@@ -30,7 +30,7 @@ Artifacts / Behavior
 ## Tests executed
 - CI required checks: PASS (Lint Gate, docs-reference-targets-gate, tests (3.11), etc.)
 - Local (pre-PR):
-  - `uv run pytest -q tests&#47;backtest&#47;test_reporting_no_plots.py tests&#47;scripts&#47;test_no_plots_cli_wiring.py`
+  - `python3 -m pytest -q tests&#47;backtest&#47;test_reporting_no_plots.py tests&#47;scripts&#47;test_no_plots_cli_wiring.py`
 
 ## Verification result
 - PASS: `save_full_report(..., save_plots_flag=False, save_html_flag=True)` writes no PNGs and the HTML contains no PNG references.

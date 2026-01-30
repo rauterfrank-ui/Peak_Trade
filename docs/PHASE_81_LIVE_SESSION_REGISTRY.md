@@ -223,7 +223,7 @@ Typisches Layout:
 ## CLI-Aufruf
 
 ```bash
-python scripts/run_execution_session.py ...
+python3 scripts/run_execution_session.py ...
 ```
 ```
 
@@ -364,7 +364,7 @@ record = LiveSessionRecord(
     started_at=datetime.utcnow(),
     config={"strategy_name": "ma_crossover"},
     metrics={"realized_pnl": 150.0, "max_drawdown": 0.05},
-    cli_args=["python", "scripts/run_execution_session.py", "--shadow"],
+    cli_args=["python3", "scripts/run_execution_session.py", "--shadow"],
 )
 
 path = register_live_session_run(record)
@@ -398,31 +398,31 @@ Das CLI-Tool `scripts/report_live_sessions.py` generiert Markdown- und HTML-Repo
 
 ```bash
 # Alle Sessions als Markdown-Report:
-python scripts/report_live_sessions.py
+python3 scripts/report_live_sessions.py
 
 # Nur Shadow-Sessions:
-python scripts/report_live_sessions.py --run-type live_session_shadow
+python3 scripts/report_live_sessions.py --run-type live_session_shadow
 
 # Nur abgeschlossene Sessions:
-python scripts/report_live_sessions.py --status completed
+python3 scripts/report_live_sessions.py --status completed
 
 # Limit auf letzte 10 Sessions:
-python scripts/report_live_sessions.py --limit 10
+python3 scripts/report_live_sessions.py --limit 10
 
 # HTML-Report generieren:
-python scripts/report_live_sessions.py --output-format html
+python3 scripts/report_live_sessions.py --output-format html
 
 # Beide Formate:
-python scripts/report_live_sessions.py --output-format both
+python3 scripts/report_live_sessions.py --output-format both
 
 # Nur Summary (keine Einzel-Reports):
-python scripts/report_live_sessions.py --summary-only
+python3 scripts/report_live_sessions.py --summary-only
 
 # Report nach stdout:
-python scripts/report_live_sessions.py --stdout
+python3 scripts/report_live_sessions.py --stdout
 
 # Report in spezifisches Verzeichnis:
-python scripts/report_live_sessions.py --output-dir reports/custom/
+python3 scripts/report_live_sessions.py --output-dir reports/custom/
 ```
 
 **Output:**

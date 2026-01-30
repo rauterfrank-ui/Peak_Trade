@@ -328,7 +328,7 @@
 # 3. Unterschiedliche Wert-Änderungen (klein, mittel, groß)
 # 4. Grenzfälle testen (genau 0.75, negative Änderungen, etc.)
 
-python scripts/generate_demo_patches_for_promotion.py --variant diverse
+python3 scripts/generate_demo_patches_for_promotion.py --variant diverse
 ```
 
 **B) Governance-Filter härter testen (PRIO 2)**

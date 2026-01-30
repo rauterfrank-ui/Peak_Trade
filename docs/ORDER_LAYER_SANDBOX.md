@@ -251,12 +251,12 @@ Das Script unterstuetzt jetzt den Order-Layer via `--use-order-layer`:
 
 ```bash
 # Mit altem PaperBroker (Standard)
-python scripts/paper_trade_from_orders.py \
+python3 scripts/paper_trade_from_orders.py \
   --orders reports/live/preview_..._orders.csv \
   --starting-cash 10000
 
 # Mit neuem Order-Layer
-python scripts/paper_trade_from_orders.py \
+python3 scripts/paper_trade_from_orders.py \
   --orders reports/live/preview_..._orders.csv \
   --starting-cash 10000 \
   --use-order-layer
@@ -267,7 +267,7 @@ python scripts/paper_trade_from_orders.py \
 Das Script zeigt jetzt die Order-Layer-Kompatibilitaet:
 
 ```bash
-python scripts/preview_live_orders.py \
+python3 scripts/preview_live_orders.py \
   --signals reports/forward/..._signals.csv \
   --notional 500
 
@@ -371,7 +371,7 @@ OrderExecutionResult(
 Die Tests befinden sich in `tests/test_orders_smoke.py`:
 
 ```bash
-pytest tests/test_orders_smoke.py -v
+python3 -m pytest tests/test_orders_smoke.py -v
 # 31 passed
 ```
 

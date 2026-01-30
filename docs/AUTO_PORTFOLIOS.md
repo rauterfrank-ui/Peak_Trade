@@ -54,13 +54,13 @@ Sweeps → Registry → Auto-Builder → TOML-Configs → Portfolio-Backtest
 Zeigt, welche Portfolios generiert würden:
 
 ```bash
-python scripts/build_auto_portfolios.py --dry-run
+python3 scripts/build_auto_portfolios.py --dry-run
 ```
 
 ### 2. Portfolio aus Sweeps generieren
 
 ```bash
-python scripts/build_auto_portfolios.py \
+python3 scripts/build_auto_portfolios.py \
     --metric sharpe \
     --min-sharpe 0.5 \
     --max-components 3 \
@@ -72,7 +72,7 @@ python scripts/build_auto_portfolios.py \
 Nur Sweeps mit bestimmtem Tag verwenden:
 
 ```bash
-python scripts/build_auto_portfolios.py \
+python3 scripts/build_auto_portfolios.py \
     --metric sharpe \
     --tag optimization-v1 \
     --prefix auto_ma \
@@ -84,7 +84,7 @@ python scripts/build_auto_portfolios.py \
 Erstellt separate Portfolios für jede Strategie:
 
 ```bash
-python scripts/build_auto_portfolios.py \
+python3 scripts/build_auto_portfolios.py \
     --mode per-strategy \
     --max-components 3 \
     --output-dir config/portfolios
@@ -95,7 +95,7 @@ python scripts/build_auto_portfolios.py \
 Gewichtet nach Sharpe statt gleichmäßig:
 
 ```bash
-python scripts/build_auto_portfolios.py \
+python3 scripts/build_auto_portfolios.py \
     --allocation metric_weighted \
     --max-components 5 \
     --output-dir config/portfolios
@@ -152,18 +152,18 @@ Nach der Generierung können die Portfolios getestet werden:
 
 ```bash
 # 1. Auto-Portfolio generieren
-python scripts/build_auto_portfolios.py \
+python3 scripts/build_auto_portfolios.py \
     --metric sharpe \
     --max-components 3 \
     --output-dir config/portfolios
 
 # 2. Generiertes Portfolio backtesten
-python scripts/run_portfolio_backtest.py \
+python3 scripts/run_portfolio_backtest.py \
     --config config/portfolios/auto_portfolio_3comp_*.toml \
     --tag auto-portfolio-test
 
 # 3. Ergebnisse analysieren
-python scripts/analyze_experiments.py \
+python3 scripts/analyze_experiments.py \
     --run-type portfolio_backtest \
     --tag auto-portfolio-test
 ```
@@ -176,27 +176,29 @@ python scripts/analyze_experiments.py \
 
 ```bash
 # 1. Sweeps für mehrere Strategien
-python scripts/run_sweep.py \
+python3 scripts/run_sweep.py \
+    --config config/config.toml \
     --strategy ma_crossover \
     --symbol BTC/EUR \
     --grid config/sweeps/ma_crossover.toml \
     --tag opt-v1
 
-python scripts/run_sweep.py \
+python3 scripts/run_sweep.py \
+    --config config/config.toml \
     --strategy rsi_reversion \
     --symbol ETH/EUR \
     --grid config/sweeps/rsi_reversion.toml \
     --tag opt-v1
 
 # 2. Auto-Portfolio generieren
-python scripts/build_auto_portfolios.py \
+python3 scripts/build_auto_portfolios.py \
     --tag opt-v1 \
     --max-components 5 \
     --min-sharpe 0.5 \
     --output-dir config/portfolios
 
 # 3. Portfolio backtesten
-python scripts/run_portfolio_backtest.py \
+python3 scripts/run_portfolio_backtest.py \
     --config config/portfolios/auto_portfolio_*.toml
 ```
 
@@ -204,18 +206,18 @@ python scripts/run_portfolio_backtest.py \
 
 ```bash
 # 1. Ein Portfolio pro Strategie
-python scripts/build_auto_portfolios.py \
+python3 scripts/build_auto_portfolios.py \
     --mode per-strategy \
     --max-components 3 \
     --output-dir config/portfolios
 
 # 2. Alle Portfolios backtesten
 for config in config/portfolios/auto_*.toml; do
-    python scripts/run_portfolio_backtest.py --config $config
+    python3 scripts/run_portfolio_backtest.py --config $config
 done
 
 # 3. Vergleichen
-python scripts/analyze_experiments.py \
+python3 scripts/analyze_experiments.py \
     --run-type portfolio_backtest
 ```
 
@@ -314,7 +316,8 @@ Der Builder benötigt Sweep-Ergebnisse in der Registry:
 
 ```bash
 # Falls keine Daten vorhanden
-python scripts/run_sweep.py \
+python3 scripts/run_sweep.py \
+    --config config/config.toml \
     --strategy ma_crossover \
     --grid config/sweeps/ma_crossover.toml
 ```
@@ -327,7 +330,8 @@ python scripts/run_sweep.py \
 
 Führe zuerst Sweeps durch:
 ```bash
-python scripts/run_sweep.py \
+python3 scripts/run_sweep.py \
+    --config config/config.toml \
     --strategy ma_crossover \
     --grid '{"short_window": [5, 10, 20], "long_window": [50, 100]}'
 ```
@@ -336,7 +340,7 @@ python scripts/run_sweep.py \
 
 Senke die Mindestanforderungen:
 ```bash
-python scripts/build_auto_portfolios.py \
+python3 scripts/build_auto_portfolios.py \
     --min-sharpe 0.0 \
     --max-components 10
 ```

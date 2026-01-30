@@ -13,7 +13,7 @@ Im Projekt-Root:
 cd /path/to/Peak_Trade
 source .venv/bin/activate
 
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
   --mode shadow \
   --config config/live/demo_session.toml
 ```
@@ -26,7 +26,7 @@ python scripts/run_execution_session.py \
 ### 2. Live-Readiness / Registry kurz prüfen (optional, aber empfehlenswert)
 
 ```bash
-python scripts/check_live_readiness.py
+python3 scripts/check_live_readiness.py
 ```
 
 * Erwartung: Alle Checks im grünen Bereich für Shadow-/Testnet.
@@ -37,7 +37,7 @@ python scripts/check_live_readiness.py
 ### 3. Web-Dashboard starten
 
 ```bash
-python scripts/operator_dashboard.py
+python3 scripts/operator_dashboard.py
 ```
 
 * Merke dir die ausgegebene URL (typisch `http://127.0.0.1:8000` oder ähnlich).

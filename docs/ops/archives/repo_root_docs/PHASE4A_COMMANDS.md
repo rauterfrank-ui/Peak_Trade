@@ -6,20 +6,20 @@
 
 ```bash
 # Default: L0, REC
-python scripts/run_layer_smoke_with_evidence_pack.py --verbose
+python3 scripts/run_layer_smoke_with_evidence_pack.py --verbose
 
 # Specify layer and autonomy
-python scripts/run_layer_smoke_with_evidence_pack.py --layer L1 --autonomy PROP --verbose
+python3 scripts/run_layer_smoke_with_evidence_pack.py --layer L1 --autonomy PROP --verbose
 ```
 
 ### 2. Validate Evidence Packs
 
 ```bash
 # Validate all packs (strict mode)
-python scripts/validate_evidence_pack_ci.py --root .artifacts/evidence_packs --verbose
+python3 scripts/validate_evidence_pack_ci.py --root .artifacts/evidence_packs --verbose
 
 # Generate JSON report
-python scripts/validate_evidence_pack_ci.py \
+python3 scripts/validate_evidence_pack_ci.py \
   --root .artifacts/evidence_packs \
   --output validation_report.json \
   --verbose
@@ -29,10 +29,10 @@ python scripts/validate_evidence_pack_ci.py \
 
 ```bash
 # CI gate tests only (17 tests)
-python -m pytest tests/ai_orchestration/test_evidence_pack_ci_gate.py -v
+python3 -m pytest tests/ai_orchestration/test_evidence_pack_ci_gate.py -v
 
 # All Evidence Pack tests (41 tests)
-python -m pytest tests/ai_orchestration/test_evidence_pack*.py -v
+python3 -m pytest tests/ai_orchestration/test_evidence_pack*.py -v
 ```
 
 ---
@@ -107,10 +107,10 @@ print(f"Evidence Pack saved: {pack_path}")
 
 ```bash
 # Step 1: Create Evidence Pack (smoke run)
-python scripts/run_layer_smoke_with_evidence_pack.py --verbose
+python3 scripts/run_layer_smoke_with_evidence_pack.py --verbose
 
 # Step 2: Validate Evidence Packs (CI gate)
-python scripts/validate_evidence_pack_ci.py \
+python3 scripts/validate_evidence_pack_ci.py \
   --root .artifacts/evidence_packs \
   --output .artifacts/validation_report.json \
   --strict \
@@ -132,19 +132,19 @@ echo "Exit code: $?"
 ls -la .artifacts/evidence_packs/
 
 # Create pack manually
-python scripts/run_layer_smoke_with_evidence_pack.py --verbose
+python3 scripts/run_layer_smoke_with_evidence_pack.py --verbose
 ```
 
 ### Invalid Evidence Pack
 
 ```bash
 # Validate specific pack with verbose output
-python scripts/validate_evidence_pack_ci.py \
+python3 scripts/validate_evidence_pack_ci.py \
   --root .artifacts/evidence_packs \
   --verbose
 
 # Check JSON report for details
-cat .artifacts/validation_report.json | python -m json.tool
+cat .artifacts/validation_report.json | python3 -m json.tool
 ```
 
 ---

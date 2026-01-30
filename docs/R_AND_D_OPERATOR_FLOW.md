@@ -39,7 +39,7 @@ cd /path/to/Peak_Trade
 source .venv/bin/activate
 
 # Beispiel: Ehlers-Preset ausführen
-python scripts/research_cli.py run-experiment \
+python3 scripts/research_cli.py run-experiment \
   --preset ehlers_super_smoother_v1 \
   --symbol BTC/USDT \
   --timeframe 1h
@@ -48,9 +48,17 @@ python scripts/research_cli.py run-experiment \
 Alternativ für Batch-Läufe:
 
 ```bash
-python scripts/research_cli.py run-batch \
-  --presets config/r_and_d_presets.toml \
-  --tag "wave_v2_test"
+# Es gibt aktuell keinen eigenen `run-batch` Subcommand.
+# Batch = mehrere `run-experiment` Calls (z.B. in zsh/bash):
+python3 scripts/research_cli.py run-experiment --list-presets
+
+for preset in ehlers_super_smoother_v1 armstrong_cycle_v0_research; do
+  python3 scripts/research_cli.py run-experiment \
+    --preset "$preset" \
+    --symbol BTC/USDT \
+    --timeframe 1h \
+    --tag "wave_v2_test"
+done
 ```
 
 ### 2.2 Report-Verzeichnis prüfen
@@ -67,7 +75,7 @@ reports/r_and_d_experiments/
 ### 2.3 Web-Dashboard starten
 
 ```bash
-python scripts/operator_dashboard.py
+python3 scripts/operator_dashboard.py
 ```
 
 Standardmäßig erreichbar unter `http://127.0.0.1:8000`.
@@ -195,7 +203,7 @@ Die Comparison-View zeigt:
 1. Prüfe, ob der Run erfolgreich war (`status: success`)
 2. Report-Generierung ggf. manuell nachziehen:
    ```bash
-   python scripts/research_cli.py generate-report --run-id <run_id>
+   python3 scripts/research_cli.py generate-report --run-id <run_id>
    ```
 
 ### 4.3 Status `failed` oder `no_trades`
@@ -284,8 +292,8 @@ mv reports/r_and_d_experiments/exp_old_*.json archive/r_and_d/
 
 ## 7. Checkliste: Bin ich bereit für das R&D-Dashboard?
 
-- [ ] **Mindestens ein Experiment gelaufen** (`reports/r_and_d_experiments/*.json` vorhanden)
-- [ ] **Web-Dashboard gestartet** (`python scripts/operator_dashboard.py`)
+- [ ] **Mindestens ein Experiment gelaufen** (`reports&#47;r_and_d_experiments&#47;*.json` vorhanden)
+- [ ] **Web-Dashboard gestartet** (`python3 scripts/operator_dashboard.py`)
 - [ ] **Browser auf** `http://127.0.0.1:8000/r_and_d`
 - [ ] **Ich weiß, wonach ich suche** (Preset, Tag, Strategy, Zeitraum)
 - [ ] **Ich verstehe die Metriken** (Return, Sharpe, MaxDD, WinRate, PF)

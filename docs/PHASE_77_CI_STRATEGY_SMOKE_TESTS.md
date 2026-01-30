@@ -57,13 +57,13 @@ strategy-smoke:
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
+        python3 -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pytest
 
     - name: Run strategy smoke pytest
       run: |
-        pytest tests/test_strategy_smoke_cli.py -v --tb=short
+        python3 -m pytest tests/test_strategy_smoke_cli.py -v --tb=short
 
     - name: Create smoke results directory
       run: |
@@ -71,7 +71,7 @@ strategy-smoke:
 
     - name: Run strategy smoke CLI
       run: |
-        python scripts/strategy_smoke_check.py \
+        python3 scripts/strategy_smoke_check.py \
           --output-json test_results/strategy_smoke/ci_smoke_latest.json \
           --output-md test_results/strategy_smoke/ci_smoke_latest.md
 
@@ -88,8 +88,8 @@ strategy-smoke:
 
 | Step | Kommando |
 |------|----------|
-| pytest | `pytest tests/test_strategy_smoke_cli.py -v --tb=short` |
-| CLI | `python scripts/strategy_smoke_check.py --output-json ... --output-md ...` |
+| pytest | `python3 -m pytest tests/test_strategy_smoke_cli.py -v --tb=short` |
+| CLI | `python3 scripts/strategy_smoke_check.py --output-json ... --output-md ...` |
 
 ## Failure-Path
 
@@ -134,11 +134,11 @@ Die CI-Schritte koennen lokal reproduziert werden:
 
 ```bash
 # Smoke pytest
-pytest tests/test_strategy_smoke_cli.py -v
+python3 -m pytest tests/test_strategy_smoke_cli.py -v
 
 # Smoke CLI
 mkdir -p test_results/strategy_smoke
-python scripts/strategy_smoke_check.py \
+python3 scripts/strategy_smoke_check.py \
   --output-json test_results/strategy_smoke/ci_smoke_latest.json \
   --output-md test_results/strategy_smoke/ci_smoke_latest.md
 ```

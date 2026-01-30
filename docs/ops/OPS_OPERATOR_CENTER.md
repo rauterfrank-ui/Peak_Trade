@@ -274,7 +274,7 @@ scripts/ops/create_and_open_merge_log_pr.sh  # → Workflow ausführen
 
 ```bash
 # Smoke-Tests
-pytest -q tests/ops/test_ops_center_smoke.py
+python3 -m pytest -q tests/ops/test_ops_center_smoke.py
 
 # Manuell
 scripts/ops/ops_center.sh help

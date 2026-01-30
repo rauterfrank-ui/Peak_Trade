@@ -732,8 +732,8 @@ STEP 4 — REVIEW (safety-first)
 - Ensure recon/audit steps are deterministic and do not depend on non-existent paths.
 
 STEP 5 — VERIFICATION (list commands, do not run unless asked)
-- `uv run ruff check .` (only if repo standard; otherwise list project's standard lint)
-- `pytest -q` (or targeted suite if documented)
+- `ruff check .` (only if repo standard; otherwise list project's standard lint)
+- `python3 -m pytest -q` (or targeted suite if documented)
 - `rg -n "live_mode|enable_live|armed" docs/` (ensure docs are safe and wording is blocked)
 - `git diff --stat`
 

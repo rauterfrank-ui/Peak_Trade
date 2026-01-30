@@ -31,12 +31,12 @@ Historisch existierte `black` (Legacy) als Referenz im Audit-Kontext, während R
 Branches mit black-formatierten Änderungen führen dann korrekt zu `ruff format --check` failures.
 
 ## Remediation
-- Sofort: Betroffene Branches via `uv run ruff format .` auf Repo-Standard gebracht.
+- Sofort: Betroffene Branches via `ruff format .` auf Repo-Standard gebracht.
 - Dauerhaft: PR #354 entfernte black-Legacy aus `scripts/ops/run_audit.sh` und erzwingt ruff-only.
 
 ## Verification
 - Guardrail: `bash scripts/ops/check_no_black_enforcement.sh` ✅
-- Audit formatting: `uv run ruff format --check .` ✅
+- Audit formatting: `ruff format --check .` ✅
 
 ## Resolution Status
 - #259 ✅ (Audit success)

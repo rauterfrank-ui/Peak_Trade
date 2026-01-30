@@ -112,20 +112,20 @@ Prioritaet (hoechste zuerst):
 
 ```bash
 # Standard - Test-Config wird automatisch verwendet
-pytest tests/
+python3 -m pytest tests/
 
 # Oder explizit
-PEAK_TRADE_CONFIG_PATH=config/config.test.toml pytest tests/
+PEAK_TRADE_CONFIG_PATH=config/config.test.toml python3 -m pytest tests/
 ```
 
 ### Produktions-/Dev-Config verwenden
 
 ```bash
 # Development
-python scripts/run_backtest.py  # nutzt config/config.toml
+python3 scripts/run_backtest.py  # nutzt config/config.toml
 
 # Explizit eine andere Config
-PEAK_TRADE_CONFIG_PATH=/path/to/custom.toml python scripts/...
+PEAK_TRADE_CONFIG_PATH=/path/to/custom.toml python3 scripts/...
 ```
 
 ## Config-Dateien Uebersicht

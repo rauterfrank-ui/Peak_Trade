@@ -407,7 +407,7 @@ load_config_with_live_overrides(
 **19 Tests, alle grün ✅**
 
 ```bash
-pytest tests&#47;test_live_overrides*.py -v
+python3 -m pytest tests&#47;test_live_overrides*.py -v
 ===== 19 passed in 0.08s =====
 ```
 

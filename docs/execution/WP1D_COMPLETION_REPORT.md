@@ -115,21 +115,21 @@ counts = alerts.get_by_priority()
 ### Run Tests
 ```bash
 # All WP1D tests
-uv run pytest tests/ops/test_wp1d_operator_ux.py -v
+python3 -m pytest tests/ops/test_wp1d_operator_ux.py -v
 
 # Specific test class
-uv run pytest tests/ops/test_wp1d_operator_ux.py::TestSessionRegistry -v
+python3 -m pytest tests/ops/test_wp1d_operator_ux.py::TestSessionRegistry -v
 ```
 
 ### Linter
 ```bash
-uv run ruff check src/live/ops/
+ruff check src/live/ops/
 ```
 
 ### Generate Evidence
 ```bash
-PYTHONPATH=/Users/frnkhrz/Peak_Trade:$PYTHONPATH \
-  uv run python scripts/ops/generate_wp1d_evidence.py
+PYTHONPATH="$PWD:$PYTHONPATH" \
+  python3 scripts/ops/generate_wp1d_evidence.py
 ```
 
 ---

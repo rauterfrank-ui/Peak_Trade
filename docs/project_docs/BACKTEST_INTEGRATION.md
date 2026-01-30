@@ -230,7 +230,7 @@ self.equity_curve.append(current_equity)
 
 **Ausführen:**
 ```bash
-python scripts/demo_backtest_with_risk.py
+python3 scripts/demo_backtest_with_risk.py
 ```
 
 **Zeigt:**
@@ -455,7 +455,7 @@ risk_limits = RiskLimits(
 
 1. **Mit echten Daten testen:**
    ```bash
-   python scripts/demo_backtest_with_risk.py
+   python3 scripts/demo_backtest_with_risk.py
    ```
 
 2. **Config optimieren:**

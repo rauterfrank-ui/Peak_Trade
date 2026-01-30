@@ -31,13 +31,13 @@ Das Script `scripts/run_offline_realtime_ma_crossover.py` ermöglicht die Ausfü
 ### Basic Run mit Defaults
 
 ```bash
-python scripts/run_offline_realtime_ma_crossover.py
+python3 scripts/run_offline_realtime_ma_crossover.py
 ```
 
 ### Custom Symbol und MA-Fenster
 
 ```bash
-python scripts/run_offline_realtime_ma_crossover.py \
+python3 scripts/run_offline_realtime_ma_crossover.py \
     --symbol BTC/EUR \
     --fast-window 10 \
     --slow-window 30
@@ -46,7 +46,7 @@ python scripts/run_offline_realtime_ma_crossover.py \
 ### Lange Simulation mit vielen Regimes
 
 ```bash
-python scripts/run_offline_realtime_ma_crossover.py \
+python3 scripts/run_offline_realtime_ma_crossover.py \
     --symbol ETH/USD \
     --n-steps 10000 \
     --n-regimes 10 \
@@ -57,7 +57,7 @@ python scripts/run_offline_realtime_ma_crossover.py \
 ### Mit Verbose-Logging
 
 ```bash
-python scripts/run_offline_realtime_ma_crossover.py \
+python3 scripts/run_offline_realtime_ma_crossover.py \
     --symbol BTC/EUR \
     --n-steps 1000 \
     --n-regimes 5 \
@@ -233,14 +233,14 @@ Das Script validiert automatisch:
 1. **Fast/Slow-Window**: `fast_window` muss < `slow_window` sein
    ```bash
    # Fehler:
-   python scripts/run_offline_realtime_ma_crossover.py --fast-window 50 --slow-window 30
+   python3 scripts/run_offline_realtime_ma_crossover.py --fast-window 50 --slow-window 30
    # error: fast-window (50) muss < slow-window (30) sein
    ```
 
 2. **N-Steps vs. Slow-Window**: `n_steps` muss >= `slow_window` sein
    ```bash
    # Fehler:
-   python scripts/run_offline_realtime_ma_crossover.py --n-steps 40 --slow-window 50
+   python3 scripts/run_offline_realtime_ma_crossover.py --n-steps 40 --slow-window 50
    # error: n-steps (40) muss >= slow-window (50) sein
    ```
 
@@ -299,7 +299,7 @@ cd /path/to/Peak_Trade
 
 # Oder setze PYTHONPATH:
 export PYTHONPATH=/path/to/Peak_Trade:$PYTHONPATH
-python scripts/run_offline_realtime_ma_crossover.py
+python3 scripts/run_offline_realtime_ma_crossover.py
 ```
 
 ### Keine Trades
@@ -330,10 +330,10 @@ Die zugrunde liegenden Komponenten werden durch bestehende Tests abgedeckt:
 
 ```bash
 # Execution-Pipeline-Tests
-pytest tests/test_execution_pipeline.py -v
+python3 -m pytest tests/test_execution_pipeline.py -v
 
 # MA-Crossover-Strategy-Tests (wenn vorhanden)
-pytest tests/ -k "ma_crossover" -v
+python3 -m pytest tests/ -k "ma_crossover" -v
 ```
 
 ## Siehe auch

@@ -87,12 +87,12 @@ Jeder Sweep-Run wird als `run_type="sweep"` in der Registry gespeichert:
 
 ```bash
 # Mit vordefiniertem Grid
-python scripts/run_sweep_strategy.py --strategy trend_following \
+python3 scripts/run_sweep_strategy.py --strategy trend_following \
     --grid config/sweeps/trend_following.toml \
     --tag optimization
 
 # Mit Limit und Top-5 Ausgabe
-python scripts/run_sweep_strategy.py --strategy trend_following \
+python3 scripts/run_sweep_strategy.py --strategy trend_following \
     --grid config/sweeps/trend_following.toml \
     --max-runs 20 --top-n 5
 ```
@@ -101,12 +101,12 @@ python scripts/run_sweep_strategy.py --strategy trend_following \
 
 ```bash
 # Mit vordefiniertem Grid
-python scripts/run_sweep_strategy.py --strategy my_strategy \
+python3 scripts/run_sweep_strategy.py --strategy my_strategy \
     --grid config/sweeps/my_strategy.toml \
     --symbol BTC/EUR --tag volatility-test
 
 # Mit CLI-Parametern (ohne Grid-Datei)
-python scripts/run_sweep_strategy.py --strategy my_strategy \
+python3 scripts/run_sweep_strategy.py --strategy my_strategy \
     --param lookback_window=15,20,25 \
     --param entry_multiplier=1.2,1.5,2.0 \
     --param exit_multiplier=0.3,0.5
@@ -116,7 +116,7 @@ python scripts/run_sweep_strategy.py --strategy my_strategy \
 
 ```bash
 # Mit echten Daten
-python scripts/run_sweep_strategy.py --strategy mean_reversion \
+python3 scripts/run_sweep_strategy.py --strategy mean_reversion \
     --grid config/sweeps/mean_reversion.toml \
     --data-file data/btc_eur_1h.csv \
     --tag production-test
@@ -125,7 +125,7 @@ python scripts/run_sweep_strategy.py --strategy mean_reversion \
 ### Beispiel 4: Dry-Run (nur Kombinationen anzeigen)
 
 ```bash
-python scripts/run_sweep_strategy.py --strategy ma_crossover \
+python3 scripts/run_sweep_strategy.py --strategy ma_crossover \
     --grid config/sweeps/ma_crossover.toml \
     --dry-run
 ```
@@ -133,7 +133,7 @@ python scripts/run_sweep_strategy.py --strategy ma_crossover \
 ### Beispiel 5: Export nach CSV
 
 ```bash
-python scripts/run_sweep_strategy.py --strategy my_strategy \
+python3 scripts/run_sweep_strategy.py --strategy my_strategy \
     --grid config/sweeps/my_strategy.toml \
     --export results/my_strategy_sweep.csv
 ```
@@ -242,7 +242,7 @@ use_close_only = [false]
 Nutze `--max-runs` um bei großen Grids die Laufzeit zu begrenzen:
 
 ```bash
-python scripts/run_sweep_strategy.py --strategy my_strategy \
+python3 scripts/run_sweep_strategy.py --strategy my_strategy \
     --grid config/sweeps/my_strategy.toml \
     --max-runs 30
 ```
@@ -252,7 +252,7 @@ python scripts/run_sweep_strategy.py --strategy my_strategy \
 Prüfe immer erst die Kombinationen mit `--dry-run`:
 
 ```bash
-python scripts/run_sweep_strategy.py --strategy trend_following \
+python3 scripts/run_sweep_strategy.py --strategy trend_following \
     --grid config/sweeps/trend_following.toml \
     --dry-run
 ```
@@ -280,7 +280,7 @@ Verwende aussagekräftige Tags:
 
 ```bash
 # Training-Daten (2022-2023)
-python scripts/run_sweep_strategy.py --strategy my_strategy \
+python3 scripts/run_sweep_strategy.py --strategy my_strategy \
     --grid config/sweeps/my_strategy.toml \
     --data-file data/btc_2022_2023.csv \
     --tag training
@@ -294,10 +294,10 @@ Nach dem Sweep:
 
 ```bash
 # Alle Sweep-Runs anzeigen
-python scripts/list_experiments.py --run-type sweep
+python3 scripts/list_experiments.py --run-type sweep
 
 # Top-Runs nach Sharpe
-python scripts/analyze_experiments.py --mode top-runs --run-type sweep --metric sharpe
+python3 scripts/analyze_experiments.py --mode top-runs --run-type sweep --metric sharpe
 ```
 
 ---
@@ -390,7 +390,7 @@ Die Sweep-Ergebnisse werden in der Registry gespeichert und können mit dem zuk�
 **Lösung**: Prüfe verfügbare Strategien mit `--list-strategies`:
 
 ```bash
-python scripts/run_sweep_strategy.py --list-strategies
+python3 scripts/run_sweep_strategy.py --list-strategies
 ```
 
 ### Problem: Zu viele Kombinationen
@@ -398,7 +398,7 @@ python scripts/run_sweep_strategy.py --list-strategies
 **Lösung**: Reduziere das Grid oder nutze `--max-runs`:
 
 ```bash
-python scripts/run_sweep_strategy.py --strategy my_strategy \
+python3 scripts/run_sweep_strategy.py --strategy my_strategy \
     --grid config/sweeps/my_strategy.toml \
     --max-runs 20
 ```
@@ -415,10 +415,10 @@ python scripts/run_sweep_strategy.py --strategy my_strategy \
 
 ```bash
 # Mit Registry (Standard)
-python scripts/run_sweep_strategy.py --strategy my_strategy --grid ...
+python3 scripts/run_sweep_strategy.py --strategy my_strategy --grid ...
 
 # Ohne Registry (nur für Tests)
-python scripts/run_sweep_strategy.py --strategy my_strategy --grid ... --no-registry
+python3 scripts/run_sweep_strategy.py --strategy my_strategy --grid ... --no-registry
 ```
 
 ---

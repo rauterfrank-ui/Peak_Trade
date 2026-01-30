@@ -407,7 +407,7 @@ def basel_traffic_light(
 
 ```bash
 # VaR Backtesting für BTC/EUR
-python scripts/risk/run_var_backtest.py \
+python3 scripts/risk/run_var_backtest.py \
   --symbol BTC/EUR \
   --start 2024-01-01 \
   --end 2024-12-31 \
@@ -649,8 +649,12 @@ expected_portfolio_impact:
   recovery_days: 365       # ~1 Jahr Recovery
 
 ---
-# src/risk/scenarios/flash_crash.yaml
-
+# (Konzeptbeispiel) Flash Crash Scenario (Risk-Layer)
+#
+# Hinweis:
+# - Der Risk-Layer Stress ist in `src/risk/stress.py` implementiert (Scenario.kind: shock/vol_spike/flash_crash/regime_bear/regime_sideways).
+# - Die Research Scenario-Library liegt separat in `config/scenarios/*.toml` (Phase 82) und definiert QA/Regression-Erwartungen.
+#
 name: "Flash Crash Scenario"
 description: "Kurzfristiger Liquiditätskollaps (Minuten bis Stunden)"
 

@@ -78,11 +78,11 @@ Der Merge+Format-Sweep Workflow wurde in PR #220 als Runbook dokumentiert und is
 
 ```bash
 # Ruff Check
-uv run ruff check .
+ruff check .
 # → All checks passed!
 
 # Targeted Tests
-uv run pytest tests/test_ops_workflows_router.py -v
+python3 -m pytest tests/test_ops_workflows_router.py -v
 # → 5 passed, 5 warnings
 ```
 
@@ -107,7 +107,7 @@ Begründung:
 
 ```bash
 # Server starten
-uv run uvicorn src.webui.app:app --reload --port 8000
+python3 -m uvicorn src.webui.app:app --reload --port 8000
 
 # Browser öffnen
 open http://localhost:8000/ops/workflows

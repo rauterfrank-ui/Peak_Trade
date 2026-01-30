@@ -46,13 +46,13 @@ Neues `--data-source` Argument:
 
 ```bash
 # Default: synthetische Daten
-python scripts/strategy_smoke_check.py
+python3 scripts/strategy_smoke_check.py
 
 # Explizit synthetisch
-python scripts/strategy_smoke_check.py --data-source synthetic
+python3 scripts/strategy_smoke_check.py --data-source synthetic
 
 # Real-Market-Smoke mit Kraken-Cache
-python scripts/strategy_smoke_check.py \
+python3 scripts/strategy_smoke_check.py \
   --data-source kraken_cache \
   --market BTC/EUR \
   --timeframe 1h \
@@ -121,12 +121,12 @@ Aktuell im `data/cache/` Verzeichnis:
 
 ```bash
 # Synthetisch (Default, CI-kompatibel)
-python scripts/strategy_smoke_check.py \
+python3 scripts/strategy_smoke_check.py \
   --strategies ma_crossover,rsi_reversion \
   --n-bars 200
 
 # Kraken-Cache mit BTC/EUR 1h
-python scripts/strategy_smoke_check.py \
+python3 scripts/strategy_smoke_check.py \
   --data-source kraken_cache \
   --market BTC/EUR \
   --timeframe 1h \
@@ -143,7 +143,7 @@ python scripts/strategy_smoke_check.py \
 - 10 neue Tests für Phase 78 (Kraken-Cache)
 
 ```bash
-pytest tests/test_strategy_smoke_cli.py -v
+python3 -m pytest tests/test_strategy_smoke_cli.py -v
 # 33 passed in 2.63s
 ```
 

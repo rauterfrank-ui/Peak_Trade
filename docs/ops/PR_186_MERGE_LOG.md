@@ -51,13 +51,13 @@
 **Usage:**
 ```bash
 # Dry-run (safe, default)
-python scripts/ops/telemetry_retention.py
+python3 scripts/ops/telemetry_retention.py
 
 # Apply cleanup
-python scripts/ops/telemetry_retention.py --apply
+python3 scripts/ops/telemetry_retention.py --apply
 
 # Custom policy
-python scripts/ops/telemetry_retention.py --apply \
+python3 scripts/ops/telemetry_retention.py --apply \
   --max-age-days 14 \
   --keep-last-n 100 \
   --compress-after-days 3
@@ -154,7 +154,7 @@ protect_keep_last_from_compress = false
 
 ### 1. Tests (22 passing)
 ```bash
-pytest -q tests/execution/test_telemetry_retention_policy.py
+python3 -m pytest -q tests/execution/test_telemetry_retention_policy.py
 ```
 
 **Expected Output:**
@@ -175,7 +175,7 @@ All checks passed!
 
 ### 3. Dry-Run (Safe)
 ```bash
-python scripts/ops/telemetry_retention.py
+python3 scripts/ops/telemetry_retention.py
 ```
 
 **Expected Output (if no logs exist):**
@@ -205,7 +205,7 @@ ACTIONS (oldest first):
 
 ### 4. Full Test Suite (Optional)
 ```bash
-pytest -q tests/execution/
+python3 -m pytest -q tests/execution/
 ```
 
 **Expected:** All execution tests pass (telemetry viewer + retention)
@@ -287,13 +287,13 @@ After:  Plateaus at ~200 MB (30d retention + compression)
 **Daily (Automated via cron/scheduler):**
 ```bash
 # Dry-run check (monitoring)
-python scripts/ops/telemetry_retention.py --json > /tmp/retention_plan.json
+python3 scripts/ops/telemetry_retention.py --json > /tmp/retention_plan.json
 ```
 
 **Weekly (Automated via cron/scheduler):**
 ```bash
 # Apply default policy
-python scripts/ops/telemetry_retention.py --apply
+python3 scripts/ops/telemetry_retention.py --apply
 ```
 
 **Monthly (Manual review):**
@@ -315,7 +315,7 @@ ls -lh logs/execution/*.jsonl.gz | wc -l  # Count compressed logs
 **Problem:** "Unsafe or invalid telemetry root"
 ```bash
 # Solution: Use correct path
-python scripts/ops/telemetry_retention.py --root logs/execution
+python3 scripts/ops/telemetry_retention.py --root logs/execution
 ```
 
 **Problem:** Not enough space freed
@@ -325,7 +325,7 @@ ls -lh logs/execution/*.jsonl
 du -sh logs/execution
 
 # Try aggressive policy
-python scripts/ops/telemetry_retention.py --apply \
+python3 scripts/ops/telemetry_retention.py --apply \
   --max-age-days 7 \
   --keep-last-n 50
 ```
@@ -333,7 +333,7 @@ python scripts/ops/telemetry_retention.py --apply \
 **Problem:** Compressed logs not readable
 ```bash
 # Viewer auto-detects compression
-python scripts/view_execution_telemetry.py --path logs/execution
+python3 scripts/view_execution_telemetry.py --path logs/execution
 
 # Manual inspection
 zcat logs/execution/session_123.jsonl.gz | head -20

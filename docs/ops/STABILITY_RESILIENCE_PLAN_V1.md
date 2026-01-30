@@ -288,7 +288,7 @@ ohlcv = client.fetch_ohlcv('BTC/USD', '1h', limit=100)
 
 **Usage:**
 ```bash
-python scripts/health_dashboard.py
+python3 scripts/health_dashboard.py
 ```
 
 #### C6: Fast Smoke Test Suite ✅
@@ -304,7 +304,7 @@ python scripts/health_dashboard.py
 ```bash
 # Historical: bash scripts/run_smoke_tests.sh
 # Current:
-python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
+python3 -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
 ```
 
 **Tests:** 14 smoke tests across resilience and stability modules
@@ -346,12 +346,12 @@ python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
 
 5. **Monitor system health:**
    ```bash
-   python scripts/health_dashboard.py
+   python3 scripts/health_dashboard.py
    ```
 
 6. **Run fast smoke tests:**
    ```bash
-   python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
+   python3 -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
    ```
 
 ### For Developers

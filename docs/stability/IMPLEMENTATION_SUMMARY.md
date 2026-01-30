@@ -138,7 +138,7 @@ The Stability & Resilience v1 implementation is now **complete** with all three 
 ```yaml
 - name: "Stability Smoke Tests (Fast Gate)"
   run: |
-    pytest tests/test_stability_smoke.py tests/test_data_contracts.py \
+    python3 -m pytest tests/test_stability_smoke.py tests/test_data_contracts.py \
            tests/test_error_taxonomy.py tests/test_resilience.py \
            -m smoke -v --tb=short
 ```
@@ -318,7 +318,7 @@ def robust_api_call():
 2. **Track reproducibility** with ReproContext
 3. **Write smoke tests** for critical features
 4. **Test determinism** with `verify_determinism()`
-5. **Run smoke tests** locally: `pytest -m smoke -v`
+5. **Run smoke tests** locally: `python3 -m pytest -m smoke -v`
 
 ---
 

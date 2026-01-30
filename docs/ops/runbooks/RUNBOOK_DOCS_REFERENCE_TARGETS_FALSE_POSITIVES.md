@@ -18,7 +18,7 @@ The `docs-reference-targets-gate` CI check validates that all file paths mention
 ```markdown
 # Tutorial: Custom Config
 Run with your custom config:
-`python scripts/run_strategy_from_config.py --config config/my_custom.toml`
+`bash python3 scripts/run_strategy_from_config.py --config config&#47;my_custom.toml`
 ```
 
 **Gate failure:**
@@ -79,21 +79,21 @@ ls -la config/my_backtest.toml
 
 ### Fix A: Neutralize Illustrative Paths (Recommended)
 
-**Method:** Replace `&#47;` with HTML entity `&#47;` in inline code spans
+**Method:** Replace `/` with HTML entity `&#47;` in inline code spans
 
 **Before:**
 ```markdown
-Example: `config&#47;my_custom.toml`
-Command: `python scripts/example.py --config config/my_custom.toml`
+Example: `config/my_custom.toml`
+Command: `python3 scripts/example.py --config config/my_custom.toml`
 ```
 
 **After:**
 ```markdown
 Example: `config&#47;my_custom.toml`
-Command: `python scripts&#47;example.py --config config&#47;my_custom.toml`
+Command: `bash python3 scripts/example.py --config config&#47;my_custom.toml`
 ```
 
-**Rendering:** Both display identically in GitHub/Quarto (entity decoded to `&#47;`)
+**Rendering:** Both display identically in GitHub/Quarto (entity decoded to `/`)
 
 **Copy/paste behavior:**
 - From rendered view (GitHub UI): ✅ Gets correct path
@@ -113,14 +113,7 @@ grep -o '`[^`]*`' docs/my_file.md | grep '/'
 # 2. Replace in editor: config/my_custom.toml → config&#47;my_custom.toml
 ```
 
-**Semi-Automated (sed):**
-```bash
-# Replace specific path in file
-sed -i 's|`config&#47;my_custom\.toml`|`config\&#47;my_custom.toml`|g' docs/my_file.md
-
-# Verify changes
-git diff docs/my_file.md
-```
+**Note:** Prefer doing this in an editor for one-off fixes; avoid bulk escaping that accidentally touches real repo paths.
 
 ### Fix B: Add to Ignore List
 
@@ -165,13 +158,13 @@ git commit -m "docs(ops): exempt illustrative path from reference targets gate"
 1. **Real paths** → Keep as-is (gate should track them)
 2. **Illustrative paths** → Encode with `&#47;`
 
-**File:** `docs&#47;ops&#47;workflows&#47;WORKFLOW_NOTES_FRONTDOOR.md` documents this policy
+**File:** `docs/ops/workflows/WORKFLOW_NOTES_FRONTDOOR.md` documents this policy
 
 **Automated Enforcement:** The [Docs Token Policy Gate](RUNBOOK_DOCS_TOKEN_POLICY_GATE.md) automatically checks changed Markdown files and enforces this encoding policy, preventing false positives before they reach CI
 
 ### Pre-Commit Check (Optional)
 
-**Script:** `scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed`
+**Script:** `bash scripts/ops/verify_docs_reference_targets.sh --changed`
 
 **Usage:**
 ```bash
@@ -198,7 +191,7 @@ repos:
 ### Documentation Guidelines
 
 **When writing docs:**
-1. For real repo paths → Use as-is (e.g., `src&#47;core&#47;config.py`)
+1. For real repo paths → Use as-is (e.g., `src/core/config.py`)
 2. For hypothetical examples → Encode (e.g., `config&#47;my_example.toml`)
 3. In code examples → Prefer fenced blocks for complex examples
 4. Test before PR → Run verification script locally
@@ -222,13 +215,13 @@ ls -la path/mentioned/in/docs
 **Before:**
 ```markdown
 1. Create your config: `config&#47;my_backtest.toml`
-2. Run: `python scripts/run_strategy_from_config.py --config config/my_backtest.toml`
+2. Run: `bash python3 scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml`
 ```
 
 **After:**
 ```markdown
-1. Create your config: `config&#47;my_backtest.toml`
-2. Run: `python scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml`
+1. Create your config: `config/config.toml`
+2. Run: `bash python3 scripts/run_strategy_from_config.py --config config/config.toml`
 ```
 
 ### Pattern 2: Walk-Through with Placeholders
@@ -237,12 +230,12 @@ ls -la path/mentioned/in/docs
 
 **Before:**
 ```markdown
-Backup logs to `logs&#47;backup_2024-01-01&#47;` directory.
+Backup docs to `docs/ops/_archive/repo_cleanup/2026-01-12/` directory.
 ```
 
 **After:**
 ```markdown
-Backup logs to `logs&#47;backup_2024-01-01&#47;` directory.
+Backup docs to `docs/ops/_archive/repo_cleanup/2026-01-12/` directory.
 ```
 
 ### Pattern 3: Script Examples
@@ -252,16 +245,10 @@ Backup logs to `logs&#47;backup_2024-01-01&#47;` directory.
 **Before:**
 ```markdown
 For walk-forward validation:
-`python scripts/run_walkforward.py --strategy ma_crossover`
+`bash python3 scripts/run_sweep.py --config config/config.toml --strategy ma_crossover --grid config/sweeps/ma_crossover.toml`
 ```
 
-**After (if script doesn't exist):**
-```markdown
-For walk-forward validation:
-`python scripts&#47;run_walkforward.py --strategy ma_crossover`
-```
-
-**Note:** Check if `scripts&#47;run_walkforward.py` exists! If yes, keep as-is.
+**Note:** Bevorzuge Beispiele mit existierenden Targets (Scripts/Configs), damit Reference‑Targets strikt bleiben können.
 
 ---
 
@@ -277,7 +264,7 @@ For walk-forward validation:
 **Solution:**
 ```bash
 # Find ALL occurrences of problematic path
-grep -r "config/my_custom.toml" docs/
+rg -n "config/my_custom.toml" docs/
 
 # Check each occurrence:
 # - Inline code → Neutralize
@@ -289,7 +276,11 @@ grep -r "config/my_custom.toml" docs/
 
 **Scenario:** User copies command from raw Markdown
 
-**Problem:** Gets `scripts&#47;example.py` instead of `scripts&#47;example.py`
+**Problem:** Gets `scripts&#47;example.py` instead of:
+
+```text
+scripts/example.py
+```
 
 **Solution:**
 - Educate users: Copy from **rendered view** (GitHub UI), not raw
@@ -297,11 +288,12 @@ grep -r "config/my_custom.toml" docs/
 
 **Example:**
 ```markdown
-Quick command: `python scripts&#47;example.py`
+Quick command: `bash python3 scripts&#47;example.py`
 
 Or copy from block below:
-```bash
-python scripts&#47;example.py
+~~~bash
+python3 scripts/example.py
+~~~
 ```
 
 ### Issue: Real path flagged as missing
@@ -314,7 +306,7 @@ python scripts&#47;example.py
 **Solution:**
 1. Verify file exists: `ls -la <path>`
 2. Check gate script: `./scripts/ops/verify_docs_reference_targets.sh --changed --verbose`
-3. Check ignore list: `docs&#47;ops&#47;DOCS_REFERENCE_TARGETS_IGNORE.txt`
+3. Check ignore list: `docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt`
 4. If legitimate bug → Fix gate script or add to ignore list
 
 ---
@@ -327,8 +319,8 @@ python scripts&#47;example.py
 - [Docs Reference Targets Gate Style Guide](../DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md) – Comprehensive style guide (if exists)
 
 ### Scripts
-- `scripts&#47;ops&#47;verify_docs_reference_targets.sh` – Local verification
-- Gate implementation: `.github&#47;workflows&#47;docs-reference-targets-gate.yml`
+- `scripts/ops/verify_docs_reference_targets.sh` – Local verification
+- Gate implementation: `.github/workflows/docs_reference_targets_gate.yml`
 
 ### Example PRs
 - PR #690 – Docs frontdoor + crosslink hardening (includes gate fix examples)
@@ -349,8 +341,8 @@ python scripts&#47;example.py
 ║    3. Classify: Real path vs Illustrative                    ║
 ║                                                               ║
 ║  FIX: Neutralize illustrative paths                          ║
-║    Before: `config&#47;my_custom.toml`                           ║
-║    After:  `config&#47;my_custom.toml`                       ║
+║    Before: `config/my_custom.toml`                            ║
+║    After:  `config&#47;my_custom.toml`                          ║
 ║                                                               ║
 ║  PREVENTION:                                                  ║
 ║    • Policy: Encode illustrative paths with &#47;            ║

@@ -78,7 +78,7 @@
 ### 🔒 Stability & Resilience
 - [Resilience](RESILIENCE.md) - System resilience patterns
 - [Stability Wave B Plan](stability/WAVE_B_PLAN.md) - Stability improvements
-- [Performance Monitoring](../src/core/performance.py) - Performance tracking
+- Performance Monitoring: `src/core/performance.py` (Code-Referenz)
 
 ---
 
@@ -239,17 +239,17 @@ Phase documentation follows format: `PHASE_XX_DESCRIPTION.md`
 ### Common Commands
 ```bash
 # Research
-python scripts/research_cli.py portfolio --config config/config.toml
+python3 scripts/research_cli.py portfolio --config config/config.toml
 
 # Backtest
-python scripts/run_backtest.py --strategy ma_crossover
+python3 scripts/run_backtest.py --strategy ma_crossover
 
 # Live Ops
-python scripts/live_ops.py health --config config/config.toml
-python scripts/live_ops.py portfolio --config config/config.toml
+python3 scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py portfolio --config config/config.toml
 
 # Reports
-python scripts/generate_live_status_report.py --format markdown
+python3 scripts/generate_live_status_report.py --config config/config.toml --output-dir reports/live_status --format markdown --tag daily
 ```
 
 ### Key Concepts
@@ -284,7 +284,7 @@ python scripts/generate_live_status_report.py --format markdown
 
 ### Deep Dives
 - [Research Backoffice Overview](DEEP_RESEARCH_BACKOFFICE_OVERVIEW.md)
-- [Position Sizing](../src/core/position_sizing.py)
+- Position Sizing: `src/core/position_sizing.py` (Code-Referenz)
 - [Regime Analysis](REGIME_ANALYSIS.md)
 
 ---

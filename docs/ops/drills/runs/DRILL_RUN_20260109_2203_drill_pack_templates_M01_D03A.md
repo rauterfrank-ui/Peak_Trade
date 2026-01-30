@@ -357,7 +357,7 @@ uv 0.5.11 (e4e9367f7 2024-12-19)
 ### Ruff (Linter)
 
 ```bash
-uv run ruff --version
+ruff --version
 ```
 
 **Output:**

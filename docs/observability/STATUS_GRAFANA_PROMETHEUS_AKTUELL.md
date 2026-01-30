@@ -242,7 +242,7 @@ UID: `peak-trade-watch-only-prom`
   - `/metrics`: 200 OK, liefert `python_*` + `peak_trade_http_*` (kein Fallback), wenn gestartet mit:
     - `PEAK_TRADE_PROMETHEUS_ENABLED=1`
     - `REQUIRE_PROMETHEUS_CLIENT=1`
-    - repo-`venv&#47;bin&#47;python`
+    - repo-`venv&#47;bin&#47;python3`
 
 ### 12.2 Prometheus (Docker, lokal)
 

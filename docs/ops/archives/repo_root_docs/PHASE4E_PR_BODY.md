@@ -60,7 +60,7 @@ Phase 4D introduced determinism contract validation, but reports were:
 
 ### Tests
 ```bash
-pytest tests/ai_orchestration/test_validator_report_normalized.py \
+python3 -m pytest tests/ai_orchestration/test_validator_report_normalized.py \
        tests/ai_orchestration/test_normalize_validator_report_cli.py -v
 ```
 **Result:** ✅ 31 tests passed in 1.55s
@@ -68,11 +68,11 @@ pytest tests/ai_orchestration/test_validator_report_normalized.py \
 ### Determinism
 ```bash
 # Run normalization twice
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input tests/fixtures/validator_reports/legacy_report_pass.json \
   --out-dir .tmp/run1 --quiet
 
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input tests/fixtures/validator_reports/legacy_report_pass.json \
   --out-dir .tmp/run2 --quiet
 
@@ -112,14 +112,14 @@ diff .tmp/run1/validator_report.normalized.json \
 
 ### Basic Normalization
 ```bash
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input .tmp/validator_report.json \
   --out-dir .tmp/normalized
 ```
 
 ### CI Mode (with runtime context)
 ```bash
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input .tmp/validator_report.json \
   --out-dir .tmp/normalized \
   --git-sha "${GITHUB_SHA}" \

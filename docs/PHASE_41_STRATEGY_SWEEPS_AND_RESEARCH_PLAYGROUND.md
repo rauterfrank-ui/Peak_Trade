@@ -92,22 +92,22 @@ Neben den einzelnen Scripts (`run_strategy_sweep.py`, `generate_strategy_sweep_r
 
 ```bash
 # Strategy-Sweep ausführen
-python scripts/research_cli.py sweep --sweep-name rsi_reversion_basic --config config/config.toml
+python3 scripts/research_cli.py sweep --sweep-name rsi_reversion_basic --config config/config.toml
 
 # Sweep-Report generieren
-python scripts/research_cli.py report --sweep-name rsi_reversion_basic --format both --with-plots
+python3 scripts/research_cli.py report --sweep-name rsi_reversion_basic --format both --with-plots
 
 # Top-N Promotion
-python scripts/research_cli.py promote --sweep-name rsi_reversion_basic --top-n 5
+python3 scripts/research_cli.py promote --sweep-name rsi_reversion_basic --top-n 5
 
 # Walk-Forward-Testing
-python scripts/research_cli.py walkforward --sweep-name rsi_reversion_basic --top-n 3 --train-window 90d --test-window 30d --use-dummy-data
+python3 scripts/research_cli.py walkforward --sweep-name rsi_reversion_basic --top-n 3 --train-window 90d --test-window 30d --use-dummy-data
 ```
 
 Für komplette End-to-End-Pipelines kann das `pipeline`-Subcommand (v2) genutzt werden:
 
 ```bash
-python scripts/research_cli.py pipeline \
+python3 scripts/research_cli.py pipeline \
   --sweep-name rsi_reversion_basic \
   --config config/config.toml \
   --format both \
@@ -131,13 +131,13 @@ python scripts/research_cli.py pipeline \
 
 ```bash
 # Vordefinierte Sweeps auflisten
-python scripts/run_strategy_sweep.py --list-sweeps
+python3 scripts/run_strategy_sweep.py --list-sweeps
 
 # Sweep ausführen
-python scripts/run_strategy_sweep.py --sweep-name rsi_reversion_basic
+python3 scripts/run_strategy_sweep.py --sweep-name rsi_reversion_basic
 
 # Mit Optionen
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
     --sweep-name breakout_basic \
     --symbol BTC/EUR \
     --start 2024-01-01 \
@@ -145,10 +145,10 @@ python scripts/run_strategy_sweep.py \
     --max-runs 50
 
 # Dry-Run (nur Kombinationen anzeigen)
-python scripts/run_strategy_sweep.py --sweep-name ma_crossover_fine --dry-run
+python3 scripts/run_strategy_sweep.py --sweep-name ma_crossover_fine --dry-run
 
 # Automatischer Sweep für Strategie
-python scripts/run_strategy_sweep.py --strategy ma_crossover --granularity medium
+python3 scripts/run_strategy_sweep.py --strategy ma_crossover --granularity medium
 ```
 
 #### generate_strategy_sweep_report.py
@@ -157,15 +157,15 @@ python scripts/run_strategy_sweep.py --strategy ma_crossover --granularity mediu
 
 ```bash
 # Report generieren
-python scripts/generate_strategy_sweep_report.py --sweep-name rsi_reversion_basic
+python3 scripts/generate_strategy_sweep_report.py --sweep-name rsi_reversion_basic
 
 # Mit Heatmap-Parametern
-python scripts/generate_strategy_sweep_report.py \
+python3 scripts/generate_strategy_sweep_report.py \
     --sweep-name breakout_basic \
     --heatmap-params lookback_breakout stop_loss_pct
 
 # Aus Datei
-python scripts/generate_strategy_sweep_report.py \
+python3 scripts/generate_strategy_sweep_report.py \
     --input reports/experiments/my_sweep_results.csv
 ```
 
@@ -289,18 +289,18 @@ source .venv/bin/activate
 
 ```bash
 # Beispiel: rsi_reversion_basic mit max. 5 Runs (für schnellen Test)
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
   --sweep-name rsi_reversion_basic \
   --config config/config.toml \
   --max-runs 5  # Optional: Limit für schnellen Test
 
 # Vollständiger Sweep (alle Kombinationen)
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
   --sweep-name rsi_reversion_basic \
   --config config/config.toml
 
 # Mit Zeitraum-Filter
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
   --sweep-name breakout_basic \
   --start 2024-01-01 \
   --end 2024-12-01
@@ -316,12 +316,12 @@ python scripts/run_strategy_sweep.py \
 
 ```bash
 # Markdown + HTML Report
-python scripts/generate_strategy_sweep_report.py \
+python3 scripts/generate_strategy_sweep_report.py \
   --sweep-name rsi_reversion_basic \
   --format both
 
 # Nur Markdown
-python scripts/generate_strategy_sweep_report.py \
+python3 scripts/generate_strategy_sweep_report.py \
   --sweep-name rsi_reversion_basic \
   --format markdown
 ```
@@ -442,7 +442,7 @@ tests/test_research_playground.py
 Ausführen:
 
 ```bash
-pytest tests/test_research_playground.py -v
+python3 -m pytest tests/test_research_playground.py -v
 ```
 
 ---
@@ -460,17 +460,17 @@ Phase 41 ist **rein Research/Backtest-fokussiert**:
 
 1. **max-runs limitieren** für erste Tests:
    ```bash
-   python scripts/run_strategy_sweep.py --sweep-name rsi_reversion_fine --max-runs 20
+   python3 scripts/run_strategy_sweep.py --sweep-name rsi_reversion_fine --max-runs 20
    ```
 
 2. **Coarse Granularität** für schnelle Exploration:
    ```bash
-   python scripts/run_strategy_sweep.py --strategy ma_crossover --granularity coarse
+   python3 scripts/run_strategy_sweep.py --strategy ma_crossover --granularity coarse
    ```
 
 3. **Parallel-Execution** für große Sweeps:
    ```bash
-   python scripts/run_strategy_sweep.py --sweep-name breakout_fine --parallel --workers 8
+   python3 scripts/run_strategy_sweep.py --sweep-name breakout_fine --parallel --workers 8
    ```
 
 ### Ergebnis-Speicherorte
@@ -540,7 +540,7 @@ Phase 42 erweitert Phase 41 um eine **Top-N Promotion Pipeline**:
 **1. Sweep ausführen**
 
 ```bash
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
   --sweep-name rsi_reversion_basic \
   --config config/config.toml \
   --max-runs 20
@@ -549,7 +549,7 @@ python scripts/run_strategy_sweep.py \
 **2. Report generieren (optional)**
 
 ```bash
-python scripts/generate_strategy_sweep_report.py \
+python3 scripts/generate_strategy_sweep_report.py \
   --sweep-name rsi_reversion_basic \
   --format both
 ```
@@ -557,7 +557,7 @@ python scripts/generate_strategy_sweep_report.py \
 **3. Top-N Kandidaten exportieren**
 
 ```bash
-python scripts/promote_sweep_topn.py \
+python3 scripts/promote_sweep_topn.py \
   --sweep-name rsi_reversion_basic \
   --metric metric_sharpe_ratio \
   --top-n 5
@@ -598,7 +598,7 @@ Die TOML-Datei kann verwendet werden für:
 ### CLI-Optionen
 
 ```bash
-python scripts/promote_sweep_topn.py \
+python3 scripts/promote_sweep_topn.py \
   --sweep-name rsi_reversion_basic \
   --metric metric_sharpe_ratio \        # Primäre Metrik
   --fallback-metric metric_total_return \ # Fallback falls primary fehlt
@@ -621,7 +621,7 @@ Phase 43 erweitert Phase 41/42 um **automatische Visualisierungen** für Sweep-E
 **1. Sweep ausführen**
 
 ```bash
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
   --sweep-name rsi_reversion_basic \
   --config config/config.toml \
   --max-runs 20
@@ -630,7 +630,7 @@ python scripts/run_strategy_sweep.py \
 **2. Report mit Visualisierungen generieren**
 
 ```bash
-python scripts/generate_strategy_sweep_report.py \
+python3 scripts/generate_strategy_sweep_report.py \
   --sweep-name rsi_reversion_basic \
   --format both \
   --with-plots \
@@ -656,7 +656,7 @@ python scripts/generate_strategy_sweep_report.py \
 ### CLI-Optionen
 
 ```bash
-python scripts/generate_strategy_sweep_report.py \
+python3 scripts/generate_strategy_sweep_report.py \
   --sweep-name rsi_reversion_basic \
   --format both \
   --with-plots \                    # Aktiviert Visualisierungen

@@ -168,13 +168,13 @@ Der **Risk Layer v1** ist jetzt vollständig getestet, dokumentiert und producti
 **Usage:**
 ```bash
 # Standard-Run
-python scripts/run_risk_stress_report.py --config config/config.toml
+python3 scripts/run_risk_stress_report.py --config config/config.toml
 
 # Custom
-python scripts/run_risk_stress_report.py --symbol BTC/EUR --days 365 --alpha 0.01
+python3 scripts/run_risk_stress_report.py --symbol BTC/EUR --days 365 --alpha 0.01
 
 # Mit Output
-python scripts/run_risk_stress_report.py --output reports/stress_report.csv
+python3 scripts/run_risk_stress_report.py --output reports/stress_report.csv
 ```
 
 **Output-Beispiel:**
@@ -328,8 +328,8 @@ Linter:      0 Errors
 
 2. **Smoke-Tests mit echten Strategien**
    ```bash
-   pytest tests/risk/ -v
-   python scripts/run_risk_stress_report.py --symbol BTC/EUR
+   python3 -m pytest tests/risk/ -v
+   python3 scripts/run_risk_stress_report.py --symbol BTC/EUR
    ```
 
 3. **Dokumentation verlinken**
@@ -356,12 +356,12 @@ Linter:      0 Errors
 
 ### 1. Run All Tests
 ```bash
-uv run pytest tests/risk/ -v
+python3 -m pytest tests/risk/ -v
 ```
 
 ### 2. Run Stress-Report
 ```bash
-python scripts/run_risk_stress_report.py --symbol BTC/EUR --output reports/stress.csv
+python3 scripts/run_risk_stress_report.py --symbol BTC/EUR --output reports/stress.csv
 ```
 
 ### 3. Run Backtest mit Risk-Limits

@@ -219,16 +219,16 @@ Das Demo-Script zeigt alle neuen Strategien in Aktion:
 
 ```bash
 # Alle Strategien testen
-python scripts/demo_phase40_portfolio_backtest.py
+python3 scripts/demo_phase40_portfolio_backtest.py
 
 # Einzelne Strategie
-python scripts/demo_phase40_portfolio_backtest.py --strategy breakout
+python3 scripts/demo_phase40_portfolio_backtest.py --strategy breakout
 
 # Mit Custom-Config
-python scripts/demo_phase40_portfolio_backtest.py --config config/config.toml
+python3 scripts/demo_phase40_portfolio_backtest.py --config config/config.toml
 
 # Report generieren
-python scripts/demo_phase40_portfolio_backtest.py --report reports/my_report.md
+python3 scripts/demo_phase40_portfolio_backtest.py --report reports/my_report.md
 ```
 
 **Optionen:**
@@ -271,12 +271,12 @@ Unit-Tests für alle neuen Komponenten:
 
 ```bash
 # Alle Phase-40-Tests
-pytest tests/test_strategy_breakout.py -v
-pytest tests/test_strategy_vol_regime_filter.py -v
-pytest tests/test_strategy_composite.py -v
+python3 -m pytest tests/test_strategy_breakout.py -v
+python3 -m pytest tests/test_strategy_vol_regime_filter.py -v
+python3 -m pytest tests/test_strategy_composite.py -v
 
 # Alle Strategy-Tests
-pytest tests/test_strategy*.py -v
+python3 -m pytest tests/test_strategy*.py -v
 ```
 
 ---
@@ -352,7 +352,7 @@ strategy = BreakoutStrategy(
 Ein umfassender Sanity-Check über Strategie-, Regime- und Experiment-Tests wurde ausgeführt:
 
 ```bash
-pytest tests/test_strategy*py tests/test_regime*py tests/test_experiments*py -q
+python3 -m pytest tests/test_strategy*py tests/test_regime*py tests/test_experiments*py -q
 ```
 
 Ergebnis:

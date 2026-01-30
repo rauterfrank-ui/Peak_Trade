@@ -43,20 +43,20 @@ Phase 0 (Live Execution Foundation) is **COMPLETE** and **READY FOR GATE**.
 
 ### 1. Linter Check
 ```bash
-$ uv run ruff check . --quiet
+$ ruff check . --quiet
 ✅ 0 errors (clean)
 ```
 
 ### 2. Phase 0 Tests (WP0C + WP0D)
 ```bash
-$ uv run pytest tests/governance/test_wp0c_*.py tests/observability/test_wp0d_*.py -q
+$ python3 -m pytest tests/governance/test_wp0c_*.py tests/observability/test_wp0d_*.py -q
 ============================== 77 passed in 0.08s ===============================
 ✅ All tests passing
 ```
 
 ### 3. Execution Tests (WP0E + WP0A + WP0B)
 ```bash
-$ uv run pytest tests/execution/test_contracts_*.py tests/execution/test_wp0a_smoke.py tests/execution/test_wp0b_*.py -q
+$ python3 -m pytest tests/execution/test_contracts_*.py tests/execution/test_wp0a_smoke.py tests/execution/test_wp0b_*.py -q
 ============================== 84 passed in 0.12s ===============================
 ✅ All tests passing
 ```

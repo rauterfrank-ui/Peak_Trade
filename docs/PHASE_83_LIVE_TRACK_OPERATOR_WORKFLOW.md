@@ -82,7 +82,7 @@ open http://127.0.0.1:8000/
 curl http://127.0.0.1:8000/api/live_sessions?limit=5 | jq .
 
 # 3. Registry-Summary generieren
-python scripts/report_live_sessions.py --summary-only --stdout
+python3 scripts/report_live_sessions.py --summary-only --stdout
 ```
 
 **Checkliste Pre-Session:**
@@ -98,7 +98,7 @@ python scripts/report_live_sessions.py --summary-only --stdout
 **Shadow-Session:**
 
 ```bash
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --mode shadow \
     --env kraken_futures_testnet \
     --symbol BTC/USDT \
@@ -109,7 +109,7 @@ python scripts/run_execution_session.py \
 **Testnet-Session:**
 
 ```bash
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --mode testnet \
     --env kraken_futures_testnet \
     --symbol BTC/USDT \
@@ -145,13 +145,13 @@ curl http://127.0.0.1:8000/api/health
 
 ```bash
 # 1. Session-Report generieren
-python scripts/report_live_sessions.py \
+python3 scripts/report_live_sessions.py \
     --limit 1 \
     --output-format markdown \
     --output-dir reports/daily/
 
 # 2. Summary über den Tag
-python scripts/report_live_sessions.py \
+python3 scripts/report_live_sessions.py \
     --run-type live_session_shadow \
     --summary-only \
     --stdout
@@ -309,13 +309,13 @@ uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
 curl http://127.0.0.1:8000/api/live_sessions?limit=5 | jq .
 
 # Summary-Report
-python scripts/report_live_sessions.py --summary-only --stdout
+python3 scripts/report_live_sessions.py --summary-only --stdout
 
 # Vollständiger Report
-python scripts/report_live_sessions.py --output-format markdown
+python3 scripts/report_live_sessions.py --output-format markdown
 
 # Shadow-Session starten
-python scripts/run_execution_session.py --mode shadow --env kraken_futures_testnet --symbol BTC/USDT
+python3 scripts/run_execution_session.py --mode shadow --env kraken_futures_testnet --symbol BTC/USDT
 ```
 
 ### 7.3 Tägliche Checkliste (Kurzform)

@@ -150,17 +150,17 @@ Stress-Tests können auf Top-N-Konfigurationen aus Sweeps angewendet werden:
 
 ```bash
 # 1. Sweep ausführen
-python scripts/research_cli.py sweep \
+python3 scripts/research_cli.py sweep \
     --sweep-name rsi_reversion_basic \
     --config config/config.toml
 
 # 2. Top-N Promotion
-python scripts/research_cli.py promote \
+python3 scripts/research_cli.py promote \
     --sweep-name rsi_reversion_basic \
     --top-n 5
 
 # 3. Stress-Tests
-python scripts/research_cli.py stress \
+python3 scripts/research_cli.py stress \
     --sweep-name rsi_reversion_basic \
     --config config/config.toml \
     --top-n 3 \
@@ -173,7 +173,7 @@ python scripts/research_cli.py stress \
 
 #### Einfacher Crash-Test
 ```bash
-python scripts/research_cli.py stress \
+python3 scripts/research_cli.py stress \
     --sweep-name rsi_reversion_basic \
     --config config/config.toml \
     --top-n 3 \
@@ -183,7 +183,7 @@ python scripts/research_cli.py stress \
 
 #### Mehrere Szenarien
 ```bash
-python scripts/research_cli.py stress \
+python3 scripts/research_cli.py stress \
     --sweep-name ma_crossover_basic \
     --config config/config.toml \
     --top-n 5 \
@@ -195,7 +195,7 @@ python scripts/research_cli.py stress \
 
 #### Mit Dummy-Daten (für Tests)
 ```bash
-python scripts/research_cli.py stress \
+python3 scripts/research_cli.py stress \
     --sweep-name test_sweep \
     --config config/config.toml \
     --top-n 3 \
@@ -294,7 +294,7 @@ Ein Stress-Test-Report enthält:
 ### 7.1 Subcommand `stress`
 
 ```bash
-python scripts/research_cli.py stress \
+python3 scripts/research_cli.py stress \
     --sweep-name {sweep_name} \
     --config {config_path} \
     --top-n {n} \
@@ -310,7 +310,7 @@ python scripts/research_cli.py stress \
 Stress-Tests sind vollständig in die **Research-Pipeline v2** integriert:
 
 ```bash
-python scripts/research_cli.py pipeline \
+python3 scripts/research_cli.py pipeline \
     --sweep-name rsi_reversion_basic \
     --config config/config.toml \
     --top-n 5 \
@@ -334,10 +334,10 @@ Die Pipeline führt automatisch Sweep → Report → Promotion → Stress-Tests 
 
 ```bash
 # Alle Stress-Test-Tests
-pytest tests/test_stress_tests.py -v
+python3 -m pytest tests/test_stress_tests.py -v
 
 # Research-CLI-Tests (inkl. stress)
-pytest tests/test_research_cli.py -v
+python3 -m pytest tests/test_research_cli.py -v
 ```
 
 ---

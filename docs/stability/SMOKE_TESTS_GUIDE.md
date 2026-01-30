@@ -10,13 +10,13 @@ The stability smoke tests are a carefully curated set of fast, critical-path tes
 
 ```bash
 # Run all smoke tests (< 1 second)
-pytest -m smoke -v
+python3 -m pytest -m smoke -v
 
 # Run stability smoke tests only
-pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v
+python3 -m pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v
 
 # Run smoke tests with coverage
-pytest -m smoke --cov=src --cov-report=term-missing
+python3 -m pytest -m smoke --cov=src --cov-report=term-missing
 ```
 
 ### CI/CD Integration
@@ -26,7 +26,7 @@ Smoke tests are automatically run in GitHub Actions CI before the full test suit
 ```yaml
 - name: "Stability Smoke Tests (Fast Gate)"
   run: |
-    pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
+    python3 -m pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
 ```
 
 This provides:
@@ -111,7 +111,7 @@ Smoke tests should be distributed across test files based on the feature being t
 
 ### Smoke test is slow (> 100ms)
 
-1. Profile the test: `pytest -m smoke --durations=10`
+1. Profile the test: `python3 -m pytest -m smoke --durations=10`
 2. Consider mocking external dependencies
 3. Use smaller test data
 4. Move to integration tests if it requires heavy setup

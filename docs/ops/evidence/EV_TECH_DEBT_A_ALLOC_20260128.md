@@ -31,8 +31,8 @@ Item A1/A2: Implement two-pass portfolio allocation methods in the backtest engi
 ## Tests executed
 - CI required checks: PASS (Lint Gate, tests (3.11), etc.)
 - Local (pre-PR):
-  - `uv run pytest -q tests/backtest/test_engine_allocations.py`
-  - `uv run ruff format --check src/backtest/engine.py tests/backtest/test_engine_allocations.py`
+  - `python3 -m pytest -q tests&#47;backtest&#47;test_engine_allocations.py`
+  - `ruff format --check src&#47;backtest&#47;engine.py tests&#47;backtest&#47;test_engine_allocations.py`
 
 ## Verification result
 - PASS: weights deterministic, finite, sum to 1; long-only; explicit errors instead of silent fallback.

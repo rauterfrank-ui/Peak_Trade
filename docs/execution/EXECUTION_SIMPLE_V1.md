@@ -215,7 +215,7 @@ block_research_in_live = true  # Safety!
 from src.core.peak_config import load_config
 from src.execution_simple import build_execution_pipeline_from_config
 
-cfg = load_config("config.toml")
+cfg = load_config("config/config.toml")
 pipeline = build_execution_pipeline_from_config(cfg)
 ```
 
@@ -297,13 +297,13 @@ fee = notional * (fee_bps / 10000)
 
 ```bash
 # Unit Tests
-pytest tests/execution_simple/test_execution_pipeline.py -v
+python3 -m pytest tests/execution_simple/test_execution_pipeline.py -v
 
 # Specific Test
-pytest tests/execution_simple/test_execution_pipeline.py::test_blocks_research_only_in_live -v
+python3 -m pytest tests/execution_simple/test_execution_pipeline.py::test_blocks_research_only_in_live -v
 
 # With Coverage
-pytest tests/execution_simple/ --cov=src.execution_simple --cov-report=term-missing
+python3 -m pytest tests/execution_simple/ --cov=src.execution_simple --cov-report=term-missing
 ```
 
 **Test Coverage:**

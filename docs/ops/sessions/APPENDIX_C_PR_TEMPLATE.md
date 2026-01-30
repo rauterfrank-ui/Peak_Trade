@@ -35,7 +35,7 @@ ruff format --check
 ruff check
 
 # Test Gate (targeted)
-pytest -q tests/[specific_module]
+python3 -m pytest -q tests/[specific_module]
 
 # Audit Gate
 pip-audit  # or: uv pip-audit
@@ -53,7 +53,7 @@ cd /Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2
 git status -sb
 ruff format --check
 ruff check
-pytest -q tests/[module]
+python3 -m pytest -q tests/[module]
 ```
 
 **Status:**
@@ -73,7 +73,7 @@ pytest -q tests/[module]
 ## Definition of Done (Checklist)
 - [ ] All P0 tasks from taskboard completed
 - [ ] Lint gate: `ruff format --check` + `ruff check` → PASS
-- [ ] Test gate: `pytest -q` (targeted) → PASS
+- [ ] Test gate: `python3 -m pytest -q` (targeted) → PASS
 - [ ] Audit gate: documented (PASS or remediation plan)
 - [ ] Docs gate: no broken links, no accidental path-like strings
 - [ ] Session log updated

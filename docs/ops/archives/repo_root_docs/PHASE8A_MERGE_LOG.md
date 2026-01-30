@@ -129,20 +129,20 @@ def kupiec_pof_test(breaches: int, observations: int, confidence_level: float = 
 ### Linting
 
 ```bash
-$ uv run ruff check . --quiet
+$ ruff check . --quiet
 ✓ No issues
 
-$ uv run ruff format --check . --quiet
+$ ruff format --check . --quiet
 ✓ All files formatted (2 files reformatted during development)
 ```
 
 ### Tests
 
 ```bash
-$ uv run pytest tests/risk/validation/test_kupiec_delegation.py -q
+$ python3 -m pytest tests/risk/validation/test_kupiec_delegation.py -q
 10 passed in 0.09s
 
-$ uv run pytest tests/risk_layer/var_backtest/ -q
+$ python3 -m pytest tests/risk_layer/var_backtest/ -q
 128 passed in 0.22s
 ```
 

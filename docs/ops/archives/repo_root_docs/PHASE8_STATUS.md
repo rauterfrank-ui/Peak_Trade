@@ -12,7 +12,7 @@ Two separate Traffic Light implementations risked drift. Canonicalize threshold 
 ## Acceptance Criteria
 - [x] No duplicated threshold/classification logic across both paths
 - [x] All existing imports remain valid (no breaking changes)
-- [x] Tests pass: `pytest -q` → 93/93 passed ✅
+- [x] Tests pass: `python3 -m pytest -q` → 93/93 passed ✅
 - [x] Ruff clean: `ruff check .` + `ruff format --check .` ✅
 - [x] Minimal/no noisy runtime warnings (CI-friendly) ✅
 
@@ -63,10 +63,10 @@ from src.risk.validation.traffic_light import (
 
 ### Test Results
 ```bash
-✅ pytest tests/risk/validation/test_traffic_light_delegation.py -q
+✅ python3 -m pytest tests/risk/validation/test_traffic_light_delegation.py -q
    → 12/12 passed in 0.09s
 
-✅ pytest tests/risk/validation/ -q
+✅ python3 -m pytest tests/risk/validation/ -q
    → 93/93 passed in 0.14s
 ```
 

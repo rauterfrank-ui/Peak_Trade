@@ -114,7 +114,7 @@ Fenster 2:
 
 Ausführen:
 ```bash
-pytest tests/test_walkforward_backtest.py -v
+python3 -m pytest tests/test_walkforward_backtest.py -v
 ```
 
 ---
@@ -145,7 +145,7 @@ source .venv/bin/activate
 
 ```bash
 # Beispiel: rsi_reversion_basic mit max. 20 Runs
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
   --sweep-name rsi_reversion_basic \
   --config config/config.toml \
   --max-runs 20
@@ -158,7 +158,7 @@ python scripts/run_strategy_sweep.py \
 **Hinweis:** Für Details zur Top-N Promotion siehe `docs/PHASE_42_TOPN_PROMOTION.md`.
 
 ```bash
-python scripts/promote_sweep_topn.py \
+python3 scripts/promote_sweep_topn.py \
   --sweep-name rsi_reversion_basic \
   --metric metric_sharpe_ratio \
   --top-n 5
@@ -169,7 +169,7 @@ python scripts/promote_sweep_topn.py \
 #### Schritt 4: Walk-Forward-Backtest ausführen
 
 ```bash
-python scripts/run_walkforward_backtest.py \
+python3 scripts/run_walkforward_backtest.py \
   --sweep-name rsi_reversion_basic \
   --top-n 3 \
   --train-window 180d \
@@ -181,7 +181,7 @@ python scripts/run_walkforward_backtest.py \
 **Mit echten Daten:**
 
 ```bash
-python scripts/run_walkforward_backtest.py \
+python3 scripts/run_walkforward_backtest.py \
   --sweep-name rsi_reversion_basic \
   --top-n 3 \
   --train-window 180d \
@@ -204,7 +204,7 @@ python scripts/run_walkforward_backtest.py \
 Alternativ zur direkten Verwendung von `run_walkforward_backtest.py` kann Walk-Forward-Testing über die Unified Research-CLI gestartet werden:
 
 ```bash
-python scripts/research_cli.py walkforward \
+python3 scripts/research_cli.py walkforward \
   --sweep-name rsi_reversion_basic \
   --top-n 3 \
   --train-window 90d \
@@ -215,7 +215,7 @@ python scripts/research_cli.py walkforward \
 Für komplette Pipelines (Sweep → Report → Promotion → Walk-Forward) kann das `pipeline`-Subcommand genutzt werden:
 
 ```bash
-python scripts/research_cli.py pipeline \
+python3 scripts/research_cli.py pipeline \
   --sweep-name rsi_reversion_basic \
   --config config/config.toml \
   --format both \
@@ -261,7 +261,7 @@ python scripts/research_cli.py pipeline \
 **Minimal (mit Dummy-Daten):**
 
 ```bash
-python scripts/run_walkforward_backtest.py \
+python3 scripts/run_walkforward_backtest.py \
   --sweep-name rsi_reversion_basic \
   --train-window 180d \
   --test-window 30d \
@@ -271,7 +271,7 @@ python scripts/run_walkforward_backtest.py \
 **Vollständig (mit echten Daten):**
 
 ```bash
-python scripts/run_walkforward_backtest.py \
+python3 scripts/run_walkforward_backtest.py \
   --sweep-name ma_crossover_basic \
   --top-n 5 \
   --train-window 90d \
@@ -287,7 +287,7 @@ python scripts/run_walkforward_backtest.py \
 **Mit Custom Step-Size:**
 
 ```bash
-python scripts/run_walkforward_backtest.py \
+python3 scripts/run_walkforward_backtest.py \
   --sweep-name breakout_basic \
   --train-window 180d \
   --test-window 30d \
@@ -493,7 +493,7 @@ Die Funktion `_compute_aggregate_metrics()` berechnet:
 **Lösung:**
 ```bash
 # Sweep zuerst ausführen
-python scripts/run_strategy_sweep.py --sweep-name rsi_reversion_basic
+python3 scripts/run_strategy_sweep.py --sweep-name rsi_reversion_basic
 ```
 
 ### Problem: Keine Top-N-Konfigurationen gefunden
@@ -532,7 +532,7 @@ python scripts/run_strategy_sweep.py --sweep-name rsi_reversion_basic
 Walk-Forward-Testing ist vollständig in die **Research-Pipeline v2** integriert:
 
 ```bash
-python scripts/research_cli.py pipeline \
+python3 scripts/research_cli.py pipeline \
     --sweep-name rsi_reversion_basic \
     --config config/config.toml \
     --top-n 5 \

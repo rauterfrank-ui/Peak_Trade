@@ -277,7 +277,7 @@ BacktestEngine(
 **Beispiel:**
 
 ```bash
-python scripts/demo_execution_backtest.py \
+python3 scripts/demo_execution_backtest.py \
     --symbol BTC/EUR \
     --mode compare \
     --stats \
@@ -598,7 +598,7 @@ env_config = get_environment_from_config(cfg)
 
 ```bash
 # ExecutionPipeline Demo mit Stats und Plot
-python scripts/demo_execution_backtest.py \
+python3 scripts/demo_execution_backtest.py \
     --symbol BTC/EUR \
     --bars 500 \
     --mode compare \

@@ -151,7 +151,7 @@ print(result.passed)  # True or False
 **All Tests Pass (112/112):**
 
 ```bash
-$ pytest tests/risk_layer/var_backtest/ -q
+$ python3 -m pytest tests/risk_layer/var_backtest/ -q
 112 passed in 0.65s ✅
 
 Breakdown:

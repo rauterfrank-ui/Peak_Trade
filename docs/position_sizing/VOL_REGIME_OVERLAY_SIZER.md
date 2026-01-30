@@ -484,7 +484,7 @@ Der Sizer wird durch umfangreiche Unit-Tests abgedeckt:
 
 **Run Tests:**
 ```bash
-python -m pytest tests/test_vol_regime_overlay_sizer.py -v
+python3 -m pytest tests/test_vol_regime_overlay_sizer.py -v
 ```
 
 ---

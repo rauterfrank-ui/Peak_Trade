@@ -352,19 +352,19 @@ write_markdown_report(summaries, Path("reports/strategy_summary.md"))
 
 ```bash
 # Strategie-Übersicht (Backtests)
-python scripts/analyze_experiments.py --mode summary --run-type backtest
+python3 scripts/analyze_experiments.py --mode summary --run-type backtest
 
 # Top 10 Backtests nach Sharpe
-python scripts/analyze_experiments.py --mode top-runs --metric sharpe --limit 10
+python3 scripts/analyze_experiments.py --mode top-runs --metric sharpe --limit 10
 
 # Portfolio-Runs analysieren
-python scripts/analyze_experiments.py --mode portfolios
+python3 scripts/analyze_experiments.py --mode portfolios
 
 # Strategien vergleichen
-python scripts/analyze_experiments.py --mode compare --strategies ma_crossover,rsi_reversion
+python3 scripts/analyze_experiments.py --mode compare --strategies ma_crossover,rsi_reversion
 
 # Markdown-Report schreiben
-python scripts/analyze_experiments.py --mode summary --write-report reports/summary.md
+python3 scripts/analyze_experiments.py --mode summary --write-report reports/summary.md
 ```
 
 ### 10.2 Leaderboard (`leaderboard.py`)

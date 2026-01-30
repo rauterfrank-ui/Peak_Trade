@@ -213,13 +213,13 @@ print(f"Sharpe: {result.portfolio_stats['sharpe']:.2f}")
 
 ```bash
 # Equal-Weight (Default)
-python scripts/demo_portfolio_backtest.py
+python3 scripts/demo_portfolio_backtest.py
 
 # Vol-Target
-python scripts/demo_portfolio_backtest.py --strategy vol_target
+python3 scripts/demo_portfolio_backtest.py --strategy vol_target
 
 # Fixed-Weights mit höherem Kapital
-python scripts/demo_portfolio_backtest.py --strategy fixed_weights --initial-capital 50000
+python3 scripts/demo_portfolio_backtest.py --strategy fixed_weights --initial-capital 50000
 ```
 
 ## Ergebnis-Struktur

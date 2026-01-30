@@ -117,16 +117,16 @@ class StrategySmokeResult:
 
 ```bash
 # Data-QC-Only Modus (ohne Strategie-Tests)
-python scripts/strategy_smoke_check.py --check-data-only --data-source kraken_cache
+python3 scripts/strategy_smoke_check.py --check-data-only --data-source kraken_cache
 
 # Eigener Min-Bars-Threshold
-python scripts/strategy_smoke_check.py --min-bars 1000 --data-source kraken_cache
+python3 scripts/strategy_smoke_check.py --min-bars 1000 --data-source kraken_cache
 ```
 
 #### Beispiel: Data-QC-Only
 
 ```bash
-$ python scripts/strategy_smoke_check.py \
+$ python3 scripts/strategy_smoke_check.py \
     --check-data-only \
     --data-source kraken_cache \
     --market "BTC/EUR" \
@@ -221,13 +221,13 @@ Data-QC: OK
 
 ```bash
 # Nur neue Phase-79-Tests
-pytest tests/test_kraken_cache_loader.py -v
-pytest tests/test_strategy_smoke_cli.py::TestPhase79DataHealthFields -v
-pytest tests/test_strategy_smoke_cli.py::TestPhase79CLIDataQCOnly -v
-pytest tests/test_strategy_smoke_cli.py::TestPhase79ReportsWithDataHealth -v
+python3 -m pytest tests/test_kraken_cache_loader.py -v
+python3 -m pytest tests/test_strategy_smoke_cli.py::TestPhase79DataHealthFields -v
+python3 -m pytest tests/test_strategy_smoke_cli.py::TestPhase79CLIDataQCOnly -v
+python3 -m pytest tests/test_strategy_smoke_cli.py::TestPhase79ReportsWithDataHealth -v
 
 # Alle Strategy-/Smoke-Tests
-pytest tests/test_strategy*.py -v
+python3 -m pytest tests/test_strategy*.py -v
 ```
 
 ---

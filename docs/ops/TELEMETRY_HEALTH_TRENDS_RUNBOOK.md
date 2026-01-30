@@ -15,7 +15,7 @@
 
 ```bash
 # Capture current health snapshot
-python scripts/telemetry_health_snapshot.py
+python3 scripts/telemetry_health_snapshot.py
 
 # Output:
 # ✅ Snapshot captured at 2025-12-20T10:00:00+00:00
@@ -49,7 +49,7 @@ open http://127.0.0.1:8000/live/telemetry
 
 ```bash
 # Last 30 days
-curl http://127.0.0.1:8000/api/telemetry/health/trends?days=30 | python -m json.tool
+curl http://127.0.0.1:8000/api/telemetry/health/trends?days=30 | python3 -m json.tool
 
 # Last 7 days
 curl "http://127.0.0.1:8000/api/telemetry/health/trends?days=7"
@@ -118,10 +118,10 @@ Each snapshot captures:
   du -sh logs/execution
 
   # Apply retention
-  python scripts/ops/telemetry_retention.py --apply
+  python3 scripts/ops/telemetry_retention.py --apply
 
   # If critical, use aggressive policy
-  python scripts/ops/telemetry_retention.py --apply \
+  python3 scripts/ops/telemetry_retention.py --apply \
     --max-age-days 7 \
     --keep-last-n 50
   ```
@@ -135,7 +135,7 @@ Each snapshot captures:
 - Action:
   ```bash
   # Check recent sessions
-  python scripts/view_execution_telemetry.py --limit 10
+  python3 scripts/view_execution_telemetry.py --limit 10
 
   # Check retention status
   ls -lh logs/execution/.last_retention_run
@@ -156,7 +156,7 @@ Each snapshot captures:
 - Action:
   ```bash
   # Find problematic sessions
-  python scripts/view_execution_telemetry.py --json 2>&1 | grep -i error
+  python3 scripts/view_execution_telemetry.py --json 2>&1 | grep -i error
 
   # Check disk space
   df -h
@@ -192,7 +192,7 @@ Each snapshot captures:
   ```bash
   # Review trend
   curl "http://127.0.0.1:8000/api/telemetry/health/trends?days=30" | \
-    python -m json.tool | grep -A 3 "disk_mb"
+    python3 -m json.tool | grep -A 3 "disk_mb"
 
   # Plan capacity: lower retention threshold or add storage
   ```
@@ -216,19 +216,19 @@ Each snapshot captures:
 **Hourly (Production):**
 ```bash
 # Crontab entry (hourly)
-0 * * * * cd /path/to/Peak_Trade && python scripts/telemetry_health_snapshot.py --quiet
+0 * * * * cd /path/to/Peak_Trade && python3 scripts/telemetry_health_snapshot.py --quiet
 ```
 
 **Daily (Development):**
 ```bash
 # Crontab entry (daily at 2 AM)
-0 2 * * * cd /path/to/Peak_Trade && python scripts/telemetry_health_snapshot.py --quiet
+0 2 * * * cd /path/to/Peak_Trade && python3 scripts/telemetry_health_snapshot.py --quiet
 ```
 
 **Manual (Testing):**
 ```bash
 # Capture snapshot now
-python scripts/telemetry_health_snapshot.py
+python3 scripts/telemetry_health_snapshot.py
 ```
 
 ### Snapshot Retention
@@ -238,7 +238,7 @@ python scripts/telemetry_health_snapshot.py
 **Prune old snapshots:**
 ```bash
 # Manual prune (keep last 60 days)
-python -c "
+python3 -c "
 from pathlib import Path
 from src.execution.telemetry_health_trends import prune_old_snapshots
 
@@ -295,7 +295,7 @@ Degradation is detected when:
 **Solution:**
 ```bash
 # Capture first snapshot
-python scripts/telemetry_health_snapshot.py
+python3 scripts/telemetry_health_snapshot.py
 
 # Verify file created
 ls -lh logs/telemetry_health_snapshots.jsonl
@@ -313,7 +313,7 @@ ls -lh logs/telemetry_health_snapshots.jsonl
 ls -lh logs/telemetry_health_snapshots.jsonl
 
 # Check snapshot age (may be older than requested days)
-python -c "
+python3 -c "
 from pathlib import Path
 from src.execution.telemetry_health_trends import load_snapshots
 
@@ -337,7 +337,7 @@ else:
 ls -lh logs/telemetry_health_snapshots.jsonl
 
 # Prune old snapshots (keep last 30 days)
-python -c "
+python3 -c "
 from pathlib import Path
 from src.execution.telemetry_health_trends import prune_old_snapshots
 
@@ -354,7 +354,7 @@ print(f'Removed: {removed}, Kept: {kept}')
 **Solution:**
 ```bash
 # Run without --quiet to see error
-python scripts/telemetry_health_snapshot.py
+python3 scripts/telemetry_health_snapshot.py
 
 # Check permissions
 ls -la logs/
@@ -399,7 +399,7 @@ ls -la logs/execution/
 
 **Capture Snapshot:**
 ```bash
-python scripts/telemetry_health_snapshot.py
+python3 scripts/telemetry_health_snapshot.py
 ```
 
 **View Trends (Dashboard):**

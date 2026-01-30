@@ -261,13 +261,13 @@ PY
 
 ## B.2 Muster für PR-Verification (Scope-spezifisch)
 ```bash
-pytest -q
-pytest -q tests/execution
-pytest -q tests/risk
-pytest -q tests/risk/validation
+python3 -m pytest -q
+python3 -m pytest -q tests/execution
+python3 -m pytest -q tests/risk
+python3 -m pytest -q tests/risk/validation
 
-uv run ruff check .
-uv run ruff format --check .
+ruff check .
+ruff format --check .
 ```
 
 ## B.3 bg_job Runner (Timeout-sichere Background Jobs)
@@ -437,7 +437,7 @@ task_packet_wp:
     - "…"
   tests:
     - "pytest tests/execution/test_contracts*"
-    - "uv run ruff check src/execution/"
+    - "ruff check src/execution/"
   evidence_outputs:
     - "reports/execution/contracts_smoke_report.json"
     - "docs/execution/WP0X_COMPLETION_REPORT.md"
@@ -506,11 +506,11 @@ Ziel: Integration ohne Konflikte und mit eindeutiger Gate-Evidenz.
 SCHRITTE:
 1) Merge-Reihenfolge: WP0E zuerst, dann 0A/0B/0C/0D.
 2) Run: ruff + tests (repo-standard, alle Python-Versionen falls CI das fordert).
-   - pytest -q tests/execution
-   - pytest -q tests/risk
-   - pytest -q tests/governance
-   - uv run ruff check .
-   - uv run ruff format --check .
+   - python3 -m pytest -q tests/execution
+   - python3 -m pytest -q tests/risk
+   - python3 -m pytest -q tests/governance
+   - ruff check .
+   - ruff format --check .
 3) Evidence Pack sicherstellen:
    - reports/execution/* (contracts smoke, state machine coverage, crash restart)
    - reports/risk/* (var/cvar/kupiec, stress suite)
@@ -556,11 +556,11 @@ OUTPUT:
 
 ```bash
 # Commands run:
-pytest -q tests/execution
-pytest -q tests/risk
-pytest -q tests/governance
-uv run ruff check .
-uv run ruff format --check .
+python3 -m pytest -q tests/execution
+python3 -m pytest -q tests/risk
+python3 -m pytest -q tests/governance
+ruff check .
+ruff format --check .
 
 # Result: ✅ PASS / ❌ FAIL
 ```

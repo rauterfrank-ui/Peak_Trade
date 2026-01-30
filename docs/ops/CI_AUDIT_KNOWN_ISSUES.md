@@ -13,8 +13,8 @@
 
 ## Local reproduction
 ```bash
-uv run ruff check .    # ✅ passes
-uv run black --check . # ❌ 61 files would be reformatted
+ruff check .    # ✅ passes
+black --check . # ❌ 61 files would be reformatted
 ```
 
 ## Next steps

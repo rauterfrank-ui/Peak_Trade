@@ -112,7 +112,7 @@ gh pr merge $PR_NUM --auto --squash --delete-branch
 ### 1. Erste Konfliktlösung ist kritisch
 - **rerere ist nur so gut wie die erste Lösung**
 - Bei erster Resolution: Extra sorgfältig reviewen
-- Tests lokal laufen lassen: `uv run pytest -xvs`
+- Tests lokal laufen lassen: `python3 -m pytest -xvs`
 - Commit-Message dokumentiert Resolution-Strategy
 
 ### 2. Immer verifizieren nach rerere auto-resolve

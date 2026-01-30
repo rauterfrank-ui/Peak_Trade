@@ -94,13 +94,13 @@ Documentation and tooling hardening for the Error Taxonomy system introduced in 
 **Usage:**
 ```bash
 # Quick check
-python scripts/audit/check_error_taxonomy_adoption.py
+python3 scripts/audit/check_error_taxonomy_adoption.py
 
 # Detailed report
-python scripts/audit/check_error_taxonomy_adoption.py --verbose
+python3 scripts/audit/check_error_taxonomy_adoption.py --verbose
 
 # CI integration
-python scripts/audit/check_error_taxonomy_adoption.py --json > adoption.json
+python3 scripts/audit/check_error_taxonomy_adoption.py --json > adoption.json
 ```
 
 **Example Output:**
@@ -226,7 +226,7 @@ git diff main README.md | head -50
 ls -lh docs/ops/PR_180_MERGE_LOG.md docs/ops/PR_193_MERGE_LOG.md
 
 # 3. Test audit tool
-python scripts/audit/check_error_taxonomy_adoption.py
+python3 scripts/audit/check_error_taxonomy_adoption.py
 
 # 4. Verify ops guide update
 git diff main docs/ops/README.md
@@ -246,7 +246,7 @@ git ls-tree -r main --name-only | grep -E "(PR_195|PR_180|PR_193|check_error)"
 
 # 3. Test audit tool from main
 git checkout main
-python scripts/audit/check_error_taxonomy_adoption.py --verbose
+python3 scripts/audit/check_error_taxonomy_adoption.py --verbose
 ```
 
 ---

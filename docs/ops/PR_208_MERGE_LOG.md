@@ -65,8 +65,8 @@ Jedes Workflow-Objekt enthält:
 - `CI Health Gate`: ✅ pass  
 
 ### Lokal
-- Targeted: `uv run pytest tests/test_ops_workflows_router.py -v` → ✅ 5 passed  
-- Full Suite: `uv run pytest -q` → ✅ 4189 passed, 24 skipped, 3 xfailed  
+- Targeted: `python3 -m pytest tests&#47;test_ops_workflows_router.py -v` → ✅ 5 passed  
+- Full Suite: `python3 -m pytest -q` → ✅ 4189 passed, 24 skipped, 3 xfailed  
 
 ---
 
@@ -84,7 +84,7 @@ Begründung:
 ## Operator How-To (Quick Usage)
 1) Server starten:
 ```bash
-uv run uvicorn src.webui.app:app --reload --port 8000
+python3 -m uvicorn src.webui.app:app --reload --port 8000
 ```
 
 2) Browser öffnen:

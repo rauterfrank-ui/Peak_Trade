@@ -92,7 +92,7 @@ Phase 43 nutzt die bestehenden Reporting- und Plot-Funktionen aus Phase 30 und e
 
 Ausführen:
 ```bash
-pytest tests/test_sweep_visualization.py -v
+python3 -m pytest tests/test_sweep_visualization.py -v
 ```
 
 ---
@@ -121,13 +121,13 @@ source .venv/bin/activate
 
 ```bash
 # Beispiel: rsi_reversion_basic mit max. 5 Runs (für schnellen Test)
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
   --sweep-name rsi_reversion_basic \
   --config config/config.toml \
   --max-runs 5
 
 # Vollständiger Sweep (alle Kombinationen)
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
   --sweep-name rsi_reversion_basic \
   --config config/config.toml
 ```
@@ -142,14 +142,14 @@ python scripts/run_strategy_sweep.py \
 
 ```bash
 # Markdown + HTML Report mit Plots (inkl. Drawdown-Heatmaps)
-python scripts/generate_strategy_sweep_report.py \
+python3 scripts/generate_strategy_sweep_report.py \
   --sweep-name rsi_reversion_basic \
   --format both \
   --with-plots \
   --plot-metric metric_total_return
 
 # Nur Markdown mit Plots
-python scripts/generate_strategy_sweep_report.py \
+python3 scripts/generate_strategy_sweep_report.py \
   --sweep-name rsi_reversion_basic \
   --format markdown \
   --with-plots
@@ -266,7 +266,7 @@ HTML-Reports enthalten die Plots als `<img>`-Tags mit relativen Pfaden.
 Alternativ zur direkten Verwendung von `generate_strategy_sweep_report.py` kann die Report-Generierung über die Unified Research-CLI gestartet werden:
 
 ```bash
-python scripts/research_cli.py report \
+python3 scripts/research_cli.py report \
   --sweep-name rsi_reversion_basic \
   --format both \
   --with-plots
@@ -275,7 +275,7 @@ python scripts/research_cli.py report \
 ### generate_strategy_sweep_report.py
 
 ```bash
-python scripts/generate_strategy_sweep_report.py \
+python3 scripts/generate_strategy_sweep_report.py \
   --sweep-name rsi_reversion_basic \
   --format both \                    # markdown, html, oder both
   --with-plots \                     # Aktiviert Visualisierungen
@@ -428,7 +428,7 @@ Fehler: Keine Ergebnisse gefunden für Sweep 'rsi_reversion_basic'
 
 **Lösung:**
 1. Prüfe, ob Sweep ausgeführt wurde: `ls reports/experiments/*rsi_reversion*`
-2. Führe Sweep aus: `python scripts/run_strategy_sweep.py --sweep-name rsi_reversion_basic`
+2. Führe Sweep aus: `python3 scripts/run_strategy_sweep.py --sweep-name rsi_reversion_basic`
 3. Prüfe Dateinamen: Der Sweep-Name muss im Dateinamen enthalten sein
 
 ### Problem: Plots werden nicht erzeugt
@@ -439,7 +439,7 @@ Fehler: Keine Ergebnisse gefunden für Sweep 'rsi_reversion_basic'
 **Lösung:**
 1. Prüfe, ob `--with-plots` Flag gesetzt wurde
 2. Prüfe Logs auf Warnungen (z.B. "Keine Parameter-Spalten gefunden")
-3. Prüfe, ob Matplotlib verfügbar ist: `python -c "import matplotlib; print('OK')"`
+3. Prüfe, ob Matplotlib verfügbar ist: `python3 -c "import matplotlib; print('OK')"`
 4. Prüfe, ob DataFrame Parameter-Spalten enthält: `df.columns[df.columns.str.startswith('param_')]`
 
 ### Problem: Bilder nicht im Report eingebunden

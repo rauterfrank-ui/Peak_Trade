@@ -25,7 +25,7 @@ cd Peak_Trade
 
 ```bash
 # Python venv erstellen
-python -m venv .venv
+python3 -m venv .venv
 
 # Aktivieren
 source .venv/bin/activate      # Linux/macOS
@@ -53,13 +53,17 @@ pip install -r requirements.txt
 
 ## 4. Config erstellen
 
-Kopiere die Beispiel-Config oder erstelle eine neue:
+Peak_Trade lädt standardmäßig `config/config.toml`.
+
+Wenn du eine alternative Config verwenden willst, setze:
+- `PEAK_TRADE_CONFIG_PATH` (Environment Variable) oder übergib einen expliziten Pfad an CLI/Runner.
 
 ```bash
-cp config.toml.example config.toml  # falls vorhanden
+# Beispiel: alternative Config via ENV (Session-lokal)
+export PEAK_TRADE_CONFIG_PATH="config/config.toml"
 ```
 
-Oder erstelle `config.toml` manuell:
+Hinweis: Die Default-Config in diesem Repo liegt unter `config/config.toml` (nicht `./config.toml`). <!-- pt:ref-target-ignore -->
 
 ```toml
 [general]
@@ -84,13 +88,13 @@ starting_cash_default = 10000.0
 
 ```bash
 # Imports testen
-python -c "from src.core.peak_config import load_config; print('OK')"
+python3 -c "from src.core.peak_config import load_config; print('OK')"
 
 # Backtest mit Dummy-Daten
-python scripts/run_backtest.py --bars 100 -v
+python3 scripts/run_backtest.py --bars 100 -v
 
 # Tests ausführen
-pytest tests/ -v
+python3 -m pytest tests/ -v
 ```
 
 ---
@@ -124,7 +128,8 @@ mypy --config-file mypy.ini src tests
 
 ```
 Peak_Trade/
-├── config.toml              # Lokale Konfiguration (nicht im Git)
+├── config/
+│   └── config.toml          # Default-Konfiguration (Repo)
 ├── requirements.txt         # Python Dependencies
 ├── src/
 │   ├── core/                # Config, Position Sizing, Risk
@@ -147,42 +152,42 @@ Peak_Trade/
 
 ```bash
 # Standard (Dummy-Daten)
-python scripts/run_backtest.py
+python3 scripts/run_backtest.py
 
 # Mit CSV-Daten
-python scripts/run_backtest.py --data-file data/btc_eur_1h.csv
+python3 scripts/run_backtest.py --data-file data/btc_eur_1h.csv
 
 # Mit anderer Strategie
-python scripts/run_backtest.py --strategy rsi_reversion
+python3 scripts/run_backtest.py --strategy rsi_reversion
 
 # Verbose-Modus
-python scripts/run_backtest.py -v
+python3 scripts/run_backtest.py -v
 ```
 
 ### Forward-Signale & Paper-Trading
 
 ```bash
 # 1. Signale generieren
-python scripts/generate_forward_signals.py --strategy ma_crossover
+python3 scripts/generate_forward_signals.py --strategy ma_crossover
 
 # 2. Order-Preview
-python scripts/preview_live_orders.py --signals reports/forward/*_signals.csv
+python3 scripts/preview_live_orders.py --signals reports/forward/*_signals.csv
 
 # 3. Paper-Trade
-python scripts/paper_trade_from_orders.py --orders reports/live/*_orders.csv
+python3 scripts/paper_trade_from_orders.py --orders reports/live/*_orders.csv
 ```
 
 ### Tests ausführen
 
 ```bash
 # Alle Tests
-pytest tests/
+python3 -m pytest tests/
 
 # Mit Coverage
-pytest tests/ --cov=src --cov-report=html
+python3 -m pytest tests/ --cov=src --cov-report=html
 
 # Einzelne Test-Datei
-pytest tests/test_strategies.py -v
+python3 -m pytest tests/test_strategies.py -v
 ```
 
 ---
@@ -223,17 +228,17 @@ export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 
 # Oder direkt aus Projekt-Root ausführen
 cd Peak_Trade
-python scripts/run_backtest.py
+python3 scripts/run_backtest.py
 ```
 
 ### "Config not found"
 
 ```bash
-# Sicherstellen, dass config.toml existiert
-ls config.toml
+# Sicherstellen, dass die Config existiert
+ls config/config.toml
 
 # Alternativ explizit angeben
-python scripts/run_backtest.py --config config.toml
+python3 scripts/run_backtest.py --config config/config.toml
 ```
 
 ### "ccxt not found"
@@ -255,7 +260,7 @@ Keine Order-Platzierung in diesem Layer!
 
 ### Konfiguration
 
-In `config.toml`:
+In `config/config.toml`:
 
 ```toml
 [exchange]
@@ -276,22 +281,22 @@ secret = ""                # Für Balance/Orders (optional)
 
 ```bash
 # Exchange-Status anzeigen
-python scripts/inspect_exchange.py --mode status
+python3 scripts/inspect_exchange.py --mode status
 
 # Ticker abrufen
-python scripts/inspect_exchange.py --mode ticker --symbol BTC/EUR
+python3 scripts/inspect_exchange.py --mode ticker --symbol BTC/EUR
 
 # OHLCV-Daten (Candlesticks)
-python scripts/inspect_exchange.py --mode ohlcv --symbol BTC/EUR --timeframe 1h --limit 20
+python3 scripts/inspect_exchange.py --mode ohlcv --symbol BTC/EUR --timeframe 1h --limit 20
 
 # Verfügbare Märkte auflisten
-python scripts/inspect_exchange.py --mode markets --limit 50
+python3 scripts/inspect_exchange.py --mode markets --limit 50
 
 # Balance anzeigen (erfordert API-Key)
-python scripts/inspect_exchange.py --mode balance
+python3 scripts/inspect_exchange.py --mode balance
 
 # Offene Orders anzeigen (erfordert API-Key)
-python scripts/inspect_exchange.py --mode orders
+python3 scripts/inspect_exchange.py --mode orders
 ```
 
 ### Programmatische Nutzung
@@ -318,7 +323,7 @@ Exchange-Integration-Tests sind standardmäßig deaktiviert (keine Netzwerk-Requ
 Zum Aktivieren:
 
 ```bash
-PEAK_TRADE_EXCHANGE_TESTS=1 pytest tests/test_exchange_smoke.py -v
+PEAK_TRADE_EXCHANGE_TESTS=1 python3 -m pytest tests/test_exchange_smoke.py -v
 ```
 
 ---

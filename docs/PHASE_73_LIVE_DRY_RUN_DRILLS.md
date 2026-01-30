@@ -107,13 +107,13 @@ Das Script führt Live-Dry-Run-Drills aus und generiert einen Report.
 
 ```bash
 # Alle Standard-Drills ausführen
-python scripts/run_live_dry_run_drills.py
+python3 scripts/run_live_dry_run_drills.py
 
 # Nur einen bestimmten Drill
-python scripts/run_live_dry_run_drills.py --scenario "A - Voll gebremst"
+python3 scripts/run_live_dry_run_drills.py --scenario "A - Voll gebremst"
 
 # JSON-Output
-python scripts/run_live_dry_run_drills.py --format json
+python3 scripts/run_live_dry_run_drills.py --format json
 ```
 
 ### 3.3 Beispiel-Ausgabe
@@ -224,7 +224,7 @@ Keine echten Orders werden gesendet, keine Config-Dateien geändert.
 **Workflow:**
 ```bash
 # Wöchentlicher Drill
-python scripts/run_live_dry_run_drills.py > reports/drills/weekly_$(date +%Y%m%d).txt
+python3 scripts/run_live_dry_run_drills.py > reports/drills/weekly_$(date +%Y%m%d).txt
 
 # Review des Reports
 # Alle Drills sollten "PASSED" sein

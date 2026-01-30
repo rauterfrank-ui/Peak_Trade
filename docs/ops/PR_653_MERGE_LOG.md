@@ -84,7 +84,7 @@ style: apply ruff format to Phase 4D files
 ### Local Verification ✅
 ```bash
 # Unit tests
-pytest -q tests/ai_orchestration/test_l4_critic_determinism_contract.py
+python3 -m pytest -q tests/ai_orchestration/test_l4_critic_determinism_contract.py
 # Result: 14 passed in 0.08s
 
 # Validator CLI (baseline vs itself)
@@ -195,7 +195,7 @@ If the determinism contract gate fails:
 
 5. **Verify fix:**
    ```bash
-   pytest tests/ai_orchestration/test_l4_critic_determinism_contract.py -v
+   python3 -m pytest tests/ai_orchestration/test_l4_critic_determinism_contract.py -v
    ```
 
 ### Triage Resources

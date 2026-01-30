@@ -62,7 +62,7 @@ Wrapper pattern reuses existing `_compute_lr_statistic()` and `chi2_df1_sf()` �
 ```bash
 ruff check .                                    # ✅ All checks passed
 ruff format --check .                           # ✅ 874 files formatted
-pytest tests/risk_layer/var_backtest/ -q        # ✅ 81 passed (56 + 25 new)
+python3 -m pytest tests/risk_layer/var_backtest/ -q        # ✅ 81 passed (56 + 25 new)
 PYTHONPATH=. python3 scripts/run_kupiec_pof.py \
   --n 1000 --x 10 --alpha 0.01                  # ✅ VERDICT: PASS
 ```

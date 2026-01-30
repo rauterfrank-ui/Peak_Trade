@@ -91,7 +91,7 @@ class StrategyProfile:
 **Datei:** `scripts/research_cli.py`
 
 ```bash
-python scripts/research_cli.py strategy-profile \
+python3 scripts/research_cli.py strategy-profile \
   --strategy-id rsi_reversion \
   --output-format both \
   --with-regime \
@@ -168,7 +168,7 @@ source .venv/bin/activate
 **2. Verfügbare Strategien anzeigen**
 
 ```bash
-python scripts/research_cli.py strategy-profile \
+python3 scripts/research_cli.py strategy-profile \
   --strategy-id dummy \
   --list-strategies
 ```
@@ -176,7 +176,7 @@ python scripts/research_cli.py strategy-profile \
 **3. Einfaches Profil generieren**
 
 ```bash
-python scripts/research_cli.py strategy-profile \
+python3 scripts/research_cli.py strategy-profile \
   --strategy-id rsi_reversion \
   --use-dummy-data \
   --output-format both
@@ -185,7 +185,7 @@ python scripts/research_cli.py strategy-profile \
 **4. Profil mit allen Analysen**
 
 ```bash
-python scripts/research_cli.py strategy-profile \
+python3 scripts/research_cli.py strategy-profile \
   --strategy-id rsi_reversion \
   --use-dummy-data \
   --with-regime \
@@ -372,13 +372,13 @@ Tests befinden sich in:
 
 ```bash
 # Unit-Tests
-pytest tests/test_strategy_profiles.py -v
+python3 -m pytest tests/test_strategy_profiles.py -v
 
 # CLI-Tests
-pytest tests/test_strategy_profile_cli.py -v
+python3 -m pytest tests/test_strategy_profile_cli.py -v
 
 # Alle Tests
-pytest tests/test_strategy_profiles.py tests/test_strategy_profile_cli.py -v
+python3 -m pytest tests/test_strategy_profiles.py tests/test_strategy_profile_cli.py -v
 ```
 
 ---
@@ -500,7 +500,7 @@ Phase 41B ist vollständig implementiert und getestet. Der aktuelle Stand:
 ### Beispiel-Aufruf
 
 ```bash
-python scripts/research_cli.py strategy-profile \
+python3 scripts/research_cli.py strategy-profile \
   --strategy-id rsi_reversion \
   --use-dummy-data \
   --with-montecarlo --mc-num-runs 100 \

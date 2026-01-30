@@ -113,7 +113,7 @@ def run_portfolio_robustness(
 
 ### 3.3 Integration mit Experiment-Registry
 
-Portfolio-Robustness nutzt Top-N-Konfigurationen aus Sweeps:
+Portfolio-Robustness nutzt Top-N-Konfigurationen aus Sweeps (Legacy-Workflow):
 
 1. **Input:** Sweep-Name + Top-N
 2. **Lade:** Top-N-Konfigurationen (via `load_top_n_configs_for_sweep`)
@@ -121,6 +121,16 @@ Portfolio-Robustness nutzt Top-N-Konfigurationen aus Sweeps:
 4. **Lade:** Returns für jede Komponente (via `returns_loader`)
 5. **Synthetisiere:** Portfolio-Returns
 6. **Analysiere:** Monte-Carlo & Stress-Tests auf Portfolio-Ebene
+
+#### Alternative (Phase 53): Direkte Strategienamen via Portfolio-Recipes
+
+Ab Phase 53 können Portfolio-Recipes statt `sweep_name + top_n` auch direkte Strategien definieren:
+
+- `strategies = ["rsi_reversion_btc_moderate", "ma_trend_btc_moderate", ...]`
+- `weights = [0.25, 0.25, 0.25, 0.25]`
+
+**Hinweis (aktueller Stand):** Für diesen direkten `strategies`-Pfad wird für Portfolio-Robustness aktuell
+`--use-dummy-data` benötigt (offline-fähiger End-to-End-Run). Ein data-backed Returns-Loader kann später ergänzt werden.
 
 ---
 
@@ -130,17 +140,17 @@ Portfolio-Robustness nutzt Top-N-Konfigurationen aus Sweeps:
 
 ```bash
 # 1. Sweep ausführen
-python scripts/research_cli.py sweep \
+python3 scripts/research_cli.py sweep \
     --sweep-name rsi_reversion_basic \
     --config config/config.toml
 
 # 2. Top-N Promotion
-python scripts/research_cli.py promote \
+python3 scripts/research_cli.py promote \
     --sweep-name rsi_reversion_basic \
     --top-n 5
 
 # 3. Portfolio-Robustness
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
     --sweep-name rsi_reversion_basic \
     --config config/config.toml \
     --top-n 3 \
@@ -158,7 +168,7 @@ python scripts/research_cli.py portfolio \
 
 #### Mit Equal-Weight
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
     --sweep-name ma_crossover_basic \
     --config config/config.toml \
     --top-n 5 \
@@ -169,7 +179,7 @@ python scripts/research_cli.py portfolio \
 
 #### Mit Custom-Weights
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
     --sweep-name rsi_reversion_basic \
     --config config/config.toml \
     --top-n 3 \
@@ -184,7 +194,7 @@ python scripts/research_cli.py portfolio \
 
 #### Mit Dummy-Daten (für Tests)
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
     --sweep-name test_sweep \
     --config config/config.toml \
     --top-n 3 \
@@ -193,6 +203,21 @@ python scripts/research_cli.py portfolio \
     --dummy-bars 500 \
     --run-montecarlo \
     --mc-num-runs 100
+```
+
+#### Phase 53 Preset mit `strategies` (offline-fähig, Dummy-Returns)
+```bash
+python3 scripts/research_cli.py portfolio \
+    --config config/config.toml \
+    --portfolio-preset multi_style_moderate \
+    --use-dummy-data \
+    --dummy-bars 500 \
+    --run-montecarlo \
+    --mc-num-runs 300 \
+    --run-stress-tests \
+    --stress-scenarios single_crash_bar vol_spike \
+    --stress-severity 0.25 \
+    --format both
 ```
 
 ### 4.3 Output-Struktur
@@ -288,7 +313,7 @@ Ein Portfolio-Robustness-Report enthält:
 ### 7.1 Subcommand `portfolio`
 
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
     --sweep-name {sweep_name} \
     --config {config_path} \
     --top-n {n} \
@@ -306,7 +331,7 @@ python scripts/research_cli.py portfolio \
 Die Pipeline könnte optional Portfolio-Robustness ausführen:
 
 ```bash
-python scripts/research_cli.py pipeline \
+python3 scripts/research_cli.py pipeline \
     --sweep-name rsi_reversion_basic \
     --config config/config.toml \
     --top-n 5 \
@@ -330,10 +355,10 @@ python scripts/research_cli.py pipeline \
 
 ```bash
 # Alle Portfolio-Robustness-Tests
-pytest tests/test_portfolio_robustness.py -v
+python3 -m pytest tests/test_portfolio_robustness.py -v
 
 # Research-CLI-Tests (inkl. portfolio)
-pytest tests/test_research_cli.py -v
+python3 -m pytest tests/test_research_cli.py -v
 ```
 
 ---

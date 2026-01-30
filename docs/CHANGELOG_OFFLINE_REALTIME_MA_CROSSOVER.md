@@ -99,14 +99,14 @@
 
 1. **Basic Run mit Defaults:**
    ```bash
-   python scripts/run_offline_realtime_ma_crossover.py
+   python3 scripts/run_offline_realtime_ma_crossover.py
    ```
    - ✅ Funktioniert
    - ✅ Report generiert
 
 2. **Custom Symbol und MA-Fenster:**
    ```bash
-   python scripts/run_offline_realtime_ma_crossover.py \
+   python3 scripts/run_offline_realtime_ma_crossover.py \
        --symbol BTC/EUR \
        --fast-window 10 \
        --slow-window 30
@@ -117,7 +117,7 @@
 
 3. **Lange Simulation mit vielen Regimes:**
    ```bash
-   python scripts/run_offline_realtime_ma_crossover.py \
+   python3 scripts/run_offline_realtime_ma_crossover.py \
        --symbol ETH/USD \
        --n-steps 10000 \
        --n-regimes 10 \
@@ -129,15 +129,15 @@
 
 4. **Verschiedene Seeds:**
    ```bash
-   python scripts/run_offline_realtime_ma_crossover.py --seed 42
-   python scripts/run_offline_realtime_ma_crossover.py --seed 123
+   python3 scripts/run_offline_realtime_ma_crossover.py --seed 42
+   python3 scripts/run_offline_realtime_ma_crossover.py --seed 123
    ```
    - ✅ Reproduzierbare Ergebnisse
    - ✅ Verschiedene Markt-Charakteristiken
 
 5. **Verbose-Logging:**
    ```bash
-   python scripts/run_offline_realtime_ma_crossover.py --verbose
+   python3 scripts/run_offline_realtime_ma_crossover.py --verbose
    ```
    - ✅ DEBUG-Level-Logging aktiv
    - ✅ Detaillierte Order-Logs

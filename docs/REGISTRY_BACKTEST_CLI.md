@@ -18,13 +18,13 @@ End-to-End Portfolio-Backtest mit echten Marktdaten über die Strategien-Registr
 cd ~/Peak_Trade
 
 # Einfachster Aufruf (mit Defaults)
-python scripts/run_registry_portfolio_backtest.py
+python3 scripts/run_registry_portfolio_backtest.py
 
 # Nur Config anzeigen (ohne Backtest)
-python scripts/run_registry_portfolio_backtest.py --dry-run
+python3 scripts/run_registry_portfolio_backtest.py --dry-run
 
 # Kraken-Verbindung testen
-python scripts/run_registry_portfolio_backtest.py --test-connection
+python3 scripts/run_registry_portfolio_backtest.py --test-connection
 ```
 
 ## CLI-Parameter
@@ -94,7 +94,7 @@ momentum_1h = 0.2
 ### Standard-Backtest mit Portfolio-Default
 
 ```bash
-python scripts/run_registry_portfolio_backtest.py
+python3 scripts/run_registry_portfolio_backtest.py
 ```
 
 Nutzt:
@@ -106,7 +106,7 @@ Nutzt:
 ### Custom Symbol und Timeframe
 
 ```bash
-python scripts/run_registry_portfolio_backtest.py \
+python3 scripts/run_registry_portfolio_backtest.py \
     --symbol ETH/EUR \
     --timeframe 4h \
     --limit 500
@@ -115,7 +115,7 @@ python scripts/run_registry_portfolio_backtest.py \
 ### Nur Trending-Strategien
 
 ```bash
-python scripts/run_registry_portfolio_backtest.py \
+python3 scripts/run_registry_portfolio_backtest.py \
     --regime trending
 ```
 
@@ -124,7 +124,7 @@ Filtert automatisch alle Strategien mit `best_market_regime = "trending"` aus de
 ### Custom Strategie-Liste
 
 ```bash
-python scripts/run_registry_portfolio_backtest.py \
+python3 scripts/run_registry_portfolio_backtest.py \
     --strategies ma_crossover momentum_1h
 ```
 
@@ -133,7 +133,7 @@ Nutzt nur die angegebenen Strategien, ignoriert `strategies.active`.
 ### Mit vollständigem Export
 
 ```bash
-python scripts/run_registry_portfolio_backtest.py \
+python3 scripts/run_registry_portfolio_backtest.py \
     --limit 500 \
     --output-dir results/btc_usd_1h \
     --export-all
@@ -147,7 +147,7 @@ Erstellt:
 ### Verbose Logging (für Debugging)
 
 ```bash
-python scripts/run_registry_portfolio_backtest.py \
+python3 scripts/run_registry_portfolio_backtest.py \
     --verbose \
     --limit 100
 ```
@@ -279,14 +279,14 @@ ls -l config/config.toml
 
 # Oder setze Environment Variable:
 export PEAK_TRADE_CONFIG=config/config.toml
-python scripts/run_registry_portfolio_backtest.py
+python3 scripts/run_registry_portfolio_backtest.py
 ```
 
 ### "Kraken-Verbindung fehlgeschlagen"
 
 ```bash
 # Teste Verbindung:
-python scripts/run_registry_portfolio_backtest.py --test-connection
+python3 scripts/run_registry_portfolio_backtest.py --test-connection
 
 # Häufige Ursachen:
 # - Keine Internetverbindung
@@ -304,7 +304,7 @@ python scripts/run_registry_portfolio_backtest.py --test-connection
 # 4. Strategie-Parameter passen nicht zum Markt
 
 # Lösung: Mehr Bars oder anderen Zeitraum testen
-python scripts/run_registry_portfolio_backtest.py --limit 720
+python3 scripts/run_registry_portfolio_backtest.py --limit 720
 ```
 
 ### "Pandas FutureWarning"

@@ -135,13 +135,13 @@ Instead of manual copy/paste, use the automation scripts:
 
 ```bash
 # Record PR telemetry automatically
-python scripts/governance/g4_record_pr_telemetry.py --pr 123
+python3 scripts/governance/g4_record_pr_telemetry.py --pr 123
 
 # Open PR in browser while recording
-python scripts/governance/g4_record_pr_telemetry.py --pr 123 --open
+python3 scripts/governance/g4_record_pr_telemetry.py --pr 123 --open
 
 # Use custom date
-python scripts/governance/g4_record_pr_telemetry.py --pr 123 --date 2025-12-01
+python3 scripts/governance/g4_record_pr_telemetry.py --pr 123 --date 2025-12-01
 ```
 
 **What it does:**
@@ -161,10 +161,10 @@ After logging 5+ PRs, generate summary statistics:
 
 ```bash
 # Display rollup to stdout
-python scripts/governance/g4_rollup_telemetry.py
+python3 scripts/governance/g4_rollup_telemetry.py
 
 # Write rollup to file
-python scripts/governance/g4_rollup_telemetry.py --out docs/governance/POLICY_CRITIC_G4_ROLLUP.md
+python3 scripts/governance/g4_rollup_telemetry.py --out docs/governance/POLICY_CRITIC_G4_ROLLUP.md
 ```
 
 **What it computes:**

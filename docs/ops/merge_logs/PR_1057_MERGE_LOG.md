@@ -18,9 +18,9 @@ Low–Medium. Test-only scope; guards against regressions and mixed semantics.
 
 ## Operator How-To
 - Run key legacy tests:
-  - `uv run pytest -q tests/execution/test_ledger_pnl_golden.py`
-  - `uv run pytest -q tests/execution/test_ledger_double_entry.py`
-  - `uv run pytest -q tests/execution/test_execution_slice1_to_ledger_integration.py`
+  - `python3 -m pytest -q tests&#47;execution&#47;test_ledger_pnl_golden.py`
+  - `python3 -m pytest -q tests&#47;execution&#47;test_ledger_double_entry.py`
+  - `python3 -m pytest -q tests&#47;execution&#47;test_execution_slice1_to_ledger_integration.py`
 
 ## References
 - PR: #1057

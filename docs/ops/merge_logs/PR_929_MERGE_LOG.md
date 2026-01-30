@@ -19,11 +19,11 @@ Determinismus-kritische Regression: Equity Curve Output muss drift-fest sein (by
   - `docs/execution/SLICE_3_BETA_BRIDGE.md` (Golden contract + operator process)
 
 ## Verification
-- `uv run pytest -q tests/execution/test_beta_event_bridge_determinism.py` → PASS
-- `uv run pytest -q tests/execution/test_beta_event_bridge_ordering.py` → PASS
-- `uv run pytest -q tests/execution/test_beta_event_bridge_equity_curve_golden.py` → PASS
-- `uv run ruff format --check .` → PASS
-- `uv run ruff check .` → PASS
+- `python3 -m pytest -q tests&#47;execution&#47;test_beta_event_bridge_determinism.py` → PASS
+- `python3 -m pytest -q tests&#47;execution&#47;test_beta_event_bridge_ordering.py` → PASS
+- `python3 -m pytest -q tests&#47;execution&#47;test_beta_event_bridge_equity_curve_golden.py` → PASS
+- `ruff format --check .` → PASS
+- `ruff check .` → PASS
 - docs-token-policy-gate: PASS
 
 ## Risk
@@ -31,7 +31,7 @@ HIGH — `src&#47;execution&#47;**` determinism + artifact contract changes; no 
 
 ## Operator How-To
 - Golden update (explicit operator action only):
-  - `uv run python scripts/testing/update_slice3_golden.py --fixture tests/fixtures/slice3_beta_events_minimal.jsonl`
+  - `python3 scripts&#47;testing&#47;update_slice3_golden.py --fixture tests&#47;fixtures&#47;slice3_beta_events_minimal.jsonl`
 - Review checklist for golden diffs:
   - fixture unchanged unless justified
   - schema/cadence unchanged unless explicitly breaking

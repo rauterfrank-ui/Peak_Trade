@@ -106,7 +106,7 @@ df_4h = pipeline.fetch_and_resample("BTC/USD", "1h", "4h", limit=1000)
 
 Zeigt alle Features in einem kompletten Workflow:
 ```bash
-python scripts/demo_complete_pipeline.py
+python3 scripts/demo_complete_pipeline.py
 ```
 
 **Inhalt:**
@@ -121,7 +121,7 @@ python scripts/demo_complete_pipeline.py
 
 Fokussiert auf Daten-Beschaffung:
 ```bash
-python scripts/demo_kraken_simple.py
+python3 scripts/demo_kraken_simple.py
 ```
 
 ---
@@ -224,10 +224,10 @@ Peak_Trade/
 ### 1. Demo ausführen
 ```bash
 # Vollständiges Demo (alle Features)
-python scripts/demo_complete_pipeline.py
+python3 scripts/demo_complete_pipeline.py
 
 # Nur Kraken-Pipeline
-python scripts/demo_kraken_simple.py
+python3 scripts/demo_kraken_simple.py
 ```
 
 ### 2. Im eigenen Code verwenden

@@ -226,7 +226,7 @@ gh pr checks 591 --watch
    # Check which links are broken:
    gh run view <run-id> --log
    # Or run locally:
-   # python scripts/ci/check_docs_reference_targets.py docs/ops/WAVE3*.md
+   # bash scripts/ops/verify_docs_reference_targets.sh
    ```
 
 2. Verify bash script safety:
@@ -373,8 +373,8 @@ gh run view <audit-run-id> --log | tail -50
 
 # Run locally:
 ruff check scripts/ops/check_merge_log_hygiene.py scripts/ops/new_merge_log.py
-python scripts/ops/check_merge_log_hygiene.py --help
-python scripts/ops/new_merge_log.py --help
+python3 scripts/ops/check_merge_log_hygiene.py --help
+python3 scripts/ops/new_merge_log.py --help
 ```
 
 **Resolution Strategy:**
@@ -404,12 +404,12 @@ python scripts/ops/new_merge_log.py --help
 4. **Test scripts locally:**
    ```bash
    # Run tests:
-   pytest tests/ops/test_check_merge_log_hygiene.py -v
-   pytest tests/ops/test_new_merge_log.py -v
+   python3 -m pytest tests/ops/test_check_merge_log_hygiene.py -v
+   python3 -m pytest tests/ops/test_new_merge_log.py -v
 
    # Smoke test scripts:
-   python scripts/ops/check_merge_log_hygiene.py docs/ops/merge_logs/
-   python scripts/ops/new_merge_log.py --dry-run --pr 999
+   python3 scripts/ops/check_merge_log_hygiene.py docs/ops/merge_logs/
+   python3 scripts/ops/new_merge_log.py --dry-run --pr 999
    ```
 
 **Merge Recommendation:**
@@ -425,10 +425,10 @@ gh run list --workflow=merge_log_hygiene.yml --limit 5
 ls -la scripts/ops/check_merge_log_hygiene.py scripts/ops/new_merge_log.py
 
 # 3. Run hygiene check on all merge logs:
-python scripts/ops/check_merge_log_hygiene.py docs/ops/merge_logs/ --strict
+python3 scripts/ops/check_merge_log_hygiene.py docs/ops/merge_logs/ --strict
 
 # 4. Test generator:
-python scripts/ops/new_merge_log.py --pr 592 --dry-run
+python3 scripts/ops/new_merge_log.py --pr 592 --dry-run
 ```
 
 **⚠️ CRITICAL NOTES:**
@@ -517,7 +517,7 @@ gh pr view <PR> --json body,files
 
 # 3. Recreate the content on current main
 # For merge logs:
-python scripts/ops/new_merge_log.py --pr <NUMBER>
+python3 scripts/ops/new_merge_log.py --pr <NUMBER>
 # Or manually copy merge log file and update README
 
 # 4. Commit and close old PR
@@ -573,9 +573,9 @@ gh pr checks <PR> --watch
    pre-commit run --all-files
 
    # Run CI gates locally (if available):
-   python scripts/ci/check_docs_reference_targets.py
+   bash scripts/ops/verify_docs_reference_targets.sh
    ruff check .
-   pytest tests/
+   python3 -m pytest tests/
    ```
 
 4. **Verify no policy violations:**

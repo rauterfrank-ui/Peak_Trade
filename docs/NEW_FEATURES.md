@@ -232,7 +232,7 @@ Backtest-Ready DataFrame
 Zeigt alle Features in Aktion:
 
 ```bash
-python scripts/demo_complete_pipeline.py
+python3 scripts/demo_complete_pipeline.py
 ```
 
 **Demos:**
@@ -247,7 +247,7 @@ python scripts/demo_complete_pipeline.py
 Fokus auf Daten-Beschaffung:
 
 ```bash
-python scripts/demo_kraken_simple.py
+python3 scripts/demo_kraken_simple.py
 ```
 
 **Zeigt:**

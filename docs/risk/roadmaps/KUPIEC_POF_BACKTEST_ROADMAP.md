@@ -422,7 +422,7 @@ class TestKupiecPOFOutput:
 - [ ] Unit Tests: ≥95% Coverage für `kupiec_pof.py`
 - [ ] Type Hints vollständig
 - [ ] Docstrings (Deutsch) für alle public Functions
-- [ ] `pytest tests&#47;risk&#47;var_backtest&#47;` grün
+- [ ] `python3 -m pytest tests&#47;risk&#47;var_backtest&#47;` grün
 
 ---
 
@@ -760,7 +760,7 @@ scripts/ops/
 
 ```bash
 # Einzelner Backtest
-python scripts/risk/run_var_backtest.py \
+python3 scripts/risk/run_var_backtest.py \
   --symbol BTC/EUR \
   --start 2024-01-01 \
   --end 2024-12-31 \
@@ -768,12 +768,12 @@ python scripts/risk/run_var_backtest.py \
   --output reports/var_backtest/btc_eur_2024.html
 
 # Portfolio Backtest
-python scripts/risk/run_var_backtest.py \
+python3 scripts/risk/run_var_backtest.py \
   --portfolio config/portfolio.toml \
   --output reports/var_backtest/portfolio_2024.html
 
 # CI Mode (Exit Code basiert auf Ergebnis)
-python scripts/risk/run_var_backtest.py \
+python3 scripts/risk/run_var_backtest.py \
   --symbol BTC/EUR \
   --ci-mode \
   --fail-on-reject

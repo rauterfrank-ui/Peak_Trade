@@ -84,7 +84,7 @@ Zur Verifikation der Gates nach Merge können folgende Commands als Snapshot aus
 scripts/ops/pt_docs_gates_snapshot.sh
 
 # Token Policy (changed files, optional)
-uv run python scripts/ops/validate_docs_token_policy.py --changed --base main
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
 
 # Reference Targets (full scan)
 scripts/ops/verify_docs_reference_targets.sh

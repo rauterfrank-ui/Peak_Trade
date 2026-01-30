@@ -32,7 +32,7 @@ Quick reference guide for diagnosing and responding to execution telemetry incid
 
 ```bash
 # Replace SESSION_ID with actual session ID
-python scripts/view_execution_telemetry.py \
+python3 scripts/view_execution_telemetry.py \
   --session SESSION_ID \
   --type fill \
   --limit 50 \
@@ -54,7 +54,7 @@ python scripts/view_execution_telemetry.py \
 
 ```bash
 # Check all BTC-USD events
-python scripts/view_execution_telemetry.py \
+python3 scripts/view_execution_telemetry.py \
   --symbol BTC-USD \
   --limit 200 \
   --summary
@@ -75,7 +75,7 @@ python scripts/view_execution_telemetry.py \
 
 ```bash
 # Export full session to JSON for analysis
-python scripts/view_execution_telemetry.py \
+python3 scripts/view_execution_telemetry.py \
   --session SESSION_ID \
   --json > /tmp/session_events.jsonl
 
@@ -103,7 +103,7 @@ grep '"kind": "fill"' /tmp/session_events.jsonl | wc -l
 
 ```bash
 # Get summary with latency stats
-python scripts/view_execution_telemetry.py \
+python3 scripts/view_execution_telemetry.py \
   --session SESSION_ID \
   --summary
 ```
@@ -126,7 +126,7 @@ Latency (order->fill): avg 120ms, p50 110ms, p95 280ms, max 1500ms
 **Drill down:**
 ```bash
 # Check events around spike time
-python scripts/view_execution_telemetry.py \
+python3 scripts/view_execution_telemetry.py \
   --session SESSION_ID \
   --from "2025-12-20T10:15:00Z" \
   --to "2025-12-20T10:20:00Z" \
@@ -141,7 +141,7 @@ python scripts/view_execution_telemetry.py \
 
 ```bash
 # Check error rate
-python scripts/view_execution_telemetry.py \
+python3 scripts/view_execution_telemetry.py \
   --path logs/execution \
   --summary
 ```
@@ -165,7 +165,7 @@ Parse Statistics:
 cd logs/execution
 for file in *.jsonl; do
   echo "Checking $file..."
-  python -c "
+  python3 -c "
 import json
 import sys
 with open('$file') as f:
@@ -205,7 +205,7 @@ grep -l "BTC-USD" logs/execution/*.jsonl
 
 ```bash
 # Export events and check timestamps
-python scripts/view_execution_telemetry.py \
+python3 scripts/view_execution_telemetry.py \
   --session SESSION_ID \
   --json | jq -r '.ts' | sort -c
 
@@ -312,7 +312,7 @@ curl "http://localhost:8000/api/telemetry?session_id=session_123&type=fill&limit
 **Commands Run:**
 ```bash
 # Paste commands here
-python scripts/view_execution_telemetry.py --session session_123 --summary
+python3 scripts/view_execution_telemetry.py --session session_123 --summary
 ```
 
 **Output Snippet:**
@@ -357,7 +357,7 @@ Compress after: 7 days (gzip, ~80% size reduction)
 
 **Check what would be deleted/compressed:**
 ```bash
-python scripts/ops/telemetry_retention.py
+python3 scripts/ops/telemetry_retention.py
 ```
 
 **Output:**
@@ -369,13 +369,13 @@ python scripts/ops/telemetry_retention.py
 
 **Execute cleanup (requires --apply):**
 ```bash
-python scripts/ops/telemetry_retention.py --apply
+python3 scripts/ops/telemetry_retention.py --apply
 ```
 
 **Custom policy:**
 ```bash
 # Keep only last 14 days, compress after 3 days
-python scripts/ops/telemetry_retention.py --apply \
+python3 scripts/ops/telemetry_retention.py --apply \
   --max-age-days 14 \
   --compress-after-days 3 \
   --keep-last-n 100
@@ -397,7 +397,7 @@ du -sh logs/execution
 **Scenario 1: Disk Almost Full (Aggressive)**
 ```bash
 # Keep only last 7 days, no compression (delete immediately)
-python scripts/ops/telemetry_retention.py --apply \
+python3 scripts/ops/telemetry_retention.py --apply \
   --max-age-days 7 \
   --compress-after-days 0 \
   --keep-last-n 50
@@ -406,7 +406,7 @@ python scripts/ops/telemetry_retention.py --apply \
 **Scenario 2: Archive Old Sessions (Compress Only)**
 ```bash
 # Don't delete, just compress everything > 3 days
-python scripts/ops/telemetry_retention.py --apply \
+python3 scripts/ops/telemetry_retention.py --apply \
   --max-age-days 365 \
   --compress-after-days 3 \
   --max-total-mb 0  # Disable size limit
@@ -415,7 +415,7 @@ python scripts/ops/telemetry_retention.py --apply \
 **Scenario 3: Size Limit Enforcement**
 ```bash
 # Keep total size under 500 MB
-python scripts/ops/telemetry_retention.py --apply \
+python3 scripts/ops/telemetry_retention.py --apply \
   --max-total-mb 500 \
   --keep-last-n 100
 ```
@@ -425,7 +425,7 @@ python scripts/ops/telemetry_retention.py --apply \
 **Compressed logs (.jsonl.gz) are still queryable:**
 ```bash
 # Viewer auto-detects compressed files
-python scripts/view_execution_telemetry.py \
+python3 scripts/view_execution_telemetry.py \
   --path logs/execution \
   --summary
 
@@ -446,7 +446,7 @@ zcat logs/execution/session_123.jsonl.gz | head -20
 **Problem:** "Unsafe or invalid telemetry root"
 ```bash
 # Solution: Use correct path with "execution" or "telemetry" in name
-python scripts/ops/telemetry_retention.py --root logs/execution
+python3 scripts/ops/telemetry_retention.py --root logs/execution
 ```
 
 **Problem:** Not enough space freed
@@ -455,7 +455,7 @@ python scripts/ops/telemetry_retention.py --root logs/execution
 ls -lh logs/execution/*.jsonl
 
 # More aggressive cleanup
-python scripts/ops/telemetry_retention.py --apply \
+python3 scripts/ops/telemetry_retention.py --apply \
   --max-age-days 3 \
   --keep-last-n 20
 ```
@@ -478,7 +478,7 @@ gunzip logs/execution/session_123.jsonl.gz
 **Or:** Set up a cron job (optional)
 ```bash
 # Example: Daily at 3 AM
-0 3 * * * cd /path/to/Peak_Trade && python scripts/ops/telemetry_retention.py --apply
+0 3 * * * cd /path/to/Peak_Trade && python3 scripts/ops/telemetry_retention.py --apply
 ```
 
 ---
@@ -508,10 +508,10 @@ To verify commands work in your environment:
 
 ```bash
 # 1. Check CLI is available
-python scripts/view_execution_telemetry.py --help
+python3 scripts/view_execution_telemetry.py --help
 
 # 2. Test with golden fixtures (dev only)
-python scripts/view_execution_telemetry.py \
+python3 scripts/view_execution_telemetry.py \
   --path tests/fixtures/execution_telemetry \
   --summary
 

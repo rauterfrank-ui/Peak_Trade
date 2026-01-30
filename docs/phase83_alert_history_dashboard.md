@@ -112,7 +112,7 @@ class AlertPipelineManager:
 
 ```bash
 # Alert Storage Tests
-pytest tests/test_alert_storage.py -v
+python3 -m pytest tests/test_alert_storage.py -v
 
 # Ergebnis: 29 passed
 ```

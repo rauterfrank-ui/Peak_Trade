@@ -92,7 +92,7 @@ assert sum(recipe.weights) == 1.0
 **Portfolio-Rezept ausführen:**
 
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset my_new_recipe
 ```
@@ -100,7 +100,7 @@ python scripts/research_cli.py portfolio \
 **Mit zusätzlichen Optionen:**
 
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset my_new_recipe \
   --format json \
@@ -110,7 +110,7 @@ python scripts/research_cli.py portfolio \
 **Ohne Preset (manuelle Konfiguration):**
 
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --strategies rsi_reversion_basic_btc,rsi_reversion_basic_eth \
   --weights 0.6,0.4
@@ -222,7 +222,7 @@ Füge eine kurze Beschreibung des neuen Rezepts hinzu:
 
 **Beispiel:**
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --portfolio-preset my_new_recipe
 ```
 ```

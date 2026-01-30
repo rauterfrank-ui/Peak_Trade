@@ -344,19 +344,19 @@ result = gate.execute_with_gate(order_function, *args, **kwargs)
 
 ```bash
 # Status
-python -m src.risk_layer.kill_switch.cli status
+python3 -m src.risk_layer.kill_switch.cli status
 
 # Trigger
-python -m src.risk_layer.kill_switch.cli trigger --reason "Maintenance" --confirm
+python3 -m src.risk_layer.kill_switch.cli trigger --reason "Maintenance" --confirm
 
 # Recover
-python -m src.risk_layer.kill_switch.cli recover --code "SECRET" --reason "Fixed"
+python3 -m src.risk_layer.kill_switch.cli recover --code "SECRET" --reason "Fixed"
 
 # Audit
-python -m src.risk_layer.kill_switch.cli audit --since 24h --limit 50
+python3 -m src.risk_layer.kill_switch.cli audit --since 24h --limit 50
 
 # Health
-python -m src.risk_layer.kill_switch.cli health
+python3 -m src.risk_layer.kill_switch.cli health
 ```
 
 ### Operator Script
@@ -414,22 +414,22 @@ export KILL_SWITCH_APPROVAL_CODE='your_secret_code_here'
 
 ```bash
 # Alle Tests
-pytest tests/risk_layer/kill_switch/ -v
+python3 -m pytest tests/risk_layer/kill_switch/ -v
 
 # Nur State Machine
-pytest tests/risk_layer/kill_switch/test_state_machine.py -v
+python3 -m pytest tests/risk_layer/kill_switch/test_state_machine.py -v
 
 # Nur Triggers
-pytest tests/risk_layer/kill_switch/test_triggers.py -v
+python3 -m pytest tests/risk_layer/kill_switch/test_triggers.py -v
 
 # Mit Coverage
-pytest tests/risk_layer/kill_switch/ --cov=src/risk_layer/kill_switch
+python3 -m pytest tests/risk_layer/kill_switch/ --cov=src/risk_layer/kill_switch
 ```
 
 ### Integration Tests
 
 ```bash
-pytest tests/risk_layer/kill_switch/test_integration.py -v
+python3 -m pytest tests/risk_layer/kill_switch/test_integration.py -v
 ```
 
 ### Test-Fixtures

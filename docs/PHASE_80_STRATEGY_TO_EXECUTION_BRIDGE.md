@@ -102,36 +102,36 @@ Phase 80 nutzt und erweitert bestehende Safety-Layer:
 
 ```bash
 # Shadow-Mode (Default) - Simulation ohne API-Calls
-python scripts/run_execution_session.py --strategy ma_crossover
+python3 scripts/run_execution_session.py --strategy ma_crossover
 
 # Mit spezifischem Symbol und Timeframe
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --strategy rsi_reversion \
     --symbol ETH/EUR \
     --timeframe 5m
 
 # Testnet-Mode (Dry-Run mit validate_only)
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --mode testnet \
     --strategy ma_crossover
 
 # Für begrenzte Dauer (30 Minuten)
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --strategy ma_crossover \
     --duration 30
 
 # Für N Schritte
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --strategy ma_crossover \
     --steps 100
 
 # Dry-Run (nur Config validieren)
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --strategy ma_crossover \
     --dry-run
 
 # Verfügbare Strategien auflisten
-python scripts/run_execution_session.py --list-strategies
+python3 scripts/run_execution_session.py --list-strategies
 ```
 
 ### 4.2 Programmatische Verwendung
@@ -257,7 +257,7 @@ Phase 80 integriert sich nahtlos mit:
 24 Tests in `tests/test_live_session_runner.py`:
 
 ```bash
-pytest tests/test_live_session_runner.py -v
+python3 -m pytest tests/test_live_session_runner.py -v
 ```
 
 | Test-Kategorie | Anzahl | Status |
@@ -322,7 +322,7 @@ Dieser Abschnitt beschreibt, wie du Phase 80 im Alltag einsetzt – als Operator
 
 **Schneller Smoke-Test einer Strategie:**
 ```bash
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --strategy rsi_reversion \
     --steps 5 \
     --dry-run
@@ -330,7 +330,7 @@ python scripts/run_execution_session.py \
 
 **30-Minuten Shadow-Session mit Logging:**
 ```bash
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --strategy ma_crossover \
     --symbol BTC/EUR \
     --duration 30 2>&1 | tee shadow_run_$(date +%Y%m%d_%H%M).log
@@ -338,7 +338,7 @@ python scripts/run_execution_session.py \
 
 **Testnet-Validierung für ETH-Strategie:**
 ```bash
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --mode testnet \
     --strategy trend_following \
     --symbol ETH/EUR \
@@ -347,7 +347,7 @@ python scripts/run_execution_session.py \
 
 **Alle verfügbaren Strategien auflisten:**
 ```bash
-python scripts/run_execution_session.py --list-strategies
+python3 scripts/run_execution_session.py --list-strategies
 ```
 
 ### 8.4 Interpretation der Session-Metriken

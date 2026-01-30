@@ -96,21 +96,21 @@ Das Script exportiert Live-Audit-Snapshots in verschiedenen Formaten.
 
 ```bash
 # Snapshot auf STDOUT (Markdown)
-python scripts/export_live_audit_snapshot.py --stdout
+python3 scripts/export_live_audit_snapshot.py --stdout
 
 # JSON-Export
-python scripts/export_live_audit_snapshot.py --output-json audit/live_audit_2025-12-07.json
+python3 scripts/export_live_audit_snapshot.py --output-json audit/live_audit_2025-12-07.json
 
 # Markdown-Export
-python scripts/export_live_audit_snapshot.py --output-markdown audit/live_audit_2025-12-07.md
+python3 scripts/export_live_audit_snapshot.py --output-markdown audit/live_audit_2025-12-07.md
 
 # Beides (JSON + Markdown)
-python scripts/export_live_audit_snapshot.py \
+python3 scripts/export_live_audit_snapshot.py \
     --output-json audit/live_audit_2025-12-07.json \
     --output-markdown audit/live_audit_2025-12-07.md
 
 # Mit expliziter Config
-python scripts/export_live_audit_snapshot.py \
+python3 scripts/export_live_audit_snapshot.py \
     --config config/config.toml \
     --output-json audit/live_audit_2025-12-07.json
 ```
@@ -234,7 +234,7 @@ Available Drill Scenarios:
 **Workflow:**
 ```bash
 # Wöchentlicher Snapshot
-python scripts/export_live_audit_snapshot.py \
+python3 scripts/export_live_audit_snapshot.py \
     --output-json audit/live_audit_$(date +%Y%m%d).json \
     --output-markdown audit/live_audit_$(date +%Y%m%d).md
 

@@ -197,7 +197,7 @@ Phase: 82A Documentation Hardening
 - [ ] **Test-Suite erstellen (Phase 82B):**
   - `tests/ops/test_ops_inspector.py` mit pytest
   - 15 Smoke-Tests für alle Checks (git_root, uv_lock, pyproject, etc.)
-  - Integration in `uv run pytest` Workflow
+  - Integration in `python3 -m pytest` Workflow
 
 - [ ] **CI-Integration:**
   - GitHub Actions Workflow für Daily Health Check

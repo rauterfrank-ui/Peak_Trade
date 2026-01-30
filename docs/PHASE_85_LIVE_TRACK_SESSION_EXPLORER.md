@@ -263,7 +263,7 @@ class LiveSessionDetail(BaseModel):
 **Gesamt:** 54 Tests (alle grün)
 
 ```bash
-pytest tests/test_webui_live_track.py -v
+python3 -m pytest tests/test_webui_live_track.py -v
 ```
 
 ---

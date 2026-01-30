@@ -145,16 +145,16 @@ results = self._pipeline.execute_orders(orders)
 
 ```bash
 # Run kill switch tests
-uv run pytest tests/risk_layer/kill_switch/ -v
+python3 -m pytest tests/risk_layer/kill_switch/ -v
 
 # Run risk limits tests
-uv run pytest tests/test_live_risk*.py -v
+python3 -m pytest tests/test_live_risk*.py -v
 
 # Test kill switch CLI
-python -m src.risk_layer.kill_switch.cli status
+python3 -m src.risk_layer.kill_switch.cli status
 
 # Verify risk config loading
-python -c "from src.live.risk_limits import LiveRiskLimits; from src.core.peak_config import load_config; cfg = load_config(); limits = LiveRiskLimits.from_config(cfg, starting_cash=10000.0); print(limits.config)"
+python3 -c "from src.live.risk_limits import LiveRiskLimits; from src.core.peak_config import load_config; cfg = load_config(); limits = LiveRiskLimits.from_config(cfg, starting_cash=10000.0); print(limits.config)"
 ```
 
 ## Conclusion

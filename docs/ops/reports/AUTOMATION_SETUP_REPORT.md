@@ -407,10 +407,10 @@ python3 scripts/automation/run_offline_daily_suite.py --no-trigger
 **Lösung**:
 ```bash
 # Pytest manuell ausführen
-pytest -xvs
+python3 -m pytest -xvs
 
 # Nur schnelle Tests (falls Marker vorhanden)
-pytest -m "offline_fast" -xvs
+python3 -m pytest -m "offline_fast" -xvs
 
 # Falls Pytest-Fehler nicht kritisch sind, überspringe
 python3 scripts/automation/run_offline_daily_suite.py --no-pytest

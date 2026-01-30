@@ -195,7 +195,7 @@ allow_live = false
 **CLI-Command:**
 
 ```bash
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy armstrong_cycle \
   --config config/config.toml \
   --bars 5000 \
@@ -252,7 +252,7 @@ reports/r_and_d/armstrong_cycle/lasttest_v1/
 **CLI-Command:**
 
 ```bash
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy armstrong_cycle \
   --config config/config.toml \
   --data-file data/ohlcv/btcusdt_1d.csv \

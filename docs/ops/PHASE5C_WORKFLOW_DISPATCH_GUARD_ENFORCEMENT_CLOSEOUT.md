@@ -614,7 +614,7 @@ jobs:
 
 **Run validator locally:**
 ```bash
-python scripts/ci/validate_required_checks_hygiene.py \
+python3 scripts/ci/validate_required_checks_hygiene.py \
   --config config/ci/required_status_checks.json \
   --workflows .github/workflows \
   --strict
@@ -735,7 +735,7 @@ jq '.required_contexts += ["test-check"]' \
 mv /tmp/config.json config/ci/required_status_checks.json
 
 # Run validator (should FAIL)
-python scripts/ci/validate_required_checks_hygiene.py --strict
+python3 scripts/ci/validate_required_checks_hygiene.py --strict
 ```
 
 **Result:**  

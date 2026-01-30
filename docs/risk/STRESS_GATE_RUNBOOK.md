@@ -390,13 +390,13 @@ result = gate.evaluate(order, context)
 ### Unit Tests
 
 ```bash
-pytest tests/risk_layer/test_stress_gate.py -v
+python3 -m pytest tests/risk_layer/test_stress_gate.py -v
 ```
 
 ### Integration Tests
 
 ```bash
-pytest tests/risk_layer/test_risk_gate.py -k stress -v
+python3 -m pytest tests/risk_layer/test_risk_gate.py -k stress -v
 ```
 
 ### Manual Verification

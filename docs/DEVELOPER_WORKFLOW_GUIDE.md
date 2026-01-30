@@ -24,13 +24,13 @@ git clone <repo-url>
 cd Peak_Trade
 
 # 2. Automated setup
-python scripts/dev_workflow.py setup
+python3 scripts/dev_workflow.py setup
 
 # 3. Health check
-python scripts/dev_workflow.py health
+python3 scripts/dev_workflow.py health
 
 # 4. Run tests to verify setup
-python scripts/dev_workflow.py test --module test_basics
+python3 scripts/dev_workflow.py test --module test_basics
 
 # 5. Read essential docs
 # - README.md
@@ -42,16 +42,16 @@ python scripts/dev_workflow.py test --module test_basics
 
 ```bash
 # Morning routine
-python scripts/dev_workflow.py health        # Quick system check
+python3 scripts/dev_workflow.py health        # Quick system check
 git pull origin main                          # Get latest changes
 
 # During development
-python scripts/dev_workflow.py test --module <module>  # Test your changes
-python scripts/dev_workflow.py lint                    # Check code style
+python3 scripts/dev_workflow.py test --module <module>  # Test your changes
+python3 scripts/dev_workflow.py lint                    # Check code style
 
 # Before committing
-python scripts/dev_workflow.py test                    # Full test suite
-python scripts/dev_workflow.py docs-validate           # Check docs
+python3 scripts/dev_workflow.py test                    # Full test suite
+python3 scripts/dev_workflow.py docs-validate           # Check docs
 git add .
 git commit -m "Your change description"
 git push
@@ -65,14 +65,14 @@ git checkout -b feature/your-feature-name
 
 # 2. Make changes incrementally
 # ... edit files ...
-python scripts/dev_workflow.py test --module <module> -v
+python3 scripts/dev_workflow.py test --module <module> -v
 
 # 3. Run linters
-python scripts/dev_workflow.py lint
+python3 scripts/dev_workflow.py lint
 
 # 4. Validate changes
-python scripts/dev_workflow.py health
-python scripts/dev_workflow.py docs-validate
+python3 scripts/dev_workflow.py health
+python3 scripts/dev_workflow.py docs-validate
 
 # 5. Commit and push
 git add .
@@ -93,7 +93,7 @@ The `scripts/dev_workflow.py` script automates common development tasks.
 
 #### Setup Environment
 ```bash
-python scripts/dev_workflow.py setup
+python3 scripts/dev_workflow.py setup
 ```
 - Creates virtual environment
 - Installs dependencies
@@ -102,28 +102,28 @@ python scripts/dev_workflow.py setup
 #### Run Tests
 ```bash
 # All tests
-python scripts/dev_workflow.py test
+python3 scripts/dev_workflow.py test
 
 # Specific module
-python scripts/dev_workflow.py test --module performance
+python3 scripts/dev_workflow.py test --module performance
 
 # With coverage
-python scripts/dev_workflow.py test --coverage
+python3 scripts/dev_workflow.py test --coverage
 
 # Verbose output
-python scripts/dev_workflow.py test -v
+python3 scripts/dev_workflow.py test -v
 ```
 
 #### Run Linters
 ```bash
-python scripts/dev_workflow.py lint
+python3 scripts/dev_workflow.py lint
 ```
 - Runs ruff for linting
 - Runs black for formatting checks
 
 #### Performance Check
 ```bash
-python scripts/dev_workflow.py perf-check
+python3 scripts/dev_workflow.py perf-check
 ```
 - Benchmarks key operations
 - Reports performance metrics
@@ -131,7 +131,7 @@ python scripts/dev_workflow.py perf-check
 
 #### Validate Documentation
 ```bash
-python scripts/dev_workflow.py docs-validate
+python3 scripts/dev_workflow.py docs-validate
 ```
 - Checks for broken links
 - Finds TODO/FIXME markers
@@ -139,7 +139,7 @@ python scripts/dev_workflow.py docs-validate
 
 #### Health Check
 ```bash
-python scripts/dev_workflow.py health
+python3 scripts/dev_workflow.py health
 ```
 - Verifies environment setup
 - Checks directory structure
@@ -147,7 +147,7 @@ python scripts/dev_workflow.py health
 
 #### Create Strategy Scaffold
 ```bash
-python scripts/dev_workflow.py create-strategy "My New Strategy"
+python3 scripts/dev_workflow.py create-strategy "My New Strategy"
 ```
 - Generates strategy boilerplate
 - Creates test file template
@@ -161,17 +161,17 @@ python scripts/dev_workflow.py create-strategy "My New Strategy"
 
 ```bash
 # 1. Create test first
-python scripts/dev_workflow.py create-strategy "momentum"
+python3 scripts/dev_workflow.py create-strategy "momentum"
 # Edit tests/strategies/test_momentum.py
 
 # 2. Run test (should fail)
-python scripts/dev_workflow.py test --module strategies/test_momentum -v
+python3 scripts/dev_workflow.py test --module strategies/test_momentum -v
 
 # 3. Implement strategy
 # Edit src/strategies/momentum.py
 
 # 4. Run test (should pass)
-python scripts/dev_workflow.py test --module strategies/test_momentum -v
+python3 scripts/dev_workflow.py test --module strategies/test_momentum -v
 
 # 5. Refine and repeat
 ```
@@ -180,13 +180,13 @@ python scripts/dev_workflow.py test --module strategies/test_momentum -v
 
 ```bash
 # 1. Baseline performance
-python scripts/dev_workflow.py perf-check
+python3 scripts/dev_workflow.py perf-check
 
 # 2. Make changes
 # ... edit files ...
 
 # 3. Check performance impact
-python scripts/dev_workflow.py perf-check
+python3 scripts/dev_workflow.py perf-check
 
 # 4. Compare metrics
 # If performance degraded, optimize before committing
@@ -199,13 +199,13 @@ python scripts/dev_workflow.py perf-check
 # Edit docs/YOUR_FEATURE.md
 
 # 2. Validate documentation
-python scripts/dev_workflow.py docs-validate
+python3 scripts/dev_workflow.py docs-validate
 
 # 3. Implement based on docs
 # ... edit files ...
 
 # 4. Ensure docs stay updated
-python scripts/dev_workflow.py docs-validate
+python3 scripts/dev_workflow.py docs-validate
 ```
 
 ### Pattern 4: Incremental Integration
@@ -215,7 +215,7 @@ python scripts/dev_workflow.py docs-validate
 # Edit single file
 
 # 2. Test immediately
-python scripts/dev_workflow.py test --module <specific_test>
+python3 scripts/dev_workflow.py test --module <specific_test>
 
 # 3. Commit if passes
 git add <file>
@@ -239,7 +239,7 @@ Create `.vscode/tasks.json`:
         {
             "label": "Run Tests",
             "type": "shell",
-            "command": "python scripts/dev_workflow.py test",
+            "command": "python3 scripts/dev_workflow.py test",
             "group": {
                 "kind": "test",
                 "isDefault": true
@@ -248,13 +248,13 @@ Create `.vscode/tasks.json`:
         {
             "label": "Run Linters",
             "type": "shell",
-            "command": "python scripts/dev_workflow.py lint",
+            "command": "python3 scripts/dev_workflow.py lint",
             "group": "build"
         },
         {
             "label": "Health Check",
             "type": "shell",
-            "command": "python scripts/dev_workflow.py health"
+            "command": "python3 scripts/dev_workflow.py health"
         }
     ]
 }
@@ -269,7 +269,7 @@ Keyboard shortcuts:
 1. **External Tools Configuration:**
    - Settings → Tools → External Tools
    - Add tool: "Workflow Health"
-   - Program: `python`
+   - Program: `python3`
    - Arguments: `scripts/dev_workflow.py health`
    - Working directory: `$ProjectFileDir$`
 
@@ -318,10 +318,10 @@ test(portfolio): add edge case tests
 
 1. **Before Creating PR:**
    ```bash
-   python scripts/dev_workflow.py test --coverage
-   python scripts/dev_workflow.py lint
-   python scripts/dev_workflow.py docs-validate
-   python scripts/dev_workflow.py health
+   python3 scripts/dev_workflow.py test --coverage
+   python3 scripts/dev_workflow.py lint
+   python3 scripts/dev_workflow.py docs-validate
+   python3 scripts/dev_workflow.py health
    ```
 
 2. **PR Description Template:**
@@ -367,38 +367,38 @@ Full Suite        → Comprehensive, all tests
 
 ```bash
 # During development (fast feedback)
-python scripts/dev_workflow.py test --module <your_module>
+python3 scripts/dev_workflow.py test --module <your_module>
 
 # Before commit (medium confidence)
-python scripts/dev_workflow.py test --module <affected_modules>
+python3 scripts/dev_workflow.py test --module <affected_modules>
 
 # Before PR (high confidence)
-python scripts/dev_workflow.py test --coverage
+python3 scripts/dev_workflow.py test --coverage
 
 # CI/CD (full validation)
-pytest tests/ -v --cov=src --cov-report=html
+python3 -m pytest tests/ -v --cov=src --cov-report=html
 ```
 
 ### Test-Specific Workflows
 
 ```bash
 # Run specific test class
-pytest tests/test_performance.py::TestPerformanceMonitor -v
+python3 -m pytest tests/test_performance.py::TestPerformanceMonitor -v
 
 # Run specific test method
-pytest tests/test_performance.py::TestPerformanceMonitor::test_init -v
+python3 -m pytest tests/test_performance.py::TestPerformanceMonitor::test_init -v
 
 # Run tests matching pattern
-pytest tests/ -k "performance" -v
+python3 -m pytest tests/ -k "performance" -v
 
 # Run with detailed output
-pytest tests/ -vv -s
+python3 -m pytest tests/ -vv -s
 
 # Run failed tests only
-pytest tests/ --lf
+python3 -m pytest tests/ --lf
 
 # Run tests in parallel (if pytest-xdist installed)
-pytest tests/ -n auto
+python3 -m pytest tests/ -n auto
 ```
 
 ---
@@ -409,7 +409,7 @@ pytest tests/ -n auto
 
 1. **Reproduce the Issue:**
    ```bash
-   python scripts/dev_workflow.py test --module <failing_test> -v
+   python3 scripts/dev_workflow.py test --module <failing_test> -v
    ```
 
 2. **Add Debug Output:**
@@ -421,10 +421,10 @@ pytest tests/ -n auto
 3. **Use Debugger:**
    ```bash
    # Run with debugger
-   python -m pdb scripts/<script_name>.py
+   python3 -m pdb scripts/<script_name>.py
 
    # Or in test
-   pytest tests/test_module.py --pdb
+   python3 -m pytest tests/test_module.py --pdb
    ```
 
 4. **Performance Profiling:**
@@ -446,7 +446,7 @@ pytest tests/ -n auto
 
 1. **Measure Baseline:**
    ```bash
-   python scripts/dev_workflow.py perf-check
+   python3 scripts/dev_workflow.py perf-check
    ```
 
 2. **Profile Code:**
@@ -478,7 +478,7 @@ pytest tests/ -n auto
 
 5. **Verify Improvement:**
    ```bash
-   python scripts/dev_workflow.py perf-check
+   python3 scripts/dev_workflow.py perf-check
    # Compare with baseline
    ```
 
@@ -496,14 +496,14 @@ Create `.git/hooks/pre-commit`:
 echo "Running pre-commit checks..."
 
 # Run tests
-python scripts/dev_workflow.py test
+python3 scripts/dev_workflow.py test
 if [ $? -ne 0 ]; then
     echo "Tests failed. Commit aborted."
     exit 1
 fi
 
 # Run linters
-python scripts/dev_workflow.py lint
+python3 scripts/dev_workflow.py lint
 if [ $? -ne 0 ]; then
     echo "Linting failed. Commit aborted."
     exit 1
@@ -524,10 +524,10 @@ Add to `.gitconfig`:
 
 ```ini
 [alias]
-    pt-test = !python scripts/dev_workflow.py test
-    pt-lint = !python scripts/dev_workflow.py lint
-    pt-health = !python scripts/dev_workflow.py health
-    pt-perf = !python scripts/dev_workflow.py perf-check
+    pt-test = !python3 scripts/dev_workflow.py test
+    pt-lint = !python3 scripts/dev_workflow.py lint
+    pt-health = !python3 scripts/dev_workflow.py health
+    pt-perf = !python3 scripts/dev_workflow.py perf-check
 ```
 
 Usage:
@@ -563,11 +563,11 @@ Success/Failure
 
 ```bash
 # Simulate CI pipeline locally
-python scripts/dev_workflow.py setup
-python scripts/dev_workflow.py lint
-python scripts/dev_workflow.py test --coverage
-python scripts/dev_workflow.py perf-check
-python scripts/dev_workflow.py docs-validate
+python3 scripts/dev_workflow.py setup
+python3 scripts/dev_workflow.py lint
+python3 scripts/dev_workflow.py test --coverage
+python3 scripts/dev_workflow.py perf-check
+python3 scripts/dev_workflow.py docs-validate
 ```
 
 ---
@@ -581,14 +581,14 @@ python scripts/dev_workflow.py docs-validate
 git diff --stat
 
 # Test coverage
-python scripts/dev_workflow.py test --coverage
+python3 scripts/dev_workflow.py test --coverage
 
 # Performance improvements
-python scripts/dev_workflow.py perf-check
+python3 scripts/dev_workflow.py perf-check
 # Compare with previous baseline
 
 # Documentation completeness
-python scripts/dev_workflow.py docs-validate
+python3 scripts/dev_workflow.py docs-validate
 ```
 
 ---
@@ -606,16 +606,16 @@ pip install -e ".[dev]" --upgrade
 rm -rf .pytest_cache
 
 # Run tests again
-python scripts/dev_workflow.py test
+python3 scripts/dev_workflow.py test
 ```
 
 #### Performance Regression
 ```bash
 # Profile the slow operation
-python -m cProfile -o profile.stats scripts/<script>.py
+python3 -m cProfile -o profile.stats scripts/<script>.py
 
 # Analyze profile
-python -m pstats profile.stats
+python3 -m pstats profile.stats
 > sort cumulative
 > stats 20
 ```
@@ -629,7 +629,7 @@ pip list | grep peak_trade
 pip install -e .
 
 # Check Python path
-python -c "import sys; print('\n'.join(sys.path))"
+python3 -c "import sys; print('\n'.join(sys.path))"
 ```
 
 ---

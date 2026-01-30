@@ -67,7 +67,7 @@ Implementation Gate Report für **WP0E Contracts & Interfaces** per Phase-0 Road
 
 **Command:**
 ```bash
-uv run ruff check src/execution/contracts.py src/execution/risk_hook.py
+ruff check src/execution/contracts.py src/execution/risk_hook.py
 ```
 
 **Result (from gate report):** ✅ All checks passed! (0 errors)
@@ -76,7 +76,7 @@ uv run ruff check src/execution/contracts.py src/execution/risk_hook.py
 
 **Command:**
 ```bash
-uv run pytest tests/execution/test_contracts_types.py tests/execution/test_contracts_risk_hook.py -v
+python3 -m pytest tests/execution/test_contracts_types.py tests/execution/test_contracts_risk_hook.py -v
 ```
 
 **Result (from gate report):** ✅ 49 passed in 0.10s (100% pass rate)

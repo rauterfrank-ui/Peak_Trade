@@ -106,7 +106,7 @@ Jede Kategorie bekommt ein konkretes Drill-Szenario.
 
 2. **Starte einen Backtest-/Research-Run** mit diesem fehlerhaften Dataset:
    ```bash
-   python scripts/research_cli.py portfolio \
+   python3 scripts/research_cli.py portfolio \
      --config config/config.toml \
      --portfolio-preset rsi_reversion_conservative \
      --format both
@@ -127,7 +127,7 @@ Jede Kategorie bekommt ein konkretes Drill-Szenario.
 
 2. **Wiederhole einen Research-/Backtest-Run**:
    ```bash
-   python scripts/run_backtest.py \
+   python3 scripts/run_backtest.py \
      --strategy ma_crossover \
      --symbol BTC/EUR \
      --bars 500
@@ -178,7 +178,7 @@ mv data/raw/btc_eur_1h.backup.parquet data/raw/btc_eur_1h.parquet
 2. **Research-Referenz erstellen**:
    ```bash
    # Aktuelle Research-Reports generieren
-   python scripts/run_portfolio_robustness.py \
+   python3 scripts/run_portfolio_robustness.py \
      --config config/config.toml \
      --portfolio-preset multi_style_moderate \
      --format both
@@ -204,7 +204,7 @@ mv data/raw/btc_eur_1h.backup.parquet data/raw/btc_eur_1h.parquet
 3. **Vergleiche Research vs. Shadow-PnL**:
    ```bash
    # Portfolio-Snapshot aus Shadow-Run
-   python scripts/live_ops.py portfolio --config config/config.toml --json > shadow_pnl.json
+   python3 scripts/live_ops.py portfolio --config config/config.toml --json > shadow_pnl.json
 
    # Vergleich mit Research-Ergebnissen
    # (manuell oder mit kleinem Vergleichs-Script)
@@ -272,13 +272,13 @@ max_daily_loss_abs = 1.0            # Sehr eng
 **Schritt 3: Drill auslösen über Live-Ops / Preview-CLI**
 ```bash
 # Orders-Preview mit Risk-Check
-python scripts/live_ops.py orders \
+python3 scripts/live_ops.py orders \
   --signals reports/forward/forward_*_signals.csv \
   --config config/config.toml \
   --enforce-live-risk
 
 # Oder Portfolio-Snapshot (Portfolio-Level Risk)
-python scripts/live_ops.py portfolio \
+python3 scripts/live_ops.py portfolio \
   --config config/config.toml
 ```
 
@@ -333,7 +333,7 @@ mv config/config.before_risk_drill.toml config/config.toml
 
 1. **Alerts-Konfiguration prüfen**:
    ```bash
-   # Prüfe live_alerts in config.toml
+   # Prüfe live_alerts in config/config.toml
    cat config/config.toml | grep -A 10 "\[live_alerts\]"
    ```
 
@@ -372,7 +372,7 @@ slack_webhook_urls = ["https://hooks.slack.com/services/INVALID/INVALID/INVALID"
 Nutze das Risk-Limit-Drill-Szenario (Szenario 3), um einen Alert zu triggern:
 ```bash
 # Risk-Limit-Verletzung erzeugen (siehe Szenario 3)
-python scripts/live_ops.py portfolio --config config/config.toml
+python3 scripts/live_ops.py portfolio --config config/config.toml
 ```
 
 **Schritt 4: Beobachte Alert-Verhalten**
@@ -496,17 +496,17 @@ mv config/config.before_alert_drill.toml config/config.toml
 
 ```bash
 # Health-Check vor/nach Drill
-python scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py health --config config/config.toml
 
 # Portfolio-Snapshot für PnL-Vergleich
-python scripts/live_ops.py portfolio --config config/config.toml --json
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
 ```
 
 ### Research-CLI
 
 ```bash
 # Research-Referenz für PnL-Vergleich
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --format both

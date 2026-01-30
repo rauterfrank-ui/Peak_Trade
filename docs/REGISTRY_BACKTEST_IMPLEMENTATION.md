@@ -76,7 +76,7 @@ Integration der **Strategien-Registry** in die **BacktestEngine**, um Config-bas
 ```bash
 cd ~/Peak_Trade
 source .venv/bin/activate
-python scripts/demo_registry_backtest.py
+python3 scripts/demo_registry_backtest.py
 ```
 
 ---
@@ -102,7 +102,7 @@ python scripts/demo_registry_backtest.py
 
 ✅ **Demo ausgeführt:**
 ```bash
-python scripts/demo_registry_backtest.py
+python3 scripts/demo_registry_backtest.py
 ```
 
 **Ergebnis:**
@@ -121,7 +121,7 @@ Noch keine automatisierten Tests geschrieben. Empfehlung:
 
 ```bash
 # In tests/backtest/test_registry_backtest.py
-pytest tests/backtest/test_registry_backtest.py -v
+python3 -m pytest tests/backtest/test_registry_backtest.py -v
 ```
 
 **Test-Cases:**
@@ -334,8 +334,8 @@ git commit -m "feat: Registry-basierte Backtest-Integration"
 5. ⬜ **Risk-Parity Allocation implementieren**
 6. ⬜ **End-to-End-Backtest-Script erstellen:**
    ```bash
-   python scripts/run_backtest.py --strategy ma_crossover --timeframe 1h
-   python scripts/run_backtest.py --portfolio --regime trending
+   python3 scripts/run_backtest.py --strategy ma_crossover --timeframe 1h
+   python3 scripts/run_backtest.py --portfolio --regime trending
    ```
 
 ### Mittelfristig

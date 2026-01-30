@@ -89,9 +89,9 @@ Finish C readiness documentation + mock-only dry-run track verification (no live
 
 ### Verification Steps (snapshot-only)
 1. Checkout commit `<SHA>`
-2. Run: `pytest -q`
-3. Run: `python -m ruff check .`
-4. Run: `python -m ruff format --check .`
+2. Run: `bash python3 -m pytest -q`
+3. Run: `bash ruff check .`
+4. Run: `bash ruff format --check .`
 5. Run: `./scripts/ops/pt_docs_gates_snapshot.sh --changed --base origin/main`
 6. Expected: all checks PASS; no network calls; no secrets in output.
 
@@ -130,7 +130,7 @@ Commit:
 - git status -sb:
 
 ### Tests
-- pytest -q:
+- python3 -m pytest -q:
 
 ### Lint/Format
 - ruff check:

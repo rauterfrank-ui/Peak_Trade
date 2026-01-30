@@ -43,7 +43,7 @@ cat PHASE6_COMMIT_MESSAGE.txt
 
 ```bash
 # Alle Validation + Integration Tests
-pytest tests/risk/validation/ tests/risk/integration/ -q
+python3 -m pytest tests/risk/validation/ tests/risk/integration/ -q
 
 # Erwartetes Ergebnis:
 # 93 passed in 0.84s ✅

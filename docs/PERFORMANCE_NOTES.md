@@ -16,7 +16,7 @@ Peak_Trade v1.0 ist funktional fertig. Dieses Dokument sammelt Performance-Messu
 
 **Verwandte Dokumente:**
 
-- [`scripts/profile_research_and_portfolio.py`](../scripts/profile_research_and_portfolio.py) – Profiling-Script
+- Profiling-Script (Code): `scripts/profile_research_and_portfolio.py`
 - [`TECH_DEBT_BACKLOG.md`](TECH_DEBT_BACKLOG.md) – Performance-Optimierungen im Backlog
 
 ---
@@ -50,7 +50,7 @@ Peak_Trade v1.0 ist funktional fertig. Dieses Dokument sammelt Performance-Messu
 **Command:**
 
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --format both
@@ -76,7 +76,7 @@ python scripts/research_cli.py portfolio \
 **Command:**
 
 ```bash
-python scripts/research_cli.py pipeline \
+python3 scripts/research_cli.py pipeline \
   --sweep-name rsi_reversion_basic \
   --config config/config.toml \
   --format both \
@@ -105,7 +105,7 @@ python scripts/research_cli.py pipeline \
 **Command:**
 
 ```bash
-python scripts/run_portfolio_robustness.py \
+python3 scripts/run_portfolio_robustness.py \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --format both
@@ -148,10 +148,10 @@ python scripts/run_portfolio_robustness.py \
 
 ```bash
 # Alle Szenarien
-python scripts/profile_research_and_portfolio.py
+python3 scripts/profile_research_and_portfolio.py
 
 # Oder einzeln
-python scripts/profile_research_and_portfolio.py --scenario portfolio_multi_style_moderate
+python3 scripts/profile_research_and_portfolio.py --scenario portfolio_multi_style_moderate
 ```
 
 **Erwartete Regression-Schwelle:**
@@ -238,26 +238,26 @@ python scripts/profile_research_and_portfolio.py --scenario portfolio_multi_styl
 **Alle Szenarien ausführen:**
 
 ```bash
-python scripts/profile_research_and_portfolio.py
+python3 scripts/profile_research_and_portfolio.py
 ```
 
 **Nur bestimmte Szenarien:**
 
 ```bash
-python scripts/profile_research_and_portfolio.py \
+python3 scripts/profile_research_and_portfolio.py \
   --scenario portfolio_multi_style_moderate
 ```
 
 **Mit Markdown-Output:**
 
 ```bash
-python scripts/profile_research_and_portfolio.py --markdown
+python3 scripts/profile_research_and_portfolio.py --markdown
 ```
 
 **Szenarien auflisten:**
 
 ```bash
-python scripts/profile_research_and_portfolio.py --list
+python3 scripts/profile_research_and_portfolio.py --list
 ```
 
 ### Auswertung

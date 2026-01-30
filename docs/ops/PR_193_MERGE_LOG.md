@@ -86,7 +86,7 @@ ruff check src tests scripts
 
 ### Tests ✅
 ```bash
-pytest -q
+python3 -m pytest -q
 # 4200 passed, 13 skipped, 3 xfailed
 ```
 
@@ -122,7 +122,7 @@ pytest -q
 ruff check src tests scripts
 
 # Verify tests still pass
-pytest -q
+python3 -m pytest -q
 
 # Verify no behavior changes
 git diff HEAD~1 HEAD --stat

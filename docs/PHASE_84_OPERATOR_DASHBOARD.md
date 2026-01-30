@@ -24,7 +24,7 @@ Phase 84 gibt Operatoren und Gatekeepern ein Tool, um mit einem Blick den "Gesun
 ### Vollständiges Dashboard
 
 ```bash
-python scripts/operator_dashboard.py
+python3 scripts/operator_dashboard.py
 ```
 
 **Ausgabe:**
@@ -75,26 +75,26 @@ macd                      [AUX]      OK         MISSING
 
 ```bash
 # Nur Strategien
-python scripts/operator_dashboard.py --view strategies
+python3 scripts/operator_dashboard.py --view strategies
 
 # Nur Portfolios
-python scripts/operator_dashboard.py --view portfolios
+python3 scripts/operator_dashboard.py --view portfolios
 
 # Nur Alerts
-python scripts/operator_dashboard.py --view alerts
+python3 scripts/operator_dashboard.py --view alerts
 
 # Nur Summary
-python scripts/operator_dashboard.py --view summary
+python3 scripts/operator_dashboard.py --view summary
 ```
 
 ### JSON-Output
 
 ```bash
 # JSON für Automation
-python scripts/operator_dashboard.py --format json
+python3 scripts/operator_dashboard.py --format json
 
 # JSON in Datei speichern
-python scripts/operator_dashboard.py --format json > dashboard_status.json
+python3 scripts/operator_dashboard.py --format json > dashboard_status.json
 ```
 
 **JSON-Struktur:**
@@ -174,9 +174,9 @@ python scripts/operator_dashboard.py --format json > dashboard_status.json
 # .github/workflows/operator_checks.yml
 - name: Operator Dashboard Check
   run: |
-    python scripts/operator_dashboard.py --format json > dashboard.json
+    python3 scripts/operator_dashboard.py --format json > dashboard.json
     # Prüfe auf Errors
-    if python -c "import json; d=json.load(open('dashboard.json')); exit(d['summary']['alerts_error'])"; then
+    if python3 -c "import json; d=json.load(open('dashboard.json')); exit(d['summary']['alerts_error'])"; then
       echo "No critical alerts"
     else
       echo "Critical alerts found!"
@@ -188,10 +188,10 @@ python scripts/operator_dashboard.py --format json > dashboard_status.json
 
 ```bash
 # Vor Shadow-Start
-python scripts/operator_dashboard.py --view alerts
+python3 scripts/operator_dashboard.py --view alerts
 if [ $? -eq 0 ]; then
     echo "OK - starting shadow run"
-    python scripts/testnet_orchestrator_cli.py start-shadow ...
+    python3 scripts/testnet_orchestrator_cli.py start-shadow ...
 else
     echo "Errors detected - aborting"
     exit 1
@@ -202,7 +202,7 @@ fi
 
 ```bash
 # Cron-Job für täglichen Check
-0 8 * * * python scripts/operator_dashboard.py --format json >> /var/log/peak_trade/dashboard.log
+0 8 * * * python3 scripts/operator_dashboard.py --format json >> /var/log/peak_trade/dashboard.log
 ```
 
 ---
@@ -211,7 +211,7 @@ fi
 
 ```bash
 # Alle Dashboard-Tests
-pytest tests/test_operator_dashboard.py -v
+python3 -m pytest tests/test_operator_dashboard.py -v
 ```
 
 ### Testabdeckung

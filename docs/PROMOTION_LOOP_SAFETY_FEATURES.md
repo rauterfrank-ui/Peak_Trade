@@ -238,7 +238,7 @@ global_promotion_lock = false  # true = Lock aktiv
 # global_promotion_lock = true
 
 # Danach:
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
 # → Wird automatisch zu manual_only degradiert mit Warning
 ```
 
@@ -311,7 +311,7 @@ Reports unter `reports&#47;live_promotion&#47;<run_id>&#47;OPERATOR_CHECKLIST.md
 ### Unit Tests (26 Tests)
 
 ```bash
-pytest tests/governance/test_promotion_loop_safety.py -v
+python3 -m pytest tests/governance/test_promotion_loop_safety.py -v
 ```
 
 **Test-Coverage:**
@@ -326,7 +326,7 @@ pytest tests/governance/test_promotion_loop_safety.py -v
 ### Integration Tests (7 Tests)
 
 ```bash
-pytest tests/governance/test_promotion_loop_safety_integration.py -v
+python3 -m pytest tests/governance/test_promotion_loop_safety_integration.py -v
 ```
 
 **Szenarien:**
@@ -341,7 +341,7 @@ pytest tests/governance/test_promotion_loop_safety_integration.py -v
 ### Alle Tests ausführen
 
 ```bash
-pytest tests/governance/test_promotion_loop_safety*.py -v
+python3 -m pytest tests/governance/test_promotion_loop_safety*.py -v
 # ✅ 33 passed in 0.09s
 ```
 
@@ -406,10 +406,10 @@ cat reports/promotion_audit/promotion_audit.jsonl | jq 'select(.patch_id == "pat
 
 ```bash
 # Check ob Candidates überhaupt generiert wurden
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto 2>&1 | grep "candidate"
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto 2>&1 | grep "candidate"
 
 # Check safety flags
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto 2>&1 | grep "P0"
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto 2>&1 | grep "P0"
 ```
 
 **Häufige Ursachen:**
@@ -430,7 +430,7 @@ ls -la reports/promotion_audit/
 mkdir -p reports/promotion_audit
 
 # Run mit debug output
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only 2>&1 | grep audit
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only 2>&1 | grep audit
 ```
 
 **Lösung:**
@@ -445,7 +445,7 @@ python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only 2>&
 
 ```bash
 # Run in manual_only mit Safety-Features
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 ```
 
 **Status:** ✅ **DONE** - 33 Tests grün, System validiert
@@ -463,7 +463,7 @@ global_promotion_lock = false  # Aber: Start mit Test-Environment
 
 ```bash
 # Test in isolierter Umgebung
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
 ```
 
 **Prüfen:**

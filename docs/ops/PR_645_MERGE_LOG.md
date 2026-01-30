@@ -53,10 +53,10 @@ Operationalize reproducibility and regression detection for L4 Governance Critic
 **Local** (example):
 ```bash
 # Run determinism tests
-python -m pytest tests/ai_orchestration/test_l4_critic_determinism.py -q
+python3 -m pytest tests/ai_orchestration/test_l4_critic_determinism.py -q
 
 # Run deterministic replay (CI-clean, no legacy output)
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -86,7 +86,7 @@ python scripts/aiops/run_l4_governance_critic.py \
 ## Operator How-To
 **Run deterministic replay with schema v1.0.0 (CI-style):**
 ```bash
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -104,8 +104,8 @@ python scripts/aiops/run_l4_governance_critic.py \
 **Verify determinism:**
 ```bash
 # Run twice, diff outputs
-python scripts/aiops/run_l4_governance_critic.py [...same args...] --out .tmp/run1
-python scripts/aiops/run_l4_governance_critic.py [...same args...] --out .tmp/run2
+python3 scripts/aiops/run_l4_governance_critic.py [...same args...] --out .tmp/run1
+python3 scripts/aiops/run_l4_governance_critic.py [...same args...] --out .tmp/run2
 diff -r .tmp/run1 .tmp/run2  # Should show no differences
 ```
 

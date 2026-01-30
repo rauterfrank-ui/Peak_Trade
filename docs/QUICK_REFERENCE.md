@@ -11,10 +11,10 @@
 ### Setup & Health
 ```bash
 # Initial setup
-python scripts/dev_workflow.py setup
+python3 scripts/dev_workflow.py setup
 
 # Quick health check
-python scripts/dev_workflow.py health
+python3 scripts/dev_workflow.py health
 
 # Activate environment
 source .venv/bin/activate
@@ -23,22 +23,22 @@ source .venv/bin/activate
 ### Testing
 ```bash
 # All tests
-python scripts/dev_workflow.py test
+python3 scripts/dev_workflow.py test
 
 # Specific module
-python scripts/dev_workflow.py test --module performance
+python3 scripts/dev_workflow.py test --module performance
 
 # With coverage
-python scripts/dev_workflow.py test --coverage
+python3 scripts/dev_workflow.py test --coverage
 
 # Quick test
-pytest tests/test_basics.py -q
+python3 -m pytest tests/test_basics.py -q
 ```
 
 ### Code Quality
 ```bash
 # Run linters
-python scripts/dev_workflow.py lint
+python3 scripts/dev_workflow.py lint
 
 # Format code
 black src/ tests/
@@ -50,13 +50,13 @@ mypy src/
 ### Research & Trading
 ```bash
 # Run backtest
-python scripts/run_backtest.py --strategy ma_crossover
+python3 scripts/run_backtest.py --strategy ma_crossover
 
 # Portfolio research
-python scripts/research_cli.py portfolio --config config/config.toml
+python3 scripts/research_cli.py portfolio --config config/config.toml
 
 # Live ops health
-python scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py health --config config/config.toml
 ```
 
 ---
@@ -88,32 +88,32 @@ python scripts/live_ops.py health --config config/config.toml
 ### Add New Strategy
 ```bash
 # 1. Generate scaffold
-python scripts/dev_workflow.py create-strategy "My Strategy"
+python3 scripts/dev_workflow.py create-strategy "My Strategy"
 
 # 2. Edit files
 # - src/strategies/my_strategy.py
 # - tests/strategies/test_my_strategy.py
 
 # 3. Test
-python scripts/dev_workflow.py test --module strategies/test_my_strategy
+python3 scripts/dev_workflow.py test --module strategies/test_my_strategy
 
 # 4. Run backtest
-python scripts/run_backtest.py --strategy my_strategy
+python3 scripts/run_backtest.py --strategy my_strategy
 ```
 
 ### Debug Test Failure
 ```bash
 # 1. Run specific test with verbose
-pytest tests/test_module.py::TestClass::test_method -vv
+python3 -m pytest tests/test_module.py::TestClass::test_method -vv
 
 # 2. Add debug output
 # In code: import logging; logging.basicConfig(level=logging.DEBUG)
 
 # 3. Use debugger
-pytest tests/test_module.py --pdb
+python3 -m pytest tests/test_module.py --pdb
 
 # 4. Check performance
-python scripts/dev_workflow.py perf-check
+python3 scripts/dev_workflow.py perf-check
 ```
 
 ### Performance Profiling
@@ -216,7 +216,7 @@ def test_double(input, expected):
 - Use `@performance_timer` decorator on slow functions
 - Cache frequently accessed data with `@lru_cache`
 - Use vectorized operations (numpy/pandas) instead of loops
-- Profile before optimizing: `python -m cProfile script.py`
+- Profile before optimizing: `python3 -m cProfile script.py`
 
 ### Monitoring
 ```python
@@ -259,10 +259,10 @@ with performance_monitor.measure("operation"):
 ### Quick Help
 ```bash
 # Script help
-python scripts/dev_workflow.py --help
+python3 scripts/dev_workflow.py --help
 
 # Test help
-pytest --help
+python3 -m pytest --help
 
 # Git help
 git <command> --help
@@ -276,7 +276,7 @@ git <command> --help
 
 ### Getting Stuck?
 1. Check [Knowledge Base Index](KNOWLEDGE_BASE_INDEX.md)
-2. Run `python scripts/dev_workflow.py health`
+2. Run `python3 scripts/dev_workflow.py health`
 3. Search codebase for similar patterns
 4. Review test files for examples
 5. Check AI workflow guide for prompt templates
@@ -303,25 +303,25 @@ git status
 git diff
 
 # 2. Run specific failing test
-pytest tests/test_module.py::test_name -vv
+python3 -m pytest tests/test_module.py::test_name -vv
 
 # 3. Reset if needed
 git checkout -- <file>
 
 # 4. Verify fix
-python scripts/dev_workflow.py test
+python3 scripts/dev_workflow.py test
 ```
 
 ### Performance Degraded
 ```bash
 # 1. Run performance check
-python scripts/dev_workflow.py perf-check
+python3 scripts/dev_workflow.py perf-check
 
 # 2. Profile the operation
-python -m cProfile -o profile.stats script.py
+python3 -m cProfile -o profile.stats script.py
 
 # 3. Analyze
-python -m pstats profile.stats
+python3 -m pstats profile.stats
 
 # 4. Optimize and re-check
 ```
@@ -334,10 +334,10 @@ rm -rf .pytest_cache
 rm -rf src/*.egg-info
 
 # 2. Rebuild
-python scripts/dev_workflow.py setup
+python3 scripts/dev_workflow.py setup
 
 # 3. Verify
-python scripts/dev_workflow.py health
+python3 scripts/dev_workflow.py health
 ```
 
 ---

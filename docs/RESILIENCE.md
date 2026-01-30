@@ -305,7 +305,7 @@ Command-line dashboard for system health monitoring.
 ### Running the Dashboard
 
 ```bash
-python scripts/health_dashboard.py
+python3 scripts/health_dashboard.py
 ```
 
 ### Output
@@ -685,9 +685,9 @@ Complete examples are available in `examples/resilience/`:
 Run examples:
 ```bash
 cd examples/resilience
-python 01_circuit_breaker_basics.py
-python 10_backup_basics.py
-python 13_disaster_recovery.py
+python3 01_circuit_breaker_basics.py
+python3 10_backup_basics.py
+python3 13_disaster_recovery.py
 ```
 
 
@@ -700,7 +700,7 @@ python 13_disaster_recovery.py
 Useful for CI/CD pipelines:
 
 ```bash
-python scripts/health_dashboard.py && echo "Deployment ready" || echo "System unhealthy"
+python3 scripts/health_dashboard.py && echo "Deployment ready" || echo "System unhealthy"
 ```
 
 ## Best Practices
@@ -845,13 +845,13 @@ Run resilience module tests:
 
 ```bash
 # Run all resilience tests
-pytest tests/test_resilience.py -v
+python3 -m pytest tests/test_resilience.py -v
 
 # Run specific test
-pytest tests/test_resilience.py::TestCircuitBreaker::test_circuit_breaker_opens_after_failures -v
+python3 -m pytest tests/test_resilience.py::TestCircuitBreaker::test_circuit_breaker_opens_after_failures -v
 
 # Run with coverage
-pytest tests/test_resilience.py --cov=src.core.resilience --cov-report=html
+python3 -m pytest tests/test_resilience.py --cov=src.core.resilience --cov-report=html
 ```
 
 ## API Reference

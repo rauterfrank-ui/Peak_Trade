@@ -366,7 +366,7 @@ exp_rnd_w2_<preset_id>_<dataset>_<timeframe>_<variant>_v<version>
 
 ```bash
 # Experiment A: ECM Longterm Cycle Baseline
-python scripts/research_cli.py sweep \
+python3 scripts/research_cli.py sweep \
     --sweep-name armstrong_ecm_btc_longterm_v1 \
     --symbol BTC/USDT \
     --start 2017-01-01 \
@@ -375,7 +375,7 @@ python scripts/research_cli.py sweep \
     --tag exp_rnd_w2_armstrong_ecm_btc_1d_baseline_v1
 
 # Experiment B: Multi-Cycle Sensitivity Sweep
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
     --strategy armstrong_cycle \
     --symbol BTC/USDT \
     --start 2018-01-01 \
@@ -388,7 +388,7 @@ python scripts/run_strategy_sweep.py \
 
 ```bash
 # Experiment A: Super Smoother vs. EMA
-python scripts/research_cli.py sweep \
+python3 scripts/research_cli.py sweep \
     --sweep-name ehlers_super_smoother_v1 \
     --symbol BTC/USDT \
     --start 2023-01-01 \
@@ -397,14 +397,14 @@ python scripts/research_cli.py sweep \
     --tag exp_rnd_w2_ehlers_super_smoother_vs_ema_1h_v1
 
 # Report generieren
-python scripts/research_cli.py report \
+python3 scripts/research_cli.py report \
     --sweep-name ehlers_super_smoother_v1 \
     --format both \
     --with-plots \
     --tag exp_rnd_w2_ehlers_super_smoother_vs_ema_1h_v1
 
 # Walk-Forward Robustness
-python scripts/research_cli.py walkforward \
+python3 scripts/research_cli.py walkforward \
     --sweep-name ehlers_bandpass_cycle_v1 \
     --top-n 3 \
     --train-window 90d \
@@ -416,7 +416,7 @@ python scripts/research_cli.py walkforward \
 
 ```bash
 # Experiment A: Meta-Labeling RSI
-python scripts/research_cli.py sweep \
+python3 scripts/research_cli.py sweep \
     --sweep-name lopez_meta_labeling_rsi_v1 \
     --symbol BTC/USDT \
     --start 2022-01-01 \
@@ -425,7 +425,7 @@ python scripts/research_cli.py sweep \
     --tag exp_rnd_w2_lopez_meta_labeling_rsi_1h_v1
 
 # Monte-Carlo Robustness
-python scripts/research_cli.py montecarlo \
+python3 scripts/research_cli.py montecarlo \
     --sweep-name lopez_meta_labeling_rsi_v1 \
     --config config/config.toml \
     --top-n 3 \
@@ -433,7 +433,7 @@ python scripts/research_cli.py montecarlo \
     --tag exp_rnd_w2_lopez_meta_labeling_montecarlo_v1
 
 # Feature Importance Analysis
-python scripts/research_cli.py strategy-profile \
+python3 scripts/research_cli.py strategy-profile \
     --strategy-id meta_labeling \
     --output-format both \
     --with-regime \
@@ -444,7 +444,7 @@ python scripts/research_cli.py strategy-profile \
 
 ```bash
 # Experiment A: Stoch-Vol Parameter Fit
-python scripts/research_cli.py sweep \
+python3 scripts/research_cli.py sweep \
     --sweep-name el_karoui_stoch_vol_v1 \
     --symbol BTC/USDT \
     --start 2020-01-01 \
@@ -453,7 +453,7 @@ python scripts/research_cli.py sweep \
     --tag exp_rnd_w2_el_karoui_stoch_vol_fit_1d_v1
 
 # Stress-Test
-python scripts/research_cli.py stress \
+python3 scripts/research_cli.py stress \
     --sweep-name el_karoui_stoch_vol_v1 \
     --config config/config.toml \
     --top-n 3 \
@@ -465,7 +465,7 @@ python scripts/research_cli.py stress \
 
 ```bash
 # Komplette Research-Pipeline für ein Preset
-python scripts/research_cli.py pipeline \
+python3 scripts/research_cli.py pipeline \
     --sweep-name ehlers_super_smoother_v1 \
     --config config/config.toml \
     --format both \
@@ -601,7 +601,7 @@ Eigenschaften und Sensitivitäten zu verstehen.
 Typischer Aufruf (Beispiel, konkrete Optionen siehe `--help`):
 
 ```bash
-python scripts/research_cli.py strategy-profile \
+python3 scripts/research_cli.py strategy-profile \
   --strategy ehlers_super_smoother_v1 \
   --preset r_and_d_wave1 \
   --symbol BTC/USDT \
@@ -621,10 +621,10 @@ oder Batch-Runs), werden sie mit dem R&D Experiments Viewer analysiert:
 
 ```bash
 # Alle Experimente anzeigen
-python scripts/view_r_and_d_experiments.py
+python3 scripts/view_r_and_d_experiments.py
 
 # Fokus auf eine bestimmte Welle / ein Preset
-python scripts/view_r_and_d_experiments.py \
+python3 scripts/view_r_and_d_experiments.py \
   --preset ehlers_super_smoother_v1 \
   --tag-substr wave2 \
   --with-trades
@@ -634,11 +634,11 @@ Optional:
 
 ```bash
 # Detail-Ansicht einer konkreten Run-ID
-python scripts/view_r_and_d_experiments.py \
+python3 scripts/view_r_and_d_experiments.py \
   --run-id <RUN_ID>
 
 # JSON-Output für weitere Auswertungen (z.B. Notebooks)
-python scripts/view_r_and_d_experiments.py \
+python3 scripts/view_r_and_d_experiments.py \
   --output json --limit 20
 ```
 
@@ -685,7 +685,7 @@ Für tiefergehende Analysen steht ein Python-Template bereit:
 
 ```bash
 # Direkt als Skript ausführen (Demo-Output)
-python notebooks/r_and_d_experiment_analysis_template.py
+python3 notebooks/r_and_d_experiment_analysis_template.py
 
 # In Jupyter Notebook importieren
 # → Sektionen als einzelne Zellen übernehmen
