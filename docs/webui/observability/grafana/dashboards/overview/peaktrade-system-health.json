@@ -82,13 +82,173 @@
   },
   "panels": [
     {
+      "id": 1,
+      "type": "row",
+      "title": "Stack Fingerprint",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": []
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Stack Fingerprint: Active Stacks",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "count by (stack) (up{stack=~\".+\"})",
+          "instant": true,
+          "range": false,
+          "legendFormat": "{{stack}}"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "orientation": "horizontal",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Stack Fingerprint: Target Count",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "count(up{stack=~\".+\"})",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "orientation": "horizontal",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 4,
+      "type": "table",
+      "title": "Stack Fingerprint: Targets UP",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "up{stack=~\".+\"} == 1",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": false
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
       "type": "row",
       "title": "Targets up (quick)",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 17
       },
       "collapsed": false,
       "panels": []
@@ -104,7 +264,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 1
+        "y": 18
       },
       "targets": [
         {
@@ -162,7 +322,7 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 1
+        "y": 18
       },
       "targets": [
         {
@@ -220,7 +380,7 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 1
+        "y": 18
       },
       "targets": [
         {
@@ -274,7 +434,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 23
       },
       "collapsed": false,
       "panels": []
@@ -290,7 +450,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 7
+        "y": 24
       },
       "targets": [
         {
@@ -311,7 +471,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 7
+        "y": 24
       },
       "fieldConfig": {
         "defaults": {
