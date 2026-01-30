@@ -121,7 +121,7 @@ Das Framework ist als **`src`-Layout** organisiert (Paket `peak_trade`) und folg
 | 4 | Erste Strategie | MA-Crossover, Signal-Format | `src/strategies/ma_crossover.py` |
 | 5 | BacktestEngine v1 | Erste Backtest-Implementierung | `src/backtest/engine.py` |
 | 6 | Statistiken | Sharpe, Drawdown, Win-Rate | `src/backtest/stats.py` |
-| 7 | Weitere Strategien | MACD, RSI, Bollinger, Donchian | `src/strategies/*.py` |
+| 7 | Weitere Strategien | MACD, RSI, Bollinger, Donchian | `src&#47;strategies&#47;*.py` |
 | 8 | Strategy-Registry | Zentrale Strategie-Verwaltung | `src/strategies/registry.py` |
 | 9 | Risk-Layer Basis | Position Sizing, Risk Management | `src/core/position_sizing.py`, `risk.py` |
 | 10 | Portfolio-Backtests | Multi-Asset, Multi-Strategy | `src/backtest/registry_engine.py` |
@@ -239,7 +239,7 @@ class ExecutionPipeline:
 ```
 
 **Workflow:**
-1. Strategy erzeugt Signal-Serie (`-1/0/+1`)
+1. Strategy erzeugt Signal-Serie (`-1&#47;0&#47;+1`)
 2. `SignalEvent` erkennt Signalwechsel (Entry/Exit/Flip)
 3. `signal_to_orders()` transformiert zu `OrderRequest`
 4. `OrderExecutor` (Paper/Testnet) führt aus

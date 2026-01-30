@@ -66,7 +66,7 @@ Der **Portfolio-Strategy-Layer** ist ein modularer Gewichtungs-Layer für Multi-
 
 Verteilt Kapital gleichmäßig auf alle Symbole im Universe.
 
-**Formel:** `w_i = 1/n` für alle Symbole
+**Formel:** `w_i = 1&#47;n` für alle Symbole
 
 **Use Case:** Baseline, kein Vorwissen über optimale Gewichtung
 
@@ -99,7 +99,7 @@ strategy_name = "fixed_weights"
 
 Gewichtet Symbole invers zu ihrer Volatilität (Risk-Parity-Ansatz).
 
-**Formel:** `w_i ~ 1/vol_i`
+**Formel:** `w_i ~ 1&#47;vol_i`
 
 **Use Case:** Risikoausgleich, alle Assets tragen gleiches Risiko bei
 

@@ -282,8 +282,8 @@ python3 -m pytest tests/test_strategy*.py -v
 
 ## Bekannte Limitierungen
 
-1. **Nur BTC/EUR 1h** im Test-Cache (`tests/data/kraken_smoke/`)
-2. Produktiv-Cache unter `data/cache/` muss manuell befüllt werden
+1. **Nur BTC/EUR 1h** im Test-Cache (`tests&#47;data&#47;kraken_smoke&#47;`)
+2. Produktiv-Cache unter `data&#47;cache&#47;` muss manuell befüllt werden
 3. Keine automatische Cache-Aktualisierung (Offline-only)
 
 ---

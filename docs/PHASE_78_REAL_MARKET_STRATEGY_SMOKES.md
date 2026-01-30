@@ -108,7 +108,7 @@ def _load_ohlcv_for_smoke(
 
 ## Verfügbare Cache-Dateien
 
-Aktuell im `data/cache/` Verzeichnis:
+Aktuell im `data&#47;cache&#47;` Verzeichnis:
 
 | Datei | Symbol | Timeframe |
 |-------|--------|-----------|
@@ -158,7 +158,7 @@ python3 -m pytest tests/test_strategy_smoke_cli.py -v
 - **Keine Netzwerk-Aufrufe**: Kraken-Cache-Modus liest nur lokale Parquet-Dateien
 - **Keine Live-/Testnet-Order-Flows**: Rein Research/Backtest
 - **Keine Secrets benötigt**: Offline-Only
-- **Keine Änderungen an Live-Komponenten**: `src/live/*` und `src/execution/*` unverändert
+- **Keine Änderungen an Live-Komponenten**: `src&#47;live&#47;*` und `src&#47;execution&#47;*` unverändert
 
 ## Geänderte/Neue Dateien
 
@@ -169,7 +169,7 @@ python3 -m pytest tests/test_strategy_smoke_cli.py -v
 
 ### Neu
 - `docs/PHASE_78_REAL_MARKET_STRATEGY_SMOKES.md` - Diese Dokumentation
-- `tests/data/kraken_smoke/BTC_EUR_1h.parquet` - Test-Fixture
+- `tests&#47;data&#47;kraken_smoke&#47;BTC_EUR_1h.parquet` - Test-Fixture
 
 ## Nächste Schritte
 

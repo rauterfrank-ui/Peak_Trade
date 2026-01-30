@@ -252,12 +252,12 @@ Alle Scripts mit Alert-Integration unterstützen:
 
 | Option | Beschreibung |
 |--------|--------------|
-| `--alert-log PATH` | Pfad zur Alert-Logdatei (Default: `logs/alerts.log`) |
+| `--alert-log PATH` | Pfad zur Alert-Logdatei (Default: `logs&#47;alerts.log`) |
 | `--no-alerts` | Alert-Benachrichtigungen deaktivieren |
 
 ## Logdatei
 
-Die Default-Logdatei ist `logs/alerts.log`. Sie wird automatisch erstellt und im Append-Modus geschrieben.
+Die Default-Logdatei ist `logs&#47;alerts.log`. Sie wird automatisch erstellt und im Append-Modus geschrieben.
 
 **Anzeigen:**
 ```bash

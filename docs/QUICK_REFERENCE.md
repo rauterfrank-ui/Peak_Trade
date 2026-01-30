@@ -285,10 +285,10 @@ git <command> --help
 
 ## Keyboard Shortcuts (VS Code)
 
-- `Cmd/Ctrl + Shift + T` - Run tests
-- `Cmd/Ctrl + Shift + B` - Run linters
-- `Cmd/Ctrl + P` - Quick file open
-- `Cmd/Ctrl + Shift + F` - Search in files
+- `Cmd&#47;Ctrl + Shift + T` - Run tests
+- `Cmd&#47;Ctrl + Shift + B` - Run linters
+- `Cmd&#47;Ctrl + P` - Quick file open
+- `Cmd&#47;Ctrl + Shift + F` - Search in files
 - `F5` - Start debugging
 - `Shift + F5` - Stop debugging
 

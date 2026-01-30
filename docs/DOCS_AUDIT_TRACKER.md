@@ -31,12 +31,12 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 ### 2) `docs/PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md` — **done (vorläufig)**
 - **Fixes (applied)**:
   - Copy/Paste-Härtung: Commands auf `python3` umgestellt.
-  - Token-Policy: illustrative Pfade in Inline-Code (`results/reports/...`) auf `&#47;` Encoding umgestellt.
+  - Token-Policy: illustrative Pfade in Inline-Code (`results&#47;reports&#47;...`) auf `&#47;` Encoding umgestellt.
 
 ### 3) `docs/PHASE_42_TOPN_PROMOTION.md` — **done (vorläufig)**
 - **Fixes (applied)**:
   - Copy/Paste-Härtung: Commands auf `python3` umgestellt.
-  - Tests: `.venv/bin/pytest ...` auf `python3 -m pytest ...` umgestellt.
+  - Tests: `.venv&#47;bin&#47;pytest ...` auf `python3 -m pytest ...` umgestellt.
   - Workflow-Skizze: `run_strategy_sweep.py` → `scripts/run_sweep.py` (korrekter Runner).
 
 ### 4) `docs/PHASE_41B_STRATEGY_ROBUSTNESS_AND_TIERING.md` — **done (vorläufig)**
@@ -64,9 +64,9 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 - `docs/PHASE_83_LIVE_GATING_AND_RISK_POLICIES.md`
   - **Fixes (applied)**: `python -c` → `python3 -c`; Tests auf `python3 -m pytest ...`.
 - `docs/PHASE_82_LIVE_TRACK_DASHBOARD.md`
-  - **Fixes (applied)**: Tests auf `python3 -m pytest ...`; Token-Policy: Inline-Code `" / "` → `" &#47; "`.
+  - **Fixes (applied)**: Tests auf `python3 -m pytest ...`; Token-Policy: Inline-Code `" &#47; "` → `" &#47; "`.
 - `docs/LIVE_RISK_LIMITS.md`
-  - **Fixes (applied)**: Referenzen auf `config.toml` → `config/config.toml`; CLI-Beispiele auf `python3 ...`; Token-Policy: `true/false` → `true&#47;false`.
+  - **Fixes (applied)**: Referenzen auf `config.toml` → `config/config.toml`; CLI-Beispiele auf `python3 ...`; Token-Policy: `true&#47;false` → `true&#47;false`.
 - `docs/LIVE_READINESS_CHECKLISTS.md`
   - **Fixes (applied)**: Token-Policy: `python3 -m pytest tests&#47; -v` (Slash-Encoding für illustrative Pfade); Config-Referenzen auf `config/config.toml`.
 
@@ -76,7 +76,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 - `docs/runbooks/KILL_SWITCH_DRILL_PROCEDURE.md`
   - **Fixes (applied)**: `python -m ...` auf `python3 -m ...` umgestellt (Status/Trigger/Recover/History).
 - `docs/runbooks/ROLLBACK_PROCEDURE.md`
-  - **Fixes (applied)**: `python` → `python3` für Kill-Switch CLI (`-m ...`) und Repo-Scripts (`scripts/live/*`, `scripts/ops/*`).
+  - **Fixes (applied)**: `python` → `python3` für Kill-Switch CLI (`-m ...`) und Repo-Scripts (`scripts&#47;live&#47;*`, `scripts&#47;ops&#47;*`).
 
 ### 10) Batch 6: Observability / WebUI / Dashboard — **done (vorläufig)**
 - `docs/PHASE_84_OPERATOR_DASHBOARD.md`
@@ -96,7 +96,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 - `docs/PHASE_50_LIVE_ALERT_WEBHOOKS_AND_SLACK.md`
   - **Fixes (applied)**: Troubleshooting/Tests auf `python3`/`python3 -m pytest`.
 - `docs/execution/EXECUTION_SIMPLE_V1.md`
-  - **Fixes (applied)**: `load_config("config/config.toml")`; Tests auf `python3 -m pytest`.
+  - **Fixes (applied)**: `load_config("config&#47;config.toml")`; Tests auf `python3 -m pytest`.
 
 ### 12) Batch 8: Exchange/Testnet/Execution Telemetry — **done (vorläufig)**
 - `docs/PHASE_35_TESTNET_EXCHANGE_INTEGRATION.md`
@@ -189,7 +189,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
   - `preview_live_portfolio.py` wird korrekt als Snapshot/Risk-Check per `--config`/`--no-risk` dokumentiert (kein `--portfolio-preset`/`--validate-only`).
   - Strategy-Profile: Umgestellt auf `research_cli.py strategy-profile` (statt `profile_research_and_portfolio.py`, das ein Benchmark-Tool ist).
   - Strategy Registry Snippet: auf `StrategySpec`/`_STRATEGY_REGISTRY` angepasst; Listing nutzt `get_available_strategy_keys()`.
-  - Erwartete Output-Pfade im Sweep/Report korrigiert (`reports/experiments/`, `reports/sweeps/{sweep}_report_<timestamp>.*`).
+  - Erwartete Output-Pfade im Sweep/Report korrigiert (`reports/experiments/`, `reports&#47;sweeps&#47;{sweep}_report_<timestamp>.*`).
 
 ### `docs/STRATEGY_RESEARCH_PLAYBOOK.md` — **done (quick audit)**
 - **Befund**:
@@ -210,11 +210,11 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 
 ### `scripts/run_research_golden_path.py` — **fix (high impact)**
 - **Fixes (applied)**:
-  - Pipeline-Flags aktualisiert (`--walkforward-train-window/--walkforward-test-window`).
+  - Pipeline-Flags aktualisiert (`--walkforward-train-window&#47;--walkforward-test-window`).
   - Stress-Szenarien auf implementierte Typen umgestellt (`single_crash_bar`, `vol_spike`, `drawdown_extension`, `gap_down_open`).
   - Strategy-Profile Schritt nutzt `research_cli.py strategy-profile` (statt Benchmark-Tool `profile_research_and_portfolio.py`).
   - Portfolio-Golden-Path nutzt `--use-dummy-data` für preset-basierte (Phase‑53/Phase‑80) `strategies=[...]` Presets.
-  - Output-Pfad-Hinweis im Log korrigiert (`reports/portfolio_robustness/{preset}/portfolio_robustness_report.html`).
+  - Output-Pfad-Hinweis im Log korrigiert (`reports&#47;portfolio_robustness&#47;{preset}&#47;portfolio_robustness_report.html`).
 
 ### `docs/PHASE_86_RESEARCH_V1_FREEZE.md` — **fix (CLI drift)**
 - **Fixes (applied)**:
@@ -224,11 +224,11 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 
 ### `docs/CASE_STUDY_REGIME_BTCUSDT_V1.md` — **fix (CLI drift)**
 - **Fixes (applied)**:
-  - `run_stress_tests.py` Beispiel auf echte Flags/Scenarios umgestellt (`--scenarios single_crash_bar vol_spike`, kein `--scenario/--output`).
+  - `run_stress_tests.py` Beispiel auf echte Flags/Scenarios umgestellt (`--scenarios single_crash_bar vol_spike`, kein `--scenario&#47;--output`).
 
 ### `docs/PHASE_82_RESEARCH_QA_AND_SCENARIOS.md` — **fix (Konzept-/CLI-Alignment)**
 - **Fixes (applied)**:
-  - Klarstellung: Scenario-Library (`config/scenarios/*.toml`) ist für QA/E2E/Regressions-Checks; Stress-Tests (Phase 46) nutzen eigene Scenario-Typen (`single_crash_bar`, `vol_spike`, `drawdown_extension`, `gap_down_open`).
+  - Klarstellung: Scenario-Library (`config&#47;scenarios&#47;*.toml`) ist für QA/E2E/Regressions-Checks; Stress-Tests (Phase 46) nutzen eigene Scenario-Typen (`single_crash_bar`, `vol_spike`, `drawdown_extension`, `gap_down_open`).
   - CLI-Beispiel entsprechend korrigiert (kein `flash_crash` als `research_cli.py stress --scenarios`).
 
 ### Risk-Layer Dokus — **fix (Begriffsabgrenzung)**
@@ -236,7 +236,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
   - `docs/risk/RISK_LAYER_V1_OPERATOR_GUIDE.md`: Abgrenzungs-Block zwischen Risk-Layer Stress (`src/risk/stress.py`), Research Stress-Tests (Phase 46/47) und Scenario-Library (Phase 82) ergänzt.
   - `docs/risk/RISK_LAYER_V1_IMPLEMENTATION_REPORT.md`: Hinweis zur Namensüberschneidung/Trennung ergänzt.
   - `docs/risk/roadmaps/PORTFOLIO_VAR_ROADMAP.md`: Stress-Testing Bullet eindeutig auf `src/risk/stress.py` referenziert.
-  - `docs/risk/roadmaps/RISK_LAYER_ROADMAP.md`: Verweis auf nicht existente `src/risk/scenarios/*.yaml` als Konzeptbeispiel markiert + Trennhinweis ergänzt.
+  - `docs/risk/roadmaps/RISK_LAYER_ROADMAP.md`: Verweis auf nicht existente `src&#47;risk&#47;scenarios&#47;*.yaml` als Konzeptbeispiel markiert + Trennhinweis ergänzt.
 
 ### `docs/PEAK_TRADE_COMPLETE_OVERVIEW_2025-12-07.md` — **fix (CLI drift, high impact)**
 - **Fixes (applied)**:
@@ -254,7 +254,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 
 ### `docs/PHASE_75_STRATEGY_LIBRARY_V1_1.md` — **fix (Sweep CLI drift)**
 - **Fixes (applied)**:
-  - Sweep-Ausführung auf `scripts/run_sweep.py --grid config/sweeps/*.toml` umgestellt (statt `run_strategy_sweep.py --sweep-config ...`).
+  - Sweep-Ausführung auf `scripts&#47;run_sweep.py --grid config&#47;sweeps&#47;*.toml` umgestellt (statt `run_strategy_sweep.py --sweep-config ...`).
 
 ### `docs/CASE_STUDY_REGIME_BTCUSDT_V1.md` — **fix (CLI drift)**
 - **Fixes (applied)**:
@@ -262,24 +262,24 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 
 ### `docs/LIVE_DEPLOYMENT_PLAYBOOK.md` — **fix (run_sweep CLI drift)**
 - **Fixes (applied)**:
-  - `run_sweep.py` Beispiel: falsches `--config config/sweeps/...` ersetzt durch korrektes `--grid config/sweeps/...` + explizite Basis-Config (`--config config/config.toml`).
+  - `run_sweep.py` Beispiel: falsches `--config config&#47;sweeps&#47;...` ersetzt durch korrektes `--grid config&#47;sweeps&#47;...` + explizite Basis-Config (`--config config&#47;config.toml`).
 
 ### `scripts/run_sweep.py` + `scripts/run_market_scan.py` + `docs/SWEEPS_MARKET_SCANS.md` — **fix (Default-Config Konsistenz)**
 - **Fixes (applied)**:
   - Default-Config-Pfad für `run_sweep.py` und `run_market_scan.py` auf `config/config.toml` vereinheitlicht.
-  - `docs/SWEEPS_MARKET_SCANS.md` Beispiele auf `--config config/config.toml` ergänzt (copy/paste-fähig).
+  - `docs/SWEEPS_MARKET_SCANS.md` Beispiele auf `--config config&#47;config.toml` ergänzt (copy/paste-fähig).
 
 ### `docs/AUTO_PORTFOLIOS.md` — **fix (Sweep examples)**
 - **Fixes (applied)**:
-  - `run_sweep.py` Beispiele um `--config config/config.toml` ergänzt (konsistent, copy/paste-fähig).
+  - `run_sweep.py` Beispiele um `--config config&#47;config.toml` ergänzt (konsistent, copy/paste-fähig).
 
 ### `docs/CLI_CHEATSHEET.md` + `docs/PEAK_TRADE_PROJECT_SUMMARY_CURRENT_2026-01-27.md` — **fix (run_sweep examples)**
 - **Fixes (applied)**:
-  - `run_sweep.py` Beispiele um `--config config/config.toml` ergänzt (copy/paste-fähig).
+  - `run_sweep.py` Beispiele um `--config config&#47;config.toml` ergänzt (copy/paste-fähig).
 
 ### `docs/CLI_CHEATSHEET.md` + `docs/SWEEPS_MARKET_SCANS.md` — **fix (run_market_scan examples)**
 - **Fixes (applied)**:
-  - `run_market_scan.py` Beispiele um `--config config/config.toml` ergänzt (copy/paste-fähig).
+  - `run_market_scan.py` Beispiele um `--config config&#47;config.toml` ergänzt (copy/paste-fähig).
 
 ### Docs Reference Targets Gate — **grün**
 - **Fixes (applied)**:
@@ -288,12 +288,12 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 
 ### Docs Links: Outside-Repo-Tree Targets — **bereinigt**
 - **Fixes (applied)**:
-  - `../scripts/*`, `../src/*`, `../config/*` Links in Docs auf **Text/Code-Referenzen** umgestellt (z.B. `src/...`, `config/...`, `scripts/...`), damit Doku-Links nicht an Tree-Grenzen hängen.
+  - `../scripts/*`, `../src/*`, `../config/*` Links in Docs auf **Text/Code-Referenzen** umgestellt (z.B. `src&#47;...`, `config&#47;...`, `scripts&#47;...`), damit Doku-Links nicht an Tree-Grenzen hängen.
   - Verifikation: `scripts/ops/verify_docs_reference_targets.sh` läuft weiterhin grün.
 
 ### CLI Copy/Paste: Config-Pfad vereinheitlicht — **bereinigt**
 - **Fixes (applied)**:
-  - Alle verbleibenden Doku-Commands mit `--config config.toml` auf `--config config/config.toml` umgestellt (Setup/Install/Runbooks/Worklogs), um Copy/Paste mit dem Repo-SSoT zu garantieren.
+  - Alle verbleibenden Doku-Commands mit `--config config.toml` auf `--config config&#47;config.toml` umgestellt (Setup/Install/Runbooks/Worklogs), um Copy/Paste mit dem Repo-SSoT zu garantieren.
   - Verifikation: `scripts/ops/verify_docs_reference_targets.sh` läuft weiterhin grün.
 
 ### Reference Scenario + Decision Log — **aktualisiert**
@@ -316,35 +316,35 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
   - `docs/ops/README.md`: `python --version` als kommentierter Fallback belassen, primär `python3 --version`.
   - `docs/ops/KILL_SWITCH_TROUBLESHOOTING.md`: `python --version` aus Diagnose entfernt (pyenv-Fall), `python3 --version` bleibt.
   - `docs/ops/runbooks/RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md`: `python3 -m venv` statt `python -m venv`.
-  - `docs/ops/_archive/installation_roadmap/..._ORIGINAL.md`: python checks/venv auf `python3` umgestellt.
+  - `docs&#47;ops&#47;_archive&#47;installation_roadmap&#47;..._ORIGINAL.md`: python checks/venv auf `python3` umgestellt.
   - Verifikation: `scripts/ops/verify_docs_reference_targets.sh` läuft weiterhin grün.
 
 ### Runbooks/ops: „non-existent script refs“ — **reduziert (High-Impact)**
 - **Fixes (applied)**:
-  - `docs/runbooks/LIVE_MODE_TRANSITION_RUNBOOK.md`: fehlende `scripts/live/*.py` Commands auf existierende CLIs/Skripte umgestellt (insb. `live_ops.py`, `run_live_dry_run_drills.py`, `test_bounded_live_limits.py`) und fehlende Runner explizit als „nicht im Repo“ markiert.
+  - `docs/runbooks/LIVE_MODE_TRANSITION_RUNBOOK.md`: fehlende `scripts&#47;live&#47;*.py` Commands auf existierende CLIs/Skripte umgestellt (insb. `live_ops.py`, `run_live_dry_run_drills.py`, `test_bounded_live_limits.py`) und fehlende Runner explizit als „nicht im Repo“ markiert.
   - `docs/runbooks/KILL_SWITCH_DRILL_PROCEDURE.md`: fehlendes `start_shadow_session.py` entfernt/ersetzt durch `run_live_dry_run_drills.py` bzw. Kill-Switch-Status-Checks; Session-Integration als „TBD“ markiert.
   - `docs/runbooks/ROLLBACK_PROCEDURE.md`: `show_positions.py`/`start_shadow_session.py`/`verify_shadow_mode.py` durch `live_ops.py` Snapshots + Dry-Run Drills ersetzt (keine Phantom-CLIs mehr).
   - `docs/runbooks/OFFLINE_REALTIME_PIPELINE_RUNBOOK_V1.md`: optionales Meta-Report-Script als nicht vorhanden gekennzeichnet; Workaround (Listing von `summary.json`) angegeben; Gate-kompatibel formuliert.
-  - `docs/ops/Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md`: „Lake“-Beispiele von nicht existenten `scripts/query_lake.py`/`build_lake_from_results.py` auf `src/data/lake/client.py` (DuckDB LakeClient) umgestellt.
-  - `docs/ops/OPS_SCRIPT_TEMPLATE_GUIDE.md`: Beispiel-Command von nicht existenter `scripts/generate_report.py` auf existentes Script (`generate_live_status_report.py --help`) umgestellt.
-  - `docs/ops/WAVE3_MERGE_READINESS_MATRIX.md`: Hinweis auf nicht existentes `scripts/ci/check_docs_reference_targets.py` ersetzt durch `scripts/ops/verify_docs_reference_targets.sh`.
-  - `docs/ops/WP5A_PHASE5_NO_LIVE_DRILL_PACK.md`: Phantom-Commands (`health_check.py`, `test_data_feed.py`) durch existierende, read-only Checks ersetzt (`live_ops.py health`, `inspect_exchange.py status/ohlcv`) inkl. `--config config/config.toml`.
+  - `docs/ops/Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md`: „Lake“-Beispiele von nicht existenten `scripts&#47;query_lake.py`/`build_lake_from_results.py` auf `src/data/lake/client.py` (DuckDB LakeClient) umgestellt.
+  - `docs/ops/OPS_SCRIPT_TEMPLATE_GUIDE.md`: Beispiel-Command von nicht existenter `scripts&#47;generate_report.py` auf existentes Script (`generate_live_status_report.py --help`) umgestellt.
+  - `docs/ops/WAVE3_MERGE_READINESS_MATRIX.md`: Hinweis auf nicht existentes `scripts&#47;ci&#47;check_docs_reference_targets.py` ersetzt durch `scripts/ops/verify_docs_reference_targets.sh`.
+  - `docs/ops/WP5A_PHASE5_NO_LIVE_DRILL_PACK.md`: Phantom-Commands (`health_check.py`, `test_data_feed.py`) durch existierende, read-only Checks ersetzt (`live_ops.py health`, `inspect_exchange.py status&#47;ohlcv`) inkl. `--config config&#47;config.toml`.
   - `docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C_MASTER.md`: kommentierte Verweise auf nicht existierende `check_docs_*` Scripts ersetzt durch echte Gate-Commands (`validate_docs_token_policy.py`, `verify_docs_reference_targets.sh`).
   - Verifikation: `scripts/ops/verify_docs_reference_targets.sh` läuft weiterhin grün.
 
 ### Docs Gates Runbooks: illustrative Inline-Tokens — **neutralisiert**
 - **Fixes (applied)**:
-  - `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md`: illustrative `scripts/example.py` „Before“-Beispiele mit `<!-- pt:ref-target-ignore -->` markiert (damit sie nicht als realer Target-Treffer zählen, aber als „Before“ lesbar bleiben).
-  - `docs/ops/runbooks/RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md`: dito (`scripts/example.py` + „Change: scripts/old_name.py …“) mit `<!-- pt:ref-target-ignore -->`.
-  - `docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md`: illustrative `scripts/old_name.py` / `scripts/helper.py` innerhalb von Log-/Command-Beispielen auf `scripts&#47;...` neutralisiert (und „Before/After“ für Encoding klar gemacht).
-  - `docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md`: illustrative `scripts/run_walkforward.py` im Log-Beispiel auf `scripts&#47;...` neutralisiert; „Before“-Inline-Commands mit `<!-- pt:ref-target-ignore -->` markiert.
+  - `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md`: illustrative `scripts&#47;example.py` „Before“-Beispiele mit `<!-- pt:ref-target-ignore -->` markiert (damit sie nicht als realer Target-Treffer zählen, aber als „Before“ lesbar bleiben).
+  - `docs/ops/runbooks/RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md`: dito (`scripts&#47;example.py` + „Change: scripts/old_name.py …“) mit `<!-- pt:ref-target-ignore -->`.
+  - `docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md`: illustrative `scripts&#47;old_name.py` / `scripts&#47;helper.py` innerhalb von Log-/Command-Beispielen auf `scripts&#47;...` neutralisiert (und „Before/After“ für Encoding klar gemacht).
+  - `docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md`: illustrative `scripts&#47;run_walkforward.py` im Log-Beispiel auf `scripts&#47;...` neutralisiert; „Before“-Inline-Commands mit `<!-- pt:ref-target-ignore -->` markiert.
   - `docs/ops/PR_691_MERGE_LOG.md`: „Initial Failure“-Block auf `scripts&#47;...` neutralisiert (weil hier die CI-Log-Ausgabe als Beispiel zitiert wird).
   - `docs/runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md`: fehlendes `smoke_test_paper.py` als Beispiel markiert und gate-sicher neutralisiert (`scripts&#47;...`).
   - `docs/runbooks/OFFLINE_TRIGGER_TRAINING_DRILL_V1.md`: fehlendes `run_offline_paper_drill_with_reports.py` durch vorhandenes `run_offline_trigger_training_drill_example.py` ersetzt.
   - `docs/ops/WAVE3_QUICKSTART.md`: fehlendes `run_live.py` als Beispiel markiert und gate-sicher neutralisiert (`scripts&#47;...`).
-  - `docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md`: exemplarisches `python scripts/run.py` auf reales Beispiel `python3 scripts/run_backtest.py` umgestellt.
+  - `docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md`: exemplarisches `python scripts&#47;run.py` auf reales Beispiel `python3 scripts/run_backtest.py` umgestellt.
   - `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md`: Policy-Critic-Call auf reales `python3 scripts/run_policy_critic.py --pr-mode` umgestellt.
-  - `docs/ops/workflows/WORKFLOW_NOTES_FRONTDOOR.md`: Log-Beispiel `scripts/my_script.py` auf `scripts&#47;...` neutralisiert.
+  - `docs/ops/workflows/WORKFLOW_NOTES_FRONTDOOR.md`: Log-Beispiel `scripts&#47;my_script.py` auf `scripts&#47;...` neutralisiert.
   - `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md`: „Violation“-Fenced-Blocks auf `scripts&#47;example.py` umgestellt (damit auch in Raw-Scans keine Phantom-Targets entstehen).
   - Archive/Logs: `DOCS_GATES_OPERATOR_PACK_V1_1_*` und `PR_703_MERGE_LOG.md` „Before“-Tokens mit `<!-- pt:ref-target-ignore -->` markiert.
   - Verifikation: `scripts/ops/verify_docs_reference_targets.sh` läuft weiterhin grün.

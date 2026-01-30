@@ -61,8 +61,8 @@ Status: ✅ **vollständig implementiert und getestet**
 - **Erweiterung von `compute_regime_stats()`**
   - Berechnung des Gesamt-Returns über alle Regimes
   - Pro Regime:
-    - `return_contribution_pct = 100 * Regime-Return / Gesamt-Return`
-    - `time_share_pct = 100 * Regime-Bars / Gesamt-Bars`
+    - `return_contribution_pct = 100 * Regime-Return &#47; Gesamt-Return`
+    - `time_share_pct = 100 * Regime-Bars &#47; Gesamt-Bars`
   - Defensive Behandlung von Division-by-zero und `None`-Werten
 
 - **Neuer Plot in `src/reporting/plots.py`**
@@ -133,7 +133,7 @@ Ein ausführlicher Meta-Prompt definiert:
   - `src/reporting/experiment_report.py`
   - `scripts/generate_backtest_report.py`
   - `scripts/generate_experiment_report.py`
-  - `tests/test_reporting_regime_*.py`
+  - `tests&#47;test_reporting_regime_*.py`
   - `docs/PHASE_REGIME_AWARE_REPORTING.md`
 - Typische Aufgaben:
   - Bugfix / Robustness

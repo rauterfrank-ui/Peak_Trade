@@ -429,7 +429,7 @@ def fetch_kraken_data(
 
 **Lösung:**
 1. Prüfe ob `config.toml` im Projekt-Root liegt
-2. Setze Environment Variable: `export PEAK_TRADE_CONFIG=/path/to/config.toml`
+2. Setze Environment Variable: `export PEAK_TRADE_CONFIG=&#47;path&#47;to&#47;config.toml`
 
 ### Position Sizing gibt 0 zurück
 

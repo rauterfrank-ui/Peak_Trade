@@ -104,7 +104,7 @@ state.trades_executed += 15
 store.save_for_today(state)
 ```
 
-**Speicherformat**: JSON-Dateien unter `{base_dir}/usage/usage_YYYY-MM-DD.json`
+**Speicherformat**: JSON-Dateien unter `{base_dir}&#47;usage&#47;usage_YYYY-MM-DD.json`
 
 #### 3. TestnetSessionProfile (`src/live/testnet_profiles.py`)
 

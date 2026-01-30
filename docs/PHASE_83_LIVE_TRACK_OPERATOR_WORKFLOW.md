@@ -267,7 +267,7 @@ curl http://127.0.0.1:8000/api/health
 
 Jede Session wird automatisch in der Registry dokumentiert. Zusätzlich empfohlen:
 
-- **Täglicher Report:** `scripts/report_live_sessions.py --summary-only`
+- **Täglicher Report:** `scripts&#47;report_live_sessions.py --summary-only`
 - **Wöchentlicher Review:** Alle Sessions der Woche exportieren
 - **Incident-Log:** Alle `failed`/`aborted` Sessions dokumentieren
 

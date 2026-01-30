@@ -126,8 +126,8 @@ python3 -m pytest tests/test_walkforward_backtest.py -v
 Der vollständige Workflow besteht aus vier Schritten:
 
 1. **Sweep ausführen** (Phase 41) → Ergebnisse unter `reports/experiments/`
-2. **Top-N auswählen** (Phase 42) → Top-Kandidaten unter `reports/sweeps/`
-3. **Walk-Forward ausführen** (Phase 44) → Walk-Forward-Ergebnisse unter `reports/walkforward/`
+2. **Top-N auswählen** (Phase 42) → Top-Kandidaten unter `reports&#47;sweeps&#47;`
+3. **Walk-Forward ausführen** (Phase 44) → Walk-Forward-Ergebnisse unter `reports&#47;walkforward&#47;`
 4. **Reports analysieren** (Phase 44) → Markdown-Reports mit aggregierten Metriken
 
 ### Schritt-für-Schritt Anleitung
@@ -151,7 +151,7 @@ python3 scripts/run_strategy_sweep.py \
   --max-runs 20
 ```
 
-**Output:** `reports/experiments/rsi_reversion_basic_*.csv`
+**Output:** `reports&#47;experiments&#47;rsi_reversion_basic_*.csv`
 
 #### Schritt 3: Top-N Kandidaten exportieren (optional, aber empfohlen)
 
@@ -164,7 +164,7 @@ python3 scripts/promote_sweep_topn.py \
   --top-n 5
 ```
 
-**Output:** `reports/sweeps/rsi_reversion_basic_top_candidates.toml`
+**Output:** `reports&#47;sweeps&#47;rsi_reversion_basic_top_candidates.toml`
 
 #### Schritt 4: Walk-Forward-Backtest ausführen
 
@@ -192,8 +192,8 @@ python3 scripts/run_walkforward_backtest.py \
 ```
 
 **Output:**
-- `reports/walkforward/{sweep_name}/{config_id}_walkforward_YYYYMMDD.md` (ein Report pro Konfiguration)
-- `reports/walkforward/{sweep_name}/comparison_YYYYMMDD.md` (Vergleichs-Report)
+- `reports&#47;walkforward&#47;{sweep_name}&#47;{config_id}_walkforward_YYYYMMDD.md` (ein Report pro Konfiguration)
+- `reports&#47;walkforward&#47;{sweep_name}&#47;comparison_YYYYMMDD.md` (Vergleichs-Report)
 
 ---
 
@@ -250,10 +250,10 @@ python3 scripts/research_cli.py pipeline \
 | `--dummy-bars` | Anzahl Bars für Dummy-Daten | `1000` |
 | `--start-date` | Startdatum (YYYY-MM-DD) | Aus Daten abgeleitet |
 | `--end-date` | Enddatum (YYYY-MM-DD) | Aus Daten abgeleitet |
-| `--symbol` | Trading-Symbol | `BTC/EUR` |
+| `--symbol` | Trading-Symbol | `BTC&#47;EUR` |
 | `--metric-primary` | Primäre Metrik für Top-N | `metric_sharpe_ratio` |
 | `--metric-fallback` | Fallback-Metrik | `metric_total_return` |
-| `--output-dir`, `-o` | Ausgabe-Verzeichnis | `reports/walkforward` |
+| `--output-dir`, `-o` | Ausgabe-Verzeichnis | `reports&#47;walkforward` |
 | `--verbose`, `-v` | Verbose Output | `False` |
 
 #### Beispiele

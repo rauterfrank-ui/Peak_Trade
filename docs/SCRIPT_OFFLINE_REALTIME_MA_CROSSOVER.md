@@ -11,7 +11,7 @@ Das Script `scripts/run_offline_realtime_ma_crossover.py` ermöglicht die Ausfü
 - ✅ **OfflineRealtimeFeed** für realistische Daten-Wiedergabe
 - ✅ **ExecutionPipeline** mit PaperOrderExecutor
 - ✅ **HTML-Report-Generierung** mit Performance-Metriken
-- ✅ **Symbol-Normalisierung** (z.B. `BTC/EUR` → `BTCEUR`)
+- ✅ **Symbol-Normalisierung** (z.B. `BTC&#47;EUR` → `BTCEUR`)
 - ✅ **Validierung** von Fast/Slow-Window-Parametern
 
 ## Workflow
@@ -70,8 +70,8 @@ python3 scripts/run_offline_realtime_ma_crossover.py \
 
 ### Symbol
 
-- `--symbol SYMBOL`: Trading-Symbol (z.B. `BTC/EUR`, `ETH/USD`)
-- Default: `BTC/EUR`
+- `--symbol SYMBOL`: Trading-Symbol (z.B. `BTC&#47;EUR`, `ETH&#47;USD`)
+- Default: `BTC&#47;EUR`
 - Wird intern normalisiert zu `BTCEUR`, `ETHUSD`, etc.
 
 ### Synth-Session-Parameter
@@ -112,7 +112,7 @@ python3 scripts/run_offline_realtime_ma_crossover.py \
 ### Output
 
 - `--output-dir OUTPUT_DIR`: Output-Verzeichnis für Reports
-  - Default: `reports/offline_realtime_pipeline/<run_id>`
+  - Default: `reports&#47;offline_realtime_pipeline&#47;<run_id>`
   - Report wird als `summary.html` gespeichert
 
 ### Logging
@@ -222,9 +222,9 @@ def normalize_symbol(symbol: str) -> str:
 ```
 
 Beispiele:
-- `BTC/EUR` → `BTCEUR`
-- `ETH/USD` → `ETHUSD`
-- `btc/eur` → `BTCEUR`
+- `BTC&#47;EUR` → `BTCEUR`
+- `ETH&#47;USD` → `ETHUSD`
+- `btc&#47;eur` → `BTCEUR`
 
 ## Validierung
 

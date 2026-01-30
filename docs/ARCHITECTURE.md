@@ -234,7 +234,7 @@ Siehe: [BACKTEST_ENGINE.md](BACKTEST_ENGINE.md)
 - Ex-Post-Evaluation von Signalen
 
 **Workflow:**
-1. `generate_forward_signals.py` → erzeugt `reports/forward/*_signals.csv`
+1. `generate_forward_signals.py` → erzeugt `reports&#47;forward&#47;*_signals.csv`
 2. Signale beobachten (manuell oder automatisch)
 3. `evaluate_forward_signals.py` → berechnet Returns
 

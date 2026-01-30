@@ -85,7 +85,7 @@ python3 scripts/run_scheduler.py \
 
 - **Hauptdokumentation**: `docs/AUTONOMOUS_AI_WORKFLOW.md`
 - **API-Dokumentation**: Siehe Module-Docstrings in `src/autonomous/`
-- **Tests**: `tests/test_autonomous_*.py`
+- **Tests**: `tests&#47;test_autonomous_*.py`
 
 ---
 
@@ -159,7 +159,7 @@ tests/
 
 ✅ **Empfohlen:**
 - Mit `--dry-run` starten
-- Alerts überwachen (`logs/autonomous_alerts.log`)
+- Alerts überwachen (`logs&#47;autonomous_alerts.log`)
 - Confidence-Thresholds konservativ wählen
 - Scheduler-Jobs schrittweise aktivieren
 
@@ -186,7 +186,7 @@ python3 scripts/run_scheduler.py \
 
 - **CPU**: Minimal (< 1% im Idle)
 - **Memory**: ~50-100 MB pro Workflow-Engine-Instanz
-- **Disk**: Logs in `logs/autonomous_alerts.log`
+- **Disk**: Logs in `logs&#47;autonomous_alerts.log`
 - **Network**: Nur bei echten Workflow-Ausführungen
 
 ---

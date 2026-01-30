@@ -11,7 +11,7 @@ Diese Dokumentation beschreibt die Standard-Workflows für Live- und Paper-Tradi
 | `--enforce-live-risk` | Bei Verletzung mit Exit-Code 1 abbrechen | False |
 | `--skip-live-risk` | Risk-Check komplett überspringen | False |
 | `--starting-cash` | Startkapital für Daily-Loss-%-Limits | aus Config |
-| `--alert-log` | Pfad zur Alert-Logdatei | `logs/alerts.log` |
+| `--alert-log` | Pfad zur Alert-Logdatei | `logs&#47;alerts.log` |
 | `--no-alerts` | Alert-Benachrichtigungen deaktivieren | False |
 
 **Wichtig:** `--enforce-live-risk` und `--skip-live-risk` können nicht gleichzeitig verwendet werden.

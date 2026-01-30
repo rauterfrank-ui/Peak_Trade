@@ -195,7 +195,7 @@ Phase: 82A Documentation Hardening
 
 ### Short-term (Post-Merge)
 - [ ] **Test-Suite erstellen (Phase 82B):**
-  - `tests/ops/test_ops_inspector.py` mit pytest
+  - `tests&#47;ops&#47;test_ops_inspector.py` mit pytest
   - 15 Smoke-Tests für alle Checks (git_root, uv_lock, pyproject, etc.)
   - Integration in `python3 -m pytest` Workflow
 

@@ -77,8 +77,9 @@ cd ~/Peak_Trade
 source .venv/bin/activate
 
 # Schritt 2: API-Credentials setzen (falls nicht in .bashrc/.zshrc)
-export KRAKEN_TESTNET_API_KEY="your-testnet-api-key"
-export KRAKEN_TESTNET_API_SECRET="your-testnet-api-secret"
+# Hinweis: Platzhalter bewusst so gewählt, dass sie nicht wie echte Keys wirken.
+export KRAKEN_TESTNET_API_KEY="<KRAKEN_TESTNET_API_KEY>"
+export KRAKEN_TESTNET_API_SECRET="<KRAKEN_TESTNET_API_SECRET>"
 
 # Schritt 3: Baseline-Tests prüfen
 python3 -m pytest -q --tb=no

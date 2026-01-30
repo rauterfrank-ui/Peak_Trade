@@ -488,12 +488,12 @@ python3 scripts/research_cli.py pipeline \
 
 | Output-Typ | Pfad | Beschreibung |
 |------------|------|--------------|
-| Sweep-Results | `reports/experiments/{tag}_{timestamp}.csv` | Rohdaten aller Runs |
-| Summary | `reports/experiments/{tag}_{timestamp}_summary.json` | Aggregierte Metriken |
-| Plots | `reports/experiments/{tag}_{timestamp}_plots/` | Visualisierungen |
-| Walk-Forward | `reports/walkforward/{tag}/` | OOS-Ergebnisse |
-| Monte-Carlo | `reports/montecarlo/{tag}/` | Verteilungen |
-| Stress-Tests | `reports/stress/{tag}/` | Szenario-Ergebnisse |
+| Sweep-Results | `reports&#47;experiments&#47;{tag}_{timestamp}.csv` | Rohdaten aller Runs |
+| Summary | `reports&#47;experiments&#47;{tag}_{timestamp}_summary.json` | Aggregierte Metriken |
+| Plots | `reports&#47;experiments&#47;{tag}_{timestamp}_plots&#47;` | Visualisierungen |
+| Walk-Forward | `reports&#47;walkforward&#47;{tag}&#47;` | OOS-Ergebnisse |
+| Monte-Carlo | `reports&#47;montecarlo&#47;{tag}&#47;` | Verteilungen |
+| Stress-Tests | `reports&#47;stress&#47;{tag}&#47;` | Szenario-Ergebnisse |
 
 ### 5.2 Ergebnis-Dokumentation
 
@@ -555,7 +555,7 @@ reports/r_and_d_experiments/
    - Entry-/Exit-Logik mit konfigurierbaren Parametern versehen
 
 2. **Echte Marktdaten verwenden:**
-   - Läufe mit `--symbol BTC/USDT` statt `--use-dummy-data`
+   - Läufe mit `--symbol BTC&#47;USDT` statt `--use-dummy-data`
    - Längere Zeiträume für aussagekräftige Statistiken
 
 3. **Robustheits-Checks:**

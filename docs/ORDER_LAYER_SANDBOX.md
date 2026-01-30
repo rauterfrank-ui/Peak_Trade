@@ -184,8 +184,8 @@ else:
 
 Slippage wird in Basispunkten (bps) angegeben:
 
-- **Buy**: `fill_price = market_price * (1 + slippage_bps / 10000)`
-- **Sell**: `fill_price = market_price * (1 - slippage_bps / 10000)`
+- **Buy**: `fill_price = market_price * (1 + slippage_bps &#47; 10000)`
+- **Sell**: `fill_price = market_price * (1 - slippage_bps &#47; 10000)`
 
 ### 5.3 Fees
 

@@ -218,7 +218,7 @@ python3 -m scripts.demo_execution_backtest --verbose
 
 | Option              | Default       | Beschreibung                                    |
 |---------------------|---------------|-------------------------------------------------|
-| `--symbol`          | `BTC/EUR`     | Trading-Symbol                                  |
+| `--symbol`          | `BTC&#47;EUR`     | Trading-Symbol                                  |
 | `--start`           | (none)        | Start-Datum (YYYY-MM-DD)                        |
 | `--end`             | (none)        | End-Datum (YYYY-MM-DD)                          |
 | `--bars`            | `200`         | Anzahl Bars (wenn --start nicht gesetzt)        |

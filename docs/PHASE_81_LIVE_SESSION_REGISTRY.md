@@ -33,7 +33,7 @@ Die Phase orientiert sich explizit am bestehenden Experiment-System:
 * `scripts/run_execution_session.py`
 
   * Orchestriert eine Execution-Session (Shadow / Testnet / später Live).
-  * Wrappt die Session in einen `try/except/finally`-Block.
+  * Wrappt die Session in einen `try&#47;except&#47;finally`-Block.
   * Erzeugt am Ende einen `LiveSessionRecord` und ruft `register_live_session_run()` auf.
   * Registry-Fehler werden **nur geloggt**, brechen die Session aber nicht.
 

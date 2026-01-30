@@ -55,7 +55,7 @@ def resolve_config_path(path=None):
 ### 3. Dedizierte Test-Config
 
 Neue `config/config.test.toml` mit:
-- Test-freundliche Pfade (`test_results/`, `test_data/`, `test_runs/`)
+- Test-freundliche Pfade (`test_results&#47;`, `test_data&#47;`, `test_runs/`)
 - Sichere Default-Werte
 - Alle notwendigen Strategy-Sektionen
 - Keine echten API-Keys (nur ENV-Platzhalter)

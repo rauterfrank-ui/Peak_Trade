@@ -7,7 +7,7 @@ Phase 41 ist **vollständig implementiert und getestet**:
 - ✅ Strategy-Sweeps sind implementiert und funktionsfähig
 - ✅ `rsi_reversion_basic` ist als Beispiel-Sweep lauffähig (27 Kombinationen)
 - ✅ Sweep-Ergebnisse werden unter `reports/experiments/` abgelegt (Dateinamen enthalten Sweep-Namen)
-- ✅ Reports werden unter `reports/sweeps/` abgelegt (Markdown + HTML)
+- ✅ Reports werden unter `reports&#47;sweeps&#47;` abgelegt (Markdown + HTML)
 - ✅ Alle Tests sind grün (~1495 passed, 4 skipped)
 
 **End-to-End Workflow funktioniert stabil** – Sweep-Ausführung → Ergebnis-Speicherung → Report-Generierung.
@@ -251,7 +251,7 @@ print(f"Valid: {sweep.num_combinations}")     # 6
 
 ## Report-Output
 
-Reports werden standardmäßig unter `reports/sweeps/` gespeichert:
+Reports werden standardmäßig unter `reports&#47;sweeps&#47;` gespeichert:
 
 ```
 reports/sweeps/
@@ -329,15 +329,15 @@ python3 scripts/generate_strategy_sweep_report.py \
 **Erwartete Ausgabe:**
 - Kein Fehler "Keine Ergebnisse gefunden"
 - Report-Dateien werden erzeugt:
-  - `reports/sweeps/{sweep_name}_report_{timestamp}.md`
-  - `reports/sweeps/{sweep_name}_report_{timestamp}.html` (falls `--format both`)
+  - `reports&#47;sweeps&#47;{sweep_name}_report_{timestamp}.md`
+  - `reports&#47;sweeps&#47;{sweep_name}_report_{timestamp}.html` (falls `--format both`)
 - Report enthält Tabelle mit Runs (Parameter + Kennzahlen)
 
 **4. Ergebnisse finden**
 
-- **Sweep-Ergebnisse**: `reports/experiments/{sweep_name}_*.csv` (oder `.parquet`)
-- **Reports**: `reports/sweeps/{sweep_name}_report_*.md` (oder `.html`)
-- **Visualisierungen**: `reports/sweeps/images/` (falls Heatmaps/Plots generiert wurden)
+- **Sweep-Ergebnisse**: `reports&#47;experiments&#47;{sweep_name}_*.csv` (oder `.parquet`)
+- **Reports**: `reports&#47;sweeps&#47;{sweep_name}_report_*.md` (oder `.html`)
+- **Visualisierungen**: `reports&#47;sweeps&#47;images&#47;` (falls Heatmaps/Plots generiert wurden)
 
 **5. Ergebnisse analysieren**
 
@@ -478,8 +478,8 @@ Phase 41 ist **rein Research/Backtest-fokussiert**:
 | Typ | Pfad |
 |-----|------|
 | Experiment-Ergebnisse | `reports/experiments/` |
-| Sweep-Reports | `reports/sweeps/` |
-| Report-Images | `reports/sweeps/images/` |
+| Sweep-Reports | `reports&#47;sweeps&#47;` |
+| Report-Images | `reports&#47;sweeps&#47;images&#47;` |
 | Experiment-Registry | `reports/experiments/experiments.csv` |
 
 ---
@@ -563,7 +563,7 @@ python3 scripts/promote_sweep_topn.py \
   --top-n 5
 ```
 
-**Output:** `reports/sweeps/{sweep_name}_top_candidates.toml`
+**Output:** `reports&#47;sweeps&#47;{sweep_name}_top_candidates.toml`
 
 ### TOML-Format
 
@@ -639,7 +639,7 @@ python3 scripts/generate_strategy_sweep_report.py \
 
 **Output:**
 - Markdown/HTML-Report mit eingebetteten Bildern
-- PNG-Dateien unter `reports/sweeps/images/`
+- PNG-Dateien unter `reports&#47;sweeps&#47;images&#47;`
 
 ### Plot-Typen
 

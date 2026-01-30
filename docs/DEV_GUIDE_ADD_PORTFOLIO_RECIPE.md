@@ -251,5 +251,5 @@ python3 scripts/research_cli.py portfolio \
 - `config/portfolio_recipes.toml` – Rezept-Definitionen
 - `src/experiments/portfolio_recipes.py` – Portfolio-Rezepte-Loader
 - `docs/PORTFOLIO_RECIPES_AND_PRESETS.md` – Portfolio-Rezepte-Doku
-- `docs/PHASE_47_*.md` – Portfolio-Robustness
+- `docs&#47;PHASE_47_*.md` – Portfolio-Robustness
 - `scripts/research_cli.py` – Research-CLI

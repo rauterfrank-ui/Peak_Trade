@@ -141,7 +141,7 @@ python3 scripts/run_shadow_execution.py --strategy rsi_strategy --tag daily-shad
 
 **Runterfahren:**
 1. Laufenden Prozess stoppen: `Ctrl+C` oder `kill <PID>`
-2. Logs sichern: `cp -r reports/experiments/ reports/experiments_backup_$(date +%Y%m%d)/`
+2. Logs sichern: `cp -r reports&#47;experiments&#47; reports&#47;experiments_backup_$(date +%Y%m%d)&#47;`
 
 #### Shadow-/Testnet-Session mit Phase-80-Runner
 
@@ -634,7 +634,7 @@ cp -r reports/experiments/ reports/experiments_incident_$(date +%Y%m%d_%H%M%S)/
 
 ### 8.3 Checkliste nach Runterfahren
 
-- [ ] Prozesse beendet (`pgrep -f "python3 scripts/run_"` zeigt nichts)
+- [ ] Prozesse beendet (`pgrep -f "python3 scripts&#47;run_"` zeigt nichts)
 - [ ] Logs gesichert
 - [ ] Bei Testnet/Live: Offene Orders geprüft
 - [ ] Registry-State dokumentiert

@@ -104,7 +104,7 @@ python3 -m pytest tests/test_sweep_visualization.py -v
 Der Workflow besteht aus zwei Schritten:
 
 1. **Sweep ausführen** (Phase 41) → Ergebnisse unter `reports/experiments/`
-2. **Report mit Plots generieren** (Phase 43) → Reports + Plots unter `reports/sweeps/`
+2. **Report mit Plots generieren** (Phase 43) → Reports + Plots unter `reports&#47;sweeps&#47;`
 
 ### Schritt-für-Schritt Anleitung
 
@@ -160,16 +160,16 @@ python3 scripts/generate_strategy_sweep_report.py \
 **Erwartete Ausgabe:**
 - Kein Fehler "Keine Ergebnisse gefunden"
 - Report-Dateien werden erzeugt:
-  - `reports/sweeps/{sweep_name}_report_{timestamp}.md`
-  - `reports/sweeps/{sweep_name}_report_{timestamp}.html` (falls `--format both`)
-- **Plots werden erzeugt** unter `reports/sweeps/images/`
+  - `reports&#47;sweeps&#47;{sweep_name}_report_{timestamp}.md`
+  - `reports&#47;sweeps&#47;{sweep_name}_report_{timestamp}.html` (falls `--format both`)
+- **Plots werden erzeugt** unter `reports&#47;sweeps&#47;images&#47;`
 - Report enthält Markdown-Bildlinks zu den Plots
 
 #### Schritt 4: Ergebnisse finden
 
-- **Sweep-Ergebnisse**: `reports/experiments/{sweep_name}_*.csv` (oder `.parquet`)
-- **Reports**: `reports/sweeps/{sweep_name}_report_*.md` (oder `.html`)
-- **Visualisierungen**: `reports/sweeps/images/`
+- **Sweep-Ergebnisse**: `reports&#47;experiments&#47;{sweep_name}_*.csv` (oder `.parquet`)
+- **Reports**: `reports&#47;sweeps&#47;{sweep_name}_report_*.md` (oder `.html`)
+- **Visualisierungen**: `reports&#47;sweeps&#47;images&#47;`
 
 ---
 
@@ -291,7 +291,7 @@ python3 scripts/generate_strategy_sweep_report.py \
 **Vollständige Optionen:**
 - `--sweep-name` / `-s`: Name des Sweeps (oder `--input` / `-i` für direkten Dateipfad)
 - `--format` / `-f`: Output-Format (`markdown`, `html`, `both`)
-- `--output-dir` / `-o`: Ausgabe-Verzeichnis (default: `reports/sweeps`)
+- `--output-dir` / `-o`: Ausgabe-Verzeichnis (default: `reports&#47;sweeps`)
 - `--top-n`: Anzahl Top-Runs im Report (default: 20)
 - `--heatmap-params`: Zwei Parameter für Heatmap (optional)
 
@@ -434,7 +434,7 @@ Fehler: Keine Ergebnisse gefunden für Sweep 'rsi_reversion_basic'
 ### Problem: Plots werden nicht erzeugt
 
 **Symptom:**
-- Report wird erstellt, aber keine Plots unter `reports/sweeps/images/`
+- Report wird erstellt, aber keine Plots unter `reports&#47;sweeps&#47;images&#47;`
 
 **Lösung:**
 1. Prüfe, ob `--with-plots` Flag gesetzt wurde
@@ -445,21 +445,21 @@ Fehler: Keine Ergebnisse gefunden für Sweep 'rsi_reversion_basic'
 ### Problem: Bilder nicht im Report eingebunden
 
 **Symptom:**
-- Plots existieren, aber Markdown zeigt `![...](images/...)` ohne Bild
+- Plots existieren, aber Markdown zeigt `![...](images&#47;...)` ohne Bild
 
 **Lösung:**
 1. Prüfe relative Pfade: Bilder sollten relativ zum Report-Verzeichnis sein
-2. Prüfe, ob `images/` Verzeichnis existiert: `ls reports/sweeps/images/`
+2. Prüfe, ob `images&#47;` Verzeichnis existiert: `ls reports/sweeps/images&#47;`
 3. Prüfe Report-Inhalt: `grep -A 2 "Visualizations" reports/sweeps/*.md`
 
 ### Problem: Reports/Plots werden in Git angezeigt
 
 **Symptom:**
-- `git status` zeigt `reports/sweeps/` oder `reports/experiments/`
+- `git status` zeigt `reports&#47;sweeps&#47;` oder `reports/experiments/`
 
 **Lösung:**
 - Reports und Plots sind **Artefakte** und sollten nicht ins Repo
-- Prüfe `.gitignore`: Sollte `reports/sweeps/` und `reports/experiments/` enthalten
+- Prüfe `.gitignore`: Sollte `reports&#47;sweeps&#47;` und `reports/experiments/` enthalten
 - Falls nötig, füge hinzu:
   ```gitignore
   # Reports & Visualizations (generierte Artefakte)

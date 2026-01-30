@@ -67,7 +67,7 @@ Das ergibt 3 × 3 = 9 Kombinationen, die jeweils als Backtest ausgeführt werden
 | `src/sweeps/engine.py` | Sweep-Engine mit SweepConfig, SweepResult, SweepSummary |
 | `src/sweeps/__init__.py` | Modul-Exports |
 | `scripts/run_sweep_strategy.py` | CLI-Script für Sweeps |
-| `config/sweeps/*.toml` | Vordefinierte Parameter-Grids |
+| `config&#47;sweeps&#47;*.toml` | Vordefinierte Parameter-Grids |
 
 ### Registry-Integration
 

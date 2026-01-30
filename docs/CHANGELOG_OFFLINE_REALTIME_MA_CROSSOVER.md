@@ -27,7 +27,7 @@
 #### Script: `scripts/run_offline_realtime_ma_crossover.py`
 
 **CLI-Parameter:**
-- ✅ `--symbol BTC/EUR` - Trading-Symbol mit automatischer Normalisierung
+- ✅ `--symbol BTC&#47;EUR` - Trading-Symbol mit automatischer Normalisierung
 - ✅ `--n-steps 1000` - Anzahl der zu generierenden Ticks/Bars
 - ✅ `--n-regimes 5` - Anzahl der Regime-Wechsel
 - ✅ `--fast-window 10` - Fast-MA-Periode
@@ -40,7 +40,7 @@
 
 **Kernfunktionalität:**
 - ✅ **argparse-Integration** mit vollständiger CLI-Unterstützung
-- ✅ **Symbol-Normalisierung** (`BTC/EUR` → `BTCEUR`)
+- ✅ **Symbol-Normalisierung** (`BTC&#47;EUR` → `BTCEUR`)
 - ✅ **Synth-Session** mit synthetischen Marktdaten
   - Random-Walk mit Regime-Switching
   - Reproduzierbar durch Seed

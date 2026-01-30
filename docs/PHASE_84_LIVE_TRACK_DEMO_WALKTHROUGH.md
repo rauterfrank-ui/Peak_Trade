@@ -162,7 +162,7 @@ python3 scripts/run_execution_session.py \
 | Parameter | Bedeutung |
 |-----------|-----------|
 | `--strategy ma_crossover` | Verwendet die MA-Crossover-Strategie |
-| `--symbol BTC/EUR` | Handelt BTC gegen EUR |
+| `--symbol BTC&#47;EUR` | Handelt BTC gegen EUR |
 | `--steps 10` | Führt 10 Bars/Schritte aus (kurze Demo) |
 
 ### 4.3 Alternativen für die Demo
@@ -414,7 +414,7 @@ Die **Snapshot-Kachel** (oberer Bereich des Live-Track Panels) zeigt die **letzt
 |---------|---------------|-----------|
 | **Mode-Badge** | `shadow` (purple) | Session-Typ |
 | **Status** | `Completed` (grün) | Erfolgreicher Abschluss |
-| **Environment** | z.B. `kraken_futures / BTC/EUR` | Exchange + Symbol |
+| **Environment** | z.B. `kraken_futures &#47; BTC&#47;EUR` | Exchange + Symbol |
 | **Realized PnL** | z.B. `+12.34` (grün) oder `-5.67` (rot) | PnL der Session |
 | **Max Drawdown** | z.B. `2.3%` | Maximaler Drawdown |
 | **Duration** | z.B. `5m 30s` | Berechnete Session-Dauer |
@@ -714,13 +714,13 @@ Nach diesem Walkthrough kannst du:
 | Aufgabe | Kommando |
 |---------|----------|
 | Dashboard starten | `uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000` |
-| Health-Check | `curl http://127.0.0.1:8000/api/health` |
+| Health-Check | `curl http:&#47;&#47;127.0.0.1:8000&#47;api&#47;health` |
 | Shadow-Session | `python scripts/run_execution_session.py --strategy ma_crossover --steps 10` |
 | CLI-Report | `python scripts/report_live_sessions.py --summary-only --stdout` |
-| Sessions-API | `curl http://127.0.0.1:8000/api/live_sessions?limit=5 \| jq .` |
-| Gefilterte Sessions | `curl "http://127.0.0.1:8000/api/live_sessions?mode=shadow&status=completed"` |
-| Session-Detail-API | `curl http://127.0.0.1:8000/api/live_sessions/{session_id} \| jq .` |
-| Stats-API | `curl http://127.0.0.1:8000/api/live_sessions/stats \| jq .` |
+| Sessions-API | `curl http:&#47;&#47;127.0.0.1:8000&#47;api&#47;live_sessions?limit=5 \| jq .` |
+| Gefilterte Sessions | `curl "http:&#47;&#47;127.0.0.1:8000&#47;api&#47;live_sessions?mode=shadow&status=completed"` |
+| Session-Detail-API | `curl http:&#47;&#47;127.0.0.1:8000&#47;api&#47;live_sessions&#47;{session_id} \| jq .` |
+| Stats-API | `curl http:&#47;&#47;127.0.0.1:8000&#47;api&#47;live_sessions&#47;stats \| jq .` |
 
 ### 10.3 Wichtige URLs (Phase 85 erweitert)
 

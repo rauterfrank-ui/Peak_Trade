@@ -291,8 +291,8 @@ if not risk_result.allowed:
 
 ### Kein echter API-Zugriff für Orders
 
-- `KrakenLiveCandleSource` nutzt **nur** `/0/public/OHLC`
-- **Keine** Order-Endpoints (`/0/private/*`)
+- `KrakenLiveCandleSource` nutzt **nur** `&#47;0&#47;public&#47;OHLC`
+- **Keine** Order-Endpoints (`&#47;0&#47;private&#47;*`)
 - **Keine** API-Keys erforderlich
 - `ShadowOrderExecutor` sendet **keine** Netzwerk-Requests
 

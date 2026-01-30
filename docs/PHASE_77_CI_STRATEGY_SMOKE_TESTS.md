@@ -125,7 +125,7 @@ Diese koennen im GitHub Actions UI unter "Artifacts" heruntergeladen werden.
 
 - **Keine Live-/Testnet-Exchanges:** Der Job verwendet ausschliesslich synthetische Backtest-Daten
 - **Keine API-Keys:** Keine Secrets werden geladen oder verwendet
-- **Keine Aenderungen an Live-Code:** `src/execution/*` und `src/live/*` wurden nicht angefasst
+- **Keine Aenderungen an Live-Code:** `src&#47;execution&#47;*` und `src&#47;live&#47;*` wurden nicht angefasst
 - **Rein offline:** Alle Tests laufen lokal ohne Netzwerkzugriff auf Exchanges
 
 ## Lokale Verifikation

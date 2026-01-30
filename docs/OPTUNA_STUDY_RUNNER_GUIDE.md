@@ -252,8 +252,8 @@ open http://localhost:5000
 - `--objectives <list>`: Comma-separated objectives (default: `sharpe`)
 - `--storage <uri>`: Storage URI (default: in-memory)
   - In-Memory: (omit `--storage`)
-  - SQLite: `sqlite:///optuna_studies.db`
-  - PostgreSQL: `postgresql://user:pass@localhost/optuna`
+  - SQLite: `sqlite:&#47;&#47;&#47;optuna_studies.db`
+  - PostgreSQL: `postgresql:&#47;&#47;user:pass@localhost&#47;optuna`
 - `--pruner <type>`: Pruner type (default: `median`)
   - Choices: `none`, `median`, `hyperband`
 - `--sampler <type>`: Sampler type (default: `tpe`)
@@ -309,7 +309,7 @@ Study Statistics:
 
 ### CSV Export
 
-**Location**: `reports/optuna_studies/<study_name>.csv`
+**Location**: `reports&#47;optuna_studies&#47;<study_name>.csv`
 
 **Columns**:
 - `number`: Trial number
@@ -337,7 +337,7 @@ print(df.head())
 
 **Requires**: `pip install optuna[visualization]`
 
-**Location**: `reports/optuna_studies/<study_name>_viz/`
+**Location**: `reports&#47;optuna_studies&#47;<study_name>_viz&#47;`
 
 **Files**:
 - `history.html`: Optimization history (objective value over trials)

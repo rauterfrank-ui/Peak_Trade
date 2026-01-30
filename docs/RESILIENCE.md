@@ -327,7 +327,7 @@ System Status: 🟢 HEALTHY
 
 ### JSON Report
 
-The dashboard generates a JSON report at `reports/health_check.json`:
+The dashboard generates a JSON report at `reports&#47;health_check.json`:
 
 ```json
 {

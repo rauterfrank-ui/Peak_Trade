@@ -230,7 +230,7 @@ git commit -m "Small incremental change"
 
 ### VS Code Setup
 
-Create `.vscode/tasks.json`:
+Create `.vscode&#47;tasks.json`:
 
 ```json
 {
@@ -270,7 +270,7 @@ Keyboard shortcuts:
    - Settings → Tools → External Tools
    - Add tool: "Workflow Health"
    - Program: `python3`
-   - Arguments: `scripts/dev_workflow.py health`
+   - Arguments: `scripts&#47;dev_workflow.py health`
    - Working directory: `$ProjectFileDir$`
 
 2. **Run Configurations:**

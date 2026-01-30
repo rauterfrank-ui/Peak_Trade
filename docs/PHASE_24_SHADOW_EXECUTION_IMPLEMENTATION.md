@@ -97,7 +97,7 @@ python3 -m pytest tests/test_shadow_execution.py -v
 
 ### Shadow-Mode ist ein Execution-Mode, kein Environment-Mode
 
-- `TradingEnvironment` bleibt bei `paper/testnet/live`
+- `TradingEnvironment` bleibt bei `paper&#47;testnet&#47;live`
 - Shadow-Mode ist orthogonal: Paper + Shadow = Paper-Backtest mit Shadow-Executor
 - Der ShadowOrderExecutor kann im Paper-Mode verwendet werden
 - Keine Vermischung mit `LiveOrderExecutor` oder echten Exchange-Clients
