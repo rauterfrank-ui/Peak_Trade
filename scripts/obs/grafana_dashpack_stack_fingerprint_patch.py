@@ -283,7 +283,9 @@ def main() -> int:
         default="docs/webui/observability/grafana/dashboards/overview/peaktrade-operator-home.json",
         help="Path to dashboard JSON (repo-relative).",
     )
-    ap.add_argument("--apply", action="store_true", help="Write changes to file (default is dry-run).")
+    ap.add_argument(
+        "--apply", action="store_true", help="Write changes to file (default is dry-run)."
+    )
     args = ap.parse_args()
 
     dash_path = Path(args.dashboard)
@@ -292,7 +294,9 @@ def main() -> int:
         return 2
 
     repo_root = get_repo_root(dash_path.parent)
-    abs_dash = (repo_root / dash_path).resolve() if not dash_path.is_absolute() else dash_path.resolve()
+    abs_dash = (
+        (repo_root / dash_path).resolve() if not dash_path.is_absolute() else dash_path.resolve()
+    )
     if not abs_dash.exists():
         abs_dash = dash_path.resolve()
 

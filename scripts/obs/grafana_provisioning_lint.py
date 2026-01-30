@@ -18,9 +18,7 @@ from typing import Any, Dict, List, Tuple
 try:
     import yaml  # type: ignore
 except Exception as e:  # noqa: BLE001 - CLI tool
-    raise SystemExit(
-        "Missing dependency: pyyaml. Install via pip (dev): pip install pyyaml"
-    ) from e
+    raise SystemExit("Missing dependency: pyyaml. Install via pip (dev): pip install pyyaml") from e
 
 
 CANONICAL_DS_NAMES = {
