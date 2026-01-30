@@ -38,7 +38,7 @@ mc_num_runs = 100
 
 # Stress-Tests
 run_stress_tests = true
-stress_scenarios = ["flash_crash", "high_volatility"]
+stress_scenarios = ["single_crash_bar", "vol_spike"]
 stress_severity = 0.5
 
 format = "both"

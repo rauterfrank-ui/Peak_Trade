@@ -45,7 +45,6 @@ logger = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).parent.parent
 CONFIG_PATH = PROJECT_ROOT / "config" / "config.toml"
 RESEARCH_CLI = PROJECT_ROOT / "scripts" / "research_cli.py"
-PROFILE_CLI = PROJECT_ROOT / "scripts" / "profile_research_and_portfolio.py"
 
 
 def run_command(cmd: list[str], description: str) -> bool:
@@ -160,13 +159,20 @@ def golden_path_new_strategy(args: argparse.Namespace) -> int:
         (
             [
                 python,
-                str(PROFILE_CLI),
+                str(RESEARCH_CLI),
+                "strategy-profile",
                 "--strategy-id",
                 args.strategy_id,
-                "--sweep-name",
-                args.sweep_name,
+                "--config",
+                str(CONFIG_PATH),
                 "--with-regime",
                 "--with-montecarlo",
+                "--mc-num-runs",
+                str(args.mc_runs),
+                "--with-stress",
+                "--stress-scenarios",
+                "single_crash_bar",
+                "vol_spike",
                 "--output-format",
                 "both",
             ],
@@ -235,9 +241,9 @@ def golden_path_optimize(args: argparse.Namespace) -> int:
         cmd.extend(
             [
                 "--run-walkforward",
-                "--train-window",
+                "--walkforward-train-window",
                 args.train_window,
-                "--test-window",
+                "--walkforward-test-window",
                 args.test_window,
             ]
         )
@@ -256,9 +262,10 @@ def golden_path_optimize(args: argparse.Namespace) -> int:
             [
                 "--run-stress-tests",
                 "--stress-scenarios",
-                "flash_crash",
-                "high_volatility",
-                "trend_reversal",
+                "single_crash_bar",
+                "vol_spike",
+                "drawdown_extension",
+                "gap_down_open",
             ]
         )
 
@@ -352,6 +359,7 @@ def golden_path_portfolio(args: argparse.Namespace) -> int:
         args.preset,
         "--format",
         "both",
+        "--use-dummy-data",
     ]
 
     if args.with_plots:
@@ -368,7 +376,7 @@ def golden_path_portfolio(args: argparse.Namespace) -> int:
         logger.info("")
         logger.info("Next steps:")
         logger.info(
-            f"  1. Review report: reports/portfolio_robustness/{args.preset}_robustness.html"
+            f"  1. Review report: reports/portfolio_robustness/{args.preset}/portfolio_robustness_report.html"
         )
         logger.info(f"  2. Check Go/No-Go criteria (Sharpe, MC p5, Stress Min)")
         logger.info(f"  3. If Go: Prepare for Shadow/Testnet")

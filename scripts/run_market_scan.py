@@ -75,8 +75,8 @@ Examples:
     parser.add_argument(
         "--config",
         type=str,
-        default="config.toml",
-        help="Pfad zur TOML-Config (Default: config.toml)",
+        default="config/config.toml",
+        help="Pfad zur TOML-Config (Default: config/config.toml)",
     )
 
     parser.add_argument(

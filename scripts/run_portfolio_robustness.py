@@ -93,6 +93,29 @@ def create_dummy_returns(n_bars: int = 500, seed: int = 42) -> pd.Series:
     return returns_series
 
 
+def _build_strategy_returns_cache(
+    strategy_config_ids: list[str],
+    *,
+    dummy_bars: int,
+    seed: int = 42,
+) -> dict[str, pd.Series]:
+    """
+    Erzeugt deterministische Dummy-Returns pro Strategy-Config-ID.
+
+    Dieser Pfad ist absichtlich offline-fähig und dient dazu, Phase-53-Presets
+    mit `strategies=[...]` end-to-end lauffähig zu machen, auch wenn keine
+    Sweep/Top-N-Artefakte vorhanden sind.
+    """
+    cache: dict[str, pd.Series] = {}
+    for i, cfg_id in enumerate(strategy_config_ids):
+        stable_offset = sum(ord(c) for c in cfg_id) % 10_000
+        cache[cfg_id] = create_dummy_returns(
+            n_bars=dummy_bars,
+            seed=seed + i + stable_offset,
+        )
+    return cache
+
+
 def build_returns_loader(
     sweep_name: str,
     experiments_dir: Path,
@@ -352,14 +375,17 @@ def run_from_args(args: argparse.Namespace) -> int:
                 logger.error(f"Unerwarteter Fehler beim Laden des Portfolio-Recipe: {e}")
                 return 1
 
+        strategies_mode = bool(recipe and recipe.strategies)
+
         # Merge: Preset-Werte als Defaults, CLI-Argumente überschreiben
-        # 1. sweep_name
+        # 1. sweep_name (nur Legacy: Sweep-basiert)
         sweep_name = args.sweep_name
-        if recipe and sweep_name is None:
-            sweep_name = recipe.sweep_name
-        if not sweep_name:
-            logger.error("--sweep-name ist erforderlich (oder via --portfolio-preset)")
-            return 1
+        if not strategies_mode:
+            if recipe and sweep_name is None:
+                sweep_name = recipe.sweep_name
+            if not sweep_name:
+                logger.error("--sweep-name ist erforderlich (oder via --portfolio-preset)")
+                return 1
 
         # 2. config
         config_path_str = args.config
@@ -370,12 +396,20 @@ def run_from_args(args: argparse.Namespace) -> int:
             logger.error("--config ist erforderlich")
             return 1
 
-        # 3. top_n
+        # 3. top_n (Legacy) / inferred Komponentenzahl (strategies)
         top_n = args.top_n
-        if recipe and top_n is None:
-            top_n = recipe.top_n
-        if top_n is None:
-            top_n = 3  # Fallback
+        if strategies_mode:
+            if top_n is not None:
+                logger.warning(
+                    "--top-n ist bei Presets mit 'strategies' nicht anwendbar und wird ignoriert "
+                    "(Komponentenzahl = len(strategies))."
+                )
+            top_n = len(recipe.strategies or [])
+        else:
+            if recipe and top_n is None:
+                top_n = recipe.top_n
+            if top_n is None:
+                top_n = 3  # Fallback
 
         # 4. portfolio_name
         portfolio_name = args.portfolio_name
@@ -433,10 +467,11 @@ def run_from_args(args: argparse.Namespace) -> int:
         if format_str is None:
             format_str = "both"  # Fallback
 
-        # Validierung: weights Länge muss mit top_n übereinstimmen
+        # Validierung: weights Länge muss mit Komponentenzahl übereinstimmen
         if weights and len(weights) != top_n:
+            label = "len(strategies)" if strategies_mode else "top-n"
             logger.error(
-                f"Anzahl Gewichte ({len(weights)}) stimmt nicht mit top-n ({top_n}) überein"
+                f"Anzahl Gewichte ({len(weights)}) stimmt nicht mit {label} ({top_n}) überein"
             )
             return 1
 
@@ -451,31 +486,40 @@ def run_from_args(args: argparse.Namespace) -> int:
         else:
             output_root = Path("reports/portfolio_robustness")
 
-        # 3. Lade Top-N-Konfigurationen
-        logger.info(f"Lade Top-{top_n} Konfigurationen für Sweep '{sweep_name}'...")
         experiments_dir = Path("reports/experiments")
+        strategies: list[str] = []
+        top_configs: list[dict] = []
 
-        try:
-            top_configs = load_top_n_configs_for_sweep(
-                sweep_name=sweep_name,
-                n=top_n,
-                experiments_dir=experiments_dir,
-            )
-        except Exception as e:
-            logger.error(f"Fehler beim Laden der Top-N-Konfigurationen: {e}")
-            if args.use_dummy_data:
-                logger.info("Erstelle Dummy-Konfigurationen für Tests...")
-                top_configs = [
-                    {"config_id": f"config_{i + 1}", "rank": i + 1} for i in range(top_n)
-                ]
-            else:
+        if strategies_mode:
+            strategies = list(recipe.strategies or [])
+            if not strategies:
+                logger.error("Preset enthält 'strategies', aber Liste ist leer.")
+                return 1
+            logger.info(f"Preset nutzt direkte Strategien: {len(strategies)} Komponente(n)")
+        else:
+            # 3. Lade Top-N-Konfigurationen
+            logger.info(f"Lade Top-{top_n} Konfigurationen für Sweep '{sweep_name}'...")
+            try:
+                top_configs = load_top_n_configs_for_sweep(
+                    sweep_name=sweep_name,
+                    n=top_n,
+                    experiments_dir=experiments_dir,
+                )
+            except Exception as e:
+                logger.error(f"Fehler beim Laden der Top-N-Konfigurationen: {e}")
+                if args.use_dummy_data:
+                    logger.info("Erstelle Dummy-Konfigurationen für Tests...")
+                    top_configs = [
+                        {"config_id": f"config_{i + 1}", "rank": i + 1} for i in range(top_n)
+                    ]
+                else:
+                    return 1
+
+            if not top_configs:
+                logger.error(f"Keine Top-N-Konfigurationen gefunden für Sweep '{sweep_name}'")
                 return 1
 
-        if not top_configs:
-            logger.error(f"Keine Top-N-Konfigurationen gefunden für Sweep '{sweep_name}'")
-            return 1
-
-        logger.info(f"Gefunden: {len(top_configs)} Konfigurationen")
+            logger.info(f"Gefunden: {len(top_configs)} Konfigurationen")
 
         # 4. Erstelle Portfolio-Definition
         components = []
@@ -486,19 +530,29 @@ def run_from_args(args: argparse.Namespace) -> int:
             # Equal-weight
             weights = [1.0 / top_n] * top_n
 
-        for i, config in enumerate(top_configs):
-            config_id = config.get("config_id", f"config_{i + 1}")
-            # Versuche, Strategie-Name aus config zu extrahieren (für zukünftige Erweiterungen)
-            strategy_name = config.get(
-                "strategy_name", sweep_name.split("_")[0] if "_" in sweep_name else "unknown"
-            )
-            components.append(
-                PortfolioComponent(
-                    strategy_name=strategy_name,
-                    config_id=config_id,
-                    weight=weights[i],
+        if strategies_mode:
+            for i, strategy_config_id in enumerate(strategies):
+                components.append(
+                    PortfolioComponent(
+                        strategy_name=strategy_config_id,
+                        config_id=strategy_config_id,
+                        weight=weights[i],
+                    )
                 )
-            )
+        else:
+            for i, config in enumerate(top_configs):
+                config_id = config.get("config_id", f"config_{i + 1}")
+                # Versuche, Strategie-Name aus config zu extrahieren (für zukünftige Erweiterungen)
+                strategy_name = config.get(
+                    "strategy_name", sweep_name.split("_")[0] if "_" in sweep_name else "unknown"
+                )
+                components.append(
+                    PortfolioComponent(
+                        strategy_name=strategy_name,
+                        config_id=config_id,
+                        weight=weights[i],
+                    )
+                )
 
         portfolio = PortfolioDefinition(
             name=portfolio_name,
@@ -525,12 +579,30 @@ def run_from_args(args: argparse.Namespace) -> int:
         )
 
         # 6. Erstelle Returns-Loader
-        returns_loader = build_returns_loader(
-            sweep_name=sweep_name,
-            experiments_dir=experiments_dir,
-            use_dummy_data=args.use_dummy_data,
-            dummy_bars=args.dummy_bars,
-        )
+        if strategies_mode:
+            if not args.use_dummy_data:
+                logger.error(
+                    "Presets mit 'strategies' benötigen aktuell --use-dummy-data, "
+                    "da kein data-backed Returns-Loader implementiert ist."
+                )
+                return 1
+
+            cache = _build_strategy_returns_cache(
+                strategies,
+                dummy_bars=args.dummy_bars,
+                seed=42,
+            )
+
+            def returns_loader(strategy_name: str, config_id: str) -> Optional[pd.Series]:
+                return cache.get(config_id)
+
+        else:
+            returns_loader = build_returns_loader(
+                sweep_name=sweep_name,
+                experiments_dir=experiments_dir,
+                use_dummy_data=args.use_dummy_data,
+                dummy_bars=args.dummy_bars,
+            )
 
         # 7. Führe Portfolio-Robustness aus
         logger.info("=" * 70)
