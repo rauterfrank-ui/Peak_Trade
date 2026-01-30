@@ -91,7 +91,11 @@ def lint_dashboard(doc: dict) -> list[Finding]:
         lst = templ.get("list")
         if isinstance(lst, list):
             for i, v in enumerate(lst):
-                if isinstance(v, dict) and v.get("type") == "datasource" and v.get("name") in LEGACY_DS_VARS:
+                if (
+                    isinstance(v, dict)
+                    and v.get("type") == "datasource"
+                    and v.get("name") in LEGACY_DS_VARS
+                ):
                     findings.append(
                         Finding(
                             path=f"$.templating.list[{i}]",
@@ -104,7 +108,13 @@ def lint_dashboard(doc: dict) -> list[Finding]:
     for path, s in _walk_strings(doc):
         for var in LEGACY_DS_VARS:
             if var in s:
-                findings.append(Finding(path=path, message=f"legacy datasource reference string contains {var}", value=s))
+                findings.append(
+                    Finding(
+                        path=path,
+                        message=f"legacy datasource reference string contains {var}",
+                        value=s,
+                    )
+                )
                 break
 
     # Panel Prometheus datasource must be ${ds}
@@ -135,7 +145,9 @@ def lint_dashboard(doc: dict) -> list[Finding]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Lint Grafana dashpack ds variable canonicalization.")
+    parser = argparse.ArgumentParser(
+        description="Lint Grafana dashpack ds variable canonicalization."
+    )
     parser.add_argument(
         "--paths",
         nargs="*",
@@ -161,7 +173,10 @@ def main() -> int:
             return 2
 
         if not isinstance(doc, dict):
-            print(f"ERROR: unexpected dashboard JSON root type in {p} (expected object)", file=sys.stderr)
+            print(
+                f"ERROR: unexpected dashboard JSON root type in {p} (expected object)",
+                file=sys.stderr,
+            )
             return 2
 
         findings = lint_dashboard(doc)

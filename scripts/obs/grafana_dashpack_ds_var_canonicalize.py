@@ -123,7 +123,11 @@ def _canonicalize_templating(doc: dict) -> tuple[list[Change], int, bool]:
     new_list: list[Any] = []
     removed = 0
     for i, v in enumerate(templ_list):
-        if isinstance(v, dict) and v.get("name") in LEGACY_DS_VARS and v.get("type") == "datasource":
+        if (
+            isinstance(v, dict)
+            and v.get("name") in LEGACY_DS_VARS
+            and v.get("type") == "datasource"
+        ):
             removed += 1
             changes.append(Change("remove", f"$.templating.list[{i}]", v, None))
             continue
@@ -215,13 +219,25 @@ def _rewrite_prometheus_datasources(node: Any, base_path: str = "$") -> list[Cha
                 if uid != "${ds}":
                     before = dict(ds)
                     node["datasource"] = _canonical_prom_ds()
-                    changes.append(Change("set", f"{base_path}.datasource", before, node["datasource"]))
+                    changes.append(
+                        Change("set", f"{base_path}.datasource", before, node["datasource"])
+                    )
             elif isinstance(ds, str):
                 # old-style string datasource (only rewrite when it's clearly prometheus-ish)
-                if ds == "prometheus" or ds.startswith("prom_") or ds.startswith("prometheus") or ds.startswith("peaktrade-prometheus") or ds.startswith("${DS_") or ds.startswith("$DS_") or ds.startswith("DS_"):
+                if (
+                    ds == "prometheus"
+                    or ds.startswith("prom_")
+                    or ds.startswith("prometheus")
+                    or ds.startswith("peaktrade-prometheus")
+                    or ds.startswith("${DS_")
+                    or ds.startswith("$DS_")
+                    or ds.startswith("DS_")
+                ):
                     before = ds
                     node["datasource"] = _canonical_prom_ds()
-                    changes.append(Change("set", f"{base_path}.datasource", before, node["datasource"]))
+                    changes.append(
+                        Change("set", f"{base_path}.datasource", before, node["datasource"])
+                    )
 
         for k, v in list(node.items()):
             child = f"{base_path}.{k}"
@@ -251,7 +267,9 @@ def canonicalize_dashboard(doc: dict) -> tuple[dict, list[Change], dict[str, int
     changes.extend(templ_changes)
     stats["legacy_vars_removed"] += removed
     stats["ds_vars_added"] += 1 if ds_added else 0
-    stats["ds_var_fields_set"] += sum(1 for c in templ_changes if c.kind == "set" and c.path.startswith("$.templating.list["))
+    stats["ds_var_fields_set"] += sum(
+        1 for c in templ_changes if c.kind == "set" and c.path.startswith("$.templating.list[")
+    )
 
     string_changes = _rewrite_string_refs(doc)
     if string_changes:
@@ -283,7 +301,12 @@ def _apply_string_changes(node: Any) -> None:
                 node[k] = re.sub(r"\bDS_LOCAL\b", "ds", node[k])
                 node[k] = re.sub(r"\bDS_MAIN\b", "ds", node[k])
                 node[k] = re.sub(r"\bDS_SHADOW\b", "ds", node[k])
-                node[k] = node[k].replace("DS_LOCAL", "ds").replace("DS_MAIN", "ds").replace("DS_SHADOW", "ds")
+                node[k] = (
+                    node[k]
+                    .replace("DS_LOCAL", "ds")
+                    .replace("DS_MAIN", "ds")
+                    .replace("DS_SHADOW", "ds")
+                )
             else:
                 _apply_string_changes(v)
     elif isinstance(node, list):
@@ -300,13 +323,20 @@ def _apply_string_changes(node: Any) -> None:
                 node[i] = re.sub(r"\bDS_LOCAL\b", "ds", node[i])
                 node[i] = re.sub(r"\bDS_MAIN\b", "ds", node[i])
                 node[i] = re.sub(r"\bDS_SHADOW\b", "ds", node[i])
-                node[i] = node[i].replace("DS_LOCAL", "ds").replace("DS_MAIN", "ds").replace("DS_SHADOW", "ds")
+                node[i] = (
+                    node[i]
+                    .replace("DS_LOCAL", "ds")
+                    .replace("DS_MAIN", "ds")
+                    .replace("DS_SHADOW", "ds")
+                )
             else:
                 _apply_string_changes(it)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Canonicalize Grafana dashpack datasource variable to ${ds}.")
+    parser = argparse.ArgumentParser(
+        description="Canonicalize Grafana dashpack datasource variable to ${ds}."
+    )
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--dry-run", action="store_true", help="dry run (default)")
     mode.add_argument("--apply", action="store_true", help="apply changes in-place")
@@ -357,7 +387,10 @@ def main() -> int:
             return 2
 
         if not isinstance(doc, dict):
-            print(f"ERROR: unexpected dashboard JSON root type in {p} (expected object)", file=sys.stderr)
+            print(
+                f"ERROR: unexpected dashboard JSON root type in {p} (expected object)",
+                file=sys.stderr,
+            )
             return 2
 
         _, changes, stats = canonicalize_dashboard(doc)
@@ -413,7 +446,9 @@ def main() -> int:
     if args.out:
         out_path = Path(args.out)
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        out_path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        out_path.write_text(
+            json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
         print(f"WROTE report={out_path}")
 
     return 0
