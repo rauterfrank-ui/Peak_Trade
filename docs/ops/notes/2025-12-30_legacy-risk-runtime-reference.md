@@ -22,7 +22,7 @@ None. Repository already in the desired state.
 - Repo-wide search (path + content): zero hits for `lib&#47;` and `risk_runtime`-related identifiers.
 - CI/Workflows/Guards: no rules referencing `lib&#47;` or `risk_runtime`.
 - Risk test suite: `tests/risk/` → 172 passed.
-- Lint: `uv run ruff check .` → green (only harmless warnings in archived files).
+- Lint: `ruff check .` → green (only harmless warnings in archived files).
 
 ## Risk
 None. No code changes performed.

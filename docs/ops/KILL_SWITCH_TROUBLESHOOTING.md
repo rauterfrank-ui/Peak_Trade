@@ -519,7 +519,6 @@ which python
 which python3
 
 # Version prüfen
-python --version
 python3 --version
 ```
 

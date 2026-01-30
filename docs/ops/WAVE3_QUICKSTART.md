@@ -353,17 +353,18 @@ make test
 make test-integration || true
 
 # Backtest suite (if strategy/backtest changes)
-make test-backtests || pytest tests/backtests/
+make test-backtests || python3 -m pytest tests/backtests/
 
 # Risk gate validation (if risk changes)
-pytest tests/risk/ -v
+python3 -m pytest tests/risk/ -v
 
 # Config validation (if config changes)
-python -c "import tomli; tomli.load(open('config/live_policies.toml', 'rb'))"
+python3 -c "import tomli; tomli.load(open('config/live_policies.toml', 'rb'))"
 
 # Smoke test (if execution changes)
 # Example: run paper trading for 1 minute
-# python scripts/run_live.py --mode paper --duration 60 --strategy minimal
+# (Beispiel; `run_live.py` existiert aktuell nicht als CLI im Repo)
+# python scripts&#47;run_live.py --mode paper --duration 60 --strategy minimal
 ```
 
 ---
@@ -563,7 +564,7 @@ git rebase -i origin/main
 # Debug test failure:
 make test-verbose
 # Or:
-pytest -vv -s tests/
+python3 -m pytest -vv -s tests/
 
 # Check logs:
 cat tests.log

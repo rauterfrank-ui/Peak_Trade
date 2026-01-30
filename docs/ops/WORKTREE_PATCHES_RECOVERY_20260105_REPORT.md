@@ -101,10 +101,10 @@ mlflow: Tests die MLflow benötigen (optional dependency tracking extra)
 **Usage**:
 ```bash
 # Skip MLflow tests
-pytest -m "not mlflow"
+python3 -m pytest -m "not mlflow"
 
 # Run only MLflow tests
-pytest -m mlflow
+python3 -m pytest -m mlflow
 ```
 
 ---
@@ -187,10 +187,10 @@ uv sync --extra tracking
 ### 3. Verify
 ```bash
 # Smoke tests
-pytest -m smoke
+python3 -m pytest -m smoke
 
 # Optional: MLflow marker tests
-pytest -m mlflow
+python3 -m pytest -m mlflow
 ```
 
 ---

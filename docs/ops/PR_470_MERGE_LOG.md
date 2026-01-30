@@ -83,7 +83,7 @@ shellcheck scripts/execution/recon_audit_gate.sh
 
 ```bash
 # Alle Tests (inkl. neue Wrapper-Tests)
-uv run pytest -q tests/scripts/test_show_recon_audit_smoke.py
+python3 -m pytest -q tests/scripts/test_show_recon_audit_smoke.py
 # Erwartung: 34 passed
 
 # JSON-Validierung (summary-json Mode)
@@ -159,7 +159,7 @@ Machine-Readable Output für Monitoring-Tools, Alerting-Pipelines
 PT_RECON_PYTHON_RUNNER="python3.11" bash scripts/execution/recon_audit_gate.sh gate
 
 # Mit uv (explizit)
-PT_RECON_PYTHON_RUNNER="uv run python" bash scripts/execution/recon_audit_gate.sh summary-json
+PT_RECON_PYTHON_RUNNER="python3" bash scripts/execution/recon_audit_gate.sh summary-json
 ```
 
 ---

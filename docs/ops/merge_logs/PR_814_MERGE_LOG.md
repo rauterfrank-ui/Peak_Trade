@@ -15,8 +15,8 @@ Canonical, branch-protection-safe record of PR #814 merge metadata + post-merge 
 
 ## Verification
 
-- Local: `uv run pytest -q tests/execution/broker -q` PASS (6/6)
-- Local: `uv run pytest -q` PASS
+- Local: `python3 -m pytest -q tests&#47;execution&#47;broker -q` PASS (6/6)
+- Local: `python3 -m pytest -q` PASS
 - CI: required checks PASS (PR #814)
 - Post-merge anchor: main HEAD shows `879b8ba2`
 

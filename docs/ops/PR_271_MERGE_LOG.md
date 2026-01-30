@@ -128,20 +128,20 @@ $ grep -B 2 "ruff-check" .pre-commit-config.yaml
 **Nach Pull von main:**
 ```bash
 # Pre-commit hooks aktualisieren
-uv run pre-commit autoupdate
-uv run pre-commit install
+pre-commit autoupdate
+pre-commit install
 
 # Test: Alle Dateien formatieren (sollte jetzt stabil sein)
-uv run pre-commit run -a
+pre-commit run -a
 ```
 
 **Lokale Formatierung:**
 ```bash
 # Option 1: Pre-commit nutzen
-uv run pre-commit run black --all-files
+pre-commit run black --all-files
 
 # Option 2: Direkt Black nutzen
-uv run black .
+black .
 
 # Beide sollten identische Ergebnisse produzieren
 ```

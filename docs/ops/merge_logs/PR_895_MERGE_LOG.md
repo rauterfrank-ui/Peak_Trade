@@ -16,7 +16,7 @@
 - Local (pre-merge):
 
 ```bash
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed
 python3 scripts/ops/check_merge_log_hygiene.py docs/ops/merge_logs/PR_894_MERGE_LOG.md
 ```
 

@@ -26,7 +26,7 @@ This procedure documents **regular kill switch drills** to ensure:
 - [ ] Drill lead identified
 - [ ] Observer/recorder identified
 - [ ] Test environment ready (shadow/testnet)
-- [ ] Kill switch confirmed operational (`python -m src.risk_layer.kill_switch.cli status`)
+- [ ] Kill switch confirmed operational (`python3 -m src.risk_layer.kill_switch.cli status`)
 
 ---
 
@@ -40,13 +40,13 @@ This procedure documents **regular kill switch drills** to ensure:
 
 1. **Verify Initial State**
    ```bash
-   python -m src.risk_layer.kill_switch.cli status
+   python3 -m src.risk_layer.kill_switch.cli status
    ```
    Expected: State = ACTIVE
 
 2. **Trigger Kill Switch**
    ```bash
-   python -m src.risk_layer.kill_switch.cli trigger \
+   python3 -m src.risk_layer.kill_switch.cli trigger \
      --reason "Drill: Manual trigger test" \
      --triggered-by "operator_name"
    ```
@@ -54,14 +54,16 @@ This procedure documents **regular kill switch drills** to ensure:
 
 3. **Verify Triggered State**
    ```bash
-   python -m src.risk_layer.kill_switch.cli status
+   python3 -m src.risk_layer.kill_switch.cli status
    ```
    Expected: State = KILLED, triggered_at timestamp shown
 
 4. **Attempt Order (Should Fail)**
    ```bash
-   # Try to start a session (should be blocked)
-   python scripts/live/start_shadow_session.py --duration 1m
+   # Es gibt aktuell keinen dedizierten Session-Runner für eine Shadow-Session im Repo.
+   # Stattdessen: führe die Dry-Run Safety-Drills aus – sie sollten „live execution not allowed“
+   # bzw. Kill-Switch-Blockade signalisieren.
+   python3 scripts/run_live_dry_run_drills.py --format json
    ```
    Expected: Error about trading blocked by kill switch
 
@@ -114,13 +116,13 @@ trigger = ThresholdTrigger(
 
 1. **Verify Killed State**
    ```bash
-   python -m src.risk_layer.kill_switch.cli status
+   python3 -m src.risk_layer.kill_switch.cli status
    ```
    Expected: State = KILLED
 
 2. **Request Recovery**
    ```bash
-   python -m src.risk_layer.kill_switch.cli recover \
+   python3 -m src.risk_layer.kill_switch.cli recover \
      --approved-by "operator_name" \
      --approval-code "RECOVERY_APPROVED"
    ```
@@ -129,7 +131,7 @@ trigger = ThresholdTrigger(
 3. **Wait for Cooldown**
    ```bash
    # Check status during cooldown
-   python -m src.risk_layer.kill_switch.cli status
+   python3 -m src.risk_layer.kill_switch.cli status
    ```
    Expected: Shows cooldown remaining (default 300 seconds)
 
@@ -142,14 +144,15 @@ trigger = ThresholdTrigger(
 4. **Complete Recovery**
    ```bash
    # After cooldown expires
-   python -m src.risk_layer.kill_switch.cli complete-recovery
+   python3 -m src.risk_layer.kill_switch.cli complete-recovery
    ```
    Expected: State = ACTIVE
 
 5. **Verify Trading Resumed**
    ```bash
-   # Try to start session (should work now)
-   python scripts/live/start_shadow_session.py --duration 1m
+   # Es gibt aktuell keinen dedizierten Session-Runner für eine Shadow-Session im Repo.
+   # Minimaler Verify: Kill-Switch State ist wieder ACTIVE
+   python3 -m src.risk_layer.kill_switch.cli status
    ```
    Expected: Session starts successfully
 
@@ -172,17 +175,16 @@ trigger = ThresholdTrigger(
 
 1. **Start Test Session**
    ```bash
-   python scripts/live/start_shadow_session.py \
-     --strategy ma_crossover \
-     --symbol BTC-EUR \
-     --timeframe 1m \
-     --duration 10m
+   # NOTE: Aktuell gibt es im Repo keinen dedizierten Session-Runner für eine Shadow-Session.
+   # Für „Integration im laufenden Betrieb“ nutze stattdessen:
+   # - Dry-Run Drills (Phase 73): `python3 scripts/run_live_dry_run_drills.py`
+   # - Live-Beta Drill (Phase 85, Simulation): `python3 scripts/run_live_beta_drill.py --all`
    ```
 
 2. **Trigger Kill Switch Mid-Session** (in separate terminal)
    ```bash
    # After 2-3 minutes
-   python -m src.risk_layer.kill_switch.cli trigger \
+   python3 -m src.risk_layer.kill_switch.cli trigger \
      --reason "Drill: Mid-session emergency stop"
    ```
 
@@ -294,19 +296,19 @@ trigger = ThresholdTrigger(
 
 ```bash
 # Status check
-python -m src.risk_layer.kill_switch.cli status
+python3 -m src.risk_layer.kill_switch.cli status
 
 # Trigger (emergency)
-python -m src.risk_layer.kill_switch.cli trigger --reason "Emergency stop"
+python3 -m src.risk_layer.kill_switch.cli trigger --reason "Emergency stop"
 
 # Request recovery
-python -m src.risk_layer.kill_switch.cli recover --approved-by "operator"
+python3 -m src.risk_layer.kill_switch.cli recover --approved-by "operator"
 
 # Complete recovery (after cooldown)
-python -m src.risk_layer.kill_switch.cli complete-recovery
+python3 -m src.risk_layer.kill_switch.cli complete-recovery
 
 # View event history
-python -m src.risk_layer.kill_switch.cli history
+python3 -m src.risk_layer.kill_switch.cli history
 ```
 
 ---

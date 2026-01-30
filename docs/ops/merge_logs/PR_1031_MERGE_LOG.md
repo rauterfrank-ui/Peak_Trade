@@ -63,12 +63,12 @@ Item A abgeschlossen: Walk‑Forward Train‑Optimierung (no leakage) + Two‑Pa
 
 ```bash
 # PR #1028
-uv run pytest -q tests/test_walkforward_backtest.py tests/backtest/test_walkforward_optimization.py
-uv run ruff format --check src/ tests/ scripts/
+python3 -m pytest -q tests/test_walkforward_backtest.py tests/backtest/test_walkforward_optimization.py
+ruff format --check src/ tests/ scripts/
 
 # PR #1030
-uv run pytest -q tests/backtest/test_engine_allocations.py
-uv run ruff format --check src/backtest/engine.py tests/backtest/test_engine_allocations.py
+python3 -m pytest -q tests/backtest/test_engine_allocations.py
+ruff format --check src/backtest/engine.py tests/backtest/test_engine_allocations.py
 
 # Docs PRs (#1029/#1031) – changed-only docs gates snapshot (runbook)
 bash scripts/ops/pt_docs_gates_snapshot.sh --changed --base origin/main

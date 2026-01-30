@@ -27,7 +27,7 @@ Erstelle eine neue Datei unter `src/strategies/`:
 """
 Meine neue Strategie - Kurze Beschreibung
 """
-from src.strategies.base_strategy import BaseStrategy
+from src.strategies.base import BaseStrategy
 import pandas as pd
 
 class MyNewStrategy(BaseStrategy):
@@ -75,12 +75,16 @@ class MyNewStrategy(BaseStrategy):
 ```python
 # src/strategies/registry.py - Eintrag hinzufügen
 
+from src.strategies.registry import StrategySpec
 from src.strategies.my_new_strategy import MyNewStrategy
 
-STRATEGY_REGISTRY = {
-    # ... bestehende Strategien ...
-    "my_new_strategy": MyNewStrategy,
-}
+# In _STRATEGY_REGISTRY hinzufügen
+_STRATEGY_REGISTRY["my_new_strategy"] = StrategySpec(
+    key="my_new_strategy",
+    cls=MyNewStrategy,
+    config_section="strategy.my_new_strategy",
+    description="Meine neue Strategie",
+)
 ```
 
 ### Schritt 3: Basis-Test schreiben
@@ -121,7 +125,7 @@ class TestMyNewStrategy:
 
 ```bash
 # Test ausführen
-.venv/bin/pytest tests/test_strategy_my_new_strategy.py -v
+python3 -m pytest tests/test_strategy_my_new_strategy.py -v
 ```
 
 ### Schritt 4: Sweep-Definition erstellen
@@ -152,7 +156,7 @@ commission = 0.001
 
 ```bash
 # Sweep starten
-python scripts/research_cli.py sweep \
+python3 scripts/research_cli.py sweep \
     --sweep-name my_new_strategy_basic \
     --config config/config.toml
 
@@ -160,59 +164,62 @@ python scripts/research_cli.py sweep \
 # Starting sweep: my_new_strategy_basic
 # Running 81 parameter combinations...
 # Progress: [========================================] 100%
-# Sweep completed. Results saved to reports/sweeps/my_new_strategy_basic/
+# Sweep completed. Results saved to reports/experiments/
 ```
 
 ### Schritt 6: Sweep-Report generieren
 
 ```bash
 # Report erstellen
-python scripts/research_cli.py report \
+python3 scripts/research_cli.py report \
     --sweep-name my_new_strategy_basic \
     --format both \
     --with-plots
 
 # Ausgabe:
 # Generating report for sweep: my_new_strategy_basic
-# - Markdown report: reports/sweeps/my_new_strategy_basic/report.md
-# - HTML report: reports/sweeps/my_new_strategy_basic/report.html
+# - Markdown report: reports/sweeps/my_new_strategy_basic_report_<timestamp>.md
+# - HTML report: reports/sweeps/my_new_strategy_basic_report_<timestamp>.html
 ```
 
 ### Schritt 7: Top-N auswählen und Robustness testen
 
 ```bash
 # Walk-Forward Testing
-python scripts/research_cli.py walkforward \
+python3 scripts/research_cli.py walkforward \
     --sweep-name my_new_strategy_basic \
     --top-n 5 \
     --train-window 90d \
     --test-window 30d
 
 # Monte-Carlo Analyse
-python scripts/research_cli.py montecarlo \
+python3 scripts/research_cli.py montecarlo \
     --sweep-name my_new_strategy_basic \
     --config config/config.toml \
     --top-n 3 \
     --num-runs 500
 
 # Stress-Tests
-python scripts/research_cli.py stress \
+python3 scripts/research_cli.py stress \
     --sweep-name my_new_strategy_basic \
     --config config/config.toml \
     --top-n 3 \
-    --scenarios flash_crash high_volatility
+    --scenarios single_crash_bar vol_spike \
+    --severity 0.2
 ```
 
 ### Schritt 8: StrategyProfile generieren
 
 ```bash
 # Profil erstellen
-python scripts/profile_research_and_portfolio.py \
+python3 scripts/research_cli.py strategy-profile \
     --strategy-id my_new_strategy \
-    --sweep-name my_new_strategy_basic \
+    --output-format both \
     --with-regime \
     --with-montecarlo \
-    --output-format both
+    --mc-num-runs 100 \
+    --with-stress \
+    --stress-scenarios single_crash_bar vol_spike
 
 # Ausgabe:
 # Strategy Profile: my_new_strategy
@@ -247,7 +254,7 @@ Wenn die Strategie als `aux` oder `core` klassifiziert wurde:
 
 ```bash
 # Validieren dass Tiering korrekt ist
-python -c "
+python3 -c "
 from src.experiments.portfolio_presets import get_strategy_tier
 print(f'Tier: {get_strategy_tier(\"my_new_strategy\")}')
 "
@@ -269,14 +276,14 @@ Strategie auswählen → Sweep anpassen → Top-N → Robustness → Update Prof
 
 ```bash
 # Verfügbare Strategien anzeigen
-python -c "
-from src.strategies.registry import STRATEGY_REGISTRY
-for name in sorted(STRATEGY_REGISTRY.keys()):
+python3 -c "
+from src.strategies.registry import get_available_strategy_keys
+for name in sorted(get_available_strategy_keys()):
     print(f'  - {name}')
 "
 
 # Tiering prüfen
-python -c "
+python3 -c "
 from src.experiments.portfolio_presets import get_all_tiered_strategies
 for tier, strategies in get_all_tiered_strategies().items():
     print(f'{tier}: {strategies}')
@@ -322,19 +329,19 @@ commission = 0.001
 
 ```bash
 # End-to-End Pipeline mit allen Robustness-Tests
-python scripts/research_cli.py pipeline \
+python3 scripts/research_cli.py pipeline \
     --sweep-name rsi_reversion_tuning_v2 \
     --config config/config.toml \
     --format both \
     --with-plots \
     --top-n 5 \
     --run-walkforward \
-    --train-window 90d \
-    --test-window 30d \
+    --walkforward-train-window 90d \
+    --walkforward-test-window 30d \
     --run-montecarlo \
     --mc-num-runs 500 \
     --run-stress-tests \
-    --stress-scenarios flash_crash high_volatility trend_reversal
+    --stress-scenarios single_crash_bar vol_spike drawdown_extension
 
 # Erwartete Ausgabe:
 # === RESEARCH PIPELINE ===
@@ -369,12 +376,11 @@ cat reports/sweeps/rsi_reversion_tuning_v2/report.md
 
 ```bash
 # Neues Profil generieren
-python scripts/profile_research_and_portfolio.py \
+python3 scripts/research_cli.py strategy-profile \
     --strategy-id rsi_reversion \
-    --sweep-name rsi_reversion_tuning_v2 \
+    --output-format both \
     --with-regime \
-    --with-montecarlo \
-    --output-format both
+    --with-montecarlo
 
 # Vergleich mit altem Profil
 diff reports/strategy_profiles/rsi_reversion_profile_v1.json \
@@ -410,7 +416,7 @@ Tier-Filter → Strategien auswählen → Gewichte definieren → Preset erstell
 
 ```bash
 # Tiering-Status anzeigen
-python -c "
+python3 -c "
 from src.experiments.portfolio_presets import (
     get_all_tiered_strategies,
     get_strategies_by_tier,
@@ -504,7 +510,7 @@ run_montecarlo = true
 mc_num_runs = 200
 
 run_stress_tests = true
-stress_scenarios = ["flash_crash", "high_volatility", "sideways_market"]
+stress_scenarios = ["single_crash_bar", "vol_spike", "drawdown_extension"]
 stress_severity = 0.5
 
 format = "both"
@@ -516,7 +522,7 @@ tags = ["core", "custom", "tiered"]
 
 ```bash
 # Validierung
-python -c "
+python3 -c "
 from src.experiments.portfolio_presets import validate_preset_tiering_compliance
 from src.experiments.portfolio_recipes import load_portfolio_recipes
 from pathlib import Path
@@ -541,11 +547,11 @@ print(result)
 
 ```bash
 # Portfolio-Level Robustness
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
     --config config/config.toml \
     --portfolio-preset my_custom_portfolio \
     --format both \
-    --with-plots
+    --use-dummy-data
 
 # Erwartete Ausgabe:
 # === PORTFOLIO ROBUSTNESS ===
@@ -560,7 +566,7 @@ python scripts/research_cli.py portfolio \
 # - MC p5/p50/p95: 0.82 / 1.58 / 2.45
 # - Stress Min/Avg: -8.2% / -4.1%
 #
-# Report: reports/portfolio_robustness/my_custom_portfolio_robustness.html
+# Report: reports/portfolio_robustness/my_custom_portfolio/portfolio_robustness_report.html
 ```
 
 ### Schritt 6: Go/No-Go Entscheidung
@@ -575,17 +581,15 @@ python scripts/research_cli.py portfolio \
 **Bei "Go":** Portfolio ist bereit für Shadow/Testnet
 
 ```bash
-# Portfolio für Shadow-Run vorbereiten
-python scripts/preview_live_portfolio.py \
-    --portfolio-preset my_custom_portfolio \
-    --validate-only
+# Portfolio-Snapshot + Risk-Check (Phase 48, PaperBroker-Fallback)
+python3 scripts/preview_live_portfolio.py \
+    --config config/config.toml \
+    --no-risk
 
 # Ausgabe:
-# Portfolio Validation: my_custom_portfolio
-# ✅ Tiering Compliance: PASSED
-# ✅ Weight Sum: 1.0
-# ✅ All strategies registered
-# ✅ Ready for Shadow/Testnet
+# === Live Portfolio Snapshot (...) UTC ===
+# Positions: ...
+# Totals: ...
 ```
 
 ---
@@ -596,68 +600,68 @@ python scripts/preview_live_portfolio.py \
 
 ```bash
 # Sweep starten
-python scripts/research_cli.py sweep --sweep-name NAME --config config/config.toml
+python3 scripts/research_cli.py sweep --sweep-name NAME --config config/config.toml
 
 # Report generieren
-python scripts/research_cli.py report --sweep-name NAME --format both --with-plots
+python3 scripts/research_cli.py report --sweep-name NAME --format both --with-plots
 
 # Top-N promoten
-python scripts/research_cli.py promote --sweep-name NAME --top-n 5
+python3 scripts/research_cli.py promote --sweep-name NAME --top-n 5
 ```
 
 ### Robustness-Tests
 
 ```bash
 # Walk-Forward
-python scripts/research_cli.py walkforward --sweep-name NAME --top-n 3 --train-window 90d --test-window 30d
+python3 scripts/research_cli.py walkforward --sweep-name NAME --top-n 3 --train-window 90d --test-window 30d
 
 # Monte-Carlo
-python scripts/research_cli.py montecarlo --sweep-name NAME --config config/config.toml --top-n 3 --num-runs 500
+python3 scripts/research_cli.py montecarlo --sweep-name NAME --config config/config.toml --top-n 3 --num-runs 500
 
 # Stress-Tests
-python scripts/research_cli.py stress --sweep-name NAME --config config/config.toml --top-n 3 --scenarios flash_crash high_volatility
+python3 scripts/research_cli.py stress --sweep-name NAME --config config/config.toml --top-n 3 --scenarios single_crash_bar vol_spike --severity 0.2
 ```
 
 ### Portfolio
 
 ```bash
 # Portfolio-Robustness
-python scripts/research_cli.py portfolio --config config/config.toml --portfolio-preset NAME --format both
+python3 scripts/research_cli.py portfolio --config config/config.toml --portfolio-preset NAME --format both --use-dummy-data
 
-# Portfolio-Validation
-python scripts/preview_live_portfolio.py --portfolio-preset NAME --validate-only
+# Portfolio-Snapshot (Phase 48)
+python3 scripts/preview_live_portfolio.py --config config/config.toml --no-risk
 ```
 
 ### Profiling & Tiering
 
 ```bash
 # Strategy-Profile generieren
-python scripts/profile_research_and_portfolio.py --strategy-id NAME --sweep-name SWEEP --with-regime --with-montecarlo
+python3 scripts/research_cli.py strategy-profile --strategy-id NAME --output-format both --with-regime --with-montecarlo --with-stress
 
 # Tiering-Status anzeigen
-python -c "from src.experiments.portfolio_presets import get_all_tiered_strategies; print(get_all_tiered_strategies())"
+python3 -c "from src.experiments.portfolio_presets import get_all_tiered_strategies; print(get_all_tiered_strategies())"
 
 # Tiering-Compliance prüfen
-python -c "from src.experiments.portfolio_presets import validate_preset_tiering_compliance; ..."
+python3 -c "from src.experiments.portfolio_presets import validate_preset_tiering_compliance; ..."
 ```
 
 ### Full Pipeline
 
 ```bash
 # End-to-End Pipeline
-python scripts/research_cli.py pipeline \
+python3 scripts/research_cli.py pipeline \
     --sweep-name NAME \
     --config config/config.toml \
     --format both \
     --with-plots \
     --top-n 5 \
     --run-walkforward \
-    --train-window 90d \
-    --test-window 30d \
+    --walkforward-train-window 90d \
+    --walkforward-test-window 30d \
     --run-montecarlo \
     --mc-num-runs 500 \
     --run-stress-tests \
-    --stress-scenarios flash_crash high_volatility
+    --stress-scenarios single_crash_bar vol_spike
 ```
 
 ---

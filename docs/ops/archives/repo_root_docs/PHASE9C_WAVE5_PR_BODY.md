@@ -99,7 +99,7 @@ Wave 5 implements cluster-based remediation for remaining low-frequency broken t
 bash scripts&#47;ops&#47;verify_docs_reference_targets.sh
 
 # Verify token policy compliance (changed files only)
-uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
 
 # Full gates snapshot
 bash scripts&#47;ops&#47;pt_docs_gates_snapshot.sh

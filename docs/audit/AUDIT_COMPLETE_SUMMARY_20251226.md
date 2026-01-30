@@ -190,7 +190,7 @@ gh api repos/rauterfrank-ui/Peak_Trade/branches/main/protection \
 for sha in 9ede5aca 81315589 f047347b a4ad0993 230098ca 466a4e84 1395b31a; do
   echo "Testing $sha..."
   git checkout $sha
-  pytest --co -q  # Collect only, verify tests load
+  python3 -m pytest --co -q  # Collect only, verify tests load
 done
 git checkout main
 ```

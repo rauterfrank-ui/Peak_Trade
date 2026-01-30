@@ -57,16 +57,16 @@ Konfigurierbare Entscheidungskriterien mit:
 
 ```bash
 # Dry-Run Test
-python scripts/run_autonomous_workflow.py --once --dry-run --verbose
+python3 scripts/run_autonomous_workflow.py --once --dry-run --verbose
 
 # Produktiv-Ausführung
-python scripts/run_autonomous_workflow.py --once
+python3 scripts/run_autonomous_workflow.py --once
 
 # Continuous Mode
-python scripts/run_autonomous_workflow.py --continuous --poll-interval 300
+python3 scripts/run_autonomous_workflow.py --continuous --poll-interval 300
 
 # Mit Scheduler
-python scripts/run_scheduler.py \
+python3 scripts/run_scheduler.py \
   --config config/scheduler/jobs.toml \
   --include-tags autonomous
 ```
@@ -85,7 +85,7 @@ python scripts/run_scheduler.py \
 
 - **Hauptdokumentation**: `docs/AUTONOMOUS_AI_WORKFLOW.md`
 - **API-Dokumentation**: Siehe Module-Docstrings in `src/autonomous/`
-- **Tests**: `tests/test_autonomous_*.py`
+- **Tests**: `tests&#47;test_autonomous_*.py`
 
 ---
 
@@ -159,7 +159,7 @@ tests/
 
 ✅ **Empfohlen:**
 - Mit `--dry-run` starten
-- Alerts überwachen (`logs/autonomous_alerts.log`)
+- Alerts überwachen (`logs&#47;autonomous_alerts.log`)
 - Confidence-Thresholds konservativ wählen
 - Scheduler-Jobs schrittweise aktivieren
 
@@ -175,7 +175,7 @@ tests/
 tail -f logs/autonomous_alerts.log
 
 # Scheduler-Status prüfen
-python scripts/run_scheduler.py \
+python3 scripts/run_scheduler.py \
   --config config/scheduler/jobs.toml \
   --once --dry-run --verbose
 ```
@@ -186,7 +186,7 @@ python scripts/run_scheduler.py \
 
 - **CPU**: Minimal (< 1% im Idle)
 - **Memory**: ~50-100 MB pro Workflow-Engine-Instanz
-- **Disk**: Logs in `logs/autonomous_alerts.log`
+- **Disk**: Logs in `logs&#47;autonomous_alerts.log`
 - **Network**: Nur bei echten Workflow-Ausführungen
 
 ---
@@ -217,8 +217,8 @@ Geplante Erweiterungen:
 
 Bei Fragen oder Problemen:
 - Dokumentation: `docs/AUTONOMOUS_AI_WORKFLOW.md`
-- Tests: `python -m pytest tests/test_autonomous_*.py -v`
-- Dry-Run: `python scripts/run_autonomous_workflow.py --help`
+- Tests: `python3 -m pytest tests/test_autonomous_*.py -v`
+- Dry-Run: `python3 scripts/run_autonomous_workflow.py --help`
 
 ---
 

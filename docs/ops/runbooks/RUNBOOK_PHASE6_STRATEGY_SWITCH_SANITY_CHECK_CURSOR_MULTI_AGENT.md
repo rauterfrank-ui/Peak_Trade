@@ -172,7 +172,7 @@ allowed = ["ma_crossover", "rsi_reversion", "breakout", "s1", "s2", "s3"]  # 6 S
 
 ```bash
 # Healthy Config
-$ python scripts/run_strategy_switch_sanity_check.py --config config/config.toml
+$ python3 scripts/run_strategy_switch_sanity_check.py --config config/config.toml
 ✅ Strategy-Switch Sanity Check: OK
 Config:             config/config.toml
 active_strategy_id: ma_crossover
@@ -180,14 +180,14 @@ allowed:            ['ma_crossover', 'rsi_reversion', 'breakout']
 # Exit: 0
 
 # R&D Strategy in Allowed (Violation)
-$ python scripts/run_strategy_switch_sanity_check.py --config config/config_bad.toml
+$ python3 scripts/run_strategy_switch_sanity_check.py --config config/config_bad.toml
 ❌ Strategy-Switch Sanity Check: FAILED
 Violations:
   • Unerlaubte R&D-Strategie(n) in allowed: armstrong_cycle
 # Exit: 2
 
 # JSON Output (for CI)
-$ python scripts/run_strategy_switch_sanity_check.py --config config/config.toml --json
+$ python3 scripts/run_strategy_switch_sanity_check.py --config config/config.toml --json
 {"switch_sanity": {"enabled": true, "is_ok": true, "violations": [], ...}}
 # Exit: 0
 ```
@@ -198,7 +198,7 @@ $ python scripts/run_strategy_switch_sanity_check.py --config config/config.toml
 
 ```bash
 # Run Full Profile
-$ python scripts/run_test_health_profile.py --profile governance_strategy_switch_sanity
+$ python3 scripts/run_test_health_profile.py --profile governance_strategy_switch_sanity
 
 ======================================================================
 📊 Test Health Summary (v1)
@@ -212,7 +212,7 @@ Switch-Sanity:   ✅ OK
 ======================================================================
 
 # Skip Switch Sanity (if needed)
-$ python scripts/run_test_health_profile.py --profile weekly_core --skip-switch-sanity
+$ python3 scripts/run_test_health_profile.py --profile weekly_core --skip-switch-sanity
 ```
 
 ---
@@ -280,7 +280,7 @@ else:
 # .github/workflows/test_health.yml
 - name: Run Governance Switch Sanity
   run: |
-    python scripts/run_test_health_profile.py \
+    python3 scripts/run_test_health_profile.py \
       --profile governance_strategy_switch_sanity \
       --report-dir reports/test_health
 ```
@@ -296,7 +296,7 @@ else:
 
 ### Unit Tests (16 Tests) ✅
 ```bash
-pytest tests/governance/test_strategy_switch_sanity_check.py -v
+python3 -m pytest tests/governance/test_strategy_switch_sanity_check.py -v
 # 16 passed in 0.06s
 ```
 
@@ -315,7 +315,7 @@ pytest tests/governance/test_strategy_switch_sanity_check.py -v
 
 ### Integration Tests (7 Tests) ✅
 ```bash
-pytest tests/ops/test_test_health_v1.py::TestRunSwitchSanityCheck -v
+python3 -m pytest tests/ops/test_test_health_v1.py::TestRunSwitchSanityCheck -v
 # 7 passed in 0.09s
 ```
 
@@ -343,7 +343,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 **Verification**:
 ```bash
-python scripts/run_strategy_switch_sanity_check.py --help
+python3 scripts/run_strategy_switch_sanity_check.py --help
 # Should show help without import errors
 ```
 
@@ -358,7 +358,7 @@ python scripts/run_strategy_switch_sanity_check.py --help
 ls -la config/config.toml
 
 # Use absolute path if needed
-python scripts/run_strategy_switch_sanity_check.py --config /abs/path/to/config.toml
+python3 scripts/run_strategy_switch_sanity_check.py --config /abs/path/to/config.toml
 ```
 
 ---
@@ -372,7 +372,7 @@ python scripts/run_strategy_switch_sanity_check.py --config /abs/path/to/config.
 
 **Verification**:
 ```bash
-pytest tests/ops/test_ops_center_smoke.py::test_doctor_command_if_available -v
+python3 -m pytest tests/ops/test_ops_center_smoke.py::test_doctor_command_if_available -v
 # Should pass (accepts warn-only check failures)
 ```
 
@@ -385,7 +385,7 @@ pytest tests/ops/test_ops_center_smoke.py::test_doctor_command_if_available -v
 1. **Immediate Action**:
    ```bash
    # Check current config
-   python scripts/run_strategy_switch_sanity_check.py --config config/config.toml
+   python3 scripts/run_strategy_switch_sanity_check.py --config config/config.toml
 
    # Review violations
    cat reports/test_health/latest/switch_sanity.json
@@ -397,7 +397,7 @@ pytest tests/ops/test_ops_center_smoke.py::test_doctor_command_if_available -v
    vim config/config.toml
 
    # Verify fix
-   python scripts/run_strategy_switch_sanity_check.py --config config/config.toml
+   python3 scripts/run_strategy_switch_sanity_check.py --config config/config.toml
    ```
 
 3. **Re-run CI**:
@@ -461,13 +461,13 @@ git push
 
 ```bash
 # 1. Quick Check (standalone)
-python scripts/run_strategy_switch_sanity_check.py --config config/config.toml
+python3 scripts/run_strategy_switch_sanity_check.py --config config/config.toml
 
 # 2. Full Profile (TestHealthAutomation)
-python scripts/run_test_health_profile.py --profile governance_strategy_switch_sanity
+python3 scripts/run_test_health_profile.py --profile governance_strategy_switch_sanity
 
 # 3. Verify Tests
-pytest tests/governance/test_strategy_switch_sanity_check.py -v
+python3 -m pytest tests/governance/test_strategy_switch_sanity_check.py -v
 ```
 
 **Expected**: All commands should succeed (exit 0) for healthy config.

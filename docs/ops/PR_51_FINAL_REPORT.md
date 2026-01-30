@@ -50,23 +50,23 @@ $ python3 -m pytest tests/test_live_eval_io.py tests/test_live_eval_metrics.py -
 
 ```bash
 # Help
-python scripts/evaluate_live_session.py --help
+python3 scripts/evaluate_live_session.py --help
 
 # Evaluate session (text output)
-python scripts/evaluate_live_session.py --session-dir /path/to/session
+python3 scripts/evaluate_live_session.py --session-dir /path/to/session
 
 # Generate JSON report
-python scripts/evaluate_live_session.py \
+python3 scripts/evaluate_live_session.py \
   --session-dir /path/to/session \
   --write-report
 
 # JSON output (machine-readable)
-python scripts/evaluate_live_session.py \
+python3 scripts/evaluate_live_session.py \
   --session-dir /path/to/session \
   --format json
 
 # Strict mode (fail on invalid rows)
-python scripts/evaluate_live_session.py \
+python3 scripts/evaluate_live_session.py \
   --session-dir /path/to/session \
   --strict
 ```
@@ -194,7 +194,7 @@ ts,symbol,side,qty,fill_price
 
 ### Test Results
 ```bash
-python -m pytest tests/test_live_eval_io.py tests/test_live_eval_metrics.py -v
+python3 -m pytest tests/test_live_eval_io.py tests/test_live_eval_metrics.py -v
 # Expected: 19 passed (8 I/O + 11 metrics)
 ```
 

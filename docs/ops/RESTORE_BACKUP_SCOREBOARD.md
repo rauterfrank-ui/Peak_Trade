@@ -109,7 +109,7 @@ ruff format --check .
 ruff check .
 
 # 4. Pytest-Subset (schnell)
-pytest tests/ -k "not slow" --maxfail=3 -x
+python3 -m pytest tests/ -k "not slow" --maxfail=3 -x
 
 # 5. Push zu Remote
 git push -u origin recovered/<name>

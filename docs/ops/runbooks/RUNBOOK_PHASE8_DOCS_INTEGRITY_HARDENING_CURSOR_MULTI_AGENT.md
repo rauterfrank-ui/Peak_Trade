@@ -58,10 +58,6 @@
 cd /Users/frnkhrz/Peak_Trade
 
 # Using uv (recommended)
-uv run python scripts/ops/docs_graph_snapshot.py \
-  --out docs/_generated/docs_graph_snapshot.json
-
-# Or using python3
 python3 scripts/ops/docs_graph_snapshot.py \
   --out docs/_generated/docs_graph_snapshot.json
 ```

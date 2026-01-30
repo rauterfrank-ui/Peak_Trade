@@ -133,7 +133,7 @@ regime_mode = true
 
 ```bash
 # Beispiel: Backtest mit erweiterter Breakout-Strategie
-python scripts/research_cli.py backtest \
+python3 scripts/research_cli.py backtest \
     --strategy breakout_basic \
     --symbol BTC-EUR \
     --timeframe 1h \
@@ -145,7 +145,7 @@ python scripts/research_cli.py backtest \
 
 ```bash
 # Beispiel: Regime-Signale analysieren
-python scripts/research_cli.py backtest \
+python3 scripts/research_cli.py backtest \
     --strategy vol_regime_basic \
     --symbol BTC-EUR \
     --timeframe 1h \
@@ -194,13 +194,13 @@ Alle neuen Features sind in `tests/test_strategy_vol_regime_filter.py` getestet:
 
 ```bash
 # Alle Breakout-Tests
-pytest tests/test_strategy_breakout.py -v
+python3 -m pytest tests/test_strategy_breakout.py -v
 
 # Alle Vol-Regime-Filter-Tests
-pytest tests/test_strategy_vol_regime_filter.py -v
+python3 -m pytest tests/test_strategy_vol_regime_filter.py -v
 
 # Alle Strategy-Tests
-pytest tests/strategies/ -v
+python3 -m pytest tests/strategies/ -v
 ```
 
 ## Rückwärtskompatibilität

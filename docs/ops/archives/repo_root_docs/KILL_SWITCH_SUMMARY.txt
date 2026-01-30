@@ -101,19 +101,19 @@ CLI & Ops:
 📝 TESTS AUSFÜHREN
 
 # Alle Tests
-pytest tests/risk_layer/kill_switch/ -v
+python3 -m pytest tests/risk_layer/kill_switch/ -v
 
 # Nur State Machine
-pytest tests/risk_layer/kill_switch/test_state_machine.py -v
+python3 -m pytest tests/risk_layer/kill_switch/test_state_machine.py -v
 
 # Nur Triggers
-pytest tests/risk_layer/kill_switch/test_triggers.py -v
+python3 -m pytest tests/risk_layer/kill_switch/test_triggers.py -v
 
 # Integration Tests
-pytest tests/risk_layer/kill_switch/test_integration.py -v
+python3 -m pytest tests/risk_layer/kill_switch/test_integration.py -v
 
 # Mit Coverage
-pytest tests/risk_layer/kill_switch/ \
+python3 -m pytest tests/risk_layer/kill_switch/ \
   --cov=src/risk_layer/kill_switch \
   --cov-report=html
 

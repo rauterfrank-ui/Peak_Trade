@@ -76,7 +76,7 @@ PR_NUM=218 ./scripts/workflows/merge_and_format_sweep.sh
    - ✅ PR mergen (squash + branch delete)
    - ✅ main aktualisieren
    - ✅ Format-Sweep Branch erstellen
-   - ✅ `uv run pre-commit run --all-files` ausführen
+   - ✅ `pre-commit run --all-files` ausführen
    - ✅ Änderungen committen + pushen
    - ✅ Neuen PR erstellen
    - ✅ Optional: `large-pr-approved` Label setzen (falls >1200 Files)
@@ -121,7 +121,7 @@ Das Skript bricht ab bei:
 
 ### Pre-commit Hook Integration
 
-Das Skript führt `uv run pre-commit run --all-files` aus, was folgende Checks umfasst:
+Das Skript führt `pre-commit run --all-files` aus, was folgende Checks umfasst:
 - `fix end of files` (fügt newline am Dateiende hinzu)
 - `trim trailing whitespace`
 - `mixed line ending`

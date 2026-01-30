@@ -99,7 +99,7 @@ signal_threshold = 0.3
 
 ```bash
 # Beispiel: Backtest mit Regime-Aware Portfolio
-python scripts/research_cli.py backtest \
+python3 scripts/research_cli.py backtest \
     --strategy regime_aware_portfolio \
     --config-section portfolio.regime_aware_breakout_rsi \
     --symbol BTC-EUR \
@@ -141,10 +141,10 @@ Alle Features sind in `tests/test_regime_aware_portfolio.py` getestet:
 
 ```bash
 # Alle Regime-Aware Portfolio Tests
-pytest tests/test_regime_aware_portfolio.py -v
+python3 -m pytest tests/test_regime_aware_portfolio.py -v
 
 # Alle Strategy-Tests
-pytest tests/strategies/ -v
+python3 -m pytest tests/strategies/ -v
 ```
 
 ## Architektur

@@ -284,7 +284,7 @@ tests/execution/test_orchestrator.py::test_recon_handoff_snapshot_methods PASSED
 **Ruff:** ✅ All checks passed
 
 ```bash
-$ uv run ruff check src/execution/orchestrator.py tests/execution/test_orchestrator.py
+$ ruff check src/execution/orchestrator.py tests/execution/test_orchestrator.py
 All checks passed!
 ```
 

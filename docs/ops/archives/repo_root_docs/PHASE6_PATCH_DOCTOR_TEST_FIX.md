@@ -79,11 +79,11 @@ acceptable_exit = result.returncode == 0 or (result.returncode == 1 and has_warn
 
 ```bash
 # Specific test (fixed)
-$ uv run python -m pytest tests/ops/test_ops_center_smoke.py::test_doctor_command_if_available -v
+$ python3 -m pytest tests/ops/test_ops_center_smoke.py::test_doctor_command_if_available -v
 PASSED [100%] ✅
 
 # Full test suite (all ops_center tests)
-$ uv run python -m pytest tests/ops/test_ops_center_smoke.py -v
+$ python3 -m pytest tests/ops/test_ops_center_smoke.py -v
 9 passed in 8.29s ✅
 
 # Linter

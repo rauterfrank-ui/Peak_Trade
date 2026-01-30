@@ -227,7 +227,7 @@ diff .tmp/l4_critic_run1/critic_report.json .tmp/l4_critic_run2/critic_report.js
 
 6. **Verify fix:**
    ```bash
-   pytest tests/ai_orchestration/test_l4_critic_determinism_contract.py -v
+   python3 -m pytest tests/ai_orchestration/test_l4_critic_determinism_contract.py -v
    ```
 
 **Triage prompt:** See `PHASE4D_CURSOR_TRIAGE_PROMPT.md` for full AI-assisted triage workflow.

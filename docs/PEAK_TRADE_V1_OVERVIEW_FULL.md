@@ -470,7 +470,7 @@ Damit ist das Dashboard sowohl technisch beschrieben als auch praktisch bespielb
 
 2. **Research-Pipeline fahren:**
    ```bash
-   python scripts/research_cli.py portfolio \
+   python3 scripts/research_cli.py portfolio \
      --config config/config.toml \
      --portfolio-preset multi_style_moderate \
      --format both
@@ -478,7 +478,7 @@ Damit ist das Dashboard sowohl technisch beschrieben als auch praktisch bespielb
 
 3. **Portfolio-Robustness interpretieren:**
    ```bash
-   python scripts/run_portfolio_robustness.py \
+   python3 scripts/run_portfolio_robustness.py \
      --config config/config.toml \
      --portfolio-preset multi_style_moderate \
      --format both
@@ -505,17 +505,17 @@ Damit ist das Dashboard sowohl technisch beschrieben als auch praktisch bespielb
 
 1. **Morgens `live_ops health`:**
    ```bash
-   python scripts/live_ops.py health --config config/config.toml
+   python3 scripts/live_ops.py health --config config/config.toml
    ```
 
 2. **Portfolio-Status prüfen:**
    ```bash
-   python scripts/live_ops.py portfolio --config config/config.toml --json
+   python3 scripts/live_ops.py portfolio --config config/config.toml --json
    ```
 
 3. **Live-Status-Report generieren:**
    ```bash
-   python scripts/generate_live_status_report.py \
+   python3 scripts/generate_live_status_report.py \
      --config config/config.toml \
      --output-dir reports/live_status \
      --format markdown \
@@ -584,13 +584,13 @@ Damit ist das Dashboard sowohl technisch beschrieben als auch praktisch bespielb
 # [portfolio_recipes.multi_style_moderate] ist bereits definiert
 
 # 2. Basis-Research durchführen
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --format both
 
 # 3. Portfolio-Robustness analysieren
-python scripts/run_portfolio_robustness.py \
+python3 scripts/run_portfolio_robustness.py \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --format both
@@ -625,7 +625,7 @@ python scripts/run_portfolio_robustness.py \
 
 ```bash
 # 1. Health-Check
-python scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py health --config config/config.toml
 
 # Output zeigt:
 # - Config-Status (OK/FAIL)
@@ -634,7 +634,7 @@ python scripts/live_ops.py health --config config/config.toml
 # - Live-Risk-Konfiguration
 
 # 2. Portfolio-Status prüfen
-python scripts/live_ops.py portfolio \
+python3 scripts/live_ops.py portfolio \
   --config config/config.toml \
   --json
 
@@ -649,7 +649,7 @@ python scripts/live_ops.py portfolio \
 # Bei kritischen Alerts: Runbook ausführen
 
 # 4. Live-Status-Report generieren
-python scripts/generate_live_status_report.py \
+python3 scripts/generate_live_status_report.py \
   --config config/config.toml \
   --output-dir reports/live_status \
   --format markdown \
@@ -1083,10 +1083,10 @@ Phase 84 liefert einen **praxisnahen Demo-Walkthrough**, mit dem Operatoren in 1
 uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
 
 # 2. Shadow-Session (10 Steps)
-python scripts/run_execution_session.py --strategy ma_crossover --steps 10
+python3 scripts/run_execution_session.py --strategy ma_crossover --steps 10
 
 # 3. Registry prüfen
-python scripts/report_live_sessions.py --summary-only --stdout
+python3 scripts/report_live_sessions.py --summary-only --stdout
 
 # 4. Dashboard öffnen: http://127.0.0.1:8000/
 ```

@@ -100,7 +100,7 @@ git worktree prune -n  # No output (clean)
 
 **Command**:
 ```bash
-python -m pytest \
+python3 -m pytest \
   tests/test_execution_pipeline.py \
   tests/test_research_strategies.py \
   tests/test_live_session_runner.py \

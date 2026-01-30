@@ -43,7 +43,7 @@ mc_num_runs = 200
 
 # Erweiterte Stress-Tests für aggressives Profil
 run_stress_tests = true
-stress_scenarios = ["flash_crash", "high_volatility", "trend_reversal", "liquidity_crisis"]
+stress_scenarios = ["single_crash_bar", "vol_spike", "gap_down_open", "drawdown_extension"]
 stress_severity = 0.7
 
 format = "both"

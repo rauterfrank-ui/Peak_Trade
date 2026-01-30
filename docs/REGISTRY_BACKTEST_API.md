@@ -459,7 +459,7 @@ logging.basicConfig(level=logging.DEBUG)
 ```bash
 cd ~/Peak_Trade
 source .venv/bin/activate
-python scripts/demo_registry_backtest.py
+python3 scripts/demo_registry_backtest.py
 ```
 
 **Output:**

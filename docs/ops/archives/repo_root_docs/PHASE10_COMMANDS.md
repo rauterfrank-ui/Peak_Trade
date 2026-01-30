@@ -4,16 +4,16 @@
 
 ```bash
 # Help message
-python scripts/risk/run_var_backtest_suite_snapshot.py --help
+python3 scripts/risk/run_var_backtest_suite_snapshot.py --help
 
 # Basic synthetic demo
-python scripts/risk/run_var_backtest_suite_snapshot.py \\
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \\
     --use-synthetic \\
     --n-observations 500 \\
     --confidence 0.99
 
 # With real data
-python scripts/risk/run_var_backtest_suite_snapshot.py \\
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \\
     --returns-file data/portfolio_returns.csv \\
     --var-file data/var_estimates.csv \\
     --confidence 0.99
@@ -22,7 +22,7 @@ python scripts/risk/run_var_backtest_suite_snapshot.py \\
 ## With Phase 9A Duration Diagnostic
 
 ```bash
-python scripts/risk/run_var_backtest_suite_snapshot.py \\
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \\
     --use-synthetic \\
     --n-observations 500 \\
     --confidence 0.99 \\
@@ -32,7 +32,7 @@ python scripts/risk/run_var_backtest_suite_snapshot.py \\
 ## With Phase 9B Rolling Evaluation
 
 ```bash
-python scripts/risk/run_var_backtest_suite_snapshot.py \\
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \\
     --use-synthetic \\
     --n-observations 1000 \\
     --confidence 0.99 \\
@@ -44,7 +44,7 @@ python scripts/risk/run_var_backtest_suite_snapshot.py \\
 ## Full Diagnostics (9A + 9B)
 
 ```bash
-python scripts/risk/run_var_backtest_suite_snapshot.py \\
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \\
     --use-synthetic \\
     --n-observations 1000 \\
     --confidence 0.99 \\
@@ -56,7 +56,7 @@ python scripts/risk/run_var_backtest_suite_snapshot.py \\
 ## Console Output Only (No Report)
 
 ```bash
-python scripts/risk/run_var_backtest_suite_snapshot.py \\
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \\
     --use-synthetic \\
     --n-observations 500 \\
     --confidence 0.99 \\
@@ -66,7 +66,7 @@ python scripts/risk/run_var_backtest_suite_snapshot.py \\
 ## Custom Output Directory
 
 ```bash
-python scripts/risk/run_var_backtest_suite_snapshot.py \\
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \\
     --use-synthetic \\
     --n-observations 500 \\
     --confidence 0.99 \\
@@ -76,7 +76,7 @@ python scripts/risk/run_var_backtest_suite_snapshot.py \\
 ## Verbose Logging
 
 ```bash
-python scripts/risk/run_var_backtest_suite_snapshot.py \\
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \\
     --use-synthetic \\
     --n-observations 500 \\
     --confidence 0.99 \\
@@ -108,7 +108,7 @@ DATE=$(date +%Y%m%d)
 RETURNS="data/portfolio_returns_${DATE}.csv"
 VAR="data/var_estimates_${DATE}.csv"
 
-python scripts/risk/run_var_backtest_suite_snapshot.py \\
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \\
     --returns-file "$RETURNS" \\
     --var-file "$VAR" \\
     --confidence 0.99 \\
@@ -143,7 +143,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run VaR Backtest Suite
         run: |
-          python scripts/risk/run_var_backtest_suite_snapshot.py \\
+          python3 scripts/risk/run_var_backtest_suite_snapshot.py \\
             --returns-file data/returns.csv \\
             --var-file data/var.csv \\
             --confidence 0.99 \\
@@ -161,7 +161,7 @@ jobs:
 
 ```bash
 # Check exit code
-python scripts/risk/run_var_backtest_suite_snapshot.py \\
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \\
     --use-synthetic \\
     --n-observations 500 \\
     --confidence 0.99

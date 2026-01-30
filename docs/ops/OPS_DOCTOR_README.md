@@ -22,7 +22,7 @@ Der Ops Doctor prüft:
 ./scripts/ops/ops_doctor.sh
 
 # Oder direkt via Python
-python -m src.ops.doctor
+python3 -m src.ops.doctor
 ```
 
 ### JSON-Output

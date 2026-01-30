@@ -27,15 +27,15 @@
 - [x] Minimal local gates runnable:
   - [x] ruff format --check
     - **Status:** VERIFIED
-    - **Command:** `uv run ruff format --check .`
+    - **Command:** `ruff format --check .`
     - **Result:** Working (no Python files in docs/)
   - [x] ruff check
     - **Status:** VERIFIED
-    - **Command:** `uv run ruff check --select I,F401 src/`
+    - **Command:** `ruff check --select I,F401 src&#47;`
     - **Result:** Working (pre-existing findings not in M2 scope)
   - [x] pytest -q (targeted)
     - **Status:** VERIFIED
-    - **Command:** `uv run pytest --version`
+    - **Command:** `python3 -m pytest --version`
     - **Result:** pytest 9.0.2 operational
 
 - [ ] PR skeleton prepared (title/scope/verification/risk)
@@ -48,7 +48,7 @@
 
 - [ ] Audit gate status clarified (pip-audit ok OR remediation plan)
   - **Status:** TODO (CI_GUARDIAN)
-  - **Action:** Run `uv run pip-audit` and document findings
+  - **Action:** Run `pip-audit` and document findings
 
 - [ ] Docs reference targets safe (no accidental path-like text)
   - **Status:** TODO (CI_GUARDIAN)

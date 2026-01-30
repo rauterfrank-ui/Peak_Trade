@@ -138,27 +138,27 @@ Peak_Trade/
 
 **1. Einfacher Config-basierter Backtest:**
 ```bash
-python scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/USDT
+python3 scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/USDT
 ```
 
 **2. Mit Custom-Config:**
 ```bash
-python scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml
+python3 scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml
 ```
 
 **3. Portfolio-Backtest:**
 ```bash
-python scripts/run_portfolio_backtest.py --allocation equal
+python3 scripts/run_portfolio_backtest.py --allocation equal
 ```
 
 **4. Walk-Forward-Validation:**
 ```bash
-python scripts&#47;run_walkforward.py --strategy ma_crossover
+python3 scripts&#47;run_walkforward.py --strategy ma_crossover
 ```
 
 **5. Monte-Carlo-Simulation:**
 ```bash
-python scripts/run_monte_carlo.py --strategy rsi_reversion --runs 1000
+python3 scripts/run_monte_carlo.py --strategy rsi_reversion --runs 1000
 ```
 
 ### Dokumentation lesen
@@ -184,13 +184,13 @@ cat docs/STRATEGY_DEV_GUIDE.md
 
 ```bash
 # Alle Backtests anzeigen
-python scripts/list_experiments.py
+python3 scripts/list_experiments.py
 
 # Details eines spezifischen Runs
-python scripts/show_experiment.py <run_id>
+python3 scripts/show_experiment.py <run_id>
 
 # Nur Portfolio-Backtests
-python scripts/list_experiments.py --run-type portfolio_backtest
+python3 scripts/list_experiments.py --run-type portfolio_backtest
 ```
 
 ---
@@ -324,19 +324,19 @@ Die folgenden existierenden Dokumente behandeln verwandte Themen und wurden **ni
 
 2. **Ersten Backtest ausführen:**
    ```bash
-   python scripts/run_strategy_from_config.py --strategy ma_crossover
+   python3 scripts/run_strategy_from_config.py --strategy ma_crossover
    ```
 
 3. **Eigene Strategie entwickeln:**
    - Folge [docs/STRATEGY_DEV_GUIDE.md](docs/STRATEGY_DEV_GUIDE.md) Schritt 1-7
    - Registriere in `src/strategies/registry.py`
    - Config-Block in `config.toml` anlegen
-   - Testen mit `pytest -m smoke`
+   - Testen mit `python3 -m pytest -m smoke`
 
 4. **Erweiterte Features nutzen:**
    - Custom Position Sizer: [docs/BACKTEST_ENGINE.md#extension-hooks](docs/BACKTEST_ENGINE.md)
-   - Portfolio-Backtest: `python scripts&#47;run_portfolio_backtest.py`
-   - Walk-Forward: `python scripts&#47;run_walkforward.py --strategy ma_crossover`
+   - Portfolio-Backtest: `python3 scripts&#47;run_portfolio_backtest.py`
+   - Walk-Forward: `python3 scripts&#47;run_walkforward.py --strategy ma_crossover`
 
 ---
 

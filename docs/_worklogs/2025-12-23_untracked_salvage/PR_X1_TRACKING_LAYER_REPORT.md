@@ -127,7 +127,7 @@ pip install -e ".[tracking_mlflow]"
 
 ```bash
 # Mit Tracking (wenn enabled=true in config)
-python scripts/run_strategy_from_config.py
+python3 scripts/run_strategy_from_config.py
 
 # MLflow UI öffnen (wenn MLflow-Backend)
 mlflow ui --backend-store-uri ./mlruns
@@ -177,7 +177,7 @@ mlflow ui --backend-store-uri ./mlruns
 
 ```bash
 # Neue Tests ausführen
-pytest tests/core/test_tracking_noop.py tests/backtest/test_engine_tracking.py -v
+python3 -m pytest tests/test_tracking_noop.py tests/backtest/test_engine_tracking.py -v
 # → 8/8 passed ✅
 ```
 
@@ -280,11 +280,11 @@ tracker = build_tracker_from_config(config)
 
 ```bash
 # Tracking-Tests
-pytest tests/core/test_tracking_noop.py -v
+python3 -m pytest tests/test_tracking_noop.py -v
 # → 3/3 passed
 
 # Backtest-Integration-Tests
-pytest tests/backtest/test_engine_tracking.py -v
+python3 -m pytest tests/backtest/test_engine_tracking.py -v
 # → 5/5 passed
 ```
 
@@ -292,7 +292,7 @@ pytest tests/backtest/test_engine_tracking.py -v
 
 ```bash
 # Config: tracking.enabled = false (default)
-python scripts/run_strategy_from_config.py
+python3 scripts/run_strategy_from_config.py
 # → Sollte normal laufen (kein Tracking)
 ```
 
@@ -306,7 +306,7 @@ backend = "noop"
 ```
 
 ```bash
-python scripts/run_strategy_from_config.py
+python3 scripts/run_strategy_from_config.py
 # → Sollte normal laufen (NoopTracker aktiv)
 # → Keine Ausgabe zu Tracking
 ```
@@ -331,7 +331,7 @@ experiment_name = "test"
 
 ```bash
 # Runner ausführen
-python scripts/run_strategy_from_config.py
+python3 scripts/run_strategy_from_config.py
 # → Sollte normal laufen + MLflow-Logs
 
 # MLflow UI öffnen
@@ -417,7 +417,7 @@ pip install mlflow
 
 **Schritt 3**: Runner ausführen
 ```bash
-python scripts/run_strategy_from_config.py
+python3 scripts/run_strategy_from_config.py
 ```
 
 ---

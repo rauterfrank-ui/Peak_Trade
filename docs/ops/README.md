@@ -392,7 +392,7 @@ ls -t reports/audit/**/sbom.json | head -1
 **Q: Nur Security-Scan ohne Tests?**
 ```bash
 # pip-audit direkt ausführen
-uv run pip-audit --desc
+pip-audit --desc
 ```
 
 ---
@@ -430,10 +430,10 @@ scripts/ops/ops_center.sh risk component-var --returns data.csv --alpha 0.99
 scripts/ops/ops_center.sh shadow smoke
 
 # Direct Execution
-python scripts/shadow_run_tick_to_ohlcv_smoke.py
+python3 scripts/shadow_run_tick_to_ohlcv_smoke.py
 
 # Run Tests
-pytest tests/data/shadow/ -q
+python3 -m pytest tests/data/shadow/ -q
 ```
 
 **Features:**
@@ -558,7 +558,7 @@ jq . reports/ops/ci_health_latest.json
 python3 scripts/ops/validate_workflow_dispatch_guards.py --paths .github/workflows --fail-on-warn
 
 # Run tests
-uv run pytest -q tests/ops/test_validate_workflow_dispatch_guards.py
+python3 -m pytest -q tests/ops/test_validate_workflow_dispatch_guards.py
 ```
 
 **Documentation:**
@@ -741,19 +741,19 @@ scripts/ops/ops_center.sh doctor
 **Quick Commands:**
 ```bash
 # Run validator on changed files (PR mode)
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 
 # Run validator on specific directory
-uv run python scripts/ops/validate_docs_token_policy.py docs/ops/
+python3 scripts/ops/validate_docs_token_policy.py docs/ops/
 
 # Run full test suite
-uv run python -m pytest tests/ops/test_validate_docs_token_policy.py -v
+python3 -m pytest tests/ops/test_validate_docs_token_policy.py -v
 ```
 
 **When Gate Fails:**
 1. Read CI log for violations (e.g., ``Line 42: scripts&#47;example.py (ILLUSTRATIVE)``)
 2. Fix: Encode ``&#47;`` as `&#47;` for illustrative paths (e.g., `scripts&#47;example.py`)
-3. Re-run validator locally: ``uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --changed``
+3. Re-run validator locally: ``python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed``
 4. Push fix
 
 **Token Classifications (7 types):**
@@ -815,7 +815,7 @@ Das Verhalten ist durch ein "Golden Corpus" an Fixtures abgedeckt (Regressionssi
 
 **Pytest Tests:**
 ```bash
-pytest -q tests/ops/test_verify_docs_reference_targets_script.py
+python3 -m pytest -q tests/ops/test_verify_docs_reference_targets_script.py
 ```
 
 ---
@@ -1207,8 +1207,8 @@ gh auth login
 
 # Python (3.x bevorzugt)
 python3 --version
-# oder
-python --version
+# Falls `python` vorhanden ist, ist das äquivalent:
+# python --version
 ```
 
 ### Python-Module
@@ -1381,10 +1381,10 @@ tests/integration/test_ops_pr_tools.py
 
 ```bash
 # Einzelner Test
-pytest tests/test_ops_merge_log_workflow_wrapper.py -v
+python3 -m pytest tests/test_ops_merge_log_workflow_wrapper.py -v
 
 # Alle Ops-Tests
-pytest tests/ -k "ops" -v
+python3 -m pytest tests/ -k "ops" -v
 ```
 
 ---
@@ -1909,7 +1909,7 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 **Quick Start:**
 ```bash
 # Generate local placeholder reports
-python scripts/ops/placeholders/generate_placeholder_reports.py
+python3 scripts/ops/placeholders/generate_placeholder_reports.py
 
 # View reports (not committed)
 cat .ops_local/inventory/TODO_PLACEHOLDER_INVENTORY.md
@@ -2188,6 +2188,7 @@ Post-merge documentation logs for operational PRs.
 - [PR #599](PR_599_MERGE_LOG.md) — docs(ops): add audit artifacts v0 (evidence index + risk register) (merged 2026-01-07) <!-- PR-599-MERGE-LOG -->
 - [PR #596](PR_596_MERGE_LOG.md) — docs(ops): add placeholder standards v0 (policy + deterministic generator) (merged 2026-01-07) <!-- PR-596-MERGE-LOG -->
 - [PR #429](PR_429_MERGE_LOG.md) — docs(risk): Phase 11 – VaR Backtest Suite UX & Docs-Verkabelung (merged 2025-12-29) <!-- PR-429-MERGE-LOG -->
+- PR 1080 — [PR_1080_MERGE_LOG.md](merge_logs/PR_1080_MERGE_LOG.md)
 
 ### Closeout Logs
 

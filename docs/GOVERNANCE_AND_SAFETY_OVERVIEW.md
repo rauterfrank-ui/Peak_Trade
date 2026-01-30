@@ -171,7 +171,7 @@ Research-Code darf Live-Endpoints **niemals** versehentlich erreichen können.
 2. **Risk-Analyse**: Reviewer prüft Auswirkungen
 3. **Freigabe**: Owner genehmigt bei positiver Risk-Analyse
 4. **Dokumentation**: Änderung in Changelog dokumentieren
-5. **Umsetzung**: Änderung in `config.toml` mit Commit-Message
+5. **Umsetzung**: Änderung in `config/config.toml` mit Commit-Message
 
 **Zwei-Augen-Prinzip:**
 - Änderungen an `[live_risk]` erfordern **immer** Review
@@ -214,7 +214,7 @@ Neben formaler Governance (Freigaben, Checklisten) werden regelmäßig **Inciden
 
 ### 4.5 Live Status Reports
 
-Regelmäßige Status-Reports (z.B. daily/weekly) sind Teil der operativen Governance und Monitoring-Strategie. Reports werden mit [`generate_live_status_report.py`](../scripts/generate_live_status_report.py) generiert und dokumentieren den aktuellen Systemzustand (Health, Portfolio, Risk).
+Regelmäßige Status-Reports (z.B. daily/weekly) sind Teil der operativen Governance und Monitoring-Strategie. Reports werden mit [`scripts/generate_live_status_report.py`](../scripts/generate_live_status_report.py) generiert und dokumentieren den aktuellen Systemzustand (Health, Portfolio, Risk).
 
 **Empfohlene Frequenz:**
 - **Daily**: Schneller Health-Check (Markdown)
@@ -297,15 +297,15 @@ Jeder Run-Report enthält:
 
 **GitHub Actions PR-Gate:**
 
-Automatische Policy-Prüfung für kritische Pfade (`src/live/**`, `src/execution/**`, `src/exchange/**`, `config/**`):
+Automatische Policy-Prüfung für kritische Pfade (`src&#47;live&#47;**`, `src&#47;execution&#47;**`, `src&#47;exchange&#47;**`, `config&#47;**`):
 - Exit-Code 2 → CI fail
 - JSON Summary als Artifact
 - Job Summary mit Violations + Testplan
 
 **Siehe:**
-- [`src/governance/policy_critic/README.md`](../src/governance/policy_critic/README.md) - Vollständige Dokumentation
+- Policy Critic (Code): `src/governance/policy_critic/README.md` – Vollständige Dokumentation
 - [`docs/governance/LLM_POLICY_CRITIC_CHARTER.md`](governance/LLM_POLICY_CRITIC_CHARTER.md) - Governance-Charter
-- [`src/governance/policy_critic/auto_apply_gate.py`](../src/governance/policy_critic/auto_apply_gate.py) - Integration-API
+- Policy Critic Gate (Code): `src/governance/policy_critic/auto_apply_gate.py` – Integration-API
 
 ---
 
@@ -347,7 +347,7 @@ Phase 25 ergänzt den **organisatorischen Layer**:
 | `LIVE_READINESS_CHECKLISTS.md` | Checklisten für Stufen-Übergänge |
 | `PHASE_23_LIVE_TESTNET_BLUEPRINT.md` | Technischer Blueprint |
 | `PHASE_24_SHADOW_EXECUTION.md` | Shadow-Execution-Dokumentation |
-| [`governance/LLM_POLICY_CRITIC_CHARTER.md`](governance/LLM_POLICY_CRITIC_CHARTER.md) | LLM Policy Critic: Read-only Governance-Layer für automatisierte Safety-Reviews |
+| [governance/LLM_POLICY_CRITIC_CHARTER.md](governance/LLM_POLICY_CRITIC_CHARTER.md) | LLM Policy Critic: Read-only Governance-Layer für automatisierte Safety-Reviews |
 
 ---
 

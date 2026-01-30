@@ -27,19 +27,7 @@ Strategie-Logik, Execution-Pfade, Fees-Handling, Positionstracking etc. testen �
 ```bash
 scripts/run_offline_realtime_ma_crossover.py
 ```
-
-* Reporting-Modul vorhanden:
-
-```bash
-src/offline/offline_realtime_report.py
-```
-
-* Optional/empfohlen: Meta-Report-Modul
-
-```bash
-src/offline/offline_realtime_meta_report.py
-scripts/offline_realtime_meta_report.py
-```
+* Reports werden pro Run unter `reports&#47;offline_realtime_pipeline&#47;<run_id>&#47;` erzeugt (siehe Abschnitt 5).
 
 ---
 
@@ -50,7 +38,7 @@ scripts/offline_realtime_meta_report.py
 Einfachster Start:
 
 ```bash
-python scripts/run_offline_realtime_ma_crossover.py
+python3 scripts/run_offline_realtime_ma_crossover.py
 ```
 
 Was passiert:
@@ -63,7 +51,7 @@ Was passiert:
 6. Report wird erzeugt unter:
 
 ```text
-reports&#47;offline_realtime_pipeline&#47;<run_id>&#47;
+reports/offline_realtime_pipeline/<run_id>/
   ├── summary.json
   ├── summary.md
   └── summary.html
@@ -83,8 +71,8 @@ Im Terminal siehst du am Ende u.a.:
 Dein „Standard"-Beispiel:
 
 ```bash
-python scripts/run_offline_realtime_ma_crossover.py \
-  --symbol BTC&#47;EUR \
+python3 scripts/run_offline_realtime_ma_crossover.py \
+  --symbol BTC/EUR \
   --n-steps 1000 \
   --n-regimes 5 \
   --fast-window 10 \
@@ -120,8 +108,8 @@ python scripts/run_offline_realtime_ma_crossover.py \
 Kurz, kleiner Run zum Checken, ob alles funktioniert:
 
 ```bash
-python scripts/run_offline_realtime_ma_crossover.py \
-  --symbol BTC&#47;EUR \
+python3 scripts/run_offline_realtime_ma_crossover.py \
+  --symbol BTC/EUR \
   --n-steps 500 \
   --n-regimes 3 \
   --fast-window 10 \
@@ -142,8 +130,8 @@ Schnell sehen, ob:
 Mehr Last auf Strategie + Pipeline:
 
 ```bash
-python scripts/run_offline_realtime_ma_crossover.py \
-  --symbol BTC&#47;EUR \
+python3 scripts/run_offline_realtime_ma_crossover.py \
+  --symbol BTC/EUR \
   --n-steps 20000 \
   --n-regimes 3 \
   --fast-window 20 \
@@ -161,8 +149,8 @@ Zweck:
 ### 4.3 „Regime-Varianz" – mehr Regimes, wilderes Verhalten
 
 ```bash
-python scripts/run_offline_realtime_ma_crossover.py \
-  --symbol BTC&#47;EUR \
+python3 scripts/run_offline_realtime_ma_crossover.py \
+  --symbol BTC/EUR \
   --n-steps 10000 \
   --n-regimes 5 \
   --fast-window 15 \
@@ -182,8 +170,8 @@ Mehrere Runs mit verschiedenen Seeds:
 
 ```bash
 for s in 1 2 3 4 5; do
-  python scripts/run_offline_realtime_ma_crossover.py \
-    --symbol BTC&#47;EUR \
+  python3 scripts/run_offline_realtime_ma_crossover.py \
+    --symbol BTC/EUR \
     --n-steps 5000 \
     --n-regimes 3 \
     --fast-window 20 \
@@ -206,7 +194,7 @@ Zweck:
 Pro Run:
 
 ```text
-reports&#47;offline_realtime_pipeline&#47;<run_id>&#47;
+reports/offline_realtime_pipeline/<run_id>/
   ├── summary.json
   ├── summary.md
   └── summary.html
@@ -237,18 +225,21 @@ reports&#47;offline_realtime_pipeline&#47;<run_id>&#47;
 
 ### 5.2 Meta-Overview über mehrere Runs
 
-Wenn du das Meta-Report-Skript implementiert hast:
+Wenn du ein Meta-Overview über mehrere Runs willst:
+
+> **Hinweis:** Es gibt aktuell kein dediziertes Meta-Report-Script im Repo (z.B. `offline_realtime_meta_report.py`).
+> (Das ist nur als optionales Follow-up erwähnt.)
 
 ```bash
-python scripts/offline_realtime_meta_report.py \
-  --limit 50
+# Beispiel (quick & dirty): die letzten summary.json Dateien finden
+ls -lt reports/offline_realtime_pipeline/*/summary.json | head -50
 ```
 
 Standard-Ausgabe:
 
 ```text
-reports&#47;offline_realtime_pipeline&#47;OVERVIEW.md
-reports&#47;offline_realtime_pipeline&#47;OVERVIEW.html
+reports/offline_realtime_pipeline/OVERVIEW.md
+reports/offline_realtime_pipeline/OVERVIEW.html
 ```
 
 Typische Inhalte:
@@ -305,8 +296,8 @@ Ganz wichtige Punkte:
 1. **Smoke-Test laufen lassen**
 
    ```bash
-   python scripts/run_offline_realtime_ma_crossover.py \
-     --symbol BTC&#47;EUR \
+   python3 scripts/run_offline_realtime_ma_crossover.py \
+     --symbol BTC/EUR \
      --n-steps 500 \
      --n-regimes 3 \
      --fast-window 10 \
@@ -327,7 +318,7 @@ Ganz wichtige Punkte:
 4. **Overview aktualisieren**
 
    ```bash
-   python scripts/offline_realtime_meta_report.py --limit 50
+   # Aktuell gibt es kein Meta-Report-Skript im Repo; siehe 5.2 für Alternativen.
    ```
 
    * `OVERVIEW.md` im Repo checken
@@ -525,8 +516,6 @@ Bis dahin reicht diese Heuristik-Sektion als praktischer „Mental-Check", um Of
 - `scripts/run_offline_realtime_ma_crossover.py` – Das Haupt-Script
 - `src/execution/pipeline.py` – Execution-Pipeline
 - `src/orders/paper.py` – Paper-Order-Executor
-- "src\/offline\/offline_realtime_report.py" (future) – Report-Modul
-- "src\/offline\/offline_realtime_meta_report.py" (future) – Meta-Report-Modul (optional)
 
 ---
 

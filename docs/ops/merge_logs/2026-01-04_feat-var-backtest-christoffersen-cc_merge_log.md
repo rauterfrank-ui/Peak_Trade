@@ -59,13 +59,13 @@ This merge log documents PR #422 implementation. PR #543 (this PR) only adds doc
 
 ### Tests
 ```bash
-pytest tests/risk/validation/test_christoffersen.py -v
+python3 -m pytest tests/risk/validation/test_christoffersen.py -v
 # Result: 47/47 passed
 ```
 
 ### CLI Smoke Test
 ```bash
-python scripts/risk/run_var_backtest.py \
+python3 scripts/risk/run_var_backtest.py \
   --returns-file tests/fixtures/var/returns_100d.csv \
   --var-file tests/fixtures/var/var_95.csv \
   --confidence 0.95 \
@@ -102,20 +102,20 @@ python scripts/risk/run_var_backtest.py \
 
 ```bash
 # Alle Tests ausführen (empfohlen)
-python scripts/risk/run_var_backtest.py \
+python3 scripts/risk/run_var_backtest.py \
   --returns-file data/returns.csv \
   --var-file data/var.csv \
   --confidence 0.95 \
   --tests all
 
 # Nur Independence Test
-python scripts/risk/run_var_backtest.py \
+python3 scripts/risk/run_var_backtest.py \
   --returns-file data/returns.csv \
   --var-file data/var.csv \
   --tests ind
 
 # Nur Conditional Coverage
-python scripts/risk/run_var_backtest.py \
+python3 scripts/risk/run_var_backtest.py \
   --returns-file data/returns.csv \
   --var-file data/var.csv \
   --tests cc

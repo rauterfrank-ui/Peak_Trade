@@ -313,11 +313,11 @@ if portfolio_drawdown < -0.15:
 ### 3. CLI
 
 ```bash
-python -m src.risk_layer.kill_switch.cli status
-python -m src.risk_layer.kill_switch.cli trigger --reason "Wartung" --confirm
-python -m src.risk_layer.kill_switch.cli recover --code "..." --reason "..."
-python -m src.risk_layer.kill_switch.cli audit --limit 50
-python -m src.risk_layer.kill_switch.cli health
+python3 -m src.risk_layer.kill_switch.cli status
+python3 -m src.risk_layer.kill_switch.cli trigger --reason "Wartung" --confirm
+python3 -m src.risk_layer.kill_switch.cli recover --code "..." --reason "..."
+python3 -m src.risk_layer.kill_switch.cli audit --limit 50
+python3 -m src.risk_layer.kill_switch.cli health
 ```
 
 ## 📊 Monitoring & Observability
@@ -358,7 +358,7 @@ kill_switch_recovery_duration_seconds
 - [ ] Approval Code in Env: `KILL_SWITCH_APPROVAL_CODE`
 - [ ] Data Directories erstellt: `data&#47;kill_switch&#47;{state,audit}`
 - [ ] Permissions: Operator kennt Approval Code
-- [ ] Tests grün: `pytest tests&#47;risk_layer&#47;kill_switch&#47;`
+- [ ] Tests grün: `python3 -m pytest tests&#47;risk_layer&#47;kill_switch&#47;`
 - [ ] Runbook bekannt: `docs/ops/KILL_SWITCH_RUNBOOK.md`
 
 ## 🔄 Dependencies

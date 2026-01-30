@@ -193,7 +193,7 @@ User Journey:
 ### Local Tests
 ```bash
 # All gates passed
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed
 # Exit: 0
 
 bash scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main

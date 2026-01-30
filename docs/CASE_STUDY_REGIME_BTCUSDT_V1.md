@@ -183,7 +183,7 @@ Walk-Forward- und Monte-Carlo-Validierung sind erforderlich, um die Robustheit d
 
 **CLI-Kommando:**
 ```bash
-python scripts/generate_backtest_report.py \
+python3 scripts/generate_backtest_report.py \
   --config config/sweeps/regime_aware_portfolio_conservative.toml \
   --override "portfolio.regime_scales.risk_off=0.0" \
   --with-regime \
@@ -232,7 +232,7 @@ python scripts/generate_backtest_report.py \
 
 **CLI-Kommando:**
 ```bash
-python scripts/research_cli.py pipeline \
+python3 scripts/research_cli.py pipeline \
   --config config/config.toml \
   --sweep-name regime_aware_portfolio_conservative \
   --run-walkforward \
@@ -255,13 +255,12 @@ python scripts/research_cli.py pipeline \
 
 **CLI-Kommando:**
 ```bash
-python scripts/research_cli.py pipeline \
+python3 scripts/research_cli.py pipeline \
   --config config/config.toml \
   --sweep-name regime_aware_portfolio_conservative \
   --run-montecarlo \
-  --mc-simulations 1000 \
-  --format both \
-  --output reports/regime_btcusdt_montecarlo.md
+  --mc-num-runs 1000 \
+  --format both
 ```
 
 ---
@@ -281,10 +280,13 @@ python scripts/research_cli.py pipeline \
 
 **CLI-Kommando:**
 ```bash
-python scripts/run_stress_tests.py \
+python3 scripts/run_stress_tests.py \
+  --sweep-name <SWEEP_NAME> \
   --config config/config.toml \
-  --scenario flash_crash \
-  --output reports/regime_btcusdt_stress_flash_crash.md
+  --top-n 1 \
+  --scenarios single_crash_bar vol_spike \
+  --severity 0.15 \
+  --format md
 ```
 
 #### Experiment 7: Regime-Misklassifikation Stress (Priorität: Niedrig)
@@ -323,23 +325,23 @@ python scripts/run_stress_tests.py \
 
 | Artefakt | Pfad |
 |----------|------|
-| Backtest-Report (Baseline) | `reports/regime_aware_btcusdt_baseline.md` |
-| Equity-Curve mit Regime-Overlay | `reports/plots/equity_regime_overlay.png` |
-| Regime-Contribution-Bars | `reports/plots/regime_contribution.png` |
+| Backtest-Report (Baseline) | `reports&#47;regime_aware_btcusdt_baseline.md` |
+| Equity-Curve mit Regime-Overlay | `reports&#47;plots&#47;equity_regime_overlay.png` |
+| Regime-Contribution-Bars | `reports&#47;plots&#47;regime_contribution.png` |
 
 ### 6.3 Test-Abdeckung
 
 ```bash
 # Regime-Reporting Tests
-pytest tests/test_reporting_regime_reporting.py -v          # 9 passed
-pytest tests/test_reporting_regime_backtest_integration.py -v  # 3 passed
-pytest tests/test_reporting_regime_experiment_report.py -v     # 3 passed
+python3 -m pytest tests/test_reporting_regime_reporting.py -v          # 9 passed
+python3 -m pytest tests/test_reporting_regime_backtest_integration.py -v  # 3 passed
+python3 -m pytest tests/test_reporting_regime_experiment_report.py -v     # 3 passed
 
 # Gesamte Reporting-Suite
-pytest tests/test_reporting*.py -q                          # 130 passed
+python3 -m pytest tests/test_reporting*.py -q                          # 130 passed
 
 # Regime-Aware Portfolio Sweeps
-pytest tests/test_regime_aware_portfolio_sweeps.py -v       # 17 passed
+python3 -m pytest tests/test_regime_aware_portfolio_sweeps.py -v       # 17 passed
 ```
 
 ### 6.4 Versionierung

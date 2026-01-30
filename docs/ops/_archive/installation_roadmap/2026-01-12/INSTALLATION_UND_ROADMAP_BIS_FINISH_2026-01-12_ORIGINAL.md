@@ -238,10 +238,10 @@ git log --oneline -5
 
 ```bash
 # Python-Version prüfen
-python --version  # Sollte 3.11+ sein
+python3 --version  # Sollte 3.11+ sein
 
 # Virtual Environment erstellen
-python -m venv .venv
+python3 -m venv .venv
 
 # Aktivieren
 source .venv/bin/activate  # macOS/Linux
@@ -252,7 +252,7 @@ source .venv/bin/activate  # macOS/Linux
 **Verifikation:**
 ```bash
 which python  # Sollte auf .venv/bin/python zeigen
-python --version
+python3 --version
 ```
 
 ### Schritt 4: Dependencies installieren
@@ -419,16 +419,16 @@ Peak_Trade/
 
 ```bash
 # Python-Imports prüfen
-python -c "from src.core.peak_config import load_config; print('✅ Imports OK')"
-python -c "from src.backtest.engine import BacktestEngine; print('✅ Backtest-Engine OK')"
-python -c "from src.strategies.registry import list_strategies; print('✅ Strategy-Registry OK')"
+python3 -c "from src.core.peak_config import load_config; print('✅ Imports OK')"
+python3 -c "from src.backtest.engine import BacktestEngine; print('✅ Backtest-Engine OK')"
+python3 -c "from src.strategies.registry import list_strategies; print('✅ Strategy-Registry OK')"
 ```
 
 #### 7.2 Config laden
 
 ```bash
 # Config-Loading testen
-python -c "
+python3 -c "
 from src.core.peak_config import load_config
 cfg = load_config('config.toml')
 print(f'✅ Config geladen: {cfg.get(\"general.active_strategy\")}')
@@ -439,7 +439,7 @@ print(f'✅ Config geladen: {cfg.get(\"general.active_strategy\")}')
 
 ```bash
 # Verfügbare Strategien anzeigen
-python -c "
+python3 -c "
 from src.strategies.registry import list_strategies
 strategies = list_strategies()
 print(f'✅ {len(strategies)} Strategien verfügbar:')
@@ -454,7 +454,7 @@ for s in strategies[:5]:
 
 ```bash
 # Schnelle Smoke-Tests (< 1 Sekunde)
-pytest -m smoke -q
+python3 -m pytest -m smoke -q
 
 # Erwartete Ausgabe:
 # ............................ [100%]
@@ -465,7 +465,7 @@ pytest -m smoke -q
 
 ```bash
 # Erster Backtest mit Dummy-Daten
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy ma_crossover \
   --symbol BTC/USDT \
   --bars 100 \
@@ -486,7 +486,7 @@ python scripts/run_backtest.py \
 
 ```bash
 # System-Health-Check
-python scripts/live_ops.py health --config config.toml
+python3 scripts/live_ops.py health --config config/config.toml
 
 # Erwartete Ausgabe:
 # 🏥 Peak_Trade Live/Testnet Health Check
@@ -502,14 +502,14 @@ python scripts/live_ops.py health --config config.toml
 
 ```bash
 # Alle Tests ausführen
-pytest -q
+python3 -m pytest -q
 
 # Erwartete Ausgabe:
 # ........................................................ [100%]
 # 1316 passed, 4 skipped in 68.45s
 
 # Mit Coverage
-pytest --cov=src --cov-report=html
+python3 -m pytest --cov=src --cov-report=html
 
 # Coverage-Report öffnen
 open htmlcov/index.html  # macOS
@@ -521,7 +521,7 @@ xdg-open htmlcov/index.html  # Linux
 
 ```bash
 # Web-Dashboard starten
-python scripts/live_web_server.py
+python3 scripts/live_web_server.py
 
 # Erwartete Ausgabe:
 # INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
@@ -535,7 +535,7 @@ open http://127.0.0.1:8000
 
 ```bash
 # Portfolio-Preset testen
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset rsi_reversion_conservative \
   --format both
@@ -558,9 +558,9 @@ INSTALLATION ERFOLGREICH WENN:
 □ Dependencies installiert (pip list | grep pandas)
 □ config.toml existiert
 □ Imports funktionieren
-□ pytest -m smoke grün (< 1 Sek)
-□ python scripts/run_backtest.py läuft durch
-□ python scripts/live_ops.py health zeigt OK
+□ python3 -m pytest -m smoke grün (< 1 Sek)
+□ python3 scripts/run_backtest.py läuft durch
+□ python3 scripts/live_ops.py health zeigt OK
 □ Verzeichnisse data/, reports/, logs/ existieren
 ```
 
@@ -568,12 +568,12 @@ INSTALLATION ERFOLGREICH WENN:
 
 | Test | Command | Erwartete Zeit | Erwartetes Ergebnis |
 |------|---------|----------------|---------------------|
-| **Imports** | `python -c "from src.core import *"` | < 1s | Keine Fehler |
-| **Config** | `python -c "from src.core.peak_config import load_config; load_config()"` | < 1s | Config geladen |
-| **Smoke-Tests** | `pytest -m smoke -q` | < 1s | 28 passed |
-| **Backtest** | `python scripts/run_backtest.py --bars 100` | < 5s | Stats angezeigt |
-| **Health** | `python scripts/live_ops.py health` | < 2s | Status: OK |
-| **Registry** | `python scripts/list_experiments.py --limit 5` | < 1s | Experiments-Liste |
+| **Imports** | `python3 -c "from src.core import *"` | < 1s | Keine Fehler |
+| **Config** | `python3 -c "from src.core.peak_config import load_config; load_config()"` | < 1s | Config geladen |
+| **Smoke-Tests** | `python3 -m pytest -m smoke -q` | < 1s | 28 passed |
+| **Backtest** | `python3 scripts/run_backtest.py --bars 100` | < 5s | Stats angezeigt |
+| **Health** | `python3 scripts/live_ops.py health` | < 2s | Status: OK |
+| **Registry** | `python3 scripts/list_experiments.py --limit 5` | < 1s | Experiments-Liste |
 
 ### Troubleshooting
 
@@ -585,7 +585,7 @@ export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 
 # Lösung 2: Aus Projekt-Root ausführen
 cd /Users/frnkhrz/Peak_Trade
-python scripts/run_backtest.py
+python3 scripts/run_backtest.py
 
 # Lösung 3: Editable Install
 pip install -e .
@@ -598,7 +598,7 @@ pip install -e .
 cp config.toml.example config.toml
 
 # Oder explizit angeben
-python scripts/run_backtest.py --config config.toml
+python3 scripts/run_backtest.py --config config/config.toml
 ```
 
 **Problem:** `Exchange connection failed`
@@ -615,13 +615,13 @@ grep -A 5 "\[exchange\]" config.toml
 
 ```bash
 # Einzelne Test-Datei ausführen
-pytest tests/test_backtest_smoke.py -v
+python3 -m pytest tests/test_backtest_smoke.py -v
 
 # Mit mehr Details
-pytest tests/test_backtest_smoke.py -vv --tb=long
+python3 -m pytest tests/test_backtest_smoke.py -vv --tb=long
 
 # Nur fehlgeschlagene Tests
-pytest --lf -v
+python3 -m pytest --lf -v
 ```
 
 ---

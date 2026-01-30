@@ -31,25 +31,25 @@ Phase 3 implementiert die vollständige **Optuna-Integration** für hyperparamet
 
 ```bash
 # Basic single-objective optimization
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --n-trials 100
 
 # Multi-objective (Sharpe + Drawdown)
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --objectives sharpe,max_drawdown \
     --n-trials 200
 
 # Mit persistent storage
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy rsi_reversion \
     --storage sqlite:///optuna_studies.db \
     --study-name rsi_opt_v1 \
     --n-trials 50
 
 # Parallel trials
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy breakout_donchian \
     --n-trials 100 \
     --jobs 4
@@ -147,7 +147,7 @@ def objective_single(
 
 **CLI**:
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --objectives sharpe \
     --n-trials 100
@@ -190,7 +190,7 @@ def objective_multi(
 
 **CLI**:
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --objectives sharpe,max_drawdown,win_rate \
     --n-trials 200
@@ -252,7 +252,7 @@ def run_backtest_trial(..., trial: Optional[Trial] = None):
 
 **CLI**:
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --pruner median \
     --n-trials 100
@@ -275,16 +275,16 @@ python scripts/run_optuna_study.py \
 **CLI**:
 ```bash
 # In-Memory (default)
-python scripts/run_optuna_study.py --strategy ma_crossover
+python3 scripts/run_optuna_study.py --strategy ma_crossover
 
 # SQLite
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --storage sqlite:///optuna_studies.db \
     --study-name ma_crossover_v1
 
 # PostgreSQL
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --storage postgresql://user:pass@localhost/optuna \
     --study-name ma_crossover_v1
@@ -293,7 +293,7 @@ python scripts/run_optuna_study.py \
 **Load Existing Study**:
 ```bash
 # Continue existing study
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --storage sqlite:///optuna_studies.db \
     --study-name ma_crossover_v1 \
@@ -307,7 +307,7 @@ python scripts/run_optuna_study.py \
 **CLI**:
 ```bash
 # Run 4 trials in parallel
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --n-trials 100 \
     --jobs 4
@@ -364,7 +364,7 @@ open http://localhost:5000
 
 **CSV Export**:
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --n-trials 100
 
@@ -385,7 +385,7 @@ python scripts/run_optuna_study.py \
 ```bash
 pip install optuna[visualization]
 
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --n-trials 100
 
@@ -431,10 +431,10 @@ python scripts/run_optuna_study.py \
 **Run Tests**:
 ```bash
 # Fast tests only (skip slow integration tests)
-pytest tests/test_optuna_integration.py -v -m "not slow"
+python3 -m pytest tests/test_optuna_integration.py -v -m "not slow"
 
 # All tests (including slow integration tests)
-pytest tests/test_optuna_integration.py -v
+python3 -m pytest tests/test_optuna_integration.py -v
 ```
 
 **Test Coverage**:
@@ -503,7 +503,7 @@ pip install optuna psycopg2-binary
 
 ```bash
 # Optimize MA Crossover for Sharpe Ratio
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --objectives sharpe \
     --n-trials 100
@@ -551,7 +551,7 @@ Study Statistics:
 
 ```bash
 # Optimize for both Sharpe and Drawdown
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --objectives sharpe,max_drawdown \
     --n-trials 200
@@ -594,14 +594,14 @@ Trial #123 (Rank 3):
 
 ```bash
 # Initial study (100 trials)
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --storage sqlite:///optuna_studies.db \
     --study-name ma_crossover_v1 \
     --n-trials 100
 
 # Continue study (50 more trials)
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --storage sqlite:///optuna_studies.db \
     --study-name ma_crossover_v1 \
@@ -616,7 +616,7 @@ python scripts/run_optuna_study.py \
 
 ```bash
 # Run 4 trials in parallel (requires storage backend)
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --storage sqlite:///optuna_studies.db \
     --study-name ma_crossover_parallel \
@@ -641,7 +641,7 @@ experiment_name = "peak_trade_optuna"
 
 ```bash
 # Run optimization (MLflow logging automatic)
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --n-trials 100
 
@@ -669,7 +669,7 @@ ruff format --check scripts/run_optuna_study.py tests/test_optuna_integration.py
 
 ```bash
 # Fast tests (without Optuna installed)
-pytest tests/test_optuna_integration.py -v -m "not slow"
+python3 -m pytest tests/test_optuna_integration.py -v -m "not slow"
 ```
 
 **Result**: ✅ **20 skipped** (Optuna not installed, expected)
@@ -677,7 +677,7 @@ pytest tests/test_optuna_integration.py -v -m "not slow"
 **With Optuna installed**:
 ```bash
 pip install optuna
-pytest tests/test_optuna_integration.py -v -m "not slow"
+python3 -m pytest tests/test_optuna_integration.py -v -m "not slow"
 ```
 
 **Expected**: ✅ **17 passed, 3 deselected** (slow tests)
@@ -691,7 +691,7 @@ pytest tests/test_optuna_integration.py -v -m "not slow"
 pip install optuna
 
 # Run small study
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --n-trials 10
 
@@ -790,7 +790,7 @@ python scripts/run_optuna_study.py \
 
 2. **Erste Optimization laufen lassen**:
    ```bash
-   python scripts/run_optuna_study.py \
+   python3 scripts/run_optuna_study.py \
        --strategy ma_crossover \
        --n-trials 50
    ```

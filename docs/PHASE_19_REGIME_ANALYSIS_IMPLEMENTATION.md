@@ -32,14 +32,14 @@ Phase 19 implementiert Regime-Analyse-Funktionalität für Peak_Trade. Das Modul
 
 ### Einzelnes Experiment analysieren
 ```bash
-python scripts/analyze_regimes.py single \
+python3 scripts/analyze_regimes.py single \
     --id abc12345-1234-5678-abcd-1234567890ab \
     --verbose
 ```
 
 ### Strategie über mehrere Backtests analysieren
 ```bash
-python scripts/analyze_regimes.py strategy \
+python3 scripts/analyze_regimes.py strategy \
     --strategy ma_crossover \
     --run-type backtest \
     --limit 50
@@ -47,7 +47,7 @@ python scripts/analyze_regimes.py strategy \
 
 ### Sweep-Robustheits-Check
 ```bash
-python scripts/analyze_regimes.py sweep \
+python3 scripts/analyze_regimes.py sweep \
     --sweep-name ma_crossover_opt_v1 \
     --metric sharpe \
     --top-n 20
@@ -55,7 +55,7 @@ python scripts/analyze_regimes.py sweep \
 
 ### Mit Export
 ```bash
-python scripts/analyze_regimes.py strategy \
+python3 scripts/analyze_regimes.py strategy \
     --strategy rsi_reversion \
     --export-csv out/regime_analysis.csv \
     --export-json out/regime_analysis.json

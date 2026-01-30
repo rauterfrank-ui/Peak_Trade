@@ -175,14 +175,14 @@ git log --all --pretty=format: --name-only | grep -E "mlruns|reports/.*\.html"
 
 ```bash
 # Run rescued tests
-pytest tests/test_data_layer*.py -v
-pytest tests/test_compare_runs.py -v
-pytest tests/test_run_summary_contract.py -v
-pytest tests/obs/ -v
+python3 -m pytest tests/test_data_layer*.py -v
+python3 -m pytest tests/test_compare_runs.py -v
+python3 -m pytest tests/test_run_summary_contract.py -v
+python3 -m pytest tests/obs/ -v
 
 # Run with markers
-pytest -m data_edge -v
-pytest -m data_integration -v
+python3 -m pytest -m data_edge -v
+python3 -m pytest -m data_integration -v
 ```
 
 ---
@@ -226,7 +226,7 @@ pytest -m data_integration -v
 - ✅ Promptfoo version: 0.120.8 (pinned)
 
 ### Artifacts
-**Location:** `.artifacts/aiops/`
+**Location:** `.artifacts&#47;aiops&#47;`
 
 **Generated:**
 - `baseline_stdout_<UTC_TIMESTAMP>.log` (terminal capture via `tee`, operator-enabled)

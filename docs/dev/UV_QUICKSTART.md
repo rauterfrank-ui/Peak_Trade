@@ -35,23 +35,26 @@ uv pip install -r requirements.txt
 ## Tägliche Nutzung
 
 ```bash
+# Virtualenv aktivieren
+source .venv/bin/activate  # Linux/macOS
+
 # Tests ausführen
-uv run pytest tests/ -v
+python3 -m pytest tests/ -v
 
 # Einzelnen Test
-uv run pytest tests/test_basics.py -v
+python3 -m pytest tests/test_basics.py -v
 
 # Mit Coverage
-uv run pytest tests/ --cov=src --cov-report=term-missing
+python3 -m pytest tests/ --cov=src --cov-report=term-missing
 
 # Linting
-uv run ruff check src tests scripts
+ruff check src tests scripts
 
 # Formatting prüfen
-uv run ruff format --check src tests scripts
+ruff format --check src tests scripts
 
 # Formatting anwenden
-uv run ruff format src tests scripts
+ruff format src tests scripts
 ```
 
 ## Paket hinzufügen

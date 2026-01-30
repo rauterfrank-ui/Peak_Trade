@@ -300,7 +300,7 @@ cat reports/live_promotion/<latest>/OPERATOR_CHECKLIST.md
 
 ```bash
 # 5. Live-/Shadow-Session starten
-python scripts/run_live_session.py --config config.toml
+python3 scripts/run_live_session.py --config config/config.toml
 ```
 
 **Config-Loader verwendet:**
@@ -420,7 +420,7 @@ Beim Config-Laden mit Overrides:
 ls reports/learning_snippets/
 
 # 2. Prüfe ob Automation läuft
-python scripts/run_test_health.py
+python3 scripts/run_test_health.py
 
 # 3. Prüfe Emitter-Konfiguration
 grep -r "LearningSignal" src/

@@ -228,7 +228,7 @@ else:
 8. **Restart system**
    ```bash
    # Restart services
-   python scripts/live_ops.py health --config config/config.toml
+   python3 scripts/live_ops.py health --config config/config.toml
    ```
 
 #### Success Criteria
@@ -303,7 +303,7 @@ else:
    ```bash
    # Stop all trading activities
    # Ensure no active orders
-   python scripts/live_ops.py portfolio --config config/config.toml
+   python3 scripts/live_ops.py portfolio --config config/config.toml
    # Cancel any pending orders manually if necessary
    ```
 
@@ -467,7 +467,7 @@ else:
 7. **Restart services**
    ```bash
    # Restart in order
-   python scripts/live_ops.py health --config config/config.toml
+   python3 scripts/live_ops.py health --config config/config.toml
    ```
 
 8. **Create post-recovery backup**
@@ -792,20 +792,20 @@ except Exception as e:
 
 ```bash
 # Health check
-python scripts/health_dashboard.py
+python3 scripts/health_dashboard.py
 
 # Create backup
-python -c "from src.core.backup_recovery import RecoveryManager; \
+python3 -c "from src.core.backup_recovery import RecoveryManager; \
            r = RecoveryManager(); \
            print(r.create_backup(include_config=True, include_data=True))"
 
 # List backups
-python -c "from src.core.backup_recovery import RecoveryManager; \
+python3 -c "from src.core.backup_recovery import RecoveryManager; \
            r = RecoveryManager(); \
            [print(b.backup_id, b.created_at) for b in r.list_backups()[:5]]"
 
 # Restore backup
-python -c "from src.core.backup_recovery import RecoveryManager; \
+python3 -c "from src.core.backup_recovery import RecoveryManager; \
            r = RecoveryManager(); \
            r.restore_backup('BACKUP_ID', restore_config=True, restore_data=True)"
 ```

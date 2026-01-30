@@ -33,8 +33,8 @@
 git checkout main && git pull --ff-only
 bash scripts/ops/ops_center.sh doctor        # 9/9 ✅
 bash scripts/ops/verify_required_checks_drift.sh  # No drift ✅
-uv run ruff check .                          # All passed ✅
-uv run ruff format --check .                 # No changes needed ✅
+ruff check .                          # All passed ✅
+ruff format --check .                 # No changes needed ✅
 ```
 
 ## Operator Checklist (copy/paste)
@@ -59,8 +59,8 @@ gh pr checks $PR_NUM --watch
 git checkout main && git pull --ff-only
 bash scripts/ops/ops_center.sh doctor
 bash scripts/ops/verify_required_checks_drift.sh
-uv run ruff check . && uv run ruff format --check .
-uv run pytest tests/ops/ -q
+ruff check . && ruff format --check .
+python3 -m pytest tests&#47;ops&#47; -q
 ```
 
 ## Failure Modes & Diagnosis

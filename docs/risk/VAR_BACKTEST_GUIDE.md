@@ -41,14 +41,14 @@ cd /Users/frnkhrz/Peak_Trade
 source venv/bin/activate  # oder entsprechender Pfad
 
 # Teste Installation
-python -m pytest tests/risk_layer/var_backtest/ -v
+python3 -m pytest tests/risk_layer/var_backtest/ -v
 ```
 
 ### Einfacher Test (Kommandozeile)
 
 ```bash
 # Einzelnes Symbol backtesten
-python scripts/risk/run_var_backtest.py \
+python3 scripts/risk/run_var_backtest.py \
   --symbol BTC-EUR \
   --start 2024-01-01 \
   --end 2024-12-31 \
@@ -163,7 +163,7 @@ Result:         ACCEPT
 ### Basis-Kommando
 
 ```bash
-python scripts/risk/run_var_backtest.py \
+python3 scripts/risk/run_var_backtest.py \
   --symbol SYMBOL \
   [OPTIONS]
 ```
@@ -197,7 +197,7 @@ python scripts/risk/run_var_backtest.py \
 #### Standard-Backtest
 
 ```bash
-python scripts/risk/run_var_backtest.py \
+python3 scripts/risk/run_var_backtest.py \
   --symbol BTC-EUR \
   --start 2024-01-01 \
   --end 2024-12-31 \
@@ -208,7 +208,7 @@ python scripts/risk/run_var_backtest.py \
 
 ```bash
 # Exit Code basiert auf Ergebnis
-python scripts/risk/run_var_backtest.py \
+python3 scripts/risk/run_var_backtest.py \
   --symbol BTC-EUR \
   --ci-mode \
   --fail-on-reject \
@@ -226,7 +226,7 @@ fi
 ```bash
 # Mehrere Symbole testen
 for symbol in BTC-EUR ETH-EUR ADA-EUR; do
-  python scripts/risk/run_var_backtest.py \
+  python3 scripts/risk/run_var_backtest.py \
     --symbol $symbol \
     --output reports/var_backtest/${symbol}_$(date +%Y%m%d).json
 done

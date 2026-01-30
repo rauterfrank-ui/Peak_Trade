@@ -175,7 +175,7 @@ tracker.update(result.risk_status, session_id=session_id, context=result.metrics
 62 Unit-Tests in `tests/test_alert_pipeline.py`:
 
 ```bash
-pytest tests/test_alert_pipeline.py -v
+python3 -m pytest tests/test_alert_pipeline.py -v
 ```
 
 **Akzeptanzkriterien (getestet):**

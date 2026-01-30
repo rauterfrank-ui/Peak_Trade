@@ -52,10 +52,10 @@ Peak_Trade folgt einer klaren Pipeline-Architektur mit strikter Separation of Co
 
 ```bash
 # Mit vorhandener Config
-python scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/USDT
+python3 scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/USDT
 
 # Mit Custom-Config
-python scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml
+python3 scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml
 ```
 
 ### 2. Programmatischer Backtest (Python)
@@ -213,16 +213,16 @@ Vor einem Live-Deployment durchläuft jede Strategie eine systematische Prüfung
 
 ```bash
 # Live-Status abrufen
-python -m src.cli.live_ops status
+python3 -m src.cli.live_ops status
 
 # Portfolio-Snapshot
-python -m src.cli.live_ops portfolio
+python3 -m src.cli.live_ops portfolio
 
 # Offene Orders
-python -m src.cli.live_ops orders
+python3 -m src.cli.live_ops orders
 
 # Health-Check
-python -m src.cli.live_ops health
+python3 -m src.cli.live_ops health
 ```
 
 ---
@@ -283,24 +283,24 @@ Peak_Trade/
 
 ```bash
 # Tests ausführen
-pytest -q
+python3 -m pytest -q
 
 # Targeted Tests (Position-Sizing)
-pytest tests/test_vol_regime_overlay_sizer.py -q
+python3 -m pytest tests/test_vol_regime_overlay_sizer.py -q
 
 # Linting
 python3 -m ruff check src tests scripts
 
 # Backtest ausführen
-python scripts/run_strategy_from_config.py --strategy ma_crossover
+python3 scripts/run_strategy_from_config.py --strategy ma_crossover
 
 # Research-Pipeline
-python scripts&#47;run_walkforward.py --strategy ma_crossover
-python scripts&#47;run_monte_carlo.py --strategy ma_crossover
-python scripts/run_stress_tests.py --portfolio moderate
+python3 scripts&#47;run_walkforward.py --strategy ma_crossover
+python3 scripts&#47;run_monte_carlo.py --strategy ma_crossover
+python3 scripts/run_stress_tests.py --portfolio moderate
 
 # Live-Status
-python -m src.cli.live_ops status
+python3 -m src.cli.live_ops status
 ```
 
 ---
@@ -419,15 +419,15 @@ seed = 42  # Für reproduzierbare Random-Samples
 **Variante A: Config-basiert (Empfohlen)**
 ```bash
 # Mit Standard-Config
-python scripts/run_strategy_from_config.py --strategy ma_crossover
+python3 scripts/run_strategy_from_config.py --strategy ma_crossover
 
 # Mit Custom-Config
-python scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml
+python3 scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml
 ```
 
 **Variante B: Portfolio-Backtest**
 ```bash
-python scripts/run_portfolio_backtest.py --allocation equal
+python3 scripts/run_portfolio_backtest.py --allocation equal
 ```
 
 **Variante C: Research-Pipeline**
@@ -445,13 +445,13 @@ Alle Backtest-Ergebnisse werden automatisch in der **Experiment-Registry** gelog
 
 ```bash
 # Alle Runs anzeigen
-python scripts/list_experiments.py
+python3 scripts/list_experiments.py
 
 # Details eines Runs
-python scripts/show_experiment.py <run_id>
+python3 scripts/show_experiment.py <run_id>
 
 # Nur Portfolio-Runs
-python scripts/list_experiments.py --run-type portfolio_backtest
+python3 scripts/list_experiments.py --run-type portfolio_backtest
 ```
 
 **Registry-Location:**

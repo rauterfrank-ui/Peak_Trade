@@ -115,16 +115,16 @@ Features:
 
 ```bash
 # Standard-Run (mit Risk-Check)
-python scripts/preview_live_portfolio.py --config config/config.toml
+python3 scripts/preview_live_portfolio.py --config config/config.toml
 
 # Ohne Risk-Check
-python scripts/preview_live_portfolio.py --config config/config.toml --no-risk
+python3 scripts/preview_live_portfolio.py --config config/config.toml --no-risk
 
 # JSON-Ausgabe
-python scripts/preview_live_portfolio.py --config config/config.toml --json
+python3 scripts/preview_live_portfolio.py --config config/config.toml --json
 
 # Mit Custom Starting-Cash für prozentuale Limits
-python scripts/preview_live_portfolio.py \
+python3 scripts/preview_live_portfolio.py \
   --config config/config.toml \
   --starting-cash 20000.0
 ```
@@ -292,7 +292,7 @@ else:
 
 ```bash
 # Portfolio-Status prüfen
-python scripts/preview_live_portfolio.py --config config/config.toml
+python3 scripts/preview_live_portfolio.py --config config/config.toml
 
 # Prüfen ob Limits OK sind
 # → Risk status: allowed = True
@@ -302,10 +302,10 @@ python scripts/preview_live_portfolio.py --config config/config.toml
 
 ```bash
 # Regelmäßig Portfolio-Status checken
-python scripts/preview_live_portfolio.py --config config/config.toml
+python3 scripts/preview_live_portfolio.py --config config/config.toml
 
 # Bei Verdacht auf Limit-Verletzung
-python scripts/preview_live_portfolio.py --config config/config.toml --json > portfolio_status.json
+python3 scripts/preview_live_portfolio.py --config config/config.toml --json > portfolio_status.json
 ```
 
 ### Incident-Handling
@@ -323,20 +323,20 @@ Bei einem Incident:
 
 ```bash
 # Portfolio-Monitor Tests
-pytest tests/test_live_portfolio_monitor.py -v
+python3 -m pytest tests/test_live_portfolio_monitor.py -v
 
 # Risk Bridge Tests
-pytest tests/test_live_risk_limits_portfolio_bridge.py -v
+python3 -m pytest tests/test_live_risk_limits_portfolio_bridge.py -v
 
 # CLI Tests
-pytest tests/test_preview_live_portfolio.py -v
+python3 -m pytest tests/test_preview_live_portfolio.py -v
 ```
 
 ### Integration-Tests
 
 ```bash
 # Alle Live-Portfolio-Tests
-pytest tests/test_live_portfolio*.py tests/test_preview_live_portfolio.py -v
+python3 -m pytest tests/test_live_portfolio*.py tests/test_preview_live_portfolio.py -v
 ```
 
 ---

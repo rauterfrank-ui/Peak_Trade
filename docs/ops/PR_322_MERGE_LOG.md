@@ -86,10 +86,10 @@ component_var = calculate_component_var(returns_df, confidence=0.95)
 ### Testing
 ```bash
 # Run Component VaR tests
-pytest tests/risk/test_component_var.py -v
+python3 -m pytest tests/risk/test_component_var.py -v
 
 # Run all risk tests
-pytest tests/risk/ -v
+python3 -m pytest tests/risk/ -v
 ```
 
 ## Follow-Up Actions

@@ -112,7 +112,7 @@ result = engine.run_realistic(df, strategy_fn, params)
 **Usage:**
 ```bash
 # Quick snapshot with all diagnostics
-python scripts/risk/run_var_backtest_suite_snapshot.py \
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \
   --returns-file data/returns.csv \
   --var-file data/var.csv \
   --confidence 0.99 \
@@ -206,13 +206,13 @@ print(result.to_markdown())  # Generate report
 ### Run All Risk-Layer Tests
 
 ```bash
-uv run pytest tests/risk/ -v
+python3 -m pytest tests/risk/ -v
 ```
 
 ### Generate Stress-Report
 
 ```bash
-python scripts/run_risk_stress_report.py --symbol BTC/EUR --output reports/stress.csv
+python3 scripts/run_risk_stress_report.py --symbol BTC/EUR --output reports/stress.csv
 ```
 
 ---
@@ -222,7 +222,7 @@ python scripts/run_risk_stress_report.py --symbol BTC/EUR --output reports/stres
 **Questions?**
 1. Check Operator-Guide: `RISK_LAYER_V1_OPERATOR_GUIDE.md`
 2. Check Tests: `tests&#47;risk&#47;` (Usage-Examples)
-3. Run Tests: `pytest tests&#47;risk&#47; -v`
+3. Run Tests: `python3 -m pytest tests&#47;risk&#47; -v`
 
 **Issues?**
 - Check Troubleshooting-Section in Operator-Guide

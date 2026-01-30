@@ -110,7 +110,7 @@ python3 scripts/ops/validate_workflow_dispatch_guards.py --paths .github/workflo
 # Result: OK (0 findings after PR #664 fix)
 
 # Tests
-uv run pytest -q tests/ops/test_validate_workflow_dispatch_guards.py
+python3 -m pytest -q tests/ops/test_validate_workflow_dispatch_guards.py
 # Result: 2 passed in 0.03s
 ```
 

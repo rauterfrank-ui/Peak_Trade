@@ -104,16 +104,16 @@ with PeakTradeRun(experiment_name="my_experiment") as run:
 **Commands:**
 ```bash
 # List latest 10 runs
-python scripts/dev/compare_runs.py --n 10
+python3 scripts/dev/compare_runs.py --n 10
 
 # Compare two specific runs
-python scripts/dev/compare_runs.py --baseline abc123 --candidate def456
+python3 scripts/dev/compare_runs.py --baseline abc123 --candidate def456
 
 # JSON output
-python scripts/dev/compare_runs.py --format json
+python3 scripts/dev/compare_runs.py --format json
 
 # Filter metrics
-python scripts/dev/compare_runs.py --metrics sharpe_ratio total_return
+python3 scripts/dev/compare_runs.py --metrics sharpe_ratio total_return
 ```
 
 **Output Examples:**
@@ -222,8 +222,8 @@ open backtest_report.html
 
 **Usage:**
 ```bash
-python scripts/dev/demo_tracking.py
-python scripts/dev/compare_runs.py --n 3
+python3 scripts/dev/demo_tracking.py
+python3 scripts/dev/compare_runs.py --n 3
 ```
 
 ---
@@ -345,13 +345,13 @@ with PeakTradeRun(experiment_name="strategy_sweep") as run:
 ### 2. Compare Latest Runs
 
 ```bash
-python scripts/dev/compare_runs.py --n 10
+python3 scripts/dev/compare_runs.py --n 10
 ```
 
 ### 3. Diff Two Runs
 
 ```bash
-python scripts/dev/compare_runs.py \
+python3 scripts/dev/compare_runs.py \
     --baseline baseline-run-id \
     --candidate new-run-id
 ```
@@ -368,7 +368,7 @@ quarto render backtest_report.qmd
 ```yaml
 - name: Track Experiment
   run: |
-    python -c "
+    python3 -c "
     from experiments.tracking import PeakTradeRun
     with PeakTradeRun(experiment_name='ci_test') as run:
         run.log_metric('test_metric', 1.5)
@@ -376,7 +376,7 @@ quarto render backtest_report.qmd
 
 - name: Compare with Baseline
   run: |
-    python scripts/dev/compare_runs.py \
+    python3 scripts/dev/compare_runs.py \
       --baseline $BASELINE_ID \
       --candidate $(ls results/*.json | tail -1)
 ```
@@ -430,8 +430,8 @@ python3 -m pytest tests/test_run_summary_contract.py tests/test_compare_runs.py 
 
 ```bash
 # Nothing to configure - works by default
-python scripts/dev/demo_tracking.py
-python scripts/dev/compare_runs.py
+python3 scripts/dev/demo_tracking.py
+python3 scripts/dev/compare_runs.py
 ```
 
 ### With MLflow
@@ -441,7 +441,7 @@ export PEAK_TRADE_MLFLOW_ENABLE=true
 export MLFLOW_TRACKING_URI=http://localhost:5000
 export MLFLOW_EXPERIMENT_NAME=peak_trade_experiments
 
-python scripts/dev/demo_tracking.py
+python3 scripts/dev/demo_tracking.py
 ```
 
 ### CI Environment
@@ -487,7 +487,7 @@ export PEAK_TRADE_MLFLOW_ENABLE=false
 ls -lh results/run_summary_*.json
 
 # Run demo to create samples
-python scripts/dev/demo_tracking.py
+python3 scripts/dev/demo_tracking.py
 ```
 
 ### MLflow Connection Failed

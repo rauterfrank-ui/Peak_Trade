@@ -26,8 +26,8 @@ Item A3: Walk-Forward parameter optimization on TRAIN data (no leakage)
 ## Tests executed
 - CI required checks: PASS (Lint Gate, docs-reference-targets-gate, tests (3.11), etc.)
 - Local (pre-PR):
-  - `uv run pytest -q tests&#47;test_walkforward_backtest.py tests&#47;backtest&#47;test_walkforward_optimization.py`
-  - `uv run ruff format --check src&#47; tests&#47; scripts&#47;`
+  - `python3 -m pytest -q tests&#47;test_walkforward_backtest.py tests&#47;backtest&#47;test_walkforward_optimization.py`
+  - `ruff format --check src&#47; tests&#47; scripts&#47;`
 
 ## Verification result
 - PASS: train/test slices are strictly disjoint (end-exclusive).

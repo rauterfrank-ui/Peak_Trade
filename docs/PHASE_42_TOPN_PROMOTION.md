@@ -25,7 +25,7 @@ Phase 42 implementiert eine automatische Pipeline zur Auswahl und Export der bes
 **Datei:** `scripts&#47;promote_sweep_topn.py`
 
 ```bash
-python scripts/promote_sweep_topn.py --sweep-name rsi_reversion_basic
+python3 scripts/promote_sweep_topn.py --sweep-name rsi_reversion_basic
 ```
 
 ---
@@ -36,23 +36,23 @@ python scripts/promote_sweep_topn.py --sweep-name rsi_reversion_basic
 
 ```bash
 # Standard: Top-5 nach Sharpe-Ratio
-python scripts/promote_sweep_topn.py --sweep-name rsi_reversion_basic
+python3 scripts/promote_sweep_topn.py --sweep-name rsi_reversion_basic
 
 # Top-10 nach Total Return
-python scripts/promote_sweep_topn.py \
+python3 scripts/promote_sweep_topn.py \
     --sweep-name breakout_basic \
     --metric metric_total_return \
     --top-n 10
 
 # Mit explizitem Fallback
-python scripts/promote_sweep_topn.py \
+python3 scripts/promote_sweep_topn.py \
     --sweep-name ma_crossover_basic \
     --metric metric_sharpe_ratio \
     --fallback-metric metric_total_return \
     --top-n 5
 
 # Custom Output-Verzeichnis
-python scripts/promote_sweep_topn.py \
+python3 scripts/promote_sweep_topn.py \
     --sweep-name rsi_reversion_basic \
     --output custom/output/dir \
     --experiments-dir custom/experiments/dir
@@ -160,7 +160,7 @@ rank = 2
 
 ```bash
 # Phase 42 Tests
-.venv/bin/pytest tests/test_topn_promotion.py -v
+python3 -m pytest tests/test_topn_promotion.py -v
 ```
 
 **19 Tests** in 5 Kategorien:
@@ -178,7 +178,7 @@ rank = 2
 [Sweep ausführen]              [Top-N promoten]              [Kandidaten nutzen]
         │                              │                              │
         ▼                              ▼                              ▼
-run_strategy_sweep.py  ─────►  promote_sweep_topn.py  ─────►  _top_candidates.toml
+scripts/run_sweep.py  ─────►  promote_sweep_topn.py  ─────►  _top_candidates.toml
         │                              │                              │
         ▼                              ▼                              ▼
 reports/experiments/           reports/sweeps/               Portfolio-Track

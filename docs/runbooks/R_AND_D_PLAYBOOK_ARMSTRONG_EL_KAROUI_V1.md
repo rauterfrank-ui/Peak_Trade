@@ -68,7 +68,7 @@ Dieses Playbook definiert:
 Beispiel-Backtest (an dein CLI anpassen):
 
 ```bash
-python -m scripts.run_backtest \
+python3 -m scripts.run_backtest \
   --strategy armstrong_cycle \
   --config config&#47;strategies&#47;armstrong_cycle_default.toml
 ```
@@ -95,7 +95,7 @@ Nicht erlaubt:
 Beispiel-Backtest:
 
 ```bash
-python -m scripts.run_backtest \
+python3 -m scripts.run_backtest \
   --strategy el_karoui_vol_model \
   --config config/strategies/el_karoui_vol_default.toml
 ```
@@ -269,18 +269,18 @@ cd /Users/frnkhrz/Peak_Trade
 source .venv/bin/activate
 
 # Einfacher Backtest mit Tag (historisch abgeschlossenes Fenster)
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy armstrong_cycle \
-  --config config.toml \
+  --config config/config.toml \
   --tag armstrong_btc_2018_2020 \
   --start-date 2018-01-01 \
   --end-date 2020-12-31 \
   --verbose
 
 # Mit Report-Export
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy armstrong_cycle \
-  --config config.toml \
+  --config config/config.toml \
   --tag armstrong_btc_2018_2020 \
   --save-report reports/r_and_d/armstrong_cycle_btc_2018_2020.html
 ```
@@ -314,18 +314,18 @@ cd /Users/frnkhrz/Peak_Trade
 source .venv/bin/activate
 
 # Einfacher Backtest mit Tag (historisch abgeschlossenes Fenster)
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy el_karoui_vol_model \
-  --config config.toml \
+  --config config/config.toml \
   --tag el_karoui_vol_regime_test \
   --start-date 2018-01-01 \
   --end-date 2020-12-31 \
   --verbose
 
 # Mit Report-Export
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy el_karoui_vol_model \
-  --config config.toml \
+  --config config/config.toml \
   --tag el_karoui_vol_regime_test \
   --save-report reports/r_and_d/el_karoui_vol_btc_regime_test.html
 ```
@@ -384,9 +384,9 @@ ls -lt reports/r_and_d_experiments/*.json | head -10
 cd /Users/frnkhrz/Peak_Trade
 source .venv/bin/activate
 
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy armstrong_cycle \
-  --config config.toml \
+  --config config/config.toml \
   --tag rnd_armstrong_smoke \
   --start-date 2018-01-01 \
   --end-date 2020-12-31 \
@@ -411,9 +411,9 @@ python scripts/run_backtest.py \
 cd /Users/frnkhrz/Peak_Trade
 source .venv/bin/activate
 
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy el_karoui_vol_model \
-  --config config.toml \
+  --config config/config.toml \
   --tag rnd_elkaroui_smoke \
   --start-date 2018-01-01 \
   --end-date 2020-12-31 \
@@ -490,9 +490,9 @@ Der Armstrong-Block hat zwei „würzige" Unter-Varianten:
 cd /Users/frnkhrz/Peak_Trade
 source .venv/bin/activate
 
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy armstrong_cycle \
-  --config config.toml \
+  --config config/config.toml \
   --tag rnd_armstrong_spicy_5k_bars \
   --bars 5000 \
   --save-report reports/r_and_d/armstrong_spicy_5k_bars.html \
@@ -518,9 +518,9 @@ Diese Variante verwendet echte OHLCV-Daten in einem volatilen Fenster und erzeug
 cd /Users/frnkhrz/Peak_Trade
 source .venv/bin/activate
 
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy armstrong_cycle \
-  --config config.toml \
+  --config config/config.toml \
   --tag rnd_armstrong_trend_spice \
   --data-file data/ohlcv/btcusdt_1d.csv \
   --start-date 2019-01-01 \
@@ -564,9 +564,9 @@ cd /Users/frnkhrz/Peak_Trade
 source .venv/bin/activate
 
 # Pfad anpassen an deine tatsächliche CSV-Datei!
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy el_karoui_vol_model \
-  --config config.toml \
+  --config config/config.toml \
   --tag rnd_elkaroui_intraday_spice \
   --data-file data/ohlcv/btcusdt_1h.csv \
   --start-date 2019-01-01 \
@@ -595,9 +595,9 @@ python scripts/run_backtest.py \
 **Schneller Mini-Smoke (nur 200 Bars):**
 
 ```bash
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy el_karoui_vol_model \
-  --config config.toml \
+  --config config/config.toml \
   --tag rnd_elkaroui_quick \
   --bars 200 \
   --verbose
@@ -606,9 +606,9 @@ python scripts/run_backtest.py \
 **Ohne Report-Export (nur Registry + Terminal-Output):**
 
 ```bash
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy armstrong_cycle \
-  --config config.toml \
+  --config config/config.toml \
   --tag rnd_armstrong_minimal \
   --verbose
 ```

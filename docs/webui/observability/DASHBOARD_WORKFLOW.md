@@ -336,7 +336,7 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 
 ### Golden Smoke Pattern: Prometheus Query via `--out` + Parse aus Datei
 
-Ziel: deterministisch (kein `curl | python json.load(...)`, keine Shell→Python JSON-Interpolation).
+Ziel: deterministisch (kein `curl | python3 json.load(...)`, keine Shell→Python JSON-Interpolation).
 
 ```bash
 # Preflight

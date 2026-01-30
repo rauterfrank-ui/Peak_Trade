@@ -7,7 +7,7 @@
 - Risk: LOW (`docs&#47;**` + `scripts&#47;**` only; watch-only ops scripts)
 
 ## Summary
-Adds a deterministic Python environment selection (`PY_CMD`) for AI Live ops scripts to avoid `prometheus_client` mismatches (e.g., `python3` vs `uv run python`), improving reproducibility of local verification.
+Adds a deterministic Python environment selection (`PY_CMD`) for AI Live ops scripts to avoid `prometheus_client` mismatches (e.g., `python3` vs `python`), improving reproducibility of local verification.
 
 ## Why
 Local runs could pass/fail depending on which Python interpreter was used, causing the exporter to exit immediately when `prometheus_client` was unavailable. The update makes the chosen Python command explicit and deterministic, reducing false negatives in ops verification.

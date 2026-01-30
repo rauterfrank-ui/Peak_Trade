@@ -82,15 +82,15 @@ Phase 16L introduces **Docker-based reproducible execution** for Stage1 Monitori
 **Examples:**
 ```bash
 # Default behavior (unchanged)
-python scripts/obs/stage1_daily_snapshot.py
+python3 scripts/obs/stage1_daily_snapshot.py
 # → ./reports/obs/stage1/
 
 # ENV override
-PEAK_REPORTS_DIR=/custom python scripts/obs/stage1_daily_snapshot.py
+PEAK_REPORTS_DIR=/custom python3 scripts/obs/stage1_daily_snapshot.py
 # → /custom/obs/stage1/
 
 # CLI override (highest priority)
-python scripts/obs/stage1_daily_snapshot.py --reports-root /override
+python3 scripts/obs/stage1_daily_snapshot.py --reports-root /override
 # → /override/obs/stage1/
 ```
 
@@ -151,8 +151,8 @@ docker compose -f docker-compose.obs.yml run --rm \
 
 **No action required.** Continue using host execution as before:
 ```bash
-python scripts/obs/stage1_daily_snapshot.py
-python scripts/obs/stage1_trend_report.py
+python3 scripts/obs/stage1_daily_snapshot.py
+python3 scripts/obs/stage1_trend_report.py
 ```
 
 **Optional:** Try Docker execution for reproducibility:
@@ -185,10 +185,10 @@ python scripts/obs/stage1_trend_report.py
 ```bash
 # Via ENV
 export PEAK_REPORTS_DIR=/custom/path
-python scripts/obs/stage1_daily_snapshot.py
+python3 scripts/obs/stage1_daily_snapshot.py
 
 # Via CLI flag
-python scripts/obs/stage1_daily_snapshot.py --reports-root /custom/path
+python3 scripts/obs/stage1_daily_snapshot.py --reports-root /custom/path
 ```
 
 ---
@@ -198,11 +198,11 @@ python scripts/obs/stage1_daily_snapshot.py --reports-root /custom/path
 ### Pre-Merge Testing (Completed)
 
 **Unit Tests:**
-- `uv run pytest tests/test_report_paths.py` → 8/8 passed
-- `uv run pytest tests/test_stage1_args.py` → 4/4 passed
+- `python3 -m pytest tests&#47;test_report_paths.py` → 8/8 passed
+- `python3 -m pytest tests&#47;test_stage1_args.py` → 4/4 passed
 
 **Linting:**
-- `uv run ruff check src tests scripts` → All checks passed
+- `ruff check src tests scripts` → All checks passed
 
 **Docker Build:**
 - `docker compose -f docker-compose.obs.yml build` → Success
@@ -218,8 +218,8 @@ python scripts/obs/stage1_daily_snapshot.py --reports-root /custom/path
 ### Post-Merge Verification (Completed)
 
 **On main branch (commit 6d929a3):**
-- `uv run ruff check src tests scripts` → ✅ All checks passed
-- `uv run pytest -q tests/test_report_paths.py tests/test_stage1_args.py` → ✅ 12/12 passed
+- `ruff check src tests scripts` → ✅ All checks passed
+- `python3 -m pytest -q tests&#47;test_report_paths.py tests&#47;test_stage1_args.py` → ✅ 12/12 passed
 
 **Files Changed:**
 - 14 files changed, +1229 insertions, -3 deletions

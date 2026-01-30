@@ -266,7 +266,7 @@ else:
 
 Ausführen:
 ```bash
-python scripts/demo_risk_limits.py
+python3 scripts/demo_risk_limits.py
 ```
 
 Zeigt:
@@ -407,7 +407,7 @@ returns_today = [return_pct]
 
 1. **Demo ausführen:**
    ```bash
-   python scripts/demo_risk_limits.py
+   python3 scripts/demo_risk_limits.py
    ```
 
 2. **In Backtest integrieren:**

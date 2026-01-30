@@ -199,7 +199,7 @@ write_minimal_evidence_chain(run_dir, meta, stats)
 ```bash
 # Run multiple backtests without reports
 for strategy in ma_crossover rsi breakout; do
-  python scripts/run_backtest.py \
+  python3 scripts/run_backtest.py \
     --strategy $strategy \
     --no-report \
     --run-id batch_${strategy}_$(date +%Y%m%d)
@@ -222,7 +222,7 @@ done
 
 **Solutions:**
 1. Install Quarto: https://quarto.org/docs/get-started/
-2. Or skip report: `python scripts&#47;run_backtest.py --no-report`
+2. Or skip report: `python3 scripts&#47;run_backtest.py --no-report`
 3. Or render later: `bash scripts&#47;utils&#47;render_last_report.sh <run_id>`
 
 ### Problem: trades.parquet not created
@@ -235,7 +235,7 @@ done
 **Cause:** No parquet engine installed
 
 **Solutions:**
-1. Install pyarrow: `pip install pyarrow`
+1. Install pyarrow: `python3 -m pip install pyarrow`
 2. Or accept CSV-only workflow (no action needed)
 
 ### Problem: MLflow UI shows no runs
@@ -244,7 +244,7 @@ done
 
 **Solutions:**
 1. Check MLflow setup: `mlflow ui` (should start server)
-2. Verify tracker mode: `python scripts&#47;run_backtest.py --tracker auto`
+2. Verify tracker mode: `python3 scripts&#47;run_backtest.py --tracker auto`
 3. Or accept local artifacts only (no MLflow needed for reproducibility)
 
 ## Best Practices
@@ -253,10 +253,10 @@ done
 
 ```bash
 # Good
-python scripts/run_backtest.py --run-id exp_ma_v2_btc_2024q4
+python3 scripts/run_backtest.py --run-id exp_ma_v2_btc_2024q4
 
 # Auto-generated (OK for quick tests)
-python scripts/run_backtest.py
+python3 scripts/run_backtest.py
 # Creates: results/20241218_143022_abc123/
 ```
 

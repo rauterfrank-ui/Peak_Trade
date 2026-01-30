@@ -260,7 +260,7 @@ bash scripts/ops/pt_docs_gates_snapshot.sh --changed
 **Check 1: Token-Policy Gate**
 
 ```bash
-python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 ```
 
 **Expected Output:**

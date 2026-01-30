@@ -86,7 +86,7 @@ Namenskonvention initial verkürzt (`RUNBOOK_CONTROL_CENTER_OPERATIONS.md` statt
 scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
 
 # 2. Validate evidence index (if applicable)
-python scripts/ops/validate_evidence_index.py
+python3 scripts/ops/validate_evidence_index.py
 
 # 3. Run ops doctor
 scripts/ops/ops_center.sh doctor

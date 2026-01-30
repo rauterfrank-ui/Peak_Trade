@@ -379,13 +379,13 @@ Führe die vollständige Test-Suite aus:
 cd /Users/frnkhrz/Peak_Trade
 
 # WebUI Endpoint Tests
-uv run pytest tests/test_webui_knowledge_endpoints.py -v
+python3 -m pytest tests/test_webui_knowledge_endpoints.py -v
 
 # Readonly Gating Tests (alle Knowledge DB Module)
-uv run pytest tests/test_knowledge_readonly_gating.py -v
+python3 -m pytest tests/test_knowledge_readonly_gating.py -v
 
 # Alle Knowledge Tests
-uv run pytest tests/test_knowledge*.py -v
+python3 -m pytest tests/test_knowledge*.py -v
 ```
 
 **Erwartetes Ergebnis:**

@@ -29,8 +29,8 @@ Not in v1: `equity_curve.jsonl` (deferred)
 - CI required checks: PASS (Lint Gate, docs-reference-targets-gate, tests (3.11), etc.)
 - Local (pre-PR):
   - ```bash
-    uv run pytest -q tests/experiments/test_equity_loader.py
-    uv run pytest -q tests/test_stress_tests.py::test_load_returns_for_top_config_dummy
+    python3 -m pytest -q tests/experiments/test_equity_loader.py
+    python3 -m pytest -q tests/test_stress_tests.py::test_load_returns_for_top_config_dummy
     ```
 
 ## Verification result

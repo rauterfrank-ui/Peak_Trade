@@ -50,7 +50,7 @@
 - **Pfad**: `scripts/run_test_health_profile.py`
 - **Verwendung**:
   ```bash
-  python scripts/run_test_health_profile.py [--profile PROFILE]
+  python3 scripts/run_test_health_profile.py [--profile PROFILE]
   ```
 - **Features**:
   - Argparse-basierte CLI

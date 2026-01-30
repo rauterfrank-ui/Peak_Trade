@@ -106,7 +106,7 @@ Validator reports (Phase 4D) were semi-structured and difficult to parse for aut
 
 ### Test Results
 ```bash
-pytest tests/ai_orchestration/test_validator_report_normalized.py \
+python3 -m pytest tests/ai_orchestration/test_validator_report_normalized.py \
        tests/ai_orchestration/test_normalize_validator_report_cli.py -v
 ```
 **Result:** ✅ 31 tests passed in 1.55s (100% pass rate)
@@ -114,11 +114,11 @@ pytest tests/ai_orchestration/test_validator_report_normalized.py \
 ### Determinism Verification
 ```bash
 # Run normalization twice
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input tests/fixtures/validator_reports/legacy_report_pass.json \
   --out-dir .tmp/run1 --quiet
 
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input tests/fixtures/validator_reports/legacy_report_pass.json \
   --out-dir .tmp/run2 --quiet
 
@@ -180,14 +180,14 @@ diff .tmp/run1/validator_report.normalized.json \
 
 ### Normalize a Report
 ```bash
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input .tmp/validator_report.json \
   --out-dir .tmp/normalized
 ```
 
 ### CI Mode
 ```bash
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input .tmp/validator_report.json \
   --out-dir .tmp/normalized \
   --git-sha "${GITHUB_SHA}" \

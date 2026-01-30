@@ -46,15 +46,15 @@ Implementiert **Phase 16A (Simplified Execution Pipeline for Learning)** und **P
 
 ```bash
 # Phase 16A Tests (Simplified Execution)
-pytest tests/execution_simple/test_execution_pipeline.py -v
+python3 -m pytest tests/execution_simple/test_execution_pipeline.py -v
 # Expected: 16 passed
 
 # Phase 16B Tests (Telemetry + Bridge)
-pytest tests/execution/test_execution_telemetry.py tests/live/test_execution_bridge.py -v
+python3 -m pytest tests/execution/test_execution_telemetry.py tests/live/test_execution_bridge.py -v
 # Expected: 17 passed
 
 # Full Suite
-pytest -q
+python3 -m pytest -q
 # Expected: 4045 passed, 1 failed (pre-existing sandbox error)
 
 # Lint
@@ -245,19 +245,19 @@ pipeline = ExecutionPipeline(executor=executor, emitter=emitter)
 
 ### Phase 16A
 ```bash
-pytest tests/execution_simple/test_execution_pipeline.py -v
+python3 -m pytest tests/execution_simple/test_execution_pipeline.py -v
 # 16 passed in 0.06s ✅
 ```
 
 ### Phase 16B
 ```bash
-pytest tests/execution/test_execution_telemetry.py tests/live/test_execution_bridge.py -v
+python3 -m pytest tests/execution/test_execution_telemetry.py tests/live/test_execution_bridge.py -v
 # 17 passed in 0.37s ✅
 ```
 
 ### Governance Tests (Fixed)
 ```bash
-pytest tests/test_execution_pipeline_governance.py -v
+python3 -m pytest tests/test_execution_pipeline_governance.py -v
 # 15 passed in 0.37s ✅
 # Previously: 4 failed (AttributeError: fills/client_id)
 # Fixed: Use exec_order.fill (singular) + exec_order.request.client_id
@@ -265,7 +265,7 @@ pytest tests/test_execution_pipeline_governance.py -v
 
 ### Full Suite
 ```bash
-pytest -q
+python3 -m pytest -q
 # 4045 passed in 67.79s ✅
 # 1 failed: test_parquet_cache (pre-existing sandbox error)
 # 13 skipped, 3 xfailed

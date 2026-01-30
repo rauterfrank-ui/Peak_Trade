@@ -138,7 +138,7 @@ PORTFOLIO_PRESET="multi_style_moderate"
 **Command:**
 
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset rsi_reversion_conservative \
   --format both
@@ -197,7 +197,7 @@ python scripts/research_cli.py portfolio \
 **Beispiel-Command:**
 
 ```bash
-python scripts/research_cli.py pipeline \
+python3 scripts/research_cli.py pipeline \
   --sweep-name rsi_reversion_basic \
   --config config/config.toml \
   --format both \
@@ -232,7 +232,7 @@ python scripts/research_cli.py pipeline \
 **Command:**
 
 ```bash
-python scripts/run_portfolio_robustness.py \
+python3 scripts/run_portfolio_robustness.py \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --run-montecarlo \
@@ -350,8 +350,8 @@ Erstelle ein Dokument `docs&#47;PORTFOLIO_DECISION_LOG.md` (oder ähnlich) mit f
 3. Bei Erfolg → Testnet-Promotion
 
 ### Reports
-- Portfolio-Robustness-Report: `results/reports/portfolio_robustness_2025-12-15/`
-- Research-Pipeline-Report: `results/reports/pipeline_rsi_reversion_2025-12-15/`
+- Portfolio-Robustness-Report: `results&#47;reports&#47;portfolio_robustness_2025-12-15&#47;`
+- Research-Pipeline-Report: `results&#47;reports&#47;pipeline_rsi_reversion_2025-12-15&#47;`
 ```
 
 **Mögliche Entscheidungs-Status:**
@@ -477,7 +477,7 @@ log_logger_name = "peak_trade.live.alerts"
 
 ```bash
 # Teste Alert-System
-python scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py health --config config/config.toml
 ```
 
 ---
@@ -500,7 +500,7 @@ python scripts/live_ops.py health --config config/config.toml
 
 ```bash
 # Shadow-Run starten (Paper-Mode)
-python scripts/run_shadow_paper_session.py \
+python3 scripts/run_shadow_paper_session.py \
   --config config/config.toml \
   --symbol BTC/EUR \
   --timeframe 1h \
@@ -511,11 +511,11 @@ python scripts/run_shadow_paper_session.py \
 
 ```bash
 # Portfolio-Snapshot anzeigen
-python scripts/live_ops.py portfolio \
+python3 scripts/live_ops.py portfolio \
   --config config/config.toml
 
 # Health-Check
-python scripts/live_ops.py health \
+python3 scripts/live_ops.py health \
   --config config/config.toml
 ```
 
@@ -540,7 +540,7 @@ python scripts/live_ops.py health \
 
 ```bash
 # Testnet-Session starten
-python scripts/run_testnet_session.py \
+python3 scripts/run_testnet_session.py \
   --config config/config.toml \
   --profile ma_crossover_small  # Oder custom Profile
 ```
@@ -567,7 +567,7 @@ python scripts/run_testnet_session.py \
 
 ```bash
 # Live-Session starten (NUR nach expliziter Freigabe!)
-python scripts/live_ops.py start \
+python3 scripts/live_ops.py start \
   --config config/config.toml \
   --confirm-token <TOKEN>  # Safety-Token erforderlich
 ```
@@ -584,16 +584,16 @@ python scripts/live_ops.py start \
 
 ```bash
 # Health-Check
-python scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py health --config config/config.toml
 
 # Portfolio-Snapshot (Text)
-python scripts/live_ops.py portfolio --config config/config.toml
+python3 scripts/live_ops.py portfolio --config config/config.toml
 
 # Portfolio-Snapshot (JSON)
-python scripts/live_ops.py portfolio --config config/config.toml --json
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
 
 # Order-Status
-python scripts/live_ops.py orders --config config/config.toml
+python3 scripts/live_ops.py orders --config config/config.toml
 ```
 
 **Alerts (Slack/Webhook):**
@@ -619,10 +619,10 @@ python scripts/live_ops.py orders --config config/config.toml
 
 ```bash
 # 1. Aktuelle Performance analysieren
-python scripts/live_ops.py portfolio --config config/config.toml --json > current_performance.json
+python3 scripts/live_ops.py portfolio --config config/config.toml --json > current_performance.json
 
 # 2. Portfolio erneut durch Robustness-Tests schicken
-python scripts/run_portfolio_robustness.py \
+python3 scripts/run_portfolio_robustness.py \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --format both
@@ -659,7 +659,7 @@ PORTFOLIO_PRESET="rsi_reversion_conservative"
 
 **Schritt 2: Basis-Research**
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset rsi_reversion_conservative \
   --format both
@@ -668,7 +668,7 @@ python scripts/research_cli.py portfolio \
 
 **Schritt 3: Portfolio-Robustness**
 ```bash
-python scripts/run_portfolio_robustness.py \
+python3 scripts/run_portfolio_robustness.py \
   --config config/config.toml \
   --portfolio-preset rsi_reversion_conservative \
   --run-montecarlo --mc-num-runs 2000 \
@@ -709,7 +709,7 @@ PORTFOLIO_PRESET="multi_style_moderate"
 
 **Schritt 2: Basis-Research**
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --format both
@@ -718,7 +718,7 @@ python scripts/research_cli.py portfolio \
 
 **Schritt 3: Portfolio-Robustness**
 ```bash
-python scripts/run_portfolio_robustness.py \
+python3 scripts/run_portfolio_robustness.py \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --run-montecarlo --mc-num-runs 3000 \

@@ -162,7 +162,7 @@ print(f"Core eligible: {summary['by_tier']['core']['eligible']}")
 
 ```bash
 # Vor Shadow/Testnet-Start
-python -c "
+python3 -c "
 from src.live.live_gates import assert_portfolio_eligible
 assert_portfolio_eligible('core_balanced')
 print('Portfolio is live-eligible')
@@ -204,13 +204,13 @@ Das Operator-Dashboard nutzt Live-Gates für:
 
 ```bash
 # Alle Live-Gates Tests
-pytest tests/test_live_gates.py -v
+python3 -m pytest tests/test_live_gates.py -v
 
 # Nur positive Cases
-pytest tests/test_live_gates.py::TestStrategyEligibilityPositive -v
+python3 -m pytest tests/test_live_gates.py::TestStrategyEligibilityPositive -v
 
 # Nur negative Cases
-pytest tests/test_live_gates.py::TestStrategyEligibilityNegative -v
+python3 -m pytest tests/test_live_gates.py::TestStrategyEligibilityNegative -v
 ```
 
 ### Testabdeckung

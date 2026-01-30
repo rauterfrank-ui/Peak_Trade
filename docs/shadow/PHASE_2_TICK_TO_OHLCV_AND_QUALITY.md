@@ -140,13 +140,13 @@ python3 scripts/shadow_run_tick_to_ohlcv_smoke.py
 
 ```bash
 # Alle Shadow Pipeline Tests
-pytest -q tests/data/shadow/
+python3 -m pytest -q tests/data/shadow/
 
 # Spezifische Tests
-pytest tests/data/shadow/test_guards.py -v
-pytest tests/data/shadow/test_tick_normalizer_kraken_trade.py -v
-pytest tests/data/shadow/test_ohlcv_builder.py -v
-pytest tests/data/shadow/test_quality_monitor.py -v
+python3 -m pytest tests/data/shadow/test_guards.py -v
+python3 -m pytest tests/data/shadow/test_tick_normalizer_kraken_trade.py -v
+python3 -m pytest tests/data/shadow/test_ohlcv_builder.py -v
+python3 -m pytest tests/data/shadow/test_quality_monitor.py -v
 ```
 
 ### Test-Coverage

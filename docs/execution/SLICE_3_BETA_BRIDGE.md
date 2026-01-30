@@ -104,8 +104,8 @@ bridge.run(
 ### Tests
 
 ```bash
-uv run pytest -q tests/execution/test_beta_event_bridge_determinism.py
-uv run pytest -q tests/execution/test_beta_event_bridge_ordering.py
+python3 -m pytest -q tests/execution/test_beta_event_bridge_determinism.py
+python3 -m pytest -q tests/execution/test_beta_event_bridge_ordering.py
 ```
 
 ### Golden Regression (Equity Curve)
@@ -122,7 +122,7 @@ uv run pytest -q tests/execution/test_beta_event_bridge_ordering.py
 Golden wird **niemals automatisch** in CI aktualisiert. Update ist ein bewusster Operator-Schritt:
 
 ```bash
-uv run python scripts/testing/update_slice3_golden.py --fixture tests/fixtures/slice3_beta_events_minimal.jsonl
+python3 scripts/testing/update_slice3_golden.py --fixture tests/fixtures/slice3_beta_events_minimal.jsonl
 ```
 
 #### Strikte Invarianten (Review-Checklist)

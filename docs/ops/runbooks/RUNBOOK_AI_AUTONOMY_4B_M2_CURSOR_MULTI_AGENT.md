@@ -277,10 +277,10 @@ pip-audit -f json -o pip_audit.json
 ./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
 
 # Policy Critic Gate (if policy-relevant files changed)
-python scripts/policy/run_policy_critic.py --pr-mode
+python3 scripts/run_policy_critic.py --pr-mode
 
 # Test Suite
-pytest tests/ai_orchestration/ -q
+python3 -m pytest tests/ai_orchestration/ -q
 ```
 
 **Schema Reference:**

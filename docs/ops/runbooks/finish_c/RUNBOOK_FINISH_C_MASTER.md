@@ -151,9 +151,9 @@ git diff --stat
 git diff
 
 # Tests/Lint (snapshot-only)
-pytest -q
-python -m ruff check .
-python -m ruff format --check .
+python3 -m pytest -q
+ruff check .
+ruff format --check .
 
 # Docs gates (snapshot-only, changed scope)
 ./scripts/ops/pt_docs_gates_snapshot.sh --changed --base origin/main
@@ -163,11 +163,11 @@ python -m ruff format --check .
 ./scripts/ops/verify_docs_reference_targets_trend.sh --changed --base origin/main
 
 # Docs/Ops hygiene (nur wenn relevant; snapshot-only)
-python scripts/ops/check_merge_log_hygiene.py
+python3 scripts/ops/check_merge_log_hygiene.py
 
 # Optional: repo-specific docs token/reference scripts (nur falls vorhanden)
-# python scripts/ops/check_docs_token_policy.py
-# python scripts/ops/check_docs_reference_targets.py
+# python3 scripts/ops/validate_docs_token_policy.py --changed
+# bash scripts/ops/verify_docs_reference_targets.sh --changed
 ```
 
 ---

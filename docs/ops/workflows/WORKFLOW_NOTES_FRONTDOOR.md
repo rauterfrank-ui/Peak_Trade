@@ -84,7 +84,7 @@ ls -la path/to/file
 ```
 Missing targets: 3
   - /path/to/docs/file.md:42: config/my_example.toml
-  - /path/to/docs/file.md:58: scripts/my_script.py
+  - /path/to/docs/file.md:58: scripts&#47;my_script.py
 ```
 
 **Diagnosis:**

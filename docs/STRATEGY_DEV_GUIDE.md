@@ -572,10 +572,10 @@ stop_pct = 0.02    # Stop-Loss (immer empfohlen!)
 
 ```bash
 # Liste aller Strategien
-python scripts/run_strategy_from_config.py --list-strategies
+python3 scripts/run_strategy_from_config.py --list-strategies
 
 # Deine neue Strategie testen
-python scripts/run_strategy_from_config.py --strategy my_new_strategy
+python3 scripts/run_strategy_from_config.py --strategy my_new_strategy
 ```
 
 ---
@@ -756,10 +756,10 @@ def test_my_new_strategy_smoke():
 **Smoke Tests ausführen:**
 ```bash
 # Nur Smoke Tests (schnell, ~1 Sekunde)
-pytest -m smoke -q
+python3 -m pytest -m smoke -q
 
 # Alle Tests (vollständig)
-pytest -q
+python3 -m pytest -q
 ```
 
 ### 6.2 Interaktive Tests
@@ -1110,7 +1110,7 @@ return signals
 - 🎯 **[Portfolio Recipes](PORTFOLIO_RECIPES_AND_PRESETS.md)** – Portfolio configurations
 
 ### Technical Guides
-- [Position Sizing & Overlays](../src/core/position_sizing.py) – Position sizing implementation
+- Position Sizing & Overlays: `src/core/position_sizing.py` – Position sizing implementation
 - [Config System](project_docs/CONFIG_SYSTEM.md) – Configuration deep dive *(if exists)*
 
 ---

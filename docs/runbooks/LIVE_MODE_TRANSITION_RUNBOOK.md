@@ -74,16 +74,16 @@ allow_limit_override = false            # NO overrides in Phase 1
 2. **Kill Switch Verification**
    ```bash
    # Verify kill switch is operational
-   python -m src.risk_layer.kill_switch.cli status
+   python3 -m src.risk_layer.kill_switch.cli status
 
    # Test trigger/recovery (dry-run)
-   python scripts/ops/drill_kill_switch.py --dry-run
+   python3 scripts/ops/drill_kill_switch.py --dry-run
    ```
 
 3. **Risk Limits Verification**
    ```bash
    # Test risk limits with bounded-live config
-   python scripts/live/test_bounded_live_limits.py
+   python3 scripts/live/test_bounded_live_limits.py
    ```
 
 4. **Set Confirm Token**
@@ -109,7 +109,7 @@ cp config/bounded_live.toml config/live_policies.toml
 source ~/.peak_trade_live_env
 
 # 3. Verify configuration
-python scripts/live/verify_bounded_live_config.py
+python3 scripts/live/test_bounded_live_limits.py
 ```
 
 **Expected Output:**
@@ -128,11 +128,7 @@ python scripts/live/verify_bounded_live_config.py
 
 ```bash
 # Run live session in dry-run mode (no real orders yet)
-python scripts/live/run_live_dry_run.py \
-  --strategy ma_crossover \
-  --symbol BTC-EUR \
-  --timeframe 1m \
-  --duration 30m
+python3 scripts/run_live_dry_run_drills.py
 ```
 
 **Step 3: Enable Live Orders (CRITICAL)**
@@ -147,7 +143,7 @@ python scripts/live/run_live_dry_run.py \
 # live_dry_run_mode = false
 
 # Verify ALL gates are correct
-python scripts/live/verify_live_gates.py
+python3 scripts/live/verify_live_gates.py
 ```
 
 **Expected Output:**
@@ -174,25 +170,22 @@ Type 'I UNDERSTAND' to confirm: _
 
 ```bash
 # Start first live session with strict monitoring
-python scripts/live/start_bounded_live_session.py \
-  --strategy ma_crossover \
-  --symbol BTC-EUR \
-  --timeframe 1m \
-  --duration 1h \
-  --confirm-token "${LIVE_CONFIRM_TOKEN}"
+# NOTE: Es gibt aktuell kein dediziertes `start_bounded_live_session.py` im Repo.
+# Für Phase-85/„Live-Beta“ existiert ein simulierter Drill-Runner:
+python3 scripts/run_live_beta_drill.py --all
 ```
 
 **Step 5: Continuous Monitoring (First 24h)**
 
 ```bash
 # Monitor in separate terminal
-watch -n 5 'python scripts/live/show_live_status.py'
+watch -n 5 'python3 scripts/live_ops.py health --config config/config.toml --json'
 
 # Monitor kill switch status
-watch -n 10 'python -m src.risk_layer.kill_switch.cli status'
+watch -n 10 'python3 -m src.risk_layer.kill_switch.cli status'
 
 # Monitor risk limits
-watch -n 10 'python scripts/live/show_risk_status.py'
+watch -n 10 'python3 scripts/live_ops.py portfolio --config config/config.toml --json'
 ```
 
 ---
@@ -234,42 +227,39 @@ max_daily_loss_abs = 200.0         # Increased to $200
 
 ```bash
 # Immediate halt of all trading
-python -m src.risk_layer.kill_switch.cli trigger \
+python3 -m src.risk_layer.kill_switch.cli trigger \
   --reason "Emergency stop - [describe reason]" \
   --triggered-by "operator_name"
 
 # Verify all orders are blocked
-python scripts/live/verify_kill_switch_active.py
+python3 -m src.risk_layer.kill_switch.cli status
 ```
 
 ### Rollback to Shadow Mode
 
 ```bash
 # 1. Trigger kill switch (if not already triggered)
-python -m src.risk_layer.kill_switch.cli trigger --reason "Rollback to shadow"
+python3 -m src.risk_layer.kill_switch.cli trigger --reason "Rollback to shadow"
 
 # 2. Update config
 # Edit config/live_environment.toml:
 # live_dry_run_mode = true
 
-# 3. Close any open positions (manual or via script)
-python scripts/live/close_all_positions.py --confirm
+# 3. Close any open positions (manuell am Broker/Exchange).
+# Danach State verifizieren:
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
 
-# 4. Restart in shadow mode
-python scripts/live/start_shadow_session.py
+# 4. Shadow/Paper Mode ist ein Konfig-/Workflow-Thema; es gibt aktuell kein
+# dediziertes `start_shadow_session.py` im Repo. Nutze für Smoke-Checks:
+python3 scripts/live_ops.py health --config config/config.toml --json
 ```
 
 ### Manual Position Close
 
 ```bash
-# Close specific position
-python scripts/live/close_position.py \
-  --symbol BTC-EUR \
-  --reason "Manual close - emergency" \
-  --confirm
-
-# Close all positions
-python scripts/live/close_all_positions.py --confirm
+# Es gibt aktuell kein `close_position.py` CLI im Repo.
+# Manuelles Schließen erfolgt am Broker/Exchange; anschließend prüfen:
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
 ```
 
 ---

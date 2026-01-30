@@ -54,7 +54,7 @@ Phase 2 (VaR Validation) wurde zu `main` gemerged (PR #413), aber es fehlten:
 
 ```bash
 # Alle Validation + Integration Tests
-pytest tests/risk/validation/ tests/risk/integration/ -q
+python3 -m pytest tests/risk/validation/ tests/risk/integration/ -q
 
 # Erwartetes Ergebnis:
 # 93 passed in 0.84s ✅
@@ -174,7 +174,7 @@ Total: 6 files changed (+714 lines, -8 lines)
 ## Test Summary
 
 ```bash
-pytest tests/risk/validation/ tests/risk/integration/ -q
+python3 -m pytest tests/risk/validation/ tests/risk/integration/ -q
 
 # Result:
 # 93 passed in 0.84s ✅

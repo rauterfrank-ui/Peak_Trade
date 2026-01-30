@@ -24,7 +24,7 @@
 
 **Token Policy Gate (Illustrative Pfade):**
 ```markdown
-Vorher: `scripts/example.py`
+Vorher: `scripts/example.py` <!-- pt:ref-target-ignore -->
 Nachher: `scripts&#47;example.py`
 ```
 
@@ -127,7 +127,7 @@ git push --force-with-lease
 **Einzelne Gates (falls nötig):**
 ```bash
 # Token Policy
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 
 # Reference Targets
 bash scripts/ops/verify_docs_reference_targets.sh --changed
