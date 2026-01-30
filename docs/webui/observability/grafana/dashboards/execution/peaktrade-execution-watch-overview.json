@@ -73,6 +73,166 @@
   ],
   "panels": [
     {
+      "id": 1,
+      "type": "row",
+      "title": "Stack Fingerprint",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": []
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Stack Fingerprint: Active Stacks",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "count by (stack) (up{stack=~\".+\"})",
+          "instant": true,
+          "range": false,
+          "legendFormat": "{{stack}}"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "orientation": "horizontal",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Stack Fingerprint: Target Count",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "count(up{stack=~\".+\"})",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "orientation": "horizontal",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 4,
+      "type": "table",
+      "title": "Stack Fingerprint: Targets UP",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "up{stack=~\".+\"} == 1",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": false
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
       "datasource": {
         "type": "prometheus",
         "uid": "${ds}"
@@ -87,7 +247,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 0
+        "y": 17
       },
       "options": {
         "reduceOptions": {
@@ -124,7 +284,7 @@
         "h": 4,
         "w": 3,
         "x": 3,
-        "y": 0
+        "y": 17
       },
       "options": {
         "reduceOptions": {
@@ -161,7 +321,7 @@
         "h": 4,
         "w": 3,
         "x": 6,
-        "y": 0
+        "y": 17
       },
       "options": {
         "reduceOptions": {
@@ -198,7 +358,7 @@
         "h": 4,
         "w": 3,
         "x": 9,
-        "y": 0
+        "y": 17
       },
       "options": {
         "reduceOptions": {
@@ -235,7 +395,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 4
+        "y": 21
       },
       "options": {
         "reduceOptions": {
@@ -272,7 +432,7 @@
         "h": 4,
         "w": 3,
         "x": 3,
-        "y": 4
+        "y": 21
       },
       "options": {
         "reduceOptions": {
@@ -309,7 +469,7 @@
         "h": 4,
         "w": 3,
         "x": 6,
-        "y": 4
+        "y": 21
       },
       "options": {
         "reduceOptions": {
@@ -346,7 +506,7 @@
         "h": 4,
         "w": 3,
         "x": 9,
-        "y": 4
+        "y": 21
       },
       "options": {
         "reduceOptions": {
@@ -381,7 +541,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 8
+        "y": 25
       },
       "options": {},
       "targets": [
@@ -420,7 +580,7 @@
         "h": 7,
         "w": 4,
         "x": 8,
-        "y": 8
+        "y": 25
       },
       "options": {},
       "targets": [
@@ -449,7 +609,7 @@
         "h": 4,
         "w": 4,
         "x": 12,
-        "y": 8
+        "y": 25
       },
       "options": {
         "reduceOptions": {
@@ -486,7 +646,7 @@
         "h": 4,
         "w": 4,
         "x": 16,
-        "y": 8
+        "y": 25
       },
       "options": {
         "reduceOptions": {
@@ -523,7 +683,7 @@
         "h": 4,
         "w": 4,
         "x": 16,
-        "y": 8
+        "y": 25
       },
       "options": {
         "reduceOptions": {
@@ -560,7 +720,7 @@
         "h": 4,
         "w": 4,
         "x": 20,
-        "y": 8
+        "y": 25
       },
       "options": {
         "reduceOptions": {
@@ -588,7 +748,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 79
+        "y": 96
       },
       "panels": [],
       "title": "AI Live — Ops Summary",
@@ -636,7 +796,7 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 80
+        "y": 97
       },
       "options": {
         "reduceOptions": {
@@ -687,7 +847,7 @@
         "h": 4,
         "w": 4,
         "x": 4,
-        "y": 80
+        "y": 97
       },
       "options": {
         "reduceOptions": {
@@ -733,7 +893,7 @@
         "h": 4,
         "w": 4,
         "x": 8,
-        "y": 80
+        "y": 97
       },
       "options": {
         "reduceOptions": {
@@ -779,7 +939,7 @@
         "h": 4,
         "w": 4,
         "x": 12,
-        "y": 80
+        "y": 97
       },
       "options": {
         "reduceOptions": {
@@ -830,7 +990,7 @@
         "h": 4,
         "w": 4,
         "x": 16,
-        "y": 80
+        "y": 97
       },
       "options": {
         "reduceOptions": {
@@ -876,7 +1036,7 @@
         "h": 4,
         "w": 4,
         "x": 20,
-        "y": 80
+        "y": 97
       },
       "options": {
         "reduceOptions": {
@@ -900,7 +1060,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 32
       },
       "panels": [],
       "title": "AI Live",
@@ -948,7 +1108,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 16
+        "y": 33
       },
       "options": {
         "reduceOptions": {
@@ -982,7 +1142,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 16
+        "y": 33
       },
       "options": {
         "reduceOptions": {
@@ -1039,7 +1199,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 16
+        "y": 33
       },
       "options": {
         "reduceOptions": {
@@ -1076,7 +1236,7 @@
         "h": 4,
         "w": 6,
         "x": 18,
-        "y": 16
+        "y": 33
       },
       "options": {
         "reduceOptions": {
@@ -1111,7 +1271,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 20
+        "y": 37
       },
       "options": {
         "reduceOptions": {
@@ -1145,7 +1305,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 20
+        "y": 37
       },
       "options": {
         "reduceOptions": {
@@ -1178,7 +1338,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 20
+        "y": 37
       },
       "options": {
         "reduceOptions": {
@@ -1211,7 +1371,7 @@
         "h": 4,
         "w": 6,
         "x": 18,
-        "y": 20
+        "y": 37
       },
       "options": {
         "reduceOptions": {
@@ -1251,7 +1411,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 41
       },
       "targets": [
         {
@@ -1279,7 +1439,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 49
       },
       "panels": [],
       "title": "AI Live — UX v2 (reasons, actions, SLO, timeline)",
@@ -1307,7 +1467,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 33
+        "y": 50
       },
       "targets": [
         {
@@ -1351,7 +1511,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 33
+        "y": 50
       },
       "targets": [
         {
@@ -1385,7 +1545,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 41
+        "y": 58
       },
       "targets": [
         {
@@ -1419,7 +1579,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 41
+        "y": 58
       },
       "targets": [
         {
@@ -1469,7 +1629,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 49
+        "y": 66
       },
       "options": {
         "reduceOptions": {
@@ -1504,7 +1664,7 @@
         "h": 8,
         "w": 18,
         "x": 6,
-        "y": 49
+        "y": 66
       },
       "targets": [
         {
@@ -1535,7 +1695,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 57
+        "y": 74
       },
       "targets": [
         {
@@ -1572,7 +1732,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 63
+        "y": 80
       },
       "options": {
         "displayMode": "gradient",
@@ -1605,7 +1765,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 69
+        "y": 86
       },
       "options": {
         "reduceOptions": {
@@ -1638,7 +1798,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 69
+        "y": 86
       },
       "options": {
         "reduceOptions": {
@@ -1671,7 +1831,7 @@
         "h": 4,
         "w": 12,
         "x": 12,
-        "y": 69
+        "y": 86
       },
       "options": {
         "displayMode": "gradient",
@@ -1704,7 +1864,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 73
+        "y": 90
       },
       "targets": [
         {
@@ -1722,7 +1882,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 84
+        "y": 101
       },
       "panels": [],
       "title": "Health invariants (shadow)",
@@ -1768,7 +1928,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 85
+        "y": 102
       },
       "options": {
         "reduceOptions": {
@@ -1826,7 +1986,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 85
+        "y": 102
       },
       "options": {
         "reduceOptions": {
@@ -1891,7 +2051,7 @@
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 85
+        "y": 102
       },
       "options": {
         "reduceOptions": {
@@ -1956,7 +2116,7 @@
         "h": 5,
         "w": 6,
         "x": 18,
-        "y": 85
+        "y": 102
       },
       "options": {
         "reduceOptions": {
@@ -1980,7 +2140,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 90
+        "y": 107
       },
       "panels": [],
       "title": "Shadow pipeline signals (throughput, errors, latency, risk blocks)",
@@ -1995,7 +2155,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 91
+        "y": 108
       },
       "targets": [
         {
@@ -2024,7 +2184,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 91
+        "y": 108
       },
       "targets": [
         {
@@ -2045,7 +2205,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 99
+        "y": 116
       },
       "targets": [
         {
@@ -2072,7 +2232,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 99
+        "y": 116
       },
       "targets": [
         {
@@ -2090,7 +2250,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 107
+        "y": 124
       },
       "panels": [],
       "title": "Replay/compare signals (Execution Watch API metrics, if enabled)",
@@ -2117,7 +2277,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 108
+        "y": 125
       },
       "targets": [
         {
@@ -2144,7 +2304,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 117
+        "y": 134
       },
       "targets": [
         {
@@ -2165,7 +2325,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 117
+        "y": 134
       },
       "targets": [
         {
@@ -2183,7 +2343,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 126
+        "y": 143
       },
       "panels": [],
       "title": "Compare (shadow vs main) — best-effort",
@@ -2198,7 +2358,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 127
+        "y": 144
       },
       "targets": [
         {
@@ -2219,7 +2379,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 127
+        "y": 144
       },
       "targets": [
         {
