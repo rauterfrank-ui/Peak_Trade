@@ -475,8 +475,9 @@ echo "API-Secret gesetzt: ${KRAKEN_TESTNET_API_SECRET:+Ja}"
 # - Bei Kompromittierung: SOFORT KEY ROTIEREN!
 
 # Schritt 4: Neue Keys setzen (falls rotiert)
-export KRAKEN_TESTNET_API_KEY="new-key"
-export KRAKEN_TESTNET_API_SECRET="new-secret"
+# Hinweis: Platzhalter bewusst so gewählt, dass sie nicht wie echte Keys wirken.
+export KRAKEN_TESTNET_API_KEY="<KRAKEN_TESTNET_API_KEY_ROTATED>"
+export KRAKEN_TESTNET_API_SECRET="<KRAKEN_TESTNET_API_SECRET_ROTATED>"
 
 # Schritt 5: Neu starten
 python3 scripts/check_live_readiness.py --stage testnet
@@ -984,8 +985,9 @@ cd ~/Peak_Trade
 source .venv/bin/activate
 
 # Schritt 2: API-Credentials setzen (falls nicht in .bashrc/.zshrc)
-export KRAKEN_TESTNET_API_KEY="your-testnet-api-key"
-export KRAKEN_TESTNET_API_SECRET="your-testnet-api-secret"
+# Hinweis: Platzhalter bewusst so gewählt, dass sie nicht wie echte Keys wirken.
+export KRAKEN_TESTNET_API_KEY="<KRAKEN_TESTNET_API_KEY>"
+export KRAKEN_TESTNET_API_SECRET="<KRAKEN_TESTNET_API_SECRET>"
 
 # Schritt 3: Testnet-Session starten (20 Schritte)
 python3 scripts/run_execution_session.py \
