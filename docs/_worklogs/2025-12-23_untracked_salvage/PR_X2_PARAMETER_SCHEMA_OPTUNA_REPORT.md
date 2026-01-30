@@ -125,7 +125,7 @@ def parameter_schema(self) -> list:
 
 **CLI**:
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --n-trials 10 \
     --seed 42
@@ -154,7 +154,7 @@ pip install -e ".[research_optuna]"
 
 ```bash
 # MA Crossover mit 10 Trials
-python scripts/run_optuna_study.py --strategy ma_crossover --n-trials 10
+python3 scripts/run_optuna_study.py --strategy ma_crossover --n-trials 10
 ```
 
 **Output**:
@@ -239,11 +239,11 @@ slow_window = 45  # ← Optimiert
 
 ```bash
 # Parameter-Schema Tests
-pytest tests/strategies/test_parameter_schema.py -v
+python3 -m pytest tests/strategies/test_parameter_schema.py -v
 # → 17/17 passed ✅
 
 # Optuna Runner Smoke-Tests (nur wenn optuna installiert)
-pytest tests/scripts/test_optuna_runner_smoke.py -v
+python3 -m pytest tests/scripts/test_optuna_runner_smoke.py -v
 # → 4/4 passed ✅ (oder skipped wenn optuna fehlt)
 ```
 
@@ -283,7 +283,7 @@ ruff check src/strategies/parameters.py scripts/run_optuna_study.py
 ✅ **Optuna ist optional**:
 ```python
 # Wenn optuna nicht installiert:
-python scripts/run_optuna_study.py
+python3 scripts/run_optuna_study.py
 # → RuntimeError mit hilfreicher Message:
 #    "Optuna ist nicht installiert. Installiere via:
 #      pip install optuna
@@ -296,7 +296,7 @@ python scripts/run_optuna_study.py
 ✅ **Reproduzierbare Studies**:
 ```bash
 # Mit Seed
-python scripts/run_optuna_study.py --strategy ma_crossover --n-trials 10 --seed 42
+python3 scripts/run_optuna_study.py --strategy ma_crossover --n-trials 10 --seed 42
 # → Identische Ergebnisse bei jedem Lauf
 ```
 
@@ -314,7 +314,7 @@ python scripts/run_optuna_study.py --strategy ma_crossover --n-trials 10 --seed 
 ### 1. Dry-Run (kein Optuna nötig)
 
 ```bash
-python scripts/run_optuna_study.py --strategy ma_crossover --dry-run
+python3 scripts/run_optuna_study.py --strategy ma_crossover --dry-run
 # → Prüft Schema, führt keine Trials aus
 ```
 
@@ -325,7 +325,7 @@ python scripts/run_optuna_study.py --strategy ma_crossover --dry-run
 pip install optuna
 
 # 1 Trial mit wenig Bars
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --n-trials 1 \
     --bars 50 \
@@ -336,7 +336,7 @@ python scripts/run_optuna_study.py \
 ### 3. Full Study (10 Trials)
 
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --n-trials 10 \
     --seed 42
@@ -347,10 +347,10 @@ python scripts/run_optuna_study.py \
 
 ```bash
 # RSI Reversion
-python scripts/run_optuna_study.py --strategy rsi_reversion --n-trials 10
+python3 scripts/run_optuna_study.py --strategy rsi_reversion --n-trials 10
 
 # Donchian Breakout
-python scripts/run_optuna_study.py --strategy breakout_donchian --n-trials 10
+python3 scripts/run_optuna_study.py --strategy breakout_donchian --n-trials 10
 ```
 
 ---
@@ -431,7 +431,7 @@ def parameter_schema(self) -> list:
 
 **Schritt 3**: Testen
 ```bash
-python scripts/run_optuna_study.py --strategy my_strategy --dry-run
+python3 scripts/run_optuna_study.py --strategy my_strategy --dry-run
 ```
 
 ---

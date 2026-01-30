@@ -183,7 +183,7 @@ ls -lh docs/runbooks/KILL_SWITCH_DRILL_PROCEDURE.md
 ls -lh docs/runbooks/ROLLBACK_PROCEDURE.md
 
 # Test kill switch CLI (should work)
-python -m src.risk_layer.kill_switch.cli status
+python3 -m src.risk_layer.kill_switch.cli status
 ```
 
 ## Next Steps

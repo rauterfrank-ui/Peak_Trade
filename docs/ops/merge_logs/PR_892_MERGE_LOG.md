@@ -15,7 +15,7 @@
 
 ## Verification
 - Local:
-  - PASS: `uv run python scripts/ops/validate_docs_token_policy.py --changed`
+  - PASS: `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed`
   - PASS: `bash scripts/ops/verify_docs_reference_targets.sh --changed`
 - CI:
   - Required checks snapshot: PASS (PR checks at merge time)

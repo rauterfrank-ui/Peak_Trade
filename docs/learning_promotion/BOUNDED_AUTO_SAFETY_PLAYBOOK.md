@@ -178,10 +178,10 @@ global_promotion_lock = false  # Erlaubt Proposal-Generierung
 **Beispiel-Aufruf (falls Script Dry-Run unterstützt):**
 
 ```bash
-python scripts/run_promotion_proposal_cycle.py --dry-run
+python3 scripts/run_promotion_proposal_cycle.py --dry-run
 # oder
 export BOUNDED_AUTO_DRY_RUN=true
-python scripts/run_promotion_proposal_cycle.py
+python3 scripts/run_promotion_proposal_cycle.py
 ```
 
 ### 3.2 Schritt 2 – 3–5 Cycles im Dry-Run durchlaufen lassen
@@ -191,7 +191,7 @@ python scripts/run_promotion_proposal_cycle.py
 1. **Promotion-Cycle starten:**
 
 ```bash
-python scripts/run_promotion_proposal_cycle.py --dry-run
+python3 scripts/run_promotion_proposal_cycle.py --dry-run
 ```
 
 2. **bounded_auto generiert im Dry-Run:**
@@ -321,7 +321,7 @@ bounded_auto darf in einem **begrenzten Scope** echte Promotions durchführen:
 **Verwendung:**
 
 ```bash
-# python scripts/check_bounded_auto_readiness.py
+# python3 scripts/check_bounded_auto_readiness.py
 ```
 
 **Ausgabe:**

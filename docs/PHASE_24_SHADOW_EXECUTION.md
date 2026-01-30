@@ -103,21 +103,21 @@ run_id = log_shadow_run(
 ### 1. CLI-Aufruf
 
 ```bash
-# Einfachster Aufruf (defaults aus config.toml)
-python scripts/run_shadow_execution.py
+# Einfachster Aufruf (defaults aus config/config.toml)
+python3 scripts/run_shadow_execution.py
 
 # Mit Strategie und Tag
-python scripts/run_shadow_execution.py --strategy ma_crossover --tag shadow_test_v1
+python3 scripts/run_shadow_execution.py --strategy ma_crossover --tag shadow_test_v1
 
 # Mit CSV-Daten und Datumsbeschränkung
-python scripts/run_shadow_execution.py \
+python3 scripts/run_shadow_execution.py \
     --strategy rsi_strategy \
     --data-file data/btc_eur_1h.csv \
     --start 2023-01-01 \
     --end 2023-12-31
 
 # Mit Fee- und Slippage-Überschreibung
-python scripts/run_shadow_execution.py \
+python3 scripts/run_shadow_execution.py \
     --fee-rate 0.001 \
     --slippage-bps 10 \
     --verbose
@@ -223,7 +223,7 @@ print(f"Total Notional: {summary['total_notional']:.2f}")
 
 ## Konfiguration
 
-### config.toml
+### config/config.toml
 
 ```toml
 [shadow]
@@ -367,4 +367,4 @@ Nein. Shadow-Mode ist zu 100% simulativ. Der `LiveOrderExecutor` ist weiterhin e
 | `src/orders/__init__.py` | Export von Shadow-Klassen |
 | `src/execution/pipeline.py` | Factory-Methode `for_shadow()` |
 | `src/core/experiments.py` | `RUN_TYPE_SHADOW_RUN`, `log_shadow_run()` |
-| `config.toml` | `[shadow]`-Sektion |
+| `config/config.toml` | `[shadow]`-Sektion |

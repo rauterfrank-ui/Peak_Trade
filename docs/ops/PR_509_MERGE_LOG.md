@@ -49,16 +49,16 @@ Wiederherstellung kritischer Optuna/MLflow-Integration und Parameter-Schema-Date
 
 ```bash
 # Formatting
-uv run ruff format <files>     # 10 files reformatted
-uv run ruff check <files>      # All checks passed
+ruff format <files>     # 10 files reformatted
+ruff check <files>      # All checks passed
 
 # Tests
-pytest tests/test_tracking_noop.py                     # 11/11 ✅
-pytest tests/strategies/test_parameter_schema.py       # 14/14 ✅ (3 skipped)
-pytest tests/backtest/test_engine_tracking.py          # 4/5 ✅ (1 skipped)
-pytest tests/test_optuna_integration.py                # 23 skipped ✅
-pytest tests/test_tracking_mlflow_integration.py       # 20 skipped ✅
-pytest tests/scripts/test_optuna_runner_smoke.py       # 4 skipped ✅
+python3 -m pytest tests/test_tracking_noop.py                     # 11/11 ✅
+python3 -m pytest tests/strategies/test_parameter_schema.py       # 14/14 ✅ (3 skipped)
+python3 -m pytest tests/backtest/test_engine_tracking.py          # 4/5 ✅ (1 skipped)
+python3 -m pytest tests/test_optuna_integration.py                # 23 skipped ✅
+python3 -m pytest tests/test_tracking_mlflow_integration.py       # 20 skipped ✅
+python3 -m pytest tests/scripts/test_optuna_runner_smoke.py       # 4 skipped ✅
 
 # Summary: 29 passed, 50 skipped
 ```
@@ -93,25 +93,25 @@ pip install optuna
 uv pip install optuna
 
 # Basic optimization (Sharpe)
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
   --strategy ma_crossover \
   --n-trials 100
 
 # Multi-objective (Sharpe + Drawdown)
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
   --strategy ma_crossover \
   --objectives sharpe,max_drawdown \
   --n-trials 200
 
 # Mit persistent storage
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
   --strategy rsi_reversion \
   --storage sqlite:///optuna_studies.db \
   --study-name rsi_opt_v1 \
   --n-trials 50
 
 # Parallel trials
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
   --strategy breakout_donchian \
   --n-trials 100 \
   --jobs 4
@@ -126,7 +126,7 @@ python scripts/run_optuna_study.py \
 pip install mlflow
 
 # Smoke tests ausführen
-python scripts/smoke_test_mlflow.py
+python3 scripts/smoke_test_mlflow.py
 
 # Output: 6 Tests (basic, context mgr, artifacts, config-builder, backtest integration)
 ```

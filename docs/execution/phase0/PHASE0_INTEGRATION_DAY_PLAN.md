@@ -166,7 +166,7 @@ If WP-A needs to reference WP-B:
 3. **Sequential (after WP0A/B):** WP0C (Order Routing) → WP0D (Recon/Ledger)
 
 **Evidence Requirements (Implementation Run):**
-- Unit tests per WP (pytest)
+- Unit tests per WP (`python3 -m pytest`)
 - Integration smoke tests
 - Evidence reports in `reports&#47;execution&#47;*` (gitignored)
 - Completion reports (like existing WP0E/WP0A completion reports)

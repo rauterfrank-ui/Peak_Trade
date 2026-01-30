@@ -12,7 +12,7 @@ Stand: Dezember 2024
 
 ```bash
 # Daily Quick Check (1-2 Sekunden)
-python scripts/run_test_health_profile.py --profile daily_quick
+python3 scripts/run_test_health_profile.py --profile daily_quick
 
 # Ergebnis:
 # ✅ 100% Health Score
@@ -23,17 +23,17 @@ python scripts/run_test_health_profile.py --profile daily_quick
 
 ```bash
 # Alle Profile
-python scripts/show_test_health_history.py --all
+python3 scripts/show_test_health_history.py --all
 
 # Einzelnes Profil
-python scripts/show_test_health_history.py --profile weekly_core
+python3 scripts/show_test_health_history.py --profile weekly_core
 ```
 
 ### 3. CI/CD validieren
 
 ```bash
 # Prüfe GitHub Actions Config
-python scripts/validate_ci_config.py
+python3 scripts/validate_ci_config.py
 
 # Ergebnis: ✅ Alle Validierungen erfolgreich!
 ```
@@ -88,14 +88,14 @@ Peak_Trade/
 
 ```bash
 # Default-Profil (daily_quick)
-python scripts/run_test_health_profile.py
+python3 scripts/run_test_health_profile.py
 
 # Spezifisches Profil
-python scripts/run_test_health_profile.py --profile weekly_core
+python3 scripts/run_test_health_profile.py --profile weekly_core
 
 # Alle Profile nacheinander
 for profile in daily_quick weekly_core r_and_d_experimental; do
-    python scripts/run_test_health_profile.py --profile $profile
+    python3 scripts/run_test_health_profile.py --profile $profile
 done
 ```
 
@@ -103,13 +103,13 @@ done
 
 ```bash
 # Übersicht aller Profile (letzte 14 Tage)
-python scripts/show_test_health_history.py --all
+python3 scripts/show_test_health_history.py --all
 
 # Zeitraum filtern
-python scripts/show_test_health_history.py --all --days 7
+python3 scripts/show_test_health_history.py --all --days 7
 
 # JSON-Output für Scripting
-python scripts/show_test_health_history.py --profile daily_quick --json
+python3 scripts/show_test_health_history.py --profile daily_quick --json
 ```
 
 ### Reports
@@ -173,7 +173,7 @@ Nach jedem Run:
 
 ```bash
 # Schneller Check vor dem Arbeiten
-python scripts/run_test_health_profile.py --profile daily_quick
+python3 scripts/run_test_health_profile.py --profile daily_quick
 
 # Bei 100%: Alles gut ✅
 # Bei <100%: Fehler-Details in summary.md ansehen
@@ -183,10 +183,10 @@ python scripts/run_test_health_profile.py --profile daily_quick
 
 ```bash
 # Umfassender Check
-python scripts/run_test_health_profile.py --profile weekly_core
+python3 scripts/run_test_health_profile.py --profile weekly_core
 
 # Historie-Trend prüfen
-python scripts/show_test_health_history.py --profile weekly_core
+python3 scripts/show_test_health_history.py --profile weekly_core
 
 # Bei Trend "declining": Ursache identifizieren
 ```
@@ -195,10 +195,10 @@ python scripts/show_test_health_history.py --profile weekly_core
 
 ```bash
 # Full Suite Check
-python scripts/run_test_health_profile.py --profile full_suite
+python3 scripts/run_test_health_profile.py --profile full_suite
 
 # R&D Check
-python scripts/run_test_health_profile.py --profile r_and_d_experimental
+python3 scripts/run_test_health_profile.py --profile r_and_d_experimental
 
 # Alle Reports prüfen
 ls -lt reports/test_health/ | head -5
@@ -208,7 +208,7 @@ ls -lt reports/test_health/ | head -5
 
 ```bash
 # Run mit Failed Check
-python scripts/run_test_health_profile.py --profile full_suite
+python3 scripts/run_test_health_profile.py --profile full_suite
 
 # Markdown-Report öffnen
 cat reports/test_health/{latest_dir}/summary.md
@@ -231,7 +231,7 @@ cat reports/test_health/{latest_dir}/summary.md
 **Lösung**: Python-Path fehlt
 ```bash
 export PYTHONPATH="${PYTHONPATH}:${PWD}"
-python scripts/run_test_health_profile.py
+python3 scripts/run_test_health_profile.py
 ```
 
 ### Problem: Health Score unerwartet niedrig
@@ -250,8 +250,8 @@ cat {latest_dir}/summary.md | grep -A50 "Fehlgeschlagene Checks"
 
 **Lösung**: Erst einen Run durchführen
 ```bash
-python scripts/run_test_health_profile.py
-python scripts/show_test_health_history.py --all
+python3 scripts/run_test_health_profile.py
+python3 scripts/show_test_health_history.py --all
 ```
 
 ### Problem: CI-Workflow startet nicht

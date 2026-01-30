@@ -366,7 +366,7 @@ Checking changed files for broken reference targets...
 Verifiziere, dass keine verbotenen Token-Patterns vorhanden sind (z.B. Inline-Backticks mit Slashes):
 
 ```bash
-python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 ```
 
 **Expected Output:**
@@ -966,7 +966,7 @@ oder
 
 ```bash
 bash scripts/ops/verify_docs_reference_targets.sh --changed
-python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 ```
 
 **Expected Output:**
@@ -1178,7 +1178,7 @@ git diff --stat
 bash scripts/ops/pt_docs_gates_snapshot.sh --changed
 # or fallback:
 bash scripts/ops/verify_docs_reference_targets.sh --changed
-python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 
 # Phase 5: Commit
 git add docs/

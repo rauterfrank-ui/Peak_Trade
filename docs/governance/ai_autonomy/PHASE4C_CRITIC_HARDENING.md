@@ -189,7 +189,7 @@ tests/fixtures/l4_critic_determinism/
 
 ```bash
 # Minimal replay (deterministic)
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -215,7 +215,7 @@ python scripts/aiops/run_l4_governance_critic.py \
 **Use Case:** Operator-controlled output location
 
 ```bash
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack evidence_packs/L1_var_research \
   --mode replay \
   --fixture l4_critic_sample \
@@ -227,7 +227,7 @@ python scripts/aiops/run_l4_governance_critic.py \
 **Use Case:** Determinism testing with fixed pack ID
 
 ```bash
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -240,7 +240,7 @@ python scripts/aiops/run_l4_governance_critic.py \
 **Use Case:** Test schema evolution
 
 ```bash
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -254,7 +254,7 @@ python scripts/aiops/run_l4_governance_critic.py \
 
 ```bash
 # Run critic in deterministic mode
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -349,7 +349,7 @@ diff -u "$SNAPSHOT_DIR/critic_summary.md" .tmp/l4_critic_out/critic_summary.md
 
 **Command:**
 ```bash
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -445,7 +445,7 @@ runner = L4Critic(clock=clock)
 
 **In CLI:**
 ```bash
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --deterministic  # Injects fixed clock: 2026-01-10T12:00:00Z
 ```
 
@@ -486,13 +486,13 @@ python scripts/aiops/run_l4_governance_critic.py \
 **Run Tests:**
 ```bash
 # All determinism tests
-pytest tests/ai_orchestration/test_l4_critic_determinism.py -v
+python3 -m pytest tests/ai_orchestration/test_l4_critic_determinism.py -v
 
 # Specific test
-pytest tests/ai_orchestration/test_l4_critic_determinism.py::TestL4CriticDeterminism::test_critic_report_json_determinism -v
+python3 -m pytest tests/ai_orchestration/test_l4_critic_determinism.py::TestL4CriticDeterminism::test_critic_report_json_determinism -v
 
 # With coverage
-pytest tests/ai_orchestration/test_l4_critic_determinism.py --cov=src/ai_orchestration/critic_report_schema --cov=src/ai_orchestration/l4_critic
+python3 -m pytest tests/ai_orchestration/test_l4_critic_determinism.py --cov=src/ai_orchestration/critic_report_schema --cov=src/ai_orchestration/l4_critic
 ```
 
 ### 8.2 CI Tests
@@ -525,7 +525,7 @@ pytest tests/ai_orchestration/test_l4_critic_determinism.py --cov=src/ai_orchest
 
 **Step 1: Run CLI in deterministic mode**
 ```bash
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -555,7 +555,7 @@ ls .tmp/l4_critic_out/
 # Expected: critic_report.json, critic_summary.md, ...
 
 # Validate JSON schema
-python -m json.tool .tmp/l4_critic_out/critic_report.json > /dev/null
+python3 -m json.tool .tmp/l4_critic_out/critic_report.json > /dev/null
 echo "✅ JSON valid"
 
 # Check schema version
@@ -574,7 +574,7 @@ jq '.meta.created_at' .tmp/l4_critic_out/critic_report.json
 **Step 3: Run twice, compare bytes**
 ```bash
 # Run 1
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -583,7 +583,7 @@ python scripts/aiops/run_l4_governance_critic.py \
   --deterministic
 
 # Run 2
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -598,7 +598,7 @@ diff .tmp/run1/critic_report.json .tmp/run2/critic_report.json
 
 **Step 4: Run tests**
 ```bash
-pytest tests/ai_orchestration/test_l4_critic_determinism.py -v
+python3 -m pytest tests/ai_orchestration/test_l4_critic_determinism.py -v
 # Expected: all tests pass
 ```
 
@@ -630,7 +630,7 @@ pytest tests/ai_orchestration/test_l4_critic_determinism.py -v
 **Step 1: Verify Intentional Change**
 ```bash
 # Run critic with current code
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -661,7 +661,7 @@ echo "✅ Snapshot updated"
 # Run twice, verify identical
 rm -rf .tmp/verify_a .tmp/verify_b
 
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -670,7 +670,7 @@ python scripts/aiops/run_l4_governance_critic.py \
   --schema-version 1.0.0 \
   --deterministic
 
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -688,7 +688,7 @@ diff .tmp/verify_a/critic_summary.md .tmp/verify_b/critic_summary.md
 **Step 4: Run Tests**
 ```bash
 # All tests should pass with new snapshot
-pytest tests/ai_orchestration/test_l4_critic_determinism.py -v
+python3 -m pytest tests/ai_orchestration/test_l4_critic_determinism.py -v
 ```
 
 **Step 5: Commit with Justification**
@@ -751,7 +751,7 @@ diff -u \
 
 **Symptom:**
 ```
-pytest tests/ai_orchestration/test_l4_critic_determinism.py
+python3 -m pytest tests/ai_orchestration/test_l4_critic_determinism.py
 # Some tests fail locally
 ```
 
@@ -766,7 +766,7 @@ pytest tests/ai_orchestration/test_l4_critic_determinism.py
 cd /path/to/Peak_Trade
 
 # Use Python 3.11
-python3.11 -m pytest tests/ai_orchestration/test_l4_critic_determinism.py -v
+python3 -m pytest tests/ai_orchestration/test_l4_critic_determinism.py -v
 ```
 
 ### Issue: CI Gate Skipped

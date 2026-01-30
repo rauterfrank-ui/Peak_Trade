@@ -152,7 +152,7 @@ git diff --cached --name-only || true
 ## 4) Phase B — Docs Gates & Test-Snapshot (lokal)
 
 ### B1 — Minimal Test Plan (D2)
-**Pflicht:** `uv run pytest -q tests/reporting/test_report_generator.py`  
+**Pflicht:** `python3 -m pytest -q tests&#47;reporting&#47;test_report_generator.py`  
 **Exit:** PASS + in Verification Note erfasst.
 
 > **Cursor Terminal — Single Block**
@@ -166,7 +166,7 @@ git rev-parse --show-toplevel 2>/dev/null || true
 git status -sb || true
 
 echo "=== TEST (D2 subset) ==="
-uv run pytest -q tests/reporting/test_report_generator.py || true
+python3 -m pytest -q tests/reporting/test_report_generator.py || true
 ```
 
 ### B2 — Docs Gates (lokal best effort)
@@ -186,11 +186,7 @@ echo "=== DISCOVER docs gate scripts (best effort) ==="
 ls -la scripts/ops 2>/dev/null | sed -n '1,120p' || true
 
 echo "=== TRY: pre-commit (if present) ==="
-if command -v uv >/dev/null 2>&1; then
-  uv run pre-commit run -a || true
-else
-  pre-commit run -a || true
-fi
+pre-commit run -a || true
 
 echo "=== NOTE ==="
 echo "If your repo has dedicated docs gate snapshot scripts, run them here and capture PASS evidence."
@@ -248,7 +244,7 @@ Make “Finish” workstreams discoverable and operational via canonical entry p
   - docs/research/option_b/* (no-code roadmap/policy)
 
 ## Verification
-- PASS: uv run pytest -q tests/reporting/test_report_generator.py
+- PASS: python3 -m pytest -q tests&#47;reporting&#47;test_report_generator.py
 - Docs gates: (list PASS snapshots or CI links)
 
 ## Risk

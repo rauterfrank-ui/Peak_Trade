@@ -98,7 +98,8 @@ class TestGoldenPathDocumentation:
 
         # Prüfe auf CLI-Befehle
         assert "research_cli.py" in content
-        assert "python scripts/" in content or "python scripts" in content.lower()
+        # Docs-Hygiene: CLI-Snippets sollen `python3` verwenden (nicht `python`).
+        assert "python3 scripts/" in content or "python3 scripts" in content.lower()
 
     def test_documentation_references_tiering(self):
         """Dokumentation referenziert das Tiering-System."""

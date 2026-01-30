@@ -16,7 +16,7 @@ MergedAt: 2026-01-28T01:35:56Z
 
 ## Tests executed
 - ```bash
-  uv run pytest -q tests/test_timeframe_infer.py
+  python3 -m pytest -q tests/test_timeframe_infer.py
   ```
 
 ## Verification result

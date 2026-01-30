@@ -679,13 +679,13 @@ def determine_cluster(event: YourEventType) -> str:
 
 ```bash
 # Alle Tests
-pytest tests/reporting/test_psychology_heuristics.py -v
+python3 -m pytest tests/reporting/test_psychology_heuristics.py -v
 
 # Nur spezifische Test-Klasse
-pytest tests/reporting/test_psychology_heuristics.py::TestScoreFOMO -v
+python3 -m pytest tests/reporting/test_psychology_heuristics.py::TestScoreFOMO -v
 
 # Mit Coverage
-pytest tests/reporting/test_psychology_heuristics.py --cov=src.reporting.psychology_heuristics
+python3 -m pytest tests/reporting/test_psychology_heuristics.py --cov=src.reporting.psychology_heuristics
 ```
 
 ### Test-Struktur
@@ -862,7 +862,7 @@ Das Script zeigt:
 1. Erstelle Test-Cases in `tests/reporting/test_psychology_heuristics.py`
 2. Definiere spezifische Events mit bekannten Inputs
 3. Assert erwartete Scores
-4. Führe Tests aus: `pytest tests/reporting/test_psychology_heuristics.py::TestYourTest -v`
+4. Führe Tests aus: `python3 -m pytest tests/reporting/test_psychology_heuristics.py::TestYourTest -v`
 
 ---
 

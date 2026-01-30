@@ -153,7 +153,7 @@ Jeder Layer Run erzeugt **zwei Artefakte** (Evidence-First):
 ### Beispiel: L2 Market Outlook Dry-Run
 
 ```bash
-python scripts/aiops/run_layer_dry_run.py \
+python3 scripts/aiops/run_layer_dry_run.py \
     --layer L2 \
     --primary gpt-5.2-pro \
     --critic deepseek-r1 \
@@ -187,7 +187,7 @@ python scripts/aiops/run_layer_dry_run.py \
 ### Beispiel: L0 Ops/Docs Dry-Run
 
 ```bash
-python scripts/aiops/run_layer_dry_run.py \
+python3 scripts/aiops/run_layer_dry_run.py \
     --layer L0 \
     --primary gpt-5.2 \
     --critic deepseek-r1 \
@@ -271,31 +271,31 @@ Phase 2 legt Foundation für **Phase 3 (L2 Market Outlook Pilot)**:
 ### Unit Tests (alle PASS ✅)
 
 ```bash
-python -m pytest tests/ai_orchestration/test_model_registry_loader.py -v
-python -m pytest tests/ai_orchestration/test_capability_scope_loader.py -v
-python -m pytest tests/ai_orchestration/test_sod_checker.py -v
-python -m pytest tests/ai_orchestration/test_runner_dry_run_manifest.py -v
+python3 -m pytest tests/ai_orchestration/test_model_registry_loader.py -v
+python3 -m pytest tests/ai_orchestration/test_capability_scope_loader.py -v
+python3 -m pytest tests/ai_orchestration/test_sod_checker.py -v
+python3 -m pytest tests/ai_orchestration/test_runner_dry_run_manifest.py -v
 ```
 
 ### Dry-Run Tests
 
 ```bash
 # L2 Market Outlook
-python scripts/aiops/run_layer_dry_run.py \
+python3 scripts/aiops/run_layer_dry_run.py \
     --layer L2 \
     --primary gpt-5.2-pro \
     --critic deepseek-r1 \
     --out test_runs/L2_dry_run
 
 # L0 Ops/Docs
-python scripts/aiops/run_layer_dry_run.py \
+python3 scripts/aiops/run_layer_dry_run.py \
     --layer L0 \
     --primary gpt-5.2 \
     --critic deepseek-r1 \
     --out test_runs/L0_dry_run
 
 # L4 Governance Critic
-python scripts/aiops/run_layer_dry_run.py \
+python3 scripts/aiops/run_layer_dry_run.py \
     --layer L4 \
     --primary o3-pro \
     --critic gpt-5.2-pro \

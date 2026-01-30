@@ -182,7 +182,7 @@ if result.verdict == "PASS":
 Stelle sicher, dass Legacy-Modul korrekt delegiert:
 
 ```bash
-pytest tests/risk/validation/test_kupiec_delegation.py -v
+python3 -m pytest tests/risk/validation/test_kupiec_delegation.py -v
 ```
 
 **Testabdeckung:**

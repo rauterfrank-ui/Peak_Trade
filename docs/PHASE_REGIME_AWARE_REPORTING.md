@@ -95,7 +95,7 @@ Diese Metriken helfen dabei, schnell zu erkennen:
 
 ```bash
 # Standard-Backtest-Report mit Regime-Daten
-python scripts/generate_backtest_report.py \
+python3 scripts/generate_backtest_report.py \
     --results-file results/regime_aware_backtest.parquet \
     --equity-file results/equity.parquet \
     --with-regime \
@@ -119,7 +119,7 @@ python scripts/generate_backtest_report.py \
 
 ```bash
 # Regime-Aware Portfolio Sweep Report
-python scripts/generate_experiment_report.py \
+python3 scripts/generate_experiment_report.py \
     --input results/regime_aware_portfolio_aggressive.parquet \
     --output reports/regime_aware_aggressive_sweep.md \
     --with-regime-heatmaps \
@@ -305,9 +305,9 @@ Die Reporting-Funktionen versuchen automatisch, Regime-Daten zu finden.
 **Tests ausführen:**
 
 ```bash
-pytest tests/test_reporting_regime_reporting.py
-pytest tests/test_reporting_regime_backtest_integration.py
-pytest tests/test_reporting_regime_experiment_report.py
+python3 -m pytest tests/test_reporting_regime_reporting.py
+python3 -m pytest tests/test_reporting_regime_backtest_integration.py
+python3 -m pytest tests/test_reporting_regime_experiment_report.py
 ```
 
 ---

@@ -29,10 +29,10 @@ git log --oneline -5
 cd /Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2
 
 # All gates in one command
-uv run ruff format --check src/ && \
-uv run ruff check src/ && \
-uv run pytest -q tests/ && \
-uv run pip-audit && \
+ruff format --check src/ && \
+ruff check src/ && \
+python3 -m pytest -q tests/ && \
+pip-audit && \
 bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs/ops/sessions/ && \
 echo "✅ All gates PASSED"
 ```
@@ -41,22 +41,22 @@ echo "✅ All gates PASSED"
 
 ```bash
 # Lint (format check)
-uv run ruff format --check src/
+ruff format --check src/
 
 # Lint (check rules)
-uv run ruff check src/
+ruff check src/
 
 # Auto-fix format issues
-uv run ruff format src/
+ruff format src/
 
 # Test (quick)
-uv run pytest -q tests/
+python3 -m pytest -q tests/
 
 # Test (specific module)
-uv run pytest -xvs tests/[module]/
+python3 -m pytest -xvs tests/[module]/
 
 # Audit
-uv run pip-audit
+pip-audit
 
 # Docs reference targets (session docs only)
 bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs/ops/sessions/

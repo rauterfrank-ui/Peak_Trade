@@ -149,7 +149,7 @@ Die **Wochen-Timeline** wird erst wichtig, wenn:
 # Alle 5 Cycles an einem Tag durchführen
 for i in {6..10}; do
   echo "=== Cycle #$i ==="
-  python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
+  python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
   # Kurze Dokumentation
   echo "Cycle #$i abgeschlossen" >> cycle_log.txt
 done
@@ -159,12 +159,12 @@ done
 
 ```bash
 # Varianz zwischen Cycles einbauen
-python scripts/generate_demo_patches_for_promotion.py --confidence 0.65
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
+python3 scripts/generate_demo_patches_for_promotion.py --confidence 0.65
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 # Dokumentation
 
-python scripts/generate_demo_patches_for_promotion.py --confidence 0.85
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
+python3 scripts/generate_demo_patches_for_promotion.py --confidence 0.85
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 # Dokumentation
 
 # etc.

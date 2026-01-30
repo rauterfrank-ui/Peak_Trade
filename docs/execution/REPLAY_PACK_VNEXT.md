@@ -69,3 +69,114 @@ Alles aus v1 **plus**:
   - `meta&#47;git.json`
   - `meta&#47;env.json`
 - [ ] Tests: v1 goldens bleiben unverändert; v2 determinism + schema checks neu.
+
+## CLI (Operator UX)
+Empfohlenes Tool ist das vorhandene deterministische CLI-Skript:
+
+```bash
+# Help
+python3 scripts/execution/pt_replay_pack.py --help
+python3 scripts/execution/pt_replay_pack.py build --help
+```
+
+### Build (v1)
+
+```bash
+python3 scripts/execution/pt_replay_pack.py build \
+  --events /abs/path/to/execution_events.jsonl \
+  --out /abs/path/to/out_dir \
+  --version 1 \
+  --created-at-utc 2000-01-01T00:00:00+00:00
+```
+
+### Build (v2, additive FIFO)
+
+```bash
+python3 scripts/execution/pt_replay_pack.py build \
+  --events /abs/path/to/execution_events.jsonl \
+  --out /abs/path/to/out_dir \
+  --version 2 \
+  --include-fifo-entries \
+  --created-at-utc 2000-01-01T00:00:00+00:00
+```
+
+### Validate
+
+```bash
+python3 scripts/execution/pt_replay_pack.py validate --bundle /abs/path/to/out_dir/replay_pack
+```
+
+### Inspect (hash/metadata/files)
+
+```bash
+# Human-readable
+python3 scripts/execution/pt_replay_pack.py inspect --bundle /abs/path/to/out_dir/replay_pack
+
+# Machine-readable JSON (stable ordering)
+python3 scripts/execution/pt_replay_pack.py inspect --bundle /abs/path/to/out_dir/replay_pack --json
+```
+
+Human-readable output shape (stable, no wall-clock):
+
+```text
+ReplayPack Inspect
+bundle: <abs_or_rel_path>
+contract_version: <1|2>
+files:
+  manifest.json: present
+  hashes/sha256sums.txt: present
+  events/execution_events.jsonl: present
+  ledger/ledger_fifo_snapshot.json: present|absent
+  ledger/ledger_fifo_entries.jsonl: present|absent
+hashes:
+  sha256sums_count: <int>
+  manifest_sha256: <64hex>
+events:
+  lines: <int>
+fifo:
+  has_fifo_ledger: true|false
+  fifo_engine: <string|null>
+  last_ts_utc: <isoZ|null>
+  last_seq: <int|null>
+  entries_lines: <int|null>
+```
+
+Machine-readable JSON output shape (`--json`, stable keys):
+
+```json
+{
+  "bundle": "<path>",
+  "contract_version": "1|2",
+  "files": {
+    "manifest_json": true,
+    "sha256sums_txt": true,
+    "execution_events_jsonl": true,
+    "ledger_fifo_snapshot_json": false,
+    "ledger_fifo_entries_jsonl": false
+  },
+  "hashes": {
+    "sha256sums_count": 17,
+    "manifest_sha256": "<hex>"
+  },
+  "events": { "lines": 42 },
+  "fifo": {
+    "has_fifo_ledger": false,
+    "fifo_engine": null,
+    "last_ts_utc": null,
+    "last_seq": null,
+    "entries_lines": null
+  }
+}
+```
+
+## Troubleshooting
+
+### HashMismatchError
+- **Symptom**: `HashMismatchError` beim `validate`.
+- **Cause**: Bundle wurde nachträglich verändert oder nicht deterministisch geschrieben.
+- **Fix**: Bundle neu bauen; sicherstellen, dass keine CRLF-Newlines oder Editor-Autoformatierung die Files verändert.
+
+### Missing FIFO snapshot (v2)
+- **Symptom**: `manifest.contents must include ledger&#47;ledger_fifo_snapshot.json for v2` oder missing file.
+- **Cause**: v2 Build ohne FIFO oder Bundle unvollständig kopiert.
+- **Fix**: v2 Build mit `--version 2` ausführen (FIFO snapshot ist required in v2).

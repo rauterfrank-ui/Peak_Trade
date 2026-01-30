@@ -33,3 +33,13 @@ scrape_configs:
     scheme: http
     static_configs:
       - targets: ["host.docker.internal:9110"]
+
+  # Strategy/Risk telemetry endpoint on :9111.
+  #
+  # Mode A (default): session runners may expose an in-process /metrics server (optional).
+  # Mode B: metricsd exposes /metrics continuously via prometheus_client multiprocess mode.
+  - job_name: "peak_trade_metricsd"
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets: ["host.docker.internal:9111"]

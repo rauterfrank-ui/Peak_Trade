@@ -568,7 +568,7 @@ LOW — tooling/CI artifacts only; no trading/live execution code touched.
 ### Local Usage
 ```bash
 # Generate ledger from seed (local)
-python scripts/aiops/generate_trend_ledger_from_seed.py \
+python3 scripts/aiops/generate_trend_ledger_from_seed.py \
   --input trend_seed.json \
   --output-json trend_ledger.json \
   --output-markdown trend_ledger.md
@@ -675,7 +675,7 @@ jobs:
           run_id: ${{ github.event.workflow_run.id }}
           name: trend-seed-${{ github.event.workflow_run.id }}
       - run: |
-          uv run python scripts/aiops/generate_trend_ledger_from_seed.py \
+          python3 scripts/aiops/generate_trend_ledger_from_seed.py \
             --input .tmp/phase5a_artifacts/trend_seed.normalized_report.json \
             --output-json .tmp/trend_ledger/trend_ledger.json \
             --output-markdown .tmp/trend_ledger/trend_ledger.md \

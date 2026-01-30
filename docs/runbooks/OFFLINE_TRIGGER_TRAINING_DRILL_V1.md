@@ -344,7 +344,7 @@ Nach dem Drill prüfe:
 
 **Ursache 1**: Matplotlib fehlt oder nicht korrekt installiert.
 
-**Lösung**: `pip install matplotlib`
+**Lösung**: `python3 -m pip install matplotlib`
 
 **Ursache 2**: `trades_df` hat keine `pnl`-Spalte.
 
@@ -411,7 +411,8 @@ python3 scripts/run_offline_realtime_ma_crossover.py \
   --duration 60
 
 # Alternativ: Python-Script mit direktem Report-Call
-python3 scripts/run_offline_paper_drill_with_reports.py
+# Alternativ: Trigger-Training Drill Example Script (Repo vorhanden; benötigt Session-Daten-Anbindung)
+python3 scripts/run_offline_trigger_training_drill_example.py
 ```
 
 ---

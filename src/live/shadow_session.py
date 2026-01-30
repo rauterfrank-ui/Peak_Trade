@@ -34,6 +34,7 @@ Example:
 from __future__ import annotations
 
 import logging
+import os
 import signal
 import time
 from dataclasses import dataclass, field
@@ -41,6 +42,8 @@ from datetime import datetime, timezone
 from typing import Any, Callable, Dict, List, Optional, Protocol, TYPE_CHECKING
 
 import pandas as pd
+
+from src.obs import strategy_risk_telemetry
 
 from ..core.environment import (
     EnvironmentConfig,
@@ -493,6 +496,21 @@ class ShadowPaperSession:
         event_data["orders_rejected"] = rejected_count
         event_data["position_size"] = self._metrics.current_position
 
+        # SLICE4 telemetry (watch/paper/shadow safe): gross exposure gauge (no symbol label).
+        try:
+            from src.obs import strategy_risk_telemetry as _srt
+
+            sym = str(self._shadow_cfg.symbol or "")
+            ccy = sym.split("/", 1)[1] if "/" in sym else "NA"
+            exposure = abs(float(self._metrics.current_position)) * float(candle.close)
+            _srt.set_strategy_position_gross_exposure(
+                strategy_id=str(getattr(self._strategy, "key", None) or "na"),
+                ccy=ccy,
+                exposure=exposure,
+            )
+        except Exception:
+            pass
+
         self._last_signal = current_signal
 
         # 7. Event loggen
@@ -584,6 +602,13 @@ class ShadowPaperSession:
                 "Warmup muss vor run_forever() aufgerufen werden. Verwende session.warmup() zuerst."
             )
 
+        # Observability: always register metrics; only start in-process server in Mode A.
+        strategy_risk_telemetry.ensure_registered()
+        if (os.getenv("PEAKTRADE_METRICS_MODE", "") or "").strip().upper() != "B":
+            from src.obs.metrics_server import ensure_metrics_server
+
+            ensure_metrics_server()
+
         self._is_running = True
         self._shutdown_requested = False
         self._setup_signal_handlers()
@@ -628,6 +653,12 @@ class ShadowPaperSession:
         if not self._is_warmup_done:
             raise RuntimeError("Warmup muss vor run_n_steps() aufgerufen werden.")
 
+        strategy_risk_telemetry.ensure_registered()
+        if (os.getenv("PEAKTRADE_METRICS_MODE", "") or "").strip().upper() != "B":
+            from src.obs.metrics_server import ensure_metrics_server
+
+            ensure_metrics_server()
+
         all_results: List[OrderExecutionResult] = []
 
         try:
@@ -655,6 +686,12 @@ class ShadowPaperSession:
         """
         if not self._is_warmup_done:
             raise RuntimeError("Warmup muss vor run_for_duration() aufgerufen werden.")
+
+        strategy_risk_telemetry.ensure_registered()
+        if (os.getenv("PEAKTRADE_METRICS_MODE", "") or "").strip().upper() != "B":
+            from src.obs.metrics_server import ensure_metrics_server
+
+            ensure_metrics_server()
 
         end_time = time.time() + (minutes * 60)
         all_results: List[OrderExecutionResult] = []

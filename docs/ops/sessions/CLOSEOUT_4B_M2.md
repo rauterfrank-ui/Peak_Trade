@@ -27,9 +27,9 @@
   - Continuously updated throughout session
 
 - [x] **Local Gates Operational**
-  - ✅ ruff format --check (via `uv run`)
-  - ✅ ruff check (via `uv run`)
-  - ✅ pytest (via `uv run`, version 9.0.2)
+  - ✅ ruff format --check
+  - ✅ ruff check
+  - ✅ python3 -m pytest (version 9.0.2)
   - ✅ Environment: uv + .venv (80 packages)
 
 - [x] **PR Skeleton**
@@ -44,7 +44,7 @@
 - [x] **Audit Gate Baseline**
   - Document: `docs/ops/sessions/AUDIT_BASELINE_4B_M2.md`
   - Result: ✅ PASS (0 vulnerabilities in 79 PyPI packages)
-  - Command: `uv run pip-audit`
+  - Command: `pip-audit`
   - Decision: Accept baseline, no remediation needed
 
 - [x] **Docs Reference Targets**
@@ -108,10 +108,10 @@
 cd /Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2
 
 # All gates
-uv run ruff format --check src/ && \
-uv run ruff check src/ && \
-uv run pytest -q tests/ && \
-uv run pip-audit && \
+ruff format --check src/ && \
+ruff check src/ && \
+python3 -m pytest -q tests/ && \
+pip-audit && \
 bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs/ops/sessions/ && \
 echo "✅ All gates PASSED"
 ```

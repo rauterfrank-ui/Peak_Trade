@@ -64,7 +64,7 @@ class LiveSessionSummary(BaseModel):
 ```
 
 Felder werden aus `LiveSessionRecord` (Phase 81) gemappt:
-- `environment` = `env_name + " / " + symbol`
+- `environment` = `env_name + " &#47; " + symbol`
 - `notes` = `error` (Fehlermeldung)
 - `num_orders` = `metrics.num_orders` oder `metrics.num_trades`
 
@@ -180,10 +180,10 @@ Sessions werden nach dem ersten Shadow-/Testnet-Run hier angezeigt.
 
 ```bash
 # Nur Live-Track Tests
-pytest tests/test_webui_live_track.py -v
+python3 -m pytest tests/test_webui_live_track.py -q
 
 # Mit Registry-Tests
-pytest tests/test_webui_live_track.py tests/test_live_session_registry.py -v
+python3 -m pytest tests/test_webui_live_track.py tests/test_live_session_registry.py -q
 ```
 
 ---

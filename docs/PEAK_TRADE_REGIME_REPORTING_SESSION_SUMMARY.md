@@ -61,8 +61,8 @@ Status: ✅ **vollständig implementiert und getestet**
 - **Erweiterung von `compute_regime_stats()`**
   - Berechnung des Gesamt-Returns über alle Regimes
   - Pro Regime:
-    - `return_contribution_pct = 100 * Regime-Return / Gesamt-Return`
-    - `time_share_pct = 100 * Regime-Bars / Gesamt-Bars`
+    - `return_contribution_pct = 100 * Regime-Return &#47; Gesamt-Return`
+    - `time_share_pct = 100 * Regime-Bars &#47; Gesamt-Bars`
   - Defensive Behandlung von Division-by-zero und `None`-Werten
 
 - **Neuer Plot in `src/reporting/plots.py`**
@@ -89,19 +89,19 @@ Status: ✅ **vollständig implementiert und getestet**
 
 **Ausgeführte Tests:**
 
-- `pytest tests/test_reporting_regime_reporting.py -v`  
+- `python3 -m pytest tests/test_reporting_regime_reporting.py -v`  
   → 9 passed ✅
 
-- `pytest tests/test_reporting_regime_backtest_integration.py -v`  
+- `python3 -m pytest tests/test_reporting_regime_backtest_integration.py -v`  
   → 3 passed ✅
 
-- `pytest tests/test_reporting_regime_experiment_report.py -v`  
+- `python3 -m pytest tests/test_reporting_regime_experiment_report.py -v`  
   → 3 passed ✅
 
-- `pytest tests/test_reporting*.py -q`  
+- `python3 -m pytest tests/test_reporting*.py -q`  
   → 130 passed ✅
 
-- `pytest tests/test_regime_aware_portfolio_sweeps.py -v`  
+- `python3 -m pytest tests/test_regime_aware_portfolio_sweeps.py -v`  
   → 17 passed ✅
 
 **Fazit Test-Gate:**  
@@ -133,7 +133,7 @@ Ein ausführlicher Meta-Prompt definiert:
   - `src/reporting/experiment_report.py`
   - `scripts/generate_backtest_report.py`
   - `scripts/generate_experiment_report.py`
-  - `tests/test_reporting_regime_*.py`
+  - `tests&#47;test_reporting_regime_*.py`
   - `docs/PHASE_REGIME_AWARE_REPORTING.md`
 - Typische Aufgaben:
   - Bugfix / Robustness
@@ -267,13 +267,13 @@ Zwei zentrale Investigation-Bausteine:
 ### 5.1 Backtest-Report mit Regime-Analyse
 
 ```bash
-python scripts/generate_backtest_report.py   --results-file results/backtest.parquet   --with-regime   --output reports/regime_aware.md
+python3 scripts/generate_backtest_report.py   --results-file results/backtest.parquet   --with-regime   --output reports/regime_aware.md
 ```
 
 ### 5.2 Experiment-Report mit Regime-Heatmaps
 
 ```bash
-python scripts/generate_experiment_report.py   --input results/regime_aware_portfolio_aggressive.parquet   --with-regime-heatmaps   --output reports/regime_aware_sweep.md
+python3 scripts/generate_experiment_report.py   --input results/regime_aware_portfolio_aggressive.parquet   --with-regime-heatmaps   --output reports/regime_aware_sweep.md
 ```
 
 ---

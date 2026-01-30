@@ -19,10 +19,10 @@
 
 ## Test Plan
 ### Automated
-- `uv run pytest -q tests/execution/broker -q` (6 passed)
-- `uv run python -m ruff check src/execution/broker tests/execution/broker` (PASS)
-- `uv run python -m ruff format src/execution/broker tests/execution/broker` (applied)
-- `uv run pytest -q` (repo full suite PASS)
+- `python3 -m pytest -q tests&#47;execution&#47;broker -q` (6 passed)
+- `ruff check src&#47;execution&#47;broker tests&#47;execution&#47;broker` (PASS)
+- `ruff format src&#47;execution&#47;broker tests&#47;execution&#47;broker` (applied)
+- `python3 -m pytest -q` (repo full suite PASS)
 
 ### Manual Scenarios (Shadow/Paper)
 - Not executed (C1 scope is NO-LIVE; FakeBroker only).

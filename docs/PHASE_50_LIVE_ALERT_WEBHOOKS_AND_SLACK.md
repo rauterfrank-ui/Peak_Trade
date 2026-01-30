@@ -77,8 +77,8 @@ webhook_timeout_seconds = 3.0
 
 3. **Alerts werden automatisch bei Risk-Violations gesendet**:
    ```bash
-   python scripts/preview_live_orders.py --signals ... --enforce-live-risk
-   python scripts/preview_live_portfolio.py
+   python3 scripts/preview_live_orders.py --signals ... --enforce-live-risk
+   python3 scripts/preview_live_portfolio.py
    ```
 
 ### Beispiel: Generischer Webhook
@@ -149,8 +149,8 @@ Alle neuen Sinks sind vollständig getestet:
 - `tests/test_live_risk_alert_integration.py`: Integration-Tests für Webhook-Integration mit `LiveRiskLimits`
 
 ```bash
-pytest tests/test_live_alerts.py -v
-pytest tests/test_live_risk_alert_integration.py::test_risk_violation_triggers_webhook -v
+python3 -m pytest tests/test_live_alerts.py -v
+python3 -m pytest tests/test_live_risk_alert_integration.py::test_risk_violation_triggers_webhook -v
 ```
 
 ## Sicherheitshinweise
@@ -167,7 +167,7 @@ pytest tests/test_live_risk_alert_integration.py::test_risk_violation_triggers_w
 1. **Config prüfen**:
    ```bash
    # Prüfe ob [live_alerts] korrekt konfiguriert ist
-   python -c "from src.config import load_config; print(load_config().get('live_alerts'))"
+   python3 -c "from src.config import load_config; print(load_config().get('live_alerts'))"
    ```
 
 2. **Logs prüfen**:

@@ -100,11 +100,11 @@ Neuer Registry-Eintrag für Backward Compatibility:
 
 ```bash
 # Research strategies
-pytest -q tests/strategies/armstrong/ tests/strategies/el_karoui/
+python3 -m pytest -q tests/strategies/armstrong/ tests/strategies/el_karoui/
 # Expected: 164 passed
 
 # Research strategies integration
-pytest -q tests/test_research_strategies.py
+python3 -m pytest -q tests/test_research_strategies.py
 # Expected: 33 passed
 ```
 
@@ -141,10 +141,10 @@ git branch -D fix/pr-531-test-failures
 
 ```bash
 # Research strategies smoke
-pytest -q tests/test_research_strategies.py
+python3 -m pytest -q tests/test_research_strategies.py
 
 # Full research strategies test suite
-pytest -q tests/strategies/armstrong/ tests/strategies/el_karoui/
+python3 -m pytest -q tests/strategies/armstrong/ tests/strategies/el_karoui/
 ```
 
 ### Erwartete Outputs

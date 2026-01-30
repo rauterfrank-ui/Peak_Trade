@@ -84,17 +84,23 @@ Reine Analyse- und Entwicklungsphase. Keine Verbindung zu echten Exchanges.
 
 **Voraussetzungen:**
 - [x] Python-Environment (`.venv`)
-- [x] `config.toml` konfiguriert
+- [x] `config/config.toml` konfiguriert
 - [x] Testdaten vorhanden
-- [x] Alle Unit-Tests grün: `pytest -q --tb=no`
+- [x] Alle Unit-Tests grün: `python3 -m pytest -q --tb=no`
 
 **Befehle:**
 ```bash
 # Backtest ausführen
-python scripts/run_backtest.py --strategy ma_crossover
+python3 scripts/run_backtest.py --strategy ma_crossover
 
 # Sweep starten
-python scripts/run_sweep.py --config config/sweeps/ma_crossover_sweep.toml
+python3 scripts/run_sweep.py \
+  --config config/config.toml \
+  --strategy ma_crossover \
+  --symbol BTC/EUR \
+  --grid config/sweeps/ma_crossover.toml \
+  --tag deploy-prep \
+  --max-runs 10
 ```
 
 ---
@@ -122,20 +128,20 @@ Shadow-Execution mit simulierten Orders. Keine echten API-Calls, aber vollständ
 **Befehle:**
 ```bash
 # Shadow-Run starten
-python scripts/run_shadow_execution.py --strategy ma_crossover --verbose
+python3 scripts/run_shadow_execution.py --strategy ma_crossover --verbose
 
 # Mit Tag für Registry
-python scripts/run_shadow_execution.py --strategy rsi_strategy --tag daily-shadow
+python3 scripts/run_shadow_execution.py --strategy rsi_strategy --tag daily-shadow
 ```
 
 **Hochfahren:**
-1. Config prüfen: `cat config.toml | grep -A 10 "\[shadow\]"`
-2. Tests laufen lassen: `pytest tests/test_shadow_*.py -v`
+1. Config prüfen: `cat config/config.toml | grep -A 10 "\[shadow\]"`
+2. Tests laufen lassen: `python3 -m pytest tests/test_shadow_*.py -v`
 3. Shadow-Run starten (siehe oben)
 
 **Runterfahren:**
 1. Laufenden Prozess stoppen: `Ctrl+C` oder `kill <PID>`
-2. Logs sichern: `cp -r reports/experiments/ reports/experiments_backup_$(date +%Y%m%d)/`
+2. Logs sichern: `cp -r reports&#47;experiments&#47; reports&#47;experiments_backup_$(date +%Y%m%d)&#47;`
 
 #### Shadow-/Testnet-Session mit Phase-80-Runner
 
@@ -151,11 +157,11 @@ python scripts/run_shadow_execution.py --strategy rsi_strategy --tag daily-shado
 1. Stelle sicher, dass die Strategie im Backtest/Research-Pipeline stabil ist (siehe Research-Dokus).
 2. Starte eine Shadow-Session mit dem Phase-80-Runner:
    ```bash
-   python scripts/run_execution_session.py --strategy ma_crossover --duration 30
+   python3 scripts/run_execution_session.py --strategy ma_crossover --duration 30
    ```
 3. Für Testnet-Validierung (`validate_only`):
    ```bash
-   python scripts/run_execution_session.py --mode testnet --strategy rsi_reversion --duration 30
+   python3 scripts/run_execution_session.py --mode testnet --strategy rsi_reversion --duration 30
    ```
 4. Werte die Session-Metriken und Logs aus (siehe Abschnitt 8 in `PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md`).
 5. **Post-Session-Registry & Reporting (Phase 81):**
@@ -163,7 +169,7 @@ python scripts/run_shadow_execution.py --strategy rsi_strategy --tag daily-shado
    - Führe das Live-Session-Reporting-CLI aus, um die Registry zu prüfen und eine Kurz-Summary zu erzeugen:
      ```bash
      # Für Shadow-Sessions:
-     python scripts/report_live_sessions.py \
+     python3 scripts/report_live_sessions.py \
        --run-type live_session_shadow \
        --status completed \
        --output-format markdown \
@@ -171,7 +177,7 @@ python scripts/run_shadow_execution.py --strategy rsi_strategy --tag daily-shado
        --stdout
 
      # Für Testnet-Sessions:
-     python scripts/report_live_sessions.py \
+     python3 scripts/report_live_sessions.py \
        --run-type live_session_testnet \
        --status completed \
        --output-format markdown \
@@ -223,19 +229,19 @@ validate_only = true  # WICHTIG: Orders nur validieren
 **Befehle:**
 ```bash
 # Readiness prüfen
-python scripts/check_live_readiness.py --stage testnet
+python3 scripts/check_live_readiness.py --stage testnet
 
 # Testnet-Stack Smoke-Test
-python scripts/smoke_test_testnet_stack.py
+python3 scripts/smoke_test_testnet_stack.py
 
 # Testnet-Session starten (wenn implementiert)
-python scripts/run_testnet_session.py --profile quick_smoke
+python3 scripts/run_testnet_session.py --profile quick_smoke
 ```
 
 **Hochfahren:**
-1. Readiness-Check: `python scripts/check_live_readiness.py --stage testnet`
+1. Readiness-Check: `bash python3 scripts/check_live_readiness.py --stage testnet`
 2. Environment-Variablen setzen (API-Keys)
-3. Smoke-Test: `python scripts/smoke_test_testnet_stack.py`
+3. Smoke-Test: `bash python3 scripts/smoke_test_testnet_stack.py`
 4. Testnet-Session starten
 
 **Runterfahren:**
@@ -314,7 +320,7 @@ Jeder Stufen-Übergang erfordert spezifische Voraussetzungen und Freigaben:
 Diese Bedingungen blockieren jeden Stufen-Übergang:
 
 1. **Offene kritische Bugs** im Execution- oder Risk-Layer
-2. **Nicht-grüne Tests** in `pytest tests/` (Baseline muss grün sein)
+2. **Nicht-grüne Tests** in `python3 -m pytest tests/ -q` (Baseline muss grün sein)
 3. **Fehlende oder veraltete Checklists**
 4. **Unklare Verantwortlichkeiten** (Owner/Risk Officer nicht definiert)
 5. **Fehlende Runbooks** für die Zielstufe
@@ -341,7 +347,7 @@ Bei diesen Kriterien ist Ermessen möglich, aber Abweichungen müssen dokumentie
 Schritt 1: Vorbereitung (1-2 Tage vor Übergang)
 ─────────────────────────────────────────────────
 □ Shadow-Statistiken exportieren und analysieren
-  $ python scripts/experiments_explorer.py --run-type shadow_run --limit 50
+  $ python3 scripts/experiments_explorer.py list --run-type shadow_run --limit 50
 
 □ Checklist "Shadow → Testnet" aus docs/LIVE_READINESS_CHECKLISTS.md kopieren
   und vollständig ausfüllen
@@ -367,13 +373,13 @@ Schritt 3: Technische Aktivierung
   $ git commit -m "feat: activate testnet mode"
 
 □ Tests ausführen
-  $ pytest tests/ -q --tb=short
+  $ python3 -m pytest tests/ -q --tb=short
 
 □ Dry-Run des Testnet-Profils
-  $ python -m scripts.orchestrate_testnet_runs --profile <PROFIL> --dry-run
+  $ python3 -m scripts.orchestrate_testnet_runs --profile <PROFIL> --dry-run
 
 □ Bei Erfolg: Echter erster Testnet-Run
-  $ python -m scripts.orchestrate_testnet_runs --profile <PROFIL>
+  $ python3 -m scripts.orchestrate_testnet_runs --profile <PROFIL>
 
 Schritt 4: Monitoring & Dokumentation
 ───────────────────────────────────────
@@ -419,7 +425,7 @@ Schritt 4: Technische Aktivierung
 ─────────────────────────────────────
 □ Live-Credentials sicher hinterlegen (Env-Variablen)
 □ Config für Live vorbereiten mit konservativen Limits
-□ Finale Test-Runde: pytest tests/ -v
+□ Finale Test-Runde: python3 -m pytest tests/ -v
 □ Dry-Run mit Live-Preview
 
 Schritt 5: Go-Live
@@ -514,7 +520,7 @@ Voraussetzungen prüfen:
 
 Schritte:
 1. □ Config prüfen
-2. □ Tests ausführen: pytest tests/ -q
+2. □ Tests ausführen: python3 -m pytest tests/ -q
 3. □ Dry-Run durchführen
 4. □ Bei Live: Freigabe durch Owner/2. Person
 5. □ System starten
@@ -533,16 +539,16 @@ Schritte:
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │  1. VORBEREITUNG                                                    │
-│     ├── Config prüfen (config.toml)                                 │
+│     ├── Config prüfen (config/config.toml)                          │
 │     ├── Environment-Variablen setzen (falls nötig)                  │
-│     └── Baseline-Tests: pytest -q --tb=no                           │
+│     └── Baseline-Tests: python3 -m pytest -q --tb=no                │
 │                                                                     │
 │  2. READINESS-CHECK                                                 │
-│     ├── python scripts/check_live_readiness.py --stage <STUFE>      │
+│     ├── python3 scripts/check_live_readiness.py --stage <STUFE>     │
 │     └── Bei Fehlern: STOPP, Probleme beheben                        │
 │                                                                     │
 │  3. SMOKE-TEST                                                      │
-│     ├── python scripts/smoke_test_testnet_stack.py                  │
+│     ├── python3 scripts/smoke_test_testnet_stack.py                 │
 │     └── Bei Fehlern: STOPP, Probleme beheben                        │
 │                                                                     │
 │  4. START                                                           │
@@ -552,7 +558,7 @@ Schritte:
 │                                                                     │
 │  5. MONITORING                                                      │
 │     ├── Logs: tail -f logs/*.log                                    │
-│     ├── Registry: python scripts/experiments_explorer.py            │
+│     ├── Registry: python3 scripts/experiments_explorer.py list      │
 │     └── Bei Anomalien: Runterfahren (siehe 4)                       │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
@@ -566,10 +572,10 @@ cd ~/Peak_Trade
 source .venv/bin/activate
 
 # 2. Tests prüfen
-pytest -q --tb=no
+python3 -m pytest -q --tb=no
 
 # 3. Shadow-Run starten
-python scripts/run_shadow_execution.py --strategy ma_crossover --verbose
+python3 scripts/run_shadow_execution.py --strategy ma_crossover --verbose
 ```
 
 ### 7.3 Quick-Start: Testnet (wenn implementiert)
@@ -584,13 +590,13 @@ export KRAKEN_TESTNET_API_KEY="..."
 export KRAKEN_TESTNET_API_SECRET="..."
 
 # 3. Readiness prüfen
-python scripts/check_live_readiness.py --stage testnet
+python3 scripts/check_live_readiness.py --stage testnet
 
 # 4. Smoke-Test
-python scripts/smoke_test_testnet_stack.py
+python3 scripts/smoke_test_testnet_stack.py
 
 # 5. Testnet-Session starten
-python scripts/run_testnet_session.py --profile quick_smoke
+python3 scripts/run_testnet_session.py --profile quick_smoke
 ```
 
 ---
@@ -604,11 +610,11 @@ python scripts/run_testnet_session.py --profile quick_smoke
 # Wartet auf laufende Operations, dann Exit
 
 # Option 2: Prozess-ID finden und stoppen
-pgrep -f "python scripts/run_"
+pgrep -f "python3 scripts/run_"
 kill <PID>
 
 # Option 3: Alle Peak_Trade-Prozesse stoppen (Vorsicht!)
-pkill -f "python scripts/run_"
+pkill -f "python3 scripts/run_"
 ```
 
 ### 8.2 Notfall-Runterfahren
@@ -617,7 +623,7 @@ Bei kritischen Incidents:
 
 ```bash
 # 1. Sofort alle Prozesse stoppen
-pkill -9 -f "python scripts/run_"
+pkill -9 -f "python3 scripts/run_"
 
 # 2. Logs sichern
 cp -r logs/ logs_incident_$(date +%Y%m%d_%H%M%S)/
@@ -628,7 +634,7 @@ cp -r reports/experiments/ reports/experiments_incident_$(date +%Y%m%d_%H%M%S)/
 
 ### 8.3 Checkliste nach Runterfahren
 
-- [ ] Prozesse beendet (`pgrep -f "python scripts/run_"` zeigt nichts)
+- [ ] Prozesse beendet (`pgrep -f "python3 scripts&#47;run_"` zeigt nichts)
 - [ ] Logs gesichert
 - [ ] Bei Testnet/Live: Offene Orders geprüft
 - [ ] Registry-State dokumentiert
@@ -669,7 +675,7 @@ cp -r reports/experiments/ reports/experiments_incident_$(date +%Y%m%d_%H%M%S)/
 | Problem | Mögliche Ursache | Lösung |
 |---------|------------------|--------|
 | "Config nicht gefunden" | Falscher Pfad | `PEAK_TRADE_CONFIG_PATH` setzen |
-| "Tests fehlgeschlagen" | Code-Änderungen | `pytest -v` für Details |
+| "Tests fehlgeschlagen" | Code-Änderungen | `python3 -m pytest -v` für Details |
 | "Readiness-Check failed" | Voraussetzungen fehlen | Output lesen, Probleme beheben |
 | "Exchange-Fehler" | API-Keys falsch/fehlend | Environment-Variablen prüfen |
 | "Risk-Limit verletzt" | Limits zu streng | `[live_risk]` prüfen |
@@ -678,7 +684,7 @@ cp -r reports/experiments/ reports/experiments_incident_$(date +%Y%m%d_%H%M%S)/
 
 ```bash
 # Config prüfen
-python -c "from src.core.peak_config import load_config; c=load_config(); print(c.get('exchange.default_type'))"
+python3 -c "from src.core.peak_config import load_config; c=load_config(); print(c.get('exchange.default_type'))"
 
 # Environment prüfen
 env | grep -i peak
@@ -774,10 +780,10 @@ Für vollständige Transparenz beide Tools nutzen:
 uvicorn src.webui.app:app --host 127.0.0.1 --port 8000
 
 # Terminal 2: Session starten
-python scripts/run_execution_session.py --mode shadow --strategy ma_crossover
+python3 scripts/run_execution_session.py --mode shadow --strategy ma_crossover
 
 # Terminal 3: CLI-Reports
-python scripts/report_live_sessions.py --summary-only --stdout
+python3 scripts/report_live_sessions.py --summary-only --stdout
 ```
 
 **Empfohlener Workflow:** Siehe `PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md` für detaillierten Tagesablauf.
@@ -800,9 +806,9 @@ Nach einer Shadow-/Testnet-Session die Ergebnisse im Web-Dashboard kontrollieren
    - Standardansicht zeigt aktuelle Live-Track Sessions.
 
 2. **Nach Mode filtern**
-   - Shadow-Run: `/?mode=shadow`
-   - Testnet-Run: `/?mode=testnet`
-   - Optional: Status filtern, z.B. `/?mode=testnet&status=failed`
+   - Shadow-Run: `&#47;?mode=shadow`
+   - Testnet-Run: `&#47;?mode=testnet`
+   - Optional: Status filtern, z.B. `&#47;?mode=testnet&status=failed`
 
 3. **Session-Detail öffnen**
    - Gewünschte Session-Zeile anklicken

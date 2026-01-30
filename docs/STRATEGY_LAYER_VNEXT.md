@@ -12,7 +12,7 @@
 
 ```bash
 # Nichts tun → Tracking ist disabled
-python scripts/run_strategy_from_config.py
+python3 scripts/run_strategy_from_config.py
 ```
 
 ### Tracking aktivieren (optional)
@@ -37,7 +37,7 @@ pip install -e ".[tracking_mlflow]"
 **Schritt 3**: Runner ausführen
 
 ```bash
-python scripts/run_strategy_from_config.py
+python3 scripts/run_strategy_from_config.py
 # → Params + Metrics werden geloggt (wenn enabled=true)
 ```
 
@@ -87,7 +87,7 @@ pip install -e ".[research_optuna]"
 **10-Trial Example**:
 ```bash
 # MA Crossover mit 10 Trials
-python scripts/run_optuna_study.py --strategy ma_crossover --n-trials 10
+python3 scripts/run_optuna_study.py --strategy ma_crossover --n-trials 10
 
 # Output:
 # 🚀 Peak_Trade Optuna Study Runner (R&D)
@@ -110,7 +110,7 @@ python scripts/run_optuna_study.py --strategy ma_crossover --n-trials 10
 **Reproduzierbare Studies**:
 ```bash
 # Mit Seed für Reproduzierbarkeit
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy rsi_reversion \
     --n-trials 50 \
     --seed 42
@@ -310,9 +310,9 @@ tracker = build_tracker_from_config(config)
 
 ```bash
 # Später:
-python scripts/run_study_optuna_placeholder.py \
+python3 scripts/run_study_optuna_placeholder.py \
     --strategy ma_crossover \
-    --config config.toml \
+    --config config/config.toml \
     --n-trials 100 \
     --study-name "ma_crossover_optimization"
 ```
@@ -607,7 +607,7 @@ backend = "noop"
 - name: Run Backtest with Tracking
   run: |
     # NoopTracker ist immer verfügbar
-    pytest tests/test_backtest_tracking_integration.py
+    python3 -m pytest tests/test_backtest_tracking_integration.py
 ```
 
 ### Für Research
@@ -620,9 +620,9 @@ uv pip install mlflow
 mlflow ui --backend-store-uri ./mlruns
 
 # Backtest mit MLflow-Tracking
-python scripts/run_backtest_with_tracking.py \
+python3 scripts/run_backtest_with_tracking.py \
     --strategy ma_crossover \
-    --config config.toml
+    --config config/config.toml
 ```
 
 ---

@@ -22,12 +22,12 @@ Phase 4E standardizes validator reports into a **machine-readable, deterministic
 
 ```bash
 # From file
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input .tmp/validator_report.json \
   --out-dir .tmp/normalized
 
 # From stdin
-cat validator_report.json | python scripts/aiops/normalize_validator_report.py \
+cat validator_report.json | python3 scripts/aiops/normalize_validator_report.py \
   --out-dir .tmp/normalized
 ```
 
@@ -40,7 +40,7 @@ cat validator_report.json | python scripts/aiops/normalize_validator_report.py \
 ### 2. CI Mode (with runtime context)
 
 ```bash
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input .tmp/validator_report.json \
   --out-dir .tmp/normalized \
   --git-sha "${GITHUB_SHA}" \
@@ -58,9 +58,9 @@ python scripts/aiops/normalize_validator_report.py \
 
 ```bash
 # Run twice
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input report.json --out-dir .tmp/run1
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input report.json --out-dir .tmp/run2
 
 # Compare (should be identical)
@@ -174,7 +174,7 @@ cat validator_report.normalized.md
 jq . input.json
 
 # Check for syntax errors
-python -m json.tool input.json
+python3 -m json.tool input.json
 ```
 
 ### Error: "Input file not found"
@@ -187,7 +187,7 @@ python -m json.tool input.json
 ls -lh .tmp/validator_report.json
 
 # Use absolute path
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input "$(pwd)/.tmp/validator_report.json" \
   --out-dir .tmp/normalized
 ```
@@ -214,7 +214,7 @@ jq 'has("runtime_context")' .tmp/normalized/validator_report.normalized.json
 ### Run All Tests
 
 ```bash
-pytest tests/ai_orchestration/test_validator_report_normalized.py \
+python3 -m pytest tests/ai_orchestration/test_validator_report_normalized.py \
        tests/ai_orchestration/test_normalize_validator_report_cli.py -v
 ```
 
@@ -224,13 +224,13 @@ pytest tests/ai_orchestration/test_validator_report_normalized.py \
 
 ```bash
 # Schema validation
-pytest tests/ai_orchestration/test_validator_report_normalized.py::test_validator_report_schema_valid -v
+python3 -m pytest tests/ai_orchestration/test_validator_report_normalized.py::test_validator_report_schema_valid -v
 
 # Determinism check
-pytest tests/ai_orchestration/test_validator_report_normalized.py::test_determinism_golden_fixture -v
+python3 -m pytest tests/ai_orchestration/test_validator_report_normalized.py::test_determinism_golden_fixture -v
 
 # CLI integration
-pytest tests/ai_orchestration/test_normalize_validator_report_cli.py::test_cli_full_pipeline -v
+python3 -m pytest tests/ai_orchestration/test_normalize_validator_report_cli.py::test_cli_full_pipeline -v
 ```
 
 ---
@@ -256,7 +256,7 @@ pytest tests/ai_orchestration/test_normalize_validator_report_cli.py::test_cli_f
 
 - **Full Spec:** [PHASE4E_VALIDATOR_REPORT_NORMALIZATION.md](PHASE4E_VALIDATOR_REPORT_NORMALIZATION.md)
 - **Phase 4D:** [L4 Critic Determinism Contract](PHASE4D_L4_CRITIC_DETERMINISM_CONTRACT.md)
-- **CLI Help:** `python scripts/aiops/normalize_validator_report.py --help`
+- **CLI Help:** `python3 scripts&#47;aiops&#47;normalize_validator_report.py --help`
 
 ---
 
@@ -274,7 +274,7 @@ cat .tmp/validator_report.json
 # }
 
 # Normalize
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input .tmp/validator_report.json \
   --out-dir .tmp/normalized
 
@@ -294,7 +294,7 @@ cat .tmp/normalized/validator_report.normalized.json
 # .github/workflows/example.yml
 - name: Normalize validator report
   run: |
-    python scripts/aiops/normalize_validator_report.py \
+    python3 scripts/aiops/normalize_validator_report.py \
       --input .tmp/validator_report.json \
       --out-dir .tmp/normalized \
       --git-sha "${{ github.sha }}" \

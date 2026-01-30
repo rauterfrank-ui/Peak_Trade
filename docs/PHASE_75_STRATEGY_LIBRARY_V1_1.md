@@ -229,16 +229,22 @@ price_col = "close"
 
 ```bash
 # Beispiel: MA-Crossover Sweep
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_sweep.py \
+  --config config/config.toml \
   --strategy ma_crossover \
-  --sweep-config config/sweeps/ma_crossover.toml \
-  --output-dir reports/sweeps/ma_crossover_v11
+  --symbol BTC/EUR \
+  --grid config/sweeps/ma_crossover.toml \
+  --sweep-name ma_crossover_v11 \
+  --tag v11
 
 # Beispiel: RSI-Reversion Sweep
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_sweep.py \
+  --config config/config.toml \
   --strategy rsi_reversion \
-  --sweep-config config/sweeps/rsi_reversion.toml \
-  --output-dir reports/sweeps/rsi_reversion_v11
+  --symbol BTC/EUR \
+  --grid config/sweeps/rsi_reversion.toml \
+  --sweep-name rsi_reversion_v11 \
+  --tag v11
 ```
 
 ---
@@ -327,7 +333,7 @@ Testfile: `tests/test_strategy_configs_and_sweeps.py`
 
 - `config/config.toml` - Haupt-Konfiguration
 - `config/portfolio_recipes.toml` - Portfolio-Presets
-- `config/sweeps/*.toml` - Sweep-Parameter-Grids
+- `config&#47;sweeps&#47;*.toml` - Sweep-Parameter-Grids
 
 ### Quellcode
 
@@ -405,8 +411,8 @@ tests/test_strategy_configs_and_sweeps.py::test_v11_portfolio_presets_use_v11_st
 
 Nach Ausfuehrung der Sweeps und Backtests:
 
-- `reports/sweeps/<strategy>_v11/` - Sweep-Reports
-- `reports/portfolio/<preset>_v11/` - Portfolio-Backtest-Reports
+- `reports&#47;sweeps&#47;<strategy>_v11&#47;` - Sweep-Reports
+- `reports&#47;portfolio&#47;<preset>_v11&#47;` - Portfolio-Backtest-Reports
 
 ### Aenderungen in dieser Phase
 

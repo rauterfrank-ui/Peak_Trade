@@ -169,13 +169,13 @@ GET /api/telemetry?session_id=session_123&format=csv
 ### Run Regression Gates
 ```bash
 cd ~/Peak_Trade
-pytest -q tests/execution/test_telemetry_regression_gates.py
+python3 -m pytest -q tests/execution/test_telemetry_regression_gates.py
 # Expected: 18 passed in ~0.5s
 ```
 
 ### Run Telemetry Viewer Tests
 ```bash
-pytest -q tests/execution/test_telemetry_viewer.py
+python3 -m pytest -q tests/execution/test_telemetry_viewer.py
 # Expected: 14 passed in ~0.3s
 ```
 
@@ -198,7 +198,7 @@ cat test.csv
 
 ### Test with Golden Fixtures
 ```bash
-python scripts/view_execution_telemetry.py \
+python3 scripts/view_execution_telemetry.py \
   --path tests/fixtures/execution_telemetry \
   --summary
 # Expected: Summary stats for golden fixtures
@@ -301,14 +301,14 @@ A  tests/fixtures/execution_telemetry/golden_session_latency.jsonl        (12 ev
 
 ### Quick Start
 1. **Diagnose Issues:** Use [Incident Runbook](./EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md)
-2. **Run Regression Gates:** `pytest -q tests&#47;execution&#47;test_telemetry_regression_gates.py`
+2. **Run Regression Gates:** `python3 -m pytest -q tests&#47;execution&#47;test_telemetry_regression_gates.py`
 3. **Export Data:** Add `?format=csv` to `/api/telemetry` requests
 
 ### Common Scenarios
 
 **Scenario 1: Missing Fills**
 ```bash
-python scripts/view_execution_telemetry.py \
+python3 scripts/view_execution_telemetry.py \
   --session SESSION_ID \
   --type fill \
   --limit 50
@@ -316,7 +316,7 @@ python scripts/view_execution_telemetry.py \
 
 **Scenario 2: High Error Rate**
 ```bash
-python scripts/view_execution_telemetry.py \
+python3 scripts/view_execution_telemetry.py \
   --path logs/execution \
   --summary
 # Check "error_rate" in output
@@ -324,7 +324,7 @@ python scripts/view_execution_telemetry.py \
 
 **Scenario 3: Latency Spike**
 ```bash
-python scripts/view_execution_telemetry.py \
+python3 scripts/view_execution_telemetry.py \
   --session SESSION_ID \
   --summary
 # Check "Latency (intent->order)" and "Latency (order->fill)"

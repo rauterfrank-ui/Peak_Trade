@@ -234,16 +234,16 @@ Der AlertEngine verhindert Alert-Spam durch Debouncing:
 
 ```bash
 # Mit Defaults (127.0.0.1:8000)
-python -m scripts.serve_live_dashboard
+python3 -m scripts.serve_live_dashboard
 
 # Mit Custom-Port
-python -m scripts.serve_live_dashboard --port 8080
+python3 -m scripts.serve_live_dashboard --port 8080
 
 # Mit anderem Runs-Verzeichnis
-python -m scripts.serve_live_dashboard --base-runs-dir /path/to/runs
+python3 -m scripts.serve_live_dashboard --base-runs-dir /path/to/runs
 
 # Mit Auto-Reload (Development)
-python -m scripts.serve_live_dashboard --reload
+python3 -m scripts.serve_live_dashboard --reload
 ```
 
 ---
@@ -307,10 +307,10 @@ Der CLI-Monitor (`scripts/monitor_live_run.py`) wurde erweitert:
 
 ```bash
 # Mit Alerts (Default)
-python -m scripts.monitor_live_run
+python3 -m scripts.monitor_live_run
 
 # Ohne Alerts
-python -m scripts.monitor_live_run --no-alerts
+python3 -m scripts.monitor_live_run --no-alerts
 
 # Nur kritische Alerts
 # (In config.toml: min_severity = "critical")
@@ -380,13 +380,13 @@ curl http://127.0.0.1:8000/runs/20251204_180000_paper_ma_crossover_BTC-EUR_1m/al
 
 ```bash
 # Alle Phase-34-Tests
-pytest tests/test_live_alerts.py tests/test_live_web.py -v
+python3 -m pytest tests/test_live_alerts.py tests/test_live_web.py -v
 
 # Nur Alert-Tests
-pytest tests/test_live_alerts.py -v
+python3 -m pytest tests/test_live_alerts.py -v
 
 # Nur Web-Tests
-pytest tests/test_live_web.py -v
+python3 -m pytest tests/test_live_web.py -v
 ```
 
 ### Test-Coverage

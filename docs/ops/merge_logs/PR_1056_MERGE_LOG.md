@@ -20,9 +20,9 @@ Medium. New contracts in `src/execution/ledger/models.py`; still offline-only (N
 
 ## Operator How-To
 - Run Slice2 tests:
-  - `uv run pytest -q tests/execution/test_ledger_determinism.py`
-  - `uv run pytest -q tests/execution/test_ledger_fifo_cases.py`
-  - `uv run pytest -q tests/execution/test_ledger_invariants.py`
+  - `python3 -m pytest -q tests&#47;execution&#47;test_ledger_determinism.py`
+  - `python3 -m pytest -q tests&#47;execution&#47;test_ledger_fifo_cases.py`
+  - `python3 -m pytest -q tests&#47;execution&#47;test_ledger_invariants.py`
 
 ## References
 - PR: #1056

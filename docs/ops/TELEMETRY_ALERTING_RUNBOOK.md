@@ -25,7 +25,7 @@ dry_run = true  # Recommended: Test with dry-run first
 
 ```bash
 # Dry-run (prints alerts, doesn't send)
-python scripts/telemetry_alerts.py
+python3 scripts/telemetry_alerts.py
 
 # Output:
 # 🚨 2 alert(s) triggered:
@@ -113,7 +113,7 @@ dedupe_window_seconds = 900
 # Edit config: telemetry.alerting.enabled = true, dry_run = true
 
 # 2. Run alert evaluation
-python scripts/telemetry_alerts.py
+python3 scripts/telemetry_alerts.py
 
 # 3. Review output (printed to console)
 # Adjust rules/thresholds as needed
@@ -130,11 +130,11 @@ echo $?  # 0 = OK, 2 = Critical
 # Set webhook.url = "https://your-webhook-url"
 
 # 2. Test with dry-run first
-python scripts/telemetry_alerts.py --no-dry-run --sink webhook
+python3 scripts/telemetry_alerts.py --no-dry-run --sink webhook
 
 # 3. Deploy (schedule with cron)
 # Crontab entry (every 10 minutes):
-*/10 * * * * cd /path/to/Peak_Trade && python scripts/telemetry_alerts.py --no-dry-run --sink webhook >> logs/alerts.log 2>&1
+*/10 * * * * cd /path/to/Peak_Trade && python3 scripts/telemetry_alerts.py --no-dry-run --sink webhook >> logs/alerts.log 2>&1
 ```
 
 ### Troubleshooting
@@ -154,10 +154,10 @@ enabled = true
 
 ```bash
 # Check health status
-python scripts/telemetry_health_check.py
+python3 scripts/telemetry_health_check.py
 
 # Check trend data
-python scripts/telemetry_health_snapshot.py
+python3 scripts/telemetry_health_snapshot.py
 ```
 
 **Problem:** Webhook send fails
@@ -298,7 +298,7 @@ curl "http://127.0.0.1:8000/api/telemetry/alerts/latest?severity=critical"
 **Health Critical:**
 ```bash
 # Run health check manually
-python scripts/telemetry_health_check.py
+python3 scripts/telemetry_health_check.py
 
 # Review specific checks
 # - Disk usage (> 1.9 GB?)
@@ -309,7 +309,7 @@ python scripts/telemetry_health_check.py
 **Degradation:**
 ```bash
 # Review trend data
-curl "http://127.0.0.1:8000/api/telemetry/health/trends?days=7" | python -m json.tool
+curl "http://127.0.0.1:8000/api/telemetry/health/trends?days=7" | python3 -m json.tool
 
 # Check degradation reasons
 # - Disk usage increasing
@@ -324,16 +324,16 @@ curl "http://127.0.0.1:8000/api/telemetry/health/trends?days=7" | python -m json
 du -sh logs/execution
 
 # Apply retention
-python scripts/ops/telemetry_retention.py --apply
+python3 scripts/ops/telemetry_retention.py --apply
 
 # If critical, use aggressive policy
-python scripts/ops/telemetry_retention.py --apply --max-age-days 7
+python3 scripts/ops/telemetry_retention.py --apply --max-age-days 7
 ```
 
 **Parse Errors:**
 ```bash
 # Find problematic sessions
-python scripts/view_execution_telemetry.py --json 2>&1 | grep -i error
+python3 scripts/view_execution_telemetry.py --json 2>&1 | grep -i error
 
 # Check disk space (may cause write failures)
 df -h
@@ -342,7 +342,7 @@ df -h
 **Degradation:**
 ```bash
 # Review recent health snapshots
-python -c "
+python3 -c "
 from pathlib import Path
 from src.execution.telemetry_health_trends import load_snapshots
 
@@ -356,14 +356,14 @@ for s in snapshots:
 
 ```bash
 # Run health check
-python scripts/telemetry_health_check.py
+python3 scripts/telemetry_health_check.py
 # Exit code should be 0 (OK)
 
 # Capture snapshot
-python scripts/telemetry_health_snapshot.py
+python3 scripts/telemetry_health_snapshot.py
 
 # Re-run alerts
-python scripts/telemetry_alerts.py
+python3 scripts/telemetry_alerts.py
 # Should show no critical alerts
 ```
 
@@ -435,7 +435,7 @@ dedupe_window_seconds = 7200  # 2 hours instead of 30 minutes
 ```bash
 # Count by severity
 curl "http://127.0.0.1:8000/api/telemetry/alerts/latest?limit=1000" | \
-  python -m json.tool | grep '"severity"' | sort | uniq -c
+  python3 -m json.tool | grep '"severity"' | sort | uniq -c
 
 # Critical alerts only
 curl "http://127.0.0.1:8000/api/telemetry/alerts/latest?severity=critical&limit=50"
@@ -450,7 +450,7 @@ curl "http://127.0.0.1:8000/api/telemetry/alerts/latest?severity=critical&limit=
 Always test alerting configuration with dry-run before going live:
 
 ```bash
-python scripts/telemetry_alerts.py --dry-run
+python3 scripts/telemetry_alerts.py --dry-run
 ```
 
 ### 2. Start with Console Sink
@@ -469,7 +469,7 @@ default_sink = "console"  # Start here
 Check exit codes and logs:
 
 ```bash
-python scripts/telemetry_alerts.py --no-dry-run --sink webhook
+python3 scripts/telemetry_alerts.py --no-dry-run --sink webhook
 echo $?  # 1 = webhook failed, 2 = critical alert
 ```
 
@@ -502,7 +502,7 @@ Review alert rules monthly:
 - [ ] Config: Test with `dry_run = true` first
 - [ ] Config: Webhook URL configured (if using webhook)
 - [ ] Config: Webhook authentication headers set (if required)
-- [ ] Test: Run `python scripts/telemetry_alerts.py --dry-run`
+- [ ] Test: Run `python3 scripts/telemetry_alerts.py --dry-run`
 - [ ] Test: Verify exit codes (0/1/2)
 - [ ] Test: Check dashboard alerts section
 - [ ] Test: Send test webhook (if using webhook)

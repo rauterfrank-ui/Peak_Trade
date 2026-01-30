@@ -142,13 +142,13 @@ Interaktives Terminal-Dashboard mit Auto-Refresh:
 
 ```bash
 # Neuesten Run monitoren:
-python -m scripts.monitor_live_run --latest
+python3 -m scripts.monitor_live_run --latest
 
 # Spezifischen Run:
-python -m scripts.monitor_live_run --run-id 20251204_180000_paper_ma_crossover_BTC-EUR_1m
+python3 -m scripts.monitor_live_run --run-id 20251204_180000_paper_ma_crossover_BTC-EUR_1m
 
 # Mit Optionen:
-python -m scripts.monitor_live_run --latest --interval 5 --rows 20 --view both
+python3 -m scripts.monitor_live_run --latest --interval 5 --rows 20 --view both
 ```
 
 #### CLI-Argumente
@@ -186,28 +186,28 @@ use_colors = true
 ### 1. Shadow-/Paper-Session starten
 
 ```bash
-python -m scripts.run_shadow_paper_session --strategy ma_crossover
+python3 -m scripts.run_shadow_paper_session --strategy ma_crossover
 ```
 
 Die Session gibt einen Hinweis zum Monitoring aus:
 ```
 Tip: You can monitor this run in real-time with:
-  python -m scripts.monitor_live_run --run-dir live_runs/20251204_180000_paper_ma_crossover_BTC-EUR_1m
+  python3 -m scripts.monitor_live_run --run-dir live_runs/20251204_180000_paper_ma_crossover_BTC-EUR_1m
 Or monitor the latest run:
-  python -m scripts.monitor_live_run --latest
+  python3 -m scripts.monitor_live_run --latest
 ```
 
 ### 2. Monitor in neuem Terminal starten
 
 ```bash
 # In einem neuen Terminal-Fenster:
-python -m scripts.monitor_live_run --latest
+python3 -m scripts.monitor_live_run --latest
 ```
 
 ### 3. Verfügbare Runs anzeigen
 
 ```bash
-python -m scripts.monitor_live_run --list
+python3 -m scripts.monitor_live_run --list
 ```
 
 Output:
@@ -284,7 +284,7 @@ Total: 3 runs
 
 ```bash
 # Monitoring-Tests ausführen:
-pytest tests/test_live_monitoring.py -v
+python3 -m pytest tests/test_live_monitoring.py -v
 ```
 
 Test-Coverage:

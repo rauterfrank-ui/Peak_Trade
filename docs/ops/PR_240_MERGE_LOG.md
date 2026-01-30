@@ -25,7 +25,7 @@
 - **CI:** all checks green (health gate, audit, lint, tests, strategy-smoke).
 - **Post-merge sanity:**
   - `scripts/ops/check_run_helpers_adoption.sh`
-  - `uv run pytest -q tests/ops/test_ops_run_helpers_adoption_guard.py`
+  - `python3 -m pytest -q tests&#47;ops&#47;test_ops_run_helpers_adoption_guard.py`
 
 ## Risk
 - 🟢 **Low** — adds guardrails only; no trading/core runtime changes.

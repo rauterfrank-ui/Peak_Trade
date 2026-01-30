@@ -164,14 +164,14 @@ config/capability_scopes/
 
 ```bash
 # Replay mode with fixture ID (recommended)
-python scripts/aiops/run_l1_deepresearch.py \
+python3 scripts/aiops/run_l1_deepresearch.py \
     --question "What are the best practices for VaR backtesting?" \
     --mode replay \
     --fixture l1_deepresearch_sample \
     --out evidence_packs/L1_demo
 
 # Replay mode with full transcript path
-python scripts/aiops/run_l1_deepresearch.py \
+python3 scripts/aiops/run_l1_deepresearch.py \
     --question "Research momentum factor literature" \
     --mode replay \
     --transcript tests/fixtures/transcripts/l1_deepresearch_sample.json \
@@ -201,7 +201,7 @@ python scripts/aiops/run_l1_deepresearch.py \
 
 # Example (future):
 # export OPENAI_API_KEY="sk-..."
-# python scripts/aiops/run_l1_deepresearch.py \
+# python3 scripts/aiops/run_l1_deepresearch.py \
 #     --question "Research VaR backtesting" \
 #     --allow-network \
 #     --record \
@@ -217,7 +217,7 @@ python scripts/aiops/run_l1_deepresearch.py \
 **Basic Usage (Offline/Replay):**
 ```bash
 # Review an L1 Evidence Pack
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
     --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
     --mode replay \
     --fixture l4_critic_sample \
@@ -226,7 +226,7 @@ python scripts/aiops/run_l4_governance_critic.py \
 
 **With Operator Notes:**
 ```bash
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
     --evidence-pack evidence_packs/L1_var_research \
     --mode replay \
     --fixture l4_critic_sample \
@@ -346,13 +346,13 @@ evidence_packs/L1_DEEPRESEARCH_20260110_120000/
 
 ```bash
 # Run all L1 tests
-pytest tests/ai_orchestration/test_l1_runner.py -v
+python3 -m pytest tests/ai_orchestration/test_l1_runner.py -v
 
 # Run specific test
-pytest tests/ai_orchestration/test_l1_runner.py::test_l1_runner_replay_mode_success -v
+python3 -m pytest tests/ai_orchestration/test_l1_runner.py::test_l1_runner_replay_mode_success -v
 
 # Run with coverage
-pytest tests/ai_orchestration/test_l1_runner.py --cov=src/ai_orchestration/l1_runner
+python3 -m pytest tests/ai_orchestration/test_l1_runner.py --cov=src/ai_orchestration/l1_runner
 ```
 
 ---
@@ -396,7 +396,7 @@ pytest tests/ai_orchestration/test_l1_runner.py --cov=src/ai_orchestration/l1_ru
 
 **Step 1: Offline Run**
 ```bash
-python scripts/aiops/run_l1_deepresearch.py \
+python3 scripts/aiops/run_l1_deepresearch.py \
     --question "Research VaR backtesting best practices" \
     --mode replay \
     --fixture l1_deepresearch_sample \
@@ -422,7 +422,7 @@ python scripts/aiops/run_l1_deepresearch.py \
 ls -lh evidence_packs/L1_verify/
 
 # Validate JSON
-python -m json.tool evidence_packs/L1_verify/evidence_pack.json > /dev/null
+python3 -m json.tool evidence_packs/L1_verify/evidence_pack.json > /dev/null
 echo "✅ Evidence Pack JSON valid"
 
 # Check SoD
@@ -440,7 +440,7 @@ jq '.capability_scope_result' evidence_packs/L1_verify/evidence_pack.json
 ```yaml
 # .github/workflows/ci.yml (excerpt)
 - name: Run L1 Runner Tests
-  run: pytest tests/ai_orchestration/test_l1_runner.py -v
+  run: python3 -m pytest tests/ai_orchestration/test_l1_runner.py -v
 ```
 
 **Expected CI Behavior:**
@@ -470,12 +470,12 @@ scripts/aiops/
 ### 9.3 Integration Pattern
 ```bash
 # Step 1: L1 Research
-python scripts/aiops/run_l1_deepresearch.py \
+python3 scripts/aiops/run_l1_deepresearch.py \
     --question "Research VaR backtesting" \
     --out evidence_packs/L1_var_research
 
 # Step 2: L4 Governance Review (Phase 4B)
-# python scripts/aiops/run_l4_governance_critic.py \
+# python3 scripts/aiops/run_l4_governance_critic.py \
 #     --input evidence_packs/L1_var_research/evidence_pack.json \
 #     --out evidence_packs/L4_governance_review
 ```
@@ -490,14 +490,14 @@ python scripts/aiops/run_l1_deepresearch.py \
 
 ```bash
 # Basic replay with fixture
-python scripts/aiops/run_l1_deepresearch.py \
+python3 scripts/aiops/run_l1_deepresearch.py \
     --question "What are the best practices for VaR backtesting?" \
     --mode replay \
     --fixture l1_deepresearch_sample \
     --out evidence_packs/L1_var_research
 
 # With operator notes and findings
-python scripts/aiops/run_l1_deepresearch.py \
+python3 scripts/aiops/run_l1_deepresearch.py \
     --question "Research momentum factor literature" \
     --mode replay \
     --fixture l1_deepresearch_sample \
@@ -528,7 +528,7 @@ ls evidence_packs/L1_var_research/
 # Expected: 7 files (evidence_pack.json, run_manifest.json, etc.)
 
 # Validate JSON structure
-python -m json.tool evidence_packs/L1_var_research/evidence_pack.json > /dev/null
+python3 -m json.tool evidence_packs/L1_var_research/evidence_pack.json > /dev/null
 echo "✅ Evidence Pack JSON valid"
 
 # Check SoD result
@@ -560,7 +560,7 @@ jq '.proposer.content' evidence_packs/L1_var_research/evidence_pack.json | grep 
 ```bash
 # NOT IMPLEMENTED YET
 # export OPENAI_API_KEY="sk-..."
-# python scripts/aiops/run_l1_deepresearch.py \
+# python3 scripts/aiops/run_l1_deepresearch.py \
 #     --question "Research VaR backtesting" \
 #     --allow-network \
 #     --record \

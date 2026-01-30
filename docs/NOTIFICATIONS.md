@@ -129,13 +129,13 @@ notifier.send(alert)  # Sendet an beide
 
 ```bash
 # Mit Alerts (default)
-python scripts/run_forward_signals.py --strategy ma_crossover --symbol BTC/EUR
+python3 scripts/run_forward_signals.py --strategy ma_crossover --symbol BTC/EUR
 
 # Ohne Alerts
-python scripts/run_forward_signals.py --strategy ma_crossover --symbol BTC/EUR --no-alerts
+python3 scripts/run_forward_signals.py --strategy ma_crossover --symbol BTC/EUR --no-alerts
 
 # Eigene Alert-Logdatei
-python scripts/run_forward_signals.py --strategy ma_crossover --symbol BTC/EUR --alert-log logs/signals.log
+python3 scripts/run_forward_signals.py --strategy ma_crossover --symbol BTC/EUR --alert-log logs/signals.log
 ```
 
 **Alert-Beispiel (Forward-Signal):**
@@ -152,10 +152,10 @@ python scripts/run_forward_signals.py --strategy ma_crossover --symbol BTC/EUR -
 
 ```bash
 # Mit Alerts (default)
-python scripts/check_live_risk_limits.py --orders orders.csv
+python3 scripts/check_live_risk_limits.py --orders orders.csv
 
 # Ohne Alerts
-python scripts/check_live_risk_limits.py --orders orders.csv --no-alerts
+python3 scripts/check_live_risk_limits.py --orders orders.csv --no-alerts
 ```
 
 **Alert-Beispiele (Live-Risk):**
@@ -176,16 +176,16 @@ Zum Testen des Notification-Layers:
 
 ```bash
 # Standard-Demo
-python scripts/send_alerts_demo.py
+python3 scripts/send_alerts_demo.py
 
 # Nur Console-Ausgabe
-python scripts/send_alerts_demo.py --console-only
+python3 scripts/send_alerts_demo.py --console-only
 
 # JSON-Format für Datei
-python scripts/send_alerts_demo.py --json-format
+python3 scripts/send_alerts_demo.py --json-format
 
 # Eigene Logdatei
-python scripts/send_alerts_demo.py --alert-log logs/demo_alerts.log
+python3 scripts/send_alerts_demo.py --alert-log logs/demo_alerts.log
 ```
 
 ## Eigene Notifier implementieren
@@ -252,12 +252,12 @@ Alle Scripts mit Alert-Integration unterstützen:
 
 | Option | Beschreibung |
 |--------|--------------|
-| `--alert-log PATH` | Pfad zur Alert-Logdatei (Default: `logs/alerts.log`) |
+| `--alert-log PATH` | Pfad zur Alert-Logdatei (Default: `logs&#47;alerts.log`) |
 | `--no-alerts` | Alert-Benachrichtigungen deaktivieren |
 
 ## Logdatei
 
-Die Default-Logdatei ist `logs/alerts.log`. Sie wird automatisch erstellt und im Append-Modus geschrieben.
+Die Default-Logdatei ist `logs&#47;alerts.log`. Sie wird automatisch erstellt und im Append-Modus geschrieben.
 
 **Anzeigen:**
 ```bash
@@ -273,7 +273,7 @@ grep "critical" logs/alerts.log
 ## Tests
 
 ```bash
-pytest tests/test_notifications_smoke.py -v
+python3 -m pytest tests/test_notifications_smoke.py -v
 ```
 
 ## Zukünftige Erweiterungen

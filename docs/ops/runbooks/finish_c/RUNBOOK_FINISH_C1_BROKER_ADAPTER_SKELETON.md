@@ -69,9 +69,9 @@ Ein minimaler, testbarer Broker‑Abstraktionslayer, der spätere Live‑Ops **m
 ## 4) Snapshot Checklist (C1)
 
 - [ ] `git status -sb` (Scope korrekt? keine uncommitted changes empfohlen)
-- [ ] `pytest -q` (snapshot)
-- [ ] `python -m ruff check .` (snapshot)
-- [ ] `python -m ruff format --check .` (snapshot)
+- [ ] `bash python3 -m pytest -q` (snapshot)
+- [ ] `bash ruff check .` (snapshot)
+- [ ] `bash ruff format --check .` (snapshot)
 - [ ] Diff‑Review: keine Secrets; keine network integration; kein live unlock
 
 ---
@@ -112,9 +112,9 @@ cd /Users/frnkhrz/Peak_Trade || cd "$HOME/Peak_Trade"
 git status -sb
 git diff --stat
 
-pytest -q
-python -m ruff check .
-python -m ruff format --check .
+python3 -m pytest -q
+ruff check .
+ruff format --check .
 ```
 
 ---

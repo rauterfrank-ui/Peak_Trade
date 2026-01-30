@@ -18,7 +18,7 @@
 cd /path/to/Peak_Trade
 
 # 2) Run the smoke script
-python scripts/shadow_run_tick_to_ohlcv_smoke.py
+python3 scripts/shadow_run_tick_to_ohlcv_smoke.py
 
 # Expected: ✅ Alle Smoke-Tests bestanden!
 ```
@@ -58,10 +58,10 @@ ls src/data/shadow/
 
 ```bash
 # All shadow tests
-pytest tests/data/shadow/ -v
+python3 -m pytest tests/data/shadow/ -v
 
 # Specific component
-pytest tests/data/shadow/test_ohlcv_builder.py -v
+python3 -m pytest tests/data/shadow/test_ohlcv_builder.py -v
 ```
 
 ### Read the Docs
@@ -87,10 +87,10 @@ pytest tests/data/shadow/test_ohlcv_builder.py -v
 scripts/ops/ops_center.sh shadow smoke
 
 # Direct
-python scripts/shadow_run_tick_to_ohlcv_smoke.py
+python3 scripts/shadow_run_tick_to_ohlcv_smoke.py
 
 # Tests
-pytest tests/data/shadow/ -q
+python3 -m pytest tests/data/shadow/ -q
 
 # Check config
 cat config/shadow_pipeline_example.toml
@@ -104,10 +104,10 @@ cat config/shadow_pipeline_example.toml
 
 ```bash
 # Check Python version
-python --version  # Should be 3.9+
+python3 --version  # Should be 3.9+
 
 # Check dependencies
-pip list | grep pandas
+python3 -m pip list | rg pandas
 
 # Verify you're NOT in live mode
 echo $PEAK_TRADE_LIVE_MODE  # Should be empty
@@ -116,7 +116,7 @@ echo $PEAK_TRADE_LIVE_MODE  # Should be empty
 ### Need Help?
 
 - **Runbook:** `docs/shadow/SHADOW_PIPELINE_PHASE2_OPERATOR_RUNBOOK.md` (Troubleshooting section)
-- **Tests:** `pytest tests&#47;data&#47;shadow&#47;test_guards.py -v` (shows guard behavior)
+- **Tests:** `python3 -m pytest tests&#47;data&#47;shadow&#47;test_guards.py -v` (shows guard behavior)
 
 ---
 

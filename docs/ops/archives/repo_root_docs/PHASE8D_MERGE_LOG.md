@@ -135,13 +135,13 @@ def basel_traffic_light(breaches: int, observations: int, confidence_level: floa
 
 **Test Results:**
 ```bash
-✅ pytest tests/risk/validation/test_traffic_light_delegation.py -q
+✅ python3 -m pytest tests/risk/validation/test_traffic_light_delegation.py -q
    → 12/12 passed in 0.09s
 
-✅ pytest tests/risk/validation/test_traffic_light.py -q
+✅ python3 -m pytest tests/risk/validation/test_traffic_light.py -q
    → 11/11 passed in 0.11s
 
-✅ pytest tests/risk/validation/ -q
+✅ python3 -m pytest tests/risk/validation/ -q
    → 93/93 passed in 0.14s
 ```
 
@@ -151,16 +151,16 @@ def basel_traffic_light(breaches: int, observations: int, confidence_level: floa
 
 ### Linting
 ```bash
-✅ uv run ruff check . --quiet
+✅ ruff check . --quiet
    → 0 issues
 
-✅ uv run ruff format --check .
+✅ ruff format --check .
    → All files formatted correctly
 ```
 
 ### Tests
 ```bash
-✅ pytest tests/risk/validation/ -q
+✅ python3 -m pytest tests/risk/validation/ -q
    → 93/93 passed (12 new delegation + 81 existing)
 
 ✅ Total: 93/93 tests passed (100%)
@@ -236,12 +236,12 @@ assert result.capital_multiplier == 3.2  # Basel penalty
 ### Verification
 ```bash
 # Linting
-uv run ruff check . --quiet
-uv run ruff format --check .
+ruff check . --quiet
+ruff format --check .
 
 # Tests
-pytest tests/risk/validation/test_traffic_light_delegation.py -q
-pytest tests/risk/validation/ -q
+python3 -m pytest tests/risk/validation/test_traffic_light_delegation.py -q
+python3 -m pytest tests/risk/validation/ -q
 
 # Manual smoke test
 python3 -c "

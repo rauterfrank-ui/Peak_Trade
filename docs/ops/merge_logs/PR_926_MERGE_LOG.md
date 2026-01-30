@@ -13,10 +13,10 @@ Determinismus-kritische Bridge + Regression-Artefakte; Korrektheit hängt an sta
 - Fixture: minimal JSONL (integer-only)
 
 ## Verification
-- uv run pytest -q tests/execution/test_beta_event_bridge_determinism.py → PASS
-- uv run pytest -q tests/execution/test_beta_event_bridge_ordering.py → PASS
-- uv run ruff format --check . → PASS
-- uv run ruff check . → PASS
+- python3 -m pytest -q tests&#47;execution&#47;test_beta_event_bridge_determinism.py → PASS
+- python3 -m pytest -q tests&#47;execution&#47;test_beta_event_bridge_ordering.py → PASS
+- ruff format --check . → PASS
+- ruff check . → PASS
 
 ## Risk
 HIGH — Determinism/Artifact-Contract is regression-sensitive; requires explicit operator approval prior to merge.

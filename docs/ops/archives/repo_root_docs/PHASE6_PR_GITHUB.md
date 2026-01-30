@@ -36,7 +36,7 @@ Phase 2 (VaR Validation) wurde zu `main` gemerged (PR #413), aber es fehlten:
 ## Verification
 
 ```bash
-pytest tests/risk/validation/ tests/risk/integration/ -q
+python3 -m pytest tests/risk/validation/ tests/risk/integration/ -q
 # Result: 93 passed in 0.84s ✅
 ```
 

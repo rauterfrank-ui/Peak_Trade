@@ -133,10 +133,10 @@ ruff format --check .
 ruff check .
 
 # Tests (relevant für betroffene Module)
-pytest tests/ -q
+python3 -m pytest tests/ -q
 
 # Optional: Spezifische Tests für betroffenen Bereich
-# pytest tests/ops/ -v
+# python3 -m pytest tests/ops/ -v
 ```
 
 **Erwartetes Ergebnis:**

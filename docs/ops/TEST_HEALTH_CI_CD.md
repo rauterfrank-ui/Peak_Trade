@@ -255,11 +255,11 @@ Teste Workflow-Commands lokal:
 
 ```bash
 # Simuliere Daily Check
-python scripts/run_test_health_profile.py --profile daily_quick
+python3 scripts/run_test_health_profile.py --profile daily_quick
 
 # Check Health Score
 LATEST_DIR=$(ls -t reports/test_health/ | grep -v history.json | head -1)
-python -c "import json; data=json.load(open('reports/test_health/${LATEST_DIR}/summary.json')); print(f\"Health Score: {data['health_score']}\")"
+python3 -c "import json; data=json.load(open('reports/test_health/${LATEST_DIR}/summary.json')); print(f\"Health Score: {data['health_score']}\")"
 ```
 
 ### 2. Manual Workflow Run

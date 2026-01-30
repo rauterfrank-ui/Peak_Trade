@@ -109,9 +109,9 @@ WP0D implements the **LedgerEntry Mapping** and **Reconciliation Wiring** for th
 
 ```bash
 cd /Users/frnkhrz/Peak_Trade
-uv run pytest tests/execution/test_wp0d_event_to_ledger_fill_maps_to_trade.py \
-                tests/execution/test_wp0d_reject_produces_no_ledger_entry.py \
-                tests/execution/test_wp0d_recon_diff_severity_deterministic.py -v
+python3 -m pytest tests/execution/test_wp0d_event_to_ledger_fill_maps_to_trade.py \
+                 tests/execution/test_wp0d_reject_produces_no_ledger_entry.py \
+                 tests/execution/test_wp0d_recon_diff_severity_deterministic.py -v
 ```
 
 **Expected Output**: ✅ 18 passed in 0.07s
@@ -119,7 +119,7 @@ uv run pytest tests/execution/test_wp0d_event_to_ledger_fill_maps_to_trade.py \
 ### Run Full Execution Test Suite
 
 ```bash
-uv run pytest tests/execution/ -q
+python3 -m pytest tests/execution/ -q
 ```
 
 **Expected Output**: All tests green (no regressions)
@@ -127,12 +127,12 @@ uv run pytest tests/execution/ -q
 ### Lint Check
 
 ```bash
-uv run ruff format --check src/execution/ledger_mapper.py \
-                           src/execution/reconciliation.py \
-                           src/execution/orchestrator.py
-uv run ruff check src/execution/ledger_mapper.py \
+ruff format --check src/execution/ledger_mapper.py \
                   src/execution/reconciliation.py \
                   src/execution/orchestrator.py
+ruff check src/execution/ledger_mapper.py \
+          src/execution/reconciliation.py \
+          src/execution/orchestrator.py
 ```
 
 **Expected Output**: No linter errors

@@ -40,10 +40,10 @@ Das Script `scripts/live_operator_status.py` ist eine zentrale CLI für Operator
 
 ```bash
 # Status mit Default-Config
-python scripts/live_operator_status.py
+python3 scripts/live_operator_status.py
 
 # Status mit expliziter Config
-python scripts/live_operator_status.py --config config/config.toml
+python3 scripts/live_operator_status.py --config config/config.toml
 ```
 
 ### 2.3 Beispiel-Ausgabe
@@ -193,7 +193,7 @@ Tests befinden sich in `tests/test_phase72_live_operator_status.py`:
 
 **Vor einem Live-Run (Design-Test):**
 ```bash
-python scripts/live_operator_status.py
+python3 scripts/live_operator_status.py
 ```
 
 **Fragen, die beantwortet werden:**

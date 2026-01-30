@@ -17,7 +17,7 @@ This runbook provides operator guidance for the **Docs Reference Targets Gate**,
 
 **Automatic (CI):**
 - Gate runs on all PRs touching Markdown files
-- Workflow: `.github&#47;workflows&#47;docs-reference-targets-gate.yml`
+- Workflow: `.github/workflows/docs_reference_targets_gate.yml`
 - Check status: `gh pr checks <PR_NUMBER> | grep "docs-reference-targets"`
 
 **Manual (Local):**
@@ -70,7 +70,7 @@ git log --follow --all -- scripts/old_name.py
 **Fix:**
 ```bash
 # Update docs to reference new path
-sed -i 's|scripts&#47;old_name.py|scripts&#47;new_name.py|g' docs/ops/GUIDE.md
+sed -i 's|scripts/old_name.py|scripts/new_name.py|g' docs/ops/GUIDE.md
 
 # Verify fix
 bash scripts/ops/verify_docs_reference_targets.sh --changed
@@ -81,7 +81,7 @@ bash scripts/ops/verify_docs_reference_targets.sh --changed
 **Symptom:**
 ```
 Missing targets: 1
-  - docs/tutorial.md:15: config&#47;my_example.toml
+  - docs/tutorial.md:15: config/my_example.toml
 ```
 
 **Diagnostic:**
@@ -94,7 +94,7 @@ ls -la config/my_example.toml
 **Fix Option A: Encode with HTML entity (recommended)**
 ```bash
 # Replace forward slash with HTML entity in inline-code span
-# Before: `config&#47;my_example.toml`
+# Before: `config/my_example.toml`
 # After:  `config&#47;my_example.toml`
 ```
 
@@ -115,7 +115,7 @@ git commit -m "docs(ops): exempt illustrative path from reference targets gate"
 **Symptom:**
 ```
 Missing targets: 1
-  - docs/roadmap.md:23: src&#47;new_feature.py
+  - docs/roadmap.md:23: src/new_feature.py
 ```
 
 **Fix Option A: Create the file first**
@@ -134,12 +134,12 @@ bash scripts/ops/verify_docs_reference_targets.sh --changed
 **Fix Option B: Encode as illustrative (if file is hypothetical)**
 ```bash
 # Use HTML entity encoding
-# Change: `src&#47;new_feature.py` → `src&#47;new_feature.py`
+# Change: `src/new_feature.py` → `src&#47;new_feature.py`
 ```
 
 **Fix Option C: Use inline ignore marker**
 ```markdown
-This feature will be implemented in `src&#47;new_feature.py`. <!-- pt:ref-target-ignore -->
+This feature will be implemented in `src&#47;new_feature.py`.
 ```
 
 ### Pattern 4: Multiple Files Reference Same Missing Target
@@ -147,11 +147,11 @@ This feature will be implemented in `src&#47;new_feature.py`. <!-- pt:ref-target
 **Symptom:**
 ```
 Missing targets: 5
-  - docs/ops/GUIDE1.md:42: scripts&#47;helper.py
-  - docs/ops/GUIDE2.md:15: scripts&#47;helper.py
-  - docs/ops/GUIDE3.md:88: scripts&#47;helper.py
-  - docs/tutorial.md:12: scripts&#47;helper.py
-  - docs/FAQ.md:55: scripts&#47;helper.py
+  - docs/ops/GUIDE1.md:42: scripts/helper.py
+  - docs/ops/GUIDE2.md:15: scripts/helper.py
+  - docs/ops/GUIDE3.md:88: scripts/helper.py
+  - docs/tutorial.md:12: scripts/helper.py
+  - docs/FAQ.md:55: scripts/helper.py
 ```
 
 **Diagnostic:**
@@ -175,7 +175,7 @@ git checkout <commit_sha> -- scripts/helper.py
 **Fix Option B: Update all references to new location**
 ```bash
 # Find and replace across all docs
-find docs -name "*.md" -type f -exec sed -i 's|scripts&#47;helper\.py|scripts&#47;utils&#47;helper.py|g' {} +
+find docs -name "*.md" -type f -exec sed -i 's|scripts/helper\.py|scripts/utils/helper.py|g' {} +
 
 # Verify fix
 bash scripts/ops/verify_docs_reference_targets.sh --changed
@@ -207,10 +207,10 @@ realpath ../../../config/settings.toml
 **Fix:**
 ```bash
 # Option A: Use repo-relative path instead
-# Change: `..&#47;..&#47;..&#47;config&#47;settings.toml` → `config&#47;settings.toml`
+# Change: `../../../config/settings.toml` → `config/settings.toml`
 
 # Option B: Fix relative path if incorrect
-# Correct: `..&#47;..&#47;config&#47;settings.toml` (if file is at repo root)
+# Correct: `../../config/settings.toml` (if file is at repo root)
 ```
 
 ## Decision Tree: Illustrative vs Real Targets
@@ -243,10 +243,10 @@ Found missing target in docs
 
 | Pattern Type | Example | Gate Behavior | Action |
 |--------------|---------|---------------|--------|
-| Real repo file | `src&#47;core&#47;config.py` | Validates existence | Keep as-is |
-| Illustrative path | `config&#47;example.toml` | Flags as missing | Encode with `&#47;` |
-| Relative path | `.&#47;local&#47;file.md` | Resolves relative to doc | Keep as-is |
-| URL | `https:&#47;&#47;github.com&#47;...` | Ignored | Keep as-is |
+| Real repo file | `src/core/config.py` | Validates existence | Keep as-is |
+| Illustrative path | `config&#47;example.toml` | Ignored (not a repo path token) | Use encoding for illustrative inline-code |
+| Relative path | `./README.md` | Resolves relative to doc | Keep as-is |
+| URL | `https://github.com/...` | Ignored | Keep as-is |
 | Markdown link | `[text](target.md)` | Validates target | Update if broken |
 | Inline code | `` `path&#47;to&#47;file` `` | Validates if path-like | Encode if illustrative |
 | Fenced code block | ` ```path/to/file``` ` | Ignored | Keep as-is |
@@ -274,11 +274,11 @@ Found missing target in docs
 
 **Example:**
 ```markdown
-❌ Triggers Reference Targets Gate:
-`scripts&#47;example.py` (missing file in all detection modes)
+❌ Triggers Reference Targets Gate (and Token Policy Gate if enabled):
+`scripts/example.py` (missing file)
 
 ✅ Safe for both gates:
-`scripts&#47;example.py` (encoded, not detected as path)
+`scripts&#47;example.py` (encoded, not detected as repo path)
 ```
 
 **When both gates fail:**
@@ -344,7 +344,7 @@ grep -r '`[^`]*/' docs/ | grep -v '&#47;' > /tmp/candidates.txt
 
 ### Ignore List Hygiene
 
-**File:** `docs&#47;ops&#47;DOCS_REFERENCE_TARGETS_IGNORE.txt`
+**File:** `docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt`
 
 **When to add entries:**
 - Generic placeholders used in tutorials (e.g., `some&#47;path`)
@@ -402,10 +402,10 @@ bash scripts/ops/verify_docs_reference_targets.sh
 - [Docs Reference Targets Safe Markdown Guide](../guides/DOCS_REFERENCE_TARGETS_SAFE_MARKDOWN.md) — Operator guide for avoiding false positives
 
 **Scripts & Tests:**
-- Validator: `scripts&#47;ops&#47;verify_docs_reference_targets.sh`
-- Trend Tracker: `scripts&#47;ops&#47;verify_docs_reference_targets_trend.sh`
-- Ignore List: `docs&#47;ops&#47;DOCS_REFERENCE_TARGETS_IGNORE.txt`
-- CI Workflow: `.github&#47;workflows&#47;docs-reference-targets-gate.yml`
+- Validator: `scripts/ops/verify_docs_reference_targets.sh`
+- Trend Tracker: `scripts/ops/verify_docs_reference_targets_trend.sh`
+- Ignore List: `docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt`
+- CI Workflow: `.github/workflows/docs_reference_targets_gate.yml`
 
 **Related Gates:**
 - [Docs Token Policy Gate](RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md) — Encoding policy for inline-code tokens

@@ -202,13 +202,13 @@ MACD:             10%
 
 ```bash
 # Einzelne Strategie
-python scripts/run_momentum_realistic.py
+python3 scripts/run_momentum_realistic.py
 
 # Portfolio mit allen 6
-python scripts/run_full_portfolio.py
+python3 scripts/run_full_portfolio.py
 
 # Unit-Tests
-pytest tests/test_new_strategies.py -v
+python3 -m pytest tests/test_new_strategies.py -v
 ```
 
 ---

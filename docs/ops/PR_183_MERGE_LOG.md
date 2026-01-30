@@ -101,14 +101,14 @@ All checks passed! ✅
 
 **Full Suite:**
 ```bash
-$ pytest -q
+$ python3 -m pytest -q
 4045 passed, 1 failed, 13 skipped, 3 xfailed, 1 warning in 67.86s ✅
 # 1 failed: test_parquet_cache (pre-existing sandbox error)
 ```
 
 **Targeted Tests:**
 ```bash
-$ pytest -q tests -k "execution or telemetry or bridge"
+$ python3 -m pytest -q tests -k "execution or telemetry or bridge"
 329 passed in 20.45s ✅
 ```
 

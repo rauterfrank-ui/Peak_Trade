@@ -78,7 +78,7 @@ Dieser PR liefert ein **standardisiertes, dokumentiertes und testbares** Stash-H
 ### Post-Merge Checks (lokal)
 
 - `bash -n scripts/ops/stash_triage.sh` ✅
-- `uv run pytest -q tests/ops/test_stash_triage_script.py` ✅ (5/5 passed)
+- `python3 -m pytest -q tests&#47;ops&#47;test_stash_triage_script.py` ✅ (5/5 passed)
 - `git stash list` → leer ✅
 - Working directory clean, main synchronized ✅
 

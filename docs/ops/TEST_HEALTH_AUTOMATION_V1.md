@@ -33,31 +33,31 @@ Die **Test Health Automation v1** erweitert die bestehende v0-Implementierung um
 ### Standard-Aufruf (alle v1-Features)
 
 ```bash
-python scripts/run_test_health_profile.py --profile daily_quick
+python3 scripts/run_test_health_profile.py --profile daily_quick
 ```
 
 ### Ohne Strategy-Coverage (z.B. für lokale Tests)
 
 ```bash
-python scripts/run_test_health_profile.py --no-strategy-coverage
+python3 scripts/run_test_health_profile.py --no-strategy-coverage
 ```
 
 ### Ohne Switch-Sanity (z.B. für CI ohne Live-Config)
 
 ```bash
-python scripts/run_test_health_profile.py --no-switch-sanity
+python3 scripts/run_test_health_profile.py --no-switch-sanity
 ```
 
 ### Ohne Slack (für lokale Entwicklung)
 
 ```bash
-python scripts/run_test_health_profile.py --no-slack
+python3 scripts/run_test_health_profile.py --no-slack
 ```
 
 ### Alles deaktiviert (nur Profile-Checks)
 
 ```bash
-python scripts/run_test_health_profile.py --no-strategy-coverage --no-switch-sanity --no-slack
+python3 scripts/run_test_health_profile.py --no-strategy-coverage --no-switch-sanity --no-slack
 ```
 
 ---
@@ -337,13 +337,13 @@ summary, report_dir = run_test_health_profile(
 
 ```bash
 # Alle v1-Tests ausführen
-pytest tests/ops/test_test_health_v1.py -v
+python3 -m pytest tests/ops/test_test_health_v1.py -v
 
 # Spezifische Test-Klasse
-pytest tests/ops/test_test_health_v1.py::TestComputeStrategyCoverage -v
+python3 -m pytest tests/ops/test_test_health_v1.py::TestComputeStrategyCoverage -v
 
 # Integration mit bestehenden Tests
-pytest tests/ops/ -v
+python3 -m pytest tests/ops/ -v
 ```
 
 ---
@@ -399,10 +399,10 @@ require_confirmation = true
 
 ```bash
 # Erst ohne v1-Features testen
-python scripts/run_test_health_profile.py --no-strategy-coverage --no-switch-sanity
+python3 scripts/run_test_health_profile.py --no-strategy-coverage --no-switch-sanity
 
 # Dann mit v1-Features
-python scripts/run_test_health_profile.py
+python3 scripts/run_test_health_profile.py
 ```
 
 ---

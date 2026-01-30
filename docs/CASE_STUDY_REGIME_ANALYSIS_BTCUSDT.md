@@ -135,7 +135,7 @@ Vollständiges Exit in Risk-Off (statt 10 % Exposure) eliminiert den größten P
 **Beispiel-Kommando (an tatsächliche CLI anpassen):**
 
 ```bash
-python scripts/run_portfolio_backtest.py \
+python3 scripts/run_portfolio_backtest.py \
   --risk-off-scale 0.0 \
   --neutral-scale 0.60 \
   --risk-on-scale 1.00 \
@@ -174,7 +174,7 @@ values = [0.50, 0.60, 0.70, 0.80, 0.90]
 Ziel: Prüfen, ob durch leicht verschobene Thresholds mehr „gute" Phasen als Risk-On klassifiziert werden können, ohne die Risk-Off-Phasen zu kontaminieren.
 
 ```bash
-python scripts/run_regime_threshold_sweep.py \
+python3 scripts/run_regime_threshold_sweep.py \
   --low-vol-threshold "0.4,0.5,0.6" \
   --high-vol-threshold "1.8,2.0,2.2"
 ```
@@ -200,7 +200,7 @@ Vergleich:
 Ziel: Überprüfen, ob die gewählten Regime-Parameter (insbesondere `risk_off_scale=0.0` und angepasste `neutral_scale`) **zeitlich stabil** sind.
 
 ```bash
-python scripts/run_walkforward.py \
+python3 scripts/run_walkforward.py \
   --config config/sweeps/regime_aware_portfolio_aggressive.toml \
   --folds 5 \
   --label "btc_regime_wf_validation"

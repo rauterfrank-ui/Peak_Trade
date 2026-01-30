@@ -354,10 +354,10 @@ def get_dashboard_data(manager: AlertManager) -> dict:
 
 ```bash
 # Run alerting tests
-pytest tests/risk_layer/alerting/ -v
+python3 -m pytest tests/risk_layer/alerting/ -v
 
 # With coverage
-pytest tests/risk_layer/alerting/ --cov=src/risk_layer/alerting --cov-report=term-missing
+python3 -m pytest tests/risk_layer/alerting/ --cov=src/risk_layer/alerting --cov-report=term-missing
 ```
 
 ### Test Coverage

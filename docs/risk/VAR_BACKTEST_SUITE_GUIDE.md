@@ -203,23 +203,23 @@ print(df[["window_id", "all_passed", "kupiec_p_value"]])
 
 ```bash
 # Help anzeigen
-python scripts/risk/run_var_backtest_suite_snapshot.py --help
+python3 scripts/risk/run_var_backtest_suite_snapshot.py --help
 
 # Basic Suite (Core Tests only)
-python scripts/risk/run_var_backtest_suite_snapshot.py \
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \
   --returns-file data/portfolio_returns.csv \
   --var-file data/var_estimates.csv \
   --confidence 0.99
 
 # Mit Phase 9A Duration Diagnostic
-python scripts/risk/run_var_backtest_suite_snapshot.py \
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \
   --returns-file data/portfolio_returns.csv \
   --var-file data/var_estimates.csv \
   --confidence 0.99 \
   --enable-duration-diagnostic
 
 # Mit Phase 9B Rolling Evaluation
-python scripts/risk/run_var_backtest_suite_snapshot.py \
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \
   --returns-file data/portfolio_returns.csv \
   --var-file data/var_estimates.csv \
   --confidence 0.99 \
@@ -228,7 +228,7 @@ python scripts/risk/run_var_backtest_suite_snapshot.py \
   --rolling-step-size 50
 
 # Full Diagnostics (Duration + Rolling)
-python scripts/risk/run_var_backtest_suite_snapshot.py \
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \
   --returns-file data/portfolio_returns.csv \
   --var-file data/var_estimates.csv \
   --confidence 0.99 \
@@ -237,7 +237,7 @@ python scripts/risk/run_var_backtest_suite_snapshot.py \
   --rolling-window-size 250
 
 # Synthetic Data Demo (kein CSV benötigt)
-python scripts/risk/run_var_backtest_suite_snapshot.py \
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \
   --use-synthetic \
   --n-observations 500 \
   --confidence 0.99 \
@@ -303,16 +303,16 @@ Inhalt:
 
 ```bash
 # Phase 9A: Duration Diagnostic
-pytest tests/risk_layer/var_backtest/test_duration_diagnostics.py -v
+python3 -m pytest tests/risk_layer/var_backtest/test_duration_diagnostics.py -v
 
 # Phase 9B: Rolling Evaluation
-pytest tests/risk_layer/var_backtest/test_rolling_evaluation.py -v
+python3 -m pytest tests/risk_layer/var_backtest/test_rolling_evaluation.py -v
 
 # Phase 10: Snapshot Runner
-pytest tests/scripts/test_run_var_backtest_suite_snapshot.py -v
+python3 -m pytest tests/scripts/test_run_var_backtest_suite_snapshot.py -v
 
 # Alle VaR Backtest Tests
-pytest tests/risk_layer/var_backtest/ -v
+python3 -m pytest tests/risk_layer/var_backtest/ -v
 ```
 
 #### Fast Check
@@ -324,9 +324,9 @@ ruff check src/risk_layer/var_backtest/rolling_evaluation.py
 ruff check scripts/risk/run_var_backtest_suite_snapshot.py
 
 # Targeted Tests (schnell)
-pytest -q tests/risk_layer/var_backtest/test_duration_diagnostics.py
-pytest -q tests/risk_layer/var_backtest/test_rolling_evaluation.py
-pytest -q tests/scripts/test_run_var_backtest_suite_snapshot.py
+python3 -m pytest -q tests/risk_layer/var_backtest/test_duration_diagnostics.py
+python3 -m pytest -q tests/risk_layer/var_backtest/test_rolling_evaluation.py
+python3 -m pytest -q tests/scripts/test_run_var_backtest_suite_snapshot.py
 ```
 
 ---
@@ -550,7 +550,7 @@ Wann Snapshot Runner verwenden?
 **Fragen?**
 1. Check Tests: `tests&#47;risk_layer&#47;var_backtest&#47;` – Konkrete Usage-Beispiele
 2. Check Core Docs: `docs&#47;risk&#47;VAR_VALIDATION_OPERATOR_GUIDE.md`
-3. Run Tests: `pytest tests&#47;risk_layer&#47;var_backtest&#47; -v`
+3. Run Tests: `python3 -m pytest tests&#47;risk_layer&#47;var_backtest&#47; -v`
 
 ---
 

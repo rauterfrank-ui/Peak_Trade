@@ -6,6 +6,8 @@ This document describes the development tools used in Peak Trade.
 
 We use [uv](https://docs.astral.sh/uv/) as our Python package manager. It's fast, reliable, and handles virtual environments automatically.
 
+After syncing dependencies, activate the virtual environment and run tools directly.
+
 ### Installation
 
 ```bash
@@ -25,20 +27,20 @@ uv sync
 # Install with dev dependencies
 uv sync --dev
 
+# Activate the virtual environment (macOS/Linux)
+source .venv/bin/activate
+
 # Add a new dependency
 uv add <package>
 
 # Add a dev dependency
 uv add --dev <package>
 
-# Run a command in the virtual environment
-uv run <command>
-
 # Run tests
-uv run pytest tests/
+python3 -m pytest tests/
 
 # Run a script
-uv run python scripts/my_script.py
+python3 scripts/my_script.py
 ```
 
 ## Linting: ruff
@@ -60,16 +62,16 @@ Ruff is configured in `pyproject.toml`. We use a **conservative gate** to avoid 
 
 ```bash
 # Check for lint errors
-uv run ruff check src tests scripts
+ruff check src tests scripts
 
 # Check with auto-fix
-uv run ruff check src tests scripts --fix
+ruff check src tests scripts --fix
 
 # Format code
-uv run ruff format src tests scripts
+ruff format src tests scripts
 
 # Check formatting without changing files
-uv run ruff format --check src tests scripts
+ruff format --check src tests scripts
 ```
 
 ## Pre-commit Hooks
@@ -80,13 +82,13 @@ We use [pre-commit](https://pre-commit.com/) to run checks before each commit.
 
 ```bash
 # Install pre-commit hooks (one-time setup)
-uv run pre-commit install
+pre-commit install
 
 # Run all hooks manually
-uv run pre-commit run --all-files
+pre-commit run --all-files
 
 # Run a specific hook
-uv run pre-commit run ruff --all-files
+pre-commit run ruff --all-files
 ```
 
 ### Configured Hooks
@@ -117,8 +119,11 @@ cd peak_trade
 # 2. Install dependencies
 uv sync --dev
 
+# 3. Activate virtual environment
+source .venv/bin/activate
+
 # 3. Set up pre-commit hooks
-uv run pre-commit install
+pre-commit install
 
 # 4. You're ready! Pre-commit will run automatically on git commit
 ```
@@ -137,7 +142,7 @@ export PATH="$HOME/.local/bin:$PATH"
 
 Run hooks manually to see details:
 ```bash
-uv run pre-commit run --all-files -v
+pre-commit run --all-files -v
 ```
 
 ### Ruff finds many errors in existing code

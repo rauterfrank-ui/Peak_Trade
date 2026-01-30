@@ -31,7 +31,7 @@ Phase 43 baut auf zwei vorherigen Phasen auf:
 
 2. **Phase 41 – Strategy-Sweeps & Research-Playground**
    - Sweep-Definition und -Ausführung
-   - Ergebnis-Speicherung unter `reports/experiments/`
+   - Ergebnis-Speicherung unter `reports&#47;experiments&#47;`
    - Siehe `docs/PHASE_41_STRATEGY_SWEEPS_AND_RESEARCH_PLAYGROUND.md` für Details zur Sweep-Definition und -Ausführung
 
 Phase 43 nutzt die bestehenden Reporting- und Plot-Funktionen aus Phase 30 und erweitert sie um **sweep-spezifische Visualisierungen**.
@@ -92,7 +92,7 @@ Phase 43 nutzt die bestehenden Reporting- und Plot-Funktionen aus Phase 30 und e
 
 Ausführen:
 ```bash
-pytest tests/test_sweep_visualization.py -v
+python3 -m pytest tests/test_sweep_visualization.py -v
 ```
 
 ---
@@ -103,8 +103,8 @@ pytest tests/test_sweep_visualization.py -v
 
 Der Workflow besteht aus zwei Schritten:
 
-1. **Sweep ausführen** (Phase 41) → Ergebnisse unter `reports/experiments/`
-2. **Report mit Plots generieren** (Phase 43) → Reports + Plots unter `reports/sweeps/`
+1. **Sweep ausführen** (Phase 41) → Ergebnisse unter `reports&#47;experiments&#47;`
+2. **Report mit Plots generieren** (Phase 43) → Reports + Plots unter `reports&#47;sweeps&#47;`
 
 ### Schritt-für-Schritt Anleitung
 
@@ -121,13 +121,13 @@ source .venv/bin/activate
 
 ```bash
 # Beispiel: rsi_reversion_basic mit max. 5 Runs (für schnellen Test)
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
   --sweep-name rsi_reversion_basic \
   --config config/config.toml \
   --max-runs 5
 
 # Vollständiger Sweep (alle Kombinationen)
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
   --sweep-name rsi_reversion_basic \
   --config config/config.toml
 ```
@@ -135,21 +135,21 @@ python scripts/run_strategy_sweep.py \
 **Erwartete Ausgabe:**
 - Sweep läuft durch ohne Exceptions
 - Erfolgreiche Runs werden angezeigt (z.B. "27 erfolgreich, 0 fehlgeschlagen")
-- Ergebnisse werden gespeichert unter `reports/experiments/`
+- Ergebnisse werden gespeichert unter `reports&#47;experiments&#47;`
 - Dateinamen enthalten den Sweep-Namen: `{sweep_name}_{experiment_id}_{timestamp}.csv`
 
 #### Schritt 3: Report mit Visualisierungen generieren
 
 ```bash
 # Markdown + HTML Report mit Plots (inkl. Drawdown-Heatmaps)
-python scripts/generate_strategy_sweep_report.py \
+python3 scripts/generate_strategy_sweep_report.py \
   --sweep-name rsi_reversion_basic \
   --format both \
   --with-plots \
   --plot-metric metric_total_return
 
 # Nur Markdown mit Plots
-python scripts/generate_strategy_sweep_report.py \
+python3 scripts/generate_strategy_sweep_report.py \
   --sweep-name rsi_reversion_basic \
   --format markdown \
   --with-plots
@@ -160,16 +160,16 @@ python scripts/generate_strategy_sweep_report.py \
 **Erwartete Ausgabe:**
 - Kein Fehler "Keine Ergebnisse gefunden"
 - Report-Dateien werden erzeugt:
-  - `reports/sweeps/{sweep_name}_report_{timestamp}.md`
-  - `reports/sweeps/{sweep_name}_report_{timestamp}.html` (falls `--format both`)
-- **Plots werden erzeugt** unter `reports/sweeps/images/`
+  - `reports&#47;sweeps&#47;{sweep_name}_report_{timestamp}.md`
+  - `reports&#47;sweeps&#47;{sweep_name}_report_{timestamp}.html` (falls `--format both`)
+- **Plots werden erzeugt** unter `reports&#47;sweeps&#47;images&#47;`
 - Report enthält Markdown-Bildlinks zu den Plots
 
 #### Schritt 4: Ergebnisse finden
 
-- **Sweep-Ergebnisse**: `reports/experiments/{sweep_name}_*.csv` (oder `.parquet`)
-- **Reports**: `reports/sweeps/{sweep_name}_report_*.md` (oder `.html`)
-- **Visualisierungen**: `reports/sweeps/images/`
+- **Sweep-Ergebnisse**: `reports&#47;experiments&#47;{sweep_name}_*.csv` (oder `.parquet`)
+- **Reports**: `reports&#47;sweeps&#47;{sweep_name}_report_*.md` (oder `.html`)
+- **Visualisierungen**: `reports&#47;sweeps&#47;images&#47;`
 
 ---
 
@@ -266,7 +266,7 @@ HTML-Reports enthalten die Plots als `<img>`-Tags mit relativen Pfaden.
 Alternativ zur direkten Verwendung von `generate_strategy_sweep_report.py` kann die Report-Generierung über die Unified Research-CLI gestartet werden:
 
 ```bash
-python scripts/research_cli.py report \
+python3 scripts/research_cli.py report \
   --sweep-name rsi_reversion_basic \
   --format both \
   --with-plots
@@ -275,7 +275,7 @@ python scripts/research_cli.py report \
 ### generate_strategy_sweep_report.py
 
 ```bash
-python scripts/generate_strategy_sweep_report.py \
+python3 scripts/generate_strategy_sweep_report.py \
   --sweep-name rsi_reversion_basic \
   --format both \                    # markdown, html, oder both
   --with-plots \                     # Aktiviert Visualisierungen
@@ -291,7 +291,7 @@ python scripts/generate_strategy_sweep_report.py \
 **Vollständige Optionen:**
 - `--sweep-name` / `-s`: Name des Sweeps (oder `--input` / `-i` für direkten Dateipfad)
 - `--format` / `-f`: Output-Format (`markdown`, `html`, `both`)
-- `--output-dir` / `-o`: Ausgabe-Verzeichnis (default: `reports/sweeps`)
+- `--output-dir` / `-o`: Ausgabe-Verzeichnis (default: `reports&#47;sweeps`)
 - `--top-n`: Anzahl Top-Runs im Report (default: 20)
 - `--heatmap-params`: Zwei Parameter für Heatmap (optional)
 
@@ -428,38 +428,38 @@ Fehler: Keine Ergebnisse gefunden für Sweep 'rsi_reversion_basic'
 
 **Lösung:**
 1. Prüfe, ob Sweep ausgeführt wurde: `ls reports/experiments/*rsi_reversion*`
-2. Führe Sweep aus: `python scripts/run_strategy_sweep.py --sweep-name rsi_reversion_basic`
+2. Führe Sweep aus: `python3 scripts/run_strategy_sweep.py --sweep-name rsi_reversion_basic`
 3. Prüfe Dateinamen: Der Sweep-Name muss im Dateinamen enthalten sein
 
 ### Problem: Plots werden nicht erzeugt
 
 **Symptom:**
-- Report wird erstellt, aber keine Plots unter `reports/sweeps/images/`
+- Report wird erstellt, aber keine Plots unter `reports&#47;sweeps&#47;images&#47;`
 
 **Lösung:**
 1. Prüfe, ob `--with-plots` Flag gesetzt wurde
 2. Prüfe Logs auf Warnungen (z.B. "Keine Parameter-Spalten gefunden")
-3. Prüfe, ob Matplotlib verfügbar ist: `python -c "import matplotlib; print('OK')"`
+3. Prüfe, ob Matplotlib verfügbar ist: `python3 -c "import matplotlib; print('OK')"`
 4. Prüfe, ob DataFrame Parameter-Spalten enthält: `df.columns[df.columns.str.startswith('param_')]`
 
 ### Problem: Bilder nicht im Report eingebunden
 
 **Symptom:**
-- Plots existieren, aber Markdown zeigt `![...](images/...)` ohne Bild
+- Plots existieren, aber Markdown zeigt `![...](images&#47;...)` ohne Bild
 
 **Lösung:**
 1. Prüfe relative Pfade: Bilder sollten relativ zum Report-Verzeichnis sein
-2. Prüfe, ob `images/` Verzeichnis existiert: `ls reports/sweeps/images/`
+2. Prüfe, ob `images&#47;` Verzeichnis existiert: `ls reports/sweeps/images&#47;`
 3. Prüfe Report-Inhalt: `grep -A 2 "Visualizations" reports/sweeps/*.md`
 
 ### Problem: Reports/Plots werden in Git angezeigt
 
 **Symptom:**
-- `git status` zeigt `reports/sweeps/` oder `reports/experiments/`
+- `git status` zeigt `reports&#47;sweeps&#47;` oder `reports&#47;experiments&#47;`
 
 **Lösung:**
 - Reports und Plots sind **Artefakte** und sollten nicht ins Repo
-- Prüfe `.gitignore`: Sollte `reports/sweeps/` und `reports/experiments/` enthalten
+- Prüfe `.gitignore`: Sollte `reports&#47;sweeps&#47;` und `reports&#47;experiments&#47;` enthalten
 - Falls nötig, füge hinzu:
   ```gitignore
   # Reports & Visualizations (generierte Artefakte)

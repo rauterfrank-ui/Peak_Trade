@@ -232,7 +232,7 @@ Backtest-Ready DataFrame
 Zeigt alle Features in Aktion:
 
 ```bash
-python scripts/demo_complete_pipeline.py
+python3 scripts/demo_complete_pipeline.py
 ```
 
 **Demos:**
@@ -247,7 +247,7 @@ python scripts/demo_complete_pipeline.py
 Fokus auf Daten-Beschaffung:
 
 ```bash
-python scripts/demo_kraken_simple.py
+python3 scripts/demo_kraken_simple.py
 ```
 
 **Zeigt:**
@@ -429,7 +429,7 @@ def fetch_kraken_data(
 
 **Lösung:**
 1. Prüfe ob `config.toml` im Projekt-Root liegt
-2. Setze Environment Variable: `export PEAK_TRADE_CONFIG=/path/to/config.toml`
+2. Setze Environment Variable: `export PEAK_TRADE_CONFIG=&#47;path&#47;to&#47;config.toml`
 
 ### Position Sizing gibt 0 zurück
 

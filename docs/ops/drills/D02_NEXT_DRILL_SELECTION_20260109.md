@@ -246,7 +246,7 @@ gh pr checks <PR_NUMBER>  # Run 3
 
 # 5. Verify locally
 scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
-uv run ruff check docs/
+ruff check docs/
 
 # 6. Commit + Push + PR
 git add docs/ops/drills/runs/ docs/ops/runbooks/
@@ -358,7 +358,7 @@ D02 Meta-Drill completed: Next drill (D03A) selected via evidence-based scoring.
 **Local Verification:**
 ```bash
 scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
-uv run ruff check docs/
+ruff check docs/
 ```
 
 **Evidence Quality:** ✅ HIGH

@@ -134,7 +134,7 @@ You can create your config in `config&#47;my_custom.toml`.
 **Lokale Verification (vor Push):**
 ```bash
 # Wenn Gate-Skript verfügbar:
-python scripts/ops/verify_docs_reference_targets.sh --changed
+scripts/ops/verify_docs_reference_targets.sh --changed
 
 # Alternativ: Manuelle Suche nach uncodierten Pfaden
 rg "`[^`]*/[^`]*`" docs/ -S | grep -v "https://" | grep -v "&#47;"

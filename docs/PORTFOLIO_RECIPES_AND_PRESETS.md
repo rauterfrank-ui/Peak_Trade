@@ -74,7 +74,7 @@ tags = ["rsi", "reversion", "balanced"]
 ### 1. Standard-Run mit Preset
 
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset rsi_reversion_balanced
 ```
@@ -87,7 +87,7 @@ python scripts/research_cli.py portfolio \
 ### 2. Preset + Override: Mehr Monte-Carlo-Runs
 
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset rsi_reversion_balanced \
   --mc-num-runs 2000
@@ -100,10 +100,10 @@ python scripts/research_cli.py portfolio \
 ### 3. Preset + Override: Anderes Output-Format
 
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset rsi_reversion_balanced \
-  --format markdown
+  --format md
 ```
 
 **Was passiert:**
@@ -113,7 +113,7 @@ python scripts/research_cli.py portfolio \
 ### 4. Preset + Override: Andere Gewichte
 
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset rsi_reversion_balanced \
   --top-n 5 \
@@ -128,9 +128,9 @@ python scripts/research_cli.py portfolio \
 ### 5. Custom Recipes-Datei
 
 ```bash
-python scripts&#47;research_cli.py portfolio \
-  --config config&#47;config.toml \
-  --recipes-config config&#47;custom_recipes.toml \
+python3 scripts/research_cli.py portfolio \
+  --config config/config.toml \
+  --recipes-config config/custom_recipes.toml \
   --portfolio-preset my_custom_preset
 ```
 
@@ -255,7 +255,7 @@ format = "both"
 
 ```bash
 # Teste ob das Rezept geladen werden kann
-python -c "
+python3 -c "
 from pathlib import Path
 from src.experiments.portfolio_recipes import get_portfolio_recipe
 recipe = get_portfolio_recipe(Path('config/portfolio_recipes.toml'), 'my_custom_preset')
@@ -266,7 +266,7 @@ print(f'✅ Rezept geladen: {recipe.portfolio_name}')
 4. **Verwende das Rezept:**
 
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset my_custom_preset
 ```
@@ -330,7 +330,7 @@ except ValueError as e:
 ### Rezept nicht gefunden
 
 ```bash
-$ python scripts/research_cli.py portfolio \
+$ python3 scripts/research_cli.py portfolio \
     --config config/config.toml \
     --portfolio-preset nonexistent
 
@@ -341,7 +341,7 @@ ERROR: Portfolio recipe 'nonexistent' not found in config/portfolio_recipes.toml
 ### Validierungsfehler
 
 ```bash
-$ python scripts/research_cli.py portfolio \
+$ python3 scripts/research_cli.py portfolio \
     --config config/config.toml \
     --portfolio-preset invalid_recipe
 
@@ -351,7 +351,7 @@ ERROR: weights length (2) must match top_n (3) for recipe 'invalid_recipe'
 ### Datei nicht gefunden
 
 ```bash
-$ python scripts/research_cli.py portfolio \
+$ python3 scripts/research_cli.py portfolio \
     --config config/config.toml \
     --recipes-config missing.toml \
     --portfolio-preset test
@@ -404,13 +404,13 @@ Die drei Risk-Profile haben folgende Bedeutung:
 
 ```bash
 # 1) Run Portfolio-Research mit Preset
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --format both
 
 # 2) Portfolio-Robustness explizit
-python scripts/run_portfolio_robustness.py \
+python3 scripts/run_portfolio_robustness.py \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --format both
@@ -419,7 +419,7 @@ python scripts/run_portfolio_robustness.py \
 #### 2. Research-Portfolio – aggressive Multi-Style
 
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset multi_style_aggressive \
   --format both
@@ -428,7 +428,7 @@ python scripts/research_cli.py portfolio \
 #### 3. Conservative RSI-Reversion
 
 ```bash
-python scripts/run_portfolio_robustness.py \
+python3 scripts/run_portfolio_robustness.py \
   --config config/config.toml \
   --portfolio-preset rsi_reversion_conservative \
   --format both

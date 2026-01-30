@@ -46,7 +46,7 @@ source .venv/bin/activate
 ./scripts/ops/kill_switch_ctl.sh trigger "GRUND FÜR NOTABSCHALTUNG"
 
 # Alternative: Direkt via Python CLI
-python -m src.risk_layer.kill_switch.cli trigger \
+python3 -m src.risk_layer.kill_switch.cli trigger \
   --reason "Grund hier eintragen" \
   --confirm
 ```
@@ -72,7 +72,7 @@ python -m src.risk_layer.kill_switch.cli trigger \
 ./scripts/ops/kill_switch_ctl.sh status
 
 # Via Python CLI
-python -m src.risk_layer.kill_switch.cli status
+python3 -m src.risk_layer.kill_switch.cli status
 ```
 
 **Ausgabe-Interpretation:**
@@ -198,7 +198,7 @@ tail -f logs/kill_switch.log
 ./scripts/ops/kill_switch_ctl.sh audit --since 7d
 
 # Spezifisches Datum
-python -m src.risk_layer.kill_switch.cli audit \
+python3 -m src.risk_layer.kill_switch.cli audit \
   --since "2025-12-20" \
   --limit 100
 ```
@@ -216,7 +216,7 @@ Timestamp            Previous     New State    Triggered By    Reason
 
 ### Audit-Dateien
 
-**Speicherort:** `data/kill_switch/audit/`
+**Speicherort:** `data&#47;kill_switch&#47;audit&#47;`
 
 **Format:** JSONL (JSON Lines) - eine Zeile pro Event
 
@@ -395,7 +395,7 @@ tail -f logs/data_pipeline.log
 **Prüfen:**
 ```bash
 # Aktuellen Status anzeigen
-python -c "
+python3 -c "
 from src.risk_layer.kill_switch.recovery import RecoveryManager
 # ... check position_limit_factor
 "

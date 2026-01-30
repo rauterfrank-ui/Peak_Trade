@@ -21,7 +21,7 @@
 
 ## Verification
 - CI: audit ✅, lint ✅, tests ✅, strategy-smoke ✅
-- Lokal: (falls vorhanden) `uv run ruff check .` und `uv run pytest -q` grün
+- Lokal: (falls vorhanden) `ruff check .` und `python3 -m pytest -q` grün
 
 ## Risk
 🟢 **Low** — ausschließlich Ops-Skripte/Tooling + Tests/Doku, keine Trading-Core-Änderungen.

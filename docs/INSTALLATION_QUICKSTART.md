@@ -163,7 +163,7 @@ See [INSTALLATION_UND_ROADMAP Teil 8 (Governance-Gate Checklist)](../INSTALLATIO
 Run this after installation:
 
 ```bash
-python scripts/live_ops.py health --config config.toml
+python3 scripts/live_ops.py health --config config/config.toml
 ```
 
 Expected output: Overall Status: OK
@@ -175,7 +175,7 @@ Expected output: Overall Status: OK
 Run this to verify core functionality:
 
 ```bash
-pytest -m smoke -q
+python3 -m pytest -m smoke -q
 ```
 
 Expected output: 28 passed in < 1s
@@ -187,7 +187,7 @@ Expected output: 28 passed in < 1s
 Run this to verify backtest engine:
 
 ```bash
-python scripts/run_backtest.py --strategy ma_crossover --symbol BTC/USDT --bars 100 -v
+python3 scripts/run_backtest.py --strategy ma_crossover --symbol BTC/USDT --bars 100 -v
 ```
 
 Expected output: Stats displayed (Return, Sharpe, Max Drawdown, Win Rate)
@@ -201,25 +201,25 @@ Expected output: Stats displayed (Return, Sharpe, Max Drawdown, Win Rate)
 **Health & Monitoring:**
 
 ```bash
-python scripts/live_ops.py health --config config.toml
-python scripts/live_ops.py portfolio --config config.toml
-python scripts/live_monitor_cli.py overview --only-active
+python3 scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py portfolio --config config/config.toml
+python3 scripts/live_monitor_cli.py overview --only-active
 ```
 
 **Testing:**
 
 ```bash
-pytest -m smoke -q
-pytest -q
-pytest --cov=src --cov-report=html
+python3 -m pytest -m smoke -q
+python3 -m pytest -q
+python3 -m pytest --cov=src --cov-report=html
 ```
 
 **Backtesting:**
 
 ```bash
-python scripts/run_backtest.py --strategy ma_crossover --symbol BTC/EUR
-python scripts/run_portfolio_backtest.py
-python scripts/research_cli.py portfolio --portfolio-preset rsi_reversion_conservative --format both
+python3 scripts/run_backtest.py --strategy ma_crossover --symbol BTC/EUR
+python3 scripts/run_portfolio_backtest.py
+python3 scripts/research_cli.py portfolio --portfolio-preset rsi_reversion_conservative --format both
 ```
 
 ---

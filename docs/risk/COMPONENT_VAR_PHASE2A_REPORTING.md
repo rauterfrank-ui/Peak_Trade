@@ -52,7 +52,7 @@ ops risk component-var --returns path/to/returns.csv
 
 ```bash
 # Full control
-python scripts/run_component_var_report.py \
+python3 scripts/run_component_var_report.py \
   --returns data/returns.csv \
   --weights BTC=0.6,ETH=0.25,SOL=0.15 \
   --alpha 0.95 \
@@ -205,7 +205,7 @@ ops risk component-var \
 
 ```bash
 # Real returns, 10-day horizon, 1-year lookback
-python scripts/run_component_var_report.py \
+python3 scripts/run_component_var_report.py \
   --returns data/crypto_returns_2024.csv \
   --weights BTC=0.5,ETH=0.3,SOL=0.15,AVAX=0.05 \
   --alpha 0.95 \
@@ -232,7 +232,7 @@ cron: 0 9 * * * cd /path/to/Peak_Trade && ops risk component-var --returns lates
 # In GitHub Actions / CI pipeline
 - name: Generate Component VaR Report
   run: |
-    python scripts/run_component_var_report.py --use-fixtures
+    python3 scripts/run_component_var_report.py --use-fixtures
     # Fail if sanity checks fail
 ```
 

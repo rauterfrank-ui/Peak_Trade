@@ -169,35 +169,39 @@ docs/PEAK_TRADE_RESEARCH_GOLDEN_PATHS.md
 
 ```bash
 # Phase 80: Tiered Presets
-python scripts/run_portfolio_robustness.py \
+python3 scripts/run_portfolio_robustness.py \
+  --config config/config.toml \
+  --recipes-config config/portfolio_presets/core_balanced.toml \
   --portfolio-preset core_balanced \
-  --format both
+  --format both \
+  --use-dummy-data
 
 # Phase 81: Golden Path
-python scripts/run_research_golden_path.py \
-  --path single-strategy-validation \
-  --strategy rsi_reversion
+python3 scripts/run_research_golden_path.py \
+  optimize \
+  --sweep-name rsi_reversion_tuning_v2 \
+  --top-n 5
 
 # Phase 82: Scenario Testing
-python scripts/research_cli.py pipeline \
+python3 scripts/research_cli.py pipeline \
   --sweep-name rsi_reversion_basic \
   --run-stress-tests \
-  --stress-scenarios flash_crash
+  --stress-scenarios single_crash_bar vol_spike drawdown_extension
 
 # Phase 83: Live-Gate Check
-python -c "
+python3 -c "
 from src.live.live_gates import assert_portfolio_eligible
 assert_portfolio_eligible('core_balanced')
 print('Portfolio is live-eligible')
 "
 
 # Phase 84: Operator Dashboard
-python scripts/operator_dashboard.py
-python scripts/operator_dashboard.py --format json
+python3 scripts/operator_dashboard.py
+python3 scripts/operator_dashboard.py --format json
 
 # Phase 85: Live-Beta Drill
-python scripts/run_live_beta_drill.py
-python scripts/run_live_beta_drill.py --format json
+python3 scripts/run_live_beta_drill.py
+python3 scripts/run_live_beta_drill.py --format json
 ```
 
 ---

@@ -49,7 +49,7 @@ ls -t reports/drift/*.md | head -1 | xargs cat
 ### Check Session Registry
 ```bash
 # List active sessions
-python -c "from src.live.ops import SessionRegistry; r = SessionRegistry(); print(r.get_summary())"
+python3 -c "from src.live.ops import SessionRegistry; r = SessionRegistry(); print(r.get_summary())"
 ```
 
 ---

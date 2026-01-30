@@ -103,7 +103,7 @@ repos:
     hooks:
       - id: policy-check
         name: Policy Pack Check
-        entry: python scripts/governance/check_policy_pack.py
+        entry: python3 scripts/governance/check_policy_pack.py
         language: python
         pass_filenames: false
 ```
@@ -153,7 +153,7 @@ jobs:
           uv sync --extra dev
 
       - name: Policy Pack Validation
-        run: python scripts/governance/validate_policy_pack.py --pack ci
+        run: python3 scripts/governance/validate_policy_pack.py --pack ci
 
       - name: Secrets Scan
         run: |
@@ -174,10 +174,10 @@ jobs:
           uv sync --extra dev
 
       - name: Run smoke tests
-        run: uv run pytest -m smoke -v
+        run: python3 -m pytest -m smoke -v
 
       - name: Run lint
-        run: uv run ruff check src/
+        run: ruff check src/
 
   security:
     runs-on: ubuntu-latest
@@ -318,10 +318,10 @@ print(f"Enabled Rules: {pack.enabled_rules}")
 
 ```bash
 # Run smoke tests (should work)
-uv run pytest -m smoke -v
+python3 -m pytest -m smoke -v
 
 # Run all tests (may take time)
-uv run pytest -v
+python3 -m pytest -v
 ```
 
 ### Step 4: Check Secrets Scanning

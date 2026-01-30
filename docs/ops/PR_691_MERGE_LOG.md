@@ -68,12 +68,12 @@ PR #691 wurde erfolgreich nach `main` gemerged (commit `55c961c4`, 2026-01-13 14
 **Initial Failure (7 missing targets):**
 ```
 - docs/ops/runbooks/RUNBOOK_...:30: config/my_custom.toml
-- docs/ops/runbooks/RUNBOOK_...:262: scripts/run_walkforward.py
-- docs/ops/runbooks/RUNBOOK_...:290: scripts/example.py
-- docs/ops/runbooks/RUNBOOK_...:302: scripts/example.py
+- docs/ops/runbooks/RUNBOOK_...:262: scripts&#47;run_walkforward.py
+- docs/ops/runbooks/RUNBOOK_...:290: scripts&#47;example.py
+- docs/ops/runbooks/RUNBOOK_...:302: scripts&#47;example.py
 - docs/ops/runbooks/RUNBOOK_...:349: config/my_custom.toml
 - docs/ops/workflows/WORKFLOW_...:25: config/my_custom.toml
-- docs/ops/workflows/WORKFLOW_...:25: scripts/my_example.py
+- docs/ops/workflows/WORKFLOW_...:25: scripts&#47;my_example.py
 ```
 
 **Root Cause:** Policy-Dokumente selbst enthielten uncodierte illustrative Pfade als Beispiele!

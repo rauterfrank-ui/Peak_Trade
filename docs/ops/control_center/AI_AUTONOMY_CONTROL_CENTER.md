@@ -92,10 +92,10 @@ graph LR
 **Evidence Validation:**
 ```bash
 # Validate Evidence Index structure
-python scripts/ops/validate_evidence_index.py
+python3 scripts/ops/validate_evidence_index.py
 
 # Check Evidence Pack Schema
-python -m src.ai_orchestration.evidence_pack
+python3 -m src.ai_orchestration.evidence_pack
 ```
 
 **CI Health Checks:**
@@ -119,7 +119,7 @@ open http://127.0.0.1:8000/ops/ci-health
 ./scripts/ops/pt_docs_gates_snapshot.sh --all
 
 # Individual gates (if needed)
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 bash scripts/ops/verify_docs_reference_targets.sh --changed
 python3 scripts/ci/check_docs_diff_guard_section.py
 ```
@@ -132,20 +132,20 @@ python3 scripts/ci/check_docs_diff_guard_section.py
 **Layer Runner Commands (Offline/Replay - CI-Safe):**
 ```bash
 # L1 DeepResearch (Phase 4A)
-python scripts/aiops/run_l1_deepresearch.py \
+python3 scripts/aiops/run_l1_deepresearch.py \
     --question "Your research question here" \
     --mode replay \
     --fixture l1_deepresearch_sample \
     --out evidence_packs/L1_research
 
 # L2 Market Outlook (Phase 3)
-python scripts/aiops/run_l2_market_outlook.py \
+python3 scripts/aiops/run_l2_market_outlook.py \
     --mode replay \
     --fixture l2_market_outlook_sample \
     --out evidence_packs/L2_outlook
 
 # L4 Governance Critic (Phase 4B)
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
     --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
     --mode replay \
     --fixture l4_critic_sample \

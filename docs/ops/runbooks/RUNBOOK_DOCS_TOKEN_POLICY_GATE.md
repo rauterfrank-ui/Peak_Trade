@@ -20,20 +20,20 @@ scripts/example.py
 
 appear in inline-code spans, the `docs-reference-targets-gate` interprets them as missing files and fails CI.
 
-**Solution:** Encode the forward slash (``&#47;``) as `&#47;` in illustrative paths, while leaving real repo targets, URLs, commands, and branch names unchanged.
+**Solution:** Encode the forward slash (`/`) as `&#47;` in illustrative paths, while leaving real repo targets, URLs, commands, and branch names unchanged.
 
 ---
 
 ## When This Gate Triggers
 
-The gate scans changed Markdown files (`.md`) for inline-code tokens (single backticks: `` `token` ``) containing ``&#47;`` and enforces:
+The gate scans changed Markdown files (`.md`) for inline-code tokens (single backticks: `` `token` ``) containing `/` and enforces:
 
 1. **ILLUSTRATIVE** paths (e.g., `scripts&#47;fake.py`, `config&#47;example.toml`) → **MUST** use `&#47;` encoding
 2. **REAL_REPO_TARGET** (existing files) → **NO** encoding required
-3. **BRANCH_NAME** patterns (e.g., ``feature&#47;my-feature``, `docs&#47;update`) → **NO** encoding required
+3. **BRANCH_NAME** patterns (e.g., `feature/my-feature`, `feat/my-feature`) → **NO** encoding required
 4. **URL** (http/https) → **NO** encoding required
 5. **COMMAND** (prefixed with `python `, `git `, etc.) → **NO** encoding required
-6. **LOCAL_PATH** (starts with ``.&#47;``, ``..&#47;``, ``~&#47;``, or ``&#47;``) → **NO** encoding required
+6. **LOCAL_PATH** (starts with `./`, `../`, `~/`, or `/`) → **NO** encoding required
 7. **ALLOWLISTED** tokens → **NO** encoding required
 
 ---
@@ -44,13 +44,12 @@ The gate scans changed Markdown files (`.md`) for inline-code tokens (single bac
 |-------|----------------|-------------------|--------|
 | `scripts&#47;example.py` | ENCODED | ✅ Already compliant | Forward slash already encoded |
 | (See fenced block below) | ILLUSTRATIVE | ❌ **VIOLATION** | Looks like path but doesn't exist |
-| `scripts&#47;real_script.py` | REAL_REPO_TARGET (if exists) | ✅ Compliant | File exists in repo |
-| ``feature&#47;my-feature`` | BRANCH_NAME | ✅ Compliant | Branch name pattern (known prefix) |
-| `docs&#47;update` | BRANCH_NAME | ✅ Compliant | Branch name pattern (known prefix) |
-| `python scripts&#47;run.py` | COMMAND | ✅ Compliant | Command prefix detected |
-| ``https:&#47;&#47;example.com&#47;path`` | URL | ✅ Compliant | URL detected |
-| `.&#47;scripts&#47;local.py` | LOCAL_PATH | ✅ Compliant | Local path prefix |
-| ``some&#47;path`` | ILLUSTRATIVE (if allowlisted) | ✅ Compliant | In allowlist |
+| `scripts/ops/validate_docs_token_policy.py` | REAL_REPO_TARGET | ✅ Compliant | File exists in repo |
+| `feature/my-feature` | BRANCH_NAME | ✅ Compliant | Branch name pattern (known prefix) |
+| `bash python3 scripts/ops/validate_docs_token_policy.py --help` | COMMAND | ✅ Compliant | Command prefix detected |
+| `https://example.com/path` | URL | ✅ Compliant | URL detected |
+| `/usr/local/bin` | LOCAL_PATH | ✅ Compliant | Local path prefix |
+| `some/path` | ALLOWLISTED | ✅ Compliant | In allowlist |
 
 **Example of ILLUSTRATIVE violation (shown in fenced block to avoid triggering gate):**
 
@@ -68,16 +67,12 @@ config/example.toml
 When the gate fails, you'll see output like:
 
 ```
-❌ Found 2 violation(s) in 1 file(s):
+❌ Found 1 violation(s) in 1 file(s):
 
 📄 docs/GUIDE.md
-  Line 15: ``scripts&#47;example.py`` (ILLUSTRATIVE)
+  Line 15: `scripts/example.py` (ILLUSTRATIVE)
     → Illustrative path token must use &#47; encoding
-    💡 Replace ``scripts&#47;example.py`` with `scripts&#47;example.py`
-
-  Line 23: ``feature&#47;my-branch`` (BRANCH_NAME)
-    → Illustrative path token must use &#47; encoding
-    💡 Replace ``feature&#47;my-branch`` with `feature&#47;my-branch`
+    💡 Replace `scripts/example.py` with `scripts&#47;example.py`
 ```
 
 ### Step 2: Apply the Fix
@@ -87,11 +82,8 @@ When the gate fails, you'll see output like:
 Replace the forward slash with `&#47;` inside the inline-code span:
 
 ```diff
-- Here's an example: ``scripts&#47;example.py``.
+- Here's an example: `scripts/example.py`.
 + Here's an example: `scripts&#47;example.py`.
-
-- Checkout branch: ``feature&#47;my-branch``.
-+ Checkout branch: `feature&#47;my-branch`.
 ```
 
 **Option B: Automated Fix (Python Script)**
@@ -111,7 +103,7 @@ python3 scripts/ops/autofix_docs_token_policy_inline_code_v2.py --dry-run <file1
 python3 scripts/ops/autofix_docs_token_policy_inline_code_v2.py --write <file1.md> <file2.md>
 
 # Verify gates pass
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 bash scripts/ops/verify_docs_reference_targets.sh --changed
 ```
 
@@ -119,7 +111,7 @@ bash scripts/ops/verify_docs_reference_targets.sh --changed
 
 If a token is a generic placeholder (e.g., ``some&#47;path``) used across many docs:
 
-1. Add it to ``scripts&#47;ops&#47;docs_token_policy_allowlist.txt``:
+1. Add it to `scripts/ops/docs_token_policy_allowlist.txt`:
 
 ```txt
 # Generic placeholders
@@ -137,25 +129,25 @@ path/to/file
 
 1. **Real repo file paths** that exist:
    ```markdown
-   ✅ ``scripts&#47;run_backtest.py`` (if file exists)
+   ✅ `scripts/run_sweep.py` (exists in this repo)
    ```
 
 2. **URLs**:
    ```markdown
-   ✅ ``https:&#47;&#47;github.com&#47;user&#47;repo&#47;blob&#47;main&#47;file.py``
+   ✅ `https://github.com/user/repo/blob/main/file.py`
    ```
 
 3. **Commands** with path arguments:
    ```markdown
-   ✅ ``python scripts&#47;run.py``
-   ✅ ``git diff origin&#47;main``
+   ✅ `bash python3 scripts/run_sweep.py --help`
+   ✅ `git diff origin/main`
    ```
 
 4. **Local path patterns**:
    ```markdown
-   ✅ ``.&#47;scripts&#47;local.py``
-   ✅ ``..&#47;config&#47;file.toml``
-   ✅ ``~&#47;Documents&#47;file.txt``
+   ✅ `./scripts/local.py`
+   ✅ `../config/file.toml`
+   ✅ `~/Documents/file.txt`
    ```
 
 5. **Fenced code blocks** (triple backticks):
@@ -175,16 +167,16 @@ path/to/file
 
 ```bash
 # Test changed files (default mode)
-python scripts/ops/validate_docs_token_policy.py
+python3 scripts/ops/validate_docs_token_policy.py
 
 # Test all Markdown files
-python scripts/ops/validate_docs_token_policy.py --all
+python3 scripts/ops/validate_docs_token_policy.py --all
 
 # Test with custom base ref
-python scripts/ops/validate_docs_token_policy.py --base origin/develop
+python3 scripts/ops/validate_docs_token_policy.py --base origin/develop
 
 # Generate JSON report
-python scripts/ops/validate_docs_token_policy.py --json report.json
+python3 scripts/ops/validate_docs_token_policy.py --json report.json
 ```
 
 ### CI Verification
@@ -208,7 +200,7 @@ gh pr checks <PR_NUMBER> | grep "Docs Token Policy Gate"
 
 ```markdown
 ❌ Before (triggers docs-reference-targets-gate):
-``scripts&#47;example.py`` (gate thinks this is a missing file)
+``scripts/example.py`` (gate thinks this is a missing file)
 
 ✅ After (safe for both gates):
 `scripts&#47;example.py` (gate ignores this as it's not a valid path)
@@ -257,7 +249,7 @@ echo "my/generic/placeholder" >> scripts/ops/docs_token_policy_allowlist.txt
 
 ### Allowlist Maintenance
 
-The allowlist is at ``scripts&#47;ops&#47;docs_token_policy_allowlist.txt``.
+The allowlist is at `scripts/ops/docs_token_policy_allowlist.txt`.
 
 **Decision Rules: When to Allowlist vs. Fix Docs Tokenization**
 
@@ -313,18 +305,18 @@ example/strategy.py
 **Local (before commit):**
 ```bash
 # Check changed files only (fast, PR-mode)
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 
-# Check specific directory
-uv run python scripts/ops/validate_docs_token_policy.py docs/ops/
+# Check git-tracked docs only (docs/**/*.md)
+python3 scripts/ops/validate_docs_token_policy.py --tracked-docs
 
 # Full scan (slow, ~30s for entire repo)
-uv run python scripts/ops/validate_docs_token_policy.py --all
+python3 scripts/ops/validate_docs_token_policy.py --all
 ```
 
 **CI (automatic):**
-- Runs on every PR touching ``docs&#47;**&#47;*.md`` or ``scripts&#47;ops&#47;docs_token_policy_allowlist.txt``
-- Workflow: ``.github&#47;workflows&#47;docs-token-policy-gate.yml``
+- Runs on every PR touching docs/**/*.md or scripts/ops/docs_token_policy_allowlist.txt
+- Workflow: `.github/workflows/docs-token-policy-gate.yml`
 - Check status: `gh pr checks <PR_NUMBER> | grep "docs-token-policy-gate"`
 
 **Exit Codes:**
@@ -336,10 +328,10 @@ uv run python scripts/ops/validate_docs_token_policy.py --all
 
 If you need to adjust how tokens are classified:
 
-1. Edit `scripts&#47;ops&#47;validate_docs_token_policy.py`
+1. Edit `scripts/ops/validate_docs_token_policy.py`
 2. Update the patterns in `DocsTokenPolicyValidator._classify_token()`
-3. Add test cases in `tests&#47;ops&#47;test_validate_docs_token_policy.py`
-4. Verify all existing docs still pass: `python scripts&#47;ops&#47;validate_docs_token_policy.py --all`
+3. Add test cases in `tests/ops/test_validate_docs_token_policy.py`
+4. Verify all existing docs still pass: `bash python3 scripts/ops/validate_docs_token_policy.py --all`
 
 ---
 
@@ -348,21 +340,21 @@ If you need to adjust how tokens are classified:
 | Scenario | Action | Example |
 |----------|--------|---------|
 | Illustrative path | Encode with `&#47;` | `scripts&#47;example.py` |
-| Branch name | No encoding (allowed) | `feature&#47;my-branch` |
-| Real repo file | No encoding | `scripts&#47;ops&#47;validate_docs_token_policy.py` (if exists) |
-| URL | No encoding | ``https:&#47;&#47;github.com&#47;...`` |
-| Command | No encoding | `python scripts&#47;run.py` |
-| Generic placeholder | Add to allowlist | ``some&#47;path`` |
+| Branch name | No encoding (allowed) | `feature/my-branch` |
+| Real repo file | No encoding | `scripts/ops/validate_docs_token_policy.py` |
+| URL | No encoding | `https://github.com/...` |
+| Command | No encoding | `bash python3 scripts/run_sweep.py --help` |
+| Generic placeholder | Add to allowlist | `some/path` |
 | Fenced code block | No action needed | (automatically ignored) |
 
 ---
 
 ## References
 
-- Script: ``scripts&#47;ops&#47;validate_docs_token_policy.py``
-- Tests: ``tests&#47;ops&#47;test_validate_docs_token_policy.py``
-- Allowlist: ``scripts&#47;ops&#47;docs_token_policy_allowlist.txt``
-- CI Workflow: ``.github&#47;workflows&#47;docs-token-policy-gate.yml``
+- Script: `scripts/ops/validate_docs_token_policy.py`
+- Tests: `tests/ops/test_validate_docs_token_policy.py`
+- Allowlist: `scripts/ops/docs_token_policy_allowlist.txt`
+- CI Workflow: `.github/workflows/docs-token-policy-gate.yml`
 - Related: [Docs Reference Targets False Positives](RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md)
 
 ---

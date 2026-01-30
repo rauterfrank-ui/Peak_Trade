@@ -185,7 +185,7 @@ scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
 scripts/ops/ops_center.sh doctor
 
 # Evidence Index validieren
-python scripts/ops/validate_evidence_index.py
+python3 scripts/ops/validate_evidence_index.py
 ```
 
 ### Layer Status Matrix anzeigen

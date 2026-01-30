@@ -94,10 +94,10 @@ scripts&#47;ops&#47;pt_docs_gates_snapshot.sh
 scripts&#47;ops&#47;verify_docs_reference_targets.sh
 
 # Token Policy Full Scan
-uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --all
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --all
 
 # Token Policy Changed Files Scan
-uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
 ```
 
 ### CI Results (Final)
@@ -181,12 +181,12 @@ git log -2 --oneline  # ✅ Verified
 1. **Always run Full Scan before PR:**
    ```bash
    scripts&#47;ops&#47;verify_docs_reference_targets.sh
-   uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --all
+   python3 scripts&#47;ops&#47;validate_docs_token_policy.py --all
    ```
 
 2. **Compare with Changed Files Scan:**
    ```bash
-   uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
+   python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
    ```
 
 3. **Use Combined Snapshot:**

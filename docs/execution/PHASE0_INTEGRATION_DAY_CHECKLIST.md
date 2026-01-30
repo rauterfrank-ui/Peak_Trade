@@ -80,15 +80,15 @@ $ git log --oneline -3
 ### Commands & Results
 ```bash
 # WP0D-specific tests
-$ uv run pytest tests/execution/test_wp0d_*.py -v
+$ python3 -m pytest tests/execution/test_wp0d_*.py -v
 ======================== 18 passed in 0.07s =========================
 
 # Linter check
-$ uv run ruff check src/execution/ledger_mapper.py src/execution/reconciliation.py
+$ ruff check src/execution/ledger_mapper.py src/execution/reconciliation.py
 No linter errors found.
 
 # Full execution test suite
-$ uv run pytest tests/execution/ -q
+$ python3 -m pytest tests/execution/ -q
 [Expected: All tests pass, no regressions]
 ```
 
@@ -148,13 +148,13 @@ git push -u origin feat/execution-wp0d-ledger-recon
 ### Commands
 ```bash
 # Format check
-uv run ruff format --check .
+ruff format --check .
 
 # Lint check
-uv run ruff check .
+ruff check .
 
 # Full test suite
-uv run pytest -q
+python3 -m pytest -q
 
 # Policy scan (manual)
 grep -r "enable_live_trading" src/ tests/ docs/ || echo "No live triggers found"
@@ -202,15 +202,15 @@ WP0D implements LedgerEntry mapping and reconciliation wiring for Phase 0 execut
 ## Verification
 ```bash
 # WP0D tests
-uv run pytest tests/execution/test_wp0d_*.py -v
+python3 -m pytest tests/execution/test_wp0d_*.py -v
 # Result: 18/18 passed
 
 # Full execution suite
-uv run pytest tests/execution/ -q
+python3 -m pytest tests/execution/ -q
 # Result: All green
 
 # Linter
-uv run ruff check src/execution/ledger_mapper.py src/execution/reconciliation.py
+ruff check src/execution/ledger_mapper.py src/execution/reconciliation.py
 # Result: Clean
 ```
 
@@ -290,7 +290,7 @@ ls -la src/execution/reconciliation.py
 ls -la tests/execution/test_wp0d_*.py
 
 # Run quick smoke test
-uv run pytest tests/execution/test_wp0d_*.py -q
+python3 -m pytest tests/execution/test_wp0d_*.py -q
 
 # Clean up local branch (if not auto-deleted)
 git branch -d feat/execution-wp0d-ledger-recon
@@ -312,13 +312,13 @@ git branch -d feat/execution-wp0d-ledger-recon
 ### Commands
 ```bash
 # Full execution test suite
-uv run pytest tests/execution/ -v
+python3 -m pytest tests/execution/ -v
 
 # End-to-end smoke test (if available)
 # [TBD: Integration test that exercises WP0A → WP0C → WP0D pipeline]
 
 # Verify orchestrator integration
-python -c "
+python3 -c "
 from src.execution.orchestrator import ExecutionOrchestrator
 from src.execution.ledger_mapper import EventToLedgerMapper
 from src.execution.reconciliation import ReconciliationEngine

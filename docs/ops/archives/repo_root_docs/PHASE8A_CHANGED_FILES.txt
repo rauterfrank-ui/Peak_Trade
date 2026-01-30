@@ -57,8 +57,8 @@ Test Results:
 
 ✅ ruff check . --quiet       → PASS
 ✅ ruff format --check .      → PASS (after formatting 2 files)
-✅ pytest tests/risk/validation/test_kupiec_delegation.py -q → 10/10 PASS
-✅ pytest tests/risk_layer/var_backtest/ -q → 128/128 PASS
+✅ python3 -m pytest tests/risk/validation/test_kupiec_delegation.py -q → 10/10 PASS
+✅ python3 -m pytest tests/risk_layer/var_backtest/ -q → 128/128 PASS
 
 Summary:
 --------

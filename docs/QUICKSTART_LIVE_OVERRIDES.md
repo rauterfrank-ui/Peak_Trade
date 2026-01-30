@@ -104,13 +104,13 @@ Werte außerhalb dieser Grenzen werden automatisch abgelehnt.
 
 ```bash
 # Basis-Tests
-pytest tests/test_live_overrides_integration.py -v
+python3 -m pytest tests/test_live_overrides_integration.py -v
 
 # Realistische Szenarien
-pytest tests/test_live_overrides_realistic_scenario.py -v
+python3 -m pytest tests/test_live_overrides_realistic_scenario.py -v
 
 # Alle Override-Tests
-pytest tests/test_live_overrides*.py -v
+python3 -m pytest tests/test_live_overrides*.py -v
 ```
 
 ## 🔧 Erweiterte Nutzung

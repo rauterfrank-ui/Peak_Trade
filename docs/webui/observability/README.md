@@ -129,9 +129,8 @@ lsof -nP -iTCP:9110 -sTCP:LISTEN
 **Python Env Contract (deterministisch):**
 - Der AI Live Exporter benötigt `prometheus_client`.
 - Die Ops-Skripte (`ai_live_smoke_test.sh`, `ai_live_verify.sh`, `ai_live_ops_verify.sh`) wählen standardmäßig:
-  - `uv run python` (wenn `uv` verfügbar ist)
-  - sonst `python3`
-- Override (optional): `PY_CMD="uv run python"` oder `PY_CMD="python3"` (die Skripte loggen `PY_CMD=<...>`).
+  - `python3`
+- Override (optional): `PY_CMD="python3"` (die Skripte loggen `PY_CMD=<...>`).
 
 1) Events-Datei wählen (JSONL, append-only). Beispiel:
 
@@ -141,13 +140,13 @@ export PEAK_TRADE_AI_EVENTS_JSONL="logs/ai/ai_events.jsonl"
 export PEAK_TRADE_AI_RUN_ID="demo"
 export PEAK_TRADE_AI_COMPONENT="execution_watch"
 export PEAK_TRADE_AI_EXPORTER_PORT="9110"
-uv run python scripts&#47;obs&#47;ai_live_exporter.py
+python3 scripts&#47;obs&#47;ai_live_exporter.py
 ```
 
 2) Beispiel-Events schreiben (separates Terminal):
 
 ```bash
-uv run python scripts&#47;obs&#47;emit_ai_live_sample_events.py --out "logs/ai/ai_events.jsonl" --n 50 --interval-ms 200
+python3 scripts&#47;obs&#47;emit_ai_live_sample_events.py --out "logs/ai/ai_events.jsonl" --n 50 --interval-ms 200
 ```
 
 ### Prometheus (Scrape)
@@ -299,7 +298,7 @@ lsof -nP -iTCP:9110 -sTCP:LISTEN
 
 #### Prometheus API Quick Queries (robust, token-policy safe)
 
-Nutze das repo-interne Helper-Script (Retries + Evidence), statt `curl | python json.load(sys.stdin)`:
+Nutze das repo-interne Helper-Script (Retries + Evidence), statt `curl | python3 json.load(sys.stdin)`:
 
 ```bash
 PROM_BASE="http://127.0.0.1:9092"
@@ -480,7 +479,7 @@ docker compose -p peaktrade-grafana-local -f docs/webui/observability/DOCKER_COM
 - Live-Web-App repo-lokal gestartet (Beispiel):
   - `PEAK_TRADE_PROMETHEUS_ENABLED=1`
   - `REQUIRE_PROMETHEUS_CLIENT=1`
-  - `.venv&#47;bin&#47;python scripts&#47;live_web_server.py --host 127.0.0.1 --port 8000`
+  - `.venv&#47;bin&#47;python3 scripts&#47;live_web_server.py --host 127.0.0.1 --port 8000`
 
 **Docker/Prometheus Networking Fix (macOS Docker Desktop):**
 - Scrape Target im Container: `localhost:8000` → **falsch** (zeigt auf den Container)

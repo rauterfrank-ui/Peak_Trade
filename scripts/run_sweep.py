@@ -14,16 +14,16 @@ Ein Sweep testet systematisch alle Kombinationen eines Parameter-Grids:
 
 Usage:
     # Mit TOML-Grid-Datei
-    python scripts/run_sweep.py --strategy ma_crossover --symbol BTC/EUR --grid config/sweeps/ma_crossover.toml
+    python scripts/run_sweep.py --config config/config.toml --strategy ma_crossover --symbol BTC/EUR --grid config/sweeps/ma_crossover.toml
 
     # Mit JSON-String
-    python scripts/run_sweep.py --strategy ma_crossover --symbol BTC/EUR --grid '{"short_window":[5,10,20],"long_window":[50,100]}'
+    python scripts/run_sweep.py --config config/config.toml --strategy ma_crossover --symbol BTC/EUR --grid '{"short_window":[5,10,20],"long_window":[50,100]}'
 
     # Mit Limit und Tag
-    python scripts/run_sweep.py --strategy ma_crossover --symbol BTC/EUR --grid ... --max-runs 10 --tag grid-test
+    python scripts/run_sweep.py --config config/config.toml --strategy ma_crossover --symbol BTC/EUR --grid ... --max-runs 10 --tag grid-test
 
     # Dry-Run (nur Kombinationen anzeigen)
-    python scripts/run_sweep.py --strategy ma_crossover --symbol BTC/EUR --grid ... --dry-run
+    python scripts/run_sweep.py --config config/config.toml --strategy ma_crossover --symbol BTC/EUR --grid ... --dry-run
 """
 
 from __future__ import annotations
@@ -76,8 +76,8 @@ Examples:
     parser.add_argument(
         "--config",
         type=str,
-        default="config.toml",
-        help="Pfad zur Basis-Config (Default: config.toml)",
+        default="config/config.toml",
+        help="Pfad zur Basis-Config (Default: config/config.toml)",
     )
 
     parser.add_argument(
