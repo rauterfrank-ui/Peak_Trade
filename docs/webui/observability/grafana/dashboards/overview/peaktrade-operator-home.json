@@ -20,43 +20,24 @@
   "templating": {
     "list": [
       {
+        "name": "ds",
+        "label": "Datasource",
         "type": "datasource",
-        "name": "DS_LOCAL",
-        "label": "Prometheus (local)",
         "query": "prometheus",
-        "current": {
-          "text": "prometheus-local",
-          "value": "peaktrade-prometheus-local"
-        },
-        "options": [],
+        "regex": "^(prom_local_9092|prom_shadow_9093|prom_ai_live_9094|prom_observability_9095)$",
         "refresh": 1,
-        "hide": 2
-      },
-      {
-        "type": "datasource",
-        "name": "DS_MAIN",
-        "label": "Prometheus (main)",
-        "query": "prometheus",
+        "hide": 0,
+        "multi": false,
+        "includeAll": false,
+        "allValue": null,
+        "sort": 0,
+        "skipUrlSync": false,
+        "description": "Peak_Trade: choose Prometheus (local/shadow/ai-live/obs)",
         "current": {
-          "text": "prometheus-main",
-          "value": "peaktrade-prometheus-main"
+          "text": "prom_local_9092",
+          "value": "prom_local_9092"
         },
-        "options": [],
-        "refresh": 1,
-        "hide": 2
-      },
-      {
-        "type": "datasource",
-        "name": "DS_SHADOW",
-        "label": "Prometheus (shadow)",
-        "query": "prometheus",
-        "current": {
-          "text": "prometheus-shadow",
-          "value": "peaktrade-prometheus-shadow"
-        },
-        "options": [],
-        "refresh": 1,
-        "hide": 2
+        "options": []
       }
     ]
   },
@@ -78,7 +59,7 @@
       "title": "Operator Summary",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 6,
@@ -136,7 +117,7 @@
       "title": "System Health",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 6,
@@ -194,7 +175,7 @@
       "title": "Execution Watch Overview",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 6,
@@ -252,7 +233,7 @@
       "title": "Shadow Pipeline (MVS)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 6,
@@ -310,7 +291,7 @@
       "title": "Compare (Main vs Shadow)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 6,
@@ -375,6 +356,72 @@
       "options": {
         "mode": "markdown",
         "content": "**Watch-only Workflow:** Operator Summary → System Health → Execution Watch → (optional) Shadow Pipeline.\n\n**Wenn du unerwartete MISSING/DOWN Werte siehst:**\n- Prüfe, ob du im richtigen Grafana bist (Port :3000).\n- Prüfe Prometheus-local (:9092) und Shadow Target `up{job=\"shadow_mvs\"}`.\n- `Contract Details` liefert die Debug-Queries je Datasource."
+      }
+    },
+    {
+      "type": "row",
+      "title": "Datasource Fingerprint",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "table",
+      "title": "Targets (up)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 18,
+        "x": 0,
+        "y": 14
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "up",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Target Count",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 14
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "count(up)",
+          "instant": true
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
       }
     }
   ],

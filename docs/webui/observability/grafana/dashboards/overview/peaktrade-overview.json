@@ -62,43 +62,23 @@
   "templating": {
     "list": [
       {
+        "name": "ds",
+        "label": "Datasource",
         "type": "datasource",
-        "name": "DS_LOCAL",
-        "label": "Prometheus (local)",
         "query": "prometheus",
-        "current": {
-          "text": "prometheus-local",
-          "value": "peaktrade-prometheus-local"
-        },
-        "options": [],
+        "regex": "^(prom_local_9092|prom_shadow_9093|prom_ai_live_9094|prom_observability_9095)$",
         "refresh": 1,
-        "hide": 2
-      },
-      {
-        "type": "datasource",
-        "name": "DS_MAIN",
-        "label": "Prometheus (main)",
-        "query": "prometheus",
+        "hide": 0,
+        "multi": false,
+        "includeAll": false,
+        "allValue": null,
+        "sort": 0,
+        "skipUrlSync": false,
         "current": {
-          "text": "prometheus-main",
-          "value": "peaktrade-prometheus-main"
+          "text": "prom_local_9092",
+          "value": "prom_local_9092"
         },
-        "options": [],
-        "refresh": 1,
-        "hide": 2
-      },
-      {
-        "type": "datasource",
-        "name": "DS_SHADOW",
-        "label": "Prometheus (shadow)",
-        "query": "prometheus",
-        "current": {
-          "text": "prometheus-shadow",
-          "value": "peaktrade-prometheus-shadow"
-        },
-        "options": [],
-        "refresh": 1,
-        "hide": 2
+        "options": []
       }
     ]
   },
@@ -114,7 +94,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "targets": [
         {
@@ -135,7 +115,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-main"
+        "uid": "${ds}"
       },
       "targets": [
         {
@@ -156,7 +136,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "targets": [
         {
@@ -177,7 +157,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-main"
+        "uid": "${ds}"
       },
       "targets": [
         {

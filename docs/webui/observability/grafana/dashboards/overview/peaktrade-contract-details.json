@@ -63,43 +63,23 @@
   "templating": {
     "list": [
       {
+        "name": "ds",
+        "label": "Datasource",
         "type": "datasource",
-        "name": "DS_LOCAL",
-        "label": "Prometheus (local)",
         "query": "prometheus",
-        "current": {
-          "text": "prometheus-local",
-          "value": "peaktrade-prometheus-local"
-        },
-        "options": [],
+        "regex": "^(prom_local_9092|prom_shadow_9093|prom_ai_live_9094|prom_observability_9095)$",
         "refresh": 1,
-        "hide": 2
-      },
-      {
-        "type": "datasource",
-        "name": "DS_MAIN",
-        "label": "Prometheus (main)",
-        "query": "prometheus",
+        "hide": 0,
+        "multi": false,
+        "includeAll": false,
+        "allValue": null,
+        "sort": 0,
+        "skipUrlSync": false,
         "current": {
-          "text": "prometheus-main",
-          "value": "peaktrade-prometheus-main"
+          "text": "prom_local_9092",
+          "value": "prom_local_9092"
         },
-        "options": [],
-        "refresh": 1,
-        "hide": 2
-      },
-      {
-        "type": "datasource",
-        "name": "DS_SHADOW",
-        "label": "Prometheus (shadow)",
-        "query": "prometheus",
-        "current": {
-          "text": "prometheus-shadow",
-          "value": "peaktrade-prometheus-shadow"
-        },
-        "options": [],
-        "refresh": 1,
-        "hide": 2
+        "options": []
       },
       {
         "type": "custom",
@@ -130,7 +110,7 @@
     },
     {
       "type": "row",
-      "title": "Shadow (DS_SHADOW)",
+      "title": "Shadow (ds)",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -145,7 +125,7 @@
       "title": "Metric present? (shadow)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-shadow"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 5,
@@ -203,7 +183,7 @@
       "title": "Series count (shadow)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-shadow"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 5,
@@ -230,7 +210,7 @@
       "title": "Series by job (shadow)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-shadow"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 8,
@@ -248,7 +228,7 @@
     },
     {
       "type": "row",
-      "title": "Local (DS_LOCAL)",
+      "title": "Local (ds)",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -263,7 +243,7 @@
       "title": "Metric present? (local)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 5,
@@ -321,7 +301,7 @@
       "title": "Series count (local)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 5,
@@ -348,7 +328,7 @@
       "title": "Series by job (local)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 8,
@@ -366,7 +346,7 @@
     },
     {
       "type": "row",
-      "title": "Main (DS_MAIN, optional)",
+      "title": "Main (ds, optional)",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -381,7 +361,7 @@
       "title": "Metric present? (main)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-main"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 5,
@@ -439,7 +419,7 @@
       "title": "Series count (main)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-main"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 5,
@@ -466,7 +446,7 @@
       "title": "Series by job (main)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-main"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 8,
