@@ -43,7 +43,7 @@ def test_drilldown_run_id_variable_exists_and_uses_ds_local() -> None:
     templ = (dash.get("templating") or {}).get("list") or []
     var = next((v for v in templ if (v.get("type"), v.get("name")) == ("query", "run_id")), None)
     assert var is not None, "expected dashboard variable run_id"
-    allowed = {"${DS_LOCAL}", "peaktrade-prometheus-local"}
+    allowed = {"${ds}"}
     ds_value = (var.get("datasource") or {}).get("uid")
     assert ds_value in allowed
     q = (var.get("query") or {}).get("query")

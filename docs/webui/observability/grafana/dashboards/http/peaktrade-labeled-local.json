@@ -44,43 +44,23 @@
   "templating": {
     "list": [
       {
-        "type": "datasource",
-        "name": "DS_LOCAL",
+        "name": "ds",
         "label": "Datasource",
-        "query": "prometheus",
-        "current": {
-          "text": "prometheus-local",
-          "value": "peaktrade-prometheus-local"
-        },
-        "options": [],
-        "refresh": 1,
-        "hide": 2
-      },
-      {
         "type": "datasource",
-        "name": "DS_MAIN",
-        "label": "Prometheus (main)",
         "query": "prometheus",
-        "current": {
-          "text": "prometheus-main",
-          "value": "peaktrade-prometheus-main"
-        },
-        "options": [],
+        "regex": "^(prom_local_9092|prom_shadow_9093|prom_ai_live_9094|prom_observability_9095)$",
         "refresh": 1,
-        "hide": 2
-      },
-      {
-        "type": "datasource",
-        "name": "DS_SHADOW",
-        "label": "Prometheus (shadow)",
-        "query": "prometheus",
+        "hide": 0,
+        "multi": false,
+        "includeAll": false,
+        "allValue": null,
+        "sort": 0,
+        "skipUrlSync": false,
         "current": {
-          "text": "prometheus-shadow",
-          "value": "peaktrade-prometheus-shadow"
+          "text": "prom_local_9092",
+          "value": "prom_local_9092"
         },
-        "options": [],
-        "refresh": 1,
-        "hide": 2
+        "options": []
       },
       {
         "type": "query",
@@ -88,7 +68,7 @@
         "label": "route",
         "datasource": {
           "type": "prometheus",
-          "uid": "peaktrade-prometheus-local"
+          "uid": "${ds}"
         },
         "query": {
           "query": "label_values(peak_trade_http_requests_total_labeled_total{service=\"peak_trade_web\",env=\"local\",stack=\"host\"}, route)",
@@ -111,7 +91,7 @@
       "title": "RPS (labeled, all routes)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 8,
@@ -132,7 +112,7 @@
       "title": "Avg latency (s) (labeled, all routes)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 8,
@@ -153,7 +133,7 @@
       "title": "RPS by route (labeled)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 10,
@@ -174,7 +154,7 @@
       "title": "In-flight requests (labeled)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 6,
@@ -202,7 +182,7 @@
       "title": "up{job=peak_trade_web} (local)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 6,

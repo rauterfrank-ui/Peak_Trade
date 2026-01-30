@@ -63,43 +63,23 @@
   "templating": {
     "list": [
       {
+        "name": "ds",
+        "label": "Datasource",
         "type": "datasource",
-        "name": "DS_LOCAL",
-        "label": "Prometheus (local)",
         "query": "prometheus",
-        "current": {
-          "text": "prometheus-local",
-          "value": "peaktrade-prometheus-local"
-        },
-        "options": [],
+        "regex": "^(prom_local_9092|prom_shadow_9093|prom_ai_live_9094|prom_observability_9095)$",
         "refresh": 1,
-        "hide": 2
-      },
-      {
-        "type": "datasource",
-        "name": "DS_MAIN",
-        "label": "Prometheus (main)",
-        "query": "prometheus",
+        "hide": 0,
+        "multi": false,
+        "includeAll": false,
+        "allValue": null,
+        "sort": 0,
+        "skipUrlSync": false,
         "current": {
-          "text": "prometheus-main",
-          "value": "peaktrade-prometheus-main"
+          "text": "prom_local_9092",
+          "value": "prom_local_9092"
         },
-        "options": [],
-        "refresh": 1,
-        "hide": 2
-      },
-      {
-        "type": "datasource",
-        "name": "DS_SHADOW",
-        "label": "Prometheus (shadow)",
-        "query": "prometheus",
-        "current": {
-          "text": "prometheus-shadow",
-          "value": "peaktrade-prometheus-shadow"
-        },
-        "options": [],
-        "refresh": 1,
-        "hide": 2
+        "options": []
       }
     ]
   },
@@ -121,7 +101,7 @@
       "title": "UP (peak_trade_web) — main (optional)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-main"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 5,
@@ -179,7 +159,7 @@
       "title": "UP (peak_trade_web) — shadow",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-shadow"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 5,
@@ -249,7 +229,7 @@
       "title": "Contract: http requests metric present — main (optional)",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-main"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 5,
@@ -314,7 +294,7 @@
       "title": "Contract: http requests metric present — shadow",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-shadow"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 5,
@@ -392,7 +372,7 @@
       "description": "Main typically does not export shadow_mvs pipeline contract metrics. If you have main exporting them, replace this panel with a real main query.",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-main"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 9,
@@ -413,7 +393,7 @@
       "title": "Pipeline events rate (shadow_mvs) — shadow",
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-shadow"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 9,

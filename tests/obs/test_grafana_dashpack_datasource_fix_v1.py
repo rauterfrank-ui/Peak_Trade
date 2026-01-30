@@ -9,6 +9,8 @@ ALLOW_UIDS = {
     "peaktrade-prometheus-main",
     "peaktrade-prometheus-shadow",
     "peaktrade-prometheus",
+    # Canonical dashpack selector (datasource variable uid)
+    "${ds}",
 }
 
 ALLOW_NAMES = {

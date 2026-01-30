@@ -4,7 +4,7 @@
       {
         "datasource": {
           "type": "prometheus",
-          "uid": "peaktrade-prometheus-local"
+          "uid": "${ds}"
         },
         "enable": true,
         "expr": "(sum(increase(peaktrade_ai_decisions_total{decision=\"reject\",run_id=~\"$run_id\"}[1m])) or on() vector(0)) > 0",
@@ -17,7 +17,7 @@
       {
         "datasource": {
           "type": "prometheus",
-          "uid": "peaktrade-prometheus-local"
+          "uid": "${ds}"
         },
         "enable": true,
         "expr": "(sum(increase(peaktrade_ai_decisions_total{decision=\"accept\",run_id=~\"$run_id\"}[1m])) or on() vector(0)) > 0",
@@ -75,7 +75,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -112,7 +112,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -149,7 +149,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -186,7 +186,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -223,7 +223,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -260,7 +260,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -297,7 +297,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -334,7 +334,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -371,7 +371,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {},
@@ -410,7 +410,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {},
@@ -437,7 +437,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -474,7 +474,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -511,7 +511,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -548,7 +548,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -597,7 +597,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -657,7 +657,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -708,7 +708,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -754,7 +754,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -800,7 +800,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -851,7 +851,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -909,7 +909,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -969,7 +969,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1003,7 +1003,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1060,7 +1060,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1098,7 +1098,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1132,7 +1132,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1166,7 +1166,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1199,7 +1199,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1232,7 +1232,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1288,7 +1288,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1332,7 +1332,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1366,7 +1366,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1400,7 +1400,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1434,7 +1434,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1490,7 +1490,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1519,7 +1519,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1560,7 +1560,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1592,7 +1592,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1626,7 +1626,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1659,7 +1659,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1691,7 +1691,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1731,7 +1731,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-shadow"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1789,7 +1789,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-shadow"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1847,7 +1847,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-shadow"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1912,7 +1912,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1989,7 +1989,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-shadow"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 8,
@@ -2010,7 +2010,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-shadow"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2039,7 +2039,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-shadow"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 8,
@@ -2060,7 +2060,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-shadow"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2099,7 +2099,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2132,7 +2132,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2159,7 +2159,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 9,
@@ -2192,7 +2192,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-shadow"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 8,
@@ -2213,7 +2213,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-main"
+        "uid": "${ds}"
       },
       "gridPos": {
         "h": 8,
@@ -2243,43 +2243,23 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "text": "prometheus-shadow",
-          "value": "peaktrade-prometheus-shadow"
-        },
-        "hide": 2,
-        "label": "Prometheus (shadow)",
-        "name": "DS_SHADOW",
-        "options": [],
+        "name": "ds",
+        "label": "Datasource",
+        "type": "datasource",
         "query": "prometheus",
+        "regex": "^(prom_local_9092|prom_shadow_9093|prom_ai_live_9094|prom_observability_9095)$",
         "refresh": 1,
-        "type": "datasource"
-      },
-      {
+        "hide": 0,
+        "multi": false,
+        "includeAll": false,
+        "allValue": null,
+        "sort": 0,
+        "skipUrlSync": false,
         "current": {
-          "text": "prometheus-main",
-          "value": "peaktrade-prometheus-main"
+          "text": "prom_local_9092",
+          "value": "prom_local_9092"
         },
-        "hide": 2,
-        "label": "Prometheus (main)",
-        "name": "DS_MAIN",
-        "options": [],
-        "query": "prometheus",
-        "refresh": 1,
-        "type": "datasource"
-      },
-      {
-        "current": {
-          "text": "prometheus-local",
-          "value": "peaktrade-prometheus-local"
-        },
-        "hide": 2,
-        "label": "Prometheus (local)",
-        "name": "DS_LOCAL",
-        "options": [],
-        "query": "prometheus",
-        "refresh": 1,
-        "type": "datasource"
+        "options": []
       },
       {
         "allValue": ".*",
@@ -2289,7 +2269,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "peaktrade-prometheus-local"
+          "uid": "${ds}"
         },
         "includeAll": true,
         "label": "AI run_id",
