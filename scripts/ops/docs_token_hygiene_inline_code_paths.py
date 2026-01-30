@@ -104,7 +104,13 @@ def process_markdown(text: str) -> str:
 
 def backup_file(src: Path, repo_root: Path) -> Path:
     rel = src.relative_to(repo_root)
-    out = repo_root / ".ops_local" / "backup_docs" / rel.parent / f"{rel.stem}.{utc_ts()}.bak{src.suffix}"
+    out = (
+        repo_root
+        / ".ops_local"
+        / "backup_docs"
+        / rel.parent
+        / f"{rel.stem}.{utc_ts()}.bak{src.suffix}"
+    )
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_bytes(src.read_bytes())
     return out
@@ -123,7 +129,9 @@ def find_repo_root(start: Path) -> Path:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--path", required=True, help="Path to markdown file (repo-relative or absolute).")
+    ap.add_argument(
+        "--path", required=True, help="Path to markdown file (repo-relative or absolute)."
+    )
     ap.add_argument("--apply", action="store_true", help="Write changes (default: dry-run).")
     args = ap.parse_args()
 
