@@ -10,16 +10,16 @@ PR #1084 wurde guarded per Squash gemerged und der Branch wurde gelöscht.
 
 ## Changes
 - **Grafana Provisioning**
-  - Neu: `docs/webui/observability/grafana/provisioning/datasources/multi_prom.yml` (4 DS; default: `prom_local_9092`)
-  - Legacy Datasource YAMLs nach `docs/webui/observability/grafana/provisioning/datasources/legacy_disabled/` verschoben (aus Provisioning-Scanpfad heraus)
+  - Neu: `docs&#47;webui&#47;observability&#47;grafana&#47;provisioning&#47;datasources&#47;multi_prom.yml` (4 DS; default: `prom_local_9092`)
+  - Legacy Datasource YAMLs nach `docs&#47;webui&#47;observability&#47;grafana&#47;provisioning&#47;datasources&#47;legacy_disabled&#47;` verschoben (aus Provisioning-Scanpfad heraus)
 - **Lint / Tooling**
-  - `scripts/obs/grafana_provisioning_lint.py` erweitert (ignoriert `legacy_disabled/`, Gate für canonical provisioning)
-  - `scripts/obs/grafana_dashpack_stack_fingerprint_patch.py` (idempotenter Patch für Fingerprint-Block)
-  - `scripts/obs/grafana_dashpack_ds_var_lint.py` / `scripts/obs/grafana_dashpack_ds_var_canonicalize.py` weiterhin canonical `${ds}`-Flow
+  - `scripts&#47;obs&#47;grafana_provisioning_lint.py` erweitert (ignoriert `legacy_disabled&#47;`, Gate für canonical provisioning)
+  - `scripts&#47;obs&#47;grafana_dashpack_stack_fingerprint_patch.py` (idempotenter Patch für Fingerprint-Block)
+  - `scripts&#47;obs&#47;grafana_dashpack_ds_var_lint.py` &#47; `scripts&#47;obs&#47;grafana_dashpack_ds_var_canonicalize.py` weiterhin canonical `${ds}`-Flow
 - **Dashboards**
-  - `docs/webui/observability/grafana/dashboards/overview/peaktrade-operator-home.json`: “Stack Fingerprint” Block oben (Panels nutzen `datasource.uid="${ds}"`)
+  - `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;overview&#47;peaktrade-operator-home.json`: “Stack Fingerprint” Block oben (Panels nutzen `datasource.uid="${ds}"`)
 - **Local Compose Helper**
-  - `DOCKER_COMPOSE_GRAFANA_ONLY.yml` im Repo-Root (Volumes auf `docs/webui/observability/grafana/...`)
+  - `DOCKER_COMPOSE_GRAFANA_ONLY.yml` im Repo-Root (Volumes auf `docs&#47;webui&#47;observability&#47;grafana&#47;...`)
 
 ## Verification
 - Gate Snapshot vor Merge: `mergeable=MERGEABLE`, `mergeStateStatus=CLEAN`, `headRefOid=3c28459cfaf75822fe128ef774adb26a7469a38c`
@@ -29,7 +29,7 @@ PR #1084 wurde guarded per Squash gemerged und der Branch wurde gelöscht.
   - mergedAt: `2026-01-30T22:34:37Z`
   - mergeCommit: `08554fc07a33860caa1f0cca1014e7d78453f0d7`
   - base: `main`
-- Local: `main` ist up to date mit `origin/main`
+- Local: `main` ist up to date mit `origin&#47;main`
 - Open PRs: keine (Liste leer)
 
 ## Risk
@@ -42,9 +42,9 @@ LOW — betrifft ausschließlich Observability Assets (Grafana Provisioning/Dash
   umschalten.
 - Erwartung: “Stack Fingerprint” + Target Count + Targets-UP Table reagieren sofort sichtbar.
 - Provisioning Guard:
-  - `python3 scripts/obs/grafana_provisioning_lint.py`
+  - `python3 scripts&#47;obs&#47;grafana_provisioning_lint.py`
 - Multi-Prom Verify (wenn vorhanden):
-  - `.ops_local/scripts/obs/verify_grafana_multi_prom.sh`
+  - `.ops_local&#47;scripts&#47;obs&#47;verify_grafana_multi_prom.sh`
 
 ## References
 - PR: https://github.com/rauterfrank-ui/Peak_Trade/pull/1084
