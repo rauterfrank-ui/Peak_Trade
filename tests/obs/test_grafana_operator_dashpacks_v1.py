@@ -57,16 +57,15 @@ def test_dashboard_uids_unique_and_vars_present() -> None:
     ):
         assert uid in uids, f"missing dashboard uid={uid}"
 
-    # Datasource variable conventions:
-    # After merging newer dashpacks, we require consistent DS_* vars for navigation
-    # and consistent scoping (panels choose the right DS_* explicitly).
+    # Datasource variable convention:
+    # Canonical dashpack uses a single datasource variable `ds` (multi-Prom switching).
     want_vars = {
-        "peaktrade-overview": {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"},
-        "peaktrade-shadow-pipeline-mvs": {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"},
-        "peaktrade-execution-watch-overview": {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"},
-        "peaktrade-labeled-local": {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"},
+        "peaktrade-overview": {"ds"},
+        "peaktrade-shadow-pipeline-mvs": {"ds"},
+        "peaktrade-execution-watch-overview": {"ds"},
+        "peaktrade-labeled-local": {"ds"},
     }
-    allow_extra = {"DS_PROM"}  # unified selector is allowed as extra
+    allow_extra: set[str] = set()
     for uid, p in uids.items():
         if uid not in want_vars:
             continue
