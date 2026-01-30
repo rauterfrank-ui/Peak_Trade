@@ -2188,6 +2188,7 @@ Post-merge documentation logs for operational PRs.
 - [PR #599](PR_599_MERGE_LOG.md) — docs(ops): add audit artifacts v0 (evidence index + risk register) (merged 2026-01-07) <!-- PR-599-MERGE-LOG -->
 - [PR #596](PR_596_MERGE_LOG.md) — docs(ops): add placeholder standards v0 (policy + deterministic generator) (merged 2026-01-07) <!-- PR-596-MERGE-LOG -->
 - [PR #429](PR_429_MERGE_LOG.md) — docs(risk): Phase 11 – VaR Backtest Suite UX & Docs-Verkabelung (merged 2025-12-29) <!-- PR-429-MERGE-LOG -->
+- PR 1080 — [PR_1080_MERGE_LOG.md](merge_logs/PR_1080_MERGE_LOG.md)
 
 ### Closeout Logs
 
