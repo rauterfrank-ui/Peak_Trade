@@ -39,11 +39,21 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Set, Tuple
 
-try:
-    import yaml
-except ImportError:
-    print("ERROR: PyYAML not installed. Install with: pip install pyyaml", file=sys.stderr)
-    sys.exit(1)
+
+def _require_yaml():
+    """
+    Lazy-import PyYAML.
+
+    Wichtig: Dieses Modul darf beim Import **nicht** `sys.exit()` ausführen,
+    weil es auch in Tests importiert wird. Fehlende Optional-Dependencies
+    sollen vom Aufrufer (Test/CLI) behandelt werden.
+    """
+
+    try:
+        import yaml  # type: ignore
+    except ModuleNotFoundError as exc:
+        raise RuntimeError("PyYAML not installed. Install with: pip install pyyaml") from exc
+    return yaml
 
 
 class WorkflowAnalyzer:
@@ -55,6 +65,7 @@ class WorkflowAnalyzer:
 
     def load_workflows(self) -> None:
         """Load and parse all workflow YAML files."""
+        yaml = _require_yaml()
         patterns = ["*.yml", "*.yaml"]
         workflow_files = []
         for pattern in patterns:

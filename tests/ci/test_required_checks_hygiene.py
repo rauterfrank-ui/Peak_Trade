@@ -24,6 +24,9 @@ import pytest
 # Import the validator (adjust import if needed)
 import sys
 
+# Patched: skip cleanly if PyYAML is not installed (optional dependency).
+pytest.importorskip("yaml")
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 from validate_required_checks_hygiene import RequiredChecksValidator
 
