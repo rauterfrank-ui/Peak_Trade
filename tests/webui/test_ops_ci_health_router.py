@@ -13,7 +13,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 # Patched: skip cleanly if optional dependency is not installed
-pytest.importorskip('fastapi')
+pytest.importorskip("fastapi")
 from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
 from fastapi.testclient import TestClient

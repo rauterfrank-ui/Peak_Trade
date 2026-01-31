@@ -1,7 +1,7 @@
 import pytest
 
 # Patched: skip cleanly if optional dependency is not installed
-pytest.importorskip('yaml')
+pytest.importorskip("yaml")
 import json
 import os
 import socket
