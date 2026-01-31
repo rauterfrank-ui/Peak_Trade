@@ -42,7 +42,9 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--input", required=True, help="Input OHLCV file (.parquet or .csv)")
     ap.add_argument("--allow-partial-volume-nans", action="store_true")
-    ap.add_argument("--check-maintenance", action="store_true", help="Fail if bars fall in daily maintenance")
+    ap.add_argument(
+        "--check-maintenance", action="store_true", help="Fail if bars fall in daily maintenance"
+    )
     args = ap.parse_args()
 
     path = Path(args.input)

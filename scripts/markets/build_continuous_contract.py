@@ -53,7 +53,9 @@ def _load_segments(path: Path) -> list[ContinuousSegment]:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--input-dir", required=True, help="Directory with {SYMBOL}.parquet OHLCV files")
+    ap.add_argument(
+        "--input-dir", required=True, help="Directory with {SYMBOL}.parquet OHLCV files"
+    )
     ap.add_argument("--segments-json", required=True, help="JSON file describing segments")
     ap.add_argument("--output-parquet", required=True, help="Output parquet path")
     ap.add_argument(

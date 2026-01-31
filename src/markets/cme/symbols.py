@@ -95,7 +95,9 @@ def parse_cme_contract_symbol(symbol: str) -> CmeFuturesContract:
     s = symbol.strip().upper()
     m = _SYM_RE.match(s)
     if not m:
-        raise ValueError(f"Invalid CME contract symbol format: {symbol!r} (expected e.g. 'NQH2026')")
+        raise ValueError(
+            f"Invalid CME contract symbol format: {symbol!r} (expected e.g. 'NQH2026')"
+        )
     root = m.group("root")
     month = month_from_code(m.group("mcode"))
     year = int(m.group("year"))

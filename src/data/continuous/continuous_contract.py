@@ -105,8 +105,7 @@ def build_continuous_contract(
         part = part.sort_index()
         if part.empty:
             raise ValueError(
-                f"Empty segment slice for {seg.contract_symbol} "
-                f"[{seg.start_ts}..{seg.end_ts}]"
+                f"Empty segment slice for {seg.contract_symbol} [{seg.start_ts}..{seg.end_ts}]"
             )
         seg_frames.append(part)
         seg_symbols.append(seg.contract_symbol)
@@ -168,7 +167,9 @@ def sha256_of_ohlcv_frame(df: pd.DataFrame) -> str:
                 row_out.append(round(fv, 12))
         payload["data"].append(row_out)
 
-    raw = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    raw = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode(
+        "utf-8"
+    )
     return sha256(raw).hexdigest()
 
 

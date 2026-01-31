@@ -81,7 +81,9 @@ class CmeEquityIndexSessionSpec:
         - closes trade_date at session_close_et
         """
         tz = self._tz()
-        open_local = datetime.combine(trade_date - timedelta(days=1), self.session_open_et, tzinfo=tz)
+        open_local = datetime.combine(
+            trade_date - timedelta(days=1), self.session_open_et, tzinfo=tz
+        )
         close_local = datetime.combine(trade_date, self.session_close_et, tzinfo=tz)
         return (open_local.astimezone(timezone.utc), close_local.astimezone(timezone.utc))
 
@@ -99,7 +101,9 @@ class CmeEquityIndexSessionSpec:
         return t >= self.maintenance_start_et or t < self.maintenance_end_et
 
 
-def infer_trade_date_from_timestamp(ts_utc: datetime, session: Optional[CmeEquityIndexSessionSpec] = None) -> date:
+def infer_trade_date_from_timestamp(
+    ts_utc: datetime, session: Optional[CmeEquityIndexSessionSpec] = None
+) -> date:
     """
     Heuristik: mappt UTC timestamp auf trade_date in ET.
     Für die Globex-Session gilt: Zeiten nach 18:00 ET gehören zum nächsten trade_date.
@@ -109,7 +113,7 @@ def infer_trade_date_from_timestamp(ts_utc: datetime, session: Optional[CmeEquit
     local = ts_utc.astimezone(tz)
     # If local time >= session_open, it's "next day's" trade date.
     if local.timetz().replace(tzinfo=None) >= sess.session_open_et:
-        return (local.date() + timedelta(days=1))
+        return local.date() + timedelta(days=1)
     return local.date()
 
 
