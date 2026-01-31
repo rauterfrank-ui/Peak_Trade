@@ -1,3 +1,7 @@
+import pytest
+
+# Patched: skip cleanly if optional dependency is not installed
+pytest.importorskip("yaml")
 import json
 from pathlib import Path
 from typing import Any, Iterator

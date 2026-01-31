@@ -6,6 +6,9 @@ Tests the main critic logic and integration of rules.
 
 import pytest
 
+# Patched: skip cleanly if optional dependency is not installed
+pytest.importorskip("yaml")
+
 from src.governance.policy_critic.critic import PolicyCritic
 from src.governance.policy_critic.models import (
     PolicyCriticInput,
