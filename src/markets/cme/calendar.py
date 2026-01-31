@@ -48,7 +48,7 @@ def cme_equity_index_roll_date(year: int, month: int) -> date:
     return third_friday(year, month) - timedelta(days=4)
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class CmeEquityIndexSessionSpec:
     """
     Minimaler, konfigurierbarer Session-Spec (MVP) für Offline-Validation.

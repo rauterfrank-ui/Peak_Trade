@@ -52,7 +52,7 @@ def month_from_code(code: str) -> int:
     return MONTH_BY_MONTH_CODE[c]
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class CmeFuturesContract:
     """
     Repräsentiert einen CME Futures Kontrakt (kanonisches Format).

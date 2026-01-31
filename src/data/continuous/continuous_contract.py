@@ -35,7 +35,7 @@ class AdjustmentMethod(str, Enum):
     RATIO_ADJUST = "RATIO_ADJUST"  # reserved (not implemented in MVP)
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class ContinuousSegment:
     """
     Definiert, welcher Kontrakt in welchem Zeitfenster verwendet wird.
