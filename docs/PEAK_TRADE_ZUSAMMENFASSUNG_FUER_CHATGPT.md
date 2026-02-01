@@ -89,7 +89,7 @@ DATA (Feeds, Loader, Cache)
 
 ### Wichtige Verzeichnisse
 
-- **`src/`** – Quellcode: `data/`, `strategies/`, `backtest/`, `risk/`, `risk_layer/`, `live/`, `execution/`, `reporting/`, `governance/`, `webui/`, etc.
+- **`src/`** – Quellcode: `data/`, `strategies&#47;`, `backtest&#47;`, `risk&#47;`, `risk_layer&#47;`, `live&#47;`, `execution&#47;`, `reporting&#47;`, `governance&#47;`, `webui&#47;`, etc.
 - **`config/`** – TOML-Konfiguration (Allgemein, Portfolios, Sweeps, Risk, Scheduler, …).
 - **`scripts/`** – CLI-Skripte (Backtest, Research, Live-Ops, Audit, Dev-Workflow, …).
 - **`docs/`** – Ausführliche Dokumentation (Architektur, Runbooks, AI-Guides, …).
