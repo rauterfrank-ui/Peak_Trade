@@ -113,27 +113,32 @@ fi
 
 echo "==> Check: Grafana datasource + dashboard provisioned"
 ds_json="$(grafana_get_json_or_fail "/api/datasources")"
+want_uid_primary="prom_local_9092"
+want_uid_legacy="peaktrade-prometheus-local"
+export want_uid_primary want_uid_legacy
 grafana_ds_ok="$(
   python3 -c '
-import json, sys
+import json, sys, os
 ds = json.loads(sys.stdin.read())
-want_uid = "peaktrade-prometheus-local"
-match = [d for d in ds if d.get("uid")==want_uid]
+want_primary = os.environ.get("want_uid_primary", "prom_local_9092")
+want_legacy = os.environ.get("want_uid_legacy", "peaktrade-prometheus-local")
+match = [d for d in ds if d.get("uid") in (want_primary, want_legacy)]
 if not match:
-    raise SystemExit("missing datasource uid=peaktrade-prometheus-local")
+    raise SystemExit("missing datasource uid=%s or %s" % (want_primary, want_legacy))
 d = match[0]
+uid_val = d.get("uid")
 if d.get("isDefault") is not True:
-    raise SystemExit("datasource peaktrade-prometheus-local is not default")
+    raise SystemExit("datasource %s is not default" % uid_val)
 url = d.get("url","")
 if "host.docker.internal:9092" not in url:
-    raise SystemExit(f"unexpected datasource url={url}")
+    raise SystemExit("unexpected datasource url=%s" % url)
 print(url)
 ' <<<"$ds_json" 2>/dev/null || true
 )"
 if [[ -z "${grafana_ds_ok:-}" ]]; then
-  fail "grafana.datasource" "Datasource provisioning mismatch (expected uid=peaktrade-prometheus-local default url contains host.docker.internal:9092)" "Phase F-1 (Grafana Login/DS)"
+  fail "grafana.datasource" "Datasource provisioning mismatch (expected uid=$want_uid_primary or $want_uid_legacy default url contains host.docker.internal:9092)" "Phase F-1 (Grafana Login/DS)"
 fi
-pass "grafana.datasource" "peaktrade-prometheus-local default url=$grafana_ds_ok"
+pass "grafana.datasource" "default url=$grafana_ds_ok (uid=$want_uid_primary or $want_uid_legacy)"
 
 search_json="$(grafana_get_json_or_fail "/api/search?type=dash-db")"
 python3 -c '
@@ -243,7 +248,7 @@ pass "prometheus.query" "latency p95 intent_to_ack (rate, job=shadow_mvs) non-em
 echo ""
 echo "EVIDENCE|exporter=$EXPORTER_URL|series=shadow_mvs_up,peak_trade_pipeline_events_total"
 echo "EVIDENCE|prometheus=$PROM_URL|target=shadow_mvs:up"
-echo "EVIDENCE|grafana=$GRAFANA_URL|ds_uid=peaktrade-prometheus-local"
+echo "EVIDENCE|grafana=$GRAFANA_URL|ds_uid_primary=$want_uid_primary|ds_uid_legacy=$want_uid_legacy"
 echo "EVIDENCE|dashboard_uid=$DASH_UID"
 echo "RESULT=PASS"
 echo "INFO|See Contract: docs/webui/observability/SHADOW_MVS_CONTRACT.md"
