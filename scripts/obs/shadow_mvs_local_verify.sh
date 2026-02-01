@@ -122,17 +122,20 @@ import json, sys, os
 ds = json.loads(sys.stdin.read())
 want_primary = os.environ.get("want_uid_primary", "prom_local_9092")
 want_legacy = os.environ.get("want_uid_legacy", "peaktrade-prometheus-local")
-match = [d for d in ds if d.get("uid") in (want_primary, want_legacy)]
-if not match:
-    raise SystemExit("missing datasource uid=%s or %s" % (want_primary, want_legacy))
-d = match[0]
-uid_val = d.get("uid")
-if d.get("isDefault") is not True:
-    raise SystemExit("datasource %s is not default" % uid_val)
-url = d.get("url","")
-if "host.docker.internal:9092" not in url:
-    raise SystemExit("unexpected datasource url=%s" % url)
-print(url)
+allowed = {want_primary, want_legacy}
+candidates = [d for d in ds if d.get("uid") in allowed]
+if not candidates:
+    raise SystemExit("no datasource with uid in %s" % sorted(allowed))
+valid = [
+    d for d in candidates
+    if d.get("isDefault") is True and "host.docker.internal:9092" in (d.get("url") or "")
+]
+if not valid:
+    summary = ", ".join(
+        ["%s(default=%s,url=%s)" % (d.get("uid"), d.get("isDefault"), d.get("url")) for d in candidates]
+    )
+    raise SystemExit("no valid default datasource found among candidates: %s" % summary)
+print(valid[0].get("url") or "")
 ' <<<"$ds_json" 2>/dev/null || true
 )"
 if [[ -z "${grafana_ds_ok:-}" ]]; then
