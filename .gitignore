@@ -120,3 +120,6 @@ docs/_scratch/
 
 # Local Prometheus configs + TSDB (never commit)
 .local/prometheus/data/
+
+# Local verify artifacts (do not commit)
+docs/ops/evidence/assets/EV_GRAFANA_VERIFY_V2_*/
