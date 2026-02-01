@@ -37,6 +37,7 @@ def _enabled() -> bool:
     v = os.getenv("PEAK_TRADE_PROMETHEUS_ENABLED", "0").strip().lower()
     return v in ("1", "true", "yes", "on")
 
+
 def _init_metrics() -> None:
     global _HTTP_REQUESTS_TOTAL
     global _HTTP_REQUEST_DURATION
@@ -103,7 +104,10 @@ def instrument_app(app: Any) -> None:
         return
 
     if not _enabled():
-        logger.info("Prometheus metrics disabled (PEAK_TRADE_PROMETHEUS_ENABLED=%r).", os.getenv("PEAK_TRADE_PROMETHEUS_ENABLED", "0"))
+        logger.info(
+            "Prometheus metrics disabled (PEAK_TRADE_PROMETHEUS_ENABLED=%r).",
+            os.getenv("PEAK_TRADE_PROMETHEUS_ENABLED", "0"),
+        )
         return
 
     _init_metrics()
@@ -111,7 +115,7 @@ def instrument_app(app: Any) -> None:
     @app.middleware("http")
     async def _prom_middleware(request, call_next):
         # Avoid self-scrape noise: do not count /metrics in HTTP stats
-        if getattr(request, 'url', None) and request.url.path == "/metrics":
+        if getattr(request, "url", None) and request.url.path == "/metrics":
             return await call_next(request)
 
         # in-flight
