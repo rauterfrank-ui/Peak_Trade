@@ -6,7 +6,7 @@ name: peak-trade-ops
 services:
   peaktrade-ops:
     build:
-      context: .
+      context: ..
       dockerfile: docker/obs/Dockerfile
     container_name: peak-trade-ops-runner
     working_dir: /app
