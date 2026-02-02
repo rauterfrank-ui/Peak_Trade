@@ -47,6 +47,10 @@
 | PR | Thema | Scope | DoD | Evidence |
 |---|---|---|---|---|
 | PR-01 | Status-Matrix + Evidence-Schema v1 + GATES-Overview konsolidieren | docs/ops + docs/ops/evidence | ✅ markdown konsistent, ✅ Claims nutzen status enums, ✅ Evidence pack example vorhanden | docs/ops/evidence/packs/PR-01/EV-2026-02-PR01-000.json |
+| PR-02 | Kill Switch Enforcement + Audit JSONL + Unit-Tests | src/live + config/risk + tests/risk + docs/ops/evidence | ✅ pytest grün, ✅ hard block nachweisbar (E1), ✅ audit JSONL append-only | docs/ops/evidence/packs/PR-02/EV-2026-02-PR02-001.json |
+| PR-03 | Escalation Providers: Stub default + PagerDuty optional (envelopes) + Tests | src/infra/escalation + config + tests/infra + docs/ops/evidence | ✅ offline-safe default, ✅ provider selection tested, ✅ no secrets in artifacts | docs/ops/evidence/packs/PR-03/EV-2026-02-PR03-001.json |
+| PR-03b | PagerDuty HTTP Sender (guarded) + Tests | src/infra/escalation + config + tests/infra + docs/ops/evidence | ✅ allow_network gating, ✅ urlopen monkeypatched test, ✅ secrets never persisted | docs/ops/evidence/packs/PR-03b/EV-2026-02-PR03b-001.json |
+| PR-04 | Event Schemas + Validator + Smoke Tests (+ optional CI) | schemas/events + scripts + tests/fixtures + tests/validation + docs/ops/evidence | ✅ fixtures valid, ✅ invalid fails, ✅ CLI validator works offline | docs/ops/evidence/packs/PR-04/EV-2026-02-PR04-001.json |
 
 ---
 

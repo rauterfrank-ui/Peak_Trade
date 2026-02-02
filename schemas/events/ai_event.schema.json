@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "peak_trade.ai_event.v1",
+  "title": "AIEvent v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schema_version", "ts", "event_type", "run_id", "layer"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "ai_event.v1" },
+    "ts": { "type": "number", "minimum": 0 },
+    "event_type": { "type": "string", "minLength": 1 },
+    "run_id": { "type": "string", "minLength": 1 },
+    "layer": { "type": "string", "minLength": 1 },
+    "component": { "type": ["string", "null"] },
+    "model": { "type": ["string", "null"] },
+    "prompt_id": { "type": ["string", "null"] },
+    "decision": { "type": ["string", "null"] },
+    "severity": { "type": ["string", "null"], "enum": ["debug", "info", "warning", "error", "critical", null] },
+    "reason": { "type": ["string", "null"] },
+    "extra": { "type": ["object", "null"] }
+  }
+}
