@@ -30,6 +30,22 @@ python3 scripts/obs/stage1_daily_snapshot.py
 python3 scripts/obs/stage1_trend_report.py
 ```
 
+## Stage1 report index (deterministic)
+After Stage1 runs, a deterministic index is generated:
+- Path: `reports/stage1/index.json`
+- Schema: `stage1_index.v1`
+- Purpose: stable discovery for WebUI/ops; includes sha256 + size for artifacts.
+
+You can regenerate manually:
+`python3 scripts/obs/stage1_report_index.py --root reports/obs/stage1 --out reports/obs/stage1/index.json --run-date YYYY-MM-DD`
+
+## Stage1 validation (fail-fast)
+After index generation, Stage1 runners validate artifacts and write:
+- `reports/obs/stage1/validation.json` (schema: `stage1_validation.v1`)
+
+Manual run:
+`python3 scripts/obs/validate_stage1_index.py --root reports/obs/stage1 --index reports/obs/stage1/index.json --out reports/obs/stage1/validation.json --require data.json --require report.md`
+
 ---
 
 ## Grafana Verify v2 (operator-grade)

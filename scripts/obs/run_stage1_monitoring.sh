@@ -19,6 +19,10 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$REPO_ROOT" || exit 1
 
+RUN_DATE="${RUN_DATE:-$(date -u +%F)}"
+# Align with Stage1 default reports root (get_reports_root()).
+REPORT_ROOT="${REPORT_ROOT:-reports/obs/stage1}"
+
 echo "============================================================"
 echo "Peak_Trade — Stage 1 Daily Monitoring"
 echo "Time: $(date -Iseconds)"
@@ -59,3 +63,15 @@ echo "Next steps:"
 echo "  - Review reports for anomalies"
 echo "  - Check 'New alerts (24h)' in snapshot"
 echo "  - If trend stable for 1-2 weeks → proceed to Stage 2 (Webhook)"
+
+python3 scripts/obs/stage1_report_index.py \
+  --root "${REPORT_ROOT}" \
+  --out "${REPORT_ROOT}/index.json" \
+  --run-date "${RUN_DATE}"
+
+python3 scripts/obs/validate_stage1_index.py \
+  --root "${REPORT_ROOT}" \
+  --index "${REPORT_ROOT}/index.json" \
+  --out "${REPORT_ROOT}/validation.json" \
+  --require "data.json" \
+  --require "report.md" || exit 2

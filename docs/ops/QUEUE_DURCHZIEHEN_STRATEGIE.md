@@ -52,6 +52,10 @@
 | PR-03b | PagerDuty HTTP Sender (guarded) + Tests | src/infra/escalation + config + tests/infra + docs/ops/evidence | ✅ allow_network gating, ✅ urlopen monkeypatched test, ✅ secrets never persisted | docs/ops/evidence/packs/PR-03b/EV-2026-02-PR03b-001.json |
 | PR-04 | Event Schemas + Validator + Smoke Tests (+ optional CI) | schemas/events + scripts + tests/fixtures + tests/validation + docs/ops/evidence | ✅ fixtures valid, ✅ invalid fails, ✅ CLI validator works offline | docs/ops/evidence/packs/PR-04/EV-2026-02-PR04-001.json |
 | PR-05 | Observability ports: metricsd vs session, fail-fast + PEAK_TRADE_METRICSD_PORT (+ canonical/legacy env, OBS_PORTS.md) | src/ops/net + src/obs + tests/ops + tests/obs + docs/ops + docs/ops/evidence + docs/webui/observability | ✅ metricsd/session cannot share port, ✅ startup fails with clear error, ✅ canonical/legacy env tested, ✅ OBS_PORTS contract doc | docs/ops/evidence/packs/PR-05/EV-2026-02-PR05-001.json |
+| PR-06 | Stage1 deterministic artifacts: index.json contract + generator + tests + docs | src/obs/stage1 + scripts/obs + tests/obs + docs/ops | ✅ index.json sorted + sha256, ✅ no now() in content, ✅ optional generated_at, ✅ STAGE1_INDEX_CONTRACT.md | (Evidence pack PR-06 optional) |
+| PR-06b | WebUI consumes Stage1 index.json | src/webui + templates + tests/webui + docs/ops/evidence | ✅ loader robust, ✅ UI table, ✅ fixture-based tests | docs/ops/evidence/packs/PR-06b/EV-2026-02-PR06b-001.json |
+| PR-07 | Stage1 index validator (sha256/bytes + required artifacts) | scripts/obs + tests/obs + tests/fixtures + docs/ops/evidence | ✅ good fixture passes, ✅ tampered fails, ✅ required artifacts enforced | docs/ops/evidence/packs/PR-07/EV-2026-02-PR07-001.json |
+| PR-08 | Stage1 runners produce validation.json (fail-fast) | scripts/obs + docs/ops/evidence (+ optional scripts/obs/README.md) | ✅ index+validation generated after runs, ✅ required artifacts enforced | docs/ops/evidence/packs/PR-08/EV-2026-02-PR08-001.json |
 
 ---
 
