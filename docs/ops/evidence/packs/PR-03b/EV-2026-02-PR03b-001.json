@@ -1,0 +1,24 @@
+{
+  "evidence_id": "EV-2026-02-PR03b-001",
+  "pr_id": "PR-03b",
+  "component": "escalation/pagerduty",
+  "claim": "PagerDuty provider can send Events API v2 via HTTP only when allow_network=true; default remains offline envelope; no secrets persisted.",
+  "level": "E1",
+  "status": "enforced",
+  "artifacts": [
+    { "type": "code", "path": "src/infra/escalation/providers.py::PagerDutyProvider.send" },
+    { "type": "config", "path": "config/telemetry_alerting.toml" },
+    { "type": "test", "path": "tests/infra/escalation/test_providers.py::test_pagerduty_http_send_calls_urlopen_when_allowed" },
+    { "type": "test", "path": "tests/infra/escalation/test_providers.py::test_pagerduty_offline_default_writes_envelope" }
+  ],
+  "how_to_verify": {
+    "commands": [
+      "python3 -m pytest -q tests/infra/escalation/test_providers.py -k pagerduty"
+    ],
+    "expected": [
+      "exit_code=0",
+      "PASSED"
+    ]
+  },
+  "notes": "HTTP call is guarded by pagerduty.allow_network=true. routing_key is used only in-memory for request body and is never written to disk. allow_network=true is explicit risk acceptance; PR-03b remains Telemetry-only; later PR-10 can gate behind live gates. Retries/backoff are intentionally small and deterministic; no infinite loops."
+}
