@@ -51,7 +51,7 @@
 | PR-03 | Escalation Providers: Stub default + PagerDuty optional (envelopes) + Tests | src/infra/escalation + config + tests/infra + docs/ops/evidence | ✅ offline-safe default, ✅ provider selection tested, ✅ no secrets in artifacts | docs/ops/evidence/packs/PR-03/EV-2026-02-PR03-001.json |
 | PR-03b | PagerDuty HTTP Sender (guarded) + Tests | src/infra/escalation + config + tests/infra + docs/ops/evidence | ✅ allow_network gating, ✅ urlopen monkeypatched test, ✅ secrets never persisted | docs/ops/evidence/packs/PR-03b/EV-2026-02-PR03b-001.json |
 | PR-04 | Event Schemas + Validator + Smoke Tests (+ optional CI) | schemas/events + scripts + tests/fixtures + tests/validation + docs/ops/evidence | ✅ fixtures valid, ✅ invalid fails, ✅ CLI validator works offline | docs/ops/evidence/packs/PR-04/EV-2026-02-PR04-001.json |
-| PR-05 | Observability ports: metricsd vs session, fail-fast + PEAK_TRADE_METRICSD_PORT | src/ops/net + src/obs + tests/ops + docs/ops/evidence + docs/webui/observability | ✅ metricsd/session cannot share port, ✅ startup fails with clear error, ✅ env var standardizes port | docs/ops/evidence/packs/PR-05/EV-2026-02-PR05-001.json |
+| PR-05 | Observability ports: metricsd vs session, fail-fast + PEAK_TRADE_METRICSD_PORT (+ canonical/legacy env, OBS_PORTS.md) | src/ops/net + src/obs + tests/ops + tests/obs + docs/ops + docs/ops/evidence + docs/webui/observability | ✅ metricsd/session cannot share port, ✅ startup fails with clear error, ✅ canonical/legacy env tested, ✅ OBS_PORTS contract doc | docs/ops/evidence/packs/PR-05/EV-2026-02-PR05-001.json |
 
 ---
 

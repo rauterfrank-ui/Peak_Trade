@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import socket
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -14,10 +13,6 @@ class PortCheckResult:
 
 
 def is_tcp_port_free(port: int, host: str = "127.0.0.1") -> PortCheckResult:
-    """
-    Checks if a TCP port can be bound on (host, port).
-    Deterministic, no external deps, works on macOS/Linux.
-    """
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
