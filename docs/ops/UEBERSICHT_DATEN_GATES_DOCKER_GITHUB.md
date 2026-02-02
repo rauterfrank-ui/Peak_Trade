@@ -23,7 +23,7 @@ Stand: Februar 2026. Kurzreferenz für Docker-Compose-Stacks, Prometheus-Scrape-
 
 | gate | claim | status | evidence | notes |
 |------|--------|--------|----------|-------|
-| Kill Switch | risk hook blocks order placement when kill switch enabled | configured | docs/ops/evidence/packs/PR-01/EV-2026-02-PR01-000.json | enforcement folgt in PR-02 (RiskHook currently not proven) |
+| Kill Switch | risk hook blocks order placement when kill switch enabled | enforced | docs/ops/evidence/packs/PR-02/EV-2026-02-PR02-001.json; docs/ops/evidence/packs/PR-02/EV-2026-02-PR02-002.json | E1 unit + E2 light via SafetyGuard; audits to JSONL |
 | PagerDuty | escalation provider interface exists; default stub | stub | docs/ops/evidence/packs/PR-01/EV-2026-02-PR01-000.json | real provider follows in PR-03 |
 
 ---
