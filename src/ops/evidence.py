@@ -75,6 +75,4 @@ def write_meta(meta_path: Path, extra: Optional[Dict[str, Any]] = None) -> None:
         },
         **extra,
     }
-    meta_path.write_text(
-        json.dumps(meta, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
+    meta_path.write_text(json.dumps(meta, indent=2, sort_keys=True) + "\n", encoding="utf-8")
