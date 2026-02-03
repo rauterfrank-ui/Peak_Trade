@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Peak_Trade risk_cli – VaR and evidence pack (offline, Phase C2)."""
+
 from __future__ import annotations
 
 import argparse
@@ -70,9 +71,7 @@ def main() -> int:
 
     if args.cmd == "var":
         r = _load_returns(Path(args.returns_file))
-        res = compute_var(
-            r, alpha=args.alpha, horizon=args.horizon, method=args.method
-        )
+        res = compute_var(r, alpha=args.alpha, horizon=args.horizon, method=args.method)
         out = {
             "method": res.method,
             "alpha": res.alpha,

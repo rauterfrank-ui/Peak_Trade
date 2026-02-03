@@ -16,6 +16,7 @@ Method = Literal["historical", "parametric_normal"]
 
 try:
     from scipy.stats import norm as scipy_norm
+
     _SCIPY_AVAILABLE = True
 except ImportError:
     scipy_norm = None
@@ -23,6 +24,7 @@ except ImportError:
 
 try:
     from statistics import NormalDist
+
     _NORMALDIST_AVAILABLE = True
 except ImportError:
     NormalDist = None
@@ -35,9 +37,7 @@ def _normal_ppf(p: float) -> float:
         return float(scipy_norm.ppf(p))
     if _NORMALDIST_AVAILABLE:
         return NormalDist().inv_cdf(p)
-    raise ImportError(
-        "VaR parametric_normal requires scipy or Python 3.8+ statistics.NormalDist"
-    )
+    raise ImportError("VaR parametric_normal requires scipy or Python 3.8+ statistics.NormalDist")
 
 
 @dataclass(frozen=True)

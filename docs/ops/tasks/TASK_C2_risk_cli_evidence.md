@@ -2,8 +2,8 @@
 
 TITLE: Phase C2 – risk_cli evidence-pack for VaR core (offline (NO-LIVE))
 SCOPE:
-- Add `scripts/risk_cli.py var ...`
-- Write evidence pack under `artifacts/risk/<run_id>/` (meta.json + results/var.json)
+- Add `scripts&#47;risk_cli.py var ...`
+- Write evidence pack under `artifacts&#47;risk&#47;<run_id>&#47;` (meta.json + results/var.json)
 NON-GOALS:
 - No live trading / execution
 - No market-specific integrations (Nasdaq/Futures out of scope)
