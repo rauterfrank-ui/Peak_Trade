@@ -131,7 +131,7 @@ Geplante Phasen mit **noch nicht umgesetzten** Features:
 | **v1.0 bewusst ausgenommen** | Live-Execution, Multi-Exchange, Web-Auth, WebSocket, ML-Strategien, Auto-Liquidation, 100 % Coverage, API-Doku, Skalierung. |
 | **Roadmap 2026** | Phasen 11–17 (Optimization, Streaming, Live, ML, Cloud, Risk-Parity, Community). |
 | **Research-Track** | Sweeps, Metriken, Heatmaps, Vol-Regime-Wrapper, Regime-adaptive Strategien, Auto-Portfolio, Nightly-Sweeps, Feature-Importance. |
-| **Stubs/Placeholder** | Kill-Switch RiskHook, PagerDuty, WP0C-Adapter, einige R&D-Strategien, `src/features`, Meta-Labeling Feature-Engineering. |
+| **Stubs/Placeholder** | Kill-Switch RiskHook, PagerDuty, WP0C-Adapter, einige R&D-Strategien, `src&#47;features`, Meta-Labeling Feature-Engineering. |
 
 ---
 
