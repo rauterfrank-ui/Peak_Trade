@@ -21,7 +21,7 @@
 ### Definition of Done pro PR
 
 - **Grüne Tests** (CI grün)
-- **Ein „Expected Artifacts“-Beispiel** in `docs/` oder `reports/fixtures/`
+- **Ein „Expected Artifacts“-Beispiel** in `docs/` oder `reports&#47;fixtures&#47;`
 
 ---
 
@@ -47,8 +47,8 @@
 | PR | Thema | Scope | DoD | Evidence |
 |---|---|---|---|---|
 | PR-01 | Status-Matrix + Evidence-Schema v1 + GATES-Overview konsolidieren | docs/ops + docs/ops/evidence | ✅ markdown konsistent, ✅ Claims nutzen status enums, ✅ Evidence pack example vorhanden | docs/ops/evidence/packs/PR-01/EV-2026-02-PR01-000.json |
-| PR-02 | Kill Switch Enforcement + Audit JSONL + Unit-Tests | src/live + config/risk + tests/risk + docs/ops/evidence | ✅ pytest grün, ✅ hard block nachweisbar (E1), ✅ audit JSONL append-only | docs/ops/evidence/packs/PR-02/EV-2026-02-PR02-001.json |
-| PR-03 | Escalation Providers: Stub default + PagerDuty optional (envelopes) + Tests | src/infra/escalation + config + tests/infra + docs/ops/evidence | ✅ offline-safe default, ✅ provider selection tested, ✅ no secrets in artifacts | docs/ops/evidence/packs/PR-03/EV-2026-02-PR03-001.json |
+| PR-02 | Kill Switch Enforcement + Audit JSONL + Unit-Tests | src/live + config/risk + tests/risk + docs/ops/evidence | ✅ pytest grün, ✅ hard block nachweisbar (E1), ✅ audit JSONL append-only | docs/ops/evidence/packs/PR-02/EV-2026-02-PR02-001.json <!-- pt:ref-target-ignore --> |
+| PR-03 | Escalation Providers: Stub default + PagerDuty optional (envelopes) + Tests | src/infra/escalation + config + tests/infra + docs/ops/evidence | ✅ offline-safe default, ✅ provider selection tested, ✅ no secrets in artifacts | docs/ops/evidence/packs/PR-03/EV-2026-02-PR03-001.json <!-- pt:ref-target-ignore --> |
 | PR-03b | PagerDuty HTTP Sender (guarded) + Tests | src/infra/escalation + config + tests/infra + docs/ops/evidence | ✅ allow_network gating, ✅ urlopen monkeypatched test, ✅ secrets never persisted | docs/ops/evidence/packs/PR-03b/EV-2026-02-PR03b-001.json |
 | PR-04 | Event Schemas + Validator + Smoke Tests (+ optional CI) | schemas/events + scripts + tests/fixtures + tests/validation + docs/ops/evidence | ✅ fixtures valid, ✅ invalid fails, ✅ CLI validator works offline | docs/ops/evidence/packs/PR-04/EV-2026-02-PR04-001.json |
 | PR-05 | Observability ports: metricsd vs session, fail-fast + PEAK_TRADE_METRICSD_PORT (+ canonical/legacy env, OBS_PORTS.md) | src/ops/net + src/obs + tests/ops + tests/obs + docs/ops + docs/ops/evidence + docs/webui/observability | ✅ metricsd/session cannot share port, ✅ startup fails with clear error, ✅ canonical/legacy env tested, ✅ OBS_PORTS contract doc | docs/ops/evidence/packs/PR-05/EV-2026-02-PR05-001.json |
@@ -69,7 +69,7 @@ Damit pro PR konkrete Commit-Patches (Diff-Style: neue Files, Signaturen, Testna
 - `docs/ai/`, `docs/execution/`, `docs/risk/`, `docs/governance/` – fachliche Verträge
 - `docs/webui/observability/` – Observability-Contracts
 - `.cursor/rules/`, `.github/` – Projekt- und CI-Contracts
-- Typische Artefakte: `docs/ops/evidence/`, `docs/ops/EVIDENCE_SCHEMA.md`, `docs/ops/GATES_*.md`
+- Typische Artefakte: `docs&#47;ops&#47;evidence&#47;`, `docs&#47;ops&#47;EVIDENCE_SCHEMA.md`, `docs&#47;ops&#47;GATES_*.md`
 
 ### Enforcement (PR-02, PR-10)
 
@@ -92,14 +92,14 @@ Damit pro PR konkrete Commit-Patches (Diff-Style: neue Files, Signaturen, Testna
 - `tests/risk/validation/`, `tests/fixtures/var_suite_reports/` – VaR-Fixtures
 - `src/execution/replay_pack/`, `src/ai_orchestration/` – Replay, Evidence Pack, Critic-Schema
 - `tests/fixtures/evidence_packs/`, `tests/fixtures/transcripts/` – erwartete Artefakte
-- `scripts/risk/var_suite_*.py`, `scripts/aiops/` – Report-Tools
-- `reports/` – nur über Artifacts/fixtures; typisch `reports/fixtures/` oder Beispiele unter `docs/`/`tests/fixtures/`
+- `scripts&#47;risk&#47;var_suite_*.py`, `scripts&#47;aiops&#47;` – Report-Tools
+- `reports&#47;` – nur über Artifacts/fixtures; typisch `reports&#47;fixtures&#47;` oder Beispiele unter `docs&#47;`/`tests&#47;fixtures&#47;`
 
 ### Expected Artifacts / Fixtures (DoD)
 
 - `docs/ops/evidence/` – Evidence-Beispiele
 - `tests/fixtures/` – JSON/Parquet/JSONL für Tests
-- `reports/fixtures/` – falls genutzt; sonst Beispiele in `docs/` (z. B. `docs/ops/.../example_*.json`)
+- `reports&#47;fixtures&#47;` – falls genutzt; sonst Beispiele in `docs&#47;` (z. B. `docs&#47;ops&#47;...&#47;example_*.json`)
 
 ---
 
