@@ -25,3 +25,16 @@ bash scripts/ops/merge_status_dashboard.sh
 ```
 
 Run from repo root (script checks out main and pulls before reporting).
+
+## Post-merge on main (safe)
+Run the dashboard only after the PR is merged (script exists on main):
+```bash
+cd "$(git rev-parse --show-toplevel)"
+git checkout main
+git pull --ff-only origin main
+if [[ -x scripts/ops/merge_status_dashboard.sh ]]; then
+  bash scripts/ops/merge_status_dashboard.sh
+else
+  echo "dashboard not on main yet (merge ops/merge-status-dashboard PR first)"
+fi
+```
