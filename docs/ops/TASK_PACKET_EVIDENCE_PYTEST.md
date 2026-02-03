@@ -53,6 +53,12 @@ for f in .tmp/evidence/*.exitcode; do
 done
 ```
 
+### Optional: One-liner (bash, tee-sicher + gleicher Timestamp)
+```bash
+mkdir -p .tmp/evidence; TS="$(date +%Y%m%d_%H%M%S)"; set -o pipefail; python -m pytest -q 2>&1 | tee ".tmp/evidence/pytest_main_pass_${TS}.txt"; echo "${PIPESTATUS[0]}" > ".tmp/evidence/pytest_main_pass_${TS}.exitcode"
+```
+(Danach ggf. Cleanup wie in C ausführen.)
+
 ---
 
 ## 3) Expected output / success criteria
