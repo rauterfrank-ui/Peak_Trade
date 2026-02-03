@@ -1,18 +1,18 @@
 from __future__ import annotations
-import importlib.util
-
-# PR-04 must not depend on modules introduced in other PRs (e.g. PR-02).
-if importlib.util.find_spec("src.live.kill_switch") is None:
-    pytest.skip(
-        "src.live.kill_switch not available on this branch (introduced in another PR); skipping E2 integration test",
-        allow_module_level=True,
-    )
-
 
 import inspect
 from pathlib import Path
 
 import pytest
+
+# PR-04 must not depend on modules introduced in other PRs (e.g. PR-02).
+import importlib.util
+
+if importlib.util.find_spec("src.live.kill_switch") is None:
+    pytest.skip(
+        "src.live.kill_switch not available on this branch (introduced in another PR); skipping E2 integration test",
+        allow_module_level=True,
+    )
 
 
 def _write(path: Path, content: str) -> None:
