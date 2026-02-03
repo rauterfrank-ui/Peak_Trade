@@ -6,3 +6,7 @@
 ## PR Inventory
 
 This repository contains PR inventory tooling: `pr_inventory`. Use `label_merge_log_prs` to label merge-log PRs.
+
+## Docs Diff Guard (auto beim Merge)
+
+Beim `--merge` läuft standardmäßig ein **Docs Diff Guard**; siehe `docs/ops/PR_MANAGEMENT_TOOLKIT.md`.
