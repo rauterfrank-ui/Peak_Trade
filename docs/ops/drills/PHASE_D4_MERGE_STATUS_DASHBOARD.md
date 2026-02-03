@@ -11,13 +11,13 @@ Provide a single-command view of merge readiness for:
 
 ## What it checks (semantic)
 - **Docs gatepacks:** existence of:
-  - `docs/ops/drills/GATEPACK_B1_RESEARCH_CLI.md`
-  - `docs/ops/drills/GATEPACK_B2_LIVE_OPS.md`
-  - `docs/ops/drills/GATEPACK_C_RISK.md`
-- **B1:** `scripts/research_cli.py` contains `--run-id` and `artifacts/research`
-- **Evidence helper:** `src/ops/evidence.py` exists
-- **B2:** `scripts/live_ops.py` contains `--run-id` and `"mode": "no_live"`
-- **C:** both `src/risk/var_core.py` and `scripts/risk_cli.py` exist
+  - `docs&#47;ops&#47;drills&#47;GATEPACK_B1_RESEARCH_CLI.md`
+  - `docs&#47;ops&#47;drills&#47;GATEPACK_B2_LIVE_OPS.md`
+  - `docs&#47;ops&#47;drills&#47;GATEPACK_C_RISK.md`
+- **B1:** `scripts&#47;research_cli.py` contains `--run-id` and `artifacts&#47;research`
+- **Evidence helper:** `src&#47;ops&#47;evidence.py` exists
+- **B2:** `scripts&#47;live_ops.py` contains `--run-id` and `"mode": "no_live"`
+- **C:** both `src&#47;risk&#47;var_core.py` and `scripts&#47;risk_cli.py` exist
 
 ## Usage
 ```bash
