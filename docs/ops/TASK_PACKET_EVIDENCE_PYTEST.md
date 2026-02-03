@@ -75,7 +75,7 @@ mkdir -p .tmp/evidence; TS="$(date +%Y%m%d_%H%M%S)"; set -o pipefail; python -m 
 **Bash (recommended, explicit):**
 
 ```bash
-bash -lc 'mkdir -p .tmp/evidence; TS="$(date +%Y%m%d_%H%M%S)"; set -o pipefail; python -m pytest -q 2>&1 | tee ".tmp/evidence/pytest_main_pass_${TS}.txt"; echo "${PIPESTATUS[0]}" > ".tmp/evidence/pytest_main_pass_${TS}.exitcode"; tail -n 2 ".tmp/evidence/pytest_main_pass_${TS}.txt"; cat ".tmp/evidence/pytest_main_pass_${TS}.exitcode"'
+bash -lc 'cd /Users/frnkhrz/Peak_Trade && source .venv/bin/activate && mkdir -p .tmp/evidence; TS="$(date +%Y%m%d_%H%M%S)"; set -o pipefail; python -m pytest -q 2>&1 | tee ".tmp/evidence/pytest_main_pass_${TS}.txt"; echo "${PIPESTATUS[0]}" > ".tmp/evidence/pytest_main_pass_${TS}.exitcode"; tail -n 2 ".tmp/evidence/pytest_main_pass_${TS}.txt"; cat ".tmp/evidence/pytest_main_pass_${TS}.exitcode"'
 ```
 
 **zsh (same shell):**
