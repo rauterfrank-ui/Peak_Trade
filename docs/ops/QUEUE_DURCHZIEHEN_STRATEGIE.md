@@ -56,6 +56,7 @@
 | PR-06b | WebUI consumes Stage1 index.json | src/webui + templates + tests/webui + docs/ops/evidence | ✅ loader robust, ✅ UI table, ✅ fixture-based tests | docs/ops/evidence/packs/PR-06b/EV-2026-02-PR06b-001.json <!-- pt:ref-target-ignore --> |
 | PR-07 | Stage1 index validator (sha256/bytes + required artifacts) | scripts/obs + tests/obs + tests/fixtures + docs/ops/evidence | ✅ good fixture passes, ✅ tampered fails, ✅ required artifacts enforced | docs/ops/evidence/packs/PR-07/EV-2026-02-PR07-001.json <!-- pt:ref-target-ignore --> |
 | PR-08 | Stage1 runners produce validation.json (fail-fast) | scripts/obs + docs/ops/evidence (+ optional scripts/obs/README.md) | ✅ index+validation generated after runs, ✅ required artifacts enforced | docs/ops/evidence/packs/PR-08/EV-2026-02-PR08-001.json |
+| PR-09 | Stage1 required artifacts + index&#47;validation scripts; require real outputs | scripts/obs + docs/ops/evidence | ✅ index+validation scripts tracked, ✅ required artifacts (snapshot&#47;summary&#47;trend) enforced, exit 2 on failure | docs/ops/evidence/packs/PR-09/EV-2026-02-PR09-001.json <!-- pt:ref-target-ignore --> |
 
 ---
 
