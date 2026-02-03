@@ -218,7 +218,7 @@ class TestBacktestRiskIntegration:
         # (sofern PositionSizer nicht blockiert)
         # Mindestens sollte Equity-Curve > 0 sein
         assert len(result.equity_curve) > 0
-        assert result.equity_curve[-1] > 0
+        assert result.equity_curve.iloc[-1] > 0
 
     def test_multiple_limits_enforcement(self, synthetic_data):
         """

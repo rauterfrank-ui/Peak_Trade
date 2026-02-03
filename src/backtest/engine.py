@@ -438,7 +438,7 @@ class BacktestEngine:
                         risk_kwargs = {
                             "symbol": symbol,
                             "last_return": (
-                                self.equity_curve[-1] / self.equity_curve[-2] - 1
+                                self.equity_curve.iloc[-1] / self.equity_curve.iloc[-2] - 1
                                 if len(self.equity_curve) >= 2
                                 else 0.0
                             ),
