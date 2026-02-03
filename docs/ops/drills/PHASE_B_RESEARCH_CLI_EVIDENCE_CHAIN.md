@@ -2,8 +2,8 @@
 
 **Goal:** `scripts/research_cli.py` produces a reproducible evidence pack per run_id:
 
-- `artifacts/research/<run_id>/meta.json` (created_utc, python, platform, git_sha, git_status_porcelain, env.PEAKTRADE_SANDBOX, command, run_id)
-- Subdirs: `env/`, `logs/`, `reports/`, `plots/`, `results/`
+- `artifacts&#47;research&#47;<run_id>&#47;meta.json` (created_utc, python, platform, git_sha, git_status_porcelain, env.PEAKTRADE_SANDBOX, command, run_id)
+- Subdirs: `env&#47;`, `logs&#47;`, `reports&#47;`, `plots&#47;`, `results&#47;`
 
 ## Usage
 
