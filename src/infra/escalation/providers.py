@@ -10,13 +10,13 @@ from typing import Any, Dict, List, Optional, Protocol
 
 
 class EscalationProvider(Protocol):
-    def send(self, event: Dict[str, Any]) -> None:
-        ...
+    def send(self, event: Dict[str, Any]) -> None: ...
 
 
 @dataclass(frozen=True)
 class PagerDutyConfig:
     """allow_network=true is explicit risk acceptance. Retries/backoff small and deterministic; no infinite loops."""
+
     allow_network: bool = False
     endpoint: str = "https://events.pagerduty.com/v2/enqueue"
     timeout_seconds: float = 5.0
@@ -29,9 +29,11 @@ def _load_toml(path: Path) -> Dict[str, Any]:
         return {}
     try:
         import tomllib  # py311+
+
         return tomllib.loads(path.read_text(encoding="utf-8"))
     except ModuleNotFoundError:
         import tomli  # type: ignore
+
         return tomli.loads(path.read_text(encoding="utf-8"))
 
 
@@ -102,9 +104,7 @@ class PagerDutyProvider:
         self.routing_key_env = routing_key_env
         self.routing_key = os.getenv(routing_key_env)
         if not self.routing_key:
-            raise RuntimeError(
-                f"PagerDuty routing key missing: env {routing_key_env} not set"
-            )
+            raise RuntimeError(f"PagerDuty routing key missing: env {routing_key_env} not set")
         self._pd = pagerduty_config or PagerDutyConfig()
 
     def send(self, event: Dict[str, Any]) -> None:
@@ -122,8 +122,14 @@ class PagerDutyProvider:
 
     def _send_http(self, event: Dict[str, Any]) -> None:
         import urllib.request
+
         raw = (event.get("severity") or "critical").upper()
-        severity = {"CRITICAL": "critical", "WARN": "warning", "WARNING": "warning", "INFO": "info"}.get(raw, raw.lower())
+        severity = {
+            "CRITICAL": "critical",
+            "WARN": "warning",
+            "WARNING": "warning",
+            "INFO": "info",
+        }.get(raw, raw.lower())
         body = {
             "routing_key": self.routing_key,
             "event_action": "trigger",
@@ -132,8 +138,15 @@ class PagerDutyProvider:
                 "summary": event.get("summary", ""),
                 "severity": severity,
                 "source": event.get("source", "peak_trade"),
-                "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(event.get("ts", time.time()))),
-                "custom_details": {k: v for k, v in event.items() if k not in ("summary", "severity", "source", "ts", "provider", "routing_key_env")},
+                "timestamp": time.strftime(
+                    "%Y-%m-%dT%H:%M:%SZ", time.gmtime(event.get("ts", time.time()))
+                ),
+                "custom_details": {
+                    k: v
+                    for k, v in event.items()
+                    if k
+                    not in ("summary", "severity", "source", "ts", "provider", "routing_key_env")
+                },
             },
         }
         data = json.dumps(body).encode("utf-8")
@@ -160,6 +173,7 @@ def build_provider(config_path: Path) -> EscalationProvider:
 # -----------------------------------------------------------------------------
 # Legacy API (for EscalationManager / Phase 85): send(event, target)
 # -----------------------------------------------------------------------------
+
 
 def _event_target_to_dict(event: Any, target: Any) -> Dict[str, Any]:
     """Convert legacy EscalationEvent + EscalationTarget to dict for outbox."""
@@ -205,8 +219,7 @@ class NullEscalationProvider:
             severity = getattr(event, "severity", "")
             target_name = getattr(target, "name", "")
             self._logger.info(
-                f"[NULL-ESCALATION] Would escalate to '{target_name}': "
-                f"[{severity}] {summary}"
+                f"[NULL-ESCALATION] Would escalate to '{target_name}': [{severity}] {summary}"
             )
 
 
@@ -225,7 +238,9 @@ def _legacy_build_pagerduty_payload(event: Any, target: Any) -> Dict[str, Any]:
     if getattr(event, "session_id", None):
         custom_details["session_id"] = event.session_id
     created_at = getattr(event, "created_at", None)
-    timestamp = created_at.isoformat() if hasattr(created_at, "isoformat") else str(created_at or "")
+    timestamp = (
+        created_at.isoformat() if hasattr(created_at, "isoformat") else str(created_at or "")
+    )
     return {
         "routing_key": getattr(target, "routing_key", None) or "default-routing-key",
         "event_action": "trigger",

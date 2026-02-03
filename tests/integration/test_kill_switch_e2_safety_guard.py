@@ -74,7 +74,9 @@ def _make_guard_or_skip():
         pytest.skip(f"Cannot instantiate SafetyGuard with inferred kwargs={kwargs}: {e!r}")
 
 
-def test_kill_switch_blocks_via_safety_guard_e2(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_kill_switch_blocks_via_safety_guard_e2(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """
     E2-light: end-to-end within process:
       - write TOML kill_switch config
