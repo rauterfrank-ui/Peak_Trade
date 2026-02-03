@@ -7,6 +7,7 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Protocol
+from src.infra.escalation.network_gate import ensure_may_use_network_escalation
 
 
 class EscalationProvider(Protocol):
@@ -100,12 +101,14 @@ class PagerDutyProvider:
         *,
         routing_key_env: str = "PAGERDUTY_ROUTING_KEY",
         pagerduty_config: Optional[PagerDutyConfig] = None,
+        env_config: Optional[object] = None,
     ) -> None:
         self.routing_key_env = routing_key_env
         self.routing_key = os.getenv(routing_key_env)
         if not self.routing_key:
             raise RuntimeError(f"PagerDuty routing key missing: env {routing_key_env} not set")
         self._pd = pagerduty_config or PagerDutyConfig()
+        self._env_config = env_config
 
     def send(self, event: Dict[str, Any]) -> None:
         payload = dict(event)
@@ -117,6 +120,11 @@ class PagerDutyProvider:
         envelope = {k: v for k, v in payload.items() if k != "routing_key"}
         _append_jsonl(outbox, envelope)
 
+        ensure_may_use_network_escalation(
+            allow_network=self._pd.allow_network,
+            context="pagerduty",
+            env_config=getattr(self, "_env_config", None),
+        )
         if self._pd.allow_network:
             self._send_http(event)
 
