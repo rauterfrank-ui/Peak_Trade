@@ -66,3 +66,21 @@ mkdir -p .tmp/evidence; TS="$(date +%Y%m%d_%H%M%S)"; set -o pipefail; python -m 
 - **pytest:** `python -m pytest -q` meldet `6587 passed, ...` und die Exitcode-Datei enthält `0`.
 - **Evidence:** `.tmp&#47;evidence&#47;failed&#47;` enthält alle Läufe mit Exitcode ≠ 0.
 - **Repo:** Bleibt sauber (`git status` clean); Evidence-Dateien sind untracked.
+
+### Shell compatibility (bash vs zsh)
+
+- **bash**: `${PIPESTATUS[0]}` is the pytest exit code (first command in the pipeline).
+- **zsh**: use `${pipestatus[1]}` instead (1-based).
+
+**Bash (recommended, explicit):**
+
+```bash
+bash -lc 'mkdir -p .tmp/evidence; TS="$(date +%Y%m%d_%H%M%S)"; set -o pipefail; python -m pytest -q 2>&1 | tee ".tmp/evidence/pytest_main_pass_${TS}.txt"; echo "${PIPESTATUS[0]}" > ".tmp/evidence/pytest_main_pass_${TS}.exitcode"; tail -n 2 ".tmp/evidence/pytest_main_pass_${TS}.txt"; cat ".tmp/evidence/pytest_main_pass_${TS}.exitcode"'
+```
+
+**zsh (same shell):**
+
+```bash
+mkdir -p .tmp/evidence; TS="$(date +%Y%m%d_%H%M%S)"; set -o pipefail; python -m pytest -q 2>&1 | tee ".tmp/evidence/pytest_main_pass_${TS}.txt"; echo "${pipestatus[1]}" > ".tmp/evidence/pytest_main_pass_${TS}.exitcode"; tail -n 2 ".tmp/evidence/pytest_main_pass_${TS}.txt"; cat ".tmp/evidence/pytest_main_pass_${TS}.exitcode"
+```
+
