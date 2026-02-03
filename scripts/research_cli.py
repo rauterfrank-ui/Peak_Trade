@@ -55,12 +55,16 @@ from __future__ import annotations
 
 import argparse
 import sys
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, Sequence
 
 # Projekt-Root zum Path hinzufügen
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
+
+from src.ops.evidence import ensure_evidence_dirs, write_meta
 
 # Importe der Runner-Funktionen aus den bestehenden Scripts
 # Da die Scripts im scripts/ Verzeichnis sind, müssen wir sie direkt importieren
@@ -122,6 +126,12 @@ def build_parser() -> argparse.ArgumentParser:
         description="Unified Research-CLI für Strategy-Sweeps, Reports, Promotion und Walk-Forward-Tests.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
+    )
+    parser.add_argument(
+        "--run-id",
+        type=str,
+        default=None,
+        help="Run-ID für Evidence-Pack (default: auto-generiert: research_YYYYMMDD_HHMMSS_<id>)",
     )
 
     subparsers = parser.add_subparsers(dest="command", required=True, help="Verfügbare Kommandos")
@@ -1703,6 +1713,19 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         args = parser.parse_args()
     else:
         args = parser.parse_args(list(argv))
+
+    # Evidence-Pack: run_id und Basisverzeichnis anlegen, meta.json schreiben
+    run_id = getattr(args, "run_id", None) or (
+        f"research_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
+    )
+    base_dir = project_root / "artifacts" / "research" / run_id
+    ensure_evidence_dirs(base_dir)
+    write_meta(
+        base_dir / "meta.json",
+        extra={"command": args.command, "run_id": run_id},
+    )
+    args.run_id = run_id
+    args.evidence_base_dir = base_dir
 
     if args.command == "sweep":
         return run_sweep_from_args(args)
