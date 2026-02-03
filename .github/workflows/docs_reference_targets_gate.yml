@@ -29,20 +29,24 @@ jobs:
             echo "base_ref=origin/main" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Not applicable if no markdown changes
+      - name: Check for markdown changes
+        id: md_changes
         shell: bash
         run: |
           set -euo pipefail
           base="${{ steps.base.outputs.base_ref }}"
           changed="$(git diff --name-only "${base}...HEAD" -- '*.md' || true)"
           if [[ -z "${changed}" ]]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "Docs Reference Targets: not applicable (no markdown changes)."
-            exit 0
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Markdown files changed:"
+            echo "${changed}"
           fi
-          echo "Markdown files changed:"
-          echo "${changed}"
 
       - name: Verify docs reference targets
+        if: steps.md_changes.outputs.changed == 'true'
         shell: bash
         run: |
           set -euo pipefail
