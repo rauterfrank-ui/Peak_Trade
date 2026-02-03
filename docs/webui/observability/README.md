@@ -501,6 +501,12 @@ docker compose -p peaktrade-grafana-local -f docs/webui/observability/DOCKER_COM
   - docs/webui/observability/grafana/dashboards/http/peaktrade-labeled-local.json
 - Hinweis: Grafana `label_values(...)` (Variable Queries) vs PromQL ist in `DASHBOARD_WORKFLOW.md` im Abschnitt „Grafana Variable Queries vs PromQL“ erklärt.
 
+## Metrics-Port 9111 — genau ein Modus (choose exactly one)
+
+- **metricsd** nutzt die Umgebungsvariable **`PEAK_TRADE_METRICSD_PORT`** (Default: 9111) und bindet exklusiv auf diesen Port.
+- **Session-HTTP** (in-process /metrics pro Session) darf **nicht** auf demselben Port laufen wie metricsd.
+- **Bei Konflikt:** Ein Prozess, der den Port nicht binden kann, beendet sich mit Fehlermeldung (z. B. `RuntimeError: Port … is already in use`). So wird vermieden, dass zwei Dienste denselben Port teilen.
+
 ## Ports & Networking (wichtig)
 
 - **Grafana UI (Host)**: http:&#47;&#47;localhost:3000
