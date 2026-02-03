@@ -24,6 +24,13 @@ jobs:
         with:
           fetch-depth: 0  # Need full history for diff
 
+      - name: Fetch base ref (for diff)
+        run: |
+          # So BASE_SHA (base branch tip) is available for git diff
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch origin "${{ github.event.pull_request.base.ref }}"
+          fi
+
       - name: Formatter policy drift guard (no black enforcement)
         run: |
           set -euo pipefail
@@ -50,7 +57,7 @@ jobs:
           echo "Base SHA: $BASE_SHA"
           echo "Head SHA: $HEAD_SHA"
 
-          # Get changed Python files
+          # Get changed Python files (BASE_SHA must be available via fetch-base step)
           CHANGED_PY_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep '\.py$' || echo "")
 
           if [ -z "$CHANGED_PY_FILES" ]; then

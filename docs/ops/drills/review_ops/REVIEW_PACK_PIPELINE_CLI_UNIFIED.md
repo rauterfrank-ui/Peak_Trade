@@ -5,7 +5,7 @@
 ## Quick verification
 From repo root:
 - `python3 scripts/pipeline_cli.py --help`
-- `PEAKTRADE_SANDBOX=1 python3 -m pytest -q tests/ops/test_pipeline_cli_smoke.py --maxfail=1`
+- `PEAKTRADE_SANDBOX=1 python3 -m pytest -q tests&#47;ops&#47;test_pipeline_cli_smoke.py --maxfail=1`
 
 ## What to look for
 - `--artifacts-dir` is forwarded to `risk_cli` before the `var` subcommand so parsing works.
