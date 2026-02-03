@@ -8,12 +8,12 @@
 
 **Context**
 - Repo: Peak_Trade  
-- Ziel: Reproduzierbarer lokaler Evidence-Stamp für `python -m pytest -q` mit korrektem Exitcode (tee-sicher) und kuratierte Evidence-Dateien (nicht-null Läufe nach `.tmp/evidence/failed/`).
+- Ziel: Reproduzierbarer lokaler Evidence-Stamp für `python -m pytest -q` mit korrektem Exitcode (tee-sicher) und kuratierte Evidence-Dateien (nicht-null Läufe nach `.tmp&#47;evidence&#47;failed&#47;`).
 
 **Preconditions**
 - In normalem Terminal-Kontext ausführen (nicht Sandbox/Agent).
-- venv aktiv: `source .venv/bin/activate`
-- Working tree sauber; `docs/ops` muss zu `origin/main` passen:
+- venv aktiv: `source .venv&#47;bin&#47;activate`
+- Working tree sauber; `docs&#47;ops` muss zu `origin&#47;main` passen:
   - `docs/ops/README.md` = vollständiges Ops-README (enthält "PR Inventory" / "pr_inventory")
   - `docs/ops/MERGE_LOG_WORKFLOW.md` und `docs/ops/PR_999_MERGE_LOG.md` dürfen **nicht** die kurzen Test-Fixtures sein.
 
@@ -58,5 +58,5 @@ done
 ## 3) Expected output / success criteria
 
 - **pytest:** `python -m pytest -q` meldet `6587 passed, ...` und die Exitcode-Datei enthält `0`.
-- **Evidence:** `.tmp/evidence/failed/` enthält alle Läufe mit Exitcode ≠ 0.
+- **Evidence:** `.tmp&#47;evidence&#47;failed&#47;` enthält alle Läufe mit Exitcode ≠ 0.
 - **Repo:** Bleibt sauber (`git status` clean); Evidence-Dateien sind untracked.
