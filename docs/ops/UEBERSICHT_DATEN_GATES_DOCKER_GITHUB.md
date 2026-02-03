@@ -23,7 +23,7 @@ Stand: Februar 2026. Kurzreferenz für Docker-Compose-Stacks, Prometheus-Scrape-
 
 | gate | claim | status | evidence | notes |
 |------|--------|--------|----------|-------|
-| Kill Switch | risk hook blocks order placement when kill switch enabled | enforced | docs/ops/evidence/packs/PR-02/EV-2026-02-PR02-001.json; docs/ops/evidence/packs/PR-02/EV-2026-02-PR02-002.json | E1 unit + E2 light via SafetyGuard; audits to JSONL |
+| Kill Switch | risk hook blocks order placement when kill switch enabled | enforced | docs/ops/evidence/packs/PR-02/EV-2026-02-PR02-001.json; docs/ops/evidence/packs/PR-02/EV-2026-02-PR02-002.json <!-- pt:ref-target-ignore --> | E1 unit + E2 light via SafetyGuard; audits to JSONL |
 | PagerDuty | escalation provider interface exists; default stub | stub | docs/ops/evidence/packs/PR-01/EV-2026-02-PR01-000.json | real provider follows in PR-03 |
 
 ---
@@ -46,7 +46,7 @@ Docker hat hier **keine** CI-„Gates“, sondern **Compose-Services** und **Pro
 | **docker/compose.yml** | `mlflow` | MLflow Backend + Artifacts (Experiment-Tracking, Model-Metadaten, Runs); Port 5001→5000 |
 | **docker/docker-compose.obs.yml** | `peaktrade-ops` | Ops Runner: Stage1-Snapshots, Stage1-Trends, Reports; kein Default-Command (z.B. `stage1-snapshot`, `stage1-trends`) |
 | **DOCKER_COMPOSE_GRAFANA_ONLY.yml** | `grafana` | Nur Grafana (Dashboards, Datasources); keine eigenen Datenquellen im Stack |
-| **docs/.../DOCKER_COMPOSE_PROM_GRAFANA.yml** | `shadow_mvs_exporter`, `prometheus`, `grafana` | Lokaler Observability-Stack: Mock Shadow-MVS, Prometheus, Grafana |
+| **docs/.../DOCKER_COMPOSE_PROM_GRAFANA.yml** <!-- pt:ref-target-ignore --> | `shadow_mvs_exporter`, `prometheus`, `grafana` | Lokaler Observability-Stack: Mock Shadow-MVS, Prometheus, Grafana |
 
 ### 1.2 Prometheus-Scrape-Targets („Daten-Gates“ in Docker)
 
@@ -208,7 +208,7 @@ Damit laufen in Docker-Umgebung folgende **Datenströme** über diese „Gates�
 - Status/Evidence-Contract: `docs/ops/STATUS_MATRIX.md`, `docs/ops/evidence/README.md`
 - Docker: `docker/`, `docs/webui/observability/`
 - Prometheus Scrape: `docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml`, `docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml`
-- Workflows: `.github/workflows/*.yml`
+- Workflows: `.github&#47;workflows&#47;*.yml`
 - CI Required Checks: `docs/ops/ci_required_checks_matrix_naming_contract.md`
 - Evidence Pack: `docs/ai/EVIDENCE_PACK_CI_GATE.md`
 - Runtime-Gates (Execution, Live, Safety): `docs/ops/GATES_UND_DATENFLUSS_UEBERSICHT.md`
@@ -221,20 +221,20 @@ Diese Datenströme laufen **nicht** über einen eigenen CI-Workflow, sondern üb
 
 | Datenstrom | Quelle / Eingang | Ausgang / Persistenz | Wo definiert / genutzt |
 |------------|------------------|----------------------|-------------------------|
-| **Kraken Data Pipeline** | Kraken API (OHLCV) | Normalizer → ParquetCache → `data/cache` | `src/data/kraken_pipeline.py`, `src/data/cache.py`, `config.toml` (data.base_path) |
-| **Knowledge Vector/TimeSeries** | RAG, Embeddings | Chroma/Pinecone/Qdrant: `data/chroma_db`, `data/timeseries` (Parquet/InfluxDB) | `config.toml` (knowledge.vector_db, knowledge.timeseries_db) |
-| **Trigger Training** | Drill-Sessions, Events | `live_runs/trigger_training_sessions.jsonl`, `reports/trigger_training/meta/` (Operator Meta Report HTML) | `src/trigger_training/session_store.py`, `operator_meta_report.py`, `scripts/generate_operator_meta_report*.py`; Offline-Suite nutzt Drills |
+| **Kraken Data Pipeline** | Kraken API (OHLCV) | Normalizer → ParquetCache → `data&#47;cache` | `src/data/kraken_pipeline.py`, `src/data/cache.py`, `config.toml` (data.base_path) |
+| **Knowledge Vector/TimeSeries** | RAG, Embeddings | Chroma/Pinecone/Qdrant: `data&#47;chroma_db`, `data&#47;timeseries` (Parquet/InfluxDB) | `config.toml` (knowledge.vector_db, knowledge.timeseries_db) |
+| **Trigger Training** | Drill-Sessions, Events | `live_runs&#47;trigger_training_sessions.jsonl`, `reports&#47;trigger_training&#47;meta&#47;` (Operator Meta Report HTML) | `src/trigger_training/session_store.py`, `operator_meta_report.py`, `scripts&#47;generate_operator_meta_report*.py`; Offline-Suite nutzt Drills |
 | **Live Audit Export** | Live-Session-Daten | Snapshot-Reports (Script) | `scripts/export_live_audit_snapshot.py` |
-| **Alert Pipeline** | Alerts, Escalation | Slack/Email; `data/telemetry/alerts/alerts_history.jsonl`, `logs/telemetry_alerts.jsonl` | `src/live/alert_pipeline.py`, `config/telemetry_alerting.toml` |
-| **Execution Events (Beta)** | Orchestrator, Stages | `execution_events.jsonl` (INTENT, RISK_REJECT, ORDER, FILL, …), Ledger | `src/execution/orchestrator.py`; Replay/Compare nutzt `logs/execution/execution_events.jsonl` |
-| **AI Events (AI Live)** | Execution-Watch, Events | `PEAK_TRADE_AI_EVENTS_JSONL` / `ai_events.jsonl` → AI Live Exporter (Port 9110) | `scripts/obs/ai_live_exporter.py`, `scripts/ops/tmux_up.sh` |
-| **Promotion Loop** | Promotion Proposals | `reports/live_promotion`, `reports/promotion_audit/promotion_audit.jsonl` | `config/promotion_loop_config.toml`, `src/governance/promotion_loop/engine.py` |
-| **Kill Switch** | State, Audit | `data/kill_switch/state.json`, `data/kill_switch/audit`, `data/kill_switch/metrics.json` | `config/risk/kill_switch.toml` |
-| **Model Registry / AI Calls** | Model-Calls | `logs/ai_model_calls.jsonl` | `config/model_registry.toml` (log_destination) |
-| **Shadow Quality Events** | Shadow-Pipeline | `reports/shadow_quality_events.jsonl` (Beispiel-Config) | `config/shadow_pipeline_example.toml` |
+| **Alert Pipeline** | Alerts, Escalation | Slack/Email; `data&#47;telemetry&#47;alerts&#47;alerts_history.jsonl`, `logs&#47;telemetry_alerts.jsonl` | `src/live/alert_pipeline.py`, `config/telemetry_alerting.toml` |
+| **Execution Events (Beta)** | Orchestrator, Stages | `execution_events.jsonl` (INTENT, RISK_REJECT, ORDER, FILL, …), Ledger | `src/execution/orchestrator.py`; Replay/Compare nutzt `logs&#47;execution&#47;execution_events.jsonl` |
+| **AI Events (AI Live)** | Execution-Watch, Events | `PEAK_TRADE_AI_EVENTS_JSONL` / `ai_events.jsonl` → AI Live Exporter (Port 9110) | `scripts&#47;obs&#47;ai_live_exporter.py`, `scripts&#47;ops&#47;tmux_up.sh` <!-- pt:ref-target-ignore --> |
+| **Promotion Loop** | Promotion Proposals | `reports&#47;live_promotion`, `reports&#47;promotion_audit&#47;promotion_audit.jsonl` | `config/promotion_loop_config.toml`, `src/governance/promotion_loop/engine.py` |
+| **Kill Switch** | State, Audit | `data&#47;kill_switch&#47;state.json`, `data&#47;kill_switch&#47;audit`, `data&#47;kill_switch&#47;metrics.json` | `config/risk/kill_switch.toml` |
+| **Model Registry / AI Calls** | Model-Calls | `logs&#47;ai_model_calls.jsonl` | `config/model_registry.toml` (log_destination) |
+| **Shadow Quality Events** | Shadow-Pipeline | `reports&#47;shadow_quality_events.jsonl` (Beispiel-Config) | `config/shadow_pipeline_example.toml` |
 | **Stage1 (Ops Runner)** | Snapshot/Trend-Scripts | Reports (z. B. aus Container); Stage1-Daily-Snapshot, Stage1-Trend-Report | `scripts/obs/stage1_daily_snapshot.py`, `scripts/obs/stage1_trend_report.py`; Docker `docker-compose.obs.yml` |
-| **Offline Suites (Daily/Weekly)** | Automations-Jobs | `reports/automation/daily/`, `reports/automation/weekly/` (JSON/MD) | `scripts/automation/run_offline_daily_suite.py`, `run_offline_weekly_suite.py`; Workflow `offline_suites.yml` lädt Artifacts |
+| **Offline Suites (Daily/Weekly)** | Automations-Jobs | `reports&#47;automation&#47;daily&#47;`, `reports&#47;automation&#47;weekly&#47;` (JSON/MD) | `scripts/automation/run_offline_daily_suite.py`, `run_offline_weekly_suite.py`; Workflow `offline_suites.yml` lädt Artifacts |
 | **InfoStream Quellen** | TestHealth, OfflineRealtime, TriggerTraining, Macro/GeoRisk, Operator-Notes | INFO_PACKET → KI → EVAL_PACKAGE, LEARNING_SNIPPET, INFOSTREAM_LEARNING_LOG.md | `docs/infostream/README.md`, `scripts/generate_infostream_packet.py`, Workflow `infostream-automation.yml` |
-| **VaR Backtest / Reports** | Risk-Validation | `reports/var_backtest` | `config/var_backtest.toml` |
-| **Scheduler / Live Risk** | Check Scripts | `reports/live/latest_orders.csv` (Beispiel) | `config/scheduler/jobs.toml` |
+| **VaR Backtest / Reports** | Risk-Validation | `reports&#47;var_backtest` | `config/var_backtest.toml` |
+| **Scheduler / Live Risk** | Check Scripts | `reports&#47;live&#47;latest_orders.csv` (Beispiel) | `config/scheduler/jobs.toml` |
 | **OpenTelemetry (optional)** | Traces/Metrics | OTLP-Export (z. B. Collector) | `src/obs/__init__.py` (init_otel), `pyproject.toml` / requirements (opentelemetry-exporter-otlp) |

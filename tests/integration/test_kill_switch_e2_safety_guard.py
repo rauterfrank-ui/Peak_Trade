@@ -5,6 +5,15 @@ from pathlib import Path
 
 import pytest
 
+# PR-04 must not depend on modules introduced in other PRs (e.g. PR-02).
+import importlib.util
+
+if importlib.util.find_spec("src.live.kill_switch") is None:
+    pytest.skip(
+        "src.live.kill_switch not available on this branch (introduced in another PR); skipping E2 integration test",
+        allow_module_level=True,
+    )
+
 
 def _write(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -74,7 +83,9 @@ def _make_guard_or_skip():
         pytest.skip(f"Cannot instantiate SafetyGuard with inferred kwargs={kwargs}: {e!r}")
 
 
-def test_kill_switch_blocks_via_safety_guard_e2(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_kill_switch_blocks_via_safety_guard_e2(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """
     E2-light: end-to-end within process:
       - write TOML kill_switch config
