@@ -1581,6 +1581,11 @@ Die folgenden Dateien **müssen** diese Marker enthalten für Auto-Updates:
 
 
 
+
+
+
+
+
 ```
 
 Das Batch-Tool ersetzt den Inhalt zwischen den Markern idempotent.

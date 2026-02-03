@@ -88,7 +88,13 @@ class ParquetCache:
             raise FileNotFoundError(
                 f"Cache nicht gefunden für Key: '{key}'. Erwarteter Pfad: {cache_path}"
             )
-        return atomic_read(cache_path, verify_checksum=False)
+        df = atomic_read(cache_path, verify_checksum=False)
+        # Normalize index to datetime64[ns, UTC] for determinism (Parquet may return ms)
+        if hasattr(df.index, "as_unit"):
+            df.index = df.index.as_unit("ns")
+        else:
+            df.index = pd.to_datetime(df.index, utc=True)
+        return df
 
     def exists(self, key: str) -> bool:
         """

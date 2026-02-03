@@ -36,6 +36,7 @@ import pytest
 import pandas as pd
 import numpy as np
 
+from tests.utils.dt import normalize_dt_index
 from src.data import (
     DataNormalizer,
     ParquetCache,
@@ -306,8 +307,12 @@ class TestCacheSavePerformance:
 
         assert elapsed_ms < 300, f"Cache-Roundtrip dauerte {elapsed_ms:.1f}ms (Budget: 300ms)"
 
-        # Verify Daten identisch (check_freq=False weil Parquet freq nicht erhält)
-        pd.testing.assert_frame_equal(large_dataset, loaded, check_freq=False)
+        # Verify Daten identisch (check_freq=False weil Parquet freq nicht erhält); Index ns für Roundtrip
+        pd.testing.assert_frame_equal(
+            normalize_dt_index(large_dataset, ensure_utc=True),
+            normalize_dt_index(loaded, ensure_utc=True),
+            check_freq=False,
+        )
 
 
 # ============================================================================
