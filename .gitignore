@@ -123,3 +123,6 @@ docs/_scratch/
 
 # Local verify artifacts (do not commit)
 docs/ops/evidence/assets/EV_GRAFANA_VERIFY_V2_*/
+
+# ops run logs
+reports/ops/*.txt
