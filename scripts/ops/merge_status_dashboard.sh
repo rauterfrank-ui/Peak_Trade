@@ -24,7 +24,7 @@ show_status () {
 hgrep () {
   local pat="$1" file="$2"
   if command -v rg >/dev/null 2>&1; then
-    rg -n --fixed-strings "$pat" "$file" >/dev/null 2>&1
+    rg -n --fixed-strings -- "$pat" "$file" >/dev/null 2>&1
   else
     grep -nF -- "$pat" "$file" >/dev/null 2>&1
   fi
@@ -37,10 +37,10 @@ show_status "docs gatepack B1" $([[ -f docs/ops/drills/GATEPACK_B1_RESEARCH_CLI.
 show_status "docs gatepack B2" $([[ -f docs/ops/drills/GATEPACK_B2_LIVE_OPS.md ]] && echo 1 || echo 0)
 show_status "docs gatepack C " $([[ -f docs/ops/drills/GATEPACK_C_RISK.md ]] && echo 1 || echo 0)
 
-# B1: research_cli evidence (signals)
+# B1: research_cli evidence (signals; path built as "artifacts" / "research" in code)
 b1_ok=0
 if [[ -f scripts/research_cli.py ]]; then
-  if hgrep "--run-id" scripts/research_cli.py && hgrep "artifacts/research" scripts/research_cli.py; then
+  if hgrep "--run-id" scripts/research_cli.py && (hgrep "artifacts/research" scripts/research_cli.py || (hgrep '"artifacts"' scripts/research_cli.py && hgrep '"research"' scripts/research_cli.py)); then
     b1_ok=1
   fi
 fi
@@ -51,10 +51,10 @@ e_ok=0
 [[ -f src/ops/evidence.py ]] && e_ok=1
 show_status "evidence helper src/ops/evidence.py" "$e_ok"
 
-# B2: live_ops evidence (signals)
+# B2: live_ops evidence (signals; path built as "artifacts" / "live_ops", meta has "mode": "no_live")
 b2_ok=0
 if [[ -f scripts/live_ops.py ]]; then
-  if hgrep "--run-id" scripts/live_ops.py && hgrep 'mode": "no_live' scripts/live_ops.py; then
+  if hgrep "--run-id" scripts/live_ops.py && (hgrep 'mode": "no_live' scripts/live_ops.py || hgrep '"no_live"' scripts/live_ops.py); then
     b2_ok=1
   fi
 fi
