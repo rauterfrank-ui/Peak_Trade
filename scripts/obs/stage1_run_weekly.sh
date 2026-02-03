@@ -30,5 +30,6 @@ echo "=== wrote: $OUT ==="
   --root "${REPORT_ROOT}" \
   --index "${REPORT_ROOT}/index.json" \
   --out "${REPORT_ROOT}/validation.json" \
-  --require "data.json" \
-  --require "report.md" || exit 2
+  --require "${RUN_DATE}_snapshot.md" \
+  --require "${RUN_DATE}_summary.json" \
+  --require "stage1_trend.json" || exit 2
