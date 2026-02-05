@@ -584,8 +584,8 @@ git checkout main
 git fetch origin --prune
 git reset --hard origin/main
 
-# 4) verify anchors
-rg -n "## Phase 17 — Release/Tagging Rules|## Phase 18 — Artifact Naming Convention|## Phase 19 — Docs-Gate Cheat Sheet|## Phase 20 — Quarterly Cleanup" \
+# 4) verify anchors (pattern = actual Phase 17–20 headings on main)
+rg -n "## Phase 17 — Release/Tagging Rules \(Runbook Lifecycle\)|## Phase 18 — Artifact Naming Convention|## Phase 19 — Docs-Gate Cheat Sheet|## Phase 20 — Quarterly Cleanup" \
   docs/ops/runbooks/cursor_multi_agent_orchestration.md
 ```
 
