@@ -4,21 +4,26 @@ set -euo pipefail
 ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
 
-unset GITHUB_TOKEN || true
 trap 'if [ -t 0 ]; then stty echo; fi' EXIT
 
-if [ -t 0 ]; then
-  echo -n "Paste full ghp_/github_pat_ token (hidden): "
-  stty -echo
-  IFS= read -r GITHUB_TOKEN
-  stty echo
-  echo
+# Token aus Umgebung nutzen, wenn gesetzt (z. B. GITHUB_TOKEN=$(pbpaste) vorher)
+if [ -n "${GITHUB_TOKEN:-}" ]; then
+  echo "Using existing GITHUB_TOKEN from environment."
 else
-  echo "NOTE: stdin is not a TTY; token input will be visible."
-  printf "Paste full ghp_/github_pat_ token: "
-  IFS= read -r GITHUB_TOKEN
+  if [ -t 0 ] && [ -n "${GITHUB_TOKEN_HIDDEN:-}" ]; then
+    echo -n "Paste full ghp_/github_pat_ token (hidden): "
+    stty -echo
+    IFS= read -r GITHUB_TOKEN
+    stty echo
+    echo
+  else
+    printf "Paste full ghp_/github_pat_ token (visible): "
+    IFS= read -r GITHUB_TOKEN
+  fi
+  # Führende/nachfolgende Leerzeichen und Zeilenumbrüche entfernen
+  GITHUB_TOKEN="$(printf '%s' "$GITHUB_TOKEN" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\r\n')"
+  export GITHUB_TOKEN
 fi
-export GITHUB_TOKEN
 
 python3 - <<'PY'
 import os, re, sys
@@ -38,6 +43,13 @@ export GITHUB_RUN_LOGS_DIR="$ROOT/artifacts/gh_run_logs"
 
 bash scripts/ops/fetch_lint_gate_logs.sh
 
-echo
-echo "Next: pick RUN_ID from above and run:"
-echo "  bash scripts/ops/fetch_lint_gate_logs.sh <RUN_ID>"
+if [ -n "${1:-}" ]; then
+  echo
+  echo "Fetching logs for RUN_ID=$1 ..."
+  bash scripts/ops/fetch_lint_gate_logs.sh "$1"
+else
+  echo
+  echo "Next: pick RUN_ID from above and run:"
+  echo "  bash scripts/ops/fetch_lint_gate_logs.sh <RUN_ID>"
+  echo "  or: bash scripts/ops/setup_gh_token_and_list_lint_runs.sh <RUN_ID>"
+fi
