@@ -5,13 +5,19 @@ ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
 
 unset GITHUB_TOKEN || true
-trap 'stty echo' EXIT
+trap 'if [ -t 0 ]; then stty echo; fi' EXIT
 
-echo -n "Paste full ghp_/github_pat_ token (hidden): "
-stty -echo
-IFS= read -r GITHUB_TOKEN
-stty echo
-echo
+if [ -t 0 ]; then
+  echo -n "Paste full ghp_/github_pat_ token (hidden): "
+  stty -echo
+  IFS= read -r GITHUB_TOKEN
+  stty echo
+  echo
+else
+  echo "NOTE: stdin is not a TTY; token input will be visible."
+  printf "Paste full ghp_/github_pat_ token: "
+  IFS= read -r GITHUB_TOKEN
+fi
 export GITHUB_TOKEN
 
 python3 - <<'PY'
