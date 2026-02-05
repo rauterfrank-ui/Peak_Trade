@@ -26,6 +26,10 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
+import pytest
+
+pytestmark = pytest.mark.network
+
 
 @dataclass
 class _State:
@@ -200,7 +204,10 @@ class _Handler(BaseHTTPRequestHandler):
 
 
 def _start_server(kind: str, state: _State) -> tuple[ThreadingHTTPServer, threading.Thread, str]:
-    srv = ThreadingHTTPServer(("127.0.0.1", 0), _Handler)
+    try:
+        srv = ThreadingHTTPServer(("127.0.0.1", 0), _Handler)
+    except PermissionError as e:
+        pytest.skip(f"network/port bind not permitted in this environment: {e}")
     srv.kind = kind  # type: ignore[attr-defined]
     srv.state = state  # type: ignore[attr-defined]
     host, port = srv.server_address

@@ -9,13 +9,19 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
+import pytest
+
+pytestmark = pytest.mark.network
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 def _free_port() -> int:
     with socket.socket() as s:
-        s.bind(("127.0.0.1", 0))
+        try:
+            s.bind(("127.0.0.1", 0))
+        except PermissionError as e:
+            pytest.skip(f"network/port bind not permitted in this environment: {e}")
         return s.getsockname()[1]
 
 
