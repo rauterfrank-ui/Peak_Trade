@@ -126,3 +126,6 @@ docs/ops/evidence/assets/EV_GRAFANA_VERIFY_V2_*/
 
 # ops run logs
 reports/ops/*.txt
+
+# local scratch (quarantined untracked)
+.scratch/
