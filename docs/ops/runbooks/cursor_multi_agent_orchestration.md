@@ -274,7 +274,7 @@ tar -tzf grafana_ds_fix_worktree_snapshot.tgz | head -n 30
 Rücknahme eines gemergten Commits per `git revert`; erzeugt einen neuen, nachvollziehbaren Commit. Commit-SHA von `origin&#47;main` verwenden (z. B. aus Evidence Pack oder `git log`).
 
 ```bash
-# - pick the commit sha from origin/main (examples)
+# - pick the commit sha from origin&#47;main (examples)
 #   - runbook merge: 70745c8b...
 #   - ignore scratch: 2aa7445b...
 git fetch origin --prune
@@ -316,5 +316,165 @@ gh pr merge "$PR_NUM" --squash --delete-branch
 # resync
 git checkout main
 git fetch origin --prune
-git reset --hard origin/main
+git reset --hard origin&#47;main
 ```
+
+---
+
+## Phase 13 — Maintenance: Drift Detection & Repro Baseline (Recurring)
+
+### Entry
+- `main` clean, stacks (falls genutzt) sind stabil.
+- Ziel: frühzeitig Config/Env-Drift erkennen, ohne Live/Execution zu berühren.
+
+### Steps (Commands)
+```bash
+# 1) Repo baseline snapshot (metadata-only)
+git fetch origin --tags --prune
+git rev-parse HEAD
+git status -sb
+git log --oneline -n 20
+
+# 2) Dependency drift (best-effort; skip if no venv)
+python3 -VV
+pip --version || true
+pip freeze | sort > /tmp/pip_freeze.sorted.txt
+shasum -a 256 /tmp/pip_freeze.sorted.txt
+
+# 3) Config drift (tracked config files)
+git ls-files \
+  | rg "\.(toml|ya?ml|json)$" \
+  | sort > /tmp/tracked_configs.list
+
+tar -czf /tmp/tracked_configs_snapshot.tgz -T /tmp/tracked_configs.list
+shasum -a 256 /tmp/tracked_configs_snapshot.tgz
+
+# 4) Prom/Grafana baseline (if running)
+[ -x scripts/ops/prom_targets_check.sh ] && ./scripts/ops/prom_targets_check.sh || true
+curl -fsS http://localhost:9090/-/ready >/dev/null && echo "prom: OK" || true
+curl -fsS http://localhost:3000/login >/dev/null && echo "grafana: OK" || true
+```
+
+### Exit
+- Snapshots/Checksums in `/tmp` (oder dokumentierter Ort) für spätere Vergleiche gesichert.
+- Keine Änderung an Live/Execution.
+
+---
+
+## Phase 14 — Drift Review & Remediation
+
+### Entry
+- Phase-13-Baseline wurde mindestens einmal erstellt.
+- Neuer Lauf (z. B. nach `git pull` oder Env-Änderung) durchgeführt; neue Snapshots in `/tmp` vorhanden.
+
+### Steps (Commands)
+```bash
+# 1) Repo-Vergleich (Commit/Branch)
+git fetch origin --tags --prune
+git rev-parse HEAD
+git log --oneline -n 5
+# Diff gegen gespeicherte HEAD/status aus Phase 13 (manuell vergleichen oder diff /tmp/status_old.txt <(git status -sb))
+
+# 2) Dependency-Vergleich (pip freeze)
+# Vorher: Baselines aus Phase 13 archivieren (z. B. pip_freeze.sorted.txt → pip_freeze.baseline.txt)
+pip freeze | sort > /tmp/pip_freeze.current.txt
+diff -u /tmp/pip_freeze.baseline.txt /tmp/pip_freeze.current.txt || true
+
+# 3) Config-Snapshot-Vergleich (Checksum oder tar diff)
+# Baselines: tracked_configs_snapshot.tgz + .sha256 aus Phase 13 behalten
+shasum -a 256 /tmp/tracked_configs_snapshot.tgz
+# Bei Abweichung: tar -tzf /tmp/tracked_configs_snapshot.tgz | sort vs. Baseline-Listing
+
+# 4) Entscheidung
+# Kein Drift → nichts tun. Drift → Ursache klären (Intent vs. Versehen), ggf. PR für bewusste Änderung, Rollback/Revert bei Versehen.
+```
+
+### Exit
+- Drift dokumentiert; bewusste Änderungen in PR/Commit, versehentliche rückgängig gemacht.
+
+---
+
+## Phase 15 — CI Docs-Gate Workflow
+
+### Entry
+- Runbook/Phasen auf `main`; Branch-Protection für `main` aktiv.
+- Ziel: Docs- und Runbook-Änderungen müssen CI (Lint/Docs-Build) bestehen, bevor Merge.
+
+### Steps (Commands)
+```bash
+# 1) Branch-Protection prüfen (GitHub; erforderliche Status-Checks)
+gh api repos/:owner/:repo/branches/main/protection 2>/dev/null | jq '.required_status_checks.contexts' || true
+
+# 2) Docs-relevante CI-Jobs (Beispiele; anpassen an eure Workflow-Namen)
+gh workflow list
+ls -la .github/workflows/*.yml 2>/dev/null | head -20
+
+# 3) Lokaler Docs-Gate (vor Push): Lint + ggf. Docs-Build
+pre-commit run --all-files || true
+# Falls MkDocs/Quarto/Sphinx: mkdocs build / quarto render / sphinx-build (je nach Stack)
+[ -f mkdocs.yml ] && mkdocs build --strict 2>/dev/null || true
+
+# 4) PR erstellen; CI muss grün sein
+git checkout -b docs/runbook-phase-13-16
+git add docs/ops/runbooks/cursor_multi_agent_orchestration.md
+git commit -m "docs(runbook): add phases 13–16 (maintenance, drift, CI docs-gate, incident playbook)"
+git push -u origin docs/runbook-phase-13-16
+gh pr create --base main --head docs/runbook-phase-13-16 \
+  --title "docs(runbook): phases 13–16" \
+  --body "Phase 13: drift detection & repro baseline. Phase 14: drift review. Phase 15: CI docs-gate. Phase 16: incident playbook."
+gh pr checks --watch
+# Nach Grün: gh pr merge --squash --delete-branch
+```
+
+### Exit
+- Nur PRs mit grüner CI gemerged; Runbook-Änderungen durch Docs-Gate abgesichert.
+
+---
+
+## Phase 16 — Incident Playbook
+
+### Entry
+- Störung oder unerwartetes Verhalten (z. B. Agent-Lauf, Observability, Config, CI).
+
+### Steps (Commands)
+
+**1) Detection & Triage**
+```bash
+# Schnell-Check: Repo, Prozesse, Ports
+git status -sb
+git log --oneline -n 3
+lsof -nP -iTCP -sTCP:LISTEN | egrep ':(3000|8000|9090|9092|9094|9095|9109|9110|9111)\b' || true
+
+# Observability erreichbar?
+curl -fsS http://localhost:9090/-/ready >/dev/null && echo "prom: OK" || echo "prom: DOWN"
+curl -fsS http://localhost:3000/login >/dev/null && echo "grafana: OK" || echo "grafana: DOWN"
+
+# Compose-Stacks
+docker compose ls
+[ -x scripts/ops/prom_targets_check.sh ] && ./scripts/ops/prom_targets_check.sh || true
+```
+
+**2) Mitigation (kein Live/Execution)**
+```bash
+# Stacks stoppen (nur wenn Ursache dort vermutet)
+# for d in peaktrade-shadow-mvs peaktrade-ai-live-ops peaktrade-observability; do
+#   [ -d "$d" ] && (cd "$d" && docker compose down --remove-orphans) || true
+# done
+
+# Repo-Reset (nur Working Tree; keine Force-Push ohne Absprache)
+git status
+# git restore --staged . && git restore .   # nur bei lokaler Versehen-Änderung
+
+# Env sicher: Execution weiter blockiert
+echo "PEAK_TRADE_EXECUTION_FORBIDDEN=${PEAK_TRADE_EXECUTION_FORBIDDEN:-not set}"
+export PEAK_TRADE_MODE=research
+export PEAK_TRADE_LIVE=0
+export PEAK_TRADE_EXECUTION_FORBIDDEN=1
+```
+
+**3) Post-Mortem (nach Stabilisierung)**
+- Kurz dokumentieren: Was? Wann? Welche Schritte? Rollback/ Fix?
+- Optional: Eintrag in `docs/ops/runbooks/` oder Incident-Log; keine Secrets festhalten.
+
+### Exit
+- System stabil; keine Live-Execution ausgelöst; Post-Mortem bei Bedarf erstellt.
