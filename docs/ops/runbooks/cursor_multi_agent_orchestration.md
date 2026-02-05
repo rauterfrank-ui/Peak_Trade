@@ -426,8 +426,29 @@ gh pr checks --watch
 # Nach Grün: gh pr merge --squash --delete-branch
 ```
 
+### Token-Policy (Slash in Inline-Code) — lokal wie CI
+
+Docs-Token-Policy lokal wie in CI prüfen; typische Verstöße: Pfade in Inline-Code mit `/` statt `&#47;`.
+
+```bash
+# 1) Reproduce locally exactly like CI
+python3 scripts/ops/validate_docs_token_policy.py --base origin/main
+
+# 2) Identify common inline-code violations (ILLUSTRATIVE)
+# - Inline code with path-like tokens must use &#47; instead of /
+rg -n "``[^`]*\/[^`]*``" docs -S || true
+
+# 3) Typical fixes (edit intentionally)
+# - `origin/main` -> `origin&#47;main`
+# - `.scratch/`   -> `.scratch&#47;`
+
+# confirm after fix
+python3 scripts/ops/validate_docs_token_policy.py --base origin/main
+```
+
 ### Exit
 - Nur PRs mit grüner CI gemerged; Runbook-Änderungen durch Docs-Gate abgesichert.
+- Token-Policy lokal bestanden (Slash in Inline-Code als `&#47;`).
 
 ---
 
@@ -478,3 +499,201 @@ export PEAK_TRADE_EXECUTION_FORBIDDEN=1
 
 ### Exit
 - System stabil; keine Live-Execution ausgelöst; Post-Mortem bei Bedarf erstellt.
+
+---
+
+## Phase 17 — Release/Tagging Rules (Runbook Lifecycle)
+
+### Entry
+- Ein Runbook-Change ist gemerged (`main`), CI grün.
+- Ziel: klare Versionierung + reproduzierbare Artefakte.
+
+### Steps (Commands)
+```bash
+# 1) Tag naming convention
+# - runbook-cursor-ma-v<N>  (annotated tag)
+# - Tag message must reference PR(s)
+
+git fetch origin --tags --prune
+git rev-parse HEAD
+git log --oneline -n 5
+
+# create next tag (example)
+# git tag -a runbook-cursor-ma-v4 -m "Runbook phases X–Y merged (#NNNN)"
+# git push origin runbook-cursor-ma-v4
+
+# verify remote tag exists
+# git ls-remote --tags origin | rg 'runbook-cursor-ma-v4'
+```
+
+### Runbook-ZIP aus Tag erzeugen
+
+Nach dem Tag: ZIP aus dem getaggten Stand erzeugen, Checksum ablegen, optional nach `~/Downloads` kopieren.
+
+```bash
+TAG="runbook-cursor-ma-v3"
+OUT="/tmp/cursor_multi_agent_orchestration_runbook_${TAG}.zip"
+
+git fetch origin --tags --prune
+git archive --format=zip --output="$OUT" \
+  "$TAG" docs/ops/runbooks/cursor_multi_agent_orchestration.md
+
+cd /tmp
+BASENAME="$(basename "$OUT")"
+H="$(shasum -a 256 "$BASENAME" | awk '{print $1}')"
+printf "%s  %s\n" "$H" "$BASENAME" > "${BASENAME}.sha256"
+shasum -a 256 -c "${BASENAME}.sha256"
+
+# optional: copy to Downloads
+cp -v "$OUT" "${OUT}.sha256" ~/Downloads/
+ls -la ~/Downloads/"$BASENAME"*
+```
+
+### PR workflow (runbook phases 17–20)
+
+Preflight: Docs-Token-Policy lokal prüfen (fast fail). Branch, Commit, Push, PR, Checks, bei Grün Merge + Resync. Anschließend Anker prüfen.
+
+```bash
+# 0) local doc gate (fast fail)
+python3 scripts/ops/validate_docs_token_policy.py --base origin/main
+
+# 1) branch + commit
+git status
+git checkout -b docs/runbook-cursor-ma-phases-17-20
+
+git add docs/ops/runbooks/cursor_multi_agent_orchestration.md
+git diff --cached
+git commit -m "docs(runbook): add phases 17–20 (tagging, artifacts, docs-gate, cleanup)"
+
+# 2) push + PR
+git push -u origin docs/runbook-cursor-ma-phases-17-20
+
+gh pr create \
+  --base main \
+  --head docs/runbook-cursor-ma-phases-17-20 \
+  --title "docs(runbook): add phases 17–20 (tagging, artifacts, docs-gate, cleanup)" \
+  --body $'Extends cursor_multi_agent_orchestration.md with:\n- Phase 17: release/tagging rules\n- Phase 18: artifact naming + sha256 verification\n- Phase 19: docs-token-policy cheat sheet\n- Phase 20: quarterly cleanup\n\nIncludes PR workflow subsection (runbook phases 17–20).\n\nDocs-only; artifacts remain local-only.'
+
+PR_NUM="$(gh pr view --json number -q .number)"
+gh pr checks "$PR_NUM" --watch
+
+# 3) merge when green + resync
+gh pr merge "$PR_NUM" --squash --delete-branch
+
+git checkout main
+git fetch origin --prune
+git reset --hard origin/main
+
+# 4) verify anchors
+rg -n "## Phase 17 — Release/Tagging Rules|## Phase 18 — Artifact Naming Convention|## Phase 19 — Docs-Gate Cheat Sheet|## Phase 20 — Quarterly Cleanup" \
+  docs/ops/runbooks/cursor_multi_agent_orchestration.md
+```
+
+### Exit
+- Annotated Tag auf `main` gepusht; Tag-Message referenziert PR(s); Reproduzierbarkeit gesichert.
+- Optional: Runbook-ZIP + `.sha256` in `/tmp` (und ggf. `~/Downloads`) für Bundle (Phase 9) verfügbar.
+
+---
+
+## Phase 18 — Artifact Naming Convention
+
+### Entry
+- Phase 17 abgeschlossen (Tag z. B. `runbook-cursor-ma-v<N>` vorhanden).
+- Ziel: einheitliche, versionierte Artefakt-Namen für Bundles und Evidence-Packs.
+
+### Steps (Naming Rules)
+
+| Artefakt-Typ | Muster | Beispiel |
+|--------------|--------|----------|
+| Runbook-ZIP | `cursor_multi_agent_orchestration_runbook.zip` | (ein pro Release; Version im Tag) |
+| Release-Bundle (tgz) | `release_bundle_cursor_ma_v<N>.tgz` | `release_bundle_cursor_ma_v4.tgz` |
+| Release-Bundle Checksum | `release_bundle_cursor_ma_v<N>.tgz.sha256` | |
+| Evidence-Pack (tgz) | `evidence_pack_cursor_ma_v<N>.tgz` | `evidence_pack_cursor_ma_v4.tgz` |
+| Evidence-Pack Checksum | `evidence_pack_cursor_ma_v<N>.tgz.sha256` | |
+| Config-Snapshot | `peaktrade_configs_snapshot.tgz` / `tracked_configs_snapshot.tgz` | (optional mit Datum im Namen) |
+| Worktree-Snapshot | `grafana_ds_fix_worktree_snapshot.tgz` (oder themenspezifisch) | |
+
+```bash
+# Beispiel: Artefakte für v4 benennen
+V=4
+cp release_bundle_cursor_ma_v1.tgz "release_bundle_cursor_ma_v${V}.tgz"
+shasum -a 256 "release_bundle_cursor_ma_v${V}.tgz" | awk '{print $1, $2}' > "release_bundle_cursor_ma_v${V}.tgz.sha256"
+```
+
+### Exit
+- Alle Release-Artefakte folgen dem Muster; Version `<N>` stimmt mit Tag `runbook-cursor-ma-v<N>` überein.
+
+---
+
+## Phase 19 — Docs-Gate Cheat Sheet
+
+### Entry
+- Branch-Protection für `main` aktiv; Docs-relevante CI-Workflows vorhanden.
+
+### Steps (Quick Reference)
+
+| Schritt | Befehl / Aktion |
+|---------|------------------|
+| Lokal vor Push | `pre-commit run --all-files`; ggf. `mkdocs build --strict` |
+| Branch erstellen | `git checkout -b docs/runbook-<thema>` |
+| PR öffnen | `gh pr create --base main --head docs/runbook-<thema> --title "..." --body "..."` |
+| CI beobachten | `gh pr checks --watch` |
+| Merge (nach Grün) | `gh pr merge <PR_NUM> --squash --delete-branch` |
+| Resync main | `git checkout main && git fetch origin --prune && git reset --hard origin/main` |
+
+**Typische Docs-Gate-Fehler**
+- Lint/format: `pre-commit run -a` erneut ausführen, Änderungen committen.
+- Docs-Build: `mkdocs build --strict` (oder Quarto/Sphinx) lokal prüfen; fehlende Referenzen/ broken links beheben.
+- Token-Policy: `python3 scripts/ops/validate_docs_token_policy.py --base origin/main`; Inline-Code-Pfade mit `&#47;` statt `/` (z. B. `origin&#47;main`, `.scratch&#47;`).
+
+### Exit
+- Cheat Sheet für schnelles Nachschlagen bei Runbook/Docs-PRs verfügbar.
+
+---
+
+## Phase 20 — Quarterly Cleanup
+
+### Entry
+- Laufendes Quartal endet; Runbook und Artefakte sind mehrfach genutzt worden.
+- Ziel: veraltete lokale Artefakte, verwaiste Branches und veraltete Dokumentation bereinigen (ohne Live/Execution).
+
+### Steps (Commands)
+```bash
+# 1) Verify repo clean
+git status
+
+# 2) Inspect scratch contents (ignored) + decide what to keep
+du -sh .scratch 2>/dev/null || true
+find .scratch -maxdepth 2 -type f -print 2>/dev/null | head -n 50
+
+# 3) Archive scratch manifests (optional)
+mkdir -p /tmp/scratch_archive
+cp -v .scratch/manifests/*.txt* /tmp/scratch_archive/ 2>/dev/null || true
+tar -czf /tmp/scratch_archive.tgz -C /tmp scratch_archive
+shasum -a 256 /tmp/scratch_archive.tgz | tee /tmp/scratch_archive.tgz.sha256
+
+# 4) Prune stale docker resources (careful; optional)
+docker system df
+# docker system prune -f
+
+# 5) Remove old /tmp bundles (optional; manual selection)
+ls -la /tmp | rg "cursor_multi_agent_orchestration_runbook|release_bundle_cursor_ma|evidence_pack_cursor_ma|incident_evidence_cursor_ma" || true
+
+# 6) Alte Pip/Config-Snapshots in /tmp
+ls -la /tmp/pip_freeze*.txt /tmp/tracked_configs*.tgz /tmp/peaktrade_configs*.tgz 2>/dev/null || true
+
+# 7) Verwaiste lokale Branches (nur anzeigen; Löschen manuell)
+git fetch origin --prune
+git branch -vv | grep ': gone]' || true
+# git branch -d <branch>   # nur nach Prüfung
+
+# 8) Runbook-Dokumentation prüfen
+# - Phasen 1–20 auf Aktualität (Links, Workflow-Namen, Beispiele)
+# - Veraltete PR-Referenzen in Tag-Messages oder Evidence-Packs dokumentieren, nicht löschen
+
+# 9) Optional: Tag-Liste für Audit
+git tag --list 'runbook-cursor-ma-v*' | sort -V
+```
+
+### Exit
+- Repo clean; .scratch inspiziert, ggf. Manifests archiviert; alte lokale Artefakte/Docker bereinigt; verwaiste Branches bereinigt; Runbook-Referenzen geprüft.
