@@ -1377,3 +1377,248 @@ PR_NUM="$(gh pr view --json number -q .number 2>/dev/null || true)"
 # resync:
 # git checkout main && git fetch origin --prune && git reset --hard origin/main
 ```
+
+---
+
+## Phase 37 — Merge Queue Failures (merge_group) Handling
+
+### Entry
+- PR was green on `pull_request` but fails under `merge_group` (merge queue run).
+
+### Steps (Commands)
+```bash
+PR_NUM="<PR_NUMBER>"
+
+# 1) Confirm required checks status (UI fallback if gh TLS broken)
+gh pr checks "$PR_NUM" --required || true
+
+# 2) Bring branch up to date with base (preferred: rebase; alternative: merge)
+BR="$(gh pr view "$PR_NUM" --json headRefName -q .headRefName 2>/dev/null || true)"
+git fetch origin --prune
+[ -n "$BR" ] && git checkout "$BR"
+
+# rebase onto latest main (keeps history clean)
+git rebase origin/main
+git push --force-with-lease
+
+# 3) Re-run local docs gates (docs-only PR)
+python3 scripts/ops/validate_docs_token_policy.py --base origin/main
+./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main || true
+```
+
+### Exit
+- Branch mit `main` abgeglichen; lokale Docs-Gates grün; Merge-Queue kann erneut laufen.
+
+---
+
+## Phase 38 — Re-Run Strategy (CI / merge_group)
+
+### Entry
+- Ein oder mehrere CI-Checks sind rot; Merge-Queue (`merge_group`) ist fehlgeschlagen oder PR-Checks hängen.
+- Ziel: entscheiden, ob Re-Run ausreicht oder Rebase/ Fix nötig ist.
+
+### Steps (Commands)
+
+**0) Required checks before merge / evidence**
+```bash
+PR_NUM="<PR_NUMBER>"
+
+# Prefer: do not merge until required checks are green.
+gh pr checks "$PR_NUM" --required || true
+
+# If a required check is flaky, re-run in UI (preferred) or via gh if available:
+# gh run rerun <RUN_ID>
+
+# Record evidence: link run + failing job for later triage.
+```
+
+**1) Re-Run vs. Rebase/Fix**
+- **Nur Re-Run:** Flaky/transiente Fehler (Netzwerk, Timeout, externer Dienst); keine Code-/Config-Änderung nötig.
+- **Rebase/Fix:** Branch out-of-date, Konflikte, Merge-Queue-Failure wegen Integration; Logs zeigen echten Fehler (Lint, Token-Policy, Reference-Targets). → Phase 37 (merge_group) bzw. Phase 23 (CI Triage).
+
+**2) Re-Run auslösen**
+```bash
+PR_NUM="<PR_NUMBER>"
+BR="$(gh pr view "$PR_NUM" --json headRefName -q .headRefName)"
+
+# Letzte Runs für den PR-Branch
+gh run list --limit 10 --branch "$BR"
+
+# Bestimmten Run erneut ausführen (RUN_ID aus Liste)
+# gh run rerun <RUN_ID> --failed
+# oder alle Jobs des Runs:
+# gh run rerun <RUN_ID>
+```
+
+**3) Nach Re-Run**
+- Checks beobachten: `gh pr checks "$PR_NUM" --watch`.
+- Bei erneutem Failure: Logs prüfen (`gh run view <RUN_ID> --log --log-failed`), dann Fix/Rebase (Phase 37/23).
+
+**4) merge_group erneut anstoßen**
+- Nach Rebase + Push (Phase 37): Merge-Queue läuft automatisch erneut. Kein separates „merge_group re-run“ nötig; Queue verarbeitet den aktualisierten Branch.
+
+### Exit
+- Re-Run nur bei vermutlich transienten Fehlern; bei echten Fehlern Rebase/Fix (Phase 37/23), dann erneuter Push.
+
+---
+
+## Phase 39 — PR Body Templates
+
+### Entry
+- Du öffnest einen PR für Runbook/Docs-Änderungen und willst einheitliche, vollständige PR-Bodies.
+- Ziel: Required-Infos für Reviewer und Audit; Copy-Paste-fähige Vorlagen.
+
+### Steps (Templates)
+
+**Runbook-Phasen-Batch (Docs-Only)**
+```markdown
+Extends cursor_multi_agent_orchestration.md with:
+- Phase XX: <short title>
+- Phase YY: <short title>
+(optional: - Phase ZZ: …)
+
+Docs-only; no runtime behavior changes.
+```
+
+**Runbook-Phasen 37–40 (Beispiel)**
+```markdown
+Extends cursor_multi_agent_orchestration.md with:
+- Phase 37: merge queue (merge_group) failure handling
+- Phase 38: re-run strategy (CI / merge_group)
+- Phase 39: PR body templates
+- Phase 40: v5 tag procedure
+
+Docs-only.
+```
+
+**Single-Phase / Fix**
+```markdown
+- Phase NN: <title> (or: Fix for <topic>)
+- <one-line reason or scope>
+
+Docs-only.
+```
+
+**Revert PR**
+```markdown
+Reverts commit <COMMIT_SHA> due to <reason>.
+
+(Optional) Ref: Phase 12 rollback.
+```
+
+**Summary / Gates / Notes (optional block for PR body)**
+```markdown
+Summary
+- <1–3 bullets of what changed>
+
+Gates
+- docs-token-policy-gate: <local result / not applicable>
+- docs-reference-targets-gate: <local result / not applicable>
+
+Notes
+- Docs-only; no runtime behavior changes.
+- If gh TLS issues: PR created via UI (Phase 33).
+```
+
+### Exit
+- PR-Body enthält Scope und „Docs-only“ (oder Revert/Ref); Vorlagen für künftige Runbook-PRs nutzbar.
+
+---
+
+## Phase 40 — v5 Tag Procedure
+
+### Entry
+- Runbook-Änderungen inkl. Phasen 37–40 sind auf `main` gemerged; CI grün.
+- Ziel: annotierten Tag `runbook-cursor-ma-v5` setzen, pushen und verifizieren.
+
+### Steps (Commands)
+```bash
+# 1) Repo auf main, aktuell
+git fetch origin --tags --prune
+git checkout main
+git pull --ff-only origin main
+git rev-parse HEAD
+git log --oneline -n 5
+
+# 2) Tag erstellen (PR-Nummer in Message eintragen)
+git tag -a runbook-cursor-ma-v5 -m "Runbook phases 37–40 merged (#<PR_NUM>): merge_group handling, re-run strategy, PR body templates, v5 tag procedure"
+git push origin runbook-cursor-ma-v5
+
+# 3) Verifizieren
+git ls-remote --tags origin | grep runbook-cursor-ma-v5
+git show runbook-cursor-ma-v5 --no-patch
+```
+
+**After merges**
+```bash
+# After merges:
+git checkout main
+git fetch origin --tags --prune
+git status -sb
+git rev-parse HEAD
+
+# Create next tag (example v5)
+# git tag -a runbook-cursor-ma-v5 -m "Runbook phases 33–40 merged (#NNNN...)"
+# git push origin runbook-cursor-ma-v5
+
+# Build zip from tag and checksum (pattern used in v1–v4)
+# git archive --format=zip --output=/tmp/cursor_multi_agent_orchestration_runbook_v5.zip \
+#   runbook-cursor-ma-v5 docs/ops/runbooks/cursor_multi_agent_orchestration.md
+# cd /tmp
+# H="$(shasum -a 256 cursor_multi_agent_orchestration_runbook_v5.zip | awk '{print $1}')"
+# printf "%s  %s\n" "$H" "cursor_multi_agent_orchestration_runbook_v5.zip" > cursor_multi_agent_orchestration_runbook_v5.zip.sha256
+# shasum -a 256 -c cursor_multi_agent_orchestration_runbook_v5.zip.sha256
+```
+
+**Optional: Runbook-ZIP aus v5**
+```bash
+TAG="runbook-cursor-ma-v5"
+OUT="/tmp/cursor_multi_agent_orchestration_runbook_${TAG}.zip"
+git archive --format=zip --output="$OUT" "$TAG" docs/ops/runbooks/cursor_multi_agent_orchestration.md
+cd /tmp
+H="$(shasum -a 256 "$(basename "$OUT")" | awk '{print $1}')"
+printf "%s  %s\n" "$H" "$(basename "$OUT")" > "$(basename "$OUT").sha256"
+shasum -a 256 -c "$(basename "$OUT").sha256"
+```
+
+### Exit
+- Tag `runbook-cursor-ma-v5` auf `origin`; Tag-Message referenziert PR; optional Runbook-ZIP + Checksum in `/tmp`.
+
+### Publish phases 37–40 (commit, push, PR)
+
+```bash
+# repo-root: publish phases 37–40 via PR (main protected) — commit first, then push + create PR (UI if gh TLS broken)
+
+# 0) docs gates preflight
+python3 scripts/ops/validate_docs_token_policy.py --base origin/main
+./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main || true
+
+# 1) branch + commit (required, since Phase 40 PR workflow assumes commit already exists)
+git status
+git checkout -b docs/runbook-cursor-ma-phases-37-40
+
+git add docs/ops/runbooks/cursor_multi_agent_orchestration.md
+git diff --cached
+git commit -m "docs(runbook): add phases 37–40 (merge_group, rerun, PR template, v5 tag)"
+
+# 2) push
+git push -u origin docs/runbook-cursor-ma-phases-37-40
+
+# 3) PR create (UI fallback if gh TLS broken)
+gh pr create \
+  --base main \
+  --head docs/runbook-cursor-ma-phases-37-40 \
+  --title "docs(runbook): add phases 37–40 (merge_group handling, rerun strategy, PR template, v5 tag)" \
+  --body $'Extends cursor_multi_agent_orchestration.md with:\n- Phase 37: merge_group failure handling\n- Phase 38: rerun strategy + flaky checks\n- Phase 39: docs-only PR body template\n- Phase 40: next tag + zip procedure\n\nDocs-only.'
+
+# if gh TLS fails, create PR via UI:
+# echo "https://github.com/rauterfrank-ui/Peak_Trade/compare/main...docs/runbook-cursor-ma-phases-37-40?expand=1"
+
+# 4) merge when green (UI if needed), then resync + verify anchors
+# PR_NUM="<PR_NUMBER>"
+# gh pr checks "$PR_NUM" --watch
+# gh pr merge "$PR_NUM" --squash --delete-branch
+# git checkout main && git fetch origin --prune && git reset --hard origin/main
+# rg -n "## Phase 37 — Merge Queue Failures|## Phase 38 — Re-Run Strategy|## Phase 39 — PR Body Templates|## Phase 40 — v5 Tag Procedure" \
+#   docs/ops/runbooks/cursor_multi_agent_orchestration.md
+```
