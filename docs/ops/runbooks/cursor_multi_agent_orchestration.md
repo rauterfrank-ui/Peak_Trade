@@ -761,11 +761,11 @@ git reset --hard origin/main
 
 | Kontext | Muster | Beispiele |
 |---------|--------|-----------|
-| Runbook Phasen | `docs/runbook-<topic>-phases-<n>-<m>` | `docs/runbook-cursor-ma-phases-21-24` |
-| Runbook Fix | `docs/runbook-<topic>-fix-<short>` | `docs/runbook-cursor-ma-fix-token-policy` |
-| Ops/Skripte | `ops/<bereich>-<kurzbeschreibung>` | `ops/validate-docs-token-policy`, `ops/prom-targets-check` |
-| Fix/Backport | `fix/<issue-oder-thema>` oder `backport/<pr>-to-main` | `fix/docs-gate-slash`, `backport/1234-to-main` |
-| Revert | `revert/<commit-oder-pr>` | `revert/runbook-or-scratch` |
+| Runbook Phasen | `docs&#47;runbook-<topic>-phases-<n>-<m>` | `docs&#47;runbook-cursor-ma-phases-21-24` |
+| Runbook Fix | `docs&#47;runbook-<topic>-fix-<short>` | `docs&#47;runbook-cursor-ma-fix-token-policy` |
+| Ops/Skripte | `ops&#47;<bereich>-<kurzbeschreibung>` | `ops&#47;validate-docs-token-policy`, `ops&#47;prom-targets-check` |
+| Fix/Backport | `fix&#47;<issue-oder-thema>` oder `backport&#47;<pr>-to-main` | `fix&#47;docs-gate-slash`, `backport&#47;1234-to-main` |
+| Revert | `revert&#47;<commit-oder-pr>` | `revert&#47;runbook-or-scratch` |
 
 ```bash
 # Beispiele: Branch anlegen
@@ -794,11 +794,11 @@ git checkout -b ops/ci-triage-patterns
 
 | CI-Fehler / Muster | Ursache (typisch) | Aktion |
 |--------------------|--------------------|--------|
-| Docs-Token-Policy fail | Slash in Inline-Code (z. B. `origin/main`) | `validate_docs_token_policy.py` lokal; Inline-Code mit `&#47;` ersetzen |
+| Docs-Token-Policy fail | Slash in Inline-Code (z. B. `origin&#47;main`) | `validate_docs_token_policy.py` lokal; Inline-Code mit `&#47;` ersetzen |
 | Lint/Format fail | Pre-Commit nicht lokal gelaufen oder andere Konfiguration | `pre-commit run -a`; Änderungen committen und pushen |
 | Docs-Build fail | Broken links, fehlende Referenzen, fehlerhafte Syntax | `mkdocs build --strict` (oder Quarto/Sphinx) lokal; Links/Refs prüfen |
 | Unrelated test fail | Flaky Test oder Änderung außerhalb des PR-Scopes | Prüfen ob PR nur `docs/` enthält; ggf. Test-Issue separat tracken, nicht in Docs-PR mischen |
-| Branch out-of-date | `main` ist voraus | `git fetch origin && git rebase origin/main` (oder Merge); Konflikte lösen |
+| Branch out-of-date | `main` ist voraus | `git fetch origin && git rebase origin&#47;main` (oder Merge); Konflikte lösen |
 
 ```bash
 # 1) CI-Status prüfen
@@ -884,8 +884,8 @@ rg -n "L6|Execution.*forbid|LIVE.*block|confirm token|armed" -S src scripts docs
 
 **4) Runbook commands (dry-run / non-destructive by default)**
 
-- Alle in `docs/runbooks` dokumentierten Befehle sollen dry-run bzw. nicht-destruktiv sein.
-- Bevorzuge `down` statt `rm -rf`; bevorzuge `curl … /-/ready`-Probes.
+- Alle in `docs&#47;runbooks` dokumentierten Befehle sollen dry-run bzw. nicht-destruktiv sein. <!-- pt:ref-target-ignore -->
+- Bevorzuge `down` statt `rm -rf`; bevorzuge `curl … &#47;-&#47;ready`-Probes.
 - `git reset --hard origin/main` nur explizit beim Reconcile nach Squash-Merge dokumentieren.
 
 **5) Documenting execution-adjacent**
