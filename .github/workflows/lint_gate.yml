@@ -55,22 +55,30 @@ jobs:
           echo "Base SHA: $BASE_SHA"
           echo "Head SHA: $HEAD_SHA"
 
-          # Get changed Python files
-          CHANGED_PY_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep '\.py$' || echo "")
+          # Get changed Python files (ignore diff errors so we don't fail on bad revision)
+          CHANGED_PY_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" 2>/dev/null | grep '\.py$' || true)
 
-          if [ -z "$CHANGED_PY_FILES" ]; then
-            echo "No Python files changed"
-            echo "applicable=false" >> $GITHUB_OUTPUT
+          if [ -n "$CHANGED_PY_FILES" ]; then
+            echo "Python files changed:"
+            echo "$CHANGED_PY_FILES"
+            echo "applicable=true" >> $GITHUB_OUTPUT
+            echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+            echo "$CHANGED_PY_FILES" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          echo "Python files changed:"
-          echo "$CHANGED_PY_FILES"
+          # No changed py files: if base ref missing (e.g. fetch failed), run full check
+          if ! git rev-parse --verify "$BASE_SHA" >/dev/null 2>&1; then
+            echo "Warning: base ref not available, running full ruff check"
+            echo "applicable=true" >> $GITHUB_OUTPUT
+            echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            exit 0
+          fi
 
-          echo "applicable=true" >> $GITHUB_OUTPUT
-          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGED_PY_FILES" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "No Python files changed"
+          echo "applicable=false" >> $GITHUB_OUTPUT
 
       - name: Set up Python
         if: steps.detect.outputs.applicable == 'true'
