@@ -799,7 +799,7 @@ git checkout -b ops/ci-triage-patterns
 | Lint/Format fail | Pre-Commit nicht lokal gelaufen oder andere Konfiguration | `pre-commit run -a`; Änderungen committen und pushen |
 | Docs-Build fail | Broken links, fehlende Referenzen, fehlerhafte Syntax | `mkdocs build --strict` (oder Quarto/Sphinx) lokal; Links/Refs prüfen |
 | Unrelated test fail | Flaky Test oder Änderung außerhalb des PR-Scopes | Prüfen ob PR nur `docs/` enthält; ggf. Test-Issue separat tracken, nicht in Docs-PR mischen |
-| Branch out-of-date | `main` ist voraus | `git fetch origin && git rebase origin/main` (oder Merge); Konflikte lösen |
+| Branch out-of-date | `main` ist voraus | `git fetch origin && git rebase origin&#47;main` (oder Merge); Konflikte lösen |
 
 ```bash
 # 1) CI-Status prüfen
@@ -871,7 +871,6 @@ git reset --hard origin/main
 rg -n "## Phase 21 — PR Hygiene|## Phase 22 — Branch Naming|## Phase 23 — CI Triage Patterns|## Phase 24 — No-Live Enforcement" \
   docs/ops/runbooks/cursor_multi_agent_orchestration.md
 ```
-
 ### Exit
 - CI-Fehler einer Kategorie zugeordnet; Fix angewendet (Token-Policy, Lint, Docs-Build, Rebase); keine Live/Execution ausgelöst.
 
@@ -917,7 +916,7 @@ rg -n "L6|Execution.*forbid|LIVE.*block|confirm token|armed" -S src scripts docs
 
 **4) Runbook commands (dry-run / non-destructive by default)**
 
-- Alle in `docs/runbooks` dokumentierten Befehle sollen dry-run bzw. nicht-destruktiv sein. <!-- pt:ref-target-ignore -->
+- Alle in `docs&#47;runbooks` dokumentierten Befehle sollen dry-run bzw. nicht-destruktiv sein. <!-- pt:ref-target-ignore -->
 - Bevorzuge `down` statt `rm -rf`; bevorzuge `curl … &#47;-&#47;ready`-Probes.
 - `git reset --hard origin/main` nur explizit beim Reconcile nach Squash-Merge dokumentieren.
 
