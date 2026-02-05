@@ -647,6 +647,18 @@ shasum -a 256 "release_bundle_cursor_ma_v${V}.tgz" | awk '{print $1, $2}' > "rel
 - Token-Policy: `python3 scripts/ops/validate_docs_token_policy.py --base origin/main`; Inline-Code-Pfade mit `&#47;` statt `/` (z. B. `origin&#47;main`, `.scratch&#47;`).
 - **docs-reference-targets-gate:** `./scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main`; referenzierte Repo-Pfade müssen existieren. False-Positives (illustrative Pfade): siehe `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md`. <!-- pt:ref-target-ignore -->
 
+**Token policy & reference targets (recommendations)**
+1. **Token policy:** Inline-code illustrative slashes must use `&#47;` (e.g. `origin&#47;main`, `scripts&#47;ops&#47;...`).
+2. **Reference targets:** Prose/table path-like tokens can be misread as repo paths and trigger docs-reference-targets-gate false positives.
+- **Prefer fenced code blocks** for commands (not inline-code inside tables).
+- If a table cell must contain path-like tokens, append `<!-- pt:ref-target-ignore -->` at end-of-line.
+
+**Local gates**
+```bash
+python3 scripts/ops/validate_docs_token_policy.py --base origin/main
+./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main || true
+```
+
 ### Exit
 - Cheat Sheet für schnelles Nachschlagen bei Runbook/Docs-PRs verfügbar.
 
@@ -1190,3 +1202,178 @@ pre-commit run --all-files
 
 ### Exit
 - Alle Punkte der Checkliste bestanden; PR kann gepusht werden; erwartet: Docs-Gates in CI grün.
+
+---
+
+## Phase 33 — PR Creation via GitHub UI (gh TLS Fallback)
+
+### Entry
+- `gh` fails with TLS verification errors (e.g., `tls: failed to verify certificate`).
+- Branch is already pushed to `origin`.
+
+### Steps (Commands)
+```bash
+BRANCH="<BRANCH_NAME>"
+
+# Open compare view (create PR from branch)
+# Replace <BRANCH_NAME> with your branch.
+echo "https://github.com/rauterfrank-ui/Peak_Trade/compare/main...${BRANCH}?expand=1"
+
+# Alternative direct PR creation URL:
+echo "https://github.com/rauterfrank-ui/Peak_Trade/pull/new/${BRANCH}"
+
+# In the UI:
+# - Set Title/Body (copy from runbook PR workflow block)
+# - Confirm "Required checks" section
+# - Squash merge + delete branch (or enable auto-merge if allowed)
+```
+
+### Exit
+- PR im UI erstellt; Required Checks bestätigt; Squash-Merge + Branch-Löschung wie im Runbook-Workflow.
+
+---
+
+## Phase 34 — Merge-Group Notes
+
+### Entry
+- Mehrere PRs sollen nacheinander oder als Gruppe gemerged werden (z. B. Runbook-Phasen-Batch).
+- Ziel: klare Reihenfolge, Abhängigkeiten und Merge-Strategie dokumentieren.
+
+### Steps (Commands)
+
+**1) Merge-Reihenfolge festlegen**
+- Abhängige PRs zuerst (z. B. Gate-Skript-Änderung vor Runbook-Phase, die darauf verweist).
+- Docs-Only-PRs können parallel oder in beliebiger Reihenfolge, sofern keine Cross-Referenzen brechen.
+
+**2) Branch-Protection & Required Checks**
+- Nur mergen, wenn alle **required** Checks grün sind.
+- Bei Merge-Group: jeden PR einzeln mergen; nach jedem Merge `main` resyncen, bevor der nächste Branch erstellt wird (falls Branch von `main` abzweigt).
+
+**3) Notizen für Operator**
+```bash
+# Vor Merge-Group: Notizen anlegen (lokal, nicht committen)
+# - Liste: PR-Nummern, Titel, Reihenfolge
+# - Nach jedem Merge: gh pr view <N> --json state, mergedAt
+# Resync nach jedem Merge:
+git checkout main
+git fetch origin --prune
+git reset --hard origin/main
+```
+
+**4) Auto-Merge bei erlaubten PRs**
+- Für Docs-Only/Low-Risk: `gh pr merge <PR_NUM> --squash --auto` (Phase 27); Merge-Group läuft dann nacheinander, sobald jeweils Checks grün sind.
+
+**5) When merge queue is enabled**
+- A PR can be green on `pull_request` but fail under `merge_group` due to integration effects (e.g. base moved, conflicts, or different env).
+- Treat merge_group failures: rebase or merge `main` into branch, re-run local gates (Phase 32), push, retry.
+
+**Quick sanity (before retry)**
+```bash
+git fetch origin --prune
+git status -sb
+```
+
+### Exit
+- Merge-Reihenfolge dokumentiert; jeder PR mit grünen Required Checks gemerged; main nach jedem Merge resynced.
+- Bei Merge-Queue: merge_group-Failures durch Rebase/Merge von main, lokale Gates, erneuten Push beheben.
+
+---
+
+## Phase 35 — Docs-Gate Table Hardening
+
+### Entry
+- Gate-Matrix (Phase 28) und Docs-Gate-Checklisten sind in Gebrauch.
+- Ziel: Tabelle und Referenzen konsistent halten; fehlende oder veraltete Einträge vermeiden.
+
+### Steps (Commands)
+
+**1) Gate-Liste gegen CI abgleichen**
+```bash
+# Welche Status-Checks verlangt main?
+gh api repos/:owner/:repo/branches/main/protection 2>/dev/null | jq '.required_status_checks.contexts'
+
+# Workflows, die Docs-Gates ausführen
+gh workflow list
+rg -l "validate_docs_token_policy|verify_docs_reference_targets" .github/workflows/
+```
+
+**2) Runbook-Tabellen prüfen**
+- Phase 28 (Gate Matrix): jede Zeile = Gate, der in CI oder als Required Check vorkommt.
+- Phase 19 (Docs-Gate Cheat Sheet): gleiche Gates mit Kurzbefehl und typischen Fehlern.
+- Phase 32 (Docs-Only CI Checklist): gleiche Gates in Checklistenform.
+
+**3) Einmalige Konsistenz-Checks**
+```bash
+# Erwähnte Skripte müssen existieren
+[ -f scripts/ops/validate_docs_token_policy.py ] && echo "token-policy: OK" || echo "token-policy: MISSING"
+[ -x scripts/ops/verify_docs_reference_targets.sh ] && echo "reference-targets: OK" || echo "reference-targets: MISSING"
+
+# False-Positives-Doc referenziert (Phase 19/26)
+[ -f docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md ] && echo "false-positives doc: OK" || echo "false-positives doc: MISSING"
+```
+
+**4) Bei neuen Gates**
+- Neue Zeile in Phase-28-Tabelle; Eintrag in Phase 19 und Phase 32; lokalen Reproduktionsbefehl dokumentieren.
+
+### Exit
+- Gate-Tabellen und Checklisten decken alle relevanten CI-Docs-Gates ab; Verweise auf Skripte und False-Positives-Doc korrekt.
+
+---
+
+## Phase 36 — Known False-Positives Catalog
+
+### Entry
+- `docs-reference-targets-gate` meldet fehlende Targets; einige davon sind bewusst illustrative Pfade (Phase 25/26).
+- Ziel: zentrale Liste bekannter False-Positives für schnelle Zuordnung und einheitliche Behandlung.
+
+### Steps (Commands)
+
+**1) Katalog-Dokument**
+- Siehe [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md): Diagnose, Fix A/B (&#47; vs. `<!-- pt:ref-target-ignore -->`), Beispiele.
+
+**Known false positives (examples)**  
+- docs-reference-targets-gate misreads: table cells containing `./scripts&#47;ops&#47;...`; prose like `docs&#47;runbooks`. Fix: `<!-- pt:ref-target-ignore -->` (same line). <!-- pt:ref-target-ignore -->
+
+**2) Bei neuem False-Positive**
+- Zuerst klassifizieren: illustrativer Pfad (Beispiel, Platzhalter, Konvention) vs. echter Repo-Pfad (dann korrigieren).
+- Illustrativ: Fix A (Inline-Code mit `&#47;`) oder Fix B (Ignore-Marker auf der Zeile); optional Eintrag im Katalog-Dokument mit Datei/Zeile/Muster.
+
+**3) Katalog pflegen (optional)**
+```bash
+# Bestehende Ignore-Marker im Runbook
+rg -n "pt:ref-target-ignore" docs/ops/runbooks/
+
+# Gate nach Änderungen erneut ausführen
+./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
+```
+
+**4) Keine echten Pfade als False-Positive markieren**
+- Nur illustrative/Platzhalter-Pfade mit Ignore-Marker oder &#47; versehen; echte Pfade müssen existieren oder angepasst werden.
+
+### Exit
+- Bekannte False-Positives im Katalog oder per Ignore-Marker/&#47; behandelt; Gate läuft grün; keine echten Pfadfehler als False-Positive abgelegt.
+
+### PR workflow (runbook phases 33–36)
+
+```bash
+# PR workflow (main protected)
+
+git checkout -b docs/runbook-cursor-ma-phases-33-36
+git push -u origin docs/runbook-cursor-ma-phases-33-36
+
+# If gh works:
+gh pr create \
+  --base main \
+  --head docs/runbook-cursor-ma-phases-33-36 \
+  --title "docs(runbook): add phases 33–36 (UI PR creation, merge_group, table hardening, catalog)" \
+  --body $'Extends cursor_multi_agent_orchestration.md with:\n- Phase 33: PR creation via GitHub UI (gh TLS fallback)\n- Phase 34: merge_group notes\n- Phase 35: docs-gate table hardening\n- Phase 36: known false positives catalog\n\nDocs-only.'
+
+# If gh TLS fails: create PR via UI using Phase 33 URLs.
+
+PR_NUM="$(gh pr view --json number -q .number 2>/dev/null || true)"
+[ -n "$PR_NUM" ] && gh pr checks "$PR_NUM" --watch
+# merge when green (UI if needed)
+# gh pr merge "$PR_NUM" --squash --delete-branch
+# resync:
+# git checkout main && git fetch origin --prune && git reset --hard origin/main
+```
