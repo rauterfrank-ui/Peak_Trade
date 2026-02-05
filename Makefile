@@ -1,4 +1,4 @@
-.PHONY: clean clean-all audit audit-tools gc report-smoke report-smoke-open ops-validate-pr-reports
+.PHONY: clean clean-all audit audit-tools gc report-smoke report-smoke-open test-sandbox ops-validate-pr-reports
 
 # ============================================================================
 # Cleanup Targets
@@ -84,6 +84,12 @@ report-smoke:
 report-smoke-open: report-smoke
 	@echo "Opening smoke report in browser..."
 	open reports/quarto/smoke.html
+
+# Full suite in sandbox-safe mode (guard + pytest; skips network/external_tools if restricted)
+test-sandbox:
+	./scripts/ops/assert_ops_readme_not_fixture.sh
+	python3 -m pytest -q -ra
+
 # --- Dev Infra: MLflow via Docker Compose ---
 DOCKER_COMPOSE ?= docker compose -f docker/compose.yml --env-file docker/.env
 
