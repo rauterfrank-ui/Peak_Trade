@@ -69,18 +69,43 @@ def compute_triple_barrier_labels(
         >>> signals = pd.Series([1, 0, 0, 0, 0, 0])  # Long bei Index 0
         >>> labels = compute_triple_barrier_labels(prices, signals, 0.02, 0.01, 5)
     """
-    # TODO: Vollständige Implementierung
-    #
-    # Für jeden Signal-Zeitpunkt:
-    # 1. Entry-Preis bestimmen
-    # 2. TP-Barriere: entry * (1 + take_profit) für long
-    # 3. SL-Barriere: entry * (1 - stop_loss) für long
-    # 4. Vertical Barrier: entry_time + vertical_barrier_bars
-    # 5. Prüfen, welche Barriere zuerst berührt wird
-    # 6. Label zuweisen
+    # MVP: Für jeden Signal-Zeitpunkt prüfen, welche Barriere zuerst getroffen wird
+    out = pd.Series(pd.NA, index=prices.index, dtype="Int64")
+    take_profit = take_profit if take_profit is not None else 0.02
+    stop_loss = stop_loss if stop_loss is not None else 0.01
 
-    # Platzhalter: Gibt Nullen zurück
-    return pd.Series(0, index=prices.index, dtype=int)
+    for i in range(len(prices)):
+        sig = signals.iloc[i]
+        if sig == 0:
+            continue
+        entry_price = float(prices.iloc[i])
+        is_long = sig > 0
+        if is_long:
+            upper = entry_price * (1 + take_profit)
+            lower = entry_price * (1 - stop_loss)
+        else:
+            upper = entry_price * (1 - stop_loss)
+            lower = entry_price * (1 + take_profit)
+        end_idx = min(i + vertical_barrier_bars + 1, len(prices))
+        label = 0  # vertical barrier default
+        for j in range(i + 1, end_idx):
+            p = float(prices.iloc[j])
+            if is_long:
+                if p >= upper:
+                    label = 1
+                    break
+                if p <= lower:
+                    label = -1
+                    break
+            else:
+                if p <= lower:
+                    label = 1
+                    break
+                if p >= upper:
+                    label = -1
+                    break
+        out.iloc[i] = label
+    return out
 
 
 def get_vertical_barrier(

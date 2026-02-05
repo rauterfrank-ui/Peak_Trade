@@ -118,8 +118,8 @@ Geplante Phasen mit **noch nicht umgesetzten** Features:
 
 - **`src/features/`:** Nur Placeholder; keine ECM- oder allgemeine Feature-Pipeline.
 - **Meta-Labeling-Strategie:**  
-  - `compute_triple_barrier_labels`: TODO, Placeholder (gibt Nullen zurück).  
-  - `_extract_features`: TODO (Fractional Differentiation, Volatility-adjusted Returns, Regime-Indikatoren); gibt leeres DataFrame zurück.
+  - `compute_triple_barrier_labels`: MVP implementiert (Research-only): pro-Signal-Vorwärtsscan mit PT/SL + Vertical Barrier, Rückgabe Int64 {-1,0,1} auf Signal-Bars, sonst NA. Tests: `tests/features/test_triple_barrier_mvp.py`.
+  - `_extract_features`: MVP an Feature-Engine angebunden über `config["features"]["requested"]` (Fallback: leeres DF). Tests: `tests/strategies/test_meta_labeling_strategy_features.py`.
 
 ---
 

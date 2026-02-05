@@ -361,28 +361,42 @@ class MetaLabelingStrategy(BaseStrategy):
         # Placeholder - gibt Nullen zurück
         return pd.Series(0, index=data.index, dtype=int)
 
-    def _extract_features(
-        self,
-        data: pd.DataFrame,
-        signals: pd.Series,
-    ) -> pd.DataFrame:
+    def _extract_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Extrahiert Features für das Meta-Modell.
-
-        TODO: Feature-Engineering nach López de Prado:
-        - Fractional Differentiation
-        - Volatility-adjusted Returns
-        - Market-Regime Indicators
-
-        Args:
-            data: OHLCV-DataFrame
-            signals: Basis-Strategie-Signale
-
-        Returns:
-            Feature-DataFrame
+        MVP: Feature extraction via Feature-Engine (FeatureRegistry + build_features).
+        Expects self.config to optionally provide:
+          config["features"]["requested"] = [{"name":..., "version":..., "params":{...}}, ...]
+        If absent, falls back to previous minimal behavior.
         """
-        # Placeholder - leeres DataFrame
-        return pd.DataFrame(index=data.index)
+        req = None
+        try:
+            req = (self.config or {}).get("features", {}).get("requested")
+        except Exception:
+            req = None
+
+        if not req:
+            return pd.DataFrame(index=df.index)
+
+        # Local registry: strategy registers its required features (extend over time)
+        from src.features.core.registry import FeatureRegistry
+        from src.features.core.spec import FeatureSpec
+        from src.features.builders.build import build_features
+
+        reg = FeatureRegistry()
+
+        # Minimal built-ins (extend as needed)
+        def _ret(in_df, params):
+            col = params.get("col", "close")
+            return pd.DataFrame({"ret_1": in_df[col].pct_change()}, index=in_df.index)
+
+        reg.register(
+            FeatureSpec(name="ret_1", version="1", freq="1d", lookback=1),
+            _ret,
+            {"col": "close"},
+        )
+
+        feats, _manifest = build_features(df, reg, req)
+        return feats
 
     def validate(self) -> None:
         """Validiert Parameter."""
