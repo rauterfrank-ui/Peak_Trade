@@ -184,7 +184,7 @@ curl -fsS http://localhost:9090/api/v1/targets | head -c 2000 || true
 
 ### Entry
 - Runbook ist auf `main` gemerged und getaggt (z. B. `runbook-cursor-ma-v1`).
-- Lokale Quarantäne ist aktiv (`.scratch/` in `.gitignore`).
+- Lokale Quarantäne ist aktiv (`.scratch&#47;` in `.gitignore`).
 - Optionaler Worktree-Snapshot wurde extern gesichert (tgz + sha256).
 
 ### Steps (Commands)
