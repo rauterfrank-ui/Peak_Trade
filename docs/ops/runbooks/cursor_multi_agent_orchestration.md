@@ -840,6 +840,17 @@ gh run list --limit 20 --branch "$BR"
 # - weekly_core: health gate; wait or re-run if allowed
 ```
 
+**Required checks must be green (TLS fallback)**
+```bash
+PR_NUM="<PR_NUMBER>"
+
+# Required checks must be green
+gh pr checks "$PR_NUM" --required || true
+
+# If gh TLS issues: use UI, but confirm required checks explicitly.
+# Fallback verification: open PR and check "Required checks" section.
+```
+
 **TLS workaround options for gh (run on your local machine; pick one path)**
 
 ```bash
@@ -1044,3 +1055,138 @@ git reset --hard origin/main
 
 ### Exit
 - Gate Matrix als Nachschlagewerk genutzt; Failures der richtigen Phase zugeordnet und behoben.
+
+---
+
+## Phase 29 — Versioning Cadence (When to Cut vN Tags)
+
+### Entry
+- Runbook changes are merged to `main`, CI green.
+
+### Steps (Commands)
+```bash
+# Tag when one of these is true:
+# - a new Phase block is added
+# - CI/gate procedure changes (token-policy, reference-targets, TLS workaround)
+# - operator-facing incident/rollback process changes
+
+git fetch origin --tags --prune
+git log --oneline -n 20
+
+# next tag (example)
+# git tag -a runbook-cursor-ma-v5 -m "Runbook phases 29–32 merged (#NNNN)"
+# git push origin runbook-cursor-ma-v5
+```
+
+### Exit
+- Neuer Tag nur bei dokumentierten Triggern; Tag-Message referenziert PR(s).
+
+---
+
+## Phase 30 — Deprecation Policy (Runbook & Gates)
+
+### Entry
+- Eine Gate-Prozedur, ein Skript oder eine Runbook-Phase soll ersetzt oder eingestellt werden.
+- Ziel: klare Ankündigung, Migration, kein stilles Entfernen.
+
+### Steps (Commands)
+
+**1) Soft deprecate first**
+- Alte Prozedur/Befehl **behalten**, als **DEPRECATED** kennzeichnen und **Ersatz** (neue Phase/Befehl) direkt daneben dokumentieren.
+- Cutoff-Datum oder Version-Tag angeben, z. B. „deprecated since runbook-cursor-ma-v4“.
+
+**2) After one release cycle: remove deprecated block**
+- Nach mindestens einem Runbook-Release (nächster Tag, z. B. `runbook-cursor-ma-vN+1`): deprecated Block aus dem Runbook entfernen oder durch kurzen Redirect zur neuen Phase ersetzen.
+
+**3) References and gates stay clean**
+- CI- und Workflow-Referenzen auf die neue Prozedur umstellen; Token-Policy und Reference-Targets nach Entfernen erneut laufen lassen.
+
+**Quick search for deprecated markers**
+```bash
+rg -n "DEPRECATED|deprecated since runbook-cursor-ma" docs/ops/runbooks/cursor_multi_agent_orchestration.md
+```
+
+**Before removing a deprecated block: cross-references**
+```bash
+# Referenzen prüfen (Beispiele; anpassen)
+rg -n "Phase NN — Deprecated Topic|script_deprecated" docs scripts --glob '*.md' || true
+git grep -n "verify_docs_token_policy\|validate_docs_token_policy" -- '*.yml' '*.md' || true
+```
+
+### Exit
+- Zuerst soft deprecate (alte Prozedur behalten, DEPRECATED + Ersatz + Tag); nach einem Release-Zyklus Block entfernen; Referenzen und Gates sauber.
+
+---
+
+## Phase 31 — Gate Regression Tests
+
+### Entry
+- CI-Gates (z. B. docs-token-policy, docs-reference-targets) sind definiert.
+- Ziel: Änderungen an Gate-Skripten oder -Regeln nicht ohne Absicherung durchführen; Regressionen vermeiden.
+
+### Steps (Commands)
+```bash
+# 1) Bestehende Gate-Skripte (Beispiele)
+ls -la scripts&#47;ops&#47;validate_docs_token_policy.py scripts&#47;ops&#47;verify_docs_reference_targets.sh 2>/dev/null || true
+
+# 2) Lokal gleiche Eingaben wie CI (geänderte .md gegen base)
+git fetch origin --prune
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --base origin&#47;main
+./scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main
+
+# 3) Bei Änderung eines Gate-Skripts: Regression prüfen
+# - Vorher: Ergebnis auf bekanntem Stand (z.&#46;B. main) notieren
+# - Nachher: gleicher Stand muss gleiches Ergebnis liefern (kein False-Negative)
+# Optional: dedizierte Tests in evals&#47; oder tests&#47; für Gate-Logik
+
+# 4) Evals/Testcases für Gates (falls vorhanden)
+ls -la evals&#47;aiops&#47;testcases&#47;*.yaml 2>/dev/null || true
+pytest tests&#47; -k "docs_token_policy or reference_targets" -q 2>/dev/null || true
+```
+
+### Exit
+- Gate-Änderungen gegen bekannte Baseline geprüft; bei vorhandenen Evals/Tests grün.
+
+---
+
+## Phase 32 — Docs-Only CI Checklist
+
+### Entry
+- PR enthält nur Änderungen unter `docs&#47;` (Runbooks, Markdown, Konfig-Docs).
+- Ziel: vor Push/Merge alle relevanten Gates lokal durchlaufen, um CI-Zeit und Rückläufer zu sparen.
+
+### Steps (Checklist)
+
+**Gates (1–3)**
+```bash
+# 1) token policy gate
+python3 scripts/ops/validate_docs_token_policy.py --base origin/main
+
+# 2) reference targets gate (changed markdown)
+./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main || true
+
+# 3) optional: full reference scan (slower)
+./scripts/ops/verify_docs_reference_targets.sh --base origin/main
+```
+
+| Schritt | Befehl / Aktion |
+|---------|------------------|
+| Scope prüfen | `git diff --name-only origin&#47;main...HEAD \| rg -v '^docs/'` → leer |
+| Token-Policy | `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --base origin&#47;main` |
+| Reference-Targets | `./scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main` <!-- pt:ref-target-ignore --> |
+| Lint / Pre-Commit | `pre-commit run --all-files` |
+| Docs-Build (falls vorhanden) | `mkdocs build --strict` oder Quarto/Sphinx |
+| Kein Live-Pfad | Keine Änderungen in `src&#47;execution&#47;`, `src&#47;governance&#47;`, `src&#47;risk&#47;` |
+
+```bash
+# One-shot docs-only checklist (fast fail)
+git fetch origin --prune
+git diff --name-only origin/main...HEAD | rg -v '^docs/' && echo "FAIL: non-docs change" || true
+python3 scripts/ops/validate_docs_token_policy.py --base origin/main
+./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
+pre-commit run --all-files
+# [ -f mkdocs.yml ] && mkdocs build --strict
+```
+
+### Exit
+- Alle Punkte der Checkliste bestanden; PR kann gepusht werden; erwartet: Docs-Gates in CI grün.
