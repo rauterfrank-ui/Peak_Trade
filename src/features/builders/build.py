@@ -1,12 +1,15 @@
 from __future__ import annotations
-import hashlib, json
+import hashlib
+import json
 from typing import Any, Mapping, Sequence
 import pandas as pd
 from ..core.registry import FeatureRegistry
 
+
 def stable_hash(obj: Any) -> str:
-    b = json.dumps(obj, sort_keys=True, separators=(",",":")).encode("utf-8")
+    b = json.dumps(obj, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(b).hexdigest()[:16]
+
 
 def build_features(
     df: pd.DataFrame,

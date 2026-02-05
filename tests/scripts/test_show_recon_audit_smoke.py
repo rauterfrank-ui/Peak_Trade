@@ -602,8 +602,10 @@ def test_wrapper_summary_json():
     )
 
     # Skip when uv panics in restricted env (e.g. sandbox)
-    if result.returncode != 0 and result.stderr and (
-        "panicked" in result.stderr or "Tokio executor failed" in result.stderr
+    if (
+        result.returncode != 0
+        and result.stderr
+        and ("panicked" in result.stderr or "Tokio executor failed" in result.stderr)
     ):
         pytest.skip("uv/wrapper failed in this environment (e.g. sandbox): uv panic")
 
@@ -651,8 +653,10 @@ def test_wrapper_gate_mode():
     )
 
     # Skip when uv panics in restricted env (e.g. sandbox)
-    if result.returncode != 0 and result.stderr and (
-        "panicked" in result.stderr or "Tokio executor failed" in result.stderr
+    if (
+        result.returncode != 0
+        and result.stderr
+        and ("panicked" in result.stderr or "Tokio executor failed" in result.stderr)
     ):
         pytest.skip("uv/wrapper failed in this environment (e.g. sandbox): uv panic")
 

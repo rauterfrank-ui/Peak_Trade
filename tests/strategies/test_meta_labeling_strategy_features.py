@@ -9,9 +9,7 @@ def test_meta_labeling_strategy_extract_features_uses_feature_engine():
     s = MetaLabelingStrategy(
         config={
             "features": {
-                "requested": [
-                    {"name": "ret_1", "version": "1", "params": {"col": "close"}}
-                ]
+                "requested": [{"name": "ret_1", "version": "1", "params": {"col": "close"}}]
             }
         }
     )
