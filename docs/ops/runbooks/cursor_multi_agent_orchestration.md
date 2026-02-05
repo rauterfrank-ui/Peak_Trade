@@ -271,7 +271,7 @@ tar -tzf grafana_ds_fix_worktree_snapshot.tgz | head -n 30
 
 ### Rollback — Option 1: Revert squash-merge (preferred; auditable)
 
-Rücknahme eines gemergten Commits per `git revert`; erzeugt einen neuen, nachvollziehbaren Commit. Commit-SHA von `origin/main` verwenden (z. B. aus Evidence Pack oder `git log`).
+Rücknahme eines gemergten Commits per `git revert`; erzeugt einen neuen, nachvollziehbaren Commit. Commit-SHA von `origin&#47;main` verwenden (z. B. aus Evidence Pack oder `git log`).
 
 ```bash
 # - pick the commit sha from origin/main (examples)
