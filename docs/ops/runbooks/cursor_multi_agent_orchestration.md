@@ -933,3 +933,115 @@ rg -n "L6|Execution.*forbid|LIVE.*block|confirm token|armed" -S src scripts docs
 
 ### Exit
 - Env auf research/dry-run/forbidden gesetzt; keine Änderung aktiviert Live-Pfad; Runbook-Befehle non-destructive; Governance-Regeln eingehalten.
+
+---
+
+## Phase 25 — docs-reference-targets-gate (Deep Dive)
+
+### Entry
+- CI meldet `docs-reference-targets-gate` failure auf PR mit `.md`-Änderungen.
+
+### Steps (Commands)
+```bash
+# Reproduce exactly like CI (only scans changed markdown)
+./scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main
+
+# If it fails: it prints "<file>:<line>: <token>" for missing targets.
+# Investigate the printed line in the markdown (example):
+#   cursor_multi_agent_orchestration.md:919: docs&#47;runbooks
+
+# Open around that line (adjust range):
+# sed -n '900,940p' docs&#47;ops&#47;runbooks&#47;cursor_multi_agent_orchestration.md
+
+# Fix options:
+# A) Correct the referenced path (preferred if it's a real repo path)
+# B) If false positive: append ignore marker on the SAME line:
+#    <!-- pt:ref-target-ignore -->
+#
+# Re-run gate:
+./scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main
+```
+
+### Exit
+- Gate lokal bestanden; alle gemeldeten Targets entweder existierender Pfad oder als False-Positive markiert (`<!-- pt:ref-target-ignore -->`).
+
+---
+
+## Phase 26 — False-Positive Playbook (docs-reference-targets)
+
+### Entry
+- Phase 25 zeigt „missing target“, der Pfad ist aber **illustrativ** (Beispiel, Platzhalter, geplanter Branch) und kein realer Repo-Pfad.
+
+### Steps (Commands)
+
+**1) Klassifizieren**
+- **Echter Pfad (Typo/veraltet):** Pfad korrigieren oder Doc an echte Datei anpassen.
+- **Illustrativ:** Siehe [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md) (Diagnose, Fix A/B, Ignore-Marker).
+
+**2) Optionen bei False Positive**
+- **Fix A (bevorzugt):** Inline-Code-Pfad mit `&#47;` statt `/` (z. B. `docs&#47;runbooks`) — reduziert Parsing als Link-Target; Token-Policy-Gate prüft das.
+- **Fix B:** Auf derselben Zeile am Zeilenende: `<!-- pt:ref-target-ignore -->` setzen (wenn Fix A nicht passt, z. B. in Tabellen oder Code-Blöcken).
+
+**3) Nach Fix**
+```bash
+./scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main
+```
+
+### Exit
+- Alle gemeldeten „missing targets“ entweder behoben (echter Pfad) oder als False-Positive neutralisiert (&#47; oder Ignore-Marker); Gate grün.
+
+---
+
+## Phase 27 — Auto-Merge Guidance
+
+### Entry
+- PR ist Docs-only oder low-risk; alle **required** CI-Checks grün oder im erwarteten Zustand.
+- Ziel: Merge ohne manuelles Klicken nach Grün; einheitlich Squash + Branch löschen.
+
+### Steps (Commands)
+
+**1) Voraussetzungen prüfen**
+- Branch-Protection: nur required Checks müssen grün sein.
+- Kein Draft; keine offenen Review-Requests (falls Policy das verlangt).
+
+**2) Auto-Merge aktivieren (Squash)**
+```bash
+PR_NUM="<PR-Nummer>"
+gh pr merge "$PR_NUM" --squash --auto
+# Prüfen:
+gh pr view "$PR_NUM" --json autoMergeRequest --jq '.autoMergeRequest'
+```
+
+**3) Wann nicht Auto-Merge**
+- PR ändert `src/execution/`, `src/governance/`, `src/risk/` oder Broker/Exchange-Code → explizite Review-Pflicht, kein Auto-Merge ohne Freigabe.
+- Optional/nicht-required Checks hängen → Auto-Merge wartet nur auf required; bei Bedarf manuell mergen: `gh pr merge "$PR_NUM" --squash --delete-branch`.
+
+**4) Nach Merge: Resync main**
+```bash
+git checkout main
+git fetch origin --prune
+git reset --hard origin/main
+```
+
+### Exit
+- Auto-Merge aktiviert (wo zulässig); nach Merge main resynced; keine Live/Execution ausgelöst.
+
+---
+
+## Phase 28 — Gate Matrix (Quick Reference)
+
+### Entry
+- Schneller Überblick: welche Gates bei Docs/Runbook-PRs laufen, wie reproduzierbar, was bei Failure zu tun ist.
+
+### Steps (Reference Table)
+
+| Gate | Trigger | Lokal reproduzieren | Bei Failure |
+|------|---------|--------------------|-------------|
+| **docs-reference-targets-gate** | PR mit geänderten `.md` | `./scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main` | Phase 25 + 26: Pfad korrigieren oder False-Positive (&#47; / `<!-- pt:ref-target-ignore -->`) |
+| **docs-token-policy-gate** | PR mit geänderten `.md` | `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --base origin&#47;main` | Inline-Pfade mit `&#47;` statt `/` (z. B. `origin&#47;main`, `.scratch&#47;`) |
+| **Lint / pre-commit** | Jeder Push | `pre-commit run --all-files` | `pre-commit run -a`, Fixes committen |
+| **Docs-Build (MkDocs etc.)** | Wenn konfiguriert | `mkdocs build --strict` (o. ä.) | Broken links/Refs in Docs beheben |
+| **No-Live / Execution** | Jeder Lauf (lokal/CI) | Env: `PEAK_TRADE_LIVE=0`, `PEAK_TRADE_EXECUTION_FORBIDDEN=1`; kein Code in execution/governance/risk ohne Review | Phase 24: Env + Grep-Checks; PR-Review bei execution-nah |
+
+### Exit
+- Gate Matrix als Nachschlagewerk genutzt; Failures der richtigen Phase zugeordnet und behoben.
