@@ -645,7 +645,7 @@ shasum -a 256 "release_bundle_cursor_ma_v${V}.tgz" | awk '{print $1, $2}' > "rel
 - Lint/format: `pre-commit run -a` erneut ausführen, Änderungen committen.
 - Docs-Build: `mkdocs build --strict` (oder Quarto/Sphinx) lokal prüfen; fehlende Referenzen/ broken links beheben.
 - Token-Policy: `python3 scripts/ops/validate_docs_token_policy.py --base origin/main`; Inline-Code-Pfade mit `&#47;` statt `/` (z. B. `origin&#47;main`, `.scratch&#47;`).
-- **docs-reference-targets-gate:** `./scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main`; referenzierte Repo-Pfade müssen existieren. False-Positives (illustrative Pfade): siehe `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md`.
+- **docs-reference-targets-gate:** `./scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main`; referenzierte Repo-Pfade müssen existieren. False-Positives (illustrative Pfade): siehe `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md`. <!-- pt:ref-target-ignore -->
 
 ### Exit
 - Cheat Sheet für schnelles Nachschlagen bei Runbook/Docs-PRs verfügbar.
