@@ -761,11 +761,11 @@ git reset --hard origin/main
 
 | Kontext | Muster | Beispiele |
 |---------|--------|-----------|
-| Runbook Phasen | `docs/runbook-<topic>-phases-<n>-<m>` | `docs/runbook-cursor-ma-phases-21-24` |
-| Runbook Fix | `docs/runbook-<topic>-fix-<short>` | `docs/runbook-cursor-ma-fix-token-policy` |
-| Ops/Skripte | `ops/<bereich>-<kurzbeschreibung>` | `ops/validate-docs-token-policy`, `ops/prom-targets-check` |
-| Fix/Backport | `fix/<issue-oder-thema>` oder `backport/<pr>-to-main` | `fix/docs-gate-slash`, `backport/1234-to-main` |
-| Revert | `revert/<commit-oder-pr>` | `revert/runbook-or-scratch` |
+| Runbook Phasen | `docs&#47;runbook-<topic>-phases-<n>-<m>` | `docs&#47;runbook-cursor-ma-phases-21-24` |
+| Runbook Fix | `docs&#47;runbook-<topic>-fix-<short>` | `docs&#47;runbook-cursor-ma-fix-token-policy` |
+| Ops/Skripte | `ops&#47;<bereich>-<kurzbeschreibung>` | `ops&#47;validate-docs-token-policy`, `ops&#47;prom-targets-check` |
+| Fix/Backport | `fix&#47;<issue-oder-thema>` oder `backport&#47;<pr>-to-main` | `fix&#47;docs-gate-slash`, `backport&#47;1234-to-main` |
+| Revert | `revert&#47;<commit-oder-pr>` | `revert&#47;runbook-or-scratch` |
 
 ```bash
 # Beispiele: Branch anlegen
@@ -794,7 +794,7 @@ git checkout -b ops/ci-triage-patterns
 
 | CI-Fehler / Muster | Ursache (typisch) | Aktion |
 |--------------------|--------------------|--------|
-| Docs-Token-Policy fail | Slash in Inline-Code (z. B. `origin/main`) | `validate_docs_token_policy.py` lokal; Inline-Code mit `&#47;` ersetzen |
+| Docs-Token-Policy fail | Slash in Inline-Code (z. B. `origin&#47;main`) | `validate_docs_token_policy.py` lokal; Inline-Code mit `&#47;` ersetzen |
 | Lint/Format fail | Pre-Commit nicht lokal gelaufen oder andere Konfiguration | `pre-commit run -a`; Änderungen committen und pushen |
 | Docs-Build fail | Broken links, fehlende Referenzen, fehlerhafte Syntax | `mkdocs build --strict` (oder Quarto/Sphinx) lokal; Links/Refs prüfen |
 | Unrelated test fail | Flaky Test oder Änderung außerhalb des PR-Scopes | Prüfen ob PR nur `docs/` enthält; ggf. Test-Issue separat tracken, nicht in Docs-PR mischen |
@@ -837,6 +837,38 @@ gh run list --limit 20 --branch "$BR"
 # - docs-token-policy-gate: run local validator + fix inline-code illustrative slashes via &#47;
 # - audit: usually dependency/security scan; ensure no lockfile changes in docs-only PR
 # - weekly_core: health gate; wait or re-run if allowed
+```
+
+**TLS workaround options for gh (run on your local machine; pick one path)**
+
+```bash
+# 0) sanity: confirm gh can reach github
+gh auth status
+gh api https://api.github.com/rate_limit
+
+# A) If corporate proxy / MITM: set proxy for gh + git (edit values)
+# export HTTPS_PROXY="http://proxy.host:port"
+# export HTTP_PROXY="http://proxy.host:port"
+# export NO_PROXY="localhost,127.0.0.1,.local"
+# gh api https://api.github.com/rate_limit
+
+# B) If custom CA cert: point git/gh at the CA bundle (edit path)
+# export SSL_CERT_FILE="$HOME/.certs/corp-ca.pem"
+# git config --global http.sslCAInfo "$SSL_CERT_FILE"
+# gh api https://api.github.com/rate_limit
+
+# C) If only gh is failing, use GitHub UI for merge and use git for resync
+# (checks + merge in browser)
+open "https://github.com/rauterfrank-ui/Peak_Trade/pull/<PR_NUMBER>"
+
+# After merge (either via gh or UI), resync main:
+git checkout main
+git fetch origin --prune
+git reset --hard origin/main
+
+# Verify anchors after merge:
+rg -n "## Phase 21 — PR Hygiene|## Phase 22 — Branch Naming|## Phase 23 — CI Triage Patterns|## Phase 24 — No-Live Enforcement" \
+  docs/ops/runbooks/cursor_multi_agent_orchestration.md
 ```
 
 ### Exit
@@ -885,7 +917,7 @@ rg -n "L6|Execution.*forbid|LIVE.*block|confirm token|armed" -S src scripts docs
 **4) Runbook commands (dry-run / non-destructive by default)**
 
 - Alle in `docs/runbooks` dokumentierten Befehle sollen dry-run bzw. nicht-destruktiv sein.
-- Bevorzuge `down` statt `rm -rf`; bevorzuge `curl … /-/ready`-Probes.
+- Bevorzuge `down` statt `rm -rf`; bevorzuge `curl … &#47;-&#47;ready`-Probes.
 - `git reset --hard origin/main` nur explizit beim Reconcile nach Squash-Merge dokumentieren.
 
 **5) Documenting execution-adjacent**
