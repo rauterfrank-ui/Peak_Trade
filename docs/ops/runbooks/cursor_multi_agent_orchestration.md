@@ -1622,3 +1622,135 @@ gh pr create \
 # rg -n "## Phase 37 — Merge Queue Failures|## Phase 38 — Re-Run Strategy|## Phase 39 — PR Body Templates|## Phase 40 — v5 Tag Procedure" \
 #   docs/ops/runbooks/cursor_multi_agent_orchestration.md
 ```
+
+---
+
+## Phase 41 — Docs PR Playbook (One Page)
+
+### Entry
+- You are about to push a docs-only PR (runbook edits).
+
+### Steps (Commands)
+```bash
+# 0) branch
+git status
+git checkout -b docs/<topic>
+
+# 1) local docs gates (CI parity)
+python3 scripts/ops/validate_docs_token_policy.py --base origin/main
+./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main || true
+
+# 2) commit + push
+git add docs/ops/runbooks/cursor_multi_agent_orchestration.md
+git diff --cached
+git commit -m "docs(runbook): <summary>"
+git push -u origin docs/<topic>
+
+# 3) PR creation (UI fallback if gh TLS broken)
+echo "https://github.com/rauterfrank-ui/Peak_Trade/compare/main...docs/<topic>?expand=1"
+
+# 4) merge readiness (UI: Required checks must be green; branch up to date)
+# 5) squash-merge + delete branch
+# 6) resync
+git checkout main
+git fetch origin --prune
+git reset --hard origin/main
+```
+
+### Exit
+- Docs-PR gemerged; lokales `main` mit `origin/main` synchron.
+
+---
+
+## Phase 42 — Troubleshooting Decision Tree
+
+### Entry
+- CI/docs-Gate schlägt fehl oder Verhalten ist unklar (z. B. merge_group, reference-targets, Token-Policy).
+
+### Decision Tree (Kurz)
+1. **Fehlertyp?**
+   - **reference-targets / broken anchors** → Phase 25 (Deep Dive), Phase 26 (False-Positive), Phase 36 (Catalog); ggf. `--changed --base origin/main` erneut prüfen.
+   - **Token-Policy / validate_docs_token_policy** → `scripts/ops/validate_docs_token_policy.py --base origin/main` lokal; Ausgabe mit CI vergleichen.
+   - **merge_group / Required checks** → Phase 37 (Merge Queue Failures), Phase 38 (Re-Run); ggf. Re-Run ohne Code-Change, dann erneut in Queue.
+2. **Lokal grün, CI rot?**
+   - Branch mit `main` abgleichen: `git fetch origin && git merge origin/main` oder Rebase; Push; erneut in Queue.
+3. **Flaky Check?**
+   - Phase 38: Re-Run-Strategie; bei wiederholtem Flake: Check/Job als flaky dokumentieren (Phase 36/Table).
+4. **Unklar / Eskalation?**
+   - Minimal Repro Bundle erstellen (Phase 43); Issue mit Bundle-Link + Schritte anlegen.
+
+### Gate-specific quick fixes
+
+1. **docs-token-policy-gate failing?**
+   - **run:** `python3 scripts/ops/validate_docs_token_policy.py --base origin/main`
+   - **fix:** illustrative slashes in inline-code to `&#47;` (do **NOT** change fenced bash blocks).
+
+2. **docs-reference-targets-gate failing?**
+   - **run:** `./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main`
+   - **fix A:** correct real repo path.
+   - **fix B:** false-positive → append `<!-- pt:ref-target-ignore -->` on the **same line**.
+   - **see:** `docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md`
+
+3. **gh TLS broken?**
+   - Create/merge PR in UI (Phase 33); resync via git (`git checkout main && git fetch origin --prune && git reset --hard origin/main`).
+
+### Exit
+- Fehler eingeordnet; nächster Schritt (Fix, Re-Run, oder Issue mit Repro) festgelegt.
+
+---
+
+## Phase 43 — Minimal Repro Bundle
+
+### Entry
+- Bug oder CI-Fehler soll reproduzierbar gemeldet werden (z. B. für Issue oder Eskalation).
+
+### Steps (Commands)
+```bash
+# 1) Repo-Zustand eingrenzen (Branch + Commit)
+git rev-parse HEAD
+git status -sb
+git log --oneline -n 3
+
+# 2) Nur relevante Artefakte bündeln (keine Secrets, kein .env)
+REPRO_DIR="/tmp/peaktrade_repro_$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$REPRO_DIR"
+git archive HEAD -- docs/ops/runbooks/cursor_multi_agent_orchestration.md \
+  scripts/ops/validate_docs_token_policy.py \
+  scripts/ops/verify_docs_reference_targets.sh 2>/dev/null | (cd "$REPRO_DIR" && tar x) || true
+cp -R docs/ops scripts/ops "$REPRO_DIR"/ 2>/dev/null || true
+
+# 3) Kontext-Infos in Datei
+echo "Branch: $(git rev-parse --abbrev-ref HEAD)" > "$REPRO_DIR/repro_context.txt"
+echo "Commit: $(git rev-parse HEAD)" >> "$REPRO_DIR/repro_context.txt"
+echo "Date: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$REPRO_DIR/repro_context.txt"
+
+# 4) Archiv (optional)
+zip -r "$REPRO_DIR.zip" "$REPRO_DIR"
+echo "Bundle: $REPRO_DIR.zip"
+```
+
+### Exit
+- Reproduzierbares Bundle (Pfad/ ZIP) ohne Secrets; Kontext (Branch, Commit, Datum) dokumentiert; für Issue/Support nutzbar.
+
+---
+
+## Phase 44 — v5 Release Cut (Checklist)
+
+### Entry
+- Alle geplanten Runbook- und Gate-Änderungen für v5 sind auf `main`; CI grün; Release-Cut soll erfolgen.
+
+### Steps (Checklist)
+1. **Pre-Cut**
+   - `main` ist geschützt; letzter Merge (z. B. Phasen 41–44) durch Required checks.
+   - Lokal: `git checkout main && git pull --ff-only origin main`.
+2. **Tag setzen** (siehe Phase 40)
+   - `git tag -a runbook-cursor-ma-v5 -m "Runbook phases 37–44 merged (#<PR_NUM>): ..."`
+   - `git push origin runbook-cursor-ma-v5`
+3. **Verifizieren**
+   - `git ls-remote --tags origin | grep runbook-cursor-ma-v5`
+   - Optional: Runbook-ZIP aus Tag (Phase 40, Optional-Block) + Checksum.
+4. **Nach dem Cut**
+   - Branch löschen (falls noch vorhanden); Release-Notes/Changelog aktualisieren falls vorgesehen.
+
+### Exit
+- Tag `runbook-cursor-ma-v5` auf `origin`; optional Runbook-ZIP + SHA256; Release-Cut abgeschlossen.
