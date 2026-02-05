@@ -19,8 +19,8 @@ jobs:
     name: Generate Trend Seed
     runs-on: ubuntu-latest
 
-    # Only run if Phase 4E workflow succeeded
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # Only run if Phase 4E workflow succeeded and source is _v2 (has validator-report-normalized artifact)
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.path == '.github/workflows/l4_critic_replay_determinism_v2.yml' }}
 
     steps:
       - name: Checkout repository
