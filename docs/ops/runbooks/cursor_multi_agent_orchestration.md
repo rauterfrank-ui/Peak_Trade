@@ -1658,7 +1658,7 @@ git reset --hard origin/main
 ```
 
 ### Exit
-- Docs-PR gemerged; lokales `main` mit `origin/main` synchron.
+- Docs-PR gemerged; lokales `main` mit `origin&#47;main` synchron.
 
 ---
 
@@ -1669,8 +1669,8 @@ git reset --hard origin/main
 
 ### Decision Tree (Kurz)
 1. **Fehlertyp?**
-   - **reference-targets / broken anchors** → Phase 25 (Deep Dive), Phase 26 (False-Positive), Phase 36 (Catalog); ggf. `--changed --base origin/main` erneut prüfen.
-   - **Token-Policy / validate_docs_token_policy** → `scripts/ops/validate_docs_token_policy.py --base origin/main` lokal; Ausgabe mit CI vergleichen.
+   - **reference-targets / broken anchors** → Phase 25 (Deep Dive), Phase 26 (False-Positive), Phase 36 (Catalog); ggf. `--changed --base origin&#47;main` erneut prüfen.
+   - **Token-Policy / validate_docs_token_policy** → `scripts&#47;ops&#47;validate_docs_token_policy.py --base origin&#47;main` lokal; Ausgabe mit CI vergleichen.
    - **merge_group / Required checks** → Phase 37 (Merge Queue Failures), Phase 38 (Re-Run); ggf. Re-Run ohne Code-Change, dann erneut in Queue.
 2. **Lokal grün, CI rot?**
    - Branch mit `main` abgleichen: `git fetch origin && git merge origin/main` oder Rebase; Push; erneut in Queue.
