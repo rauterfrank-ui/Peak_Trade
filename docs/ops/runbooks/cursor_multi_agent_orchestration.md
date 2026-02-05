@@ -645,6 +645,7 @@ shasum -a 256 "release_bundle_cursor_ma_v${V}.tgz" | awk '{print $1, $2}' > "rel
 - Lint/format: `pre-commit run -a` erneut ausführen, Änderungen committen.
 - Docs-Build: `mkdocs build --strict` (oder Quarto/Sphinx) lokal prüfen; fehlende Referenzen/ broken links beheben.
 - Token-Policy: `python3 scripts/ops/validate_docs_token_policy.py --base origin/main`; Inline-Code-Pfade mit `&#47;` statt `/` (z. B. `origin&#47;main`, `.scratch&#47;`).
+- **docs-reference-targets-gate:** `./scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main`; referenzierte Repo-Pfade müssen existieren. False-Positives (illustrative Pfade): siehe `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md`. <!-- pt:ref-target-ignore -->
 
 ### Exit
 - Cheat Sheet für schnelles Nachschlagen bei Runbook/Docs-PRs verfügbar.
@@ -839,6 +840,37 @@ gh run list --limit 20 --branch "$BR"
 # - weekly_core: health gate; wait or re-run if allowed
 ```
 
+**TLS workaround options for gh (run on your local machine; pick one path)**
+
+```bash
+# 0) sanity: confirm gh can reach github
+gh auth status
+gh api https://api.github.com/rate_limit
+
+# A) If corporate proxy / MITM: set proxy for gh + git (edit values)
+# export HTTPS_PROXY="http://proxy.host:port"
+# export HTTP_PROXY="http://proxy.host:port"
+# export NO_PROXY="localhost,127.0.0.1,.local"
+# gh api https://api.github.com/rate_limit
+
+# B) If custom CA cert: point git/gh at the CA bundle (edit path)
+# export SSL_CERT_FILE="$HOME/.certs/corp-ca.pem"
+# git config --global http.sslCAInfo "$SSL_CERT_FILE"
+# gh api https://api.github.com/rate_limit
+
+# C) If only gh is failing, use GitHub UI for merge and use git for resync
+# (checks + merge in browser)
+open "https://github.com/rauterfrank-ui/Peak_Trade/pull/<PR_NUMBER>"
+
+# After merge (either via gh or UI), resync main:
+git checkout main
+git fetch origin --prune
+git reset --hard origin/main
+
+# Verify anchors after merge:
+rg -n "## Phase 21 — PR Hygiene|## Phase 22 — Branch Naming|## Phase 23 — CI Triage Patterns|## Phase 24 — No-Live Enforcement" \
+  docs/ops/runbooks/cursor_multi_agent_orchestration.md
+```
 ### Exit
 - CI-Fehler einer Kategorie zugeordnet; Fix angewendet (Token-Policy, Lint, Docs-Build, Rebase); keine Live/Execution ausgelöst.
 
