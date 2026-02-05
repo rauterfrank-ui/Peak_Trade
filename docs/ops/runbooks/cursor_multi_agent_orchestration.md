@@ -917,7 +917,7 @@ rg -n "L6|Execution.*forbid|LIVE.*block|confirm token|armed" -S src scripts docs
 
 **4) Runbook commands (dry-run / non-destructive by default)**
 
-- Alle in `docs/runbooks` dokumentierten Befehle sollen dry-run bzw. nicht-destruktiv sein.
+- Alle in `docs/runbooks` dokumentierten Befehle sollen dry-run bzw. nicht-destruktiv sein. <!-- pt:ref-target-ignore -->
 - Bevorzuge `down` statt `rm -rf`; bevorzuge `curl … &#47;-&#47;ready`-Probes.
 - `git reset --hard origin/main` nur explizit beim Reconcile nach Squash-Merge dokumentieren.
 
