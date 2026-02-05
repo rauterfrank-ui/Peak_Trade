@@ -1754,3 +1754,182 @@ echo "Bundle: $REPRO_DIR.zip"
 
 ### Exit
 - Tag `runbook-cursor-ma-v5` auf `origin`; optional Runbook-ZIP + SHA256; Release-Cut abgeschlossen.
+
+---
+
+## Phase 45 — Release Bundle (vN) Packaging
+
+### Entry
+- A runbook tag `runbook-cursor-ma-vN` exists on `origin`.
+
+### Steps (Commands)
+```bash
+TAG="runbook-cursor-ma-vN"
+OUT_DIR="/tmp/release_bundle_${TAG}"
+mkdir -p "$OUT_DIR"
+
+# 1) Runbook zip from tag
+git archive --format=zip --output="${OUT_DIR}/cursor_multi_agent_orchestration_runbook_${TAG}.zip" \
+  "$TAG" docs/ops/runbooks/cursor_multi_agent_orchestration.md
+
+# 2) SHA256 (basename-only)
+cd "$OUT_DIR"
+H="$(shasum -a 256 "cursor_multi_agent_orchestration_runbook_${TAG}.zip" | awk '{print $1}')"
+printf "%s  %s\n" "$H" "cursor_multi_agent_orchestration_runbook_${TAG}.zip" > "cursor_multi_agent_orchestration_runbook_${TAG}.zip.sha256"
+shasum -a 256 -c "cursor_multi_agent_orchestration_runbook_${TAG}.zip.sha256"
+
+# 3) Optional: add related artifacts (snapshots/manifests) into same folder, each with basename-only .sha256
+# Example:
+# cp -v ~/Downloads/grafana_ds_fix_worktree_snapshot.tgz "$OUT_DIR/"
+# shasum -a 256 grafana_ds_fix_worktree_snapshot.tgz | awk '{print $1 "  grafana_ds_fix_worktree_snapshot.tgz"}' > grafana_ds_fix_worktree_snapshot.tgz.sha256
+
+# 4) Tar the bundle + checksum
+cd /tmp
+tar -czf "${OUT_DIR}.tgz" -C "$(dirname "$OUT_DIR")" "$(basename "$OUT_DIR")"
+shasum -a 256 "${OUT_DIR}.tgz" | awk '{print $1 "  " FILENAME}' FILENAME="$(basename "${OUT_DIR}.tgz")" > "${OUT_DIR}.tgz.sha256"
+shasum -a 256 -c "${OUT_DIR}.tgz.sha256"
+```
+
+### Exit
+- Release-Bundle (tgz) + SHA256 in `/tmp`; Runbook-ZIP im Bundle mit basename-only Checksum; optional weitere Artefakte mit je .sha256.
+
+---
+
+## Phase 46 — Cross-Machine Verification
+
+### Entry
+- Release-Bundle (z. B. `release_bundle_runbook-cursor-ma-vN.tgz` + `.sha256`) wurde auf einer Maschine erstellt und liegt auf anderem Rechner oder geteiltem Speicher vor.
+- Ziel: Integrität und Nutzbarkeit auf einer **anderen** Maschine prüfen (Consumer-/Ops-Sicht).
+
+### Steps (Commands)
+```bash
+# 1) Bundle-Checksum prüfen (basename-only; gleicher Befehl wie Erzeuger)
+cd /tmp
+# Annahme: Bundle + .sha256 in aktuellem Verzeichnis (z. B. nach Download/Kopie)
+shasum -a 256 -c release_bundle_runbook-cursor-ma-vN.tgz.sha256
+
+# 2) Entpacken
+rm -rf /tmp/release_bundle_runbook-cursor-ma-vN
+mkdir -p /tmp/release_bundle_runbook-cursor-ma-vN
+tar -xzf release_bundle_runbook-cursor-ma-vN.tgz -C /tmp
+
+# 3) Enthaltene Artefakte verifizieren (alle .sha256 im Bundle sind basename-only)
+cd /tmp/release_bundle_runbook-cursor-ma-vN
+for f in *.sha256; do [ -f "$f" ] && shasum -a 256 -c "$f"; done
+
+# 4) Sanity: Runbook-ZIP vorhanden und lesbar
+unzip -l cursor_multi_agent_orchestration_runbook_runbook-cursor-ma-vN.zip | head -20
+
+# 5) Optional: Runbook-Inhalt prüfen (z. B. Phasen-Überschrift)
+unzip -p cursor_multi_agent_orchestration_runbook_runbook-cursor-ma-vN.zip \
+  docs/ops/runbooks/cursor_multi_agent_orchestration.md | head -80
+```
+
+**Alternative: Verifikation in dediziertem Verzeichnis (SRC → DST)**
+
+Bundle und Checksum in ein separates Verzeichnis kopieren, dort Tarball prüfen, entpacken und innere ZIP-Checksum verifizieren.
+
+```bash
+SRC="/tmp/release_bundle_runbook-cursor-ma-vN.tgz"
+DST="/tmp/verify_release_bundle_vN"
+mkdir -p "$DST"
+cp -v "$SRC" "$SRC.sha256" "$DST/"
+cd "$DST"
+
+# Verify the tarball checksum
+shasum -a 256 -c "$(basename "$SRC").sha256"
+
+# Extract and verify inner zip checksum
+tar -xzf "$(basename "$SRC")"
+cd release_bundle_runbook-cursor-ma-vN
+shasum -a 256 -c cursor_multi_agent_orchestration_runbook_runbook-cursor-ma-vN.zip.sha256
+```
+
+### Exit
+- Bundle auf der Zielmaschine verifiziert; alle Checksums grün; Runbook-ZIP entpackbar und lesbar.
+
+---
+
+## Phase 47 — Retention Policy
+
+### Entry
+- Runbook-Releases (Tags, Bundles, Evidence-Packs) und lokale Artefakte sind im Einsatz.
+- Ziel: klare Aufbewahrungsfristen und Bereinigung ohne Verlust von Audit-Pfaden.
+
+### Steps (Policy)
+
+**Aufbewahrung**
+
+| Artefakt | Empfehlung | Aktion nach Frist |
+|----------|------------|-------------------|
+| Tags `runbook-cursor-ma-v*` | Dauerhaft auf `origin` | Nicht löschen; Audit-Referenz |
+| Release-Bundle (tgz + .sha256) | Mind. 2 Releases oder 6 Monate | Optional archivieren; dann aus `/tmp` oder Downloads entfernen |
+| Evidence-Pack (tgz + .sha256) | Wie Release-Bundle | Optional archivieren |
+| Lokale `/tmp`-Bundles, pip_freeze, Config-Snapshots | Bis zum nächsten Release oder Quartal | Phase 20 (Quarterly Cleanup); manuell auswählen |
+| Scratch-Archive, Manifests | Optional 1 Jahr | Archiv; dann Bereinigung |
+
+**Befehle (Beispiele)**
+```bash
+# Bestehende Tags (nicht löschen)
+git tag --list 'runbook-cursor-ma-v*' | sort -V
+
+# Alte lokale Bundles identifizieren (manuell löschen)
+ls -la /tmp/release_bundle_* ~/Downloads/release_bundle_* 2>/dev/null || true
+
+# Quarterly Cleanup anwenden (Phase 20)
+# - .scratch inspizieren, Manifests ggf. archivieren
+# - verwaiste Branches, alte /tmp-Artefakte bereinigen
+```
+
+### Exit
+- Retention-Regeln dokumentiert; Tags bleiben; lokale/archivierte Artefakte nach Policy bereinigt (Phase 20).
+
+---
+
+## Phase 48 — Rollback Procedure
+
+### Entry
+- Ein Release (Tag + ggf. Merge) soll zurückgenommen werden; z. B. fehlerhafte Runbook-Änderung oder Gate-Anpassung.
+- Kein Live/Execution; nur Repo- und Artefakt-Ebene.
+
+### Steps (Commands)
+
+**1) Rollback der Runbook-Änderung (revert merge, bevorzugt)**
+
+Commit-SHA des zu revertierenden Merges von `origin&#47;main` ermitteln (z. B. aus Evidence-Pack oder `git log`).
+
+```bash
+git fetch origin --prune
+git log --oneline -n 20 origin/main
+
+# Revert-Branch erstellen
+git checkout -b revert/runbook-cursor-ma-vN origin/main
+git revert <COMMIT_SHA_TO_REVERT> --no-edit
+
+git push -u origin revert/runbook-cursor-ma-vN
+# PR erstellen (Base: main, Head: revert/runbook-cursor-ma-vN)
+# gh pr create --base main --head revert/runbook-cursor-ma-vN --title "revert: runbook <reason>" --body "Reverts <COMMIT_SHA>. Ref: Phase 48."
+# Nach Merge: Tag für korrigierten Stand ggf. neu setzen (runbook-cursor-ma-vN+1 oder Patch).
+```
+
+**2) Tag nicht rückgängig machen; neuen Tag für korrigierten Stand**
+
+- Alte Tags (`runbook-cursor-ma-vN`) **nicht** löschen (Audit).
+- Nach Revert-Merge: neuen Tag setzen (z. B. `runbook-cursor-ma-vN+1` oder vN.1), siehe Phase 40/44.
+
+**3) Rollback des Release-Bundles (Consumer)**
+
+- Auf Consumer-Seite: vorherigen Release-Bundle (vN-1) verwenden; neuen Bundle (vN) nicht mehr nutzen.
+- Kein automatisches Überschreiben von Bundles auf `origin`; Bundles sind lokal/Downloads.
+
+**4) Schnell-Check nach Revert**
+
+```bash
+git checkout main
+git pull --ff-only origin main
+git log --oneline -n 5
+# Prüfen: Revert-Commit ist auf main; Runbook-Inhalt entspricht erwartetem Stand.
+```
+
+### Exit
+- Revert als Merge-Commit auf `main`; alter Tag unverändert; neuer Tag für korrigierten Stand; Consumer nutzen vorherigen Bundle bei Bedarf.
