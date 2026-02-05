@@ -940,6 +940,14 @@ rg -n "L6|Execution.*forbid|LIVE.*block|confirm token|armed" -S src scripts docs
 ### Entry
 - CI meldet `docs-reference-targets-gate` failure auf PR mit `.md`-Änderungen.
 
+### Summary (What / Where / How)
+- **What:** CI check that validates Markdown-referenced repo paths exist (or are explicitly ignored). Prevents broken doc references.
+- **Where:** Workflow `.github&#47;workflows&#47;docs_reference_targets_gate.yml` (check name: `docs-reference-targets-gate`) calls `scripts&#47;ops&#47;verify_docs_reference_targets.sh`.
+- **How (CI parity):**
+  - PR-like (changed markdown only): `./scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main`
+  - Full scan (slower): `./scripts&#47;ops&#47;verify_docs_reference_targets.sh --base origin&#47;main`
+- **Fixes:** Correct real paths; for false-positives (illustrative tokens), use `&#47;` in inline-code or append `<!-- pt:ref-target-ignore -->` on the same line. See `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md`.
+
 ### Steps (Commands)
 ```bash
 # Reproduce exactly like CI (only scans changed markdown)
