@@ -6,10 +6,15 @@ import pytest
 
 from src.ops.net.ports import ensure_tcp_port_free
 
+pytestmark = pytest.mark.network
+
 
 def _bind_ephemeral() -> tuple[socket.socket, int]:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(("127.0.0.1", 0))
+    try:
+        s.bind(("127.0.0.1", 0))
+    except PermissionError as e:
+        pytest.skip(f"network/port bind not permitted in this environment: {e}")
     s.listen(1)
     port = s.getsockname()[1]
     return s, port

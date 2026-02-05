@@ -16,6 +16,8 @@ import yaml
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
+pytestmark = pytest.mark.network
+
 
 def test_prometheus_local_compose_mounts_rules_dir_deterministically() -> None:
     p = PROJECT_ROOT / "docs" / "webui" / "observability" / "DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml"
@@ -186,7 +188,10 @@ class _Handler(BaseHTTPRequestHandler):
 
 def _free_port() -> int:
     with socket.socket() as s:
-        s.bind(("127.0.0.1", 0))
+        try:
+            s.bind(("127.0.0.1", 0))
+        except PermissionError as e:
+            pytest.skip(f"network/port bind not permitted in this environment: {e}")
         return s.getsockname()[1]
 
 
