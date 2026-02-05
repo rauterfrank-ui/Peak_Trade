@@ -1173,7 +1173,7 @@ python3 scripts/ops/validate_docs_token_policy.py --base origin/main
 |---------|------------------|
 | Scope prüfen | `git diff --name-only origin&#47;main...HEAD \| rg -v '^docs/'` → leer |
 | Token-Policy | `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --base origin&#47;main` |
-| Reference-Targets | `./scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main` |
+| Reference-Targets | `./scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main` <!-- pt:ref-target-ignore --> |
 | Lint / Pre-Commit | `pre-commit run --all-files` |
 | Docs-Build (falls vorhanden) | `mkdocs build --strict` oder Quarto/Sphinx |
 | Kein Live-Pfad | Keine Änderungen in `src&#47;execution&#47;`, `src&#47;governance&#47;`, `src&#47;risk&#47;` |
