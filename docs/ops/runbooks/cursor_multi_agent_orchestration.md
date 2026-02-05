@@ -698,3 +698,238 @@ git tag --list 'runbook-cursor-ma-v*' | sort -V
 
 ### Exit
 - Repo clean; .scratch inspiziert, ggf. Manifests archiviert; alte lokale Artefakte/Docker bereinigt; verwaiste Branches bereinigt; Runbook-Referenzen geprüft.
+
+---
+
+## Phase 21 — PR Hygiene (Docs-Only Changes)
+
+### Entry
+- Du änderst ausschließlich Docs/Runbooks.
+- Ziel: kleine, reviewbare PRs, minimales CI-Risiko.
+
+### Steps (Commands)
+```bash
+# 1) Ensure diff scope is docs-only
+git status
+git diff --name-only origin/main...HEAD | sort
+
+# should be only under docs/
+git diff --name-only origin/main...HEAD | rg -v '^docs/' && echo "ERROR: non-docs changes present" || echo "OK: docs-only"
+
+# 2) Local gates (fast)
+python3 scripts/ops/validate_docs_token_policy.py --base origin/main
+pre-commit run -a || true  # optional
+```
+
+### Exit
+- Nur Dateien unter `docs/` geändert; Token-Policy und Pre-Commit lokal bestanden; PR klein und fokussiert.
+
+### PR workflow (runbook phases 21–24)
+
+```bash
+# PR workflow (main protected)
+
+git checkout -b docs/runbook-cursor-ma-phases-21-24
+git push -u origin docs/runbook-cursor-ma-phases-21-24
+
+gh pr create \
+  --base main \
+  --head docs/runbook-cursor-ma-phases-21-24 \
+  --title "docs(runbook): add phases 21–24 (PR hygiene, naming, CI triage, no-live)" \
+  --body $'Extends cursor_multi_agent_orchestration.md with:\n- Phase 21: docs-only PR hygiene\n- Phase 22: branch/commit conventions\n- Phase 23: CI triage patterns\n- Phase 24: no-live enforcement checklist\n\nDocs-only; no runtime behavior changes.'
+
+PR_NUM="$(gh pr view --json number -q .number)"
+gh pr checks "$PR_NUM" --watch
+# merge when green
+gh pr merge "$PR_NUM" --squash --delete-branch
+
+git checkout main
+git fetch origin --prune
+git reset --hard origin/main
+```
+
+---
+
+## Phase 22 — Branch Naming Convention
+
+### Entry
+- Du erstellst einen Branch für Runbook/Docs- oder Ops-Änderungen.
+- Ziel: einheitliche, maschinenlesbare Branch-Namen für schnelle Zuordnung und CI-Triage.
+
+### Steps (Naming Rules)
+
+**Branch naming (examples)**
+
+| Kontext | Muster | Beispiele |
+|---------|--------|-----------|
+| Runbook Phasen | `docs&#47;runbook-<topic>-phases-<n>-<m>` | `docs&#47;runbook-cursor-ma-phases-21-24` |
+| Runbook Fix | `docs&#47;runbook-<topic>-fix-<short>` | `docs&#47;runbook-cursor-ma-fix-token-policy` |
+| Ops/Skripte | `ops&#47;<bereich>-<kurzbeschreibung>` | `ops&#47;validate-docs-token-policy`, `ops&#47;prom-targets-check` |
+| Fix/Backport | `fix&#47;<issue-oder-thema>` oder `backport&#47;<pr>-to-main` | `fix&#47;docs-gate-slash`, `backport&#47;1234-to-main` |
+| Revert | `revert&#47;<commit-oder-pr>` | `revert&#47;runbook-or-scratch` |
+
+```bash
+# Beispiele: Branch anlegen
+git checkout -b docs/runbook-cursor-ma-phases-21-24
+git checkout -b docs/runbook-cursor-ma-fix-token-policy
+git checkout -b ops/ci-triage-patterns
+```
+
+**Commit message**
+
+- Format: `docs(runbook): <imperative summary>`
+- Beispiel: `docs(runbook): add phases 21–24 (PR hygiene, naming, CI triage, no-live)`
+
+### Exit
+- Branch-Name folgt dem Muster; Commit-Message im Format `docs(runbook): …`; CI und Reviewer können Scope sofort erkennen.
+
+---
+
+## Phase 23 — CI Triage Patterns
+
+### Entry
+- PR ist offen; CI läuft oder ist durchgelaufen.
+- Ziel: typische CI-Fehler schnell einordnen und beheben (ohne Live/Execution).
+
+### Steps (Quick Reference)
+
+| CI-Fehler / Muster | Ursache (typisch) | Aktion |
+|--------------------|--------------------|--------|
+| Docs-Token-Policy fail | Slash in Inline-Code (z. B. `origin&#47;main`) | `validate_docs_token_policy.py` lokal; Inline-Code mit `&#47;` ersetzen |
+| Lint/Format fail | Pre-Commit nicht lokal gelaufen oder andere Konfiguration | `pre-commit run -a`; Änderungen committen und pushen |
+| Docs-Build fail | Broken links, fehlende Referenzen, fehlerhafte Syntax | `mkdocs build --strict` (oder Quarto/Sphinx) lokal; Links/Refs prüfen |
+| Unrelated test fail | Flaky Test oder Änderung außerhalb des PR-Scopes | Prüfen ob PR nur `docs/` enthält; ggf. Test-Issue separat tracken, nicht in Docs-PR mischen |
+| Branch out-of-date | `main` ist voraus | `git fetch origin && git rebase origin/main` (oder Merge); Konflikte lösen |
+
+```bash
+# 1) CI-Status prüfen
+gh pr checks --watch
+gh pr view --json statusCheckRollup -q '.statusCheckRollup[] | "\(.name): \(.status)"'
+
+# 2) Lokal gleiche Gates wie CI (Docs-PR)
+python3 scripts/ops/validate_docs_token_policy.py --base origin/main
+pre-commit run -a
+# [ -f mkdocs.yml ] && mkdocs build --strict
+
+# 3) Bei "branch out of date": Rebase
+git fetch origin
+git rebase origin/main
+git push --force-with-lease
+```
+
+**PR status and run logs (by PR number)**
+
+```bash
+PR_NUM="<PR_NUMBER>"
+
+# 1) Non-blocking status
+gh pr view "$PR_NUM" --json number,state,mergeable,headRefName,baseRefName,url
+gh pr checks "$PR_NUM" --required
+gh pr checks "$PR_NUM"
+
+# 2) Find latest run(s) for PR branch and pull logs for failing jobs
+BR="$(gh pr view "$PR_NUM" --json headRefName -q .headRefName)"
+gh run list --limit 20 --branch "$BR"
+# If needed:
+# RUN_ID="<databaseId>"
+# gh run view "$RUN_ID" --log --log-failed
+
+# 3) Typical docs-only failure handling
+# - docs-token-policy-gate: run local validator + fix inline-code illustrative slashes via &#47;
+# - audit: usually dependency/security scan; ensure no lockfile changes in docs-only PR
+# - weekly_core: health gate; wait or re-run if allowed
+```
+
+**TLS workaround options for gh (run on your local machine; pick one path)**
+
+```bash
+# 0) sanity: confirm gh can reach github
+gh auth status
+gh api https://api.github.com/rate_limit
+
+# A) If corporate proxy / MITM: set proxy for gh + git (edit values)
+# export HTTPS_PROXY="http://proxy.host:port"
+# export HTTP_PROXY="http://proxy.host:port"
+# export NO_PROXY="localhost,127.0.0.1,.local"
+# gh api https://api.github.com/rate_limit
+
+# B) If custom CA cert: point git/gh at the CA bundle (edit path)
+# export SSL_CERT_FILE="$HOME/.certs/corp-ca.pem"
+# git config --global http.sslCAInfo "$SSL_CERT_FILE"
+# gh api https://api.github.com/rate_limit
+
+# C) If only gh is failing, use GitHub UI for merge and use git for resync
+# (checks + merge in browser)
+open "https://github.com/rauterfrank-ui/Peak_Trade/pull/<PR_NUMBER>"
+
+# After merge (either via gh or UI), resync main:
+git checkout main
+git fetch origin --prune
+git reset --hard origin/main
+
+# Verify anchors after merge:
+rg -n "## Phase 21 — PR Hygiene|## Phase 22 — Branch Naming|## Phase 23 — CI Triage Patterns|## Phase 24 — No-Live Enforcement" \
+  docs/ops/runbooks/cursor_multi_agent_orchestration.md
+```
+
+### Exit
+- CI-Fehler einer Kategorie zugeordnet; Fix angewendet (Token-Policy, Lint, Docs-Build, Rebase); keine Live/Execution ausgelöst.
+
+---
+
+## Phase 24 — No-Live Enforcement
+
+### Entry
+- Jeder Lauf (lokal, CI, Agent) muss ohne Live-Trading/Execution bleiben.
+- Ziel: klare Checks und Env-Setzung, damit versehentliches Live nie ausgelöst wird.
+
+### Steps (Commands)
+
+**1) Env-Checks (vor jedem Agent-/Runner-Lauf)**
+```bash
+# Erforderliche sichere Defaults / Blockierung
+echo "PEAK_TRADE_MODE=${PEAK_TRADE_MODE:-not set}"
+echo "PEAK_TRADE_LIVE=${PEAK_TRADE_LIVE:-not set}"
+echo "PEAK_TRADE_EXECUTION_FORBIDDEN=${PEAK_TRADE_EXECUTION_FORBIDDEN:-not set}"
+echo "PEAK_TRADE_DRY_RUN=${PEAK_TRADE_DRY_RUN:-not set}"
+
+# Sollte sein: MODE=research, LIVE=0, EXECUTION_FORBIDDEN=1, DRY_RUN=1
+export PEAK_TRADE_MODE=research
+export PEAK_TRADE_LIVE=0
+export PEAK_TRADE_EXECUTION_FORBIDDEN=1
+export PEAK_TRADE_DRY_RUN=1
+```
+
+**2) Code-/Config-Scan (kein Live-Pfad aktiv)**
+```bash
+# Hinweis: Nur Hinweis; verbotene Muster dürfen in Runbook/Governance-Docs vorkommen (als Referenz).
+rg -n "LIVE|live.*trade|execution.*allow|armed|confirm token|dry[- ]run" -S src scripts configs --glob '!*.md' || true
+
+# Prüfen: Keine unabsichtliche Aktivierung in geänderten Dateien
+git diff --name-only origin/main...HEAD | xargs -I {} rg -l "PEAK_TRADE_LIVE=1|EXECUTION_FORBIDDEN=0" {} 2>/dev/null && echo "RISK: possible live path" || echo "OK: no live env in diff"
+```
+
+**3) Confirm LIVE/Execution stays blocked (best-effort: env + grep)**
+```bash
+env | rg -n "PEAK_TRADE_LIVE|EXECUTION|ARMED|CONFIRM|DRY_RUN" -S || true
+rg -n "L6|Execution.*forbid|LIVE.*block|confirm token|armed" -S src scripts docs || true
+```
+
+**4) Runbook commands (dry-run / non-destructive by default)**
+
+- Alle in `docs/runbooks` dokumentierten Befehle sollen dry-run bzw. nicht-destruktiv sein. <!-- pt:ref-target-ignore -->
+- Bevorzuge `down` statt `rm -rf`; bevorzuge `curl … &#47;-&#47;ready`-Probes.
+- `git reset --hard origin/main` nur explizit beim Reconcile nach Squash-Merge dokumentieren.
+
+**5) Documenting execution-adjacent**
+
+- Falls etwas execution-nah dokumentiert wird: explizit als verboten oder gated kennzeichnen (enabled/armed + confirm token).
+- Aus default-Pfaden heraushalten (nicht in Standard-Runbook-Schritten ohne Warnung).
+
+**6) Runbook/PR-Policy**
+
+- Jeder PR, der `src/execution/`, `src/governance/`, `src/risk/` oder Broker/Exchange-Code ändert: explizite Review-Pflicht; keine autonome Merge-Entscheidung.
+- Docs-Only-PRs (Phase 21): kein Live-Risiko; CI-Gates (Token-Policy, Lint, Docs-Build) reichen.
+
+### Exit
+- Env auf research/dry-run/forbidden gesetzt; keine Änderung aktiviert Live-Pfad; Runbook-Befehle non-destructive; Governance-Regeln eingehalten.
