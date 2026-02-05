@@ -67,7 +67,4 @@ show_status "C risk var_core + risk_cli present" "$c_ok"
 
 echo
 echo "=== NEXT ACTIONS (manual merges) ==="
-echo "Docs PR: https://github.com/rauterfrank-ui/Peak_Trade/compare/docs/gatepacks-merge-readiness?expand=1"
-echo "B1 PR  : https://github.com/rauterfrank-ui/Peak_Trade/compare/feat/research-cli-evidence-chain?expand=1"
-echo "B2 PR  : https://github.com/rauterfrank-ui/Peak_Trade/compare/feat/live-ops-evidence-chain?expand=1"
-echo "C  PR  : https://github.com/rauterfrank-ui/Peak_Trade/compare/feat/risk-var-core?expand=1"
+echo "NONE ✅ (all merge-readiness PRs already merged)"
