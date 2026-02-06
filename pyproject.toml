@@ -34,6 +34,7 @@ dev = [
     "black>=23.0.0",
     "pyright>=1.1.380",
     "mypy>=1.10",
+    "tomli; python_version < \"3.11\"",
 ]
 web = [
     "fastapi>=0.104.0",

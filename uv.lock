@@ -4457,6 +4457,7 @@ dev = [
     { name = "pytest", version = "9.0.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "pytest-cov" },
     { name = "ruff" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 knowledge = [
     { name = "chromadb" },
@@ -4530,6 +4531,7 @@ requires-dist = [
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.1.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.1.0" },
     { name = "toml", specifier = ">=0.10.2" },
+    { name = "tomli", marker = "python_full_version < '3.11' and extra == 'dev'" },
     { name = "urllib3", specifier = ">=2.6.3,<3" },
     { name = "uvicorn", marker = "extra == 'web'", specifier = ">=0.24.0" },
 ]

@@ -655,6 +655,7 @@ tomli==2.3.0
     #   build
     #   coverage
     #   mypy
+    #   peak-trade
     #   pip-audit
     #   pytest
 tomli-w==1.2.0 ; python_full_version >= '3.10'
