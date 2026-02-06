@@ -2,6 +2,6 @@
 set -euo pipefail
 
 # Run only if relevant files changed
-if git diff --cached --name-only | rg -q "(docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX\.md|config/model_registry\.toml)"; then
+if git diff --cached --name-only | rg -q "(docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX\.md|config/model_registry\.toml|config/capability_scopes/.*\.toml)"; then
   ./scripts/governance/ai_matrix_consistency_gate.sh
 fi
