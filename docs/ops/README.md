@@ -2203,3 +2203,11 @@ Documentation for PRs closed without merge (superseded, redundant, or obsolete).
 
 ## Specs
 - Project Summary Outline V2: `docs/ops/specs/PEAK_TRADE_PROJECT_SUMMARY_OUTLINE_V2.md`
+
+## Git hooks (local)
+
+This repo ships versioned hooks under `.githooks/`. To enable them locally:
+
+```bash
+./scripts/dev/bootstrap.sh
+```
