@@ -552,3 +552,7 @@ Begleitende Specs/Contracts:
 - docs/webui/DASHBOARD_GOVERNANCE_NO_LIVE.md
 - docs/webui/DASHBOARD_DATA_CONTRACT_OBS_v1.md
 - docs/webui/GRAFANA_DASHBOARD_SPEC_PEAK_TRADE_OBS_v1.md
+
+## Runbooks
+
+- **Runbook (Grafana Dashboard Setup):** `docs/webui/observability/RUNBOOK_Grafana_Dashboard_Setup.md`
