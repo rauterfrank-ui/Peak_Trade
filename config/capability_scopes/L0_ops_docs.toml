@@ -81,3 +81,6 @@ safety_checks = [
 # Alerts
 alert_on_violation = true
 alert_channel = "ops-safety"
+
+[tools]
+allowed_tools = ["files"]
