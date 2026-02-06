@@ -14,10 +14,10 @@ This milestone establishes a single-source AI autonomy matrix and enforces drift
   - P0: matrix↔registry drift checks + SoD + authoritative Reference enforcement + CI-friendly output
   - P1: matrix schema tokens + duplicate row detection + model existence + best-effort capability scope checks
   - P2: `make governance-gate` + `--explain` remediation hints
-  - Help: `--help/-h`
+  - Help: `--help&#47;-h`
 - Local developer enablement:
   - `.githooks/pre-commit` gate on matrix/registry changes
-  - Bootstrap: `./scripts/dev/bootstrap.sh` (sets `core.hooksPath=.githooks`)
+  - Bootstrap: `scripts/dev/bootstrap.sh` (sets `core.hooksPath=.githooks`)
 
 ## Tags
 
