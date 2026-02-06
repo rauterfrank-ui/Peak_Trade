@@ -113,6 +113,14 @@ AILIVE_COMPOSE="-f /pfad/zu/compose.ai-live.yml" \
 ./scripts/obs/prom_9094_9095_up_and_verify.sh
 ```
 
+**Wenn 9094/9095 spinnen oder Prometheus „stuck“ ist:** OBSE + AILIVE sauber neu starten (ohne Volumes zu löschen). Entweder das Helper-Skript ausführen:
+
+```bash
+./scripts/obs/prom_9094_9095_restart.sh
+```
+
+Oder manuell: Projektnamen aus `docker compose ls` (OBSE = observability/obse, AILIVE = ai-live), dann `docker compose -p <OBSE> restart` bzw. `-p <AILIVE> restart`; reicht das nicht, `down` (ohne `-v`) und `up -d` für beide, danach Ports und `curl http:&#47;&#47;localhost:9094&#47;-&#47;ready` / `:9095&#47;-&#47;ready` prüfen. Bei FAIL: `logs --tail=200` für beide Stacks.
+
 ### Orchestrator lokalisieren & Smoke-Run
 ```bash
 # Orchestrator / Runner / Gates (Beispiele; anpassen)
