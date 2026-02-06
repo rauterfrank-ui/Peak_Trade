@@ -141,8 +141,10 @@ def test_label_merge_log_merge_log_pattern():
 
 def test_ops_readme_exists():
     """Ops README documentation exists."""
-    readme = Path("docs/ops/README.md")
-    assert readme.exists(), f"Ops README not found: {readme}"
-    content = readme.read_text()
+    readme_path = "docs/ops/README.md"
+    # Read from git to avoid false failures if some test mutates the working tree.
+    content = subprocess.check_output(
+        ["git", "show", f"HEAD:{readme_path}"], text=True
+    )
     assert "PR Inventory" in content or "pr_inventory" in content
     assert "label" in content.lower()
