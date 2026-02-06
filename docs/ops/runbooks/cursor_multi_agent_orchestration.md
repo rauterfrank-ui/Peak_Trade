@@ -121,6 +121,16 @@ AILIVE_COMPOSE="-f /pfad/zu/compose.ai-live.yml" \
 
 Oder manuell: Projektnamen aus `docker compose ls` (OBSE = observability/obse, AILIVE = ai-live), dann `docker compose -p <OBSE> restart` bzw. `-p <AILIVE> restart`; reicht das nicht, `down` (ohne `-v`) und `up -d` für beide, danach Ports und `curl http:&#47;&#47;localhost:9094&#47;-&#47;ready` / `:9095&#47;-&#47;ready` prüfen. Bei FAIL: `logs --tail=200` für beide Stacks.
 
+### Lokale Compose-Overrides (Ports 9094/9095) – ohne manuelles `-f`
+Wenn `peaktrade-observability` / `peaktrade-ai-live-ops` nach einem `down` nicht mehr in `docker compose ls` auftauchen, nutzen die Helper-Skripte einen Fallback.
+
+**Empfohlen:** Lege auf deinem Host lokale Overrides an (werden nicht versioniert):
+
+- `.ops_local&#47;compose_overrides&#47;observability.prom.override.yml` → published Port `9095:9090`
+- `.ops_local&#47;compose_overrides&#47;ai-live.prom.override.yml` → published Port `9094:9090`
+
+Die Skripte wählen diese Overrides automatisch (ohne manuelle `OBSE_COMPOSE`/`AILIVE_COMPOSE`).
+
 ### Orchestrator lokalisieren & Smoke-Run
 ```bash
 # Orchestrator / Runner / Gates (Beispiele; anpassen)

@@ -25,62 +25,33 @@ AILIVE_COMPOSE="${AILIVE_COMPOSE:-}"
 echo "== docker compose ls =="
 docker compose ls || true
 
-detect_project() {
-  local needle="$1"
-  local out=""
-  out="$(docker compose ls --format json 2>/dev/null | python3 - <<PY 2>/dev/null || true
-import json,sys
-try:
-  data=json.load(sys.stdin)
-except Exception:
-  data=[]
-needle="${needle}"
-hits=[]
-for row in data:
-  name=(row.get("Name") or "").strip()
-  if needle in name:
-    hits.append(name)
-print(hits[0] if hits else "")
-PY
-)"
-  echo "$out"
-}
-
-OBSE_PROJECT="${OBSE_PROJECT:-}"
-AILIVE_PROJECT="${AILIVE_PROJECT:-}"
-
-if [[ -z "${OBSE_PROJECT}" ]]; then
-  OBSE_PROJECT="$(detect_project "observability")"
-  [[ -z "${OBSE_PROJECT}" ]] && OBSE_PROJECT="$(detect_project "obse")"
-  [[ -z "${OBSE_PROJECT}" ]] && OBSE_PROJECT="peaktrade-observability"
-fi
-
-if [[ -z "${AILIVE_PROJECT}" ]]; then
-  AILIVE_PROJECT="$(detect_project "ai-live")"
-  [[ -z "${AILIVE_PROJECT}" ]] && AILIVE_PROJECT="peaktrade-ai-live-ops"
-fi
+RESOLVE_JSON="$(python3 scripts/obs/resolve_obse_ailive_compose.py)"
+OBSE_PROJECT="$(printf '%s' "$RESOLVE_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("OBSE_PROJECT",""))')"
+AILIVE_PROJECT="$(printf '%s' "$RESOLVE_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("AILIVE_PROJECT",""))')"
+OBSE_COMPOSE_ARGS="$(printf '%s' "$RESOLVE_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("OBSE_COMPOSE_ARGS",""))')"
+AILIVE_COMPOSE_ARGS="$(printf '%s' "$RESOLVE_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("AILIVE_COMPOSE_ARGS",""))')"
 
 echo ""
-echo "== detected projects =="
+echo "== resolved config =="
 echo "OBSE_PROJECT=${OBSE_PROJECT} (expects host :9095 -> container :9090)"
 echo "AILIVE_PROJECT=${AILIVE_PROJECT} (expects host :9094 -> container :9090)"
-echo "OBSE_COMPOSE=${OBSE_COMPOSE:-<none>}"
-echo "AILIVE_COMPOSE=${AILIVE_COMPOSE:-<none>}"
+echo "OBSE_COMPOSE_ARGS=${OBSE_COMPOSE_ARGS:-<none>}"
+echo "AILIVE_COMPOSE_ARGS=${AILIVE_COMPOSE_ARGS:-<none>}"
 
 echo ""
 echo "== status (before) =="
-docker compose ${OBSE_COMPOSE} -p "${OBSE_PROJECT}" ps || true
-docker compose ${AILIVE_COMPOSE} -p "${AILIVE_PROJECT}" ps || true
+eval "docker compose ${OBSE_COMPOSE_ARGS:-} -p \"${OBSE_PROJECT}\" ps" || true
+eval "docker compose ${AILIVE_COMPOSE_ARGS:-} -p \"${AILIVE_PROJECT}\" ps" || true
 
 echo ""
 echo "== soft restart (docker compose restart) =="
-docker compose ${OBSE_COMPOSE} -p "${OBSE_PROJECT}" restart || true
-docker compose ${AILIVE_COMPOSE} -p "${AILIVE_PROJECT}" restart || true
+eval "docker compose ${OBSE_COMPOSE_ARGS:-} -p \"${OBSE_PROJECT}\" restart" || true
+eval "docker compose ${AILIVE_COMPOSE_ARGS:-} -p \"${AILIVE_PROJECT}\" restart" || true
 
 echo ""
 echo "== status (after soft restart) =="
-docker compose ${OBSE_COMPOSE} -p "${OBSE_PROJECT}" ps || true
-docker compose ${AILIVE_COMPOSE} -p "${AILIVE_PROJECT}" ps || true
+eval "docker compose ${OBSE_COMPOSE_ARGS:-} -p \"${OBSE_PROJECT}\" ps" || true
+eval "docker compose ${AILIVE_COMPOSE_ARGS:-} -p \"${AILIVE_PROJECT}\" ps" || true
 
 echo ""
 echo "== readiness probes (after soft restart) =="
@@ -89,10 +60,10 @@ curl -fsS "http://localhost:9095/-/ready" && echo "9095 ready: OK" || echo "9095
 
 echo ""
 echo "== hard restart (down/up, no -v) =="
-docker compose ${OBSE_COMPOSE} -p "${OBSE_PROJECT}" down || true
-docker compose ${AILIVE_COMPOSE} -p "${AILIVE_PROJECT}" down || true
-docker compose ${OBSE_COMPOSE} -p "${OBSE_PROJECT}" up -d || true
-docker compose ${AILIVE_COMPOSE} -p "${AILIVE_PROJECT}" up -d || true
+eval "docker compose ${OBSE_COMPOSE_ARGS:-} -p \"${OBSE_PROJECT}\" down" || true
+eval "docker compose ${AILIVE_COMPOSE_ARGS:-} -p \"${AILIVE_PROJECT}\" down" || true
+eval "docker compose ${OBSE_COMPOSE_ARGS:-} -p \"${OBSE_PROJECT}\" up -d" || true
+eval "docker compose ${AILIVE_COMPOSE_ARGS:-} -p \"${AILIVE_PROJECT}\" up -d" || true
 
 echo ""
 echo "== port binding check (lsof) =="
@@ -108,5 +79,5 @@ curl -fsS "http://localhost:9095/-/ready" && echo "9095 ready: OK" || echo "9095
 
 echo ""
 echo "== logs (tail=200) if still failing =="
-docker compose ${OBSE_COMPOSE} -p "${OBSE_PROJECT}" logs --tail=200 || true
-docker compose ${AILIVE_COMPOSE} -p "${AILIVE_PROJECT}" logs --tail=200 || true
+eval "docker compose ${OBSE_COMPOSE_ARGS:-} -p \"${OBSE_PROJECT}\" logs --tail=200" || true
+eval "docker compose ${AILIVE_COMPOSE_ARGS:-} -p \"${AILIVE_PROJECT}\" logs --tail=200" || true
