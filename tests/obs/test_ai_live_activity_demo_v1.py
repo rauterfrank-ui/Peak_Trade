@@ -1,3 +1,7 @@
+import pytest
+
+pytestmark = pytest.mark.network
+
 import json
 import os
 import socket

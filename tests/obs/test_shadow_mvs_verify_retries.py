@@ -26,6 +26,10 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
+import pytest
+
+pytestmark = pytest.mark.network
+
 
 @dataclass
 class _State:

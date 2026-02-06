@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import pytest
+
+pytestmark = pytest.mark.network
+
 import subprocess
 import threading
 import urllib.parse
