@@ -101,7 +101,7 @@ Das Skript macht:
 1) `docker compose ls` (Projektnamen erkennen)
 2) `ps` + `logs --tail=200` für OBSE (9095) und AILIVE (9094)
 3) `docker compose ... up -d` für beide
-4) Port-Check via `lsof` (9094/9095) + `curl http://localhost:9094/-/ready` und `:9095/-/ready`
+4) Port-Check via `lsof` (9094/9095) + `curl http:&#47;&#47;localhost:9094&#47;-&#47;ready` und `:9095&#47;-&#47;ready`
 
 **Projekt-Erkennung:** Namen aus `docker compose ls` (enthält „observability“/„obse“ → OBSE; enthält „ai-live“ → AILIVE). Fallback: `peaktrade-observability` und `peaktrade-ai-live-ops`.
 
