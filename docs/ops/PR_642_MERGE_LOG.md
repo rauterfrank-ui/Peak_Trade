@@ -194,7 +194,7 @@ jq '.proposer.content' evidence_packs/L1_*/evidence_pack.json | grep -o "\[Sourc
 - **Datum:** 2026-01-10
 - **Control Center:** `docs/ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md`
 - **Phase 4A Doc:** `docs/governance/ai_autonomy/PHASE4_L1_L4_INTEGRATION.md`
-- **Authoritative Matrix:** `docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`
+- **Authoritative Matrix:** `docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`
 - **Model Registry:** `config/model_registry.toml`
 - **L1 Capability Scope:** `config/capability_scopes/L1_deep_research.toml`
 

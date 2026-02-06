@@ -1,12 +1,12 @@
 # AI Autonomy Layer Map + Model Assignment Matrix (Day Trading, Safety-First)
 
 **Status:** Detailed Specification v1.0  
-**Authoritative Matrix:** `docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md` ⚠️  
+**Authoritative Matrix:** `docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md` ⚠️  
 **Scope:** Peak_Trade Day Trading. **Execution bleibt verboten**, bis explizite Evidence Packs + Go/NoGo Freigabe vorliegen.  
 **Date:** 2026-01-08
 
 > **WICHTIG:** Dieses Dokument ist die **detaillierte Spezifikation**. Die **authoritative Matrix** für Layer→Model Assignments ist:  
-> `docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`  
+> `docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`  
 > Evidence Packs MÜSSEN auf die Matrix referenzieren, nicht auf dieses Dokument.
 
 ---

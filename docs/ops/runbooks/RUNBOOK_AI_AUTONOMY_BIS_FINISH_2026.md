@@ -61,7 +61,7 @@ Dieses Runbook dokumentiert den **kompletten** operationalen Pfad von der aktuel
 
 ## 📊 LAYER INTEGRATION STATUS
 
-**Source of Truth:** [AI Autonomy Layer Map & Model Assignment Matrix](../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md)
+**Source of Truth:** [AI Autonomy Layer Map & Model Assignment Matrix](../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md)
 
 | Layer | Name | Autonomy | Primary Model | Critic Model | Status | Integration Phase |
 |-------|------|----------|---------------|--------------|--------|------------------|
@@ -798,7 +798,7 @@ Establish sustainable operations: weekly health discipline, continuous improveme
 ## 📚 REFERENCE DOCUMENTATION
 
 ### Authoritative Sources
-- **Layer Map & Model Matrix:** [AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md](../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md)
+- **Layer Map & Model Matrix:** [AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md](../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md)
 - **Control Center:** [AI_AUTONOMY_CONTROL_CENTER.md](../control_center/AI_AUTONOMY_CONTROL_CENTER.md)
 - **Evidence Pack Template v2:** [AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md](../../governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md)
 
