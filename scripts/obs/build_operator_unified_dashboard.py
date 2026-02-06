@@ -51,6 +51,17 @@ def _pin_shadow_panels_in_dashboard(d: dict) -> None:
             _pin_panel_to_shadow(panel)
 
 
+def _pin_stack_fingerprint_panels(d: dict) -> None:
+    """Pin Stack Fingerprint panels to prom_local_9092 regardless of $ds."""
+    for panel in d.get("panels") or []:
+        if not isinstance(panel, dict):
+            continue
+        title = (panel.get("title") or "").strip()
+        if not title.startswith("Stack Fingerprint:"):
+            continue
+        panel["datasource"] = {"type": "prometheus", "uid": UID_SHADOW}
+
+
 src_op = pathlib.Path(
     "docs/webui/observability/grafana/dashboards/overview/peaktrade-operator-home.json"
 )
@@ -180,6 +191,7 @@ elif ai.get("annotations") and u.get("annotations", {}).get("list"):
             u["annotations"]["list"].append(copy.deepcopy(a))
 
 _pin_shadow_panels_in_dashboard(u)
+_pin_stack_fingerprint_panels(u)
 
 out.write_text(json.dumps(u, indent=2) + "\n")
 print("WROTE", out)
