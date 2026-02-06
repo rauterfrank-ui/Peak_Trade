@@ -21,6 +21,8 @@ Exit codes:
   - 0: PASS
   - 2: FAIL (violations)
   - 1: unexpected error
+
+CLI: pass --explain to print remediation hints after each [FAIL] line.
 """
 
 from __future__ import annotations
@@ -58,9 +60,31 @@ DEFAULT_SCOPE_FILES = {
 }
 
 
-def _fail(violations: list[Violation]) -> int:
+def _explain(code: str) -> str:
+    hints = {
+        "REGISTRY_REFERENCE_MISSING": "Add a line 'Reference: docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md' (or # Reference: ...) in model_registry.toml.",
+        "REGISTRY_REFERENCE_DRIFT": "Fix config/model_registry.toml Reference: to docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+        "MATRIX_HEADER_MISSING": 'Ensure the matrix contains a markdown table with a header row containing "Layer" and a separator row.',
+        "MATRIX_HEADER_COL_MISSING": "Add the missing required column token (Layer, Autonomy, Primary, Fallback, Critic) to the matrix table header.",
+        "MATRIX_DUPLICATE_LAYER_ROWS": "Remove duplicate layer rows; each of L0..L6 must appear exactly once.",
+        "MODEL_UNDEFINED": "Add the referenced model under [models] in config/model_registry.toml (or set model_id accordingly).",
+        "SCOPE_LAYER_MISMATCH": 'Update the scope file to include layer_id = "Lx" matching the layer.',
+        "DRIFT_PRIMARY": "Sync matrix Primary with registry.layer_mapping or update both consistently.",
+        "DRIFT_FALLBACK": "Sync matrix Fallback list with registry.layer_mapping or update both consistently.",
+        "DRIFT_CRITIC": "Sync matrix Critic with registry.layer_mapping or update both consistently.",
+        "DRIFT_AUTONOMY": "Sync matrix Autonomy with registry.layer_mapping or update both consistently.",
+        "SOD_VIOLATION": "Set critic model different from primary (separation-of-duties).",
+    }
+    return hints.get(code, "")
+
+
+def _fail(violations: list[Violation], explain: bool = False) -> int:
     for v in violations:
         print(f"[FAIL] {v.code}: {v.msg}")
+        if explain:
+            h = _explain(v.code)
+            if h:
+                print(f"[EXPLAIN] {v.code}: {h}")
     print(f"[SUMMARY] violations={len(violations)}")
     return 2
 
@@ -238,7 +262,7 @@ def _check_capability_scopes(violations: list[Violation], repo_root: Path) -> No
             )
 
 
-def main(matrix_path: str, registry_path: str) -> int:
+def main(matrix_path: str, registry_path: str, explain: bool = False) -> int:
     violations: list[Violation] = []
     try:
         mp = Path(matrix_path)
@@ -246,9 +270,9 @@ def main(matrix_path: str, registry_path: str) -> int:
         repo_root = Path.cwd()
 
         if not mp.exists():
-            return _fail([Violation("MATRIX_NOT_FOUND", f"{matrix_path} missing")])
+            return _fail([Violation("MATRIX_NOT_FOUND", f"{matrix_path} missing")], explain)
         if not rp.exists():
-            return _fail([Violation("REGISTRY_NOT_FOUND", f"{registry_path} missing")])
+            return _fail([Violation("REGISTRY_NOT_FOUND", f"{registry_path} missing")], explain)
 
         md = mp.read_text(encoding="utf-8")
         reg_text = rp.read_text(encoding="utf-8")
@@ -422,7 +446,7 @@ def main(matrix_path: str, registry_path: str) -> int:
         _check_capability_scopes(violations, repo_root)
 
         if violations:
-            return _fail(violations)
+            return _fail(violations, explain)
         return _pass()
 
     except SystemExit:
@@ -434,7 +458,11 @@ def main(matrix_path: str, registry_path: str) -> int:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("usage: validate_ai_matrix_vs_registry.py <matrix.md> <model_registry.toml>")
+    explain = "--explain" in sys.argv
+    argv = [a for a in sys.argv[1:] if a != "--explain"]
+    if len(argv) != 2:
+        print(
+            "usage: validate_ai_matrix_vs_registry.py [--explain] <matrix.md> <model_registry.toml>"
+        )
         raise SystemExit(2)
-    raise SystemExit(main(sys.argv[1], sys.argv[2]))
+    raise SystemExit(main(argv[0], argv[1], explain=explain))
