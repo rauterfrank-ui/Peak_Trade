@@ -140,7 +140,7 @@ deactivate
 ./scripts/obs/ai_live_restart.sh 9110
 ```
 
-Das Skript beendet ggf. einen bestehenden Listener auf :9110 und startet `ai_live_exporter.py` im Hintergrund (Log: `scripts/obs/.runtime/ai_live_restart.log`). Danach Prometheus-Scrape prüfen: `up{job="ai_live"}` sollte 1 werden. Optional: `PY_CMD` setzen, um eine andere Python-Exe zu erzwingen (z. B. `PY_CMD='/path/to/venv/bin/python'`).
+Das Skript beendet ggf. einen bestehenden Listener auf :9110 und startet `ai_live_exporter.py` im Hintergrund (Log: `scripts/obs/.runtime/ai_live_restart.log`). Danach Prometheus-Scrape prüfen: `up{job="ai_live"}` sollte 1 werden. Optional: `PY_CMD` setzen, um eine andere Python-Exe zu erzwingen (z. B. `PY_CMD='&#47;path&#47;to&#47;venv&#47;bin&#47;python'`).
 
 ### Start (Exporter lokal)
 
