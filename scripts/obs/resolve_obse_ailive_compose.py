@@ -3,6 +3,7 @@ Resolve OBSE + AILIVE compose project names and -f compose file args.
 Uses docker compose ls ConfigFiles when present; else fallback to known
 base + override compose files on disk (so stacks can be started after a down).
 """
+
 from __future__ import annotations
 
 import json
@@ -62,13 +63,17 @@ def _fallback_files(kind: str) -> List[Path]:
     .ops_local) to avoid port list merge with base (which would add 9092)."""
     if kind == "obse":
         patterns = [
-            "*observability*.yml", "*observability*.yaml",
-            "*obse*.yml", "*obse*.yaml",
+            "*observability*.yml",
+            "*observability*.yaml",
+            "*obse*.yml",
+            "*obse*.yaml",
         ]
     else:
         patterns = [
-            "*ai-live*.yml", "*ai-live*.yaml",
-            "*ai_live*.yml", "*ai_live*.yaml",
+            "*ai-live*.yml",
+            "*ai-live*.yaml",
+            "*ai_live*.yml",
+            "*ai_live*.yaml",
         ]
 
     files: List[Path] = []
@@ -91,6 +96,7 @@ def _fallback_files(kind: str) -> List[Path]:
 def _shell_f_args(paths: List[Path]) -> str:
     def q(s: str) -> str:
         return "'" + s.replace("'", "'\"'\"'") + "'"
+
     return " ".join("-f " + q(str(p)) for p in paths)
 
 
