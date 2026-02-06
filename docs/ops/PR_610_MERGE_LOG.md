@@ -51,7 +51,7 @@ Follows Phase 1 PR #609 (authoritative layer map + matrix).
 - `scripts/validate_layer_map_config.py` (121 lines)
 
 ### Matrix Updated (1 file)
-- `docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md` (restored real links from Phase 2 markers)
+- `docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md` (restored real links from Phase 2 markers)
 
 **Total:** 3333 insertions(+), 12 deletions(-)
 

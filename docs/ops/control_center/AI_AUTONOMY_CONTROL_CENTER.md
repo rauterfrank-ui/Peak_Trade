@@ -25,7 +25,7 @@ This page is the **single "Start Here" entry point** for AI Autonomy operations:
 | **Operating Mode** | Governance-Locked / No-Live | No trading execution permitted |
 | **Layer Coverage** | 7/7 Layers Defined | L0-L6 (L6 EXEC forbidden) |
 | **Latest Milestone** | Phase 4B (L1 + L4 Integration) | L1 Runner + L4 Critic implemented |
-| **Authoritative Matrix** | [AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md](../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md) | v1.0 (2026-01-08) |
+| **Authoritative Matrix** | [AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md](../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md) | v1.0 (2026-01-08) |
 | **Evidence Infrastructure** | ✅ Active | Templates, Schema, Validator, Index |
 | **CI Health** | ✅ Required Checks Active | 7 primary gates enforced |
 
@@ -33,7 +33,7 @@ This page is the **single "Start Here" entry point** for AI Autonomy operations:
 
 ## 3. Layer Status Matrix
 
-**Source of Truth:** [AI Autonomy Layer Map & Model Assignment Matrix](../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md)
+**Source of Truth:** [AI Autonomy Layer Map & Model Assignment Matrix](../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md)
 
 | Layer ID | Layer Name | Autonomy | Primary Model | Critic Model | Capability Scope | Status |
 |----------|------------|----------|---------------|--------------|------------------|--------|
@@ -299,7 +299,7 @@ This control center does not redefine gates; it points to the authoritative sour
 - Logging captures actual inputs/outputs manifest (audit trail)
 - Evidence Pack validator checks scope compliance
 
-**Reference:** [AI Autonomy Layer Map](../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md), Section "CAPABILITY SCOPES"
+**Reference:** [AI Autonomy Layer Map](../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md), Section "CAPABILITY SCOPES"
 
 ---
 
@@ -331,7 +331,7 @@ This control center does not redefine gates; it points to the authoritative sour
 
 **Q: SoD Check fails (Proposer == Critic)**
 - **A:** Verify `primary_model_id` ≠ `critic_model_id` in Evidence Pack
-- Check [Layer Map Matrix](../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md) for correct assignments
+- Check [Layer Map Matrix](../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md) for correct assignments
 
 **Q: CI stuck on "mergeable: UNKNOWN"**
 - **A:** See [GitHub Rulesets Runbook](../runbooks/github_rulesets_pr_reviews_policy.md), Section "Quickflow: mergeable UNKNOWN"

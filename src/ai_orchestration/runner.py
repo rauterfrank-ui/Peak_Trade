@@ -4,7 +4,7 @@ Multi-Model Runner with Dry-Run Mode
 NO real model API calls. Orchestration validation + artifact generation only.
 
 Reference:
-- docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
+- docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
 """
 
 import hashlib

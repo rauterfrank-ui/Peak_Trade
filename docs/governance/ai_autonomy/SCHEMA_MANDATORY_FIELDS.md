@@ -425,7 +425,7 @@ else:
 
 ## REFERENCES
 
-- **Authoritative Matrix:** `docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`
+- **Authoritative Matrix:** `docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`
 - **Evidence Pack Template v2:** `docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md`
 - **Model Registry:** `config/model_registry.toml`
 - **Capability Scopes:** `config&#47;capability_scopes&#47;*.toml`

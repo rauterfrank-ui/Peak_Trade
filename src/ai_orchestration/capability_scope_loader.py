@@ -5,7 +5,7 @@ Loads and parses config/capability_scopes/*.toml into structured Python objects.
 
 Reference:
 - config/capability_scopes/*.toml
-- docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
+- docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
 """
 
 from dataclasses import dataclass

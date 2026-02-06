@@ -13,7 +13,7 @@
 
 ## METADATA (Layer Map v1 Integration)
 
-> **AUTHORITATIVE MATRIX:** `docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`  
+> **AUTHORITATIVE MATRIX:** `docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`  
 > Alle Felder unten MÜSSEN mit der Matrix übereinstimmen.
 
 ### Layer Information
