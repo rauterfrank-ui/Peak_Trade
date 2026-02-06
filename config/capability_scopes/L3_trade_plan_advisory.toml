@@ -1,0 +1,36 @@
+id = "L3_trade_plan_advisory_v1"
+layer_id = "L3"
+layer_name = "Trade Plan Advisory"
+autonomy = "REC/PROP"
+
+[tools]
+allowed_tools = ["files"]
+
+[inputs_allowed]
+files = true
+web = false
+
+[inputs_forbidden]
+secrets = true
+live_accounts = true
+exchange_private_keys = true
+
+[outputs_allowed]
+plan_templates = true
+checklists = true
+hypotheses = true
+candidate_configs = true
+
+[outputs_forbidden]
+execution_commands = true
+ready_to_send_orders = true
+broker_api_calls = true
+exchange_api_calls = true
+
+[safety_checks]
+require_risk_checklist = true
+require_no_trade_triggers = true
+require_sod = true
+
+[logging]
+required_fields = ["run_id", "layer_id", "model_id", "prompt_hash", "artifact_hash", "timestamp"]
