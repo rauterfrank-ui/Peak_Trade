@@ -157,3 +157,11 @@ deps-sync-check:
 # Validate PR final report formatting
 ops-validate-pr-reports:
 	bash scripts/validate_pr_report_format.sh
+
+# ============================================================================
+# Governance Gate (AI matrix vs registry)
+# ============================================================================
+
+.PHONY: governance-gate
+governance-gate:
+	@bash scripts/governance/ai_matrix_consistency_gate.sh
