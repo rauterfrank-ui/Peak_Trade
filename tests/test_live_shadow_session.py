@@ -50,6 +50,8 @@ from src.orders.base import OrderRequest
 from src.execution.pipeline import ExecutionPipeline, SignalEvent
 from src.strategies.base import BaseStrategy, StrategyMetadata
 
+pytestmark = pytest.mark.network
+
 
 # =============================================================================
 # Test Fixtures
