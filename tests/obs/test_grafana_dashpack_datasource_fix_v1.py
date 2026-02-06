@@ -11,6 +11,11 @@ ALLOW_UIDS = {
     "peaktrade-prometheus",
     # Canonical dashpack selector (datasource variable uid)
     "${ds}",
+    # Grafana provisioned datasource UIDs (observability stack)
+    "prom_local_9092",
+    "prom_shadow_9093",
+    "prom_ai_live_9094",
+    "prom_observability_9095",
 }
 
 ALLOW_NAMES = {
