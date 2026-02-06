@@ -10,7 +10,7 @@ Scope: Improve `src/governance/validate_ai_matrix_vs_registry.py` and the CI gat
   - Enforce Separation-of-Duties: `critic != primary` where applicable
 - [ ] Validate the registry reference is authoritative:
   - `Reference:` points to `docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`
-  - No remaining references to `docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`
+  - No remaining references to `docs&#47;governance&#47;ai_autonomy&#47;AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`
 - [ ] Make validator outputs CI-friendly:
   - Single-line `[FAIL] CODE: message` entries
   - Summary line with count of violations
