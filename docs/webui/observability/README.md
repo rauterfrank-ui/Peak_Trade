@@ -126,7 +126,7 @@ lsof -nP -iTCP:9110 -sTCP:LISTEN
 
 **Exporter wieder starten (Restart):** Wenn der ai_live Exporter nicht läuft und Grafana/Prometheus daher keine ai_* Metriken zeigen, zuerst den Exporter auf :9110 bringen.
 
-Deterministisch (ohne uv, ohne globales pip): repo-lokales venv anlegen und dann Restart-Skript nutzen (das Skript verwendet automatisch `.venv_obs/bin/python`, falls vorhanden):
+Deterministisch (ohne uv, ohne globales pip): repo-lokales venv anlegen und dann Restart-Skript nutzen (das Skript verwendet automatisch `.venv_obs&#47;bin&#47;python`, falls vorhanden):
 
 ```bash
 # Einmalig: venv anlegen (idempotent)
@@ -140,7 +140,7 @@ deactivate
 ./scripts/obs/ai_live_restart.sh 9110
 ```
 
-Das Skript beendet ggf. einen bestehenden Listener auf :9110 und startet `ai_live_exporter.py` im Hintergrund (Log: `scripts/obs/.runtime/ai_live_restart.log`). Danach Prometheus-Scrape prüfen: `up{job="ai_live"}` sollte 1 werden. Optional: `PY_CMD` setzen, um eine andere Python-Exe zu erzwingen (z. B. `PY_CMD='&#47;path&#47;to&#47;venv&#47;bin&#47;python'`).
+Das Skript beendet ggf. einen bestehenden Listener auf :9110 und startet `ai_live_exporter.py` im Hintergrund (Log: `scripts&#47;obs&#47;.runtime&#47;ai_live_restart.log`). Danach Prometheus-Scrape prüfen: `up{job="ai_live"}` sollte 1 werden. Optional: `PY_CMD` setzen, um eine andere Python-Exe zu erzwingen (z. B. `PY_CMD='&#47;path&#47;to&#47;venv&#47;bin&#47;python'`).
 
 ### Start (Exporter lokal)
 
@@ -292,7 +292,7 @@ Der Exporter setzt `run_id` pro Event aus:
 
 - **AI_LIVE_ExporterDown**
   - Bedeutung: `up{job="ai_live"} == 0` → Exporter wird nicht gescrapt.
-  - Sofort: Port Contract v1 prüfen (`:9110`), Exporter-Metrics direkt öffnen (`http://127.0.0.1:9110/metrics`), Port-Konflikt prüfen:
+  - Sofort: Port Contract v1 prüfen (`:9110`), Exporter-Metrics direkt öffnen (`http:&#47;&#47;127.0.0.1:9110&#47;metrics`), Port-Konflikt prüfen:
 
 ```bash
 lsof -nP -iTCP:9110 -sTCP:LISTEN
