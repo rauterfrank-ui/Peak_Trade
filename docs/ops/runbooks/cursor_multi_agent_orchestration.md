@@ -87,6 +87,32 @@ curl -fsS http://localhost:3000/login >/dev/null && echo "grafana: OK" || echo "
 curl -fsS http://localhost:9090/-/ready  >/dev/null && echo "prom: OK"    || echo "prom: DOWN"
 ```
 
+## Prometheus 9094/9095 nicht gebunden (AI-Live/Observability)
+
+**Ursache „9094/9095 nicht gebunden“:** Wenn `peaktrade-obse` und `peaktrade-ai-live` (bzw. `peaktrade-observability` / `peaktrade-ai-live-ops`) **nicht** „Up“ sind, bindet Docker die Ports `9095:9090` und `9094:9090` nicht.
+
+Diagnose + Start (in einem Schritt):
+
+```bash
+./scripts/obs/prom_9094_9095_up_and_verify.sh
+```
+
+Das Skript macht:
+1) `docker compose ls` (Projektnamen erkennen)
+2) `ps` + `logs --tail=200` für OBSE (9095) und AILIVE (9094)
+3) `docker compose ... up -d` für beide
+4) Port-Check via `lsof` (9094/9095) + `curl http:&#47;&#47;localhost:9094&#47;-&#47;ready` und `:9095&#47;-&#47;ready`
+
+**Projekt-Erkennung:** Namen aus `docker compose ls` (enthält „observability“/„obse“ → OBSE; enthält „ai-live“ → AILIVE). Fallback: `peaktrade-observability` und `peaktrade-ai-live-ops`.
+
+**Falls du mit eigenen `-f` Compose-Dateien startest:**
+
+```bash
+OBSE_COMPOSE="-f /pfad/zu/compose.obse.yml" \
+AILIVE_COMPOSE="-f /pfad/zu/compose.ai-live.yml" \
+./scripts/obs/prom_9094_9095_up_and_verify.sh
+```
+
 ### Orchestrator lokalisieren & Smoke-Run
 ```bash
 # Orchestrator / Runner / Gates (Beispiele; anpassen)
