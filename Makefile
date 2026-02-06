@@ -162,6 +162,9 @@ ops-validate-pr-reports:
 # Governance Gate (AI matrix vs registry)
 # ============================================================================
 
-.PHONY: governance-gate
+.PHONY: governance-gate l3-docker
 governance-gate:
 	@bash scripts/governance/ai_matrix_consistency_gate.sh
+
+l3-docker:
+	@bash scripts/docker/run_l3_no_net.sh
