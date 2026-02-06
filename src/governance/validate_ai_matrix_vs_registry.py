@@ -457,12 +457,25 @@ def main(matrix_path: str, registry_path: str, explain: bool = False) -> int:
         return 1
 
 
+def _print_help() -> None:
+    print("usage: validate_ai_matrix_vs_registry.py [--explain] <matrix.md> <model_registry.toml>")
+    print("")
+    print("options:")
+    print("  --explain   print remediation hints for violations")
+    print("  --help      show this help and exit")
+    print("")
+
+
 if __name__ == "__main__":
-    explain = "--explain" in sys.argv
-    argv = [a for a in sys.argv[1:] if a != "--explain"]
+    explain = False
+    argv = sys.argv[1:]
+    if "--help" in argv or "-h" in argv:
+        _print_help()
+        raise SystemExit(0)
+    if "--explain" in argv:
+        explain = True
+        argv = [a for a in argv if a != "--explain"]
     if len(argv) != 2:
-        print(
-            "usage: validate_ai_matrix_vs_registry.py [--explain] <matrix.md> <model_registry.toml>"
-        )
+        _print_help()
         raise SystemExit(2)
     raise SystemExit(main(argv[0], argv[1], explain=explain))
