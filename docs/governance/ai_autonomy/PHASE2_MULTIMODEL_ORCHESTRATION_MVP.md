@@ -345,7 +345,7 @@ python3 scripts/aiops/run_layer_dry_run.py \
 
 ## References
 
-- **Authoritative Matrix:** `docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`
+- **Authoritative Matrix:** `docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`
 - **Model Registry:** `config/model_registry.toml`
 - **Capability Scopes:** `config&#47;capability_scopes&#47;*.toml`
 - **Phase 1 Summary:** `PHASE_AI_AUTONOMY_LAYER_MAP_V1_SUMMARY.md`

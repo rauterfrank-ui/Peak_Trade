@@ -12,7 +12,7 @@
 
 | Dokument | Pfad | Zweck |
 |---|---|---|
-| **Layer Map Matrix** ⚠️ | `docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md` | **AUTHORITATIVE:** Single source of truth für Layer→Model Assignments |
+| **Layer Map Matrix** ⚠️ | `docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md` | **AUTHORITATIVE:** Single source of truth für Layer→Model Assignments |
 | **Layer Map v1** | `docs/architecture/ai_autonomy_layer_map_v1.md` | Detailed Spec: 7 Layer (L0-L6), Modellzuweisung, SoD, Safety-First |
 | **Gap-Analyse** | `docs/architecture/ai_autonomy_layer_map_gap_analysis.md` | Gap-Analyse, Bestands-Assessment, 7-Phasen Roadmap |
 | **Integration Summary** | `docs/architecture/INTEGRATION_SUMMARY.md` | Dieses Dokument: Zusammenfassung + Next Steps |
