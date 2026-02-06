@@ -129,3 +129,6 @@ reports/ops/*.txt
 
 # local scratch (quarantined untracked)
 .scratch/
+
+# Docs token policy gate (local report artifact)
+docs-token-policy-report.json
