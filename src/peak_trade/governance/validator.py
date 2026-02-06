@@ -1,4 +1,5 @@
 """CLI wrapper for AI matrix vs registry validator (P0–P2). Delegates to src/governance/validate_ai_matrix_vs_registry.py."""
+
 from __future__ import annotations
 
 import argparse

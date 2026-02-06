@@ -527,14 +527,21 @@ def main(
 
 
 def _print_help() -> None:
-    print("usage: validate_ai_matrix_vs_registry.py [--explain] [--level P0|P1|P2] [<matrix.md> [<model_registry.toml>]]")
+    print(
+        "usage: validate_ai_matrix_vs_registry.py [--explain] [--level P0|P1|P2] [<matrix.md> [<model_registry.toml>]]"
+    )
     print("")
     print("options:")
     print("  --explain   print remediation hints for violations")
     print("  --level     P0=matrix+registry+SoD only, P1/P2=+models+scopes (default: P2)")
     print("  --help      show this help and exit")
     print("")
-    print("defaults when omitted: matrix=" + AUTHORITATIVE_MATRIX_PATH + ", registry=" + DEFAULT_REGISTRY_PATH)
+    print(
+        "defaults when omitted: matrix="
+        + AUTHORITATIVE_MATRIX_PATH
+        + ", registry="
+        + DEFAULT_REGISTRY_PATH
+    )
     print("")
 
 

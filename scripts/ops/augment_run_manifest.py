@@ -1,4 +1,5 @@
 """Augment out/l3/run_manifest.json with container-run metadata (image, no_net, repo_mode, etc.)."""
+
 from __future__ import annotations
 
 import json
