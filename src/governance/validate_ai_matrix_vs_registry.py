@@ -318,7 +318,15 @@ def _check_scope_tool_alignment(
             )
 
 
-def main(matrix_path: str, registry_path: str, explain: bool = False) -> int:
+DEFAULT_REGISTRY_PATH = "config/model_registry.toml"
+
+
+def main(
+    matrix_path: str,
+    registry_path: str,
+    explain: bool = False,
+    level: str = "P2",
+) -> int:
     violations: list[Violation] = []
     try:
         mp = Path(matrix_path)
@@ -473,8 +481,11 @@ def main(matrix_path: str, registry_path: str, explain: bool = False) -> int:
                     )
                 )
 
-        # P1 models existence
-        defined_models = _models_defined(reg)
+        # P1/P2: models existence
+        if level in ("P1", "P2"):
+            defined_models = _models_defined(reg)
+        else:
+            defined_models = None
         if defined_models:
             for lid in EXPECTED_LAYER_IDS:
                 m = md_layers.get(lid)
@@ -498,9 +509,10 @@ def main(matrix_path: str, registry_path: str, explain: bool = False) -> int:
                             )
                         )
 
-        # P1 capability scopes (best-effort)
-        _check_capability_scopes(violations, repo_root)
-        _check_scope_tool_alignment(violations, repo_root, md_layers)
+        # P1/P2: capability scopes (best-effort)
+        if level in ("P1", "P2"):
+            _check_capability_scopes(violations, repo_root)
+            _check_scope_tool_alignment(violations, repo_root, md_layers)
 
         if violations:
             return _fail(violations, explain)
@@ -515,16 +527,27 @@ def main(matrix_path: str, registry_path: str, explain: bool = False) -> int:
 
 
 def _print_help() -> None:
-    print("usage: validate_ai_matrix_vs_registry.py [--explain] <matrix.md> <model_registry.toml>")
+    print(
+        "usage: validate_ai_matrix_vs_registry.py [--explain] [--level P0|P1|P2] [<matrix.md> [<model_registry.toml>]]"
+    )
     print("")
     print("options:")
     print("  --explain   print remediation hints for violations")
+    print("  --level     P0=matrix+registry+SoD only, P1/P2=+models+scopes (default: P2)")
     print("  --help      show this help and exit")
+    print("")
+    print(
+        "defaults when omitted: matrix="
+        + AUTHORITATIVE_MATRIX_PATH
+        + ", registry="
+        + DEFAULT_REGISTRY_PATH
+    )
     print("")
 
 
 if __name__ == "__main__":
     explain = False
+    level = "P2"
     argv = sys.argv[1:]
     if "--help" in argv or "-h" in argv:
         _print_help()
@@ -532,7 +555,14 @@ if __name__ == "__main__":
     if "--explain" in argv:
         explain = True
         argv = [a for a in argv if a != "--explain"]
-    if len(argv) != 2:
-        _print_help()
-        raise SystemExit(2)
-    raise SystemExit(main(argv[0], argv[1], explain=explain))
+    if "--level" in argv:
+        i = argv.index("--level")
+        if i + 1 < len(argv) and argv[i + 1] in ("P0", "P1", "P2"):
+            level = argv[i + 1]
+            argv = argv[:i] + argv[i + 2 :]
+        else:
+            _print_help()
+            raise SystemExit(2)
+    matrix_path = argv[0] if len(argv) >= 1 else AUTHORITATIVE_MATRIX_PATH
+    registry_path = argv[1] if len(argv) >= 2 else DEFAULT_REGISTRY_PATH
+    raise SystemExit(main(matrix_path, registry_path, explain=explain, level=level))
