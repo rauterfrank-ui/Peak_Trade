@@ -43,7 +43,7 @@ jobs:
   promptfoo-eval:
     name: Run Promptfoo Evals
     needs: changes
-    if: needs.changes.outputs.run_evals == 'true' && secrets.OPENAI_API_KEY != ''
+    if: needs.changes.outputs.run_evals == 'true'
     runs-on: ubuntu-latest
 
     steps:
