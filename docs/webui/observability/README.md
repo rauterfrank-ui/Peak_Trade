@@ -555,4 +555,4 @@ Begleitende Specs/Contracts:
 
 ## Runbooks
 
-- **Runbook (Grafana Dashboard Setup):** `docs/webui/observability/RUNBOOK_Grafana_Dashboard_Setup.md`
+- **Runbook (Grafana Dashboard Setup):** `docs&#47;webui&#47;observability&#47;RUNBOOK_Grafana_Dashboard_Setup.md`
