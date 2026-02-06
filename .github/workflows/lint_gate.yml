@@ -123,6 +123,10 @@ jobs:
 
           echo "✅ Code formatting check passed"
 
+      - name: Governance AI matrix consistency gate
+        run: |
+          bash scripts/governance/ai_matrix_consistency_gate.sh
+
       - name: Gate Success (Not Applicable)
         if: steps.detect.outputs.applicable == 'false'
         run: |
