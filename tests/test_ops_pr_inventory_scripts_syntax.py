@@ -143,6 +143,11 @@ def test_ops_readme_exists():
     """Ops README documentation exists."""
     readme_path = "docs/ops/README.md"
     # Read from git to avoid false failures if some test mutates the working tree.
-    content = subprocess.check_output(["git", "show", f"HEAD:{readme_path}"], text=True)
+    repo_root = Path(__file__).resolve().parents[1]
+    content = subprocess.check_output(
+        ["git", "show", f"HEAD:{readme_path}"],
+        text=True,
+        cwd=str(repo_root),
+    )
     assert "PR Inventory" in content or "pr_inventory" in content
     assert "label" in content.lower()
