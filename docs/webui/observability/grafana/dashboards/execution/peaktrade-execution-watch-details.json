@@ -149,7 +149,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "count by (stack) (up{stack=~\".+\"})",
+          "expr": "count by (job) (up)",
           "instant": true,
           "range": false,
           "legendFormat": "{{stack}}"
@@ -202,7 +202,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "count(up{stack=~\".+\"})",
+          "expr": "count(up)",
           "instant": true,
           "range": false,
           "legendFormat": "__auto"
@@ -255,7 +255,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "up{stack=~\".+\"} == 1",
+          "expr": "up == 1",
           "instant": true,
           "range": false,
           "legendFormat": "__auto"
