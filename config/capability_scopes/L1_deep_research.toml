@@ -112,3 +112,6 @@ alert_channel = "research-safety"
 min_citations = 3      # At least 3 citations for any research output
 require_sources = true # Sources must be listed
 require_limitations = true  # Research limitations must be stated
+
+[tools]
+allowed_tools = ["web", "files"]

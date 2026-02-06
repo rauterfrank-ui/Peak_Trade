@@ -117,3 +117,6 @@ live_execution_policies = true
 risk_governance_policies = true
 ops_runbook_policies = true
 test_repro_policies = true
+
+[tools]
+allowed_tools = ["files"]

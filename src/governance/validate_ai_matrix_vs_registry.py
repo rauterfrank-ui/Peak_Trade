@@ -69,6 +69,8 @@ def _explain(code: str) -> str:
         "MATRIX_DUPLICATE_LAYER_ROWS": "Remove duplicate layer rows; each of L0..L6 must appear exactly once.",
         "MODEL_UNDEFINED": "Add the referenced model under [models] in config/model_registry.toml (or set model_id accordingly).",
         "SCOPE_LAYER_MISMATCH": 'Update the scope file to include layer_id = "Lx" matching the layer.',
+        "SCOPE_ALLOWED_TOOLS_MISSING": 'Add [tools] allowed_tools = ["files"] (or ["web", "files"]) to the scope TOML.',
+        "SCOPE_TOOLS_MISMATCH": "Align scope allowed_tools with the matrix Tool Access column (canonical: files, web).",
         "DRIFT_PRIMARY": "Sync matrix Primary with registry.layer_mapping or update both consistently.",
         "DRIFT_FALLBACK": "Sync matrix Fallback list with registry.layer_mapping or update both consistently.",
         "DRIFT_CRITIC": "Sync matrix Critic with registry.layer_mapping or update both consistently.",
@@ -191,6 +193,7 @@ def parse_matrix_md(md_text: str) -> tuple[dict[str, dict[str, Any]], dict[str, 
         primary = _norm_model(cols[4])
         fallback = _split_fallback(cols[5])
         critic = _norm_model(cols[6])
+        tool_access = _strip_md(cols[7]) if len(cols) > 7 else ""
 
         if layer in layers:
             meta["duplicates"].add(layer)
@@ -200,6 +203,7 @@ def parse_matrix_md(md_text: str) -> tuple[dict[str, dict[str, Any]], dict[str, 
             "primary": primary,
             "fallback": fallback,
             "critic": critic,
+            "tool_access": tool_access,
         }
 
     return layers, meta
@@ -242,6 +246,25 @@ def _models_defined(reg: dict[str, Any]) -> set[str]:
     return out
 
 
+def _norm_tools(tool_access: str) -> set[str]:
+    """
+    Normalize matrix Tool Access / scope allowed_tools to canonical tokens.
+    Canonical tokens: {"files", "web"}.
+    Treat "web_optional" as "web". Ignore blanks / dashes.
+    """
+    s = _strip_md(tool_access).lower()
+    if s in ("", "-", "—", "none", "null"):
+        return set()
+    parts = [p.strip() for p in re.split(r"[,/]+", s) if p.strip()]
+    out: set[str] = set()
+    for p in parts:
+        if "web" in p or p == "web_optional":
+            out.add("web")
+        elif p in ("files", "file"):
+            out.add("files")
+    return out
+
+
 def _check_capability_scopes(violations: list[Violation], repo_root: Path) -> None:
     """
     Best-effort cross-check: if a scope file exists, ensure it declares the matching layer_id.
@@ -258,6 +281,39 @@ def _check_capability_scopes(violations: list[Violation], repo_root: Path) -> No
                 Violation(
                     "SCOPE_LAYER_MISMATCH",
                     f'{rel} does not declare layer_id = "{lid}"',
+                )
+            )
+
+
+def _check_scope_tool_alignment(
+    violations: list[Violation],
+    repo_root: Path,
+    md_layers: dict[str, dict[str, Any]],
+) -> None:
+    """Cross-check matrix Tool Access column vs scope allowed_tools for each existing scope file."""
+    for lid, rel in DEFAULT_SCOPE_FILES.items():
+        sp = repo_root / rel
+        if not sp.exists():
+            continue
+        st = sp.read_text(encoding="utf-8", errors="replace")
+        m = re.search(r"allowed_tools\s*=\s*\[(.*?)\]", st, re.DOTALL)
+        if not m:
+            violations.append(
+                Violation("SCOPE_ALLOWED_TOOLS_MISSING", f"{rel} missing allowed_tools = [...]")
+            )
+            continue
+        inner = m.group(1)
+        scope_tools: set[str] = set()
+        for tok in re.findall(r'"([^"]+)"', inner):
+            scope_tools |= _norm_tools(tok)
+        matrix_tools = _norm_tools(
+            md_layers.get(lid, {}).get("tool_access", ""),
+        )
+        if matrix_tools != scope_tools:
+            violations.append(
+                Violation(
+                    "SCOPE_TOOLS_MISMATCH",
+                    f"{lid}: matrix_tool_access={sorted(matrix_tools)} scope_allowed_tools={sorted(scope_tools)} ({rel})",
                 )
             )
 
@@ -444,6 +500,7 @@ def main(matrix_path: str, registry_path: str, explain: bool = False) -> int:
 
         # P1 capability scopes (best-effort)
         _check_capability_scopes(violations, repo_root)
+        _check_scope_tool_alignment(violations, repo_root, md_layers)
 
         if violations:
             return _fail(violations, explain)
