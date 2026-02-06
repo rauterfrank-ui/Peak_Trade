@@ -6,6 +6,8 @@ import pytest
 
 from src.ops.net.ports import ensure_tcp_port_free
 
+pytestmark = pytest.mark.network
+
 
 def _bind_ephemeral() -> tuple[socket.socket, int]:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

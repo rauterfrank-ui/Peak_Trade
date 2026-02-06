@@ -19,6 +19,8 @@ from io import StringIO
 
 import pytest
 
+pytestmark = pytest.mark.external_tools
+
 # Add scripts to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "execution"))
 
