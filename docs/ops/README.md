@@ -2211,3 +2211,13 @@ This repo ships versioned hooks under `.githooks/`. To enable them locally:
 ```bash
 ./scripts/dev/bootstrap.sh
 ```
+
+## Tag retargeting (safe)
+
+If a tag must be moved (e.g., squash-merge retarget), prefer the helper:
+
+```bash
+scripts/ops/tag_retarget_safe.sh <TAG> <TARGET_REF>
+```
+
+It fetches remote tags, recreates the annotated tag locally, and only forces the push if the remote tag object differs.
