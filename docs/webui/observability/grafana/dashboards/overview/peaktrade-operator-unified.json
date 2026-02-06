@@ -1133,7 +1133,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "prom_local_9092"
       },
       "fieldConfig": {
         "defaults": {
@@ -1161,7 +1161,11 @@
           "expr": "(sum(increase(peaktrade_signals_total[$__range])) or on() vector(0))",
           "format": "time_series",
           "instant": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom_local_9092"
+          }
         }
       ],
       "title": "Total Signals (Range)",
@@ -1170,7 +1174,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "prom_local_9092"
       },
       "fieldConfig": {
         "defaults": {
@@ -1198,7 +1202,11 @@
           "expr": "((sum(rate(peaktrade_signals_total[1m])) * 60) or on() vector(0))",
           "format": "time_series",
           "instant": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom_local_9092"
+          }
         }
       ],
       "title": "Signals / min (1m)",
@@ -1207,7 +1215,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "prom_local_9092"
       },
       "fieldConfig": {
         "defaults": {
@@ -1235,7 +1243,11 @@
           "expr": "(sum(increase(peaktrade_orders_approved_total[$__range])) or on() vector(0))",
           "format": "time_series",
           "instant": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom_local_9092"
+          }
         }
       ],
       "title": "Orders Approved (Range)",
@@ -1244,7 +1256,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "prom_local_9092"
       },
       "fieldConfig": {
         "defaults": {
@@ -1272,7 +1284,11 @@
           "expr": "(sum(increase(peaktrade_orders_blocked_total[$__range])) or on() vector(0))",
           "format": "time_series",
           "instant": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom_local_9092"
+          }
         }
       ],
       "title": "Orders Blocked (Range)",

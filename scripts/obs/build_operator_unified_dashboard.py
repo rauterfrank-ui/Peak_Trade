@@ -13,6 +13,13 @@ ROW_TITLES_SHADOW = {
     "Health invariants (shadow)",
     "Shadow pipeline signals (throughput, errors, latency, risk blocks)",
 }
+# Panels that use metrics from metricsd/web (Prom 9092), not AI Live (9094)
+SIGNALS_ORDERS_PANEL_TITLES = {
+    "Total Signals (Range)",
+    "Signals / min (1m)",
+    "Orders Approved (Range)",
+    "Orders Blocked (Range)",
+}
 _SHADOW_EXPR_PAT = re.compile(
     r"(shadow_mvs|peaktrade_shadow|shadow_|pipeline_|risk_block|intent\s*→\s*ack)",
     re.IGNORECASE,
@@ -60,6 +67,22 @@ def _pin_stack_fingerprint_panels(d: dict) -> None:
         if not title.startswith("Stack Fingerprint:"):
             continue
         panel["datasource"] = {"type": "prometheus", "uid": UID_SHADOW}
+
+
+def _pin_signals_orders_panels(d: dict) -> None:
+    """Pin Signals/Orders panels to prom_local_9092 (metricsd/web), not $ds (AI Live)."""
+    for panel in d.get("panels") or []:
+        if not isinstance(panel, dict):
+            continue
+        title = (panel.get("title") or "").strip()
+        if title not in SIGNALS_ORDERS_PANEL_TITLES:
+            continue
+        panel["datasource"] = {"type": "prometheus", "uid": UID_SHADOW}
+        for t in panel.get("targets", []) or []:
+            if isinstance(t.get("datasource"), dict) and t["datasource"].get("type") == "prometheus":
+                t["datasource"] = {"type": "prometheus", "uid": UID_SHADOW}
+            elif "expr" in t:
+                t["datasource"] = {"type": "prometheus", "uid": UID_SHADOW}
 
 
 src_op = pathlib.Path(
@@ -192,6 +215,7 @@ elif ai.get("annotations") and u.get("annotations", {}).get("list"):
 
 _pin_shadow_panels_in_dashboard(u)
 _pin_stack_fingerprint_panels(u)
+_pin_signals_orders_panels(u)
 
 out.write_text(json.dumps(u, indent=2) + "\n")
 print("WROTE", out)
