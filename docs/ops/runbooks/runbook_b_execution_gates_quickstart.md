@@ -62,10 +62,26 @@ export PEAK_RECON_POSITION_ABS=0
 
 When enabled, the hook uses a **provider** (default: `NullReconProvider` with empty snapshots, so no drift). Wire a real provider to supply expected/observed snapshots for meaningful drift checks.
 
+### Provider wiring
+
+By default the hook uses `NullReconProvider(epoch=0, balances={})` (no drift).  
+To make reconciliation meaningful, wire a **real provider** that supplies:
+
+- **expected** balances/positions (from local ledger / strategy expectations)
+- **observed** balances/positions (from exchange adapter snapshot)
+
 ### Safe usage
 
 - **Default (no env set):** Recon is off; no reconciliation runs.
 - Enable only when you have a provider (or accept the null provider’s no-op).
+
+---
+
+## Recommended workflow
+
+1. **Keep gates OFF in dev** until wiring is complete.
+2. **Turn on B5/B3 in Shadow mode** with a strict secret and conservative limits.
+3. **Add a real ReconProvider** before enabling B2 in any non-dev environment.
 
 ---
 
