@@ -16,7 +16,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
@@ -28,12 +28,41 @@ from governance.policy_critic.models import PolicyCriticInput, ReviewContext
 def load_diff(diff_file: Optional[str], diff_stdin: bool) -> str:
     """Load diff from file or stdin."""
     if diff_stdin:
-        return sys.stdin.read()
+        raw = sys.stdin.read()
     elif diff_file:
         with open(diff_file, "r") as f:
-            return f.read()
+            raw = f.read()
     else:
         raise ValueError("Must provide either --diff-file or --diff-stdin")
+    return _filter_diff_exclude_path_prefix(raw, "out/")
+
+
+def _filter_diff_exclude_path_prefix(diff: str, prefix: str) -> str:
+    """Drop hunks for files under the given path prefix (e.g. out/) so artifact files don't trigger rules."""
+    if not prefix:
+        return diff
+    out: List[str] = []
+    current_hunk: List[str] = []
+    skip_current = False
+    for line in diff.splitlines(keepends=True):
+        if line.startswith("diff --git "):
+            if current_hunk and not skip_current:
+                out.extend(current_hunk)
+            current_hunk = [line]
+            # Parse "diff --git a/path b/path" -> path
+            parts = line.split()
+            if len(parts) >= 4:
+                path = parts[2]  # a/path
+                if path.startswith("a/"):
+                    path = path[2:]
+                skip_current = path.startswith(prefix)
+            else:
+                skip_current = False
+        else:
+            current_hunk.append(line)
+    if current_hunk and not skip_current:
+        out.extend(current_hunk)
+    return "".join(out)
 
 
 def load_context(context_json: Optional[str]) -> Optional[ReviewContext]:
