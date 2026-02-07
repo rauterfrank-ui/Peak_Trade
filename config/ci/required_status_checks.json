@@ -1,6 +1,8 @@
 {
   "schema_version": "1.0.0",
-  "required_contexts": [
+  "required_contexts": ["PR Gate"],
+  "ignored_contexts": [
+    "tests (3.11)",
     "CI Health Gate (weekly_core)",
     "Guard tracked files in reports directories",
     "audit",
@@ -11,8 +13,5 @@
     "docs-reference-targets-gate",
     "dispatch-guard"
   ],
-  "ignored_contexts": [
-    "tests (3.11)"
-  ],
-  "notes": "Keep in sync with branch protection required status checks on main. These contexts must be produced by always-on workflows (no PR-level path filtering). Last updated: 2026-01-12 (Phase 5D baseline from Phase 5C enforcement list). Matrix job contexts (e.g., 'tests (3.11)') are in ignored_contexts because they contain runtime template variables that cannot be statically validated."
+  "notes": "Pragmatic flow: Branch protection requires only PR Gate. PR Gate (ci.yml) succeeds when Fast-Lane + (tests + strategy-smoke or docs/workflow-only skip) pass. Last updated: 2026-02-07."
 }
