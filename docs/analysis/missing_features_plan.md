@@ -87,10 +87,12 @@
 
 | Ziel | Konkrete Schritte | Akzeptanzkriterien | Tests |
 |------|-------------------|--------------------|-------|
-| Feature-Pipeline-Skelett | `src/features/pipeline.py` mit Registry, `src/features/ta.py` mit 2–3 Indikatoren aus bestehendem Code extrahiert | Pipeline läuft im Backtest-Kontext; gleiche Ergebnisse wie bisher bei gleichen Seeds | `tests/features/test_pipeline.py`, `tests/features/test_ta.py` |
+| Feature-Pipeline-Skelett | `src/features/pipeline.py` mit Registry, `src/features/ta.py` mit MA, RSI, ATR aus bestehendem Code (keine neuen externen Abhängigkeiten) | Pipeline läuft im Backtest-Kontext; gleiche Ergebnisse bei gleichen Seeds | `tests/features/test_pipeline.py`, `tests/features/test_ta.py` |
 | ECM-Stub mit Vertrag | `src/features/ecm.py` mit klar definiertem Ein-/Ausgabe-Contract (DataFrame in/out) | Unit-Test mit Mock-OHLCV; Dokumentation in `docs/features/ECM_CONTRACT.md` | `tests/features/test_ecm.py` |
-| Meta-Labeling Triple-Barrier | `compute_triple_barrier_labels` implementieren (ohne Live-Daten), `_extract_features` mit mind. einem echten Feature | Backtest-tauglich; keine Live-/Exchange-Calls | Bestehende Strategy-Tests + `tests/features/test_meta_labeling.py` |
+| Meta-Labeling Triple-Barrier | `compute_triple_barrier_labels` implementieren (ohne Live-Daten), `_extract_features` mit mind. einem echten Feature (numerische Spalte, dokumentierte Semantik, Unit-Test mit festem Seed) | Backtest-tauglich; keine Live-/Exchange-Calls | Bestehende Strategy-Tests + `tests/features/test_meta_labeling.py` |
 | Research: Heatmap-Template | Ein Standard-Heatmap-Template (2 Parameter × 2 Metriken) in `src/sweeps/` oder `src/analytics/` | Reproduzierbarer Sweep → Heatmap-Output (z. B. CSV/HTML) | `tests/sweeps/test_heatmap.py` oder in experiments |
+
+**Observability (M0):** Feature-Pipeline: Laufzeit und Feature-Anzahl pro Run loggen (ohne PII); Sweep-Heatmap: Metrik-Namen und Parameter-Range im Report/Artifact.
 
 **M0-Exit:** Alle neuen Tests grün; CI unverändert; keine Änderung an `src/governance/`, `src/execution/live/` (Gates bleiben).
 
@@ -100,10 +102,12 @@
 
 | Ziel | Konkrete Schritte | Akzeptanzkriterien | Tests |
 |------|-------------------|--------------------|-------|
-| Risk: VaR/CVaR/Stress erweitern | Bestehende `src/risk/` Module nutzen; Dokumentation welche Limits wo geprüft werden | Report/API für VaR/CVaR/Stress in Backtest-Kontext | Erweiterung bestehender Risk-Tests |
-| Risk: Auto-Liquidation nur Stub | Kill-Switch / Auto-Liquidation nur als dokumentierter Stub (Phase 0), kein automatisches Ausführen | Kein neuer Code der echte Liquidation auslöst | Review + optional `tests/risk/test_liquidation_stub.py` |
+| Risk: VaR/CVaR/Stress erweitern | Bestehende `src/risk/` Module nutzen; Dokumentation welche Limits wo geprüft werden | Report/Export nur im Backtest-/Research-Kontext; keine Live-Risk-Entscheidungen aus diesem Modul | Erweiterung bestehender Risk-Tests |
+| Risk: Auto-Liquidation nur Stub | Kill-Switch / Auto-Liquidation nur als dokumentierter Stub (Phase 0), kein automatisches Ausführen | Kein neuer Code der echte Liquidation auslöst | Verpflichtend: `tests/risk/test_liquidation_stub.py` (stellt sicher, dass Hook nicht aufrufbar/No-Op) |
 | Web: Auth/SSE-Design | `docs/webui/AUTH_DESIGN.md`, ggf. `docs/infostream/SSE_WEBSOCKET_DESIGN.md` | Keine Implementierung die POST/PUT/DELETE für Orders ermöglicht | Doc-Review |
 | Streaming: WebSocket-Design | `docs/infostream/WEBSOCKET_DESIGN.md`, optional `src/data/feeds/websocket_feed.py` als Interface (ohne Live-Orders) | Nur Daten-Feed; keine Order-Streams | Interface-Tests mit Mock |
+
+**Observability (M1):** Risk-Reports: welche Limits wo geprüft werden, in Doku/Log referenzierbar.
 
 **M1-Exit:** Keine Safety-Regression; alle Änderungen hinter bestehenden Gates oder reine Docs/Stubs.
 
@@ -113,7 +117,7 @@
 
 | Ziel | Konkrete Schritte | Akzeptanzkriterien | Tests |
 |------|-------------------|--------------------|-------|
-| Multi-Exchange / Execution-Design | `docs/execution/MULTI_EXCHANGE_DESIGN.md`, Abhängigkeit zu enabled/armed/confirm dokumentieren | Klar: Keine Implementierung ohne Governance-Review | Doc-Review, evtl. Contract-Tests für Adapter-Interface |
+| Multi-Exchange / Execution-Design | `docs/execution/MULTI_EXCHANGE_DESIGN.md`: Venue-Adapter nur über Governance (enabled/armed/confirm); keine direkten Aufrufe aus Web/API in Live-Order-Pfade | Keine Implementierung ohne Governance-Review | Doc-Review; Contract-Tests für Adapter-Interface sobald Stub existiert |
 | Infra-Skalierung-Design | `docs/infra/SCALING_DESIGN.md` | Keine Änderung an Single-Instance-Live-Gates | Doc-Review |
 | Research: Bayesian/Sweep-Stubs | `src/experiments/bayesian_sweep.py` oder Äquivalent als Stub; Roadmap Phase 11 abbildbar | Reproduzierbare Experimente; kein Live | Unit-Tests für Stub |
 
@@ -125,8 +129,10 @@
 
 - [ ] **Kein Live-Trading:** Keine Änderung, die SafetyGuard/LiveNotImplementedError umgeht oder Gates schwächt.
 - [ ] **Gates erhalten:** enabled/armed/confirm-Token-Logik unberührt; alle Execution-Pfade weiter durch Governance.
+- [ ] **Pipeline:** Alle neuen Execution- oder Risk-Entscheidungspfade folgen research→shadow→testnet→live; keine Stufe überspringen.
 - [ ] **Deterministisch:** Feature-Pipeline und Research-Sweeps mit festem Seed reproduzierbar.
 - [ ] **Reproduzierbare Experimente:** Backtest- und Sweep-Ergebnisse dokumentiert und testbar.
+- [ ] **Audit:** Änderungen an `src/risk/`, `src/governance/`, `src/execution/live/` nur mit ADR oder Eintrag in `docs/audit/` (bzw. bestehendem Audit-Prozess).
 
 ---
 
