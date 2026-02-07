@@ -5,9 +5,9 @@
 
 ## Sink semantics
 
-- **Sink type:** Repo-commit (writes to `reports/infostream/`, `docs/mindmap/INFOSTREAM_LEARNING_LOG.md` and pushes to `main`).
+- **Sink type:** Repo-commit (writes to `reports&#47;infostream&#47;`, `docs/mindmap/INFOSTREAM_LEARNING_LOG.md` and pushes to `main`).
 - **Trigger:** Schedule (03:15 UTC daily) or `workflow_dispatch`.
-- **Commit scope:** Only staged paths `reports/infostream/` and `docs/mindmap/INFOSTREAM_LEARNING_LOG.md` are committed.
+- **Commit scope:** Only staged paths `reports&#47;infostream&#47;` and `docs/mindmap/INFOSTREAM_LEARNING_LOG.md` are committed.
 
 ## Failure policy
 
@@ -23,5 +23,5 @@
 ## Workflow configuration (contract enforcement)
 
 - **Permissions:** Job uses `permissions: contents: write` so the default token can push.
-- **Checkout:** `actions/checkout@v4` is used with `persist-credentials: true` so the same token is available for `git push`.
+- **Checkout:** `actions&#47;checkout@v4` is used with `persist-credentials: true` so the same token is available for `git push`.
 - **No push swallow:** The run script does not use `|| echo "…"` after `git push`; the step fails on push failure.
