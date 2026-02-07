@@ -7,3 +7,8 @@ CHECKS:
 - SoD (critic model/instance != proposer)
 - Scope compliance (L2/L3 forbidden outputs)
 - Fail-closed on ambiguity
+
+## Decision
+
+**REASON_CODE:** <one of: SCOPE, SOD, EVIDENCE, SAFETY, QUALITY, OTHER>
+**REASON_DETAIL:** <1–3 sentences>
