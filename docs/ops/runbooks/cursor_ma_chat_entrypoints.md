@@ -6,9 +6,9 @@
 - **L4 Critic**: `.cursor/agents/L4_governance.critic.md`
 
 ## Expected local artifacts (ignored by git)
-- `out/ai/l2/<run_id>_market_outlook.md`
-- `out/ai/l3/<run_id>_trade_plan.md`
-- `out/ai/l4/<run_id>_critic_decision.md`
+- `out&#47;ai&#47;l2&#47;<run_id>_market_outlook.md`
+- `out&#47;ai&#47;l3&#47;<run_id>_trade_plan.md`
+- `out&#47;ai&#47;l4&#47;<run_id>_critic_decision.md`
 
 ## Exit points
 - L4 decision is **APPROVE / APPROVE_WITH_CHANGES / REJECT**
