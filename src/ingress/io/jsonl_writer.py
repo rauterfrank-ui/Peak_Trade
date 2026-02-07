@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Iterable, Optional, Tuple
 
 from ..normalized_event import NormalizedEvent
+from ..validate import validate_normalized_event
 
 
 def _sha256_hex(data: bytes) -> str:
@@ -61,6 +62,7 @@ class JsonlEventWriter:
 
         with self.path_jsonl.open("ab") as f:
             for ev in events:
+                validate_normalized_event(ev)
                 line = ev.to_json_line().encode("utf-8")
                 line_sha = _sha256_hex(line)
                 chain_head = _sha256_hex((chain_head + line_sha).encode("utf-8"))

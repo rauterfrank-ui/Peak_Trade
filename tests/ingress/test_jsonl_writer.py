@@ -51,3 +51,23 @@ def test_jsonl_writer_chain_and_resume(tmp_path: Path):
     assert m2["records"] == 3
     assert m2["chain_head"] != head1
     assert len(m2["chain"]) == 3
+
+
+def test_validation_rejects_bad_sensitivity(tmp_path: Path):
+    base = tmp_path / "events" / "stream"
+    w = JsonlEventWriter(base)
+    bad = NormalizedEvent("e1", 1, "s", "k", "sc", ["t"], "SECRET", {"x": 1})
+    try:
+        w.append([bad])
+        assert False, "expected ValueError"
+    except ValueError as e:
+        assert "sensitivity" in str(e)
+
+
+def test_dumps_disallows_nan():
+    ev = NormalizedEvent("e1", 1, "s", "k", "sc", ["t"], "internal", {"x": float("nan")})
+    try:
+        ev.to_json_line()
+        assert False, "expected ValueError due to allow_nan=False"
+    except ValueError:
+        pass
