@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from src.ops.recon.models import BalanceSnapshot, PositionSnapshot, DriftReport
+from src.ops.recon.providers import ReconProvider, NullReconProvider
 from src.ops.recon.reconcile import ReconTolerances, reconcile
 
 
@@ -29,13 +30,26 @@ def config_from_env() -> ReconConfig:
 def run_recon_if_enabled(
     cfg: ReconConfig,
     *,
-    expected_balances: BalanceSnapshot,
-    observed_balances: BalanceSnapshot,
+    provider: Optional[ReconProvider] = None,
+    expected_balances: Optional[BalanceSnapshot] = None,
+    observed_balances: Optional[BalanceSnapshot] = None,
     expected_positions: Optional[PositionSnapshot] = None,
     observed_positions: Optional[PositionSnapshot] = None,
 ) -> DriftReport:
     if not cfg.enabled:
         return DriftReport(ok=True, drifts=[])
+
+    if provider is None:
+        provider = NullReconProvider()
+
+    if expected_balances is None:
+        expected_balances = provider.expected_balances()
+    if observed_balances is None:
+        observed_balances = provider.observed_balances()
+    if expected_positions is None:
+        expected_positions = provider.expected_positions()
+    if observed_positions is None:
+        observed_positions = provider.observed_positions()
 
     tol = ReconTolerances(
         balance_abs=cfg.balance_abs, position_abs=cfg.position_abs

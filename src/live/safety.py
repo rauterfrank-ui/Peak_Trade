@@ -45,6 +45,7 @@ from src.ops.wiring.execution_guards import (
     apply_execution_guards,
 )
 from src.ops.recon.models import BalanceSnapshot, PositionSnapshot
+from src.ops.recon.providers import NullReconProvider
 from src.ops.recon.recon_hook import (
     ReconConfig,
     config_from_env as recon_config_from_env,
@@ -307,12 +308,12 @@ class SafetyGuard:
         # TODO(wire): Replace placeholder snapshots with real pre/post state.
         recon_cfg = recon_config_from_env()
         if recon_cfg.enabled:
-            expected_bal = BalanceSnapshot(epoch=0, balances={})
-            observed_bal = BalanceSnapshot(epoch=0, balances={})
+            provider = NullReconProvider(epoch=0, balances={})
             rep = run_recon_if_enabled(
                 recon_cfg,
-                expected_balances=expected_bal,
-                observed_balances=observed_bal,
+                provider=provider,
+                expected_balances=None,
+                observed_balances=None,
                 expected_positions=None,
                 observed_positions=None,
             )
