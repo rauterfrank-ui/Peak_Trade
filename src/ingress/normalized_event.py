@@ -7,7 +7,9 @@ import json
 
 def _stable_json_dumps(obj: Any) -> str:
     # Deterministic: sorted keys, no whitespace, UTF-8, disallow NaN/Inf.
-    return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
+    return json.dumps(
+        obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False
+    )
 
 
 @dataclass(frozen=True)
@@ -23,6 +25,7 @@ class NormalizedEvent:
       sensitivity: "public"|"internal"|"restricted"
       payload: JSON-serializable mapping
     """
+
     event_id: str
     ts_ms: int
     source: str

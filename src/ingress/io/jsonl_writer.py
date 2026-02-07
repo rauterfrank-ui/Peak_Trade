@@ -39,6 +39,7 @@ class JsonlEventWriter:
         }
     NOTE: chain list can be truncated later; for now keep full for auditability.
     """
+
     def __init__(self, base_path: Path):
         self.base_path = Path(base_path)
         self.path_jsonl = self.base_path.with_suffix(".jsonl")
