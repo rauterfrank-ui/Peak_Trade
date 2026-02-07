@@ -2222,3 +2222,5 @@ scripts/ops/tag_retarget_safe.sh <TAG> <TARGET_REF>
 ```
 
 It fetches remote tags, recreates the annotated tag locally, and only forces the push if the remote tag object differs.
+
+<!-- ci smoke 20260207-0125Z -->
