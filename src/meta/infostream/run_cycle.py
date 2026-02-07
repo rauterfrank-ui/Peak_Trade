@@ -127,42 +127,37 @@ def discover_test_health_runs(project_root: Path) -> List[Path]:
 
 def create_ai_client() -> Optional[Any]:
     """
-    Erstellt einen KI-Client für die Auswertung.
+    Erstellt einen KI-Client für die Auswertung (über Orchestrator, kein direkter Bypass).
 
     Returns
     -------
     Optional[Any]
-        OpenAI-Client oder None wenn nicht konfiguriert
+        ModelClient (ai_orchestration) oder None wenn nicht konfiguriert
 
     Notes
     -----
-    TODO: Saubere Konfiguration mit Environment-Variablen:
-        - OPENAI_API_KEY: API-Key für OpenAI
-        - INFOSTREAM_MODEL: Modellname (default: gpt-4o-mini)
-        - INFOSTREAM_SKIP_AI: Wenn "true", wird kein KI-Aufruf gemacht
+    - OPENAI_API_KEY: API-Key für OpenAI
+    - INFOSTREAM_MODEL: Modellname (default: gpt-4o-mini)
+    - INFOSTREAM_SKIP_AI: Wenn "true", wird kein KI-Aufruf gemacht
+    - SAFETY: persist full evidence locally (out/ops); outbound via model_client redaction only.
     """
-    # Prüfe ob KI-Auswertung übersprungen werden soll
     if os.environ.get("INFOSTREAM_SKIP_AI", "").lower() == "true":
         logger.info("KI-Auswertung deaktiviert (INFOSTREAM_SKIP_AI=true)")
         return None
 
-    # Prüfe ob API-Key vorhanden
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
         logger.warning("OPENAI_API_KEY nicht gesetzt - KI-Auswertung wird übersprungen")
         return None
 
     try:
-        from openai import OpenAI
+        from src.ai_orchestration.model_client import create_model_client
 
-        client = OpenAI(api_key=api_key)
-        logger.info("OpenAI-Client erfolgreich initialisiert")
+        client = create_model_client("live")
+        logger.info("Model-Client (Orchestrator) erfolgreich initialisiert")
         return client
-    except ImportError:
-        logger.warning("openai-Paket nicht installiert - KI-Auswertung wird übersprungen")
-        return None
     except Exception as e:
-        logger.error(f"Fehler beim Initialisieren des OpenAI-Clients: {e}")
+        logger.error(f"Fehler beim Initialisieren des Model-Clients: {e}")
         return None
 
 
