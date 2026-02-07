@@ -10,6 +10,7 @@ REQUIRED_SCOPES = [
     "config/capability_scopes/L4_governance_critic.toml",
 ]
 
+
 def test_required_capability_scopes_exist():
     missing = [p for p in REQUIRED_SCOPES if not (ROOT / p).is_file()]
     assert not missing, f"Missing capability scopes: {missing}"
