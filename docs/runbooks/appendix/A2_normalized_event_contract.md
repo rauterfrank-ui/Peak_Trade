@@ -18,3 +18,6 @@
 
 ## Determinism rules
 - JSON serialization: sorted keys, separators `,`/`:`, UTF-8, `allow_nan=false`.
+
+## Validation
+- `src&#47;ingress&#47;validate.py`: minimal contract checks (types, non-empty strings, sensitivity enum).
