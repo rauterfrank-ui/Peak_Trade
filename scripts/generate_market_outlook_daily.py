@@ -25,7 +25,7 @@ Usage:
     python scripts/generate_market_outlook_daily.py -v
 
 Environment Variables:
-    OPENAI_API_KEY: API-Key für OpenAI (erforderlich für LLM)
+    OPENAI_API_KEY: API-Key für OpenAI-API (erforderlich für LLM)
     OPENAI_MODEL: Modell-Override (Default: aus Config oder "gpt-4o")
 
 Stand: Dezember 2024
@@ -72,7 +72,7 @@ Beispiele:
       --config-path config/market_outlook/my_custom.yaml
 
 Environment Variables:
-  OPENAI_API_KEY  API-Key für OpenAI (erforderlich für LLM)
+  OPENAI_API_KEY  API-Key für OpenAI-API (erforderlich für LLM)
   OPENAI_MODEL    Modell-Override (z.B. "gpt-4o-mini")
         """,
     )
