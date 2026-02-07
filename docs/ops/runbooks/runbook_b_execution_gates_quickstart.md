@@ -45,7 +45,7 @@ Context placeholders (for testing or when not wired from session):
 
 - **Default (no env set):** Guards are off; behavior unchanged.
 - **Enable only in controlled sessions** with a strong secret and (when arming) a short-lived token.
-- Audit lines: `place_order(runbook_b_guards)` with `allowed=True/False` and reason.
+- Audit lines: `place_order(runbook_b_guards)` with `allowed=True&#47;False` and reason.
 
 ---
 

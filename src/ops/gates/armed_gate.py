@@ -52,9 +52,7 @@ class ArmedGate:
         if (now_epoch - ts) > self._ttl:
             return False
 
-        expected = hmac.new(
-            self._secret, str(ts).encode("utf-8"), hashlib.sha256
-        ).hexdigest()
+        expected = hmac.new(self._secret, str(ts).encode("utf-8"), hashlib.sha256).hexdigest()
         return hmac.compare_digest(expected, mac)
 
     def arm(self, state: ArmedState, token: str, now_epoch: int) -> ArmedState:

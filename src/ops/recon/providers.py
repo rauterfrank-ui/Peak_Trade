@@ -3,6 +3,7 @@ Runbook-B reconciliation snapshot providers (pluggable).
 Implementations may be in-memory, local state, or exchange adapters;
 tests must use offline implementations only.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -32,14 +33,10 @@ class NullReconProvider:
     balances: Optional[Dict[str, float]] = None
 
     def expected_balances(self) -> BalanceSnapshot:
-        return BalanceSnapshot(
-            epoch=self.epoch, balances=dict(self.balances or {})
-        )
+        return BalanceSnapshot(epoch=self.epoch, balances=dict(self.balances or {}))
 
     def observed_balances(self) -> BalanceSnapshot:
-        return BalanceSnapshot(
-            epoch=self.epoch, balances=dict(self.balances or {})
-        )
+        return BalanceSnapshot(epoch=self.epoch, balances=dict(self.balances or {}))
 
     def expected_positions(self) -> Optional[PositionSnapshot]:
         return None

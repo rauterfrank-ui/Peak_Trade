@@ -1,6 +1,7 @@
 """
 Unit tests for Runbook-B recon hook (offline, pure).
 """
+
 from __future__ import annotations
 
 from src.ops.recon.models import BalanceSnapshot

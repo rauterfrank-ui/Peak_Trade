@@ -5,6 +5,7 @@ Guards are default OFF; enabled via PEAK_EXEC_GUARDS_ENABLED=1.
 When enabled, PEAK_EXEC_GUARDS_SECRET is required (env).
 Tests are offline; no exchange calls.
 """
+
 from __future__ import annotations
 
 import importlib

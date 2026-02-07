@@ -2,6 +2,7 @@
 Runbook-B reconciliation hook: compare expected vs observed snapshots (pure).
 Default OFF via PEAK_RECON_ENABLED=1.
 """
+
 from __future__ import annotations
 
 import os
@@ -51,9 +52,7 @@ def run_recon_if_enabled(
     if observed_positions is None:
         observed_positions = provider.observed_positions()
 
-    tol = ReconTolerances(
-        balance_abs=cfg.balance_abs, position_abs=cfg.position_abs
-    )
+    tol = ReconTolerances(balance_abs=cfg.balance_abs, position_abs=cfg.position_abs)
     return reconcile(
         expected_balances=expected_balances,
         observed_balances=observed_balances,

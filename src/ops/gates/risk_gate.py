@@ -61,10 +61,7 @@ def evaluate_risk(limits: RiskLimits, ctx: RiskContext) -> RiskDecision:
             {"age_s": str(ctx.market_data_age_seconds)},
         )
 
-    if (
-        limits.max_notional_usd > 0
-        and ctx.order_notional_usd > limits.max_notional_usd
-    ):
+    if limits.max_notional_usd > 0 and ctx.order_notional_usd > limits.max_notional_usd:
         return RiskDecision(
             False,
             RiskDenyReason.MAX_NOTIONAL,
@@ -78,20 +75,14 @@ def evaluate_risk(limits: RiskLimits, ctx: RiskContext) -> RiskDecision:
             {"order_size": str(ctx.order_size)},
         )
 
-    if (
-        limits.max_position > 0
-        and abs(ctx.current_position + ctx.order_size) > limits.max_position
-    ):
+    if limits.max_position > 0 and abs(ctx.current_position + ctx.order_size) > limits.max_position:
         return RiskDecision(
             False,
             RiskDenyReason.MAX_POSITION,
             {"next_pos": str(ctx.current_position + ctx.order_size)},
         )
 
-    if (
-        limits.max_session_loss_usd > 0
-        and ctx.session_pnl_usd < -abs(limits.max_session_loss_usd)
-    ):
+    if limits.max_session_loss_usd > 0 and ctx.session_pnl_usd < -abs(limits.max_session_loss_usd):
         return RiskDecision(
             False,
             RiskDenyReason.LOSS_LIMIT,

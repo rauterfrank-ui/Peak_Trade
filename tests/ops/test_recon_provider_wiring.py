@@ -1,6 +1,7 @@
 """
 Unit tests for reconciliation provider wiring (offline, deterministic).
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
