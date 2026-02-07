@@ -3,6 +3,7 @@ Governance: no direct LLM calls outside src/ai_orchestration.
 
 Allow explicit exceptions via inline marker: # ORCH_BYPASS_ALLOWED: <reason>
 """
+
 import re
 from pathlib import Path
 
@@ -53,6 +54,4 @@ def test_no_direct_llm_calls_outside_orchestrator():
             continue
         filtered.append(h)
 
-    assert not filtered, (
-        "Direct LLM usage outside orchestrator detected:\n" + "\n".join(filtered)
-    )
+    assert not filtered, "Direct LLM usage outside orchestrator detected:\n" + "\n".join(filtered)

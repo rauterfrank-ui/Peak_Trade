@@ -269,12 +269,29 @@ def redact_outbound_envelope(payload: dict) -> dict:
     - include hashes + run_id for auditability
     """
     deny_keys = {
-        "api_key", "token", "secret", "password", "email", "address", "phone",
-        "orders", "trades", "positions", "routing_key",
+        "api_key",
+        "token",
+        "secret",
+        "password",
+        "email",
+        "address",
+        "phone",
+        "orders",
+        "trades",
+        "positions",
+        "routing_key",
     }
     allow_keys = {
-        "run_id", "layer_id", "component", "ts", "prompt_hash", "config_hash",
-        "metrics", "risk", "strategy", "gate",
+        "run_id",
+        "layer_id",
+        "component",
+        "ts",
+        "prompt_hash",
+        "config_hash",
+        "metrics",
+        "risk",
+        "strategy",
+        "gate",
     }
     out = {k: v for k, v in payload.items() if k in allow_keys and k not in deny_keys}
     blob = json.dumps(out, sort_keys=True, ensure_ascii=True).encode("utf-8")
