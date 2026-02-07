@@ -20,21 +20,21 @@ Matrix läuft nur bei Code-Änderungen (siehe Pfad-Logik). Lint Gate, Docs Gates
 |--------|-----------|-----------|
 | `run_fast` / `run_fast_lane` | immer `true` | — |
 | `run_matrix` | volle Matrix | Code-Pfade geändert (oder `workflow_dispatch` mit `force_matrix=true`) |
-| `docs_only` | nur Fast-Lane nötig | **Nur** `docs/**`, `**/grafana/dashboards/**`, `out/**`, `**/*.md` |
-| `workflow_only` | nur Fast-Lane nötig | **Nur** `.github/workflows/**` |
+| `docs_only` | nur Fast-Lane nötig | **Nur** `docs&#47;**`, `**&#47;grafana&#47;dashboards&#47;**`, `out&#47;**`, `**&#47;*.md` |
+| `workflow_only` | nur Fast-Lane nötig | **Nur** `.github&#47;workflows&#47;**` |
 
-**Code-Pfade** (run_matrix): `src/**`, `tests/**`, `scripts/**`, `config/**`, `requirements*.txt`, `pyproject.toml`, `uv.lock`, `pytest.ini`, `Makefile`.  
-`.github/workflows/**` zählt **nicht** zu Code (workflow-only → kein Matrix).
+**Code-Pfade** (run_matrix): `src&#47;**`, `tests&#47;**`, `scripts&#47;**`, `config&#47;**`, `requirements*.txt`, `pyproject.toml`, `uv.lock`, `pytest.ini`, `Makefile`.  
+`.github&#47;workflows&#47;**` zählt **nicht** zu Code (workflow-only → kein Matrix).
 
 ## Beispiel-Pfade → welche Jobs laufen
 
 | Geänderte Pfade (nur diese) | run_matrix | Laufende Jobs (relevant) |
 |-----------------------------|------------|---------------------------|
-| `docs/webui/observability/grafana/dashboards/overview/foo.json` | false | changes, Fast-Lane, tests (skip), strategy-smoke (skip), **PR Gate** |
-| `docs/foo.md` | false | wie oben |
-| `.github/workflows/lint.yml` | false | wie oben |
-| `src/foo.py` | true | changes, Fast-Lane, **tests (3.9/3.10/3.11)**, **strategy-smoke**, **PR Gate** |
-| `tests/test_baz.py`, `scripts/obs/build_foo.py`, `pyproject.toml`, `uv.lock`, `requirements.txt` | true | wie oben |
+| `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;overview&#47;foo.json` | false | changes, Fast-Lane, tests (skip), strategy-smoke (skip), **PR Gate** |
+| `docs&#47;foo.md` | false | wie oben |
+| `.github&#47;workflows&#47;lint.yml` | false | wie oben |
+| `src&#47;foo.py` | true | changes, Fast-Lane, **tests (3.9/3.10/3.11)**, **strategy-smoke**, **PR Gate** |
+| `tests&#47;test_baz.py`, `scripts&#47;obs&#47;build_foo.py`, `pyproject.toml`, `uv.lock`, `requirements.txt` | true | wie oben |
 
 ## workflow_dispatch: Matrix erzwingen
 
@@ -47,7 +47,7 @@ CI → "Run workflow" → Input **force_matrix** (boolean): bei `true` wird `run
 
 ## Lokal (vor Push)
 
-**Fast-Lane:** `ruff format --check .` → `ruff check .` → `pytest -q -m smoke -x 2>/dev/null \|\| pytest -q -x tests/obs/`  
+**Fast-Lane:** `ruff format --check .` → `ruff check .` → `pytest -q -m smoke -x 2>&#47;dev&#47;null \|\| pytest -q -x tests&#47;obs&#47;`  
 **Matrix (bei Code-Change):** `pytest -q`
 
 ## Konfiguration
