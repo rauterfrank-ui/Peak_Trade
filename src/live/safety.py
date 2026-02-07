@@ -44,6 +44,12 @@ from src.ops.wiring.execution_guards import (
     GuardInputs,
     apply_execution_guards,
 )
+from src.ops.recon.models import BalanceSnapshot, PositionSnapshot
+from src.ops.recon.recon_hook import (
+    ReconConfig,
+    config_from_env as recon_config_from_env,
+    run_recon_if_enabled,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -295,6 +301,32 @@ class SafetyGuard:
                 )
                 raise
         # --- End Guards ---
+        # --- Runbook-B Reconciliation Hook (B2) ---
+        # Default OFF. Enable explicitly: PEAK_RECON_ENABLED=1
+        # NOTE: Pure hook; caller must supply expected/observed snapshots.
+        # TODO(wire): Replace placeholder snapshots with real pre/post state.
+        recon_cfg = recon_config_from_env()
+        if recon_cfg.enabled:
+            expected_bal = BalanceSnapshot(epoch=0, balances={})
+            observed_bal = BalanceSnapshot(epoch=0, balances={})
+            rep = run_recon_if_enabled(
+                recon_cfg,
+                expected_balances=expected_bal,
+                observed_balances=observed_bal,
+                expected_positions=None,
+                observed_positions=None,
+            )
+            if not rep.ok:
+                self._log_audit(
+                    "recon(runbook_b)",
+                    False,
+                    "Runbook-B recon drift: " + " | ".join(rep.drifts[:5]),
+                )
+                raise RuntimeError(
+                    "Execution blocked: reconciliation drift"
+                )
+            self._log_audit("recon(runbook_b)", True, "Runbook-B recon: ok")
+        # --- End Reconciliation Hook ---
         action = f"place_order(is_testnet={is_testnet})"
 
         # --- PAPER Mode ---
