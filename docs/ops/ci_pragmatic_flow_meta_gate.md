@@ -53,7 +53,7 @@ CI → "Run workflow" → Input **force_matrix** (boolean): bei `true` wird `run
 ## Konfiguration
 
 - `config/ci/required_status_checks.json`: `required_contexts: ["PR Gate"]`.
-- Hygiene-Validator: `scripts/ci/validate_required_checks_hygiene.py`.
+- Hygiene-Validator: `scripts&#47;ci/validate_required_checks_hygiene.py`.
 - Inventar: `docs/ops/ci_pragmatic_flow_inventory.md`.
 
 Stand: 2026-02-07
