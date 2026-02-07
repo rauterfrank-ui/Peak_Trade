@@ -1,0 +1,21 @@
+# Runbook B — Env example (all OFF by default)
+# Copy to .env only when you intend to enable; do not commit secrets.
+# Default: no vars set = no behavior change.
+
+# --- B5/B3 Execution guards (default OFF) ---
+# PEAK_EXEC_GUARDS_ENABLED=0
+# PEAK_EXEC_GUARDS_SECRET=
+# PEAK_EXEC_GUARDS_TOKEN=
+
+# --- B3 Risk limits (only when guards enabled; 0 = no enforcement) ---
+# PEAK_KILL_SWITCH=0
+# PEAK_MAX_NOTIONAL_USD=0
+# PEAK_MAX_ORDER_SIZE=0
+# PEAK_MAX_POSITION=0
+# PEAK_MAX_SESSION_LOSS_USD=0
+# PEAK_MAX_DATA_AGE_SECONDS=0
+
+# --- B2 Reconciliation (default OFF) ---
+# PEAK_RECON_ENABLED=0
+# PEAK_RECON_BALANCE_ABS=0
+# PEAK_RECON_POSITION_ABS=0

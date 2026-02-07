@@ -57,6 +57,13 @@ Runbooks for specific phase implementations and workflows:
 - [RUNBOOK_PHASE8_DOCS_INTEGRITY_HARDENING_CURSOR_MULTI_AGENT.md](RUNBOOK_PHASE8_DOCS_INTEGRITY_HARDENING_CURSOR_MULTI_AGENT.md) — Phase 8 docs integrity hardening
 - [RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md](RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md) — Workflow docs integration
 
+### Runbook B — Execution Gates (B5/B3/B2)
+
+Safety controls for Shadow → Mini-Live (ArmedGate, RiskGate, Reconciliation). **All OFF by default.**
+
+- [runbook_b_execution_gates_quickstart.md](runbook_b_execution_gates_quickstart.md) — Quickstart: env toggles, safe usage, config examples
+- [runbook_b_env_example.txt](runbook_b_env_example.txt) — Minimal env example (all disabled)
+
 ### CI & Operations
 
 Runbooks for CI operations and general operational procedures:
