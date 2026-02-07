@@ -1,3 +1,4 @@
+# ci smoke workflow-only 20260207-0135Z
 name: CI
 
 on:
