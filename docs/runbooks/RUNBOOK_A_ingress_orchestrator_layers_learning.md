@@ -41,13 +41,13 @@ Zusatz-Layer (neu, empfohlen):
 ## 3) Ergebnisartefakte & Speicherorte (konventionell)
 > Wenn ihr schon andere Pfade nutzt, passt diese 3 Pfade als Konstante an.
 
-- `out/ops/events/`  
+- `out&#47;ops&#47;events&#47;`  
   - `EVENTS_<run_id>_<ts>.jsonl` (+ `.sha256`)
-- `out/ops/views/`  
+- `out&#47;ops&#47;views&#47;`  
   - `FEATURE_VIEW_<run_id>_<ts>.json` (+ `.sha256`)
-- `out/ops/capsules/`  
+- `out&#47;ops&#47;capsules&#47;`  
   - `CAPSULES_<run_id>_<ts>.jsonl` (+ `.sha256`)
-- `out/ops/audit/`  
+- `out&#47;ops&#47;audit&#47;`  
   - `AUDIT_<run_id>.log` (append-only)
 
 ---
@@ -60,8 +60,8 @@ Zusatz-Layer (neu, empfohlen):
 
 **Schritte**
 1. Alle Quellen sammeln (Docs + Code):
-   - Data: `src/data/*` (Kraken OHLC, CCXT backend)
-   - Exchange: `src/exchange/*` (KrakenTestnetClient, ccxt client)
+   - Data: `src&#47;data&#47;*` (Kraken OHLC, CCXT backend)
+   - Exchange: `src&#47;exchange&#47;*` (KrakenTestnetClient, ccxt client)
    - Live/Shadow: `src/live/shadow_session.py`, `src/execution/live_session.py`
    - Scripts: `run_shadow_execution.py`, `run_testnet_session.py`, `check_live_readiness.py`, …
 2. Tabelle erstellen:
@@ -92,7 +92,7 @@ Zusatz-Layer (neu, empfohlen):
    - Raw payload (z.B. Transcript Text) **nur** lokal, nicht in Envelope
 
 **Exit Criteria**
-- Mindestens 1 Pipeline (Shadow oder Data) schreibt Events in `out/ops/events/`.
+- Mindestens 1 Pipeline (Shadow oder Data) schreibt Events in `out&#47;ops&#47;events&#47;`.
 
 ---
 
@@ -197,7 +197,7 @@ Zusatz-Layer (neu, empfohlen):
 
 ## 5) Wieder-Einstiegspunkte (Quick Resume)
 ### Resume R1: "Ich will nur sehen, ob Events geschrieben werden"
-- Prüfe: `out/ops/events/` neue JSONL?
+- Prüfe: `out&#47;ops&#47;events&#47;` neue JSONL?
 - Prüfe: sha256 manifest ok?
 - Prüfe: event_kinds counts
 
@@ -207,7 +207,7 @@ Zusatz-Layer (neu, empfohlen):
 
 ### Resume R3: "LearningCapsules erzeugen"
 - Trigger 1 Shadow cycle
-- Prüfe `out/ops/capsules/` neue jsonl + sha256
+- Prüfe `out&#47;ops&#47;capsules&#47;` neue jsonl + sha256
 
 ---
 
