@@ -79,7 +79,10 @@ def _pin_signals_orders_panels(d: dict) -> None:
             continue
         panel["datasource"] = {"type": "prometheus", "uid": UID_SHADOW}
         for t in panel.get("targets", []) or []:
-            if isinstance(t.get("datasource"), dict) and t["datasource"].get("type") == "prometheus":
+            if (
+                isinstance(t.get("datasource"), dict)
+                and t["datasource"].get("type") == "prometheus"
+            ):
                 t["datasource"] = {"type": "prometheus", "uid": UID_SHADOW}
             elif "expr" in t:
                 t["datasource"] = {"type": "prometheus", "uid": UID_SHADOW}
@@ -116,7 +119,12 @@ def _apply_nodata_robustness(d: dict) -> None:
         defaults["noValue"] = "0"
         defaults.setdefault("custom", {})["spanNulls"] = True
         xforms = panel.get("transformations") or []
-        keep = [t for t in xforms if (t.get("id") or "").lower() not in {"filterfieldsbyname", "filterbyvalue", "organize", "groupby", "reduce"}]
+        keep = [
+            t
+            for t in xforms
+            if (t.get("id") or "").lower()
+            not in {"filterfieldsbyname", "filterbyvalue", "organize", "groupby", "reduce"}
+        ]
         if keep != xforms:
             panel["transformations"] = keep
         if (panel.get("type") or "").lower() in {"stat", "gauge", "bargauge", "table"}:
