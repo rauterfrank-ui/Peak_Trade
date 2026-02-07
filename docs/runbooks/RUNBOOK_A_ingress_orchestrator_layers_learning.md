@@ -79,6 +79,18 @@ Zusatz-Layer (neu, empfohlen):
 ---
 
 ### Phase A2 — Single Ingress: NormalizedEvent-Contract + Writer
+
+---
+## RE-ENTRY MARKER (Cursor MA)
+- Date: 2026-02-07
+- Context: Phase A2 scaffold PR `feat/ingress-a2-normalizedevent-jsonl`
+- State: Tests green; **Lint gate failing** (needs local repro + fix + push)
+- Next actions:
+  - Reproduce lint gate locally (make lint-gate / pre-commit) on changed files
+  - Apply formatter/fixes (ruff/black/isort) and re-run lint gate
+  - Push fix commit; verify CI; merge PR
+---
+
 **Ziel**: alles geht zuerst in `NormalizedEvent` und wird lokal append-only gespeichert.  
 **Einstieg**: Phase A1 fertig oder du hast bereits eine Event-Struktur.  
 **Endpunkt**: `hub.ingest(...)` wird an allen Ingress-Stellen genutzt (oder parallel "tap").
