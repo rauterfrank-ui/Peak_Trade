@@ -1133,11 +1133,15 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "prom_local_9092"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "none"
+          "unit": "none",
+          "noValue": "0",
+          "custom": {
+            "spanNulls": true
+          }
         },
         "overrides": []
       },
@@ -1150,7 +1154,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -1161,7 +1165,11 @@
           "expr": "(sum(increase(peaktrade_signals_total[$__range])) or on() vector(0))",
           "format": "time_series",
           "instant": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom_local_9092"
+          }
         }
       ],
       "title": "Total Signals (Range)",
@@ -1170,11 +1178,15 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "prom_local_9092"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "none"
+          "unit": "none",
+          "noValue": "0",
+          "custom": {
+            "spanNulls": true
+          }
         },
         "overrides": []
       },
@@ -1187,7 +1199,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -1198,7 +1210,11 @@
           "expr": "((sum(rate(peaktrade_signals_total[1m])) * 60) or on() vector(0))",
           "format": "time_series",
           "instant": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom_local_9092"
+          }
         }
       ],
       "title": "Signals / min (1m)",
@@ -1207,11 +1223,15 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "prom_local_9092"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "none"
+          "unit": "none",
+          "noValue": "0",
+          "custom": {
+            "spanNulls": true
+          }
         },
         "overrides": []
       },
@@ -1224,7 +1244,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -1235,7 +1255,11 @@
           "expr": "(sum(increase(peaktrade_orders_approved_total[$__range])) or on() vector(0))",
           "format": "time_series",
           "instant": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom_local_9092"
+          }
         }
       ],
       "title": "Orders Approved (Range)",
@@ -1244,11 +1268,15 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "prom_local_9092"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "none"
+          "unit": "none",
+          "noValue": "0",
+          "custom": {
+            "spanNulls": true
+          }
         },
         "overrides": []
       },
@@ -1261,7 +1289,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -1272,7 +1300,11 @@
           "expr": "(sum(increase(peaktrade_orders_blocked_total[$__range])) or on() vector(0))",
           "format": "time_series",
           "instant": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom_local_9092"
+          }
         }
       ],
       "title": "Orders Blocked (Range)",
@@ -2805,7 +2837,11 @@
               "title": "Drilldown: Execution Watch Details",
               "url": "/d/peaktrade-execution-watch-details?var-endpoint=${__series.labels.endpoint}&var-status=${__series.labels.status}"
             }
-          ]
+          ],
+          "noValue": "0",
+          "custom": {
+            "spanNulls": true
+          }
         },
         "overrides": []
       },
@@ -2832,7 +2868,11 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "s"
+          "unit": "s",
+          "noValue": "0",
+          "custom": {
+            "spanNulls": true
+          }
         },
         "overrides": []
       },
