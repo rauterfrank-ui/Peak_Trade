@@ -35,6 +35,13 @@ from src.core.environment import (
     TradingEnvironment,
     LIVE_CONFIRM_TOKEN,
 )
+from src.ops.gates.armed_gate import ArmedGate, ArmedState
+from src.ops.gates.risk_gate import RiskLimits, RiskContext
+from src.ops.wiring.execution_guards import (
+    GuardConfig,
+    GuardInputs,
+    apply_execution_guards,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -198,6 +205,13 @@ class SafetyGuard:
             da echte Orders nicht implementiert sind.
         """
         env = self.env_config.environment
+        # --- Peak_Trade Runbook-B Guards (B5/B3) ---
+        # NOTE: Default OFF. Caller must explicitly enable cfg.enabled.
+        # TODO(wire): Provide real inputs (armed_state/token, limits, ctx) from config/session.
+        # gate = ArmedGate(secret=b"CHANGE_ME")
+        # cfg = GuardConfig(enabled=False)
+        # _ = apply_execution_guards(cfg, gate=gate, inputs=GuardInputs(...))
+        # --- End Guards ---
         action = f"place_order(is_testnet={is_testnet})"
 
         # --- PAPER Mode ---
