@@ -22,7 +22,7 @@
 - observability/metrics sanity: N/A
 
 ## Results / Evidence
-- local outputs / logs: `out/ops/pr_1208/` (pytest_full.txt, pytest_show_recon_audit_smoke.txt, pytest_last_failed_verbose.txt, docs_token_policy_gate.txt)
+- local outputs / logs: `out&#47;ops&#47;pr_1208&#47;` (pytest_full.txt, pytest_show_recon_audit_smoke.txt, pytest_last_failed_verbose.txt, docs_token_policy_gate.txt)
 - CI summary: pending
 
 ## Review Attestation
