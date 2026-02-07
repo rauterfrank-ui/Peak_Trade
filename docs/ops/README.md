@@ -46,6 +46,7 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - [merge_logs/PR_714_MERGE_LOG.md](merge_logs/PR_714_MERGE_LOG.md) — PR #714 (Phase 9C Wave 4: broken targets 87→65, CI-Parity Guide) ([PR #714](https://github.com/rauterfrank-ui/Peak_Trade/pull/714), 2026-01-14)
 - [merge_logs/PR_712_MERGE_LOG.md](merge_logs/PR_712_MERGE_LOG.md) — PR #712 (Phase 9C Wave 3: broken targets 114→89) ([PR #712](https://github.com/rauterfrank-ui/Peak_Trade/pull/712), 2026-01-14)
 - **[Phase 5C Workflow Dispatch Guard Enforcement Closeout](PHASE5C_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_CLOSEOUT.md)** — Phase 5C closeout: dispatch-guard enforcement activation, 10 required checks, verified (2026-01-12)
+- **Branch Protection (Pragmatic Flow):** Required check = **PR Gate**. Matrix läuft nur bei code changes. → [ci_pragmatic_flow_meta_gate.md](ci_pragmatic_flow_meta_gate.md), [ci_pragmatic_flow_inventory.md](ci_pragmatic_flow_inventory.md)
 - ``docs&#47;ops&#47;PR_693_MERGE_LOG.md`` — PR #693 (Docs Token Policy Gate: CI enforcement + tests + runbook + allowlist) ([PR #693](https://github.com/rauterfrank-ui/Peak_Trade/pull/693), 2026-01-13)
 - ``docs&#47;ops&#47;PR_691_MERGE_LOG.md`` — PR #691 (Workflow notes integration + docs-reference-targets-gate policy formalization) ([PR #691](https://github.com/rauterfrank-ui/Peak_Trade/pull/691), 2026-01-13)
 - ``docs&#47;ops&#47;PR_690_MERGE_LOG.md`` — PR #690 (Docs frontdoor + crosslink hardening + illustrative paths neutralization) ([PR #690](https://github.com/rauterfrank-ui/Peak_Trade/pull/690), 2026-01-13)
