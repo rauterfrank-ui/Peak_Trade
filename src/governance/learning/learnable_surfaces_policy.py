@@ -103,7 +103,9 @@ def assert_surfaces_allowed(
         ValueError: if layer_id is not a valid layer id (L0..L6).
     """
     if layer_id not in VALID_LAYER_IDS:
-        raise ValueError(f"Invalid layer_id: {layer_id!r}. Must be one of {sorted(VALID_LAYER_IDS)}")
+        raise ValueError(
+            f"Invalid layer_id: {layer_id!r}. Must be one of {sorted(VALID_LAYER_IDS)}"
+        )
 
     if not requested:
         return  # Nothing to allow/deny
