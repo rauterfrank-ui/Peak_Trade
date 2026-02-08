@@ -15,6 +15,7 @@ from typing import List, Optional
 
 from .capability_scope_loader import CapabilityScopeLoader
 from .errors import DryRunError, ForbiddenAutonomyError, InvalidLayerError
+from .layer_envelope import build_layer_envelope
 from .l3_runner import L3Runner
 from .model_registry_loader import ModelRegistryLoader
 from .models import AutonomyLevel, SoDResult
@@ -206,8 +207,13 @@ class MultiModelRunner:
             clock=self.clock,
         )
         minimal_input: dict = {"run_id": "multimodel-dispatch", "ts_ms": 0, "artifacts": []}
-        result = l3_runner.run(
+        envelope = build_layer_envelope(
+            layer_id="L3",
             inputs=minimal_input,
+            tooling_allowlist=scope.tooling_allowed,
+        )
+        result = l3_runner.run(
+            inputs=envelope.inputs,
             mode="dry-run",
             out_dir=out_dir,
             operator_notes=operator_notes,
