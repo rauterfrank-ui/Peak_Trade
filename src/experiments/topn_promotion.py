@@ -580,6 +580,8 @@ def export_top_n_with_policy_check(
     config: TopNPromotionConfig,
     auto_apply: bool = False,
     context: Optional[Dict[str, Any]] = None,
+    layer_id: Optional[str] = None,
+    requested_surfaces: Optional[list[str]] = None,
 ) -> Tuple[Path, Dict[str, Any]]:
     """
     Export Top-N configs with optional policy critic check for auto-apply.
@@ -592,6 +594,10 @@ def export_top_n_with_policy_check(
         config: TopNPromotionConfig
         auto_apply: If True, attempt automated application (requires policy approval)
         context: Optional context for policy critic (justification, test_plan, etc.)
+        layer_id: Optional layer id (L0-L6) for learnable-surfaces gate; when provided
+            with requested_surfaces, the gate is enforced.
+        requested_surfaces: Optional list of learnable surface names; when provided
+            with layer_id, the gate is enforced.
 
     Returns:
         Tuple of (output_path, governance_report)
@@ -639,11 +645,18 @@ def export_top_n_with_policy_check(
             diff_text = f"+++ b/config/promoted_configs.toml\n{new_config_content}"
             changed_files = [str(output_path.relative_to(Path.cwd()))]
 
+            # Merge learnable-surfaces context when provided (for gate at auto_apply_gate)
+            ctx = dict(context or {})
+            if layer_id is not None:
+                ctx["layer_id"] = layer_id
+            if requested_surfaces is not None:
+                ctx["requested_surfaces"] = requested_surfaces
+
             # Evaluate policy critic
             decision = evaluate_policy_critic_before_apply(
                 diff_text=diff_text,
                 changed_files=changed_files,
-                context=context or {},
+                context=ctx,
                 fail_closed=True,  # Always fail-closed
             )
 
