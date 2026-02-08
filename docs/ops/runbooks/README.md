@@ -7,6 +7,11 @@
 
 - [RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md](./RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md): Tech-Debt Top-3 ROI bis Finish (Cursor Multi-Agent)
 
+
+## Research & New Listings (CEX+DEX Crawler, AI Layers)
+
+- [New Listings Crawler Runbook](./new_listings_crawler_runbook.md)
+
 ## Runbook Categories
 
 ### Docs Gates & Policies
