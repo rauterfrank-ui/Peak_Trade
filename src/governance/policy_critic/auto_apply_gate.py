@@ -223,7 +223,7 @@ def _map_critic_result_to_decision(
     - REVIEW_REQUIRED → manual only
     - ALLOW → may proceed (but hard gates still apply)
     """
-    policy_critic_dict = result.to_dict()
+    policy_critic_dict = result.to_canonical_dict()
 
     if result.recommended_action == RecommendedAction.AUTO_APPLY_DENY:
         return AutoApplyDecision(
