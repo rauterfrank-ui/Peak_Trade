@@ -24,7 +24,8 @@ def test_write_produces_json_and_sha256(tmp_path: Path) -> None:
     assert json_path.exists()
     assert len(digest) == 64
     sha_path = json_path.with_suffix(".json.sha256")
-    assert sha_path.read_text().strip() == digest
+    # Sidecar format: "<hex>  <relative_filename>" (shasum -c compatible)
+    assert sha_path.read_text().strip() == f"{digest}  {json_path.name}"
     loaded = json.loads(json_path.read_text(encoding="utf-8"))
     assert loaded["capsule_id"] == "c1"
     assert "payload" not in loaded
