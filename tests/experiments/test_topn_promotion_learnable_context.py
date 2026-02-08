@@ -20,9 +20,11 @@ from src.experiments.topn_promotion import (
 
 def _minimal_df_top() -> pd.DataFrame:
     """Minimal Top-N DataFrame for export (rank + one metric)."""
-    return pd.DataFrame([
-        {"rank": 1, "metric_sharpe_ratio": 0.5, "param_window": 14},
-    ])
+    return pd.DataFrame(
+        [
+            {"rank": 1, "metric_sharpe_ratio": 0.5, "param_window": 14},
+        ]
+    )
 
 
 def _config_with_tmp_output() -> TopNPromotionConfig:
