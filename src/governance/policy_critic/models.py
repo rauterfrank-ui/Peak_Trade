@@ -6,7 +6,7 @@ These models define the input and output contracts for policy review.
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 
 class Severity(str, Enum):
@@ -116,6 +116,32 @@ class PolicyCriticResult:
         if self.effective_ruleset_hash:
             result["effective_ruleset_hash"] = self.effective_ruleset_hash
 
+        return result
+
+    def to_canonical_dict(self) -> Dict[str, Any]:
+        """
+        Convert to dictionary with stable ordering for deterministic hashing.
+
+        Violations are sorted by rule_id then message; evidence by file_path then line_range.
+        Use with json.dumps(..., sort_keys=True) for identical output for same logical result.
+        """
+        result = self.to_dict()
+        # Sort violations by rule_id, then message (stable order)
+        violations = result.get("violations", [])
+        result["violations"] = sorted(
+            violations,
+            key=lambda v: (v.get("rule_id", ""), v.get("message", "")),
+        )
+        # Sort evidence within each violation by file_path, then line_range
+        for v in result["violations"]:
+            ev_list = v.get("evidence", [])
+            v["evidence"] = sorted(
+                ev_list,
+                key=lambda e: (e.get("file_path", ""), str(e.get("line_range") or "")),
+            )
+        # minimum_test_plan and operator_questions already lists; sort for determinism
+        result["minimum_test_plan"] = sorted(result.get("minimum_test_plan", []))
+        result["operator_questions"] = sorted(result.get("operator_questions", []))
         return result
 
     @property
