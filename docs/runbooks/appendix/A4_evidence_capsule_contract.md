@@ -14,7 +14,7 @@ Pointer-only bundle for learning/audit. Built from a FeatureView (A3) plus optio
 - `path: str`, `sha256: str` — reference only; no inline content
 
 ## Storage
-- Written under `base_dir/capsules/<run_id>.capsule.json` by the orchestrator.
+- Written under `base_dir&#47;capsules&#47;<run_id>.capsule.json` by the orchestrator.
 
 ## Implementation
 - `src&#47;ingress&#47;capsules&#47;evidence_capsule_builder.py`: `build_evidence_capsule(capsule_id, run_id, ts_ms, feature_view, labels)` → `EvidenceCapsule`

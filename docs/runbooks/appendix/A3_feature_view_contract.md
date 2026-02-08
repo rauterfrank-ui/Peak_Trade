@@ -15,7 +15,7 @@ Compact, deterministic summary for layer routing. Input: event JSONL (from A2). 
 - `sha256: str` — hex digest of file bytes
 
 ## Storage
-- Written under `base_dir/views/<run_id>.feature_view.json` by the orchestrator.
+- Written under `base_dir&#47;views&#47;<run_id>.feature_view.json` by the orchestrator.
 
 ## Implementation
 - `src&#47;ingress&#47;views&#47;feature_view_builder.py`: `build_feature_view_from_jsonl(jsonl_path, run_id)` → `FeatureView`

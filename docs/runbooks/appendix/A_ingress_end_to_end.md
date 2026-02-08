@@ -11,8 +11,8 @@ Single pipeline from normalized events (JSONL) to a FeatureView and an EvidenceC
 5. **A6** — CLI: `python -m src.ingress.cli.ingress_cli --run-id … --base-dir out/ops [--input-jsonl PATH] [--label K=V …]`; prints two paths, exit 0/1.
 
 ## Layout (default)
-- `out/ops/views/<run_id>.feature_view.json`
-- `out/ops/capsules/<run_id>.capsule.json`
+- `out&#47;ops&#47;views&#47;<run_id>.feature_view.json`
+- `out&#47;ops&#47;capsules&#47;<run_id>.capsule.json`
 - Input JSONL: any path (or empty for empty view).
 
 ## Contracts
