@@ -13,6 +13,8 @@ from typing import Dict, List, Optional
 from .capability_scope_loader import CapabilityScope, CapabilityScopeLoader
 from .errors import OrchestrationError
 from .l3_contracts import accepts_l3_pointer_only_input, artifact_paths_from_pointer_only_input
+
+from governance.learning import validate_envelope_learnable_surfaces
 from .model_registry_loader import ModelRegistryLoader
 from .models import SoDResult
 from .run_manifest import RunManifest, RunManifestGenerator, generate_operator_output
@@ -103,6 +105,12 @@ class L3Runner:
             raise L3PointerOnlyViolation(
                 "L3 accepts only pointer-only inputs (no payload/raw/transcript; artifacts = path+sha256 only)."
             )
+
+        # Envelope boundary: learnable_surfaces / requested_surfaces must be allowlisted (L3: prompt_template_variants only).
+        try:
+            validate_envelope_learnable_surfaces(inputs, "L3")
+        except Exception as e:
+            raise L3RunnerError(f"Learnable surfaces gate: {e}") from e
 
         if not out_dir:
             out_dir = Path("evidence_packs") / f"L3_TRADE_PLAN_{self._get_timestamp_str()}"
