@@ -32,5 +32,6 @@ def write_evidence_capsule(capsule: EvidenceCapsule, json_path: Path) -> tuple[P
     json_path.write_text(payload, encoding="utf-8")
     digest = _sha256_hex(payload.encode("utf-8"))
     sha_path = json_path.with_suffix(json_path.suffix + ".sha256")
-    sha_path.write_text(digest + "\n", encoding="utf-8")
+    # shasum -c compatible: "<hex>  <relative_filename>"
+    sha_path.write_text(f"{digest}  {json_path.name}\n", encoding="utf-8")
     return (json_path, digest)
