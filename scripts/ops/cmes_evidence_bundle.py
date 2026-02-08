@@ -32,6 +32,41 @@ FORBIDDEN_PATTERN = re.compile(
 )
 
 
+def _run(cmd: list[str], *, cwd: str | Path | None = None) -> tuple[int, str]:
+    """Run command; return (returncode, combined stdout/stderr)."""
+    p = subprocess.run(
+        cmd,
+        cwd=str(cwd) if cwd else None,
+        capture_output=True,
+        text=True,
+    )
+    out = (p.stdout or "") + (p.stderr or "")
+    return p.returncode, out
+
+
+def _verify_sidecar(
+    *,
+    base_dir: Path,
+    sidecar_rel: str,
+    audit_path: Path,
+) -> None:
+    """
+    Verify <hex>  <filename> sidecar using shasum -a 256 -c.
+    Runs with cwd=base_dir so basename in sidecar resolves. Writes output to audit_path.
+    Fail-closed on non-zero exit.
+    """
+    audit_path.parent.mkdir(parents=True, exist_ok=True)
+    rc, out = _run(
+        ["shasum", "-a", "256", "-c", sidecar_rel],
+        cwd=str(base_dir),
+    )
+    audit_path.write_text(out, encoding="utf-8")
+    if rc != 0:
+        raise RuntimeError(
+            f"Sidecar verification failed: {sidecar_rel} (rc={rc}). See {audit_path}"
+        )
+
+
 def main() -> int:
     evid_id = f"cmes-risk-strat-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%SZ')}"
     tmp_base = REPO_ROOT / "out" / f"_tmp_cmes_{evid_id}"
@@ -96,11 +131,28 @@ def main() -> int:
         encoding="utf-8",
     )
 
+    # 4b) Sidecar verification (shasum -c); fail-closed + audit logs
+    # Run from views/ and capsules/ so sidecar's "<hex>  <basename>.json" resolves
+    audit_dir = tmp_base / "audit"
+    audit_dir.mkdir(parents=True, exist_ok=True)
+    _verify_sidecar(
+        base_dir=tmp_base / "views",
+        sidecar_rel=f"{evid_id}.feature_view.json.sha256",
+        audit_path=audit_dir / f"{evid_id}_sidecar_verify_views.txt",
+    )
+    _verify_sidecar(
+        base_dir=tmp_base / "capsules",
+        sidecar_rel=f"{evid_id}.capsule.json.sha256",
+        audit_path=audit_dir / f"{evid_id}_sidecar_verify_capsules.txt",
+    )
+
     # 5) Bundle (selected files that exist)
     to_bundle = [
         f"{evid_id}_ingress_paths.txt",
         f"{evid_id}_pointer_only_scan.txt",
         f"{evid_id}_facts_hash.txt",
+        f"audit/{evid_id}_sidecar_verify_views.txt",
+        f"audit/{evid_id}_sidecar_verify_capsules.txt",
     ]
     for name in ("views", "capsules"):
         d = tmp_base / name
