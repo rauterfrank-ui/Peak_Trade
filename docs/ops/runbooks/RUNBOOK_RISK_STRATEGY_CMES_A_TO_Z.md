@@ -134,6 +134,8 @@ Required facts at the end of the pipeline:
 - main health checks green
 - snapshot /tmp and ~/Downloads
 
+**Implementation complete (A→L):** CMES facts module, reason codes, FeatureView/EvidenceCapsule wiring, L5 adapter, all tests (unit, contract, e2e), evidence bundle script at `scripts/ops/cmes_evidence_bundle.py`.
+
 ## Operator Commands (Canonical)
 ### Dev loop
 - `python3 -m ruff format src tests scripts`
