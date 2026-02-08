@@ -176,9 +176,9 @@ Integrate L3 Trade Plan Advisory layer to generate intraday trade hypotheses, se
 ### Tasks
 
 #### A1 (Implementer):
-1. Implement L3 Runner script (`scripts&#47;aiops&#47;run_l3_trade_plan_advisory.py`)
-   - Input: L2 Market Outlook scenarios + historical patterns
-   - Output: Trade hypotheses (setup, entry zones, risk parameters)
+1. ✅ L3 Runner script implemented (`scripts&#47;aiops&#47;run_l3_trade_plan_advisory.py`); registered in Runner Index (Tier A). Pointer-only inputs, files-only tooling; deterministic manifest + artifacts. See `docs&#47;dev&#47;RUNNER_INDEX.md`.
+   - Input: Pointer-only (FeatureView/EvidenceCapsule style); L2 scenarios via artifact refs
+   - Output: run_manifest.json, operator_output.md, evidence_pack_id (no raw content)
    - **NO execution parameters** (no "place order now" outputs)
 2. Create L3 Evidence Pack fixtures
 3. Integrate L3 Capability Scope enforcement
