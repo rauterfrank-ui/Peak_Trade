@@ -27,7 +27,7 @@ def build_feature_view_from_jsonl(
     Never put payload, raw, transcript, api_key, secret, token into FeatureView.
     """
     path = Path(jsonl_path)
-    if not path.exists():
+    if not jsonl_path or not str(jsonl_path).strip() or not path.exists() or not path.is_file():
         return FeatureView(run_id=run_id, ts_ms=0, counts={}, facts={}, artifacts=[])
 
     counts: Dict[str, int] = {}
