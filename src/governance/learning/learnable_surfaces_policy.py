@@ -139,3 +139,28 @@ def assert_surfaces_allowed(
             requested=requested,
             allowed=allowed,
         )
+
+
+def validate_envelope_learnable_surfaces(
+    envelope: Dict[str, object],
+    layer_id: str,
+    policy: Optional[Dict[str, List[str]]] = None,
+) -> None:
+    """
+    Envelope boundary gate: if envelope has learnable_surfaces or requested_surfaces,
+    assert all are allowlisted for the layer. Missing key => treated as [] (no-op).
+
+    Call this when assembling or accepting a layer envelope so runtime enforces
+    the learnable surfaces policy (e.g. L2->L3 handoff with disallowed surface blocks).
+
+    Raises:
+        LearnableSurfacesViolation: if any requested surface is not allowed.
+        ValueError: if layer_id is not valid.
+    """
+    requested = envelope.get("learnable_surfaces") or envelope.get("requested_surfaces")
+    if requested is None:
+        requested = []
+    if not isinstance(requested, list):
+        requested = []
+    requested = [str(s) for s in requested]
+    assert_surfaces_allowed(layer_id, requested, policy=policy)
