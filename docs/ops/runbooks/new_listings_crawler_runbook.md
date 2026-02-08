@@ -47,7 +47,7 @@
 ## 2) Artifacts & Interfaces (Contracts)
 
 ### 2.1 SQLite DB (Source-of-Truth)
-**Default path:** `out/research/new_listings/new_listings.sqlite`
+**Default path:** `out&#47;research&#47;new_listings&#47;new_listings.sqlite`
 
 **Tables (minimum):**
 - `raw_events(source, venue_type, observed_at, payload_json)` (append-only)
@@ -65,7 +65,7 @@ Create stable read views to avoid ad-hoc SQL in other components:
 - `v_assets_candidates`: assets passing L5 and meeting min thresholds
 
 ### 2.3 JSONL Event Feed (Orchestration Bus)
-**Path:** `out/research/new_listings/events.jsonl` (append-only)
+**Path:** `out&#47;research&#47;new_listings&#47;events.jsonl` (append-only)
 
 **Event types (minimum):**
 - `asset.discovered` (new asset_id first seen)
@@ -111,7 +111,7 @@ Create stable read views to avoid ad-hoc SQL in other components:
 ## 4) Multi-Day Tasks (Implementation Order)
 
 ### Day 1–2: Foundation
-- [ ] Create `out/research/new_listings/` and add to .gitignore (or use existing research out layout).
+- [ ] Create `out&#47;research&#47;new_listings&#47;` and add to .gitignore (or use existing research out layout).
 - [ ] Implement SQLite schema (raw_events, assets, market_snapshots, risk_flags, listing_scores).
 - [ ] Implement stable views (v_latest_snapshot, v_latest_risk, v_latest_score, v_assets_new, v_assets_candidates).
 - [ ] Implement append-only events.jsonl writer and run_id/config_hash in event meta.
@@ -172,7 +172,7 @@ Create stable read views to avoid ad-hoc SQL in other components:
 # python -m research.new_listings.run_cycle --config ... --dry-run
 
 # Replay events from events.jsonl (e.g. for testing consumers)
-# python -m research.new_listings.replay_events --path out/research/new_listings/events.jsonl --from-ts ...
+# python -m research.new_listings.replay_events --path out&#47;research&#47;new_listings&#47;events.jsonl --from-ts ...
 ```
 
 ---
