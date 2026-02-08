@@ -161,9 +161,7 @@ class TestNetworkEscalationGateContract:
             require_confirm_token=True,
             confirm_token=LIVE_CONFIRM_TOKEN,
         )
-        ensure_may_use_network_escalation(
-            allow_network=True, context="pagerduty", env_config=cfg
-        )
+        ensure_may_use_network_escalation(allow_network=True, context="pagerduty", env_config=cfg)
 
 
 # -----------------------------------------------------------------------------
