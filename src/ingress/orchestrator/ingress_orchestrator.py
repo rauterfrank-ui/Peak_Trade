@@ -5,6 +5,7 @@ Outputs stay pointer-only (no payload/raw/transcript in written files).
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
@@ -65,3 +66,11 @@ def run_ingress(
     cap_path = capsules_dir / f"{config.run_id}.capsule.json"
     write_evidence_capsule(cap, cap_path)
     return (fv_path, cap_path)
+
+
+def load_capsule_dict(capsule_path: Path) -> Dict[str, Any]:
+    """
+    Load pointer-only capsule JSON as dict for downstream (e.g. LayerEnvelope inputs).
+    Caller must ensure path exists and is pointer-only (no payload/raw/transcript).
+    """
+    return json.loads(capsule_path.read_text(encoding="utf-8"))

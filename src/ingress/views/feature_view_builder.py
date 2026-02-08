@@ -12,6 +12,7 @@ from typing import Any, Dict, List
 
 from src.ingress.normalized_event import NormalizedEvent
 from src.ingress.views.feature_view import ArtifactPointer, FeatureView
+from src.risk.cmes import default_cmes_facts
 
 
 def _sha256_hex(data: bytes) -> str:
@@ -28,7 +29,8 @@ def build_feature_view_from_jsonl(
     """
     path = Path(jsonl_path)
     if not jsonl_path or not str(jsonl_path).strip() or not path.exists() or not path.is_file():
-        return FeatureView(run_id=run_id, ts_ms=0, counts={}, facts={}, artifacts=[])
+        facts = default_cmes_facts()
+        return FeatureView(run_id=run_id, ts_ms=0, counts={}, facts=facts, artifacts=[])
 
     counts: Dict[str, int] = {}
     facts: Dict[str, Any] = {}
@@ -72,9 +74,19 @@ def build_feature_view_from_jsonl(
     if ts_min is None:
         ts_min = 0
 
-    facts["event_count_total"] = sum(counts.values())
-    facts["ts_min"] = ts_min
-    facts["ts_max"] = ts_max
+    # CMES 7 facts (canonical, pointer-only); default for now; upstream can override later
+    cmes = default_cmes_facts()
+    # Safe run-scope facts (no payload)
+    final_facts: Dict[str, Any] = {
+        **cmes,
+        "event_count_total": sum(counts.values()),
+        "ts_min": ts_min,
+        "ts_max": ts_max,
+    }
+    if facts.get("scope"):
+        final_facts["scope"] = facts["scope"]
+    if facts.get("source"):
+        final_facts["source"] = facts["source"]
 
     # Artifact pointer for the JSONL itself (path + sha256 of file)
     file_sha = _sha256_hex(path.read_bytes())
@@ -86,6 +98,6 @@ def build_feature_view_from_jsonl(
         run_id=run_id,
         ts_ms=ts_max,
         counts=counts,
-        facts=facts,
+        facts=final_facts,
         artifacts=artifacts,
     )
