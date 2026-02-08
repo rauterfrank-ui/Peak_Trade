@@ -14,13 +14,13 @@
 | Prom (Shadow stack) | prometheus-local | `:9092` | — | 9092 | `prom_local_9092` |
 | Prom (AI Live ops) | prometheus-local | `:9094` | — | 9094 | `prom_ai_live_9094` |
 | Prom (Observability) | prometheus-local | `:9095` | — | 9095 | `prom_observability_9095` |
-| AI Live Exporter | host python proc (ai_live_restart) | `:9110/metrics` | job=`ai_live` | 9094 *(typisch)* | `prom_ai_live_9094` |
-| Shadow MVS Exporter | host/stack proc | `:9109/metrics` | job=`shadow_mvs` | 9092 | `prom_local_9092` |
-| peak_trade_web | web service | `:8000/metrics` | job=`peak_trade_web` | 9092 | `prom_local_9092` |
-| peak_trade_metricsd | metrics daemon | `:9111/metrics` | job=`peak_trade_metricsd` | 9092 | `prom_local_9092` |
+| AI Live Exporter | host python proc (ai_live_restart) | ``:9110&#47;metrics`` | job=`ai_live` | 9094 *(typisch)* | `prom_ai_live_9094` |
+| Shadow MVS Exporter | host/stack proc | ``:9109&#47;metrics`` | job=`shadow_mvs` | 9092 | `prom_local_9092` |
+| peak_trade_web | web service | ``:8000&#47;metrics`` | job=`peak_trade_web` | 9092 | `prom_local_9092` |
+| peak_trade_metricsd | metrics daemon | ``:9111&#47;metrics`` | job=`peak_trade_metricsd` | 9092 | `prom_local_9092` |
 
 > **Wichtig:** „Grafana/Prometheus laufen“ ≠ „Telemetry-Produzenten laufen“.  
-> Health/Shadow-Panels sind *korrekt leer*, wenn `9109/8000/9111` nicht laufen oder nicht gescraped werden.
+> Health/Shadow-Panels sind *korrekt leer*, wenn ``9109&#47;8000&#47;9111`` nicht laufen oder nicht gescraped werden.
 
 ---
 
@@ -38,7 +38,7 @@ Diese Regeln vermeiden, dass ein `$ds=9094` die Shadow/Health-Kacheln „wegfilt
 ## 2. Start/Restart (deterministisch, ohne „no configuration file provided“)
 
 ### 2.1 Shadow MVS Grafana+Prom (9092 + 3000)
-**Helper:** `scripts/obs/shadow_mvs_up.sh` (auto-resolve compose files)
+**Helper:** ``scripts&#47;obs&#47;shadow_mvs_up.sh`` (auto-resolve compose files)
 
 ```bash
 ./scripts/obs/shadow_mvs_up.sh ps
@@ -50,9 +50,9 @@ Diese Regeln vermeiden, dass ein `$ds=9094` die Shadow/Health-Kacheln „wegfilt
 
 ### 2.2 Prometheus 9094/9095 (AI-Live-ops + Observability)
 **Helpers:**
-- `scripts/obs/prom_9094_9095_up_and_verify.sh`
-- `scripts/obs/prom_9094_9095_restart.sh`
-- Resolver: `scripts/obs/resolve_obse_ailive_compose.py` (funktioniert auch nach `down`, via lokale Overrides)
+- ``scripts&#47;obs&#47;prom_9094_9095_up_and_verify.sh``
+- ``scripts&#47;obs&#47;prom_9094_9095_restart.sh``
+- Resolver: ``scripts&#47;obs&#47;resolve_obse_ailive_compose.py`` (funktioniert auch nach `down`, via lokale Overrides)
 
 ```bash
 ./scripts/obs/prom_9094_9095_up_and_verify.sh
@@ -60,11 +60,11 @@ Diese Regeln vermeiden, dass ein `$ds=9094` die Shadow/Health-Kacheln „wegfilt
 ./scripts/obs/prom_9094_9095_restart.sh
 ```
 
-> **Lokale Overrides (Ports 9094/9095):** liegen bei dir unter `.ops_local/compose_overrides/*` (gitignored).  
+> **Lokale Overrides (Ports 9094/9095):** liegen bei dir unter ``.ops_local&#47;compose_overrides&#47;*`` (gitignored).  
 > Diese sind bewusst *lokal* und ändern keine repo/Docker-Defaults.
 
 ### 2.3 AI Live Exporter (9110) – deterministisch via repo-lokalem venv
-**Helper:** `scripts/obs/ai_live_restart.sh` (nutzt `.venv_obs` fallback)
+**Helper:** ``scripts&#47;obs&#47;ai_live_restart.sh`` (nutzt `.venv_obs` fallback)
 
 Einmalig (falls venv noch nicht existiert):
 ```bash
@@ -122,8 +122,8 @@ curl -fsS "http://localhost:9094/api/v1/series?match[]=peaktrade_ai_decisions_to
 ## 4. Grafana: Unified Dashboard Betrieb
 
 ### 4.1 URL + Login
-- URL: `http://localhost:3000`
-- User/Pass: `admin / admin`
+- URL: ``http:&#47;&#47;localhost:3000``
+- User/Pass: ``admin &#47; admin``
 - Unified: `Dashboards → Peak_Trade — Operator Unified`
 
 ### 4.2 Wenn Panels „nicht aktualisieren“ (Provisioning/Caching)
@@ -154,14 +154,14 @@ curl -fsS -G "http://localhost:9094/api/v1/query" --data-urlencode 'query=<PROMQ
 ### 5.1 AI Live Panels (Decisions/Latency/Actions) leer
 **Ursache:** Exporter liefert HELP/TYPE aber keine Samples → keine Serien in Prom.  
 **Check:**
-- `curl :9110/metrics | rg peaktrade_ai_decisions_total` (muss Sample-Zeilen zeigen)
+- ``curl :9110&#47;metrics | rg peaktrade_ai_decisions_total`` (muss Sample-Zeilen zeigen)
 - `series?match[]=peaktrade_ai_decisions_total` auf 9094
 
 ### 5.2 Signals / Orders Approved/Blocked / Signals per min leer
 **Ursache:** Diese Metriken kommen **nicht** aus AI Live, sondern aus `metricsd` oder Shadow/Web.  
 **Check:**
 - `up{job="peak_trade_metricsd"}` auf 9092
-- Metrikfamilien im 9092 Prom vorhanden? (`/api/v1/label/__name__/values` + grep)
+- Metrikfamilien im 9092 Prom vorhanden? (``&#47;api&#47;v1&#47;label&#47;__name__&#47;values`` + grep)
 
 ### 5.3 Shadow Health / Pipeline leer
 **Ursache:** `shadow_mvs` Exporter (9109) nicht aktiv oder nicht gescraped.  
@@ -189,27 +189,27 @@ curl -fsS -G "http://localhost:9092/api/v1/query" --data-urlencode 'query=count(
    - Shadow/Health → 9092
 3) **Producer müssen laufen**, sonst bleibt Dashboard leer (kein „Grafana Bug“).
 4) **Rebuild bleibt Zero-Diff**:
-   - `python3 scripts/obs/build_operator_unified_dashboard.py`
-   - `git diff --exit-code docs/.../peaktrade-operator-unified.json`
+   - ``python3 scripts&#47;obs&#47;build_operator_unified_dashboard.py``
+   - ``git diff --exit-code docs&#47;...&#47;peaktrade-operator-unified.json``
 
 ---
 
 ## 7. Operator-Checkliste (Read-only, kurz)
 
-1) `curl :3000/api/health`
-2) `curl :9092/-/ready ; :9094/-/ready ; :9095/-/ready`
-3) `curl :9094/api/v1/query?query=up{job="ai_live"}`
-4) `curl :9110/metrics | head`
-5) `curl :9092/api/v1/query?query=up` → sind `shadow_mvs/web/metricsd` up?
+1) ``curl :3000&#47;api&#47;health``
+2) ``curl :9092&#47;-&#47;ready ; :9094&#47;-&#47;ready ; :9095&#47;-&#47;ready``
+3) ``curl :9094&#47;api&#47;v1&#47;query?query=up{job="ai_live"}``
+4) ``curl :9110&#47;metrics | head``
+5) ``curl :9092&#47;api&#47;v1&#47;query?query=up`` → sind ``shadow_mvs&#47;web&#47;metricsd`` up?
 6) Unified Dashboard öffnen → Zeitfenster 6h → 15m → Hard refresh
 7) Bei No data: Panel Inspect Query → PromQL gegen richtigen Prom curl’n
 
 ---
 
 ## 8. Links (lokal)
-- Grafana: `http://localhost:3000`
-- Unified Dashboard: `http://localhost:3000/d/peaktrade-operator-unified/peak-trade-operator-unified`
-- Prometheus 9092: `http://localhost:9092`
-- Prometheus 9094 Targets: `http://localhost:9094/targets`
-- Prometheus 9095: `http://localhost:9095`
-- AI Live Exporter: `http://localhost:9110/metrics`
+- Grafana: ``http:&#47;&#47;localhost:3000``
+- Unified Dashboard: ``http:&#47;&#47;localhost:3000&#47;d&#47;peaktrade-operator-unified&#47;peak-trade-operator-unified``
+- Prometheus 9092: ``http:&#47;&#47;localhost:9092``
+- Prometheus 9094 Targets: ``http:&#47;&#47;localhost:9094&#47;targets``
+- Prometheus 9095: ``http:&#47;&#47;localhost:9095``
+- AI Live Exporter: ``http:&#47;&#47;localhost:9110&#47;metrics``

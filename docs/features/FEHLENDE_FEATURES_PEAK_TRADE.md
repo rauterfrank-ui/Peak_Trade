@@ -14,7 +14,7 @@
 
 ## 2. Architektur-Vision vs. Implementierung (trading_bot_notes / Feature-Engine)
 
-Laut `src/docs/trading_bot_notes.md` ist die Zielarchitektur:
+Laut ``src&#47;docs&#47;trading_bot_notes.md`` ist die Zielarchitektur:
 
 ```text
 Datenquellen → Research & Feature-Engine → Strategie / Signale → Risk Layer → Broker/Exchange
@@ -24,11 +24,11 @@ Datenquellen → Research & Feature-Engine → Strategie / Signale → Risk Laye
 
 | Feature (Vision) | Status | Anmerkung |
 |------------------|--------|-----------|
-| **Feature-Engine als zentrale Schicht** | ❌ Fehlt | `src/features/` ist nur Placeholder („wird später mit ECM-Features gefüllt“). Kein dediziertes Modul „Research & Feature-Engine“. |
+| **Feature-Engine als zentrale Schicht** | ❌ Fehlt | ``src&#47;features&#47;`` ist nur Placeholder („wird später mit ECM-Features gefüllt“). Kein dediziertes Modul „Research & Feature-Engine“. |
 | **Indikatoren (TA)** | ✅ Teilweise | In Strategien/Regime verteilt (MA, RSI, ATR, Vol-Score etc.), nicht als einheitliche Feature-Pipeline. |
-| **Regime-Labels** | ✅ Vorhanden | `src/regime/`, `src/core/regime.py`, `src/analytics/regimes.py`. |
+| **Regime-Labels** | ✅ Vorhanden | ``src&#47;regime&#47;``, ``src&#47;core&#47;regime.py``, ``src&#47;analytics&#47;regimes.py``. |
 | **Volatilitäts-Cluster** | ✅ Teilweise | Vol-Regime/Labels vorhanden; „Cluster“-Pipeline nicht als eigenes Feature-Modul. |
-| **ECM-Fenster / ECM-Features** | ❌ Fehlt | In `src/features/__init__.py` als „später“ genannt, nicht implementiert. |
+| **ECM-Fenster / ECM-Features** | ❌ Fehlt | In ``src&#47;features&#47;__init__.py`` als „später“ genannt, nicht implementiert. |
 | **Sentiment (News/Makro/Krypto-Onchain)** | ❌ Fehlt | In trading_bot_notes als „optional, später“ genannt. |
 | **Orderbuch-/Tickdaten** | ❌ Fehlt | In trading_bot_notes als „später“ genannt. |
 
@@ -116,7 +116,7 @@ Geplante Phasen mit **noch nicht umgesetzten** Features:
 
 ## 6. Feature-Engine & López de Prado (konkret im Code)
 
-- **`src/features/`:** Nur Placeholder; keine ECM- oder allgemeine Feature-Pipeline.
+- **``src&#47;features&#47;``:** Nur Placeholder; keine ECM- oder allgemeine Feature-Pipeline.
 - **Meta-Labeling-Strategie:**  
   - `compute_triple_barrier_labels`: TODO, Placeholder (gibt Nullen zurück).  
   - `_extract_features`: TODO (Fractional Differentiation, Volatility-adjusted Returns, Regime-Indikatoren); gibt leeres DataFrame zurück.
@@ -131,16 +131,16 @@ Geplante Phasen mit **noch nicht umgesetzten** Features:
 | **v1.0 bewusst ausgenommen** | Live-Execution, Multi-Exchange, Web-Auth, WebSocket, ML-Strategien, Auto-Liquidation, 100 % Coverage, API-Doku, Skalierung. |
 | **Roadmap 2026** | Phasen 11–17 (Optimization, Streaming, Live, ML, Cloud, Risk-Parity, Community). |
 | **Research-Track** | Sweeps, Metriken, Heatmaps, Vol-Regime-Wrapper, Regime-adaptive Strategien, Auto-Portfolio, Nightly-Sweeps, Feature-Importance. |
-| **Stubs/Placeholder** | Kill-Switch RiskHook, PagerDuty, WP0C-Adapter, einige R&D-Strategien, `src/features`, Meta-Labeling Feature-Engineering. |
+| **Stubs/Placeholder** | Kill-Switch RiskHook, PagerDuty, WP0C-Adapter, einige R&D-Strategien, ``src&#47;features``, Meta-Labeling Feature-Engineering. |
 
 ---
 
 **Referenzen:**
 
-- `docs/PEAK_TRADE_V1_RELEASE_NOTES.md` – Kern-Features v1.0  
-- `docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md` – bewusst nicht implementiert  
+- ``docs&#47;PEAK_TRADE_V1_RELEASE_NOTES.md`` – Kern-Features v1.0  
+- ``docs&#47;PEAK_TRADE_V1_KNOWN_LIMITATIONS.md`` – bewusst nicht implementiert  
 - `INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md` – Roadmap Teil 4  
-- `src/docs/trading_bot_notes.md` – Architektur & Feature-Engine-Vision  
-- `docs/Peak_Trade_Research_Strategy_TODO_2025-12-07.md` – Research-TODO  
-- `docs/TECH_DEBT_BACKLOG.md` – Tech-Debt  
-- `docs/ops/UEBERSICHT_DATEN_GATES_DOCKER_GITHUB.md` – Stubs/Optional
+- ``src&#47;docs&#47;trading_bot_notes.md`` – Architektur & Feature-Engine-Vision  
+- ``docs&#47;Peak_Trade_Research_Strategy_TODO_2025-12-07.md`` – Research-TODO  
+- ``docs&#47;TECH_DEBT_BACKLOG.md`` – Tech-Debt  
+- ``docs&#47;ops&#47;UEBERSICHT_DATEN_GATES_DOCKER_GITHUB.md`` – Stubs/Optional

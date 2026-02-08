@@ -83,15 +83,15 @@ Ziel: Cursor nutzt mehrere spezialisierte Agenten parallel, aber **keiner** darf
 
 2. **Research Agent (L1)**  
    - sammelt Quellen, schreibt Evidence‑Packs, dokumentiert Annahmen
-   - Output: `docs/ai/evidence_packs/<topic>/<run_id>/`
+   - Output: ``docs&#47;ai&#47;evidence_packs&#47;<topic>&#47;<run_id>&#47;``
 
 3. **Market Analyst Agent (L2)**  
    - erzeugt Market‑Outlook Artefakte (keine Trades, keine “signals” ohne Gate)
-   - Output: `research/market_outlook/<date>/<run_id>/`
+   - Output: ``research&#47;market_outlook&#47;<date>&#47;<run_id>&#47;``
 
 4. **Policy Critic Agent (L4)**  
    - prüft auf Policy/Operational Safety, SoD, Scope‑Violations
-   - Output: `audits/<run_id>/critic_report.md`
+   - Output: ``audits&#47;<run_id>&#47;critic_report.md``
 
 5. **Engineer Agent**  
    - implementiert Änderungen (Code/Configs), immer mit Tests & Logging
@@ -99,7 +99,7 @@ Ziel: Cursor nutzt mehrere spezialisierte Agenten parallel, aber **keiner** darf
 
 6. **Release Manager Agent**  
    - checkt Versionierung, migration notes, Rollback plan, tags
-   - Output: `docs/ops/release/<version>.md`
+   - Output: ``docs&#47;ops&#47;release&#47;<version>.md``
 
 ### Cursor‑Setup (konkret)
 - Lege in Cursor pro Rolle ein **Agent Profile** an:
@@ -108,7 +108,7 @@ Ziel: Cursor nutzt mehrere spezialisierte Agenten parallel, aber **keiner** darf
   - **Output Contract** (Dateipfade + Format)
 - Wichtiger Trick: **gemeinsame “Repo Rules”**: jeder Agent muss
   - einen `run_id` erzeugen
-  - alle Artefakte unter `./runs/<run_id>/...` ablegen
+  - alle Artefakte unter ``.&#47;runs&#47;<run_id>&#47;...`` ablegen
   - am Ende eine “Result Summary” + “Risk Notes” schreiben
 
 ---
@@ -145,17 +145,17 @@ Du willst *alle Anbieter außer Anthropic*. Das heißt: **Multi‑Provider erlau
 ### Schritte
 1. **Run‑ID Standard einführen**
    - Format: `YYYYMMDD_HHMMSS_<short>` (oder UUID)
-   - Convention: jeder Agent schreibt nach `runs/<run_id>/...`
+   - Convention: jeder Agent schreibt nach ``runs&#47;<run_id>&#47;...``
 2. **Verzeichnisstruktur**
-   - `runs/` (ephemeral)
-   - `audits/` (persistent, versioniert)
-   - `docs/ai/evidence_packs/`
-   - `configs/ai/` (Layer‑Matrix, allowlists, budgets)
+   - ``runs&#47;`` (ephemeral)
+   - ``audits&#47;`` (persistent, versioniert)
+   - ``docs&#47;ai&#47;evidence_packs&#47;``
+   - ``configs&#47;ai&#47;`` (Layer‑Matrix, allowlists, budgets)
 3. **Config‑Lint Job**
-   - `scripts/ops/config_lint.sh`: parse TOML/YAML, validate schema
+   - ``scripts&#47;ops&#47;config_lint.sh``: parse TOML/YAML, validate schema
 4. **Hard Deny implementieren**
-   - `src/ai_orchestration/model_policy.py`: deny anthropic/claude
-   - `src/ai_orchestration/model_client.py`: deny anthropic/claude
+   - ``src&#47;ai_orchestration&#47;model_policy.py``: deny anthropic/claude
+   - ``src&#47;ai_orchestration&#47;model_client.py``: deny anthropic/claude
 5. **Observability Basics**
    - Jede LLM‑Call: log line mit `run_id`, `layer`, `role`, `provider`, `model_id`, `request_hash`
    - Exporter Metric: `llm_calls_total{layer,role,provider,model_id}`
@@ -178,11 +178,11 @@ Du willst *alle Anbieter außer Anthropic*. Das heißt: **Multi‑Provider erlau
    - Orchestrator, Research, Analyst, Critic, Engineer, Release Manager
 2. **Output Contracts**
    - Jeder Agent schreibt:
-     - `runs/<run_id>/<agent>/result.md`
-     - `runs/<run_id>/<agent>/risks.md`
+     - ``runs&#47;<run_id>&#47;<agent>&#47;result.md``
+     - ``runs&#47;<run_id>&#47;<agent>&#47;risks.md``
 3. **SoD Workflow**
    - Engineer darf nur “draft changes”
-   - Critic prüft `runs/<run_id>/diff.patch` + `policy_report.md`
+   - Critic prüft ``runs&#47;<run_id>&#47;diff.patch`` + `policy_report.md`
 4. **“Merge Gate”**
    - Nur wenn `critic_passed == true` und `tests_passed == true`
 
@@ -202,7 +202,7 @@ Du willst *alle Anbieter außer Anthropic*. Das heißt: **Multi‑Provider erlau
 
 ### Schritte
 1. **Matrix als Source of Truth**
-   - Datei: `configs/ai/layer_model_matrix.toml` (oder vorhandene Matrix‑MD + loader)
+   - Datei: ``configs&#47;ai&#47;layer_model_matrix.toml`` (oder vorhandene Matrix‑MD + loader)
 2. **Provider Adapter**
    - OpenAI‑API direkt (bereits da)
    - Adapter‑Stubs für: google, mistral, bedrock, together, azure
@@ -237,7 +237,7 @@ Du willst *alle Anbieter außer Anthropic*. Das heißt: **Multi‑Provider erlau
 
 ### Schritte
 1. **Eval Harness**
-   - `tests/eval/` mit 30–100 Cases pro Layer
+   - ``tests&#47;eval&#47;`` mit 30–100 Cases pro Layer
    - Metriken: pass@1, policy violations, format compliance, latency p95, cost estimate
 2. **Golden Outputs**
    - Für deterministische Teile: Snapshot‑Tests
@@ -245,7 +245,7 @@ Du willst *alle Anbieter außer Anthropic*. Das heißt: **Multi‑Provider erlau
 3. **“Verified” Definition**
    - Verified = (a) allowlisted, (b) eval score über threshold, (c) budget ok
 4. **Registry Snapshot**
-   - `configs/ai/verified_models.lock` (frozen list + timestamp)
+   - ``configs&#47;ai&#47;verified_models.lock`` (frozen list + timestamp)
    - Matrix darf nur auf verified lock referenzieren (Prod)
 
 ### Endpunkt
@@ -332,7 +332,7 @@ Du willst *alle Anbieter außer Anthropic*. Das heißt: **Multi‑Provider erlau
 ### Sofortmaßnahmen (1‑Minute actions)
 1. `AI_ARMED=false`
 2. `AI_ENABLED=false` (wenn nötig global)
-3. Capture: `runs/<run_id>/` + logs + metrics snapshot
+3. Capture: ``runs&#47;<run_id>&#47;`` + logs + metrics snapshot
 
 ### Rollback
 - Deploy rollback to previous verified lock

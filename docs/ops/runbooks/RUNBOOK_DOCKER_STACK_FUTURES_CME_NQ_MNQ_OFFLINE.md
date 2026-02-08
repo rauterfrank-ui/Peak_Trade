@@ -15,26 +15,26 @@ Dieses Runbook beschreibt, wie du **Peak_Trade Futures (CME NQ/MNQ)** als **sepa
 
 ## 1) Ausgangslage (bereits implementiert)
 ### 1.1 CME NQ/MNQ Implementierung (Offline)
-- Contract Specs: `src/markets/cme/contracts.py`
+- Contract Specs: ``src&#47;markets&#47;cme&#47;contracts.py``
   - NQ: 20 USD/Indexpunkt, Tick 0.25, Tick Value 5 USD
   - MNQ: 2 USD/Indexpunkt, Tick 0.25, Tick Value 0,50 USD
-- Symbol-Format & Kalender: `src/markets/cme/symbols.py`, `calendar.py`
+- Symbol-Format & Kalender: ``src&#47;markets&#47;cme&#47;symbols.py``, `calendar.py`
   - Canonical Format: `NQH2026`
   - Roll Policy: Montag vor dem 3. Freitag des Expirationsmonats
   - Session-Spec (Globex-ähnlich), keine Holiday-Liste im Code
-- Continuous Contract Builder: `src/data/continuous/continuous_contract.py`
+- Continuous Contract Builder: ``src&#47;data&#47;continuous&#47;continuous_contract.py``
   - Stitch + BACK_ADJUST, deterministische OHLCV
 - CLI:
-  - `scripts/markets/build_continuous_contract.py`
-  - `scripts/markets/validate_futures_dataset.py`
+  - ``scripts&#47;markets&#47;build_continuous_contract.py``
+  - ``scripts&#47;markets&#47;validate_futures_dataset.py``
 - Tests:
-  - `tests/data/continuous/test_continuous_contract.py`
-  - `tests/markets/cme/test_contract_specs.py`
+  - ``tests&#47;data&#47;continuous&#47;test_continuous_contract.py``
+  - ``tests&#47;markets&#47;cme&#47;test_contract_specs.py``
 - Doku/Runbook:
-  - `docs/markets/cme/NQ_MNQ_SPEC.md`
-  - `docs/markets/cme/ROLL_POLICY.md`
-  - `docs/ops/runbooks/RUNBOOK_FUTURES_CME_NQ_MNQ_ENABLEMENT_FINISH.md`
-  - Überblick: `docs/markets/UEBERBLICK_FUTURES_NASDAQ100_IMPLEMENTIERT.md`
+  - ``docs&#47;markets&#47;cme&#47;NQ_MNQ_SPEC.md``
+  - ``docs&#47;markets&#47;cme&#47;ROLL_POLICY.md``
+  - ``docs&#47;ops&#47;runbooks&#47;RUNBOOK_FUTURES_CME_NQ_MNQ_ENABLEMENT_FINISH.md``
+  - Überblick: ``docs&#47;markets&#47;UEBERBLICK_FUTURES_NASDAQ100_IMPLEMENTIERT.md``
 
 ### 1.2 Offene Punkte (laut Runbook)
 - Futures-spezifische Risk-Config (max contracts, daily loss, fees, slippage)
@@ -128,8 +128,8 @@ evidence/
 - `INSTRUMENT_ALLOWLIST=NQ,MNQ`
 - `CME_FUTURES_ENABLED=1`
 - `LOG_LEVEL=INFO`
-- `EVIDENCE_DIR=/evidence`
-- `DATA_DIR=/data`
+- ``EVIDENCE_DIR=&#47;evidence``
+- ``DATA_DIR=&#47;data``
 
 ### 5.2 `docker-compose.yml` (Skizze)
 - `futures_runner` (Service der CLI/Jobs ausführt)
@@ -155,7 +155,7 @@ evidence/
 ### 6.3 Daten-/Index-Guards (Builder)
 - Zeitindex monotonic + keine doppelten Timestamps
 - tz-awareness konsistent (tz-naive vs tz-aware vermeiden)
-- Partitionierung Parquet nach `root/year/month` empfohlen
+- Partitionierung Parquet nach ``root&#47;year&#47;month`` empfohlen
 
 ---
 
@@ -163,13 +163,13 @@ evidence/
 Ziel: die Crash-Pfade triggern, ohne große Datenmengen.
 
 1. Tests:
-   - `pytest -q tests/data/continuous/test_continuous_contract.py tests/markets/cme/test_contract_specs.py`
+   - ``pytest -q tests&#47;data&#47;continuous&#47;test_continuous_contract.py tests&#47;markets&#47;cme&#47;test_contract_specs.py``
 
 2. Mini Build (z.B. 2 Wochen, 1m Bars):
-   - `python scripts/markets/build_continuous_contract.py --root NQ --from 2026-01-01 --to 2026-01-15 --method BACK_ADJUST --bar 1m`
+   - ``python scripts&#47;markets&#47;build_continuous_contract.py --root NQ --from 2026-01-01 --to 2026-01-15 --method BACK_ADJUST --bar 1m``
 
 3. Validate:
-   - `python scripts/markets/validate_futures_dataset.py --root NQ --bar 1m`
+   - ``python scripts&#47;markets&#47;validate_futures_dataset.py --root NQ --bar 1m``
 
 **Abbruchkriterien:**
 - RAM steigt ohne Plateau (Memory leak / giant concat)
@@ -200,7 +200,7 @@ Pro Run ein neues Verzeichnis, z.B.:
 - `run_manifest.json` (dataset ids/hashes, time range)
 - `metrics_snapshot.prom` (optional)
 - `logs.ndjson`
-- `artifacts/checksums.txt`
+- ``artifacts&#47;checksums.txt``
 
 **DoD Evidence:**
 - du kannst jeden Run 1:1 reproduzieren (gleiche inputs → gleiche outputs)
@@ -209,7 +209,7 @@ Pro Run ein neues Verzeichnis, z.B.:
 
 ## 10) Operations: Start/Stop/Status (Konzept)
 ### 10.1 Start (Beispiel)
-- `docker compose -p peaktrade-futures-cme -f deploy/futures_cme/docker-compose.yml up -d`
+- ``docker compose -p peaktrade-futures-cme -f deploy&#47;futures_cme&#47;docker-compose.yml up -d``
 
 ### 10.2 Logs
 - `docker compose -p peaktrade-futures-cme -f ... logs -f --tail=200`

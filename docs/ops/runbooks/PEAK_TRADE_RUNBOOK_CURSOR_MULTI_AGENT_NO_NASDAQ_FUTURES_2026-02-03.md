@@ -60,7 +60,7 @@ Stabile Arbeitsbasis: saubere Toolchain, reproduzierbare Runs, eindeutige Runner
    pytest -q
    ```
 3. **CI/Drill‑Inventory vorbereiten (D01 #1)**
-   - Liste der CI‑Workflows + Haupt‑Gates in `docs/ops/drills/` ablegen.
+   - Liste der CI‑Workflows + Haupt‑Gates in ``docs&#47;ops&#47;drills&#47;`` ablegen.
 
 ### Exit (Done)
 - `pytest -q` läuft deterministisch (bekannte Ausnahmen dokumentiert)
@@ -72,7 +72,7 @@ Stabile Arbeitsbasis: saubere Toolchain, reproduzierbare Runs, eindeutige Runner
 ## 2) Phase B – Evidence‑Chain Standardisieren (Runner‑konform)
 
 ### Ziel
-Einheitliche Runner‑Signatur: `run_id`, `results/`, Registry‑Logging, konsistente CLI‑Flags, reproduzierbare Reports.
+Einheitliche Runner‑Signatur: `run_id`, ``results&#47;``, Registry‑Logging, konsistente CLI‑Flags, reproduzierbare Reports.
 
 ### Einstieg
 - Phase A done
@@ -80,8 +80,8 @@ Einheitliche Runner‑Signatur: `run_id`, `results/`, Registry‑Logging, konsis
 
 ### Schritte (Top‑Priorität laut Übersicht)
 1. **`research_cli.py` – PARTIAL → READY**
-   - `run_id/results/` vollständig integrieren
-   - Output‑Layout standardisieren: `artifacts/<run_id>/...`
+   - ``run_id&#47;results&#47;`` vollständig integrieren
+   - Output‑Layout standardisieren: ``artifacts&#47;<run_id>&#47;...``
 2. **`run_backtest.py` – READY**
    - Als Referenz für Output‑Konventionen verwenden
 3. **`live_ops.py` – TODO**
@@ -161,8 +161,8 @@ Roadmap Phase 4: Stress‑Tests + Szenarien in Evidence‑Chain.
 
 ### Schritte
 1. Szenario‑Definitionen als versionierte Configs
-2. Stress‑Runner: `--run/--report` Pattern
-3. Output: Tabellen + Plots (optional), alles unter `artifacts/<run_id>/`
+2. Stress‑Runner: ``--run&#47;--report`` Pattern
+3. Output: Tabellen + Plots (optional), alles unter ``artifacts&#47;<run_id>&#47;``
 
 ### Exit
 - Stress‑Suite läuft lokal + CI‑fähig
@@ -214,7 +214,7 @@ Backtest‑Registry robust machen (Unit‑Tests) + Dynamic Rebalancing implement
 ## 8) Phase H – Feature‑Engine & Meta‑Labeling (Scaffold)
 
 ### Ziel
-`src/features/` von Placeholder zu nutzbarer Basisschicht: Feature‑Pipeline, Meta‑Labeling Stubs entfernen.
+``src&#47;features&#47;`` von Placeholder zu nutzbarer Basisschicht: Feature‑Pipeline, Meta‑Labeling Stubs entfernen.
 
 ### Einstieg
 - Phase B done
@@ -245,7 +245,7 @@ Research‑Pipeline konsolidieren: Sweeps, Metriken, Robustness, Reports.
 - Phase H (mind. Meta‑Labeling/Features) done
 
 ### Schritte
-1. Unified Pipeline‑CLI: `run_sweep_pipeline.py --run/--report/--promote`
+1. Unified Pipeline‑CLI: ``run_sweep_pipeline.py --run&#47;--report&#47;--promote``
 2. Templates: Heatmap (2×2), Drawdown‑Heatmap, Rolling‑Stabilität
 3. Robustness: Monte‑Carlo + Correlation‑Matrix‑Plot
 4. Metriken erweitern: Calmar, Ulcer, Recovery‑Factor

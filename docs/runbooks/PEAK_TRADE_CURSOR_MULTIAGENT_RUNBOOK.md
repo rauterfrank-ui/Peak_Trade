@@ -42,12 +42,12 @@ Aus `FEHLENDE_FEATURES_PEAK_TRADE.md` ergeben sich die Kern‑Epics. Zusätzlich
 
 ### 2.1 Epics aus der Datei (kuratiert)
 **E‑01 Feature‑Engine (zentral)**
-- `src/features/` als echte Schicht (Unified Feature Pipeline, caching, versioning)
+- ``src&#47;features&#47;`` als echte Schicht (Unified Feature Pipeline, caching, versioning)
 - ECM‑Features / Fenster
 - Meta‑Labeling / Triple‑Barrier + Feature Extraction (fractional diff, vol‑adj returns, regime inputs)
 
 **E‑02 Research Automation**
-- Unified Sweep‑Pipeline CLI (`--run/--report/--promote`)
+- Unified Sweep‑Pipeline CLI (``--run&#47;--report&#47;--promote``)
 - Robustness: Monte‑Carlo/Bootstraps, rolling windows
 - Metrics: Sortino/Calmar/Ulcer/Recovery, Heatmaps, comparison tool
 - Nightly automation + alerts
@@ -109,7 +109,7 @@ Aus `FEHLENDE_FEATURES_PEAK_TRADE.md` ergeben sich die Kern‑Epics. Zusätzlich
 
 Jede Phase hat **Entry**, **Exit**, **Deliverables**, **Commands**, **Agent‑Assignments**.
 
-> Konvention: Branch‑Prefix pro Epic: `feat/E-01-feature-engine`, `chore/X-01-evidence`, etc.
+> Konvention: Branch‑Prefix pro Epic: ``feat&#47;E-01-feature-engine``, ``chore&#47;X-01-evidence``, etc.
 
 ---
 
@@ -144,7 +144,7 @@ ruff format --check .
 
 **Exit**
 - `pytest`, `ruff` grün
-- Baseline‑Report in `docs/evidence/phase0_baseline.md`
+- Baseline‑Report in ``docs&#47;evidence&#47;phase0_baseline.md``
 
 **Agent**
 - ORCH (führt), TEST (validiert), CRIT (checkt “NO‑LIVE” Pfade)
@@ -162,9 +162,9 @@ ruff format --check .
 - “Thin‑slice Plan”: zuerst X‑Epics (Evidence/Obs/Security), dann Feature Epics
 
 **Deliverables**
-- `docs/backlog/EPICS.md`
-- `docs/backlog/STORIES.md` (je Story: AC, tests, metrics, risk)
-- `docs/adr/` Skeleton (ADR‑0001 …)
+- ``docs&#47;backlog&#47;EPICS.md``
+- ``docs&#47;backlog&#47;STORIES.md`` (je Story: AC, tests, metrics, risk)
+- ``docs&#47;adr&#47;`` Skeleton (ADR‑0001 …)
 
 **Commands**
 ```bash
@@ -225,8 +225,8 @@ $EDITOR docs/adr/ADR-0005-risk-gate-sim.md
 - ADRs vorhanden
 
 **Implement (MVP)**
-- `src/core/evidence/` helpers
-- `scripts/evidence/make_evidence_pack.sh`
+- ``src&#47;core&#47;evidence&#47;`` helpers
+- ``scripts&#47;evidence&#47;make_evidence_pack.sh``
 - CI job: minimal backtest checksum reproducibility
 
 **Commands**
@@ -296,9 +296,9 @@ git add -A && git commit -m "chore(sec): add web threat model + baseline policie
 
 **MVP Scope**
 - `FeatureSpec` (name, version, params, dependencies)
-- `FeaturePipeline.fit/transform` (pandas), deterministic
+- ``FeaturePipeline.fit&#47;transform`` (pandas), deterministic
 - Cache (parquet) keyed by (dataset_hash, feature_spec_hash)
-- Registry write: `registry/features/<name>/<hash>.json`
+- Registry write: ``registry&#47;features&#47;<name>&#47;<hash>.json``
 
 **Commands**
 ```bash
@@ -432,8 +432,8 @@ git add -A && git commit -m "feat(risk): add var/cvar + stress + sim auto-liquid
 - Live bleibt blockiert: Promote endet bei Testnet/Dry‑Run unless governance exception.
 
 **Deliverables**
-- `docs/runbooks/PROMOTION_PIPELINE.md`
-- `scripts/ops/promote_run.sh` (requires confirm token)
+- ``docs&#47;runbooks&#47;PROMOTION_PIPELINE.md``
+- ``scripts&#47;ops&#47;promote_run.sh`` (requires confirm token)
 
 **Commands**
 ```bash
