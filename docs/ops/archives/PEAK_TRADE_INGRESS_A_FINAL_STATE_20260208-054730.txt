@@ -1,0 +1,44 @@
+Peak_Trade Ingress-A final state
+timestamp: 2026-02-08T04:47:30Z
+
+HEAD:
+24e8b912 (HEAD -> main, origin/main, origin/HEAD) docs: add Ingress-A closeout note (#1215)
+
+tags:
+tag ingress-A-v1
+
+Ingress-A complete (A2–A7): NormalizedEvent+JSONL, FeatureView, EvidenceCapsule, Orchestrator, CLI, Docs
+fd249147 docs: ingress A3-A6 contracts + end-to-end runbook (#1213)
+tag ingress-A-v1.1
+
+Ingress-A v1.1: include post-run cleanup (remove tracked out/ops artifacts)
+9b2484ec chore: remove tracked out/ops artifacts (#1214)
+
+ingress tests:
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 17 items
+
+tests/ingress/test_evidence_capsule_builder.py ..                        [ 11%]
+tests/ingress/test_evidence_capsule_writer.py ..                         [ 23%]
+tests/ingress/test_feature_view_builder.py ...                           [ 41%]
+tests/ingress/test_feature_view_writer.py ..                             [ 52%]
+tests/ingress/test_ingress_cli_smoke.py ..                               [ 64%]
+tests/ingress/test_ingress_orchestrator_smoke.py ..                      [ 76%]
+tests/ingress/test_jsonl_writer.py ....                                  [100%]
+
+============================== 17 passed in 0.19s ==============================
+
+tracked out/ops count:
+       0
+
+closeout note:
+Ingress-A closeout
+- v1 (tag ingress-A-v1 @ fd249147): A2 NormalizedEvent+JSONL(+sha256), A3 FeatureView(pointer-only), A4 EvidenceCapsule(pointer-only), A5 Orchestrator wiring, A6 CLI, A7 docs/contracts + end-to-end runbook.
+- v1.1 (tag ingress-A-v1.1 @ 9b2484ec): post-run hygiene: removed previously tracked out/ops artifacts (#1214); out/ops no longer tracked.
+Evidence artifacts (local):
+- ~/Downloads/ingress-A-v1_appendix.zip (+ .sha256)
+- ~/Downloads/ingress-A-v1_evidence-20260208-051920-20181_evidence.tgz (+ .sha256)
