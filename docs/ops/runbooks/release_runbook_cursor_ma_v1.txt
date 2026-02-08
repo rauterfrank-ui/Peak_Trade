@@ -1,0 +1,6 @@
+Release checklist: runbook-cursor-ma-v1
+- PR #1133 merged (runbook phases 2–8): origin/main contains runbook.
+- PR #1134 merged (.scratch ignored): origin/main contains .gitignore entry.
+- Local quarantine: .scratch documented via scratch_manifest.txt + sha256.
+- Orphaned worktree snapshot archived: ~/Downloads/grafana_ds_fix_worktree_snapshot.tgz + .sha256.
+- Runbook ZIP archived: ~/Downloads/cursor_multi_agent_orchestration_runbook.zip (sha256 recorded in PR body).
