@@ -28,3 +28,16 @@ git push origin --delete docs/runbook-index-new-listings || true
 # 3) Final sync + verify index entry still present on main
 git pull --ff-only origin main
 rg -n "## Research & New Listings|new_listings_crawler_runbook\\.md" docs/ops/runbooks/README.md
+
+# __REF_PARSE_HELPERS__
+
+ref_soft() {
+  local ref="$1"
+  echo "$ref = $(git rev-parse --short "$ref" 2>/dev/null || echo MISSING)"
+}
+
+ref_hard() {
+  local ref="$1"
+  git rev-parse --short "$ref" >/dev/null
+  echo "$ref OK"
+}
