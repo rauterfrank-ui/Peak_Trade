@@ -5,6 +5,7 @@ from .learnable_surfaces_policy import (
     assert_surfaces_allowed,
     get_allowed_surfaces,
     load_policy,
+    validate_envelope_learnable_surfaces,
 )
 
 __all__ = [
@@ -12,4 +13,5 @@ __all__ = [
     "assert_surfaces_allowed",
     "get_allowed_surfaces",
     "load_policy",
+    "validate_envelope_learnable_surfaces",
 ]
