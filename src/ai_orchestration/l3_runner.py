@@ -14,7 +14,7 @@ from .capability_scope_loader import CapabilityScope, CapabilityScopeLoader
 from .errors import OrchestrationError
 from .l3_contracts import accepts_l3_pointer_only_input, artifact_paths_from_pointer_only_input
 
-from src.governance.learning import validate_envelope_learnable_surfaces
+from governance.learning import validate_envelope_learnable_surfaces
 from .model_registry_loader import ModelRegistryLoader
 from .models import SoDResult
 from .run_manifest import RunManifest, RunManifestGenerator, generate_operator_output
