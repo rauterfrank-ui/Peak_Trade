@@ -25,6 +25,7 @@ from pathlib import Path
 # Repo root
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "ops"))
 
 FORBIDDEN_PATTERN = re.compile(
     r"payload|raw|transcript|api_key|secret|token|content",
@@ -131,17 +132,27 @@ def main() -> int:
         encoding="utf-8",
     )
 
-    # 4b) Sidecar verification (shasum -c); fail-closed + audit logs
-    # Run from views/ and capsules/ so sidecar's "<hex>  <basename>.json" resolves
+    # 4b) Strict sidecar format gate (fail-closed), then shasum -c + audit logs
+    from sidecar_verify import validate_json_and_sidecar
+
+    views_dir = tmp_base / "views"
+    capsules_dir = tmp_base / "capsules"
+    view_json = views_dir / f"{evid_id}.feature_view.json"
+    view_sha = views_dir / f"{evid_id}.feature_view.json.sha256"
+    cap_json = capsules_dir / f"{evid_id}.capsule.json"
+    cap_sha = capsules_dir / f"{evid_id}.capsule.json.sha256"
+    validate_json_and_sidecar(view_json, view_sha)
+    validate_json_and_sidecar(cap_json, cap_sha)
+
     audit_dir = tmp_base / "audit"
     audit_dir.mkdir(parents=True, exist_ok=True)
     _verify_sidecar(
-        base_dir=tmp_base / "views",
+        base_dir=views_dir,
         sidecar_rel=f"{evid_id}.feature_view.json.sha256",
         audit_path=audit_dir / f"{evid_id}_sidecar_verify_views.txt",
     )
     _verify_sidecar(
-        base_dir=tmp_base / "capsules",
+        base_dir=capsules_dir,
         sidecar_rel=f"{evid_id}.capsule.json.sha256",
         audit_path=audit_dir / f"{evid_id}_sidecar_verify_capsules.txt",
     )
