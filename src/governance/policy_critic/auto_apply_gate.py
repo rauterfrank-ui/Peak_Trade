@@ -14,6 +14,11 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+from src.governance.learning import (
+    LearnableSurfacesViolation,
+    assert_surfaces_allowed,
+)
+
 from .critic import PolicyCritic
 from .models import PolicyCriticInput, PolicyCriticResult, RecommendedAction, ReviewContext
 
@@ -108,6 +113,47 @@ def evaluate_policy_critic_before_apply(
         "source": context.get("source", "unknown"),
         "run_id": context.get("run_id"),
     }
+
+    # Learnable surfaces gate: when context signals learning (layer_id or
+    # requested_surfaces present), deny unless both are explicit and fully allowed.
+    # Missing surfaces list => treat as __unknown__ and deny. Skip gate when neither
+    # is in context (backward compatible for non-learning auto-apply).
+    if "layer_id" in context or "requested_surfaces" in context:
+        layer_id = context.get("layer_id")
+        requested_surfaces = context.get("requested_surfaces")
+        if layer_id is None or requested_surfaces is None:
+            layer_id = "L0"
+            requested_surfaces = ["__unknown__"]  # Force deny when not explicit
+        try:
+            assert_surfaces_allowed(layer_id, list(requested_surfaces))
+        except LearnableSurfacesViolation as e:
+            logger.warning("Learnable surfaces gate: %s", e)
+            return AutoApplyDecision(
+                allowed=False,
+                mode=ApplyMode.MANUAL_ONLY,
+                reason=f"Learnable surfaces not allowed: {e}",
+                decided_at=decided_at,
+                policy_critic_result=None,
+                inputs_summary={
+                    **inputs_summary,
+                    "learnable_surfaces_violation": str(e),
+                    "layer_id": layer_id,
+                    "requested_surfaces": list(requested_surfaces),
+                },
+            )
+        except ValueError as e:
+            logger.warning("Learnable surfaces gate (invalid layer): %s", e)
+            return AutoApplyDecision(
+                allowed=False,
+                mode=ApplyMode.MANUAL_ONLY,
+                reason=f"Learnable surfaces gate: {e}",
+                decided_at=decided_at,
+                policy_critic_result=None,
+                inputs_summary={
+                    **inputs_summary,
+                    "learnable_surfaces_violation": str(e),
+                },
+            )
 
     try:
         # Build review context
