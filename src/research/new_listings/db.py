@@ -403,3 +403,30 @@ def insert_listing_score(
         ),
     )
     con.commit()
+
+
+def fetch_candidates(con: sqlite3.Connection) -> list[dict]:
+    """Return rows from v_assets_candidates as list[dict], with first_seen_at and reasons from joined tables."""
+    cur = con.cursor()
+    cur.execute(
+        """
+        SELECT
+          a.asset_id,
+          a.symbol,
+          a.chain,
+          a.first_seen_at,
+          rf.severity AS risk_severity,
+          rf.flags_json AS risk_reason,
+          ls.score,
+          ls.reason AS score_reason
+        FROM assets a
+        LEFT JOIN v_latest_score ls ON ls.asset_id = a.asset_id
+        LEFT JOIN v_latest_risk rf ON rf.asset_id = a.asset_id
+        WHERE
+          COALESCE(rf.severity, 'LOW') != 'HIGH'
+          AND COALESCE(ls.score, 0) >= 50.0
+        ORDER BY ls.score DESC, a.first_seen_at ASC
+        """
+    )
+    cols = [d[0] for d in cur.description]
+    return [dict(zip(cols, row)) for row in cur.fetchall()]

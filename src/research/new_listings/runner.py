@@ -28,14 +28,23 @@ from .normalizer import (
     normalize_seed_payload,
     persist_asset,
 )
-from .risk import assess_risk_seed
-from .scoring import score_seed
+from .risk import assess_risk_seed, assess_risk_ccxt
+from .scoring import score_seed, score_ccxt
 
 
 @dataclass(frozen=True)
 class RunConfig:
     # P2 scope: still JSON-only config, minimal surface
     collectors: Sequence[str]
+
+
+def _get_nested(cfg: dict, *keys: str) -> dict:
+    cur = cfg
+    for k in keys:
+        if not isinstance(cur, dict):
+            return {}
+        cur = cur.get(k, {})
+    return cur if isinstance(cur, dict) else {}
 
 
 def parse_run_config(cfg: Mapping[str, Any]) -> RunConfig:
@@ -238,11 +247,15 @@ def risk_and_persist(
         )
     )
 
+    ccxt_risk_cfg = _get_nested(dict(cfg), "sources", "ccxt_risk")
     n = 0
     for r in assets:
         asset_id = r[0]
         row = {"asset_id": r[0], "symbol": r[1], "chain": r[2], "tags_json": r[3]}
-        res = assess_risk_seed(row)
+        if str(asset_id).startswith("cex:"):
+            res = assess_risk_ccxt(row, cfg=ccxt_risk_cfg)
+        else:
+            res = assess_risk_seed(row)
         ts = utc_now_iso()
         insert_risk_flag(
             con,
@@ -303,18 +316,32 @@ def score_and_persist(
         r[0]: {"ts": r[1]} for r in con.execute("SELECT asset_id, ts FROM v_latest_snapshot")
     }
 
+    ccxt_score_cfg = _get_nested(dict(cfg), "sources", "ccxt_score")
     n = 0
     for r in assets:
         asset_id = r[0]
         asset_row = {"asset_id": r[0], "symbol": r[1], "chain": r[2], "tags_json": r[3]}
         rr = latest_risk.get(asset_id)
         sr = latest_snap.get(asset_id)
+        severity = (rr.get("severity") if rr else None) or "LOW"
 
-        res = score_seed(
-            asset_row=asset_row,
-            latest_risk_row=rr,
-            latest_snapshot_row=sr,
-        )
+        if str(asset_id).startswith("cex:"):
+            tags_json = asset_row.get("tags_json") or "{}"
+            tags = tags_json if isinstance(tags_json, dict) else {}
+            if isinstance(tags_json, str):
+                try:
+                    tags = json.loads(tags_json)
+                except (json.JSONDecodeError, TypeError):
+                    pass
+            if not isinstance(tags, dict):
+                tags = {}
+            res = score_ccxt(tags, risk_severity=severity, cfg=ccxt_score_cfg)
+        else:
+            res = score_seed(
+                asset_row=asset_row,
+                latest_risk_row=rr,
+                latest_snapshot_row=sr,
+            )
         ts = utc_now_iso()
         insert_listing_score(
             con,
