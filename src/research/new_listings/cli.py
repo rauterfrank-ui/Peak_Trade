@@ -18,7 +18,12 @@ from .db import (
     upsert_asset,
     utc_now_iso,
 )
-from .runner import collect_and_persist, normalize_and_persist, risk_and_persist
+from .runner import (
+    collect_and_persist,
+    normalize_and_persist,
+    risk_and_persist,
+    score_and_persist,
+)
 
 
 def _load_config(path: Path) -> dict[str, Any]:
@@ -113,6 +118,13 @@ def cmd_risk(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_score(args: argparse.Namespace) -> int:
+    cfg = _load_config(args.config)
+    payload = score_and_persist(cfg=cfg, db_path=Path(args.db), events_path=Path(args.events))
+    print(json.dumps(payload))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="new_listings")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -157,6 +169,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_risk.add_argument("--db", default=str(DEFAULT_DB_PATH), help="SQLite path")
     p_risk.add_argument("--events", default=str(DEFAULT_EVENTS_PATH), help="Events JSONL path")
     p_risk.set_defaults(fn=cmd_risk)
+
+    p_score = sub.add_parser(
+        "score",
+        help="Compute deterministic listing scores for assets (P5)",
+    )
+    p_score.add_argument("--config", required=True, type=Path, help="Path to JSON config file")
+    p_score.add_argument("--db", default=str(DEFAULT_DB_PATH), help="SQLite path")
+    p_score.add_argument("--events", default=str(DEFAULT_EVENTS_PATH), help="Events JSONL path")
+    p_score.set_defaults(fn=cmd_score)
 
     return p
 
