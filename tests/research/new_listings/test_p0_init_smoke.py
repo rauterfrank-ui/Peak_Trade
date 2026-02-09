@@ -8,13 +8,14 @@ from pathlib import Path
 import sqlite3
 
 
-
 def test_p0_init_creates_db_and_events(tmp_path: Path, monkeypatch):
     # run CLI in isolated tmp
     db = tmp_path / "nl.sqlite"
     events = tmp_path / "events.jsonl"
     cfg = tmp_path / "cfg.json"
-    cfg.write_text(json.dumps({"scope": "research", "phase": "P0", "sources": []}), encoding="utf-8")
+    cfg.write_text(
+        json.dumps({"scope": "research", "phase": "P0", "sources": []}), encoding="utf-8"
+    )
 
     # call as module path (python -m ...)
     cmd = [

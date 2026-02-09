@@ -77,7 +77,17 @@ def cmd_init(args: argparse.Namespace) -> int:
         ],
     )
 
-    print(json.dumps({"ok": True, "db": str(args.db), "events": str(args.events), "run_id": run_id, "config_hash": cfg_hash}))
+    print(
+        json.dumps(
+            {
+                "ok": True,
+                "db": str(args.db),
+                "events": str(args.events),
+                "run_id": run_id,
+                "config_hash": cfg_hash,
+            }
+        )
+    )
     return 0
 
 
@@ -87,8 +97,16 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_init = sub.add_parser("init", help="Initialize SQLite schema + seed event and events.jsonl")
     p_init.add_argument("--config", required=True, type=Path, help="Path to JSON config file (P0)")
-    p_init.add_argument("--db", default=str(DEFAULT_DB_PATH), help="SQLite path (default: out/research/new_listings/new_listings.sqlite)")
-    p_init.add_argument("--events", default=str(DEFAULT_EVENTS_PATH), help="Events JSONL path (default: out/research/new_listings/events.jsonl)")
+    p_init.add_argument(
+        "--db",
+        default=str(DEFAULT_DB_PATH),
+        help="SQLite path (default: out/research/new_listings/new_listings.sqlite)",
+    )
+    p_init.add_argument(
+        "--events",
+        default=str(DEFAULT_EVENTS_PATH),
+        help="Events JSONL path (default: out/research/new_listings/events.jsonl)",
+    )
     p_init.set_defaults(fn=cmd_init)
 
     return p

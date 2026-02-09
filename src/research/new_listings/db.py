@@ -28,7 +28,9 @@ def stable_config_hash(config: Mapping[str, Any]) -> str:
     Deterministic SHA256 over JSON with sorted keys and minimal separators.
     NOTE: Caller must pass only JSON-serializable content.
     """
-    b = json.dumps(config, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    b = json.dumps(config, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode(
+        "utf-8"
+    )
     return hashlib.sha256(b).hexdigest()
 
 
@@ -218,7 +220,14 @@ def insert_raw_event(
 ) -> None:
     con.execute(
         "INSERT INTO raw_events(source, venue_type, observed_at, payload_json, run_id, config_hash) VALUES(?,?,?,?,?,?)",
-        (source, venue_type, observed_at, json.dumps(payload, ensure_ascii=False), run_id, config_hash),
+        (
+            source,
+            venue_type,
+            observed_at,
+            json.dumps(payload, ensure_ascii=False),
+            run_id,
+            config_hash,
+        ),
     )
     con.commit()
 
