@@ -127,6 +127,20 @@ def normalize_ccxt_ticker_payload(
         "quote": quote or None,
         "raw_payload": json.loads(json.dumps(dict(payload))),
     }
+    # P10: ticker fields for CEX risk/score (spread + volume heuristics)
+    bid = payload.get("bid") if payload.get("bid") is not None else ticker.get("bid")
+    ask = payload.get("ask") if payload.get("ask") is not None else ticker.get("ask")
+    qv = (
+        payload.get("quoteVolume")
+        if payload.get("quoteVolume") is not None
+        else ticker.get("quoteVolume")
+    )
+    if bid is not None:
+        tags["ticker_bid"] = bid
+    if ask is not None:
+        tags["ticker_ask"] = ask
+    if qv is not None:
+        tags["ticker_quoteVolume"] = qv
 
     asset = NormalizedAsset(
         asset_id=asset_id,

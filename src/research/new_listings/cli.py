@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -18,6 +19,7 @@ from .db import (
     upsert_asset,
     utc_now_iso,
 )
+from .exporter import export_candidates
 from .orchestrator import run_pipeline
 from .runner import (
     collect_and_persist,
@@ -126,6 +128,31 @@ def cmd_score(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_export(args: argparse.Namespace) -> int:
+    con = connect(Path(args.db))
+    run_id = args.run_id or make_run_id(
+        prefix="ex",
+        config_hash8=hashlib.sha256(utc_now_iso().encode()).hexdigest()[:8],
+    )
+    result = export_candidates(
+        con,
+        Path(args.out_dir),
+        run_id=run_id,
+        limit=args.limit,
+    )
+    print(
+        json.dumps(
+            {
+                "ok": result.ok,
+                "rows": result.rows,
+                "json_path": result.json_path,
+                "csv_path": result.csv_path,
+            }
+        )
+    )
+    return 0
+
+
 def cmd_run(args: argparse.Namespace) -> int:
     cfg = _load_config(args.config)
     steps_str = (args.steps or "").strip()
@@ -223,6 +250,30 @@ def build_parser() -> argparse.ArgumentParser:
         help="Comma list of steps (default: all). Ex: collect,normalize,risk,score",
     )
     p_run.set_defaults(fn=cmd_run)
+
+    p_export = sub.add_parser(
+        "export",
+        help="Export v_assets_candidates to JSON + CSV (deterministic order)",
+    )
+    p_export.add_argument("--db", default=str(DEFAULT_DB_PATH), help="SQLite path")
+    p_export.add_argument(
+        "--out-dir",
+        default="out/research/new_listings",
+        help="Output directory for candidates JSON and CSV",
+    )
+    p_export.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        metavar="N",
+        help="Max number of rows to export (default: all)",
+    )
+    p_export.add_argument(
+        "--run-id",
+        default=None,
+        help="Run ID for output filenames (default: auto-generated)",
+    )
+    p_export.set_defaults(fn=cmd_export)
 
     return p
 
