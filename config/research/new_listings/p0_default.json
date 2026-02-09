@@ -4,5 +4,5 @@
     "phase": "P0",
     "sources": [],
     "collectors": ["manual_seed"],
-    "notes": "P0 foundation seed config; no network; no secrets.",
+    "notes": "P0 foundation seed config; no network; no secrets."
 }
