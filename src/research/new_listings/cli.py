@@ -8,6 +8,7 @@ from typing import Any
 from .db import (
     DEFAULT_DB_PATH,
     DEFAULT_EVENTS_PATH,
+    Event,
     append_events,
     apply_schema,
     connect,
@@ -16,8 +17,8 @@ from .db import (
     stable_config_hash,
     upsert_asset,
     utc_now_iso,
-    Event,
 )
+from .runner import collect_and_persist
 
 
 def _load_config(path: Path) -> dict[str, Any]:
@@ -91,6 +92,13 @@ def cmd_init(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_collect(args: argparse.Namespace) -> int:
+    cfg = _load_config(args.config)
+    payload = collect_and_persist(cfg=cfg, db_path=Path(args.db), events_path=Path(args.events))
+    print(json.dumps(payload))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="new_listings")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -108,6 +116,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="Events JSONL path (default: out/research/new_listings/events.jsonl)",
     )
     p_init.set_defaults(fn=cmd_init)
+
+    p_collect = sub.add_parser(
+        "collect",
+        help="Run collectors and persist raw_events + append events.jsonl (P2)",
+    )
+    p_collect.add_argument("--config", required=True, type=Path, help="Path to JSON config file")
+    p_collect.add_argument("--db", default=str(DEFAULT_DB_PATH), help="SQLite path")
+    p_collect.add_argument("--events", default=str(DEFAULT_EVENTS_PATH), help="Events JSONL path")
+    p_collect.set_defaults(fn=cmd_collect)
 
     return p
 
