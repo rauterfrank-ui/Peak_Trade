@@ -18,6 +18,7 @@ from .db import (
     upsert_asset,
     utc_now_iso,
 )
+from .orchestrator import run_pipeline
 from .runner import (
     collect_and_persist,
     normalize_and_persist,
@@ -125,6 +126,31 @@ def cmd_score(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_run(args: argparse.Namespace) -> int:
+    cfg = _load_config(args.config)
+    steps_str = (args.steps or "").strip()
+    steps = [x.strip() for x in steps_str.split(",") if x.strip()] if steps_str else []
+    payload = run_pipeline(
+        cfg=cfg,
+        out_dir=Path(args.out_dir),
+        db_path=Path(args.db),
+        events_path=Path(args.events),
+        steps=steps if steps else None,
+    )
+    print(
+        json.dumps(
+            {
+                "ok": payload.ok,
+                "run_id": payload.run_id,
+                "config_hash": payload.config_hash,
+                "steps": payload.steps,
+                "manifest_path": payload.manifest_path,
+            }
+        )
+    )
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="new_listings")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -178,6 +204,25 @@ def build_parser() -> argparse.ArgumentParser:
     p_score.add_argument("--db", default=str(DEFAULT_DB_PATH), help="SQLite path")
     p_score.add_argument("--events", default=str(DEFAULT_EVENTS_PATH), help="Events JSONL path")
     p_score.set_defaults(fn=cmd_score)
+
+    p_run = sub.add_parser(
+        "run",
+        help="Orchestrator-lite pipeline: init,collect,normalize,risk,score (P6)",
+    )
+    p_run.add_argument("--config", required=True, type=Path, help="Path to JSON config file")
+    p_run.add_argument(
+        "--out-dir",
+        default="out/research/new_listings",
+        help="Output dir for run manifest",
+    )
+    p_run.add_argument("--db", default=str(DEFAULT_DB_PATH), help="SQLite path")
+    p_run.add_argument("--events", default=str(DEFAULT_EVENTS_PATH), help="Events JSONL path")
+    p_run.add_argument(
+        "--steps",
+        default="",
+        help="Comma list of steps (default: all). Ex: collect,normalize,risk,score",
+    )
+    p_run.set_defaults(fn=cmd_run)
 
     return p
 
