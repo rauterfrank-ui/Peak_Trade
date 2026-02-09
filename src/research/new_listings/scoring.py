@@ -57,3 +57,51 @@ def score_seed(
     score = max(0.0, min(100.0, score))
     reason = "seed_placeholder"
     return ScoreResult(score=score, breakdown=breakdown, reason=reason)
+
+
+def _num(x: Any) -> float | None:
+    return float(x) if isinstance(x, (int, float)) else None
+
+
+def score_ccxt(
+    asset_tags: Mapping[str, Any], *, risk_severity: str, cfg: Mapping[str, Any]
+) -> ScoreResult:
+    """
+    Deterministic score for CEX assets based on ticker fields.
+    Config:
+      - volume_bonus_k (default: 0.002)  (bonus = min(20, quoteVolume * k))
+      - spread_penalty_max (default: 20)
+    """
+    base = 50.0
+    breakdown: dict[str, Any] = {"base": 50.0}
+
+    # risk penalty
+    if risk_severity == "HIGH":
+        base -= 40.0
+        breakdown["risk_penalty"] = -40.0
+    elif risk_severity == "MED":
+        base -= 20.0
+        breakdown["risk_penalty"] = -20.0
+    else:
+        breakdown["risk_penalty"] = 0.0
+
+    qv = _num(asset_tags.get("ticker_quoteVolume"))
+    k = float(cfg.get("volume_bonus_k", 0.002))
+    volume_bonus = 0.0
+    if qv is not None and qv > 0:
+        volume_bonus = min(20.0, qv * k)
+        base += volume_bonus
+    breakdown["volume_bonus"] = volume_bonus
+
+    bid = _num(asset_tags.get("ticker_bid"))
+    ask = _num(asset_tags.get("ticker_ask"))
+    spread_penalty = 0.0
+    if bid is not None and ask is not None and bid > 0 and ask >= bid:
+        spread_pct = (ask - bid) / bid * 100.0
+        spread_penalty_max = float(cfg.get("spread_penalty_max", 20.0))
+        spread_penalty = min(spread_penalty_max, spread_pct)
+        base -= spread_penalty
+    breakdown["spread_penalty"] = -spread_penalty
+
+    score = max(0.0, min(100.0, base))
+    return ScoreResult(score=score, breakdown=breakdown, reason="cex_score")
