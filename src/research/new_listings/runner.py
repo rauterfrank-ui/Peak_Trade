@@ -23,7 +23,11 @@ from .db import (
     stable_config_hash,
     utc_now_iso,
 )
-from .normalizer import normalize_seed_payload, persist_asset
+from .normalizer import (
+    normalize_ccxt_ticker_payload,
+    normalize_seed_payload,
+    persist_asset,
+)
 from .risk import assess_risk_seed
 from .scoring import score_seed
 
@@ -137,28 +141,61 @@ def normalize_and_persist(
     n_snaps = 0
     for r in rows:
         source = r[0]
+        venue_type = r[1]
         observed_at = r[2]
         payload = json.loads(r[3])
-        # P3: only seed normalization
-        a = normalize_seed_payload(payload, source=source, observed_at=observed_at)
-        persist_asset(con, a)
-        n_assets += 1
 
-        ts = utc_now_iso()
-        insert_market_snapshot(
-            con,
-            asset_id=a.asset_id,
-            ts=ts,
-            price=None,
-            fdv=None,
-            liquidity_usd=None,
-            volume_24h_usd=None,
-            holders=None,
-            age_minutes=None,
-            run_id=run_id,
-            config_hash=cfg_hash,
+        # Route by venue_type/source: seed vs ccxt_ticker/replay(ccxt-shaped)
+        is_ccxt_ticker = (
+            venue_type == "ccxt_ticker"
+            or venue_type == "ccxt"
+            or source == "ccxt_ticker"
+            or (isinstance(source, str) and source.startswith("ccxt_ticker"))
+            or (
+                source == "replay" and payload.get("exchange") is not None and payload.get("symbol")
+            )
         )
-        n_snaps += 1
+        if is_ccxt_ticker:
+            a, overrides = normalize_ccxt_ticker_payload(
+                payload, source=source, observed_at=observed_at
+            )
+            persist_asset(con, a)
+            n_assets += 1
+            ts = utc_now_iso()
+            insert_market_snapshot(
+                con,
+                asset_id=a.asset_id,
+                ts=ts,
+                price=overrides.price,
+                fdv=None,
+                liquidity_usd=None,
+                volume_24h_usd=overrides.volume_24h_usd,
+                holders=None,
+                age_minutes=None,
+                run_id=run_id,
+                config_hash=cfg_hash,
+            )
+            n_snaps += 1
+        else:
+            # P3: seed normalization (manual_seed, etc.)
+            a = normalize_seed_payload(payload, source=source, observed_at=observed_at)
+            persist_asset(con, a)
+            n_assets += 1
+            ts = utc_now_iso()
+            insert_market_snapshot(
+                con,
+                asset_id=a.asset_id,
+                ts=ts,
+                price=None,
+                fdv=None,
+                liquidity_usd=None,
+                volume_24h_usd=None,
+                holders=None,
+                age_minutes=None,
+                run_id=run_id,
+                config_hash=cfg_hash,
+            )
+            n_snaps += 1
 
     append_events(
         events_path,
