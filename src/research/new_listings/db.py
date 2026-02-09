@@ -232,6 +232,35 @@ def insert_raw_event(
     con.commit()
 
 
+def insert_raw_events_bulk(
+    con: sqlite3.Connection,
+    *,
+    events: Sequence[
+        tuple[str, str, str, Mapping[str, Any]]
+    ],  # (source, venue_type, observed_at, payload)
+    run_id: str,
+    config_hash: str,
+) -> int:
+    """Insert many raw events in a single transaction. Returns inserted count."""
+    rows = [
+        (
+            source,
+            venue_type,
+            observed_at,
+            json.dumps(payload, ensure_ascii=False),
+            run_id,
+            config_hash,
+        )
+        for (source, venue_type, observed_at, payload) in events
+    ]
+    con.executemany(
+        "INSERT INTO raw_events(source, venue_type, observed_at, payload_json, run_id, config_hash) VALUES(?,?,?,?,?,?)",
+        rows,
+    )
+    con.commit()
+    return len(rows)
+
+
 def upsert_asset(
     con: sqlite3.Connection,
     *,
