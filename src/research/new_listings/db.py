@@ -261,6 +261,42 @@ def insert_raw_events_bulk(
     return len(rows)
 
 
+def insert_market_snapshot(
+    con: sqlite3.Connection,
+    *,
+    asset_id: str,
+    ts: str,
+    price: float | None,
+    fdv: float | None,
+    liquidity_usd: float | None,
+    volume_24h_usd: float | None,
+    holders: int | None,
+    age_minutes: int | None,
+    run_id: str,
+    config_hash: str,
+) -> None:
+    con.execute(
+        """
+        INSERT OR REPLACE INTO market_snapshots(
+          asset_id, ts, price, fdv, liquidity_usd, volume_24h_usd, holders, age_minutes, run_id, config_hash
+        ) VALUES(?,?,?,?,?,?,?,?,?,?)
+        """,
+        (
+            asset_id,
+            ts,
+            price,
+            fdv,
+            liquidity_usd,
+            volume_24h_usd,
+            holders,
+            age_minutes,
+            run_id,
+            config_hash,
+        ),
+    )
+    con.commit()
+
+
 def upsert_asset(
     con: sqlite3.Connection,
     *,
