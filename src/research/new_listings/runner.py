@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -12,11 +13,13 @@ from .db import (
     Event,
     append_events,
     connect,
+    insert_market_snapshot,
     insert_raw_events_bulk,
     make_run_id,
     stable_config_hash,
     utc_now_iso,
 )
+from .normalizer import normalize_seed_payload, persist_asset
 
 
 @dataclass(frozen=True)
@@ -92,6 +95,74 @@ def collect_and_persist(
         "run_id": run_id,
         "config_hash": cfg_hash,
         "raw_events": n,
+        "db": str(db_path),
+        "events": str(events_path),
+    }
+
+
+def normalize_and_persist(
+    *,
+    cfg: Mapping[str, Any],
+    db_path: Path = DEFAULT_DB_PATH,
+    events_path: Path = DEFAULT_EVENTS_PATH,
+) -> dict[str, Any]:
+    cfg_hash = stable_config_hash(cfg)
+    run_id = make_run_id(prefix="nl", config_hash8=cfg_hash[:8])
+
+    con = connect(db_path)
+    rows = list(
+        con.execute(
+            "SELECT source, venue_type, observed_at, payload_json FROM raw_events ORDER BY id DESC LIMIT 1000"
+        )
+    )
+
+    n_assets = 0
+    n_snaps = 0
+    for r in rows:
+        source = r[0]
+        observed_at = r[2]
+        payload = json.loads(r[3])
+        # P3: only seed normalization
+        a = normalize_seed_payload(payload, source=source, observed_at=observed_at)
+        persist_asset(con, a)
+        n_assets += 1
+
+        ts = utc_now_iso()
+        insert_market_snapshot(
+            con,
+            asset_id=a.asset_id,
+            ts=ts,
+            price=None,
+            fdv=None,
+            liquidity_usd=None,
+            volume_24h_usd=None,
+            holders=None,
+            age_minutes=None,
+            run_id=run_id,
+            config_hash=cfg_hash,
+        )
+        n_snaps += 1
+
+    append_events(
+        events_path,
+        [
+            Event(
+                ts=utc_now_iso(),
+                type="asset.normalized",
+                run_id=run_id,
+                config_hash=cfg_hash,
+                asset_id=None,
+                source="normalizer.seed",
+                meta={"assets": n_assets, "snapshots": n_snaps},
+            )
+        ],
+    )
+    return {
+        "ok": True,
+        "run_id": run_id,
+        "config_hash": cfg_hash,
+        "assets": n_assets,
+        "snapshots": n_snaps,
         "db": str(db_path),
         "events": str(events_path),
     }

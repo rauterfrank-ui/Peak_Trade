@@ -18,7 +18,7 @@ from .db import (
     upsert_asset,
     utc_now_iso,
 )
-from .runner import collect_and_persist
+from .runner import collect_and_persist, normalize_and_persist
 
 
 def _load_config(path: Path) -> dict[str, Any]:
@@ -99,6 +99,13 @@ def cmd_collect(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_normalize(args: argparse.Namespace) -> int:
+    cfg = _load_config(args.config)
+    payload = normalize_and_persist(cfg=cfg, db_path=Path(args.db), events_path=Path(args.events))
+    print(json.dumps(payload))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="new_listings")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -125,6 +132,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_collect.add_argument("--db", default=str(DEFAULT_DB_PATH), help="SQLite path")
     p_collect.add_argument("--events", default=str(DEFAULT_EVENTS_PATH), help="Events JSONL path")
     p_collect.set_defaults(fn=cmd_collect)
+
+    p_norm = sub.add_parser(
+        "normalize",
+        help="Normalize raw_events into assets + market_snapshots (P3)",
+    )
+    p_norm.add_argument("--config", required=True, type=Path, help="Path to JSON config file")
+    p_norm.add_argument("--db", default=str(DEFAULT_DB_PATH), help="SQLite path")
+    p_norm.add_argument("--events", default=str(DEFAULT_EVENTS_PATH), help="Events JSONL path")
+    p_norm.set_defaults(fn=cmd_normalize)
 
     return p
 
