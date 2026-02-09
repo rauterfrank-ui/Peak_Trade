@@ -207,5 +207,65 @@ Create stable read views to avoid ad-hoc SQL in other components:
 
 ---
 
-**Last Updated:** 2026-02-08  
+## P7 — Quickstart (Offline-First) + CLI Reference
+
+### Quickstart (local, no network)
+
+```bash
+cd /Users/frnkhrz/Peak_Trade
+
+# One-shot pipeline (P6 orchestrator-lite)
+python -m src.research.new_listings run \
+  --config config/research/new_listings/p0_default.json \
+  --out-dir out/research/new_listings \
+  --db out/research/new_listings/new_listings.sqlite \
+  --events out/research/new_listings/events.jsonl
+
+# Inspect DB (tables/views)
+python - <<'PY'
+import sqlite3
+con = sqlite3.connect("out/research/new_listings/new_listings.sqlite")
+print("tables:", con.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").fetchall())
+print("views:", con.execute("SELECT name FROM sqlite_master WHERE type='view' ORDER BY name").fetchall())
+print("assets:", con.execute("SELECT COUNT(*) FROM assets").fetchone()[0])
+print("risk_flags:", con.execute("SELECT COUNT(*) FROM risk_flags").fetchone()[0])
+print("listing_scores:", con.execute("SELECT COUNT(*) FROM listing_scores").fetchone()[0])
+print("candidates:", con.execute("SELECT COUNT(*) FROM v_assets_candidates").fetchone()[0])
+PY
+
+tail -n 20 out/research/new_listings/events.jsonl
+ls -la out/research/new_listings/run_manifest_*.json 2>/dev/null | tail -n 3
+```
+
+### CLI commands (entrypoints)
+
+| Command | Description | Key args |
+|---------|-------------|----------|
+| `init` | Initialize SQLite schema + seed event and events.jsonl | `--config`, `--db`, `--events` |
+| `collect` | Run collectors; persist raw_events + append events.jsonl | `--config`, `--db`, `--events` |
+| `normalize` | Normalize raw_events → assets + market_snapshots | `--config`, `--db`, `--events` |
+| `risk` | Assess deterministic risk flags for assets | `--config`, `--db`, `--events` |
+| `score` | Compute deterministic listing scores | `--config`, `--db`, `--events` |
+| `run` | Orchestrator-lite: init → collect → normalize → risk → score; writes run manifest | `--config`, `--out-dir`, `--db`, `--events`, `--steps` (optional comma list) |
+
+**Example (single steps):**
+
+```bash
+python -m src.research.new_listings init --config config/research/new_listings/p0_default.json --db out/research/new_listings/new_listings.sqlite --events out/research/new_listings/events.jsonl
+python -m src.research.new_listings collect --config config/research/new_listings/p0_default.json --db out/research/new_listings/new_listings.sqlite --events out/research/new_listings/events.jsonl
+# ... normalize, risk, score
+```
+
+### Troubleshooting (P7)
+
+| Issue | Check | Action |
+|-------|--------|--------|
+| `run` fails with "no such table" | Schema not applied | Run `init` first or use `run` (includes init) |
+| Empty v_assets_candidates | Risk severity HIGH or score &lt; 50 | Run full pipeline; check risk/score config |
+| No run_manifest_*.json | `--out-dir` path | Ensure out_dir exists or omit for default |
+| Config change mid-run | config_hash in manifest | Re-run with same config for reproducibility |
+
+---
+
+**Last Updated:** 2026-02-09  
 **Maintainer:** ops
