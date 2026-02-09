@@ -336,3 +336,31 @@ def upsert_asset(
         ),
     )
     con.commit()
+
+
+def insert_risk_flag(
+    con: sqlite3.Connection,
+    *,
+    asset_id: str,
+    ts: str,
+    severity: str,
+    flags: Mapping[str, Any],
+    run_id: str,
+    config_hash: str,
+) -> None:
+    con.execute(
+        """
+        INSERT OR REPLACE INTO risk_flags(
+          asset_id, ts, severity, flags_json, run_id, config_hash
+        ) VALUES(?,?,?,?,?,?)
+        """,
+        (
+            asset_id,
+            ts,
+            severity,
+            json.dumps(flags, ensure_ascii=False),
+            run_id,
+            config_hash,
+        ),
+    )
+    con.commit()
