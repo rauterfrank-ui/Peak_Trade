@@ -10,7 +10,7 @@ echo "============================================================"
 echo
 
 # Optional deps allowlist policy:
-# - ccxt darf nur in Provider-Modulen importiert werden.
+# - ccxt darf nur in Provider-Modulen und research/new_listings (read-only collector) importiert werden.
 # - Tests/Docs sind ausgenommen (dürfen Snippets/Mocks enthalten).
 #
 # NOTE: We use different regex flavors for rg vs grep:
@@ -21,6 +21,7 @@ PATTERN_GREP='^[[:space:]]*(import[[:space:]]+ccxt\\b|from[[:space:]]+ccxt\\b)'
 
 ALLOW_GLOBS=(
   "src/data/providers/**"
+  "src/research/new_listings/**"
 )
 
 EXCLUDE_GLOBS=(
@@ -55,9 +56,10 @@ else
   echo
 
   # Build grep excludes (directories)
-  # providers excluded (allowlist)
+  # providers + research/new_listings excluded (allowlist)
   GREP_EXCLUDES=(
     "--exclude-dir=src/data/providers"
+    "--exclude-dir=new_listings"
     "--exclude-dir=tests"
     "--exclude-dir=docs"
     "--exclude-dir=.git"
@@ -75,7 +77,7 @@ if [[ -n "${RESULTS}" ]]; then
   echo "Found ccxt imports outside allowlist:"
   echo "${RESULTS}"
   echo
-  echo "Allowlist: src/data/providers/**"
+  echo "Allowlist: src/data/providers/**, src/research/new_listings/**"
   exit 1
 fi
 
