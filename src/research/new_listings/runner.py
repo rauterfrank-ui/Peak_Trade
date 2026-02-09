@@ -14,12 +14,14 @@ from .db import (
     append_events,
     connect,
     insert_market_snapshot,
+    insert_risk_flag,
     insert_raw_events_bulk,
     make_run_id,
     stable_config_hash,
     utc_now_iso,
 )
 from .normalizer import normalize_seed_payload, persist_asset
+from .risk import assess_risk_seed
 
 
 @dataclass(frozen=True)
@@ -163,6 +165,63 @@ def normalize_and_persist(
         "config_hash": cfg_hash,
         "assets": n_assets,
         "snapshots": n_snaps,
+        "db": str(db_path),
+        "events": str(events_path),
+    }
+
+
+def risk_and_persist(
+    *,
+    cfg: Mapping[str, Any],
+    db_path: Path = DEFAULT_DB_PATH,
+    events_path: Path = DEFAULT_EVENTS_PATH,
+) -> dict[str, Any]:
+    cfg_hash = stable_config_hash(cfg)
+    run_id = make_run_id(prefix="nl", config_hash8=cfg_hash[:8])
+
+    con = connect(db_path)
+    assets = list(
+        con.execute(
+            "SELECT asset_id, symbol, chain, tags_json FROM assets ORDER BY first_seen_at DESC LIMIT 1000"
+        )
+    )
+
+    n = 0
+    for r in assets:
+        asset_id = r[0]
+        row = {"asset_id": r[0], "symbol": r[1], "chain": r[2], "tags_json": r[3]}
+        res = assess_risk_seed(row)
+        ts = utc_now_iso()
+        insert_risk_flag(
+            con,
+            asset_id=asset_id,
+            ts=ts,
+            severity=res.severity,
+            flags=res.flags,
+            run_id=run_id,
+            config_hash=cfg_hash,
+        )
+        n += 1
+
+    append_events(
+        events_path,
+        [
+            Event(
+                ts=utc_now_iso(),
+                type="risk.assessed",
+                run_id=run_id,
+                config_hash=cfg_hash,
+                source="risk.seed",
+                meta={"assets": n},
+            )
+        ],
+    )
+
+    return {
+        "ok": True,
+        "run_id": run_id,
+        "config_hash": cfg_hash,
+        "risk_rows": n,
         "db": str(db_path),
         "events": str(events_path),
     }

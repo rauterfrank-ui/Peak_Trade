@@ -18,7 +18,7 @@ from .db import (
     upsert_asset,
     utc_now_iso,
 )
-from .runner import collect_and_persist, normalize_and_persist
+from .runner import collect_and_persist, normalize_and_persist, risk_and_persist
 
 
 def _load_config(path: Path) -> dict[str, Any]:
@@ -106,6 +106,13 @@ def cmd_normalize(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_risk(args: argparse.Namespace) -> int:
+    cfg = _load_config(args.config)
+    payload = risk_and_persist(cfg=cfg, db_path=Path(args.db), events_path=Path(args.events))
+    print(json.dumps(payload))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="new_listings")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -141,6 +148,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_norm.add_argument("--db", default=str(DEFAULT_DB_PATH), help="SQLite path")
     p_norm.add_argument("--events", default=str(DEFAULT_EVENTS_PATH), help="Events JSONL path")
     p_norm.set_defaults(fn=cmd_normalize)
+
+    p_risk = sub.add_parser(
+        "risk",
+        help="Assess deterministic risk flags for assets (P4)",
+    )
+    p_risk.add_argument("--config", required=True, type=Path, help="Path to JSON config file")
+    p_risk.add_argument("--db", default=str(DEFAULT_DB_PATH), help="SQLite path")
+    p_risk.add_argument("--events", default=str(DEFAULT_EVENTS_PATH), help="Events JSONL path")
+    p_risk.set_defaults(fn=cmd_risk)
 
     return p
 
