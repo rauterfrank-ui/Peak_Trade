@@ -7,6 +7,8 @@ from typing import Any, Mapping, Sequence
 
 from .collectors.base import Collector, CollectorContext, RawEvent
 from .collectors.manual_seed import ManualSeedCollector
+from .collectors.ccxt_ticker import CcxtTickerCollector
+from .collectors.replay import ReplayCollector
 from .db import (
     DEFAULT_DB_PATH,
     DEFAULT_EVENTS_PATH,
@@ -39,11 +41,20 @@ def parse_run_config(cfg: Mapping[str, Any]) -> RunConfig:
     return RunConfig(collectors=tuple(cols))
 
 
-def build_collectors(names: Sequence[str]) -> Sequence[Collector]:
+def build_collectors(names: Sequence[str], cfg: Mapping[str, Any] | None = None) -> Sequence[Collector]:
+    cfg = cfg or {}
     out: list[Collector] = []
     for n in names:
         if n == "manual_seed":
             out.append(ManualSeedCollector())
+        elif n == "ccxt_ticker":
+            ccxt_cfg = (cfg.get("sources") or {}).get("ccxt") or {}
+            if ccxt_cfg.get("enabled", True):
+                out.append(CcxtTickerCollector(cfg))
+        elif n == "replay":
+            replay_cfg = (cfg.get("sources") or {}).get("replay") or {}
+            if replay_cfg.get("enabled", True):
+                out.append(ReplayCollector(cfg))
         else:
             raise ValueError(f"unknown collector: {n}")
     return out
@@ -59,7 +70,7 @@ def collect_and_persist(
     run_id = make_run_id(prefix="nl", config_hash8=cfg_hash[:8])
 
     rc = parse_run_config(cfg)
-    collectors = build_collectors(rc.collectors)
+    collectors = build_collectors(rc.collectors, cfg)
 
     con = connect(db_path)
 
