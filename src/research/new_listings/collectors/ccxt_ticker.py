@@ -133,7 +133,23 @@ class CcxtTickerCollector:
                 "markets_count": len(markets),
             }
             if isinstance(data, dict):
-                payload["ticker"] = {k: v for k, v in data.items() if k in ("last", "bid", "ask", "timestamp", "symbol", "high", "low", "volume", "base", "quote")}
+                payload["ticker"] = {
+                    k: v
+                    for k, v in data.items()
+                    if k
+                    in (
+                        "last",
+                        "bid",
+                        "ask",
+                        "timestamp",
+                        "symbol",
+                        "high",
+                        "low",
+                        "volume",
+                        "base",
+                        "quote",
+                    )
+                }
             else:
                 payload["ticker"] = data
 

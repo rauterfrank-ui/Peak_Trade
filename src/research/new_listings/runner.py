@@ -41,7 +41,9 @@ def parse_run_config(cfg: Mapping[str, Any]) -> RunConfig:
     return RunConfig(collectors=tuple(cols))
 
 
-def build_collectors(names: Sequence[str], cfg: Mapping[str, Any] | None = None) -> Sequence[Collector]:
+def build_collectors(
+    names: Sequence[str], cfg: Mapping[str, Any] | None = None
+) -> Sequence[Collector]:
     cfg = cfg or {}
     out: list[Collector] = []
     for n in names:

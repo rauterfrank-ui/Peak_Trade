@@ -106,14 +106,26 @@ def test_get_ccxt_config_defaults() -> None:
     assert _get_ccxt_config({})["exchange"] == "kraken"
     assert _get_ccxt_config({})["enabled"] is True
     assert _get_ccxt_config({})["max_markets"] == 50
-    assert _get_ccxt_config({"sources": {"ccxt": {"exchange": "binance", "max_markets": 5}}})["exchange"] == "binance"
-    assert _get_ccxt_config({"sources": {"ccxt": {"exchange": "binance", "max_markets": 5}}})["max_markets"] == 5
+    assert (
+        _get_ccxt_config({"sources": {"ccxt": {"exchange": "binance", "max_markets": 5}}})[
+            "exchange"
+        ]
+        == "binance"
+    )
+    assert (
+        _get_ccxt_config({"sources": {"ccxt": {"exchange": "binance", "max_markets": 5}}})[
+            "max_markets"
+        ]
+        == 5
+    )
 
 
 def test_get_replay_config_defaults() -> None:
     default_dir = Path("out/research/new_listings/replay")
     assert _get_replay_config({}, default_dir)["enabled"] is True
-    assert _get_replay_config({"sources": {"replay": {"dir": "/tmp/replay"}}}, default_dir)["dir"] == Path("/tmp/replay")
+    assert _get_replay_config({"sources": {"replay": {"dir": "/tmp/replay"}}}, default_dir)[
+        "dir"
+    ] == Path("/tmp/replay")
 
 
 def test_build_collectors_ccxt_and_replay() -> None:
