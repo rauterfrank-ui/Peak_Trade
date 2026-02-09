@@ -13,6 +13,7 @@ from .db import (
     Event,
     append_events,
     connect,
+    insert_listing_score,
     insert_market_snapshot,
     insert_risk_flag,
     insert_raw_events_bulk,
@@ -22,6 +23,7 @@ from .db import (
 )
 from .normalizer import normalize_seed_payload, persist_asset
 from .risk import assess_risk_seed
+from .scoring import score_seed
 
 
 @dataclass(frozen=True)
@@ -222,6 +224,79 @@ def risk_and_persist(
         "run_id": run_id,
         "config_hash": cfg_hash,
         "risk_rows": n,
+        "db": str(db_path),
+        "events": str(events_path),
+    }
+
+
+def score_and_persist(
+    *,
+    cfg: Mapping[str, Any],
+    db_path: Path = DEFAULT_DB_PATH,
+    events_path: Path = DEFAULT_EVENTS_PATH,
+) -> dict[str, Any]:
+    cfg_hash = stable_config_hash(cfg)
+    run_id = make_run_id(prefix="nl", config_hash8=cfg_hash[:8])
+
+    con = connect(db_path)
+
+    assets = list(
+        con.execute(
+            "SELECT asset_id, symbol, chain, tags_json FROM assets ORDER BY first_seen_at DESC LIMIT 1000"
+        )
+    )
+    latest_risk = {
+        r[0]: {"severity": r[2], "flags_json": r[3]}
+        for r in con.execute("SELECT asset_id, ts, severity, flags_json FROM v_latest_risk")
+    }
+    latest_snap = {
+        r[0]: {"ts": r[1]} for r in con.execute("SELECT asset_id, ts FROM v_latest_snapshot")
+    }
+
+    n = 0
+    for r in assets:
+        asset_id = r[0]
+        asset_row = {"asset_id": r[0], "symbol": r[1], "chain": r[2], "tags_json": r[3]}
+        rr = latest_risk.get(asset_id)
+        sr = latest_snap.get(asset_id)
+
+        res = score_seed(
+            asset_row=asset_row,
+            latest_risk_row=rr,
+            latest_snapshot_row=sr,
+        )
+        ts = utc_now_iso()
+        insert_listing_score(
+            con,
+            asset_id=asset_id,
+            ts=ts,
+            score=res.score,
+            breakdown=res.breakdown,
+            reason=res.reason,
+            run_id=run_id,
+            config_hash=cfg_hash,
+        )
+        n += 1
+
+    append_events(
+        events_path,
+        [
+            Event(
+                ts=utc_now_iso(),
+                type="score.assessed",
+                run_id=run_id,
+                config_hash=cfg_hash,
+                source="score.seed",
+                meta={"assets": n},
+            )
+        ],
+    )
+
+    return {
+        "ok": True,
+        "run_id": run_id,
+        "config_hash": cfg_hash,
+        "score_rows": n,
         "db": str(db_path),
         "events": str(events_path),
     }

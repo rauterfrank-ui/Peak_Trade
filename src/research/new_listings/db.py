@@ -147,11 +147,20 @@ CREATE VIEW IF NOT EXISTS v_assets_new AS
 SELECT *
 FROM assets;
 
--- candidates: defined by downstream L5 + thresholds; placeholder view for stable reads
--- For P0 we keep it permissive; later phases can refine.
+-- candidates: defined by downstream L5 + thresholds; join latest score+risk with thresholds
 CREATE VIEW IF NOT EXISTS v_assets_candidates AS
-SELECT a.asset_id
-FROM assets a;
+SELECT
+  a.asset_id,
+  a.symbol,
+  a.chain,
+  ls.score AS latest_score,
+  rf.severity AS latest_severity
+FROM assets a
+LEFT JOIN v_latest_score ls ON ls.asset_id = a.asset_id
+LEFT JOIN v_latest_risk rf ON rf.asset_id = a.asset_id
+WHERE
+  COALESCE(rf.severity, 'LOW') != 'HIGH'
+  AND COALESCE(ls.score, 0) >= 50.0;
 """
 
 
@@ -359,6 +368,36 @@ def insert_risk_flag(
             ts,
             severity,
             json.dumps(flags, ensure_ascii=False),
+            run_id,
+            config_hash,
+        ),
+    )
+    con.commit()
+
+
+def insert_listing_score(
+    con: sqlite3.Connection,
+    *,
+    asset_id: str,
+    ts: str,
+    score: float,
+    breakdown: Mapping[str, Any],
+    reason: str | None,
+    run_id: str,
+    config_hash: str,
+) -> None:
+    con.execute(
+        """
+        INSERT OR REPLACE INTO listing_scores(
+          asset_id, ts, score, breakdown_json, reason, run_id, config_hash
+        ) VALUES(?,?,?,?,?,?,?)
+        """,
+        (
+            asset_id,
+            ts,
+            float(score),
+            json.dumps(breakdown, ensure_ascii=False),
+            reason,
             run_id,
             config_hash,
         ),
