@@ -12,8 +12,8 @@
 |------------|--------|
 | **Grafana** | Watch-only Observability-UI (Dashboards, Prometheus-Datasources), Port **3000** |
 | **Docker** | Grafana + Prometheus + optionale Exporter als Container; Compose-Dateien im Repo |
-| **GitHub** | CI erkennt Grafana/Docs-Änderungen (`docs_only`), reduziert Lauf (nur Fast-Lane); Dashboards versioniert in `docs/webui/observability/grafana/` |
-| **Frontdoor** | Einstieg in die Doku: `docs/README.md` (Haupt-Frontdoor), `docs/WORKFLOW_FRONTDOOR.md` (Workflow/Runbooks); Ops-Hub `docs/ops/README.md` verlinkt Observability/Grafana-Kontext |
+| **GitHub** | CI erkennt Grafana/Docs-Änderungen (`docs_only`), reduziert Lauf (nur Fast-Lane); Dashboards versioniert in `docs&#47;webui&#47;observability&#47;grafana&#47;` |
+| **Frontdoor** | Einstieg in die Doku: `docs&#47;README.md` (Haupt-Frontdoor), `docs&#47;WORKFLOW_FRONTDOOR.md` (Workflow/Runbooks); Ops-Hub `docs&#47;ops&#47;README.md` verlinkt Observability/Grafana-Kontext |
 
 ---
 
@@ -22,23 +22,23 @@
 ### 2.1 Speicherort im Repo
 
 - **Dashboards (JSON):**  
-  `docs/webui/observability/grafana/dashboards/`  
-  - `overview/` — Operator Home, Unified, System Health, Contract Details, …  
-  - `execution/` — Execution Watch Overview/Details  
-  - `shadow/` — Shadow Pipeline MVS  
-  - `compare/` — Main vs Shadow, Metrics Drift  
-  - `http/` — HTTP/labeled local  
+  `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;`  
+  - `overview&#47;` — Operator Home, Unified, System Health, Contract Details, …  
+  - `execution&#47;` — Execution Watch Overview/Details  
+  - `shadow&#47;` — Shadow Pipeline MVS  
+  - `compare&#47;` — Main vs Shadow, Metrics Drift  
+  - `http&#47;` — HTTP/labeled local  
 
 - **Provisioning:**  
-  - **Datasources:** `docs/webui/observability/grafana/provisioning/datasources/`  
+  - **Datasources:** `docs&#47;webui&#47;observability&#47;grafana&#47;provisioning&#47;datasources&#47;`  
     - Aktiv: `multi_prom.yml` (Prometheus 9092/9093/9094/9095 via `host.docker.internal`)  
-    - Legacy/disabled: `legacy_disabled/`  
-  - **Dashboards:** `docs/webui/observability/grafana/provisioning/dashboards/dashboards.yaml`  
-    - Provider „Peak_Trade“, Typ `file`, Pfad im Container: `/etc/grafana/dashboards`, Ordnerstruktur aus Dateien  
+    - Legacy/disabled: `legacy_disabled&#47;`  
+  - **Dashboards:** `docs&#47;webui&#47;observability&#47;grafana&#47;provisioning&#47;dashboards&#47;dashboards.yaml`  
+    - Provider „Peak_Trade“, Typ `file`, Pfad im Container: `&#47;etc&#47;grafana&#47;dashboards`, Ordnerstruktur aus Dateien  
 
 - **Default-Home-Dashboard:**  
   Im Compose per Umgebungsvariable gesetzt:  
-  `GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: "/etc/grafana/dashboards/execution/peaktrade-execution-watch-overview.json"`
+  `GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: "&#47;etc&#47;grafana&#47;dashboards&#47;execution&#47;peaktrade-execution-watch-overview.json"`
 
 ### 2.2 Datasources (Multi-Prometheus)
 
@@ -62,19 +62,19 @@ Alle URLs: `http://host.docker.internal:<port>` (Grafana im Container spricht Ho
 | Datei | Verwendung |
 |-------|------------|
 | **Repo-Root** | |
-| `DOCKER_COMPOSE_GRAFANA_ONLY.yml` | Nur Grafana (:3000), bindet `docs/webui/observability/grafana/` (provisioning + dashboards) |
+| `DOCKER_COMPOSE_GRAFANA_ONLY.yml` | Nur Grafana (:3000), bindet `docs&#47;webui&#47;observability&#47;grafana&#47;` (provisioning + dashboards) |
 | **Unter docs** | |
-| `docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml` | Grafana-only, relative Pfade zu `./grafana/...` (gleicher Inhalt wie Root-Variante, andere Basis) |
-| `docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml` | Nur Prometheus-local (:9092), Scrape-Config + Rules |
-| `docs/webui/observability/DOCKER_COMPOSE_PROM_GRAFANA.yml` | Stack: Shadow-MVS-Exporter + Prometheus + Grafana (Ports 9109, 9091, 3000) |
+| `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_GRAFANA_ONLY.yml` | Grafana-only, relative Pfade zu `./grafana/...` (gleicher Inhalt wie Root-Variante, andere Basis) |
+| `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml` | Nur Prometheus-local (:9092), Scrape-Config + Rules |
+| `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_PROM_GRAFANA.yml` | Stack: Shadow-MVS-Exporter + Prometheus + Grafana (Ports 9109, 9091, 3000) |
 
 ### 3.2 Typischer lokaler Start (Grafana + Prometheus-local)
 
 - **Up (Prometheus-local + Grafana):**  
   `scripts/obs/grafana_local_up.sh`  
   - Nutzt:  
-    - `docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml`  
-    - `docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml`  
+    - `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml`  
+    - `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_GRAFANA_ONLY.yml`  
   - Projektname: `peaktrade-grafana-local` (über `GRAFANA_LOCAL_COMPOSE_PROJECT` änderbar)  
   - Ports: Grafana **3000**, Prometheus **9092**
 
@@ -94,14 +94,14 @@ Alle URLs: `http://host.docker.internal:<port>` (Grafana im Container spricht Ho
 - **Down:**  
   `scripts/obs/shadow_mvs_local_down.sh`  
 
-Dokumentation: `docs/webui/observability/README.md` (Quickstart, URLs, Verhalten).
+Dokumentation: `docs&#47;webui&#47;observability&#47;README.md` (Quickstart, URLs, Verhalten).
 
 ### 3.4 Weitere Docker-Bausteine
 
 - **Ops-Runner:**  
   `docker/docker-compose.obs.yml` + `docker/obs/Dockerfile` — separater Ops-Container (z. B. Reports), kein Grafana.
 - **Observability-Runbook:**  
-  `docs/observability/Peak_Trade_Observability_Runbook_Grafana_Dashboard_Setup.md` — stabile Datenflüsse, Grafana-Betrieb ohne Compose-Änderungen.
+  `docs&#47;observability&#47;Peak_Trade_Observability_Runbook_Grafana_Dashboard_Setup.md` — stabile Datenflüsse, Grafana-Betrieb ohne Compose-Änderungen.
 
 ---
 
@@ -110,9 +110,9 @@ Dokumentation: `docs/webui/observability/README.md` (Quickstart, URLs, Verhalten
 ### 4.1 CI-Workflow (`.github/workflows/ci.yml`)
 
 - **Change Detection (paths-filter):**  
-  - **Code-Pfade** (→ volle Matrix): `src/**`, `tests/**`, `scripts/**`, `config/**`, `pyproject.toml`, `uv.lock`, `pytest.ini`, `Makefile`, …  
-  - **Docs** (u.a.): `docs/**`, `**/grafana/dashboards/**`, `out/**`, `**/*.md`  
-  - **Workflow:** `.github/workflows/**`  
+  - **Code-Pfade** (→ volle Matrix): `src&#47;**`, `tests&#47;**`, `scripts&#47;**`, `config&#47;**`, `pyproject.toml`, `uv.lock`, `pytest.ini`, `Makefile`, …  
+  - **Docs** (u.a.): `docs&#47;**`, `**&#47;grafana&#47;dashboards&#47;**`, `out&#47;**`, `**&#47;*.md`  
+  - **Workflow:** `.github&#47;workflows&#47;**`  
 
 - **Pragmatic Flow:**  
   - **docs_only = true**, wenn *nur* Docs/Grafana/out/md geändert → **keine** volle Python-Matrix, nur Fast-Lane + Smoke (+ PR Gate).  
@@ -120,22 +120,22 @@ Dokumentation: `docs/webui/observability/README.md` (Quickstart, URLs, Verhalten
   - Ein **PR Gate** (ein Required Check) fasst die relevanten Jobs zusammen.
 
 - **Konkrete Grafana-Relevanz:**  
-  - Änderungen unter `docs/webui/observability/grafana/dashboards/**` zählen als Docs → `docs_only`-Pfad → schneller CI-Lauf ohne volle Test-Matrix.  
-  - Referenz: `docs/ops/ci_pragmatic_flow_meta_gate.md`, `docs/ops/ci_pragmatic_flow_inventory.md`.
+  - Änderungen unter `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;**` zählen als Docs → `docs_only`-Pfad → schneller CI-Lauf ohne volle Test-Matrix.  
+  - Referenz: `docs&#47;ops&#47;ci_pragmatic_flow_meta_gate.md`, `docs&#47;ops&#47;ci_pragmatic_flow_inventory.md`.
 
 ### 4.2 Weitere Workflows mit Docs/Observability-Bezug
 
-- **docs_reference_targets_trend.yml** — prüft `docs/**`, Baseline in `docs/ops/`.  
-- **docs-integrity-snapshot.yml** — wird bei Änderungen in `docs/**` getriggert.  
-- **merge_logs / merge_log_hygiene** — Merge-Logs unter `docs/ops/merge_logs/`, inkl. Grafana/DS-Fixes (z. B. PR #999).  
-- **mcp_smoke_preflight** — kann Runbooks wie `docs/ops/runbooks/RUNBOOK_MCP_TOOLING.md` (Playwright/Grafana MCP) referenzieren.
+- **docs_reference_targets_trend.yml** — prüft `docs&#47;**`, Baseline in `docs&#47;ops&#47;`.  
+- **docs-integrity-snapshot.yml** — wird bei Änderungen in `docs&#47;**` getriggert.  
+- **merge_logs / merge_log_hygiene** — Merge-Logs unter `docs&#47;ops&#47;merge_logs&#47;`, inkl. Grafana/DS-Fixes (z. B. PR #999).  
+- **mcp_smoke_preflight** — kann Runbooks wie `docs&#47;ops&#47;runbooks&#47;RUNBOOK_MCP_TOOLING.md` (Playwright/Grafana MCP) referenzieren.
 
 ### 4.3 Tests im Repo
 
 - **Grafana-Provisioning / Dashpack:**  
   - `tests/obs/test_grafana_provisioning_sanity.py`  
   - `tests/obs/test_grafana_dashpack_integrity_v1.py`  
-  - Verweisen auf `docs/webui/observability/grafana/dashboards`.  
+  - Verweisen auf `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards`.  
 - **Shadow MVS / Grafana-Health:**  
   - `tests/obs/test_shadow_mvs_verify_retries.py` (Grafana Health, API).  
 - **AI Live Ops:**  
@@ -152,7 +152,7 @@ Die **Frontdoor** ist der **zentrale Einstieg** in die Peak_Trade-Dokumentation:
 - **Haupt-Frontdoor:**  
   **`docs/README.md`** — „Peak_Trade Documentation – Frontdoor“  
   - Start Here, By Audience (Research, Developer, Ops, Governance), Quick Start, Subdirectory Indexes.  
-  - Verlinkt u.a. **Ops-Hub** `docs/ops/README.md`, **Monitoring** (z. B. `OBSERVABILITY_AND_MONITORING_PLAN.md`), Runbooks, Governance.
+  - Verlinkt u.a. **Ops-Hub** `docs&#47;ops&#47;README.md`, **Monitoring** (z. B. `OBSERVABILITY_AND_MONITORING_PLAN.md`), Runbooks, Governance.
 
 - **Workflow-Frontdoor:**  
   **`docs/WORKFLOW_FRONTDOOR.md`**  
@@ -160,18 +160,18 @@ Die **Frontdoor** ist der **zentrale Einstieg** in die Peak_Trade-Dokumentation:
   - Verweist auf Runbook-Übersichten, Installation, Live Operational Runbooks.
 
 - **Ops-Hub (Operator-Frontdoor):**  
-  **`docs/ops/README.md`**  
+  **`docs&#47;ops&#47;README.md`**  
   - Operator-Zentrum: Runbooks, Merge-Logs, Gates, Evidenz, CI-Policy.  
   - Enthält Verweise auf Grafana/Observability (z. B. PR #994 MCP/Playwright/Grafana, PR #964 AI Live Ops/Grafana, PR #999 DS_LOCAL Fix).
 
 ### 5.2 Einbindung von Grafana/Observability in die Frontdoor
 
 - **Direkt:**  
-  - Observability-Quickstart und Grafana-Betrieb stehen in **`docs/webui/observability/README.md`**.  
-  - Von der Haupt-Frontdoor aus erreichbar über **Monitoring & Alerts** (z. B. `OBSERVABILITY_AND_MONITORING_PLAN.md`) und über den **Ops-Hub** (`docs/ops/README.md`), der Merge-Logs und Runbooks zu Grafana/Observability verlinkt.
+  - Observability-Quickstart und Grafana-Betrieb stehen in **`docs&#47;webui&#47;observability&#47;README.md`**.  
+  - Von der Haupt-Frontdoor aus erreichbar über **Monitoring & Alerts** (z. B. `OBSERVABILITY_AND_MONITORING_PLAN.md`) und über den **Ops-Hub** (`docs&#47;ops&#47;README.md`), der Merge-Logs und Runbooks zu Grafana/Observability verlinkt.
 
 - **Indirekt:**  
-  - Runbooks unter `docs/ops/runbooks/` (z. B. MCP Tooling mit Grafana, Docker-Stack, Cursor Multi-Agent) und `docs/observability/Peak_Trade_Observability_Runbook_Grafana_Dashboard_Setup.md` sind Teil der ops-orientierten Navigation und über die Frontdoor-Struktur auffindbar.
+  - Runbooks unter `docs&#47;ops&#47;runbooks&#47;` (z. B. MCP Tooling mit Grafana, Docker-Stack, Cursor Multi-Agent) und `docs&#47;observability&#47;Peak_Trade_Observability_Runbook_Grafana_Dashboard_Setup.md` sind Teil der ops-orientierten Navigation und über die Frontdoor-Struktur auffindbar.
 
 ### 5.3 Wichtige Docs-Pfade (Überblick)
 
@@ -179,11 +179,11 @@ Die **Frontdoor** ist der **zentrale Einstieg** in die Peak_Trade-Dokumentation:
 |------|--------|
 | `docs/README.md` | Haupt-Frontdoor |
 | `docs/WORKFLOW_FRONTDOOR.md` | Workflow-/Runbook-Navigation |
-| `docs/ops/README.md` | Ops-Hub, inkl. Grafana/Observability-Kontext |
-| `docs/webui/observability/README.md` | Grafana/Prometheus Quickstart, AI Live, Verify |
-| `docs/webui/observability/grafana/` | Dashboards + Provisioning |
-| `docs/observability/Peak_Trade_Observability_Runbook_*.md` | Runbook Grafana/Datenflüsse |
-| `docs/ops/ci_pragmatic_flow_*.md` | CI-Logik (docs_only, PR Gate) |
+| `docs&#47;ops&#47;README.md` | Ops-Hub, inkl. Grafana/Observability-Kontext |
+| `docs&#47;webui&#47;observability&#47;README.md` | Grafana/Prometheus Quickstart, AI Live, Verify |
+| `docs&#47;webui&#47;observability&#47;grafana&#47;` | Dashboards + Provisioning |
+| `docs&#47;observability&#47;Peak_Trade_Observability_Runbook_*.md` | Runbook Grafana/Datenflüsse |
+| `docs&#47;ops&#47;ci_pragmatic_flow_*.md` | CI-Logik (docs_only, PR Gate) |
 
 ---
 
@@ -221,10 +221,10 @@ bash scripts/obs/shadow_mvs_local_down.sh
 
 ### Wo was ändern?
 
-- **Dashboard-JSON:** `docs/webui/observability/grafana/dashboards/` → wird von CI als Docs-Änderung erkannt (`docs_only`).  
-- **Datasources:** `docs/webui/observability/grafana/provisioning/datasources/` (z. B. `multi_prom.yml`).  
-- **Dashboard-Provider:** `docs/webui/observability/grafana/provisioning/dashboards/dashboards.yaml`.  
-- **Compose (Grafana/Prom):** Root `DOCKER_COMPOSE_GRAFANA_ONLY.yml` bzw. `docs/webui/observability/*.yml`.
+- **Dashboard-JSON:** `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;` → wird von CI als Docs-Änderung erkannt (`docs_only`).  
+- **Datasources:** `docs&#47;webui&#47;observability&#47;grafana&#47;provisioning&#47;datasources&#47;` (z. B. `multi_prom.yml`).  
+- **Dashboard-Provider:** `docs&#47;webui&#47;observability&#47;grafana&#47;provisioning&#47;dashboards&#47;dashboards.yaml`.  
+- **Compose (Grafana/Prom):** Root `DOCKER_COMPOSE_GRAFANA_ONLY.yml` bzw. `docs&#47;webui&#47;observability&#47;*.yml`.
 
 ---
 

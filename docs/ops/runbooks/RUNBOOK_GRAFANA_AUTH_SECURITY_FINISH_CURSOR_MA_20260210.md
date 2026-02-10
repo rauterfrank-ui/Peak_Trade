@@ -1,6 +1,6 @@
 # RUNBOOK_GRAFANA_AUTH_SECURITY_FINISH_CURSOR_MA_20260210
 
-> Scope: Grafana Login (kein `admin/admin` mehr als Repo-Default) + Security-Baseline (Ports localhost-only, Remote-Access-Policy) + Verify-Skripte/Docs/Tests konsistent.
+> Scope: Grafana Login (kein `admin&#47;admin` mehr als Repo-Default) + Security-Baseline (Ports localhost-only, Remote-Access-Policy) + Verify-Skripte/Docs/Tests konsistent.
 >
 > Execution mode: Cursor Multi Agent Orchestrator (Bash-only).  
 > Repo: Peak_Trade  
@@ -25,7 +25,7 @@ ls -la DOCKER_COMPOSE_GRAFANA_ONLY.yml || true
 ls -la docs/webui/observability/DOCKER_COMPOSE_*.yml || true
 
 rg -n --hidden --glob '!**/.git/**' \
-  'GF_SECURITY_ADMIN_(USER|PASSWORD)|GF_AUTH_ANONYMOUS|GF_USERS_ALLOW_SIGN_UP|admin:admin|admin/admin|GRAFANA_AUTH\=\"\$\{GRAFANA_AUTH:-admin:admin\}\"|GRAFANA_AUTH:-admin:admin' \
+  'GF_SECURITY_ADMIN_(USER|PASSWORD)|GF_AUTH_ANONYMOUS|GF_USERS_ALLOW_SIGN_UP|admin:admin|admin&#47;admin|GRAFANA_AUTH\=\"\$\{GRAFANA_AUTH:-admin:admin\}\"|GRAFANA_AUTH:-admin:admin' \
   DOCKER_COMPOSE_GRAFANA_ONLY.yml docs/webui/observability scripts/obs tests/obs docs -S
 ```
 
@@ -55,7 +55,7 @@ git status -sb
 
 ---
 
-## Phase 3 — Compose: Remove Hardcoded admin/admin + Require Env + Localhost Ports
+## Phase 3 — Compose: Remove Hardcoded admin&#47;admin + Require Env + Localhost Ports
 
 ### 3.1 Edit Root Compose: `DOCKER_COMPOSE_GRAFANA_ONLY.yml`
 
@@ -102,7 +102,7 @@ Apply:
 ```bash
 cd /Users/frnkhrz/Peak_Trade
 
-rg -n 'GF_SECURITY_ADMIN_PASSWORD\s*:\s*["'\'']admin["'\'']|GF_SECURITY_ADMIN_PASSWORD=admin|admin/admin|admin:admin' \
+rg -n 'GF_SECURITY_ADMIN_PASSWORD\s*:\s*["'\'']admin["'\'']|GF_SECURITY_ADMIN_PASSWORD=admin|admin&#47;admin|admin:admin' \
   DOCKER_COMPOSE_GRAFANA_ONLY.yml docs/webui/observability/DOCKER_COMPOSE_*.yml -S || true
 
 rg -n '127\.0\.0\.1:3000:3000|127\.0\.0\.1:9092|127\.0\.0\.1:9093|127\.0\.0\.1:9094|127\.0\.0\.1:9095|127\.0\.0\.1:9109|127\.0\.0\.1:9110' \
@@ -162,21 +162,21 @@ fi
 Post-edit:
 ```bash
 cd /Users/frnkhrz/Peak_Trade
-rg -n 'admin:admin|admin/admin|GRAFANA_AUTH:-admin:admin' scripts/obs -S || true
+rg -n 'admin:admin|admin&#47;admin|GRAFANA_AUTH:-admin:admin' scripts/obs -S || true
 ```
 
 ---
 
-## Phase 6 — Docs: Remove admin/admin + Add Override Instructions
+## Phase 6 — Docs: Remove admin&#47;admin + Add Override Instructions
 
 ```bash
 cd /Users/frnkhrz/Peak_Trade
 
-rg -n 'admin:admin|admin/admin' docs/webui/observability docs/ops/runbooks docs/observability -S
+rg -n 'admin:admin|admin&#47;admin' docs/webui/observability docs/ops/runbooks docs/observability -S
 ```
 
 Edit each hit:
-- replace "admin/admin" with "use `.env` / exports"
+- replace "admin&#47;admin" with "use `.env` / exports"
 - add a Credentials section in `docs/webui/observability/README.md`
 - troubleshooting: 401 → auth vars; if correct but still 401 → volume drift; reset is destructive (dev-only)
 
@@ -249,7 +249,7 @@ cd /Users/frnkhrz/Peak_Trade
 git add -A
 git diff --cached --stat
 
-git commit -m "obs(grafana): require env creds, remove admin/admin defaults; localhost-only ports; align verify+docs+tests"
+git commit -m "obs(grafana): require env creds, remove admin&#47;admin defaults; localhost-only ports; align verify+docs+tests"
 
 git push -u origin feat/obs-grafana-auth-security
 
@@ -281,7 +281,7 @@ git status -sb
 ```bash
 cd /Users/frnkhrz/Peak_Trade
 
-rg -n 'admin:admin|admin/admin|GF_SECURITY_ADMIN_PASSWORD\s*:\s*["'\'']admin["'\'']|GF_SECURITY_ADMIN_PASSWORD=admin' \
+rg -n 'admin:admin|admin&#47;admin|GF_SECURITY_ADMIN_PASSWORD\s*:\s*["'\'']admin["'\'']|GF_SECURITY_ADMIN_PASSWORD=admin' \
   DOCKER_COMPOSE_GRAFANA_ONLY.yml docs/webui/observability scripts/obs docs tests -S || true
 
 docker ps --format 'table {{.Names}}\t{{.Ports}}' | rg -n '3000|9092|9093|9094|9095|9109|9110' || true
