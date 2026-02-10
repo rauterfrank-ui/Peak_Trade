@@ -5,7 +5,8 @@
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
-git fetch origin --prune --tags
+echo "[Phase 1] Fetch (best-effort; may fail offline)"
+git fetch origin --prune --tags || echo "WARN: git fetch failed (offline/blocked). Continuing with local refs."
 git checkout main
 git pull --ff-only origin main || {
   if [ -z "$(git status --porcelain)" ]; then
