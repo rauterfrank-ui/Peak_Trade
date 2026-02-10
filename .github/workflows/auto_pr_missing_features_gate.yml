@@ -18,18 +18,18 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const branch = context.ref.replace('refs/heads/', '');
-            const base = 'main';
-            const head = `${owner}:${branch}`;
-
             try {
+              const owner = context.repo.owner;
+              const repo = context.repo.repo;
+              const branch = context.ref.replace('refs/heads/', '');
+              const base = 'main';
+
               const existing = await github.rest.pulls.list({
-                owner, repo, state: 'open', base, head
+                owner,
+                repo,
+                state: 'open',
+                base,
+                head: `${owner}:${branch}`,
               });
 
               if (existing.data.length > 0) {
@@ -41,22 +41,31 @@ jobs:
               const body = [
                 '## Summary',
                 '',
-                '- Add/index Cursor MA runbook for open points (A–J).',
-                '- Sync missing-features doc to current repo state.',
-                '- Refine ai_matrix_consistency_gate.',
+                '1) Runbook indexed + added',
+                '- Adds Cursor MA open-points runbook (A–J) and index entries.',
+                '',
+                '2) Missing-features status synced',
+                '- Updates missing-features doc to current repo state (research track).',
+                '',
+                '3) AI matrix consistency gate refined',
+                '- Updates scripts/governance/ai_matrix_consistency_gate.sh',
                 '',
                 '## Validation',
-                '- Guardrails confirmed: only expected paths changed (docs + governance gate).',
-                '',
-                '_Details: see commit list and file diff._'
+                '- Guardrails: only expected paths changed (docs + governance gate).',
               ].join('\n');
 
               const pr = await github.rest.pulls.create({
-                owner, repo, title, head: branch, base, body, maintainer_can_modify: true
+                owner,
+                repo,
+                title,
+                head: branch,
+                base,
+                body,
+                maintainer_can_modify: true,
               });
 
               core.info(`PR created: ${pr.data.html_url}`);
             } catch (err) {
-              core.setFailed(`Create PR failed: ${err.message}. If 403/Resource not accessible: Settings → Actions → Workflow permissions → set to "Read and write permissions".`);
-              throw err;
+              core.setFailed(`Auto PR creation failed: ${err?.message || err}`);
+              core.info('If this is a permissions issue: Settings → Actions → General → Workflow permissions → Read and write permissions + allow PR create/approve.');
             }
