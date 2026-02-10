@@ -30,7 +30,7 @@ jobs:
               return;
             }
             if (pr.data.draft) {
-              core.setFailed('PR is draft; cannot enable auto-merge.');
+              core.info('PR is draft; cannot enable auto-merge (noop).');
               return;
             }
 
