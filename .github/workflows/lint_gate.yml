@@ -49,6 +49,10 @@ jobs:
           elif [ "${{ github.event_name }}" = "merge_group" ]; then
             BASE_SHA="${{ github.event.merge_group.base_sha }}"
             HEAD_SHA="${{ github.event.merge_group.head_sha }}"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            git fetch origin main --depth=1 || git fetch origin main
+            BASE_SHA="$(git rev-parse origin/main)"
+            HEAD_SHA="${{ github.sha }}"
           else
             echo "Unsupported event: ${{ github.event_name }}"
             exit 1
