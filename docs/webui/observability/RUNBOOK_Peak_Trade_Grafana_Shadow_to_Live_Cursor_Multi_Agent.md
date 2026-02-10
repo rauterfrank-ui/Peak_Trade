@@ -99,7 +99,7 @@ Wenn **irgendwas FAIL**: **sofort** auf den passenden Knoten springen (kein Scop
   - `shadow_mvs_up`
   - `peak_trade_pipeline_events_total`
 - Prometheus-local (Host): `http://127.0.0.1:9092` zeigt unter `&#47;targets` **`job="shadow_mvs"` = UP**
-- Grafana (Host): `http://127.0.0.1:3000` (Login `admin&#47;admin`)
+- Grafana (Host): `http://127.0.0.1:3000` (Login: Credentials aus `.env` oder `GRAFANA_AUTH=user:pass`)
   - Datasource default: **`prometheus-local`** (UID `peaktrade-prometheus-local`, URL `http://host.docker.internal:9092`)
   - Dashboard sichtbar: UID **`peaktrade-shadow-pipeline-mvs`**
 
@@ -466,7 +466,7 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 - Prometheus:
   - `curl -fsS "http:&#47;&#47;127.0.0.1:9092&#47;api&#47;v1&#47;query?query=up%7Bjob%3D%22shadow_mvs%22%7D"`
 - Grafana:
-  - `curl -fsS -u admin:admin http:&#47;&#47;127.0.0.1:3000&#47;api&#47;health`
+  - `curl -fsS -u "$GRAFANA_AUTH" http:&#47;&#47;127.0.0.1:3000&#47;api&#47;health` (GRAFANA_AUTH aus .env oder export)
 
 **Smoke Checklist (was das Script prüft):**
 - Exporter erreichbar und enthält `shadow_mvs_up` + `peak_trade_pipeline_events_total`
@@ -523,7 +523,7 @@ bash scripts/obs/shadow_mvs_local_verify.sh
     - Erwartung: `targets: ["host.docker.internal:9109"]`
 
 #### G‑4: Grafana down / health nicht OK
-- **Symptom**: `curl -u admin:admin http:&#47;&#47;127.0.0.1:3000&#47;api&#47;health` fail
+- **Symptom**: `curl -u "$GRAFANA_AUTH" http:&#47;&#47;127.0.0.1:3000&#47;api&#47;health` fail
 - **Wahrscheinlichste Ursache**: Grafana container nicht läuft / Port `:3000` belegt
 - **Next Commands (snapshot)**:
   - `docker compose -p peaktrade-shadow-mvs -f docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_GRAFANA_ONLY.yml ps`
@@ -534,7 +534,7 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 - **Symptom (Auth)**: Verify meldet `Grafana auth failed ... (HTTP 401)` → Credentials/DB-Drift (alte Volumes) oder falsches Login
 - **Wahrscheinlichste Ursache**: falsches Datasource‑YAML gemountet (oder altes Provisioning im Container)
 - **Next Commands (snapshot)**:
-  - `curl -fsS -u admin:admin http:&#47;&#47;127.0.0.1:3000&#47;api&#47;datasources | python3 -m json.tool | head -n 220`
+  - `curl -fsS -u "$GRAFANA_AUTH" http:&#47;&#47;127.0.0.1:3000&#47;api&#47;datasources | python3 -m json.tool | head -n 220`
   - `docker compose -p peaktrade-shadow-mvs -f docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_GRAFANA_ONLY.yml up -d --force-recreate --renew-anon-volumes --remove-orphans`
   - (Reset, deterministisch) `bash scripts&#47;obs&#47;shadow_mvs_local_down.sh && bash scripts&#47;obs&#47;shadow_mvs_local_up.sh`
 
@@ -542,7 +542,7 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 - **Symptom**: Grafana `&#47;api&#47;search?type=dash-db` enthält `peaktrade-shadow-pipeline-mvs` nicht
 - **Wahrscheinlichste Ursache**: Dashboard provider path/mount mismatch oder JSON nicht gemountet
 - **Next Commands (snapshot)**:
-  - `curl -fsS -u admin:admin -G http:&#47;&#47;127.0.0.1:3000&#47;api&#47;search --data-urlencode type=dash-db | python3 -m json.tool | head -n 120`
+  - `curl -fsS -u "$GRAFANA_AUTH" -G http:&#47;&#47;127.0.0.1:3000&#47;api&#47;search --data-urlencode type=dash-db | python3 -m json.tool | head -n 120`
   - `docker compose -p peaktrade-shadow-mvs -f docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml -f docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_GRAFANA_ONLY.yml exec grafana sh -lc 'ls -la &#47;etc&#47;grafana&#47;provisioning&#47;dashboards || true; echo; ls -la &#47;etc&#47;grafana&#47;dashboards || true'`
 
 #### G‑7: Daten „empty“ obwohl Targets UP

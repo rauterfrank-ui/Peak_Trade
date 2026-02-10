@@ -16,7 +16,7 @@ bash scripts/obs/up.sh
 ```
 
 Access:
-- Grafana: http://localhost:3000 (admin/admin)
+- Grafana: http://localhost:3000 (Login: .env oder GRAFANA_AUTH=user:pass)
 - Prometheus: http://localhost:9090
 - Tempo: http://localhost:3200
 - Loki: http://localhost:3100
@@ -94,7 +94,7 @@ lake.read(...)
 ## Viewing Traces in Grafana
 
 1. Open http://localhost:3000
-2. Login: admin/admin
+2. Login: Credentials aus .env oder GRAFANA_AUTH=user:pass
 3. Navigate to Explore (left sidebar)
 4. Select "Tempo" datasource
 5. Search by:
