@@ -29,13 +29,20 @@ bash scripts/obs/shadow_mvs_local_down.sh
 ```
 
 URLs:
-- Grafana: http:&#47;&#47;127.0.0.1:3000 (admin/admin)
+- Grafana: http:&#47;&#47;127.0.0.1:3000 (Login: Credentials via `.env` oder `GRAFANA_AUTH=user:pass`, siehe Abschnitt Credentials)
 - Prometheus-local: http:&#47;&#47;127.0.0.1:9092
 - Shadow-MVS Exporter: http:&#47;&#47;127.0.0.1:9109&#47;metrics
 
 Relevante Compose-Files:
 - docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml
 - docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml
+
+### Credentials (Grafana Login)
+
+- **Kein Default-Passwort im Repo.** Compose erwartet `GF_SECURITY_ADMIN_PASSWORD` (z.B. aus lokaler `.env`).
+- **Lokale `.env`** (nicht committen): `GF_SECURITY_ADMIN_USER=admin`, `GF_SECURITY_ADMIN_PASSWORD=<dein Passwort>`, optional `GRAFANA_AUTH=admin:<dein Passwort>` für Verify-Skripte.
+- **Verify-Skripte** benötigen `GRAFANA_AUTH=user:pass` oder `GRAFANA_TOKEN`; bei gesetzter `.env` können sie Auth aus `GF_SECURITY_ADMIN_USER` + `GF_SECURITY_ADMIN_PASSWORD` ableiten.
+- **401 / Auth fehlgeschlagen:** Credentials prüfen (`.env` / `GRAFANA_AUTH`); wenn korrekt und weiter 401 → Volume-Drift (Reset nur dev-only: `grafana_local_down.sh` + `grafana_local_up.sh`).
 
 ## AI Live
 
@@ -382,7 +389,8 @@ Script: `scripts&#47;obs&#47;grafana_verify_v2.sh`
 
 Env Overrides:
 - `GRAFANA_URL` (default `http:&#47;&#47;127.0.0.1:3000`)
-- `GRAFANA_AUTH` (default `admin:admin`)
+- `GRAFANA_AUTH` (Format `user:pass`; **erforderlich** für Verify-Skripte — setzen oder aus `.env` / `GF_SECURITY_ADMIN_USER`+`GF_SECURITY_ADMIN_PASSWORD` ableiten)
+- `GRAFANA_TOKEN` (alternativ zu GRAFANA_AUTH, wo unterstützt)
 - `PROM_URL` (default `http:&#47;&#47;127.0.0.1:9092`)
 - `VERIFY_OUT_DIR` (optional)
 
@@ -426,8 +434,9 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 curl -fsS http://127.0.0.1:9092/-/ready
 curl -fsS http://127.0.0.1:9092/api/v1/targets | python3 -m json.tool | head -n 120
 curl -fsS http://127.0.0.1:9109/metrics | head -n 40
-curl -fsS -u admin:admin http://127.0.0.1:3000/api/health
+curl -fsS -u \"\$GRAFANA_AUTH\" http://127.0.0.1:3000/api/health
 ```
+(Setze vorher `export GRAFANA_AUTH=user:pass` oder nutze Werte aus `.env`.)
 
 - Golden Smoke Pattern (Prometheus Query deterministisch: `--out` + Parse aus Datei):
 
@@ -453,8 +462,8 @@ Snapshot-Debug (keine Watch-Loops):
 # Status
 docker compose -p peaktrade-grafana-local -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml ps
 
-# Grafana health
-curl -fsS -u admin:admin http://127.0.0.1:3000/api/health
+# Grafana health (GRAFANA_AUTH=user:pass aus .env setzen)
+curl -fsS -u \"\$GRAFANA_AUTH\" http://127.0.0.1:3000/api/health
 
 # Provisioning mounts (im Container)
 docker compose -p peaktrade-grafana-local -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml exec grafana sh -lc 'ls -la /etc/grafana/provisioning/dashboards /etc/grafana/provisioning/datasources /etc/grafana/dashboards'

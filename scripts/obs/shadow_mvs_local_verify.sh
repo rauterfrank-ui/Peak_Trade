@@ -6,7 +6,15 @@ cd "$(git rev-parse --show-toplevel)"
 GRAFANA_URL="${GRAFANA_URL:-http://127.0.0.1:3000}"
 PROM_URL="${PROM_URL:-http://127.0.0.1:9092}"
 EXPORTER_URL="${EXPORTER_URL:-${SHADOW_MVS_EXPORTER_URL:-http://127.0.0.1:9109/metrics}}"
-GRAFANA_AUTH="${GRAFANA_AUTH:-admin:admin}"
+if [[ -z "${GRAFANA_TOKEN:-}" ]]; then
+  if [[ -z "${GRAFANA_AUTH:-}" && -n "${GF_SECURITY_ADMIN_USER:-}" && -n "${GF_SECURITY_ADMIN_PASSWORD:-}" ]]; then
+    GRAFANA_AUTH="${GF_SECURITY_ADMIN_USER}:${GF_SECURITY_ADMIN_PASSWORD}"
+  fi
+fi
+if [[ -z "${GRAFANA_TOKEN:-}" && -z "${GRAFANA_AUTH:-}" ]]; then
+  echo "ERROR: Grafana auth missing. Set GRAFANA_TOKEN (preferred) or GRAFANA_AUTH=user:pass." >&2
+  exit 2
+fi
 DASH_UID="${DASH_UID:-peaktrade-shadow-pipeline-mvs}"
 
 pass() {
@@ -64,7 +72,7 @@ grafana_get_json_or_fail() {
   code="${resp##*$'\n'}"
 
   if [[ "$code" == "401" || "$code" == "403" ]]; then
-    fail "grafana.auth" "Grafana auth failed for ${path} (HTTP $code). Expected default admin/admin." "Phase F-1 (Grafana Login/DS)"
+    fail "grafana.auth" "Grafana auth failed for ${path} (HTTP $code). Set GRAFANA_AUTH=user:pass or use .env." "Phase F-1 (Grafana Login/DS)"
   fi
   if [[ "$code" != "200" ]]; then
     fail "grafana.http" "Grafana request failed for ${path} (HTTP ${code})." "Phase F-1 (Grafana Login/DS)"
