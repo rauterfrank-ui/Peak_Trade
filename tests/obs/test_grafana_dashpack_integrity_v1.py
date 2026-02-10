@@ -80,13 +80,8 @@ def test_dashpack_ds_vars_hidden_and_defaults_stable() -> None:
         assert t.get("hide") == 0, f"{p} var ds should be visible (hide=0)"
         cur = t.get("current") or {}
         assert isinstance(cur, dict)
-        # Contract: default to local Prometheus for deterministic local UX.
-        # Unified operator dashboard defaults to AI Live datasource.
-        expected_ds = (
-            "prom_ai_live_9094"
-            if p.name == "peaktrade-operator-unified.json"
-            else "prom_local_9092"
-        )
+        # Contract: default to local Prometheus for deterministic local UX (DS invariant).
+        expected_ds = "prom_local_9092"
         assert cur.get("value") == expected_ds, f"{p} var ds default mismatch"
 
 
