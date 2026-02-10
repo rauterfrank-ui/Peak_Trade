@@ -1,0 +1,48 @@
+name: Auto-merge PR 1267 (squash)
+
+on:
+  push:
+    branches:
+      - feat/missing-features-and-ai-matrix-gate
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable auto-merge for PR 1267
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const pull_number = 1267;
+
+            const pr = await github.rest.pulls.get({ owner, repo, pull_number });
+            core.info(`PR state=${pr.data.state} merged=${pr.data.merged} draft=${pr.data.draft}`);
+
+            if (pr.data.state !== 'open' || pr.data.merged) {
+              core.info('PR is not open or already merged. Exiting.');
+              return;
+            }
+            if (pr.data.draft) {
+              core.setFailed('PR is draft; cannot enable auto-merge.');
+              return;
+            }
+
+            // Enable auto-merge (squash)
+            await github.graphql(
+              `
+              mutation($prId:ID!, $method:PullRequestMergeMethod!) {
+                enablePullRequestAutoMerge(input:{pullRequestId:$prId, mergeMethod:$method}) {
+                  pullRequest { number autoMergeRequest { enabledAt } }
+                }
+              }`,
+              { prId: pr.data.node_id, method: "SQUASH" }
+            );
+
+            core.info('Auto-merge enabled (SQUASH).');
