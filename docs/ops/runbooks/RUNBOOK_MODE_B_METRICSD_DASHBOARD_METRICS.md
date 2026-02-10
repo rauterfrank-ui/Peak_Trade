@@ -132,11 +132,11 @@ PY
 echo "== Grafana verify (datasource proxy query up) =="
 GRAFANA_URL="http://localhost:3000"
 curl -sS "$GRAFANA_URL/api/health" > "$OUT/grafana_health.json"
-curl -sS -u "admin:admin" "$GRAFANA_URL/api/datasources/name/prometheus" > "$OUT/grafana_ds_prom.json"
+curl -sS -u "${GRAFANA_AUTH:?set GRAFANA_AUTH}" "$GRAFANA_URL/api/datasources/name/prometheus" > "$OUT/grafana_ds_prom.json"
 DS_ID="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("id",""))' "$OUT/grafana_ds_prom.json" 2>/dev/null || true)"
 echo "DS_ID=${DS_ID:-<EMPTY>}" | tee "$OUT/grafana_ds_id.txt"
 if [ -n "$DS_ID" ]; then
-  curl -sS -u "admin:admin" \
+  curl -sS -u "${GRAFANA_AUTH:?set GRAFANA_AUTH}" \
     "$GRAFANA_URL/api/datasources/proxy/$DS_ID/api/v1/query?query=up" \
     > "$OUT/grafana_proxy_query_up.json"
 fi
