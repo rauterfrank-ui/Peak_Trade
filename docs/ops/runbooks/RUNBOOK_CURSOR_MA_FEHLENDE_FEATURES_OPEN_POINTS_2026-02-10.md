@@ -4,6 +4,23 @@
 **Runbook-Version:** 2026-02-10T12:00:00+01:00 (Europe/Berlin)  
 **Ziel:** Für die **noch offenen** Punkte ein **logisches, sequentielles** Abarbeitungs-Runbook, das in **Cursor Multi-Agent Chats** (bash-only) ausführbar ist, mit klaren **Einstiegs-/Endpunkten**, Artefakt-Pfaden und Evidence.
 
+### Stand / Fortschritt (wird bei Abarbeitung aktualisiert)
+
+| Block | Slug | Status | Anmerkung |
+|-------|------|--------|-----------|
+| A | sweep-pipeline-cli | ✅ erledigt | `scripts/run_sweep_pipeline.py` mit --run/--report/--promote, Artefakte unter `out/research/<sweep_id>/` (2026-02-11) |
+| B | heatmap-template-2x2 | ✅ erledigt | `create_standard_2x2_heatmap()` in `src/reporting/sweep_visualization.py`, 2 params × 2 metrics, Tests (2026-02-11) |
+| C | vol-regime-universal-wrapper | offen | |
+| D | corr-matrix-param-metric | offen | |
+| E | rolling-window-stability | offen | |
+| F | sweep-comparison-tool | offen | |
+| G | metrics-ulcer-recovery | ✅ erledigt | Ulcer Index + Recovery Factor in `src/backtest/stats.py`, Engine + `compute_backtest_stats`, Sweep-Defaults, Tests (2026-02-11) |
+| H | nightly-sweep-automation | offen | |
+| I | feature-importance-wrapper | offen | |
+| J | feature-engine-skeleton | offen | |
+
+**Nächster logischer Schritt:** Block C (Vol-Regime Universal Wrapper).
+
 ---
 
 ## 0) Konventionen (wichtig für Reproduzierbarkeit)
@@ -123,8 +140,8 @@ cd "$(git rev-parse --show-toplevel)"
 ruff format --check src tests scripts || true
 pytest -q || true
 
-# Minimal Smoke (falls CLI existiert):
-python -m scripts.run_sweep_pipeline --help 2>&1 | tee "out/ops/cursor_ma/${SLUG}/smoke_help.txt" || true
+# Minimal Smoke (CLI vorhanden):
+python3 scripts/run_sweep_pipeline.py --help 2>&1 | tee "out/ops/cursor_ma/${SLUG}/smoke_help.txt" || true
 
 # Evidence
 git diff | tee "out/ops/cursor_ma/${SLUG}/DIFF.patch"
@@ -184,6 +201,23 @@ git commit -m "reporting: add standard 2x2 heatmap template" || true
 ```
 
 **Endpunkt:** 2×Heatmap Template ist verfügbar, tests grün.
+
+**Beispiel (nach Implementierung):**
+```python
+from pathlib import Path
+from src.reporting.sweep_visualization import create_standard_2x2_heatmap
+
+paths = create_standard_2x2_heatmap(
+    df=sweep_df,
+    x_param="fast_period",
+    y_param="slow_period",
+    metric_a="sharpe_ratio",
+    metric_b="max_drawdown",
+    sweep_name="ma_sweep",
+    output_dir=Path("out/research/run_01/report"),
+)
+# -> paths["metric_a"], paths["metric_b"] (PNG-Pfade)
+```
 
 ---
 

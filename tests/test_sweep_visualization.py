@@ -20,6 +20,7 @@ from src.reporting.sweep_visualization import (
     plot_metric_vs_single_param,
     plot_metric_heatmap_two_params,
     create_drawdown_heatmap,
+    create_standard_2x2_heatmap,
     generate_default_sweep_plots,
 )
 
@@ -468,6 +469,84 @@ class TestCreateDrawdownHeatmap:
 
             assert result is not None
             assert result.exists()
+
+
+# =============================================================================
+# STANDARD 2×2 HEATMAP TEMPLATE (Block B)
+# =============================================================================
+
+
+class TestCreateStandard2x2Heatmap:
+    """Tests für create_standard_2x2_heatmap()."""
+
+    def test_create_standard_2x2_heatmap_creates_two_files(self):
+        """2×2 Template erzeugt zwei Heatmaps mit deterministischen Dateinamen."""
+        df = pd.DataFrame({
+            "param_fast": [5, 5, 10, 10],
+            "param_slow": [50, 100, 50, 100],
+            "metric_sharpe_ratio": [1.2, 1.5, 1.3, 1.6],
+            "metric_max_drawdown": [-0.05, -0.08, -0.06, -0.07],
+        })
+        with TemporaryDirectory() as tmpdir:
+            out = Path(tmpdir)
+            result = create_standard_2x2_heatmap(
+                df=df,
+                x_param="fast",
+                y_param="slow",
+                metric_a="sharpe_ratio",
+                metric_b="max_drawdown",
+                sweep_name="smoke_2x2",
+                output_dir=out,
+            )
+            assert "metric_a" in result
+            assert "metric_b" in result
+            assert result["metric_a"].exists()
+            assert result["metric_b"].exists()
+            assert "heatmap_2x2" in result["metric_a"].name
+            assert "sharpe_ratio" in result["metric_a"].name
+            assert "max_drawdown" in result["metric_b"].name
+
+    def test_create_standard_2x2_heatmap_handles_missing_grid_points(self):
+        """Fehlende Gitterpunkte (unvollständiges Grid) werden toleriert."""
+        df = pd.DataFrame({
+            "param_fast": [5, 10, 10],
+            "param_slow": [50, 50, 100],
+            "metric_sharpe_ratio": [1.2, 1.3, 1.6],
+            "metric_total_return": [0.1, 0.12, 0.15],
+        })
+        with TemporaryDirectory() as tmpdir:
+            out = Path(tmpdir)
+            result = create_standard_2x2_heatmap(
+                df=df,
+                x_param="fast",
+                y_param="slow",
+                metric_a="sharpe_ratio",
+                metric_b="total_return",
+                sweep_name="sparse",
+                output_dir=out,
+            )
+            assert len(result) == 2
+            assert result["metric_a"].exists()
+            assert result["metric_b"].exists()
+
+    def test_create_standard_2x2_heatmap_missing_column_raises(self):
+        """Fehler wenn eine erforderliche Spalte fehlt."""
+        df = pd.DataFrame({
+            "param_fast": [5, 10],
+            "param_slow": [50, 100],
+            "metric_sharpe_ratio": [1.2, 1.5],
+        })
+        with TemporaryDirectory() as tmpdir:
+            with pytest.raises(ValueError, match="metric_b|nicht gefunden"):
+                create_standard_2x2_heatmap(
+                    df=df,
+                    x_param="fast",
+                    y_param="slow",
+                    metric_a="sharpe_ratio",
+                    metric_b="max_drawdown",
+                    sweep_name="test",
+                    output_dir=Path(tmpdir),
+                )
 
 
 # =============================================================================
