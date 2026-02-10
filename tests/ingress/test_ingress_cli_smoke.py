@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_cli_empty_input_exits_zero_and_prints_two_paths(tmp_path: Path) -> None:
@@ -22,7 +25,8 @@ def test_cli_empty_input_exits_zero_and_prints_two_paths(tmp_path: Path) -> None
         ],
         capture_output=True,
         text=True,
-        cwd=str(Path(__file__).resolve().parents[2]),
+        cwd=REPO_ROOT,
+        env={**os.environ, "PYTHONPATH": str(REPO_ROOT)},
     )
     assert result.returncode == 0
     lines = [s.strip() for s in result.stdout.strip().splitlines() if s.strip()]
@@ -50,7 +54,8 @@ def test_cli_with_label_exits_zero(tmp_path: Path) -> None:
         ],
         capture_output=True,
         text=True,
-        cwd=str(Path(__file__).resolve().parents[2]),
+        cwd=REPO_ROOT,
+        env={**os.environ, "PYTHONPATH": str(REPO_ROOT)},
     )
     assert result.returncode == 0
     lines = [s.strip() for s in result.stdout.strip().splitlines() if s.strip()]
