@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """KEEP_REVIEW triage: branch, behind, ahead, last_commit_iso, open_pr_url for ahead>0 branches."""
+
 import json
 import os
 import subprocess
@@ -27,8 +28,14 @@ def main():
     if os.path.exists(path):
         lines = [l.strip().split("\t") for l in open(path) if l.strip()]
     else:
-        raw = sh("git", "for-each-ref", "--format=%(refname:short)", "refs/remotes/origin").splitlines()
-        bs = [r.split("/", 1)[1] for r in raw if r.startswith("origin/") and r not in ("origin/HEAD", "origin/main")]
+        raw = sh(
+            "git", "for-each-ref", "--format=%(refname:short)", "refs/remotes/origin"
+        ).splitlines()
+        bs = [
+            r.split("/", 1)[1]
+            for r in raw
+            if r.startswith("origin/") and r not in ("origin/HEAD", "origin/main")
+        ]
         lines = []
         for b in sorted(bs):
             out = sh("git", "rev-list", "--left-right", "--count", f"origin/main...origin/{b}")
