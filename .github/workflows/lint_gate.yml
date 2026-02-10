@@ -7,6 +7,8 @@ name: Lint Gate (Always Run)
 # If applicable → run linter (ruff)
 
 on:
+  workflow_dispatch: {}
+
   pull_request:
     types: [opened, synchronize, reopened]
   merge_group:

@@ -7,6 +7,8 @@ name: Policy Critic Gate (Always Run)
 # If applicable → run Policy Critic analysis
 
 on:
+  workflow_dispatch: {}
+
   pull_request:
     types: [opened, synchronize, reopened]
   merge_group:
