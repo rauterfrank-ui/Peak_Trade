@@ -9,11 +9,11 @@
 ## 0) Konventionen (wichtig für Reproduzierbarkeit)
 
 **Arbeitsweise pro Feature-Block:**
-- Neuer Branch pro Block: `feat/<slug>`
+- Neuer Branch pro Block: `feat&#47;<slug>`
 - Jede MA-Session schreibt:
-  - `out/ops/cursor_ma/<slug>/MANIFEST.json`
-  - `out/ops/cursor_ma/<slug>/JOURNAL.ndjson`
-  - `out/ops/cursor_ma/<slug>/EVIDENCE.md`
+  - `out&#47;ops&#47;cursor_ma&#47;<slug>&#47;MANIFEST.json`
+  - `out&#47;ops&#47;cursor_ma&#47;<slug>&#47;JOURNAL.ndjson`
+  - `out&#47;ops&#47;cursor_ma&#47;<slug>&#47;EVIDENCE.md`
 - Finaler Abschluss pro Block:
   - Tests/Lint: mindestens `ruff format --check` + relevante `pytest -q`
   - Commit mit eindeutigem Scope
@@ -74,7 +74,7 @@ Die folgenden Abschnitte liefern **konkrete Cursor-MA Blöcke** für 1–6.
 ## 3) Block A — Unified Pipeline CLI (`run_sweep_pipeline.py`)
 
 ### Einstieg
-- Ziel: Ein einziges CLI, das `--run/--report/--promote` orchestriert und Artefakte standardisiert ablegt.
+- Ziel: Ein einziges CLI, das `--run&#47;--report&#47;--promote` orchestriert und Artefakte standardisiert ablegt.
 - Endzustand: CLI vorhanden + Tests/Smoke + Doku-Update.
 
 ```bash
@@ -136,7 +136,7 @@ git commit -m "research: add unified sweep pipeline CLI" || true
 
 ### Endpunkt
 - Branch enthält CLI + Tests/Doku.
-- Evidence liegt unter `out/ops/cursor_ma/sweep-pipeline-cli/`.
+- Evidence liegt unter `out&#47;ops&#47;cursor_ma&#47;sweep-pipeline-cli&#47;`.
 
 ---
 
@@ -191,7 +191,7 @@ git commit -m "reporting: add standard 2x2 heatmap template" || true
 
 ### Einstieg
 - Ziel: Eine dekorator-/wrapper-basierte Lösung, die jede Strategie optional mit Regime-Filter (z.B. only trade in specific vol regimes) versieht.
-- Endzustand: Wrapper im `src/strategies/` oder `src/core/strategy_wrappers.py` + tests.
+- Endzustand: Wrapper im `src/strategies/` oder `src&#47;core&#47;strategy_wrappers.py` + tests.
 
 ```bash
 set -euo pipefail
