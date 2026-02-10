@@ -37,8 +37,8 @@
         "description": "Peak_Trade: choose Prometheus (local/shadow/ai-live/obs)",
         "current": {
           "selected": true,
-          "text": "prom_ai_live_9094",
-          "value": "prom_ai_live_9094"
+          "text": "prom_local_9092",
+          "value": "prom_local_9092"
         },
         "options": []
       },
