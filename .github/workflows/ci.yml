@@ -243,12 +243,12 @@ jobs:
       - name: Run tests
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' }}
         run: |
-          pytest tests/ -v --tb=short
+          pytest tests/ -v --tb=short -m "not network and not external_tools"
 
       - name: Run tests with coverage
         if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true') && matrix.python-version == '3.11' }}
         run: |
-          pytest tests/ --cov=src --cov-report=xml --cov-report=term-missing
+          pytest tests/ --cov=src --cov-report=xml --cov-report=term-missing -m "not network and not external_tools"
 
       # TODO: Linting (optional, aktivieren wenn gewünscht)
       # - name: Run ruff
