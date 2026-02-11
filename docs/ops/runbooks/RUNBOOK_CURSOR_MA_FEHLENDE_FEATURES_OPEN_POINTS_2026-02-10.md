@@ -586,3 +586,7 @@ Diese Datei ist **crawler-eindeutig** benannt und enthält im Titel die Scope-Ke
 - Commit: 50a2dd4a ops: make portable_verify hash only existing files (ignore flags)
 
 Evidence: `out/ops/cursor_ma/metrics-ulcer-recovery/closeout_meta2/` (STATUS.txt, LOG1.txt, DIFF_CACHED.patch, SHA256.txt)
+
+### Closeout — normalize_validator_report_cli (PYTHONPATH-free) green
+- Fix commit: 604a53fb (scripts/aiops/normalize_validator_report.py)
+- Evidence: out/ops/portable_verify_failures/fix_normalize_validator_report_cli/
