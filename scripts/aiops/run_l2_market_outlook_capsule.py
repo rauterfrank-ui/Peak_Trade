@@ -43,8 +43,8 @@ def utc_now_iso() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
-def ensure_outdir(base: Path) -> Path:
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+def ensure_outdir(base: Path, run_id: str = "") -> Path:
+    ts = run_id.strip() or datetime.now().strftime("%Y%m%d_%H%M%S")
     outdir = base / "out" / "ops" / "p4c" / f"run_{ts}"
     outdir.mkdir(parents=True, exist_ok=True)
     return outdir
@@ -59,6 +59,12 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--capsule", type=str, required=True, help="Path to input capsule JSON")
     ap.add_argument("--outdir", type=str, default="", help="Override output directory (optional)")
+    ap.add_argument(
+        "--run-id",
+        type=str,
+        default="",
+        help="Deterministic run id (optional; used when outdir not provided)",
+    )
     ap.add_argument("--dry-run", action="store_true", default=True, help="Dry-run (default true)")
     ap.add_argument(
         "--evidence",
@@ -66,15 +72,25 @@ def main() -> int:
         default=1,
         help="Write evidence manifest (1 default, 0 disable)",
     )
+    ap.add_argument(
+        "--deterministic",
+        action="store_true",
+        help="Use fixed timestamp for reproducible outputs (CI/testing)",
+    )
     args = ap.parse_args()
 
     capsule_path = Path(args.capsule).expanduser().resolve()
     if not capsule_path.is_file():
         raise FileNotFoundError(capsule_path)
 
-    outdir = Path(args.outdir).expanduser().resolve() if args.outdir else ensure_outdir(Path.cwd())
+    outdir = (
+        Path(args.outdir).expanduser().resolve()
+        if args.outdir
+        else ensure_outdir(Path.cwd(), args.run_id)
+    )
 
-    meta = RunnerMeta(created_at_utc=utc_now_iso())
+    created_at = "2026-02-11T12:00:00Z" if args.deterministic else utc_now_iso()
+    meta = RunnerMeta(created_at_utc=created_at)
 
     capsule = load_capsule(capsule_path)
 
@@ -103,7 +119,7 @@ def main() -> int:
             "runner_version": meta.runner_version,
             "created_at_utc": meta.created_at_utc,
         }
-        manifest = build_manifest(printed, manifest_meta)
+        manifest = build_manifest(printed, manifest_meta, base_dir=outdir)
         out_manifest = outdir / "evidence_manifest.json"
         write_json(out_manifest, manifest)
         printed.append(out_manifest)
