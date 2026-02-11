@@ -6,6 +6,8 @@ Working notes for P6 (Shadow Mode Stability). See `docs/ops/p6/P6_TODO.md`.
 
 Docs paths in prose use token-policy safe encoding (e.g. `out&#47;ops&#47;...`). In the terminal examples below, paths use normal slashes.
 
+- **Runbook:** `docs/ops/p6/runbook_shadow_session.md` (start/stop/monitor, ≥3 runs evidence)
+
 Run (dry-run, deterministic):
 
 ```bash
