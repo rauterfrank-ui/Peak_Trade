@@ -1,0 +1,41 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+
+def test_p4c_runner_emits_json(tmp_path: Path) -> None:
+    repo = Path(__file__).resolve().parents[3]
+    runner = repo / "scripts" / "aiops" / "run_l2_market_outlook_capsule.py"
+    assert runner.is_file()
+
+    capsule = repo / "tests" / "fixtures" / "p4c" / "capsule_min_v0.json"
+    assert capsule.is_file()
+
+    outdir = tmp_path / "out"
+    outdir.mkdir(parents=True, exist_ok=True)
+
+    p = subprocess.run(
+        [
+            sys.executable,
+            str(runner),
+            "--capsule",
+            str(capsule),
+            "--outdir",
+            str(outdir),
+            "--dry-run",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    out_json = Path(p.stdout.strip())
+    assert out_json.is_file()
+
+    data = json.loads(out_json.read_text(encoding="utf-8"))
+    assert "meta" in data
+    assert data["meta"].get("schema_version")
+    assert "outlook" in data
