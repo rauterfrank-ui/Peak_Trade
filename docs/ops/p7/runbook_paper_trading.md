@@ -24,6 +24,9 @@ Session artifacts under `out&#47;ops&#47;p7&#47;paper_&lt;run-id&gt;&#47;`:
 - `evidence_manifest.json` — manifest (when `--evidence 1`)
 
 ## Operator CLI (p7_ctl)
+
+Full reference: [docs/ops/p7/operator_cli.md](operator_cli.md)
+
 Reconcile, run-paper, run-shadow:
 
 ```bash
