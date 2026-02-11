@@ -152,6 +152,9 @@ jobs:
         run: |
           pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
 
+      - name: Evidence Pack Smoke (P5B)
+        run: scripts/ci/evidence_pack_validation_smoke.sh
+
   # ============================================================================
   # Tests (all Python versions)
   # ============================================================================
