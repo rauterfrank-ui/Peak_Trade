@@ -1,0 +1,13 @@
+{
+  "asof_utc": "2026-02-11T11:02:19Z",
+  "universe": ["BTC/USDT", "ETH/USDT"],
+  "p4c_outlook": {
+    "regime": "NEUTRAL",
+    "no_trade": false,
+    "no_trade_reasons": []
+  },
+  "risk": {
+    "max_gross_exposure": 1.0,
+    "max_leverage": 1.0
+  }
+}
