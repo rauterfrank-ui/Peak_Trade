@@ -21,13 +21,14 @@ import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Add repo root for src imports when run as script
 _repo_root = Path(__file__).resolve().parents[2]
 if str(_repo_root) not in sys.path:
     sys.path.insert(0, str(_repo_root))
 
+from src.aiops.p4c.evidence import build_manifest, write_json
 from src.aiops.p4c.regime_rules_v0 import compute_outlook_v0
 
 
@@ -59,6 +60,12 @@ def main() -> int:
     ap.add_argument("--capsule", type=str, required=True, help="Path to input capsule JSON")
     ap.add_argument("--outdir", type=str, default="", help="Override output directory (optional)")
     ap.add_argument("--dry-run", action="store_true", default=True, help="Dry-run (default true)")
+    ap.add_argument(
+        "--evidence",
+        type=int,
+        default=1,
+        help="Write evidence manifest (1 default, 0 disable)",
+    )
     args = ap.parse_args()
 
     capsule_path = Path(args.capsule).expanduser().resolve()
@@ -85,10 +92,24 @@ def main() -> int:
     }
 
     out_json = outdir / "l2_market_outlook.json"
-    with out_json.open("w", encoding="utf-8") as f:
-        json.dump(result, f, indent=2, sort_keys=True)
+    write_json(out_json, result)
 
-    print(str(out_json))
+    printed: List[Path] = [out_json]
+
+    if int(args.evidence) == 1:
+        manifest_meta = {
+            "kind": "p4c_evidence_manifest",
+            "schema_version": meta.schema_version,
+            "runner_version": meta.runner_version,
+            "created_at_utc": meta.created_at_utc,
+        }
+        manifest = build_manifest(printed, manifest_meta)
+        out_manifest = outdir / "evidence_manifest.json"
+        write_json(out_manifest, manifest)
+        printed.append(out_manifest)
+
+    for fp in printed:
+        print(str(fp))
     return 0
 
 
