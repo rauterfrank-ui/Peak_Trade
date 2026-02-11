@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Dict, Tuple
 
 from .models import Fill, Order
+from .reconcile import LedgerRow, snapshot, verify_invariants
 from .slippage import SlippageModel
 
 
@@ -31,8 +32,13 @@ class PaperTradingSimulator:
     ) -> None:
         self.fee_model = fee_model or FeeModel(0.0)
         self.slippage = slippage or SlippageModel(0.0)
+        self.ledger: list[LedgerRow] = []
 
     def execute(self, acct: PaperAccount, order: Order, mid_price: float) -> Fill:
+        self.ledger.append(
+            snapshot(step=len(self.ledger), cash=acct.cash, positions=acct.positions)
+        )
+
         price = self.slippage.apply(order.side, float(mid_price))
         notional = price * float(order.qty)
         fee = self.fee_model.fee(notional)
@@ -60,10 +66,12 @@ class PaperTradingSimulator:
         )
 
     def reconcile(self, acct: PaperAccount) -> Tuple[float, Dict[str, float]]:
-        # Minimal reconciliation: ensure no NaNs, positions non-negative
-        for sym, q in acct.positions.items():
-            if q < -1e-12:
-                raise RuntimeError(f"NEGATIVE_POSITION:{sym}")
-        if acct.cash != acct.cash:
-            raise RuntimeError("CASH_NAN")
-        return acct.cash, dict(acct.positions)
+        if self.ledger:
+            self.ledger.append(
+                snapshot(
+                    step=len(self.ledger),
+                    cash=acct.cash,
+                    positions=acct.positions,
+                )
+            )
+        return verify_invariants(self.ledger)
