@@ -150,6 +150,12 @@ from .offline_paper_trade_integration import (
     generate_reports_for_offline_paper_trade,
 )
 
+# Correlation matrix (Parameter–Metric)
+from .correlation_matrix_report import (
+    build_param_metric_corr,
+    correlation_matrix_report,
+)
+
 __all__ = [
     # Execution Reports (Phase 16D)
     "ExecutionStats",
@@ -238,4 +244,7 @@ __all__ = [
     # Offline Paper Trade Integration
     "OfflinePaperTradeReportConfig",
     "generate_reports_for_offline_paper_trade",
+    # Correlation matrix (Parameter–Metric)
+    "build_param_metric_corr",
+    "correlation_matrix_report",
 ]
