@@ -4,6 +4,23 @@
 **Runbook-Version:** 2026-02-10T12:00:00+01:00 (Europe/Berlin)  
 **Ziel:** Für die **noch offenen** Punkte ein **logisches, sequentielles** Abarbeitungs-Runbook, das in **Cursor Multi-Agent Chats** (bash-only) ausführbar ist, mit klaren **Einstiegs-/Endpunkten**, Artefakt-Pfaden und Evidence.
 
+### Stand / Fortschritt (wird bei Abarbeitung aktualisiert)
+
+| Block | Slug | Status | Anmerkung |
+|-------|------|--------|-----------|
+| A | sweep-pipeline-cli | ✅ erledigt | `scripts/run_sweep_pipeline.py` mit --run/--report/--promote, Artefakte unter `out&#47;research&#47;<sweep_id>&#47;` (2026-02-11) |
+| B | heatmap-template-2x2 | ✅ erledigt | `create_standard_2x2_heatmap()` in `src/reporting/sweep_visualization.py`, 2 params × 2 metrics, Tests (2026-02-11) |
+| C | vol-regime-universal-wrapper | offen | |
+| D | corr-matrix-param-metric | offen | |
+| E | rolling-window-stability | offen | |
+| F | sweep-comparison-tool | offen | |
+| G | metrics-ulcer-recovery | ✅ erledigt | Ulcer Index + Recovery Factor in `src/backtest/stats.py`, Engine + `compute_backtest_stats`, Sweep-Defaults, Tests (2026-02-11) |
+| H | nightly-sweep-automation | offen | |
+| I | feature-importance-wrapper | offen | |
+| J | feature-engine-skeleton | offen | |
+
+**Nächster logischer Schritt:** Block C (Vol-Regime Universal Wrapper).
+
 ---
 
 ## 0) Konventionen (wichtig für Reproduzierbarkeit)
@@ -97,7 +114,7 @@ mkdir -p "out/ops/cursor_ma/${SLUG}"
 Implement a unified sweep pipeline CLI: scripts/run_sweep_pipeline.py (or src/cli/run_sweep_pipeline.py if that's the convention)
 with subcommands or flags:
   --run (execute sweep), --report (generate plots/reports), --promote (move "best" configs into registry/presets)
-Write artifacts to out/research/<sweep_id>/...
+Write artifacts to out&#47;research&#47;<sweep_id>&#47;...
 Ensure idempotency: rerun does not corrupt outputs; new run_id each time unless explicitly provided.
 
 [CONSTRAINTS]
@@ -123,8 +140,8 @@ cd "$(git rev-parse --show-toplevel)"
 ruff format --check src tests scripts || true
 pytest -q || true
 
-# Minimal Smoke (falls CLI existiert):
-python -m scripts.run_sweep_pipeline --help 2>&1 | tee "out/ops/cursor_ma/${SLUG}/smoke_help.txt" || true
+# Minimal Smoke (CLI vorhanden):
+python3 scripts/run_sweep_pipeline.py --help 2>&1 | tee "out/ops/cursor_ma/${SLUG}/smoke_help.txt" || true
 
 # Evidence
 git diff | tee "out/ops/cursor_ma/${SLUG}/DIFF.patch"
@@ -184,6 +201,23 @@ git commit -m "reporting: add standard 2x2 heatmap template" || true
 ```
 
 **Endpunkt:** 2×Heatmap Template ist verfügbar, tests grün.
+
+**Beispiel (nach Implementierung):**
+```python
+from pathlib import Path
+from src.reporting.sweep_visualization import create_standard_2x2_heatmap
+
+paths = create_standard_2x2_heatmap(
+    df=sweep_df,
+    x_param="fast_period",
+    y_param="slow_period",
+    metric_a="sharpe_ratio",
+    metric_b="max_drawdown",
+    sweep_name="ma_sweep",
+    output_dir=Path("out/research/run_01/report"),
+)
+# -> paths["metric_a"], paths["metric_b"] (PNG-Pfade)
+```
 
 ---
 
@@ -514,3 +548,45 @@ Diese Datei ist **crawler-eindeutig** benannt und enthält im Titel die Scope-Ke
 - `FEHLENDE_FEATURES`
 - `OPEN_POINTS`
 - Datum
+
+---
+
+## Closeout — Block G Evidence (metrics-ulcer-recovery)
+
+**Date:** 2026-02-10
+
+### Evidence files
+- Present: DIFF.patch, STATUS.txt, HEAD.txt, LOG1.txt
+- DIFF.patch: 0 bytes (working tree clean)
+
+### Verify commands actually executed
+- ruff format --check: **NOT executed** (ruff not in PATH; use `python3 -m ruff` on macOS)
+- pytest: executed as `python3 -m pytest tests/backtest/test_stats_ulcer_recovery.py -q` → **8 passed**
+
+### Cross-check
+- LOG1 = `5e279236 reporting: add standard 2x2 heatmap template`
+- Ulcer/Recovery changes are also in commit `5e279236` (git log -S ulcer / -S recovery_factor → same commit)
+- Interpretation: Branch `feat/metrics-ulcer-recovery` forked after Block-G changes already existed → no additional diff/commit on this branch.
+
+### New evidence artifacts
+- `out&#47;ops&#47;cursor_ma&#47;metrics-ulcer-recovery&#47;EVIDENCE_SUMMARY.md`
+- `out&#47;ops&#47;cursor_ma&#47;metrics-ulcer-recovery&#47;EVIDENCE_SHA256.txt` (macOS `shasum -a 256`)
+
+### If a dedicated Block-G commit is required
+- Option A: branch from parent commit before `5e279236`, stage only Block-G files/hunks, commit.
+- Option B: keep as-is (no-op branch), confirm main contains Block-G, then delete branch.
+
+### Portable verify helper — hash flags fix
+
+- Problem: `portable_verify.sh` hashed every pytest arg; flags like `-q` caused hash failures.
+- Fix: hash only existing file paths; ignore args starting with `-` and non-existent paths.
+- Behavior:
+  - If no files are passed (or only flags): prints `[hash] no files to hash (pass file paths as args; flags are ignored)` and exits 0.
+  - If files are passed: hashes via `sha256sum` when available, else `shasum -a 256` per file (macOS).
+- Commit: 50a2dd4a ops: make portable_verify hash only existing files (ignore flags)
+
+Evidence: `out&#47;ops&#47;cursor_ma&#47;metrics-ulcer-recovery&#47;closeout_meta2&#47;` (STATUS.txt, LOG1.txt, DIFF_CACHED.patch, SHA256.txt)
+
+### Closeout — normalize_validator_report_cli (PYTHONPATH-free) green
+- Fix commit: 604a53fb (scripts/aiops/normalize_validator_report.py)
+- Evidence: out&#47;ops&#47;portable_verify_failures&#47;fix_normalize_validator_report_cli&#47;
