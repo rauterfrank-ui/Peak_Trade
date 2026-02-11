@@ -548,3 +548,30 @@ Diese Datei ist **crawler-eindeutig** benannt und enthält im Titel die Scope-Ke
 - `FEHLENDE_FEATURES`
 - `OPEN_POINTS`
 - Datum
+
+---
+
+## Closeout — Block G Evidence (metrics-ulcer-recovery)
+
+**Date:** 2026-02-10
+
+### Evidence files
+- Present: DIFF.patch, STATUS.txt, HEAD.txt, LOG1.txt
+- DIFF.patch: 0 bytes (working tree clean)
+
+### Verify commands actually executed
+- ruff format --check: **NOT executed** (ruff not in PATH; use `python3 -m ruff` on macOS)
+- pytest: executed as `python3 -m pytest tests/backtest/test_stats_ulcer_recovery.py -q` → **8 passed**
+
+### Cross-check
+- LOG1 = `5e279236 reporting: add standard 2x2 heatmap template`
+- Ulcer/Recovery changes are also in commit `5e279236` (git log -S ulcer / -S recovery_factor → same commit)
+- Interpretation: Branch `feat/metrics-ulcer-recovery` forked after Block-G changes already existed → no additional diff/commit on this branch.
+
+### New evidence artifacts
+- `out/ops/cursor_ma/metrics-ulcer-recovery/EVIDENCE_SUMMARY.md`
+- `out/ops/cursor_ma/metrics-ulcer-recovery/EVIDENCE_SHA256.txt` (macOS `shasum -a 256`)
+
+### If a dedicated Block-G commit is required
+- Option A: branch from parent commit before `5e279236`, stage only Block-G files/hunks, commit.
+- Option B: keep as-is (no-op branch), confirm main contains Block-G, then delete branch.
