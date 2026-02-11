@@ -5,7 +5,7 @@
 
 ## PR Inventory
 - See: scripts/ops/pr_inventory_full.sh
-- Keyword: pr_inventory
+- Keyword: pr_inventory. Use **label** (e.g. ops/inventory) for filtering.
 
 ## Docs Diff Guard (auto beim Merge)
 
