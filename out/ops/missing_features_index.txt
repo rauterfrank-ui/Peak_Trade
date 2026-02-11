@@ -1,0 +1,53 @@
+1:# Peak Trade – Fehlende / geplante Features (Übersicht)
+8:## 1. Kurzfassung
+15:## 2. Architektur-Vision vs. Implementierung (trading_bot_notes / Feature-Engine)
+25:| Feature (Vision) | Status | Anmerkung |
+26:|------------------|--------|-----------|
+27:| **Feature-Engine als zentrale Schicht** | ❌ Fehlt | `src/features/` ist nur Placeholder („wird später mit ECM-Features gefüllt“). Kein dediziertes Modul „Research & Feature-Engine“. |
+28:| **Indikatoren (TA)** | ✅ Teilweise | In Strategien/Regime verteilt (MA, RSI, ATR, Vol-Score etc.), nicht als einheitliche Feature-Pipeline. |
+29:| **Regime-Labels** | ✅ Vorhanden | `src/regime/`, `src/core/regime.py`, `src/analytics/regimes.py`. |
+30:| **Volatilitäts-Cluster** | ✅ Teilweise | Vol-Regime/Labels vorhanden; „Cluster“-Pipeline nicht als eigenes Feature-Modul. |
+31:| **ECM-Fenster / ECM-Features** | ❌ Fehlt | In `src/features/__init__.py` als „später“ genannt, nicht implementiert. |
+32:| **Sentiment (News/Makro/Krypto-Onchain)** | ❌ Fehlt | In trading_bot_notes als „optional, später“ genannt. |
+33:| **Orderbuch-/Tickdaten** | ❌ Fehlt | In trading_bot_notes als „später“ genannt. |
+37:## 3. Known Limitations (PEAK_TRADE_V1_KNOWN_LIMITATIONS.md)
+41:| Bereich | Fehlendes Feature |
+42:|---------|-------------------|
+43:| **Live/Execution** | Echte Live-Order-Ausführung (blockiert durch SafetyGuard / LiveNotImplementedError) |
+44:| **Live/Execution** | Testnet ohne Dry-Run (echte Testnet-Orders) |
+45:| **Exchange** | Multi-Exchange (nur Kraken; Binance, Coinbase etc. fehlen) |
+46:| **Web-Dashboard** | Authentifizierung, Access-Control, Benutzerverwaltung |
+47:| **Web-Dashboard** | POST/PUT/DELETE (Order-Erzeugung, Start/Stop aus Web-UI) |
+48:| **Web-Dashboard** | SSE/WebSocket (nur Polling) |
+49:| **Daten** | Real-Time-WebSocket-Streams (nur REST/Polling) |
+50:| **Daten** | Multi-Exchange-Datenquellen / aggregierte Feeds |
+51:| **Strategien** | ML-basierte Strategien, komplexe Multi-Factor-Modelle |
+52:| **Daten/Assets** | Corporate Actions (Splits, Dividenden), Futures/Options (Spot-Fokus) |
+53:| **Risk** | Automatische Position-Liquidation bei Limit-Verletzung |
+54:| **Testing** | 100 % Test-Coverage |
+55:| **Doku** | Automatisch generierte API-Doku (OpenAPI/Swagger) |
+56:| **Infra** | Horizontale Skalierung / Multi-Instance |
+60:## 4. Roadmap „bis Finish“ (INSTALLATION_UND_ROADMAP_BIS_FINISH)
+64:| Phase | Thema | Fehlende Features (Auszug) |
+65:|-------|--------|----------------------------|
+66:| **11** | Advanced Strategy Research | Genetic Algorithm, Bayesian Optimization, Adaptive Parameter-Tuning, Multi-Objective, Strategy-Ensemble, Auto-ML Strategy-Selection |
+67:| **12** | Real-Time Data & Streaming | WebSocket-Integration, Real-Time-Signale, Streaming-Backtest-Engine, Latency-Monitoring, Order-Book-Analytics, Tick-Level-Backtests |
+68:| **13** | Production Live-Trading | Live-Orders via CCXT, Multi-Exchange, Order-Routing/Smart-Order-Routing, Fill-Tracking, Live-PnL, Emergency-Stop (Governance-Review) |
+69:| **14** | Advanced Analytics & ML | LSTM/Transformer Predictions, Reinforcement Learning, **Sentiment-Analysis**, **Feature-Engineering-Pipeline**, Model-Training, Online-Learning |
+70:| **15** | Cloud & Scalability | Kubernetes, Docker-Compose, AWS/GCP/Azure, Auto-Scaling, Load-Balancing, Multi-Region |
+71:| **16** | Advanced Risk & Portfolio | VaR/CVaR, Stress-Testing, Portfolio-Optimization (Markowitz, Black-Litterman), Risk-Parity, Factor-Models, Attribution |
+72:| **17** | Community & Open-Source | Open-Source-Release, Contributing-Guide, Plugin-System für Community-Strategien |
+76:## 5. Research-/Strategy-TODO & Tech-Debt
+78:### 5.1 Peak_Trade Research/Strategy ToDo (2025-12-07)
+98:### 5.2 Stubs / Phase-begrenzt (ops-Docs)
+105:### 5.3 Tech-Debt Backlog (TECH_DEBT_BACKLOG.md)
+110:### 5.4 Futures/Continuous (docs/markets)
+117:## 6. Feature-Engine & López de Prado (konkret im Code)
+126:## 7. Einordnung
+128:| Kategorie | Bedeutung |
+129:|-----------|-----------|
+130:| **Architektur-Vision** | Feature-Engine, Sentiment, Orderbuch/Tick, ECM – in Vision/Docs genannt, nicht als durchgängige Schicht umgesetzt. |
+131:| **v1.0 bewusst ausgenommen** | Live-Execution, Multi-Exchange, Web-Auth, WebSocket, ML-Strategien, Auto-Liquidation, 100 % Coverage, API-Doku, Skalierung. |
+132:| **Roadmap 2026** | Phasen 11–17 (Optimization, Streaming, Live, ML, Cloud, Risk-Parity, Community). |
+133:| **Research-Track** | Sweeps, Metriken, Heatmaps, Vol-Regime-Wrapper, Regime-adaptive Strategien, Auto-Portfolio, Nightly-Sweeps, Feature-Importance. |
+134:| **Stubs/Placeholder** | Kill-Switch RiskHook, PagerDuty, WP0C-Adapter, einige R&D-Strategien, `src&#47;features`, Meta-Labeling Feature-Engineering. |
