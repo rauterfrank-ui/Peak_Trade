@@ -17,7 +17,17 @@ def test_runner_accepts_from_p4c(tmp_path: Path) -> None:
     outdir = tmp_path / "p4c"
     outdir.mkdir(parents=True, exist_ok=True)
     p = subprocess.run(
-        [sys.executable, str(p4c_runner), "--capsule", str(p4c), "--outdir", str(outdir), "--evidence", "0", "--dry-run"],
+        [
+            sys.executable,
+            str(p4c_runner),
+            "--capsule",
+            str(p4c),
+            "--outdir",
+            str(outdir),
+            "--evidence",
+            "0",
+            "--dry-run",
+        ],
         check=True,
         capture_output=True,
         text=True,
@@ -29,7 +39,19 @@ def test_runner_accepts_from_p4c(tmp_path: Path) -> None:
     outdir2 = tmp_path / "p5a"
     outdir2.mkdir(parents=True, exist_ok=True)
     q = subprocess.run(
-        [sys.executable, str(runner), "--input", str(inp), "--from-p4c", str(p4c_out), "--outdir", str(outdir2), "--evidence", "0", "--dry-run"],
+        [
+            sys.executable,
+            str(runner),
+            "--input",
+            str(inp),
+            "--from-p4c",
+            str(p4c_out),
+            "--outdir",
+            str(outdir2),
+            "--evidence",
+            "0",
+            "--dry-run",
+        ],
         check=True,
         capture_output=True,
         text=True,
