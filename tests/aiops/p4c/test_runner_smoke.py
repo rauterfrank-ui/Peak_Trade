@@ -39,3 +39,10 @@ def test_p4c_runner_emits_json(tmp_path: Path) -> None:
     assert "meta" in data
     assert data["meta"].get("schema_version")
     assert "outlook" in data
+    assert data["outlook"]["regime"] in (
+        None,
+        "NEUTRAL",
+        "RISK_ON",
+        "RISK_OFF",
+        "HIGH_VOL",
+    )

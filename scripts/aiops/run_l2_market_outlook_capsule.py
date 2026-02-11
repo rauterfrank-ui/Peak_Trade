@@ -12,14 +12,23 @@ Intent:
 
 This is a scaffold. Implementation is runbook-driven.
 """
+
 from __future__ import annotations
 
 import argparse
 import json
+import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict
+
+# Add repo root for src imports when run as script
+_repo_root = Path(__file__).resolve().parents[2]
+if str(_repo_root) not in sys.path:
+    sys.path.insert(0, str(_repo_root))
+
+from src.aiops.p4c.regime_rules_v0 import compute_outlook_v0
 
 
 @dataclass(frozen=True)
@@ -62,14 +71,15 @@ def main() -> int:
 
     capsule = load_capsule(capsule_path)
 
-    # TODO (P4C): compute regimes + NO-TRADE triggers based on runbook-defined rules.
+    outlook = compute_outlook_v0(capsule.get("features", {}) if isinstance(capsule, dict) else {})
+
     result: Dict[str, Any] = {
         "meta": asdict(meta),
         "inputs": {"capsule": str(capsule_path)},
         "outlook": {
-            "regime": None,
-            "no_trade": False,
-            "no_trade_reasons": [],
+            "regime": outlook.regime,
+            "no_trade": outlook.no_trade,
+            "no_trade_reasons": outlook.no_trade_reasons,
         },
         "capsule_preview_keys": sorted(list(capsule.keys())),
     }
