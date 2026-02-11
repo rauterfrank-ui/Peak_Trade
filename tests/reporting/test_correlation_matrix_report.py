@@ -26,12 +26,14 @@ class TestBuildParamMetricCorr:
 
     def test_basic_synthetic_matrix_shape(self):
         """Matrix hat Zeilen = numerische Parameter, Spalten = Metriken."""
-        df = pd.DataFrame({
-            "param_a": [1.0, 2.0, 3.0, 4.0, 5.0],
-            "param_b": [10.0, 20.0, 30.0, 40.0, 50.0],
-            "metric_x": [0.1, 0.2, 0.3, 0.4, 0.5],
-            "metric_y": [1.0, 1.0, 1.0, 1.0, 1.0],
-        })
+        df = pd.DataFrame(
+            {
+                "param_a": [1.0, 2.0, 3.0, 4.0, 5.0],
+                "param_b": [10.0, 20.0, 30.0, 40.0, 50.0],
+                "metric_x": [0.1, 0.2, 0.3, 0.4, 0.5],
+                "metric_y": [1.0, 1.0, 1.0, 1.0, 1.0],
+            }
+        )
         result = build_param_metric_corr(df, method="spearman")
         assert result.index.tolist() == ["param_a", "param_b"]
         assert result.columns.tolist() == ["metric_x", "metric_y"]
@@ -41,29 +43,35 @@ class TestBuildParamMetricCorr:
         """Spearman-Korrelation: perfekte Monotonie ergibt 1.0."""
         n = 20
         x = list(range(n))
-        df = pd.DataFrame({
-            "param_p": x,
-            "metric_m": [v * 2.0 + 1.0 for v in x],
-        })
+        df = pd.DataFrame(
+            {
+                "param_p": x,
+                "metric_m": [v * 2.0 + 1.0 for v in x],
+            }
+        )
         result = build_param_metric_corr(df, method="spearman")
         assert result.loc["param_p", "metric_m"] == pytest.approx(1.0, abs=1e-9)
 
     def test_perfect_negative_correlation_spearman(self):
         """Spearman: perfekt negativ monoton ergibt -1.0."""
         n = 15
-        df = pd.DataFrame({
-            "param_p": list(range(n)),
-            "metric_m": list(range(n, 0, -1)),
-        })
+        df = pd.DataFrame(
+            {
+                "param_p": list(range(n)),
+                "metric_m": list(range(n, 0, -1)),
+            }
+        )
         result = build_param_metric_corr(df, method="spearman")
         assert result.loc["param_p", "metric_m"] == pytest.approx(-1.0, abs=1e-9)
 
     def test_pearson_option(self):
         """Pearson-Methode wird unterstützt."""
-        df = pd.DataFrame({
-            "param_a": [1.0, 2.0, 3.0],
-            "metric_m": [2.0, 4.0, 6.0],
-        })
+        df = pd.DataFrame(
+            {
+                "param_a": [1.0, 2.0, 3.0],
+                "metric_m": [2.0, 4.0, 6.0],
+            }
+        )
         result = build_param_metric_corr(df, method="pearson")
         assert result.loc["param_a", "metric_m"] == pytest.approx(1.0, abs=1e-9)
 
@@ -75,11 +83,13 @@ class TestBuildParamMetricCorr:
 
     def test_skips_non_numeric_params(self):
         """Nicht-numerische Parameter-Spalten werden ausgelassen; nur numerische bleiben."""
-        df = pd.DataFrame({
-            "param_numeric": [1.0, 2.0, 3.0],
-            "param_str": ["a", "b", "c"],
-            "metric_m": [0.5, 0.6, 0.7],
-        })
+        df = pd.DataFrame(
+            {
+                "param_numeric": [1.0, 2.0, 3.0],
+                "param_str": ["a", "b", "c"],
+                "metric_m": [0.5, 0.6, 0.7],
+            }
+        )
         result = build_param_metric_corr(df, method="spearman")
         assert "param_numeric" in result.index
         assert "param_str" not in result.index
@@ -87,10 +97,12 @@ class TestBuildParamMetricCorr:
 
     def test_pairwise_complete_missing_values(self):
         """Fehlende Werte: pairwise complete – Korrelation wird trotzdem berechnet."""
-        df = pd.DataFrame({
-            "param_a": [1.0, 2.0, 3.0, 4.0, 5.0],
-            "metric_m": [1.0, 2.0, float("nan"), 4.0, 5.0],
-        })
+        df = pd.DataFrame(
+            {
+                "param_a": [1.0, 2.0, 3.0, 4.0, 5.0],
+                "metric_m": [1.0, 2.0, float("nan"), 4.0, 5.0],
+            }
+        )
         result = build_param_metric_corr(df, method="spearman")
         assert result.shape == (1, 1)
         # 4 Paare ohne NaN → Korrelation definiert
@@ -98,42 +110,52 @@ class TestBuildParamMetricCorr:
 
     def test_deterministic_ordering(self):
         """Zeilen- und Spaltenreihenfolge sind deterministisch (sortiert)."""
-        df = pd.DataFrame({
-            "param_z": [1, 2, 3],
-            "param_a": [4, 5, 6],
-            "metric_second": [0.1, 0.2, 0.3],
-            "metric_first": [0.3, 0.2, 0.1],
-        })
+        df = pd.DataFrame(
+            {
+                "param_z": [1, 2, 3],
+                "param_a": [4, 5, 6],
+                "metric_second": [0.1, 0.2, 0.3],
+                "metric_first": [0.3, 0.2, 0.1],
+            }
+        )
         result = build_param_metric_corr(df, method="spearman")
         assert result.index.tolist() == ["param_a", "param_z"]
         assert result.columns.tolist() == ["metric_first", "metric_second"]
 
     def test_empty_metrics_returns_empty_df(self):
         """Keine Metrik-Spalten → leeres DataFrame."""
-        df = pd.DataFrame({
-            "param_a": [1.0, 2.0, 3.0],
-        })
+        df = pd.DataFrame(
+            {
+                "param_a": [1.0, 2.0, 3.0],
+            }
+        )
         result = build_param_metric_corr(df, method="spearman")
         assert result.empty
 
     def test_no_numeric_params_returns_empty_df(self):
         """Keine numerischen Parameter → leeres DataFrame."""
-        df = pd.DataFrame({
-            "param_x": ["a", "b", "c"],
-            "metric_m": [1.0, 2.0, 3.0],
-        })
+        df = pd.DataFrame(
+            {
+                "param_x": ["a", "b", "c"],
+                "metric_m": [1.0, 2.0, 3.0],
+            }
+        )
         result = build_param_metric_corr(df, method="spearman")
         assert result.empty
 
     def test_metric_cols_filter(self):
         """metric_cols begrenzt auf angegebene Metriken."""
-        df = pd.DataFrame({
-            "param_a": [1.0, 2.0, 3.0],
-            "metric_x": [0.1, 0.2, 0.3],
-            "metric_y": [1.0, 2.0, 3.0],
-            "metric_z": [10.0, 20.0, 30.0],
-        })
-        result = build_param_metric_corr(df, metric_cols=["metric_x", "metric_z"], method="spearman")
+        df = pd.DataFrame(
+            {
+                "param_a": [1.0, 2.0, 3.0],
+                "metric_x": [0.1, 0.2, 0.3],
+                "metric_y": [1.0, 2.0, 3.0],
+                "metric_z": [10.0, 20.0, 30.0],
+            }
+        )
+        result = build_param_metric_corr(
+            df, metric_cols=["metric_x", "metric_z"], method="spearman"
+        )
         assert result.columns.tolist() == ["metric_x", "metric_z"]
 
 
@@ -147,11 +169,14 @@ class TestCorrelationMatrixReport:
 
     def test_produces_csv_and_heatmap(self):
         """Report erzeugt CSV und (bei Matplotlib) Heatmap mit deterministischen Namen."""
-        df = pd.DataFrame({
-            "param_a": [1.0, 2.0, 3.0, 4.0, 5.0],
-            "metric_m": [0.1, 0.2, 0.3, 0.4, 0.5],
-        })
+        df = pd.DataFrame(
+            {
+                "param_a": [1.0, 2.0, 3.0, 4.0, 5.0],
+                "metric_m": [0.1, 0.2, 0.3, 0.4, 0.5],
+            }
+        )
         import tempfile
+
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp)
             artifacts = correlation_matrix_report(
@@ -167,16 +192,22 @@ class TestCorrelationMatrixReport:
             loaded = pd.read_csv(csv_path, index_col=0)
             assert loaded.shape == (1, 1)
             if "heatmap_path" in artifacts:
-                assert artifacts["heatmap_path"].name == "test_sweep_param_metric_correlation_heatmap.png"
+                assert (
+                    artifacts["heatmap_path"].name
+                    == "test_sweep_param_metric_correlation_heatmap.png"
+                )
                 assert artifacts["heatmap_path"].exists()
 
     def test_csv_content_matches_matrix(self):
         """Inhalt der CSV entspricht der berechneten Matrix."""
-        df = pd.DataFrame({
-            "param_p": [1.0, 2.0, 3.0],
-            "metric_m": [2.0, 4.0, 6.0],
-        })
+        df = pd.DataFrame(
+            {
+                "param_p": [1.0, 2.0, 3.0],
+                "metric_m": [2.0, 4.0, 6.0],
+            }
+        )
         import tempfile
+
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp)
             artifacts = correlation_matrix_report(
