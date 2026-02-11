@@ -16,6 +16,6 @@
 
 ## Next steps
 - [ ] Implement paper trading simulator core (fills + slippage + fees hooks)
-- [ ] Reconciliation checks (positions, cash, realized PnL invariants)
-- [ ] Paper trading runbook + operator CLI
-- [ ] Integrate into Shadow pipeline (P6 runner extension or separate P7 runner)
+- [x] Reconciliation checks (positions, cash, realized PnL invariants) — scripts/aiops/run_p7_reconcile.py
+- [x] Paper trading runbook + operator CLI — runbook exists; scripts/ops/p7_ctl.py
+- [x] Integrate into Shadow pipeline (P6 runner extension or separate P7 runner)
