@@ -111,6 +111,7 @@ class PagerDutyProvider:
         self._env_config = env_config
 
     def send(self, event: Dict[str, Any]) -> None:
+        # SAFETY: never send raw risk/strategy payload; send reason codes + hashes only (custom_details filtered).
         payload = dict(event)
         payload.setdefault("ts", time.time())
         payload["provider"] = "pagerduty"

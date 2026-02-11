@@ -225,7 +225,7 @@ def test_shadow_mvs_verify_retries_and_warmup_passes(tmp_path):
                 "PROM_URL": prom_url,
                 "GRAFANA_URL": graf_url,
                 "EXPORTER_URL": f"{exp_url}/metrics",
-                "GRAFANA_AUTH": "admin:admin",
+                "GRAFANA_AUTH": "testuser:testpass",  # explicit test credentials (no repo default)
                 "DASH_UID": "peaktrade-shadow-pipeline-mvs",
                 # Fast retries for test runtime
                 "TARGETS_MAX_ATTEMPTS": "5",

@@ -1,6 +1,6 @@
 # Missing Features Plan – Critic Review (Risk/Scope)
 
-**Review-Objekt:** `docs/analysis/missing_features_plan.md`  
+**Review-Objekt:** `docs&#47;analysis&#47;missing_features_plan.md`  
 **Fokus:** Safety-Regressionen, Scope-Creep, fehlende Tests/Observability/Audit-Anforderungen.  
 **Stand:** Nach Orchestrator-Run; Plan wurde um die unten genannten Empfehlungen ergänzt.
 
@@ -11,7 +11,7 @@
 ### Bewertung: **Keine kritischen Lücken festgestellt**
 
 - Der Plan verbietet explizit das Freischalten von Live-Trading und die Aufweichung der Gates (enabled/armed/confirm). Das ist konsistent.
-- **Beobachtung:** Unter „Execution (nur Vorbereitung)“ steht „`src/execution/venue_adapters/` erweitern“.  
+- **Beobachtung:** Unter „Execution (nur Vorbereitung)“ steht „`src&#47;execution&#47;venue_adapters&#47;` erweitern“.  
   **Übernommen im Plan:** M2 Multi-Exchange-Design verlangt nun explizit: Venue-Adapter nur über Governance (enabled/armed/confirm); keine direkten Aufrufe aus Web/API in Live-Order-Pfade.
 - **Auto-Liquidation / Kill-Switch:** Korrekt als Stub (Phase 0) vorgesehen. Kritisch: Jeder zukünftige „echte“ RiskHook muss in der gleichen Review-Schleife wie Execution-Code behandelt werden (Audit-Anforderung).
 
@@ -42,8 +42,8 @@
 
 ### Tests
 
-- **M0:** Konkrete Test-Dateien genannt (`tests/features/test_*.py`, `tests/sweeps/test_heatmap.py`) – gut.
-- **M1:** **Übernommen:** `tests/risk/test_liquidation_stub.py` ist im Plan nun verpflichtend (stellt sicher, dass Hook nicht aufrufbar/No-Op).
+- **M0:** Konkrete Test-Dateien genannt (`tests&#47;features&#47;test_*.py`, `tests&#47;sweeps&#47;test_heatmap.py`) – gut.
+- **M1:** **Übernommen:** `tests&#47;risk&#47;test_liquidation_stub.py` ist im Plan nun verpflichtend (stellt sicher, dass Hook nicht aufrufbar/No-Op).
 - **M2:** **Übernommen:** Contract-Tests für Adapter-Interface sobald Stub existiert.
 
 ### Observability
@@ -53,7 +53,7 @@
 ### Audit
 
 - **Reproduzierbarkeit:** Plan verlangt deterministische Seeds – gut.  
-- **Übernommen im Plan:** Checkliste enthält nun „Änderungen an `src/risk/`, `src/governance/`, `src/execution/live/` nur mit ADR oder Eintrag in `docs/audit/` (bzw. bestehendem Audit-Prozess)“.
+- **Übernommen im Plan:** Checkliste enthält nun „Änderungen an `src&#47;risk&#47;`, `src&#47;governance&#47;`, `src&#47;execution&#47;live&#47;` nur mit ADR oder Eintrag in `docs&#47;audit&#47;` (bzw. bestehendem Audit-Prozess)“.
 
 ---
 

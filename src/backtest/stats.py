@@ -5,7 +5,8 @@ Performance-Metriken und Live-Trading-Validierung.
 
 Metriken:
 - Total Return, Max Drawdown
-- Sharpe Ratio, Calmar Ratio
+- Sharpe Ratio, Sortino Ratio, Calmar Ratio
+- Ulcer Index, Recovery Factor
 - Trade-Statistiken (Win Rate, Profit Factor)
 - Live-Trading-Validierung
 """
@@ -170,6 +171,61 @@ def compute_calmar_ratio(equity: pd.Series, periods_per_year: int = 252) -> floa
     return float(annual_return / max_dd)
 
 
+def compute_ulcer_index(equity: pd.Series) -> float:
+    """
+    Berechnet den Ulcer Index (RMS der Drawdowns).
+
+    Der Ulcer Index misst die "Stress"-Tiefe von Drawdowns: Wurzel aus dem
+    Mittel der quadrierten prozentualen Drawdowns. Niedrigere Werte = weniger
+    anhaltende Drawdowns. Einheit: Dezimal (z.B. 0.05 = 5% RMS-Drawdown).
+
+    Formula:
+        dd_t = (equity_t - running_max_t) / running_max_t
+        Ulcer Index = sqrt(mean(dd_t^2))
+
+    Args:
+        equity: Equity-Kurve (Series mit DatetimeIndex optional)
+
+    Returns:
+        Ulcer Index >= 0 (0 = keine Drawdowns)
+    """
+    if len(equity) < 2:
+        return 0.0
+    dd = compute_drawdown(equity.astype(float))
+    sq = (dd**2).replace([np.inf, -np.inf], np.nan).dropna()
+    if len(sq) == 0:
+        return 0.0
+    return float(np.sqrt(sq.mean()))
+
+
+def compute_recovery_factor(equity: pd.Series) -> float:
+    """
+    Berechnet den Recovery Factor (Total Return / |Max Drawdown|).
+
+    Misst, wie viel Return pro Einheit Max Drawdown erzielt wurde.
+    Höhere Werte = bessere Risiko-Adjustierung. Bei keinem Drawdown wird 0
+    zurückgegeben (keine Division durch null).
+
+    Formula:
+        Recovery Factor = total_return / |max_drawdown|  (max_drawdown < 0)
+
+    Args:
+        equity: Equity-Kurve
+
+    Returns:
+        Recovery Factor >= 0 (0 wenn max_drawdown == 0)
+    """
+    if len(equity) < 2:
+        return 0.0
+    basic = compute_basic_stats(equity.astype(float))
+    total_return = basic["total_return"]
+    max_dd = basic["max_drawdown"]
+    abs_dd = abs(max_dd)
+    if abs_dd == 0:
+        return 0.0
+    return float(total_return / abs_dd)
+
+
 def compute_trade_stats(trades: List[Dict]) -> TradeStats:
     """
     Berechnet Trade-Statistiken.
@@ -255,6 +311,8 @@ def compute_backtest_stats(
             "sharpe": float,            # Sharpe Ratio (annualisiert)
             "sortino": float,           # Sortino Ratio (annualisiert)
             "calmar": float,            # Calmar Ratio (Return / MaxDD)
+            "ulcer_index": float,       # Ulcer Index (RMS Drawdown)
+            "recovery_factor": float,   # Recovery Factor (Return / |MaxDD|)
             "total_trades": int,        # Anzahl Trades
             "winning_trades": int,      # Anzahl Gewinn-Trades
             "losing_trades": int,       # Anzahl Verlust-Trades
@@ -294,7 +352,11 @@ def compute_backtest_stats(
     # 5. Calmar Ratio
     calmar = compute_calmar_ratio(equity_curve, periods_per_year=periods_per_year)
 
-    # 6. Expectancy (durchschnittlicher Gewinn pro Trade)
+    # 6. Ulcer Index & Recovery Factor
+    ulcer_index = compute_ulcer_index(equity_curve)
+    recovery_factor = compute_recovery_factor(equity_curve)
+
+    # 7. Expectancy (durchschnittlicher Gewinn pro Trade)
     if trade_stats.total_trades > 0:
         total_pnl = sum(t.get("pnl", 0) for t in trades)
         expectancy = total_pnl / trade_stats.total_trades
@@ -309,6 +371,8 @@ def compute_backtest_stats(
         "sharpe": sharpe,
         "sortino": sortino,
         "calmar": calmar,
+        "ulcer_index": ulcer_index,
+        "recovery_factor": recovery_factor,
         # Trade-basierte Metriken
         "total_trades": trade_stats.total_trades,
         "winning_trades": trade_stats.winning_trades,

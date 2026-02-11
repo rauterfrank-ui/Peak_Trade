@@ -113,6 +113,27 @@ filtered_signals = vol_filter.apply_to_signals(df, raw_signals)
 
 ---
 
+### 2b. Vol Regime Wrapper (universal)
+
+**Zweck:** Beliebige Strategie nach Regime-Labels filtern (nur in erlaubten Regimes Signale/Positionen durchlassen). Für Backtest und Sweeps.
+
+**Verwendung im Code:**
+
+```python
+import pandas as pd
+from src.strategies.wrappers.vol_regime_wrapper import VolRegimeWrapper
+from src.strategies.ma_crossover import MACrossoverStrategy
+
+base = MACrossoverStrategy(fast=10, slow=20)
+regime_labels = pd.Series(["low_vol", "high_vol", "low_vol"], index=df.index)  # an data index
+wrapper = VolRegimeWrapper(
+    base, regime_labels, allowed_regimes={"low_vol"}, mode="signals", allow_unknown=False
+)
+signals = wrapper.generate_signals(df)
+```
+
+---
+
 ### 3. Composite Strategy (`src/strategies/composite.py`)
 
 **Zweck:** Kombiniert mehrere Strategien zu einem Portfolio.
