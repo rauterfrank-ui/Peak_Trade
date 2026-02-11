@@ -51,6 +51,7 @@ from src.reporting.experiment_report import (
 )
 from src.reporting.base import Report, ReportSection
 from src.reporting.sweep_visualization import generate_default_sweep_plots
+from src.reporting.correlation_matrix_report import correlation_matrix_report
 
 
 def setup_logging(verbose: bool = False) -> None:
@@ -132,6 +133,13 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         default="metric_sharpe_ratio",
         help="Metrik für Plots (default: metric_sharpe_ratio)",
+    )
+    parser.add_argument(
+        "--correlation-method",
+        type=str,
+        choices=["spearman", "pearson"],
+        default="spearman",
+        help="Korrelationsmethode für Parameter–Metrik-Matrix (default: spearman)",
     )
 
     # Logging
@@ -462,6 +470,24 @@ def run_from_args(args: argparse.Namespace) -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
     images_dir = output_dir / "images"
     images_dir.mkdir(parents=True, exist_ok=True)
+
+    # Korrelationsmatrix Parameter–Metrik (CSV immer, Heatmap bei --with-plots)
+    try:
+        corr_artifacts = correlation_matrix_report(
+            df=df,
+            output_dir=output_dir,
+            sweep_name=sweep_name,
+            metric_cols=None,
+            method=getattr(args, "correlation_method", "spearman"),
+            with_heatmap=args.with_plots,
+        )
+        if corr_artifacts:
+            if "csv_path" in corr_artifacts:
+                logger.info("Correlation matrix CSV: %s", corr_artifacts["csv_path"])
+            if "heatmap_path" in corr_artifacts:
+                logger.info("Correlation heatmap: %s", corr_artifacts["heatmap_path"])
+    except Exception as e:
+        logger.warning("Correlation matrix report skipped: %s", e)
 
     # Heatmap-Parameter
     heatmap_params: Optional[Tuple[str, str]] = None
