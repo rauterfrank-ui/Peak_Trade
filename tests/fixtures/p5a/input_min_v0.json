@@ -1,5 +1,6 @@
 {
   "asof_utc": "2026-02-11T11:02:19Z",
+  "schema_version": "p5a.input.v0",
   "universe": ["BTC/USDT", "ETH/USDT"],
   "p4c_outlook": {
     "regime": "NEUTRAL",
@@ -7,7 +8,7 @@
     "no_trade_reasons": []
   },
   "risk": {
-    "max_gross_exposure": 1.0,
-    "max_leverage": 1.0
+    "max_gross_exposure": 1,
+    "max_leverage": 1
   }
 }

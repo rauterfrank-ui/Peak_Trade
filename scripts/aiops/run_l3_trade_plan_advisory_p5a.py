@@ -20,6 +20,7 @@ if str(_repo_root) not in sys.path:
     sys.path.insert(0, str(_repo_root))
 
 from src.aiops.p4c.evidence import build_manifest, write_json
+from src.aiops.p5a.input_schema import validate_input
 from src.aiops.p5a.schema import TradePlanAdvisory
 
 
@@ -42,6 +43,12 @@ def load_input(path: Path) -> Dict[str, Any]:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--input", type=str, required=True, help="Path to P5A input JSON")
+    ap.add_argument(
+        "--from-p4c",
+        type=str,
+        default="",
+        help="Optional: path to P4C l2_market_outlook.json to populate p4c_outlook",
+    )
     ap.add_argument("--outdir", type=str, default="", help="Override output directory (optional)")
     ap.add_argument(
         "--run-id",
@@ -74,6 +81,21 @@ def main() -> int:
     )
 
     inp = load_input(inp_path)
+
+    if args.from_p4c:
+        p4c_path = Path(args.from_p4c).expanduser().resolve()
+        if not p4c_path.is_file():
+            raise FileNotFoundError(p4c_path)
+        p4c_obj = load_input(p4c_path)
+        if isinstance(inp, dict):
+            inp = dict(inp)
+            inp["p4c_outlook"] = dict(
+                (p4c_obj.get("outlook") or {}) if isinstance(p4c_obj, dict) else {}
+            )
+
+    if isinstance(inp, dict):
+        validate_input(inp)
+
     p4c = (inp.get("p4c_outlook") or {}) if isinstance(inp, dict) else {}
 
     no_trade = bool(p4c.get("no_trade", False))
