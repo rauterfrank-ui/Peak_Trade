@@ -33,10 +33,14 @@ def cmd_reconcile(args: argparse.Namespace) -> int:
     if not recon.is_file():
         print(f"missing {recon}", file=sys.stderr)
         return 1
-    outdir = (root / args.outdir).resolve() if not Path(args.outdir).is_absolute() else Path(args.outdir)
+    outdir = (
+        (root / args.outdir).resolve() if not Path(args.outdir).is_absolute() else Path(args.outdir)
+    )
     cmd = [sys.executable, str(recon), str(outdir)]
     if args.spec:
-        spec = (root / args.spec).resolve() if not Path(args.spec).is_absolute() else Path(args.spec)
+        spec = (
+            (root / args.spec).resolve() if not Path(args.spec).is_absolute() else Path(args.spec)
+        )
         cmd.extend(["--spec", str(spec)])
     return subprocess.run(cmd, cwd=str(root)).returncode
 
@@ -53,7 +57,11 @@ def cmd_run_paper(args: argparse.Namespace) -> int:
     if args.run_id:
         cmd.extend(["--run-id", str(args.run_id)])
     if args.outdir:
-        outdir = (root / args.outdir).resolve() if not Path(args.outdir).is_absolute() else Path(args.outdir)
+        outdir = (
+            (root / args.outdir).resolve()
+            if not Path(args.outdir).is_absolute()
+            else Path(args.outdir)
+        )
         cmd.extend(["--outdir", str(outdir)])
     cmd.extend(["--evidence", str(args.evidence)])
     return subprocess.run(cmd, cwd=str(root)).returncode
@@ -67,7 +75,9 @@ def cmd_run_shadow(args: argparse.Namespace) -> int:
         print(f"missing {runner}", file=sys.stderr)
         return 1
     spec = (root / args.spec).resolve() if not Path(args.spec).is_absolute() else Path(args.spec)
-    outdir = (root / args.outdir).resolve() if not Path(args.outdir).is_absolute() else Path(args.outdir)
+    outdir = (
+        (root / args.outdir).resolve() if not Path(args.outdir).is_absolute() else Path(args.outdir)
+    )
     cmd = [
         sys.executable,
         str(runner),

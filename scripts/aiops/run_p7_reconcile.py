@@ -96,9 +96,7 @@ def run_reconcile(
             initial_cash = float(spec.get("initial_cash", 0.0))
             exp_cash, exp_pos = reconcile_from_fills(fills, initial_cash)
             if abs(cash - exp_cash) > tol:
-                raise RuntimeError(
-                    f"P7_RECON:CASH_MISMATCH actual={cash} expected={exp_cash}"
-                )
+                raise RuntimeError(f"P7_RECON:CASH_MISMATCH actual={cash} expected={exp_cash}")
             for sym, exp_q in exp_pos.items():
                 act_q = positions.get(sym, 0.0)
                 if abs(act_q - exp_q) > tol:
@@ -107,9 +105,7 @@ def run_reconcile(
                     )
             for sym in positions:
                 if sym not in exp_pos and abs(positions[sym]) > tol:
-                    raise RuntimeError(
-                        f"P7_RECON:EXTRA_POSITION {sym}={positions[sym]}"
-                    )
+                    raise RuntimeError(f"P7_RECON:EXTRA_POSITION {sym}={positions[sym]}")
 
     print("P7_RECON:OK")
     return 0
