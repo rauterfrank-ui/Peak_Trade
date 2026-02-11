@@ -8,7 +8,7 @@
 
 | Block | Slug | Status | Anmerkung |
 |-------|------|--------|-----------|
-| A | sweep-pipeline-cli | ✅ erledigt | `scripts/run_sweep_pipeline.py` mit --run/--report/--promote, Artefakte unter `out/research/<sweep_id>/` (2026-02-11) |
+| A | sweep-pipeline-cli | ✅ erledigt | `scripts/run_sweep_pipeline.py` mit --run/--report/--promote, Artefakte unter `out&#47;research&#47;<sweep_id>&#47;` (2026-02-11) |
 | B | heatmap-template-2x2 | ✅ erledigt | `create_standard_2x2_heatmap()` in `src/reporting/sweep_visualization.py`, 2 params × 2 metrics, Tests (2026-02-11) |
 | C | vol-regime-universal-wrapper | offen | |
 | D | corr-matrix-param-metric | offen | |
@@ -114,7 +114,7 @@ mkdir -p "out/ops/cursor_ma/${SLUG}"
 Implement a unified sweep pipeline CLI: scripts/run_sweep_pipeline.py (or src/cli/run_sweep_pipeline.py if that's the convention)
 with subcommands or flags:
   --run (execute sweep), --report (generate plots/reports), --promote (move "best" configs into registry/presets)
-Write artifacts to out/research/<sweep_id>/...
+Write artifacts to out&#47;research&#47;<sweep_id>&#47;...
 Ensure idempotency: rerun does not corrupt outputs; new run_id each time unless explicitly provided.
 
 [CONSTRAINTS]
