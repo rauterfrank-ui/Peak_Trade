@@ -59,6 +59,7 @@ from .plots import (
     save_scatter_plot,
     save_histogram,
     save_equity_with_regimes,
+    render_standard_2x2_heatmap_template,
 )
 
 from .backtest_report import (
@@ -187,6 +188,7 @@ __all__ = [
     "save_drawdown_plot",
     "save_heatmap",
     "save_scatter_plot",
+    "render_standard_2x2_heatmap_template",
     "save_histogram",
     "save_equity_with_regimes",
     # Phase 30: Backtest Reports
