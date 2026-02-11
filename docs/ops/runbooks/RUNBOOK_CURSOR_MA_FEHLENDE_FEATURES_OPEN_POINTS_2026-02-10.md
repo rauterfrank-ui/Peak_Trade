@@ -569,8 +569,8 @@ Diese Datei ist **crawler-eindeutig** benannt und enthält im Titel die Scope-Ke
 - Interpretation: Branch `feat/metrics-ulcer-recovery` forked after Block-G changes already existed → no additional diff/commit on this branch.
 
 ### New evidence artifacts
-- `out/ops/cursor_ma/metrics-ulcer-recovery/EVIDENCE_SUMMARY.md`
-- `out/ops/cursor_ma/metrics-ulcer-recovery/EVIDENCE_SHA256.txt` (macOS `shasum -a 256`)
+- `out&#47;ops&#47;cursor_ma&#47;metrics-ulcer-recovery&#47;EVIDENCE_SUMMARY.md`
+- `out&#47;ops&#47;cursor_ma&#47;metrics-ulcer-recovery&#47;EVIDENCE_SHA256.txt` (macOS `shasum -a 256`)
 
 ### If a dedicated Block-G commit is required
 - Option A: branch from parent commit before `5e279236`, stage only Block-G files/hunks, commit.
@@ -585,8 +585,8 @@ Diese Datei ist **crawler-eindeutig** benannt und enthält im Titel die Scope-Ke
   - If files are passed: hashes via `sha256sum` when available, else `shasum -a 256` per file (macOS).
 - Commit: 50a2dd4a ops: make portable_verify hash only existing files (ignore flags)
 
-Evidence: `out/ops/cursor_ma/metrics-ulcer-recovery/closeout_meta2/` (STATUS.txt, LOG1.txt, DIFF_CACHED.patch, SHA256.txt)
+Evidence: `out&#47;ops&#47;cursor_ma&#47;metrics-ulcer-recovery&#47;closeout_meta2&#47;` (STATUS.txt, LOG1.txt, DIFF_CACHED.patch, SHA256.txt)
 
 ### Closeout — normalize_validator_report_cli (PYTHONPATH-free) green
 - Fix commit: 604a53fb (scripts/aiops/normalize_validator_report.py)
-- Evidence: out/ops/portable_verify_failures/fix_normalize_validator_report_cli/
+- Evidence: out&#47;ops&#47;portable_verify_failures&#47;fix_normalize_validator_report_cli&#47;

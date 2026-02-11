@@ -153,7 +153,7 @@ Zusatz-Layer (neu, empfohlen):
 **Endpunkt**: Toolcall existiert, mit Allowlist, Logging.
 
 **Mindestregeln**
-- Only read from `out/ops/` allowlist
+- Only read from `out&#47;ops&#47;` allowlist
 - Snippet-Limits (z.B. max 2k chars)
 - Redaction (secrets/keys) vor Ausgabe
 
