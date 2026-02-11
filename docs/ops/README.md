@@ -4,7 +4,7 @@
 <!-- MERGE_LOG_EXAMPLES:END -->
 
 ## PR Inventory
-- See: scripts/ops/pr_inventory.py
+- See: scripts/ops/pr_inventory_full.sh
 - Keyword: pr_inventory
 
 ## Docs Diff Guard (auto beim Merge)
