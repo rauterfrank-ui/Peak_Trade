@@ -17,3 +17,24 @@ python3 scripts/aiops/run_shadow_session.py \
   --evidence 1 \
   --dry-run
 ```
+
+Run with P7 paper trading (P4C + P5A + P7):
+
+```bash
+python3 scripts/aiops/run_shadow_session.py \
+  --spec tests/fixtures/p6/shadow_session_min_v1_p7.json \
+  --run-id fixed \
+  --evidence 1 \
+  --dry-run \
+  --p7-enable 1 \
+  --p7-evidence 1
+```
+
+Disable P7 (legacy P4C + P5A only):
+
+```bash
+python3 scripts/aiops/run_shadow_session.py \
+  --spec tests/fixtures/p6/shadow_session_min_v0.json \
+  --run-id fixed \
+  --p7-enable 0
+```

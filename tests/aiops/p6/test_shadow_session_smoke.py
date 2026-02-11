@@ -7,7 +7,7 @@ import sys
 import tempfile
 
 
-def _run(repo: Path, outdir: Path, run_id: str) -> list[Path]:
+def _run(repo: Path, outdir: Path, run_id: str, p7_enable: int = 0) -> list[Path]:
     cli = repo / "scripts" / "aiops" / "run_shadow_session.py"
     spec = repo / "tests" / "fixtures" / "p6" / "shadow_session_min_v0.json"
     assert cli.is_file()
@@ -25,6 +25,8 @@ def _run(repo: Path, outdir: Path, run_id: str) -> list[Path]:
             "--evidence",
             "1",
             "--dry-run",
+            "--p7-enable",
+            str(p7_enable),
         ],
         check=True,
         capture_output=True,

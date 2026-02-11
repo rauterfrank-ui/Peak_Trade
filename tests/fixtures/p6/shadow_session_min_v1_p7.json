@@ -1,0 +1,6 @@
+{
+  "asof_utc": "2026-02-11T14:00:00Z",
+  "capsule_path": "tests/fixtures/p4c/capsule_min_v0.json",
+  "p5a_input_path": "tests/fixtures/p5a/input_min_v0.json",
+  "p7_spec_path": "tests/fixtures/p7/paper_run_min_v0.json"
+}
