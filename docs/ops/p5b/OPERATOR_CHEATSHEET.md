@@ -1,5 +1,7 @@
 # P5B — Evidence Pack Automation (Operator Cheatsheet)
 
+**Paths:** Docs use token-policy-safe encoding (`out&#47;ops&#47;...`). In your terminal, replace `&#47;` with `/`.
+
 ## Generate a pack (deterministic)
 
 ```bash
@@ -14,8 +16,9 @@ Outputs: `manifest.json` + `index.json` under `out&#47;ops&#47;evidence_packs&#4
 ## Validate a pack
 
 ```bash
+# Terminal: use out/ops/... (replace &#47; with /)
 python3 scripts/aiops/validate_evidence_pack.py \
-  --manifest out&#47;ops&#47;evidence_packs&#47;pack_fixed&#47;manifest.json
+  --manifest out/ops/evidence_packs/pack_fixed/manifest.json
 ```
 
 Exit 0: OK. Exit 2: validation failed.
@@ -23,9 +26,10 @@ Exit 0: OK. Exit 2: validation failed.
 ## Update consolidated index
 
 ```bash
+# Terminal: use out/ops/... (replace &#47; with /)
 python3 scripts/aiops/update_evidence_index.py \
-  --root out&#47;ops&#47;evidence_packs \
-  --out out&#47;ops&#47;evidence_packs&#47;index_all.json
+  --root out/ops/evidence_packs \
+  --out out/ops/evidence_packs/index_all.json
 ```
 
 ## CI smoke (local)

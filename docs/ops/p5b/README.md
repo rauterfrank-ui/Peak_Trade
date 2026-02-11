@@ -21,6 +21,8 @@ Consolidate all packs into a single index:
 
 ```bash
 python3 scripts/aiops/update_evidence_index.py \
-  --root out&#47;ops&#47;evidence_packs \
-  --out out&#47;ops&#47;evidence_packs&#47;index_all.json
+  --root out/ops/evidence_packs \
+  --out out/ops/evidence_packs/index_all.json
 ```
+
+> **Note:** Docs use token-policy-safe paths (`out&#47;ops&#47;...`) in prose. In your terminal, replace `&#47;` with `/`.
