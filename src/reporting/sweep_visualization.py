@@ -386,7 +386,12 @@ def create_standard_2x2_heatmap(
     ma_col = metric_a if metric_a.startswith("metric_") else f"metric_{metric_a}"
     mb_col = metric_b if metric_b.startswith("metric_") else f"metric_{metric_b}"
 
-    for name, col in [("x_param", x_col), ("y_param", y_col), ("metric_a", ma_col), ("metric_b", mb_col)]:
+    for name, col in [
+        ("x_param", x_col),
+        ("y_param", y_col),
+        ("metric_a", ma_col),
+        ("metric_b", mb_col),
+    ]:
         if col not in df.columns:
             raise ValueError(f"Spalte für {name} nicht gefunden: {col}")
 
@@ -405,7 +410,11 @@ def create_standard_2x2_heatmap(
 
     logger.info(
         "2×2 Heatmap-Template: x_param=%s, y_param=%s, metric_a=%s, metric_b=%s -> %s",
-        x_clean, y_clean, ma_clean, mb_clean, output_dir,
+        x_clean,
+        y_clean,
+        ma_clean,
+        mb_clean,
+        output_dir,
     )
 
     result: Dict[str, Path] = {}
@@ -430,7 +439,9 @@ def create_standard_2x2_heatmap(
         if fill_missing is not None:
             pivot = pivot.fillna(fill_missing)
 
-        title = f"{metric_col.replace('metric_', '').replace('_', ' ').title()}: {x_clean} × {y_clean}"
+        title = (
+            f"{metric_col.replace('metric_', '').replace('_', ' ').title()}: {x_clean} × {y_clean}"
+        )
         xlabel = x_clean.replace("_", " ").title()
         ylabel = y_clean.replace("_", " ").title()
         cbar_label = metric_col.replace("metric_", "").replace("_", " ").title()

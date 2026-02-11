@@ -192,7 +192,7 @@ def compute_ulcer_index(equity: pd.Series) -> float:
     if len(equity) < 2:
         return 0.0
     dd = compute_drawdown(equity.astype(float))
-    sq = (dd ** 2).replace([np.inf, -np.inf], np.nan).dropna()
+    sq = (dd**2).replace([np.inf, -np.inf], np.nan).dropna()
     if len(sq) == 0:
         return 0.0
     return float(np.sqrt(sq.mean()))

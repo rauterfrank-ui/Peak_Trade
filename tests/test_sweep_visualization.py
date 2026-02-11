@@ -481,12 +481,14 @@ class TestCreateStandard2x2Heatmap:
 
     def test_create_standard_2x2_heatmap_creates_two_files(self):
         """2×2 Template erzeugt zwei Heatmaps mit deterministischen Dateinamen."""
-        df = pd.DataFrame({
-            "param_fast": [5, 5, 10, 10],
-            "param_slow": [50, 100, 50, 100],
-            "metric_sharpe_ratio": [1.2, 1.5, 1.3, 1.6],
-            "metric_max_drawdown": [-0.05, -0.08, -0.06, -0.07],
-        })
+        df = pd.DataFrame(
+            {
+                "param_fast": [5, 5, 10, 10],
+                "param_slow": [50, 100, 50, 100],
+                "metric_sharpe_ratio": [1.2, 1.5, 1.3, 1.6],
+                "metric_max_drawdown": [-0.05, -0.08, -0.06, -0.07],
+            }
+        )
         with TemporaryDirectory() as tmpdir:
             out = Path(tmpdir)
             result = create_standard_2x2_heatmap(
@@ -508,12 +510,14 @@ class TestCreateStandard2x2Heatmap:
 
     def test_create_standard_2x2_heatmap_handles_missing_grid_points(self):
         """Fehlende Gitterpunkte (unvollständiges Grid) werden toleriert."""
-        df = pd.DataFrame({
-            "param_fast": [5, 10, 10],
-            "param_slow": [50, 50, 100],
-            "metric_sharpe_ratio": [1.2, 1.3, 1.6],
-            "metric_total_return": [0.1, 0.12, 0.15],
-        })
+        df = pd.DataFrame(
+            {
+                "param_fast": [5, 10, 10],
+                "param_slow": [50, 50, 100],
+                "metric_sharpe_ratio": [1.2, 1.3, 1.6],
+                "metric_total_return": [0.1, 0.12, 0.15],
+            }
+        )
         with TemporaryDirectory() as tmpdir:
             out = Path(tmpdir)
             result = create_standard_2x2_heatmap(
@@ -531,11 +535,13 @@ class TestCreateStandard2x2Heatmap:
 
     def test_create_standard_2x2_heatmap_missing_column_raises(self):
         """Fehler wenn eine erforderliche Spalte fehlt."""
-        df = pd.DataFrame({
-            "param_fast": [5, 10],
-            "param_slow": [50, 100],
-            "metric_sharpe_ratio": [1.2, 1.5],
-        })
+        df = pd.DataFrame(
+            {
+                "param_fast": [5, 10],
+                "param_slow": [50, 100],
+                "metric_sharpe_ratio": [1.2, 1.5],
+            }
+        )
         with TemporaryDirectory() as tmpdir:
             with pytest.raises(ValueError, match="metric_b|nicht gefunden"):
                 create_standard_2x2_heatmap(

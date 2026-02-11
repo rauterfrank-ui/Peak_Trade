@@ -78,9 +78,12 @@ def _do_run(sweep_name: str, sweep_id: str, config: str, verbose: bool) -> int:
         sys.executable,
         str(SCRIPTS / "research_cli.py"),
         "sweep",
-        "--sweep-name", sweep_name,
-        "--config", config,
-        "--output-dir", str(out),
+        "--sweep-name",
+        sweep_name,
+        "--config",
+        config,
+        "--output-dir",
+        str(out),
     ]
     if verbose:
         cmd.append("--verbose")
@@ -120,10 +123,14 @@ def _do_report(
         sys.executable,
         str(SCRIPTS / "research_cli.py"),
         "report",
-        "--input", str(input_csv),
-        "--output-dir", str(out),
-        "--format", "both",
-        "--top-n", str(top_n),
+        "--input",
+        str(input_csv),
+        "--output-dir",
+        str(out),
+        "--format",
+        "both",
+        "--top-n",
+        str(top_n),
     ]
     if with_plots:
         cmd.append("--with-plots")
@@ -149,10 +156,14 @@ def _do_promote(
         sys.executable,
         str(SCRIPTS / "research_cli.py"),
         "promote",
-        "--sweep-name", sweep_name,
-        "--top-n", str(top_n),
-        "--output", str(out_dir),
-        "--experiments-dir", experiments_dir,
+        "--sweep-name",
+        sweep_name,
+        "--top-n",
+        str(top_n),
+        "--output",
+        str(out_dir),
+        "--experiments-dir",
+        experiments_dir,
     ]
     if verbose:
         cmd.append("--verbose")
@@ -239,8 +250,12 @@ def main(argv: Optional[List[str]] = None) -> int:
             return rc
     if args.report:
         rc = _do_report(
-            args.sweep_name, sweep_id, args.config,
-            args.top_n, args.with_plots, args.verbose,
+            args.sweep_name,
+            sweep_id,
+            args.config,
+            args.top_n,
+            args.with_plots,
+            args.verbose,
         )
         if rc != 0:
             return rc
