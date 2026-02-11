@@ -327,9 +327,7 @@ def build_experiment_report(
     output_dir: Optional[Union[str, Path]] = None,
     metadata: Optional[Dict[str, Any]] = None,
     with_regime_heatmaps: bool = False,
-    quadrant_2x2_matrix: Optional[
-        Tuple[Tuple[float, float], Tuple[float, float]]
-    ] = None,
+    quadrant_2x2_matrix: Optional[Tuple[Tuple[float, float], Tuple[float, float]]] = None,
     quadrant_2x2_title: Optional[str] = None,
 ) -> Report:
     """
@@ -493,9 +491,7 @@ def build_experiment_report(
                 title=quadrant_2x2_title or "2x2 Quadrant Summary",
             )
             rel_path = os.path.relpath(quad_path, output_dir.parent)
-            charts_content.append(
-                f"### Quadrant Summary\n\n![2x2 Quadrant]({rel_path})"
-            )
+            charts_content.append(f"### Quadrant Summary\n\n![2x2 Quadrant]({rel_path})")
         except Exception:
             pass
 

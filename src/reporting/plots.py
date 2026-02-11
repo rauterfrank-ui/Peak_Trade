@@ -389,7 +389,9 @@ def render_standard_2x2_heatmap_template(
     ax.set_yticklabels(["Top", "Bottom"], fontsize=QUADRANT_2X2_FONT_SIZE)
 
     # Zell-Annotationen: Quadrant-Label (optional) + Wert
-    labels_flat = list(quadrant_labels) if quadrant_labels and len(quadrant_labels) >= 4 else [None] * 4
+    labels_flat = (
+        list(quadrant_labels) if quadrant_labels and len(quadrant_labels) >= 4 else [None] * 4
+    )
     for i in range(2):
         for j in range(2):
             val = arr[i, j]
@@ -401,7 +403,12 @@ def render_standard_2x2_heatmap_template(
             mean_val = np.nanmean(arr)
             color = "white" if (not np.isnan(val) and val < mean_val) else "black"
             ax.text(
-                j, i, text, ha="center", va="center", color=color,
+                j,
+                i,
+                text,
+                ha="center",
+                va="center",
+                color=color,
                 fontsize=QUADRANT_2X2_FONT_SIZE,
             )
 
