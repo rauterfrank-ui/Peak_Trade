@@ -38,3 +38,7 @@ python3 scripts/aiops/run_shadow_session.py \
   --run-id fixed \
   --p7-enable 0
 ```
+
+## P7 Operator CLI
+
+See: [docs/ops/p7/operator_cli.md](../p7/operator_cli.md)
