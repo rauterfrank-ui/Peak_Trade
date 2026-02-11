@@ -575,3 +575,14 @@ Diese Datei ist **crawler-eindeutig** benannt und enthält im Titel die Scope-Ke
 ### If a dedicated Block-G commit is required
 - Option A: branch from parent commit before `5e279236`, stage only Block-G files/hunks, commit.
 - Option B: keep as-is (no-op branch), confirm main contains Block-G, then delete branch.
+
+### Portable verify helper — hash flags fix
+
+- Problem: `portable_verify.sh` hashed every pytest arg; flags like `-q` caused hash failures.
+- Fix: hash only existing file paths; ignore args starting with `-` and non-existent paths.
+- Behavior:
+  - If no files are passed (or only flags): prints `[hash] no files to hash (pass file paths as args; flags are ignored)` and exits 0.
+  - If files are passed: hashes via `sha256sum` when available, else `shasum -a 256` per file (macOS).
+- Commit: 50a2dd4a ops: make portable_verify hash only existing files (ignore flags)
+
+Evidence: `out/ops/cursor_ma/metrics-ulcer-recovery/closeout_meta2/` (STATUS.txt, LOG1.txt, DIFF_CACHED.patch, SHA256.txt)
