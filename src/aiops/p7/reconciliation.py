@@ -24,7 +24,48 @@ def _read_json(p: Path) -> Any:
     return json.loads(p.read_text(encoding="utf-8"))
 
 
-def reconcile_p7_outdir(p7_dir: Path) -> ReconciliationResult:
+def _load_expected_spec(spec_path: Path) -> tuple[Dict[str, Any], Dict[str, Any]]:
+    """Load expected and tolerances from spec JSON. Returns (expected, tolerances)."""
+    data = _read_json(spec_path)
+    if not isinstance(data, dict):
+        return {}, {}
+    expected = data.get("expected")
+    tolerances = data.get("tolerances")
+    return (
+        expected if isinstance(expected, dict) else {},
+        tolerances if isinstance(tolerances, dict) else {},
+    )
+
+
+def _check_expected_vs_actual(
+    metrics: Dict[str, Any],
+    expected: Dict[str, Any],
+    tolerances: Dict[str, Any],
+    issues: List[ReconciliationIssue],
+    spec_path: str,
+) -> None:
+    """Compare metrics against expected; append issues on mismatch."""
+    for key, exp_val in expected.items():
+        if key not in metrics:
+            continue
+        actual = metrics[key]
+        tol = tolerances.get(key)
+        if isinstance(exp_val, (int, float)) and isinstance(actual, (int, float)):
+            tol_val = tol if isinstance(tol, (int, float)) else 0
+            if abs(actual - exp_val) > tol_val:
+                issues.append(
+                    ReconciliationIssue(
+                        code="EXPECTED_VS_ACTUAL",
+                        path=spec_path,
+                        detail=f"{key}: actual={actual} expected={exp_val} tolerance={tol_val}",
+                    )
+                )
+
+
+def reconcile_p7_outdir(
+    p7_dir: Path,
+    expected_spec_path: Optional[Path] = None,
+) -> ReconciliationResult:
     """
     Best-effort reconciliation for a P7 run directory.
 
@@ -38,6 +79,7 @@ def reconcile_p7_outdir(p7_dir: Path) -> ReconciliationResult:
       - fills is a list (or dict with list) and has deterministic schema
       - account has required numeric fields (best-effort)
       - evidence manifest references the produced artifacts (best-effort)
+      - optional: expected-vs-actual when expected_spec_path is provided
     """
     issues: List[ReconciliationIssue] = []
     metrics: Dict[str, Any] = {}
@@ -116,6 +158,14 @@ def reconcile_p7_outdir(p7_dir: Path) -> ReconciliationResult:
                         detail=f"manifest does not reference {p7_name} or {alt_name}",
                     )
                 )
+
+    # expected-vs-actual when spec provided
+    if expected_spec_path is not None and expected_spec_path.exists():
+        expected, tolerances = _load_expected_spec(expected_spec_path)
+        if expected:
+            _check_expected_vs_actual(
+                metrics, expected, tolerances, issues, str(expected_spec_path)
+            )
 
     ok = len(issues) == 0
     return ReconciliationResult(ok=ok, issues=issues, metrics=metrics)
