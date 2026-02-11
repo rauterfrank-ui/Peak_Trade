@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """P6 — Shadow Session Runner (dry-run, deterministic).
 
-Orchestrates P4C + P5A as a shadow session (no live trading).
+Orchestrates P4C + P5A + P7 (optional paper trading) as a shadow session (no live trading).
 """
 
 from __future__ import annotations
@@ -67,6 +67,24 @@ def main() -> int:
     )
     ap.add_argument(
         "--dry-run", action="store_true", default=True, help="Dry-run only (default true)"
+    )
+    ap.add_argument(
+        "--p7-spec",
+        type=str,
+        default="",
+        help="P7 paper run spec JSON (optional; overrides spec p7_spec_path)",
+    )
+    ap.add_argument(
+        "--p7-enable",
+        type=int,
+        default=1,
+        help="Enable P7 paper trading step (1 default, 0 disable)",
+    )
+    ap.add_argument(
+        "--p7-evidence",
+        type=int,
+        default=1,
+        help="Write P7 evidence manifest (1 default, 0 disable)",
     )
     args = ap.parse_args()
 
@@ -138,22 +156,77 @@ def main() -> int:
     outlook = (p4c_obj.get("outlook") or {}) if isinstance(p4c_obj, dict) else {}
     no_trade = bool(outlook.get("no_trade", False))
 
+    p7_outputs: Dict[str, Any] = {}
+    p7_account_summary: Dict[str, Any] = {}
+    p7_printed: List[Path] = []
+
+    if int(args.p7_enable) == 1:
+        p7_spec_path = (
+            Path(args.p7_spec).expanduser().resolve()
+            if args.p7_spec
+            else (
+                repo / (spec.get("p7_spec_path") or "tests/fixtures/p7/paper_run_min_v0.json")
+            ).resolve()
+        )
+        if not p7_spec_path.is_file():
+            raise FileNotFoundError(p7_spec_path)
+        p7_runner = repo / "scripts" / "aiops" / "run_paper_trading_session.py"
+        if not p7_runner.is_file():
+            raise FileNotFoundError(p7_runner)
+
+        p7_subdir = outdir / "p7"
+        p7_subdir.mkdir(parents=True, exist_ok=True)
+        p7_out_lines = _run(
+            [
+                sys.executable,
+                str(p7_runner),
+                "--spec",
+                str(p7_spec_path),
+                "--run-id",
+                args.run_id.strip() or outdir.name,
+                "--outdir",
+                str(p7_subdir),
+                "--evidence",
+                str(args.p7_evidence),
+            ],
+            cwd=repo,
+        )
+        p7_fills = p7_subdir / "fills.json"
+        p7_acct = p7_subdir / "account.json"
+        p7_manifest = p7_subdir / "evidence_manifest.json"
+
+        out_p7_fills = outdir / "p7_fills.json"
+        out_p7_acct = outdir / "p7_account.json"
+        out_p7_manifest = outdir / "p7_evidence_manifest.json"
+        write_json(out_p7_fills, load_json(p7_fills))
+        write_json(out_p7_acct, load_json(p7_acct))
+        p7_outputs = {"p7_fills": str(out_p7_fills), "p7_account": str(out_p7_acct)}
+        p7_account_summary = load_json(p7_acct)
+        p7_printed = [out_p7_fills, out_p7_acct]
+        if p7_manifest.is_file() and int(args.p7_evidence) == 1:
+            write_json(out_p7_manifest, load_json(p7_manifest))
+            p7_outputs["p7_evidence_manifest"] = str(out_p7_manifest)
+            p7_printed.append(out_p7_manifest)
+
     summary = ShadowSessionSummary(
         run_id=(args.run_id.strip() or outdir.name),
         asof_utc=str(spec.get("asof_utc", "")),
         steps=[
             {"name": "p4c", "out": str(p4c_out)},
             {"name": "p5a", "out": str(p5a_out)},
-        ],
-        outputs={"p4c_out": str(p4c_out), "p5a_out": str(p5a_out)},
+        ]
+        + ([{"name": "p7", "out": str(outdir / "p7_fills.json")}] if p7_outputs else []),
+        outputs={"p4c_out": str(p4c_out), "p5a_out": str(p5a_out), **p7_outputs},
         no_trade=no_trade,
         notes=["dry_run_only", "no_execution"],
+        p7_outputs=p7_outputs,
+        p7_account_summary=p7_account_summary,
     )
 
     out_summary = outdir / "shadow_session_summary.json"
     write_json(out_summary, summary.to_dict())
 
-    printed: List[Path] = [out_summary, p4c_out, p5a_out]
+    printed: List[Path] = [out_summary, p4c_out, p5a_out] + p7_printed
 
     if int(args.evidence) == 1:
         meta = {

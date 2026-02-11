@@ -16,6 +16,8 @@ class ShadowSessionSummary:
     outputs: Dict[str, Any] = field(default_factory=dict)
     no_trade: bool = False
     notes: List[str] = field(default_factory=list)
+    p7_outputs: Dict[str, Any] = field(default_factory=dict)
+    p7_account_summary: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         d = asdict(self)
