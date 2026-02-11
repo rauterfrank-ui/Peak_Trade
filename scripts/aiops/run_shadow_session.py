@@ -62,8 +62,12 @@ def main() -> int:
         default="",
         help="Deterministic run id (optional; used when outdir not provided)",
     )
-    ap.add_argument("--evidence", type=int, default=1, help="Write evidence manifest (1 default, 0 disable)")
-    ap.add_argument("--dry-run", action="store_true", default=True, help="Dry-run only (default true)")
+    ap.add_argument(
+        "--evidence", type=int, default=1, help="Write evidence manifest (1 default, 0 disable)"
+    )
+    ap.add_argument(
+        "--dry-run", action="store_true", default=True, help="Dry-run only (default true)"
+    )
     args = ap.parse_args()
 
     repo = _repo_root
