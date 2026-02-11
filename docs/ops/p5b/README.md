@@ -14,3 +14,13 @@ python3 scripts/aiops/generate_evidence_pack.py \
 ```
 
 Outputs: `manifest.json` + `index.json` under `out&#47;ops&#47;evidence_packs&#47;pack_&lt;id&gt;&#47;`
+
+## Evidence Index updater
+
+Consolidate all packs into a single index:
+
+```bash
+python3 scripts/aiops/update_evidence_index.py \
+  --root out&#47;ops&#47;evidence_packs \
+  --out out&#47;ops&#47;evidence_packs&#47;index_all.json
+```
