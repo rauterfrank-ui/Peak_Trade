@@ -9,7 +9,7 @@
 ## Constraints / Guardrails
 - Safety-first: runner must be dry-run by default; no live trading effects.
 - Deterministic outputs: fixed seeds; stable ordering; explicit versions in metadata.
-- Evidence: write to `out/ops/p4c/` only, with timestamped subdirs; include hashes.
+- Evidence: write to `out&#47;ops&#47;p4c&#47;` only, with timestamped subdirs; include hashes.
 
 ## Next concrete steps
 1) Define L2 input schema (from L1/L4 operational outputs).
