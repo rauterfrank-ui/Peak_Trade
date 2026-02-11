@@ -18,12 +18,20 @@ fi
 echo "[verify] pytest -> python3 -m pytest $*"
 python3 -m pytest "$@"
 
-echo "[hash] hashing (macOS portable)"
+echo "[hash] hashing (macOS portable) — only existing files passed as args"
+FILES=()
+for a in "$@"; do
+  [[ "$a" == -* ]] && continue
+  [[ -f "$a" ]] && FILES+=("$a")
+done
+if (( ${#FILES[@]} == 0 )); then
+  echo "[hash] no files to hash (pass file paths as args; flags are ignored)"
+  exit 0
+fi
 if have sha256sum; then
-  sha256sum "$@"
+  sha256sum "${FILES[@]}"
 else
-  # macOS
-  for f in "$@"; do
+  for f in "${FILES[@]}"; do
     shasum -a 256 "$f"
   done
 fi
