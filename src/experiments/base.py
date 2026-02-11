@@ -213,6 +213,8 @@ class ExperimentConfig:
             "win_rate",
             "num_trades",
             "profit_factor",
+            "ulcer_index",
+            "recovery_factor",
         ]
     )
     parallel: bool = False

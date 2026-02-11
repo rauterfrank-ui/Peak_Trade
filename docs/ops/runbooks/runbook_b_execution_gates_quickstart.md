@@ -115,4 +115,4 @@ export PEAK_RECON_ENABLED=1
 
 - **Implementation:** `src/ops/gates/` (ArmedGate, RiskGate), `src/ops/wiring/execution_guards.py`, `src/ops/recon/` (recon hook, providers), `src/live/safety.py` (wire-in).
 - **Tests:** `tests/ops/test_armed_gate.py`, `test_risk_gate.py`, `test_execution_guards.py`, `test_recon_hook.py`, `test_recon_provider_wiring.py`, `tests/live/test_safety_exec_guards_wiring.py`.
-- **Runbook B source:** See `out/ops/runbook_b/` (gap scan, integration map, tasks checklist) and the original Runbook B document (Shadow → Mini-Live).
+- **Runbook B source:** See `out&#47;ops&#47;runbook_b&#47;` (gap scan, integration map, tasks checklist) and the original Runbook B document (Shadow → Mini-Live).

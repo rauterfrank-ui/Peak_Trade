@@ -9,6 +9,7 @@ Komponenten:
 - plot_metric_vs_single_param: 1D-Plot (Parameter vs. Metrik)
 - plot_metric_heatmap_two_params: 2D-Heatmap (zwei Parameter vs. Metrik)
 - create_drawdown_heatmap: 2D-Heatmap speziell für Drawdown-Metriken
+- create_standard_2x2_heatmap: Standard-Template mit 2 Parametern × 2 Metriken (zwei Heatmaps)
 - generate_default_sweep_plots: Standardkollektion von Plots
 
 Usage:
@@ -332,6 +333,135 @@ def create_drawdown_heatmap(
     except Exception as e:
         logger.error(f"Fehler beim Erstellen der Drawdown-Heatmap: {e}")
         return None
+
+
+# =============================================================================
+# STANDARD 2×2 HEATMAP TEMPLATE (Block B)
+# =============================================================================
+
+
+def create_standard_2x2_heatmap(
+    df: pd.DataFrame,
+    x_param: str,
+    y_param: str,
+    metric_a: str,
+    metric_b: str,
+    *,
+    sweep_name: str,
+    output_dir: Path,
+    fill_missing: Optional[float] = None,
+) -> Dict[str, Path]:
+    """
+    Standard 2×2 heatmap template: two heatmaps (metric_a, metric_b) over the same
+    (x_param, y_param) grid with consistent labeling and deterministic output paths.
+
+    Use case: e.g. Sharpe + Max-Drawdown on the same parameter grid for quick
+    side-by-side comparison. Missing grid points are left as NaN in the pivot
+    (or filled with fill_missing if provided); plotting does not require a full grid.
+
+    Args:
+        df: DataFrame with sweep results (param_* and metric_* columns).
+        x_param: Column name for the x-axis (with or without "param_" prefix).
+        y_param: Column name for the y-axis (with or without "param_" prefix).
+        metric_a: Column name for the first heatmap (with or without "metric_" prefix).
+        metric_b: Column name for the second heatmap (with or without "metric_" prefix).
+        sweep_name: Sweep identifier for filenames and logging.
+        output_dir: Directory for output PNGs.
+        fill_missing: Optional value to fill missing (x, y) cells before plotting.
+
+    Returns:
+        Dict with keys "metric_a" and "metric_b" mapping to the created PNG paths.
+        Keys are omitted for metrics that could not be plotted (missing column or no data).
+
+    Raises:
+        ValueError: If any of the required columns are missing from df.
+    """
+    if not MATPLOTLIB_AVAILABLE:
+        logger.warning("Matplotlib nicht verfügbar, überspringe 2×2 Heatmap-Template")
+        return {}
+
+    # Normalize column names
+    x_col = x_param if x_param.startswith("param_") else f"param_{x_param}"
+    y_col = y_param if y_param.startswith("param_") else f"param_{y_param}"
+    ma_col = metric_a if metric_a.startswith("metric_") else f"metric_{metric_a}"
+    mb_col = metric_b if metric_b.startswith("metric_") else f"metric_{metric_b}"
+
+    for name, col in [
+        ("x_param", x_col),
+        ("y_param", y_col),
+        ("metric_a", ma_col),
+        ("metric_b", mb_col),
+    ]:
+        if col not in df.columns:
+            raise ValueError(f"Spalte für {name} nicht gefunden: {col}")
+
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Deterministic filenames: same axis order and metric suffix
+    x_clean = x_param.replace("param_", "")
+    y_clean = y_param.replace("param_", "")
+    ma_clean = metric_a.replace("metric_", "")
+    mb_clean = metric_b.replace("metric_", "")
+
+    base = f"{sweep_name}_heatmap_2x2_{x_clean}_x_{y_clean}"
+    path_a = output_dir / f"{base}_{ma_clean}.png"
+    path_b = output_dir / f"{base}_{mb_clean}.png"
+
+    logger.info(
+        "2×2 Heatmap-Template: x_param=%s, y_param=%s, metric_a=%s, metric_b=%s -> %s",
+        x_clean,
+        y_clean,
+        ma_clean,
+        mb_clean,
+        output_dir,
+    )
+
+    result: Dict[str, Path] = {}
+
+    # Build pivot once per metric; reuse shared logic for consistent layout
+    for label, metric_col, out_path in [
+        ("metric_a", ma_col, path_a),
+        ("metric_b", mb_col, path_b),
+    ]:
+        df_sub = df[[x_col, y_col, metric_col]].dropna()
+        if len(df_sub) == 0:
+            logger.warning("Keine gültigen Daten für 2×2 Heatmap %s", label)
+            continue
+
+        pivot = df_sub.pivot_table(
+            values=metric_col,
+            index=y_col,
+            columns=x_col,
+            aggfunc="mean",
+        )
+        pivot = pivot.sort_index(axis=0).sort_index(axis=1)
+        if fill_missing is not None:
+            pivot = pivot.fillna(fill_missing)
+
+        title = (
+            f"{metric_col.replace('metric_', '').replace('_', ' ').title()}: {x_clean} × {y_clean}"
+        )
+        xlabel = x_clean.replace("_", " ").title()
+        ylabel = y_clean.replace("_", " ").title()
+        cbar_label = metric_col.replace("metric_", "").replace("_", " ").title()
+
+        try:
+            save_heatmap(
+                pivot_df=pivot,
+                output_path=out_path,
+                title=title,
+                xlabel=xlabel,
+                ylabel=ylabel,
+                cbar_label=cbar_label,
+                annotate=pivot.size <= 100,
+            )
+            result[label] = out_path
+            logger.info("2×2 Heatmap erstellt: %s -> %s", label, out_path)
+        except Exception as e:
+            logger.error("Fehler beim Erstellen der 2×2 Heatmap %s: %s", label, e)
+
+    return result
 
 
 # =============================================================================
