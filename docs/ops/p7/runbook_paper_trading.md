@@ -23,9 +23,19 @@ Session artifacts under `out&#47;ops&#47;p7&#47;paper_&lt;run-id&gt;&#47;`:
 - `account.json` — cash, positions
 - `evidence_manifest.json` — manifest (when `--evidence 1`)
 
+## Operator CLI (p7_ctl)
+Reconcile, run-paper, run-shadow:
+
+```bash
+python3 scripts/ops/p7_ctl.py reconcile out/ops/<shadow_outdir> --spec tests/fixtures/p7/paper_run_min_v0.json
+python3 scripts/ops/p7_ctl.py run-paper --spec tests/fixtures/p7/paper_run_min_v0.json
+python3 scripts/ops/p7_ctl.py run-shadow --spec tests/fixtures/p6/shadow_session_min_v1_p7.json --outdir out/ops/p7_ctl_test
+```
+
 ## Smoke test
 Run smoke test locally:
 
 ```bash
 pytest tests/sim/paper/test_paper_runner_smoke.py -v
+pytest tests/aiops/p6/test_p7_reconcile_smoke.py -v
 ```
