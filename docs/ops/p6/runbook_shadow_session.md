@@ -31,8 +31,8 @@ python3 scripts/aiops/run_shadow_session.py \
 Session artifacts under `out&#47;ops&#47;p6&#47;shadow_&lt;run-id&gt;&#47;`:
 
 - `shadow_session_summary.json` — schema version, steps, outputs, no_trade
-- `p4c/l2_market_outlook.json` — P4C output
-- `p5a/l3_trade_plan_advisory.json` — P5A output
+- `p4c&#47;l2_market_outlook.json` — P4C output
+- `p5a&#47;l3_trade_plan_advisory.json` — P5A output
 - `evidence_manifest.json` — manifest of printed paths (when `--evidence 1`)
 
 ## Override output directory
@@ -52,7 +52,7 @@ Single run. No daemon. Exit when finished.
 ## Monitor
 - Check stdout: one path per line (summary, p4c out, p5a out, manifest)
 - Inspect `shadow_session_summary.json` for `no_trade`, `steps`, `outputs`
-- Run smoke test: `pytest tests/aiops/p6/test_shadow_session_smoke.py -v`
+- Run smoke test: `pytest tests&#47;aiops&#47;p6&#47;test_shadow_session_smoke.py -v`
 
 ## Troubleshooting
 | Issue | Action |
