@@ -7,11 +7,12 @@ have() { command -v "$1" >/dev/null 2>&1; }
 
 echo "[verify] python: $(python3 --version 2>/dev/null || true)"
 
-if have ruff; then
-  echo "[verify] ruff in PATH -> ruff format --check"
+echo "[verify] ruff: prefer CLI if runnable, else python3 -m ruff"
+if have ruff && ruff --version >/dev/null 2>&1; then
+  echo "[verify] using: ruff format --check"
   ruff format --check src tests scripts
 else
-  echo "[verify] ruff not in PATH -> python3 -m ruff format --check"
+  echo "[verify] using: python3 -m ruff format --check"
   python3 -m ruff format --check src tests scripts
 fi
 
