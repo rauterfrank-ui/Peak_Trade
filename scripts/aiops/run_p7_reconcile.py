@@ -81,6 +81,16 @@ def run_reconcile(
         print(f"SKIP: no account file {acct_p}", file=sys.stderr)
         return 0
 
+    # Structural + expected-vs-actual (reconcile_p7_outdir) when spec provided
+    if spec_path and spec_path.is_file():
+        from src.aiops.p7.reconciliation import reconcile_p7_outdir
+
+        res = reconcile_p7_outdir(outdir, expected_spec_path=spec_path)
+        if not res.ok:
+            for i in res.issues:
+                print(f"P7_RECON:ISSUE {i.code} {i.path} {i.detail}", file=sys.stderr)
+            return 1
+
     acct = load_json(acct_p)
     cash = float(acct.get("cash", 0.0))
     positions = {k: float(v) for k, v in (acct.get("positions") or {}).items()}
