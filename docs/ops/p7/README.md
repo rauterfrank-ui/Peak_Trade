@@ -1,0 +1,6 @@
+# P7 — Paper Trading Validation
+
+Docs paths in prose use token-policy safe encoding (e.g. `out&#47;ops&#47;...`).
+In the terminal examples below, paths use normal slashes.
+
+See `docs/ops/p7/P7_TODO.md`.
