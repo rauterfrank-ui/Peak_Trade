@@ -45,7 +45,9 @@ class VolRegimeWrapper:
         """
         self.base_strategy = base_strategy
         self.regime_labels = regime_labels
-        self._allowed = set(allowed_regimes) if not isinstance(allowed_regimes, set) else allowed_regimes
+        self._allowed = (
+            set(allowed_regimes) if not isinstance(allowed_regimes, set) else allowed_regimes
+        )
         if mode not in ("signals", "positions"):
             raise ValueError(f"mode must be 'signals' or 'positions', got {mode!r}")
         self.mode = mode
@@ -63,9 +65,7 @@ class VolRegimeWrapper:
         try:
             aligned = self.regime_labels.reindex(series.index)
         except Exception as e:
-            raise ValueError(
-                f"regime_labels could not be aligned to series index: {e}"
-            ) from e
+            raise ValueError(f"regime_labels could not be aligned to series index: {e}") from e
         if aligned.isna().any() and not self.allow_unknown:
             # Check for labels missing from regime_labels index (reindex produced NaN)
             missing = series.index.difference(self.regime_labels.index)
@@ -81,9 +81,7 @@ class VolRegimeWrapper:
         else:
             allowed_mask = in_allowed.fillna(False)
         if not allowed_mask.index.equals(series.index):
-            raise ValueError(
-                "regime_labels alignment produced index mismatch with signal series"
-            )
+            raise ValueError("regime_labels alignment produced index mismatch with signal series")
         out = series.where(allowed_mask, 0).astype(series.dtype)
         logger.info(
             "vol_regime_wrapper applied: allowed_regimes=%s, allow_unknown=%s, mode=%s",
