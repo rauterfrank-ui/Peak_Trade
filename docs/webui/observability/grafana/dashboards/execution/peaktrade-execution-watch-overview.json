@@ -4,7 +4,7 @@
       {
         "datasource": {
           "type": "prometheus",
-          "uid": "${ds}"
+          "uid": "peaktrade-prometheus-local"
         },
         "enable": true,
         "expr": "(sum(increase(peaktrade_ai_decisions_total{decision=\"reject\",run_id=~\"$run_id\"}[1m])) or on() vector(0)) > 0",
@@ -17,7 +17,7 @@
       {
         "datasource": {
           "type": "prometheus",
-          "uid": "${ds}"
+          "uid": "peaktrade-prometheus-local"
         },
         "enable": true,
         "expr": "(sum(increase(peaktrade_ai_decisions_total{decision=\"accept\",run_id=~\"$run_id\"}[1m])) or on() vector(0)) > 0",
@@ -73,169 +73,9 @@
   ],
   "panels": [
     {
-      "id": 1,
-      "type": "row",
-      "title": "Stack Fingerprint",
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "panels": []
-    },
-    {
-      "id": 2,
-      "type": "stat",
-      "title": "Stack Fingerprint: Active Stacks",
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 0,
-        "y": 1
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "count by (job) (up)",
-          "instant": true,
-          "range": false,
-          "legendFormat": "{{stack}}"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": ""
-        },
-        "orientation": "horizontal",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 3,
-      "type": "stat",
-      "title": "Stack Fingerprint: Target Count",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds}"
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 12,
-        "y": 1
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "count(up)",
-          "instant": true,
-          "range": false,
-          "legendFormat": "__auto"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": ""
-        },
-        "orientation": "horizontal",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 4,
-      "type": "table",
-      "title": "Stack Fingerprint: Targets UP",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds}"
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 24,
-        "x": 0,
-        "y": 7
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "up == 1",
-          "instant": true,
-          "range": false,
-          "legendFormat": "__auto"
-        }
-      ],
-      "options": {
-        "showHeader": true,
-        "cellHeight": "sm",
-        "footer": {
-          "show": false
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto",
-            "inspect": false
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -247,7 +87,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 17
+        "y": 0
       },
       "options": {
         "reduceOptions": {
@@ -272,7 +112,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -284,7 +124,7 @@
         "h": 4,
         "w": 3,
         "x": 3,
-        "y": 17
+        "y": 0
       },
       "options": {
         "reduceOptions": {
@@ -309,7 +149,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -321,7 +161,7 @@
         "h": 4,
         "w": 3,
         "x": 6,
-        "y": 17
+        "y": 0
       },
       "options": {
         "reduceOptions": {
@@ -346,7 +186,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -358,7 +198,7 @@
         "h": 4,
         "w": 3,
         "x": 9,
-        "y": 17
+        "y": 0
       },
       "options": {
         "reduceOptions": {
@@ -383,7 +223,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -395,7 +235,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 21
+        "y": 4
       },
       "options": {
         "reduceOptions": {
@@ -420,7 +260,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -432,7 +272,7 @@
         "h": 4,
         "w": 3,
         "x": 3,
-        "y": 21
+        "y": 4
       },
       "options": {
         "reduceOptions": {
@@ -457,7 +297,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -469,7 +309,7 @@
         "h": 4,
         "w": 3,
         "x": 6,
-        "y": 21
+        "y": 4
       },
       "options": {
         "reduceOptions": {
@@ -494,7 +334,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -506,7 +346,7 @@
         "h": 4,
         "w": 3,
         "x": 9,
-        "y": 21
+        "y": 4
       },
       "options": {
         "reduceOptions": {
@@ -531,7 +371,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {},
@@ -541,7 +381,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 25
+        "y": 8
       },
       "options": {},
       "targets": [
@@ -570,7 +410,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {},
@@ -580,7 +420,7 @@
         "h": 7,
         "w": 4,
         "x": 8,
-        "y": 25
+        "y": 8
       },
       "options": {},
       "targets": [
@@ -595,160 +435,12 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 12,
-        "y": 25
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        }
-      },
-      "targets": [
-        {
-          "expr": "(sum(increase(peaktrade_signals_total[$__range])) or on() vector(0))",
-          "format": "time_series",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Total Signals (Range)",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 16,
-        "y": 25
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        }
-      },
-      "targets": [
-        {
-          "expr": "((sum(rate(peaktrade_signals_total[1m])) * 60) or on() vector(0))",
-          "format": "time_series",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Signals / min (1m)",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 16,
-        "y": 25
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        }
-      },
-      "targets": [
-        {
-          "expr": "(sum(increase(peaktrade_orders_approved_total[$__range])) or on() vector(0))",
-          "format": "time_series",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Orders Approved (Range)",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 20,
-        "y": 25
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        }
-      },
-      "targets": [
-        {
-          "expr": "(sum(increase(peaktrade_orders_blocked_total[$__range])) or on() vector(0))",
-          "format": "time_series",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Orders Blocked (Range)",
-      "type": "stat"
-    },
-    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 96
+        "y": 79
       },
       "panels": [],
       "title": "AI Live — Ops Summary",
@@ -757,7 +449,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -796,7 +488,7 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 97
+        "y": 80
       },
       "options": {
         "reduceOptions": {
@@ -817,7 +509,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -847,7 +539,7 @@
         "h": 4,
         "w": 4,
         "x": 4,
-        "y": 97
+        "y": 80
       },
       "options": {
         "reduceOptions": {
@@ -868,7 +560,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -893,7 +585,7 @@
         "h": 4,
         "w": 4,
         "x": 8,
-        "y": 97
+        "y": 80
       },
       "options": {
         "reduceOptions": {
@@ -914,7 +606,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -939,7 +631,7 @@
         "h": 4,
         "w": 4,
         "x": 12,
-        "y": 97
+        "y": 80
       },
       "options": {
         "reduceOptions": {
@@ -960,7 +652,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -990,7 +682,7 @@
         "h": 4,
         "w": 4,
         "x": 16,
-        "y": 97
+        "y": 80
       },
       "options": {
         "reduceOptions": {
@@ -1011,7 +703,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1036,7 +728,7 @@
         "h": 4,
         "w": 4,
         "x": 20,
-        "y": 97
+        "y": 80
       },
       "options": {
         "reduceOptions": {
@@ -1060,7 +752,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 15
       },
       "panels": [],
       "title": "AI Live",
@@ -1069,7 +761,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1108,7 +800,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 33
+        "y": 16
       },
       "options": {
         "reduceOptions": {
@@ -1129,7 +821,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1142,7 +834,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 33
+        "y": 16
       },
       "options": {
         "reduceOptions": {
@@ -1163,7 +855,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1199,7 +891,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 33
+        "y": 16
       },
       "options": {
         "reduceOptions": {
@@ -1220,7 +912,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1236,7 +928,7 @@
         "h": 4,
         "w": 6,
         "x": 18,
-        "y": 33
+        "y": 16
       },
       "options": {
         "reduceOptions": {
@@ -1258,7 +950,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1271,7 +963,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 37
+        "y": 20
       },
       "options": {
         "reduceOptions": {
@@ -1292,7 +984,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1305,7 +997,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 37
+        "y": 20
       },
       "options": {
         "reduceOptions": {
@@ -1326,7 +1018,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1338,7 +1030,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 37
+        "y": 20
       },
       "options": {
         "reduceOptions": {
@@ -1359,7 +1051,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1371,7 +1063,7 @@
         "h": 4,
         "w": 6,
         "x": 18,
-        "y": 37
+        "y": 20
       },
       "options": {
         "reduceOptions": {
@@ -1392,7 +1084,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1411,7 +1103,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 41
+        "y": 24
       },
       "targets": [
         {
@@ -1439,7 +1131,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 49
+        "y": 32
       },
       "panels": [],
       "title": "AI Live — UX v2 (reasons, actions, SLO, timeline)",
@@ -1448,7 +1140,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1467,7 +1159,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 50
+        "y": 33
       },
       "targets": [
         {
@@ -1492,7 +1184,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1511,7 +1203,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 50
+        "y": 33
       },
       "targets": [
         {
@@ -1526,7 +1218,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1545,7 +1237,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 58
+        "y": 41
       },
       "targets": [
         {
@@ -1560,7 +1252,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1579,7 +1271,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 58
+        "y": 41
       },
       "targets": [
         {
@@ -1594,7 +1286,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1629,7 +1321,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 66
+        "y": 49
       },
       "options": {
         "reduceOptions": {
@@ -1650,7 +1342,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1664,7 +1356,7 @@
         "h": 8,
         "w": 18,
         "x": 6,
-        "y": 66
+        "y": 49
       },
       "targets": [
         {
@@ -1679,7 +1371,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1695,7 +1387,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 74
+        "y": 57
       },
       "targets": [
         {
@@ -1720,7 +1412,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1732,7 +1424,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 80
+        "y": 63
       },
       "options": {
         "displayMode": "gradient",
@@ -1752,7 +1444,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1765,7 +1457,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 86
+        "y": 69
       },
       "options": {
         "reduceOptions": {
@@ -1786,7 +1478,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1798,7 +1490,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 86
+        "y": 69
       },
       "options": {
         "reduceOptions": {
@@ -1819,7 +1511,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1831,7 +1523,7 @@
         "h": 4,
         "w": 12,
         "x": 12,
-        "y": 86
+        "y": 69
       },
       "options": {
         "displayMode": "gradient",
@@ -1851,7 +1543,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -1864,7 +1556,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 90
+        "y": 73
       },
       "targets": [
         {
@@ -1882,7 +1574,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 101
+        "y": 84
       },
       "panels": [],
       "title": "Health invariants (shadow)",
@@ -1891,7 +1583,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "fieldConfig": {
         "defaults": {
@@ -1928,7 +1620,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 102
+        "y": 85
       },
       "options": {
         "reduceOptions": {
@@ -1949,7 +1641,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "fieldConfig": {
         "defaults": {
@@ -1986,7 +1678,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 102
+        "y": 85
       },
       "options": {
         "reduceOptions": {
@@ -2007,7 +1699,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "fieldConfig": {
         "defaults": {
@@ -2051,7 +1743,7 @@
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 102
+        "y": 85
       },
       "options": {
         "reduceOptions": {
@@ -2116,7 +1808,7 @@
         "h": 5,
         "w": 6,
         "x": 18,
-        "y": 102
+        "y": 85
       },
       "options": {
         "reduceOptions": {
@@ -2140,7 +1832,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 107
+        "y": 90
       },
       "panels": [],
       "title": "Shadow pipeline signals (throughput, errors, latency, risk blocks)",
@@ -2149,13 +1841,13 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 108
+        "y": 91
       },
       "targets": [
         {
@@ -2170,7 +1862,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "fieldConfig": {
         "defaults": {
@@ -2184,7 +1876,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 108
+        "y": 91
       },
       "targets": [
         {
@@ -2199,13 +1891,13 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 116
+        "y": 99
       },
       "targets": [
         {
@@ -2220,7 +1912,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "fieldConfig": {
         "defaults": {
@@ -2232,7 +1924,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 116
+        "y": 99
       },
       "targets": [
         {
@@ -2250,7 +1942,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 124
+        "y": 107
       },
       "panels": [],
       "title": "Replay/compare signals (Execution Watch API metrics, if enabled)",
@@ -2259,7 +1951,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -2277,7 +1969,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 125
+        "y": 108
       },
       "targets": [
         {
@@ -2292,7 +1984,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "fieldConfig": {
         "defaults": {
@@ -2304,7 +1996,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 134
+        "y": 117
       },
       "targets": [
         {
@@ -2319,13 +2011,13 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 134
+        "y": 117
       },
       "targets": [
         {
@@ -2343,7 +2035,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 143
+        "y": 126
       },
       "panels": [],
       "title": "Compare (shadow vs main) — best-effort",
@@ -2352,13 +2044,13 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 144
+        "y": 127
       },
       "targets": [
         {
@@ -2373,13 +2065,13 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-main"
       },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 144
+        "y": 127
       },
       "targets": [
         {
@@ -2403,23 +2095,56 @@
   "templating": {
     "list": [
       {
-        "name": "ds",
-        "label": "Datasource",
-        "type": "datasource",
-        "query": "prometheus",
-        "regex": "^(prom_local_9092|prom_shadow_9093|prom_ai_live_9094|prom_observability_9095)$",
-        "refresh": 1,
-        "hide": 0,
-        "multi": false,
-        "includeAll": false,
-        "allValue": null,
-        "sort": 0,
-        "skipUrlSync": false,
         "current": {
           "text": "prom_local_9092",
           "value": "prom_local_9092"
         },
-        "options": []
+        "hide": 0,
+        "label": "Datasource",
+        "name": "ds",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "text": "prometheus-shadow",
+          "value": "peaktrade-prometheus-shadow"
+        },
+        "hide": 2,
+        "label": "Prometheus (shadow)",
+        "name": "DS_SHADOW",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "text": "prometheus-main",
+          "value": "peaktrade-prometheus-main"
+        },
+        "hide": 2,
+        "label": "Prometheus (main)",
+        "name": "DS_MAIN",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "text": "prometheus-local",
+          "value": "peaktrade-prometheus-local"
+        },
+        "hide": 2,
+        "label": "Prometheus (local)",
+        "name": "DS_LOCAL",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "type": "datasource"
       },
       {
         "allValue": ".*",

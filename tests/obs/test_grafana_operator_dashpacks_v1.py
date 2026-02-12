@@ -65,7 +65,7 @@ def test_dashboard_uids_unique_and_vars_present() -> None:
         "peaktrade-execution-watch-overview": {"ds"},
         "peaktrade-labeled-local": {"ds"},
     }
-    allow_extra: set[str] = set()
+    allow_extra: set[str] = {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"}
     for uid, p in uids.items():
         if uid not in want_vars:
             continue
