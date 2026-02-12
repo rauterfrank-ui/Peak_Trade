@@ -3,7 +3,7 @@
 
 ## Evidence
 - Script: `scripts/ops/phase_h_todo_index.sh`
-- Output (local-only): `artifacts/closeout/PHASE_H_TODO_INDEX.json`
+- Output (local-only): `artifacts&#47;closeout&#47;PHASE_H_TODO_INDEX.json`
 
 ## Notes
 - Uses BSD `stat -f '%m'` to pick the newest runbook by mtime (portable for macOS).

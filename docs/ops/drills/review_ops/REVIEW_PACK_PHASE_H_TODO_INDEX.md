@@ -11,4 +11,4 @@ From repo root:
   - `open_points_tasks: ...`
 
 ## Output
-- Generated locally at: `artifacts/closeout/PHASE_H_TODO_INDEX.json`
+- Generated locally at: `artifacts&#47;closeout&#47;PHASE_H_TODO_INDEX.json`
