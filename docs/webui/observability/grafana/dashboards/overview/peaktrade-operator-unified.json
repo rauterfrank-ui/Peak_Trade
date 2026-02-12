@@ -37,8 +37,8 @@
         "description": "Peak_Trade: choose Prometheus (local/shadow/ai-live/obs)",
         "current": {
           "selected": true,
-          "text": "prom_ai_live_9094",
-          "value": "prom_ai_live_9094"
+          "text": "prom_local_9092",
+          "value": "prom_local_9092"
         },
         "options": []
       },
@@ -1137,7 +1137,11 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "none"
+          "unit": "none",
+          "noValue": "0",
+          "custom": {
+            "spanNulls": true
+          }
         },
         "overrides": []
       },
@@ -1150,7 +1154,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -1178,7 +1182,11 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "none"
+          "unit": "none",
+          "noValue": "0",
+          "custom": {
+            "spanNulls": true
+          }
         },
         "overrides": []
       },
@@ -1191,7 +1199,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -1219,7 +1227,11 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "none"
+          "unit": "none",
+          "noValue": "0",
+          "custom": {
+            "spanNulls": true
+          }
         },
         "overrides": []
       },
@@ -1232,7 +1244,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -1260,7 +1272,11 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "none"
+          "unit": "none",
+          "noValue": "0",
+          "custom": {
+            "spanNulls": true
+          }
         },
         "overrides": []
       },
@@ -1273,7 +1289,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -2821,7 +2837,11 @@
               "title": "Drilldown: Execution Watch Details",
               "url": "/d/peaktrade-execution-watch-details?var-endpoint=${__series.labels.endpoint}&var-status=${__series.labels.status}"
             }
-          ]
+          ],
+          "noValue": "0",
+          "custom": {
+            "spanNulls": true
+          }
         },
         "overrides": []
       },
@@ -2848,7 +2868,11 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "s"
+          "unit": "s",
+          "noValue": "0",
+          "custom": {
+            "spanNulls": true
+          }
         },
         "overrides": []
       },

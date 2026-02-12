@@ -37,5 +37,5 @@ bash scripts/obs/grafana_dashpack_datasource_verify_v1.sh
 ```
 
 ## Hinweise
-- Der Verify-Step nutzt Basic Auth aus `GRAFANA_AUTH` (Format `user:pass`), default `admin:admin`.
+- Der Verify-Step nutzt Basic Auth aus `GRAFANA_AUTH` (Format `user:pass`). Kein Default im Repo; setze `GRAFANA_AUTH` oder nutze `.env` (siehe RUNBOOK_GRAFANA_AUTH_SECURITY_FINISH_CURSOR_MA_20260210.md).
 - Artifacts werden unter `.local_tmp&#47;grafana_ds_verify_<UTCSTAMP>/` gespeichert (file-backed, ohne Pipes).

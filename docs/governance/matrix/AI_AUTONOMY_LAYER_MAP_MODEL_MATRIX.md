@@ -96,6 +96,7 @@ config/capability_scopes/<layer_id>_<layer_name>.toml
 - L0: `config/capability_scopes/L0_ops_docs.toml`
 - L1: `config/capability_scopes/L1_deep_research.toml`
 - L2: `config/capability_scopes/L2_market_outlook.toml`
+- L3: `config/capability_scopes/L3_trade_plan_advisory.toml`
 - L4: `config/capability_scopes/L4_governance_critic.toml`
 
 ---
@@ -178,6 +179,7 @@ Jedes Evidence Pack **MUSS** folgende Felder aus dieser Matrix referenzieren:
 | Version | Date | Changes | Author |
 |---|---|---|---|
 | v1.0 | 2026-01-08 | Initial authoritative matrix: 7 Layer, 8 Modelle, SoD Rules, Capability Scope Integration | ops |
+| v1.1 | 2026-02-07 | Add L3 capability scope (exists in repo) + governance test expects L0–L4 scopes | ops |
 
 ---
 

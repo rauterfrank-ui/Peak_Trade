@@ -15,6 +15,7 @@ Usage:
 """
 
 import hashlib
+import json
 import os
 import subprocess
 import uuid
@@ -331,12 +332,12 @@ class EvidencePackRuntime:
         # Save pack
         save_evidence_pack(pack, filepath)
 
-        # Also save run metadata
+        # Also save run metadata (artifacts sorted for deterministic hashes)
         metadata_path = filepath.parent / "run_metadata.json"
-        import json
-
+        meta = dict(self.run_metadata[run_id])
+        meta["artifacts"] = sorted(meta.get("artifacts", []))
         with open(metadata_path, "w") as f:
-            json.dump(self.run_metadata[run_id], f, indent=2)
+            json.dump(meta, f, indent=2)
 
         return filepath
 

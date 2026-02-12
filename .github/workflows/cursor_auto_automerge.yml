@@ -1,0 +1,114 @@
+name: Cursor Auto-AutoMerge (label-gated)
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, labeled, unlabeled, ready_for_review]
+    branches: [main]
+  check_suite:
+    types: [completed]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  statuses: read
+
+concurrency:
+  group: cursor-automerge-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  maybe_merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Merge PR if labeled + green (API squash)
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            // Collect PR numbers from event
+            let prNumbers = [];
+            if (context.eventName === "pull_request") {
+              prNumbers = [context.payload.pull_request.number];
+            } else if (context.eventName === "check_suite") {
+              const prs = (context.payload.check_suite && context.payload.check_suite.pull_requests) || [];
+              prNumbers = prs.map(p => p.number).filter(Boolean);
+            } else {
+              core.info(`Unsupported event: ${context.eventName}`);
+              return;
+            }
+
+            if (!prNumbers.length) {
+              core.info("No PR numbers in payload; nothing to do.");
+              return;
+            }
+
+            const hasLabels = (pr, names) => {
+              const set = new Set((pr.labels || []).map(l => l.name));
+              return names.every(n => set.has(n));
+            };
+
+            const isAllChecksGreen = async (sha) => {
+              // 1) Combined status must be success (covers legacy status contexts)
+              const cs = await github.rest.repos.getCombinedStatusForRef({ owner, repo, ref: sha });
+              if (cs.data.state !== "success") {
+                core.info(`combined_status=${cs.data.state} (not success)`);
+                return false;
+              }
+
+              // 2) Check-runs: none failing, none in_progress/queued
+              const cr = await github.rest.checks.listForRef({ owner, repo, ref: sha, per_page: 100 });
+              for (const r of cr.data.check_runs) {
+                if (r.status !== "completed") {
+                  core.info(`check_run pending: ${r.name} status=${r.status}`);
+                  return false;
+                }
+                // Treat success/neutral/skipped as OK; everything else blocks
+                const ok = (r.conclusion === "success" || r.conclusion === "neutral" || r.conclusion === "skipped");
+                if (!ok) {
+                  core.info(`check_run not ok: ${r.name} conclusion=${r.conclusion}`);
+                  return false;
+                }
+              }
+              return true;
+            };
+
+            for (const prNumber of prNumbers) {
+              core.info(`Evaluating PR #${prNumber}`);
+
+              const prResp = await github.rest.pulls.get({ owner, repo, pull_number: prNumber });
+              const pr = prResp.data;
+
+              if (pr.state !== "open" || pr.merged) { core.info("PR not open or already merged."); continue; }
+              if (pr.draft) { core.info("PR is draft; skip."); continue; }
+              if (!hasLabels(pr, ["cursor-auto", "automerge"])) { core.info("Missing labels cursor-auto+automerge; skip."); continue; }
+
+              const sha = pr.head.sha;
+              core.info(`head_sha=${sha}`);
+
+              // mergeable_state can be 'clean'/'unstable'/null; we rely on checks being green.
+              const green = await isAllChecksGreen(sha);
+              if (!green) { core.info("Checks not green yet; will try again on next check_suite completion."); continue; }
+
+              // Final guard: still mergeable?
+              const prResp2 = await github.rest.pulls.get({ owner, repo, pull_number: prNumber });
+              const pr2 = prResp2.data;
+              if (pr2.state !== "open" || pr2.merged || pr2.draft) { core.info("PR state changed; skip."); continue; }
+
+              core.info("Merging via API (squash)...");
+              try {
+                await github.rest.pulls.merge({
+                  owner, repo,
+                  pull_number: prNumber,
+                  merge_method: "squash"
+                });
+                core.info(`MERGED PR #${prNumber}`);
+              } catch (e) {
+                core.setFailed(`Merge failed for PR #${prNumber}: ${e.message}`);
+              }
+            }

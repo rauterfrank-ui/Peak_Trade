@@ -115,6 +115,9 @@ PHASE8E_8F_PR_GITHUB.md
 .tmp_backtest_artifacts/
 out/
 
+# research artifacts (new listings crawler)
+out/research/new_listings/
+
 # local scratch (never commit)
 docs/_scratch/
 

@@ -326,6 +326,109 @@ def save_heatmap(
 
 
 # =============================================================================
+# STANDARD 2x2 QUADRANT HEATMAP TEMPLATE
+# =============================================================================
+
+# Fixed layout for deterministic rendering
+QUADRANT_2X2_FIGSIZE = (6, 6)
+QUADRANT_2X2_FONT_SIZE = 10
+QUADRANT_2X2_TITLE_FONT_SIZE = 12
+
+
+def render_standard_2x2_heatmap_template(
+    matrix: Union[Sequence[Sequence[float]], np.ndarray],
+    output_path: Union[str, Path],
+    *,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    quadrant_labels: Optional[Tuple[str, str, str, str]] = None,
+    fmt: str = ".2f",
+    cmap: str = "RdYlGn",
+    figsize: Tuple[int, int] = QUADRANT_2X2_FIGSIZE,
+    dpi: int = DEFAULT_DPI,
+) -> str:
+    """
+    Rendert eine deterministische 2x2 Quadrant-Heatmap als PNG.
+
+    Args:
+        matrix: 2x2 numerische Matrix [[tl, tr], [bl, br]] (top-left, top-right, bottom-left, bottom-right).
+        output_path: Pfad für die PNG-Datei.
+        title: Optionaler Plot-Titel.
+        xlabel: Optionales X-Achsen-Label.
+        ylabel: Optionales Y-Achsen-Label.
+        quadrant_labels: Optional (top_left, top_right, bottom_left, bottom_right).
+        fmt: Format-String für Zell-Annotationen (default: ".2f").
+        cmap: Matplotlib Colormap (default: "RdYlGn").
+        figsize: Figure-Größe (default: 6x6 für Determinismus).
+        dpi: Auflösung.
+
+    Returns:
+        Pfad zur gespeicherten PNG-Datei.
+
+    Raises:
+        ValueError: Wenn matrix nicht exakt 2x2 ist.
+    """
+    if not MATPLOTLIB_AVAILABLE:
+        raise ImportError("Matplotlib is required for plotting")
+
+    arr = np.asarray(matrix)
+    if arr.shape != (2, 2):
+        raise ValueError(f"matrix must be 2x2, got shape {arr.shape}")
+
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    fig, ax = plt.subplots(figsize=figsize)
+    im = ax.imshow(arr, aspect="auto", cmap=cmap)
+
+    # Reihenfolge: (0,0)=top-left, (0,1)=top-right, (1,0)=bottom-left, (1,1)=bottom-right
+    ax.set_xticks([0, 1])
+    ax.set_yticks([0, 1])
+    ax.set_xticklabels(["Left", "Right"], fontsize=QUADRANT_2X2_FONT_SIZE)
+    ax.set_yticklabels(["Top", "Bottom"], fontsize=QUADRANT_2X2_FONT_SIZE)
+
+    # Zell-Annotationen: Quadrant-Label (optional) + Wert
+    labels_flat = (
+        list(quadrant_labels) if quadrant_labels and len(quadrant_labels) >= 4 else [None] * 4
+    )
+    for i in range(2):
+        for j in range(2):
+            val = arr[i, j]
+            idx = i * 2 + j
+            lbl = labels_flat[idx] if idx < len(labels_flat) else None
+            text = f"{val:{fmt}}" if not np.isnan(val) else "—"
+            if lbl:
+                text = f"{lbl}\n{text}"
+            mean_val = np.nanmean(arr)
+            color = "white" if (not np.isnan(val) and val < mean_val) else "black"
+            ax.text(
+                j,
+                i,
+                text,
+                ha="center",
+                va="center",
+                color=color,
+                fontsize=QUADRANT_2X2_FONT_SIZE,
+            )
+
+    # Axis labels als Achsenbeschriftung (nicht Quadrant-Labels)
+    if xlabel:
+        ax.set_xlabel(xlabel, fontsize=QUADRANT_2X2_FONT_SIZE)
+    if ylabel:
+        ax.set_ylabel(ylabel, fontsize=QUADRANT_2X2_FONT_SIZE)
+    if title:
+        ax.set_title(title, fontsize=QUADRANT_2X2_TITLE_FONT_SIZE)
+
+    fig.colorbar(im, ax=ax)
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+
+    return str(output_path)
+
+
+# =============================================================================
 # SCATTER PLOTS
 # =============================================================================
 

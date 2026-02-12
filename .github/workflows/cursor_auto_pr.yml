@@ -1,0 +1,105 @@
+name: Cursor Auto-PR (feat/* -> main)
+
+on:
+  push:
+    branches:
+      - "feat/**"
+  workflow_dispatch: {}
+
+# actions: write needed for workflow_dispatch of CI/audit/etc. (otherwise "Resource not accessible by integration")
+permissions:
+  contents: read
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: cursor-auto-pr-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  create_pr_if_missing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create PR if missing
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
+            const head  = context.ref.replace("refs/heads/", "");
+            const base  = "main";
+
+            // Don't PR main to main
+            if (head === base) {
+              core.info("NOOP: head==base");
+              return;
+            }
+
+            // Find existing open PR for this branch -> main
+            const prs = await github.rest.pulls.list({
+              owner, repo,
+              state: "open",
+              head: `${owner}:${head}`,
+              base
+            });
+
+            if (prs.data.length > 0) {
+              core.info(`EXISTS: PR #${prs.data[0].number} ${prs.data[0].html_url}`);
+              return;
+            }
+
+            const title = `auto: ${head} -> ${base}`;
+            const body =
+              `Auto-created by Cursor workflow.\n\n` +
+              `- Branch: \`${head}\`\n` +
+              `- Base: \`${base}\`\n` +
+              `- Commit: \`${context.sha}\`\n\n` +
+              `Labels:\n- cursor-auto\n- automerge\n`;
+
+            const pr = await github.rest.pulls.create({
+              owner, repo, head, base, title, body,
+              maintainer_can_modify: true
+            });
+
+            // Add labels used by the automerge workflow
+            await github.rest.issues.addLabels({
+              owner, repo,
+              issue_number: pr.data.number,
+              labels: ["cursor-auto", "automerge"]
+            });
+
+            core.info(`CREATED: PR #${pr.data.number} ${pr.data.html_url}`);
+
+      - name: Dispatch required checks (workflow_dispatch)
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
+            const ref   = context.ref.replace('refs/heads/', '');
+
+            const workflows = [
+              { id: 'ci.yml', inputs: { force_matrix: 'true' } },
+              { id: 'lint_gate.yml' },
+              { id: 'policy_critic_gate.yml' },
+              { id: 'policy_tracked_reports_guard.yml' },
+              { id: 'audit.yml' },
+              { id: 'ci-workflow-dispatch-guard.yml' },
+            ];
+
+            for (const w of workflows) {
+              try {
+                await github.rest.actions.createWorkflowDispatch({
+                  owner, repo,
+                  workflow_id: w.id,
+                  ref,
+                  inputs: w.inputs || {}
+                });
+                core.info(`dispatched ${w.id} on ${ref}`);
+              } catch (e) {
+                core.warning(`failed dispatch ${w.id}: ${e.message}`);
+              }
+            }
+

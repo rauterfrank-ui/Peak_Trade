@@ -20,8 +20,8 @@ RETRIES="8"
 TIMEOUT_S=""
 
 usage() {
-  echo "usage: $0 --base <http://127.0.0.1:3000> --path </api/health> [--auth <admin:admin>] [--out <path>] [--retries N] [--timeout S]" >&2
-  echo "   or: $0 <base_url> <path> [--auth <admin:admin>] [--out <path>] [--retries N] [--timeout S]" >&2
+  echo "usage: $0 --base <http://127.0.0.1:3000> --path </api/health> [--auth <user:pass>] [--out <path>] [--retries N] [--timeout S]" >&2
+  echo "   or: $0 <base_url> <path> [--auth <user:pass>] [--out <path>] [--retries N] [--timeout S]" >&2
 }
 
 if [ $# -ge 1 ] && [ "${1#--}" = "$1" ]; then

@@ -84,11 +84,7 @@ def test_dashboard_uids_unique_and_required_vars_present() -> None:
         assert t.get("hide") == 0, f"{p} var ds should be visible (hide=0)"
         cur = t.get("current") or {}
         assert isinstance(cur, dict)
-        expected_ds = (
-            "prom_ai_live_9094"
-            if p.name == "peaktrade-operator-unified.json"
-            else "prom_local_9092"
-        )
+        expected_ds = "prom_local_9092"
         assert cur.get("value") == expected_ds, f"{p} var ds default mismatch"
 
 

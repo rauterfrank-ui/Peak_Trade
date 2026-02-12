@@ -1,3 +1,6 @@
+
+# ci smoke workflow-only 20260207-0217Z
+# ci smoke workflow-only 20260207-0135Z
 name: CI
 
 on:
@@ -8,6 +11,12 @@ on:
   merge_group:
     branches: ["main", "master"]
   workflow_dispatch:
+    inputs:
+      force_matrix:
+        description: 'Force full Python matrix (run_matrix=true) regardless of changed paths'
+        required: false
+        default: false
+        type: boolean
   schedule:
     - cron: "0 3 * * 1"  # Monday 03:00 UTC
 
@@ -17,16 +26,25 @@ concurrency:
 
 jobs:
   # ============================================================================
-  # Change Detection
+  # Change Detection (pragmatic flow)
   # ============================================================================
-  # Detects whether code changes occurred (vs. docs-only changes).
-  # This allows required test jobs to skip gracefully on docs-only PRs,
-  # preventing "Pending" status checks that block merges.
+  # Outputs: code_changed (legacy), run_matrix, run_fast_lane, docs_only, workflow_only.
+  # - run_fast_lane: always true (Fast-Lane always runs).
+  # - run_matrix: true when code paths changed (or workflow_dispatch force_matrix=true).
+  # - run_fast: always true. run_fast_lane: alias.
+  # - docs_only: true when ONLY docs/grafana/out/*.md changed.
+  # - workflow_only: true when ONLY .github/workflows changed.
+  # Code paths: src/**, tests/**, scripts/**, config/**, pyproject.toml, uv.lock, requirements*.txt, pytest.ini, Makefile.
   # ============================================================================
   changes:
     runs-on: ubuntu-latest
     outputs:
       code_changed: ${{ steps.filter.outputs.code }}
+      run_matrix: ${{ steps.set_outputs.outputs.run_matrix }}
+      run_fast: ${{ steps.set_outputs.outputs.run_fast }}
+      run_fast_lane: ${{ steps.set_outputs.outputs.run_fast }}
+      docs_only: ${{ steps.set_outputs.outputs.docs_only }}
+      workflow_only: ${{ steps.set_outputs.outputs.workflow_only }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -41,11 +59,43 @@ jobs:
               - 'tests/**'
               - 'scripts/**'
               - 'config/**'
-              - '.github/workflows/**'
               - 'requirements.txt'
+              - 'requirements*.txt'
               - 'pyproject.toml'
+              - 'uv.lock'
               - 'pytest.ini'
               - 'Makefile'
+            docs:
+              - 'docs/**'
+              - '**/grafana/dashboards/**'
+              - 'out/**'
+              - '**/*.md'
+            workflow:
+              - '.github/workflows/**'
+
+      - name: Set pragmatic flow outputs
+        id: set_outputs
+        run: |
+          FORCE_MATRIX="${{ github.event_name == 'workflow_dispatch' && github.event.inputs.force_matrix == 'true' }}"
+          if [ "$FORCE_MATRIX" = "true" ]; then
+            echo "run_matrix=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run_matrix=${{ steps.filter.outputs.code }}" >> "$GITHUB_OUTPUT"
+          fi
+          echo "run_fast=true" >> "$GITHUB_OUTPUT"
+          CODE="${{ steps.filter.outputs.code }}"
+          DOCS="${{ steps.filter.outputs.docs }}"
+          WF="${{ steps.filter.outputs.workflow }}"
+          if [ "$DOCS" = "true" ] && [ "$CODE" != "true" ] && [ "$WF" != "true" ]; then
+            echo "docs_only=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "docs_only=false" >> "$GITHUB_OUTPUT"
+          fi
+          if [ "$WF" = "true" ] && [ "$CODE" != "true" ] && [ "$DOCS" != "true" ]; then
+            echo "workflow_only=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "workflow_only=false" >> "$GITHUB_OUTPUT"
+          fi
 
   # ============================================================================
   # CI Required Contexts Contract
@@ -66,6 +116,44 @@ jobs:
 
       - name: Validate CI Required Contexts Contract
         run: ./scripts/ops/check_required_ci_contexts_present.sh
+
+  # ============================================================================
+  # Fast-Lane (always runs; minimal smoke for docs/workflow-only PRs)
+  # ============================================================================
+  fast-lane:
+    name: Fast-Lane
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: changes
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Stability smoke (fast gate)
+        run: |
+          pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
+
+      - name: Evidence Pack Smoke (P5B)
+        run: scripts/ci/evidence_pack_validation_smoke.sh
 
   # ============================================================================
   # Tests (all Python versions)
@@ -158,12 +246,12 @@ jobs:
       - name: Run tests
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' }}
         run: |
-          pytest tests/ -v --tb=short
+          pytest tests/ -v --tb=short -m "not network and not external_tools"
 
       - name: Run tests with coverage
         if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true') && matrix.python-version == '3.11' }}
         run: |
-          pytest tests/ --cov=src --cov-report=xml --cov-report=term-missing
+          pytest tests/ --cov=src --cov-report=xml --cov-report=term-missing -m "not network and not external_tools"
 
       # TODO: Linting (optional, aktivieren wenn gewünscht)
       # - name: Run ruff
@@ -244,3 +332,24 @@ jobs:
           name: strategy-smoke-results
           path: test_results/strategy_smoke/
           retention-days: 30
+
+  # ============================================================================
+  # PR Gate (single required check for branch protection)
+  # ============================================================================
+  # When run_matrix=false: Fast-Lane + (tests/strategy-smoke skip) → SUCCESS.
+  # When run_matrix=true: Fast-Lane + tests (3.9/3.10/3.11) + strategy-smoke → SUCCESS.
+  # Branch protection: require only "PR Gate".
+  # ============================================================================
+  pr-gate:
+    name: PR Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    needs: [changes, fast-lane, tests, strategy-smoke]
+    if: always() && !cancelled() && needs.changes.result == 'success'
+    steps:
+      - name: Require all gates passed
+        run: |
+          [[ "${{ needs.fast-lane.result }}" == "success" ]] || { echo "Fast-Lane failed"; exit 1; }
+          [[ "${{ needs.tests.result }}" == "success" ]] || { echo "tests failed"; exit 1; }
+          [[ "${{ needs.strategy-smoke.result }}" == "success" ]] || { echo "strategy-smoke failed"; exit 1; }
+          echo "PR Gate: all gates passed (run_matrix=${{ needs.changes.outputs.run_matrix }}, docs_only=${{ needs.changes.outputs.docs_only }}, workflow_only=${{ needs.changes.outputs.workflow_only }})"

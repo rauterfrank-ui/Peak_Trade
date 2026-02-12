@@ -18,6 +18,12 @@ jobs:
       - name: Fetch origin
         run: git fetch --prune origin
 
+      - name: Fetch base ref (ensure origin/main exists for merge-base)
+        shell: bash
+        run: |
+          base_ref="${GITHUB_BASE_REF:-main}"
+          git fetch origin "${base_ref}:refs/remotes/origin/${base_ref}" || true
+
       - name: Determine base ref
         id: base
         shell: bash

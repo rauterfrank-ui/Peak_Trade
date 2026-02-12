@@ -79,10 +79,59 @@ def _pin_signals_orders_panels(d: dict) -> None:
             continue
         panel["datasource"] = {"type": "prometheus", "uid": UID_SHADOW}
         for t in panel.get("targets", []) or []:
-            if isinstance(t.get("datasource"), dict) and t["datasource"].get("type") == "prometheus":
+            if (
+                isinstance(t.get("datasource"), dict)
+                and t["datasource"].get("type") == "prometheus"
+            ):
                 t["datasource"] = {"type": "prometheus", "uid": UID_SHADOW}
             elif "expr" in t:
                 t["datasource"] = {"type": "prometheus", "uid": UID_SHADOW}
+
+
+# Panels to make robust to 0/NaN (show 0 instead of "No data")
+NODATA_ROBUST_TITLES = (
+    "Total Signals (Range)",
+    "Signals / min (1m)",
+    "Orders Approved (Range)",
+    "Orders Blocked (Range)",
+    "Execution Watch req/s (by endpoint, status)",
+    "Execution Watch latency p95 (by endpoint)",
+)
+
+
+def _walk_panels(panels):
+    for p in panels or []:
+        if not isinstance(p, dict):
+            continue
+        yield p
+        for child in _walk_panels(p.get("panels") or []):
+            yield child
+
+
+def _apply_nodata_robustness(d: dict) -> None:
+    """Set noValue=0, spanNulls, relax reduce (last), drop filtering transforms for no-data tiles."""
+    for panel in _walk_panels(d.get("panels") or []):
+        title = (panel.get("title") or "").strip()
+        if title not in NODATA_ROBUST_TITLES:
+            continue
+        fc = panel.setdefault("fieldConfig", {})
+        defaults = fc.setdefault("defaults", {})
+        defaults["noValue"] = "0"
+        defaults.setdefault("custom", {})["spanNulls"] = True
+        xforms = panel.get("transformations") or []
+        keep = [
+            t
+            for t in xforms
+            if (t.get("id") or "").lower()
+            not in {"filterfieldsbyname", "filterbyvalue", "organize", "groupby", "reduce"}
+        ]
+        if keep != xforms:
+            panel["transformations"] = keep
+        if (panel.get("type") or "").lower() in {"stat", "gauge", "bargauge", "table"}:
+            ro = panel.setdefault("options", {}).setdefault("reduceOptions", {})
+            ro["calcs"] = ["last"]
+            ro.setdefault("fields", "")
+            ro.setdefault("values", False)
 
 
 src_op = pathlib.Path(
@@ -216,6 +265,7 @@ elif ai.get("annotations") and u.get("annotations", {}).get("list"):
 _pin_shadow_panels_in_dashboard(u)
 _pin_stack_fingerprint_panels(u)
 _pin_signals_orders_panels(u)
+_apply_nodata_robustness(u)
 
 out.write_text(json.dumps(u, indent=2) + "\n")
 print("WROTE", out)

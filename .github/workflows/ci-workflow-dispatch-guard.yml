@@ -1,6 +1,8 @@
 name: CI / Workflow Dispatch Guard
 
 on:
+  workflow_dispatch: {}
+
   pull_request:
     # NO paths filter at workflow level (required checks must always run)
   push:

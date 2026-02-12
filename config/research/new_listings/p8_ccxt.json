@@ -1,0 +1,21 @@
+{
+  "scope": "research",
+  "component": "new_listings",
+  "phase": "P8",
+  "collectors": ["manual_seed", "replay"],
+  "sources": {
+    "ccxt": {
+      "exchange": "kraken",
+      "symbols": null,
+      "market_type": "spot",
+      "max_markets": 20,
+      "rate_limit_ms": 1200,
+      "enabled": false
+    },
+    "replay": {
+      "dir": "out/research/new_listings/replay",
+      "enabled": true
+    }
+  },
+  "notes": "P8 CCXT read-only + replay. Set sources.ccxt.enabled true for live ticker fetch (network). No secrets."
+}
