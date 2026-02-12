@@ -18,7 +18,7 @@ Pure functions, no I/O, no state, no external deps beyond stdlib.
 All functions are deterministic and side-effect free.
 
 ### `compute_returns(equity: list[float]) -> list[float]`
-Simple returns per step: `r_t = equity[t]/equity[t-1] - 1`
+Simple returns per step: `r_t = equity[t]&#47;equity[t-1] - 1`
 - If `len(equity) < 2`: returns `[]`
 - Rejects non-positive `equity[t-1]` via `ValueError` (undefined division / invalid equity)
 
@@ -26,7 +26,7 @@ Simple returns per step: `r_t = equity[t]/equity[t-1] - 1`
 Peak-to-trough max drawdown computed on equity:
 - Returns `0.0` for `len(equity) < 2`
 - Drawdown is expressed as a **positive fraction** in `[0, +inf)`:
-  `dd_t = 1 - equity[t]/peak_so_far` for `equity[t] <= peak_so_far`
+  `dd_t = 1 - equity[t]&#47;peak_so_far` for `equity[t] <= peak_so_far`
 - Rejects non-positive peaks via `ValueError`
 
 ### `sharpe(returns: list[float], risk_free: float=0.0) -> float`
@@ -37,7 +37,7 @@ Per-step Sharpe ratio:
 
 ### `summary_kpis(equity: list[float], risk_free: float=0.0) -> dict[str, float]`
 Returns:
-- `total_return`: `equity[-1]/equity[0] - 1` (requires len>=2 and equity[0]>0)
+- `total_return`: `equity[-1]&#47;equity[0] - 1` (requires len>=2 and equity[0]>0)
 - `max_drawdown`: from `max_drawdown`
 - `sharpe`: sharpe of `compute_returns(equity)`
 - `n_steps`: float(len(equity))
