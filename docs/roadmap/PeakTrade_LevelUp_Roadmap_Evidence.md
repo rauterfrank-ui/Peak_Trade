@@ -905,3 +905,5 @@ Evidence: `out&#47;ops&#47;cursor_ma&#47;metrics-ulcer-recovery&#47;closeout_met
 #### Closeout — normalize_validator_report_cli (PYTHONPATH-free) green
 - Fix commit: 604a53fb (scripts/aiops/normalize_validator_report.py)
 - Evidence: out&#47;ops&#47;portable_verify_failures&#47;fix_normalize_validator_report_cli&#47;
+
+<!-- docs gates smoke: 2026-02-12T17:50:26Z -->
