@@ -269,8 +269,8 @@ python scripts/run_scheduler.py \
 In **10–15 Minuten** den kompletten Live-Track praktisch erleben – ohne echtes Kapital:
 
 ```bash
-# 1. Dashboard starten
-uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
+# 1. Dashboard starten (siehe auch "Web UI" weiter unten)
+RELOAD=1 ./scripts/ops/run_webui.sh
 
 # 2. Shadow-Session (10 Steps)
 python scripts/run_execution_session.py --strategy ma_crossover --steps 10
@@ -285,6 +285,32 @@ python scripts/report_live_sessions.py --summary-only --stdout
 
 > **Safety-First:** Nur Shadow-/Testnet-Mode. Live-Mode bleibt durch Safety-Gates blockiert.
 > **Vollständiger Walkthrough:** [`docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
+
+---
+
+## Web UI
+
+### Install deps (uv)
+
+```bash
+uv sync --extra web
+```
+
+### Run (recommended wrapper)
+
+```bash
+./scripts/ops/run_webui.sh
+# Reload:
+RELOAD=1 ./scripts/ops/run_webui.sh
+```
+
+### Live dashboard
+
+```bash
+./scripts/ops/run_live_webui.sh
+# Reload:
+RELOAD=1 ./scripts/ops/run_live_webui.sh
+```
 
 ---
 
