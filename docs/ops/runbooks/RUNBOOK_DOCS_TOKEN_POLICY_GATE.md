@@ -107,7 +107,23 @@ python3 scripts/ops/validate_docs_token_policy.py --changed
 bash scripts/ops/verify_docs_reference_targets.sh --changed
 ```
 
-**Option C: Add to Allowlist (If Appropriate)**
+**Option C: Perl One-Liner (File-Specific)**
+
+If the validator names a *different* file than `README.md` (e.g., `docs&#47;ops&#47;README.md`, `docs&#47;GUIDE.md`), apply the most common fixes with a perl one-liner:
+
+```bash
+perl -0777 -i -pe 's/allowed=True\/False/allowed=True&#47;False/g; s/allowed=False\/True/allowed=False&#47;True/g; s/True\/False/True&#47;False/g; s/False\/True/False&#47;True/g' <path>
+```
+
+Example for `docs/ops/README.md`:
+
+```bash
+perl -0777 -i -pe 's/allowed=True\/False/allowed=True&#47;False/g; s/allowed=False\/True/allowed=False&#47;True/g; s/True\/False/True&#47;False/g; s/False\/True/False&#47;True/g' docs/ops/README.md
+```
+
+Re-run the validator to verify. Safe to run multiple times (idempotent).
+
+**Option D: Add to Allowlist (If Appropriate)**
 
 If a token is a generic placeholder (e.g., ``some&#47;path``) used across many docs:
 
