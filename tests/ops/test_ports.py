@@ -1,10 +1,19 @@
 from __future__ import annotations
 
+import os
 import socket
 
 import pytest
 
+if os.getenv("PEAKTRADE_ALLOW_PORT_BIND_TESTS", "0") != "1":
+    pytest.skip(
+        "port bind tests disabled in restricted CI; set PEAKTRADE_ALLOW_PORT_BIND_TESTS=1 to enable",
+        allow_module_level=True,
+    )
+
 from src.ops.net.ports import ensure_tcp_port_free
+
+pytestmark = pytest.mark.network
 
 
 def _bind_ephemeral() -> tuple[socket.socket, int]:

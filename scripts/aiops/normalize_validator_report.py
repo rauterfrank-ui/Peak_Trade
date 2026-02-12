@@ -44,15 +44,16 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-# Add src/ to path for imports
+# Add repo root to path so that "from src.*" works when run via subprocess without PYTHONPATH
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(_REPO_ROOT / "src"))
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
 
-from ai_orchestration.validator_report_normalized import (
+from src.ai_orchestration.validator_report_normalized import (
     normalize_validator_report,
     hash_normalized_report,
 )
-from ai_orchestration.validator_report_schema import ValidatorReport
+from src.ai_orchestration.validator_report_schema import ValidatorReport
 
 
 def load_raw_report(input_path: Optional[Path]) -> Dict[str, Any]:

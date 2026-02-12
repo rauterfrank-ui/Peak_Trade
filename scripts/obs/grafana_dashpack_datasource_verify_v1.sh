@@ -11,12 +11,20 @@ set -euo pipefail
 #   - DS_VERIFY_SUMMARY.txt
 #
 # Auth:
-# - Uses Basic Auth from env GRAFANA_AUTH (user:pass), default admin:admin
+# - Uses Basic Auth from env GRAFANA_AUTH (user:pass). Set GRAFANA_AUTH or GRAFANA_TOKEN (see runbook).
 
 cd "$(git rev-parse --show-toplevel)"
 
 GRAFANA_URL="${GRAFANA_URL:-http://127.0.0.1:3000}"
-GRAFANA_AUTH="${GRAFANA_AUTH:-admin:admin}"
+if [[ -z "${GRAFANA_TOKEN:-}" ]]; then
+  if [[ -z "${GRAFANA_AUTH:-}" && -n "${GF_SECURITY_ADMIN_USER:-}" && -n "${GF_SECURITY_ADMIN_PASSWORD:-}" ]]; then
+    GRAFANA_AUTH="${GF_SECURITY_ADMIN_USER}:${GF_SECURITY_ADMIN_PASSWORD}"
+  fi
+fi
+if [[ -z "${GRAFANA_TOKEN:-}" && -z "${GRAFANA_AUTH:-}" ]]; then
+  echo "ERROR: Grafana auth missing. Set GRAFANA_TOKEN (preferred) or GRAFANA_AUTH=user:pass." >&2
+  exit 2
+fi
 
 RUN_TS_UTC="$(date -u +%Y%m%dT%H%M%SZ)"
 OUT_DIR=".local_tmp/grafana_ds_verify_${RUN_TS_UTC}"

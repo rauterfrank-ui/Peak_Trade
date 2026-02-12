@@ -61,7 +61,7 @@ Dieses Runbook dokumentiert den **kompletten** operationalen Pfad von der aktuel
 
 ## 📊 LAYER INTEGRATION STATUS
 
-**Source of Truth:** [AI Autonomy Layer Map & Model Assignment Matrix](../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md)
+**Source of Truth:** [AI Autonomy Layer Map & Model Assignment Matrix](../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md)
 
 | Layer | Name | Autonomy | Primary Model | Critic Model | Status | Integration Phase |
 |-------|------|----------|---------------|--------------|--------|------------------|
@@ -176,9 +176,9 @@ Integrate L3 Trade Plan Advisory layer to generate intraday trade hypotheses, se
 ### Tasks
 
 #### A1 (Implementer):
-1. Implement L3 Runner script (`scripts&#47;aiops&#47;run_l3_trade_plan_advisory.py`)
-   - Input: L2 Market Outlook scenarios + historical patterns
-   - Output: Trade hypotheses (setup, entry zones, risk parameters)
+1. ✅ L3 Runner script implemented (`scripts&#47;aiops&#47;run_l3_trade_plan_advisory.py`); registered in Runner Index (Tier A). Pointer-only inputs, files-only tooling; deterministic manifest + artifacts. See `docs&#47;dev&#47;RUNNER_INDEX.md`.
+   - Input: Pointer-only (FeatureView/EvidenceCapsule style); L2 scenarios via artifact refs
+   - Output: run_manifest.json, operator_output.md, evidence_pack_id (no raw content)
    - **NO execution parameters** (no "place order now" outputs)
 2. Create L3 Evidence Pack fixtures
 3. Integrate L3 Capability Scope enforcement
@@ -798,7 +798,7 @@ Establish sustainable operations: weekly health discipline, continuous improveme
 ## 📚 REFERENCE DOCUMENTATION
 
 ### Authoritative Sources
-- **Layer Map & Model Matrix:** [AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md](../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md)
+- **Layer Map & Model Matrix:** [AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md](../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md)
 - **Control Center:** [AI_AUTONOMY_CONTROL_CENTER.md](../control_center/AI_AUTONOMY_CONTROL_CENTER.md)
 - **Evidence Pack Template v2:** [AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md](../../governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md)
 

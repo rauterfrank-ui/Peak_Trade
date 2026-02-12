@@ -1,0 +1,90 @@
+# Capability Scope: L3 Trade Plan Advisory
+# Layer: L3 (Trade Plan Advisory)
+# Purpose: Intraday trade hypotheses, setup templates, risk checklists (files only)
+# Autonomy: REC/PROP (Recommend / Propose)
+# Primary Model: GPT-5.2 pro
+# Critic: o3
+
+[scope]
+layer_id = "L3"
+description = "Trade Plan Advisory: Intraday trade hypotheses, setup templates, risk checklists"
+autonomy_level = "REC/PROP"
+version = "1.0"
+effective_date = "2026-02-06"
+
+[models]
+primary = "gpt-5.2-pro"
+fallback = "gpt-5.2"
+critic = "o3"
+
+[inputs]
+allowed = [
+  "docs/market_outlook/**/*.yaml",
+  "docs/market_outlook/**/*.md",
+  "config/macro_regimes/**/*.toml",
+  "config/regimes.toml",
+  "config/scenarios/**/*.toml",
+  "data/market_snapshots/*.json",
+  "data/scenarios/*.json",
+  "config/capability_scopes/**/*.toml",
+]
+forbidden = [
+  ".env",
+  "live_runs/**/*",
+  "config/portfolios/**/*.toml",
+  "config/live_*.toml",
+  "src/execution/**/*",
+]
+
+[outputs]
+allowed = [
+  "PlanTemplates",
+  "Checklists",
+  "Hypotheses",
+  "CandidateConfigs",
+  "RiskChecklist",
+  "NoTradeTriggers",
+]
+forbidden = [
+  "ExecutionCommands",
+  "ReadyToSendOrders",
+  "BrokerApiCalls",
+  "ExchangeApiCalls",
+  "OrderParameters",
+]
+
+[tooling]
+allowed = ["files"]  # Files only, no web (L3 is files-only)
+forbidden = ["web", "code-interpreter", "shell", "execution"]
+
+[constraints]
+no_execution_trigger = true
+no_order_parameters = true
+require_risk_checklist = true
+require_no_trade_triggers = true
+require_sod = true
+
+[logging]
+required_fields = [
+  "run_id",
+  "layer_id",
+  "model_id",
+  "prompt_hash",
+  "artifact_hash",
+  "timestamp",
+]
+
+[safety]
+safety_checks = [
+  "no_execution_trigger",
+  "no_order_parameters_in_output",
+  "require_risk_checklist",
+  "require_no_trade_triggers",
+  "no_secrets_in_output",
+]
+
+alert_on_violation = true
+alert_channel = "trade-plan-advisory-safety"
+
+[tools]
+allowed_tools = ["files"]

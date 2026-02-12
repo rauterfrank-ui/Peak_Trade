@@ -43,7 +43,7 @@ jobs:
   promptfoo-eval:
     name: Run Promptfoo Evals
     needs: changes
-    if: needs.changes.outputs.run_evals == 'true' && secrets.OPENAI_API_KEY != ''
+    if: needs.changes.outputs.run_evals == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -55,11 +55,21 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
+      - name: Prepare AIOps artifacts dir
+        run: mkdir -p .artifacts/aiops
+
       - name: Run Promptfoo Eval
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           bash scripts/aiops/run_promptfoo_eval.sh
+
+      - name: Ensure eval artifacts (fallback if empty)
+        run: |
+          mkdir -p .artifacts/aiops
+          if [ "$(find .artifacts/aiops -type f 2>/dev/null | wc -l | tr -d ' ')" = "0" ]; then
+            printf '%s\n' '{"status":"ran","note":"no outputs produced"}' > .artifacts/aiops/eval_empty.json
+          fi
 
       - name: Upload Artifacts
         if: always()
@@ -75,7 +85,25 @@ jobs:
     if: needs.changes.outputs.run_evals != 'true'
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare AIOps artifacts dir
+        run: mkdir -p .artifacts/aiops
+
+      - name: Write skip marker
+        run: |
+          TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          echo "{\"status\":\"skipped\",\"reason\":\"run_evals=false or missing OPENAI_API_KEY\",\"ts_utc\":\"$TS\"}" > .artifacts/aiops/skip.json
+
       - name: Log skip reason
         run: |
           echo "No eval-relevant changes detected. Skipping promptfoo evals."
           echo "This job succeeds to avoid false negatives in CI status."
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: promptfoo-eval-logs
+          path: .artifacts/aiops/
+          retention-days: 7

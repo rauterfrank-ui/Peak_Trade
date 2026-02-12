@@ -8,9 +8,9 @@ Führt KI-gestützte Auswertung von IntelEvents durch:
 
 Verwendung:
     from src.meta.infostream.evaluator import call_ai_for_event, render_event_as_infopacket
-    from openai import OpenAI
+    from src.ai_orchestration.model_client import create_model_client
 
-    client = OpenAI()
+    client = create_model_client("live")
     intel_eval, learning = call_ai_for_event(event, client)
 """
 
@@ -406,7 +406,7 @@ def call_ai_for_event(
     event : IntelEvent
         Das zu bewertende Event
     client : Any
-        OpenAI-kompatibler Client mit .chat.completions.create(...)
+        ModelClient (complete(request)); single egress via ai_orchestration.
     model : str, optional
         Modellname. Falls nicht angegeben, wird aus ENV oder Default geladen.
 
@@ -417,8 +417,7 @@ def call_ai_for_event(
 
     Notes
     -----
-    Der Client sollte die OpenAI-API-Struktur haben:
-    client.chat.completions.create(model=..., messages=[...])
+    ModelClient aus ai_orchestration (client.complete(ModelRequest(...))).
 
     TODO: Saubere Konfiguration für Modellname und API-Key.
     """
@@ -432,15 +431,17 @@ def call_ai_for_event(
     logger.info(f"Rufe KI-Modell auf für Event: {event.event_id}")
 
     try:
-        response = client.chat.completions.create(
-            model=model,
+        from src.ai_orchestration.model_client import ModelRequest
+
+        req = ModelRequest(
+            model_id=model,
             messages=[
                 {"role": "system", "content": INFOSTREAM_SYSTEM_PROMPT},
                 {"role": "user", "content": info_packet},
             ],
         )
-
-        response_text = response.choices[0].message.content
+        resp = client.complete(req)
+        response_text = resp.content
 
     except Exception as e:
         logger.error(f"Fehler beim KI-Aufruf: {e}")
