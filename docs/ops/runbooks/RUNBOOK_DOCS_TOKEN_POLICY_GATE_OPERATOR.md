@@ -68,6 +68,12 @@ After:  `scripts&#47;example.py`
 
 **Rendering:** Both display identically (entity decoded to `/` in rendered view)
 
+**Alternative (Perl one-liner for non-README files):** If the validator names a different file (e.g., `docs/ops/README.md`), apply common token fixes:
+
+```bash
+perl -0777 -i -pe 's/True\/False/True&#47;False/g; s/False\/True/False&#47;True/g; s/allowed=True\/False/allowed=True&#47;False/g' <path>
+```
+
 ### Pattern 2: Real File Flagged as Illustrative
 
 **Symptom:**
