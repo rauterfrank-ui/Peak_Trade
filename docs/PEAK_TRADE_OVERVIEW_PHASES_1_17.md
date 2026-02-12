@@ -121,7 +121,7 @@ Das Framework ist als **`src`-Layout** organisiert (Paket `peak_trade`) und folg
 | 4 | Erste Strategie | MA-Crossover, Signal-Format | `src/strategies/ma_crossover.py` |
 | 5 | BacktestEngine v1 | Erste Backtest-Implementierung | `src/backtest/engine.py` |
 | 6 | Statistiken | Sharpe, Drawdown, Win-Rate | `src/backtest/stats.py` |
-| 7 | Weitere Strategien | MACD, RSI, Bollinger, Donchian | `src/strategies/*.py` |
+| 7 | Weitere Strategien | MACD, RSI, Bollinger, Donchian | `src&#47;strategies&#47;*.py` |
 | 8 | Strategy-Registry | Zentrale Strategie-Verwaltung | `src/strategies/registry.py` |
 | 9 | Risk-Layer Basis | Position Sizing, Risk Management | `src/core/position_sizing.py`, `risk.py` |
 | 10 | Portfolio-Backtests | Multi-Asset, Multi-Strategy | `src/backtest/registry_engine.py` |
@@ -175,7 +175,7 @@ Das Framework ist als **`src`-Layout** organisiert (Paket `peak_trade`) und folg
 **Phase 11 (Experiments-Registry):**
 - `ExperimentRecord` Dataclass für Run-Ergebnisse
 - Run-Types: `backtest`, `portfolio_backtest`, `forward_signal`, `live_risk_check`, `paper_trade`, `sweep`, `market_scan`, `scheduler_job`
-- CSV-Persistenz in `reports/experiments/experiments.csv`
+- CSV-Persistenz in `reports&#47;experiments&#47;experiments.csv`
 
 **Phase 12 (Scheduler):**
 - `JobDefinition` und `JobSchedule` Dataclasses
@@ -239,7 +239,7 @@ class ExecutionPipeline:
 ```
 
 **Workflow:**
-1. Strategy erzeugt Signal-Serie (`-1/0/+1`)
+1. Strategy erzeugt Signal-Serie (`-1&#47;0&#47;+1`)
 2. `SignalEvent` erkennt Signalwechsel (Entry/Exit/Flip)
 3. `signal_to_orders()` transformiert zu `OrderRequest`
 4. `OrderExecutor` (Paper/Testnet) führt aus
@@ -277,7 +277,7 @@ BacktestEngine(
 **Beispiel:**
 
 ```bash
-python scripts/demo_execution_backtest.py \
+python3 scripts/demo_execution_backtest.py \
     --symbol BTC/EUR \
     --mode compare \
     --stats \
@@ -598,7 +598,7 @@ env_config = get_environment_from_config(cfg)
 
 ```bash
 # ExecutionPipeline Demo mit Stats und Plot
-python scripts/demo_execution_backtest.py \
+python3 scripts/demo_execution_backtest.py \
     --symbol BTC/EUR \
     --bars 500 \
     --mode compare \

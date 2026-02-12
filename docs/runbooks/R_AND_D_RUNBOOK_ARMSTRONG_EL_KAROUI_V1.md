@@ -75,7 +75,7 @@ source .venv/bin/activate
 
 Prüfen:
 
-* `pytest` läuft durch (oder mindestens die relevanten Strategy-/R&D-Tests).
+* `python3 -m pytest` läuft durch (oder mindestens die relevanten Strategy-/R&D-Tests).
 * Config-Dateien für die beiden Strategien existieren (z.B. in `config&#47;strategies&#47;` oder entsprechend deiner Struktur).
 
 ### 3.2 R&D-Experiment-Registry
@@ -115,7 +115,7 @@ Typische Run-Types:
 1. Experiment starten (Beispiel-Command, ggf. an deine CLI anpassen):
 
    ```bash
-   python scripts/research_cli.py strategy-profile \
+   python3 scripts/research_cli.py strategy-profile \
        --strategy ArmstrongCycleStrategy \
        --symbol BTCUSD \
        --run-label "armstrong_baseline_btcusd"
@@ -181,7 +181,7 @@ Workflow wie oben, aber mit expliziter Marktauswahl / speziellen Testperioden.
 **Schritte:**
 
 ```bash
-python scripts/research_cli.py strategy-profile \
+python3 scripts/research_cli.py strategy-profile \
     --strategy ElKarouiVolModelStrategy \
     --symbol BTCUSD \
     --run-label "el_karoui_baseline_btcusd"

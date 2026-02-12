@@ -115,18 +115,12 @@ tags_out:
 
 @pytest.fixture
 def mock_client(mock_ai_response_text: str) -> MagicMock:
-    """Mock-Client für KI-Aufrufe."""
+    """Mock ModelClient (ai_orchestration) für KI-Aufrufe."""
     client = MagicMock()
-
-    # Mock-Response-Struktur wie OpenAI
-    mock_choice = MagicMock()
-    mock_choice.message.content = mock_ai_response_text
-
+    # ModelClient.complete(request) -> response with .content
     mock_response = MagicMock()
-    mock_response.choices = [mock_choice]
-
-    client.chat.completions.create.return_value = mock_response
-
+    mock_response.content = mock_ai_response_text
+    client.complete.return_value = mock_response
     return client
 
 
@@ -372,8 +366,8 @@ class TestEvaluator:
 
         intel_eval, learning = call_ai_for_event(event, mock_client, model="gpt-4o-mini")
 
-        # Prüfe, dass Client aufgerufen wurde
-        mock_client.chat.completions.create.assert_called_once()
+        # Prüfe, dass ModelClient.complete aufgerufen wurde
+        mock_client.complete.assert_called_once()
 
         # Prüfe Ergebnisse - event_id kommt vom Input-Event, nicht aus der Response
         assert intel_eval.event_id == "INF-ai_test"  # Vom Input-Event übernommen

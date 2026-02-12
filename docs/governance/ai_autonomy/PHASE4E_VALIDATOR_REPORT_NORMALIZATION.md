@@ -130,19 +130,19 @@ Isolated section for volatile fields:
 
 ```bash
 # From file
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input .tmp/validator_report.json \
   --out-dir .tmp/normalized
 
 # From stdin
-cat validator_report.json | python scripts/aiops/normalize_validator_report.py \
+cat validator_report.json | python3 scripts/aiops/normalize_validator_report.py \
   --out-dir .tmp/normalized
 ```
 
 ### CI Mode (with runtime context)
 
 ```bash
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input .tmp/validator_report.json \
   --out-dir .tmp/normalized \
   --git-sha "${GITHUB_SHA}" \
@@ -223,9 +223,9 @@ Human-readable Markdown summary:
 
 ```bash
 # Run normalization twice
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input report.json --out-dir .tmp/run1
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input report.json --out-dir .tmp/run2
 
 # Compare (should be byte-identical)
@@ -307,13 +307,13 @@ normalized = ValidatorReport.from_legacy_validator_report(
 
 ```bash
 # Unit tests
-pytest tests/ai_orchestration/test_validator_report_normalized.py -v
+python3 -m pytest tests/ai_orchestration/test_validator_report_normalized.py -v
 
 # CLI tests
-pytest tests/ai_orchestration/test_normalize_validator_report_cli.py -v
+python3 -m pytest tests/ai_orchestration/test_normalize_validator_report_cli.py -v
 
 # All tests
-pytest tests/ai_orchestration/test_validator_report_normalized.py \
+python3 -m pytest tests/ai_orchestration/test_validator_report_normalized.py \
        tests/ai_orchestration/test_normalize_validator_report_cli.py -v
 ```
 
@@ -480,7 +480,7 @@ If issues arise:
 ### Normalize a Report
 
 ```bash
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input .tmp/validator_report.json \
   --out-dir .tmp/normalized
 ```
@@ -490,7 +490,7 @@ python scripts/aiops/normalize_validator_report.py \
 ```bash
 # Run twice
 for i in 1 2; do
-  python scripts/aiops/normalize_validator_report.py \
+  python3 scripts/aiops/normalize_validator_report.py \
     --input report.json --out-dir .tmp/run$i
 done
 
@@ -512,7 +512,7 @@ cat .tmp/normalized/validator_report.normalized.md
 ### Run Tests
 
 ```bash
-pytest tests/ai_orchestration/test_validator_report_normalized.py \
+python3 -m pytest tests/ai_orchestration/test_validator_report_normalized.py \
        tests/ai_orchestration/test_normalize_validator_report_cli.py -v
 ```
 

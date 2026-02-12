@@ -391,10 +391,10 @@ Test-Workflow:
 
 ```bash
 # Ohne Limits
-python scripts/run_backtest.py --config config/no_risk.toml
+python3 scripts/run_backtest.py --config config/no_risk.toml
 
 # Mit Limits
-python scripts/run_backtest.py --config config/risk_v1.toml
+python3 scripts/run_backtest.py --config config/risk_v1.toml
 
 # Vergleiche Sharpe/DD
 ```
@@ -406,10 +406,16 @@ python scripts/run_backtest.py --config config/risk_v1.toml
 ### Stress-Report generieren
 
 ```bash
-python scripts/run_risk_stress_report.py --config config/config.toml --output reports/stress_report.csv
+python3 scripts/run_risk_stress_report.py --config config/config.toml --output reports/stress_report.csv
 ```
 
 → Erzeugt CSV mit VaR/CVaR für verschiedene Stress-Szenarien
+
+### Abgrenzung (wichtig)
+
+- **Risk-Layer Stress (dieses Kapitel)** nutzt `src/risk/stress.py` und kennt die `kind`-Typen: `shock`, `vol_spike`, `flash_crash`, `regime_bear`, `regime_sideways`.
+- **Research Stress-Tests (Phase 46/47)** laufen über `src/experiments/stress_tests.py` und nutzen *andere* Typen: `single_crash_bar`, `vol_spike`, `drawdown_extension`, `gap_down_open`.
+- **Scenario-Library (Phase 82)** liegt unter `config&#47;scenarios&#47;*.toml` (z.B. `flash_crash.toml`) und definiert QA/Regression-Erwartungen – sie wird nicht 1:1 als Stress-Test-Typ an die Runner übergeben.
 
 ### Szenarien
 
@@ -475,4 +481,4 @@ max_var = 0.08                # Neu: VaR-basiertes DD-Management
 Bei Fragen:
 1. Check `docs/risk_layer_v1.md` (Technical Guide)
 2. Check Tests in `tests/risk/` (Usage Examples)
-3. Run `pytest tests&#47;risk&#47; -v` (Smoke-Tests)
+3. Run `python3 -m pytest tests&#47;risk&#47; -v` (Smoke-Tests)

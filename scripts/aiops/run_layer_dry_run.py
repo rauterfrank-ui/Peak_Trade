@@ -18,7 +18,7 @@ Exit Codes:
     3: Unexpected error
 
 Reference:
-- docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
+- docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
 """
 
 import argparse

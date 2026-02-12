@@ -28,7 +28,7 @@ Erweitere Peak_Trade um ein umfassendes Portfolio-Level Value-at-Risk (VaR) Fram
   - Rolling-window support (30-365 days)
 
 - ✅ **Stress Testing**
-  - 5 scenario types (shock, vol_spike, flash_crash, regime_bear, regime_sideways)
+  - 5 scenario types (shock, vol_spike, flash_crash, regime_bear, regime_sideways) in `src/risk/stress.py`
   - Batch scenario execution
   - Metrics aggregation
 

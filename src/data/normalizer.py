@@ -9,6 +9,27 @@ import pandas as pd
 from . import REQUIRED_OHLCV_COLUMNS
 
 
+# _PEAK_TRADE_FORCE_DT64NS_UTC
+def _force_datetime_index_ns(idx, ensure_utc: bool):
+    import pandas as pd
+
+    di = pd.DatetimeIndex(idx)
+    if ensure_utc:
+        if di.tz is None:
+            di = di.tz_localize("UTC")
+        else:
+            di = di.tz_convert("UTC")
+        if hasattr(di, "as_unit"):
+            return di.as_unit("ns")
+        return pd.to_datetime(di, utc=True)
+    else:
+        if di.tz is not None:
+            di = di.tz_convert("UTC").tz_localize(None)
+        if hasattr(di, "as_unit"):
+            return di.as_unit("ns")
+        return pd.to_datetime(di)
+
+
 class DataNormalizer:
     """
     Normalisiert rohe DataFrames in Peak_Trade-Standard-Format.
@@ -62,6 +83,8 @@ class DataNormalizer:
         for col in REQUIRED_OHLCV_COLUMNS:
             df[col] = df[col].astype(float)
 
+        # Normalize index to datetime64[ns] (UTC if ensure_utc=True, else naive)
+        df.index = _force_datetime_index_ns(df.index, ensure_utc)
         return df
 
 

@@ -737,28 +737,19 @@ def call_llm(
     logger.info(f"Rufe LLM auf: model={model}, max_tokens={max_tokens}")
 
     try:
-        # Versuche OpenAI-Import
-        try:
-            from openai import OpenAI
-        except ImportError:
-            raise ImportError(
-                "openai-Paket nicht installiert. Bitte installiere mit: pip install openai"
-            )
+        from src.ai_orchestration.model_client import create_model_client, ModelRequest
 
-        client = OpenAI(api_key=api_key)
-
-        response = client.chat.completions.create(
-            model=model,
-            messages=messages,  # type: ignore
+        client = create_model_client("live")
+        request = ModelRequest(
+            model_id=model,
+            messages=messages,
             max_tokens=max_tokens,
             temperature=temperature,
         )
+        response = client.complete(request)
 
-        if not response.choices:
-            raise RuntimeError("LLM-Antwort enthält keine Choices")
-
-        content = response.choices[0].message.content
-        if content is None:
+        content = response.content
+        if not content:
             raise RuntimeError("LLM-Antwort enthält keinen Content")
 
         logger.info(f"LLM-Antwort erhalten: {len(content)} Zeichen")

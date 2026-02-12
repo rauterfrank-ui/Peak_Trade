@@ -24,15 +24,15 @@ Phase 2 (VaR Validation) was merged to main (PR #413) but lacked:
 
 ### Changes
 
-**Integration Tests** (`tests/risk/integration/`)
-- 12 deterministic integration tests
+**Integration Tests** (`tests/risk/integration/test_var_validation_integration.py`)
+- 12 deterministic integration tests (402 lines)
 - Full workflow coverage (VaR → Validation → Reporting)
 - Edge cases (empty, NaN, misaligned indices)
 - Performance test (<100ms target)
 - All tests pass in <1s ✅
 
 **Operator Guide** (`docs/risk/VAR_VALIDATION_OPERATOR_GUIDE.md`)
-- Quick-start (copy-paste example)
+- Quick-start (copy-paste example) (314 lines)
 - Result interpretation (Kupiec, Basel Traffic Light)
 - Common failure modes + fixes
 - Best practices
@@ -130,12 +130,12 @@ Phase 2 (VaR Validation) was merged (PR #413) but needed:
 1. `tests/risk/integration/__init__.py` (NEW)
    - Integration test package
 
-2. `tests/risk/integration/test_var_validation_integration.py` (NEW, 370 lines)
+2. `tests/risk/integration/test_var_validation_integration.py` (NEW, 402 lines)
    - 12 deterministic integration tests
    - Full workflow coverage
    - Edge cases + performance test
 
-3. `docs/risk/VAR_VALIDATION_OPERATOR_GUIDE.md` (NEW, 350 lines)
+3. `docs/risk/VAR_VALIDATION_OPERATOR_GUIDE.md` (NEW, 314 lines)
    - Quick-start guide
    - Result interpretation
    - Troubleshooting FAQ
@@ -203,6 +203,8 @@ print(f"Traffic Light: {result.traffic_light.color.upper()}")
 ### References
 
 - **Phase 2 (VaR Validation):** PR #413 (merged 2025-12-28)
+- **Branch:** `feat/risk-layer-phase6-integration-clean`
+- **Latest Commit:** `664ac90` (docs: fix broken doc references)
 - **Roadmap:** Phase 6 Integration Testing & Documentation
 - **Tests:** 93 total (81 validation + 12 integration)
 - **Operator Guide:** [docs/risk/VAR_VALIDATION_OPERATOR_GUIDE.md](docs/risk/VAR_VALIDATION_OPERATOR_GUIDE.md)
@@ -214,17 +216,17 @@ print(f"Traffic Light: {result.traffic_light.color.upper()}")
 ```
 tests/risk/integration/
 ├── __init__.py                              (NEW, 1 line)
-└── test_var_validation_integration.py       (NEW, 370 lines)
+└── test_var_validation_integration.py       (NEW, 402 lines)
 
 docs/risk/
-├── VAR_VALIDATION_OPERATOR_GUIDE.md         (NEW, 350 lines)
+├── VAR_VALIDATION_OPERATOR_GUIDE.md         (NEW, 314 lines)
 └── README.md                                (UPDATED, +2 lines)
 
 src/risk/validation/
 ├── backtest_runner.py                       (MINOR UPDATE, -8 lines)
 └── breach_analysis.py                       (MINOR UPDATE, +3 lines)
 
-Total: 6 files changed (+718 lines, -8 lines)
+Total: 6 files changed (+714 lines, -8 lines)
 ```
 
 ---

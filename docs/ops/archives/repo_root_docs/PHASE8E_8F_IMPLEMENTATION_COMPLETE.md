@@ -92,13 +92,13 @@ Phase 8E/8F erfolgreich abgeschlossen: **CI Regression Gate für Phase-8D report
 
 ### Tests (Local)
 ```
-✅ pytest tests/risk/validation/test_report_compare.py -v
+✅ python3 -m pytest tests/risk/validation/test_report_compare.py -v
    → 12 passed in 1.63s
 
-✅ pytest tests/risk/validation/test_report_index.py -v
+✅ python3 -m pytest tests/risk/validation/test_report_index.py -v
    → 10 passed in 0.77s
 
-✅ pytest tests/risk/validation/ -v
+✅ python3 -m pytest tests/risk/validation/ -v
    → 93 passed (all validation tests)
 ```
 
@@ -319,13 +319,13 @@ Phase 8E/8F erfolgreich abgeschlossen! Wir haben:
 
 ```bash
 # Run all validation tests
-pytest tests/risk/validation/ -v
+python3 -m pytest tests/risk/validation/ -v
 
 # Run report_compare tests specifically
-pytest tests/risk/validation/test_report_compare.py -v
+python3 -m pytest tests/risk/validation/test_report_compare.py -v
 
 # Run report_index tests specifically
-pytest tests/risk/validation/test_report_index.py -v
+python3 -m pytest tests/risk/validation/test_report_index.py -v
 
 # CLI smoke tests
 python3 scripts/risk/var_suite_compare_runs.py --help

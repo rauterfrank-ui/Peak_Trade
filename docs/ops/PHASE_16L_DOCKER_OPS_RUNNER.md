@@ -48,13 +48,13 @@ Für CI/CD, Reproducibility und Isolation benötigt: Docker-Runner mit sauberem 
 **Example:**
 ```bash
 # Default (unchanged)
-python scripts/obs/stage1_daily_snapshot.py
+python3 scripts/obs/stage1_daily_snapshot.py
 
 # ENV override
-PEAK_REPORTS_DIR=/custom python scripts/obs/stage1_daily_snapshot.py
+PEAK_REPORTS_DIR=/custom python3 scripts/obs/stage1_daily_snapshot.py
 
 # CLI override (highest priority)
-python scripts/obs/stage1_daily_snapshot.py --reports-root /custom
+python3 scripts/obs/stage1_daily_snapshot.py --reports-root /custom
 ```
 
 ### 3. Docker Infrastructure
@@ -120,7 +120,7 @@ docker compose -f docker-compose.obs.yml run --rm peaktrade-ops --help
 
 ```bash
 # Host execution (default)
-python scripts/obs/stage1_daily_snapshot.py
+python3 scripts/obs/stage1_daily_snapshot.py
 
 # Docker execution
 ./scripts/obs/run_stage1_snapshot_docker.sh
@@ -165,7 +165,7 @@ reports/obs/stage1/
 ### 1. Local Development (Default)
 
 ```bash
-python scripts/obs/stage1_daily_snapshot.py
+python3 scripts/obs/stage1_daily_snapshot.py
 # Output: reports/obs/stage1/2025-12-20_snapshot.md
 ```
 

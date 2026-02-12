@@ -27,6 +27,7 @@ import pytest
 import pandas as pd
 import numpy as np
 
+from tests.utils.dt import normalize_dt_index
 from src.data import (
     DataNormalizer,
     CsvLoader,
@@ -224,8 +225,10 @@ class TestPipelineFetchCacheNormalize:
         cache.save(original_df, "precision_test")
         loaded_df = cache.load("precision_test")
 
-        # Verify Precision (exakte Float-Werte)
-        pd.testing.assert_frame_equal(original_df, loaded_df, check_freq=False)
+        # Verify Precision (exakte Float-Werte); Index ns für Roundtrip-Vergleich
+        expected = normalize_dt_index(original_df, ensure_utc=True)
+        got = normalize_dt_index(loaded_df, ensure_utc=True)
+        pd.testing.assert_frame_equal(expected, got, check_freq=False)
 
         # Specific Precision-Check
         assert original_df["close"].iloc[0] == loaded_df["close"].iloc[0]
@@ -258,9 +261,11 @@ class TestResampleIntegration:
         cache = ParquetCache(cache_dir=str(tmp_path / "cache"))
         cache.save(df_4h, "resample_4h")
 
-        # STEP 3: Verify
+        # STEP 3: Verify; Index ns für Roundtrip-Vergleich
         loaded = cache.load("resample_4h")
-        pd.testing.assert_frame_equal(df_4h, loaded, check_freq=False)
+        expected = normalize_dt_index(df_4h, ensure_utc=True)
+        got = normalize_dt_index(loaded, ensure_utc=True)
+        pd.testing.assert_frame_equal(expected, got, check_freq=False)
 
     def test_resample_preserves_ohlc_semantics(self, test_ohlcv_data):
         """
@@ -324,12 +329,19 @@ class TestCacheIsolation:
         cache.save(df1, "key1")
         cache.save(df2, "key2")
 
-        # Load und verify
+        # Load und verify; Index ns für Roundtrip-Vergleich
         loaded1 = cache.load("key1")
         loaded2 = cache.load("key2")
-
-        pd.testing.assert_frame_equal(df1, loaded1, check_freq=False)
-        pd.testing.assert_frame_equal(df2, loaded2, check_freq=False)
+        pd.testing.assert_frame_equal(
+            normalize_dt_index(df1, ensure_utc=True),
+            normalize_dt_index(loaded1, ensure_utc=True),
+            check_freq=False,
+        )
+        pd.testing.assert_frame_equal(
+            normalize_dt_index(df2, ensure_utc=True),
+            normalize_dt_index(loaded2, ensure_utc=True),
+            check_freq=False,
+        )
 
         # Verify keine Interferenz
         assert len(loaded1) == 100

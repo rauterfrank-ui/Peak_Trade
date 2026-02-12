@@ -26,8 +26,8 @@ PR #213 fügt den Merge-Log für PR #212 hinzu und hält damit die Ops-Merge-Log
 - CI (falls vorhanden): sollte grün laufen wie üblich
 
 Optional lokal:
-- `uv run ruff check .`
-- `uv run pytest -q` (nicht zwingend für reine Docs)
+- `ruff check .`
+- `python3 -m pytest -q` (nicht zwingend für reine Docs)
 
 ## Risk Assessment
 🟢 **Minimal**  

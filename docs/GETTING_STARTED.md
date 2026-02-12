@@ -12,7 +12,7 @@ Dieses Dokument führt dich Schritt für Schritt durch deine erste Stunde mit Pe
 
 ## 1. Voraussetzungen
 
-- **Python 3.11+** (prüfen mit `python --version`)
+- **Python 3.11+** (prüfen mit `python3 --version`; falls `python` verfügbar ist, geht auch `python --version`)
 - `git` (für Repository-Klonen)
 - `virtualenv` oder `venv` (meist bereits in Python enthalten)
 - Optional: API-Keys für Testnet-Exchange (falls du später Testnet nutzen willst – für den Quickstart nicht nötig)
@@ -31,7 +31,7 @@ cd peak_trade
 ### 2.2 Virtual Environment erstellen & aktivieren
 
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 ```
 
@@ -44,7 +44,7 @@ pip install -r requirements.txt
 ### 2.4 (Optional) Test-Suite prüfen
 
 ```bash
-pytest -q
+python3 -m pytest -q
 ```
 
 Dieser Schritt ist optional, aber hilfreich, um sicherzustellen, dass die Test-Suite grundsätzlich grün ist.
@@ -63,7 +63,7 @@ Peak_Trade kommt mit vordefinierten Portfolio-Presets in `config/portfolio_recip
 ### 3.2 Ersten Research-Run starten
 
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset rsi_reversion_conservative \
   --format both
@@ -77,7 +77,7 @@ python scripts/research_cli.py portfolio \
 
 **Output-Location:**
 
-- Reports landen typischerweise in `reports/portfolio_robustness/` oder ähnlich
+- Reports landen typischerweise in `reports&#47;portfolio_robustness&#47;` oder ähnlich
 - Suche nach Dateien mit Timestamp im Namen (z.B. `portfolio_robustness_2025-12-07_0900.md`)
 
 ### 3.3 Metriken anschauen
@@ -95,7 +95,7 @@ Die Reports enthalten typischerweise:
 Für detailliertere Robustness-Analysen:
 
 ```bash
-python scripts/run_portfolio_robustness.py \
+python3 scripts/run_portfolio_robustness.py \
   --config config/config.toml \
   --portfolio-preset rsi_reversion_conservative \
   --format both
@@ -112,7 +112,7 @@ Dies führt zusätzlich Monte-Carlo-Simulationen und Stress-Tests durch.
 ### 4.1 Health-Check
 
 ```bash
-python scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py health --config config/config.toml
 ```
 
 **Was prüft `health`?**
@@ -137,7 +137,7 @@ Overall Status: OK
 ### 4.2 Portfolio-Snapshot
 
 ```bash
-python scripts/live_ops.py portfolio --config config/config.toml --json
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
 ```
 
 **Was zeigt `portfolio`?**
@@ -173,7 +173,7 @@ python scripts/live_ops.py portfolio --config config/config.toml --json
 ### 5.1 Ersten Daily-Report erstellen
 
 ```bash
-python scripts/generate_live_status_report.py \
+python3 scripts/generate_live_status_report.py \
   --config config/config.toml \
   --output-dir reports/live_status \
   --format markdown \
@@ -184,11 +184,11 @@ python scripts/generate_live_status_report.py \
 
 - Das Script sammelt Health- und Portfolio-Daten via `live_ops`
 - Generiert einen strukturierten Markdown-Report
-- Speichert ihn in `reports/live_status/` mit Timestamp
+- Speichert ihn in `reports&#47;live_status&#47;` mit Timestamp
 
 **Report-Location:**
 
-- `reports/live_status/live_status_YYYY-MM-DD_HHMM_daily.md`
+- `reports&#47;live_status&#47;live_status_YYYY-MM-DD_HHMM_daily.md`
 
 ### 5.2 Report-Inhalt
 

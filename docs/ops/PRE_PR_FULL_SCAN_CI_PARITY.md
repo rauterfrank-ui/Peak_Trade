@@ -17,10 +17,10 @@ Run these commands **before** creating a PR:
 scripts&#47;ops&#47;verify_docs_reference_targets.sh
 
 # 2. Full Token Policy Scan (--all flag)
-uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --all
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --all
 
 # 3. Changed-files scan (against main, for comparison)
-uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
 
 # 4. Full Gates Snapshot (optional, comprehensive)
 scripts&#47;ops&#47;pt_docs_gates_snapshot.sh
@@ -69,7 +69,7 @@ scripts&#47;ops&#47;verify_docs_reference_targets.sh
 
 ```bash
 # Full Scan (CI-Parity)
-uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --all
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --all
 
 # Expected output: "✅ All checks passed!" or "❌ Found N violation(s) in M file(s)"
 ```
@@ -77,10 +77,10 @@ uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --all
 **Changed Files Scan (for comparison):**
 ```bash
 # Against main
-uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
 
 # Against custom base
-uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base origin&#47;feature-branch
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base origin&#47;feature-branch
 ```
 
 **Notes:**
@@ -151,7 +151,7 @@ git status -sb
 
 # Step 2: Full Scan (CI-Parity)
 scripts&#47;ops&#47;verify_docs_reference_targets.sh | tee /tmp/pre_pr_targets.txt
-uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --all | tee /tmp/pre_pr_token_policy.txt
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --all | tee /tmp/pre_pr_token_policy.txt
 
 # Step 3: Review outputs
 grep "Missing targets:" /tmp/pre_pr_targets.txt
@@ -161,7 +161,7 @@ grep "Found .* violation" /tmp/pre_pr_token_policy.txt
 # (apply escapes, fix links, etc.)
 
 # Step 5: Re-run changed-files scan to verify fixes
-uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
 
 # Step 6: Commit + push
 git add -A
@@ -222,7 +222,7 @@ git rev-parse --show-toplevel
 
 **Prevention:** Run Full Scan before PR:
 ```bash
-uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --all
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --all
 # Would have caught: Line 35: `reports&#47;` (ILLUSTRATIVE)
 ```
 
@@ -239,11 +239,11 @@ scripts&#47;ops&#47;verify_docs_reference_targets.sh
 # Result: Missing targets: 65 (down from 87 ✅)
 
 # Full Token Policy Scan
-uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --all
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --all
 # Result: ✅ No new violations introduced (baseline: 1860 violations in 469 files, out of scope)
 
 # Changed Files Scan (for comparison)
-uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
 # Result: ✅ All checks passed! (8 files scanned)
 ```
 

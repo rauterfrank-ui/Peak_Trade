@@ -135,7 +135,7 @@ Der Guard läuft automatisch via `.github/workflows/ci-workflow-dispatch-guard.y
 
 **Lokale Ausführung:**
 ```bash
-uv run pytest -q tests/ops/test_validate_workflow_dispatch_guards.py -v
+python3 -m pytest -q tests/ops/test_validate_workflow_dispatch_guards.py -v
 ```
 
 **Fixtures:**

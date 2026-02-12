@@ -46,7 +46,7 @@ Phase 2 (VaR Validation) was merged to main (PR #413) but lacked:
 
 ```bash
 # Run all validation + integration tests
-pytest tests/risk/validation/ tests/risk/integration/ -q
+python3 -m pytest tests/risk/validation/ tests/risk/integration/ -q
 
 # Result: 93 passed in 0.84s ✅
 ```
@@ -154,13 +154,13 @@ Phase 2 (VaR Validation) was merged (PR #413) but needed:
 
 ```bash
 # All validation + integration tests
-pytest tests/risk/validation/ tests/risk/integration/ -q
+python3 -m pytest tests/risk/validation/ tests/risk/integration/ -q
 
 # Result
 93 passed in 0.84s ✅
 
 # Performance check
-pytest tests/risk/integration/ -k performance -v
+python3 -m pytest tests/risk/integration/ -k performance -v
 
 # Result
 test_performance_target PASSED (<100ms target achieved) ✅

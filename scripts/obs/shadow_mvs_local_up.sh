@@ -47,7 +47,7 @@ docker compose -p "$COMPOSE_PROJECT" \
 
 echo ""
 echo "Up."
-echo "- Grafana:     http://127.0.0.1:3000   (admin/admin)"
+echo "- Grafana:     http://127.0.0.1:3000   (login: set GF_SECURITY_ADMIN_* in .env or GRAFANA_AUTH=user:pass)"
 echo "- Prometheus:  http://127.0.0.1:9092"
 echo "- Exporter:    http://127.0.0.1:${EXPORTER_PORT}/metrics"
 echo ""

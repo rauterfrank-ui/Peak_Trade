@@ -16,7 +16,7 @@ The Peak_Trade smoke test suite provides fast, comprehensive validation of criti
 # bash scripts/run_smoke_tests.sh
 
 # Using pytest directly (recommended)
-python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py -v
+python3 -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py -v
 ```
 
 ### CI/CD Integration
@@ -24,12 +24,12 @@ python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
 ```yaml
 # GitHub Actions example
 - name: Run smoke tests
-  run: python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py -v
+  run: python3 -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py -v
 
 # GitLab CI example
 smoke_tests:
   script:
-    - python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py -v
+    - python3 -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py -v
   timeout: 1 minute
 ```
 

@@ -27,11 +27,12 @@ import sys
 from pathlib import Path
 from typing import Any, Dict
 
-# Add src/ to path for imports
+# Repo root on path so l3_runner's "from src.governance" resolves
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(_REPO_ROOT / "src"))
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
 
-from ai_orchestration.l4_critic_determinism_contract import (
+from src.ai_orchestration.l4_critic_determinism_contract import (
     CONTRACT_SCHEMA_VERSION,
     ComparisonResult,
     DeterminismContract,

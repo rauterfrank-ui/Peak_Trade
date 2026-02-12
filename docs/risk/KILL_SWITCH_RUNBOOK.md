@@ -183,7 +183,7 @@ print(f"Kill switch reset: {status}")
 #### Via Script
 ```bash
 # Create a simple reset script if needed
-python -c "
+python3 -c "
 from src.core.peak_config import PeakConfig
 from src.risk_layer.risk_gate import RiskGate
 cfg = PeakConfig.from_file('config/config.toml')
@@ -300,16 +300,16 @@ jq 'select(.kill_switch.armed == true)' logs/risk_audit.jsonl
 ### Unit Tests
 ```bash
 # Test kill switch layer
-pytest -v tests/risk_layer/test_kill_switch.py
+python3 -m pytest -v tests/risk_layer/test_kill_switch.py
 
 # Test risk gate integration
-pytest -v tests/risk_layer/test_risk_gate.py
+python3 -m pytest -v tests/risk_layer/test_risk_gate.py
 ```
 
 ### Integration Test
 ```bash
 # Run all risk layer tests
-pytest -v tests/risk_layer/
+python3 -m pytest -v tests/risk_layer/
 ```
 
 ### Manual Smoke Test

@@ -90,7 +90,7 @@ gh workflow list | grep "merge state"  # Workflow active (ID: 223251142) ✅
 ./scripts/ops/pt_docs_gates_snapshot.sh --changed
 
 # Step 2: If failures, quick fixes
-# Token Policy: Replace `scripts/example.py` with `scripts&#47;example.py`
+  # Token Policy: Replace `scripts/example.py` with `scripts&#47;example.py` <!-- pt:ref-target-ignore -->
 # Reference Targets: Update paths or encode illustrative ones
 # Diff Guard: python3 scripts/ops/insert_docs_diff_guard_section.py --files <path>
 

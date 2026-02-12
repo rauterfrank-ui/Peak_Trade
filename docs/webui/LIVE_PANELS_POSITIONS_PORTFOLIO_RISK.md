@@ -168,9 +168,9 @@ curl http://127.0.0.1:8001/api/live/status/snapshot.json | jq '.panels[] | {id, 
 ```bash
 # Terminal 1: Shadow Session starten
 cd ~/Peak_Trade
-uv run python scripts/live/run_shadow_paper_session.py \
+python3 scripts/run_shadow_paper_session.py \
   --strategy ma_crossover \
-  --symbol BTC-EUR \
+  --symbol BTC/EUR \
   --exchange kraken \
   --mode shadow
 ```

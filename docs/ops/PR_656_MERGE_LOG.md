@@ -24,8 +24,8 @@ Phase 4E standardisiert den Validator-Report als kanonisches, schema-stabiles Ar
 
 ### 2) Root Cause Fix: Dependency Resolution in Workflow
 - **Initial failure:** `ModuleNotFoundError: No module named 'pydantic'`
-- **Root cause:** workflow invoked `python ...` instead of `uv run python ...` → environment/deps not available
-- **Fix:** replace python invocations with `uv run python` across all affected call sites
+- **Root cause:** workflow invoked `python ...` instead of `python3 ...` → environment/deps not available
+- **Fix:** replace python invocations with `python3` across all affected call sites
 
 ### 3) Workflow Trigger / Path Correction (v2)
 - Adjusted workflow trigger/path to ensure the correct workflow is exercised:

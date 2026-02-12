@@ -39,6 +39,8 @@ from .config_pydantic import (
 from .peak_config import (
     PeakConfig,
     load_config as load_peak_config,
+    load_config_with_live_overrides,
+    AUTO_LIVE_OVERRIDES_PATH,
 )
 
 # Registry-Config (Portfolio)
@@ -121,6 +123,8 @@ __all__ = [
     # New TOML
     "PeakConfig",
     "load_peak_config",
+    "load_config_with_live_overrides",
+    "AUTO_LIVE_OVERRIDES_PATH",
     # Registry
     "get_registry_config",
     "get_active_strategies",

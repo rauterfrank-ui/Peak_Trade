@@ -76,7 +76,7 @@ Ensures governance-critic outputs are stable, comparable, and CI-enforceable thr
 ### Manual Verification
 ```bash
 # CI-clean replay (standard artifacts only)
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -104,12 +104,12 @@ diff -u "$SNAP_DIR/critic_report.json" .tmp/l4_critic_ci_run/critic_report.json
 ### Automated Verification
 ```bash
 # All tests pass
-pytest tests/ai_orchestration/test_l4_critic_determinism.py -v
+python3 -m pytest tests/ai_orchestration/test_l4_critic_determinism.py -v
 # Result: 10 passed in 0.09s
 
 # Determinism check (2 runs → identical)
-python scripts/aiops/run_l4_governance_critic.py ... --out .tmp/run1
-python scripts/aiops/run_l4_governance_critic.py ... --out .tmp/run2
+python3 scripts/aiops/run_l4_governance_critic.py ... --out .tmp/run1
+python3 scripts/aiops/run_l4_governance_critic.py ... --out .tmp/run2
 diff .tmp/run1/critic_report.json .tmp/run2/critic_report.json
 # Expected: no output (byte-identical)
 ```
@@ -150,7 +150,7 @@ diff .tmp/run1/critic_report.json .tmp/run2/critic_report.json
 
 **Command:**
 ```bash
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -202,7 +202,7 @@ Artifacts: 2 files
 **Procedure:**
 ```bash
 # 1) Generate fresh outputs
-python scripts/aiops/run_l4_governance_critic.py ... --out .tmp/new_output
+python3 scripts/aiops/run_l4_governance_critic.py ... --out .tmp/new_output
 
 # 2) Review diff
 SNAP_DIR="tests/fixtures/l4_critic_determinism/l4_critic_sample__pack-L1_sample_2026-01-10__schema-1.0.0"

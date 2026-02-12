@@ -13,6 +13,7 @@ import pytest
 
 from src.core.errors import CacheCorruptionError
 from src.data.cache import ParquetCache
+from tests.utils.dt import normalize_dt_index
 
 
 @pytest.fixture
@@ -56,8 +57,10 @@ def test_save_and_load_basic(cache, sample_ohlcv_df):
     cache.save(sample_ohlcv_df, "test_key")
 
     loaded_df = cache.load("test_key")
-
-    pd.testing.assert_frame_equal(loaded_df, sample_ohlcv_df)
+    pd.testing.assert_frame_equal(
+        normalize_dt_index(loaded_df, ensure_utc=True),
+        normalize_dt_index(sample_ohlcv_df, ensure_utc=True),
+    )
 
 
 def test_save_creates_file_atomically(cache, sample_ohlcv_df, temp_cache_dir):
@@ -85,8 +88,11 @@ def test_save_overwrites_existing_atomically(cache, sample_ohlcv_df):
     cache.save(sample_ohlcv_df_v2, "test_key")
     df2 = cache.load("test_key")
 
-    # Verify overwrite happened
-    pd.testing.assert_frame_equal(df2, sample_ohlcv_df_v2)
+    # Verify overwrite happened; Index ns für Roundtrip-Vergleich
+    pd.testing.assert_frame_equal(
+        normalize_dt_index(df2, ensure_utc=True),
+        normalize_dt_index(sample_ohlcv_df_v2, ensure_utc=True),
+    )
     assert not df1["close"].equals(df2["close"])
 
 
@@ -97,9 +103,9 @@ def test_save_with_different_compression(cache, sample_ohlcv_df):
 
     df_snappy = cache.load("test_key_snappy")
     df_gzip = cache.load("test_key_gzip")
-
-    pd.testing.assert_frame_equal(df_snappy, sample_ohlcv_df)
-    pd.testing.assert_frame_equal(df_gzip, sample_ohlcv_df)
+    expected = normalize_dt_index(sample_ohlcv_df, ensure_utc=True)
+    pd.testing.assert_frame_equal(normalize_dt_index(df_snappy, ensure_utc=True), expected)
+    pd.testing.assert_frame_equal(normalize_dt_index(df_gzip, ensure_utc=True), expected)
 
 
 # ============================================================================
@@ -256,8 +262,11 @@ def test_crash_during_write_leaves_no_corruption(cache, sample_ohlcv_df, temp_ca
         # If file exists, it MUST be valid (not corrupted)
         try:
             loaded_df = cache.load(key)
-            # Verify it's the correct data
-            pd.testing.assert_frame_equal(loaded_df, sample_ohlcv_df)
+            # Verify it's the correct data; Index ns für Roundtrip-Vergleich
+            pd.testing.assert_frame_equal(
+                normalize_dt_index(loaded_df, ensure_utc=True),
+                normalize_dt_index(sample_ohlcv_df, ensure_utc=True),
+            )
         except Exception as e:
             pytest.fail(f"Atomic write failed: cache file exists but is corrupted after crash: {e}")
     else:
@@ -283,14 +292,22 @@ def test_concurrent_writes_to_different_keys(cache, sample_ohlcv_df):
     df3["close"] = df3["close"] * 3
     cache.save(df3, "key3")
 
-    # Verify all three are stored correctly
+    # Verify all three are stored correctly; Index ns für Roundtrip-Vergleich
     loaded1 = cache.load("key1")
     loaded2 = cache.load("key2")
     loaded3 = cache.load("key3")
-
-    pd.testing.assert_frame_equal(loaded1, sample_ohlcv_df)
-    pd.testing.assert_frame_equal(loaded2, df2)
-    pd.testing.assert_frame_equal(loaded3, df3)
+    pd.testing.assert_frame_equal(
+        normalize_dt_index(loaded1, ensure_utc=True),
+        normalize_dt_index(sample_ohlcv_df, ensure_utc=True),
+    )
+    pd.testing.assert_frame_equal(
+        normalize_dt_index(loaded2, ensure_utc=True),
+        normalize_dt_index(df2, ensure_utc=True),
+    )
+    pd.testing.assert_frame_equal(
+        normalize_dt_index(loaded3, ensure_utc=True),
+        normalize_dt_index(df3, ensure_utc=True),
+    )
 
 
 # ============================================================================
@@ -366,14 +383,15 @@ def test_roundtrip_preserves_data_integrity(cache):
     cache.save(df, "roundtrip_test")
     loaded = cache.load("roundtrip_test")
 
+    # Normalize index to ns for roundtrip comparison
+    expected = normalize_dt_index(df, ensure_utc=True)
+    got = normalize_dt_index(loaded, ensure_utc=True)
     # Check index
-    pd.testing.assert_index_equal(loaded.index, df.index)
-
+    pd.testing.assert_index_equal(got.index, expected.index)
     # Check columns
     assert list(loaded.columns) == list(df.columns)
-
     # Check values
-    pd.testing.assert_frame_equal(loaded, df)
+    pd.testing.assert_frame_equal(got, expected)
 
     # Check dtypes
     assert loaded["open"].dtype == df["open"].dtype

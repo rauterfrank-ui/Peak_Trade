@@ -239,8 +239,8 @@ ruff check src/risk/monte_carlo.py
 ruff check src/risk_layer/var_backtest/
 
 # Run existing tests (ensure no regressions)
-pytest tests/risk/ -v
-pytest tests/risk_layer/ -v
+python3 -m pytest tests/risk/ -v
+python3 -m pytest tests/risk_layer/ -v
 ```
 
 ---

@@ -193,10 +193,10 @@ mit `use_execution_pipeline` und `log_executions`:
 
 ```bash
 # ExecutionPipeline-Modus (Default)
-python -m scripts.demo_execution_backtest
+python3 -m scripts.demo_execution_backtest
 
 # Mit Parametern
-python -m scripts.demo_execution_backtest \
+python3 -m scripts.demo_execution_backtest \
     --symbol BTC/EUR \
     --start 2024-01-01 \
     --end 2024-02-01 \
@@ -205,20 +205,20 @@ python -m scripts.demo_execution_backtest \
     --slippage-bps 5
 
 # Legacy-Modus (ohne ExecutionPipeline)
-python -m scripts.demo_execution_backtest --use-legacy
+python3 -m scripts.demo_execution_backtest --use-legacy
 
 # Vergleichsmodus: ExecutionPipeline vs. Legacy nebeneinander
-python -m scripts.demo_execution_backtest --compare
+python3 -m scripts.demo_execution_backtest --compare
 
 # Ausfuehrliche Ausgabe mit Sample-Trades
-python -m scripts.demo_execution_backtest --verbose
+python3 -m scripts.demo_execution_backtest --verbose
 ```
 
 #### CLI-Optionen
 
 | Option              | Default       | Beschreibung                                    |
 |---------------------|---------------|-------------------------------------------------|
-| `--symbol`          | `BTC/EUR`     | Trading-Symbol                                  |
+| `--symbol`          | `BTC&#47;EUR`     | Trading-Symbol                                  |
 | `--start`           | (none)        | Start-Datum (YYYY-MM-DD)                        |
 | `--end`             | (none)        | End-Datum (YYYY-MM-DD)                          |
 | `--bars`            | `200`         | Anzahl Bars (wenn --start nicht gesetzt)        |
@@ -329,8 +329,8 @@ Das aeltere Demo-Script nutzt die deprecated `run_with_order_layer()` API:
 
 ```bash
 # DEPRECATED - nutze stattdessen demo_execution_backtest.py
-python scripts/demo_order_pipeline_backtest.py
-python scripts/demo_order_pipeline_backtest.py --compare-legacy
+python3 scripts/demo_order_pipeline_backtest.py
+python3 scripts/demo_order_pipeline_backtest.py --compare-legacy
 ```
 
 **Hinweis:** Dieses Script funktioniert weiterhin, nutzt aber die veraltete
@@ -406,10 +406,10 @@ summary = pipeline.get_execution_summary()
 
 ```bash
 # Smoke-Tests ausfuehren
-pytest tests/test_execution_pipeline_smoke.py -v
+python3 -m pytest tests/test_execution_pipeline_smoke.py -v
 
 # Mit Coverage
-pytest tests/test_execution_pipeline_smoke.py -v --cov=src/execution
+python3 -m pytest tests/test_execution_pipeline_smoke.py -v --cov=src/execution
 ```
 
 ### Test-Abdeckung

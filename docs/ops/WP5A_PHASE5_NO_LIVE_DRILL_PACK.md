@@ -121,8 +121,8 @@ Before executing this drill, verify ALL conditions are met:
 **Actions:**
 1. Run health check script (if available):
    ```bash
-   # Example (adjust to actual script path)
-   python scripts/health_check.py --mode=shadow
+   # Health-Check (snapshot-only)
+   python3 scripts/live_ops.py health --config config/config.toml --json
    ```
 2. Check telemetry pipeline:
    ```bash
@@ -131,8 +131,11 @@ Before executing this drill, verify ALL conditions are met:
    ```
 3. Test data connectivity (paper/shadow market data):
    ```bash
-   # Example data fetch test (no live trading)
-   python scripts/test_data_feed.py --symbol=BTC-EUR --mode=paper
+   # Read-only Exchange Inspector (no orders)
+   python3 scripts/inspect_exchange.py --mode status --config config/config.toml
+
+   # Optional: OHLCV fetch (read-only; requires configured provider)
+   python3 scripts/inspect_exchange.py --mode ohlcv --symbol BTC/EUR --timeframe 1h --limit 5 --config config/config.toml
    ```
 4. Capture screenshots/logs as evidence
 

@@ -158,7 +158,7 @@
 | Schema defined and versioned (v1.0.0) | ✅ PASS | validator_report_schema.py |
 | Normalizer implemented | ✅ PASS | validator_report_normalized.py |
 | CLI script functional | ✅ PASS | normalize_validator_report.py |
-| 31 tests passing | ✅ PASS | pytest output |
+| 31 tests passing | ✅ PASS | `python3 -m pytest` output |
 | Determinism verified | ✅ PASS | SHA256 hashes match |
 | CI integration complete | ✅ PASS | Workflow updated |
 | Documentation complete | ✅ PASS | Spec + Quickstart |

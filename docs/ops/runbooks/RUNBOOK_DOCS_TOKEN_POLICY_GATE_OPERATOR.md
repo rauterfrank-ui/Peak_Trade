@@ -31,16 +31,16 @@ This runbook provides operator guidance for the **Docs Token Policy Gate**, whic
 
 ```bash
 # Default: check changed files only (fast, PR-mode)
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 
-# Check specific directory
-uv run python scripts/ops/validate_docs_token_policy.py docs/ops/
+# Check git-tracked docs only (docs/**/*.md)
+python3 scripts/ops/validate_docs_token_policy.py --tracked-docs
 
 # Full repo scan (slow, ~30s)
-uv run python scripts/ops/validate_docs_token_policy.py --all
+python3 scripts/ops/validate_docs_token_policy.py --all
 
 # Generate JSON report
-uv run python scripts/ops/validate_docs_token_policy.py --changed --json report.json
+python3 scripts/ops/validate_docs_token_policy.py --changed --json report.json
 ```
 
 ### Exit Codes
@@ -54,7 +54,7 @@ uv run python scripts/ops/validate_docs_token_policy.py --changed --json report.
 
 **Symptom:**
 ```
-Line 42: `scripts/example.py` (ILLUSTRATIVE)
+Line 42: `scripts/example.py` (ILLUSTRATIVE) <!-- pt:ref-target-ignore -->
   → Illustrative path token must use encoding
 ```
 
@@ -67,6 +67,12 @@ After:  `scripts&#47;example.py`
 ```
 
 **Rendering:** Both display identically (entity decoded to `/` in rendered view)
+
+**Alternative (Perl one-liner for non-README files):** If the validator names a different file (e.g., `docs/ops/README.md`), apply common token fixes:
+
+```bash
+perl -0777 -i -pe 's/allowed=True\/False/allowed=True&#47;False/g; s/allowed=False\/True/allowed=False&#47;True/g; s/True\/False/True&#47;False/g; s/False\/True/False&#47;True/g' <path>
+```
 
 ### Pattern 2: Real File Flagged as Illustrative
 
@@ -85,7 +91,7 @@ git add src/new_module.py
 git commit -m "add new module"
 
 # Re-run validator (should now classify as REAL_REPO_TARGET)
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 ```
 
 ### Pattern 3: Branch Name False Positive
@@ -151,12 +157,12 @@ See [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](RUNBOOK_DOCS_REFERENCE_T
 | Pattern | Example | Action | Reason |
 |---------|---------|--------|--------|
 | ILLUSTRATIVE | `scripts&#47;fake.py` | Encode (`&#47;`) | Doesn't exist in repo |
-| REAL_REPO_TARGET | `src&#47;core&#47;config.py` | NO encoding | File exists |
-| BRANCH_NAME | `feature&#47;x`, `docs&#47;y` | NO encoding | Branch pattern |
-| URL | `https:&#47;&#47;example.com&#47;path` | NO encoding | URL detected |
-| COMMAND | `python scripts&#47;run.py` | NO encoding | Command prefix |
-| LOCAL_PATH | `.&#47;scripts&#47;x.py`, `~&#47;config` | NO encoding | Local prefix |
-| ALLOWLISTED | `some&#47;path` | NO encoding | In allowlist |
+| REAL_REPO_TARGET | `src/core/config.py` | NO encoding | File exists |
+| BRANCH_NAME | `feature/x`, `fix/y` | NO encoding | Branch pattern |
+| URL | `https://example.com/path` | NO encoding | URL detected |
+| COMMAND | `bash python3 scripts/ops/validate_docs_token_policy.py --help` | NO encoding | Command prefix |
+| LOCAL_PATH | `/usr/local/bin`, `~/config` | NO encoding | Local prefix |
+| ALLOWLISTED | `some/path` | NO encoding | In allowlist |
 
 ## Decision Tree: `--changed` vs `--all`
 
@@ -180,7 +186,7 @@ See [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](RUNBOOK_DOCS_REFERENCE_T
 **Example:**
 ```markdown
 ❌ Before (triggers Reference Targets Gate):
-`scripts/example.py` (gate thinks this is a missing file)
+`scripts/example.py` (gate thinks this is a missing file) <!-- pt:ref-target-ignore -->
 
 ✅ After (safe for both gates):
 `scripts&#47;example.py` (gate ignores this as it's not a valid path)
@@ -208,6 +214,16 @@ See [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](RUNBOOK_DOCS_REFERENCE_T
 1. Check if token should be in different category (e.g., is it a command?)
 2. Add to allowlist if it's a known exception
 3. Open ticket to adjust classifier if systematic issue
+
+## Fixing a failure (targeted)
+
+If the validator reports a file other than `README.md`, apply the fix **only** to that file:
+
+```bash
+perl -0777 -i -pe 's/allowed=True\/False/allowed=True&#47;False/g; s/allowed=False\/True/allowed=False&#47;True/g; s/True\/False/True&#47;False/g; s/False\/True/False&#47;True/g' <path>
+```
+
+Example: `perl -0777 -i -pe '...' docs&#47;ops&#47;README.md`
 
 ## Maintenance
 

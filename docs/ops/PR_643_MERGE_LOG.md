@@ -32,8 +32,8 @@ Operationalize governance review and make SoD enforcement visible and testable b
 ## Verification
 - CI: all required gates passed (lint/format, tests matrix, audit, policy critic, docs gates).
 - Local (example):
-  - `python -m pytest tests&#47;ai_orchestration&#47;test_l4_critic.py -q`
-  - `python scripts&#47;aiops&#47;run_l4_governance_critic.py --help`
+  - `python3 -m pytest tests&#47;ai_orchestration&#47;test_l4_critic.py -q`
+  - `python3 scripts&#47;aiops&#47;run_l4_governance_critic.py --help`
 
 ## Risk
 LOW.
@@ -44,7 +44,7 @@ LOW.
 ## Operator How-To
 Replay review against sample evidence pack + transcript:
 ```bash
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \

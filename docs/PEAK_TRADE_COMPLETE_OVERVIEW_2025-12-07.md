@@ -382,51 +382,52 @@ print(result.stats)
 
 ```bash
 # Einzelne Strategie testen
-python scripts/research_cli.py run \
+python3 scripts/research_run_strategy.py \
   --strategy ma_crossover \
   --symbol BTC/EUR \
   --timeframe 1h \
   --start 2024-01-01 \
-  --end 2024-12-01
+  --end 2024-12-01 \
+  --use-dummy-data
 
 # Portfolio-Preset testen
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
+  --config config/config.toml \
   --portfolio-preset multi_style_moderate \
-  --format both
+  --format both \
+  --use-dummy-data
 
 # Parameter-Sweep durchführen
-python scripts/run_strategy_sweep.py \
-  --strategy ma_crossover \
-  --sweep-config config/sweeps/ma_crossover.toml
+python3 scripts/run_strategy_sweep.py \
+  --sweep-name ma_crossover_basic \
+  --config config/config.toml
 ```
 
 ### 6.4 Robustness-Tests
 
-```python
-# Monte-Carlo Simulation
-from src.experiments.monte_carlo import MonteCarloSimulator
+```bash
+# Walk-Forward Testing (Phase 44)
+python3 scripts/research_cli.py walkforward \
+  --sweep-name ma_crossover_basic \
+  --top-n 3 \
+  --train-window 90d \
+  --test-window 30d \
+  --use-dummy-data
 
-mc = MonteCarloSimulator(n_simulations=1000)
-mc_results = mc.run(equity_curve, returns)
+# Monte-Carlo Robustness (Phase 45)
+python3 scripts/research_cli.py montecarlo \
+  --sweep-name ma_crossover_basic \
+  --config config/config.toml \
+  --top-n 3 \
+  --num-runs 1000
 
-# Walk-Forward Testing
-from src.backtest.walkforward import WalkForwardTest
-
-wf = WalkForwardTest(
-    train_window=252,  # 1 Jahr Training
-    test_window=63,    # 3 Monate Test
-    step_size=21,      # 1 Monat Step
-)
-wf_results = wf.run(strategy, df)
-
-# Stress-Tests
-from src.experiments.stress_tests import StressTestRunner
-
-stress = StressTestRunner()
-stress_results = stress.run(
-    strategy,
-    scenarios=["2020_covid_crash", "2022_crypto_winter"]
-)
+# Stress-Tests (Phase 46)
+python3 scripts/research_cli.py stress \
+  --sweep-name ma_crossover_basic \
+  --config config/config.toml \
+  --top-n 3 \
+  --scenarios single_crash_bar vol_spike drawdown_extension \
+  --severity 0.2
 ```
 
 ---
@@ -569,16 +570,17 @@ size = sizer.calculate(
 
 ```bash
 # Health-Check
-python scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py health --config config/config.toml
 
 # Portfolio-Status
-python scripts/live_ops.py portfolio --config config/config.toml --json
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
 
 # Order-Preview (ohne Ausführung)
-python scripts/live_ops.py orders preview --config config/config.toml
+python3 scripts/live_ops.py orders preview --config config/config.toml
 
 # Live-Status-Report generieren
-python scripts/generate_live_status_report.py \
+python3 scripts/generate_live_status_report.py \
+  --config config/config.toml \
   --output-dir reports/live_status \
   --format markdown \
   --tag daily
@@ -810,13 +812,13 @@ tracker.finish_experiment(exp_id)
 
 ```bash
 # Alle Experimente auflisten
-python scripts/experiments_explorer.py list
+python3 scripts/experiments_explorer.py list
 
 # Details zu Experiment
-python scripts/experiments_explorer.py show --id exp_20241207_123456
+python3 scripts/experiments_explorer.py show --id exp_20241207_123456
 
 # Vergleich mehrerer Experimente
-python scripts/experiments_explorer.py compare \
+python3 scripts/experiments_explorer.py compare \
   --ids exp_001 exp_002 exp_003
 ```
 
@@ -944,34 +946,38 @@ min_sharpe = 0.5
 ### 13.4 Beispiel-Aufrufe
 
 ```bash
-# Research: Strategie testen
-python scripts/research_cli.py run \
+# Research: Strategie testen (Phase 18)
+python3 scripts/research_run_strategy.py \
   --strategy rsi_reversion \
   --symbol BTC/EUR \
   --timeframe 1h \
   --start 2024-01-01 \
-  --end 2024-12-01
+  --end 2024-12-01 \
+  --use-dummy-data
 
-# Parameter-Sweep
-python scripts/run_strategy_sweep.py \
-  --strategy ma_crossover \
-  --sweep-config config/sweeps/ma_crossover.toml \
-  --output-dir reports/sweeps
+# Strategy-Sweep (Phase 41)
+python3 scripts/run_strategy_sweep.py \
+  --sweep-name ma_crossover_basic \
+  --config config/config.toml \
+  --max-runs 10
 
-# Portfolio-Robustness
-python scripts/run_portfolio_robustness.py \
+# Portfolio-Robustness (Phase 47; Presets können `strategies=[...]` nutzen → offline via Dummy)
+python3 scripts/run_portfolio_robustness.py \
+  --config config/config.toml \
   --portfolio-preset multi_style_moderate \
-  --mc-simulations 1000 \
-  --stress-scenarios all
-
-# Live-Status
-python scripts/live_ops.py health
-python scripts/live_ops.py portfolio --json
-
-# Report generieren
-python scripts/generate_live_status_report.py \
-  --output-dir reports/live_status \
+  --use-dummy-data \
   --format both
+
+# Live-Status (Phase 51)
+python3 scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
+
+# Live-Status-Report (Phase 57)
+python3 scripts/generate_live_status_report.py \
+  --config config/config.toml \
+  --output-dir reports/live_status \
+  --format both \
+  --tag daily
 ```
 
 ---
@@ -996,19 +1002,19 @@ python scripts/generate_live_status_report.py \
 
 ```bash
 # Alle Tests
-pytest
+python3 -m pytest
 
 # Mit Coverage
-pytest --cov=src --cov-report=html
+python3 -m pytest --cov=src --cov-report=html
 
 # Nur bestimmte Module
-pytest tests/test_backtest*.py -v
+python3 -m pytest tests/test_backtest*.py -v
 
 # Schneller Smoke-Test
-pytest -m "not slow" -q
+python3 -m pytest -m "not slow" -q
 
 # Nur Integration-Tests
-pytest tests/test_*_integration.py -v
+python3 -m pytest tests/test_*_integration.py -v
 ```
 
 ### 14.3 Test-Kategorien
@@ -1168,55 +1174,58 @@ git clone <repo-url> Peak_Trade
 cd Peak_Trade
 
 # Virtuelle Umgebung erstellen
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 
 # Dependencies installieren
 pip install -r requirements.txt
 
 # Installation prüfen
-python -c "from src.backtest import BacktestEngine; print('OK')"
+python3 -c "from src.backtest import BacktestEngine; print('OK')"
 ```
 
 ### 17.2 Erster Backtest
 
 ```bash
 # MA Crossover auf BTC/EUR testen
-python scripts/research_cli.py run \
+python3 scripts/research_run_strategy.py \
   --strategy ma_crossover \
   --symbol BTC/EUR \
   --timeframe 1h \
   --start 2024-01-01 \
-  --end 2024-06-01
+  --end 2024-06-01 \
+  --use-dummy-data
 ```
 
 ### 17.3 Portfolio-Test
 
 ```bash
 # Portfolio-Preset testen
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
+  --config config/config.toml \
   --portfolio-preset rsi_reversion_conservative \
-  --format both
+  --format both \
+  --use-dummy-data
 ```
 
 ### 17.4 Live-Ops Check
 
 ```bash
 # System-Health prüfen
-python scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py health --config config/config.toml
 
 # Portfolio-Status (Paper-Mode)
-python scripts/live_ops.py portfolio --config config/config.toml
+python3 scripts/live_ops.py portfolio --config config/config.toml
 ```
 
 ### 17.5 Tests ausführen
 
 ```bash
 # Alle Tests
-pytest -v
+python3 -m pytest -v
 
 # Schneller Check
-pytest tests/test_execution_pipeline.py -v
+python3 -m pytest tests/test_execution_pipeline.py -v
 ```
 
 ---

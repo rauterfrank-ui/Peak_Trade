@@ -74,7 +74,7 @@ make mlog-review PR=XYZ
 
 **Testing**
 ```bash
-pytest tests/test_ops_merge_log_workflow_wrapper.py -vv
+python3 -m pytest tests/test_ops_merge_log_workflow_wrapper.py -vv
 ```
 
 ## Referenzen

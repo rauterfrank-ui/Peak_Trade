@@ -40,7 +40,7 @@ Durchführung eines Shadow-/Dry-Run mit der Shadow-Execution-Pipeline (Phase 24)
 ### 2.2 Voraussetzungen
 
 - [ ] Python-Environment aktiviert (`.venv`)
-- [ ] `config.toml` vorhanden und aktuell
+- [ ] `config/config.toml` vorhanden und aktuell
 - [ ] `[shadow]`-Sektion konfiguriert
 - [ ] Datenquelle verfügbar (CSV oder API-Zugang)
 
@@ -50,7 +50,7 @@ Durchführung eines Shadow-/Dry-Run mit der Shadow-Execution-Pipeline (Phase 24)
 
 ```bash
 # Config-Datei prüfen
-cat config.toml | grep -A 10 "\[shadow\]"
+cat config/config.toml | grep -A 10 "\[shadow\]"
 
 # Erwartete Ausgabe:
 # [shadow]
@@ -64,7 +64,7 @@ cat config.toml | grep -A 10 "\[shadow\]"
 
 ```bash
 # Verfügbare Strategien auflisten
-python -c "from src.strategies.registry import get_available_strategy_keys; print(get_available_strategy_keys())"
+python3 -c "from src.strategies.registry import get_available_strategy_keys; print(get_available_strategy_keys())"
 
 # Datenquelle prüfen (falls CSV)
 ls -la data/*.csv
@@ -74,10 +74,10 @@ ls -la data/*.csv
 
 ```bash
 # Standard-Run mit ma_crossover
-python scripts/run_shadow_execution.py --strategy ma_crossover --verbose
+python3 scripts/run_shadow_execution.py --strategy ma_crossover --verbose
 
 # Mit CSV-Daten und Datumsbeschränkung
-python scripts/run_shadow_execution.py \
+python3 scripts/run_shadow_execution.py \
     --strategy rsi_strategy \
     --data-file data/btc_eur_1h.csv \
     --start 2023-01-01 \
@@ -85,7 +85,7 @@ python scripts/run_shadow_execution.py \
     --tag shadow_run_v1
 
 # Mit Fee-/Slippage-Überschreibung
-python scripts/run_shadow_execution.py \
+python3 scripts/run_shadow_execution.py \
     --fee-rate 0.001 \
     --slippage-bps 10 \
     --verbose
@@ -95,10 +95,10 @@ python scripts/run_shadow_execution.py \
 
 ```bash
 # Experiments-Registry prüfen
-python scripts/experiments_explorer.py --run-type shadow_run --limit 5
+python3 scripts/experiments_explorer.py list --run-type shadow_run --limit 5
 
 # Oder: HTML-Report generieren (falls Reporting v2 aktiviert)
-python scripts/report_experiment.py --run-id <RUN_ID>
+python3 scripts/report_experiment.py --id <RUN_ID>
 ```
 
 **Schritt 5: Dokumentation**
@@ -333,6 +333,7 @@ Der **Kill-Switch** ist die letzte Verteidigungslinie:
 | `SAFETY_POLICY_TESTNET_AND_LIVE.md` | Safety-Policies |
 | `LIVE_READINESS_CHECKLISTS.md` | Checklisten für Stufen-Übergänge |
 | `PHASE_24_SHADOW_EXECUTION.md` | Shadow-Execution-Dokumentation |
+| `RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md` | Tech-Debt Top-3 ROI bis Finish (Cursor Multi-Agent, NO-LIVE) |
 | `INCIDENT_SIMULATION_AND_DRILLS.md` | Incident-Drill-Playbook (Phase 56) |
 | `INCIDENT_DRILL_LOG.md` | Drill-Log für dokumentierte Übungen |
 

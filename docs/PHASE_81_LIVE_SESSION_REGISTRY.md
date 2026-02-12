@@ -12,7 +12,7 @@ Die Phase orientiert sich explizit am bestehenden Experiment-System:
 
 * `SweepResultRow` → `LiveSessionRecord`
 * Experiment-Registry → Live-Session-Registry
-* `reports/experiments/` → `reports/experiments/live_sessions/`
+* `reports&#47;experiments&#47;` → `reports&#47;experiments&#47;live_sessions&#47;`
 
 ---
 
@@ -28,12 +28,12 @@ Die Phase orientiert sich explizit am bestehenden Experiment-System:
   * `get_session_summary()` – einfache Aggregations-Summary
   * `render_session_markdown()` / `render_sessions_markdown()` – Markdown-Reports
   * `render_session_html()` / `render_sessions_html()` – HTML-Reports
-  * `DEFAULT_LIVE_SESSION_DIR` – Basis-Pfad: `reports/experiments/live_sessions`
+  * `DEFAULT_LIVE_SESSION_DIR` – Basis-Pfad: `reports&#47;experiments&#47;live_sessions`
 
 * `scripts/run_execution_session.py`
 
   * Orchestriert eine Execution-Session (Shadow / Testnet / später Live).
-  * Wrappt die Session in einen `try/except/finally`-Block.
+  * Wrappt die Session in einen `try&#47;except&#47;finally`-Block.
   * Erzeugt am Ende einen `LiveSessionRecord` und ruft `register_live_session_run()` auf.
   * Registry-Fehler werden **nur geloggt**, brechen die Session aber nicht.
 
@@ -46,7 +46,7 @@ Die Phase orientiert sich explizit am bestehenden Experiment-System:
 
 * Basis-Verzeichnis:
 
-  * `reports/experiments/live_sessions/`
+  * `reports&#47;experiments&#47;live_sessions&#47;`
 * Pro Session ein eigenes JSON-File:
 
   * `YYYYMMDDTHHMMSS_<run_type>_<session_id>.json`
@@ -145,7 +145,7 @@ records = list_session_records(
 )
 ```
 
-* Lädt alle passenden JSON-Files aus `reports/experiments/live_sessions/`.
+* Lädt alle passenden JSON-Files aus `reports&#47;experiments&#47;live_sessions&#47;`.
 * Filter:
 
   * `run_type`
@@ -223,7 +223,7 @@ Typisches Layout:
 ## CLI-Aufruf
 
 ```bash
-python scripts/run_execution_session.py ...
+python3 scripts/run_execution_session.py ...
 ```
 ```
 
@@ -332,7 +332,7 @@ Ein Smoketest wurde durchgeführt:
 
 1. Shadow-Session gestartet (Dummy-Run).
 2. `LiveSessionRecord` erstellt und registriert.
-3. JSON-File in `reports/experiments/live_sessions/` erzeugt.
+3. JSON-File in `reports&#47;experiments&#47;live_sessions&#47;` erzeugt.
 4. `list_session_records()` findet die Session.
 5. `get_session_summary()` zeigt konsistente Aggregation.
 6. `render_session_markdown()` liefert einen vollständigen Report-String.
@@ -364,7 +364,7 @@ record = LiveSessionRecord(
     started_at=datetime.utcnow(),
     config={"strategy_name": "ma_crossover"},
     metrics={"realized_pnl": 150.0, "max_drawdown": 0.05},
-    cli_args=["python", "scripts/run_execution_session.py", "--shadow"],
+    cli_args=["python3", "scripts/run_execution_session.py", "--shadow"],
 )
 
 path = register_live_session_run(record)
@@ -398,31 +398,31 @@ Das CLI-Tool `scripts/report_live_sessions.py` generiert Markdown- und HTML-Repo
 
 ```bash
 # Alle Sessions als Markdown-Report:
-python scripts/report_live_sessions.py
+python3 scripts/report_live_sessions.py
 
 # Nur Shadow-Sessions:
-python scripts/report_live_sessions.py --run-type live_session_shadow
+python3 scripts/report_live_sessions.py --run-type live_session_shadow
 
 # Nur abgeschlossene Sessions:
-python scripts/report_live_sessions.py --status completed
+python3 scripts/report_live_sessions.py --status completed
 
 # Limit auf letzte 10 Sessions:
-python scripts/report_live_sessions.py --limit 10
+python3 scripts/report_live_sessions.py --limit 10
 
 # HTML-Report generieren:
-python scripts/report_live_sessions.py --output-format html
+python3 scripts/report_live_sessions.py --output-format html
 
 # Beide Formate:
-python scripts/report_live_sessions.py --output-format both
+python3 scripts/report_live_sessions.py --output-format both
 
 # Nur Summary (keine Einzel-Reports):
-python scripts/report_live_sessions.py --summary-only
+python3 scripts/report_live_sessions.py --summary-only
 
 # Report nach stdout:
-python scripts/report_live_sessions.py --stdout
+python3 scripts/report_live_sessions.py --stdout
 
 # Report in spezifisches Verzeichnis:
-python scripts/report_live_sessions.py --output-dir reports/custom/
+python3 scripts/report_live_sessions.py --output-dir reports/custom/
 ```
 
 **Output:**

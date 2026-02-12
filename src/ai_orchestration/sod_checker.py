@@ -4,7 +4,7 @@ Separation of Duties (SoD) Checker
 Validates that Proposer != Critic (different models/instances) for AI Autonomy.
 
 Reference:
-- docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
+- docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
 - docs/governance/ai_autonomy/SCHEMA_MANDATORY_FIELDS.md
 """
 

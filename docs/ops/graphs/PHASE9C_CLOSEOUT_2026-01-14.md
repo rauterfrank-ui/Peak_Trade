@@ -138,10 +138,10 @@ scripts/ops/pt_docs_gates_snapshot.sh
 scripts/ops/verify_docs_reference_targets.sh
 
 # Token Policy (changed files, optional)
-uv run python scripts/ops/validate_docs_token_policy.py --changed --base main
+python3 scripts/ops/validate_docs_token_policy.py --changed --base main
 
 # CI-Parity Mode (full scan, mirrors CI)
-uv run python scripts/ops/validate_docs_token_policy.py --all
+python3 scripts/ops/validate_docs_token_policy.py --all
 ```
 
 ### Expected Results
@@ -254,11 +254,11 @@ grep "Missing targets:" docs/ops/graphs/docs_graph_snapshot_waveN_before.txt
 
 ```bash
 # Local scans (iterative)
-uv run python scripts/ops/validate_docs_token_policy.py --changed --base main
+python3 scripts/ops/validate_docs_token_policy.py --changed --base main
 scripts/ops/verify_docs_reference_targets.sh
 
 # Pre-PR Full Scan (CI-Parity, mandatory)
-uv run python scripts/ops/validate_docs_token_policy.py --all
+python3 scripts/ops/validate_docs_token_policy.py --all
 scripts/ops/pt_docs_gates_snapshot.sh
 ```
 

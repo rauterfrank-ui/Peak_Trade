@@ -328,7 +328,7 @@ git status -sb
 ./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
 
 # Verify lint (if markdown files changed)
-uv run ruff check docs/
+ruff check docs/
 
 # Check for broken links (if new files added)
 # (Manual: click links in templates, verify they resolve)

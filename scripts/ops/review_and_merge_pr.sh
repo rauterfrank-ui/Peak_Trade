@@ -6,6 +6,12 @@
 
 set -euo pipefail
 
+# Approval gate:
+# - Prefer GitHub reviews: any state == "APPROVED"
+# - Fallback: exact issue comment body == "APPROVED"
+# - Do NOT rely on reviewDecision field (can be empty depending on repo settings / API shape)
+REQUIRE_APPROVAL="${REQUIRE_APPROVAL:-true}"  # true | false (only enforced when --merge is used)
+
 # ----------------------------
 # Docs Diff Guard (PR files)
 # ----------------------------
@@ -167,20 +173,35 @@ esac
 
 echo ""
 
-# Optional guard: require an approving review decision for merge mode
+# Optional guard: require approval for merge mode (robust: reviews -> APPROVED comment)
 # (keeps review-only flexible; enforces only when --merge is set)
 if [ "$DO_MERGE" -eq 1 ]; then
-  REVIEW_DECISION=$(gh pr view "$PR" --json reviewDecision --jq .reviewDecision 2>/dev/null || echo "")
-  # reviewDecision can be: APPROVED, CHANGES_REQUESTED, REVIEW_REQUIRED, null
-  if [ "$REVIEW_DECISION" = "CHANGES_REQUESTED" ]; then
-    die "Review decision is CHANGES_REQUESTED. Not merging."
+  # 0) If any CHANGES_REQUESTED exists, hard-stop (safety).
+  has_cr="$(gh pr view "$PR" --json reviews --jq '[.reviews[].state] | any(.=="CHANGES_REQUESTED")' 2>/dev/null || echo "false")"
+  if [ "${has_cr}" = "true" ]; then
+    die "Found CHANGES_REQUESTED review(s). Not merging."
   fi
-  if [ "$REVIEW_DECISION" = "REVIEW_REQUIRED" ]; then
-    info "Review decision is REVIEW_REQUIRED. Merge may still be blocked by branch protection."
-    # If you want this to be a hard fail, replace info -> die.
+
+  approved_review="$(gh pr view "$PR" --json reviews --jq '[.reviews[].state] | any(.=="APPROVED")' 2>/dev/null || echo "false")"
+  approval_comment_id="$(
+    gh api "repos/${REPO}/issues/${PR}/comments" --paginate --jq '.[] | select(.body == "APPROVED") | .id' 2>/dev/null \
+      | head -n 1 \
+      || true
+  )"
+
+  approval_ok=0
+  if [ "${approved_review}" = "true" ] || [ -n "${approval_comment_id}" ]; then
+    approval_ok=1
   fi
-  if [ "$REVIEW_DECISION" = "APPROVED" ]; then
-    ok "PR has been approved."
+
+  if [ "$REQUIRE_APPROVAL" = "true" ] && [ "$approval_ok" -ne 1 ]; then
+    die "No approval found (need review APPROVED or exact comment body 'APPROVED'). Set REQUIRE_APPROVAL=false to bypass."
+  fi
+
+  if [ "$approval_ok" -eq 1 ]; then
+    ok "Approval gate satisfied."
+  else
+    info "Approval gate not satisfied (REQUIRE_APPROVAL=false)."
   fi
   echo ""
 fi

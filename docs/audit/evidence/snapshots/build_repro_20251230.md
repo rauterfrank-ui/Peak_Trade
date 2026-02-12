@@ -47,7 +47,7 @@
 - **Tool:** pytest (configured in pytest.ini)
 - **Test Files:** 276 test files
 - **Test Functions:** 5,340+ test functions (across 278 files)
-- **Status:** ⚠️ pytest not in PATH (may require `uv run pytest`)
+- **Status:** ⚠️ pytest not in PATH (may require `python3 -m pytest` / venv activation)
 
 ### Test Configuration (pytest.ini)
 - **Test Discovery:** `tests/` directory
@@ -158,7 +158,7 @@ Three policy packs defined in `policy_packs/`:
    - Policy packs exist but unclear how/where they're enforced
    - No evidence of automated test runs on PRs
 
-2. **Pytest Not in PATH:** May require `uv run pytest` or venv activation
+2. **Pytest Not in PATH:** May require `python3 -m pytest` or venv activation
    - Not a blocker, but adds friction
 
 3. **Many Linter Rules Disabled:** Ruff ignores many rules for "legacy code"
@@ -169,7 +169,7 @@ Three policy packs defined in `policy_packs/`:
 
 ### 🔍 Further Investigation Needed
 - Check if CI runs externally (GitHub Actions, GitLab CI, etc.)
-- Verify test execution: `uv run pytest -m smoke` (smoke tests)
+- Verify test execution: `python3 -m pytest -m smoke` (smoke tests)
 - Review Makefile for build automation
 - Confirm reproducibility: same inputs → same outputs
 
@@ -180,13 +180,13 @@ Three policy packs defined in `policy_packs/`:
 uv lock --check
 
 # Run smoke tests (fast)
-uv run pytest -m smoke -v
+python3 -m pytest -m smoke -v
 
 # Run full test suite (may be slow)
-uv run pytest -v
+python3 -m pytest -v
 
 # Check linter
-uv run ruff check src/
+ruff check src/
 
 # Verify build
 uv build

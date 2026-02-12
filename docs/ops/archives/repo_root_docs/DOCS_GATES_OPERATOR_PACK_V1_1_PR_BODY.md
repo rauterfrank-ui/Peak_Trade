@@ -125,7 +125,7 @@ ruff check docs/ops/
 
 **Token Policy Gate:**
 ```markdown
-Replace: `scripts/example.py`
+Replace: `scripts/example.py` <!-- pt:ref-target-ignore -->
 With:    `scripts&#47;example.py`
 ```
 

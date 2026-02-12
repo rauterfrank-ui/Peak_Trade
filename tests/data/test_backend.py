@@ -3,7 +3,7 @@ Tests für Data Backend Layer (src/data/backend.py)
 ==================================================
 Testet PandasBackend, PolarsBackend (optional), DuckDBBackend (optional).
 
-NOTE: src/data/backend.py nicht implementiert - deferred to future phase
+NOTE: Optional Dependencies (polars/duckdb/parquet-engine) werden sauber ge-guarded.
 """
 
 import tempfile
@@ -11,9 +11,6 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
-
-# Skip all tests in this module if backend doesn't exist
-pytest.skip("src.data.backend not implemented yet", allow_module_level=True)
 
 from src.data.backend import (
     DataBackend,
@@ -49,6 +46,25 @@ def _is_duckdb_available() -> bool:
         return False
 
 
+def _is_parquet_engine_available() -> bool:
+    """
+    Pandas benötigt für Parquet Read/Write eine Engine (pyarrow oder fastparquet).
+    Diese Tests sollen in minimalen Environments nicht hart failen.
+    """
+    try:
+        import pyarrow  # noqa: F401
+
+        return True
+    except ImportError:
+        pass
+    try:
+        import fastparquet  # noqa: F401
+
+        return True
+    except ImportError:
+        return False
+
+
 # ============================================================================
 # Fixtures
 # ============================================================================
@@ -72,6 +88,8 @@ def sample_df():
 @pytest.fixture
 def temp_parquet_file(sample_df, tmp_path):
     """Temporäre Parquet-Datei für Tests."""
+    if not _is_parquet_engine_available():
+        pytest.skip("Kein Parquet-Engine verfügbar (installiere pyarrow oder fastparquet)")
     parquet_path = tmp_path / "test_data.parquet"
     sample_df.to_parquet(parquet_path, index=False)
     return parquet_path

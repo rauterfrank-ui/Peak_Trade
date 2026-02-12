@@ -46,11 +46,11 @@
 **Lokal**
 ```bash
 # 1. Run validator on changed files (PR mode)
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 # Expected: ✅ All checks passed! (2 files scanned)
 
 # 2. Run full test suite
-uv run python -m pytest -q tests/ops/test_validate_docs_token_policy.py
+python3 -m pytest -q tests/ops/test_validate_docs_token_policy.py
 # Expected: 26 passed in 0.06s
 
 # 3. Verify runbook exists and is linked
@@ -69,7 +69,7 @@ gh pr checks <NEXT_PR_NUMBER> | grep "docs-token-policy-gate"
 # Expected: PASS or FAIL (with actionable report)
 
 # 2. Test validator locally (full scan)
-uv run python scripts/ops/validate_docs_token_policy.py docs/
+python3 scripts/ops/validate_docs_token_policy.py docs/
 # Expected: Report of all violations (if any)
 
 # 3. Verify CI artifact upload on failure
@@ -141,7 +141,7 @@ Line 42: ``scripts&#47;example.py`` (ILLUSTRATIVE)
 
 **Step 4: Re-run Validator Locally**
 ```bash
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 ```
 
 **Step 5: Push Fix**

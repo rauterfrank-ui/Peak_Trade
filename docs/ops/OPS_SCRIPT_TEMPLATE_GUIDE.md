@@ -179,7 +179,7 @@ pt_require_cmd jq
 ```bash
 # ✅ Good: Strukturiertes Logging
 pt_log "Starting main work..."
-pt_run "Build report" python scripts/generate_report.py
+pt_run "Build report" python3 scripts/generate_live_status_report.py --help
 pt_log "Main work completed"
 ```
 

@@ -19,10 +19,12 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
+# Repo root on path so that src.* and l3_runner's "from src.governance" resolve
+_repo_root = Path(__file__).resolve().parent.parent.parent
+if str(_repo_root) not in sys.path:
+    sys.path.insert(0, str(_repo_root))
 
-from ai_orchestration.l4_critic import (
+from src.ai_orchestration.l4_critic import (
     CapabilityScopeViolation,
     L4Critic,
     L4CriticError,

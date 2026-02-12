@@ -45,32 +45,36 @@ Führt Parameter-Sweeps für eine Strategie durch.
 | `--max-runs` | Maximale Anzahl Runs (0 = unbegrenzt) | `0` |
 | `--sweep-name` | Optionaler Name für den Sweep | auto |
 | `--tag` | Optionaler Tag für Registry | - |
-| `--config` | Pfad zur TOML-Config | `config.toml` |
+| `--config` | Pfad zur TOML-Config | `config/config.toml` |
 | `--dry-run` | Nur Parameter anzeigen, keine Runs | False |
 
 #### Beispiele
 
 ```bash
 # Sweep mit JSON-Grid
-python scripts/run_sweep.py \
+python3 scripts/run_sweep.py \
+    --config config/config.toml \
     --strategy ma_crossover \
     --symbol BTC/EUR \
     --grid '{"short_window": [5, 10, 20], "long_window": [50, 100]}'
 
 # Sweep mit TOML-Datei
-python scripts/run_sweep.py \
+python3 scripts/run_sweep.py \
+    --config config/config.toml \
     --strategy ma_crossover \
     --grid config/sweeps/ma_crossover.toml \
     --tag optimization-v1
 
 # Limitierter Sweep (max 10 Kombinationen)
-python scripts/run_sweep.py \
+python3 scripts/run_sweep.py \
+    --config config/config.toml \
     --strategy rsi_reversion \
     --grid config/sweeps/rsi_reversion.toml \
     --max-runs 10
 
 # Dry-Run (nur Kombinationen anzeigen)
-python scripts/run_sweep.py \
+python3 scripts/run_sweep.py \
+    --config config/config.toml \
     --strategy ma_crossover \
     --grid '{"short_window": [5, 10], "long_window": [50, 100]}' \
     --dry-run
@@ -115,28 +119,31 @@ Scannt mehrere Symbole mit einer Strategie.
 | `--mode` | Scan-Modus: `forward` oder `backtest-lite` | `forward` |
 | `--scan-name` | Optionaler Name für den Scan | auto |
 | `--tag` | Optionaler Tag für Registry | - |
-| `--config` | Pfad zur TOML-Config | `config.toml` |
+| `--config` | Pfad zur TOML-Config | `config/config.toml` |
 | `--dry-run` | Nur Symbole anzeigen, keine Runs | False |
 
 #### Beispiele
 
 ```bash
 # Forward-Scan (echte Exchange-Daten)
-python scripts/run_market_scan.py \
+python3 scripts/run_market_scan.py \
+    --config config/config.toml \
     --strategy ma_crossover \
     --symbols "BTC/EUR,ETH/EUR,LTC/EUR,XRP/EUR" \
     --mode forward \
     --tag morning-scan
 
 # Backtest-Lite-Scan (schnell, Dummy-Daten)
-python scripts/run_market_scan.py \
+python3 scripts/run_market_scan.py \
+    --config config/config.toml \
     --strategy rsi_reversion \
     --symbols "BTC/EUR,ETH/EUR,SOL/EUR" \
     --mode backtest-lite \
     --timeframe 4h
 
 # Dry-Run
-python scripts/run_market_scan.py \
+python3 scripts/run_market_scan.py \
+    --config config/config.toml \
     --strategy ma_crossover \
     --symbols "BTC/EUR,ETH/EUR" \
     --dry-run
@@ -292,16 +299,16 @@ for s in summaries:
 
 ```bash
 # Alle Sweep-Runs auflisten
-python scripts/analyze_experiments.py --run-type sweep
+python3 scripts/analyze_experiments.py --run-type sweep
 
 # Alle Market-Scans auflisten
-python scripts/analyze_experiments.py --run-type market_scan
+python3 scripts/analyze_experiments.py --run-type market_scan
 
 # Sweeps für eine Strategie filtern
-python scripts/analyze_experiments.py --run-type sweep --strategy ma_crossover
+python3 scripts/analyze_experiments.py --run-type sweep --strategy ma_crossover
 
 # Scans mit Tag filtern
-python scripts/analyze_experiments.py --run-type market_scan --tag morning-scan
+python3 scripts/analyze_experiments.py --run-type market_scan --tag morning-scan
 ```
 
 ---
@@ -312,19 +319,19 @@ python scripts/analyze_experiments.py --run-type market_scan --tag morning-scan
 
 ```bash
 # 1. Sweep durchführen
-python scripts/run_sweep.py \
+python3 scripts/run_sweep.py \
     --strategy ma_crossover \
     --symbol BTC/EUR \
     --grid config/sweeps/ma_crossover.toml \
     --tag optimization-v1
 
 # 2. Ergebnisse analysieren
-python scripts/analyze_experiments.py \
+python3 scripts/analyze_experiments.py \
     --run-type sweep \
     --tag optimization-v1
 
 # 3. Beste Parameter für Backtest verwenden
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
     --strategy ma_crossover \
     --symbol BTC/EUR \
     --params '{"short_window": 10, "long_window": 100}'
@@ -334,19 +341,19 @@ python scripts/run_backtest.py \
 
 ```bash
 # 1. Alle Symbole scannen
-python scripts/run_market_scan.py \
+python3 scripts/run_market_scan.py \
     --strategy ma_crossover \
     --symbols "BTC/EUR,ETH/EUR,LTC/EUR,XRP/EUR,SOL/EUR" \
     --mode forward \
     --tag morning-scan
 
 # 2. Signale analysieren
-python scripts/analyze_experiments.py \
+python3 scripts/analyze_experiments.py \
     --run-type market_scan \
     --tag morning-scan
 
 # 3. Bei starkem Signal: Order-Preview
-python scripts/preview_live_orders.py \
+python3 scripts/preview_live_orders.py \
     --signals reports/forward/... \
     --notional 500
 ```
@@ -356,7 +363,7 @@ python scripts/preview_live_orders.py \
 ```bash
 # Mehrere Strategien scannen
 for strategy in ma_crossover rsi_reversion breakout_donchian; do
-    python scripts/run_market_scan.py \
+    python3 scripts/run_market_scan.py \
         --strategy $strategy \
         --symbols "BTC/EUR,ETH/EUR" \
         --mode forward \
@@ -364,7 +371,7 @@ for strategy in ma_crossover rsi_reversion breakout_donchian; do
 done
 
 # Aggregierte Analyse
-python scripts/analyze_experiments.py \
+python3 scripts/analyze_experiments.py \
     --run-type market_scan \
     --tag multi-scan
 ```
@@ -412,7 +419,7 @@ num_std = [1.5, 2.0, 2.5, 3.0]
 
 ```bash
 # Verfügbare Strategien auflisten
-python -c "from src.strategies.registry import list_strategies; print(list_strategies())"
+python3 -c "from src.strategies.registry import list_strategies; print(list_strategies())"
 ```
 
 ### "Grid konnte nicht geladen werden"
@@ -425,12 +432,12 @@ python -c "from src.strategies.registry import list_strategies; print(list_strat
 
 Verwende `--max-runs` um die Anzahl zu begrenzen:
 ```bash
-python scripts/run_sweep.py ... --max-runs 20
+python3 scripts/run_sweep.py ... --max-runs 20
 ```
 
 ### "Exchange-Fehler im Forward-Mode"
 
-- Prüfe API-Keys in config.toml
+- Prüfe API-Keys in `config/config.toml`
 - Verwende `--mode backtest-lite` für Tests ohne Exchange
 
 ---

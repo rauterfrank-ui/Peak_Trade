@@ -111,3 +111,6 @@ alert_channel = "market-outlook-safety"
 min_scenario_count = 2  # At least 2 scenarios (base + alternative)
 max_scenario_count = 5  # No more than 5 scenarios (keep it tractable)
 require_rationale = true  # Every scenario must have rationale
+
+[tools]
+allowed_tools = ["web", "files"]

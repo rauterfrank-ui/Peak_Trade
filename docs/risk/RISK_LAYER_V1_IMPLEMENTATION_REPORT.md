@@ -105,6 +105,8 @@ def run_stress_suite(returns, scenarios, alpha) -> pd.DataFrame
 # - regime_sideways: Seitwärts-Markt (hohe Choppiness)
 ```
 
+**Abgrenzung:** Diese Risk-Layer Stress-Szenarien sind **nicht identisch** mit den Research Stress-Tests (Phase 46/47, `src/experiments/stress_tests.py`) und auch nicht mit der Scenario-Library (Phase 82, `config&#47;scenarios&#47;*.toml`). Namen können sich überschneiden (z.B. „flash_crash“), aber die Mechanik und Parameter unterscheiden sich bewusst.
+
 ### Enforcement (src/risk/enforcement.py)
 ```python
 class RiskLimitsV2               # v1-Limits-Definition

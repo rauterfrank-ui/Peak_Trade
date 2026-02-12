@@ -39,11 +39,11 @@
 **Lokal**
 ```bash
 # 1. Run v2 unit tests
-uv run python -m pytest tests/ops/test_autofix_docs_token_policy_v2.py -v
+python3 -m pytest tests/ops/test_autofix_docs_token_policy_v2.py -v
 # Expected/Observed: 13 passed
 
 # 2. Validate gates
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 # PASS
 
 bash scripts/ops/verify_docs_reference_targets.sh --changed
@@ -84,7 +84,7 @@ python3 scripts/ops/autofix_docs_token_policy_inline_code_v2.py --dry-run <file1
 python3 scripts/ops/autofix_docs_token_policy_inline_code_v2.py --write <file1.md> <file2.md>
 
 # 3. Verify gates
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 bash scripts/ops/verify_docs_reference_targets.sh --changed
 ```
 
@@ -95,7 +95,7 @@ python3 scripts/ops/autofix_docs_token_policy_inline_code.py --dry-run <file1.md
 python3 scripts/ops/autofix_docs_token_policy_inline_code.py --write <file1.md>
 
 # Verify gates
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 bash scripts/ops/verify_docs_reference_targets.sh --changed
 ```
 

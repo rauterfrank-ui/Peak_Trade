@@ -69,6 +69,10 @@ class DocsTokenPolicyValidator:
     ENCODED_PATTERN = re.compile(r"&#47;")
     COMMAND_PREFIXES = (
         "python ",
+        "python3 ",
+        "python3.11 ",
+        "python3.10 ",
+        "python3.9 ",
         "git ",
         "gh ",
         "uv ",

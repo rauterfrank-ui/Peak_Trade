@@ -1,0 +1,28 @@
+name: typecheck-pyright
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  pyright:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dev deps (editable)
+        run: |
+          python -m pip install -U pip
+          pip install -e ".[dev]"
+
+      - name: Pyright typecheck (basic)
+        run: bash scripts/ops/typecheck_pyright.sh

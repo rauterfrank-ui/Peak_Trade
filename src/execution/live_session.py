@@ -34,6 +34,7 @@ Example:
 from __future__ import annotations
 
 import logging
+import os
 import signal
 import time
 import uuid
@@ -43,6 +44,8 @@ from enum import Enum
 from typing import Any, Callable, Dict, List, Literal, Optional, TYPE_CHECKING
 
 import pandas as pd
+
+from src.obs import strategy_risk_telemetry
 
 from ..orders.base import OrderRequest, OrderExecutionResult
 from .pipeline import ExecutionPipeline, ExecutionPipelineConfig, SignalEvent
@@ -722,6 +725,19 @@ class LiveSessionRunner:
             f"@ price={current_price:.2f}"
         )
 
+        # Telemetry: count final signal event once per change (watch-only safe)
+        try:
+            from ..obs import trade_flow_telemetry
+
+            trade_flow_telemetry.inc_signal(
+                strategy_id=self._config.strategy_key,
+                symbol=self._config.symbol,
+                signal=("buy" if current_signal > 0 else "sell" if current_signal < 0 else "flat"),
+                n=1,
+            )
+        except Exception:
+            pass
+
         # SignalEvent erstellen
         sig_event = SignalEvent(
             timestamp=datetime.now(timezone.utc),
@@ -773,6 +789,21 @@ class LiveSessionRunner:
 
         self._last_signal = current_signal
 
+        # SLICE4 telemetry (watch/paper/shadow safe): gross exposure gauge (no symbol label).
+        try:
+            from src.obs import strategy_risk_telemetry as _srt
+
+            sym = str(self._config.symbol or "")
+            ccy = sym.split("/", 1)[1] if "/" in sym else "NA"
+            exposure = abs(float(self._metrics.current_position)) * float(current_price)
+            _srt.set_strategy_position_gross_exposure(
+                strategy_id=str(getattr(self._config, "strategy_key", None) or "na"),
+                ccy=ccy,
+                exposure=exposure,
+            )
+        except Exception:
+            pass
+
         return exec_result.executed_orders if not exec_result.rejected else []
 
     def run_n_steps(self, n: int, sleep_between: bool = False) -> List[OrderExecutionResult]:
@@ -788,6 +819,12 @@ class LiveSessionRunner:
         """
         if not self._is_warmup_done:
             raise SessionRuntimeError("Warmup muss vor run_n_steps() aufgerufen werden.")
+
+        strategy_risk_telemetry.ensure_registered()
+        if (os.getenv("PEAKTRADE_METRICS_MODE", "") or "").strip().upper() != "B":
+            from src.obs.metrics_server import ensure_metrics_server
+
+            ensure_metrics_server()
 
         all_results: List[OrderExecutionResult] = []
 
@@ -817,6 +854,12 @@ class LiveSessionRunner:
         if not self._is_warmup_done:
             raise SessionRuntimeError("Warmup muss vor run_for_duration() aufgerufen werden.")
 
+        strategy_risk_telemetry.ensure_registered()
+        if (os.getenv("PEAKTRADE_METRICS_MODE", "") or "").strip().upper() != "B":
+            from src.obs.metrics_server import ensure_metrics_server
+
+            ensure_metrics_server()
+
         end_time = time.time() + (minutes * 60)
         all_results: List[OrderExecutionResult] = []
 
@@ -842,6 +885,12 @@ class LiveSessionRunner:
         """
         if not self._is_warmup_done:
             raise SessionRuntimeError("Warmup muss vor run_forever() aufgerufen werden.")
+
+        strategy_risk_telemetry.ensure_registered()
+        if (os.getenv("PEAKTRADE_METRICS_MODE", "") or "").strip().upper() != "B":
+            from src.obs.metrics_server import ensure_metrics_server
+
+            ensure_metrics_server()
 
         self._is_running = True
         self._shutdown_requested = False

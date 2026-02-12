@@ -89,6 +89,12 @@ Examples:
     )
 
     parser.add_argument(
+        "--no-plots",
+        action="store_true",
+        help="Disable plot generation for reports (no PNG chart artifacts)",
+    )
+
+    parser.add_argument(
         "--tag",
         type=str,
         default=None,
@@ -636,6 +642,9 @@ def main():
         print("\n💾 Speichere individuelle Asset-Reports...")
         from src.backtest.reporting import save_full_report
 
+        if args.no_plots:
+            print("ℹ️  Plots deaktiviert (--no-plots) für individuelle Asset-Reports")
+
         for symbol, result in results.items():
             symbol_safe = symbol.replace("/", "_")
             report_name = f"{run_name}_{symbol_safe}"
@@ -645,7 +654,7 @@ def main():
                     result=result,
                     output_dir="reports",
                     run_name=report_name,
-                    save_plots_flag=True,
+                    save_plots_flag=not args.no_plots,
                     save_html_flag=True,
                 )
                 print(f"  ✅ {symbol} Report: {report_name}_*")

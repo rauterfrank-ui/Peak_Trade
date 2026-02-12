@@ -52,13 +52,13 @@ Phase 5B consumes **Phase 5A Trend Seeds** (generated from normalized validator 
 
 ```bash
 # Basic usage
-python scripts/aiops/generate_trend_ledger_from_seed.py \
+python3 scripts/aiops/generate_trend_ledger_from_seed.py \
   --input trend_seed.json \
   --output-json trend_ledger.json \
   --output-markdown trend_ledger.md
 
 # With run manifest (CI mode)
-python scripts/aiops/generate_trend_ledger_from_seed.py \
+python3 scripts/aiops/generate_trend_ledger_from_seed.py \
   --input trend_seed.json \
   --output-json trend_ledger.json \
   --output-markdown trend_ledger.md \
@@ -97,10 +97,10 @@ python scripts/aiops/generate_trend_ledger_from_seed.py \
 
 ```bash
 # Run Phase 5B tests
-pytest tests/ai_orchestration/test_trend_ledger_from_seed.py -v
+python3 -m pytest tests/ai_orchestration/test_trend_ledger_from_seed.py -v
 
 # Run with coverage
-pytest tests/ai_orchestration/test_trend_ledger_from_seed.py --cov=src.ai_orchestration.trends.trend_ledger
+python3 -m pytest tests/ai_orchestration/test_trend_ledger_from_seed.py --cov=src.ai_orchestration.trends.trend_ledger
 ```
 
 **Test Coverage:**
@@ -115,11 +115,11 @@ pytest tests/ai_orchestration/test_trend_ledger_from_seed.py --cov=src.ai_orches
 
 ```bash
 # Generate ledger twice from same seed, compare hashes
-python scripts/aiops/generate_trend_ledger_from_seed.py \
+python3 scripts/aiops/generate_trend_ledger_from_seed.py \
   --input tests/fixtures/trend_seed.sample.json \
   --output-json /tmp/ledger1.json
 
-python scripts/aiops/generate_trend_ledger_from_seed.py \
+python3 scripts/aiops/generate_trend_ledger_from_seed.py \
   --input tests/fixtures/trend_seed.sample.json \
   --output-json /tmp/ledger2.json
 
@@ -191,7 +191,7 @@ sha256sum /tmp/ledger1.json /tmp/ledger2.json
 ls -lh trend_seed.json
 
 # Use absolute path if relative path fails
-python scripts/aiops/generate_trend_ledger_from_seed.py \
+python3 scripts/aiops/generate_trend_ledger_from_seed.py \
   --input /absolute/path/to/trend_seed.json \
   --output-json trend_ledger.json
 ```

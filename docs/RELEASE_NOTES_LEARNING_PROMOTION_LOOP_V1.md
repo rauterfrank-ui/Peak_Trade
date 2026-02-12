@@ -3,11 +3,23 @@
 **Modul:** Peak_Trade – Learning Loop (System 1) + Promotion/Governance Loop (System 2)  
 **Version:** v1  
 **Datum:** 2025-12-11  
-**Status:** ✅ VOLLSTÄNDIG IMPLEMENTIERT & GETESTET  
+**Status:** ✅ IMPLEMENTIERT & GETESTET (v1)  
 **Qualität:** ✅ PRODUCTION-READY  
 **Ready for Production:** 🚀
 
 ---
+
+## 0. As-built Hinweis (Nacharbeit 2026-01-27)
+
+Dieses Dokument wurde nachgezogen, sodass alle **Kommandos ausführbar** sind und “planned/✅” konsistent ist.
+
+**Neu/ergänzt (Stand 2026-01-27):**
+
+* ✅ `scripts&#47;run_learning_apply_cycle.py` (minimaler Bridge-Runner: JSON/JSONL → `config&#47;auto&#47;learning.override.toml`)
+* ✅ `scripts&#47;demo_live_overrides.py`
+* ✅ `scripts&#47;generate_demo_patches_for_promotion.py` (Demo-Input für `reports&#47;learning_snippets&#47;*.json`)
+* ✅ `config&#47;live_overrides&#47;auto.toml` (Template)
+* ✅ Tests: `tests&#47;test_live_overrides_integration.py` + `tests&#47;test_live_overrides_realistic_scenario.py` (19/19)
 
 ## 1. Kurzüberblick
 
@@ -25,7 +37,7 @@ Der **Learning & Promotion Loop v1** schließt den Kreis zwischen autonomer Opti
 **Erzeugt:**
 
 * `LearningSignal` → `ConfigPatch`
-* TOML-Overrides in `config/auto/*.override.toml`
+* TOML-Overrides in `config&#47;auto&#47;*.override.toml`
 * **Scope:** Nur Offline/Backtest/Drills (keine Live-Orders)
 
 ### 1.2 Promotion- & Governance-Loop (System 2)
@@ -42,14 +54,14 @@ Der **Learning & Promotion Loop v1** schließt den Kreis zwischen autonomer Opti
 
 **Erzeugt:**
 
-* Promotion-Proposals unter `reports/live_promotion/<proposal_id>/`
-* Optional: Live-Overrides unter `config&sol;live_overrides&sol;auto.toml (planned)` (Modus: `bounded_auto`)
+* Promotion-Proposals unter `reports&#47;live_promotion&#47;<proposal_id>&#47;`
+* Optional: Live-Overrides unter `config&#47;live_overrides&#47;auto.toml` (Modus: `bounded_auto`)
 
 ### 1.3 Config-Layer
 
 **Mischt automatisch ein:**
 
-* `config&sol;live_overrides&sol;auto.toml (planned)` in die effektive Laufzeit-Config
+* `config&#47;live_overrides&#47;auto.toml` in die effektive Laufzeit-Config
 * **Nur in Live-nahen Umgebungen:** live, shadow, paper_live, testnet
 * **Nicht in:** paper, backtest
 
@@ -100,46 +112,46 @@ Der Promotion-Loop kennt **drei Modi** (konfigurierbar via CLI):
 
 ```bash
 # 1. Automation laufen lassen
-python scripts/run_test_health.py
-python scripts/run_trigger_training_drill.py
-python scripts/generate_infostream_packet.py
+python3 scripts/run_test_health.py
+python3 scripts/run_trigger_training_drill.py
+python3 scripts/generate_infostream_packet.py
 # ... weitere Automation-Tools
 ```
 
-**Output:** Learning Signals in `reports/learning_snippets/`
+**Output:** Learning Signals in `reports&#47;learning_snippets&#47;`
 
 ### 3.2 Learning Loop ausführen
 
 ```bash
 # Dry-Run (Preview ohne Änderungen)
-python `scripts&sol;run_learning_apply_cycle.py` (planned) --dry-run
+python3 scripts/run_learning_apply_cycle.py --dry-run
 
 # Tatsächliche Anwendung
-python `scripts&sol;run_learning_apply_cycle.py` (planned)
+python3 scripts/run_learning_apply_cycle.py
 ```
 
 **Output:**
 
 * `ConfigPatch`-Objekte (intern)
-* TOML-Overrides: `config/auto/*.override.toml`
+* TOML-Overrides: `config&#47;auto&#47;*.override.toml`
 
 ### 3.3 Promotion Loop fahren
 
 ```bash
 # Option 1: Nur Vorschläge (konservativ)
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 
 # Option 2: Konservativer Autopilot (bounded auto, empfohlen für Production)
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
 
 # Option 3: Killswitch (Notfall)
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode disabled
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode disabled
 ```
 
 **Output:**
 
 ```
-reports/live_promotion/<proposal_id>/
+reports&#47;live_promotion&#47;<proposal_id>&#47;
 ├── proposal_meta.json          # Metadaten
 ├── config_patches.json         # Alle Patches mit Decisions
 └── OPERATOR_CHECKLIST.md       # Operator-Review-Checkliste
@@ -161,7 +173,7 @@ reports/live_promotion/<proposal_id>/
 cat reports/live_promotion/<latest>/OPERATOR_CHECKLIST.md
 
 # Config-Diff anschauen
-python `scripts&sol;demo_live_overrides.py` (planned)
+python3 scripts/demo_live_overrides.py
 ```
 
 **Checkliste prüfen:**
@@ -196,7 +208,7 @@ trigger_delay = cfg.get("strategy.trigger_delay")  # -> 8.0 (statt 10.0)
 
 ```bash
 # Option 1: Auto-Apply-Modus deaktivieren
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode disabled
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode disabled
 
 # Option 2: auto.toml zurücksetzen
 cp config/live_overrides/auto.toml.backup config/live_overrides/auto.toml
@@ -209,6 +221,22 @@ git checkout config/live_overrides/auto.toml
 ```
 
 ---
+
+## 15. Operator Verify (kurz)
+
+```bash
+# Smoke: Runner muss auch ohne Inputs clean laufen
+python3 scripts/run_learning_apply_cycle.py --dry-run
+
+# Optional: Demo-Input erzeugen (landet unter reports/learning_snippets/*.json)
+python3 scripts/generate_demo_patches_for_promotion.py --variant diverse
+
+# Apply (schreibt config/auto/learning.override.toml)
+python3 scripts/run_learning_apply_cycle.py
+
+# Tests (schnell)
+python3 -m pytest -q tests/test_live_overrides_integration.py tests/test_live_overrides_realistic_scenario.py
+```
 
 ## 4. Sicherheits-Features
 
@@ -364,7 +392,7 @@ load_config_with_live_overrides(
 * CLI mit 3 Modi (disabled/manual_only/bounded_auto)
 * Output: Proposals + optional auto.toml
 
-**`scripts&sol;demo_live_overrides.py (planned)`:**
+**`scripts&#47;demo_live_overrides.py`:**
 
 * Demo & Debugging-Tool
 * Zeigt Config-Diff vor/nach Overrides
@@ -379,7 +407,7 @@ load_config_with_live_overrides(
 **19 Tests, alle grün ✅**
 
 ```bash
-pytest tests/test_live_overrides*.py -v
+python3 -m pytest tests&#47;test_live_overrides*.py -v
 ===== 19 passed in 0.08s =====
 ```
 
@@ -600,8 +628,8 @@ cfg = load_config_with_live_overrides()
 ### 11.3 Fragen & Feedback
 
 1. Prüfe Troubleshooting-Sektion
-2. Führe Demo-Script aus: `python `scripts&sol;demo_live_overrides.py` (planned)`
-3. Schaue in Tests für Code-Beispiele: `tests/test_live_overrides*.py`
+2. Führe Demo-Script aus: `python scripts&#47;demo_live_overrides.py`
+3. Schaue in Tests für Code-Beispiele: `tests&#47;test_live_overrides*.py`
 
 ---
 

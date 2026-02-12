@@ -277,41 +277,42 @@ In **< 5 Minuten** klären, ob ExecutionPipeline, Risk-Limits und Alerts „read
 
 | # | Check | Kommando / Aktion | Erwartung | Zeit |
 |---|-------|-------------------|-----------|------|
-| 1 | **Config & Secrets validieren** | `python scripts&#47;check_live_readiness.py` | `✅ All checks passed` | 30s |
+| 1 | **Config & Secrets validieren** | `python3 scripts&#47;check_live_readiness.py` | `✅ All checks passed` | 30s |
 | 2 | **Governance-Lock aktiv** | `grep "live_order_execution" src&#47;governance&#47;go_no_go.py` | `"locked"` | 10s |
-| 3 | **Execution-Tests grün** | `pytest -q tests&#47;test_execution_pipeline*.py` | Alle Tests `PASSED` | 60s |
-| 4 | **Testnet-/Shadow-Order-Simulation** | `python scripts&#47;smoke_test_testnet_stack.py` | `SUCCESS` Status | 60s |
-| 5 | **Risk-Limits geladen & valide** | `python -c "from risk import LiveRiskLimits; print(LiveRiskLimits.load())"` | Limits angezeigt, keine Errors | 15s |
+| 3 | **Execution-Tests grün** | `python3 -m pytest -q tests&#47;test_execution_pipeline*.py` | Alle Tests `PASSED` | 60s |
+| 4 | **Testnet-/Shadow-Order-Simulation** | `python3 scripts&#47;smoke_test_testnet_stack.py` | `SUCCESS` Status | 60s |
+| 5 | **Risk-Limits geladen & valide** | `python3 -c "from risk import LiveRiskLimits; print(LiveRiskLimits.load())"` | Limits angezeigt, keine Errors | 15s |
 | 6 | **Alert-Kanäle testen** | Slack/E-Mail-Testalert senden | Alert wird empfangen | 30s |
 | 7 | **Dashboard-Health** | Web-UI öffnen (`localhost:8000` oder Prod-URL) | UI lädt, Status-Page zeigt „OK" | 30s |
-| 8 | **Paper-Smoke-Test** | `python scripts&#47;smoke_test_paper.py` (illustrative) | `SUCCESS` Status | 30s |
+| 8 | **Paper-Smoke-Test** | `python3 scripts&#47;smoke_test_paper.py` (illustrative) | `SUCCESS` Status | 30s |
 
 ### 7.3 Ausführbare Kommandos
 
 ```bash
 # 1. Config & Secrets
-python scripts/check_live_readiness.py
+python3 scripts/check_live_readiness.py
 
 # 2. Governance-Lock prüfen
 grep -n "live_order_execution" src/governance/go_no_go.py
 
 # 3. Tests ausführen
-pytest -q tests/test_execution_pipeline*.py
+python3 -m pytest -q tests/test_execution_pipeline*.py
 
 # 4. Testnet-Simulation
-python scripts/smoke_test_testnet_stack.py
+python3 scripts/smoke_test_testnet_stack.py
 
 # 5. Risk-Limits prüfen
-python -c "from risk import LiveRiskLimits; print(LiveRiskLimits.load())"
+python3 -c "from risk import LiveRiskLimits; print(LiveRiskLimits.load())"
 
 # 6. Alert-Test (Beispiel für Slack)
-python -c "from alerts import send_test_alert; send_test_alert(channel='#peak-trade-alerts')"
+python3 -c "from alerts import send_test_alert; send_test_alert(channel='#peak-trade-alerts')"
 
 # 7. Dashboard-Health
 curl -s http://localhost:8000/health | jq .
 
 # 8. Paper-Smoke-Test
-# python scripts/smoke_test_paper.py
+# (Beispiel; aktuell kein dediziertes `smoke_test_paper.py` im Repo)
+# python3 scripts&#47;smoke_test_paper.py
 ```
 
 ### 7.4 Pre-Session-Protokoll
@@ -587,7 +588,7 @@ assert result.risk_violation_details is not None  # Details zur Violation
    cat config/config.toml | grep -A5 "\[execution\]"
 
    # Tests ausführen
-   pytest -v tests/test_execution_pipeline_governance.py
+   python3 -m pytest -v tests/test_execution_pipeline_governance.py
    ```
 
 5. **ROOT-CAUSE** – Mögliche Ursachen:
@@ -666,7 +667,7 @@ Bei Änderungen an:
 
 1. **Tests anpassen/erweitern:**
    ```bash
-   pytest -v tests/test_execution_pipeline*.py
+   python3 -m pytest -v tests/test_execution_pipeline*.py
    ```
 
 2. **Runbook aktualisieren:**
@@ -700,10 +701,10 @@ print(f"✅ Governance-Lock aktiv: {status}")
 
 ```bash
 # Schnell-Check (nur kritische Tests)
-pytest -q tests/test_execution_pipeline.py tests/test_execution_pipeline_governance.py
+python3 -m pytest -q tests/test_execution_pipeline.py tests/test_execution_pipeline_governance.py
 
 # Vollständig mit Coverage
-pytest -v --cov=src/execution tests/test_execution_pipeline*.py
+python3 -m pytest -v --cov=src/execution tests/test_execution_pipeline*.py
 ```
 
 ### 12.3 Notfall: Live sofort sperren

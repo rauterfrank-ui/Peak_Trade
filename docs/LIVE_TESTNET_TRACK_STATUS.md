@@ -192,25 +192,25 @@ Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~95%** –
   * Standard-Run mit Risk-Check:
 
     ```bash
-    python scripts/preview_live_portfolio.py --config config/config.toml
+    python3 scripts/preview_live_portfolio.py --config config/config.toml
     ```
 
   * Ohne Risk-Check:
 
     ```bash
-    python scripts/preview_live_portfolio.py --config config/config.toml --no-risk
+    python3 scripts/preview_live_portfolio.py --config config/config.toml --no-risk
     ```
 
   * JSON-Ausgabe:
 
     ```bash
-    python scripts/preview_live_portfolio.py --config config/config.toml --json
+    python3 scripts/preview_live_portfolio.py --config config/config.toml --json
     ```
 
   * Mit Custom Starting-Cash:
 
     ```bash
-    python scripts/preview_live_portfolio.py --config config/config.toml --starting-cash 20000.0
+    python3 scripts/preview_live_portfolio.py --config config/config.toml --starting-cash 20000.0
     ```
 
 * Tests:
@@ -328,7 +328,7 @@ Incident-Drills sind etabliert und werden regelmäßig durchgeführt, um Runbook
 
 **Live Status Reports (Phase 57):**
 
-Live-Status-Reports ermöglichen tägliche/wöchentliche Snapshots des Systemzustands (Health, Portfolio, Risk). Reports werden mit [`generate_live_status_report.py`](../scripts/generate_live_status_report.py) generiert und in `reports/live_status/` gespeichert. Siehe [`LIVE_STATUS_REPORTS.md`](LIVE_STATUS_REPORTS.md) für Details.
+Live-Status-Reports ermöglichen tägliche/wöchentliche Snapshots des Systemzustands (Health, Portfolio, Risk). Reports werden mit `scripts/generate_live_status_report.py` generiert und in `reports&#47;live_status&#47;` gespeichert. Siehe [`LIVE_STATUS_REPORTS.md`](LIVE_STATUS_REPORTS.md) für Details.
 
 ---
 

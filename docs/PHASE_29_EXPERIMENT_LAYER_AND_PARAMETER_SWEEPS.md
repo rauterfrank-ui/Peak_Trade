@@ -78,34 +78,34 @@ best = result.get_best_by_metric("sharpe_ratio", top_n=5)
 
 ```bash
 # Einfacher Sweep
-python scripts/run_experiment_sweep.py --strategy ma_crossover --granularity medium
+python3 scripts/run_experiment_sweep.py --strategy ma_crossover --granularity medium
 
 # Mit mehreren Symbolen und Zeitraum
-python scripts/run_experiment_sweep.py \
+python3 scripts/run_experiment_sweep.py \
     --strategy vol_breakout \
     --symbols BTC/EUR ETH/EUR \
     --start 2024-01-01 \
     --end 2024-06-01
 
 # Mit Regime-Detection
-python scripts/run_experiment_sweep.py \
+python3 scripts/run_experiment_sweep.py \
     --strategy vol_breakout \
     --with-regime \
     --detector volatility_breakout
 
 # Parallel ausführen
-python scripts/run_experiment_sweep.py \
+python3 scripts/run_experiment_sweep.py \
     --strategy ma_crossover \
     --parallel \
     --workers 4
 
 # Dry-Run (nur Parameter anzeigen)
-python scripts/run_experiment_sweep.py \
+python3 scripts/run_experiment_sweep.py \
     --strategy ma_crossover \
     --dry-run
 
 # Verfügbare Strategien
-python scripts/run_experiment_sweep.py --list-strategies
+python3 scripts/run_experiment_sweep.py --list-strategies
 ```
 
 ---
@@ -405,13 +405,13 @@ tests/
 
 ```bash
 # Alle Experiment-Tests
-pytest tests/test_experiments_*.py -v
+python3 -m pytest tests/test_experiments_*.py -v
 
 # Nur Base-Tests
-pytest tests/test_experiments_base.py -v
+python3 -m pytest tests/test_experiments_base.py -v
 
 # Nur Integration
-pytest tests/test_experiments_integration.py -v
+python3 -m pytest tests/test_experiments_integration.py -v
 ```
 
 **Test-Abdeckung:** 133 Tests

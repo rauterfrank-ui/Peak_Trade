@@ -28,12 +28,13 @@ Usage:
 
 from __future__ import annotations
 
+import itertools
+import json
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
-from os import PathLike
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
 import pandas as pd
 
@@ -65,7 +66,7 @@ class WalkForwardConfig:
         start_date: Startdatum für Walk-Forward (optional, wird aus Daten abgeleitet)
         end_date: Enddatum für Walk-Forward (optional, wird aus Daten abgeleitet)
         step_size: Schrittgröße zwischen Fenstern (default: test_window, d.h. keine Überlappung)
-        output_dir: Ausgabe-Verzeichnis für Walk-Forward-Ergebnisse (default: "results/walkforward")
+        output_dir: Ausgabe-Verzeichnis für Walk-Forward-Ergebnisse (default: "reports/walkforward")
     """
 
     train_window: str
@@ -77,7 +78,7 @@ class WalkForwardConfig:
     start_date: Optional[pd.Timestamp] = None
     end_date: Optional[pd.Timestamp] = None
     step_size: Optional[str] = None  # None = anchored mode (lückenlos)
-    output_dir: Path = field(default_factory=lambda: Path("results/walkforward"))
+    output_dir: Path = field(default_factory=lambda: Path("reports/walkforward"))
 
     def __post_init__(self) -> None:
         """Normalisiert Pfade und setzt Defaults."""
@@ -108,6 +109,10 @@ class WalkForwardWindowResult:
         test_result: BacktestResult für Testfenster
         metrics: Aggregierte Metriken (z.B. Sharpe, Return, Drawdown)
         result_path: Pfad zur gespeicherten Ergebnis-Datei (optional)
+        best_params: Ausgewählte Parameter aus Train-Optimierung (optional)
+        train_score: Score der besten Parameter auf Train (optional)
+        candidates_total: Anzahl Kandidaten in param_grid
+        candidates_skipped: Anzahl Kandidaten, die wegen Fehlern übersprungen wurden
     """
 
     window_index: int
@@ -119,6 +124,10 @@ class WalkForwardWindowResult:
     test_result: BacktestResult = field(default_factory=lambda: None)
     metrics: Dict[str, float] = field(default_factory=dict)
     result_path: Optional[Path] = None
+    best_params: Optional[Dict[str, Any]] = None
+    train_score: Optional[float] = None
+    candidates_total: int = 0
+    candidates_skipped: int = 0
 
 
 @dataclass
@@ -140,7 +149,104 @@ class WalkForwardResult:
     windows: List[WalkForwardWindowResult] = field(default_factory=list)
     aggregate_metrics: Dict[str, float] = field(default_factory=dict)
     config_params: Dict[str, Any] = field(default_factory=dict)
-    output_dir: Path = field(default_factory=lambda: Path("results/walkforward"))
+    output_dir: Path = field(default_factory=lambda: Path("reports/walkforward"))
+
+
+def _safe_filename(stem: str) -> str:
+    """Return a filesystem-safe stem (deterministic)."""
+    out: list[str] = []
+    for ch in str(stem):
+        if ch.isalnum() or ch in ("-", "_"):
+            out.append(ch)
+        else:
+            out.append("_")
+    s = "".join(out).strip("_")
+    return s or "walkforward"
+
+
+def _slice_time_range_end_exclusive(
+    df: pd.DataFrame, start: pd.Timestamp, end: pd.Timestamp
+) -> pd.DataFrame:
+    """
+    Slice a DatetimeIndex DataFrame as [start, end) (end exclusive).
+
+    Avoids pandas .loc inclusive end semantics to prevent leakage at boundaries.
+    """
+    if df.empty:
+        return df
+    if not isinstance(df.index, pd.DatetimeIndex):
+        raise ValueError("DataFrame muss einen DatetimeIndex haben")
+
+    if not df.index.is_monotonic_increasing:
+        df = df.sort_index()
+
+    idx = df.index
+    start_pos = int(idx.searchsorted(start, side="left"))
+    end_pos = int(idx.searchsorted(end, side="left"))
+    if end_pos < start_pos:
+        return df.iloc[0:0].copy()
+    return df.iloc[start_pos:end_pos].copy()
+
+
+def _expand_param_grid(
+    param_grid: Union[Mapping[str, Sequence[Any]], Sequence[Mapping[str, Any]]],
+) -> List[Dict[str, Any]]:
+    """
+    Expand param_grid into a deterministic list of param dicts.
+
+    Supported:
+    - dict[str, list[Any]]: expanded via cartesian product (keys sorted for determinism)
+    - list[dict[str, Any]]: used as-is (list order preserved)
+    """
+    if isinstance(param_grid, Mapping):
+        keys = sorted(param_grid.keys())
+        if len(keys) == 0:
+            raise ValueError("param_grid darf nicht leer sein")
+        values: list[list[Any]] = []
+        for k in keys:
+            v = list(param_grid[k])
+            if len(v) == 0:
+                raise ValueError(f"param_grid entry '{k}' darf nicht leer sein")
+            values.append(v)
+        out: list[dict[str, Any]] = []
+        for combo in itertools.product(*values):
+            out.append({k: combo[i] for i, k in enumerate(keys)})
+        return out
+
+    out2: list[dict[str, Any]] = []
+    for item in param_grid:
+        out2.append(dict(item))
+    return out2
+
+
+def _score_from_stats(stats: Mapping[str, Any], metric: str) -> float:
+    if not stats:
+        return 0.0
+    v = stats.get(metric, 0.0)
+    try:
+        return float(v)
+    except Exception as e:
+        raise ValueError(f"Optimization metric '{metric}' ist nicht numerisch: {v!r}") from e
+
+
+def _select_best_candidate(
+    candidates: list[tuple[int, float, float, float, dict[str, Any]]],
+) -> tuple[int, float, float, float, dict[str, Any]]:
+    """
+    Deterministic tie-break:
+    1) higher score
+    2) lower max_drawdown (closer to 0 is better; e.g. -0.10 beats -0.30)
+    3) higher total_return
+    4) first in grid order
+    """
+    if not candidates:
+        raise ValueError("Keine gültigen Kandidaten für Optimierung")
+
+    def key(x: tuple[int, float, float, float, dict[str, Any]]):
+        idx, score, max_dd, total_ret, _params = x
+        return (-score, -max_dd, -total_ret, idx)
+
+    return sorted(candidates, key=key)[0]
 
 
 # =============================================================================
@@ -254,6 +360,8 @@ def run_walkforward_for_config(
     strategy_name: Optional[str] = None,
     strategy_params: Optional[Dict[str, Any]] = None,
     strategy_signal_fn: Optional[Any] = None,
+    param_grid: Optional[Union[Mapping[str, Sequence[Any]], Sequence[Mapping[str, Any]]]] = None,
+    optimization_metric: str = "sharpe",
     logger: Optional[logging.Logger] = None,
 ) -> WalkForwardResult:
     """
@@ -312,6 +420,10 @@ def run_walkforward_for_config(
     if not isinstance(df.index, pd.DatetimeIndex):
         raise ValueError("DataFrame muss einen DatetimeIndex haben")
 
+    # Stable ordering for deterministic slicing.
+    if not df.index.is_monotonic_increasing:
+        df = df.sort_index()
+
     # 2. Strategie-Parameter und Signal-Funktion laden
     if strategy_params is None:
         if strategy_name is None:
@@ -343,8 +455,8 @@ def run_walkforward_for_config(
     if wf_config.start_date is not None and wf_config.end_date is not None:
         start = pd.Timestamp(wf_config.start_date)
         end = pd.Timestamp(wf_config.end_date)
-        # Filtere DataFrame auf Zeitraum
-        df = df.loc[start:end].copy()
+        # Filtere DataFrame auf Zeitraum (end exklusiv, um Grenzfälle konsistent zu halten)
+        df = _slice_time_range_end_exclusive(df, start, end)
         if df.empty:
             raise ValueError(f"Keine Daten im Zeitraum {start} bis {end}")
     else:
@@ -366,6 +478,13 @@ def run_walkforward_for_config(
 
     # 6. Für jedes Fenster: Backtest durchführen
     window_results: List[WalkForwardWindowResult] = []
+    optimization_artifacts: list[dict[str, Any]] = []
+
+    grid_candidates: Optional[List[Dict[str, Any]]] = None
+    if param_grid is not None:
+        grid_candidates = _expand_param_grid(param_grid)
+        if len(grid_candidates) == 0:
+            raise ValueError("param_grid darf nicht leer sein")
 
     for window_idx, (train_start, train_end, test_start, test_end) in enumerate(windows):
         logger.info(
@@ -374,34 +493,80 @@ def run_walkforward_for_config(
             f"Test {test_start.date()} - {test_end.date()}"
         )
 
-        # Train-Daten extrahieren (optional, für spätere Parameter-Optimierung)
-        train_df = df.loc[train_start:train_end].copy()
+        # Train-Daten extrahieren: [train_start, train_end) (end exklusiv) => kein Leakage
+        train_df = _slice_time_range_end_exclusive(df, train_start, train_end)
         if train_df.empty:
             logger.warning(f"Train-Daten leer für Fenster {window_idx}, überspringe")
             continue
 
-        # Test-Daten extrahieren
-        test_df = df.loc[test_start:test_end].copy()
+        # Test-Daten extrahieren: [test_start, test_end) (end exklusiv)
+        test_df = _slice_time_range_end_exclusive(df, test_start, test_end)
         if test_df.empty:
             logger.warning(f"Test-Daten leer für Fenster {window_idx}, überspringe")
             continue
 
-        # Train-Backtest (optional, aktuell nicht verwendet, aber für spätere Optimierung)
+        # Train-Optimierung (v1): Grid Search auf Train, wähle best_params, dann OOS-Test
         train_result: Optional[BacktestResult] = None
-        # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Walk-Forward: Parameter-Optimierung")
-        # train_result = engine.run_realistic(
-        #     df=train_df,
-        #     strategy_signal_fn=strategy_signal_fn,
-        #     strategy_params=strategy_params,
-        #     symbol=wf_config.symbol,
-        # )
+        best_params: Optional[Dict[str, Any]] = None
+        best_score: Optional[float] = None
+        candidates_total = 0
+        candidates_skipped = 0
+
+        if grid_candidates is not None:
+            candidates_total = len(grid_candidates)
+            valid: list[tuple[int, float, float, float, dict[str, Any]]] = []
+
+            for cand_idx, cand in enumerate(grid_candidates):
+                cand_params = dict(strategy_params or {})
+                cand_params.update(cand)
+                try:
+                    cand_train = engine.run_realistic(
+                        df=train_df,
+                        strategy_signal_fn=strategy_signal_fn,
+                        strategy_params=cand_params,
+                        symbol=wf_config.symbol,
+                    )
+                except Exception as e:
+                    candidates_skipped += 1
+                    logger.warning(
+                        f"Optimierung: skip params (window={window_idx}, idx={cand_idx}): {e}"
+                    )
+                    continue
+
+                stats = cand_train.stats or {}
+                score = _score_from_stats(stats, optimization_metric)
+                max_dd = float(stats.get("max_drawdown", 0.0))
+                total_ret = float(stats.get("total_return", 0.0))
+                valid.append((cand_idx, score, max_dd, total_ret, cand_params))
+
+            if not valid:
+                raise ValueError(
+                    f"Keine gültigen Parameter-Kandidaten in param_grid (window={window_idx}). "
+                    "Prüfe param_grid oder Strategie-Constraints."
+                )
+
+            cand_idx, score, max_dd, total_ret, best_params = _select_best_candidate(valid)
+            best_score = float(score)
+
+            # Optional: keep the best train result for diagnostics
+            train_result = engine.run_realistic(
+                df=train_df,
+                strategy_signal_fn=strategy_signal_fn,
+                strategy_params=best_params,
+                symbol=wf_config.symbol,
+            )
+
+            logger.info(
+                f"Optimierung: best_params (window={window_idx}) score={best_score:.4f} "
+                f"max_dd={max_dd:.4f} total_return={total_ret:.4f} (idx={cand_idx})"
+            )
 
         # Test-Backtest (Haupt-Backtest für Out-of-Sample-Validierung)
         try:
             test_result = engine.run_realistic(
                 df=test_df,
                 strategy_signal_fn=strategy_signal_fn,
-                strategy_params=strategy_params,
+                strategy_params=best_params or strategy_params,
                 symbol=wf_config.symbol,
             )
         except Exception as e:
@@ -421,6 +586,10 @@ def run_walkforward_for_config(
             train_result=train_result,
             test_result=test_result,
             metrics=metrics,
+            best_params=best_params,
+            train_score=best_score,
+            candidates_total=candidates_total,
+            candidates_skipped=candidates_skipped,
         )
 
         window_results.append(window_result)
@@ -433,6 +602,22 @@ def run_walkforward_for_config(
             f"  → Sharpe: {sharpe:.2f}, Return: {total_return:.2%}, "
             f"MaxDD: {max_drawdown:.2%}, Trades: {metrics.get('total_trades', 0)}"
         )
+
+        if grid_candidates is not None:
+            optimization_artifacts.append(
+                {
+                    "window_index": window_idx,
+                    "train_start": str(train_start),
+                    "train_end": str(train_end),
+                    "test_start": str(test_start),
+                    "test_end": str(test_end),
+                    "metric": optimization_metric,
+                    "best_score": best_score,
+                    "best_params": best_params,
+                    "candidates_total": candidates_total,
+                    "candidates_skipped": candidates_skipped,
+                }
+            )
 
     if len(window_results) == 0:
         raise ValueError("Keine gültigen Fenster-Ergebnisse erzeugt")
@@ -449,6 +634,22 @@ def run_walkforward_for_config(
         config_params=strategy_params,
         output_dir=wf_config.output_dir,
     )
+
+    # Artifacts (v1): only when optimization is enabled (param_grid provided).
+    if grid_candidates is not None:
+        out_dir = Path(wf_config.output_dir)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        artifact_path = out_dir / f"{_safe_filename(config_id)}_walkforward_optimization.json"
+        payload = {
+            "config_id": config_id,
+            "strategy_name": strategy_name or "unknown",
+            "metric": optimization_metric,
+            "windows": optimization_artifacts,
+        }
+        artifact_path.write_text(
+            json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        logger.info(f"Walk-forward optimization artifacts written: {artifact_path}")
 
     logger.info(
         f"Walk-Forward-Analyse abgeschlossen: {len(window_results)} Fenster, "

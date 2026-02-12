@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "peak_trade.execution_event.v1",
+  "title": "ExecutionEvent v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schema_version", "ts", "event_type", "run_id"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "execution_event.v1" },
+    "ts": { "type": "number", "minimum": 0 },
+    "event_type": { "type": "string", "minLength": 1 },
+    "run_id": { "type": "string", "minLength": 1 },
+    "component": { "type": "string" },
+    "order_id": { "type": ["string", "null"] },
+    "idempotency_key": { "type": ["string", "null"] },
+    "exchange_order_id": { "type": ["string", "null"] },
+    "symbol": { "type": ["string", "null"] },
+    "side": { "type": ["string", "null"], "enum": ["buy", "sell", null] },
+    "qty": { "type": ["number", "null"] },
+    "price": { "type": ["number", "null"] },
+    "status": { "type": ["string", "null"] },
+    "reason": { "type": ["string", "null"] },
+    "extra": { "type": ["object", "null"] }
+  }
+}

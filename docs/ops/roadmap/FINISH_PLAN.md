@@ -76,19 +76,19 @@ bash scripts/ops/pt_docs_gates_snapshot.sh --changed
 2) **Minimaler Backtest (offline)**:
 
 ```bash
-python scripts/run_backtest.py --strategy ma_crossover --symbol BTC/EUR --bars 100 -v
+python3 scripts/run_backtest.py --strategy ma_crossover --symbol BTC/EUR --bars 100 -v
 ```
 
 3) **Minimaler Portfolio-Backtest (offline)**:
 
 ```bash
-python scripts/run_portfolio_backtest.py
+python3 scripts/run_portfolio_backtest.py
 ```
 
 4) **Minimaler Test-Snapshot** (falls du nur schnell einen “green signal” willst):
 
 ```bash
-uv run pytest -q
+python3 -m pytest -q
 ```
 
 ### Operator Evidence Block (MVP)
@@ -97,9 +97,9 @@ uv run pytest -q
 Finish Level A (MVP) — Evidence (Snapshot-only)
 NO-LIVE: YES
 Docs Gates Snapshot: bash scripts/ops/pt_docs_gates_snapshot.sh --changed → <PASS/FAIL>
-Backtest Smoke: python scripts/run_backtest.py --strategy ma_crossover --symbol BTC/EUR --bars 100 -v → exit=<0/!0>
-Portfolio Smoke: python scripts/run_portfolio_backtest.py → exit=<0/!0>
-Tests: uv run pytest -q → <summary>
+Backtest Smoke: python3 scripts/run_backtest.py --strategy ma_crossover --symbol BTC/EUR --bars 100 -v → exit=<0/!0>
+Portfolio Smoke: python3 scripts/run_portfolio_backtest.py → exit=<0/!0>
+Tests: python3 -m pytest -q → <summary>
 Notes: <max 2 lines>
 Risk: LOW
 ```
@@ -144,15 +144,15 @@ bash scripts/ops/pt_docs_gates_snapshot.sh --changed
 2) **Targeted tests (ExecutionPipeline + Ledger)**:
 
 ```bash
-uv run pytest -q tests/execution/test_wp0d_reject_produces_no_ledger_entry.py
-uv run pytest -q tests/execution/test_wp0d_event_to_ledger_fill_maps_to_trade.py
-uv run pytest -q tests/ai_orchestration/test_trend_ledger_from_seed.py
+python3 -m pytest -q tests/execution/test_wp0d_reject_produces_no_ledger_entry.py
+python3 -m pytest -q tests/execution/test_wp0d_event_to_ledger_fill_maps_to_trade.py
+python3 -m pytest -q tests/ai_orchestration/test_trend_ledger_from_seed.py
 ```
 
 3) **Optional: Pipeline demo (offline/paper)**:
 
 ```bash
-python scripts/demo_order_pipeline_backtest.py --help
+python3 scripts/demo_order_pipeline_backtest.py --help
 ```
 
 ### Operator Evidence Block (Beta)
@@ -162,9 +162,9 @@ Finish Level B (Beta) — Evidence (Snapshot-only)
 NO-LIVE: YES (paper/sim only)
 Docs Gates Snapshot: bash scripts/ops/pt_docs_gates_snapshot.sh --changed → <PASS/FAIL>
 Tests (pipeline/ledger):
- - uv run pytest -q tests/execution/test_wp0d_reject_produces_no_ledger_entry.py → <PASS/FAIL>
- - uv run pytest -q tests/execution/test_wp0d_event_to_ledger_fill_maps_to_trade.py → <PASS/FAIL>
- - uv run pytest -q tests/ai_orchestration/test_trend_ledger_from_seed.py → <PASS/FAIL>
+ - python3 -m pytest -q tests/execution/test_wp0d_reject_produces_no_ledger_entry.py → <PASS/FAIL>
+ - python3 -m pytest -q tests/execution/test_wp0d_event_to_ledger_fill_maps_to_trade.py → <PASS/FAIL>
+ - python3 -m pytest -q tests/ai_orchestration/test_trend_ledger_from_seed.py → <PASS/FAIL>
 Notes: <max 2 lines>
 Risk: MED (execution-adjacent, still NO-LIVE)
 ```
@@ -207,13 +207,13 @@ bash scripts/ops/pt_docs_gates_snapshot.sh --changed
 2) **Paper broker test (snapshot)**:
 
 ```bash
-uv run pytest -q tests/execution/test_paper_broker.py
+python3 -m pytest -q tests/execution/test_paper_broker.py
 ```
 
 3) **Kill switch drill (snapshot)**:
 
 ```bash
-uv run python scripts/ops/drill_kill_switch.py --help
+python3 scripts/ops/drill_kill_switch.py --help
 ```
 
 ### Operator Evidence Block (v1.0)
@@ -222,8 +222,8 @@ uv run python scripts/ops/drill_kill_switch.py --help
 Finish Level C (v1.0) — Evidence (Snapshot-only)
 NO-LIVE: YES (this verify is local-only)
 Docs Gates Snapshot: bash scripts/ops/pt_docs_gates_snapshot.sh --changed → <PASS/FAIL>
-Paper Broker Test: uv run pytest -q tests/execution/test_paper_broker.py → <PASS/FAIL>
-Kill Switch Drill: uv run python scripts/ops/drill_kill_switch.py --help → <exit>
+Paper Broker Test: python3 -m pytest -q tests/execution/test_paper_broker.py → <PASS/FAIL>
+Kill Switch Drill: python3 scripts/ops/drill_kill_switch.py --help → <exit>
 Notes: <max 2 lines>
 Risk: HIGH (broker/live-ops domain; execution-adjacent)
 ```

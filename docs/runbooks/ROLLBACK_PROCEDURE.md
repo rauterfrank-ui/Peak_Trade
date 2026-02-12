@@ -54,14 +54,14 @@
 
 **Command:**
 ```bash
-python -m src.risk_layer.kill_switch.cli trigger \
+python3 -m src.risk_layer.kill_switch.cli trigger \
   --reason "Rollback to shadow mode - [DESCRIBE REASON]" \
   --triggered-by "operator_name"
 ```
 
 **Verify:**
 ```bash
-python -m src.risk_layer.kill_switch.cli status
+python3 -m src.risk_layer.kill_switch.cli status
 ```
 
 Expected: State = KILLED
@@ -74,7 +74,7 @@ Expected: State = KILLED
 
 **Command:**
 ```bash
-python scripts/live/show_positions.py
+python3 scripts/live/show_positions.py
 ```
 
 **Document:**
@@ -88,7 +88,7 @@ python scripts/live/show_positions.py
 
 **Option A: Automated (Recommended if possible)**
 ```bash
-python scripts/live/close_all_positions.py \
+python3 scripts/live/close_all_positions.py \
   --reason "Rollback to shadow" \
   --confirm
 ```
@@ -101,7 +101,7 @@ python scripts/live/close_all_positions.py \
 
 **Verify:**
 ```bash
-python scripts/live/show_positions.py
+python3 scripts/live/show_positions.py
 ```
 
 Expected: No open positions
@@ -125,7 +125,7 @@ live_dry_run_mode = true           # Gate 3: ENABLED (dry-run)
 
 **Or use script:**
 ```bash
-python scripts/ops/disable_live_trading.py --confirm
+python3 scripts/ops/disable_live_trading.py --confirm
 ```
 
 **⏱ Checkpoint:** Gates disabled (~1 minute)
@@ -145,7 +145,7 @@ enabled = true
 
 **Verify configuration:**
 ```bash
-python scripts/live/verify_shadow_mode.py
+python3 scripts/live_ops.py health --config config/config.toml --json
 ```
 
 Expected:
@@ -164,11 +164,7 @@ Expected:
 
 **Start test session:**
 ```bash
-python scripts/live/start_shadow_session.py \
-  --strategy ma_crossover \
-  --symbol BTC-EUR \
-  --timeframe 1m \
-  --duration 5m
+python3 scripts/run_live_dry_run_drills.py
 ```
 
 **Expected:**
@@ -185,7 +181,7 @@ python scripts/live/start_shadow_session.py \
 
 **Attempt to enable live trading (should fail or be blocked):**
 ```bash
-python scripts/live/verify_live_gates.py
+python3 scripts/run_live_dry_run_drills.py --format json
 ```
 
 Expected:
@@ -205,7 +201,7 @@ Expected:
 **Create rollback report:**
 ```bash
 # Generate report
-python scripts/ops/generate_rollback_report.py \
+python3 scripts/ops/generate_rollback_report.py \
   --reason "[DESCRIBE REASON]" \
   --output docs/ops/incidents/rollback_$(date +%Y%m%d_%H%M%S).md
 ```
@@ -337,22 +333,23 @@ Minimum waiting period: 24 hours in shadow mode
 
 ```bash
 # 1. Trigger kill switch
-python -m src.risk_layer.kill_switch.cli trigger --reason "Rollback"
+python3 -m src.risk_layer.kill_switch.cli trigger --reason "Rollback"
 
 # 2. Check positions
-python scripts/live/show_positions.py
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
 
 # 3. Close all positions
-python scripts/live/close_all_positions.py --confirm
+# (manuell am Broker/Exchange) und danach erneut Snapshot prüfen:
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
 
 # 4. Disable live trading
-python scripts/ops/disable_live_trading.py --confirm
+python3 scripts/ops/disable_live_trading.py --confirm
 
 # 5. Verify shadow mode
-python scripts/live/verify_shadow_mode.py
+python3 scripts/live_ops.py health --config config/config.toml --json
 
 # 6. Start shadow session (test)
-python scripts/live/start_shadow_session.py --duration 5m
+python3 scripts/run_live_dry_run_drills.py
 ```
 
 ---

@@ -136,7 +136,7 @@ grep -E "def (evaluate_order|check_kill_switch|evaluate_position_change)" src/ex
 
 **Verification:**
 ```bash
-uv run pytest tests/execution/test_contracts_types.py::test_snapshot_deterministic -v
+python3 -m pytest tests/execution/test_contracts_types.py::test_snapshot_deterministic -v
 ```
 
 #### ✅ AC4: No cyclic imports
@@ -158,7 +158,7 @@ src/risk_layer/*.py (imports from contracts only, NOT from execution)
 
 **Verification:**
 ```bash
-uv run pytest tests/execution/test_contracts_risk_hook.py::test_no_cyclic_imports -v
+python3 -m pytest tests/execution/test_contracts_risk_hook.py::test_no_cyclic_imports -v
 ```
 
 #### ✅ AC5: Enums defined
@@ -269,7 +269,7 @@ tests/execution/test_contracts_risk_hook.py (24 tests):
 
 **Test Execution:**
 ```bash
-uv run pytest tests/execution/test_contracts_types.py tests/execution/test_contracts_risk_hook.py -v
+python3 -m pytest tests/execution/test_contracts_types.py tests/execution/test_contracts_risk_hook.py -v
 ```
 
 **Result:** ✅ 49 passed in 0.10s
@@ -335,7 +335,7 @@ Invalid orders are correctly rejected with clear error messages.
 
 **Command:**
 ```bash
-uv run ruff check src/execution/contracts.py src/execution/risk_hook.py
+ruff check src/execution/contracts.py src/execution/risk_hook.py
 ```
 
 **Result:** ✅ All checks passed! (0 errors)
@@ -344,7 +344,7 @@ uv run ruff check src/execution/contracts.py src/execution/risk_hook.py
 
 **Command:**
 ```bash
-uv run pytest tests/execution/test_contracts_types.py tests/execution/test_contracts_risk_hook.py -v
+python3 -m pytest tests/execution/test_contracts_types.py tests/execution/test_contracts_risk_hook.py -v
 ```
 
 **Result:** ✅ 49 passed in 0.10s
@@ -359,7 +359,7 @@ uv run pytest tests/execution/test_contracts_types.py tests/execution/test_contr
 ### Expected CI Gates
 
 - ✅ `ruff check` — PASS
-- ✅ `pytest` — PASS (49/49)
+- ✅ `python3 -m pytest` — PASS (49/49)
 - ⏳ `docs-reference-targets-gate` — Expected PASS (no new doc links)
 - ⏳ `policy-critic-gate` — Expected PASS (no live-enablement violations)
 

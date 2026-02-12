@@ -1,6 +1,6 @@
 # AI Model Registry for Peak_Trade
 # Purpose: Authoritative registry of AI models used across all layers
-# Reference: docs/architecture/ai_autonomy_layer_map_v1.md
+# Reference: docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
 
 [registry]
 version = "1.0"

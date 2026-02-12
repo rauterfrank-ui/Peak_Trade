@@ -204,10 +204,10 @@ stop_pct = 0.02
 
 ```bash
 # Mit default config
-python scripts/run_simple_backtest.py
+python3 scripts/run_simple_backtest.py
 
 # Mit custom config
-PEAK_TRADE_CONFIG=my_config.toml python scripts/run_simple_backtest.py
+PEAK_TRADE_CONFIG=my_config.toml python3 scripts/run_simple_backtest.py
 ```
 
 ### Was macht das Script?

@@ -9,7 +9,7 @@ scripts/obs/
 ├── stage1_trend_report.py         ← Trend-Analyse über N Tage
 └── run_stage1_monitoring.sh       ← Convenience Wrapper (täglich ausführen)
 
-reports/obs/stage1/
+reports&#47;obs&#47;stage1&#47;
 ├── 2025-12-20_snapshot.md         ← Daily Snapshots (automatisch erstellt)
 ├── 2025-12-21_snapshot.md
 └── ...
@@ -30,6 +30,45 @@ python3 scripts/obs/stage1_daily_snapshot.py
 python3 scripts/obs/stage1_trend_report.py
 ```
 
+## Stage1 report index (deterministic)
+After Stage1 runs, a deterministic index is generated:
+- Path: `reports&#47;stage1&#47;index.json`
+- Schema: `stage1_index.v1`
+- Purpose: stable discovery for WebUI/ops; includes sha256 + size for artifacts.
+
+You can regenerate manually:
+`python3 scripts/obs/stage1_report_index.py --root reports/obs/stage1 --out reports/obs/stage1/index.json --run-date YYYY-MM-DD` <!-- pt:ref-target-ignore -->
+
+## Stage1 validation (fail-fast)
+After index generation, Stage1 runners validate artifacts and write:
+- `reports&#47;obs&#47;stage1&#47;validation.json` (schema: `stage1_validation.v1`)
+
+Manual run:
+`python3 scripts/obs/validate_stage1_index.py --root reports/obs/stage1 --index reports/obs/stage1/index.json --out reports/obs/stage1/validation.json --require data.json --require report.md` <!-- pt:ref-target-ignore -->
+
+---
+
+## Grafana Verify v2 (operator-grade)
+
+Für Grafana/Prometheus-local Smoke + Dashpack-Integrity:
+
+```bash
+# Start (Grafana-only + Prometheus-local)
+bash scripts/obs/grafana_local_up.sh
+
+# Verify (evidenzfähig; schreibt Timestamp-Artifacts)
+bash scripts/obs/grafana_verify_v2.sh
+```
+
+### Dashpack Verify v2 (hermetic-first)
+
+Script: `scripts/obs/grafana_dashpack_local_verify_v2.sh`
+
+- Default: Hermetic JSON-only Checks laufen immer; Grafana API Checks nur wenn Grafana erreichbar ist.
+- Hermetic mode (no API): `--hermetic` (Alias: `--no-api`)
+  - JSON-only; keine Grafana API/Creds, kein curl erforderlich.
+- Artifacts: `docs&#47;ops&#47;evidence&#47;assets&#47;EV_GRAFANA_DASHPACK_VERIFY_V2_<timestamp>` (oder per `VERIFY_OUT_DIR`).
+
 ---
 
 ## 📊 Script 1: Daily Snapshot
@@ -45,7 +84,7 @@ python3 scripts/obs/stage1_daily_snapshot.py
 # Mit custom Optionen
 python3 scripts/obs/stage1_daily_snapshot.py \
   --repo ~/Peak_Trade \
-  --out-dir reports/obs/stage1 \
+  --out-dir reports&#47;obs&#47;stage1 \
   --max-files 10 \
   --max-depth 12
 ```
@@ -55,7 +94,7 @@ python3 scripts/obs/stage1_daily_snapshot.py \
 | Option | Default | Beschreibung |
 |--------|---------|--------------|
 | `--repo` | `.` | Repo root (Ausgangspunkt für Dateisuche) |
-| `--out-dir` | `reports/obs/stage1` | Output-Verzeichnis für Reports |
+| `--out-dir` | `reports&#47;obs&#47;stage1` | Output-Verzeichnis für Reports |
 | `--max-depth` | `10` | Maximale Suchtiefe für JSONL-Dateien |
 | `--max-files` | `8` | Parse nur die N neuesten Dateien |
 | `--legacy-regex` | `(legacy\|risk[_ -]?limit...)` | Regex für Legacy-Detection |
@@ -68,7 +107,7 @@ python3 scripts/obs/stage1_daily_snapshot.py \
 
 ### Output
 
-Erstellt `reports/obs/stage1/YYYY-MM-DD_snapshot.md` mit:
+Erstellt `reports&#47;obs&#47;stage1&#47;YYYY-MM-DD_snapshot.md` mit:
 - Candidate JSONL files (Top 8, neueste zuerst)
 - Summary (Zeilen, Timestamps, Legacy-Hits)
 - Last 24h breakdown (Severity, Event Types, Rules)
@@ -91,14 +130,14 @@ python3 scripts/obs/stage1_trend_report.py
 python3 scripts/obs/stage1_trend_report.py --days 7
 
 # Custom Snapshot-Directory
-python3 scripts/obs/stage1_trend_report.py --dir reports/obs/stage1
+python3 scripts/obs/stage1_trend_report.py --dir reports&#47;obs&#47;stage1
 ```
 
 ### Optionen
 
 | Option | Default | Beschreibung |
 |--------|---------|--------------|
-| `--dir` | `reports/obs/stage1` | Snapshot-Verzeichnis |
+| `--dir` | `reports&#47;obs&#47;stage1` | Snapshot-Verzeichnis |
 | `--days` | `14` | Anzahl der letzten Tage (max) |
 
 ### Output
@@ -129,7 +168,7 @@ crontab -e
 
 ### Alternative: GitHub Actions
 
-Siehe `.github/workflows/stage1_monitoring.yml` (falls vorhanden).
+Siehe `.github&#47;workflows&#47;stage1_monitoring.yml` (falls vorhanden).
 
 ---
 
@@ -168,8 +207,8 @@ Siehe `.github/workflows/stage1_monitoring.yml` (falls vorhanden).
 **Symptom:** New-alerts heuristic = 0, aber viele CRITICAL/WARN
 
 **Erklärung:**
-- Legacy-System (`live_runs/alerts/`) ist ein **separates System**
-- Neues System (`data/telemetry/alerts/`) emitted nur bei tatsächlichen Issues
+- Legacy-System (`live_runs&#47;alerts&#47;`) ist ein **separates System**
+- Neues System (`data&#47;telemetry&#47;alerts&#47;`) emitted nur bei tatsächlichen Issues
 - **Erwartetes Verhalten** für healthy Stage 1 ✅
 
 ### Problem: Parse errors

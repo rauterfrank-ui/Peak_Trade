@@ -23,7 +23,7 @@ Live-Status-Reports bieten einen **strukturierten Snapshot** des aktuellen Zusta
 
 **Daily-Report (Markdown only):**
 ```bash
-python scripts/generate_live_status_report.py \
+python3 scripts/generate_live_status_report.py \
   --config config/config.toml \
   --output-dir reports/live_status \
   --format markdown \
@@ -32,7 +32,7 @@ python scripts/generate_live_status_report.py \
 
 **Weekly-Report (Markdown + HTML):**
 ```bash
-python scripts/generate_live_status_report.py \
+python3 scripts/generate_live_status_report.py \
   --config config/config.toml \
   --output-dir reports/live_status \
   --format both \
@@ -41,7 +41,7 @@ python scripts/generate_live_status_report.py \
 
 **Report mit Operator-Notizen:**
 ```bash
-python scripts/generate_live_status_report.py \
+python3 scripts/generate_live_status_report.py \
   --config config/config.toml \
   --output-dir reports&#47;live_status \
   --format markdown \
@@ -144,8 +144,8 @@ Regelmäßige Status-Reports sind Teil der operativen Governance:
 ### 5.1 Datenquelle
 
 Reports basieren auf:
-- `python scripts/live_ops.py health --json`
-- `python scripts/live_ops.py portfolio --json`
+- `python3 scripts&#47;live_ops.py health --json`
+- `python3 scripts&#47;live_ops.py portfolio --json`
 
 Die JSON-Ausgaben werden geparst und in Markdown/HTML formatiert.
 

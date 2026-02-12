@@ -42,7 +42,7 @@
 
 ### Tests
 ```bash
-pytest tests/core/test_tracking.py -v
+python3 -m pytest tests/test_tracking_noop.py -v
 ```
 **Result**: ✅ **4 passed, 1 skipped in 0.04s**
 

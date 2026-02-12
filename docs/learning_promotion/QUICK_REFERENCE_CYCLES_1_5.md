@@ -8,10 +8,10 @@
 
 ```bash
 # 1. Neue Demo-Patches generieren (empfohlen)
-python scripts/generate_demo_patches_for_promotion.py
+python3 scripts/generate_demo_patches_for_promotion.py
 
 # 2. Cycle starten
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 
 # 3. Reports prüfen
 ls -lh reports/live_promotion/
@@ -145,7 +145,7 @@ grep "mode =" config/promotion_loop_config.toml
 ls -lh reports/learning_snippets/demo_patches_for_promotion.json
 
 # 3. Logs prüfen
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only 2>&1 | tee cycle_log.txt
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only 2>&1 | tee cycle_log.txt
 ```
 
 **Problem:** Keine neuen Empfehlungen
@@ -173,7 +173,7 @@ python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only 2>&
 
 ```bash
 # Neuen Cycle starten
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 
 # Reports auflisten
 ls -lth reports/live_promotion/ | head -5

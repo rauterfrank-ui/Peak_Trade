@@ -47,7 +47,7 @@ DOCS_PR=123 FEAT_PR=124 ./scripts/ops/merge_both_prs.sh
 ```
 
 **Warum DRY_RUN?**
-- ✅ Testet alle Fail-Fast-Checks (state, draft, base, mergeable, reviewDecision)
+- ✅ Testet alle Fail-Fast-Checks (state, draft, base, mergeable, approval gate)
 - ✅ Kein Merge, keine Git-State-Changes
 - ✅ Safe-by-default Testing vor echtem Merge
 

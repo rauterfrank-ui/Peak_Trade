@@ -1,0 +1,52 @@
+name: MCP Smoke Preflight (signal-only)
+
+on:
+  pull_request:
+    paths:
+      - ".cursor/**"
+      - "scripts/ops/mcp_*"
+      - "docs/ops/runbooks/RUNBOOK_MCP_TOOLING.md"
+      - ".github/workflows/mcp_smoke_preflight.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - ".cursor/**"
+      - "scripts/ops/mcp_*"
+      - "docs/ops/runbooks/RUNBOOK_MCP_TOOLING.md"
+      - ".github/workflows/mcp_smoke_preflight.yml"
+  workflow_dispatch: {}
+
+jobs:
+  mcp-smoke-preflight:
+    name: MCP Smoke Preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck || true
+
+      - name: ShellCheck (best-effort)
+        run: |
+          if command -v shellcheck >/dev/null 2>&1; then
+            shellcheck scripts/ops/mcp_smoke_preflight.sh
+          else
+            echo "shellcheck not available; skipping"
+          fi
+
+      - name: Run MCP preflight (signal-only)
+        run: |
+          bash scripts/ops/mcp_smoke_preflight.sh || {
+            rc=$?
+            echo "::error::mcp_smoke_preflight failed (exit $rc)"
+            exit "$rc"
+          }

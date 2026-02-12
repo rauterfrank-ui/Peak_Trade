@@ -152,7 +152,7 @@ Implemented the core execution system components for order lifecycle management.
 
 ### Linter
 ```bash
-uv run ruff check src/execution/order_state_machine.py \
+ruff check src/execution/order_state_machine.py \
                    src/execution/order_ledger.py \
                    src/execution/position_ledger.py \
                    src/execution/audit_log.py \
@@ -163,7 +163,7 @@ uv run ruff check src/execution/order_state_machine.py \
 
 ### Tests
 ```bash
-uv run pytest tests/execution/test_wp0a_smoke.py -v
+python3 -m pytest tests/execution/test_wp0a_smoke.py -v
 ```
 
 **Result:** ✅ 12/12 passed in 0.07s

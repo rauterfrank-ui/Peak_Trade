@@ -21,7 +21,7 @@ Verwendung:
     python scripts/infostream_run_cycle.py --skip-ai
 
 Environment-Variablen:
-    OPENAI_API_KEY:      API-Key für OpenAI (erforderlich für KI-Auswertung)
+    OPENAI_API_KEY:      API-Key für OpenAI-API (erforderlich für KI-Auswertung)
     INFOSTREAM_MODEL:    Modellname (default: gpt-4o-mini)
     INFOSTREAM_SKIP_AI:  Wenn "true", wird keine KI-Auswertung durchgeführt
 

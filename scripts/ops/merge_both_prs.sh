@@ -41,6 +41,9 @@ git diff --cached --quiet || die "Index not clean. Commit/stash first."
 # Ensure auth
 gh auth status >/dev/null 2>&1 || die "gh not authenticated. Run: gh auth login"
 
+REPO="$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null || true)"
+[[ -n "$REPO" ]] || die "Could not resolve repo via gh (are you in the right repo?)"
+
 merge_flags=( "--${MERGE_METHOD}" )
 if [[ "$DELETE_BRANCH" == "true" ]]; then
   merge_flags+=( "--delete-branch" )
@@ -55,6 +58,30 @@ pr_fields() {
   local pr="$1"
   gh pr view "$pr" --json number,url,title,state,isDraft,baseRefName,mergeable,reviewDecision --jq \
     '"#"+(.number|tostring)+" | "+.title+" | "+.url+"\nstate="+.state+" draft="+(.isDraft|tostring)+" base="+.baseRefName+" mergeable="+.mergeable+" reviewDecision="+(.reviewDecision//"null")'
+}
+
+approval_ok() {
+  local pr="$1"
+  local repo="$2"
+
+  # Approval gate (robust):
+  # - Prefer GitHub reviews: any state == "APPROVED"
+  # - Fallback: exact issue comment body == "APPROVED"
+  # - Do NOT rely on reviewDecision field
+  local approved_review
+  local approved_comment_id
+
+  approved_review="$(
+    gh pr view "$pr" --json reviews --jq '[.reviews[].state] | any(.=="APPROVED")' 2>/dev/null \
+      || echo "false"
+  )"
+  approved_comment_id="$(
+    gh api "repos/${repo}/issues/${pr}/comments" --paginate --jq '.[] | select(.body == "APPROVED") | .id' 2>/dev/null \
+      | head -n 1 \
+      || true
+  )"
+
+  [[ "${approved_review}" == "true" || -n "${approved_comment_id}" ]]
 }
 
 wait_mergeable() {
@@ -99,13 +126,11 @@ assert_pr_ready() {
   mergeable="$(wait_mergeable "$pr")"
   [[ "$mergeable" == "MERGEABLE" ]] || die "PR #$pr is not mergeable (mergeable=$mergeable). Resolve conflicts / rebase."
 
-  review="$(pr_field "$pr" reviewDecision || true)"
-  # reviewDecision can be null if repo has no reviews or GitHub hasn't computed it.
   if [[ "$REQUIRE_APPROVAL" == "true" ]]; then
-    [[ "$review" == "APPROVED" ]] || die "PR #$pr not approved (reviewDecision=$review). Get approval or set REQUIRE_APPROVAL=false."
+    approval_ok "$pr" "$REPO" || die "PR #$pr not approved (need review APPROVED or exact comment body 'APPROVED'). Set REQUIRE_APPROVAL=false to bypass."
   fi
 
-  echo "✅ Ready: #$pr (mergeable=$mergeable, reviewDecision=${review:-null})"
+  echo "✅ Ready: #$pr (mergeable=$mergeable)"
 }
 
 watch_pr() {

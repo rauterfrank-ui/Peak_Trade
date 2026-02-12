@@ -44,6 +44,7 @@ from ..risk import (
     calc_position_size,
 )
 from .result import BacktestResult
+from .portfolio_resolver import resolve_portfolio_cfg
 from . import stats as stats_mod
 
 # Order-Layer Imports (Phase 16)
@@ -437,7 +438,7 @@ class BacktestEngine:
                         risk_kwargs = {
                             "symbol": symbol,
                             "last_return": (
-                                self.equity_curve[-1] / self.equity_curve[-2] - 1
+                                self.equity_curve.iloc[-1] / self.equity_curve.iloc[-2] - 1
                                 if len(self.equity_curve) >= 2
                                 else 0.0
                             ),
@@ -624,6 +625,8 @@ class BacktestEngine:
             "win_rate": trade_stats.win_rate,
             "profit_factor": trade_stats.profit_factor,
             "blocked_trades": blocked_trades,
+            "ulcer_index": stats_mod.compute_ulcer_index(equity_series),
+            "recovery_factor": stats_mod.compute_recovery_factor(equity_series),
         }
 
         # Trades als DataFrame für neuen BacktestResult
@@ -720,6 +723,8 @@ class BacktestEngine:
             "total_trades": 0,  # Nicht verfügbar im vectorized mode
             "win_rate": 0.0,
             "profit_factor": 0.0,
+            "ulcer_index": stats_mod.compute_ulcer_index(equity),
+            "recovery_factor": stats_mod.compute_recovery_factor(equity),
         }
 
         return BacktestResult(
@@ -1031,6 +1036,8 @@ class BacktestEngine:
             "filled_orders": exec_summary["filled_orders"],
             "rejected_orders": exec_summary["rejected_orders"],
             "total_fees": exec_summary["total_fees"],
+            "ulcer_index": stats_mod.compute_ulcer_index(equity_series),
+            "recovery_factor": stats_mod.compute_recovery_factor(equity_series),
         }
 
         # Trades-DataFrame
@@ -1231,7 +1238,7 @@ def run_portfolio_from_config(
     if cfg is None:
         cfg = get_config()
 
-    portfolio_cfg = cfg.get("portfolio", {})
+    portfolio_cfg = resolve_portfolio_cfg(cfg, portfolio_name=portfolio_name)
 
     if not portfolio_cfg.get("enabled", False):
         raise ValueError(
@@ -1263,6 +1270,9 @@ def run_portfolio_from_config(
         )
         strategies = strategies[:max_strategies]
 
+    # Determinismus: stabile, sortierte Strategie-Reihenfolge für Preview + Final Run
+    strategies = sorted(strategies)
+
     logger.info(
         f"Starte Portfolio-Backtest mit {len(strategies)} Strategien: {', '.join(strategies)}"
     )
@@ -1271,12 +1281,40 @@ def run_portfolio_from_config(
     total_capital = portfolio_cfg.get("total_capital", cfg["backtest"]["initial_cash"])
     allocation_method = portfolio_cfg.get("allocation_method", "equal")
 
-    allocation = _calculate_allocation(
-        strategies=strategies,
-        method=allocation_method,
-        manual_weights=portfolio_cfg.get("weights", {}),
-        total_capital=total_capital,
-    )
+    if allocation_method in ("risk_parity", "sharpe_weighted"):
+        # Two-pass allocation:
+        # 1) preview backtests on a fixed initial slice -> estimate returns
+        # 2) compute weights from preview returns
+        # 3) final run uses a single weighting point (combined equity = sum(w_i * equity_i))
+        # Default bewusst konservativ (deterministisch): ausreichend Bars für stabile Schätzung
+        estimation_bars = int(portfolio_cfg.get("allocation_estimation_bars", 500))
+        risk_free_rate = float(portfolio_cfg.get("risk_free_rate", 0.0))
+
+        preview_returns = _preview_strategy_returns_for_allocation(
+            df=df,
+            cfg=cfg,
+            strategies=strategies,
+            total_capital=float(total_capital),
+            estimation_bars=estimation_bars,
+            position_sizer=position_sizer,
+            risk_limits=risk_limits,
+            core_position_sizer=core_position_sizer,
+            risk_manager=risk_manager,
+        )
+
+        allocation = _calculate_allocation_from_preview_returns(
+            preview_returns=preview_returns,
+            method=allocation_method,
+            strategies=strategies,
+            risk_free_rate=risk_free_rate,
+        )
+    else:
+        allocation = _calculate_allocation(
+            strategies=strategies,
+            method=allocation_method,
+            manual_weights=portfolio_cfg.get("weights", {}),
+            total_capital=total_capital,
+        )
 
     logger.info(f"Capital Allocation ({allocation_method}): {allocation}")
 
@@ -1284,13 +1322,13 @@ def run_portfolio_from_config(
     strategy_results: Dict[str, BacktestResult] = {}
 
     for strategy_name in strategies:
-        # Capital für diese Strategie
-        strategy_capital = allocation[strategy_name] * total_capital
+        # Final run: do NOT pre-scale per-strategy initial_cash by weights.
+        # Single weighting point is applied in _combine_equity_curves().
+        initial_capital = float(total_capital)
 
-        # Backtest mit angepasstem Initial Capital
-        # WICHTIG: Wir müssen initial_cash temporär überschreiben
+        # Backtest mit angepasstem Initial Capital (temporär überschreiben)
         original_cash = cfg["backtest"]["initial_cash"]
-        cfg["backtest"]["initial_cash"] = strategy_capital
+        cfg["backtest"]["initial_cash"] = initial_capital
 
         try:
             result = run_single_strategy_from_registry(
@@ -1306,7 +1344,7 @@ def run_portfolio_from_config(
             logger.error(f"Fehler beim Backtest von '{strategy_name}': {e}")
             # Bei Fehler: Dummy-Result mit 0 Equity
             strategy_results[strategy_name] = _create_dummy_result(
-                strategy_name, df, strategy_capital
+                strategy_name, df, initial_capital
             )
         finally:
             # Initial Cash zurücksetzen
@@ -1351,6 +1389,339 @@ def run_portfolio_from_config(
 # ============================================================================
 # HELPER FUNCTIONS
 # ============================================================================
+
+
+def _equity_to_preview_returns(equity: pd.Series, *, strategy_name: str) -> pd.Series:
+    """
+    Convert an equity curve into per-period returns for allocation estimation.
+
+    Deterministic, strict:
+    - requires at least 3 equity points (>= 2 returns)
+    - rejects NaN/inf
+    """
+    if equity is None or len(equity) < 3:
+        raise ValueError(
+            f"Allocation preview: equity curve too short for '{strategy_name}' "
+            f"(need >= 3 points, got {0 if equity is None else len(equity)})"
+        )
+
+    s = equity.astype(float)
+    if isinstance(s.index, pd.DatetimeIndex):
+        s = s.sort_index()
+        # guard against duplicated timestamps (can happen in some dummy paths)
+        s = s[~s.index.duplicated(keep="last")]
+
+    rets = s.pct_change().dropna()
+    if len(rets) < 2:
+        raise ValueError(
+            f"Allocation preview: returns too short for '{strategy_name}' (need >= 2 returns)"
+        )
+    if not np.isfinite(rets.to_numpy()).all():
+        raise ValueError(f"Allocation preview: non-finite returns for '{strategy_name}'")
+
+    return rets
+
+
+def _equity_to_returns_preview(equity: pd.Series, estimation_bars: int) -> pd.Series:
+    """
+    v1 helper (local): compute preview returns from the first N equity bars.
+
+    Contract:
+    - returns = equity.pct_change().dropna().iloc[:estimation_bars]
+    - explicit failure modes (no silent fallbacks)
+    """
+    if estimation_bars < 3:
+        raise ValueError(f"estimation_bars must be >= 3 (got {estimation_bars})")
+    if equity is None:
+        raise ValueError("equity must not be None")
+
+    s = equity.astype(float)
+    if isinstance(s.index, pd.DatetimeIndex):
+        s = s.sort_index()
+        s = s[~s.index.duplicated(keep="last")]
+
+    if len(s) < estimation_bars:
+        raise ValueError(
+            f"insufficient equity bars for preview (need >= {estimation_bars}, got {len(s)})"
+        )
+
+    s = s.iloc[:estimation_bars]
+    rets = s.pct_change().dropna()
+    if len(rets) < 2:
+        raise ValueError("insufficient preview returns (need >= 2 returns)")
+    if not np.isfinite(rets.to_numpy()).all():
+        raise ValueError("non-finite preview returns")
+    return rets
+
+
+def _weights_inverse_vol(
+    returns_map: Dict[str, pd.Series],
+    *,
+    eps: float = 1e-12,
+) -> Dict[str, float]:
+    """v1 inverse-vol weights (risk_parity approximation), long-only, deterministic."""
+    if not returns_map:
+        raise ValueError("returns_map must not be empty")
+
+    keys = sorted(returns_map.keys())
+    vols: Dict[str, float] = {}
+    for k in keys:
+        r = returns_map[k]
+        if r is None or len(r) < 2:
+            raise ValueError(f"insufficient returns for '{k}' (need >= 2)")
+        arr = r.astype(float).to_numpy()
+        if not np.isfinite(arr).all():
+            raise ValueError(f"non-finite returns for '{k}'")
+        v = float(pd.Series(arr).std(ddof=0))
+        if not np.isfinite(v):
+            raise ValueError(f"non-finite volatility for '{k}'")
+        vols[k] = max(v, float(eps))
+
+    inv = {k: 1.0 / vols[k] for k in keys}
+    total = float(sum(inv.values()))
+    if not np.isfinite(total) or total <= float(eps):
+        raise ValueError("all-zero inverse-vol weights")
+
+    w = {k: float(inv[k] / total) for k in keys}
+    s = float(sum(w.values()))
+    if not np.isfinite(s) or s <= float(eps):
+        raise ValueError("invalid weight sum")
+    # defensiv renorm
+    return {k: float(w[k] / s) for k in keys}
+
+
+def _weights_sharpe_long_only(
+    returns_map: Dict[str, pd.Series],
+    *,
+    risk_free_rate: float = 0.0,
+    eps: float = 1e-12,
+) -> Dict[str, float]:
+    """v1 Sharpe-weighted, long-only: clip negative Sharpe to 0, renorm."""
+    if not returns_map:
+        raise ValueError("returns_map must not be empty")
+
+    keys = sorted(returns_map.keys())
+    raw: Dict[str, float] = {}
+    rf = float(risk_free_rate)
+    for k in keys:
+        r = returns_map[k]
+        if r is None or len(r) < 2:
+            raise ValueError(f"insufficient returns for '{k}' (need >= 2)")
+        arr = r.astype(float).to_numpy()
+        if not np.isfinite(arr).all():
+            raise ValueError(f"non-finite returns for '{k}'")
+        mu = float(np.mean(arr) - rf)
+        vol = float(np.std(arr, ddof=0))
+        if not np.isfinite(mu) or not np.isfinite(vol):
+            raise ValueError(f"non-finite moments for '{k}'")
+        vol = max(vol, float(eps))
+        sharpe = mu / vol
+        if not np.isfinite(sharpe):
+            raise ValueError(f"non-finite Sharpe for '{k}'")
+        raw[k] = max(0.0, float(sharpe))
+
+    total = float(sum(raw.values()))
+    if total <= float(eps):
+        raise ValueError("Sharpe scores <= 0 after clipping")
+
+    w = {k: float(raw[k] / total) for k in keys}
+    s = float(sum(w.values()))
+    if not np.isfinite(s) or s <= float(eps):
+        raise ValueError("invalid weight sum")
+    return {k: float(w[k] / s) for k in keys}
+
+
+def _combine_equities_weighted(
+    equities_map: Dict[str, pd.Series],
+    weights: Dict[str, float],
+) -> pd.Series:
+    """Combine equities with a single weighting point: Σ w_i * equity_i(t)."""
+    if not equities_map:
+        raise ValueError("equities_map must not be empty")
+    if not weights:
+        raise ValueError("weights must not be empty")
+
+    keys = sorted(weights.keys())
+    missing = [k for k in keys if k not in equities_map]
+    if missing:
+        raise ValueError(f"missing equities for: {missing}")
+
+    ref_idx = equities_map[keys[0]].index
+    for k in keys[1:]:
+        if not equities_map[k].index.equals(ref_idx):
+            raise ValueError("equity indices must match to combine deterministically")
+
+    combined = None
+    for k in keys:
+        w = float(weights[k])
+        if not np.isfinite(w) or w < 0.0:
+            raise ValueError(f"invalid weight for '{k}': {w}")
+        part = equities_map[k].astype(float) * w
+        combined = part if combined is None else (combined + part)
+
+    if combined is None:
+        raise ValueError("no equities combined")
+    return combined.astype(float)
+
+
+def _preview_strategy_returns_for_allocation(
+    *,
+    df: pd.DataFrame,
+    cfg: Dict[str, Any],
+    strategies: List[str],
+    total_capital: float,
+    estimation_bars: int,
+    position_sizer: Optional[PositionSizer],
+    risk_limits: Optional[RiskLimits],
+    core_position_sizer: Optional[BasePositionSizer],
+    risk_manager: Optional[BaseRiskManager],
+) -> pd.DataFrame:
+    """
+    Two-pass allocation preview:
+    run short preview backtests per strategy on the first N bars to estimate returns.
+
+    Failure modes are explicit (no silent fallbacks).
+    """
+    if estimation_bars < 3:
+        raise ValueError(
+            f"allocation_estimation_bars must be >= 3 (got {estimation_bars}). "
+            "Set portfolio.allocation_estimation_bars."
+        )
+    if df is None or df.empty:
+        raise ValueError("Allocation preview requires a non-empty DataFrame")
+    if len(df) < estimation_bars:
+        raise ValueError(
+            f"Insufficient data for allocation preview: need >= {estimation_bars} bars, got {len(df)}. "
+            "Reduce portfolio.allocation_estimation_bars or provide more data."
+        )
+
+    df_preview = df.iloc[:estimation_bars].copy()
+    if df_preview.empty:
+        raise ValueError("Allocation preview slice is empty")
+
+    returns_by_strategy: Dict[str, pd.Series] = {}
+
+    for strategy_name in strategies:
+        original_cash = cfg["backtest"]["initial_cash"]
+        cfg["backtest"]["initial_cash"] = float(total_capital)
+        try:
+            result = run_single_strategy_from_registry(
+                df=df_preview,
+                strategy_name=strategy_name,
+                position_sizer=position_sizer,
+                risk_limits=risk_limits,
+                core_position_sizer=core_position_sizer,
+                risk_manager=risk_manager,
+            )
+        except Exception as e:
+            raise ValueError(
+                f"Allocation preview backtest failed for '{strategy_name}': {e}"
+            ) from e
+        finally:
+            cfg["backtest"]["initial_cash"] = original_cash
+
+        returns_by_strategy[strategy_name] = _equity_to_preview_returns(
+            result.equity_curve, strategy_name=strategy_name
+        )
+
+    # Align to common index and drop any rows with missing returns.
+    df_rets = pd.concat([returns_by_strategy[s] for s in strategies], axis=1)
+    df_rets.columns = list(strategies)
+    df_rets = df_rets.dropna(how="any")
+
+    if df_rets.empty or len(df_rets) < 2:
+        raise ValueError(
+            "Allocation preview produced insufficient aligned returns. "
+            "Ensure strategies have enough history in the estimation window."
+        )
+
+    return df_rets
+
+
+def _calculate_allocation_from_preview_returns(
+    *,
+    preview_returns: pd.DataFrame,
+    method: str,
+    strategies: List[str],
+    risk_free_rate: float = 0.0,
+    eps: float = 1e-12,
+) -> Dict[str, float]:
+    """
+    Compute allocation weights from preview returns.
+
+    v1 algorithms (deterministic, long-only):
+    - risk_parity: inverse-vol weights (diag of cov / std floor)
+    - sharpe_weighted: positive Sharpe weights, clipped at 0 then renormalized
+    """
+    if preview_returns is None or preview_returns.empty:
+        raise ValueError("preview_returns must be provided for allocation estimation")
+
+    # enforce stable column order and presence
+    for s in strategies:
+        if s not in preview_returns.columns:
+            raise ValueError(f"preview_returns missing strategy column: {s}")
+    rets = preview_returns.loc[:, strategies]
+
+    vol = rets.std(axis=0, ddof=0).astype(float)
+    # Numerische Stabilität v1: std-floor epsilon (statt stilles Fallback / statt hard zero-div)
+    # - NaNs bleiben ein harter Fehler (fehlerhafte Preview-Daten)
+    if not np.isfinite(vol.to_numpy()).all():
+        bad = [str(k) for k in vol.index[~np.isfinite(vol.to_numpy())]]
+        raise ValueError(
+            "Allocation preview: non-finite volatility for strategies: "
+            f"{bad}. Check preview returns for NaNs/inf."
+        )
+    vol = vol.clip(lower=float(eps))
+
+    if method == "risk_parity":
+        inv_vol = 1.0 / vol
+        inv_vol = inv_vol.replace([np.inf, -np.inf], np.nan)
+        if inv_vol.isna().any():
+            raise ValueError("Allocation preview: non-finite inverse-vol weights")
+
+        raw = inv_vol.clip(lower=0.0)
+        total = float(raw.sum())
+        if not np.isfinite(total) or total <= eps:
+            raise ValueError("Allocation preview: all-zero risk_parity weights (check returns)")
+
+        w_s = (raw / total).astype(float)
+        if not np.isfinite(w_s.to_numpy()).all():
+            raise ValueError("Allocation preview: non-finite normalized weights")
+        # Renorm defensiv gegen Rundungsdrift
+        s = float(w_s.sum())
+        if not np.isfinite(s) or s <= eps:
+            raise ValueError("Allocation preview: invalid weight sum after normalization")
+        w_s = w_s / s
+        return {k: float(w_s.loc[k]) for k in strategies}
+
+    if method == "sharpe_weighted":
+        mu = rets.mean(axis=0) - float(risk_free_rate)
+        sharpe = mu / vol
+        sharpe = sharpe.replace([np.inf, -np.inf], np.nan)
+        if sharpe.isna().any():
+            raise ValueError("Allocation preview: non-finite Sharpe values")
+
+        raw = sharpe.clip(lower=0.0)
+        total = float(raw.sum())
+        if total <= eps:
+            raise ValueError(
+                "Allocation preview: all Sharpe scores <= 0 after clipping. "
+                "Provide strategies with positive risk-adjusted returns or choose a different allocation_method."
+            )
+
+        w_s = (raw / total).astype(float)
+        if not np.isfinite(w_s.to_numpy()).all():
+            raise ValueError("Allocation preview: non-finite normalized weights")
+        s = float(w_s.sum())
+        if not np.isfinite(s) or s <= eps:
+            raise ValueError("Allocation preview: invalid weight sum after normalization")
+        w_s = w_s / s
+        return {k: float(w_s.loc[k]) for k in strategies}
+
+    raise ValueError(
+        f"Unknown allocation estimation method: {method!r}. "
+        "Expected 'risk_parity' or 'sharpe_weighted'."
+    )
 
 
 def _calculate_allocation(
@@ -1401,14 +1772,16 @@ def _calculate_allocation(
         return allocation
 
     elif method == "risk_parity":
-        # TODO: Implementierung basierend auf Volatility/Sharpe
-        logger.warning("risk_parity noch nicht implementiert, nutze equal weight")
-        return {name: 1.0 / n for name in strategies}
+        raise ValueError(
+            "Allocation method 'risk_parity' requires a two-pass preview to estimate returns. "
+            "Use run_portfolio_from_config() with portfolio.allocation_estimation_bars configured."
+        )
 
     elif method == "sharpe_weighted":
-        # TODO: Benötigt historische Backtests
-        logger.warning("sharpe_weighted noch nicht implementiert, nutze equal weight")
-        return {name: 1.0 / n for name in strategies}
+        raise ValueError(
+            "Allocation method 'sharpe_weighted' requires a two-pass preview to estimate returns. "
+            "Use run_portfolio_from_config() with portfolio.allocation_estimation_bars configured."
+        )
 
     else:
         raise ValueError(
@@ -1467,9 +1840,12 @@ def _create_dummy_result(
         index=[df.index[0]] + list(df.index),
     )
 
+    drawdown_series = stats_mod.compute_drawdown(equity)
+
     return BacktestResult(
         equity_curve=equity,
-        trades=[],
+        drawdown=drawdown_series,
+        trades=None,
         stats={
             "total_return": 0.0,
             "sharpe": 0.0,
@@ -1477,10 +1853,13 @@ def _create_dummy_result(
             "total_trades": 0,
             "win_rate": 0.0,
             "profit_factor": 0.0,
+            "blocked_trades": 0,
         },
-        mode="error_dummy",
-        strategy_name=strategy_name,
-        blocked_trades=0,
+        metadata={
+            "mode": "error_dummy",
+            "strategy_name": strategy_name,
+            "blocked_trades": 0,
+        },
     )
 
 

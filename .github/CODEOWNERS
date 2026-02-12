@@ -27,7 +27,8 @@
 
 # Operations Scripts
 # Critical: Production operations, deployment, live system management
-/scripts/ops/ @rauterfrank-ui
+# Secondary owner added to prevent self-owner approval deadlocks on ops script PRs.
+/scripts/ops/ @rauterfrank-ui @HrzFrnk
 
 # Note: Replace the team handles above with actual GitHub teams or individual usernames
 # Example:

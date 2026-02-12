@@ -1872,7 +1872,7 @@ def chi2_cdf(x: float, df: int) -> float:
 
 **Usage:**
 ```bash
-python scripts/risk/run_var_backtest_suite_snapshot.py \
+python3 scripts/risk/run_var_backtest_suite_snapshot.py \
   --returns-file data/returns.csv \
   --var-file data/var.csv \
   --confidence 0.99 \

@@ -333,7 +333,7 @@ Die Gating-Logik ist durch Tests in `tests/test_r_and_d_strategy_gating.py` abge
 
 Tests ausführen:
 ```bash
-python -m pytest tests/test_r_and_d_strategy_gating.py -v
+python3 -m pytest tests/test_r_and_d_strategy_gating.py -v
 ```
 
 ---

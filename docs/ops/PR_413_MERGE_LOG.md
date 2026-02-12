@@ -95,15 +95,15 @@ docs/risk/roadmaps/KUPIEC_POF_BACKTEST_ROADMAP.md (Phase 2 roadmap)
 
 ```bash
 # All validation tests
-pytest tests/risk/validation/ -q
+python3 -m pytest tests/risk/validation/ -q
 # Result: 81 passed ✅
 
 # Kupiec accuracy test
-pytest tests/risk/validation/test_kupiec.py::test_chi2_p_value_accuracy -v
+python3 -m pytest tests/risk/validation/test_kupiec.py::test_chi2_p_value_accuracy -v
 # Result: Max error < 1e-6 ✅
 
 # Performance
-pytest tests/risk/validation/ --durations=10
+python3 -m pytest tests/risk/validation/ --durations=10
 # Result: All tests <100ms ✅
 ```
 
@@ -111,11 +111,11 @@ pytest tests/risk/validation/ --durations=10
 
 ```bash
 # Integration with existing risk layer
-pytest tests/risk/ -k validation -q
+python3 -m pytest tests/risk/ -k validation -q
 # Expected: All validation tests passing
 
 # API import test
-python -c "from src.risk.validation import run_var_backtest, kupiec_pof_test; print('✅')"
+python3 -c "from src.risk.validation import run_var_backtest, kupiec_pof_test; print('✅')"
 ```
 
 ---

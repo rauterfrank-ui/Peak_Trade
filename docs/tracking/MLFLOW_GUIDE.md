@@ -51,11 +51,11 @@ MLflow wird automatisch in CI installiert, wenn die Tracking-Extras/Requirements
 
 ```bash
 # Check MLflow Installation
-python -c "import mlflow; print(mlflow.__version__)"
+python3 -c "import mlflow; print(mlflow.__version__)"
 # Expected: 3.x.x
 
 # Run MLflow Integration Tests
-pytest -q tests/test_tracking_mlflow_integration.py
+python3 -m pytest -q tests/test_tracking_mlflow_integration.py
 # Expected: 18 passed in ~1s
 ```
 
@@ -380,7 +380,7 @@ uv sync
 # oder: pip install -e ".[tracking]"
 
 # Verification
-python -c "from src.core.tracking import MLflowTracker; print('OK')"
+python3 -c "from src.core.tracking import MLflowTracker; print('OK')"
 ```
 
 ---
@@ -418,23 +418,23 @@ run = mlflow.get_run(tracker._run_id)  # OK
 
 **Symptom:**
 ```bash
-pytest tests/test_tracking_mlflow_integration.py
+python3 -m pytest tests/test_tracking_mlflow_integration.py
 # → FAILED: some tests fail
 ```
 
 **Diagnose:**
 ```bash
 # 1. MLflow installiert?
-python -c "import mlflow; print(mlflow.__version__)"
+python3 -c "import mlflow; print(mlflow.__version__)"
 
 # 2. Aktive Runs cleanup
-python -c "import mlflow; [mlflow.end_run() for _ in range(10)]"
+python3 -c "import mlflow; [mlflow.end_run() for _ in range(10)]"
 
 # 3. Tests mit verbose output
-pytest tests/test_tracking_mlflow_integration.py -v --tb=short
+python3 -m pytest tests/test_tracking_mlflow_integration.py -v --tb=short
 
 # 4. Nur einen Test laufen lassen
-pytest tests/test_tracking_mlflow_integration.py::TestMLflowTrackerBasics::test_mlflow_tracker_initialization -v
+python3 -m pytest tests/test_tracking_mlflow_integration.py::TestMLflowTrackerBasics::test_mlflow_tracker_initialization -v
 ```
 
 **Common Fixes:**
@@ -509,16 +509,16 @@ tracker.log_params({
 
 ```bash
 # Alle MLflow-Integration-Tests
-pytest tests/test_tracking_mlflow_integration.py -v
+python3 -m pytest tests/test_tracking_mlflow_integration.py -v
 
 # Nur Basics
-pytest tests/test_tracking_mlflow_integration.py::TestMLflowTrackerBasics -v
+python3 -m pytest tests/test_tracking_mlflow_integration.py::TestMLflowTrackerBasics -v
 
 # Nur Logging
-pytest tests/test_tracking_mlflow_integration.py::TestMLflowTrackerLogging -v
+python3 -m pytest tests/test_tracking_mlflow_integration.py::TestMLflowTrackerLogging -v
 
 # Mit Coverage
-pytest tests/test_tracking_mlflow_integration.py --cov=src.core.tracking --cov-report=term-missing
+python3 -m pytest tests/test_tracking_mlflow_integration.py --cov=src.core.tracking --cov-report=term-missing
 ```
 
 ### Test Structure

@@ -19,6 +19,8 @@ from io import StringIO
 
 import pytest
 
+pytestmark = pytest.mark.external_tools
+
 # Add scripts to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "execution"))
 
@@ -577,6 +579,13 @@ def test_parse_args_combined_new_flags():
 # ============================================================================
 
 
+def _recon_wrapper_env():
+    """Env for wrapper tests: use python3 so we don't depend on uv (which may crash locally)."""
+    env = os.environ.copy()
+    env["PT_RECON_PYTHON_RUNNER"] = "python3"
+    return env
+
+
 @pytest.mark.skipif(os.name == "nt", reason="Bash wrapper not available on Windows")
 def test_wrapper_summary_json():
     """Test bash wrapper produces valid JSON output"""
@@ -587,12 +596,13 @@ def test_wrapper_summary_json():
     if not wrapper_script.exists():
         pytest.skip("Wrapper script not found")
 
-    # Run wrapper
+    # Run wrapper (PT_RECON_PYTHON_RUNNER=python3 for deterministic run without uv)
     result = subprocess.run(
         ["bash", str(wrapper_script), "summary-json"],
         cwd=repo_root,
         capture_output=True,
         text=True,
+        env=_recon_wrapper_env(),
     )
 
     # Should succeed
@@ -625,12 +635,13 @@ def test_wrapper_gate_mode():
     if not wrapper_script.exists():
         pytest.skip("Wrapper script not found")
 
-    # Run gate mode
+    # Run gate mode (PT_RECON_PYTHON_RUNNER=python3 for deterministic run without uv)
     result = subprocess.run(
         ["bash", str(wrapper_script), "gate"],
         cwd=repo_root,
         capture_output=True,
         text=True,
+        env=_recon_wrapper_env(),
     )
 
     # Empty audit log should exit 0 (no findings)

@@ -50,6 +50,24 @@ def _render_metrics(uptime_s: float, mode: str, exchange: str) -> str:
     # Run state: gauge; keep "running" at 1 for the demo exporter.
     run_state = {"running": 1.0, "stopped": 0.0}
 
+    # Trade-flow counters (watch-only dashboards).
+    # Keep label cardinality finite and deterministic.
+    pt_signals_total = {
+        # strategy_id, symbol, signal
+        ("demo_strategy", "btc/eur", "buy"): max(0, int(uptime_s * 1.2)),
+        ("demo_strategy", "btc/eur", "sell"): max(0, int(uptime_s * 0.9)),
+        ("demo_strategy", "btc/eur", "flat"): max(0, int(uptime_s * 0.2)),
+    }
+    pt_orders_approved_total = {
+        # strategy_id, symbol, venue, order_type
+        ("demo_strategy", "btc/eur", mode, "market"): max(0, int(uptime_s * 1.1)),
+    }
+    pt_orders_blocked_total = {
+        # strategy_id, symbol, reason (finite allowlist)
+        ("demo_strategy", "btc/eur", "limits"): max(0, int(uptime_s * 0.15)),
+        ("demo_strategy", "btc/eur", "governance"): max(0, int(uptime_s * 0.03)),
+    }
+
     # Histogram: intent_to_ack latency distribution. Produce cumulative buckets that grow.
     # Buckets should match typical seconds-based buckets. Grafana panel uses rate() over 5m.
     buckets = [0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0, float("inf")]
@@ -147,6 +165,37 @@ def _render_metrics(uptime_s: float, mode: str, exchange: str) -> str:
     ]
     for state, val in run_state.items():
         lines.append(f'peak_trade_run_state{{mode="{mode}",state="{state}"}} {val}')
+
+    # Trade-flow counters (watch-only, demo-friendly)
+    lines += [
+        "# HELP peaktrade_signals_total Total number of final signal events emitted (mock).",
+        "# TYPE peaktrade_signals_total counter",
+    ]
+    for (strategy_id, symbol, signal), val in pt_signals_total.items():
+        lines.append(
+            "peaktrade_signals_total"
+            f'{{strategy_id="{strategy_id}",symbol="{symbol}",signal="{signal}"}} {val}'
+        )
+
+    lines += [
+        "# HELP peaktrade_orders_approved_total Total number of orders approved after gates (mock).",
+        "# TYPE peaktrade_orders_approved_total counter",
+    ]
+    for (strategy_id, symbol, venue, order_type), val in pt_orders_approved_total.items():
+        lines.append(
+            "peaktrade_orders_approved_total"
+            f'{{strategy_id="{strategy_id}",symbol="{symbol}",venue="{venue}",order_type="{order_type}"}} {val}'
+        )
+
+    lines += [
+        "# HELP peaktrade_orders_blocked_total Total number of orders blocked by gates (mock).",
+        "# TYPE peaktrade_orders_blocked_total counter",
+    ]
+    for (strategy_id, symbol, reason), val in pt_orders_blocked_total.items():
+        lines.append(
+            "peaktrade_orders_blocked_total"
+            f'{{strategy_id="{strategy_id}",symbol="{symbol}",reason="{reason}"}} {val}'
+        )
 
     return "\n".join(lines) + "\n"
 

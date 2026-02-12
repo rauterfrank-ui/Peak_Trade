@@ -62,6 +62,62 @@ from src.strategies.registry import (
 )
 
 
+def infer_timeframe_from_index(index: pd.DatetimeIndex) -> str:
+    """
+    Infer a Peak_Trade timeframe string from a DatetimeIndex.
+
+    Uses median delta with strict validation (no silent defaults).
+
+    Supported:
+    - 1m, 5m, 15m, 30m
+    - 1h, 4h
+    - 1d, 1w
+    """
+    if index is None:
+        raise ValueError("cannot infer timeframe: index is None")
+    if not isinstance(index, pd.DatetimeIndex):
+        raise ValueError(
+            f"cannot infer timeframe: expected DatetimeIndex, got {type(index).__name__}"
+        )
+    if len(index) < 3:
+        raise ValueError("cannot infer timeframe: need at least 3 timestamps")
+
+    idx = index.sort_values()
+    diffs = idx.to_series().diff().dropna()
+    if diffs.empty:
+        raise ValueError("cannot infer timeframe: empty diffs")
+
+    median = diffs.median()
+    sec = float(median.total_seconds())
+    if sec <= 0:
+        raise ValueError("cannot infer timeframe: non-positive median delta")
+
+    buckets = [
+        (60, "1m"),
+        (300, "5m"),
+        (900, "15m"),
+        (1800, "30m"),
+        (3600, "1h"),
+        (14400, "4h"),
+        (86400, "1d"),
+        (604800, "1w"),
+    ]
+
+    best_sec, best_tf = min(buckets, key=lambda b: abs(sec - b[0]))
+    tol = best_sec * 0.05  # 5%
+    if abs(sec - best_sec) > tol:
+        raise ValueError(
+            f"cannot infer timeframe: median delta {sec:.3f}s not close to known buckets"
+        )
+
+    # Strict irregularity check: all deltas must be close to the selected bucket
+    # (avoid mislabeling irregular time series).
+    if (diffs.dt.total_seconds() - best_sec).abs().max() > tol:
+        raise ValueError("cannot infer timeframe: irregular index (deltas not consistent)")
+
+    return best_tf
+
+
 def parse_args() -> argparse.Namespace:
     """CLI-Argumente parsen."""
     parser = argparse.ArgumentParser(
@@ -103,6 +159,12 @@ Beispiele:
         type=str,
         default="BTC/EUR",
         help="Trading-Symbol (default: BTC/EUR)",
+    )
+    parser.add_argument(
+        "--timeframe",
+        type=str,
+        default=None,
+        help="Optionaler Timeframe-Override (z.B. 1h, 4h). Default: aus Daten ableiten",
     )
     parser.add_argument(
         "--data-file",
@@ -502,10 +564,11 @@ def main() -> int:
         start_date_str = df.index[0].strftime("%Y-%m-%d")
         end_date_str = df.index[-1].strftime("%Y-%m-%d")
 
+        timeframe = args.timeframe or infer_timeframe_from_index(df.index)
         run_id = log_shadow_run(
             strategy_key=strategy_name,
             symbol=args.symbol,
-            timeframe="1h",  # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Timeframe aus Daten ableiten")
+            timeframe=timeframe,
             stats=stats,
             execution_summary=execution_summary,
             start_date=start_date_str,

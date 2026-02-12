@@ -25,6 +25,8 @@ P0 Guardrails: This file is protected by CODEOWNERS (live trading review require
 from __future__ import annotations
 
 import logging
+import os
+import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import List, Optional
@@ -34,6 +36,20 @@ from src.core.environment import (
     EnvironmentConfig,
     TradingEnvironment,
     LIVE_CONFIRM_TOKEN,
+)
+from src.ops.gates.armed_gate import ArmedGate, ArmedState
+from src.ops.gates.risk_gate import RiskLimits, RiskContext
+from src.ops.wiring.execution_guards import (
+    GuardConfig,
+    GuardInputs,
+    apply_execution_guards,
+)
+from src.ops.recon.models import BalanceSnapshot, PositionSnapshot
+from src.ops.recon.providers import NullReconProvider
+from src.ops.recon.recon_hook import (
+    ReconConfig,
+    config_from_env as recon_config_from_env,
+    run_recon_if_enabled,
 )
 
 logger = logging.getLogger(__name__)
@@ -198,6 +214,92 @@ class SafetyGuard:
             da echte Orders nicht implementiert sind.
         """
         env = self.env_config.environment
+        # --- Peak_Trade Runbook-B Guards (B5/B3) ---
+        # Default OFF. Enable via PEAK_EXEC_GUARDS_ENABLED=1.
+        # When enabled: PEAK_EXEC_GUARDS_SECRET required; optional PEAK_EXEC_GUARDS_TOKEN for arming.
+        guards_enabled = os.getenv("PEAK_EXEC_GUARDS_ENABLED", "0") == "1"
+        if guards_enabled:
+            secret = os.getenv("PEAK_EXEC_GUARDS_SECRET", "").encode("utf-8")
+            if not secret:
+                self._log_audit(
+                    "place_order(runbook_b_guards)",
+                    False,
+                    "Execution blocked: PEAK_EXEC_GUARDS_SECRET required when PEAK_EXEC_GUARDS_ENABLED=1",
+                )
+                raise RuntimeError(
+                    "Execution blocked: PEAK_EXEC_GUARDS_SECRET required when PEAK_EXEC_GUARDS_ENABLED=1"
+                )
+            token = os.getenv("PEAK_EXEC_GUARDS_TOKEN")
+            gate = ArmedGate(secret=secret, token_ttl_seconds=120)
+            cfg = GuardConfig(enabled=True, armed_required=True, risk_enabled=True)
+            limits = RiskLimits(
+                enabled=True,
+                kill_switch=(os.getenv("PEAK_KILL_SWITCH", "0") == "1"),
+                max_notional_usd=float(os.getenv("PEAK_MAX_NOTIONAL_USD", "0") or 0.0),
+                max_order_size=float(os.getenv("PEAK_MAX_ORDER_SIZE", "0") or 0.0),
+                max_position=float(os.getenv("PEAK_MAX_POSITION", "0") or 0.0),
+                max_session_loss_usd=float(os.getenv("PEAK_MAX_SESSION_LOSS_USD", "0") or 0.0),
+                max_data_age_seconds=int(os.getenv("PEAK_MAX_DATA_AGE_SECONDS", "0") or 0),
+            )
+            now_epoch = int(os.getenv("PEAK_NOW_EPOCH", "0") or 0) or int(time.time())
+            ctx = RiskContext(
+                now_epoch=now_epoch,
+                market_data_age_seconds=int(os.getenv("PEAK_MD_AGE_SECONDS", "0") or 0),
+                session_pnl_usd=float(os.getenv("PEAK_SESSION_PNL_USD", "0") or 0.0),
+                current_position=float(os.getenv("PEAK_CURRENT_POSITION", "0") or 0.0),
+                order_size=float(os.getenv("PEAK_ORDER_SIZE", "0") or 0.0),
+                order_notional_usd=float(os.getenv("PEAK_ORDER_NOTIONAL_USD", "0") or 0.0),
+            )
+            inputs = GuardInputs(
+                armed_state=ArmedState(
+                    enabled=True,
+                    armed=False,
+                    armed_since_epoch=None,
+                    token_issued_epoch=None,
+                ),
+                armed_token=token,
+                limits=limits,
+                ctx=ctx,
+            )
+            try:
+                _ = apply_execution_guards(cfg, gate=gate, inputs=inputs)
+                self._log_audit(
+                    "place_order(runbook_b_guards)",
+                    True,
+                    "Runbook-B guards: allow",
+                )
+            except RuntimeError as e:
+                self._log_audit(
+                    "place_order(runbook_b_guards)",
+                    False,
+                    f"Runbook-B guards: deny — {e!s}",
+                )
+                raise
+        # --- End Guards ---
+        # --- Runbook-B Reconciliation Hook (B2) ---
+        # Default OFF. Enable explicitly: PEAK_RECON_ENABLED=1
+        # NOTE: Pure hook; caller must supply expected/observed snapshots.
+        # TODO(wire): Replace placeholder snapshots with real pre/post state.
+        recon_cfg = recon_config_from_env()
+        if recon_cfg.enabled:
+            provider = NullReconProvider(epoch=0, balances={})
+            rep = run_recon_if_enabled(
+                recon_cfg,
+                provider=provider,
+                expected_balances=None,
+                observed_balances=None,
+                expected_positions=None,
+                observed_positions=None,
+            )
+            if not rep.ok:
+                self._log_audit(
+                    "recon(runbook_b)",
+                    False,
+                    "Runbook-B recon drift: " + " | ".join(rep.drifts[:5]),
+                )
+                raise RuntimeError("Execution blocked: reconciliation drift")
+            self._log_audit("recon(runbook_b)", True, "Runbook-B recon: ok")
+        # --- End Reconciliation Hook ---
         action = f"place_order(is_testnet={is_testnet})"
 
         # --- PAPER Mode ---

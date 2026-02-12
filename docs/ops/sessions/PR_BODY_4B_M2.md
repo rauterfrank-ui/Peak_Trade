@@ -33,11 +33,11 @@ Reduce CI roundtrips and standardize multi-agent execution with audit-stable out
 cd /Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2
 
 # Lint Gate
-uv run ruff format --check .
-uv run ruff check --select I,F401 src/
+ruff format --check .
+ruff check --select I,F401 src/
 
 # Test Gate
-uv run pytest --version  # pytest 9.0.2
+python3 -m pytest --version  # pytest 9.0.2
 
 # Git Status
 git status -sb  # Clean, all pre-commit hooks passed
@@ -103,9 +103,9 @@ code /Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2
 cd /Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2
 
 # Quick gate check
-uv run ruff format --check src/
-uv run ruff check src/
-uv run pytest -q tests/[specific_module]
+ruff format --check src/
+ruff check src/
+python3 -m pytest -q tests/[specific_module]
 
 # Full verification
 make audit  # (if audit target exists)

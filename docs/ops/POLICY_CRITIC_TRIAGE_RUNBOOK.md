@@ -184,7 +184,7 @@ ruff check .
 black --check .
 
 # 3) Optional: Pytest Smoke Test (Sample)
-pytest tests/test_utils_sample.py -x
+python3 -m pytest tests/test_utils_sample.py -x
 
 # 4) CI Status prüfen (nach ~2-5min)
 gh pr view <PR_NUMBER> --json statusCheckRollup

@@ -141,34 +141,34 @@ gh pr checks 677
 
 ```bash
 # Full test suite
-uv run python -m pytest -q
+python3 -m pytest -q
 # 30/30 tests passed
 
 # Unit Tests (16/16 ✅)
-pytest tests/governance/test_strategy_switch_sanity_check.py -v
+python3 -m pytest tests&#47;governance&#47;test_strategy_switch_sanity_check.py -v
 # 16 passed in 0.06s
 
 # Integration Tests (7/7 ✅)
-pytest tests/ops/test_test_health_v1.py::TestRunSwitchSanityCheck -v
+python3 -m pytest tests&#47;ops&#47;test_test_health_v1.py::TestRunSwitchSanityCheck -v
 # 7 passed in 0.09s
 
 # Hermetic Test (Fixed ✅)
-pytest tests/ops/test_ops_center_smoke.py::test_doctor_command_if_available -v
+python3 -m pytest tests&#47;ops&#47;test_ops_center_smoke.py::test_doctor_command_if_available -v
 # PASSED (now accepts any warning type)
 
 # CLI Standalone (Fixed ✅)
-python scripts/run_strategy_switch_sanity_check.py --config config/config.toml
+python3 scripts&#47;run_strategy_switch_sanity_check.py --config config&#47;config.toml
 # ✅ Strategy-Switch Sanity Check: OK
 # Exit: 0
 
 # TestHealthAutomation Profile (Full Integration ✅)
-python scripts/run_test_health_profile.py --profile governance_strategy_switch_sanity
+python3 scripts&#47;run_test_health_profile.py --profile governance_strategy_switch_sanity
 # Health-Score: 100.0 / 100.0
 # Switch-Sanity: ✅ OK
 # Exit: 0
 
 # Linter (Clean ✅)
-ruff check scripts/run_strategy_switch_sanity_check.py tests/ops/test_ops_center_smoke.py
+ruff check scripts&#47;run_strategy_switch_sanity_check.py tests&#47;ops&#47;test_ops_center_smoke.py
 # No output (clean)
 ```
 
@@ -229,13 +229,13 @@ ruff check scripts/run_strategy_switch_sanity_check.py tests/ops/test_ops_center
 
 ```bash
 # 1. Run standalone
-python scripts/run_strategy_switch_sanity_check.py --config config/config.toml
+python3 scripts/run_strategy_switch_sanity_check.py --config config/config.toml
 
 # 2. Run via TestHealthAutomation profile
-python scripts/run_test_health_profile.py --profile governance_strategy_switch_sanity
+python3 scripts/run_test_health_profile.py --profile governance_strategy_switch_sanity
 
 # 3. Verify Tests
-pytest tests/governance/test_strategy_switch_sanity_check.py -v
+python3 -m pytest tests/governance/test_strategy_switch_sanity_check.py -v
 ```
 
 ---
@@ -299,13 +299,13 @@ git push
 
 ```bash
 # 1. Check config
-python scripts/run_strategy_switch_sanity_check.py --config config/config.toml
+python3 scripts/run_strategy_switch_sanity_check.py --config config/config.toml
 
 # 2. Fix config
 vim config/config.toml  # Remove R&D strategies, fix active, etc.
 
 # 3. Verify fix
-python scripts/run_strategy_switch_sanity_check.py --config config/config.toml
+python3 scripts/run_strategy_switch_sanity_check.py --config config/config.toml
 # Should exit 0
 
 # 4. Commit fix

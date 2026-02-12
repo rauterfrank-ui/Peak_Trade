@@ -75,7 +75,7 @@ Diese können direkt mit `scripts/run_strategy_sweep.py` verwendet werden.
 
 ```bash
 # Vordefinierten Sweep ausführen
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
     --sweep-name regime_aware_portfolio_aggressive \
     --symbol BTC-EUR \
     --timeframe 1h \
@@ -83,7 +83,7 @@ python scripts/run_strategy_sweep.py \
     --end 2024-12-01
 
 # Mit TOML-Config
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
     --config config/sweeps/regime_aware_portfolio_aggressive.toml \
     --symbol BTC-EUR
 ```
@@ -91,7 +91,7 @@ python scripts/run_strategy_sweep.py \
 #### Preset B – Konservativ
 
 ```bash
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
     --sweep-name regime_aware_portfolio_conservative \
     --symbol BTC-EUR \
     --timeframe 1h \
@@ -102,7 +102,7 @@ python scripts/run_strategy_sweep.py \
 #### Preset C – Vol-Metrik-Vergleich
 
 ```bash
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
     --sweep-name regime_aware_portfolio_volmetric \
     --symbol BTC-EUR \
     --timeframe 1h
@@ -245,10 +245,10 @@ Alle Sweep-Funktionen sind in `tests/test_regime_aware_portfolio_sweeps.py` gete
 
 ```bash
 # Alle Regime-Aware Sweep-Tests
-pytest tests/test_regime_aware_portfolio_sweeps.py -v
+python3 -m pytest tests/test_regime_aware_portfolio_sweeps.py -v
 
 # Alle Experiment-Tests
-pytest tests/test_experiments*.py -v
+python3 -m pytest tests/test_experiments*.py -v
 ```
 
 ## Integration mit Reporting
@@ -259,14 +259,14 @@ Die Sweeps integrieren sich nahtlos in die bestehende Reporting-Infrastruktur:
 
 ```bash
 # Sweep ausführen und Report generieren
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
     --sweep-name regime_aware_portfolio_aggressive \
     --symbol BTC-EUR \
     --with-plots \
     --format both
 
 # Report separat generieren
-python scripts/generate_experiment_report.py \
+python3 scripts/generate_experiment_report.py \
     --experiment-dir reports/experiments/regime_aware_portfolio_aggressive_*
 ```
 
@@ -299,7 +299,7 @@ reports/experiments/
 ```bash
 # Alle drei Presets nacheinander ausführen
 for preset in aggressive conservative volmetric; do
-    python scripts/run_strategy_sweep.py \
+    python3 scripts/run_strategy_sweep.py \
         --sweep-name regime_aware_portfolio_${preset} \
         --symbol BTC-EUR \
         --timeframe 1h \
@@ -307,7 +307,7 @@ for preset in aggressive conservative volmetric; do
 done
 
 # Ergebnisse vergleichen
-python scripts/compare_sweep_results.py \
+python3 scripts/compare_sweep_results.py \
     --experiment-dirs reports/experiments/regime_aware_portfolio_*
 ```
 
@@ -315,7 +315,7 @@ python scripts/compare_sweep_results.py \
 
 ```bash
 # Fine-Granularität für detaillierte Analyse
-python scripts/run_strategy_sweep.py \
+python3 scripts/run_strategy_sweep.py \
     --sweep-name regime_aware_portfolio_aggressive \
     --symbol BTC-EUR \
     --timeframe 1h \
@@ -323,7 +323,7 @@ python scripts/run_strategy_sweep.py \
     --end 2024-12-01
 
 # Top-10 nach Sharpe identifizieren
-python scripts/analyze_sweep_results.py \
+python3 scripts/analyze_sweep_results.py \
     --experiment-dir reports/experiments/regime_aware_portfolio_aggressive_* \
     --metric sharpe \
     --top-n 10
@@ -334,7 +334,7 @@ python scripts/analyze_sweep_results.py \
 ```bash
 # Sweep über mehrere Symbole
 for symbol in BTC-EUR ETH-EUR; do
-    python scripts/run_strategy_sweep.py \
+    python3 scripts/run_strategy_sweep.py \
         --sweep-name regime_aware_portfolio_conservative \
         --symbol ${symbol} \
         --timeframe 1h

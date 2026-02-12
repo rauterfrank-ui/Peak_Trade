@@ -104,7 +104,7 @@ state.trades_executed += 15
 store.save_for_today(state)
 ```
 
-**Speicherformat**: JSON-Dateien unter `{base_dir}/usage/usage_YYYY-MM-DD.json`
+**Speicherformat**: JSON-Dateien unter `{base_dir}&#47;usage&#47;usage_YYYY-MM-DD.json`
 
 #### 3. TestnetSessionProfile (`src/live/testnet_profiles.py`)
 
@@ -208,7 +208,7 @@ usage_retention_days = 30               # Aufbewahrungszeit Usage-Daten
 ### Profile auflisten
 
 ```bash
-python -m scripts.orchestrate_testnet_runs --list
+python3 -m scripts.orchestrate_testnet_runs --list
 ```
 
 Output:
@@ -230,7 +230,7 @@ Verfuegbare Testnet-Profile:
 ### Tages-Budget anzeigen
 
 ```bash
-python -m scripts.orchestrate_testnet_runs --budget
+python3 -m scripts.orchestrate_testnet_runs --budget
 ```
 
 Output:
@@ -256,7 +256,7 @@ Limits:
 ### Profil starten (Dry-Run)
 
 ```bash
-python -m scripts.orchestrate_testnet_runs --profile ma_crossover_small --dry-run
+python3 -m scripts.orchestrate_testnet_runs --profile ma_crossover_small --dry-run
 ```
 
 Prueft alle Limits ohne Session zu starten.
@@ -264,7 +264,7 @@ Prueft alle Limits ohne Session zu starten.
 ### Profil starten (Echt)
 
 ```bash
-python -m scripts.orchestrate_testnet_runs --profile ma_crossover_small
+python3 -m scripts.orchestrate_testnet_runs --profile ma_crossover_small
 ```
 
 **Voraussetzungen**:
@@ -275,7 +275,7 @@ python -m scripts.orchestrate_testnet_runs --profile ma_crossover_small
 ### Mit Overrides
 
 ```bash
-python -m scripts.orchestrate_testnet_runs --profile ma_crossover_small \
+python3 -m scripts.orchestrate_testnet_runs --profile ma_crossover_small \
     --override-duration 30 \
     --override-max-notional 300.0
 ```
@@ -286,23 +286,23 @@ python -m scripts.orchestrate_testnet_runs --profile ma_crossover_small \
 
 ```bash
 # Morgens: Budget pruefen
-python -m scripts.orchestrate_testnet_runs --budget
+python3 -m scripts.orchestrate_testnet_runs --budget
 
 # Quick-Smoke starten
-python -m scripts.orchestrate_testnet_runs --profile quick_smoke
+python3 -m scripts.orchestrate_testnet_runs --profile quick_smoke
 
 # Budget nach Run
-python -m scripts.orchestrate_testnet_runs --budget
+python3 -m scripts.orchestrate_testnet_runs --budget
 ```
 
 ### Workflow 2: Strategie-Validierung
 
 ```bash
 # Dry-Run zuerst
-python -m scripts.orchestrate_testnet_runs --profile btc_momentum --dry-run
+python3 -m scripts.orchestrate_testnet_runs --profile btc_momentum --dry-run
 
 # Bei OK: Echter Run
-python -m scripts.orchestrate_testnet_runs --profile btc_momentum
+python3 -m scripts.orchestrate_testnet_runs --profile btc_momentum
 
 # Report im reports_dir pruefen
 ```
@@ -311,10 +311,10 @@ python -m scripts.orchestrate_testnet_runs --profile btc_momentum
 
 ```bash
 # Erstes Profil
-python -m scripts.orchestrate_testnet_runs --profile ma_crossover_small
+python3 -m scripts.orchestrate_testnet_runs --profile ma_crossover_small
 
 # Zweites Profil (wird gegen Daily-Limits geprueft)
-python -m scripts.orchestrate_testnet_runs --profile eth_swing
+python3 -m scripts.orchestrate_testnet_runs --profile eth_swing
 
 # Drittes Profil koennte geblockt werden wenn Daily-Limits erreicht
 ```

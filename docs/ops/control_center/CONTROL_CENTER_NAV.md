@@ -13,7 +13,7 @@
 
 ## 📚 Layer Map & Model Matrix
 - **AI Autonomy Layer Map & Model Assignment Matrix (Authoritative v1.0):**  
-  `docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`  
+  `docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`  
   *7 Layers (L0-L6), model assignments, SoD rules, capability scopes*
 
 - **Layer Map Gap Analysis:**  

@@ -39,6 +39,8 @@ from typing import Callable, Dict, Iterable, Literal, Optional
 import numpy as np
 import pandas as pd
 
+from .equity_loader import equity_to_returns, load_equity_curves_from_run_dir
+
 logger = logging.getLogger(__name__)
 
 
@@ -362,7 +364,7 @@ def load_returns_for_top_config(
     *,
     use_dummy_data: bool = False,
     dummy_bars: int = 500,
-) -> Optional[pd.Series]:
+) -> pd.Series:
     """
     Lädt Returns für eine Top-N-Konfiguration aus einem Sweep.
 
@@ -389,14 +391,33 @@ def load_returns_for_top_config(
         dates = pd.date_range("2024-01-01", periods=n, freq="1h")
         return pd.Series(returns, index=dates)
 
-    # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Vollständige Stress-Test-Implementierung")
-    logger.warning(
-        f"load_returns_for_top_config ist noch nicht vollständig implementiert "
-        f"für sweep_name={sweep_name}, config_rank={config_rank}. "
-        f"Verwende Dummy-Daten als Fallback."
+    # v1: strict load (no silent dummy fallback).
+    # Resolve the Top-N config via existing TopN machinery, then treat config_id as run_dir name.
+    from .topn_promotion import load_top_n_configs_for_sweep
+
+    if config_rank < 1:
+        raise ValueError(f"config_rank muss >= 1 sein, got {config_rank}")
+
+    configs = load_top_n_configs_for_sweep(
+        sweep_name=sweep_name,
+        n=config_rank,
+        experiments_dir=Path(experiments_dir),
     )
-    np.random.seed(42 + config_rank)
-    n = dummy_bars
-    returns = np.random.normal(0.0005, 0.02, n)
-    dates = pd.date_range("2024-01-01", periods=n, freq="1h")
-    return pd.Series(returns, index=dates)
+    if len(configs) < config_rank:
+        raise ValueError(
+            f"Nicht genügend Top-N Konfigurationen für sweep={sweep_name}: "
+            f"requested rank={config_rank}, got={len(configs)}"
+        )
+
+    cfg = configs[config_rank - 1]
+    config_id = str(cfg.get("config_id", ""))
+    if not config_id or config_id.startswith("config_"):
+        raise ValueError(
+            "Top-N config has no usable experiment_id/config_id to resolve a run directory. "
+            f"sweep={sweep_name}, rank={config_rank}, config_id={config_id!r}. "
+            "Ensure sweep results include an experiment_id (directory name) or use_dummy_data=True."
+        )
+
+    run_dir = Path(experiments_dir) / config_id
+    curves = load_equity_curves_from_run_dir(run_dir, max_curves=1)
+    return equity_to_returns(curves[0])

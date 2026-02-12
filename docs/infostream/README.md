@@ -95,7 +95,7 @@ Manuell oder mit Hilfs-Script:
 
 ```bash
 # Mit Script (empfohlen)
-python scripts/create_info_packet.py \
+python3 scripts/create_info_packet.py \
     --source test_health_automation \
     --category test_automation \
     --severity warning \
@@ -174,7 +174,7 @@ Beispiele:
 
 ```bash
 # Nach einer Trigger-Training-Session
-python scripts/create_info_packet.py \
+python3 scripts/create_info_packet.py \
     --source trigger_training_sessions \
     --category operator_training \
     --severity info \
@@ -186,7 +186,7 @@ python scripts/create_info_packet.py \
 
 ```bash
 # Nach einer Makro-Analyse
-python scripts/create_info_packet.py \
+python3 scripts/create_info_packet.py \
     --source macro_georisk_specialist \
     --category market_analysis \
     --severity warning \
@@ -225,22 +225,22 @@ Der InfoStream unterstützt die Erfassung von Makro-Events und geopolitischen Ri
 
 ```bash
 # FED-Entscheidung
-python scripts/create_macro_event.py --quick fed_hike
+python3 scripts/create_macro_event.py --quick fed_hike
 
 # Inflationsdaten
-python scripts/create_macro_event.py --quick cpi_high
+python3 scripts/create_macro_event.py --quick cpi_high
 
 # Regulierung
-python scripts/create_macro_event.py --quick regulation
+python3 scripts/create_macro_event.py --quick regulation
 
 # Kritisches Event
-python scripts/create_macro_event.py --quick black_swan
+python3 scripts/create_macro_event.py --quick black_swan
 ```
 
 ### Interaktiver Modus
 
 ```bash
-python scripts/create_macro_event.py --interactive
+python3 scripts/create_macro_event.py --interactive
 ```
 
 ### Verfügbare Quick-Templates

@@ -154,7 +154,7 @@ log_logger_name = "peak_trade.live.alerts"
 
 ```bash
 # preview_live_orders.py mit Risk-Violation
-python scripts/preview_live_orders.py \
+python3 scripts/preview_live_orders.py \
   --signals reports/forward/..._signals.csv \
   --enforce-live-risk
 ```
@@ -168,7 +168,7 @@ ERROR [peak_trade.live.alerts] [CRITICAL] live_risk.orders - RISK_LIMIT_VIOLATIO
 
 ```bash
 # preview_live_portfolio.py mit Portfolio-Violation
-python scripts/preview_live_portfolio.py --config config/config.toml
+python3 scripts/preview_live_portfolio.py --config config/config.toml
 ```
 
 **Log-Ausgabe:**
@@ -319,7 +319,7 @@ result = risk_limits.check_orders(orders)
 # → config/config.toml: [live_alerts] Block prüfen
 
 # Test mit Portfolio-Monitoring
-python scripts/preview_live_portfolio.py --config config/config.toml
+python3 scripts/preview_live_portfolio.py --config config/config.toml
 # → Prüfe Logs auf Alerts
 ```
 
@@ -327,11 +327,11 @@ python scripts/preview_live_portfolio.py --config config/config.toml
 
 ```bash
 # Regelmäßig Portfolio-Status checken
-python scripts/preview_live_portfolio.py --config config/config.toml
+python3 scripts/preview_live_portfolio.py --config config/config.toml
 # → Alerts werden automatisch bei Violations erzeugt
 
 # Order-Preview mit Risk-Check
-python scripts/preview_live_orders.py \
+python3 scripts/preview_live_orders.py \
   --signals reports/forward/..._signals.csv \
   --enforce-live-risk
 # → Alerts werden automatisch bei Violations erzeugt
@@ -352,17 +352,17 @@ Bei einem Incident:
 
 ```bash
 # Alert-System Tests
-pytest tests/test_live_alerts.py -v
+python3 -m pytest tests/test_live_alerts.py -v
 
 # Risk-Alert-Integration Tests
-pytest tests/test_live_risk_alert_integration.py -v
+python3 -m pytest tests/test_live_risk_alert_integration.py -v
 ```
 
 ### Integration-Tests
 
 ```bash
 # Alle Alert-Tests
-pytest tests/test_live_alerts*.py -v
+python3 -m pytest tests/test_live_alerts*.py -v
 ```
 
 ---

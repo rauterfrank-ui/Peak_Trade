@@ -6,7 +6,15 @@ cd "$(git rev-parse --show-toplevel)"
 GRAFANA_URL="${GRAFANA_URL:-http://127.0.0.1:3000}"
 PROM_URL="${PROM_URL:-http://127.0.0.1:9092}"
 EXPORTER_URL="${EXPORTER_URL:-${SHADOW_MVS_EXPORTER_URL:-http://127.0.0.1:9109/metrics}}"
-GRAFANA_AUTH="${GRAFANA_AUTH:-admin:admin}"
+if [[ -z "${GRAFANA_TOKEN:-}" ]]; then
+  if [[ -z "${GRAFANA_AUTH:-}" && -n "${GF_SECURITY_ADMIN_USER:-}" && -n "${GF_SECURITY_ADMIN_PASSWORD:-}" ]]; then
+    GRAFANA_AUTH="${GF_SECURITY_ADMIN_USER}:${GF_SECURITY_ADMIN_PASSWORD}"
+  fi
+fi
+if [[ -z "${GRAFANA_TOKEN:-}" && -z "${GRAFANA_AUTH:-}" ]]; then
+  echo "ERROR: Grafana auth missing. Set GRAFANA_TOKEN (preferred) or GRAFANA_AUTH=user:pass." >&2
+  exit 2
+fi
 DASH_UID="${DASH_UID:-peaktrade-shadow-pipeline-mvs}"
 
 pass() {
@@ -41,6 +49,20 @@ curl_ok_or_retry_once() {
   curl_ok "$url"
 }
 
+prom_query_json() {
+  # Robust Prometheus /api/v1/query fetch with gating + evidence on failure.
+  # Always uses the shared helper to avoid transient JSONDecodeError in pipelines.
+  local q="${1:-}"
+  if [[ -z "${q:-}" ]]; then
+    echo "prom_query_json: missing query" >&2
+    return 2
+  fi
+  bash scripts/obs/_prom_query_json.sh \
+    --base "$PROM_URL" \
+    --query "$q" \
+    --retries "${PROM_QUERY_MAX_ATTEMPTS:-3}"
+}
+
 grafana_get_json_or_fail() {
   local path="$1"
   local url="${GRAFANA_URL%/}${path}"
@@ -50,7 +72,7 @@ grafana_get_json_or_fail() {
   code="${resp##*$'\n'}"
 
   if [[ "$code" == "401" || "$code" == "403" ]]; then
-    fail "grafana.auth" "Grafana auth failed for ${path} (HTTP $code). Expected default admin/admin." "Phase F-1 (Grafana Login/DS)"
+    fail "grafana.auth" "Grafana auth failed for ${path} (HTTP $code). Set GRAFANA_AUTH=user:pass or use .env." "Phase F-1 (Grafana Login/DS)"
   fi
   if [[ "$code" != "200" ]]; then
     fail "grafana.http" "Grafana request failed for ${path} (HTTP ${code})." "Phase F-1 (Grafana Login/DS)"
@@ -99,27 +121,35 @@ fi
 
 echo "==> Check: Grafana datasource + dashboard provisioned"
 ds_json="$(grafana_get_json_or_fail "/api/datasources")"
+want_uid_primary="prom_local_9092"
+want_uid_legacy="peaktrade-prometheus-local"
+export want_uid_primary want_uid_legacy
 grafana_ds_ok="$(
   python3 -c '
-import json, sys
+import json, sys, os
 ds = json.loads(sys.stdin.read())
-want_uid = "peaktrade-prometheus-local"
-match = [d for d in ds if d.get("uid")==want_uid]
-if not match:
-    raise SystemExit("missing datasource uid=peaktrade-prometheus-local")
-d = match[0]
-if d.get("isDefault") is not True:
-    raise SystemExit("datasource peaktrade-prometheus-local is not default")
-url = d.get("url","")
-if "host.docker.internal:9092" not in url:
-    raise SystemExit(f"unexpected datasource url={url}")
-print(url)
+want_primary = os.environ.get("want_uid_primary", "prom_local_9092")
+want_legacy = os.environ.get("want_uid_legacy", "peaktrade-prometheus-local")
+allowed = {want_primary, want_legacy}
+candidates = [d for d in ds if d.get("uid") in allowed]
+if not candidates:
+    raise SystemExit("no datasource with uid in %s" % sorted(allowed))
+valid = [
+    d for d in candidates
+    if d.get("isDefault") is True and "host.docker.internal:9092" in (d.get("url") or "")
+]
+if not valid:
+    summary = ", ".join(
+        ["%s(default=%s,url=%s)" % (d.get("uid"), d.get("isDefault"), d.get("url")) for d in candidates]
+    )
+    raise SystemExit("no valid default datasource found among candidates: %s" % summary)
+print(valid[0].get("url") or "")
 ' <<<"$ds_json" 2>/dev/null || true
 )"
 if [[ -z "${grafana_ds_ok:-}" ]]; then
-  fail "grafana.datasource" "Datasource provisioning mismatch (expected uid=peaktrade-prometheus-local default url contains host.docker.internal:9092)" "Phase F-1 (Grafana Login/DS)"
+  fail "grafana.datasource" "Datasource provisioning mismatch (expected uid=$want_uid_primary or $want_uid_legacy default url contains host.docker.internal:9092)" "Phase F-1 (Grafana Login/DS)"
 fi
-pass "grafana.datasource" "peaktrade-prometheus-local default url=$grafana_ds_ok"
+pass "grafana.datasource" "default url=$grafana_ds_ok (uid=$want_uid_primary or $want_uid_legacy)"
 
 search_json="$(grafana_get_json_or_fail "/api/search?type=dash-db")"
 python3 -c '
@@ -168,15 +198,17 @@ pass "prometheus.targets" "shadow_mvs=up"
 
 prom_query_non_empty_once() {
   local q="$1"
-  curl -fsS -G "$PROM_URL/api/v1/query" --data-urlencode "query=$q" 2>/dev/null | python3 -c '
+  # Fetch JSON robustly (retries + deterministic diagnostics), then apply "non-empty & non-NaN" semantics.
+  local json
+  if ! json="$(prom_query_json "$q")"; then
+    return 1
+  fi
+  printf '%s' "$json" | python3 -c '
 import json, sys
 doc = json.load(sys.stdin)
-if doc.get("status") != "success":
-    raise SystemExit(1)
 res = doc.get("data", {}).get("result", [])
 if not res:
     raise SystemExit(1)
-# Treat NaN as "not ready" (common during warmup for rate()/histogram_quantile()).
 for item in res:
     v = item.get("value")
     if not isinstance(v, list) or len(v) < 2:
@@ -185,7 +217,7 @@ for item in res:
     if s not in ("nan", "+nan", "-nan"):
         raise SystemExit(0)
 raise SystemExit(1)
-'
+' >/dev/null 2>&1
 }
 
 prom_query_non_empty_with_retries() {
@@ -227,7 +259,7 @@ pass "prometheus.query" "latency p95 intent_to_ack (rate, job=shadow_mvs) non-em
 echo ""
 echo "EVIDENCE|exporter=$EXPORTER_URL|series=shadow_mvs_up,peak_trade_pipeline_events_total"
 echo "EVIDENCE|prometheus=$PROM_URL|target=shadow_mvs:up"
-echo "EVIDENCE|grafana=$GRAFANA_URL|ds_uid=peaktrade-prometheus-local"
+echo "EVIDENCE|grafana=$GRAFANA_URL|ds_uid_primary=$want_uid_primary|ds_uid_legacy=$want_uid_legacy"
 echo "EVIDENCE|dashboard_uid=$DASH_UID"
 echo "RESULT=PASS"
 echo "INFO|See Contract: docs/webui/observability/SHADOW_MVS_CONTRACT.md"

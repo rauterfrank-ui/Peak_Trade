@@ -138,13 +138,13 @@ Erweitert WP0D Reconciliation Engine um strukturierte **ReconSummary** und **Aud
 
 ```bash
 # Alle Execution-Tests (inkl. neue WP0D Tests)
-pytest tests/execution/ -v
+python3 -m pytest tests/execution/ -v
 
 # Nur WP0D Observability Tests
-pytest tests/execution/test_wp0d_recon_summary_observability.py -v
+python3 -m pytest tests/execution/test_wp0d_recon_summary_observability.py -v
 
 # Nur WP0D Tests (alle)
-pytest tests/execution/test_wp0d* -v
+python3 -m pytest tests/execution/test_wp0d* -v
 ```
 
 **Erwartung:** Alle Tests bestehen, keine Flaky-Failures.

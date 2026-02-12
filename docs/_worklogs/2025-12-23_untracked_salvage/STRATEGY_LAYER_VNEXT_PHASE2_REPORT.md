@@ -121,7 +121,7 @@ tracker.end_run()
 
 **Alle Tests bestehen** (wenn MLflow installiert):
 ```bash
-pytest tests/test_tracking_mlflow_integration.py -v
+python3 -m pytest tests/test_tracking_mlflow_integration.py -v
 # → 25 passed (oder skipped wenn MLflow nicht installiert)
 ```
 
@@ -155,7 +155,7 @@ pytest tests/test_tracking_mlflow_integration.py -v
 
 **Usage**:
 ```bash
-python scripts/smoke_test_mlflow.py
+python3 scripts/smoke_test_mlflow.py
 # → ✅ 6/6 Tests bestanden
 ```
 
@@ -258,7 +258,7 @@ with MLflowTracker(auto_start_run=True) as tracker:
 ### Unit-Tests (Phase 1)
 
 ```bash
-pytest tests/test_tracking_noop.py -v
+python3 -m pytest tests/test_tracking_noop.py -v
 # → 11/11 passed ✅
 ```
 
@@ -266,18 +266,18 @@ pytest tests/test_tracking_noop.py -v
 
 ```bash
 # Mit MLflow installiert
-pytest tests/test_tracking_mlflow_integration.py -v
+python3 -m pytest tests/test_tracking_mlflow_integration.py -v
 # → 25/25 passed ✅
 
 # Ohne MLflow
-pytest tests/test_tracking_mlflow_integration.py -v
+python3 -m pytest tests/test_tracking_mlflow_integration.py -v
 # → 25 skipped (MLflow nicht installiert)
 ```
 
 ### Smoke-Test
 
 ```bash
-python scripts/smoke_test_mlflow.py
+python3 scripts/smoke_test_mlflow.py
 # → 6/6 Tests bestanden ✅
 ```
 
@@ -521,7 +521,7 @@ research = ["mlflow>=2.10", "matplotlib>=3.5"]
 
 2. **Smoke-Test ausführen**:
    ```bash
-   python scripts/smoke_test_mlflow.py
+   python3 scripts/smoke_test_mlflow.py
    ```
 
 3. **Ersten Backtest mit MLflow**:

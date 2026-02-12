@@ -165,7 +165,7 @@ While all audit findings are closed, operators should complete these actions bef
    - [ ] ROLLBACK_PROCEDURE.md
 
 2. **Run Test Script:**
-   - [ ] `python scripts/live/test_bounded_live_limits.py`
+   - [ ] `python3 scripts/live/test_bounded_live_limits.py`
 
 3. **Conduct First Drill:**
    - [ ] Follow KILL_SWITCH_DRILL_PROCEDURE.md

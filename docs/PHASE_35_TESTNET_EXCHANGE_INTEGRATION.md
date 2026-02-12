@@ -234,29 +234,29 @@ testnet_dry_run = false  # Für echte Testnet-Orders, true für validate_only
 
 ```bash
 # Standard-Start mit MA-Crossover
-python -m scripts.run_testnet_session
+python3 -m scripts.run_testnet_session
 
 # Mit anderer Strategie
-python -m scripts.run_testnet_session --strategy rsi_strategy
+python3 -m scripts.run_testnet_session --strategy rsi_strategy
 
 # Mit anderem Symbol
-python -m scripts.run_testnet_session --symbol ETH/EUR
+python3 -m scripts.run_testnet_session --symbol ETH/EUR
 
 # Für begrenzte Dauer (30 Minuten)
-python -m scripts.run_testnet_session --duration 30
+python3 -m scripts.run_testnet_session --duration 30
 
 # Nur Config validieren (Dry-Run)
-python -m scripts.run_testnet_session --dry-run
+python3 -m scripts.run_testnet_session --dry-run
 ```
 
 ### 4. Monitoring (optional)
 
 ```bash
 # Letzte Run beobachten
-python -m scripts.monitor_live_run --latest
+python3 -m scripts.monitor_live_run --latest
 
 # Alerts anzeigen
-python -m scripts.monitor_live_run --latest --alerts
+python3 -m scripts.monitor_live_run --latest --alerts
 ```
 
 ---
@@ -267,16 +267,16 @@ python -m scripts.monitor_live_run --latest --alerts
 # 1. Terminal 1: Testnet-Session starten
 export KRAKEN_TESTNET_API_KEY="..."
 export KRAKEN_TESTNET_API_SECRET="..."
-python -m scripts.run_testnet_session \
+python3 -m scripts.run_testnet_session \
     --strategy ma_crossover \
     --symbol BTC/EUR \
     --duration 60
 
 # 2. Terminal 2: Session beobachten
-python -m scripts.monitor_live_run --latest --tail
+python3 -m scripts.monitor_live_run --latest --tail
 
 # 3. Terminal 3: Web-Dashboard (optional)
-python -m scripts.serve_live_dashboard
+python3 -m scripts.serve_live_dashboard
 # → http://localhost:8000
 ```
 
@@ -288,10 +288,10 @@ python -m scripts.serve_live_dashboard
 
 ```bash
 # Nur Phase-35-Tests
-pytest tests/test_exchange_client.py tests/test_exchange_order_executor.py tests/test_run_testnet_session.py -v
+python3 -m pytest tests/test_exchange_client.py tests/test_exchange_order_executor.py tests/test_run_testnet_session.py -v
 
 # Vollständige Test-Suite
-pytest -q
+python3 -m pytest -q
 ```
 
 ### Test-Abdeckung

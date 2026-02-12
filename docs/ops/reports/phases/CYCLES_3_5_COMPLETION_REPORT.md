@@ -144,7 +144,7 @@ Option C (aggressiv):
 1. Script anpassen für variierende Demo-Patches:
    ```bash
    # Generiere neue Demo-Patches mit Varianz
-   python scripts/generate_demo_patches_for_promotion.py
+   python3 scripts/generate_demo_patches_for_promotion.py
    ```
 
 2. Variationen einbauen:
@@ -318,11 +318,11 @@ Readiness-Score: 30% (3/10 Kriterien erfüllt)
 **Nächster Cycle starten:**
 ```bash
 # Mit aktuellen Demo-Patches (identisch zu Cycles #1-5)
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 
 # ODER: Erst neue Demo-Patches generieren (empfohlen für Cycle #6)
-python scripts/generate_demo_patches_for_promotion.py
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
+python3 scripts/generate_demo_patches_for_promotion.py
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 ```
 
 ---

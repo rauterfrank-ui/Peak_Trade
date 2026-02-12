@@ -237,7 +237,7 @@ Phase 16K führt ein **read-only Web Dashboard** für Stage1 (DRY-RUN) Monitorin
 **Daily Snapshot (JSON + Markdown):**
 ```bash
 # Generiert YYYY-MM-DD_summary.json + YYYY-MM-DD_snapshot.md
-python scripts/obs/stage1_daily_snapshot.py
+python3 scripts/obs/stage1_daily_snapshot.py
 
 # Output: reports/obs/stage1/
 # - 2025-12-20_summary.json  (neu in Phase 16K)
@@ -247,10 +247,10 @@ python scripts/obs/stage1_daily_snapshot.py
 **Trend Report (JSON + Markdown):**
 ```bash
 # Generiert stage1_trend.json + Markdown Output (stdout)
-python scripts/obs/stage1_trend_report.py
+python3 scripts/obs/stage1_trend_report.py
 
 # Custom time range (default: 14 Tage)
-python scripts/obs/stage1_trend_report.py --days 30
+python3 scripts/obs/stage1_trend_report.py --days 30
 
 # Output: reports/obs/stage1/stage1_trend.json
 ```
@@ -346,8 +346,8 @@ Symptom: "No data available yet" Message
    ```
 2. Falls leer: Daily Snapshot einmal manuell ausführen:
    ```bash
-   python scripts/obs/stage1_daily_snapshot.py
-   python scripts/obs/stage1_trend_report.py
+   python3 scripts/obs/stage1_daily_snapshot.py
+   python3 scripts/obs/stage1_trend_report.py
    ```
 
 ---
@@ -372,8 +372,8 @@ Latest Measurement ist > 24h alt
 - Cronjob/Launchd einrichten:
   ```bash
   # Beispiel: Daily um 00:05 UTC
-  5 0 * * * cd /path/to/Peak_Trade && python scripts/obs/stage1_daily_snapshot.py
-  10 0 * * * cd /path/to/Peak_Trade && python scripts/obs/stage1_trend_report.py
+  5 0 * * * cd /path/to/Peak_Trade && python3 scripts/obs/stage1_daily_snapshot.py
+  10 0 * * * cd /path/to/Peak_Trade && python3 scripts/obs/stage1_trend_report.py
   ```
 
 ---
@@ -393,7 +393,7 @@ Pydantic ValidationError in logs
    ```
 2. Neu generieren:
    ```bash
-   python scripts/obs/stage1_daily_snapshot.py
+   python3 scripts/obs/stage1_daily_snapshot.py
    ```
 
 ---
@@ -593,7 +593,7 @@ Phase 16K ist **read-only** und **DRY-RUN only**. Mögliche Follow-Ups:
 ruff check src/obs/stage1/ src/webui/ops_stage1_router.py tests/test_stage1_*.py
 
 # 2. Tests
-pytest tests/test_stage1_io.py tests/test_stage1_trend.py tests/test_stage1_router.py -v
+python3 -m pytest tests/test_stage1_io.py tests/test_stage1_trend.py tests/test_stage1_router.py -v
 
 # 3. Strategy Smoke Tests
 make strategy-smoke
@@ -615,8 +615,8 @@ uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
 # → Open http://localhost:8000/ops/stage1
 
 # 4. Functional Test: Generate Reports
-python scripts/obs/stage1_daily_snapshot.py
-python scripts/obs/stage1_trend_report.py
+python3 scripts/obs/stage1_daily_snapshot.py
+python3 scripts/obs/stage1_trend_report.py
 ls -lh reports/obs/stage1/*.json
 
 # 5. Functional Test: JSON API

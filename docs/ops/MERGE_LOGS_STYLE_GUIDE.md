@@ -172,16 +172,16 @@ Use the `new_merge_log.py` generator with GitHub CLI integration:
 
 ```bash
 # Auto-fetch PR metadata via gh CLI
-python scripts/ops/new_merge_log.py --pr 450
+python3 scripts/ops/new_merge_log.py --pr 450
 
 # Custom output location
-python scripts/ops/new_merge_log.py --pr 450 --out docs/ops/custom_name.md
+python3 scripts/ops/new_merge_log.py --pr 450 --out docs/ops/custom_name.md
 
 # Fallback mode (template with placeholders)
-python scripts/ops/new_merge_log.py --pr 450 --fallback
+python3 scripts/ops/new_merge_log.py --pr 450 --fallback
 
 # Skip README update
-python scripts/ops/new_merge_log.py --pr 450 --no-update-readme
+python3 scripts/ops/new_merge_log.py --pr 450 --no-update-readme
 ```
 
 **Hygiene Check:**
@@ -190,13 +190,13 @@ Before committing, run the hygiene checker to catch issues:
 
 ```bash
 # Check a single file
-python scripts/ops/check_merge_log_hygiene.py docs/ops/PR_450_MERGE_LOG.md
+python3 scripts/ops/check_merge_log_hygiene.py docs/ops/PR_450_MERGE_LOG.md
 
 # Check multiple files (glob pattern)
-python scripts/ops/check_merge_log_hygiene.py docs/ops/PR_*_MERGE_LOG.md
+python3 scripts/ops/check_merge_log_hygiene.py docs/ops/PR_*_MERGE_LOG.md
 
 # Verbose mode
-python scripts/ops/check_merge_log_hygiene.py -v docs/ops/PR_450_MERGE_LOG.md
+python3 scripts/ops/check_merge_log_hygiene.py -v docs/ops/PR_450_MERGE_LOG.md
 ```
 
 **What the hygiene checker finds:**

@@ -325,7 +325,7 @@ Peak_Trade/
 Bei Fragen:
 1. Lies `docs/psychology_heatmap_integration.md`
 2. Schau dir `scripts/example_psychology_heatmap_integration.py` an
-3. Führe die Tests aus: `pytest tests&#47;test_psychology_heatmap.py -v`
+3. Führe die Tests aus: `python3 -m pytest tests&#47;test_psychology_heatmap.py -v`
 
 ---
 

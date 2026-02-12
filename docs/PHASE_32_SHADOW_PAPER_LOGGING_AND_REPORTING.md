@@ -165,35 +165,35 @@ live_runs/
 
 ```bash
 # Standard mit Logging
-python -m scripts.run_shadow_paper_session
+python3 -m scripts.run_shadow_paper_session
 
 # Mit spezifischer Run-ID
-python -m scripts.run_shadow_paper_session --run-id my_test_001
+python3 -m scripts.run_shadow_paper_session --run-id my_test_001
 
 # Logging deaktivieren
-python -m scripts.run_shadow_paper_session --no-logging
+python3 -m scripts.run_shadow_paper_session --no-logging
 
 # Alternatives Log-Verzeichnis
-python -m scripts.run_shadow_paper_session --log-dir /tmp/runs
+python3 -m scripts.run_shadow_paper_session --log-dir /tmp/runs
 ```
 
 ### Report generieren
 
 ```bash
 # Report für spezifischen Run
-python -m scripts.generate_live_run_report live_runs/RUN_ID
+python3 -m scripts.generate_live_run_report live_runs/RUN_ID
 
 # Als HTML
-python -m scripts.generate_live_run_report live_runs/RUN_ID --format html
+python3 -m scripts.generate_live_run_report live_runs/RUN_ID --format html
 
 # In Datei speichern
-python -m scripts.generate_live_run_report live_runs/RUN_ID -o report.md
+python3 -m scripts.generate_live_run_report live_runs/RUN_ID -o report.md
 
 # Alle Runs auflisten
-python -m scripts.generate_live_run_report --list
+python3 -m scripts.generate_live_run_report --list
 
 # Letzten Run
-python -m scripts.generate_live_run_report --latest
+python3 -m scripts.generate_live_run_report --latest
 ```
 
 ---
@@ -366,11 +366,11 @@ Ein generierter Report enthält:
 
 ```bash
 # Alle Phase-32-Tests
-pytest tests/test_run_logging_and_reporting.py -v
+python3 -m pytest tests/test_run_logging_and_reporting.py -v
 
 # Spezifische Test-Klassen
-pytest tests/test_run_logging_and_reporting.py::TestLiveRunLogger -v
-pytest tests/test_run_logging_and_reporting.py::TestReportGeneration -v
+python3 -m pytest tests/test_run_logging_and_reporting.py::TestLiveRunLogger -v
+python3 -m pytest tests/test_run_logging_and_reporting.py::TestReportGeneration -v
 ```
 
 ### Test-Kategorien

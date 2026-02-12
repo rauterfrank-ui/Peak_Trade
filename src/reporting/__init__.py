@@ -59,6 +59,7 @@ from .plots import (
     save_scatter_plot,
     save_histogram,
     save_equity_with_regimes,
+    render_standard_2x2_heatmap_template,
 )
 
 from .backtest_report import (
@@ -150,6 +151,12 @@ from .offline_paper_trade_integration import (
     generate_reports_for_offline_paper_trade,
 )
 
+# Correlation matrix (Parameter–Metric)
+from .correlation_matrix_report import (
+    build_param_metric_corr,
+    correlation_matrix_report,
+)
+
 __all__ = [
     # Execution Reports (Phase 16D)
     "ExecutionStats",
@@ -181,6 +188,7 @@ __all__ = [
     "save_drawdown_plot",
     "save_heatmap",
     "save_scatter_plot",
+    "render_standard_2x2_heatmap_template",
     "save_histogram",
     "save_equity_with_regimes",
     # Phase 30: Backtest Reports
@@ -238,4 +246,7 @@ __all__ = [
     # Offline Paper Trade Integration
     "OfflinePaperTradeReportConfig",
     "generate_reports_for_offline_paper_trade",
+    # Correlation matrix (Parameter–Metric)
+    "build_param_metric_corr",
+    "correlation_matrix_report",
 ]

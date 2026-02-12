@@ -31,19 +31,19 @@ config/scheduler/jobs.toml  →  run_scheduler.py  →  Registry + Alerts
 ### 1. Scheduler im Dry-Run-Modus testen
 
 ```bash
-python scripts/run_scheduler.py --config config/scheduler/jobs.toml --dry-run --once
+python3 scripts/run_scheduler.py --config config/scheduler/jobs.toml --dry-run --once
 ```
 
 ### 2. Alle fälligen Jobs einmal ausführen
 
 ```bash
-python scripts/run_scheduler.py --config config/scheduler/jobs.toml --once
+python3 scripts/run_scheduler.py --config config/scheduler/jobs.toml --once
 ```
 
 ### 3. Scheduler als Daemon starten
 
 ```bash
-python scripts/run_scheduler.py --config config/scheduler/jobs.toml --poll-interval 60
+python3 scripts/run_scheduler.py --config config/scheduler/jobs.toml --poll-interval 60
 ```
 
 Der Scheduler läuft dann kontinuierlich und prüft alle 60 Sekunden auf fällige Jobs.
@@ -70,13 +70,13 @@ Der Scheduler läuft dann kontinuierlich und prüft alle 60 Sekunden auf fällig
 
 ```bash
 # Nur Forward-Signal-Jobs ausführen
-python scripts/run_scheduler.py --include-tags forward --once
+python3 scripts/run_scheduler.py --include-tags forward --once
 
 # Alle Jobs außer "heavy" ausführen
-python scripts/run_scheduler.py --exclude-tags heavy --once
+python3 scripts/run_scheduler.py --exclude-tags heavy --once
 
 # Verbose Dry-Run
-python scripts/run_scheduler.py --dry-run --verbose --once
+python3 scripts/run_scheduler.py --dry-run --verbose --once
 ```
 
 ---
@@ -91,7 +91,7 @@ Jobs werden in `config/scheduler/jobs.toml` definiert.
 [[job]]
 name = "daily_forward_btc"
 description = "Generiert Forward-Signal für BTC/EUR"
-command = "python"
+command = "python3"
 args = { script = "scripts/run_forward_signals.py", strategy = "ma_crossover", symbol = "BTC/EUR" }
 schedule_type = "daily"
 daily_time = "07:30"
@@ -160,7 +160,7 @@ daily_time = "07:30"
 [[job]]
 name = "daily_forward_signals_btc"
 description = "BTC Forward-Signal täglich um 07:30"
-command = "python"
+command = "python3"
 args = { script = "scripts/run_forward_signals.py", strategy = "ma_crossover", symbol = "BTC/EUR", timeframe = "1h", bars = 200, tag = "daily-forward" }
 schedule_type = "daily"
 daily_time = "07:30"
@@ -230,7 +230,7 @@ log_scheduler_job_run(
 Abfrage in der Registry:
 
 ```bash
-python scripts/list_experiments.py --run-type scheduler_job
+python3 scripts/list_experiments.py --run-type scheduler_job
 ```
 
 ### Notifications
@@ -251,7 +251,7 @@ Konfiguriere Notifier in `.env` oder Konfigurationsdateien.
 ```bash
 # In einer Screen-Session
 screen -S peak_scheduler
-python scripts/run_scheduler.py --config config/scheduler/jobs.toml --poll-interval 60
+python3 scripts/run_scheduler.py --config config/scheduler/jobs.toml --poll-interval 60
 # Ctrl+A, D zum Detachen
 ```
 
@@ -268,7 +268,7 @@ After=network.target
 Type=simple
 User=trading
 WorkingDirectory=/path/to/Peak_Trade
-ExecStart=/path/to/Peak_Trade/.venv/bin/python scripts/run_scheduler.py --config config/scheduler/jobs.toml --poll-interval 60
+ExecStart=/path/to/Peak_Trade/.venv/bin/python3 scripts/run_scheduler.py --config config/scheduler/jobs.toml --poll-interval 60
 Restart=on-failure
 RestartSec=10
 
@@ -287,7 +287,7 @@ Starte den Scheduler im `--once`-Modus via cron:
 
 ```cron
 # Alle 5 Minuten prüfen
-*/5 * * * * cd /path/to/Peak_Trade && .venv/bin/python scripts/run_scheduler.py --once
+*/5 * * * * cd /path/to/Peak_Trade && .venv/bin/python3 scripts/run_scheduler.py --once
 ```
 
 ### Option 4: launchd (macOS)
@@ -303,7 +303,7 @@ Erstelle `~/Library/LaunchAgents/com.peaktrade.scheduler.plist`:
     <string>com.peaktrade.scheduler</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/path/to/Peak_Trade/.venv/bin/python</string>
+        <string>/path/to/Peak_Trade/.venv/bin/python3</string>
         <string>/path/to/Peak_Trade/scripts/run_scheduler.py</string>
         <string>--config</string>
         <string>/path/to/Peak_Trade/config/scheduler/jobs.toml</string>
@@ -350,14 +350,14 @@ kill -TERM $(pgrep -f run_scheduler.py)
 3. Nutze `--verbose` für Debug-Output
 
 ```bash
-python scripts/run_scheduler.py --dry-run --verbose --once
+python3 scripts/run_scheduler.py --dry-run --verbose --once
 ```
 
 ### "Config not found"
 
 ```bash
 # Explizit Config angeben
-python scripts/run_scheduler.py --config /absolute/path/to/jobs.toml
+python3 scripts/run_scheduler.py --config /absolute/path/to/jobs.toml
 ```
 
 ### "Job timeout"

@@ -158,7 +158,7 @@ Wave 4 continues the systematic Docs Graph Remediation initiative, targeting the
 - **Total References:** 5879 → 5844 (−35, −0.6%)
 
 ### Token Policy Compliance
-- **Full Scan:** `uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --all`
+- **Full Scan:** `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --all`
 - **Baseline:** 1860 violations in 469 files (pre-existing, out of Wave 4 scope)
 - **Wave 4 Scope:** No new violations introduced
 - **Strategy:** All inline-code paths escaped with `&#47;`

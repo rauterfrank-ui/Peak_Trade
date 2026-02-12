@@ -15,10 +15,10 @@
 
 ```bash
 # Human-readable output
-python scripts/telemetry_health_check.py
+python3 scripts/telemetry_health_check.py
 
 # JSON output (for automation)
-python scripts/telemetry_health_check.py --json
+python3 scripts/telemetry_health_check.py --json
 ```
 
 **Exit Codes:**
@@ -68,10 +68,10 @@ curl http://127.0.0.1:8000/api/telemetry/health
 du -sh logs/execution
 
 # Apply retention cleanup
-python scripts/ops/telemetry_retention.py --apply
+python3 scripts/ops/telemetry_retention.py --apply
 
 # Aggressive cleanup (if critical)
-python scripts/ops/telemetry_retention.py --apply \
+python3 scripts/ops/telemetry_retention.py --apply \
   --max-age-days 7 \
   --keep-last-n 50
 ```
@@ -92,11 +92,11 @@ ls -lh logs/execution/.last_retention_run  # (marker file)
 ls -lht logs/execution/*.gz | head -5       # (recent compressed files)
 
 # Run retention now
-python scripts/ops/telemetry_retention.py --apply
+python3 scripts/ops/telemetry_retention.py --apply
 
 # Add to cron (recommended)
 # Run daily at 2 AM:
-# 0 2 * * * cd /path/to/Peak_Trade && python scripts/ops/telemetry_retention.py --apply
+# 0 2 * * * cd /path/to/Peak_Trade && python3 scripts/ops/telemetry_retention.py --apply
 ```
 
 ### 3. Compression Failures
@@ -132,13 +132,13 @@ df -h
 
 ```bash
 # Check for invalid lines
-python scripts/view_execution_telemetry.py --session <SESSION_ID>
+python3 scripts/view_execution_telemetry.py --session <SESSION_ID>
 
 # Manually inspect log file
 cat logs/execution/<SESSION_ID>.jsonl | head -20
 
 # Check for truncated/corrupted files
-python -c "
+python3 -c "
 import json
 import sys
 with open('logs/execution/<SESSION_ID>.jsonl') as f:
@@ -165,7 +165,7 @@ with open('logs/execution/<SESSION_ID>.jsonl') as f:
 
 ```bash
 # 1. Immediate cleanup (aggressive)
-python scripts/ops/telemetry_retention.py --apply \
+python3 scripts/ops/telemetry_retention.py --apply \
   --max-age-days 7 \
   --keep-last-n 50 \
   --compress-after-days 0  # Delete immediately, no compression
@@ -193,14 +193,14 @@ rm logs/execution/<OLD_SESSION_ID>.jsonl.gz
 
 ```bash
 # 1. Run retention manually
-python scripts/ops/telemetry_retention.py --apply
+python3 scripts/ops/telemetry_retention.py --apply
 
 # 2. Check cron/scheduler
 crontab -l | grep retention
 
 # 3. Add to cron if missing
 crontab -e
-# Add: 0 2 * * * cd /path/to/Peak_Trade && python scripts/ops/telemetry_retention.py --apply
+# Add: 0 2 * * * cd /path/to/Peak_Trade && python3 scripts/ops/telemetry_retention.py --apply
 ```
 
 ### Scenario 3: High Parse Error Rate (WARNING)
@@ -218,7 +218,7 @@ crontab -e
 
 ```bash
 # 1. Identify problematic sessions
-python scripts/view_execution_telemetry.py --json 2>&1 | grep -i error
+python3 scripts/view_execution_telemetry.py --json 2>&1 | grep -i error
 
 # 2. Manually inspect
 cat logs/execution/<SESSION_ID>.jsonl | tail -50
@@ -252,7 +252,7 @@ df -h
 rm logs/execution/*.tmp
 
 # 3. Re-run retention (will retry compression)
-python scripts/ops/telemetry_retention.py --apply
+python3 scripts/ops/telemetry_retention.py --apply
 
 # 4. Check permissions
 ls -la logs/execution/
@@ -266,12 +266,12 @@ ls -la logs/execution/
 
 ```bash
 # Custom disk thresholds
-python scripts/telemetry_health_check.py \
+python3 scripts/telemetry_health_check.py \
   --disk-warn-mb 1000 \
   --disk-critical-mb 1800
 
 # Custom retention thresholds
-python scripts/telemetry_health_check.py \
+python3 scripts/telemetry_health_check.py \
   --retention-warn-hours 24 \
   --retention-critical-hours 72
 ```
@@ -291,14 +291,14 @@ curl "http://127.0.0.1:8000/api/telemetry/health?root=logs/custom_execution"
 
 ```bash
 # Export metrics (example)
-python scripts/telemetry_health_check.py --json | jq '.checks[] | {name, status, value}'
+python3 scripts/telemetry_health_check.py --json | jq '.checks[] | {name, status, value}'
 ```
 
 ### Slack/PagerDuty Alerts (Future)
 
 ```bash
 # Run health check in cron, alert on non-zero exit
-python scripts/telemetry_health_check.py || \
+python3 scripts/telemetry_health_check.py || \
   curl -X POST https://hooks.slack.com/... -d '{"text": "Telemetry health check failed"}'
 ```
 
@@ -308,8 +308,8 @@ python scripts/telemetry_health_check.py || \
 
 | Frequency | Task | Command |
 |-----------|------|---------|
-| **Daily** | Retention cleanup | `python scripts/ops/telemetry_retention.py --apply` |
-| **Daily** | Health check | `python scripts/telemetry_health_check.py` |
+| **Daily** | Retention cleanup | `python3 scripts/ops/telemetry_retention.py --apply` |
+| **Daily** | Health check | `python3 scripts/telemetry_health_check.py` |
 | **Weekly** | Review dashboard | Open `/live/telemetry` |
 | **Monthly** | Manual audit | Review old sessions, disk trends |
 
@@ -328,7 +328,7 @@ python scripts/telemetry_health_check.py || \
 
 **Health Check:**
 ```bash
-python scripts/telemetry_health_check.py
+python3 scripts/telemetry_health_check.py
 ```
 
 **Dashboard:**
@@ -338,7 +338,7 @@ open http://127.0.0.1:8000/live/telemetry
 
 **Retention:**
 ```bash
-python scripts/ops/telemetry_retention.py --apply
+python3 scripts/ops/telemetry_retention.py --apply
 ```
 
 **Disk Usage:**

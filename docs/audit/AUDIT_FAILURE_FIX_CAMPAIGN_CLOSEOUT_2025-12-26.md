@@ -65,7 +65,7 @@
 | **Problem** | Formatter Drift (black vs ruff format) |
 | **Impact** | 4 PRs blockiert durch Audit failures |
 | **Detektor** | Audit-Check (`ruff format --check`) hat korrekt blockiert |
-| **Immediate Fix** | Branches mit `uv run ruff format .` reformatiert |
+| **Immediate Fix** | Branches mit `ruff format .` reformatiert |
 | **Permanent Fix** | PR #354: Tool-Alignment, black-Legacy entfernt |
 | **Outcome** | Single Source of Truth = RUFF format |
 
@@ -81,7 +81,7 @@ bash scripts/ops/check_no_black_enforcement.sh
 # ✅ PASS - No black enforcement detected
 
 # Audit formatting check
-uv run ruff format --check .
+ruff format --check .
 # ✅ PASS - All files formatted correctly
 
 # Local main branch

@@ -180,24 +180,24 @@ test_strict_mode_raises_on_invalid_config ............... PASSED
 
 ### Run All WP0C Tests
 ```bash
-uv run pytest tests/governance/test_wp0c_*.py -v
+python3 -m pytest tests/governance/test_wp0c_*.py -v
 ```
 
 ### Run Specific Test Suite
 ```bash
 # Enforce gate tests
-uv run pytest tests/governance/test_wp0c_enforce_gate.py -v
+python3 -m pytest tests/governance/test_wp0c_enforce_gate.py -v
 
 # Config validation tests
-uv run pytest tests/governance/test_wp0c_config_validation.py -v
+python3 -m pytest tests/governance/test_wp0c_config_validation.py -v
 
 # Gate architecture tests
-uv run pytest tests/governance/test_live_mode_gate.py -v
+python3 -m pytest tests/governance/test_live_mode_gate.py -v
 ```
 
 ### Run Phase 0 Integration Tests
 ```bash
-uv run pytest \
+python3 -m pytest \
   tests/execution/test_contracts_*.py \
   tests/execution/test_wp0a_smoke.py \
   tests/execution/test_wp0b_*.py \
@@ -284,19 +284,19 @@ config = {
 
 ### Linter
 ```bash
-$ uv run ruff check src/governance/ --quiet
+$ ruff check src/governance/ --quiet
 # Result: ✅ 0 errors
 ```
 
 ### Tests
 ```bash
-$ uv run pytest tests/governance/test_wp0c_*.py -v
+$ python3 -m pytest tests/governance/test_wp0c_*.py -v
 # Result: ✅ 33/33 tests passed (15 + 18)
 ```
 
 ### Integration Tests
 ```bash
-$ uv run pytest \
+$ python3 -m pytest \
     tests/execution/test_contracts_*.py \
     tests/execution/test_wp0a_smoke.py \
     tests/execution/test_wp0b_*.py \

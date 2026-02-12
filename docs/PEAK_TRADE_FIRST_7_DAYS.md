@@ -63,7 +63,7 @@ cd peak_trade
    (Details stehen in `docs/GETTING_STARTED.md` – hier nur ein Beispiel mit venv):
 
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -e .[dev]
 ```
@@ -71,7 +71,7 @@ pip install -e .[dev]
 3. **Tests laufen lassen**
 
 ```bash
-pytest
+python3 -m pytest
 ```
 
 Erwartung:
@@ -108,7 +108,7 @@ Einen ersten Backtest-Lauf ausführen und sehen, wie Ergebnisse in der Registry/
 2. **Demo-Backtest laufen lassen**
 
 ```bash
-python scripts/demo_registry_backtest.py
+python3 scripts/demo_registry_backtest.py
 ```
 
 Beobachte:
@@ -161,7 +161,7 @@ Beispiel-Ideen:
 3. **Demo-Backtest erneut laufen lassen**
 
 ```bash
-python scripts/demo_registry_backtest.py
+python3 scripts/demo_registry_backtest.py
 ```
 
 Vergleiche:
@@ -195,7 +195,7 @@ Die **Research-Pipeline v2** einmal komplett durchlaufen, um einen vollwertigen 
 Beispiel (ggf. Parameter/Names an dein Repo anpassen):
 
 ```bash
-python scripts/research_cli.py pipeline \
+python3 scripts/research_cli.py pipeline \
   --sweep-name rsi_reversion_basic \
   --config config/config.toml \
   --format both \
@@ -241,7 +241,7 @@ Einen Shadow- oder Testnet-Run über den Orchestrator starten, seinen Status pr�
 2. **Shadow-Run starten (Beispiel)**
 
 ```bash
-python scripts/testnet_orchestrator_cli.py start-shadow \
+python3 scripts/testnet_orchestrator_cli.py start-shadow \
   --strategy ma_crossover \
   --symbol BTC/EUR \
   --timeframe 1m \
@@ -253,13 +253,13 @@ Merke dir die ausgegebene **Run-ID**.
 3. **Status prüfen**
 
 ```bash
-python scripts/testnet_orchestrator_cli.py status
+python3 scripts/testnet_orchestrator_cli.py status
 ```
 
 4. **Run stoppen**
 
 ```bash
-python scripts/testnet_orchestrator_cli.py stop --run-id <DEINE_RUN_ID>
+python3 scripts/testnet_orchestrator_cli.py stop --run-id <DEINE_RUN_ID>
 ```
 
 ### Erfolgs-Check
@@ -281,19 +281,19 @@ Laufende Runs im CLI & Web-Dashboard beobachten und Alerts prüfen.
 1. **Übersicht aller Runs**
 
 ```bash
-python scripts/live_monitor_cli.py overview
+python3 scripts/live_monitor_cli.py overview
 ```
 
 2. **Details zu einem Run**
 
 ```bash
-python scripts/live_monitor_cli.py run --run-id <DEINE_RUN_ID>
+python3 scripts/live_monitor_cli.py run --run-id <DEINE_RUN_ID>
 ```
 
 3. **Follow-Modus**
 
 ```bash
-python scripts/live_monitor_cli.py follow \
+python3 scripts/live_monitor_cli.py follow \
   --run-id <DEINE_RUN_ID> \
   --interval 5
 ```
@@ -308,7 +308,7 @@ python scripts/live_monitor_cli.py follow \
 2. **Alert-Regeln einmal ausführen**
 
 ```bash
-python scripts/live_alerts_cli.py run-rules \
+python3 scripts/live_alerts_cli.py run-rules \
   --run-id <DEINE_RUN_ID> \
   --pnl-drop-threshold-pct 5.0 \
   --no-events-max-minutes 10 \
@@ -323,7 +323,7 @@ python scripts/live_alerts_cli.py run-rules \
 1. **Web-Server starten**
 
 ```bash
-python scripts/live_web_server.py
+python3 scripts/live_web_server.py
 # oder:
 # uvicorn src.live.web.app:app --host 127.0.0.1 --port 8000 --reload
 ```

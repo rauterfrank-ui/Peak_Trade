@@ -519,13 +519,13 @@ Ein **Portfolio-Backtest** ist eine Kollektion von Einzel-Backtests:
 
 ```bash
 # Portfolio-Backtest starten
-python scripts/run_portfolio_backtest.py
+python3 scripts/run_portfolio_backtest.py
 
 # Mit Tag für Registry
-python scripts/run_portfolio_backtest.py --tag weekend-research
+python3 scripts/run_portfolio_backtest.py --tag weekend-research
 
 # Mit spezifischer Allocation
-python scripts/run_portfolio_backtest.py --allocation risk_parity
+python3 scripts/run_portfolio_backtest.py --allocation risk_parity
 ```
 
 ### CLI-Argumente
@@ -561,10 +561,10 @@ run_id = log_portfolio_backtest_result(
 
 ```bash
 # Portfolio-Runs in Registry
-python scripts/list_experiments.py --run-type portfolio_backtest
+python3 scripts/list_experiments.py --run-type portfolio_backtest
 
 # Details eines Runs
-python scripts/show_experiment.py <run_id>
+python3 scripts/show_experiment.py <run_id>
 ```
 
 ---
@@ -1085,7 +1085,7 @@ print(f"Best Params: {study.best_params}")
 - 🛡️ **[Governance & Safety Overview](GOVERNANCE_AND_SAFETY_OVERVIEW.md)** – Safety-first approach
 
 ### Technical References
-- [Position Sizing & Overlays](../src/core/position_sizing.py) – Source code
+- Position Sizing & Overlays: `src/core/position_sizing.py` – Source code
 - [Vol Regime Overlay Sizer Tests](../tests/test_vol_regime_overlay_sizer.py) – Test examples
 - [Config Reference](../config.toml) – Configuration schema
 

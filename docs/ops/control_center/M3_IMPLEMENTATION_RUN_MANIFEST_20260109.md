@@ -272,7 +272,7 @@ open docs/ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md
 - [RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md](../runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md)
 
 ### Authoritative Sources
-- [AI Autonomy Layer Map & Model Assignment Matrix v1.0](../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md)
+- [AI Autonomy Layer Map & Model Assignment Matrix v1.0](../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md)
 - [Evidence Pack Template v2](../../governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md)
 - [Branch Protection Required Checks](../BRANCH_PROTECTION_REQUIRED_CHECKS.md)
 

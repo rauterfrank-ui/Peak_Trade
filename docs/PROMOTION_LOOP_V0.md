@@ -63,7 +63,7 @@ Promotion Loop (Governance)
    - v0: Genau eine Proposal pro Durchlauf
 
 4. **`materialize_promotion_proposals()`**
-   - Schreibt Artifacts nach `reports/live_promotion/<proposal_id>/`
+   - Schreibt Artifacts nach `reports&#47;live_promotion&#47;<proposal_id>&#47;`
    - `proposal_meta.json`: Metadaten
    - `config_patches.json`: Alle Patches mit Decisions
    - `OPERATOR_CHECKLIST.md`: Operator-Checkliste
@@ -72,7 +72,7 @@ Promotion Loop (Governance)
    - Optional: Nur in `bounded_auto` Modus
    - Schreibt akzeptierte numerische Patches in TOML
    - Respektiert AutoApplyBounds (min/max/step)
-   - Pfad: `config&sol;live_overrides&sol;auto.toml (planned)` (konfigurierbar)
+  - Pfad: `config&#47;live_overrides&#47;auto.toml` (konfigurierbar)
 
 ## Nutzung
 

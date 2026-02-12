@@ -23,7 +23,7 @@ pip install optuna psycopg2-binary
 
 ```bash
 # Basic: Optimize MA Crossover für Sharpe Ratio
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --n-trials 100
 
@@ -52,7 +52,7 @@ open http://localhost:5000
 **Ziel**: Finde Parameter, die Sharpe Ratio maximieren.
 
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --objectives sharpe \
     --n-trials 100
@@ -80,7 +80,7 @@ Best Trial:
 **Ziel**: Finde Parameter, die Sharpe **und** Drawdown optimieren (Pareto Front).
 
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --objectives sharpe,max_drawdown \
     --n-trials 200
@@ -116,14 +116,14 @@ Trial #87 (Rank 2):
 
 ```bash
 # Initial study (100 trials)
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --storage sqlite:///optuna_studies.db \
     --study-name ma_crossover_v1 \
     --n-trials 100
 
 # Continue study (50 more trials)
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --storage sqlite:///optuna_studies.db \
     --study-name ma_crossover_v1 \
@@ -144,7 +144,7 @@ python scripts/run_optuna_study.py \
 **Ziel**: Mehrere Trials gleichzeitig laufen lassen (4x schneller).
 
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --storage sqlite:///optuna_studies.db \
     --study-name ma_crossover_parallel \
@@ -168,7 +168,7 @@ python scripts/run_optuna_study.py \
 **Ziel**: Schlechte Trials früh abbrechen (mehr Trials in gleicher Zeit).
 
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --pruner median \
     --n-trials 100
@@ -203,7 +203,7 @@ experiment_name = "peak_trade_optuna"
 
 **Run Study**:
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --n-trials 100
 ```
@@ -252,8 +252,8 @@ open http://localhost:5000
 - `--objectives <list>`: Comma-separated objectives (default: `sharpe`)
 - `--storage <uri>`: Storage URI (default: in-memory)
   - In-Memory: (omit `--storage`)
-  - SQLite: `sqlite:///optuna_studies.db`
-  - PostgreSQL: `postgresql://user:pass@localhost/optuna`
+  - SQLite: `sqlite:&#47;&#47;&#47;optuna_studies.db`
+  - PostgreSQL: `postgresql:&#47;&#47;user:pass@localhost&#47;optuna`
 - `--pruner <type>`: Pruner type (default: `median`)
   - Choices: `none`, `median`, `hyperband`
 - `--sampler <type>`: Sampler type (default: `tpe`)
@@ -309,7 +309,7 @@ Study Statistics:
 
 ### CSV Export
 
-**Location**: `reports/optuna_studies/<study_name>.csv`
+**Location**: `reports&#47;optuna_studies&#47;<study_name>.csv`
 
 **Columns**:
 - `number`: Trial number
@@ -337,7 +337,7 @@ print(df.head())
 
 **Requires**: `pip install optuna[visualization]`
 
-**Location**: `reports/optuna_studies/<study_name>_viz/`
+**Location**: `reports&#47;optuna_studies&#47;<study_name>_viz&#47;`
 
 **Files**:
 - `history.html`: Optimization history (objective value over trials)
@@ -405,7 +405,7 @@ class MyStrategy(BaseStrategy):
 
 **Run Optimization**:
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy my_strategy \
     --n-trials 100
 ```
@@ -482,12 +482,12 @@ pip install optuna
 
 ```bash
 # First run: 10-20 trials für Quick-Test
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --n-trials 10
 
 # If successful: 100-200 trials für Production
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --n-trials 100
 ```
@@ -498,7 +498,7 @@ python scripts/run_optuna_study.py \
 
 ```bash
 # Always use storage for studies > 50 trials
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --storage sqlite:///optuna_studies.db \
     --study-name ma_crossover_v1 \
@@ -532,7 +532,7 @@ backend = "mlflow"
 
 ```bash
 # Always use pruning für studies > 50 trials
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --pruner median \
     --n-trials 100
@@ -549,7 +549,7 @@ python scripts/run_optuna_study.py \
 
 ```bash
 # Optimize for Sharpe AND Drawdown (not just Sharpe)
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --objectives sharpe,max_drawdown \
     --n-trials 200

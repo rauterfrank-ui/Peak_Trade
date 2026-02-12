@@ -112,21 +112,21 @@ It is intended as an immutable evidence snapshot for operations and audit purpos
 ### Tests
 
 ```bash
-$ uv run pytest tests/execution/test_wp0d_*.py -q
+$ python3 -m pytest tests/execution/test_wp0d_*.py -q
 ===== 18 passed in 0.09s =====
 ```
 
 ### Linting
 
 ```bash
-$ uv run ruff check src/execution/ledger_mapper.py src/execution/reconciliation.py
+$ ruff check src/execution/ledger_mapper.py src/execution/reconciliation.py
 All checks passed!
 ```
 
 ### Imports
 
 ```bash
-$ python -c "from src.execution.ledger_mapper import EventToLedgerMapper; from src.execution.reconciliation import ReconciliationEngine; print('OK')"
+$ python3 -c "from src.execution.ledger_mapper import EventToLedgerMapper; from src.execution.reconciliation import ReconciliationEngine; print('OK')"
 OK
 ```
 
@@ -196,13 +196,13 @@ git switch main
 git pull --ff-only
 
 # WP0D Tests
-uv run pytest tests/execution/test_wp0d_*.py -v
+python3 -m pytest tests/execution/test_wp0d_*.py -v
 
 # Linting
-uv run ruff check src/execution/ledger_mapper.py src/execution/reconciliation.py
+ruff check src/execution/ledger_mapper.py src/execution/reconciliation.py
 
 # Import Check
-python -c "from src.execution.ledger_mapper import EventToLedgerMapper; from src.execution.reconciliation import ReconciliationEngine; print('WP0D OK')"
+python3 -c "from src.execution.ledger_mapper import EventToLedgerMapper; from src.execution.reconciliation import ReconciliationEngine; print('WP0D OK')"
 
 # Policy Scan (local)
 grep -r "enable_live_trading" src/execution/ledger_mapper.py src/execution/reconciliation.py || echo "Clean"

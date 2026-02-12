@@ -298,7 +298,7 @@ def query(...):
 
 ```bash
 # Alle Knowledge Tests
-uv run pytest tests/test_webui_knowledge_endpoints.py tests/test_knowledge_readonly_gating.py -v
+python3 -m pytest tests/test_webui_knowledge_endpoints.py tests/test_knowledge_readonly_gating.py -v
 
 # Ergebnis:
 # ===== 86 passed in 75.32s (0:01:15) =====
@@ -449,16 +449,16 @@ KNOWLEDGE_WEB_WRITE_ENABLED=false
 cd /Users/frnkhrz/Peak_Trade
 
 # Alle Knowledge Tests
-uv run pytest tests/test_knowledge*.py -v
+python3 -m pytest tests/test_knowledge*.py -v
 
 # Nur WebUI Endpoint Tests
-uv run pytest tests/test_webui_knowledge_endpoints.py -v
+python3 -m pytest tests/test_webui_knowledge_endpoints.py -v
 
 # Nur Readonly Gating Tests
-uv run pytest tests/test_knowledge_readonly_gating.py -v
+python3 -m pytest tests/test_knowledge_readonly_gating.py -v
 
 # Mit Coverage
-uv run pytest tests/test_knowledge*.py --cov=src.knowledge --cov=src.webui --cov-report=html
+python3 -m pytest tests/test_knowledge*.py --cov=src.knowledge --cov=src.webui --cov-report=html
 ```
 
 ### Manuelle Smoke Tests
@@ -477,10 +477,10 @@ curl http://127.0.0.1:8000/api/knowledge/stats | jq .
 
 ```bash
 # Ruff Check (Linting)
-uv run ruff check src/webui/knowledge_api.py src/webui/services/knowledge_service.py
+ruff check src/webui/knowledge_api.py src/webui/services/knowledge_service.py
 
 # Ruff Format
-uv run ruff format src/webui/knowledge_api.py src/webui/services/knowledge_service.py
+ruff format src/webui/knowledge_api.py src/webui/services/knowledge_service.py
 
 # Type Checking (optional)
 # mypy src/webui/knowledge_api.py src/webui/services/knowledge_service.py
@@ -592,7 +592,7 @@ TOTAL                                      86 passed   74.20s  ✅
 ### Contact
 
 Bei Fragen oder Problemen:
-1. Prüfe Tests: `uv run pytest tests/test_knowledge*.py -v`
+1. Prüfe Tests: `python3 -m pytest tests&#47;test_knowledge*.py -v`
 2. Prüfe Logs: `uvicorn src.webui.app:app --log-level debug`
 3. Prüfe Smoke Tests: `KNOWLEDGE_API_SMOKE_TESTS.md`
 

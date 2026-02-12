@@ -148,9 +148,9 @@ class RegimeAnalysisResult:
 
 ```bash
 # Subcommands
-python scripts/analyze_regimes.py single    # Einzelnes Experiment
-python scripts/analyze_regimes.py strategy  # Strategie-Analyse
-python scripts/analyze_regimes.py sweep     # Sweep-Robustheit
+python3 scripts/analyze_regimes.py single    # Einzelnes Experiment
+python3 scripts/analyze_regimes.py strategy  # Strategie-Analyse
+python3 scripts/analyze_regimes.py sweep     # Sweep-Robustheit
 ```
 
 ---
@@ -160,7 +160,7 @@ python scripts/analyze_regimes.py sweep     # Sweep-Robustheit
 ### Beispiel 1: Einzelnes Experiment analysieren
 
 ```bash
-python scripts/analyze_regimes.py single \
+python3 scripts/analyze_regimes.py single \
     --id abc12345-1234-5678-abcd-1234567890ab \
     --verbose
 ```
@@ -206,7 +206,7 @@ low_vol_uptrend             8.0%     292      0.0045      2.85    -3.2%
 ### Beispiel 2: Strategie-Analyse über mehrere Backtests
 
 ```bash
-python scripts/analyze_regimes.py strategy \
+python3 scripts/analyze_regimes.py strategy \
     --strategy ma_crossover \
     --run-type backtest \
     --limit 20
@@ -234,7 +234,7 @@ high_vol_downtrend           20          -0.28          0.82       8/20
 ### Beispiel 3: Sweep-Robustheits-Check
 
 ```bash
-python scripts/analyze_regimes.py sweep \
+python3 scripts/analyze_regimes.py sweep \
     --sweep-name ma_crossover_opt_v1 \
     --metric sharpe \
     --top-n 20 \
@@ -276,12 +276,12 @@ Analysiere Top-20 Runs nach sharpe
 
 ```bash
 # CSV-Export
-python scripts/analyze_regimes.py strategy \
+python3 scripts/analyze_regimes.py strategy \
     --strategy rsi_reversion \
     --export-csv out/rsi_regime_analysis.csv
 
 # JSON-Export
-python scripts/analyze_regimes.py single \
+python3 scripts/analyze_regimes.py single \
     --id abc12345-... \
     --export-json out/experiment_regime.json
 ```
@@ -301,19 +301,19 @@ python scripts/analyze_regimes.py single \
 **Phase 20 (Sweeps)**:
 ```bash
 # Erst Sweep laufen lassen
-python scripts/run_sweep_strategy.py --strategy ma_crossover
+python3 scripts/run_sweep_strategy.py --strategy ma_crossover
 
 # Dann Robustheits-Check
-python scripts/analyze_regimes.py sweep --sweep-name ma_crossover_opt_v1
+python3 scripts/analyze_regimes.py sweep --sweep-name ma_crossover_opt_v1
 ```
 
 **Phase 22 (Explorer)**:
 ```bash
 # Top-Runs nach Sharpe finden
-python scripts/experiments_explorer.py top --metric sharpe --top-n 10
+python3 scripts/experiments_explorer.py top --metric sharpe --top-n 10
 
 # Dann einzeln analysieren
-python scripts/analyze_regimes.py single --id <run-id>
+python3 scripts/analyze_regimes.py single --id <run-id>
 ```
 
 **Phase 21 (Reporting v2)**:

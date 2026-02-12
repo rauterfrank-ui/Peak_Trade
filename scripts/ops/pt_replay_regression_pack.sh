@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Use same interpreter as pytest when set (avoids CI env drift)
+PY="${PEAK_TRADE_PYTHON:-python3}"
+
 usage() {
   cat <<'EOF'
 pt_replay_regression_pack.sh
@@ -70,7 +73,7 @@ _repo_root_cd() {
 }
 
 _abspath() {
-  python3 - "$1" <<'PY'
+  "${PY}" - "$1" <<'PY'
 import sys
 from pathlib import Path
 print(str(Path(sys.argv[1]).expanduser().resolve()))
@@ -78,7 +81,7 @@ PY
 }
 
 _relpath() {
-  python3 - "$1" "$2" <<'PY'
+  "${PY}" - "$1" "$2" <<'PY'
 import os
 import sys
 print(os.path.relpath(sys.argv[1], start=sys.argv[2]))
@@ -86,7 +89,7 @@ PY
 }
 
 _manifest_created_at_utc() {
-  python3 - "$1" <<'PY'
+  "${PY}" - "$1" <<'PY'
 import json
 import sys
 from pathlib import Path
@@ -105,7 +108,7 @@ PY
 }
 
 _normalize_iso8601_or_die() {
-  python3 - "$1" <<'PY'
+  "${PY}" - "$1" <<'PY'
 import sys
 from datetime import datetime
 
@@ -215,7 +218,7 @@ case "${resolve_datarefs}" in
 esac
 
 _require_cmd git
-_require_cmd python3
+_require_cmd "${PY}"
 
 _repo_root_cd
 
@@ -248,7 +251,7 @@ if [[ -n "${bundle}" ]]; then
   # Provide a stable local path under OUT_DIR.
   rm -rf "${out_dir}/bundle"
   if [[ "${bundle_mode}" == "copy" ]]; then
-    python3 - "${bundle}" "${out_dir}/bundle" <<'PY'
+    "${PY}" - "${bundle}" "${out_dir}/bundle" <<'PY'
 import shutil
 import sys
 from pathlib import Path
@@ -279,7 +282,7 @@ else
   rm -rf "${tmp_root}"
   mkdir -p "${tmp_root}"
 
-  build_cmd=(python3 scripts/execution/pt_replay_pack.py build
+  build_cmd=("${PY}" scripts/execution/pt_replay_pack.py build
     --run-id-or-dir "${run_id_or_dir}"
     --out "${tmp_root}"
     --created-at-utc "${generated_at_utc}"
@@ -335,7 +338,7 @@ summary_path="${out_dir}/reports/compare_summary.min.json"
 } > "${log_path}"
 
 set +e
-python3 scripts/execution/pt_replay_pack.py validate --bundle "${bundle_dir}"
+"${PY}" scripts/execution/pt_replay_pack.py validate --bundle "${bundle_dir}"
 validate_rc=$?
 set -e
 
@@ -343,7 +346,7 @@ set -e
   printf '%s\n' "validate_exit=${validate_rc}"
 } >> "${log_path}"
 
-compare_cmd=(python3 scripts/execution/pt_replay_pack.py compare
+compare_cmd=("${PY}" scripts/execution/pt_replay_pack.py compare
   --bundle "${bundle_dir}"
   --generated-at-utc "${generated_at_utc}"
   --out "${report_path}"
@@ -368,7 +371,7 @@ set -e
   printf '%s\n' "compare_exit=${compare_rc}"
 } >> "${log_path}"
 
-consume_cmd=(python3 scripts/ops/pt_compare_consume.py
+consume_cmd=("${PY}" scripts/ops/pt_compare_consume.py
   --report "${report_path}"
   --out "${summary_path}"
   --mode ci

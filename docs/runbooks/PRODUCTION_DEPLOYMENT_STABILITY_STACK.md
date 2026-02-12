@@ -26,12 +26,12 @@ gh pr checks <PR_NUMBER> --watch
 ### 2) Run Local Validation
 ```bash
 # Full test suite
-uv run pytest -q
+python3 -m pytest -q
 
 # Specific stability smoke tests
-uv run pytest tests/test_stability_smoke.py -v
-uv run pytest tests/test_cache_manifest.py -v
-uv run pytest tests/test_repro.py -v
+python3 -m pytest tests/test_stability_smoke.py -v
+python3 -m pytest tests/test_cache_manifest.py -v
+python3 -m pytest tests/test_repro.py -v
 ```
 
 **Expected:** All tests pass, no errors
@@ -41,13 +41,13 @@ uv run pytest tests/test_repro.py -v
 #### Cache Manifest System
 ```bash
 # Verify module imports
-python -c "from src.data.cache_manifest import CacheManifest; print('✅ CacheManifest available')"
+python3 -c "from src.data.cache_manifest import CacheManifest; print('✅ CacheManifest available')"
 ```
 
 #### Reproducibility Helpers
 ```bash
 # Verify repro utilities
-python -c "from src.core.repro import get_git_sha, stable_hash_dict; print('✅ Repro tools available')"
+python3 -c "from src.core.repro import get_git_sha, stable_hash_dict; print('✅ Repro tools available')"
 ```
 
 ### 4) Post-Deployment Verification
