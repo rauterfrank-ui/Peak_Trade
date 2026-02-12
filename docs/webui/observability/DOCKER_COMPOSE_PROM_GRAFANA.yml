@@ -15,7 +15,7 @@ services:
         "sim",
       ]
     ports:
-      - "9109:9109"
+      - "127.0.0.1:9109:9109"
     volumes:
       # Repo-relative from this compose file dir (docs/webui/observability)
       - ../../../scripts/obs:/app/scripts/obs:ro
@@ -26,21 +26,20 @@ services:
     volumes:
       - ./PROMETHEUS_SCRAPE_EXAMPLE.yml:/etc/prometheus/prometheus.yml:ro
     ports:
-      - "9091:9090"
+      - "127.0.0.1:9091:9090"
     # Note: Prometheus scrapes the host-side Peak_Trade web server via
     # host.docker.internal:8000 (see PROMETHEUS_SCRAPE_EXAMPLE.yml).
 
   grafana:
     image: grafana/grafana:latest
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     depends_on:
       - shadow_mvs_exporter
       - prometheus
     environment:
-      # Local dev defaults (watch-only). Ensures the login matches the docs.
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:?set GF_SECURITY_ADMIN_PASSWORD}
       # Provision Prometheus datasource; see ./grafana/provisioning/datasources/datasources.yaml
     volumes:
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro

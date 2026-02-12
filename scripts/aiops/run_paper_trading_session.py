@@ -1,0 +1,107 @@
+#!/usr/bin/env python3
+"""P7 — Paper Trading Session Runner (deterministic, no exchange)."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Dict, List
+
+_repo_root = Path(__file__).resolve().parents[2]
+if str(_repo_root) not in sys.path:
+    sys.path.insert(0, str(_repo_root))
+
+from src.aiops.p4c.evidence import build_manifest, write_json
+from src.sim.paper.models import Order
+from src.sim.paper.simulator import FeeModel, PaperAccount, PaperTradingSimulator
+from src.sim.paper.slippage import SlippageModel
+
+
+def utc_now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def load_json(p: Path) -> Dict[str, Any]:
+    with p.open("r", encoding="utf-8") as f:
+        o = json.load(f)
+    if not isinstance(o, dict):
+        raise TypeError(f"expected dict json: {p}")
+    return o
+
+
+def ensure_outdir(repo: Path, run_id: str) -> Path:
+    rid = run_id.strip() or datetime.now().strftime("%Y%m%d_%H%M%S")
+    out = repo / "out" / "ops" / "p7" / f"paper_{rid}"
+    out.mkdir(parents=True, exist_ok=True)
+    return out.resolve()
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--spec", type=str, required=True, help="Paper run spec JSON")
+    ap.add_argument("--run-id", type=str, default="", help="Deterministic run id (optional)")
+    ap.add_argument("--outdir", type=str, default="", help="Override output dir (optional)")
+    ap.add_argument("--evidence", type=int, default=1, help="Write evidence manifest (1 default)")
+    args = ap.parse_args()
+
+    repo = _repo_root
+    spec_path = (
+        Path(args.spec).expanduser().resolve()
+        if Path(args.spec).is_absolute()
+        else (repo / args.spec).resolve()
+    )
+    spec = load_json(spec_path)
+
+    outdir = (
+        Path(args.outdir).expanduser().resolve()
+        if args.outdir
+        else ensure_outdir(repo, args.run_id)
+    )
+    outdir.mkdir(parents=True, exist_ok=True)
+
+    acct = PaperAccount(cash=float(spec["initial_cash"]))
+    sim = PaperTradingSimulator(
+        fee_model=FeeModel(rate=float(spec.get("fee_rate", 0.0))),
+        slippage=SlippageModel(bps=float(spec.get("slippage_bps", 0.0))),
+    )
+
+    mids: Dict[str, float] = {k: float(v) for k, v in (spec.get("mid_prices") or {}).items()}
+    fills: List[Dict[str, Any]] = []
+
+    for o in spec.get("orders") or []:
+        order = Order(symbol=str(o["symbol"]), side=str(o["side"]), qty=float(o["qty"]))
+        mid = mids[order.symbol]
+        f = sim.execute(acct, order, mid_price=mid)
+        fills.append(
+            {"symbol": f.symbol, "side": f.side, "qty": f.qty, "price": f.price, "fee": f.fee}
+        )
+
+    cash, pos = sim.reconcile(acct)
+
+    out_fills = outdir / "fills.json"
+    out_acct = outdir / "account.json"
+    write_json(out_fills, {"schema_version": "p7.fills.v0", "fills": fills})
+    write_json(out_acct, {"schema_version": "p7.account.v0", "cash": cash, "positions": pos})
+
+    printed: List[Path] = [out_fills, out_acct]
+    if int(args.evidence) == 1:
+        meta = {
+            "kind": "p7_paper_manifest",
+            "schema_version": "p7.paper_run.v0",
+            "created_at_utc": utc_now_iso(),
+        }
+        manifest = build_manifest(printed, meta, base_dir=outdir)
+        out_manifest = outdir / "evidence_manifest.json"
+        write_json(out_manifest, manifest)
+        printed.append(out_manifest)
+
+    for p in printed:
+        print(str(p))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

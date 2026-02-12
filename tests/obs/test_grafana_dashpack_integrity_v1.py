@@ -80,8 +80,9 @@ def test_dashpack_ds_vars_hidden_and_defaults_stable() -> None:
         assert t.get("hide") == 0, f"{p} var ds should be visible (hide=0)"
         cur = t.get("current") or {}
         assert isinstance(cur, dict)
-        # Contract: default to local Prometheus for deterministic local UX.
-        assert cur.get("value") == "prom_local_9092", f"{p} var ds default mismatch"
+        # Contract: default to local Prometheus for deterministic local UX (DS invariant).
+        expected_ds = "prom_local_9092"
+        assert cur.get("value") == expected_ds, f"{p} var ds default mismatch"
 
 
 def test_operator_home_links_to_compare_overview() -> None:

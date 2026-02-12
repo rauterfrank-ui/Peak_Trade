@@ -5,7 +5,7 @@ Loads and parses config/model_registry.toml into structured Python objects.
 
 Reference:
 - config/model_registry.toml
-- docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
+- docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
 """
 
 from dataclasses import dataclass, field

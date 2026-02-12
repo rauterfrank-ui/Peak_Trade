@@ -157,3 +157,24 @@ suppress_critical_on_ack = false
 # enabled = true
 # url = "https://hooks.example.com/telemetry-alerts"
 # headers = '{"Authorization": "Bearer YOUR_SECRET_TOKEN"}'
+
+
+# =============================================================================
+# ESCALATION (stub / PagerDuty)
+# =============================================================================
+
+[escalation]
+# Default-safe. No network calls.
+provider = "stub"
+
+# Stub outbox for offline review / replay
+outbox_path = "data/escalation/outbox.jsonl"
+
+[pagerduty]
+# HARD SAFETY DEFAULT: false. allow_network=true = explicit risk acceptance (Telemetry-only here; PR-10 can gate behind live later).
+allow_network = false
+endpoint = "https://events.pagerduty.com/v2/enqueue"
+timeout_seconds = 5.0
+# Retries/backoff small and deterministic; no infinite loops.
+max_retries = 2
+backoff_seconds = 1.0

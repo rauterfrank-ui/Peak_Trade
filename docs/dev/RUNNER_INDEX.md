@@ -43,11 +43,12 @@ Wir gewichten Signale in dieser Reihenfolge:
 | experiments_explorer.py | `scripts/experiments_explorer.py` | Explore experiments: list, top, details, sweep-summary, sweeps, compare, export | `python3 scripts&#47;experiments_explorer.py --help` | experiment database/results | queries, comparisons, exports (reads results/) | 🟡 PARTIAL | LATER |
 | testnet_orchestrator_cli.py | `scripts/testnet_orchestrator_cli.py` | Testnet orchestration: start-shadow, start-testnet, status, stop, tail | `python3 scripts&#47;testnet_orchestrator_cli.py --help` | testnet configs, orchestration commands | run_id, orchestration logs (partial results/) | 🟡 PARTIAL | LATER |
 | run_offline_realtime_ma_crossover.py | `scripts/run_offline_realtime_ma_crossover.py` | Run offline realtime MA crossover with n-regimes | `python3 scripts&#47;run_offline_realtime_ma_crossover.py --help` | data file, n-regimes param | run_id, backtest results (partial results/) | 🟡 PARTIAL | LATER |
+| run_l3_trade_plan_advisory.py | `scripts/aiops/run_l3_trade_plan_advisory.py` | L3 Trade Plan Advisory: pointer-only inputs, files-only tooling, deterministic manifest + artifacts | `python3 scripts&#47;aiops&#47;run_l3_trade_plan_advisory.py --help` | pointer-only input (FeatureView/EvidenceCapsule style), --out | run_id, evidence_pack_id, run_manifest.json, operator_output.md (no raw) | 🟡 PARTIAL | LATER |
 
 ### Auto-Curation Notes
 
-**Analysiert:** 12 Tier-A Runner
-**Readiness:** 1 READY, 5 PARTIAL, 6 TODO
+**Analysiert:** 13 Tier-A Runner
+**Readiness:** 1 READY, 6 PARTIAL, 6 TODO
 
 **Kuratierungs-Details:**
 - ✅ Alle Runner haben `--help` Support (außer `run_promotion_proposal_cycle.py`)

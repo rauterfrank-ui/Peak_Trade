@@ -35,7 +35,7 @@
 ### Step 1: Read the Authoritative Matrix
 
 ```bash
-cat docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
+cat docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
 ```
 
 **Key Sections:**
@@ -137,7 +137,7 @@ assert validation.status == "APPROVED"
 
 ```bash
 # Read Matrix
-grep "L2" docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
+grep "L2" docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
 
 # Or use config
 python3 -c "

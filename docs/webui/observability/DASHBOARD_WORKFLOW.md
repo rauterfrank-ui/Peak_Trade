@@ -236,7 +236,7 @@ docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOS
 ### Grafana Health
 
 ```bash
-curl -sS -u admin:admin http://127.0.0.1:3000/api/health
+curl -sS -u "$GRAFANA_AUTH" http://127.0.0.1:3000/api/health
 ```
 
 Erwartung: `"database": "ok"`.
@@ -244,7 +244,7 @@ Erwartung: `"database": "ok"`.
 ### Dashboards sichtbar?
 
 ```bash
-curl -sS -u admin:admin -G http://127.0.0.1:3000/api/search --data-urlencode type=dash-db | python3 -m json.tool | head -n 120
+curl -sS -u "$GRAFANA_AUTH" -G http://127.0.0.1:3000/api/search --data-urlencode type=dash-db | python3 -m json.tool | head -n 120
 ```
 
 Erwartung: eine Liste mit z.B. `peaktrade-labeled-local` und `peaktrade-overview`.
@@ -252,7 +252,7 @@ Erwartung: eine Liste mit z.B. `peaktrade-labeled-local` und `peaktrade-overview
 ### Default Datasource ist `prometheus-local`?
 
 ```bash
-curl -sS -u admin:admin http://127.0.0.1:3000/api/datasources | python3 -m json.tool | head -n 220
+curl -sS -u "$GRAFANA_AUTH" http://127.0.0.1:3000/api/datasources | python3 -m json.tool | head -n 220
 ```
 
 Erwartung: Datasource `prometheus-local` mit `"isDefault": true` und URL http://host.docker.internal:9092.

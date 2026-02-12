@@ -8,7 +8,7 @@ docker compose up -d --remove-orphans
 
 echo ""
 echo "✅ Observability stack is up"
-echo "Grafana:     http://localhost:3000 (admin/admin)"
+echo "Grafana:     http://localhost:3000 (login: .env or GRAFANA_AUTH=user:pass)"
 echo "Prometheus:  http://localhost:9090"
 echo "Tempo:       http://localhost:3200"
 echo "Loki:        http://localhost:3100"

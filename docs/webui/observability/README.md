@@ -29,13 +29,20 @@ bash scripts/obs/shadow_mvs_local_down.sh
 ```
 
 URLs:
-- Grafana: http:&#47;&#47;127.0.0.1:3000 (admin/admin)
+- Grafana: http:&#47;&#47;127.0.0.1:3000 (Login: Credentials via `.env` oder `GRAFANA_AUTH=user:pass`, siehe Abschnitt Credentials)
 - Prometheus-local: http:&#47;&#47;127.0.0.1:9092
 - Shadow-MVS Exporter: http:&#47;&#47;127.0.0.1:9109&#47;metrics
 
 Relevante Compose-Files:
 - docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml
 - docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml
+
+### Credentials (Grafana Login)
+
+- **Kein Default-Passwort im Repo.** Compose erwartet `GF_SECURITY_ADMIN_PASSWORD` (z.B. aus lokaler `.env`).
+- **Lokale `.env`** (nicht committen): `GF_SECURITY_ADMIN_USER=admin`, `GF_SECURITY_ADMIN_PASSWORD=<dein Passwort>`, optional `GRAFANA_AUTH=admin:<dein Passwort>` für Verify-Skripte.
+- **Verify-Skripte** benötigen `GRAFANA_AUTH=user:pass` oder `GRAFANA_TOKEN`; bei gesetzter `.env` können sie Auth aus `GF_SECURITY_ADMIN_USER` + `GF_SECURITY_ADMIN_PASSWORD` ableiten.
+- **401 / Auth fehlgeschlagen:** Credentials prüfen (`.env` / `GRAFANA_AUTH`); wenn korrekt und weiter 401 → Volume-Drift (Reset nur dev-only: `grafana_local_down.sh` + `grafana_local_up.sh`).
 
 ## AI Live
 
@@ -123,6 +130,24 @@ lsof -nP -iTCP:9110 -sTCP:LISTEN
 
 - Stoppe den Prozess, der `:9110` belegt (empfohlen) und starte dann den Exporter erneut.
 - Nicht empfohlen: Exporter auf anderem Port laufen lassen **und** Prometheus-Scrape-Config explizit anpassen.
+
+**Exporter wieder starten (Restart):** Wenn der ai_live Exporter nicht läuft und Grafana/Prometheus daher keine ai_* Metriken zeigen, zuerst den Exporter auf :9110 bringen.
+
+Deterministisch (ohne uv, ohne globales pip): repo-lokales venv anlegen und dann Restart-Skript nutzen (das Skript verwendet automatisch `.venv_obs&#47;bin&#47;python`, falls vorhanden):
+
+```bash
+# Einmalig: venv anlegen (idempotent)
+python3 -m venv .venv_obs
+. .venv_obs/bin/activate
+python -m pip install -U pip wheel
+python -m pip install prometheus-client
+deactivate
+
+# Exporter starten/neu starten
+./scripts/obs/ai_live_restart.sh 9110
+```
+
+Das Skript beendet ggf. einen bestehenden Listener auf :9110 und startet `ai_live_exporter.py` im Hintergrund (Log: `scripts&#47;obs&#47;.runtime&#47;ai_live_restart.log`). Danach Prometheus-Scrape prüfen: `up{job="ai_live"}` sollte 1 werden. Optional: `PY_CMD` setzen, um eine andere Python-Exe zu erzwingen (z. B. `PY_CMD='&#47;path&#47;to&#47;venv&#47;bin&#47;python'`).
 
 ### Start (Exporter lokal)
 
@@ -274,7 +299,7 @@ Der Exporter setzt `run_id` pro Event aus:
 
 - **AI_LIVE_ExporterDown**
   - Bedeutung: `up{job="ai_live"} == 0` → Exporter wird nicht gescrapt.
-  - Sofort: Port Contract v1 prüfen (`:9110`), Exporter-Metrics direkt öffnen (`http://127.0.0.1:9110/metrics`), Port-Konflikt prüfen:
+  - Sofort: Port Contract v1 prüfen (`:9110`), Exporter-Metrics direkt öffnen (`http:&#47;&#47;127.0.0.1:9110&#47;metrics`), Port-Konflikt prüfen:
 
 ```bash
 lsof -nP -iTCP:9110 -sTCP:LISTEN
@@ -364,7 +389,8 @@ Script: `scripts&#47;obs&#47;grafana_verify_v2.sh`
 
 Env Overrides:
 - `GRAFANA_URL` (default `http:&#47;&#47;127.0.0.1:3000`)
-- `GRAFANA_AUTH` (default `admin:admin`)
+- `GRAFANA_AUTH` (Format `user:pass`; **erforderlich** für Verify-Skripte — setzen oder aus `.env` / `GF_SECURITY_ADMIN_USER`+`GF_SECURITY_ADMIN_PASSWORD` ableiten)
+- `GRAFANA_TOKEN` (alternativ zu GRAFANA_AUTH, wo unterstützt)
 - `PROM_URL` (default `http:&#47;&#47;127.0.0.1:9092`)
 - `VERIFY_OUT_DIR` (optional)
 
@@ -408,8 +434,9 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 curl -fsS http://127.0.0.1:9092/-/ready
 curl -fsS http://127.0.0.1:9092/api/v1/targets | python3 -m json.tool | head -n 120
 curl -fsS http://127.0.0.1:9109/metrics | head -n 40
-curl -fsS -u admin:admin http://127.0.0.1:3000/api/health
+curl -fsS -u \"\$GRAFANA_AUTH\" http://127.0.0.1:3000/api/health
 ```
+(Setze vorher `export GRAFANA_AUTH=user:pass` oder nutze Werte aus `.env`.)
 
 - Golden Smoke Pattern (Prometheus Query deterministisch: `--out` + Parse aus Datei):
 
@@ -435,8 +462,8 @@ Snapshot-Debug (keine Watch-Loops):
 # Status
 docker compose -p peaktrade-grafana-local -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml ps
 
-# Grafana health
-curl -fsS -u admin:admin http://127.0.0.1:3000/api/health
+# Grafana health (GRAFANA_AUTH=user:pass aus .env setzen)
+curl -fsS -u \"\$GRAFANA_AUTH\" http://127.0.0.1:3000/api/health
 
 # Provisioning mounts (im Container)
 docker compose -p peaktrade-grafana-local -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml exec grafana sh -lc 'ls -la /etc/grafana/provisioning/dashboards /etc/grafana/provisioning/datasources /etc/grafana/dashboards'
@@ -501,6 +528,12 @@ docker compose -p peaktrade-grafana-local -f docs/webui/observability/DOCKER_COM
   - docs/webui/observability/grafana/dashboards/http/peaktrade-labeled-local.json
 - Hinweis: Grafana `label_values(...)` (Variable Queries) vs PromQL ist in `DASHBOARD_WORKFLOW.md` im Abschnitt „Grafana Variable Queries vs PromQL“ erklärt.
 
+## Metrics-Port 9111 — genau ein Modus (choose exactly one)
+
+- **metricsd** nutzt die Umgebungsvariable **`PEAK_TRADE_METRICSD_PORT`** (Default: 9111) und bindet exklusiv auf diesen Port.
+- **Session-HTTP** (in-process /metrics pro Session) darf **nicht** auf demselben Port laufen wie metricsd.
+- **Bei Konflikt:** Ein Prozess, der den Port nicht binden kann, beendet sich mit Fehlermeldung (z. B. `RuntimeError: Port … is already in use`). So wird vermieden, dass zwei Dienste denselben Port teilen.
+
 ## Ports & Networking (wichtig)
 
 - **Grafana UI (Host)**: http:&#47;&#47;localhost:3000
@@ -528,3 +561,7 @@ Begleitende Specs/Contracts:
 - docs/webui/DASHBOARD_GOVERNANCE_NO_LIVE.md
 - docs/webui/DASHBOARD_DATA_CONTRACT_OBS_v1.md
 - docs/webui/GRAFANA_DASHBOARD_SPEC_PEAK_TRADE_OBS_v1.md
+
+## Runbooks
+
+- **Runbook (Grafana Dashboard Setup):** `docs&#47;webui&#47;observability&#47;RUNBOOK_Grafana_Dashboard_Setup.md`

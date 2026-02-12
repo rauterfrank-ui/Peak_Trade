@@ -26,6 +26,7 @@ import pandas as pd
 import numpy as np
 
 # Import Data-Layer Komponenten
+from tests.utils.dt import normalize_dt_index
 from src.data import (
     DataNormalizer,
     CsvLoader,
@@ -190,8 +191,10 @@ class TestNaNValueHandling:
         assert loaded["open"].isna().sum() == 1
         assert loaded["close"].isna().sum() == 1
 
-        # Check ohne check_freq (Parquet kann freq-Metadata verlieren)
-        pd.testing.assert_frame_equal(df, loaded, check_freq=False)
+        # Check ohne check_freq (Parquet kann freq-Metadata verlieren); Index ns für Roundtrip-Vergleich
+        expected = normalize_dt_index(df, ensure_utc=True)
+        got = normalize_dt_index(loaded, ensure_utc=True)
+        pd.testing.assert_frame_equal(expected, got, check_freq=False)
 
 
 # ============================================================================

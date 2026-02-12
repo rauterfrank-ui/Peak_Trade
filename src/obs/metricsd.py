@@ -7,6 +7,9 @@ import time
 from pathlib import Path
 from typing import Optional
 
+from src.obs.metrics_config import get_metrics_port
+from src.ops.net.ports import ensure_tcp_port_free
+
 logger = logging.getLogger(__name__)
 
 
@@ -111,6 +114,8 @@ def run_forever(
     """
     CLI-friendly runner: start metricsd and block forever.
     """
+    port = get_metrics_port(port)
+    ensure_tcp_port_free(port, context="metricsd")
     ok = start_metricsd(
         port=port,
         multiproc_dir=multiproc_dir,

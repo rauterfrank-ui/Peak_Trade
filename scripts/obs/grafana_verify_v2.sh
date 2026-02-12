@@ -4,7 +4,15 @@ set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
 GRAFANA_URL="${GRAFANA_URL:-http://127.0.0.1:3000}"
-GRAFANA_AUTH="${GRAFANA_AUTH:-admin:admin}"
+if [[ -z "${GRAFANA_TOKEN:-}" ]]; then
+  if [[ -z "${GRAFANA_AUTH:-}" && -n "${GF_SECURITY_ADMIN_USER:-}" && -n "${GF_SECURITY_ADMIN_PASSWORD:-}" ]]; then
+    GRAFANA_AUTH="${GF_SECURITY_ADMIN_USER}:${GF_SECURITY_ADMIN_PASSWORD}"
+  fi
+fi
+if [[ -z "${GRAFANA_TOKEN:-}" && -z "${GRAFANA_AUTH:-}" ]]; then
+  echo "ERROR: Grafana auth missing. Set GRAFANA_TOKEN (preferred) or GRAFANA_AUTH=user:pass." >&2
+  exit 2
+fi
 PROM_URL="${PROM_URL:-http://127.0.0.1:9092}"
 
 VERIFY_OUT_DIR="${VERIFY_OUT_DIR:-}"

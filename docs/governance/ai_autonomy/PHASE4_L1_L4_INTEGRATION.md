@@ -646,7 +646,7 @@ Check `config/model_registry.toml` and `config/capability_scopes/L1_deep_researc
 
 ## 12. References
 
-- **Authoritative Matrix:** `docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`
+- **Authoritative Matrix:** `docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`
 - **Model Registry:** `config/model_registry.toml`
 - **L1 Capability Scope:** `config/capability_scopes/L1_deep_research.toml`
 - **Phase 2 (Orchestration MVP):** `docs/governance/ai_autonomy/PHASE2_MULTIMODEL_ORCHESTRATION_MVP.md`

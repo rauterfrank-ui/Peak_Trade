@@ -40,6 +40,9 @@ Phase 38: Ergänzt um TradingExchangeClient-Offline-Tests (DummyExchangeClient).
 
 import os
 import pytest
+
+ccxt = pytest.importorskip("ccxt", reason="Optional dependency missing: ccxt")
+
 import pandas as pd
 
 from src.exchange.base import Ticker, Balance, ExchangeClient, TradingExchangeClient
@@ -123,6 +126,7 @@ def test_balance_get_asset_missing():
 
 def test_ccxt_client_construction():
     """Test: CcxtExchangeClient kann mit gültiger Exchange-ID erstellt werden."""
+    pytest.importorskip("ccxt")
     client = CcxtExchangeClient("kraken")
 
     assert client.get_name() == "kraken"
@@ -131,6 +135,7 @@ def test_ccxt_client_construction():
 
 def test_ccxt_client_construction_with_credentials():
     """Test: CcxtExchangeClient mit API-Key."""
+    pytest.importorskip("ccxt")
     client = CcxtExchangeClient(
         "kraken",
         api_key="test_key",
@@ -143,12 +148,14 @@ def test_ccxt_client_construction_with_credentials():
 
 def test_ccxt_client_invalid_exchange():
     """Test: Ungültige Exchange-ID wirft ValueError."""
+    pytest.importorskip("ccxt")
     with pytest.raises(ValueError, match="Unknown ccxt exchange id"):
         CcxtExchangeClient("invalid_exchange_xyz")
 
 
 def test_ccxt_client_available_timeframes():
     """Test: Timeframes können abgerufen werden (offline)."""
+    pytest.importorskip("ccxt")
     client = CcxtExchangeClient("kraken")
 
     timeframes = client.get_available_timeframes()
@@ -159,6 +166,7 @@ def test_ccxt_client_available_timeframes():
 
 def test_ccxt_client_implements_protocol():
     """Test: CcxtExchangeClient implementiert ExchangeClient-Protokoll."""
+    pytest.importorskip("ccxt")
     client = CcxtExchangeClient("kraken")
 
     # Protocol-Check
@@ -167,6 +175,7 @@ def test_ccxt_client_implements_protocol():
 
 def test_build_exchange_client_from_config(tmp_path):
     """Test: Factory-Funktion erstellt Client aus Config."""
+    pytest.importorskip("ccxt")
     config_text = """
 [exchange]
 id = "binance"
@@ -188,6 +197,7 @@ secret = ""
 
 def test_build_exchange_client_defaults(tmp_path):
     """Test: Factory verwendet Defaults wenn Config minimal ist."""
+    pytest.importorskip("ccxt")
     config_text = """
 [general]
 base_currency = "EUR"
@@ -305,6 +315,7 @@ EXCHANGE_TESTS_ENABLED = os.environ.get("PEAK_TRADE_EXCHANGE_TESTS", "").lower()
 )
 def test_integration_fetch_ticker():
     """Integration-Test: Ticker von Kraken abrufen."""
+    pytest.importorskip("ccxt")
     client = CcxtExchangeClient("kraken")
 
     ticker = client.fetch_ticker("BTC/EUR")
@@ -320,6 +331,7 @@ def test_integration_fetch_ticker():
 )
 def test_integration_fetch_ohlcv():
     """Integration-Test: OHLCV-Daten von Kraken abrufen."""
+    pytest.importorskip("ccxt")
     client = CcxtExchangeClient("kraken")
 
     df = client.fetch_ohlcv("BTC/EUR", timeframe="1h", limit=10)
@@ -342,6 +354,7 @@ def test_integration_fetch_ohlcv():
 )
 def test_integration_fetch_markets():
     """Integration-Test: Märkte von Kraken abrufen."""
+    pytest.importorskip("ccxt")
     client = CcxtExchangeClient("kraken")
 
     markets = client.fetch_markets()
@@ -360,6 +373,7 @@ def test_integration_fetch_markets():
 )
 def test_integration_from_config():
     """Integration-Test: Client aus config.toml funktioniert."""
+    pytest.importorskip("ccxt")
     cfg = load_config()
     client = build_exchange_client_from_config(cfg)
 

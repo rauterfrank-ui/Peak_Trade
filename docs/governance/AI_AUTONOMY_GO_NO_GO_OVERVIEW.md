@@ -22,7 +22,7 @@ Dieses Dokument ist eine **Governance-Leitplanke**. Es ist **keine** Implementie
 ## 0.5 Authoritative Layer Map (v1)
 
 **WICHTIG:** Die Layer→Autonomy→Model-Zuordnung ist definiert in:  
-→ **`docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`** ⚠️
+→ **`docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`** ⚠️
 
 Diese Matrix ist **authoritative** für:
 - Layer-Definitionen (L0-L6)

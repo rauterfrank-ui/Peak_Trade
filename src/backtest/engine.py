@@ -438,7 +438,7 @@ class BacktestEngine:
                         risk_kwargs = {
                             "symbol": symbol,
                             "last_return": (
-                                self.equity_curve[-1] / self.equity_curve[-2] - 1
+                                self.equity_curve.iloc[-1] / self.equity_curve.iloc[-2] - 1
                                 if len(self.equity_curve) >= 2
                                 else 0.0
                             ),
@@ -625,6 +625,8 @@ class BacktestEngine:
             "win_rate": trade_stats.win_rate,
             "profit_factor": trade_stats.profit_factor,
             "blocked_trades": blocked_trades,
+            "ulcer_index": stats_mod.compute_ulcer_index(equity_series),
+            "recovery_factor": stats_mod.compute_recovery_factor(equity_series),
         }
 
         # Trades als DataFrame für neuen BacktestResult
@@ -721,6 +723,8 @@ class BacktestEngine:
             "total_trades": 0,  # Nicht verfügbar im vectorized mode
             "win_rate": 0.0,
             "profit_factor": 0.0,
+            "ulcer_index": stats_mod.compute_ulcer_index(equity),
+            "recovery_factor": stats_mod.compute_recovery_factor(equity),
         }
 
         return BacktestResult(
@@ -1032,6 +1036,8 @@ class BacktestEngine:
             "filled_orders": exec_summary["filled_orders"],
             "rejected_orders": exec_summary["rejected_orders"],
             "total_fees": exec_summary["total_fees"],
+            "ulcer_index": stats_mod.compute_ulcer_index(equity_series),
+            "recovery_factor": stats_mod.compute_recovery_factor(equity_series),
         }
 
         # Trades-DataFrame

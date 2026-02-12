@@ -7,6 +7,8 @@ name: Lint Gate (Always Run)
 # If applicable → run linter (ruff)
 
 on:
+  workflow_dispatch: {}
+
   pull_request:
     types: [opened, synchronize, reopened]
   merge_group:
@@ -23,6 +25,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Need full history for diff
+
+      - name: Fetch base ref (for diff)
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin "${{ github.event.pull_request.base.ref }}"
 
       - name: Formatter policy drift guard (no black enforcement)
         run: |
@@ -42,6 +49,10 @@ jobs:
           elif [ "${{ github.event_name }}" = "merge_group" ]; then
             BASE_SHA="${{ github.event.merge_group.base_sha }}"
             HEAD_SHA="${{ github.event.merge_group.head_sha }}"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            git fetch origin main --depth=1 || git fetch origin main
+            BASE_SHA="$(git rev-parse origin/main)"
+            HEAD_SHA="${{ github.sha }}"
           else
             echo "Unsupported event: ${{ github.event_name }}"
             exit 1
@@ -50,22 +61,30 @@ jobs:
           echo "Base SHA: $BASE_SHA"
           echo "Head SHA: $HEAD_SHA"
 
-          # Get changed Python files
-          CHANGED_PY_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep '\.py$' || echo "")
+          # Get changed Python files (ignore diff errors so we don't fail on bad revision)
+          CHANGED_PY_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" 2>/dev/null | grep '\.py$' || true)
 
-          if [ -z "$CHANGED_PY_FILES" ]; then
-            echo "No Python files changed"
-            echo "applicable=false" >> $GITHUB_OUTPUT
+          if [ -n "$CHANGED_PY_FILES" ]; then
+            echo "Python files changed:"
+            echo "$CHANGED_PY_FILES"
+            echo "applicable=true" >> $GITHUB_OUTPUT
+            echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+            echo "$CHANGED_PY_FILES" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          echo "Python files changed:"
-          echo "$CHANGED_PY_FILES"
+          # No changed py files: if base ref missing (e.g. fetch failed), run full check
+          if ! git rev-parse --verify "$BASE_SHA" >/dev/null 2>&1; then
+            echo "Warning: base ref not available, running full ruff check"
+            echo "applicable=true" >> $GITHUB_OUTPUT
+            echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            exit 0
+          fi
 
-          echo "applicable=true" >> $GITHUB_OUTPUT
-          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGED_PY_FILES" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "No Python files changed"
+          echo "applicable=false" >> $GITHUB_OUTPUT
 
       - name: Set up Python
         if: steps.detect.outputs.applicable == 'true'
@@ -109,6 +128,10 @@ jobs:
           }
 
           echo "✅ Code formatting check passed"
+
+      - name: Governance AI matrix consistency gate
+        run: |
+          bash scripts/governance/ai_matrix_consistency_gate.sh
 
       - name: Gate Success (Not Applicable)
         if: steps.detect.outputs.applicable == 'false'

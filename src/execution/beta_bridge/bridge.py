@@ -6,7 +6,7 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
 
-from src.execution.ledger import LedgerEngine
+from src.execution.ledger import LegacyLedgerEngine as LedgerEngine
 
 from .canonical import canonical_json_bytes, canonical_jsonl_bytes
 from .schema import BetaEventSchemaError, dedupe_by_event_id, sort_key_beta_exec_v1

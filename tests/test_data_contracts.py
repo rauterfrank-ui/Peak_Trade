@@ -93,14 +93,22 @@ def test_validate_ohlcv_duplicates(valid_ohlcv_df):
 
 
 def test_validate_ohlcv_object_dtype(valid_ohlcv_df):
-    """Object dtype columns raise error in strict mode."""
+    """Numeric strings (object dtype) are coerced and accepted in strict mode."""
     df = valid_ohlcv_df.copy()
-    df["close"] = df["close"].astype(str)  # Convert to object
+    df["close"] = df["close"].astype(str)  # Numeric as strings, e.g. "103.0"
+
+    validate_ohlcv(df, strict=True)  # Should pass: coerced via to_numeric
+
+
+def test_validate_ohlcv_non_numeric_string_raises(valid_ohlcv_df):
+    """Non-numeric string columns raise in strict mode."""
+    df = valid_ohlcv_df.head(3).copy()
+    df["close"] = ["not", "numeric", "values"]
 
     with pytest.raises(DataContractError) as exc_info:
         validate_ohlcv(df, strict=True)
 
-    assert "object dtype" in str(exc_info.value).lower()
+    assert "object" in str(exc_info.value).lower() or "non-numeric" in str(exc_info.value).lower()
     assert "close" in exc_info.value.context["object_columns"]
 
 

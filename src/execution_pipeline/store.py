@@ -75,7 +75,7 @@ class JsonlExecutionRunStore:
 
         summaries: List[RunSummaryV0] = []
         for rid, evs in grouped.items():
-            evs_sorted = sorted(evs, key=lambda e: (e.get("ts") or ""))
+            evs_sorted = sorted(evs, key=lambda e: e.get("ts") or "")
             started = evs_sorted[0].get("ts")
             last = evs_sorted[-1].get("ts")
             corr = str(evs_sorted[0].get("correlation_id") or "")
@@ -102,12 +102,12 @@ class JsonlExecutionRunStore:
                 )
             )
 
-        summaries.sort(key=lambda s: (s.last_event_at or ""), reverse=True)
+        summaries.sort(key=lambda s: s.last_event_at or "", reverse=True)
         return summaries[:limit]
 
     def get_run(self, run_id: str, *, limit: int = 2000) -> Dict[str, Any]:
         evs = [e for e in self._iter_events() if str(e.get("run_id") or "") == run_id]
-        evs = sorted(evs, key=lambda e: (e.get("ts") or ""))[:limit]
+        evs = sorted(evs, key=lambda e: e.get("ts") or "")[:limit]
         if not evs:
             return {"run_id": run_id, "events": [], "count": 0, "summary": None}
 

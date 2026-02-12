@@ -157,3 +157,24 @@ deps-sync-check:
 # Validate PR final report formatting
 ops-validate-pr-reports:
 	bash scripts/validate_pr_report_format.sh
+
+# ============================================================================
+# Governance Gate (AI matrix vs registry)
+# ============================================================================
+
+.PHONY: governance-gate governance-validate l3-docker test lint
+governance-gate:
+	@bash scripts/governance/ai_matrix_consistency_gate.sh
+
+governance-validate:
+	@python3 src/governance/validate_ai_matrix_vs_registry.py --level P2
+
+test:
+	@python3 -m pytest -q
+
+lint:
+	@python3 -m ruff check .
+
+l3-docker:
+	@bash scripts/docker/run_l3_no_net.sh
+	@OUT_DIR=out/l3 CACHE_DIR=$${CACHE_DIR:-.cache/l3} IMAGE=$${IMAGE:-peaktrade-l3:latest} python3 scripts/ops/augment_run_manifest.py

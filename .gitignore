@@ -115,6 +115,9 @@ PHASE8E_8F_PR_GITHUB.md
 .tmp_backtest_artifacts/
 out/
 
+# research artifacts (new listings crawler)
+out/research/new_listings/
+
 # local scratch (never commit)
 docs/_scratch/
 
@@ -123,3 +126,12 @@ docs/_scratch/
 
 # Local verify artifacts (do not commit)
 docs/ops/evidence/assets/EV_GRAFANA_VERIFY_V2_*/
+
+# ops run logs
+reports/ops/*.txt
+
+# local scratch (quarantined untracked)
+.scratch/
+
+# Docs token policy gate (local report artifact)
+docs-token-policy-report.json

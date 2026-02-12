@@ -67,19 +67,52 @@
         "label": "Datasource",
         "type": "datasource",
         "query": "prometheus",
-        "regex": "^(prom_local_9092|prom_shadow_9093|prom_ai_live_9094|prom_observability_9095)$",
         "refresh": 1,
         "hide": 0,
-        "multi": false,
-        "includeAll": false,
-        "allValue": null,
-        "sort": 0,
-        "skipUrlSync": false,
         "current": {
           "text": "prom_local_9092",
           "value": "prom_local_9092"
         },
         "options": []
+      },
+      {
+        "type": "datasource",
+        "name": "DS_LOCAL",
+        "label": "Prometheus (local)",
+        "query": "prometheus",
+        "current": {
+          "text": "prometheus-local",
+          "value": "peaktrade-prometheus-local"
+        },
+        "options": [],
+        "refresh": 1,
+        "hide": 2
+      },
+      {
+        "type": "datasource",
+        "name": "DS_MAIN",
+        "label": "Prometheus (main)",
+        "query": "prometheus",
+        "current": {
+          "text": "prometheus-main",
+          "value": "peaktrade-prometheus-main"
+        },
+        "options": [],
+        "refresh": 1,
+        "hide": 2
+      },
+      {
+        "type": "datasource",
+        "name": "DS_SHADOW",
+        "label": "Prometheus (shadow)",
+        "query": "prometheus",
+        "current": {
+          "text": "prometheus-shadow",
+          "value": "peaktrade-prometheus-shadow"
+        },
+        "options": [],
+        "refresh": 1,
+        "hide": 2
       },
       {
         "type": "custom",
@@ -95,173 +128,13 @@
   },
   "panels": [
     {
-      "id": 1,
-      "type": "row",
-      "title": "Stack Fingerprint",
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "panels": []
-    },
-    {
-      "id": 2,
-      "type": "stat",
-      "title": "Stack Fingerprint: Active Stacks",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds}"
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 0,
-        "y": 1
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "count by (stack) (up{stack=~\".+\"})",
-          "instant": true,
-          "range": false,
-          "legendFormat": "{{stack}}"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": ""
-        },
-        "orientation": "horizontal",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 3,
-      "type": "stat",
-      "title": "Stack Fingerprint: Target Count",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds}"
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 12,
-        "y": 1
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "count(up{stack=~\".+\"})",
-          "instant": true,
-          "range": false,
-          "legendFormat": "__auto"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": ""
-        },
-        "orientation": "horizontal",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 4,
-      "type": "table",
-      "title": "Stack Fingerprint: Targets UP",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds}"
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 24,
-        "x": 0,
-        "y": 7
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "up{stack=~\".+\"} == 1",
-          "instant": true,
-          "range": false,
-          "legendFormat": "__auto"
-        }
-      ],
-      "options": {
-        "showHeader": true,
-        "cellHeight": "sm",
-        "footer": {
-          "show": false
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto",
-            "inspect": false
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
       "type": "text",
       "title": "How to use",
       "gridPos": {
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 0
       },
       "options": {
         "mode": "markdown",
@@ -270,12 +143,12 @@
     },
     {
       "type": "row",
-      "title": "Shadow (ds)",
+      "title": "Shadow (DS_SHADOW)",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 22
+        "y": 5
       },
       "collapsed": false,
       "panels": []
@@ -285,13 +158,13 @@
       "title": "Metric present? (shadow)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 23
+        "y": 6
       },
       "targets": [
         {
@@ -343,13 +216,13 @@
       "title": "Series count (shadow)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 23
+        "y": 6
       },
       "targets": [
         {
@@ -370,13 +243,13 @@
       "title": "Series by job (shadow)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 28
+        "y": 11
       },
       "targets": [
         {
@@ -388,12 +261,12 @@
     },
     {
       "type": "row",
-      "title": "Local (ds)",
+      "title": "Local (DS_LOCAL)",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 36
+        "y": 19
       },
       "collapsed": false,
       "panels": []
@@ -403,13 +276,13 @@
       "title": "Metric present? (local)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 37
+        "y": 20
       },
       "targets": [
         {
@@ -461,13 +334,13 @@
       "title": "Series count (local)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 37
+        "y": 20
       },
       "targets": [
         {
@@ -488,13 +361,13 @@
       "title": "Series by job (local)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 42
+        "y": 25
       },
       "targets": [
         {
@@ -506,12 +379,12 @@
     },
     {
       "type": "row",
-      "title": "Main (ds, optional)",
+      "title": "Main (DS_MAIN, optional)",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 50
+        "y": 33
       },
       "collapsed": false,
       "panels": []
@@ -521,13 +394,13 @@
       "title": "Metric present? (main)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-main"
       },
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 51
+        "y": 34
       },
       "targets": [
         {
@@ -579,13 +452,13 @@
       "title": "Series count (main)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-main"
       },
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 51
+        "y": 34
       },
       "targets": [
         {
@@ -606,13 +479,13 @@
       "title": "Series by job (main)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-main"
       },
       "gridPos": {
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 56
+        "y": 39
       },
       "targets": [
         {

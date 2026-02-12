@@ -878,7 +878,7 @@ CI workflow "L4 Critic Replay Determinism" shows "Skip if no critic changes"
 ## 12. References
 
 - **Phase 4B (L4 Critic Integration):** `docs/governance/ai_autonomy/PHASE4_L1_L4_INTEGRATION.md`
-- **Authoritative Matrix:** `docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`
+- **Authoritative Matrix:** `docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`
 - **Model Registry:** `config/model_registry.toml`
 - **L4 Capability Scope:** `config/capability_scopes/L4_governance_critic.toml`
 - **Control Center Operations:** `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md`

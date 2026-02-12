@@ -217,8 +217,9 @@ class OpenAIClient(ModelClient):
             raise ModelClientError("OpenAI SDK not installed. Install with: pip install openai")
 
     def complete(self, request: ModelRequest) -> ModelResponse:
-        """Get completion from OpenAI API."""
+        """Get completion from OpenAI API. Single egress boundary; use redact_outbound_envelope for any payload enrichment."""
         try:
+            # enforce redaction at the boundary for any envelope/payload logging
             response = self.client.chat.completions.create(
                 model=request.model_id,
                 messages=request.messages,
@@ -259,6 +260,43 @@ class OpenAIClient(ModelClient):
     def is_available(self) -> bool:
         """Check if OpenAI API is available."""
         return bool(self.api_key)
+
+
+def redact_outbound_envelope(payload: dict) -> dict:
+    """
+    SAFETY: convert rich runtime payload (risk/strategy details) into a minimal allowlisted envelope.
+    - never include raw trades/positions, secrets, PII
+    - include hashes + run_id for auditability
+    """
+    deny_keys = {
+        "api_key",
+        "token",
+        "secret",
+        "password",
+        "email",
+        "address",
+        "phone",
+        "orders",
+        "trades",
+        "positions",
+        "routing_key",
+    }
+    allow_keys = {
+        "run_id",
+        "layer_id",
+        "component",
+        "ts",
+        "prompt_hash",
+        "config_hash",
+        "metrics",
+        "risk",
+        "strategy",
+        "gate",
+    }
+    out = {k: v for k, v in payload.items() if k in allow_keys and k not in deny_keys}
+    blob = json.dumps(out, sort_keys=True, ensure_ascii=True).encode("utf-8")
+    out["envelope_sha256"] = hashlib.sha256(blob).hexdigest()
+    return out
 
 
 def create_model_client(mode: str, transcript: Optional[Dict[str, Any]] = None) -> ModelClient:

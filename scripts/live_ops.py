@@ -32,6 +32,7 @@ ROOT_DIR = CURRENT_DIR.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
+from src.ops.evidence import ensure_evidence_dirs, write_meta
 from src.core.peak_config import PeakConfig, load_config
 from src.live.alerts import LiveAlertsConfig, build_alert_sink_from_config
 from src.live.broker_base import BaseBrokerClient, PaperBroker
@@ -53,7 +54,7 @@ from src.live.orders import (
 import pandas as pd
 import numpy as np
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -68,6 +69,12 @@ Beispiele:
   python scripts/live_ops.py portfolio --config config/config.toml
   python scripts/live_ops.py health --config config/config.toml --json
         """,
+    )
+    parser.add_argument(
+        "--run-id",
+        type=str,
+        default=None,
+        help="Run-ID für Evidence-Pack (default: auto-generiert: live_ops_YYYYMMDD_HHMMSS_<id>)",
     )
 
     subparsers = parser.add_subparsers(
@@ -835,6 +842,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     """
     parser = build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
+
+    # Evidence-Pack (NO-LIVE): run_id und Basisverzeichnis, meta.json
+    run_id = getattr(args, "run_id", None) or (
+        f"live_ops_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
+    )
+    base_dir = ROOT_DIR / "artifacts" / "live_ops" / run_id
+    ensure_evidence_dirs(base_dir)
+    write_meta(
+        base_dir / "meta.json",
+        extra={"command": args.command, "run_id": run_id, "mode": "no_live"},
+    )
+    args.run_id = run_id
+    args.evidence_base_dir = base_dir
 
     if args.command == "orders":
         return run_orders_command(args)

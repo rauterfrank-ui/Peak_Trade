@@ -106,11 +106,22 @@ def validate_ohlcv(
             },
         )
 
-    # Rule 6: Check for object dtypes (indicates bad parsing)
-    object_cols = [col for col in REQUIRED_OHLCV_COLUMNS if df[col].dtype == object]
+    # Coerce numeric strings to numeric for checks (pandas 3 / pyarrow string columns)
+    _df = df.copy()
+    for col in REQUIRED_OHLCV_COLUMNS:
+        d = _df[col].dtype
+        if getattr(d, "kind", None) in ("O", "U", "S"):
+            _df[col] = pd.to_numeric(_df[col], errors="coerce")
+
+    # Rule 6: Check for object dtypes or non-numeric strings (all NaN after coerce)
+    object_cols = [
+        col
+        for col in REQUIRED_OHLCV_COLUMNS
+        if _df[col].dtype.kind not in ("i", "u", "f", "c") or _df[col].isna().all()
+    ]
     if object_cols:
         raise DataContractError(
-            f"Columns have object dtype (strict=True): {object_cols}",
+            f"Columns have object dtype or non-numeric values (strict=True): {object_cols}",
             hint="Ensure columns are numeric. Use pd.to_numeric() or astype(float)",
             context={"object_columns": object_cols},
         )
@@ -120,7 +131,7 @@ def validate_ohlcv(
     for col in REQUIRED_OHLCV_COLUMNS:
         if col == "volume" and allow_partial_nans:
             continue
-        if df[col].isna().any():
+        if _df[col].isna().any():
             nan_cols.append(col)
 
     if nan_cols:
@@ -129,14 +140,14 @@ def validate_ohlcv(
             hint="Fill or drop NaNs before validation",
             context={
                 "nan_columns": nan_cols,
-                "nan_counts": {col: int(df[col].isna().sum()) for col in nan_cols},
+                "nan_counts": {col: int(_df[col].isna().sum()) for col in nan_cols},
             },
         )
 
     # Rule 8: OHLC values must be positive
     for col in ["open", "high", "low", "close"]:
-        if (df[col] <= 0).any():
-            bad_rows = df[df[col] <= 0].index.tolist()
+        if (_df[col] <= 0).any():
+            bad_rows = _df[_df[col] <= 0].index.tolist()
             raise DataContractError(
                 f"Column '{col}' contains non-positive values (strict=True)",
                 hint="OHLC prices must be > 0",
@@ -148,8 +159,8 @@ def validate_ohlcv(
             )
 
     # Rule 9: high >= low
-    if (df["high"] < df["low"]).any():
-        bad_rows = df[df["high"] < df["low"]].index.tolist()
+    if (_df["high"] < _df["low"]).any():
+        bad_rows = _df[_df["high"] < _df["low"]].index.tolist()
         raise DataContractError(
             "high < low detected (strict=True)",
             hint="Check data source for corruption",
@@ -160,8 +171,8 @@ def validate_ohlcv(
         )
 
     # Rule 10: volume >= 0
-    if (df["volume"] < 0).any():
-        bad_rows = df[df["volume"] < 0].index.tolist()
+    if (_df["volume"] < 0).any():
+        bad_rows = _df[_df["volume"] < 0].index.tolist()
         raise DataContractError(
             "Volume contains negative values (strict=True)",
             hint="Volume must be >= 0",

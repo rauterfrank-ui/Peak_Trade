@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -67,9 +68,11 @@ def _write_events_file(run_dir: Path, run_id: str) -> None:
 
 
 def _run_script(args: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
+    env = {**os.environ, "PEAK_TRADE_PYTHON": sys.executable}
     return subprocess.run(
         ["bash", "scripts/ops/pt_replay_regression_pack.sh", *args],
         cwd=str(cwd),
+        env=env,
         text=True,
         capture_output=True,
         check=False,
