@@ -24,7 +24,7 @@ Für jedes Yellow/Red Feature wird **genau eine Slice** abgearbeitet:
    Beweisen den Contract, inkl. Edge Cases.  
 3) **Docs (kurz, operator-tauglich)**  
    Minimaler Abschnitt + „Was tun wenn…“  
-4) **Evidence Bundle (out/ops)**  
+4) **Evidence Bundle (out&#47;ops)**  
    Hashes + Pointer + 1-Line-Crawler-Summary.
 
 > Ergebnis: Ein Slice ist “Green”, sobald Tests + Contract + Evidence vorhanden sind.
@@ -32,7 +32,7 @@ Für jedes Yellow/Red Feature wird **genau eine Slice** abgearbeitet:
 ### 1.2 Definition of Done (global)
 - Tests grün (CI + lokale Smoke soweit möglich)
 - Contract-Text vorhanden (docs oder in-code docstring)
-- Evidence: `out/ops/<task>_*` mit `SHA256SUMS.txt` + `*.bundle.tgz` + `*_CRAWLER_SUMMARY_1LINE.txt`
+- Evidence: `out&#47;ops&#47;<task>_*` mit `SHA256SUMS.txt` + `*.bundle.tgz` + `*_CRAWLER_SUMMARY_1LINE.txt`
 - Live bleibt **default-blocked** (enabled/armed/token gating), keine Bypass-Pfade.
 
 ---
@@ -61,7 +61,7 @@ Ziel: „Live ist sicher gated, execution ist korrekt, state ist reconcilebar.�
 - Tests:
   - transient error → retry nach policy
   - idempotency-key verhindert Doppelorder
-  - fake broker simuliert timeout/retry → **genau 1** Order
+  - fake broker simuliert timeout&#47;retry → **genau 1** Order
 - Contract: „Idempotency Contract“ (key formation + guarantees)
 - Evidence + 1-line summary
 
@@ -231,7 +231,7 @@ Leverage wird **elegant dynamisch** (vol-/stop-basiert) bestimmt, aber durch **M
 ### 3.1 Kickoff (Branch + Work-Start)
 - `git checkout main && git pull --ff-only origin main`
 - `git checkout -b feat/<slice-slug>`
-- `out/ops/work_start_<ts>/WORK_START.txt` + sha256
+- `out&#47;ops&#47;work_start_<ts>/WORK_START.txt` + sha256
 
 ### 3.2 Implement (Contract → Tests → Docs)
 - **Contract** zuerst schreiben (10–20 Zeilen)
@@ -243,7 +243,7 @@ Leverage wird **elegant dynamisch** (vol-/stop-basiert) bestimmt, aber durch **M
 - `ruff format --check ...` / `ruff check ...` (falls im PATH; sonst CI)
 - `gh pr checks <PR>` ohne watch (Evidence-Snapshot)
 
-### 3.4 Evidence Bundle (out/ops only)
+### 3.4 Evidence Bundle (out&#47;ops only)
 Mindestinhalt:
 - `HEAD.txt`, `STATUS.txt`, `LOG5.txt`, `PR_VIEW.json`, `PR_CHECKS.txt`
 - `LOCAL_DIFFSTAT.txt`, `LOCAL_NAME_ONLY.txt`
@@ -370,7 +370,7 @@ git pull --ff-only origin main
 
 ## Arbeitsordner für diese Session
 export MA_TS="2026-02-10T12:00:00+01:00"
-export MA_ROOT="out/ops/cursor_ma/session_${MA_TS//:/-}"
+export MA_ROOT="out&#47;ops&#47;cursor_ma/session_${MA_TS//:/-}"
 mkdir -p "$MA_ROOT"
 
 ## Snapshot
@@ -416,7 +416,7 @@ cd "$(git rev-parse --show-toplevel)"
 export SLUG="sweep-pipeline-cli"
 git checkout -b "feat/${SLUG}"
 
-mkdir -p "out/ops/cursor_ma/${SLUG}"
+mkdir -p "out&#47;ops&#47;cursor_ma/${SLUG}"
 
 ## Cursor Multi-Agent: Planner → Implementer → Critic
 ## (Command Palette in Cursor): "Cursor: Multi Agent Orchestration"
@@ -456,10 +456,10 @@ ruff format --check src tests scripts || true
 pytest -q || true
 
 ## Minimal Smoke (CLI vorhanden):
-python3 scripts/run_sweep_pipeline.py --help 2>&1 | tee "out/ops/cursor_ma/${SLUG}/smoke_help.txt" || true
+python3 scripts/run_sweep_pipeline.py --help 2>&1 | tee "out&#47;ops&#47;cursor_ma/${SLUG}/smoke_help.txt" || true
 
 ## Evidence
-git diff | tee "out/ops/cursor_ma/${SLUG}/DIFF.patch"
+git diff | tee "out&#47;ops&#47;cursor_ma/${SLUG}/DIFF.patch"
 
 ## Commit
 git add -A
@@ -484,7 +484,7 @@ cd "$(git rev-parse --show-toplevel)"
 
 export SLUG="heatmap-template-2x2"
 git checkout -b "feat/${SLUG}"
-mkdir -p "out/ops/cursor_ma/${SLUG}"
+mkdir -p "out&#47;ops&#47;cursor_ma/${SLUG}"
 ```
 
 **MA Prompt:**
@@ -529,7 +529,7 @@ paths = create_standard_2x2_heatmap(
     metric_a="sharpe_ratio",
     metric_b="max_drawdown",
     sweep_name="ma_sweep",
-    output_dir=Path("out/research/run_01/report"),
+    output_dir=Path("out&#47;research/run_01/report"),
 )
 ## -> paths["metric_a"], paths["metric_b"] (PNG-Pfade)
 ```
@@ -548,7 +548,7 @@ cd "$(git rev-parse --show-toplevel)"
 
 export SLUG="vol-regime-universal-wrapper"
 git checkout -b "feat/${SLUG}"
-mkdir -p "out/ops/cursor_ma/${SLUG}"
+mkdir -p "out&#47;ops&#47;cursor_ma/${SLUG}"
 ```
 
 **MA Prompt:**
@@ -587,7 +587,7 @@ cd "$(git rev-parse --show-toplevel)"
 
 export SLUG="corr-matrix-param-metric"
 git checkout -b "feat/${SLUG}"
-mkdir -p "out/ops/cursor_ma/${SLUG}"
+mkdir -p "out&#47;ops&#47;cursor_ma/${SLUG}"
 ```
 
 **MA Prompt:**
@@ -621,7 +621,7 @@ cd "$(git rev-parse --show-toplevel)"
 
 export SLUG="rolling-window-stability"
 git checkout -b "feat/${SLUG}"
-mkdir -p "out/ops/cursor_ma/${SLUG}"
+mkdir -p "out&#47;ops&#47;cursor_ma/${SLUG}"
 ```
 
 **MA Prompt:**
@@ -655,7 +655,7 @@ cd "$(git rev-parse --show-toplevel)"
 
 export SLUG="sweep-comparison-tool"
 git checkout -b "feat/${SLUG}"
-mkdir -p "out/ops/cursor_ma/${SLUG}"
+mkdir -p "out&#47;ops&#47;cursor_ma/${SLUG}"
 ```
 
 **MA Prompt:**
@@ -688,7 +688,7 @@ cd "$(git rev-parse --show-toplevel)"
 
 export SLUG="metrics-ulcer-recovery"
 git checkout -b "feat/${SLUG}"
-mkdir -p "out/ops/cursor_ma/${SLUG}"
+mkdir -p "out&#47;ops&#47;cursor_ma/${SLUG}"
 ```
 
 **MA Prompt:**
@@ -719,7 +719,7 @@ cd "$(git rev-parse --show-toplevel)"
 
 export SLUG="nightly-sweep-automation"
 git checkout -b "feat/${SLUG}"
-mkdir -p "out/ops/cursor_ma/${SLUG}"
+mkdir -p "out&#47;ops&#47;cursor_ma/${SLUG}"
 ```
 
 **MA Prompt:**
@@ -753,7 +753,7 @@ cd "$(git rev-parse --show-toplevel)"
 
 export SLUG="feature-importance-wrapper"
 git checkout -b "feat/${SLUG}"
-mkdir -p "out/ops/cursor_ma/${SLUG}"
+mkdir -p "out&#47;ops&#47;cursor_ma/${SLUG}"
 ```
 
 **MA Prompt:**
@@ -788,7 +788,7 @@ cd "$(git rev-parse --show-toplevel)"
 
 export SLUG="feature-engine-skeleton"
 git checkout -b "feat/${SLUG}"
-mkdir -p "out/ops/cursor_ma/${SLUG}"
+mkdir -p "out&#47;ops&#47;cursor_ma/${SLUG}"
 ```
 
 **MA Prompt:**
@@ -797,7 +797,7 @@ mkdir -p "out/ops/cursor_ma/${SLUG}"
 Turn src/features/ from placeholder into a minimal feature engine:
 - feature schema/versioning (simple: dataclass + version string)
 - compute feature matrix from OHLCV (returns, vol, rolling stats, regime features)
-- store outputs deterministically (parquet/csv) under out/features/<run_id>/
+- store outputs deterministically (parquet/csv) under out&#47;features/<run_id>/
 - implement compute_triple_barrier_labels (no placeholders)
 - implement _extract_features with a minimal meaningful set
 
@@ -825,9 +825,9 @@ pytest -q || true
 
 ## Evidence snapshot (always)
 export SLUG="<set_this>"
-mkdir -p "out/ops/cursor_ma/${SLUG}"
-git rev-parse HEAD | tee "out/ops/cursor_ma/${SLUG}/HEAD.txt"
-git log -1 --oneline | tee "out/ops/cursor_ma/${SLUG}/LOG1.txt"
+mkdir -p "out&#47;ops&#47;cursor_ma/${SLUG}"
+git rev-parse HEAD | tee "out&#47;ops&#47;cursor_ma/${SLUG}/HEAD.txt"
+git log -1 --oneline | tee "out&#47;ops&#47;cursor_ma/${SLUG}/LOG1.txt"
 ```
 
 Optional PR:
