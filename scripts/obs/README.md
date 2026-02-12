@@ -71,6 +71,20 @@ Script: `scripts/obs/grafana_dashpack_local_verify_v2.sh`
 
 ---
 
+## Grafana Verify v2 (operator-grade)
+
+Für Grafana/Prometheus-local Smoke + Dashpack-Integrity:
+
+```bash
+# Start (Grafana-only + Prometheus-local)
+bash scripts/obs/grafana_local_up.sh
+
+# Verify (evidenzfähig; schreibt Timestamp-Artifacts)
+bash scripts/obs/grafana_verify_v2.sh
+```
+
+---
+
 ## 📊 Script 1: Daily Snapshot
 
 **Zweck:** Analysiert Telemetry/Alert-JSONL-Dateien der letzten 24h und erstellt einen Markdown-Report.
