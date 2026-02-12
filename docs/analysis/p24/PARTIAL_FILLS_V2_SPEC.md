@@ -37,11 +37,11 @@ For any eligible order on a bar:
   - Base price = `bar.open` (for determinism at bar start)
   - Apply `price_rule` adjustment:
     - worst: BUY uses `bar.high`, SELL uses `bar.low`
-    - mid: `(bar.high + bar.low)/2`
+    - mid: `(bar.high + bar.low)&#47;2`
     - close: `bar.close`
   - Apply slippage bps in direction that worsens:
-    - BUY: `price *= (1 + slippage_bps/10_000)`
-    - SELL: `price *= (1 - slippage_bps/10_000)`
+    - BUY: `price *= (1 + slippage_bps&#47;10_000)`
+    - SELL: `price *= (1 - slippage_bps&#47;10_000)`
 
 ### LIMIT
 - Eligibility depends on touch_mode:
