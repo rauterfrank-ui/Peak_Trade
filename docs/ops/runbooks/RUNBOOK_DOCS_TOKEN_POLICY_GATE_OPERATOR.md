@@ -215,6 +215,16 @@ See [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](RUNBOOK_DOCS_REFERENCE_T
 2. Add to allowlist if it's a known exception
 3. Open ticket to adjust classifier if systematic issue
 
+## Fixing a failure (targeted)
+
+If the validator reports a file other than `README.md`, apply the fix **only** to that file:
+
+```bash
+perl -0777 -i -pe 's/allowed=True\/False/allowed=True&#47;False/g; s/allowed=False\/True/allowed=False&#47;True/g; s/True\/False/True&#47;False/g; s/False\/True/False&#47;True/g' <path>
+```
+
+Example: `perl -0777 -i -pe '...' docs&#47;ops&#47;README.md`
+
 ## Maintenance
 
 ### Allowlist Hygiene
