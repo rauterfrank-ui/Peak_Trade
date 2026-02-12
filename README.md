@@ -203,7 +203,7 @@ Peak_Trade ist in mehrere Layer strukturiert:
 - **Live-/Testnet-Layer** (`src/live/`, `scripts/live_ops.py`) – Live-Ops, Alerts, Risk-Limits
 - **Autonomous Workflow-Layer** (`src/autonomous/`, `scripts/run_autonomous_workflow.py`) – AI-gesteuerter autonomer Workflow, Decision Engine
 - **Reporting & Status-Reports** (`src/reporting/`, `scripts/generate_live_status_report.py`) – Reports, Visualisierung
-- **Governance, Safety & Runbooks** (`docs/*.md`) – Dokumentation, Prozesse, Drills
+- **Governance, Safety & Runbooks** (`docs&#47;*.md`) – Dokumentation, Prozesse, Drills
 
 **Details & Diagramme:** siehe [`docs/ARCHITECTURE_OVERVIEW.md`](docs/ARCHITECTURE_OVERVIEW.md).
 
@@ -318,7 +318,7 @@ RELOAD=1 ./scripts/ops/run_live_webui.sh
 
 - 🔍 **Neues Portfolio-Setup researchen**
   1. Portfolio-Preset in `config/portfolio_recipes.toml` auswählen
-  2. Research-CLI (`scripts/research_cli.py portfolio/pipeline`) ausführen
+  2. Research-CLI (`scripts&#47;research_cli.py portfolio&#47;pipeline`) ausführen
 3. Portfolio-Robustness & Reports prüfen
 4. Entscheidung anhand des Playbooks treffen: [`docs/PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](docs/PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md)
 
@@ -391,7 +391,7 @@ make audit
 ./scripts/run_audit.sh
 ```
 
-**Output:** `reports/audit/YYYY-MM-DD_HHMM/` with:
+**Output:** `reports&#47;audit&#47;YYYY-MM-DD_HHMM&#47;` with:
 - `summary.json` - Machine-readable results
 - `summary.md` - Human-readable report with status indicators
 - Individual check outputs (pytest, secrets scan, live gating, etc.)
@@ -418,7 +418,7 @@ pip install ruff black mypy pip-audit bandit
 make gc
 ```
 
-> **Note:** Audit outputs are stored in `reports/audit/` and are gitignored.
+> **Note:** Audit outputs are stored in `reports&#47;audit&#47;` and are gitignored.
 
 ---
 
