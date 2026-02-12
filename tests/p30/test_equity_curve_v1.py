@@ -61,6 +61,4 @@ def test_invariant_equity_equals_cash_plus_position_value():
     fills = [[_fill(1.0, 100.0, fee=0.0)], []]
     rows = equity_curve_v1(prices, fills, initial_cash=1000.0)
     for r in rows:
-        assert math.isclose(
-            r.equity, r.cash + r.position_value, rel_tol=0, abs_tol=1e-9
-        )
+        assert math.isclose(r.equity, r.cash + r.position_value, rel_tol=0, abs_tol=1e-9)
