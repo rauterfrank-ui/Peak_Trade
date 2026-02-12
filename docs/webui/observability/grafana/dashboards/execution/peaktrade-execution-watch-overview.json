@@ -1764,7 +1764,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${ds}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2096,6 +2096,19 @@
     "list": [
       {
         "current": {
+          "text": "prom_local_9092",
+          "value": "prom_local_9092"
+        },
+        "hide": 0,
+        "label": "Datasource",
+        "name": "ds",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "type": "datasource"
+      },
+      {
+        "current": {
           "text": "prometheus-shadow",
           "value": "peaktrade-prometheus-shadow"
         },
@@ -2141,7 +2154,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "peaktrade-prometheus-local"
+          "uid": "${ds}"
         },
         "includeAll": true,
         "label": "AI run_id",

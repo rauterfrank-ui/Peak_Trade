@@ -48,6 +48,19 @@
   "templating": {
     "list": [
       {
+        "name": "ds",
+        "label": "Datasource",
+        "type": "datasource",
+        "query": "prometheus",
+        "refresh": 1,
+        "hide": 0,
+        "current": {
+          "text": "prom_local_9092",
+          "value": "prom_local_9092"
+        },
+        "options": []
+      },
+      {
         "type": "datasource",
         "name": "DS_LOCAL",
         "label": "Prometheus (local)",

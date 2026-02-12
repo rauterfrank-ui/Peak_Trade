@@ -35,7 +35,9 @@ class DsRef:
 def iter_ds_refs(node: Any, base: str = "") -> Iterable[DsRef]:
     if isinstance(node, dict):
         if "datasource" in node:
-            yield DsRef(path=f"{base}.datasource" if base else "datasource", value=node["datasource"])
+            yield DsRef(
+                path=f"{base}.datasource" if base else "datasource", value=node["datasource"]
+            )
         for k, v in node.items():
             child = f"{base}.{k}" if base else str(k)
             yield from iter_ds_refs(v, child)
