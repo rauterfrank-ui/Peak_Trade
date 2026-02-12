@@ -17,7 +17,7 @@
 
 ```bash
 python3 scripts/ops/check_merge_log_hygiene.py docs/ops/merge_logs/PR_895_MERGE_LOG.md
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed
 ```
 
 - CI required checks: PASS (snapshot at merge time)

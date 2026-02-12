@@ -122,7 +122,7 @@ osm = OrderStateMachine(risk_hook=hook)
 
 ### Linter
 ```bash
-uv run ruff check src/execution/risk_runtime/ \
+ruff check src/execution/risk_runtime/ \
                    src/execution/risk_hook_impl.py \
                    tests/execution/test_wp0b_*.py
 ```
@@ -131,7 +131,7 @@ uv run ruff check src/execution/risk_runtime/ \
 
 ### Tests
 ```bash
-uv run pytest tests/execution/test_wp0b_*.py -v
+python3 -m pytest tests/execution/test_wp0b_*.py -v
 ```
 
 **Result:** ✅ 23/23 passed in 0.05s

@@ -27,7 +27,7 @@ Die **VaR Backtest Suite** aggregiert alle VaR-Validierungstests in einem einzig
 ### CLI Usage
 
 ```bash
-python scripts/risk/run_var_backtest_suite.py \
+python3 scripts/risk/run_var_backtest_suite.py \
   --returns-file data/returns.csv \
   --var-file data/var.csv \
   --confidence 0.95 \
@@ -228,7 +228,7 @@ date,var
 
 ```bash
 # Run suite with fixtures
-python scripts/risk/run_var_backtest_suite.py \
+python3 scripts/risk/run_var_backtest_suite.py \
   --returns-file tests/fixtures/var/returns_100d.csv \
   --var-file tests/fixtures/var/var_95.csv \
   --confidence 0.95 \
@@ -249,16 +249,16 @@ Die Suite ist **deterministisch** und eignet sich für Regression Tests:
 
 ```bash
 # Golden Test
-pytest tests/risk/validation/test_suite_golden.py -v
+python3 -m pytest tests/risk/validation/test_suite_golden.py -v
 
 # Check: Same input → same output (across runs)
-python scripts/risk/run_var_backtest_suite.py \
+python3 scripts/risk/run_var_backtest_suite.py \
   --returns-file data/returns.csv \
   --var-file data/var.csv \
   --confidence 0.95 \
   --output-dir /tmp/run1/
 
-python scripts/risk/run_var_backtest_suite.py \
+python3 scripts/risk/run_var_backtest_suite.py \
   --returns-file data/returns.csv \
   --var-file data/var.csv \
   --confidence 0.95 \
@@ -279,7 +279,7 @@ diff /tmp/run1/suite_report.json /tmp/run2/suite_report.json
 Generiert `index.{json,md,html}` für alle Runs in einem Report-Root:
 
 ```bash
-python scripts/risk/var_suite_build_index.py \
+python3 scripts/risk/var_suite_build_index.py \
   --report-root results/var_suite/
 ```
 
@@ -305,7 +305,7 @@ Open `results&#47;var_suite&#47;index.html` in Browser:
 Vergleicht zwei Runs (baseline vs candidate) und identifiziert Regressions/Improvements:
 
 ```bash
-python scripts/risk/var_suite_compare_runs.py \
+python3 scripts/risk/var_suite_compare_runs.py \
   --baseline results/var_suite/run_20260101/ \
   --candidate results/var_suite/run_20260104/ \
   --out results/var_suite/compare/
@@ -351,14 +351,14 @@ python scripts/risk/var_suite_compare_runs.py \
 **Step 1: Generate Runs**
 ```bash
 # Baseline run
-python scripts/risk/run_var_backtest_suite.py \
+python3 scripts/risk/run_var_backtest_suite.py \
   --returns-file data/returns_2024.csv \
   --var-file data/var_baseline_2024.csv \
   --confidence 0.95 \
   --output-dir results/var_suite/run_baseline_2024/
 
 # Candidate run (new model)
-python scripts/risk/run_var_backtest_suite.py \
+python3 scripts/risk/run_var_backtest_suite.py \
   --returns-file data/returns_2024.csv \
   --var-file data/var_candidate_2024.csv \
   --confidence 0.95 \
@@ -367,7 +367,7 @@ python scripts/risk/run_var_backtest_suite.py \
 
 **Step 2: Compare Runs**
 ```bash
-python scripts/risk/var_suite_compare_runs.py \
+python3 scripts/risk/var_suite_compare_runs.py \
   --baseline results/var_suite/run_baseline_2024/ \
   --candidate results/var_suite/run_candidate_2024/ \
   --out results/var_suite/compare_baseline_vs_candidate/
@@ -378,7 +378,7 @@ open results/var_suite/compare_baseline_vs_candidate/compare.html
 
 **Step 3: Build Index**
 ```bash
-python scripts/risk/var_suite_build_index.py \
+python3 scripts/risk/var_suite_build_index.py \
   --report-root results/var_suite/
 
 # Opens index.html in browser
@@ -390,12 +390,12 @@ open results/var_suite/index.html
 **Index Builder:**
 ```bash
 # JSON only (no HTML)
-python scripts/risk/var_suite_build_index.py \
+python3 scripts/risk/var_suite_build_index.py \
   --report-root results/var_suite/ \
   --json-only
 
 # Skip HTML
-python scripts/risk/var_suite_build_index.py \
+python3 scripts/risk/var_suite_build_index.py \
   --report-root results/var_suite/ \
   --no-html
 ```
@@ -403,14 +403,14 @@ python scripts/risk/var_suite_build_index.py \
 **Compare Tool:**
 ```bash
 # JSON only (CI-friendly)
-python scripts/risk/var_suite_compare_runs.py \
+python3 scripts/risk/var_suite_compare_runs.py \
   --baseline run_baseline/ \
   --candidate run_candidate/ \
   --out compare/ \
   --json-only
 
 # Skip HTML
-python scripts/risk/var_suite_compare_runs.py \
+python3 scripts/risk/var_suite_compare_runs.py \
   --baseline run_baseline/ \
   --candidate run_candidate/ \
   --out compare/ \

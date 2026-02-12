@@ -325,13 +325,13 @@ bash scripts/ops/pt_docs_gates_snapshot.sh
 
 ```bash
 # Token Policy Gate (if validator exists)
-if [ -f scripts/docs/validate_token_policy.py ]; then
-  python3 scripts/docs/validate_token_policy.py --changed .github/PULL_REQUEST_TEMPLATE/*.md
+if [ -f scripts/ops/validate_docs_token_policy.py ]; then
+  python3 scripts/ops/validate_docs_token_policy.py --changed .github/PULL_REQUEST_TEMPLATE/*.md
 fi
 
 # Reference Targets Gate (if validator exists)
-if [ -f scripts/docs/validate_reference_targets.py ]; then
-  python3 scripts/docs/validate_reference_targets.py
+if [ -f scripts/ops/verify_docs_reference_targets.sh ]; then
+  bash scripts/ops/verify_docs_reference_targets.sh --changed
 fi
 
 # Diff Guard (manual check)

@@ -104,9 +104,9 @@ cd /Users/frnkhrz/Peak_Trade || cd "$HOME/Peak_Trade"
 git status -sb
 git diff --stat
 
-pytest -q
-python -m ruff check .
-python -m ruff format --check .
+python3 -m pytest -q
+ruff check .
+ruff format --check .
 ```
 
 ---

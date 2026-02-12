@@ -110,10 +110,10 @@
 ### Position Sizing Test Suite
 
 ```bash
-pytest tests/test_vol_regime_overlay_sizer.py -v
+python3 -m pytest tests/test_vol_regime_overlay_sizer.py -v
 # Result: 10/10 PASSED ✅
 
-pytest tests/test_position_sizing_overlay_pipeline.py -v
+python3 -m pytest tests/test_position_sizing_overlay_pipeline.py -v
 # Result: 12 PASSED + 3 XFAIL (strict) ✅
 ```
 
@@ -151,7 +151,7 @@ pytest tests/test_position_sizing_overlay_pipeline.py -v
 **Verification:**
 ```bash
 git checkout feat/pos-sizing-obs-pack
-pytest tests/test_r_and_d_strategy_gating.py
+python3 -m pytest tests/test_r_and_d_strategy_gating.py
 # Result: 9 failed, 9 passed (SAME failures as on PR branch)
 ```
 
@@ -218,8 +218,8 @@ git revert bcf2f73  # Canonical sizer + vol-targeting
 ### 1. Run Position Sizing Tests
 
 ```bash
-pytest -q tests/test_vol_regime_overlay_sizer.py
-pytest -q tests/test_position_sizing_overlay_pipeline.py
+python3 -m pytest -q tests/test_vol_regime_overlay_sizer.py
+python3 -m pytest -q tests/test_position_sizing_overlay_pipeline.py
 ```
 
 **Expected:** 22 passed, 3 xfailed
@@ -228,7 +228,7 @@ pytest -q tests/test_position_sizing_overlay_pipeline.py
 
 ```bash
 # Run a short backtest with overlays enabled (offline mode)
-python scripts/run_backtest.py --config config/test/position_sizing_overlay_smoke.toml
+python3 scripts/run_backtest.py --config config/test/position_sizing_overlay_smoke.toml
 ```
 
 **Expected:** Backtest completes without errors, overlay scaling visible in logs.

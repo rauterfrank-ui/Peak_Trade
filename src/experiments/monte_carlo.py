@@ -34,6 +34,7 @@ import numpy as np
 import pandas as pd
 
 from ..backtest import stats as stats_mod
+from .equity_loader import equity_to_returns, load_equity_curves_from_run_dir
 
 logger = logging.getLogger(__name__)
 
@@ -281,7 +282,7 @@ def run_monte_carlo_from_returns(
 def load_returns_for_experiment_run(
     experiment_id: str,
     experiments_dir: Path,
-) -> Optional[pd.Series]:
+) -> pd.Series:
     """
     Lädt Returns für einen Experiment-Run.
 
@@ -301,20 +302,16 @@ def load_returns_for_experiment_run(
         laden. Für Phase 45 verwenden wir eine pragmatische Lösung, die aus den
         Metriken approximiert oder Dummy-Daten verwendet.
     """
-    # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Vollständige Monte-Carlo-Implementierung")
-    # Aktuell: Placeholder für zukünftige Erweiterung
-    logger.warning(
-        f"load_returns_for_experiment_run ist noch nicht vollständig implementiert "
-        f"für experiment_id={experiment_id}"
-    )
-    return None
+    run_dir = Path(experiments_dir) / experiment_id
+    curves = load_equity_curves_from_run_dir(run_dir, max_curves=1)
+    return equity_to_returns(curves[0])
 
 
 def run_monte_carlo_for_experiment(
     experiment_id: str,
     config: MonteCarloConfig,
     experiments_dir: Path,
-) -> Optional[MonteCarloSummaryResult]:
+) -> MonteCarloSummaryResult:
     """
     Führt Monte-Carlo-Analyse für einen Experiment-Run durch.
 
@@ -324,13 +321,9 @@ def run_monte_carlo_for_experiment(
         experiments_dir: Verzeichnis mit Experiment-Ergebnissen
 
     Returns:
-        MonteCarloSummaryResult oder None, falls Returns nicht geladen werden konnten
+        MonteCarloSummaryResult
     """
     returns = load_returns_for_experiment_run(experiment_id, experiments_dir)
-    if returns is None:
-        logger.error(f"Konnte Returns für experiment_id={experiment_id} nicht laden")
-        return None
-
     return run_monte_carlo_from_returns(returns, config)
 
 

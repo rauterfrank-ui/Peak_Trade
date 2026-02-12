@@ -78,29 +78,29 @@ und bietet:
 
 ```bash
 # Report für ein einzelnes Experiment
-python scripts/report_experiment.py --id abc12345-6789-...
+python3 scripts/report_experiment.py --id abc12345-6789-...
 
 # Report im Browser öffnen
-python scripts/report_experiment.py --id abc12345 --open
+python3 scripts/report_experiment.py --id abc12345 --open
 
 # Nur Text-Summary (kein HTML)
-python scripts/report_experiment.py --id abc12345 --text-only
+python3 scripts/report_experiment.py --id abc12345 --text-only
 ```
 
 ### 2. Sweep-Report generieren
 
 ```bash
 # Verfügbare Sweeps auflisten
-python scripts/report_sweep.py --list-sweeps
+python3 scripts/report_sweep.py --list-sweeps
 
 # Sweep-Report generieren
-python scripts/report_sweep.py --sweep-name ma_crossover_opt_v1
+python3 scripts/report_sweep.py --sweep-name ma_crossover_opt_v1
 
 # Mit spezifischer Metrik und Top-N
-python scripts/report_sweep.py --sweep-name ma_opt_v1 --metric sharpe --top-n 20
+python3 scripts/report_sweep.py --sweep-name ma_opt_v1 --metric sharpe --top-n 20
 
 # Report im Browser öffnen
-python scripts/report_sweep.py --sweep-name ma_opt_v1 --open
+python3 scripts/report_sweep.py --sweep-name ma_opt_v1 --open
 ```
 
 ### 3. Programmatische Nutzung
@@ -374,10 +374,10 @@ optional arguments:
 
 ```bash
 # 1. Experiment-ID finden
-python scripts/experiments_explorer.py list --strategy ma_crossover --limit 10
+python3 scripts/experiments_explorer.py list --strategy ma_crossover --limit 10
 
 # 2. Report generieren
-python scripts/report_experiment.py --id abc12345-6789-... --open
+python3 scripts/report_experiment.py --id abc12345-6789-... --open
 
 # 3. Report liegt in reports/experiment_abc12345_YYYYMMDD_HHMMSS.html
 ```
@@ -386,10 +386,10 @@ python scripts/report_experiment.py --id abc12345-6789-... --open
 
 ```bash
 # 1. Sweep durchführen (Phase 20)
-python scripts/run_sweep_strategy.py --strategy ma_crossover --config config/sweeps/ma_crossover.toml
+python3 scripts/run_sweep_strategy.py --strategy ma_crossover --config config/sweeps/ma_crossover.toml
 
 # 2. Sweep-Report generieren
-python scripts/report_sweep.py --sweep-name ma_crossover_opt_v1 --metric sharpe --open
+python3 scripts/report_sweep.py --sweep-name ma_crossover_opt_v1 --metric sharpe --open
 
 # 3. Report zeigt Top-20 Parameterkombinationen
 ```
@@ -398,12 +398,12 @@ python scripts/report_sweep.py --sweep-name ma_crossover_opt_v1 --metric sharpe 
 
 ```bash
 # 1. Reports für verschiedene Sweeps generieren
-python scripts/report_sweep.py --sweep-name ma_crossover_v1 --metric sharpe
-python scripts/report_sweep.py --sweep-name rsi_reversion_v1 --metric sharpe
-python scripts/report_sweep.py --sweep-name trend_following_v1 --metric sharpe
+python3 scripts/report_sweep.py --sweep-name ma_crossover_v1 --metric sharpe
+python3 scripts/report_sweep.py --sweep-name rsi_reversion_v1 --metric sharpe
+python3 scripts/report_sweep.py --sweep-name trend_following_v1 --metric sharpe
 
 # 2. Ergebnisse vergleichen (Phase 22 Explorer)
-python scripts/experiments_explorer.py compare \
+python3 scripts/experiments_explorer.py compare \
     --sweeps ma_crossover_v1,rsi_reversion_v1,trend_following_v1 \
     --metric sharpe
 ```
@@ -454,20 +454,20 @@ reports/
 
 ```bash
 # Für schnelle Übersicht
-python scripts/report_sweep.py --sweep-name my_sweep --top-n 5
+python3 scripts/report_sweep.py --sweep-name my_sweep --top-n 5
 
 # Für detaillierte Analyse
-python scripts/report_sweep.py --sweep-name my_sweep --top-n 50
+python3 scripts/report_sweep.py --sweep-name my_sweep --top-n 50
 ```
 
 ### 4. Text-Only für Scripts
 
 ```bash
 # In Automatisierung: Nur Text-Output
-python scripts/report_experiment.py --id abc12345 --text-only | grep "Sharpe"
+python3 scripts/report_experiment.py --id abc12345 --text-only | grep "Sharpe"
 
 # Für interaktive Arbeit: HTML mit Browser
-python scripts/report_experiment.py --id abc12345 --open
+python3 scripts/report_experiment.py --id abc12345 --open
 ```
 
 ---
@@ -507,7 +507,7 @@ Die CSV-Datei existiert nicht:
 ls reports/experiments/experiments.csv
 
 # Falls nicht vorhanden: Backtest durchführen
-python scripts/run_backtest.py --strategy ma_crossover
+python3 scripts/run_backtest.py --strategy ma_crossover
 ```
 
 ### "Experiment nicht gefunden"
@@ -516,10 +516,10 @@ Die Run-ID existiert nicht oder ist falsch:
 
 ```bash
 # Verfügbare Experimente listen
-python scripts/experiments_explorer.py list --limit 20
+python3 scripts/experiments_explorer.py list --limit 20
 
 # Mit korrekter ID erneut versuchen
-python scripts/report_experiment.py --id KORREKTE_ID
+python3 scripts/report_experiment.py --id KORREKTE_ID
 ```
 
 ### "Sweep nicht gefunden"
@@ -528,10 +528,10 @@ Der angegebene Sweep-Name existiert nicht:
 
 ```bash
 # Alle Sweeps listen
-python scripts/report_sweep.py --list-sweeps
+python3 scripts/report_sweep.py --list-sweeps
 
 # Mit korrektem Namen erneut versuchen
-python scripts/report_sweep.py --sweep-name KORREKTER_NAME
+python3 scripts/report_sweep.py --sweep-name KORREKTER_NAME
 ```
 
 ### Plot-Fehler
@@ -540,8 +540,8 @@ Falls Matplotlib-Probleme auftreten:
 
 ```bash
 # Report ohne Charts generieren
-python scripts/report_experiment.py --id abc12345 --no-charts
-python scripts/report_sweep.py --sweep-name my_sweep --no-charts
+python3 scripts/report_experiment.py --id abc12345 --no-charts
+python3 scripts/report_sweep.py --sweep-name my_sweep --no-charts
 ```
 
 ---

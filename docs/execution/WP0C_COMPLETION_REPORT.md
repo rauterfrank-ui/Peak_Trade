@@ -139,7 +139,7 @@ ExecutionEvent (ACK/REJECT/FILL)
 **33 tests, 100% pass rate:**
 
 ```bash
-uv run pytest tests/execution/venue_adapters/ -v
+python3 -m pytest tests/execution/venue_adapters/ -v
 ======================== 33 passed in 0.08s =========================
 ```
 
@@ -167,7 +167,7 @@ uv run pytest tests/execution/venue_adapters/ -v
 ### Linter
 
 ```bash
-uv run ruff check src/execution/venue_adapters/ src/execution/orchestrator.py
+ruff check src/execution/venue_adapters/ src/execution/orchestrator.py
 All checks passed!
 ```
 
@@ -175,17 +175,17 @@ All checks passed!
 
 **Run WP0C tests only:**
 ```bash
-uv run pytest tests/execution/venue_adapters/ -v
+python3 -m pytest tests/execution/venue_adapters/ -v
 ```
 
 **Run full execution test suite:**
 ```bash
-uv run pytest tests/execution/ -v
+python3 -m pytest tests/execution/ -v
 ```
 
 **Lint WP0C code:**
 ```bash
-uv run ruff check src/execution/venue_adapters/
+ruff check src/execution/venue_adapters/
 ```
 
 ---
@@ -335,14 +335,14 @@ except VenueAdapterError as e:
 ### Ruff (Linter)
 
 ```bash
-uv run ruff check src/execution/venue_adapters/ src/execution/orchestrator.py
+ruff check src/execution/venue_adapters/ src/execution/orchestrator.py
 ✅ All checks passed!
 ```
 
 ### Pytest (Tests)
 
 ```bash
-uv run pytest tests/execution/venue_adapters/ -v
+python3 -m pytest tests/execution/venue_adapters/ -v
 ✅ 33 passed in 0.08s
 ```
 
@@ -356,7 +356,7 @@ uv run pytest tests/execution/venue_adapters/ -v
 
 **Verification:**
 ```bash
-python -c "import pathlib; ..." # Unicode scan
+python3 -c "import pathlib; ..." # Unicode scan
 ✅ OK: No suspicious unicode chars found
 ```
 

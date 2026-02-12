@@ -42,13 +42,13 @@ Start Script:
 Minimal:
 
 ```bash
-python scripts/live_web_server.py --host 127.0.0.1 --port 8000
+python3 scripts/live_web_server.py --host 127.0.0.1 --port 8000
 ```
 
 Optional: Runs Directory Override (wenn deine Artefakte nicht im Default liegen):
 
 ```bash
-python scripts/live_web_server.py --host 127.0.0.1 --port 8000 --base-runs-dir live_runs --auto-refresh-seconds 5
+python3 scripts/live_web_server.py --host 127.0.0.1 --port 8000 --base-runs-dir live_runs --auto-refresh-seconds 5
 ```
 
 ---
@@ -65,7 +65,7 @@ Browser:
 One-shot Snapshots (ohne watch):
 
 ```bash
-python -c "import requests; print(requests.get('http://127.0.0.1:8000/api/v0/health').status_code)"
+python3 -c "import requests; print(requests.get('http://127.0.0.1:8000/api/v0/health').status_code)"
 ```
 
 Alternativ via Browser/HTTP Client:
@@ -86,7 +86,7 @@ Strict Mode: Mit `REQUIRE_PROMETHEUS_CLIENT=1` liefert `&#47;metrics` bei fehlen
 Beim Start des Watch-Only Servers das Env-Flag setzen (Beispiel):
 
 ```bash
-PEAK_TRADE_PROMETHEUS_ENABLED=1 python scripts/live_web_server.py --host 127.0.0.1 --port 8000
+PEAK_TRADE_PROMETHEUS_ENABLED=1 python3 scripts/live_web_server.py --host 127.0.0.1 --port 8000
 ```
 
 ### B) Prometheus/Grafana lokal starten (Docker Compose, optional)

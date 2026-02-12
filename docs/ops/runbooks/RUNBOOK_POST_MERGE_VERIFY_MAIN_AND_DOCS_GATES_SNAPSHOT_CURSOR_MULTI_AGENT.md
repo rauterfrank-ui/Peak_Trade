@@ -100,7 +100,7 @@ If no consolidated runner exists, discover available validators:
 
 Then run what is available (examples; names may vary):
 - Token policy validator (changed range):
-  - `python scripts/ops/validate_docs_token_policy.py --changed "HEAD~1..HEAD"`
+  - `bash python3 scripts/ops/validate_docs_token_policy.py --changed "HEAD~1..HEAD"`
 - Reference targets verifier:
   - `bash scripts/ops/verify_docs_reference_targets.sh --changed "HEAD~1..HEAD"`
 - Diff guard / policy gate checks:

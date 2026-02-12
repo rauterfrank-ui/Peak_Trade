@@ -1,0 +1,33 @@
+from __future__ import annotations
+
+import os
+import socket
+
+import pytest
+
+if os.getenv("PEAKTRADE_ALLOW_PORT_BIND_TESTS", "0") != "1":
+    pytest.skip(
+        "port bind tests disabled in restricted CI; set PEAKTRADE_ALLOW_PORT_BIND_TESTS=1 to enable",
+        allow_module_level=True,
+    )
+
+from src.ops.net.ports import ensure_tcp_port_free
+
+pytestmark = pytest.mark.network
+
+
+def _bind_ephemeral() -> tuple[socket.socket, int]:
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(("127.0.0.1", 0))
+    s.listen(1)
+    port = s.getsockname()[1]
+    return s, port
+
+
+def test_ensure_tcp_port_free_raises_when_bound() -> None:
+    s, port = _bind_ephemeral()
+    try:
+        with pytest.raises(RuntimeError):
+            ensure_tcp_port_free(port, context="test")
+    finally:
+        s.close()

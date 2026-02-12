@@ -97,10 +97,10 @@ Für dieses Scenario wird vorausgesetzt:
 # Repository & Environment
 git clone <REPO_URL> peak_trade
 cd peak_trade
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-pytest -q
+python3 -m pytest -q
 ```
 
 ### 3.3 Config prüfen
@@ -112,7 +112,7 @@ Stelle sicher, dass `config/config.toml` vorhanden ist und die relevanten Strate
 ls -la config/config.toml
 
 # Prüfe, ob Portfolio-Recipes geladen werden können
-python -c "import tomli; print(tomli.load(open('config/portfolio_recipes.toml')))"
+python3 -c "import tomli; print(tomli.load(open('config/portfolio_recipes.toml')))"
 ```
 
 ---
@@ -124,7 +124,7 @@ python -c "import tomli; print(tomli.load(open('config/portfolio_recipes.toml'))
 **Command:**
 
 ```bash
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --format both
@@ -183,14 +183,14 @@ Falls du zusätzliche Filter oder Parameter nutzen möchtest:
 
 ```bash
 # Mit Top-N-Filter (falls unterstützt)
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --format both \
   --top-n 3
 ```
 
-**Hinweis:** Die verfügbaren Parameter hängen von deiner aktuellen CLI-Implementierung ab. Prüfe `python scripts/research_cli.py portfolio --help` für Details.
+**Hinweis:** Die verfügbaren Parameter hängen von deiner aktuellen CLI-Implementierung ab. Prüfe `python3 scripts&#47;research_cli.py portfolio --help` für Details.
 
 ---
 
@@ -203,7 +203,7 @@ Nutze das bereits existierende CLI `scripts/run_portfolio_robustness.py`:
 **Command:**
 
 ```bash
-python scripts/run_portfolio_robustness.py \
+python3 scripts/run_portfolio_robustness.py \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --format both
@@ -212,7 +212,7 @@ python scripts/run_portfolio_robustness.py \
 **Mit expliziten Robustness-Parametern:**
 
 ```bash
-python scripts/run_portfolio_robustness.py \
+python3 scripts/run_portfolio_robustness.py \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --run-montecarlo \
@@ -317,7 +317,7 @@ Wir haben nun Backtest + Robustness für `multi_style_moderate`. Jetzt gehen wir
 
 **Dokumentation:**
 
-Erstelle einen Eintrag in `docs&#47;PORTFOLIO_DECISION_LOG.md` (oder ähnlich):
+Erstelle einen Eintrag in [`PORTFOLIO_DECISION_LOG.md`](PORTFOLIO_DECISION_LOG.md):
 
 ```markdown
 ## Portfolio: multi_style_moderate
@@ -456,7 +456,7 @@ log_logger_name = "peak_trade.live.alerts"
 
 ```bash
 # Teste Alert-System
-python scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py health --config config/config.toml
 ```
 
 **Verweise:**
@@ -477,7 +477,7 @@ Beschreibe einen **typischen Betriebs-Flow** für `multi_style_moderate` im Shad
 
 ```bash
 # Health-Check
-python scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py health --config config/config.toml
 ```
 
 **Was prüft `health`?**
@@ -503,10 +503,10 @@ Overall Status: OK
 
 ```bash
 # Portfolio-Snapshot (Text)
-python scripts/live_ops.py portfolio --config config/config.toml
+python3 scripts/live_ops.py portfolio --config config/config.toml
 
 # Portfolio-Snapshot (JSON)
-python scripts/live_ops.py portfolio --config config/config.toml --json
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
 ```
 
 **Was prüfst du im Portfolio-Snapshot für dieses Portfolio?**
@@ -575,7 +575,7 @@ Nutze das Ergebnis aus Phase 57 (`generate_live_status_report.py`):
 **Command:**
 
 ```bash
-python scripts/generate_live_status_report.py \
+python3 scripts/generate_live_status_report.py \
   --config config/config.toml \
   --output-dir reports/live_status \
   --format markdown \
@@ -585,7 +585,7 @@ python scripts/generate_live_status_report.py \
 **Mit HTML-Format:**
 
 ```bash
-python scripts/generate_live_status_report.py \
+python3 scripts/generate_live_status_report.py \
   --config config/config.toml \
   --output-dir reports/live_status \
   --format both \
@@ -672,13 +672,13 @@ max_daily_loss_abs = 1.0             # Sehr eng
 
 ```bash
 # Orders-Preview mit Risk-Check
-python scripts/live_ops.py orders \
+python3 scripts/live_ops.py orders \
   --signals reports/forward/forward_*_signals.csv \
   --config config/config.toml \
   --enforce-live-risk
 
 # Oder Portfolio-Snapshot (Portfolio-Level Risk)
-python scripts/live_ops.py portfolio \
+python3 scripts/live_ops.py portfolio \
   --config config/config.toml
 ```
 
@@ -818,13 +818,13 @@ Dieses Referenz-Szenario hat gezeigt, wie:
 
 ```bash
 # Portfolio-Research
-python scripts/research_cli.py portfolio \
+python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --format both
 
 # Portfolio-Robustness
-python scripts/run_portfolio_robustness.py \
+python3 scripts/run_portfolio_robustness.py \
   --config config/config.toml \
   --portfolio-preset multi_style_moderate \
   --format both
@@ -834,17 +834,17 @@ python scripts/run_portfolio_robustness.py \
 
 ```bash
 # Health-Check
-python scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py health --config config/config.toml
 
 # Portfolio-Snapshot
-python scripts/live_ops.py portfolio --config config/config.toml --json
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
 ```
 
 ### Status-Reports
 
 ```bash
 # Status-Report generieren
-python scripts/generate_live_status_report.py \
+python3 scripts/generate_live_status_report.py \
   --config config/config.toml \
   --output-dir reports/live_status \
   --format markdown \

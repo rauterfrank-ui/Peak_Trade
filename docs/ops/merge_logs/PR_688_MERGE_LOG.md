@@ -19,9 +19,9 @@ PR #688 (squash-merge) liefert Phase 8 „Docs Integrity Hardening": determinist
 ## Verification
 Local (fast, deterministic):
 - Tests:
-  - `uv run pytest -q`
+  - `python3 -m pytest -q`
 - Example snapshot (no generated output committed):
-  - `uv run python scripts&#47;ops&#47;docs_graph_snapshot.py --roots docs&#47;WORKFLOW_FRONTDOOR.md WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md docs&#47;ops&#47;README.md docs&#47;INSTALLATION_QUICKSTART.md --out <snapshot.json>`
+  - `python3 scripts&#47;ops&#47;docs_graph_snapshot.py --roots docs&#47;WORKFLOW_FRONTDOOR.md WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md docs&#47;ops&#47;README.md docs&#47;INSTALLATION_QUICKSTART.md --out <snapshot.json>`
 
 CI:
 - All required checks: PASS (22/22), PR merged via squash.
@@ -34,7 +34,7 @@ LOW (docs/ops tooling only)
 
 ## Operator How-To
 1) Run snapshot (default excludes archives):
-   - `uv run python scripts&#47;ops&#47;docs_graph_snapshot.py --roots docs&#47;WORKFLOW_FRONTDOOR.md WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md docs&#47;ops&#47;README.md docs&#47;INSTALLATION_QUICKSTART.md --out <snapshot.json>`
+   - `python3 scripts&#47;ops&#47;docs_graph_snapshot.py --roots docs&#47;WORKFLOW_FRONTDOOR.md WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md docs&#47;ops&#47;README.md docs&#47;INSTALLATION_QUICKSTART.md --out <snapshot.json>`
    - (Output path typically: `docs&#47;_generated&#47;*.json`, git-ignored)
 2) Optional: include archives:
    - Add `--include-archives`

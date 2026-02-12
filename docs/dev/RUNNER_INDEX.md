@@ -31,23 +31,24 @@ Wir gewichten Signale in dieser Reihenfolge:
 
 | Shortname | Pfad | Zweck | Beispiel-Command | Inputs | Outputs | Readiness | P1 |
 |---|---|---|---|---|---|---|---|
-| research_cli.py | `scripts/research_cli.py` | Research CLI: sweep, report, promote, walkforward, montecarlo, stress, portfolio, pipeline, strategy-profile... | `python scripts/research_cli.py --help` | strategy config, data files, sweep params | run_id, results/* (partial) | 🟡 PARTIAL | **MUST** |
-| run_backtest.py | `scripts/run_backtest.py` | Run backtest with strategy config, data file, date range | `python scripts/run_backtest.py --help` | strategy config, data file, date range | run_id, results/*/config_snapshot, stats.json, equity.csv | ✅ READY | **MUST** |
-| live_ops.py | `scripts/live_ops.py` | Peak_Trade Live-/Testnet Operations CLI | `python scripts/live_ops.py --help` | live/testnet credentials, strategy configs | logs, session reports (no results/ yet) | ❌ TODO | **MUST** |
-| run_execution_session.py | `scripts/run_execution_session.py` | Execute live/testnet session with strategy + symbol | `python scripts/run_execution_session.py --help` | strategy name, symbol, live/testnet mode | run_id, session logs (partial results/) | 🟡 PARTIAL | SHOULD |
-| preview_live_portfolio.py | `scripts/preview_live_portfolio.py` | Preview live portfolio allocation, JSON export, starting cash config | `python scripts/preview_live_portfolio.py --help` | portfolio config, starting cash | JSON preview (no results/) | ❌ TODO | LATER |
-| run_test_health_profile.py | `scripts/run_test_health_profile.py` | Run test health profiling/reporting | `python scripts/run_test_health_profile.py --help` | test suite results | health reports (no results/) | ❌ TODO | LATER |
-| report_live_sessions.py | `scripts/report_live_sessions.py` | Generate live session reports (markdown/html) | `python scripts/report_live_sessions.py --help` | session logs, trade data | markdown/html reports (no results/) | ❌ TODO | LATER |
-| run_promotion_proposal_cycle.py | `scripts/run_promotion_proposal_cycle.py` | Run promotion loop v0: build promotion candidates from config patches | `python scripts/run_promotion_proposal_cycle.py --help` | config patches, promotion criteria | promotion candidates (no results/) | ❌ TODO | LATER |
-| run_strategy_sweep.py | `scripts/run_strategy_sweep.py` | Run strategy parameter sweep | `python scripts/run_strategy_sweep.py --help` | strategy name, param grid | sweep results (no results/) | ❌ TODO | LATER |
-| experiments_explorer.py | `scripts/experiments_explorer.py` | Explore experiments: list, top, details, sweep-summary, sweeps, compare, export | `python scripts/experiments_explorer.py --help` | experiment database/results | queries, comparisons, exports (reads results/) | 🟡 PARTIAL | LATER |
-| testnet_orchestrator_cli.py | `scripts/testnet_orchestrator_cli.py` | Testnet orchestration: start-shadow, start-testnet, status, stop, tail | `python scripts/testnet_orchestrator_cli.py --help` | testnet configs, orchestration commands | run_id, orchestration logs (partial results/) | 🟡 PARTIAL | LATER |
-| run_offline_realtime_ma_crossover.py | `scripts/run_offline_realtime_ma_crossover.py` | Run offline realtime MA crossover with n-regimes | `python scripts/run_offline_realtime_ma_crossover.py --help` | data file, n-regimes param | run_id, backtest results (partial results/) | 🟡 PARTIAL | LATER |
+| research_cli.py | `scripts/research_cli.py` | Research CLI: sweep, report, promote, walkforward, montecarlo, stress, portfolio, pipeline, strategy-profile... | `python3 scripts&#47;research_cli.py --help` | strategy config, data files, sweep params | run_id, results/* (partial) | 🟡 PARTIAL | **MUST** |
+| run_backtest.py | `scripts/run_backtest.py` | Run backtest with strategy config, data file, date range | `python3 scripts&#47;run_backtest.py --help` | strategy config, data file, date range | run_id, results/*/config_snapshot, stats.json, equity.csv | ✅ READY | **MUST** |
+| live_ops.py | `scripts/live_ops.py` | Peak_Trade Live-/Testnet Operations CLI | `python3 scripts&#47;live_ops.py --help` | live/testnet credentials, strategy configs | logs, session reports (no results/ yet) | ❌ TODO | **MUST** |
+| run_execution_session.py | `scripts/run_execution_session.py` | Execute live/testnet session with strategy + symbol | `python3 scripts&#47;run_execution_session.py --help` | strategy name, symbol, live/testnet mode | run_id, session logs (partial results/) | 🟡 PARTIAL | SHOULD |
+| preview_live_portfolio.py | `scripts/preview_live_portfolio.py` | Preview live portfolio allocation, JSON export, starting cash config | `python3 scripts&#47;preview_live_portfolio.py --help` | portfolio config, starting cash | JSON preview (no results/) | ❌ TODO | LATER |
+| run_test_health_profile.py | `scripts/run_test_health_profile.py` | Run test health profiling/reporting | `python3 scripts&#47;run_test_health_profile.py --help` | test suite results | health reports (no results/) | ❌ TODO | LATER |
+| report_live_sessions.py | `scripts/report_live_sessions.py` | Generate live session reports (markdown/html) | `python3 scripts&#47;report_live_sessions.py --help` | session logs, trade data | markdown/html reports (no results/) | ❌ TODO | LATER |
+| run_promotion_proposal_cycle.py | `scripts/run_promotion_proposal_cycle.py` | Run promotion loop v0: build promotion candidates from config patches | `python3 scripts&#47;run_promotion_proposal_cycle.py --help` | config patches, promotion criteria | promotion candidates (no results/) | ❌ TODO | LATER |
+| run_strategy_sweep.py | `scripts/run_strategy_sweep.py` | Run strategy parameter sweep | `python3 scripts&#47;run_strategy_sweep.py --help` | strategy name, param grid | sweep results (no results/) | ❌ TODO | LATER |
+| experiments_explorer.py | `scripts/experiments_explorer.py` | Explore experiments: list, top, details, sweep-summary, sweeps, compare, export | `python3 scripts&#47;experiments_explorer.py --help` | experiment database/results | queries, comparisons, exports (reads results/) | 🟡 PARTIAL | LATER |
+| testnet_orchestrator_cli.py | `scripts/testnet_orchestrator_cli.py` | Testnet orchestration: start-shadow, start-testnet, status, stop, tail | `python3 scripts&#47;testnet_orchestrator_cli.py --help` | testnet configs, orchestration commands | run_id, orchestration logs (partial results/) | 🟡 PARTIAL | LATER |
+| run_offline_realtime_ma_crossover.py | `scripts/run_offline_realtime_ma_crossover.py` | Run offline realtime MA crossover with n-regimes | `python3 scripts&#47;run_offline_realtime_ma_crossover.py --help` | data file, n-regimes param | run_id, backtest results (partial results/) | 🟡 PARTIAL | LATER |
+| run_l3_trade_plan_advisory.py | `scripts/aiops/run_l3_trade_plan_advisory.py` | L3 Trade Plan Advisory: pointer-only inputs, files-only tooling, deterministic manifest + artifacts | `python3 scripts&#47;aiops&#47;run_l3_trade_plan_advisory.py --help` | pointer-only input (FeatureView/EvidenceCapsule style), --out | run_id, evidence_pack_id, run_manifest.json, operator_output.md (no raw) | 🟡 PARTIAL | LATER |
 
 ### Auto-Curation Notes
 
-**Analysiert:** 12 Tier-A Runner
-**Readiness:** 1 READY, 5 PARTIAL, 6 TODO
+**Analysiert:** 13 Tier-A Runner
+**Readiness:** 1 READY, 6 PARTIAL, 6 TODO
 
 **Kuratierungs-Details:**
 - ✅ Alle Runner haben `--help` Support (außer `run_promotion_proposal_cycle.py`)
@@ -70,7 +71,7 @@ Wir gewichten Signale in dieser Reihenfolge:
 
 **Reproduce Curation:**
 ```bash
-python scripts/dev/curate_runner_index.py
+python3 scripts/dev/curate_runner_index.py
 # Output: results/dev/runner_index_curation.json
 ```
 

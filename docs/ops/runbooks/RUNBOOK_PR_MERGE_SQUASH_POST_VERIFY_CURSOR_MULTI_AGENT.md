@@ -524,7 +524,7 @@ git status -sb
 # Example: `docs/example/file.md` → `docs&#47;example&#47;file.md`
 
 # Use autofix tool
-uv run python scripts/ops/autofix_docs_token_policy_inline_code_v2.py \
+python3 scripts/ops/autofix_docs_token_policy_inline_code_v2.py \
   --files <file>
 
 # Verify

@@ -5,12 +5,43 @@
   "schemaVersion": 39,
   "version": 1,
   "refresh": "10s",
-  "tags": ["peak_trade", "observability", "execution_watch", "watch_only", "drilldown", "ux_pack_v5"],
-  "time": { "from": "now-30m", "to": "now" },
+  "tags": [
+    "peak_trade",
+    "observability",
+    "execution_watch",
+    "watch_only",
+    "drilldown",
+    "ux_pack_v5"
+  ],
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
   "links": [
-    { "type": "link", "title": "Operator Home", "url": "/d/peaktrade-operator-home", "targetBlank": false, "keepTime": true, "includeVars": true },
-    { "type": "link", "title": "Execution Watch Overview", "url": "/d/peaktrade-execution-watch-overview", "targetBlank": false, "keepTime": true, "includeVars": true },
-    { "type": "link", "title": "Contract Details", "url": "/d/peaktrade-contract-details", "targetBlank": false, "keepTime": true, "includeVars": true },
+    {
+      "type": "link",
+      "title": "Operator Home",
+      "url": "/d/peaktrade-operator-home",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "Execution Watch Overview",
+      "url": "/d/peaktrade-execution-watch-overview",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "Contract Details",
+      "url": "/d/peaktrade-contract-details",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
     {
       "type": "link",
       "title": "Explore (req/s, endpoint/status)",
@@ -23,11 +54,27 @@
   "templating": {
     "list": [
       {
+        "name": "ds",
+        "label": "Datasource",
+        "type": "datasource",
+        "query": "prometheus",
+        "refresh": 1,
+        "hide": 0,
+        "current": {
+          "text": "prom_local_9092",
+          "value": "prom_local_9092"
+        },
+        "options": []
+      },
+      {
         "type": "datasource",
         "name": "DS_LOCAL",
         "label": "Prometheus (local)",
         "query": "prometheus",
-        "current": { "text": "prometheus-local", "value": "peaktrade-prometheus-local" },
+        "current": {
+          "text": "prometheus-local",
+          "value": "peaktrade-prometheus-local"
+        },
         "options": [],
         "refresh": 1,
         "hide": 2
@@ -37,7 +84,10 @@
         "name": "DS_MAIN",
         "label": "Prometheus (main)",
         "query": "prometheus",
-        "current": { "text": "prometheus-main", "value": "peaktrade-prometheus-main" },
+        "current": {
+          "text": "prometheus-main",
+          "value": "peaktrade-prometheus-main"
+        },
         "options": [],
         "refresh": 1,
         "hide": 2
@@ -47,7 +97,10 @@
         "name": "DS_SHADOW",
         "label": "Prometheus (shadow)",
         "query": "prometheus",
-        "current": { "text": "prometheus-shadow", "value": "peaktrade-prometheus-shadow" },
+        "current": {
+          "text": "prometheus-shadow",
+          "value": "peaktrade-prometheus-shadow"
+        },
         "options": [],
         "refresh": 1,
         "hide": 2
@@ -56,7 +109,10 @@
         "type": "query",
         "name": "endpoint",
         "label": "endpoint",
-        "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "peaktrade-prometheus-local"
+        },
         "query": {
           "query": "label_values(peak_trade_execution_watch_requests_total, endpoint)",
           "refId": "endpointVars"
@@ -66,13 +122,19 @@
         "multi": false,
         "refresh": 2,
         "sort": 1,
-        "current": { "text": "All", "value": "$__all" }
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        }
       },
       {
         "type": "query",
         "name": "status",
         "label": "status",
-        "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "peaktrade-prometheus-local"
+        },
         "query": {
           "query": "label_values(peak_trade_execution_watch_requests_total, status)",
           "refId": "statusVars"
@@ -82,7 +144,10 @@
         "multi": false,
         "refresh": 2,
         "sort": 1,
-        "current": { "text": "All", "value": "$__all" }
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        }
       }
     ]
   },
@@ -90,7 +155,12 @@
     {
       "type": "text",
       "title": "Drilldown context",
-      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 0 },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
       "options": {
         "mode": "markdown",
         "content": "Diese View ist für Drilldowns aus **Execution Watch Overview**.\n\n- Filter: `endpoint=~\"$endpoint\"`, `status=~\"$status\"`\n- Datasource ist **DS_LOCAL** (Guardrail gegen false MISSING auf DS_SHADOW)."
@@ -99,8 +169,16 @@
     {
       "type": "timeseries",
       "title": "Execution Watch req/s (filtered)",
-      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 4 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "peaktrade-prometheus-local"
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
       "targets": [
         {
           "refId": "A",
@@ -112,9 +190,22 @@
     {
       "type": "timeseries",
       "title": "Execution Watch latency p95 (filtered)",
-      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 14 },
-      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "peaktrade-prometheus-local"
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
       "targets": [
         {
           "refId": "A",
@@ -123,5 +214,8 @@
         }
       ]
     }
-  ]
+  ],
+  "timepicker": {
+    "hidden": false
+  }
 }

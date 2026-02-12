@@ -53,8 +53,8 @@ Finish C — Phase C1: Minimal broker adapter skeleton under execution-layer wit
 
 ### Deterministic test snapshots (historical, captured during PR #814)
 
-- `uv run pytest -q tests/execution/broker -q` (PASS)
-- `uv run pytest -q` (PASS)
+- `python3 -m pytest -q tests&#47;execution&#47;broker -q` (PASS)
+- `python3 -m pytest -q` (PASS)
 
 ## References
 

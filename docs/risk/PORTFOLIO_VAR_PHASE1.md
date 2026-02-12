@@ -312,7 +312,7 @@ weights = {"BTC": 0.5, "ETH": 0.5}  # Missing: SOL
 ### Run Phase 1 Tests
 
 ```bash
-pytest tests/risk/test_portfolio_var_phase1.py -v
+python3 -m pytest tests/risk/test_portfolio_var_phase1.py -v
 ```
 
 ### Test Coverage

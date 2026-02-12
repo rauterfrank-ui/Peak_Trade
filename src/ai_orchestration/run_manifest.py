@@ -4,7 +4,7 @@ Run Manifest Generator
 Generates deterministic Run Manifests and Operator Outputs for AI Layer runs.
 
 Reference:
-- docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
+- docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
 - docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md
 """
 

@@ -429,7 +429,7 @@ from src.risk_layer.var_backtest import (
 
 ```bash
 # Run Duration Diagnostic Tests
-pytest tests/risk_layer/var_backtest/test_duration_diagnostics.py -v
+python3 -m pytest tests/risk_layer/var_backtest/test_duration_diagnostics.py -v
 
 # Expected: ~30 tests, all passing
 ```

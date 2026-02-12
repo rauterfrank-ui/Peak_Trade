@@ -133,17 +133,17 @@ Monte-Carlo kann auf Top-N-Konfigurationen aus Sweeps angewendet werden:
 
 ```bash
 # 1. Sweep ausführen
-python scripts/research_cli.py sweep \
+python3 scripts/research_cli.py sweep \
     --sweep-name rsi_reversion_basic \
     --config config/config.toml
 
 # 2. Top-N Promotion
-python scripts/research_cli.py promote \
+python3 scripts/research_cli.py promote \
     --sweep-name rsi_reversion_basic \
     --top-n 5
 
 # 3. Monte-Carlo-Analyse
-python scripts/research_cli.py montecarlo \
+python3 scripts/research_cli.py montecarlo \
     --sweep-name rsi_reversion_basic \
     --config config/config.toml \
     --top-n 3 \
@@ -156,7 +156,7 @@ python scripts/research_cli.py montecarlo \
 
 #### Simple Bootstrap (Standard)
 ```bash
-python scripts/research_cli.py montecarlo \
+python3 scripts/research_cli.py montecarlo \
     --sweep-name rsi_reversion_basic \
     --config config/config.toml \
     --top-n 3 \
@@ -167,7 +167,7 @@ python scripts/research_cli.py montecarlo \
 
 #### Block-Bootstrap
 ```bash
-python scripts/research_cli.py montecarlo \
+python3 scripts/research_cli.py montecarlo \
     --sweep-name ma_crossover_basic \
     --config config/config.toml \
     --top-n 5 \
@@ -178,7 +178,7 @@ python scripts/research_cli.py montecarlo \
 
 #### Mit Dummy-Daten (für Tests)
 ```bash
-python scripts/research_cli.py montecarlo \
+python3 scripts/research_cli.py montecarlo \
     --sweep-name test_sweep \
     --config config/config.toml \
     --top-n 3 \
@@ -297,7 +297,7 @@ Siehe: [PHASE_46_STRESS_TESTS_AND_CRASH_SCENARIOS.md](PHASE_46_STRESS_TESTS_AND_
 ### 8.1 Subcommand `montecarlo`
 
 ```bash
-python scripts/research_cli.py montecarlo \
+python3 scripts/research_cli.py montecarlo \
     --sweep-name {sweep_name} \
     --config {config_path} \
     --top-n {n} \
@@ -312,7 +312,7 @@ python scripts/research_cli.py montecarlo \
 Monte-Carlo ist vollständig in die **Research-Pipeline v2** integriert:
 
 ```bash
-python scripts/research_cli.py pipeline \
+python3 scripts/research_cli.py pipeline \
     --sweep-name rsi_reversion_basic \
     --config config/config.toml \
     --top-n 5 \
@@ -336,10 +336,10 @@ Die Pipeline führt automatisch Sweep → Report → Promotion → Monte-Carlo a
 
 ```bash
 # Alle Monte-Carlo-Tests
-pytest tests/test_monte_carlo_robustness.py -v
+python3 -m pytest tests/test_monte_carlo_robustness.py -v
 
 # Research-CLI-Tests (inkl. montecarlo)
-pytest tests/test_research_cli.py -v
+python3 -m pytest tests/test_research_cli.py -v
 ```
 
 ---

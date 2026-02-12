@@ -228,13 +228,13 @@ Das Demo-Script (`scripts/demo_execution_backtest.py`) unterstuetzt seit Phase 1
 
 ```bash
 # Detaillierte ExecutionStats ausgeben
-python -m scripts.demo_execution_backtest --stats
+python3 -m scripts.demo_execution_backtest --stats
 
 # Plots erstellen
-python -m scripts.demo_execution_backtest --plot --output-dir reports
+python3 -m scripts.demo_execution_backtest --plot --output-dir reports
 
 # Kombination
-python -m scripts.demo_execution_backtest --stats --plot --verbose
+python3 -m scripts.demo_execution_backtest --stats --plot --verbose
 ```
 
 ### Neue CLI-Optionen
@@ -251,10 +251,10 @@ python -m scripts.demo_execution_backtest --stats --plot --verbose
 
 ```bash
 # Execution-Reporting Tests ausfuehren
-pytest tests/test_execution_reporting.py -v
+python3 -m pytest tests/test_execution_reporting.py -v
 
 # Mit Coverage
-pytest tests/test_execution_reporting.py -v --cov=src/reporting
+python3 -m pytest tests/test_execution_reporting.py -v --cov=src/reporting
 ```
 
 ### Test-Abdeckung

@@ -5,7 +5,7 @@ Loads and parses config/capability_scopes/*.toml into structured Python objects.
 
 Reference:
 - config/capability_scopes/*.toml
-- docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
+- docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
 """
 
 from dataclasses import dataclass
@@ -243,6 +243,25 @@ class CapabilityScopeLoader:
             return True
 
         return False
+
+    def get_envelope_tooling_allowlist(self, layer_id: str) -> List[str]:
+        """
+        Return the tooling allowlist for the layer envelope (orchestrator boundary).
+
+        Call this when building a LayerEnvelope so tooling selection is always
+        derived from capability scope; never hardcode web/shell for files-only layers.
+
+        Args:
+            layer_id: Layer identifier (e.g., "L0", "L3", "L4")
+
+        Returns:
+            List of allowed tool names (e.g., ["files"] or ["web", "files"])
+
+        Raises:
+            CapabilityScopeError: If scope not found
+        """
+        scope = self.load(layer_id)
+        return list(scope.tooling_allowed)
 
     def _matches_pattern(self, path: str, pattern: str) -> bool:
         """

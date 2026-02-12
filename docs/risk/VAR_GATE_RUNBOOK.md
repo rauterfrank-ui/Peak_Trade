@@ -289,12 +289,12 @@ warn_var_pct = null    # No warning
 
 ### Unit Tests
 ```bash
-pytest -v tests/risk_layer/test_var_gate.py
+python3 -m pytest -v tests/risk_layer/test_var_gate.py
 ```
 
 ### Integration Tests
 ```bash
-pytest -v tests/risk_layer/test_risk_gate.py -k var_gate
+python3 -m pytest -v tests/risk_layer/test_risk_gate.py -k var_gate
 ```
 
 ### Manual Smoke Test

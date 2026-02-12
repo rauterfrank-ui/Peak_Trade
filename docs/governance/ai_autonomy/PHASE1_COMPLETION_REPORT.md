@@ -25,7 +25,7 @@ Phase 1 ist **vollständig abgeschlossen** und umfasst:
 
 ### Authoritative Documents (2)
 
-1. ⚠️ **`docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`**  
+1. ⚠️ **`docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`**  
    Single source of truth für Layer→Model Assignments
 
 2. ⚠️ **`docs/governance/ai_autonomy/SCHEMA_MANDATORY_FIELDS.md`**  
@@ -164,7 +164,7 @@ python3 -m pytest tests/ai_orchestration/test_models.py -v
 
 1. **Review Authoritative Matrix:**
    ```bash
-   cat docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
+   cat docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
    ```
 
 2. **Review Mandatory Fields Schema:**

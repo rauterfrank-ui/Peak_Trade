@@ -101,13 +101,13 @@ Four critical modules fully migrated to new taxonomy:
 
 **Test Results:**
 ```bash
-pytest tests/test_error_taxonomy.py -v
+python3 -m pytest tests/test_error_taxonomy.py -v
 # 30 passed
 ```
 
 **Full Suite:**
 ```bash
-pytest -q
+python3 -m pytest -q
 # 4200 passed, 13 skipped, 3 xfailed
 ```
 
@@ -152,7 +152,7 @@ ruff check src tests scripts
 
 ### Tests ✅
 ```bash
-pytest -q
+python3 -m pytest -q
 # 4200 passed, 13 skipped, 3 xfailed
 ```
 
@@ -225,14 +225,14 @@ except ConfigError as e:
 rg "from src.core.errors import" src/
 
 # Run error taxonomy tests
-pytest tests/test_error_taxonomy.py -v
+python3 -m pytest tests/test_error_taxonomy.py -v
 
 # Check ERROR_HANDLING_GUIDE.md
 cat docs/ERROR_HANDLING_GUIDE.md
 
 # Verify migrated modules
-pytest tests/test_data_contracts.py -v
-pytest tests/test_backtest_smoke.py -v
+python3 -m pytest tests/test_data_contracts.py -v
+python3 -m pytest tests/test_backtest_smoke.py -v
 ```
 
 ---

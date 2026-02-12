@@ -1606,7 +1606,7 @@ class AuditTrail:
 # Kill Switch Control CLI
 
 # Status abfragen
-python -m peak_trade.risk.kill_switch status
+python3 -m peak_trade.risk.kill_switch status
 # Output:
 # ┌────────────────────────────────────────┐
 # │ KILL SWITCH STATUS                     │
@@ -1618,22 +1618,22 @@ python -m peak_trade.risk.kill_switch status
 # └────────────────────────────────────────┘
 
 # Manueller Trigger
-python -m peak_trade.risk.kill_switch trigger \
+python3 -m peak_trade.risk.kill_switch trigger \
   --reason "Manual stop for maintenance" \
   --confirm
 
 # Recovery starten
-python -m peak_trade.risk.kill_switch recover \
+python3 -m peak_trade.risk.kill_switch recover \
   --code "EMERGENCY_RECOVERY_2025" \
   --reason "Maintenance complete"
 
 # Audit Trail anzeigen
-python -m peak_trade.risk.kill_switch audit \
+python3 -m peak_trade.risk.kill_switch audit \
   --since "2025-01-01" \
   --limit 50
 
 # Health Check
-python -m peak_trade.risk.kill_switch health
+python3 -m peak_trade.risk.kill_switch health
 ```
 
 ### 5.4 Execution Gate
@@ -1923,9 +1923,9 @@ class TestChaosScenarios:
 **Schritte:**
 1. Terminal öffnen
 2. `cd ~/Peak_Trade && source .venv/bin/activate`
-3. `python -m peak_trade.risk.kill_switch trigger --reason "GRUND" --confirm`
+3. `python3 -m peak_trade.risk.kill_switch trigger --reason "GRUND" --confirm`
 4. Bestätigung abwarten
-5. Status prüfen: `python -m peak_trade.risk.kill_switch status`
+5. Status prüfen: `python3 -m peak_trade.risk.kill_switch status`
 
 ### 🔄 Recovery nach Kill Switch
 
@@ -1935,10 +1935,10 @@ class TestChaosScenarios:
 - System Health ist OK
 
 **Schritte:**
-1. Health Check: `python -m peak_trade.risk.kill_switch health`
+1. Health Check: `python3 -m peak_trade.risk.kill_switch health`
 2. Recovery starten:
    ```bash
-   python -m peak_trade.risk.kill_switch recover \
+   python3 -m peak_trade.risk.kill_switch recover \
      --code "EMERGENCY_RECOVERY_2025" \
      --reason "Wartung abgeschlossen"
    ```
@@ -1951,10 +1951,10 @@ class TestChaosScenarios:
 
 ```bash
 # Letzte 50 Events
-python -m peak_trade.risk.kill_switch audit --limit 50
+python3 -m peak_trade.risk.kill_switch audit --limit 50
 
 # Events der letzten 24h
-python -m peak_trade.risk.kill_switch audit --since "$(date -v-1d +%Y-%m-%d)"
+python3 -m peak_trade.risk.kill_switch audit --since "$(date -v-1d +%Y-%m-%d)"
 ```
 ```
 

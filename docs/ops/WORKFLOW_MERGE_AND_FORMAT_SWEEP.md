@@ -32,7 +32,7 @@ PR_NUM=<nummer> ./scripts/workflows/merge_and_format_sweep.sh
 2. PR mergen (squash + branch delete)
 3. `main` aktualisieren
 4. Format-Sweep Branch erstellen
-5. `uv run pre-commit run --all-files` ausführen
+5. `pre-commit run --all-files` ausführen
 6. Änderungen committen + pushen
 7. Neuen Format-Sweep PR erstellen
 8. Optional: `large-pr-approved` Label setzen (falls >1200 Files)
@@ -111,7 +111,7 @@ Das Workflow-Script führt automatisch aus:
 
 ```bash
 # Erstellt Branch: chore/format-sweep-precommit-YYYY-MM-DD
-# Führt aus: uv run pre-commit run --all-files
+# Führt aus: pre-commit run --all-files
 # Committet + pusht Änderungen
 # Erstellt Format-Sweep PR
 # Setzt Label (falls >1200 Files)

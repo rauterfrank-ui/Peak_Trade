@@ -76,6 +76,45 @@ Ziel: Operator kann in jedem Dashboard deterministisch zwischen lokalen/optional
 - **Execution Watch Details**: `peaktrade-execution-watch-details`
   - Drilldown aus „Execution Watch req/s (by endpoint, status)“ mit `endpoint&#47;status` Kontext
 
+### Execution Watch Overview: „AI Live“ (Control Panel)
+
+Im Dashboard `peaktrade-execution-watch-overview` ist die Row **„AI Live“** als **Live-Control-Panel** gedacht:
+
+- Zusätzlich gibt es darunter die Row **„AI Live — Ops Summary“** (Ops Pack v1):
+  - Up/Freshness/ParseErrors/Drops/Latency (p95) + Active Alerts (firing)
+
+- **Drilldown v1 (run_id)**:
+  - Dashboard Variable: `run_id` (DS_LOCAL)
+  - Panels filtern via `run_id=~"$run_id"` (All → `.*`)
+
+- **AI Live UX v2 (Reason/Action/SLO/Timeline)**:
+  - **Decisions by decision (1m)**: Counts/min nach `decision` (accept/reject/noop), run-scoped
+  - **Reject reasons (5m)**: Top Reasons (Timeseries, stacked), run-scoped
+  - **Noop reasons (5m)**: Top Reasons (Timeseries, stacked), run-scoped
+  - **Actions (5m)**: Top Actions aus `peaktrade_ai_actions_total`, run-scoped
+  - **Latency SLO > 500ms (5m) — breach %**: SLO-Breach basierend auf Histogram `peaktrade_ai_decision_latency_seconds_*` (run-scoped)
+  - **Latency breach % (>500ms) (5m)**: Timeseries-Variante (run-scoped)
+  - **AI Activity State (per decision type, last 30m)**: 0/1 Aktivitäts-Spuren je Decision-Type (run-scoped)
+
+- **AI Active (last 30s)**: Aktivitätsindikator (1 wenn in den letzten 30s eine AI-Decision passiert ist, sonst 0)
+- **Total decisions / min (1m)**: Gesamt-Durchsatz (pro Minute)
+- **Reject share (5m)**: Reject-Anteil als 0..1 (Grafana Unit `percentunit`)
+- **Last decision age (s)**: Alter der letzten Decision (sekundär)
+- **Recent activity (run_id)**: Last event age + decision counts (1m/5m) + last decision age (alle no-data gehärtet)
+- **Decisions / min (1m)**: Timeseries, gestapelt nach `decision` (accept/reject/noop)
+- **Top reject reasons (10m)**: Bar-Gauge der häufigsten Reject-Gründe
+- **Annotations**: Marker für Accept/Reject Events (letzte 1m), robust gegen „no data“ via `or on() vector(0)`
+
+**Validierung (schnell):**
+- In Grafana → Dashboard öffnen → Time range z.B. „Last 30m“
+- `run_id` setzen (All oder konkreter Lauf) und prüfen, dass die UX v2 Panels deterministisch 0/„none“ zeigen wenn keine Daten da sind (no-data hardening).
+- Prüfen, dass bei „idle/no traffic“ keine NaNs/Inf auftauchen (Nennersicherung via `clamp_min(..., 1e-9)`), und „AI Active“ sauber 0 zeigt.
+
+## Compare Pack v0.1 (stacked auf PR #950)
+
+- **Compare Overview (Main vs Shadow)**: `peaktrade-main-vs-shadow-overview`
+- **Metrics Drift**: `peaktrade-metrics-drift`
+
 ## Verify Quick Path (operator-grade)
 
 ```bash
@@ -197,7 +236,7 @@ docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOS
 ### Grafana Health
 
 ```bash
-curl -sS -u admin:admin http://127.0.0.1:3000/api/health
+curl -sS -u "$GRAFANA_AUTH" http://127.0.0.1:3000/api/health
 ```
 
 Erwartung: `"database": "ok"`.
@@ -205,7 +244,7 @@ Erwartung: `"database": "ok"`.
 ### Dashboards sichtbar?
 
 ```bash
-curl -sS -u admin:admin -G http://127.0.0.1:3000/api/search --data-urlencode type=dash-db | python3 -m json.tool | head -n 120
+curl -sS -u "$GRAFANA_AUTH" -G http://127.0.0.1:3000/api/search --data-urlencode type=dash-db | python3 -m json.tool | head -n 120
 ```
 
 Erwartung: eine Liste mit z.B. `peaktrade-labeled-local` und `peaktrade-overview`.
@@ -213,7 +252,7 @@ Erwartung: eine Liste mit z.B. `peaktrade-labeled-local` und `peaktrade-overview
 ### Default Datasource ist `prometheus-local`?
 
 ```bash
-curl -sS -u admin:admin http://127.0.0.1:3000/api/datasources | python3 -m json.tool | head -n 220
+curl -sS -u "$GRAFANA_AUTH" http://127.0.0.1:3000/api/datasources | python3 -m json.tool | head -n 220
 ```
 
 Erwartung: Datasource `prometheus-local` mit `"isDefault": true` und URL http://host.docker.internal:9092.
@@ -287,9 +326,17 @@ curl -fsS http://127.0.0.1:9092/api/v1/targets | python3 -m json.tool | head -n 
 curl -fsS http://127.0.0.1:9109/metrics | head -n 60
 ```
 
+**Hinweis (robust gegen transiente Responses)**  
+Wenn `curl ... &#47;api&#47;v1&#47;query` sporadisch **leer** oder **nicht-JSON** liefert (Warmup/Netzwerk), nutze die repo-interne Verifikation:
+
+```bash
+# Enthält retries + deterministische Diagnostik (Headers + Body-Preview) statt JSONDecodeError
+bash scripts/obs/shadow_mvs_local_verify.sh
+```
+
 ### Golden Smoke Pattern: Prometheus Query via `--out` + Parse aus Datei
 
-Ziel: deterministisch (kein `curl | python json.load(...)`, keine Shell→Python JSON-Interpolation).
+Ziel: deterministisch (kein `curl | python3 json.load(...)`, keine Shell→Python JSON-Interpolation).
 
 ```bash
 # Preflight

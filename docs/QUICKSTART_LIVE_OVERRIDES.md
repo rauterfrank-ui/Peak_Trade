@@ -22,7 +22,7 @@ from src.core.peak_config import load_config_with_live_overrides
 cfg = load_config_with_live_overrides()
 ```
 
-Das war's! In **Paper-Environments** verhält sich die Funktion identisch zu `load_config()`. In **Live-Environments** werden automatisch die Overrides aus `config&sol;live_overrides&sol;auto.toml (planned)` angewendet.
+Das war's! In **Paper-Environments** verhält sich die Funktion identisch zu `load_config()`. In **Live-Environments** werden automatisch die Overrides aus `config&#47;live_overrides&#47;auto.toml` angewendet.
 
 ### 2. Promotion Loop konfigurieren
 
@@ -31,7 +31,7 @@ Das war's! In **Paper-Environments** verhält sich die Funktion identisch zu `lo
 python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
 ```
 
-Dies erzeugt/aktualisiert `config&sol;live_overrides&sol;auto.toml (planned)`:
+Dies erzeugt/aktualisiert `config&#47;live_overrides&#47;auto.toml`:
 
 ```toml
 [auto_applied]
@@ -104,13 +104,13 @@ Werte außerhalb dieser Grenzen werden automatisch abgelehnt.
 
 ```bash
 # Basis-Tests
-pytest tests/test_live_overrides_integration.py -v
+python3 -m pytest tests/test_live_overrides_integration.py -v
 
 # Realistische Szenarien
-pytest tests/test_live_overrides_realistic_scenario.py -v
+python3 -m pytest tests/test_live_overrides_realistic_scenario.py -v
 
 # Alle Override-Tests
-pytest tests/test_live_overrides*.py -v
+python3 -m pytest tests/test_live_overrides*.py -v
 ```
 
 ## 🔧 Erweiterte Nutzung
@@ -242,6 +242,6 @@ print(overrides)  # Sollte deinen Key enthalten
 Du bist jetzt bereit, Live-Overrides zu nutzen. Bei Fragen siehe:
 - Dokumentation oben
 - Tests als Beispiele
-- Demo-Script: `scripts&sol;demo_live_overrides.py (planned)`
+- Demo-Script: `scripts&#47;demo_live_overrides.py`
 
 Happy Trading! 🚀

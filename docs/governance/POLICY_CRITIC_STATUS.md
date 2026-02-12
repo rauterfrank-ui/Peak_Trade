@@ -60,7 +60,7 @@
 ### Path Exclusions
 
 - `docs/` - Documentation files
-- `tmp/` - Temporary test artifacts
+- `tmp&#47;` - Temporary test artifacts
 - `tests/fixtures/` - Test data
 
 ---
@@ -144,7 +144,7 @@ gh run view <RUN_ID> --log-failed
 
 ### Run Policy Critic locally
 ```bash
-python scripts/run_policy_critic.py \
+python3 scripts/run_policy_critic.py \
   --diff-file pr.diff \
   --changed-files "file1.py,file2.py"
 ```

@@ -82,17 +82,17 @@ All new `PR_*_MERGE_LOG.md` files must include:
 ### Audit Tool
 ```bash
 # Check all logs
-python scripts/audit/check_ops_merge_logs.py
+python3 scripts/audit/check_ops_merge_logs.py
 
 # Generate reports
-python scripts/audit/check_ops_merge_logs.py \
+python3 scripts/audit/check_ops_merge_logs.py \
   --report-md reports/ops/violations.md \
   --report-json reports/ops/violations.json
 ```
 
 ### Regenerate This Backlog
 ```bash
-python scripts/ops/generate_legacy_merge_log_backlog.py
+python3 scripts/ops/generate_legacy_merge_log_backlog.py
 ```
 
 ### CI Integration

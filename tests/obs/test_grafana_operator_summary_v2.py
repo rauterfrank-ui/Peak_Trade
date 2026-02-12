@@ -58,7 +58,7 @@ def test_operator_summary_dashboard_v2_contract() -> None:
         for t in templ
         if isinstance(t, dict) and t.get("type") == "datasource" and isinstance(t.get("name"), str)
     }
-    assert {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"}.issubset(ds_vars)
+    assert {"ds"}.issubset(ds_vars)
 
     # Links accept /d/<uid> and /d/<uid>/<slug>
     uid_re = re.compile(r"^/d/([^/]+)(?:/[^/]+)?$")

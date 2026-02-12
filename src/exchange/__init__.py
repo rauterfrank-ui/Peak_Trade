@@ -42,10 +42,12 @@ from .base import (
     TradingOrderType,
 )
 from .ccxt_client import CcxtExchangeClient
+from .protocols import ExchangeClient as ExchangeClientProtocol
 
 __all__ = [
     # Read-only Exchange
     "ExchangeClient",
+    "ExchangeClientProtocol",
     "Ticker",
     "Balance",
     "CcxtExchangeClient",
@@ -60,7 +62,7 @@ __all__ = [
 ]
 
 
-def build_exchange_client_from_config(cfg) -> CcxtExchangeClient:
+def build_exchange_client_from_config(cfg) -> ExchangeClientProtocol:
     """
     Factory-Funktion: Erstellt CcxtExchangeClient (read-only) aus PeakConfig.
 

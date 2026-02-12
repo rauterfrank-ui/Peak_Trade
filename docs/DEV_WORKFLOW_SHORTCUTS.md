@@ -11,23 +11,23 @@ Kurze Referenz für häufige Developer-Commands im Peak_Trade-Projekt.
 ### Vollständige Test-Suite
 
 ```bash
-pytest -q
+python3 -m pytest -q
 ```
 
 ### Spezifische Test-Gruppen
 
 ```bash
 # Nur Live-bezogene Tests
-pytest -q tests/test_live_* tests/test_generate_live_status_report_cli.py
+python3 -m pytest -q tests/test_live_* tests/test_generate_live_status_report_cli.py
 
 # Nur Backtest-Tests
-pytest -q tests/test_backtest_*
+python3 -m pytest -q tests/test_backtest_*
 
 # Nur Strategy-Tests
-pytest -q tests/test_strategy_*
+python3 -m pytest -q tests/test_strategy_*
 
 # Mit Coverage
-pytest -q --cov=src --cov-report=html
+python3 -m pytest -q --cov=src --cov-report=html
 ```
 
 ---
@@ -38,36 +38,36 @@ pytest -q --cov=src --cov-report=html
 
 ```bash
 # Help anzeigen
-python scripts/research_cli.py --help
+python3 scripts/research_cli.py --help
 
 # Portfolio-Subcommand
-python scripts/research_cli.py portfolio --help
+python3 scripts/research_cli.py portfolio --help
 
 # Pipeline-Subcommand
-python scripts/research_cli.py pipeline --help
+python3 scripts/research_cli.py pipeline --help
 ```
 
 ### Live-Ops CLI
 
 ```bash
 # Help anzeigen
-python scripts/live_ops.py --help
+python3 scripts/live_ops.py --help
 
 # Health-Check
-python scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py health --config config/config.toml
 
 # Portfolio-Snapshot
-python scripts/live_ops.py portfolio --config config/config.toml --json
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
 ```
 
 ### Live-Status-Report
 
 ```bash
 # Help anzeigen
-python scripts/generate_live_status_report.py --help
+python3 scripts/generate_live_status_report.py --help
 
 # Quick-Test (mit Test-Config)
-python scripts/generate_live_status_report.py \
+python3 scripts/generate_live_status_report.py \
   --config config/config.test.toml \
   --output-dir /tmp/test_reports \
   --format markdown \
@@ -103,21 +103,21 @@ mypy src/
 
 ```bash
 # 1. Tests laufen lassen
-pytest -q
+python3 -m pytest -q
 
 # 2. CLI-Smoke-Test
-python scripts/research_cli.py --help
-python scripts/live_ops.py --help
+python3 scripts/research_cli.py --help
+python3 scripts/live_ops.py --help
 
 # 3. Quick-Integration-Test (falls relevant)
-python scripts/generate_live_status_report.py --help
+python3 scripts/generate_live_status_report.py --help
 ```
 
 ### Vor Commit
 
 ```bash
 # 1. Tests
-pytest -q
+python3 -m pytest -q
 
 # 2. Git-Status prüfen
 git status
@@ -134,14 +134,14 @@ git diff
 
 ```bash
 # Config laden und validieren
-python -c "from src.core.peak_config import load_config; cfg = load_config('config/config.toml'); print('OK')"
+python3 -c "from src.core.peak_config import load_config; cfg = load_config('config/config.toml'); print('OK')"
 ```
 
 ### Registry prüfen
 
 ```bash
 # Experiment-Registry anzeigen
-python scripts/list_experiments.py --limit 10
+python3 scripts/list_experiments.py --limit 10
 ```
 
 ---

@@ -593,6 +593,13 @@ class LiveRiskLimits:
 
         # Wenn Live-Risk-Limits deaktiviert, einfach alles erlauben
         if not self.config.enabled:
+            # SLICE4 telemetry (watch/paper/shadow safe): disabled check signal (bounded labels).
+            try:
+                from src.obs import strategy_risk_telemetry as _srt
+
+                _srt.inc_risk_check(check="live_limits.check_orders", result="disabled", n=1)
+            except Exception:
+                pass
             aggregates = self._compute_orders_aggregates(orders)
             return LiveRiskCheckResult(
                 allowed=True,
@@ -744,6 +751,28 @@ class LiveRiskLimits:
             severity=overall_severity,
             limit_details=limit_details,
         )
+
+        # SLICE4 telemetry (watch/paper/shadow safe): bounded counters + utilization gauges.
+        try:
+            from src.obs import strategy_risk_telemetry as _srt
+
+            if not result.allowed:
+                _srt.inc_risk_check(check="live_limits.check_orders", result="block", n=1)
+            elif result.severity == RiskCheckSeverity.WARNING:
+                _srt.inc_risk_check(check="live_limits.check_orders", result="warn", n=1)
+            else:
+                _srt.inc_risk_check(check="live_limits.check_orders", result="allow", n=1)
+
+            for d in result.limit_details:
+                # utilization gauge is 0..1; we clamp in telemetry helper
+                _srt.set_risk_limit_utilization(
+                    limit_id=str(d.limit_name),
+                    utilization_0_1=float(getattr(d, "ratio", 0.0)),
+                )
+                if d.severity == RiskCheckSeverity.BREACH:
+                    _srt.inc_risk_block(reason=f"limit:{d.limit_name}", n=1)
+        except Exception:
+            pass
 
         # Alert bei Violation oder Warning
         if result.severity == RiskCheckSeverity.BREACH:

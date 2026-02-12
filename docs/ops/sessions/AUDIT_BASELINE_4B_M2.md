@@ -4,7 +4,7 @@
 **Worktree:** `/Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2`  
 **Branch:** `feat/4b-m2-cursor-multi-agent`  
 **Base Commit:** 340dd29c (origin/main)  
-**Tool:** `pip-audit` (via `uv run pip-audit`)
+**Tool:** `pip-audit`
 
 ---
 
@@ -26,7 +26,7 @@
 ### Command
 ```bash
 cd /Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2
-uv run pip-audit --desc
+pip-audit --desc
 ```
 
 ### Output

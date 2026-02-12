@@ -56,6 +56,18 @@ class ReplayBundle:
             return data_refs.get("market_data_refs")
         return None
 
+    def ledger_fifo_snapshot(self) -> Optional[Dict[str, Any]]:
+        p = self.root / "ledger" / "ledger_fifo_snapshot.json"
+        if not p.exists():
+            return None
+        return json.loads(p.read_text(encoding="utf-8"))
+
+    def ledger_fifo_entries(self) -> Optional[Iterable[Dict[str, Any]]]:
+        p = self.root / "ledger" / "ledger_fifo_entries.jsonl"
+        if not p.exists():
+            return None
+        return iter_jsonl(p)
+
 
 def load_replay_pack(bundle_path: str | Path) -> ReplayBundle:
     root = Path(bundle_path)

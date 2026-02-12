@@ -43,13 +43,13 @@ See contracts:
 Start the live dashboard server (read-only):
 
 ```bash
-python scripts/live_web_server.py --host 127.0.0.1 --port 8000
+python3 scripts/live_web_server.py --host 127.0.0.1 --port 8000
 ```
 
 Optional: override run artifacts directory:
 
 ```bash
-python scripts/live_web_server.py --host 127.0.0.1 --port 8000 --base-runs-dir live_runs --auto-refresh-seconds 5
+python3 scripts/live_web_server.py --host 127.0.0.1 --port 8000 --base-runs-dir live_runs --auto-refresh-seconds 5
 ```
 
 ---
@@ -96,9 +96,9 @@ Notes:
 ## 8) Evidence Commands (Snapshot-Only)
 
 ```bash
-python3 -m ruff check .
-python3 -m ruff format --check .
-pytest -q
+ruff check .
+ruff format --check .
+python3 -m pytest -q
 ```
 
 ---

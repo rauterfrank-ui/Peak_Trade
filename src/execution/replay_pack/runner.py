@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple
 
 from src.execution.beta_bridge.schema import normalize_beta_exec_v1_event, sort_key_beta_exec_v1
-from src.execution.ledger.engine import LedgerEngine
+from src.execution.ledger.engine_legacy import LegacyLedgerEngine as LedgerEngine
 from src.execution.ledger.quantization import parse_symbol
 
 from .contract import ContractViolationError, HashMismatchError, ReplayMismatchError

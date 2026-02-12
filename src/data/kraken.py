@@ -10,11 +10,9 @@ Features:
 - Error-Handling mit ProviderError
 """
 
-import ccxt
 import pandas as pd
 from pathlib import Path
-from typing import Optional
-from datetime import datetime, timezone
+from typing import Any, Optional
 import logging
 
 from ..core.config_registry import get_config
@@ -23,23 +21,21 @@ from ..core.errors import ProviderError, CacheError, chain_error
 logger = logging.getLogger(__name__)
 
 
-def get_kraken_client() -> ccxt.kraken:
+def get_kraken_client() -> Any:
     """
     Erstellt Kraken-Client mit sicheren Defaults.
 
     Returns:
-        Konfigurierter ccxt.kraken-Client
+        Konfigurierter Kraken-Client (ccxt Exchange Objekt)
 
     Note:
         API-Keys aus Umgebungsvariablen, NICHT aus config.toml!
     """
-    return ccxt.kraken(
-        {
-            "enableRateLimit": True,
-            "rateLimit": 1000,  # 1 Sekunde zwischen Requests
-            "options": {"defaultType": "spot"},  # KEIN Margin/Futures!
-        }
-    )
+    # Lazy: ccxt wird erst im Provider-Backend importiert.
+    from .providers.kraken_ccxt_backend import KrakenCcxtBackend
+
+    backend = KrakenCcxtBackend(enable_rate_limit=True, timeout_ms=30000)
+    return backend._exchange()
 
 
 def _get_cache_path(symbol: str, timeframe: str) -> Path:
@@ -107,11 +103,28 @@ def fetch_ohlcv_df(
     logger.info(f"Hole {symbol} {timeframe} von Kraken (limit={limit})")
 
     try:
-        client = get_kraken_client()
-        ohlcv = client.fetch_ohlcv(symbol=symbol, timeframe=timeframe, limit=limit, since=since_ms)
+        # Verwende den read-only Provider (canonical records)
+        from .providers.kraken_ccxt_backend import KrakenCcxtBackend
+
+        backend = KrakenCcxtBackend(enable_rate_limit=True, timeout_ms=30000)
+        records = backend.fetch_ohlcv(
+            symbol=symbol, timeframe=timeframe, since_ms=since_ms, limit=limit
+        )
 
         # 3. In DataFrame konvertieren
-        df = pd.DataFrame(ohlcv, columns=["timestamp", "open", "high", "low", "close", "volume"])
+        df = pd.DataFrame(
+            [
+                {
+                    "timestamp": r["ts_ms"],
+                    "open": r["open"],
+                    "high": r["high"],
+                    "low": r["low"],
+                    "close": r["close"],
+                    "volume": r["volume"],
+                }
+                for r in records
+            ]
+        )
 
         # 4. Timestamp -> UTC DateTime
         df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms", utc=True)
@@ -129,40 +142,38 @@ def fetch_ohlcv_df(
         logger.info(f"Geladen: {len(df)} Bars von {df.index[0]} bis {df.index[-1]}")
         return df
 
-    except ccxt.NetworkError as e:
-        logger.error(f"Netzwerkfehler bei Kraken: {e}")
-        raise ProviderError(
-            f"Network error connecting to Kraken API",
-            hint="Check your internet connection and verify Kraken API status at status.kraken.com",
-            context={"symbol": symbol, "timeframe": timeframe, "limit": limit},
-            cause=e,
-        )
-    except ccxt.RateLimitExceeded as e:
-        logger.error(f"Kraken Rate Limit überschritten: {e}")
-        raise ProviderError(
-            f"Kraken API rate limit exceeded",
-            hint="Wait 60 seconds before retrying or reduce request frequency",
-            context={"symbol": symbol, "timeframe": timeframe},
-            cause=e,
-        )
-    except ccxt.AuthenticationError as e:
-        logger.error(f"Kraken Authentifizierungsfehler: {e}")
-        raise ProviderError(
-            f"Kraken API authentication failed",
-            hint="Check API credentials in environment variables (KRAKEN_API_KEY, KRAKEN_API_SECRET)",
-            context={"symbol": symbol},
-            cause=e,
-        )
-    except ccxt.ExchangeError as e:
-        logger.error(f"Kraken API-Fehler: {e}")
-        raise ProviderError(
-            f"Kraken API error: {str(e)}",
-            hint=f"Check if symbol '{symbol}' is valid and supported by Kraken",
-            context={"symbol": symbol, "timeframe": timeframe},
-            cause=e,
-        )
     except Exception as e:
         logger.error(f"Unerwarteter Fehler beim Laden von Kraken-Daten: {e}")
+        # Best-effort Mapping ohne ccxt Import: anhand Klassennamen
+        name = e.__class__.__name__
+        if name in ("NetworkError",):
+            raise ProviderError(
+                "Network error connecting to Kraken API",
+                hint="Check your internet connection and verify Kraken API status at status.kraken.com",
+                context={"symbol": symbol, "timeframe": timeframe, "limit": limit},
+                cause=e,
+            )
+        if name in ("RateLimitExceeded",):
+            raise ProviderError(
+                "Kraken API rate limit exceeded",
+                hint="Wait 60 seconds before retrying or reduce request frequency",
+                context={"symbol": symbol, "timeframe": timeframe},
+                cause=e,
+            )
+        if name in ("AuthenticationError",):
+            raise ProviderError(
+                "Kraken API authentication failed",
+                hint="Check API credentials in environment variables (KRAKEN_API_KEY, KRAKEN_API_SECRET)",
+                context={"symbol": symbol},
+                cause=e,
+            )
+        if name in ("ExchangeError",):
+            raise ProviderError(
+                f"Kraken API error: {str(e)}",
+                hint=f"Check if symbol '{symbol}' is valid and supported by Kraken",
+                context={"symbol": symbol, "timeframe": timeframe},
+                cause=e,
+            )
         raise chain_error(
             e,
             f"Unexpected error fetching data from Kraken",
@@ -184,7 +195,8 @@ def clear_cache(symbol: Optional[str] = None, timeframe: Optional[str] = None) -
         >>> clear_cache()                  # Gesamten Cache löschen
     """
     cfg = get_config()
-    cache_dir = Path(cfg.data.data_dir) / "cache"
+    data_dir = cfg.get("data", {}).get("data_dir", "data")
+    cache_dir = Path(data_dir) / "cache"
 
     if not cache_dir.exists():
         logger.info("Cache-Verzeichnis existiert nicht")

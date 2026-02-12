@@ -69,9 +69,9 @@ Das File ist sortiert nach (event_time_utc, seq) und kann daher streamend gelese
 ### CLI Usage
 
 ```bash
-python scripts/execution/pt_replay_pack.py build --run-id-or-dir <RUN_DIR> --out <OUT_DIR> --include-outputs
-python scripts/execution/pt_replay_pack.py validate --bundle <OUT_DIR>/replay_pack
-python scripts/execution/pt_replay_pack.py replay --bundle <OUT_DIR>/replay_pack --check-outputs
+python3 scripts/execution/pt_replay_pack.py build --run-id-or-dir <RUN_DIR> --out <OUT_DIR> --include-outputs
+python3 scripts/execution/pt_replay_pack.py validate --bundle <OUT_DIR>/replay_pack
+python3 scripts/execution/pt_replay_pack.py replay --bundle <OUT_DIR>/replay_pack --check-outputs
 ```
 
 ### Market Data References (market_data_refs) — Slice 3.2
@@ -113,8 +113,8 @@ events/market_data_refs.json
 Der Resolver nutzt ausschließlich lokale Filesystem-Quellen (kein HTTP/Netzwerk) und erzeugt einen deterministischen Report.
 
 ```bash
-python scripts/execution/pt_replay_pack.py resolve-datarefs --bundle <OUT_DIR>/replay_pack --cache-root <CACHE_ROOT> --mode best_effort
-python scripts/execution/pt_replay_pack.py resolve-datarefs --bundle <OUT_DIR>/replay_pack --cache-root <CACHE_ROOT> --mode strict
+python3 scripts/execution/pt_replay_pack.py resolve-datarefs --bundle <OUT_DIR>/replay_pack --cache-root <CACHE_ROOT> --mode best_effort
+python3 scripts/execution/pt_replay_pack.py resolve-datarefs --bundle <OUT_DIR>/replay_pack --cache-root <CACHE_ROOT> --mode strict
 ```
 
 Report (default):
@@ -126,23 +126,23 @@ meta/resolution_report.json
 Replay mit optionalem Resolve-Schritt:
 
 ```bash
-python scripts/execution/pt_replay_pack.py replay --bundle <OUT_DIR>/replay_pack --resolve-datarefs best_effort --cache-root <CACHE_ROOT>
-python scripts/execution/pt_replay_pack.py replay --bundle <OUT_DIR>/replay_pack --resolve-datarefs strict --cache-root <CACHE_ROOT>
+python3 scripts/execution/pt_replay_pack.py replay --bundle <OUT_DIR>/replay_pack --resolve-datarefs best_effort --cache-root <CACHE_ROOT>
+python3 scripts/execution/pt_replay_pack.py replay --bundle <OUT_DIR>/replay_pack --resolve-datarefs strict --cache-root <CACHE_ROOT>
 ```
 
 ### Compare Report (Baseline vs Replay) — Slice 3.3
 Ein Compare Report ist ein deterministisches JSON-Artefakt für CI und Ops, das DataRefs-Status und Replay-Invariants zusammenfasst.
 
 ```bash
-python scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --generated-at-utc <ISO8601>
-python scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --check-outputs --generated-at-utc <ISO8601>
+python3 scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --generated-at-utc <ISO8601>
+python3 scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --check-outputs --generated-at-utc <ISO8601>
 ```
 
 Optional (inkl. Offline-DataRefs-Resolve vor dem Compare):
 
 ```bash
-python scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --resolve-datarefs best_effort --cache-root <CACHE_ROOT> --generated-at-utc <ISO8601>
-python scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --resolve-datarefs strict --cache-root <CACHE_ROOT> --generated-at-utc <ISO8601>
+python3 scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --resolve-datarefs best_effort --cache-root <CACHE_ROOT> --generated-at-utc <ISO8601>
+python3 scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --resolve-datarefs strict --cache-root <CACHE_ROOT> --generated-at-utc <ISO8601>
 ```
 
 Default Output:

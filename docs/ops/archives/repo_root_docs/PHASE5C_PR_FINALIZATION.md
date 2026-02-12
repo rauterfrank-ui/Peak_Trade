@@ -48,7 +48,7 @@
 
 - [x] Guard script implemented (stdlib-only, 309 lines)
 - [x] CI workflow created (path-filtered)
-- [x] Tests written and passing (2/2 pytest tests)
+- [x] Tests written and passing (2/2 `python3 -m pytest` tests)
 - [x] Fixtures created (good + bad examples)
 
 ### ✅ Documentation Complete
@@ -63,7 +63,7 @@
 ### ✅ Verification Complete
 
 - [x] Local guard run: **PASS** (0 findings)
-- [x] Pytest tests: **PASS** (2/2 tests passing)
+- [x] Tests (`python3 -m pytest`): **PASS** (2/2 tests passing)
 - [x] Burn-in validation: **PASS** (PR #664 found, 100% accuracy)
 - [x] Test PR created: **DONE** (PR #665, closed after verification)
 - [x] Evidence captured: **DONE** (API snapshot, test results, operator sign-off)

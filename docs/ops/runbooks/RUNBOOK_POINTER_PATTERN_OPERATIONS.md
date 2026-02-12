@@ -124,7 +124,7 @@ ls -lh RUNBOOK_*.md
 
 ```bash
 # Check token policy (inline-code with `/` must be real paths or escaped)
-python scripts/ops/validate_docs_token_policy.py RUNBOOK_*.md
+python3 scripts/ops/validate_docs_token_policy.py RUNBOOK_*.md
 
 # Check reference targets (all linked paths must exist)
 bash scripts/ops/verify_docs_reference_targets.sh
@@ -316,7 +316,7 @@ git status -sb
 
 ```bash
 # Docs Token Policy Gate (inline-code `/` encoding)
-python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 
 # Docs Reference Targets Gate (all paths exist)
 bash scripts/ops/verify_docs_reference_targets.sh --changed
@@ -383,7 +383,7 @@ bash scripts/ops/verify_docs_reference_targets.sh --changed
 **Valid patterns (auto-exempted):**
 
 ```markdown
-- Run: `python scripts/run_backtest.py --strategy ma_crossover`
+- Run: `python3 scripts/run_backtest.py --strategy ma_crossover`
 - Branch: `git checkout feature/new-runbook`
 - URL: `https://github.com/rauterfrank-ui/Peak_Trade/blob/main/README.md`
 - Local path: `./scripts/local_helper.sh`
@@ -442,7 +442,7 @@ Inline-code token contains `/`?
 ├─ YES → Is this a REAL file in repo?
 │   ├─ YES → No escaping needed (e.g., `docs/ops/README.md`)
 │   └─ NO → Is it a command/URL/branch/local path?
-│       ├─ YES → No escaping needed (e.g., `python scripts/run.py`)
+│       ├─ YES → No escaping needed (e.g., `python3 scripts/run_backtest.py`)
 │       └─ NO → MUST escape `/` with `&#47;` (e.g., `config&#47;example.toml`)
 └─ NO → No action needed
 ```
@@ -566,7 +566,7 @@ docs/ops/runbooks/RUNBOOK_EXAMPLE_POINTER.md:12: `docs/ops/example.md` (ILLUSTRA
 sed -i 's|`docs/ops/example.md`|`docs&#47;ops&#47;example.md`|g' docs/ops/runbooks/RUNBOOK_EXAMPLE_POINTER.md
 
 # Revalidate
-python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 ```
 
 ### Failure Mode 2: Reference Targets Violation

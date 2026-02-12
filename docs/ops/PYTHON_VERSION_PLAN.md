@@ -59,14 +59,14 @@
 
 2. Create fresh venv and install deps:
    ```bash
-   python3.11 -m venv .venv311
+   python3 -m venv .venv311
    source .venv311/bin/activate
    pip install -r requirements.txt
    ```
 
 3. Run full test suite:
    ```bash
-   python -m pytest -q
+   python3 -m pytest -q
    make todo-board-check
    ```
 

@@ -62,11 +62,27 @@
   "templating": {
     "list": [
       {
+        "name": "ds",
+        "label": "Datasource",
+        "type": "datasource",
+        "query": "prometheus",
+        "refresh": 1,
+        "hide": 0,
+        "current": {
+          "text": "prom_local_9092",
+          "value": "prom_local_9092"
+        },
+        "options": []
+      },
+      {
         "type": "datasource",
         "name": "DS_LOCAL",
         "label": "Prometheus (local)",
         "query": "prometheus",
-        "current": { "text": "prometheus-local", "value": "peaktrade-prometheus-local" },
+        "current": {
+          "text": "prometheus-local",
+          "value": "peaktrade-prometheus-local"
+        },
         "options": [],
         "refresh": 1,
         "hide": 2
@@ -76,7 +92,10 @@
         "name": "DS_MAIN",
         "label": "Prometheus (main)",
         "query": "prometheus",
-        "current": { "text": "prometheus-main", "value": "peaktrade-prometheus-main" },
+        "current": {
+          "text": "prometheus-main",
+          "value": "peaktrade-prometheus-main"
+        },
         "options": [],
         "refresh": 1,
         "hide": 2
@@ -86,7 +105,10 @@
         "name": "DS_SHADOW",
         "label": "Prometheus (shadow)",
         "query": "prometheus",
-        "current": { "text": "prometheus-shadow", "value": "peaktrade-prometheus-shadow" },
+        "current": {
+          "text": "prometheus-shadow",
+          "value": "peaktrade-prometheus-shadow"
+        },
         "options": [],
         "refresh": 1,
         "hide": 2
@@ -105,7 +127,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_LOCAL}"
+        "uid": "peaktrade-prometheus-local"
       },
       "targets": [
         {
@@ -126,7 +148,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_MAIN}"
+        "uid": "peaktrade-prometheus-main"
       },
       "targets": [
         {
@@ -147,7 +169,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_LOCAL}"
+        "uid": "peaktrade-prometheus-local"
       },
       "targets": [
         {
@@ -168,7 +190,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_MAIN}"
+        "uid": "peaktrade-prometheus-main"
       },
       "targets": [
         {
@@ -178,5 +200,12 @@
         }
       ]
     }
-  ]
+  ],
+  "timepicker": {
+    "hidden": false
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  }
 }

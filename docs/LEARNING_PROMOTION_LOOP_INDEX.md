@@ -64,15 +64,15 @@ cfg = load_config_with_live_overrides()
 ### Promotion Loop
 
 ```bash
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
 ```
 
 → **[LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md](./LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md)** - Sektion 3: "System 2"
 
-### Learning Loop (TODO)
+### Learning Loop ✅
 
 ```bash
-python scripts/run_learning_apply_cycle.py --dry-run
+python3 scripts/run_learning_apply_cycle.py --dry-run
 ```
 
 → **[LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md](./LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md)** - Sektion 2: "System 1"
@@ -80,7 +80,7 @@ python scripts/run_learning_apply_cycle.py --dry-run
 ### Monitoring & Debugging
 
 ```bash
-# Historical: python scripts/demo_live_overrides.py
+# Historical: python3 scripts/demo_live_overrides.py
 ```
 
 → **[LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md](./LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md)** - Sektion 7: "Monitoring & Observability"
@@ -114,7 +114,7 @@ python scripts/run_learning_apply_cycle.py --dry-run
 
 3. Führe Tests aus:
    ```bash
-   pytest tests/test_live_overrides*.py -v
+   python3 -m pytest tests/test_live_overrides*.py -v
    ```
 
 ### 3. Production-Readiness (1 Tag)
@@ -160,7 +160,7 @@ src/
 ```
 scripts/
 ├── run_promotion_proposal_cycle.py   # Promotion Loop ✅
-├── run_learning_apply_cycle.py       # Learning Loop (TODO)
+├── run_learning_apply_cycle.py       # Learning Loop ✅
 └── demo_live_overrides.py            # Demo & Testing ✅
 ```
 
@@ -180,7 +180,7 @@ tests/
 
 ### Operator-Checkliste: Promotion Cycle durchführen
 
-- [ ] Learning Loop gelaufen (wenn implementiert)
+- [ ] Learning Loop gelaufen
 - [ ] Promotion Loop gestartet: `run_promotion_proposal_cycle.py`
 - [ ] Proposals in `reports&#47;live_promotion&#47;` geprüft
 - [ ] `OPERATOR_CHECKLIST.md` durchgearbeitet
@@ -317,7 +317,7 @@ tests/
 **Standard-Command für den nächsten Cycle:**
 
 ```bash
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 ```
 
 **Ziel der Stabilisierungsphase:**
@@ -391,7 +391,7 @@ python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
   und der Operator die Freigabe explizit erteilt.
 
 → Siehe auch:
-- **[config/promotion_loop_config.toml](../config/promotion_loop_config.toml)** - Sektion "UMSCHALTEN AUF bounded_auto"
+- **Config (Repo):** `config/promotion_loop_config.toml` – Sektion "UMSCHALTEN AUF bounded_auto"
 - **[PROMOTION_LOOP_SAFETY_FEATURES.md](./PROMOTION_LOOP_SAFETY_FEATURES.md)** - P0/P1 Safety Details
 
 ---
@@ -421,7 +421,7 @@ python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 
 1. **Quickstart durcharbeiten:** [QUICKSTART_LIVE_OVERRIDES.md](./QUICKSTART_LIVE_OVERRIDES.md)
 2. **Demo-Script testen:** `python scripts&#47;demo_live_overrides.py` (historical)
-3. **Promotion Loop ausprobieren:** `python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only`
+3. **Promotion Loop ausprobieren:** `python3 scripts&#47;run_promotion_proposal_cycle.py --auto-apply-mode manual_only`
 
 ### Für Developer
 

@@ -199,14 +199,21 @@ Simuliert einen sauberen Aufwärtstrend:
 
 ## Verwendung
 
-### Szenario in Research-Pipeline nutzen
+### Szenario-Library vs. Stress-Tests (wichtig)
+
+- **Scenario-Library (`config&#47;scenarios&#47;*.toml`)**: dient **Research-QA / E2E-Tests / Regressions-Checks** (Phase 82). Sie beschreibt Marktbedingungen + Erwartungen, wird aber **nicht** 1:1 als CLI-Parameter an die Stress-Test-Runner übergeben.
+- **Stress-Tests (Phase 46/47, `src/experiments/stress_tests.py`)**: sind **deterministische Return-Transformationen** und verwenden die Scenario-Typen:
+  - `single_crash_bar`, `vol_spike`, `drawdown_extension`, `gap_down_open`
+
+### Stress-Tests in der Research-CLI nutzen (Phase 46)
 
 ```bash
-# Stress-Test mit spezifischem Szenario
-python scripts/research_cli.py stress \
+# Stress-Tests (deterministische Crash-Szenarien)
+python3 scripts/research_cli.py stress \
     --sweep-name my_strategy_sweep \
     --config config/config.toml \
-    --scenarios flash_crash sideways_low_vol trend_regime
+    --scenarios single_crash_bar vol_spike drawdown_extension \
+    --severity 0.2
 ```
 
 ### Szenario-Erwartungen in Code abrufen

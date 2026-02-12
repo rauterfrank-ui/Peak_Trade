@@ -180,7 +180,7 @@ run_montecarlo = true
 mc_num_runs = 2000
 
 run_stress_tests = true
-stress_scenarios = ["single_crash_bar", "vol_spike", "liquidity_gap"]
+stress_scenarios = ["single_crash_bar", "vol_spike", "gap_down_open"]
 stress_severity = 0.2
 
 format = "both"
@@ -207,7 +207,7 @@ run_montecarlo = true
 mc_num_runs = 3000
 
 run_stress_tests = true
-stress_scenarios = ["single_crash_bar", "vol_spike", "trend_reversal"]
+stress_scenarios = ["single_crash_bar", "vol_spike", "drawdown_extension"]
 stress_severity = 0.25
 
 format = "both"
@@ -234,7 +234,7 @@ run_montecarlo = true
 mc_num_runs = 5000
 
 run_stress_tests = true
-stress_scenarios = ["single_crash_bar", "vol_spike", "flash_crash", "trend_reversal"]
+stress_scenarios = ["single_crash_bar", "vol_spike", "gap_down_open", "drawdown_extension"]
 stress_severity = 0.30
 
 format = "both"

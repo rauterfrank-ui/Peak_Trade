@@ -24,28 +24,28 @@ source .venv/bin/activate
 pip install -e ".[dev]"
 
 # Testing
-pytest tests/ -v                              # All tests
-pytest tests/test_backtest_smoke.py -v        # Specific file
-pytest tests/ --cov=src --cov-report=html     # With coverage
+python3 -m pytest tests/ -v                              # All tests
+python3 -m pytest tests/test_backtest_smoke.py -v        # Specific file
+python3 -m pytest tests/ --cov=src --cov-report=html     # With coverage
 
 # Linting & Formatting
 ruff check src/ tests/
 black src/ tests/
 
 # Run Backtest
-python scripts/run_backtest.py
-python scripts/run_backtest.py --strategy rsi_reversion
-python scripts/run_backtest.py --config custom_config.toml
+python3 scripts/run_backtest.py
+python3 scripts/run_backtest.py --strategy rsi_reversion
+python3 scripts/run_backtest.py --config custom_config.toml
 
 # Sweeps & Analytics
-python scripts/sweep_parameters.py --strategy ma_crossover
-python scripts/list_experiments.py --sort-by sharpe
-python scripts/generate_leaderboards.py
+python3 scripts/sweep_parameters.py --strategy ma_crossover
+python3 scripts/list_experiments.py --sort-by sharpe
+python3 scripts/generate_leaderboards.py
 
 # Forward/Paper Trading
-python scripts/generate_forward_signals.py --strategy ma_crossover
-python scripts/check_live_risk_limits.py
-python scripts/paper_trade_from_orders.py
+python3 scripts/generate_forward_signals.py --strategy ma_crossover
+python3 scripts/check_live_risk_limits.py
+python3 scripts/paper_trade_from_orders.py
 ```
 
 ---
@@ -213,7 +213,7 @@ block_on_violation = true
 
 - Strategies return **states** (persistent positions), not events
 - CLI args override `config.toml` settings
-- All runs logged to `reports/experiments/experiments.csv`
+- All runs logged to `reports&#47;experiments&#47;experiments.csv`
 - Documentation in German and English
 
 ---

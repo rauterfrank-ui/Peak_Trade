@@ -167,11 +167,11 @@ Minor gaps are P2-P3 and can be addressed during bounded-live phase.
 gitleaks detect --no-git --redact
 
 # Dependency scan
-uv run pip-audit
+pip-audit
 
 # Test execution pipeline
-uv run pytest tests/execution/ -v
+python3 -m pytest tests/execution/ -v
 
 # Check kill switch CLI
-python -m src.risk_layer.kill_switch.cli status
+python3 -m src.risk_layer.kill_switch.cli status
 ```

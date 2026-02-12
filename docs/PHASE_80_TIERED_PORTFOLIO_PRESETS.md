@@ -8,6 +8,8 @@
 
 Phase 80 verbindet das in Phase 41B eingeführte Strategy-Tiering mit der Portfolio-Konstruktion. Standard-Presets verwenden nun nur `core`-Strategien; `aux`-Strategien werden nur explizit hinzugefügt; `legacy`-Strategien erscheinen nie automatisch in Presets.
 
+**Wichtig:** Die `stress_scenarios` in Presets/Recipes müssen zu den implementierten Scenario-Typen aus `src/experiments/stress_tests.py` passen (aktuell: `single_crash_bar`, `vol_spike`, `drawdown_extension`, `gap_down_open`).
+
 ---
 
 ## Motivation
@@ -104,7 +106,7 @@ weights = [0.183, 0.184, 0.183, 0.15, 0.15, 0.15]
 
 ```bash
 # Preset laden mit Tiering-Validierung
-python -c "
+python3 -c "
 from src.experiments.portfolio_presets import load_tiered_preset
 recipe = load_tiered_preset('core_balanced')
 print(f'Preset: {recipe.portfolio_name}')
@@ -112,10 +114,23 @@ print(f'Strategien: {recipe.strategies}')
 "
 ```
 
+### CLI: Portfolio-Robustness mit Tiered Preset
+
+Wenn du ein Tiered Preset via CLI nutzt, gib explizit die Preset-Datei als `--recipes-config` an (die Defaults zeigen auf `config/portfolio_recipes.toml`):
+
+```bash
+python3 scripts/run_portfolio_robustness.py \
+  --config config/config.toml \
+  --recipes-config config/portfolio_presets/core_balanced.toml \
+  --portfolio-preset core_balanced \
+  --format both \
+  --use-dummy-data
+```
+
 ### Tiering-Compliance prüfen
 
 ```bash
-python -c "
+python3 -c "
 from src.experiments.portfolio_presets import validate_preset_tiering_compliance
 from src.experiments.portfolio_recipes import load_portfolio_recipes
 from pathlib import Path
@@ -133,7 +148,7 @@ print(result)
 ### Alle Strategien nach Tier auflisten
 
 ```bash
-python -c "
+python3 -c "
 from src.experiments.portfolio_presets import get_all_tiered_strategies
 for tier, strategies in get_all_tiered_strategies().items():
     print(f'{tier}: {strategies}')
@@ -160,10 +175,10 @@ print(recipe.strategies)  # ['rsi_reversion', 'ma_crossover', 'bollinger_bands']
 
 ```bash
 # Alle Phase-80-Tests ausführen
-pytest tests/test_portfolio_presets_tiering.py -v
+python3 -m pytest tests/test_portfolio_presets_tiering.py -v
 
 # Spezifische Testklasse
-pytest tests/test_portfolio_presets_tiering.py::TestCorePresetsNoLegacy -v
+python3 -m pytest tests/test_portfolio_presets_tiering.py::TestCorePresetsNoLegacy -v
 ```
 
 ### Testabdeckung

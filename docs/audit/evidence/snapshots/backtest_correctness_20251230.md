@@ -110,11 +110,11 @@ test_result = engine.run_realistic(df=test_df, ...)
 
 ```bash
 # Run backtest tests
-uv run pytest tests/test_backtest*.py -v
+python3 -m pytest tests/test_backtest*.py -v
 
 # Check for lookahead bias in tests
 rg -n "lookahead|future.*leak" tests/
 
 # Review execution pipeline tests
-uv run pytest tests/execution/ -v
+python3 -m pytest tests/execution/ -v
 ```

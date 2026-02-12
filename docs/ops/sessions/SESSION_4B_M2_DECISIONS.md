@@ -43,7 +43,7 @@ Record trade-offs and rationale for key decisions during 4B Milestone 2 setup an
 
 **Follow-up:**
 - Verify `uv` is documented in `docs/DEV_SETUP.md`
-- Ensure all gate commands use `uv run` prefix
+- Ensure all gate commands use the standard CLI (`python3`, `python3 -m pytest`, `ruff`)
 
 ---
 

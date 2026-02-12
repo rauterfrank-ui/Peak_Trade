@@ -30,6 +30,45 @@ python3 scripts/obs/stage1_daily_snapshot.py
 python3 scripts/obs/stage1_trend_report.py
 ```
 
+## Stage1 report index (deterministic)
+After Stage1 runs, a deterministic index is generated:
+- Path: `reports&#47;stage1&#47;index.json`
+- Schema: `stage1_index.v1`
+- Purpose: stable discovery for WebUI/ops; includes sha256 + size for artifacts.
+
+You can regenerate manually:
+`python3 scripts/obs/stage1_report_index.py --root reports/obs/stage1 --out reports/obs/stage1/index.json --run-date YYYY-MM-DD` <!-- pt:ref-target-ignore -->
+
+## Stage1 validation (fail-fast)
+After index generation, Stage1 runners validate artifacts and write:
+- `reports&#47;obs&#47;stage1&#47;validation.json` (schema: `stage1_validation.v1`)
+
+Manual run:
+`python3 scripts/obs/validate_stage1_index.py --root reports/obs/stage1 --index reports/obs/stage1/index.json --out reports/obs/stage1/validation.json --require data.json --require report.md` <!-- pt:ref-target-ignore -->
+
+---
+
+## Grafana Verify v2 (operator-grade)
+
+Für Grafana/Prometheus-local Smoke + Dashpack-Integrity:
+
+```bash
+# Start (Grafana-only + Prometheus-local)
+bash scripts/obs/grafana_local_up.sh
+
+# Verify (evidenzfähig; schreibt Timestamp-Artifacts)
+bash scripts/obs/grafana_verify_v2.sh
+```
+
+### Dashpack Verify v2 (hermetic-first)
+
+Script: `scripts/obs/grafana_dashpack_local_verify_v2.sh`
+
+- Default: Hermetic JSON-only Checks laufen immer; Grafana API Checks nur wenn Grafana erreichbar ist.
+- Hermetic mode (no API): `--hermetic` (Alias: `--no-api`)
+  - JSON-only; keine Grafana API/Creds, kein curl erforderlich.
+- Artifacts: `docs&#47;ops&#47;evidence&#47;assets&#47;EV_GRAFANA_DASHPACK_VERIFY_V2_<timestamp>` (oder per `VERIFY_OUT_DIR`).
+
 ---
 
 ## Grafana Verify v2 (operator-grade)
@@ -182,7 +221,7 @@ Siehe `.github&#47;workflows&#47;stage1_monitoring.yml` (falls vorhanden).
 **Symptom:** New-alerts heuristic = 0, aber viele CRITICAL/WARN
 
 **Erklärung:**
-- Legacy-System (`live_runs/alerts/`) ist ein **separates System**
+- Legacy-System (`live_runs&#47;alerts&#47;`) ist ein **separates System**
 - Neues System (`data&#47;telemetry&#47;alerts&#47;`) emitted nur bei tatsächlichen Issues
 - **Erwartetes Verhalten** für healthy Stage 1 ✅
 

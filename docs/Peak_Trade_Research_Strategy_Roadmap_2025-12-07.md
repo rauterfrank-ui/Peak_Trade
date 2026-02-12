@@ -1,9 +1,9 @@
-# Peak_Trade  Research-/Strategy-Track Roadmap
+# Peak_Trade – Research-/Strategy-Track Roadmap
 **Stand: 07.12.2025**
 
 ---
 
-## 1. Kurz�berblick  Research-/Strategy-Track
+## 1. Kurzüberblick – Research-/Strategy-Track
 
 Der Strategy-/Research-Track bietet jetzt einen vollständigen Workflow: Strategy-Sweeps (Phase 41), Top-N Promotion (Phase 42), Visualisierung (Phase 43), Walk-Forward-Testing (Phase 44) und Monte-Carlo-Robustness (Phase 45) für statistische Unsicherheitsquantifizierung. Der End-to-End-Flow von Sweep-Definition über Top-N-Auswahl bis hin zu Walk-Forward- und Monte-Carlo-Reports funktioniert stabil. Die Strategie-Bibliothek umfasst ~13–14 Strategien (MA, RSI, Momentum, MACD, Breakout, Vol-Regime-Filter, Portfolio-Strategien) und ist damit solide, aber noch nicht breit oder regime-adaptiv genug. Mit Phase 44 (Walk-Forward) und Phase 45 (Monte-Carlo) ist die Robustness-Analyse praktisch nutzbar; es fehlen noch erweiterte Stress-Test-Module. Die nächsten Schritte liegen weniger im Aufbau von Infrastruktur, sondern in der Vertiefung der Robustheit und in der Erweiterung des Strategieraums.
 
@@ -11,29 +11,29 @@ Der Strategy-/Research-Track bietet jetzt einen vollständigen Workflow: Strateg
 
 ## 2. Roadmap A/B/C
 
-### A. Foundations (vorhanden, ausbauf�hig)
+### A. Foundations (vorhanden, ausbaufähig)
 
 **Basis-Infrastruktur vorhanden:**
 
-- Experiment-Registry (Phase 29): Struktur f�r Runs, Parameter, Ergebnisse
+- Experiment-Registry (Phase 29): Struktur für Runs, Parameter, Ergebnisse
 - Strategy-Sweeps (Phase 41): Parameter-Sweeps mit Constraint-Filterung, vordefinierte Sweeps
 - Top-N Promotion (Phase 42): Automatische Auswahl, TOML-Export
 - Visualisierung (Phase 43): 1D-Plots, 2D-Heatmaps, automatische Plot-Generierung
-- Walk-Forward-Testing (Phase 44): Out-of-Sample-Validierung fr Top-N-Konfigurationen
+- Walk-Forward-Testing (Phase 44): Out-of-Sample-Validierung für Top-N-Konfigurationen
 - Monte-Carlo-Robustness (Phase 45): Bootstrap-basierte Unsicherheitsquantifizierung, Konfidenzintervalle für Kennzahlen
 - Stress-Tests & Crash-Szenarien (Phase 46): Deterministische Szenario-Transformationen, Baseline vs. Szenario-Vergleiche
 - Portfolio-Layer (Phase 26): Multi-Strategy-Portfolio-Manager, Capital-Allocation-Methoden
 
-**Verst�rkungen sinnvoll:**
+**Verstärkungen sinnvoll:**
 
 - Mehr Metriken: Sortino, Calmar, Tail-Ratio, Win-Rate-Distribution
 - Mehr Strategietypen: Regime-Switching, Multi-Timeframe, Adaptive-Parameter
-- Bessere Schnittstellen: Unified CLI f�r Sweep-Workflow, Experiment-Viewer f�r Top-Kandidaten
+- Bessere Schnittstellen: Unified CLI für Sweep-Workflow, Experiment-Viewer für Top-Kandidaten
 - Portfolio-Sweeps erweitern: Weight-Optimierung, Correlation-basierte Allokation
 
 ---
 
-### B. Next Steps (13 Sessions umsetzbar)
+### B. Next Steps (1–3 Sessions umsetzbar)
 
 **Konkrete, kleine Tasks:**
 
@@ -47,12 +47,12 @@ Der Strategy-/Research-Track bietet jetzt einen vollständigen Workflow: Strateg
    - Mehr Märkte/Symbole und mehrere Zeiträume (verschiedene Marktphasen) abdecken.
    - Kennzahlen aus Walk-Forward-Runs systematisch in die Entscheidungsfindung für Top-N-Strategien einbeziehen.
 
-3. **Zus�tzliche Metriken/Plots im Sweep-Workflow**
+3. **Zusätzliche Metriken/Plots im Sweep-Workflow**
    - Drawdown-Heatmaps (Parameter vs. Max-Drawdown).
    - 3D-Visualisierungen für drei Parameter (z. B. RSI-Period × Oversold × Overbought).
    - Korrelations-Matrizen zwischen Parametern und Metriken.
 
-4. **CLI-/UX-Verbesserungen f�r Research-Flow**
+4. **CLI-/UX-Verbesserungen für Research-Flow**
    - Unified Command: `peak-trade research sweep --name X --with-plots --promote-topn`.
    - Experiment-Viewer: `peak-trade research view --sweep-name X` (zeigt Top-Kandidaten interaktiv).
    - Quick-Compare: `peak-trade research compare --sweep-name X --top-n 5` (vergleicht Top-5 visuell).
@@ -61,10 +61,10 @@ Der Strategy-/Research-Track bietet jetzt einen vollständigen Workflow: Strateg
 
 ### C. Advanced Research (Mid-/Long-Term)
 
-**Gr��ere, research-lastige Themen:**
+**Größere, research-lastige Themen:**
 
 1. **Regime-Detection & Regime-basierte Strategien**
-   - HMM/Markov-Switching f�r Regime-Identifikation
+   - HMM/Markov-Switching für Regime-Identifikation
    - Regime-spezifische Parameter-Optimierung
    - Regime-Transition-Analysen
 
@@ -80,33 +80,33 @@ Der Strategy-/Research-Track bietet jetzt einen vollständigen Workflow: Strateg
    - Risk-Parity / Vol-Targeting aus Top-Kandidaten
 
 4. **Feature-Importance / Model-Interpretability**
-   - SHAP-Values f�r Parameter-Importance
-   - Permutation-Importance f�r Metrik-Pr�diktion
+   - SHAP-Values für Parameter-Importance
+   - Permutation-Importance für Metrik-Prädiktion
    - Feature-Ranking-Dashboards
 
 ---
 
-## 3. Tabellarische �bersicht in % (nur Strategy-/Research-Track)
+## 3. Tabellarische Übersicht in % (nur Strategy-/Research-Track)
 
 | Bereich                                      | Status in % | Kommentar                                                                 |
 |----------------------------------------------|-----------:|---------------------------------------------------------------------------|
-| **Single-Strategien** (MA, RSI, Momentum, MACD, Breakout, Vol-Regime&) | **65 %** | ~1314 Strategien vorhanden; fehlen: Regime-Switching, Multi-Timeframe, Adaptive-Parameter |
+| **Single-Strategien** (MA, RSI, Momentum, MACD, Breakout, Vol-Regime&) | **65 %** | ~13–14 Strategien vorhanden; fehlen: Regime-Switching, Multi-Timeframe, Adaptive-Parameter |
 | **Portfolio-Strategien**                     | **80 %**   | Portfolio-Manager vorhanden (Phase 26), Portfolio-Level Robustness (Phase 47); fehlen: Auto-Optimierung, Correlation-basierte Allokation |
 | **Registry & Sweeps**                        | **85 %**   | Experiment-Registry (Phase 29), Strategy-Sweeps (Phase 41), Top-N Promotion (Phase 42); fehlen: Walk-Forward-Integration, Monte-Carlo-Sweeps |
-| **Reporting f�r Research**                   | **80 %**   | Backtest-Reports (Phase 30), Sweep-Visualisierung (Phase 43); fehlen: Interaktive Dashboards, Feature-Importance-Plots |
+| **Reporting für Research**                   | **80 %**   | Backtest-Reports (Phase 30), Sweep-Visualisierung (Phase 43); fehlen: Interaktive Dashboards, Feature-Importance-Plots |
 | **Robustness-Analyse**                       | **85 %**   | Walk-Forward-Testing (Phase 44), Monte-Carlo-Robustness (Phase 45), Stress-Tests (Phase 46) und Portfolio-Level Robustness (Phase 47) vorhanden; fehlen: Erweiterte Multi-Asset-Stress-Tests, Regime-bewusste Stress-Tests, Korrelations-Analyse |
 | **Auto-Optimization**                        | **40 %**   | Top-N Promotion vorhanden; fehlen: Auto-Portfolio-Building, Parameter-Auto-Tuning |
 
-**Research-/Strategy-Track gesamt:** **H65 %**
-(gewichteter Durchschnitt, fokussiert auf Research-F�higkeiten)
+**Research-/Strategy-Track gesamt:** **≈65 %**
+(gewichteter Durchschnitt, fokussiert auf Research-Fähigkeiten)
 
 ---
 
 ## 4. Konkrete ToDo-Liste (Research-Sicht)
 
-### Short-Term (n�chste 12 Sessions)
+### Short-Term (nächste 1–2 Sessions)
 
-- [ ] **RSI-Reversion-Varianten-Sweep** mit zus�tzlichen Parametern aufsetzen (z. B. RSI-Period 530, Oversold 1535, Overbought 6585)
+- [ ] **RSI-Reversion-Varianten-Sweep** mit zusätzlichen Parametern aufsetzen (z. B. RSI-Period 5–30, Oversold 15–35, Overbought 65–85)
 - [x] **Walk-Forward-Test implementieren** ✅ (Phase 44)  
       Einfache In-Sample/Out-of-Sample-Validierung für Top-N-Konfigurationen aufbauen. Basis implementiert: Walk-Forward-Engine, Reporting, CLI. Erweiterungen: Parameter-Optimierung auf Train-Daten, erweiterte Metriken.
 - [x] **Monte-Carlo-Simulationen implementieren** ✅ (Phase 45)  
@@ -114,27 +114,27 @@ Der Strategy-/Research-Track bietet jetzt einen vollständigen Workflow: Strateg
 - [x] **Stress-Tests & Crash-Szenarien implementieren** ✅ (Phase 46)  
       Deterministische Szenario-Transformationen für Top-N-Konfigurationen. Implementiert: 4 Szenario-Typen (single_crash_bar, vol_spike, drawdown_extension, gap_down_open), Baseline vs. Szenario-Vergleiche, Reports. Erweiterungen: Multi-Asset-Stress-Tests, Regime-bewusste Stress-Tests.
 - [ ] **Experiment-Registry-View** bauen, um Top-N-Konfigurationen schnell zu finden (`scripts&#47;view_top_candidates.py --sweep-name X`, illustrative)
-- [ ] **Drawdown-Heatmap** als zus�tzlichen Plot-Typ in `sweep_visualization.py` hinzuf�gen
+- [ ] **Drawdown-Heatmap** als zusätzlichen Plot-Typ in `sweep_visualization.py` hinzufügen
 - [ ] **Volatility-Strategien-Sweep** aufsetzen (ATR-basiert, Volatility-Breakout mit verschiedenen Lookback-Perioden)
 
-### Mid-Term (n�chste Phasen)
+### Mid-Term (nächste Phasen)
 
-- [ ] **Monte-Carlo-Simulationen** f�r Robustness-Tests implementieren (Random-Walk-Bootstrap, Parameter-Perturbation)
+- [ ] **Monte-Carlo-Simulationen** für Robustness-Tests implementieren (Random-Walk-Bootstrap, Parameter-Perturbation)
 - [ ] **Regime-Switching-Strategien** entwickeln und in Sweeps integrieren (Trend vs. Mean-Reversion basierend auf Vol-Regime)
 - [ ] **Auto-Portfolio-Building** aus Sweep-Ergebnissen (automatische Konstruktion diversifizierter Portfolios aus Top-Kandidaten)
-- [ ] **3D-Visualisierungen** f�r drei Parameter implementieren (z. B. Plotly-basiert)
-- [ ] **Korrelations-Matrizen** zwischen Parametern und Metriken in Reports hinzuf�gen
-- [ ] **Unified CLI** f�r Research-Workflow (`peak-trade research` mit Subcommands: `sweep`, `view`, `compare`, `promote`)
+- [ ] **3D-Visualisierungen** für drei Parameter implementieren (z. B. Plotly-basiert)
+- [ ] **Korrelations-Matrizen** zwischen Parametern und Metriken in Reports hinzufügen
+- [ ] **Unified CLI** für Research-Workflow (`peak-trade research` mit Subcommands: `sweep`, `view`, `compare`, `promote`)
 
 ### Long-Term (Vision / Nice-to-have)
 
-- [ ] **Regime-Detection** mit HMM/Markov-Switching f�r automatische Regime-Identifikation
-- [ ] **Feature-Importance-Analysen** (SHAP-Values, Permutation-Importance) f�r Parameter-Ranking
-- [ ] **Stress-Test-Framework** (Vol-Spikes, Flash-Crashes, Liquidity-Dry-ups) f�r alle Top-Kandidaten
+- [ ] **Regime-Detection** mit HMM/Markov-Switching für automatische Regime-Identifikation
+- [ ] **Feature-Importance-Analysen** (SHAP-Values, Permutation-Importance) für Parameter-Ranking
+- [ ] **Stress-Test-Framework** (Vol-Spikes, Flash-Crashes, Liquidity-Dry-ups) für alle Top-Kandidaten
 - [ ] **Multi-Timeframe-Strategien** entwickeln und in Sweeps integrieren (z. B. 1h Entry, 4h Confirmation)
 - [ ] **Adaptive-Parameter-Strategien** (Parameter passen sich an Marktregime an)
-- [ ] **Interaktive Research-Dashboards** (Plotly/Web-UI) f�r Live-Exploration von Sweep-Ergebnissen
+- [ ] **Interaktive Research-Dashboards** (Plotly/Web-UI) für Live-Exploration von Sweep-Ergebnissen
 
 ---
 
-**Hinweis:** Die Prozentwerte sind fokussiert auf den Research-/Strategy-Track und k�nnen von den Gesamtprojekt-Werten abweichen, da hier nur Research-F�higkeiten betrachtet werden.
+**Hinweis:** Die Prozentwerte sind fokussiert auf den Research-/Strategy-Track und können von den Gesamtprojekt-Werten abweichen, da hier nur Research-Fähigkeiten betrachtet werden.

@@ -11200,30 +11200,30 @@
     },
     {
       "anchor": null,
-      "dst": "docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+      "dst": "docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
       "kind": "md",
-      "raw": "../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+      "raw": "../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
       "src": "docs/ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md"
     },
     {
       "anchor": null,
-      "dst": "docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+      "dst": "docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
       "kind": "md",
-      "raw": "../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+      "raw": "../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
       "src": "docs/ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md"
     },
     {
       "anchor": null,
-      "dst": "docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+      "dst": "docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
       "kind": "md",
-      "raw": "../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+      "raw": "../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
       "src": "docs/ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md"
     },
     {
       "anchor": null,
-      "dst": "docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+      "dst": "docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
       "kind": "md",
-      "raw": "../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+      "raw": "../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
       "src": "docs/ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md"
     },
     {
@@ -11375,9 +11375,9 @@
     },
     {
       "anchor": null,
-      "dst": "docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+      "dst": "docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
       "kind": "md",
-      "raw": "../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+      "raw": "../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
       "src": "docs/ops/control_center/M3_IMPLEMENTATION_RUN_MANIFEST_20260109.md"
     },
     {
@@ -15183,7 +15183,7 @@
     },
     {
       "is_root": false,
-      "path": "docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md"
+      "path": "docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md"
     },
     {
       "is_root": false,

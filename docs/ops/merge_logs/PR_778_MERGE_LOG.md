@@ -13,7 +13,7 @@
 ## Changes
 - Scope: docs-only / observability dashboard JSON
 - Files:
-  - M docs/webui/observability/grafana/dashboards/peaktrade-overview.json
+  - M `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;overview&#47;peaktrade-overview.json`
 
 ## Verification
 - PR checks snapshot: `gh pr checks 778` showed PASS/SKIP only (no watch loops).

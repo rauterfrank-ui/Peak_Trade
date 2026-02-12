@@ -109,8 +109,8 @@
 ## Referenzen
 
 - **Demo-Walkthrough:** [`docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
-- **Web-Dashboard v1.1:** [`src/webui/app.py`](../src/webui/app.py)
-- **Live-Track Service:** [`src/webui/live_track.py`](../src/webui/live_track.py)
+- **Web-Dashboard v1.1 (Code):** `src/webui/app.py`
+- **Live-Track Service (Code):** `src/webui/live_track.py`
 
 ---
 

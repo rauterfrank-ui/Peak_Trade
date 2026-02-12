@@ -126,7 +126,7 @@ def robust_api_call():
    ```yaml
    - name: "Stability Smoke Tests (Fast Gate)"
      run: |
-       pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
+       python3 -m pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
    ```
 
 4. ✅ Created comprehensive guide: [`docs/stability/SMOKE_TESTS_GUIDE.md`](SMOKE_TESTS_GUIDE.md)
@@ -136,10 +136,10 @@ def robust_api_call():
 **Usage:**
 ```bash
 # Run all smoke tests
-pytest -m smoke -v
+python3 -m pytest -m smoke -v
 
 # Run stability smoke tests only
-pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v
+python3 -m pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v
 ```
 
 ## Acceptance Criteria
@@ -147,7 +147,7 @@ pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_err
 - ✅ Retry logic handles transient failures gracefully
 - ✅ Health checks provide system-wide visibility
 - ✅ All tests pass without warnings
-- ✅ Smoke tests can be run via `pytest -m smoke`
+- ✅ Smoke tests can be run via `python3 -m pytest -m smoke`
 - ✅ CI pipeline includes smoke test gate
 
 ## Test Results

@@ -69,10 +69,10 @@ Datenvielfalt:        100% (21 unique Patch-Typen) ✅
 
 ```bash
 # Prüfe ob bounded_auto bereit ist (Go/No-Go)
-python scripts/check_bounded_auto_readiness.py
+python3 scripts/check_bounded_auto_readiness.py
 
 # Detaillierte Ausgabe mit allen Details
-python scripts/check_bounded_auto_readiness.py --verbose
+python3 scripts/check_bounded_auto_readiness.py --verbose
 ```
 
 ### Dry-Run Playbook
@@ -87,10 +87,10 @@ Siehe **[BOUNDED_AUTO_SAFETY_PLAYBOOK.md](./BOUNDED_AUTO_SAFETY_PLAYBOOK.md)** f
 
 ```bash
 # 1. Neue Demo-Patches mit Varianz generieren
-python scripts/generate_demo_patches_for_promotion.py
+python3 scripts/generate_demo_patches_for_promotion.py
 
 # 2. Weiteren Cycle durchführen
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 
 # 3. Nach jedem Cycle dokumentieren
 vim docs/learning_promotion/OPERATOR_DECISION_LOG.md

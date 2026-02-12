@@ -21,16 +21,16 @@ results/<run_id>/
 
 ```bash
 # Basic run (auto-generates run_id)
-python scripts/run_backtest.py --strategy ma_crossover
+python3 scripts/run_backtest.py --strategy ma_crossover
 
 # With custom run_id
-python scripts/run_backtest.py --strategy ma_crossover --run-id my_run_001
+python3 scripts/run_backtest.py --strategy ma_crossover --run-id my_run_001
 
 # Without Quarto report rendering
-python scripts/run_backtest.py --strategy ma_crossover --no-report
+python3 scripts/run_backtest.py --strategy ma_crossover --no-report
 
 # With null tracker (no mlflow)
-python scripts/run_backtest.py --strategy ma_crossover --tracker null
+python3 scripts/run_backtest.py --strategy ma_crossover --tracker null
 ```
 
 ### 2. View Artifacts
@@ -79,20 +79,20 @@ The Evidence Chain is designed to work without optional dependencies:
 
 ```bash
 # No mlflow installed -> Uses NullTracker (no error)
-python scripts/run_backtest.py --tracker auto
+python3 scripts/run_backtest.py --tracker auto
 
 # Force null tracker
-python scripts/run_backtest.py --tracker null
+python3 scripts/run_backtest.py --tracker null
 ```
 
 ### Without Quarto
 
 ```bash
 # quarto not installed -> WARN + skip report rendering (no error)
-python scripts/run_backtest.py
+python3 scripts/run_backtest.py
 
 # Explicitly skip report
-python scripts/run_backtest.py --no-report
+python3 scripts/run_backtest.py --no-report
 ```
 
 ### Without Parquet Engine (pyarrow/fastparquet)
@@ -216,7 +216,7 @@ pip install mlflow
 ### Example 1: Quick MA Crossover Test
 
 ```bash
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy ma_crossover \
   --run-id quick_ma_test_001 \
   --bars 1000
@@ -235,7 +235,7 @@ results/quick_ma_test_001/
 ### Example 2: RSI Strategy with Real Data
 
 ```bash
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy rsi_strategy \
   --data-file data/btc_eur_1h.csv \
   --start-date 2023-01-01 \
@@ -247,7 +247,7 @@ python scripts/run_backtest.py \
 
 ```bash
 for strategy in ma_crossover rsi_strategy breakout; do
-  python scripts/run_backtest.py \
+  python3 scripts/run_backtest.py \
     --strategy $strategy \
     --no-report \
     --run-id batch_${strategy}_$(date +%Y%m%d)

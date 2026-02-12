@@ -24,7 +24,7 @@ Sie ist so gestaltet, dass ein Cursor Multi-Agent Chat:
 
 You are operating in Peak_Trade under strict governance constraints:
 - **No-live policy:** No trading execution, no live API calls, no external services
-- **Read-only safe:** Only read operations and writes to `.tmp/` directories
+- **Read-only safe:** Only read operations and writes to `.tmp&#47;` directories
 - **Evidence-first:** All diagnostics must be reproducible and documented
 
 **Task:** Triage a failing CI gate "Validate Determinism Contract" for L4 Critic replay determinism (Phase 4D).
@@ -68,7 +68,7 @@ Execute the following commands in sequence and capture outputs:
 
 #### Step A: Validate contract + print hash
 ```bash
-python scripts/aiops/validate_l4_critic_determinism_contract.py \
+python3 scripts/aiops/validate_l4_critic_determinism_contract.py \
   --report <REPORT_PATH> \
   --print-hash
 ```
@@ -88,7 +88,7 @@ Hash: <SHA256>
 
 #### Step B: Emit canonical JSON
 ```bash
-python scripts/aiops/validate_l4_critic_determinism_contract.py \
+python3 scripts/aiops/validate_l4_critic_determinism_contract.py \
   --report <REPORT_PATH> \
   --write-canonical .tmp/canonical.json
 ```
@@ -272,7 +272,7 @@ def write_json(self, path: Path, deterministic: bool = False):
 **Verification command:**
 ```bash
 # Verify keys are sorted in output
-python -c "import json; d=json.load(open('.tmp/canonical.json')); print(list(d.keys()))"
+python3 -c "import json; d=json.load(open('.tmp/canonical.json')); print(list(d.keys()))"
 # Expected: ['critic', 'findings', 'inputs', 'meta', 'mode', 'pack_id', 'schema_version', 'summary']
 ```
 
@@ -284,7 +284,7 @@ python -c "import json; d=json.load(open('.tmp/canonical.json')); print(list(d.k
 # Step 1: Verify change is intentional (review PR/commit that introduced field)
 
 # Step 2: Regenerate snapshot with new schema
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -295,7 +295,7 @@ python scripts/aiops/run_l4_governance_critic.py \
   --no-legacy-output
 
 # Step 3: Validate new snapshot passes contract validation
-python scripts/aiops/validate_l4_critic_determinism_contract.py \
+python3 scripts/aiops/validate_l4_critic_determinism_contract.py \
   --report tests/fixtures/l4_critic_determinism/l4_critic_sample__pack-L1_sample_2026-01-10__schema-1.0.0/critic_report.json \
   --print-hash
 
@@ -332,7 +332,7 @@ git commit -m "chore(aiops): update L4 critic determinism snapshot (schema v1.0.
 
 **1. Contract validation:**
 ```bash
-python <validator_cli_planned> \
+python3 <validator_cli_planned> \
   --report <REPORT_PATH> \
   --print-hash
 ```
@@ -344,7 +344,7 @@ python <validator_cli_planned> \
 
 **2. Canonical emission:**
 ```bash
-python <validator_cli_planned> \
+python3 <validator_cli_planned> \
   --report <REPORT_PATH> \
   --write-canonical .tmp/canonical.json
 ```
@@ -419,7 +419,7 @@ diff -u tests/fixtures/l4_critic_determinism/.../critic_report.json .tmp/canonic
 ### Next Steps
 1. [ ] Review proposed fix with team
 2. [ ] Apply patch to codebase
-3. [ ] Run local tests: `pytest tests/ai_orchestration/test_l4_critic_determinism_contract.py -v`
+3. [ ] Run local tests: `python3 -m pytest tests&#47;ai_orchestration&#47;test_l4_critic_determinism_contract.py -v`
 4. [ ] Verify CI passes on fix branch
 5. [ ] Open PR with fix (reference this triage report)
 
@@ -445,14 +445,14 @@ diff -u tests/fixtures/l4_critic_determinism/.../critic_report.json .tmp/canonic
 
 ✅ **Allowed:**
 - Read operations on all files
-- Writes to `.tmp/` directory
+- Writes to `.tmp&#47;` directory
 - Command execution (read-only validators, tests)
 - Evidence capture and documentation
 
 ❌ **Forbidden:**
 - Live trading operations
 - External API calls (network requests)
-- Writes outside `.tmp/` (except with explicit operator approval for snapshot updates)
+- Writes outside `.tmp&#47;` (except with explicit operator approval for snapshot updates)
 - Automatic commits/pushes
 
 ---

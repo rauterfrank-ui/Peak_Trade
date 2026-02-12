@@ -33,13 +33,13 @@ Phase 3 der Strategy Layer vNext Roadmap ist **vollständig implementiert**. Die
 **CLI Examples**:
 ```bash
 # Basic
-python scripts/run_optuna_study.py --strategy ma_crossover --n-trials 100
+python3 scripts/run_optuna_study.py --strategy ma_crossover --n-trials 100
 
 # Multi-objective
-python scripts/run_optuna_study.py --strategy ma_crossover --objectives sharpe,max_drawdown --n-trials 200
+python3 scripts/run_optuna_study.py --strategy ma_crossover --objectives sharpe,max_drawdown --n-trials 200
 
 # Parallel
-python scripts/run_optuna_study.py --strategy ma_crossover --storage sqlite:///optuna.db --n-trials 100 --jobs 4
+python3 scripts/run_optuna_study.py --strategy ma_crossover --storage sqlite:///optuna.db --n-trials 100 --jobs 4
 ```
 
 ---
@@ -59,7 +59,7 @@ python scripts/run_optuna_study.py --strategy ma_crossover --storage sqlite:///o
 
 **Test Results**:
 ```bash
-pytest tests/test_optuna_integration.py -v -m "not slow"
+python3 -m pytest tests/test_optuna_integration.py -v -m "not slow"
 # Result: 20 skipped (Optuna not installed, expected)
 # With Optuna: 17 passed, 3 deselected (slow tests)
 ```
@@ -120,13 +120,13 @@ def suggest_params_from_schema(trial: Trial, strategy: Any) -> Dict[str, Any]:
 
 ### Linter ✅
 ```bash
-python3 -m ruff check scripts/run_optuna_study.py tests/test_optuna_integration.py
+ruff check scripts/run_optuna_study.py tests/test_optuna_integration.py
 # Result: All checks passed!
 ```
 
 ### Tests ✅
 ```bash
-pytest tests/test_optuna_integration.py -v -m "not slow"
+python3 -m pytest tests/test_optuna_integration.py -v -m "not slow"
 # Result: 20 skipped (Optuna not installed, expected)
 ```
 
@@ -141,7 +141,7 @@ pytest tests/test_optuna_integration.py -v -m "not slow"
 
 ### Single-Objective Optimization
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --objectives sharpe \
     --n-trials 100
@@ -153,7 +153,7 @@ python scripts/run_optuna_study.py \
 
 ### Multi-Objective Optimization
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --objectives sharpe,max_drawdown \
     --n-trials 200
@@ -165,7 +165,7 @@ python scripts/run_optuna_study.py \
 
 ### Pruning (schnellere Optimization)
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --pruner median \
     --n-trials 100
@@ -177,7 +177,7 @@ python scripts/run_optuna_study.py \
 
 ### Parallel Trials (4x schneller)
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --storage sqlite:///optuna.db \
     --n-trials 100 \
@@ -197,7 +197,7 @@ backend = "mlflow"
 ```
 
 ```bash
-python scripts/run_optuna_study.py --strategy ma_crossover --n-trials 100
+python3 scripts/run_optuna_study.py --strategy ma_crossover --n-trials 100
 mlflow ui --backend-store-uri ./.mlruns --port 5000
 ```
 
@@ -279,7 +279,7 @@ pip install optuna
 
 ### 2. Erste Optimization
 ```bash
-python scripts/run_optuna_study.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --n-trials 50
 ```
@@ -305,7 +305,7 @@ def parameter_schema(self) -> list:
 ```
 
 ```bash
-python scripts/run_optuna_study.py --strategy my_strategy --n-trials 100
+python3 scripts/run_optuna_study.py --strategy my_strategy --n-trials 100
 ```
 
 ---
@@ -410,7 +410,7 @@ python scripts/run_optuna_study.py --strategy my_strategy --n-trials 100
 
 2. **Erste Optimization laufen lassen**:
    ```bash
-   python scripts/run_optuna_study.py --strategy ma_crossover --n-trials 50
+   python3 scripts/run_optuna_study.py --strategy ma_crossover --n-trials 50
    ```
 
 3. **Doku lesen**:

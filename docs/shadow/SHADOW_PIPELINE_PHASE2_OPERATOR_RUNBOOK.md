@@ -39,7 +39,7 @@ This document focuses on how to run the provided smoke flow and how to interpret
 
 1. Pull latest `main`
 2. Run the smoke script:
-   - `python scripts/shadow_run_tick_to_ohlcv_smoke.py`
+   - `python3 scripts&#47;shadow_run_tick_to_ohlcv_smoke.py`
 3. Confirm:
    - Script exits with success
    - Expected OHLCV output is produced (console/log output)
@@ -52,7 +52,7 @@ This document focuses on how to run the provided smoke flow and how to interpret
 ### Command
 
 ```bash
-python scripts/shadow_run_tick_to_ohlcv_smoke.py
+python3 scripts/shadow_run_tick_to_ohlcv_smoke.py
 ```
 
 ### Expected Output
@@ -242,13 +242,13 @@ enabled = false  # CRITICAL: Runtime guard enforced
 
 ```bash
 # All Shadow Pipeline Tests
-pytest tests/data/shadow/ -q
+python3 -m pytest tests/data/shadow/ -q
 
 # Specific Tests
-pytest tests/data/shadow/test_guards.py -v
-pytest tests/data/shadow/test_tick_normalizer_kraken_trade.py -v
-pytest tests/data/shadow/test_ohlcv_builder.py -v
-pytest tests/data/shadow/test_quality_monitor.py -v
+python3 -m pytest tests/data/shadow/test_guards.py -v
+python3 -m pytest tests/data/shadow/test_tick_normalizer_kraken_trade.py -v
+python3 -m pytest tests/data/shadow/test_ohlcv_builder.py -v
+python3 -m pytest tests/data/shadow/test_quality_monitor.py -v
 ```
 
 ### Test Coverage
@@ -271,8 +271,8 @@ pytest tests/data/shadow/test_quality_monitor.py -v
 **Check:**
 1. Are you in the correct Python environment?
    ```bash
-   python --version  # Should be 3.9+
-   which python
+   python3 --version  # Should be 3.9+
+   which python3
    ```
 
 2. Are dependencies installed?

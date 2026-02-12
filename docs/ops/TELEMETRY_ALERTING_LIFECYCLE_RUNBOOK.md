@@ -35,26 +35,26 @@ suppress_critical_on_ack = false  # CRITICAL bypasses ACK by default
 
 ```bash
 # Last 50 alerts
-python scripts/telemetry_alerts_lifecycle.py history --limit 50
+python3 scripts/telemetry_alerts_lifecycle.py history --limit 50
 
 # Last 24 hours
-python scripts/telemetry_alerts_lifecycle.py history --since 24h
+python3 scripts/telemetry_alerts_lifecycle.py history --since 24h
 
 # Filter by severity
-python scripts/telemetry_alerts_lifecycle.py history --severity critical --limit 20
+python3 scripts/telemetry_alerts_lifecycle.py history --severity critical --limit 20
 ```
 
 ### 4. Acknowledge Alert (Suppress Future Occurrences)
 
 ```bash
 # ACK with 2-hour TTL
-python scripts/telemetry_alerts_lifecycle.py ack \
+python3 scripts/telemetry_alerts_lifecycle.py ack \
   --dedupe-key "health_critical:Telemetry Health Check CRITICAL" \
   --ttl 2h \
   --enable-operator-actions
 
 # Permanent ACK (no TTL)
-python scripts/telemetry_alerts_lifecycle.py ack \
+python3 scripts/telemetry_alerts_lifecycle.py ack \
   --dedupe-key "degradation_detected:..." \
   --enable-operator-actions
 ```
@@ -63,14 +63,14 @@ python scripts/telemetry_alerts_lifecycle.py ack \
 
 ```bash
 # Snooze for 30 minutes
-python scripts/telemetry_alerts_lifecycle.py snooze \
+python3 scripts/telemetry_alerts_lifecycle.py snooze \
   --rule-id degradation_detected \
   --ttl 30m \
   --enable-operator-actions \
   --reason "Under maintenance"
 
 # Unsnooze
-python scripts/telemetry_alerts_lifecycle.py unsnooze \
+python3 scripts/telemetry_alerts_lifecycle.py unsnooze \
   --rule-id degradation_detected \
   --enable-operator-actions
 ```
@@ -79,10 +79,10 @@ python scripts/telemetry_alerts_lifecycle.py unsnooze \
 
 ```bash
 # Last 7 days
-python scripts/telemetry_alerts_lifecycle.py stats --since 7d
+python3 scripts/telemetry_alerts_lifecycle.py stats --since 7d
 
 # All time
-python scripts/telemetry_alerts_lifecycle.py stats
+python3 scripts/telemetry_alerts_lifecycle.py stats
 ```
 
 ---
@@ -172,14 +172,14 @@ suppress_critical_on_ack = false
 **Solution:**
 ```bash
 # Snooze for 4 hours
-python scripts/telemetry_alerts_lifecycle.py snooze \
+python3 scripts/telemetry_alerts_lifecycle.py snooze \
   --rule-id degradation_detected \
   --ttl 4h \
   --enable-operator-actions \
   --reason "Maintenance: retention cleanup"
 
 # After maintenance, verify unsnooze (or wait for TTL expiry)
-python scripts/telemetry_alerts_lifecycle.py unsnooze \
+python3 scripts/telemetry_alerts_lifecycle.py unsnooze \
   --rule-id degradation_detected \
   --enable-operator-actions
 ```
@@ -191,7 +191,7 @@ python scripts/telemetry_alerts_lifecycle.py unsnooze \
 **Solution:**
 ```bash
 # ACK with 2-hour TTL
-python scripts/telemetry_alerts_lifecycle.py ack \
+python3 scripts/telemetry_alerts_lifecycle.py ack \
   --dedupe-key "health_critical:Telemetry Health Check CRITICAL" \
   --ttl 2h \
   --enable-operator-actions \
@@ -205,12 +205,12 @@ python scripts/telemetry_alerts_lifecycle.py ack \
 **Solution:**
 ```bash
 # View last 6 hours of critical alerts
-python scripts/telemetry_alerts_lifecycle.py history \
+python3 scripts/telemetry_alerts_lifecycle.py history \
   --since 6h \
   --severity critical
 
 # Get stats for last 24h
-python scripts/telemetry_alerts_lifecycle.py stats --since 24h
+python3 scripts/telemetry_alerts_lifecycle.py stats --since 24h
 ```
 
 ---
@@ -243,7 +243,7 @@ suppress_critical_on_ack = false  # Default: CRITICAL bypasses ACK
 Weekly review of alert statistics:
 
 ```bash
-python scripts/telemetry_alerts_lifecycle.py stats --since 7d
+python3 scripts/telemetry_alerts_lifecycle.py stats --since 7d
 ```
 
 ### 4. Clean Up Expired State

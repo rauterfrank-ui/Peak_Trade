@@ -5,12 +5,21 @@
 
 ---
 
+- [RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md](./RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md): Tech-Debt Top-3 ROI bis Finish (Cursor Multi-Agent)
+
+
+## Research & New Listings (CEX+DEX Crawler, AI Layers)
+
+- [RUNBOOK_CURSOR_MA_FEHLENDE_FEATURES_OPEN_POINTS_2026-02-10.md](RUNBOOK_CURSOR_MA_FEHLENDE_FEATURES_OPEN_POINTS_2026-02-10.md) — Cursor Multi-Agent Runbook für offene Peak_Trade Features (Einstieg→Endpunkt, Blöcke A–J).
+- [New Listings Crawler Runbook](./new_listings_crawler_runbook.md)
+
 ## Runbook Categories
 
 ### Docs Gates & Policies
 
 Runbooks for operating and troubleshooting documentation quality gates:
 
+- [Gates Overview](../GATES_OVERVIEW.md) – Complete gates map (where/what/why/how), change impact matrix, and operator snapshot block
 - [RUNBOOK_LOCAL_DOCS_GATES_SNAPSHOT_CHANGED_SCOPE_CURSOR_MULTI_AGENT.md](RUNBOOK_LOCAL_DOCS_GATES_SNAPSHOT_CHANGED_SCOPE_CURSOR_MULTI_AGENT.md) — Local docs gates snapshot (changed scope), operator evidence block (Cursor Multi-Agent)
 - [RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md](RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md) — Operating the Docs Reference Targets Gate
 - [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md) — Handling false positives
@@ -54,10 +63,20 @@ Runbooks for specific phase implementations and workflows:
 - [RUNBOOK_PHASE8_DOCS_INTEGRITY_HARDENING_CURSOR_MULTI_AGENT.md](RUNBOOK_PHASE8_DOCS_INTEGRITY_HARDENING_CURSOR_MULTI_AGENT.md) — Phase 8 docs integrity hardening
 - [RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md](RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md) — Workflow docs integration
 
+### Runbook B — Execution Gates (B5/B3/B2)
+
+Safety controls for Shadow → Mini-Live (ArmedGate, RiskGate, Reconciliation). **All OFF by default.**
+
+- [runbook_b_execution_gates_quickstart.md](runbook_b_execution_gates_quickstart.md) — Quickstart: env toggles, safe usage, config examples
+- [runbook_b_env_example.txt](runbook_b_env_example.txt) — Minimal env example (all disabled)
+
 ### CI & Operations
 
 Runbooks for CI operations and general operational procedures:
 
+- [RUNBOOK_MCP_TOOLING.md](RUNBOOK_MCP_TOOLING.md) — MCP Tooling (Cursor): Playwright + Grafana (read-only), Secret-Handling, Smoke/Preflight
+- [RUNBOOK_AI_LIVE_OPS_LOCAL.md](RUNBOOK_AI_LIVE_OPS_LOCAL.md) — AI Live Ops Pack (local start/verify/troubleshoot; snapshot-only)
+- [RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md](RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md) — Execution Watch Demo-Stack (shadow_mvs + ai_live, STRICT NO-LIVE)
 - [RUNBOOK_SLICE_3_6_REPLAY_REGRESSION_PACK_OPERATOR_SHORTCUT.md](RUNBOOK_SLICE_3_6_REPLAY_REGRESSION_PACK_OPERATOR_SHORTCUT.md) — Slice 3.6: Offline deterministic replay regression pack shortcut (bundle → compare → consume)
 - [RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md](RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md) — PR #736: CI snapshot → enable auto-merge → post-merge verify on main (snapshot-only)
 - [RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md](RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md) — Operator Dashboard (Watch-Only) start→finish (local, read-only monitoring + deterministic snapshot export)
@@ -67,6 +86,7 @@ Runbooks for CI operations and general operational procedures:
 - [PHASE4E_STABILITY_MONITORING_CHECKLIST.md](PHASE4E_STABILITY_MONITORING_CHECKLIST.md) — Phase 4E stability monitoring checklist
 - [rebase_cleanup_workflow.md](rebase_cleanup_workflow.md) — Rebase cleanup workflow
 - [Stale Branch Hygiene (Local "gone")](RUNBOOK_STALE_BRANCH_HYGIENE_LOCAL_GONE_CURSOR_MULTI_AGENT.md) — Safe cleanup of local branches with deleted upstream refs (DRY-RUN, recovery via reflog, protected branches)
+- [RUNBOOK_BRANCH_CLEANUP_RECOVERY.md](RUNBOOK_BRANCH_CLEANUP_RECOVERY.md) — Branch cleanup recovery (tags + bundles)
 - [Commit Salvage Workflow](RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md) ⭐ — Salvaging commits from wrong branch (feature branch → PR → merge workflow)
 - [Pointer Pattern Operations](RUNBOOK_POINTER_PATTERN_OPERATIONS.md) — Operator runbook for root canonical runbooks integration (pointer pattern maintenance, gates compliance)
 - [Pointer Pattern Quarterly Review](RUNBOOK_POINTER_PATTERN_QUARTERLY_REVIEW.md) — Quarterly drift control and orphan prevention for pointer pattern architecture

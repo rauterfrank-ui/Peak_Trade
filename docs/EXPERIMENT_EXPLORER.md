@@ -202,56 +202,56 @@ overview = quick_sweep_summary("my_sweep", metric="sharpe", top_n=10)
 
 ```bash
 # Alle Backtests der letzten 50
-python scripts/experiments_explorer.py list --run-type backtest --limit 50
+python3 scripts/experiments_explorer.py list --run-type backtest --limit 50
 
 # Nur ma_crossover Strategie
-python scripts/experiments_explorer.py list --strategy ma_crossover
+python3 scripts/experiments_explorer.py list --strategy ma_crossover
 
 # Mit Tag-Filter
-python scripts/experiments_explorer.py list --tag dev-test
+python3 scripts/experiments_explorer.py list --tag dev-test
 
 # Nach Sharpe sortiert
-python scripts/experiments_explorer.py list --sort-by sharpe
+python3 scripts/experiments_explorer.py list --sort-by sharpe
 ```
 
 #### 2. Top-N nach Metrik
 
 ```bash
 # Top-10 nach Sharpe (alle Run-Types)
-python scripts/experiments_explorer.py top --metric sharpe --top-n 10
+python3 scripts/experiments_explorer.py top --metric sharpe --top-n 10
 
 # Top-10 Backtests nach Return
-python scripts/experiments_explorer.py top --run-type backtest --metric total_return --top-n 10
+python3 scripts/experiments_explorer.py top --run-type backtest --metric total_return --top-n 10
 
 # Top-10 mit niedrigstem Drawdown
-python scripts/experiments_explorer.py top --metric max_drawdown --top-n 10 --ascending
+python3 scripts/experiments_explorer.py top --metric max_drawdown --top-n 10 --ascending
 ```
 
 #### 3. Experiment-Details
 
 ```bash
 # Details zu einem Experiment anzeigen
-python scripts/experiments_explorer.py details --id abc12345-6789-...
+python3 scripts/experiments_explorer.py details --id abc12345-6789-...
 ```
 
 #### 4. Sweep-Auswertung
 
 ```bash
 # Sweep-Übersicht mit Top-15 Runs
-python scripts/experiments_explorer.py sweep-summary \
+python3 scripts/experiments_explorer.py sweep-summary \
     --sweep-name ma_crossover_opt_v1 \
     --metric sharpe \
     --top-n 15
 
 # Alle Sweeps listen
-python scripts/experiments_explorer.py sweeps
+python3 scripts/experiments_explorer.py sweeps
 ```
 
 #### 5. Sweep-Vergleich
 
 ```bash
 # Zwei Sweeps vergleichen
-python scripts/experiments_explorer.py compare \
+python3 scripts/experiments_explorer.py compare \
     --sweeps ma_crossover_opt_v1,rsi_reversion_opt_v1 \
     --metric sharpe
 ```
@@ -260,19 +260,19 @@ python scripts/experiments_explorer.py compare \
 
 ```bash
 # CSV-Export aller Sweeps
-python scripts/experiments_explorer.py export \
+python3 scripts/experiments_explorer.py export \
     --run-type sweep \
     --metric sharpe \
     --csv out/all_sweeps.csv
 
 # Markdown-Export für einen bestimmten Sweep
-python scripts/experiments_explorer.py export \
+python3 scripts/experiments_explorer.py export \
     --sweep-name ma_crossover_opt_v1 \
     --metric sharpe \
     --markdown out/ma_sweep_report.md
 
 # Beides gleichzeitig
-python scripts/experiments_explorer.py export \
+python3 scripts/experiments_explorer.py export \
     --strategy my_strategy \
     --csv out/my_strategy.csv \
     --markdown out/my_strategy.md
@@ -286,19 +286,19 @@ python scripts/experiments_explorer.py export \
 
 ```bash
 # 1. Sweep durchführen (Phase 20)
-python scripts/run_sweep_strategy.py --strategy ma_crossover --config config/sweeps/ma_crossover.toml
+python3 scripts/run_sweep_strategy.py --strategy ma_crossover --config config/sweeps/ma_crossover.toml
 
 # 2. Sweep-Übersicht abrufen
-python scripts/experiments_explorer.py sweep-summary \
+python3 scripts/experiments_explorer.py sweep-summary \
     --sweep-name ma_crossover_opt_v1 \
     --metric sharpe \
     --top-n 10
 
 # 3. Details zum besten Run
-python scripts/experiments_explorer.py details --id <RUN_ID>
+python3 scripts/experiments_explorer.py details --id <RUN_ID>
 
 # 4. Export für weitere Analyse
-python scripts/experiments_explorer.py export \
+python3 scripts/experiments_explorer.py export \
     --sweep-name ma_crossover_opt_v1 \
     --csv out/ma_sweep_results.csv
 ```
@@ -307,20 +307,20 @@ python scripts/experiments_explorer.py export \
 
 ```bash
 # 1. Alle Backtests einer Strategie listen
-python scripts/experiments_explorer.py list \
+python3 scripts/experiments_explorer.py list \
     --run-type backtest \
     --strategy trend_following \
     --limit 100
 
 # 2. Top-20 nach Sharpe
-python scripts/experiments_explorer.py top \
+python3 scripts/experiments_explorer.py top \
     --run-type backtest \
     --strategy trend_following \
     --metric sharpe \
     --top-n 20
 
 # 3. Mit Tag für Zeitraum-Filter
-python scripts/experiments_explorer.py list \
+python3 scripts/experiments_explorer.py list \
     --run-type backtest \
     --tag q4-2024
 ```
@@ -329,15 +329,15 @@ python scripts/experiments_explorer.py list \
 
 ```bash
 # 1. Alle Sweeps listen
-python scripts/experiments_explorer.py sweeps
+python3 scripts/experiments_explorer.py sweeps
 
 # 2. Sweeps verschiedener Strategien vergleichen
-python scripts/experiments_explorer.py compare \
+python3 scripts/experiments_explorer.py compare \
     --sweeps trend_following_v2,mean_reversion_v1,ma_crossover_v3 \
     --metric sharpe
 
 # 3. Export für Präsentation
-python scripts/experiments_explorer.py export \
+python3 scripts/experiments_explorer.py export \
     --run-type sweep \
     --markdown reports/strategy_comparison.md
 ```
@@ -352,10 +352,10 @@ Der Explorer ergänzt die Research-Scripts:
 
 ```bash
 # Research-Script für neuen Backtest
-python scripts/research_run_strategy.py --strategy ma_crossover --symbol BTC/EUR
+python3 scripts/research_run_strategy.py --strategy ma_crossover --symbol BTC/EUR
 
 # Explorer für Analyse der Ergebnisse
-python scripts/experiments_explorer.py top --strategy ma_crossover --metric sharpe
+python3 scripts/experiments_explorer.py top --strategy ma_crossover --metric sharpe
 ```
 
 ### Hyperparameter-Sweeps (Phase 20)
@@ -364,10 +364,10 @@ Der Explorer ist das primäre Werkzeug zur Sweep-Auswertung:
 
 ```bash
 # Sweep durchführen
-python scripts/run_sweep_strategy.py --strategy my_strategy --config config/sweeps/my_strategy.toml
+python3 scripts/run_sweep_strategy.py --strategy my_strategy --config config/sweeps/my_strategy.toml
 
 # Ergebnisse analysieren
-python scripts/experiments_explorer.py sweep-summary --sweep-name my_strategy_opt_v1
+python3 scripts/experiments_explorer.py sweep-summary --sweep-name my_strategy_opt_v1
 ```
 
 ### Notebooks & Excel
@@ -376,12 +376,12 @@ Exports für externe Analyse:
 
 ```bash
 # CSV für Excel
-python scripts/experiments_explorer.py export \
+python3 scripts/experiments_explorer.py export \
     --sweep-name my_sweep \
     --csv out/for_excel.csv
 
 # Markdown für Dokumentation
-python scripts/experiments_explorer.py export \
+python3 scripts/experiments_explorer.py export \
     --run-type backtest \
     --markdown reports/backtest_overview.md
 ```
@@ -417,7 +417,7 @@ Die CSV-Datei existiert nicht:
 ls reports/experiments/experiments.csv
 
 # Falls nicht vorhanden: Backtest durchführen
-python scripts/run_backtest.py --strategy ma_crossover
+python3 scripts/run_backtest.py --strategy ma_crossover
 ```
 
 ### "Sweep nicht gefunden"
@@ -426,10 +426,10 @@ Der angegebene `sweep_name` existiert nicht:
 
 ```bash
 # Alle Sweeps listen
-python scripts/experiments_explorer.py sweeps
+python3 scripts/experiments_explorer.py sweeps
 
 # Mit korrektem Namen erneut versuchen
-python scripts/experiments_explorer.py sweep-summary --sweep-name RICHTIGER_NAME
+python3 scripts/experiments_explorer.py sweep-summary --sweep-name RICHTIGER_NAME
 ```
 
 ### Leere Ergebnisse
@@ -438,11 +438,11 @@ Filter zu restriktiv:
 
 ```bash
 # Ohne Filter testen
-python scripts/experiments_explorer.py list --limit 10
+python3 scripts/experiments_explorer.py list --limit 10
 
 # Filter schrittweise hinzufügen
-python scripts/experiments_explorer.py list --run-type backtest
-python scripts/experiments_explorer.py list --run-type backtest --strategy ma_crossover
+python3 scripts/experiments_explorer.py list --run-type backtest
+python3 scripts/experiments_explorer.py list --run-type backtest --strategy ma_crossover
 ```
 
 ---

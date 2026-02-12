@@ -52,11 +52,11 @@ Phase 8D implementierte die VaR Report Tools (`report_compare` und `report_index
 **Steps:**
 ```yaml
 # 1. Run Tests
-pytest tests/risk/validation/test_report_compare.py -v --tb=short
-pytest tests/risk/validation/test_report_index.py -v --tb=short
+python3 -m pytest tests/risk/validation/test_report_compare.py -v --tb=short
+python3 -m pytest tests/risk/validation/test_report_index.py -v --tb=short
 
 # 2. Compare Gate (with fixtures)
-python scripts/risk/var_suite_compare_runs.py \
+python3 scripts/risk/var_suite_compare_runs.py \
   --baseline tests/fixtures/var_suite_reports/run_baseline \
   --candidate tests/fixtures/var_suite_reports/run_candidate \
   --out reports/var_suite/ci_compare
@@ -65,7 +65,7 @@ python scripts/risk/var_suite_compare_runs.py \
 [ -f compare.json ] && python3 -c "import json; json.load(open('compare.json'))"
 
 # 3. Index Gate (with fixtures)
-python scripts/risk/var_suite_build_index.py \
+python3 scripts/risk/var_suite_build_index.py \
   --report-root tests/fixtures/var_suite_reports
 
 # Verify deterministic ordering
@@ -132,15 +132,15 @@ paths:
 
 ```bash
 # report_compare tests
-pytest tests/risk/validation/test_report_compare.py -v
+python3 -m pytest tests/risk/validation/test_report_compare.py -v
 # Result: 12 passed in 1.63s
 
 # report_index tests
-pytest tests/risk/validation/test_report_index.py -v
+python3 -m pytest tests/risk/validation/test_report_index.py -v
 # Result: 10 passed in 0.77s
 
 # All validation tests
-pytest tests/risk/validation/ -v
+python3 -m pytest tests/risk/validation/ -v
 # Result: 93 passed
 ```
 
@@ -180,8 +180,8 @@ python3 scripts/risk/var_suite_build_index.py \
 
 | Step | Expected Outcome | Exit Code |
 |------|------------------|-----------|
-| `pytest test_report_compare.py` | All tests pass | 0 |
-| `pytest test_report_index.py` | All tests pass | 0 |
+| `python3 -m pytest tests/risk/validation/test_report_compare.py` | All tests pass | 0 |
+| `python3 -m pytest tests/risk/validation/test_report_index.py` | All tests pass | 0 |
 | `var_suite_compare_runs.py` (script) | Files created, JSON valid | 0 (warning if regressions) |
 | `var_suite_build_index.py` (script) | Files created, JSON valid, sorted | 0 |
 | Verify compare outputs exist | All 3 files exist | 0 |

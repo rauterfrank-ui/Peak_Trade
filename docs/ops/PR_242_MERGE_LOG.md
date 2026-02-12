@@ -66,9 +66,9 @@ Pre-Commit Hooks: ✅ bestanden
 - Panel-Verhalten/Datenflüsse: siehe `docs/webui/LIVE_STATUS_PANELS.md`
 - Positions/Portfolio/Risk Panels: siehe `docs/webui/LIVE_PANELS_POSITIONS_PORTFOLIO_RISK.md`
 - Lokale Sanity:
-  - `uv run ruff check .`
-  - `uv run pytest -q`
-  - optional gezielt: `uv run pytest -q tests&#47;test_live_status_snapshot_panels.py`
+  - `ruff check .`
+  - `python3 -m pytest -q`
+  - optional gezielt: `python3 -m pytest -q tests&#47;test_live_status_snapshot_panels.py`
 
 ## References
 - PR #242: https://github.com/rauterfrank-ui/Peak_Trade/pull/242

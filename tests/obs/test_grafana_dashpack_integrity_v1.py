@@ -65,12 +65,8 @@ def test_dashpack_ds_vars_hidden_and_defaults_stable() -> None:
     json_files = sorted(dashboards_dir.glob("*/*.json"))
     assert json_files, "expected at least one dashboard JSON"
 
-    expected_defaults = {
-        "DS_LOCAL": "peaktrade-prometheus-local",
-        "DS_MAIN": "peaktrade-prometheus-main",
-        "DS_SHADOW": "peaktrade-prometheus-shadow",
-    }
-    need = set(expected_defaults.keys())
+    # Canonical dashpack datasource var (single selector).
+    need = {"ds"}
 
     for p in json_files:
         doc = _load_json(p)
@@ -79,9 +75,19 @@ def test_dashpack_ds_vars_hidden_and_defaults_stable() -> None:
         by_name = {t.get("name"): t for t in ds_items if isinstance(t.get("name"), str)}
         have = set(by_name.keys())
         assert need.issubset(have), f"{p} missing {sorted(need - have)}"
-        for name, want_uid in expected_defaults.items():
-            t = by_name[name]
-            assert t.get("hide") == 2, f"{p} var {name} should be hidden (hide=2)"
-            cur = t.get("current") or {}
-            assert isinstance(cur, dict)
-            assert cur.get("value") == want_uid, f"{p} var {name} default mismatch"
+        t = by_name["ds"]
+        # ds selector should be visible so operators can switch stacks.
+        assert t.get("hide") == 0, f"{p} var ds should be visible (hide=0)"
+        cur = t.get("current") or {}
+        assert isinstance(cur, dict)
+        # Contract: default to local Prometheus for deterministic local UX (DS invariant).
+        expected_ds = "prom_local_9092"
+        assert cur.get("value") == expected_ds, f"{p} var ds default mismatch"
+
+
+def test_operator_home_links_to_compare_overview() -> None:
+    dashboards_dir = PROJECT_ROOT / "docs" / "webui" / "observability" / "grafana" / "dashboards"
+    operator_home = _load_json(dashboards_dir / "overview" / "peaktrade-operator-home.json")
+
+    urls = set(_iter_url_strings(operator_home))
+    assert "/d/peaktrade-main-vs-shadow-overview" in urls

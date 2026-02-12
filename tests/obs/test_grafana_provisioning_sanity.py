@@ -50,7 +50,7 @@ def test_dashboards_folder_layout_no_root_jsons() -> None:
     root_jsons = sorted(dashboards_dir.glob("*.json"))
     assert root_jsons == []
 
-    for folder in ("overview", "shadow", "execution", "http"):
+    for folder in ("overview", "shadow", "execution", "http", "compare"):
         assert (dashboards_dir / folder).is_dir()
 
 
@@ -69,15 +69,9 @@ def test_dashboard_uids_unique_and_required_vars_present() -> None:
         assert uid not in uids, f"duplicate uid={uid} in {uids[uid]} and {p}"
         uids[uid] = p
 
-    # Variable conventions: all dashboards carry the same DS_* set so navigation
-    # can include vars and panels can scope correctly. DS vars are hidden by
-    # default (guardrail) and have stable datasource UID defaults.
-    expected = {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"}
-    expected_defaults = {
-        "DS_LOCAL": "peaktrade-prometheus-local",
-        "DS_MAIN": "peaktrade-prometheus-main",
-        "DS_SHADOW": "peaktrade-prometheus-shadow",
-    }
+    # Variable conventions: all dashboards carry the same canonical datasource var (`ds`)
+    # so navigation can include vars and panels can scope correctly.
+    expected = {"ds"}
 
     for p in json_files:
         doc = _load_json(p)
@@ -86,12 +80,12 @@ def test_dashboard_uids_unique_and_required_vars_present() -> None:
         by_name = {t.get("name"): t for t in ds_items if isinstance(t.get("name"), str)}
         ds_vars = set(by_name.keys())
         assert expected.issubset(ds_vars), f"{p} missing {sorted(expected - ds_vars)}"
-        for name, want_uid in expected_defaults.items():
-            t = by_name[name]
-            assert t.get("hide") == 2, f"{p} var {name} should be hidden (hide=2)"
-            cur = t.get("current") or {}
-            assert isinstance(cur, dict)
-            assert cur.get("value") == want_uid, f"{p} var {name} default mismatch"
+        t = by_name["ds"]
+        assert t.get("hide") == 0, f"{p} var ds should be visible (hide=0)"
+        cur = t.get("current") or {}
+        assert isinstance(cur, dict)
+        expected_ds = "prom_local_9092"
+        assert cur.get("value") == expected_ds, f"{p} var ds default mismatch"
 
 
 def test_all_internal_dashboard_links_resolve_to_known_uids() -> None:

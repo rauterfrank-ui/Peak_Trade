@@ -6,23 +6,23 @@ Offline-Tool zur Evaluation von Live-Trading-Sessions basierend auf `fills.csv`.
 
 ```bash
 # Help
-python scripts/evaluate_live_session.py --help
+python3 scripts/evaluate_live_session.py --help
 
 # Evaluate session (text output)
-python scripts/evaluate_live_session.py --session-dir /path/to/session
+python3 scripts/evaluate_live_session.py --session-dir /path/to/session
 
 # Generate JSON report
-python scripts/evaluate_live_session.py \
+python3 scripts/evaluate_live_session.py \
   --session-dir /path/to/session \
   --write-report
 
 # JSON output (machine-readable)
-python scripts/evaluate_live_session.py \
+python3 scripts/evaluate_live_session.py \
   --session-dir /path/to/session \
   --format json
 
 # Strict mode (fail on invalid rows)
-python scripts/evaluate_live_session.py \
+python3 scripts/evaluate_live_session.py \
   --session-dir /path/to/session \
   --strict
 ```
@@ -255,7 +255,7 @@ print(json.dumps({
 
 ```bash
 # Run tests
-python -m pytest tests/test_live_eval_io.py tests/test_live_eval_metrics.py -v
+python3 -m pytest tests/test_live_eval_io.py tests/test_live_eval_metrics.py -v
 
 # Expected: 19 passed
 ```
@@ -284,10 +284,10 @@ python -m pytest tests/test_live_eval_io.py tests/test_live_eval_metrics.py -v
 
 ```bash
 # Quick overview
-python scripts/evaluate_live_session.py --session-dir ~/live_sessions/2025-01-15
+python3 scripts/evaluate_live_session.py --session-dir ~/live_sessions/2025-01-15
 
 # Generate report for archival
-python scripts/evaluate_live_session.py \
+python3 scripts/evaluate_live_session.py \
   --session-dir ~/live_sessions/2025-01-15 \
   --write-report
 ```
@@ -296,7 +296,7 @@ python scripts/evaluate_live_session.py \
 
 ```bash
 # Machine-readable output for monitoring pipeline
-python scripts/evaluate_live_session.py \
+python3 scripts/evaluate_live_session.py \
   --session-dir /var/peak_trade/sessions/latest \
   --format json \
   > /tmp/session_metrics.json
@@ -306,7 +306,7 @@ python scripts/evaluate_live_session.py \
 
 ```bash
 # Strict validation (fail on any issues)
-python scripts/evaluate_live_session.py \
+python3 scripts/evaluate_live_session.py \
   --session-dir ~/live_sessions/2025-01-15 \
   --strict
 

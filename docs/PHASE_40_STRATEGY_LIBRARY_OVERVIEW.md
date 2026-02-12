@@ -113,6 +113,27 @@ filtered_signals = vol_filter.apply_to_signals(df, raw_signals)
 
 ---
 
+### 2b. Vol Regime Wrapper (universal)
+
+**Zweck:** Beliebige Strategie nach Regime-Labels filtern (nur in erlaubten Regimes Signale/Positionen durchlassen). Für Backtest und Sweeps.
+
+**Verwendung im Code:**
+
+```python
+import pandas as pd
+from src.strategies.wrappers.vol_regime_wrapper import VolRegimeWrapper
+from src.strategies.ma_crossover import MACrossoverStrategy
+
+base = MACrossoverStrategy(fast=10, slow=20)
+regime_labels = pd.Series(["low_vol", "high_vol", "low_vol"], index=df.index)  # an data index
+wrapper = VolRegimeWrapper(
+    base, regime_labels, allowed_regimes={"low_vol"}, mode="signals", allow_unknown=False
+)
+signals = wrapper.generate_signals(df)
+```
+
+---
+
 ### 3. Composite Strategy (`src/strategies/composite.py`)
 
 **Zweck:** Kombiniert mehrere Strategien zu einem Portfolio.
@@ -219,16 +240,16 @@ Das Demo-Script zeigt alle neuen Strategien in Aktion:
 
 ```bash
 # Alle Strategien testen
-python scripts/demo_phase40_portfolio_backtest.py
+python3 scripts/demo_phase40_portfolio_backtest.py
 
 # Einzelne Strategie
-python scripts/demo_phase40_portfolio_backtest.py --strategy breakout
+python3 scripts/demo_phase40_portfolio_backtest.py --strategy breakout
 
 # Mit Custom-Config
-python scripts/demo_phase40_portfolio_backtest.py --config config/config.toml
+python3 scripts/demo_phase40_portfolio_backtest.py --config config/config.toml
 
 # Report generieren
-python scripts/demo_phase40_portfolio_backtest.py --report reports/my_report.md
+python3 scripts/demo_phase40_portfolio_backtest.py --report reports/my_report.md
 ```
 
 **Optionen:**
@@ -271,12 +292,12 @@ Unit-Tests für alle neuen Komponenten:
 
 ```bash
 # Alle Phase-40-Tests
-pytest tests/test_strategy_breakout.py -v
-pytest tests/test_strategy_vol_regime_filter.py -v
-pytest tests/test_strategy_composite.py -v
+python3 -m pytest tests/test_strategy_breakout.py -v
+python3 -m pytest tests/test_strategy_vol_regime_filter.py -v
+python3 -m pytest tests/test_strategy_composite.py -v
 
 # Alle Strategy-Tests
-pytest tests/test_strategy*.py -v
+python3 -m pytest tests/test_strategy*.py -v
 ```
 
 ---
@@ -352,7 +373,7 @@ strategy = BreakoutStrategy(
 Ein umfassender Sanity-Check über Strategie-, Regime- und Experiment-Tests wurde ausgeführt:
 
 ```bash
-pytest tests/test_strategy*py tests/test_regime*py tests/test_experiments*py -q
+python3 -m pytest tests/test_strategy*py tests/test_regime*py tests/test_experiments*py -q
 ```
 
 Ergebnis:

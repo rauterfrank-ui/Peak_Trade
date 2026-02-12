@@ -117,8 +117,8 @@ git status -sb
 git rev-parse HEAD
 
 # Optional: run targeted tests relevant to failure (snapshot)
-# pytest -q tests/live/orchestrator -q
-# pytest -q tests/live/reconcile -q
+# python3 -m pytest tests/live/orchestrator -q
+# python3 -m pytest tests/live/reconcile -q
 
 # Docs gates (wenn docs betroffen)
 ./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main

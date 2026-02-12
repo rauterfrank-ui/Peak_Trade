@@ -12,8 +12,8 @@
 
 | Command | Success | Failure | Notes |
 |---------|---------|---------|-------|
-| `pytest tests&#47;risk&#47;validation&#47;test_report_compare.py` | 0 | ≠0 | 12 tests must pass |
-| `pytest tests&#47;risk&#47;validation&#47;test_report_index.py` | 0 | ≠0 | 10 tests must pass |
+| `python3 -m pytest tests/risk/validation/test_report_compare.py` | 0 | ≠0 | 12 tests must pass |
+| `python3 -m pytest tests/risk/validation/test_report_index.py` | 0 | ≠0 | 10 tests must pass |
 | `python3 scripts&#47;risk&#47;var_suite_compare_runs.py ...` | 0 | ≠0 | Script execution (warns if regressions found) |
 | `python3 scripts&#47;risk&#47;var_suite_build_index.py ...` | 0 | ≠0 | Script execution |
 | Verify compare outputs exist | 0 | 1 | Check for `compare.{json,md,html}` |
@@ -91,7 +91,7 @@ Gate **FAILS** when:
 ### Scenario 1: Test Failures
 - ❌ Any test in `test_report_compare.py` fails
 - ❌ Any test in `test_report_index.py` fails
-- **Exit Code:** ≠0 from pytest
+- **Exit Code:** ≠0 from `python3 -m pytest`
 - **CI Status:** ❌ Failed
 
 ### Scenario 2: Script Errors

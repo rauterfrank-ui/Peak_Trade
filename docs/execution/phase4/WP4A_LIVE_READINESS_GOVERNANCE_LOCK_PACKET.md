@@ -174,7 +174,7 @@ Jedes Gate hat:
 
 **Evidence:**
 - Risk Config Files (`config&#47;risk&#47;*.toml`)
-- Kill-Switch Test Log (`pytest tests&#47;risk_layer&#47;kill_switch&#47; -v`)
+- Kill-Switch Test Log (`python3 -m pytest tests&#47;risk_layer&#47;kill_switch&#47; -v`)
 - Live Risk Limits Documentation (`docs/LIVE_RISK_LIMITS.md`)
 
 **Sign-off:**
@@ -269,7 +269,7 @@ Jedes Gate hat:
 
 **Evidence:**
 - Market-Data Quality Report (`"scripts\&#47;data\&#47;quality_check.py" (future; placeholder target — not in repo yet)`)
-- Reconciliation Test Log (`pytest tests&#47;execution&#47;test_reconciliation.py`)
+- Reconciliation Test Log (`python3 -m pytest tests&#47;execution&#47;test_reconciliation.py`)
 - Recon-Diffs Runbook Walkthrough (dokumentierter Test)
 
 **Sign-off:**
@@ -554,7 +554,7 @@ make test-policy-ci > reports/ci_snapshot_$(date +%Y%m%d).log
 git show HEAD:config/risk/ > reports/risk_config_snapshot_$(date +%Y%m%d).txt
 
 # Test-Results
-pytest tests/risk/ tests/execution/ --tb=short > reports/test_results_$(date +%Y%m%d).log
+python3 -m pytest tests/risk/ tests/execution/ --tb=short > reports/test_results_$(date +%Y%m%d).log
 ```
 
 ### 11.3 Gate-Checks
@@ -564,13 +564,13 @@ pytest tests/risk/ tests/execution/ --tb=short > reports/test_results_$(date +%Y
 make test-policy-ci
 
 # G1: Risk-Tests
-pytest tests/risk_layer/kill_switch/ -v
+python3 -m pytest tests/risk_layer/kill_switch/ -v
 
 # G2: Execution-Tests
-pytest tests/execution/ -v
+python3 -m pytest tests/execution/ -v
 
 # G5: Recon-Tests
-pytest tests/execution/test_reconciliation.py -v
+python3 -m pytest tests/execution/test_reconciliation.py -v
 
 # G6: Policy-Check
 rg "execution_mode" config/ -A 2
@@ -581,10 +581,10 @@ rg "enable_live_trading.*true|live_mode.*true" docs/ && echo "FAIL" || echo "PAS
 
 ```bash
 # Live-Track Report (read-only)
-python scripts/reporting/render_live_track_report.py --session <session_id>
+python3 scripts/reporting/render_live_track_report.py --session <session_id>
 
 # Recon-Diffs Report
-python scripts/execution/report_recon_diffs.py --date <YYYY-MM-DD>
+python3 scripts/execution/report_recon_diffs.py --date <YYYY-MM-DD>
 
 # Telemetry Snapshot
 tail -n 100 logs/telemetry_health_snapshots.jsonl

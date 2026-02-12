@@ -156,7 +156,7 @@
 
 2. **Run Test Script:** ⏱️ 5 minutes
    ```bash
-   python scripts/live/test_bounded_live_limits.py
+   python3 scripts/live/test_bounded_live_limits.py
    ```
 
 3. **Conduct First Kill Switch Drill:** ⏱️ 30-60 minutes

@@ -215,7 +215,7 @@ Confidence < 0.75:
 
 ```bash
 # Script anpassen für Varianz:
-python scripts/generate_demo_patches_for_promotion.py
+python3 scripts/generate_demo_patches_for_promotion.py
 ```
 
 **Variationen:**

@@ -1715,7 +1715,7 @@ if not all(checks.values()):
 ### 4. Demo ausführen
 
 ```bash
-python scripts/risk/demo_component_var.py
+python3 scripts/risk/demo_component_var.py
 ```
 ```
 
@@ -2009,12 +2009,12 @@ cd ~/Peak_Trade
 git checkout -b feature/component-var
 
 # Phase 0: Setup
-python tests/risk/fixtures/generate_sample_returns.py
+python3 tests/risk/fixtures/generate_sample_returns.py
 cat `config&sol;risk.toml (planned)`  # Review config
 
 # Phase 1: Covariance
 # Implementiere src/risk/covariance.py
-pytest tests/risk/test_covariance.py -v
+python3 -m pytest tests/risk/test_covariance.py -v
 ```
 
 ### Short-term (Woche 2-3)

@@ -501,7 +501,7 @@ __all__ = [
 ### 7.1 Unit Tests
 - Jeder Agent implementiert Tests für seine Module
 - Naming Convention: `tests&#47;risk&#47;test_<module>.py`
-- Alle Tests müssen `pytest` konform sein
+- Alle Tests müssen `python3 -m pytest` konform sein
 
 ### 7.2 Integration Tests
 - Agent A6 implementiert End-to-End-Tests

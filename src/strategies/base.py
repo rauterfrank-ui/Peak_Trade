@@ -87,6 +87,10 @@ class BaseStrategy(ABC):
     ) -> None:
         self.config: Dict[str, Any] = config or {}
         self.meta: StrategyMetadata = metadata or StrategyMetadata(name=self.__class__.__name__)
+        # Internal: Track whether prepare() was already run for a given DataFrame object.
+        # We deliberately key by object identity (id(data)) to keep this lightweight and
+        # avoid expensive hashing of large DataFrames.
+        self._prepared_data_id: Optional[int] = None
 
     @property
     def key(self) -> str:
@@ -141,6 +145,34 @@ class BaseStrategy(ABC):
             data: OHLCV-DataFrame
         """
         return
+
+    def prepare_once(self, data: pd.DataFrame) -> None:
+        """
+        Führt `prepare()` höchstens einmal pro DataFrame-Objekt aus.
+
+        Motivation:
+        - `prepare()` ist für teure Vorberechnungen gedacht (Caching von Indikatoren, etc.).
+        - Viele Call-Sites generieren Signale genau einmal für einen kompletten DataFrame.
+          In solchen Flows soll `prepare()` genau einmal laufen, nicht mehrfach.
+
+        Hinweis:
+        - Der Cache-Key basiert bewusst auf *Objektidentität* (`id(data)`), nicht auf Inhalt/Fingerprint.
+        - Konsequenz: `df.copy()`/ein neues Objekt triggert `prepare()` erneut (gewollt).
+        """
+        data_id = id(data)
+        if self._prepared_data_id == data_id:
+            return
+        self.prepare(data)
+        self._prepared_data_id = data_id
+
+    def run(self, data: pd.DataFrame) -> pd.Series:
+        """
+        Empfohlener Entry-Point für Strategie-Ausführung:
+        - ruft `prepare_once(data)` auf
+        - ruft danach `generate_signals(data)` auf
+        """
+        self.prepare_once(data)
+        return self.generate_signals(data)
 
     def validate(self) -> None:
         """

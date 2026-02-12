@@ -84,7 +84,7 @@ git diff
 ./scripts/ops/verify_docs_reference_targets_trend.sh --changed --base origin/main
 
 # Merge log hygiene (snapshot-only)
-python scripts/ops/check_merge_log_hygiene.py
+python3 scripts/ops/check_merge_log_hygiene.py
 ```
 
 ---

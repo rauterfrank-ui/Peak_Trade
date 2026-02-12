@@ -37,7 +37,7 @@ uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
 
 If `uvicorn` is not on your PATH, start via `uv` (same stack, no new services):
 ```bash
-uv run uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
+python3 -m uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
 ```
 
 Open the dashboard page in your browser:

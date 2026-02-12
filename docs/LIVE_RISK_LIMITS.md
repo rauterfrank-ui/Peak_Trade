@@ -5,7 +5,7 @@ Es stellt sowohl eine Python-API als auch CLI-Tools zur Verfügung, um Orders vo
 
 ---
 
-## 1. Konfiguration (`config.toml`)
+## 1. Konfiguration (`config/config.toml`)
 
 Die Live-Risk-Limits werden im Block `[live_risk]` der Projektkonfiguration gepflegt:
 
@@ -46,7 +46,7 @@ use_experiments_for_daily_pnl = true
 
 ### 2.1 `LiveRiskConfig`
 
-Dataclass, die die Konfiguration aus `PeakConfig` / `config.toml` repräsentiert:
+Dataclass, die die Konfiguration aus `PeakConfig` / `config/config.toml` repräsentiert:
 
 * `max_daily_loss_abs: float`
 * `max_daily_loss_pct: float`
@@ -139,13 +139,13 @@ Beispielaufrufe:
 
 ```bash
 # Standard: Risk-Check mit Warnung bei Verletzung
-python scripts/preview_live_orders.py --signals reports/forward/..._signals.csv
+python3 scripts/preview_live_orders.py --signals reports/forward/..._signals.csv
 
 # Strikte Durchsetzung – bricht bei Verletzung sofort ab
-python scripts/preview_live_orders.py --signals reports/forward/..._signals.csv --enforce-live-risk
+python3 scripts/preview_live_orders.py --signals reports/forward/..._signals.csv --enforce-live-risk
 
 # Risk-Check bewusst deaktivieren
-python scripts/preview_live_orders.py --signals reports/forward/..._signals.csv --skip-live-risk
+python3 scripts/preview_live_orders.py --signals reports/forward/..._signals.csv --skip-live-risk
 ```
 
 ---
@@ -169,7 +169,7 @@ Verhalten:
 Beispiel:
 
 ```bash
-python scripts/paper_trade_from_orders.py \
+python3 scripts/paper_trade_from_orders.py \
   --orders reports/live/preview_..._orders.csv \
   --start-cash 10000 \
   --enforce-live-risk
@@ -184,7 +184,7 @@ Eigenständiges Tool, um die Live-Risk-Limits und aktuellen Metriken zu prüfen,
 
 Features:
 
-* Lädt `config.toml` und erstellt `LiveRiskLimits` via `from_config()`.
+* Lädt `config/config.toml` und erstellt `LiveRiskLimits` via `from_config()`.
 * Führt einen Risk-Check basierend auf aktuellem Status (PnL, Exposure, Positions etc.) durch.
 * Schreibt einen Eintrag in die Registry mit `run_type = "live_risk_check"`.
 * Gibt Metriken und eventuelle Verletzungen im CLI-Output aus.
@@ -192,7 +192,7 @@ Features:
 Beispiel:
 
 ```bash
-python scripts/check_live_risk_limits.py --orders reports/live/preview_..._orders.csv
+python3 scripts/check_live_risk_limits.py --orders reports/live/preview_..._orders.csv
 ```
 
 Bekannter Hinweis:
@@ -210,7 +210,7 @@ Folgende Aspekte werden in der Registry festgehalten:
 
   * `run_type = "live_risk_check"`
   * Relevante Metriken (z. B. `daily_pnl`, `total_exposure_notional`, `max_symbol_exposure_notional`, `open_positions`, ...)
-  * Ergebnis (`allowed = true/false`, Anzahl und Art der Verletzungen)
+  * Ergebnis (`allowed = true&#47;false`, Anzahl und Art der Verletzungen)
 
 * Bei Risk-Checks, die innerhalb anderer Skripte stattfinden, können ebenfalls Metriken und Status optional geloggt werden, um spätere Analysen und Monitoring zu ermöglichen.
 
@@ -221,7 +221,7 @@ Folgende Aspekte werden in der Registry festgehalten:
 ### 6.1 Schnellcheck der aktuellen Risikosituation
 
 ```bash
-python scripts/check_live_risk_limits.py --orders reports/live/preview_..._orders.csv
+python3 scripts/check_live_risk_limits.py --orders reports/live/preview_..._orders.csv
 ```
 
 Ergebnis:
@@ -234,7 +234,7 @@ Ergebnis:
 ### 6.2 Orders prüfen, ohne sie auszuführen (Preview)
 
 ```bash
-python scripts/preview_live_orders.py \
+python3 scripts/preview_live_orders.py \
   --signals reports/forward/..._signals.csv \
   --enforce-live-risk
 ```
@@ -253,7 +253,7 @@ ValueError: Live-Risk-Limits verletzt (preview_live_orders) und --enforce-live-r
 ### 6.3 Paper-Trade mit vorgeschaltetem Risk-Check
 
 ```bash
-python scripts/paper_trade_from_orders.py \
+python3 scripts/paper_trade_from_orders.py \
   --orders reports/live/preview_..._orders.csv \
   --start-cash 10000 \
   --enforce-live-risk

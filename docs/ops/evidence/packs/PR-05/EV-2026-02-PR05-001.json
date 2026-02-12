@@ -1,0 +1,23 @@
+{
+  "evidence_id": "EV-2026-02-PR05-001",
+  "pr_id": "PR-05",
+  "component": "observability_ports",
+  "claim": "metricsd vs session cannot bind the same metrics port; startup fails fast with clear error; port is standardized via PEAK_TRADE_METRICSD_PORT.",
+  "level": "E1",
+  "status": "enforced",
+  "artifacts": [
+    { "type": "code", "path": "src/ops/net/ports.py" },
+    { "type": "code", "path": "src/obs/metrics_config.py" },
+    { "type": "test", "path": "tests/ops/test_ports.py::test_ensure_tcp_port_free_raises_when_bound" }
+  ],
+  "how_to_verify": {
+    "commands": [
+      "python3 -m pytest -q tests/ops/test_ports.py"
+    ],
+    "expected": [
+      "exit_code=0",
+      "PASSED"
+    ]
+  },
+  "notes": "Fail-fast prevents silent port collisions; env var standardizes metrics port contract."
+}

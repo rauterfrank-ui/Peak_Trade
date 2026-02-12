@@ -179,6 +179,12 @@ Examples:
         "--no-report", action="store_true", help="If set, no report files will be written"
     )
 
+    parser.add_argument(
+        "--no-plots",
+        action="store_true",
+        help="Disable plot generation (no PNG chart artifacts)",
+    )
+
     return parser.parse_args()
 
 
@@ -318,12 +324,15 @@ def main():
         base_name = args.run_name or "run"
         run_name = f"{strategy_key}_{base_name}"
 
+        if args.no_plots:
+            print("ℹ️  Plots deaktiviert (--no-plots)")
+
         print(f"\n💾 Speichere Reports...")
         save_full_report(
             result=result,
             output_dir="reports",
             run_name=run_name,
-            save_plots_flag=True,
+            save_plots_flag=not args.no_plots,
             save_html_flag=True,
         )
         print(f"✅ Reports gespeichert unter: reports/{run_name}_* [csv/json/png/html]")

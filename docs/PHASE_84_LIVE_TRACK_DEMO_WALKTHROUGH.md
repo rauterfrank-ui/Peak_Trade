@@ -49,7 +49,7 @@ Nach Durcharbeiten dieses Walkthroughs kann ein Operator:
   ```
 - [ ] Test-Suite zuletzt grün (Kurzcheck):
   ```bash
-  pytest -q --tb=no
+  python3 -m pytest -q --tb=no
   ```
   (Details in `docs/PEAK_TRADE_STATUS_OVERVIEW.md`)
 - [ ] Abhängigkeiten aktuell:
@@ -139,7 +139,7 @@ curl http://127.0.0.1:8000/api/health
 ### 4.1 Verfügbare Strategien prüfen (optional)
 
 ```bash
-python scripts/run_execution_session.py --list-strategies
+python3 scripts/run_execution_session.py --list-strategies
 ```
 
 ### 4.2 Shadow-Session starten
@@ -151,7 +151,7 @@ cd ~/Peak_Trade
 source .venv/bin/activate
 
 # Shadow-Session mit Standard-Strategie (ma_crossover)
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --strategy ma_crossover \
     --symbol BTC/EUR \
     --steps 10
@@ -162,14 +162,14 @@ python scripts/run_execution_session.py \
 | Parameter | Bedeutung |
 |-----------|-----------|
 | `--strategy ma_crossover` | Verwendet die MA-Crossover-Strategie |
-| `--symbol BTC/EUR` | Handelt BTC gegen EUR |
+| `--symbol BTC&#47;EUR` | Handelt BTC gegen EUR |
 | `--steps 10` | Führt 10 Bars/Schritte aus (kurze Demo) |
 
 ### 4.3 Alternativen für die Demo
 
 **Längere Session (30 Minuten):**
 ```bash
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --strategy rsi_reversion \
     --symbol ETH/EUR \
     --duration 30
@@ -177,7 +177,7 @@ python scripts/run_execution_session.py \
 
 **Testnet-Mode (validate_only):**
 ```bash
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --mode testnet \
     --strategy ma_crossover \
     --steps 10
@@ -185,7 +185,7 @@ python scripts/run_execution_session.py \
 
 **Dry-Run (nur Config validieren):**
 ```bash
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --strategy ma_crossover \
     --dry-run
 ```
@@ -221,7 +221,7 @@ Nach Abschluss der Session wurde ein Eintrag in der Live-Session-Registry erstel
 
 ```bash
 # Summary der letzten Shadow-Sessions
-python scripts/report_live_sessions.py \
+python3 scripts/report_live_sessions.py \
     --run-type live_session_shadow \
     --status completed \
     --limit 5 \
@@ -244,7 +244,7 @@ python scripts/report_live_sessions.py \
 
 ```bash
 # Detaillierter Markdown-Report
-python scripts/report_live_sessions.py \
+python3 scripts/report_live_sessions.py \
     --run-type live_session_shadow \
     --limit 1 \
     --output-format markdown \
@@ -414,7 +414,7 @@ Die **Snapshot-Kachel** (oberer Bereich des Live-Track Panels) zeigt die **letzt
 |---------|---------------|-----------|
 | **Mode-Badge** | `shadow` (purple) | Session-Typ |
 | **Status** | `Completed` (grün) | Erfolgreicher Abschluss |
-| **Environment** | z.B. `kraken_futures / BTC/EUR` | Exchange + Symbol |
+| **Environment** | z.B. `kraken_futures &#47; BTC&#47;EUR` | Exchange + Symbol |
 | **Realized PnL** | z.B. `+12.34` (grün) oder `-5.67` (rot) | PnL der Session |
 | **Max Drawdown** | z.B. `2.3%` | Maximaler Drawdown |
 | **Duration** | z.B. `5m 30s` | Berechnete Session-Dauer |
@@ -616,7 +616,7 @@ Hier ein typisches Beispiel einer erfolgreichen Demo:
 
 ```bash
 # Session gestartet mit:
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --strategy ma_crossover \
     --symbol BTC/EUR \
     --steps 10
@@ -714,13 +714,13 @@ Nach diesem Walkthrough kannst du:
 | Aufgabe | Kommando |
 |---------|----------|
 | Dashboard starten | `uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000` |
-| Health-Check | `curl http://127.0.0.1:8000/api/health` |
+| Health-Check | `curl http:&#47;&#47;127.0.0.1:8000&#47;api&#47;health` |
 | Shadow-Session | `python scripts/run_execution_session.py --strategy ma_crossover --steps 10` |
 | CLI-Report | `python scripts/report_live_sessions.py --summary-only --stdout` |
-| Sessions-API | `curl http://127.0.0.1:8000/api/live_sessions?limit=5 \| jq .` |
-| Gefilterte Sessions | `curl "http://127.0.0.1:8000/api/live_sessions?mode=shadow&status=completed"` |
-| Session-Detail-API | `curl http://127.0.0.1:8000/api/live_sessions/{session_id} \| jq .` |
-| Stats-API | `curl http://127.0.0.1:8000/api/live_sessions/stats \| jq .` |
+| Sessions-API | `curl http:&#47;&#47;127.0.0.1:8000&#47;api&#47;live_sessions?limit=5 \| jq .` |
+| Gefilterte Sessions | `curl "http:&#47;&#47;127.0.0.1:8000&#47;api&#47;live_sessions?mode=shadow&status=completed"` |
+| Session-Detail-API | `curl http:&#47;&#47;127.0.0.1:8000&#47;api&#47;live_sessions&#47;{session_id} \| jq .` |
+| Stats-API | `curl http:&#47;&#47;127.0.0.1:8000&#47;api&#47;live_sessions&#47;stats \| jq .` |
 
 ### 10.3 Wichtige URLs (Phase 85 erweitert)
 
@@ -780,17 +780,17 @@ uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
 ```bash
 # Terminal 2: Shadow-Session
 cd ~/Peak_Trade && source .venv/bin/activate
-python scripts/run_execution_session.py --strategy ma_crossover --symbol BTC/EUR --steps 10
+python3 scripts/run_execution_session.py --strategy ma_crossover --symbol BTC/EUR --steps 10
 ```
 
 ### Phase C: CLI-Report prüfen (2 Min)
 
 ```bash
 # Summary der letzten Sessions
-python scripts/report_live_sessions.py --summary-only --stdout
+python3 scripts/report_live_sessions.py --summary-only --stdout
 
 # Letzte Session im Detail
-python scripts/report_live_sessions.py --limit 1 --output-format markdown --stdout
+python3 scripts/report_live_sessions.py --limit 1 --output-format markdown --stdout
 ```
 
 ### Phase D: Web-Dashboard erkunden (3 Min)

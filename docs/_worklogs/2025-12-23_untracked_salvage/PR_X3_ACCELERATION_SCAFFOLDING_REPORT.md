@@ -265,7 +265,7 @@ Or use extras: pip install -e '.[acceleration_duckdb]'
 ### Test-Ergebnisse
 
 ```bash
-pytest tests/data/test_backend.py -v
+python3 -m pytest tests/data/test_backend.py -v
 # ============================== 15 passed, 7 skipped in 0.68s ==============================
 ```
 

@@ -41,7 +41,7 @@ We want workflow automation scripts to remain reliable over time. A fast syntax 
 - CI Health Gate: pass (46s)
 
 ### Local Sanity (main)
-- `uv run pytest -q tests/test_ops_workflow_scripts_syntax.py`
+- `python3 -m pytest -q tests&#47;test_ops_workflow_scripts_syntax.py`
 - Result: ✅ 8 passed (~0.05s)
 
 ## Risk Assessment

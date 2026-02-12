@@ -103,7 +103,7 @@ Implemented stable contracts and interfaces for the execution system, establishi
 
 ### Linter
 ```bash
-uv run ruff check src/execution/contracts.py \
+ruff check src/execution/contracts.py \
                    src/execution/risk_hook.py \
                    tests/execution/test_contracts_types.py \
                    tests/execution/test_contracts_risk_hook.py
@@ -113,16 +113,16 @@ uv run ruff check src/execution/contracts.py \
 
 ### Tests
 ```bash
-uv run pytest tests/execution/test_contracts_types.py \
-              tests/execution/test_contracts_risk_hook.py \
-              -v
+python3 -m pytest tests/execution/test_contracts_types.py \
+                 tests/execution/test_contracts_risk_hook.py \
+                 -v
 ```
 
 **Result:** ✅ 49 passed in 0.11s
 
 ### Evidence Generation
 ```bash
-PYTHONPATH=/Users/frnkhrz/Peak_Trade uv run python scripts/execution/generate_contracts_smoke.py
+PYTHONPATH="$PWD" python3 scripts/execution/generate_contracts_smoke.py
 ```
 
 **Result:** ✅ contracts_smoke.json generated in reports/execution/ (gitignored)

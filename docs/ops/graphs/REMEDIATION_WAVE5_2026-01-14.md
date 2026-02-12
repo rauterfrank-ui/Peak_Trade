@@ -209,13 +209,13 @@ bash scripts&#47;ops&#47;verify_docs_reference_targets.sh
 
 #### 2. Docs Token Policy Gate (Changed Files)
 ```bash
-uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
 # Expected: ✅ All checks passed!
 ```
 
 #### 3. Docs Token Policy Gate (Full Scan, CI-Parity)
 ```bash
-uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --all
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --all
 # Expected: ✅ All checks passed! (no new violations introduced)
 ```
 

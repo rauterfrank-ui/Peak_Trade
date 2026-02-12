@@ -194,7 +194,7 @@ UID: `peak-trade-watch-only-prom`
 
 ### 9.3 Grafana Dashboard
 
-- Grafana: `http://localhost:3000` (admin/admin)
+- Grafana: `http://localhost:3000` (Login: Credentials aus `.env` oder `GRAFANA_AUTH=user:pass`)
 - Prometheus Datasources und Dashboards werden im Mini-Compose **automatisch provisioniert** (siehe `docs&#47;webui&#47;observability&#47;grafana&#47;provisioning&#47;`).
 
 ---
@@ -242,7 +242,7 @@ UID: `peak-trade-watch-only-prom`
   - `/metrics`: 200 OK, liefert `python_*` + `peak_trade_http_*` (kein Fallback), wenn gestartet mit:
     - `PEAK_TRADE_PROMETHEUS_ENABLED=1`
     - `REQUIRE_PROMETHEUS_CLIENT=1`
-    - repo-`venv&#47;bin&#47;python`
+    - repo-`venv&#47;bin&#47;python3`
 
 ### 12.2 Prometheus (Docker, lokal)
 
@@ -264,5 +264,5 @@ UID: `peak-trade-watch-only-prom`
   - `database: ok`
   - `version: 12.3.1`
 - **Auth-Zustand (API)**:
-  - Standardmäßig setzen wir im Mini-Compose `GF_SECURITY_ADMIN_USER=admin` und `GF_SECURITY_ADMIN_PASSWORD=admin`.
-  - Damit funktionieren Grafana API Calls mit Basic Auth `admin:admin` (z.B. `GET &#47;api&#47;datasources`).
+  - Compose erwartet `GF_SECURITY_ADMIN_PASSWORD` (z.B. aus lokaler `.env`); User optional `GF_SECURITY_ADMIN_USER` (Default `admin`).
+  - Grafana API Calls nutzen Basic Auth aus `GRAFANA_AUTH` (user:pass) oder aus `.env` (z.B. `GET &#47;api&#47;datasources`).

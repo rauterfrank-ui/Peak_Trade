@@ -31,7 +31,7 @@ grep "37a51cb8a198a893109e9f12fd0f671bc6d2941a" docs/ops/PR_694_MERGE_LOG.md
 # Expected: Line 5 contains merge commit SHA
 
 # Gates
-uv run python scripts/ops/validate_docs_token_policy.py --changed  # PASS
+python3 scripts/ops/validate_docs_token_policy.py --changed  # PASS
 bash scripts/ops/verify_docs_reference_targets.sh --changed        # PASS
 ```
 

@@ -995,7 +995,7 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
         * `--stdout` (Report zusätzlich auf STDOUT ausgeben)
       * Typische Nutzung, z.B.:
         ```bash
-        python scripts/report_live_sessions.py \
+        python3 scripts/report_live_sessions.py \
           --run-type live_session_shadow \
           --status completed \
           --output-format markdown \

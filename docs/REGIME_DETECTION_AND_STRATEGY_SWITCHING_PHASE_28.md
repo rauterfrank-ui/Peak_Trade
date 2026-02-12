@@ -257,25 +257,25 @@ for i, row in df.iterrows():
 
 ```bash
 # Mit Regime-Layer aktiviert
-python scripts/demo_regime_switching.py --use-regime-layer
+python3 scripts/demo_regime_switching.py --use-regime-layer
 
 # Ohne Regime-Layer (klassischer Modus)
-python scripts/demo_regime_switching.py --no-regime-layer
+python3 scripts/demo_regime_switching.py --no-regime-layer
 
 # Mit mehr Bars
-python scripts/demo_regime_switching.py --use-regime-layer --bars 1000
+python3 scripts/demo_regime_switching.py --use-regime-layer --bars 1000
 ```
 
 ## Tests
 
 ```bash
 # Alle Regime-Tests ausführen
-pytest tests/test_regime*.py -v
+python3 -m pytest tests/test_regime*.py -v
 
 # Einzelne Test-Dateien
-pytest tests/test_regime_detection.py -v     # Detector-Tests
-pytest tests/test_strategy_switching.py -v   # Switching-Tests
-pytest tests/test_regime_integration.py -v   # Integration-Tests
+python3 -m pytest tests/test_regime_detection.py -v     # Detector-Tests
+python3 -m pytest tests/test_strategy_switching.py -v   # Switching-Tests
+python3 -m pytest tests/test_regime_integration.py -v   # Integration-Tests
 ```
 
 ## Abgrenzung

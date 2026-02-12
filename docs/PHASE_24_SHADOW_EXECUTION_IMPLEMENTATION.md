@@ -23,20 +23,20 @@
 
 ```bash
 # Einfachster Aufruf (defaults aus config.toml)
-python scripts/run_shadow_execution.py
+python3 scripts/run_shadow_execution.py
 
 # Mit Strategie und Tag
-python scripts/run_shadow_execution.py --strategy ma_crossover --tag shadow_test_v1
+python3 scripts/run_shadow_execution.py --strategy ma_crossover --tag shadow_test_v1
 
 # Mit CSV-Daten und Datumsbeschränkung
-python scripts/run_shadow_execution.py \
+python3 scripts/run_shadow_execution.py \
     --strategy rsi_strategy \
     --data-file data/btc_eur_1h.csv \
     --start 2023-01-01 \
     --end 2023-12-31
 
 # Mit Fee- und Slippage-Überschreibung
-python scripts/run_shadow_execution.py \
+python3 scripts/run_shadow_execution.py \
     --fee-rate 0.001 \
     --slippage-bps 10 \
     --verbose
@@ -67,7 +67,7 @@ python scripts/run_shadow_execution.py \
 ### Gesamtzahl Tests (Projekt)
 ```bash
 # Nur Shadow-Tests
-.venv/bin/pytest tests/test_shadow_execution.py -v
+python3 -m pytest tests/test_shadow_execution.py -v
 # 33 passed
 ```
 
@@ -97,7 +97,7 @@ python scripts/run_shadow_execution.py \
 
 ### Shadow-Mode ist ein Execution-Mode, kein Environment-Mode
 
-- `TradingEnvironment` bleibt bei `paper/testnet/live`
+- `TradingEnvironment` bleibt bei `paper&#47;testnet&#47;live`
 - Shadow-Mode ist orthogonal: Paper + Shadow = Paper-Backtest mit Shadow-Executor
 - Der ShadowOrderExecutor kann im Paper-Mode verwendet werden
 - Keine Vermischung mit `LiveOrderExecutor` oder echten Exchange-Clients

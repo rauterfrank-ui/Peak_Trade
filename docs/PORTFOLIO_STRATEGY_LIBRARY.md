@@ -66,7 +66,7 @@ Der **Portfolio-Strategy-Layer** ist ein modularer Gewichtungs-Layer für Multi-
 
 Verteilt Kapital gleichmäßig auf alle Symbole im Universe.
 
-**Formel:** `w_i = 1/n` für alle Symbole
+**Formel:** `w_i = 1&#47;n` für alle Symbole
 
 **Use Case:** Baseline, kein Vorwissen über optimale Gewichtung
 
@@ -99,7 +99,7 @@ strategy_name = "fixed_weights"
 
 Gewichtet Symbole invers zu ihrer Volatilität (Risk-Parity-Ansatz).
 
-**Formel:** `w_i ~ 1/vol_i`
+**Formel:** `w_i ~ 1&#47;vol_i`
 
 **Use Case:** Risikoausgleich, alle Assets tragen gleiches Risiko bei
 
@@ -213,13 +213,13 @@ print(f"Sharpe: {result.portfolio_stats['sharpe']:.2f}")
 
 ```bash
 # Equal-Weight (Default)
-python scripts/demo_portfolio_backtest.py
+python3 scripts/demo_portfolio_backtest.py
 
 # Vol-Target
-python scripts/demo_portfolio_backtest.py --strategy vol_target
+python3 scripts/demo_portfolio_backtest.py --strategy vol_target
 
 # Fixed-Weights mit höherem Kapital
-python scripts/demo_portfolio_backtest.py --strategy fixed_weights --initial-capital 50000
+python3 scripts/demo_portfolio_backtest.py --strategy fixed_weights --initial-capital 50000
 ```
 
 ## Ergebnis-Struktur

@@ -76,7 +76,7 @@ Peak_Trade requires a robust, deterministic execution pipeline to safely transit
 
 ### ✅ Tests
 ```bash
-$ uv run pytest tests/execution/test_orchestrator.py -v
+$ python3 -m pytest tests/execution/test_orchestrator.py -v
 ======================== 23 passed in 0.04s =========================
 ```
 
@@ -92,7 +92,7 @@ $ uv run pytest tests/execution/test_orchestrator.py -v
 
 ### ✅ Linter
 ```bash
-$ uv run ruff check src/execution/orchestrator.py tests/execution/test_orchestrator.py
+$ ruff check src/execution/orchestrator.py tests/execution/test_orchestrator.py
 All checks passed!
 ```
 
@@ -113,7 +113,7 @@ All checks passed!
 - Comprehensive test coverage (23/23 tests passed)
 - Safety-first design (live execution blocked by default)
 - Clear integration points for WP0B/WP0C/WP0D
-- All hard constraints met (no live enablement, WP0A scope only, ruff + pytest passed)
+- All hard constraints met (no live enablement, WP0A scope only, ruff + `python3 -m pytest` passed)
 
 **Mitigations:**
 - Live execution blocked at Stage 4 (Route Selection) with governance check

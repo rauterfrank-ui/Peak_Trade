@@ -95,13 +95,13 @@ Validiert alle Evidence Packs in einem Verzeichnis (default: `.artifacts&#47;evi
 
 ```bash
 # Validate all packs (strict mode)
-python scripts/validate_evidence_pack_ci.py --root .artifacts/evidence_packs
+python3 scripts/validate_evidence_pack_ci.py --root .artifacts/evidence_packs
 
 # Verbose output
-python scripts/validate_evidence_pack_ci.py --root .artifacts/evidence_packs --verbose
+python3 scripts/validate_evidence_pack_ci.py --root .artifacts/evidence_packs --verbose
 
 # Generate JSON report
-python scripts/validate_evidence_pack_ci.py \
+python3 scripts/validate_evidence_pack_ci.py \
   --root .artifacts/evidence_packs \
   --output validation_report.json
 ```
@@ -146,13 +146,13 @@ Erstellt einen minimalen Evidence Pack als Smoke Test.
 
 ```bash
 # Default: L0, REC
-python scripts/run_layer_smoke_with_evidence_pack.py
+python3 scripts/run_layer_smoke_with_evidence_pack.py
 
 # Specify layer and autonomy
-python scripts/run_layer_smoke_with_evidence_pack.py --layer L1 --autonomy PROP
+python3 scripts/run_layer_smoke_with_evidence_pack.py --layer L1 --autonomy PROP
 
 # Verbose output
-python scripts/run_layer_smoke_with_evidence_pack.py --verbose
+python3 scripts/run_layer_smoke_with_evidence_pack.py --verbose
 ```
 
 **Exit Codes:**
@@ -218,13 +218,13 @@ python scripts/run_layer_smoke_with_evidence_pack.py --verbose
 ### 1. Create Evidence Pack (Minimal)
 
 ```bash
-python scripts/run_layer_smoke_with_evidence_pack.py --verbose
+python3 scripts/run_layer_smoke_with_evidence_pack.py --verbose
 ```
 
 ### 2. Validate Evidence Packs
 
 ```bash
-python scripts/validate_evidence_pack_ci.py \
+python3 scripts/validate_evidence_pack_ci.py \
   --root .artifacts/evidence_packs \
   --verbose
 ```
@@ -233,10 +233,10 @@ python scripts/validate_evidence_pack_ci.py \
 
 ```bash
 # Run CI gate tests only
-python -m pytest -q tests/ai_orchestration/test_evidence_pack_ci_gate.py
+python3 -m pytest -q tests/ai_orchestration/test_evidence_pack_ci_gate.py
 
 # Run all Evidence Pack tests
-python -m pytest -q tests/ai_orchestration/test_evidence_pack*.py
+python3 -m pytest -q tests/ai_orchestration/test_evidence_pack*.py
 ```
 
 ---
@@ -272,7 +272,7 @@ python -m pytest -q tests/ai_orchestration/test_evidence_pack*.py
    - GitHub Actions → Workflow run → Artifacts → `evidence-pack-validation-report`
 3. Run validation locally to reproduce:
    ```bash
-   python scripts/validate_evidence_pack_ci.py \
+   python3 scripts/validate_evidence_pack_ci.py \
      --root .artifacts/evidence_packs \
      --verbose
    ```
@@ -478,7 +478,7 @@ pack_path = create_minimal_evidence_pack_for_run(
 **Run:**
 
 ```bash
-python -m pytest -q tests/ai_orchestration/test_evidence_pack_ci_gate.py
+python3 -m pytest -q tests/ai_orchestration/test_evidence_pack_ci_gate.py
 ```
 
 ### Integration Tests
@@ -486,13 +486,13 @@ python -m pytest -q tests/ai_orchestration/test_evidence_pack_ci_gate.py
 **Smoke Run (CI):**
 
 ```bash
-python scripts/run_layer_smoke_with_evidence_pack.py --verbose
+python3 scripts/run_layer_smoke_with_evidence_pack.py --verbose
 ```
 
 **CI Validation (Local):**
 
 ```bash
-python scripts/validate_evidence_pack_ci.py \
+python3 scripts/validate_evidence_pack_ci.py \
   --root .artifacts/evidence_packs \
   --verbose
 ```
@@ -572,8 +572,8 @@ Falls CI Gate Probleme verursacht:
 
 2. **Reproduce Locally:**
    ```bash
-   python scripts/run_layer_smoke_with_evidence_pack.py --verbose
-   python scripts/validate_evidence_pack_ci.py --root .artifacts/evidence_packs --verbose
+   python3 scripts/run_layer_smoke_with_evidence_pack.py --verbose
+   python3 scripts/validate_evidence_pack_ci.py --root .artifacts/evidence_packs --verbose
    ```
 
 3. **Fix Root Cause:**

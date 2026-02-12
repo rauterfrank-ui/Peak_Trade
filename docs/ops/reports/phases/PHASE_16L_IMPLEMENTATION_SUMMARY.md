@@ -84,8 +84,8 @@ Phase 16L wurde erfolgreich implementiert: Stage1 Monitoring (Daily Snapshot + W
 
 ```bash
 # Wie bisher - keine Änderungen nötig
-python scripts/obs/stage1_daily_snapshot.py
-python scripts/obs/stage1_trend_report.py
+python3 scripts/obs/stage1_daily_snapshot.py
+python3 scripts/obs/stage1_trend_report.py
 ```
 
 **Output:** `.&sol;reports&sol;obs&sol;stage1&sol;YYYY-MM-DD_snapshot.md` (planned) etc.
@@ -108,10 +108,10 @@ docker compose -f docker-compose.obs.yml run --rm peaktrade-ops stage1-trends --
 
 ```bash
 # Via ENV (funktioniert host + Docker)
-PEAK_REPORTS_DIR=/custom/path python scripts/obs/stage1_daily_snapshot.py
+PEAK_REPORTS_DIR=/custom/path python3 scripts/obs/stage1_daily_snapshot.py
 
 # Via CLI flag (höchste Priorität)
-python scripts/obs/stage1_daily_snapshot.py --reports-root /custom/path
+python3 scripts/obs/stage1_daily_snapshot.py --reports-root /custom/path
 
 # Docker mit custom mount
 docker compose -f docker-compose.obs.yml run --rm \
@@ -151,7 +151,7 @@ docker compose -f docker-compose.obs.yml run --rm \
 ### Import Tests
 
 ```bash
-python -c "from src.utils.report_paths import get_repo_root, get_reports_root, ensure_dir"
+python3 -c "from src.utils.report_paths import get_repo_root, get_reports_root, ensure_dir"
 ✅ report_paths imports successful
 Repo root: /Users/frnkhrz/Peak_Trade
 Reports root: /Users/frnkhrz/Peak_Trade/reports
@@ -160,17 +160,17 @@ Reports root: /Users/frnkhrz/Peak_Trade/reports
 ### CLI Flag Tests
 
 ```bash
-python scripts/obs/stage1_daily_snapshot.py --help | grep reports-root
+python3 scripts/obs/stage1_daily_snapshot.py --help | grep reports-root
 ✅ --reports-root Flag verfügbar
 
-python scripts/obs/stage1_trend_report.py --help | grep reports-root
+python3 scripts/obs/stage1_trend_report.py --help | grep reports-root
 ✅ --reports-root Flag verfügbar
 ```
 
 ### ENV Override Test
 
 ```bash
-PEAK_REPORTS_DIR=/tmp/custom_reports python -c "from src.utils.report_paths import get_reports_root; print(get_reports_root())"
+PEAK_REPORTS_DIR=/tmp/custom_reports python3 -c "from src.utils.report_paths import get_reports_root; print(get_reports_root())"
 ✅ Reports root with ENV: /tmp/custom_reports
 ```
 
@@ -250,7 +250,7 @@ PEAK_REPORTS_DIR=/tmp/custom_reports python -c "from src.utils.report_paths impo
 
 1. **Full Test Suite:**
    ```bash
-   pytest -v  # (sobald venv mit pytest ausgestattet)
+   python3 -m pytest -v  # (sobald venv mit pytest ausgestattet)
    ```
 
 2. **Docker Image Build & Test:**

@@ -48,12 +48,12 @@ Fokus:
 
 ## 3. Repo Structure
 
-### Generated artifacts: `reports/`
+### Generated artifacts: `reports&#47;`
 
-The `reports/` directory contains generated artifacts (HTML/PNG/JSON logs, validation outputs, etc.) and is **not tracked** in git.
+The `reports&#47;` directory contains generated artifacts (HTML/PNG/JSON logs, validation outputs, etc.) and is **not tracked** in git.
 
 - Rule: `/reports/` is ignored via `.gitignore`
-- Policy: Never commit anything under `reports/` (CI/guard + local checks enforce this)
+- Policy: Never commit anything under `reports&#47;` (CI/guard + local checks enforce this)
 - If you accidentally tracked files: `git rm -r --cached reports`
 
 ---
@@ -159,7 +159,7 @@ adjusted = risk_mgr.adjust_target_position(target_units=0.2, price=50000.0, equi
 
 ### 6.4 Experiments (`experiments.py`)
 
-Zentrales Tracking aller Runs in `reports/experiments/experiments.csv`.
+Zentrales Tracking aller Runs in `reports&#47;experiments&#47;experiments.csv`.
 
 **Run-Types:**
 - `backtest` – Einzel-Strategie-Backtest
@@ -234,7 +234,7 @@ Siehe: [BACKTEST_ENGINE.md](BACKTEST_ENGINE.md)
 - Ex-Post-Evaluation von Signalen
 
 **Workflow:**
-1. `generate_forward_signals.py` → erzeugt `reports/forward/*_signals.csv`
+1. `generate_forward_signals.py` → erzeugt `reports&#47;forward&#47;*_signals.csv`
 2. Signale beobachten (manuell oder automatisch)
 3. `evaluate_forward_signals.py` → berechnet Returns
 
@@ -352,19 +352,19 @@ write_markdown_report(summaries, Path("reports/strategy_summary.md"))
 
 ```bash
 # Strategie-Übersicht (Backtests)
-python scripts/analyze_experiments.py --mode summary --run-type backtest
+python3 scripts/analyze_experiments.py --mode summary --run-type backtest
 
 # Top 10 Backtests nach Sharpe
-python scripts/analyze_experiments.py --mode top-runs --metric sharpe --limit 10
+python3 scripts/analyze_experiments.py --mode top-runs --metric sharpe --limit 10
 
 # Portfolio-Runs analysieren
-python scripts/analyze_experiments.py --mode portfolios
+python3 scripts/analyze_experiments.py --mode portfolios
 
 # Strategien vergleichen
-python scripts/analyze_experiments.py --mode compare --strategies ma_crossover,rsi_reversion
+python3 scripts/analyze_experiments.py --mode compare --strategies ma_crossover,rsi_reversion
 
 # Markdown-Report schreiben
-python scripts/analyze_experiments.py --mode summary --write-report reports/summary.md
+python3 scripts/analyze_experiments.py --mode summary --write-report reports/summary.md
 ```
 
 ### 10.2 Leaderboard (`leaderboard.py`)

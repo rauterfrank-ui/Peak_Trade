@@ -52,18 +52,18 @@ scripts/
 
 ```bash
 # Aus gespeichertem Result
-python scripts/generate_backtest_report.py \
+python3 scripts/generate_backtest_report.py \
     --results-file results/btc_ma_crossover.parquet \
     --output reports/btc_ma_crossover.md
 
 # Mit Equity-Curve aus separater Datei
-python scripts/generate_backtest_report.py \
+python3 scripts/generate_backtest_report.py \
     --results-file results/stats.csv \
     --equity-file results/equity.parquet \
     --output reports/backtest_report.md
 
 # HTML-Output
-python scripts/generate_backtest_report.py \
+python3 scripts/generate_backtest_report.py \
     --results-file results/run.parquet \
     --output reports/report.html \
     --format html
@@ -112,19 +112,19 @@ Ein typischer Backtest-Report enthält:
 
 ```bash
 # Basic Report
-python scripts/generate_experiment_report.py \
+python3 scripts/generate_experiment_report.py \
     --input results/rsi_reversion_sweep.parquet \
     --output reports/rsi_reversion_sweep_report.md
 
 # Mit Sortierung und Top-N
-python scripts/generate_experiment_report.py \
+python3 scripts/generate_experiment_report.py \
     --input results/ma_sweep.csv \
     --output reports/ma_sweep_report.md \
     --sort-metric metric_sharpe \
     --top-n 30
 
 # Mit Heatmap-Visualisierung
-python scripts/generate_experiment_report.py \
+python3 scripts/generate_experiment_report.py \
     --input results/rsi_sweep.parquet \
     --output reports/rsi_sweep.md \
     --heatmap-params param_rsi_window param_lower_threshold
@@ -354,12 +354,12 @@ from src.reporting import (
 
 ```bash
 # Alle Reporting-Tests
-pytest tests/test_reporting_*.py -v
+python3 -m pytest tests/test_reporting_*.py -v
 
 # Einzelne Module
-pytest tests/test_reporting_base.py -v
-pytest tests/test_reporting_backtest_report.py -v
-pytest tests/test_reporting_experiment_report.py -v
+python3 -m pytest tests/test_reporting_base.py -v
+python3 -m pytest tests/test_reporting_backtest_report.py -v
+python3 -m pytest tests/test_reporting_experiment_report.py -v
 ```
 
 ---

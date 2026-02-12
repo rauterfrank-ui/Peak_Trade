@@ -12,7 +12,7 @@
 
 | Dokument | Pfad | Zweck |
 |---|---|---|
-| **Layer Map Matrix** ⚠️ | `docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md` | **AUTHORITATIVE:** Single source of truth für Layer→Model Assignments |
+| **Layer Map Matrix** ⚠️ | `docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md` | **AUTHORITATIVE:** Single source of truth für Layer→Model Assignments |
 | **Layer Map v1** | `docs/architecture/ai_autonomy_layer_map_v1.md` | Detailed Spec: 7 Layer (L0-L6), Modellzuweisung, SoD, Safety-First |
 | **Gap-Analyse** | `docs/architecture/ai_autonomy_layer_map_gap_analysis.md` | Gap-Analyse, Bestands-Assessment, 7-Phasen Roadmap |
 | **Integration Summary** | `docs/architecture/INTEGRATION_SUMMARY.md` | Dieses Dokument: Zusammenfassung + Next Steps |
@@ -153,10 +153,10 @@
 
 ```bash
 # 1. TOML Syntax Check (alle Capability Scopes + Model Registry)
-python -c "import tomli; [tomli.load(open(f, 'rb')) for f in ['config/model_registry.toml', 'config/capability_scopes/L0_ops_docs.toml', 'config/capability_scopes/L1_deep_research.toml', 'config/capability_scopes/L2_market_outlook.toml', 'config/capability_scopes/L4_governance_critic.toml']]" && echo "✅ TOML Syntax: PASS"
+python3 -c "import tomli; [tomli.load(open(f, 'rb')) for f in ['config/model_registry.toml', 'config/capability_scopes/L0_ops_docs.toml', 'config/capability_scopes/L1_deep_research.toml', 'config/capability_scopes/L2_market_outlook.toml', 'config/capability_scopes/L4_governance_critic.toml']]" && echo "✅ TOML Syntax: PASS"
 
 # 2. Model Registry: Check Layer Mapping Completeness
-python -c "
+python3 -c "
 import tomli
 reg = tomli.load(open('config/model_registry.toml', 'rb'))
 layers = ['L0', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6']
@@ -165,7 +165,7 @@ print('✅ Layer Mapping Complete' if not missing else f'❌ Missing: {missing}'
 "
 
 # 3. Capability Scope: Check required fields
-python -c "
+python3 -c "
 import tomli
 from pathlib import Path
 scopes = list(Path('config/capability_scopes').glob('*.toml'))

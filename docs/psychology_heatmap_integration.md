@@ -337,7 +337,7 @@ def calculate_custom_scores(events):
 ### Unit-Tests
 
 ```bash
-pytest tests/test_psychology_heatmap.py -v
+python3 -m pytest tests/test_psychology_heatmap.py -v
 ```
 
 Die Tests decken ab:
@@ -351,7 +351,7 @@ Die Tests decken ab:
 ### Beispiel-Script
 
 ```bash
-python scripts/example_psychology_heatmap_integration.py
+python3 scripts/example_psychology_heatmap_integration.py
 ```
 
 Das Script zeigt:

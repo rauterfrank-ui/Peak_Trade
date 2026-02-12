@@ -253,14 +253,14 @@ Diese Kommandos sind bewusst „konservativ“ formuliert; falls du `uv` nutzt, 
 git status
 git rev-parse HEAD
 git remote -v
-python --version
+python3 --version
 pip --version
 pip freeze | head
 ```
 
 ### Tests / Lint (wenn im Projekt vorhanden)
 ```bash
-pytest -q
+python3 -m pytest -q
 ruff check .
 # mypy .   # optional
 ```

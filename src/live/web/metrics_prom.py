@@ -34,7 +34,8 @@ def is_prometheus_available() -> bool:
 
 
 def _enabled() -> bool:
-    return os.getenv("PEAK_TRADE_PROMETHEUS_ENABLED", "0") == "1"
+    v = os.getenv("PEAK_TRADE_PROMETHEUS_ENABLED", "0").strip().lower()
+    return v in ("1", "true", "yes", "on")
 
 
 def _init_metrics() -> None:
@@ -98,14 +99,25 @@ def instrument_app(app: Any) -> None:
     Adds lightweight Prometheus instrumentation via middleware.
     No-ops if prometheus is unavailable or disabled.
     """
-    if not is_prometheus_available() or not _enabled():
-        logger.info("Prometheus metrics disabled (prometheus_client missing or flag off).")
+    if not is_prometheus_available():
+        logger.info("Prometheus metrics disabled (prometheus_client missing).")
+        return
+
+    if not _enabled():
+        logger.info(
+            "Prometheus metrics disabled (PEAK_TRADE_PROMETHEUS_ENABLED=%r).",
+            os.getenv("PEAK_TRADE_PROMETHEUS_ENABLED", "0"),
+        )
         return
 
     _init_metrics()
 
     @app.middleware("http")
     async def _prom_middleware(request, call_next):
+        # Avoid self-scrape noise: do not count /metrics in HTTP stats
+        if getattr(request, "url", None) and request.url.path == "/metrics":
+            return await call_next(request)
+
         # in-flight
         try:
             _HTTP_IN_FLIGHT.inc()  # type: ignore[union-attr]

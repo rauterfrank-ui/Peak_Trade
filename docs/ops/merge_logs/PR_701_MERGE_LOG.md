@@ -65,7 +65,7 @@
 ./scripts/ops/pt_docs_gates_snapshot.sh --all
 
 # Individual gates (if needed)
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed
 bash scripts/ops/verify_docs_reference_targets.sh --changed
 python3 scripts/ci/check_docs_diff_guard_section.py
 ```

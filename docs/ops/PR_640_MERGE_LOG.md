@@ -63,11 +63,11 @@ PR #640 wurde erfolgreich nach `main` gemerged. Alle CI-Checks sind grün; initi
 ## Operator How-To
 - Referenz-Ausführung (dry-run):
   ```bash
-  python scripts/aiops/run_layer_dry_run.py ...
+  python3 scripts/aiops/run_layer_dry_run.py ...
   ```
 - L2-Ausführung/Outlook:
   ```bash
-  python scripts/aiops/run_l2_market_outlook.py ...
+  python3 scripts/aiops/run_l2_market_outlook.py ...
   ```
 - Bei Lint-Problemen: ruff/format in einem Schritt laufen lassen (repo-standard).
 

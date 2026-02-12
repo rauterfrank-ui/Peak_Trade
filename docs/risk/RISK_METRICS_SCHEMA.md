@@ -238,7 +238,7 @@ Comprehensive tests in `tests&#47;risk_layer&#47;test_metrics.py`:
 
 Run tests:
 ```bash
-pytest -v tests/risk_layer/test_metrics.py
+python3 -m pytest -v tests/risk_layer/test_metrics.py
 ```
 
 ## Design Principles

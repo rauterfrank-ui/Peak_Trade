@@ -31,7 +31,12 @@ import pandas as pd
 import numpy as np
 
 from .base import Report, ReportSection, df_to_markdown, format_metric
-from .plots import save_heatmap, save_histogram, save_scatter_plot
+from .plots import (
+    save_heatmap,
+    save_histogram,
+    save_scatter_plot,
+    render_standard_2x2_heatmap_template,
+)
 
 
 # =============================================================================
@@ -322,6 +327,8 @@ def build_experiment_report(
     output_dir: Optional[Union[str, Path]] = None,
     metadata: Optional[Dict[str, Any]] = None,
     with_regime_heatmaps: bool = False,
+    quadrant_2x2_matrix: Optional[Tuple[Tuple[float, float], Tuple[float, float]]] = None,
+    quadrant_2x2_title: Optional[str] = None,
 ) -> Report:
     """
     Erstellt einen kompletten Experiment/Sweep-Report.
@@ -473,6 +480,20 @@ def build_experiment_report(
                 charts_content.append(f"### Parameter Heatmap\n\n![Heatmap]({rel_path})")
             except Exception:
                 pass  # Pivot nicht möglich
+
+    # Standard 2x2 Quadrant Heatmap Template (optional)
+    if quadrant_2x2_matrix is not None:
+        try:
+            quad_path = output_dir / "quadrant_2x2_heatmap.png"
+            render_standard_2x2_heatmap_template(
+                quadrant_2x2_matrix,
+                quad_path,
+                title=quadrant_2x2_title or "2x2 Quadrant Summary",
+            )
+            rel_path = os.path.relpath(quad_path, output_dir.parent)
+            charts_content.append(f"### Quadrant Summary\n\n![2x2 Quadrant]({rel_path})")
+        except Exception:
+            pass
 
     # Metrik-Verteilung
     if sort_metric in df.columns:
