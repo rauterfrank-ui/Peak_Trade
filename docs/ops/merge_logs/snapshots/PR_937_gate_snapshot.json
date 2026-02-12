@@ -1,0 +1,242 @@
+{
+  "collectedAtUtc": "2026-01-22T14:52:18Z",
+  "repo": "rauterfrank-ui/Peak_Trade",
+  "pr": {
+    "number": 937,
+    "state": "OPEN",
+    "title": "fix(ops): preserve exit_code=0 in compare consumer stdout",
+    "isDraft": false,
+    "baseRefName": "main",
+    "headRefName": "fix/compare-consumer-exit0",
+    "headRefOid": "5162ea9de238a08f95184b39534ec89362dc2a60",
+    "mergeable": "MERGEABLE",
+    "mergeStateStatus": "CLEAN",
+    "reviewDecision": null
+  },
+  "approvals": [
+    {
+      "login": "HrzFrnk",
+      "submittedAt": "2026-01-22T14:01:45Z",
+      "state": "APPROVED",
+      "commitOid": "5162ea9de238a08f95184b39534ec89362dc2a60"
+    }
+  ],
+  "statusCheckRollup": [
+    {
+      "name": "audit",
+      "workflowName": "Audit",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:51:10Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941110/job/61152069562"
+    },
+    {
+      "name": "dispatch-guard",
+      "workflowName": "CI / Workflow Dispatch Guard",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:49:53Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941134/job/61152069585"
+    },
+    {
+      "name": "changes",
+      "workflowName": "CI",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:49:51Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941125/job/61152069772"
+    },
+    {
+      "name": "Docs Diff Guard Policy Gate",
+      "workflowName": "Docs Diff Guard Policy Gate",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:49:50Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941083/job/61152069753"
+    },
+    {
+      "name": "docs-reference-targets-gate",
+      "workflowName": "Docs Reference Targets Gate",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:49:51Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941114/job/61152069525"
+    },
+    {
+      "name": "docs-token-policy-gate",
+      "workflowName": "Docs Token Policy Gate",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:49:53Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941106/job/61152069597"
+    },
+    {
+      "name": "changes",
+      "workflowName": "Evidence Pack Validation Gate",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:49:53Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941136/job/61152069768"
+    },
+    {
+      "name": "L4 Critic Replay Determinism",
+      "workflowName": "L4 Critic Replay Determinism",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:50:03Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941147/job/61152069791"
+    },
+    {
+      "name": "changes",
+      "workflowName": "L4 Critic Replay Determinism",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:50:00Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941143/job/61152081601"
+    },
+    {
+      "name": "lint",
+      "workflowName": "Lint",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:49:55Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941120/job/61152069449"
+    },
+    {
+      "name": "Lint Gate",
+      "workflowName": "Lint Gate (Always Run)",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:50:03Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941191/job/61152070024"
+    },
+    {
+      "name": "merge-logs-sanity",
+      "workflowName": "Merge Logs Sanity",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:49:53Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941116/job/61152069530"
+    },
+    {
+      "name": "PR Merge State Signal",
+      "workflowName": "PR Merge State Signal (Informational)",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:49:48Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941145/job/61152069789"
+    },
+    {
+      "name": "Policy Critic Gate",
+      "workflowName": "Policy Critic Gate (Always Run)",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:50:58Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941077/job/61152069550"
+    },
+    {
+      "name": "Guard tracked files in reports directories",
+      "workflowName": "Policy Guard - No Tracked Reports",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:49:52Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941095/job/61152069644"
+    },
+    {
+      "name": "required-checks-hygiene-gate",
+      "workflowName": "Required Checks Hygiene Gate",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:49:52Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941159/job/61152069513"
+    },
+    {
+      "name": "CI Health Gate (weekly_core)",
+      "workflowName": "Test Health Automation",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:51:28Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941118/job/61152069838"
+    },
+    {
+      "name": "Daily Quick Health Check",
+      "workflowName": "Test Health Automation",
+      "status": "COMPLETED",
+      "conclusion": "SKIPPED",
+      "completedAt": "2026-01-22T13:49:43Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941118/job/61152070279"
+    },
+    {
+      "name": "ci-required-contexts-contract",
+      "workflowName": "CI",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:49:52Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941125/job/61152069796"
+    },
+    {
+      "name": "evidence-pack-smoke-run",
+      "workflowName": "Evidence Pack Validation Gate",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:49:59Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941136/job/61152089568"
+    },
+    {
+      "name": "evidence-pack-validation-gate",
+      "workflowName": "Evidence Pack Validation Gate",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:50:05Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941136/job/61152101207"
+    },
+    {
+      "name": "L4 Critic Replay Determinism",
+      "workflowName": "L4 Critic Replay Determinism",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:50:15Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941143/job/61152109637"
+    },
+    {
+      "name": "Weekly Core Health Check",
+      "workflowName": "Test Health Automation",
+      "status": "COMPLETED",
+      "conclusion": "SKIPPED",
+      "completedAt": "2026-01-22T13:49:43Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941118/job/61152070299"
+    },
+    {
+      "name": "tests (3.9)",
+      "workflowName": "CI",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:53:58Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941125/job/61152084971"
+    },
+    {
+      "name": "tests (3.10)",
+      "workflowName": "CI",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:54:45Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941125/job/61152084979"
+    },
+    {
+      "name": "tests (3.11)",
+      "workflowName": "CI",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T13:55:20Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941125/job/61152084967"
+    },
+    {
+      "name": "strategy-smoke",
+      "workflowName": "CI",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-01-22T14:01:22Z",
+      "detailsUrl": "https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/21250941125/job/61153208956"
+    }
+  ]
+}
