@@ -54,7 +54,7 @@ Ziel: „Live ist sicher gated, execution ist korrekt, state ist reconcilebar.�
 **Artefakt-Targets (typisch)**
 - `src/live/safety.py`
 - `src/execution/pipeline.py`
-- Tests: `tests/live/test_gating_contract.py` (neu)
+- Tests: `tests&#47;live&#47;test_gating_contract.py` (neu)
 
 #### S1-R4: Retries + Idempotency (kritisch)
 **DoD**
@@ -68,7 +68,7 @@ Ziel: „Live ist sicher gated, execution ist korrekt, state ist reconcilebar.�
 **Artefakt-Targets**
 - `src/execution/retry_policy.py`
 - `src/execution/broker/fake_broker.py`
-- Tests: `tests/execution/test_idempotency_retry.py` (neu)
+- Tests: `tests&#47;execution&#47;test_idempotency_retry.py` (neu)
 
 #### S1-R5: Reconciliation (kritisch)
 **DoD**
@@ -82,7 +82,7 @@ Ziel: „Live ist sicher gated, execution ist korrekt, state ist reconcilebar.�
 **Artefakt-Targets**
 - `src/execution/reconciliation.py`
 - `src/ops/recon/reconcile.py`
-- Tests: `tests/execution/test_reconcile_drift.py` (neu)
+- Tests: `tests&#47;execution&#47;test_reconcile_drift.py` (neu)
 
 #### S1-R1: Confirmation token (Governance-Kern)
 **DoD**
@@ -97,7 +97,7 @@ Ziel: „Live ist sicher gated, execution ist korrekt, state ist reconcilebar.�
 - `src/core/environment.py`
 - `src/live/safety.py`
 - `src/live/drills.py`
-- Tests: `tests/live/test_confirm_token.py` (neu)
+- Tests: `tests&#47;live&#47;test_confirm_token.py` (neu)
 
 ---
 
@@ -117,7 +117,7 @@ Ziel: Kein Trading bei kaputten Daten + harte Verlustgrenzen.
 - `src/live/risk_limits.py`
 - `src/live/live_gates.py`
 - `src/backtest/stats.py`
-- Tests: `tests/live/test_maxdd_gate.py` (neu)
+- Tests: `tests&#47;live&#47;test_maxdd_gate.py` (neu)
 
 #### S2-DQ: Data Freshness / Gap Detection als Hard Gate (kritisch)
 **DoD**
@@ -132,8 +132,8 @@ Ziel: Kein Trading bei kaputten Daten + harte Verlustgrenzen.
 **Artefakt-Targets**
 - `src/data/shadow/live_quality_checks.py`
 - `src/data/feeds/live_feed.py`
-- Tests: `tests/data/test_freshness_gap_gate.py` (neu)
-- Docs: `docs/ops/runbooks/stale_data.md` (neu/kurz)
+- Tests: `tests&#47;data&#47;test_freshness_gap_gate.py` (neu)
+- Docs: `docs&#47;ops&#47;runbooks&#47;stale_data.md` (neu/kurz)
 
 ---
 
@@ -159,9 +159,9 @@ Leverage wird **elegant dynamisch** (vol-/stop-basiert) bestimmt, aber durch **M
 - Evidence: slice-evidence + 1-line summary
 
 **Artefakt-Targets**
-- `src/strategy/models/bull.py` (neu)
-- `src/strategy/models/bear.py` (neu)
-- Tests: `tests/strategy/test_specialists_contract.py` (neu)
+- `src&#47;strategy&#47;models&#47;bull.py` (neu)
+- `src&#47;strategy&#47;models&#47;bear.py` (neu)
+- Tests: `tests&#47;strategy&#47;test_specialists_contract.py` (neu)
 
 ### S3-S2: Switch-Gate (Hysterese + MinHold + Cooldown + Sideways-Band) (kritisch)
 **DoD**
@@ -178,8 +178,8 @@ Leverage wird **elegant dynamisch** (vol-/stop-basiert) bestimmt, aber durch **M
 - Evidence + 1-line summary
 
 **Artefakt-Targets**
-- `src/strategy/meta/switch_gate.py` (neu)
-- Tests: `tests/strategy/test_switch_gate_hysteresis.py` (neu)
+- `src&#47;strategy&#47;meta&#47;switch_gate.py` (neu)
+- Tests: `tests&#47;strategy&#47;test_switch_gate_hysteresis.py` (neu)
 
 ### S3-R1: Risk Sizing “Elegant Leverage” (Vol-/Stop-basiert, capped bei 50×) (kritisch)
 **Zielbild**
@@ -202,9 +202,9 @@ Leverage wird **elegant dynamisch** (vol-/stop-basiert) bestimmt, aber durch **M
 - Evidence + 1-line summary
 
 **Artefakt-Targets**
-- `src/risk/sizing/dynamic_leverage.py` (neu)
-- `src/risk/sizing/__init__.py` (export)
-- Tests: `tests/risk/test_dynamic_leverage_cap50.py` (neu)
+- `src&#47;risk&#47;sizing&#47;dynamic_leverage.py` (neu)
+- `src&#47;risk&#47;sizing&#47;__init__.py` (export)
+- Tests: `tests&#47;risk&#47;test_dynamic_leverage_cap50.py` (neu)
 
 ### S3-I: Integration-Policy “double_play” (Strategy→Risk→Execution) (kritisch)
 **DoD**
@@ -217,9 +217,9 @@ Leverage wird **elegant dynamisch** (vol-/stop-basiert) bestimmt, aber durch **M
 - Evidence + 1-line summary
 
 **Artefakt-Targets**
-- `src/strategy/policies/double_play.py` (neu)
-- Tests: `tests/integration/test_double_play_policy_smoke.py` (neu)
-- Docs: kurzer Abschnitt `docs/ops/runbooks/double_play.md` (neu/kurz, operator-first)
+- `src&#47;strategy&#47;policies&#47;double_play.py` (neu)
+- Tests: `tests&#47;integration&#47;test_double_play_policy_smoke.py` (neu)
+- Docs: kurzer Abschnitt `docs&#47;ops&#47;runbooks&#47;double_play.md` (neu/kurz, operator-first)
 
 ---
 
@@ -315,7 +315,7 @@ Wenn ihr das „Skeleton-Pn“ Pattern beibehalten wollt, dann:
 
 ## Cursor Multi-Agent Runbook — Offene Features in Peak_Trade (Einstieg → Endpunkt)
 
-**Quelle:** [docs/FEHLENDE_FEATURES_PEAK_TRADE.md](../../FEHLENDE_FEATURES_PEAK_TRADE.md) (Stand 2026-02-10, letzter Repo-Abgleich 2026-02-10)  
+**Quelle:** [docs/FEHLENDE_FEATURES_PEAK_TRADE.md](../FEHLENDE_FEATURES_PEAK_TRADE.md) (Stand 2026-02-10, letzter Repo-Abgleich 2026-02-10)  
 **Runbook-Version:** 2026-02-10T12:00:00+01:00 (Europe/Berlin)  
 **Ziel:** Für die **noch offenen** Punkte ein **logisches, sequentielles** Abarbeitungs-Runbook, das in **Cursor Multi-Agent Chats** (bash-only) ausführbar ist, mit klaren **Einstiegs-/Endpunkten**, Artefakt-Pfaden und Evidence.
 
@@ -384,7 +384,7 @@ git status -sb | tee "$MA_ROOT/STATUS.txt"
 
 ### 2) Offene Punkte → Logische Abarbeitungsreihenfolge
 
-Aus [docs/FEHLENDE_FEATURES_PEAK_TRADE.md](../../FEHLENDE_FEATURES_PEAK_TRADE.md) sind offen (Schwerpunkte):
+Aus [docs/FEHLENDE_FEATURES_PEAK_TRADE.md](../FEHLENDE_FEATURES_PEAK_TRADE.md) sind offen (Schwerpunkte):
 - Research/Strategy (5.1): Pipeline-CLI, Heatmap-Template, Vol-Regime Wrapper, Corr-Matrix, Rolling Stability, Sweep-Comparison, zusätzliche Metriken, Regime-adaptive Strategien, Nightly Sweeps, interaktive Dashboards, Feature-Importance Wrapper
 - Feature-Engine/Meta-Labeling: `src/features/` Placeholder, Triple-Barrier Labels / Feature Extraction TODO
 - Real-Time/Streaming, Live-Execution, Multi-Exchange, Web-Dashboard (Auth/WebSocket), Risk Auto-Liquidation, API-Doku, Skalierung, etc.
