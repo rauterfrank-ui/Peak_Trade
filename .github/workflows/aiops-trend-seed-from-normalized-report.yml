@@ -1,5 +1,8 @@
 name: AIOps - Trend Seed from Normalized Report
 
+env:
+  ARTIFACT_NAME: trend-seed-artifact
+
 # Phase 5A: Generate deterministic Trend Seeds from Phase 4E normalized validator reports
 # Trigger: workflow_run on Phase 4E workflow completion (success only, main branch only)
 # Outputs: trend_seed.normalized_report.json, trend_seed.run_manifest.json, trend_seed.normalized_report.md
@@ -117,7 +120,7 @@ jobs:
       - name: Upload Trend Seed artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: trend-seed-${{ github.event.workflow_run.id }}
+          name: ${{ env.ARTIFACT_NAME }}
           path: |
             .tmp/trend_seed/trend_seed.normalized_report.json
             .tmp/trend_seed/trend_seed.run_manifest.json
@@ -135,7 +138,7 @@ jobs:
           echo "| **Source Run ID** | ${{ github.event.workflow_run.id }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Commit SHA** | ${{ github.event.workflow_run.head_sha }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Branch** | ${{ github.event.workflow_run.head_branch }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Artifact** | trend-seed-${{ github.event.workflow_run.id }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Artifact** | ${{ env.ARTIFACT_NAME }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [ -f ".tmp/trend_seed/trend_seed.normalized_report.json" ]; then
