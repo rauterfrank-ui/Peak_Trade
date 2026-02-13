@@ -171,8 +171,10 @@ def main() -> int:
 
         # Write canonical JSON
         print(f"Writing canonical JSON: {args.output_json}")
+        out_path = Path(args.output_json)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
         canonical_json = to_canonical_json(ledger)
-        Path(args.output_json).write_text(canonical_json, encoding="utf-8")
+        out_path.write_text(canonical_json, encoding="utf-8")
         ledger_hash = compute_canonical_hash(ledger)
         print(f"✅ Wrote canonical JSON (hash: {ledger_hash[:16]}...)")
         print()
