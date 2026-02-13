@@ -74,6 +74,7 @@ Safety controls for Shadow → Mini-Live (ArmedGate, RiskGate, Reconciliation). 
 
 Runbooks for CI operations and general operational procedures:
 
+- [PR Ops v1 Runbook](../pr/pr_ops_v1_runbook.md) — PR watch, closeout, required-checks snapshot (generated via `p41 --with-pr-ops`)
 - [RUNBOOK_MCP_TOOLING.md](RUNBOOK_MCP_TOOLING.md) — MCP Tooling (Cursor): Playwright + Grafana (read-only), Secret-Handling, Smoke/Preflight
 - [RUNBOOK_AI_LIVE_OPS_LOCAL.md](RUNBOOK_AI_LIVE_OPS_LOCAL.md) — AI Live Ops Pack (local start/verify/troubleshoot; snapshot-only)
 - [RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md](RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md) — Execution Watch Demo-Stack (shadow_mvs + ai_live, STRICT NO-LIVE)
