@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import subprocess
+import sys
 import textwrap
 from pathlib import Path
 
@@ -17,7 +18,7 @@ def run(cmd: list[str]) -> subprocess.CompletedProcess[str]:
 def test_passes_on_repo_main_files() -> None:
     r = run(
         [
-            "python3",
+            sys.executable,
             "src/governance/validate_ai_matrix_vs_registry.py",
             "docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
             "config/model_registry.toml",
@@ -57,7 +58,7 @@ def test_fails_on_registry_reference_drift(tmp_path: Path) -> None:
 
     r = run(
         [
-            "python3",
+            sys.executable,
             "src/governance/validate_ai_matrix_vs_registry.py",
             str(matrix),
             str(reg),
@@ -100,7 +101,7 @@ def test_fails_on_duplicate_layer_rows(tmp_path: Path) -> None:
 
     r = run(
         [
-            "python3",
+            sys.executable,
             "src/governance/validate_ai_matrix_vs_registry.py",
             str(matrix),
             str(reg),
