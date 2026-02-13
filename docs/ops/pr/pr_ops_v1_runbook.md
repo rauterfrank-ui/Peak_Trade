@@ -23,6 +23,19 @@ This creates `scripts/ops/p44_pr_watch.sh`, `p44_oneshot_closeout.sh`, and `p44_
 
 ## Scripts
 
+### Single entrypoint (recommended)
+
+```bash
+# uses gh; optional TLS wrapper: alias gh='scripts/ops/gh_tls_wrap.sh'
+./scripts/ops/pr_ops_v1.sh <PR_NUM>
+```
+
+**Usage:**
+- snapshots view+checks
+- waits required checks
+- retriggers once only if "Expected/Waiting for status" appears
+- on merge: sync main + closeout evidence + tarball
+
 ### 1. PR Watch (`<pNN>_pr_watch.sh`)
 
 Polls PR state via `gh pr view` every 15s until MERGED (max ~1h). On MERGED, writes evidence to `out&#47;ops&#47;pr<N>_watch_<TS>&#47;`.
