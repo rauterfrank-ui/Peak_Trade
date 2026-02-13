@@ -106,6 +106,7 @@ def write_report_bundle_v1(
         if metrics is not None:
             _write_json_file(d / _METRICS_JSON, metrics)
 
+    # manifest.files excludes manifest.json (avoids fixed-point: manifest cannot hash itself)
     files: dict[str, ManifestFileEntryV1] = {}
     for name in (_REPORT_JSON, _METRICS_JSON):
         p = d / name
