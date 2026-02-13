@@ -7,6 +7,10 @@
 
 Standardized PR watch, closeout, and required-checks snapshot helpers. See [PR Ops v1 Runbook](pr/pr_ops_v1_runbook.md).
 
+### PR Ops v1 (canonical)
+- Entry-point: `scripts&#47;ops&#47;pr_ops_v1.sh <PR_NUM>`
+- Runbook: `docs&#47;ops&#47;pr&#47;pr_ops_v1_runbook.md`
+
 ## PR Inventory
 - See: scripts/ops/pr_inventory_full.sh
 - Keyword: pr_inventory. Use **label** (e.g. ops/inventory) for filtering.

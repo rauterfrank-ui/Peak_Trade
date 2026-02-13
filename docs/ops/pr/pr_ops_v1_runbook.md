@@ -19,7 +19,7 @@ TS="$(date -u +%Y%m%dT%H%M%SZ)"
 ./scripts/ops/p41_kickoff_scaffold_v1.sh p44 <topic> --ts "$TS" --with-pr-ops
 ```
 
-This creates `scripts/ops/p44_pr_watch.sh`, `p44_oneshot_closeout.sh`, and `p44_required_checks_snapshot.sh`.
+This creates `scripts&#47;ops&#47;p44_pr_watch.sh`, `p44_oneshot_closeout.sh`, and `p44_required_checks_snapshot.sh`.
 
 ## Scripts
 
@@ -78,9 +78,33 @@ Captures PR view, checks, and (best-effort) branch protection required contexts.
 ## Typical Flow
 
 1. Open PR, enable auto-merge
-2. Run `./scripts/ops/<pNN>_pr_watch.sh <PR_NUM> --bg` (optional)
-3. After merge: `./scripts/ops/<pNN>_oneshot_closeout.sh <PR_NUM>`
-4. For debugging checks: `./scripts/ops/<pNN>_required_checks_snapshot.sh <PR_NUM>`
+2. Run `.&#47;scripts&#47;ops&#47;<pNN>_pr_watch.sh <PR_NUM> --bg` (optional)
+3. After merge: `.&#47;scripts&#47;ops&#47;<pNN>_oneshot_closeout.sh <PR_NUM>`
+4. For debugging checks: `.&#47;scripts&#47;ops&#47;<pNN>_required_checks_snapshot.sh <PR_NUM>`
+
+## Canonical entrypoint (recommended)
+
+Use the single entrypoint:
+
+- `scripts&#47;ops&#47;pr_ops_v1.sh <PR_NUM>`
+
+It can:
+- snapshot PR view/checks
+- `--watch` required checks
+- (optional) one-time retrigger on "Expected — Waiting for status to be reported"
+- closeout after merge (main sync + evidence + bundle)
+
+## Legacy scripts (deprecated)
+
+The older per-PR scripts are kept for reference, but **new work should use `pr_ops_v1.sh`**:
+
+- `*_pr_watch.sh`
+- `*_oneshot_closeout.sh`
+- `*_required_checks_snapshot.sh`
+
+If you generated these from scaffolds, prefer switching to:
+
+- `scripts&#47;ops&#47;pr_ops_v1.sh <PR_NUM> [--watch] [--retrigger-on-waiting] [--closeout] [--bundle]`
 
 ## See Also
 
