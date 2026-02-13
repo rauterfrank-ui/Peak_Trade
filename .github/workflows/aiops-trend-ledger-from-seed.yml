@@ -69,6 +69,7 @@ jobs:
             echo "commit_sha=n/a"
           fi
           echo "source_run_id=${RUN_ID}"
+          export RUN_ID
           echo "RUN_ID=${RUN_ID}" >> "$GITHUB_ENV"
           curl -sSf -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" \
             "${{ github.api_url }}/repos/${{ github.repository }}/actions/runs/${RUN_ID}/artifacts" \
