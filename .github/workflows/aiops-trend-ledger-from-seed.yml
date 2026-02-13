@@ -13,6 +13,11 @@ on:
     types: [completed]
     branches: [main]
   workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Source workflow_run id to fetch artifacts from (optional; omit to skip)"
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -27,6 +32,12 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
 
     steps:
+      - name: Skip notice (workflow_dispatch without run_id)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.run_id == ''
+        run: |
+          echo "::notice::Skipped: workflow_dispatch without run_id. Provide run_id to fetch artifacts from a specific Trend Seed run."
+          echo "Job passes (no-op)."
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -41,18 +52,25 @@ jobs:
           enable-cache: true
 
       - name: Assert upstream artifact exists
-        if: github.event_name == 'workflow_run'
+        if: github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.run_id != '')
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           ARTIFACT_NAME: ${{ env.ARTIFACT_NAME }}
         run: |
           set -euo pipefail
-          echo "source_workflow=${{ github.event.workflow_run.name }}"
-          echo "source_run_id=${{ github.event.workflow_run.id }}"
-          echo "commit_sha=${{ github.event.workflow_run.head_sha }}"
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            RUN_ID="${{ github.event.workflow_run.id }}"
+            echo "source_workflow=${{ github.event.workflow_run.name }}"
+            echo "commit_sha=${{ github.event.workflow_run.head_sha }}"
+          else
+            RUN_ID="${{ github.event.inputs.run_id }}"
+            echo "source_workflow=manual (workflow_dispatch)"
+            echo "commit_sha=n/a"
+          fi
+          echo "source_run_id=${RUN_ID}"
           curl -sSf -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" \
-            "${{ github.api_url }}/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/artifacts" \
+            "${{ github.api_url }}/repos/${{ github.repository }}/actions/runs/${RUN_ID}/artifacts" \
             > artifacts.json
           echo "Artifacts:"
           python3 - <<'PY2'
@@ -73,16 +91,16 @@ jobs:
           PY3
 
       - name: Download Phase 5A trend seed artifact
-        if: github.event_name == 'workflow_run'
+        if: github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.run_id != '')
         uses: dawidd6/action-download-artifact@v6
         with:
           workflow: aiops-trend-seed-from-normalized-report.yml
-          run_id: ${{ github.event.workflow_run.id }}
+          run_id: ${{ github.event.workflow_run.id || github.event.inputs.run_id }}
           name: ${{ env.ARTIFACT_NAME }}
           path: .tmp/phase5a_artifacts
 
       - name: Verify artifact contents
-        if: github.event_name == 'workflow_run'
+        if: github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.run_id != '')
         run: |
           echo "=== Verifying Phase 5A artifact contents ==="
           ls -lh .tmp/phase5a_artifacts/
@@ -95,6 +113,7 @@ jobs:
           echo "✅ Artifact verified"
 
       - name: Generate Trend Ledger
+        if: github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.run_id != '')
         run: |
           echo "=== Generating Trend Ledger ==="
 
@@ -106,6 +125,7 @@ jobs:
             --run-manifest ".tmp/trend_ledger/manifest.json"
 
       - name: Verify Trend Ledger outputs
+        if: github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.run_id != '')
         run: |
           echo "=== Verifying Trend Ledger outputs ==="
           ls -lh .tmp/trend_ledger/
@@ -136,9 +156,10 @@ jobs:
           echo "✅ Trend Ledger outputs verified"
 
       - name: Upload Trend Ledger artifacts
+        if: github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.run_id != '')
         uses: actions/upload-artifact@v4
         with:
-          name: trend-ledger-${{ github.event.workflow_run.id }}
+          name: trend-ledger-${{ github.event.workflow_run.id || github.run_id }}
           path: |
             .tmp/trend_ledger/trend_ledger.json
             .tmp/trend_ledger/trend_ledger.md
@@ -152,11 +173,11 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
-          echo "| **Source Workflow** | ${{ github.event.workflow_run.name }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Source Run ID** | ${{ github.event.workflow_run.id }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Commit SHA** | ${{ github.event.workflow_run.head_sha }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Branch** | ${{ github.event.workflow_run.head_branch }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Artifact** | trend-ledger-${{ github.event.workflow_run.id }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Source Workflow** | ${{ github.event.workflow_run.name || 'manual (workflow_dispatch)' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Source Run ID** | ${{ github.event.workflow_run.id || github.event.inputs.run_id || github.run_id }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit SHA** | ${{ github.event.workflow_run.head_sha || github.sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Branch** | ${{ github.event.workflow_run.head_branch || github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Artifact** | trend-ledger-${{ github.event.workflow_run.id || github.run_id }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [ -f ".tmp/trend_ledger/trend_ledger.json" ]; then
