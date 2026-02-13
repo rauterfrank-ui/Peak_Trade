@@ -19,6 +19,7 @@ from io import StringIO
 
 import pytest
 
+pytest.importorskip("pandas")  # guard: src.execution.pipeline needs pandas
 pytestmark = pytest.mark.external_tools
 
 # Add scripts to path
@@ -580,9 +581,12 @@ def test_parse_args_combined_new_flags():
 
 
 def _recon_wrapper_env():
-    """Env for wrapper tests: use python3 so we don't depend on uv (which may crash locally)."""
+    """Env for wrapper tests: use same python as pytest so deps (pandas) are available."""
     env = os.environ.copy()
-    env["PT_RECON_PYTHON_RUNNER"] = "python3"
+    env["PT_RECON_PYTHON_RUNNER"] = sys.executable
+    repo_root = Path(__file__).parent.parent.parent
+    pp = env.get("PYTHONPATH", "")
+    env["PYTHONPATH"] = f"{repo_root}{os.pathsep}{pp}" if pp else str(repo_root)
     return env
 
 

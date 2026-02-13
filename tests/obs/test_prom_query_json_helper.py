@@ -1,8 +1,24 @@
 from __future__ import annotations
 
+import os
+
 import pytest
 
 pytestmark = pytest.mark.network
+
+# PT_PORT_BIND_GUARD: skip in sandbox unless explicitly enabled
+if os.environ.get("PEAKTRADE_ALLOW_PORT_BIND_TESTS", "0") != "1":
+    pytest.skip(
+        "port-bind tests disabled (set PEAKTRADE_ALLOW_PORT_BIND_TESTS=1 to enable)",
+        allow_module_level=True,
+    )
+try:
+    import socket as _pt_sock
+
+    with _pt_sock.socket() as _s:
+        _s.bind(("127.0.0.1", 0))
+except (PermissionError, OSError):
+    pytest.skip("port-bind not permitted in this environment (sandbox)", allow_module_level=True)
 
 import subprocess
 import threading
