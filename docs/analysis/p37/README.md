@@ -1,14 +1,30 @@
 # P37 — Bundle Index v1
 
-## Concept
-An **index.json** that lists multiple bundle artifacts (directory bundles or tarballs) with stable metadata:
-- kind: `dir_bundle` | `tarball`
-- relpath: relative path (preferred) or absolute path (allowed for local ops)
-- sha256 + bytes of the artifact container (dir manifest.json hash for dir bundle; tarball hash for tarball)
-- report schema version (from report.json)
-- optional tags: strategy_id, run_id, timeframe (free-form)
+## Goal
+Create a deterministic index over multiple **report bundles** produced by:
+- **P35**: directory bundle (contains `report.json` + `manifest.json` [+ `metrics_summary.json`])
+- **P36**: tarball bundle (a `.tgz` containing a P35-style bundle)
+
+## Supported inputs
+`index_bundles_v1(paths, base_dir=...)` accepts:
+- A directory that contains `manifest.json` and `report.json` (treated as `dir_bundle`)
+- A `.tgz` tarball (treated as `tarball`)
+
+## Entry fields
+- `kind`: `dir_bundle` | `tarball`
+- `relpath`: stable path used as identifier (relative to `base_dir` if provided, else the given path)
+- `sha256`, `bytes`: hash/size of:
+  - `dir_bundle`: **manifest.json file contents** (avoids hashing whole dir)
+  - `tarball`: tarball file contents
+- `report_schema_version`: read from validated `report.json` (schema v1 via P34/P33)
 
 ## Determinism
-- JSON UTF-8, sort_keys=true, indent=2, trailing newline
-- Entries sorted by `relpath`
-- No timestamps
+- Index JSON written UTF-8 with `sort_keys=true`, `indent=2`, trailing newline.
+- Entries are sorted by `relpath`.
+- No timestamps, no host-specific metadata.
+
+## Verify
+`verify_bundle_index_v1(index, base_dir=...)`:
+- validates version
+- ensures **unique** `relpath`
+- checks optional existence + sha/bytes match for each entry
