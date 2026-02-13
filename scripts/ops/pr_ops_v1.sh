@@ -82,7 +82,8 @@ MERGED_AT="$(jq -r '.mergedAt' "$EVI/PR_VIEW_POST_MIN.json" 2>/dev/null || echo 
 if [[ "$CLOSEOUT" -eq 1 && ( "$STATE" == "MERGED" || "$MERGED_AT" != "null" ) ]]; then
   git checkout main
   git fetch origin --prune
-  git pull --ff-only origin main
+  # Use reset --hard to avoid "Cannot fast-forward to multiple branches" when upstream ambiguous
+  git reset --hard origin/main
   git status -sb > "$EVI/GIT_STATUS.txt"
   git rev-parse HEAD > "$EVI/MAIN_HEAD.txt"
   git log -n 12 --oneline --decorate > "$EVI/MAIN_LOG12.txt"
