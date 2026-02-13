@@ -3,6 +3,10 @@
 - PR #281 — Test PR 281: docs/ops/PR_281_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
 
+## PR Ops v1
+
+Standardized PR watch, closeout, and required-checks snapshot helpers. See [PR Ops v1 Runbook](pr/pr_ops_v1_runbook.md).
+
 ## PR Inventory
 - See: scripts/ops/pr_inventory_full.sh
 - Keyword: pr_inventory. Use **label** (e.g. ops/inventory) for filtering.
