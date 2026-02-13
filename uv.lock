@@ -4473,6 +4473,9 @@ otel = [
     { name = "opentelemetry-exporter-otlp" },
     { name = "opentelemetry-sdk" },
 ]
+test = [
+    { name = "tomli", marker = "python_full_version < '3.11'" },
+]
 tracking = [
     { name = "mlflow", version = "3.1.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "mlflow", version = "3.8.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
@@ -4532,10 +4535,11 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.1.0" },
     { name = "toml", specifier = ">=0.10.2" },
     { name = "tomli", marker = "python_full_version < '3.11' and extra == 'dev'" },
+    { name = "tomli", marker = "python_full_version < '3.11' and extra == 'test'" },
     { name = "urllib3", specifier = ">=2.6.3,<3" },
     { name = "uvicorn", marker = "extra == 'web'", specifier = ">=0.24.0" },
 ]
-provides-extras = ["kraken", "dev", "web", "viz", "otel", "knowledge", "monitoring", "tracking"]
+provides-extras = ["kraken", "dev", "test", "web", "viz", "otel", "knowledge", "monitoring", "tracking"]
 
 [package.metadata.requires-dev]
 dev = [

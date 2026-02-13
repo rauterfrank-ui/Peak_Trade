@@ -27,6 +27,7 @@ if os.environ.get("PEAKTRADE_ALLOW_PORT_BIND_TESTS", "0") != "1":
     )
 try:
     import socket as _pt_sock
+
     with _pt_sock.socket() as _s:
         _s.bind(("127.0.0.1", 0))
 except (PermissionError, OSError):
