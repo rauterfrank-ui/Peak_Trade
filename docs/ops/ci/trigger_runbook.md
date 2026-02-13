@@ -5,7 +5,7 @@
 - Oder in UI sind nur sehr wenige Checks sichtbar ("Rollup symptom")
 
 ## Regeln
-1) **Niemals** mehrfach hintereinander retriggern, wenn Jobs bereits `pending/in_progress` sind → dann nur warten.
+1) **Niemals** mehrfach hintereinander retriggern, wenn Jobs bereits `pending&#47;in_progress` sind → dann nur warten.
 2) Retrigger **nur**, wenn Checks offensichtlich fehlen / nicht gestartet sind.
 3) Bei `failed` → Code fixen, normal commit+push (kein empty commit).
 
@@ -24,7 +24,7 @@ git status -sb
 ./scripts/ops/ci_pr_checks_retrigger_v1.sh
 ```
 
-Evidenz wird in `out/ops/ci_pr_retrigger_<branch>_<timestamp>/` geschrieben.
+Evidenz wird in `out&#47;ops&#47;ci_pr_retrigger_<branch>_<timestamp>&#47;` geschrieben.
 
 ### C) GitHub-Maßnahmen (Branch Protection / Required Checks)
 
