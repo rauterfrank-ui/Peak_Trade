@@ -82,21 +82,25 @@ jobs:
           for a in arts:
               print("-", a.get("name"), "expired=", a.get("expired"), "size=", a.get("size_in_bytes"))
           PY2
-          # Try fixed name first, fallback to legacy trend-seed-<run_id>
+          # Try fixed first, then legacy trend-seed-<run_id>, then any trend-seed-*
           python3 - <<PY3
           import json, sys, os
           d = json.load(open("artifacts.json", encoding="utf-8"))
           arts = [a.get("name") for a in (d.get("artifacts") or [])]
           fixed = os.environ.get("ARTIFACT_NAME", "trend-seed-artifact")
           legacy = f"trend-seed-{os.environ.get('RUN_ID', '')}"
+          trend_seeds = [a for a in arts if a and a.startswith("trend-seed-")]
           if fixed in arts:
               effective = fixed
               print(f"OK: using fixed artifact: {effective}")
           elif legacy in arts:
               effective = legacy
               print(f"OK: using legacy artifact: {effective}")
+          elif trend_seeds:
+              effective = trend_seeds[0]
+              print(f"OK: using trend-seed-* artifact: {effective}")
           else:
-              sys.exit(f"ERROR: expected artifact '{fixed}' or '{legacy}' not found. Present={arts}")
+              sys.exit(f"ERROR: expected artifact '{fixed}' or '{legacy}' or trend-seed-* not found. Present={arts}")
           with open(os.environ.get("GITHUB_ENV", "/dev/null"), "a") as f:
               f.write(f"ARTIFACT_NAME_EFFECTIVE={effective}\n")
           PY3
