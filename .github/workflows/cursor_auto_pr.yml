@@ -46,6 +46,30 @@ jobs:
 
             if (prs.data.length > 0) {
               core.info(`EXISTS: PR #${prs.data[0].number} ${prs.data[0].html_url}`);
+              // Still dispatch required checks so docs-only PRs get all required contexts
+              const workflows = [
+                { id: 'ci.yml', inputs: { force_matrix: 'true' } },
+                { id: 'lint_gate.yml' },
+                { id: 'policy_critic_gate.yml' },
+                { id: 'policy_tracked_reports_guard.yml' },
+                { id: 'audit.yml' },
+                { id: 'ci-workflow-dispatch-guard.yml' },
+                { id: 'docs-token-policy-gate.yml' },
+                { id: 'docs_reference_targets_gate.yml' },
+              ];
+              for (const w of workflows) {
+                try {
+                  await github.rest.actions.createWorkflowDispatch({
+                    owner, repo,
+                    workflow_id: w.id,
+                    ref: head,
+                    inputs: w.inputs || {}
+                  });
+                  core.info(`dispatched ${w.id} on ${head} (PR exists)`);
+                } catch (e) {
+                  core.warning(`failed dispatch ${w.id}: ${e.message}`);
+                }
+              }
               return;
             }
 
@@ -87,6 +111,8 @@ jobs:
               { id: 'policy_tracked_reports_guard.yml' },
               { id: 'audit.yml' },
               { id: 'ci-workflow-dispatch-guard.yml' },
+              { id: 'docs-token-policy-gate.yml' },
+              { id: 'docs_reference_targets_gate.yml' },
             ];
 
             for (const w of workflows) {
