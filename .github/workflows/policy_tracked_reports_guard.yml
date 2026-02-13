@@ -2,8 +2,8 @@ name: Policy Guard - No Tracked Reports
 
 on:
   workflow_dispatch: {}
-
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: ["main"]
   merge_group:

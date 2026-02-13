@@ -4,7 +4,8 @@ on:
   workflow_dispatch: {}
   schedule:
     - cron: "0 6 * * 1"   # Mo 06:00 UTC (Berlin i.d.R. 07:00/08:00)
-  pull_request: {}
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: [ main ]
   merge_group:
