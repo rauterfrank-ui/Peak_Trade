@@ -69,6 +69,7 @@ jobs:
             echo "commit_sha=n/a"
           fi
           echo "source_run_id=${RUN_ID}"
+          echo "RUN_ID=${RUN_ID}" >> "$GITHUB_ENV"
           curl -sSf -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" \
             "${{ github.api_url }}/repos/${{ github.repository }}/actions/runs/${RUN_ID}/artifacts" \
             > artifacts.json
@@ -80,14 +81,23 @@ jobs:
           for a in arts:
               print("-", a.get("name"), "expired=", a.get("expired"), "size=", a.get("size_in_bytes"))
           PY2
-          python3 - <<'PY3'
+          # Try fixed name first, fallback to legacy trend-seed-<run_id>
+          python3 - <<PY3
           import json, sys, os
           d = json.load(open("artifacts.json", encoding="utf-8"))
           arts = [a.get("name") for a in (d.get("artifacts") or [])]
-          want = os.environ.get("ARTIFACT_NAME", "trend-seed-artifact")
-          if want not in arts:
-              sys.exit(f"ERROR: expected artifact '{want}' not found. Present={arts}")
-          print("OK: artifact present:", want)
+          fixed = os.environ.get("ARTIFACT_NAME", "trend-seed-artifact")
+          legacy = f"trend-seed-{os.environ.get('RUN_ID', '')}"
+          if fixed in arts:
+              effective = fixed
+              print(f"OK: using fixed artifact: {effective}")
+          elif legacy in arts:
+              effective = legacy
+              print(f"OK: using legacy artifact: {effective}")
+          else:
+              sys.exit(f"ERROR: expected artifact '{fixed}' or '{legacy}' not found. Present={arts}")
+          with open(os.environ.get("GITHUB_ENV", "/dev/null"), "a") as f:
+              f.write(f"ARTIFACT_NAME_EFFECTIVE={effective}\n")
           PY3
 
       - name: Download Phase 5A trend seed artifact
@@ -96,7 +106,7 @@ jobs:
         with:
           workflow: aiops-trend-seed-from-normalized-report.yml
           run_id: ${{ github.event.workflow_run.id || github.event.inputs.run_id }}
-          name: ${{ env.ARTIFACT_NAME }}
+          name: ${{ env.ARTIFACT_NAME_EFFECTIVE || env.ARTIFACT_NAME }}
           path: .tmp/phase5a_artifacts
 
       - name: Verify artifact contents
