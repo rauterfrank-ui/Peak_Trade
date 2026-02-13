@@ -1,5 +1,8 @@
 name: AIOps - Trend Ledger from Seed
 
+env:
+  ARTIFACT_NAME: trend-seed-artifact
+
 # Phase 5B: Generate canonical Trend Ledger from Phase 5A Trend Seed
 # Trigger: workflow_run on Phase 5A workflow completion (success only, main branch only)
 # Outputs: trend_ledger.json (canonical), trend_ledger.md (summary), manifest.json
@@ -37,15 +40,49 @@ jobs:
         with:
           enable-cache: true
 
+      - name: Assert upstream artifact exists
+        if: github.event_name == 'workflow_run'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_NAME: ${{ env.ARTIFACT_NAME }}
+        run: |
+          set -euo pipefail
+          echo "source_workflow=${{ github.event.workflow_run.name }}"
+          echo "source_run_id=${{ github.event.workflow_run.id }}"
+          echo "commit_sha=${{ github.event.workflow_run.head_sha }}"
+          curl -sSf -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" \
+            "${{ github.api_url }}/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/artifacts" \
+            > artifacts.json
+          echo "Artifacts:"
+          python3 - <<'PY2'
+          import json
+          d = json.load(open("artifacts.json", encoding="utf-8"))
+          arts = d.get("artifacts") or []
+          for a in arts:
+              print("-", a.get("name"), "expired=", a.get("expired"), "size=", a.get("size_in_bytes"))
+          PY2
+          python3 - <<'PY3'
+          import json, sys, os
+          d = json.load(open("artifacts.json", encoding="utf-8"))
+          arts = [a.get("name") for a in (d.get("artifacts") or [])]
+          want = os.environ.get("ARTIFACT_NAME", "trend-seed-artifact")
+          if want not in arts:
+              sys.exit(f"ERROR: expected artifact '{want}' not found. Present={arts}")
+          print("OK: artifact present:", want)
+          PY3
+
       - name: Download Phase 5A trend seed artifact
+        if: github.event_name == 'workflow_run'
         uses: dawidd6/action-download-artifact@v6
         with:
           workflow: aiops-trend-seed-from-normalized-report.yml
           run_id: ${{ github.event.workflow_run.id }}
-          name: trend-seed-${{ github.event.workflow_run.id }}
+          name: ${{ env.ARTIFACT_NAME }}
           path: .tmp/phase5a_artifacts
 
       - name: Verify artifact contents
+        if: github.event_name == 'workflow_run'
         run: |
           echo "=== Verifying Phase 5A artifact contents ==="
           ls -lh .tmp/phase5a_artifacts/
