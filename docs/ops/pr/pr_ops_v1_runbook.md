@@ -25,7 +25,7 @@ This creates `scripts/ops/p44_pr_watch.sh`, `p44_oneshot_closeout.sh`, and `p44_
 
 ### 1. PR Watch (`<pNN>_pr_watch.sh`)
 
-Polls PR state via `gh pr view` every 15s until MERGED (max ~1h). On MERGED, writes evidence to `out/ops/pr<N>_watch_<TS>/`.
+Polls PR state via `gh pr view` every 15s until MERGED (max ~1h). On MERGED, writes evidence to `out&#47;ops&#47;pr<N>_watch_<TS>&#47;`.
 
 **Usage:**
 
@@ -48,7 +48,7 @@ Runs **after** PR is merged. Syncs main, writes evidence, creates tarball + sha2
 
 **Guard:** Exits with code 3 if PR is not yet MERGED.
 
-**Evidence:** `out/ops/pr<N>_closeout_<TS>/` + `*.bundle.tgz` + `*.sha256`
+**Evidence:** `out&#47;ops&#47;pr<N>_closeout_<TS>&#47;` + `*.bundle.tgz` + `*.sha256`
 
 ### 3. Required Checks Snapshot (`<pNN>_required_checks_snapshot.sh`)
 
@@ -60,7 +60,7 @@ Captures PR view, checks, and (best-effort) branch protection required contexts.
 ./scripts/ops/<pNN>_required_checks_snapshot.sh <PR_NUM>
 ```
 
-**Evidence:** `out/ops/pr<N>_required_checks_<TS>/`
+**Evidence:** `out&#47;ops&#47;pr<N>_required_checks_<TS>&#47;`
 
 ## Typical Flow
 

@@ -14,13 +14,13 @@ No changes to governance rules. No workflow edits. No trading.
 `./scripts/ops/p41_kickoff_scaffold_v1.sh <pNN> <topic> [--ts TS] [--with-pr-ops]`
 
 When `--with-pr-ops` is set, scaffold adds:
-- `scripts/ops/<pNN>_pr_watch.sh`
-- `scripts/ops/<pNN>_oneshot_closeout.sh`
-- `scripts/ops/<pNN>_required_checks_snapshot.sh`
+- `scripts&#47;ops&#47;<pNN>_pr_watch.sh`
+- `scripts&#47;ops&#47;<pNN>_oneshot_closeout.sh`
+- `scripts&#47;ops&#47;<pNN>_required_checks_snapshot.sh`
 
 All scripts:
 - bash strict mode
-- deterministic evidence paths under `out/ops/`
+- deterministic evidence paths under `out&#47;ops&#47;`
 - safe defaults (no destructive actions unless explicit)
 
 ## Tests
