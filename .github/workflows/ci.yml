@@ -7,6 +7,7 @@ on:
   push:
     branches: ["main", "master"]
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     branches: ["main", "master"]
   merge_group:
     branches: ["main", "master"]
