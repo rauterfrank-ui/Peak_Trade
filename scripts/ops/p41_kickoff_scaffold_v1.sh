@@ -4,7 +4,7 @@ set -euo pipefail
 usage() {
   cat <<'USAGE'
 Usage:
-  scripts/ops/p41_kickoff_scaffold_v1.sh <phase> <slug> [--branch <branch>] [--ts <UTC_YYYYMMDDTHHMMSSZ>] [--no-branch]
+  scripts/ops/p41_kickoff_scaffold_v1.sh <phase> <slug> [--branch <branch>] [--ts <UTC_YYYYMMDDTHHMMSSZ>] [--no-branch] [--with-pr-ops]
 
 Examples:
   scripts/ops/p41_kickoff_scaffold_v1.sh p42 data-ingest-v2
@@ -47,12 +47,14 @@ fi
 TS="$(date -u +%Y%m%dT%H%M%SZ)"
 BRANCH="feat/${PHASE}-${SLUG}"
 DO_BRANCH="yes"
+WITH_PR_OPS="0"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --branch) BRANCH="${2:-}"; shift 2 ;;
     --ts) TS="${2:-}"; shift 2 ;;
     --no-branch) DO_BRANCH="no"; shift 1 ;;
+    --with-pr-ops) WITH_PR_OPS="1"; shift 1 ;;
     -h | --help) usage; exit 0 ;;
     *) die "unknown arg: $1" ;;
   esac
@@ -127,6 +129,120 @@ PY
 echo "OK: appended \${evt}"
 APP
 chmod +x "${OPS_DIR}/${PHASE}_worklog_append.sh"
+
+# Optional PR-ops helpers (watch/closeout/required-checks snapshot)
+if [[ "${WITH_PR_OPS}" == "1" ]]; then
+  SCRIPTS_OPS="scripts/ops"
+  mkdir -p "${SCRIPTS_OPS}"
+
+  PR_WATCH="${SCRIPTS_OPS}/${PHASE}_pr_watch.sh"
+  cat > "${PR_WATCH}" <<'PRWATCH'
+#!/usr/bin/env bash
+set -euo pipefail
+# Usage: ./scripts/ops/<pNN>_pr_watch.sh <PR_NUM> [--bg]
+PR="${1:-}"
+MODE="${2:-}"
+test -n "${PR}" || { echo "missing PR number" >&2; exit 2; }
+TS="$(date -u +%Y%m%dT%H%M%SZ)"
+EVI="out/ops/pr${PR}_watch_${TS}"
+mkdir -p "${EVI}"
+LOG="/tmp/pr${PR}_watch.log"
+PID="/tmp/pr${PR}_watch.pid"
+touch "${LOG}"
+
+poll() {
+  STATE="$(gh pr view "${PR}" --json state,mergedAt --jq '.state + "|" + (.mergedAt // "")' 2>/dev/null || echo "ERR|")"
+  printf "%s %s\n" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "${STATE}" | tee -a "${LOG}" >/dev/null
+  echo "${STATE}"
+}
+
+run_watch() {
+  for i in $(seq 1 240); do
+    OUT="$(poll)"
+    if printf "%s" "${OUT}" | grep -q '^MERGED|'; then
+      gh pr view "${PR}" --json number,title,state,url,mergeCommit,mergedAt,headRefName,baseRefName,mergeable,mergeStateStatus > "${EVI}/PR_VIEW.json" 2>/dev/null || true
+      (gh pr checks "${PR}" 2>/dev/null || true) > "${EVI}/PR_CHECKS.txt"
+      git status -sb > "${EVI}/STATUS.txt" 2>/dev/null || true
+      git rev-parse HEAD > "${EVI}/HEAD.txt" 2>/dev/null || true
+      git log -n 5 --oneline --decorate > "${EVI}/LOG5.txt" 2>/dev/null || true
+      shasum -a 256 "${EVI}"/* > "${EVI}/SHA256SUMS.txt" 2>/dev/null || true
+      echo "WATCH_OK pr=${PR} evidence_dir=${EVI}" | tee -a "${LOG}" >/dev/null
+      return 0
+    fi
+    sleep 15
+  done
+  echo "WATCH_TIMEOUT pr=${PR} log=${LOG}" | tee -a "${LOG}" >/dev/null
+  return 3
+}
+
+if [[ "${MODE}" == "--bg" ]]; then
+  (run_watch) &
+  echo $! > "${PID}"
+  echo "WATCH_BG_OK pid=$(cat "${PID}") log=${LOG}"
+  exit 0
+fi
+
+run_watch
+PRWATCH
+  chmod +x "${PR_WATCH}"
+
+  CLOSEOUT="${SCRIPTS_OPS}/${PHASE}_oneshot_closeout.sh"
+  cat > "${CLOSEOUT}" <<'CLOSEOUTSH'
+#!/usr/bin/env bash
+set -euo pipefail
+# Usage: ./scripts/ops/<pNN>_oneshot_closeout.sh <PR_NUM>
+PR="${1:-}"
+test -n "${PR}" || { echo "missing PR number" >&2; exit 2; }
+TS="$(date -u +%Y%m%dT%H%M%SZ)"
+EVI="out/ops/pr${PR}_closeout_${TS}"
+mkdir -p "${EVI}"
+
+STATE="$(gh pr view "${PR}" --json state --jq .state 2>/dev/null || echo "")"
+test "${STATE}" = "MERGED" || { echo "NOT_MERGED_YET pr=${PR} state=${STATE}" >&2; exit 3; }
+
+git checkout main
+git fetch origin --prune
+git pull --ff-only origin main
+
+gh pr view "${PR}" --json number,title,state,url,mergeCommit,mergedAt,headRefName,baseRefName,mergeable,mergeStateStatus > "${EVI}/PR_VIEW.json" 2>/dev/null || true
+(gh pr checks "${PR}" 2>/dev/null || true) > "${EVI}/PR_CHECKS.txt"
+git status -sb > "${EVI}/STATUS.txt"
+git rev-parse HEAD > "${EVI}/MAIN_HEAD.txt"
+git log -n 12 --oneline --decorate > "${EVI}/LOG12.txt"
+shasum -a 256 "${EVI}"/* > "${EVI}/SHA256SUMS.txt" 2>/dev/null || true
+
+TARBALL="${EVI}.bundle.tgz"
+tar -czf "${TARBALL}" "${EVI}"
+shasum -a 256 "${TARBALL}" > "${TARBALL}.sha256"
+echo "CLOSEOUT_OK pr=${PR} evidence_dir=${EVI} tarball=${TARBALL} main_head=$(cat "${EVI}/MAIN_HEAD.txt")"
+CLOSEOUTSH
+  chmod +x "${CLOSEOUT}"
+
+  REQ="${SCRIPTS_OPS}/${PHASE}_required_checks_snapshot.sh"
+  cat > "${REQ}" <<'REQSH'
+#!/usr/bin/env bash
+set -euo pipefail
+# Usage: ./scripts/ops/<pNN>_required_checks_snapshot.sh <PR_NUM>
+PR="${1:-}"
+test -n "${PR}" || { echo "missing PR number" >&2; exit 2; }
+TS="$(date -u +%Y%m%dT%H%M%SZ)"
+EVI="out/ops/pr${PR}_required_checks_${TS}"
+mkdir -p "${EVI}"
+
+gh pr view "${PR}" --json number,title,state,url,headRefName,baseRefName,mergeable,mergeStateStatus > "${EVI}/PR_VIEW.json" 2>/dev/null || true
+(gh pr checks "${PR}" 2>/dev/null || true) > "${EVI}/PR_CHECKS.txt"
+
+BASE="$(jq -r '.baseRefName // "main"' "${EVI}/PR_VIEW.json" 2>/dev/null || echo "main")"
+REPO="$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null || true)"
+if [[ -n "${REPO}" ]]; then
+  gh api "repos/${REPO}/branches/${BASE}/protection/required_status_checks" > "${EVI}/REQUIRED_STATUS_CHECKS.json" 2>/dev/null || true
+fi
+
+shasum -a 256 "${EVI}"/* > "${EVI}/SHA256SUMS.txt" 2>/dev/null || true
+echo "REQ_SNAPSHOT_OK pr=${PR} evidence_dir=${EVI}"
+REQSH
+  chmod +x "${REQ}"
+fi
 
 mkdir -p "docs/analysis/${PHASE}" "src/ops/${PHASE}" "tests/${PHASE}"
 
