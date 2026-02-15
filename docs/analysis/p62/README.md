@@ -4,7 +4,7 @@
 Provide a **single ops entrypoint** to:
 - run P61 readiness,
 - derive a deterministic **shadow session plan** (no execution),
-- optionally write evidence under `out/ops/*`.
+- optionally write evidence under `out&#47;ops&#47;*`.
 
 ## Safety Invariants
 - `mode in {"live","record"}` → **PermissionError**
