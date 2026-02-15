@@ -19,6 +19,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from src.ai.gates.ai_model_hard_gate_v1 import require_ai_models_allowed
+from src.ai.policy.ai_model_enablement_policy_v1 import policy_allows_ai_call_v1
 
 from .errors import OrchestrationError
 
@@ -322,6 +323,8 @@ def create_model_client(mode: str, transcript: Optional[Dict[str, Any]] = None) 
 
     elif mode in ["live", "record"]:
         require_ai_models_allowed(context="create_model_client")
+        confirm_token = os.environ.get("PEAKTRADE_AI_CONFIRM_TOKEN")
+        policy_allows_ai_call_v1(confirm_token=confirm_token)
         return OpenAIClient()
 
     else:
