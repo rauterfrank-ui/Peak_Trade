@@ -19,3 +19,9 @@ class SwitchLayerConfigV1:
 
     # Safety
     require_min_samples: int = 60
+
+    # ---- Routing allowlist (deny-by-default) ----
+    # Consumed by routing layer (P56) for deterministic strategy selection by regime.
+    # Does NOT enable AI model calls; AI remains gated by P49/P50.
+    allow_bull_strategies: tuple[str, ...] = ()
+    allow_bear_strategies: tuple[str, ...] = ()

@@ -20,6 +20,9 @@ class P55RunContextV1:
     out_dir: Optional[Path] = None
     run_id: str = "p55"
     allow_live_or_record: bool = False  # hard gate override (default False)
+    # P56: routing allowlist (deny-by-default)
+    allow_bull_strategies: tuple[str, ...] = ()
+    allow_bear_strategies: tuple[str, ...] = ()
 
 
 def _json_dump_deterministic(obj: Any, path: Path) -> None:
@@ -118,7 +121,13 @@ def run_switch_layer_e2e_v1(
     orch_out = run_switch_layer_orch_v1(returns=prices_list, ctx=orch_ctx)
 
     routing_fn = _resolve_routing_callable()
-    routing_out = routing_fn(decision=orch_out)
+    allow_bull = tuple(ctx.allow_bull_strategies) if ctx.allow_bull_strategies else None
+    allow_bear = tuple(ctx.allow_bear_strategies) if ctx.allow_bear_strategies else None
+    routing_out = routing_fn(
+        decision=orch_out,
+        allow_bull=allow_bull,
+        allow_bear=allow_bear,
+    )
 
     result = {
         "decision": orch_out,
