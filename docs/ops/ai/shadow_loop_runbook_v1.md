@@ -53,9 +53,9 @@ out = run_online_readiness_operator_entrypoint_v1(prices, ctx)
 
 ## Evidence layout
 When `--out-dir` is set, evidence is written under:
-- `out/ops/<run_id>/p67_shadow_session_<run_id>/meta.json`
-- `out/ops/<run_id>/p67_shadow_session_<run_id>/events.json`
-- `out/ops/<run_id>/p67_shadow_session_<run_id>/manifest.json`
+- `out&#47;ops&#47;<run_id>&#47;p67_shadow_session_<run_id>&#47;meta.json`
+- `out&#47;ops&#47;<run_id>&#47;p67_shadow_session_<run_id>&#47;events.json`
+- `out&#47;ops&#47;<run_id>&#47;p67_shadow_session_<run_id>&#47;manifest.json`
 
 ## Cron / launchd
 Schedule the P67 CLI with your preferred interval. Example (cron, every hour):
