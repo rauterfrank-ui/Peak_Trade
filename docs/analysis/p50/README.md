@@ -5,7 +5,7 @@ This adds a **policy-driven enablement layer** on top of P49's hard gate:
 - stage-aware (research/shadow/testnet/live)
 - 2-step activation: `enabled` + `armed`
 - optional **confirm token** (required by default for testnet/live)
-- audit trail written to `out/ops/ai_policy/*`
+- audit trail written to `out&#47;ops&#47;ai_policy&#47;*`
 
 ## Env
 - `PEAKTRADE_STAGE` = research|shadow|testnet|live (default: research)
