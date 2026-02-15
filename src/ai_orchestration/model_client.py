@@ -18,6 +18,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
+from src.ai.gates.ai_model_hard_gate_v1 import require_ai_models_allowed
+
 from .errors import OrchestrationError
 
 
@@ -319,6 +321,7 @@ def create_model_client(mode: str, transcript: Optional[Dict[str, Any]] = None) 
         return ReplayClient(transcript=transcript)
 
     elif mode in ["live", "record"]:
+        require_ai_models_allowed(context="create_model_client")
         return OpenAIClient()
 
     else:
