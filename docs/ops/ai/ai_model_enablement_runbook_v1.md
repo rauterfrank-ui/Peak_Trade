@@ -35,4 +35,4 @@ python3 -m src.ops.p50.ai_model_policy_cli_v1 disarm
 ```
 
 ## Audit
-Audit events: `out/ops/ai_policy/ai_model_policy_v1_audit.ndjson`
+Audit events: `out&#47;ops&#47;ai_policy&#47;ai_model_policy_v1_audit.ndjson`
