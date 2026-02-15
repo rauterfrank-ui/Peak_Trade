@@ -18,7 +18,9 @@ def test_switch_layer_orch_no_outdir_no_write(tmp_path: Path) -> None:
 def test_switch_layer_orch_writes_evidence_when_outdir_set(tmp_path: Path) -> None:
     returns = [0.002] * 120
     out_dir = tmp_path / "evi"
-    ctx = SwitchLayerContextV1(symbol="BTC/USDT", timeframe="1h", out_dir=str(out_dir), meta={"k": "v"})
+    ctx = SwitchLayerContextV1(
+        symbol="BTC/USDT", timeframe="1h", out_dir=str(out_dir), meta={"k": "v"}
+    )
     decision = run_switch_layer_orch_v1(returns=returns, ctx=ctx)
 
     p = out_dir / "switch_layer_decision_v1.json"
