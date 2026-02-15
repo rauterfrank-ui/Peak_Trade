@@ -2,10 +2,8 @@ from __future__ import annotations
 
 from dataclasses import is_dataclass
 
-import pytest
-
-from src.ai.switch_layer.types_v1 import MarketRegimeV1, SwitchDecisionV1
 from src.ai.switch_layer.config_v1 import SwitchLayerConfigV1
+from src.ai.switch_layer.types_v1 import MarketRegimeV1, SwitchDecisionV1
 from src.ai_orchestration.switch_layer_routing_v1 import (
     route_from_switch_decision_v1,
     route_from_switch_decision_with_config_v1,
@@ -37,9 +35,7 @@ def test_routing_allowlist_bull_enables_strategies() -> None:
 
 def test_routing_allowlist_bear_enables_strategies() -> None:
     decision = _mk_decision(MarketRegimeV1.BEAR)
-    out = route_from_switch_decision_v1(
-        decision=decision, allow_bull=None, allow_bear=["strat_c"]
-    )
+    out = route_from_switch_decision_v1(decision=decision, allow_bull=None, allow_bear=["strat_c"])
     assert out.ai_mode == "shadow"
     assert out.allowed_strategies == ("strat_c",)
     assert out.reason == "bear_allowlist"
