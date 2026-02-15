@@ -25,5 +25,6 @@ ctx = P57RunContextV1(
     allow_bear_strategies=[],
 )
 out = run_switch_layer_paper_shadow_v1(prices, ctx)
-print(out["decision"].regime, out["routing"].ai_mode)
+# Returns JSON-dicts only (P59 boundary)
+print(out["regime"], out["routing"]["ai_mode"])
 ```

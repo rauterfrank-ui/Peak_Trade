@@ -52,9 +52,9 @@ def test_p57_allowlist_enables_routing(tmp_path: Path) -> None:
     )
     # bull-ish returns
     out = run_switch_layer_paper_shadow_v1([0.003] * 120, ctx)
-    assert out["decision"].regime.value == "bull"
-    assert out["routing"].ai_mode == "shadow"
-    assert out["routing"].allowed_strategies == ("s1",)
+    assert out["regime"] == "bull"
+    assert out["routing"]["ai_mode"] == "shadow"
+    assert out["routing"]["allowed_strategies"] == ["s1"]
 
 
 def test_p57_deterministic(tmp_path: Path) -> None:
