@@ -6,7 +6,7 @@ Single canonical entrypoint combining:
 - P62 shadow session plan (deny-by-default routing + allowlists)
 
 ## Safety
-- `mode in {"paper","shadow"}` only. `live/record` raises `PermissionError`.
+- `mode in {"paper","shadow"}` only. `live&#47;record` raises `PermissionError`.
 - No model calls required. Outputs are dict-only JSON boundary.
 
 ## API

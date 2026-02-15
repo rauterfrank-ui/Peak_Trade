@@ -16,5 +16,5 @@ print(out["shadow_plan"])
 
 ## Safety
 
-- `paper` | `shadow` only. `live`/`record` → `PermissionError`.
+- `paper` | `shadow` only. `live`&#47;`record` → `PermissionError`.
 - Evidence written only when `out_dir` is set (via P62).
