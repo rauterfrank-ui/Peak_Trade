@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+
+from src.ops.common import to_jsonable_v1
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -48,7 +50,5 @@ def run_switch_layer_online_readiness_v1(
         "note": "AI routing remains deny-by-default unless P49/P50 gates permit + allowlists set.",
     }
 
-    return {
-        "readiness": readiness,
-        **out,
-    }
+    res = {"readiness": readiness, **out}
+    return to_jsonable_v1(res)

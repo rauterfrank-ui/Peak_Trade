@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+
+from src.ops.common import to_jsonable_v1
 from pathlib import Path
 from typing import Any, Dict, Optional, Sequence
 
@@ -88,4 +90,5 @@ def run_switch_layer_paper_shadow_v1(
             regime=regime,
         )
 
-    return {"regime": regime, "decision": decision, "routing": routing, "meta": meta}
+    out = {"regime": regime, "decision": decision, "routing": routing, "meta": meta}
+    return to_jsonable_v1(out)

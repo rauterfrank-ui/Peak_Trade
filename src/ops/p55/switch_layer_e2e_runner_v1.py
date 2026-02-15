@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
+
+from src.ops.common import to_jsonable_v1
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
@@ -157,4 +159,4 @@ def run_switch_layer_e2e_v1(
         }
         _json_dump_deterministic(manifest, out_dir / "manifest.json")
 
-    return result
+    return to_jsonable_v1(result)
