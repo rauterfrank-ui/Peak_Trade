@@ -40,6 +40,4 @@ def test_p93_smoke(tmp_path: Path) -> None:
 
     pin = repo / "out" / "ops" / "P93_STATUS_DASHBOARD_DONE_20990101T000000Z.txt"
     assert pin.exists()
-    assert (
-        repo / "out" / "ops" / "P93_STATUS_DASHBOARD_DONE_20990101T000000Z.txt.sha256"
-    ).exists()
+    assert (repo / "out" / "ops" / "P93_STATUS_DASHBOARD_DONE_20990101T000000Z.txt.sha256").exists()
