@@ -14,6 +14,7 @@ class P78SupervisorPlanV1:
     iterations: int
     pidfile: Path
     max_logs: int
+    gate_variant: str = "p86"  # "p76" | "p86" — P87: p86 = readiness+ingest gate (default)
 
 
 def build_supervisor_plan_v1(
@@ -25,9 +26,12 @@ def build_supervisor_plan_v1(
     iterations: int = 0,
     pidfile: Optional[Path] = None,
     max_logs: int = 50,
+    gate_variant: str = "p86",
 ) -> P78SupervisorPlanV1:
     if mode not in ("paper", "shadow"):
         raise ValueError("mode must be 'paper' or 'shadow' (live/record hard-blocked)")
+    if gate_variant not in ("p76", "p86"):
+        raise ValueError("gate_variant must be 'p76' or 'p86'")
     if interval_sec < 0:
         raise ValueError("interval_sec must be >= 0")
     if iterations < 0:
@@ -44,4 +48,5 @@ def build_supervisor_plan_v1(
         iterations=iterations,
         pidfile=pidfile,
         max_logs=max_logs,
+        gate_variant=gate_variant,
     )
