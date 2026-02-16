@@ -13,9 +13,13 @@ def test_p81_smoke() -> None:
 
 def test_p81_meta_json_created(tmp_path: Path) -> None:
     """One tick creates supervisor_meta.json with last_tick."""
+    root = Path(__file__).resolve().parents[2]
+    out_dir = root / "out" / "ops" / f"p81_test_meta_{tmp_path.name}"
+    out_dir.mkdir(parents=True, exist_ok=True)
     env = {
         "MODE": "shadow",
-        "OUT_DIR": str(tmp_path / "out"),
+        "OUT_DIR": str(out_dir),
+        "SUPERVISOR_ENABLE": "YES",
         "PIDFILE": str(tmp_path / "p81.pid"),
         "LOCKFILE": str(tmp_path / "p81.lock"),
         "INTERVAL": "0",
@@ -30,7 +34,7 @@ def test_p81_meta_json_created(tmp_path: Path) -> None:
         timeout=60,
     )
     assert result.returncode == 0
-    meta_path = tmp_path / "out" / "supervisor_meta.json"
+    meta_path = out_dir / "supervisor_meta.json"
     assert meta_path.exists()
     meta = json.loads(meta_path.read_text())
     assert "version" in meta
