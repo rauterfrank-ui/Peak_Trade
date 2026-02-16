@@ -38,5 +38,14 @@ if [ "$ticks" -lt "$MIN_TICKS" ]; then
   exit 3
 fi
 
+# DRY_RUN: sandbox/CI-safe path (skip launchctl)
+DRY_RUN="${DRY_RUN:-}"
+case "$DRY_RUN" in
+  YES|yes|1|true|TRUE)
+    echo "P91_DRY_RUN_OK out_dir=$OUT_DIR ticks=$ticks label=$LABEL"
+    exit 0
+    ;;
+esac
+
 launchctl kickstart -k "gui/${UID_NUM}/${LABEL}"
 echo "P91_KICKSTART_OK out_dir=$OUT_DIR ticks=$ticks label=$LABEL"
