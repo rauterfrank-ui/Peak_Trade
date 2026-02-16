@@ -14,7 +14,7 @@
 ## macOS (launchd)
 1. Copy `docs&#47;ops&#47;services&#47;launchd_online_readiness_supervisor_v1.plist` to `~&#47;Library&#47;LaunchAgents&#47;`
 2. Edit `WorkingDirectory` to your repo root (e.g. `&#47;Users&#47;you&#47;Peak_Trade`)
-3. **Arm**: Add `<key>SUPERVISOR_ENABLE</key><string>YES</string>` to `EnvironmentVariables` (P84)
+3. **Arm**: Add `<key>SUPERVISOR_ENABLE<&#47;key><string>YES<&#47;string>` to `EnvironmentVariables` (P84)
 4. Validate: `plutil -lint ~&#47;Library&#47;LaunchAgents&#47;launchd_online_readiness_supervisor_v1.plist`
 5. Load: `launchctl load ~&#47;Library&#47;LaunchAgents&#47;launchd_online_readiness_supervisor_v1.plist`
 6. Stop: `launchctl unload ...` or `STOP=1 bash scripts&#47;ops&#47;online_readiness_supervisor_v1.sh`
