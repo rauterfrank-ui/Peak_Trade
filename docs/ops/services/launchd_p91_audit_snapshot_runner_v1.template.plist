@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.peaktrade.p91-audit-snapshot-runner</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+    <key>StartInterval</key>
+    <integer>300</integer>
+
+    <key>WorkingDirectory</key>
+    <string>@REPO_ROOT@</string>
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>/bin/bash</string>
+      <string>@REPO_ROOT@/scripts/ops/p103_launchd_p91_audit_snapshot_entry_v1.sh</string>
+    </array>
+
+    <!-- Optional env overrides (do NOT set OUT_DIR here) -->
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>MODE</key>
+      <string>shadow</string>
+      <key>MAX_AGE_SEC</key>
+      <string>900</string>
+      <key>MIN_TICKS</key>
+      <string>2</string>
+      <key>SUP_BASE_DIR</key>
+      <string>out/ops/online_readiness_supervisor</string>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>@REPO_ROOT@/out/ops/online_readiness_supervisor/LAUNCHD_P91_AUDIT.out.log</string>
+
+    <!-- keep stderr quiet by default (can change to a file if desired) -->
+    <key>StandardErrorPath</key>
+    <string>/dev/null</string>
+  </dict>
+</plist>
