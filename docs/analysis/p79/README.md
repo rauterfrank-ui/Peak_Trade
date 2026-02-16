@@ -15,7 +15,7 @@ Detect operational drift in the **paper/shadow** online readiness stack:
 
 ## Artifacts
 - `scripts/ops/p79_supervisor_health_gate_v1.sh` (exit 0 OK, exit 3 gate failed)
-- Evidence JSON: `OUT_DIR/p79_health_gate_v1.json`
+- Evidence JSON: `OUT_DIR&#47;p79_health_gate_v1.json`
 
 ## Usage
 ```bash

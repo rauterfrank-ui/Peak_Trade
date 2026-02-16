@@ -19,4 +19,4 @@ MODE=shadow OUT_DIR=/path/to/supervisor/out MAX_AGE_SEC=300 \
 - `3` — gate failed (stale ticks, stale pidfile, missing artifacts)
 
 ## Evidence
-- `OUT_DIR/p79_health_gate_v1.json` — JSON with mode, newest_tick, age_sec, etc.
+- `OUT_DIR&#47;p79_health_gate_v1.json` — JSON with mode, newest_tick, age_sec, etc.
