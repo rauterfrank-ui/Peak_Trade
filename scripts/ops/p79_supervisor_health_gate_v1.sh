@@ -75,15 +75,16 @@ age=$(( now - newest_mtime ))
 
 # per-tick required artifacts (if enabled)
 # P76 writes: P76_RESULT.txt, ONLINE_READINESS_ENV.json, P71_GATE.log, P72_PACK.log
+# P86 gate uses tick/p76/ subdir; go_no_go (p76-only) writes to tick root — accept both
 missing_files=0
 if [ "${REQUIRE_P76_FILES}" = "1" ]; then
   while IFS= read -r d; do
     [ -d "$d" ] || continue
     ok=false
-    [ -f "$d/P76_RESULT.txt" ] && ok=true
-    [ -f "$d/ONLINE_READINESS_ENV.json" ] && ok=true
-    [ -f "$d/P71_GATE.log" ] && ok=true
-    [ -f "$d/P72_PACK.log" ] && ok=true
+    [ -f "$d/p76/P76_RESULT.txt" ] || [ -f "$d/P76_RESULT.txt" ] && ok=true
+    [ -f "$d/p76/ONLINE_READINESS_ENV.json" ] || [ -f "$d/ONLINE_READINESS_ENV.json" ] && ok=true
+    [ -f "$d/p76/P71_GATE.log" ] || [ -f "$d/P71_GATE.log" ] && ok=true
+    [ -f "$d/p76/P72_PACK.log" ] || [ -f "$d/P72_PACK.log" ] && ok=true
     [ -f "$d/readiness_report.json" ] && ok=true
     [ -f "$d/manifest.json" ] && ok=true
     if [ "$ok" = false ]; then
