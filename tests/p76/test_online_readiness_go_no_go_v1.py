@@ -8,7 +8,9 @@ import subprocess
 from pathlib import Path
 
 
-def _run(env: dict[str, str], cwd: Path, *, clear_p76_vars: bool = False) -> subprocess.CompletedProcess[str]:
+def _run(
+    env: dict[str, str], cwd: Path, *, clear_p76_vars: bool = False
+) -> subprocess.CompletedProcess[str]:
     base = os.environ.copy()
     if clear_p76_vars:
         for k in ("OUT_DIR", "RUN_ID", "OUT_DIR_OVERRIDE", "RUN_ID_OVERRIDE"):
