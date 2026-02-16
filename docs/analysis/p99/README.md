@@ -6,7 +6,7 @@
 DRY_RUN=YES python3 -m src.ops.p99.ops_loop_cli_v1 --mode shadow
 ```
 
-Writes an evidence dir under `out/ops/p99_ops_loop_run_<TS>/` and pins `out/ops/P99_OPS_LOOP_DONE_<TS>.txt`.
+Writes an evidence dir under `out&#47;ops&#47;p99_ops_loop_run_<TS>&#47;` and pins `out&#47;ops&#47;P99_OPS_LOOP_DONE_<TS>.txt`.
 
 ## launchd
 
