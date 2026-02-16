@@ -8,8 +8,8 @@ ts_utc="${TS_OVERRIDE:-$(date -u +%Y%m%dT%H%M%SZ)}"
 evi="${EVI_OVERRIDE:-out/ops/p93_online_readiness_status_${ts_utc}}"
 mkdir -p "$evi"
 
-# OUT_DIR resolution
-out_dir_default="out/ops/online_readiness_supervisor/$(ls -1 out/ops/online_readiness_supervisor 2>/dev/null | grep '^run_' | LC_ALL=C sort | tail -n 1)"
+# OUT_DIR resolution (|| true so empty dir doesn't fail under set -e)
+out_dir_default="out/ops/online_readiness_supervisor/$(ls -1 out/ops/online_readiness_supervisor 2>/dev/null | grep '^run_' | LC_ALL=C sort | tail -n 1 || true)"
 OUT_DIR="${OUT_DIR:-$out_dir_default}"
 MODE="${MODE:-shadow}"
 MAX_AGE_SEC="${MAX_AGE_SEC:-900}"
@@ -100,6 +100,7 @@ shasum -a 256 "$bundle" > "$bundle.sha256"
 
 # pin
 pin="out/ops/P93_STATUS_DASHBOARD_DONE_${ts_utc}.txt"
+mkdir -p "$(dirname "$pin")"
 {
   echo "P93_STATUS_DASHBOARD_DONE OK"
   echo "timestamp_utc=$ts_utc"
