@@ -2,7 +2,7 @@
 
 ## Goal
 Provide a **paper/shadow-only** daemon wrapper that repeatedly runs the canonical online readiness entry script
-and writes each tick into an isolated `out/ops/.../<run_id>/` directory.
+and writes each tick into an isolated `out&#47;ops&#47;...&#47;&lt;run_id&gt;&#47;` directory.
 
 ## Safety
 - `MODE` is restricted to `shadow|paper`.
