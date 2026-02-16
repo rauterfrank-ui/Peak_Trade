@@ -1,36 +1,29 @@
-# Execution Review Evidence – PR_1435
+# PR 1435 — EXECUTION REVIEW (mocks-only)
 
-## Scope / Files
-- execution:
-  - `src/execution/adapters/providers/__init__.py`
-  - `src/execution/adapters/providers/coinbase_v1.py`
-- risk_runtime: none
-- live ops / monitoring: none
-- governance: none
+## Scope
+- **Provider:** Coinbase (adapter)
+- **Mode:** paper/shadow only
+- **Network:** none (no HTTP/WebSocket)
+- **Secrets:** none (no API keys, no env secrets)
+- **Live trading:** explicitly not implemented
 
-## Nature of Change
-- **Mock-only**: Coinbase provider adapter stub. No network calls, no API keys, no live trading.
-- `place_order` stores intent in dict and returns synthetic order_id; no broker/venue interaction.
-- Conforms to existing base_v1 contract (P106).
+## What changed
+- Added a **mock-only** Coinbase execution adapter under `src&#47;execution&#47;adapters&#47;providers&#47;coinbase_v1.py`.
+- Added smoke tests under `tests&#47;p107&#47;`.
+- No wiring into live execution paths; no ccxt; no external I/O.
 
-## Test Plan
-### Automated
-- ruff format/check: PASS
-- pytest scope (p107): `tests&#47;p107&#47;test_p107_coinbase_adapter_smoke.py`
+## Safety assessment
+- No order submission to a real venue is possible from this change.
+- Adapter returns deterministic mock `OrderResultV1`; cancel methods return counts only.
+- No credential handling added; no env var reads for keys.
 
-### Manual Scenarios (Shadow/Paper)
-- paper/shadow smoke: N/A (mock-only, no venue)
-- risk runtime decisions: N/A
-- ops endpoints / alerts: N/A
-- limits / breach path: N/A
-- observability/metrics sanity: N/A
+## Risk / mitigations
+- Primary risk is accidental future wiring into live paths.
+- Mitigation: keep adapter mocks-only; add hard gates before any real connector:
+  - require `MODE in {shadow,paper}` for any adapter runner
+  - deny `LIVE`, `TRADING_ENABLE`, `PT_ARMED`, `EXECUTION_ENABLE`, etc.
+  - require explicit review evidence before any networked adapter is introduced
 
-## Results / Evidence
-- local outputs: `pytest tests&#47;p107 -vv` PASS
-- CI: Policy Critic override via this evidence (mocks-only, no live path)
-
-## Review Attestation
-- reviewer:
-- date:
-- notes: Evidence created. Mock-only Coinbase adapter; no live path. Attestation to be completed before override label.
-- approve: yes/no
+## How to validate locally
+- `python3 -m pytest tests&#47;p107 -q`
+- `python3 -m ruff check .`
