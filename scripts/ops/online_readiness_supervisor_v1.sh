@@ -31,7 +31,7 @@ case "$MODE" in paper|shadow) ;; *)
   exit $EXIT_NOT_ALLOWED
 esac
 
-# --- P80: Stop mode (STOP=1 or ACTION=stop) ---
+# --- P84: Stop mode (STOP=1 or ACTION=stop) — allowed without SUPERVISOR_ENABLE ---
 if [ "${STOP}" = "1" ] || [ "${ACTION}" = "stop" ]; then
   if [ -e "${PIDFILE}" ]; then
     pid="$(cat "${PIDFILE}" 2>/dev/null || true)"
@@ -53,6 +53,29 @@ if [ "${STOP}" = "1" ] || [ "${ACTION}" = "stop" ]; then
   else
     echo "P80_STOP_OK pidfile=${PIDFILE} (already absent)"
   fi
+  exit $EXIT_OK
+fi
+
+# --- P84: Safe-default guardrails (start path only) ---
+# (a) MODE=paper requires explicit opt-in
+if [ "$MODE" = "paper" ] && [ "${SUPERVISOR_ALLOW_PAPER:-}" != "YES" ]; then
+  echo "ERR: MODE=paper requires SUPERVISOR_ALLOW_PAPER=YES (safe-by-default)" >&2
+  exit $EXIT_NOT_ALLOWED
+fi
+# (b) OUT_DIR must be set and under out/ops/
+if [ -z "${OUT_DIR:-}" ]; then
+  echo "ERR: OUT_DIR must be set (safe-by-default)" >&2
+  exit $EXIT_USAGE
+fi
+OUT_ABS="${OUT_DIR}"
+[[ "$OUT_ABS" != /* ]] && OUT_ABS="$ROOT/$OUT_ABS"
+if [[ "$OUT_ABS" != "$ROOT/out/ops" && "$OUT_ABS" != "$ROOT/out/ops/"* ]]; then
+  echo "ERR: OUT_DIR must be under out/ops/ (got ${OUT_DIR})" >&2
+  exit $EXIT_NOT_ALLOWED
+fi
+# (c) SUPERVISOR_ENABLE=YES required to start (explicit opt-in; exit 0 = not armed, no restart loop)
+if [ "${SUPERVISOR_ENABLE:-}" != "YES" ]; then
+  echo "SUPERVISOR_NOT_ARMED: SUPERVISOR_ENABLE=YES required. Add to unit/env to arm." >&2
   exit $EXIT_OK
 fi
 

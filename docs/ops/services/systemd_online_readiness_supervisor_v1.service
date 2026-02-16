@@ -8,6 +8,7 @@ User=peaktrade
 Group=peaktrade
 WorkingDirectory=/path/to/Peak_Trade
 ExecStart=/usr/bin/env bash scripts/ops/online_readiness_supervisor_v1.sh
+# P84: safe-by-default — add Environment=SUPERVISOR_ENABLE=YES to arm
 Environment=MODE=shadow
 Environment=OUT_DIR=out/ops/p78_supervisor
 Environment=INTERVAL=30
