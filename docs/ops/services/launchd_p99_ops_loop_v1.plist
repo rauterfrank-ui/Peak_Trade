@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.peaktrade.p99-ops-loop</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>-lc</string>
+    <string>cd "$HOME/Peak_Trade" &amp;&amp; MODE=shadow MAX_AGE_SEC=900 MIN_TICKS=2 DRY_RUN=YES python3 -m src.ops.p99.ops_loop_cli_v1</string>
+  </array>
+
+  <key>StartInterval</key>
+  <integer>300</integer>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>StandardOutPath</key>
+  <string>out/ops/online_readiness_supervisor/LAUNCHD_P99_OPS_LOOP.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>out/ops/online_readiness_supervisor/LAUNCHD_P99_OPS_LOOP.err.log</string>
+</dict>
+</plist>
