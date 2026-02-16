@@ -18,6 +18,7 @@ MAX_TICK_DIRS="${MAX_TICK_DIRS:-100}"   # P81: max tick_* dirs to retain
 BACKOFF_SEC="${BACKOFF_SEC:-5}"         # P81: sleep after transient failure
 STOP="${STOP:-0}"                   # 1 = stop mode (terminate existing supervisor)
 ACTION="${ACTION:-}"                # "stop" = same as STOP=1
+CHECK_MODE="${CHECK_MODE:-p86}"     # P87: p76 = go/no-go only; p86 = readiness+ingest gate (default)
 
 # Exit code constants
 EXIT_OK=0
@@ -29,6 +30,11 @@ EXIT_INTERNAL=5
 case "$MODE" in paper|shadow) ;; *)
   echo "ERR: MODE must be paper|shadow (live/record blocked)" >&2
   exit $EXIT_NOT_ALLOWED
+esac
+
+case "${CHECK_MODE}" in p76|p86) ;; *)
+  echo "ERR: CHECK_MODE must be p76|p86 (got ${CHECK_MODE})" >&2
+  exit $EXIT_USAGE
 esac
 
 # --- P84: Stop mode (STOP=1 or ACTION=stop) — allowed without SUPERVISOR_ENABLE ---
@@ -148,8 +154,13 @@ tick() {
   mkdir -p "$tick_dir"
 
   local rc=0
-  OUT_DIR_OVERRIDE="$tick_dir" RUN_ID_OVERRIDE="${RUN_ID}_${ts}" MODE_OVERRIDE="$MODE" ITERATIONS_OVERRIDE="1" INTERVAL_OVERRIDE="0" \
-    bash scripts/ops/online_readiness_go_no_go_v1.sh >"$OUT_DIR/P78_TICK_${ts}.log" 2>&1 || rc=$?
+  if [ "${CHECK_MODE}" = "p86" ]; then
+    MODE="$MODE" RUN_ID="${RUN_ID}_${ts}" OUT_DIR="$tick_dir" \
+      bash scripts/ops/p86_gate_v1.sh >"$OUT_DIR/P78_TICK_${ts}.log" 2>&1 || rc=$?
+  else
+    OUT_DIR_OVERRIDE="$tick_dir" RUN_ID_OVERRIDE="${RUN_ID}_${ts}" MODE_OVERRIDE="$MODE" ITERATIONS_OVERRIDE="1" INTERVAL_OVERRIDE="0" \
+      bash scripts/ops/online_readiness_go_no_go_v1.sh >"$OUT_DIR/P78_TICK_${ts}.log" 2>&1 || rc=$?
+  fi
 
   rotate_logs
   rotate_tick_dirs
