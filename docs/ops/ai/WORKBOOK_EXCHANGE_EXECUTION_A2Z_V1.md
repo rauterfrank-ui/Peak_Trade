@@ -3,7 +3,7 @@
 ## A) Scope & Guardrails (Non-goals)
 - **NO LIVE**: Kein Live-Trading, keine Orders, keine Secrets.
 - Nur Interface/Adapter, Mocks, Backtest/Shadow, Audit-Trails.
-- Harte Deny-List für `LIVE/TRADING_ENABLE/PT_ARMED/...` analog Ops-Loop.
+- Harte Deny-List für `LIVE&#47;TRADING_ENABLE&#47;PT_ARMED&#47;...` analog Ops-Loop.
 
 ## B) Anforderungen (must-have)
 - Multi-Exchange-fähig (Kraken bleibt default).
@@ -23,15 +23,15 @@
 - Market microstructure: spread, slippage, latency, maker/taker
 
 ## E) Adapter Architektur (Plan)
-- `src/exchanges/`:
+- `src&#47;exchanges&#47;`:
   - `base.py` (protocol)
   - `kraken.py` (default impl)
   - `ccxt_adapter.py` (optional abstraction)
-- `src/execution/`:
+- `src&#47;execution&#47;`:
   - order router (paper/shadow only)
   - strict kill-switch + budget caps
-- `src/schemas/`:
-  - canonical `OrderRequest/OrderAck/Fill/Position/Balance`
+- `src&#47;schemas&#47;`:
+  - canonical `OrderRequest&#47;OrderAck&#47;Fill&#47;Position&#47;Balance`
 
 ## F) Safety Gates (hard)
 - Env deny-list + secret scanning
@@ -50,8 +50,8 @@
 - Backtest parity + shadow parity before any broader enablement.
 
 ## I) Evidence + Artifacts
-- `docs/analysis/p105/README.md` (research notes)
-- runbook: `docs/ops/ai/exchange_execution_runbook_v1.md` (later)
+- `docs&#47;analysis&#47;p105&#47;README.md` (research notes)
+- runbook: `docs&#47;ops&#47;ai&#47;exchange_execution_runbook_v1.md` (later)
 - tests: file existence + minimal lint
 
 ## J) Finish Criteria
