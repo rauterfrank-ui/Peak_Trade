@@ -33,4 +33,4 @@ assert out["gate_ok"]
 
 ## Evidence layout
 - `p71_health_gate_report.json`, `p71_health_gate_manifest.json`
-- `p67_shadow_session_<run_id>/` (meta.json, events.json, manifest.json)
+- `p67_shadow_session_<run_id>&#47;` (meta.json, events.json, manifest.json)
