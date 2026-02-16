@@ -31,6 +31,12 @@ out = run_shadowloop_pack_v1(ctx)
 assert out["gate_ok"]
 ```
 
+## Environment contract (canonical)
+- Supported variables:
+  - Preferred: `OUT_DIR_OVERRIDE`, `RUN_ID_OVERRIDE`, `MODE_OVERRIDE`, `ITERATIONS_OVERRIDE`, `INTERVAL_OVERRIDE`
+  - Legacy: `OUT_DIR`, `RUN_ID`, `MODE`, `ITERATIONS`, `INTERVAL`
+- Precedence: if both are set, `*_OVERRIDE` **wins**.
+
 ## Evidence layout
 - `p71_health_gate_report.json`, `p71_health_gate_manifest.json`
 - `p67_shadow_session_<run_id>&#47;` (meta.json, events.json, manifest.json)
