@@ -39,7 +39,7 @@
 
 ### Agent 6 — Docs / UX (optional, can be merged with Agent 0/4)
 - Runbooks, quickstarts, troubleshooting tables.
-- Fixes docs-token-policy-gate encoding (`/` → `&#47;` in inline code).
+- Fixes docs-token-policy-gate encoding (`&#47;` → `&#47;` in inline code).
 
 ---
 
@@ -47,7 +47,7 @@
 - **MODE:** only `shadow` or `paper`.
 - **DRY_RUN default:** `YES` for anything launchd/CI-facing unless explicitly doing local "real kickstart".
 - **Secrets forbidden:** any env vars matching API keys/secrets.
-- **OUT_DIR constraint:** must be under `out/ops/*`.
+- **OUT_DIR constraint:** must be under `out&#47;ops&#47;*`.
 - **Deny-by-default execution:** no trade placement, no withdrawals, no record mode.
 
 ---
@@ -73,11 +73,11 @@
 **Commands**
 - `git status -sb`
 - `git log -1 --oneline`
-- `./scripts/ops/repo_clean_baseline_pin_v1.sh`
-- `./scripts/ops/final_done_pin_v1.sh`
+- `scripts&#47;ops&#47;repo_clean_baseline_pin_v1.sh`
+- `scripts&#47;ops&#47;final_done_pin_v1.sh`
 
 **Pass**
-- `main...origin/main (clean)`
+- `main...origin&#47;main (clean)`
 - baseline + final_done pins created and sha256 verified
 
 ---
@@ -86,17 +86,17 @@
 **Objective:** Supervisor produces ticks consistently.
 
 **Start**
-- `MODE=shadow INTERVAL=300 bash scripts/ops/launchd_online_readiness_supervisor_smoke_v1.sh start`
+- `MODE=shadow INTERVAL=300 bash scripts&#47;ops&#47;launchd_online_readiness_supervisor_smoke_v1.sh start`
 
 **Status**
-- `bash scripts/ops/launchd_online_readiness_supervisor_smoke_v1.sh status`
+- `bash scripts&#47;ops&#47;launchd_online_readiness_supervisor_smoke_v1.sh status`
 
 **Pass**
 - state=running
 - tick dirs appear under OUT_DIR
 
 **Stop**
-- `bash scripts/ops/launchd_online_readiness_supervisor_smoke_v1.sh stop`
+- `bash scripts&#47;ops&#47;launchd_online_readiness_supervisor_smoke_v1.sh stop`
 
 ---
 
@@ -104,10 +104,10 @@
 **Objective:** confirm freshness, tick count, P76 ready.
 
 **P79**
-- `MODE=shadow MAX_AGE_SEC=900 bash scripts/ops/p79_supervisor_health_gate_v1.sh`
+- `MODE=shadow MAX_AGE_SEC=900 bash scripts&#47;ops&#47;p79_supervisor_health_gate_v1.sh`
 
 **P90**
-- `MIN_TICKS=2 MAX_AGE_SEC=900 bash scripts/ops/p90_supervisor_metrics_v1.sh | python3 -m json.tool`
+- `MIN_TICKS=2 MAX_AGE_SEC=900 bash scripts&#47;ops&#47;p90_supervisor_metrics_v1.sh | python3 -m json.tool`
 
 **Pass**
 - P79_GATE_OK
@@ -119,13 +119,13 @@
 **Objective:** periodic audited bundle/pin with deterministic verification.
 
 **One-shot snapshot**
-- `bash scripts/ops/p91_audit_snapshot_runner_v1.sh`
+- `bash scripts&#47;ops&#47;p91_audit_snapshot_runner_v1.sh`
 
 **Launchd periodic (optional)**
 - com.peaktrade.p91-audit-snapshot-runner
 
 **Kickstart when ready**
-- `DRY_RUN=YES bash scripts/ops/p91_kickstart_when_ready_v1.sh`
+- `DRY_RUN=YES bash scripts&#47;ops&#47;p91_kickstart_when_ready_v1.sh`
 - (local real) `DRY_RUN=NO bash ...` (only outside sandbox)
 
 **Pass**
@@ -138,10 +138,10 @@
 **Objective:** periodic "status dashboard" evidence and keep only last N.
 
 **One-shot**
-- `OUT_DIR="<run_dir>" MODE=shadow MAX_AGE_SEC=900 MIN_TICKS=2 bash scripts/ops/p93_online_readiness_status_dashboard_v1.sh`
+- `OUT_DIR="<run_dir>" MODE=shadow MAX_AGE_SEC=900 MIN_TICKS=2 bash scripts&#47;ops&#47;p93_online_readiness_status_dashboard_v1.sh`
 
 **Retention**
-- `KEEP_N=48 bash scripts/ops/p94_p93_status_dashboard_retention_v1.sh`
+- `KEEP_N=48 bash scripts&#47;ops&#47;p94_p93_status_dashboard_retention_v1.sh`
 
 **Pass**
 - pin/evi/bundle created
@@ -152,14 +152,14 @@
 ## F) Retention for P91 snapshots (P92)
 **Objective:** keep last N P91 snapshot artifacts.
 
-- `KEEP_N=48 bash scripts/ops/p92_p91_audit_snapshot_retention_v1.sh`
+- `KEEP_N=48 bash scripts&#47;ops&#47;p92_p91_audit_snapshot_retention_v1.sh`
 
 ---
 
 ## G) Ops meta gate (P95)
 **Objective:** single "green light" check for ops loop.
 
-- `MODE=shadow MAX_AGE_SEC=900 MIN_TICKS=2 bash scripts/ops/p95_ops_health_meta_gate_v1.sh`
+- `MODE=shadow MAX_AGE_SEC=900 MIN_TICKS=2 bash scripts&#47;ops&#47;p95_ops_health_meta_gate_v1.sh`
 
 **Pass**
 - `P95_GATE_OK`
@@ -183,7 +183,7 @@
 **Objective:** schedule ops loop safely with hard guardrails.
 
 **Install**
-- copy guarded plist into `~/Library/LaunchAgents/`
+- copy guarded plist into `~/Library&#47;LaunchAgents&#47;`
 - ensure `WorkingDirectory` is set to repo root
 - bootstrap + kickstart
 
@@ -221,7 +221,7 @@
 ---
 
 ## L) Hygiene + parking
-**Rule:** no untracked leftovers. Park under `out/ops/_scratch/...` and add `.git/info/exclude`.
+**Rule:** no untracked leftovers. Park under `out&#47;ops&#47;_scratch&#47;...` and add `.git&#47;info&#47;exclude`.
 
 ---
 
@@ -246,11 +246,11 @@
 - Increase wait window for first 2 ticks
 
 ## P76 missing
-- Look under `tick_*/p76/P76_RESULT.txt` (not tick root)
+- Look under `tick_*&#47;p76&#47;P76_RESULT.txt` (not tick root)
 
 ## launchd EX_CONFIG / bad paths
 - Set `WorkingDirectory` to repo root
 - Use absolute log paths or redirect stderr to /dev/null (if desired)
 
 ## docs-token-policy-gate
-- Inline code must escape `/` as `&#47;`
+- Inline code must escape `&#47;` as `&#47;`
