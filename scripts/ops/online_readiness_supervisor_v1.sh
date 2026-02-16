@@ -11,11 +11,49 @@ INTERVAL="${INTERVAL:-30}"          # seconds
 ITERATIONS="${ITERATIONS:-0}"       # 0 = infinite
 PIDFILE="${PIDFILE:-/tmp/p78_online_readiness_supervisor.pid}"
 MAX_LOGS="${MAX_LOGS:-50}"
+STOP="${STOP:-0}"                   # 1 = stop mode (terminate existing supervisor)
+ACTION="${ACTION:-}"                # "stop" = same as STOP=1
 
 case "$MODE" in paper|shadow) ;; *)
   echo "ERR: MODE must be paper|shadow (live/record blocked)" >&2
   exit 2
 esac
+
+# --- P80: Stop mode (STOP=1 or ACTION=stop) ---
+if [ "${STOP}" = "1" ] || [ "${ACTION}" = "stop" ]; then
+  if [ -e "${PIDFILE}" ]; then
+    pid="$(cat "${PIDFILE}" 2>/dev/null || true)"
+    if [ -n "${pid}" ] && kill -0 "${pid}" 2>/dev/null; then
+      echo "P80_STOP: sending SIGTERM to pid=${pid}"
+      kill -TERM "${pid}" 2>/dev/null || true
+      for _ in $(seq 1 30); do
+        kill -0 "${pid}" 2>/dev/null || break
+        sleep 1
+      done
+      if kill -0 "${pid}" 2>/dev/null; then
+        echo "P80_STOP: pid ${pid} still alive after 30s, sending SIGKILL" >&2
+        kill -KILL "${pid}" 2>/dev/null || true
+        sleep 1
+      fi
+    fi
+    rm -f "${PIDFILE}" 2>/dev/null || true
+    echo "P80_STOP_OK pidfile=${PIDFILE}"
+  else
+    echo "P80_STOP_OK pidfile=${PIDFILE} (already absent)"
+  fi
+  exit 0
+fi
+
+# --- P80: Idempotent start (refuse double-start, handle stale pidfile) ---
+if [ -e "${PIDFILE}" ]; then
+  pid="$(cat "${PIDFILE}" 2>/dev/null || true)"
+  if [ -n "${pid}" ] && kill -0 "${pid}" 2>/dev/null; then
+    echo "ERR: supervisor already running pid=${pid} (pidfile=${PIDFILE}). Use STOP=1 or ACTION=stop to terminate." >&2
+    exit 2
+  fi
+  # stale pidfile: process dead, remove and proceed
+  rm -f "${PIDFILE}" 2>/dev/null || true
+fi
 
 mkdir -p "$OUT_DIR"
 echo $$ > "$PIDFILE"
