@@ -210,6 +210,28 @@
 ---
 
 ## K) Stop playbooks (must exist)
+
+## Checklists (copy/paste)
+
+### Preflight (must be true)
+- [ ] `git status -sb` shows clean or only excluded scratch
+- [ ] `REPO_CLEAN_BASELINE_PIN_OK` present
+- [ ] `FINAL_DONE_PIN_OK` present
+- [ ] `MODE=shadow` and `DRY_RUN=YES` for any automated ops loop
+
+### Long shadow soak (2–6h)
+- [ ] Supervisor running (`INTERVAL=300`, `MODE=shadow`)
+- [ ] P79 gate OK (`age_sec <= 900`)
+- [ ] P90 metrics OK (no alerts, latest_p76_status=ready)
+- [ ] P95 meta gate OK
+- [ ] Periodic P93 snapshots appear (pins + bundles)
+- [ ] Retention jobs (P92/P94) are NOOP or OK
+
+### Stop playbook (must exist + tested)
+- [ ] Run `bash scripts&#47;ops&#47;p101_stop_playbook_v1.sh` (creates pinned evidence)
+- [ ] Verify bundle + pin SHA256
+- [ ] Confirm supervisor stopped (no new ticks), and launchd jobs booted out as expected
+
 **Objective:** quick & safe shutdown.
 
 1) Stop ops-loop launchd
