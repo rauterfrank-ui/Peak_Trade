@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.peaktrade.online-readiness-supervisor</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/usr/bin/env</string>
+		<string>bash</string>
+		<string>scripts/ops/online_readiness_supervisor_v1.sh</string>
+	</array>
+	<key>WorkingDirectory</key>
+	<string>/path/to/Peak_Trade</string>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>MODE</key>
+		<string>shadow</string>
+		<key>OUT_DIR</key>
+		<string>out/ops/p78_supervisor</string>
+		<key>INTERVAL</key>
+		<string>30</string>
+		<key>ITERATIONS</key>
+		<string>0</string>
+	</dict>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>KeepAlive</key>
+	<dict>
+		<key>SuccessfulExit</key>
+		<false/>
+	</dict>
+	<key>StandardOutPath</key>
+	<string>/tmp/online_readiness_supervisor.log</string>
+	<key>StandardErrorPath</key>
+	<string>/tmp/online_readiness_supervisor.err</string>
+</dict>
+</plist>
