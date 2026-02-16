@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.peaktrade.p104-soak-watch</string>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>WorkingDirectory</key>
+  <string>@REPO_ROOT@</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>MODE</key><string>shadow</string>
+    <key>DRY_RUN</key><string>YES</string>
+    <key>MAX_AGE_SEC</key><string>900</string>
+    <key>MIN_TICKS</key><string>2</string>
+    <key>SLEEP_SEC</key><string>1800</string>
+    <key>ITERATIONS</key><string>0</string>
+  </dict>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>-lc</string>
+    <string>cd "@REPO_ROOT@" &amp;&amp; MODE=shadow DRY_RUN=YES MAX_AGE_SEC=900 MIN_TICKS=2 SLEEP_SEC=1800 ITERATIONS=0 bash scripts/ops/p104_soak_watch_v1.sh</string>
+  </array>
+
+  <key>StandardOutPath</key>
+  <string>@REPO_ROOT@/out/ops/online_readiness_supervisor/LAUNCHD_P104_SOAK_WATCH.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>@REPO_ROOT@/out/ops/online_readiness_supervisor/LAUNCHD_P104_SOAK_WATCH.err.log</string>
+</dict>
+</plist>

@@ -72,6 +72,15 @@ else
   echo "P92_PLIST_ABSENT" > "$evi/P92_PLIST.txt"
 fi
 
+# Stop P104 soak watch if installed
+p104_plist="$HOME/Library/LaunchAgents/com.peaktrade.p104_soak_watch_v1.plist"
+if [ -f "$p104_plist" ]; then
+  launchctl print "gui/$(id -u)/com.peaktrade.p104-soak-watch" > "$evi/LAUNCHD_P104_STATUS.before.txt" 2>&1 || true
+  launchctl bootout "gui/$(id -u)" "$p104_plist" > "$evi/LAUNCHD_P104_BOOTOUT.txt" 2>&1 || true
+else
+  echo "P104_PLIST_ABSENT" > "$evi/P104_PLIST.txt"
+fi
+
 # Stop supervisor (P88 script)
 bash scripts/ops/launchd_online_readiness_supervisor_smoke_v1.sh stop > "$evi/P88_SUPERVISOR_STOP.log" 2>&1 || true
 
