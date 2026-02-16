@@ -53,11 +53,15 @@ def test_p80_stop_mode_stale_pidfile(tmp_path: Path) -> None:
 
 def test_p80_double_start_refused(tmp_path: Path) -> None:
     """Pidfile with live pid (self) -> refuse start, exit 3 (not_allowed)."""
+    root = Path(__file__).resolve().parents[2]
+    out_dir = root / "out" / "ops" / f"p80_test_double_{tmp_path.name}"
+    out_dir.mkdir(parents=True, exist_ok=True)
     pidfile = tmp_path / "live.pid"
     pidfile.write_text(str(__import__("os").getpid()))
     env = {
         "MODE": "shadow",
-        "OUT_DIR": str(tmp_path / "out"),
+        "OUT_DIR": str(out_dir),
+        "SUPERVISOR_ENABLE": "YES",
         "PIDFILE": str(pidfile),
         "LOCKFILE": str(tmp_path / "test.lock"),
     }
@@ -74,11 +78,14 @@ def test_p80_double_start_refused(tmp_path: Path) -> None:
 
 def test_p80_smoke_one_tick(tmp_path: Path) -> None:
     """INTERVAL=0 ITERATIONS=1 runs one tick and exits."""
-    out_dir = tmp_path / "out"
+    root = Path(__file__).resolve().parents[2]
+    out_dir = root / "out" / "ops" / f"p80_test_tick_{tmp_path.name}"
+    out_dir.mkdir(parents=True, exist_ok=True)
     pidfile = tmp_path / "p80_test.pid"
     env = {
         "MODE": "shadow",
         "OUT_DIR": str(out_dir),
+        "SUPERVISOR_ENABLE": "YES",
         "PIDFILE": str(pidfile),
         "LOCKFILE": str(tmp_path / "test.lock"),
         "INTERVAL": "0",

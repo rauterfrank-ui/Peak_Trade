@@ -12,6 +12,7 @@
 	</array>
 	<key>WorkingDirectory</key>
 	<string>/path/to/Peak_Trade</string>
+	<!-- P84: safe-by-default — add SUPERVISOR_ENABLE=YES to arm -->
 	<key>EnvironmentVariables</key>
 	<dict>
 		<key>MODE</key>
