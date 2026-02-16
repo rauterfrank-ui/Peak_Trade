@@ -9,6 +9,7 @@ Prevent early P91 kickstarts that fail with `no_ticks_found` by enforcing a mini
 - **OUT_DIR selection:** If `OUT_DIR` is not set, use the newest `out&#47;ops&#47;online_readiness_supervisor&#47;run_*`.
 - **Condition:** At least `MIN_TICKS` tick directories under `OUT_DIR` (default: 2).
 - **Action:** `launchctl kickstart -k` for P91 launchd job.
+- **DRY_RUN:** If `DRY_RUN=YES`, skip launchctl and exit 0 after guard passes.
 - **Exit code 3:** `out_dir_missing` or `insufficient_ticks`.
 
 ## Usage
@@ -16,4 +17,16 @@ Prevent early P91 kickstarts that fail with `no_ticks_found` by enforcing a mini
 ```bash
 bash scripts&#47;ops&#47;p91_kickstart_when_ready_v1.sh
 OUT_DIR="out&#47;ops&#47;online_readiness_supervisor&#47;run_YYYYMMDDTHHMMSSZ" bash scripts&#47;ops&#47;p91_kickstart_when_ready_v1.sh
+```
+
+## Sandbox / CI
+
+`launchctl` can be unavailable or blocked (e.g. sandboxed CI runners), causing `Operation not permitted`.
+Use `DRY_RUN=YES` to validate the tick guard without invoking `launchctl`.
+
+### DRY_RUN Usage
+
+```bash
+DRY_RUN=YES bash scripts&#47;ops&#47;p91_kickstart_when_ready_v1.sh
+OUT_DIR="out&#47;ops&#47;online_readiness_supervisor&#47;run_YYYYMMDDTHHMMSSZ" DRY_RUN=YES bash scripts&#47;ops&#47;p91_kickstart_when_ready_v1.sh
 ```
