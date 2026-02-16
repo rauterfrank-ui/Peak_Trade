@@ -29,3 +29,5 @@ A guarded LaunchAgent template (macOS) uses this wrapper:
 - Logs:
   - `out&#47;ops&#47;online_readiness_supervisor&#47;LAUNCHD_P99_OPS_LOOP_GUARDED.out.log`
   - `out&#47;ops&#47;online_readiness_supervisor&#47;LAUNCHD_P99_OPS_LOOP_GUARDED.err.log`
+
+**Install:** Copy the plist to `~/Library/LaunchAgents/` and replace `WorkingDirectory` with your repo path (launchd does not expand `$HOME`).
