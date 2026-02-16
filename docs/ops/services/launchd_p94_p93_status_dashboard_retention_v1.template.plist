@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key><string>com.peaktrade.p94-p93-status-dashboard-retention</string>
+    <key>RunAtLoad</key><true/>
+    <key>StartInterval</key><integer>900</integer>
+    <key>WorkingDirectory</key><string>@REPO_ROOT@</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>KEEP_N</key><string>48</string>
+    </dict>
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>/bin/bash</string>
+      <string>-lc</string>
+      <string>cd "@REPO_ROOT@" &amp;&amp; KEEP_N=48 bash scripts/ops/p94_p93_status_dashboard_retention_v1.sh</string>
+    </array>
+
+    <key>StandardOutPath</key><string>@REPO_ROOT@/out/ops/online_readiness_supervisor/LAUNCHD_P94_RETENTION.out.log</string>
+    <key>StandardErrorPath</key><string>/dev/null</string>
+  </dict>
+</plist>

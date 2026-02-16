@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key><string>com.peaktrade.p93-status-dashboard</string>
+    <key>RunAtLoad</key><true/>
+    <key>StartInterval</key><integer>300</integer>
+    <key>WorkingDirectory</key><string>@REPO_ROOT@</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>MODE</key><string>shadow</string>
+      <key>MAX_AGE_SEC</key><string>900</string>
+      <key>MIN_TICKS</key><string>2</string>
+    </dict>
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>/bin/bash</string>
+      <string>-lc</string>
+      <string>cd "@REPO_ROOT@" &amp;&amp; OUT_DIR="out/ops/online_readiness_supervisor/$(ls -1 out/ops/online_readiness_supervisor 2&gt;/dev/null | grep '^run_' | LC_ALL=C sort | tail -n 1)" MODE=shadow MAX_AGE_SEC=900 MIN_TICKS=2 bash scripts/ops/p93_online_readiness_status_dashboard_v1.sh</string>
+    </array>
+
+    <key>StandardOutPath</key><string>@REPO_ROOT@/out/ops/online_readiness_supervisor/LAUNCHD_P93_STATUS.out.log</string>
+    <key>StandardErrorPath</key><string>/dev/null</string>
+  </dict>
+</plist>
