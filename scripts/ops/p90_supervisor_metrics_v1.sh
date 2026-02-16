@@ -1,6 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+epoch_now() {
+  python3 - <<'PY'
+import time
+print(int(time.time()))
+PY
+}
+
+mtime_epoch() {
+  python3 - "$1" <<'PY'
+import os, sys
+print(int(os.path.getmtime(sys.argv[1])))
+PY
+}
+
 usage() {
   cat <<'USAGE' >&2
 Usage:
@@ -58,8 +72,8 @@ fi
 # Age seconds (best-effort) based on filesystem mtime of latest tick dir
 AGE_SEC=""
 if [ -n "${LATEST_TICK}" ]; then
-  now="$(date +%s)"
-  mt="$(stat -f '%m' "${LATEST_TICK}" 2>/dev/null || echo "")"
+  now="$(epoch_now)"
+  mt="$(mtime_epoch "${LATEST_TICK}" 2>/dev/null || echo "")"
   if [ -n "${mt}" ]; then
     AGE_SEC="$((now-mt))"
   fi
