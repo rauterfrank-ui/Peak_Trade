@@ -1,0 +1,21 @@
+[Unit]
+Description=Peak Trade Online Readiness Supervisor (paper/shadow only)
+After=network.target
+
+[Service]
+Type=simple
+User=peaktrade
+Group=peaktrade
+WorkingDirectory=/path/to/Peak_Trade
+ExecStart=/usr/bin/env bash scripts/ops/online_readiness_supervisor_v1.sh
+Environment=MODE=shadow
+Environment=OUT_DIR=out/ops/p78_supervisor
+Environment=INTERVAL=30
+Environment=ITERATIONS=0
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/var/log/peaktrade/supervisor.log
+StandardError=append:/var/log/peaktrade/supervisor.err
+
+[Install]
+WantedBy=multi-user.target
