@@ -52,13 +52,14 @@ def test_p80_stop_mode_stale_pidfile(tmp_path: Path) -> None:
 
 
 def test_p80_double_start_refused(tmp_path: Path) -> None:
-    """Pidfile with live pid (self) -> refuse start, exit 2."""
+    """Pidfile with live pid (self) -> refuse start, exit 3 (not_allowed)."""
     pidfile = tmp_path / "live.pid"
     pidfile.write_text(str(__import__("os").getpid()))
     env = {
         "MODE": "shadow",
         "OUT_DIR": str(tmp_path / "out"),
         "PIDFILE": str(pidfile),
+        "LOCKFILE": str(tmp_path / "test.lock"),
     }
     result = subprocess.run(
         ["bash", "scripts/ops/online_readiness_supervisor_v1.sh"],
@@ -67,7 +68,7 @@ def test_p80_double_start_refused(tmp_path: Path) -> None:
         text=True,
         cwd=Path(__file__).resolve().parents[2],
     )
-    assert result.returncode == 2
+    assert result.returncode == 3
     assert "already running" in result.stderr
 
 
@@ -79,6 +80,7 @@ def test_p80_smoke_one_tick(tmp_path: Path) -> None:
         "MODE": "shadow",
         "OUT_DIR": str(out_dir),
         "PIDFILE": str(pidfile),
+        "LOCKFILE": str(tmp_path / "test.lock"),
         "INTERVAL": "0",
         "ITERATIONS": "1",
     }
