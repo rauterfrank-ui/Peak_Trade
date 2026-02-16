@@ -17,7 +17,7 @@
 ## Test Plan
 ### Automated
 - ruff format/check: PASS
-- pytest scope (p106): `tests/p106/test_p106_mock_adapter_smoke.py` (place_order, cancel_all, batch_cancel)
+- pytest scope (p106): `tests&#47;p106&#47;test_p106_mock_adapter_smoke.py` (place_order, cancel_all, batch_cancel)
 
 ### Manual Scenarios (Shadow/Paper)
 - paper/shadow smoke: N/A (mock-only, no venue)
@@ -27,7 +27,7 @@
 - observability/metrics sanity: N/A
 
 ## Results / Evidence
-- local outputs: `pytest tests/p106 -vv` PASS
+- local outputs: `pytest tests&#47;p106 -vv` PASS
 - CI: Policy Critic Gate PASS; Policy Critic Review BLOCK (expected for execution touch; override via this evidence)
 
 ## Review Attestation
