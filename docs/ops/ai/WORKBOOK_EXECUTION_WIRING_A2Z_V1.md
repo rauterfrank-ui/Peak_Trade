@@ -50,4 +50,4 @@ Produce a **provider wiring plan** that defines:
 - Docs: wiring plan + taxonomy + normalization spec
 - Code: interfaces + normalization + errors + stubs (no network)
 - Tests: pass on 3.9/3.10/3.11
-- Snapshot: `P119_EXECUTION_WIRING_PLAN_DONE_<TS>.txt` in `out/ops/`
+- Snapshot: `P119_EXECUTION_WIRING_PLAN_DONE_<TS>.txt` in `out&#47;ops&#47;`
