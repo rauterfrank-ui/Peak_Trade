@@ -192,7 +192,9 @@ class SafetyGuard:
             log_msg += f", details={details}"
         logger.log(level, log_msg)
 
-    def ensure_may_place_order(self, *, is_testnet: bool = False) -> None:
+    def ensure_may_place_order(
+        self, *, is_testnet: bool = False, context: Optional[dict] = None
+    ) -> None:
         """
         Prüft ob eine Order-Platzierung erlaubt ist.
 
