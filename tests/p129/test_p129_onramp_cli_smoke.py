@@ -8,7 +8,7 @@ import sys
 
 
 def test_onramp_cli_default_deny_returns_json() -> None:
-    """Default transport_allow=NO: flow completes, adapter denies, exit 0."""
+    """With allowlist_allow=YES and allowlist: flow completes, adapter denies, exit 0."""
     result = subprocess.run(
         [
             sys.executable,
@@ -22,6 +22,12 @@ def test_onramp_cli_default_deny_returns_json() -> None:
             "BTC-USD",
             "--qty",
             "0.01",
+            "--allowlist-allow",
+            "YES",
+            "--allowlist-adapters",
+            "networked_stub",
+            "--allowlist-markets",
+            "BTC-USD",
         ],
         capture_output=True,
         text=True,
@@ -32,6 +38,7 @@ def test_onramp_cli_default_deny_returns_json() -> None:
     assert data["meta"]["transport_allow"] == "NO"
     assert data["meta"]["mode"] == "shadow"
     assert data["guards"]["rc"] == 0
+    assert data["allowlist"]["rc"] == 0
     assert data["transport"]["rc"] == 0
     assert data["adapter"]["rc"] == 1
     assert "networked_send_denied" in data["adapter"]["msg"]
@@ -52,6 +59,12 @@ def test_onramp_cli_transport_allow_yes_exits_3() -> None:
             "BTC-USD",
             "--qty",
             "0.01",
+            "--allowlist-allow",
+            "YES",
+            "--allowlist-adapters",
+            "networked_stub",
+            "--allowlist-markets",
+            "BTC-USD",
             "--transport-allow",
             "YES",
         ],
