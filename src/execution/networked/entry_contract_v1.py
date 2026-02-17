@@ -85,7 +85,7 @@ def validate_execution_networked_context_v1(
     _deny_env(env)
     _secret_check(env)
 
-    if ctx.intent not in ("place_order", "cancel_all"):
+    if ctx.intent not in ("place_order", "cancel_all", "markets", "orderbook"):
         raise ExecutionEntryGuardError(f"intent_invalid:{ctx.intent}")
 
     if not ctx.market or "/" in ctx.market:
