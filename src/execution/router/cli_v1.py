@@ -46,6 +46,10 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     ns = _parse_args(sys.argv[1:] if argv is None else argv)
+    # Hard safety guard: CLI is mocks-only. We do not allow dry-run disable here.
+    if str(ns.dry_run).upper() != "YES":
+        print("ROUTER_CLI_GUARD_FAIL: dry_run_must_be_yes")
+        return 3
     dry_run = ns.dry_run == "YES"
 
     ctx = ExecutionRouterContextV1(
