@@ -21,6 +21,7 @@ class ExecutionRouterContextV1:
     adapter_name: str = "mock"
     # Optional: enforce market scoping at router boundary (kept simple for v1)
     market: Optional[str] = None
+    dry_run: bool = True
 
 
 class ExecutionRouterV1:
