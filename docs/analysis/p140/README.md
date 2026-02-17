@@ -11,15 +11,15 @@ Generate a deterministic evidence pack for the networked onramp CLI in **paper m
 - Script: `scripts/ops/p140_exec_net_paper_evidence_pack_v1.sh`
 
 ## Outputs
-Evidence dir under `out/ops/`:
-- `out/ops/p140_paper_evidence_pack_<TS>/`
+Evidence dir under `out&#47;ops&#47;`:
+- `out&#47;ops&#47;p140_paper_evidence_pack_<TS>&#47;`
 - `manifest.json`
 - `onramp_markets.json`
 - `onramp_orderbook.json`
 - `pytest.log`
 - `SHA256SUMS.txt` (style-guarded, repo-root-relative paths)
 - bundle: `...bundle.tgz` + `...bundle.tgz.sha256`
-- DONE pin: `out/ops/P140_EXEC_NET_PAPER_EVI_DONE_<TS>.txt` + `.sha256`
+- DONE pin: `out&#47;ops&#47;P140_EXEC_NET_PAPER_EVI_DONE_<TS>.txt` + `.sha256`
 
 ## Verifications
 - `shasum -a 256 -c <PIN>.sha256`
