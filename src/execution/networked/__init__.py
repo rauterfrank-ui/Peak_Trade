@@ -12,6 +12,8 @@ from .http_client_stub_v1 import (
     NetworkTransportDisabledError,
     http_request_stub_v1,
 )
+from .onramp_cli_v1 import main as onramp_cli_main
+from .onramp_runner_v1 import run_networked_onramp_v1
 
 __all__ = [
     "ExecutionEntryGuardError",
@@ -22,4 +24,6 @@ __all__ = [
     "HttpResponseV1",
     "NetworkTransportDisabledError",
     "http_request_stub_v1",
+    "onramp_cli_main",
+    "run_networked_onramp_v1",
 ]
