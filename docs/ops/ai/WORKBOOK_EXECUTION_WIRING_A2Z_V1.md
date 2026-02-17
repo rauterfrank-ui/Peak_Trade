@@ -22,16 +22,16 @@ Produce a **provider wiring plan** that defines:
 - Market-symbol normalization rules (e.g., BTC-USD vs BTCUSDT)
 
 ## D) Phase 1: "Networkless wiring"
-- Create `src/execution/providers/http_client_v1.py` (interface only)
-- Create `src/execution/providers/errors_v1.py` (typed exceptions)
-- Create `src/execution/providers/normalization_v1.py`
+- Create `src&#47;execution&#47;providers&#47;http_client_v1.py` (interface only)
+- Create `src&#47;execution&#47;providers&#47;errors_v1.py` (typed exceptions)
+- Create `src&#47;execution&#47;providers&#47;normalization_v1.py`
 - Add unit tests: pure functions only.
 
 ## E) Phase 2: "Sandbox-ready provider stubs"
 - Provider-specific client stubs with **no HTTP**:
-  - `src/execution/providers/coinbase/client_v1.py`
-  - `src/execution/providers/okx/client_v1.py`
-  - `src/execution/providers/bybit/client_v1.py`
+  - `src&#47;execution&#47;providers&#47;coinbase&#47;client_v1.py`
+  - `src&#47;execution&#47;providers&#47;okx&#47;client_v1.py`
+  - `src&#47;execution&#47;providers&#47;bybit&#47;client_v1.py`
 - These only validate intents, normalize symbols, simulate responses.
 
 ## F) Phase 3: Future integration hooks (no implementation yet)
@@ -43,7 +43,7 @@ Produce a **provider wiring plan** that defines:
 - Add `ProviderClientV1` guard: reject secrets env vars if present at runtime.
 
 ## H) Evidence packs
-- Add `scripts/ops/p119_execution_wiring_plan_snapshot_v1.sh` (docs + unit tests + pin)
+- Add `scripts&#47;ops&#47;p119_execution_wiring_plan_snapshot_v1.sh` (docs + unit tests + pin)
 - Must use `sha256sums_no_xargs_v1.sh`.
 
 ## I) DONE criteria
