@@ -21,7 +21,12 @@ def main() -> int:
         choices=["shadow", "paper", "live"],
         help="shadow|paper allowed; live is rejected by guard",
     )
-    parser.add_argument("--intent", required=True, choices=["place_order", "cancel_all"])
+    parser.add_argument(
+        "--intent",
+        required=True,
+        choices=["place_order", "cancel_all", "markets", "orderbook"],
+        help="place_order|cancel_all (write); markets|orderbook (read-only)",
+    )
     parser.add_argument("--market", required=True)
     parser.add_argument("--qty", type=float, required=True)
     parser.add_argument(
