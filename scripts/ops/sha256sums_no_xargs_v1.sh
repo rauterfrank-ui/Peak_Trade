@@ -46,4 +46,6 @@ find "${TARGET_DIR}" -type f -print0 \
     done
 
 mv -f "${tmp}" "${OUT_PATH}"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+bash "${SCRIPT_DIR}/sha256sums_style_guard_v1.sh" "${OUT_PATH}"
 echo "SHA256SUMS_NO_XARGS_OK out=${OUT_PATH} target_dir=${TARGET_DIR}"
