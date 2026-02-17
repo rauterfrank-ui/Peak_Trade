@@ -13,9 +13,13 @@
 - safety: cancel_all, batch_cancel, kill_switch
 
 ## Rows (v0)
+- Mock (testing baseline)
 - Kraken (baseline)
 - Coinbase Advanced
 - OKX
 - Bybit
+
+## Registry (P111)
+Selector: `src&#47;execution&#47;adapters&#47;registry_v1.py` — `select_execution_adapter_v1(name, market=...)` for mocks-only providers.
 
 > v0 is documentation + mock interfaces only. No live trading, no real keys, no network calls.
