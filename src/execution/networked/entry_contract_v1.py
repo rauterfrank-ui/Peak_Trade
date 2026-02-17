@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from typing import Dict, Optional, Sequence
 
@@ -24,6 +25,9 @@ SECRET_ENV_HINTS = (
     "OKX_API_KEY",
     "BYBIT_API_KEY",
 )
+
+# Alias for P125 transport gate reuse
+DENY_ENV = DENY_ENV_VARS
 
 
 class ExecutionEntryGuardError(RuntimeError):
@@ -120,3 +124,29 @@ def build_execution_networked_context_v1(
         intent=intent,
         extra=extra,
     )
+
+
+def guard_entry_contract_v1(
+    *,
+    mode: str,
+    dry_run: bool,
+    adapter: str,
+    intent: str,
+    market: str,
+    qty: float,
+    env: Optional[Dict[str, str]] = None,
+) -> None:
+    """
+    Entry contract guard for P125 transport gate.
+    Builds context, validates against mode/dry_run/deny_env/secret_env.
+    Raises ExecutionEntryGuardError on failure.
+    """
+    ctx = build_execution_networked_context_v1(
+        mode=mode,
+        dry_run=dry_run,
+        adapter=adapter,
+        market=market,
+        qty=qty,
+        intent=intent,
+    )
+    validate_execution_networked_context_v1(ctx, env=env or dict(os.environ))
