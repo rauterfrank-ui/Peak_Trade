@@ -65,8 +65,17 @@ def guard_transport_gate_v1(
 
     allow = (transport_allow or "NO").strip().upper()
 
-    # v1 is networkless: only NO is permitted, anything else is denied
-    if allow != "NO":
+    # v1 is networkless: NO always permitted; YES only when mode in shadow/paper and dry_run
+    if allow == "YES":
+        if mode not in ("shadow", "paper"):
+            raise TransportGateError(
+                f"TRANSPORT_GATE_DENY transport_allow=YES requires mode in (shadow,paper), got {mode}"
+            )
+        if not dry_run:
+            raise TransportGateError(
+                "TRANSPORT_GATE_DENY transport_allow=YES requires dry_run=True"
+            )
+    elif allow != "NO":
         raise TransportGateError(f"TRANSPORT_GATE_DENY transport_allow={allow}")
 
     return TransportDecisionV1(

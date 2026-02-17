@@ -27,7 +27,8 @@ def main() -> int:
     parser.add_argument(
         "--transport-allow",
         default=os.environ.get("TRANSPORT_ALLOW", "NO").strip().upper(),
-        help="Default NO; YES is blocked (exit 3)",
+        choices=["NO", "YES"],
+        help="Default NO; YES allowed only in shadow/paper with dry_run and allowlist pass",
     )
     parser.add_argument(
         "--allowlist-allow",

@@ -79,5 +79,7 @@ class NetworkedTransportStubV1:
         )
 
 
-def build_networked_transport_stub_v1() -> NetworkedTransportStubV1:
-    return NetworkedTransportStubV1()
+def build_networked_transport_stub_v1(
+    transport_allow: str = "NO",
+) -> NetworkedTransportStubV1:
+    return NetworkedTransportStubV1(gate=TransportGateV1(transport_allow=transport_allow))
