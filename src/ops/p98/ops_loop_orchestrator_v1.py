@@ -68,6 +68,17 @@ def run_ops_loop_orchestrator_v1(ctx: P98OpsLoopContextV1) -> dict:
         ["bash", str(root / "scripts/ops/p94_p93_status_dashboard_retention_v1.sh")],
     )
 
+    # p117_exec_evidence_optional (P116) — OFF by default
+    p117_env = env.copy()
+    p117_env["DRY_RUN"] = "YES" if ctx.dry_run else "NO"
+    p117_env["P117_ENABLE_EXEC_EVI"] = os.environ.get("P117_ENABLE_EXEC_EVI", "NO")
+    rc, out = _sh(
+        ["bash", str(root / "scripts/ops/p117_run_p116_exec_evidence_guarded_v1.sh")],
+        env=p117_env,
+        cwd=str(root),
+    )
+    steps.append({"name": "p117_exec_evidence_optional", "rc": rc, "out": out})
+
     report = {
         "meta": {
             "ok": True,
