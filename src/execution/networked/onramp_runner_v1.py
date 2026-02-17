@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
+from .allowlist_v1 import NetworkedAllowlistV1, guard_allowlist_v1
 from .entry_contract_v1 import ExecutionEntryGuardError, guard_entry_contract_v1
 from .providers.base_stub_v1 import DefaultDenyNetworkedProviderAdapterV1
 from .transport_gate_v1 import TransportGateError, guard_transport_gate_v1
@@ -25,11 +26,13 @@ def run_networked_onramp_v1(
     transport_allow: str,
     adapter: str = "networked_stub",
     env: Dict[str, str] | None = None,
+    allowlist_allow: str = "NO",
+    allowlist: Optional[NetworkedAllowlistV1] = None,
 ) -> Dict[str, Any]:
     """
-    Run the networked onramp flow: EntryContract -> TransportGate -> Transport(Stub) -> ProviderAdapter(Stub).
+    Run the networked onramp flow: EntryContract -> Allowlist -> TransportGate -> Transport(Stub) -> ProviderAdapter(Stub).
 
-    Returns a report dict with meta, guards, transport, adapter.
+    Returns a report dict with meta, guards, allowlist, transport, adapter.
     """
     env = env or dict(os.environ)
     report: Dict[str, Any] = {
@@ -44,6 +47,7 @@ def run_networked_onramp_v1(
             "qty": qty,
         },
         "guards": {"rc": 0, "msg": ""},
+        "allowlist": {"rc": 0, "msg": ""},
         "transport": {"rc": 0, "msg": ""},
         "adapter": {"rc": 0, "msg": ""},
     }
@@ -66,7 +70,23 @@ def run_networked_onramp_v1(
         report["guards"]["msg"] = str(e)
         return report
 
-    # 2) Transport gate guard (transport_allow=YES => deny, exit 3)
+    # 2) Allowlist guard (allowlist_allow=NO => deny; empty allowlist => deny)
+    if (allowlist_allow or "NO").strip().upper() != "YES":
+        report["allowlist"]["rc"] = 1
+        report["allowlist"]["msg"] = "allowlist_disabled"
+        return report
+
+    al = allowlist or NetworkedAllowlistV1.default_deny()
+    try:
+        guard_allowlist_v1(allowlist=al, adapter=adapter, market=market)
+        report["allowlist"]["rc"] = 0
+        report["allowlist"]["msg"] = "ok"
+    except ExecutionEntryGuardError as e:
+        report["allowlist"]["rc"] = 1
+        report["allowlist"]["msg"] = str(e)
+        return report
+
+    # 3) Transport gate guard (transport_allow=YES => deny, exit 3)
     try:
         guard_transport_gate_v1(
             mode=mode,
@@ -82,7 +102,7 @@ def run_networked_onramp_v1(
         report["transport"]["msg"] = str(e)
         return report
 
-    # 3) Transport stub (returns deny response)
+    # 4) Transport stub (returns deny response)
     ctx: Dict[str, Any] = {
         "mode": mode,
         "dry_run": dry_run,
@@ -98,7 +118,7 @@ def run_networked_onramp_v1(
     report["transport"]["rc"] = 0
     report["transport"]["msg"] = resp.error or "stub_deny"
 
-    # 4) Provider adapter (build_request ok, send_request denies)
+    # 5) Provider adapter (build_request ok, send_request denies)
     try:
         provider = DefaultDenyNetworkedProviderAdapterV1()
         built_req = provider.build_request(
@@ -117,6 +137,7 @@ def run_networked_onramp_v1(
 
     report["meta"]["ok"] = (
         report["guards"]["rc"] == 0
+        and report["allowlist"]["rc"] == 0
         and report["transport"]["rc"] == 0
         and report["adapter"]["rc"] in (0, 1)
     )
