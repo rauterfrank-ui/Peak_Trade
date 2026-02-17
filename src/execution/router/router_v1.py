@@ -46,6 +46,14 @@ class ExecutionRouterV1:
     def batch_cancel(self, order_ids: List[str]) -> int:
         return self._adapter.batch_cancel(order_ids=order_ids)
 
+    def status(self) -> dict:
+        """Return router status with adapter capabilities (for wiring invariants)."""
+        caps = self._adapter.capabilities()
+        return {
+            "ok": True,
+            "adapter": {"name": caps.name},
+        }
+
 
 def build_execution_router_v1(ctx: ExecutionRouterContextV1) -> ExecutionRouterV1:
     if ctx.mode not in _ALLOWED_MODES:
