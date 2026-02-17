@@ -15,6 +15,13 @@ class TransportGateError(RuntimeError):
 
 
 @dataclass(frozen=True)
+class TransportGateV1:
+    """Config for transport gate (transport_allow only; v1 networkless)."""
+
+    transport_allow: str = "NO"
+
+
+@dataclass(frozen=True)
 class TransportDecisionV1:
     ok: bool
     reason: str
@@ -87,6 +94,7 @@ __all__ = [
     "SECRET_ENV_HINTS",
     "TransportDecisionV1",
     "TransportGateError",
+    "TransportGateV1",
     "guard_transport_gate_v1",
     "assert_networkless_v1",
 ]
