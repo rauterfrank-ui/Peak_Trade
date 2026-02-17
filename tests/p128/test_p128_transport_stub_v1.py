@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from src.execution.networked.entry_contract_v1 import ExecutionEntryGuardError
-from src.execution.networked.transport_gate_v1 import TransportGateError, TransportGateV1
+from src.execution.networked.transport_gate_v1 import TransportGateV1
 from src.execution.networked.transport_stub_v1 import (
     HttpRequestV1,
     NetworkedTransportStubV1,
@@ -45,9 +45,12 @@ def test_transport_stub_respects_entry_contract_guard() -> None:
         _ = t.request(request=req, ctx=bad)
 
 
-def test_transport_stub_blocks_if_gate_configured_to_allow_transport_yes() -> None:
+def test_transport_stub_allows_gate_yes_when_shadow_dry_run_returns_stub_deny() -> None:
+    """P132: transport_allow=YES with shadow/dry_run passes gate; stub still returns deny (no I/O)."""
     gate = TransportGateV1(transport_allow="YES")
     t = NetworkedTransportStubV1(gate=gate)
     req = HttpRequestV1(method="GET", url="https://example.invalid", headers={})
-    with pytest.raises(TransportGateError):
-        _ = t.request(request=req, ctx=_ctx_ok())
+    resp = t.request(request=req, ctx=_ctx_ok())
+    assert resp.ok is False
+    assert resp.status_code == 599
+    assert "STUB_DENY" in (resp.error or "") or "no network" in (resp.error or "").lower()

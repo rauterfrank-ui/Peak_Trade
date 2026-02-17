@@ -48,6 +48,7 @@ def run_networked_onramp_v1(
         },
         "guards": {"rc": 0, "msg": ""},
         "allowlist": {"rc": 0, "msg": ""},
+        "transport_gate": {"transport_allow": transport_allow},
         "transport": {"rc": 0, "msg": ""},
         "adapter": {"rc": 0, "msg": ""},
     }
@@ -112,7 +113,7 @@ def run_networked_onramp_v1(
         "qty": qty,
         "env": env,
     }
-    transport = build_networked_transport_stub_v1()
+    transport = build_networked_transport_stub_v1(transport_allow=transport_allow)
     req = HttpRequestV1(method="GET", url="https://example.invalid", headers={})
     resp = transport.request(request=req, ctx=ctx)
     report["transport"]["rc"] = 0

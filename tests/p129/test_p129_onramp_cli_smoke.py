@@ -44,8 +44,8 @@ def test_onramp_cli_default_deny_returns_json() -> None:
     assert "networked_send_denied" in data["adapter"]["msg"]
 
 
-def test_onramp_cli_transport_allow_yes_exits_3() -> None:
-    """transport_allow=YES: TransportGateError, exit 3."""
+def test_onramp_cli_transport_allow_yes_with_allowlist_exits_0_still_networkless() -> None:
+    """P132: transport_allow=YES with allowlist pass exits 0; adapter still denies (rc=1)."""
     result = subprocess.run(
         [
             sys.executable,
@@ -71,10 +71,12 @@ def test_onramp_cli_transport_allow_yes_exits_3() -> None:
         capture_output=True,
         text=True,
     )
-    assert result.returncode == 3
+    assert result.returncode == 0
     data = json.loads(result.stdout)
-    assert data["transport"]["rc"] == 3
-    assert "TRANSPORT_GATE_DENY" in data["transport"]["msg"]
+    assert data["transport_gate"]["transport_allow"] == "YES"
+    assert data["transport"]["rc"] == 0
+    assert data["adapter"]["rc"] == 1
+    assert "networked_send_denied" in data["adapter"]["msg"]
 
 
 def test_onramp_cli_rejects_live_mode() -> None:

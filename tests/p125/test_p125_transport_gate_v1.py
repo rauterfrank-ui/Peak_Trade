@@ -35,17 +35,19 @@ def test_default_transport_allow_is_no():
     assert d.transport_allow == "NO"
 
 
-def test_deny_when_transport_allow_is_yes():
-    with pytest.raises(TransportGateError):
-        guard_transport_gate_v1(
-            mode="shadow",
-            dry_run=True,
-            adapter="mock",
-            intent="place_order",
-            market="BTC-USD",
-            qty=0.01,
-            transport_allow="YES",
-        )
+def test_allow_transport_allow_yes_when_shadow_paper_dry_run():
+    """P132: transport_allow=YES allowed when mode in (shadow,paper) and dry_run=True."""
+    d = guard_transport_gate_v1(
+        mode="shadow",
+        dry_run=True,
+        adapter="mock",
+        intent="place_order",
+        market="BTC-USD",
+        qty=0.01,
+        transport_allow="YES",
+    )
+    assert d.ok is True
+    assert d.transport_allow == "YES"
 
 
 def test_deny_when_secret_env_present():
