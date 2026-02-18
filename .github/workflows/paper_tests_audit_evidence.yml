@@ -122,9 +122,11 @@ jobs:
           PY
 
           # --- policy telemetry summary (best-effort) ---
+          echo '{"action":"NO_TRADE","reason_codes":["AUDIT_MANIFEST_NO_DECISION_CONTEXT"]}' > "${EVI_DIR}/fallback_policy.json"
           python3 scripts/aiops/extract_policy_telemetry_summary.py \
             --manifest "${EVI_DIR}/manifest.json" \
-            --out "${EVI_DIR}/telemetry_summary.json" || true
+            --out "${EVI_DIR}/telemetry_summary.json" \
+            --fallback-policy-json "${EVI_DIR}/fallback_policy.json" || true
           # Re-run manifest to include telemetry_summary.json in items + SHA256SUMS
           python3 - <<'PY'
           import json, os, hashlib

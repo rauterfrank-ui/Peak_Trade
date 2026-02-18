@@ -54,6 +54,11 @@ def main() -> int:
         "--manifest", required=True, help="Path to evidence_manifest.json or manifest.json"
     )
     ap.add_argument("--out", required=True, help="Path to write telemetry_summary.json")
+    ap.add_argument(
+        "--fallback-policy-json",
+        default=None,
+        help="Optional JSON file with policy dict when manifest has no decision.",
+    )
     ns = ap.parse_args()
 
     manifest = Path(ns.manifest)
@@ -61,6 +66,25 @@ def main() -> int:
     outp.parent.mkdir(parents=True, exist_ok=True)
 
     summary = extract_from_evidence_manifest(manifest)
+
+    # Phase K: optional fallback policy when manifest lacks decision context
+    if (not summary.get("policy")) and ns.fallback_policy_json:
+        fp = Path(ns.fallback_policy_json)
+        if fp.exists():
+            try:
+                fb = json.loads(fp.read_text(encoding="utf-8"))
+                if isinstance(fb, dict) and fb:
+                    fb.setdefault("reason_codes", [])
+                    summary["policy"] = fb
+            except Exception:
+                pass
+
+    # Normalize policy shape
+    if "policy" not in summary or summary["policy"] is None:
+        summary["policy"] = {}
+    if isinstance(summary["policy"], dict):
+        summary["policy"].setdefault("reason_codes", [])
+
     outp.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return 0
 
