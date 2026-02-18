@@ -18,4 +18,4 @@ The Policy Telemetry (Real) audit pipeline is complete. All milestones L→R are
 ## Canonical entrypoints
 
 - Index: [docs/ops/registry/INDEX.md](INDEX.md)
-- Operator verify: `scripts/ops/verify_from_registry.sh docs/ops/registry/LATEST_POLICY_TELEMETRY_REAL.pointer --download`
+- Operator verify: `scripts&#47;ops&#47;verify_from_registry.sh docs&#47;ops&#47;registry&#47;LATEST_POLICY_TELEMETRY_REAL.pointer --download`
