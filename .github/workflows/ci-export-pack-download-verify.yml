@@ -1,7 +1,12 @@
-name: CI / Export Pack Download + Verify (Stub)
+name: CI / Export Pack Download + Verify
 
 on:
   workflow_dispatch:
+    inputs:
+      export_id:
+        description: "Optional: pin a specific export_id (else latest)."
+        required: false
+        default: ""
   pull_request:
 
 jobs:
@@ -9,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    # Skip when secrets not configured (allows PR merge; run manually after secrets set)
+    if: ${{ secrets.PT_RCLONE_CONF_B64 != '' }}
 
     steps:
       - name: Checkout
@@ -19,22 +26,93 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Verify tools
+      - name: Install rclone
         run: |
-          python -V
-          bash --version
-          which shasum || true
+          sudo apt-get update
+          sudo apt-get install -y rclone
 
-      # NOTE: This is a stub. Wire to your object storage client later (awscli/rclone/minio).
-      # Goal here is to keep the contract in-repo: after download, run sha256 verification.
-      - name: Download export pack (TODO)
+      - name: Materialize rclone config (read-only)
+        env:
+          PT_RCLONE_CONF_B64: ${{ secrets.PT_RCLONE_CONF_B64 }}
         run: |
-          echo "TODO: download export pack into out/ops/exports_ci/"
-          mkdir -p out/ops/exports_ci
+          test -n "${PT_RCLONE_CONF_B64}"
+          mkdir -p "${HOME}/.config/rclone"
+          echo "${PT_RCLONE_CONF_B64}" | base64 -d > "${HOME}/.config/rclone/rclone.conf"
+          rclone version
+
+      - name: Resolve export_id (pinned or latest)
+        id: resolve
+        env:
+          PT_EXPORT_REMOTE: ${{ secrets.PT_EXPORT_REMOTE }}
+          PT_EXPORT_PREFIX: ${{ secrets.PT_EXPORT_PREFIX }}
+          PT_EXPORT_ID_SECRET: ${{ secrets.PT_EXPORT_ID }}
+          PT_EXPORT_ID_INPUT: ${{ github.event.inputs.export_id }}
+        run: |
+          test -n "${PT_EXPORT_REMOTE}"
+          test -n "${PT_EXPORT_PREFIX}"
+
+          PIN="${PT_EXPORT_ID_INPUT}"
+          if [ -z "${PIN}" ]; then
+            PIN="${PT_EXPORT_ID_SECRET}"
+          fi
+
+          if [ -n "${PIN}" ]; then
+            echo "export_id=${PIN}" >> "${GITHUB_OUTPUT}"
+            echo "Resolved pinned export_id=${PIN}"
+            exit 0
+          fi
+
+          # List directories under prefix and pick lexicographically last (timestamped IDs recommended)
+          # Expect layout: <remote>/<prefix>/export_<export_id>/
+          rclone lsf "${PT_EXPORT_REMOTE}/${PT_EXPORT_PREFIX}" --dirs-only --max-depth 1 | sort | tail -n1 > latest_dir.txt
+          LATEST_DIR="$(cat latest_dir.txt | tr -d '\n')"
+          test -n "${LATEST_DIR}"
+
+          # Strip leading "export_" and trailing "/"
+          EID="${LATEST_DIR%/}"
+          EID="${EID#export_}"
+
+          echo "export_id=${EID}" >> "${GITHUB_OUTPUT}"
+          echo "Resolved latest export_id=${EID} (dir=${LATEST_DIR})"
+
+      - name: Download export pack
+        env:
+          PT_EXPORT_REMOTE: ${{ secrets.PT_EXPORT_REMOTE }}
+          PT_EXPORT_PREFIX: ${{ secrets.PT_EXPORT_PREFIX }}
+        run: |
+          EID="${{ steps.resolve.outputs.export_id }}"
+          test -n "${EID}"
+          OUT="out/ops/exports_ci/export_${EID}"
+          mkdir -p "${OUT}"
+
+          # Copy full pack dir
+          rclone copy "${PT_EXPORT_REMOTE}/${PT_EXPORT_PREFIX}/export_${EID}" "${OUT}" -P
+
+          # Basic presence
+          test -s "${OUT}/manifest.json"
+          test -s "${OUT}/SHA256SUMS.stable.txt"
 
       - name: Verify SHA256SUMS (contract)
         run: |
-          echo "TODO: point this to the downloaded pack dir"
-          # Example:
-          # cd out/ops/exports_ci/export_<id> && shasum -a 256 -c SHA256SUMS.stable.txt
-          true
+          EID="${{ steps.resolve.outputs.export_id }}"
+          OUT="out/ops/exports_ci/export_${EID}"
+          cd "${OUT}"
+
+          # Prefer sha256sum on ubuntu
+          sha256sum -c SHA256SUMS.stable.txt
+
+      - name: Show manifest summary
+        run: |
+          EID="${{ steps.resolve.outputs.export_id }}"
+          OUT="out/ops/exports_ci/export_${EID}"
+          python3 - <<PY
+import json
+from pathlib import Path
+p = Path("${OUT}") / "manifest.json"
+doc = json.loads(p.read_text(encoding="utf-8"))
+print("schema_version:", doc.get("schema_version"))
+print("export_id:", doc.get("export_id"))
+print("created_at_utc:", doc.get("created_at_utc"))
+print("source:", doc.get("source"))
+print("files_count:", len(doc.get("files", [])))
+PY
