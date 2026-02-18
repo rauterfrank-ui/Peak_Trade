@@ -16,6 +16,8 @@ if str(_repo_root) not in sys.path:
     sys.path.insert(0, str(_repo_root))
 
 from src.aiops.p4c.evidence import build_manifest, write_json
+from src.execution import ExecutionPipeline, OrderIntent
+from src.orders.paper import PaperMarketContext
 from src.sim.paper.models import Order
 from src.sim.paper.simulator import FeeModel, PaperAccount, PaperTradingSimulator
 from src.sim.paper.slippage import SlippageModel
@@ -24,6 +26,41 @@ from src.sim.paper.slippage import SlippageModel
 def _env_flag(name: str) -> bool:
     v = os.getenv(name, "").strip().lower()
     return v in ("1", "true", "yes", "on")
+
+
+def _capture_decision_context_from_pipeline(
+    spec: Dict[str, Any], mids: Dict[str, float]
+) -> Dict[str, Any] | None:
+    """Phase H: Run one order through pipeline to capture decision_context (best-effort)."""
+    if not _env_flag("PT_EVIDENCE_INCLUDE_DECISION"):
+        return None
+    orders = spec.get("orders") or []
+    if not orders:
+        return None
+    o = orders[0]
+    symbol_raw = str(o["symbol"])
+    symbol = f"{symbol_raw}/EUR" if "/" not in symbol_raw else symbol_raw
+    mid = mids.get(symbol_raw) or mids.get(symbol)
+    if mid is None:
+        return None
+    try:
+        ctx = PaperMarketContext(
+            prices={symbol: float(mid)},
+            fee_bps=float(spec.get("fee_rate", 0.0)) * 10000.0,
+            slippage_bps=float(spec.get("slippage_bps", 0.0)),
+        )
+        pipeline = ExecutionPipeline.for_paper(ctx)
+        intent = OrderIntent(
+            symbol=symbol,
+            side=str(o["side"]).lower(),
+            quantity=float(o["qty"]),
+            current_price=float(mid),
+        )
+        result = pipeline.submit_order(intent, raise_on_governance_violation=False)
+        dc = (result.metadata or {}).get("decision_context")
+        return dc if isinstance(dc, dict) else None
+    except Exception:
+        return None
 
 
 def _maybe_attach_decision_envelope(path: Path) -> None:
@@ -125,6 +162,9 @@ def main() -> int:
             "created_at_utc": utc_now_iso(),
         }
         manifest = build_manifest(printed, meta, base_dir=outdir)
+        dc = _capture_decision_context_from_pipeline(spec, mids)
+        if isinstance(dc, dict) and dc:
+            manifest["decision_context"] = dc
         out_manifest = outdir / "evidence_manifest.json"
         write_json(out_manifest, manifest)
         _maybe_attach_decision_envelope(out_manifest)
