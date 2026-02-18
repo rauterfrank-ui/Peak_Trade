@@ -356,8 +356,6 @@ class ExecutionResult:
     status: ExecutionStatus = ExecutionStatus.SUCCESS
     environment: Optional[str] = None
     governance_status: Optional[GovernanceStatus] = None
-    # Phase H: decision_context from submit_order (for evidence manifest)
-    metadata: Dict[str, Any] = field(default_factory=dict)
 
     @property
     def is_success(self) -> bool:
@@ -1239,25 +1237,18 @@ class ExecutionPipeline:
             "action": pe.action,
         }
         if not pe.allowed:
-            res = ExecutionResult(
+            return ExecutionResult(
                 rejected=True,
                 reason=f"policy_blocked: {pe.reason_code}",
                 status=ExecutionStatus.BLOCKED_BY_SAFETY,
                 environment=env_str,
                 governance_status=governance_status,
             )
-            res.metadata["decision_context"] = context["decision"]
-            return res
 
         context = context if context else None
 
         # 5. Durch execute_with_safety() ausfuehren
         result = self.execute_with_safety([order], context=context)
-
-        # Phase H: attach decision_context for evidence manifest (paper session)
-        if context and isinstance(context.get("decision"), dict):
-            result.metadata = dict(result.metadata) if result.metadata else {}
-            result.metadata["decision_context"] = context["decision"]
 
         # Phase 16B: Emit fill events if executed
         if result.executed_orders:

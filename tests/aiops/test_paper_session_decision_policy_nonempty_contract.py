@@ -42,4 +42,4 @@ def test_paper_session_cli_decision_policy_nonempty_when_enabled(
     pol = dec.get("policy") or {}
     assert isinstance(pol, dict)
     assert pol.get("action") in ("ALLOW", "NO_TRADE")
-    assert isinstance(pol.get("reason_codes", []), list)
+    assert isinstance(pol.get("reason_codes") or [], list)
