@@ -1,6 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Hash tool portability:
+# - Linux: prefer sha256sum
+# - macOS: shasum -a 256
+if command -v sha256sum >/dev/null 2>&1; then
+  HASH_CMD=(sha256sum)
+  HASH_CHECK=(sha256sum -c)
+elif command -v shasum >/dev/null 2>&1; then
+  HASH_CMD=(shasum -a 256)
+  HASH_CHECK=(shasum -a 256 -c)
+else
+  echo "ERR: no sha256 tool found (need sha256sum or shasum)" >&2
+  exit 2
+fi
+
 # Build an immutable export pack (manifest + stable sha256sums).
 # No execution endpoints. Data production step is a placeholder (user integrates collectors/shadow outputs).
 #
@@ -70,8 +84,8 @@ PY
 (
   cd "${PACK}"
   find . -type f ! -name "SHA256SUMS.stable.txt" -print0 | LC_ALL=C sort -z \
-    | xargs -0 shasum -a 256 > SHA256SUMS.stable.txt
-  shasum -a 256 -c SHA256SUMS.stable.txt >/dev/null
+    | xargs -0 "${HASH_CMD[@]}" > SHA256SUMS.stable.txt
+  "${HASH_CHECK[@]}" SHA256SUMS.stable.txt >/dev/null
 )
 
 echo "OK: export pack built: ${PACK}"
