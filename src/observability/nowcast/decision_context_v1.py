@@ -83,6 +83,7 @@ def build_decision_context_v1(
     source: str = "observability.nowcast.v1",
     ts: Optional[str] = None,
     cost_model: Optional[CostModelV1] = None,
+    extra_inputs: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     _ts = ts or utc_ts()
     cm = cost_model or CostModelV1()
@@ -99,4 +100,41 @@ def build_decision_context_v1(
         current_price=float(current_price) if current_price is not None else None,
         cost_model=cm,
     )
-    return ctx.to_dict()
+    d = ctx.to_dict()
+
+    # Merge extra_inputs (e.g. price_change_bp, mu_bp) into inputs
+    inputs = d.get("inputs") or {}
+    if not isinstance(inputs, dict):
+        inputs = {}
+    if extra_inputs:
+        inputs = {**inputs, **extra_inputs}
+    d["inputs"] = inputs
+
+    # Hardening: costs always dict with float bp fields (None -> 0.0)
+    costs = d.get("costs") or {}
+    if not isinstance(costs, dict):
+        costs = {}
+    for k in ("fees_bp", "slippage_bp", "impact_bp", "latency_bp"):
+        v = costs.get(k)
+        try:
+            costs[k] = float(v) if v is not None else 0.0
+        except (TypeError, ValueError):
+            costs[k] = 0.0
+    d["costs"] = costs
+
+    # Hardening: forecast.mu_bp always float. Prefer inputs.mu_bp or inputs.price_change_bp
+    forecast = d.get("forecast") or {}
+    if not isinstance(forecast, dict):
+        forecast = {}
+    mu = forecast.get("mu_bp")
+    if mu is None:
+        mu = inputs.get("mu_bp")
+    if mu is None:
+        mu = inputs.get("price_change_bp")
+    try:
+        forecast["mu_bp"] = float(mu) if mu is not None else 0.0
+    except (TypeError, ValueError):
+        forecast["mu_bp"] = 0.0
+    d["forecast"] = forecast
+
+    return d
