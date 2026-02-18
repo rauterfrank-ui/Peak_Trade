@@ -53,7 +53,9 @@ class FakeSafetyGuard:
         self.raise_exception = raise_exception
         self.called = False
 
-    def ensure_may_place_order(self, *, is_testnet: bool = False) -> None:
+    def ensure_may_place_order(
+        self, *, is_testnet: bool = False, context: Optional[dict] = None
+    ) -> None:
         """Fake ensure_may_place_order."""
         self.called = True
         if self.raise_exception:

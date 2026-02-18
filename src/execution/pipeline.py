@@ -1194,8 +1194,27 @@ class ExecutionPipeline:
             },
         )
 
-        # 4. Kontext fuer Risk-Check
-        context = {"current_price": intent.current_price} if intent.current_price else None
+        # 4. Kontext fuer Risk-Check (+ DecisionContext envelope)
+        context: Dict[str, Any] = {}
+        if intent.current_price:
+            context["current_price"] = intent.current_price
+
+        context["decision"] = {
+            "ts": None,  # optionally set later where a UTC helper is available
+            "source": "execution.pipeline.submit_order",
+            "symbol": intent.symbol,
+            "side": getattr(intent, "side", None),
+            "qty": intent.quantity,
+            "order_type": getattr(intent, "order_type", None),
+            "session_id": getattr(intent, "session_id", "default"),
+            "policy": {"action": "UNSPECIFIED", "reason_codes": []},
+            "micro": {},
+            "forecast": {},
+            "costs": {},
+            "regime": {},
+        }
+
+        context = context if context else None
 
         # 5. Durch execute_with_safety() ausfuehren
         result = self.execute_with_safety([order], context=context)
@@ -1412,7 +1431,7 @@ class ExecutionPipeline:
                 # SafetyGuard.ensure_may_place_order() wirft Exception bei Blockierung
                 # Wir pruefen nur, ob wir im Testnet sind (fuer is_testnet Flag)
                 is_testnet = self._env_config.is_testnet if self._env_config is not None else False
-                self._safety_guard.ensure_may_place_order(is_testnet=is_testnet)
+                self._safety_guard.ensure_may_place_order(is_testnet=is_testnet, context=context)
             except Exception as e:
                 reason = f"safety_guard_blocked: {str(e)}"
                 logger.warning(f"[EXECUTION PIPELINE] SafetyGuard blockiert Orders: {reason}")

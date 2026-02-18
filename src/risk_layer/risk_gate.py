@@ -8,7 +8,7 @@ Central orchestrator for risk evaluation and audit logging.
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 from src.core.peak_config import PeakConfig
 from src.execution_simple.types import Order
@@ -39,7 +39,7 @@ class RiskGate:
         audit_path = cfg.get("risk.audit_log.path", "./logs/risk_audit.jsonl")
         self.audit_log = AuditLogWriter(audit_path)
 
-    def evaluate(self, order: Union[Order, dict], context: dict | None = None) -> RiskResult:
+    def evaluate(self, order: Union[Order, dict], context: Optional[dict] = None) -> RiskResult:
         """
         Evaluate an order against risk rules.
 
@@ -94,7 +94,7 @@ class RiskGate:
         return RiskResult(decision=decision, audit_event=audit_event)
 
     def _build_audit_event(
-        self, order: Union[Order, dict], decision: RiskDecision, context: dict | None
+        self, order: Union[Order, dict], decision: RiskDecision, context: Optional[dict]
     ) -> dict:
         """
         Build audit event dict.
