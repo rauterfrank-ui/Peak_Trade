@@ -63,10 +63,11 @@ jobs:
           if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
 
       - name: Run Paper Session (offline) + Audit Evidence
-        env:
-          EVI_DIR: "out/ops/gh_paper_session_audit/${{ github.run_id }}_${{ github.run_attempt }}_py${{ matrix.python-version }}"
         run: |
           set -euo pipefail
+          # YAML-safe: define EVI_DIR inside run (avoid step.env parsing edge-cases)
+          EVI_DIR="out/ops/gh_paper_session_audit/${{ github.run_id }}_${{ github.run_attempt }}_py${{ matrix.python-version }}"
+          export EVI_DIR
 
           mkdir -p "${EVI_DIR}"
 
@@ -116,28 +117,28 @@ jobs:
           elif [ "${EP}" = "runner_v1" ] && [ -f src/execution/session/runner_v1.py ]; then
             FOUND="true"
             python - <<'PY' > "${EVI_DIR}/runner_v1_call.txt" 2>&1
-import os
-import json
-from pathlib import Path
+          import os
+          import json
+          from pathlib import Path
 
-from src.execution.session.runner_v1 import ExecutionSessionContextV1, run_execution_session_v1
+          from src.execution.session.runner_v1 import ExecutionSessionContextV1, run_execution_session_v1
 
-ts = __import__("datetime").datetime.now(__import__("datetime").timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-ctx = ExecutionSessionContextV1(
-    mode="paper",
-    adapters=("mock",),
-    intents=("place_order",),
-    market="BTC-USD",
-    side="buy",
-    qty=0.001,
-    dry_run=True,
-    ts_utc=ts,
-)
-res = run_execution_session_v1(ctx)
-print("OK: run_execution_session_v1 returned keys:", sorted(res.keys()) if isinstance(res, dict) else type(res))
-outp = Path(os.environ["EVI_DIR"]) / "runner_v1_result.json"
-outp.write_text(json.dumps(res, indent=2, sort_keys=True, default=str), encoding="utf-8")
-PY
+          ts = __import__("datetime").datetime.now(__import__("datetime").timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+          ctx = ExecutionSessionContextV1(
+              mode="paper",
+              adapters=("mock",),
+              intents=("place_order",),
+              market="BTC-USD",
+              side="buy",
+              qty=0.001,
+              dry_run=True,
+              ts_utc=ts,
+          )
+          res = run_execution_session_v1(ctx)
+          print("OK: run_execution_session_v1 returned keys:", sorted(res.keys()) if isinstance(res, dict) else type(res))
+          outp = Path(os.environ["EVI_DIR"]) / "runner_v1_result.json"
+          outp.write_text(json.dumps(res, indent=2, sort_keys=True, default=str), encoding="utf-8")
+          PY
           else
             echo "NO_ENTRYPOINT_FOUND" | tee "${EVI_DIR}/paper_session_status.txt"
           fi
@@ -151,27 +152,27 @@ PY
 
           # --- manifest + sha256 ---
           python - <<'PY'
-import json
-import os
-import hashlib
-from pathlib import Path
+          import json
+          import os
+          import hashlib
+          from pathlib import Path
 
-evi_dir = Path(os.environ["EVI_DIR"])
-items = []
-for p in sorted(evi_dir.rglob("*")):
-    if p.is_file():
-        h = hashlib.sha256(p.read_bytes()).hexdigest()
-        items.append({"path": str(p.relative_to(evi_dir)), "sha256": h, "bytes": p.stat().st_size})
-manifest = {
-    "schema": "pt.audit.evidence.manifest.v1",
-    "evidence_dir": str(evi_dir),
-    "n_items": len(items),
-    "items": items,
-}
-(evi_dir / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
-(evi_dir / "SHA256SUMS.txt").write_text("\n".join([f'{it["sha256"]}  {it["path"]}' for it in items]) + "\n", encoding="utf-8")
-print("MANIFEST_OK", len(items))
-PY
+          evi_dir = Path(os.environ["EVI_DIR"])
+          items = []
+          for p in sorted(evi_dir.rglob("*")):
+              if p.is_file():
+                  h = hashlib.sha256(p.read_bytes()).hexdigest()
+                  items.append({"path": str(p.relative_to(evi_dir)), "sha256": h, "bytes": p.stat().st_size})
+          manifest = {
+              "schema": "pt.audit.evidence.manifest.v1",
+              "evidence_dir": str(evi_dir),
+              "n_items": len(items),
+              "items": items,
+          }
+          (evi_dir / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
+          (evi_dir / "SHA256SUMS.txt").write_text("\n".join([f'{it["sha256"]}  {it["path"]}' for it in items]) + "\n", encoding="utf-8")
+          print("MANIFEST_OK", len(items))
+          PY
 
       - name: Upload artifact (audit evidence)
         if: always()
