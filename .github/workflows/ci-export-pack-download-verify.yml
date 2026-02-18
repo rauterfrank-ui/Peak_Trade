@@ -1,0 +1,40 @@
+name: CI / Export Pack Download + Verify (Stub)
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  export-pack-verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify tools
+        run: |
+          python -V
+          bash --version
+          which shasum || true
+
+      # NOTE: This is a stub. Wire to your object storage client later (awscli/rclone/minio).
+      # Goal here is to keep the contract in-repo: after download, run sha256 verification.
+      - name: Download export pack (TODO)
+        run: |
+          echo "TODO: download export pack into out/ops/exports_ci/"
+          mkdir -p out/ops/exports_ci
+
+      - name: Verify SHA256SUMS (contract)
+        run: |
+          echo "TODO: point this to the downloaded pack dir"
+          # Example:
+          # cd out/ops/exports_ci/export_<id> && shasum -a 256 -c SHA256SUMS.stable.txt
+          true

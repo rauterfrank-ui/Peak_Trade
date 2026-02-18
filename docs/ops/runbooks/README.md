@@ -63,6 +63,7 @@ Runbooks for specific phase implementations and workflows:
 - [RUNBOOK_PHASE8_DOCS_INTEGRITY_HARDENING_CURSOR_MULTI_AGENT.md](RUNBOOK_PHASE8_DOCS_INTEGRITY_HARDENING_CURSOR_MULTI_AGENT.md) — Phase 8 docs integrity hardening
 - [RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md](RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md) — Workflow docs integration
 - [Phase T — Data Node + Immutable Export Channel + GitHub Consumer](PHASE_T_DATA_NODE_EXPORT_CHANNEL.md) — Data Node, export packs, GitHub consumer (audit-safe)
+- [Phase U — Data Node Bootstrap (Ubuntu) + Hardening](PHASE_U_DATA_NODE_BOOTSTRAP.md) — Server bootstrap checklist, exporter skeleton, object storage template
 
 ### Runbook B — Execution Gates (B5/B3/B2)
 
