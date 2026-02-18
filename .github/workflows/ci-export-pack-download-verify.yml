@@ -1,6 +1,6 @@
 name: CI / Export Pack Download + Verify
 
-on:
+"on":
   workflow_dispatch:
     inputs:
       export_id:
@@ -102,17 +102,7 @@ jobs:
           sha256sum -c SHA256SUMS.stable.txt
 
       - name: Show manifest summary
+        env:
+          OUT: "out/ops/exports_ci/export_${{ steps.resolve.outputs.export_id }}"
         run: |
-          EID="${{ steps.resolve.outputs.export_id }}"
-          OUT="out/ops/exports_ci/export_${EID}"
-          python3 - <<PY
-import json
-from pathlib import Path
-p = Path("${OUT}") / "manifest.json"
-doc = json.loads(p.read_text(encoding="utf-8"))
-print("schema_version:", doc.get("schema_version"))
-print("export_id:", doc.get("export_id"))
-print("created_at_utc:", doc.get("created_at_utc"))
-print("source:", doc.get("source"))
-print("files_count:", len(doc.get("files", [])))
-PY
+          python3 -c "import json,os; from pathlib import Path; p=Path(os.environ['OUT'])/'manifest.json'; d=json.loads(p.read_text()); print('schema_version:', d.get('schema_version')); print('export_id:', d.get('export_id')); print('created_at_utc:', d.get('created_at_utc')); print('source:', d.get('source')); print('files_count:', len(d.get('files',[])))"
