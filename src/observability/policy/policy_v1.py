@@ -65,7 +65,9 @@ def decide_policy_v1(*, env: str, decision: dict[str, Any]) -> PolicyDecisionV1:
 
     costs = (decision or {}).get("costs")
     if not isinstance(costs, dict):
-        return PolicyDecisionV1(action="NO_TRADE", reason_codes=["MISSING_COSTS_V1"], metadata={"env": env})
+        return PolicyDecisionV1(
+            action="NO_TRADE", reason_codes=["MISSING_COSTS_V1"], metadata={"env": env}
+        )
 
     fees_bp = costs.get("fees_bp")
     slippage_bp = costs.get("slippage_bp")

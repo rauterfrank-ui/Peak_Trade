@@ -4,7 +4,11 @@ from src.observability.policy.policy_v1 import decide_policy_v1
 
 
 def test_policy_v1_blocks_live():
-    d = {"inputs": {"current_price": 100.0}, "costs": {"fees_bp": 1.0}, "forecast": {"mu_bp": 100.0}}
+    d = {
+        "inputs": {"current_price": 100.0},
+        "costs": {"fees_bp": 1.0},
+        "forecast": {"mu_bp": 100.0},
+    }
     p = decide_policy_v1(env="live", decision=d)
     assert p.action == "NO_TRADE"
     assert "ENV_LIVE" in p.reason_codes
