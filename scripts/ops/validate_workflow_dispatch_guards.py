@@ -29,9 +29,10 @@ INPUT_REF_BRACKET_RE = re.compile(r"github\.event\.inputs\[\s*[\"']([A-Za-z0-9_-
 MISUSED_INPUTS_DOT_RE = re.compile(r"(?<!github\.event\.)\binputs\.([A-Za-z0-9_-]+)\b")
 
 INLINE_ON_DISPATCH_RE = re.compile(
-    r"^\s*on:\s*(\[[^\]]*\bworkflow_dispatch\b[^\]]*\]|workflow_dispatch\b|{.*\bworkflow_dispatch\b.*})\s*$"
+    r"^\s*[\"']?on[\"']?\s*:\s*(\[[^\]]*\bworkflow_dispatch\b[^\]]*\]|workflow_dispatch\b|{.*\bworkflow_dispatch\b.*})\s*$"
 )
-ON_BLOCK_RE = re.compile(r"^\s*on:\s*$")
+# Match both "on": and on: (YAML allows quoting keys; "on" is needed to avoid parsing as boolean)
+ON_BLOCK_RE = re.compile(r"^\s*[\"']?on[\"']?\s*:\s*$")
 WORKFLOW_DISPATCH_KEY_RE = re.compile(r"^\s*workflow_dispatch:\s*$")
 INPUTS_KEY_RE = re.compile(r"^\s*inputs:\s*$")
 # Captures YAML keys like:  foo_bar-1:
