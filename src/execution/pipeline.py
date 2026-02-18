@@ -38,6 +38,7 @@ from typing import Any, Dict, Iterable, List, Literal, Optional, Sequence, TYPE_
 from src.observability.nowcast.decision_context_v1 import build_decision_context_v1
 from src.observability.policy.policy_v0 import decide_policy_v0
 from src.execution.policy import PolicyEnforcerV0
+from src.core.performance import performance_monitor
 
 import pandas as pd
 
@@ -1219,7 +1220,14 @@ class ExecutionPipeline:
         context["decision"]["policy"] = _policy
 
         # Phase C: Enforce policy (v0, default OFF)
-        pe = self._policy_enforcer_v0.evaluate(env=env_str, policy=_policy)
+        with performance_monitor.measure("policy_enforce_v0"):
+            pe = self._policy_enforcer_v0.evaluate(env=env_str, policy=_policy)
+        # Audit telemetry: decision + reason code
+        performance_monitor.record(
+            "policy_enforce_v0_decision",
+            0.0,
+            metadata={"allowed": bool(pe.allowed), "reason_code": pe.reason_code, "env": env_str},
+        )
         context["decision"]["policy_enforce"] = {
             "allowed": bool(pe.allowed),
             "reason_code": pe.reason_code,
