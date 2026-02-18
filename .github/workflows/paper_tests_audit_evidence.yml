@@ -1,0 +1,126 @@
+name: paper-tests-audit-evidence
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: "Test scope: execution (default) or full (if available)"
+        required: true
+        default: "execution"
+        type: choice
+        options:
+          - execution
+          - full
+      note:
+        description: "Optional operator note (audit metadata)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  paper_tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      # Hard safety: never live/testnet from this workflow
+      PEAK_TRADE_TESTNET_ONLY: "false"
+      PEAK_TRADE_LIVE_ENABLED: "false"
+      PEAK_TRADE_LIVE_ARMED: "false"
+      PT_DRY_RUN: "1"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "${{ matrix.python-version }}"
+
+      - name: Install
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+
+      - name: Paper Tests + Audit Evidence (offline)
+        env:
+          EVI_DIR: "out/ops/gh_paper_tests_audit/${{ github.run_id }}_${{ github.run_attempt }}_py${{ matrix.python-version }}"
+        run: |
+          set -euo pipefail
+
+          EVI_DIR="${EVI_DIR}"
+          mkdir -p "${EVI_DIR}"
+
+          # --- audit metadata (run params) ---
+          {
+            echo "ts_utc=$(date -u +%Y%m%dT%H%M%SZ)"
+            echo "workflow=${{ github.workflow }}"
+            echo "run_id=${{ github.run_id }}"
+            echo "run_attempt=${{ github.run_attempt }}"
+            echo "job=${{ github.job }}"
+            echo "ref=${{ github.ref }}"
+            echo "sha=${{ github.sha }}"
+            echo "actor=${{ github.actor }}"
+            echo "scope=${{ github.event.inputs.scope }}"
+            echo "note=${{ github.event.inputs.note }}"
+            echo "safety.PEAK_TRADE_LIVE_ENABLED=${PEAK_TRADE_LIVE_ENABLED}"
+            echo "safety.PEAK_TRADE_LIVE_ARMED=${PEAK_TRADE_LIVE_ARMED}"
+            echo "safety.PT_DRY_RUN=${PT_DRY_RUN}"
+          } | tee "${EVI_DIR}/run_params.txt"
+
+          python -V | tee "${EVI_DIR}/python_version.txt"
+
+          # --- test run (scope) ---
+          if [ "${{ github.event.inputs.scope }}" = "full" ]; then
+            python -m pytest -q | tee "${EVI_DIR}/pytest_full.txt"
+          else
+            python -m pytest -q tests/execution | tee "${EVI_DIR}/pytest_execution.txt"
+          fi
+
+          # --- runner_v1 import smoke (does not fail job) ---
+          if [ -f src/execution/session/runner_v1.py ]; then
+            python -c "import importlib; importlib.import_module('src.execution.session.runner_v1'); print('OK: runner_v1 import')" \
+              | tee "${EVI_DIR}/runner_v1_import.txt" || true
+          else
+            echo "SKIP: src/execution/session/runner_v1.py not found" | tee "${EVI_DIR}/runner_v1_import.txt"
+          fi
+
+          # --- manifest (audit index for artifact contents) ---
+          python3 - <<'PY'
+          import json, os, hashlib
+          from pathlib import Path
+
+          evi_dir = Path(os.environ["EVI_DIR"])
+          items = []
+          for p in sorted(evi_dir.rglob("*")):
+              if p.is_file():
+                  h = hashlib.sha256(p.read_bytes()).hexdigest()
+                  items.append({"path": str(p.relative_to(evi_dir)), "sha256": h, "bytes": p.stat().st_size})
+          manifest = {
+              "schema": "pt.audit.evidence.manifest.v1",
+              "evidence_dir": str(evi_dir),
+              "n_items": len(items),
+              "items": items,
+          }
+          (evi_dir / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
+          (evi_dir / "SHA256SUMS.txt").write_text("\n".join([f'{it["sha256"]}  {it["path"]}' for it in items]) + "\n", encoding="utf-8")
+          print("MANIFEST_OK", len(items))
+          PY
+
+      - name: Upload artifact (audit evidence)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gh-paper-tests-audit-evidence-py${{ matrix.python-version }}
+          path: |
+            out/ops/gh_paper_tests_audit/**
