@@ -1,0 +1,37 @@
+name: weekly-core-audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      note:
+        description: "Optional operator note"
+        required: false
+        default: "weekly core audit"
+  schedule:
+    - cron: "0 5 * * 1"  # Mondays 05:00 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  call_paper_audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Dispatch paper-tests-audit-evidence (execution scope)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const payloadInputs = context.payload.inputs;
+            const noteVal = payloadInputs && payloadInputs.note ? payloadInputs.note : "weekly core audit";
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: "paper_tests_audit_evidence.yml",
+              ref: context.ref ? context.ref.replace("refs/heads/", "") : "main",
+              inputs: {
+                scope: "execution",
+                note: noteVal
+              }
+            });
+            core.info("Dispatched paper_tests_audit_evidence.yml");

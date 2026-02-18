@@ -2,6 +2,10 @@ name: paper-tests-audit-evidence
 
 on:
   workflow_dispatch:
+  # optional weekly schedule (disabled by default; uncomment if desired)
+  # schedule:
+  #   - cron: "0 4 * * 1"
+
     inputs:
       scope:
         description: "Test scope: execution (default) or full (if available)"
@@ -116,6 +120,16 @@ jobs:
           (evi_dir / "SHA256SUMS.txt").write_text("\n".join([f'{it["sha256"]}  {it["path"]}' for it in items]) + "\n", encoding="utf-8")
           print("MANIFEST_OK", len(items))
           PY
+
+      - name: Evidence Pack Gate (best-effort)
+        if: always()
+        run: |
+          set -euo pipefail
+          if [ -x scripts/governance/validate_evidence_pack.sh ]; then
+            scripts/governance/validate_evidence_pack.sh || true
+          else
+            echo "SKIP: scripts/governance/validate_evidence_pack.sh not found"
+          fi
 
       - name: Upload artifact (audit evidence)
         if: always()
