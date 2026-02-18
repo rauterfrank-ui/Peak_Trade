@@ -35,6 +35,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, Iterable, List, Literal, Optional, Sequence, TYPE_CHECKING, Union
+from src.observability.nowcast.decision_context_v0 import build_decision_context_v0
 
 import pandas as pd
 
@@ -1199,20 +1200,13 @@ class ExecutionPipeline:
         if intent.current_price:
             context["current_price"] = intent.current_price
 
-        context["decision"] = {
-            "ts": None,  # optionally set later where a UTC helper is available
-            "source": "execution.pipeline.submit_order",
-            "symbol": intent.symbol,
-            "side": getattr(intent, "side", None),
-            "qty": intent.quantity,
-            "order_type": getattr(intent, "order_type", None),
-            "session_id": getattr(intent, "session_id", "default"),
-            "policy": {"action": "UNSPECIFIED", "reason_codes": []},
-            "micro": {},
-            "forecast": {},
-            "costs": {},
-            "regime": {},
-        }
+        is_testnet = self._env_config.is_testnet if self._env_config is not None else False
+        context["decision"] = build_decision_context_v0(
+            intent=intent,
+            env=env_str,
+            is_testnet=is_testnet,
+            source="execution.pipeline.submit_order",
+        )
 
         context = context if context else None
 
