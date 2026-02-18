@@ -2,6 +2,8 @@
 
 This directory contains stable pointers to important audit milestones.
 
+**Canonical index:** [INDEX.md](INDEX.md) — Pipeline L→R summary + operator entrypoint.
+
 ## Verify a milestone (operator shortcut)
 
 Preferred:
