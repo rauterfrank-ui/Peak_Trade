@@ -1,0 +1,91 @@
+name: shadow-paper-smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Mode: paper or shadow (offline)"
+        required: true
+        default: "paper"
+        type: choice
+        options:
+          - paper
+          - shadow
+      adapters:
+        description: "Comma-separated adapters (e.g. mock,coinbase,bybit). Defaults to mock."
+        required: false
+        default: "mock"
+      intents:
+        description: "Comma-separated intents (place_order,cancel_all). Defaults to place_order."
+        required: false
+        default: "place_order"
+      market:
+        description: "Symbol/market (e.g. BTC/USDT)."
+        required: false
+        default: "BTC/USDT"
+  # optional weekly schedule (disabled by default; uncomment if desired)
+  # schedule:
+  #   - cron: "0 3 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    env:
+      # Hard safety: no live/testnet
+      PEAK_TRADE_TESTNET_ONLY: "false"
+      PEAK_TRADE_LIVE_ENABLED: "false"
+      PEAK_TRADE_LIVE_ARMED: "false"
+      PT_DRY_RUN: "1"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "${{ matrix.python-version }}"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+
+      - name: Smoke (execution tests + session runner)
+        run: |
+          set -euo pipefail
+          mkdir -p out/ops/gh_shadow_paper_smoke
+
+          echo "mode=${{ github.event.inputs.mode }}" | tee out/ops/gh_shadow_paper_smoke/run_params.txt
+          echo "adapters=${{ github.event.inputs.adapters }}" | tee -a out/ops/gh_shadow_paper_smoke/run_params.txt
+          echo "intents=${{ github.event.inputs.intents }}" | tee -a out/ops/gh_shadow_paper_smoke/run_params.txt
+          echo "market=${{ github.event.inputs.market }}" | tee -a out/ops/gh_shadow_paper_smoke/run_params.txt
+          python -V | tee out/ops/gh_shadow_paper_smoke/python_version.txt
+
+          # High-signal unit/integration slice
+          python -m pytest -q tests/execution | tee out/ops/gh_shadow_paper_smoke/pytest_execution.txt
+
+          # Offline session runner v1 (best-effort; does not fail the job if runner signature differs)
+          if [ -f src/execution/session/runner_v1.py ]; then
+            python -c "import importlib; importlib.import_module('src.execution.session.runner_v1')" \
+              | tee out/ops/gh_shadow_paper_smoke/runner_import.txt || true
+          fi
+
+      - name: Upload artifact (evidence)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gh-shadow-paper-smoke-${{ github.event.inputs.mode }}-py${{ matrix.python-version }}
+          path: |
+            out/ops/gh_shadow_paper_smoke/**
