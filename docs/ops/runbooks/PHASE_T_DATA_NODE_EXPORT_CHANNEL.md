@@ -91,12 +91,12 @@ Repository contains compose files; deploy only **data-plane** services:
 ## T.3 Define the Export Contract
 ### Directory layout (example)
 Object Storage bucket `peaktrade-exports`:
-- `exports/`
-  - `policy_telemetry_real/`
-    - `export_<export_id>/`
+- `exports&#47;`
+  - `policy_telemetry_real&#47;`
+    - `export_<export_id>&#47;`
       - `manifest.json`
       - `SHA256SUMS.stable.txt`
-      - `data/....`
+      - `data&#47;....`
 
 ### Required fields in `manifest.json` (minimum)
 - `schema_version`
@@ -119,7 +119,7 @@ Object Storage bucket `peaktrade-exports`:
 
 ## T.4 Implement Export Job (Data Node)
 Export Job produces a pack locally under:
-- `out/ops/exports/export_<export_id>/...`
+- `out&#47;ops&#47;exports&#47;export_<export_id>&#47;...`
 Then uploads to object storage (outbound).
 
 **Implementation options**
