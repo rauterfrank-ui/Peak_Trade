@@ -2,8 +2,16 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from typing import Any, Optional
+
+
+def _env_flag(name: str, default: bool = False) -> bool:
+    v = ("" if os.environ.get(name) is None else str(os.environ.get(name))).strip().lower()
+    if v == "":
+        return default
+    return v in {"1", "true", "yes", "on"}
 
 
 @dataclass(frozen=True)
@@ -23,6 +31,12 @@ class PolicyEnforcerV0:
     - If env is live -> block
     - If policy.action == "NO_TRADE" -> block
     """
+
+    @classmethod
+    def from_env(cls) -> "PolicyEnforcerV0":
+        """Create instance from PT_POLICY_ENFORCE_V0 env (default OFF)."""
+        enforce = _env_flag("PT_POLICY_ENFORCE_V0", default=False)
+        return cls(enforce=enforce)
 
     def __init__(self, *, enforce: bool = False) -> None:
         self.enforce = enforce
