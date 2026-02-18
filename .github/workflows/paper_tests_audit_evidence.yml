@@ -124,7 +124,22 @@ jobs:
           # --- policy telemetry summary (best-effort) ---
           python3 scripts/aiops/extract_policy_telemetry_summary.py \
             --manifest "${EVI_DIR}/manifest.json" \
-            --out "${EVI_DIR}/telemetry_summary.json"
+            --out "${EVI_DIR}/telemetry_summary.json" || true
+          # Re-run manifest to include telemetry_summary.json in items + SHA256SUMS
+          python3 - <<'PY'
+          import json, os, hashlib
+          from pathlib import Path
+          evi_dir = Path(os.environ["EVI_DIR"])
+          items = []
+          for p in sorted(evi_dir.rglob("*")):
+              if p.is_file():
+                  h = hashlib.sha256(p.read_bytes()).hexdigest()
+                  items.append({"path": str(p.relative_to(evi_dir)), "sha256": h, "bytes": p.stat().st_size})
+          manifest = {"schema": "pt.audit.evidence.manifest.v1", "evidence_dir": str(evi_dir), "n_items": len(items), "items": items}
+          (evi_dir / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
+          (evi_dir / "SHA256SUMS.txt").write_text("\n".join([f'{it["sha256"]}  {it["path"]}' for it in items]) + "\n", encoding="utf-8")
+          print("MANIFEST_OK", len(items))
+          PY
 
       - name: Evidence Pack Gate (best-effort)
         if: always()
