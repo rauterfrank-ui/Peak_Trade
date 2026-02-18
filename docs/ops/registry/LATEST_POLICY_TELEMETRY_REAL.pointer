@@ -1,0 +1,6 @@
+phase=M
+rid=22156880821
+done=out/ops/done/PHASE_M_SMOKE_20260218T204532Z_RID_22156880821.txt
+snapshot=out/ops/snapshots/PHASE_M_SMOKE_20260218T204533Z_RID_22156880821.md
+pack=out/ops/evidence_packs/pack_phase_m_smoke_22156880821
+phase_index=out/ops/index_phase_m_smokes.md
