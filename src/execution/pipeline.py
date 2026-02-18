@@ -35,7 +35,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, Iterable, List, Literal, Optional, Sequence, TYPE_CHECKING, Union
-from src.observability.nowcast.decision_context_v0 import build_decision_context_v0
+from src.observability.nowcast.decision_context_v1 import build_decision_context_v1
 
 import pandas as pd
 
@@ -1201,10 +1201,11 @@ class ExecutionPipeline:
             context["current_price"] = intent.current_price
 
         is_testnet = self._env_config.is_testnet if self._env_config is not None else False
-        context["decision"] = build_decision_context_v0(
+        context["decision"] = build_decision_context_v1(
             intent=intent,
             env=env_str,
             is_testnet=is_testnet,
+            current_price=getattr(intent, "current_price", None),
             source="execution.pipeline.submit_order",
         )
 
