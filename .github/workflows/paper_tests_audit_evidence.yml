@@ -121,6 +121,11 @@ jobs:
           print("MANIFEST_OK", len(items))
           PY
 
+          # --- policy telemetry summary (best-effort) ---
+          python3 scripts/aiops/extract_policy_telemetry_summary.py \
+            --manifest "${EVI_DIR}/manifest.json" \
+            --out "${EVI_DIR}/telemetry_summary.json"
+
       - name: Evidence Pack Gate (best-effort)
         if: always()
         run: |
