@@ -12,7 +12,9 @@ HAS_SUPERVISOR = SUP_BASE.exists() and bool(list(SUP_BASE.glob("run_*")))
 def _p95_launchd_ready() -> bool:
     """True if p95 meta gate would pass (launchd jobs present)."""
     try:
-        uid = subprocess.run(["id", "-u"], capture_output=True, text=True, check=True).stdout.strip()
+        uid = subprocess.run(
+            ["id", "-u"], capture_output=True, text=True, check=True
+        ).stdout.strip()
         r = subprocess.run(
             ["launchctl", "print", f"gui/{uid}/com.peaktrade.p93-status-dashboard"],
             capture_output=True,
