@@ -99,6 +99,14 @@ jobs:
             echo "SKIP: src/execution/session/runner_v1.py not found" | tee "${EVI_DIR}/runner_v1_import.txt"
           fi
 
+          # --- produce evidence_manifest (paper session, deterministic, Phase L) ---
+          PT_EVIDENCE_INCLUDE_DECISION=1 python3 scripts/aiops/run_paper_trading_session.py \
+            --spec "tests/fixtures/p7/paper_run_min_v0.json" \
+            --run-id "ci_smoke" \
+            --outdir "${EVI_DIR}/session_out" \
+            --evidence 1
+          test -f "${EVI_DIR}/session_out/evidence_manifest.json"
+
           # --- manifest (audit index for artifact contents) ---
           python3 - <<'PY'
           import json, os, hashlib
@@ -121,12 +129,22 @@ jobs:
           print("MANIFEST_OK", len(items))
           PY
 
-          # --- policy telemetry summary (best-effort) ---
-          echo '{"action":"NO_TRADE","reason_codes":["AUDIT_MANIFEST_NO_DECISION_CONTEXT"]}' > "${EVI_DIR}/fallback_policy.json"
+          # --- policy telemetry summary (Phase L: real policy from evidence_manifest) ---
           python3 scripts/aiops/extract_policy_telemetry_summary.py \
-            --manifest "${EVI_DIR}/manifest.json" \
-            --out "${EVI_DIR}/telemetry_summary.json" \
-            --fallback-policy-json "${EVI_DIR}/fallback_policy.json" || true
+            --manifest "${EVI_DIR}/session_out/evidence_manifest.json" \
+            --out "${EVI_DIR}/telemetry_summary.json"
+          python3 -c '
+          import json
+          d=json.load(open("'"${EVI_DIR}"'/telemetry_summary.json","r",encoding="utf-8"))
+          assert isinstance(d,dict)
+          pol=d.get("policy") or {}
+          assert isinstance(pol,dict) and pol, "policy must be non-empty"
+          assert pol.get("action") in ("ALLOW","NO_TRADE"), "missing/invalid policy.action"
+          rc=pol.get("reason_codes",[])
+          assert isinstance(rc,list), "reason_codes must be list"
+          assert "AUDIT_MANIFEST_NO_DECISION_CONTEXT" not in rc, "policy must be real, not fallback"
+          print("policy_action=",pol.get("action"),"reason_codes_n=",len(rc))
+          '
           # Re-run manifest to include telemetry_summary.json in items + SHA256SUMS
           python3 - <<'PY'
           import json, os, hashlib
