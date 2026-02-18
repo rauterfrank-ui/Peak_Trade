@@ -70,11 +70,7 @@ def validate_summary(path: Path) -> Tuple[bool, str]:
 
 def write_sha256sums(pack_dir: Path) -> Path:
     sums = pack_dir / "SHA256SUMS.stable.txt"
-    files = [
-        p
-        for p in pack_dir.rglob("*")
-        if p.is_file() and p.name != sums.name
-    ]
+    files = [p for p in pack_dir.rglob("*") if p.is_file() and p.name != sums.name]
     files_sorted = sorted([str(p.relative_to(pack_dir).as_posix()) for p in files])
     lines: List[str] = []
     for rel in files_sorted:
@@ -125,9 +121,7 @@ def main() -> None:
     artifacts_root = args.out_base / run_id
     if args.download or not artifacts_root.exists():
         if not args.download and not artifacts_root.exists():
-            raise SystemExit(
-                f"ERR: artifacts missing at {artifacts_root}. Re-run with --download."
-            )
+            raise SystemExit(f"ERR: artifacts missing at {artifacts_root}. Re-run with --download.")
         maybe_download(run_id, args.out_base)
 
     summaries = find_telemetry_summaries(artifacts_root)
