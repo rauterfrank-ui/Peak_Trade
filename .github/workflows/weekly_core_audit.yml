@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: read
+  actions: write  # required for createWorkflowDispatch
 
 jobs:
   call_paper_audit:
