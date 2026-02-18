@@ -3,27 +3,18 @@ name: paper-session-audit-evidence
 on:
   workflow_dispatch:
     inputs:
-      entrypoint:
-        description: "Entrypoint: auto | scripts/aiops/run_paper_trading_session.py | runner_v1"
+      spec:
+        description: "Paper run spec JSON (repo path)"
         required: true
-        default: "auto"
-        type: choice
-        options:
-          - auto
-          - scripts/aiops/run_paper_trading_session.py
-          - runner_v1
+        default: "tests/fixtures/p7/paper_run_min_v0.json"
+      run_id:
+        description: "Deterministic run id"
+        required: true
+        default: "ci_smoke"
       note:
         description: "Optional operator note (audit metadata)"
         required: false
         default: ""
-      require_entrypoint:
-        description: "If true, fail the run when no entrypoint is found"
-        required: true
-        default: "false"
-        type: choice
-        options:
-          - "false"
-          - "true"
 
 permissions:
   contents: read
@@ -81,9 +72,9 @@ jobs:
             echo "ref=${{ github.ref }}"
             echo "sha=${{ github.sha }}"
             echo "actor=${{ github.actor }}"
-            echo "entrypoint=${{ github.event.inputs.entrypoint }}"
+            echo "spec=${{ github.event.inputs.spec }}"
             echo "note=${{ github.event.inputs.note }}"
-            echo "require_entrypoint=${{ github.event.inputs.require_entrypoint }}"
+            echo "run_id=${{ github.event.inputs.run_id }}"
             echo "safety.PEAK_TRADE_LIVE_ENABLED=${PEAK_TRADE_LIVE_ENABLED}"
             echo "safety.PEAK_TRADE_LIVE_ARMED=${PEAK_TRADE_LIVE_ARMED}"
             echo "safety.PT_DRY_RUN=${PT_DRY_RUN}"
@@ -91,64 +82,26 @@ jobs:
 
           python -V | tee "${EVI_DIR}/python_version.txt"
 
-          # --- resolve entrypoint ---
-          EP="${{ github.event.inputs.entrypoint }}"
-          FOUND="false"
+          # --- canonical paper session runner (deterministic) ---
+          SESSION_OUT="${EVI_DIR}/session_out"
+          mkdir -p "${SESSION_OUT}"
+          echo "session_out=${SESSION_OUT}" | tee "${EVI_DIR}/paper_session_status.txt"
 
-          if [ "${EP}" = "auto" ]; then
-            if [ -f scripts/aiops/run_paper_trading_session.py ]; then
-              EP="scripts/aiops/run_paper_trading_session.py"
-            else
-              EP="runner_v1"
-            fi
-          fi
+          # Help (for audit)
+          python scripts/aiops/run_paper_trading_session.py --help > "${EVI_DIR}/paper_session_help.txt" 2>&1 || true
 
-          echo "resolved_entrypoint=${EP}" | tee "${EVI_DIR}/resolved_entrypoint.txt"
+          # Execute deterministically on fixture spec
+          python scripts/aiops/run_paper_trading_session.py \
+            --spec "${{ github.event.inputs.spec }}" \
+            --run-id "${{ github.event.inputs.run_id }}" \
+            --outdir "${SESSION_OUT}" \
+            --evidence 1 \
+            > "${EVI_DIR}/paper_session_stdout.txt" 2> "${EVI_DIR}/paper_session_stderr.txt"
 
-          # --- execute (best-effort) ---
-          if [ "${EP}" = "scripts/aiops/run_paper_trading_session.py" ] && [ -f scripts/aiops/run_paper_trading_session.py ]; then
-            FOUND="true"
-            (python scripts/aiops/run_paper_trading_session.py --help || true) > "${EVI_DIR}/paper_session_help.txt" 2>&1
-            python scripts/aiops/run_paper_trading_session.py \
-              --spec tests/fixtures/p7/paper_run_min_v0.json \
-              --run-id "ci_audit_${{ github.run_id }}_py${{ matrix.python-version }}" \
-              --outdir "${EVI_DIR}" \
-              > "${EVI_DIR}/paper_session_stdout.txt" 2> "${EVI_DIR}/paper_session_stderr.txt"
-          elif [ "${EP}" = "runner_v1" ] && [ -f src/execution/session/runner_v1.py ]; then
-            FOUND="true"
-            python - <<'PY' > "${EVI_DIR}/runner_v1_call.txt" 2>&1
-          import os
-          import json
-          from pathlib import Path
-
-          from src.execution.session.runner_v1 import ExecutionSessionContextV1, run_execution_session_v1
-
-          ts = __import__("datetime").datetime.now(__import__("datetime").timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-          ctx = ExecutionSessionContextV1(
-              mode="paper",
-              adapters=("mock",),
-              intents=("place_order",),
-              market="BTC-USD",
-              side="buy",
-              qty=0.001,
-              dry_run=True,
-              ts_utc=ts,
-          )
-          res = run_execution_session_v1(ctx)
-          print("OK: run_execution_session_v1 returned keys:", sorted(res.keys()) if isinstance(res, dict) else type(res))
-          outp = Path(os.environ["EVI_DIR"]) / "runner_v1_result.json"
-          outp.write_text(json.dumps(res, indent=2, sort_keys=True, default=str), encoding="utf-8")
-          PY
-          else
-            echo "NO_ENTRYPOINT_FOUND" | tee "${EVI_DIR}/paper_session_status.txt"
-          fi
-
-          echo "found_entrypoint=${FOUND}" | tee -a "${EVI_DIR}/paper_session_status.txt"
-
-          if [ "${FOUND}" = "false" ] && [ "${{ github.event.inputs.require_entrypoint }}" = "true" ]; then
-            echo "ERROR: require_entrypoint=true but no entrypoint found" | tee -a "${EVI_DIR}/paper_session_status.txt"
-            exit 2
-          fi
+          # Expected outputs (fail if missing)
+          test -f "${SESSION_OUT}/fills.json"
+          test -f "${SESSION_OUT}/account.json"
+          test -f "${SESSION_OUT}/evidence_manifest.json"
 
           # --- manifest + sha256 ---
           python - <<'PY'
