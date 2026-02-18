@@ -31,6 +31,7 @@ jobs:
       PEAK_TRADE_LIVE_ENABLED: "false"
       PEAK_TRADE_LIVE_ARMED: "false"
       PT_DRY_RUN: "1"
+      PT_EVIDENCE_INCLUDE_DECISION: "1"
 
     strategy:
       fail-fast: false
