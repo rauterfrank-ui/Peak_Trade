@@ -4,6 +4,10 @@ set -euo pipefail
 # Hash tool portability:
 # - Linux: prefer sha256sum
 # - macOS: shasum -a 256
+#
+# Arrays are used later for:
+# - generating SHA256SUMS.stable.txt via xargs
+# - verifying SHA256SUMS.stable.txt
 if command -v sha256sum >/dev/null 2>&1; then
   HASH_CMD=(sha256sum)
   HASH_CHECK=(sha256sum -c)
