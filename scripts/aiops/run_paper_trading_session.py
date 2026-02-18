@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -18,6 +19,36 @@ from src.aiops.p4c.evidence import build_manifest, write_json
 from src.sim.paper.models import Order
 from src.sim.paper.simulator import FeeModel, PaperAccount, PaperTradingSimulator
 from src.sim.paper.slippage import SlippageModel
+
+
+def _env_flag(name: str) -> bool:
+    v = os.getenv(name, "").strip().lower()
+    return v in ("1", "true", "yes", "on")
+
+
+def _maybe_attach_decision_envelope(path: Path) -> None:
+    """Phase G: optionally attach decision envelope (opt-in via PT_EVIDENCE_INCLUDE_DECISION=1)."""
+    if not _env_flag("PT_EVIDENCE_INCLUDE_DECISION"):
+        return
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(data, dict) or "decision" in data:
+            return
+        dc = data.get("decision_context") if isinstance(data.get("decision_context"), dict) else {}
+        policy = dc.get("policy") if isinstance(dc.get("policy"), dict) else {}
+        pe = dc.get("policy_enforce") if isinstance(dc.get("policy_enforce"), dict) else {}
+        data["decision"] = {
+            "source": "paper_session_cli",
+            "policy": policy,
+            "policy_enforce": pe,
+            "costs": dc.get("costs") if isinstance(dc.get("costs"), dict) else {},
+            "forecast": dc.get("forecast") if isinstance(dc.get("forecast"), dict) else {},
+            "micro": dc.get("micro") if isinstance(dc.get("micro"), dict) else {},
+            "regime": dc.get("regime"),
+        }
+        path.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    except Exception:
+        pass
 
 
 def utc_now_iso() -> str:
@@ -96,6 +127,7 @@ def main() -> int:
         manifest = build_manifest(printed, meta, base_dir=outdir)
         out_manifest = outdir / "evidence_manifest.json"
         write_json(out_manifest, manifest)
+        _maybe_attach_decision_envelope(out_manifest)
         printed.append(out_manifest)
 
     for p in printed:
