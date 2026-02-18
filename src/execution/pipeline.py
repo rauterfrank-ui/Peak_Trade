@@ -36,6 +36,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, Iterable, List, Literal, Optional, Sequence, TYPE_CHECKING, Union
 from src.observability.nowcast.decision_context_v1 import build_decision_context_v1
+from src.observability.policy.policy_v0 import decide_policy_v0
 
 import pandas as pd
 
@@ -1208,6 +1209,10 @@ class ExecutionPipeline:
             current_price=getattr(intent, "current_price", None),
             source="execution.pipeline.submit_order",
         )
+
+        # Phase Policy v0: safety-first NO_TRADE default (read-only by default)
+        _policy = decide_policy_v0(decision_ctx=context["decision"], intent=intent, env=env_str)
+        context["decision"]["policy"] = _policy
 
         context = context if context else None
 
