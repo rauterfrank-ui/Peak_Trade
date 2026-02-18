@@ -2,7 +2,21 @@
 
 This directory contains stable pointers to important audit milestones.
 
-## Verify a milestone (portable)
+## Verify a milestone (operator shortcut)
+
+Preferred:
+
+```bash
+scripts/ops/verify_from_registry.sh docs/ops/registry/LATEST_PHASE_M_SMOKE.pointer --download
+```
+
+With evidence pack:
+
+```bash
+scripts/ops/verify_from_registry.sh docs/ops/registry/LATEST_PHASE_M_SMOKE.pointer --download --pack
+```
+
+## Verify a milestone (portable, direct)
 
 Prereqs:
 
