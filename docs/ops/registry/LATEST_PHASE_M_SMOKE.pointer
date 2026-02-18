@@ -3,3 +3,8 @@ done=out/ops/done/PHASE_M_SMOKE_20260218T204532Z_RID_22156880821.txt
 snapshot=out/ops/snapshots/PHASE_M_SMOKE_20260218T204533Z_RID_22156880821.md
 pack=out/ops/evidence_packs/pack_phase_m_smoke_22156880821
 index=out/ops/index_phase_m_smokes.md
+
+repo=rauterfrank-ui/Peak_Trade
+workflow=paper-tests-audit-evidence
+run_id=22156880821
+artifact_hint=download all artifacts for run_id (gh run download)
