@@ -1,0 +1,45 @@
+name: CI / Operator Verify (Registry)
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  operator-verify:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install tooling
+        run: |
+          python -V
+          pip -V
+          pip install -U pip
+          pip install ruff
+          sudo apt-get update -qq && sudo apt-get install -y ripgrep
+
+      - name: Ruff check (fast)
+        run: |
+          ruff check .
+
+      - name: gh auth (token)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh auth status
+
+      - name: Operator verify (download + invariants)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          scripts/ops/verify_from_registry.sh docs/ops/registry/LATEST_PHASE_M_SMOKE.pointer --download
