@@ -534,8 +534,8 @@ class ExecutionPipeline:
         # Phase 16B: Telemetry
         self._emitter = emitter
 
-        # Phase C: Policy enforcement (default OFF)
-        self._policy_enforcer_v0 = PolicyEnforcerV0(enforce=False)
+        # Phase C: Policy enforcement (default OFF, PT_POLICY_ENFORCE_V0=1 to enable)
+        self._policy_enforcer_v0 = PolicyEnforcerV0.from_env()
 
     @property
     def config(self) -> ExecutionPipelineConfig:
