@@ -37,6 +37,7 @@ from enum import Enum
 from typing import Any, Dict, Iterable, List, Literal, Optional, Sequence, TYPE_CHECKING, Union
 from src.observability.nowcast.decision_context_v1 import build_decision_context_v1
 from src.observability.policy.policy_v0 import decide_policy_v0
+from src.execution.policy import PolicyEnforcerV0
 
 import pandas as pd
 
@@ -531,6 +532,9 @@ class ExecutionPipeline:
 
         # Phase 16B: Telemetry
         self._emitter = emitter
+
+        # Phase C: Policy enforcement (default OFF)
+        self._policy_enforcer_v0 = PolicyEnforcerV0(enforce=False)
 
     @property
     def config(self) -> ExecutionPipelineConfig:
@@ -1213,6 +1217,23 @@ class ExecutionPipeline:
         # Phase Policy v0: safety-first NO_TRADE default (read-only by default)
         _policy = decide_policy_v0(decision_ctx=context["decision"], intent=intent, env=env_str)
         context["decision"]["policy"] = _policy
+
+        # Phase C: Enforce policy (v0, default OFF)
+        pe = self._policy_enforcer_v0.evaluate(env=env_str, policy=_policy)
+        context["decision"]["policy_enforce"] = {
+            "allowed": bool(pe.allowed),
+            "reason_code": pe.reason_code,
+            "reason_detail": pe.reason_detail,
+            "action": pe.action,
+        }
+        if not pe.allowed:
+            return ExecutionResult(
+                rejected=True,
+                reason=f"policy_blocked: {pe.reason_code}",
+                status=ExecutionStatus.BLOCKED_BY_SAFETY,
+                environment=env_str,
+                governance_status=governance_status,
+            )
 
         context = context if context else None
 
