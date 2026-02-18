@@ -36,7 +36,8 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, Iterable, List, Literal, Optional, Sequence, TYPE_CHECKING, Union
 from src.observability.nowcast.decision_context_v1 import build_decision_context_v1
-from src.observability.policy.policy_v0 import decide_policy_v0
+from src.observability.policy.policy_v1 import decide_policy_v1  # v1 cost/edge gate
+from src.observability.policy.policy_v0 import decide_policy_v0  # legacy reference
 from src.execution.policy import PolicyEnforcerV0
 from src.core.performance import performance_monitor
 
@@ -1216,7 +1217,8 @@ class ExecutionPipeline:
         )
 
         # Phase Policy v0: safety-first NO_TRADE default (read-only by default)
-        _policy = decide_policy_v0(decision_ctx=context["decision"], intent=intent, env=env_str)
+        _policy_raw = decide_policy_v1(env=env_str, decision=context["decision"])
+        _policy = _policy_raw.to_dict()
         context["decision"]["policy"] = _policy
 
         # Phase C: Enforce policy (v0, default OFF)
