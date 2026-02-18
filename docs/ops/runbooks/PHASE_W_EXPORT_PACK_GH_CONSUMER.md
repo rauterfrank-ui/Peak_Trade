@@ -10,6 +10,7 @@ No inbound access to the Data Node is required.
 
 ## Required GitHub Secrets
 - `PT_RCLONE_CONF_B64` — base64-encoded `rclone.conf` (read-only credentials)
+- **Repository variable** `PT_EXPORT_CI_ENABLED` — set to `true` to run this job on pull_request (otherwise skipped)
 - `PT_EXPORT_REMOTE` — rclone remote + bucket, e.g. `ptos:peaktrade-exports`
 - `PT_EXPORT_PREFIX` — prefix under bucket, e.g. `exports&#47;policy_telemetry_real`
 Optional:
