@@ -5,6 +5,7 @@ Usage:
   python scripts/aiops/validate_shadow_stability.py --runs out/ops/shadow_runs --latest 3
   python scripts/aiops/validate_shadow_stability.py --runs out/ops/shadow_runs --latest 3 --artifact shadow_session_result.json
 """
+
 import argparse
 import hashlib
 from pathlib import Path
@@ -42,13 +43,11 @@ def main() -> int:
     if not runs_dir.exists():
         raise SystemExit(f"missing runs dir: {runs_dir}")
 
-    run_dirs = sorted(
-        [p for p in runs_dir.iterdir() if p.is_dir()], key=lambda p: p.name
-    )
+    run_dirs = sorted([p for p in runs_dir.iterdir() if p.is_dir()], key=lambda p: p.name)
     if len(run_dirs) < args.latest:
         raise SystemExit(f"need >= {args.latest} runs, found {len(run_dirs)}")
 
-    pick = run_dirs[-args.latest:]
+    pick = run_dirs[-args.latest :]
     targets = []
     for d in pick:
         f = d / args.artifact
