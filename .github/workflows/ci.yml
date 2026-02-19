@@ -119,6 +119,43 @@ jobs:
         run: ./scripts/ops/check_required_ci_contexts_present.sh
 
   # ============================================================================
+  # Evidence Validator (P5B required check)
+  # ============================================================================
+  # Generates a deterministic pack from fixtures and validates via
+  # scripts/aiops/validate_evidence_pack.py. Always runs (no job-level if)
+  # to satisfy required check contract.
+  # ============================================================================
+  evidence-validator:
+    name: Evidence Validator
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: changes
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Generate and validate Evidence Pack (P5B)
+        run: scripts/ci/evidence_pack_validation_smoke.sh
+
+  # ============================================================================
   # Fast-Lane (always runs; minimal smoke for docs/workflow-only PRs)
   # ============================================================================
   fast-lane:
@@ -152,9 +189,6 @@ jobs:
       - name: Stability smoke (fast gate)
         run: |
           pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
-
-      - name: Evidence Pack Smoke (P5B)
-        run: scripts/ci/evidence_pack_validation_smoke.sh
 
   # ============================================================================
   # Tests (all Python versions)
