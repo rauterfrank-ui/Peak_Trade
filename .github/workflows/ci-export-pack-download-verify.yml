@@ -110,7 +110,11 @@ jobs:
           mkdir -p "${OUT}"
 
           # Copy full pack dir
-          rclone copy "${PT_EXPORT_REMOTE}/${PT_EXPORT_PREFIX}/export_${EID}" "${OUT}" -P
+          REMOTE_DIR="${EID}"
+          if [[ "${REMOTE_DIR}" != export_* ]]; then
+            REMOTE_DIR="export_${REMOTE_DIR}"
+          fi
+          rclone copy "${PT_EXPORT_REMOTE}/${PT_EXPORT_PREFIX}/${REMOTE_DIR}" "${OUT}" -P
 
           # Basic presence
           test -s "${OUT}/manifest.json"
