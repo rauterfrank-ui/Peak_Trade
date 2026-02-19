@@ -16,6 +16,10 @@ on:
         required: false
         default: ""
 
+
+concurrency:
+  group: pt-paper-session-audit-evidence
+  cancel-in-progress: true
 permissions:
   contents: read
   actions: write
@@ -42,6 +46,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Guardrails (vars/secrets)
+        shell: bash
+        env:
+          PT_SCHEDULED_PAPER_TESTS_ENABLED: ${{ vars.PT_SCHEDULED_PAPER_TESTS_ENABLED }}
+          PT_SCHEDULED_EXPORT_VERIFY_ENABLED: ${{ vars.PT_SCHEDULED_EXPORT_VERIFY_ENABLED }}
+          PT_RCLONE_CONF_B64: ${{ secrets.PT_RCLONE_CONF_B64 }}
+          PT_EXPORT_REMOTE: ${{ secrets.PT_EXPORT_REMOTE }}
+          PT_EXPORT_PREFIX: ${{ secrets.PT_EXPORT_PREFIX }}
+        run: |
+          bash scripts/ci/scheduled_guardrails.sh
       - name: Setup Python
         uses: actions/setup-python@v5
         with:

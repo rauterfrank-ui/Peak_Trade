@@ -2,10 +2,6 @@ name: paper-tests-audit-evidence
 
 on:
   workflow_dispatch:
-  # optional weekly schedule (disabled by default; uncomment if desired)
-  # schedule:
-  #   - cron: "0 4 * * 1"
-
     inputs:
       scope:
         description: "Test scope: execution (default) or full (if available)"
@@ -19,6 +15,13 @@ on:
         description: "Optional operator note (audit metadata)"
         required: false
         default: ""
+  # optional weekly schedule (disabled by default; uncomment if desired)
+  # schedule:
+  #   - cron: "0 4 * * 1"
+
+concurrency:
+  group: pt-paper-tests-audit-evidence
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -44,6 +47,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Guardrails (vars/secrets)
+        shell: bash
+        env:
+          PT_SCHEDULED_PAPER_TESTS_ENABLED: ${{ vars.PT_SCHEDULED_PAPER_TESTS_ENABLED }}
+          PT_SCHEDULED_EXPORT_VERIFY_ENABLED: ${{ vars.PT_SCHEDULED_EXPORT_VERIFY_ENABLED }}
+          PT_RCLONE_CONF_B64: ${{ secrets.PT_RCLONE_CONF_B64 }}
+          PT_EXPORT_REMOTE: ${{ secrets.PT_EXPORT_REMOTE }}
+          PT_EXPORT_PREFIX: ${{ secrets.PT_EXPORT_PREFIX }}
+        run: |
+          bash scripts/ci/scheduled_guardrails.sh
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
