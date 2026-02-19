@@ -134,18 +134,27 @@ Integrate L2 Market Outlook layer to produce regime scenarios, NO-TRADE triggers
 ### Verification Commands
 ```bash
 # Local L2 run (replay mode, CI-safe)
-python3 scripts/aiops/run_l2_market_outlook.py \
+# Note: PYTHONPATH=. required for run_l2_market_outlook.py (src.* imports)
+PYTHONPATH=. python3 scripts/aiops/run_l2_market_outlook.py \
     --mode replay \
     --fixture l2_market_outlook_sample \
-    --out evidence_packs/L2_outlook
+    --out out/ops/p4c_runs/L2_outlook
 
-# Validate Evidence Pack
-python3 -m src.ai_orchestration.evidence_pack \
-    --validate evidence_packs/L2_outlook/EVP_20260113_L2_OUTLOOK_001.json
+# Generate Evidence Pack (P5B CLI)
+python3 scripts/aiops/generate_evidence_pack.py \
+    --base-dir out/ops \
+    --in "out/ops/p4c_runs/L2_outlook" \
+    --out-root out/ops/evidence_packs \
+    --pack-id p4c_L2_outlook \
+    --deterministic
+
+# Validate Evidence Pack (manifest path required)
+manifest=$(ls -1t out/ops/evidence_packs/*/manifest.json | head -n 1)
+python3 scripts/aiops/validate_evidence_pack.py --manifest "$manifest"
 
 # Run L4 Critic on L2 Evidence Pack
 python3 scripts/aiops/run_l4_governance_critic.py \
-    --evidence-pack evidence_packs/L2_outlook/EVP_20260113_L2_OUTLOOK_001.json \
+    --evidence-pack out/ops/evidence_packs/pack_p4c_L2_outlook \
     --mode replay \
     --out evidence_packs/L4_review_L2
 ```

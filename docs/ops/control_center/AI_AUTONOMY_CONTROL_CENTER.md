@@ -138,8 +138,8 @@ python3 scripts/aiops/run_l1_deepresearch.py \
     --fixture l1_deepresearch_sample \
     --out evidence_packs/L1_research
 
-# L2 Market Outlook (Phase 3)
-python3 scripts/aiops/run_l2_market_outlook.py \
+# L2 Market Outlook (Phase 3) — PYTHONPATH=. required (src.* imports)
+PYTHONPATH=. python3 scripts/aiops/run_l2_market_outlook.py \
     --mode replay \
     --fixture l2_market_outlook_sample \
     --out evidence_packs/L2_outlook

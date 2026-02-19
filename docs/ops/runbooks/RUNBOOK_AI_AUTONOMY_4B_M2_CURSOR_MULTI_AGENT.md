@@ -248,14 +248,22 @@ Output:
 #### Canonical Commands (Verified)
 
 **Evidence Pack Validation (CLI):**
+
+P5B Evidence Pack (manifest + SHA256):
 ```bash
-# Strict validation (default, fail on any error)
+# Generate pack from run output
+python3 scripts/aiops/generate_evidence_pack.py \
+  --base-dir out/ops --in "out/ops/p4c_runs/<run_id>" \
+  --out-root out/ops/evidence_packs --pack-id p4c_<id> --deterministic
+
+# Validate (manifest path required; no --latest)
+manifest=$(ls -1t out/ops/evidence_packs/*/manifest.json | head -n 1)
+python3 scripts/aiops/validate_evidence_pack.py --manifest "$manifest"
+```
+
+Legacy schema validator (single JSON file):
+```bash
 python3 scripts/validate_evidence_pack.py data/evidence_packs/EVP-001.json
-
-# Verbose mode (show warnings)
-python3 scripts/validate_evidence_pack.py data/evidence_packs/EVP-001.json --verbose
-
-# Lenient mode (collect warnings, don't fail)
 python3 scripts/validate_evidence_pack.py data/evidence_packs/EVP-001.json --lenient
 ```
 
