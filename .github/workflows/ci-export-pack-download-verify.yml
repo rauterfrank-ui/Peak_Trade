@@ -92,6 +92,7 @@ jobs:
           echo "Seeded EID=${EID}"
 
       - name: Resolve export_id (pinned or latest)
+        if: github.event_name == 'workflow_dispatch'
         id: resolve
         env:
           PT_EXPORT_REMOTE: ${{ secrets.PT_EXPORT_REMOTE }}
@@ -130,6 +131,7 @@ jobs:
           echo "Resolved latest export_id=${EID} (dir=${LATEST_DIR})"
 
       - name: Download export pack
+        if: github.event_name == 'workflow_dispatch'
         env:
           PT_EXPORT_REMOTE: ${{ secrets.PT_EXPORT_REMOTE }}
           PT_EXPORT_PREFIX: ${{ secrets.PT_EXPORT_PREFIX }}
@@ -151,6 +153,7 @@ jobs:
           test -s "${OUT}/SHA256SUMS.stable.txt"
 
       - name: Verify SHA256SUMS (contract)
+        if: github.event_name == 'workflow_dispatch'
         run: |
           EID="${{ steps.resolve.outputs.export_id }}"
           REMOTE_DIR="${EID}"
@@ -164,6 +167,7 @@ jobs:
           sha256sum -c SHA256SUMS.stable.txt
 
       - name: Show manifest summary
+        if: github.event_name == 'workflow_dispatch'
         run: |
           EID="${{ steps.resolve.outputs.export_id }}"
           REMOTE_DIR="${EID}"
