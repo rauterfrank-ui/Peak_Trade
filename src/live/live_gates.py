@@ -53,6 +53,7 @@ from src.experiments.strategy_profiles import (
     load_tiering_config,
     get_tiering_for_strategy,
 )
+from src.live.data_quality_gate import evaluate_data_quality
 
 logger = logging.getLogger(__name__)
 
@@ -240,6 +241,8 @@ def check_strategy_live_eligibility(
     profile: Optional[StrategyProfile] = None,
     policies: Optional[LivePolicies] = None,
     tiering_config_path: Path = DEFAULT_TIERING_PATH,
+    asof_utc: Optional[str] = None,
+    context: Optional[Dict[str, Any]] = None,
 ) -> LiveGateResult:
     """
     Prüft, ob eine Strategie für Live-Runs eligible ist.
@@ -265,6 +268,20 @@ def check_strategy_live_eligibility(
     """
     reasons: List[str] = []
     details: Dict[str, Any] = {}
+
+    # DQ Hard Gate (fail-closed when asof_utc provided in live context)
+    if asof_utc is not None:
+        dq_result = check_data_quality_gate(asof_utc=asof_utc, context=context or {})
+        if not dq_result.is_eligible:
+            return LiveGateResult(
+                entity_id=strategy_id,
+                entity_type="strategy",
+                is_eligible=False,
+                reasons=["dq_freshness_gap_failed"] + dq_result.reasons,
+                details={"dq_gate": dq_result.details},
+                tier=None,
+                allow_live_flag=None,
+            )
 
     # Policies laden
     if policies is None:
@@ -394,6 +411,8 @@ def check_portfolio_live_eligibility(
     policies: Optional[LivePolicies] = None,
     tiering_config_path: Path = DEFAULT_TIERING_PATH,
     presets_dir: Path = DEFAULT_PRESETS_DIR,
+    asof_utc: Optional[str] = None,
+    context: Optional[Dict[str, Any]] = None,
 ) -> LiveGateResult:
     """
     Prüft, ob ein Portfolio für Live-Runs eligible ist.
@@ -421,6 +440,18 @@ def check_portfolio_live_eligibility(
     """
     reasons: List[str] = []
     details: Dict[str, Any] = {}
+
+    # DQ Hard Gate (fail-closed when asof_utc provided in live context)
+    if asof_utc is not None:
+        dq_result = check_data_quality_gate(asof_utc=asof_utc, context=context or {})
+        if not dq_result.is_eligible:
+            return LiveGateResult(
+                entity_id=portfolio_id,
+                entity_type="portfolio",
+                is_eligible=False,
+                reasons=["dq_freshness_gap_failed"] + dq_result.reasons,
+                details={"dq_gate": dq_result.details},
+            )
 
     # Policies laden
     if policies is None:
@@ -499,6 +530,31 @@ def check_portfolio_live_eligibility(
         is_eligible=is_eligible,
         reasons=reasons,
         details=details,
+    )
+
+
+# =============================================================================
+# DATA QUALITY HARD GATE
+# =============================================================================
+
+
+def check_data_quality_gate(
+    *,
+    asof_utc: str,
+    context: Optional[Dict[str, Any]] = None,
+) -> LiveGateResult:
+    """Evaluate DQ freshness/gap gate. Fail-closed: FAIL → no-trade.
+
+    Call before strategy/portfolio eligibility when in live context.
+    """
+    ctx = context or {}
+    d = evaluate_data_quality(asof_utc=asof_utc, context=ctx)
+    return LiveGateResult(
+        entity_id=d.gate_id,
+        entity_type="data_quality",
+        is_eligible=(d.status == "PASS"),
+        reasons=d.reasons,
+        details=d.details,
     )
 
 
@@ -744,6 +800,8 @@ def log_strategy_tier_info(
 __all__ = [
     # Exceptions
     "RnDLiveTradingBlockedError",
+    # Data Quality Gate
+    "check_data_quality_gate",
     # Data Models
     "LiveGateResult",
     "LivePolicies",
