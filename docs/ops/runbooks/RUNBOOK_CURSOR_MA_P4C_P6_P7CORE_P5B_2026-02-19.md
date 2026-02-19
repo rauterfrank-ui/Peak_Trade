@@ -2,7 +2,7 @@
 **Runbook ID:** `RUNBOOK_CURSOR_MA_P4C_P6_P7CORE_P5B_2026-02-19`  
 **Scope:** L2 Market Outlook (P4C), Shadow stability (P6), Paper simulator core (P7 Core), Evidence pipeline CI truth (P5B)  
 **Audience:** Operator running Cursor Multi‑Agent Orchestrator in the Peak_Trade repo  
-**Repository root:** `Peak_Trade/`  
+**Repository root:** `Peak_Trade&#47;`  
 **Default branch:** `main`  
 **Safety posture:** No Live trading. Everything produces evidence packs and hard gates.
 
@@ -12,19 +12,19 @@
 
 ### 0.1 Execution contexts (Git level)
 Every command block explicitly states the required Git context:
-- **Context A:** `main` (clean, synced to `origin/main`)
-- **Context B:** feature branch `feat/<slug>` (based on `origin/main`)
+- **Context A:** `main` (clean, synced to `origin&#47;main`)
+- **Context B:** feature branch `feat&#47;<slug>` (based on `origin&#47;main`)
 - **Context C:** post-merge cleanup on `main`
 
 ### 0.2 Global invariants
 - Working tree must be clean before creating PRs.
-- `out/` remains untracked unless the repo policy explicitly tracks specific evidence pointers.
+- `out&#47;` remains untracked unless the repo policy explicitly tracks specific evidence pointers.
 - Every bundle produces an **Evidence Pack** with checksums and a validation token.
 - CI must be the source of truth: required checks fail on invalid evidence.
 
 ### 0.3 Definitions
 - **Evidence Pack:** a deterministic folder containing `manifest.json`, `index.json`, checksums, and referenced artifacts.
-- **Golden fixture:** stable test input/output used for snapshot/semantic assertions.
+- **Golden fixture:** stable test input&#47;output used for snapshot&#47;semantic assertions.
 - **DoD:** Definition of Done (must be met before merging).
 
 ---
@@ -39,25 +39,25 @@ You can run with 7 agents by merging roles; 9 is clearer and reduces context mix
 2. **Repo Scout**
    - Locates files, existing runbooks, scripts, schemas, prior work.
 3. **Spec Engineer**
-   - Writes/updates schemas, contracts, and canonical JSON definitions.
+   - Writes&#47;updates schemas, contracts, and canonical JSON definitions.
 4. **Implementation Engineer**
-   - Implements core logic in `src/` + scripts in `scripts/`.
+   - Implements core logic in `src&#47;` + scripts in `scripts&#47;`.
 5. **Test Engineer**
    - Adds fixtures, golden tests, invariants, regression tests.
 6. **Evidence Engineer**
-   - Ensures evidence generation/validation, indexing, checksums.
+   - Ensures evidence generation&#47;validation, indexing, checksums.
 7. **CI Engineer**
    - Adds required checks, wiring in GitHub Actions, failure modes.
 8. **Docs Engineer**
    - Updates runbooks, quickstart snippets, operator guidance.
 9. **Auditor**
-   - Performs final sanity checks, verifies DoD, prepares merge/closeout tokens.
+   - Performs final sanity checks, verifies DoD, prepares merge&#47;closeout tokens.
 
 ### 1.2 Agent handoff artifacts (per PR)
 Each PR MUST produce:
-- `out/ops/<bundle>/PR_<N>_CLOSEOUT_DONE.txt` (or equivalent) + `.sha256`
+- `out&#47;ops&#47;<bundle>&#47;PR_<N>_CLOSEOUT_DONE.txt` (or equivalent) + `.sha256`
 - Evidence pack folder and validation token (`VALIDATION_OK*.txt`)
-- A short PR body section: Change / Reason / Validation / Evidence pointers
+- A short PR body section: Change &#47; Reason &#47; Validation &#47; Evidence pointers
 
 ---
 
@@ -66,7 +66,7 @@ Each PR MUST produce:
 ### 2.1 Entry criteria (before starting PR1)
 All must be true:
 - You are in repo root (`pwd` shows Peak_Trade).
-- `main` is clean and synced to `origin/main`.
+- `main` is clean and synced to `origin&#47;main`.
 - Tooling available: `python`, `pytest`, `ruff` (or project equivalents).
 - No pending local experimental changes.
 
@@ -76,7 +76,7 @@ All must be true:
 - Required CI checks enforced: `tests`, `ruff`, `evidence-validate` (names may vary but must be required).
 - Evidence packs for each bundle exist and validate locally and in CI.
 - Post-merge closeout completed; feature branches deleted locally and (optionally) remotely.
-- A final handoff file exists under `out/ops/` summarizing all bundles and hashes.
+- A final handoff file exists under `out&#47;ops&#47;` summarizing all bundles and hashes.
 
 ---
 
@@ -98,7 +98,7 @@ ruff check .
 
 ### 3.2 Preflight gate
 Pass if:
-- `git status -sb` shows `## main...origin/main` and clean
+- `git status -sb` shows `## main...origin&#47;main` and clean
 - `pytest` and `ruff` succeed
 
 If this fails: stop and fix before proceeding.
@@ -113,7 +113,7 @@ Produce deterministic L2 market outlook output + NO‑TRADE triggers with schema
 ### 4.2 DoD (PR1)
 - Canonical `market_outlook.json` schema is defined and enforced.
 - ≥3 golden fixtures (regime + no-trade variants).
-- Tests validate schema + deterministic/semantic invariants.
+- Tests validate schema + deterministic&#47;semantic invariants.
 - Evidence pack created + validated + indexed.
 - `pytest -q` and `ruff check .` green.
 
@@ -127,7 +127,7 @@ git checkout -b feat/p4c-l2-market-outlook
 ```
 
 ### 4.4 Implementation checklist (agents)
-- Repo Scout: find existing L2/L3 docs and any P4B/P4C placeholders.
+- Repo Scout: find existing L2&#47;L3 docs and any P4B&#47;P4C placeholders.
 - Spec Engineer: define schema `market_outlook.json` (canonical fields).
 - Implementation Engineer: implement regime computation + no-trade evaluation.
 - Test Engineer: add golden fixtures + tests (schema + invariants).
@@ -135,11 +135,11 @@ git checkout -b feat/p4c-l2-market-outlook
 - Docs Engineer: add short operator doc (how to run P4C and where outputs go).
 
 ### 4.5 Required outputs
-- `out/ops/p4c_runs/<ts>/market_outlook.json`
-- Evidence pack `out/ops/evidence_packs/pack_p4c_<ts>/`
-- Validation token `out/ops/VALIDATION_OK_P4C.txt` (or P4C‑scoped)
+- `out&#47;ops&#47;p4c_runs&#47;<ts>&#47;market_outlook.json`
+- Evidence pack `out&#47;ops&#47;evidence_packs&#47;pack_p4c_<ts>&#47;`
+- Validation token `out&#47;ops&#47;VALIDATION_OK_P4C.txt` (or P4C‑scoped)
 
-### 4.6 Local validation (Context B: feat/p4c-l2-market-outlook)
+### 4.6 Local validation (Context B: feat&#47;p4c-l2-market-outlook)
 ```bash
 ruff check .
 pytest -q
@@ -167,12 +167,12 @@ Create PR via your canonical safe flow script if present, otherwise with `gh pr 
 ## 5) Bundle PR2 — P6: Shadow Mode Stability (Contracts + 3-run gate)
 
 ### 5.1 Goal
-Freeze shadow session input/output contract and enforce stability with a 3-run regression gate.
+Freeze shadow session input&#47;output contract and enforce stability with a 3-run regression gate.
 
 ### 5.2 DoD (PR2)
 - Input schema and output schema exist for shadow sessions.
 - `run_shadow_session` produces deterministic core artifacts for identical inputs.
-- A 3-run stability test exists (hash/semantic stable) with allowed variance only for timestamps.
+- A 3-run stability test exists (hash&#47;semantic stable) with allowed variance only for timestamps.
 - Evidence pack per run + index append-only correctness.
 - CI check `shadow-contract` (or equivalent) is required.
 
@@ -187,12 +187,12 @@ git checkout -b feat/p6-shadow-contract-stability
 
 ### 5.4 Implementation checklist (agents)
 - Spec Engineer: define `shadow_session_config.json` and `shadow_session_result.json` schemas.
-- Implementation Engineer: harden `scripts/aiops/run_shadow_session.py` (deterministic run_id, stable paths).
+- Implementation Engineer: harden `scripts&#47;aiops&#47;run_shadow_session.py` (deterministic run_id, stable paths).
 - Test Engineer: add contract tests + 3-run stability gate.
 - Evidence Engineer: ensure evidence packs validate and index updates are deterministic.
 - CI Engineer: wire `shadow-contract` as required.
 
-### 5.5 Local validation (Context B: feat/p6-shadow-contract-stability)
+### 5.5 Local validation (Context B: feat&#47;p6-shadow-contract-stability)
 ```bash
 ruff check .
 pytest -q
@@ -213,15 +213,15 @@ git push -u origin HEAD
 
 ---
 
-## 6) Bundle PR3 — P7 Core: Paper Simulator Core (fills/slippage/fees) + integration
+## 6) Bundle PR3 — P7 Core: Paper Simulator Core (fills&#47;slippage&#47;fees) + integration
 
 ### 6.1 Goal
-Implement deterministic paper execution core (fills/slippage/fees) and integrate into the pipeline so Shadow→Paper produces canonical artifacts.
+Implement deterministic paper execution core (fills&#47;slippage&#47;fees) and integrate into the pipeline so Shadow→Paper produces canonical artifacts.
 
 ### 6.2 DoD (PR3)
-- Paper fill engine exists with configurable fee/slippage models.
+- Paper fill engine exists with configurable fee&#47;slippage models.
 - Canonical `fills.json` and `account.json` produced deterministically.
-- Unit tests + regression tests for monotonicity/non-negativity invariants.
+- Unit tests + regression tests for monotonicity&#47;non-negativity invariants.
 - Reconciliation remains green (no regression).
 - Evidence pack validates.
 
@@ -241,7 +241,7 @@ git checkout -b feat/p7-paper-sim-core
 - Evidence Engineer: evidence packs for P7 runs; stable checksums.
 - Docs Engineer: minimal quickstart (run P7 core and locate outputs).
 
-### 6.5 Local validation (Context B: feat/p7-paper-sim-core)
+### 6.5 Local validation (Context B: feat&#47;p7-paper-sim-core)
 ```bash
 ruff check .
 pytest -q
@@ -262,7 +262,7 @@ git push -u origin HEAD
 ## 7) Bundle PR4 — P5B: Evidence pipeline CI truth (required check)
 
 ### 7.1 Goal
-Make evidence validation a required CI check. Invalid/missing packs must fail the PR.
+Make evidence validation a required CI check. Invalid&#47;missing packs must fail the PR.
 
 ### 7.2 DoD (PR4)
 - Evidence validator is strict and deterministic.
@@ -280,12 +280,12 @@ git checkout -b feat/p5b-evidence-ci-required
 ```
 
 ### 7.4 Implementation checklist (agents)
-- Evidence Engineer: confirm generator/validator behavior and deterministic index ordering.
+- Evidence Engineer: confirm generator&#47;validator behavior and deterministic index ordering.
 - CI Engineer: add workflow job and mark as required in repo settings (manual step if needed).
-- Test Engineer: add a minimal failing fixture/test case for validator.
+- Test Engineer: add a minimal failing fixture&#47;test case for validator.
 - Docs Engineer: update runbook snippet.
 
-### 7.5 Local validation (Context B: feat/p5b-evidence-ci-required)
+### 7.5 Local validation (Context B: feat&#47;p5b-evidence-ci-required)
 ```bash
 ruff check .
 pytest -q
@@ -355,7 +355,7 @@ python scripts/aiops/validate_evidence_pack.py --all
 ```
 
 ### 9.2 Final handoff artifact (required)
-Create a single final summary file under `out/ops/` that includes:
+Create a single final summary file under `out&#47;ops&#47;` that includes:
 - merged PR numbers + merge SHAs
 - evidence pack directories + validation tokens
 - sha256 checksums file reference
@@ -400,5 +400,5 @@ Use this template in each PR description:
 - **Change:** <what changed>
 - **Reason:** <why now>
 - **Validation:** `pytest -q`, `ruff check .`, evidence validate commands
-- **Evidence:** `out/ops/evidence_packs/<pack_name>` + `VALIDATION_OK*.txt`
+- **Evidence:** `out&#47;ops&#47;evidence_packs&#47;<pack_name>` + `VALIDATION_OK*.txt`
 
