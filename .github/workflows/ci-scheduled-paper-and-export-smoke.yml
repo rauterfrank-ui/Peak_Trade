@@ -18,6 +18,8 @@ jobs:
     if: vars.PT_SCHEDULED_PAPER_TESTS_ENABLED == 'true'
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Trigger paper-tests-audit-evidence
         env:
           GH_TOKEN: ${{ github.token }}
@@ -29,6 +31,8 @@ jobs:
     if: vars.PT_SCHEDULED_EXPORT_VERIFY_ENABLED == 'true'
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Trigger CI / Export Pack Download + Verify
         env:
           GH_TOKEN: ${{ github.token }}
