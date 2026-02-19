@@ -1,5 +1,9 @@
 name: CI / Export Pack Download + Verify
 
+concurrency:
+  group: pt-ci-export-pack-download-verify
+  cancel-in-progress: true
+
 "on":
   workflow_dispatch:
     inputs:
@@ -12,6 +16,7 @@ name: CI / Export Pack Download + Verify
 jobs:
   export-pack-verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     permissions:
       contents: read
     # Skip on PR when not enabled (vars); always run on workflow_dispatch (secrets not allowed in job.if)
@@ -21,6 +26,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Guardrails (vars/secrets)
+        shell: bash
+        env:
+          PT_SCHEDULED_PAPER_TESTS_ENABLED: ${{ vars.PT_SCHEDULED_PAPER_TESTS_ENABLED }}
+          PT_SCHEDULED_EXPORT_VERIFY_ENABLED: ${{ vars.PT_SCHEDULED_EXPORT_VERIFY_ENABLED }}
+          PT_RCLONE_CONF_B64: ${{ secrets.PT_RCLONE_CONF_B64 }}
+          PT_EXPORT_REMOTE: ${{ secrets.PT_EXPORT_REMOTE }}
+          PT_EXPORT_PREFIX: ${{ secrets.PT_EXPORT_PREFIX }}
+        run: |
+          bash scripts/ci/scheduled_guardrails.sh
       - name: Validate required secrets/vars
         env:
           PT_RCLONE_CONF_B64: ${{ secrets.PT_RCLONE_CONF_B64 }}
