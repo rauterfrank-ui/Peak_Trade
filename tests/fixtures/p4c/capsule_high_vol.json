@@ -1,0 +1,1 @@
+{"schema_version":"p4c.capsule.v0","asof_utc":"2026-02-11T09:31:40Z","universe":["BTC/USDT","ETH/USDT"],"features":{"volatility_14d":{"BTC/USDT":0.92,"ETH/USDT":0.95},"trend_7d":{"BTC/USDT":0.05,"ETH/USDT":-0.02}},"context":{"stage":"research","source":"fixture","variant":"high_vol"}}
