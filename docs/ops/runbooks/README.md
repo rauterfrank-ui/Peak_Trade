@@ -48,6 +48,7 @@ Runbooks for AI autonomy workflows and control center operations:
 Runbooks for specific phase implementations and workflows:
 
 - [RUNBOOK_TO_FINISH_MASTER.md](RUNBOOK_TO_FINISH_MASTER.md) — Master: docs-only Branch → PR → D2/D3/D4 DoD → SSoT „Finish“-Definition (NO‑LIVE)
+- [RUNBOOK_CURSOR_MA_P4C_P6_P7CORE_P5B_2026-02-19.md](RUNBOOK_CURSOR_MA_P4C_P6_P7CORE_P5B_2026-02-19.md) — Cursor Multi-Agent: P4C (L2 Market Outlook) → P6 (Shadow) → P7 Core (Paper) → P5B (Evidence CI)
 - [RUNBOOK_FINISH_A_MVP.md](RUNBOOK_FINISH_A_MVP.md) — Finish Level A (MVP): Backtest → Artifacts → Report → Watch‑Only Dashboard (Cursor Multi‑Agent, NO‑LIVE)
 - [RUNBOOK_FINISH_B_BETA_EXECUTIONPIPELINE.md](RUNBOOK_FINISH_B_BETA_EXECUTIONPIPELINE.md) — Finish Level B (Beta): ExecutionPipeline + Ledger + Paper‑Trading (Cursor Multi‑Agent, NO‑LIVE)
 - [RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md](RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) — ExecutionPipeline Slice 2: Ledger/Accounting + deterministic PnL (NO‑LIVE, snapshot-only)
