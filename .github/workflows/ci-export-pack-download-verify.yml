@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    # Skip when secrets not configured (allows PR merge; run manually after secrets set)
-    if: ${{ secrets.PT_RCLONE_CONF_B64 != '' }}
+    # Skip on PR when not enabled (vars); always run on workflow_dispatch (secrets not allowed in job.if)
+    if: github.event_name == 'workflow_dispatch' || vars.PT_EXPORT_CI_ENABLED == 'true'
 
     steps:
       - name: Checkout
