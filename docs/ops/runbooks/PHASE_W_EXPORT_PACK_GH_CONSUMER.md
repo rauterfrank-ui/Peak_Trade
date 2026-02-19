@@ -20,3 +20,5 @@ Workflow dispatch input `export_id` can also pin a run.
 ## Notes
 - The workflow selects the lexicographically last `export_<id>&#47;` directory under the prefix.
 - Use timestamped export_ids for stable ordering.
+
+- export_id normalization: The workflow accepts either an ID with or without the `export_` prefix. It will download `${PT_EXPORT_PREFIX}&#47;export_<id>`; if you pass `export_<id>` it will not double-prefix.

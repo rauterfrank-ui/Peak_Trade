@@ -92,6 +92,7 @@ jobs:
           echo "Seeded EID=${EID}"
 
       - name: Resolve export_id (pinned or latest)
+        if: github.event_name == 'workflow_dispatch'
         id: resolve
         env:
           PT_EXPORT_REMOTE: ${{ secrets.PT_EXPORT_REMOTE }}
@@ -130,20 +131,21 @@ jobs:
           echo "Resolved latest export_id=${EID} (dir=${LATEST_DIR})"
 
       - name: Download export pack
+        if: github.event_name == 'workflow_dispatch'
         env:
           PT_EXPORT_REMOTE: ${{ secrets.PT_EXPORT_REMOTE }}
           PT_EXPORT_PREFIX: ${{ secrets.PT_EXPORT_PREFIX }}
         run: |
           EID="${{ steps.resolve.outputs.export_id }}"
           test -n "${EID}"
-          OUT="out/ops/exports_ci/export_${EID}"
-          mkdir -p "${OUT}"
-
-          # Copy full pack dir (normalize export_ prefix to avoid double)
           REMOTE_DIR="${EID}"
           if [[ "${REMOTE_DIR}" != export_* ]]; then
             REMOTE_DIR="export_${REMOTE_DIR}"
           fi
+          OUT="out/ops/exports_ci/${REMOTE_DIR}"
+          mkdir -p "${OUT}"
+
+          # Copy full pack dir
           rclone copy "${PT_EXPORT_REMOTE}/${PT_EXPORT_PREFIX}/${REMOTE_DIR}" "${OUT}" -P
 
           # Basic presence
@@ -151,16 +153,27 @@ jobs:
           test -s "${OUT}/SHA256SUMS.stable.txt"
 
       - name: Verify SHA256SUMS (contract)
+        if: github.event_name == 'workflow_dispatch'
         run: |
           EID="${{ steps.resolve.outputs.export_id }}"
-          OUT="out/ops/exports_ci/export_${EID}"
+          REMOTE_DIR="${EID}"
+          if [[ "${REMOTE_DIR}" != export_* ]]; then
+            REMOTE_DIR="export_${REMOTE_DIR}"
+          fi
+          OUT="out/ops/exports_ci/${REMOTE_DIR}"
           cd "${OUT}"
 
           # Prefer sha256sum on ubuntu
           sha256sum -c SHA256SUMS.stable.txt
 
       - name: Show manifest summary
-        env:
-          OUT: "out/ops/exports_ci/export_${{ steps.resolve.outputs.export_id }}"
+        if: github.event_name == 'workflow_dispatch'
         run: |
+          EID="${{ steps.resolve.outputs.export_id }}"
+          REMOTE_DIR="${EID}"
+          if [[ "${REMOTE_DIR}" != export_* ]]; then
+            REMOTE_DIR="export_${REMOTE_DIR}"
+          fi
+          OUT="out/ops/exports_ci/${REMOTE_DIR}"
+          export OUT
           python3 -c "import json,os; from pathlib import Path; p=Path(os.environ['OUT'])/'manifest.json'; d=json.loads(p.read_text()); print('schema_version:', d.get('schema_version')); print('export_id:', d.get('export_id')); print('created_at_utc:', d.get('created_at_utc')); print('source:', d.get('source')); print('files_count:', len(d.get('files',[])))"
