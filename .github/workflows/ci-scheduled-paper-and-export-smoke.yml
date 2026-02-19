@@ -1,0 +1,37 @@
+name: CI / Scheduled Paper + Export Smoke
+
+"on":
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: scheduled-paper-export-smoke
+  cancel-in-progress: true
+
+jobs:
+  paper_tests_audit_evidence:
+    if: vars.PT_SCHEDULED_PAPER_TESTS_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger paper-tests-audit-evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run "paper-tests-audit-evidence" -f scope=execution -f note="scheduled smoke (hourly)"
+
+  export_pack_verify:
+    if: vars.PT_SCHEDULED_EXPORT_VERIFY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger CI / Export Pack Download + Verify
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run "CI / Export Pack Download + Verify" -f export_id=""
