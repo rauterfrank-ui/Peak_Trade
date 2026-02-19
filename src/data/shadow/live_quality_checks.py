@@ -238,3 +238,23 @@ class LiveQualityChecker:
         self._last_tick_ts.clear()
         self._last_bar_ts.clear()
         self._issues_found = 0
+
+
+def run_live_quality_checks(
+    *,
+    asof_utc: str,
+    context: dict,
+) -> tuple[bool, dict]:
+    """Run live quality checks for gate evaluation.
+
+    Stub: returns (True, {}) when no issues. Can be extended to use
+    LiveQualityChecker state or external staleness/gap checks.
+
+    Args:
+        asof_utc: Evaluation timestamp (ISO UTC)
+        context: Optional context (symbols, timeframes, etc.)
+
+    Returns:
+        (ok, extra): ok=True if checks pass, extra dict with details
+    """
+    return True, {"asof_utc": asof_utc}
