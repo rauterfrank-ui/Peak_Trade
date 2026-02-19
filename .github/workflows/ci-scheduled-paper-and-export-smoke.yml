@@ -6,7 +6,7 @@ name: CI / Scheduled Paper + Export Smoke
     - cron: "17 * * * *"
 
 permissions:
-  actions: read
+  actions: write
   contents: read
 
 concurrency:
