@@ -1,0 +1,24 @@
+{
+  "capsule_preview_keys": [
+    "asof_utc",
+    "context",
+    "features",
+    "schema_version",
+    "universe"
+  ],
+  "inputs": {
+    "capsule": "/Users/frnkhrz/Peak_Trade/tests/fixtures/p4c/capsule_high_vol.json"
+  },
+  "meta": {
+    "created_at_utc": "2026-02-11T12:00:00Z",
+    "runner_version": "0.0.0",
+    "schema_version": "p4c.l2_market_outlook.v0"
+  },
+  "outlook": {
+    "no_trade": true,
+    "no_trade_reasons": [
+      "VOL_EXTREME"
+    ],
+    "regime": "HIGH_VOL"
+  }
+}

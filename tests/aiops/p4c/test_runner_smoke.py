@@ -33,7 +33,7 @@ def test_p4c_runner_emits_json(tmp_path: Path) -> None:
     )
 
     lines = [ln.strip() for ln in p.stdout.splitlines() if ln.strip()]
-    assert len(lines) in (1, 2)
+    assert len(lines) in (2, 3), f"expected 2 (no evidence) or 3 (with evidence), got {len(lines)}"
     out_json = Path(lines[0])
     assert out_json.is_file()
 
@@ -41,8 +41,8 @@ def test_p4c_runner_emits_json(tmp_path: Path) -> None:
     assert "meta" in data
     assert data["meta"].get("schema_version")
     assert "outlook" in data
-    if len(lines) == 2:
-        mf = Path(lines[1])
+    if len(lines) == 3:
+        mf = Path(lines[2])
         assert mf.is_file()
         m = json.loads(mf.read_text(encoding="utf-8"))
         assert m.get("meta", {}).get("kind") == "p4c_evidence_manifest"

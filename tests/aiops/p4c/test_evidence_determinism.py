@@ -35,9 +35,9 @@ def _run(repo: Path, run_id: str) -> tuple[dict, dict]:
             text=True,
         )
         lines = [ln.strip() for ln in p.stdout.splitlines() if ln.strip()]
-        assert len(lines) == 2
+        assert len(lines) == 3, f"expected 3 outputs (l2, alias, manifest), got {len(lines)}"
         out_json = Path(lines[0])
-        out_mf = Path(lines[1])
+        out_mf = Path(lines[2])
         data = json.loads(out_json.read_text(encoding="utf-8"))
         mf = json.loads(out_mf.read_text(encoding="utf-8"))
         return data, mf

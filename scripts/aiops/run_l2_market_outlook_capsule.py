@@ -55,6 +55,32 @@ def load_capsule(path: Path) -> Dict[str, Any]:
         return json.load(f)
 
 
+# Canonical output schema (p4c.l2_market_outlook.v0)
+OUTLOOK_REGIMES = frozenset({"HIGH_VOL", "RISK_OFF", "RISK_ON", "NEUTRAL"})
+NO_TRADE_REASONS_ALLOWED = frozenset({"VOL_EXTREME", "MISSING_FEATURES"})
+
+
+def validate_market_outlook_result(result: Dict[str, Any]) -> None:
+    """Strict schema validation at write-time. Raises ValueError on failure."""
+    if not isinstance(result, dict):
+        raise ValueError("result must be dict")
+    if "meta" not in result or not isinstance(result["meta"], dict):
+        raise ValueError("result.meta required (dict)")
+    if "outlook" not in result or not isinstance(result["outlook"], dict):
+        raise ValueError("result.outlook required (dict)")
+    out = result["outlook"]
+    if "regime" not in out or out["regime"] not in OUTLOOK_REGIMES:
+        raise ValueError(f"outlook.regime must be one of {OUTLOOK_REGIMES}")
+    if "no_trade" not in out or not isinstance(out["no_trade"], bool):
+        raise ValueError("outlook.no_trade required (bool)")
+    reasons = out.get("no_trade_reasons", [])
+    if not isinstance(reasons, list):
+        raise ValueError("outlook.no_trade_reasons must be list")
+    for r in reasons:
+        if r not in NO_TRADE_REASONS_ALLOWED:
+            raise ValueError(f"invalid no_trade_reason: {r!r}")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--capsule", type=str, required=True, help="Path to input capsule JSON")
@@ -107,10 +133,15 @@ def main() -> int:
         "capsule_preview_keys": sorted(list(capsule.keys())),
     }
 
+    validate_market_outlook_result(result)
+
     out_json = outdir / "l2_market_outlook.json"
     write_json(out_json, result)
 
-    printed: List[Path] = [out_json]
+    alias_json = outdir / "market_outlook.json"
+    write_json(alias_json, result)
+
+    printed: List[Path] = [out_json, alias_json]
 
     if int(args.evidence) == 1:
         manifest_meta = {
