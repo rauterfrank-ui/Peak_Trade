@@ -64,6 +64,33 @@ jobs:
           echo "${PT_RCLONE_CONF_B64}" | base64 -d > "${HOME}/.config/rclone/rclone.conf"
           rclone version
 
+      - name: Seed export pack locally (fallback when bucket empty)
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        env:
+          PT_EXPORT_REMOTE: ${{ secrets.PT_EXPORT_REMOTE }}
+          PT_EXPORT_PREFIX: ${{ secrets.PT_EXPORT_PREFIX }}
+        run: |
+          set -euo pipefail
+          TS="$(date -u +%Y%m%dT%H%M%SZ)"
+          EID="export_seed_${TS}"
+          LOCAL="out/ops/exports_ci_seed/${EID}"
+          mkdir -p "${LOCAL}/data"
+          printf '{"export_id":"%s","created_at":"%s","note":"ci seed export (auto)"}\n' "${EID}" "${TS}" > "${LOCAL}/manifest.json"
+          printf "seed payload %s\n" "${TS}" > "${LOCAL}/data/payload.txt"
+          if command -v sha256sum >/dev/null 2>&1; then
+            (cd "${LOCAL}" && sha256sum manifest.json data/payload.txt | awk '{print $1"  "$2}' > SHA256SUMS.stable.txt)
+          else
+            (cd "${LOCAL}" && shasum -a 256 manifest.json data/payload.txt | awk '{print $1"  "$2}' > SHA256SUMS.stable.txt)
+          fi
+          REMOTE_DIR="${EID}"
+          if [[ "${REMOTE_DIR}" != export_* ]]; then
+            REMOTE_DIR="export_${REMOTE_DIR}"
+          fi
+          rclone copy "${LOCAL}" "${PT_EXPORT_REMOTE}/${PT_EXPORT_PREFIX}/${REMOTE_DIR}" -P
+          echo "${EID}" > out/ops/exports_ci_seed/SEEDED_EXPORT_ID.txt
+          echo "Seeded EID=${EID}"
+
       - name: Resolve export_id (pinned or latest)
         id: resolve
         env:
@@ -72,6 +99,9 @@ jobs:
           PT_EXPORT_ID_SECRET: ${{ secrets.PT_EXPORT_ID }}
           PT_EXPORT_ID_INPUT: ${{ github.event.inputs.export_id }}
         run: |
+          if test -f out/ops/exports_ci_seed/SEEDED_EXPORT_ID.txt; then
+            PT_EXPORT_ID_INPUT="$(cat out/ops/exports_ci_seed/SEEDED_EXPORT_ID.txt)"
+          fi
           test -n "${PT_EXPORT_REMOTE}"
           test -n "${PT_EXPORT_PREFIX}"
 
@@ -109,8 +139,12 @@ jobs:
           OUT="out/ops/exports_ci/export_${EID}"
           mkdir -p "${OUT}"
 
-          # Copy full pack dir
-          rclone copy "${PT_EXPORT_REMOTE}/${PT_EXPORT_PREFIX}/export_${EID}" "${OUT}" -P
+          # Copy full pack dir (normalize export_ prefix to avoid double)
+          REMOTE_DIR="${EID}"
+          if [[ "${REMOTE_DIR}" != export_* ]]; then
+            REMOTE_DIR="export_${REMOTE_DIR}"
+          fi
+          rclone copy "${PT_EXPORT_REMOTE}/${PT_EXPORT_PREFIX}/${REMOTE_DIR}" "${OUT}" -P
 
           # Basic presence
           test -s "${OUT}/manifest.json"
