@@ -5,7 +5,7 @@ This folder contains P4C-specific notes and (later) the definitive documentation
 - NO-TRADE triggers
 - Evidence pack format
 
-See: `docs/ops/p4c/P4C_TODO.md` for the working checklist.
+See: `docs&#47;ops&#47;p4c&#47;P4C_TODO.md` for the working checklist.
 
 ## Runner (Capsule) usage
 
@@ -19,7 +19,7 @@ python3 scripts/aiops/run_l2_market_outlook_capsule.py \
   --dry-run
 ```
 
-Deterministic run (CI/testing):
+Deterministic run (CI&#47;testing):
 
 ```bash
 python3 scripts/aiops/run_l2_market_outlook_capsule.py \

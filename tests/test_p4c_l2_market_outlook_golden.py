@@ -1,4 +1,5 @@
 """Golden fixture tests for P4C L2 market outlook schema and invariants."""
+
 import json
 from pathlib import Path
 

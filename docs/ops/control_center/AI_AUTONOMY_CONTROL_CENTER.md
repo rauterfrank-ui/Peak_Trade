@@ -22,10 +22,10 @@ This page is the **single "Start Here" entry point** for AI Autonomy operations:
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| **Operating Mode** | Governance-Locked / No-Live | No trading execution permitted |
-| **Layer Coverage** | 7/7 Layers Defined | L0-L6 (L6 EXEC forbidden) |
+| **Operating Mode** | Governance-Locked &#47; No-Live | No trading execution permitted |
+| **Layer Coverage** | 7&#47;7 Layers Defined | L0-L6 (L6 EXEC forbidden) |
 | **Latest Milestone** | Phase 4B (L1 + L4 Integration) | L1 Runner + L4 Critic implemented |
-| **Authoritative Matrix** | [AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md](../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md) | v1.0 (2026-01-08) |
+| **Authoritative Matrix** | [AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md](..&#47;..&#47;governance&#47;matrix&#47;AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md) | v1.0 (2026-01-08) |
 | **Evidence Infrastructure** | ✅ Active | Templates, Schema, Validator, Index |
 | **CI Health** | ✅ Required Checks Active | 7 primary gates enforced |
 
@@ -33,15 +33,15 @@ This page is the **single "Start Here" entry point** for AI Autonomy operations:
 
 ## 3. Layer Status Matrix
 
-**Source of Truth:** [AI Autonomy Layer Map & Model Assignment Matrix](../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md)
+**Source of Truth:** [AI Autonomy Layer Map & Model Assignment Matrix](..&#47;..&#47;governance&#47;matrix&#47;AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md)
 
 | Layer ID | Layer Name | Autonomy | Primary Model | Critic Model | Capability Scope | Status |
 |----------|------------|----------|---------------|--------------|------------------|--------|
-| **L0** | Ops/Docs | REC | gpt-5.2 | deepseek-r1 | `L0_ops_docs.toml` | ✅ Defined |
+| **L0** | Ops&#47;Docs | REC | gpt-5.2 | deepseek-r1 | `L0_ops_docs.toml` | ✅ Defined |
 | **L1** | DeepResearch | PROP | o3-deep-research | o3-pro | `L1_deep_research.toml` | ✅ Defined |
 | **L2** | Market Outlook | PROP | gpt-5.2-pro | deepseek-r1 | `L2_market_outlook.toml` | ✅ Defined |
-| **L3** | Trade Plan Advisory | REC/PROP | gpt-5.2-pro | o3 | (pending) | 🟡 Partial |
-| **L4** | Governance / Policy Critic | RO/REC | o3-pro | gpt-5.2-pro | `L4_governance_critic.toml` | ✅ Defined |
+| **L3** | Trade Plan Advisory | REC&#47;PROP | gpt-5.2-pro | o3 | (pending) | 🟡 Partial |
+| **L4** | Governance &#47; Policy Critic | RO&#47;REC | o3-pro | gpt-5.2-pro | `L4_governance_critic.toml` | ✅ Defined |
 | **L5** | Risk Gate (Hard) | RO | (no LLM) | — | Deterministic Code | ✅ Defined |
 | **L6** | Execution | EXEC | — | — | FORBIDDEN | 🚫 Blocked |
 
@@ -125,11 +125,11 @@ python3 scripts/ci/check_docs_diff_guard_section.py
 ```
 
 **Docs Gates Runbooks:**
-- [Token Policy Gate Operator Runbook](../runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md)
-- [Reference Targets Gate Operator Runbook](../runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md)
-- [Diff Guard Policy Gate Operator Runbook](../runbooks/RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md)
+- [Token Policy Gate Operator Runbook](..&#47;runbooks&#47;RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md)
+- [Reference Targets Gate Operator Runbook](..&#47;runbooks&#47;RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md)
+- [Diff Guard Policy Gate Operator Runbook](..&#47;runbooks&#47;RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md)
 
-**Layer Runner Commands (Offline/Replay - CI-Safe):**
+**Layer Runner Commands (Offline&#47;Replay - CI-Safe):**
 ```bash
 # L1 DeepResearch (Phase 4A)
 python3 scripts/aiops/run_l1_deepresearch.py \
@@ -152,40 +152,40 @@ python3 scripts/aiops/run_l4_governance_critic.py \
     --out evidence_packs/L4_review
 ```
 
-**Reference:** [Phase 4A & 4B: L1/L4 Integration](../../governance/ai_autonomy/PHASE4_L1_L4_INTEGRATION.md)
+**Reference:** [Phase 4A & 4B: L1&#47;L4 Integration](..&#47;..&#47;governance&#47;ai_autonomy&#47;PHASE4_L1_L4_INTEGRATION.md)
 
 ### 5.2 Navigation
 
 **Quick Links:**
 - [Control Center Navigation](CONTROL_CENTER_NAV.md) — All key paths in one page
-- [Evidence Index](../EVIDENCE_INDEX.md) — Track all evidence items
-- [Evidence Schema](../EVIDENCE_SCHEMA.md) — Required fields for evidence packs
-- [Ops README](../README.md) — Ops tools, scripts, and runbooks overview
+- [Evidence Index](..&#47;EVIDENCE_INDEX.md) — Track all evidence items
+- [Evidence Schema](..&#47;EVIDENCE_SCHEMA.md) — Required fields for evidence packs
+- [Ops README](..&#47;README.md) — Ops tools, scripts, and runbooks overview
 
 ---
 
 ### 6.1 Primary Runbooks
 
 - **🎯 Control Center Operations (v0.1):**  
-  [RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md](../runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md)  
+  [RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md](..&#47;runbooks&#47;RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md)  
   *Daily routine, layer triage, CI gates verification, evidence handling, troubleshooting guide*
 
 - **Phase 4B M2 (Cursor Multi-Agent — Evidence-First Operator Loop):**  
-  [RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md](../runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md)  
+  [RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md](..&#47;runbooks&#47;RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md)  
   *Multi-agent orchestration, evidence pack workflow, operator review*
 
-- **Phase 4B M3 (Control Center Dashboard/Visual):**  
-  [RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md](../runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md)  
+- **Phase 4B M3 (Control Center Dashboard&#47;Visual):**  
+  [RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md](..&#47;runbooks&#47;RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md)  
   *This control center development, extended orchestration, dashboard modes*
 
 ### 6.2 Related Governance Runbooks
 
 - **Phase 5 NO-LIVE Drill Pack:**  
-  [WP5A_PHASE5_NO_LIVE_DRILL_PACK.md](../WP5A_PHASE5_NO_LIVE_DRILL_PACK.md)  
+  [WP5A_PHASE5_NO_LIVE_DRILL_PACK.md](..&#47;WP5A_PHASE5_NO_LIVE_DRILL_PACK.md)  
   *Governance-safe manual drills, no live trading, evidence chain*
 
 - **Cursor Multi-Agent Workflow (General):**  
-  [CURSOR_MULTI_AGENT_WORKFLOW.md](../CURSOR_MULTI_AGENT_WORKFLOW.md)  
+  [CURSOR_MULTI_AGENT_WORKFLOW.md](..&#47;CURSOR_MULTI_AGENT_WORKFLOW.md)  
   *Canonical workflow, roles, protocol, recovery*
 
 ---
@@ -194,12 +194,12 @@ python3 scripts/aiops/run_l4_governance_critic.py \
 
 | Component | Location | Purpose |
 |-----------|----------|---------|
-| **Evidence Index** | [EVIDENCE_INDEX.md](../EVIDENCE_INDEX.md) | Master index of all evidence items |
-| **Evidence Schema** | [EVIDENCE_SCHEMA.md](../EVIDENCE_SCHEMA.md) | Required fields for evidence packs |
-| **Evidence Entry Template** | [EVIDENCE_ENTRY_TEMPLATE.md](../EVIDENCE_ENTRY_TEMPLATE.md) | Template for new evidence entries |
-| **Evidence Pack Template v2** | [AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md](../../governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md) | Layer-aware evidence pack template |
-| **Evidence Pack Validator** | `src/ai_orchestration/evidence_pack.py` | Python validator for schema compliance |
-| **Evidence Index Validator** | `scripts/ops/validate_evidence_index.py` | CLI validator for evidence index |
+| **Evidence Index** | [EVIDENCE_INDEX.md](..&#47;EVIDENCE_INDEX.md) | Master index of all evidence items |
+| **Evidence Schema** | [EVIDENCE_SCHEMA.md](..&#47;EVIDENCE_SCHEMA.md) | Required fields for evidence packs |
+| **Evidence Entry Template** | [EVIDENCE_ENTRY_TEMPLATE.md](..&#47;EVIDENCE_ENTRY_TEMPLATE.md) | Template for new evidence entries |
+| **Evidence Pack Template v2** | [AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md](..&#47;..&#47;governance&#47;templates&#47;AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md) | Layer-aware evidence pack template |
+| **Evidence Pack Validator** | `src&#47;ai_orchestration&#47;evidence_pack.py` | Python validator for schema compliance |
+| **Evidence Index Validator** | `scripts&#47;ops&#47;validate_evidence_index.py` | CLI validator for evidence index |
 
 ### 7.2 Evidence Pack Workflow
 
@@ -220,9 +220,9 @@ This control center does not redefine gates; it points to the authoritative sour
 
 | Reference | Location | Purpose |
 |-----------|----------|---------|
-| **Branch Protection Required Checks** | [BRANCH_PROTECTION_REQUIRED_CHECKS.md](../BRANCH_PROTECTION_REQUIRED_CHECKS.md) | Snapshot of required CI checks |
-| **CI Policy Enforcement** | [CI_POLICY_ENFORCEMENT.md](../../ci/CI_POLICY_ENFORCEMENT.md) | Policy enforcement rules |
-| **P0 Guardrails Milestone** | [P0_GUARDRAILS_MILESTONE.md](../../P0_GUARDRAILS_MILESTONE.md) | P0 safety gates |
+| **Branch Protection Required Checks** | [BRANCH_PROTECTION_REQUIRED_CHECKS.md](..&#47;BRANCH_PROTECTION_REQUIRED_CHECKS.md) | Snapshot of required CI checks |
+| **CI Policy Enforcement** | [CI_POLICY_ENFORCEMENT.md](..&#47;..&#47;ci&#47;CI_POLICY_ENFORCEMENT.md) | Policy enforcement rules |
+| **P0 Guardrails Milestone** | [P0_GUARDRAILS_MILESTONE.md](..&#47;..&#47;P0_GUARDRAILS_MILESTONE.md) | P0 safety gates |
 
 ### 8.2 Primary Gates (7 Required Checks)
 
@@ -237,7 +237,7 @@ This control center does not redefine gates; it points to the authoritative sour
 | **CI Contract** | `ci.yml` | CI contract validation | Skips gracefully |
 
 **Key Rules:**
-- ✅ **Docs-only changes:** Most gates skip gracefully (no code → no lint/test/audit needed)
+- ✅ **Docs-only changes:** Most gates skip gracefully (no code → no lint&#47;test&#47;audit needed)
 - 🚨 **Docs Reference Targets gate:** MUST PASS always (prevents broken links)
 - 🛡️ **Policy Critic gate:** Runs on all PRs (governance enforcement)
 
@@ -247,8 +247,8 @@ This control center does not redefine gates; it points to the authoritative sour
 
 **For routine AI Autonomy operations:**
 
-1. **Choose Runbook:** M2 (general layer runs) or M3 (control center/dashboard work)
-2. **Scope Freeze:** Define acceptance criteria, in/out-of-scope
+1. **Choose Runbook:** M2 (general layer runs) or M3 (control center&#47;dashboard work)
+2. **Scope Freeze:** Define acceptance criteria, in&#47;out-of-scope
 3. **Evidence Pack Setup:** Create from template, assign Evidence ID
 4. **Layer Run(s):** Execute with logging (run_id, model_id, prompt_hash, artifact_hash)
 5. **SoD Check:** Verify Proposer ≠ Critic (different models)
@@ -257,7 +257,7 @@ This control center does not redefine gates; it points to the authoritative sour
 8. **Merge:** Squash & merge (after all gates pass)
 9. **Post-Merge:** Update evidence index, create merge log (if required)
 
-**Reference:** [Phase 4B M2 Runbook](../runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md) for detailed steps
+**Reference:** [Phase 4B M2 Runbook](..&#47;runbooks&#47;RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md) for detailed steps
 
 ---
 
@@ -268,11 +268,11 @@ This control center does not redefine gates; it points to the authoritative sour
 🚫 **NO-LIVE Enforcement:**
 - Any live trading enablement or strategy switching
 - Any order execution pipeline activation
-- Any real funds / exchange connectivity (use Shadow/Paper only)
+- Any real funds &#47; exchange connectivity (use Shadow&#47;Paper only)
 
 🚫 **NO Runtime Changes (without gates):**
 - Any changes to execution orchestration without explicit gates
-- Any changes to risk limits / kill-switch / bounded-auto rules
+- Any changes to risk limits &#47; kill-switch &#47; bounded-auto rules
 - Any model API calls that bypass SoD or logging
 
 🚫 **NO Non-Deterministic Outputs:**
@@ -289,30 +289,30 @@ This control center does not redefine gates; it points to the authoritative sour
 
 | Layer | Capability Scope File | Enforcement |
 |-------|----------------------|-------------|
-| L0 | `config/capability_scopes/L0_ops_docs.toml` | Inputs: docs, outputs: docs/runbooks, tools: files only |
-| L1 | `config/capability_scopes/L1_deep_research.toml` | Inputs: queries, outputs: research reports, tools: web + files |
-| L2 | `config/capability_scopes/L2_market_outlook.toml` | Inputs: market data, outputs: scenarios, tools: web (optional) + files |
-| L4 | `config/capability_scopes/L4_governance_critic.toml` | Inputs: evidence packs, outputs: decisions, tools: files only |
+| L0 | `config&#47;capability_scopes&#47;L0_ops_docs.toml` | Inputs: docs, outputs: docs&#47;runbooks, tools: files only |
+| L1 | `config&#47;capability_scopes&#47;L1_deep_research.toml` | Inputs: queries, outputs: research reports, tools: web + files |
+| L2 | `config&#47;capability_scopes&#47;L2_market_outlook.toml` | Inputs: market data, outputs: scenarios, tools: web (optional) + files |
+| L4 | `config&#47;capability_scopes&#47;L4_governance_critic.toml` | Inputs: evidence packs, outputs: decisions, tools: files only |
 
 **Enforcement:**
-- Runtime checks validate inputs/outputs against capability scope
-- Logging captures actual inputs/outputs manifest (audit trail)
+- Runtime checks validate inputs&#47;outputs against capability scope
+- Logging captures actual inputs&#47;outputs manifest (audit trail)
 - Evidence Pack validator checks scope compliance
 
-**Reference:** [AI Autonomy Layer Map](../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md), Section "CAPABILITY SCOPES"
+**Reference:** [AI Autonomy Layer Map](..&#47;..&#47;governance&#47;matrix&#47;AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md), Section "CAPABILITY SCOPES"
 
 ---
 
 ## 12. Model Registry & Budget
 
-**Authoritative Source:** `config/model_registry.toml`
+**Authoritative Source:** `config&#47;model_registry.toml`
 
 **Model Families in Use:**
 - **OpenAI GPT-5:** gpt-5.2-pro, gpt-5.2, gpt-5-mini (L0, L2, L3)
-- **OpenAI O3/O4:** o3-deep-research, o3-pro, o3, o4-mini-deep-research (L1, L3 critic, L4)
+- **OpenAI O3&#47;O4:** o3-deep-research, o3-pro, o3, o4-mini-deep-research (L1, L3 critic, L4)
 - **DeepSeek:** deepseek-r1 (L0 critic, L2 critic, L4 fallback)
 
-**Cost Monitoring:** Model registry includes cost per 1k tokens (input/output), latency p50, and status
+**Cost Monitoring:** Model registry includes cost per 1k tokens (input&#47;output), latency p50, and status
 
 **Budget Enforcement:** (planned) Evidence Pack includes token counts + cost estimate
 
@@ -323,7 +323,7 @@ This control center does not redefine gates; it points to the authoritative sour
 ### Common Issues
 
 **Q: Evidence Pack validation fails with "missing layer_id"**
-- **A:** Update Evidence Pack to include mandatory Layer Map fields (see [Evidence Pack Template v2](../../governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md))
+- **A:** Update Evidence Pack to include mandatory Layer Map fields (see [Evidence Pack Template v2](..&#47;..&#47;governance&#47;templates&#47;AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md))
 
 **Q: Docs Reference Targets gate fails**
 - **A:** Run local validation: `scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main`
@@ -331,17 +331,17 @@ This control center does not redefine gates; it points to the authoritative sour
 
 **Q: SoD Check fails (Proposer == Critic)**
 - **A:** Verify `primary_model_id` ≠ `critic_model_id` in Evidence Pack
-- Check [Layer Map Matrix](../../governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md) for correct assignments
+- Check [Layer Map Matrix](..&#47;..&#47;governance&#47;matrix&#47;AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md) for correct assignments
 
 **Q: CI stuck on "mergeable: UNKNOWN"**
-- **A:** See [GitHub Rulesets Runbook](../runbooks/github_rulesets_pr_reviews_policy.md), Section "Quickflow: mergeable UNKNOWN"
+- **A:** See [GitHub Rulesets Runbook](..&#47;runbooks&#47;github_rulesets_pr_reviews_policy.md), Section "Quickflow: mergeable UNKNOWN"
 
 ### Escalation
 
 **For governance violations or unclear scope:**
-- Contact: Operator (Frank) / Risk Officer
+- Contact: Operator (Frank) &#47; Risk Officer
 - Create Issue: Tag with `governance`, `ai-autonomy`
-- Reference: [AI Autonomy Go/No-Go Overview](../../governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md)
+- Reference: [AI Autonomy Go&#47;No-Go Overview](..&#47;..&#47;governance&#47;AI_AUTONOMY_GO_NO_GO_OVERVIEW.md)
 
 ---
 
