@@ -2,7 +2,7 @@ name: PR-J / Scheduled Shadow+Paper Features Smoke
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "23 * * * *"
   workflow_dispatch:
     inputs:
       enabled:
@@ -35,7 +35,7 @@ on:
         default: "-1.0"
 
 concurrency:
-  group: prj-features-smoke-${{ github.ref }}
+  group: prj-features-smoke-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 permissions:
