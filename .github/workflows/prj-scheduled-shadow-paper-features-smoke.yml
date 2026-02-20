@@ -2,7 +2,7 @@ name: PR-J / Scheduled Shadow+Paper Features Smoke
 
 on:
   schedule:
-    - cron: "23 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
     inputs:
       enabled:
