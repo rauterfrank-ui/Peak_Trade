@@ -1,9 +1,44 @@
 from __future__ import annotations
 
+import argparse
 import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
+
+
+def _parse_args() -> argparse.Namespace:
+    p = argparse.ArgumentParser(
+        description="Generate PR-J status report artifacts from a GitHub Actions runs JSON array."
+    )
+    p.add_argument(
+        "--input",
+        dest="input_path",
+        default=None,
+        help="Path to GitHub Actions workflow runs JSON array (default: env PRJ_RUNS_JSON or out/prj_runs.json).",
+    )
+    p.add_argument(
+        "--output-dir",
+        dest="output_dir",
+        default="reports/status",
+        help="Output directory for prj_status_latest.{json,md}.",
+    )
+    p.add_argument(
+        "--limit",
+        dest="limit",
+        type=int,
+        default=None,
+        help="Optional limit for number of runs to include (most recent first).",
+    )
+    return p.parse_args()
+
+
+def _apply_cli_overrides(args: argparse.Namespace) -> None:
+    if args.input_path:
+        os.environ["PRJ_RUNS_JSON"] = args.input_path
+    os.environ["PRJ_REPORTS_DIR"] = args.output_dir
+    if args.limit is not None:
+        os.environ["PRJ_RUNS_LIMIT"] = str(args.limit)
 
 
 def _iso_now() -> str:
@@ -12,10 +47,13 @@ def _iso_now() -> str:
 
 def main() -> int:
     in_path = Path(os.environ.get("PRJ_RUNS_JSON", "out/prj_runs.json"))
-    out_dir = Path("reports/status")
+    out_dir = Path(os.environ.get("PRJ_REPORTS_DIR", "reports/status"))
     out_dir.mkdir(parents=True, exist_ok=True)
 
     runs = json.loads(in_path.read_text(encoding="utf-8"))
+    limit = os.environ.get("PRJ_RUNS_LIMIT")
+    if limit:
+        runs = runs[: int(limit)]
     # expected: list of runs (from GitHub API)
     rows = []
     for r in runs:
@@ -87,4 +125,6 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    args = _parse_args()
+    _apply_cli_overrides(args)
     raise SystemExit(main())
