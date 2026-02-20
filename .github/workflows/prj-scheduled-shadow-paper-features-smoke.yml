@@ -38,6 +38,9 @@ concurrency:
   group: prj-features-smoke-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   prj-features-smoke:
     runs-on: ubuntu-latest
@@ -65,13 +68,13 @@ jobs:
 
       - name: Run PR-J smoke + evidence
         env:
-          PT_ENABLED: ${{ inputs.enabled || 'false' }}
-          PT_ARMED: ${{ inputs.armed || 'false' }}
-          PT_CONFIRM_PRESENT: ${{ inputs.confirm_present || 'false' }}
-          PT_ALLOW_DOUBLE_PLAY: ${{ inputs.allow_double_play || 'false' }}
-          PT_ALLOW_DYNAMIC_LEVERAGE: ${{ inputs.allow_dynamic_leverage || 'false' }}
-          PT_STRENGTH: ${{ inputs.strength || '1.0' }}
-          PT_SWITCH_SCORE: ${{ inputs.switch_score || '-1.0' }}
+          PT_ENABLED: ${{ github.event.inputs.enabled || 'false' }}
+          PT_ARMED: ${{ github.event.inputs.armed || 'false' }}
+          PT_CONFIRM_PRESENT: ${{ github.event.inputs.confirm_present || 'false' }}
+          PT_ALLOW_DOUBLE_PLAY: ${{ github.event.inputs.allow_double_play || 'false' }}
+          PT_ALLOW_DYNAMIC_LEVERAGE: ${{ github.event.inputs.allow_dynamic_leverage || 'false' }}
+          PT_STRENGTH: ${{ github.event.inputs.strength || '1.0' }}
+          PT_SWITCH_SCORE: ${{ github.event.inputs.switch_score || '-1.0' }}
         run: |
           ./scripts/ci/prj_features_smoke_and_evidence.sh
 

@@ -13,10 +13,10 @@ Run a deterministic scheduled smoke that:
 - Feature flags only affect `details`/sizing hints, not eligibility.
 
 ## Outputs (uploaded as artifacts)
-- `out/ops/prj_smoke/<run_id>/summary.json`
-- `out/ops/prj_smoke/<run_id>/shadow/` (run outputs)
-- `out/ops/prj_smoke/<run_id>/paper/` (run outputs)
-- Evidence pack: `out/ops/evidence_packs/pack_prj_smoke_<run_id>/manifest.json` + VALIDATION_OK
+- `out&#47;ops&#47;prj_smoke&#47;<run_id>&#47;summary.json`
+- `out&#47;ops&#47;prj_smoke&#47;<run_id>&#47;shadow&#47;` (run outputs)
+- `out&#47;ops&#47;prj_smoke&#47;<run_id>&#47;paper&#47;` (run outputs)
+- Evidence pack: `out&#47;ops&#47;evidence_packs&#47;pack_prj_smoke_<run_id>&#47;manifest.json` + VALIDATION_OK
 
 ## Config
 Workflow supports:
