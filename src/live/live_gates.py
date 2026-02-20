@@ -54,6 +54,7 @@ from src.experiments.strategy_profiles import (
     get_tiering_for_strategy,
 )
 from src.live.data_quality_gate import evaluate_data_quality
+from src.live.dynamic_leverage_live import evaluate_dynamic_leverage_for_live
 
 logger = logging.getLogger(__name__)
 
@@ -356,6 +357,10 @@ def check_strategy_live_eligibility(
     else:
         logger.info(f"Strategy '{strategy_id}' is NOT live-eligible: {reasons}")
 
+    # Dynamic leverage sizing hint (SAFE DEFAULT OFF; does not change eligibility)
+    dl_decision = evaluate_dynamic_leverage_for_live(context=context or {})
+    details["dynamic_leverage"] = dl_decision.details
+
     return LiveGateResult(
         entity_id=strategy_id,
         entity_type="strategy",
@@ -523,6 +528,10 @@ def check_portfolio_live_eligibility(
         logger.debug(f"Portfolio '{portfolio_id}' is live-eligible")
     else:
         logger.info(f"Portfolio '{portfolio_id}' is NOT live-eligible: {reasons}")
+
+    # Dynamic leverage sizing hint (SAFE DEFAULT OFF; does not change eligibility)
+    dl_decision = evaluate_dynamic_leverage_for_live(context=context or {})
+    details["dynamic_leverage"] = dl_decision.details
 
     return LiveGateResult(
         entity_id=portfolio_id,
