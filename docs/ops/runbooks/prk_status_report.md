@@ -9,7 +9,7 @@ Generate a daily status snapshot of the PR-J smoke workflow:
 
 ## Outputs
 Uploaded as GitHub Actions artifacts:
-- `reports/status/prj_status_latest.json`
-- `reports/status/prj_status_latest.md`
+- `reports&#47;status&#47;prj_status_latest.json`
+- `reports&#47;status&#47;prj_status_latest.md`
 
 No repo writes, no secrets, read-only permissions.
