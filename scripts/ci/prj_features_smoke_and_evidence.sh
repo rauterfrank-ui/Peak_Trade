@@ -9,9 +9,9 @@ export PT_RUN_ID="$run_id"
 python3 scripts/aiops/run_prj_features_smoke.py
 out_base="out/ops/prj_smoke/${run_id}"
 
-# Evidence pack (base-dir = repo root for relpaths)
+# Evidence pack (base-dir = out/ops for portable relpaths in artifact)
 python3 scripts/aiops/generate_evidence_pack.py \
-  --base-dir "$(pwd)" \
+  --base-dir "out/ops" \
   --in "out/ops/prj_smoke/${run_id}" \
   --pack-id "prj_smoke_${run_id}" \
   --out-root "out/ops/evidence_packs" \
