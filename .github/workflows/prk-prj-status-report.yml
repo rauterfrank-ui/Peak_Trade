@@ -1,0 +1,48 @@
+name: PR-K / PR-J Status Report
+
+on:
+  schedule:
+    - cron: "7 0 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: prk-prj-status-report-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prj-status-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch last 50 PR-J runs (GitHub API)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          # workflow file name is stable in repo
+          wf_path="prj-scheduled-shadow-paper-features-smoke.yml"
+          # get workflow id
+          wf_id="$(gh api repos/${REPO}/actions/workflows --jq ".workflows[] | select(.path==\".github/workflows/${wf_path}\") | .id")"
+          echo "WF_ID=${wf_id}"
+          gh api "repos/${REPO}/actions/workflows/${wf_id}/runs?per_page=50" --jq '.workflow_runs' > out/prj_runs.json
+
+      - name: Build report (md+json)
+        run: |
+          set -euo pipefail
+          python3 scripts/ci/prj_status_report.py
+          ls -la reports/status
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: prj-status-report
+          path: reports/status/prj_status_latest.*
+          retention-days: 30
