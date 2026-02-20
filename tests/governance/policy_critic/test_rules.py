@@ -200,6 +200,18 @@ class TestRiskLimitRaiseRule:
 
         assert len(violations) >= 2
 
+    def test_skips_tests_path_max_leverage(self):
+        """Tests instantiate configs with max_leverage; not production limit changes."""
+        rule = RiskLimitRaiseRule()
+        diff = """
++++ b/tests/risk/test_dynamic_leverage_contract.py
++cfg = DynamicLeverageConfig(min_leverage=1.0, max_leverage=50.0, gamma=2.0)
++    assert compute_dynamic_leverage(strength=1.0, cfg=cfg) == pytest.approx(50.0)
+        """
+        violations = rule.check(diff, ["tests/risk/test_dynamic_leverage_contract.py"])
+
+        assert len(violations) == 0
+
 
 class TestMissingTestPlanRule:
     """Tests for missing test plan rule."""
