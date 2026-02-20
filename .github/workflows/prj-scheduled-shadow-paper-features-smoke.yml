@@ -1,0 +1,86 @@
+name: PR-J / Scheduled Shadow+Paper Features Smoke
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+    inputs:
+      enabled:
+        description: "PT_ENABLED (bool)"
+        required: false
+        default: "false"
+      armed:
+        description: "PT_ARMED (bool)"
+        required: false
+        default: "false"
+      confirm_present:
+        description: "PT_CONFIRM_PRESENT (bool)"
+        required: false
+        default: "false"
+      allow_double_play:
+        description: "PT_ALLOW_DOUBLE_PLAY (bool)"
+        required: false
+        default: "false"
+      allow_dynamic_leverage:
+        description: "PT_ALLOW_DYNAMIC_LEVERAGE (bool)"
+        required: false
+        default: "false"
+      strength:
+        description: "PT_STRENGTH (float 0..1)"
+        required: false
+        default: "1.0"
+      switch_score:
+        description: "PT_SWITCH_SCORE (float; negative -> bear)"
+        required: false
+        default: "-1.0"
+
+concurrency:
+  group: prj-features-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prj-features-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: ${{ vars.PT_PRJ_FEATURES_SMOKE_ENABLED == 'true' || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install (minimal)
+        run: |
+          python3 -m pip install -U pip
+          python3 -m pip install -e .
+
+      - name: Guardrails (log config)
+        run: |
+          python3 -c "import platform; print(platform.platform())"
+          python3 -c "import sys; print(sys.version)"
+          echo "PT_PRJ_FEATURES_SMOKE_ENABLED=${{ vars.PT_PRJ_FEATURES_SMOKE_ENABLED }}"
+          echo "EVENT=${{ github.event_name }}"
+
+      - name: Run PR-J smoke + evidence
+        env:
+          PT_ENABLED: ${{ inputs.enabled || 'false' }}
+          PT_ARMED: ${{ inputs.armed || 'false' }}
+          PT_CONFIRM_PRESENT: ${{ inputs.confirm_present || 'false' }}
+          PT_ALLOW_DOUBLE_PLAY: ${{ inputs.allow_double_play || 'false' }}
+          PT_ALLOW_DYNAMIC_LEVERAGE: ${{ inputs.allow_dynamic_leverage || 'false' }}
+          PT_STRENGTH: ${{ inputs.strength || '1.0' }}
+          PT_SWITCH_SCORE: ${{ inputs.switch_score || '-1.0' }}
+        run: |
+          ./scripts/ci/prj_features_smoke_and_evidence.sh
+
+      - name: Upload PR-J smoke artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prj-features-smoke
+          path: |
+            out/ops/prj_smoke/**/*
+            out/ops/evidence_packs/**/manifest.json
+            out/ops/evidence_packs/**/index.json
+          retention-days: 30
