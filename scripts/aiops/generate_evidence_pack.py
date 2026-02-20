@@ -35,6 +35,21 @@ def ensure_pack_dir(root: Path, pack_id: str) -> Path:
     return d
 
 
+def _base_dir_relative_to_manifest(pack_dir: Path, base_dir: Path) -> str:
+    """Return base_dir as path relative to pack_dir for portable manifest."""
+    pack_res = pack_dir.resolve()
+    base_res = base_dir.resolve()
+    try:
+        rel = pack_res.relative_to(base_res)
+        return "/".join([".."] * len(rel.parts)) if rel.parts else "."
+    except ValueError:
+        try:
+            rel = base_res.relative_to(pack_res)
+            return rel.as_posix()
+        except ValueError:
+            return base_res.as_posix()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--base-dir", type=str, required=True, help="Base dir for relpaths")
@@ -78,10 +93,11 @@ def main() -> int:
     created_at = "2026-02-11T12:00:00Z" if args.deterministic else utc_now_iso()
 
     entries = build_pack_entries(files, base_dir=base_dir)
+    base_dir_rel = _base_dir_relative_to_manifest(pack_dir, base_dir)
     meta = EvidencePackMeta(
         pack_id=f"pack_{pack_id}",
         created_at_utc=created_at,
-        base_dir=base_dir.as_posix(),
+        base_dir=base_dir_rel,
     )
 
     manifest = build_manifest(meta, entries)

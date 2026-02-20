@@ -64,10 +64,11 @@ def validate_pack(manifest_path: Path) -> None:
     m = load_json(manifest_path)
     validate_manifest_structure(m)
     meta = m["meta"]
-    base_dir_s = str(meta.get("base_dir", "") or "")
-    base_dir = (
-        Path(base_dir_s).expanduser().resolve()
-        if base_dir_s
-        else manifest_path.parent.parent.resolve()
-    )
+    base_dir_s = str(meta.get("base_dir", "") or "").strip()
+    if not base_dir_s:
+        base_dir = manifest_path.parent.parent.resolve()
+    elif base_dir_s.startswith("/") or (len(base_dir_s) > 1 and base_dir_s[1] == ":"):
+        base_dir = Path(base_dir_s).expanduser().resolve()
+    else:
+        base_dir = (manifest_path.parent / base_dir_s).resolve()
     verify_files(m, base_dir=base_dir)
