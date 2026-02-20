@@ -55,6 +55,7 @@ from src.experiments.strategy_profiles import (
 )
 from src.live.data_quality_gate import evaluate_data_quality
 from src.live.dynamic_leverage_live import evaluate_dynamic_leverage_for_live
+from src.ops.double_play.specialists import evaluate_double_play
 
 logger = logging.getLogger(__name__)
 
@@ -361,6 +362,10 @@ def check_strategy_live_eligibility(
     dl_decision = evaluate_dynamic_leverage_for_live(context=context or {})
     details["dynamic_leverage"] = dl_decision.details
 
+    # Double-play specialist selection (SAFE DEFAULT OFF; annotate only)
+    dp_decision = evaluate_double_play(context=context or {})
+    details["double_play"] = dp_decision.details
+
     return LiveGateResult(
         entity_id=strategy_id,
         entity_type="strategy",
@@ -532,6 +537,10 @@ def check_portfolio_live_eligibility(
     # Dynamic leverage sizing hint (SAFE DEFAULT OFF; does not change eligibility)
     dl_decision = evaluate_dynamic_leverage_for_live(context=context or {})
     details["dynamic_leverage"] = dl_decision.details
+
+    # Double-play specialist selection (SAFE DEFAULT OFF; annotate only)
+    dp_decision = evaluate_double_play(context=context or {})
+    details["double_play"] = dp_decision.details
 
     return LiveGateResult(
         entity_id=portfolio_id,
