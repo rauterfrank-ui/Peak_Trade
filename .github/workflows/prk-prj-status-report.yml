@@ -35,7 +35,7 @@ jobs:
             exit 1
           fi
           echo "WF_ID=${wf_id}"
-          gh api "repos/${REPO}/actions/workflows/${wf_id}/runs?per_page=50" --jq '.workflow_runs // []' > out/prj_runs.json
+          gh api "repos/${REPO}/actions/runs?workflow_id=${wf_id}&per_page=50" --jq '.workflow_runs // []' > out/prj_runs.json
 
       - name: Build report (md+json)
         run: |
