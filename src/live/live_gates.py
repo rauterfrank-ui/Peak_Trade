@@ -55,6 +55,7 @@ from src.experiments.strategy_profiles import (
 )
 from src.live.data_quality_gate import evaluate_data_quality
 from src.live.dynamic_leverage_live import evaluate_dynamic_leverage_for_live
+from src.live.feature_activation import evaluate_feature_activation
 from src.ops.double_play.specialists import evaluate_double_play
 
 logger = logging.getLogger(__name__)
@@ -358,12 +359,25 @@ def check_strategy_live_eligibility(
     else:
         logger.info(f"Strategy '{strategy_id}' is NOT live-eligible: {reasons}")
 
+    # Activation gate: require enabled+armed+confirm+allow before enabling features (SAFE DEFAULT OFF)
+    ctx = context or {}
+    activation = evaluate_feature_activation(context=ctx)
+    details["features"] = activation.details
+
+    effective_ctx = dict(ctx)
+    effective_ctx["double_play_enabled"] = activation.allow_double_play and ctx.get(
+        "double_play_enabled", False
+    )
+    effective_ctx["dynamic_leverage_enabled"] = activation.allow_dynamic_leverage and ctx.get(
+        "dynamic_leverage_enabled", False
+    )
+
     # Dynamic leverage sizing hint (SAFE DEFAULT OFF; does not change eligibility)
-    dl_decision = evaluate_dynamic_leverage_for_live(context=context or {})
+    dl_decision = evaluate_dynamic_leverage_for_live(context=effective_ctx)
     details["dynamic_leverage"] = dl_decision.details
 
     # Double-play specialist selection (SAFE DEFAULT OFF; annotate only)
-    dp_decision = evaluate_double_play(context=context or {})
+    dp_decision = evaluate_double_play(context=effective_ctx)
     details["double_play"] = dp_decision.details
 
     return LiveGateResult(
@@ -534,12 +548,25 @@ def check_portfolio_live_eligibility(
     else:
         logger.info(f"Portfolio '{portfolio_id}' is NOT live-eligible: {reasons}")
 
+    # Activation gate: require enabled+armed+confirm+allow before enabling features (SAFE DEFAULT OFF)
+    ctx = context or {}
+    activation = evaluate_feature_activation(context=ctx)
+    details["features"] = activation.details
+
+    effective_ctx = dict(ctx)
+    effective_ctx["double_play_enabled"] = activation.allow_double_play and ctx.get(
+        "double_play_enabled", False
+    )
+    effective_ctx["dynamic_leverage_enabled"] = activation.allow_dynamic_leverage and ctx.get(
+        "dynamic_leverage_enabled", False
+    )
+
     # Dynamic leverage sizing hint (SAFE DEFAULT OFF; does not change eligibility)
-    dl_decision = evaluate_dynamic_leverage_for_live(context=context or {})
+    dl_decision = evaluate_dynamic_leverage_for_live(context=effective_ctx)
     details["dynamic_leverage"] = dl_decision.details
 
     # Double-play specialist selection (SAFE DEFAULT OFF; annotate only)
-    dp_decision = evaluate_double_play(context=context or {})
+    dp_decision = evaluate_double_play(context=effective_ctx)
     details["double_play"] = dp_decision.details
 
     return LiveGateResult(
