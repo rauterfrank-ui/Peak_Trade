@@ -229,10 +229,10 @@ class RiskLimitRaiseRule(PolicyRule):
                 for match in matches:
                     file_path = NoSecretsRule._extract_file_from_diff_position(diff, match.start())
 
-                    # Skip excluded paths: docs/, tmp/, tests/fixtures/
+                    # Skip excluded paths: docs/, tmp/, tests/ (tests instantiate configs, not production limits)
                     if file_path and any(
                         file_path.startswith(excluded)
-                        for excluded in ["docs/", "tmp/", "tests/fixtures/"]
+                        for excluded in ["docs/", "tmp/", "tests/fixtures/", "tests/"]
                     ):
                         continue
 
