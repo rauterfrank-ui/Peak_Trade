@@ -27,17 +27,20 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p out
-          # workflow file name is stable in repo
-          wf_path="prj-scheduled-shadow-paper-features-smoke.yml"
-          # get workflow id
-          wf_id="$(gh api repos/${REPO}/actions/workflows --jq ".workflows[] | select(.path==\".github/workflows/${wf_path}\") | .id")"
+          # workflow file name is stable in repo; API path may be full or filename-only
+          wf_id="$(gh api repos/${REPO}/actions/workflows --jq '.workflows[] | select(.path | endswith("prj-scheduled-shadow-paper-features-smoke.yml")) | .id' | head -1)"
+          if [ -z "${wf_id}" ]; then
+            echo "ERROR: PR-J workflow not found; listing available workflows:"
+            gh api repos/${REPO}/actions/workflows --jq '.workflows[] | "\(.path) id=\(.id)"'
+            exit 1
+          fi
           echo "WF_ID=${wf_id}"
-          gh api "repos/${REPO}/actions/workflows/${wf_id}/runs?per_page=50" --jq '.workflow_runs' > out/prj_runs.json
+          gh api "repos/${REPO}/actions/workflows/${wf_id}/runs?per_page=50" --jq '.workflow_runs // []' > out/prj_runs.json
 
       - name: Build report (md+json)
         run: |
           set -euo pipefail
-          python3 scripts/ci/prj_status_report.py
+          python3 scripts/ci/prj_status_report.py --input out/prj_runs.json
           ls -la reports/status
 
       - name: Upload report artifact
