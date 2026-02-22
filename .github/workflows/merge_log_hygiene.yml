@@ -7,6 +7,7 @@ on:
       - 'docs/ops/MERGE_LOGS_STYLE_GUIDE.md'
       - 'docs/ops/README.md'
       - 'scripts/ops/check_merge_log_hygiene.py'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 # This workflow is informational only (not required)

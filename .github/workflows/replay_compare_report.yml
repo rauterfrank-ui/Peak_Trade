@@ -27,7 +27,7 @@ on:
 
   pull_request:
     paths:
-      - ".github/workflows/replay_compare_report.yml"
+      - ".github/workflows/**"
       - "scripts/ops/pt_replay_compare_ci.sh"
       - "scripts/execution/pt_replay_pack.py"
       - "src/execution/replay_pack/**"

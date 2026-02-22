@@ -7,7 +7,7 @@ on:
       - 'docs/ai/**'
       - 'evals/aiops/**'
       - 'scripts/aiops/**'
-      - '.github/workflows/aiops-promptfoo-evals.yml'
+      - '.github/workflows/**'
   push:
     branches: [main]
     paths:

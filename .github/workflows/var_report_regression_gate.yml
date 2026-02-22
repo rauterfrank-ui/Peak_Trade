@@ -27,7 +27,7 @@ on:
       - "scripts/risk/var_suite_*.py"
       - "docs/risk/**"
       - "docs/ops/runbooks/var_*.md"
-      - ".github/workflows/var_report_regression_gate.yml"
+      - ".github/workflows/**"
   push:
     branches: ["main", "master"]
     paths:

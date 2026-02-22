@@ -6,7 +6,7 @@ on:
       - "src/ai_orchestration/**"
       - "scripts/aiops/**"
       - "tests/**"
-      - ".github/workflows/l4_critic_replay_determinism_v2.yml"
+      - ".github/workflows/**"
   push:
     branches: ["main"]
     paths:

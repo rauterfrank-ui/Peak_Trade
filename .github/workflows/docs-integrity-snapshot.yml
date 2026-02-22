@@ -9,7 +9,7 @@ on:
       - 'docs/**'
       - 'scripts/ops/docs_graph_snapshot.py'
       - 'scripts/ops/_docs_graph.py'
-      - '.github/workflows/docs-integrity-snapshot.yml'
+      - '.github/workflows/**'
 
 permissions:
   contents: read

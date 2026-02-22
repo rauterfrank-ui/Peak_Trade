@@ -8,7 +8,7 @@ on:
       - "src/execution/**"
       - "pyproject.toml"
       - "uv.lock"
-      - ".github/workflows/ci_recon_audit_gate_smoke.yml"
+      - ".github/workflows/**"
   push:
     branches: ["main"]
     paths:

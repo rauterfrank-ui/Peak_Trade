@@ -18,7 +18,7 @@ on:
       - '**/*.qmd'
       - 'templates/quarto/**'
       - 'scripts/dev/report_smoke.sh'
-      - '.github/workflows/quarto_smoke.yml'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 jobs:

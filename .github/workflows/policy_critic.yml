@@ -9,7 +9,7 @@ on:
       - 'src/risk/**'
       - 'config/**'
       - 'docs/governance/**'
-      - '.github/workflows/policy_critic.yml'
+      - '.github/workflows/**'
   merge_group:
     branches: [main]
 
