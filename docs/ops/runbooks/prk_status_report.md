@@ -16,3 +16,5 @@ No repo writes, no secrets, read-only permissions.
 
 <!-- CI-TRIGGER: workflow-yaml-fix 20260222T171500Z -->
 <!-- CI-TRIGGER: pr1556 20260222T180000Z -->
+
+<!-- CI-TRIGGER: 20260222T180542Z PR-1557 -->
