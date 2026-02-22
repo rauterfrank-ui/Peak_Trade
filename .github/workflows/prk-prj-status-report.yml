@@ -39,11 +39,7 @@ jobs:
           if [ -n "${{ github.event.inputs.mock_runs_path }}" ] && [ -f "${{ github.event.inputs.mock_runs_path }}" ]; then
             cp -f "${{ github.event.inputs.mock_runs_path }}" out/prj_runs.json
           else
-            cat > out/prj_runs.json <<'JSON'
-[
-  {"id": 1, "run_number": 1, "event": "schedule", "status": "completed", "conclusion": "success", "created_at": "2026-02-22T00:00:00Z", "updated_at": "2026-02-22T00:01:00Z", "html_url": "https://example.invalid/run/1"}
-]
-JSON
+            echo '[{"id":1,"run_number":1,"event":"schedule","status":"completed","conclusion":"success","created_at":"2026-02-22T00:00:00Z","updated_at":"2026-02-22T00:01:00Z","html_url":"https://example.invalid/run/1"}]' > out/prj_runs.json
           fi
       - name: Fetch last 50 PR-J runs (GitHub API)
         if: ${{ github.event.inputs.mock_mode != 'true' }}
@@ -74,11 +70,7 @@ JSON
         run: |
           test -f reports/status/prj_status_latest.md
           test -f reports/status/prj_status_latest.json
-          python3 - <<'PY'
-import json
-json.load(open('reports/status/prj_status_latest.json','r',encoding='utf-8'))
-print('JSON_OK')
-PY
+          python3 -c "import json; json.load(open('reports/status/prj_status_latest.json','r',encoding='utf-8')); print('JSON_OK')"
       - name: Upload report artifact
         uses: actions/upload-artifact@v4
         with:
