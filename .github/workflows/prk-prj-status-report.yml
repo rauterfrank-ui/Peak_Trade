@@ -66,14 +66,19 @@ jobs:
           python3 scripts/ci/prj_status_report.py --input out/prj_runs.json
           ls -la reports/status
 
+      - name: Build health summary
+        run: |
+          python3 scripts/ci/prk_health_summary.py --input reports/status/prj_status_latest.json --output-dir reports/status
       - name: Validate report artifacts
         run: |
           test -f reports/status/prj_status_latest.md
           test -f reports/status/prj_status_latest.json
+          test -f reports/status/prj_health_summary.json
+          test -f reports/status/prj_health_summary.md
           python3 -c "import json; json.load(open('reports/status/prj_status_latest.json','r',encoding='utf-8')); print('JSON_OK')"
       - name: Upload report artifact
         uses: actions/upload-artifact@v4
         with:
           name: prj-status-report
-          path: reports/status/prj_status_latest.*
+          path: reports/status/
           retention-days: 30
