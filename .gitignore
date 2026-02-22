@@ -114,6 +114,7 @@ PHASE8E_8F_PR_DESCRIPTION.md
 PHASE8E_8F_PR_GITHUB.md
 .tmp_backtest_artifacts/
 out/
+!out/ops/index_post_merge_closeouts.jsonl
 
 # research artifacts (new listings crawler)
 out/research/new_listings/
