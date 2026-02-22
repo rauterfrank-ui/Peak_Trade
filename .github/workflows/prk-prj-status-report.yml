@@ -52,8 +52,17 @@ JSON
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
+          retry() {
+            local n=0 max=5 delay=1
+            while true; do "$@" && break || true
+              n=$((n+1))
+              [ "$n" -ge "$max" ] && { echo "RETRY_EXHAUSTED" >&2; return 1; }
+              sleep "$delay"
+              delay=$((delay*2))
+            done
+          }
           mkdir -p out
-          gh api "repos/${REPO}/actions/workflows/prj-scheduled-shadow-paper-features-smoke.yml/runs?per_page=50" --jq '.workflow_runs // []' > out/prj_runs.json
+          retry gh api "repos/${REPO}/actions/workflows/prj-scheduled-shadow-paper-features-smoke.yml/runs?per_page=50" --jq '.workflow_runs // []' > out/prj_runs.json
 
       - name: Build report (md+json)
         run: |
