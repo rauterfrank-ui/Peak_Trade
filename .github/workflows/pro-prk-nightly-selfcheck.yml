@@ -1,0 +1,35 @@
+name: PR-O / PR-K Nightly Self-Check
+on:
+  schedule:
+    - cron: "37 1 * * *"
+  workflow_dispatch: {}
+permissions:
+  actions: read
+  contents: read
+concurrency:
+  group: pro-prk-nightly-selfcheck-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+jobs:
+  prk-selfcheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run PR-K workflow in mock mode (local)
+        run: |
+          mkdir -p out
+          echo '[{"id":1,"run_number":1,"event":"schedule","status":"completed","conclusion":"success","created_at":"2026-02-22T00:00:00Z","updated_at":"2026-02-22T00:01:00Z","html_url":"https://example.invalid/run/1"}]' > out/prj_runs.json
+          python3 scripts/ci/prj_status_report.py --input out/prj_runs.json --output-dir reports/status --limit 10
+      - name: Validate artifacts
+        run: |
+          test -f reports/status/prj_status_latest.md
+          test -f reports/status/prj_status_latest.json
+          python3 -c "import json; json.load(open('reports/status/prj_status_latest.json','r',encoding='utf-8')); print('JSON_OK')"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: prk_selfcheck_report
+          path: reports/status/
+          retention-days: 7
