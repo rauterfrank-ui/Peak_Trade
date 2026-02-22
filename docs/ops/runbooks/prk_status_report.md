@@ -25,7 +25,3 @@ This is a pure safety signal: no trading recommendation when status data is stal
 <!-- CI-TRIGGER: pr1556 20260222T180000Z -->
 
 <!-- CI-TRIGGER: 20260222T180542Z PR-1557 -->
-
-<!-- CI-TRIGGER: 20260222T194929Z PR-1564 -->
-
-<!-- CI-TRIGGER: 20260222T195030Z PR-1564 -->
