@@ -124,6 +124,8 @@ def main() -> int:
     return 0
 
 
+CI_TRIGGER_WORKFLOW_YAML_FIX = True  # noqa: F841
+
 if __name__ == "__main__":
     args = _parse_args()
     _apply_cli_overrides(args)

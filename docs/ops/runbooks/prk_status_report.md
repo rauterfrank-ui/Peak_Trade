@@ -13,3 +13,5 @@ Uploaded as GitHub Actions artifacts:
 - `reports&#47;status&#47;prj_status_latest.md`
 
 No repo writes, no secrets, read-only permissions.
+
+<!-- CI-TRIGGER: workflow-yaml-fix 20260222T171500Z -->
