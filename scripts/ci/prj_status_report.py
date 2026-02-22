@@ -3,8 +3,9 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from datetime import datetime, timezone
 from pathlib import Path
+
+OUTPUT_VERSION = 1
 
 
 def _parse_args() -> argparse.Namespace:
@@ -30,7 +31,47 @@ def _parse_args() -> argparse.Namespace:
         default=None,
         help="Optional limit for number of runs to include (most recent first).",
     )
+    p.add_argument(
+        "--validate-schema",
+        dest="validate_schema",
+        action="store_true",
+        default=True,
+        help="Validate output JSON against schema (default).",
+    )
+    p.add_argument(
+        "--no-validate-schema",
+        dest="validate_schema",
+        action="store_false",
+        help="Disable schema validation.",
+    )
+    p.add_argument(
+        "--stale-hours",
+        dest="stale_hours",
+        type=float,
+        default=36.0,
+        help="Mark report stale if last successful schedule run older than this many hours.",
+    )
+    p.add_argument(
+        "--now",
+        dest="now",
+        default=None,
+        help="Override current time (ISO8601) for deterministic tests.",
+    )
     return p.parse_args()
+
+
+def _load_schema() -> dict:
+    schema_path = Path(__file__).resolve().parent / "prj_status_report_schema.json"
+    return json.loads(schema_path.read_text(encoding="utf-8"))
+
+
+def _validate_schema(obj: dict) -> None:
+    try:
+        import jsonschema
+    except ImportError:
+        return
+    schema = _load_schema()
+    jsonschema.validate(instance=obj, schema=schema)
 
 
 def _apply_cli_overrides(args: argparse.Namespace) -> None:
@@ -42,10 +83,54 @@ def _apply_cli_overrides(args: argparse.Namespace) -> None:
 
 
 def _iso_now() -> str:
+    from datetime import datetime, timezone
+
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def main() -> int:
+def _parse_iso8601(s: str):
+    from datetime import datetime, timezone
+
+    if s.endswith("Z"):
+        s = s[:-1] + "+00:00"
+    return datetime.fromisoformat(s).astimezone(timezone.utc)
+
+
+def _apply_staleness_policy(payload: dict, rows: list, args: argparse.Namespace | None) -> None:
+    from datetime import datetime, timezone
+
+    now = (
+        _parse_iso8601(args.now)
+        if args and getattr(args, "now", None)
+        else datetime.now(timezone.utc)
+    )
+    stale_hours = float(getattr(args, "stale_hours", 36.0)) if args else 36.0
+
+    last_ok = None
+    for r in rows:
+        if r.get("event") == "schedule" and r.get("conclusion") == "success":
+            last_ok = r.get("created_at")
+            break
+
+    if not last_ok:
+        payload["policy"] = {
+            "action": "NO_TRADE",
+            "reason_codes": ["PRJ_STATUS_NO_SUCCESS"],
+        }
+        return
+
+    age_h = (now - _parse_iso8601(last_ok)).total_seconds() / 3600.0
+    payload["last_successful_schedule_created_at"] = last_ok
+    payload["last_successful_schedule_age_hours"] = round(age_h, 2)
+
+    if age_h > stale_hours:
+        payload["policy"] = {
+            "action": "NO_TRADE",
+            "reason_codes": ["PRJ_STATUS_STALE"],
+        }
+
+
+def main(args: argparse.Namespace | None = None) -> int:
     in_path = Path(os.environ.get("PRJ_RUNS_JSON", "out/prj_runs.json"))
     out_dir = Path(os.environ.get("PRJ_REPORTS_DIR", "reports/status"))
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -83,6 +168,7 @@ def main() -> int:
     latest_any = rows[0] if rows else None
 
     payload = {
+        "output_version": OUTPUT_VERSION,
         "generated_utc": _iso_now(),
         "workflow": "PR-J / Scheduled Shadow+Paper Features Smoke",
         "runs_count": len(rows),
@@ -92,12 +178,21 @@ def main() -> int:
         "runs": rows,
     }
 
+    _apply_staleness_policy(payload, rows, args)
+
+    if args and getattr(args, "validate_schema", True):
+        _validate_schema(payload)
+
     (out_dir / "prj_status_latest.json").write_text(
         json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
     )
 
     md = []
     md.append(f"# PR-J Status Report — {_iso_now()}\n")
+    policy = payload.get("policy")
+    if policy and policy.get("action") == "NO_TRADE":
+        reason = ", ".join(policy.get("reason_codes", []))
+        md.append(f"**⚠️ STALE — NO_TRADE** (`{reason}`)\n")
     md.append(f"- Runs sampled: **{len(rows)}**\n")
     md.append("## Counts\n")
     for k, v in sorted(by_conc.items(), key=lambda kv: (-kv[1], kv[0])):
@@ -130,4 +225,4 @@ CI_TRIGGER_PR1556 = True  # noqa: F841
 if __name__ == "__main__":
     args = _parse_args()
     _apply_cli_overrides(args)
-    raise SystemExit(main())
+    raise SystemExit(main(args))
