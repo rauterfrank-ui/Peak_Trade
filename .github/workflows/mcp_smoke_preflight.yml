@@ -6,7 +6,7 @@ on:
       - ".cursor/**"
       - "scripts/ops/mcp_*"
       - "docs/ops/runbooks/RUNBOOK_MCP_TOOLING.md"
-      - ".github/workflows/mcp_smoke_preflight.yml"
+      - ".github/workflows/**"
   push:
     branches: ["main"]
     paths:

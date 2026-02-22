@@ -19,7 +19,7 @@ on:
       - 'tests/**/*.py'
       - 'scripts/**/*.py'
       - 'pyproject.toml'
-      - '.github/workflows/lint.yml'
+      - '.github/workflows/**'
   merge_group:
     branches: [main]
 

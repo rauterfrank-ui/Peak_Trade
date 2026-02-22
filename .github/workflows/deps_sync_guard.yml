@@ -7,7 +7,7 @@ on:
       - "uv.lock"
       - "requirements.txt"
       - "scripts/ops/check_requirements_synced_with_uv.sh"
-      - ".github/workflows/deps_sync_guard.yml"
+      - ".github/workflows/**"
   merge_group:
     branches: [ main ]
   workflow_dispatch:

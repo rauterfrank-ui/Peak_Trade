@@ -5,6 +5,7 @@ on:
     paths:
       - ".gitignore"
       - "reports/**"
+      - ".github/workflows/**"
   push:
     branches: ["main"]
     paths:
