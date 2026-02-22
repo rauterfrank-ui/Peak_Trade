@@ -222,7 +222,6 @@ def main(args: argparse.Namespace | None = None) -> int:
 CI_TRIGGER_WORKFLOW_YAML_FIX = True  # noqa: F841
 CI_TRIGGER_PR1556 = True  # noqa: F841
 CI_TRIGGER_REQUIRED_CHECKS = True  # noqa: F841
-CI_TRIGGER_REQUIRED_CHECKS_PR1564 = True  # noqa: F841
 
 if __name__ == "__main__":
     args = _parse_args()
