@@ -1,0 +1,24 @@
+name: PR-U / Required Checks Drift Detector
+on:
+  pull_request:
+    paths:
+      - ".github/required_status_checks_main.txt"
+      - ".github/workflows/**"
+  schedule:
+    - cron: "13 2 * * 1"
+  workflow_dispatch: {}
+permissions:
+  contents: read
+concurrency:
+  group: pru-required-checks-drift-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+jobs:
+  drift-detector:
+    name: required-checks-drift
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          python3 -m pip install --disable-pip-version-check --no-cache-dir pyyaml
+          python3 scripts/ci/required_checks_drift_detector.py

@@ -1,0 +1,9 @@
+Guard tracked files in reports directories
+audit
+tests (3.11)
+strategy-smoke
+Policy Critic Gate
+Lint Gate
+dispatch-guard
+docs-token-policy-gate
+docs-reference-targets-gate
