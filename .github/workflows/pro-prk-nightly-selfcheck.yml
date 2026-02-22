@@ -27,6 +27,22 @@ jobs:
           test -f reports/status/prj_status_latest.md
           test -f reports/status/prj_status_latest.json
           python3 -c "import json; json.load(open('reports/status/prj_status_latest.json','r',encoding='utf-8')); print('JSON_OK')"
+      - name: Schema validate (best-effort)
+        run: |
+          python3 -c "
+          import json
+          obj = json.load(open('reports/status/prj_status_latest.json', encoding='utf-8'))
+          sch = json.load(open('scripts/ci/prj_status_report_schema.json', encoding='utf-8'))
+          try:
+            import jsonschema
+            jsonschema.validate(instance=obj, schema=sch)
+            print('SCHEMA_OK')
+          except ImportError:
+            for k in sch.get('required', []):
+              if k not in obj:
+                raise SystemExit(f'Missing required: {k}')
+            print('SCHEMA_OK (minimal)')
+          "
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
