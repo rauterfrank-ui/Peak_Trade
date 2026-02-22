@@ -33,11 +33,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build mock runs JSON
-        if: ${{ inputs.mock_mode == 'true' }}
+        if: ${{ github.event.inputs.mock_mode == 'true' }}
         run: |
           mkdir -p out
-          if [ -n "${{ inputs.mock_runs_path }}" ] && [ -f "${{ inputs.mock_runs_path }}" ]; then
-            cp -f "${{ inputs.mock_runs_path }}" out/prj_runs.json
+          if [ -n "${{ github.event.inputs.mock_runs_path }}" ] && [ -f "${{ github.event.inputs.mock_runs_path }}" ]; then
+            cp -f "${{ github.event.inputs.mock_runs_path }}" out/prj_runs.json
           else
             cat > out/prj_runs.json <<'JSON'
 [
@@ -46,7 +46,7 @@ jobs:
 JSON
           fi
       - name: Fetch last 50 PR-J runs (GitHub API)
-        if: ${{ inputs.mock_mode != 'true' }}
+        if: ${{ github.event.inputs.mock_mode != 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
