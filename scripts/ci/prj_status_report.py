@@ -125,6 +125,7 @@ def main() -> int:
 
 
 CI_TRIGGER_WORKFLOW_YAML_FIX = True  # noqa: F841
+CI_TRIGGER_PR1556 = True  # noqa: F841
 
 if __name__ == "__main__":
     args = _parse_args()
