@@ -22,3 +22,7 @@ jobs:
       - run: |
           python3 -m pip install --disable-pip-version-check --no-cache-dir pyyaml
           python3 scripts/ci/required_checks_drift_detector.py
+      - name: Live compare (schedule only)
+        if: github.event_name == 'schedule'
+        run: |
+          python3 scripts/ci/required_checks_drift_detector.py --compare-live
