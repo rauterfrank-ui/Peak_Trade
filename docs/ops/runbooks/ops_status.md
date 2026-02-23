@@ -7,3 +7,7 @@ Local operator one-shot checks for:
 
 Run:
 - scripts&#47;ops&#47;ops_status.sh
+
+## Related runbooks
+
+- **Required checks deadlocks**: When required checks are "Expected" but never start, see `required_checks_deadlocks.md` and use `scripts&#47;ops&#47;ci_trigger_required_checks.sh`.
