@@ -10,4 +10,5 @@ Run:
 
 ## Related runbooks
 
+- **Operating rhythm**: Daily/weekly cadence and incident playbooks — see `operating_rhythm.md`
 - **Required checks deadlocks**: When required checks are "Expected" but never start, see `required_checks_deadlocks.md` and use `scripts&#47;ops&#47;ci_trigger_required_checks.sh`.
