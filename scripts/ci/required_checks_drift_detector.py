@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import argparse
+import json
+import re
+import subprocess
 from pathlib import Path
 import sys
 
@@ -21,7 +24,68 @@ def _parse_args() -> argparse.Namespace:
         "--workflows-dir",
         default=".github/workflows",
     )
+    p.add_argument(
+        "--compare-live",
+        action="store_true",
+        default=False,
+        help="Compare required list to live branch protection contexts via gh api (best-effort)",
+    )
+    p.add_argument(
+        "--strict-live",
+        action="store_true",
+        default=False,
+        help="Fail if live compare cannot be performed",
+    )
     return p.parse_args()
+
+
+def _live_required_contexts_main() -> list[str]:
+    """Fetch required status check contexts for main from GitHub API."""
+    q = """
+query($owner:String!,$repo:String!){
+  repository(owner:$owner,name:$repo){
+    branchProtectionRules(first:50){
+      nodes{
+        pattern
+        requiredStatusCheckContexts
+      }
+    }
+  }
+}
+"""
+    remote = subprocess.check_output(["git", "remote", "get-url", "origin"], text=True).strip()
+    m = re.search(r"[:/](?P<owner>[^/]+)/(?P<repo>[^/.]+)(?:\.git)?$", remote)
+    if not m:
+        raise RuntimeError("cannot parse origin remote for owner/repo")
+    owner = m.group("owner")
+    repo = m.group("repo")
+    r = subprocess.run(
+        [
+            "gh",
+            "api",
+            "graphql",
+            "-f",
+            f"query={q}",
+            "-F",
+            f"owner={owner}",
+            "-F",
+            f"repo={repo}",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    if r.returncode != 0:
+        raise RuntimeError(r.stderr.strip() or "gh api graphql failed")
+    data = json.loads(r.stdout)
+    rules = data["data"]["repository"]["branchProtectionRules"]["nodes"]
+    ctx = []
+    for rule in rules:
+        pat = rule.get("pattern", "")
+        if pat in ("main", "*", "**", "refs/heads/main"):
+            for c in rule.get("requiredStatusCheckContexts") or []:
+                if c:
+                    ctx.append(c)
+    return sorted(set(ctx))
 
 
 def main() -> int:
@@ -64,6 +128,32 @@ def main() -> int:
         for m in missing:
             print("-", m)
         return 2
+
+    if args.compare_live:
+        try:
+            live = _live_required_contexts_main()
+            req_set = set(req)
+            live_set = set(live)
+            extra_in_live = sorted(live_set - req_set)
+            missing_in_live = sorted(req_set - live_set)
+            if extra_in_live or missing_in_live:
+                print("LIVE_COMPARE_DIFF:")
+                if missing_in_live:
+                    print("missing_in_live:")
+                    for x in missing_in_live:
+                        print("-", x)
+                if extra_in_live:
+                    print("extra_in_live:")
+                    for x in extra_in_live:
+                        print("-", x)
+                return 3
+            print("LIVE_COMPARE_OK")
+        except Exception as e:
+            msg = str(e)
+            print("LIVE_COMPARE_SKIPPED:", msg)
+            if args.strict_live:
+                return 4
+
     print("DRIFT_OK")
     return 0
 
