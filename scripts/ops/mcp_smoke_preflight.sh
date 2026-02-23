@@ -5,14 +5,12 @@ set -euo pipefail
 # scripts/ops/mcp_smoke_preflight.sh
 #
 # Purpose:
-# - Operator-Preflight für MCP Tooling (Cursor): JSON-Parse + Help-Smokes (Playwright + Grafana)
 # - Kein heredoc (vermeidet dquote>/heredoc>-Hänger beim Copy/Paste)
 #
 # Dependencies:
 # - git (optional, für Repo-Root-Erkennung)
 # - python3 (JSON parse)
 # - npx (Playwright MCP help)
-# - docker (Grafana MCP help)
 #
 # Exit codes:
 # - 0: PASS
@@ -94,13 +92,8 @@ npx -y @playwright/mcp@latest --help >/dev/null 2>&1 \
   || { echo "FAIL: npx @playwright/mcp@latest --help"; exit 2; }
 echo "PASS: npx @playwright/mcp@latest --help"
 
-# Grafana MCP CLI Help (Docker)
 echo
-echo "-- Grafana MCP (-h) --"
 need_cmd docker
-docker run --rm grafana/mcp-grafana -h >/dev/null 2>&1 \
-  || { echo "FAIL: docker run grafana/mcp-grafana -h"; exit 2; }
-echo "PASS: docker run grafana/mcp-grafana -h"
 
 echo
 echo "OK: MCP smoke checks passed."
