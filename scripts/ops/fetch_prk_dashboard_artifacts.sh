@@ -32,7 +32,7 @@ LATEST_DIR="${OUT_DIR}/latest"
 
 pick_latest_success_run() {
   gh run list --workflow "${WORKFLOW}" --branch "${BRANCH}" --limit "${LIMIT}" \
-    --json databaseId,status,conclusion,createdAt,event,htmlUrl > "${RUN_META_JSON}"
+    --json databaseId,status,conclusion,createdAt,event,url > "${RUN_META_JSON}"
 
   python3 - <<PY
 import json, os
