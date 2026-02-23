@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PR-J Health Dashboard v1",
+  "type": "object",
+  "required": [
+    "dashboard_version",
+    "generated_at",
+    "status",
+    "policy_action",
+    "reason_codes",
+    "runs_sampled",
+    "last_success_age_hours"
+  ],
+  "properties": {
+    "dashboard_version": { "type": "integer", "const": 1 },
+    "generated_at": { "type": "string" },
+    "status": { "type": "string" },
+    "policy_action": { "type": "string" },
+    "reason_codes": { "type": "array", "items": { "type": "string" } },
+    "runs_sampled": { "type": "integer", "minimum": 0 },
+    "last_success_age_hours": { "type": ["number", "null"] }
+  }
+}
