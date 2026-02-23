@@ -69,12 +69,18 @@ jobs:
       - name: Build health summary
         run: |
           python3 scripts/ci/prk_health_summary.py --input reports/status/prj_status_latest.json --output-dir reports/status
+      - name: Build health dashboard formats
+        run: |
+          python3 scripts/ci/prk_health_dashboard.py --input reports/status/prj_health_summary.json --output-dir reports/status
       - name: Validate report artifacts
         run: |
           test -f reports/status/prj_status_latest.md
           test -f reports/status/prj_status_latest.json
           test -f reports/status/prj_health_summary.json
           test -f reports/status/prj_health_summary.md
+          test -f reports/status/prj_health_dashboard.prom
+          test -f reports/status/prj_health_dashboard.csv
+          test -f reports/status/prj_health_dashboard.md
           python3 -c "import json; json.load(open('reports/status/prj_status_latest.json','r',encoding='utf-8')); print('JSON_OK')"
       - name: Upload report artifact
         uses: actions/upload-artifact@v4
