@@ -17,7 +17,7 @@ fi
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 TARGET="${1:-src/__init__.py}"
-BR="ci/trigger-required-checks-${STAMP}"
+BR="feat/ci-trigger-required-checks-${STAMP}"
 
 test -f "${TARGET}" || { echo "ERROR: target missing: ${TARGET}" >&2; exit 4; }
 
