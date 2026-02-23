@@ -42,10 +42,10 @@ def test_formats_created(tmp_path: Path) -> None:
     )
     assert r.returncode == 0, r.stderr or r.stdout
 
-    assert (outdir / "prj_health_dashboard.metrics").exists()
+    assert (outdir / "prj_health_dashboard.txt").exists()
     assert (outdir / "prj_health_dashboard.csv").exists()
     assert (outdir / "prj_health_dashboard.md").exists()
 
-    prom = (outdir / "prj_health_dashboard.metrics").read_text(encoding="utf-8")
+    prom = (outdir / "prj_health_dashboard.txt").read_text(encoding="utf-8")
     assert 'prj_health_status{status="STALE"} 1' in prom
     assert "prj_health_last_success_age_hours 48.0" in prom

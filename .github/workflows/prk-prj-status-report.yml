@@ -78,7 +78,7 @@ jobs:
           test -f reports/status/prj_status_latest.json
           test -f reports/status/prj_health_summary.json
           test -f reports/status/prj_health_summary.md
-          test -f reports/status/prj_health_dashboard.metrics
+          test -f reports/status/prj_health_dashboard.txt
           test -f reports/status/prj_health_dashboard.csv
           test -f reports/status/prj_health_dashboard.md
           python3 -c "import json; json.load(open('reports/status/prj_status_latest.json','r',encoding='utf-8')); print('JSON_OK')"
