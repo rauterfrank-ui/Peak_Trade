@@ -247,3 +247,5 @@ if __name__ == "__main__":
     args = _parse_args()
     _apply_cli_overrides(args)
     raise SystemExit(main(args))
+
+CI_TRIGGER_REQUIRED_CHECKS_PR1569 = True
