@@ -40,19 +40,17 @@ def main() -> int:
     outdir = Path(args.output_dir)
     outdir.mkdir(parents=True, exist_ok=True)
 
-    prom_lines = []
-    prom_lines.append("# TYPE prj_health_status gauge")
-    for s in ["OK", "STALE", "NO_SUCCESS", "NO_TRADE", "UNKNOWN"]:
-        v = 1 if status == s else 0
-        prom_lines.append(f'prj_health_status{{status="{s}"}} {v}')
-    prom_lines.append("# TYPE prj_health_last_success_age_hours gauge")
-    prom_lines.append(f"prj_health_last_success_age_hours {age_val}")
-    prom_lines.append("# TYPE prj_health_runs_sampled gauge")
-    prom_lines.append(f"prj_health_runs_sampled {runs_val}")
-    prom_lines.append("# TYPE prj_health_policy_action gauge")
-    prom_lines.append(f'prj_health_policy_action{{action="{action}"}} 1')
-
-    (outdir / "prj_health_dashboard.txt").write_text("\n".join(prom_lines) + "\n", encoding="utf-8")
+    reason_codes = obj.get("reason_codes") or []
+    rc = ",".join(reason_codes)
+    lines = []
+    lines.append(f"generated_at={obj.get('generated_at', '')}")
+    lines.append(f"status={status}")
+    lines.append(f"policy_action={action}")
+    lines.append(f"reason_codes={rc}")
+    lines.append(f"last_success_age_hours={age_val}")
+    lines.append(f"runs_sampled={runs_val}")
+    lines.append(f"output_version={obj.get('output_version', 1)}")
+    (outdir / "prj_health_dashboard.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     (outdir / "prj_health_dashboard.csv").write_text(
         "generated_at,status,policy_action,last_success_age_hours,runs_sampled\n"

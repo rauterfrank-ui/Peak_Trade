@@ -46,6 +46,6 @@ def test_formats_created(tmp_path: Path) -> None:
     assert (outdir / "prj_health_dashboard.csv").exists()
     assert (outdir / "prj_health_dashboard.md").exists()
 
-    prom = (outdir / "prj_health_dashboard.txt").read_text(encoding="utf-8")
-    assert 'prj_health_status{status="STALE"} 1' in prom
-    assert "prj_health_last_success_age_hours 48.0" in prom
+    txt = (outdir / "prj_health_dashboard.txt").read_text(encoding="utf-8")
+    assert "status=STALE" in txt
+    assert "last_success_age_hours=48.0" in txt
