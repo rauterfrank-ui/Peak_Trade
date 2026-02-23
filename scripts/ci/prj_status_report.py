@@ -96,6 +96,25 @@ def _parse_iso8601(s: str):
     return datetime.fromisoformat(s).astimezone(timezone.utc)
 
 
+def _badge_line(payload: dict) -> str:
+    """Single machine-parseable line for Grafana/README scraping."""
+    policy = payload.get("policy") or {}
+    action = policy.get("action") or "none"
+    reasons = policy.get("reason_codes") or []
+    status = "OK"
+    if action == "NO_TRADE":
+        if "PRJ_STATUS_NO_SUCCESS" in reasons:
+            status = "NO_SUCCESS"
+        elif "PRJ_STATUS_STALE" in reasons:
+            status = "STALE"
+        else:
+            status = "NO_TRADE"
+    age = payload.get("last_successful_schedule_age_hours")
+    runs = payload.get("runs_count")
+    age_s = "(n/a)" if age is None else f"{age:.2f}"
+    return f"PRJ_BADGE: {status} | policy={action} | last_success_age_h={age_s} | runs={runs}"
+
+
 def _apply_staleness_policy(payload: dict, rows: list, args: argparse.Namespace | None) -> None:
     from datetime import datetime, timezone
 
@@ -187,7 +206,7 @@ def main(args: argparse.Namespace | None = None) -> int:
         json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
     )
 
-    md = []
+    md = [_badge_line(payload), ""]
     md.append(f"# PR-J Status Report — {_iso_now()}\n")
     policy = payload.get("policy")
     if policy and policy.get("action") == "NO_TRADE":
@@ -228,3 +247,5 @@ if __name__ == "__main__":
     args = _parse_args()
     _apply_cli_overrides(args)
     raise SystemExit(main(args))
+
+CI_TRIGGER_REQUIRED_CHECKS_PR1569 = True

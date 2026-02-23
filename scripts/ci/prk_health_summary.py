@@ -78,7 +78,11 @@ def main() -> int:
         encoding="utf-8",
     )
 
+    age_s = "(n/a)" if age_h is None else f"{age_h:.2f}"
+    badge = f"PRJ_HEALTH_BADGE: {status} | policy={action or 'none'} | last_success_age_h={age_s} | runs={runs_sampled}"
     md_lines = [
+        badge,
+        "",
         f"# PR-J Health Summary — {out['generated_at']}",
         f"- Status: **{status}**",
         f"- Policy: **{action or 'none'}**",
