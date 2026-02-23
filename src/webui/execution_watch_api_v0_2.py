@@ -205,9 +205,8 @@ def _init_exec_watch_prom_metrics() -> None:
         return
     if not _PROM_AVAILABLE:
         return
-    if os.getenv("PEAK_TRADE_PROMETHEUS_ENABLED", "0") != "1":
-        # Align with existing /metrics gating in src/live/web/metrics_prom.py
-        return
+    # Hard-disabled: never enable Prometheus export for execution watch.
+    return
     _PROM_REQUESTS_TOTAL = _PromCounter(  # type: ignore[misc]
         "peak_trade_execution_watch_requests_total",
         "Total requests handled by Execution Watch watch-only endpoints.",

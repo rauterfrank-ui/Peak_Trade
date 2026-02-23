@@ -34,8 +34,8 @@ def is_prometheus_available() -> bool:
 
 
 def _enabled() -> bool:
-    v = os.getenv("PEAK_TRADE_PROMETHEUS_ENABLED", "0").strip().lower()
-    return v in ("1", "true", "yes", "on")
+    # Hard-disabled: ignore PEAK_TRADE_PROMETHEUS_ENABLED; never enable export.
+    return False
 
 
 def _init_metrics() -> None:
