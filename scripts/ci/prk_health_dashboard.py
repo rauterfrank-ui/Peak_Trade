@@ -58,6 +58,24 @@ def main() -> int:
         encoding="utf-8",
     )
 
+    dash = {
+        "dashboard_version": 1,
+        "generated_at": obj.get("generated_at", ""),
+        "status": status,
+        "policy_action": action,
+        "reason_codes": obj.get("reason_codes") or [],
+        "runs_sampled": runs_val,
+        "last_success_age_hours": (
+            None
+            if obj.get("last_success_age_hours") is None
+            else float(obj["last_success_age_hours"])
+        ),
+    }
+    (outdir / "prj_health_dashboard_v1.json").write_text(
+        json.dumps(dash, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
     (outdir / "prj_health_dashboard.md").write_text(
         "\n".join(
             [
