@@ -52,7 +52,7 @@ def main() -> int:
     prom_lines.append("# TYPE prj_health_policy_action gauge")
     prom_lines.append(f'prj_health_policy_action{{action="{action}"}} 1')
 
-    (outdir / "prj_health_dashboard.prom").write_text(
+    (outdir / "prj_health_dashboard.metrics").write_text(
         "\n".join(prom_lines) + "\n", encoding="utf-8"
     )
 
