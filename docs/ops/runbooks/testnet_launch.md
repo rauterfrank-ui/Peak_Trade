@@ -41,6 +41,18 @@ This runbook is operational only. It is not financial advice.
   - max drawdown guardrails enabled
   - logging enabled for execution events (fills, rejects, rate limits, reconnects)
 
+## Execution Events (recommended)
+
+Enable automatic execution event capture (local, untracked):
+
+- export PT_EXEC_EVENTS_ENABLED=true
+- export PT_EXEC_MODE=testnet
+- export PT_EXEC_EVENTS_JSONL_PATH=out/ops/execution_events/execution_events.jsonl
+
+Then after a session:
+
+- python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input out/ops/execution_events/execution_events.jsonl --input-format jsonl
+
 ## Step 3 — Monitor and produce Execution Evidence
 
 You must produce evidence from real execution events, not mock:

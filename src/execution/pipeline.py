@@ -76,6 +76,21 @@ try:
 except Exception:  # pragma: no cover
     _strategy_risk_telemetry = None  # type: ignore
 
+try:
+    from src.observability.execution_events import emit as _emit_exec_event
+except Exception:  # pragma: no cover
+    _emit_exec_event = None  # type: ignore
+
+
+def _emit_exec_event_safe(**kwargs: Any) -> None:
+    """Emit execution event; never fails execution logic."""
+    if _emit_exec_event is None:
+        return
+    try:
+        _emit_exec_event(**kwargs)
+    except Exception:
+        pass
+
 
 def _signal_label_from_int(sig: int) -> str:
     # Contract: buy/sell/flat (mapped from -1/0/+1).
@@ -1247,6 +1262,17 @@ class ExecutionPipeline:
 
         context = context if context else None
 
+        # Execution events (JSONL, default off)
+        _emit_exec_event_safe(
+            event_type="order_submit",
+            level="info",
+            symbol=order.symbol,
+            client_order_id=client_id,
+            side=order.side,
+            qty=order.quantity,
+            price=getattr(order, "limit_price", None),
+        )
+
         # 5. Durch execute_with_safety() ausfuehren
         result = self.execute_with_safety([order], context=context)
 
@@ -1267,12 +1293,29 @@ class ExecutionPipeline:
                             "fill_fee": fill.fee or 0.0,  # fee is optional
                         },
                     )
+                    _emit_exec_event_safe(
+                        event_type="fill",
+                        level="info",
+                        symbol=intent.symbol,
+                        client_order_id=exec_order.request.client_id,
+                        side=exec_order.request.side,
+                        qty=fill.quantity,
+                        price=fill.price,
+                    )
 
         # 6. Result erweitern mit Phase 16A V2 Feldern
         result.environment = env_str
         result.governance_status = governance_status
 
         if result.rejected:
+            _emit_exec_event_safe(
+                event_type="order_reject",
+                level="error",
+                is_error=True,
+                msg=result.reason or "rejected",
+                symbol=intent.symbol,
+                client_order_id=client_id,
+            )
             if "risk_limits" in (result.reason or ""):
                 result.status = ExecutionStatus.BLOCKED_BY_RISK
             elif "safety_guard" in (result.reason or ""):
