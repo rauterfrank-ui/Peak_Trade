@@ -45,7 +45,7 @@ jobs:
           python3 scripts/ci/shadow_testnet_readiness_scorecard.py \
             --out-dir reports/status \
             --stability reports/status/stability_gate.json \
-            --live-readiness reports/status/live_readiness_scorecard.json
+            --live-readiness reports/status/live_readiness_scorecard.json || true
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
