@@ -1,0 +1,47 @@
+name: PR-BG / Execution Evidence Producer
+
+on:
+  schedule:
+    - cron: "11 4 * * *"
+  workflow_dispatch:
+    inputs:
+      mock_profile:
+        description: "Mock profile: ok|anomalies|errors|missing"
+        required: false
+        default: "missing"
+      input_path:
+        description: "Optional path in repo to events JSON array (advanced)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prbg-execution-evidence-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Produce execution evidence
+        run: |
+          mkdir -p reports/status
+          if [ -n "${{ github.event.inputs.input_path }}" ] && [ -f "${{ github.event.inputs.input_path }}" ]; then
+            python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input "${{ github.event.inputs.input_path }}"
+          else
+            MOCK_PROFILE="${{ github.event.inputs.mock_profile }}"
+            [ -z "$MOCK_PROFILE" ] && MOCK_PROFILE="missing"
+            python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --mock-profile "$MOCK_PROFILE"
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: execution_evidence
+          path: reports/status/execution_evidence.*
+          retention-days: 14
