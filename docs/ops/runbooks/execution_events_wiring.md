@@ -12,3 +12,11 @@ Execution evidence from this stream:
 
 CI validation sample (tracked):
 - docs/ops/samples/execution_events_sample.jsonl
+
+## Automatic wiring (recommended)
+
+- export PT_EXEC_EVENTS_ENABLED=true
+- export PT_EXEC_MODE=shadow|testnet
+- export PT_EXEC_EVENTS_JSONL_PATH=out/ops/execution_events/execution_events.jsonl
+
+The execution pipeline emits order_submit, fill, and order_reject events automatically when enabled. Manual fallback: scripts/ops/append_execution_event.py.
