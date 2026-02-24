@@ -1,0 +1,74 @@
+name: PR-BI / Live Pilot Scorecard
+
+on:
+  schedule:
+    - cron: "23 4 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: prbi-live-pilot-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  scorecard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download latest Stability Gate
+        run: |
+          mkdir -p reports/status out/tmp
+          RUN_ID="$(gh run list --workflow prbc-stability-gate.yml --branch main --limit 30 --json databaseId,status,conclusion --jq '.[] | select(.status=="completed" and .conclusion=="success") | .databaseId' | head -n 1)"
+          test -n "${RUN_ID}"
+          gh run download "${RUN_ID}" --dir out/tmp
+          find out/tmp -type f -name stability_gate.json -exec cp -f {} reports/status/stability_gate.json \; || true
+
+      - name: Download latest Live Readiness Scorecard
+        run: |
+          mkdir -p out/tmp2
+          RUN_ID="$(gh run list --workflow prbd-live-readiness-scorecard.yml --branch main --limit 30 --json databaseId,status,conclusion --jq '.[] | select(.status=="completed" and .conclusion=="success") | .databaseId' | head -n 1)"
+          test -n "${RUN_ID}"
+          gh run download "${RUN_ID}" --dir out/tmp2
+          find out/tmp2 -type f -name live_readiness_scorecard.json -exec cp -f {} reports/status/live_readiness_scorecard.json \; || true
+
+      - name: Download latest Shadow/Testnet Scorecard
+        run: |
+          mkdir -p out/tmp3
+          RUN_ID="$(gh run list --workflow prbe-shadow-testnet-scorecard.yml --branch main --limit 30 --json databaseId,status,conclusion --jq '.[] | select(.status=="completed" and .conclusion=="success") | .databaseId' | head -n 1)"
+          test -n "${RUN_ID}"
+          gh run download "${RUN_ID}" --dir out/tmp3
+          find out/tmp3 -type f -name shadow_testnet_scorecard.json -exec cp -f {} reports/status/shadow_testnet_scorecard.json \; || true
+
+      - name: Download latest Execution Evidence
+        run: |
+          mkdir -p out/tmp4
+          RUN_ID="$(gh run list --workflow prbg-execution-evidence.yml --branch main --limit 30 --json databaseId,status,conclusion --jq '.[] | select(.status=="completed" and .conclusion=="success") | .databaseId' | head -n 1)"
+          test -n "${RUN_ID}"
+          gh run download "${RUN_ID}" --dir out/tmp4
+          find out/tmp4 -type f -name execution_evidence.json -exec cp -f {} reports/status/execution_evidence.json \; || true
+
+      - name: Build scorecard
+        run: |
+          test -f reports/status/stability_gate.json
+          test -f reports/status/live_readiness_scorecard.json
+          test -f reports/status/shadow_testnet_scorecard.json
+          test -f reports/status/execution_evidence.json
+          python3 scripts/ci/live_pilot_scorecard.py --out-dir reports/status \
+            --stability reports/status/stability_gate.json \
+            --live-readiness reports/status/live_readiness_scorecard.json \
+            --shadow-testnet reports/status/shadow_testnet_scorecard.json \
+            --execution-evidence reports/status/execution_evidence.json || true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: live_pilot_scorecard
+          path: reports/status/live_pilot_scorecard.*
+          retention-days: 14
