@@ -9,6 +9,10 @@ on:
         description: "Use mock runs JSON instead of GitHub API"
         required: false
         default: "false"
+      mock_profile:
+        description: "Mock profile: ok|stale|no_success"
+        required: false
+        default: "stale"
       mock_runs_path:
         description: "Optional path to JSON array file for mock_mode"
         required: false
@@ -39,7 +43,14 @@ jobs:
           if [ -n "${{ github.event.inputs.mock_runs_path }}" ] && [ -f "${{ github.event.inputs.mock_runs_path }}" ]; then
             cp -f "${{ github.event.inputs.mock_runs_path }}" out/prj_runs.json
           else
-            echo '[{"id":1,"run_number":1,"event":"schedule","status":"completed","conclusion":"success","created_at":"2026-02-22T00:00:00Z","updated_at":"2026-02-22T00:01:00Z","html_url":"https://example.invalid/run/1"}]' > out/prj_runs.json
+            PROFILE="${{ github.event.inputs.mock_profile || 'stale' }}"
+            if [ "${PROFILE}" = "ok" ]; then
+              echo '[{"id":1,"run_number":1,"event":"schedule","status":"completed","conclusion":"success","created_at":"2026-02-23T19:00:00Z","updated_at":"2026-02-23T19:01:00Z","html_url":"https://example.invalid/run/1"}]' > out/prj_runs.json
+            elif [ "${PROFILE}" = "no_success" ]; then
+              echo '[]' > out/prj_runs.json
+            else
+              echo '[{"id":1,"run_number":1,"event":"schedule","status":"completed","conclusion":"success","created_at":"2026-02-20T00:00:00Z","updated_at":"2026-02-20T00:01:00Z","html_url":"https://example.invalid/run/1"}]' > out/prj_runs.json
+            fi
           fi
       - name: Fetch last 50 PR-J runs (GitHub API)
         if: ${{ github.event.inputs.mock_mode != 'true' }}

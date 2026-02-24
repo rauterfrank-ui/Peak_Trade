@@ -27,3 +27,10 @@ This is a pure safety signal: no trading recommendation when status data is stal
 <!-- CI-TRIGGER: 20260222T180542Z PR-1557 -->
 
 <!-- CI-TRIGGER: 20260223T120500Z PR-1570 -->
+
+## Mock Profiles (workflow_dispatch)
+
+Examples:
+- `gh workflow run prk-prj-status-report.yml --ref main -f mock_mode=true -f mock_profile=ok`
+- `gh workflow run prk-prj-status-report.yml --ref main -f mock_mode=true -f mock_profile=stale`
+- `gh workflow run prk-prj-status-report.yml --ref main -f mock_mode=true -f mock_profile=no_success`
