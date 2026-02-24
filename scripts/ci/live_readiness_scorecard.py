@@ -100,9 +100,7 @@ def main() -> int:
                     score = 0
 
                 decision = (
-                    "GO"
-                    if (score >= int(args.go_threshold) and not hard_blocks)
-                    else "NO_GO"
+                    "GO" if (score >= int(args.go_threshold) and not hard_blocks) else "NO_GO"
                 )
 
     out = {
