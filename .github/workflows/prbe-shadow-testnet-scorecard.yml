@@ -1,0 +1,55 @@
+name: PR-BE / Shadow-Testnet Scorecard
+
+on:
+  schedule:
+    - cron: "57 3 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: prbe-shadow-testnet-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  scorecard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download latest Stability Gate artifact
+        run: |
+          mkdir -p reports/status out/tmp
+          RUN_ID="$(gh run list --workflow prbc-stability-gate.yml --branch main --limit 20 --json databaseId,status,conclusion --jq '.[] | select(.status=="completed" and .conclusion=="success") | .databaseId' | head -n 1)"
+          test -n "${RUN_ID}" || { echo "No successful stability gate run"; exit 1; }
+          gh run download "${RUN_ID}" --dir out/tmp
+          find out/tmp -type f -name stability_gate.json -exec cp -f {} reports/status/ \;
+
+      - name: Download latest Live Readiness Scorecard artifact
+        run: |
+          mkdir -p out/tmp2
+          RUN_ID="$(gh run list --workflow prbd-live-readiness-scorecard.yml --branch main --limit 20 --json databaseId,status,conclusion --jq '.[] | select(.status=="completed" and .conclusion=="success") | .databaseId' | head -n 1)"
+          test -n "${RUN_ID}" || { echo "No successful live readiness run"; exit 1; }
+          gh run download "${RUN_ID}" --dir out/tmp2
+          find out/tmp2 -type f -name live_readiness_scorecard.json -exec cp -f {} reports/status/ \;
+
+      - name: Build scorecard
+        run: |
+          test -f reports/status/stability_gate.json
+          test -f reports/status/live_readiness_scorecard.json
+          python3 scripts/ci/shadow_testnet_readiness_scorecard.py \
+            --out-dir reports/status \
+            --stability reports/status/stability_gate.json \
+            --live-readiness reports/status/live_readiness_scorecard.json
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: shadow_testnet_scorecard
+          path: reports/status/shadow_testnet_scorecard.*
+          retention-days: 14
