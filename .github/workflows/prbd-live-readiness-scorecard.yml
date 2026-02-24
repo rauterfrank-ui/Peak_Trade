@@ -1,0 +1,56 @@
+name: PR-BD / Live Readiness Scorecard
+
+on:
+  schedule:
+    - cron: "41 3 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: prbd-live-readiness-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  scorecard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch latest Stability Gate artifact
+        run: |
+          mkdir -p reports/status out/tmp
+          RUN_ID="$(gh run list --workflow prbc-stability-gate.yml --branch main --limit 20 --json databaseId,status,conclusion --jq '.[] | select(.status=="completed" and .conclusion=="success") | .databaseId' | head -n 1)"
+          test -n "${RUN_ID}" || { echo "No successful stability gate run found"; exit 1; }
+          gh run download "${RUN_ID}" --dir out/tmp
+          find out/tmp -type f -name stability_gate.json -exec cp -f {} reports/status/ \;
+
+      - name: Fetch latest PR-K artifact (schedule success)
+        run: |
+          RUN_ID="$(gh run list --workflow prk-prj-status-report.yml --branch main --limit 60 --json databaseId,status,conclusion,event --jq '.[] | select(.status=="completed" and .conclusion=="success" and .event=="schedule") | .databaseId' | head -n 1)"
+          test -n "${RUN_ID}" || { echo "No successful PR-K schedule run found"; exit 1; }
+          gh run download "${RUN_ID}" --dir out/tmp
+          find out/tmp -type f \( -name prj_status_latest.json -o -name prj_health_summary.json \) -exec cp -f {} reports/status/ \;
+
+      - name: Build scorecard
+        run: |
+          test -f reports/status/stability_gate.json
+          test -f reports/status/prj_status_latest.json
+          test -f reports/status/prj_health_summary.json
+          python3 scripts/ci/live_readiness_scorecard.py \
+            --out-dir reports/status \
+            --stability reports/status/stability_gate.json \
+            --status reports/status/prj_status_latest.json \
+            --health reports/status/prj_health_summary.json
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: live_readiness_scorecard
+          path: reports/status/live_readiness_scorecard.*
+          retention-days: 14
