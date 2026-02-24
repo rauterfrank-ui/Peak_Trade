@@ -58,6 +58,10 @@ def main() -> int:
                 warnings.append("MISSING_EXECUTION_EVIDENCE")
                 score -= 10
             else:
+                ex_status = exe.get("status", "UNKNOWN")
+                if ex_status != "OK":
+                    warnings.append(f"EXECUTION_EVIDENCE_{ex_status}")
+                    score -= 10
                 anomalies = int(exe.get("anomaly_count", 0))
                 errors = int(exe.get("error_count", 0))
                 if errors > 0:

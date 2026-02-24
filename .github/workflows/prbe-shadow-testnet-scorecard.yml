@@ -38,14 +38,26 @@ jobs:
           gh run download "${RUN_ID}" --dir out/tmp2
           find out/tmp2 -type f -name live_readiness_scorecard.json -exec cp -f {} reports/status/ \;
 
+      - name: Download latest Execution Evidence artifact (best-effort)
+        run: |
+          mkdir -p out/exe_tmp
+          RUN_ID="$(gh run list --workflow prbg-execution-evidence.yml --branch main --limit 20 --json databaseId,status,conclusion --jq '.[] | select(.status=="completed" and .conclusion=="success") | .databaseId' | head -n 1)"
+          if [ -n "${RUN_ID}" ]; then
+            gh run download "${RUN_ID}" --dir out/exe_tmp || true
+            find out/exe_tmp -type f -name execution_evidence.json -exec cp -f {} reports/status/ \; || true
+          fi
+
       - name: Build scorecard
         run: |
           test -f reports/status/stability_gate.json
           test -f reports/status/live_readiness_scorecard.json
+          EXE_ARGS=""
+          [ -f reports/status/execution_evidence.json ] && EXE_ARGS="--execution-evidence reports/status/execution_evidence.json"
           python3 scripts/ci/shadow_testnet_readiness_scorecard.py \
             --out-dir reports/status \
             --stability reports/status/stability_gate.json \
-            --live-readiness reports/status/live_readiness_scorecard.json || true
+            --live-readiness reports/status/live_readiness_scorecard.json \
+            $EXE_ARGS || true
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
