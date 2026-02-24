@@ -15,3 +15,6 @@ Manual dispatch (validation):
 - gh workflow run prbg-execution-evidence.yml --ref main -f mock_profile=ok
 - gh workflow run prbg-execution-evidence.yml --ref main -f mock_profile=anomalies
 - gh workflow run prbg-execution-evidence.yml --ref main -f mock_profile=errors
+
+CI validation sample:
+- gh workflow run prbg-execution-evidence.yml --ref main -f input_path=docs/ops/samples/execution_events_sample.jsonl
