@@ -56,6 +56,16 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+def _emit_exec_event_safe(**kwargs: Any) -> None:
+    """Emit execution event (no-op when PT_EXEC_EVENTS_ENABLED=false). Never raises."""
+    try:
+        from src.observability.execution_events import emit
+
+        emit(**kwargs)
+    except Exception:
+        pass
+
+
 # =============================================================================
 # Custom Exceptions
 # =============================================================================
@@ -302,6 +312,15 @@ class TestnetExchangeOrderExecutor:
         self._execution_count += 1
         now = datetime.now(timezone.utc)
 
+        _emit_exec_event_safe(
+            event_type="order_submit",
+            level="info",
+            symbol=order.symbol,
+            side=order.side,
+            qty=order.quantity,
+            client_order_id=order.client_id,
+        )
+
         logger.info(
             f"[TESTNET EXECUTOR] Order #{self._execution_count}: "
             f"{order.side.upper()} {order.quantity} {order.symbol} @ {order.order_type}"
@@ -311,6 +330,14 @@ class TestnetExchangeOrderExecutor:
         try:
             self._check_environment()
         except (EnvironmentNotTestnetError, TestnetDryRunOnlyError) as e:
+            _emit_exec_event_safe(
+                event_type="order_reject",
+                level="error",
+                is_error=True,
+                symbol=order.symbol,
+                side=order.side,
+                msg=f"environment_blocked: {type(e).__name__}",
+            )
             result = OrderExecutionResult(
                 status="rejected",
                 request=order,
@@ -328,6 +355,14 @@ class TestnetExchangeOrderExecutor:
         # 2. Risk-Check
         risk_result = self._check_risk_limits([order], current_price)
         if risk_result is not None and not risk_result.allowed:
+            _emit_exec_event_safe(
+                event_type="order_reject",
+                level="error",
+                is_error=True,
+                symbol=order.symbol,
+                side=order.side,
+                msg="risk_limit_violation",
+            )
             logger.warning(f"[TESTNET EXECUTOR] Risk-Limits verletzt: {risk_result.reasons}")
             result = OrderExecutionResult(
                 status="rejected",
@@ -362,6 +397,14 @@ class TestnetExchangeOrderExecutor:
                     fee=None,
                     fee_currency=None,
                 )
+                _emit_exec_event_safe(
+                    event_type="fill",
+                    level="info",
+                    symbol=order.symbol,
+                    side=order.side,
+                    qty=fill.quantity,
+                    price=fill.price,
+                )
                 result = OrderExecutionResult(
                     status="filled",
                     request=order,
@@ -380,6 +423,15 @@ class TestnetExchangeOrderExecutor:
                 fill = self._client.fetch_order_as_fill(exchange_order_id, order)
 
                 if fill:
+                    _emit_exec_event_safe(
+                        event_type="fill",
+                        level="info",
+                        symbol=order.symbol,
+                        side=order.side,
+                        qty=fill.quantity,
+                        price=fill.price,
+                        order_id=exchange_order_id,
+                    )
                     status: OrderStatus = "filled"
                 else:
                     # Order noch offen oder pending
@@ -403,6 +455,14 @@ class TestnetExchangeOrderExecutor:
             return result
 
         except Exception as e:
+            _emit_exec_event_safe(
+                event_type="order_reject",
+                level="error",
+                is_error=True,
+                symbol=order.symbol,
+                side=order.side,
+                msg=f"exchange_error: {type(e).__name__}",
+            )
             logger.error(f"[TESTNET EXECUTOR] Order fehlgeschlagen: {e}")
             result = OrderExecutionResult(
                 status="rejected",
@@ -449,6 +509,14 @@ class TestnetExchangeOrderExecutor:
             results = []
             for order in orders:
                 self._execution_count += 1
+                _emit_exec_event_safe(
+                    event_type="order_reject",
+                    level="error",
+                    is_error=True,
+                    symbol=order.symbol,
+                    side=order.side,
+                    msg="batch_risk_limit_violation",
+                )
                 result = OrderExecutionResult(
                     status="rejected",
                     request=order,

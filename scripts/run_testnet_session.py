@@ -87,6 +87,16 @@ from src.strategies.base import BaseStrategy
 from src.execution.pipeline import ExecutionPipeline, SignalEvent
 
 
+def _emit_exec_event_safe(**kwargs: Any) -> None:
+    """Emit execution event (no-op when PT_EXEC_EVENTS_ENABLED=false). Never raises."""
+    try:
+        from src.observability.execution_events import emit
+
+        emit(**kwargs)
+    except Exception:
+        pass
+
+
 # =============================================================================
 # Logging Setup
 # =============================================================================
@@ -556,6 +566,12 @@ class TestnetSession:
         self._shutdown_requested = False
         self._setup_signal_handlers()
 
+        _emit_exec_event_safe(
+            event_type="session_start",
+            level="info",
+            msg=f"testnet session start symbol={self._session_config.symbol}",
+        )
+
         self._logger.info(
             f"[TESTNET SESSION] Starte Loop: "
             f"poll_interval={self._session_config.poll_interval_seconds}s"
@@ -591,6 +607,12 @@ class TestnetSession:
         end_time = time.time() + (minutes * 60)
         all_results: List[OrderExecutionResult] = []
 
+        _emit_exec_event_safe(
+            event_type="session_start",
+            level="info",
+            msg=f"testnet session start symbol={self._session_config.symbol} duration={minutes}min",
+        )
+
         self._logger.info(f"[TESTNET SESSION] Starte fuer {minutes} Minuten...")
 
         try:
@@ -611,6 +633,11 @@ class TestnetSession:
 
     def _finalize(self) -> None:
         """Finalisiert die Session."""
+        _emit_exec_event_safe(
+            event_type="session_end",
+            level="info",
+            msg=f"testnet session end symbol={self._session_config.symbol}",
+        )
         self._log_session_summary()
 
         if self._run_logger:

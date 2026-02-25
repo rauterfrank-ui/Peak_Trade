@@ -43,6 +43,8 @@ This runbook is operational only. It is not financial advice.
 
 ## Execution Events (recommended)
 
+Testnet executor now emits execution events (session_start, order_submit, order_reject, fill, session_end) when PT_EXEC_EVENTS_ENABLED=true, so evidence can be built from real testnet sessions without smoke fallback.
+
 Enable automatic execution event capture (local, untracked):
 
 - export PT_EXEC_EVENTS_ENABLED=true
