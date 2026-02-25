@@ -98,6 +98,10 @@ if ! command -v docker >/dev/null 2>&1; then
   DOCKER_AVAILABLE=0
   echo "WARN: docker not found in PATH. Docker-dependent MCP checks will be skipped."
 fi
+# Use DOCKER_AVAILABLE so shellcheck SC2034 does not flag it (variable reserved for future docker checks)
+if [ "${DOCKER_AVAILABLE}" -eq 1 ]; then
+  docker --version 2>/dev/null || true
+fi
 
 echo
 echo "OK: MCP smoke checks passed."
