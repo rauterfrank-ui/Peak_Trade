@@ -2,7 +2,7 @@
 Snapshot-only tests for Shadow MVS verify retries/warmup.
 
 We do NOT start docker compose here. Instead we stub the HTTP endpoints that
-`scripts/obs/shadow_mvs_local_verify.sh` talks to:
+the (now removed) shadow_mvs_local_verify.sh used to talk to:
 - Exporter (/metrics)
 - Prometheus (/-/ready, /api/v1/targets, /api/v1/query)
 - Grafana (/api/health, /api/datasources, /api/search)
@@ -255,6 +255,8 @@ def test_shadow_mvs_verify_retries_and_warmup_passes(tmp_path):
 
         root = Path(__file__).resolve().parents[2]
         script = root / "scripts" / "obs" / "shadow_mvs_local_verify.sh"
+        if not script.exists():
+            pytest.skip("shadow_mvs_local_verify.sh removed (Grafana/Dashboard legacy cleanup)")
         proc = subprocess.run(
             ["bash", str(script)],
             cwd=str(root),

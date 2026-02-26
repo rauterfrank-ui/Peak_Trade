@@ -1,8 +1,0 @@
-==> Shadow MVS verify (snapshot-only; max 1 retry per endpoint)
-==> Check: Prometheus ready
-PASS|prometheus.ready|http://127.0.0.1:9092/-/ready
-==> Check: Exporter /metrics reachable + contract series present
-PASS|exporter.metrics|shadow_mvs_up + peak_trade_pipeline_events_total present
-==> Check: Grafana health
-PASS|grafana.health|http://127.0.0.1:3000/api/health
-==> Check: Grafana datasource + dashboard provisioned

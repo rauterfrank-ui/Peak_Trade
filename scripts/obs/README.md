@@ -48,40 +48,19 @@ Manual run:
 
 ---
 
-## Grafana Verify v2 (operator-grade)
+## Observability Stack (Ops Runner)
 
-Für Grafana/Prometheus-local Smoke + Dashpack-Integrity:
-
-```bash
-# Start (Grafana-only + Prometheus-local)
-bash scripts/obs/grafana_local_up.sh
-
-# Verify (evidenzfähig; schreibt Timestamp-Artifacts)
-bash scripts/obs/grafana_verify_v2.sh
-```
-
-### Dashpack Verify v2 (hermetic-first)
-
-Script: `scripts/obs/grafana_dashpack_local_verify_v2.sh`
-
-- Default: Hermetic JSON-only Checks laufen immer; Grafana API Checks nur wenn Grafana erreichbar ist.
-- Hermetic mode (no API): `--hermetic` (Alias: `--no-api`)
-  - JSON-only; keine Grafana API/Creds, kein curl erforderlich.
-- Artifacts: `docs&#47;ops&#47;evidence&#47;assets&#47;EV_GRAFANA_DASHPACK_VERIFY_V2_<timestamp>` (oder per `VERIFY_OUT_DIR`).
-
----
-
-## Grafana Verify v2 (operator-grade)
-
-Für Grafana/Prometheus-local Smoke + Dashpack-Integrity:
+Grafana/Dashboard-Skripte wurden entfernt. Für lokale Observability nutze den Ops Runner:
 
 ```bash
-# Start (Grafana-only + Prometheus-local)
-bash scripts/obs/grafana_local_up.sh
+# Compose prüfen
+docker compose -f docker/docker-compose.obs.yml config
 
-# Verify (evidenzfähig; schreibt Timestamp-Artifacts)
-bash scripts/obs/grafana_verify_v2.sh
+# Stage1 Snapshot (siehe run_stage1_snapshot_docker.sh)
+docker compose -f docker/docker-compose.obs.yml run --rm peaktrade-ops stage1-snapshot
 ```
+
+Siehe `docs/DOCKER_KOMPLETT_UEBERSICHT.md` für die kanonische Docker-Dokumentation.
 
 ---
 

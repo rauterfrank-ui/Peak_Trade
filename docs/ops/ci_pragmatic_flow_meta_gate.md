@@ -1,7 +1,7 @@
 # CI Pragmatic Flow — PR Gate (Single Required Check)
 
 **Ziel:** Für Branch Protection nur **einen** Required Check: **PR Gate**.  
-- Reine Grafana/Docs/Workflow-Änderungen: nur Fast-Lane + Smoke (keine volle Py-Matrix).  
+- Reine Docs/Workflow-Änderungen: nur Fast-Lane + Smoke (keine volle Py-Matrix).  
 - Code-Änderungen: volle Python-Matrix (3.9/3.10/3.11) + strategy-smoke.
 
 ## Required Check = PR Gate
@@ -20,7 +20,7 @@ Matrix läuft nur bei Code-Änderungen (siehe Pfad-Logik). Lint Gate, Docs Gates
 |--------|-----------|-----------|
 | `run_fast` / `run_fast_lane` | immer `true` | — |
 | `run_matrix` | volle Matrix | Code-Pfade geändert (oder `workflow_dispatch` mit `force_matrix=true`) |
-| `docs_only` | nur Fast-Lane nötig | **Nur** `docs&#47;**`, `**&#47;grafana&#47;dashboards&#47;**`, `out&#47;**`, `**&#47;*.md` |
+| `docs_only` | nur Fast-Lane nötig | **Nur** `docs&#47;**`, `out&#47;**`, `**&#47;*.md` |
 | `workflow_only` | nur Fast-Lane nötig | **Nur** `.github&#47;workflows&#47;**` |
 
 **Code-Pfade** (run_matrix): `src&#47;**`, `tests&#47;**`, `scripts&#47;**`, `config&#47;**`, `requirements*.txt`, `pyproject.toml`, `uv.lock`, `pytest.ini`, `Makefile`.  
@@ -30,8 +30,7 @@ Matrix läuft nur bei Code-Änderungen (siehe Pfad-Logik). Lint Gate, Docs Gates
 
 | Geänderte Pfade (nur diese) | run_matrix | Laufende Jobs (relevant) |
 |-----------------------------|------------|---------------------------|
-| `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;overview&#47;foo.json` | false | changes, Fast-Lane, tests (skip), strategy-smoke (skip), **PR Gate** |
-| `docs&#47;foo.md` | false | wie oben |
+| `docs&#47;foo.md` | false | changes, Fast-Lane, tests (skip), strategy-smoke (skip), **PR Gate** |
 | `.github&#47;workflows&#47;lint.yml` | false | wie oben |
 | `src&#47;foo.py` | true | changes, Fast-Lane, **tests (3.9/3.10/3.11)**, **strategy-smoke**, **PR Gate** |
 | `tests&#47;test_baz.py`, `scripts&#47;obs&#47;build_foo.py`, `pyproject.toml`, `uv.lock`, `requirements.txt` | true | wie oben |
