@@ -14,7 +14,8 @@ from pathlib import Path
 from typing import List
 
 REPO = Path.cwd()
-BASE_DEFAULT = REPO / "docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml"
+BASE_DEFAULT = REPO / "docker/docker-compose.obs.yml"
+PROMETHEUS_CONFIG_DEFAULT = REPO / ".local/prometheus/prometheus.docker.yml"
 OVR_DIR = REPO / ".ops_local/compose_overrides"
 
 

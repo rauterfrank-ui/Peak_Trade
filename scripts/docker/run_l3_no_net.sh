@@ -40,6 +40,7 @@ mkdir -p "${OUT_DIR}" "${CACHE_DIR}"
 docker run ${DOCKER_RM} \
   --name "${DOCKER_NAME}" \
   --network=none \
+  -e PYTHONPATH=/work \
   --cpus="${CPUS:-2}" --memory="${MEM:-4g}" \
   -v "${REPO_ROOT}:/work:ro" \
   -v "${OUT_DIR}:/out:rw" \

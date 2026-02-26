@@ -45,12 +45,10 @@ Docker hat hier **keine** CI-„Gates“, sondern **Compose-Services** und **Pro
 |---------------|------------|----------------|
 | **docker/compose.yml** | `mlflow` | MLflow Backend + Artifacts (Experiment-Tracking, Model-Metadaten, Runs); Port 5001→5000 |
 | **docker/docker-compose.obs.yml** | `peaktrade-ops` | Ops Runner: Stage1-Snapshots, Stage1-Trends, Reports; kein Default-Command (z.B. `stage1-snapshot`, `stage1-trends`) |
-| **DOCKER_COMPOSE_GRAFANA_ONLY.yml** | `grafana` | Nur Grafana (Dashboards, Datasources); keine eigenen Datenquellen im Stack |
-| **docs/.../DOCKER_COMPOSE_PROM_GRAFANA.yml** <!-- pt:ref-target-ignore --> | `shadow_mvs_exporter`, `prometheus`, `grafana` | Lokaler Observability-Stack: Mock Shadow-MVS, Prometheus, Grafana |
 
 ### 1.2 Prometheus-Scrape-Targets („Daten-Gates“ in Docker)
 
-Konfiguration typisch in `docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml` bzw. als Volume in Prometheus-Stack:
+Konfiguration typisch in `.local&#47;prometheus&#47;prometheus.docker.yml` bzw. als Volume in Prometheus-Stack:
 
 | Job Name | Target | Port | Daten / Bedeutung |
 |----------|--------|------|-------------------|
@@ -206,8 +204,8 @@ Damit laufen in Docker-Umgebung folgende **Datenströme** über diese „Gates�
 ## 4. Referenzen
 
 - Status/Evidence-Contract: `docs/ops/STATUS_MATRIX.md`, `docs/ops/evidence/README.md`
-- Docker: `docker/`, `docs/webui/observability/`
-- Prometheus Scrape: `docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml`, `docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml`
+- Docker: `docker&#47;`, `.local&#47;prometheus&#47;`
+- Prometheus Scrape: `.local&#47;prometheus&#47;prometheus.docker.yml`
 - Workflows: `.github&#47;workflows&#47;*.yml`
 - CI Required Checks: `docs/ops/ci_required_checks_matrix_naming_contract.md`
 - Evidence Pack: `docs/ai/EVIDENCE_PACK_CI_GATE.md`
@@ -238,3 +236,15 @@ Diese Datenströme laufen **nicht** über einen eigenen CI-Workflow, sondern üb
 | **VaR Backtest / Reports** | Risk-Validation | `reports&#47;var_backtest` | `config/var_backtest.toml` |
 | **Scheduler / Live Risk** | Check Scripts | `reports&#47;live&#47;latest_orders.csv` (Beispiel) | `config/scheduler/jobs.toml` |
 | **OpenTelemetry (optional)** | Traces/Metrics | OTLP-Export (z. B. Collector) | `src/obs/__init__.py` (init_otel), `pyproject.toml` / requirements (opentelemetry-exporter-otlp) |
+
+
+## Canonical recovery note
+Siehe: `docs/ops/DOCKER_RECOVERY_CANONICAL_STATE.md`
+
+Kanonische Docker-/Prometheus-Pfade:
+- `docker/compose.yml`
+- `docker/docker-compose.obs.yml`
+- `.local/prometheus/prometheus.docker.yml`
+- `scripts/docker/run_l3_no_net.sh`
+
+Historische Verweise auf entfernte `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_*.yml` sind Legacy.
