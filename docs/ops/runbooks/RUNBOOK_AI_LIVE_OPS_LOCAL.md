@@ -243,13 +243,13 @@ scripts/obs/ai_live_exporter.py
 ```
 - Dashboard/Observability doc:
 ```text
-docs/webui/observability/README.md
+docs/DOCKER_KOMPLETT_UEBERSICHT.md
 ```
 
 
 ## Kanonische lokale Docker-/Prometheus-Pfade
-- Compose (Ops Runner / lokale Docker-Laufzeit): `docker/docker-compose.obs.yml`
-- Prometheus Local Scrape Config: `.local/prometheus/prometheus.docker.yml`
+- Compose (Ops Runner / lokale Docker-Laufzeit): `docker&#47;docker-compose.obs.yml`
+- Prometheus Local Scrape Config: `.local&#47;prometheus&#47;prometheus.docker.yml`
 
 Hinweis:
-Historische Verweise auf `docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml` sind Legacy und nicht mehr gültig.
+Historische Verweise auf entfernte lokale Observability-Compose-Dateien sind Legacy und nicht mehr gültig.

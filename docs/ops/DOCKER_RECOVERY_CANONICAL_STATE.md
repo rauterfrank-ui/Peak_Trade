@@ -25,7 +25,7 @@ Die aktuell gewollten Docker-Komponenten in Peak_Trade reproduzierbar betreiben 
 - Einstieg: `make l3-docker`
 
 ## Legacy / nicht mehr kanonisch
-- `docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml`
+- historischer Legacy-Pfad auf entfernte lokale Observability-Compose-Datei
 - historische `DOCKER_COMPOSE_*.yml` im Grafana-/Dashboard-Kontext
 
 ## Recovery-Regel

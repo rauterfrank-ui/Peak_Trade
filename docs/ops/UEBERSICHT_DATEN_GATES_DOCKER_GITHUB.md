@@ -48,7 +48,7 @@ Docker hat hier **keine** CI-„Gates“, sondern **Compose-Services** und **Pro
 
 ### 1.2 Prometheus-Scrape-Targets („Daten-Gates“ in Docker)
 
-Konfiguration typisch in `docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml` bzw. als Volume in Prometheus-Stack:
+Konfiguration typisch in `.local&#47;prometheus&#47;prometheus.docker.yml` bzw. als Volume in Prometheus-Stack:
 
 | Job Name | Target | Port | Daten / Bedeutung |
 |----------|--------|------|-------------------|
@@ -204,8 +204,8 @@ Damit laufen in Docker-Umgebung folgende **Datenströme** über diese „Gates�
 ## 4. Referenzen
 
 - Status/Evidence-Contract: `docs/ops/STATUS_MATRIX.md`, `docs/ops/evidence/README.md`
-- Docker: `docker/`, `docs/webui/observability/`
-- Prometheus Scrape: `docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml`, `docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml`
+- Docker: `docker&#47;`, `.local&#47;prometheus&#47;`
+- Prometheus Scrape: `.local&#47;prometheus&#47;prometheus.docker.yml`
 - Workflows: `.github&#47;workflows&#47;*.yml`
 - CI Required Checks: `docs/ops/ci_required_checks_matrix_naming_contract.md`
 - Evidence Pack: `docs/ai/EVIDENCE_PACK_CI_GATE.md`
@@ -247,4 +247,4 @@ Kanonische Docker-/Prometheus-Pfade:
 - `.local/prometheus/prometheus.docker.yml`
 - `scripts/docker/run_l3_no_net.sh`
 
-Historische Verweise auf entfernte `docs/webui/observability/DOCKER_COMPOSE_*.yml` sind Legacy.
+Historische Verweise auf entfernte `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_*.yml` sind Legacy.

@@ -272,4 +272,4 @@ Kanonische Docker-/Prometheus-Pfade:
 - `.local/prometheus/prometheus.docker.yml`
 - `scripts/docker/run_l3_no_net.sh`
 
-Historische Verweise auf entfernte `docs/webui/observability/DOCKER_COMPOSE_*.yml` sind Legacy.
+Historische Verweise auf entfernte `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_*.yml` sind Legacy.

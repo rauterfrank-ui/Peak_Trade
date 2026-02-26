@@ -21,7 +21,7 @@
 ### 2.1 Dateien
 - `docker/compose.yml` – Compose-Konfiguration
 - `docker/mlflow/Dockerfile` – MLflow 2.15.1 Image
-- `docker/.env.example` – Template für `docker/.env`
+- `docker&#47;.env.example` – Template für `docker&#47;.env`
 - `docker/README.md` – Detaillierte Anleitung
 
 ### 2.2 Befehle
@@ -29,7 +29,7 @@
 ```bash
 # Start
 make mlflow-up
-# oder: docker compose -f docker/compose.yml --env-file docker/.env up -d --build
+# oder: docker compose -f docker&#47;compose.yml --env-file docker&#47;.env up -d --build
 
 # Stop (Daten bleiben erhalten)
 make mlflow-down
@@ -45,13 +45,13 @@ make mlflow-smoke
 ```
 
 ### 2.3 Konfiguration
-- **Port:** 5001 (Standard), änderbar in `docker/.env` via `MLFLOW_PORT`
+- **Port:** 5001 (Standard), änderbar in `docker&#47;.env` via `MLFLOW_PORT`
 - **UI:** http://localhost:5001
 - **Volumes:** `peak_trade_mlflow` (Experiments + Artifacts)
 
 ### 2.4 Hinweise
 - Port 5000 oft von macOS AirPlay belegt → 5001 nutzen
-- `docker/.env` aus `.env.example` erstellen: `cp docker/.env.example docker/.env`
+- `docker&#47;.env` aus `.env.example` erstellen: `cp docker&#47;.env.example docker&#47;.env`
 
 ---
 
@@ -79,17 +79,17 @@ docker compose -f docker/docker-compose.obs.yml run --rm peaktrade-ops --help
 ```
 
 ### 3.3 Convenience-Scripts
-- `./scripts/obs/run_stage1_snapshot_docker.sh` – Baut Image, führt Snapshot aus
-- `./scripts/obs/run_stage1_trends_docker.sh` – Baut Image, führt Trends aus
+- `scripts/obs/run_stage1_snapshot_docker.sh` – Baut Image, führt Snapshot aus
+- `scripts/obs/run_stage1_trends_docker.sh` – Baut Image, führt Trends aus
 
 ### 3.4 Umgebung
 - `PEAK_REPORTS_DIR` – Reports-Verzeichnis (Default: `/reports`, Volume-Mount)
-- Volume: `./reports:/reports`
+- Volume: `./reports:/reports` <!-- pt:ref-target-ignore -->
 
 ### 3.5 Ausgabe
-- `reports/obs/stage1/2025-12-20_snapshot.md`
-- `reports/obs/stage1/2025-12-20_summary.json`
-- `reports/obs/stage1/stage1_trend.json`
+- `reports&#47;obs&#47;stage1&#47;2025-12-20_snapshot.md`
+- `reports&#47;obs&#47;stage1&#47;2025-12-20_summary.json`
+- `reports&#47;obs&#47;stage1&#47;stage1_trend.json`
 
 ---
 
@@ -112,9 +112,9 @@ make l3-docker
 
 ### 4.3 Umgebung
 - `--network=none` – Kein Netzwerk
-- `-v REPO:/work:ro` – Repo read-only
-- `-v OUT_DIR:/out:rw` – Ausgabe
-- `-v CACHE_DIR:/cache:rw` – Cache
+- `-v REPO:&#47;work:ro` – Repo read-only
+- `-v OUT_DIR:&#47;out:rw` – Ausgabe
+- `-v CACHE_DIR:&#47;cache:rw` – Cache
 - `IMAGE` (Default: `peaktrade-l3:latest`)
 - `KEEP_CONTAINER=1` – Container nicht mit `--rm` entfernen
 
@@ -124,7 +124,7 @@ make l3-docker
 
 Ausschlüsse beim Docker-Build (u.a.):
 - `.git`, `.venv`, `__pycache__`
-- `reports/`, `artifacts/`, `data/`
+- `reports&#47;`, `artifacts&#47;`, `data&#47;`
 - `.env`, `secrets.toml`
 
 ---
@@ -177,7 +177,7 @@ In `/Users/frnkhrz/Downloads/`:
   uses: actions/upload-artifact@v3
   with:
     name: stage1-reports
-    path: reports/obs/stage1/
+    path: reports&#47;obs&#47;stage1&#47;
 ```
 
 ---
@@ -201,9 +201,16 @@ lsof -i :3000   # Grafana (falls verwendet)
 Siehe: `docs/ops/DOCKER_RECOVERY_CANONICAL_STATE.md`
 
 Kanonische Docker-/Prometheus-Pfade:
-- `docker/compose.yml`
-- `docker/docker-compose.obs.yml`
-- `.local/prometheus/prometheus.docker.yml`
-- `scripts/docker/run_l3_no_net.sh`
+- `docker&#47;compose.yml`
+- `docker&#47;docker-compose.obs.yml`
+- `.local&#47;prometheus&#47;prometheus.docker.yml`
+- `scripts&#47;docker&#47;run_l3_no_net.sh`
 
-Historische Verweise auf entfernte `docs/webui/observability/DOCKER_COMPOSE_*.yml` sind Legacy.
+Historische Verweise auf entfernte `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_*.yml` sind Legacy.
+
+## Hinweise zu Pfadnotation in dieser Doku
+Illustrative Pfade werden teilweise token-policy-konform mit HTML-escaped Slash geschrieben, z. B.:
+- `docker&#47;compose.yml`
+- `docker&#47;docker-compose.obs.yml`
+- `.local&#47;prometheus&#47;prometheus.docker.yml`
+- `reports&#47;obs&#47;stage1&#47;...`
