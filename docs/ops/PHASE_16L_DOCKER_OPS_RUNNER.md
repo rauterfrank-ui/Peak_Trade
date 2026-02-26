@@ -261,3 +261,15 @@ PEAK_REPORTS_DIR=/var/peak/reports ./scripts/obs/run_stage1_snapshot_docker.sh
 - **Related Docs:**
   - `docs/ops/README.md` - Operations Guide
   - `ADR_0001_Peak_Tool_Stack.md` - Tool stack decisions
+
+
+## Canonical recovery note
+Siehe: `docs/ops/DOCKER_RECOVERY_CANONICAL_STATE.md`
+
+Kanonische Docker-/Prometheus-Pfade:
+- `docker/compose.yml`
+- `docker/docker-compose.obs.yml`
+- `.local/prometheus/prometheus.docker.yml`
+- `scripts/docker/run_l3_no_net.sh`
+
+Historische Verweise auf entfernte `docs/webui/observability/DOCKER_COMPOSE_*.yml` sind Legacy.

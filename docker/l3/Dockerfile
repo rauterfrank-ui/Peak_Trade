@@ -28,3 +28,4 @@ RUN grep -v '^-e ' /tmp/requirements.txt > /tmp/deps.txt \
 # NOTE: We do NOT COPY the repo; you mount it read-only at /work at run time.
 
 CMD ["bash", "-lc", "python3 --version && echo 'L3 image ready'"]
+ENV PYTHONPATH=/work

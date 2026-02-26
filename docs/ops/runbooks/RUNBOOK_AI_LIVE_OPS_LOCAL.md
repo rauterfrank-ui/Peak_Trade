@@ -51,7 +51,7 @@ export PY_CMD="python3"
   - **Prometheus Scrape + Rules (Repo → Container)**:
     - Repo Scrape Config: `docs&#47;webui&#47;observability&#47;PROMETHEUS_LOCAL_SCRAPE.yml`
     - Repo Rules Dir: `docs&#47;webui&#47;observability&#47;prometheus&#47;rules&#47;` (z.B. `ai_live_alerts_v1.yml`)
-    - Compose mount (lokal): `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml` mountet das nach `&#47;etc&#47;prometheus&#47;rules`
+    - Compose mount (lokal): `docker&#47;docker-compose.obs.yml` (Ops Runner; Prometheus-Rules siehe `.local&#47;prometheus&#47;prometheus.docker.yml`)
 
 - **Outputs (raus geht)**:
   - Evidence dir (Default): `.local_tmp&#47;ai_live_ops_verify_<timestamp>`
@@ -245,3 +245,11 @@ scripts/obs/ai_live_exporter.py
 ```text
 docs/webui/observability/README.md
 ```
+
+
+## Kanonische lokale Docker-/Prometheus-Pfade
+- Compose (Ops Runner / lokale Docker-Laufzeit): `docker/docker-compose.obs.yml`
+- Prometheus Local Scrape Config: `.local/prometheus/prometheus.docker.yml`
+
+Hinweis:
+Historische Verweise auf `docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml` sind Legacy und nicht mehr gültig.

@@ -45,8 +45,6 @@ Docker hat hier **keine** CI-„Gates“, sondern **Compose-Services** und **Pro
 |---------------|------------|----------------|
 | **docker/compose.yml** | `mlflow` | MLflow Backend + Artifacts (Experiment-Tracking, Model-Metadaten, Runs); Port 5001→5000 |
 | **docker/docker-compose.obs.yml** | `peaktrade-ops` | Ops Runner: Stage1-Snapshots, Stage1-Trends, Reports; kein Default-Command (z.B. `stage1-snapshot`, `stage1-trends`) |
-| **DOCKER_COMPOSE_GRAFANA_ONLY.yml** | `grafana` | Nur Grafana (Dashboards, Datasources); keine eigenen Datenquellen im Stack |
-| **docs/.../DOCKER_COMPOSE_PROM_GRAFANA.yml** <!-- pt:ref-target-ignore --> | `shadow_mvs_exporter`, `prometheus`, `grafana` | Lokaler Observability-Stack: Mock Shadow-MVS, Prometheus, Grafana |
 
 ### 1.2 Prometheus-Scrape-Targets („Daten-Gates“ in Docker)
 
@@ -238,3 +236,15 @@ Diese Datenströme laufen **nicht** über einen eigenen CI-Workflow, sondern üb
 | **VaR Backtest / Reports** | Risk-Validation | `reports&#47;var_backtest` | `config/var_backtest.toml` |
 | **Scheduler / Live Risk** | Check Scripts | `reports&#47;live&#47;latest_orders.csv` (Beispiel) | `config/scheduler/jobs.toml` |
 | **OpenTelemetry (optional)** | Traces/Metrics | OTLP-Export (z. B. Collector) | `src/obs/__init__.py` (init_otel), `pyproject.toml` / requirements (opentelemetry-exporter-otlp) |
+
+
+## Canonical recovery note
+Siehe: `docs/ops/DOCKER_RECOVERY_CANONICAL_STATE.md`
+
+Kanonische Docker-/Prometheus-Pfade:
+- `docker/compose.yml`
+- `docker/docker-compose.obs.yml`
+- `.local/prometheus/prometheus.docker.yml`
+- `scripts/docker/run_l3_no_net.sh`
+
+Historische Verweise auf entfernte `docs/webui/observability/DOCKER_COMPOSE_*.yml` sind Legacy.

@@ -37,22 +37,26 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_prometheus_local_compose_mounts_rules_dir_deterministically() -> None:
-    p = PROJECT_ROOT / "docs" / "webui" / "observability" / "DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml"
+    """Canonical: docker-compose.obs.yml has peaktrade-ops with reports volume."""
+    p = PROJECT_ROOT / "docker" / "docker-compose.obs.yml"
     doc = yaml.safe_load(p.read_text(encoding="utf-8"))
-    svc = (doc.get("services") or {}).get("prometheus-local") or {}
+    svc = (doc.get("services") or {}).get("peaktrade-ops") or {}
     vols = svc.get("volumes") or []
     assert any(
-        isinstance(v, str) and v.strip().startswith("./prometheus/rules:/etc/prometheus/rules")
+        isinstance(v, str) and "reports" in v
         for v in vols
-    ), "expected bind mount for ./prometheus/rules -> /etc/prometheus/rules"
+    ), "expected bind mount for reports in peaktrade-ops"
 
 
 def test_prometheus_local_scrape_config_has_rule_files_path() -> None:
-    p = PROJECT_ROOT / "docs" / "webui" / "observability" / "PROMETHEUS_LOCAL_SCRAPE.yml"
+    """Canonical: .local/prometheus/prometheus.docker.yml has scrape_configs."""
+    p = PROJECT_ROOT / ".local" / "prometheus" / "prometheus.docker.yml"
     doc = yaml.safe_load(p.read_text(encoding="utf-8"))
-    rf = doc.get("rule_files") or []
-    assert "/etc/prometheus/rules/*.yml" in rf
-    assert "/etc/prometheus/rules/*.yaml" in rf
+    scrape = doc.get("scrape_configs") or []
+    assert len(scrape) >= 1, "expected at least one scrape config"
+    assert any(
+        c.get("job_name") == "peak_trade_web" for c in scrape
+    ), "expected peak_trade_web job"
 
 
 def test_ai_live_ops_verify_script_exists_and_is_strict_shell() -> None:
@@ -230,3 +234,8 @@ def test_ai_live_ops_verify_script_can_run_against_mock_endpoints(tmp_path: Path
     finally:
         httpd.shutdown()
         httpd.server_close()
+
+
+def test_canonical_prometheus_docker_config_exists() -> None:
+    from pathlib import Path
+    assert Path(".local/prometheus/prometheus.docker.yml").exists()
