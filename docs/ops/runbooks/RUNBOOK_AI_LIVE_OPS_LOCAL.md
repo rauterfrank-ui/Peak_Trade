@@ -78,7 +78,7 @@ export PY_CMD="python3"
 ### 4.1 Prometheus-local (und optional Grafana)
 Wenn du den lokalen Observability-Stack verwendest:
 ```bash
-bash scripts/obs/grafana_local_up.sh
+docker compose -f docker/docker-compose.obs.yml up -d
 ```
 
 ### 4.2 Exporter starten (watch-only)

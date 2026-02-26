@@ -1,6 +1,0 @@
-=== QUERY: sum(peak_trade_pipeline_events_total)
-{"status":"success","data":{"resultType":"vector","result":[{"metric":{},"value":[1768711322.224,"153144"]}]}}
-=== QUERY: sum(peak_trade_pipeline_latency_seconds_count)
-{"status":"success","data":{"resultType":"vector","result":[{"metric":{},"value":[1768711322.235,"22800"]}]}}
-=== QUERY: sum(peak_trade_risk_blocks_total)
-{"status":"success","data":{"resultType":"vector","result":[{"metric":{},"value":[1768711322.247,"646"]}]}}

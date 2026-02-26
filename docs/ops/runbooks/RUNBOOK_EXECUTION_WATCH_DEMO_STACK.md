@@ -42,8 +42,9 @@ Im Terminal (Repo-Root):
 ```bash
 cd ~/Peak_Trade
 
-# 1) Shadow MVS + Prometheus-local + Grafana (Grafana: :3000, Prometheus-local: :9092)
-bash scripts/obs/shadow_mvs_local_up.sh
+# 1) Shadow MVS + Prometheus-local + Grafana (Legacy-Stack entfernt)
+#    Alternative: docker compose -f docker/docker-compose.obs.yml (Ops Runner, Stage1)
+#    Siehe docs/DOCKER_KOMPLETT_UEBERSICHT.md
 
 # 2) AI Live Demo Events (STRICT NO-LIVE; schreibt nur JSONL)
 mkdir -p logs/ai
@@ -146,8 +147,8 @@ Checks:
 ```bash
 cd ~/Peak_Trade
 
-# Stop: Grafana + Prometheus-local + (falls gestartet) Shadow-MVS Exporter
-bash scripts/obs/shadow_mvs_local_down.sh
+# Stop: Legacy-Stack (shadow_mvs_local_* entfernt)
+#    Bei Ops Runner: docker compose -f docker/docker-compose.obs.yml down
 
 # Falls ai_live_exporter im Foreground läuft: Ctrl-C im entsprechenden Terminal
 ```
@@ -156,7 +157,7 @@ bash scripts/obs/shadow_mvs_local_down.sh
 
 ## Referenzen
 
-- Stack start/stop: `scripts/obs/shadow_mvs_local_up.sh`, `scripts/obs/shadow_mvs_local_down.sh`
+- Stack start/stop: Legacy (entfernt). Alternative: `docker/docker-compose.obs.yml`
 - AI Live Exporter: `scripts/obs/ai_live_exporter.py`
 - Demo-Events: `scripts/obs/emit_ai_live_sample_events.py`
-- Dashboard JSON: `docs/webui/observability/grafana/dashboards/execution/peaktrade-execution-watch-overview.json`
+- Dashboard JSON: Legacy (entfernt). Siehe docs/DOCKER_KOMPLETT_UEBERSICHT.md

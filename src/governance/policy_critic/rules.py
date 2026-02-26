@@ -52,6 +52,16 @@ class NoSecretsRule(PolicyRule):
 
         for pattern, message in self.SECRET_PATTERNS:
             for match in re.finditer(pattern, diff, re.IGNORECASE):
+                # Skip false positives: env var references (e.g. ${VAR}, $VAR, ${VAR:?msg})
+                matched_text = match.group(0)
+                if re.search(r"[\$]\{?[A-Za-z_][A-Za-z0-9_]*", matched_text):
+                    continue
+
+                # Skip docs: runbooks/specs often show env var examples or detection patterns
+                file_path = self._extract_file_from_diff_position(diff, match.start())
+                if file_path and file_path.startswith("docs/"):
+                    continue
+
                 # Extract context around match
                 start = max(0, match.start() - 50)
                 end = min(len(diff), match.end() + 50)

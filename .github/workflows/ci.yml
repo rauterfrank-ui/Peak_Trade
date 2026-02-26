@@ -33,7 +33,7 @@ jobs:
   # - run_fast_lane: always true (Fast-Lane always runs).
   # - run_matrix: true when code paths changed (or workflow_dispatch force_matrix=true).
   # - run_fast: always true. run_fast_lane: alias.
-  # - docs_only: true when ONLY docs/grafana/out/*.md changed.
+  # - docs_only: true when ONLY docs/out/*.md changed.
   # - workflow_only: true when ONLY .github/workflows changed.
   # Code paths: src/**, tests/**, scripts/**, config/**, pyproject.toml, uv.lock, requirements*.txt, pytest.ini, Makefile.
   # ============================================================================
@@ -68,7 +68,6 @@ jobs:
               - 'Makefile'
             docs:
               - 'docs/**'
-              - '**/grafana/dashboards/**'
               - 'out/**'
               - '**/*.md'
             workflow:

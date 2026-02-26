@@ -143,7 +143,7 @@ echo "==> Preflight: endpoints reachable"
 if curl -fsS "$PROM_URL/-/ready" >"$OUT/prom_ready.txt" 2>"$OUT/prom_ready.err"; then
   pass "prometheus.ready" "$PROM_URL/-/ready"
 else
-  fail "prometheus.ready" "Prometheus not ready: $PROM_URL/-/ready" "Start prometheus-local (scripts/obs/grafana_local_up.sh)"
+  fail "prometheus.ready" "Prometheus not ready: $PROM_URL/-/ready" "Start local Docker observability via docker compose -f docker/docker-compose.obs.yml up -d"
 fi
 
 if curl -fsS "$GRAFANA_URL/api/health" >"$OUT/grafana_health.json" 2>"$OUT/grafana_health.err"; then
