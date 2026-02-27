@@ -15,6 +15,7 @@ def test_shared_smoke_aggregator_builds_summary() -> None:
         "scripts/wave3/model_registry_loader_smoke.py",
         "scripts/wave3/metrics_server_smoke.py",
         "scripts/wave3/api_manager_smoke.py",
+        "scripts/wave5/new_listings_to_ai_bridge.py",
     ]
     for script in prereq_scripts:
         result = subprocess.run(
@@ -46,6 +47,6 @@ def test_shared_smoke_aggregator_builds_summary() -> None:
     assert payload["contract_version"] == "wave4.summary.v1"
     assert payload["component"] == "shared_smoke_summary"
     assert payload["status"] == "SMOKE_OK"
-    assert payload["component_count"] == 5
+    assert payload["component_count"] == 6
     assert payload["missing_count"] == 0
-    assert len(payload["components"]) == 5
+    assert len(payload["components"]) == 6
