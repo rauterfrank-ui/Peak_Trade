@@ -1,18 +1,25 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 
 def main() -> int:
+    run_id = "SMOKE-" + Path(__file__).stem
+    timestamp = datetime.now(timezone.utc).isoformat()
     out_dir = Path("out/ops/model_registry_loader_smoke")
     out_dir.mkdir(parents=True, exist_ok=True)
 
     fixture = Path("tests/fixtures/wave3/model_registry_loader_input.json")
     input_payload = json.loads(fixture.read_text(encoding="utf-8"))
     payload = {
+        "contract_version": "wave4.v1",
         "status": "SMOKE_OK",
         "component": "model_registry_loader",
+        "run_id": run_id,
+        "timestamp": timestamp,
+        "summary": "deterministic smoke artifact",
         "registry_name": input_payload.get("registry_name"),
         "model_count": len(input_payload.get("models", [])),
         "default_model": input_payload.get("default_model"),

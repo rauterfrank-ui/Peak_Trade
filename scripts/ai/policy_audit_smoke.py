@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 
 def main() -> int:
+    run_id = "SMOKE-" + Path(__file__).stem
+    timestamp = datetime.now(timezone.utc).isoformat()
     fixture = Path("tests/fixtures/ai/policy_audit_input.json")
     payload = json.loads(fixture.read_text(encoding="utf-8"))
 
@@ -12,8 +15,12 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     result = {
+        "contract_version": "wave4.v1",
         "status": "SMOKE_OK",
         "component": "ai_model_policy_audit_v1",
+        "run_id": run_id,
+        "timestamp": timestamp,
+        "summary": "deterministic smoke artifact",
         "mode": payload.get("mode"),
         "enabled_count": len(payload.get("enabled", [])),
         "blocked_count": len(payload.get("blocked", [])),
