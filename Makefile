@@ -197,3 +197,13 @@ wave2-ai-entrypoints-smoke:
 	@PYTHONPATH=. python3 src/ops/p50/ai_model_policy_cli_v1.py --help
 	@python3 scripts/ai/switch_layer_smoke.py
 
+ai-policy-audit-deterministic-smoke:
+	@PYTHONPATH=. python3 scripts/ai/policy_audit_smoke.py
+
+ai-switch-layer-deterministic-smoke:
+	@PYTHONPATH=. python3 scripts/ai/switch_layer_smoke.py
+
+wave2-ai-deterministic-smoke:
+	@PYTHONPATH=. python3 scripts/ai/policy_audit_smoke.py
+	@PYTHONPATH=. python3 scripts/ai/switch_layer_smoke.py
+
