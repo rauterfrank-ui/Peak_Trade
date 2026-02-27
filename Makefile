@@ -187,3 +187,13 @@ research-new-listings-smoke:
 research-new-listings-run-smoke:
 	@python3 -m src.research.new_listings run --help
 
+ai-policy-audit-smoke:
+	@PYTHONPATH=. python3 src/ops/p50/ai_model_policy_cli_v1.py --help
+
+ai-switch-layer-smoke:
+	@python3 scripts/ai/switch_layer_smoke.py
+
+wave2-ai-entrypoints-smoke:
+	@PYTHONPATH=. python3 src/ops/p50/ai_model_policy_cli_v1.py --help
+	@python3 scripts/ai/switch_layer_smoke.py
+
