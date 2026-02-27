@@ -38,3 +38,17 @@ Subcommands:
 ```bash
 make research-new-listings-smoke
 ```
+
+## Pass 2 – deterministischer Run-Smoketest
+Fixture:
+- `tests/fixtures/research/new_listings/config.json` (collectors: manual_seed)
+- `tests/fixtures/research/new_listings/manual_seed.json` (Beispieldaten)
+
+Ziel:
+- `run` nicht nur per `--help`, sondern mit testbarem Input/Output-Pfad ausführbar machen
+- Output deterministisch unter temporärem oder stabilem Verzeichnis prüfen
+
+```bash
+pytest tests/research/test_new_listings_run_smoke.py -v
+make research-new-listings-run-smoke
+```
