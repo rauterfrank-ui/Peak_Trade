@@ -178,3 +178,12 @@ lint:
 l3-docker:
 	@bash scripts/docker/run_l3_no_net.sh
 	@OUT_DIR=out/l3 CACHE_DIR=$${CACHE_DIR:-.cache/l3} IMAGE=$${IMAGE:-peaktrade-l3:latest} python3 scripts/ops/augment_run_manifest.py
+
+
+research-new-listings-smoke:
+	@python3 -m src.research.new_listings --help
+	@python3 -m src.research.new_listings run --help
+
+research-new-listings-run-smoke:
+	@python3 -m src.research.new_listings run --help
+
