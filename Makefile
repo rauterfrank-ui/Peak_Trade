@@ -242,3 +242,8 @@ wave4-aggregate-smoke-summary:
 wave5-new-listings-ai-bridge:
 	PYTHONPATH=. python3 scripts/wave5/new_listings_to_ai_bridge.py
 
+
+wave6-evidence-registry-hook:
+	$(MAKE) wave4-aggregate-smoke-summary
+	PYTHONPATH=. python3 scripts/wave6/write_evidence_registry_hook.py
+
