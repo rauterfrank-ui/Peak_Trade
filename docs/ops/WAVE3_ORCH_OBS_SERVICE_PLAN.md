@@ -26,3 +26,9 @@ Drei hochwirksame Kandidaten mit minimalen, reproduzierbaren Bedienoberflächen 
 - API Manager: `PYTHONPATH=. python3 scripts&#47;wave3&#47;api_manager_smoke.py`
 - Make: `make wave3-orch-obs-service-smoke`
 
+
+## Erreichte Aktivierung (Pass 2)
+- fixture-basierte deterministic smokes für alle drei Kandidaten
+- strukturierte JSON-Artefakte unter `out&#47;ops&#47;...`
+- zusätzlicher deterministic test layer
+

@@ -222,3 +222,9 @@ wave3-orch-obs-service-smoke:
 	PYTHONPATH=. python3 scripts/wave3/metrics_server_smoke.py
 	PYTHONPATH=. python3 scripts/wave3/api_manager_smoke.py
 
+
+wave3-deterministic-smokes:
+	PYTHONPATH=. python3 scripts/wave3/model_registry_loader_smoke.py
+	PYTHONPATH=. python3 scripts/wave3/metrics_server_smoke.py
+	PYTHONPATH=. python3 scripts/wave3/api_manager_smoke.py
+
