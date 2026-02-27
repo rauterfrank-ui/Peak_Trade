@@ -237,3 +237,7 @@ wave4-aggregate-smoke-summary:
 	PYTHONPATH=. python3 scripts/wave3/api_manager_smoke.py
 	PYTHONPATH=. python3 scripts/wave4/aggregate_smoke_contracts.py
 
+
+wave5-new-listings-ai-bridge:
+	PYTHONPATH=. python3 scripts/wave5/new_listings_to_ai_bridge.py
+
