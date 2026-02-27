@@ -6,14 +6,26 @@ import sys
 from pathlib import Path
 
 SCRIPTS = [
-    ("scripts/ai/policy_audit_smoke.py", Path("out/ops/policy_audit_smoke/policy_audit_smoke.json")),
-    ("scripts/ai/switch_layer_smoke.py", Path("out/ops/switch_layer_smoke/switch_layer_smoke.json")),
+    (
+        "scripts/ai/policy_audit_smoke.py",
+        Path("out/ops/policy_audit_smoke/policy_audit_smoke.json"),
+    ),
+    (
+        "scripts/ai/switch_layer_smoke.py",
+        Path("out/ops/switch_layer_smoke/switch_layer_smoke.json"),
+    ),
     (
         "scripts/wave3/model_registry_loader_smoke.py",
         Path("out/ops/model_registry_loader_smoke/model_registry_loader_smoke.json"),
     ),
-    ("scripts/wave3/metrics_server_smoke.py", Path("out/ops/metrics_server_smoke/metrics_server_smoke.json")),
-    ("scripts/wave3/api_manager_smoke.py", Path("out/ops/api_manager_smoke/api_manager_smoke.json")),
+    (
+        "scripts/wave3/metrics_server_smoke.py",
+        Path("out/ops/metrics_server_smoke/metrics_server_smoke.json"),
+    ),
+    (
+        "scripts/wave3/api_manager_smoke.py",
+        Path("out/ops/api_manager_smoke/api_manager_smoke.json"),
+    ),
 ]
 
 
