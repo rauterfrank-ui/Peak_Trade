@@ -34,3 +34,14 @@ Make:
 make wave3-orch-obs-service-smoke
 ```
 
+## Pass 2 – Deterministische Smoke-Runs
+Fixtures:
+- `tests&#47;fixtures&#47;wave3&#47;model_registry_loader_input.json`
+- `tests&#47;fixtures&#47;wave3&#47;metrics_server_input.json`
+- `tests&#47;fixtures&#47;wave3&#47;api_manager_input.json`
+
+Make:
+```bash
+make wave3-deterministic-smokes
+```
+
