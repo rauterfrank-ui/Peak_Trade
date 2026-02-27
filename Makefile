@@ -228,3 +228,12 @@ wave3-deterministic-smokes:
 	PYTHONPATH=. python3 scripts/wave3/metrics_server_smoke.py
 	PYTHONPATH=. python3 scripts/wave3/api_manager_smoke.py
 
+
+wave4-aggregate-smoke-summary:
+	PYTHONPATH=. python3 scripts/ai/policy_audit_smoke.py
+	PYTHONPATH=. python3 scripts/ai/switch_layer_smoke.py
+	PYTHONPATH=. python3 scripts/wave3/model_registry_loader_smoke.py
+	PYTHONPATH=. python3 scripts/wave3/metrics_server_smoke.py
+	PYTHONPATH=. python3 scripts/wave3/api_manager_smoke.py
+	PYTHONPATH=. python3 scripts/wave4/aggregate_smoke_contracts.py
+
