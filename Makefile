@@ -207,3 +207,18 @@ wave2-ai-deterministic-smoke:
 	@PYTHONPATH=. python3 scripts/ai/policy_audit_smoke.py
 	@PYTHONPATH=. python3 scripts/ai/switch_layer_smoke.py
 
+
+wave3-model-registry-loader-smoke:
+	PYTHONPATH=. python3 scripts/wave3/model_registry_loader_smoke.py
+
+wave3-metrics-server-smoke:
+	PYTHONPATH=. python3 scripts/wave3/metrics_server_smoke.py
+
+wave3-api-manager-smoke:
+	PYTHONPATH=. python3 scripts/wave3/api_manager_smoke.py
+
+wave3-orch-obs-service-smoke:
+	PYTHONPATH=. python3 scripts/wave3/model_registry_loader_smoke.py
+	PYTHONPATH=. python3 scripts/wave3/metrics_server_smoke.py
+	PYTHONPATH=. python3 scripts/wave3/api_manager_smoke.py
+
