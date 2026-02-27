@@ -20,7 +20,7 @@ Strategisch wichtige AI-Module mit reproduzierbarer Bedienoberfläche versehen.
 
 ## Pass 1 – Aktivierte Einstiege
 Policy Audit:
-- `PYTHONPATH=. python3 src/ops/p50/ai_model_policy_cli_v1.py --help`
+- `PYTHONPATH=. python3 src&#47;ops&#47;p50&#47;ai_model_policy_cli_v1.py --help`
 
 Switch Layer:
 - `python3 scripts/ai/switch_layer_smoke.py`
