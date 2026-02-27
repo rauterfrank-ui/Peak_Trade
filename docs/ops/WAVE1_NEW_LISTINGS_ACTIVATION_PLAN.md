@@ -7,7 +7,7 @@ Den aktuell isolierten Modulbaum `src/research/new_listings/` minimal operationa
 - funktionierender CLI-Entrypoint
 - Make-Target
 - Smoke-Test
-- Output in `out/research/new_listings/`
+- Output in `out&#47;research&#47;new_listings&#47;`
 - Runbook
 
 ## Nicht-Ziele

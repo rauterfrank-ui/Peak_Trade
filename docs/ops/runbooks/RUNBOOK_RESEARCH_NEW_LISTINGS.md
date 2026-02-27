@@ -14,7 +14,7 @@ Aktivierungswelle 1 – minimaler Entrypoint + Smoke-Test + Output-Kontrakt.
 ## Guardrails
 - offline / local-first
 - kein Live-/Order-Hook
-- reproduzierbarer Output unter `out/research/new_listings/`
+- reproduzierbarer Output unter `out&#47;research&#47;new_listings&#47;`
 
 ## Nächste Integrationsstufe
 - Registry/Evidence-Anbindung
