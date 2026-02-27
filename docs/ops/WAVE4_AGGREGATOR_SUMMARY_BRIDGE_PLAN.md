@@ -5,7 +5,7 @@ Mehrere Smoke-Artefakte in ein gemeinsames Summary-Artefakt überführen.
 
 ## Deliverables
 - lokaler Aggregator
-- Summary JSON unter `out/ops/shared_smoke_summary/shared_smoke_summary.json`
+- Summary JSON unter `out&#47;ops&#47;shared_smoke_summary&#47;shared_smoke_summary.json`
 - Smoke-Test
 - Make-Target
 - Runbook
