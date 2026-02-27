@@ -14,6 +14,7 @@ INPUTS = [
     ),
     ("metrics_server", Path("out/ops/metrics_server_smoke/metrics_server_smoke.json")),
     ("api_manager", Path("out/ops/api_manager_smoke/api_manager_smoke.json")),
+    ("new_listings_ai_bridge", Path("out/ops/new_listings_ai_bridge/new_listings_ai_bridge.json")),
 ]
 
 

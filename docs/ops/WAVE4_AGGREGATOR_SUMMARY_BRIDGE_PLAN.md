@@ -16,9 +16,10 @@ Mehrere Smoke-Artefakte in ein gemeinsames Summary-Artefakt überführen.
 - model_registry_loader_smoke.json
 - metrics_server_smoke.json
 - api_manager_smoke.json
+- new_listings_ai_bridge.json
 
 ## Output
 - gemeinsames Summary-Artefakt
-- Liste erkannter Komponenten
+- Liste erkannter Komponenten inkl. Research->AI Bridge
 - Contract-Version
 - Status-Übersicht
