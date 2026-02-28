@@ -33,6 +33,8 @@ jobs:
           mkdir -p reports/status
           if [ -n "${{ github.event.inputs.input_path }}" ] && [ -f "${{ github.event.inputs.input_path }}" ]; then
             python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input "${{ github.event.inputs.input_path }}" --input-format auto
+          elif [ -f "docs/ops/samples/execution_events_latest.jsonl" ]; then
+            python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input "docs/ops/samples/execution_events_latest.jsonl" --input-format jsonl
           elif [ -f "docs/ops/samples/execution_events_sample.jsonl" ]; then
             python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input "docs/ops/samples/execution_events_sample.jsonl" --input-format jsonl
           else
