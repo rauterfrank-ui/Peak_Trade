@@ -28,10 +28,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Download latest PR-BJ exec events artifact (best-effort)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p out/prbj
+          RUN_ID="$(gh run list --workflow prbj-testnet-exec-events.yml --branch main --limit 30 --json databaseId,status,conclusion --jq '.[] | select(.status=="completed" and .conclusion=="success") | .databaseId' | head -n 1)" || true
+          if [ -n "${RUN_ID}" ]; then
+            gh run download "${RUN_ID}" --dir out/prbj || true
+          fi
+
       - name: Produce execution evidence
         run: |
           mkdir -p reports/status
-          if [ -n "${{ github.event.inputs.input_path }}" ] && [ -f "${{ github.event.inputs.input_path }}" ]; then
+          PRBJ_EVENTS="$(find out/prbj -type f -name 'execution_events.jsonl' 2>/dev/null | head -n 1)"
+          if [ -n "${PRBJ_EVENTS}" ] && [ -f "${PRBJ_EVENTS}" ]; then
+            python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input "${PRBJ_EVENTS}" --input-format jsonl
+          elif [ -n "${{ github.event.inputs.input_path }}" ] && [ -f "${{ github.event.inputs.input_path }}" ]; then
             python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input "${{ github.event.inputs.input_path }}" --input-format auto
           elif [ -f "docs/ops/samples/execution_events_latest.jsonl" ]; then
             python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input "docs/ops/samples/execution_events_latest.jsonl" --input-format jsonl
