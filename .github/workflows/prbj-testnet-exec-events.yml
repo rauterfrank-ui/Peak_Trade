@@ -1,0 +1,70 @@
+name: PR-BJ / Testnet Exec Events Artifact
+
+on:
+  schedule:
+    - cron: "9 2 * * *"
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "Strategy profile (e.g. ma_crossover_small)"
+        required: false
+        default: "ma_crossover_small"
+      duration_min:
+        description: "Override duration minutes"
+        required: false
+        default: "2"
+      config_path:
+        description: "Optional config path"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prbj-testnet-exec-events-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  run-testnet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run testnet orchestrator (exec events enabled)
+        env:
+          PT_EXEC_EVENTS_ENABLED: "true"
+          PT_EXEC_MODE: "testnet"
+          PT_EXEC_EVENTS_JSONL_PATH: "out/ops/execution_events/execution_events.jsonl"
+          KRAKEN_TESTNET_API_KEY: ${{ secrets.KRAKEN_TESTNET_API_KEY }}
+          KRAKEN_TESTNET_API_SECRET: ${{ secrets.KRAKEN_TESTNET_API_SECRET }}
+        run: |
+          mkdir -p out/ops/execution_events
+          PROFILE="${{ github.event.inputs.profile || 'ma_crossover_small' }}"
+          DURATION="${{ github.event.inputs.duration_min || '2' }}"
+          CONFIG_PATH="${{ github.event.inputs.config_path || '' }}"
+          if [ -n "${KRAKEN_TESTNET_API_KEY:-}" ] && [ -n "${KRAKEN_TESTNET_API_SECRET:-}" ]; then
+            if [ -n "${CONFIG_PATH}" ] && [ -f "${CONFIG_PATH}" ]; then
+              python3 scripts/orchestrate_testnet_runs.py --config "${CONFIG_PATH}" --profile "${PROFILE}" --override-duration "${DURATION}"
+            else
+              python3 scripts/ops/create_testnet_config.py /tmp/config_testnet.toml
+              python3 scripts/orchestrate_testnet_runs.py --config /tmp/config_testnet.toml --profile "${PROFILE}" --override-duration "${DURATION}"
+            fi
+          else
+            echo "WARN: testnet secrets not available (expected on PRs). Writing placeholder exec events."
+            python3 -c "
+          from src.observability.execution_events import emit
+          emit(event_type='session_start', level='info', msg='placeholder (no secrets in PR)')
+          emit(event_type='session_end', level='info', msg='placeholder (no secrets in PR)')
+          "
+          fi
+          test -f out/ops/execution_events/execution_events.jsonl
+          wc -l out/ops/execution_events/execution_events.jsonl
+
+      - name: Upload exec events artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: testnet_execution_events_jsonl
+          path: out/ops/execution_events/execution_events.jsonl
+          retention-days: 14
