@@ -18,3 +18,9 @@ Manual dispatch (validation):
 
 CI validation sample:
 - gh workflow run prbg-execution-evidence.yml --ref main -f input_path=docs/ops/samples/execution_events_sample.jsonl
+
+## CI fallback behavior
+
+If no input_path is provided (or it does not exist), the workflow falls back to:
+- docs/ops/samples/execution_events_sample.jsonl (if present)
+- otherwise mock_profile=missing
