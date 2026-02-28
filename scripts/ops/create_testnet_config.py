@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Create a temp config with mode=testnet from config.toml. Used by CI workflows."""
+
 import re
 import sys
 

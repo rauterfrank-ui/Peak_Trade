@@ -44,11 +44,20 @@ jobs:
           PROFILE="${{ github.event.inputs.profile || 'ma_crossover_small' }}"
           DURATION="${{ github.event.inputs.duration_min || '2' }}"
           CONFIG_PATH="${{ github.event.inputs.config_path || '' }}"
-          if [ -n "${CONFIG_PATH}" ] && [ -f "${CONFIG_PATH}" ]; then
-            python3 scripts/orchestrate_testnet_runs.py --config "${CONFIG_PATH}" --profile "${PROFILE}" --override-duration "${DURATION}"
+          if [ -n "${KRAKEN_TESTNET_API_KEY:-}" ] && [ -n "${KRAKEN_TESTNET_API_SECRET:-}" ]; then
+            if [ -n "${CONFIG_PATH}" ] && [ -f "${CONFIG_PATH}" ]; then
+              python3 scripts/orchestrate_testnet_runs.py --config "${CONFIG_PATH}" --profile "${PROFILE}" --override-duration "${DURATION}"
+            else
+              python3 scripts/ops/create_testnet_config.py /tmp/config_testnet.toml
+              python3 scripts/orchestrate_testnet_runs.py --config /tmp/config_testnet.toml --profile "${PROFILE}" --override-duration "${DURATION}"
+            fi
           else
-            python3 scripts/ops/create_testnet_config.py /tmp/config_testnet.toml
-            python3 scripts/orchestrate_testnet_runs.py --config /tmp/config_testnet.toml --profile "${PROFILE}" --override-duration "${DURATION}"
+            echo "WARN: testnet secrets not available (expected on PRs). Writing placeholder exec events."
+            python3 -c "
+          from src.observability.execution_events import emit
+          emit(event_type='session_start', level='info', msg='placeholder (no secrets in PR)')
+          emit(event_type='session_end', level='info', msg='placeholder (no secrets in PR)')
+          "
           fi
           test -f out/ops/execution_events/execution_events.jsonl
           wc -l out/ops/execution_events/execution_events.jsonl
