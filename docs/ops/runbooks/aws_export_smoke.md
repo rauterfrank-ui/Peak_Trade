@@ -1,7 +1,7 @@
 # AWS Export Smoke (PR-CC)
 
 Workflow:
-- `.github/workflows/prcc-aws-export-smoke.yml`
+- ``.github&#47;workflows&#47;prcc-aws-export-smoke.yml``
 
 Purpose:
 - Read-only verification that the configured export target is reachable from GitHub Actions.
@@ -12,8 +12,8 @@ Inputs (Repo Secrets):
 - `PT_RCLONE_CONF_B64` (base64 rclone.conf)
 
 Outputs (Artifact):
-- `reports/status/aws_export_smoke.json`
-- `reports/status/aws_export_smoke.md`
+- ``reports&#47;status&#47;aws_export_smoke.json``
+- ``reports&#47;status&#47;aws_export_smoke.md``
 
 Interpretation:
 - `ok=true` + `listed_ok=true` means Actions can list the export prefix.
