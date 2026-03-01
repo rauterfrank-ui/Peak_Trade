@@ -108,6 +108,8 @@ def main() -> int:
 
     env = os.environ.copy()
     env["RCLONE_CONFIG"] = str(conf_path)
+    # Skip bucket existence check/creation (pt-gh-export-consumer has no s3:CreateBucket)
+    env["RCLONE_S3_NO_CHECK_BUCKET"] = "true"
 
     base = export_remote.rstrip("/")
     prefix = export_prefix.strip().strip("/")
