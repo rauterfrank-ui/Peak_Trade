@@ -1,0 +1,48 @@
+name: PR-CD / AWS Export Write Smoke (GATED)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_token:
+        description: "Type YES_WRITE_SMOKE to allow a write+delete smoke to the export target."
+        required: true
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prcd-aws-export-write-smoke-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  aws-export-write-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install rclone
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y rclone
+          rclone version
+
+      - name: Run write smoke (write+delete) — HARD GATED
+        env:
+          PT_EXPORT_REMOTE: ${{ secrets.PT_EXPORT_REMOTE }}
+          PT_EXPORT_PREFIX: ${{ secrets.PT_EXPORT_PREFIX }}
+          PT_RCLONE_CONF_B64: ${{ secrets.PT_RCLONE_CONF_B64 }}
+          PT_EXPORT_SMOKE_WRITE_ENABLED: ${{ vars.PT_EXPORT_SMOKE_WRITE_ENABLED }}
+          PT_EXPORT_SMOKE_CONFIRM_TOKEN: ${{ github.event.inputs.confirm_token }}
+        run: |
+          python3 scripts/ops/aws_export_write_smoke.py || true
+          test -f reports/status/aws_export_write_smoke.json
+          test -f reports/status/aws_export_write_smoke.md
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aws_export_write_smoke
+          path: reports/status/aws_export_write_smoke.*
+          retention-days: 14
