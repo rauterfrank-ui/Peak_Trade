@@ -147,6 +147,26 @@ def main() -> int:
 
     cp2 = _run(["rclone", "deletefile", target], env=env)
     if cp2.returncode != 0:
+        stderr = cp2.stderr or ""
+        # If IAM forbids DeleteObject, treat as warning (write-path verified; cleanup via lifecycle)
+        if "AccessDenied" in stderr or "access denied" in stderr.lower():
+            res = WriteSmokeResult(
+                ok=True,
+                reason="DELETE_DENIED_WARNING",
+                export_remote=export_remote,
+                export_prefix=export_prefix,
+                target_path=target,
+                wrote=True,
+                deleted=False,
+                timestamp_utc=ts,
+                notes=[
+                    "Delete denied (likely missing s3:DeleteObject). Write-path verified.",
+                    "Recommended: configure S3 lifecycle to expire _smoke/aws_export_write_smoke/* quickly (e.g. 1 day).",
+                ]
+                + (cp2.stderr.splitlines() + cp2.stdout.splitlines())[:10],
+            )
+            _write_reports(res)
+            return 0
         res = WriteSmokeResult(
             ok=False,
             reason="RCLONE_DELETE_FAILED",

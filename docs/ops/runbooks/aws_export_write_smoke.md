@@ -20,3 +20,14 @@ Writes:
 Outputs (Artifact):
 - ``reports&#47;status&#47;aws_export_write_smoke.json``
 - ``reports&#47;status&#47;aws_export_write_smoke.md``
+
+## Delete permissions
+
+If the IAM principal can write but cannot delete (missing s3:DeleteObject), the write smoke reports:
+- reason: DELETE_DENIED_WARNING
+- ok: true, wrote: true, deleted: false
+
+Recommendation:
+- Configure an S3 lifecycle rule to expire
+  ``<export_prefix>/_smoke/aws_export_write_smoke/*`` quickly (e.g. 1 day).
+
