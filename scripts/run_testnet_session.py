@@ -97,6 +97,22 @@ def _emit_exec_event_safe(**kwargs: Any) -> None:
         pass
 
 
+def _maybe_emit_heartbeat(now_ts: float, last_ts: float, throttle_s: int, symbol: str) -> float:
+    """Emit market_tick event if throttle elapsed. Returns last_emit_ts."""
+    if now_ts - last_ts >= throttle_s:
+        _emit_exec_event_safe(
+            event_type="market_tick",
+            level="info",
+            msg=f"tick symbol={symbol}",
+            symbol=symbol,
+            exchange="kraken",
+            is_anomaly=False,
+            is_error=False,
+        )
+        return now_ts
+    return last_ts
+
+
 # =============================================================================
 # Logging Setup
 # =============================================================================
@@ -577,8 +593,15 @@ class TestnetSession:
             f"poll_interval={self._session_config.poll_interval_seconds}s"
         )
 
+        throttle_s = int(os.getenv("PT_EXEC_EVENTS_HEARTBEAT_SECS", "30"))
+        last_heartbeat_ts = 0.0
+        symbol = self._session_config.symbol
+
         try:
             while not self._shutdown_requested:
+                last_heartbeat_ts = _maybe_emit_heartbeat(
+                    time.time(), last_heartbeat_ts, throttle_s, symbol
+                )
                 try:
                     self.step_once()
                 except Exception as e:
@@ -615,8 +638,15 @@ class TestnetSession:
 
         self._logger.info(f"[TESTNET SESSION] Starte fuer {minutes} Minuten...")
 
+        throttle_s = int(os.getenv("PT_EXEC_EVENTS_HEARTBEAT_SECS", "30"))
+        last_heartbeat_ts = 0.0
+        symbol = self._session_config.symbol
+
         try:
             while time.time() < end_time and not self._shutdown_requested:
+                last_heartbeat_ts = _maybe_emit_heartbeat(
+                    time.time(), last_heartbeat_ts, throttle_s, symbol
+                )
                 results = self.step_once()
                 if results:
                     all_results.extend(results)
