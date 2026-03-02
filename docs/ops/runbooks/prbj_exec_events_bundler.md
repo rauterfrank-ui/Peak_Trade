@@ -7,8 +7,8 @@ Problem
 Solution
 - Bundle the last N successful PR-BJ artifacts (`execution_events.jsonl`) into a single JSONL.
 - Write the bundle to:
-  - `out/ops/prbj_bundle_latest/execution_events_bundled.jsonl` (untracked)
-  - optionally `docs/ops/samples/execution_events_latest.jsonl` (tracked) so PR-BG can prefer it in its fallback chain.
+  - ``out&#47;ops&#47;prbj_bundle_latest&#47;execution_events_bundled.jsonl`` (untracked)
+  - optionally ``docs&#47;ops&#47;samples&#47;execution_events_latest.jsonl`` (tracked) so PR-BG can prefer it in its fallback chain.
 
 Safety
 - No trading actions are performed.
@@ -17,8 +17,8 @@ Safety
 Local usage
 - Requires `gh` auth.
 - Run:
-  - `python3 scripts/ops/bundle_prbj_exec_events.py --runs 20 --take 10 --write-repo-latest`
+  - ``python3 scripts&#47;ops&#47;bundle_prbj_exec_events.py --runs 20 --take 10 --write-repo-latest``
 
 Expected
-- `docs/ops/samples/execution_events_latest.jsonl` grows to >=100 lines once enough PR-BJ successful runs exist.
+- ``docs&#47;ops&#47;samples&#47;execution_events_latest.jsonl`` grows to >=100 lines once enough PR-BJ successful runs exist.
 - PRBG sample_size increases accordingly; PRBI warning `INSUFFICIENT_SAMPLE_SIZE` can clear without changing strategies.
