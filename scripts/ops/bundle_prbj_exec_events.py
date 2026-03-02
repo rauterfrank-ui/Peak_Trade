@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import shutil
 import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterable, List, Optional, Tuple
+from typing import Iterable, List, Optional
 
 
 def _run(cmd: List[str], *, check: bool = True) -> subprocess.CompletedProcess[str]:
