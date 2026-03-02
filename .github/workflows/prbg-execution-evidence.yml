@@ -15,6 +15,7 @@ on:
         default: ""
 
 permissions:
+  actions: read
   contents: read
 
 concurrency:
@@ -36,6 +37,16 @@ jobs:
           RUN_ID="$(gh run list --workflow prbj-testnet-exec-events.yml --branch main --limit 30 --json databaseId,status,conclusion --jq '.[] | select(.status=="completed" and .conclusion=="success") | .databaseId' | head -n 1)" || true
           if [ -n "${RUN_ID}" ]; then
             gh run download "${RUN_ID}" --dir out/prbj || true
+          fi
+
+      - name: Bundle last PR-BJ exec-events (best-effort)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/ops/bundle_prbj_exec_events.py --workflow prbj-testnet-exec-events.yml --branch main --runs 20 --take 10 --out-dir out/ops/prbj_bundle_latest --write-repo-latest || true
+          if [ -f out/ops/prbj_bundle_latest/execution_events_bundled.jsonl ]; then
+            mkdir -p out/prbj
+            cp out/ops/prbj_bundle_latest/execution_events_bundled.jsonl out/prbj/execution_events.jsonl
           fi
 
       - name: Produce execution evidence
