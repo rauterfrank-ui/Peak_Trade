@@ -49,6 +49,16 @@ jobs:
             cp out/ops/prbj_bundle_latest/execution_events_bundled.jsonl out/prbj/execution_events.jsonl
           fi
 
+      - name: PR-BM / Bundler diagnostics (always)
+        if: always()
+        run: |
+          echo "=== out/ops/prbj_bundle_latest ==="
+          ls -la out/ops/prbj_bundle_latest || true
+          find out/ops/prbj_bundle_latest -maxdepth 3 -type f -print || true
+          echo "=== docs/ops/samples/execution_events_latest.jsonl ==="
+          ls -la docs/ops/samples/execution_events_latest.jsonl || true
+          wc -l docs/ops/samples/execution_events_latest.jsonl 2>/dev/null || true
+
       - name: Produce execution evidence
         run: |
           mkdir -p reports/status
@@ -67,9 +77,15 @@ jobs:
             python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --mock-profile "$MOCK_PROFILE"
           fi
 
+      - name: Copy bundler outputs for artifact (best-effort)
+        run: |
+          mkdir -p reports/status
+          cp out/ops/prbj_bundle_latest/bundle_meta.json reports/status/ 2>/dev/null || true
+          cp out/ops/prbj_bundle_latest/execution_events_bundled.jsonl reports/status/ 2>/dev/null || true
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: execution_evidence
-          path: reports/status/execution_evidence.*
+          path: reports/status/
           retention-days: 14
