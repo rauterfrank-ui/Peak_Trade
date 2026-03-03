@@ -2,7 +2,7 @@ name: PR-BI / Live Pilot Scorecard
 
 on:
   schedule:
-    - cron: "23 4 * * *"
+    - cron: "39 2 * * *"
   workflow_dispatch: {}
 
 permissions:

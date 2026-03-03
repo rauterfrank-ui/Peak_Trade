@@ -2,7 +2,7 @@ name: PR-BG / Execution Evidence Producer
 
 on:
   schedule:
-    - cron: "11 4 * * *"
+    - cron: "19 2 * * *"
   workflow_dispatch:
     inputs:
       mock_profile:

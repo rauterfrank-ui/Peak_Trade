@@ -2,7 +2,7 @@ name: PR-BC / Stability Gate (PR-J + PR-K)
 
 on:
   schedule:
-    - cron: "17 3 * * *"
+    - cron: "57 2 * * *"
   workflow_dispatch: {}
 
 permissions:
