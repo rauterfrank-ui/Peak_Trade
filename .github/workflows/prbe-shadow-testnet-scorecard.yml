@@ -2,7 +2,7 @@ name: PR-BE / Shadow-Testnet Scorecard
 
 on:
   schedule:
-    - cron: "57 3 * * *"
+    - cron: "29 2 * * *"
   workflow_dispatch: {}
 
 permissions:
