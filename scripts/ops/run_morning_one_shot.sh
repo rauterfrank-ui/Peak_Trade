@@ -20,6 +20,11 @@ else
   echo "SKIP: scripts/ops/run_end_to_end_verification.sh missing"
 fi
 
+echo "1b) Pull PRBG latest execution evidence (best-effort)"
+if [ -x scripts/ops/pull_latest_prbg_execution_evidence.sh ]; then
+  ./scripts/ops/pull_latest_prbg_execution_evidence.sh || true
+fi
+
 echo "2) Pull PRBI latest + ops_status verdict"
 if [ -x scripts/ops/pull_latest_prbi_scorecard.sh ]; then
   ./scripts/ops/pull_latest_prbi_scorecard.sh || true
@@ -32,11 +37,52 @@ fi
 
 echo "ops_status_exit=${OPS_EXIT}" > "${OUT}/ops_status_exit.txt"
 
+PRBI_JSON="$(find out/ops/prbi_latest -type f -name live_pilot_scorecard.json 2>/dev/null | head -n 1 || true)"
+PRBI_DECISION="__MISSING__"
+PRBI_SCORE="__MISSING__"
+if test -n "${PRBI_JSON}"; then
+  PRBI_DECISION="$(python3 - <<PY2
+import json
+from pathlib import Path
+p=Path("${PRBI_JSON}")
+o=json.loads(p.read_text(encoding="utf-8"))
+print(o.get("decision","__MISSING__"))
+PY2
+  )"
+  PRBI_SCORE="$(python3 - <<PY2
+import json
+from pathlib import Path
+p=Path("${PRBI_JSON}")
+o=json.loads(p.read_text(encoding="utf-8"))
+print(o.get("score","__MISSING__"))
+PY2
+  )"
+fi
+
+PRBG_EVID_JSON="$(find out/ops/prbg_latest -type f -name execution_evidence.json 2>/dev/null | head -n 1 || true)"
+if test -z "${PRBG_EVID_JSON}"; then
+  PRBG_EVID_JSON="$(find out/ops -maxdepth 5 -type f -name execution_evidence.json 2>/dev/null | xargs ls -t 2>/dev/null | head -n 1 || true)"
+fi
+PRBG_SAMPLE_SIZE="__MISSING__"
+if test -n "${PRBG_EVID_JSON}"; then
+  PRBG_SAMPLE_SIZE="$(python3 - <<PY2
+import json
+from pathlib import Path
+p=Path("${PRBG_EVID_JSON}")
+o=json.loads(p.read_text(encoding="utf-8"))
+print(o.get("sample_size","__MISSING__"))
+PY2
+  )"
+fi
+
 DONE="out/ops/MORNING_ONE_SHOT_DONE_${TS}.txt"
 cat > "$DONE" <<EOF
 DONE: morning_one_shot
 ts_utc: ${TS}
 ops_status_exit: ${OPS_EXIT}
+prbi_decision: ${PRBI_DECISION}
+prbi_score: ${PRBI_SCORE}
+prbg_sample_size: ${PRBG_SAMPLE_SIZE}
 evidence_dir: ${OUT}
 EOF
 
