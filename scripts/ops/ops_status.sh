@@ -31,7 +31,12 @@ PY
 
 echo ""
 echo "== PR-BI (Live Pilot Scorecard) =="
-PRBI_JSON_CANDIDATE="$(find out/ops -maxdepth 4 -type f -name live_pilot_scorecard.json 2>/dev/null | head -n 1 || true)"
+PRBI_JSON_CANDIDATE=""
+if test -f "out/ops/prbi_latest/live_pilot_scorecard/live_pilot_scorecard.json"; then
+  PRBI_JSON_CANDIDATE="out/ops/prbi_latest/live_pilot_scorecard/live_pilot_scorecard.json"
+else
+  PRBI_JSON_CANDIDATE="$(find out/ops -type f -name live_pilot_scorecard.json -print0 2>/dev/null | xargs -0 ls -t 2>/dev/null | head -n 1 || true)"
+fi
 if test -z "${PRBI_JSON_CANDIDATE}"; then
   echo "PR-BI: SKIP (no local live_pilot_scorecard.json found)."
   echo "  Hint: run PR-BI and download artifacts, then re-run ops_status:"
