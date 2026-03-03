@@ -9,7 +9,7 @@ Ein einziger Befehl, der morgens:
 - DONE token + sha schreibt (lokal unter out/ops/, untracked)
 
 Command
-- `./scripts/ops/run_morning_one_shot.sh`
+- ``.&#47;scripts&#47;ops&#47;run_morning_one_shot.sh``
 
 Exit Codes
 - 0: ops_status OK (inkl. PRBI gate wenn vorhanden)
