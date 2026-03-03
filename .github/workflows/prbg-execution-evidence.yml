@@ -59,22 +59,47 @@ jobs:
           ls -la docs/ops/samples/execution_events_latest.jsonl || true
           wc -l docs/ops/samples/execution_events_latest.jsonl 2>/dev/null || true
 
+      - name: PR-BM / Select bundled input (always)
+        if: always()
+        run: |
+          set -euo pipefail
+          CAND1="out/ops/prbj_bundle_latest/execution_events_bundled.jsonl"
+          CAND2="docs/ops/samples/execution_events_latest.jsonl"
+          CAND3="docs/ops/samples/execution_events_sample.jsonl"
+          if [ -f "$CAND1" ]; then
+            echo "INPUT_PATH=$CAND1" >> "$GITHUB_ENV"
+            echo "selected INPUT_PATH=$CAND1"
+          elif [ -f "$CAND2" ]; then
+            echo "INPUT_PATH=$CAND2" >> "$GITHUB_ENV"
+            echo "selected INPUT_PATH=$CAND2"
+          elif [ -f "$CAND3" ]; then
+            echo "INPUT_PATH=$CAND3" >> "$GITHUB_ENV"
+            echo "selected INPUT_PATH=$CAND3"
+          else
+            echo "INPUT_PATH=__MISSING__" >> "$GITHUB_ENV"
+            echo "selected INPUT_PATH=__MISSING__"
+          fi
+
       - name: Produce execution evidence
         run: |
           mkdir -p reports/status
-          PRBJ_EVENTS="$(find out/prbj -type f -name 'execution_events.jsonl' 2>/dev/null | head -n 1)"
-          if [ -n "${PRBJ_EVENTS}" ] && [ -f "${PRBJ_EVENTS}" ]; then
-            python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input "${PRBJ_EVENTS}" --input-format jsonl
+          if [ -n "${INPUT_PATH:-}" ] && [ "${INPUT_PATH}" != "__MISSING__" ] && [ -f "${INPUT_PATH}" ]; then
+            python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input "${INPUT_PATH}" --input-format jsonl
           elif [ -n "${{ github.event.inputs.input_path }}" ] && [ -f "${{ github.event.inputs.input_path }}" ]; then
             python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input "${{ github.event.inputs.input_path }}" --input-format auto
-          elif [ -f "docs/ops/samples/execution_events_latest.jsonl" ]; then
-            python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input "docs/ops/samples/execution_events_latest.jsonl" --input-format jsonl
-          elif [ -f "docs/ops/samples/execution_events_sample.jsonl" ]; then
-            python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input "docs/ops/samples/execution_events_sample.jsonl" --input-format jsonl
           else
-            MOCK_PROFILE="${{ github.event.inputs.mock_profile }}"
-            [ -z "$MOCK_PROFILE" ] && MOCK_PROFILE="missing"
-            python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --mock-profile "$MOCK_PROFILE"
+            PRBJ_EVENTS="$(find out/prbj -type f -name 'execution_events.jsonl' 2>/dev/null | head -n 1)"
+            if [ -n "${PRBJ_EVENTS}" ] && [ -f "${PRBJ_EVENTS}" ]; then
+              python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input "${PRBJ_EVENTS}" --input-format jsonl
+            elif [ -f "docs/ops/samples/execution_events_latest.jsonl" ]; then
+              python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input "docs/ops/samples/execution_events_latest.jsonl" --input-format jsonl
+            elif [ -f "docs/ops/samples/execution_events_sample.jsonl" ]; then
+              python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --input "docs/ops/samples/execution_events_sample.jsonl" --input-format jsonl
+            else
+              MOCK_PROFILE="${{ github.event.inputs.mock_profile }}"
+              [ -z "$MOCK_PROFILE" ] && MOCK_PROFILE="missing"
+              python3 scripts/ci/execution_evidence_producer.py --out-dir reports/status --mock-profile "$MOCK_PROFILE"
+            fi
           fi
 
       - name: Copy bundler outputs for artifact (best-effort)
@@ -82,6 +107,12 @@ jobs:
           mkdir -p reports/status
           cp out/ops/prbj_bundle_latest/bundle_meta.json reports/status/ 2>/dev/null || true
           cp out/ops/prbj_bundle_latest/execution_events_bundled.jsonl reports/status/ 2>/dev/null || true
+
+      - name: Write input_path_used marker (always)
+        if: always()
+        run: |
+          mkdir -p reports/status || true
+          echo "${INPUT_PATH:-__UNSET__}" > reports/status/input_path_used.txt
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
