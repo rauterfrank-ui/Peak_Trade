@@ -30,4 +30,35 @@ print("PRK_YAML_OK")
 PY
 
 echo ""
+echo "== PR-BI (Live Pilot Scorecard) =="
+PRBI_JSON_CANDIDATE="$(find out/ops -maxdepth 4 -type f -name live_pilot_scorecard.json 2>/dev/null | head -n 1 || true)"
+if test -z "${PRBI_JSON_CANDIDATE}"; then
+  echo "PR-BI: SKIP (no local live_pilot_scorecard.json found)."
+  echo "  Hint: run PR-BI and download artifacts, then re-run ops_status:"
+  echo "    gh workflow run prbi-live-pilot-scorecard.yml --ref main"
+  echo "    gh run list --workflow prbi-live-pilot-scorecard.yml --branch main --limit 5"
+else
+  echo "PR-BI json: ${PRBI_JSON_CANDIDATE}"
+  python3 - <<PY2
+import json
+from pathlib import Path
+p=Path("${PRBI_JSON_CANDIDATE}")
+o=json.loads(p.read_text(encoding="utf-8"))
+dec=o.get("decision")
+score=o.get("score")
+hb=o.get("hard_blocks") or []
+warn=o.get("warnings") or []
+print("decision:", dec)
+print("score:", score)
+print("hard_blocks:", hb)
+print("warnings:", warn)
+if dec != "READY_FOR_LIVE_PILOT":
+    raise SystemExit(2)
+if hb:
+    raise SystemExit(2)
+PY2
+  echo "PR-BI: READY_FOR_LIVE_PILOT ✓"
+fi
+
+echo ""
 echo "DONE"
