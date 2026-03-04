@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+LABEL="com.peaktrade.operator_all"
+PLIST_PATH="${HOME}/Library/LaunchAgents/${LABEL}.plist"
+LOG_DIR="${REPO_ROOT}/out/ops/launchd"
+STDOUT_LOG="${LOG_DIR}/operator_all.stdout.log"
+STDERR_LOG="${LOG_DIR}/operator_all.stderr.log"
+
+START_HOUR="${START_HOUR:-7}"
+START_MINUTE="${START_MINUTE:-15}"
+
+RUN_E2E="${RUN_E2E:-true}"
+RUN_ONE_SHOT="${RUN_ONE_SHOT:-true}"
+RUN_REGISTRY="${RUN_REGISTRY:-true}"
+STRICT_ALERTS="${STRICT_ALERTS:-true}"
+
+mkdir -p "${LOG_DIR}"
+
+cat > "${PLIST_PATH}" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>${LABEL}</string>
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>/bin/bash</string>
+      <string>-lc</string>
+      <string>cd "${REPO_ROOT}" &amp;&amp; RUN_E2E=${RUN_E2E} RUN_ONE_SHOT=${RUN_ONE_SHOT} RUN_REGISTRY=${RUN_REGISTRY} STRICT_ALERTS=${STRICT_ALERTS} ./scripts/ops/operator_all.sh</string>
+    </array>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+      <key>Hour</key>
+      <integer>${START_HOUR}</integer>
+      <key>Minute</key>
+      <integer>${START_MINUTE}</integer>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>${STDOUT_LOG}</string>
+    <key>StandardErrorPath</key>
+    <string>${STDERR_LOG}</string>
+
+    <key>WorkingDirectory</key>
+    <string>${REPO_ROOT}</string>
+  </dict>
+</plist>
+PLIST
+
+launchctl unload "${PLIST_PATH}" >/dev/null 2>&1 || true
+launchctl load "${PLIST_PATH}"
+
+echo "OK"
+echo "PLIST=${PLIST_PATH}"
+echo "LOG_DIR=${LOG_DIR}"
+echo "NEXT: tail -f ${STDOUT_LOG}"
