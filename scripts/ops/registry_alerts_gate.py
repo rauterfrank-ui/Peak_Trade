@@ -2,8 +2,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any, Dict, List
+
+# Ensure repo root on path when run as script
+_repo = Path(__file__).resolve().parent.parent.parent
+if str(_repo) not in sys.path:
+    sys.path.insert(0, str(_repo))
 
 from scripts.ops.registry_trend_report import compute_alerts
 
