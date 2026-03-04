@@ -2,21 +2,21 @@
 
 Ziel
 - Lokale Trend-/Regression-Auswertung aus der DONE-Registry (JSONL).
-- Outputs sind **untracked** unter `out/ops/registry/reports/`.
+- Outputs sind **untracked** unter ``out&#47;ops&#47;registry&#47;reports&#47;``.
 
 Inputs
-- `out/ops/registry/morning_one_shot_done_registry.jsonl`
+- ``out&#47;ops&#47;registry&#47;morning_one_shot_done_registry.jsonl``
 
 Command
-- `python3 scripts/ops/registry_trend_report.py`
+- ``python3 scripts&#47;ops&#47;registry_trend_report.py``
 
 Optionen
 - `--limit 30` (default)
-- `--outdir out/ops/registry/reports`
+- ``--outdir out&#47;ops&#47;registry&#47;reports``
 
 Outputs
-- `out/ops/registry/reports/trend_report_latest.md`
-- `out/ops/registry/reports/trend_report_latest.json`
+- ``out&#47;ops&#47;registry&#47;reports&#47;trend_report_latest.md``
+- ``out&#47;ops&#47;registry&#47;reports&#47;trend_report_latest.json``
 
 Alerts (latest row)
 - OPS_STATUS_FAIL
