@@ -126,5 +126,10 @@ print("WROTE", p)
 print("WROTE", p2)
 PY
 
+echo "3) Append DONE to local registry (best-effort, untracked)"
+if [ -f "${DONE}" ] && [ -x scripts/ops/append_done_registry.py ]; then
+  python3 scripts/ops/append_done_registry.py --done "${DONE}" --sha256-ok true >/dev/null 2>&1 || true
+fi
+
 echo "DONE=${DONE}"
 exit "${OPS_EXIT}"
