@@ -64,6 +64,9 @@ if test -z "${PRBG_EVID_JSON}"; then
   PRBG_EVID_JSON="$(find out/ops -maxdepth 5 -type f -name execution_evidence.json 2>/dev/null | xargs ls -t 2>/dev/null | head -n 1 || true)"
 fi
 PRBG_SAMPLE_SIZE="__MISSING__"
+PRBG_STATUS="__MISSING__"
+PRBG_ANOMALY_COUNT="__MISSING__"
+PRBG_ERROR_COUNT="__MISSING__"
 if test -n "${PRBG_EVID_JSON}"; then
   PRBG_SAMPLE_SIZE="$(python3 - <<PY2
 import json
@@ -71,6 +74,30 @@ from pathlib import Path
 p=Path("${PRBG_EVID_JSON}")
 o=json.loads(p.read_text(encoding="utf-8"))
 print(o.get("sample_size","__MISSING__"))
+PY2
+  )"
+  PRBG_STATUS="$(python3 - <<PY2
+import json
+from pathlib import Path
+p=Path("${PRBG_EVID_JSON}")
+o=json.loads(p.read_text(encoding="utf-8"))
+print(o.get("status","__MISSING__"))
+PY2
+  )"
+  PRBG_ANOMALY_COUNT="$(python3 - <<PY2
+import json
+from pathlib import Path
+p=Path("${PRBG_EVID_JSON}")
+o=json.loads(p.read_text(encoding="utf-8"))
+print(o.get("anomaly_count","__MISSING__"))
+PY2
+  )"
+  PRBG_ERROR_COUNT="$(python3 - <<PY2
+import json
+from pathlib import Path
+p=Path("${PRBG_EVID_JSON}")
+o=json.loads(p.read_text(encoding="utf-8"))
+print(o.get("error_count","__MISSING__"))
 PY2
   )"
 fi
@@ -82,7 +109,10 @@ ts_utc: ${TS}
 ops_status_exit: ${OPS_EXIT}
 prbi_decision: ${PRBI_DECISION}
 prbi_score: ${PRBI_SCORE}
+prbg_status: ${PRBG_STATUS}
 prbg_sample_size: ${PRBG_SAMPLE_SIZE}
+prbg_anomaly_count: ${PRBG_ANOMALY_COUNT}
+prbg_error_count: ${PRBG_ERROR_COUNT}
 evidence_dir: ${OUT}
 EOF
 
