@@ -136,8 +136,17 @@ def main() -> int:
         default="out/ops/registry/reports",
         help="Output directory (untracked)",
     )
+    ap.add_argument(
+        "--days",
+        type=int,
+        default=None,
+        help="Compatibility alias for --limit (number of most-recent DONE entries to include).",
+    )
     ap.add_argument("--limit", type=int, default=30, help="Tail window size")
+
     args = ap.parse_args()
+    if args.days is not None:
+        args.limit = args.days
 
     reg = Path(args.registry)
     rows = _read_jsonl(reg)
