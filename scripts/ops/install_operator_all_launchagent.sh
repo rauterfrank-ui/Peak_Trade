@@ -55,10 +55,23 @@ cat > "${PLIST_PATH}" <<PLIST
 </plist>
 PLIST
 
+# --- PeakTrade: robust LaunchAgent label extraction (PlistBuddy) ---
+_plist_label_from_path() {
+  local plist_path="$1"
+  if [ -z "${plist_path}" ] || [ ! -f "${plist_path}" ]; then
+    return 1
+  fi
+  /usr/libexec/PlistBuddy -c "Print :Label" "${plist_path}" 2>/dev/null | tr -d '\r' | head -n 1
+}
+# --- /PeakTrade ---
+
 launchctl unload "${PLIST_PATH}" >/dev/null 2>&1 || true
 launchctl load "${PLIST_PATH}"
+
+LA_LABEL="$(_plist_label_from_path "${PLIST_PATH}")" || true
 
 echo "OK"
 echo "PLIST=${PLIST_PATH}"
 echo "LOG_DIR=${LOG_DIR}"
+echo "LA_LABEL=${LA_LABEL:-$LABEL}"
 echo "NEXT: tail -f ${STDOUT_LOG}"
