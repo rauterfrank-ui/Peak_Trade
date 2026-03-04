@@ -5,7 +5,7 @@ Ziel
 - Logs und Evidence bleiben lokal unter `out/ops/`.
 
 Install (empfohlen)
-- `START_HOUR=7 START_MINUTE=15 STRICT_ALERTS=true scripts/ops/install_operator_all_launchagent.sh`
+- `START_HOUR=7 START_MINUTE=15 STRICT_ALERTS=true scripts&#47;ops&#47;install_operator_all_launchagent.sh`
 
 Defaults
 - Uhrzeit: 07:15 (lokale Zeit)
@@ -16,14 +16,14 @@ Defaults
 - `RunAtLoad=true` (läuft zusätzlich beim Login/Load)
 
 Logs
-- `out/ops/launchd/operator_all.stdout.log`
-- `out/ops/launchd/operator_all.stderr.log`
+- `out&#47;ops&#47;launchd&#47;operator_all.stdout.log`
+- `out&#47;ops&#47;launchd&#47;operator_all.stderr.log`
 
 Status
 - `launchctl list | rg -n "com\.peaktrade\.operator_all" -S`
 
 Uninstall
-- `scripts/ops/uninstall_operator_all_launchagent.sh`
+- `scripts&#47;ops&#47;uninstall_operator_all_launchagent.sh`
 
 Hinweis
 - Diese Runbooks/Plists sind **nur lokal relevant**. `out/` bleibt untracked.
