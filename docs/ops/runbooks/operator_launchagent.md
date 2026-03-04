@@ -27,3 +27,4 @@ Uninstall
 
 Hinweis
 - Diese Runbooks/Plists sind **nur lokal relevant**. `out/` bleibt untracked.
+- Das Label wird robust aus der Plist gelesen (PlistBuddy: `Print :Label`).
