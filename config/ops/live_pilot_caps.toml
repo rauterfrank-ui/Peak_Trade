@@ -1,0 +1,14 @@
+# Live Pilot Caps (Safety)
+# This file is a scaffold; it does not enable trading by itself.
+
+[pilot_caps]
+max_notional_per_order = 25.0
+max_orders_per_session = 2
+max_daily_notional = 100.0
+
+[risk_caps]
+max_drawdown_pilot_pct = 0.5
+kill_switch_required = true
+
+[run]
+dry_run_first = true
