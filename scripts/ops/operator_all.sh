@@ -14,6 +14,10 @@ echo "RUN_ONE_SHOT=${RUN_ONE_SHOT}"
 echo "RUN_REGISTRY=${RUN_REGISTRY}"
 echo "STRICT_ALERTS=${STRICT_ALERTS}"
 
+if [ -x "./scripts/ops/rotate_launchd_logs.sh" ]; then
+  ./scripts/ops/rotate_launchd_logs.sh || true
+fi
+
 if [ "${RUN_E2E}" = "true" ] && [ -x "./scripts/ops/run_end_to_end_verification.sh" ]; then
   ./scripts/ops/run_end_to_end_verification.sh
 fi
