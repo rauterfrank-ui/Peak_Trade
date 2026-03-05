@@ -29,7 +29,10 @@ Hinweis
 - Diese Runbooks/Plists sind **nur lokal relevant**. `out/` bleibt untracked.
 - Das Label wird robust aus der Plist gelesen (PlistBuddy: `Print :Label`).
 
-
 Profile modes
 - Full: `MODE=full` (default)
 - Registry-only strict: `MODE=registry_only STRICT_ALERTS=true`
+
+Convenience wrappers
+- Full: `scripts&#47;ops&#47;install_operator_all_launchagent_full.sh`
+- Registry-only strict: `scripts&#47;ops&#47;install_operator_all_launchagent_registry_only.sh`
