@@ -11,10 +11,20 @@ STDERR_LOG="${LOG_DIR}/operator_all.stderr.log"
 START_HOUR="${START_HOUR:-7}"
 START_MINUTE="${START_MINUTE:-15}"
 
-RUN_E2E="${RUN_E2E:-true}"
-RUN_ONE_SHOT="${RUN_ONE_SHOT:-true}"
-RUN_REGISTRY="${RUN_REGISTRY:-true}"
 STRICT_ALERTS="${STRICT_ALERTS:-true}"
+
+MODE="${MODE:-full}"  # full | registry_only
+if [ "${MODE}" = "registry_only" ]; then
+  RUN_E2E="false"
+  RUN_ONE_SHOT="false"
+  RUN_REGISTRY="true"
+  STRICT_ALERTS="${STRICT_ALERTS:-true}"
+else
+  RUN_E2E="${RUN_E2E:-true}"
+  RUN_ONE_SHOT="${RUN_ONE_SHOT:-true}"
+  RUN_REGISTRY="${RUN_REGISTRY:-true}"
+  STRICT_ALERTS="${STRICT_ALERTS:-true}"
+fi
 
 mkdir -p "${LOG_DIR}"
 

@@ -28,3 +28,8 @@ Uninstall
 Hinweis
 - Diese Runbooks/Plists sind **nur lokal relevant**. `out/` bleibt untracked.
 - Das Label wird robust aus der Plist gelesen (PlistBuddy: `Print :Label`).
+
+
+Profile modes
+- Full: `MODE=full` (default)
+- Registry-only strict: `MODE=registry_only STRICT_ALERTS=true`
