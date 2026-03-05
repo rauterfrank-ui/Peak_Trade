@@ -33,6 +33,9 @@ fi
 
 mkdir -p "${LOG_DIR}"
 
+# PATH für LaunchAgent (kein Login-Shell-Profile): uv, Homebrew, pyenv, Cargo
+LA_ENV_PATH="${LA_ENV_PATH:-/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:${HOME}/.local/bin:${HOME}/.pyenv/shims:${HOME}/.pyenv/bin:${HOME}/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin}"
+
 cat > "${PLIST_PATH}" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -43,6 +46,8 @@ cat > "${PLIST_PATH}" <<PLIST
 
     <key>ProgramArguments</key>
     <array>
+      <string>/usr/bin/env</string>
+      <string>PATH=${LA_ENV_PATH}</string>
       <string>/bin/bash</string>
       <string>-lc</string>
       <string>cd "${REPO_ROOT}" &amp;&amp; RUN_E2E=${RUN_E2E} RUN_ONE_SHOT=${RUN_ONE_SHOT} RUN_REGISTRY=${RUN_REGISTRY} STRICT_ALERTS=${STRICT_ALERTS} ./scripts/ops/operator_all.sh</string>
