@@ -17,7 +17,7 @@ out&#47;ops&#47;pilot_ready_snapshot_&lt;UTC_TS&gt;&#47;
 - `snapshot_summary.md` — Menschenlesbare Zusammenfassung
 - `DONE_<UTC_TS>.txt` — Done-Token
 - `DONE_<UTC_TS>.txt.sha256` — SHA256 des Done-Tokens
-- `inputs/` — Kopien der gefundenen Evidence-Inputs (prbi, prbg, prbe, prbj, live_pilot_caps)
+- `inputs&#47;` — Kopien der gefundenen Evidence-Inputs (prbi, prbg, prbe, prbj, live_pilot_caps)
 
 ## STRICT=0 vs STRICT=1
 - **STRICT=0** (Default): Fehlende erwartete Inputs werden als `__MISSING__` im Summary vermerkt, der Build läuft weiter.
