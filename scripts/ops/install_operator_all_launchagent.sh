@@ -4,6 +4,11 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 LABEL="com.peaktrade.operator_all"
 PLIST_PATH="${HOME}/Library/LaunchAgents/${LABEL}.plist"
+
+# Ensure a predictable PATH for launchd (minimal env by default)
+# Add common locations for Homebrew + pyenv + uv + system tools
+LA_ENV_PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${HOME}/.local/bin:${HOME}/.cargo/bin:${HOME}/.pyenv/shims:${HOME}/.pyenv/bin"
+
 LOG_DIR="${REPO_ROOT}/out/ops/launchd"
 STDOUT_LOG="${LOG_DIR}/operator_all.stdout.log"
 STDERR_LOG="${LOG_DIR}/operator_all.stderr.log"
@@ -61,6 +66,12 @@ cat > "${PLIST_PATH}" <<PLIST
 
     <key>WorkingDirectory</key>
     <string>${REPO_ROOT}</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>PATH</key>
+      <string>${LA_ENV_PATH}</string>
+    </dict>
   </dict>
 </plist>
 PLIST

@@ -36,3 +36,7 @@ Profile modes
 Convenience wrappers
 - Full: `scripts&#47;ops&#47;install_operator_all_launchagent_full.sh`
 - Registry-only strict: `scripts&#47;ops&#47;install_operator_all_launchagent_registry_only.sh`
+
+## LaunchAgent environment (PATH)
+
+The LaunchAgent runs with a minimal environment. The install script sets an explicit PATH so `uv`, `python3`, and other CLI tools resolve reliably.
