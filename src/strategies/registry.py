@@ -77,7 +77,7 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
         cls=MACrossoverStrategy,
         config_section="strategy.ma_crossover",
         description="Moving Average Crossover (Trend-Following)",
-        allowed_environments=("backtest", "paper", "testnet", "live"),
+        allowed_environments=("backtest", "offline_backtest", "paper", "testnet", "live"),
     ),
     "rsi_reversion": StrategySpec(
         key="rsi_reversion",
