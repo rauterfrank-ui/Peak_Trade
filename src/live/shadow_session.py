@@ -136,6 +136,7 @@ class ShadowPaperSessionMetrics:
 
 ALLOWED_ENVIRONMENT_MODES = {
     TradingEnvironment.PAPER,
+    TradingEnvironment.TESTNET,  # Real testnet session path (Phase 64)
     # TradingEnvironment.SHADOW,  # Kann später hinzugefügt werden
 }
 
