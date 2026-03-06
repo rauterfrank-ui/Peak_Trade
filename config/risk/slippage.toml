@@ -1,0 +1,19 @@
+# Slippage model for backtest/paper/testnet (Phase B)
+# Deterministic. Same inputs -> same outputs.
+
+[slippage]
+# Default slippage in basis points (1 bp = 0.01%)
+default_bps = 5
+
+# Cap: max slippage in bps (safety)
+cap_bps = 50
+
+# Per-side defaults (optional overrides)
+buy_bps = 5
+sell_bps = 5
+
+[slippage.formula]
+# fill_price = market_price * (1 ± slippage_bps/10000)
+# BUY: + (pay more)
+# SELL: - (receive less)
+# slippage_bps = min(requested_bps, cap_bps)
