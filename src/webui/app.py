@@ -77,7 +77,7 @@ from typing import Any, Dict, List, Optional
 
 import toml
 from fastapi import FastAPI, HTTPException, Query, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 
 logger = logging.getLogger(__name__)
@@ -104,6 +104,7 @@ from .r_and_d_api import (
     compute_best_metrics,
     parse_and_validate_run_ids,
 )
+from .ops_cockpit import render_ops_cockpit_html, render_ops_cockpit_json
 from .alerts_api import (
     AlertSummary,
     AlertStats,
@@ -1745,3 +1746,15 @@ def load_filtered_sessions(
 
 # Für uvicorn: `uvicorn src.webui.app:app --reload`
 app = create_app()
+
+
+@app.get("/ops", response_class=HTMLResponse)
+def ops_cockpit() -> HTMLResponse:
+    """Read-only Ops Cockpit from local artifacts."""
+    return HTMLResponse(render_ops_cockpit_html(render_ops_cockpit_json()))
+
+
+@app.get("/api/ops-cockpit", response_class=JSONResponse)
+def ops_cockpit_api() -> JSONResponse:
+    """Read-only Ops Cockpit data as JSON."""
+    return JSONResponse(render_ops_cockpit_json())
