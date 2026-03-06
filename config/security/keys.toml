@@ -1,0 +1,14 @@
+[key_roles]
+default_role = "bot"
+
+[roles.bot]
+description = "Trading-only bot key. Treasury operations must be blocked."
+allow_withdrawals = false
+allow_deposit_address_requests = false
+allow_internal_transfers = false
+
+[roles.treasury]
+description = "Treasury-only operational key. Use outside normal bot runtime."
+allow_withdrawals = true
+allow_deposit_address_requests = true
+allow_internal_transfers = true
