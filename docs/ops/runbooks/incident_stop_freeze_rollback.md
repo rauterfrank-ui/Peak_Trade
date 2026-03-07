@@ -78,3 +78,8 @@ Alle geprüften Dateien sollten mit `OK` bestätigt werden.
 
 ## Hinweis
 Runtime-Evidence unter `out&#47;ops&#47;` wird nicht von Git getrackt. Incident-Snapshots sind lokale Artefakte und sollten bei Bedarf manuell archiviert oder exportiert werden.
+
+## Truth-first reference
+- Canonical AI layer truth: `docs&#47;governance&#47;ai&#47;AI_LAYER_CANONICAL_SPEC_V1.md`
+- Latest truth model artifacts: `out&#47;ops&#47;peak_trade_truth_model_*`
+- Latest AI layer matrix artifacts: `out&#47;ops&#47;ai_layer_model_matrix_v1_*`

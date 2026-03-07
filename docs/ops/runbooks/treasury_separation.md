@@ -46,3 +46,8 @@ Secrets niemals im Repo speichern. Keys nur via GitHub Actions Secrets, lokale K
 - [ ] Treasury-Key separat, nur für manuelle Treasury-Ops
 - [ ] `PT_KEY_ROLE` im Bot-Runtime nicht auf `treasury` gesetzt
 - [ ] Gate-Tests grün: `pytest tests&#47;ops&#47;test_treasury_separation_gate.py`
+
+## Truth-first reference
+- Canonical AI layer truth: `docs&#47;governance&#47;ai&#47;AI_LAYER_CANONICAL_SPEC_V1.md`
+- Latest truth model artifacts: `out&#47;ops&#47;peak_trade_truth_model_*`
+- Latest AI layer matrix artifacts: `out&#47;ops&#47;ai_layer_model_matrix_v1_*`
