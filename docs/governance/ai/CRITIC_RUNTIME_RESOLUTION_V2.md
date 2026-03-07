@@ -24,6 +24,6 @@ It does not change runtime behavior.
 - exact block/downgrade semantics, only if explicitly evidenced
 
 ## Canonical Reading Order
-- `docs/governance/ai/CRITIC_PROPOSER_BOUNDARY_SPEC_V1.md`
-- `docs/governance/ai/RUNTIME_UNKNOWN_RESOLUTION_V1.md`
-- `out/ops/critic_runtime_resolution_v2_*`
+- `docs&#47;governance&#47;ai&#47;CRITIC_PROPOSER_BOUNDARY_SPEC_V1.md`
+- `docs&#47;governance&#47;ai&#47;RUNTIME_UNKNOWN_RESOLUTION_V1.md`
+- `out&#47;ops&#47;critic_runtime_resolution_v2_*`
