@@ -112,7 +112,7 @@ def build_truth_state(truth_docs: List[Dict[str, object]]) -> Dict[str, object]:
     }
 
 
-def build_ai_boundary_state(truth_docs: List[Dict[str, object]]) -> Dict[str, object]:
+def build_ai_boundary_state() -> Dict[str, object]:
     return {
         "proposer_authority": "advisory_only",
         "critic_authority": "supervisory_only",
@@ -122,7 +122,7 @@ def build_ai_boundary_state(truth_docs: List[Dict[str, object]]) -> Dict[str, ob
     }
 
 
-def build_runtime_unknown_state(truth_docs: List[Dict[str, object]]) -> Dict[str, object]:
+def build_runtime_unknown_state() -> Dict[str, object]:
     return {
         "critic_runtime_path": "partial",
         "proposer_runtime_path": "partial_or_unknown",
@@ -144,8 +144,8 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
             "treasury_separation": "enforced",
         },
         "truth_state": build_truth_state(truth_docs),
-        "ai_boundary_state": build_ai_boundary_state(truth_docs),
-        "runtime_unknown_state": build_runtime_unknown_state(truth_docs),
+        "ai_boundary_state": build_ai_boundary_state(),
+        "runtime_unknown_state": build_runtime_unknown_state(),
         "canonical_sources": truth_docs,
     }
 
@@ -190,28 +190,28 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
   <div class="grid">
     <div class="card">
       <h2>Truth State</h2>
-      <p><strong>Truth-first positioning:</strong> {escape(str(truth_state['truth_first_positioning']))}</p>
-      <p><strong>Available truth docs:</strong> {escape(str(truth_state['available_count']))}</p>
-      <p><strong>Unavailable truth docs:</strong> {escape(str(truth_state['unavailable_count']))}</p>
-      <p><strong>Final trade authority:</strong> {escape(str(truth_state['final_trade_authority']))}</p>
-      <p><strong>Live autonomy:</strong> {escape(str(truth_state['live_autonomy']))}</p>
+      <p><strong>Truth-first positioning:</strong> {escape(str(truth_state["truth_first_positioning"]))}</p>
+      <p><strong>Available truth docs:</strong> {escape(str(truth_state["available_count"]))}</p>
+      <p><strong>Unavailable truth docs:</strong> {escape(str(truth_state["unavailable_count"]))}</p>
+      <p><strong>Final trade authority:</strong> {escape(str(truth_state["final_trade_authority"]))}</p>
+      <p><strong>Live autonomy:</strong> {escape(str(truth_state["live_autonomy"]))}</p>
     </div>
 
     <div class="card">
       <h2>AI Boundary State</h2>
-      <p><strong>Proposer:</strong> {escape(str(boundary['proposer_authority']))}</p>
-      <p><strong>Critic:</strong> {escape(str(boundary['critic_authority']))}</p>
-      <p><strong>Provider binding authority:</strong> {escape(str(boundary['provider_binding_authority']))}</p>
-      <p><strong>Execution boundary:</strong> {escape(str(boundary['execution_boundary']))}</p>
-      <p><strong>Closest to trade:</strong> {escape(str(boundary['closest_to_trade']))}</p>
+      <p><strong>Proposer:</strong> {escape(str(boundary["proposer_authority"]))}</p>
+      <p><strong>Critic:</strong> {escape(str(boundary["critic_authority"]))}</p>
+      <p><strong>Provider binding authority:</strong> {escape(str(boundary["provider_binding_authority"]))}</p>
+      <p><strong>Execution boundary:</strong> {escape(str(boundary["execution_boundary"]))}</p>
+      <p><strong>Closest to trade:</strong> {escape(str(boundary["closest_to_trade"]))}</p>
     </div>
 
     <div class="card">
       <h2>Runtime Unknown State</h2>
-      <p><strong>Critic runtime path:</strong> {escape(str(runtime['critic_runtime_path']))}</p>
-      <p><strong>Proposer runtime path:</strong> {escape(str(runtime['proposer_runtime_path']))}</p>
-      <p><strong>Provider/model runtime slots:</strong> {escape(str(runtime['provider_model_runtime_slots']))}</p>
-      <p><strong>Execution-adjacent contracts:</strong> {escape(str(runtime['execution_adjacent_contracts']))}</p>
+      <p><strong>Critic runtime path:</strong> {escape(str(runtime["critic_runtime_path"]))}</p>
+      <p><strong>Proposer runtime path:</strong> {escape(str(runtime["proposer_runtime_path"]))}</p>
+      <p><strong>Provider/model runtime slots:</strong> {escape(str(runtime["provider_model_runtime_slots"]))}</p>
+      <p><strong>Execution-adjacent contracts:</strong> {escape(str(runtime["execution_adjacent_contracts"]))}</p>
     </div>
   </div>
 

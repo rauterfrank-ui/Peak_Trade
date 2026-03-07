@@ -18,7 +18,9 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
 def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:
     docs_dir = tmp_path / "docs" / "governance" / "ai"
     docs_dir.mkdir(parents=True, exist_ok=True)
-    (docs_dir / "CRITIC_RUNTIME_RESOLUTION_V2.md").write_text("# Critic Runtime Resolution v2\n", encoding="utf-8")
+    (docs_dir / "CRITIC_RUNTIME_RESOLUTION_V2.md").write_text(
+        "# Critic Runtime Resolution v2\n", encoding="utf-8"
+    )
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert "Ops Cockpit v2 — Truth-First" in html
     assert "AI Boundary State" in html
