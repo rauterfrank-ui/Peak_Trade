@@ -57,6 +57,12 @@ TRUTH_DOCS: List[TruthDoc] = [
         path="docs/governance/ai/CRITIC_RUNTIME_RESOLUTION_V2.md",
         summary="Critic is runtime-near, supervisory, and not final trade authority.",
     ),
+    TruthDoc(
+        key="proposer_runtime_resolution",
+        title="Proposer Runtime Resolution v1",
+        path="docs/governance/ai/PROPOSER_RUNTIME_RESOLUTION_V1.md",
+        summary="Proposer remains advisory and weaker in runtime evidence than critic.",
+    ),
 ]
 
 
@@ -100,6 +106,17 @@ def discover_truth_docs(repo_root: Path | None = None) -> List[Dict[str, object]
     return docs
 
 
+def _coverage_label(available_count: int, total_count: int) -> str:
+    if total_count <= 0:
+        return "no_truth_sources"
+    ratio = available_count / total_count
+    if ratio >= 0.95:
+        return "high"
+    if ratio >= 0.60:
+        return "partial"
+    return "low"
+
+
 def build_truth_state(truth_docs: List[Dict[str, object]]) -> Dict[str, object]:
     available = [d for d in truth_docs if d["exists"]]
     unavailable = [d for d in truth_docs if not d["exists"]]
@@ -107,6 +124,7 @@ def build_truth_state(truth_docs: List[Dict[str, object]]) -> Dict[str, object]:
         "available_count": len(available),
         "unavailable_count": len(unavailable),
         "truth_first_positioning": "enabled",
+        "truth_coverage": _coverage_label(len(available), len(truth_docs)),
         "final_trade_authority": "not_evidenced_as_model_final",
         "live_autonomy": "not_evidenced_as_self_improving_live",
     }
@@ -135,7 +153,7 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
     truth_docs = discover_truth_docs(repo_root=repo_root)
     return {
         "system_state": {
-            "mode": "truth_first_ops_cockpit_v2",
+            "mode": "truth_first_ops_cockpit_v2_1",
             "execution_model": "guarded_execution",
         },
         "guard_state": {
@@ -153,10 +171,11 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
 def _render_doc_card(doc: Dict[str, object]) -> str:
     preview_items = "".join(f"<li>{escape(str(line))}</li>" for line in doc["preview"])
     preview_html = f"<ul>{preview_items}</ul>" if preview_items else "<p>No preview available.</p>"
+    status_badge = "Available" if doc["exists"] else "Unavailable"
     return (
         '<div class="card">'
         f"<h3>{escape(str(doc['title']))}</h3>"
-        f"<p><strong>Status:</strong> {escape(str(doc['status']))}</p>"
+        f"<p><strong>Status:</strong> {escape(status_badge)}</p>"
         f"<p><strong>Path:</strong> <code>{escape(str(doc['path']))}</code></p>"
         f"<p>{escape(str(doc['summary']))}</p>"
         f"{preview_html}"
@@ -175,17 +194,23 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Peak_Trade Ops Cockpit v2</title>
+  <title>Peak_Trade Ops Cockpit v2.1</title>
   <style>
     body {{ font-family: Arial, sans-serif; margin: 24px; }}
     .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }}
     .card {{ border: 1px solid #ddd; border-radius: 12px; padding: 16px; }}
+    .hero {{ border: 1px solid #ddd; border-radius: 12px; padding: 20px; margin-bottom: 20px; }}
     code {{ background: #f5f5f5; padding: 2px 4px; border-radius: 4px; }}
   </style>
 </head>
 <body>
-  <h1>Ops Cockpit v2 — Truth-First</h1>
-  <p>Read-only operations cockpit aligned to the current canonical truth model.</p>
+  <div class="hero">
+    <h1>Ops Cockpit v2.1 — Truth-First</h1>
+    <p>Read-only operations cockpit aligned to the current canonical truth model.</p>
+    <p><strong>Truth coverage:</strong> {escape(str(truth_state["truth_coverage"]))}</p>
+    <p><strong>Execution model:</strong> {escape(str(payload["system_state"]["execution_model"]))}</p>
+    <p><strong>Final trade authority:</strong> {escape(str(truth_state["final_trade_authority"]))}</p>
+  </div>
 
   <div class="grid">
     <div class="card">
@@ -193,7 +218,6 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
       <p><strong>Truth-first positioning:</strong> {escape(str(truth_state["truth_first_positioning"]))}</p>
       <p><strong>Available truth docs:</strong> {escape(str(truth_state["available_count"]))}</p>
       <p><strong>Unavailable truth docs:</strong> {escape(str(truth_state["unavailable_count"]))}</p>
-      <p><strong>Final trade authority:</strong> {escape(str(truth_state["final_trade_authority"]))}</p>
       <p><strong>Live autonomy:</strong> {escape(str(truth_state["live_autonomy"]))}</p>
     </div>
 
