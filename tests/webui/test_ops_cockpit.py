@@ -1,40 +1,31 @@
-"""Tests for Ops Cockpit read-only UI."""
+from pathlib import Path
 
-from __future__ import annotations
-
-from fastapi.testclient import TestClient
-
-from src.webui.app import app
-from src.webui.ops_cockpit import load_ops_cockpit_data
+from src.webui.ops_cockpit import build_ops_cockpit_payload, render_ops_cockpit_html
 
 
-def test_ops_cockpit_data_loads_without_crashing() -> None:
-    data = load_ops_cockpit_data()
-    assert "system_state" in data
-    assert "guard_state" in data
-    assert "latest_evidence" in data
-    assert "latest_testnet_pilot_status" in data
-    assert "incidents_abort" in data
-    assert "readiness_routing_health" in data
+def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert "truth_state" in payload
+    assert "ai_boundary_state" in payload
+    assert "runtime_unknown_state" in payload
+    assert payload["truth_state"]["truth_first_positioning"] == "enabled"
 
 
-def test_ops_route_responds() -> None:
-    client = TestClient(app)
-    response = client.get("/ops")
-    assert response.status_code == 200
-    assert "Peak_Trade Ops Cockpit" in response.text
+def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "CRITIC_RUNTIME_RESOLUTION_V2.md").write_text("# Critic Runtime Resolution v2\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Ops Cockpit v2 — Truth-First" in html
+    assert "AI Boundary State" in html
+    assert "Runtime Unknown State" in html
 
 
-def test_ops_api_route_responds() -> None:
-    client = TestClient(app)
-    response = client.get("/api/ops-cockpit")
-    assert response.status_code == 200
-    payload = response.json()
-    assert "system_state" in payload
-    assert "latest_evidence" in payload
-
-
-def test_missing_artifacts_do_not_break_response() -> None:
-    client = TestClient(app)
-    response = client.get("/api/ops-cockpit")
-    assert response.status_code == 200
+def test_missing_docs_are_safe(tmp_path: Path) -> None:
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["truth_state"]["available_count"] == 0
+    assert payload["truth_state"]["unavailable_count"] >= 1

@@ -1,218 +1,234 @@
-"""Peak_Trade Ops Cockpit — read-only artifact discovery and rendering."""
-
 from __future__ import annotations
 
-import html
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
+from html import escape
 from pathlib import Path
-from typing import Any
-
-
-OPS_ROOT = Path("out/ops")
+from typing import Dict, List, Optional
 
 
 @dataclass(frozen=True)
-class ArtifactRef:
-    label: str
+class TruthDoc:
+    key: str
+    title: str
     path: str
-    exists: bool
+    summary: str
 
 
-def _latest_dir(pattern: str) -> Path | None:
-    matches = [p for p in OPS_ROOT.glob(pattern) if p.is_dir()]
-    if not matches:
+TRUTH_DOCS: List[TruthDoc] = [
+    TruthDoc(
+        key="ai_layer_canonical_spec",
+        title="AI Layer Canonical Spec v1",
+        path="docs/governance/ai/AI_LAYER_CANONICAL_SPEC_V1.md",
+        summary="Canonical AI layer truth and authority boundaries.",
+    ),
+    TruthDoc(
+        key="ai_unknown_reduction",
+        title="AI Unknown Reduction v1",
+        path="docs/governance/ai/AI_UNKNOWN_REDUCTION_V1.md",
+        summary="Clarifies unresolved layer/runtime slots without invention.",
+    ),
+    TruthDoc(
+        key="critic_proposer_boundary",
+        title="Critic / Proposer Boundary Spec v1",
+        path="docs/governance/ai/CRITIC_PROPOSER_BOUNDARY_SPEC_V1.md",
+        summary="Separates advisory proposer from supervisory critic.",
+    ),
+    TruthDoc(
+        key="provider_model_binding",
+        title="Provider / Model Binding Spec v1",
+        path="docs/governance/ai/PROVIDER_MODEL_BINDING_SPEC_V1.md",
+        summary="Binding references do not imply runtime or execution authority.",
+    ),
+    TruthDoc(
+        key="execution_adjacent_boundary",
+        title="Execution-Adjacent AI Boundary Spec v1",
+        path="docs/governance/ai/EXECUTION_ADJACENT_AI_BOUNDARY_SPEC_V1.md",
+        summary="Separates AI-adjacent, execution-adjacent, and execution-authoritative.",
+    ),
+    TruthDoc(
+        key="runtime_unknown_resolution",
+        title="Runtime Unknown Resolution v1",
+        path="docs/governance/ai/RUNTIME_UNKNOWN_RESOLUTION_V1.md",
+        summary="Repo-near runtime unknown consolidation.",
+    ),
+    TruthDoc(
+        key="critic_runtime_resolution",
+        title="Critic Runtime Resolution v2",
+        path="docs/governance/ai/CRITIC_RUNTIME_RESOLUTION_V2.md",
+        summary="Critic is runtime-near, supervisory, and not final trade authority.",
+    ),
+]
+
+
+def _read_text_if_exists(path: Path) -> Optional[str]:
+    if not path.exists():
         return None
-    return sorted(matches)[-1]
+    return path.read_text(encoding="utf-8", errors="ignore")
 
 
-def _latest_incident_snapshot_dir() -> Path | None:
-    """Latest incident snapshot dir, excluding incident_stop."""
-    matches = [
-        p
-        for p in OPS_ROOT.glob("incident_*")
-        if p.is_dir() and not p.name.startswith("incident_stop")
-    ]
-    if not matches:
-        return None
-    return sorted(matches)[-1]
+def _first_nonempty_lines(text: str, limit: int = 6) -> List[str]:
+    out: List[str] = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        out.append(stripped)
+        if len(out) >= limit:
+            break
+    return out
 
 
-def _latest_file(root: Path | None, glob_pattern: str) -> Path | None:
-    if root is None:
-        return None
-    matches = sorted(root.glob(glob_pattern))
-    return matches[-1] if matches else None
+def discover_truth_docs(repo_root: Path | None = None) -> List[Dict[str, object]]:
+    root = repo_root or Path.cwd()
+    docs: List[Dict[str, object]] = []
+    for doc in TRUTH_DOCS:
+        full_path = root / doc.path
+        text = _read_text_if_exists(full_path)
+        exists = text is not None
+        preview = _first_nonempty_lines(text) if text else []
+        docs.append(
+            {
+                "key": doc.key,
+                "title": doc.title,
+                "path": doc.path,
+                "summary": doc.summary,
+                "exists": exists,
+                "preview": preview,
+                "status": "available" if exists else "unavailable",
+            }
+        )
+    return docs
 
 
-def _safe_read_text(path: Path | None, limit: int = 4000) -> str:
-    if path is None or not path.exists() or not path.is_file():
-        return ""
-    try:
-        return path.read_text(encoding="utf-8", errors="ignore")[:limit]
-    except OSError:
-        return ""
-
-
-def _artifact_ref(label: str, path: Path | None) -> ArtifactRef:
-    if path is None:
-        return ArtifactRef(label=label, path="", exists=False)
-    return ArtifactRef(label=label, path=str(path), exists=path.exists())
-
-
-def load_ops_cockpit_data() -> dict[str, Any]:
-    guarded_exec_dir = _latest_dir("guarded_pilot_execution_*")
-    guarded_run_dir = _latest_dir("guarded_pilot_run_*")
-    final_go_dir = _latest_dir("final_pilot_go_no_go_*")
-    testnet_impl_dir = _latest_dir("testnet_real_session_impl_*")
-    incident_stop_dir = _latest_dir("incident_stop_*_abort_pilot")
-    pilot_snapshot_dir = _latest_dir("pilot_ready_snapshot_*")
-    incident_snapshot_dir = _latest_incident_snapshot_dir()
-
-    guarded_exec_summary = _safe_read_text(
-        _latest_file(guarded_exec_dir, "*first_guarded_pilot_execution_summary.md")
-    )
-    guarded_handoff = _safe_read_text(
-        _latest_file(guarded_exec_dir, "*first_guarded_pilot_execution_handoff.md")
-    )
-    final_go_summary = _safe_read_text(
-        _latest_file(final_go_dir, "*final_pilot_go_no_go_corrected.md")
-    )
-    testnet_impl_summary = _safe_read_text(_latest_file(testnet_impl_dir, "*impl_summary.md"))
-    testnet_run_excerpt = _safe_read_text(
-        (testnet_impl_dir / "05_testnet_run.txt") if testnet_impl_dir else None
-    )
-    incident_stop_excerpt = _safe_read_text(_latest_file(incident_stop_dir, "*.md"))
-    hash_pilot = _safe_read_text(
-        (pilot_snapshot_dir / "SHA256SUMS.txt") if pilot_snapshot_dir else None
-    )
-    hash_incident = _safe_read_text(
-        (incident_snapshot_dir / "SHA256SUMS.txt") if incident_snapshot_dir else None
-    )
-
-    current_status = "UNKNOWN"
-    if "GO WITH GUARDS" in guarded_exec_summary or "GO WITH GUARDS" in final_go_summary:
-        current_status = "GO WITH GUARDS"
-
+def build_truth_state(truth_docs: List[Dict[str, object]]) -> Dict[str, object]:
+    available = [d for d in truth_docs if d["exists"]]
+    unavailable = [d for d in truth_docs if not d["exists"]]
     return {
-        "system_state": {
-            "status": current_status,
-            "latest_guarded_execution_dir": str(guarded_exec_dir) if guarded_exec_dir else "",
-            "latest_guarded_run_dir": str(guarded_run_dir) if guarded_run_dir else "",
-            "latest_final_go_dir": str(final_go_dir) if final_go_dir else "",
-        },
-        "guard_state": {
-            "no_trade_baseline": True,
-            "deny_by_default_expected": True,
-            "treasury_separation_expected": True,
-            "guarded_execution_summary_present": bool(guarded_exec_summary),
-        },
-        "latest_evidence": {
-            "pilot_snapshot": asdict(_artifact_ref("pilot_snapshot", pilot_snapshot_dir)),
-            "incident_snapshot": asdict(_artifact_ref("incident_snapshot", incident_snapshot_dir)),
-            "incident_stop": asdict(_artifact_ref("incident_stop", incident_stop_dir)),
-            "final_go": asdict(_artifact_ref("final_go", final_go_dir)),
-            "testnet_impl": asdict(_artifact_ref("testnet_impl", testnet_impl_dir)),
-        },
-        "latest_testnet_pilot_status": {
-            "final_go_summary_excerpt": final_go_summary,
-            "testnet_impl_summary_excerpt": testnet_impl_summary,
-            "testnet_run_excerpt": testnet_run_excerpt,
-        },
-        "incidents_abort": {
-            "incident_stop_excerpt": incident_stop_excerpt,
-            "guarded_handoff_excerpt": guarded_handoff,
-        },
-        "readiness_routing_health": {
-            "guarded_exec_summary_excerpt": guarded_exec_summary,
-            "pilot_hash_excerpt": hash_pilot,
-            "incident_hash_excerpt": hash_incident,
-        },
+        "available_count": len(available),
+        "unavailable_count": len(unavailable),
+        "truth_first_positioning": "enabled",
+        "final_trade_authority": "not_evidenced_as_model_final",
+        "live_autonomy": "not_evidenced_as_self_improving_live",
     }
 
 
-def render_ops_cockpit_html(data: dict[str, Any]) -> str:
-    def esc(value: Any) -> str:
-        return html.escape(str(value))
-
-    def card(title: str, body: str) -> str:
-        return (
-            f"<section style='border:1px solid #ddd;padding:12px;border-radius:8px;margin:12px 0;'>"
-            f"<h2>{esc(title)}</h2>{body}</section>"
-        )
-
-    def pre_block(text: str) -> str:
-        if not text:
-            return "<p>Not available.</p>"
-        return f"<pre style='white-space:pre-wrap;overflow:auto;'>{esc(text)}</pre>"
-
-    system = data["system_state"]
-    guards = data["guard_state"]
-    evidence = data["latest_evidence"]
-    status = data["latest_testnet_pilot_status"]
-    incidents = data["incidents_abort"]
-    readiness = data["readiness_routing_health"]
-
-    evidence_rows = "".join(
-        f"<tr><td>{esc(k)}</td><td>{esc(v['path'])}</td><td>{esc(v['exists'])}</td></tr>"
-        for k, v in evidence.items()
-    )
-
-    system_body = (
-        "<ul>"
-        f"<li>Status: {esc(system['status'])}</li>"
-        f"<li>Latest guarded execution dir: {esc(system['latest_guarded_execution_dir'])}</li>"
-        f"<li>Latest guarded run dir: {esc(system['latest_guarded_run_dir'])}</li>"
-        f"<li>Latest final go dir: {esc(system['latest_final_go_dir'])}</li>"
-        "</ul>"
-    )
-    guards_body = (
-        "<ul>"
-        f"<li>NO_TRADE baseline expected: {esc(guards['no_trade_baseline'])}</li>"
-        f"<li>deny-by-default expected: {esc(guards['deny_by_default_expected'])}</li>"
-        f"<li>treasury separation expected: {esc(guards['treasury_separation_expected'])}</li>"
-        f"<li>guarded execution summary present: {esc(guards['guarded_execution_summary_present'])}</li>"
-        "</ul>"
-    )
-    evidence_body = (
-        "<table border='1' cellpadding='6' cellspacing='0'>"
-        "<tr><th>Artifact</th><th>Path</th><th>Exists</th></tr>"
-        f"{evidence_rows}"
-        "</table>"
-    )
-    status_body = pre_block(
-        status["final_go_summary_excerpt"]
-        + "\n\n"
-        + status["testnet_impl_summary_excerpt"]
-        + "\n\n"
-        + status["testnet_run_excerpt"]
-    )
-    incidents_body = pre_block(
-        incidents["incident_stop_excerpt"] + "\n\n" + incidents["guarded_handoff_excerpt"]
-    )
-    readiness_body = pre_block(
-        readiness["guarded_exec_summary_excerpt"]
-        + "\n\n"
-        + readiness["pilot_hash_excerpt"]
-        + "\n\n"
-        + readiness["incident_hash_excerpt"]
-    )
-
-    html_doc = (
-        "<!doctype html><html><head><meta charset='utf-8'>"
-        "<title>Peak_Trade Ops Cockpit</title></head>"
-        "<body style='font-family:Arial,sans-serif;max-width:1200px;margin:20px auto;padding:0 16px;'>"
-        "<h1>Peak_Trade Ops Cockpit</h1>"
-        "<p>Read-only operational overview from local artifacts.</p>"
-        + card("System State", system_body)
-        + card("Guard State", guards_body)
-        + card("Latest Evidence", evidence_body)
-        + card("Latest Testnet / Pilot Status", status_body)
-        + card("Incidents / Abort", incidents_body)
-        + card("Readiness / Routing / Health Summary", readiness_body)
-        + "</body></html>"
-    )
-    return html_doc
+def build_ai_boundary_state(truth_docs: List[Dict[str, object]]) -> Dict[str, object]:
+    return {
+        "proposer_authority": "advisory_only",
+        "critic_authority": "supervisory_only",
+        "provider_binding_authority": "not_execution_authority",
+        "execution_boundary": "deterministic_gated",
+        "closest_to_trade": "not_evidenced_as_llm_final",
+    }
 
 
-def render_ops_cockpit_json() -> dict[str, Any]:
-    return load_ops_cockpit_data()
+def build_runtime_unknown_state(truth_docs: List[Dict[str, object]]) -> Dict[str, object]:
+    return {
+        "critic_runtime_path": "partial",
+        "proposer_runtime_path": "partial_or_unknown",
+        "provider_model_runtime_slots": "partial_or_unknown",
+        "execution_adjacent_contracts": "documented_without_overclaiming",
+    }
+
+
+def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object]:
+    truth_docs = discover_truth_docs(repo_root=repo_root)
+    return {
+        "system_state": {
+            "mode": "truth_first_ops_cockpit_v2",
+            "execution_model": "guarded_execution",
+        },
+        "guard_state": {
+            "no_trade_baseline": "reference",
+            "deny_by_default": "active",
+            "treasury_separation": "enforced",
+        },
+        "truth_state": build_truth_state(truth_docs),
+        "ai_boundary_state": build_ai_boundary_state(truth_docs),
+        "runtime_unknown_state": build_runtime_unknown_state(truth_docs),
+        "canonical_sources": truth_docs,
+    }
+
+
+def _render_doc_card(doc: Dict[str, object]) -> str:
+    preview_items = "".join(f"<li>{escape(str(line))}</li>" for line in doc["preview"])
+    preview_html = f"<ul>{preview_items}</ul>" if preview_items else "<p>No preview available.</p>"
+    return (
+        '<div class="card">'
+        f"<h3>{escape(str(doc['title']))}</h3>"
+        f"<p><strong>Status:</strong> {escape(str(doc['status']))}</p>"
+        f"<p><strong>Path:</strong> <code>{escape(str(doc['path']))}</code></p>"
+        f"<p>{escape(str(doc['summary']))}</p>"
+        f"{preview_html}"
+        "</div>"
+    )
+
+
+def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
+    payload = build_ops_cockpit_payload(repo_root=repo_root)
+    truth_state = payload["truth_state"]
+    boundary = payload["ai_boundary_state"]
+    runtime = payload["runtime_unknown_state"]
+    doc_cards = "".join(_render_doc_card(doc) for doc in payload["canonical_sources"])
+
+    return f"""<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Peak_Trade Ops Cockpit v2</title>
+  <style>
+    body {{ font-family: Arial, sans-serif; margin: 24px; }}
+    .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }}
+    .card {{ border: 1px solid #ddd; border-radius: 12px; padding: 16px; }}
+    code {{ background: #f5f5f5; padding: 2px 4px; border-radius: 4px; }}
+  </style>
+</head>
+<body>
+  <h1>Ops Cockpit v2 — Truth-First</h1>
+  <p>Read-only operations cockpit aligned to the current canonical truth model.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Truth State</h2>
+      <p><strong>Truth-first positioning:</strong> {escape(str(truth_state['truth_first_positioning']))}</p>
+      <p><strong>Available truth docs:</strong> {escape(str(truth_state['available_count']))}</p>
+      <p><strong>Unavailable truth docs:</strong> {escape(str(truth_state['unavailable_count']))}</p>
+      <p><strong>Final trade authority:</strong> {escape(str(truth_state['final_trade_authority']))}</p>
+      <p><strong>Live autonomy:</strong> {escape(str(truth_state['live_autonomy']))}</p>
+    </div>
+
+    <div class="card">
+      <h2>AI Boundary State</h2>
+      <p><strong>Proposer:</strong> {escape(str(boundary['proposer_authority']))}</p>
+      <p><strong>Critic:</strong> {escape(str(boundary['critic_authority']))}</p>
+      <p><strong>Provider binding authority:</strong> {escape(str(boundary['provider_binding_authority']))}</p>
+      <p><strong>Execution boundary:</strong> {escape(str(boundary['execution_boundary']))}</p>
+      <p><strong>Closest to trade:</strong> {escape(str(boundary['closest_to_trade']))}</p>
+    </div>
+
+    <div class="card">
+      <h2>Runtime Unknown State</h2>
+      <p><strong>Critic runtime path:</strong> {escape(str(runtime['critic_runtime_path']))}</p>
+      <p><strong>Proposer runtime path:</strong> {escape(str(runtime['proposer_runtime_path']))}</p>
+      <p><strong>Provider/model runtime slots:</strong> {escape(str(runtime['provider_model_runtime_slots']))}</p>
+      <p><strong>Execution-adjacent contracts:</strong> {escape(str(runtime['execution_adjacent_contracts']))}</p>
+    </div>
+  </div>
+
+  <h2>Canonical Sources</h2>
+  <div class="grid">
+    {doc_cards}
+  </div>
+</body>
+</html>"""
+
+
+__all__ = [
+    "TRUTH_DOCS",
+    "discover_truth_docs",
+    "build_truth_state",
+    "build_ai_boundary_state",
+    "build_runtime_unknown_state",
+    "build_ops_cockpit_payload",
+    "render_ops_cockpit_html",
+]

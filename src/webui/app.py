@@ -104,7 +104,7 @@ from .r_and_d_api import (
     compute_best_metrics,
     parse_and_validate_run_ids,
 )
-from .ops_cockpit import render_ops_cockpit_html, render_ops_cockpit_json
+from .ops_cockpit import build_ops_cockpit_payload, render_ops_cockpit_html
 from .alerts_api import (
     AlertSummary,
     AlertStats,
@@ -1751,10 +1751,10 @@ app = create_app()
 @app.get("/ops", response_class=HTMLResponse)
 def ops_cockpit() -> HTMLResponse:
     """Read-only Ops Cockpit from local artifacts."""
-    return HTMLResponse(render_ops_cockpit_html(render_ops_cockpit_json()))
+    return HTMLResponse(render_ops_cockpit_html())
 
 
 @app.get("/api/ops-cockpit", response_class=JSONResponse)
 def ops_cockpit_api() -> JSONResponse:
     """Read-only Ops Cockpit data as JSON."""
-    return JSONResponse(render_ops_cockpit_json())
+    return JSONResponse(build_ops_cockpit_payload())
