@@ -25,7 +25,7 @@ It does not change runtime behavior.
 - exact runtime trigger, only if explicitly evidenced
 
 ## Canonical Reading Order
-- `docs/governance/ai/CRITIC_PROPOSER_BOUNDARY_SPEC_V1.md`
-- `docs/governance/ai/RUNTIME_UNKNOWN_RESOLUTION_V1.md`
-- `docs/governance/ai/CRITIC_RUNTIME_RESOLUTION_V2.md`
-- `out/ops/proposer_runtime_resolution_v1_*`
+- `docs&#47;governance&#47;ai&#47;CRITIC_PROPOSER_BOUNDARY_SPEC_V1.md`
+- `docs&#47;governance&#47;ai&#47;RUNTIME_UNKNOWN_RESOLUTION_V1.md`
+- `docs&#47;governance&#47;ai&#47;CRITIC_RUNTIME_RESOLUTION_V2.md`
+- `out&#47;ops&#47;proposer_runtime_resolution_v1_*`
