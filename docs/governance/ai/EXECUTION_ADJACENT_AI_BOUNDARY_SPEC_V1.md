@@ -75,9 +75,9 @@ The closest-to-trade path remains canonically described as:
 5. document any future model-final authority only if explicit evidence exists
 
 ## Canonical Reading Order
-- `docs/governance/ai/AI_LAYER_CANONICAL_SPEC_V1.md`
-- `docs/governance/ai/AI_UNKNOWN_REDUCTION_V1.md`
-- `docs/governance/ai/CRITIC_PROPOSER_BOUNDARY_SPEC_V1.md`
-- `docs/governance/ai/PROVIDER_MODEL_BINDING_SPEC_V1.md`
-- `out/ops/peak_trade_truth_model_*`
-- `out/ops/ai_layer_model_matrix_v1_*`
+- `docs&#47;governance&#47;ai&#47;AI_LAYER_CANONICAL_SPEC_V1.md`
+- `docs&#47;governance&#47;ai&#47;AI_UNKNOWN_REDUCTION_V1.md`
+- `docs&#47;governance&#47;ai&#47;CRITIC_PROPOSER_BOUNDARY_SPEC_V1.md`
+- `docs&#47;governance&#47;ai&#47;PROVIDER_MODEL_BINDING_SPEC_V1.md`
+- `out&#47;ops&#47;peak_trade_truth_model_*`
+- `out&#47;ops&#47;ai_layer_model_matrix_v1_*`
