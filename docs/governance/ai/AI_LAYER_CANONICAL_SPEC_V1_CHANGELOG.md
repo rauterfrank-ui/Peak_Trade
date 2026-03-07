@@ -6,3 +6,4 @@
 - codified proposer / critic / provider role boundaries
 - codified deterministic gated execution boundary
 - added dashboard truth guidance
+- Truth source alignment for docs and UI wording
