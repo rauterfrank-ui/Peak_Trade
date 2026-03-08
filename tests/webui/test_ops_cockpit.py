@@ -13,6 +13,7 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "ai_boundary_state" in payload
     assert "runtime_unknown_state" in payload
     assert payload["truth_state"]["truth_first_positioning"] == "enabled"
+    assert payload["system_state"]["mode"] == "truth_first_ops_cockpit_v2_4"
 
 
 def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:
@@ -22,7 +23,8 @@ def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:
         "# Critic Runtime Resolution v2\n", encoding="utf-8"
     )
     html = render_ops_cockpit_html(repo_root=tmp_path)
-    assert "Ops Cockpit v2.3 — Truth-First" in html
+    assert "Ops Cockpit v2.4 — Truth-First" in html
+    assert "Read-only" in html
     assert "AI Boundary State" in html
     assert "Runtime Unknown State" in html
     assert "Truth coverage" in html
