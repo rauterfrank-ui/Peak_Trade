@@ -323,7 +323,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Peak_Trade Ops Cockpit v2.8</title>
+  <title>Peak_Trade Ops Cockpit v2.9</title>
   <style>
     body {{ font-family: Arial, sans-serif; margin: 24px; }}
     .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }}
@@ -339,7 +339,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
 </head>
 <body>
   <div class="hero">
-    <h1>Ops Cockpit v2.8 — Truth-First</h1>
+    <h1>Ops Cockpit v2.9 — Truth-First</h1>
     <p>Read-only. No write actions.</p>
     <p>Read-only operations cockpit aligned to the current canonical truth model.</p>
     <p><strong>Last verified:</strong> {escape(str(truth_state["last_verified_utc"]))}</p>
@@ -356,6 +356,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
 
   <div class="legend">
     <h2>Read-only legends</h2>
+    <p><strong>Visual emphasis only.</strong> No semantic or execution changes.</p>
     <p><strong>Availability:</strong> <code>available</code> = source found, <code>unavailable</code> = source missing.</p>
     <p><strong>Freshness:</strong> <code>fresh</code> ≤ 24h, <code>stale</code> ≤ 7d, <code>older</code> > 7d.</p>
     <p><strong>Source groups:</strong> {group_chips}</p>
@@ -363,6 +364,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
 
   <div class="group-block">
     <h2>Compact Source Summary</h2>
+    <p><strong>At-a-glance grouped counts.</strong></p>
     <div class="grid">
       {summary_blocks}
     </div>
@@ -399,6 +401,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
 
   <div class="group-block">
     <h2>Canonical Boundary Sources</h2>
+    <p><strong>Highest-priority canonical boundary references.</strong></p>
     <div class="grid">
       {canonical_cards}
     </div>
@@ -406,6 +409,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
 
   <div class="group-block">
     <h2>Runtime Resolution Sources</h2>
+    <p><strong>Runtime-near clarifications and partial resolutions.</strong></p>
     <div class="grid">
       {runtime_cards}
     </div>
@@ -413,6 +417,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
 
   <div class="group-block">
     <h2>Supporting Truth Sources</h2>
+    <p><strong>Supporting context with lower direct authority weight.</strong></p>
     <div class="grid">
       {supporting_cards}
     </div>
