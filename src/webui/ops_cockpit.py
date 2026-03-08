@@ -111,6 +111,14 @@ def _coverage_label(available_count: int, total_count: int) -> str:
     return "low"
 
 
+def _priority_counts(truth_docs: List[Dict[str, object]]) -> Dict[str, int]:
+    counts = {"canonical_boundary": 0, "runtime_resolution": 0, "supporting_truth": 0}
+    for doc in truth_docs:
+        priority = str(doc["priority"])
+        counts[priority] = counts.get(priority, 0) + 1
+    return counts
+
+
 def discover_truth_docs(repo_root: Path | None = None) -> List[Dict[str, object]]:
     root = repo_root or Path.cwd()
     docs: List[Dict[str, object]] = []
@@ -144,6 +152,7 @@ def build_truth_state(truth_docs: List[Dict[str, object]]) -> Dict[str, object]:
         "unavailable_count": len(unavailable),
         "truth_first_positioning": "enabled",
         "truth_coverage": _coverage_label(len(available), len(truth_docs)),
+        "priority_counts": _priority_counts(truth_docs),
         "final_trade_authority": "not_evidenced_as_model_final",
         "live_autonomy": "not_evidenced_as_self_improving_live",
     }
@@ -172,7 +181,7 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
     truth_docs = discover_truth_docs(repo_root=repo_root)
     return {
         "system_state": {
-            "mode": "truth_first_ops_cockpit_v2_2",
+            "mode": "truth_first_ops_cockpit_v2_3",
             "execution_model": "guarded_execution",
         },
         "guard_state": {
@@ -190,12 +199,12 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
 def _render_doc_card(doc: Dict[str, object]) -> str:
     preview_items = "".join(f"<li>{escape(str(line))}</li>" for line in doc["preview"])
     preview_html = f"<ul>{preview_items}</ul>" if preview_items else "<p>No preview available.</p>"
-    status_badge = "Available" if doc["exists"] else "Unavailable"
+    status_badge = "available" if doc["exists"] else "unavailable"
     return (
         '<div class="card">'
         f"<h3>{escape(str(doc['title']))}</h3>"
-        f"<p><strong>Status:</strong> {escape(status_badge)}</p>"
-        f"<p><strong>Priority:</strong> {escape(str(doc['priority']))}</p>"
+        f"<p><strong>Status:</strong> <code>{escape(status_badge)}</code></p>"
+        f"<p><strong>Priority:</strong> <code>{escape(str(doc['priority']))}</code></p>"
         f"<p><strong>Path:</strong> <code>{escape(str(doc['path']))}</code></p>"
         f"<p>{escape(str(doc['summary']))}</p>"
         f"{preview_html}"
@@ -208,13 +217,14 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     truth_state = payload["truth_state"]
     boundary = payload["ai_boundary_state"]
     runtime = payload["runtime_unknown_state"]
+    counts = truth_state["priority_counts"]
     doc_cards = "".join(_render_doc_card(doc) for doc in payload["canonical_sources"])
 
     return f"""<!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Peak_Trade Ops Cockpit v2.2</title>
+  <title>Peak_Trade Ops Cockpit v2.3</title>
   <style>
     body {{ font-family: Arial, sans-serif; margin: 24px; }}
     .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }}
@@ -225,10 +235,11 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
 </head>
 <body>
   <div class="hero">
-    <h1>Ops Cockpit v2.2 — Truth-First</h1>
+    <h1>Ops Cockpit v2.3 — Truth-First</h1>
     <p>Read-only operations cockpit aligned to the current canonical truth model.</p>
     <p><strong>Truth coverage:</strong> {escape(str(truth_state["truth_coverage"]))}</p>
     <p><strong>Available / unavailable:</strong> {escape(str(truth_state["available_count"]))} / {escape(str(truth_state["unavailable_count"]))}</p>
+    <p><strong>Priority buckets:</strong> canonical={escape(str(counts["canonical_boundary"]))}, runtime={escape(str(counts["runtime_resolution"]))}, supporting={escape(str(counts["supporting_truth"]))}</p>
     <p><strong>Execution model:</strong> {escape(str(payload["system_state"]["execution_model"]))}</p>
     <p><strong>Final trade authority:</strong> {escape(str(truth_state["final_trade_authority"]))}</p>
   </div>
