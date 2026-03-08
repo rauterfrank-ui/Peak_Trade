@@ -215,11 +215,32 @@ def _grouped_sources(truth_docs: List[Dict[str, object]]) -> Dict[str, List[Dict
     return grouped
 
 
+def _group_summary(group_docs: List[Dict[str, object]]) -> Dict[str, int]:
+    summary = {
+        "total": len(group_docs),
+        "available": 0,
+        "unavailable": 0,
+        "fresh": 0,
+        "stale": 0,
+        "older": 0,
+    }
+    for doc in group_docs:
+        if doc["exists"]:
+            summary["available"] += 1
+        else:
+            summary["unavailable"] += 1
+        freshness = str(doc["freshness"])
+        if freshness in ("fresh", "stale", "older"):
+            summary[freshness] += 1
+    return summary
+
+
 def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object]:
     truth_docs = discover_truth_docs(repo_root=repo_root)
+    groups = _grouped_sources(truth_docs)
     return {
         "system_state": {
-            "mode": "truth_first_ops_cockpit_v2_7",
+            "mode": "truth_first_ops_cockpit_v2_8",
             "execution_model": "guarded_execution",
         },
         "guard_state": {
@@ -230,7 +251,8 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
         "truth_state": build_truth_state(truth_docs),
         "ai_boundary_state": build_ai_boundary_state(),
         "runtime_unknown_state": build_runtime_unknown_state(),
-        "source_groups": _grouped_sources(truth_docs),
+        "source_groups": groups,
+        "source_group_summary": {name: _group_summary(items) for name, items in groups.items()},
         "canonical_sources": truth_docs,
     }
 
@@ -257,6 +279,17 @@ def _render_group_chip(name: str, count: int) -> str:
     return f'<span class="chip"><code>{escape(name)}={count}</code></span>'
 
 
+def _render_group_summary_block(name: str, summary: Dict[str, int]) -> str:
+    return (
+        '<div class="card">'
+        f"<h3>{escape(name)}</h3>"
+        f"<p><strong>Total:</strong> {summary['total']}</p>"
+        f"<p><strong>Available / unavailable:</strong> {summary['available']} / {summary['unavailable']}</p>"
+        f"<p><strong>Fresh / stale / older:</strong> {summary['fresh']} / {summary['stale']} / {summary['older']}</p>"
+        "</div>"
+    )
+
+
 def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     payload = build_ops_cockpit_payload(repo_root=repo_root)
     truth_state = payload["truth_state"]
@@ -264,12 +297,21 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     runtime = payload["runtime_unknown_state"]
     counts = truth_state["priority_counts"]
     groups = payload["source_groups"]
+    summaries = payload["source_group_summary"]
 
     group_chips = " ".join(
         [
             _render_group_chip("canonical_boundary", len(groups["canonical_boundary"])),
             _render_group_chip("runtime_resolution", len(groups["runtime_resolution"])),
             _render_group_chip("supporting_truth", len(groups["supporting_truth"])),
+        ]
+    )
+
+    summary_blocks = "".join(
+        [
+            _render_group_summary_block("canonical_boundary", summaries["canonical_boundary"]),
+            _render_group_summary_block("runtime_resolution", summaries["runtime_resolution"]),
+            _render_group_summary_block("supporting_truth", summaries["supporting_truth"]),
         ]
     )
 
@@ -281,7 +323,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Peak_Trade Ops Cockpit v2.7</title>
+  <title>Peak_Trade Ops Cockpit v2.8</title>
   <style>
     body {{ font-family: Arial, sans-serif; margin: 24px; }}
     .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }}
@@ -297,7 +339,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
 </head>
 <body>
   <div class="hero">
-    <h1>Ops Cockpit v2.7 — Truth-First</h1>
+    <h1>Ops Cockpit v2.8 — Truth-First</h1>
     <p>Read-only. No write actions.</p>
     <p>Read-only operations cockpit aligned to the current canonical truth model.</p>
     <p><strong>Last verified:</strong> {escape(str(truth_state["last_verified_utc"]))}</p>
@@ -317,6 +359,13 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     <p><strong>Availability:</strong> <code>available</code> = source found, <code>unavailable</code> = source missing.</p>
     <p><strong>Freshness:</strong> <code>fresh</code> ≤ 24h, <code>stale</code> ≤ 7d, <code>older</code> > 7d.</p>
     <p><strong>Source groups:</strong> {group_chips}</p>
+  </div>
+
+  <div class="group-block">
+    <h2>Compact Source Summary</h2>
+    <div class="grid">
+      {summary_blocks}
+    </div>
   </div>
 
   <div class="grid">
