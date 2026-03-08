@@ -198,7 +198,11 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
 
 def _render_doc_card(doc: Dict[str, object]) -> str:
     preview_items = "".join(f"<li>{escape(str(line))}</li>" for line in doc["preview"])
-    preview_html = f"<ul>{preview_items}</ul>" if preview_items else "<p class=\"empty-preview\">No preview (read-only).</p>"
+    preview_html = (
+        f"<ul>{preview_items}</ul>"
+        if preview_items
+        else '<p class="empty-preview">No preview (read-only).</p>'
+    )
     status_badge = "available" if doc["exists"] else "unavailable"
     return (
         '<div class="card">'
