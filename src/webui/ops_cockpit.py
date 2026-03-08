@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from dataclasses import dataclass
 from html import escape
 from pathlib import Path
@@ -100,6 +101,18 @@ def _first_nonempty_lines(text: str, limit: int = 6) -> List[str]:
     return out
 
 
+def _freshness_label(mtime_sec: Optional[float]) -> str:
+    """fresh ≤24h, stale ≤7d, older >7d."""
+    if mtime_sec is None:
+        return "unknown"
+    age_sec = time.time() - mtime_sec
+    if age_sec <= 86400:  # 24h
+        return "fresh"
+    if age_sec <= 604800:  # 7d
+        return "stale"
+    return "older"
+
+
 def _coverage_label(available_count: int, total_count: int) -> str:
     if total_count <= 0:
         return "no_truth_sources"
@@ -127,6 +140,16 @@ def discover_truth_docs(repo_root: Path | None = None) -> List[Dict[str, object]
         text = _read_text_if_exists(full_path)
         exists = text is not None
         preview = _first_nonempty_lines(text) if text else []
+        mtime: Optional[float] = None
+        if full_path.exists():
+            try:
+                mtime = full_path.stat().st_mtime
+            except OSError:
+                pass
+        freshness = _freshness_label(mtime) if exists else "unknown"
+        last_modified_utc = (
+            time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(mtime)) if mtime is not None else None
+        )
         docs.append(
             {
                 "key": doc.key,
@@ -138,6 +161,8 @@ def discover_truth_docs(repo_root: Path | None = None) -> List[Dict[str, object]
                 "status": "available" if exists else "unavailable",
                 "priority": doc.priority,
                 "priority_rank": PRIORITY_ORDER.get(doc.priority, 99),
+                "freshness": freshness,
+                "last_modified_utc": last_modified_utc,
             }
         )
     docs.sort(key=lambda d: (int(d["priority_rank"]), str(d["title"])))
@@ -147,6 +172,8 @@ def discover_truth_docs(repo_root: Path | None = None) -> List[Dict[str, object]
 def build_truth_state(truth_docs: List[Dict[str, object]]) -> Dict[str, object]:
     available = [d for d in truth_docs if d["exists"]]
     unavailable = [d for d in truth_docs if not d["exists"]]
+    last_utcs = [d["last_modified_utc"] for d in available if d.get("last_modified_utc")]
+    last_verified_utc = max(last_utcs) if last_utcs else None
     return {
         "available_count": len(available),
         "unavailable_count": len(unavailable),
@@ -155,6 +182,7 @@ def build_truth_state(truth_docs: List[Dict[str, object]]) -> Dict[str, object]:
         "priority_counts": _priority_counts(truth_docs),
         "final_trade_authority": "not_evidenced_as_model_final",
         "live_autonomy": "not_evidenced_as_self_improving_live",
+        "last_verified_utc": last_verified_utc or "—",
     }
 
 
@@ -181,7 +209,7 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
     truth_docs = discover_truth_docs(repo_root=repo_root)
     return {
         "system_state": {
-            "mode": "truth_first_ops_cockpit_v2_4",
+            "mode": "truth_first_ops_cockpit_v2_6",
             "execution_model": "guarded_execution",
         },
         "guard_state": {
@@ -203,12 +231,15 @@ def _render_doc_card(doc: Dict[str, object]) -> str:
         if preview_items
         else '<p class="empty-preview">No preview (read-only).</p>'
     )
-    status_badge = "available" if doc["exists"] else "unavailable"
+    status_val = str(doc.get("status", "available" if doc["exists"] else "unavailable"))
+    priority_val = str(doc["priority"])
+    freshness_val = str(doc.get("freshness", "unknown"))
     return (
-        '<div class="card">'
+        '<div class="card truth-card">'
         f"<h3>{escape(str(doc['title']))}</h3>"
-        f"<p><strong>Status:</strong> <code>{escape(status_badge)}</code></p>"
-        f"<p><strong>Priority:</strong> <code>{escape(str(doc['priority']))}</code></p>"
+        f'<p><strong>Status:</strong> <span class="chip"><code>{escape(status_val)}</code></span></p>'
+        f'<p><strong>Priority:</strong> <span class="chip"><code>{escape(priority_val)}</code></span></p>'
+        f'<p><strong>Freshness:</strong> <span class="chip"><code>{escape(freshness_val)}</code></span></p>'
         f"<p><strong>Path:</strong> <code>{escape(str(doc['path']))}</code></p>"
         f"<p>{escape(str(doc['summary']))}</p>"
         f"{preview_html}"
@@ -228,27 +259,37 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Peak_Trade Ops Cockpit v2.4</title>
+  <title>Peak_Trade Ops Cockpit v2.6</title>
   <style>
     body {{ font-family: Arial, sans-serif; margin: 24px; }}
     .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }}
     .card {{ border: 1px solid #ddd; border-radius: 12px; padding: 16px; }}
     .card.truth-section {{ border-left: 4px solid #6b8e6b; }}
+    .truth-card {{ border-left: 6px solid #6b8e6b; }}
     .hero {{ border: 1px solid #ddd; border-radius: 12px; padding: 20px; margin-bottom: 20px; }}
     .section-head {{ margin-top: 0; margin-bottom: 8px; font-size: 0.9em; color: #555; }}
+    .legend {{ border: 1px solid #ddd; border-radius: 12px; padding: 14px; margin-bottom: 20px; }}
+    .chip {{ display: inline-block; margin-left: 4px; }}
     code {{ background: #f5f5f5; padding: 2px 4px; border-radius: 4px; }}
-    .priority-inline {{ font-size: 0.95em; }}
+    .priority-inline {{ display: inline-block; margin-right: 10px; font-size: 0.95em; }}
   </style>
 </head>
 <body>
   <div class="hero">
-    <h1>Ops Cockpit v2.4 — Truth-First</h1>
-    <p><em>Read-only.</em> Operations cockpit aligned to the current canonical truth model. No write actions.</p>
+    <h1>Ops Cockpit v2.6 — Truth-First</h1>
+    <p><em>Read-only. No write actions.</em></p>
     <p><strong>Truth coverage:</strong> {escape(str(truth_state["truth_coverage"]))}</p>
     <p><strong>Available / unavailable:</strong> {escape(str(truth_state["available_count"]))} / {escape(str(truth_state["unavailable_count"]))}</p>
     <p class="priority-inline"><strong>Priority buckets:</strong> canonical={escape(str(counts["canonical_boundary"]))}, runtime={escape(str(counts["runtime_resolution"]))}, supporting={escape(str(counts["supporting_truth"]))}</p>
     <p><strong>Execution model:</strong> {escape(str(payload["system_state"]["execution_model"]))}</p>
     <p><strong>Final trade authority:</strong> {escape(str(truth_state["final_trade_authority"]))}</p>
+    <p><strong>Last verified:</strong> <code>{escape(str(truth_state.get("last_verified_utc", "—")))}</code></p>
+  </div>
+
+  <div class="legend">
+    <h2>Read-only legends</h2>
+    <p><strong>Availability:</strong> <code>available</code> = source found, <code>unavailable</code> = source missing.</p>
+    <p><strong>Freshness:</strong> <code>fresh</code> ≤ 24h, <code>stale</code> ≤ 7d, <code>older</code> > 7d.</p>
   </div>
 
   <div class="grid">
@@ -281,6 +322,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
   </div>
 
   <h2>Canonical Sources</h2>
+  <p>Read-only source cards with availability, priority, and freshness chips.</p>
   <p class="section-head">Truth docs (read-only)</p>
   <div class="grid">
     {doc_cards}

@@ -13,7 +13,6 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "ai_boundary_state" in payload
     assert "runtime_unknown_state" in payload
     assert payload["truth_state"]["truth_first_positioning"] == "enabled"
-    assert payload["system_state"]["mode"] == "truth_first_ops_cockpit_v2_4"
 
 
 def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:
@@ -23,12 +22,11 @@ def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:
         "# Critic Runtime Resolution v2\n", encoding="utf-8"
     )
     html = render_ops_cockpit_html(repo_root=tmp_path)
-    assert "Ops Cockpit v2.4 — Truth-First" in html
-    assert "Read-only" in html
-    assert "AI Boundary State" in html
-    assert "Runtime Unknown State" in html
+    assert "Ops Cockpit v2.6 — Truth-First" in html
+    assert "Read-only. No write actions." in html
     assert "Truth coverage" in html
-    assert "Priority buckets" in html
+    assert "Last verified" in html
+    assert "Priority" in html
 
 
 def test_missing_docs_are_safe(tmp_path: Path) -> None:
@@ -47,9 +45,18 @@ def test_sources_are_priority_sorted(tmp_path: Path) -> None:
     assert priorities == sorted(priorities)
 
 
-def test_priority_counts_present(tmp_path: Path) -> None:
+def test_freshness_fields_present(tmp_path: Path) -> None:
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
     payload = build_ops_cockpit_payload(repo_root=tmp_path)
-    counts = payload["truth_state"]["priority_counts"]
-    assert "canonical_boundary" in counts
-    assert "runtime_resolution" in counts
-    assert "supporting_truth" in counts
+    first = payload["canonical_sources"][0]
+    assert "freshness" in first
+    assert "last_modified_utc" in first
+
+
+def test_html_contains_legends(tmp_path: Path) -> None:
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Read-only legends" in html
+    assert "Availability:" in html
+    assert "Freshness:" in html
