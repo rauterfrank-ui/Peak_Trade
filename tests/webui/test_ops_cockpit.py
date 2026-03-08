@@ -22,12 +22,13 @@ def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:
         "# Critic Runtime Resolution v2\n", encoding="utf-8"
     )
     html = render_ops_cockpit_html(repo_root=tmp_path)
-    assert "Ops Cockpit v2.8 — Truth-First" in html
+    assert "Ops Cockpit v2.9 — Truth-First" in html
     assert "Read-only legends" in html
     assert "Compact Source Summary" in html
     assert "Canonical Boundary Sources" in html
     assert "Runtime Resolution Sources" in html
     assert "Supporting Truth Sources" in html
+    assert "Visual emphasis only." in html
 
 
 def test_missing_docs_are_safe(tmp_path: Path) -> None:
