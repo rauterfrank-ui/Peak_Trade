@@ -181,7 +181,7 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
     truth_docs = discover_truth_docs(repo_root=repo_root)
     return {
         "system_state": {
-            "mode": "truth_first_ops_cockpit_v2_3",
+            "mode": "truth_first_ops_cockpit_v2_4",
             "execution_model": "guarded_execution",
         },
         "guard_state": {
@@ -198,7 +198,11 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
 
 def _render_doc_card(doc: Dict[str, object]) -> str:
     preview_items = "".join(f"<li>{escape(str(line))}</li>" for line in doc["preview"])
-    preview_html = f"<ul>{preview_items}</ul>" if preview_items else "<p>No preview available.</p>"
+    preview_html = (
+        f"<ul>{preview_items}</ul>"
+        if preview_items
+        else '<p class="empty-preview">No preview (read-only).</p>'
+    )
     status_badge = "available" if doc["exists"] else "unavailable"
     return (
         '<div class="card">'
@@ -224,36 +228,41 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Peak_Trade Ops Cockpit v2.3</title>
+  <title>Peak_Trade Ops Cockpit v2.4</title>
   <style>
     body {{ font-family: Arial, sans-serif; margin: 24px; }}
     .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }}
     .card {{ border: 1px solid #ddd; border-radius: 12px; padding: 16px; }}
+    .card.truth-section {{ border-left: 4px solid #6b8e6b; }}
     .hero {{ border: 1px solid #ddd; border-radius: 12px; padding: 20px; margin-bottom: 20px; }}
+    .section-head {{ margin-top: 0; margin-bottom: 8px; font-size: 0.9em; color: #555; }}
     code {{ background: #f5f5f5; padding: 2px 4px; border-radius: 4px; }}
+    .priority-inline {{ font-size: 0.95em; }}
   </style>
 </head>
 <body>
   <div class="hero">
-    <h1>Ops Cockpit v2.3 — Truth-First</h1>
-    <p>Read-only operations cockpit aligned to the current canonical truth model.</p>
+    <h1>Ops Cockpit v2.4 — Truth-First</h1>
+    <p><em>Read-only.</em> Operations cockpit aligned to the current canonical truth model. No write actions.</p>
     <p><strong>Truth coverage:</strong> {escape(str(truth_state["truth_coverage"]))}</p>
     <p><strong>Available / unavailable:</strong> {escape(str(truth_state["available_count"]))} / {escape(str(truth_state["unavailable_count"]))}</p>
-    <p><strong>Priority buckets:</strong> canonical={escape(str(counts["canonical_boundary"]))}, runtime={escape(str(counts["runtime_resolution"]))}, supporting={escape(str(counts["supporting_truth"]))}</p>
+    <p class="priority-inline"><strong>Priority buckets:</strong> canonical={escape(str(counts["canonical_boundary"]))}, runtime={escape(str(counts["runtime_resolution"]))}, supporting={escape(str(counts["supporting_truth"]))}</p>
     <p><strong>Execution model:</strong> {escape(str(payload["system_state"]["execution_model"]))}</p>
     <p><strong>Final trade authority:</strong> {escape(str(truth_state["final_trade_authority"]))}</p>
   </div>
 
   <div class="grid">
-    <div class="card">
+    <div class="card truth-section">
       <h2>Truth State</h2>
+      <p class="section-head">Read-only canonical truth</p>
       <p><strong>Truth-first positioning:</strong> {escape(str(truth_state["truth_first_positioning"]))}</p>
       <p><strong>Truth coverage:</strong> {escape(str(truth_state["truth_coverage"]))}</p>
       <p><strong>Live autonomy:</strong> {escape(str(truth_state["live_autonomy"]))}</p>
     </div>
 
-    <div class="card">
+    <div class="card truth-section">
       <h2>AI Boundary State</h2>
+      <p class="section-head">Authority boundaries (read-only)</p>
       <p><strong>Proposer:</strong> {escape(str(boundary["proposer_authority"]))}</p>
       <p><strong>Critic:</strong> {escape(str(boundary["critic_authority"]))}</p>
       <p><strong>Provider binding authority:</strong> {escape(str(boundary["provider_binding_authority"]))}</p>
@@ -261,8 +270,9 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
       <p><strong>Closest to trade:</strong> {escape(str(boundary["closest_to_trade"]))}</p>
     </div>
 
-    <div class="card">
+    <div class="card truth-section">
       <h2>Runtime Unknown State</h2>
+      <p class="section-head">Unknown / partial slots (read-only)</p>
       <p><strong>Critic runtime path:</strong> {escape(str(runtime["critic_runtime_path"]))}</p>
       <p><strong>Proposer runtime path:</strong> {escape(str(runtime["proposer_runtime_path"]))}</p>
       <p><strong>Provider/model runtime slots:</strong> {escape(str(runtime["provider_model_runtime_slots"]))}</p>
@@ -271,6 +281,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
   </div>
 
   <h2>Canonical Sources</h2>
+  <p class="section-head">Truth docs (read-only)</p>
   <div class="grid">
     {doc_cards}
   </div>
