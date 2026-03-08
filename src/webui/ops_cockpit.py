@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import time
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from html import escape
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -83,6 +83,10 @@ PRIORITY_ORDER = {
 }
 
 
+def _utc_now() -> datetime:
+    return datetime.now(timezone.utc)
+
+
 def _read_text_if_exists(path: Path) -> Optional[str]:
     if not path.exists():
         return None
@@ -99,18 +103,6 @@ def _first_nonempty_lines(text: str, limit: int = 6) -> List[str]:
         if len(out) >= limit:
             break
     return out
-
-
-def _freshness_label(mtime_sec: Optional[float]) -> str:
-    """fresh ≤24h, stale ≤7d, older >7d."""
-    if mtime_sec is None:
-        return "unknown"
-    age_sec = time.time() - mtime_sec
-    if age_sec <= 86400:  # 24h
-        return "fresh"
-    if age_sec <= 604800:  # 7d
-        return "stale"
-    return "older"
 
 
 def _coverage_label(available_count: int, total_count: int) -> str:
@@ -132,6 +124,25 @@ def _priority_counts(truth_docs: List[Dict[str, object]]) -> Dict[str, int]:
     return counts
 
 
+def _freshness_label(path: Path) -> str:
+    if not path.exists():
+        return "unavailable"
+    modified = datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc)
+    age_hours = (_utc_now() - modified).total_seconds() / 3600
+    if age_hours <= 24:
+        return "fresh"
+    if age_hours <= 24 * 7:
+        return "stale"
+    return "older"
+
+
+def _iso_mtime(path: Path) -> Optional[str]:
+    if not path.exists():
+        return None
+    modified = datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc)
+    return modified.isoformat()
+
+
 def discover_truth_docs(repo_root: Path | None = None) -> List[Dict[str, object]]:
     root = repo_root or Path.cwd()
     docs: List[Dict[str, object]] = []
@@ -140,16 +151,6 @@ def discover_truth_docs(repo_root: Path | None = None) -> List[Dict[str, object]
         text = _read_text_if_exists(full_path)
         exists = text is not None
         preview = _first_nonempty_lines(text) if text else []
-        mtime: Optional[float] = None
-        if full_path.exists():
-            try:
-                mtime = full_path.stat().st_mtime
-            except OSError:
-                pass
-        freshness = _freshness_label(mtime) if exists else "unknown"
-        last_modified_utc = (
-            time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(mtime)) if mtime is not None else None
-        )
         docs.append(
             {
                 "key": doc.key,
@@ -161,8 +162,8 @@ def discover_truth_docs(repo_root: Path | None = None) -> List[Dict[str, object]
                 "status": "available" if exists else "unavailable",
                 "priority": doc.priority,
                 "priority_rank": PRIORITY_ORDER.get(doc.priority, 99),
-                "freshness": freshness,
-                "last_modified_utc": last_modified_utc,
+                "freshness": _freshness_label(full_path),
+                "last_modified_utc": _iso_mtime(full_path),
             }
         )
     docs.sort(key=lambda d: (int(d["priority_rank"]), str(d["title"])))
@@ -172,8 +173,6 @@ def discover_truth_docs(repo_root: Path | None = None) -> List[Dict[str, object]
 def build_truth_state(truth_docs: List[Dict[str, object]]) -> Dict[str, object]:
     available = [d for d in truth_docs if d["exists"]]
     unavailable = [d for d in truth_docs if not d["exists"]]
-    last_utcs = [d["last_modified_utc"] for d in available if d.get("last_modified_utc")]
-    last_verified_utc = max(last_utcs) if last_utcs else None
     return {
         "available_count": len(available),
         "unavailable_count": len(unavailable),
@@ -182,7 +181,7 @@ def build_truth_state(truth_docs: List[Dict[str, object]]) -> Dict[str, object]:
         "priority_counts": _priority_counts(truth_docs),
         "final_trade_authority": "not_evidenced_as_model_final",
         "live_autonomy": "not_evidenced_as_self_improving_live",
-        "last_verified_utc": last_verified_utc or "—",
+        "last_verified_utc": _utc_now().isoformat(),
     }
 
 
@@ -205,11 +204,22 @@ def build_runtime_unknown_state() -> Dict[str, object]:
     }
 
 
+def _grouped_sources(truth_docs: List[Dict[str, object]]) -> Dict[str, List[Dict[str, object]]]:
+    grouped: Dict[str, List[Dict[str, object]]] = {
+        "canonical_boundary": [],
+        "runtime_resolution": [],
+        "supporting_truth": [],
+    }
+    for doc in truth_docs:
+        grouped.setdefault(str(doc["priority"]), []).append(doc)
+    return grouped
+
+
 def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object]:
     truth_docs = discover_truth_docs(repo_root=repo_root)
     return {
         "system_state": {
-            "mode": "truth_first_ops_cockpit_v2_6",
+            "mode": "truth_first_ops_cockpit_v2_7",
             "execution_model": "guarded_execution",
         },
         "guard_state": {
@@ -220,6 +230,7 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
         "truth_state": build_truth_state(truth_docs),
         "ai_boundary_state": build_ai_boundary_state(),
         "runtime_unknown_state": build_runtime_unknown_state(),
+        "source_groups": _grouped_sources(truth_docs),
         "canonical_sources": truth_docs,
     }
 
@@ -227,24 +238,23 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
 def _render_doc_card(doc: Dict[str, object]) -> str:
     preview_items = "".join(f"<li>{escape(str(line))}</li>" for line in doc["preview"])
     preview_html = (
-        f"<ul>{preview_items}</ul>"
-        if preview_items
-        else '<p class="empty-preview">No preview (read-only).</p>'
+        f"<ul>{preview_items}</ul>" if preview_items else "<p>No preview (read-only).</p>"
     )
-    status_val = str(doc.get("status", "available" if doc["exists"] else "unavailable"))
-    priority_val = str(doc["priority"])
-    freshness_val = str(doc.get("freshness", "unknown"))
     return (
         '<div class="card truth-card">'
         f"<h3>{escape(str(doc['title']))}</h3>"
-        f'<p><strong>Status:</strong> <span class="chip"><code>{escape(status_val)}</code></span></p>'
-        f'<p><strong>Priority:</strong> <span class="chip"><code>{escape(priority_val)}</code></span></p>'
-        f'<p><strong>Freshness:</strong> <span class="chip"><code>{escape(freshness_val)}</code></span></p>'
+        f'<p><strong>Status:</strong> <span class="chip"><code>{escape(str(doc["status"]))}</code></span></p>'
+        f'<p><strong>Priority:</strong> <span class="chip"><code>{escape(str(doc["priority"]))}</code></span></p>'
+        f'<p><strong>Freshness:</strong> <span class="chip"><code>{escape(str(doc["freshness"]))}</code></span></p>'
         f"<p><strong>Path:</strong> <code>{escape(str(doc['path']))}</code></p>"
         f"<p>{escape(str(doc['summary']))}</p>"
         f"{preview_html}"
         "</div>"
     )
+
+
+def _render_group_chip(name: str, count: int) -> str:
+    return f'<span class="chip"><code>{escape(name)}={count}</code></span>'
 
 
 def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
@@ -253,57 +263,74 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     boundary = payload["ai_boundary_state"]
     runtime = payload["runtime_unknown_state"]
     counts = truth_state["priority_counts"]
-    doc_cards = "".join(_render_doc_card(doc) for doc in payload["canonical_sources"])
+    groups = payload["source_groups"]
+
+    group_chips = " ".join(
+        [
+            _render_group_chip("canonical_boundary", len(groups["canonical_boundary"])),
+            _render_group_chip("runtime_resolution", len(groups["runtime_resolution"])),
+            _render_group_chip("supporting_truth", len(groups["supporting_truth"])),
+        ]
+    )
+
+    canonical_cards = "".join(_render_doc_card(doc) for doc in groups["canonical_boundary"])
+    runtime_cards = "".join(_render_doc_card(doc) for doc in groups["runtime_resolution"])
+    supporting_cards = "".join(_render_doc_card(doc) for doc in groups["supporting_truth"])
 
     return f"""<!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Peak_Trade Ops Cockpit v2.6</title>
+  <title>Peak_Trade Ops Cockpit v2.7</title>
   <style>
     body {{ font-family: Arial, sans-serif; margin: 24px; }}
     .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }}
     .card {{ border: 1px solid #ddd; border-radius: 12px; padding: 16px; }}
-    .card.truth-section {{ border-left: 4px solid #6b8e6b; }}
-    .truth-card {{ border-left: 6px solid #6b8e6b; }}
     .hero {{ border: 1px solid #ddd; border-radius: 12px; padding: 20px; margin-bottom: 20px; }}
-    .section-head {{ margin-top: 0; margin-bottom: 8px; font-size: 0.9em; color: #555; }}
+    .truth-card {{ border-left: 6px solid #6b8e6b; }}
+    .priority-inline {{ display: inline-block; margin-right: 10px; }}
     .legend {{ border: 1px solid #ddd; border-radius: 12px; padding: 14px; margin-bottom: 20px; }}
-    .chip {{ display: inline-block; margin-left: 4px; }}
+    .chip {{ display: inline-block; margin-left: 4px; margin-right: 6px; }}
+    .group-block {{ margin-top: 22px; }}
     code {{ background: #f5f5f5; padding: 2px 4px; border-radius: 4px; }}
-    .priority-inline {{ display: inline-block; margin-right: 10px; font-size: 0.95em; }}
   </style>
 </head>
 <body>
   <div class="hero">
-    <h1>Ops Cockpit v2.6 — Truth-First</h1>
-    <p><em>Read-only. No write actions.</em></p>
+    <h1>Ops Cockpit v2.7 — Truth-First</h1>
+    <p>Read-only. No write actions.</p>
+    <p>Read-only operations cockpit aligned to the current canonical truth model.</p>
+    <p><strong>Last verified:</strong> {escape(str(truth_state["last_verified_utc"]))}</p>
     <p><strong>Truth coverage:</strong> {escape(str(truth_state["truth_coverage"]))}</p>
     <p><strong>Available / unavailable:</strong> {escape(str(truth_state["available_count"]))} / {escape(str(truth_state["unavailable_count"]))}</p>
-    <p class="priority-inline"><strong>Priority buckets:</strong> canonical={escape(str(counts["canonical_boundary"]))}, runtime={escape(str(counts["runtime_resolution"]))}, supporting={escape(str(counts["supporting_truth"]))}</p>
+    <p>
+      <span class="priority-inline"><strong>canonical</strong>={escape(str(counts["canonical_boundary"]))}</span>
+      <span class="priority-inline"><strong>runtime</strong>={escape(str(counts["runtime_resolution"]))}</span>
+      <span class="priority-inline"><strong>supporting</strong>={escape(str(counts["supporting_truth"]))}</span>
+    </p>
     <p><strong>Execution model:</strong> {escape(str(payload["system_state"]["execution_model"]))}</p>
     <p><strong>Final trade authority:</strong> {escape(str(truth_state["final_trade_authority"]))}</p>
-    <p><strong>Last verified:</strong> <code>{escape(str(truth_state.get("last_verified_utc", "—")))}</code></p>
   </div>
 
   <div class="legend">
     <h2>Read-only legends</h2>
     <p><strong>Availability:</strong> <code>available</code> = source found, <code>unavailable</code> = source missing.</p>
     <p><strong>Freshness:</strong> <code>fresh</code> ≤ 24h, <code>stale</code> ≤ 7d, <code>older</code> > 7d.</p>
+    <p><strong>Source groups:</strong> {group_chips}</p>
   </div>
 
   <div class="grid">
-    <div class="card truth-section">
+    <div class="card">
       <h2>Truth State</h2>
-      <p class="section-head">Read-only canonical truth</p>
+      <p><strong>Read-only canonical truth</strong></p>
       <p><strong>Truth-first positioning:</strong> {escape(str(truth_state["truth_first_positioning"]))}</p>
       <p><strong>Truth coverage:</strong> {escape(str(truth_state["truth_coverage"]))}</p>
       <p><strong>Live autonomy:</strong> {escape(str(truth_state["live_autonomy"]))}</p>
     </div>
 
-    <div class="card truth-section">
+    <div class="card">
       <h2>AI Boundary State</h2>
-      <p class="section-head">Authority boundaries (read-only)</p>
+      <p><strong>Authority boundaries (read-only)</strong></p>
       <p><strong>Proposer:</strong> {escape(str(boundary["proposer_authority"]))}</p>
       <p><strong>Critic:</strong> {escape(str(boundary["critic_authority"]))}</p>
       <p><strong>Provider binding authority:</strong> {escape(str(boundary["provider_binding_authority"]))}</p>
@@ -311,9 +338,9 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
       <p><strong>Closest to trade:</strong> {escape(str(boundary["closest_to_trade"]))}</p>
     </div>
 
-    <div class="card truth-section">
+    <div class="card">
       <h2>Runtime Unknown State</h2>
-      <p class="section-head">Unknown / partial slots (read-only)</p>
+      <p><strong>Unknown / partial slots (read-only)</strong></p>
       <p><strong>Critic runtime path:</strong> {escape(str(runtime["critic_runtime_path"]))}</p>
       <p><strong>Proposer runtime path:</strong> {escape(str(runtime["proposer_runtime_path"]))}</p>
       <p><strong>Provider/model runtime slots:</strong> {escape(str(runtime["provider_model_runtime_slots"]))}</p>
@@ -321,11 +348,25 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     </div>
   </div>
 
-  <h2>Canonical Sources</h2>
-  <p>Read-only source cards with availability, priority, and freshness chips.</p>
-  <p class="section-head">Truth docs (read-only)</p>
-  <div class="grid">
-    {doc_cards}
+  <div class="group-block">
+    <h2>Canonical Boundary Sources</h2>
+    <div class="grid">
+      {canonical_cards}
+    </div>
+  </div>
+
+  <div class="group-block">
+    <h2>Runtime Resolution Sources</h2>
+    <div class="grid">
+      {runtime_cards}
+    </div>
+  </div>
+
+  <div class="group-block">
+    <h2>Supporting Truth Sources</h2>
+    <div class="grid">
+      {supporting_cards}
+    </div>
   </div>
 </body>
 </html>"""

@@ -22,11 +22,11 @@ def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:
         "# Critic Runtime Resolution v2\n", encoding="utf-8"
     )
     html = render_ops_cockpit_html(repo_root=tmp_path)
-    assert "Ops Cockpit v2.6 — Truth-First" in html
-    assert "Read-only. No write actions." in html
-    assert "Truth coverage" in html
-    assert "Last verified" in html
-    assert "Priority" in html
+    assert "Ops Cockpit v2.7 — Truth-First" in html
+    assert "Read-only legends" in html
+    assert "Canonical Boundary Sources" in html
+    assert "Runtime Resolution Sources" in html
+    assert "Supporting Truth Sources" in html
 
 
 def test_missing_docs_are_safe(tmp_path: Path) -> None:
@@ -55,8 +55,9 @@ def test_freshness_fields_present(tmp_path: Path) -> None:
     assert "last_modified_utc" in first
 
 
-def test_html_contains_legends(tmp_path: Path) -> None:
-    html = render_ops_cockpit_html(repo_root=tmp_path)
-    assert "Read-only legends" in html
-    assert "Availability:" in html
-    assert "Freshness:" in html
+def test_source_groups_present(tmp_path: Path) -> None:
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert "source_groups" in payload
+    assert "canonical_boundary" in payload["source_groups"]
+    assert "runtime_resolution" in payload["source_groups"]
+    assert "supporting_truth" in payload["source_groups"]
