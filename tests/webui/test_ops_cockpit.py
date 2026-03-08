@@ -22,7 +22,7 @@ def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:
         "# Critic Runtime Resolution v2\n", encoding="utf-8"
     )
     html = render_ops_cockpit_html(repo_root=tmp_path)
-    assert "Ops Cockpit v2.1 — Truth-First" in html
+    assert "Ops Cockpit v2.2 — Truth-First" in html
     assert "AI Boundary State" in html
     assert "Runtime Unknown State" in html
     assert "Truth coverage" in html
@@ -33,3 +33,12 @@ def test_missing_docs_are_safe(tmp_path: Path) -> None:
     assert payload["truth_state"]["available_count"] == 0
     assert payload["truth_state"]["unavailable_count"] >= 1
     assert payload["truth_state"]["truth_coverage"] == "low"
+
+
+def test_sources_are_priority_sorted(tmp_path: Path) -> None:
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    priorities = [item["priority_rank"] for item in payload["canonical_sources"]]
+    assert priorities == sorted(priorities)

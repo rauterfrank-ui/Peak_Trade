@@ -12,6 +12,7 @@ class TruthDoc:
     title: str
     path: str
     summary: str
+    priority: str
 
 
 TRUTH_DOCS: List[TruthDoc] = [
@@ -20,50 +21,65 @@ TRUTH_DOCS: List[TruthDoc] = [
         title="AI Layer Canonical Spec v1",
         path="docs/governance/ai/AI_LAYER_CANONICAL_SPEC_V1.md",
         summary="Canonical AI layer truth and authority boundaries.",
-    ),
-    TruthDoc(
-        key="ai_unknown_reduction",
-        title="AI Unknown Reduction v1",
-        path="docs/governance/ai/AI_UNKNOWN_REDUCTION_V1.md",
-        summary="Clarifies unresolved layer/runtime slots without invention.",
+        priority="canonical_boundary",
     ),
     TruthDoc(
         key="critic_proposer_boundary",
         title="Critic / Proposer Boundary Spec v1",
         path="docs/governance/ai/CRITIC_PROPOSER_BOUNDARY_SPEC_V1.md",
         summary="Separates advisory proposer from supervisory critic.",
+        priority="canonical_boundary",
     ),
     TruthDoc(
         key="provider_model_binding",
         title="Provider / Model Binding Spec v1",
         path="docs/governance/ai/PROVIDER_MODEL_BINDING_SPEC_V1.md",
         summary="Binding references do not imply runtime or execution authority.",
+        priority="canonical_boundary",
     ),
     TruthDoc(
         key="execution_adjacent_boundary",
         title="Execution-Adjacent AI Boundary Spec v1",
         path="docs/governance/ai/EXECUTION_ADJACENT_AI_BOUNDARY_SPEC_V1.md",
         summary="Separates AI-adjacent, execution-adjacent, and execution-authoritative.",
+        priority="canonical_boundary",
     ),
     TruthDoc(
         key="runtime_unknown_resolution",
         title="Runtime Unknown Resolution v1",
         path="docs/governance/ai/RUNTIME_UNKNOWN_RESOLUTION_V1.md",
         summary="Repo-near runtime unknown consolidation.",
+        priority="runtime_resolution",
     ),
     TruthDoc(
         key="critic_runtime_resolution",
         title="Critic Runtime Resolution v2",
         path="docs/governance/ai/CRITIC_RUNTIME_RESOLUTION_V2.md",
         summary="Critic is runtime-near, supervisory, and not final trade authority.",
+        priority="runtime_resolution",
     ),
     TruthDoc(
         key="proposer_runtime_resolution",
         title="Proposer Runtime Resolution v1",
         path="docs/governance/ai/PROPOSER_RUNTIME_RESOLUTION_V1.md",
         summary="Proposer remains advisory and weaker in runtime evidence than critic.",
+        priority="runtime_resolution",
+    ),
+    TruthDoc(
+        key="ai_unknown_reduction",
+        title="AI Unknown Reduction v1",
+        path="docs/governance/ai/AI_UNKNOWN_REDUCTION_V1.md",
+        summary="Clarifies unresolved layer/runtime slots without invention.",
+        priority="supporting_truth",
     ),
 ]
+
+
+PRIORITY_ORDER = {
+    "canonical_boundary": 0,
+    "runtime_resolution": 1,
+    "supporting_truth": 2,
+}
 
 
 def _read_text_if_exists(path: Path) -> Optional[str]:
@@ -84,6 +100,17 @@ def _first_nonempty_lines(text: str, limit: int = 6) -> List[str]:
     return out
 
 
+def _coverage_label(available_count: int, total_count: int) -> str:
+    if total_count <= 0:
+        return "no_truth_sources"
+    ratio = available_count / total_count
+    if ratio >= 0.95:
+        return "high"
+    if ratio >= 0.60:
+        return "partial"
+    return "low"
+
+
 def discover_truth_docs(repo_root: Path | None = None) -> List[Dict[str, object]]:
     root = repo_root or Path.cwd()
     docs: List[Dict[str, object]] = []
@@ -101,20 +128,12 @@ def discover_truth_docs(repo_root: Path | None = None) -> List[Dict[str, object]
                 "exists": exists,
                 "preview": preview,
                 "status": "available" if exists else "unavailable",
+                "priority": doc.priority,
+                "priority_rank": PRIORITY_ORDER.get(doc.priority, 99),
             }
         )
+    docs.sort(key=lambda d: (int(d["priority_rank"]), str(d["title"])))
     return docs
-
-
-def _coverage_label(available_count: int, total_count: int) -> str:
-    if total_count <= 0:
-        return "no_truth_sources"
-    ratio = available_count / total_count
-    if ratio >= 0.95:
-        return "high"
-    if ratio >= 0.60:
-        return "partial"
-    return "low"
 
 
 def build_truth_state(truth_docs: List[Dict[str, object]]) -> Dict[str, object]:
@@ -153,7 +172,7 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
     truth_docs = discover_truth_docs(repo_root=repo_root)
     return {
         "system_state": {
-            "mode": "truth_first_ops_cockpit_v2_1",
+            "mode": "truth_first_ops_cockpit_v2_2",
             "execution_model": "guarded_execution",
         },
         "guard_state": {
@@ -176,6 +195,7 @@ def _render_doc_card(doc: Dict[str, object]) -> str:
         '<div class="card">'
         f"<h3>{escape(str(doc['title']))}</h3>"
         f"<p><strong>Status:</strong> {escape(status_badge)}</p>"
+        f"<p><strong>Priority:</strong> {escape(str(doc['priority']))}</p>"
         f"<p><strong>Path:</strong> <code>{escape(str(doc['path']))}</code></p>"
         f"<p>{escape(str(doc['summary']))}</p>"
         f"{preview_html}"
@@ -194,7 +214,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Peak_Trade Ops Cockpit v2.1</title>
+  <title>Peak_Trade Ops Cockpit v2.2</title>
   <style>
     body {{ font-family: Arial, sans-serif; margin: 24px; }}
     .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }}
@@ -205,9 +225,10 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
 </head>
 <body>
   <div class="hero">
-    <h1>Ops Cockpit v2.1 — Truth-First</h1>
+    <h1>Ops Cockpit v2.2 — Truth-First</h1>
     <p>Read-only operations cockpit aligned to the current canonical truth model.</p>
     <p><strong>Truth coverage:</strong> {escape(str(truth_state["truth_coverage"]))}</p>
+    <p><strong>Available / unavailable:</strong> {escape(str(truth_state["available_count"]))} / {escape(str(truth_state["unavailable_count"]))}</p>
     <p><strong>Execution model:</strong> {escape(str(payload["system_state"]["execution_model"]))}</p>
     <p><strong>Final trade authority:</strong> {escape(str(truth_state["final_trade_authority"]))}</p>
   </div>
@@ -216,8 +237,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     <div class="card">
       <h2>Truth State</h2>
       <p><strong>Truth-first positioning:</strong> {escape(str(truth_state["truth_first_positioning"]))}</p>
-      <p><strong>Available truth docs:</strong> {escape(str(truth_state["available_count"]))}</p>
-      <p><strong>Unavailable truth docs:</strong> {escape(str(truth_state["unavailable_count"]))}</p>
+      <p><strong>Truth coverage:</strong> {escape(str(truth_state["truth_coverage"]))}</p>
       <p><strong>Live autonomy:</strong> {escape(str(truth_state["live_autonomy"]))}</p>
     </div>
 
