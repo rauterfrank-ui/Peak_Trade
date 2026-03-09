@@ -254,9 +254,7 @@ def _build_v3_executive_summary(
     # Heuristic: ok | warn | critical | unknown
     # truth_status
     if coverage == "high":
-        truth_status = _status_obj(
-            "ok", "high", "Truth-first, read-only. Source groups present."
-        )
+        truth_status = _status_obj("ok", "high", "Truth-first, read-only. Source groups present.")
     elif coverage == "partial":
         truth_status = _status_obj(
             "warn", "partial", "Partial source coverage. Review missing anchors."
@@ -290,23 +288,17 @@ def _build_v3_executive_summary(
             "unknown", "unknown", "No available sources. Unresolved state."
         )
     else:
-        freshness_status = _status_obj(
-            "ok", "fresh", "Sources fresh (≤24h). Evidence current."
-        )
+        freshness_status = _status_obj("ok", "fresh", "Sources fresh (≤24h). Evidence current.")
 
     # source_coverage_status
     if coverage == "high":
-        source_status = _status_obj(
-            "ok", "high", f"{available}/{total} sources available."
-        )
+        source_status = _status_obj("ok", "high", f"{available}/{total} sources available.")
     elif coverage == "partial":
         source_status = _status_obj(
             "warn", "partial", f"{available}/{total} sources. Partial coverage."
         )
     elif coverage == "no_truth_sources":
-        source_status = _status_obj(
-            "critical", "no_truth_sources", "No truth sources. No data."
-        )
+        source_status = _status_obj("critical", "no_truth_sources", "No truth sources. No data.")
     else:
         source_status = _status_obj(
             "critical", "low", f"{available}/{total} sources. Low coverage."
@@ -474,7 +466,7 @@ def _render_exec_summary_status_grid(payload: Dict[str, object]) -> str:
             parts.append(
                 f'<span class="status-badge status-badge--unknown">Unknown: {", ".join(escape(str(f)) for f in unknown)}</span>'
             )
-        flags_html = f'<p class="status-flags">{ " ".join(parts) }</p>'
+        flags_html = f'<p class="status-flags">{" ".join(parts)}</p>'
 
     return (
         '<div class="exec-summary">'
