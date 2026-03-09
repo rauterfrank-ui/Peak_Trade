@@ -235,12 +235,125 @@ def _group_summary(group_docs: List[Dict[str, object]]) -> Dict[str, int]:
     return summary
 
 
+def _status_obj(level: str, label: str, detail: str) -> Dict[str, object]:
+    """Build status object with level, label, detail. Defensive."""
+    return {"level": level, "label": label, "detail": detail}
+
+
+def _build_v3_executive_summary(
+    truth_state: Dict[str, object],
+    source_group_summary: Dict[str, Dict[str, int]],
+) -> Dict[str, object]:
+    """Build v3 executive summary with nested status objects. Read-only, defensive defaults."""
+    coverage = str(truth_state.get("truth_coverage", "unknown"))
+    available = int(truth_state.get("available_count", 0))
+    unavailable = int(truth_state.get("unavailable_count", 0))
+    total = available + unavailable
+    truth_posture = str(truth_state.get("truth_first_positioning", "enabled"))
+
+    # Heuristic: ok | warn | critical | unknown
+    # truth_status
+    if coverage == "high":
+        truth_status = _status_obj(
+            "ok", "high", "Truth-first, read-only. Source groups present."
+        )
+    elif coverage == "partial":
+        truth_status = _status_obj(
+            "warn", "partial", "Partial source coverage. Review missing anchors."
+        )
+    elif coverage == "no_truth_sources":
+        truth_status = _status_obj(
+            "critical", "no_truth_sources", "No truth sources found. Unknown state."
+        )
+    else:
+        truth_status = _status_obj(
+            "critical", "low", "Low truth coverage. Missing canonical anchors."
+        )
+
+    # freshness_status
+    total_stale = 0
+    total_older = 0
+    for s in (source_group_summary or {}).values():
+        if isinstance(s, dict):
+            total_stale += int(s.get("stale", 0))
+            total_older += int(s.get("older", 0))
+    if total_older > 0:
+        freshness_status = _status_obj(
+            "critical", "older", "Sources older than 7 days. Stale evidence."
+        )
+    elif total_stale > 0:
+        freshness_status = _status_obj(
+            "warn", "stale", "Some sources stale (≤7d). Partial freshness."
+        )
+    elif available == 0 and total > 0:
+        freshness_status = _status_obj(
+            "unknown", "unknown", "No available sources. Unresolved state."
+        )
+    else:
+        freshness_status = _status_obj(
+            "ok", "fresh", "Sources fresh (≤24h). Evidence current."
+        )
+
+    # source_coverage_status
+    if coverage == "high":
+        source_status = _status_obj(
+            "ok", "high", f"{available}/{total} sources available."
+        )
+    elif coverage == "partial":
+        source_status = _status_obj(
+            "warn", "partial", f"{available}/{total} sources. Partial coverage."
+        )
+    elif coverage == "no_truth_sources":
+        source_status = _status_obj(
+            "critical", "no_truth_sources", "No truth sources. No data."
+        )
+    else:
+        source_status = _status_obj(
+            "critical", "low", f"{available}/{total} sources. Low coverage."
+        )
+
+    # critical_flags / unknown_flags
+    critical_flags: List[str] = []
+    unknown_flags: List[str] = []
+    if coverage in ("low", "no_truth_sources"):
+        critical_flags.append("low_truth_coverage")
+    if total_older > 0:
+        critical_flags.append("older_sources")
+    if total_stale > 0:
+        critical_flags.append("stale_sources")
+    if unavailable > 0:
+        unknown_flags.append("unavailable_sources")
+
+    executive_summary: Dict[str, object] = {
+        "mode": "truth_first_ops_cockpit_v3",
+        "truth_posture": truth_posture,
+        "truth_status": truth_status,
+        "freshness_status": freshness_status,
+        "source_coverage_status": source_status,
+        "critical_flags": critical_flags,
+        "unknown_flags": unknown_flags,
+    }
+
+    # Flat keys for backward compatibility (additive, nicht umbenennen)
+    return {
+        "executive_summary": executive_summary,
+        "truth_status": truth_status["level"],
+        "freshness_status": freshness_status["level"],
+        "source_coverage_status": source_status["level"],
+        "critical_flags": critical_flags,
+        "unknown_flags": unknown_flags,
+    }
+
+
 def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object]:
     truth_docs = discover_truth_docs(repo_root=repo_root)
     groups = _grouped_sources(truth_docs)
+    group_summaries = {name: _group_summary(items) for name, items in groups.items()}
+    truth_state = build_truth_state(truth_docs)
+    v3_summary = _build_v3_executive_summary(truth_state, group_summaries)
     return {
         "system_state": {
-            "mode": "truth_first_ops_cockpit_v2_8",
+            "mode": "truth_first_ops_cockpit_v3",
             "execution_model": "guarded_execution",
         },
         "guard_state": {
@@ -248,12 +361,18 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
             "deny_by_default": "active",
             "treasury_separation": "enforced",
         },
-        "truth_state": build_truth_state(truth_docs),
+        "truth_state": truth_state,
         "ai_boundary_state": build_ai_boundary_state(),
         "runtime_unknown_state": build_runtime_unknown_state(),
         "source_groups": groups,
-        "source_group_summary": {name: _group_summary(items) for name, items in groups.items()},
+        "source_group_summary": group_summaries,
         "canonical_sources": truth_docs,
+        "executive_summary": v3_summary["executive_summary"],
+        "truth_status": v3_summary["truth_status"],
+        "freshness_status": v3_summary["freshness_status"],
+        "source_coverage_status": v3_summary["source_coverage_status"],
+        "critical_flags": v3_summary["critical_flags"],
+        "unknown_flags": v3_summary["unknown_flags"],
     }
 
 
@@ -290,6 +409,86 @@ def _render_group_summary_block(name: str, summary: Dict[str, int]) -> str:
     )
 
 
+def _status_badge_class(status: str) -> str:
+    """Map status/level to CSS modifier. unknown/stale/no-data stronger than ok."""
+    if status in ("critical", "no_truth_sources"):
+        return "status-badge--critical"
+    if status in ("warn", "low", "stale", "older", "partial"):
+        return "status-badge--warn"
+    if status in ("unknown", "unavailable"):
+        return "status-badge--unknown"
+    return "status-badge--ok"
+
+
+def _render_exec_summary_status_grid(payload: Dict[str, object]) -> str:
+    """Render compact v3 Executive Summary. 4 status cards, flags only if present. Read-only."""
+    exec_sum = payload.get("executive_summary") or {}
+    t_obj = exec_sum.get("truth_status") or {}
+    f_obj = exec_sum.get("freshness_status") or {}
+    s_obj = exec_sum.get("source_coverage_status") or {}
+    truth_level = str(t_obj.get("level", payload.get("truth_status", "unknown")))
+    freshness_level = str(f_obj.get("level", payload.get("freshness_status", "unknown")))
+    source_level = str(s_obj.get("level", payload.get("source_coverage_status", "unknown")))
+    truth_label = str(t_obj.get("label", truth_level))
+    freshness_label = str(f_obj.get("label", freshness_level))
+    source_label = str(s_obj.get("label", source_level))
+    truth_detail = str(t_obj.get("detail", ""))
+    freshness_detail = str(f_obj.get("detail", ""))
+    source_detail = str(s_obj.get("detail", ""))
+    sys_state = payload.get("system_state") or {}
+    mode = str(sys_state.get("mode", "unknown"))
+    critical = payload.get("critical_flags") or []
+    unknown = payload.get("unknown_flags") or []
+
+    t_class = _status_badge_class(truth_level)
+    f_class = _status_badge_class(freshness_level)
+    s_class = _status_badge_class(source_level)
+    mode_class = "status-badge--ok" if mode != "unknown" else "status-badge--unknown"
+
+    def _card(label: str, badge_class: str, value: str, detail: str) -> str:
+        d = f'<p class="status-detail">{escape(detail)}</p>' if detail else ""
+        return (
+            f'<div class="status-card">'
+            f'<span class="status-label">{escape(label)}</span> '
+            f'<span class="status-badge {badge_class} status-value">{escape(value)}</span>'
+            f"{d}"
+            "</div>"
+        )
+
+    mode_detail = "" if mode != "unknown" else "Unknown state."
+    cards = (
+        _card("Mode", mode_class, mode, mode_detail),
+        _card("Truth", t_class, truth_label, truth_detail),
+        _card("Freshness", f_class, freshness_label, freshness_detail),
+        _card("Sources", s_class, source_label, source_detail),
+    )
+
+    flags_html = ""
+    if critical or unknown:
+        parts = []
+        if critical:
+            parts.append(
+                f'<span class="status-badge status-badge--critical">Critical: {", ".join(escape(str(f)) for f in critical)}</span>'
+            )
+        if unknown:
+            parts.append(
+                f'<span class="status-badge status-badge--unknown">Unknown: {", ".join(escape(str(f)) for f in unknown)}</span>'
+            )
+        flags_html = f'<p class="status-flags">{ " ".join(parts) }</p>'
+
+    return (
+        '<div class="exec-summary">'
+        "<h2>Executive Summary</h2>"
+        "<p><strong>Read-only.</strong> No write actions. Operator snapshot.</p>"
+        '<div class="status-grid">'
+        f"{''.join(cards)}"
+        "</div>"
+        '<p class="status-attribution"><strong>Sources:</strong> operator snapshot, system state, truth sections</p>'
+        f"{flags_html}"
+        "</div>"
+    )
+
+
 def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     payload = build_ops_cockpit_payload(repo_root=repo_root)
     truth_state = payload["truth_state"]
@@ -318,12 +517,13 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     canonical_cards = "".join(_render_doc_card(doc) for doc in groups["canonical_boundary"])
     runtime_cards = "".join(_render_doc_card(doc) for doc in groups["runtime_resolution"])
     supporting_cards = "".join(_render_doc_card(doc) for doc in groups["supporting_truth"])
+    exec_summary_html = _render_exec_summary_status_grid(payload)
 
     return f"""<!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Peak_Trade Ops Cockpit v2.9</title>
+  <title>Peak_Trade Ops Cockpit v3</title>
   <style>
     body {{ font-family: Arial, sans-serif; margin: 24px; }}
     .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }}
@@ -335,11 +535,25 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     .chip {{ display: inline-block; margin-left: 4px; margin-right: 6px; }}
     .group-block {{ margin-top: 22px; }}
     code {{ background: #f5f5f5; padding: 2px 4px; border-radius: 4px; }}
+    .exec-summary {{ border: 1px solid #333; border-radius: 12px; padding: 16px; margin-bottom: 20px; background: #fafafa; }}
+    .status-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 12px 0; }}
+    .status-card {{ padding: 10px; border-radius: 8px; border: 1px solid #e0e0e0; }}
+    .status-label {{ display: block; font-size: 0.85em; color: #555; margin-bottom: 4px; }}
+    .status-value {{ margin-left: 0; }}
+    .status-detail {{ font-size: 0.8em; color: #666; margin: 6px 0 0 0; line-height: 1.3; }}
+    .status-attribution {{ font-size: 0.85em; color: #555; margin-top: 12px; }}
+    .status-flags {{ margin-top: 12px; }}
+    .status-badge {{ display: inline-block; padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 0.9em; }}
+    .status-badge--critical {{ background: #d32f2f; color: #fff; }}
+    .status-badge--warn {{ background: #f57c00; color: #fff; }}
+    .status-badge--ok {{ background: #388e3c; color: #fff; }}
+    .status-badge--unknown {{ background: #616161; color: #fff; }}
   </style>
 </head>
 <body>
+  {exec_summary_html}
   <div class="hero">
-    <h1>Ops Cockpit v2.9 — Truth-First</h1>
+    <h1>Ops Cockpit v3 — Truth-First</h1>
     <p>Read-only. No write actions.</p>
     <p>Read-only operations cockpit aligned to the current canonical truth model.</p>
     <p><strong>Last verified:</strong> {escape(str(truth_state["last_verified_utc"]))}</p>
