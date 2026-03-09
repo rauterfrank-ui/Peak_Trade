@@ -22,7 +22,7 @@ def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:
         "# Critic Runtime Resolution v2\n", encoding="utf-8"
     )
     html = render_ops_cockpit_html(repo_root=tmp_path)
-    assert "Ops Cockpit v2.9 — Truth-First" in html
+    assert "Ops Cockpit v3 — Truth-First" in html
     assert "Read-only legends" in html
     assert "Compact Source Summary" in html
     assert "Canonical Boundary Sources" in html
@@ -71,3 +71,100 @@ def test_source_group_summary_present(tmp_path: Path) -> None:
     assert "canonical_boundary" in payload["source_group_summary"]
     assert "runtime_resolution" in payload["source_group_summary"]
     assert "supporting_truth" in payload["source_group_summary"]
+
+
+def test_v3_executive_summary_keys_present(tmp_path: Path) -> None:
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert "executive_summary" in payload
+    assert "truth_status" in payload
+    assert "freshness_status" in payload
+    assert "source_coverage_status" in payload
+    assert "critical_flags" in payload
+    assert "unknown_flags" in payload
+    exec_sum = payload["executive_summary"]
+    assert "mode" in exec_sum
+    assert "truth_posture" in exec_sum
+    assert "truth_status" in exec_sum
+    assert "freshness_status" in exec_sum
+    assert "source_coverage_status" in exec_sum
+    for key in ("truth_status", "freshness_status", "source_coverage_status"):
+        obj = exec_sum[key]
+        assert "level" in obj
+        assert "label" in obj
+        assert "detail" in obj
+
+
+def test_v3_html_contains_executive_summary(tmp_path: Path) -> None:
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Executive Summary" in html
+    assert "status-grid" in html
+    assert "status-label" in html
+    assert "Truth" in html
+    assert "Freshness" in html
+    assert "Sources" in html
+    assert "Mode" in html
+    assert "operator snapshot, system state, truth sections" in html
+
+
+def test_v3_unknown_stale_no_data_stable(tmp_path: Path) -> None:
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["truth_status"] in ("ok", "warn", "critical", "unknown")
+    assert payload["freshness_status"] in ("ok", "warn", "critical", "unknown")
+    assert payload["source_coverage_status"] in ("ok", "warn", "critical", "unknown")
+    assert isinstance(payload["critical_flags"], list)
+    assert isinstance(payload["unknown_flags"], list)
+    assert "unavailable_sources" in payload["unknown_flags"]
+
+
+def test_v3_read_only_truth_first_wording_preserved(tmp_path: Path) -> None:
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Read-only" in html
+    assert "Truth-First" in html
+    assert "Visual emphasis only" in html
+    assert "No write actions" in html
+
+
+def test_build_ops_cockpit_payload_includes_v3_executive_summary(tmp_path: Path) -> None:
+    """Payload enthält executive_summary mit allen v3-Keys."""
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert "executive_summary" in payload
+    exec_sum = payload["executive_summary"]
+    assert "mode" in exec_sum
+    assert "truth_status" in exec_sum
+    assert "freshness_status" in exec_sum
+    assert "source_coverage_status" in exec_sum
+    assert "critical_flags" in exec_sum
+    assert "unknown_flags" in exec_sum
+
+
+def test_render_ops_cockpit_html_renders_v3_summary(tmp_path: Path) -> None:
+    """HTML rendert v3 Executive Summary mit allen Status-Karten."""
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Executive Summary" in html
+    assert "Truth" in html
+    assert "Freshness" in html
+    assert "Sources" in html
+    assert "Read-only" in html
+
+
+def test_render_ops_cockpit_html_marks_unknown_or_stale_state(tmp_path: Path) -> None:
+    """Unknown/stale/no-data Zustände werden markiert, keine Write-Actions."""
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["freshness_status"] in ("unknown", "ok", "warn", "critical")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "unknown" in html or "stale" in html or "Unresolved" in html or "Low" in html
+    assert "No write actions" in html
+    assert "Read-only" in html
+    assert "<button" not in html
+    assert 'method="post"' not in html.lower()
+    assert 'type="submit"' not in html.lower()
+
+
+def test_truth_first_regression(tmp_path: Path) -> None:
+    """Regression: truth-first Erwartungen bleiben erfüllt."""
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["truth_state"]["truth_first_positioning"] == "enabled"
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Truth-First" in html
+    assert "Read-only" in html
+    assert "Visual emphasis only" in html
