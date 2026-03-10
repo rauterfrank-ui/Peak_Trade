@@ -44,7 +44,7 @@ Prioritize salvage or implementation of top-value branches: p101, p22, p80, p99-
 - No live execution changes
 - No autonomous merges
 - Each salvage requires: diff review, test run, operator approval
-- docs/GOVERNANCE_DATAFLOW_REPORT.md and docs/REPO_AUDIT_REPORT.md remain untouched
+- docs/GOVERNANCE_DATAFLOW_REPORT.md and docs/REPO_AUDIT_REPORT.md remain untouched <!-- pt:ref-target-ignore -->
 
 ### Required Evidence
 - Diff vs main for each
