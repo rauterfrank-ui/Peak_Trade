@@ -1,0 +1,10 @@
+theme	branch_count	likely_active_value	likely_historical	duplication_uncertainty	recommended_action
+recover-ops-supervisor-launchd	8	medium-high	high	medium	preserve_p80_p81_p99_archive_rest
+execution-networked-p122-p132	8	low	high	low	archive_after_diff_proof
+observability-reporting-accounting	4	medium-high	high	medium	manual_review_p29
+governance-docs	3	medium-high	medium	medium	keep_p22_archive_rest
+stash-restore-wip	10	unknown-low	high	high	manual_deep_review
+execution-exchange-adapter	5	medium	high	medium	archive_after_diff_proof
+online-readiness-backtest-evidence	8	medium-high	high	medium	manual_review_p28
+workbook-ops-pr-ops	4	high	high	low-medium	keep_p101_archive_rest
+backup-tmp-unknown	11	low	medium	high	disposal_after_proof
