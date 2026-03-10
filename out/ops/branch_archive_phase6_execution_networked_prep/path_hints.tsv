@@ -1,0 +1,9 @@
+branch_name	subtheme	likely_paths
+recover/p122-execution-runbook-v1	runbook	docs/ops/runbooks/execution_wiring_runbook_v1.md,docs/analysis/p122/,tests/p122/
+recover/p123-execution-networked-onramp-v1	runner/onramp	docs/analysis/p123/,tests/p123/
+recover/p124-execution-networked-entry-contract-v1	execution control	src/execution/networked/entry_contract_v1.py,docs/analysis/p124/,tests/p124/
+recover/p126-execution-networked-transport-stub-v1	transport	src/execution/networked/http_client_stub_v1.py,docs/analysis/p126/,tests/p126/
+recover/p127-networked-provider-adapter-stub-v1	execution control	src/execution/networked/providers/base_stub_v1.py,docs/analysis/p127/,tests/p127/
+recover/p128-execution-networked-transport-stub-v1	transport	LIKELY_ALREADY_ON_MAIN
+recover/p130-networked-allowlist-stub-v1	execution control	src/execution/networked/allowlist_v1.py,docs/analysis/p130/,tests/p130/
+recover/p132-networked-transport-allow-handshake-v1	handshake wiring	tests/p128/,tests/p129/,tests/p132/

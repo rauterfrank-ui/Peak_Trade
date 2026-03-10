@@ -1,0 +1,9 @@
+branch_name	uniqueness_bucket	commit_count	diff_lines	rationale
+recover/p122-execution-runbook-v1	STRONGLY_UNIQUE	1	89	docs/runbook + test; execution wiring
+recover/p123-execution-networked-onramp-v1	STRONGLY_UNIQUE	1	63	workbook A2Z; shadow/paper only
+recover/p124-execution-networked-entry-contract-v1	STRONGLY_UNIQUE	1	220	entry_contract_v1.py + guards; src/execution/networked
+recover/p126-execution-networked-transport-stub-v1	STRONGLY_UNIQUE	1	173	http_client_stub_v1.py; disabled by default
+recover/p127-networked-provider-adapter-stub-v1	STRONGLY_UNIQUE	1	129	base_stub_v1.py; default-deny
+recover/p128-execution-networked-transport-stub-v1	LIKELY_ALREADY_ON_MAIN	0	0	git log main..branch empty; diff empty
+recover/p130-networked-allowlist-stub-v1	STRONGLY_UNIQUE	1	88	allowlist_v1.py; default-deny
+recover/p132-networked-transport-allow-handshake-v1	STRONGLY_UNIQUE	1	185	transport_allow handshake wiring; tests p128/p129/p132
