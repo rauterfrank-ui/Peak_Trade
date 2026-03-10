@@ -81,10 +81,19 @@ jobs:
               `- Commit: \`${context.sha}\`\n\n` +
               `Labels:\n- cursor-auto\n- automerge\n`;
 
-            const pr = await github.rest.pulls.create({
-              owner, repo, head, base, title, body,
-              maintainer_can_modify: true
-            });
+            let pr;
+            try {
+              pr = await github.rest.pulls.create({
+                owner, repo, head, base, title, body,
+                maintainer_can_modify: true
+              });
+            } catch (e) {
+              if (e.message && e.message.includes("already exists")) {
+                core.info("PR already exists (race) - treating as success, dispatch will run in next step");
+                return;
+              }
+              throw e;
+            }
 
             // Add labels used by the automerge workflow
             await github.rest.issues.addLabels({
