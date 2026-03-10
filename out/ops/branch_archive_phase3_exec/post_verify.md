@@ -19,8 +19,7 @@
 
 - Deleted branches: absent (spot-checked)
 - Skipped branches (recover/*): preserved per safety gate
-- `docs/GOVERNANCE_DATAFLOW_REPORT.md`: untracked, untouched
-- `docs/REPO_AUDIT_REPORT.md`: untracked, untouched
+- Lokale Governance- und Audit-Reports (untracked): unverändert
 
 ---
 
