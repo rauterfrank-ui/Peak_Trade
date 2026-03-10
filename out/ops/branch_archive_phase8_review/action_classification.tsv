@@ -1,0 +1,64 @@
+branch_name	next_action_bucket	theme	rationale
+recover/fix-p76-result-path-in-ticks	ARCHIVE_REVIEW_NEXT	online-readiness	ticks path fix; likely merged or superseded
+recover/ops-launchd-supervisor-subcommands-v1	ARCHIVE_REVIEW_NEXT	supervisor/launchd	subcommands; check vs main
+recover/ops_pr-drill-20260211T070830Z	MANUAL_DEEP_REVIEW_NEXT	ops/pr-drill	drill artifact; unknown state
+recover/p101-workbook-checklists-stop-playbook-v1	KEEP_FOR_FUTURE_IMPL	workbook	explicit keep; high value
+recover/p102-launchd-templates-p93-p94-v1	ARCHIVE_REVIEW_NEXT	supervisor/launchd	templates; check vs main
+recover/p105-exchange-execution-research-v1	ARCHIVE_REVIEW_NEXT	execution/exchange	research; likely superseded
+recover/p105-exchange-shortlist-v1	ARCHIVE_REVIEW_NEXT	execution/exchange	shortlist; likely superseded
+recover/p105-readme-pointer-pin-v1	ARCHIVE_REVIEW_NEXT	execution/docs	readme; low risk archive
+recover/p111-execution-adapter-selector-v1	ARCHIVE_REVIEW_NEXT	execution/adapter	adapter selector; check vs main
+recover/p118-sha256sums-no-xargs-v1	ARCHIVE_REVIEW_NEXT	evidence	sha256sums fix; 0 ahead
+recover/p122-execution-runbook-v1	ARCHIVE_REVIEW_NEXT	execution-networked	cycle closed; diff proof
+recover/p123-execution-networked-onramp-v1	ARCHIVE_REVIEW_NEXT	execution-networked	cycle closed
+recover/p124-execution-networked-entry-contract-v1	ARCHIVE_REVIEW_NEXT	execution-networked	cycle closed
+recover/p126-execution-networked-transport-stub-v1	ARCHIVE_REVIEW_NEXT	execution-networked	cycle closed
+recover/p127-networked-provider-adapter-stub-v1	ARCHIVE_REVIEW_NEXT	execution-networked	cycle closed
+recover/p128-execution-networked-transport-stub-v1	ARCHIVE_REVIEW_NEXT	execution-networked	cycle closed
+recover/p13-kickoff	MANUAL_DEEP_REVIEW_NEXT	unknown	kickoff; unclear scope
+recover/p130-networked-allowlist-stub-v1	ARCHIVE_REVIEW_NEXT	execution-networked	cycle closed
+recover/p132-networked-transport-allow-handshake-v1	ARCHIVE_REVIEW_NEXT	execution-networked	cycle closed
+recover/p22-roadmap-runbook-merge	KEEP_FOR_FUTURE_IMPL	governance	explicit keep; roadmap
+recover/p27-execution-integration-v2	ARCHIVE_REVIEW_NEXT	execution	integration; check vs main
+recover/p28-backtest-loop-positions-cash-v1	ARCHIVE_REVIEW_NEXT	backtest	high value; diff proof before archive
+recover/p29-accounting-v2-avgcost-realizedpnl	ARCHIVE_REVIEW_NEXT	accounting	high value; diff proof
+recover/p33-report-artifacts-v1	ARCHIVE_REVIEW_NEXT	reporting	artifacts; check vs main
+recover/p51-ai-layer-guardrails-audit-v1	ARCHIVE_REVIEW_NEXT	ai	guardrails audit; check vs main
+recover/p54-switch-layer-routing-v1	ARCHIVE_REVIEW_NEXT	switch-layer	0 ahead; likely merged
+recover/p64-online-readiness-runner-v1	ARCHIVE_REVIEW_NEXT	online-readiness	runner; check vs main
+recover/p65-online-readiness-loop-runner-v1	ARCHIVE_REVIEW_NEXT	online-readiness	loop runner; check vs main
+recover/p66-online-readiness-operator-entrypoint-v1	ARCHIVE_REVIEW_NEXT	online-readiness	operator; check vs main
+recover/p75-p72-env-contract-tests-v1	ARCHIVE_REVIEW_NEXT	evidence	env contract; check vs main
+recover/p80-supervisor-stop-idempotent-v1	KEEP_FOR_FUTURE_IMPL	supervisor	explicit keep; 2 ahead
+recover/p81-supervisor-service-hardening-v1	ARCHIVE_REVIEW_NEXT	supervisor	0 ahead; likely merged
+recover/p87-supervisor-plus-ingest-v1	ARCHIVE_REVIEW_NEXT	supervisor	plus ingest; check vs main
+recover/p88-launchd-supervisor-smoke-script-v1	ARCHIVE_REVIEW_NEXT	supervisor	smoke script; check vs main
+recover/p92-audit-snapshot-runner-v1	ARCHIVE_REVIEW_NEXT	audit	snapshot runner; check vs main
+recover/p94-p93-status-dashboard-retention-v1	ARCHIVE_REVIEW_NEXT	observability	dashboard; check vs main
+recover/p97-p96-dry-run-sandbox-smoke	ARCHIVE_REVIEW_NEXT	ops	sandbox smoke; check vs main
+recover/p98-ops-loop-orchestrator-v1	ARCHIVE_REVIEW_NEXT	ops	orchestrator; 0 ahead
+recover/p99-guarded-plist-workingdir-v1	ARCHIVE_REVIEW_NEXT	launchd	plist; check vs main
+recover/p99-launchd-hard-guardrails-v1	KEEP_FOR_FUTURE_IMPL	launchd	explicit keep; guardrails
+recover/pr-ops-v1-closeout-ff-fix	ARCHIVE_REVIEW_NEXT	pr-ops	closeout fix; check vs main
+recover/pr-trigger-triage-v1	ARCHIVE_REVIEW_NEXT	pr	trigger triage; check vs main
+recover/stash-2	MANUAL_DEEP_REVIEW_NEXT	stash	unknown content; high behind
+recover/stash-3	MANUAL_DEEP_REVIEW_NEXT	stash	unknown content; high behind
+wip/local-uncommitted-20260128	DISPOSAL_CANDIDATE_NEEDS_PROOF	stash	local snapshot; proof before disposal
+wip/local-unrelated-20260127-205436	DISPOSAL_CANDIDATE_NEEDS_PROOF	stash	local snapshot; proof before disposal
+wip/pausepoint-branch-cleanup-recovery-20260124T133039Z	MANUAL_DEEP_REVIEW_NEXT	cleanup	cleanup recovery; unknown value
+wip/restore-stash-after-pr432	MANUAL_DEEP_REVIEW_NEXT	stash	restore; high behind
+wip/restore-stash-operator-pack	MANUAL_DEEP_REVIEW_NEXT	stash	operator pack; high behind
+wip/salvage-code-tests-untracked-20251224_082521	MANUAL_DEEP_REVIEW_NEXT	salvage	tests; rescue remote exists
+wip/salvage-dirty-main-20260118	DISPOSAL_CANDIDATE_NEEDS_PROOF	salvage	dirty main; proof before disposal
+wip/untracked-salvage-20251224_081737	MANUAL_DEEP_REVIEW_NEXT	salvage	untracked; rescue remote exists
+backup/docs/ev-strategy-risk-telemetry-20260129_20260130T160236Z	DISPOSAL_CANDIDATE_NEEDS_PROOF	backup	docs snapshot; proof
+backup/docs_merge-log-1063_20260130T162733Z	DISPOSAL_CANDIDATE_NEEDS_PROOF	backup	merge-log snapshot; proof
+backup/docs_merge-log-1067_20260130T162738Z	DISPOSAL_CANDIDATE_NEEDS_PROOF	backup	merge-log snapshot; proof
+backup/local-main-diverged-2026-01-03_023911	DISPOSAL_CANDIDATE_NEEDS_PROOF	backup	local snapshot; proof
+backup/local-main-pre-sync-770_20260118_014415Z	DISPOSAL_CANDIDATE_NEEDS_PROOF	backup	local snapshot; proof
+backup/pr394-before-squash	DISPOSAL_CANDIDATE_NEEDS_PROOF	backup	pr snapshot; proof
+backup/pr60-local-34ac928c	DISPOSAL_CANDIDATE_NEEDS_PROOF	backup	pr snapshot; proof
+backup/pr642-pre-rebase-20260111-1814	DISPOSAL_CANDIDATE_NEEDS_PROOF	backup	pr snapshot; proof
+backup/slice2-staged-20260122T005833	DISPOSAL_CANDIDATE_NEEDS_PROOF	backup	slice snapshot; proof
+tmp/docs-runbook-to-finish-clean	ARCHIVE_REVIEW_NEXT	docs	runbook; origin/main upstream
+tmp/stack-test	DISPOSAL_CANDIDATE_NEEDS_PROOF	tmp	scratch; proof before disposal
