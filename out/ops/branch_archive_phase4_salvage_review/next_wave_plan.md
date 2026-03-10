@@ -27,7 +27,7 @@ Prüfen und ggf. in main integrieren: recover/p122–p132 Execution-Networked Tr
 - Keine Remote-Mutation außer via PR
 
 ### Erwartete Outputs
-- `out/ops/branch_archive_phase5_salvage_exec/` — Diff-Reports, PR-Liste, Roadmap-Update
+- `out&#47;ops&#47;branch_archive_phase5_salvage_exec&#47;` — Diff-Reports, PR-Liste, Roadmap-Update
 - Dokumentation: was fehlt in main, was ist Roadmap-Debt
 
 ### Go/No-Go
@@ -56,7 +56,7 @@ backup/*, tmp/*, wip/local-*, wip/restore-* nach Prüfung löschen.
 - Backup/Evidence vor Löschung
 
 ### Erwartete Outputs
-- `out/ops/branch_archive_phase5_archive_exec/` — verified_delete, delete_log, post_verify
+- `out&#47;ops&#47;branch_archive_phase5_archive_exec&#47;` — verified_delete, delete_log, post_verify
 
 ### Go/No-Go
 - **Go:** Nach Verifizierung dass alle merged
