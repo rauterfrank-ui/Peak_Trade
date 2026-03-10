@@ -1,0 +1,5 @@
+recover/p118-sha256sums-no-xargs-v1
+recover/p128-execution-networked-transport-stub-v1
+recover/p54-switch-layer-routing-v1
+recover/p81-supervisor-service-hardening-v1
+recover/p98-ops-loop-orchestrator-v1
