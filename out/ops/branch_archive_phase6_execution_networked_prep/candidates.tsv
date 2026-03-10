@@ -1,0 +1,9 @@
+branch_name	exists_local	source_bucket	theme	priority	notes
+recover/p122-execution-runbook-v1	yes	SALVAGE_REVIEW_REQUIRED	execution-networked	high	runbook
+recover/p123-execution-networked-onramp-v1	yes	SALVAGE_REVIEW_REQUIRED	execution-networked	high	onramp
+recover/p124-execution-networked-entry-contract-v1	yes	SALVAGE_REVIEW_REQUIRED	execution-networked	high	entry-contract
+recover/p126-execution-networked-transport-stub-v1	yes	SALVAGE_REVIEW_REQUIRED	execution-networked	high	transport-stub
+recover/p127-networked-provider-adapter-stub-v1	yes	SALVAGE_REVIEW_REQUIRED	execution-networked	high	provider-adapter
+recover/p128-execution-networked-transport-stub-v1	yes	skipped_protected	execution-networked	high	transport-stub
+recover/p130-networked-allowlist-stub-v1	yes	SALVAGE_REVIEW_REQUIRED	execution-networked	high	allowlist
+recover/p132-networked-transport-allow-handshake-v1	yes	SALVAGE_REVIEW_REQUIRED	execution-networked	high	handshake
