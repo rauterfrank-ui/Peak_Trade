@@ -18,7 +18,7 @@
 
 ## Path Hints
 
-- `src/execution/networked/` — entry_contract, http_client_stub, providers, allowlist
-- `docs/analysis/p122/`, `p123/`, `p124/`, `p126/`, `p127/`, `p130/` — README/analysis
-- `docs/ops/runbooks/execution_wiring_runbook_v1.md`
-- `tests/p122/`, `p123/`, `p124/`, `p126/`, `p127/`, `p128/`, `p129/`, `p130/`, `p132/`
+- `src&#47;execution&#47;networked&#47;` — entry_contract, http_client_stub, providers, allowlist
+- `docs&#47;analysis&#47;p122&#47;`, `p123&#47;`, `p124&#47;`, `p126&#47;`, `p127&#47;`, `p130&#47;` — README/analysis
+- `docs&#47;ops&#47;runbooks&#47;execution_wiring_runbook_v1.md`
+- `tests&#47;p122&#47;`, `p123&#47;`, `p124&#47;`, `p126&#47;`, `p127&#47;`, `p128&#47;`, `p129&#47;`, `p130&#47;`, `p132&#47;`
