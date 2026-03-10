@@ -31,5 +31,7 @@
 - [runbooks/](runbooks/) — Runbooks
 
 ### Historical (Referenz)
+- [audit/GOVERNANCE_DATAFLOW_REPORT.md](audit/GOVERNANCE_DATAFLOW_REPORT.md) — Historisch: Dataflow & Governance
+- [audit/REPO_AUDIT_REPORT.md](audit/REPO_AUDIT_REPORT.md) — Historisch: Repo-Inventory & Feature-Matrix
 - [ops/PR_*_MERGE_LOG.md](ops/) — Merge-Logs
 - [ops/_archive/](ops/_archive/) — Archivierte Docs

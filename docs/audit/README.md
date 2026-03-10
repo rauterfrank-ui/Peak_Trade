@@ -12,6 +12,8 @@ Audit-Dokumentation, Security-Scanning, Compliance-Checks und Remediation-Logs f
 
 ## 📊 Audit Reports & Analysis
 
+- **[Governance Dataflow Report](GOVERNANCE_DATAFLOW_REPORT.md)** — Historisch: Dataflow & Governance Coverage (Wave 16)
+- **[Repo Audit Report](REPO_AUDIT_REPORT.md)** — Historisch: Repo-Inventory & Feature-Matrix (Wave 16)
 - **[Audit Complete Summary (2025-12-26)](AUDIT_COMPLETE_SUMMARY_20251226.md)** — Vollständige Audit-Zusammenfassung
 - **[Audit Check Analysis (PR #1-229)](AUDIT_CHECK_ANALYSIS_PR_1_229.md)** — Historische Analyse
 - **[Audit Check Timeline Investigation](AUDIT_CHECK_TIMELINE_INVESTIGATION.md)** — Timeline-Forensik
