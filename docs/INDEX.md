@@ -1,0 +1,35 @@
+# Peak_Trade Documentation Index
+
+> **Zweck:** Zentraler Einstieg in die Peak_Trade-Dokumentation  
+> **Stand:** 2026-03-10  
+> **Status:** canonical
+
+---
+
+## Einstieg
+
+| Dokument | Zweck |
+|----------|-------|
+| [PEAK_TRADE_OVERVIEW.md](PEAK_TRADE_OVERVIEW.md) | Architektur & Schnelleinstieg |
+| [KNOWLEDGE_BASE_INDEX.md](KNOWLEDGE_BASE_INDEX.md) | Vollständiger Dokumentations-Hub |
+
+---
+
+## Gruppierung
+
+### Canonical / Current (autoritativ)
+- [README](../README.md) — Projekt-Einstieg
+- [PEAK_TRADE_OVERVIEW.md](PEAK_TRADE_OVERVIEW.md) — Architektur
+- [KNOWLEDGE_BASE_INDEX.md](KNOWLEDGE_BASE_INDEX.md) — Hub
+- [features/FEHLENDE_FEATURES_PEAK_TRADE.md](features/FEHLENDE_FEATURES_PEAK_TRADE.md) — Fehlende/geplante Features (canonical)
+- [ai/CLAUDE_GUIDE.md](ai/CLAUDE_GUIDE.md) — Technische AI-Referenz
+- [governance/README.md](governance/README.md) — Governance
+
+### Operational (Runbooks, Ops)
+- [ops/RUNBOOK_INDEX.md](ops/RUNBOOK_INDEX.md) — Runbook-Index
+- [ops/](ops/) — Ops-Docs, Merge-Logs
+- [runbooks/](runbooks/) — Runbooks
+
+### Historical (Referenz)
+- [ops/PR_*_MERGE_LOG.md](ops/) — Merge-Logs
+- [ops/_archive/](ops/_archive/) — Archivierte Docs

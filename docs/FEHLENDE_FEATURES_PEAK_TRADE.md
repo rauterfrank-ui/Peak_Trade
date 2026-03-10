@@ -1,5 +1,7 @@
 # Peak Trade – Fehlende / geplante Features (Übersicht)
 
+> **SUPERSEDED:** Canonical version is [docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md](docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md). This file is kept for reference only.
+
 **Stand:** 2026-02-10
 **Zweck:** Vollständige Liste der Features, die in der Architektur/Vision genannt sind oder in Roadmaps/TODOs/Limitations dokumentiert wurden, aber **noch nicht implementiert** sind oder bewusst aus v1.0 ausgenommen wurden.
 **Letzter Abgleich mit Repo:** 2026-02-10.
