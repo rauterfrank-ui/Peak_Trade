@@ -1,0 +1,200 @@
+=== feat/salvage-fix-p76-result-path-in-ticks (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-fix-p76-result-path-in-ticks (was 58132aa7).
+=== feat/salvage-manual-p118-sha256sums-no-xargs-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-manual-p118-sha256sums-no-xargs-v1 (was bdf38800).
+=== feat/salvage-manual-p128-execution-networked-transport-stub-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-manual-p128-execution-networked-transport-stub-v1 (was 58132aa7).
+=== feat/salvage-manual-p54-switch-layer-routing-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-manual-p54-switch-layer-routing-v1 (was 58132aa7).
+=== feat/salvage-manual-p80-supervisor-stop-idempotent-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-manual-p80-supervisor-stop-idempotent-v1 (was bdf38800).
+=== feat/salvage-manual-p81-supervisor-service-hardening-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-manual-p81-supervisor-service-hardening-v1 (was bdf38800).
+=== feat/salvage-manual-p98-ops-loop-orchestrator-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-manual-p98-ops-loop-orchestrator-v1 (was 58132aa7).
+=== feat/salvage-ops-launchd-supervisor-subcommands-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-ops-launchd-supervisor-subcommands-v1 (was 58132aa7).
+=== feat/salvage-ops_pr-drill-20260211T070830Z (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-ops_pr-drill-20260211T070830Z (was 58132aa7).
+=== feat/salvage-p101-workbook-checklists-stop-playbook-v (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p101-workbook-checklists-stop-playbook-v (was 58132aa7).
+=== feat/salvage-p102-launchd-templates-p93-p94-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p102-launchd-templates-p93-p94-v1 (was 58132aa7).
+=== feat/salvage-p105-exchange-execution-research-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p105-exchange-execution-research-v1 (was 58132aa7).
+=== feat/salvage-p105-exchange-shortlist-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p105-exchange-shortlist-v1 (was 58132aa7).
+=== feat/salvage-p105-readme-pointer-pin-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p105-readme-pointer-pin-v1 (was 58132aa7).
+=== feat/salvage-p111-execution-adapter-selector-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p111-execution-adapter-selector-v1 (was 58132aa7).
+=== feat/salvage-p118-sha256sums-no-xargs-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p118-sha256sums-no-xargs-v1 (was 58132aa7).
+=== feat/salvage-p122-execution-runbook-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p122-execution-runbook-v1 (was 58132aa7).
+=== feat/salvage-p123-execution-networked-onramp-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p123-execution-networked-onramp-v1 (was 58132aa7).
+=== feat/salvage-p124-execution-networked-entry-contract- (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p124-execution-networked-entry-contract- (was 58132aa7).
+=== feat/salvage-p126-execution-networked-transport-stub- (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p126-execution-networked-transport-stub- (was 58132aa7).
+=== feat/salvage-p127-networked-provider-adapter-stub-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p127-networked-provider-adapter-stub-v1 (was 58132aa7).
+=== feat/salvage-p128-execution-networked-transport-stub- (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p128-execution-networked-transport-stub- (was 58132aa7).
+=== feat/salvage-p13-kickoff (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p13-kickoff (was 58132aa7).
+=== feat/salvage-p130-networked-allowlist-stub-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p130-networked-allowlist-stub-v1 (was 58132aa7).
+=== feat/salvage-p132-networked-transport-allow-handshake (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p132-networked-transport-allow-handshake (was 58132aa7).
+=== feat/salvage-p22-roadmap-runbook-merge (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p22-roadmap-runbook-merge (was 58132aa7).
+=== feat/salvage-p27-execution-integration-v2 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p27-execution-integration-v2 (was 58132aa7).
+=== feat/salvage-p28-backtest-loop-positions-cash-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p28-backtest-loop-positions-cash-v1 (was 58132aa7).
+=== feat/salvage-p29-accounting-v2-avgcost-realizedpnl (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p29-accounting-v2-avgcost-realizedpnl (was 58132aa7).
+=== feat/salvage-p33-report-artifacts-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p33-report-artifacts-v1 (was 58132aa7).
+=== feat/salvage-p51-ai-layer-guardrails-audit-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p51-ai-layer-guardrails-audit-v1 (was 58132aa7).
+=== feat/salvage-p54-switch-layer-routing-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p54-switch-layer-routing-v1 (was 58132aa7).
+=== feat/salvage-p64-online-readiness-runner-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p64-online-readiness-runner-v1 (was 58132aa7).
+=== feat/salvage-p65-online-readiness-loop-runner-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p65-online-readiness-loop-runner-v1 (was 58132aa7).
+=== feat/salvage-p66-online-readiness-operator-entrypoint (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p66-online-readiness-operator-entrypoint (was 58132aa7).
+=== feat/salvage-p75-p72-env-contract-tests-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p75-p72-env-contract-tests-v1 (was 58132aa7).
+=== feat/salvage-p80-supervisor-stop-idempotent-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p80-supervisor-stop-idempotent-v1 (was 58132aa7).
+=== feat/salvage-p81-supervisor-service-hardening-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p81-supervisor-service-hardening-v1 (was 58132aa7).
+=== feat/salvage-p87-supervisor-plus-ingest-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p87-supervisor-plus-ingest-v1 (was 58132aa7).
+=== feat/salvage-p88-launchd-supervisor-smoke-script-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p88-launchd-supervisor-smoke-script-v1 (was 58132aa7).
+=== feat/salvage-p92-audit-snapshot-runner-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p92-audit-snapshot-runner-v1 (was 58132aa7).
+=== feat/salvage-p94-p93-status-dashboard-retention-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p94-p93-status-dashboard-retention-v1 (was 58132aa7).
+=== feat/salvage-p97-p96-dry-run-sandbox-smoke (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p97-p96-dry-run-sandbox-smoke (was 58132aa7).
+=== feat/salvage-p98-ops-loop-orchestrator-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p98-ops-loop-orchestrator-v1 (was 58132aa7).
+=== feat/salvage-p99-guarded-plist-workingdir-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p99-guarded-plist-workingdir-v1 (was 58132aa7).
+=== feat/salvage-p99-launchd-hard-guardrails-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-p99-launchd-hard-guardrails-v1 (was 58132aa7).
+=== feat/salvage-pr-ops-v1-closeout-ff-fix (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-pr-ops-v1-closeout-ff-fix (was 58132aa7).
+=== feat/salvage-pr-trigger-triage-v1 (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/salvage-pr-trigger-triage-v1 (was 58132aa7).
+=== feat/webui-ops-cockpit-v2-2-status-priority (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch feat/webui-ops-cockpit-v2-2-status-priority (was 4940b1b2).
+=== fix/untrack-out-ops-scratch (exit=0) ===
+error: could not write config file .git/config: Operation not permitted
+warning: update of config-file failed
+Deleted branch fix/untrack-out-ops-scratch (was ec1e13e5).
