@@ -24,8 +24,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: prk-prj-status-report-${{ github.ref }}
-  -${{ github.event_name }}cancel-in-progress: true
+  group: prk-prj-status-report-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
 
 jobs:
   prj-status-report:

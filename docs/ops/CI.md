@@ -52,3 +52,11 @@ Retention: 7 days
 - Smoke test skips gracefully if validation script doesn't exist yet
 - Fast Lane provides early visibility into contract violations
 - Full suite execution provides defense against test ordering bugs
+
+---
+
+## Scheduled Workflow Variable Gates
+
+Several scheduled workflows are gated by repository variables. When unset, jobs are skipped on schedule.
+
+**Canonical reference:** [CI_SCHEDULED_WORKFLOW_VARIABLE_GATES.md](CI_SCHEDULED_WORKFLOW_VARIABLE_GATES.md)
