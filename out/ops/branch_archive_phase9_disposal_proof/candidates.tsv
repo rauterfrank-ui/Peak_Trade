@@ -1,0 +1,14 @@
+branch_name	category	still_exists_local	upstream	theme	initial_wave17_reason
+wip/local-uncommitted-20260128	wip	yes	none	stash	local snapshot; proof before disposal
+wip/local-unrelated-20260127-205436	wip	yes	none	stash	local snapshot; proof before disposal
+wip/salvage-dirty-main-20260118	wip	yes	none	salvage	dirty main; proof before disposal
+backup/docs/ev-strategy-risk-telemetry-20260129_20260130T160236Z	backup	yes	none	backup	docs snapshot; proof
+backup/docs_merge-log-1063_20260130T162733Z	backup	yes	none	backup	merge-log snapshot; proof
+backup/docs_merge-log-1067_20260130T162738Z	backup	yes	none	backup	merge-log snapshot; proof
+backup/local-main-diverged-2026-01-03_023911	backup	yes	none	backup	local snapshot; proof
+backup/local-main-pre-sync-770_20260118_014415Z	backup	yes	none	backup	local snapshot; proof
+backup/pr394-before-squash	backup	yes	none	backup	pr snapshot; proof
+backup/pr60-local-34ac928c	backup	yes	none	backup	pr snapshot; proof
+backup/pr642-pre-rebase-20260111-1814	backup	yes	none	backup	pr snapshot; proof
+backup/slice2-staged-20260122T005833	backup	yes	none	backup	slice snapshot; proof
+tmp/stack-test	tmp	yes	none	tmp	scratch; proof before disposal

@@ -1,0 +1,14 @@
+branch_name	proof_outcome	ahead	behind	unique_files	unique_insertions	merge_base_ancestor	rationale
+backup/docs_merge-log-1063_20260130T162733Z	SAFE_DELETE_PROOF_READY	3	634	1	36	no	PR_1063_MERGE_LOG.md identical on main; backup branch only merge commits
+backup/docs_merge-log-1067_20260130T162738Z	SAFE_DELETE_PROOF_READY	3	634	1	43	no	PR_1067_MERGE_LOG.md identical on main; backup branch only merge commits
+wip/salvage-dirty-main-20260118	LOCAL_ONLY_NOISE_LIKELY_DISPOSABLE	1	899	1	18	no	Single evidence doc; low value; 899 behind main
+backup/docs/ev-strategy-risk-telemetry-20260129_20260130T160236Z	LOCAL_ONLY_NOISE_LIKELY_DISPOSABLE	1	635	2	92	no	Docs/evidence snapshot; 635 behind; likely superseded
+backup/local-main-diverged-2026-01-03_023911	LOCAL_ONLY_NOISE_LIKELY_DISPOSABLE	1	1180	1	78	no	HANDOVER doc; exists on main; branch only adds handover; 1180 behind
+backup/local-main-pre-sync-770_20260118_014415Z	LOW_VALUE_NOT_MERGED_KEEP_FOR_NOW	1	935	1	34	no	SHADOW_MVS_CONTRACT.md not on main; may have unique content; keep for now
+backup/slice2-staged-20260122T005833	LOW_VALUE_NOT_MERGED_KEEP_FOR_NOW	3	781	3	152	no	Runbooks + execution_watch; 3 ahead; verify before delete
+wip/local-uncommitted-20260128	LOW_VALUE_NOT_MERGED_KEEP_FOR_NOW	1	667	6	70	no	WIP: src/strategies, src/sweeps; small code; 1 ahead; keep for now
+backup/pr394-before-squash	LOW_VALUE_NOT_MERGED_KEEP_FOR_NOW	3	1280	15	1852	no	PR394 backup; likely merged; 15 files; verify PR394 status before delete
+backup/pr60-local-34ac928c	MANUAL_REVIEW_STILL_REQUIRED	6	1604	47	3347	no	47 files; old PR60 backup; substantial code; manual review
+backup/pr642-pre-rebase-20260111-1814	MANUAL_REVIEW_STILL_REQUIRED	1	1057	7	1789	no	AI orchestration tests; 7 files; substantial; manual review
+wip/local-unrelated-20260127-205436	MANUAL_REVIEW_STILL_REQUIRED	2	696	31	1662	no	31 files; optional deps, ccxt tests; substantial; manual review
+tmp/stack-test	MANUAL_REVIEW_STILL_REQUIRED	3	656	13	1440	no	Execution ledger tests; 13 files; substantial; manual review
