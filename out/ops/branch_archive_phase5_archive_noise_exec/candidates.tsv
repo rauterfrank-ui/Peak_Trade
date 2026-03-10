@@ -1,0 +1,13 @@
+branch_name	source_bucket	theme	recommended_action	safety_notes
+backup/docs/ev-strategy-risk-telemetry-20260129_20260130T160236Z	SAFE_ARCHIVE_KEEP_LOCAL_FOR_NOW	archive-noise	ARCHIVE_AFTER_REVIEW	backup; verify merged
+backup/local-main-diverged-2026-01-03_023911	SAFE_ARCHIVE_KEEP_LOCAL_FOR_NOW	archive-noise	ARCHIVE_AFTER_REVIEW	backup; verify merged
+backup/local-main-pre-sync-770_20260118_014415Z	SAFE_ARCHIVE_KEEP_LOCAL_FOR_NOW	archive-noise	ARCHIVE_AFTER_REVIEW	backup; verify merged
+backup/pr394-before-squash	SAFE_ARCHIVE_KEEP_LOCAL_FOR_NOW	archive-noise	ARCHIVE_AFTER_REVIEW	backup; verify merged
+backup/pr60-local-34ac928c	SAFE_ARCHIVE_KEEP_LOCAL_FOR_NOW	archive-noise	ARCHIVE_AFTER_REVIEW	backup; verify merged
+backup/pr642-pre-rebase-20260111-1814	SAFE_ARCHIVE_KEEP_LOCAL_FOR_NOW	archive-noise	ARCHIVE_AFTER_REVIEW	backup; verify merged
+backup/slice2-staged-20260122T005833	SAFE_ARCHIVE_KEEP_LOCAL_FOR_NOW	archive-noise	ARCHIVE_AFTER_REVIEW	backup; verify merged
+tmp/docs-runbook-to-finish-clean	SAFE_ARCHIVE_KEEP_LOCAL_FOR_NOW	archive-noise	ARCHIVE_AFTER_REVIEW	tmp; verify merged
+wip/local-uncommitted-20260128	SAFE_ARCHIVE_KEEP_LOCAL_FOR_NOW	archive-noise	ARCHIVE_AFTER_REVIEW	wip; verify merged
+wip/local-unrelated-20260127-205436	SAFE_ARCHIVE_KEEP_LOCAL_FOR_NOW	archive-noise	ARCHIVE_AFTER_REVIEW	wip; verify merged
+wip/restore-stash-after-pr432	SAFE_ARCHIVE_KEEP_LOCAL_FOR_NOW	archive-noise	ARCHIVE_AFTER_REVIEW	wip; verify merged
+wip/restore-stash-operator-pack	SAFE_ARCHIVE_KEEP_LOCAL_FOR_NOW	archive-noise	ARCHIVE_AFTER_REVIEW	wip; verify merged
