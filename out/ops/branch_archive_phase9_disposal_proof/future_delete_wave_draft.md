@@ -7,8 +7,8 @@
 
 Only these 2 branches have verified identical content on main:
 
-1. `backup/docs_merge-log-1063_20260130T162733Z`
-2. `backup/docs_merge-log-1067_20260130T162738Z`
+1. `backup&#47;docs_merge-log-1063_20260130T162733Z`
+2. `backup&#47;docs_merge-log-1067_20260130T162738Z`
 
 ## Pre-Delete Verification (Run Immediately Before Deletion)
 
