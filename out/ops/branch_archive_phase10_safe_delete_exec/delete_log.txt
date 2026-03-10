@@ -1,0 +1,16 @@
+2026-03-10 Wave 19 Safe Delete Execution — delete_log
+====================================================
+
+Attempt 1: git branch -d backup/docs_merge-log-1063_20260130T162733Z
+stdout: (none)
+stderr: error: the branch 'backup/docs_merge-log-1063_20260130T162733Z' is not fully merged
+hint: If you are sure you want to delete it, run 'git branch -D backup/docs_merge-log-1063_20260130T162733Z'
+hint: Disable this message with "git config set advice.forceDeleteBranch false"
+exit_code: 1
+
+Attempt 2: git branch -d backup/docs_merge-log-1067_20260130T162738Z
+stdout: (none)
+stderr: error: the branch 'backup/docs_merge-log-1067_20260130T162738Z' is not fully merged
+hint: If you are sure you want to delete it, run 'git branch -D backup/docs_merge-log-1067_20260130T162738Z'
+hint: Disable this message with "git config set advice.forceDeleteBranch false"
+exit_code: 1
