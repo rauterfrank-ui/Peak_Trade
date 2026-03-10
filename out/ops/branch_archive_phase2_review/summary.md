@@ -80,4 +80,4 @@
 - Alle Phase-1-Inputs vorhanden
 - 6 Output-Dateien erstellt
 - Keine Branch-Löschung durchgeführt
-- docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md unverändert
+- Lokale Governance- und Audit-Reports (untracked) unverändert
