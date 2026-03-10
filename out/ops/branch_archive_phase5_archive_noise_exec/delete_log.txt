@@ -1,0 +1,4 @@
+# Wave 6 Option B — Deletion Log
+# verified_delete.txt was empty (0 branches passed merge-base check)
+# No deletions attempted.
+# All 12 candidates were skipped_not_merged (not merged into main).

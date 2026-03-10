@@ -1,0 +1,12 @@
+backup/docs/ev-strategy-risk-telemetry-20260129_20260130T160236Z
+backup/local-main-diverged-2026-01-03_023911
+backup/local-main-pre-sync-770_20260118_014415Z
+backup/pr394-before-squash
+backup/pr60-local-34ac928c
+backup/pr642-pre-rebase-20260111-1814
+backup/slice2-staged-20260122T005833
+tmp/docs-runbook-to-finish-clean
+wip/local-uncommitted-20260128
+wip/local-unrelated-20260127-205436
+wip/restore-stash-after-pr432
+wip/restore-stash-operator-pack
