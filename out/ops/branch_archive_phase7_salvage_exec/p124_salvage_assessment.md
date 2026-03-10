@@ -7,7 +7,7 @@
 
 ## Source Branch
 
-- **Name:** `recover/p124-execution-networked-entry-contract-v1`
+- **Name:** `recover&#47;p124-execution-networked-entry-contract-v1`
 - **Exists:** yes
 - **Commit:** 5f0cfb75 feat(p124): add execution networked entry contract v1 (guards only, no transport)
 
