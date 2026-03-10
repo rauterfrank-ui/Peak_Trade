@@ -28,9 +28,11 @@ Datenquellen → Research & Feature-Engine → Strategie / Signale → Risk Laye
 | **Indikatoren (TA)** | ✅ Teilweise | In Strategien/Regime verteilt (MA, RSI, ATR, Vol-Score etc.), nicht als einheitliche Feature-Pipeline. |
 | **Regime-Labels** | ✅ Vorhanden | ``src&#47;regime&#47;``, ``src&#47;core&#47;regime.py``, ``src&#47;analytics&#47;regimes.py``. |
 | **Volatilitäts-Cluster** | ✅ Teilweise | Vol-Regime/Labels vorhanden; „Cluster“-Pipeline nicht als eigenes Feature-Modul. |
-| **ECM-Fenster / ECM-Features** | ❌ Fehlt | In ``src&#47;features&#47;__init__.py`` als „später“ genannt, nicht implementiert. |
+| **ECM-Fenster / ECM-Features** | ⚠️ Differenziert | **Armstrong ECM** (``src&#47;strategies&#47;ecm.py``, ``src&#47;strategies&#47;armstrong&#47;``) ist implementiert. **Feature-Engine ECM-Fenster** (``src&#47;features&#47;``) ist Placeholder, nicht implementiert. |
 | **Sentiment (News/Makro/Krypto-Onchain)** | ❌ Fehlt | In trading_bot_notes als „optional, später“ genannt. |
 | **Orderbuch-/Tickdaten** | ❌ Fehlt | In trading_bot_notes als „später“ genannt. |
+
+**ECM-Differenzierung (Code vs. Docs):** Armstrong ECM ist als Strategie implementiert; Feature-Engine ECM-Fenster als zentrale Schicht fehlt. Siehe Code-Drift in CANONICAL_DOC_SET.
 
 ---
 
