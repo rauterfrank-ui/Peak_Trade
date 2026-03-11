@@ -136,6 +136,15 @@ All runbooks should follow this structure:
 
 ---
 
+## Workflow Policy Docs
+
+Policy-Dokumente für illustrative Pfade und Workflow-Konventionen (relevant für Docs-Gates):
+
+- [WORKFLOW_NOTES_FRONTDOOR.md](../workflows/WORKFLOW_NOTES_FRONTDOOR.md) — Policy für `&#47;`-Encoding in Markdown
+- [PEAK_TRADE_WORKFLOW_NOTES_2025-12-03.md](../workflows/PEAK_TRADE_WORKFLOW_NOTES_2025-12-03.md) — Historische Workflow-Notizen
+
+---
+
 ## Related Documentation
 
 - [../README.md](../README.md) — Docs Ops overview
