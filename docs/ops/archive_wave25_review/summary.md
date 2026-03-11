@@ -42,7 +42,7 @@ Wave 25 performed a **classification and planning** review for archive/historica
 ## Untracked Local Docs Status
 
 - **docs/GOVERNANCE_DATAFLOW_REPORT.md:** Untracked, untouched ✓ <!-- pt:ref-target-ignore -->
-- **docs/REPO_AUDIT_REPORT.md:** Untracked, untouched ✓
+- **docs/REPO_AUDIT_REPORT.md:** Untracked, untouched ✓ <!-- pt:ref-target-ignore -->
 
 ---
 
