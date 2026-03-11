@@ -1,0 +1,36 @@
+path	area	type	final_bucket	rationale_short
+docs/_worklogs/2025-12-23_untracked_salvage/README.md	docs/_worklogs	worklog	HISTORICAL_REFERENCE_CANDIDATE	Worklog; no index/runbook refs; historical salvage context
+docs/_worklogs/2025-12-23_untracked_salvage/PHASE_3_COMPLETION_SUMMARY.md	docs/_worklogs	completion_summary	HISTORICAL_REFERENCE_CANDIDATE	Completion summary; no operational refs
+docs/_worklogs/2025-12-23_untracked_salvage/PR_X1_FINAL_REPORT.md	docs/_worklogs	phase_report	HISTORICAL_REFERENCE_CANDIDATE	Historical PR report; no operational refs
+docs/_worklogs/2025-12-23_untracked_salvage/PR_X1_TRACKING_LAYER_REPORT.md	docs/_worklogs	phase_report	HISTORICAL_REFERENCE_CANDIDATE	Historical PR report; no operational refs
+docs/_worklogs/2025-12-23_untracked_salvage/PR_X2_PARAMETER_SCHEMA_OPTUNA_REPORT.md	docs/_worklogs	phase_report	HISTORICAL_REFERENCE_CANDIDATE	Historical PR report; no operational refs
+docs/_worklogs/2025-12-23_untracked_salvage/PR_X3_ACCELERATION_SCAFFOLDING_REPORT.md	docs/_worklogs	phase_report	HISTORICAL_REFERENCE_CANDIDATE	Historical PR report; no operational refs
+docs/_worklogs/2025-12-23_untracked_salvage/STRATEGY_LAYER_VNEXT_IMPLEMENTATION_REPORT.md	docs/_worklogs	phase_report	HISTORICAL_REFERENCE_CANDIDATE	Historical implementation report; no operational refs
+docs/_worklogs/2025-12-23_untracked_salvage/STRATEGY_LAYER_VNEXT_PHASE2_REPORT.md	docs/_worklogs	phase_report	HISTORICAL_REFERENCE_CANDIDATE	Historical phase report; no operational refs
+docs/_worklogs/2025-12-23_untracked_salvage/STRATEGY_LAYER_VNEXT_PHASE3_REPORT.md	docs/_worklogs	phase_report	HISTORICAL_REFERENCE_CANDIDATE	Historical phase report; no operational refs
+out/ops/branch_archive_phase2_review/	out/ops	branch_archive	ARCHIVE_CANDIDATE	Review artifact; no operational refs; low risk
+out/ops/branch_archive_phase3_exec/	out/ops	branch_archive	ARCHIVE_CANDIDATE	Review artifact; no operational refs; low risk
+out/ops/branch_archive_phase4_salvage_review/	out/ops	branch_archive	ARCHIVE_CANDIDATE	Review artifact; no operational refs; low risk
+out/ops/branch_archive_phase5_archive_noise_exec/	out/ops	branch_archive	ARCHIVE_CANDIDATE	Review artifact; no operational refs; low risk
+out/ops/branch_archive_phase6_execution_networked_prep/	out/ops	branch_archive	ARCHIVE_CANDIDATE	Review artifact; no operational refs; low risk
+out/ops/branch_archive_phase7_salvage_exec/	out/ops	branch_archive	ARCHIVE_CANDIDATE	Review artifact; no operational refs; low risk
+out/ops/branch_archive_phase8_review/	out/ops	branch_archive	ARCHIVE_CANDIDATE	Review artifact; no operational refs; low risk
+out/ops/branch_archive_phase9_disposal_proof/	out/ops	branch_archive	ARCHIVE_CANDIDATE	Review artifact; no operational refs; low risk
+out/ops/branch_archive_phase10_safe_delete_exec/	out/ops	branch_archive	ARCHIVE_CANDIDATE	Review artifact; no operational refs; low risk
+out/ops/branch_archive_phase11_top_value_review/	out/ops	branch_archive	ARCHIVE_CANDIDATE	Review artifact; no operational refs; low risk
+out/ops/branch_archive_phase12_salvage_now_batch/	out/ops	branch_archive	ARCHIVE_CANDIDATE	Review artifact; no operational refs; low risk
+docs/audit/GOVERNANCE_DATAFLOW_REPORT.md	docs/audit	audit_report	KEEP_ACTIVE_UNTIL_PROVEN_SAFE	Indexed; audit/README links; evidence chain
+docs/audit/REPO_AUDIT_REPORT.md	docs/audit	audit_report	KEEP_ACTIVE_UNTIL_PROVEN_SAFE	Indexed; audit/README links; evidence chain
+docs/GOVERNANCE_DATAFLOW_REPORT.md	docs	untracked_local	KEEP_ACTIVE_UNTIL_PROVEN_SAFE	Explicit preservation; untracked
+docs/REPO_AUDIT_REPORT.md	docs	untracked_local	KEEP_ACTIVE_UNTIL_PROVEN_SAFE	Explicit preservation; untracked
+docs/ops/PR_*_MERGE_LOG.md	docs/ops	merge_log	KEEP_ACTIVE_UNTIL_PROVEN_SAFE	Evidence chain; INDEX Historical
+docs/ops/merge_logs/*.md	docs/ops	merge_log	KEEP_ACTIVE_UNTIL_PROVEN_SAFE	Evidence chain; runbook refs
+docs/ops/_archive/	docs/ops	archive	KEEP_ACTIVE_UNTIL_PROVEN_SAFE	Runbook refs; already archived
+docs/ops/archives/	docs/ops	archive	KEEP_ACTIVE_UNTIL_PROVEN_SAFE	Runbook refs; already archived
+docs/INDEX.md	docs	index	KEEP_ACTIVE_UNTIL_PROVEN_SAFE	Canonical index; CRITICAL
+docs/ops/RUNBOOK_INDEX.md	docs/ops	index	KEEP_ACTIVE_UNTIL_PROVEN_SAFE	Canonical runbook index; CRITICAL
+docs/audit/README.md	docs/audit	index	KEEP_ACTIVE_UNTIL_PROVEN_SAFE	Canonical audit index; CRITICAL
+docs/audit/AUDIT_RUNBOOK_COMPLETE.md	docs/audit	runbook	KEEP_ACTIVE_UNTIL_PROVEN_SAFE	Operational runbook; CRITICAL
+docs/ops/runbooks/	docs/ops	runbooks	KEEP_ACTIVE_UNTIL_PROVEN_SAFE	Operational runbooks; CRITICAL
+PRE_FLIGHT_CHECKLIST_RUNBOOK_OPS.md	root	runbook	KEEP_ACTIVE_UNTIL_PROVEN_SAFE	Operational runbook; CRITICAL
+WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md	root	workflow	KEEP_ACTIVE_UNTIL_PROVEN_SAFE	Operational workflow; CRITICAL
