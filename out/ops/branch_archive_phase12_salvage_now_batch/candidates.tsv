@@ -1,0 +1,7 @@
+branch_name	exists	commit_count	unique_files	insertions	deletions
+recover/p22-roadmap-runbook-merge	yes	1	1	918	1
+recover/p99-launchd-hard-guardrails-v1	yes	1	2	36	3
+recover/p28-backtest-loop-positions-cash-v1	yes	1	5	201	0
+recover/p29-accounting-v2-avgcost-realizedpnl	yes	1	5	240	0
+recover/p111-execution-adapter-selector-v1	yes	1	3	104	0
+recover/ops-launchd-supervisor-subcommands-v1	yes	1	3	100	9
