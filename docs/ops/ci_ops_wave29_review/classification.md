@@ -40,8 +40,8 @@
 |-------------|--------|
 | config/ci/required_status_checks.json | Branch protection contract; no change without proof |
 | .github/workflows/*.yml | Workflow semantics; no change in proof wave |
-| docs/GOVERNANCE_DATAFLOW_REPORT.md | Untracked; explicit preservation |
-| docs/REPO_AUDIT_REPORT.md | Untracked; explicit preservation |
+| docs&#47;GOVERNANCE_DATAFLOW_REPORT.md | Untracked; explicit preservation |
+| docs&#47;REPO_AUDIT_REPORT.md | Untracked; explicit preservation |
 | scripts/ci/validate_required_checks_hygiene.py | Validates config; no change |
 | GitHub branch protection settings | Operator-controlled; no automated change |
 
