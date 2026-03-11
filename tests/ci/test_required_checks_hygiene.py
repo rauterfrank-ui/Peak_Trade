@@ -266,3 +266,64 @@ jobs:
         # Should PASS (at least one always-on workflow exists)
         assert success is True
         assert len(validator.findings) == 0
+
+
+def test_pass_when_matrix_job_name_expanded_and_required(fixtures_dir):
+    """
+    Test PASS case: Required context is a matrix-expanded job name.
+
+    Fixture: matrix_job.yml
+    - Has pull_request trigger
+    - Job name: tests (${{ matrix.python-version }}) with matrix 3.9, 3.10, 3.11
+    - Runtime emits: tests (3.9), tests (3.10), tests (3.11)
+    - Config requires "tests (3.11)"
+    - Should PASS (validator expands matrix and recognizes tests (3.11))
+    """
+    with tempfile.TemporaryDirectory() as tmpdir:
+        workflows_dir = Path(tmpdir) / "workflows"
+        workflows_dir.mkdir()
+        (workflows_dir / "matrix_job.yml").write_text((fixtures_dir / "matrix_job.yml").read_text())
+        config = fixtures_dir / "test_config_matrix.json"
+        validator = RequiredChecksValidator(
+            config_path=config,
+            workflow_dir=workflows_dir,
+            strict=False,
+        )
+        success = validator.validate()
+        assert success is True
+        assert len(validator.findings) == 0
+
+
+def test_fail_when_matrix_expanded_name_truly_missing(fixtures_dir):
+    """
+    Test FAIL case: Required context does not match any matrix expansion.
+
+    Fixture: matrix_job.yml (expands to tests (3.9), tests (3.10), tests (3.11))
+    - Config requires "tests (3.12)" which is not in matrix
+    - Should FAIL (not produced)
+    """
+    with tempfile.TemporaryDirectory() as tmpdir:
+        workflows_dir = Path(tmpdir) / "workflows"
+        workflows_dir.mkdir()
+        (workflows_dir / "matrix_job.yml").write_text((fixtures_dir / "matrix_job.yml").read_text())
+        config_path = Path(tmpdir) / "test_config.json"
+        config_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": "1.0.0",
+                    "required_contexts": ["tests (3.12)"],
+                    "ignored_contexts": [],
+                    "notes": "tests (3.12) not in matrix",
+                }
+            )
+        )
+        validator = RequiredChecksValidator(
+            config_path=config_path,
+            workflow_dir=workflows_dir,
+            strict=False,
+        )
+        success = validator.validate()
+        assert success is False
+        assert len(validator.findings) == 1
+        assert validator.findings[0]["context"] == "tests (3.12)"
+        assert "not produced" in validator.findings[0]["reason"]
