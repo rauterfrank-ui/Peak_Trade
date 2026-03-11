@@ -64,7 +64,7 @@
 
 Die wichtigsten PR-relevanten Checks (inkl. required contexts config) sind in `config&#47;ci&#47;required_status_checks.json` definiert; die Workflows, die diese Checks erzeugen, sind in den YAMLs implementiert.
 
-**Branch Protection:** Nur **PR Gate** ist required; alle anderen dokumentierten Gates sind informational oder in `ignored_contexts` (siehe `required_status_checks.json`).
+**Branch Protection:** Nur **PR Gate** ist required; alle anderen dokumentierten Gates sind informational oder in `ignored_contexts` (siehe `required_status_checks.json`). Die tatsächlichen required contexts auf GitHub können von der Config abweichen. Siehe `gh api repos/<owner>/<repo>/branches/main/protection` für den aktuellen Stand.
 
 - **Workflow `CI`** (`.github/workflows/ci.yml`)
   - Job/Check: `ci-required-contexts-contract` (runs always)
