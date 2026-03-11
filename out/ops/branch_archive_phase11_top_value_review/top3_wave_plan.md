@@ -29,10 +29,10 @@ Salvage the 6 branches classified SALVAGE_NOW with highest confidence and lowest
 - No live execution changes
 - Run tests before/after each salvage
 - Conflict assessment per branch
-- docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md untouched
+- docs&#47;GOVERNANCE_DATAFLOW_REPORT.md, docs&#47;REPO_AUDIT_REPORT.md untouched
 
 ### Expected Validations
-- `pytest tests/p28 tests/p29 tests/p88 tests/p111 -q`
+- `pytest tests&#47;p28 tests&#47;p29 tests&#47;p88 tests&#47;p111 -q`
 - No new lint/type errors
 - Merge conflict resolution documented
 
