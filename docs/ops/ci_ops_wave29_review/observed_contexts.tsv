@@ -1,0 +1,13 @@
+context_name	branch_protection_required	config_required	config_ignored	produced_by_workflow	observed_on_main
+Guard tracked files in reports directories	1	0	1	policy_tracked_reports_guard.yml	1
+audit	1	0	0	audit.yml	1
+tests (3.11)	1	0	1	ci.yml	1
+strategy-smoke	1	0	1	ci.yml	1
+Policy Critic Gate	1	0	1	policy_critic_gate.yml	1
+Lint Gate	1	0	1	lint_gate.yml	1
+dispatch-guard	1	0	1	ci-workflow-dispatch-guard.yml	1
+docs-token-policy-gate	1	0	0	docs-token-policy-gate.yml	1
+docs-reference-targets-gate	1	0	1	docs_reference_targets_gate.yml	1
+PR Gate	0	1	0	ci.yml	1
+required-checks-hygiene-gate	0	0	0	required-checks-hygiene-gate.yml	1
+Docs Diff Guard Policy Gate	0	0	1	docs_diff_guard_policy_gate.yml	1
