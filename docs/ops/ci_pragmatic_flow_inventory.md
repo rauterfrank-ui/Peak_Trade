@@ -1,5 +1,7 @@
 # CI Pragmatic Flow — Inventar (Workflows & Jobs)
 
+**Canonical reference:** [GATES_OVERVIEW.md](GATES_OVERVIEW.md) ist SSoT für Gates. Dieses Doc beschreibt pragmatische Flow-Details.
+
 **Stand:** 2026-02-07. Branch Protection: nur **PR Gate** als required check (TODO: in GitHub einstellen).
 
 ## Relevante Workflows und Jobs

@@ -1,5 +1,7 @@
 # Peak_Trade — Status-Übersicht & Implementierungsliste
 
+**Scope:** Aktueller Projektstatus, Runbook-Landschaft, Implementierungsliste; operativer Snapshot. Für Status-Contract/Evidence-Level siehe [STATUS_MATRIX.md](STATUS_MATRIX.md).
+
 **Stand:** 2026-02-19  
 **Zweck:** Aktueller Projektstatus, Runbook-Landschaft, Workflows und konsolidierte Liste offener Implementierungen.  
 **Letzte Registry-Downloads:** 2026-02-19 (Phase L, M, Policy Telemetry Real — `out&#47;ops&#47;gh_runs&#47;`)

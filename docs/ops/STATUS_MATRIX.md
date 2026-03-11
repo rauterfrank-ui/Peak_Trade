@@ -1,5 +1,7 @@
 # Status Matrix Contract
 
+**Scope:** Contract/Status-Werte für Tabellen; normativ für Evidence-Level. Für operativen Projektstatus siehe [STATUS_OVERVIEW_2026-02-19.md](STATUS_OVERVIEW_2026-02-19.md).
+
 ## Motivation
 
 Dieses Projekt unterscheidet strikt zwischen:

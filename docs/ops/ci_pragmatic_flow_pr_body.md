@@ -1,5 +1,7 @@
 # PR-Body (Copy-Paste für Pragmatic-Flow-PR)
 
+**Canonical reference:** [GATES_OVERVIEW.md](GATES_OVERVIEW.md) ist SSoT für Gates. Siehe auch [ci_pragmatic_flow_inventory.md](ci_pragmatic_flow_inventory.md), [ci_pragmatic_flow_meta_gate.md](ci_pragmatic_flow_meta_gate.md).
+
 ## Motivation
 
 Ein einziger Required Check (PR Gate) für Branch Protection; bei Docs/Grafana/Workflow-only PRs läuft nur Fast-Lane (keine volle Py-Matrix). Reduziert Wartezeit und vereinheitlicht Merge-Gate.

@@ -1,5 +1,7 @@
 # CI Pragmatic Flow — PR Gate (Single Required Check)
 
+**Canonical reference:** [GATES_OVERVIEW.md](GATES_OVERVIEW.md) ist SSoT für Gates. Dieses Doc beschreibt PR-Gate-Details.
+
 **Ziel:** Für Branch Protection nur **einen** Required Check: **PR Gate**.  
 - Reine Docs/Workflow-Änderungen: nur Fast-Lane + Smoke (keine volle Py-Matrix).  
 - Code-Änderungen: volle Python-Matrix (3.9/3.10/3.11) + strategy-smoke.
