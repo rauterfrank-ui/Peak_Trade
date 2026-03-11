@@ -17,7 +17,7 @@ This plan defines a **future** archive wave. **No actions are taken in Wave 25.*
 
 **What:** Consolidate `out/ops/branch_archive_phase2_review/` through `out/ops/branch_archive_phase12_salvage_now_batch/` into a single archive location.
 
-**Proposed target:** `docs/ops/_archive/branch_archive_waves/` or `out/ops/_archive/branch_archive_phases_2_12/`
+**Proposed target:** `docs&#47;ops&#47;_archive&#47;branch_archive_waves&#47;` or `out&#47;ops&#47;_archive&#47;branch_archive_phases_2_12&#47;`
 
 **Conditions:**
 - Verify `cursor_ma_ops_cli` and any scripts do not hardcode paths to these phase dirs
@@ -32,7 +32,7 @@ This plan defines a **future** archive wave. **No actions are taken in Wave 25.*
 
 **What:** Move `docs/_worklogs/2025-12-23_untracked_salvage/` to archive.
 
-**Proposed target:** `docs/ops/_archive/worklogs/2025-12-23_untracked_salvage/` or `docs/_worklogs/_archive/`
+**Proposed target:** `docs&#47;ops&#47;_archive&#47;worklogs&#47;2025-12-23_untracked_salvage&#47;` or `docs&#47;_worklogs&#47;_archive&#47;`
 
 **Conditions:**
 - Confirm no late-added references to these files

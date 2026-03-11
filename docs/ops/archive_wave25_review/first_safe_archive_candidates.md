@@ -21,7 +21,7 @@
 | out/ops/branch_archive_phase11_top_value_review/ | 1+ | LOW |
 | out/ops/branch_archive_phase12_salvage_now_batch/ | 1+ | LOW |
 
-**Action (future wave):** Consolidate into `docs/ops/_archive/branch_archive_waves/` or equivalent. No index updates required.
+**Action (future wave):** Consolidate into `docs&#47;ops&#47;_archive&#47;branch_archive_waves&#47;` or equivalent. No index updates required.
 
 ---
 
@@ -39,7 +39,7 @@
 | STRATEGY_LAYER_VNEXT_PHASE2_REPORT.md | LOW |
 | STRATEGY_LAYER_VNEXT_PHASE3_REPORT.md | LOW |
 
-**Action (future wave):** Move to `docs/ops/_archive/worklogs/2025-12-23_untracked_salvage/` or similar. Verify no index links first.
+**Action (future wave):** Move to `docs&#47;ops&#47;_archive&#47;worklogs&#47;2025-12-23_untracked_salvage&#47;` or similar. Verify no index links first.
 
 ---
 
