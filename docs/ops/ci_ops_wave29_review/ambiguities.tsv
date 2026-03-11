@@ -1,0 +1,7 @@
+id	doc_or_config	location	ambiguity_type	evidence	severity
+A01	config	required_status_checks.json	config_vs_github_mismatch	required_contexts=["PR Gate"] but GitHub has 9 required; PR Gate not in GitHub	HIGH
+A02	docs	CI.md	branch_protection_claim	"Nur PR Gate ist als required check konfiguriert" — true for config, false for GitHub	MEDIUM
+A03	docs	GATES_OVERVIEW.md	branch_protection_claim	"Branch Protection: Nur PR Gate ist required" — contradicted by GitHub API	MEDIUM
+A04	config	required_status_checks.json	ignored_vs_required	ignored_contexts lists checks that are actually required by GitHub	MEDIUM
+A05	docs	CI.md; GATES_OVERVIEW	config_scope_unclear	Unclear if docs describe config-only or GitHub branch protection	LOW
+A06	docs	ci/WORKFLOW_DISPATCH_GUARD_GITHUB_SETTINGS.md	stale_reference	"Required Check Active: No" — dispatch-guard IS required by GitHub	LOW

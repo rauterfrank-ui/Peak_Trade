@@ -1,0 +1,12 @@
+workflow_file	workflow_name	trigger_pr	trigger_push	trigger_mg	trigger_schedule	trigger_dispatch	paths_filter	pr_critical
+.github/workflows/ci.yml	CI	1	1	1	1	1	0	1
+.github/workflows/required-checks-hygiene-gate.yml	Required Checks Hygiene Gate	1	1	0	0	0	0	1
+.github/workflows/lint_gate.yml	Lint Gate (Always Run)	1	0	1	0	1	0	1
+.github/workflows/policy_critic_gate.yml	Policy Critic Gate (Always Run)	1	0	1	0	1	0	1
+.github/workflows/docs-token-policy-gate.yml	Docs Token Policy Gate	1	0	1	1	0	0	1
+.github/workflows/docs_reference_targets_gate.yml	Docs Reference Targets Gate	1	0	1	0	0	0	1
+.github/workflows/docs_diff_guard_policy_gate.yml	Docs Diff Guard Policy Gate	1	0	1	0	0	0	1
+.github/workflows/ci-workflow-dispatch-guard.yml	CI / Workflow Dispatch Guard	1	1	0	0	0	1	1
+.github/workflows/policy_tracked_reports_guard.yml	Policy Guard - No Tracked Reports	1	1	1	0	1	0	1
+.github/workflows/merge-logs-sanity.yml	Merge Logs Sanity	1	0	0	0	0	0	0
+.github/workflows/audit.yml	Audit	1	1	1	1	1	0	1

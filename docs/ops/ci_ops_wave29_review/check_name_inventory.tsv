@@ -1,0 +1,17 @@
+check_name	workflow_file	workflow_name	job_id	config_required	config_ignored	branch_protection_required
+PR Gate	.github/workflows/ci.yml	CI	pr-gate	1	0	0
+ci-required-contexts-contract	.github/workflows/ci.yml	CI	ci-required-contexts-contract	0	0	0
+tests (3.9)	.github/workflows/ci.yml	CI	tests	0	0	0
+tests (3.10)	.github/workflows/ci.yml	CI	tests	0	0	0
+tests (3.11)	.github/workflows/ci.yml	CI	tests	0	1	1
+strategy-smoke	.github/workflows/ci.yml	CI	strategy-smoke	0	1	1
+required-checks-hygiene-gate	.github/workflows/required-checks-hygiene-gate.yml	Required Checks Hygiene Gate	required-checks-hygiene-gate	0	0	0
+Lint Gate	.github/workflows/lint_gate.yml	Lint Gate (Always Run)	lint-gate	0	1	1
+Policy Critic Gate	.github/workflows/policy_critic_gate.yml	Policy Critic Gate (Always Run)	policy-critic-gate	0	1	1
+docs-token-policy-gate	.github/workflows/docs-token-policy-gate.yml	Docs Token Policy Gate	docs_token_policy_gate	0	0	1
+docs-reference-targets-gate	.github/workflows/docs_reference_targets_gate.yml	Docs Reference Targets Gate	docs_reference_targets_gate	0	1	1
+Docs Diff Guard Policy Gate	.github/workflows/docs_diff_guard_policy_gate.yml	Docs Diff Guard Policy Gate	docs_diff_guard_policy_gate	0	1	0
+dispatch-guard	.github/workflows/ci-workflow-dispatch-guard.yml	CI / Workflow Dispatch Guard	dispatch-guard	0	1	1
+Guard tracked files in reports directories	.github/workflows/policy_tracked_reports_guard.yml	Policy Guard - No Tracked Reports	guard-no-tracked-reports	0	1	1
+merge-logs-sanity	.github/workflows/merge-logs-sanity.yml	Merge Logs Sanity	merge_logs_sanity	0	0	0
+audit	.github/workflows/audit.yml	Audit	audit	0	0	1
