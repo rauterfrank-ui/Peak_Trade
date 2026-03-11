@@ -24,7 +24,7 @@
 | docs/_worklogs | 9 | Strategy layer vnext, PR reports, completion summary |
 | out/ops (branch_archive_phase*) | 52 | Phase 2–12 review artifacts, salvage assessments |
 | docs/audit | 2 | GOVERNANCE_DATAFLOW_REPORT, REPO_AUDIT_REPORT (indexed) |
-| docs (untracked) | 2 | docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md |
+| docs (untracked) | 2 | docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md <!-- pt:ref-target-ignore --> |
 | docs/ops | 4 | Merge logs, _archive, archives (patterns) |
 | docs | 2 | INDEX.md, canonical |
 | root | 2 | Pre-flight runbook, workflow overview |
@@ -44,4 +44,4 @@
 
 - Total candidates in inventory: **75** (14 keep + 9 historical + 52 archive)
 - No deletions, moves, or renames performed
-- docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md: untracked, untouched
+- docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md: untracked, untouched <!-- pt:ref-target-ignore -->

@@ -46,7 +46,7 @@
 ## Not in First Safe Wave
 
 - docs/audit/GOVERNANCE_DATAFLOW_REPORT.md, REPO_AUDIT_REPORT.md — Indexed; keep active
-- docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md — Untracked; explicit preservation
+- docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md — Untracked; explicit preservation <!-- pt:ref-target-ignore -->
 - docs/ops/merge_logs/, PR_*_MERGE_LOG — Evidence chain
 - docs/ops/_archive/, docs/ops/archives/ — Already archived; referenced
 - All runbooks, indexes — CRITICAL

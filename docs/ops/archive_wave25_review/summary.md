@@ -41,7 +41,7 @@ Wave 25 performed a **classification and planning** review for archive/historica
 
 ## Untracked Local Docs Status
 
-- **docs/GOVERNANCE_DATAFLOW_REPORT.md:** Untracked, untouched ✓
+- **docs/GOVERNANCE_DATAFLOW_REPORT.md:** Untracked, untouched ✓ <!-- pt:ref-target-ignore -->
 - **docs/REPO_AUDIT_REPORT.md:** Untracked, untouched ✓
 
 ---
@@ -52,4 +52,4 @@ Wave 25 performed a **classification and planning** review for archive/historica
 - No functional mutation
 - No service/dataflow risk
 - Conservative classification applied
-- docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md preserved
+- docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md preserved <!-- pt:ref-target-ignore -->

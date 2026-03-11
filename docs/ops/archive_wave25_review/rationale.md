@@ -23,7 +23,7 @@
 - **Merge logs (PR_*_MERGE_LOG, merge_logs/):** Evidence chain; EVIDENCE_INDEX, runbooks reference; INDEX lists as Historical but still in active use.
 - **Archives (docs/ops/_archive, docs/ops/archives/):** Already archived; runbooks reference paths (workflow_docs_integration, KILL_SWITCH_SUMMARY, etc.).
 - **Audit reports (docs/audit/GOVERNANCE_DATAFLOW_REPORT, REPO_AUDIT_REPORT):** INDEX and audit/README link; evidence chain.
-- **Untracked local docs (docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md):** Explicit Wave 25 preservation; do not add, modify, delete, or stage.
+- **Untracked local docs (docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md):** Explicit Wave 25 preservation; do not add, modify, delete, or stage. <!-- pt:ref-target-ignore -->
 
 ---
 

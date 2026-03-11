@@ -41,8 +41,8 @@ These items have operational evidence, index linkage, runbook references, or are
 
 | Path | Reason |
 |------|--------|
-| docs/GOVERNANCE_DATAFLOW_REPORT.md | Untracked; explicit Wave 25 preservation requirement |
-| docs/REPO_AUDIT_REPORT.md | Untracked; explicit Wave 25 preservation requirement |
+| docs/GOVERNANCE_DATAFLOW_REPORT.md | Untracked; explicit Wave 25 preservation requirement <!-- pt:ref-target-ignore --> |
+| docs/REPO_AUDIT_REPORT.md | Untracked; explicit Wave 25 preservation requirement <!-- pt:ref-target-ignore --> |
 
 ---
 
@@ -61,4 +61,4 @@ These are **operational evidence** and are **not** archive candidates. Do not mo
 
 - **14** items explicitly flagged as KEEP_ACTIVE_UNTIL_PROVEN_SAFE
 - **0** functional mutations in this wave
-- docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md: **untracked, untouched**
+- docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md: **untracked, untouched** <!-- pt:ref-target-ignore -->

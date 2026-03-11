@@ -46,7 +46,7 @@ This plan defines a **future** archive wave. **No actions are taken in Wave 25.*
 ## What Must Stay Active
 
 - All items in `must_keep_active.md`
-- docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md (untracked)
+- docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md (untracked) <!-- pt:ref-target-ignore -->
 - docs/ops/merge_logs/, docs/ops/PR_*_MERGE_LOG.md
 - docs/ops/_archive/, docs/ops/archives/ (already archived; do not move again)
 - All runbooks, indexes, evidence chain artifacts
