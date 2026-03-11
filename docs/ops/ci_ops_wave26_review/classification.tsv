@@ -1,0 +1,12 @@
+id	friction_type	classification	rationale
+F01	duplicate_docs	NEEDS_PROOF_BEFORE_CHANGE	Untracked docs explicit preservation; affects evidence chain; do not touch without proof
+F02	overlap_docs	DOCS_ALIGNMENT_CANDIDATE	Docs-only; no workflow/trigger impact; align or consolidate with GATES_OVERVIEW
+F03	overlap_docs	DOCS_ALIGNMENT_CANDIDATE	Docs-only; clarify scope in one place
+F04	naming_mismatch	NEEDS_PROOF_BEFORE_CHANGE	Config affects branch protection; naming change could break checks
+F05	naming_mismatch	KEEP_AS_IS	Cosmetic; risk of workflow trigger breakage if renamed
+F06	stale_reference	NEEDS_PROOF_BEFORE_CHANGE	Could affect operator behavior re branch protection; verify intent before change
+F07	link_verification	DOCS_ALIGNMENT_CANDIDATE	Verify link; fix if broken; docs-only
+F08	ambiguous_link	DOCS_ALIGNMENT_CANDIDATE	Clarify INDEX link target; docs-only
+F09	discoverability	OPS_RUNBOOK_HYGIENE_CANDIDATE	Add workflows/ to runbook index or README; low risk
+F10	discoverability	OPS_RUNBOOK_HYGIENE_CANDIDATE	Create script index or extend existing; docs-only
+F11	clarity	DOCS_ALIGNMENT_CANDIDATE	Add one-sentence clarification to GATES_OVERVIEW or CI.md; docs-only

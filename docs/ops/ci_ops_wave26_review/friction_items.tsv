@@ -1,0 +1,12 @@
+id	friction_type	affected_paths	evidence_summary	initial_severity
+F01	duplicate_docs	docs/GOVERNANCE_DATAFLOW_REPORT.md; docs/REPO_AUDIT_REPORT.md; docs/audit/GOVERNANCE_DATAFLOW_REPORT.md; docs/audit/REPO_AUDIT_REPORT.md	Two locations for audit reports; untracked vs tracked; relationship undocumented	MEDIUM
+F02	overlap_docs	docs/ops/ci_pragmatic_flow_inventory.md; docs/ops/ci_pragmatic_flow_meta_gate.md; docs/ops/ci_pragmatic_flow_pr_body.md; docs/ops/GATES_OVERVIEW.md	Multiple CI flow docs; overlap with GATES_OVERVIEW	LOW
+F03	overlap_docs	docs/ops/STATUS_MATRIX.md; docs/ops/STATUS_OVERVIEW_2026-02-19.md	Two status docs; scope unclear	LOW
+F04	naming_mismatch	config/ci/required_status_checks.json; docs/ops/GATES_OVERVIEW.md	Check names: PR Gate vs gate IDs; inconsistent formats	LOW
+F05	naming_mismatch	.github/workflows/*.yml	Workflow files: mostly hyphens, some underscores	LOW
+F06	stale_reference	docs/ops/ci/WORKFLOW_DISPATCH_GUARD_GITHUB_SETTINGS.md; config/ci/required_status_checks.json	Dispatch guard "Required Check Active: No" - intentional or stale?	MEDIUM
+F07	link_verification	WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md; INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md	Link to INSTALLATION_UND_ROADMAP - verify exists	LOW
+F08	ambiguous_link	docs/INDEX.md; runbooks/	INDEX runbooks/ - docs/runbooks vs docs/ops/runbooks?	LOW
+F09	discoverability	docs/ops/workflows/; docs/ops/runbooks/README.md	Workflow docs not in runbook README; only in WORKFLOW_RUNBOOK_OVERVIEW	LOW
+F10	discoverability	scripts/ops/*; docs/ops/WORKFLOW_SCRIPTS.md; docs/ops/OPS_SCRIPT_TEMPLATE_GUIDE.md	No script-to-runbook index; 270+ scripts	MEDIUM
+F11	clarity	config/ci/required_status_checks.json; docs/ops/GATES_OVERVIEW.md	Required vs ignored contexts not explicitly explained in one place	LOW
