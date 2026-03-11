@@ -26,9 +26,9 @@
 - [governance/README.md](governance/README.md) — Governance
 
 ### Operational (Runbooks, Ops)
-- [ops/RUNBOOK_INDEX.md](ops/RUNBOOK_INDEX.md) — Runbook-Index
+- [ops/RUNBOOK_INDEX.md](ops/RUNBOOK_INDEX.md) — Runbook-Index (Ops-Runbooks, Workflows)
 - [ops/](ops/) — Ops-Docs, Merge-Logs
-- [runbooks/](runbooks/) — Runbooks
+- [runbooks/](runbooks/) — Runbooks (docs&#47;runbooks&#47;; Ops-Runbooks siehe ops&#47;RUNBOOK_INDEX.md)
 
 ### Historical (Referenz)
 - [audit/GOVERNANCE_DATAFLOW_REPORT.md](audit/GOVERNANCE_DATAFLOW_REPORT.md) — Historisch: Dataflow & Governance

@@ -62,7 +62,9 @@
 
 ### Workflow → Jobs (Check-Namen) → Definition
 
-Die wichtigsten PR-relevanten Checks (inkl. required contexts config) sind in `config/ci/required_status_checks.json` definiert; die Workflows, die diese Checks erzeugen, sind in den YAMLs implementiert.
+Die wichtigsten PR-relevanten Checks (inkl. required contexts config) sind in `config&#47;ci&#47;required_status_checks.json` definiert; die Workflows, die diese Checks erzeugen, sind in den YAMLs implementiert.
+
+**Branch Protection:** Nur **PR Gate** ist required; alle anderen dokumentierten Gates sind informational oder in `ignored_contexts` (siehe `required_status_checks.json`).
 
 - **Workflow `CI`** (`.github/workflows/ci.yml`)
   - Job/Check: `ci-required-contexts-contract` (runs always)
