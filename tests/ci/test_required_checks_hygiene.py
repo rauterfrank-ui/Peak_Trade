@@ -282,9 +282,7 @@ def test_pass_when_matrix_job_name_expanded_and_required(fixtures_dir):
     with tempfile.TemporaryDirectory() as tmpdir:
         workflows_dir = Path(tmpdir) / "workflows"
         workflows_dir.mkdir()
-        (workflows_dir / "matrix_job.yml").write_text(
-            (fixtures_dir / "matrix_job.yml").read_text()
-        )
+        (workflows_dir / "matrix_job.yml").write_text((fixtures_dir / "matrix_job.yml").read_text())
         config = fixtures_dir / "test_config_matrix.json"
         validator = RequiredChecksValidator(
             config_path=config,
@@ -307,9 +305,7 @@ def test_fail_when_matrix_expanded_name_truly_missing(fixtures_dir):
     with tempfile.TemporaryDirectory() as tmpdir:
         workflows_dir = Path(tmpdir) / "workflows"
         workflows_dir.mkdir()
-        (workflows_dir / "matrix_job.yml").write_text(
-            (fixtures_dir / "matrix_job.yml").read_text()
-        )
+        (workflows_dir / "matrix_job.yml").write_text((fixtures_dir / "matrix_job.yml").read_text())
         config_path = Path(tmpdir) / "test_config.json"
         config_path.write_text(
             json.dumps(

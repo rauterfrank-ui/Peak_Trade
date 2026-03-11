@@ -174,9 +174,7 @@ class WorkflowAnalyzer:
             job_list = []
             for job_id, job_config in jobs.items():
                 if isinstance(job_config, dict):
-                    job_list.extend(
-                        self._expand_matrix_job_names(job_id, job_config)
-                    )
+                    job_list.extend(self._expand_matrix_job_names(job_id, job_config))
 
             pr_workflows.append(
                 {
