@@ -1,17 +1,19 @@
 {
   "schema_version": "1.0.0",
-  "required_contexts": ["PR Gate"],
-  "ignored_contexts": [
-    "tests (3.11)",
-    "CI Health Gate (weekly_core)",
+  "required_contexts": [
     "Guard tracked files in reports directories",
     "audit",
+    "tests (3.11)",
     "strategy-smoke",
     "Policy Critic Gate",
     "Lint Gate",
-    "Docs Diff Guard Policy Gate",
-    "docs-reference-targets-gate",
-    "dispatch-guard"
+    "dispatch-guard",
+    "docs-token-policy-gate",
+    "docs-reference-targets-gate"
   ],
-  "notes": "Pragmatic flow: Branch protection requires only PR Gate. PR Gate (ci.yml) succeeds when Fast-Lane + (tests + strategy-smoke or docs/workflow-only skip) pass. Last updated: 2026-02-07."
+  "ignored_contexts": [
+    "CI Health Gate (weekly_core)",
+    "Docs Diff Guard Policy Gate"
+  ],
+  "notes": "Aligned to GitHub branch protection (9 required contexts). PR Gate is produced by CI but not in branch protection. Last updated: 2026-03-11."
 }
