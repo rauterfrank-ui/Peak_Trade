@@ -1,0 +1,99 @@
+path	area	kind	current_role_guess	operational_risk_if_changed	initial_bucket
+.github/workflows/ci.yml	ci	workflow	Primary CI; PR Gate; tests; strategy-smoke	CRITICAL	KEEP_AS_IS
+.github/workflows/required-checks-hygiene-gate.yml	ci	workflow	Required checks drift validation	HIGH	KEEP_AS_IS
+.github/workflows/ci-workflow-dispatch-guard.yml	ci	workflow	Workflow dispatch inputs guard	HIGH	KEEP_AS_IS
+.github/workflows/lint_gate.yml	ci	workflow	Lint Gate; Ruff check/format	HIGH	KEEP_AS_IS
+.github/workflows/policy_critic_gate.yml	ci	workflow	Policy Critic Gate	HIGH	KEEP_AS_IS
+.github/workflows/docs-token-policy-gate.yml	ci	workflow	Docs token policy validation	HIGH	KEEP_AS_IS
+.github/workflows/docs_reference_targets_gate.yml	ci	workflow	Docs reference targets validation	HIGH	KEEP_AS_IS
+.github/workflows/docs_diff_guard_policy_gate.yml	ci	workflow	Docs diff guard policy	HIGH	KEEP_AS_IS
+.github/workflows/policy_tracked_reports_guard.yml	ci	workflow	Guard tracked files in reports	HIGH	KEEP_AS_IS
+.github/workflows/merge-logs-sanity.yml	ci	workflow	Merge logs sanity check	MEDIUM	KEEP_AS_IS
+.github/workflows/merge_log_hygiene.yml	ci	workflow	Merge log hygiene (informational)	LOW	KEEP_AS_IS
+.github/workflows/deps_sync_guard.yml	ci	workflow	Deps sync (uv/requirements)	MEDIUM	KEEP_AS_IS
+.github/workflows/guard-reports-ignored.yml	ci	workflow	Guard reports/.gitignore	MEDIUM	KEEP_AS_IS
+.github/workflows/evidence_pack_gate.yml	ci	workflow	Evidence pack validation	MEDIUM	KEEP_AS_IS
+.github/workflows/audit.yml	ci	workflow	Audit workflow	MEDIUM	KEEP_AS_IS
+.github/workflows/test_health.yml	ci	workflow	Test health profile	MEDIUM	KEEP_AS_IS
+.github/workflows/pru-required-checks-drift-detector.yml	ci	workflow	Required checks drift detector (scheduled)	MEDIUM	KEEP_AS_IS
+.github/workflows/ci-scheduled-paper-and-export-smoke.yml	ci	workflow	Scheduled paper + export smoke	MEDIUM	KEEP_AS_IS
+.github/workflows/ci-export-pack-download-verify.yml	ci	workflow	Export pack download/verify	MEDIUM	KEEP_AS_IS
+.github/workflows/prj-scheduled-shadow-paper-features-smoke.yml	ci	workflow	Scheduled PR-J features smoke	MEDIUM	KEEP_AS_IS
+.github/workflows/ci_pr_merge_state_signal.yml	ci	workflow	PR merge state signal	LOW	KEEP_AS_IS
+.github/workflows/add-to-project.yml	ci	workflow	Add to project automation	LOW	KEEP_AS_IS
+.github/workflows/cursor_auto_pr.yml	ci	workflow	Cursor auto PR	LOW	KEEP_AS_IS
+.github/workflows/cursor_auto_automerge.yml	ci	workflow	Cursor auto automerge	LOW	KEEP_AS_IS
+.github/workflows/typecheck-pyright.yml	ci	workflow	Pyright typecheck	MEDIUM	KEEP_AS_IS
+.github/workflows/typecheck-mypy.yml	ci	workflow	Mypy typecheck	MEDIUM	KEEP_AS_IS
+.github/workflows/offline_suites.yml	ci	workflow	Offline test suites	MEDIUM	KEEP_AS_IS
+.github/workflows/weekly_core_audit.yml	ci	workflow	Weekly core audit	MEDIUM	KEEP_AS_IS
+.github/workflows/full_audit_weekly.yml	ci	workflow	Full audit weekly	MEDIUM	KEEP_AS_IS
+.github/workflows/ci-operator-verify-registry.yml	ci	workflow	Operator verify registry	MEDIUM	KEEP_AS_IS
+.github/workflows/ci_recon_audit_gate_smoke.yml	ci	workflow	Recon audit gate smoke	MEDIUM	KEEP_AS_IS
+.github/workflows/ops_doctor_pages.yml	ci	workflow	Ops doctor pages	LOW	KEEP_AS_IS
+.github/workflows/ops_doctor_dashboard.yml	ci	workflow	Ops doctor dashboard	LOW	KEEP_AS_IS
+.github/workflows/docs-integrity-snapshot.yml	ci	workflow	Docs integrity snapshot	LOW	KEEP_AS_IS
+.github/workflows/docs_reference_targets_trend.yml	ci	workflow	Docs reference targets trend	LOW	KEEP_AS_IS
+.github/workflows/docs-token-policy-gate.yml	ci	workflow	Docs token policy (duplicate ref)	HIGH	KEEP_AS_IS
+config/ci/required_status_checks.json	ci	config	Required contexts; branch protection contract	CRITICAL	KEEP_AS_IS
+scripts/ci/validate_required_checks_hygiene.py	ci	script	Required checks hygiene validator	HIGH	KEEP_AS_IS
+scripts/ci/required_checks_drift_detector.py	ci	script	Required checks drift detector	MEDIUM	KEEP_AS_IS
+scripts/ci/scheduled_guardrails.sh	ci	script	Scheduled workflow guardrails	MEDIUM	KEEP_AS_IS
+scripts/ci/check_docs_diff_guard_section.py	ci	script	Docs diff guard section checker	MEDIUM	KEEP_AS_IS
+scripts/ci/guard_no_tracked_reports.sh	ci	script	Guard no tracked reports	MEDIUM	KEEP_AS_IS
+scripts/ops/validate_workflow_dispatch_guards.py	ci	script	Workflow dispatch guards validator	HIGH	KEEP_AS_IS
+scripts/ops/check_required_ci_contexts_present.sh	ci	script	CI required contexts contract check	HIGH	KEEP_AS_IS
+scripts/ops/verify_docs_reference_targets.sh	ci	script	Docs reference targets verifier	HIGH	KEEP_AS_IS
+scripts/ops/docs_diff_guard.sh	ci	script	Docs diff guard	MEDIUM	KEEP_AS_IS
+scripts/ops/check_merge_log_hygiene.py	ci	script	Merge log hygiene checker	MEDIUM	KEEP_AS_IS
+scripts/ops/check_requirements_synced_with_uv.sh	ci	script	Deps sync checker	MEDIUM	KEEP_AS_IS
+scripts/ops/create_required_checks_drift_guard_pr.sh	ci	script	Create drift guard PR	LOW	WORKFLOW_HYGIENE_CANDIDATE
+scripts/ops/ci_pr_checks_retrigger_v1.sh	ci	script	CI PR checks retrigger	LOW	KEEP_AS_IS
+scripts/ops/ci_trigger_required_checks.sh	ci	script	CI trigger required checks	LOW	KEEP_AS_IS
+scripts/ops/p46_required_checks_snapshot.sh	ci	script	Required checks snapshot	LOW	KEEP_AS_IS
+scripts/ops/p44_required_checks_snapshot.sh	ci	script	Required checks snapshot (p44)	LOW	KEEP_AS_IS
+docs/ops/CI.md	ci	doc	CI pipeline documentation	MEDIUM	KEEP_AS_IS
+docs/ops/CI_SCHEDULED_WORKFLOW_VARIABLE_GATES.md	ci	doc	Scheduled workflow variable gates	MEDIUM	KEEP_AS_IS
+docs/ops/GATES_OVERVIEW.md	ci	doc	Canonical gates map; SSoT	CRITICAL	KEEP_AS_IS
+docs/ops/ci/WORKFLOW_DISPATCH_GUARD_GITHUB_SETTINGS.md	ci	doc	Dispatch guard GitHub settings	MEDIUM	KEEP_AS_IS
+docs/ops/ci/WORKFLOW_DISPATCH_GUARD.md	ci	doc	Dispatch guard reference	MEDIUM	KEEP_AS_IS
+docs/ops/ci/trigger_runbook.md	ci	doc	CI trigger runbook	LOW	KEEP_AS_IS
+docs/ops/ci_pragmatic_flow_inventory.md	ci	doc	CI pragmatic flow inventory	LOW	DOCS_ALIGNMENT_CANDIDATE
+docs/ops/ci_pragmatic_flow_meta_gate.md	ci	doc	CI pragmatic flow meta gate	LOW	DOCS_ALIGNMENT_CANDIDATE
+docs/ops/ci_required_checks_matrix_naming_contract.md	ci	doc	Required checks matrix naming	LOW	DOCS_ALIGNMENT_CANDIDATE
+docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md	ci	doc	Drift guard operator notes	LOW	KEEP_AS_IS
+docs/ops/DRIFT_GUARD_QUICK_START.md	ci	doc	Drift guard quick start	LOW	KEEP_AS_IS
+docs/INDEX.md	docs	index	Canonical documentation index	CRITICAL	KEEP_AS_IS
+docs/ops/RUNBOOK_INDEX.md	ops	index	Canonical runbook navigation	CRITICAL	KEEP_AS_IS
+docs/audit/README.md	audit	index	Canonical audit navigation	CRITICAL	KEEP_AS_IS
+docs/audit/AUDIT_RUNBOOK_COMPLETE.md	ops	runbook	Operational audit runbook	CRITICAL	KEEP_AS_IS
+docs/ops/runbooks/	ops	runbooks	Operational runbooks collection	CRITICAL	KEEP_AS_IS
+docs/ops/runbooks/README.md	ops	index	Runbook index	HIGH	KEEP_AS_IS
+docs/ops/runbooks/ci_trigger_tool.md	ops	runbook	CI trigger tool runbook	MEDIUM	KEEP_AS_IS
+docs/ops/runbooks/required_checks_deadlocks.md	ops	runbook	Required checks deadlocks	MEDIUM	KEEP_AS_IS
+docs/ops/runbooks/RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE_OPERATIONS.md	ops	runbook	Required checks hygiene gate ops	HIGH	KEEP_AS_IS
+docs/ops/runbooks/prj_scheduled_shadow_paper_features_smoke.md	ops	runbook	PR-J scheduled smoke runbook	MEDIUM	KEEP_AS_IS
+docs/ops/runbooks/registry_weekly_digest.md	ops	runbook	Registry weekly digest	LOW	KEEP_AS_IS
+docs/ops/runbooks/registry_alerts_gate.md	ops	runbook	Registry alerts gate	LOW	KEEP_AS_IS
+docs/ops/runbooks/ops_status.md	ops	runbook	Ops status runbook	LOW	KEEP_AS_IS
+docs/ops/runbooks/operating_rhythm.md	ops	runbook	Operating rhythm	LOW	KEEP_AS_IS
+docs/ops/runbooks/operating_rhythm_daily.md	ops	runbook	Operating rhythm daily	LOW	KEEP_AS_IS
+docs/ops/runbooks/morning_one_shot.md	ops	runbook	Morning one shot	LOW	KEEP_AS_IS
+docs/ops/registry/README.md	ops	doc	Registry overview	LOW	KEEP_AS_IS
+docs/ops/WORKFLOW_SCRIPTS.md	ops	doc	Workflow scripts reference	LOW	DOCS_ALIGNMENT_CANDIDATE
+docs/ops/OPS_SCRIPT_TEMPLATE_GUIDE.md	ops	doc	Ops script template guide	LOW	KEEP_AS_IS
+docs/ops/OPS_DOCTOR_README.md	ops	doc	Ops doctor reference	LOW	KEEP_AS_IS
+docs/ops/README.md	ops	doc	Docs ops overview	HIGH	KEEP_AS_IS
+docs/ops/PR_MANAGEMENT_TOOLKIT.md	ops	doc	PR management toolkit	HIGH	KEEP_AS_IS
+docs/ops/PR_MANAGEMENT_QUICKSTART.md	ops	doc	PR management quickstart	HIGH	KEEP_AS_IS
+docs/ops/EVIDENCE_INDEX.md	ops	doc	Evidence index	MEDIUM	KEEP_AS_IS
+docs/ops/STATUS_MATRIX.md	ops	doc	Status matrix	LOW	KEEP_AS_IS
+docs/ops/STATUS_OVERVIEW_2026-02-19.md	ops	doc	Status overview	LOW	KEEP_AS_IS
+docs/ops/GATES_OVERVIEW.md	ops	doc	Gates overview (duplicate ref)	CRITICAL	KEEP_AS_IS
+PRE_FLIGHT_CHECKLIST_RUNBOOK_OPS.md	root	runbook	Pre-flight runbook	CRITICAL	KEEP_AS_IS
+WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md	root	workflow	Workflow runbook overview	CRITICAL	KEEP_AS_IS
+docs/audit/GOVERNANCE_DATAFLOW_REPORT.md	audit	audit_report	Historical; indexed in audit/README	MEDIUM	KEEP_AS_IS
+docs/audit/REPO_AUDIT_REPORT.md	audit	audit_report	Historical; indexed in audit/README	MEDIUM	KEEP_AS_IS
+docs/GOVERNANCE_DATAFLOW_REPORT.md	docs	untracked_local	Explicit preservation; do not touch	HIGH	KEEP_AS_IS
+docs/REPO_AUDIT_REPORT.md	docs	untracked_local	Explicit preservation; do not touch	HIGH	KEEP_AS_IS
+docs/ops/archive_wave25_review/	ops	archive_review	Wave 25 archive review artifacts	LOW	KEEP_AS_IS
