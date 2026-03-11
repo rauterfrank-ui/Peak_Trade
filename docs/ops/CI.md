@@ -6,6 +6,8 @@ Peak_Trade uses GitHub Actions for continuous integration. The primary workflow 
 
 **Branch Protection:** Nur **PR Gate** ist als required check konfiguriert (`config&#47;ci&#47;required_status_checks.json`). Alle anderen Gates (Lint, Docs, Policy Critic, etc.) laufen weiter, sind aber informational bzw. in `ignored_contexts` und blockieren Merge nur indirekt.
 
+Hinweis: `config&#47;ci&#47;required_status_checks.json` beschreibt den Repo-Vertrag (required_contexts&#47;ignored_contexts). Die tatsächlichen GitHub Branch-Protection-Einstellungen werden separat verwaltet und können abweichen. Aktueller Stand: `gh api repos/<owner>/<repo>/branches/main/protection`.
+
 ## CI: RL v0.1 Fast Lane (Smoke)
 
 ### Dual Execution Strategy
