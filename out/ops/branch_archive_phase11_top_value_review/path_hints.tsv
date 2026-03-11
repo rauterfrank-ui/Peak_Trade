@@ -1,0 +1,11 @@
+branch_name	theme	primary_paths	file_count	insertions
+recover/p101-workbook-checklists-stop-playbook-v1	workbook	scripts/ops/p101_stop_playbook_v1.sh	1	-9
+recover/p22-roadmap-runbook-merge	governance	docs/roadmap/PeakTrade_LevelUp_Roadmap_Evidence.md	1	918
+recover/p80-supervisor-stop-idempotent-v1	supervisor	—	0	0
+recover/p99-launchd-hard-guardrails-v1	launchd	docs/analysis/p99/README.md, launchd plist	2	36
+recover/p28-backtest-loop-positions-cash-v1	backtest	src/backtest/p28/, tests/p28/	5	201
+recover/p29-accounting-v2-avgcost-realizedpnl	accounting	src/backtest/p29/, tests/p29/	5	240
+wip/salvage-code-tests-untracked-20251224_082521	salvage	src/strategies/parameters.py, tests/test_*	4	1270
+wip/untracked-salvage-20251224_081737	salvage	docs/, scripts/ops/, src/, tests/	23	9338
+recover/p111-execution-adapter-selector-v1	execution	src/execution/adapters/registry_v1.py, tests/p111/	3	104
+recover/ops-launchd-supervisor-subcommands-v1	supervisor	scripts/ops/*supervisor*, tests/p88/	3	100
