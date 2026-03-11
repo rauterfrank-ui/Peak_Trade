@@ -1,0 +1,11 @@
+branch_name	commits_ahead	unique_files	unique_insertions	classification	rationale
+recover/p101-workbook-checklists-stop-playbook-v1	1	1	-9	SALVAGE_LATER	workbook checklists + stop playbook; 9 deletions in p101 script; verify intent before salvage
+recover/p22-roadmap-runbook-merge	1	1	918	SALVAGE_NOW	roadmap runbook merge; 918 insertions in docs/roadmap; governance alignment
+recover/p80-supervisor-stop-idempotent-v1	2	0	0	ALREADY_ON_MAIN	2 commits; revert commit nets diff to zero; supervisor stop logic effectively on main
+recover/p99-launchd-hard-guardrails-v1	1	2	36	SALVAGE_NOW	launchd guardrails; docs + plist; safety-critical
+recover/p28-backtest-loop-positions-cash-v1	1	5	201	SALVAGE_NOW	backtest positions+cash accounting; src/backtest/p28 + tests; core accounting
+recover/p29-accounting-v2-avgcost-realizedpnl	1	5	240	SALVAGE_NOW	avg cost + realized PnL; src/backtest/p29 + tests; reporting core
+wip/salvage-code-tests-untracked-20251224_082521	1	4	1270	MANUAL_DEEP_REVIEW	strategy params + tracking tests; 4 files; rescue remote; verify overlap with main
+wip/untracked-salvage-20251224_081737	3	23	9338	MANUAL_DEEP_REVIEW	23 files; docs, scripts, src, tests; massive; rescue remote; high overlap risk
+recover/p111-execution-adapter-selector-v1	1	3	104	SALVAGE_NOW	execution adapter registry + selector; mocks only; execution routing
+recover/ops-launchd-supervisor-subcommands-v1	1	3	100	SALVAGE_NOW	start/stop/status subcommands; supervisor script + tests; ops tooling

@@ -1,0 +1,11 @@
+branch_name	exists_local	category	theme	prior_reason	upstream
+recover/p101-workbook-checklists-stop-playbook-v1	yes	KEEP_FOR_FUTURE_IMPL	workbook	explicit keep; high value	main
+recover/p22-roadmap-runbook-merge	yes	KEEP_FOR_FUTURE_IMPL	governance	explicit keep; roadmap	main
+recover/p80-supervisor-stop-idempotent-v1	yes	KEEP_FOR_FUTURE_IMPL	supervisor	explicit keep; 2 ahead	main
+recover/p99-launchd-hard-guardrails-v1	yes	KEEP_FOR_FUTURE_IMPL	launchd	explicit keep; guardrails	main
+recover/p28-backtest-loop-positions-cash-v1	yes	ARCHIVE_REVIEW_NEXT	backtest	high value; diff proof	main
+recover/p29-accounting-v2-avgcost-realizedpnl	yes	ARCHIVE_REVIEW_NEXT	accounting	high value; diff proof	main
+wip/salvage-code-tests-untracked-20251224_082521	yes	MANUAL_DEEP_REVIEW_NEXT	salvage	tests; rescue remote exists	main
+wip/untracked-salvage-20251224_081737	yes	MANUAL_DEEP_REVIEW_NEXT	salvage	untracked; rescue remote exists	main
+recover/p111-execution-adapter-selector-v1	yes	ARCHIVE_REVIEW_NEXT	execution/adapter	adapter selector; check vs main	main
+recover/ops-launchd-supervisor-subcommands-v1	yes	ARCHIVE_REVIEW_NEXT	supervisor/launchd	subcommands; check vs main	main
