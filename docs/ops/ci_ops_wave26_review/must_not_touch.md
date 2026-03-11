@@ -9,8 +9,8 @@
 
 | Path | Reason |
 |------|--------|
-| docs/GOVERNANCE_DATAFLOW_REPORT.md | Untracked; explicit Wave 25/26 preservation; do not add, modify, delete, or stage |
-| docs/REPO_AUDIT_REPORT.md | Untracked; explicit Wave 25/26 preservation; do not add, modify, delete, or stage |
+| docs&#47;GOVERNANCE_DATAFLOW_REPORT.md | Untracked; explicit Wave 25/26 preservation; do not add, modify, delete, or stage |
+| docs&#47;REPO_AUDIT_REPORT.md | Untracked; explicit Wave 25/26 preservation; do not add, modify, delete, or stage |
 
 ---
 
@@ -18,22 +18,22 @@
 
 | Path / Area | Reason |
 |-------------|--------|
-| .github/workflows/ci.yml | Primary CI; PR Gate; tests; strategy-smoke; CRITICAL |
-| config/ci/required_status_checks.json | Branch protection contract; required contexts |
-| .github/workflows/required-checks-hygiene-gate.yml | Required checks drift validation |
-| .github/workflows/ci-workflow-dispatch-guard.yml | Workflow dispatch guard |
-| .github/workflows/lint_gate.yml | Lint Gate |
-| .github/workflows/policy_critic_gate.yml | Policy Critic Gate |
-| .github/workflows/docs-token-policy-gate.yml | Docs token policy |
-| .github/workflows/docs_reference_targets_gate.yml | Docs reference targets |
-| .github/workflows/docs_diff_guard_policy_gate.yml | Docs diff guard |
-| .github/workflows/policy_tracked_reports_guard.yml | Guard tracked reports |
-| docs/ops/GATES_OVERVIEW.md | Canonical SSoT for gates |
-| docs/INDEX.md | Canonical documentation index |
-| docs/ops/RUNBOOK_INDEX.md | Canonical runbook navigation |
-| docs/audit/README.md | Canonical audit navigation |
-| docs/audit/AUDIT_RUNBOOK_COMPLETE.md | Operational audit runbook |
-| docs/ops/runbooks/ | Operational runbooks |
+| .github&#47;workflows&#47;ci.yml | Primary CI; PR Gate; tests; strategy-smoke; CRITICAL |
+| config&#47;ci&#47;required_status_checks.json | Branch protection contract; required contexts |
+| .github&#47;workflows&#47;required-checks-hygiene-gate.yml | Required checks drift validation |
+| .github&#47;workflows&#47;ci-workflow-dispatch-guard.yml | Workflow dispatch guard |
+| .github&#47;workflows&#47;lint_gate.yml | Lint Gate |
+| .github&#47;workflows&#47;policy_critic_gate.yml | Policy Critic Gate |
+| .github&#47;workflows&#47;docs-token-policy-gate.yml | Docs token policy |
+| .github&#47;workflows&#47;docs_reference_targets_gate.yml | Docs reference targets |
+| .github&#47;workflows&#47;docs_diff_guard_policy_gate.yml | Docs diff guard |
+| .github&#47;workflows&#47;policy_tracked_reports_guard.yml | Guard tracked reports |
+| docs&#47;ops&#47;GATES_OVERVIEW.md | Canonical SSoT for gates |
+| docs&#47;INDEX.md | Canonical documentation index |
+| docs&#47;ops&#47;RUNBOOK_INDEX.md | Canonical runbook navigation |
+| docs&#47;audit&#47;README.md | Canonical audit navigation |
+| docs&#47;audit&#47;AUDIT_RUNBOOK_COMPLETE.md | Operational audit runbook |
+| docs&#47;ops&#47;runbooks&#47; | Operational runbooks |
 | PRE_FLIGHT_CHECKLIST_RUNBOOK_OPS.md | Pre-flight runbook |
 | WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md | Workflow overview |
 

@@ -18,8 +18,8 @@ Define the **smallest future hygiene wave** with the **lowest operational risk**
 | Action | Target | Validation |
 |--------|--------|------------|
 | F07: Verify link | `WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md` → `INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md` | Link exists; fix if broken |
-| F08: Clarify INDEX link | `docs/INDEX.md` runbooks/ | Resolve to docs/ops/runbooks/ or correct path |
-| F11: Add clarification | `docs/ops/GATES_OVERVIEW.md` or `docs/ops/CI.md` | One sentence: "Only PR Gate is required for branch protection; other gates are informational or in ignored_contexts." |
+| F08: Clarify INDEX link | `docs&#47;INDEX.md` runbooks/ | Resolve to docs&#47;ops&#47;runbooks&#47; or correct path |
+| F11: Add clarification | `docs&#47;ops&#47;GATES_OVERVIEW.md` or `docs&#47;ops&#47;CI.md` | One sentence: "Only PR Gate is required for branch protection; other gates are informational or in ignored_contexts." |
 | F02: Align CI pragmatic flow docs | `ci_pragmatic_flow_*.md` vs GATES_OVERVIEW | Add cross-reference or consolidate; no deletion |
 | F03: Clarify status docs | STATUS_MATRIX vs STATUS_OVERVIEW | Add one-line scope note to each |
 
@@ -27,8 +27,8 @@ Define the **smallest future hygiene wave** with the **lowest operational risk**
 
 | Action | Target | Validation |
 |--------|--------|------------|
-| F09: Add workflows to index | `docs/ops/runbooks/README.md` or RUNBOOK_INDEX | Add "Workflow Policy Docs" section pointing to docs/ops/workflows/ |
-| F10: Script index | `docs/ops/` | Add or extend script-to-runbook mapping; start with high-value scripts (CI, drift guard, merge logs) |
+| F09: Add workflows to index | `docs&#47;ops&#47;runbooks&#47;README.md` or RUNBOOK_INDEX | Add "Workflow Policy Docs" section pointing to docs&#47;ops&#47;workflows&#47; |
+| F10: Script index | `docs&#47;ops&#47;` | Add or extend script-to-runbook mapping; start with high-value scripts (CI, drift guard, merge logs) |
 
 ---
 
@@ -47,10 +47,10 @@ Define the **smallest future hygiene wave** with the **lowest operational risk**
 
 ## Safety Gates
 
-1. **No workflow changes** — no edits to `.github/workflows/*.yml`
-2. **No config changes** — no edits to `config/ci/required_status_checks.json`
-3. **No script changes** — no edits to `scripts/ci/*`, `scripts/ops/*`
-4. **docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md** — untouched, unstaged
+1. **No workflow changes** — no edits to `.github&#47;workflows&#47;*.yml`
+2. **No config changes** — no edits to `config&#47;ci&#47;required_status_checks.json`
+3. **No script changes** — no edits to `scripts&#47;ci&#47;*`, `scripts&#47;ops&#47;*`
+4. **docs&#47;GOVERNANCE_DATAFLOW_REPORT.md, docs&#47;REPO_AUDIT_REPORT.md** — untouched, unstaged
 5. **Additive-only** — prefer adding clarifications over deleting content
 6. **Link fixes only** — fix broken links; do not remove valid links
 
@@ -69,7 +69,7 @@ Define the **smallest future hygiene wave** with the **lowest operational risk**
 
 ## Expected Evidence Outputs
 
-- `out/ops/ci_ops_wave26_review/first_safe_hygiene_wave.md` (this file)
+- `out&#47;ops&#47;ci_ops_wave26_review&#47;first_safe_hygiene_wave.md` (this file)
 - Post-wave: PR with diff showing only docs changes; CI green
 
 ---

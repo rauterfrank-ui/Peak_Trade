@@ -41,8 +41,8 @@ Wave 26 performed a **CI/Ops hygiene classification and planning** review. No co
 
 ## Untracked Local Docs Status
 
-- **docs/GOVERNANCE_DATAFLOW_REPORT.md:** Untracked, untouched ✓
-- **docs/REPO_AUDIT_REPORT.md:** Untracked, untouched ✓
+- **docs&#47;GOVERNANCE_DATAFLOW_REPORT.md:** Untracked, untouched ✓
+- **docs&#47;REPO_AUDIT_REPORT.md:** Untracked, untouched ✓
 
 ---
 
@@ -52,4 +52,4 @@ Wave 26 performed a **CI/Ops hygiene classification and planning** review. No co
 - No functional mutation
 - No CI/workflow/script changes
 - Conservative classification applied
-- docs/GOVERNANCE_DATAFLOW_REPORT.md, docs/REPO_AUDIT_REPORT.md preserved
+- docs&#47;GOVERNANCE_DATAFLOW_REPORT.md, docs&#47;REPO_AUDIT_REPORT.md preserved

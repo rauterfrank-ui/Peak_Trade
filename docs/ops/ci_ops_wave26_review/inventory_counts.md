@@ -21,10 +21,10 @@
 
 | Kind | Count | Notes |
 |------|-------|------|
-| workflow | 35 | .github/workflows/*.yml |
-| script | 16 | scripts/ci/*, scripts/ops/* |
-| doc | 28 | docs/ops/*, docs/audit/* |
-| runbook | 12 | docs/ops/runbooks/* |
+| workflow | 35 | .github&#47;workflows&#47;*.yml |
+| script | 16 | scripts&#47;ci&#47;*, scripts&#47;ops&#47;* |
+| doc | 28 | docs&#47;ops&#47;*, docs&#47;audit&#47;* |
+| runbook | 12 | docs&#47;ops&#47;runbooks&#47;* |
 | index | 5 | INDEX, RUNBOOK_INDEX, audit README |
 | config | 1 | required_status_checks.json |
 | audit_report | 2 | GOVERNANCE_DATAFLOW, REPO_AUDIT |
@@ -55,4 +55,4 @@
 
 ## Full Workflow Count (Reference)
 
-Total workflows in `.github/workflows/`: **67** (inventory samples 35 most relevant for CI/Ops)
+Total workflows in `.github&#47;workflows&#47;`: **67** (inventory samples 35 most relevant for CI/Ops)
