@@ -34,7 +34,9 @@ Owner: ops
 """
 
 import argparse
+import itertools
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Set, Tuple
@@ -86,6 +88,52 @@ class WorkflowAnalyzer:
             except Exception as e:
                 print(f"WARNING: Failed to parse {wf_file.name}: {e}", file=sys.stderr)
 
+    def _expand_matrix_job_names(
+        self, job_id: str, job_config: Dict[str, Any]
+    ) -> List[Dict[str, str]]:
+        """
+        Expand matrix job names so runtime-emitted contexts are recognized.
+
+        When a job has name like "tests (${{ matrix.python-version }})" and
+        strategy.matrix.python-version: ['3.9', '3.10', '3.11'], returns one
+        job entry per matrix combination with expanded display name.
+        """
+        job_display = job_config.get("name", job_id)
+        if job_display is None:
+            job_display = job_id
+        job_display = str(job_display)
+
+        strategy = job_config.get("strategy", {})
+        if not isinstance(strategy, dict):
+            return [{"job_id": job_id, "job_display": job_display}]
+
+        matrix = strategy.get("matrix", {})
+        if not isinstance(matrix, dict) or not matrix:
+            return [{"job_id": job_id, "job_display": job_display}]
+
+        # Match ${{ matrix.KEY }} in job name (KEY may contain hyphens, e.g. python-version)
+        pattern = r"\$\{\{\s*matrix\.([\w-]+)\s*\}\}"
+        matches = list(re.finditer(pattern, job_display))
+        if not matches:
+            return [{"job_id": job_id, "job_display": job_display}]
+
+        keys_in_name = [m.group(1) for m in matches]
+        dims = []
+        for key in keys_in_name:
+            if key not in matrix:
+                return [{"job_id": job_id, "job_display": job_display}]
+            vals = matrix[key]
+            dims.append(list(vals) if isinstance(vals, (list, tuple)) else [vals])
+
+        result = []
+        for combo in itertools.product(*dims):
+            display = job_display
+            for key, val in zip(keys_in_name, combo):
+                pattern = r"\$\{\{\s*matrix\." + re.escape(key) + r"\s*\}\}"
+                display = re.sub(pattern, str(val), display)
+            result.append({"job_id": job_id, "job_display": display})
+        return result
+
     def extract_pr_workflows(self) -> List[Dict[str, Any]]:
         """Extract workflows that trigger on pull_request events."""
         pr_workflows = []
@@ -120,17 +168,14 @@ class WorkflowAnalyzer:
             # Extract workflow name
             workflow_name = content.get("name", wf["file"].replace(".yml", "").replace(".yaml", ""))
 
-            # Extract jobs
+            # Extract jobs (expand matrix job names so e.g. tests (${{ matrix.python-version }})
+            # becomes tests (3.9), tests (3.10), tests (3.11))
             jobs = content.get("jobs", {})
             job_list = []
             for job_id, job_config in jobs.items():
                 if isinstance(job_config, dict):
-                    job_display = job_config.get("name", job_id)
-                    job_list.append(
-                        {
-                            "job_id": job_id,
-                            "job_display": job_display,
-                        }
+                    job_list.extend(
+                        self._expand_matrix_job_names(job_id, job_config)
                     )
 
             pr_workflows.append(
