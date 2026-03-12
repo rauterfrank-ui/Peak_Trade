@@ -2,7 +2,7 @@
 title: "Finish Plan (MVP→v1.0) — Repo Roadmap + DoD Checklists"
 status: DRAFT
 scope: docs-first (NO-LIVE)
-last_updated: 2026-01-18
+last_updated: 2026-03-12
 ---
 
 # Finish Plan (MVP→v1.0) — Repo Roadmap + DoD Checklists
