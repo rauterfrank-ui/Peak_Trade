@@ -17,6 +17,14 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "operator_state" in payload
     assert "run_state" in payload
     assert "incident_state" in payload
+    assert "exposure_state" in payload
+    exp = payload["exposure_state"]
+    assert "summary" in exp
+    assert "treasury_separation" in exp
+    assert "risk_status" in exp
+    assert exp["summary"] == "no_live_context"
+    assert exp["treasury_separation"] == "enforced"
+    assert exp["risk_status"] == "unknown"
     assert payload["run_state"]["status"] == "idle"
     assert payload["incident_state"]["status"] == "blocked"
     assert payload["incident_state"]["blocked"] is True
@@ -42,6 +50,26 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert payload["operator_state"]["dry_run"] is True
     assert payload["operator_state"]["blocked"] is True
     assert payload["operator_state"]["kill_switch_active"] is False
+
+
+def test_exposure_state_section_present(tmp_path: Path) -> None:
+    """exposure_state Sektion ist im Payload und hat erwartete Keys."""
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert "exposure_state" in payload
+    exp = payload["exposure_state"]
+    assert exp["summary"] in ("no_live_context", "unknown")
+    assert "treasury_separation" in exp
+    assert "risk_status" in exp
+    assert "caps_configured" in exp
+    assert isinstance(exp["caps_configured"], list)
+
+
+def test_ops_cockpit_html_contains_exposure_state(tmp_path: Path) -> None:
+    """HTML rendert Exposure State Card."""
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Exposure State" in html
+    assert "no_live_context" in html
+    assert "treasury separation" in html or "Treasury separation" in html
 
 
 def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:
