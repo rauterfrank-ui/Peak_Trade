@@ -3,6 +3,9 @@
 - PR #281 — Test PR 281: docs/ops/PR_281_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
 
+- `docs/ops/specs/OPS_SUITE_DASHBOARD_VNEXT_SPEC.md` — OPS Suite / Dashboard vNext Spezifikation
+- `docs/ops/runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md` — Phasenplan für spätere Umsetzung
+
 ## PR Ops v1
 
 Standardized PR watch, closeout, and required-checks snapshot helpers. See [PR Ops v1 Runbook](pr/pr_ops_v1_runbook.md).
