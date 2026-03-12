@@ -91,14 +91,14 @@ This document defines the canonical schema and real-signal mapping for `exposure
 
 ### 3.1 Option A: Prometheus Scrape
 
-- **Endpoint:** Live web app `/metrics` (uses default prometheus REGISTRY; includes strategy_risk_telemetry)
+- **Endpoint:** Live web app `&#47;metrics` (uses default prometheus REGISTRY; includes strategy_risk_telemetry)
 - **Pros:** Real-time, already written by Live/Shadow sessions
 - **Cons:** Ops Cockpit is stateless; requires scrape target or in-process registry access
 - **Architecture:** Ops Cockpit must either (a) run in same process as live app, or (b) scrape external /metrics, or (c) use shared multiproc dir (PEAKTRADE_METRICS_MODE=B)
 
 ### 3.2 Option B: Telemetry Logs
 
-- **Location:** `telemetry_root` (e.g. `logs/execution`)
+- **Location:** `telemetry_root` (e.g. `logs&#47;execution`)
 - **Pros:** File-based, audit-friendly, no runtime dependency
 - **Cons:** Requires structured log format for exposure; may need new log sink
 - **Architecture:** Ops Cockpit reads parsed log files; freshness from mtime
