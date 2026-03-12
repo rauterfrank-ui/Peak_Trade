@@ -8,6 +8,7 @@
 - `docs/ops/specs/PILOT_READY_EXECUTION_REVIEW_SPEC.md` — Pilot-Ready Execution Review Spezifikation
 - `docs/ops/runbooks/RUNBOOK_PILOT_READY_EXECUTION_REVIEW_PLAN.md` — Phasenplan für Pilot-Ready Review/Härtung
 - `docs/ops/specs/PILOT_EXECUTION_EDGE_CASE_MATRIX.md` — Kanonische Edge-Case-Matrix für Pilot-Execution-Härtung
+- `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md` — Kanonische Go/No-Go-Checkliste für begrenzte Pilot-Freigabe
 
 ## PR Ops v1
 
