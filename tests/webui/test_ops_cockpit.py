@@ -15,6 +15,13 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert payload["truth_state"]["truth_first_positioning"] == "enabled"
     assert "policy_state" in payload
     assert "operator_state" in payload
+    assert "run_state" in payload
+    assert payload["run_state"]["status"] == "idle"
+    assert payload["run_state"]["active"] is False
+    assert payload["run_state"]["last_run_status"] == "unknown"
+    assert payload["run_state"]["session_active"] is False
+    assert payload["run_state"]["generated_at"] == payload["truth_state"]["last_verified_utc"]
+    assert payload["run_state"]["freshness_status"] == payload["freshness_status"]
     assert payload["policy_state"]["action"] == "NO_TRADE"
     assert payload["policy_state"]["confirm_token_required"] is True
     assert payload["policy_state"]["enabled"] is False
