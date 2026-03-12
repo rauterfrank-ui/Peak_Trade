@@ -506,21 +506,6 @@ def build_ops_cockpit_payload(
                     exposure_state["risk_status"] = "ok"
         except (TypeError, ValueError):
             pass
-    _fs_level = str(v3_summary.get("freshness_status", "unknown"))
-    _ev_summary = {"ok": "ok", "warn": "partial", "critical": "stale"}.get(_fs_level, "unknown")
-    _fresh = _stale = _older = 0
-    for s in group_summaries.values():
-        if isinstance(s, dict):
-            _fresh += int(s.get("fresh", 0))
-            _stale += int(s.get("stale", 0))
-            _older += int(s.get("older", 0))
-    evidence_state = {
-        "summary": _ev_summary,
-        "last_verified_utc": truth_state["last_verified_utc"],
-        "freshness_status": _fs_level,
-        "source_freshness": {"fresh": _fresh, "stale": _stale, "older": _older},
-        "audit_trail": "intact",
-    }
     _tel_root = (
         telemetry_root
         if telemetry_root is not None
@@ -537,6 +522,38 @@ def build_ops_cockpit_payload(
             _degraded = [c.name for c in _report.checks if c.status in ("warn", "critical")]
         except Exception:
             pass
+    _fs_level = str(v3_summary.get("freshness_status", "unknown"))
+    _ev_summary = {"ok": "ok", "warn": "partial", "critical": "stale"}.get(_fs_level, "unknown")
+    _fresh = _stale = _older = 0
+    for s in group_summaries.values():
+        if isinstance(s, dict):
+            _fresh += int(s.get("fresh", 0))
+            _stale += int(s.get("stale", 0))
+            _older += int(s.get("older", 0))
+    _audit_trail = (
+        "intact"
+        if _tel_status == "ok"
+        else "degraded"
+        if _tel_status in ("warn", "critical")
+        else "unknown"
+    )
+    _blended_summary = _ev_summary
+    if _tel_status != "unknown":
+        _tel_ev = {"ok": "ok", "warn": "partial", "critical": "stale"}.get(_tel_status, "unknown")
+        _rank = {"ok": 0, "partial": 1, "stale": 2, "unknown": 3}
+        _blended_summary = max(
+            [_ev_summary, _tel_ev],
+            key=lambda x: _rank.get(x, 3),
+        )
+    evidence_state = {
+        "summary": _blended_summary,
+        "last_verified_utc": truth_state["last_verified_utc"],
+        "freshness_status": _fs_level,
+        "source_freshness": {"fresh": _fresh, "stale": _stale, "older": _older},
+        "audit_trail": _audit_trail,
+    }
+    if _tel_status != "unknown":
+        evidence_state["telemetry_evidence"] = _tel_status
     _dep_summary = (
         "ok"
         if _tel_status == "ok" and not _degraded
