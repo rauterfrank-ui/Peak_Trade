@@ -1,0 +1,10 @@
+context	order
+Guard tracked files in reports directories	1
+audit	2
+tests (3.11)	3
+strategy-smoke	4
+Policy Critic Gate	5
+Lint Gate	6
+dispatch-guard	7
+docs-token-policy-gate	8
+docs-reference-targets-gate	9
