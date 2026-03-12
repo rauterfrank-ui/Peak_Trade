@@ -35,7 +35,7 @@ scripts/ops/verify_from_registry.sh docs/ops/registry/LATEST_PHASE_M_SMOKE.point
 |---------|--------|-----------|
 | **Phase (AI Autonomy)** | P4B abgeschlossen, P4C nächster | L1&#47;L4 operational; L2 Market Outlook Integration geplant |
 | **Operating Mode** | Governance-Locked &#47; NO-LIVE | L6 Execution FORBIDDEN |
-| **CI Health** | ✅ 7 Required Checks Active | Docs Gates, Policy Critic, Evidence Pack Validator |
+| **CI Health** | ✅ 9 Required Checks Active | Docs Gates, Policy Critic, Evidence Pack Validator |
 | **Evidence Infrastructure** | ✅ Templates, Schema, Validator, Index | Operational |
 | **Runner Readiness** | 1 READY, 6 PARTIAL, 6 TODO | Siehe `docs&#47;dev&#47;RUNNER_INDEX.md` |
 
