@@ -337,7 +337,10 @@ def _build_v3_executive_summary(
     }
 
 
-def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object]:
+def build_ops_cockpit_payload(
+    repo_root: Path | None = None,
+    telemetry_root: Path | None = None,
+) -> Dict[str, object]:
     truth_docs = discover_truth_docs(repo_root=repo_root)
     groups = _grouped_sources(truth_docs)
     group_summaries = {name: _group_summary(items) for name, items in groups.items()}
@@ -422,11 +425,36 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
         "source_freshness": {"fresh": _fresh, "stale": _stale, "older": _older},
         "audit_trail": "intact",
     }
+    _tel_root = (
+        telemetry_root
+        if telemetry_root is not None
+        else (repo_root / "logs" / "execution" if repo_root else Path("logs/execution"))
+    )
+    _tel_status = "unknown"
+    _degraded: List[str] = []
+    if _tel_root.exists():
+        try:
+            from src.execution.telemetry_health import run_health_checks
+
+            _report = run_health_checks(_tel_root)
+            _tel_status = _report.status
+            _degraded = [c.name for c in _report.checks if c.status in ("warn", "critical")]
+        except Exception:
+            pass
+    _dep_summary = (
+        "ok"
+        if _tel_status == "ok" and not _degraded
+        else "partial"
+        if _tel_status == "warn"
+        else "degraded"
+        if _tel_status == "critical"
+        else "unknown"
+    )
     dependencies_state = {
-        "summary": "unknown",
+        "summary": _dep_summary,
         "exchange": "unknown",
-        "telemetry": "unknown",
-        "degraded": [],
+        "telemetry": _tel_status,
+        "degraded": _degraded,
     }
     return {
         "system_state": {
