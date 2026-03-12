@@ -422,6 +422,12 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
         "source_freshness": {"fresh": _fresh, "stale": _stale, "older": _older},
         "audit_trail": "intact",
     }
+    dependencies_state = {
+        "summary": "unknown",
+        "exchange": "unknown",
+        "telemetry": "unknown",
+        "degraded": [],
+    }
     return {
         "system_state": {
             "mode": "truth_first_ops_cockpit_v3",
@@ -438,6 +444,7 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
         "incident_state": incident_state,
         "exposure_state": exposure_state,
         "evidence_state": evidence_state,
+        "dependencies_state": dependencies_state,
         "truth_state": truth_state,
         "ai_boundary_state": build_ai_boundary_state(),
         "runtime_unknown_state": build_runtime_unknown_state(),
@@ -573,6 +580,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     runtime = payload["runtime_unknown_state"]
     exposure = payload.get("exposure_state") or {}
     evidence = payload.get("evidence_state") or {}
+    dependencies = payload.get("dependencies_state") or {}
     counts = truth_state["priority_counts"]
     groups = payload["source_groups"]
     summaries = payload["source_group_summary"]
@@ -705,6 +713,14 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
       <p><strong>Summary:</strong> <span class="chip"><code>{escape(str(evidence.get("summary", "unknown")))}</code></span></p>
       <p><strong>Freshness:</strong> {escape(str(evidence.get("freshness_status", "unknown")))}</p>
       <p><strong>Audit trail:</strong> {escape(str(evidence.get("audit_trail", "unknown")))}</p>
+    </div>
+
+    <div class="card">
+      <h2>Dependencies State</h2>
+      <p><strong>Read-only dependencies surface (placeholder)</strong></p>
+      <p><strong>Summary:</strong> <span class="chip"><code>{escape(str(dependencies.get("summary", "unknown")))}</code></span></p>
+      <p><strong>Exchange:</strong> {escape(str(dependencies.get("exchange", "unknown")))}</p>
+      <p><strong>Telemetry:</strong> {escape(str(dependencies.get("telemetry", "unknown")))}</p>
     </div>
   </div>
 
