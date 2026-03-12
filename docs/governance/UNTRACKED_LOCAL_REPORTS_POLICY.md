@@ -12,8 +12,8 @@ Diese Policy regelt den Umgang mit lokalen, unversionierten Analyse- und Audit-R
 
 **Betroffene Dateien (Stand 2026-03-12):**
 
-- `docs/GOVERNANCE_DATAFLOW_REPORT.md`
-- `docs/REPO_AUDIT_REPORT.md`
+- `docs&#47;GOVERNANCE_DATAFLOW_REPORT.md`
+- `docs&#47;REPO_AUDIT_REPORT.md`
 
 ---
 
