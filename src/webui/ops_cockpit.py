@@ -407,6 +407,21 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
         "caps_configured": [],
         "risk_status": "unknown",
     }
+    _fs_level = str(v3_summary.get("freshness_status", "unknown"))
+    _ev_summary = {"ok": "ok", "warn": "partial", "critical": "stale"}.get(_fs_level, "unknown")
+    _fresh = _stale = _older = 0
+    for s in group_summaries.values():
+        if isinstance(s, dict):
+            _fresh += int(s.get("fresh", 0))
+            _stale += int(s.get("stale", 0))
+            _older += int(s.get("older", 0))
+    evidence_state = {
+        "summary": _ev_summary,
+        "last_verified_utc": truth_state["last_verified_utc"],
+        "freshness_status": _fs_level,
+        "source_freshness": {"fresh": _fresh, "stale": _stale, "older": _older},
+        "audit_trail": "intact",
+    }
     return {
         "system_state": {
             "mode": "truth_first_ops_cockpit_v3",
@@ -422,6 +437,7 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
         "run_state": run_state,
         "incident_state": incident_state,
         "exposure_state": exposure_state,
+        "evidence_state": evidence_state,
         "truth_state": truth_state,
         "ai_boundary_state": build_ai_boundary_state(),
         "runtime_unknown_state": build_runtime_unknown_state(),
@@ -556,6 +572,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     boundary = payload["ai_boundary_state"]
     runtime = payload["runtime_unknown_state"]
     exposure = payload.get("exposure_state") or {}
+    evidence = payload.get("evidence_state") or {}
     counts = truth_state["priority_counts"]
     groups = payload["source_groups"]
     summaries = payload["source_group_summary"]
@@ -680,6 +697,14 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
       <p><strong>Summary:</strong> <span class="chip"><code>{escape(str(exposure.get("summary", "unknown")))}</code></span></p>
       <p><strong>Treasury separation:</strong> {escape(str(exposure.get("treasury_separation", "unknown")))}</p>
       <p><strong>Risk status:</strong> {escape(str(exposure.get("risk_status", "unknown")))}</p>
+    </div>
+
+    <div class="card">
+      <h2>Evidence State</h2>
+      <p><strong>Read-only evidence / audit surface (derived from truth sources)</strong></p>
+      <p><strong>Summary:</strong> <span class="chip"><code>{escape(str(evidence.get("summary", "unknown")))}</code></span></p>
+      <p><strong>Freshness:</strong> {escape(str(evidence.get("freshness_status", "unknown")))}</p>
+      <p><strong>Audit trail:</strong> {escape(str(evidence.get("audit_trail", "unknown")))}</p>
     </div>
   </div>
 

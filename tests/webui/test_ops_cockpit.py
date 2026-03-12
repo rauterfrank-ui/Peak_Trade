@@ -18,6 +18,18 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "run_state" in payload
     assert "incident_state" in payload
     assert "exposure_state" in payload
+    assert "evidence_state" in payload
+    ev = payload["evidence_state"]
+    assert "summary" in ev
+    assert "last_verified_utc" in ev
+    assert "freshness_status" in ev
+    assert "source_freshness" in ev
+    assert "audit_trail" in ev
+    assert ev["audit_trail"] == "intact"
+    assert isinstance(ev["source_freshness"], dict)
+    assert "fresh" in ev["source_freshness"]
+    assert "stale" in ev["source_freshness"]
+    assert "older" in ev["source_freshness"]
     exp = payload["exposure_state"]
     assert "summary" in exp
     assert "treasury_separation" in exp
@@ -64,12 +76,35 @@ def test_exposure_state_section_present(tmp_path: Path) -> None:
     assert isinstance(exp["caps_configured"], list)
 
 
+def test_evidence_state_section_present(tmp_path: Path) -> None:
+    """evidence_state Sektion ist im Payload und hat erwartete Keys."""
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert "evidence_state" in payload
+    ev = payload["evidence_state"]
+    assert ev["summary"] in ("ok", "partial", "stale", "unknown")
+    assert "last_verified_utc" in ev
+    assert "freshness_status" in ev
+    assert "source_freshness" in ev
+    assert "audit_trail" in ev
+    assert ev["audit_trail"] == "intact"
+    sf = ev["source_freshness"]
+    assert isinstance(sf, dict)
+    assert "fresh" in sf and "stale" in sf and "older" in sf
+
+
 def test_ops_cockpit_html_contains_exposure_state(tmp_path: Path) -> None:
     """HTML rendert Exposure State Card."""
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert "Exposure State" in html
     assert "no_live_context" in html
     assert "treasury separation" in html or "Treasury separation" in html
+
+
+def test_ops_cockpit_html_contains_evidence_state(tmp_path: Path) -> None:
+    """HTML rendert Evidence State Card."""
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Evidence State" in html
+    assert "audit trail" in html or "Audit trail" in html
 
 
 def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:
