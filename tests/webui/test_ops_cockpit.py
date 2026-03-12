@@ -13,6 +13,21 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "ai_boundary_state" in payload
     assert "runtime_unknown_state" in payload
     assert payload["truth_state"]["truth_first_positioning"] == "enabled"
+    assert "policy_state" in payload
+    assert "operator_state" in payload
+    assert payload["policy_state"]["action"] == "NO_TRADE"
+    assert payload["policy_state"]["confirm_token_required"] is True
+    assert payload["policy_state"]["enabled"] is False
+    assert payload["policy_state"]["armed"] is False
+    assert payload["policy_state"]["dry_run"] is True
+    assert payload["policy_state"]["blocked"] is True
+    assert payload["policy_state"]["summary"] == "blocked"
+    assert payload["operator_state"]["disabled"] is True
+    assert payload["operator_state"]["enabled"] is False
+    assert payload["operator_state"]["armed"] is False
+    assert payload["operator_state"]["dry_run"] is True
+    assert payload["operator_state"]["blocked"] is True
+    assert payload["operator_state"]["kill_switch_active"] is False
 
 
 def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:

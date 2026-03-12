@@ -343,16 +343,47 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
     group_summaries = {name: _group_summary(items) for name, items in groups.items()}
     truth_state = build_truth_state(truth_docs)
     v3_summary = _build_v3_executive_summary(truth_state, group_summaries)
+    guard_state = {
+        "no_trade_baseline": "reference",
+        "deny_by_default": "active",
+        "treasury_separation": "enforced",
+        "enabled": False,
+        "armed": False,
+        "dry_run": True,
+        "confirm_token_required": True,
+        "kill_switch_active": False,
+    }
+    policy_state = {
+        "action": "NO_TRADE",
+        "confirm_token_required": guard_state["confirm_token_required"],
+        "enabled": guard_state["enabled"],
+        "armed": guard_state["armed"],
+        "dry_run": guard_state["dry_run"],
+        "blocked": (not guard_state["enabled"]) or (not guard_state["armed"]),
+        "summary": (
+            "blocked" if (not guard_state["enabled"] or not guard_state["armed"]) else "armed"
+        ),
+    }
+    operator_state = {
+        "disabled": not guard_state["enabled"],
+        "enabled": guard_state["enabled"],
+        "armed": guard_state["armed"],
+        "dry_run": guard_state["dry_run"],
+        "blocked": (not guard_state["enabled"]) or (not guard_state["armed"]),
+        "kill_switch_active": guard_state["kill_switch_active"],
+    }
     return {
         "system_state": {
             "mode": "truth_first_ops_cockpit_v3",
             "execution_model": "guarded_execution",
         },
         "guard_state": {
-            "no_trade_baseline": "reference",
-            "deny_by_default": "active",
-            "treasury_separation": "enforced",
+            "no_trade_baseline": guard_state["no_trade_baseline"],
+            "deny_by_default": guard_state["deny_by_default"],
+            "treasury_separation": guard_state["treasury_separation"],
         },
+        "policy_state": policy_state,
+        "operator_state": operator_state,
         "truth_state": truth_state,
         "ai_boundary_state": build_ai_boundary_state(),
         "runtime_unknown_state": build_runtime_unknown_state(),
