@@ -86,6 +86,91 @@ def test_exposure_state_section_present(tmp_path: Path) -> None:
     assert isinstance(exp["caps_configured"], list)
 
 
+def test_exposure_state_caps_configured_from_config(tmp_path: Path) -> None:
+    """When config_path exists with live_risk, caps_configured is populated."""
+    config_dir = tmp_path / "config"
+    config_dir.mkdir(parents=True)
+    config_path = config_dir / "config.toml"
+    config_path.write_text(
+        """
+[live_risk]
+base_currency = "EUR"
+max_total_exposure_notional = 5000.0
+max_symbol_exposure_notional = 2000.0
+max_order_notional = 1000.0
+max_open_positions = 5
+max_daily_loss_abs = 500.0
+max_daily_loss_pct = 5.0
+""",
+        encoding="utf-8",
+    )
+    payload = build_ops_cockpit_payload(repo_root=tmp_path, config_path=config_path)
+    caps = payload["exposure_state"]["caps_configured"]
+    assert len(caps) == 6
+    limit_ids = {c["limit_id"] for c in caps}
+    assert limit_ids == {
+        "max_total_exposure",
+        "max_symbol_exposure",
+        "max_order_notional",
+        "max_open_positions",
+        "max_daily_loss_abs",
+        "max_daily_loss_pct",
+    }
+    for c in caps:
+        assert c["source"] == "config"
+        assert c["ccy"] == "EUR"
+        assert c["cap_value"] > 0
+
+
+def test_exposure_state_risk_status_derived(tmp_path: Path) -> None:
+    """risk_status derived from observed_exposure vs max_total_exposure cap."""
+    import json
+
+    import pandas as pd
+
+    config_dir = tmp_path / "config"
+    config_dir.mkdir(parents=True)
+    (config_dir / "config.toml").write_text(
+        """
+[live_risk]
+base_currency = "EUR"
+max_total_exposure_notional = 5000.0
+""",
+        encoding="utf-8",
+    )
+    live_runs = tmp_path / "live_runs"
+    run_dir = live_runs / "20251207_120000_shadow_ma_BTC-EUR_1m"
+    run_dir.mkdir(parents=True)
+    with open(run_dir / "meta.json", "w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "run_id": "x",
+                "mode": "shadow",
+                "strategy_name": "ma",
+                "symbol": "BTC/EUR",
+                "timeframe": "1m",
+            },
+            f,
+        )
+    # observed = 5000 (cap) -> util 1.0 -> critical
+    events = pd.DataFrame([{"step": 1, "position_size": 0.1, "price": 50000.0, "close": 50000.0}])
+    events.to_parquet(run_dir / "events.parquet", index=False)
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["exposure_state"]["risk_status"] == "critical"
+
+    # observed = 4000 (80%) -> warn
+    events = pd.DataFrame([{"step": 1, "position_size": 0.08, "price": 50000.0, "close": 50000.0}])
+    events.to_parquet(run_dir / "events.parquet", index=False)
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["exposure_state"]["risk_status"] == "warn"
+
+    # observed = 3000 (60%) -> ok
+    events = pd.DataFrame([{"step": 1, "position_size": 0.06, "price": 50000.0, "close": 50000.0}])
+    events.to_parquet(run_dir / "events.parquet", index=False)
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["exposure_state"]["risk_status"] == "ok"
+
+
 def test_exposure_state_with_live_runs_data(tmp_path: Path) -> None:
     """When live_runs has data, exposure_state includes observed_exposure."""
     import json

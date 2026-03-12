@@ -337,10 +337,57 @@ def _build_v3_executive_summary(
     }
 
 
+def _build_caps_configured_from_config(config_path: Path) -> List[Dict[str, object]]:
+    """
+    Read-only. Build caps_configured from live_risk config.
+    Returns [] on any error. Aligned with strategy_risk_telemetry limit_ids.
+    """
+    caps: List[Dict[str, object]] = []
+    try:
+        from src.core.peak_config import load_config
+
+        cfg = load_config(config_path)
+        base_ccy = str(cfg.get("live_risk.base_currency", "EUR") or "EUR")
+
+        # Map config keys to limit_id (aligned with strategy_risk_telemetry)
+        mappings = [
+            ("live_risk.max_total_exposure_notional", "max_total_exposure"),
+            ("live_risk.max_symbol_exposure_notional", "max_symbol_exposure"),
+            ("live_risk.max_order_notional", "max_order_notional"),
+            ("live_risk.max_open_positions", "max_open_positions"),
+            ("live_risk.max_daily_loss_abs", "max_daily_loss_abs"),
+            ("live_risk.max_daily_loss_pct", "max_daily_loss_pct"),
+        ]
+        for config_key, limit_id in mappings:
+            val = cfg.get(config_key)
+            if val is None:
+                continue
+            try:
+                if limit_id == "max_open_positions":
+                    cap_val = float(int(val))
+                else:
+                    cap_val = float(val)
+                if cap_val > 0:
+                    caps.append(
+                        {
+                            "limit_id": limit_id,
+                            "cap_value": cap_val,
+                            "ccy": base_ccy,
+                            "source": "config",
+                        }
+                    )
+            except (TypeError, ValueError):
+                continue
+    except Exception:
+        pass
+    return caps
+
+
 def build_ops_cockpit_payload(
     repo_root: Path | None = None,
     telemetry_root: Path | None = None,
     live_runs_root: Path | None = None,
+    config_path: Path | None = None,
 ) -> Dict[str, object]:
     truth_docs = discover_truth_docs(repo_root=repo_root)
     groups = _grouped_sources(truth_docs)
@@ -405,10 +452,18 @@ def build_ops_cockpit_payload(
             else "normal"
         ),
     }
+    _config_path = config_path
+    if _config_path is None and repo_root:
+        _config_path = repo_root / "config" / "config.toml"
+    caps_configured = (
+        _build_caps_configured_from_config(_config_path)
+        if _config_path and _config_path.exists()
+        else []
+    )
     exposure_state = {
         "summary": "no_live_context",
         "treasury_separation": guard_state["treasury_separation"],
-        "caps_configured": [],
+        "caps_configured": caps_configured,
         "risk_status": "unknown",
     }
     _live_runs = (
@@ -431,6 +486,25 @@ def build_ops_cockpit_payload(
                 else:
                     exposure_state["summary"] = "ok"
         except Exception:
+            pass
+    # Derived risk_status heuristic: observed vs max_total_exposure cap
+    _obs = exposure_state.get("observed_exposure")
+    _cap_obj = next(
+        (c for c in caps_configured if c.get("limit_id") == "max_total_exposure"),
+        None,
+    )
+    if _obs is not None and _cap_obj is not None:
+        try:
+            cap_val = float(_cap_obj.get("cap_value", 0))
+            if cap_val > 0:
+                util = float(_obs) / cap_val
+                if util >= 1.0:
+                    exposure_state["risk_status"] = "critical"
+                elif util >= 0.8:
+                    exposure_state["risk_status"] = "warn"
+                else:
+                    exposure_state["risk_status"] = "ok"
+        except (TypeError, ValueError):
             pass
     _fs_level = str(v3_summary.get("freshness_status", "unknown"))
     _ev_summary = {"ok": "ok", "warn": "partial", "critical": "stale"}.get(_fs_level, "unknown")
