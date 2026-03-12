@@ -16,7 +16,14 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "policy_state" in payload
     assert "operator_state" in payload
     assert "run_state" in payload
+    assert "incident_state" in payload
     assert payload["run_state"]["status"] == "idle"
+    assert payload["incident_state"]["status"] == "blocked"
+    assert payload["incident_state"]["blocked"] is True
+    assert payload["incident_state"]["kill_switch_active"] is False
+    assert payload["incident_state"]["degraded"] is False
+    assert payload["incident_state"]["requires_operator_attention"] is True
+    assert payload["incident_state"]["summary"] == "blocked"
     assert payload["run_state"]["active"] is False
     assert payload["run_state"]["last_run_status"] == "unknown"
     assert payload["run_state"]["session_active"] is False
