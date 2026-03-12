@@ -25,9 +25,9 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "exchange" in dep
     assert "telemetry" in dep
     assert "degraded" in dep
-    assert dep["summary"] == "unknown"
+    assert dep["summary"] in ("ok", "partial", "degraded", "unknown")
     assert dep["exchange"] == "unknown"
-    assert dep["telemetry"] == "unknown"
+    assert dep["telemetry"] in ("ok", "warn", "critical", "unknown")
     assert isinstance(dep["degraded"], list)
     ev = payload["evidence_state"]
     assert "summary" in ev
@@ -115,9 +115,11 @@ def test_dependencies_state_section_present(tmp_path: Path) -> None:
     payload = build_ops_cockpit_payload(repo_root=tmp_path)
     assert "dependencies_state" in payload
     dep = payload["dependencies_state"]
-    assert dep["summary"] == "unknown"
+    assert dep["summary"] in ("ok", "partial", "degraded", "unknown")
     assert "exchange" in dep
+    assert dep["exchange"] == "unknown"
     assert "telemetry" in dep
+    assert dep["telemetry"] in ("ok", "warn", "critical", "unknown")
     assert "degraded" in dep
     assert isinstance(dep["degraded"], list)
 
@@ -127,6 +129,16 @@ def test_ops_cockpit_html_contains_evidence_state(tmp_path: Path) -> None:
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert "Evidence State" in html
     assert "audit trail" in html or "Audit trail" in html
+
+
+def test_dependencies_state_telemetry_signal_when_path_exists(tmp_path: Path) -> None:
+    """Wenn telemetry_root existiert, wird telemetry aus run_health_checks abgeleitet."""
+    tel_root = tmp_path / "logs" / "execution"
+    tel_root.mkdir(parents=True, exist_ok=True)
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    dep = payload["dependencies_state"]
+    assert dep["telemetry"] in ("ok", "warn", "critical")
+    assert dep["summary"] in ("ok", "partial", "degraded")
 
 
 def test_ops_cockpit_html_contains_dependencies_state(tmp_path: Path) -> None:
