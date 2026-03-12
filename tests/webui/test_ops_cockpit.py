@@ -55,7 +55,12 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert payload["incident_state"]["requires_operator_attention"] is True
     assert payload["incident_state"]["summary"] == "blocked"
     assert payload["run_state"]["active"] is False
-    assert payload["run_state"]["last_run_status"] == "unknown"
+    assert payload["run_state"]["last_run_status"] in (
+        "unknown",
+        "completed",
+        "failed",
+        "aborted",
+    )
     assert payload["run_state"]["session_active"] is False
     assert payload["run_state"]["generated_at"] == payload["truth_state"]["last_verified_utc"]
     assert payload["run_state"]["freshness_status"] == payload["freshness_status"]
@@ -72,6 +77,32 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert payload["operator_state"]["dry_run"] is True
     assert payload["operator_state"]["blocked"] is True
     assert payload["operator_state"]["kill_switch_active"] is False
+
+
+def test_run_state_last_run_status_from_registry(tmp_path: Path) -> None:
+    """When live_sessions registry has records, last_run_status is derived."""
+    from datetime import datetime
+
+    from src.experiments.live_session_registry import (
+        LiveSessionRecord,
+        register_live_session_run,
+    )
+
+    sessions_dir = tmp_path / "reports" / "experiments" / "live_sessions"
+    sessions_dir.mkdir(parents=True)
+    record = LiveSessionRecord(
+        session_id="session_test",
+        run_id="run_001",
+        run_type="live_session_shadow",
+        mode="shadow",
+        env_name="test_env",
+        symbol="BTC/USD",
+        status="completed",
+        started_at=datetime.utcnow(),
+    )
+    register_live_session_run(record, base_dir=sessions_dir)
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["run_state"]["last_run_status"] == "completed"
 
 
 def test_exposure_state_section_present(tmp_path: Path) -> None:

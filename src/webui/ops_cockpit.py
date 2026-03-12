@@ -423,10 +423,25 @@ def build_ops_cockpit_payload(
         "blocked": (not guard_state["enabled"]) or (not guard_state["armed"]),
         "kill_switch_active": guard_state["kill_switch_active"],
     }
+    _last_run_status = "unknown"
+    _sessions_root = (
+        repo_root / "reports" / "experiments" / "live_sessions"
+        if repo_root
+        else Path("reports/experiments/live_sessions")
+    )
+    if _sessions_root.exists():
+        try:
+            from src.experiments.live_session_registry import list_session_records
+
+            records = list_session_records(base_dir=_sessions_root, limit=1)
+            if records:
+                _last_run_status = str(records[0].status or "unknown")
+        except Exception:
+            pass
     run_state = {
         "status": "idle",
         "active": False,
-        "last_run_status": "unknown",
+        "last_run_status": _last_run_status,
         "session_active": False,
         "generated_at": truth_state["last_verified_utc"],
         "freshness_status": v3_summary["freshness_status"],
