@@ -22,8 +22,8 @@
 - No branch protection reduction
 - No workflow rename/trigger mutation
 - No deletions, moves, renames
-- `docs/GOVERNANCE_DATAFLOW_REPORT.md` — untouched, untracked
-- `docs/REPO_AUDIT_REPORT.md` — untouched, untracked
+- `docs&#47;GOVERNANCE_DATAFLOW_REPORT.md` — untouched, untracked
+- `docs&#47;REPO_AUDIT_REPORT.md` — untouched, untracked
 
 ---
 

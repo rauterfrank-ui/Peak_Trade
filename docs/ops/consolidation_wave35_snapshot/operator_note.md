@@ -15,7 +15,7 @@ Post-alignment consolidation audit snapshot. **No action required.** Config and 
 - **Config:** 9 required contexts, aligned to GitHub
 - **GitHub:** 9 required contexts, identical to config
 - **Validator:** Expands matrix job names correctly
-- **Untracked docs:** `docs/GOVERNANCE_DATAFLOW_REPORT.md`, `docs/REPO_AUDIT_REPORT.md` — untouched
+- **Untracked docs:** `docs&#47;GOVERNANCE_DATAFLOW_REPORT.md`, `docs&#47;REPO_AUDIT_REPORT.md` — untouched
 
 ---
 
