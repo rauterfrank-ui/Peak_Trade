@@ -340,6 +340,7 @@ def _build_v3_executive_summary(
 def build_ops_cockpit_payload(
     repo_root: Path | None = None,
     telemetry_root: Path | None = None,
+    live_runs_root: Path | None = None,
 ) -> Dict[str, object]:
     truth_docs = discover_truth_docs(repo_root=repo_root)
     groups = _grouped_sources(truth_docs)
@@ -410,6 +411,27 @@ def build_ops_cockpit_payload(
         "caps_configured": [],
         "risk_status": "unknown",
     }
+    _live_runs = (
+        live_runs_root
+        if live_runs_root is not None
+        else (repo_root / "live_runs" if repo_root else Path("live_runs"))
+    )
+    if _live_runs.exists():
+        try:
+            from src.live.exposure_reader import get_live_runs_exposure_summary
+
+            _exp = get_live_runs_exposure_summary(_live_runs)
+            if _exp.get("observed_exposure") is not None:
+                exposure_state["observed_exposure"] = _exp["observed_exposure"]
+                exposure_state["observed_ccy"] = _exp.get("observed_ccy", "unknown")
+                exposure_state["last_updated_utc"] = _exp.get("last_updated_utc")
+                exposure_state["data_source"] = "live_runs"
+                if _exp.get("stale"):
+                    exposure_state["summary"] = "unknown"
+                else:
+                    exposure_state["summary"] = "ok"
+        except Exception:
+            pass
     _fs_level = str(v3_summary.get("freshness_status", "unknown"))
     _ev_summary = {"ok": "ok", "warn": "partial", "critical": "stale"}.get(_fs_level, "unknown")
     _fresh = _stale = _older = 0

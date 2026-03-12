@@ -79,11 +79,41 @@ def test_exposure_state_section_present(tmp_path: Path) -> None:
     payload = build_ops_cockpit_payload(repo_root=tmp_path)
     assert "exposure_state" in payload
     exp = payload["exposure_state"]
-    assert exp["summary"] in ("no_live_context", "unknown")
+    assert exp["summary"] in ("no_live_context", "unknown", "ok")
     assert "treasury_separation" in exp
     assert "risk_status" in exp
     assert "caps_configured" in exp
     assert isinstance(exp["caps_configured"], list)
+
+
+def test_exposure_state_with_live_runs_data(tmp_path: Path) -> None:
+    """When live_runs has data, exposure_state includes observed_exposure."""
+    import json
+
+    import pandas as pd
+
+    live_runs = tmp_path / "live_runs"
+    run_dir = live_runs / "20251207_120000_shadow_ma_BTC-EUR_1m"
+    run_dir.mkdir(parents=True)
+    with open(run_dir / "meta.json", "w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "run_id": "x",
+                "mode": "shadow",
+                "strategy_name": "ma",
+                "symbol": "BTC/EUR",
+                "timeframe": "1m",
+            },
+            f,
+        )
+    events = pd.DataFrame([{"step": 1, "position_size": 0.1, "price": 50000.0, "close": 50000.0}])
+    events.to_parquet(run_dir / "events.parquet", index=False)
+
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    exp = payload["exposure_state"]
+    assert exp.get("observed_exposure") == 5000.0
+    assert exp.get("data_source") == "live_runs"
+    assert exp.get("summary") == "ok"
 
 
 def test_evidence_state_section_present(tmp_path: Path) -> None:
