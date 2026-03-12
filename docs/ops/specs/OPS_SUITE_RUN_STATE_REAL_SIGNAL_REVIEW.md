@@ -117,7 +117,7 @@ Session / Run State view should include:
 
 ### 4.1 Registry Path
 
-- Default: `repo_root / "reports" / "experiments" / "live_sessions"` when `repo_root` set
+- Default: `repo_root &#47; "reports" &#47; "experiments" &#47; "live_sessions"` when `repo_root` set
 - Or: `live_session_registry.DEFAULT_LIVE_SESSION_DIR` relative to cwd
 
 ### 4.2 Order of Operations
