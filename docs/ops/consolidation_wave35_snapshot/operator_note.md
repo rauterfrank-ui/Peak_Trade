@@ -21,7 +21,7 @@ Post-alignment consolidation audit snapshot. **No action required.** Config and 
 
 ## Evidence Location
 
-`out/ops/consolidation_wave35_snapshot/`
+`out&#47;ops&#47;consolidation_wave35_snapshot&#47;`
 
 - `repo_snapshot.md` — Repo head, validator/config presence
 - `config_snapshot.json` — Config state
