@@ -380,6 +380,27 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
         "generated_at": truth_state["last_verified_utc"],
         "freshness_status": v3_summary["freshness_status"],
     }
+    freshness_ok = v3_summary["freshness_status"] == "ok"
+    incident_state = {
+        "status": (
+            "blocked"
+            if operator_state["blocked"] or operator_state["kill_switch_active"]
+            else "normal"
+        ),
+        "blocked": operator_state["blocked"],
+        "kill_switch_active": operator_state["kill_switch_active"],
+        "degraded": not freshness_ok,
+        "requires_operator_attention": (
+            operator_state["blocked"] or operator_state["kill_switch_active"] or not freshness_ok
+        ),
+        "summary": (
+            "blocked"
+            if operator_state["blocked"] or operator_state["kill_switch_active"]
+            else "degraded"
+            if not freshness_ok
+            else "normal"
+        ),
+    }
     return {
         "system_state": {
             "mode": "truth_first_ops_cockpit_v3",
@@ -393,6 +414,7 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
         "policy_state": policy_state,
         "operator_state": operator_state,
         "run_state": run_state,
+        "incident_state": incident_state,
         "truth_state": truth_state,
         "ai_boundary_state": build_ai_boundary_state(),
         "runtime_unknown_state": build_runtime_unknown_state(),
