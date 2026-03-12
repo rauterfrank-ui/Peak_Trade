@@ -19,6 +19,16 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "incident_state" in payload
     assert "exposure_state" in payload
     assert "evidence_state" in payload
+    assert "dependencies_state" in payload
+    dep = payload["dependencies_state"]
+    assert "summary" in dep
+    assert "exchange" in dep
+    assert "telemetry" in dep
+    assert "degraded" in dep
+    assert dep["summary"] == "unknown"
+    assert dep["exchange"] == "unknown"
+    assert dep["telemetry"] == "unknown"
+    assert isinstance(dep["degraded"], list)
     ev = payload["evidence_state"]
     assert "summary" in ev
     assert "last_verified_utc" in ev
@@ -100,11 +110,32 @@ def test_ops_cockpit_html_contains_exposure_state(tmp_path: Path) -> None:
     assert "treasury separation" in html or "Treasury separation" in html
 
 
+def test_dependencies_state_section_present(tmp_path: Path) -> None:
+    """dependencies_state Sektion ist im Payload und hat erwartete Keys."""
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert "dependencies_state" in payload
+    dep = payload["dependencies_state"]
+    assert dep["summary"] == "unknown"
+    assert "exchange" in dep
+    assert "telemetry" in dep
+    assert "degraded" in dep
+    assert isinstance(dep["degraded"], list)
+
+
 def test_ops_cockpit_html_contains_evidence_state(tmp_path: Path) -> None:
     """HTML rendert Evidence State Card."""
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert "Evidence State" in html
     assert "audit trail" in html or "Audit trail" in html
+
+
+def test_ops_cockpit_html_contains_dependencies_state(tmp_path: Path) -> None:
+    """HTML rendert Dependencies State Card."""
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Dependencies State" in html
+    assert "unknown" in html
+    assert "Exchange" in html or "exchange" in html
+    assert "Telemetry" in html or "telemetry" in html
 
 
 def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:
