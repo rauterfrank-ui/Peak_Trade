@@ -401,6 +401,12 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
             else "normal"
         ),
     }
+    exposure_state = {
+        "summary": "no_live_context",
+        "treasury_separation": guard_state["treasury_separation"],
+        "caps_configured": [],
+        "risk_status": "unknown",
+    }
     return {
         "system_state": {
             "mode": "truth_first_ops_cockpit_v3",
@@ -415,6 +421,7 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
         "operator_state": operator_state,
         "run_state": run_state,
         "incident_state": incident_state,
+        "exposure_state": exposure_state,
         "truth_state": truth_state,
         "ai_boundary_state": build_ai_boundary_state(),
         "runtime_unknown_state": build_runtime_unknown_state(),
@@ -548,6 +555,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     truth_state = payload["truth_state"]
     boundary = payload["ai_boundary_state"]
     runtime = payload["runtime_unknown_state"]
+    exposure = payload.get("exposure_state") or {}
     counts = truth_state["priority_counts"]
     groups = payload["source_groups"]
     summaries = payload["source_group_summary"]
@@ -664,6 +672,14 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
       <p><strong>Proposer runtime path:</strong> {escape(str(runtime["proposer_runtime_path"]))}</p>
       <p><strong>Provider/model runtime slots:</strong> {escape(str(runtime["provider_model_runtime_slots"]))}</p>
       <p><strong>Execution-adjacent contracts:</strong> {escape(str(runtime["execution_adjacent_contracts"]))}</p>
+    </div>
+
+    <div class="card">
+      <h2>Exposure State</h2>
+      <p><strong>Read-only exposure / risk surface (placeholder)</strong></p>
+      <p><strong>Summary:</strong> <span class="chip"><code>{escape(str(exposure.get("summary", "unknown")))}</code></span></p>
+      <p><strong>Treasury separation:</strong> {escape(str(exposure.get("treasury_separation", "unknown")))}</p>
+      <p><strong>Risk status:</strong> {escape(str(exposure.get("risk_status", "unknown")))}</p>
     </div>
   </div>
 
