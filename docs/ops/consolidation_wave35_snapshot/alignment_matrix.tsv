@@ -1,0 +1,10 @@
+context	config_present	github_present	match
+Guard tracked files in reports directories	1	1	1
+audit	1	1	1
+tests (3.11)	1	1	1
+strategy-smoke	1	1	1
+Policy Critic Gate	1	1	1
+Lint Gate	1	1	1
+dispatch-guard	1	1	1
+docs-token-policy-gate	1	1	1
+docs-reference-targets-gate	1	1	1

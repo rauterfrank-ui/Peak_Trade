@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0.0",
+  "required_contexts": [
+    "Guard tracked files in reports directories",
+    "audit",
+    "tests (3.11)",
+    "strategy-smoke",
+    "Policy Critic Gate",
+    "Lint Gate",
+    "dispatch-guard",
+    "docs-token-policy-gate",
+    "docs-reference-targets-gate"
+  ],
+  "ignored_contexts": [
+    "CI Health Gate (weekly_core)",
+    "Docs Diff Guard Policy Gate"
+  ],
+  "notes": "Aligned to GitHub branch protection (9 required contexts). PR Gate is produced by CI but not in branch protection. Last updated: 2026-03-11.",
+  "snapshot_timestamp": "2026-03-12",
+  "source": "config/ci/required_status_checks.json"
+}
