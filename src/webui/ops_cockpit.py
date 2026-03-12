@@ -372,6 +372,14 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
         "blocked": (not guard_state["enabled"]) or (not guard_state["armed"]),
         "kill_switch_active": guard_state["kill_switch_active"],
     }
+    run_state = {
+        "status": "idle",
+        "active": False,
+        "last_run_status": "unknown",
+        "session_active": False,
+        "generated_at": truth_state["last_verified_utc"],
+        "freshness_status": v3_summary["freshness_status"],
+    }
     return {
         "system_state": {
             "mode": "truth_first_ops_cockpit_v3",
@@ -384,6 +392,7 @@ def build_ops_cockpit_payload(repo_root: Path | None = None) -> Dict[str, object
         },
         "policy_state": policy_state,
         "operator_state": operator_state,
+        "run_state": run_state,
         "truth_state": truth_state,
         "ai_boundary_state": build_ai_boundary_state(),
         "runtime_unknown_state": build_runtime_unknown_state(),
