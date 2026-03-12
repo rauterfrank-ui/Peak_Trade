@@ -16,6 +16,7 @@
 - `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_UNEXPECTED_EXPOSURE.md` — Incident-Runbook für unexpected exposure
 
 - `docs/ops/specs/OPS_SUITE_EXPOSURE_READ_MODEL_CONTRACT.md` — Kanonischer Read-Model-Contract für Exposure State im Ops Cockpit
+- `docs/ops/specs/OPS_SUITE_EXPOSURE_DATA_SOURCE_DECISION.md` — Kanonische Entscheidung: live_runs als primäre Exposure-Datenquelle
 
 ## PR Ops v1
 
