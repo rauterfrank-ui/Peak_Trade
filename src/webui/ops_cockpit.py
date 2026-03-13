@@ -394,15 +394,47 @@ def build_ops_cockpit_payload(
     group_summaries = {name: _group_summary(items) for name, items in groups.items()}
     truth_state = build_truth_state(truth_docs)
     v3_summary = _build_v3_executive_summary(truth_state, group_summaries)
+    _config_path = config_path or (repo_root / "config" / "config.toml" if repo_root else None)
+    _config_enabled = False
+    _config_armed = False
+    _config_dry_run = True
+    if _config_path and _config_path.exists():
+        try:
+            from src.core.environment import get_environment_from_config
+            from src.core.peak_config import load_config
+
+            peak_config = load_config(_config_path)
+            env_config = get_environment_from_config(peak_config)
+            _config_enabled = bool(env_config.enable_live_trading)
+            _config_armed = bool(env_config.live_mode_armed)
+            _config_dry_run = bool(env_config.live_dry_run_mode)
+        except Exception:
+            pass
+    _kill_switch_active = False
+    _ks_path = (
+        repo_root / "data" / "kill_switch" / "state.json"
+        if repo_root
+        else Path("data/kill_switch/state.json")
+    )
+    if _ks_path.exists():
+        try:
+            import json
+
+            with open(_ks_path, encoding="utf-8") as f:
+                _ks_data = json.load(f)
+            _ks_state = str(_ks_data.get("state", "")).upper()
+            _kill_switch_active = _ks_state in ("KILLED", "RECOVERING")
+        except Exception:
+            pass
     guard_state = {
         "no_trade_baseline": "reference",
         "deny_by_default": "active",
         "treasury_separation": "enforced",
-        "enabled": False,
-        "armed": False,
-        "dry_run": True,
+        "enabled": _config_enabled,
+        "armed": _config_armed,
+        "dry_run": _config_dry_run,
         "confirm_token_required": True,
-        "kill_switch_active": False,
+        "kill_switch_active": _kill_switch_active,
     }
     policy_state = {
         "action": "NO_TRADE",
@@ -463,22 +495,6 @@ def build_ops_cockpit_payload(
             _degraded = [c.name for c in _report.checks if c.status in ("warn", "critical")]
         except Exception:
             pass
-    _kill_switch_active = False
-    _ks_path = (
-        repo_root / "data" / "kill_switch" / "state.json"
-        if repo_root
-        else Path("data/kill_switch/state.json")
-    )
-    if _ks_path.exists():
-        try:
-            import json
-
-            with open(_ks_path, encoding="utf-8") as f:
-                _ks_data = json.load(f)
-            _ks_state = str(_ks_data.get("state", "")).upper()
-            _kill_switch_active = _ks_state in ("KILLED", "RECOVERING")
-        except Exception:
-            pass
     _degraded_incident = not freshness_ok or _tel_status in ("warn", "critical")
     incident_state = {
         "status": ("blocked" if operator_state["blocked"] or _kill_switch_active else "normal"),
@@ -496,9 +512,6 @@ def build_ops_cockpit_payload(
             else "normal"
         ),
     }
-    _config_path = config_path
-    if _config_path is None and repo_root:
-        _config_path = repo_root / "config" / "config.toml"
     caps_configured = (
         _build_caps_configured_from_config(_config_path)
         if _config_path and _config_path.exists()
