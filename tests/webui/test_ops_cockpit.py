@@ -232,6 +232,31 @@ def test_exposure_state_with_live_runs_data(tmp_path: Path) -> None:
     assert exp.get("summary") == "ok"
 
 
+def test_incident_state_degraded_when_telemetry_warn(tmp_path: Path) -> None:
+    """When telemetry has issues, incident_state.degraded is True."""
+    tel_root = tmp_path / "logs" / "execution"
+    tel_root.mkdir(parents=True)
+    (tel_root / "session.jsonl").write_text('{"kind":"event"}\n', encoding="utf-8")
+    (tel_root / "orphan.tmp").write_text("", encoding="utf-8")
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    inc = payload["incident_state"]
+    assert inc["degraded"] is True
+
+
+def test_incident_state_kill_switch_active_when_state_file(tmp_path: Path) -> None:
+    """When kill_switch state file has KILLED, kill_switch_active is True."""
+    ks_dir = tmp_path / "data" / "kill_switch"
+    ks_dir.mkdir(parents=True)
+    (ks_dir / "state.json").write_text(
+        '{"state": "KILLED", "killed_at": "2026-03-12T12:00:00Z"}',
+        encoding="utf-8",
+    )
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    inc = payload["incident_state"]
+    assert inc["kill_switch_active"] is True
+    assert inc["status"] == "blocked"
+
+
 def test_evidence_state_audit_trail_and_telemetry_when_telemetry_ok(tmp_path: Path) -> None:
     """When telemetry_root exists and health is ok, audit_trail=intact, telemetry_evidence=ok."""
     tel_root = tmp_path / "logs" / "execution"
