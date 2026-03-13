@@ -79,6 +79,8 @@ Solange diese Frage **nicht** mit „Ja, per separatem Go/No-Go-Entscheid" beant
 * [x] **2026-Betrieb des Alert-Clusters** (Monitoring, Dashboard, Runbooks, Escalation) ist freigegeben.
 * [ ] **Real-Live-Order-Execution** ist *nicht* freigegeben und erfordert einen separaten Go/No-Go-Prozess.
 
+**Decision Package (Bounded Pilot):** [`docs/governance/BOUNDED_PILOT_LIVE_ORDER_EXECUTION_DECISION_PACKAGE.md`](governance/BOUNDED_PILOT_LIVE_ORDER_EXECUTION_DECISION_PACKAGE.md) strukturiert die Entscheidung für den strikt begrenzten Echtgeld-Pilot.
+
 **Kurzfassung:**
 
 * Alerts & Incident-Handling: ✅ **2026-ready**
