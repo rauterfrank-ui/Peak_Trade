@@ -113,6 +113,7 @@ Primary operator evidence:
 
 Primary docs / scripts:
 
+- `scripts/ops/run_bounded_pilot_session.py` — Pre-Entry-Checks gate (no live start)
 - `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`
 - `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md`
 - `docs/ops/specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md`
