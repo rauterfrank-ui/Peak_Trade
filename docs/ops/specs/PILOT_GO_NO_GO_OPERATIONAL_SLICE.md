@@ -19,7 +19,7 @@ This document maps each checklist item in `PILOT_GO_NO_GO_CHECKLIST` to the conc
 | # | Area | Question | Evidence Source | Where to Look |
 |---|------|----------|-----------------|---------------|
 | 1 | Safety Gates | enabled/armed/confirm-token/dry-run explicit? | Ops Cockpit | `policy_state`, `operator_state`, `guard_state` (enabled, armed, dry_run, confirm_token_required) |
-| 2 | Kill Switch | posture visible and clear? | Ops Cockpit | `policy_state.kill_switch_active`, `incident_state.kill_switch_active`; `data/kill_switch/state.json` |
+| 2 | Kill Switch | posture visible and clear? | Ops Cockpit | `policy_state.kill_switch_active`, `incident_state.kill_switch_active`; `data&#47;kill_switch&#47;state.json` |
 | 3 | Policy Posture | current policy action visible? | Ops Cockpit | `policy_state.action` (NO_TRADE / TRADE_READY), `policy_state.summary` |
 | 4 | Operator Visibility | blocked vs allowed quickly identifiable? | Ops Cockpit | `policy_state.blocked`, `incident_state.requires_operator_attention`, Executive Summary |
 | 5 | Pilot Caps | bounded caps defined and documented? | Ops Cockpit + Config | `exposure_state.caps_configured` (from `live_risk` in config.toml) |
