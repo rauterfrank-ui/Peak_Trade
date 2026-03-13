@@ -20,6 +20,11 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "exposure_state" in payload
     assert "stale_state" in payload
     assert "session_end_mismatch_state" in payload
+    assert "human_supervision_state" in payload
+    sup = payload["human_supervision_state"]
+    assert sup["status"] == "operator_supervised"
+    assert sup["mode"] == "intended"
+    assert sup["summary"] == "bounded pilot requires operator supervision"
     sem = payload["session_end_mismatch_state"]
     assert sem["status"] == "unknown"
     assert sem["summary"] == "no_session_end_reconciliation"
@@ -598,6 +603,25 @@ def test_ops_cockpit_html_contains_session_end_mismatch(tmp_path: Path) -> None:
     assert "Session End Mismatch" in html
     assert "RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH" in html
     assert "Blocked next session" in html or "blocked_next_session" in html
+
+
+def test_ops_cockpit_html_contains_human_supervision(tmp_path: Path) -> None:
+    """HTML rendert Human Supervision Card (PILOT_GO_NO_GO_CHECKLIST row 55)."""
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Human Supervision" in html
+    assert "operator_supervised" in html
+    assert "bounded pilot requires operator supervision" in html
+
+
+def test_human_supervision_state_present(tmp_path: Path) -> None:
+    """human_supervision_state hat erwartete Werte."""
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["human_supervision_state"]["status"] == "operator_supervised"
+    assert payload["human_supervision_state"]["mode"] == "intended"
+    assert (
+        payload["human_supervision_state"]["summary"]
+        == "bounded pilot requires operator supervision"
+    )
 
 
 def test_dependencies_state_section_present(tmp_path: Path) -> None:
