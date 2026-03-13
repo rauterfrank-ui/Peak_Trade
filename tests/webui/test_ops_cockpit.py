@@ -105,6 +105,34 @@ def test_run_state_last_run_status_from_registry(tmp_path: Path) -> None:
     assert payload["run_state"]["last_run_status"] == "completed"
 
 
+def test_run_state_session_active_when_started_record(tmp_path: Path) -> None:
+    """When registry has status=started record, session_active is True."""
+    from datetime import datetime
+
+    from src.experiments.live_session_registry import (
+        LiveSessionRecord,
+        register_live_session_run,
+    )
+
+    sessions_dir = tmp_path / "reports" / "experiments" / "live_sessions"
+    sessions_dir.mkdir(parents=True)
+    record = LiveSessionRecord(
+        session_id="session_active_test",
+        run_id="run_001",
+        run_type="live_session_shadow",
+        mode="shadow",
+        env_name="test_env",
+        symbol="BTC/USD",
+        status="started",
+        started_at=datetime.utcnow(),
+    )
+    register_live_session_run(record, base_dir=sessions_dir)
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["run_state"]["session_active"] is True
+    assert payload["run_state"]["active"] is True
+    assert payload["run_state"]["status"] == "active"
+
+
 def test_exposure_state_section_present(tmp_path: Path) -> None:
     """exposure_state Sektion ist im Payload und hat erwartete Keys."""
     payload = build_ops_cockpit_payload(repo_root=tmp_path)

@@ -401,6 +401,34 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
         runner.warmup()
         logger.info("Warmup abgeschlossen")
 
+        # Phase 81+: Register started state (enables run_state.session_active)
+        if not args.no_registry:
+            try:
+                from src.experiments.live_session_registry import (
+                    LiveSessionRecord,
+                    register_live_session_run,
+                )
+
+                record = LiveSessionRecord(
+                    session_id=session_id,
+                    run_id=run_id,
+                    run_type=run_type,
+                    mode=args.mode,
+                    env_name=args.env_name,
+                    symbol=args.symbol,
+                    status="started",
+                    started_at=started_at,
+                    finished_at=None,
+                    config=config,
+                    metrics=metrics,
+                    cli_args=sys.argv,
+                    error=None,
+                )
+                register_live_session_run(record)
+                logger.info(f"Session registered as started: {session_id}")
+            except Exception as reg_exc:
+                logger.warning("Failed to register session as started: %s", reg_exc)
+
         # Session starten
         if args.steps:
             logger.info(f"Starte Session für {args.steps} Steps...")
