@@ -601,7 +601,58 @@ def build_ops_cockpit_payload(
     }
     if _tel_status != "unknown":
         evidence_state["telemetry_evidence"] = _tel_status
-    _dep_summary = (
+    _exchange_status = "unknown"
+    _p85_base = repo_root / "out" / "ops" if repo_root else Path("out/ops")
+    if _p85_base.exists():
+        try:
+            import json
+            import time
+
+            p85_files = sorted(
+                _p85_base.glob("**/P85_RESULT.json"),
+                key=lambda p: p.stat().st_mtime,
+                reverse=True,
+            )
+            if p85_files:
+                p85_path = p85_files[0]
+                age_sec = time.time() - p85_path.stat().st_mtime
+                if age_sec <= 3600:
+                    with open(p85_path, encoding="utf-8") as f:
+                        p85_data = json.load(f)
+                    conn = p85_data.get("connectivity", {})
+                    if conn.get("ok") is True:
+                        _exchange_status = "ok"
+                    else:
+                        _exchange_status = "degraded"
+        except Exception:
+            pass
+    _market_data_cache_status: Optional[str] = None
+    if _config_path and _config_path.exists():
+        try:
+            from src.data.kraken_cache_loader import (
+                check_data_health_only,
+                get_real_market_smokes_config,
+            )
+
+            rms = get_real_market_smokes_config(str(_config_path))
+            base_path = repo_root / rms["base_path"] if repo_root else Path(rms["base_path"])
+            if base_path.exists():
+                health = check_data_health_only(
+                    base_path,
+                    market=rms.get("default_market", "BTC/EUR"),
+                    timeframe=rms.get("default_timeframe", "1h"),
+                    min_bars=rms.get("min_bars", 500),
+                )
+                if health.status == "ok":
+                    _market_data_cache_status = "ok"
+                elif health.status in ("missing_file", "too_few_bars", "empty", "invalid_format"):
+                    _market_data_cache_status = "degraded"
+                else:
+                    _market_data_cache_status = "warn"
+        except Exception:
+            pass
+    _dep_rank = {"ok": 0, "partial": 1, "warn": 1, "degraded": 2, "stale": 2, "unknown": 3}
+    _tel_dep = (
         "ok"
         if _tel_status == "ok" and not _degraded
         else "partial"
@@ -610,12 +661,26 @@ def build_ops_cockpit_payload(
         if _tel_status == "critical"
         else "unknown"
     )
+    _ex_dep = (
+        "ok"
+        if _exchange_status == "ok"
+        else "degraded"
+        if _exchange_status == "degraded"
+        else "unknown"
+    )
+    _cache_dep = _market_data_cache_status if _market_data_cache_status is not None else "unknown"
+    _dep_signals = [s for s in [_tel_dep, _ex_dep, _cache_dep] if s != "unknown"]
+    _dep_summary = (
+        max(_dep_signals, key=lambda x: _dep_rank.get(x, 3)) if _dep_signals else "unknown"
+    )
     dependencies_state = {
         "summary": _dep_summary,
-        "exchange": "unknown",
+        "exchange": _exchange_status,
         "telemetry": _tel_status,
         "degraded": _degraded,
     }
+    if _market_data_cache_status is not None:
+        dependencies_state["market_data_cache"] = _market_data_cache_status
     return {
         "system_state": {
             "mode": "truth_first_ops_cockpit_v3",

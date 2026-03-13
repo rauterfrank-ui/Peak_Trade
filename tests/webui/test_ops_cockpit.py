@@ -461,6 +461,55 @@ def test_ops_cockpit_html_contains_evidence_state(tmp_path: Path) -> None:
     assert "audit trail" in html or "Audit trail" in html
 
 
+def test_dependencies_state_exchange_from_p85_when_ok(tmp_path: Path) -> None:
+    """When P85_RESULT.json exists and connectivity.ok, exchange is ok."""
+    import json
+
+    p85_dir = tmp_path / "out" / "ops" / "p85_run_test"
+    p85_dir.mkdir(parents=True)
+    (p85_dir / "P85_RESULT.json").write_text(
+        json.dumps(
+            {
+                "meta": {"p85_version": "v1", "run_id": "test", "mode": "shadow"},
+                "overall_ok": True,
+                "connectivity": {"ok": True, "status": 200, "schema_valid": True},
+            }
+        ),
+        encoding="utf-8",
+    )
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    dep = payload["dependencies_state"]
+    assert dep["exchange"] == "ok"
+
+
+def test_dependencies_state_exchange_from_p85_when_degraded(tmp_path: Path) -> None:
+    """When P85_RESULT.json has connectivity.ok=False, exchange is degraded."""
+    import json
+
+    p85_dir = tmp_path / "out" / "ops" / "p85_run_test"
+    p85_dir.mkdir(parents=True)
+    (p85_dir / "P85_RESULT.json").write_text(
+        json.dumps(
+            {
+                "meta": {"p85_version": "v1", "run_id": "test", "mode": "shadow"},
+                "overall_ok": False,
+                "connectivity": {"ok": False, "error": "Connection refused"},
+            }
+        ),
+        encoding="utf-8",
+    )
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    dep = payload["dependencies_state"]
+    assert dep["exchange"] == "degraded"
+
+
+def test_dependencies_state_exchange_unknown_when_no_p85(tmp_path: Path) -> None:
+    """When no P85_RESULT.json, exchange is unknown."""
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    dep = payload["dependencies_state"]
+    assert dep["exchange"] == "unknown"
+
+
 def test_dependencies_state_telemetry_signal_when_path_exists(tmp_path: Path) -> None:
     """Wenn telemetry_root existiert, wird telemetry aus run_health_checks abgeleitet."""
     tel_root = tmp_path / "logs" / "execution"
