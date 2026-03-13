@@ -613,6 +613,13 @@ def build_ops_cockpit_payload(
         "exposure": _exposure_stale,
         "summary": _stale_summary,
     }
+    # Session-end mismatch surface (placeholder: no runtime reconciliation yet)
+    session_end_mismatch_state = {
+        "status": "unknown",
+        "summary": "no_session_end_reconciliation",
+        "blocked_next_session": False,
+        "runbook": "RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH",
+    }
     _fs_level = str(v3_summary.get("freshness_status", "unknown"))
     _ev_summary = {"ok": "ok", "warn": "partial", "critical": "stale"}.get(_fs_level, "unknown")
     _fresh = _stale = _older = 0
@@ -741,6 +748,7 @@ def build_ops_cockpit_payload(
         "incident_state": incident_state,
         "exposure_state": exposure_state,
         "stale_state": stale_state,
+        "session_end_mismatch_state": session_end_mismatch_state,
         "evidence_state": evidence_state,
         "dependencies_state": dependencies_state,
         "truth_state": truth_state,
@@ -878,6 +886,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     runtime = payload["runtime_unknown_state"]
     exposure = payload.get("exposure_state") or {}
     stale = payload.get("stale_state") or {}
+    session_end_mismatch = payload.get("session_end_mismatch_state") or {}
     evidence = payload.get("evidence_state") or {}
     dependencies = payload.get("dependencies_state") or {}
     counts = truth_state["priority_counts"]
@@ -1014,6 +1023,15 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
       <p><strong>Position:</strong> {escape(str(stale.get("position", "unknown")))}</p>
       <p><strong>Order:</strong> {escape(str(stale.get("order", "unknown")))}</p>
       <p><strong>Exposure:</strong> {escape(str(stale.get("exposure", "unknown")))}</p>
+    </div>
+
+    <div class="card">
+      <h2>Session End Mismatch</h2>
+      <p><strong>Local closeout vs broker at session end; unresolved blocks next session</strong></p>
+      <p><strong>Status:</strong> <span class="chip"><code>{escape(str(session_end_mismatch.get("status", "unknown")))}</code></span></p>
+      <p><strong>Summary:</strong> {escape(str(session_end_mismatch.get("summary", "unknown")))}</p>
+      <p><strong>Blocked next session:</strong> {escape(str(session_end_mismatch.get("blocked_next_session", False)))}</p>
+      <p><strong>Runbook:</strong> <code>{escape(str(session_end_mismatch.get("runbook", "")))}</code></p>
     </div>
 
     <div class="card">
