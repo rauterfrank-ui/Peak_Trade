@@ -19,6 +19,12 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "incident_state" in payload
     assert "exposure_state" in payload
     assert "stale_state" in payload
+    assert "session_end_mismatch_state" in payload
+    sem = payload["session_end_mismatch_state"]
+    assert sem["status"] == "unknown"
+    assert sem["summary"] == "no_session_end_reconciliation"
+    assert sem["blocked_next_session"] is False
+    assert sem["runbook"] == "RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH"
     assert "evidence_state" in payload
     assert "dependencies_state" in payload
     dep = payload["dependencies_state"]
@@ -584,6 +590,14 @@ def test_ops_cockpit_html_contains_stale_state(tmp_path: Path) -> None:
     assert "balance" in html.lower()
     assert "position" in html.lower()
     assert "Reconciliation hardening" in html or "reconciliation" in html.lower()
+
+
+def test_ops_cockpit_html_contains_session_end_mismatch(tmp_path: Path) -> None:
+    """HTML rendert Session End Mismatch Card."""
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Session End Mismatch" in html
+    assert "RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH" in html
+    assert "Blocked next session" in html or "blocked_next_session" in html
 
 
 def test_dependencies_state_section_present(tmp_path: Path) -> None:
