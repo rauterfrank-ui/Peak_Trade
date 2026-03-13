@@ -10,6 +10,7 @@
 - `docs/ops/specs/PILOT_EXECUTION_EDGE_CASE_MATRIX.md` — Kanonische Edge-Case-Matrix für Pilot-Execution-Härtung
 - `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md` — Kanonische Go/No-Go-Checkliste für begrenzte Pilot-Freigabe
 - `docs/ops/specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md` — Operator-Mapping: Checkliste → Ops Cockpit / Runbooks / Config
+- `docs/ops/specs/TREASURY_BALANCE_SEPARATION_SPEC.md` — Trading vs Treasury Balance: Execution muss Trading-Balance nutzen
 - `docs/ops/specs/RECONCILIATION_FLOW_SPEC.md` — Kanonische Reconciliation-Flow-Spezifikation für bounded pilot / execution safety
 - `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED.md` — Incident-Runbook für degraded exchange/broker Verhalten
 - `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md` — Incident-Runbook für degradierte Telemetrie / Evidenz
