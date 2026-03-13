@@ -13,6 +13,7 @@
 - `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED.md` — Incident-Runbook für degraded exchange/broker Verhalten
 - `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md` — Incident-Runbook für degradierte Telemetrie / Evidenz
 - `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md` — Incident-Runbook für Reconciliation-Mismatch
+- `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md` — Incident-Runbook für Session-End-Mismatch (lokaler Closeout vs Broker)
 - `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_UNEXPECTED_EXPOSURE.md` — Incident-Runbook für unexpected exposure
 
 - `docs/ops/specs/OPS_SUITE_EXPOSURE_READ_MODEL_CONTRACT.md` — Kanonischer Read-Model-Contract für Exposure State im Ops Cockpit
