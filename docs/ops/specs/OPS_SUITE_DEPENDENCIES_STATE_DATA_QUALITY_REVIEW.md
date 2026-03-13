@@ -72,14 +72,14 @@ Health / Drift view (Section 7):
 
 - Runs connectivity check (Kraken Time API)
 - Writes `OUT_DIR&#47;P85_RESULT.json` with `connectivity.ok`, `overall_ok`
-- Typically run by scheduler/cron; OUT_DIR e.g. `out/ops/p85_run_*`
+- Typically run by scheduler/cron; OUT_DIR e.g. `out&#47;ops&#47;p85_run_*`
 
 **Recommendation:** When a recent P85_RESULT.json exists (e.g. under `out/ops` or configurable path):
 - Read `connectivity.ok` → map to exchange: `"ok"` if True, `"degraded"` if False
 - Consider staleness: if file older than threshold (e.g. 1h), treat as `"unknown"`
 - Fallback: `"unknown"` when no file or parse error
 
-**Path resolution:** Config or `repo_root &#47; "out" &#47; "ops"`; search for `**/P85_RESULT.json`, pick most recent by mtime.
+**Path resolution:** Config or `repo_root &#47; "out" &#47; "ops"`; search for `**&#47;P85_RESULT.json`, pick most recent by mtime.
 
 ### 2.3 Kraken Cache — Market Data Quality
 
@@ -87,7 +87,7 @@ Health / Drift view (Section 7):
 
 - Reads local Parquet cache (no network)
 - Returns `KrakenDataHealth` with status: ok, missing_file, too_few_bars, empty, invalid_format, other
-- Config: `real_market_smokes.base_path` (default `data/cache`)
+- Config: `real_market_smokes.base_path` (default `data&#47;cache`)
 
 **Recommendation:** When cache path exists:
 - Call `check_data_health_only(base_path, market, timeframe, min_bars)` (use config defaults)
@@ -131,12 +131,12 @@ Health / Drift view (Section 7):
 ### 3.3 P85 Path Resolution
 
 - Config: `ops.p85_result_path` or `ops.p85_out_base` (e.g. `out/ops`)
-- Search: `glob("**/P85_RESULT.json")` under base, sort by mtime desc, take first
+- Search: `glob("**&#47;P85_RESULT.json")` under base, sort by mtime desc, take first
 - Staleness: if `mtime` &gt; 3600 seconds ago, treat as stale → "unknown"
 
 ### 3.4 Kraken Cache Path
 
-- Config: `real_market_smokes.base_path` (default `data/cache`)
+- Config: `real_market_smokes.base_path` (default `data&#47;cache`)
 - Path: `repo_root &#47; base_path` or `Path(base_path)` when repo_root is None
 
 ### 3.5 Risk
