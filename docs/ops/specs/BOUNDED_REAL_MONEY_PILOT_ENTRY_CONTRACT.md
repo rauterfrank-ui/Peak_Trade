@@ -97,6 +97,8 @@ Rule: **ambiguity => `NO_TRADE` / safe stop**
 
 **Entry boundary note:** See `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md` for where the flow ends today and how the first real-money step is invoked (operator-driven until a bounded-pilot entry path exists).
 
+**Gap note:** See `docs/ops/specs/BOUNDED_PILOT_LIVE_ENTRY_GAP_NOTE.md` for the gap between the gate wrapper and first live session start (blockers B1–B6).
+
 Primary operator evidence:
 
 - Ops Cockpit payload / UI:
