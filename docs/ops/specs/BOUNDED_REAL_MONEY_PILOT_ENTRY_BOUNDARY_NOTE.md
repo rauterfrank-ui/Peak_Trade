@@ -43,6 +43,7 @@ The first bounded real-money step (§4 of BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRAC
 ## 5. Relationship
 
 - Companion to: `BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT`
+- Gap documentation: `BOUNDED_PILOT_LIVE_ENTRY_GAP_NOTE` (blockers B1–B6, dependency chain)
 - Companion to: `RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW`
 - Closes documentation gap from: first-bounded-real-money-pilot-execution-readiness-review
 
