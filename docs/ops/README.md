@@ -27,6 +27,7 @@
 - `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md` — Incident-Runbook für Prozess-Neustart während aktiver Orders/Positions
 
 - `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` — Kanonischer operatorischer Eintrittsvertrag für den ersten strikt begrenzten Echtgeldpilot
+- `docs/ops/runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md` — Kanonische First-Session-Sequenz für den ersten strikt begrenzten Echtgeldpilot-Kandidatenfluss
 
 ## PR Ops v1
 
