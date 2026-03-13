@@ -462,6 +462,7 @@ def build_ops_cockpit_payload(
         "kill_switch_active": guard_state["kill_switch_active"],
     }
     _last_run_status = "unknown"
+    _session_active = False
     _sessions_root = (
         repo_root / "reports" / "experiments" / "live_sessions"
         if repo_root
@@ -469,18 +470,23 @@ def build_ops_cockpit_payload(
     )
     if _sessions_root.exists():
         try:
-            from src.experiments.live_session_registry import list_session_records
+            from src.experiments.live_session_registry import (
+                get_session_summary,
+                list_session_records,
+            )
 
             records = list_session_records(base_dir=_sessions_root, limit=1)
             if records:
                 _last_run_status = str(records[0].status or "unknown")
+            summary = get_session_summary(base_dir=_sessions_root)
+            _session_active = (summary.get("by_status", {}).get("started", 0) or 0) > 0
         except Exception:
             pass
     run_state = {
-        "status": "idle",
-        "active": False,
+        "status": "active" if _session_active else "idle",
+        "active": _session_active,
         "last_run_status": _last_run_status,
-        "session_active": False,
+        "session_active": _session_active,
         "generated_at": truth_state["last_verified_utc"],
         "freshness_status": v3_summary["freshness_status"],
     }
