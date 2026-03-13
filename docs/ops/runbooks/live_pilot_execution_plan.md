@@ -44,7 +44,7 @@ B) Arm sequence (explicit opt-in)
 - Gate 2: `PT_LIVE_ARMED=YES`
 - Gate 3: `PT_CONFIRM_TOKEN=<one-time token>`
 - Gate 4: `PT_LIVE_ALLOW_FLAGS=pilot_only` (deny default)
-- Dry-run first: `PT_LIVE_DRY_RUN=YES` (must succeed)
+- Dry-run first: `PT_LIVE_DRY_RUN=YES` (must succeed). See `RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION` for operator sequence (drills → go/no-go → session dry-run).
 
 C) Execute pilot (bounded)
 - Run a single session with strict caps and short duration.
