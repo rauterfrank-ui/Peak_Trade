@@ -18,6 +18,7 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "run_state" in payload
     assert "incident_state" in payload
     assert "exposure_state" in payload
+    assert "stale_state" in payload
     assert "evidence_state" in payload
     assert "dependencies_state" in payload
     dep = payload["dependencies_state"]
@@ -47,6 +48,14 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert exp["summary"] == "no_live_context"
     assert exp["treasury_separation"] == "enforced"
     assert exp["risk_status"] == "unknown"
+    stale = payload["stale_state"]
+    assert "summary" in stale
+    assert "balance" in stale
+    assert "position" in stale
+    assert "order" in stale
+    assert "exposure" in stale
+    assert stale["balance"] == "unknown"
+    assert stale["order"] == "unknown"
     assert payload["run_state"]["status"] == "idle"
     assert payload["incident_state"]["status"] == "blocked"
     assert payload["incident_state"]["blocked"] is True
@@ -449,6 +458,54 @@ max_symbol_exposure_notional = 3000.0
     assert payload["exposure_state"]["risk_status"] == "ok"
 
 
+def test_stale_state_when_exposure_stale(tmp_path: Path) -> None:
+    """When exposure data is stale, stale_state reflects it."""
+    import json
+
+    import pandas as pd
+
+    from unittest.mock import patch
+
+    live_runs = tmp_path / "live_runs"
+    run_dir = live_runs / "20251207_120000_shadow_ma_BTC-EUR_1m"
+    run_dir.mkdir(parents=True)
+    with open(run_dir / "meta.json", "w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "run_id": "x",
+                "mode": "shadow",
+                "strategy_name": "ma",
+                "symbol": "BTC/EUR",
+                "timeframe": "1m",
+            },
+            f,
+        )
+    events = pd.DataFrame([{"step": 1, "position_size": 0.1, "price": 50000.0, "close": 50000.0}])
+    events.to_parquet(run_dir / "events.parquet", index=False)
+
+    # With fresh data: position/exposure ok
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    stale = payload["stale_state"]
+    assert stale["position"] == "ok"
+    assert stale["exposure"] == "ok"
+    assert stale["summary"] == "ok"
+
+    # Mock stale exposure
+    with patch("src.live.exposure_reader.get_live_runs_exposure_summary") as mock:
+        mock.return_value = {
+            "data_source": "live_runs",
+            "run_count": 1,
+            "observed_exposure": 5000.0,
+            "observed_ccy": "EUR",
+            "stale": True,
+        }
+        payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    stale = payload["stale_state"]
+    assert stale["position"] == "stale"
+    assert stale["exposure"] == "stale"
+    assert stale["summary"] == "stale"
+
+
 def test_incident_state_degraded_when_telemetry_warn(tmp_path: Path) -> None:
     """When telemetry has issues, incident_state.degraded is True."""
     tel_root = tmp_path / "logs" / "execution"
@@ -518,6 +575,15 @@ def test_ops_cockpit_html_contains_exposure_state(tmp_path: Path) -> None:
     assert "Exposure State" in html
     assert "no_live_context" in html
     assert "treasury separation" in html or "Treasury separation" in html
+
+
+def test_ops_cockpit_html_contains_stale_state(tmp_path: Path) -> None:
+    """HTML rendert Stale State Card."""
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Stale State" in html
+    assert "balance" in html.lower()
+    assert "position" in html.lower()
+    assert "Reconciliation hardening" in html or "reconciliation" in html.lower()
 
 
 def test_dependencies_state_section_present(tmp_path: Path) -> None:
