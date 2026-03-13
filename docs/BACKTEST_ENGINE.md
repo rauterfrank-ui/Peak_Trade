@@ -636,7 +636,7 @@ Die BacktestEngine garantiert **realistische Simulation** ohne Look-Ahead-Bias:
 #### ⚠️ Was NICHT garantiert ist
 
 - **Intrabar-Events:** Keine Simulation von Tick-Daten
-- **Slippage:** Momentan nicht modelliert (kommt in v2)
+- **Slippage:** Momentan nicht modelliert (kommt in v2). Für realistische Bewertung: Paper-Trading oder ExecutionPipeline mit Fee/Slippage nutzen; siehe `docs/ops/specs/FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS.md`.
 - **Order-Latency:** Instant-Fills angenommen
 
 ### Position-Sizing Integration
