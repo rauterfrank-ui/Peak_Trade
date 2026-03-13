@@ -31,7 +31,7 @@ This document maps each checklist item in `PILOT_GO_NO_GO_CHECKLIST` to the conc
 | 11 | Incident Runbooks | critical incident paths exist? | Runbooks | `RUNBOOK_PILOT_INCIDENT_*` (Exchange Degraded, Telemetry Degraded, Reconciliation Mismatch, Transfer Ambiguity, Session End Mismatch, Unexpected Exposure) |
 | 12 | Evidence Continuity | evidence/audit trail sufficient? | Ops Cockpit | `evidence_state` (summary, audit_trail, telemetry_evidence) |
 | 13 | Dependency Degradation | degraded exchange/telemetry explicit? | Ops Cockpit | `dependencies_state` (exchange, telemetry, market_data_cache, degraded) |
-| 14 | Human Supervision | pilot explicitly operator-supervised? | Specs | `PILOT_GO_NO_GO_CHECKLIST`, `PILOT_READY_EXECUTION_REVIEW_SPEC`; no cockpit surface |
+| 14 | Human Supervision | pilot explicitly operator-supervised? | Ops Cockpit + Specs | `human_supervision_state` (status, mode, summary); `PILOT_GO_NO_GO_CHECKLIST`, `PILOT_READY_EXECUTION_REVIEW_SPEC` |
 | 15 | Ambiguity Rule | ambiguity → NO_TRADE / safe stop? | Ops Cockpit + Specs | `policy_state`, `incident_state`; `RECONCILIATION_FLOW_SPEC` |
 
 ## Ops Cockpit Entry Point
@@ -41,8 +41,8 @@ This document maps each checklist item in `PILOT_GO_NO_GO_CHECKLIST` to the conc
 ## Known Gaps (Follow-up)
 - ~~Fee/slippage: dedicated conservative-assumptions document~~ (done: `FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS`)
 - Restart mid-session: dedicated runbook
-- Human supervision: explicit cockpit surface (optional)
-- Go/No-Go script: automated checklist evaluation against cockpit/config (future)
+- ~~Human supervision: explicit cockpit surface (optional)~~ (done: `human_supervision_state` in Ops Cockpit)
+- ~~Go/No-Go script: automated checklist evaluation against cockpit/config (future)~~ (done: `scripts/ops/pilot_go_no_go_eval_v1.py`)
 
 ## Explicit Non-Goals
 - no direct activation authority
