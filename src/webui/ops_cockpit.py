@@ -447,23 +447,52 @@ def build_ops_cockpit_payload(
         "freshness_status": v3_summary["freshness_status"],
     }
     freshness_ok = v3_summary["freshness_status"] == "ok"
+    _tel_root = (
+        telemetry_root
+        if telemetry_root is not None
+        else (repo_root / "logs" / "execution" if repo_root else Path("logs/execution"))
+    )
+    _tel_status = "unknown"
+    _degraded: List[str] = []
+    if _tel_root.exists():
+        try:
+            from src.execution.telemetry_health import run_health_checks
+
+            _report = run_health_checks(_tel_root)
+            _tel_status = _report.status
+            _degraded = [c.name for c in _report.checks if c.status in ("warn", "critical")]
+        except Exception:
+            pass
+    _kill_switch_active = False
+    _ks_path = (
+        repo_root / "data" / "kill_switch" / "state.json"
+        if repo_root
+        else Path("data/kill_switch/state.json")
+    )
+    if _ks_path.exists():
+        try:
+            import json
+
+            with open(_ks_path, encoding="utf-8") as f:
+                _ks_data = json.load(f)
+            _ks_state = str(_ks_data.get("state", "")).upper()
+            _kill_switch_active = _ks_state in ("KILLED", "RECOVERING")
+        except Exception:
+            pass
+    _degraded_incident = not freshness_ok or _tel_status in ("warn", "critical")
     incident_state = {
-        "status": (
-            "blocked"
-            if operator_state["blocked"] or operator_state["kill_switch_active"]
-            else "normal"
-        ),
+        "status": ("blocked" if operator_state["blocked"] or _kill_switch_active else "normal"),
         "blocked": operator_state["blocked"],
-        "kill_switch_active": operator_state["kill_switch_active"],
-        "degraded": not freshness_ok,
+        "kill_switch_active": _kill_switch_active,
+        "degraded": _degraded_incident,
         "requires_operator_attention": (
-            operator_state["blocked"] or operator_state["kill_switch_active"] or not freshness_ok
+            operator_state["blocked"] or _kill_switch_active or _degraded_incident
         ),
         "summary": (
             "blocked"
-            if operator_state["blocked"] or operator_state["kill_switch_active"]
+            if operator_state["blocked"] or _kill_switch_active
             else "degraded"
-            if not freshness_ok
+            if _degraded_incident
             else "normal"
         ),
     }
@@ -520,22 +549,6 @@ def build_ops_cockpit_payload(
                 else:
                     exposure_state["risk_status"] = "ok"
         except (TypeError, ValueError):
-            pass
-    _tel_root = (
-        telemetry_root
-        if telemetry_root is not None
-        else (repo_root / "logs" / "execution" if repo_root else Path("logs/execution"))
-    )
-    _tel_status = "unknown"
-    _degraded: List[str] = []
-    if _tel_root.exists():
-        try:
-            from src.execution.telemetry_health import run_health_checks
-
-            _report = run_health_checks(_tel_root)
-            _tel_status = _report.status
-            _degraded = [c.name for c in _report.checks if c.status in ("warn", "critical")]
-        except Exception:
             pass
     _fs_level = str(v3_summary.get("freshness_status", "unknown"))
     _ev_summary = {"ok": "ok", "warn": "partial", "critical": "stale"}.get(_fs_level, "unknown")
