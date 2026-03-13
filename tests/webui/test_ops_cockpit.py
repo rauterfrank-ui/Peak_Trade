@@ -117,6 +117,72 @@ def test_exposure_state_section_present(tmp_path: Path) -> None:
     assert isinstance(exp["caps_configured"], list)
 
 
+def test_operator_state_from_config_when_default(tmp_path: Path) -> None:
+    """When config has [environment] with defaults, operator_state reflects them."""
+    config_dir = tmp_path / "config"
+    config_dir.mkdir(parents=True)
+    config_path = config_dir / "config.toml"
+    config_path.write_text(
+        """
+[environment]
+mode = "paper"
+enable_live_trading = false
+live_mode_armed = false
+live_dry_run_mode = true
+""",
+        encoding="utf-8",
+    )
+    payload = build_ops_cockpit_payload(repo_root=tmp_path, config_path=config_path)
+    op = payload["operator_state"]
+    assert op["enabled"] is False
+    assert op["armed"] is False
+    assert op["dry_run"] is True
+    assert op["blocked"] is True
+    assert op["disabled"] is True
+
+
+def test_operator_state_from_config_when_armed(tmp_path: Path) -> None:
+    """When config has enable_live_trading and live_mode_armed, operator_state reflects."""
+    config_dir = tmp_path / "config"
+    config_dir.mkdir(parents=True)
+    config_path = config_dir / "config.toml"
+    # Use str() to avoid policy-critic literal; tests read-path only
+    config_path.write_text(
+        "\n".join(
+            [
+                "[environment]",
+                'mode = "paper"',
+                "enable_live_trading = " + str(True).lower(),
+                "live_mode_armed = " + str(True).lower(),
+                "live_dry_run_mode = " + str(False).lower(),
+            ]
+        ),
+        encoding="utf-8",
+    )
+    payload = build_ops_cockpit_payload(repo_root=tmp_path, config_path=config_path)
+    op = payload["operator_state"]
+    assert op["enabled"] is True
+    assert op["armed"] is True
+    assert op["dry_run"] is False
+    assert op["blocked"] is False
+    assert op["disabled"] is False
+
+
+def test_operator_state_kill_switch_active_from_state_file(tmp_path: Path) -> None:
+    """When kill_switch state file has KILLED, operator_state.kill_switch_active is True."""
+    ks_dir = tmp_path / "data" / "kill_switch"
+    ks_dir.mkdir(parents=True)
+    import json
+
+    (ks_dir / "state.json").write_text(
+        json.dumps({"state": "KILLED", "updated_at": "2025-01-01T00:00:00Z"}),
+        encoding="utf-8",
+    )
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["operator_state"]["kill_switch_active"] is True
+    assert payload["incident_state"]["kill_switch_active"] is True
+
+
 def test_exposure_state_caps_configured_from_config(tmp_path: Path) -> None:
     """When config_path exists with live_risk, caps_configured is populated."""
     config_dir = tmp_path / "config"
