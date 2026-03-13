@@ -52,7 +52,11 @@ from ..orders.base import (
 )
 from ..orders.paper import PaperOrderExecutor, PaperMarketContext
 from ..orders.shadow import ShadowOrderExecutor, ShadowMarketContext
-from ..governance.go_no_go import get_governance_status, GovernanceStatus
+from ..governance.go_no_go import (
+    get_governance_status,
+    GovernanceStatus,
+    select_live_order_execution_key,
+)
 
 if TYPE_CHECKING:
     from ..core.environment import EnvironmentConfig, TradingEnvironment
@@ -1179,12 +1183,20 @@ class ExecutionPipeline:
         env_str = self._get_current_environment()
 
         # 2. Governance-Check fuer Live-Environment
-        governance_status = get_governance_status("live_order_execution")
+        bounded_pilot_context = bool(
+            getattr(self._env_config, "bounded_pilot_mode", False)
+            if self._env_config is not None
+            else False
+        )
+        live_order_execution_key = select_live_order_execution_key(
+            bounded_pilot_context=bounded_pilot_context
+        )
+        governance_status = get_governance_status(live_order_execution_key)
 
         if env_str == "live":
             if governance_status == "locked":
                 reason = (
-                    f"live_order_execution is governance-locked (status='{governance_status}'). "
+                    f"{live_order_execution_key} is governance-locked (status='{governance_status}'). "
                     f"Live-Orders sind nicht erlaubt."
                 )
                 logger.warning(f"[EXECUTION PIPELINE] Governance-Block: {reason}")
@@ -1359,7 +1371,15 @@ class ExecutionPipeline:
             - governance_status: Aktueller Governance-Status
             - reason: Grund bei Blockierung (None wenn erlaubt)
         """
-        governance_status = get_governance_status("live_order_execution")
+        bounded_pilot_context = bool(
+            getattr(self._env_config, "bounded_pilot_mode", False)
+            if self._env_config is not None
+            else False
+        )
+        live_order_execution_key = select_live_order_execution_key(
+            bounded_pilot_context=bounded_pilot_context
+        )
+        governance_status = get_governance_status(live_order_execution_key)
 
         if env == "live":
             if governance_status == "locked":

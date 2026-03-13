@@ -11,6 +11,7 @@ from src.governance.go_no_go import (
     GovernanceStatus,
     get_governance_status,
     is_feature_approved_for_year,
+    select_live_order_execution_key,
 )
 
 
@@ -26,6 +27,11 @@ class TestGetGovernanceStatus:
         """Live-Order-Execution ist gesperrt."""
         result = get_governance_status("live_order_execution")
         assert result == "locked"
+
+    def test_live_order_execution_bounded_pilot_returns_approved_2026(self) -> None:
+        """Bounded Pilot Key ist für 2026 freigegeben (Option A)."""
+        result = get_governance_status("live_order_execution_bounded_pilot")
+        assert result == "approved_2026"
 
     def test_unknown_feature_returns_unknown(self) -> None:
         """Unbekannte Features liefern 'unknown'."""
@@ -68,6 +74,19 @@ class TestIsFeatureApprovedForYear:
             result = is_feature_approved_for_year("live_order_execution", year)
             assert result is False, f"Sollte für Jahr {year} False sein"
 
+    def test_live_order_execution_bounded_pilot_approved_for_2026(self) -> None:
+        """Bounded Pilot Key ist für 2026 freigegeben."""
+        result = is_feature_approved_for_year("live_order_execution_bounded_pilot", 2026)
+        assert result is True
+
+    def test_live_order_execution_bounded_pilot_not_approved_for_other_years(
+        self,
+    ) -> None:
+        """Bounded Pilot Key ist nur für 2026 freigegeben."""
+        for year in [2024, 2025, 2027, 2028]:
+            result = is_feature_approved_for_year("live_order_execution_bounded_pilot", year)
+            assert result is False, f"Sollte für Jahr {year} False sein"
+
     def test_unknown_feature_never_approved(self) -> None:
         """Unbekannte Features sind nie freigegeben."""
         result = is_feature_approved_for_year("unknown_feature", 2026)
@@ -91,6 +110,20 @@ class TestGovernanceStatusType:
         assert get_governance_status("live_order_execution") == "locked"
         # unknown
         assert get_governance_status("nonexistent") == "unknown"
+
+
+class TestSelectLiveOrderExecutionKey:
+    """Tests für select_live_order_execution_key()."""
+
+    def test_bounded_pilot_context_false_returns_broad_key(self) -> None:
+        """bounded_pilot_context=False -> live_order_execution."""
+        result = select_live_order_execution_key(bounded_pilot_context=False)
+        assert result == "live_order_execution"
+
+    def test_bounded_pilot_context_true_returns_bounded_pilot_key(self) -> None:
+        """bounded_pilot_context=True -> live_order_execution_bounded_pilot."""
+        result = select_live_order_execution_key(bounded_pilot_context=True)
+        assert result == "live_order_execution_bounded_pilot"
 
 
 class TestEdgeCases:

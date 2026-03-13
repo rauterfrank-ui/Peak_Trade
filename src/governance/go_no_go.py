@@ -23,7 +23,18 @@ _FEATURE_STATUS_MAP: Mapping[str, GovernanceStatus] = {
     # Live-Order-Execution:
     # Laut demselben Dokument explizit gesperrt, separate Entscheidung nötig.
     "live_order_execution": "locked",
+    # Bounded Pilot: Option A (Governance-Entscheidung). Nur für bounded_pilot-Kontext.
+    "live_order_execution_bounded_pilot": "approved_2026",
 }
+
+
+def select_live_order_execution_key(*, bounded_pilot_context: bool) -> str:
+    """Select the governance key for order execution checks.
+
+    bounded_pilot_context=False -> broad live key
+    bounded_pilot_context=True  -> bounded pilot key
+    """
+    return "live_order_execution_bounded_pilot" if bounded_pilot_context else "live_order_execution"
 
 
 def get_governance_status(feature_key: str) -> GovernanceStatus:
