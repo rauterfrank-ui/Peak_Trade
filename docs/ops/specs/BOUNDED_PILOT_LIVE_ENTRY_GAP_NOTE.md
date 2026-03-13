@@ -49,7 +49,7 @@ Exchange client (Kraken Live)
 
 ## 5. Prerequisites for First Live Step
 
-1. **Governance:** Decision on `live_order_execution` status for bounded pilot
+1. **Governance:** Decision on `live_order_execution` status for bounded pilot. See `docs/governance/BOUNDED_PILOT_LIVE_ORDER_EXECUTION_DECISION_PACKAGE.md` for the decision package.
 2. **LiveSessionRunner:** Support mode=bounded_pilot or conditional live
 3. **run_execution_session:** Add --mode bounded_pilot (or equivalent)
 4. **run_bounded_pilot_session:** After gates GREEN, invoke session starter (when 1–3 exist)
@@ -57,6 +57,7 @@ Exchange client (Kraken Live)
 ## 6. Relationship
 
 - Companion to: `BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT`
+- Governance decision package: `docs/governance/BOUNDED_PILOT_LIVE_ORDER_EXECUTION_DECISION_PACKAGE.md`
 - Companion to: `BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE`
 - Source: `bounded_pilot_wrapper_to_first_live_step_gap_review`
 
