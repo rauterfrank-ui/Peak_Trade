@@ -24,6 +24,8 @@
 
 - `docs/ops/specs/FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS.md` — Kanonische konservative Fee-/Slippage-Annahmen für bounded Echtgeldpilot / Go-No-Go Row 7
 
+- `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md` — Incident-Runbook für Prozess-Neustart während aktiver Orders/Positions
+
 ## PR Ops v1
 
 Standardized PR watch, closeout, and required-checks snapshot helpers. See [PR Ops v1 Runbook](pr/pr_ops_v1_runbook.md).
