@@ -367,6 +367,58 @@ def test_exposure_state_with_live_runs_data(tmp_path: Path) -> None:
     assert exp.get("observed_exposure") == 5000.0
     assert exp.get("data_source") == "live_runs"
     assert exp.get("summary") == "ok"
+    assert "exposure_by_symbol" in exp
+    assert exp["exposure_by_symbol"]["BTC/EUR"] == 5000.0
+
+
+def test_exposure_state_symbol_level_risk(tmp_path: Path) -> None:
+    """risk_status critical when symbol exposure exceeds max_symbol_exposure cap."""
+    import json
+
+    import pandas as pd
+
+    config_dir = tmp_path / "config"
+    config_dir.mkdir(parents=True)
+    (config_dir / "config.toml").write_text(
+        """
+[live_risk]
+base_currency = "EUR"
+max_total_exposure_notional = 100000.0
+max_symbol_exposure_notional = 3000.0
+""",
+        encoding="utf-8",
+    )
+    live_runs = tmp_path / "live_runs"
+    run_dir = live_runs / "20251207_120000_shadow_ma_BTC-EUR_1m"
+    run_dir.mkdir(parents=True)
+    with open(run_dir / "meta.json", "w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "run_id": "x",
+                "mode": "shadow",
+                "strategy_name": "ma",
+                "symbol": "BTC/EUR",
+                "timeframe": "1m",
+            },
+            f,
+        )
+    # 0.1 * 35000 = 3500 > 3000 cap -> critical
+    events = pd.DataFrame([{"step": 1, "position_size": 0.1, "price": 35000.0, "close": 35000.0}])
+    events.to_parquet(run_dir / "events.parquet", index=False)
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["exposure_state"]["risk_status"] == "critical"
+
+    # 0.08 * 35000 = 2800 -> 2800/3000 = 0.93 -> warn
+    events = pd.DataFrame([{"step": 1, "position_size": 0.08, "price": 35000.0, "close": 35000.0}])
+    events.to_parquet(run_dir / "events.parquet", index=False)
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["exposure_state"]["risk_status"] == "warn"
+
+    # 0.05 * 35000 = 1750 -> ok
+    events = pd.DataFrame([{"step": 1, "position_size": 0.05, "price": 35000.0, "close": 35000.0}])
+    events.to_parquet(run_dir / "events.parquet", index=False)
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["exposure_state"]["risk_status"] == "ok"
 
 
 def test_incident_state_degraded_when_telemetry_warn(tmp_path: Path) -> None:
