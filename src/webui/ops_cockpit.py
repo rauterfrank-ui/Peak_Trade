@@ -620,6 +620,12 @@ def build_ops_cockpit_payload(
         "blocked_next_session": False,
         "runbook": "RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH",
     }
+    # Human supervision surface (read-only; design intent per PILOT_GO_NO_GO_CHECKLIST row 55)
+    human_supervision_state = {
+        "status": "operator_supervised",
+        "mode": "intended",
+        "summary": "bounded pilot requires operator supervision",
+    }
     _fs_level = str(v3_summary.get("freshness_status", "unknown"))
     _ev_summary = {"ok": "ok", "warn": "partial", "critical": "stale"}.get(_fs_level, "unknown")
     _fresh = _stale = _older = 0
@@ -749,6 +755,7 @@ def build_ops_cockpit_payload(
         "exposure_state": exposure_state,
         "stale_state": stale_state,
         "session_end_mismatch_state": session_end_mismatch_state,
+        "human_supervision_state": human_supervision_state,
         "evidence_state": evidence_state,
         "dependencies_state": dependencies_state,
         "truth_state": truth_state,
@@ -887,6 +894,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     exposure = payload.get("exposure_state") or {}
     stale = payload.get("stale_state") or {}
     session_end_mismatch = payload.get("session_end_mismatch_state") or {}
+    human_supervision = payload.get("human_supervision_state") or {}
     evidence = payload.get("evidence_state") or {}
     dependencies = payload.get("dependencies_state") or {}
     counts = truth_state["priority_counts"]
@@ -1032,6 +1040,14 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
       <p><strong>Summary:</strong> {escape(str(session_end_mismatch.get("summary", "unknown")))}</p>
       <p><strong>Blocked next session:</strong> {escape(str(session_end_mismatch.get("blocked_next_session", False)))}</p>
       <p><strong>Runbook:</strong> <code>{escape(str(session_end_mismatch.get("runbook", "")))}</code></p>
+    </div>
+
+    <div class="card">
+      <h2>Human Supervision</h2>
+      <p><strong>Pilot design intent (read-only; per PILOT_GO_NO_GO_CHECKLIST row 55)</strong></p>
+      <p><strong>Status:</strong> <span class="chip"><code>{escape(str(human_supervision.get("status", "unknown")))}</code></span></p>
+      <p><strong>Mode:</strong> <span class="chip"><code>{escape(str(human_supervision.get("mode", "unknown")))}</code></span></p>
+      <p><strong>Summary:</strong> {escape(str(human_supervision.get("summary", "unknown")))}</p>
     </div>
 
     <div class="card">
