@@ -408,6 +408,7 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
                     LiveSessionRecord,
                     register_live_session_run,
                 )
+
                 record = LiveSessionRecord(
                     session_id=session_id,
                     run_id=run_id,
