@@ -123,6 +123,7 @@ The operator should preserve evidence for:
 ## 6. Related Runbooks / Specs
 
 - `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`
+- `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md` (where flow ends, first real-money step operator-driven)
 - `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`
 - `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md`
 - `docs/ops/specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md`

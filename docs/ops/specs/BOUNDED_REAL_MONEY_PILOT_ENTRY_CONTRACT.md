@@ -95,6 +95,8 @@ Rule: **ambiguity => `NO_TRADE` / safe stop**
 
 ## 6. Where To Look
 
+**Entry boundary note:** See `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md` for where the flow ends today and how the first real-money step is invoked (operator-driven until a bounded-pilot entry path exists).
+
 Primary operator evidence:
 
 - Ops Cockpit payload / UI:
