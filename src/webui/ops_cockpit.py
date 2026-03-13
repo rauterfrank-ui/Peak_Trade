@@ -552,8 +552,10 @@ def build_ops_cockpit_payload(
                 exposure_state["data_source"] = "live_runs"
                 if _exp.get("stale"):
                     exposure_state["summary"] = "unknown"
+                    exposure_state["stale"] = True
                 else:
                     exposure_state["summary"] = "ok"
+                    exposure_state["stale"] = False
                 if _exp.get("exposure_by_symbol"):
                     exposure_state["exposure_by_symbol"] = _exp["exposure_by_symbol"]
         except Exception:
@@ -595,6 +597,22 @@ def build_ops_cockpit_payload(
                         exposure_state["risk_status"] = "warn"
         except (TypeError, ValueError):
             pass
+    # Stale state surface (reconciliation hardening)
+    _exp_stale = exposure_state.get("stale", False)
+    _has_exposure = exposure_state.get("data_source") == "live_runs"
+    _position_stale = "stale" if _exp_stale else ("ok" if _has_exposure else "unknown")
+    _exposure_stale = "stale" if _exp_stale else ("ok" if _has_exposure else "unknown")
+    _stale_signals = [_position_stale, _exposure_stale]
+    _stale_summary = (
+        "stale" if "stale" in _stale_signals else ("ok" if "ok" in _stale_signals else "unknown")
+    )
+    stale_state = {
+        "balance": "unknown",
+        "position": _position_stale,
+        "order": "unknown",
+        "exposure": _exposure_stale,
+        "summary": _stale_summary,
+    }
     _fs_level = str(v3_summary.get("freshness_status", "unknown"))
     _ev_summary = {"ok": "ok", "warn": "partial", "critical": "stale"}.get(_fs_level, "unknown")
     _fresh = _stale = _older = 0
@@ -722,6 +740,7 @@ def build_ops_cockpit_payload(
         "run_state": run_state,
         "incident_state": incident_state,
         "exposure_state": exposure_state,
+        "stale_state": stale_state,
         "evidence_state": evidence_state,
         "dependencies_state": dependencies_state,
         "truth_state": truth_state,
@@ -858,6 +877,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     boundary = payload["ai_boundary_state"]
     runtime = payload["runtime_unknown_state"]
     exposure = payload.get("exposure_state") or {}
+    stale = payload.get("stale_state") or {}
     evidence = payload.get("evidence_state") or {}
     dependencies = payload.get("dependencies_state") or {}
     counts = truth_state["priority_counts"]
@@ -984,6 +1004,16 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
       <p><strong>Summary:</strong> <span class="chip"><code>{escape(str(exposure.get("summary", "unknown")))}</code></span></p>
       <p><strong>Treasury separation:</strong> {escape(str(exposure.get("treasury_separation", "unknown")))}</p>
       <p><strong>Risk status:</strong> {escape(str(exposure.get("risk_status", "unknown")))}</p>
+    </div>
+
+    <div class="card">
+      <h2>Stale State</h2>
+      <p><strong>Reconciliation hardening: balance / position / order staleness</strong></p>
+      <p><strong>Summary:</strong> <span class="chip"><code>{escape(str(stale.get("summary", "unknown")))}</code></span></p>
+      <p><strong>Balance:</strong> {escape(str(stale.get("balance", "unknown")))}</p>
+      <p><strong>Position:</strong> {escape(str(stale.get("position", "unknown")))}</p>
+      <p><strong>Order:</strong> {escape(str(stale.get("order", "unknown")))}</p>
+      <p><strong>Exposure:</strong> {escape(str(stale.get("exposure", "unknown")))}</p>
     </div>
 
     <div class="card">
