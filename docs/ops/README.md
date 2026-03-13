@@ -22,6 +22,8 @@
 - `docs/ops/specs/OPS_SUITE_EXPOSURE_READ_MODEL_CONTRACT.md` — Kanonischer Read-Model-Contract für Exposure State im Ops Cockpit
 - `docs/ops/specs/OPS_SUITE_EXPOSURE_DATA_SOURCE_DECISION.md` — Kanonische Entscheidung: live_runs als primäre Exposure-Datenquelle
 
+- `docs/ops/specs/FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS.md` — Kanonische konservative Fee-/Slippage-Annahmen für bounded Echtgeldpilot / Go-No-Go Row 7
+
 ## PR Ops v1
 
 Standardized PR watch, closeout, and required-checks snapshot helpers. See [PR Ops v1 Runbook](pr/pr_ops_v1_runbook.md).
