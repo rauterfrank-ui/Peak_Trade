@@ -548,17 +548,23 @@ def build_ops_cockpit_payload(
                     exposure_state["summary"] = "unknown"
                 else:
                     exposure_state["summary"] = "ok"
+                if _exp.get("exposure_by_symbol"):
+                    exposure_state["exposure_by_symbol"] = _exp["exposure_by_symbol"]
         except Exception:
             pass
-    # Derived risk_status heuristic: observed vs max_total_exposure cap
+    # Derived risk_status heuristic: observed vs max_total_exposure, then symbol-level
     _obs = exposure_state.get("observed_exposure")
-    _cap_obj = next(
+    _cap_total = next(
         (c for c in caps_configured if c.get("limit_id") == "max_total_exposure"),
         None,
     )
-    if _obs is not None and _cap_obj is not None:
+    _cap_symbol = next(
+        (c for c in caps_configured if c.get("limit_id") == "max_symbol_exposure"),
+        None,
+    )
+    if _obs is not None and _cap_total is not None:
         try:
-            cap_val = float(_cap_obj.get("cap_value", 0))
+            cap_val = float(_cap_total.get("cap_value", 0))
             if cap_val > 0:
                 util = float(_obs) / cap_val
                 if util >= 1.0:
@@ -567,6 +573,20 @@ def build_ops_cockpit_payload(
                     exposure_state["risk_status"] = "warn"
                 else:
                     exposure_state["risk_status"] = "ok"
+        except (TypeError, ValueError):
+            pass
+    _exp_by_sym = exposure_state.get("exposure_by_symbol") or {}
+    if _exp_by_sym and _cap_symbol is not None:
+        try:
+            sym_cap = float(_cap_symbol.get("cap_value", 0))
+            if sym_cap > 0:
+                for _sym, _sym_exp in _exp_by_sym.items():
+                    _sym_util = float(_sym_exp) / sym_cap
+                    if _sym_util >= 1.0:
+                        exposure_state["risk_status"] = "critical"
+                        break
+                    if _sym_util >= 0.8 and exposure_state.get("risk_status") != "critical":
+                        exposure_state["risk_status"] = "warn"
         except (TypeError, ValueError):
             pass
     _fs_level = str(v3_summary.get("freshness_status", "unknown"))

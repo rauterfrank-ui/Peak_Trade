@@ -64,9 +64,21 @@ def get_live_runs_exposure_summary(
     total_exposure = 0.0
     ccys: set[str] = set()
     latest_mtime: float = 0.0
+    exposure_by_symbol: Dict[str, float] = {}
 
     for run_id in run_ids:
         run_dir = base_dir / run_id
+        symbol = "unknown"
+        meta_path = run_dir / "meta.json"
+        if meta_path.exists():
+            try:
+                with open(meta_path, encoding="utf-8") as f:
+                    meta = json.load(f)
+                symbol = str(meta.get("symbol", "unknown")).strip() or "unknown"
+                if "/" in symbol:
+                    ccys.add(symbol.split("/", 1)[1].strip())
+            except Exception:
+                pass
         try:
             events_df = load_run_events(run_dir)
         except FileNotFoundError:
@@ -90,21 +102,11 @@ def get_live_runs_exposure_summary(
         try:
             pos = float(position_size)
             pr = float(price)
-            total_exposure += abs(pos * pr)
+            run_exposure = abs(pos * pr)
+            total_exposure += run_exposure
+            exposure_by_symbol[symbol] = exposure_by_symbol.get(symbol, 0.0) + run_exposure
         except (TypeError, ValueError):
             continue
-
-        # Ccy from metadata if available
-        meta_path = run_dir / "meta.json"
-        if meta_path.exists():
-            try:
-                with open(meta_path, encoding="utf-8") as f:
-                    meta = json.load(f)
-                symbol = meta.get("symbol", "")
-                if "/" in symbol:
-                    ccys.add(symbol.split("/", 1)[1].strip())
-            except Exception:
-                pass
 
         # Freshness from events file mtime
         for name in ("events.parquet", "events.csv"):
@@ -116,6 +118,10 @@ def get_live_runs_exposure_summary(
                 break
 
     result["run_count"] = len(run_ids)
+    if exposure_by_symbol:
+        result["exposure_by_symbol"] = {
+            sym: round(val, 2) for sym, val in exposure_by_symbol.items()
+        }
     if total_exposure > 0:
         result["observed_exposure"] = round(total_exposure, 2)
         result["observed_ccy"] = (

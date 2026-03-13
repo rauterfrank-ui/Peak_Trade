@@ -116,3 +116,33 @@ def test_multiple_runs_aggregates_exposure(tmp_path: Path) -> None:
     assert result["run_count"] == 2
     expected = 0.05 * 50000 + 0.02 * 51000  # 2500 + 1020 = 3520
     assert result["observed_exposure"] == pytest.approx(expected, rel=0.01)
+    assert "exposure_by_symbol" in result
+    assert result["exposure_by_symbol"]["BTC/EUR"] == pytest.approx(3520.0, rel=0.01)
+
+
+def test_multiple_runs_different_symbols_exposure_by_symbol(tmp_path: Path) -> None:
+    """Multiple runs with different symbols populate exposure_by_symbol per symbol."""
+    for run_id, symbol, pos, price in [
+        ("run_btc", "BTC/EUR", 0.05, 50000.0),
+        ("run_eth", "ETH/EUR", 0.2, 3000.0),
+    ]:
+        run_dir = tmp_path / run_id
+        run_dir.mkdir(parents=True)
+        meta = {
+            "run_id": run_id,
+            "mode": "shadow",
+            "strategy_name": "x",
+            "symbol": symbol,
+            "timeframe": "1m",
+        }
+        with open(run_dir / "meta.json", "w", encoding="utf-8") as f:
+            json.dump(meta, f)
+        events = pd.DataFrame([{"step": 1, "position_size": pos, "price": price, "close": price}])
+        events.to_parquet(run_dir / "events.parquet", index=False)
+
+    result = get_live_runs_exposure_summary(tmp_path)
+    assert result["run_count"] == 2
+    assert result["observed_exposure"] == pytest.approx(2500.0 + 600.0, rel=0.01)  # 3100
+    assert "exposure_by_symbol" in result
+    assert result["exposure_by_symbol"]["BTC/EUR"] == pytest.approx(2500.0, rel=0.01)
+    assert result["exposure_by_symbol"]["ETH/EUR"] == pytest.approx(600.0, rel=0.01)
