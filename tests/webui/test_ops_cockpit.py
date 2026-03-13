@@ -117,6 +117,77 @@ def test_exposure_state_section_present(tmp_path: Path) -> None:
     assert isinstance(exp["caps_configured"], list)
 
 
+def test_policy_state_confirm_token_required_from_config(tmp_path: Path) -> None:
+    """When config has require_confirm_token=false, policy_state reflects it."""
+    config_dir = tmp_path / "config"
+    config_dir.mkdir(parents=True)
+    config_path = config_dir / "config.toml"
+    config_path.write_text(
+        """
+[environment]
+mode = "paper"
+enable_live_trading = false
+require_confirm_token = false
+""",
+        encoding="utf-8",
+    )
+    payload = build_ops_cockpit_payload(repo_root=tmp_path, config_path=config_path)
+    assert payload["policy_state"]["confirm_token_required"] is False
+
+
+def test_policy_state_action_trade_ready_when_armed(tmp_path: Path) -> None:
+    """When enabled+armed and no kill_switch, policy_state.action is TRADE_READY."""
+    config_dir = tmp_path / "config"
+    config_dir.mkdir(parents=True)
+    config_path = config_dir / "config.toml"
+    config_path.write_text(
+        "\n".join(
+            [
+                "[environment]",
+                'mode = "paper"',
+                "enable_live_trading = " + str(True).lower(),
+                "live_mode_armed = " + str(True).lower(),
+                "live_dry_run_mode = " + str(False).lower(),
+            ]
+        ),
+        encoding="utf-8",
+    )
+    payload = build_ops_cockpit_payload(repo_root=tmp_path, config_path=config_path)
+    pol = payload["policy_state"]
+    assert pol["action"] == "TRADE_READY"
+    assert pol["blocked"] is False
+    assert pol["summary"] == "armed"
+
+
+def test_policy_state_blocked_when_kill_switch(tmp_path: Path) -> None:
+    """When kill_switch active, policy_state is blocked and action is NO_TRADE."""
+    config_dir = tmp_path / "config"
+    config_dir.mkdir(parents=True)
+    config_path = config_dir / "config.toml"
+    config_path.write_text(
+        "\n".join(
+            [
+                "[environment]",
+                'mode = "paper"',
+                "enable_live_trading = " + str(True).lower(),
+                "live_mode_armed = " + str(True).lower(),
+            ]
+        ),
+        encoding="utf-8",
+    )
+    ks_dir = tmp_path / "data" / "kill_switch"
+    ks_dir.mkdir(parents=True)
+    import json
+
+    (ks_dir / "state.json").write_text(json.dumps({"state": "KILLED"}), encoding="utf-8")
+    payload = build_ops_cockpit_payload(repo_root=tmp_path, config_path=config_path)
+    pol = payload["policy_state"]
+    assert pol["blocked"] is True
+    assert pol["action"] == "NO_TRADE"
+    assert pol["summary"] == "blocked"
+    assert pol["kill_switch_active"] is True
+
+
 def test_operator_state_from_config_when_default(tmp_path: Path) -> None:
     """When config has [environment] with defaults, operator_state reflects them."""
     config_dir = tmp_path / "config"

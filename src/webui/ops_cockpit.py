@@ -398,6 +398,7 @@ def build_ops_cockpit_payload(
     _config_enabled = False
     _config_armed = False
     _config_dry_run = True
+    _config_confirm_token_required = True
     if _config_path and _config_path.exists():
         try:
             from src.core.environment import get_environment_from_config
@@ -408,6 +409,7 @@ def build_ops_cockpit_payload(
             _config_enabled = bool(env_config.enable_live_trading)
             _config_armed = bool(env_config.live_mode_armed)
             _config_dry_run = bool(env_config.live_dry_run_mode)
+            _config_confirm_token_required = bool(env_config.require_confirm_token)
         except Exception:
             pass
     _kill_switch_active = False
@@ -433,19 +435,23 @@ def build_ops_cockpit_payload(
         "enabled": _config_enabled,
         "armed": _config_armed,
         "dry_run": _config_dry_run,
-        "confirm_token_required": True,
+        "confirm_token_required": _config_confirm_token_required,
         "kill_switch_active": _kill_switch_active,
     }
+    _policy_blocked = (
+        (not guard_state["enabled"])
+        or (not guard_state["armed"])
+        or guard_state["kill_switch_active"]
+    )
     policy_state = {
-        "action": "NO_TRADE",
+        "action": "NO_TRADE" if _policy_blocked else "TRADE_READY",
         "confirm_token_required": guard_state["confirm_token_required"],
         "enabled": guard_state["enabled"],
         "armed": guard_state["armed"],
         "dry_run": guard_state["dry_run"],
-        "blocked": (not guard_state["enabled"]) or (not guard_state["armed"]),
-        "summary": (
-            "blocked" if (not guard_state["enabled"] or not guard_state["armed"]) else "armed"
-        ),
+        "blocked": _policy_blocked,
+        "summary": "blocked" if _policy_blocked else "armed",
+        "kill_switch_active": guard_state["kill_switch_active"],
     }
     operator_state = {
         "disabled": not guard_state["enabled"],
