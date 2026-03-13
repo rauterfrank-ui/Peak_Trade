@@ -76,6 +76,20 @@ scripts/ops/run_live_pilot_session.sh
 
 **Note:** This wrapper invokes `orchestrate_testnet_runs.py`. For live session dry validation, Step 3 (`run_execution_session.py --dry_run`) is the primary check.
 
+### Step 5: Bounded Pilot Entry Gate (optional)
+
+Verify all Pre-Entry-Checks GREEN via the dedicated gate wrapper. Does **not** start a live session.
+
+```bash
+python3 scripts/ops/run_bounded_pilot_session.py
+```
+
+**Expected:** Exit 0 with message "Bounded pilot entry ready; live session start not yet implemented." (Live session start is operator-driven until a bounded-pilot runtime path exists.)
+
+**If exit 1:** One or more gates RED. Inspect `--json` output and fix blockers.
+
+**Reference:** `BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT`, `bounded_pilot_entry_point_slice_review`
+
 ## Evidence
 
 - Step 1: Drill output (text or JSON)

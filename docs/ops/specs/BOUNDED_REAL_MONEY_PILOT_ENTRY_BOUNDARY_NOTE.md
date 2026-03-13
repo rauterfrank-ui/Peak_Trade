@@ -32,6 +32,8 @@ The first bounded real-money step (§4 of BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRAC
 
 **Rule:** Until a bounded-pilot entry path exists, the first real-money step is **manual / operator-driven**, with all Entry Contract prerequisites and abort criteria applied.
 
+**Gate wrapper:** `scripts/ops/run_bounded_pilot_session.py` runs Pre-Entry-Checks (go/no-go, cockpit). Exit 0 when all gates GREEN; does not start a live session. See `RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION` Step 5.
+
 ## 4. run_live_pilot_session.sh
 
 - **Current scope:** Dry-run and testnet validation only.
