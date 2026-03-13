@@ -24,7 +24,7 @@ This document maps each checklist item in `PILOT_GO_NO_GO_CHECKLIST` to the conc
 | 4 | Operator Visibility | blocked vs allowed quickly identifiable? | Ops Cockpit | `policy_state.blocked`, `incident_state.requires_operator_attention`, Executive Summary |
 | 5 | Pilot Caps | bounded caps defined and documented? | Ops Cockpit + Config | `exposure_state.caps_configured` (from `live_risk` in config.toml) |
 | 6 | Treasury Separation | trading vs treasury explicit? | Ops Cockpit | `guard_state.treasury_separation` = enforced; `src/ops/treasury_separation_gate.py` |
-| 7 | Fee/Slippage Realism | conservative assumptions documented? | Edge Case Matrix | `PILOT_EXECUTION_EDGE_CASE_MATRIX` Fee/slippage row; no dedicated assumptions doc yet |
+| 7 | Fee/Slippage Realism | conservative assumptions documented? | Assumptions Doc + Edge Case Matrix | `FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS`, `PILOT_EXECUTION_EDGE_CASE_MATRIX` Fee/slippage row |
 | 8 | Partial Fill Handling | bounded and understood? | Specs + Engine | `PILOT_EXECUTION_EDGE_CASE_MATRIX`, `ReconciliationEngine` (position/cash recon) |
 | 9 | Stale State Handling | stale balance/order/position handled safely? | Ops Cockpit | `stale_state` (balance, position, order, exposure); `exposure_state.stale` |
 | 10 | Restart / Replay | restart and replay semantics safe? | Edge Case Matrix | `PILOT_EXECUTION_EDGE_CASE_MATRIX` Restart mid-session, Replay ambiguity; no dedicated runbook yet |
@@ -39,7 +39,7 @@ This document maps each checklist item in `PILOT_GO_NO_GO_CHECKLIST` to the conc
 - HTML: `render_ops_cockpit_html()` for operator dashboard view
 
 ## Known Gaps (Follow-up)
-- Fee/slippage: dedicated conservative-assumptions document
+- ~~Fee/slippage: dedicated conservative-assumptions document~~ (done: `FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS`)
 - Restart mid-session: dedicated runbook
 - Human supervision: explicit cockpit surface (optional)
 - Go/No-Go script: automated checklist evaluation against cockpit/config (future)
