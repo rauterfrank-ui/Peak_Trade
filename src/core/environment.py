@@ -83,6 +83,8 @@ class EnvironmentConfig:
     # Phase 71: Live-Execution-Design
     live_mode_armed: bool = False
     live_dry_run_mode: bool = True
+    # Bounded Pilot (Option A): Signal für governance key live_order_execution_bounded_pilot
+    bounded_pilot_mode: bool = False
     max_live_notional_per_order: Optional[float] = None
     max_live_notional_total: Optional[float] = None
     live_trade_min_size: Optional[float] = None

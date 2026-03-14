@@ -625,6 +625,25 @@ class TestLiveSessionRunnerFactory:
         with pytest.raises(LiveModeNotAllowedError):
             LiveSessionConfig(mode="live", strategy_key="test", symbol="BTC/EUR")
 
+    def test_from_config_bounded_pilot_raises_kraken_live_not_configured(self):
+        """from_config mit bounded_pilot wirft SessionSetupError (B5 nicht implementiert)."""
+        from src.execution.live_session import (
+            LiveSessionConfig,
+            LiveSessionRunner,
+            SessionSetupError,
+        )
+
+        config = LiveSessionConfig(
+            mode="bounded_pilot",
+            strategy_key="ma_crossover",
+            symbol="BTC/EUR",
+        )
+        with pytest.raises(SessionSetupError) as exc_info:
+            LiveSessionRunner.from_config(config)
+
+        assert "Kraken Live client not configured" in str(exc_info.value)
+        assert "bounded_pilot" in str(exc_info.value).lower()
+
 
 # =============================================================================
 # Tests: CLI Smoke Test
@@ -707,6 +726,29 @@ class TestExecutionSessionCLI:
         # argparse sollte "invalid choice" melden
         assert result.returncode != 0
         assert "invalid choice" in result.stderr or "error" in result.stderr.lower()
+
+    def test_cli_bounded_pilot_mode_fails_with_clear_error(self):
+        """CLI --mode bounded_pilot scheitert mit klarem Kraken-Live-Fehler (B5 nicht implementiert)."""
+        result = subprocess.run(
+            [
+                sys.executable,
+                "scripts/run_execution_session.py",
+                "--mode",
+                "bounded_pilot",
+                "--strategy",
+                "ma_crossover",
+                "--steps",
+                "1",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=str(ROOT_DIR),
+            timeout=30,
+        )
+
+        assert result.returncode != 0
+        assert "Kraken Live client not configured" in (result.stderr + result.stdout)
+        assert "bounded_pilot" in (result.stderr + result.stdout).lower()
 
 
 # =============================================================================

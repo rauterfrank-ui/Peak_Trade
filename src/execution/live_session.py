@@ -120,7 +120,7 @@ class LiveSessionConfig:
         - Testnet-Mode nutzt validate_only=True (keine echten Testnet-Orders)
     """
 
-    mode: Literal["shadow", "testnet"] = "shadow"
+    mode: Literal["shadow", "testnet", "bounded_pilot"] = "shadow"
     strategy_key: str = "ma_crossover"
     symbol: str = "BTC/EUR"
     timeframe: str = "1m"
@@ -146,8 +146,10 @@ class LiveSessionConfig:
             )
 
         # Validiere mode
-        if self.mode not in ("shadow", "testnet"):
-            raise ValueError(f"Ungültiger mode: '{self.mode}'. Erlaubt: 'shadow', 'testnet'")
+        if self.mode not in ("shadow", "testnet", "bounded_pilot"):
+            raise ValueError(
+                f"Ungültiger mode: '{self.mode}'. Erlaubt: 'shadow', 'testnet', 'bounded_pilot'"
+            )
 
         # Validiere strategy_key
         if not self.strategy_key:
@@ -485,12 +487,19 @@ class LiveSessionRunner:
 
                 peak_config = load_config(session_config.config_path)
 
-            # 2. EnvironmentConfig erstellen (Paper für Shadow, Testnet für Testnet)
+            # 2. EnvironmentConfig erstellen (Paper für Shadow, Testnet für Testnet, LIVE für bounded_pilot)
             if session_config.mode == "shadow":
                 env_config = EnvironmentConfig(
                     environment=TradingEnvironment.PAPER,
                     enable_live_trading=False,
                     testnet_dry_run=True,
+                )
+            elif session_config.mode == "bounded_pilot":
+                env_config = EnvironmentConfig(
+                    environment=TradingEnvironment.LIVE,
+                    enable_live_trading=True,
+                    bounded_pilot_mode=True,
+                    testnet_dry_run=False,
                 )
             else:  # testnet
                 env_config = EnvironmentConfig(
@@ -566,6 +575,13 @@ class LiveSessionRunner:
                 market_context=market_context,
                 fee_rate=session_config.fee_rate,
                 slippage_bps=session_config.slippage_bps,
+            )
+        elif session_config.mode == "bounded_pilot":
+            # Bounded Pilot: Kraken Live client (B5) nicht im Flow — klarer Fehler
+            raise SessionSetupError(
+                "Kraken Live client not configured for bounded_pilot mode. "
+                "B5 (exchange integration) not yet implemented. "
+                "Use shadow or testnet mode."
             )
         else:
             # Testnet-Mode: Auch ShadowOrderExecutor für Phase 80
