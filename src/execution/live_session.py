@@ -67,6 +67,23 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+def _config_with_exchange_type(cfg: Any, exchange_type: str) -> Any:
+    """
+    Wrapper um PeakConfig, der exchange.default_type überschreibt.
+
+    Für bounded_pilot: exchange.default_type=kraken_live erforderlich.
+    """
+    from copy import deepcopy
+
+    from ..core.peak_config import PeakConfig
+
+    raw = deepcopy(cfg.raw)
+    if "exchange" not in raw:
+        raw["exchange"] = {}
+    raw["exchange"]["default_type"] = exchange_type
+    return PeakConfig(raw=raw)
+
+
 # =============================================================================
 # Session Mode Enum
 # =============================================================================
@@ -120,7 +137,7 @@ class LiveSessionConfig:
         - Testnet-Mode nutzt validate_only=True (keine echten Testnet-Orders)
     """
 
-    mode: Literal["shadow", "testnet"] = "shadow"
+    mode: Literal["shadow", "testnet", "bounded_pilot"] = "shadow"
     strategy_key: str = "ma_crossover"
     symbol: str = "BTC/EUR"
     timeframe: str = "1m"
@@ -146,8 +163,10 @@ class LiveSessionConfig:
             )
 
         # Validiere mode
-        if self.mode not in ("shadow", "testnet"):
-            raise ValueError(f"Ungültiger mode: '{self.mode}'. Erlaubt: 'shadow', 'testnet'")
+        if self.mode not in ("shadow", "testnet", "bounded_pilot"):
+            raise ValueError(
+                f"Ungültiger mode: '{self.mode}'. Erlaubt: 'shadow', 'testnet', 'bounded_pilot'"
+            )
 
         # Validiere strategy_key
         if not self.strategy_key:
@@ -485,12 +504,19 @@ class LiveSessionRunner:
 
                 peak_config = load_config(session_config.config_path)
 
-            # 2. EnvironmentConfig erstellen (Paper für Shadow, Testnet für Testnet)
+            # 2. EnvironmentConfig erstellen (Paper für Shadow, Testnet für Testnet, LIVE für bounded_pilot)
             if session_config.mode == "shadow":
                 env_config = EnvironmentConfig(
                     environment=TradingEnvironment.PAPER,
                     enable_live_trading=False,
                     testnet_dry_run=True,
+                )
+            elif session_config.mode == "bounded_pilot":
+                env_config = EnvironmentConfig(
+                    environment=TradingEnvironment.LIVE,
+                    enable_live_trading=True,
+                    bounded_pilot_mode=True,
+                    testnet_dry_run=False,
                 )
             else:  # testnet
                 env_config = EnvironmentConfig(
@@ -506,7 +532,7 @@ class LiveSessionRunner:
             logger.info(f"[LIVE SESSION] Strategy geladen: {strategy}")
 
             # 4. ExecutionPipeline erstellen
-            pipeline = cls._build_pipeline(session_config, env_config)
+            pipeline = cls._build_pipeline(session_config, env_config, peak_config=peak_config)
 
             # 5. Data-Source erstellen
             data_source = cls._build_data_source(session_config)
@@ -541,6 +567,7 @@ class LiveSessionRunner:
         cls,
         session_config: LiveSessionConfig,
         env_config: "EnvironmentConfig",
+        peak_config: Optional["PeakConfig"] = None,
     ) -> ExecutionPipeline:
         """
         Baut eine ExecutionPipeline basierend auf dem Session-Mode.
@@ -548,6 +575,7 @@ class LiveSessionRunner:
         Args:
             session_config: LiveSessionConfig
             env_config: EnvironmentConfig
+            peak_config: Optionale PeakConfig (für bounded_pilot: KrakenLiveClient)
 
         Returns:
             Konfigurierte ExecutionPipeline
@@ -556,7 +584,21 @@ class LiveSessionRunner:
         from ..orders.shadow import ShadowMarketContext
         from ..live.safety import SafetyGuard
 
-        if session_config.mode == "shadow":
+        if session_config.mode == "bounded_pilot" and peak_config is not None:
+            # Bounded-Pilot: ExchangeOrderExecutor + KrakenLiveClient (echte Orders)
+            from ..exchange import build_trading_client_from_config
+            from ..orders.exchange import create_order_executor
+
+            # Config mit exchange.default_type=kraken_live für bounded pilot
+            cfg = _config_with_exchange_type(peak_config, "kraken_live")
+            trading_client = build_trading_client_from_config(cfg)
+            executor = create_order_executor(env_config, trading_client=trading_client)
+            pipeline = ExecutionPipeline(executor=executor)
+            logger.info(
+                "[LIVE SESSION] Bounded-Pilot: Pipeline mit KrakenLiveClient "
+                f"({trading_client.get_name()})"
+            )
+        elif session_config.mode == "shadow":
             # Shadow-Mode: ShadowOrderExecutor (keine echten API-Calls)
             market_context = ShadowMarketContext(
                 fee_rate=session_config.fee_rate,
@@ -569,7 +611,6 @@ class LiveSessionRunner:
             )
         else:
             # Testnet-Mode: Auch ShadowOrderExecutor für Phase 80
-            # (Echte Testnet-Integration kann später hinzugefügt werden)
             market_context = ShadowMarketContext(
                 fee_rate=session_config.fee_rate,
                 slippage_bps=session_config.slippage_bps,

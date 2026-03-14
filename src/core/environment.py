@@ -88,6 +88,8 @@ class EnvironmentConfig:
     live_trade_min_size: Optional[float] = None
     # Knowledge DB Access Control
     knowledge_readonly: bool = False
+    # Bounded pilot: governance-approved live path only
+    bounded_pilot_mode: bool = False
 
     def __post_init__(self) -> None:
         """Validierung und Typ-Konvertierung nach Initialisierung."""
