@@ -958,7 +958,7 @@ auto_refresh_seconds = 5
 # Verfügbare Typen:
 # - "dummy": In-Memory-Client für Tests (keine echten API-Calls)
 # - "kraken_testnet": Kraken Testnet/Demo-API
-# - (später) "kraken_live": Echte Kraken-API
+# - "kraken_live": Echte Kraken Live-API (Option A Slice 5)
 # ============================================================================
 
 [exchange]
@@ -1013,6 +1013,25 @@ timeout_seconds = 30.0
 max_retries = 3
 
 # Rate-Limit: Mindestabstand zwischen Requests in Millisekunden
+rate_limit_ms = 1000
+
+# ============================================================================
+# OPTION A SLICE 5: KRAKEN LIVE EXCHANGE INTEGRATION
+# ============================================================================
+# Konfiguration fuer echte Kraken Live-Orders.
+# WICHTIG: Sendet ECHTE Orders! Nur nach Governance-Freigabe und Entry Contract.
+#
+# Sicherheitshinweise:
+# - API-Keys NUR aus Environment-Variablen (KRAKEN_API_KEY, KRAKEN_API_SECRET)
+# - Strikte Trennung von kraken_testnet (andere ENV-Variablen)
+# ============================================================================
+
+[exchange.kraken_live]
+base_url = "https://api.kraken.com"
+api_key_env_var = "KRAKEN_API_KEY"
+api_secret_env_var = "KRAKEN_API_SECRET"
+timeout_seconds = 30.0
+max_retries = 3
 rate_limit_ms = 1000
 
 # ============================================================================

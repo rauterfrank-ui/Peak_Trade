@@ -265,6 +265,7 @@ class TradingExchangeClient(Protocol):
     Implementierungen:
     - `DummyExchangeClient`: In-Memory-Simulation für Tests
     - `KrakenTestnetClient`: Kraken Testnet/Demo-API
+    - `KrakenLiveClient`: Kraken Live-API (Option A Slice 5)
 
     Verwendung:
         >>> client: TradingExchangeClient = DummyExchangeClient(prices={"BTC/EUR": 50000})
