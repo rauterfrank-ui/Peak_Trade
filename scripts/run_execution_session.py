@@ -149,8 +149,8 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
         "--mode",
         type=str,
         default="shadow",
-        choices=["shadow", "testnet", "bounded_pilot"],
-        help="Ausführungsmodus: 'shadow', 'testnet' oder 'bounded_pilot'. bounded_pilot erfordert B5 (Kraken Live). (default: shadow)",
+        choices=["shadow", "testnet"],
+        help="Ausführungsmodus: 'shadow' (Simulation) oder 'testnet' (Dry-Run). LIVE ist nicht erlaubt! (default: shadow)",
     )
 
     # Strategy

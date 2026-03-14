@@ -30,7 +30,7 @@ The bounded real-money pilot is permitted only under all of the following condit
 The operator must confirm all of the following before entry:
 
 1. **Dry Validation Completed**
-   - See `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`
+   - See `docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`
    - Required sequence:
      - Live Drills
      - Pilot Go/No-Go Eval
@@ -38,7 +38,7 @@ The operator must confirm all of the following before entry:
      - Optional bounded wrapper dry-run
 
 2. **Go/No-Go Acceptable**
-   - `scripts/ops/pilot_go_no_go_eval_v1.py`
+   - `scripts&#47;ops&#47;pilot_go_no_go_eval_v1.py`
    - Acceptable result for entry:
      - `GO_FOR_NEXT_PHASE_ONLY`
    - Non-acceptable results:
@@ -63,7 +63,7 @@ The operator must confirm all of the following before entry:
 
 6. **Treasury Separation Explicit**
    - `guard_state.treasury_separation == enforced`
-   - See `docs/ops/specs/TREASURY_BALANCE_SEPARATION_SPEC.md`
+   - See `docs&#47;ops&#47;specs&#47;TREASURY_BALANCE_SEPARATION_SPEC.md`
 
 ## 4. First Bounded Real-Money Step
 
@@ -95,7 +95,7 @@ Rule: **ambiguity => `NO_TRADE` / safe stop**
 
 ## 6. Where To Look
 
-**Entry boundary note:** See `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md` for where the flow ends today and how the first real-money step is invoked (operator-driven until a bounded-pilot entry path exists).
+**Entry boundary note:** See `docs&#47;ops&#47;specs&#47;BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md` for where the flow ends today and how the first real-money step is invoked (operator-driven until a bounded-pilot entry path exists).
 
 **Gap note:** See `docs/ops/specs/BOUNDED_PILOT_LIVE_ENTRY_GAP_NOTE.md` for the gap between the gate wrapper and first live session start (blockers B1–B6).
 
@@ -115,15 +115,15 @@ Primary operator evidence:
 
 Primary docs / scripts:
 
-- `scripts/ops/run_bounded_pilot_session.py` — Pre-Entry-Checks gate (no live start)
-- `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`
-- `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md`
-- `docs/ops/specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md`
-- `scripts/ops/pilot_go_no_go_eval_v1.py`
-- `docs/ops/specs/TREASURY_BALANCE_SEPARATION_SPEC.md`
-- `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md`
-- `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md`
-- `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY.md`
+- `scripts&#47;ops&#47;run_bounded_pilot_session.py` — Pre-Entry-Checks gate (no live start)
+- `docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`
+- `docs&#47;ops&#47;specs&#47;PILOT_GO_NO_GO_CHECKLIST.md`
+- `docs&#47;ops&#47;specs&#47;PILOT_GO_NO_GO_OPERATIONAL_SLICE.md`
+- `scripts&#47;ops&#47;pilot_go_no_go_eval_v1.py`
+- `docs&#47;ops&#47;specs&#47;TREASURY_BALANCE_SEPARATION_SPEC.md`
+- `docs&#47;ops&#47;runbooks&#47;RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md`
+- `docs&#47;ops&#47;runbooks&#47;RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md`
+- `docs&#47;ops&#47;runbooks&#47;RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY.md`
 
 ## 7. Non-Goals
 
