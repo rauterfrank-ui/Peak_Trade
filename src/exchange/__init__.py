@@ -118,6 +118,7 @@ def build_trading_client_from_config(cfg) -> TradingExchangeClient:
     entsprechenden Client:
     - "dummy": DummyExchangeClient (In-Memory, für Tests)
     - "kraken_testnet": KrakenTestnetClient (echte Testnet-API)
+    - "kraken_live": KrakenLiveClient (echte Kraken Live-API)
 
     Args:
         cfg: PeakConfig-Objekt (oder kompatibel mit .get())
@@ -156,8 +157,13 @@ def build_trading_client_from_config(cfg) -> TradingExchangeClient:
 
         return create_kraken_testnet_client_from_config(cfg)
 
+    elif default_type == "kraken_live":
+        from .kraken_live import create_kraken_live_client_from_config
+
+        return create_kraken_live_client_from_config(cfg)
+
     else:
         raise ValueError(
             f"Unbekannter exchange.default_type: {default_type!r}. "
-            f"Verfügbar: 'dummy', 'kraken_testnet'"
+            f"Verfügbar: 'dummy', 'kraken_testnet', 'kraken_live'"
         )
