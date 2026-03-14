@@ -625,6 +625,21 @@ class TestLiveSessionRunnerFactory:
         with pytest.raises(LiveModeNotAllowedError):
             LiveSessionConfig(mode="live", strategy_key="test", symbol="BTC/EUR")
 
+    def test_from_config_bounded_pilot_rejected(self):
+        """mode='bounded_pilot' ist nicht mehr erlaubt (Slice 3 parse-only)."""
+        from src.execution.live_session import LiveSessionConfig
+
+        with pytest.raises(ValueError) as exc_info:
+            LiveSessionConfig(
+                mode="bounded_pilot",
+                strategy_key="ma_crossover",
+                symbol="BTC/EUR",
+            )
+        assert (
+            "bounded_pilot" in str(exc_info.value).lower()
+            or "ungültig" in str(exc_info.value).lower()
+        )
+
 
 # =============================================================================
 # Tests: CLI Smoke Test
@@ -707,6 +722,28 @@ class TestExecutionSessionCLI:
         # argparse sollte "invalid choice" melden
         assert result.returncode != 0
         assert "invalid choice" in result.stderr or "error" in result.stderr.lower()
+
+    def test_cli_bounded_pilot_mode_rejected(self):
+        """CLI --mode bounded_pilot wird abgelehnt (Slice 3 parse-only)."""
+        result = subprocess.run(
+            [
+                sys.executable,
+                "scripts/run_execution_session.py",
+                "--mode",
+                "bounded_pilot",
+                "--strategy",
+                "ma_crossover",
+                "--steps",
+                "1",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=str(ROOT_DIR),
+            timeout=30,
+        )
+
+        assert result.returncode != 0
+        assert "invalid choice" in result.stderr.lower() or "error" in result.stderr.lower()
 
 
 # =============================================================================

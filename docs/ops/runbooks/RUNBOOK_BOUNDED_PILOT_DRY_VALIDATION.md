@@ -21,7 +21,7 @@ This runbook defines the **exact operator sequence** for dry validation before a
 ## Prerequisites
 
 - Repo on `main` (or approved branch)
-- Config present: `config/config.toml` (or `CONFIG_PATH`)
+- Config present: `config&#47;config.toml` (or `CONFIG_PATH`)
 - Ops Cockpit buildable: `build_ops_cockpit_payload()` succeeds
 
 ## Operator Sequence (in order)
