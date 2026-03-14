@@ -149,8 +149,8 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
         "--mode",
         type=str,
         default="shadow",
-        choices=["shadow", "testnet"],
-        help="Ausführungsmodus: 'shadow' (Simulation) oder 'testnet' (Dry-Run). LIVE ist nicht erlaubt! (default: shadow)",
+        choices=["shadow", "testnet", "bounded_pilot"],
+        help="Ausführungsmodus: 'shadow' (Simulation), 'testnet' (Dry-Run), 'bounded_pilot' (echte Orders, nur nach Gates). (default: shadow)",
     )
 
     # Strategy
