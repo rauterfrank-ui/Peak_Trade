@@ -19,19 +19,24 @@ def test_script_exists() -> None:
 def test_script_runs_with_repo_root() -> None:
     """Script runs with --repo-root and produces output."""
     r = subprocess.run(
-        [sys.executable, str(SCRIPT), "--repo-root", str(ROOT)],
+        [sys.executable, str(SCRIPT), "--repo-root", str(ROOT), "--no-invoke"],
         capture_output=True,
         text=True,
         cwd=ROOT,
     )
     assert r.returncode in (0, 1, 2), f"stderr: {r.stderr}"
-    assert "Bounded pilot" in r.stdout or "GATES_RED" in r.stderr or "entry_permitted" in r.stdout
+    assert (
+        "Bounded pilot" in r.stdout
+        or "GATES_RED" in r.stderr
+        or "entry_permitted" in r.stdout
+        or "Gates GREEN" in r.stdout
+    )
 
 
 def test_script_json_output() -> None:
     """Script --json produces valid JSON with contract and entry_permitted."""
     r = subprocess.run(
-        [sys.executable, str(SCRIPT), "--repo-root", str(ROOT), "--json"],
+        [sys.executable, str(SCRIPT), "--repo-root", str(ROOT), "--json", "--no-invoke"],
         capture_output=True,
         text=True,
         cwd=ROOT,
