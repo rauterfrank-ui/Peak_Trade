@@ -51,6 +51,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -105,6 +106,17 @@ def list_available_strategies() -> None:
     print(f"\n  Total: {len(keys)} Strategien verfügbar")
     print("\nBeispiel:")
     print(f"  python scripts/run_execution_session.py --strategy {keys[0]}\n")
+
+
+# =============================================================================
+# Bounded Pilot Evidence (session-scoped execution events)
+# =============================================================================
+
+
+def _ensure_bounded_pilot_events_enabled(args: argparse.Namespace) -> None:
+    """Enable session-scoped execution events for bounded_pilot (evidence quality slice)."""
+    if args.mode == "bounded_pilot":
+        os.environ["PT_EXEC_EVENTS_ENABLED"] = "true"
 
 
 # =============================================================================
@@ -279,6 +291,7 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
     )
 
     args = parser.parse_args()
+    _ensure_bounded_pilot_events_enabled(args)
 
     # Strategy-Liste?
     if args.list_strategies:
