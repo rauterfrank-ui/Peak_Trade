@@ -312,6 +312,11 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
     # Run-Type basierend auf Mode
     run_type = f"live_session_{args.mode}"
 
+    # Env-Name: bounded_pilot nutzt expliziten Namen statt shadow_local
+    effective_env_name = (
+        "bounded_pilot_kraken_live" if args.mode == "bounded_pilot" else args.env_name
+    )
+
     # Session-ID generieren
     from src.experiments.live_session_registry import generate_session_run_id
 
@@ -370,7 +375,7 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
             "start_balance": args.start_balance,
             "enable_risk_limits": not args.no_risk_limits,
             "config_path": str(config_path),
-            "env_name": args.env_name,
+            "env_name": effective_env_name,
             "tags": args.tags,
             "notes": args.notes,
         }
@@ -414,7 +419,7 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
                     run_id=run_id,
                     run_type=run_type,
                     mode=args.mode,
-                    env_name=args.env_name,
+                    env_name=effective_env_name,
                     symbol=args.symbol,
                     status="started",
                     started_at=started_at,
@@ -498,7 +503,7 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
                 run_id=run_id,
                 run_type=run_type,
                 mode=args.mode,
-                env_name=args.env_name,
+                env_name=effective_env_name,
                 symbol=args.symbol,
                 status=status,
                 started_at=started_at,
