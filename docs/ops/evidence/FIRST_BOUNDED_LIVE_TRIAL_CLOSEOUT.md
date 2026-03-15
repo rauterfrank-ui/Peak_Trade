@@ -45,7 +45,7 @@ run_bounded_pilot_session.py (Gates GREEN)
 | symbol | BTC/EUR |
 | metrics | steps=1, num_orders=0, fill_rate=0.0 |
 
-**Path:** `reports/experiments/live_sessions/20260315T161644_live_session_bounded_pilot_session_20260315_161644_bounded_pilot_90036c.json`
+**Path:** `reports&#47;experiments&#47;live_sessions&#47;20260315T161644_live_session_bounded_pilot_session_20260315_161644_bounded_pilot_90036c.json`
 
 ### 4.2 Contract §7 Alignment
 
