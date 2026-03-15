@@ -537,6 +537,40 @@ class TestExecuteWithSafetyGovernance:
         assert result.environment == "paper"
         assert result.status == ExecutionStatus.SUCCESS
 
+    def test_bounded_pilot_blocks_when_kill_switch_active(self, tmp_path, monkeypatch):
+        """
+        bounded_pilot mode blocks orders when kill switch state is KILLED.
+        """
+        import json
+
+        from src.execution import ExecutionPipeline, ExecutionStatus
+        from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
+        from src.orders.base import OrderRequest
+
+        # Kill switch state file: KILLED
+        state_file = tmp_path / "kill_switch_state.json"
+        state_file.write_text(json.dumps({"state": "KILLED", "version": "1.0"}))
+        monkeypatch.setenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", str(state_file))
+
+        env_config = EnvironmentConfig(
+            environment=TradingEnvironment.LIVE,
+            bounded_pilot_mode=True,
+        )
+        executor = PaperOrderExecutor(PaperMarketContext(prices={"BTC/EUR": 50000.0}))
+
+        pipeline = ExecutionPipeline(
+            executor=executor,
+            env_config=env_config,
+        )
+
+        order = OrderRequest(symbol="BTC/EUR", side="buy", quantity=0.01)
+        result = pipeline.execute_with_safety([order])
+
+        assert result.rejected is True
+        assert result.status == ExecutionStatus.BLOCKED_BY_SAFETY
+        assert "kill_switch" in (result.reason or "").lower()
+
 
 class TestExecutionPipelineExceptions:
     """Tests fuer ExecutionPipeline-Exceptions."""
