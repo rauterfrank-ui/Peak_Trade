@@ -401,6 +401,11 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
 
         logger.info(f"Session erstellt: run_id={runner.run_id}")
 
+        # Session-scoped execution_events (FIRST_BOUNDED_LIVE_TRIAL_CLOSEOUT gap)
+        from src.observability.execution_events import set_session_context
+
+        set_session_context(session_id)
+
         # Warmup
         logger.info("Starte Warmup...")
         runner.warmup()
@@ -485,6 +490,14 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
         # Exception nicht weiter werfen, damit finally-Block ausgeführt wird
 
     finally:
+        # Session-scoped execution_events: context aufräumen
+        try:
+            from src.observability.execution_events import clear_session_context
+
+            clear_session_context()
+        except Exception:
+            pass
+
         # finished_at setzen falls noch nicht gesetzt
         if finished_at is None:
             finished_at = datetime.utcnow()
