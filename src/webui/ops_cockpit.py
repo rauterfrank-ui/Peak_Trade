@@ -642,7 +642,9 @@ def build_ops_cockpit_payload(
         "intact"
         if _tel_status == "ok"
         else "degraded"
-        if _tel_status in ("warn", "critical")
+        if _tel_status == "warn"
+        else "broken"
+        if _tel_status == "critical"
         else "unknown"
     )
     _blended_summary = _ev_summary
