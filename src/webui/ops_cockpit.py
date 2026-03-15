@@ -82,6 +82,10 @@ PRIORITY_ORDER = {
     "supporting_truth": 2,
 }
 
+# Truth-doc freshness thresholds (Evidence Continuity / Row 12)
+FRESHNESS_FRESH_HOURS = 24
+FRESHNESS_OLDER_DAYS = 30
+
 
 def _utc_now() -> datetime:
     return datetime.now(timezone.utc)
@@ -129,9 +133,9 @@ def _freshness_label(path: Path) -> str:
         return "unavailable"
     modified = datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc)
     age_hours = (_utc_now() - modified).total_seconds() / 3600
-    if age_hours <= 24:
+    if age_hours <= FRESHNESS_FRESH_HOURS:
         return "fresh"
-    if age_hours <= 24 * 7:
+    if age_hours <= 24 * FRESHNESS_OLDER_DAYS:
         return "stale"
     return "older"
 
@@ -277,11 +281,11 @@ def _build_v3_executive_summary(
             total_older += int(s.get("older", 0))
     if total_older > 0:
         freshness_status = _status_obj(
-            "critical", "older", "Sources older than 7 days. Stale evidence."
+            "critical", "older", f"Sources older than {FRESHNESS_OLDER_DAYS} days. Stale evidence."
         )
     elif total_stale > 0:
         freshness_status = _status_obj(
-            "warn", "stale", "Some sources stale (≤7d). Partial freshness."
+            "warn", "stale", f"Some sources stale (≤{FRESHNESS_OLDER_DAYS}d). Partial freshness."
         )
     elif available == 0 and total > 0:
         freshness_status = _status_obj(
@@ -975,7 +979,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     <h2>Read-only legends</h2>
     <p><strong>Visual emphasis only.</strong> No semantic or execution changes.</p>
     <p><strong>Availability:</strong> <code>available</code> = source found, <code>unavailable</code> = source missing.</p>
-    <p><strong>Freshness:</strong> <code>fresh</code> ≤ 24h, <code>stale</code> ≤ 7d, <code>older</code> > 7d.</p>
+    <p><strong>Freshness:</strong> <code>fresh</code> ≤ 24h, <code>stale</code> ≤ 30d, <code>older</code> > 30d.</p>
     <p><strong>Source groups:</strong> {group_chips}</p>
   </div>
 
