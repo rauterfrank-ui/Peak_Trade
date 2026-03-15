@@ -30,6 +30,7 @@ WICHTIG: Es werden KEINE echten Live-Orders an Boersen gesendet!
 from __future__ import annotations
 
 import logging
+import os
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -94,6 +95,31 @@ def _emit_exec_event_safe(**kwargs: Any) -> None:
         _emit_exec_event(**kwargs)
     except Exception:
         pass
+
+
+def _is_kill_switch_blocking(state_path: Optional[str] = None) -> bool:
+    """
+    Check if kill switch state file indicates trading should be blocked.
+
+    Reads data/kill_switch/state.json (or state_path). Returns True when
+    state is KILLED or RECOVERING. Fail-open: returns False on any error
+    (missing file, parse error) so execution is not blocked by I/O issues.
+
+    Used only for bounded_pilot mode (config: require_kill_switch_active).
+    """
+    import json
+    from pathlib import Path
+
+    path = Path(state_path or "data/kill_switch/state.json")
+    try:
+        if not path.exists():
+            return False
+        with path.open(encoding="utf-8") as f:
+            data = json.load(f)
+        state = str(data.get("state", "")).strip().upper()
+        return state in ("KILLED", "RECOVERING")
+    except Exception:
+        return False
 
 
 def _signal_label_from_int(sig: int) -> str:
@@ -1518,6 +1544,39 @@ class ExecutionPipeline:
                     environment=env_str,
                     governance_status=governance_status,
                 )
+
+        # 2.5. Kill-Switch-Check (bounded_pilot only; config: require_kill_switch_active)
+        bounded_pilot_ok = bool(getattr(self._env_config, "bounded_pilot_mode", False))
+        ks_path = os.getenv("PEAKTRADE_KILL_SWITCH_STATE_PATH")
+        if bounded_pilot_ok and _is_kill_switch_blocking(ks_path):
+            reason = "kill_switch_active"
+            logger.warning(
+                "[EXECUTION PIPELINE] Kill switch active - Orders blockiert (bounded_pilot)"
+            )
+            if _trade_flow_telemetry is not None:
+                try:
+                    reason_label = _trade_flow_telemetry.map_block_reason(  # type: ignore[union-attr]
+                        status=ExecutionStatus.BLOCKED_BY_SAFETY.value,
+                        raw_reason=reason,
+                    )
+                    for o in orders_list:
+                        _trade_flow_telemetry.inc_orders_blocked(  # type: ignore[union-attr]
+                            strategy_id=_strategy_id_from_order_metadata(o),
+                            symbol=o.symbol,
+                            reason=reason_label,
+                            n=1,
+                        )
+                except Exception:
+                    pass
+            return ExecutionResult(
+                rejected=True,
+                executed_orders=[],
+                execution_results=[],
+                reason=reason,
+                status=ExecutionStatus.BLOCKED_BY_SAFETY,
+                environment=env_str,
+                governance_status=governance_status,
+            )
 
         # 3. SafetyGuard-Check
         if self._safety_guard is not None:
