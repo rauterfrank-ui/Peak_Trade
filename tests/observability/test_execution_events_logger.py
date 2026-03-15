@@ -1,6 +1,8 @@
 """Unit tests for execution_events logger (enabled/disabled/out-guard/session-scoped)."""
 
+import importlib.util
 import json
+import os
 from pathlib import Path
 
 import pytest
@@ -69,3 +71,39 @@ def test_session_scoped_writes_to_session_dir(
     obj = json.loads(p.read_text(encoding="utf-8").splitlines()[0])
     assert obj["event_type"] == "order_submit"
     assert obj["session_id"] == "session_20260315_abc123"
+
+
+def test_bounded_pilot_enables_execution_events(monkeypatch: pytest.MonkeyPatch) -> None:
+    """run_execution_session sets PT_EXEC_EVENTS_ENABLED=true for bounded_pilot mode."""
+    monkeypatch.delenv("PT_EXEC_EVENTS_ENABLED", raising=False)
+    root = Path(__file__).resolve().parents[2]
+    spec = importlib.util.spec_from_file_location(
+        "run_execution_session", root / "scripts" / "run_execution_session.py"
+    )
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    class Args:
+        mode = "bounded_pilot"
+
+    mod._ensure_bounded_pilot_events_enabled(Args())
+    assert os.environ.get("PT_EXEC_EVENTS_ENABLED") == "true"
+
+
+def test_shadow_mode_does_not_set_exec_events_enabled(monkeypatch: pytest.MonkeyPatch) -> None:
+    """run_execution_session does not set PT_EXEC_EVENTS_ENABLED for shadow mode."""
+    monkeypatch.delenv("PT_EXEC_EVENTS_ENABLED", raising=False)
+    root = Path(__file__).resolve().parents[2]
+    spec = importlib.util.spec_from_file_location(
+        "run_execution_session", root / "scripts" / "run_execution_session.py"
+    )
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    class Args:
+        mode = "shadow"
+
+    mod._ensure_bounded_pilot_events_enabled(Args())
+    assert os.environ.get("PT_EXEC_EVENTS_ENABLED") is None

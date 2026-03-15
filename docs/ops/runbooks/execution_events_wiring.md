@@ -20,3 +20,5 @@ CI validation sample (tracked):
 - export PT_EXEC_EVENTS_JSONL_PATH=out/ops/execution_events/execution_events.jsonl
 
 The execution pipeline emits order_submit, fill, and order_reject events automatically when enabled. Manual fallback: scripts/ops/append_execution_event.py.
+
+**Bounded pilot:** `run_execution_session --mode bounded_pilot` (and `run_bounded_pilot_session`) auto-enable execution events; no manual export needed. Session-scoped events go to `out/ops/execution_events/sessions/<session_id>/execution_events.jsonl`.
