@@ -500,17 +500,33 @@ def build_ops_cockpit_payload(
         if telemetry_root is not None
         else (repo_root / "logs" / "execution" if repo_root else Path("logs/execution"))
     )
+    _exec_events_root = repo_root / "out" / "ops" / "execution_events" if repo_root else None
     _tel_status = "unknown"
     _degraded: List[str] = []
+    _reports: List[object] = []
     if _tel_root.exists():
         try:
             from src.execution.telemetry_health import run_health_checks
 
-            _report = run_health_checks(_tel_root)
-            _tel_status = _report.status
-            _degraded = [c.name for c in _report.checks if c.status in ("warn", "critical")]
+            _reports.append(run_health_checks(_tel_root))
         except Exception:
             pass
+    if _exec_events_root and _exec_events_root.exists():
+        try:
+            from src.execution.telemetry_health import run_health_checks
+
+            _reports.append(run_health_checks(_exec_events_root))
+        except Exception:
+            pass
+    if _reports:
+        _tel_status = (
+            "critical"
+            if any(r.status == "critical" for r in _reports)
+            else ("warn" if any(r.status == "warn" for r in _reports) else "ok")
+        )
+        for r in _reports:
+            _degraded.extend(c.name for c in r.checks if c.status in ("warn", "critical"))
+        _degraded = list(dict.fromkeys(_degraded))
     _degraded_incident = not freshness_ok or _tel_status in ("warn", "critical")
     incident_state = {
         "status": ("blocked" if operator_state["blocked"] or _kill_switch_active else "normal"),
