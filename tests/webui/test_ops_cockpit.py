@@ -1,5 +1,7 @@
 from pathlib import Path
+from unittest.mock import patch
 
+from src.execution.telemetry_health import HealthCheckResult, HealthReport
 from src.webui.ops_cockpit import build_ops_cockpit_payload, render_ops_cockpit_html
 
 
@@ -713,6 +715,26 @@ def test_dependencies_state_telemetry_signal_when_path_exists(tmp_path: Path) ->
     dep = payload["dependencies_state"]
     assert dep["telemetry"] in ("ok", "warn", "critical")
     assert dep["summary"] in ("ok", "partial", "degraded")
+
+
+def test_dependencies_state_telemetry_worst_of_when_both_roots_exist(tmp_path: Path) -> None:
+    """Wenn logs/execution und out/ops/execution_events existieren, wird worst-of blend verwendet."""
+    (tmp_path / "logs" / "execution").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "out" / "ops" / "execution_events").mkdir(parents=True, exist_ok=True)
+    ok_report = HealthReport(checks=[HealthCheckResult("disk", "ok", "ok")])
+    warn_report = HealthReport(checks=[HealthCheckResult("disk", "warn", "warn")])
+
+    def mock_run_health_checks(root: Path):
+        if "execution_events" in str(root):
+            return warn_report
+        return ok_report
+
+    with patch(
+        "src.execution.telemetry_health.run_health_checks", side_effect=mock_run_health_checks
+    ):
+        payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    dep = payload["dependencies_state"]
+    assert dep["telemetry"] == "warn"
 
 
 def test_ops_cockpit_html_contains_dependencies_state(tmp_path: Path) -> None:
