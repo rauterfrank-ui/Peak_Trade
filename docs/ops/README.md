@@ -29,6 +29,8 @@
 - `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` — Kanonischer operatorischer Eintrittsvertrag für den ersten strikt begrenzten Echtgeldpilot
 - `docs/ops/runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md` — Kanonische First-Session-Sequenz für den ersten strikt begrenzten Echtgeldpilot-Kandidatenfluss
 
+- `docs/ops/specs/BOUNDED_PILOT_CAPS_ENFORCEMENT_POINT.md` — Kanonische Einordnung des aktuellen Caps-Enforcement-Punkts im bounded-pilot-Pfad
+
 ## PR Ops v1
 
 Standardized PR watch, closeout, and required-checks snapshot helpers. See [PR Ops v1 Runbook](pr/pr_ops_v1_runbook.md).
