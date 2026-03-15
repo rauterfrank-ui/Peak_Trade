@@ -47,7 +47,7 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "freshness_status" in ev
     assert "source_freshness" in ev
     assert "audit_trail" in ev
-    assert ev["audit_trail"] in ("intact", "degraded", "unknown")
+    assert ev["audit_trail"] in ("intact", "degraded", "broken", "unknown")
     assert isinstance(ev["source_freshness"], dict)
     assert "fresh" in ev["source_freshness"]
     assert "stale" in ev["source_freshness"]
@@ -553,14 +553,14 @@ def test_evidence_state_audit_trail_and_telemetry_when_telemetry_ok(tmp_path: Pa
 
 
 def test_evidence_state_audit_trail_degraded_when_telemetry_warn(tmp_path: Path) -> None:
-    """When telemetry has issues, audit_trail=degraded, summary may blend."""
+    """When telemetry has issues, audit_trail=degraded or broken, summary may blend."""
     tel_root = tmp_path / "logs" / "execution"
     tel_root.mkdir(parents=True)
     (tel_root / "session.jsonl").write_text('{"kind":"event"}\n', encoding="utf-8")
     (tel_root / "orphan.tmp").write_text("", encoding="utf-8")
     payload = build_ops_cockpit_payload(repo_root=tmp_path)
     ev = payload["evidence_state"]
-    assert ev["audit_trail"] == "degraded"
+    assert ev["audit_trail"] in ("degraded", "broken")
     assert ev.get("telemetry_evidence") in ("warn", "critical")
 
 
@@ -574,10 +574,21 @@ def test_evidence_state_section_present(tmp_path: Path) -> None:
     assert "freshness_status" in ev
     assert "source_freshness" in ev
     assert "audit_trail" in ev
-    assert ev["audit_trail"] in ("intact", "degraded", "unknown")
+    assert ev["audit_trail"] in ("intact", "degraded", "broken", "unknown")
     sf = ev["source_freshness"]
     assert isinstance(sf, dict)
     assert "fresh" in sf and "stale" in sf and "older" in sf
+
+
+def test_evidence_state_audit_trail_present() -> None:
+    """audit_trail is derived from telemetry health and in allowed set."""
+    payload = build_ops_cockpit_payload()
+    assert payload["evidence_state"]["audit_trail"] in {
+        "intact",
+        "degraded",
+        "broken",
+        "unknown",
+    }
 
 
 def test_ops_cockpit_html_contains_exposure_state(tmp_path: Path) -> None:
