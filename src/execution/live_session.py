@@ -516,6 +516,7 @@ class LiveSessionRunner:
                     environment=TradingEnvironment.LIVE,
                     enable_live_trading=True,
                     bounded_pilot_mode=True,
+                    live_mode_armed=True,  # Gate 2: bounded_pilot has governance approval
                     testnet_dry_run=False,
                 )
             else:  # testnet
