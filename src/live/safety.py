@@ -388,9 +388,17 @@ class SafetyGuard:
                     f"Live-Trading ist in Phase 71 nicht implementiert. Grund: {reason_detail}"
                 )
 
-            # Falls alle Kriterien erfüllt wären (sollte in Phase 71 nicht vorkommen):
-            # In Phase 71 ist dies theoretisch nicht erreichbar, da live_dry_run_mode=True
-            # immer blockiert. Aber für zukünftige Phasen:
+            # bounded_pilot: alle Kriterien erfüllt → Phase-71-Unblock für governance-approved actual order path
+            if getattr(self.env_config, "bounded_pilot_mode", False):
+                self._log_audit(
+                    action,
+                    True,
+                    "bounded_pilot: alle Kriterien erfüllt, Live-Execution erlaubt (Phase-71-Unblock)",
+                    "Governance, Gate 2, live_dry_run=False, confirm_token satisfied",
+                )
+                return
+
+            # Broad live: Phase 71 block (nicht bounded_pilot)
             reason = "Live-Trading nicht implementiert (Phase 71)"
             self._log_audit(
                 action,
@@ -482,10 +490,12 @@ class SafetyGuard:
         if env == TradingEnvironment.TESTNET:
             return "dry_run"  # Immer Dry-Run in Phase 71
         if env == TradingEnvironment.LIVE:
-            # Phase 71: Live-Path existiert als Design, aber nur Dry-Run
+            # Phase 71: Live-Path existiert als Design, aber nur Dry-Run (außer bounded_pilot)
             if self.env_config.live_dry_run_mode:
                 return "live_dry_run"  # Phase 71: Design/Dry-Run
-            return "blocked"  # Falls live_dry_run_mode=False (sollte nicht vorkommen)
+            if getattr(self.env_config, "bounded_pilot_mode", False):
+                return "live"  # bounded_pilot: Phase-71-Unblock, actual orders allowed
+            return "blocked"  # Broad live: Phase 71 block
 
         return "unknown"
 
