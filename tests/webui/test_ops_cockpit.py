@@ -340,6 +340,49 @@ max_daily_loss_pct = 5.0
         assert c["cap_value"] > 0
 
 
+def test_exposure_state_caps_configured_reflects_bounded_live_when_enabled(
+    tmp_path: Path,
+) -> None:
+    """When bounded_live.toml exists and enabled, caps_configured uses bounded_live limits."""
+    config_dir = tmp_path / "config"
+    config_dir.mkdir(parents=True)
+    (config_dir / "config.toml").write_text(
+        """
+[live_risk]
+base_currency = "EUR"
+max_total_exposure_notional = 5000.0
+max_symbol_exposure_notional = 2500.0
+max_order_notional = 1000.0
+max_open_positions = 10
+max_daily_loss_abs = 500.0
+max_daily_loss_pct = 5.0
+""",
+        encoding="utf-8",
+    )
+    (config_dir / "bounded_live.toml").write_text(
+        """
+[bounded_live]
+enabled = true
+
+[bounded_live.limits]
+max_order_notional = 50.0
+max_total_notional = 500.0
+max_open_positions = 2
+max_daily_loss_abs = 100.0
+max_daily_loss_pct = 5.0
+""",
+        encoding="utf-8",
+    )
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    caps = payload["exposure_state"]["caps_configured"]
+    cap_by_id = {c["limit_id"]: c["cap_value"] for c in caps}
+    assert cap_by_id["max_order_notional"] == 50.0
+    assert cap_by_id["max_total_exposure"] == 500.0
+    assert cap_by_id["max_open_positions"] == 2.0
+    assert cap_by_id["max_daily_loss_abs"] == 100.0
+    assert cap_by_id["max_symbol_exposure"] == 2500.0
+
+
 def test_exposure_state_risk_status_derived(tmp_path: Path) -> None:
     """risk_status derived from observed_exposure vs max_total_exposure cap."""
     import json
