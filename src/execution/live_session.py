@@ -501,9 +501,12 @@ class LiveSessionRunner:
 
             # 1. PeakConfig laden falls nicht übergeben
             if peak_config is None:
-                from ..core.peak_config import load_config
+                from ..core.peak_config import load_config, load_config_with_bounded_live
 
-                peak_config = load_config(session_config.config_path)
+                if session_config.mode == "bounded_pilot":
+                    peak_config = load_config_with_bounded_live(session_config.config_path)
+                else:
+                    peak_config = load_config(session_config.config_path)
 
             # 2. EnvironmentConfig erstellen (Paper für Shadow, Testnet für Testnet, LIVE für bounded_pilot)
             if session_config.mode == "shadow":
