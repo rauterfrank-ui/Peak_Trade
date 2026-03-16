@@ -33,7 +33,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from src.core.environment import get_environment_from_config
-from src.core.peak_config import PeakConfig, load_config, load_config_default
+from src.core.peak_config import load_config_with_bounded_live
 from src.live.audit import (
     build_live_audit_snapshot,
     live_audit_snapshot_to_dict,
@@ -127,10 +127,10 @@ def main() -> int:
             if not config_path.exists():
                 print(f"ERROR: Config-Datei nicht gefunden: {config_path}", file=sys.stderr)
                 return 1
-            peak_config = load_config(str(config_path))
+            peak_config = load_config_with_bounded_live(str(config_path))
             environment_id = args.environment_id or config_path.stem
         else:
-            peak_config = load_config_default()
+            peak_config = load_config_with_bounded_live()
             environment_id = args.environment_id or "default"
 
         # EnvironmentConfig erstellen
