@@ -17,7 +17,7 @@ from typing import Dict, List, Tuple
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root / "src"))
 
-from core.peak_config import load_config
+from core.peak_config import load_config_with_bounded_live
 from live.risk_limits import LiveRiskLimits, LiveOrderRequest, LiveRiskCheckResult
 
 
@@ -29,20 +29,19 @@ def test_bounded_live_config() -> Tuple[bool, List[str]]:
     print("BOUNDED-LIVE CONFIGURATION TEST")
     print("=" * 70 + "\n")
 
-    # Load config
+    # Load config (with bounded_live.toml merged)
     try:
-        config = load_config()
+        config = load_config_with_bounded_live()
         print("✅ Config loaded successfully")
     except Exception as e:
         errors.append(f"Failed to load config: {e}")
         return False, errors
 
     # Check bounded_live section exists
-    if "bounded_live" not in config:
+    bounded_cfg = config.get("bounded_live")
+    if bounded_cfg is None:
         errors.append("bounded_live section missing from config")
         return False, errors
-
-    bounded_cfg = config["bounded_live"]
     print("✅ bounded_live section found in config\n")
 
     # Check enabled
@@ -64,21 +63,37 @@ def test_bounded_live_config() -> Tuple[bool, List[str]]:
         "max_total_notional": 500.0,
         "max_open_positions": 2,
         "max_daily_loss_abs": 100.0,
+        "min_order_notional": 10.0,
     }
 
     print("\nBounded-Live Limits:")
     print("-" * 50)
 
-    for limit_name, expected_max in critical_limits.items():
+    for limit_name, expected_val in critical_limits.items():
         actual = limits.get(limit_name)
         if actual is None:
             errors.append(f"{limit_name} not configured")
             print(f"❌ {limit_name}: MISSING")
-        elif actual > expected_max:
-            errors.append(f"{limit_name} = {actual} exceeds Phase 1 maximum of {expected_max}")
-            print(f"⚠️  {limit_name}: ${actual:.2f} (exceeds Phase 1 max: ${expected_max:.2f})")
+        elif limit_name == "min_order_notional":
+            if actual < expected_val:
+                errors.append(f"{limit_name} = {actual} below Phase 1 minimum of {expected_val}")
+                print(f"⚠️  {limit_name}: ${actual:.2f} (below Phase 1 min: ${expected_val:.2f})")
+            else:
+                print(f"✅ {limit_name}: ${actual:.2f}")
+        elif limit_name in ("max_order_notional", "max_total_notional", "max_daily_loss_abs"):
+            if actual > expected_val:
+                errors.append(f"{limit_name} = {actual} exceeds Phase 1 maximum of {expected_val}")
+                print(f"⚠️  {limit_name}: ${actual:.2f} (exceeds Phase 1 max: ${expected_val:.2f})")
+            else:
+                print(f"✅ {limit_name}: ${actual:.2f}")
+        elif limit_name == "max_open_positions":
+            if actual > expected_val:
+                errors.append(f"{limit_name} = {actual} exceeds Phase 1 maximum of {expected_val}")
+                print(f"⚠️  {limit_name}: {actual} (exceeds Phase 1 max: {expected_val})")
+            else:
+                print(f"✅ {limit_name}: {actual}")
         else:
-            print(f"✅ {limit_name}: ${actual:.2f}")
+            print(f"✅ {limit_name}: {actual}")
 
     # Check enforcement
     enforcement = bounded_cfg.get("enforcement", {})
@@ -111,21 +126,40 @@ def test_live_risk_limits_integration() -> Tuple[bool, List[str]]:
     print("=" * 70 + "\n")
 
     try:
-        config = load_config()
+        config = load_config_with_bounded_live()
         limits = LiveRiskLimits.from_config(config, starting_cash=2000.0)
         print("✅ LiveRiskLimits instantiated successfully\n")
     except Exception as e:
         errors.append(f"Failed to create LiveRiskLimits: {e}")
         return False, errors
 
+    # Test 0: Dust order below min_order_notional (should fail)
+    print("Test 0: Dust order ($5, below min $10) - SHOULD FAIL")
+    print("-" * 50)
+    order_dust = LiveOrderRequest(
+        client_order_id="test_dust_1",
+        symbol="BTC-EUR",
+        side="buy",
+        quantity=0.0001,
+        notional=5.0,
+    )
+    result_dust = limits.check_orders([order_dust])
+
+    if not result_dust.allowed:
+        print(f"✅ Dust order BLOCKED as expected (min_order_notional enforcement)")
+        print(f"   Reason: {result_dust.reasons[0] if result_dust.reasons else 'Unknown'}")
+    else:
+        errors.append("Dust order ALLOWED (should be blocked by min_order_notional)")
+        print(f"❌ Dust order ALLOWED (should be blocked!)")
+
     # Test 1: Small order (should pass)
     print("Test 1: Small order ($30) - SHOULD PASS")
     print("-" * 50)
     order = LiveOrderRequest(
+        client_order_id="test_small_1",
         symbol="BTC-EUR",
         side="buy",
         quantity=0.0006,
-        price=50000.0,
         notional=30.0,
     )
     result = limits.check_orders([order])
@@ -140,10 +174,10 @@ def test_live_risk_limits_integration() -> Tuple[bool, List[str]]:
     print("\nTest 2: Large order ($100) - SHOULD FAIL")
     print("-" * 50)
     order_large = LiveOrderRequest(
+        client_order_id="test_large_1",
         symbol="BTC-EUR",
         side="buy",
         quantity=0.002,
-        price=50000.0,
         notional=100.0,
     )
     result_large = limits.check_orders([order_large])
@@ -160,9 +194,19 @@ def test_live_risk_limits_integration() -> Tuple[bool, List[str]]:
     print("-" * 50)
     orders_multi = [
         LiveOrderRequest(
-            symbol="BTC-EUR", side="buy", quantity=0.0008, price=50000.0, notional=40.0
+            client_order_id="test_multi_1",
+            symbol="BTC-EUR",
+            side="buy",
+            quantity=0.0008,
+            notional=40.0,
         ),
-        LiveOrderRequest(symbol="ETH-EUR", side="buy", quantity=0.02, price=2000.0, notional=40.0),
+        LiveOrderRequest(
+            client_order_id="test_multi_2",
+            symbol="ETH-EUR",
+            side="buy",
+            quantity=0.02,
+            notional=40.0,
+        ),
     ]
     result_multi = limits.check_orders(orders_multi)
 
@@ -179,9 +223,19 @@ def test_live_risk_limits_integration() -> Tuple[bool, List[str]]:
     print("-" * 50)
     orders_excessive = [
         LiveOrderRequest(
-            symbol="BTC-EUR", side="buy", quantity=0.006, price=50000.0, notional=300.0
+            client_order_id="test_excess_1",
+            symbol="BTC-EUR",
+            side="buy",
+            quantity=0.006,
+            notional=300.0,
         ),
-        LiveOrderRequest(symbol="ETH-EUR", side="buy", quantity=0.15, price=2000.0, notional=300.0),
+        LiveOrderRequest(
+            client_order_id="test_excess_2",
+            symbol="ETH-EUR",
+            side="buy",
+            quantity=0.15,
+            notional=300.0,
+        ),
     ]
     result_excessive = limits.check_orders(orders_excessive)
 

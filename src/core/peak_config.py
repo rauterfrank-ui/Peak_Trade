@@ -214,6 +214,58 @@ def load_config_default() -> PeakConfig:
     return load_config(config_path)
 
 
+def merge_bounded_live_config(cfg: PeakConfig, config_dir: Optional[Path] = None) -> PeakConfig:
+    """
+    Merges bounded_live.toml into config when present.
+
+    Used for bounded_pilot mode so LiveRiskLimits can read bounded_live.limits.min_order_notional.
+
+    Args:
+        cfg: Base PeakConfig
+        config_dir: Directory containing bounded_live.toml (default: config/ relative to project root)
+
+    Returns:
+        New PeakConfig with bounded_live merged if file exists; otherwise unchanged.
+    """
+    if config_dir is None:
+        config_dir = _PROJECT_ROOT / "config"
+    bounded_path = config_dir / "bounded_live.toml"
+    if not bounded_path.exists():
+        return cfg
+
+    try:
+        with bounded_path.open("rb") as f:
+            bounded_data = tomllib.load(f)
+    except Exception:
+        return cfg
+
+    if not isinstance(bounded_data, dict):
+        return cfg
+
+    data = cfg.to_dict()
+    for key, value in bounded_data.items():
+        if key not in data:
+            data[key] = deepcopy(value)
+        elif isinstance(data[key], dict) and isinstance(value, dict):
+            data[key] = {**data[key], **value}
+        else:
+            data[key] = deepcopy(value)
+
+    return PeakConfig(raw=data)
+
+
+def load_config_with_bounded_live(path: Optional[str | Path] = None) -> PeakConfig:
+    """
+    Loads config and merges bounded_live.toml when present.
+
+    Use for bounded_pilot mode to ensure bounded caps (e.g. min_order_notional) are available.
+    """
+    p = resolve_config_path(path)
+    cfg = load_config(p)
+    config_dir = p.parent
+    return merge_bounded_live_config(cfg, config_dir)
+
+
 def get_project_root() -> Path:
     """
     Gibt das Projekt-Root-Verzeichnis zurueck.

@@ -327,6 +327,32 @@ class LiveRiskLimits:
 
         max_order_notional = _get_float("live_risk.max_order_notional")
 
+        # Bounded pilot: apply bounded_live.limits overrides when present and enabled
+        bl = cfg.get("bounded_live")
+        if isinstance(bl, dict) and bl.get("enabled"):
+            limits_bl = bl.get("limits", {})
+            if isinstance(limits_bl, dict):
+                if "max_order_notional" in limits_bl:
+                    try:
+                        max_order_notional = float(limits_bl["max_order_notional"])
+                    except (TypeError, ValueError):
+                        pass
+                if "max_total_notional" in limits_bl:
+                    try:
+                        max_total_exposure_notional = float(limits_bl["max_total_notional"])
+                    except (TypeError, ValueError):
+                        pass
+                if "max_open_positions" in limits_bl:
+                    try:
+                        max_open_positions = int(limits_bl["max_open_positions"])
+                    except (TypeError, ValueError):
+                        pass
+                if "max_daily_loss_abs" in limits_bl:
+                    try:
+                        max_daily_loss_abs = float(limits_bl["max_daily_loss_abs"])
+                    except (TypeError, ValueError):
+                        pass
+
         block_on_violation = _get_bool("live_risk.block_on_violation", True)
         use_experiments_for_daily_pnl = _get_bool("live_risk.use_experiments_for_daily_pnl", True)
 
@@ -334,6 +360,16 @@ class LiveRiskLimits:
         max_live_notional_per_order = _get_float("live_risk.max_live_notional_per_order")
         max_live_notional_total = _get_float("live_risk.max_live_notional_total")
         live_trade_min_size = _get_float("live_risk.live_trade_min_size")
+        # Bounded pilot: fallback to bounded_live.limits.min_order_notional
+        if live_trade_min_size is None:
+            bl = cfg.get("bounded_live")
+            if isinstance(bl, dict):
+                limits = bl.get("limits", {})
+                if isinstance(limits, dict) and "min_order_notional" in limits:
+                    try:
+                        live_trade_min_size = float(limits["min_order_notional"])
+                    except (TypeError, ValueError):
+                        pass
 
         # Warning-Threshold-Faktor (Default: 0.8 = 80%)
         warning_threshold_factor = _get_float("live_risk.warning_threshold_factor")
@@ -399,13 +435,19 @@ class LiveRiskLimits:
         per_symbol_notional: Dict[str, float] = {}
         total_notional = 0.0
         max_order_notional = 0.0
+        min_order_notional = float("inf")
 
         for order in orders:
             n = self._order_notional(order)
             total_notional += n
             max_order_notional = max(max_order_notional, n)
+            if n > 0:
+                min_order_notional = min(min_order_notional, n)
             per_symbol_notional.setdefault(order.symbol, 0.0)
             per_symbol_notional[order.symbol] += n
+
+        if min_order_notional == float("inf"):
+            min_order_notional = 0.0
 
         max_symbol_exposure = max(per_symbol_notional.values()) if per_symbol_notional else 0.0
 
@@ -414,6 +456,7 @@ class LiveRiskLimits:
             "n_symbols": len(per_symbol_notional),
             "total_notional": total_notional,
             "max_order_notional": max_order_notional,
+            "min_order_notional": min_order_notional,
             "per_symbol_notional": per_symbol_notional,
             "max_symbol_exposure_notional": max_symbol_exposure,
         }
@@ -617,11 +660,33 @@ class LiveRiskLimits:
         aggregates = self._compute_orders_aggregates(orders)
         total_notional = aggregates["total_notional"]
         max_order_notional = aggregates["max_order_notional"]
+        min_order_notional = aggregates["min_order_notional"]
         max_symbol_exposure_notional = aggregates["max_symbol_exposure_notional"]
         n_orders = aggregates["n_orders"]
         n_symbols = aggregates["n_symbols"]
 
         cfg = self.config
+
+        # 0. Check min_order_notional (bounded pilot: avoid dust trades)
+        if cfg.live_trade_min_size is not None and cfg.live_trade_min_size > 0:
+            if n_orders > 0 and min_order_notional < cfg.live_trade_min_size:
+                allowed = False
+                msg = (
+                    f"min_order_notional_below_limit(min={cfg.live_trade_min_size:.2f}, "
+                    f"observed={min_order_notional:.2f})"
+                )
+                reasons.append(msg)
+                limit_details.append(
+                    LimitCheckDetail(
+                        limit_name="min_order_notional",
+                        current_value=min_order_notional,
+                        limit_value=cfg.live_trade_min_size,
+                        warning_threshold=None,
+                        severity=RiskCheckSeverity.BREACH,
+                        message=msg,
+                    )
+                )
+                self._log_limit_check(limit_details[-1])
 
         # 1. Check max_order_notional
         detail = self._evaluate_limit(
@@ -737,6 +802,7 @@ class LiveRiskLimits:
             "n_symbols": n_symbols,
             "total_notional": total_notional,
             "max_order_notional": max_order_notional,
+            "min_order_notional": min_order_notional,
             "max_symbol_exposure_notional": max_symbol_exposure_notional,
             "daily_realized_pnl_net": daily_pnl,
             "base_currency": cfg.base_currency,
