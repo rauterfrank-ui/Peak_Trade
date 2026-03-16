@@ -493,6 +493,7 @@ class LiveSessionRunner:
             # Lazy imports um Circular Imports zu vermeiden
             from ..core.environment import (
                 EnvironmentConfig,
+                LIVE_CONFIRM_TOKEN,
                 TradingEnvironment,
             )
             from ..live.safety import SafetyGuard
@@ -518,6 +519,7 @@ class LiveSessionRunner:
                     bounded_pilot_mode=True,
                     live_mode_armed=True,  # Gate 2: bounded_pilot has governance approval
                     live_dry_run_mode=False,  # bounded_pilot: governance-approved actual order path
+                    confirm_token=LIVE_CONFIRM_TOKEN,  # bounded_pilot: operator-confirmed actual submit path
                     testnet_dry_run=False,
                 )
             else:  # testnet
