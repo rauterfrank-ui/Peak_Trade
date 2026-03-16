@@ -344,26 +344,42 @@ def _build_v3_executive_summary(
 def _build_caps_configured_from_config(config_path: Path) -> List[Dict[str, object]]:
     """
     Read-only. Build caps_configured from live_risk config.
+    When bounded_live is enabled, uses bounded_live.limits overrides (aligned with
+    LiveRiskLimits.from_config) so cockpit displays the same caps as runtime enforces.
     Returns [] on any error. Aligned with strategy_risk_telemetry limit_ids.
     """
     caps: List[Dict[str, object]] = []
     try:
-        from src.core.peak_config import load_config
+        from src.core.peak_config import load_config_with_bounded_live
 
-        cfg = load_config(config_path)
+        cfg = load_config_with_bounded_live(config_path)
         base_ccy = str(cfg.get("live_risk.base_currency", "EUR") or "EUR")
 
-        # Map config keys to limit_id (aligned with strategy_risk_telemetry)
+        # (live_risk config_key, limit_id, optional bounded_live.limits key for override)
         mappings = [
-            ("live_risk.max_total_exposure_notional", "max_total_exposure"),
-            ("live_risk.max_symbol_exposure_notional", "max_symbol_exposure"),
-            ("live_risk.max_order_notional", "max_order_notional"),
-            ("live_risk.max_open_positions", "max_open_positions"),
-            ("live_risk.max_daily_loss_abs", "max_daily_loss_abs"),
-            ("live_risk.max_daily_loss_pct", "max_daily_loss_pct"),
+            ("live_risk.max_total_exposure_notional", "max_total_exposure", "max_total_notional"),
+            ("live_risk.max_symbol_exposure_notional", "max_symbol_exposure", None),
+            ("live_risk.max_order_notional", "max_order_notional", "max_order_notional"),
+            ("live_risk.max_open_positions", "max_open_positions", "max_open_positions"),
+            ("live_risk.max_daily_loss_abs", "max_daily_loss_abs", "max_daily_loss_abs"),
+            ("live_risk.max_daily_loss_pct", "max_daily_loss_pct", "max_daily_loss_pct"),
         ]
-        for config_key, limit_id in mappings:
-            val = cfg.get(config_key)
+        bl = cfg.get("bounded_live")
+        limits_bl: dict = {}
+        if isinstance(bl, dict) and bl.get("enabled"):
+            _limits = bl.get("limits", {})
+            if isinstance(_limits, dict):
+                limits_bl = _limits
+
+        for config_key, limit_id, bl_key in mappings:
+            val = None
+            if bl_key and bl_key in limits_bl:
+                try:
+                    val = limits_bl[bl_key]
+                except (TypeError, ValueError):
+                    pass
+            if val is None:
+                val = cfg.get(config_key)
             if val is None:
                 continue
             try:
