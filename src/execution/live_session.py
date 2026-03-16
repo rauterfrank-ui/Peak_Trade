@@ -517,6 +517,7 @@ class LiveSessionRunner:
                     enable_live_trading=True,
                     bounded_pilot_mode=True,
                     live_mode_armed=True,  # Gate 2: bounded_pilot has governance approval
+                    live_dry_run_mode=False,  # bounded_pilot: governance-approved actual order path
                     testnet_dry_run=False,
                 )
             else:  # testnet
