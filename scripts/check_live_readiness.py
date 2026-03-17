@@ -41,7 +41,7 @@ ROOT_DIR = CURRENT_DIR.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from src.core.peak_config import load_config, PeakConfig
+from src.core.peak_config import load_config_with_bounded_live, PeakConfig
 from src.live.risk_limits import LiveRiskLimits
 
 # =============================================================================
@@ -117,7 +117,7 @@ def check_config_exists(config_path: Path) -> CheckResult:
 def check_config_valid(config_path: Path) -> CheckResult:
     """Prüft, ob die Config gültig ist."""
     try:
-        cfg = load_config(config_path)
+        cfg = load_config_with_bounded_live(config_path)
         return CheckResult(
             name="Config-Validität",
             passed=True,
@@ -602,7 +602,7 @@ def run_readiness_checks(
     if not config_result.passed:
         return ReadinessReport(stage=stage, checks=checks, warnings=warnings)
 
-    cfg = load_config(config_path)
+    cfg = load_config_with_bounded_live(config_path)
 
     # 3. Environment-Mode
     checks.append(check_environment_mode(cfg, stage))
