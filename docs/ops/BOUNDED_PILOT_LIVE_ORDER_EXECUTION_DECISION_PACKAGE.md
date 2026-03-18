@@ -41,7 +41,7 @@ This document does **not** cover:
 ## Inputs
 Primary review artifacts are located under:
 
-`docs/ops/reviews/bounded_pilot_live_governance_decision_package_review/`
+`docs&#47;ops&#47;reviews&#47;bounded_pilot_live_governance_decision_package_review&#47;`
 
 Expected inputs include:
 - `decision_package_inventory.md`
@@ -242,4 +242,4 @@ This recommendation is provided as a decision input only and does not itself aut
 ## Source Review Package
 Reference review directory:
 
-`docs/ops/reviews/bounded_pilot_live_governance_decision_package_review/`
+`docs&#47;ops&#47;reviews&#47;bounded_pilot_live_governance_decision_package_review&#47;`
