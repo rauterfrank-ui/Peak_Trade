@@ -1652,11 +1652,49 @@ class ExecutionPipeline:
                     governance_status=governance_status,
                 )
 
-        # 5. Executor: Fuehre Orders aus
+        # 5. Execution events: order_submit (Trial 5 gap fix - direct execute_with_safety path)
+        for order in orders_list:
+            client_id = order.client_id or ""
+            _emit_exec_event_safe(
+                event_type="order_submit",
+                level="info",
+                symbol=order.symbol,
+                client_order_id=client_id,
+                side=order.side,
+                qty=order.quantity,
+                price=getattr(order, "limit_price", None),
+            )
+
+        # 6. Executor: Fuehre Orders aus
         execution_results = self._executor.execute_orders(orders_list)
         self._execution_history.extend(execution_results)
 
-        # 6. Run-Logging (optional)
+        # 7. Execution events: order_reject / fill (Trial 5 gap fix)
+        for res in execution_results:
+            req = res.request
+            cid = req.client_id or ""
+            if res.status == "rejected":
+                _emit_exec_event_safe(
+                    event_type="order_reject",
+                    level="error",
+                    is_error=True,
+                    msg=res.reason or "rejected",
+                    symbol=req.symbol,
+                    client_order_id=cid,
+                )
+            elif res.fill is not None:
+                fill = res.fill
+                _emit_exec_event_safe(
+                    event_type="fill",
+                    level="info",
+                    symbol=fill.symbol,
+                    client_order_id=cid,
+                    side=fill.side,
+                    qty=fill.quantity,
+                    price=fill.price,
+                )
+
+        # 8. Run-Logging (optional)
         if self._run_logger is not None:
             self._log_execution_results(execution_results, risk_result)
 
