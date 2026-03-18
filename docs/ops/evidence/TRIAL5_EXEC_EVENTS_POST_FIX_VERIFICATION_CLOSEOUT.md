@@ -33,19 +33,19 @@ PR #1847 introduced:
 - Session ID: `session_20260318_164528_bounded_pilot_9c239f`
 
 ## Verified Evidence Path
-- `out/ops/execution_events/sessions/session_20260318_164528_bounded_pilot_9c239f/execution_events.jsonl`
+- `out&#47;ops&#47;execution_events&#47;sessions&#47;session_20260318_164528_bounded_pilot_9c239f&#47;execution_events.jsonl`
 
 ## Observed Execution Events
 The session-scoped file contains exactly two verified events:
 
 1. `order_submit`
    - `ts`: `2026-03-18T16:46:30.736518Z`
-   - `symbol`: `BTC/EUR`
+   - `symbol`: `BTC&#47;EUR`
    - `client_order_id`: `exec_BTC_EUR_1_ed6884`
 
 2. `order_reject`
    - `ts`: `2026-03-18T16:46:30.739568Z`
-   - `symbol`: `BTC/EUR`
+   - `symbol`: `BTC&#47;EUR`
    - `client_order_id`: `exec_BTC_EUR_1_ed6884`
    - rejection reason observed at runtime: API credentials not set
 
