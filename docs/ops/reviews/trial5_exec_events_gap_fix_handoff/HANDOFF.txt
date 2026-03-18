@@ -1,0 +1,27 @@
+PROJECT: Peak_Trade
+TOPIC: trial5_exec_events_gap_fix
+REPO: Peak_Trade
+BRANCH: main
+MODE: paper_stability_guard
+
+PROBLEM
+- Trial 5 produced a signal change and a live order attempt
+- kraken_live rejected due to missing API credentials
+- no execution events were written
+
+ROOT CAUSE
+- live_session.py uses execute_with_safety directly
+- submit_order contains execution-event emits
+- execute_with_safety does not emit order_submit/order_reject
+- therefore rejected order attempts in this path leave no execution-event evidence
+
+FIX TARGET
+- add order_submit/order_reject emission in execute_with_safety
+- preserve PT_EXEC_EVENTS_ENABLED + session context behavior
+- add regression tests for missing-credentials rejected path
+
+FILES
+- src/execution/live_session.py
+- src/execution/pipeline.py
+- src/observability/execution_events.py
+- tests/*
