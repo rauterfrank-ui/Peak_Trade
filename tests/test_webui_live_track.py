@@ -367,6 +367,7 @@ class TestDashboardRendering:
 
     def test_dashboard_shows_empty_state(self, test_client, monkeypatch):
         """Test: Dashboard zeigt leeren Zustand wenn keine Sessions."""
+
         # Leere Registry erzwingen, damit Empty-State gerendert wird
         def _empty_sessions(*, limit=10):
             return {"sessions": [], "latest": None, "has_sessions": False}
