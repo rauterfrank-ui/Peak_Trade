@@ -34,7 +34,7 @@ Verified session evidence:
 ### 1. Repository Baseline
 Confirm:
 - branch is `main`
-- `main` is synchronized with `origin/main`
+- `main` is synchronized with `origin&#47;main`
 - working tree is clean
 
 Expected outcome:
