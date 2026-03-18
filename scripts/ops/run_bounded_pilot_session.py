@@ -15,6 +15,7 @@ Usage:
   python3 scripts/ops/run_bounded_pilot_session.py
   python3 scripts/ops/run_bounded_pilot_session.py --json
   python3 scripts/ops/run_bounded_pilot_session.py --no-invoke  # Gates check only, no session start
+  python3 scripts/ops/run_bounded_pilot_session.py --steps 25 --position-fraction 0.0005  # Safe acceptance sizing
 
 Reference: BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT, option_a_slice_4_wrapper_to_runner_handoff_review
 """
@@ -34,6 +35,8 @@ if str(_REPO_ROOT) not in sys.path:
 
 RUNNER_SCRIPT = "scripts/run_execution_session.py"
 DEFAULT_BOUNDED_STEPS = 1  # Entry Contract §4: bounded by configured caps
+# Safe default for acceptance runs: ~0.0005 BTC ≈ 30 EUR @ 60k (within bounded_live max_order_notional)
+DEFAULT_POSITION_FRACTION_ACCEPTANCE = 0.0005
 
 
 def main() -> int:
@@ -61,6 +64,12 @@ def main() -> int:
         type=int,
         default=DEFAULT_BOUNDED_STEPS,
         help=f"Bounded cap: max steps for session (default: {DEFAULT_BOUNDED_STEPS})",
+    )
+    parser.add_argument(
+        "--position-fraction",
+        type=float,
+        default=DEFAULT_POSITION_FRACTION_ACCEPTANCE,
+        help=f"Order size in base units (BTC); safe default for acceptance runs (default: {DEFAULT_POSITION_FRACTION_ACCEPTANCE})",
     )
     args = parser.parse_args()
     repo_root = args.repo_root or (_REPO_ROOT if _REPO_ROOT.exists() else Path.cwd())
@@ -131,6 +140,8 @@ def main() -> int:
         "ma_crossover",
         "--steps",
         str(args.steps),
+        "--position-fraction",
+        str(args.position_fraction),
     ]
     result = subprocess.run(cmd, cwd=repo_root)
     return result.returncode
