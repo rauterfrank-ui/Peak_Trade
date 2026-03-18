@@ -353,7 +353,9 @@ class TestExecutionPipelineWithSafety:
         monkeypatch.chdir(tmp_path)
         (tmp_path / "out").mkdir(parents=True, exist_ok=True)
         monkeypatch.setenv("PT_EXEC_EVENTS_ENABLED", "true")
-        monkeypatch.setenv("PT_EXEC_EVENTS_JSONL_PATH", "out/ops/execution_events/execution_events.jsonl")
+        monkeypatch.setenv(
+            "PT_EXEC_EVENTS_JSONL_PATH", "out/ops/execution_events/execution_events.jsonl"
+        )
 
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
         pipeline = ExecutionPipeline(
@@ -382,7 +384,9 @@ class TestExecutionPipelineWithSafety:
         events = [json.loads(ln) for ln in lines]
         types = [e["event_type"] for e in events]
         assert "order_submit" in types, "order_submit must be emitted before executor call"
-        assert "order_reject" in types, "order_reject must be emitted when executor returns rejected"
+        assert "order_reject" in types, (
+            "order_reject must be emitted when executor returns rejected"
+        )
 
         submit = next(e for e in events if e["event_type"] == "order_submit")
         assert submit["symbol"] == "BTC/EUR"
