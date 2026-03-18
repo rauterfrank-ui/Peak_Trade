@@ -365,13 +365,20 @@ class TestDashboardRendering:
         response = test_client.get("/")
         assert "Live-Track" in response.text
 
-    def test_dashboard_shows_empty_state(self, test_client):
+    def test_dashboard_shows_empty_state(self, test_client, monkeypatch):
         """Test: Dashboard zeigt leeren Zustand wenn keine Sessions."""
-        response = test_client.get("/")
-        # Entweder Sessions vorhanden oder "Keine Live-Sessions gefunden"
-        assert (
-            "Session(s) geladen" in response.text or "Keine Live-Sessions gefunden" in response.text
+
+        # Leere Registry erzwingen, damit Empty-State gerendert wird
+        def _empty_sessions(*, limit=10):
+            return {"sessions": [], "latest": None, "has_sessions": False}
+
+        monkeypatch.setattr(
+            "src.webui.app.load_live_sessions",
+            _empty_sessions,
         )
+        response = test_client.get("/")
+        # Dashboard-Empty-State muss den exakten kanonischen Template-Text rendern
+        assert "Keine Live-Sessions gefunden." in response.text
 
 
 # =============================================================================
