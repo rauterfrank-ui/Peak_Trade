@@ -105,6 +105,23 @@ class FakeRunLogger:
         self.events.append(event)
 
 
+class FakeRejectingExecutor:
+    """Executor that returns rejected results (simulates missing API credentials / exchange reject)."""
+
+    def execute_orders(self, orders) -> List:
+        from src.orders.base import OrderExecutionResult
+
+        return [
+            OrderExecutionResult(
+                status="rejected",
+                request=o,
+                fill=None,
+                reason="missing_api_credentials",
+            )
+            for o in orders
+        ]
+
+
 # ============================================================================
 # Tests für execute_with_safety()
 # ============================================================================
@@ -322,6 +339,58 @@ class TestExecutionPipelineWithSafety:
         assert live_order.symbol == "BTC/EUR"
         assert live_order.side == "BUY"
         assert live_order.quantity == 0.01
+
+    def test_execute_with_safety_emits_order_submit_and_reject_when_executor_rejects(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Regression: execute_with_safety emits order_submit/order_reject for executor-rejected path (Trial 5 gap fix)."""
+        import json
+
+        from src.execution import ExecutionPipeline
+        from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.orders.base import OrderRequest
+
+        monkeypatch.chdir(tmp_path)
+        (tmp_path / "out").mkdir(parents=True, exist_ok=True)
+        monkeypatch.setenv("PT_EXEC_EVENTS_ENABLED", "true")
+        monkeypatch.setenv("PT_EXEC_EVENTS_JSONL_PATH", "out/ops/execution_events/execution_events.jsonl")
+
+        env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
+        pipeline = ExecutionPipeline(
+            executor=FakeRejectingExecutor(),
+            env_config=env_config,
+            safety_guard=FakeSafetyGuard(allow_orders=True),
+        )
+
+        order = OrderRequest(
+            symbol="BTC/EUR",
+            side="buy",
+            quantity=0.01,
+            client_id="trial5_test_001",
+        )
+        result = pipeline.execute_with_safety([order])
+
+        assert result.rejected is False
+        assert len(result.executed_orders) == 1
+        assert result.executed_orders[0].status == "rejected"
+
+        p = tmp_path / "out/ops/execution_events/execution_events.jsonl"
+        assert p.exists(), "Execution events JSONL should exist when PT_EXEC_EVENTS_ENABLED=true"
+        lines = p.read_text(encoding="utf-8").strip().splitlines()
+        assert len(lines) >= 2, "Expected order_submit + order_reject events"
+
+        events = [json.loads(ln) for ln in lines]
+        types = [e["event_type"] for e in events]
+        assert "order_submit" in types, "order_submit must be emitted before executor call"
+        assert "order_reject" in types, "order_reject must be emitted when executor returns rejected"
+
+        submit = next(e for e in events if e["event_type"] == "order_submit")
+        assert submit["symbol"] == "BTC/EUR"
+        assert submit["client_order_id"] == "trial5_test_001"
+
+        reject = next(e for e in events if e["event_type"] == "order_reject")
+        assert reject["symbol"] == "BTC/EUR"
+        assert "missing_api_credentials" in (reject.get("msg") or "")
 
 
 if __name__ == "__main__":
