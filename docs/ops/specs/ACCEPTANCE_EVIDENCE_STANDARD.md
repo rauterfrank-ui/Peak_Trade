@@ -83,6 +83,16 @@ Rejected-order evidence:
 Accepted-and-filled evidence:
 - `docs&#47;ops&#47;evidence&#47;ACCEPTANCE_ORIENTED_BOUNDED_RUN_20260318_CLOSEOUT.md`
 - `docs&#47;ops&#47;evidence&#47;LOCAL_SECRET_LAUNCHER_BOUNDED_RUN_20260319_CLOSEOUT.md`
+- `docs&#47;ops&#47;evidence&#47;CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md`
+
+## Canonical Accepted-and-Filled Example
+Canonical accepted-and-filled reference:
+- `docs&#47;ops&#47;evidence&#47;CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md`
+
+Use this document as the preferred accepted-and-filled example when:
+- future closeouts need a reference example
+- operator runbooks need a canonical accepted-and-filled pointer
+- governance / ops packaging needs a concrete bounded accepted-and-filled anchor
 
 ## Non-Goals
 - no weakening of gates
