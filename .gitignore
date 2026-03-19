@@ -136,3 +136,12 @@ reports/ops/*.txt
 
 # Docs token policy gate (local report artifact)
 docs-token-policy-report.json
+
+# Bounded pilot local secret source (LOCAL_BOUNDED_SECRET_ENV_FILE_CONTRACT)
+.bounded_pilot.env
+.bounded_launch.env
+!scripts/ops/run_bounded_pilot_with_local_secrets.py
+!docs/ops/evidence/LOCAL_BOUNDED_SECRET_LAUNCHER_*.md
+!docs/ops/specs/LOCAL_BOUNDED_SECRET_*.md
+!docs/ops/runbooks/LOCAL_BOUNDED_SECRET_*.md
+!tests/ops/test_run_bounded_pilot_with_local_secrets.py
