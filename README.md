@@ -446,3 +446,7 @@ und den zugehörigen Runbooks/Playbooks dokumentiert.
 ## Lizenz
 
 Privates Projekt – alle Rechte vorbehalten.
+
+## Bounded Acceptance Documentation Chain
+- start here: `docs&#47;ops&#47;reviews&#47;bounded_acceptance_start_here_page&#47;START_HERE.md`
+- index, runbook, cheat sheet, go/no-go snapshot, readiness matrix, and governance framing are linked from there
