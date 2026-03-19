@@ -3,6 +3,9 @@
 ## Purpose
 Ultra-compact operator reference for bounded / acceptance runs.
 
+## Bounded Acceptance Index
+- `docs&#47;ops&#47;reviews&#47;bounded_acceptance_index_page&#47;INDEX.md`
+
 ## Canonical Path
 - runbook: `docs&#47;ops&#47;runbooks&#47;ACCEPTANCE_ORIENTED_BOUNDED_RUN_OPERATOR_RUNBOOK.md`
 - launcher: `scripts&#47;ops&#47;run_bounded_pilot_with_local_secrets.py`

@@ -31,6 +31,9 @@ The bounded / acceptance path is now fully documented, standardized, and operati
 - use the acceptance operator runbook
 - use the acceptance evidence standard and templates for closeout
 
+## Bounded Acceptance Index
+- `docs&#47;ops&#47;reviews&#47;bounded_acceptance_index_page&#47;INDEX.md`
+
 ## If you return later
 Start here:
 - `docs&#47;ops&#47;reviews&#47;bounded_acceptance_index_page&#47;INDEX.md`

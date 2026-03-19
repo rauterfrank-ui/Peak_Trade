@@ -3,6 +3,9 @@
 ## Purpose
 Operator workflow for a conservative acceptance-oriented bounded-pilot run aligned to the acceptance evidence standard.
 
+## Bounded Acceptance Index
+- `docs&#47;ops&#47;reviews&#47;bounded_acceptance_index_page&#47;INDEX.md`
+
 ## Scope
 Applies to explicit bounded/acceptance-oriented runs only.
 
