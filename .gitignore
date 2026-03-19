@@ -142,6 +142,9 @@ docs-token-policy-report.json
 .bounded_launch.env
 !scripts/ops/run_bounded_pilot_with_local_secrets.py
 !docs/ops/evidence/LOCAL_BOUNDED_SECRET_LAUNCHER_*.md
+!docs/ops/evidence/LOCAL_SECRET_LAUNCHER_*.md
 !docs/ops/specs/LOCAL_BOUNDED_SECRET_*.md
 !docs/ops/runbooks/LOCAL_BOUNDED_SECRET_*.md
 !tests/ops/test_run_bounded_pilot_with_local_secrets.py
+!docs/ops/reviews/post_local_secret_launcher_run_handoff/
+!docs/ops/reviews/post_local_secret_launcher_run_handoff/*
