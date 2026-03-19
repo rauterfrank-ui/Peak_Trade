@@ -8,7 +8,7 @@ GOAL
 - provide an ultra-compact one-page operator cheat sheet for bounded / acceptance
 
 OUTPUT
-- docs/ops/runbooks/BOUNDED_ACCEPTANCE_OPERATOR_CHEAT_SHEET.md
+- docs&#47;ops&#47;runbooks/BOUNDED_ACCEPTANCE_OPERATOR_CHEAT_SHEET.md
 
 NEXT SUGGESTED STEP
 - link this cheat sheet from the acceptance operator runbook and go/no-go snapshot

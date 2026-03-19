@@ -28,10 +28,10 @@ python3 scripts/ops/run_bounded_pilot_with_local_secrets.py --steps 25 --positio
 ```
 
 ## After Run
-1. **Execution events** — `out/ops/execution_events/sessions/<session_id>/execution_events.jsonl`
-2. **Live-session report** — `reports/experiments/live_sessions/<timestamp>_live_session_bounded_pilot_<session_id>.json`
-3. **Closeout** — create under `docs/ops/evidence/` using `docs/ops/templates/ACCEPTED_AND_FILLED_CLOSEOUT_TEMPLATE.md` or `REJECTED_ORDER_CLOSEOUT_TEMPLATE.md`
-4. **Handoff** — if evidence position changes, add under `docs/ops/reviews/`
+1. **Execution events** — `out&#47;ops&#47;execution_events&#47;sessions&#47;&lt;session_id&gt;&#47;execution_events.jsonl`
+2. **Live-session report** — `reports&#47;experiments&#47;live_sessions&#47;&lt;timestamp&gt;_live_session_bounded_pilot_&lt;session_id&gt;.json`
+3. **Closeout** — create under `docs&#47;ops&#47;evidence/` using `docs&#47;ops&#47;templates/ACCEPTED_AND_FILLED_CLOSEOUT_TEMPLATE.md` or `REJECTED_ORDER_CLOSEOUT_TEMPLATE.md`
+4. **Handoff** — if evidence position changes, add under `docs&#47;ops&#47;reviews/`
 
 ## Allowed
 - Bounded runs via local secret launcher
@@ -45,6 +45,6 @@ python3 scripts/ops/run_bounded_pilot_with_local_secrets.py --steps 25 --positio
 - Skipping evidence capture
 
 ## References
-- Go/No-Go: `docs/ops/reviews/bounded_acceptance_go_no_go_snapshot/GO_NO_GO_SNAPSHOT.md`
-- Runbook: `docs/ops/runbooks/ACCEPTANCE_ORIENTED_BOUNDED_RUN_OPERATOR_RUNBOOK.md`
-- Canonical: `docs/ops/evidence/CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md`
+- Go/No-Go: `docs&#47;ops&#47;reviews/bounded_acceptance_go_no_go_snapshot/GO_NO_GO_SNAPSHOT.md`
+- Runbook: `docs&#47;ops&#47;runbooks/ACCEPTANCE_ORIENTED_BOUNDED_RUN_OPERATOR_RUNBOOK.md`
+- Canonical: `docs&#47;ops&#47;evidence/CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md`
