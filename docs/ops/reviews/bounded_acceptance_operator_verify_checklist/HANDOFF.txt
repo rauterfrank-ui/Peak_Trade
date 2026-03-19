@@ -1,0 +1,14 @@
+PROJECT: Peak_Trade
+TOPIC: bounded_acceptance_operator_verify_checklist
+STATUS: docs_draft_ready
+BRANCH: feat/bounded-acceptance-operator-verify-checklist
+MODE: paper_stability_guard
+
+GOAL
+- provide a short pass/fail verify checklist for bounded / acceptance runs
+
+OUTPUT
+- docs/ops/runbooks/BOUNDED_ACCEPTANCE_OPERATOR_VERIFY_CHECKLIST.md
+
+NEXT SUGGESTED STEP
+- bounded_acceptance_review_packet
