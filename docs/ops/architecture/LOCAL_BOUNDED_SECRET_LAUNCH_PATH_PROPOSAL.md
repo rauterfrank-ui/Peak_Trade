@@ -105,7 +105,8 @@ Rationale:
 
 ### Explicit Local Launcher
 Proposed dedicated entrypoint:
-- `scripts/ops/run_bounded_pilot_with_local_secrets.py`
+- proposed dedicated bounded launcher script (not yet implemented)
+- for example: `scripts&#47;ops&#47;run_bounded_pilot_with_local_secrets.py`
 - or a shell wrapper with equivalent behavior
 
 Responsibilities:
