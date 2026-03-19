@@ -1,0 +1,21 @@
+PROJECT: Peak_Trade
+TOPIC: local_bounded_secret_launch_path
+STATUS: synthesis_complete_ready_for_implementation
+BRANCH: feat/local-bounded-secret-launch-path
+MODE: paper_stability_guard
+
+DECISION
+- recommended secret source: explicit local non-git env file
+- recommended launcher model: explicit bounded/acceptance-only launcher
+- paper/shadow/testnet must never auto-load live secrets
+- Entry Contract / Go-No-Go / Evidence checks remain mandatory
+
+NEXT IMPLEMENTATION TARGET
+- implement a dedicated local bounded secret launcher
+- ensure only bounded/acceptance runs can use it
+- add tests for mode isolation and fail-closed behavior
+- add operator runbook
+
+KEY OUTPUTS
+- docs/ops/architecture/LOCAL_BOUNDED_SECRET_LAUNCH_PATH_PROPOSAL.md
+- docs/ops/reviews/local_bounded_secret_launch_path_review/HANDOFF.txt
