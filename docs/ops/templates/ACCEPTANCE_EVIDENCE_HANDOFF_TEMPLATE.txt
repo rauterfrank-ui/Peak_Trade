@@ -1,0 +1,21 @@
+PROJECT: Peak_Trade
+TOPIC: <topic_name>
+STATUS: <status>
+BRANCH: main baseline after <closeout_name>
+MODE: paper_stability_guard
+
+STARTING POINT
+- <summary of run outcome>
+- <summary of evidence position>
+
+NOW PROVEN
+- <proof item 1>
+- <proof item 2>
+
+NEXT DECISION OPTIONS
+1) <option 1>
+2) <option 2>
+3) <option 3>
+
+RECOMMENDED NEXT STEP
+- <recommended next step>
