@@ -1,0 +1,12 @@
+PROJECT: Peak_Trade
+TOPIC: acceptance_runbook_canonical_reference
+STATUS: merged
+PR: #1860
+
+RESULT
+- acceptance operator runbook now points explicitly to the canonical accepted-and-filled closeout
+- future operator docs and governance packaging can reference one canonical accepted-and-filled example
+
+MERGED DOCS
+- docs/ops/runbooks/ACCEPTANCE_ORIENTED_BOUNDED_RUN_OPERATOR_RUNBOOK.md
+- docs/ops/reviews/acceptance_runbook_canonical_reference/HANDOFF.txt
