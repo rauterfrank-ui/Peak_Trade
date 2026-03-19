@@ -1,0 +1,14 @@
+PROJECT: Peak_Trade
+TOPIC: bounded_acceptance_release_note_for_future_you
+STATUS: docs_draft_ready
+BRANCH: feat/bounded-acceptance-release-note-for-future-you
+MODE: paper_stability_guard
+
+GOAL
+- provide a short release note / memory aid for future bounded-acceptance work
+
+OUTPUT
+- docs/ops/reviews/bounded_acceptance_release_note_for_future_you/RELEASE_NOTE.md
+
+NEXT SUGGESTED STEP
+- use the index page + cheat sheet as the default re-entry point for future bounded/acceptance work
