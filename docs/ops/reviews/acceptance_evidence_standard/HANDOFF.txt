@@ -1,0 +1,20 @@
+PROJECT: Peak_Trade
+TOPIC: acceptance_evidence_standard
+STATUS: docs_draft_ready
+BRANCH: feat/acceptance-evidence-standard
+MODE: paper_stability_guard
+
+GOAL
+- standardize the minimum evidence package for acceptance-oriented bounded runs
+
+OUTPUT
+- docs/ops/specs/ACCEPTANCE_EVIDENCE_STANDARD.md
+
+NOTES
+- current repo truth uses these closeout examples:
+  - docs/ops/evidence/TYPE_A_BOUNDED_TRIAL_20260318_REJECTED_ORDER_EVIDENCE_CLOSEOUT.md
+  - docs/ops/evidence/ACCEPTANCE_ORIENTED_BOUNDED_RUN_20260318_CLOSEOUT.md
+  - docs/ops/evidence/LOCAL_SECRET_LAUNCHER_BOUNDED_RUN_20260319_CLOSEOUT.md
+
+NEXT SUGGESTED STEP
+- align operator runbooks and future closeouts to this standard
