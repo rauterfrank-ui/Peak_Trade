@@ -1,0 +1,14 @@
+PROJECT: Peak_Trade
+TOPIC: bounded_acceptance_docs_navigation_alignment
+STATUS: docs_draft_ready
+BRANCH: feat/bounded-acceptance-docs-navigation-alignment
+MODE: paper_stability_guard
+
+GOAL
+- make the bounded acceptance index page the explicit navigation hub
+
+OUTPUT
+- navigation links added to cheat sheet, operator runbook, and release note
+
+NEXT SUGGESTED STEP
+- use the index page as the default re-entry point for future bounded / acceptance work
