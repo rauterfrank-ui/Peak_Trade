@@ -70,6 +70,7 @@ After the run completes, verify:
 3. **Closeout document**
    - Create under `docs&#47;ops&#47;evidence&#47;`
    - Include all required closeout fields per `docs&#47;ops&#47;specs&#47;ACCEPTANCE_EVIDENCE_STANDARD.md`
+   - Canonical accepted-and-filled example: `docs&#47;ops&#47;evidence&#47;CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md`
 
 4. **Handoff**
    - If the run changes the evidence position, add a handoff under `docs&#47;ops&#47;reviews&#47;`
@@ -91,6 +92,20 @@ After the run completes, verify:
 - operator interpretation
 - next-step recommendation
 
+## Accepted-and-Filled Evidence
+- `docs&#47;ops&#47;evidence&#47;ACCEPTANCE_ORIENTED_BOUNDED_RUN_20260318_CLOSEOUT.md`
+- `docs&#47;ops&#47;evidence&#47;LOCAL_SECRET_LAUNCHER_BOUNDED_RUN_20260319_CLOSEOUT.md`
+- `docs&#47;ops&#47;evidence&#47;CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md`
+
+## Canonical Accepted-and-Filled Reference
+Preferred accepted-and-filled example:
+- `docs&#47;ops&#47;evidence&#47;CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md`
+
+Use this canonical example when:
+- operators need one concrete accepted-and-filled reference
+- future acceptance closeouts need a model document
+- governance / ops packaging needs a canonical bounded accepted-and-filled anchor
+
 ## Guardrails
 
 - no weakening of gates
@@ -102,6 +117,7 @@ After the run completes, verify:
 ## References
 
 - `docs&#47;ops&#47;specs&#47;ACCEPTANCE_EVIDENCE_STANDARD.md`
+- `docs&#47;ops&#47;evidence&#47;CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md` (canonical accepted-and-filled example)
 - `docs&#47;ops&#47;runbooks&#47;NEXT_BOUNDED_TRIAL_PREFLIGHT_CHECKLIST.md`
 - `docs&#47;ops&#47;runbooks&#47;LOCAL_BOUNDED_SECRET_LAUNCHER_RUNBOOK.md`
 - `docs&#47;ops&#47;specs&#47;BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`
