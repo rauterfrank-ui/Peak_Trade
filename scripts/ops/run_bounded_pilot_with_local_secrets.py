@@ -3,6 +3,7 @@
 
 Reference: LOCAL_BOUNDED_SECRET_ENV_FILE_CONTRACT, LOCAL_BOUNDED_SECRET_LAUNCH_PATH_PROPOSAL
 """
+
 from __future__ import annotations
 
 import argparse
@@ -40,12 +41,16 @@ def _load_local_env(path: Path) -> dict[str, str]:
     data = _parse_env_file(path)
     missing = [k for k in REQUIRED_VARS if not data.get(k)]
     if missing:
-        raise RuntimeError("missing required vars in local bounded secret env file: " + ", ".join(missing))
+        raise RuntimeError(
+            "missing required vars in local bounded secret env file: " + ", ".join(missing)
+        )
     return data
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Run bounded pilot with local secrets from a dedicated env file")
+    p = argparse.ArgumentParser(
+        description="Run bounded pilot with local secrets from a dedicated env file"
+    )
     p.add_argument("--env-file", default=str(DEFAULT_ENV_FILE))
     p.add_argument("--steps", type=int, default=25)
     p.add_argument("--position-fraction", type=float, default=0.0005)
@@ -59,7 +64,10 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.mode not in ALLOWED_MODES:
-        print(f"FAIL_CLOSED: unsupported mode for local bounded secret launcher: {args.mode}", file=sys.stderr)
+        print(
+            f"FAIL_CLOSED: unsupported mode for local bounded secret launcher: {args.mode}",
+            file=sys.stderr,
+        )
         return 2
 
     env_path = Path(args.env_file).expanduser()
@@ -71,7 +79,9 @@ def main(argv: list[str] | None = None) -> int:
 
     child_env = os.environ.copy()
     child_env.update({k: loaded[k] for k in REQUIRED_VARS})
-    child_env["PT_EXEC_EVENTS_ENABLED"] = loaded.get("PT_EXEC_EVENTS_ENABLED") or child_env.get("PT_EXEC_EVENTS_ENABLED") or "true"
+    child_env["PT_EXEC_EVENTS_ENABLED"] = (
+        loaded.get("PT_EXEC_EVENTS_ENABLED") or child_env.get("PT_EXEC_EVENTS_ENABLED") or "true"
+    )
 
     cmd = [
         sys.executable,
