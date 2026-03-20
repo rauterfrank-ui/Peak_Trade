@@ -296,3 +296,48 @@ def test_format_portfolio_snapshot():
     assert "Live Portfolio Snapshot" in output
     assert "BTC/EUR" in output
     assert "14750" in output or "14750.0" in output
+
+
+def test_format_portfolio_snapshot_with_balance_semantics():
+    """Testet dass balance_semantic_state, balance_reason_code, balance_operator_visible_state sichtbar sind."""
+    snapshot = LivePortfolioSnapshot(
+        as_of=datetime.utcnow(),
+        positions=[],
+        balance_semantic_state="balance_semantics_clear",
+        balance_reason_code="BALANCE_PAPER_BROKER_EXPLICIT",
+        balance_operator_visible_state="paper_broker_cash_explicit",
+    )
+
+    output = preview_script.format_portfolio_snapshot(snapshot)
+
+    assert "Balance semantics:" in output
+    assert "balance_semantic_state" in output
+    assert "balance_semantics_clear" in output
+    assert "balance_reason_code" in output
+    assert "BALANCE_PAPER_BROKER_EXPLICIT" in output
+    assert "balance_operator_visible_state" in output
+    assert "paper_broker_cash_explicit" in output
+
+
+def test_format_json_output_with_balance_semantics():
+    """Testet dass balance_semantics in JSON-Ausgabe erscheint."""
+    snapshot = LivePortfolioSnapshot(
+        as_of=datetime.utcnow(),
+        positions=[],
+        balance_semantic_state="balance_semantics_blocked",
+        balance_reason_code="BALANCE_CASH_FALLBACK_AMBIGUOUS",
+        balance_operator_visible_state="blocked: cash fallback not upgradeable",
+    )
+
+    output = preview_script.format_json_output(snapshot)
+
+    import json
+
+    data = json.loads(output)
+    assert "balance_semantics" in data
+    assert data["balance_semantics"]["balance_semantic_state"] == "balance_semantics_blocked"
+    assert data["balance_semantics"]["balance_reason_code"] == "BALANCE_CASH_FALLBACK_AMBIGUOUS"
+    assert (
+        data["balance_semantics"]["balance_operator_visible_state"]
+        == "blocked: cash fallback not upgradeable"
+    )
