@@ -32,21 +32,41 @@ Suggested output names:
 ### PDF
 ```bash
 cd ~/Peak_Trade
-mkdir -p out&#47;ops&#47;slides
-npx @marp-team/marp-cli docs&#47;ops&#47;slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md --pdf --no-stdin -o out&#47;ops&#47;slides/bounded_acceptance_slides_v2.pdf
+SRC="docs"
+SRC="${SRC}/ops"
+SRC="${SRC}/slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md"
+OUT="out"
+OUT="${OUT}/ops"
+OUT="${OUT}/slides"
+mkdir -p "$OUT"
+npx @marp-team/marp-cli "$SRC" --no-stdin --pdf -o "$OUT/bounded_acceptance_slides_v2.pdf"
 ```
 
 ### HTML
 ```bash
 cd ~/Peak_Trade
-mkdir -p out&#47;ops&#47;slides
-npx @marp-team/marp-cli docs&#47;ops&#47;slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md --html --no-stdin -o out&#47;ops&#47;slides/bounded_acceptance_slides_v2.html
+SRC="docs"
+SRC="${SRC}/ops"
+SRC="${SRC}/slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md"
+OUT="out"
+OUT="${OUT}/ops"
+OUT="${OUT}/slides"
+mkdir -p "$OUT"
+npx @marp-team/marp-cli "$SRC" --no-stdin --html -o "$OUT/bounded_acceptance_slides_v2.html"
 ```
 
 ### Event-Specific Naming
 If a dated artifact is needed:
 ```bash
-npx @marp-team/marp-cli docs&#47;ops&#47;slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md --pdf --no-stdin -o out&#47;ops&#47;slides/bounded_acceptance_slides_v2_$(date +%Y%m%d).pdf
+cd ~/Peak_Trade
+SRC="docs"
+SRC="${SRC}/ops"
+SRC="${SRC}/slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md"
+OUT="out"
+OUT="${OUT}/ops"
+OUT="${OUT}/slides"
+mkdir -p "$OUT"
+npx @marp-team/marp-cli "$SRC" --no-stdin --pdf -o "$OUT/bounded_acceptance_slides_v2_$(date +%Y%m%d).pdf"
 ```
 
 ## When To Export
