@@ -29,6 +29,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
 
+from .balance_semantics_guardrail import classify_balance_semantics
 from .broker_base import BaseBrokerClient
 from .risk_limits import LiveRiskLimits
 
@@ -84,6 +85,9 @@ class LivePortfolioSnapshot:
         equity: Equity (falls verfügbar)
         cash: Cash (falls verfügbar)
         margin_used: Margin verwendet (falls verfügbar)
+        balance_semantic_state: Balance-semantics guardrail state (optional)
+        balance_reason_code: Balance-semantics reason code (optional)
+        balance_operator_visible_state: Operator-visible state from guardrail (optional)
     """
 
     as_of: datetime
@@ -99,6 +103,10 @@ class LivePortfolioSnapshot:
     equity: float | None = None
     cash: float | None = None
     margin_used: float | None = None
+
+    balance_semantic_state: str | None = None
+    balance_reason_code: str | None = None
+    balance_operator_visible_state: str | None = None
 
     def __post_init__(self) -> None:
         """Berechnet Aggregat-Werte aus positions."""
@@ -185,6 +193,11 @@ class LivePortfolioMonitor:
             snapshot.equity = account_data.get("equity")
             snapshot.cash = account_data.get("cash")
             snapshot.margin_used = account_data.get("margin_used")
+            snapshot.balance_semantic_state = account_data.get("balance_semantic_state")
+            snapshot.balance_reason_code = account_data.get("balance_reason_code")
+            snapshot.balance_operator_visible_state = account_data.get(
+                "balance_operator_visible_state"
+            )
 
         return snapshot
 
@@ -333,28 +346,47 @@ class LivePortfolioMonitor:
         """
         Holt Account-Daten vom Exchange-Client (optional).
 
+        Invokes balance-semantics guardrail at fetch boundary.
+        Does not populate cash for decision use when semantic_state is blocked.
+
         Returns:
-            Dict mit equity, cash, margin_used oder None
+            Dict mit equity, cash, margin_used, balance_semantic_state, etc. oder None
         """
         try:
-            # Versuche fetch_balance() oder ähnliche Methode
             if hasattr(self._exchange_client, "fetch_balance"):
                 balance = self._exchange_client.fetch_balance()
                 if isinstance(balance, dict):
-                    return {
+                    result = classify_balance_semantics(
+                        balance=balance,
+                        source_metadata={"source_type": "fetch_balance"},
+                    )
+                    out: dict[str, Any] = {
                         "equity": balance.get("equity"),
-                        "cash": balance.get("free", balance.get("cash")),
                         "margin_used": balance.get("used", balance.get("margin")),
+                        "balance_semantic_state": result.semantic_state,
+                        "balance_reason_code": result.reason_code,
+                        "balance_operator_visible_state": result.operator_visible_state,
                     }
+                    if result.decision_use_allowed:
+                        out["cash"] = balance.get("free", balance.get("cash"))
+                    return out
         except Exception as e:
             logger.debug(f"Fehler beim Abrufen von Account-Daten: {e}")
 
-        # Fallback: Versuche cash-Attribut (z.B. PaperBroker)
         try:
             if hasattr(self._exchange_client, "cash"):
                 cash = self._exchange_client.cash
                 if isinstance(cash, (int, float)):
-                    return {"cash": float(cash)}
+                    result = classify_balance_semantics(
+                        balance=float(cash),
+                        source_metadata={"source_type": "paper_broker_cash"},
+                    )
+                    return {
+                        "cash": float(cash),
+                        "balance_semantic_state": result.semantic_state,
+                        "balance_reason_code": result.reason_code,
+                        "balance_operator_visible_state": result.operator_visible_state,
+                    }
         except Exception as e:
             logger.debug(f"Fehler beim Abrufen von Cash via cash-Attribut: {e}")
 

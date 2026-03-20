@@ -1,0 +1,16 @@
+PROJECT: Peak_Trade
+TOPIC: balance_semantics_guardrail_fetch_boundary_integration
+STATUS: docs_draft_ready
+BRANCH: feat/balance-semantics-guardrail-fetch-boundary-integration
+MODE: paper_stability_guard
+
+GOAL
+- integrate balance-semantics guardrail at portfolio_monitor fetch boundary (Phase 2+3)
+
+OUTPUTS
+- src&#47;live&#47;portfolio_monitor.py (modified)
+- tests&#47;test_live_portfolio_monitor.py (modified)
+- docs&#47;ops&#47;reviews&#47;balance_semantics_guardrail_fetch_boundary_integration&#47;HANDOFF.txt
+
+NEXT SUGGESTED STEP
+- balance_semantics_guardrail_downstream_consumer_handling (Phase 4)

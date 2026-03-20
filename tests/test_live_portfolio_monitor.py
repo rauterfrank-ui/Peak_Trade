@@ -14,6 +14,7 @@ from __future__ import annotations
 from datetime import datetime
 from unittest.mock import Mock
 
+import pandas as pd
 import pytest
 
 from src.live.broker_base import BaseBrokerClient, PaperBroker
@@ -206,14 +207,14 @@ def test_live_portfolio_monitor_with_paper_broker():
     assert eth_pos.side == "short"
     assert eth_pos.size == pytest.approx(2.0, abs=0.001)
 
-    # Prüfe Cash
+    # Prüfe Cash (PaperBroker -> paper_broker_cash -> clear)
     assert snapshot.cash == pytest.approx(10000.0, abs=0.01)
+    assert snapshot.balance_semantic_state == "balance_semantics_clear"
+    assert snapshot.balance_reason_code == "BALANCE_PAPER_BROKER_EXPLICIT"
 
 
 def test_live_portfolio_monitor_with_dataframe_positions(fake_exchange_client: Mock):
     """Testet LivePortfolioMonitor mit DataFrame-Positionen."""
-    import pandas as pd
-
     df = pd.DataFrame(
         [
             {
@@ -242,6 +243,42 @@ def test_live_portfolio_monitor_with_dataframe_positions(fake_exchange_client: M
 
     assert snapshot.num_open_positions == 2
     assert len(snapshot.positions) == 2
+
+
+def test_live_portfolio_monitor_fetch_balance_free_explicit_populates_cash():
+    """fetch_balance with explicit free -> cash populated, contract fields set."""
+    client = Mock()
+    client.fetch_positions.return_value = pd.DataFrame()
+    client.fetch_balance.return_value = {
+        "free": 500.0,
+        "used": 100.0,
+        "total": 600.0,
+        "equity": 600.0,
+    }
+
+    monitor = LivePortfolioMonitor(client)
+    snapshot = monitor.snapshot()
+
+    assert snapshot.cash == pytest.approx(500.0, abs=0.01)
+    assert snapshot.balance_semantic_state == "balance_semantics_clear"
+    assert snapshot.balance_reason_code == "BALANCE_FREE_EXPLICIT"
+
+
+def test_live_portfolio_monitor_fetch_balance_cash_only_blocked():
+    """fetch_balance with only cash (no free) -> blocked, cash not populated."""
+    client = Mock()
+    client.fetch_positions.return_value = pd.DataFrame()
+    client.fetch_balance.return_value = {
+        "cash": 500.0,
+        "used": 100.0,
+    }
+
+    monitor = LivePortfolioMonitor(client)
+    snapshot = monitor.snapshot()
+
+    assert snapshot.cash is None
+    assert snapshot.balance_semantic_state == "balance_semantics_blocked"
+    assert snapshot.balance_reason_code == "BALANCE_CASH_FALLBACK_AMBIGUOUS"
 
 
 def test_live_portfolio_monitor_parse_position_variants():
