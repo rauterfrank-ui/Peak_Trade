@@ -1,0 +1,14 @@
+PROJECT: Peak_Trade
+TOPIC: bounded_acceptance_export_runbook
+STATUS: docs_draft_ready
+BRANCH: feat/bounded-acceptance-export-runbook
+MODE: paper_stability_guard
+
+GOAL
+- provide a lightweight runbook for on-demand PDF/HTML export from Marp source
+
+OUTPUT
+- docs/ops/runbooks/BOUNDED_ACCEPTANCE_EXPORT_RUNBOOK.md
+
+NEXT SUGGESTED STEP
+- use runbook when a presentation artifact is needed for a review event
