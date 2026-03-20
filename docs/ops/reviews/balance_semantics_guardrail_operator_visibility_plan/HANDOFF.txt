@@ -8,8 +8,8 @@ GOAL
 - define the rollout order for operator-visible balance semantics
 
 OUTPUTS
-- docs/ops/reviews/balance_semantics_guardrail_operator_visibility_plan/PLAN.md
-- docs/ops/reviews/balance_semantics_guardrail_operator_visibility_plan/HANDOFF.txt
+- docs&#47;ops&#47;reviews/balance_semantics_guardrail_operator_visibility_plan/PLAN.md
+- docs&#47;ops&#47;reviews/balance_semantics_guardrail_operator_visibility_plan/HANDOFF.txt
 
 NEXT SUGGESTED STEP
 - balance_semantics_guardrail_preview_visibility

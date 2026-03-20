@@ -54,7 +54,7 @@ Why first:
 
 ## Safety Constraints
 - no silent semantic blocking
-- no hidden `cash -> free/usable` upgrade
+- no hidden `cash -> free&#47;usable` upgrade
 - no disturbance to paper/shadow/testnet stability
 - operator-visible semantics must remain aligned with runtime contract docs
 
