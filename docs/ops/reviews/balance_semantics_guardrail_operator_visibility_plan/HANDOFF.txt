@@ -1,0 +1,15 @@
+PROJECT: Peak_Trade
+TOPIC: balance_semantics_guardrail_operator_visibility_plan
+STATUS: docs_draft_ready
+BRANCH: feat/balance-semantics-guardrail-operator-visibility-plan
+MODE: paper_stability_guard
+
+GOAL
+- define the rollout order for operator-visible balance semantics
+
+OUTPUTS
+- docs&#47;ops&#47;reviews/balance_semantics_guardrail_operator_visibility_plan/PLAN.md
+- docs&#47;ops&#47;reviews/balance_semantics_guardrail_operator_visibility_plan/HANDOFF.txt
+
+NEXT SUGGESTED STEP
+- balance_semantics_guardrail_preview_visibility
