@@ -1,6 +1,9 @@
 from pathlib import Path
 from unittest.mock import patch
 
+import pytest
+from fastapi.testclient import TestClient
+
 from src.execution.telemetry_health import HealthCheckResult, HealthReport
 from src.webui.ops_cockpit import build_ops_cockpit_payload, render_ops_cockpit_html
 
@@ -653,6 +656,47 @@ def test_ops_cockpit_html_contains_stale_state(tmp_path: Path) -> None:
     assert "Reconciliation hardening" in html or "reconciliation" in html.lower()
 
 
+def test_balance_semantics_state_section_present(tmp_path: Path) -> None:
+    """balance_semantics_state Sektion ist im Payload und hat erwartete Keys."""
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert "balance_semantics_state" in payload
+    bs = payload["balance_semantics_state"]
+    assert "balance_semantic_state" in bs
+    assert "balance_reason_code" in bs
+    assert "balance_operator_visible_state" in bs
+
+
+def test_balance_semantics_state_with_config_returns_populated_when_paper_broker(
+    tmp_path: Path,
+) -> None:
+    """When config exists and PaperBroker is used, balance_semantic_state is balance_semantics_clear."""
+    config_dir = tmp_path / "config"
+    config_dir.mkdir(parents=True)
+    config_path = config_dir / "config.toml"
+    config_path.write_text(
+        """
+[general]
+base_currency = "EUR"
+starting_capital = 10000.0
+""",
+        encoding="utf-8",
+    )
+    payload = build_ops_cockpit_payload(repo_root=tmp_path, config_path=config_path)
+    bs = payload["balance_semantics_state"]
+    assert bs["balance_semantic_state"] == "balance_semantics_clear"
+    assert bs["balance_reason_code"] == "BALANCE_PAPER_BROKER_EXPLICIT"
+    assert bs["balance_operator_visible_state"] == "paper_broker_cash_explicit"
+    assert payload["stale_state"]["balance"] == "ok"
+
+
+def test_ops_cockpit_html_contains_balance_semantics(tmp_path: Path) -> None:
+    """HTML rendert Balance Semantics Card."""
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Balance Semantics" in html
+    assert "Operator visibility" in html or "operator visibility" in html.lower()
+    assert "Semantic state" in html or "semantic state" in html.lower()
+
+
 def test_ops_cockpit_html_contains_session_end_mismatch(tmp_path: Path) -> None:
     """HTML rendert Session End Mismatch Card."""
     html = render_ops_cockpit_html(repo_root=tmp_path)
@@ -942,3 +986,22 @@ def test_truth_first_regression(tmp_path: Path) -> None:
     assert "Truth-First" in html
     assert "Read-only" in html
     assert "Visual emphasis only" in html
+
+
+@pytest.fixture
+def ops_client():
+    """Create FastAPI test client for ops cockpit (uses module-level app with /ops route)."""
+    from src.webui.app import app
+
+    return TestClient(app)
+
+
+def test_ops_cockpit_shows_balance_semantics(ops_client: TestClient) -> None:
+    """GET /ops rendert Balance Semantics Card (HTTP-Integration)."""
+    response = ops_client.get("/ops")
+    assert response.status_code == 200
+    html = response.text
+    assert "Balance Semantics" in html
+    assert "Operator visibility" in html or "operator visibility" in html.lower()
+    assert "Semantic state" in html or "semantic state" in html.lower()
+    assert "Reason code" in html or "reason code" in html.lower()
