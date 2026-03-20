@@ -1,0 +1,16 @@
+PROJECT: Peak_Trade
+TOPIC: reconciliation_flow_hardening_review
+STATUS: review_ready
+BRANCH: feat/reconciliation-flow-hardening-review
+MODE: paper_stability_guard
+
+GOAL
+- deliver docs-first reconciliation flow hardening review
+- define source-of-truth hierarchy, mismatch taxonomy, operator-visible states, safe handling under ambiguity
+
+OUTPUTS
+- docs/ops/reviews/reconciliation_flow_hardening_review/REVIEW.md
+- docs/ops/reviews/reconciliation_flow_hardening_review/HANDOFF.txt
+
+NEXT SUGGESTED STEP
+- treasury_balance_incident_runbook
