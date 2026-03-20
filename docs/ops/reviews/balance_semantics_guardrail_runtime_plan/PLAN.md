@@ -19,7 +19,7 @@ Future runtime logic should prevent ambiguous balance semantics from being treat
    - `balance_semantics_blocked`
 3. expose operator-visible state before decision-adjacent use
 4. ensure warning/blocked states restrict interpretation conservatively
-5. avoid implicit `cash -> free/usable` upgrade
+5. avoid implicit `cash -> free&#47;usable` upgrade
 
 ## Candidate Integration Point
 Preferred direction:

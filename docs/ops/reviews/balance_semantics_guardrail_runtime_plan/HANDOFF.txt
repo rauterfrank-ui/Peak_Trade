@@ -8,8 +8,8 @@ GOAL
 - define the docs-first runtime plan for a future balance-semantics guardrail
 
 OUTPUTS
-- docs/ops/reviews/balance_semantics_guardrail_runtime_plan/PLAN.md
-- docs/ops/reviews/balance_semantics_guardrail_runtime_plan/HANDOFF.txt
+- docs&#47;ops&#47;reviews/balance_semantics_guardrail_runtime_plan/PLAN.md
+- docs&#47;ops&#47;reviews/balance_semantics_guardrail_runtime_plan/HANDOFF.txt
 
 NEXT SUGGESTED STEP
 - balance_semantics_guardrail_runtime_stub_review
