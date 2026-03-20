@@ -1,0 +1,15 @@
+PROJECT: Peak_Trade
+TOPIC: balance_semantics_guardrail_contract_usage_review
+STATUS: docs_draft_ready
+BRANCH: feat/balance-semantics-guardrail-contract-usage-review
+MODE: paper_stability_guard
+
+GOAL
+- define where and how the balance-semantics guardrail contract should be applied in the codebase
+
+OUTPUTS
+- docs&#47;ops&#47;reviews&#47;balance_semantics_guardrail_contract_usage_review&#47;REVIEW.md
+- docs&#47;ops&#47;reviews&#47;balance_semantics_guardrail_contract_usage_review&#47;HANDOFF.txt
+
+NEXT SUGGESTED STEP
+- balance_semantics_guardrail_integration_plan
