@@ -29,7 +29,7 @@ Recommended Follow-Up:
 
 ## Finding 2 — Treasury vs Trading Balance Boundary Is Policy-Heavy, Model-Light
 Category:
-- `D. Docs / Code Drift Surface`
+- `D. Docs &#47; Code Drift Surface`
 
 Observation:
 - treasury vs tradable balance is clearly defined in docs/specs
@@ -61,7 +61,7 @@ Recommended Follow-Up:
 
 ## Finding 4 — Reconciliation Failure Severity Appears Too Soft Relative to Spec Direction
 Category:
-- `D. Docs / Code Drift Surface`
+- `D. Docs &#47; Code Drift Surface`
 
 Observation:
 - there is evidence that reconciliation failure is not always treated as a critical blocker
