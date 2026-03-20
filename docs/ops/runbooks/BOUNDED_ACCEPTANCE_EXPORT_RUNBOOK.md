@@ -5,13 +5,13 @@ Runbook for exporting bounded acceptance slides from Marp Markdown source into o
 
 ## Source of Truth
 Primary source:
-- `docs/ops/slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md`
+- `docs&#47;ops&#47;slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md`
 
 Do not edit generated PDF or HTML as the canonical source.
 
 ## Output Position
 Preferred generated-artifact location:
-- `out/ops/slides/`
+- `out&#47;ops&#47;slides&#47;`
 
 Suggested output names:
 - `bounded_acceptance_slides_v2.pdf`
@@ -25,28 +25,28 @@ Suggested output names:
 
 ## Prerequisites
 - Node.js and `npx` available
-- Marp CLI: `npx @marp-team/marp-cli` (no global install required)
+- Marp CLI: `npx @marp-team&#47;marp-cli` (no global install required)
 
 ## Export Commands
 
 ### PDF
 ```bash
 cd ~/Peak_Trade
-mkdir -p out/ops/slides
-npx @marp-team/marp-cli docs/ops/slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md --pdf --no-stdin -o out/ops/slides/bounded_acceptance_slides_v2.pdf
+mkdir -p out&#47;ops&#47;slides
+npx @marp-team/marp-cli docs&#47;ops&#47;slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md --pdf --no-stdin -o out&#47;ops&#47;slides/bounded_acceptance_slides_v2.pdf
 ```
 
 ### HTML
 ```bash
 cd ~/Peak_Trade
-mkdir -p out/ops/slides
-npx @marp-team/marp-cli docs/ops/slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md --html --no-stdin -o out/ops/slides/bounded_acceptance_slides_v2.html
+mkdir -p out&#47;ops&#47;slides
+npx @marp-team/marp-cli docs&#47;ops&#47;slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md --html --no-stdin -o out&#47;ops&#47;slides/bounded_acceptance_slides_v2.html
 ```
 
 ### Event-Specific Naming
 If a dated artifact is needed:
 ```bash
-npx @marp-team/marp-cli docs/ops/slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md --pdf --no-stdin -o out/ops/slides/bounded_acceptance_slides_v2_$(date +%Y%m%d).pdf
+npx @marp-team/marp-cli docs&#47;ops&#47;slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md --pdf --no-stdin -o out&#47;ops&#47;slides/bounded_acceptance_slides_v2_$(date +%Y%m%d).pdf
 ```
 
 ## When To Export
@@ -57,9 +57,9 @@ Export only when:
 
 ## References
 - export plan:
-  `docs/ops/reviews/bounded_acceptance_presentation_export_plan/PLAN.md`
+  `docs&#47;ops&#47;reviews/bounded_acceptance_presentation_export_plan/PLAN.md`
 - slides source:
-  `docs/ops/slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md`
+  `docs&#47;ops&#47;slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md`
 
 ## Bottom Line
 Exports are reproducible from Marp source. Do not version generated PDF/HTML in git by default.
