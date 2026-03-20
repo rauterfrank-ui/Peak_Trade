@@ -180,6 +180,24 @@ def format_portfolio_snapshot(snapshot: LivePortfolioSnapshot) -> str:
             lines.append(f"  - margin_used         : {snapshot.margin_used:.2f}")
         lines.append("")
 
+    # Balance semantics (operator-visible, wenn vom Guardrail gesetzt)
+    if (
+        snapshot.balance_semantic_state is not None
+        or snapshot.balance_reason_code is not None
+        or snapshot.balance_operator_visible_state is not None
+    ):
+        lines.append("Balance semantics:")
+        lines.append("-" * 70)
+        if snapshot.balance_semantic_state is not None:
+            lines.append(f"  - balance_semantic_state       : {snapshot.balance_semantic_state}")
+        if snapshot.balance_reason_code is not None:
+            lines.append(f"  - balance_reason_code         : {snapshot.balance_reason_code}")
+        if snapshot.balance_operator_visible_state is not None:
+            lines.append(
+                f"  - balance_operator_visible_state : {snapshot.balance_operator_visible_state}"
+            )
+        lines.append("")
+
     return "\n".join(lines)
 
 
@@ -260,6 +278,17 @@ def format_json_output(snapshot: LivePortfolioSnapshot, risk_result: Any | None 
             data["account"]["cash"] = snapshot.cash
         if snapshot.margin_used is not None:
             data["account"]["margin_used"] = snapshot.margin_used
+
+    if (
+        snapshot.balance_semantic_state is not None
+        or snapshot.balance_reason_code is not None
+        or snapshot.balance_operator_visible_state is not None
+    ):
+        data["balance_semantics"] = {
+            "balance_semantic_state": snapshot.balance_semantic_state,
+            "balance_reason_code": snapshot.balance_reason_code,
+            "balance_operator_visible_state": snapshot.balance_operator_visible_state,
+        }
 
     if risk_result:
         data["risk"] = {
