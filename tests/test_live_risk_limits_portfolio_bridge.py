@@ -292,6 +292,37 @@ def test_evaluate_portfolio_metrics_includes_account_data():
     assert result.metrics["portfolio_margin_used"] == pytest.approx(15000.0, abs=0.01)
 
 
+def test_evaluate_portfolio_balance_semantics_blocked_excludes_portfolio_cash():
+    """When balance_semantic_state is blocked, portfolio_cash is not added to metrics."""
+    snapshot = LivePortfolioSnapshot(
+        as_of=datetime.utcnow(),
+        positions=[],
+        cash=3000.0,
+        balance_semantic_state="balance_semantics_blocked",
+        balance_reason_code="BALANCE_CASH_FALLBACK_AMBIGUOUS",
+        balance_operator_visible_state="blocked: cash fallback not upgradeable to free/usable",
+    )
+
+    config = LiveRiskConfig(
+        enabled=True,
+        base_currency="EUR",
+        max_total_exposure_notional=50000.0,
+        max_symbol_exposure_notional=20000.0,
+        max_open_positions=10,
+        max_order_notional=None,
+        max_daily_loss_abs=None,
+        max_daily_loss_pct=None,
+        block_on_violation=True,
+        use_experiments_for_daily_pnl=True,
+    )
+
+    risk_limits = LiveRiskLimits(config)
+    result = risk_limits.evaluate_portfolio(snapshot)
+
+    assert "portfolio_cash" not in result.metrics
+    assert result.metrics.get("balance_operator_visible_state") is not None
+
+
 def test_evaluate_portfolio_empty_portfolio():
     """Testet leeres Portfolio."""
     snapshot = LivePortfolioSnapshot(

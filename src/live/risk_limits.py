@@ -1096,7 +1096,14 @@ class LiveRiskLimits:
         if snapshot.equity is not None:
             metrics["portfolio_equity"] = snapshot.equity
         if snapshot.cash is not None:
-            metrics["portfolio_cash"] = snapshot.cash
+            # Do not treat cash as decision-grade when balance semantics are blocked
+            semantic_state = snapshot.balance_semantic_state
+            if semantic_state != "balance_semantics_blocked":
+                metrics["portfolio_cash"] = snapshot.cash
+            if snapshot.balance_operator_visible_state:
+                metrics["balance_operator_visible_state"] = (
+                    snapshot.balance_operator_visible_state
+                )
         if snapshot.margin_used is not None:
             metrics["portfolio_margin_used"] = snapshot.margin_used
 
