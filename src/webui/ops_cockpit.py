@@ -642,8 +642,48 @@ def build_ops_cockpit_payload(
     _stale_summary = (
         "stale" if "stale" in _stale_signals else ("ok" if "ok" in _stale_signals else "unknown")
     )
+    # Balance semantics visibility (operator-facing; from LivePortfolioSnapshot when available)
+    _balance_semantic_state: Optional[str] = None
+    _balance_reason_code: Optional[str] = None
+    _balance_operator_visible_state: Optional[str] = None
+    if _config_path and _config_path.exists():
+        try:
+            from src.core.peak_config import load_config
+            from src.live.broker_base import PaperBroker
+            from src.live.portfolio_monitor import LivePortfolioMonitor
+
+            peak_config = load_config(_config_path)
+            starting_cash = float(peak_config.get("general.starting_capital", 10000.0))
+            base_currency = str(peak_config.get("general.base_currency", "EUR"))
+            broker = PaperBroker(
+                starting_cash=starting_cash,
+                base_currency=base_currency,
+                log_to_console=False,
+            )
+            monitor = LivePortfolioMonitor(broker)
+            snapshot = monitor.snapshot()
+            if snapshot is not None:
+                _balance_semantic_state = getattr(snapshot, "balance_semantic_state", None)
+                _balance_reason_code = getattr(snapshot, "balance_reason_code", None)
+                _balance_operator_visible_state = getattr(
+                    snapshot, "balance_operator_visible_state", None
+                )
+        except Exception:
+            pass
+    balance_semantics_state = {
+        "balance_semantic_state": _balance_semantic_state,
+        "balance_reason_code": _balance_reason_code,
+        "balance_operator_visible_state": _balance_operator_visible_state,
+    }
+    _balance_stale = "unknown"
+    if _balance_semantic_state == "balance_semantics_blocked":
+        _balance_stale = "blocked"
+    elif _balance_semantic_state == "balance_semantics_warning":
+        _balance_stale = "warn"
+    elif _balance_semantic_state == "balance_semantics_clear":
+        _balance_stale = "ok"
     stale_state = {
-        "balance": "unknown",
+        "balance": _balance_stale,
         "position": _position_stale,
         "order": "unknown",
         "exposure": _exposure_stale,
@@ -792,6 +832,7 @@ def build_ops_cockpit_payload(
         "incident_state": incident_state,
         "exposure_state": exposure_state,
         "stale_state": stale_state,
+        "balance_semantics_state": balance_semantics_state,
         "session_end_mismatch_state": session_end_mismatch_state,
         "human_supervision_state": human_supervision_state,
         "evidence_state": evidence_state,
@@ -931,6 +972,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     runtime = payload["runtime_unknown_state"]
     exposure = payload.get("exposure_state") or {}
     stale = payload.get("stale_state") or {}
+    balance_sem = payload.get("balance_semantics_state") or {}
     session_end_mismatch = payload.get("session_end_mismatch_state") or {}
     human_supervision = payload.get("human_supervision_state") or {}
     evidence = payload.get("evidence_state") or {}
@@ -1069,6 +1111,14 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
       <p><strong>Position:</strong> {escape(str(stale.get("position", "unknown")))}</p>
       <p><strong>Order:</strong> {escape(str(stale.get("order", "unknown")))}</p>
       <p><strong>Exposure:</strong> {escape(str(stale.get("exposure", "unknown")))}</p>
+    </div>
+
+    <div class="card">
+      <h2>Balance Semantics</h2>
+      <p><strong>Operator visibility: clear / warning / blocked</strong></p>
+      <p><strong>Semantic state:</strong> <span class="chip"><code>{escape(str(balance_sem.get("balance_semantic_state") or "n/a"))}</code></span></p>
+      <p><strong>Reason code:</strong> {escape(str(balance_sem.get("balance_reason_code") or "n/a"))}</p>
+      <p><strong>Operator-visible state:</strong> {escape(str(balance_sem.get("balance_operator_visible_state") or "n/a"))}</p>
     </div>
 
     <div class="card">
