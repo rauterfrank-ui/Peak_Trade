@@ -1,0 +1,16 @@
+PROJECT: Peak_Trade
+TOPIC: balance_semantics_guardrail_ops_cockpit_visibility
+STATUS: implementation_in_progress
+BRANCH: feat/balance-semantics-guardrail-ops-cockpit-visibility
+MODE: paper_stability_guard
+
+GOAL
+- expose balance semantics fields in ops / cockpit visibility surfaces
+
+OUTPUTS
+- ops / cockpit visibility updates
+- tests covering clear / warning / blocked visibility
+- docs/ops/reviews/balance_semantics_guardrail_ops_cockpit_visibility/HANDOFF.txt
+
+NEXT SUGGESTED STEP
+- balance_semantics_guardrail_visibility_closeout
