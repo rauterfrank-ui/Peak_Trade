@@ -1100,10 +1100,16 @@ class LiveRiskLimits:
             semantic_state = snapshot.balance_semantic_state
             if semantic_state != "balance_semantics_blocked":
                 metrics["portfolio_cash"] = snapshot.cash
-            if snapshot.balance_operator_visible_state:
-                metrics["balance_operator_visible_state"] = snapshot.balance_operator_visible_state
         if snapshot.margin_used is not None:
             metrics["portfolio_margin_used"] = snapshot.margin_used
+
+        # Balance semantics visibility for risk alerts (warn/blocked context)
+        if snapshot.balance_semantic_state is not None:
+            metrics["balance_semantic_state"] = snapshot.balance_semantic_state
+        if snapshot.balance_reason_code is not None:
+            metrics["balance_reason_code"] = snapshot.balance_reason_code
+        if snapshot.balance_operator_visible_state:
+            metrics["balance_operator_visible_state"] = snapshot.balance_operator_visible_state
 
         result = LiveRiskCheckResult(
             allowed=allowed,

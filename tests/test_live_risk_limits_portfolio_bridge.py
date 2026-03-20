@@ -321,6 +321,8 @@ def test_evaluate_portfolio_balance_semantics_blocked_excludes_portfolio_cash():
 
     assert "portfolio_cash" not in result.metrics
     assert result.metrics.get("balance_operator_visible_state") is not None
+    assert result.metrics.get("balance_semantic_state") == "balance_semantics_blocked"
+    assert result.metrics.get("balance_reason_code") == "BALANCE_CASH_FALLBACK_AMBIGUOUS"
 
 
 def test_evaluate_portfolio_empty_portfolio():

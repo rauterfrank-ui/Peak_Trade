@@ -249,6 +249,44 @@ def test_portfolio_violation_emits_alert(
     assert "total_notional" in alert.context
 
 
+def test_portfolio_violation_alert_includes_balance_semantics(
+    collecting_sink: CollectingAlertSink,
+    risk_config_low_limits: LiveRiskConfig,
+):
+    """Testet dass Portfolio-Violation-Alert Balance-Semantics-Felder im Context hat."""
+    risk_limits = LiveRiskLimits(risk_config_low_limits, alert_sink=collecting_sink)
+
+    positions = [
+        LivePositionSnapshot(
+            symbol="BTC/EUR",
+            side="long",
+            size=1.0,
+            mark_price=2000.0,
+            notional=2000.0,  # Überschreitet max_total_exposure_notional (1000.0)
+        ),
+    ]
+
+    snapshot = LivePortfolioSnapshot(
+        as_of=datetime.now(timezone.utc),
+        positions=positions,
+        cash=500.0,
+        balance_semantic_state="balance_semantics_blocked",
+        balance_reason_code="BALANCE_CASH_FALLBACK_AMBIGUOUS",
+        balance_operator_visible_state="blocked: cash fallback not upgradeable",
+    )
+
+    result = risk_limits.evaluate_portfolio(snapshot)
+
+    assert result.allowed is False
+    assert len(collecting_sink.events) == 1
+    alert = collecting_sink.events[0]
+
+    assert alert.code == "RISK_LIMIT_VIOLATION_PORTFOLIO"
+    assert alert.context.get("balance_semantic_state") == "balance_semantics_blocked"
+    assert alert.context.get("balance_reason_code") == "BALANCE_CASH_FALLBACK_AMBIGUOUS"
+    assert "blocked" in str(alert.context.get("balance_operator_visible_state", ""))
+
+
 def test_portfolio_ok_no_alert(
     collecting_sink: CollectingAlertSink,
     risk_config_ok_limits: LiveRiskConfig,
