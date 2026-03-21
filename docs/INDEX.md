@@ -35,3 +35,7 @@
 - [audit/REPO_AUDIT_REPORT.md](audit/REPO_AUDIT_REPORT.md) — Historisch: Repo-Inventory & Feature-Matrix
 - [ops/PR_*_MERGE_LOG.md](ops/) — Merge-Logs
 - [ops/_archive/](ops/_archive/) — Archivierte Docs
+## Cursor Rules / Agent Context
+
+- `.cursor/rules/README.md` — lokaler Index der Cursor-Regeln im Repo
+- `.cursor/rules/peak_trade_founder_operator_paper_stability_guard.mdc` — Founder/Operator-Regel für `paper_stability_guard`, read-only-inventory-first und one-topic-one-PR
