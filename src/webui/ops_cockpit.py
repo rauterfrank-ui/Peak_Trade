@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from html import escape
@@ -341,6 +342,23 @@ def _build_v3_executive_summary(
     }
 
 
+def _detect_incident_stop(repo_root: Path | None) -> tuple[bool, str]:
+    """Detect if incident-stop was invoked. Returns (invoked, source)."""
+    root = repo_root or Path.cwd()
+    out_ops = root / "out" / "ops"
+    if out_ops.exists():
+        for d in sorted(out_ops.iterdir(), key=lambda p: p.stat().st_mtime, reverse=True):
+            if d.is_dir() and d.name.startswith("incident_stop_"):
+                state_file = d / "incident_stop_state.env"
+                if state_file.exists():
+                    return True, str(state_file.relative_to(root))
+    # Fallback: check PT_INCIDENT_STOP env
+    val = os.environ.get("PT_INCIDENT_STOP", "").strip()
+    if val and val not in ("0", "false", "False", ""):
+        return True, "env:PT_INCIDENT_STOP"
+    return False, "unknown"
+
+
 def _build_caps_configured_from_config(config_path: Path) -> List[Dict[str, object]]:
     """
     Read-only. Build caps_configured from live_risk config.
@@ -544,6 +562,30 @@ def build_ops_cockpit_payload(
             _degraded.extend(c.name for c in r.checks if c.status in ("warn", "critical"))
         _degraded = list(dict.fromkeys(_degraded))
     _degraded_incident = not freshness_ok or _tel_status in ("warn", "critical")
+    _incident_stop_invoked, _incident_stop_source = _detect_incident_stop(repo_root)
+    _pt_force_no_trade = os.environ.get("PT_FORCE_NO_TRADE")
+    _pt_enabled = os.environ.get("PT_ENABLED")
+    _pt_armed = os.environ.get("PT_ARMED")
+    _entry_permitted = not _policy_blocked
+    _ks_source = "data/kill_switch/state.json" if _ks_path.exists() else "unavailable"
+    _op_auth = (
+        "kill_switch_active"
+        if _kill_switch_active
+        else "blocked"
+        if operator_state["blocked"]
+        else "degraded"
+        if _degraded_incident
+        else "normal"
+    )
+    _op_reason = (
+        "Kill switch state from data/kill_switch/state.json"
+        if _kill_switch_active
+        else "Operator gates not armed (enabled/armed)"
+        if operator_state["blocked"]
+        else "Degraded telemetry or freshness"
+        if _degraded_incident
+        else "No operator-critical incident-state signal mapped"
+    )
     incident_state = {
         "status": ("blocked" if operator_state["blocked"] or _kill_switch_active else "normal"),
         "blocked": operator_state["blocked"],
@@ -559,6 +601,16 @@ def build_ops_cockpit_payload(
             if _degraded_incident
             else "normal"
         ),
+        "incident_stop_invoked": _incident_stop_invoked,
+        "incident_stop_source": _incident_stop_source,
+        "pt_force_no_trade": _pt_force_no_trade,
+        "pt_enabled": _pt_enabled,
+        "pt_armed": _pt_armed,
+        "kill_switch_source": _ks_source,
+        "entry_permitted": _entry_permitted,
+        "risk_gate_kill_switch_active": _kill_switch_active,
+        "operator_authoritative_state": _op_auth,
+        "operator_state_reason": _op_reason,
     }
     caps_configured = (
         _build_caps_configured_from_config(_config_path)
@@ -977,6 +1029,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     human_supervision = payload.get("human_supervision_state") or {}
     evidence = payload.get("evidence_state") or {}
     dependencies = payload.get("dependencies_state") or {}
+    incident = payload.get("incident_state") or {}
     counts = truth_state["priority_counts"]
     groups = payload["source_groups"]
     summaries = payload["source_group_summary"]
@@ -1152,6 +1205,22 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
       <p><strong>Summary:</strong> <span class="chip"><code>{escape(str(dependencies.get("summary", "unknown")))}</code></span></p>
       <p><strong>Exchange:</strong> {escape(str(dependencies.get("exchange", "unknown")))}</p>
       <p><strong>Telemetry:</strong> {escape(str(dependencies.get("telemetry", "unknown")))}</p>
+    </div>
+
+    <div class="card truth-card">
+      <h2>Incident-state read model</h2>
+      <p><strong>Question-specific authority (read-model contract)</strong></p>
+      <p><strong>Incident stop invoked:</strong> {escape(str(incident.get("incident_stop_invoked", False)))}</p>
+      <p><strong>Incident stop source:</strong> <code>{escape(str(incident.get("incident_stop_source", "n/a")))}</code></p>
+      <p><strong>PT_FORCE_NO_TRADE:</strong> {escape(str(incident.get("pt_force_no_trade") if incident.get("pt_force_no_trade") is not None else "n/a"))}</p>
+      <p><strong>PT_ENABLED:</strong> {escape(str(incident.get("pt_enabled") if incident.get("pt_enabled") is not None else "n/a"))}</p>
+      <p><strong>PT_ARMED:</strong> {escape(str(incident.get("pt_armed") if incident.get("pt_armed") is not None else "n/a"))}</p>
+      <p><strong>Kill-switch active:</strong> {escape(str(incident.get("kill_switch_active", False)))}</p>
+      <p><strong>Kill-switch source:</strong> <code>{escape(str(incident.get("kill_switch_source", "n/a")))}</code></p>
+      <p><strong>Entry permitted:</strong> {escape(str(incident.get("entry_permitted") if incident.get("entry_permitted") is not None else "n/a"))}</p>
+      <p><strong>Risk-gate kill-switch active:</strong> {escape(str(incident.get("risk_gate_kill_switch_active", False)))}</p>
+      <p><strong>Operator authoritative state:</strong> <code>{escape(str(incident.get("operator_authoritative_state", "n/a")))}</code></p>
+      <p><strong>Operator state reason:</strong> {escape(str(incident.get("operator_state_reason", "n/a")))}</p>
     </div>
   </div>
 
