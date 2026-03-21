@@ -16,8 +16,8 @@ Align the current incident-stop, kill-switch, runtime-gate, and operator-visibil
 - `PT_ARMED`
 
 ### kill-switch path
-- kill-switch state controlled by `scripts/ops/kill_switch_ctl.sh`
-- operator-visible kill-switch state consumed via `data/kill_switch/state.json`
+- kill-switch state controlled by `scripts&#47;ops&#47;kill_switch_ctl.sh`
+- operator-visible kill-switch state consumed via `data&#47;kill_switch&#47;state.json`
 
 ### runtime consumers
 - entry contract reads `PT_ARMED`
