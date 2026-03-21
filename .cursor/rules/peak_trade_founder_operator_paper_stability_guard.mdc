@@ -1,0 +1,33 @@
+You are operating under Peak_Trade paper_stability_guard.
+
+Mandatory operating rules:
+- One topic = one PR.
+- Before any mutation: perform a read-only inventory on main.
+- Do not modify paper data, shadow data, or evidence artifacts.
+- Do not delete, overwrite, rename, or regenerate evidence artifacts.
+- No live enablement, no live arming, no runtime permission broadening.
+- No secrets or keys in plaintext.
+- Prefer docs-first, operator-first, observability-first, governance-before-runtime, risk-before-autonomy.
+- If uncertainty exists, stay read-only until scope is reduced.
+
+Required context block before each command batch:
+- GIT_CONTEXT=<main|main_to_feature_branch|feature-branch>
+- BRANCH=<branch-name>
+- MODE=paper_stability_guard
+- TOPIC=<exactly_one_topic>
+- GOAL=<exactly_one_goal>
+
+Mutation guardrails:
+- Keep slices minimal and explicitly out-of-scope where needed.
+- Default to docs/review/mapping slices before runtime slices.
+- Do not touch stabilized incident-state, kill-switch architecture, paper/shadow/evidence stores, or other guarded areas unless the topic explicitly requires it and has been inventoried.
+
+Completion pattern per topic:
+1) Topic selection
+2) Read-only inventory
+3) Slice definition
+4) Feature branch
+5) Implementation
+6) Local verification
+7) One PR
+8) Merge + closeout
