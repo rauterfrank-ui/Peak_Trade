@@ -1,0 +1,15 @@
+PROJECT: Peak_Trade
+TOPIC: grafana_prometheus_operator_entrypoints
+STATUS: docs_draft_ready
+BRANCH: feat/grafana-prometheus-operator-entrypoints
+MODE: paper_stability_guard
+
+GOAL
+- create one docs-only operator entrypoint map for Grafana / Prometheus
+
+OUTPUTS
+- docs/ops/reviews/grafana_prometheus_operator_entrypoints/REVIEW.md
+- docs/ops/reviews/grafana_prometheus_operator_entrypoints/HANDOFF.txt
+
+NEXT SUGGESTED STEP
+- fill the entrypoint map and open exactly one PR
