@@ -107,6 +107,7 @@ mkdir -p .cursor/rules .cursor/commands evals/aiops/tests/testcases docs/ai
 
 **Rules:**
 - `.cursor/rules/peak-trade-governance.mdc` — Prime Directive, High-Risk Paths
+- `.cursor/rules/peak_trade_founder_operator_paper_stability_guard.mdc` — Founder/Operator-Regel für `paper_stability_guard`, one-topic-one-PR, read-only-inventory-first
 - `.cursor&#47;rules&#47;delivery-contract.mdc` — Workflow, Completion Block
 
 **Commands:**
