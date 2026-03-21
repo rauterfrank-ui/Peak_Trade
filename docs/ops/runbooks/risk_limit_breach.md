@@ -38,3 +38,8 @@ Use this runbook when a limit breach, hard risk denial, or operator-visible risk
 ## Notes
 - do not assume incident-stop and kill-switch are the same signal
 - prefer conservative operator posture under ambiguity
+
+
+## Telemetry Cross-Reference
+If the risk-limit event is telemetry-adjacent or evidence interpretation is unclear, also consult:
+`docs&#47;ops&#47;EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md`
