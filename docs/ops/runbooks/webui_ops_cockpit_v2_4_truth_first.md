@@ -18,3 +18,8 @@ Small UX finishes on v2.3:
 
 ## Implementation
 - `src/webui/ops_cockpit.py`
+
+
+## Telemetry Interpretation Cross-Reference
+For telemetry-incident-specific operator interpretation, also use:
+`docs&#47;ops&#47;EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md`

@@ -21,3 +21,8 @@ Adds tiny read-only visual-emphasis refinements:
 - `src&#47;webui&#47;ops_cockpit.py`
 - `src&#47;webui&#47;app.py`
 - `tests&#47;webui&#47;test_ops_cockpit.py`
+
+
+## Telemetry Interpretation Cross-Reference
+For telemetry-incident-specific operator interpretation, also use:
+`docs&#47;ops&#47;EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md`
