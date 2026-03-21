@@ -38,6 +38,18 @@
 
 ---
 
+## Preconditions
+Vor einem Live-Rollback muss ein operatorisch gesicherter STOP/FREEZE-Zustand hergestellt sein. Dazu gehört insbesondere:
+
+- `bash scripts/ops/incident_stop_now.sh` wurde ausgeführt
+- keine weiteren Bot-Runs werden gestartet
+- keine manuellen Orders werden platziert
+- ein Incident-Snapshot wurde erstellt, z. B. via `bash scripts/ops/build_incident_snapshot.sh`
+
+Siehe auch: [Incident Stop / Freeze / Rollback](../ops/runbooks/incident_stop_freeze_rollback.md).
+
+---
+
 ## Pre-Rollback Check
 
 **Before executing rollback, quickly assess:**
