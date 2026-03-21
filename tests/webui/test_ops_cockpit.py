@@ -79,6 +79,16 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert payload["incident_state"]["degraded"] is False
     assert payload["incident_state"]["requires_operator_attention"] is True
     assert payload["incident_state"]["summary"] == "blocked"
+    assert "incident_stop_invoked" in payload["incident_state"]
+    assert "incident_stop_source" in payload["incident_state"]
+    assert "pt_force_no_trade" in payload["incident_state"]
+    assert "pt_enabled" in payload["incident_state"]
+    assert "pt_armed" in payload["incident_state"]
+    assert "kill_switch_source" in payload["incident_state"]
+    assert "entry_permitted" in payload["incident_state"]
+    assert "risk_gate_kill_switch_active" in payload["incident_state"]
+    assert "operator_authoritative_state" in payload["incident_state"]
+    assert "operator_state_reason" in payload["incident_state"]
     assert payload["run_state"]["active"] is False
     assert payload["run_state"]["last_run_status"] in (
         "unknown",
@@ -588,6 +598,43 @@ def test_incident_state_kill_switch_active_when_state_file(tmp_path: Path) -> No
     inc = payload["incident_state"]
     assert inc["kill_switch_active"] is True
     assert inc["status"] == "blocked"
+    assert inc["kill_switch_source"] == "data/kill_switch/state.json"
+    assert inc["risk_gate_kill_switch_active"] is True
+    assert inc["operator_authoritative_state"] == "kill_switch_active"
+    assert "Kill switch" in str(inc["operator_state_reason"])
+
+
+def test_incident_state_read_model_incident_stop_invoked_when_artifact_exists(
+    tmp_path: Path,
+) -> None:
+    """When incident-stop artifact exists, incident_stop_invoked is True."""
+    out_ops = tmp_path / "out" / "ops"
+    out_ops.mkdir(parents=True)
+    stop_dir = out_ops / "incident_stop_20260321T120000Z_manual-stop"
+    stop_dir.mkdir()
+    (stop_dir / "incident_stop_state.env").write_text(
+        "PT_INCIDENT_STOP=1\nPT_FORCE_NO_TRADE=1\nPT_ENABLED=0\nPT_ARMED=0\n",
+        encoding="utf-8",
+    )
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    inc = payload["incident_state"]
+    assert inc["incident_stop_invoked"] is True
+    assert "incident_stop_state.env" in str(inc["incident_stop_source"])
+
+
+def test_ops_cockpit_html_contains_incident_state_read_model(tmp_path: Path) -> None:
+    """HTML renders Incident-state read model section."""
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Incident-state read model" in html
+    assert "Incident stop invoked" in html
+    assert "PT_FORCE_NO_TRADE" in html
+    assert "PT_ENABLED" in html
+    assert "PT_ARMED" in html
+    assert "Kill-switch source" in html
+    assert "Entry permitted" in html
+    assert "Risk-gate kill-switch active" in html
+    assert "Operator authoritative state" in html
+    assert "Operator state reason" in html
 
 
 def test_evidence_state_audit_trail_and_telemetry_when_telemetry_ok(tmp_path: Path) -> None:
