@@ -1,0 +1,15 @@
+PROJECT: Peak_Trade
+TOPIC: ops_suite_incident_state_real_signal_alignment
+STATUS: docs_draft_ready
+BRANCH: feat/ops-suite-incident-state-real-signal-alignment
+MODE: paper_stability_guard
+
+GOAL
+- align incident-stop, kill-switch, runtime-gate, and operator-visibility signals into one docs-first read-model view
+
+OUTPUTS
+- docs/ops/reviews/ops_suite_incident_state_real_signal_alignment/REVIEW.md
+- docs/ops/reviews/ops_suite_incident_state_real_signal_alignment/HANDOFF.txt
+
+NEXT SUGGESTED STEP
+- incident_state_read_model_contract
