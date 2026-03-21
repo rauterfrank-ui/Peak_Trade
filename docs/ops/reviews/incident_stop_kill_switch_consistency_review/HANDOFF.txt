@@ -1,0 +1,21 @@
+PROJECT: Peak_Trade
+TOPIC: incident_stop_kill_switch_consistency_review
+STATUS: docs_draft_ready
+BRANCH: feat/incident-stop-kill-switch-consistency-review
+MODE: paper_stability_guard
+
+GOAL
+- review consistency between incident-stop, kill-switch, runtime guards, and operator visibility
+
+OUTPUTS
+- docs/ops/reviews/incident_stop_kill_switch_consistency_review/REVIEW.md
+- docs/ops/reviews/incident_stop_kill_switch_consistency_review/HANDOFF.txt
+
+KEY REFERENCES
+- docs/ops/runbooks/incident_stop_freeze_rollback.md
+- scripts/ops/incident_stop_now.sh
+- scripts/ops/kill_switch_ctl.sh
+- docs/ops/specs/OPS_SUITE_INCIDENT_STATE_REAL_SIGNAL_REVIEW.md
+
+NEXT SUGGESTED STEP
+- ops_suite_incident_state_real_signal_alignment
