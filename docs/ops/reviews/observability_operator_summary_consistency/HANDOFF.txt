@@ -1,0 +1,15 @@
+PROJECT: Peak_Trade
+TOPIC: observability_operator_summary_consistency
+STATUS: plan_stub_ready
+BRANCH: feat/observability-operator-summary-consistency
+MODE: paper_stability_guard
+
+GOAL
+- prepare one docs-only PR for observability operator-summary consistency
+
+OUTPUTS
+- docs/ops/reviews/observability_operator_summary_consistency/PLAN.md
+- docs/ops/reviews/observability_operator_summary_consistency/HANDOFF.txt
+
+NEXT SUGGESTED STEP
+- edit the observability-facing docs in this same branch and open one PR

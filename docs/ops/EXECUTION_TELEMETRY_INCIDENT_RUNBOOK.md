@@ -547,3 +547,22 @@ When handling execution telemetry incidents, keep the following aligned:
 - telemetry incident handling should reference the same evidence location operators use for incident review
 - operator summary text should not drift from the underlying evidence interpretation
 - incident handling remains conservative under ambiguous telemetry state
+
+
+## Operator Summary Consistency
+Use one conservative operator-summary interpretation path across telemetry and cockpit-facing docs:
+- telemetry incident interpretation
+- operator-visible summary wording
+- evidence location references
+- alert / degraded / blocked state explanations
+
+## Related Operator-Facing Docs
+- ops cockpit truth-first:
+  `docs&#47;ops&#47;runbooks&#47;webui_ops_cockpit_v2_9_truth_first.md`
+- earlier ops cockpit truth-first:
+  `docs&#47;ops&#47;runbooks&#47;webui_ops_cockpit_v2_4_truth_first.md`
+
+## Consistency Notes
+- operator summary wording should not overclaim certainty beyond evidence
+- alert / degraded language should remain conservative
+- telemetry interpretation and cockpit language should point to the same operator reading
