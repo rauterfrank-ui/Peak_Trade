@@ -524,3 +524,26 @@ curl http://localhost:8000/api/telemetry?limit=1
 **Last Updated:** 2025-12-20 (Phase 16D)  
 **Maintainer:** Ops Team  
 **Status:** Active
+
+
+## Operator Summary / Evidence Consistency
+When handling execution telemetry incidents, keep the following aligned:
+- operator-visible telemetry summary
+- evidence artifact location
+- incident snapshot output
+- incident / rollback decision notes
+
+## Related Operator Paths
+- incident stop / freeze / rollback:
+  `docs&#47;ops&#47;runbooks&#47;incident_stop_freeze_rollback.md`
+- risk limit breach:
+  `docs&#47;ops&#47;runbooks&#47;risk_limit_breach.md`
+
+## Related Evidence Commands
+- incident snapshot:
+  `scripts&#47;ops&#47;build_incident_snapshot.sh`
+
+## Consistency Notes
+- telemetry incident handling should reference the same evidence location operators use for incident review
+- operator summary text should not drift from the underlying evidence interpretation
+- incident handling remains conservative under ambiguous telemetry state
