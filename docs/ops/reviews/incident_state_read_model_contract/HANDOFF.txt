@@ -1,0 +1,15 @@
+PROJECT: Peak_Trade
+TOPIC: incident_state_read_model_contract
+STATUS: docs_draft_ready
+BRANCH: feat/incident-state-read-model-contract
+MODE: paper_stability_guard
+
+GOAL
+- define the docs-first read-model contract for incident-state visibility
+
+OUTPUTS
+- docs/ops/reviews/incident_state_read_model_contract/CONTRACT.md
+- docs/ops/reviews/incident_state_read_model_contract/HANDOFF.txt
+
+NEXT SUGGESTED STEP
+- incident_state_read_model_usage_plan
