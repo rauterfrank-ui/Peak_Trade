@@ -62,3 +62,8 @@
 ### Telemetry Output (JSONL)
 - Default: `logs&#47;execution&#47;execution_pipeline_events_v0.jsonl` (append-only).
 - Ziel ist Watch-only Observability via `src&#47;webui&#47;execution_watch_api_v0.py`.
+
+
+## Live Broker Boundary Cross-Reference
+For operator-facing live-broker boundary interpretation, also use:
+`docs&#47;ops&#47;runbooks&#47;RUNBOOK_FINISH_C_V1_LIVE_BROKER_OPS.md`

@@ -90,3 +90,8 @@ Required:
 
 Then:
 - Live pilot with minimal notional + strict caps + confirm-token gating.
+
+
+## Live Broker Boundary Cross-Reference
+For no-live-default and operator boundary interpretation, also use:
+`docs&#47;ops&#47;runbooks&#47;RUNBOOK_FINISH_C_V1_LIVE_BROKER_OPS.md`

@@ -1,0 +1,15 @@
+PROJECT: Peak_Trade
+TOPIC: live_broker_boundary_review
+STATUS: plan_stub_ready
+BRANCH: feat/live-broker-boundary-review
+MODE: paper_stability_guard
+
+GOAL
+- prepare one docs-only PR for live broker boundary review
+
+OUTPUTS
+- docs/ops/reviews/live_broker_boundary_review/PLAN.md
+- docs/ops/reviews/live_broker_boundary_review/HANDOFF.txt
+
+NEXT SUGGESTED STEP
+- edit the live-broker-facing docs in this same branch and open one PR
