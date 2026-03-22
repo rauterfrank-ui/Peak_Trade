@@ -32,6 +32,7 @@ Schnelleinstieg für neue Cursor Multi-Agent Sessions:
 1. **Öffne dieses Frontdoor-Dokument** (du bist bereits hier)
 2. **Öffne den Phasen-Runbook**: [CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md](CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md)
 3. **Erstelle einen Session Runlog** aus dem Template: [CURSOR_MULTI_AGENT_SESSION_RUNLOG_TEMPLATE.md](CURSOR_MULTI_AGENT_SESSION_RUNLOG_TEMPLATE.md)
+4. **Founder/Operator-Regel aktivieren** (empfohlen): `.cursor/rules/peak_trade_founder_operator_paper_stability_guard.mdc` — `paper_stability_guard`, one-topic-one-PR, read-only-inventory-first
 
 **Phasen-Auswahl:**
 - **Phase 0** — Foundation / Contracts / Docs-First (siehe PHASES_V2, Abschnitt 5)
