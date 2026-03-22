@@ -167,7 +167,7 @@ Jedes Gate hat:
 - [ ] `config/risk/` vollständig konfiguriert
 - [ ] Position Size Limits definiert (`max_position_size`, `max_portfolio_value`)
 - [ ] Drawdown Limits definiert (`max_daily_drawdown`, `max_total_drawdown`)
-- [ ] Kill-Switch konfiguriert (`config&#47;kill_switch&#47;`)
+- [ ] Kill-Switch konfiguriert (`config/risk/kill_switch.toml`)
 - [ ] Risk-Layer Tests grün (`tests/risk/`)
 - [ ] LiveRiskLimits implementiert (`"src\&#47;risk\&#47;live_risk_limits.py" (future; placeholder target — not in repo yet)`)
 - [ ] Pre-Trade & Runtime Checks aktiv

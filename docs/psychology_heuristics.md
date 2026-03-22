@@ -638,7 +638,7 @@ MOVE_LARGE_PCT = 0.50  # statt 0.70 (niedrigere Schwelle für "große Moves")
 **Option 2:** Via Config-File (zukünftig)
 
 ```toml
-# config/psychology_heuristics.toml
+# future example config path (not yet implemented)
 [thresholds]
 latency_ok_s = 4.0
 latency_hesitation_s = 10.0
