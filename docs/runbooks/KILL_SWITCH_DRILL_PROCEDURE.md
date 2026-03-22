@@ -215,7 +215,7 @@ trigger = ThresholdTrigger(
 
 4. **Check Session Logs**
    ```bash
-   tail -f logs/live_sessions/[session_id].log
+   tail -f logs/execution/<session_id>.jsonl
    ```
    Expected: "Trading blocked: Kill Switch is KILLED"
 
