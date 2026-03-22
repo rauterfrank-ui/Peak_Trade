@@ -7,6 +7,19 @@
 
 ---
 
+## Operator entrypoint guidance
+For operator-facing guarded work, prefer the shell wrapper for routine status and audit-oriented checks:
+
+- `bash scripts/ops/kill_switch_ctl.sh status`
+- `bash scripts/ops/kill_switch_ctl.sh audit`
+
+Use the Python CLI for direct kill-switch control steps that are part of the live-mode transition flow:
+
+- `python3 -m src.risk_layer.kill_switch.cli status`
+- `python3 -m src.risk_layer.kill_switch.cli trigger`
+
+This keeps routine operator checks aligned with rollback and kill-switch runbook guidance while preserving the direct transition control path here.
+
 ## Purpose
 
 This runbook documents the **safe transition procedure** from Phase 71 (shadow/paper mode) to live trading with real orders. This is a **one-way gate** and requires multiple sign-offs.
