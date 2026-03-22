@@ -647,7 +647,7 @@ python3 scripts/live_web_server.py --reload
 - Runs-Liste (JSON): `http://localhost:8000/api/execution/runs`
 - Run-Snapshot (JSON): `http://localhost:8000/api/execution/runs/{run_id}`
 - Run-Events (JSON): `http://localhost:8000/api/execution/runs/{run_id}/events?limit=100`
-- Run-Alerts (JSON): `http://localhost:8000/api/live/alerts?limit=20`
+- Live Alerts (JSON): `http://localhost:8000/api/live/alerts?limit=20`
 
 **Siehe:** [`LIVE_OPERATIONAL_RUNBOOKS.md`](LIVE_OPERATIONAL_RUNBOOKS.md) Abschnitt 10d für Details.
 
