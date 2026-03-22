@@ -872,9 +872,9 @@ Der Orchestrator führt automatisch folgende Checks durch:
 ### 10a.8 Logs & Events
 
 **Log-Pfad:**
-- Run-Logs werden in `live_runs/{run_id}/` gespeichert
-- Metadaten: `live_runs/{run_id}/meta.json`
-- Events: `live_runs/{run_id}/events.parquet` (oder `.csv`)
+- Run-Logs werden in `live_runs&#47;{run_id}&#47;` gespeichert
+- Metadaten: `live_runs&#47;{run_id}&#47;meta.json`
+- Events: `live_runs&#47;{run_id}&#47;events.parquet` (oder `.csv`)
 
 **Log-Struktur:**
 - `meta.json`: Run-Metadaten (Run-ID, Mode, Strategy, Symbol, Timeframe, Start/End-Zeit)
@@ -1201,7 +1201,7 @@ python3 scripts/live_monitor_cli.py follow \
 ### 10b.5 Run-Logs & Verzeichnisstruktur
 
 **Log-Pfad:**
-- Run-Logs werden in `live_runs/{run_id}/` gespeichert (konfigurierbar via `shadow_paper_logging.base_dir`)
+- Run-Logs werden in `live_runs&#47;{run_id}&#47;` gespeichert (konfigurierbar via `shadow_paper_logging.base_dir`)
 
 **Verzeichnisstruktur:**
 ```
@@ -1514,7 +1514,7 @@ python3 scripts/live_web_server.py
 ```
 
 **Mit Alerts:**
-- Alerts werden automatisch aus `{run_dir}/alerts.jsonl` geladen
+- Alerts werden automatisch aus `{run_dir}&#47;alerts.jsonl` geladen
 - Keine zusätzliche Konfiguration nötig
 
 ### 10d.7 Bekannte Limitierungen (v0)
@@ -1561,7 +1561,7 @@ python3 scripts/live_web_server.py
 ### 11.3 Dokumentationspflichten
 
 **Laufender Betrieb:**
-- Täglicher Health-Check-Eintrag in `logs/operations.log`
+- Täglicher Health-Check-Eintrag in `logs&#47;operations.log`
 - Run-IDs und Ergebnisse in Experiments-Registry
 
 **Bei Incidents:**
@@ -1569,7 +1569,7 @@ python3 scripts/live_web_server.py
 - Post-Mortem bei High-Severity-Incidents
 
 **Bei Stufen-Übergängen:**
-- Ausgefüllte Checklisten in `reports/checklists/`
+- Ausgefüllte Checklisten in `reports&#47;checklists&#47;`
 - Freigabe-Dokumentation
 
 ---
