@@ -1505,7 +1505,7 @@ Das HTML-Dashboard bietet:
 **Mit Testnet-Orchestrator:**
 ```bash
 # Terminal 1: Orchestrator starten
-python3 scripts/testnet_orchestrator_cli.py start --profile quick_smoke
+python3 scripts/orchestrate_testnet_runs.py --profile quick_smoke
 
 # Terminal 2: Web-Dashboard starten
 python3 scripts/live_web_server.py
