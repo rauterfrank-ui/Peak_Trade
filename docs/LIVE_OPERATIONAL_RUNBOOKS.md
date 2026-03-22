@@ -1015,7 +1015,7 @@ python3 scripts/run_execution_session.py \
 
 #### 1. Registry-Verfügbarkeit prüfen
 
-- Stelle sicher, dass `reports/experiments/live_sessions/` existiert.
+- Stelle sicher, dass `reports&#47;experiments&#47;live_sessions&#47;` existiert.
 - Falls nicht, wurde ggf. noch keine Session erfolgreich registriert → Ursache prüfen (Logs von `run_execution_session.py`).
 
 ```bash
@@ -1635,7 +1635,7 @@ Nutzung des Live-Track Panels (Phase 82) für kontinuierliches Session-Monitorin
 ### 12a.2 Voraussetzungen
 
 - [ ] Web-Dashboard verfügbar (`src/webui/app.py`)
-- [ ] Live-Session-Registry mit Einträgen (`reports/experiments/live_sessions/`)
+- [ ] Live-Session-Registry mit Einträgen (`reports&#47;experiments&#47;live_sessions&#47;`)
 - [ ] Browser oder curl verfügbar
 
 ### 12a.3 Dashboard starten
