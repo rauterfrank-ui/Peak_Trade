@@ -272,11 +272,10 @@ tail -f logs/exchange.log
 
 **Option 1: Verbindung wiederherstellen**
 ```bash
-# Data Pipeline neustarten
-./scripts/data/restart_pipeline.sh
-
-# Oder gesamtes System
-./scripts/ops/restart_all.sh
+# Laufende Sessions prüfen und ggf. neu starten (Preisdaten vom Orchestrator)
+python3 scripts/testnet_orchestrator_cli.py status --config config/config.toml
+python3 scripts/testnet_orchestrator_cli.py stop --all --config config/config.toml
+# Neue Session starten – siehe LIVE_OPERATIONAL_RUNBOOKS
 ```
 
 **Option 2: Exchange-Check deaktivieren** (nur für Recovery!)
@@ -293,21 +292,22 @@ require_exchange_connection = false  # Temporär!
 
 **Diagnose:**
 ```bash
-# 1. Data Pipeline Status
-./scripts/data/pipeline_status.sh
+# 1. Laufende Sessions prüfen (Preisdaten vom Live/Testnet-Orchestrator)
+python3 scripts/testnet_orchestrator_cli.py status --config config/config.toml
 
-# 2. Letzte Price Updates prüfen
-tail -f logs/data_pipeline.log | grep "price"
+# 2. Execution-Telemetrie prüfen (falls Session läuft)
+python3 scripts/view_execution_telemetry.py --path logs/execution --limit 20
 
-# 3. Exchange API Rate Limits prüfen
-grep "rate_limit" logs/exchange.log
+# 3. Logs auf Rate-Limit-Hinweise prüfen
+grep -r "rate_limit\|rate limit" logs/ 2>/dev/null | tail -5
 ```
 
 **Lösungen:**
 
-**Option 1: Data Pipeline neustarten**
+**Option 1: Session neu starten (frische Preisdaten)**
 ```bash
-./scripts/data/restart_pipeline.sh
+python3 scripts/testnet_orchestrator_cli.py stop --all --config config/config.toml
+# Dann neue Session starten – siehe LIVE_OPERATIONAL_RUNBOOKS
 ```
 
 **Option 2: Exchange API-Key prüfen**
