@@ -196,7 +196,7 @@ Jedes Gate hat:
 - [ ] Keine Order-Rejections (außer durch Risk-Gates)
 
 **Evidence:**
-- Shadow Session Logs (`live_runs&#47;*&#47;session.log`)
+- Shadow Session Logs (`out&#47;ops&#47;live_pilot_session_*&#47;session.log`)
 - Testnet Session Logs (falls vorhanden)
 - Reconciliation Reports (`reports&#47;recon_*.json`)
 - Telemetry Dashboard Screenshot (oder Log-Auszug)
