@@ -148,7 +148,7 @@ curl http://127.0.0.1:8000/api/health
 python3 scripts/report_live_sessions.py \
     --limit 1 \
     --output-format markdown \
-    --output-dir reports/daily/
+    --output-dir reports/experiments/live_sessions/reports/
 
 # 2. Summary über den Tag
 python3 scripts/report_live_sessions.py \
