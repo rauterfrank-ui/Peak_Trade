@@ -298,6 +298,8 @@ uv sync --extra web
 
 ### Run (recommended wrapper)
 
+Operator-Dashboard (Session Explorer, R&D, Ops). **Port 8000** (`http://127.0.0.1:8000/`).
+
 ```bash
 ./scripts/ops/run_webui.sh
 # Reload:
@@ -306,11 +308,23 @@ RELOAD=1 ./scripts/ops/run_webui.sh
 
 ### Live dashboard
 
+Run-zentriertes Dashboard (Runs-Liste, Snapshots, Alerts) für Shadow-/Testnet-Monitoring. **Port 8010** (Override: `PORT=8000 .&#47;scripts&#47;ops&#47;run_live_webui.sh`).
+
 ```bash
 ./scripts/ops/run_live_webui.sh
 # Reload:
 RELOAD=1 ./scripts/ops/run_live_webui.sh
 ```
+
+**Alternativen (alle starten dieselbe App `src.live.web.app`):**
+
+| Entrypoint | Port | Hinweis |
+|------------|------|---------|
+| `run_live_webui.sh` | 8010 | Shell-Wrapper mit `uv` (oben) |
+| `python3 scripts/live_web_server.py` | 8000 | Empfohlen in Runbooks, CLI-Argumente |
+| `python -m scripts.serve_live_dashboard` | 8000 | Config aus `config/config.toml` |
+
+Details: [`docs/CLI_CHEATSHEET.md`](docs/CLI_CHEATSHEET.md#18-live-web-dashboard-phase-67), [`docs/LIVE_OPERATIONAL_RUNBOOKS.md`](docs/LIVE_OPERATIONAL_RUNBOOKS.md) Abschnitt 10d.
 
 ---
 
