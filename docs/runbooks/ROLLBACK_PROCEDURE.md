@@ -38,6 +38,20 @@
 
 ---
 
+## Operator entrypoint guidance
+For operator-facing guarded work, prefer the shell wrapper for status/audit-oriented checks:
+
+- `bash scripts/ops/kill_switch_ctl.sh status`
+- `bash scripts/ops/kill_switch_ctl.sh audit`
+
+Use the Python CLI for direct kill-switch control steps inside this rollback procedure:
+
+- `python3 -m src.risk_layer.kill_switch.cli status`
+- `python3 -m src.risk_layer.kill_switch.cli trigger`
+- `python3 -m src.risk_layer.kill_switch.cli recover`
+
+This keeps the operator entry surface consistent with the incident-facing runbooks while preserving the lower-level rollback control path here.
+
 ## Preconditions
 Vor einem Live-Rollback muss ein operatorisch gesicherter STOP/FREEZE-Zustand hergestellt sein. Dazu gehört insbesondere:
 
