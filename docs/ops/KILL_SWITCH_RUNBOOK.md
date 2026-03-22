@@ -6,6 +6,22 @@
 
 ---
 
+## Operator entrypoint guidance
+For operator-facing guarded work, prefer the shell wrapper for routine status, health, audit, and recovery-oriented checks:
+
+- `bash scripts/ops/kill_switch_ctl.sh status`
+- `bash scripts/ops/kill_switch_ctl.sh health`
+- `bash scripts/ops/kill_switch_ctl.sh audit`
+- `bash scripts/ops/kill_switch_ctl.sh recover`
+
+Use the Python CLI as the lower-level interface when direct module-oriented kill-switch control is explicitly required:
+
+- `python3 -m src.risk_layer.kill_switch.cli status`
+- `python3 -m src.risk_layer.kill_switch.cli trigger`
+- `python3 -m src.risk_layer.kill_switch.cli recover`
+
+This keeps the operator entry surface aligned with troubleshooting and rollback guidance while preserving the direct CLI path where needed.
+
 ## 🎯 Übersicht
 
 Dieses Runbook beschreibt die operativen Verfahren für den Emergency Kill Switch.
