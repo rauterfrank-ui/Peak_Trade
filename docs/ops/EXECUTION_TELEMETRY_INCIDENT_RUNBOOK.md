@@ -186,13 +186,13 @@ done
 
 ```bash
 # List all session log files
-ls -lht logs/execution/*.jsonl | head -20
+ls -lht logs&#47;execution&#47;*.jsonl | head -20
 
 # Search for sessions by time
 find logs/execution -name "*.jsonl" -mtime -1  # Last 24h
 
 # Search for sessions by symbol (content grep)
-grep -l "BTC-USD" logs/execution/*.jsonl
+grep -l "BTC-USD" logs&#47;execution&#47;*.jsonl
 ```
 
 **Next:** Use discovered session_id with other commands.
@@ -430,7 +430,7 @@ python3 scripts/view_execution_telemetry.py \
   --summary
 
 # Manual inspection
-zcat logs/execution/session_123.jsonl.gz | head -20
+zcat logs&#47;execution&#47;session_123.jsonl.gz | head -20
 ```
 
 ### Safety Features
@@ -452,7 +452,7 @@ python3 scripts/ops/telemetry_retention.py --root logs/execution
 **Problem:** Not enough space freed
 ```bash
 # Check actual file sizes
-ls -lh logs/execution/*.jsonl
+ls -lh logs&#47;execution&#47;*.jsonl
 
 # More aggressive cleanup
 python3 scripts/ops/telemetry_retention.py --apply \
@@ -463,8 +463,8 @@ python3 scripts/ops/telemetry_retention.py --apply \
 **Problem:** Need to restore compressed log
 ```bash
 # Decompress manually
-gunzip logs/execution/session_123.jsonl.gz
-# Creates: logs/execution/session_123.jsonl
+gunzip logs&#47;execution&#47;session_123.jsonl.gz
+# Creates: logs&#47;execution&#47;session_123.jsonl
 ```
 
 ### Recommended Maintenance Schedule
@@ -536,6 +536,28 @@ Escalate as follows:
 - For incident evidence capture: `bash scripts/ops/build_incident_snapshot.sh`
 
 Keep this runbook read-only. Use the linked runbooks for any guarded operational action.
+
+## Execution events path guidance
+Execution events appear in two different roots with different purposes:
+
+- **Runtime telemetry root:** `logs&#47;execution&#47;`
+  - Use this for live operator diagnostics, telemetry inspection, and runtime-oriented incident triage.
+  - Typical files include:
+    - `logs&#47;execution&#47;execution_events.jsonl`
+    - `logs&#47;execution&#47;<session_id>.jsonl`
+
+- **Evidence / export root:** `out&#47;ops&#47;execution_events&#47;`
+  - Use this for bounded-pilot, testnet, and evidence-oriented review paths where execution events are exported into operator evidence bundles.
+  - Typical files include:
+    - `out&#47;ops&#47;execution_events&#47;execution_events.jsonl`
+    - `out&#47;ops&#47;execution_events&#47;sessions&#47;<session_id>&#47;execution_events.jsonl`
+
+Operator rule of thumb:
+- Start with `logs&#47;execution&#47;` for runtime diagnostics.
+- Use `out&#47;ops&#47;execution_events&#47;` when validating exported evidence, bounded-pilot outputs, or session-scoped evidence packs.
+
+See also:
+- `docs/ops/specs/BOUNDED_PILOT_TELEMETRY_ROOT_EVIDENCE_GAP_NOTE.md`
 
 ## Operator Summary / Evidence Consistency
 When handling execution telemetry incidents, keep the following aligned:
