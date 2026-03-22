@@ -408,7 +408,7 @@ audit_retention_days = 90
 
 # Persistence
 persist_state = true
-state_file = "data/kill_switch_state.json"
+state_file = "data/kill_switch/state.json"
 ```
 
 ### 1.5 Acceptance Criteria
