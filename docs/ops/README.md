@@ -68,3 +68,8 @@ scripts/ops/review_and_merge_pr.sh --pr 123 --merge --skip-docs-guard
 ## Bounded Acceptance Documentation Chain
 - start here: `docs&#47;ops&#47;reviews&#47;bounded_acceptance_start_here_page&#47;START_HERE.md`
 - index, runbook, cheat sheet, go/no-go snapshot, readiness matrix, and governance framing are linked from there
+
+## Cursor Multi-Agent
+- Frontdoor: [CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md](CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md)
+- Founder/Operator-Regel: `.cursor/rules/peak_trade_founder_operator_paper_stability_guard.mdc` (`paper_stability_guard`, one-topic-one-PR, read-only-inventory-first)
+
