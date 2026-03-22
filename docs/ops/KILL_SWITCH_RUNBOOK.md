@@ -395,11 +395,12 @@ curl https://status.kraken.com/api/v2/status.json
 
 **4. Stale Price Data:**
 ```bash
-# Logs prüfen
-tail -f logs/data_pipeline.log
+# Laufende Sessions prüfen (Preisdaten vom Live/Testnet-Orchestrator)
+python3 scripts/testnet_orchestrator_cli.py status --config config/config.toml
 
-# Data Pipeline neustarten
-./scripts/data/restart_pipeline.sh
+# Bei Stale Data: Session stoppen und neu starten (frische Preisdaten)
+python3 scripts/testnet_orchestrator_cli.py stop --all --config config/config.toml
+# Dann neue Session starten – siehe LIVE_OPERATIONAL_RUNBOOKS (Start-Runbooks)
 ```
 
 ---
