@@ -53,3 +53,13 @@ Policy-Dokumente für illustrative Pfade und Workflow-Konventionen (relevant fü
 Für eine zentrale Workflow- und Runbook-Übersicht siehe:
 
 - [WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md](../../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md) (Repo-Root)
+
+## Critical Operator Runbooks
+- [incident_stop_freeze_rollback.md](runbooks/incident_stop_freeze_rollback.md)
+- [risk_limit_breach.md](runbooks/risk_limit_breach.md)
+- [ROLLBACK_PROCEDURE.md](../runbooks/ROLLBACK_PROCEDURE.md)
+- [KILL_SWITCH_RUNBOOK.md](KILL_SWITCH_RUNBOOK.md)
+- [LIVE_MODE_TRANSITION_RUNBOOK.md](../runbooks/LIVE_MODE_TRANSITION_RUNBOOK.md)
+- [EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md](EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md)
+- [KILL_SWITCH_DRILL_PROCEDURE.md](../runbooks/KILL_SWITCH_DRILL_PROCEDURE.md)
+
