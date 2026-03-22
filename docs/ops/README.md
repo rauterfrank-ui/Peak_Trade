@@ -73,3 +73,12 @@ scripts/ops/review_and_merge_pr.sh --pr 123 --merge --skip-docs-guard
 - Frontdoor: [CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md](CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md)
 - Founder/Operator-Regel: `.cursor/rules/peak_trade_founder_operator_paper_stability_guard.mdc` (`paper_stability_guard`, one-topic-one-PR, read-only-inventory-first)
 
+## Operator Critical Runbooks
+- Incident stop / freeze / rollback: [runbooks/incident_stop_freeze_rollback.md](runbooks/incident_stop_freeze_rollback.md)
+- Risk limit breach: [runbooks/risk_limit_breach.md](runbooks/risk_limit_breach.md)
+- Rollback procedure: [../runbooks/ROLLBACK_PROCEDURE.md](../runbooks/ROLLBACK_PROCEDURE.md)
+- Kill switch runbook: [KILL_SWITCH_RUNBOOK.md](KILL_SWITCH_RUNBOOK.md)
+- Live mode transition: [../runbooks/LIVE_MODE_TRANSITION_RUNBOOK.md](../runbooks/LIVE_MODE_TRANSITION_RUNBOOK.md)
+- Execution telemetry incident: [EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md](EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md)
+- Kill switch drill procedure: [../runbooks/KILL_SWITCH_DRILL_PROCEDURE.md](../runbooks/KILL_SWITCH_DRILL_PROCEDURE.md)
+
