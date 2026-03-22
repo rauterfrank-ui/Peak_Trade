@@ -93,9 +93,9 @@ python3 scripts/smoke_test_testnet_stack.py
 # Erwartung: "Smoke-Test PASSED"
 
 # Schritt 6: Testnet-Session starten
-python3 scripts/run_testnet_session.py --profile quick_smoke --verbose
-# Oder mit DummyExchangeClient (Offline):
-# python3 scripts/run_testnet_session.py --use-dummy --verbose
+python3 scripts/orchestrate_testnet_runs.py --profile quick_smoke
+# Oder Dry-Run (nur Checks, kein Start):
+# python3 scripts/orchestrate_testnet_runs.py --profile quick_smoke --dry-run
 
 # Schritt 7: Logs beobachten (in zweitem Terminal)
 tail -f logs/*.log
@@ -556,7 +556,7 @@ print('Max Daily Loss Abs:', limits.config.max_daily_loss_abs)
 # max_order_notional = 10000.0  # Temporär erhöht
 
 # Option 2: Via CLI-Flag (falls unterstützt)
-python3 scripts/run_testnet_session.py --skip-live-risk
+python3 scripts/check_live_readiness.py --stage testnet
 
 # WICHTIG: Nach dem Test wieder zurücksetzen!
 ```
