@@ -4,6 +4,7 @@ Purpose: Canonical workflow for running multi-agent work in Peak_Trade using Cur
 
 ## Entry Point
 - Frontdoor runbook: `docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md`
+- Founder/Operator rule: `.cursor/rules/peak_trade_founder_operator_paper_stability_guard.mdc` (`paper_stability_guard`, one-topic-one-PR, read-only-inventory-first)
 
 ## Standard Agent Roles
 - A1: Implementer (code changes, tests)
