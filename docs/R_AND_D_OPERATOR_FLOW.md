@@ -201,9 +201,9 @@ Die Comparison-View zeigt:
 
 **Lösung:**
 1. Prüfe, ob der Run erfolgreich war (`status: success`)
-2. Report-Generierung ggf. manuell nachziehen:
+2. Report-Generierung ggf. manuell nachziehen (Re-Run mit Flag):
    ```bash
-   python3 scripts/research_cli.py generate-report --run-id <run_id>
+   python3 scripts/research_cli.py run-experiment --preset <PRESET> --generate-report
    ```
 
 ### 4.3 Status `failed` oder `no_trades`
@@ -248,7 +248,7 @@ Halte in einem Run-Log fest, welche Presets wann gelaufen sind:
 Aktiviere Report-Generierung im Preset oder per Flag:
 
 ```bash
---generate-reports
+--generate-report
 ```
 
 So sind HTML-Reports und Charts später im Dashboard verfügbar.
