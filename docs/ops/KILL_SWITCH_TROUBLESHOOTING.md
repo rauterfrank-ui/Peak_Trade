@@ -22,8 +22,8 @@ Dieser Guide hilft bei der Diagnose und Lösung von Problemen mit dem Emergency 
 # 1. Kill Switch Status
 ./scripts/ops/kill_switch_ctl.sh status
 
-# 2. Logs prüfen
-tail -f logs/kill_switch.log
+# 2. CLI-Ausgabe prüfen (schreibt auf stderr; logs/kill_switch.log nicht automatisch)
+./scripts/ops/kill_switch_ctl.sh status 2>&1
 
 # 3. State File prüfen
 cat data/kill_switch/state.json
@@ -609,17 +609,15 @@ log_level = "DEBUG"  # Von INFO auf DEBUG
 ### Logs Analysieren
 
 ```bash
-# Kill Switch Logs
-tail -f logs/kill_switch.log
+# CLI schreibt auf stderr; logs/kill_switch.log wird nicht automatisch erstellt.
+# Nutze Audit für State/Trigger-Diagnose:
+./scripts/ops/kill_switch_ctl.sh audit --since 24h | less
 
-# Fehler finden
-grep "ERROR" logs/kill_switch.log
+# State-Änderungen filtern (Audit-Dateien)
+grep -h '"new_state"' data/kill_switch/audit/*.jsonl | tail -50
 
-# Trigger Events
-grep "TRIGGERED" logs/kill_switch.log
-
-# State Changes
-grep "State:" logs/kill_switch.log
+# Trigger/Reason filtern
+grep -h '"triggered_by"\|"reason"' data/kill_switch/audit/*.jsonl | tail -50
 ```
 
 ### Debug-Modus
@@ -657,8 +655,9 @@ Eskaliere an Engineering Team wenn:
 # 2. Audit Trail
 ./scripts/ops/kill_switch_ctl.sh audit --since 24h > /tmp/ks_audit.txt
 
-# 3. Logs
-tail -n 1000 logs/kill_switch.log > /tmp/ks_logs.txt
+# 3. CLI-Ausgabe + Audit (logs/kill_switch.log wird nicht automatisch erstellt)
+./scripts/ops/kill_switch_ctl.sh status 2>&1 >> /tmp/ks_logs.txt
+./scripts/ops/kill_switch_ctl.sh audit --since 24h >> /tmp/ks_logs.txt
 
 # 4. Health Check
 ./scripts/ops/kill_switch_ctl.sh health > /tmp/ks_health.txt
