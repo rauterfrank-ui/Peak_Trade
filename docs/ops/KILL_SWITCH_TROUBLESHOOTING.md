@@ -264,8 +264,7 @@ ping api.kraken.com
 curl https://status.kraken.com/api/v2/status.json | jq
 
 # 3. Eigene Exchange-Connection prüfen
-# (Je nach System - ggf. in Logs schauen)
-tail -f logs/exchange.log
+python3 scripts/inspect_exchange.py --mode status
 ```
 
 **Lösungen:**
@@ -434,11 +433,12 @@ kill_switch = KillSwitch(config.get("kill_switch", {}))
 
 **Oder State File löschen:**
 ```bash
-# Löschen (System startet mit ACTIVE)
+# Löschen (System startet mit ACTIVE bei nächstem Load)
 rm data/kill_switch/state.json
 
-# System neu starten
-./scripts/ops/restart_trading.sh
+# Laufende Sessions stoppen, damit neuer State sauber übernommen wird
+python3 scripts/testnet_orchestrator_cli.py stop --all --config config/config.toml
+# Für erneuten Start siehe docs/LIVE_OPERATIONAL_RUNBOOKS.md
 ```
 
 ---
