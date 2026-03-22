@@ -100,7 +100,7 @@ Expected: State = KILLED
 
 **Command:**
 ```bash
-python3 scripts/live/show_positions.py
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
 ```
 
 **Document:**
@@ -127,7 +127,7 @@ python3 scripts/live/close_all_positions.py \
 
 **Verify:**
 ```bash
-python3 scripts/live/show_positions.py
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
 ```
 
 Expected: No open positions
