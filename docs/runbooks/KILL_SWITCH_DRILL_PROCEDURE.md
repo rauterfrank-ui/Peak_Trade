@@ -8,7 +8,7 @@
 ---
 
 ## Operator entrypoint guidance
-This drill procedure intentionally uses the Python CLI as the primary control surface for exercise steps such as trigger, recover, complete-recovery, and history review.
+This drill procedure intentionally uses the Python CLI as the primary control surface for exercise steps such as trigger, recover, audit, and health.
 
 For routine operator-facing status and audit-oriented checks outside of drills, prefer the shell wrapper:
 
@@ -20,8 +20,8 @@ Use the Python CLI in this drill runbook for the explicit training and control s
 - `python3 -m src.risk_layer.kill_switch.cli status`
 - `python3 -m src.risk_layer.kill_switch.cli trigger`
 - `python3 -m src.risk_layer.kill_switch.cli recover`
-- `python3 -m src.risk_layer.kill_switch.cli complete-recovery`
-- `python3 -m src.risk_layer.kill_switch.cli history`
+- `python3 -m src.risk_layer.kill_switch.cli audit`
+- `python3 -m src.risk_layer.kill_switch.cli health`
 
 See also:
 - `docs/ops/KILL_SWITCH_RUNBOOK.md`
@@ -160,12 +160,12 @@ trigger = ThresholdTrigger(
    recovery_cooldown_seconds = 60  # 1 minute for drill
    ```
 
-4. **Complete Recovery**
+4. **Verify Recovery Completed**
    ```bash
-   # After cooldown expires
-   python3 -m src.risk_layer.kill_switch.cli complete-recovery
+   # Recovery completes automatically after cooldown; verify with status
+   python3 -m src.risk_layer.kill_switch.cli status
    ```
-   Expected: State = ACTIVE
+   Expected: State = ACTIVE (after cooldown expires)
 
 5. **Verify Trading Resumed**
    ```bash
@@ -323,11 +323,11 @@ python3 -m src.risk_layer.kill_switch.cli trigger --reason "Emergency stop"
 # Request recovery
 python3 -m src.risk_layer.kill_switch.cli recover --approved-by "operator"
 
-# Complete recovery (after cooldown)
-python3 -m src.risk_layer.kill_switch.cli complete-recovery
+# Verify recovery (after cooldown; state auto-transitions to ACTIVE)
+python3 -m src.risk_layer.kill_switch.cli status
 
-# View event history
-python3 -m src.risk_layer.kill_switch.cli history
+# View audit trail
+python3 -m src.risk_layer.kill_switch.cli audit
 ```
 
 ---
