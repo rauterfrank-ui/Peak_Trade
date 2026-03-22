@@ -190,8 +190,13 @@ Nach Recovery startet das System mit **reduzierten Position Limits**:
 
 **Monitoring:**
 ```bash
-# Logs überwachen
-tail -f logs/kill_switch.log
+# CLI-Ausgabe überwachen (schreibt auf stderr; logs/kill_switch.log wird nicht automatisch erstellt)
+# Option A: Wiederholt Status abfragen
+watch -n 5 './scripts/ops/kill_switch_ctl.sh status'
+
+# Option B: Ausgabe in Datei erfassen, dann tail (falls gewünscht)
+# ./scripts/ops/kill_switch_ctl.sh status 2>&1 | tee -a logs/kill_switch.log
+# tail -f logs/kill_switch.log
 
 # Trading-Aktivität prüfen
 ./scripts/ops/ops_center.sh monitor
@@ -461,8 +466,9 @@ Eskaliere an Engineering Team wenn:
 # 2. Audit Trail exportieren
 ./scripts/ops/kill_switch_ctl.sh audit --since 24h > /tmp/ks_audit.txt
 
-# 3. Logs sammeln
-tail -n 1000 logs/kill_switch.log > /tmp/ks_logs.txt
+# 3. CLI-Ausgabe + Audit (logs/kill_switch.log wird nicht automatisch erstellt)
+./scripts/ops/kill_switch_ctl.sh status 2>&1 >> /tmp/ks_logs.txt
+./scripts/ops/kill_switch_ctl.sh audit --since 24h >> /tmp/ks_logs.txt
 
 # 4. Health Check
 ./scripts/ops/kill_switch_ctl.sh health > /tmp/ks_health.txt
