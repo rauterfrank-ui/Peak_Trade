@@ -308,7 +308,7 @@ RELOAD=1 ./scripts/ops/run_webui.sh
 
 ### Live dashboard
 
-Run-zentriertes Dashboard (Runs-Liste, Snapshots, Alerts) für Shadow-/Testnet-Monitoring. **Port 8010** (Override: `PORT=8000 ./scripts/ops/run_live_webui.sh`).
+Run-zentriertes Dashboard (Runs-Liste, Snapshots, Alerts) für Shadow-/Testnet-Monitoring. **Port 8010** (Override: `PORT=8000 .&#47;scripts&#47;ops&#47;run_live_webui.sh`).
 
 ```bash
 ./scripts/ops/run_live_webui.sh
