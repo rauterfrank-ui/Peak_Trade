@@ -537,6 +537,28 @@ Escalate as follows:
 
 Keep this runbook read-only. Use the linked runbooks for any guarded operational action.
 
+## Execution events path guidance
+Execution events appear in two different roots with different purposes:
+
+- **Runtime telemetry root:** `logs/execution/`
+  - Use this for live operator diagnostics, telemetry inspection, and runtime-oriented incident triage.
+  - Typical files include:
+    - `logs/execution/execution_events.jsonl`
+    - `logs/execution/<session_id>.jsonl`
+
+- **Evidence / export root:** `out/ops/execution_events/`
+  - Use this for bounded-pilot, testnet, and evidence-oriented review paths where execution events are exported into operator evidence bundles.
+  - Typical files include:
+    - `out/ops/execution_events/execution_events.jsonl`
+    - `out/ops/execution_events/sessions/<session_id>/execution_events.jsonl`
+
+Operator rule of thumb:
+- Start with `logs/execution/` for runtime diagnostics.
+- Use `out/ops/execution_events/` when validating exported evidence, bounded-pilot outputs, or session-scoped evidence packs.
+
+See also:
+- `docs/ops/specs/BOUNDED_PILOT_TELEMETRY_ROOT_EVIDENCE_GAP_NOTE.md`
+
 ## Operator Summary / Evidence Consistency
 When handling execution telemetry incidents, keep the following aligned:
 - operator-visible telemetry summary
