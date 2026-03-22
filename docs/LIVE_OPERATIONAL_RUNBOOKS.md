@@ -85,17 +85,17 @@ pytest -q --tb=no
 # Erwartung: Alle Tests grün (1316+ passed, 4 skipped)
 
 # Schritt 4: Readiness-Check
-python scripts/check_live_readiness.py --stage testnet
+python3 scripts/check_live_readiness.py --stage testnet
 # Erwartung: "Readiness-Check PASSED"
 
 # Schritt 5: Smoke-Test
-python scripts/smoke_test_testnet_stack.py
+python3 scripts/smoke_test_testnet_stack.py
 # Erwartung: "Smoke-Test PASSED"
 
 # Schritt 6: Testnet-Session starten
-python scripts/run_testnet_session.py --profile quick_smoke --verbose
+python3 scripts/run_testnet_session.py --profile quick_smoke --verbose
 # Oder mit DummyExchangeClient (Offline):
-# python scripts/run_testnet_session.py --use-dummy --verbose
+# python3 scripts/run_testnet_session.py --use-dummy --verbose
 
 # Schritt 7: Logs beobachten (in zweitem Terminal)
 tail -f logs/*.log
@@ -163,20 +163,20 @@ pytest tests/ -q --tb=short
 # Erwartung: Alle Tests grün
 
 # Schritt 4: Readiness-Check für Live
-python scripts/check_live_readiness.py --stage live
+python3 scripts/check_live_readiness.py --stage live
 # Erwartung: PASSED
 
 # Schritt 5: Risk-Limits verifizieren
-python scripts/check_live_risk_limits.py
+python3 scripts/check_live_risk_limits.py
 # Ausgabe prüfen: Limits konservativ?
 
 # Schritt 6: Order-Preview (Dry-Run)
-python scripts/preview_live_orders.py --strategy <STRATEGIE> --dry-run
+python3 scripts/preview_live_orders.py --strategy <STRATEGIE> --dry-run
 # Erwartete Orders prüfen: Sehen sie vernünftig aus?
 
 # Schritt 7: Go-Live (KRITISCHER SCHRITT!)
 # Beide Personen bestätigen mündlich: "Ready to go live"
-python scripts/send_live_orders_dry_run.py --strategy <STRATEGIE> --mode live
+python3 scripts/send_live_orders_dry_run.py --strategy <STRATEGIE> --mode live
 
 # Schritt 8: Erste Order überwachen
 # Terminal 1: Live-Run läuft
@@ -238,11 +238,11 @@ pytest tests/ -q --tb=short
 git diff config/config.toml
 
 # Schritt 5: Readiness-Check
-python scripts/check_live_readiness.py --stage <STUFE>
+python3 scripts/check_live_readiness.py --stage <STUFE>
 # <STUFE> = shadow, testnet, oder live
 
 # Schritt 6: Smoke-Test
-python scripts/smoke_test_testnet_stack.py
+python3 scripts/smoke_test_testnet_stack.py
 
 # Schritt 7: Wiederanlauf
 # Je nach Stufe das entsprechende Start-Runbook ausführen
@@ -294,7 +294,7 @@ pgrep -af "python.*run_"
 
 # Schritt 5: Bei Testnet/Live - Offene Orders prüfen
 # Manuell auf Exchange oder via Script
-python scripts/check_open_orders.py
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
 
 # Schritt 6: Logs sichern (optional)
 cp -r logs/ logs_shutdown_$(date +%Y%m%d_%H%M%S)/
@@ -356,11 +356,11 @@ pytest -q --tb=no
 # Erwartung: Alle grün
 
 # Schritt 3: Readiness-Check
-python scripts/check_live_readiness.py --stage testnet
+python3 scripts/check_live_readiness.py --stage testnet
 # Erwartung: PASSED
 
 # Schritt 4: Letzte Runs prüfen
-python scripts/experiments_explorer.py --limit 10
+python3 scripts/experiments_explorer.py --limit 10
 
 # Schritt 5: Logs auf Fehler prüfen
 grep -i "error\|critical\|exception" logs/*.log | tail -20
@@ -378,7 +378,7 @@ echo "$(date): Health-Check OK" >> logs/operations.log
 | Check | Befehl | Erwartung |
 |-------|--------|-----------|
 | Tests grün | `pytest -q --tb=no` | Alle passed |
-| Readiness | `python scripts/check_live_readiness.py` | PASSED |
+| Readiness | `python3 scripts/check_live_readiness.py` | PASSED |
 | Keine Fehler in Logs | `grep -i error logs/*.log` | Leer oder bekannt |
 | Disk-Space | `df -h` | > 10% frei |
 | Prozesse laufen | `pgrep -af python.*run_` | Je nach Erwartung |
@@ -478,7 +478,7 @@ export KRAKEN_TESTNET_API_KEY="new-key"
 export KRAKEN_TESTNET_API_SECRET="new-secret"
 
 # Schritt 5: Neu starten
-python scripts/check_live_readiness.py --stage testnet
+python3 scripts/check_live_readiness.py --stage testnet
 ```
 
 ---
@@ -556,7 +556,7 @@ print('Max Daily Loss Abs:', limits.config.max_daily_loss_abs)
 # max_order_notional = 10000.0  # Temporär erhöht
 
 # Option 2: Via CLI-Flag (falls unterstützt)
-python scripts/run_testnet_session.py --skip-live-risk
+python3 scripts/run_testnet_session.py --skip-live-risk
 
 # WICHTIG: Nach dem Test wieder zurücksetzen!
 ```
@@ -592,10 +592,10 @@ python scripts/run_testnet_session.py --skip-live-risk
 # Nicht bei Shadow - dort weiterlaufen lassen für Daten
 
 # Schritt 2: PnL-Daten exportieren
-python scripts/experiments_explorer.py --run-id <RUN_ID> --export-csv
+python3 scripts/experiments_explorer.py --run-id <RUN_ID> --export-csv
 
 # Schritt 3: Backtest mit gleichem Zeitraum laufen lassen
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
     --strategy <STRATEGIE> \
     --start <START_DATUM> \
     --end <END_DATUM>
@@ -708,7 +708,7 @@ Der **Testnet-Orchestrator** ist ein v1-Tool für die Orchestrierung von Shadow-
 
 ```bash
 # Shadow-Run starten
-python scripts/testnet_orchestrator_cli.py start-shadow \
+python3 scripts/testnet_orchestrator_cli.py start-shadow \
   --strategy ma_crossover \
   --symbol BTC/EUR \
   --timeframe 1m \
@@ -740,7 +740,7 @@ python scripts/testnet_orchestrator_cli.py start-shadow \
 
 ```bash
 # Testnet-Run starten
-python scripts/testnet_orchestrator_cli.py start-testnet \
+python3 scripts/testnet_orchestrator_cli.py start-testnet \
   --strategy ma_crossover \
   --symbol BTC/EUR \
   --timeframe 1m \
@@ -761,7 +761,7 @@ python scripts/testnet_orchestrator_cli.py start-testnet \
 **Alle Runs:**
 
 ```bash
-python scripts/testnet_orchestrator_cli.py status --config config/config.toml
+python3 scripts/testnet_orchestrator_cli.py status --config config/config.toml
 
 # Output:
 # Run-ID                                    Mode      Strategy            State     Started
@@ -773,7 +773,7 @@ python scripts/testnet_orchestrator_cli.py status --config config/config.toml
 **Einzelner Run:**
 
 ```bash
-python scripts/testnet_orchestrator_cli.py status \
+python3 scripts/testnet_orchestrator_cli.py status \
   --run-id shadow_20251207_120000_abc123 \
   --config config/config.toml
 
@@ -790,7 +790,7 @@ python scripts/testnet_orchestrator_cli.py status \
 **JSON-Output:**
 
 ```bash
-python scripts/testnet_orchestrator_cli.py status --json
+python3 scripts/testnet_orchestrator_cli.py status --json
 ```
 
 ### 10a.5 Run stoppen
@@ -798,7 +798,7 @@ python scripts/testnet_orchestrator_cli.py status --json
 **Einzelner Run:**
 
 ```bash
-python scripts/testnet_orchestrator_cli.py stop \
+python3 scripts/testnet_orchestrator_cli.py stop \
   --run-id shadow_20251207_120000_abc123 \
   --config config/config.toml
 
@@ -809,7 +809,7 @@ python scripts/testnet_orchestrator_cli.py stop \
 **Alle Runs:**
 
 ```bash
-python scripts/testnet_orchestrator_cli.py stop --all --config config/config.toml
+python3 scripts/testnet_orchestrator_cli.py stop --all --config config/config.toml
 
 # Output:
 # ✅ 2 Run(s) gestoppt
@@ -826,7 +826,7 @@ python scripts/testnet_orchestrator_cli.py stop --all --config config/config.tom
 **Letzte Events anzeigen:**
 
 ```bash
-python scripts/testnet_orchestrator_cli.py tail \
+python3 scripts/testnet_orchestrator_cli.py tail \
   --run-id shadow_20251207_120000_abc123 \
   --limit 50 \
   --config config/config.toml
@@ -842,7 +842,7 @@ python scripts/testnet_orchestrator_cli.py tail \
 **JSON-Output:**
 
 ```bash
-python scripts/testnet_orchestrator_cli.py tail \
+python3 scripts/testnet_orchestrator_cli.py tail \
   --run-id shadow_20251207_120000_abc123 \
   --limit 10 \
   --json
@@ -941,16 +941,16 @@ cd ~/Peak_Trade
 source .venv/bin/activate
 
 # Schritt 2: Verfügbare Strategien prüfen
-python scripts/run_execution_session.py --list-strategies
+python3 scripts/run_execution_session.py --list-strategies
 
 # Schritt 3: Schneller Smoke-Test (5 Schritte, nur Config validieren)
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --strategy ma_crossover \
     --steps 5 \
     --dry-run
 
 # Schritt 4: Shadow-Session starten (30 Minuten)
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --strategy ma_crossover \
     --symbol ETH/EUR \
     --timeframe 5m \
@@ -987,7 +987,7 @@ export KRAKEN_TESTNET_API_KEY="your-testnet-api-key"
 export KRAKEN_TESTNET_API_SECRET="your-testnet-api-secret"
 
 # Schritt 3: Testnet-Session starten (20 Schritte)
-python scripts/run_execution_session.py \
+python3 scripts/run_execution_session.py \
     --mode testnet \
     --strategy trend_following \
     --symbol ETH/EUR \
@@ -1027,7 +1027,7 @@ ls -la reports/experiments/live_sessions/
 **Für Shadow-Sessions:**
 
 ```bash
-python scripts/report_live_sessions.py \
+python3 scripts/report_live_sessions.py \
   --run-type live_session_shadow \
   --status completed \
   --output-format markdown \
@@ -1038,7 +1038,7 @@ python scripts/report_live_sessions.py \
 **Für Testnet-Sessions:**
 
 ```bash
-python scripts/report_live_sessions.py \
+python3 scripts/report_live_sessions.py \
   --run-type live_session_testnet \
   --status completed \
   --output-format markdown \
@@ -1049,7 +1049,7 @@ python scripts/report_live_sessions.py \
 **Optional: Reports zusätzlich in ein eigenes Verzeichnis schreiben:**
 
 ```bash
-python scripts/report_live_sessions.py \
+python3 scripts/report_live_sessions.py \
   --run-type live_session_shadow \
   --status completed \
   --output-format both \
@@ -1115,7 +1115,7 @@ Das **Live-Monitoring-System** bietet Operatoren eine einfache Möglichkeit, Sha
 **Kommando:**
 
 ```bash
-python scripts/live_monitor_cli.py overview --only-active
+python3 scripts/live_monitor_cli.py overview --only-active
 ```
 
 **Output:**
@@ -1132,13 +1132,13 @@ python scripts/live_monitor_cli.py overview --only-active
 
 ```bash
 # Übersicht aller aktiven Runs
-python scripts/live_monitor_cli.py overview --only-active
+python3 scripts/live_monitor_cli.py overview --only-active
 
 # Übersicht der letzten 24 Stunden
-python scripts/live_monitor_cli.py overview --max-age-hours 24
+python3 scripts/live_monitor_cli.py overview --max-age-hours 24
 
 # Alle Runs (inkl. inaktive)
-python scripts/live_monitor_cli.py overview --include-inactive
+python3 scripts/live_monitor_cli.py overview --include-inactive
 ```
 
 ### 10b.3 Run-Details
@@ -1146,7 +1146,7 @@ python scripts/live_monitor_cli.py overview --include-inactive
 **Kommando:**
 
 ```bash
-python scripts/live_monitor_cli.py run --run-id shadow_20251207_120000_abc123
+python3 scripts/live_monitor_cli.py run --run-id shadow_20251207_120000_abc123
 ```
 
 **Output:**
@@ -1158,12 +1158,12 @@ python scripts/live_monitor_cli.py run --run-id shadow_20251207_120000_abc123
 
 ```bash
 # Run-Details anzeigen
-python scripts/live_monitor_cli.py run \
+python3 scripts/live_monitor_cli.py run \
   --run-id shadow_20251207_120000_abc123 \
   --config config/config.toml
 
 # JSON-Output
-python scripts/live_monitor_cli.py run \
+python3 scripts/live_monitor_cli.py run \
   --run-id shadow_20251207_120000_abc123 \
   --json
 ```
@@ -1173,7 +1173,7 @@ python scripts/live_monitor_cli.py run \
 **Kommando:**
 
 ```bash
-python scripts/live_monitor_cli.py follow \
+python3 scripts/live_monitor_cli.py follow \
   --run-id shadow_20251207_120000_abc123 \
   --refresh-interval 2.0
 ```
@@ -1192,7 +1192,7 @@ python scripts/live_monitor_cli.py follow \
 
 ```bash
 # Live-Tailing mit 2 Sekunden Refresh
-python scripts/live_monitor_cli.py follow \
+python3 scripts/live_monitor_cli.py follow \
   --run-id shadow_20251207_120000_abc123 \
   --refresh-interval 2.0 \
   --config config/config.toml
@@ -1243,18 +1243,18 @@ Das Monitoring-System arbeitet nahtlos mit dem Testnet-Orchestrator zusammen:
 
 1. **Run starten** (via Orchestrator):
    ```bash
-   python scripts/testnet_orchestrator_cli.py start-shadow \
+   python3 scripts/testnet_orchestrator_cli.py start-shadow \
      --strategy ma_crossover --symbol BTC/EUR --timeframe 1m
    ```
 
 2. **Run überwachen** (via Monitor):
    ```bash
-   python scripts/live_monitor_cli.py follow --run-id <run_id>
+   python3 scripts/live_monitor_cli.py follow --run-id <run_id>
    ```
 
 3. **Run stoppen** (via Orchestrator):
    ```bash
-   python scripts/testnet_orchestrator_cli.py stop --run-id <run_id>
+   python3 scripts/testnet_orchestrator_cli.py stop --run-id <run_id>
    ```
 
 **Vorteil:**
@@ -1306,7 +1306,7 @@ Das **Alerting & Incident-Notification-System** ermöglicht es Operatoren, autom
 **Kommando:**
 
 ```bash
-python scripts/live_alerts_cli.py run-rules \
+python3 scripts/live_alerts_cli.py run-rules \
   --run-id shadow_20251207_120000_abc123 \
   --config config/config.toml \
   --pnl-drop-threshold-pct 5.0 \
@@ -1332,17 +1332,17 @@ python scripts/live_alerts_cli.py run-rules \
 
 ```bash
 # Nur PnL-Drop-Check
-python scripts/live_alerts_cli.py run-rules \
+python3 scripts/live_alerts_cli.py run-rules \
   --run-id shadow_20251207_120000_abc123 \
   --pnl-drop-threshold-pct 5.0
 
 # Nur No-Events-Check
-python scripts/live_alerts_cli.py run-rules \
+python3 scripts/live_alerts_cli.py run-rules \
   --run-id shadow_20251207_120000_abc123 \
   --no-events-max-minutes 10
 
 # Alle Checks
-python scripts/live_alerts_cli.py run-rules \
+python3 scripts/live_alerts_cli.py run-rules \
   --run-id shadow_20251207_120000_abc123 \
   --pnl-drop-threshold-pct 5.0 \
   --no-events-max-minutes 10 \
@@ -1355,7 +1355,7 @@ Das CLI ist so designed, dass es per Cron / Systemd / Scheduler regelmäßig lau
 
 ```bash
 # Cron-Beispiel (alle 5 Minuten)
-*/5 * * * * cd /path/to/Peak_Trade && python scripts/live_alerts_cli.py run-rules \
+*/5 * * * * cd /path/to/Peak_Trade && python3 scripts/live_alerts_cli.py run-rules \
   --run-id shadow_20251207_120000_abc123 \
   --pnl-drop-threshold-pct 5.0 \
   --no-events-max-minutes 10 \
@@ -1390,18 +1390,18 @@ Das Alerting-System arbeitet nahtlos mit Monitoring und Orchestrator zusammen:
 
 1. **Run starten** (via Orchestrator):
    ```bash
-   python scripts/testnet_orchestrator_cli.py start-shadow \
+   python3 scripts/testnet_orchestrator_cli.py start-shadow \
      --strategy ma_crossover --symbol BTC/EUR --timeframe 1m
    ```
 
 2. **Run überwachen** (via Monitor):
    ```bash
-   python scripts/live_monitor_cli.py follow --run-id <run_id>
+   python3 scripts/live_monitor_cli.py follow --run-id <run_id>
    ```
 
 3. **Alerts prüfen** (via Alerts CLI):
    ```bash
-   python scripts/live_alerts_cli.py run-rules \
+   python3 scripts/live_alerts_cli.py run-rules \
      --run-id <run_id> \
      --pnl-drop-threshold-pct 5.0 \
      --no-events-max-minutes 10
@@ -1434,7 +1434,7 @@ Das **Live Web Dashboard v0** bietet ein einfaches, read-only Web-Interface für
 
 **Option 1: Mit Script (empfohlen)**
 ```bash
-python scripts/live_web_server.py
+python3 scripts/live_web_server.py
 ```
 
 **Option 2: Mit uvicorn direkt**
@@ -1444,7 +1444,7 @@ uvicorn src.live.web.app:app --host 127.0.0.1 --port 8000 --reload
 
 **Option 3: Mit Custom-Parametern**
 ```bash
-python scripts/live_web_server.py \
+python3 scripts/live_web_server.py \
   --host 0.0.0.0 \
   --port 9000 \
   --base-runs-dir /path/to/live_runs \
@@ -1505,10 +1505,10 @@ Das HTML-Dashboard bietet:
 **Mit Testnet-Orchestrator:**
 ```bash
 # Terminal 1: Orchestrator starten
-python scripts/testnet_orchestrator_cli.py start --profile quick_smoke
+python3 scripts/testnet_orchestrator_cli.py start --profile quick_smoke
 
 # Terminal 2: Web-Dashboard starten
-python scripts/live_web_server.py
+python3 scripts/live_web_server.py
 
 # Browser: http://localhost:8000 öffnen
 ```
@@ -1592,7 +1592,7 @@ pgrep -af "python.*run_"
 tail -100 logs/*.log
 
 # Experiments-Registry
-python scripts/experiments_explorer.py --limit 10
+python3 scripts/experiments_explorer.py --limit 10
 ```
 
 ### 12.2 Kontrolle
@@ -1710,7 +1710,7 @@ NACH SESSION-ENDE:
 curl http://127.0.0.1:8000/api/live_sessions?limit=1 | jq .
 
 # Summary via CLI
-python scripts/report_live_sessions.py --limit 1 --stdout
+python3 scripts/report_live_sessions.py --limit 1 --stdout
 ```
 
 ### 12a.7 Behandlung: Failed-Session im Dashboard
