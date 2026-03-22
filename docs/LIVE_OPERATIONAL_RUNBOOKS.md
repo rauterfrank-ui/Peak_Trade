@@ -1484,10 +1484,10 @@ Nach dem Start sind folgende URLs verfügbar:
 - HTTP 404 wenn Run nicht gefunden
 
 **GET /api/live/alerts?limit=20**
-- Lädt Alerts eines Runs aus `alerts.jsonl`
+- Lädt globale Live-Alerts
 - Query-Parameter: `limit` (1-100, default: 20)
 - Response: Liste von Alerts (rule_id, severity, message, run_id, timestamp)
-- HTTP 404 wenn Run nicht gefunden
+- Keine run-spezifische Filterung; Endpoint ist global
 
 ### 10d.5 Dashboard-Features
 
