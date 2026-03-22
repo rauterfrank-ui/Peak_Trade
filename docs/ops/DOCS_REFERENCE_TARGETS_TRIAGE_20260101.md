@@ -13,19 +13,19 @@
 
 ## Priority 1: Ops/Risk-Relevant References
 
-### ops_inspector.sh References (HIGH PRIORITY)
-Diese Referenzen sind operations-kritisch und müssen aufgelöst werden:
+### ops_inspector.sh → ops_doctor.sh (RESOLVED ✅)
+Docs referenzieren nun korrekt `scripts/ops/ops_doctor.sh`:
 
 ```
-- docs/CONTRACT_VERIFICATION_FINAL.md:32 → scripts/ops/ops_inspector.sh
-- docs/CONTRACT_VERIFICATION_FINAL.md:42 → scripts/ops/ops_inspector.sh
-- docs/CONTRACT_VERIFICATION_FINAL.md:53 → scripts/ops/ops_inspector.sh
-- docs/CONTRACT_VERIFICATION_FINAL.md:54 → ./scripts/ops/ops_inspector.sh
-- docs/CONTRACT_VERIFICATION_FINAL.md:201 → scripts/ops/ops_inspector.sh
-- docs/CONTRACT_VERIFICATION_FINAL.md:232 → scripts/ops/ops_inspector.sh
-- docs/CONTRACT_VERIFICATION_FINAL.md:298 → scripts/ops/ops_inspector.sh
-- docs/FINAL_VERIFICATION_SUMMARY.md:193 → scripts/ops/ops_inspector.sh
-- docs/HARDENING_PATCH_SUMMARY.md:40 → scripts/ops/ops_inspector.sh
+- docs/CONTRACT_VERIFICATION_FINAL.md:32 → scripts/ops/ops_doctor.sh
+- docs/CONTRACT_VERIFICATION_FINAL.md:42 → scripts/ops/ops_doctor.sh
+- docs/CONTRACT_VERIFICATION_FINAL.md:53 → scripts/ops/ops_doctor.sh
+- docs/CONTRACT_VERIFICATION_FINAL.md:54 → ./scripts/ops/ops_doctor.sh
+- docs/CONTRACT_VERIFICATION_FINAL.md:201 → scripts/ops/ops_doctor.sh
+- docs/CONTRACT_VERIFICATION_FINAL.md:232 → scripts/ops/ops_doctor.sh
+- docs/CONTRACT_VERIFICATION_FINAL.md:298 → scripts/ops/ops_doctor.sh
+- docs/FINAL_VERIFICATION_SUMMARY.md:193 → scripts/ops/ops_doctor.sh
+- docs/HARDENING_PATCH_SUMMARY.md:40 → scripts/ops/ops_doctor.sh
 ```
 
 ### risk_layer/ Module References (HIGH PRIORITY)
@@ -73,7 +73,7 @@ Die folgenden Missing Targets befinden sich in Legacy-Worklogs und werden **nich
 
 ## Action Items
 
-1. **ops_inspector.sh**: Prüfen, ob Nachfolger existiert oder minimal-safe Wrapper erstellen
+1. ~~**ops_inspector.sh**~~ ✅ **ops_doctor.sh**: Nachfolger existiert, Docs aktualisiert
 2. **risk_layer/**: Module-Pfade verifizieren und Docs aktualisieren
 3. **Legacy worklogs**: Mit Disclaimer versehen statt vollständig reparieren
 4. **Re-verify**: Script nach Fixes erneut ausführen
