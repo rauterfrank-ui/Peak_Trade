@@ -7,6 +7,25 @@
 
 ---
 
+## Operator entrypoint guidance
+This drill procedure intentionally uses the Python CLI as the primary control surface for exercise steps such as trigger, recover, complete-recovery, and history review.
+
+For routine operator-facing status and audit-oriented checks outside of drills, prefer the shell wrapper:
+
+- `bash scripts/ops/kill_switch_ctl.sh status`
+- `bash scripts/ops/kill_switch_ctl.sh audit`
+
+Use the Python CLI in this drill runbook for the explicit training and control steps documented here:
+
+- `python3 -m src.risk_layer.kill_switch.cli status`
+- `python3 -m src.risk_layer.kill_switch.cli trigger`
+- `python3 -m src.risk_layer.kill_switch.cli recover`
+- `python3 -m src.risk_layer.kill_switch.cli complete-recovery`
+- `python3 -m src.risk_layer.kill_switch.cli history`
+
+See also:
+- `docs/ops/KILL_SWITCH_RUNBOOK.md`
+
 ## Overview
 
 This procedure documents **regular kill switch drills** to ensure:
