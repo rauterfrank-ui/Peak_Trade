@@ -122,6 +122,15 @@ task_packet:
 ## 5. PR-Contract (DoD) — Muss in jeder PR-Beschreibung stehen
 **Einsatzort:** GitHub PR Description (oder `docs&#47;ops&#47;PR_<N>_MERGE_LOG.md` als Verified Log).
 
+**Required Founder/Operator context block for guarded work:**
+- `GIT_CONTEXT=<main|main_to_feature_branch|feature-branch>`
+- `BRANCH=<branch-name>`
+- `MODE=paper_stability_guard`
+- `TOPIC=<exactly_one_topic>`
+- `GOAL=<exactly_one_goal>`
+
+Reference: `.cursor/rules/peak_trade_founder_operator_paper_stability_guard.mdc`
+
 Pflichtsektionen:
 - **Summary:** Was wurde geändert (max 6 bullets)
 - **Why:** Warum nötig (1–3 bullets)
