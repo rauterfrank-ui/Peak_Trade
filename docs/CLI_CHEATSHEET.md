@@ -65,7 +65,7 @@ python3 scripts/research_cli.py portfolio \
 # Custom Recipes-Datei
 python3 scripts/research_cli.py portfolio \
   --config config/config.toml \
-  --recipes-config config/custom_recipes.toml \
+  --recipes-config config/portfolio_recipes.toml \
   --portfolio-preset my_custom_preset
 ```
 
