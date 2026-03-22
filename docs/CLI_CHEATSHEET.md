@@ -644,10 +644,10 @@ python3 scripts/live_web_server.py --reload
 **Wichtige URLs:**
 - Dashboard: `http://localhost:8000/` oder `http://localhost:8000/dashboard`
 - Health-Check: `http://localhost:8000/health`
-- Runs-Liste (JSON): `http://localhost:8000/api/execution/runs`
-- Run-Snapshot (JSON): `http://localhost:8000/api/execution/runs/{run_id}`
-- Run-Events (JSON): `http://localhost:8000/api/execution/runs/{run_id}/events?limit=100`
-- Live Alerts (JSON): `http://localhost:8000/api/live/alerts?limit=20`
+- Runs-Liste (JSON): `http://localhost:8000/runs`
+- Run-Snapshot (JSON): `http://localhost:8000/runs/{run_id}/snapshot`
+- Run-Events (JSON): `http://localhost:8000/runs/{run_id}/tail?limit=100`
+- Live Alerts (JSON): `http://localhost:8000/runs/{run_id}/alerts?limit=20`
 
 **Siehe:** [`LIVE_OPERATIONAL_RUNBOOKS.md`](LIVE_OPERATIONAL_RUNBOOKS.md) Abschnitt 10d für Details.
 

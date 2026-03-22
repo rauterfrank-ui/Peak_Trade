@@ -1457,10 +1457,10 @@ Nach dem Start sind folgende URLs verfügbar:
 
 - **Dashboard:** `http://localhost:8000/` oder `http://localhost:8000/dashboard`
 - **Health-Check:** `http://localhost:8000/health`
-- **Runs-Liste (JSON):** `http://localhost:8000/api/execution/runs`
-- **Run-Snapshot (JSON):** `http://localhost:8000/api/execution/runs/{run_id}`
-- **Run-Events (JSON):** `http://localhost:8000/api/execution/runs/{run_id}/events?limit=100`
-- **Run-Alerts (JSON):** `http://localhost:8000/api/live/alerts?limit=20`
+- **Runs-Liste (JSON):** `http://localhost:8000/runs`
+- **Run-Snapshot (JSON):** `http://localhost:8000/runs/{run_id}/snapshot`
+- **Run-Events (JSON):** `http://localhost:8000/runs/{run_id}/tail?limit=100`
+- **Run-Alerts (JSON):** `http://localhost:8000/runs/{run_id}/alerts?limit=20`
 
 ### 10d.4 API-Endpunkte
 
@@ -1468,26 +1468,26 @@ Nach dem Start sind folgende URLs verfügbar:
 - Response: `{"status": "ok"}`
 - HTTP 200
 
-**GET /api/execution/runs**
+**GET /runs**
 - Listet alle verfügbaren Runs
 - Response: Liste von Run-Metadaten (run_id, mode, strategy_name, symbol, timeframe, ...)
 
-**GET /api/execution/runs/{run_id}**
+**GET /runs/{run_id}/snapshot**
 - Lädt Snapshot eines Runs mit aggregierten Metriken
 - Response: Run-Snapshot (total_steps, total_orders, total_blocked_orders, equity, realized_pnl, unrealized_pnl, ...)
 - HTTP 404 wenn Run nicht gefunden
 
-**GET /api/execution/runs/{run_id}/events?limit=100**
+**GET /runs/{run_id}/tail?limit=100**
 - Lädt die letzten Events eines Runs
 - Query-Parameter: `limit` (1-500, default: 50)
 - Response: Liste von Events (ts_bar, equity, realized_pnl, unrealized_pnl, position_size, orders_count, risk_allowed, risk_reasons, ...)
 - HTTP 404 wenn Run nicht gefunden
 
-**GET /api/live/alerts?limit=20**
-- Lädt globale Live-Alerts
+**GET /runs/{run_id}/alerts?limit=20**
+- Lädt Alerts für einen Run
 - Query-Parameter: `limit` (1-100, default: 20)
 - Response: Liste von Alerts (rule_id, severity, message, run_id, timestamp)
-- Keine run-spezifische Filterung; Endpoint ist global
+- HTTP 404 wenn Run nicht gefunden
 
 ### 10d.5 Dashboard-Features
 
