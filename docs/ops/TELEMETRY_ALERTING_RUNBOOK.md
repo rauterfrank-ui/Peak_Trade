@@ -59,6 +59,33 @@ open http://127.0.0.1:8000/live/telemetry
 
 ---
 
+## Alert path guidance
+
+Alerts and notifications use different roots depending on purpose:
+
+- **Notification-facing output:** `logs&#47;alerts.log`
+  - Used when cron or scripts redirect telemetry-alert stdout/stderr to a file.
+  - Also used by other notification sinks (e.g. `FileNotifier`, `run_forward_signals --alert-log`).
+  - Use for live operator tail, grep, or log aggregation.
+
+- **Structured telemetry alert persistence:** `logs&#47;telemetry_alerts.jsonl`
+  - JSONL append-only log written by telemetry alerting persistence.
+  - Use for programmatic analysis, dashboards, or evidence export.
+
+- **Lifecycle and state:** `data&#47;telemetry&#47;alerts&#47;`
+  - `alerts_history.jsonl` — full alert history.
+  - `alerts_state.json` — operator state (ACK, SNOOZE).
+  - Use for lifecycle management, deduplication, and operator-state inspection.
+
+**Operator rule of thumb:**
+- Start with `logs&#47;alerts.log` for tail/grep when cron redirects there.
+- Use `logs&#47;telemetry_alerts.jsonl` for structured query.
+- Use `data&#47;telemetry&#47;alerts&#47;` for history and state.
+
+See also: `config&#47;telemetry_alerting.toml` (log_path, history path, state_path).
+
+---
+
 ## 📋 Alert Rules
 
 ### Built-in Rules (4)
