@@ -111,6 +111,7 @@ Runbooks for responding to incidents and troubleshooting:
 - [drift_critical.md](drift_critical.md) — Critical drift incident response
 - [drift_high.md](drift_high.md) — High drift incident response
 - [execution_error.md](execution_error.md) — Execution error incident response
+- [incident_stop_freeze_rollback.md](incident_stop_freeze_rollback.md) — operator flow for STOP / FREEZE / ROLLBACK incident handling
 - [risk_limit_breach.md](risk_limit_breach.md) — Risk limit breach incident response
 - [var_report_compare.md](var_report_compare.md) — VaR report comparison and analysis
 
