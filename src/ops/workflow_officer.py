@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import shlex
 import subprocess
 import sys
 from dataclasses import asdict, dataclass, field
@@ -13,6 +12,8 @@ from typing import Any
 
 
 UTC = timezone.utc
+MODES = {"audit", "preflight", "advise"}
+SEVERITIES = {"hard_fail", "warn", "info"}
 
 
 def _utc_ts() -> str:
@@ -29,6 +30,7 @@ class CheckResult:
     command: list[str]
     returncode: int
     status: str
+    severity: str
     stdout_path: str | None = None
     stderr_path: str | None = None
     started_at: str | None = None
@@ -50,97 +52,123 @@ class WorkflowOfficerReport:
     summary: dict[str, Any]
 
 
-PROFILES: dict[str, list[dict[str, Any]]] = {
+PROFILE_CHECKS: dict[str, list[dict[str, Any]]] = {
     "docs_only_pr": [
         {
             "check_id": "docs_token_policy",
             "command": [sys.executable, "scripts/ops/validate_docs_token_policy.py"],
-            "optional": False,
         },
         {
             "check_id": "docs_graph_triage",
             "command": [sys.executable, "scripts/ops/docs_graph_triage.py"],
-            "optional": True,
         },
         {
             "check_id": "error_taxonomy_adoption",
             "command": [sys.executable, "scripts/audit/check_error_taxonomy_adoption.py"],
-            "optional": True,
         },
     ],
     "ops_local_env": [
-        {
-            "check_id": "ops_doctor_shell",
-            "command": ["bash", "scripts/ops/ops_doctor.sh"],
-            "optional": True,
-        },
+        {"check_id": "ops_doctor_shell", "command": ["bash", "scripts/ops/ops_doctor.sh"]},
         {
             "check_id": "docker_desktop_preflight_readonly",
             "command": ["bash", "scripts/ops/docker_desktop_preflight_readonly.sh"],
-            "optional": True,
         },
         {
             "check_id": "mcp_smoke_preflight",
             "command": ["bash", "scripts/ops/mcp_smoke_preflight.sh"],
-            "optional": True,
         },
-        {
-            "check_id": "failure_analysis",
-            "command": ["bash", "scripts/ops/analyze_failures.sh"],
-            "optional": True,
-        },
+        {"check_id": "failure_analysis", "command": ["bash", "scripts/ops/analyze_failures.sh"]},
     ],
     "live_pilot_preflight": [
         {
             "check_id": "docker_desktop_preflight_readonly",
             "command": ["bash", "scripts/ops/docker_desktop_preflight_readonly.sh"],
-            "optional": False,
         },
         {
             "check_id": "mcp_smoke_preflight",
             "command": ["bash", "scripts/ops/mcp_smoke_preflight.sh"],
-            "optional": True,
         },
     ],
 }
 
 
-MODES = {"audit", "preflight", "advise"}
+PROFILES = PROFILE_CHECKS  # alias for workflow_officer_profiles
+
+PROFILE_POLICY: dict[str, dict[str, str]] = {
+    "docs_only_pr": {
+        "docs_token_policy": "hard_fail",
+        "docs_graph_triage": "warn",
+        "error_taxonomy_adoption": "warn",
+    },
+    "ops_local_env": {
+        "ops_doctor_shell": "warn",
+        "docker_desktop_preflight_readonly": "warn",
+        "mcp_smoke_preflight": "warn",
+        "failure_analysis": "info",
+    },
+    "live_pilot_preflight": {
+        "docker_desktop_preflight_readonly": "hard_fail",
+        "mcp_smoke_preflight": "warn",
+    },
+}
 
 
 def _write_text(path: Path, content: str) -> None:
     path.write_text(content, encoding="utf-8")
 
 
+def _resolve_severity(profile: str, check_id: str) -> str:
+    severity = PROFILE_POLICY.get(profile, {}).get(check_id, "warn")
+    if severity not in SEVERITIES:
+        raise ValueError(f"Unsupported severity {severity!r} for {profile}.{check_id}")
+    return severity
+
+
+def _resolve_status(returncode: int, severity: str, missing: bool = False) -> str:
+    if returncode == 0 and not missing:
+        return "OK"
+    if missing and severity == "hard_fail":
+        return "FAILED_MISSING"
+    if missing and severity == "warn":
+        return "WARN_MISSING"
+    if missing and severity == "info":
+        return "INFO_MISSING"
+    if severity == "hard_fail":
+        return "FAILED"
+    if severity == "warn":
+        return "WARN"
+    return "INFO"
+
+
 def _run_check(
     repo_root: Path,
     output_dir: Path,
+    profile: str,
     check_id: str,
     command: list[str],
-    optional: bool,
 ) -> CheckResult:
     started_at = datetime.now(UTC).isoformat()
     stdout_path = output_dir / f"{check_id}.stdout.log"
     stderr_path = output_dir / f"{check_id}.stderr.log"
+    severity = _resolve_severity(profile, check_id)
 
-    if (
-        not Path(repo_root / command[-1]).exists()
-        and len(command) >= 2
-        and command[0] in {sys.executable, "bash"}
-    ):
-        status = "SKIPPED_OPTIONAL_MISSING" if optional else "FAILED_MISSING"
+    wrapped_target = command[-1]
+    expects_local_target = len(command) >= 2 and command[0] in {sys.executable, "bash"}
+
+    if expects_local_target and not (repo_root / wrapped_target).exists():
         _write_text(stdout_path, "")
-        _write_text(stderr_path, f"Missing target: {command[-1]}\n")
+        _write_text(stderr_path, f"Missing target: {wrapped_target}\n")
         return CheckResult(
             check_id=check_id,
             command=command,
-            returncode=0 if optional else 2,
-            status=status,
+            returncode=2,
+            status=_resolve_status(returncode=2, severity=severity, missing=True),
+            severity=severity,
             stdout_path=str(stdout_path),
             stderr_path=str(stderr_path),
             started_at=started_at,
             finished_at=datetime.now(UTC).isoformat(),
-            notes=[f"Missing wrapped target: {command[-1]}"],
+            notes=[f"Missing wrapped target: {wrapped_target}"],
         )
 
     env = os.environ.copy()
@@ -158,15 +186,12 @@ def _run_check(
     _write_text(stdout_path, proc.stdout)
     _write_text(stderr_path, proc.stderr)
 
-    status = "OK"
-    if proc.returncode != 0:
-        status = "WARN_OPTIONAL_FAIL" if optional else "FAILED"
-
     return CheckResult(
         check_id=check_id,
         command=command,
         returncode=proc.returncode,
-        status=status,
+        status=_resolve_status(returncode=proc.returncode, severity=severity),
+        severity=severity,
         stdout_path=str(stdout_path),
         stderr_path=str(stderr_path),
         started_at=started_at,
@@ -184,6 +209,7 @@ def _emit_events(events_path: Path, results: list[CheckResult]) -> None:
                         "type": "workflow_officer_check",
                         "check_id": result.check_id,
                         "status": result.status,
+                        "severity": result.severity,
                         "returncode": result.returncode,
                         "started_at": result.started_at,
                         "finished_at": result.finished_at,
@@ -204,10 +230,33 @@ def _emit_manifest(manifest_path: Path, output_dir: Path) -> None:
     )
 
 
+def _build_summary(results: list[CheckResult], strict: bool) -> dict[str, Any]:
+    severity_counts = {"hard_fail": 0, "warn": 0, "info": 0}
+    status_counts: dict[str, int] = {}
+
+    for result in results:
+        severity_counts[result.severity] += 1
+        status_counts[result.status] = status_counts.get(result.status, 0) + 1
+
+    hard_failures = sum(1 for r in results if r.status in {"FAILED", "FAILED_MISSING"})
+    warnings = sum(1 for r in results if r.status in {"WARN", "WARN_MISSING"})
+    infos = sum(1 for r in results if r.status in {"INFO", "INFO_MISSING"})
+
+    return {
+        "total_checks": len(results),
+        "hard_failures": hard_failures,
+        "warnings": warnings,
+        "infos": infos,
+        "severity_counts": severity_counts,
+        "status_counts": status_counts,
+        "strict": strict,
+    }
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Peak_Trade Workflow Officer v0")
     parser.add_argument("--mode", choices=sorted(MODES), default="audit")
-    parser.add_argument("--profile", choices=sorted(PROFILES.keys()), default="docs_only_pr")
+    parser.add_argument("--profile", choices=sorted(PROFILE_CHECKS.keys()), default="docs_only_pr")
     parser.add_argument("--output-root", default="out/ops/workflow_officer")
     parser.add_argument("--strict", action="store_true")
     return parser.parse_args()
@@ -221,23 +270,22 @@ def main() -> int:
     _safe_mkdir(run_dir)
 
     results: list[CheckResult] = []
-    for spec in PROFILES[args.profile]:
-        result = _run_check(
-            repo_root=repo_root,
-            output_dir=run_dir,
-            check_id=spec["check_id"],
-            command=spec["command"],
-            optional=bool(spec.get("optional", False)),
+    for spec in PROFILE_CHECKS[args.profile]:
+        results.append(
+            _run_check(
+                repo_root=repo_root,
+                output_dir=run_dir,
+                profile=args.profile,
+                check_id=spec["check_id"],
+                command=spec["command"],
+            )
         )
-        results.append(result)
 
     _emit_events(run_dir / "events.jsonl", results)
     _emit_manifest(run_dir / "manifest.json", run_dir)
 
-    hard_failures = [r for r in results if r.status in {"FAILED", "FAILED_MISSING"}]
-    optional_warnings = [
-        r for r in results if r.status in {"WARN_OPTIONAL_FAIL", "SKIPPED_OPTIONAL_MISSING"}
-    ]
+    summary = _build_summary(results, strict=bool(args.strict))
+    success = summary["hard_failures"] == 0
 
     report = WorkflowOfficerReport(
         officer_version="v0-min",
@@ -247,23 +295,20 @@ def main() -> int:
         finished_at=datetime.now(UTC).isoformat(),
         output_dir=str(run_dir),
         repo_root=str(repo_root),
-        success=len(hard_failures) == 0,
+        success=success,
         checks=[asdict(r) for r in results],
-        summary={
-            "total_checks": len(results),
-            "hard_failures": len(hard_failures),
-            "optional_warnings": len(optional_warnings),
-            "strict": bool(args.strict),
-        },
+        summary=summary,
     )
     (run_dir / "report.json").write_text(
         json.dumps(asdict(report), indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
 
-    if args.strict and optional_warnings:
+    if summary["hard_failures"] > 0:
         return 1
-    return 0 if not hard_failures else 1
+    if args.strict and (summary["warnings"] > 0 or summary["infos"] > 0):
+        return 1
+    return 0
 
 
 if __name__ == "__main__":

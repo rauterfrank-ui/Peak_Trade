@@ -5,6 +5,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from src.ops.workflow_officer import PROFILE_POLICY, _resolve_status, _resolve_severity
+
 
 def _run(repo_root: Path, *args: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
@@ -37,6 +39,7 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     assert report["profile"] == "docs_only_pr"
     assert "checks" in report
     assert "summary" in report
+    assert "severity_counts" in report["summary"]
 
 
 def test_workflow_officer_profiles_alias_exports_profiles() -> None:
@@ -47,3 +50,24 @@ def test_workflow_officer_profiles_alias_exports_profiles() -> None:
     assert "docs_only_pr" in PROFILES
     assert "ops_local_env" in PROFILES
     assert "live_pilot_preflight" in PROFILES
+
+
+def test_profile_policy_contains_expected_severities() -> None:
+    assert PROFILE_POLICY["docs_only_pr"]["docs_token_policy"] == "hard_fail"
+    assert PROFILE_POLICY["ops_local_env"]["ops_doctor_shell"] == "warn"
+    assert (
+        PROFILE_POLICY["live_pilot_preflight"]["docker_desktop_preflight_readonly"] == "hard_fail"
+    )
+
+
+def test_resolve_severity_and_status() -> None:
+    assert _resolve_severity("docs_only_pr", "docs_token_policy") == "hard_fail"
+    assert _resolve_severity("ops_local_env", "failure_analysis") == "info"
+
+    assert _resolve_status(0, "hard_fail") == "OK"
+    assert _resolve_status(1, "hard_fail") == "FAILED"
+    assert _resolve_status(1, "warn") == "WARN"
+    assert _resolve_status(1, "info") == "INFO"
+    assert _resolve_status(2, "hard_fail", missing=True) == "FAILED_MISSING"
+    assert _resolve_status(2, "warn", missing=True) == "WARN_MISSING"
+    assert _resolve_status(2, "info", missing=True) == "INFO_MISSING"
