@@ -68,10 +68,10 @@ Beta-Events (INTENT, RISK_REJECT, ORDER, FILL, …) werden an **zwei getrennten 
 
 | Root | Verwendung |
 |------|------------|
-| `logs/execution/` | Runtime-Telemetrie, Operator-Diagnostik, Incident-Triage |
-| `out/ops/execution_events/` | Bounded-Pilot Evidence, Testnet-Exports, Session-scoped Bundles |
+| `logs&#47;execution&#47;` | Runtime-Telemetrie, Operator-Diagnostik, Incident-Triage |
+| `out&#47;ops&#47;execution_events&#47;` | Bounded-Pilot Evidence, Testnet-Exports, Session-scoped Bundles |
 
-**Operator-Regel:** Für Laufzeit-Diagnostik zuerst `logs/execution/` prüfen; für Evidence-Validierung und Bounded-Pilot-Outputs `out/ops/execution_events/` nutzen.
+**Operator-Regel:** Für Laufzeit-Diagnostik zuerst `logs&#47;execution&#47;` prüfen; für Evidence-Validierung und Bounded-Pilot-Outputs `out&#47;ops&#47;execution_events&#47;` nutzen.
 
 Details: [EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md](EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md) § Execution events path guidance.
 
