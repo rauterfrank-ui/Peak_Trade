@@ -247,3 +247,8 @@ wave6-evidence-registry-hook:
 	$(MAKE) wave4-aggregate-smoke-summary
 	PYTHONPATH=. python3 scripts/wave6/write_evidence_registry_hook.py
 
+workflow-officer-audit:
+	python3 src/ops/workflow_officer.py --mode audit --profile docs_only_pr
+
+workflow-officer-preflight:
+	python3 src/ops/workflow_officer.py --mode preflight --profile ops_local_env
