@@ -7,6 +7,28 @@
 
 ---
 
+## Env File Contexts
+Use the env file that matches the operational path:
+
+- `.env`
+  - local operator shell context for generic/manual workflows such as kill-switch recovery commands
+  - do not assume it is the bounded-pilot launcher input
+
+- `.bounded_pilot.env`
+  - local bounded-pilot launcher input used by `scripts/ops/run_bounded_pilot_with_local_secrets.py`
+  - intended for bounded/acceptance-oriented local secret loading
+
+- `~/.peak_trade_live_env`
+  - user-scoped shell env file used in the full live-transition flow
+  - distinct from both `.env` and `.bounded_pilot.env`
+
+Operator rule of thumb:
+- use `.env` for local/manual operator commands when a runbook explicitly says so
+- use `.bounded_pilot.env` for bounded-pilot launcher flows
+- use `~/.peak_trade_live_env` only for the full live-transition path
+
+---
+
 ## 1. Einleitung
 
 ### 1.1 Was ist ein Runbook?
