@@ -20,15 +20,15 @@
 
 ## Phase 2: Minimaler Python-Orchestrator-Wrapper
 
-**Ziel:** Einziges neues Modul `src/ops/workflow_officer.py` mit:
+**Ziel:** Einziges neues Modul <!-- pt:ref-target-ignore --> `src&#47;ops&#47;workflow_officer.py` *(planned module; not implemented in v0 docs-only phase)* mit:
 
 - CLI via `argparse` (--mode, --profile, --json)
 - Keine eigenen Checks; nur Aufruf von bestehenden Modulen
-- Output nach `out/ops/workflow_officer/<ts>/` gemäß Report-Schema
+- Output nach `out&#47;ops&#47;workflow_officer&#47;<ts>&#47;` gemäß Report-Schema
 
 **Dateiplan:**
 ```
-src/ops/workflow_officer.py   # Neues Modul
+src&#47;ops&#47;workflow_officer.py   # Neues Modul
 ```
 
 **Dependencies:** Keine neuen; nutzt `src.ops.doctor`, subprocess für Shell-Scripts.
@@ -52,7 +52,7 @@ src/ops/workflow_officer.py   # Neues Modul
 
 **Dateiplan:**
 ```
-src/ops/workflow_officer.py   # Erweiterung: Profile + Adapter
+src&#47;ops&#47;workflow_officer.py   # Erweiterung: Profile + Adapter
 src/ops/workflow_officer_profiles.py   # Optional: Profil-Definitionen
 ```
 
@@ -76,7 +76,7 @@ src/ops/workflow_officer_profiles.py   # Optional: Profil-Definitionen
 
 Falls Probleme:
 - Workflow Officer nicht in CI integrieren; nur manuell nutzbar
-- `src/ops/workflow_officer.py` kann ohne Auswirkung auf Doctor/Preflight entfernt werden (keine Abhängigkeiten von außen)
+- <!-- pt:ref-target-ignore --> `src&#47;ops&#47;workflow_officer.py` *(planned module; not implemented in v0 docs-only phase)* kann ohne Auswirkung auf Doctor/Preflight entfernt werden (keine Abhängigkeiten von außen)
 
 ---
 

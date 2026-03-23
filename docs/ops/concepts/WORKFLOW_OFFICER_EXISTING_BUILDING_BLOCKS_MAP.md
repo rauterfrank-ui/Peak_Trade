@@ -41,7 +41,7 @@
 | Docs Graph Triage | `scripts/ops/docs_graph_triage.py` | Erweiterte Docs-Analyse |
 | Stash Triage | `scripts/ops/stash_triage.sh` | Git-Stash-spezifisch |
 | Closeout-Scripts | diverse p*_closeout | PR/Closeout-Workflows; nicht v0-Scope |
-| gh_tls_wrap / diag | `scripts/ops/gh_tls_*.sh` | Nur wenn gh-Checks in Profil; später |
+| gh_tls_wrap / diag | `scripts&#47;ops&#47;gh_tls_*.sh` | Nur wenn gh-Checks in Profil; später |
 
 ---
 

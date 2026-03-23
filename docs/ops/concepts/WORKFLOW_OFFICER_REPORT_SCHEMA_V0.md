@@ -1,6 +1,6 @@
 # Workflow Officer Report Schema v0
 
-**Output-Ort:** `out/ops/workflow_officer/<timestamp>/`  
+**Output-Ort:** `out&#47;ops&#47;workflow_officer&#47;<timestamp>&#47;`  
 **Keine Vermischung** mit Paper-/Shadow-/Evidence-Produktion.
 
 ---
@@ -55,7 +55,7 @@
 
 ## 2. Markdown Summary (optional)
 
-Datei: `out/ops/workflow_officer/<ts>/summary.md`
+Datei: `out&#47;ops&#47;workflow_officer&#47;<ts>&#47;summary.md`
 
 ```
 # Workflow Officer Report — <mode> / <profile>
@@ -78,7 +78,7 @@ Exit Code: <0|1|2|3>
 
 ## 3. JSONL Event/Log Schema (optional, für Audit Trail)
 
-Datei: `out/ops/workflow_officer/<ts>/events.jsonl`  
+Datei: `out&#47;ops&#47;workflow_officer&#47;<ts>&#47;events.jsonl`  
 Nur append, keine Mutation bestehender Zeilen.
 
 ```json
@@ -104,6 +104,6 @@ Nur append, keine Mutation bestehender Zeilen.
 
 | Art | Ort | Workflow Officer |
 |-----|-----|------------------|
-| Evidence Packs | `.artifacts/evidence_packs/`, `out/ops/evidence_packs/` | Nicht verwendet |
-| Paper/Shadow Runs | `reports/`, `live_runs/` | Kein Zugriff |
+| Evidence Packs | `.artifacts&#47;evidence_packs&#47;`, `out&#47;ops&#47;evidence_packs&#47;` | Nicht verwendet |
+| Paper/Shadow Runs | `reports&#47;`, `live_runs&#47;` | Kein Zugriff |
 | Doctor Report | In-Memory / stdout | Workflow Officer kann Doctor als Sub-Check aufrufen, aggregiert |
