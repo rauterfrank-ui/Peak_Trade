@@ -139,7 +139,7 @@ python3 scripts/research_cli.py portfolio \
 
 **Output-Location:**
 
-- Reports landen typischerweise in `results&#47;reports&#47;portfolio_*` oder `reports&#47;portfolio_*`
+- Reports landen typischerweise in `reports&#47;portfolio_*` oder `reports&#47;portfolio_*`
 - Suche nach Dateien mit Timestamp im Namen (z.B. `portfolio_multi_style_moderate_2025-12-07_0900.md`)
 
 ### 4.2 Zentrale Metriken im Report
@@ -347,8 +347,8 @@ Erstelle einen Eintrag in [`PORTFOLIO_DECISION_LOG.md`](PORTFOLIO_DECISION_LOG.m
 3. Bei Erfolg → Testnet-Promotion
 
 ### Reports
-- Portfolio-Robustness-Report: `results/reports/portfolio_robustness_2025-12-15/`
-- Research-Pipeline-Report: `results/reports/pipeline_multi_style_moderate_2025-12-15/`
+- Portfolio-Robustness-Report: `reports/portfolio_robustness_2025-12-15/`
+- Research-Pipeline-Report: `reports/pipeline_multi_style_moderate_2025-12-15/`
 ```
 
 **Mögliche Entscheidungs-Status:**

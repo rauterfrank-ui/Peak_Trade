@@ -153,7 +153,7 @@ python3 scripts/research_cli.py portfolio \
 
 **Outputs:**
 
-- Portfolio-Report in `results&#47;reports&#47;portfolio_*`
+- Portfolio-Report in `reports&#47;portfolio_*`
 - Metriken: CAGR, Sharpe, Max Drawdown, Volatilität, etc.
 - Equity-Curve-Plots
 - Trade-Statistiken pro Strategie
@@ -350,8 +350,8 @@ Erstelle ein Dokument `docs&#47;PORTFOLIO_DECISION_LOG.md` (oder ähnlich) mit f
 3. Bei Erfolg → Testnet-Promotion
 
 ### Reports
-- Portfolio-Robustness-Report: `results&#47;reports&#47;portfolio_robustness_2025-12-15&#47;`
-- Research-Pipeline-Report: `results&#47;reports&#47;pipeline_rsi_reversion_2025-12-15&#47;`
+- Portfolio-Robustness-Report: `reports&#47;portfolio_robustness_2025-12-15&#47;`
+- Research-Pipeline-Report: `reports&#47;pipeline_rsi_reversion_2025-12-15&#47;`
 ```
 
 **Mögliche Entscheidungs-Status:**
