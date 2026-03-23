@@ -115,6 +115,25 @@ python3 scripts/run_sweep.py \
 
 ---
 
+## 3b. Report-Tools
+
+Es gibt zwei getrennte Report-Flows:
+
+- **Registry-basierter Report**: `report_sweep.py`
+  - verwenden, wenn der Sweep über `run_sweep.py` lief und auf der Registry `reports/experiments/experiments.csv` basiert
+- **Preset-/CSV-basierter Report**: `research_cli.py report` oder `generate_strategy_sweep_report.py`
+  - verwenden, wenn der Sweep über `run_strategy_sweep.py` oder `research_cli.py sweep` lief
+  - dieser Flow arbeitet auf `reports/experiments/{sweep_name}_*.csv` und schreibt nach `reports/sweeps/`
+
+Beispiele:
+
+```bash
+python3 scripts/report_sweep.py --sweep-name ma_crossover_btc --metric sharpe
+python3 scripts/research_cli.py report --sweep-name rsi_reversion_basic
+```
+
+---
+
 ## 4. Market-Scans
 
 ```bash
