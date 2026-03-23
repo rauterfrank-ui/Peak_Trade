@@ -251,6 +251,8 @@ max_daily_loss_abs = 200.0         # Increased to $200
 
 ### Kill Switch Activation
 
+For full operator guidance, see [KILL_SWITCH_RUNBOOK.md](../ops/KILL_SWITCH_RUNBOOK.md).
+
 ```bash
 # Immediate halt of all trading
 python3 -m src.risk_layer.kill_switch.cli trigger \
@@ -262,6 +264,8 @@ python3 -m src.risk_layer.kill_switch.cli status
 ```
 
 ### Rollback to Shadow Mode
+
+For the complete rollback procedure, see [ROLLBACK_PROCEDURE.md](ROLLBACK_PROCEDURE.md).
 
 ```bash
 # 1. Trigger kill switch (if not already triggered)
