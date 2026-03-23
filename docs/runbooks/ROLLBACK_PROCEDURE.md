@@ -298,7 +298,7 @@ python3 scripts/ops/generate_rollback_report.py \
 
 ---
 
-### Scenario C: Risk Limit Breach
+### Scenario C: [risk_limit_breach.md](../ops/runbooks/risk_limit_breach.md)
 
 **Trigger:** Risk limits breached multiple times, max daily loss exceeded
 
