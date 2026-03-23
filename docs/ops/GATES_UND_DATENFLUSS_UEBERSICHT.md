@@ -62,6 +62,19 @@ Zusätzlich kann **vor** Stage 3 der **Kill Switch** greifen: `kill_switch_activ
 - **Persistenz**: execution_events.jsonl (Beta-Events: INTENT, RISK_REJECT, ORDER, FILL, etc.), OrderLedger, PositionLedger, AuditLog.
 - **Recon**: Daten für ReconciliationEngine (Position/Order-Ledger).
 
+### 3.4 Execution-Events-Pfade (Dual Root)
+
+Beta-Events (INTENT, RISK_REJECT, ORDER, FILL, …) werden an **zwei getrennten Roots** persistiert:
+
+| Root | Verwendung |
+|------|------------|
+| `logs/execution/` | Runtime-Telemetrie, Operator-Diagnostik, Incident-Triage |
+| `out/ops/execution_events/` | Bounded-Pilot Evidence, Testnet-Exports, Session-scoped Bundles |
+
+**Operator-Regel:** Für Laufzeit-Diagnostik zuerst `logs/execution/` prüfen; für Evidence-Validierung und Bounded-Pilot-Outputs `out/ops/execution_events/` nutzen.
+
+Details: [EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md](EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md) § Execution events path guidance.
+
 ---
 
 ## 4. Live- und Safety-Gates (SafetyGuard, Phase 71)
