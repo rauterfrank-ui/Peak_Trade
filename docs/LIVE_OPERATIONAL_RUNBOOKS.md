@@ -1650,6 +1650,14 @@ top -l 1 | head -10
 
 ## 12a. Runbook: Live-Track Panel Monitoring
 
+### Hinweis: Zwei getrennte Web-Apps
+
+Runbook **10d** beschreibt das **Live Web Dashboard v0** (`src.live.web.app`) mit run-zentrierten Pfaden wie `/runs/*` und `/dashboard`.
+
+Runbook **12a** beschreibt die **Operator-WebUI** (`src.webui.app`) mit session- und operator-zentrierten Pfaden wie `/api/live_sessions`, `/ops` und `/r_and_d`.
+
+Diese Runbooks gehören zu unterschiedlichen Web-Oberflächen und sollten nicht als dieselbe App gelesen werden.
+
 ### 12a.1 Zweck
 
 Nutzung des Live-Track Panels (Phase 82) für kontinuierliches Session-Monitoring während Shadow-/Testnet-Runs.
