@@ -530,9 +530,9 @@ curl http://localhost:8000/api/telemetry?limit=1
 This runbook is read-only and focused on diagnostics. If findings require operational containment or recovery action, use the dedicated operator-facing runbooks instead of mutating system state from this procedure.
 
 Escalate as follows:
-- For STOP / FREEZE / ROLLBACK flow: `docs/ops/runbooks/incident_stop_freeze_rollback.md`
-- For breach-driven operator response: `docs/ops/runbooks/risk_limit_breach.md`
-- For kill-switch operator entrypoints and command-surface guidance: `docs/ops/KILL_SWITCH_RUNBOOK.md`
+- For STOP / FREEZE / ROLLBACK flow: [incident_stop_freeze_rollback.md](runbooks/incident_stop_freeze_rollback.md)
+- For breach-driven operator response: [risk_limit_breach.md](runbooks/risk_limit_breach.md)
+- For kill-switch operator entrypoints and command-surface guidance: [KILL_SWITCH_RUNBOOK.md](KILL_SWITCH_RUNBOOK.md)
 - For incident evidence capture: `bash scripts/ops/build_incident_snapshot.sh`
 
 Keep this runbook read-only. Use the linked runbooks for any guarded operational action.
