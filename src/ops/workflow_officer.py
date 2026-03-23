@@ -54,19 +54,40 @@ class WorkflowOfficerReport:
 
 PROFILE_CHECKS: dict[str, list[dict[str, Any]]] = {
     "docs_only_pr": [
-        {"check_id": "docs_token_policy", "command": [sys.executable, "scripts/ops/validate_docs_token_policy.py"]},
-        {"check_id": "docs_graph_triage", "command": [sys.executable, "scripts/ops/docs_graph_triage.py"]},
-        {"check_id": "error_taxonomy_adoption", "command": [sys.executable, "scripts/audit/check_error_taxonomy_adoption.py"]},
+        {
+            "check_id": "docs_token_policy",
+            "command": [sys.executable, "scripts/ops/validate_docs_token_policy.py"],
+        },
+        {
+            "check_id": "docs_graph_triage",
+            "command": [sys.executable, "scripts/ops/docs_graph_triage.py"],
+        },
+        {
+            "check_id": "error_taxonomy_adoption",
+            "command": [sys.executable, "scripts/audit/check_error_taxonomy_adoption.py"],
+        },
     ],
     "ops_local_env": [
         {"check_id": "ops_doctor_shell", "command": ["bash", "scripts/ops/ops_doctor.sh"]},
-        {"check_id": "docker_desktop_preflight_readonly", "command": ["bash", "scripts/ops/docker_desktop_preflight_readonly.sh"]},
-        {"check_id": "mcp_smoke_preflight", "command": ["bash", "scripts/ops/mcp_smoke_preflight.sh"]},
+        {
+            "check_id": "docker_desktop_preflight_readonly",
+            "command": ["bash", "scripts/ops/docker_desktop_preflight_readonly.sh"],
+        },
+        {
+            "check_id": "mcp_smoke_preflight",
+            "command": ["bash", "scripts/ops/mcp_smoke_preflight.sh"],
+        },
         {"check_id": "failure_analysis", "command": ["bash", "scripts/ops/analyze_failures.sh"]},
     ],
     "live_pilot_preflight": [
-        {"check_id": "docker_desktop_preflight_readonly", "command": ["bash", "scripts/ops/docker_desktop_preflight_readonly.sh"]},
-        {"check_id": "mcp_smoke_preflight", "command": ["bash", "scripts/ops/mcp_smoke_preflight.sh"]},
+        {
+            "check_id": "docker_desktop_preflight_readonly",
+            "command": ["bash", "scripts/ops/docker_desktop_preflight_readonly.sh"],
+        },
+        {
+            "check_id": "mcp_smoke_preflight",
+            "command": ["bash", "scripts/ops/mcp_smoke_preflight.sh"],
+        },
     ],
 }
 
@@ -182,15 +203,21 @@ def _run_check(
 def _emit_events(events_path: Path, results: list[CheckResult]) -> None:
     with events_path.open("w", encoding="utf-8") as fh:
         for result in results:
-            fh.write(json.dumps({
-                "type": "workflow_officer_check",
-                "check_id": result.check_id,
-                "status": result.status,
-                "severity": result.severity,
-                "returncode": result.returncode,
-                "started_at": result.started_at,
-                "finished_at": result.finished_at,
-            }, ensure_ascii=False) + "\n")
+            fh.write(
+                json.dumps(
+                    {
+                        "type": "workflow_officer_check",
+                        "check_id": result.check_id,
+                        "status": result.status,
+                        "severity": result.severity,
+                        "returncode": result.returncode,
+                        "started_at": result.started_at,
+                        "finished_at": result.finished_at,
+                    },
+                    ensure_ascii=False,
+                )
+                + "\n"
+            )
 
 
 def _emit_manifest(manifest_path: Path, output_dir: Path) -> None:
@@ -198,7 +225,9 @@ def _emit_manifest(manifest_path: Path, output_dir: Path) -> None:
     for p in sorted(output_dir.iterdir()):
         if p.is_file():
             files.append({"path": str(p), "size_bytes": p.stat().st_size})
-    manifest_path.write_text(json.dumps({"files": files}, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    manifest_path.write_text(
+        json.dumps({"files": files}, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
 
 
 def _build_summary(results: list[CheckResult], strict: bool) -> dict[str, Any]:

@@ -55,7 +55,9 @@ def test_workflow_officer_profiles_alias_exports_profiles() -> None:
 def test_profile_policy_contains_expected_severities() -> None:
     assert PROFILE_POLICY["docs_only_pr"]["docs_token_policy"] == "hard_fail"
     assert PROFILE_POLICY["ops_local_env"]["ops_doctor_shell"] == "warn"
-    assert PROFILE_POLICY["live_pilot_preflight"]["docker_desktop_preflight_readonly"] == "hard_fail"
+    assert (
+        PROFILE_POLICY["live_pilot_preflight"]["docker_desktop_preflight_readonly"] == "hard_fail"
+    )
 
 
 def test_resolve_severity_and_status() -> None:
