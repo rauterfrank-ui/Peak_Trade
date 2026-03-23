@@ -153,7 +153,11 @@ python3 scripts/run_portfolio_backtest.py --allocation equal
 
 **4. Walk-Forward-Validation:**
 ```bash
-python3 scripts&#47;run_walkforward_backtest.py --strategy ma_crossover
+python3 scripts/run_walkforward_backtest.py \
+  --sweep-name rsi_reversion_basic \
+  --top-n 3 \
+  --train-window 90d \
+  --test-window 30d
 ```
 
 **5. Monte-Carlo-Simulation:**
@@ -336,7 +340,7 @@ Die folgenden existierenden Dokumente behandeln verwandte Themen und wurden **ni
 4. **Erweiterte Features nutzen:**
    - Custom Position Sizer: [docs/BACKTEST_ENGINE.md#extension-hooks](docs/BACKTEST_ENGINE.md)
    - Portfolio-Backtest: `python3 scripts&#47;run_portfolio_backtest.py`
-   - Walk-Forward: `python3 scripts&#47;run_walkforward_backtest.py --strategy ma_crossover`
+   - Walk-Forward: `python3 scripts&#47;run_walkforward_backtest.py --sweep-name rsi_reversion_basic --top-n 3 --train-window 90d --test-window 30d`
 
 ---
 

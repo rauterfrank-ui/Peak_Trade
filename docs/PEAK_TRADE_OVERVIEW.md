@@ -295,7 +295,11 @@ python3 -m ruff check src tests scripts
 python3 scripts/run_strategy_from_config.py --strategy ma_crossover
 
 # Research-Pipeline
-python3 scripts&#47;run_walkforward_backtest.py --strategy ma_crossover
+python3 scripts/run_walkforward_backtest.py \
+  --sweep-name rsi_reversion_basic \
+  --top-n 3 \
+  --train-window 90d \
+  --test-window 30d
 python3 scripts&#47;run_monte_carlo.py --strategy ma_crossover
 python3 scripts/run_stress_tests.py --portfolio moderate
 
@@ -433,7 +437,11 @@ python3 scripts/run_portfolio_backtest.py --allocation equal
 **Variante C: Research-Pipeline**
 ```bash
 # Walk-Forward
-python scripts&#47;run_walkforward_backtest.py --strategy ma_crossover
+python3 scripts/run_walkforward_backtest.py \
+  --sweep-name rsi_reversion_basic \
+  --top-n 3 \
+  --train-window 90d \
+  --test-window 30d
 
 # Monte-Carlo
 python scripts&#47;run_monte_carlo.py --strategy rsi_reversion --runs 1000
