@@ -23,9 +23,9 @@ Use this runbook when a limit breach, hard risk denial, or operator-visible risk
 
 ## Related Runbooks
 - incident stop / freeze / rollback:
-  `docs&#47;ops&#47;runbooks&#47;incident_stop_freeze_rollback.md`
+  [incident_stop_freeze_rollback.md](incident_stop_freeze_rollback.md)
 - rollback procedure:
-  `docs&#47;runbooks&#47;ROLLBACK_PROCEDURE.md`
+  [ROLLBACK_PROCEDURE.md](../../runbooks/ROLLBACK_PROCEDURE.md)
 
 ## Evidence To Capture
 - active mode
@@ -42,4 +42,4 @@ Use this runbook when a limit breach, hard risk denial, or operator-visible risk
 
 ## Telemetry Cross-Reference
 If the risk-limit event is telemetry-adjacent or evidence interpretation is unclear, also consult:
-`docs&#47;ops&#47;EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md`
+[EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md](../EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md)
