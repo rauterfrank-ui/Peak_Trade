@@ -39,7 +39,7 @@ Provide one compact docs-only operator entrypoint map for Grafana / Prometheus a
 
 ### Legacy / removed references
 The following references appear in historical notes or merge logs but are not current operator entrypoints:
-- `scripts/obs/grafana_local_up.sh`
-- `docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml`
+- <!-- pt:ref-target-ignore --> `scripts&#47;obs&#47;grafana_local_up.sh`
+- <!-- pt:ref-target-ignore --> `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_GRAFANA_ONLY.yml`
 
 Use the current scripts above instead of the legacy references.
