@@ -6,13 +6,13 @@ Dieser Ordner enthält lokale, sensible oder generierte Ops-Daten, die **nicht**
 
 > **Scope note**
 >
-> `.ops_local/secrets/` is currently a manual local storage location for operator-managed credentials and related files.
+> `.ops_local&#47;secrets&#47;` is currently a manual local storage location for operator-managed credentials and related files.
 > It is **not** an automatically loaded secret store in Peak_Trade runtime code.
 > If a workflow requires a specific loader, use the documented env-file or script-specific input for that workflow instead.
 >
 
-- `secrets/` – AWS Access Keys, Credentials (z.B. `pt-gh-export-consumer_accessKeys.csv`)
-- `rclone/` – Rclone-Konfiguration (z.B. `pt_rclone.conf`)
+- `secrets&#47;` – AWS Access Keys, Credentials (z.B. `pt-gh-export-consumer_accessKeys.csv`)
+- `rclone&#47;` – Rclone-Konfiguration (z.B. `pt_rclone.conf`)
 
 ## Hinweis
 
