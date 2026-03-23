@@ -53,7 +53,8 @@ src&#47;ops&#47;workflow_officer.py   # Neues Modul
 **Dateiplan:**
 ```
 src&#47;ops&#47;workflow_officer.py   # Erweiterung: Profile + Adapter
-src/ops/workflow_officer_profiles.py   # Optional: Profil-Definitionen
+<!-- pt:ref-target-ignore -->
+src&#47;ops&#47;workflow_officer_profiles.py   # Optional: Profil-Definitionen
 ```
 
 **Keine neuen Scripts.** Nur Aufruf von:
