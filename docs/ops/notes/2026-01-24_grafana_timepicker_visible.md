@@ -11,7 +11,7 @@
   - Bestehende `time`-Ranges werden **nicht** überschrieben.
 
 ## Verify (lokal)
-- Stack starten/neu starten: `bash scripts/obs/grafana_local_up.sh` (oder vorher `..._down.sh`)
+- Stack starten/neu starten: siehe `docs/ops/reviews/grafana_prometheus_operator_entrypoints/REVIEW.md` für aktuelle Observability-Entrypoints (Legacy-Skripte `grafana_local_up&#47;down` existieren nicht mehr)
 - Grafana öffnen:
   - `http://127.0.0.1:3000/d/peaktrade-execution-watch-overview`
   - `http://127.0.0.1:3000/d/peaktrade-operator-home`
