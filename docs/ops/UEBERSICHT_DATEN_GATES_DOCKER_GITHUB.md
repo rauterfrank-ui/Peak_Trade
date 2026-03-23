@@ -238,6 +238,28 @@ Diese Datenströme laufen **nicht** über einen eigenen CI-Workflow, sondern üb
 | **OpenTelemetry (optional)** | Traces/Metrics | OTLP-Export (z. B. Collector) | `src/obs/__init__.py` (init_otel), `pyproject.toml` / requirements (opentelemetry-exporter-otlp) |
 
 
+
+## Output root semantics
+
+Peak_Trade uses three common output-root families with different meanings:
+
+- `reports&#47;`
+  - generated reports, summaries, dashboards, CSV/JSON/HTML/Markdown outputs
+  - typical examples: experiments, sweeps, walkforward, live status, portfolio robustness
+
+- `results&#47;`
+  - run artifacts and result sets tied to a concrete run or validation flow
+  - typical examples: `<run_id>&#47;`, `var_suite&#47;`, drill or risk-validation outputs
+
+- `out&#47;ops&#47;`
+  - operator evidence, pins, bundles, registries, snapshots and ops-facing artifacts
+  - typical examples: evidence packs, evidence registry, ops snapshots, execution-event exports
+
+Operator rule of thumb:
+- use `reports&#47;` when the output is primarily a human-facing report artifact
+- use `results&#47;` when the output is a run/result artifact set
+- use `out&#47;ops&#47;` when the output is ops evidence or operational state/snapshot material
+
 ## Canonical recovery note
 Siehe: `docs/ops/DOCKER_RECOVERY_CANONICAL_STATE.md`
 
