@@ -560,7 +560,7 @@ tracker = MLflowTracker(
 
 ```python
 tracker = MLflowTracker(
-    tracking_uri="http://localhost:5000",
+    tracking_uri="http://localhost:5001",
     experiment_name="production_backtests",
 )
 ```
@@ -605,7 +605,7 @@ mlflow server --backend-store-uri postgresql://... --default-artifact-root s3://
 ### Access UI
 
 ```
-http://localhost:5000
+http://localhost:5001
 ```
 
 **Features:**

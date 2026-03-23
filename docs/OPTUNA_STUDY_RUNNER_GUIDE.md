@@ -39,8 +39,8 @@ python3 scripts/run_optuna_study.py \
 cat reports/optuna_studies/ma_crossover_*.csv
 
 # MLflow UI (falls tracking enabled)
-mlflow ui --backend-store-uri ./.mlruns --port 5000
-open http://localhost:5000
+mlflow ui --backend-store-uri ./.mlruns --port 5001
+open http://localhost:5001
 ```
 
 ---
@@ -210,8 +210,8 @@ python3 scripts/run_optuna_study.py \
 
 **View Results**:
 ```bash
-mlflow ui --backend-store-uri ./.mlruns --port 5000
-open http://localhost:5000
+mlflow ui --backend-store-uri ./.mlruns --port 5001
+open http://localhost:5001
 ```
 
 **Was wird geloggt**:

@@ -77,7 +77,7 @@ Peak Trade uses a clear configuration precedence:
 ```bash
 # Enable MLflow tracking (optional)
 export PEAK_TRADE_MLFLOW_ENABLE=true
-export MLFLOW_TRACKING_URI=http://localhost:5000
+export MLFLOW_TRACKING_URI=http://localhost:5001
 export MLFLOW_EXPERIMENT_NAME=peak_trade_experiments
 
 # Disable MLflow (default)
@@ -92,7 +92,7 @@ MLflow support is completely optional and graceful:
 # With MLflow enabled
 with PeakTradeRun(
     experiment_name="strategy_sweep",
-    mlflow_uri="http://localhost:5000",
+    mlflow_uri="http://localhost:5001",
     enable_mlflow=True,  # Explicit override
 ) as run:
     # Logs to both MLflow AND local JSON
