@@ -75,10 +75,10 @@ reports/r_and_d_experiments/
 ### 2.3 Web-Dashboard starten
 
 ```bash
-python3 scripts/operator_dashboard.py
+bash scripts/ops/run_webui.sh
 ```
 
-Standardmäßig erreichbar unter `http://127.0.0.1:8000`.
+Standardmäßig erreichbar unter `http://127.0.0.1:8000/r_and_d`.
 
 ---
 
@@ -203,7 +203,7 @@ Die Comparison-View zeigt:
 1. Prüfe, ob der Run erfolgreich war (`status: success`)
 2. Report-Generierung ggf. manuell nachziehen (Re-Run mit Flag):
    ```bash
-   python3 scripts/research_cli.py run-experiment --preset <PRESET> --generate-report
+   python3 scripts/research_cli.py run-experiment --preset <PRESET>
    ```
 
 ### 4.3 Status `failed` oder `no_trades`
@@ -245,13 +245,7 @@ Halte in einem Run-Log fest, welche Presets wann gelaufen sind:
 
 ### 5.3 Reports immer generieren lassen
 
-Aktiviere Report-Generierung im Preset oder per Flag:
-
-```bash
---generate-report
-```
-
-So sind HTML-Reports und Charts später im Dashboard verfügbar.
+Aktiviere Report-Generierung im Preset (vgl. `config/r_and_d_presets.toml`). So sind HTML-Reports und Charts später im Dashboard verfügbar.
 
 ### 5.4 Raw JSON nur bei Bedarf
 
@@ -293,7 +287,7 @@ mv reports/r_and_d_experiments/exp_old_*.json archive/r_and_d/
 ## 7. Checkliste: Bin ich bereit für das R&D-Dashboard?
 
 - [ ] **Mindestens ein Experiment gelaufen** (`reports&#47;r_and_d_experiments&#47;*.json` vorhanden)
-- [ ] **Web-Dashboard gestartet** (`python3 scripts/operator_dashboard.py`)
+- [ ] **Web-Dashboard gestartet** (`bash scripts/ops/run_webui.sh`)
 - [ ] **Browser auf** `http://127.0.0.1:8000/r_and_d`
 - [ ] **Ich weiß, wonach ich suche** (Preset, Tag, Strategy, Zeitraum)
 - [ ] **Ich verstehe die Metriken** (Return, Sharpe, MaxDD, WinRate, PF)
