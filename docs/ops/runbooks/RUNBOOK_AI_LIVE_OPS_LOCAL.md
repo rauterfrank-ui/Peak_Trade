@@ -66,7 +66,7 @@ export PY_CMD="python3"
 
 - **Inputs (rein kommt)**:
   - Rules file: `docs&#47;webui&#47;observability&#47;prometheus&#47;rules&#47;ai_live_alerts_v1.yml`
-  - Dashboard JSON: `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;execution&#47;peaktrade-execution-watch-overview.json`
+  - Dashboard JSON: `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;execution&#47;peaktrade-execution-watch-overview.json *(legacy reference; source dashboard path is not present in the current repo state)*`
 
 - **Outputs (raus geht)**:
   - Pytest PASS/FAIL (kein Runtime-Zugriff; keine Docker-Abhängigkeit)
