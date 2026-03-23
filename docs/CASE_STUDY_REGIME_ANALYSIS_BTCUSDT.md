@@ -201,9 +201,11 @@ Ziel: Überprüfen, ob die gewählten Regime-Parameter (insbesondere `risk_off_s
 
 ```bash
 python3 scripts/run_walkforward_backtest.py \
-  --config config/sweeps/regime_aware_portfolio_aggressive.toml \
-  --folds 5 \
-  --label "btc_regime_wf_validation"
+  --sweep-name regime_aware_portfolio_aggressive \
+  --top-n 3 \
+  --train-window 90d \
+  --test-window 30d \
+  --symbol BTC/USDT
 ```
 
 ---
