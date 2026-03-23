@@ -106,7 +106,7 @@ allow_limit_override = false            # NO overrides in Phase 1
 > This runbook describes the full live-transition path and uses `LIVE_CONFIRM_TOKEN` as the config-facing confirm-token value.
 >
 > Related but separate confirm-token surfaces:
-> - **Bounded/live-pilot wrapper:** `PT_CONFIRM_TOKEN` and `PT_CONFIRM_TOKEN_EXPECTED` in `scripts/ops/run_live_pilot_session.sh`
+> - **Bounded/live-pilot wrapper:** `PT_CONFIRM_TOKEN` and `PT_CONFIRM_TOKEN_EXPECTED` in `scripts/ops/run_live_pilot_session.sh` Details: [live_pilot_session_wrapper.md](../ops/runbooks/live_pilot_session_wrapper.md).
 > - **AI activation gate:** `PT_CONFIRM_TOKEN` via `config/governance/ai_activation_gate_v1.json`
 > - **AI model client calls:** `PEAKTRADE_AI_CONFIRM_TOKEN` in `src/ai_orchestration/model_client.py`
 >
