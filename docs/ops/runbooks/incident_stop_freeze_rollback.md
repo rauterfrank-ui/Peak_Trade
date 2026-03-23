@@ -87,4 +87,4 @@ Runtime-Evidence unter `out&#47;ops&#47;` wird nicht von Git getrackt. Incident-
 
 ## Telemetry Incident Cross-Reference
 For execution-telemetry-specific investigation, also use:
-`docs&#47;ops&#47;EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md`
+[EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md](../EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md)
