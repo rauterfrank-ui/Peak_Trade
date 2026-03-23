@@ -568,9 +568,9 @@ When handling execution telemetry incidents, keep the following aligned:
 
 ## Related Operator Paths
 - incident stop / freeze / rollback:
-  `docs&#47;ops&#47;runbooks&#47;incident_stop_freeze_rollback.md`
+  [incident_stop_freeze_rollback.md](runbooks/incident_stop_freeze_rollback.md)
 - risk limit breach:
-  `docs&#47;ops&#47;runbooks&#47;risk_limit_breach.md`
+  [risk_limit_breach.md](runbooks/risk_limit_breach.md)
 
 ## Related Evidence Commands
 - incident snapshot:
