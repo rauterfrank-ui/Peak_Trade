@@ -17,6 +17,8 @@ if str(_REPO_ROOT) not in sys.path:
 
 from src.ops.workflow_officer_schema import validate_report_payload
 
+from src.ops.workflow_officer_markdown import render_workflow_officer_summary
+
 
 UTC = timezone.utc
 MODES = {"audit", "preflight", "advise"}
@@ -362,6 +364,10 @@ def main() -> int:
     validate_report_payload(report_payload)
     (run_dir / "report.json").write_text(
         json.dumps(report_payload, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    (run_dir / "summary.md").write_text(
+        render_workflow_officer_summary(report_payload),
         encoding="utf-8",
     )
 
