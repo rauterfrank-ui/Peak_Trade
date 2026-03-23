@@ -39,7 +39,7 @@ src&#47;ops&#47;workflow_officer.py   # Neues Modul
 - Keine Änderung an bestehenden Doctor-/Preflight-Tests
 
 **Verify-Plan:**
-- `./scripts/ops/ops_doctor.sh --json` weiterhin unverändert
+- `./scripts&#47;ops&#47;ops_doctor.sh --json` weiterhin unverändert
 - Keine Regression in CI (Doctor wird nicht durch Workflow Officer ersetzt)
 
 ---
@@ -58,8 +58,8 @@ src&#47;ops&#47;workflow_officer_profiles.py   # Optional: Profil-Definitionen
 ```
 
 **Keine neuen Scripts.** Nur Aufruf von:
-- `scripts/ops/validate_docs_token_policy.py`
-- `scripts/ops/docker_desktop_preflight_readonly.sh`
+- `scripts&#47;ops&#47;validate_docs_token_policy.py`
+- `scripts&#47;ops&#47;docker_desktop_preflight_readonly.sh`
 - `scripts/ops/run_live_pilot_preflight.sh` (oder Einzelchecks)
 - etc.
 

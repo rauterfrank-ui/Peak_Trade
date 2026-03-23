@@ -123,7 +123,11 @@ def _run_check(
     stdout_path = output_dir / f"{check_id}.stdout.log"
     stderr_path = output_dir / f"{check_id}.stderr.log"
 
-    if not Path(repo_root / command[-1]).exists() and len(command) >= 2 and command[0] in {sys.executable, "bash"}:
+    if (
+        not Path(repo_root / command[-1]).exists()
+        and len(command) >= 2
+        and command[0] in {sys.executable, "bash"}
+    ):
         status = "SKIPPED_OPTIONAL_MISSING" if optional else "FAILED_MISSING"
         _write_text(stdout_path, "")
         _write_text(stderr_path, f"Missing target: {command[-1]}\n")
@@ -174,14 +178,20 @@ def _run_check(
 def _emit_events(events_path: Path, results: list[CheckResult]) -> None:
     with events_path.open("w", encoding="utf-8") as fh:
         for result in results:
-            fh.write(json.dumps({
-                "type": "workflow_officer_check",
-                "check_id": result.check_id,
-                "status": result.status,
-                "returncode": result.returncode,
-                "started_at": result.started_at,
-                "finished_at": result.finished_at,
-            }, ensure_ascii=False) + "\n")
+            fh.write(
+                json.dumps(
+                    {
+                        "type": "workflow_officer_check",
+                        "check_id": result.check_id,
+                        "status": result.status,
+                        "returncode": result.returncode,
+                        "started_at": result.started_at,
+                        "finished_at": result.finished_at,
+                    },
+                    ensure_ascii=False,
+                )
+                + "\n"
+            )
 
 
 def _emit_manifest(manifest_path: Path, output_dir: Path) -> None:
@@ -189,7 +199,9 @@ def _emit_manifest(manifest_path: Path, output_dir: Path) -> None:
     for p in sorted(output_dir.iterdir()):
         if p.is_file():
             files.append({"path": str(p), "size_bytes": p.stat().st_size})
-    manifest_path.write_text(json.dumps({"files": files}, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    manifest_path.write_text(
+        json.dumps({"files": files}, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
 
 
 def parse_args() -> argparse.Namespace:
@@ -223,7 +235,9 @@ def main() -> int:
     _emit_manifest(run_dir / "manifest.json", run_dir)
 
     hard_failures = [r for r in results if r.status in {"FAILED", "FAILED_MISSING"}]
-    optional_warnings = [r for r in results if r.status in {"WARN_OPTIONAL_FAIL", "SKIPPED_OPTIONAL_MISSING"}]
+    optional_warnings = [
+        r for r in results if r.status in {"WARN_OPTIONAL_FAIL", "SKIPPED_OPTIONAL_MISSING"}
+    ]
 
     report = WorkflowOfficerReport(
         officer_version="v0-min",
