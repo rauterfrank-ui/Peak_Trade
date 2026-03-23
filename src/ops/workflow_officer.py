@@ -10,6 +10,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+# ensure repo root in path when run as script
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from src.ops.workflow_officer_schema import validate_report_payload
+
 
 UTC = timezone.utc
 MODES = {"audit", "preflight", "advise"}
@@ -351,8 +358,10 @@ def main() -> int:
         checks=[asdict(r) for r in results],
         summary=summary,
     )
+    report_payload = asdict(report)
+    validate_report_payload(report_payload)
     (run_dir / "report.json").write_text(
-        json.dumps(asdict(report), indent=2, ensure_ascii=False) + "\n",
+        json.dumps(report_payload, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
 
