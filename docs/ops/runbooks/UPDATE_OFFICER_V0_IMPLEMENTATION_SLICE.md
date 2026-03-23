@@ -5,7 +5,7 @@
 Minimal **read-only, deterministic** update scout for `Peak_Trade`.
 Inspects pinned/ranged dev-tooling dependencies and GitHub Actions references,
 classifies each finding, and emits a structured report under
-`out/ops/update_officer/<ts>/`.
+`out&#47;ops&#47;update_officer&#47;<ts>&#47;`.
 
 No network calls, no package mutations, no paper/shadow/evidence interaction.
 
@@ -14,7 +14,7 @@ No network calls, no package mutations, no paper/shadow/evidence interaction.
 | Rule | Detail |
 |---|---|
 | Mode | `paper_stability_guard` — read-only scout only |
-| Mutation | No writes outside `out/ops/update_officer/<ts>/` |
+| Mutation | No writes outside `out&#47;ops&#47;update_officer&#47;<ts>&#47;` |
 | Data isolation | No mutation of paper/shadow/evidence data or runs |
 | Dependencies | No dependency bumping, no lockfile changes, no package installation |
 | Network | No network calls required |
@@ -22,7 +22,7 @@ No network calls, no package mutations, no paper/shadow/evidence interaction.
 
 ## Output Contract
 
-Each run produces a timestamped directory `out/ops/update_officer/<ts>/` containing:
+Each run produces a timestamped directory `out&#47;ops&#47;update_officer&#47;<ts>&#47;` containing:
 
 | File | Format | Purpose |
 |---|---|---|
@@ -73,7 +73,7 @@ Each run produces a timestamped directory `out/ops/update_officer/<ts>/` contain
 
 1. **pyproject.toml** — parse `[project.optional-dependencies].dev` and `[dependency-groups].dev`
    for dev-tooling package pins and ranges.
-2. **GitHub Actions** (optional) — scan `.github/workflows/*.yml` for `uses:` lines
+2. **GitHub Actions** (optional) — scan `.github&#47;workflows&#47;*.yml` for `uses:` lines
    referencing actions with version pins.
 
 ### Classification semantics
@@ -91,11 +91,11 @@ Each run produces a timestamped directory `out/ops/update_officer/<ts>/` contain
 
 ## Minimal Acceptance Criteria
 
-1. `python3 src/ops/update_officer.py --profile dev_tooling_review` exits 0
+1. `python3 src&#47;ops&#47;update_officer.py --profile dev_tooling_review` exits 0
 2. `report.json` passes schema validation
 3. `summary.md` contains header, run metadata, summary counts, findings table
 4. `events.jsonl` has one line per finding
 5. `manifest.json` lists all output files
-6. All tests pass: `pytest -q tests/ops/test_update_officer*.py`
-7. No mutation outside `out/ops/update_officer/<ts>/`
+6. All tests pass: `pytest -q tests&#47;ops&#47;test_update_officer*.py`
+7. No mutation outside `out&#47;ops&#47;update_officer&#47;<ts>&#47;`
 8. No network dependency
