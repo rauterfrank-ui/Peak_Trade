@@ -24,7 +24,7 @@ Use the Python CLI in this drill runbook for the explicit training and control s
 - `python3 -m src.risk_layer.kill_switch.cli health`
 
 See also:
-- `docs/ops/KILL_SWITCH_RUNBOOK.md`
+- [KILL_SWITCH_RUNBOOK.md](../ops/KILL_SWITCH_RUNBOOK.md)
 
 ## Overview
 
