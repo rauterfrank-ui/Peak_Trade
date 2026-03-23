@@ -75,6 +75,14 @@ python3 scripts/research_cli.py portfolio \
 
 ## 3. Parameter-Sweeps
 
+There are two distinct sweep flows:
+
+- **Grid-based sweep**: `run_sweep.py`
+  - use this when you have an explicit grid config (`--grid`) and want a parameter-grid driven sweep
+- **Preset-based sweep**: `research_cli.py sweep` or `run_strategy_sweep.py`
+  - use this when you want a named sweep preset (`--sweep-name`)
+  - `research_cli.py sweep` delegates to `run_strategy_sweep.py`; it does not wrap `run_sweep.py`
+
 ```bash
 # Sweep mit TOML-Grid
 python3 scripts/run_sweep.py \
