@@ -5,7 +5,13 @@ import subprocess
 import sys
 from pathlib import Path
 
-from src.ops.workflow_officer import PROFILE_POLICY, _resolve_status, _resolve_severity
+from src.ops.workflow_officer import (
+    PROFILE_POLICY,
+    _resolve_effective_level,
+    _resolve_outcome,
+    _resolve_severity,
+    _resolve_status,
+)
 
 
 def _run(repo_root: Path, *args: str) -> subprocess.CompletedProcess[str]:
@@ -40,6 +46,13 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     assert "checks" in report
     assert "summary" in report
     assert "severity_counts" in report["summary"]
+    assert "outcome_counts" in report["summary"]
+    assert "effective_level_counts" in report["summary"]
+
+    for check in report["checks"]:
+        assert "severity" in check
+        assert "outcome" in check
+        assert "effective_level" in check
 
 
 def test_workflow_officer_profiles_alias_exports_profiles() -> None:
@@ -71,3 +84,17 @@ def test_resolve_severity_and_status() -> None:
     assert _resolve_status(2, "hard_fail", missing=True) == "FAILED_MISSING"
     assert _resolve_status(2, "warn", missing=True) == "WARN_MISSING"
     assert _resolve_status(2, "info", missing=True) == "INFO_MISSING"
+
+
+def test_resolve_outcome_and_effective_level() -> None:
+    assert _resolve_outcome(0) == "pass"
+    assert _resolve_outcome(1) == "fail"
+    assert _resolve_outcome(2, missing=True) == "missing"
+
+    assert _resolve_effective_level("pass", "hard_fail") == "ok"
+    assert _resolve_effective_level("fail", "hard_fail") == "error"
+    assert _resolve_effective_level("fail", "warn") == "warning"
+    assert _resolve_effective_level("fail", "info") == "info"
+    assert _resolve_effective_level("missing", "hard_fail") == "error"
+    assert _resolve_effective_level("missing", "warn") == "warning"
+    assert _resolve_effective_level("missing", "info") == "info"

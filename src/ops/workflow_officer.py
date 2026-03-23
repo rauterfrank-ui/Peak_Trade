@@ -14,6 +14,8 @@ from typing import Any
 UTC = timezone.utc
 MODES = {"audit", "preflight", "advise"}
 SEVERITIES = {"hard_fail", "warn", "info"}
+OUTCOMES = {"pass", "fail", "missing"}
+EFFECTIVE_LEVELS = {"ok", "warning", "error", "info"}
 
 
 def _utc_ts() -> str:
@@ -31,6 +33,8 @@ class CheckResult:
     returncode: int
     status: str
     severity: str
+    outcome: str
+    effective_level: str
     stdout_path: str | None = None
     stderr_path: str | None = None
     started_at: str | None = None
@@ -68,7 +72,10 @@ PROFILE_CHECKS: dict[str, list[dict[str, Any]]] = {
         },
     ],
     "ops_local_env": [
-        {"check_id": "ops_doctor_shell", "command": ["bash", "scripts/ops/ops_doctor.sh"]},
+        {
+            "check_id": "ops_doctor_shell",
+            "command": ["bash", "scripts/ops/ops_doctor.sh"],
+        },
         {
             "check_id": "docker_desktop_preflight_readonly",
             "command": ["bash", "scripts/ops/docker_desktop_preflight_readonly.sh"],
@@ -77,7 +84,10 @@ PROFILE_CHECKS: dict[str, list[dict[str, Any]]] = {
             "check_id": "mcp_smoke_preflight",
             "command": ["bash", "scripts/ops/mcp_smoke_preflight.sh"],
         },
-        {"check_id": "failure_analysis", "command": ["bash", "scripts/ops/analyze_failures.sh"]},
+        {
+            "check_id": "failure_analysis",
+            "command": ["bash", "scripts/ops/analyze_failures.sh"],
+        },
     ],
     "live_pilot_preflight": [
         {
@@ -91,8 +101,6 @@ PROFILE_CHECKS: dict[str, list[dict[str, Any]]] = {
     ],
 }
 
-
-PROFILES = PROFILE_CHECKS  # alias for workflow_officer_profiles
 
 PROFILE_POLICY: dict[str, dict[str, str]] = {
     "docs_only_pr": {
@@ -140,6 +148,30 @@ def _resolve_status(returncode: int, severity: str, missing: bool = False) -> st
     return "INFO"
 
 
+def _resolve_outcome(returncode: int, missing: bool = False) -> str:
+    if missing:
+        return "missing"
+    if returncode == 0:
+        return "pass"
+    return "fail"
+
+
+def _resolve_effective_level(outcome: str, severity: str) -> str:
+    if outcome == "pass":
+        return "ok"
+    if outcome == "missing":
+        if severity == "hard_fail":
+            return "error"
+        if severity == "warn":
+            return "warning"
+        return "info"
+    if severity == "hard_fail":
+        return "error"
+    if severity == "warn":
+        return "warning"
+    return "info"
+
+
 def _run_check(
     repo_root: Path,
     output_dir: Path,
@@ -158,12 +190,15 @@ def _run_check(
     if expects_local_target and not (repo_root / wrapped_target).exists():
         _write_text(stdout_path, "")
         _write_text(stderr_path, f"Missing target: {wrapped_target}\n")
+        outcome = _resolve_outcome(returncode=2, missing=True)
         return CheckResult(
             check_id=check_id,
             command=command,
             returncode=2,
             status=_resolve_status(returncode=2, severity=severity, missing=True),
             severity=severity,
+            outcome=outcome,
+            effective_level=_resolve_effective_level(outcome=outcome, severity=severity),
             stdout_path=str(stdout_path),
             stderr_path=str(stderr_path),
             started_at=started_at,
@@ -186,12 +221,16 @@ def _run_check(
     _write_text(stdout_path, proc.stdout)
     _write_text(stderr_path, proc.stderr)
 
+    outcome = _resolve_outcome(returncode=proc.returncode, missing=False)
+
     return CheckResult(
         check_id=check_id,
         command=command,
         returncode=proc.returncode,
         status=_resolve_status(returncode=proc.returncode, severity=severity),
         severity=severity,
+        outcome=outcome,
+        effective_level=_resolve_effective_level(outcome=outcome, severity=severity),
         stdout_path=str(stdout_path),
         stderr_path=str(stderr_path),
         started_at=started_at,
@@ -210,6 +249,8 @@ def _emit_events(events_path: Path, results: list[CheckResult]) -> None:
                         "check_id": result.check_id,
                         "status": result.status,
                         "severity": result.severity,
+                        "outcome": result.outcome,
+                        "effective_level": result.effective_level,
                         "returncode": result.returncode,
                         "started_at": result.started_at,
                         "finished_at": result.finished_at,
@@ -226,21 +267,26 @@ def _emit_manifest(manifest_path: Path, output_dir: Path) -> None:
         if p.is_file():
             files.append({"path": str(p), "size_bytes": p.stat().st_size})
     manifest_path.write_text(
-        json.dumps({"files": files}, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        json.dumps({"files": files}, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
     )
 
 
 def _build_summary(results: list[CheckResult], strict: bool) -> dict[str, Any]:
     severity_counts = {"hard_fail": 0, "warn": 0, "info": 0}
     status_counts: dict[str, int] = {}
+    outcome_counts = {"pass": 0, "fail": 0, "missing": 0}
+    effective_level_counts = {"ok": 0, "warning": 0, "error": 0, "info": 0}
 
     for result in results:
         severity_counts[result.severity] += 1
         status_counts[result.status] = status_counts.get(result.status, 0) + 1
+        outcome_counts[result.outcome] += 1
+        effective_level_counts[result.effective_level] += 1
 
-    hard_failures = sum(1 for r in results if r.status in {"FAILED", "FAILED_MISSING"})
-    warnings = sum(1 for r in results if r.status in {"WARN", "WARN_MISSING"})
-    infos = sum(1 for r in results if r.status in {"INFO", "INFO_MISSING"})
+    hard_failures = sum(1 for r in results if r.effective_level == "error")
+    warnings = sum(1 for r in results if r.effective_level == "warning")
+    infos = sum(1 for r in results if r.effective_level == "info")
 
     return {
         "total_checks": len(results),
@@ -249,6 +295,8 @@ def _build_summary(results: list[CheckResult], strict: bool) -> dict[str, Any]:
         "infos": infos,
         "severity_counts": severity_counts,
         "status_counts": status_counts,
+        "outcome_counts": outcome_counts,
+        "effective_level_counts": effective_level_counts,
         "strict": strict,
     }
 
@@ -256,7 +304,11 @@ def _build_summary(results: list[CheckResult], strict: bool) -> dict[str, Any]:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Peak_Trade Workflow Officer v0")
     parser.add_argument("--mode", choices=sorted(MODES), default="audit")
-    parser.add_argument("--profile", choices=sorted(PROFILE_CHECKS.keys()), default="docs_only_pr")
+    parser.add_argument(
+        "--profile",
+        choices=sorted(PROFILE_CHECKS.keys()),
+        default="docs_only_pr",
+    )
     parser.add_argument("--output-root", default="out/ops/workflow_officer")
     parser.add_argument("--strict", action="store_true")
     return parser.parse_args()
