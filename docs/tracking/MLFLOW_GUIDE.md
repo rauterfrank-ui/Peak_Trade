@@ -596,10 +596,10 @@ tracker = build_tracker_from_config(config["tracking"])
 
 ```bash
 # Local file-based tracking
-mlflow ui --backend-store-uri file:///path/to/mlruns --port 5000
+mlflow ui --backend-store-uri file:///path/to/mlruns --port 5001
 
 # Remote tracking server
-mlflow server --backend-store-uri postgresql://... --default-artifact-root s3://... --port 5000
+mlflow server --backend-store-uri postgresql://... --default-artifact-root s3://... --port 5001
 ```
 
 ### Access UI
