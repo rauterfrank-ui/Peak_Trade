@@ -316,7 +316,12 @@ Run-zentriertes Dashboard (Runs-Liste, Snapshots, Alerts) für Shadow-/Testnet-M
 RELOAD=1 ./scripts/ops/run_live_webui.sh
 ```
 
-**Alternativen (alle starten dieselbe App `src.live.web.app`):**
+**Alternativen (nicht alle starten dieselbe App):**
+
+- `python3 scripts/live_web_server.py` → `src.live.web.app` (Live-Dashboard mit `/api/v0/*`, `/runs/*`, `/dashboard`)
+- `bash scripts/ops/run_live_webui.sh` → `src.live.web.app` (Wrapper für das Live-Dashboard)
+- `bash scripts/ops/run_webui.sh` → `src.webui.app` (Operator-WebUI mit `/api/live_sessions`, `/api/execution/*`, `/ops`, `/r_and_d`)
+- `python3 scripts/serve_live_dashboard.py` → `src.live.web.app` (alternativer Live-Dashboard-Entrypoint)
 
 | Entrypoint | Port | Hinweis |
 |------------|------|---------|
