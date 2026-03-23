@@ -17,3 +17,11 @@ Example (will FAIL unless all gates satisfied)
 Notes
 - This wrapper only **gates** and then calls the existing orchestrator entrypoint.
 - Default outcome is **NO_TRADE** unless the operator explicitly arms and confirms.
+
+## Emergency during pilot session
+
+If something goes wrong during a pilot session:
+
+- For stop / freeze / rollback: [incident_stop_freeze_rollback.md](incident_stop_freeze_rollback.md)
+- For kill switch: [KILL_SWITCH_RUNBOOK.md](../KILL_SWITCH_RUNBOOK.md)
+- For full rollback: [ROLLBACK_PROCEDURE.md](../../runbooks/ROLLBACK_PROCEDURE.md)
