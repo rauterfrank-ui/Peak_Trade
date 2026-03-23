@@ -15,6 +15,13 @@ Für **neue** Ops-Skripte steht ein standardisiertes Template mit wiederverwendb
 | `scripts/ops/run_helpers.sh` | Shared bash helper functions (source-only) |
 | `scripts/ops/ops_script_template.sh` | Template für neue Ops-Skripte |
 
+> **Path note**
+>
+> The operator-facing template path is `scripts&#47;ops&#47;ops_script_template.sh`.
+> A historical copy also exists at `templates&#47;bash&#47;ops_script_template.sh`.
+> For current operator workflows, prefer the `scripts&#47;ops&#47;` path used in this guide.
+>
+
 ---
 
 ## 🚀 Quick Start
