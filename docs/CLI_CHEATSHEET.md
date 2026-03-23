@@ -120,10 +120,10 @@ python3 scripts/run_sweep.py \
 Es gibt zwei getrennte Report-Flows:
 
 - **Registry-basierter Report**: `report_sweep.py`
-  - verwenden, wenn der Sweep über `run_sweep.py` lief und auf der Registry `reports/experiments/experiments.csv` basiert
+  - verwenden, wenn der Sweep über `run_sweep.py` lief und auf der Registry `reports&#47;experiments&#47;experiments.csv` basiert
 - **Preset-/CSV-basierter Report**: `research_cli.py report` oder `generate_strategy_sweep_report.py`
   - verwenden, wenn der Sweep über `run_strategy_sweep.py` oder `research_cli.py sweep` lief
-  - dieser Flow arbeitet auf `reports/experiments/{sweep_name}_*.csv` und schreibt nach `reports/sweeps/`
+  - dieser Flow arbeitet auf `reports&#47;experiments&#47;{sweep_name}_*.csv` und schreibt nach `reports&#47;sweeps&#47;`
 
 Beispiele:
 
