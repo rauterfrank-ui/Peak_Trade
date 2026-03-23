@@ -20,6 +20,7 @@
 
 ## Phase 2: Minimaler Python-Orchestrator-Wrapper
 
+<!-- pt:ref-target-ignore -->
 **Ziel:** Einziges neues Modul <!-- pt:ref-target-ignore --> `src&#47;ops&#47;workflow_officer.py` *(planned module; not implemented in v0 docs-only phase)* mit:
 
 - CLI via `argparse` (--mode, --profile, --json)
@@ -28,6 +29,7 @@
 
 **Dateiplan:**
 ```
+<!-- pt:ref-target-ignore -->
 src&#47;ops&#47;workflow_officer.py   # Neues Modul
 ```
 
@@ -39,7 +41,7 @@ src&#47;ops&#47;workflow_officer.py   # Neues Modul
 - Keine Änderung an bestehenden Doctor-/Preflight-Tests
 
 **Verify-Plan:**
-- `./scripts&#47;ops&#47;ops_doctor.sh --json` weiterhin unverändert
+- `./scripts&#47;ops&#47;ops_doctor.sh --json` weiterhin unverändert <!-- pt:ref-target-ignore -->
 - Keine Regression in CI (Doctor wird nicht durch Workflow Officer ersetzt)
 
 ---
@@ -52,6 +54,7 @@ src&#47;ops&#47;workflow_officer.py   # Neues Modul
 
 **Dateiplan:**
 ```
+<!-- pt:ref-target-ignore -->
 src&#47;ops&#47;workflow_officer.py   # Erweiterung: Profile + Adapter
 <!-- pt:ref-target-ignore -->
 src&#47;ops&#47;workflow_officer_profiles.py   # Optional: Profil-Definitionen
@@ -77,6 +80,7 @@ src&#47;ops&#47;workflow_officer_profiles.py   # Optional: Profil-Definitionen
 
 Falls Probleme:
 - Workflow Officer nicht in CI integrieren; nur manuell nutzbar
+<!-- pt:ref-target-ignore -->
 - <!-- pt:ref-target-ignore --> `src&#47;ops&#47;workflow_officer.py` *(planned module; not implemented in v0 docs-only phase)* kann ohne Auswirkung auf Doctor/Preflight entfernt werden (keine Abhängigkeiten von außen)
 
 ---
