@@ -67,8 +67,12 @@ def test_render_workflow_officer_summary_contains_core_sections() -> None:
     assert "triage warning" in md
 
 
-def test_workflow_officer_run_writes_summary_md() -> None:
+def test_workflow_officer_run_writes_summary_md(tmp_path: Path) -> None:
+    """Run workflow_officer into isolated tmp output root; assert report.json and summary.md."""
     repo_root = Path(__file__).resolve().parents[2]
+    output_root = tmp_path / "workflow_officer"
+    output_root.mkdir(parents=True, exist_ok=True)
+
     proc = subprocess.run(
         [
             sys.executable,
@@ -77,6 +81,8 @@ def test_workflow_officer_run_writes_summary_md() -> None:
             "audit",
             "--profile",
             "docs_only_pr",
+            "--output-root",
+            str(output_root),
         ],
         cwd=repo_root,
         capture_output=True,
@@ -84,14 +90,15 @@ def test_workflow_officer_run_writes_summary_md() -> None:
     )
     assert proc.returncode in (0, 1)
 
-    out_root = repo_root / "out" / "ops" / "workflow_officer"
-    latest = sorted([p for p in out_root.iterdir() if p.is_dir()])[-1]
+    run_dirs = sorted([p for p in output_root.iterdir() if p.is_dir()])
+    assert run_dirs, f"expected at least one run dir under {output_root}"
+    run_dir = run_dirs[-1]
 
-    summary_path = latest / "summary.md"
-    report_path = latest / "report.json"
+    summary_path = run_dir / "summary.md"
+    report_path = run_dir / "report.json"
 
-    assert summary_path.exists()
-    assert report_path.exists()
+    assert summary_path.exists(), f"summary.md missing in {run_dir}"
+    assert report_path.exists(), f"report.json missing in {run_dir}"
 
     report = json.loads(report_path.read_text(encoding="utf-8"))
     summary_md = summary_path.read_text(encoding="utf-8")
