@@ -35,10 +35,12 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     report_path = latest / "report.json"
     manifest_path = latest / "manifest.json"
     events_path = latest / "events.jsonl"
+    summary_path = latest / "summary.md"
 
     assert report_path.exists()
     assert manifest_path.exists()
     assert events_path.exists()
+    assert summary_path.exists()
 
     report = json.loads(report_path.read_text(encoding="utf-8"))
     assert report["officer_version"] == "v0-min"
