@@ -438,7 +438,7 @@ python3 scripts/dev/compare_runs.py
 
 ```bash
 export PEAK_TRADE_MLFLOW_ENABLE=true
-export MLFLOW_TRACKING_URI=http://localhost:5000
+export MLFLOW_TRACKING_URI=http://localhost:5001
 export MLFLOW_EXPERIMENT_NAME=peak_trade_experiments
 
 python3 scripts/dev/demo_tracking.py
