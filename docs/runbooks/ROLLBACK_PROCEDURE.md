@@ -265,7 +265,7 @@ python3 scripts/ops/generate_rollback_report.py \
 - [ ] Fix tested in shadow mode
 - [ ] New drill completed successfully
 - [ ] Risk Owner approval obtained
-- [ ] Follow LIVE_MODE_TRANSITION_RUNBOOK.md to re-enable
+- [ ] Follow [LIVE_MODE_TRANSITION_RUNBOOK.md](LIVE_MODE_TRANSITION_RUNBOOK.md) to re-enable
 
 ---
 
@@ -340,7 +340,7 @@ Minimum waiting period: 24 hours in shadow mode
 3. Shadow mode stable for 24+ hours
 4. Kill switch drill completed successfully
 5. Risk Owner approval
-6. Follow LIVE_MODE_TRANSITION_RUNBOOK.md
+6. Follow [LIVE_MODE_TRANSITION_RUNBOOK.md](LIVE_MODE_TRANSITION_RUNBOOK.md)
 
 ---
 
