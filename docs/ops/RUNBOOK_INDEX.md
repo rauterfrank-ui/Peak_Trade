@@ -59,7 +59,9 @@ Für eine zentrale Workflow- und Runbook-Übersicht siehe:
 - [risk_limit_breach.md](runbooks/risk_limit_breach.md)
 - [ROLLBACK_PROCEDURE.md](../runbooks/ROLLBACK_PROCEDURE.md)
 - [KILL_SWITCH_RUNBOOK.md](KILL_SWITCH_RUNBOOK.md)
+- [KILL_SWITCH_TROUBLESHOOTING.md](KILL_SWITCH_TROUBLESHOOTING.md)
 - [LIVE_MODE_TRANSITION_RUNBOOK.md](../runbooks/LIVE_MODE_TRANSITION_RUNBOOK.md)
 - [EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md](EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md)
+- [live_pilot_session_wrapper.md](runbooks/live_pilot_session_wrapper.md)
 - [KILL_SWITCH_DRILL_PROCEDURE.md](../runbooks/KILL_SWITCH_DRILL_PROCEDURE.md)
 
