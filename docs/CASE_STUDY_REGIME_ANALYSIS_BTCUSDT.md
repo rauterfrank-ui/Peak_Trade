@@ -200,7 +200,7 @@ Vergleich:
 Ziel: Überprüfen, ob die gewählten Regime-Parameter (insbesondere `risk_off_scale=0.0` und angepasste `neutral_scale`) **zeitlich stabil** sind.
 
 ```bash
-python3 scripts/run_walkforward.py \
+python3 scripts/run_walkforward_backtest.py \
   --config config/sweeps/regime_aware_portfolio_aggressive.toml \
   --folds 5 \
   --label "btc_regime_wf_validation"

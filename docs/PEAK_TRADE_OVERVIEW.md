@@ -295,7 +295,7 @@ python3 -m ruff check src tests scripts
 python3 scripts/run_strategy_from_config.py --strategy ma_crossover
 
 # Research-Pipeline
-python3 scripts&#47;run_walkforward.py --strategy ma_crossover
+python3 scripts&#47;run_walkforward_backtest.py --strategy ma_crossover
 python3 scripts&#47;run_monte_carlo.py --strategy ma_crossover
 python3 scripts/run_stress_tests.py --portfolio moderate
 
@@ -378,7 +378,7 @@ cfg = load_config()
 **Beispiele:**
 - `scripts&#47;run_strategy_from_config.py` – Einzel-Backtest
 - `scripts&#47;run_portfolio_backtest.py` – Portfolio-Backtest
-- `scripts&#47;run_walkforward.py` – Walk-Forward-Validation
+- `scripts&#47;run_walkforward_backtest.py` – Walk-Forward-Validation
 
 ### 5. Neue Datenquelle hinzufügen
 
@@ -433,7 +433,7 @@ python3 scripts/run_portfolio_backtest.py --allocation equal
 **Variante C: Research-Pipeline**
 ```bash
 # Walk-Forward
-python scripts&#47;run_walkforward.py --strategy ma_crossover
+python scripts&#47;run_walkforward_backtest.py --strategy ma_crossover
 
 # Monte-Carlo
 python scripts&#47;run_monte_carlo.py --strategy rsi_reversion --runs 1000
