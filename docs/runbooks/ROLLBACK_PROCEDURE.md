@@ -263,7 +263,7 @@ python3 scripts/ops/generate_rollback_report.py \
 
 - [ ] Root cause identified and fixed
 - [ ] Fix tested in shadow mode
-- [ ] New drill completed successfully
+- [ ] New [KILL_SWITCH_DRILL_PROCEDURE.md](KILL_SWITCH_DRILL_PROCEDURE.md) completed successfully
 - [ ] Risk Owner approval obtained
 - [ ] Follow [LIVE_MODE_TRANSITION_RUNBOOK.md](LIVE_MODE_TRANSITION_RUNBOOK.md) to re-enable
 
@@ -338,7 +338,7 @@ Minimum waiting period: 24 hours in shadow mode
 1. Root cause analysis complete
 2. Fix implemented and tested
 3. Shadow mode stable for 24+ hours
-4. Kill switch drill completed successfully
+4. Kill switch [KILL_SWITCH_DRILL_PROCEDURE.md](KILL_SWITCH_DRILL_PROCEDURE.md) completed successfully
 5. Risk Owner approval
 6. Follow [LIVE_MODE_TRANSITION_RUNBOOK.md](LIVE_MODE_TRANSITION_RUNBOOK.md)
 
