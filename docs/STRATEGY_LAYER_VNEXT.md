@@ -306,11 +306,11 @@ tracker = build_tracker_from_config(config)
 
 ### 2. Study Runner (Phase: 🔜 Placeholder)
 
-**Script**: `scripts/run_study_optuna_placeholder.py`
+**Script**: `scripts/run_optuna_study.py`
 
 ```bash
 # Später:
-python3 scripts/run_study_optuna_placeholder.py \
+python3 scripts/run_optuna_study.py \
     --strategy ma_crossover \
     --config config/config.toml \
     --n-trials 100 \
@@ -581,7 +581,7 @@ class MyStrategy(BaseStrategy):
 
 ### Manual Smoke-Tests
 
-🔜 `scripts/run_study_optuna_placeholder.py`:
+`scripts/run_optuna_study.py`:
 - Gibt hilfreiche Meldung aus
 - Exit-Code 0 (kein Crash)
 
