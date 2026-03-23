@@ -309,6 +309,8 @@ Issues:
 
 ## 🔧 TROUBLESHOOTING
 
+For detailed diagnosis and operator-oriented troubleshooting flows, see [KILL_SWITCH_TROUBLESHOOTING.md](KILL_SWITCH_TROUBLESHOOTING.md).
+
 ### Problem: Kill Switch lässt sich nicht triggern
 
 **Symptome:**
