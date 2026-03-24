@@ -7,6 +7,14 @@ def _bool_text(value: bool) -> str:
     return "yes" if value else "no"
 
 
+_PRIORITY_LABELS = {
+    "p0": "Immediate",
+    "p1": "Before merge / CI",
+    "p2": "Before next tooling bump",
+    "p3": "Routine hygiene",
+}
+
+
 def render_update_officer_summary(report: dict[str, Any]) -> str:
     summary = report["summary"]
     findings = report["findings"]
@@ -25,7 +33,7 @@ def render_update_officer_summary(report: dict[str, Any]) -> str:
     lines.append(f"- repo_root: `{report['repo_root']}`")
     lines.append("")
 
-    lines.append("## Summary Counts")
+    lines.append("## Summary counts")
     lines.append("")
     lines.append(f"- total_findings: `{summary['total_findings']}`")
     lines.append(f"- safe_review: `{summary['safe_review']}`")
@@ -33,14 +41,89 @@ def render_update_officer_summary(report: dict[str, Any]) -> str:
     lines.append(f"- blocked: `{summary['blocked']}`")
     lines.append("")
 
+    lines.append("### By classification")
+    lines.append("")
+    lines.append(
+        f"- `safe_review`: `{summary['safe_review']}` — routine dev-tooling or well-pinned refs"
+    )
+    lines.append(f"- `manual_review`: `{summary['manual_review']}` — needs human verification")
+    lines.append(f"- `blocked`: `{summary['blocked']}` — runtime-adjacent or policy-blocked")
+    lines.append("")
+
+    prio = summary.get("priority_counts", {})
+    if prio:
+        lines.append("### Priority counts")
+        lines.append("")
+        for key in ["p0", "p1", "p2", "p3"]:
+            label = _PRIORITY_LABELS.get(key, key)
+            lines.append(f"- {key} ({label}): `{prio.get(key, 0)}`")
+        lines.append("")
+
+    cat_counts = summary.get("category_counts", {})
+    if cat_counts:
+        lines.append("### Category counts")
+        lines.append("")
+        for key in sorted(cat_counts.keys()):
+            lines.append(f"- {key}: `{cat_counts[key]}`")
+        lines.append("")
+
+    lines.append("## By priority")
+    lines.append("")
+    for prio_key in ["p0", "p1", "p2", "p3"]:
+        subset = sorted(
+            [f for f in findings if f.get("recommended_priority") == prio_key],
+            key=lambda x: (x["surface"], x["item_name"]),
+        )
+        label = _PRIORITY_LABELS.get(prio_key, prio_key)
+        lines.append(f"### {prio_key} ({label})")
+        lines.append("")
+        if not subset:
+            lines.append("- _(none)_")
+        else:
+            for f in subset:
+                lines.append(
+                    f"- `{f['item_name']}` — {f['surface']} / {f['classification']} — {f['reason']}"
+                )
+        lines.append("")
+
+    lines.append("## By category")
+    lines.append("")
+    by_cat: dict[str, list[dict[str, Any]]] = {}
+    for f in findings:
+        by_cat.setdefault(str(f.get("category", "unknown")), []).append(f)
+    for cat in sorted(by_cat.keys()):
+        lines.append(f"### {cat}")
+        lines.append("")
+        for f in sorted(by_cat[cat], key=lambda x: (x["recommended_priority"], x["item_name"])):
+            lines.append(
+                f"- `{f['item_name']}` — priority `{f.get('recommended_priority', '')}` — "
+                f"{f['classification']} — {f['surface']}"
+            )
+        lines.append("")
+
+    lines.append("## Recommended next actions")
+    lines.append("")
+    lines.append("| item_name | priority | recommended_action |")
+    lines.append("|---|---|---|")
+    for f in sorted(
+        findings,
+        key=lambda x: (x.get("recommended_priority", ""), x["surface"], x["item_name"]),
+    ):
+        action = str(f.get("recommended_action", "")).replace("|", "\\|")
+        lines.append(f"| `{f['item_name']}` | `{f.get('recommended_priority', '')}` | {action} |")
+    lines.append("")
+
     lines.append("## Findings")
     lines.append("")
-    lines.append("| surface | item_name | current_spec | classification | reason |")
-    lines.append("|---|---|---|---|---|")
-    for f in findings:
+    lines.append(
+        "| surface | item_name | classification | priority | category | current_spec | reason |"
+    )
+    lines.append("|---|---|---|---|---|---|---|")
+    for f in sorted(findings, key=lambda x: (x["surface"], x["item_name"])):
         lines.append(
-            f"| {f['surface']} | {f['item_name']} | {f['current_spec']} "
-            f"| {f['classification']} | {f['reason']} |"
+            f"| {f['surface']} | {f['item_name']} | {f['classification']} | "
+            f"{f.get('recommended_priority', '')} | {f.get('category', '')} | "
+            f"{f['current_spec']} | {f['reason']} |"
         )
     lines.append("")
 
@@ -53,7 +136,7 @@ def render_update_officer_summary(report: dict[str, Any]) -> str:
     if notes_entries:
         lines.append("## Notes")
         lines.append("")
-        for item_name, item_notes in notes_entries:
+        for item_name, item_notes in sorted(notes_entries, key=lambda x: x[0]):
             lines.append(f"### {item_name}")
             lines.append("")
             for note in item_notes:

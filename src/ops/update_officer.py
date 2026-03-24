@@ -13,7 +13,11 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from src.ops.update_officer_markdown import render_update_officer_summary
-from src.ops.update_officer_profiles import PROFILES
+from src.ops.update_officer_profiles import (
+    PROFILES,
+    surface_category,
+    surface_finding_description,
+)
 from src.ops.update_officer_schema import validate_report_payload
 
 UTC = timezone.utc
@@ -63,6 +67,42 @@ def _classify_package(
     if not spec or spec == "*":
         return "manual_review", f"{norm} has no version pin"
     return "manual_review", f"{norm} is not in known dev-tooling bucket"
+
+
+def recommend_priority_action(classification: str, surface: str) -> tuple[str, str]:
+    """Deterministic operator-facing recommendation; never implies auto-fix."""
+    if classification == "blocked":
+        if surface == "pyproject.toml":
+            return (
+                "p0",
+                "Remove or replace runtime-adjacent dev dependency before proceeding.",
+            )
+        return (
+            "p1",
+            "Resolve blocked CI or supply-chain finding before merge.",
+        )
+    if classification == "manual_review":
+        if surface == "github_actions":
+            return (
+                "p1",
+                "Pin or verify GitHub Actions references before relying on this workflow.",
+            )
+        return (
+            "p2",
+            "Review unpinned or unrecognized dev dependency before the next tooling bump.",
+        )
+    return ("p3", "No immediate action; include in routine dev-tooling hygiene.")
+
+
+def enrich_findings(profile: str, findings: list[dict[str, Any]]) -> None:
+    for f in findings:
+        surf = str(f["surface"])
+        f.setdefault("notes", [])
+        f["category"] = surface_category(profile, surf)
+        f["description"] = surface_finding_description(profile, surf, str(f["item_name"]))
+        prio, action = recommend_priority_action(str(f["classification"]), surf)
+        f["recommended_priority"] = prio
+        f["recommended_action"] = action
 
 
 def _classify_action_ref(ref: str) -> tuple[str, str]:
@@ -186,12 +226,25 @@ def scan_github_actions(repo_root: Path) -> list[dict[str, Any]]:
 # ---------------------------------------------------------------------------
 
 
-def build_summary(findings: list[dict[str, Any]]) -> dict[str, int]:
-    counts = {"total_findings": len(findings), "safe_review": 0, "manual_review": 0, "blocked": 0}
+def build_summary(findings: list[dict[str, Any]]) -> dict[str, Any]:
+    counts: dict[str, Any] = {
+        "total_findings": len(findings),
+        "safe_review": 0,
+        "manual_review": 0,
+        "blocked": 0,
+        "priority_counts": {"p0": 0, "p1": 0, "p2": 0, "p3": 0},
+        "category_counts": {},
+    }
     for f in findings:
         cls = f["classification"]
-        if cls in counts:
+        if cls in ("safe_review", "manual_review", "blocked"):
             counts[cls] += 1
+        pr = f.get("recommended_priority", "")
+        if pr in counts["priority_counts"]:
+            counts["priority_counts"][pr] += 1  # type: ignore[index]
+        cat = f.get("category", "unknown")
+        cc: dict[str, int] = counts["category_counts"]  # type: ignore[assignment]
+        cc[cat] = cc.get(cat, 0) + 1
     return counts
 
 
@@ -205,6 +258,7 @@ def emit_events(events_path: Path, findings: list[dict[str, Any]]) -> None:
                         "surface": f["surface"],
                         "item_name": f["item_name"],
                         "classification": f["classification"],
+                        "recommended_priority": f.get("recommended_priority"),
                     },
                     ensure_ascii=False,
                 )
@@ -242,7 +296,15 @@ def run(
     if "github_actions" in surfaces:  # type: ignore[operator]
         findings.extend(scan_github_actions(repo_root))
 
-    findings.sort(key=lambda f: (f["classification"], f["surface"], f["item_name"]))
+    enrich_findings(profile, findings)
+    findings.sort(
+        key=lambda f: (
+            f["recommended_priority"],
+            f["classification"],
+            f["surface"],
+            f["item_name"],
+        )
+    )
 
     emit_events(run_dir / "events.jsonl", findings)
 
@@ -250,7 +312,7 @@ def run(
     success = summary["blocked"] == 0
 
     report_payload: dict[str, Any] = {
-        "officer_version": "v0-min",
+        "officer_version": "v1-min",
         "profile": profile,
         "started_at": started_at,
         "finished_at": datetime.now(UTC).isoformat(),
@@ -278,7 +340,7 @@ def run(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Peak_Trade Update Officer v0")
+    parser = argparse.ArgumentParser(description="Peak_Trade Update Officer v1")
     parser.add_argument(
         "--profile",
         choices=sorted(PROFILES.keys()),

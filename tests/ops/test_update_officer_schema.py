@@ -10,7 +10,7 @@ from src.ops.update_officer_schema import (
 
 def _valid_report() -> dict:
     return {
-        "officer_version": "v0-min",
+        "officer_version": "v1-min",
         "profile": "dev_tooling_review",
         "started_at": "2026-03-23T10:00:00+00:00",
         "finished_at": "2026-03-23T10:00:01+00:00",
@@ -24,6 +24,11 @@ def _valid_report() -> dict:
                 "current_spec": ">=0.1.0",
                 "classification": "safe_review",
                 "reason": "recognized dev tooling",
+                "category": "python_dependencies",
+                "description": "Dev dependency ruff in pyproject.toml.",
+                "recommended_action": "No immediate action; include in routine dev-tooling hygiene.",
+                "recommended_priority": "p3",
+                "notes": [],
             }
         ],
         "summary": {
@@ -31,6 +36,8 @@ def _valid_report() -> dict:
             "safe_review": 1,
             "manual_review": 0,
             "blocked": 0,
+            "priority_counts": {"p0": 0, "p1": 0, "p2": 0, "p3": 1},
+            "category_counts": {"python_dependencies": 1},
         },
     }
 
@@ -77,5 +84,19 @@ def test_validate_report_payload_rejects_missing_top_level_key() -> None:
 def test_validate_report_payload_rejects_invalid_surface() -> None:
     payload = _valid_report()
     payload["findings"][0]["surface"] = "unknown_surface"
+    with pytest.raises(UpdateOfficerSchemaError):
+        validate_report_payload(payload)
+
+
+def test_validate_report_payload_rejects_invalid_priority() -> None:
+    payload = _valid_report()
+    payload["findings"][0]["recommended_priority"] = "p9"
+    with pytest.raises(UpdateOfficerSchemaError):
+        validate_report_payload(payload)
+
+
+def test_validate_report_payload_rejects_bad_priority_count_keys() -> None:
+    payload = _valid_report()
+    payload["summary"]["priority_counts"] = {"p0": 0, "p1": 1}
     with pytest.raises(UpdateOfficerSchemaError):
         validate_report_payload(payload)
