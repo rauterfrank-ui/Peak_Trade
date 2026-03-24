@@ -6,7 +6,7 @@ name: "PR Merge State Signal (Informational)"
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 # Ensure only one run per PR at a time
 concurrency:
