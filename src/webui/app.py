@@ -1758,15 +1758,24 @@ def ops_cockpit(
     update_officer_run_dir: Optional[str] = None,
 ) -> HTMLResponse:
     """Read-only Ops Cockpit from local artifacts."""
+    qs_n = (update_officer_notifier_path or "").strip()
+    qs_r = (update_officer_run_dir or "").strip()
     np, rd, conflict = resolve_update_officer_route_inputs(
         update_officer_notifier_path,
         update_officer_run_dir,
     )
+    if conflict:
+        form_np, form_rd = qs_n, qs_r
+    else:
+        form_np = str(np) if np else ""
+        form_rd = str(rd) if rd else ""
     return HTMLResponse(
         render_ops_cockpit_html(
             update_officer_notifier_path=np,
             update_officer_run_dir=rd,
             update_officer_source_conflict=conflict,
+            update_officer_form_notifier_path=form_np,
+            update_officer_form_run_dir=form_rd,
         )
     )
 
