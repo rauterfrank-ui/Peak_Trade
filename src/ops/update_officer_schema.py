@@ -19,6 +19,20 @@ REQUIRED_TOP_LEVEL_KEYS = {
     "success",
     "findings",
     "summary",
+    "next_recommended_topic",
+    "top_priority_reason",
+    "recommended_update_queue",
+}
+
+REQUIRED_QUEUE_ENTRY_KEYS = {
+    "topic_id",
+    "rank",
+    "worst_priority",
+    "finding_count",
+    "blocked_count",
+    "manual_review_count",
+    "safe_review_count",
+    "headline",
 }
 
 REQUIRED_FINDING_KEYS = {
@@ -90,6 +104,23 @@ def validate_finding_payload(finding: dict[str, Any], idx: int) -> None:
             _require_type(note, str, f"{scope}.notes[{j}]")
 
 
+def validate_queue_entry(entry: dict[str, Any], idx: int) -> None:
+    scope = f"recommended_update_queue[{idx}]"
+    _require_keys(entry, REQUIRED_QUEUE_ENTRY_KEYS, scope)
+    _require_type(entry["topic_id"], str, f"{scope}.topic_id")
+    _require_type(entry["rank"], int, f"{scope}.rank")
+    _require_type(entry["worst_priority"], str, f"{scope}.worst_priority")
+    _require_enum(entry["worst_priority"], ALLOWED_PRIORITIES, f"{scope}.worst_priority")
+    for k in (
+        "finding_count",
+        "blocked_count",
+        "manual_review_count",
+        "safe_review_count",
+    ):
+        _require_type(entry[k], int, f"{scope}.{k}")
+    _require_type(entry["headline"], str, f"{scope}.headline")
+
+
 def validate_summary_payload(summary: dict[str, Any]) -> None:
     scope = "summary"
     _require_keys(summary, REQUIRED_SUMMARY_KEYS, scope)
@@ -136,3 +167,15 @@ def validate_report_payload(report: dict[str, Any]) -> None:
         validate_finding_payload(finding, idx)
 
     validate_summary_payload(report["summary"])
+
+    _require_type(report["next_recommended_topic"], str, f"{scope}.next_recommended_topic")
+    _require_type(report["top_priority_reason"], str, f"{scope}.top_priority_reason")
+    _require_type(report["recommended_update_queue"], list, f"{scope}.recommended_update_queue")
+    for qi, qe in enumerate(report["recommended_update_queue"]):
+        _require_type(qe, dict, f"{scope}.recommended_update_queue[{qi}]")
+        validate_queue_entry(qe, qi)
+    for i, entry in enumerate(report["recommended_update_queue"]):
+        if entry["rank"] != i + 1:
+            raise UpdateOfficerSchemaError(
+                f"{scope}.recommended_update_queue: expected rank {i + 1}, got {entry['rank']}"
+            )

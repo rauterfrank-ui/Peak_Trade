@@ -10,7 +10,7 @@ from src.ops.update_officer_schema import (
 
 def _valid_report() -> dict:
     return {
-        "officer_version": "v1-min",
+        "officer_version": "v2-min",
         "profile": "dev_tooling_review",
         "started_at": "2026-03-23T10:00:00+00:00",
         "finished_at": "2026-03-23T10:00:01+00:00",
@@ -39,6 +39,20 @@ def _valid_report() -> dict:
             "priority_counts": {"p0": 0, "p1": 0, "p2": 0, "p3": 1},
             "category_counts": {"python_dependencies": 1},
         },
+        "next_recommended_topic": "python_dependencies",
+        "top_priority_reason": "Topic `python_dependencies` ranks first.",
+        "recommended_update_queue": [
+            {
+                "topic_id": "python_dependencies",
+                "rank": 1,
+                "worst_priority": "p3",
+                "finding_count": 1,
+                "blocked_count": 0,
+                "manual_review_count": 0,
+                "safe_review_count": 1,
+                "headline": "1 finding(s); worst_priority=p3; blocked=0; manual_review=0; safe_review=1",
+            }
+        ],
     }
 
 
@@ -98,5 +112,30 @@ def test_validate_report_payload_rejects_invalid_priority() -> None:
 def test_validate_report_payload_rejects_bad_priority_count_keys() -> None:
     payload = _valid_report()
     payload["summary"]["priority_counts"] = {"p0": 0, "p1": 1}
+    with pytest.raises(UpdateOfficerSchemaError):
+        validate_report_payload(payload)
+
+
+def test_validate_report_payload_rejects_missing_next_topic() -> None:
+    payload = _valid_report()
+    del payload["next_recommended_topic"]
+    with pytest.raises(UpdateOfficerSchemaError):
+        validate_report_payload(payload)
+
+
+def test_validate_report_payload_rejects_bad_queue_rank_sequence() -> None:
+    payload = _valid_report()
+    payload["recommended_update_queue"] = [
+        {
+            "topic_id": "python_dependencies",
+            "rank": 2,
+            "worst_priority": "p3",
+            "finding_count": 1,
+            "blocked_count": 0,
+            "manual_review_count": 0,
+            "safe_review_count": 1,
+            "headline": "x",
+        }
+    ]
     with pytest.raises(UpdateOfficerSchemaError):
         validate_report_payload(payload)

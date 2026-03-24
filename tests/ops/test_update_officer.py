@@ -6,8 +6,10 @@ import sys
 from pathlib import Path
 
 from src.ops.update_officer import (
+    build_recommended_update_queue,
     build_summary,
     enrich_findings,
+    next_recommended_topic_and_reason,
     recommend_priority_action,
     run,
     scan_github_actions,
@@ -43,7 +45,7 @@ def test_update_officer_dev_tooling_review_emits_report(tmp_path: Path) -> None:
     assert manifest_path.exists()
 
     report = json.loads(report_path.read_text(encoding="utf-8"))
-    assert report["officer_version"] == "v1-min"
+    assert report["officer_version"] == "v2-min"
     assert report["profile"] == "dev_tooling_review"
     assert "findings" in report
     assert "summary" in report
@@ -60,6 +62,15 @@ def test_update_officer_dev_tooling_review_emits_report(tmp_path: Path) -> None:
         assert "recommended_action" in finding
         assert "category" in finding
         assert "description" in finding
+
+    assert "next_recommended_topic" in report
+    assert "top_priority_reason" in report
+    assert "recommended_update_queue" in report
+    assert isinstance(report["recommended_update_queue"], list)
+    for i, q in enumerate(report["recommended_update_queue"], start=1):
+        assert q["rank"] == i
+        assert "topic_id" in q
+        assert "headline" in q
 
 
 def test_update_officer_cli_exits_zero() -> None:
@@ -157,3 +168,65 @@ def test_profiles_exports_dev_tooling_review() -> None:
     assert "surfaces" in cfg
     assert "safe_packages" in cfg
     assert "surface_metadata" in cfg
+
+
+def test_build_recommended_update_queue_tiebreak_lex_topic() -> None:
+    """Same worst priority and bucket size → lexicographic topic_id wins."""
+    findings = [
+        {
+            "surface": "pyproject.toml",
+            "item_name": "z-pkg",
+            "current_spec": "x",
+            "classification": "manual_review",
+            "reason": "r",
+            "category": "python_dependencies",
+            "description": "d",
+            "recommended_priority": "p2",
+            "recommended_action": "a",
+        },
+        {
+            "surface": "pyproject.toml",
+            "item_name": "a-pkg",
+            "current_spec": "x",
+            "classification": "manual_review",
+            "reason": "r",
+            "category": "python_dependencies",
+            "description": "d",
+            "recommended_priority": "p2",
+            "recommended_action": "a",
+        },
+        {
+            "surface": "github_actions",
+            "item_name": "org/act@1",
+            "current_spec": "1",
+            "classification": "manual_review",
+            "reason": "r",
+            "category": "ci_integrations",
+            "description": "d",
+            "recommended_priority": "p2",
+            "recommended_action": "a",
+        },
+        {
+            "surface": "github_actions",
+            "item_name": "org/other@1",
+            "current_spec": "1",
+            "classification": "manual_review",
+            "reason": "r",
+            "category": "ci_integrations",
+            "description": "d",
+            "recommended_priority": "p2",
+            "recommended_action": "a",
+        },
+    ]
+    q = build_recommended_update_queue(findings)
+    assert [e["topic_id"] for e in q] == ["ci_integrations", "python_dependencies"]
+    nt, reason = next_recommended_topic_and_reason(q)
+    assert nt == "ci_integrations"
+    assert "ci_integrations" in reason
+
+
+def test_next_topic_none_when_empty() -> None:
+    q = build_recommended_update_queue([])
+    nt, reason = next_recommended_topic_and_reason(q)
+    assert nt == "none"
+    assert "No findings" in reason

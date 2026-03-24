@@ -22,6 +22,9 @@ from src.ops.update_officer_schema import validate_report_payload
 
 UTC = timezone.utc
 
+PRIORITY_RANK: dict[str, int] = {"p0": 0, "p1": 1, "p2": 2, "p3": 3}
+RANK_TO_PRIORITY: tuple[str, ...] = ("p0", "p1", "p2", "p3")
+
 # tomllib is stdlib from 3.11; fall back to tomli for 3.9/3.10
 try:
     import tomllib
@@ -226,6 +229,73 @@ def scan_github_actions(repo_root: Path) -> list[dict[str, Any]]:
 # ---------------------------------------------------------------------------
 
 
+def build_recommended_update_queue(findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Deterministic topic buckets = finding `category`; stable sort for notifier use."""
+    by_topic: dict[str, list[dict[str, Any]]] = {}
+    for f in findings:
+        tid = str(f.get("category", "unknown"))
+        by_topic.setdefault(tid, []).append(f)
+
+    rows: list[dict[str, Any]] = []
+    for topic_id, bucket in by_topic.items():
+        pranks = [PRIORITY_RANK.get(str(x.get("recommended_priority", "p3")), 3) for x in bucket]
+        worst = min(pranks)
+        worst_p = RANK_TO_PRIORITY[worst]
+        bc = sum(1 for x in bucket if x["classification"] == "blocked")
+        mc = sum(1 for x in bucket if x["classification"] == "manual_review")
+        sc = sum(1 for x in bucket if x["classification"] == "safe_review")
+        fc = len(bucket)
+        headline = (
+            f"{fc} finding(s); worst_priority={worst_p}; "
+            f"blocked={bc}; manual_review={mc}; safe_review={sc}"
+        )
+        rows.append(
+            {
+                "topic_id": topic_id,
+                "worst_priority": worst_p,
+                "finding_count": fc,
+                "blocked_count": bc,
+                "manual_review_count": mc,
+                "safe_review_count": sc,
+                "headline": headline,
+                "_sort_worst": worst,
+                "_sort_neg_fc": -fc,
+            }
+        )
+
+    rows.sort(key=lambda r: (r["_sort_worst"], r["_sort_neg_fc"], r["topic_id"]))
+    out: list[dict[str, Any]] = []
+    for i, r in enumerate(rows, start=1):
+        out.append(
+            {
+                "topic_id": r["topic_id"],
+                "rank": i,
+                "worst_priority": r["worst_priority"],
+                "finding_count": r["finding_count"],
+                "blocked_count": r["blocked_count"],
+                "manual_review_count": r["manual_review_count"],
+                "safe_review_count": r["safe_review_count"],
+                "headline": r["headline"],
+            }
+        )
+    return out
+
+
+def next_recommended_topic_and_reason(queue: list[dict[str, Any]]) -> tuple[str, str]:
+    if not queue:
+        return (
+            "none",
+            "No findings; no deterministic update topic to prioritize.",
+        )
+    top = queue[0]
+    reason = (
+        f"Topic `{top['topic_id']}` ranks first in the deterministic queue: "
+        f"worst per-finding priority is `{top['worst_priority']}` across "
+        f"{top['finding_count']} finding(s) (blocked={top['blocked_count']})."
+    )
+    return str(top["topic_id"]), reason
+
+
 def build_summary(findings: list[dict[str, Any]]) -> dict[str, Any]:
     counts: dict[str, Any] = {
         "total_findings": len(findings),
@@ -310,9 +380,13 @@ def run(
 
     summary = build_summary(findings)
     success = summary["blocked"] == 0
+    recommended_update_queue = build_recommended_update_queue(findings)
+    next_recommended_topic, top_priority_reason = next_recommended_topic_and_reason(
+        recommended_update_queue
+    )
 
     report_payload: dict[str, Any] = {
-        "officer_version": "v1-min",
+        "officer_version": "v2-min",
         "profile": profile,
         "started_at": started_at,
         "finished_at": datetime.now(UTC).isoformat(),
@@ -321,6 +395,9 @@ def run(
         "success": success,
         "findings": findings,
         "summary": summary,
+        "next_recommended_topic": next_recommended_topic,
+        "top_priority_reason": top_priority_reason,
+        "recommended_update_queue": recommended_update_queue,
     }
 
     validate_report_payload(report_payload)
@@ -340,7 +417,7 @@ def run(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Peak_Trade Update Officer v1")
+    parser = argparse.ArgumentParser(description="Peak_Trade Update Officer v2")
     parser.add_argument(
         "--profile",
         choices=sorted(PROFILES.keys()),

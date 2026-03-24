@@ -7,6 +7,12 @@ def _bool_text(value: bool) -> str:
     return "yes" if value else "no"
 
 
+def _sorted_item_names_for_topic(findings: list[dict[str, Any]], topic_id: str) -> list[str]:
+    return sorted(
+        str(f["item_name"]) for f in findings if str(f.get("category", "unknown")) == topic_id
+    )
+
+
 _PRIORITY_LABELS = {
     "p0": "Immediate",
     "p1": "Before merge / CI",
@@ -32,6 +38,37 @@ def render_update_officer_summary(report: dict[str, Any]) -> str:
     lines.append(f"- output_dir: `{report['output_dir']}`")
     lines.append(f"- repo_root: `{report['repo_root']}`")
     lines.append("")
+
+    lines.append("## Next best update topic")
+    lines.append("")
+    lines.append(f"- `{report.get('next_recommended_topic', 'none')}`")
+    lines.append("")
+
+    lines.append("## Why now")
+    lines.append("")
+    lines.append(report.get("top_priority_reason", ""))
+    lines.append("")
+
+    lines.append("## What to review first")
+    lines.append("")
+    queue = report.get("recommended_update_queue") or []
+    if not queue:
+        lines.append("- _(no queued topics)_")
+        lines.append("")
+    else:
+        for entry in queue:
+            tid = entry.get("topic_id", "")
+            rk = entry.get("rank", 0)
+            hl = entry.get("headline", "")
+            lines.append(f"{rk}. **`{tid}`** — {hl}")
+        lines.append("")
+        top_tid = str(queue[0].get("topic_id", ""))
+        first_items = _sorted_item_names_for_topic(findings, top_tid)
+        lines.append(f"### Items to review first (topic: `{top_tid}`)")
+        lines.append("")
+        for name in first_items:
+            lines.append(f"- `{name}`")
+        lines.append("")
 
     lines.append("## Summary counts")
     lines.append("")
