@@ -37,6 +37,19 @@ def render_update_officer_summary(report: dict[str, Any]) -> str:
     lines.append(f"- finished_at: `{report['finished_at']}`")
     lines.append(f"- output_dir: `{report['output_dir']}`")
     lines.append(f"- repo_root: `{report['repo_root']}`")
+    npp = report.get("notifier_payload_path")
+    if npp:
+        lines.append(f"- notifier_payload_path: `{npp}`")
+    lines.append("")
+
+    lines.append("## Notifier-ready output")
+    lines.append("")
+    if npp:
+        lines.append(
+            f"Machine-readable notifier contract (same run directory as `report.json`): `{npp}`."
+        )
+    else:
+        lines.append("_Notifier payload path not present in this report._")
     lines.append("")
 
     lines.append("## Next best update topic")

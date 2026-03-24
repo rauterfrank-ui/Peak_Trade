@@ -9,6 +9,22 @@ ALLOWED_SURFACES = {"pyproject.toml", "github_actions"}
 ALLOWED_PRIORITIES = {"p0", "p1", "p2", "p3"}
 PRIORITY_COUNT_KEYS = {"p0", "p1", "p2", "p3"}
 
+ALLOWED_NOTIFIER_SEVERITY = {"info", "low", "medium", "high", "critical"}
+ALLOWED_REMINDER_CLASS = {"none", "blocked", "manual_review", "hygiene"}
+
+REQUIRED_NOTIFIER_KEYS = {
+    "officer_version",
+    "generated_at",
+    "next_recommended_topic",
+    "top_priority_reason",
+    "recommended_update_queue",
+    "recommended_next_action",
+    "recommended_review_paths",
+    "severity",
+    "reminder_class",
+    "requires_manual_review",
+}
+
 REQUIRED_TOP_LEVEL_KEYS = {
     "officer_version",
     "profile",
@@ -22,6 +38,7 @@ REQUIRED_TOP_LEVEL_KEYS = {
     "next_recommended_topic",
     "top_priority_reason",
     "recommended_update_queue",
+    "notifier_payload_path",
 }
 
 REQUIRED_QUEUE_ENTRY_KEYS = {
@@ -104,6 +121,31 @@ def validate_finding_payload(finding: dict[str, Any], idx: int) -> None:
             _require_type(note, str, f"{scope}.notes[{j}]")
 
 
+def validate_notifier_payload(payload: dict[str, Any]) -> None:
+    scope = "notifier_payload"
+    _require_keys(payload, REQUIRED_NOTIFIER_KEYS, scope)
+    _require_type(payload["officer_version"], str, f"{scope}.officer_version")
+    _require_type(payload["generated_at"], str, f"{scope}.generated_at")
+    _require_type(payload["next_recommended_topic"], str, f"{scope}.next_recommended_topic")
+    _require_type(payload["top_priority_reason"], str, f"{scope}.top_priority_reason")
+    _require_type(payload["recommended_next_action"], str, f"{scope}.recommended_next_action")
+    _require_type(payload["recommended_review_paths"], list, f"{scope}.recommended_review_paths")
+    for i, p in enumerate(payload["recommended_review_paths"]):
+        _require_type(p, str, f"{scope}.recommended_review_paths[{i}]")
+    _require_enum(payload["severity"], ALLOWED_NOTIFIER_SEVERITY, f"{scope}.severity")
+    _require_enum(payload["reminder_class"], ALLOWED_REMINDER_CLASS, f"{scope}.reminder_class")
+    _require_type(payload["requires_manual_review"], bool, f"{scope}.requires_manual_review")
+    _require_type(payload["recommended_update_queue"], list, f"{scope}.recommended_update_queue")
+    for qi, qe in enumerate(payload["recommended_update_queue"]):
+        _require_type(qe, dict, f"{scope}.recommended_update_queue[{qi}]")
+        validate_queue_entry(qe, qi)
+    for i, entry in enumerate(payload["recommended_update_queue"]):
+        if entry["rank"] != i + 1:
+            raise UpdateOfficerSchemaError(
+                f"{scope}.recommended_update_queue: expected rank {i + 1}, got {entry['rank']}"
+            )
+
+
 def validate_queue_entry(entry: dict[str, Any], idx: int) -> None:
     scope = f"recommended_update_queue[{idx}]"
     _require_keys(entry, REQUIRED_QUEUE_ENTRY_KEYS, scope)
@@ -179,3 +221,5 @@ def validate_report_payload(report: dict[str, Any]) -> None:
             raise UpdateOfficerSchemaError(
                 f"{scope}.recommended_update_queue: expected rank {i + 1}, got {entry['rank']}"
             )
+
+    _require_type(report["notifier_payload_path"], str, f"{scope}.notifier_payload_path")
