@@ -6,6 +6,8 @@ from typing import Any
 ALLOWED_CLASSIFICATIONS = {"safe_review", "manual_review", "blocked"}
 ALLOWED_PROFILES = {"dev_tooling_review"}
 ALLOWED_SURFACES = {"pyproject.toml", "github_actions"}
+ALLOWED_PRIORITIES = {"p0", "p1", "p2", "p3"}
+PRIORITY_COUNT_KEYS = {"p0", "p1", "p2", "p3"}
 
 REQUIRED_TOP_LEVEL_KEYS = {
     "officer_version",
@@ -25,6 +27,10 @@ REQUIRED_FINDING_KEYS = {
     "current_spec",
     "classification",
     "reason",
+    "category",
+    "description",
+    "recommended_action",
+    "recommended_priority",
 }
 
 REQUIRED_SUMMARY_KEYS = {
@@ -32,6 +38,8 @@ REQUIRED_SUMMARY_KEYS = {
     "safe_review",
     "manual_review",
     "blocked",
+    "priority_counts",
+    "category_counts",
 }
 
 
@@ -65,15 +73,48 @@ def validate_finding_payload(finding: dict[str, Any], idx: int) -> None:
     _require_type(finding["current_spec"], str, f"{scope}.current_spec")
     _require_type(finding["classification"], str, f"{scope}.classification")
     _require_type(finding["reason"], str, f"{scope}.reason")
+    _require_type(finding["category"], str, f"{scope}.category")
+    _require_type(finding["description"], str, f"{scope}.description")
+    _require_type(finding["recommended_action"], str, f"{scope}.recommended_action")
+    _require_type(finding["recommended_priority"], str, f"{scope}.recommended_priority")
     _require_enum(finding["classification"], ALLOWED_CLASSIFICATIONS, f"{scope}.classification")
     _require_enum(finding["surface"], ALLOWED_SURFACES, f"{scope}.surface")
+    _require_enum(
+        finding["recommended_priority"],
+        ALLOWED_PRIORITIES,
+        f"{scope}.recommended_priority",
+    )
+    if "notes" in finding:
+        _require_type(finding["notes"], list, f"{scope}.notes")
+        for j, note in enumerate(finding["notes"]):
+            _require_type(note, str, f"{scope}.notes[{j}]")
 
 
 def validate_summary_payload(summary: dict[str, Any]) -> None:
     scope = "summary"
     _require_keys(summary, REQUIRED_SUMMARY_KEYS, scope)
-    for key in REQUIRED_SUMMARY_KEYS:
+    for key in (
+        "total_findings",
+        "safe_review",
+        "manual_review",
+        "blocked",
+    ):
         _require_type(summary[key], int, f"{scope}.{key}")
+    _require_type(summary["priority_counts"], dict, f"{scope}.priority_counts")
+    _require_type(summary["category_counts"], dict, f"{scope}.category_counts")
+
+    pc = summary["priority_counts"]
+    if set(pc.keys()) != PRIORITY_COUNT_KEYS:
+        raise UpdateOfficerSchemaError(
+            f"{scope}.priority_counts: expected keys {sorted(PRIORITY_COUNT_KEYS)}, "
+            f"got {sorted(pc.keys())}"
+        )
+    for k in PRIORITY_COUNT_KEYS:
+        _require_type(pc[k], int, f"{scope}.priority_counts.{k}")
+
+    for ck, cv in summary["category_counts"].items():
+        _require_type(ck, str, f"{scope}.category_counts key")
+        _require_type(cv, int, f"{scope}.category_counts[{ck!r}]")
 
 
 def validate_report_payload(report: dict[str, Any]) -> None:

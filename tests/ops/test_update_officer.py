@@ -7,6 +7,8 @@ from pathlib import Path
 
 from src.ops.update_officer import (
     build_summary,
+    enrich_findings,
+    recommend_priority_action,
     run,
     scan_github_actions,
     scan_pyproject,
@@ -41,17 +43,23 @@ def test_update_officer_dev_tooling_review_emits_report(tmp_path: Path) -> None:
     assert manifest_path.exists()
 
     report = json.loads(report_path.read_text(encoding="utf-8"))
-    assert report["officer_version"] == "v0-min"
+    assert report["officer_version"] == "v1-min"
     assert report["profile"] == "dev_tooling_review"
     assert "findings" in report
     assert "summary" in report
     assert report["summary"]["total_findings"] > 0
+    assert "priority_counts" in report["summary"]
+    assert "category_counts" in report["summary"]
 
     for finding in report["findings"]:
         assert "surface" in finding
         assert "item_name" in finding
         assert "classification" in finding
         assert finding["classification"] in {"safe_review", "manual_review", "blocked"}
+        assert "recommended_priority" in finding
+        assert "recommended_action" in finding
+        assert "category" in finding
+        assert "description" in finding
 
 
 def test_update_officer_cli_exits_zero() -> None:
@@ -76,6 +84,7 @@ def test_scan_pyproject_finds_dev_deps() -> None:
     repo_root = Path(__file__).resolve().parents[2]
     profile_cfg = PROFILES["dev_tooling_review"]
     findings = scan_pyproject(repo_root, profile_cfg)
+    enrich_findings("dev_tooling_review", findings)
     names = {f["item_name"] for f in findings}
     assert "pytest" in names or "ruff" in names, f"expected dev deps, got {names}"
 
@@ -83,6 +92,7 @@ def test_scan_pyproject_finds_dev_deps() -> None:
 def test_scan_github_actions_finds_refs() -> None:
     repo_root = Path(__file__).resolve().parents[2]
     findings = scan_github_actions(repo_root)
+    enrich_findings("dev_tooling_review", findings)
     assert len(findings) > 0, "expected at least one GitHub Action reference"
     for f in findings:
         assert f["surface"] == "github_actions"
@@ -96,6 +106,10 @@ def test_build_summary_counts() -> None:
             "current_spec": ">=0.1.0",
             "classification": "safe_review",
             "reason": "recognized dev tooling",
+            "category": "python_dependencies",
+            "description": "desc",
+            "recommended_priority": "p3",
+            "recommended_action": "act",
         },
         {
             "surface": "pyproject.toml",
@@ -103,6 +117,10 @@ def test_build_summary_counts() -> None:
             "current_spec": "",
             "classification": "manual_review",
             "reason": "unknown",
+            "category": "python_dependencies",
+            "description": "desc",
+            "recommended_priority": "p2",
+            "recommended_action": "act",
         },
         {
             "surface": "pyproject.toml",
@@ -110,6 +128,10 @@ def test_build_summary_counts() -> None:
             "current_spec": ">=0.104.0",
             "classification": "blocked",
             "reason": "runtime-adjacent",
+            "category": "python_dependencies",
+            "description": "desc",
+            "recommended_priority": "p0",
+            "recommended_action": "act",
         },
     ]
     summary = build_summary(findings)
@@ -117,6 +139,16 @@ def test_build_summary_counts() -> None:
     assert summary["safe_review"] == 1
     assert summary["manual_review"] == 1
     assert summary["blocked"] == 1
+    assert summary["priority_counts"] == {"p0": 1, "p1": 0, "p2": 1, "p3": 1}
+    assert summary["category_counts"] == {"python_dependencies": 3}
+
+
+def test_recommend_priority_action_matrix() -> None:
+    assert recommend_priority_action("blocked", "pyproject.toml")[0] == "p0"
+    assert recommend_priority_action("blocked", "github_actions")[0] == "p1"
+    assert recommend_priority_action("manual_review", "github_actions")[0] == "p1"
+    assert recommend_priority_action("manual_review", "pyproject.toml")[0] == "p2"
+    assert recommend_priority_action("safe_review", "pyproject.toml")[0] == "p3"
 
 
 def test_profiles_exports_dev_tooling_review() -> None:
@@ -124,3 +156,4 @@ def test_profiles_exports_dev_tooling_review() -> None:
     cfg = PROFILES["dev_tooling_review"]
     assert "surfaces" in cfg
     assert "safe_packages" in cfg
+    assert "surface_metadata" in cfg

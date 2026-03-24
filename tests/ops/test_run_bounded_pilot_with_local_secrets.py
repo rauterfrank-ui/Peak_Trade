@@ -46,7 +46,15 @@ def test_fail_closed_for_wrong_mode(tmp_path: Path) -> None:
     env_file = tmp_path / "bounded.env"
     env_file.write_text("KRAKEN_API_KEY=abc\nKRAKEN_API_SECRET=xyz\n")
     r = subprocess.run(
-        [sys.executable, str(SCRIPT), "--env-file", str(env_file), "--mode", "paper", "--dry-check"],
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--env-file",
+            str(env_file),
+            "--mode",
+            "paper",
+            "--dry-check",
+        ],
         capture_output=True,
         text=True,
         cwd=ROOT,
@@ -58,11 +66,7 @@ def test_fail_closed_for_wrong_mode(tmp_path: Path) -> None:
 def test_dry_check_succeeds_for_bounded_mode(tmp_path: Path) -> None:
     """Dry-check succeeds when env file is complete and mode is bounded_pilot."""
     env_file = tmp_path / "bounded.env"
-    env_file.write_text(
-        "KRAKEN_API_KEY=abc\n"
-        "KRAKEN_API_SECRET=xyz\n"
-        "PT_EXEC_EVENTS_ENABLED=true\n"
-    )
+    env_file.write_text("KRAKEN_API_KEY=abc\nKRAKEN_API_SECRET=xyz\nPT_EXEC_EVENTS_ENABLED=true\n")
     r = subprocess.run(
         [sys.executable, str(SCRIPT), "--env-file", str(env_file), "--dry-check"],
         capture_output=True,
@@ -77,13 +81,17 @@ def test_dry_check_succeeds_for_bounded_mode(tmp_path: Path) -> None:
 def test_dry_check_succeeds_for_acceptance_mode(tmp_path: Path) -> None:
     """Dry-check succeeds when env file is complete and mode is acceptance."""
     env_file = tmp_path / "bounded.env"
-    env_file.write_text(
-        "KRAKEN_API_KEY=abc\n"
-        "KRAKEN_API_SECRET=xyz\n"
-        "PT_EXEC_EVENTS_ENABLED=true\n"
-    )
+    env_file.write_text("KRAKEN_API_KEY=abc\nKRAKEN_API_SECRET=xyz\nPT_EXEC_EVENTS_ENABLED=true\n")
     r = subprocess.run(
-        [sys.executable, str(SCRIPT), "--env-file", str(env_file), "--mode", "acceptance", "--dry-check"],
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--env-file",
+            str(env_file),
+            "--mode",
+            "acceptance",
+            "--dry-check",
+        ],
         capture_output=True,
         text=True,
         cwd=ROOT,
