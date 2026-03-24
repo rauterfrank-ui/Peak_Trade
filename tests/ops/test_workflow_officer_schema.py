@@ -10,7 +10,7 @@ from src.ops.workflow_officer_schema import (
 
 def _valid_report() -> dict:
     return {
-        "officer_version": "v0-min",
+        "officer_version": "v1-min",
         "mode": "audit",
         "profile": "docs_only_pr",
         "started_at": "2026-03-23T10:00:00+00:00",
@@ -27,6 +27,11 @@ def _valid_report() -> dict:
                 "severity": "hard_fail",
                 "outcome": "pass",
                 "effective_level": "ok",
+                "surface": "docs",
+                "category": "documentation",
+                "description": "Docs token policy.",
+                "recommended_action": "No operator action required.",
+                "recommended_priority": "p3",
             }
         ],
         "summary": {
@@ -52,6 +57,12 @@ def _valid_report() -> dict:
                 "warning": 0,
                 "error": 0,
                 "info": 0,
+            },
+            "recommended_priority_counts": {
+                "p0": 0,
+                "p1": 0,
+                "p2": 0,
+                "p3": 1,
             },
             "strict": False,
         },
@@ -87,5 +98,19 @@ def test_validate_report_payload_rejects_invalid_outcome_counts_keys() -> None:
 def test_validate_report_payload_rejects_invalid_effective_level_enum() -> None:
     payload = _valid_report()
     payload["checks"][0]["effective_level"] = "bad"
+    with pytest.raises(WorkflowOfficerSchemaError):
+        validate_report_payload(payload)
+
+
+def test_validate_report_payload_rejects_invalid_recommended_priority() -> None:
+    payload = _valid_report()
+    payload["checks"][0]["recommended_priority"] = "p9"
+    with pytest.raises(WorkflowOfficerSchemaError):
+        validate_report_payload(payload)
+
+
+def test_validate_report_payload_rejects_bad_priority_count_keys() -> None:
+    payload = _valid_report()
+    payload["summary"]["recommended_priority_counts"] = {"p0": 1, "p1": 0}
     with pytest.raises(WorkflowOfficerSchemaError):
         validate_report_payload(payload)

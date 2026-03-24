@@ -10,7 +10,7 @@ from src.ops.workflow_officer_markdown import render_workflow_officer_summary
 
 def _sample_report() -> dict:
     return {
-        "officer_version": "v0-min",
+        "officer_version": "v1-min",
         "mode": "audit",
         "profile": "docs_only_pr",
         "started_at": "2026-03-23T10:00:00+00:00",
@@ -27,6 +27,11 @@ def _sample_report() -> dict:
                 "severity": "hard_fail",
                 "outcome": "pass",
                 "effective_level": "ok",
+                "surface": "docs",
+                "category": "documentation",
+                "description": "Token policy",
+                "recommended_action": "No operator action required.",
+                "recommended_priority": "p3",
                 "notes": [],
             },
             {
@@ -37,6 +42,11 @@ def _sample_report() -> dict:
                 "severity": "warn",
                 "outcome": "fail",
                 "effective_level": "warning",
+                "surface": "docs",
+                "category": "documentation",
+                "description": "Graph triage",
+                "recommended_action": "Review logs.",
+                "recommended_priority": "p1",
                 "notes": ["triage warning"],
             },
         ],
@@ -49,6 +59,7 @@ def _sample_report() -> dict:
             "status_counts": {"OK": 1, "WARN": 1},
             "outcome_counts": {"pass": 1, "fail": 1, "missing": 0},
             "effective_level_counts": {"ok": 1, "warning": 1, "error": 0, "info": 0},
+            "recommended_priority_counts": {"p0": 0, "p1": 1, "p2": 0, "p3": 1},
             "strict": False,
         },
     }
@@ -59,8 +70,12 @@ def test_render_workflow_officer_summary_contains_core_sections() -> None:
     assert "# Workflow Officer Summary" in md
     assert "## Run" in md
     assert "## Summary Counts" in md
+    assert "### Recommended priority counts" in md
+    assert "## By priority" in md
+    assert "## By category" in md
+    assert "## Recommended next actions" in md
     assert "## Checks" in md
-    assert "| check_id | severity | outcome | effective_level | status | returncode |" in md
+    assert "| check_id | surface | category | priority |" in md
     assert "docs_token_policy" in md
     assert "docs_graph_triage" in md
     assert "## Notes" in md
@@ -105,4 +120,6 @@ def test_workflow_officer_run_writes_summary_md(tmp_path: Path) -> None:
 
     assert report["profile"] in summary_md
     assert report["mode"] in summary_md
-    assert "## Checks" in summary_md
+    assert report["officer_version"] == "v1-min"
+    assert "## By priority" in summary_md
+    assert "## Recommended next actions" in summary_md
