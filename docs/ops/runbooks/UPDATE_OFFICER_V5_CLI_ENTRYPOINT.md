@@ -9,7 +9,7 @@ for `notifier_payload.json`, without adding transport, scheduling, or autonomous
 |-----------|---------|
 | `scripts/ops/update_officer_summary.py` | Read-only CLI for notifier payload summaries |
 | `--payload` | Explicit path to `notifier_payload.json` |
-| `--run-dir` | Resolves `<run-dir>/notifier_payload.json` |
+| `--run-dir` | Resolves `<run-dir>&#47;notifier_payload.json` |
 
 ## Usage
 ```bash
