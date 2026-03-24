@@ -14,6 +14,9 @@ EMPTY_UPDATE_OFFICER_UI_MESSAGE = (
 INVALID_UPDATE_OFFICER_UI_MESSAGE = (
     "Update Officer notifier payload could not be loaded or validated."
 )
+UPDATE_OFFICER_ROUTE_CONFLICT_MESSAGE = (
+    "Update Officer: provide only one of notifier path or run directory (both were given)."
+)
 
 
 def load_notifier_payload(path: str | Path) -> Dict[str, Any]:
@@ -113,6 +116,11 @@ def resolve_update_officer_notifier_payload_path(
         candidate = Path(run_dir) / NOTIFIER_PAYLOAD_BASENAME
         return candidate if candidate.is_file() else None
     return None
+
+
+def build_update_officer_ui_route_conflict() -> Dict[str, Any]:
+    """Deterministic empty-state when route supplies conflicting explicit sources."""
+    return _empty_update_officer_ui_model(UPDATE_OFFICER_ROUTE_CONFLICT_MESSAGE)
 
 
 def _empty_update_officer_ui_model(message: str) -> Dict[str, Any]:

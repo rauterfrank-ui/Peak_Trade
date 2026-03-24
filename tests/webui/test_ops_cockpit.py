@@ -6,7 +6,12 @@ import pytest
 from fastapi.testclient import TestClient
 
 from src.execution.telemetry_health import HealthCheckResult, HealthReport
-from src.webui.ops_cockpit import build_ops_cockpit_payload, render_ops_cockpit_html
+from src.ops.update_officer_consumer import UPDATE_OFFICER_ROUTE_CONFLICT_MESSAGE
+from src.webui.ops_cockpit import (
+    build_ops_cockpit_payload,
+    render_ops_cockpit_html,
+    resolve_update_officer_route_inputs,
+)
 
 
 def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
@@ -1123,3 +1128,108 @@ def test_ops_cockpit_html_update_officer_no_write_actions(tmp_path: Path) -> Non
     assert "Update Officer" in html
     assert "<button" not in html
     assert 'method="post"' not in html.lower()
+
+
+def test_resolve_update_officer_route_inputs_conflict() -> None:
+    n, r, c = resolve_update_officer_route_inputs("/a", "/b")
+    assert c is True
+    assert n is None and r is None
+
+
+def test_resolve_update_officer_route_inputs_whitespace_only_is_omitted() -> None:
+    n, r, c = resolve_update_officer_route_inputs("   ", None)
+    assert c is False
+    assert n is None and r is None
+
+
+def test_build_ops_cockpit_payload_update_officer_conflict(tmp_path: Path) -> None:
+    payload = build_ops_cockpit_payload(
+        repo_root=tmp_path,
+        update_officer_source_conflict=True,
+    )
+    uo = payload["update_officer_ui"]
+    assert uo["available"] is False
+    assert uo["empty_state_message"] == UPDATE_OFFICER_ROUTE_CONFLICT_MESSAGE
+
+
+def test_ops_route_explicit_notifier_path(ops_client: TestClient, tmp_path: Path) -> None:
+    path = tmp_path / "notifier_payload.json"
+    path.write_text(json.dumps(_sample_notifier_payload()), encoding="utf-8")
+    response = ops_client.get("/ops", params={"update_officer_notifier_path": str(path)})
+    assert response.status_code == 200
+    assert "python_dependencies" in response.text
+
+
+def test_ops_route_explicit_run_dir(ops_client: TestClient, tmp_path: Path) -> None:
+    run_dir = tmp_path / "uo_run"
+    run_dir.mkdir()
+    (run_dir / "notifier_payload.json").write_text(
+        json.dumps(_sample_notifier_payload()),
+        encoding="utf-8",
+    )
+    response = ops_client.get("/ops", params={"update_officer_run_dir": str(run_dir)})
+    assert response.status_code == 200
+    assert "python_dependencies" in response.text
+
+
+def test_ops_route_whitespace_only_params_empty_state(
+    ops_client: TestClient,
+) -> None:
+    response = ops_client.get(
+        "/ops",
+        params={"update_officer_notifier_path": "  ", "update_officer_run_dir": "\t"},
+    )
+    assert response.status_code == 200
+    assert "not available" in response.text.lower()
+
+
+def test_ops_route_conflicting_params_deterministic_message(
+    ops_client: TestClient, tmp_path: Path
+) -> None:
+    path = tmp_path / "notifier_payload.json"
+    path.write_text(json.dumps(_sample_notifier_payload()), encoding="utf-8")
+    run_dir = tmp_path / "other"
+    run_dir.mkdir()
+    response = ops_client.get(
+        "/ops",
+        params={
+            "update_officer_notifier_path": str(path),
+            "update_officer_run_dir": str(run_dir),
+        },
+    )
+    assert response.status_code == 200
+    assert UPDATE_OFFICER_ROUTE_CONFLICT_MESSAGE.split(":")[0] in response.text
+    assert "<button" not in response.text
+
+
+def test_api_ops_cockpit_query_params_explicit_path(ops_client: TestClient, tmp_path: Path) -> None:
+    path = tmp_path / "notifier_payload.json"
+    path.write_text(json.dumps(_sample_notifier_payload()), encoding="utf-8")
+    response = ops_client.get(
+        "/api/ops-cockpit",
+        params={"update_officer_notifier_path": str(path)},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["update_officer_ui"]["available"] is True
+    assert data["update_officer_ui"]["next_topic"] == "python_dependencies"
+
+
+def test_api_ops_cockpit_query_params_conflict(ops_client: TestClient, tmp_path: Path) -> None:
+    path = tmp_path / "notifier_payload.json"
+    path.write_text(json.dumps(_sample_notifier_payload()), encoding="utf-8")
+    run_dir = tmp_path / "other"
+    run_dir.mkdir()
+    response = ops_client.get(
+        "/api/ops-cockpit",
+        params={
+            "update_officer_notifier_path": str(path),
+            "update_officer_run_dir": str(run_dir),
+        },
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["update_officer_ui"]["available"] is False
+    assert data["update_officer_ui"]["empty_state_message"] == (
+        UPDATE_OFFICER_ROUTE_CONFLICT_MESSAGE
+    )

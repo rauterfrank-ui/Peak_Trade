@@ -7,7 +7,10 @@ from html import escape
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from src.ops.update_officer_consumer import build_update_officer_ui_model
+from src.ops.update_officer_consumer import (
+    build_update_officer_ui_model,
+    build_update_officer_ui_route_conflict,
+)
 
 
 @dataclass(frozen=True)
@@ -423,6 +426,21 @@ def _build_caps_configured_from_config(config_path: Path) -> List[Dict[str, obje
     return caps
 
 
+def resolve_update_officer_route_inputs(
+    notifier_path: str | Path | None,
+    run_dir: str | Path | None,
+) -> tuple[str | Path | None, str | Path | None, bool]:
+    """
+    Normalize optional query parameters for Update Officer.
+    Returns (notifier_path, run_dir, conflict). On conflict both paths are None.
+    """
+    n_raw = "" if notifier_path is None else str(notifier_path).strip()
+    r_raw = "" if run_dir is None else str(run_dir).strip()
+    if n_raw and r_raw:
+        return None, None, True
+    return (n_raw or None, r_raw or None, False)
+
+
 def build_ops_cockpit_payload(
     repo_root: Path | None = None,
     telemetry_root: Path | None = None,
@@ -430,6 +448,7 @@ def build_ops_cockpit_payload(
     config_path: Path | None = None,
     update_officer_notifier_path: Path | str | None = None,
     update_officer_run_dir: Path | str | None = None,
+    update_officer_source_conflict: bool = False,
 ) -> Dict[str, object]:
     truth_docs = discover_truth_docs(repo_root=repo_root)
     groups = _grouped_sources(truth_docs)
@@ -872,10 +891,13 @@ def build_ops_cockpit_payload(
     }
     if _market_data_cache_status is not None:
         dependencies_state["market_data_cache"] = _market_data_cache_status
-    update_officer_ui: Dict[str, object] = build_update_officer_ui_model(
-        payload_path=update_officer_notifier_path,
-        run_dir=update_officer_run_dir,
-    )
+    if update_officer_source_conflict:
+        update_officer_ui = build_update_officer_ui_route_conflict()
+    else:
+        update_officer_ui = build_update_officer_ui_model(
+            payload_path=update_officer_notifier_path,
+            run_dir=update_officer_run_dir,
+        )
     return {
         "system_state": {
             "mode": "truth_first_ops_cockpit_v3",
@@ -1074,8 +1096,19 @@ def _render_exec_summary_status_grid(payload: Dict[str, object]) -> str:
     )
 
 
-def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
-    payload = build_ops_cockpit_payload(repo_root=repo_root)
+def render_ops_cockpit_html(
+    repo_root: Path | None = None,
+    *,
+    update_officer_notifier_path: Path | str | None = None,
+    update_officer_run_dir: Path | str | None = None,
+    update_officer_source_conflict: bool = False,
+) -> str:
+    payload = build_ops_cockpit_payload(
+        repo_root=repo_root,
+        update_officer_notifier_path=update_officer_notifier_path,
+        update_officer_run_dir=update_officer_run_dir,
+        update_officer_source_conflict=update_officer_source_conflict,
+    )
     truth_state = payload["truth_state"]
     boundary = payload["ai_boundary_state"]
     runtime = payload["runtime_unknown_state"]
@@ -1320,4 +1353,5 @@ __all__ = [
     "build_runtime_unknown_state",
     "build_ops_cockpit_payload",
     "render_ops_cockpit_html",
+    "resolve_update_officer_route_inputs",
 ]

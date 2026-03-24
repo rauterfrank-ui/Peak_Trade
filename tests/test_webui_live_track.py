@@ -910,3 +910,62 @@ class TestComputeDurationSeconds:
 
         duration = compute_duration_seconds(start, end)
         assert duration == 300
+
+
+# =============================================================================
+# Update Officer v7: /ops query wiring (module app includes /ops)
+# =============================================================================
+
+
+class TestUpdateOfficerV7OpsRouteQuery:
+    """HTTP checks for optional Update Officer query parameters on /ops."""
+
+    @pytest.fixture
+    def ops_client(self):
+        from fastapi.testclient import TestClient
+        from src.webui.app import app
+
+        return TestClient(app)
+
+    def test_ops_omitted_params_empty_update_officer_card(self, ops_client):
+        response = ops_client.get("/ops")
+        assert response.status_code == 200
+        assert "Update Officer" in response.text
+        assert "not available" in response.text.lower()
+
+    def test_ops_json_conflict_both_query_params(self, ops_client, tmp_path):
+        import json
+
+        from src.ops.update_officer_consumer import UPDATE_OFFICER_ROUTE_CONFLICT_MESSAGE
+
+        path = tmp_path / "notifier_payload.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "officer_version": "v3-min",
+                    "generated_at": "2026-03-24T10:25:52Z",
+                    "next_recommended_topic": "python_dependencies",
+                    "top_priority_reason": "x",
+                    "recommended_update_queue": [],
+                    "recommended_next_action": "x",
+                    "recommended_review_paths": [],
+                    "severity": "low",
+                    "reminder_class": "hygiene",
+                    "requires_manual_review": False,
+                }
+            ),
+            encoding="utf-8",
+        )
+        run_dir = tmp_path / "d"
+        run_dir.mkdir()
+        r = ops_client.get(
+            "/api/ops-cockpit",
+            params={
+                "update_officer_notifier_path": str(path),
+                "update_officer_run_dir": str(run_dir),
+            },
+        )
+        assert r.status_code == 200
+        uo = r.json()["update_officer_ui"]
+        assert uo["available"] is False
+        assert uo["empty_state_message"] == UPDATE_OFFICER_ROUTE_CONFLICT_MESSAGE

@@ -104,7 +104,11 @@ from .r_and_d_api import (
     compute_best_metrics,
     parse_and_validate_run_ids,
 )
-from .ops_cockpit import build_ops_cockpit_payload, render_ops_cockpit_html
+from .ops_cockpit import (
+    build_ops_cockpit_payload,
+    render_ops_cockpit_html,
+    resolve_update_officer_route_inputs,
+)
 from .alerts_api import (
     AlertSummary,
     AlertStats,
@@ -1749,12 +1753,38 @@ app = create_app()
 
 
 @app.get("/ops", response_class=HTMLResponse)
-def ops_cockpit() -> HTMLResponse:
+def ops_cockpit(
+    update_officer_notifier_path: Optional[str] = None,
+    update_officer_run_dir: Optional[str] = None,
+) -> HTMLResponse:
     """Read-only Ops Cockpit from local artifacts."""
-    return HTMLResponse(render_ops_cockpit_html())
+    np, rd, conflict = resolve_update_officer_route_inputs(
+        update_officer_notifier_path,
+        update_officer_run_dir,
+    )
+    return HTMLResponse(
+        render_ops_cockpit_html(
+            update_officer_notifier_path=np,
+            update_officer_run_dir=rd,
+            update_officer_source_conflict=conflict,
+        )
+    )
 
 
 @app.get("/api/ops-cockpit", response_class=JSONResponse)
-def ops_cockpit_api() -> JSONResponse:
+def ops_cockpit_api(
+    update_officer_notifier_path: Optional[str] = None,
+    update_officer_run_dir: Optional[str] = None,
+) -> JSONResponse:
     """Read-only Ops Cockpit data as JSON."""
-    return JSONResponse(build_ops_cockpit_payload())
+    np, rd, conflict = resolve_update_officer_route_inputs(
+        update_officer_notifier_path,
+        update_officer_run_dir,
+    )
+    return JSONResponse(
+        build_ops_cockpit_payload(
+            update_officer_notifier_path=np,
+            update_officer_run_dir=rd,
+            update_officer_source_conflict=conflict,
+        )
+    )
