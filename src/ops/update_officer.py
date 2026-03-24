@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import re
 import sys
@@ -18,12 +19,19 @@ from src.ops.update_officer_profiles import (
     surface_category,
     surface_finding_description,
 )
-from src.ops.update_officer_schema import validate_report_payload
+from src.ops.update_officer_schema import validate_notifier_payload, validate_report_payload
 
 UTC = timezone.utc
 
 PRIORITY_RANK: dict[str, int] = {"p0": 0, "p1": 1, "p2": 2, "p3": 3}
 RANK_TO_PRIORITY: tuple[str, ...] = ("p0", "p1", "p2", "p3")
+
+NOTIFIER_PAYLOAD_BASENAME = "notifier_payload.json"
+
+_TOPIC_REVIEW_PATHS: dict[str, list[str]] = {
+    "python_dependencies": ["pyproject.toml"],
+    "ci_integrations": [".github/workflows"],
+}
 
 # tomllib is stdlib from 3.11; fall back to tomli for 3.9/3.10
 try:
@@ -281,6 +289,68 @@ def build_recommended_update_queue(findings: list[dict[str, Any]]) -> list[dict[
     return out
 
 
+def _worst_priority_rank(findings: list[dict[str, Any]]) -> int | None:
+    if not findings:
+        return None
+    return min(PRIORITY_RANK.get(str(f.get("recommended_priority", "p3")), 3) for f in findings)
+
+
+def build_notifier_payload(
+    officer_version: str,
+    generated_at: str,
+    next_recommended_topic: str,
+    top_priority_reason: str,
+    recommended_update_queue: list[dict[str, Any]],
+    findings: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Deterministic machine-readable contract for external notifiers (no transport)."""
+    worst_rank = _worst_priority_rank(findings)
+    if worst_rank is None:
+        severity = "info"
+    else:
+        worst_p = RANK_TO_PRIORITY[worst_rank]
+        severity = {"p0": "critical", "p1": "high", "p2": "medium", "p3": "low"}[worst_p]
+
+    if not findings:
+        reminder_class = "none"
+    elif any(f["classification"] == "blocked" for f in findings):
+        reminder_class = "blocked"
+    elif any(f["classification"] == "manual_review" for f in findings):
+        reminder_class = "manual_review"
+    else:
+        reminder_class = "hygiene"
+
+    review_paths = sorted(_TOPIC_REVIEW_PATHS.get(next_recommended_topic, []))
+
+    if not recommended_update_queue:
+        next_action = "No update topics queued; no notifier next action required."
+    else:
+        next_action = (
+            f"Focus manual review on update topic `{next_recommended_topic}` first. "
+            f"Context: {top_priority_reason}"
+        )
+
+    requires_manual = bool(findings) and (
+        severity in ("critical", "high")
+        or any(f["classification"] in ("blocked", "manual_review") for f in findings)
+    )
+
+    qcopy: list[dict[str, Any]] = copy.deepcopy(recommended_update_queue)
+
+    return {
+        "officer_version": officer_version,
+        "generated_at": generated_at,
+        "next_recommended_topic": next_recommended_topic,
+        "top_priority_reason": top_priority_reason,
+        "recommended_update_queue": qcopy,
+        "recommended_next_action": next_action,
+        "recommended_review_paths": review_paths,
+        "severity": severity,
+        "reminder_class": reminder_class,
+        "requires_manual_review": requires_manual,
+    }
+
+
 def next_recommended_topic_and_reason(queue: list[dict[str, Any]]) -> tuple[str, str]:
     if not queue:
         return (
@@ -384,12 +454,28 @@ def run(
     next_recommended_topic, top_priority_reason = next_recommended_topic_and_reason(
         recommended_update_queue
     )
+    finished_at = datetime.now(UTC).isoformat()
+    officer_version = "v3-min"
+
+    notifier_payload = build_notifier_payload(
+        officer_version=officer_version,
+        generated_at=finished_at,
+        next_recommended_topic=next_recommended_topic,
+        top_priority_reason=top_priority_reason,
+        recommended_update_queue=recommended_update_queue,
+        findings=findings,
+    )
+    validate_notifier_payload(notifier_payload)
+    _write_text(
+        run_dir / NOTIFIER_PAYLOAD_BASENAME,
+        json.dumps(notifier_payload, indent=2, ensure_ascii=False) + "\n",
+    )
 
     report_payload: dict[str, Any] = {
-        "officer_version": "v2-min",
+        "officer_version": officer_version,
         "profile": profile,
         "started_at": started_at,
-        "finished_at": datetime.now(UTC).isoformat(),
+        "finished_at": finished_at,
         "output_dir": str(run_dir),
         "repo_root": str(repo_root),
         "success": success,
@@ -398,6 +484,7 @@ def run(
         "next_recommended_topic": next_recommended_topic,
         "top_priority_reason": top_priority_reason,
         "recommended_update_queue": recommended_update_queue,
+        "notifier_payload_path": NOTIFIER_PAYLOAD_BASENAME,
     }
 
     validate_report_payload(report_payload)
@@ -417,7 +504,7 @@ def run(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Peak_Trade Update Officer v2")
+    parser = argparse.ArgumentParser(description="Peak_Trade Update Officer v3")
     parser.add_argument(
         "--profile",
         choices=sorted(PROFILES.keys()),

@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 from src.ops.update_officer import (
+    build_notifier_payload,
     build_recommended_update_queue,
     build_summary,
     enrich_findings,
@@ -45,7 +46,7 @@ def test_update_officer_dev_tooling_review_emits_report(tmp_path: Path) -> None:
     assert manifest_path.exists()
 
     report = json.loads(report_path.read_text(encoding="utf-8"))
-    assert report["officer_version"] == "v2-min"
+    assert report["officer_version"] == "v3-min"
     assert report["profile"] == "dev_tooling_review"
     assert "findings" in report
     assert "summary" in report
@@ -71,6 +72,19 @@ def test_update_officer_dev_tooling_review_emits_report(tmp_path: Path) -> None:
         assert q["rank"] == i
         assert "topic_id" in q
         assert "headline" in q
+
+    assert report.get("notifier_payload_path") == "notifier_payload.json"
+    notifier_path = run_dir / "notifier_payload.json"
+    assert notifier_path.exists()
+    notifier = json.loads(notifier_path.read_text(encoding="utf-8"))
+    assert notifier["officer_version"] == "v3-min"
+    assert "recommended_next_action" in notifier
+    assert "severity" in notifier
+    assert "reminder_class" in notifier
+    assert "requires_manual_review" in notifier
+    manifest = json.loads((run_dir / "manifest.json").read_text(encoding="utf-8"))
+    rel_names = {Path(e["path"]).name for e in manifest["files"]}
+    assert "notifier_payload.json" in rel_names
 
 
 def test_update_officer_cli_exits_zero() -> None:
@@ -230,3 +244,20 @@ def test_next_topic_none_when_empty() -> None:
     nt, reason = next_recommended_topic_and_reason(q)
     assert nt == "none"
     assert "No findings" in reason
+
+
+def test_build_notifier_payload_empty_findings() -> None:
+    q: list[dict] = []
+    nt, tr = next_recommended_topic_and_reason(q)
+    p = build_notifier_payload(
+        officer_version="v3-min",
+        generated_at="2026-03-24T12:00:00+00:00",
+        next_recommended_topic=nt,
+        top_priority_reason=tr,
+        recommended_update_queue=q,
+        findings=[],
+    )
+    assert p["severity"] == "info"
+    assert p["reminder_class"] == "none"
+    assert p["requires_manual_review"] is False
+    assert p["recommended_review_paths"] == []

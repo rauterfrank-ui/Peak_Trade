@@ -4,13 +4,14 @@ import pytest
 
 from src.ops.update_officer_schema import (
     UpdateOfficerSchemaError,
+    validate_notifier_payload,
     validate_report_payload,
 )
 
 
 def _valid_report() -> dict:
     return {
-        "officer_version": "v2-min",
+        "officer_version": "v3-min",
         "profile": "dev_tooling_review",
         "started_at": "2026-03-23T10:00:00+00:00",
         "finished_at": "2026-03-23T10:00:01+00:00",
@@ -53,11 +54,49 @@ def _valid_report() -> dict:
                 "headline": "1 finding(s); worst_priority=p3; blocked=0; manual_review=0; safe_review=1",
             }
         ],
+        "notifier_payload_path": "notifier_payload.json",
+    }
+
+
+def _valid_notifier_payload() -> dict:
+    return {
+        "officer_version": "v3-min",
+        "generated_at": "2026-03-23T10:00:01+00:00",
+        "next_recommended_topic": "python_dependencies",
+        "top_priority_reason": "Topic `python_dependencies` ranks first.",
+        "recommended_update_queue": [
+            {
+                "topic_id": "python_dependencies",
+                "rank": 1,
+                "worst_priority": "p3",
+                "finding_count": 1,
+                "blocked_count": 0,
+                "manual_review_count": 0,
+                "safe_review_count": 1,
+                "headline": "1 finding(s); worst_priority=p3; blocked=0; manual_review=0; safe_review=1",
+            }
+        ],
+        "recommended_next_action": "Focus manual review on update topic `python_dependencies` first.",
+        "recommended_review_paths": ["pyproject.toml"],
+        "severity": "low",
+        "reminder_class": "hygiene",
+        "requires_manual_review": False,
     }
 
 
 def test_validate_report_payload_accepts_valid() -> None:
     validate_report_payload(_valid_report())
+
+
+def test_validate_notifier_payload_accepts_valid() -> None:
+    validate_notifier_payload(_valid_notifier_payload())
+
+
+def test_validate_notifier_payload_rejects_bad_severity() -> None:
+    payload = _valid_notifier_payload()
+    payload["severity"] = "nope"
+    with pytest.raises(UpdateOfficerSchemaError):
+        validate_notifier_payload(payload)
 
 
 def test_validate_report_payload_rejects_invalid_profile() -> None:
@@ -119,6 +158,13 @@ def test_validate_report_payload_rejects_bad_priority_count_keys() -> None:
 def test_validate_report_payload_rejects_missing_next_topic() -> None:
     payload = _valid_report()
     del payload["next_recommended_topic"]
+    with pytest.raises(UpdateOfficerSchemaError):
+        validate_report_payload(payload)
+
+
+def test_validate_report_payload_rejects_missing_notifier_path() -> None:
+    payload = _valid_report()
+    del payload["notifier_payload_path"]
     with pytest.raises(UpdateOfficerSchemaError):
         validate_report_payload(payload)
 

@@ -5,13 +5,14 @@ from src.ops.update_officer_markdown import render_update_officer_summary
 
 def _sample_report() -> dict:
     return {
-        "officer_version": "v2-min",
+        "officer_version": "v3-min",
         "profile": "dev_tooling_review",
         "started_at": "2026-03-23T10:00:00+00:00",
         "finished_at": "2026-03-23T10:00:01+00:00",
         "output_dir": "out/ops/update_officer/20260323T100000Z",
         "repo_root": "/tmp/repo",
         "success": True,
+        "notifier_payload_path": "notifier_payload.json",
         "next_recommended_topic": "ci_integrations",
         "top_priority_reason": (
             "Topic `ci_integrations` ranks first in the deterministic queue: "
@@ -84,6 +85,9 @@ def test_render_contains_core_sections() -> None:
     md = render_update_officer_summary(_sample_report())
     assert "# Update Officer Summary" in md
     assert "## Run" in md
+    assert "## Notifier-ready output" in md
+    assert "notifier_payload.json" in md
+    assert "notifier_payload_path" in md
     assert "## Next best update topic" in md
     assert "## Why now" in md
     assert "## What to review first" in md
@@ -117,7 +121,7 @@ def test_render_no_notes_when_empty() -> None:
 def test_render_includes_metadata() -> None:
     md = render_update_officer_summary(_sample_report())
     assert "dev_tooling_review" in md
-    assert "v2-min" in md
+    assert "v3-min" in md
     assert "total_findings" in md
     assert "### Priority counts" in md
     assert "### Category counts" in md
