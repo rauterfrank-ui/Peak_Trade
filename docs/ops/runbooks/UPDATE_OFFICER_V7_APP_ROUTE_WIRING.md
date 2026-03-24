@@ -11,8 +11,8 @@ Both accept the same optional query parameters:
 
 | Route | Response |
 |-------|----------|
-| `GET /ops` | HTML Ops Cockpit |
-| `GET /api/ops-cockpit` | JSON payload (includes `update_officer_ui`) |
+| `GET &#47;ops` | HTML Ops Cockpit |
+| `GET &#47;api&#47;ops-cockpit` | JSON payload (includes `update_officer_ui`) |
 
 ### Query parameters
 | Parameter | Meaning |
@@ -46,7 +46,7 @@ Inline example segments (token-policy safe): `out&#47;ops&#47;update_officer&#47
 ## Implementation references
 - `resolve_update_officer_route_inputs()` in `src/webui/ops_cockpit.py`
 - `build_update_officer_ui_route_conflict()` in `src/ops/update_officer_consumer.py`
-- `GET /ops` and `GET /api/ops-cockpit` in `src/webui/app.py`
+- `GET &#47;ops` and `GET &#47;api&#47;ops-cockpit` in `src/webui/app.py`
 
 ## Verification
 ```bash
