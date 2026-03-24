@@ -7,6 +7,8 @@ from html import escape
 from pathlib import Path
 from typing import Dict, List, Optional
 
+from src.ops.update_officer_consumer import build_update_officer_ui_model
+
 
 @dataclass(frozen=True)
 class TruthDoc:
@@ -426,6 +428,8 @@ def build_ops_cockpit_payload(
     telemetry_root: Path | None = None,
     live_runs_root: Path | None = None,
     config_path: Path | None = None,
+    update_officer_notifier_path: Path | str | None = None,
+    update_officer_run_dir: Path | str | None = None,
 ) -> Dict[str, object]:
     truth_docs = discover_truth_docs(repo_root=repo_root)
     groups = _grouped_sources(truth_docs)
@@ -868,6 +872,10 @@ def build_ops_cockpit_payload(
     }
     if _market_data_cache_status is not None:
         dependencies_state["market_data_cache"] = _market_data_cache_status
+    update_officer_ui: Dict[str, object] = build_update_officer_ui_model(
+        payload_path=update_officer_notifier_path,
+        run_dir=update_officer_run_dir,
+    )
     return {
         "system_state": {
             "mode": "truth_first_ops_cockpit_v3",
@@ -901,7 +909,56 @@ def build_ops_cockpit_payload(
         "source_coverage_status": v3_summary["source_coverage_status"],
         "critical_flags": v3_summary["critical_flags"],
         "unknown_flags": v3_summary["unknown_flags"],
+        "update_officer_ui": update_officer_ui,
     }
+
+
+def _render_update_officer_card(uo: Dict[str, object]) -> str:
+    """Read-only Update Officer summary card (v6). No actions."""
+    avail = bool(uo.get("available"))
+    if not avail:
+        msg = escape(str(uo.get("empty_state_message") or "Unavailable."))
+        return (
+            '<div class="card truth-card">'
+            "<h2>Update Officer</h2>"
+            "<p><strong>Read-only.</strong> Notifier summary from local payload (if provided).</p>"
+            f'<p><strong>Available:</strong> <span class="chip"><code>false</code></span></p>'
+            f"<p>{msg}</p>"
+            "</div>"
+        )
+    qp = uo.get("queue_preview") or []
+    qp_items = ""
+    if isinstance(qp, list):
+        for item in qp:
+            if not isinstance(item, dict):
+                continue
+            qp_items += (
+                f"<li>#{escape(str(item.get('rank', '')))} "
+                f"{escape(str(item.get('topic_id', '')))} "
+                f"[worst_priority={escape(str(item.get('worst_priority', '')))}, "
+                f"findings={escape(str(item.get('finding_count', '')))}]</li>"
+            )
+    qp_html = f"<ul>{qp_items}</ul>" if qp_items else "<p>No queue entries.</p>"
+    rp = uo.get("review_paths") or []
+    rp_str = ", ".join(escape(str(p)) for p in rp) if isinstance(rp, list) else ""
+    return (
+        '<div class="card truth-card">'
+        "<h2>Update Officer</h2>"
+        "<p><strong>Read-only.</strong> Deterministic notifier view (v4 consumer layer).</p>"
+        f'<p><strong>Available:</strong> <span class="chip"><code>true</code></span></p>'
+        f"<p><strong>Headline:</strong> {escape(str(uo.get('headline', '')))}</p>"
+        f"<p><strong>Status:</strong> <code>{escape(str(uo.get('status', '')))}</code></p>"
+        f"<p><strong>Next topic:</strong> <code>{escape(str(uo.get('next_topic', '')))}</code></p>"
+        f"<p><strong>Why now:</strong> {escape(str(uo.get('why_now', '')))}</p>"
+        f"<p><strong>Next action:</strong> {escape(str(uo.get('next_action', '')))}</p>"
+        f"<p><strong>Review paths:</strong> {rp_str or 'none'}</p>"
+        f"<p><strong>Requires manual review:</strong> {escape(str(uo.get('requires_manual_review', False)))}</p>"
+        f"<p><strong>Severity:</strong> <code>{escape(str(uo.get('severity', '')))}</code></p>"
+        f"<p><strong>Reminder class:</strong> <code>{escape(str(uo.get('reminder_class', '')))}</code></p>"
+        "<p><strong>Queue preview:</strong></p>"
+        f"{qp_html}"
+        "</div>"
+    )
 
 
 def _render_doc_card(doc: Dict[str, object]) -> str:
@@ -1029,6 +1086,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     human_supervision = payload.get("human_supervision_state") or {}
     evidence = payload.get("evidence_state") or {}
     dependencies = payload.get("dependencies_state") or {}
+    update_officer_ui = payload.get("update_officer_ui") or {}
     incident = payload.get("incident_state") or {}
     counts = truth_state["priority_counts"]
     groups = payload["source_groups"]
@@ -1054,6 +1112,7 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
     runtime_cards = "".join(_render_doc_card(doc) for doc in groups["runtime_resolution"])
     supporting_cards = "".join(_render_doc_card(doc) for doc in groups["supporting_truth"])
     exec_summary_html = _render_exec_summary_status_grid(payload)
+    update_officer_card_html = _render_update_officer_card(update_officer_ui)
 
     return f"""<!doctype html>
 <html>
@@ -1206,6 +1265,8 @@ def render_ops_cockpit_html(repo_root: Path | None = None) -> str:
       <p><strong>Exchange:</strong> {escape(str(dependencies.get("exchange", "unknown")))}</p>
       <p><strong>Telemetry:</strong> {escape(str(dependencies.get("telemetry", "unknown")))}</p>
     </div>
+
+    {update_officer_card_html}
 
     <div class="card truth-card">
       <h2>Incident-state read model</h2>

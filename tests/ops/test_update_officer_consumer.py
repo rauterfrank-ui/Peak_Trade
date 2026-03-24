@@ -7,8 +7,10 @@ import pytest
 from src.ops.update_officer_schema import UpdateOfficerSchemaError
 from src.ops.update_officer_consumer import (
     build_notifier_view_model,
+    build_update_officer_ui_model,
     load_notifier_payload,
     render_notifier_text_summary,
+    resolve_update_officer_notifier_payload_path,
 )
 
 
@@ -107,3 +109,42 @@ def test_load_notifier_payload_invalid_fails(tmp_path):
     path.write_text(json.dumps(invalid), encoding="utf-8")
     with pytest.raises(UpdateOfficerSchemaError):
         load_notifier_payload(path)
+
+
+def test_resolve_notifier_payload_path_explicit_file(tmp_path):
+    path = tmp_path / "notifier_payload.json"
+    path.write_text("{}", encoding="utf-8")
+    assert resolve_update_officer_notifier_payload_path(payload_path=path) == path
+    assert resolve_update_officer_notifier_payload_path(payload_path=tmp_path / "nope.json") is None
+
+
+def test_resolve_notifier_payload_path_run_dir(tmp_path):
+    path = tmp_path / "notifier_payload.json"
+    path.write_text("{}", encoding="utf-8")
+    assert resolve_update_officer_notifier_payload_path(run_dir=tmp_path) == path
+
+
+def test_build_update_officer_ui_model_empty_when_unresolved():
+    ui = build_update_officer_ui_model()
+    assert ui["available"] is False
+    assert ui["status"] == "unavailable"
+    assert "not available" in ui["empty_state_message"].lower()
+
+
+def test_build_update_officer_ui_model_when_payload_valid(tmp_path):
+    path = tmp_path / "notifier_payload.json"
+    path.write_text(json.dumps(_payload()), encoding="utf-8")
+    ui = build_update_officer_ui_model(payload_path=path)
+    assert ui["available"] is True
+    assert ui["headline"]
+    assert ui["next_topic"] == "ci_integrations"
+    assert ui["empty_state_message"] == ""
+    assert len(ui["queue_preview"]) == 2
+
+
+def test_build_update_officer_ui_model_invalid_payload(tmp_path):
+    path = tmp_path / "notifier_payload.json"
+    path.write_text(json.dumps(_payload(severity="urgent")), encoding="utf-8")
+    ui = build_update_officer_ui_model(payload_path=path)
+    assert ui["available"] is False
+    assert "could not be loaded" in ui["empty_state_message"].lower()
