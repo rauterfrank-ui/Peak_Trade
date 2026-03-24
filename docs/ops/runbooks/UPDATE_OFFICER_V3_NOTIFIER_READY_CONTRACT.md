@@ -36,10 +36,10 @@ downstream notifiers, **without** adding notification transport or changing read
 
 ## Deliverables (code)
 
-- `src&#47;ops&#47;update_officer.py` — build + write notifier payload; report field
-- `src&#47;ops&#47;update_officer_schema.py` — notifier + report validation
-- `src&#47;ops&#47;update_officer_markdown.py` — notifier section
-- Tests under `tests&#47;ops&#47;test_update_officer*.py`
+- `src/ops/update_officer.py` — build + write notifier payload; report field
+- `src/ops/update_officer_schema.py` — notifier + report validation
+- `src/ops/update_officer_markdown.py` — notifier section
+- `tests/ops/test_update_officer.py`, `tests/ops/test_update_officer_schema.py`, `tests/ops/test_update_officer_markdown.py`
 - This runbook
 
 ## Version
