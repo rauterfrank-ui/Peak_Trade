@@ -4,7 +4,16 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List
 
-from src.ops.update_officer_schema import validate_notifier_payload
+from src.ops.update_officer_schema import UpdateOfficerSchemaError, validate_notifier_payload
+
+NOTIFIER_PAYLOAD_BASENAME = "notifier_payload.json"
+
+EMPTY_UPDATE_OFFICER_UI_MESSAGE = (
+    "Update Officer notifier payload is not available (no path resolved or file missing)."
+)
+INVALID_UPDATE_OFFICER_UI_MESSAGE = (
+    "Update Officer notifier payload could not be loaded or validated."
+)
 
 
 def load_notifier_payload(path: str | Path) -> Dict[str, Any]:
@@ -90,3 +99,60 @@ def render_notifier_text_summary(payload: Dict[str, Any]) -> str:
             )
 
     return "\n".join(lines)
+
+
+def resolve_update_officer_notifier_payload_path(
+    payload_path: str | Path | None = None,
+    run_dir: str | Path | None = None,
+) -> Path | None:
+    """Resolve path to notifier_payload.json. Explicit payload_path wins; no directory scans."""
+    if payload_path is not None:
+        p = Path(payload_path)
+        return p if p.is_file() else None
+    if run_dir is not None:
+        candidate = Path(run_dir) / NOTIFIER_PAYLOAD_BASENAME
+        return candidate if candidate.is_file() else None
+    return None
+
+
+def _empty_update_officer_ui_model(message: str) -> Dict[str, Any]:
+    return {
+        "available": False,
+        "headline": "",
+        "status": "unavailable",
+        "next_topic": "",
+        "why_now": "",
+        "next_action": "",
+        "review_paths": [],
+        "queue_preview": [],
+        "requires_manual_review": False,
+        "severity": "info",
+        "reminder_class": "none",
+        "empty_state_message": message,
+    }
+
+
+def build_update_officer_ui_model(
+    payload_path: str | Path | None = None,
+    run_dir: str | Path | None = None,
+) -> Dict[str, Any]:
+    """
+    Read-only UI contract: load notifier payload from explicit path or run directory,
+    or return a deterministic empty-state model.
+    """
+    resolved = resolve_update_officer_notifier_payload_path(
+        payload_path=payload_path,
+        run_dir=run_dir,
+    )
+    if resolved is None:
+        return _empty_update_officer_ui_model(EMPTY_UPDATE_OFFICER_UI_MESSAGE)
+    try:
+        payload = load_notifier_payload(resolved)
+        view = build_notifier_view_model(payload)
+    except (OSError, json.JSONDecodeError, UpdateOfficerSchemaError, ValueError, KeyError):
+        return _empty_update_officer_ui_model(INVALID_UPDATE_OFFICER_UI_MESSAGE)
+    return {
+        "available": True,
+        "empty_state_message": "",
+        **view,
+    }

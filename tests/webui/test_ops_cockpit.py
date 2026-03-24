@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from unittest.mock import patch
 
@@ -1052,3 +1053,73 @@ def test_ops_cockpit_shows_balance_semantics(ops_client: TestClient) -> None:
     assert "Operator visibility" in html or "operator visibility" in html.lower()
     assert "Semantic state" in html or "semantic state" in html.lower()
     assert "Reason code" in html or "reason code" in html.lower()
+
+
+def _sample_notifier_payload() -> dict:
+    return {
+        "officer_version": "v3-min",
+        "generated_at": "2026-03-24T10:25:52Z",
+        "next_recommended_topic": "python_dependencies",
+        "top_priority_reason": "Topic ranks first.",
+        "recommended_update_queue": [
+            {
+                "topic_id": "python_dependencies",
+                "rank": 1,
+                "worst_priority": "p3",
+                "finding_count": 1,
+                "blocked_count": 0,
+                "manual_review_count": 0,
+                "safe_review_count": 1,
+                "headline": "1 finding(s); worst_priority=p3; blocked=0; manual_review=0; safe_review=1",
+            }
+        ],
+        "recommended_next_action": "Focus manual review on update topic.",
+        "recommended_review_paths": ["pyproject.toml"],
+        "severity": "low",
+        "reminder_class": "hygiene",
+        "requires_manual_review": False,
+    }
+
+
+def test_update_officer_ui_empty_by_default(tmp_path: Path) -> None:
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    uo = payload["update_officer_ui"]
+    assert uo["available"] is False
+    assert uo["status"] == "unavailable"
+    assert uo["empty_state_message"]
+
+
+def test_update_officer_ui_from_run_dir(tmp_path: Path) -> None:
+    run_dir = tmp_path / "uo_run"
+    run_dir.mkdir()
+    (run_dir / "notifier_payload.json").write_text(
+        json.dumps(_sample_notifier_payload()),
+        encoding="utf-8",
+    )
+    payload = build_ops_cockpit_payload(repo_root=tmp_path, update_officer_run_dir=run_dir)
+    uo = payload["update_officer_ui"]
+    assert uo["available"] is True
+    assert uo["next_topic"] == "python_dependencies"
+    assert uo["headline"]
+
+
+def test_update_officer_ui_from_explicit_payload_path(tmp_path: Path) -> None:
+    path = tmp_path / "notifier_payload.json"
+    path.write_text(json.dumps(_sample_notifier_payload()), encoding="utf-8")
+    payload = build_ops_cockpit_payload(repo_root=tmp_path, update_officer_notifier_path=path)
+    uo = payload["update_officer_ui"]
+    assert uo["available"] is True
+    assert "python_dependencies" in str(uo.get("headline", ""))
+
+
+def test_ops_cockpit_html_contains_update_officer_section(tmp_path: Path) -> None:
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Update Officer" in html
+    assert "Notifier summary" in html or "notifier" in html.lower()
+
+
+def test_ops_cockpit_html_update_officer_no_write_actions(tmp_path: Path) -> None:
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Update Officer" in html
+    assert "<button" not in html
+    assert 'method="post"' not in html.lower()
