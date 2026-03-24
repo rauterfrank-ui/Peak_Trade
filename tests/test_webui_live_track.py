@@ -969,3 +969,24 @@ class TestUpdateOfficerV7OpsRouteQuery:
         uo = r.json()["update_officer_ui"]
         assert uo["available"] is False
         assert uo["empty_state_message"] == UPDATE_OFFICER_ROUTE_CONFLICT_MESSAGE
+
+
+# =============================================================================
+# Update Officer v8: visible GET-only source selection on /ops
+# =============================================================================
+
+
+class TestUpdateOfficerV8SourceErgonomics:
+    @pytest.fixture
+    def ops_client(self):
+        from fastapi.testclient import TestClient
+        from src.webui.app import app
+
+        return TestClient(app)
+
+    def test_ops_get_form_source_selection_no_post(self, ops_client):
+        r = ops_client.get("/ops")
+        assert r.status_code == 200
+        assert "Update Officer source selection" in r.text
+        assert 'method="get"' in r.text
+        assert 'method="post"' not in r.text.lower()

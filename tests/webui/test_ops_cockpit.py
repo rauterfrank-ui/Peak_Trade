@@ -1026,9 +1026,9 @@ def test_render_ops_cockpit_html_marks_unknown_or_stale_state(tmp_path: Path) ->
     assert "unknown" in html or "stale" in html or "Unresolved" in html or "Low" in html
     assert "No write actions" in html
     assert "Read-only" in html
-    assert "<button" not in html
     assert 'method="post"' not in html.lower()
-    assert 'type="submit"' not in html.lower()
+    assert "uo-source-form" in html
+    assert 'method="get"' in html
 
 
 def test_truth_first_regression(tmp_path: Path) -> None:
@@ -1126,8 +1126,9 @@ def test_ops_cockpit_html_contains_update_officer_section(tmp_path: Path) -> Non
 def test_ops_cockpit_html_update_officer_no_write_actions(tmp_path: Path) -> None:
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert "Update Officer" in html
-    assert "<button" not in html
     assert 'method="post"' not in html.lower()
+    assert 'method="get"' in html
+    assert "uo-source-form" in html
 
 
 def test_resolve_update_officer_route_inputs_conflict() -> None:
@@ -1199,7 +1200,54 @@ def test_ops_route_conflicting_params_deterministic_message(
     )
     assert response.status_code == 200
     assert UPDATE_OFFICER_ROUTE_CONFLICT_MESSAGE.split(":")[0] in response.text
-    assert "<button" not in response.text
+    assert "Active source:" in response.text
+    assert "conflict" in response.text.lower()
+    assert 'method="post"' not in response.text.lower()
+
+
+def test_ops_route_source_selection_ergonomics_visible(ops_client: TestClient) -> None:
+    response = ops_client.get("/ops")
+    assert response.status_code == 200
+    html = response.text
+    assert "Update Officer source selection" in html
+    assert "uo-source-form" in html
+    assert 'method="get"' in html
+    assert 'action="/ops"' in html
+    assert 'name="update_officer_notifier_path"' in html
+    assert 'name="update_officer_run_dir"' in html
+    assert 'href="/ops"' in html
+    assert 'method="post"' not in html.lower()
+
+
+def test_ops_route_active_source_summary_explicit_notifier_path(
+    ops_client: TestClient, tmp_path: Path
+) -> None:
+    path = tmp_path / "notifier_payload.json"
+    path.write_text(json.dumps(_sample_notifier_payload()), encoding="utf-8")
+    response = ops_client.get("/ops", params={"update_officer_notifier_path": str(path)})
+    assert response.status_code == 200
+    assert "explicit notifier path" in response.text.lower()
+    assert str(path) in response.text
+
+
+def test_ops_route_active_source_summary_run_dir(ops_client: TestClient, tmp_path: Path) -> None:
+    run_dir = tmp_path / "uo_run"
+    run_dir.mkdir()
+    (run_dir / "notifier_payload.json").write_text(
+        json.dumps(_sample_notifier_payload()),
+        encoding="utf-8",
+    )
+    response = ops_client.get("/ops", params={"update_officer_run_dir": str(run_dir)})
+    assert response.status_code == 200
+    assert "run directory" in response.text.lower()
+    assert str(run_dir) in response.text
+
+
+def test_ops_route_clear_link_resets_to_empty_state(ops_client: TestClient) -> None:
+    r_clear = ops_client.get("/ops")
+    assert r_clear.status_code == 200
+    assert "Active source:" in r_clear.text
+    assert "none" in r_clear.text.lower() or "empty-state" in r_clear.text.lower()
 
 
 def test_api_ops_cockpit_query_params_explicit_path(ops_client: TestClient, tmp_path: Path) -> None:

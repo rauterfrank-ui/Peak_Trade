@@ -935,6 +935,56 @@ def build_ops_cockpit_payload(
     }
 
 
+def _render_update_officer_source_ergonomics_block(
+    *,
+    form_notifier_path: str,
+    form_run_dir: str,
+    conflict: bool,
+    effective_notifier_path: Path | str | None,
+    effective_run_dir: Path | str | None,
+) -> str:
+    """v8: visible GET-only source selection; same resolution rules as v7."""
+    esc_np = escape(form_notifier_path)
+    esc_rd = escape(form_run_dir)
+    if conflict:
+        summary = (
+            "Active source: <strong>conflict</strong> — both notifier path and run directory "
+            "were supplied; use only one."
+        )
+    elif effective_notifier_path:
+        summary = (
+            "Active source: <strong>explicit notifier path</strong> — "
+            f"<code>{escape(str(effective_notifier_path))}</code>"
+        )
+    elif effective_run_dir:
+        summary = (
+            "Active source: <strong>run directory</strong> — "
+            f"<code>{escape(str(effective_run_dir))}</code> (expects notifier_payload.json)"
+        )
+    else:
+        summary = (
+            "Active source: <strong>none</strong> — standard empty-state; use the form below "
+            "or query parameters."
+        )
+    return (
+        '<div class="card truth-card">'
+        "<h2>Update Officer source selection</h2>"
+        "<p><strong>Read-only.</strong> GET-only navigation; no POST, no write actions.</p>"
+        f"<p>{summary}</p>"
+        '<form class="uo-source-form" method="get" action="/ops">'
+        '<p><label for="uo-np">Notifier payload path</label><br>'
+        f'<input id="uo-np" type="text" name="update_officer_notifier_path" '
+        f'value="{esc_np}" size="72" autocomplete="off"></p>'
+        '<p><label for="uo-rd">Run directory</label><br>'
+        f'<input id="uo-rd" type="text" name="update_officer_run_dir" '
+        f'value="{esc_rd}" size="72" autocomplete="off"></p>'
+        '<p><button type="submit">Apply source (GET)</button></p>'
+        "</form>"
+        '<p><a href="/ops">Clear source inputs</a> — returns to default empty-state.</p>'
+        "</div>"
+    )
+
+
 def _render_update_officer_card(uo: Dict[str, object]) -> str:
     """Read-only Update Officer summary card (v6). No actions."""
     avail = bool(uo.get("available"))
@@ -1102,6 +1152,8 @@ def render_ops_cockpit_html(
     update_officer_notifier_path: Path | str | None = None,
     update_officer_run_dir: Path | str | None = None,
     update_officer_source_conflict: bool = False,
+    update_officer_form_notifier_path: str = "",
+    update_officer_form_run_dir: str = "",
 ) -> str:
     payload = build_ops_cockpit_payload(
         repo_root=repo_root,
@@ -1145,6 +1197,13 @@ def render_ops_cockpit_html(
     runtime_cards = "".join(_render_doc_card(doc) for doc in groups["runtime_resolution"])
     supporting_cards = "".join(_render_doc_card(doc) for doc in groups["supporting_truth"])
     exec_summary_html = _render_exec_summary_status_grid(payload)
+    update_officer_ergonomics_html = _render_update_officer_source_ergonomics_block(
+        form_notifier_path=update_officer_form_notifier_path,
+        form_run_dir=update_officer_form_run_dir,
+        conflict=update_officer_source_conflict,
+        effective_notifier_path=update_officer_notifier_path,
+        effective_run_dir=update_officer_run_dir,
+    )
     update_officer_card_html = _render_update_officer_card(update_officer_ui)
 
     return f"""<!doctype html>
@@ -1176,6 +1235,7 @@ def render_ops_cockpit_html(
     .status-badge--warn {{ background: #f57c00; color: #fff; }}
     .status-badge--ok {{ background: #388e3c; color: #fff; }}
     .status-badge--unknown {{ background: #616161; color: #fff; }}
+    .uo-source-form input[type="text"] {{ width: 100%; max-width: 52rem; box-sizing: border-box; }}
   </style>
 </head>
 <body>
@@ -1298,6 +1358,8 @@ def render_ops_cockpit_html(
       <p><strong>Exchange:</strong> {escape(str(dependencies.get("exchange", "unknown")))}</p>
       <p><strong>Telemetry:</strong> {escape(str(dependencies.get("telemetry", "unknown")))}</p>
     </div>
+
+    {update_officer_ergonomics_html}
 
     {update_officer_card_html}
 
