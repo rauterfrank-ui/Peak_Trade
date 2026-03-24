@@ -106,6 +106,7 @@ from .r_and_d_api import (
 )
 from .ops_cockpit import (
     build_ops_cockpit_payload,
+    normalize_update_officer_source_preset,
     render_ops_cockpit_html,
     resolve_update_officer_route_inputs,
 )
@@ -1756,6 +1757,7 @@ app = create_app()
 def ops_cockpit(
     update_officer_notifier_path: Optional[str] = None,
     update_officer_run_dir: Optional[str] = None,
+    update_officer_source_preset: Optional[str] = None,
 ) -> HTMLResponse:
     """Read-only Ops Cockpit from local artifacts."""
     qs_n = (update_officer_notifier_path or "").strip()
@@ -1764,6 +1766,7 @@ def ops_cockpit(
         update_officer_notifier_path,
         update_officer_run_dir,
     )
+    preset = normalize_update_officer_source_preset(update_officer_source_preset)
     if conflict:
         form_np, form_rd = qs_n, qs_r
     else:
@@ -1776,6 +1779,7 @@ def ops_cockpit(
             update_officer_source_conflict=conflict,
             update_officer_form_notifier_path=form_np,
             update_officer_form_run_dir=form_rd,
+            update_officer_source_preset=preset,
         )
     )
 

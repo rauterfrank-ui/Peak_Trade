@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from html import escape
 from pathlib import Path
 from typing import Dict, List, Optional
+from urllib.parse import urlencode
 
 from src.ops.update_officer_consumer import (
     build_update_officer_ui_model,
@@ -439,6 +440,55 @@ def resolve_update_officer_route_inputs(
     if n_raw and r_raw:
         return None, None, True
     return (n_raw or None, r_raw or None, False)
+
+
+def normalize_update_officer_source_preset(raw: str | None) -> str:
+    """
+    v9: normalize optional query preset for Update Officer source ergonomics.
+    Returns one of: manual, notifier_path, run_dir. Unknown values map to manual.
+    """
+    v = "" if raw is None else str(raw).strip().lower().replace("-", "_")
+    if v == "notifier_path":
+        return "notifier_path"
+    if v == "run_dir":
+        return "run_dir"
+    return "manual"
+
+
+def _uo_ops_preset_href(*, link_kind: str, form_np: str, form_rd: str) -> str:
+    """Build GET /ops href for read-only preset toolbar (v9)."""
+    if link_kind == "clear":
+        return "/ops"
+    if link_kind == "manual_keep":
+        q: dict[str, str] = {"update_officer_source_preset": "manual"}
+        np = form_np.strip()
+        rd = form_rd.strip()
+        if np:
+            q["update_officer_notifier_path"] = np
+        if rd:
+            q["update_officer_run_dir"] = rd
+        return "/ops?" + urlencode(q)
+    if link_kind == "notifier_path":
+        q = {"update_officer_source_preset": "notifier_path"}
+        np = form_np.strip()
+        if np:
+            q["update_officer_notifier_path"] = np
+        return "/ops?" + urlencode(q)
+    if link_kind == "run_dir":
+        q = {"update_officer_source_preset": "run_dir"}
+        rd = form_rd.strip()
+        if rd:
+            q["update_officer_run_dir"] = rd
+        return "/ops?" + urlencode(q)
+    return "/ops"
+
+
+def _uo_preset_display_label(preset: str) -> str:
+    if preset == "notifier_path":
+        return "notifier path"
+    if preset == "run_dir":
+        return "run directory"
+    return "manual"
 
 
 def build_ops_cockpit_payload(
@@ -942,10 +992,12 @@ def _render_update_officer_source_ergonomics_block(
     conflict: bool,
     effective_notifier_path: Path | str | None,
     effective_run_dir: Path | str | None,
+    source_preset: str,
 ) -> str:
-    """v8: visible GET-only source selection; same resolution rules as v7."""
+    """v8/v9: visible GET-only source selection; same resolution rules as v7."""
     esc_np = escape(form_notifier_path)
     esc_rd = escape(form_run_dir)
+    esc_preset = escape(source_preset)
     if conflict:
         summary = (
             "Active source: <strong>conflict</strong> — both notifier path and run directory "
@@ -966,12 +1018,49 @@ def _render_update_officer_source_ergonomics_block(
             "Active source: <strong>none</strong> — standard empty-state; use the form below "
             "or query parameters."
         )
+    pl = _uo_preset_display_label(source_preset)
+    preset_note = ""
+    if conflict:
+        preset_note = (
+            ' <span class="uo-preset-context">(preset is informational while source inputs '
+            "conflict)</span>"
+        )
+    preset_summary = (
+        f'<p><strong>Active preset:</strong> <span class="uo-active-preset">{escape(pl)}</span>'
+        f"{preset_note}</p>"
+    )
+    href_clear = _uo_ops_preset_href(
+        link_kind="clear", form_np=form_notifier_path, form_rd=form_run_dir
+    )
+    href_manual = _uo_ops_preset_href(
+        link_kind="manual_keep", form_np=form_notifier_path, form_rd=form_run_dir
+    )
+    href_np = _uo_ops_preset_href(
+        link_kind="notifier_path", form_np=form_notifier_path, form_rd=form_run_dir
+    )
+    href_rd = _uo_ops_preset_href(
+        link_kind="run_dir", form_np=form_notifier_path, form_rd=form_run_dir
+    )
+    preset_toolbar = (
+        "<h3>Operator presets (GET-only)</h3>"
+        "<p>Quick navigation only — presets do not discover paths or change v7 resolution rules. "
+        "Focus links omit the other source parameter from the URL.</p>"
+        '<ul class="uo-preset-toolbar">'
+        f'<li><a href="{escape(href_clear)}">Default — clear query</a></li>'
+        f'<li><a href="{escape(href_manual)}">Manual — keep current inputs</a></li>'
+        f'<li><a href="{escape(href_np)}">Notifier path focus</a> (omits run directory param)</li>'
+        f'<li><a href="{escape(href_rd)}">Run directory focus</a> (omits notifier path param)</li>'
+        "</ul>"
+    )
     return (
         '<div class="card truth-card">'
         "<h2>Update Officer source selection</h2>"
         "<p><strong>Read-only.</strong> GET-only navigation; no POST, no write actions.</p>"
         f"<p>{summary}</p>"
+        f"{preset_summary}"
+        f"{preset_toolbar}"
         '<form class="uo-source-form" method="get" action="/ops">'
+        f'<input type="hidden" name="update_officer_source_preset" value="{esc_preset}">'
         '<p><label for="uo-np">Notifier payload path</label><br>'
         f'<input id="uo-np" type="text" name="update_officer_notifier_path" '
         f'value="{esc_np}" size="72" autocomplete="off"></p>'
@@ -1154,6 +1243,7 @@ def render_ops_cockpit_html(
     update_officer_source_conflict: bool = False,
     update_officer_form_notifier_path: str = "",
     update_officer_form_run_dir: str = "",
+    update_officer_source_preset: str = "manual",
 ) -> str:
     payload = build_ops_cockpit_payload(
         repo_root=repo_root,
@@ -1203,6 +1293,7 @@ def render_ops_cockpit_html(
         conflict=update_officer_source_conflict,
         effective_notifier_path=update_officer_notifier_path,
         effective_run_dir=update_officer_run_dir,
+        source_preset=update_officer_source_preset,
     )
     update_officer_card_html = _render_update_officer_card(update_officer_ui)
 
@@ -1236,6 +1327,8 @@ def render_ops_cockpit_html(
     .status-badge--ok {{ background: #388e3c; color: #fff; }}
     .status-badge--unknown {{ background: #616161; color: #fff; }}
     .uo-source-form input[type="text"] {{ width: 100%; max-width: 52rem; box-sizing: border-box; }}
+    .uo-preset-toolbar {{ margin: 0 0 12px 1.2rem; line-height: 1.5; }}
+    .uo-preset-context {{ color: #555; font-size: 0.95em; }}
   </style>
 </head>
 <body>
@@ -1416,4 +1509,5 @@ __all__ = [
     "build_ops_cockpit_payload",
     "render_ops_cockpit_html",
     "resolve_update_officer_route_inputs",
+    "normalize_update_officer_source_preset",
 ]

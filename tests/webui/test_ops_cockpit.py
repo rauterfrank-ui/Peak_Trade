@@ -1281,3 +1281,92 @@ def test_api_ops_cockpit_query_params_conflict(ops_client: TestClient, tmp_path:
     assert data["update_officer_ui"]["empty_state_message"] == (
         UPDATE_OFFICER_ROUTE_CONFLICT_MESSAGE
     )
+
+
+def test_normalize_update_officer_source_preset() -> None:
+    from src.webui.ops_cockpit import normalize_update_officer_source_preset
+
+    assert normalize_update_officer_source_preset(None) == "manual"
+    assert normalize_update_officer_source_preset("") == "manual"
+    assert normalize_update_officer_source_preset("  run-dir  ") == "run_dir"
+    assert normalize_update_officer_source_preset("NOTIFIER_PATH") == "notifier_path"
+    assert normalize_update_officer_source_preset("bogus") == "manual"
+
+
+def test_ops_route_v9_preset_toolbar_visible(ops_client: TestClient) -> None:
+    r = ops_client.get("/ops")
+    assert r.status_code == 200
+    html = r.text
+    assert "Operator presets (GET-only)" in html
+    assert "uo-preset-toolbar" in html
+    assert "Active preset:" in html
+    assert "uo-active-preset" in html
+    assert "update_officer_source_preset" in html
+    assert 'method="post"' not in html.lower()
+
+
+def test_ops_route_v9_active_preset_from_query_param(ops_client: TestClient) -> None:
+    r = ops_client.get("/ops", params={"update_officer_source_preset": "notifier_path"})
+    assert r.status_code == 200
+    assert "Active preset:" in r.text
+    assert "notifier path" in r.text.lower()
+    assert 'name="update_officer_source_preset"' in r.text
+    assert 'value="notifier_path"' in r.text
+
+
+def test_ops_route_v9_apply_source_preserves_preset(ops_client: TestClient, tmp_path: Path) -> None:
+    run_dir = tmp_path / "uo_run"
+    run_dir.mkdir()
+    (run_dir / "notifier_payload.json").write_text(
+        json.dumps(_sample_notifier_payload()),
+        encoding="utf-8",
+    )
+    r = ops_client.get(
+        "/ops",
+        params={
+            "update_officer_source_preset": "run_dir",
+            "update_officer_run_dir": str(run_dir),
+        },
+    )
+    assert r.status_code == 200
+    assert "run directory" in r.text.lower()
+    assert 'value="run_dir"' in r.text
+
+
+def test_ops_route_v9_conflict_with_preset_query_still_read_only(
+    ops_client: TestClient, tmp_path: Path
+) -> None:
+    path = tmp_path / "notifier_payload.json"
+    path.write_text(json.dumps(_sample_notifier_payload()), encoding="utf-8")
+    run_dir = tmp_path / "other"
+    run_dir.mkdir()
+    r = ops_client.get(
+        "/ops",
+        params={
+            "update_officer_source_preset": "notifier_path",
+            "update_officer_notifier_path": str(path),
+            "update_officer_run_dir": str(run_dir),
+        },
+    )
+    assert r.status_code == 200
+    assert "conflict" in r.text.lower()
+    assert "preset is informational" in r.text.lower()
+    assert 'method="post"' not in r.text.lower()
+
+
+def test_ops_route_v9_notifier_path_focus_link_omits_run_dir_param(
+    ops_client: TestClient, tmp_path: Path
+) -> None:
+    import re
+
+    run_dir = tmp_path / "uo_run"
+    run_dir.mkdir()
+    r = ops_client.get(
+        "/ops",
+        params={"update_officer_run_dir": str(run_dir)},
+    )
+    assert r.status_code == 200
+    m = re.search(r'<a href="([^"]+)">Notifier path focus</a>', r.text)
+    assert m
+    assert "update_officer_source_preset=notifier_path" in m.group(1)
+    assert "update_officer_run_dir" not in m.group(1)
