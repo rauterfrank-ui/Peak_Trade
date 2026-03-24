@@ -35,6 +35,12 @@ def render_workflow_officer_summary(report: dict[str, Any]) -> str:
     lines.append(f"- strict: `{_bool_text(summary['strict'])}`")
     lines.append("")
 
+    lines.append("### Recommended priority counts")
+    lines.append("")
+    for key in ["p0", "p1", "p2", "p3"]:
+        lines.append(f"- {key}: `{summary['recommended_priority_counts'][key]}`")
+    lines.append("")
+
     lines.append("### Severity Counts")
     lines.append("")
     for key in ["hard_fail", "warn", "info"]:
@@ -53,13 +59,59 @@ def render_workflow_officer_summary(report: dict[str, Any]) -> str:
         lines.append(f"- {key}: `{summary['effective_level_counts'][key]}`")
     lines.append("")
 
+    lines.append("## By priority")
+    lines.append("")
+    for prio in ["p0", "p1", "p2", "p3"]:
+        subset = sorted(
+            [c for c in checks if c["recommended_priority"] == prio],
+            key=lambda x: x["check_id"],
+        )
+        lines.append(f"### {prio}")
+        lines.append("")
+        if not subset:
+            lines.append("- _(none)_")
+        else:
+            for c in subset:
+                lines.append(
+                    f"- `{c['check_id']}` — {c['category']} / {c['surface']} — "
+                    f"{c['effective_level']} / {c['outcome']}"
+                )
+        lines.append("")
+
+    lines.append("## By category")
+    lines.append("")
+    by_cat: dict[str, list[dict[str, Any]]] = {}
+    for c in checks:
+        by_cat.setdefault(c["category"], []).append(c)
+    for cat in sorted(by_cat.keys()):
+        lines.append(f"### {cat}")
+        lines.append("")
+        for c in sorted(by_cat[cat], key=lambda x: x["check_id"]):
+            lines.append(
+                f"- `{c['check_id']}` — priority `{c['recommended_priority']}` — "
+                f"{c['effective_level']} / {c['outcome']}"
+            )
+        lines.append("")
+
+    lines.append("## Recommended next actions")
+    lines.append("")
+    lines.append("| check_id | priority | recommended_action |")
+    lines.append("|---|---|---|")
+    for c in sorted(checks, key=lambda x: (x["recommended_priority"], x["check_id"])):
+        action = c["recommended_action"].replace("|", "\\|")
+        lines.append(f"| `{c['check_id']}` | `{c['recommended_priority']}` | {action} |")
+    lines.append("")
+
     lines.append("## Checks")
     lines.append("")
-    lines.append("| check_id | severity | outcome | effective_level | status | returncode |")
-    lines.append("|---|---|---|---|---|---:|")
-    for check in checks:
+    lines.append(
+        "| check_id | surface | category | priority | severity | outcome | effective_level | status | returncode |"
+    )
+    lines.append("|---|---|---|---|---|---|---|---|---:|")
+    for check in sorted(checks, key=lambda x: x["check_id"]):
         lines.append(
-            f"| {check['check_id']} | {check['severity']} | {check['outcome']} | "
+            f"| {check['check_id']} | {check['surface']} | {check['category']} | "
+            f"{check['recommended_priority']} | {check['severity']} | {check['outcome']} | "
             f"{check['effective_level']} | {check['status']} | {check['returncode']} |"
         )
     lines.append("")
@@ -73,7 +125,7 @@ def render_workflow_officer_summary(report: dict[str, Any]) -> str:
     if notes:
         lines.append("## Notes")
         lines.append("")
-        for check_id, check_notes in notes:
+        for check_id, check_notes in sorted(notes, key=lambda x: x[0]):
             lines.append(f"### {check_id}")
             lines.append("")
             for note in check_notes:

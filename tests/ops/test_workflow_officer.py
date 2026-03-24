@@ -7,6 +7,7 @@ from pathlib import Path
 
 from src.ops.workflow_officer import (
     PROFILE_POLICY,
+    _recommend_priority_action,
     _resolve_effective_level,
     _resolve_outcome,
     _resolve_severity,
@@ -43,7 +44,7 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     assert summary_path.exists()
 
     report = json.loads(report_path.read_text(encoding="utf-8"))
-    assert report["officer_version"] == "v0-min"
+    assert report["officer_version"] == "v1-min"
     assert report["profile"] == "docs_only_pr"
     assert "checks" in report
     assert "summary" in report
@@ -55,6 +56,10 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
         assert "severity" in check
         assert "outcome" in check
         assert "effective_level" in check
+        assert check["recommended_priority"] in {"p0", "p1", "p2", "p3"}
+        assert "recommended_action" in check
+        assert "surface" in check
+        assert "category" in check
 
 
 def test_workflow_officer_profiles_alias_exports_profiles() -> None:
@@ -100,3 +105,11 @@ def test_resolve_outcome_and_effective_level() -> None:
     assert _resolve_effective_level("missing", "hard_fail") == "error"
     assert _resolve_effective_level("missing", "warn") == "warning"
     assert _resolve_effective_level("missing", "info") == "info"
+
+
+def test_recommend_priority_action_mapping() -> None:
+    assert _recommend_priority_action("error", "fail", "hard_fail")[0] == "p0"
+    assert _recommend_priority_action("warning", "fail", "warn")[0] == "p1"
+    assert _recommend_priority_action("info", "fail", "info")[0] == "p2"
+    assert _recommend_priority_action("info", "pass", "info")[0] == "p3"
+    assert _recommend_priority_action("ok", "pass", "hard_fail")[0] == "p3"

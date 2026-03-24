@@ -15,16 +15,18 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from src.ops.workflow_officer_schema import validate_report_payload
-
 from src.ops.workflow_officer_markdown import render_workflow_officer_summary
-
+from src.ops.workflow_officer_profiles import PROFILE_POLICY, PROFILES
+from src.ops.workflow_officer_schema import validate_report_payload
 
 UTC = timezone.utc
 MODES = {"audit", "preflight", "advise"}
 SEVERITIES = {"hard_fail", "warn", "info"}
 OUTCOMES = {"pass", "fail", "missing"}
 EFFECTIVE_LEVELS = {"ok", "warning", "error", "info"}
+
+# Re-export for tests and callers that imported from workflow_officer.
+PROFILE_CHECKS = PROFILES
 
 
 def _utc_ts() -> str:
@@ -63,71 +65,6 @@ class WorkflowOfficerReport:
     success: bool
     checks: list[dict[str, Any]]
     summary: dict[str, Any]
-
-
-PROFILE_CHECKS: dict[str, list[dict[str, Any]]] = {
-    "docs_only_pr": [
-        {
-            "check_id": "docs_token_policy",
-            "command": [sys.executable, "scripts/ops/validate_docs_token_policy.py"],
-        },
-        {
-            "check_id": "docs_graph_triage",
-            "command": [sys.executable, "scripts/ops/docs_graph_triage.py"],
-        },
-        {
-            "check_id": "error_taxonomy_adoption",
-            "command": [sys.executable, "scripts/audit/check_error_taxonomy_adoption.py"],
-        },
-    ],
-    "ops_local_env": [
-        {
-            "check_id": "ops_doctor_shell",
-            "command": ["bash", "scripts/ops/ops_doctor.sh"],
-        },
-        {
-            "check_id": "docker_desktop_preflight_readonly",
-            "command": ["bash", "scripts/ops/docker_desktop_preflight_readonly.sh"],
-        },
-        {
-            "check_id": "mcp_smoke_preflight",
-            "command": ["bash", "scripts/ops/mcp_smoke_preflight.sh"],
-        },
-        {
-            "check_id": "failure_analysis",
-            "command": ["bash", "scripts/ops/analyze_failures.sh"],
-        },
-    ],
-    "live_pilot_preflight": [
-        {
-            "check_id": "docker_desktop_preflight_readonly",
-            "command": ["bash", "scripts/ops/docker_desktop_preflight_readonly.sh"],
-        },
-        {
-            "check_id": "mcp_smoke_preflight",
-            "command": ["bash", "scripts/ops/mcp_smoke_preflight.sh"],
-        },
-    ],
-}
-
-
-PROFILE_POLICY: dict[str, dict[str, str]] = {
-    "docs_only_pr": {
-        "docs_token_policy": "hard_fail",
-        "docs_graph_triage": "warn",
-        "error_taxonomy_adoption": "warn",
-    },
-    "ops_local_env": {
-        "ops_doctor_shell": "warn",
-        "docker_desktop_preflight_readonly": "warn",
-        "mcp_smoke_preflight": "warn",
-        "failure_analysis": "info",
-    },
-    "live_pilot_preflight": {
-        "docker_desktop_preflight_readonly": "hard_fail",
-        "mcp_smoke_preflight": "warn",
-    },
-}
 
 
 def _write_text(path: Path, content: str) -> None:
@@ -181,17 +118,61 @@ def _resolve_effective_level(outcome: str, severity: str) -> str:
     return "info"
 
 
+def _recommend_priority_action(
+    effective_level: str,
+    outcome: str,
+    severity: str,
+) -> tuple[str, str]:
+    """Deterministic operator-facing recommendation; never implies auto-fix."""
+    if effective_level == "error":
+        return (
+            "p0",
+            "Stop and remediate: check failed at hard_fail severity or missing required target.",
+        )
+    if effective_level == "warning":
+        return (
+            "p1",
+            "Review stdout/stderr logs; resolve warnings before relying on this path.",
+        )
+    if effective_level == "ok":
+        return ("p3", "No operator action required.")
+    # info
+    if outcome == "pass":
+        return ("p3", "No operator action required.")
+    return (
+        "p2",
+        "Informational: verify manually if this check matters for your change.",
+    )
+
+
+def _check_to_report_dict(result: CheckResult, plan: dict[str, Any]) -> dict[str, Any]:
+    rec = asdict(result)
+    prio, action = _recommend_priority_action(
+        result.effective_level,
+        result.outcome,
+        result.severity,
+    )
+    rec["surface"] = plan["surface"]
+    rec["category"] = plan["category"]
+    rec["description"] = plan["description"]
+    rec["recommended_action"] = action
+    rec["recommended_priority"] = prio
+    return rec
+
+
 def _run_check(
     repo_root: Path,
     output_dir: Path,
     profile: str,
     check_id: str,
     command: list[str],
+    severity: str,
 ) -> CheckResult:
     started_at = datetime.now(UTC).isoformat()
     stdout_path = output_dir / f"{check_id}.stdout.log"
     stderr_path = output_dir / f"{check_id}.stderr.log"
-    severity = _resolve_severity(profile, check_id)
+    if severity not in SEVERITIES:
+        raise ValueError(f"Unsupported severity {severity!r} for {profile}.{check_id}")
 
     wrapped_target = command[-1]
     expects_local_target = len(command) >= 2 and command[0] in {sys.executable, "bash"}
@@ -248,21 +229,22 @@ def _run_check(
     )
 
 
-def _emit_events(events_path: Path, results: list[CheckResult]) -> None:
+def _emit_events(events_path: Path, check_dicts: list[dict[str, Any]]) -> None:
     with events_path.open("w", encoding="utf-8") as fh:
-        for result in results:
+        for row in check_dicts:
             fh.write(
                 json.dumps(
                     {
                         "type": "workflow_officer_check",
-                        "check_id": result.check_id,
-                        "status": result.status,
-                        "severity": result.severity,
-                        "outcome": result.outcome,
-                        "effective_level": result.effective_level,
-                        "returncode": result.returncode,
-                        "started_at": result.started_at,
-                        "finished_at": result.finished_at,
+                        "check_id": row["check_id"],
+                        "status": row["status"],
+                        "severity": row["severity"],
+                        "outcome": row["outcome"],
+                        "effective_level": row["effective_level"],
+                        "recommended_priority": row["recommended_priority"],
+                        "returncode": row["returncode"],
+                        "started_at": row.get("started_at"),
+                        "finished_at": row.get("finished_at"),
                     },
                     ensure_ascii=False,
                 )
@@ -281,24 +263,26 @@ def _emit_manifest(manifest_path: Path, output_dir: Path) -> None:
     )
 
 
-def _build_summary(results: list[CheckResult], strict: bool) -> dict[str, Any]:
+def _build_summary(check_dicts: list[dict[str, Any]], strict: bool) -> dict[str, Any]:
     severity_counts = {"hard_fail": 0, "warn": 0, "info": 0}
     status_counts: dict[str, int] = {}
     outcome_counts = {"pass": 0, "fail": 0, "missing": 0}
     effective_level_counts = {"ok": 0, "warning": 0, "error": 0, "info": 0}
+    recommended_priority_counts = {"p0": 0, "p1": 0, "p2": 0, "p3": 0}
 
-    for result in results:
-        severity_counts[result.severity] += 1
-        status_counts[result.status] = status_counts.get(result.status, 0) + 1
-        outcome_counts[result.outcome] += 1
-        effective_level_counts[result.effective_level] += 1
+    for row in check_dicts:
+        severity_counts[row["severity"]] += 1
+        status_counts[row["status"]] = status_counts.get(row["status"], 0) + 1
+        outcome_counts[row["outcome"]] += 1
+        effective_level_counts[row["effective_level"]] += 1
+        recommended_priority_counts[row["recommended_priority"]] += 1
 
-    hard_failures = sum(1 for r in results if r.effective_level == "error")
-    warnings = sum(1 for r in results if r.effective_level == "warning")
-    infos = sum(1 for r in results if r.effective_level == "info")
+    hard_failures = sum(1 for r in check_dicts if r["effective_level"] == "error")
+    warnings = sum(1 for r in check_dicts if r["effective_level"] == "warning")
+    infos = sum(1 for r in check_dicts if r["effective_level"] == "info")
 
     return {
-        "total_checks": len(results),
+        "total_checks": len(check_dicts),
         "hard_failures": hard_failures,
         "warnings": warnings,
         "infos": infos,
@@ -306,16 +290,17 @@ def _build_summary(results: list[CheckResult], strict: bool) -> dict[str, Any]:
         "status_counts": status_counts,
         "outcome_counts": outcome_counts,
         "effective_level_counts": effective_level_counts,
+        "recommended_priority_counts": recommended_priority_counts,
         "strict": strict,
     }
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Peak_Trade Workflow Officer v0")
+    parser = argparse.ArgumentParser(description="Peak_Trade Workflow Officer")
     parser.add_argument("--mode", choices=sorted(MODES), default="audit")
     parser.add_argument(
         "--profile",
-        choices=sorted(PROFILE_CHECKS.keys()),
+        choices=sorted(PROFILES.keys()),
         default="docs_only_pr",
     )
     parser.add_argument("--output-root", default="out/ops/workflow_officer")
@@ -331,25 +316,29 @@ def main() -> int:
     _safe_mkdir(run_dir)
 
     results: list[CheckResult] = []
-    for spec in PROFILE_CHECKS[args.profile]:
+    plans = PROFILES[args.profile]
+    for plan in plans:
         results.append(
             _run_check(
                 repo_root=repo_root,
                 output_dir=run_dir,
                 profile=args.profile,
-                check_id=spec["check_id"],
-                command=spec["command"],
+                check_id=plan["check_id"],
+                command=plan["command"],
+                severity=plan["severity"],
             )
         )
 
-    _emit_events(run_dir / "events.jsonl", results)
+    check_dicts = [_check_to_report_dict(r, p) for r, p in zip(results, plans)]
+
+    _emit_events(run_dir / "events.jsonl", check_dicts)
     _emit_manifest(run_dir / "manifest.json", run_dir)
 
-    summary = _build_summary(results, strict=bool(args.strict))
+    summary = _build_summary(check_dicts, strict=bool(args.strict))
     success = summary["hard_failures"] == 0
 
     report = WorkflowOfficerReport(
-        officer_version="v0-min",
+        officer_version="v1-min",
         mode=args.mode,
         profile=args.profile,
         started_at=started_at,
@@ -357,7 +346,7 @@ def main() -> int:
         output_dir=str(run_dir),
         repo_root=str(repo_root),
         success=success,
-        checks=[asdict(r) for r in results],
+        checks=check_dicts,
         summary=summary,
     )
     report_payload = asdict(report)

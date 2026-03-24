@@ -7,6 +7,7 @@ ALLOWED_MODES = {"audit", "preflight", "advise"}
 ALLOWED_SEVERITIES = {"hard_fail", "warn", "info"}
 ALLOWED_OUTCOMES = {"pass", "fail", "missing"}
 ALLOWED_EFFECTIVE_LEVELS = {"ok", "warning", "error", "info"}
+ALLOWED_PRIORITIES = {"p0", "p1", "p2", "p3"}
 
 REQUIRED_TOP_LEVEL_KEYS = {
     "officer_version",
@@ -29,6 +30,11 @@ REQUIRED_CHECK_KEYS = {
     "severity",
     "outcome",
     "effective_level",
+    "surface",
+    "category",
+    "description",
+    "recommended_action",
+    "recommended_priority",
 }
 
 REQUIRED_SUMMARY_KEYS = {
@@ -40,6 +46,7 @@ REQUIRED_SUMMARY_KEYS = {
     "status_counts",
     "outcome_counts",
     "effective_level_counts",
+    "recommended_priority_counts",
     "strict",
 }
 
@@ -83,6 +90,16 @@ def validate_check_payload(check: dict[str, Any], idx: int) -> None:
         ALLOWED_EFFECTIVE_LEVELS,
         f"{scope}.effective_level",
     )
+    _require_type(check["surface"], str, f"{scope}.surface")
+    _require_type(check["category"], str, f"{scope}.category")
+    _require_type(check["description"], str, f"{scope}.description")
+    _require_type(check["recommended_action"], str, f"{scope}.recommended_action")
+    _require_type(check["recommended_priority"], str, f"{scope}.recommended_priority")
+    _require_enum(
+        check["recommended_priority"],
+        ALLOWED_PRIORITIES,
+        f"{scope}.recommended_priority",
+    )
 
 
 def validate_summary_payload(summary: dict[str, Any]) -> None:
@@ -99,10 +116,16 @@ def validate_summary_payload(summary: dict[str, Any]) -> None:
         dict,
         f"{scope}.effective_level_counts",
     )
+    _require_type(
+        summary["recommended_priority_counts"],
+        dict,
+        f"{scope}.recommended_priority_counts",
+    )
 
     severity_keys = set(summary["severity_counts"].keys())
     outcome_keys = set(summary["outcome_counts"].keys())
     effective_level_keys = set(summary["effective_level_counts"].keys())
+    prio_keys = set(summary["recommended_priority_counts"].keys())
 
     if severity_keys != ALLOWED_SEVERITIES:
         raise WorkflowOfficerSchemaError(
@@ -115,6 +138,16 @@ def validate_summary_payload(summary: dict[str, Any]) -> None:
     if effective_level_keys != ALLOWED_EFFECTIVE_LEVELS:
         raise WorkflowOfficerSchemaError(
             f"{scope}.effective_level_counts: expected keys {sorted(ALLOWED_EFFECTIVE_LEVELS)}, got {sorted(effective_level_keys)}"
+        )
+    if prio_keys != ALLOWED_PRIORITIES:
+        raise WorkflowOfficerSchemaError(
+            f"{scope}.recommended_priority_counts: expected keys {sorted(ALLOWED_PRIORITIES)}, got {sorted(prio_keys)}"
+        )
+    for pk in sorted(ALLOWED_PRIORITIES):
+        _require_type(
+            summary["recommended_priority_counts"][pk],
+            int,
+            f"{scope}.recommended_priority_counts.{pk}",
         )
 
 
