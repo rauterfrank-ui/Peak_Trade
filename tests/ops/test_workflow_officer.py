@@ -16,7 +16,9 @@ from src.ops.workflow_officer import (
     _resolve_status,
     build_followup_topic_ranking,
     build_handoff_context,
+    load_ops_merge_log_inputs,
     load_ops_registry_inputs,
+    parse_merge_log_signals,
     parse_ops_pointer_text,
 )
 
@@ -90,6 +92,19 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     assert rr["pointer_count"] == reg_in["pointer_count"]
     if rr["primary_run_id"] is not None:
         assert isinstance(rr["primary_run_id"], str) and rr["primary_run_id"].strip()
+
+    ml_in = report["summary"]["merge_log_inputs"]
+    assert ml_in["merge_logs_dir_present"] is True
+    assert ml_in["canonical_merge_log_count"] >= 30
+    assert len(ml_in["recent_merge_logs"]) == 5
+    pr_seq = [row["pr_number"] for row in ml_in["recent_merge_logs"]]
+    assert pr_seq == sorted(pr_seq, reverse=True)
+    mlr = handoff["merge_log_inputs_rollup"]
+    assert mlr["merge_logs_dir_present"] is True
+    assert mlr["canonical_merge_log_count"] == ml_in["canonical_merge_log_count"]
+    assert mlr["latest_pr_number"] == pr_seq[0]
+    if mlr["latest_merge_commit_sha"] is not None:
+        assert len(mlr["latest_merge_commit_sha"]) >= 7
 
     for check in report["checks"]:
         assert "severity" in check
@@ -265,6 +280,12 @@ def test_build_handoff_context_empty_ranking_is_stable() -> None:
             "pointer_count": 0,
             "primary_run_id": None,
         },
+        "merge_log_inputs_rollup": {
+            "merge_logs_dir_present": False,
+            "canonical_merge_log_count": 0,
+            "latest_pr_number": None,
+            "latest_merge_commit_sha": None,
+        },
     }
 
 
@@ -281,6 +302,7 @@ def test_build_handoff_context_missing_ranking_treated_as_empty() -> None:
     assert ctx["top_followups"] == []
     assert ctx["rollup"]["total_checks"] == 2
     assert ctx["registry_inputs_rollup"]["primary_run_id"] is None
+    assert ctx["merge_log_inputs_rollup"]["latest_pr_number"] is None
 
 
 def test_build_handoff_context_caps_top_followups() -> None:
@@ -403,3 +425,55 @@ def test_build_handoff_context_registry_primary_run_id_first_pointer() -> None:
         },
     }
     assert build_handoff_context(summary2)["registry_inputs_rollup"]["primary_run_id"] == "99"
+
+
+def test_parse_merge_log_signals_evidence_block_and_compact_line() -> None:
+    sha40 = "0123456789abcdef0123456789abcdef01234567"
+    evidence_style = f"""
+## Verification
+- Post-Merge Evidence (Truth):
+  - mergeCommit: `{sha40}`
+  - mergedAt: `2026-01-30T23:44:08Z`
+"""
+    sig = parse_merge_log_signals(evidence_style)
+    assert sig["merge_commit_sha"] == sha40
+    assert sig["merged_at"] == "2026-01-30T23:44:08Z"
+
+    compact = """
+- Merge commit: 0ae34d94394d8ff63cbc356e3ff1b82bddb31bf6
+- Merged at (UTC): 2026-01-18T18:28:31Z
+"""
+    sig2 = parse_merge_log_signals(compact)
+    assert sig2["merge_commit_sha"] == "0ae34d94394d8ff63cbc356e3ff1b82bddb31bf6"
+    assert sig2["merged_at"] == "2026-01-18T18:28:31Z"
+
+
+def test_load_ops_merge_log_inputs_missing_dir_is_stable(tmp_path: Path) -> None:
+    assert load_ops_merge_log_inputs(tmp_path) == {
+        "merge_logs_dir_present": False,
+        "canonical_merge_log_count": 0,
+        "recent_merge_logs": [],
+    }
+
+
+def test_load_ops_merge_log_inputs_orders_by_pr_desc_and_caps(tmp_path: Path) -> None:
+    ml = tmp_path / "docs" / "ops" / "merge_logs"
+    ml.mkdir(parents=True)
+    (ml / "PR_2_MERGE_LOG.md").write_text(
+        "Merge commit: aaa0000000000000000000000000000000000000\n",
+        encoding="utf-8",
+    )
+    (ml / "PR_10_MERGE_LOG.md").write_text(
+        "Merge commit: bbb0000000000000000000000000000000000000\n",
+        encoding="utf-8",
+    )
+    (ml / "PR_99_MERGE_LOG.md").write_text("# x\n", encoding="utf-8")
+    for i in range(1, 8):
+        (ml / f"PR_{100 + i}_MERGE_LOG.md").write_text("# stub\n", encoding="utf-8")
+    got = load_ops_merge_log_inputs(tmp_path)
+    assert got["merge_logs_dir_present"] is True
+    assert got["canonical_merge_log_count"] == 10
+    recent = got["recent_merge_logs"]
+    assert len(recent) == 5
+    assert [r["pr_number"] for r in recent] == [107, 106, 105, 104, 103]
+    assert recent[0]["merge_commit_sha"] is None

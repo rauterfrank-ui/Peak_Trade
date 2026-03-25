@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 from dataclasses import asdict, dataclass, field
@@ -39,6 +40,21 @@ _HANDOFF_CONTEXT_SCHEMA_VERSION = "workflow_officer.handoff_context/v0"
 # Ops registry pointers under docs/ops/registry (read-only; same line format as
 # scripts/ops/verify_registry_pointer_artifacts.parse_pointer).
 _OPS_REGISTRY_REL = Path("docs/ops/registry")
+
+# Canonical merge logs (read-only); matches docs/ops/merge_logs/PR_*_MERGE_LOG.md convention.
+_MERGE_LOGS_SUBDIR = Path("docs/ops/merge_logs")
+_MERGE_LOG_GLOB = "PR_*_MERGE_LOG.md"
+_MERGE_LOG_FILENAME_RE = re.compile(r"^PR_(\d+)_MERGE_LOG\.md$")
+_MAX_RECENT_MERGE_LOGS = 5
+_MERGE_COMMIT_PATTERNS = (
+    re.compile(r"mergeCommit:\s*`([0-9a-fA-F]{7,40})`"),
+    re.compile(r"Merge commit:\s*([0-9a-fA-F]{7,40})\b"),
+    re.compile(r"Merge commit `([0-9a-fA-F]{7,40})`"),
+)
+_MERGED_AT_PATTERNS = (
+    re.compile(r"mergedAt:\s*`([^`]+)`"),
+    re.compile(r"Merged at \(UTC\):\s*(\S+)"),
+)
 
 
 def _utc_ts() -> str:
@@ -386,6 +402,100 @@ def _registry_inputs_rollup(summary: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def parse_merge_log_signals(text: str) -> dict[str, str | None]:
+    """Extract common merge metadata from a merge-log markdown body (best-effort)."""
+    merge_sha: str | None = None
+    merged_at: str | None = None
+    for rx in _MERGE_COMMIT_PATTERNS:
+        m = rx.search(text)
+        if m:
+            merge_sha = m.group(1).lower()
+            break
+    for rx in _MERGED_AT_PATTERNS:
+        m = rx.search(text)
+        if m:
+            merged_at = m.group(1).strip()
+            break
+    return {"merge_commit_sha": merge_sha, "merged_at": merged_at}
+
+
+def load_ops_merge_log_inputs(repo_root: Path) -> dict[str, Any]:
+    """Read-only scan of canonical PR merge logs under docs/ops/merge_logs."""
+    ml_dir = repo_root / _MERGE_LOGS_SUBDIR
+    if not ml_dir.is_dir():
+        return {
+            "merge_logs_dir_present": False,
+            "canonical_merge_log_count": 0,
+            "recent_merge_logs": [],
+        }
+    entries: list[tuple[int, Path]] = []
+    for p in ml_dir.glob(_MERGE_LOG_GLOB):
+        if not p.is_file():
+            continue
+        m = _MERGE_LOG_FILENAME_RE.match(p.name)
+        if not m:
+            continue
+        entries.append((int(m.group(1)), p))
+    entries.sort(key=lambda t: t[0], reverse=True)
+    recent: list[dict[str, Any]] = []
+    for pr_num, p in entries[:_MAX_RECENT_MERGE_LOGS]:
+        rel = str(p.relative_to(repo_root).as_posix())
+        try:
+            body = p.read_text(encoding="utf-8")
+        except OSError:
+            body = ""
+        sig = parse_merge_log_signals(body)
+        recent.append(
+            {
+                "pr_number": pr_num,
+                "rel_path": rel,
+                "merge_commit_sha": sig["merge_commit_sha"],
+                "merged_at": sig["merged_at"],
+            }
+        )
+    return {
+        "merge_logs_dir_present": True,
+        "canonical_merge_log_count": len(entries),
+        "recent_merge_logs": recent,
+    }
+
+
+def _merge_log_inputs_rollup(summary: dict[str, Any]) -> dict[str, Any]:
+    """Handoff-sized digest of ``merge_log_inputs``."""
+    block = summary.get("merge_log_inputs")
+    if not isinstance(block, dict):
+        return {
+            "merge_logs_dir_present": False,
+            "canonical_merge_log_count": 0,
+            "latest_pr_number": None,
+            "latest_merge_commit_sha": None,
+        }
+    present = bool(block.get("merge_logs_dir_present", False))
+    try:
+        count = int(block.get("canonical_merge_log_count", 0))
+    except (TypeError, ValueError):
+        count = 0
+    latest_pr: int | None = None
+    latest_sha: str | None = None
+    recent = block.get("recent_merge_logs")
+    if isinstance(recent, list) and recent:
+        first = recent[0]
+        if isinstance(first, dict):
+            try:
+                latest_pr = int(first["pr_number"])
+            except (KeyError, TypeError, ValueError):
+                latest_pr = None
+            sha = first.get("merge_commit_sha")
+            if isinstance(sha, str) and sha.strip():
+                latest_sha = sha.strip().lower()
+    return {
+        "merge_logs_dir_present": present,
+        "canonical_merge_log_count": count,
+        "latest_pr_number": latest_pr,
+        "latest_merge_commit_sha": latest_sha,
+    }
+
+
 def build_followup_topic_ranking(check_dicts: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Rank checks as read-only follow-up topics (no I/O, no mutation).
 
@@ -420,8 +530,9 @@ def build_followup_topic_ranking(check_dicts: list[dict[str, Any]]) -> list[dict
 def build_handoff_context(summary: dict[str, Any]) -> dict[str, Any]:
     """Derive a small read-only handoff snapshot from an existing summary dict.
 
-    Uses ``followup_topic_ranking``, check rollups, and optional ``registry_inputs``.
-    If ``followup_topic_ranking`` is missing or not a list, it is treated as empty.
+    Uses ``followup_topic_ranking``, check rollups, ``registry_inputs``, and
+    ``merge_log_inputs``. If ``followup_topic_ranking`` is missing or not a list,
+    it is treated as empty.
     """
     ranking = summary.get("followup_topic_ranking")
     if not isinstance(ranking, list):
@@ -448,6 +559,7 @@ def build_handoff_context(summary: dict[str, Any]) -> dict[str, Any]:
             for row in top
         ],
         "registry_inputs_rollup": _registry_inputs_rollup(summary),
+        "merge_log_inputs_rollup": _merge_log_inputs_rollup(summary),
     }
 
 
@@ -494,6 +606,7 @@ def _build_summary(
         "recommended_priority_counts": recommended_priority_counts,
         "strict": strict,
         "registry_inputs": load_ops_registry_inputs(repo_root),
+        "merge_log_inputs": load_ops_merge_log_inputs(repo_root),
         "followup_topic_ranking": build_followup_topic_ranking(check_dicts),
     }
     summary["handoff_context"] = build_handoff_context(summary)
