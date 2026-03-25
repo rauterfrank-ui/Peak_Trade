@@ -118,31 +118,72 @@ def _resolve_effective_level(outcome: str, severity: str) -> str:
     return "info"
 
 
+_RECOMMEND_PREFIX = "[workflow_officer.recommend"
+
+
+def _format_recommendation(rationale_key: str, body: str) -> str:
+    return f"{_RECOMMEND_PREFIX}.{rationale_key}] {body}"
+
+
 def _recommend_priority_action(
     effective_level: str,
     outcome: str,
     severity: str,
 ) -> tuple[str, str]:
-    """Deterministic operator-facing recommendation; never implies auto-fix."""
+    """Deterministic operator-facing recommendation; never implies auto-fix.
+
+    Precedence: ``error`` > ``warning`` > ``ok``; remaining ``info`` effective
+    level branches on ``outcome`` (pass → p3, else → p2).
+    """
+    if effective_level not in EFFECTIVE_LEVELS:
+        raise ValueError(f"Unsupported effective_level {effective_level!r}")
+    if outcome not in OUTCOMES:
+        raise ValueError(f"Unsupported outcome {outcome!r}")
+    if severity not in SEVERITIES:
+        raise ValueError(f"Unsupported severity {severity!r}")
+
     if effective_level == "error":
         return (
             "p0",
-            "Stop and remediate: check failed at hard_fail severity or missing required target.",
+            _format_recommendation(
+                "remediate_error",
+                "Stop and remediate: hard_fail check failed or a required target is "
+                "missing under hard_fail severity.",
+            ),
         )
     if effective_level == "warning":
         return (
             "p1",
-            "Review stdout/stderr logs; resolve warnings before relying on this path.",
+            _format_recommendation(
+                "review_warning",
+                "Review stdout/stderr logs; resolve warnings before relying on this path.",
+            ),
         )
     if effective_level == "ok":
-        return ("p3", "No operator action required.")
-    # info
-    if outcome == "pass":
-        return ("p3", "No operator action required.")
-    return (
-        "p2",
-        "Informational: verify manually if this check matters for your change.",
-    )
+        return (
+            "p3",
+            _format_recommendation(
+                "no_action_ok",
+                "No operator action required.",
+            ),
+        )
+    if effective_level == "info":
+        if outcome == "pass":
+            return (
+                "p3",
+                _format_recommendation(
+                    "no_action_info_pass",
+                    "No operator action required.",
+                ),
+            )
+        return (
+            "p2",
+            _format_recommendation(
+                "verify_manual_info",
+                "Informational: verify manually if this check matters for your change.",
+            ),
+        )
+    raise AssertionError(f"Unhandled effective_level {effective_level!r}")
 
 
 def _check_to_report_dict(result: CheckResult, plan: dict[str, Any]) -> dict[str, Any]:

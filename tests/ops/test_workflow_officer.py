@@ -5,6 +5,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 from src.ops.workflow_officer import (
     PROFILE_POLICY,
     _recommend_priority_action,
@@ -108,8 +110,41 @@ def test_resolve_outcome_and_effective_level() -> None:
 
 
 def test_recommend_priority_action_mapping() -> None:
-    assert _recommend_priority_action("error", "fail", "hard_fail")[0] == "p0"
-    assert _recommend_priority_action("warning", "fail", "warn")[0] == "p1"
-    assert _recommend_priority_action("info", "fail", "info")[0] == "p2"
-    assert _recommend_priority_action("info", "pass", "info")[0] == "p3"
-    assert _recommend_priority_action("ok", "pass", "hard_fail")[0] == "p3"
+    assert _recommend_priority_action("error", "fail", "hard_fail") == (
+        "p0",
+        "[workflow_officer.recommend.remediate_error] Stop and remediate: hard_fail check failed "
+        "or a required target is missing under hard_fail severity.",
+    )
+    assert _recommend_priority_action("warning", "fail", "warn") == (
+        "p1",
+        "[workflow_officer.recommend.review_warning] Review stdout/stderr logs; resolve "
+        "warnings before relying on this path.",
+    )
+    assert _recommend_priority_action("info", "fail", "info") == (
+        "p2",
+        "[workflow_officer.recommend.verify_manual_info] Informational: verify manually if this "
+        "check matters for your change.",
+    )
+    assert _recommend_priority_action("info", "pass", "info") == (
+        "p3",
+        "[workflow_officer.recommend.no_action_info_pass] No operator action required.",
+    )
+    assert _recommend_priority_action("ok", "pass", "hard_fail") == (
+        "p3",
+        "[workflow_officer.recommend.no_action_ok] No operator action required.",
+    )
+
+
+def test_recommend_priority_action_boundary_missing_effective_levels() -> None:
+    assert _recommend_priority_action("error", "missing", "hard_fail")[0] == "p0"
+    assert _recommend_priority_action("warning", "missing", "warn")[0] == "p1"
+    assert _recommend_priority_action("info", "missing", "info")[0] == "p2"
+
+
+def test_recommend_priority_action_rejects_invalid_inputs() -> None:
+    with pytest.raises(ValueError, match="effective_level"):
+        _recommend_priority_action("bogus", "pass", "info")
+    with pytest.raises(ValueError, match="outcome"):
+        _recommend_priority_action("ok", "bogus", "info")
+    with pytest.raises(ValueError, match="severity"):
+        _recommend_priority_action("ok", "pass", "bogus")
