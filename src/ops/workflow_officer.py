@@ -667,6 +667,60 @@ def build_next_chat_preview(summary: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def render_next_chat_preview_markdown(preview: dict[str, Any]) -> str:
+    """Deterministic markdown excerpt for ``summary[\"next_chat_preview\"]`` (read-only, no I/O)."""
+    if not isinstance(preview, dict):
+        return ""
+    schema = preview.get("preview_schema_version")
+    if not isinstance(schema, str) or not schema.strip():
+        return ""
+
+    def _int_field(key: str) -> str:
+        raw = preview.get(key)
+        try:
+            return str(int(raw))
+        except (TypeError, ValueError):
+            return "n/a"
+
+    prov = preview.get("provenance_schema_version")
+    prov_s = prov.strip() if isinstance(prov, str) and prov.strip() else "n/a"
+
+    primary = preview.get("primary_followup_check_id")
+    primary_s = primary.strip() if isinstance(primary, str) and primary.strip() else "n/a"
+
+    queued_raw = preview.get("queued_followup_check_ids")
+    if isinstance(queued_raw, list):
+        queued = [x.strip() for x in queued_raw if isinstance(x, str) and x.strip()]
+    else:
+        queued = []
+
+    reg_s = _int_field("registry_pointer_count")
+    raw_pr = preview.get("latest_pr_number")
+    try:
+        pr_s = str(int(raw_pr)) if raw_pr is not None else "n/a"
+    except (TypeError, ValueError):
+        pr_s = "n/a"
+
+    lines = [
+        "## Next chat preview",
+        "",
+        f"- preview_schema_version: `{schema.strip()}`",
+        f"- provenance_schema_version: `{prov_s}`",
+        f"- total_checks: `{_int_field('total_checks')}`",
+        f"- hard_failures: `{_int_field('hard_failures')}`",
+        f"- warnings: `{_int_field('warnings')}`",
+        f"- primary_followup_check_id: `{primary_s}`",
+    ]
+    if queued:
+        joined = ", ".join(f"`{cid}`" for cid in queued)
+        lines.append(f"- queued_followup_check_ids (order preserved): {joined}")
+    else:
+        lines.append("- queued_followup_check_ids (order preserved): _(none)_")
+    lines.append(f"- registry_pointer_count: `{reg_s}`")
+    lines.append(f"- latest_pr_number: `{pr_s}`")
+    return "\n".join(lines) + "\n"
+
+
 def build_handoff_context(summary: dict[str, Any]) -> dict[str, Any]:
     """Derive a small read-only handoff snapshot from an existing summary dict.
 
