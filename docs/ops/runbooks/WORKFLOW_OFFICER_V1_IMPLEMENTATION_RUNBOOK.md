@@ -21,6 +21,9 @@
 ## Read-only registry / pointer inputs
 - Report summary may include `registry_inputs`: parsed `docs&#47;ops&#47;registry&#47;*.pointer` files (sorted by filename, `fields` sorted by key). Missing directory yields an empty stable payload. `handoff_context.registry_inputs_rollup` mirrors pointer count and the first `run_id` found in that order (operators/evidence cross-check).
 
+## Read-only merge log inputs
+- Report summary may include `merge_log_inputs`: read-only scan of `docs&#47;ops&#47;merge_logs&#47;PR_*_MERGE_LOG.md` (PR number from filename), sorted by PR descending, capped recent slice with parsed `merge_commit_sha` and `merged_at` when detectable. `handoff_context.merge_log_inputs_rollup` summarizes total canonical files and the latest slice head.
+
 ## Next
 - map existing building blocks
 - define snapshot schema
