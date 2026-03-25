@@ -1370,3 +1370,85 @@ def test_ops_route_v9_notifier_path_focus_link_omits_run_dir_param(
     assert m
     assert "update_officer_source_preset=notifier_path" in m.group(1)
     assert "update_officer_run_dir" not in m.group(1)
+
+
+def test_build_update_officer_validation_aids_conflict() -> None:
+    from src.webui.ops_cockpit import build_update_officer_validation_aids
+
+    aids = build_update_officer_validation_aids(
+        conflict=True,
+        effective_notifier_path=None,
+        effective_run_dir=None,
+        source_preset="notifier_path",
+    )
+    assert aids["source_mode"] == "conflict"
+    assert aids["conflict_explanation"]
+    assert not aids["safe_default_explanation"]
+    assert "Active preset notifier path" in aids["preset_explanation"]
+
+
+def test_build_update_officer_validation_aids_none_manual() -> None:
+    from src.webui.ops_cockpit import build_update_officer_validation_aids
+
+    aids = build_update_officer_validation_aids(
+        conflict=False,
+        effective_notifier_path=None,
+        effective_run_dir=None,
+        source_preset="manual",
+    )
+    assert aids["source_mode"] == "none"
+    assert aids["safe_default_explanation"]
+    assert "Active preset manual" in aids["preset_explanation"]
+
+
+def test_build_update_officer_validation_aids_explicit_path() -> None:
+    from src.webui.ops_cockpit import build_update_officer_validation_aids
+
+    aids = build_update_officer_validation_aids(
+        conflict=False,
+        effective_notifier_path="/tmp/np.json",
+        effective_run_dir=None,
+        source_preset="manual",
+    )
+    assert aids["source_mode"] == "explicit_notifier_path"
+    assert "explicit path" in aids["resolution_explanation"].lower()
+
+
+def test_ops_route_v10_validation_aids_visible(ops_client: TestClient) -> None:
+    r = ops_client.get("/ops")
+    assert r.status_code == 200
+    assert "uo-validation-aids" in r.text
+    assert "Validation / explainability (read-only)" in r.text
+    assert 'data-u10-source-mode="none"' in r.text
+    assert "Active preset manual" in r.text
+    assert 'method="post"' not in r.text.lower()
+
+
+def test_ops_route_v10_help_text_notifier_path_preset(ops_client: TestClient) -> None:
+    r = ops_client.get("/ops", params={"update_officer_source_preset": "notifier_path"})
+    assert r.status_code == 200
+    assert 'data-u10-source-mode="none"' in r.text
+    assert "Active preset notifier path" in r.text
+
+
+def test_ops_route_v10_help_text_run_dir_preset(ops_client: TestClient) -> None:
+    r = ops_client.get("/ops", params={"update_officer_source_preset": "run_dir"})
+    assert r.status_code == 200
+    assert "Active preset run directory" in r.text
+
+
+def test_ops_route_v10_help_text_conflict_state(ops_client: TestClient, tmp_path: Path) -> None:
+    path = tmp_path / "notifier_payload.json"
+    path.write_text(json.dumps(_sample_notifier_payload()), encoding="utf-8")
+    run_dir = tmp_path / "other"
+    run_dir.mkdir()
+    r = ops_client.get(
+        "/ops",
+        params={
+            "update_officer_notifier_path": str(path),
+            "update_officer_run_dir": str(run_dir),
+        },
+    )
+    assert r.status_code == 200
+    assert 'data-u10-source-mode="conflict"' in r.text
+    assert "No notifier payload is loaded while inputs conflict" in r.text
