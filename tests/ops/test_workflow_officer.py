@@ -17,12 +17,14 @@ from src.ops.workflow_officer import (
     build_followup_topic_ranking,
     build_handoff_context,
     build_next_chat_preview,
+    build_operator_report_view,
     build_workflow_officer_provenance,
     load_ops_merge_log_inputs,
     load_ops_registry_inputs,
     parse_merge_log_signals,
     parse_ops_pointer_text,
     render_next_chat_preview_markdown,
+    render_operator_report_markdown,
 )
 
 
@@ -137,7 +139,44 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     assert preview["registry_pointer_count"] == handoff["registry_inputs_rollup"]["pointer_count"]
     assert preview["latest_pr_number"] == handoff["merge_log_inputs_rollup"]["latest_pr_number"]
 
+    op = report["summary"]["operator_report"]
+    assert op["operator_report_schema_version"] == "workflow_officer.operator_report/v0"
+    assert op["strict"] is report["summary"]["strict"]
+    assert op["rollup"] == {
+        "total_checks": report["summary"]["total_checks"],
+        "hard_failures": report["summary"]["hard_failures"],
+        "warnings": report["summary"]["warnings"],
+        "infos": report["summary"]["infos"],
+    }
+    if ranking:
+        assert op["primary_followup"] is not None
+        assert op["primary_followup"]["check_id"] == ranking[0]["check_id"]
+        assert [r["check_id"] for r in op["top_followups"]] == [
+            r["check_id"] for r in ranking[: min(5, len(ranking))]
+        ]
+    assert (
+        op["next_chat_essentials"]["primary_followup_check_id"]
+        == preview["primary_followup_check_id"]
+    )
+    assert op["registry_signals"]["pointer_count"] == rr["pointer_count"]
+    assert op["merge_log_signals"]["canonical_merge_log_count"] == mlr["canonical_merge_log_count"]
+    assert prov["operator_report"]["summary_inputs"] == sorted(
+        [
+            "followup_topic_ranking",
+            "handoff_context",
+            "hard_failures",
+            "infos",
+            "next_chat_preview",
+            "strict",
+            "total_checks",
+            "warnings",
+            "workflow_officer_provenance",
+        ]
+    )
+
     summary_md = summary_path.read_text(encoding="utf-8")
+    assert "## Operator consolidated view" in summary_md
+    assert "workflow_officer.operator_report/v0" in summary_md
     assert "## Next chat preview" in summary_md
     assert "workflow_officer.next_chat_preview/v0" in summary_md
 
@@ -680,7 +719,72 @@ def test_build_workflow_officer_provenance_is_stable() -> None:
             "queued_followup_max": 3,
             "summary_inputs": sorted(["handoff_context", "workflow_officer_provenance"]),
         },
+        "operator_report": {
+            "builder": "build_operator_report_view",
+            "markdown_builder": "render_operator_report_markdown",
+            "summary_inputs": sorted(
+                [
+                    "followup_topic_ranking",
+                    "handoff_context",
+                    "hard_failures",
+                    "infos",
+                    "next_chat_preview",
+                    "strict",
+                    "total_checks",
+                    "warnings",
+                    "workflow_officer_provenance",
+                ]
+            ),
+        },
     }
+
+
+def test_build_operator_report_view_empty_summary_is_deterministic() -> None:
+    assert build_operator_report_view({}) == {
+        "merge_log_signals": {
+            "canonical_merge_log_count": 0,
+            "latest_merge_commit_sha": None,
+            "latest_pr_number": None,
+            "merge_logs_dir_present": False,
+        },
+        "next_chat_essentials": {
+            "latest_pr_number": None,
+            "primary_followup_check_id": None,
+            "queued_followup_check_ids": [],
+            "registry_pointer_count": None,
+        },
+        "operator_report_schema_version": "workflow_officer.operator_report/v0",
+        "primary_followup": None,
+        "provenance_schema_version": None,
+        "ranking_basis": {
+            "ordering_inputs": [],
+            "rank_heuristic_schema_version": None,
+        },
+        "registry_signals": {
+            "pointer_count": 0,
+            "primary_run_id": None,
+            "registry_dir_present": False,
+        },
+        "rollup": {
+            "hard_failures": 0,
+            "infos": 0,
+            "total_checks": 0,
+            "warnings": 0,
+        },
+        "strict": False,
+        "top_followups": [],
+    }
+
+
+def test_render_operator_report_markdown_requires_schema_version() -> None:
+    assert render_operator_report_markdown({}) == ""
+    assert render_operator_report_markdown({"rollup": {}}) == ""
+
+
+def test_render_operator_report_markdown_matches_empty_build() -> None:
+    md = render_operator_report_markdown(build_operator_report_view({}))
+    assert md.startswith("## Operator consolidated view\n")
+    assert "workflow_officer.operator_report/v0" in md
 
 
 def test_parse_ops_pointer_text_ignores_comments_and_orders_keys_in_payload() -> None:
