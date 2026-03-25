@@ -16,6 +16,8 @@ from src.ops.workflow_officer import (
     _resolve_status,
     build_followup_topic_ranking,
     build_handoff_context,
+    load_ops_registry_inputs,
+    parse_ops_pointer_text,
 )
 
 
@@ -76,6 +78,18 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     else:
         assert handoff["primary_followup_check_id"] is None
         assert handoff["top_followups"] == []
+
+    reg_in = report["summary"]["registry_inputs"]
+    assert reg_in["registry_dir_present"] is True
+    assert reg_in["pointer_count"] >= 3
+    assert len(reg_in["pointers"]) == reg_in["pointer_count"]
+    names = [p["name"] for p in reg_in["pointers"]]
+    assert names == sorted(names)
+    rr = handoff["registry_inputs_rollup"]
+    assert rr["registry_dir_present"] is True
+    assert rr["pointer_count"] == reg_in["pointer_count"]
+    if rr["primary_run_id"] is not None:
+        assert isinstance(rr["primary_run_id"], str) and rr["primary_run_id"].strip()
 
     for check in report["checks"]:
         assert "severity" in check
@@ -246,6 +260,11 @@ def test_build_handoff_context_empty_ranking_is_stable() -> None:
         },
         "primary_followup_check_id": None,
         "top_followups": [],
+        "registry_inputs_rollup": {
+            "registry_dir_present": False,
+            "pointer_count": 0,
+            "primary_run_id": None,
+        },
     }
 
 
@@ -261,6 +280,7 @@ def test_build_handoff_context_missing_ranking_treated_as_empty() -> None:
     assert ctx["primary_followup_check_id"] is None
     assert ctx["top_followups"] == []
     assert ctx["rollup"]["total_checks"] == 2
+    assert ctx["registry_inputs_rollup"]["primary_run_id"] is None
 
 
 def test_build_handoff_context_caps_top_followups() -> None:
@@ -297,3 +317,89 @@ def test_build_handoff_context_caps_top_followups() -> None:
         set(r.keys()) == {"rank", "check_id", "recommended_priority", "effective_level"}
         for r in ctx["top_followups"]
     )
+
+
+def test_parse_ops_pointer_text_ignores_comments_and_orders_keys_in_payload() -> None:
+    text = """
+# comment
+run_id=123
+
+repo=org/repo
+artifact_hint=x=y
+"""
+    d = parse_ops_pointer_text(text)
+    assert d == {"run_id": "123", "repo": "org/repo", "artifact_hint": "x=y"}
+
+
+def test_load_ops_registry_inputs_missing_dir_is_stable(tmp_path: Path) -> None:
+    assert load_ops_registry_inputs(tmp_path) == {
+        "registry_dir_present": False,
+        "pointer_count": 0,
+        "pointers": [],
+    }
+
+
+def test_load_ops_registry_inputs_sorted_names_and_field_keys(tmp_path: Path) -> None:
+    reg = tmp_path / "docs" / "ops" / "registry"
+    reg.mkdir(parents=True)
+    (reg / "z.pointer").write_text("z=last\nrun_id=9\n", encoding="utf-8")
+    (reg / "a.pointer").write_text("a=first\nrun_id=1\n", encoding="utf-8")
+    got = load_ops_registry_inputs(tmp_path)
+    assert got["registry_dir_present"] is True
+    assert got["pointer_count"] == 2
+    assert [p["name"] for p in got["pointers"]] == ["a.pointer", "z.pointer"]
+    assert got["pointers"][0]["fields"] == {"a": "first", "run_id": "1"}
+    assert got["pointers"][1]["fields"] == {"run_id": "9", "z": "last"}
+
+
+def test_build_handoff_context_registry_primary_run_id_first_pointer() -> None:
+    summary = {
+        "strict": False,
+        "total_checks": 1,
+        "hard_failures": 0,
+        "warnings": 0,
+        "infos": 0,
+        "followup_topic_ranking": [],
+        "registry_inputs": {
+            "registry_dir_present": True,
+            "pointer_count": 2,
+            "pointers": [
+                {
+                    "name": "first.pointer",
+                    "rel_path": "docs/ops/registry/first.pointer",
+                    "fields": {},
+                },
+                {
+                    "name": "second.pointer",
+                    "rel_path": "docs/ops/registry/second.pointer",
+                    "fields": {"run_id": " 42 "},
+                },
+            ],
+        },
+    }
+    ctx = build_handoff_context(summary)
+    assert ctx["registry_inputs_rollup"] == {
+        "registry_dir_present": True,
+        "pointer_count": 2,
+        "primary_run_id": "42",
+    }
+    summary2 = {
+        **summary,
+        "registry_inputs": {
+            "registry_dir_present": True,
+            "pointer_count": 2,
+            "pointers": [
+                {
+                    "name": "first.pointer",
+                    "rel_path": "docs/ops/registry/first.pointer",
+                    "fields": {"run_id": "99"},
+                },
+                {
+                    "name": "second.pointer",
+                    "rel_path": "docs/ops/registry/second.pointer",
+                    "fields": {"run_id": "1"},
+                },
+            ],
+        },
+    }
+    assert build_handoff_context(summary2)["registry_inputs_rollup"]["primary_run_id"] == "99"
