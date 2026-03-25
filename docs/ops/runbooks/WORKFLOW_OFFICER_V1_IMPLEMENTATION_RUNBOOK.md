@@ -24,6 +24,9 @@
 ## Read-only merge log inputs
 - Report summary may include `merge_log_inputs`: read-only scan of `docs&#47;ops&#47;merge_logs&#47;PR_*_MERGE_LOG.md` (PR number from filename), sorted by PR descending, capped recent slice with parsed `merge_commit_sha` and `merged_at` when detectable. `handoff_context.merge_log_inputs_rollup` summarizes total canonical files and the latest slice head.
 
+## Read-only provenance
+- Report summary may include `workflow_officer_provenance`: deterministic declaration of which check-row fields, profile plan fields, repo globs, and summary keys feed recommendations, `followup_topic_ranking`, registry/merge-log inputs, and `handoff_context`. No extra files; no writes.
+
 ## Next
 - map existing building blocks
 - define snapshot schema

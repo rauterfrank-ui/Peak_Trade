@@ -37,6 +37,8 @@ _FOLLOWUP_EFFECTIVE_RANK = {"error": 0, "warning": 1, "info": 2, "ok": 3}
 _HANDOFF_CONTEXT_TOP_FOLLOWUPS = 5
 _HANDOFF_CONTEXT_SCHEMA_VERSION = "workflow_officer.handoff_context/v0"
 
+_PROVENANCE_SCHEMA_VERSION = "workflow_officer.provenance/v0"
+
 # Ops registry pointers under docs/ops/registry (read-only; same line format as
 # scripts/ops/verify_registry_pointer_artifacts.parse_pointer).
 _OPS_REGISTRY_REL = Path("docs/ops/registry")
@@ -55,6 +57,58 @@ _MERGED_AT_PATTERNS = (
     re.compile(r"mergedAt:\s*`([^`]+)`"),
     re.compile(r"Merged at \(UTC\):\s*(\S+)"),
 )
+
+
+def build_workflow_officer_provenance() -> dict[str, Any]:
+    """Declare read-only lineage for derived summary fields (no I/O, deterministic)."""
+    return {
+        "provenance_schema_version": _PROVENANCE_SCHEMA_VERSION,
+        "recommended_priority_and_action": {
+            "builder": "_recommend_priority_action",
+            "check_row_inputs": sorted(["effective_level", "outcome", "severity"]),
+            "profile_plan_fields_appended": sorted(["category", "description", "surface"]),
+        },
+        "followup_topic_ranking": {
+            "builder": "build_followup_topic_ranking",
+            "check_row_inputs": sorted(
+                ["category", "check_id", "effective_level", "recommended_priority", "surface"]
+            ),
+            "ordering_inputs": sorted(["check_id", "effective_level", "recommended_priority"]),
+        },
+        "registry_inputs": {
+            "builder": "load_ops_registry_inputs",
+            "repo_relative_glob": "docs/ops/registry/*.pointer",
+        },
+        "merge_log_inputs": {
+            "builder": "load_ops_merge_log_inputs",
+            "body_signal_parser": "parse_merge_log_signals",
+            "parsed_fields": sorted(["merged_at", "merge_commit_sha"]),
+            "repo_relative_glob": "docs/ops/merge_logs/PR_*_MERGE_LOG.md",
+        },
+        "handoff_context": {
+            "builder": "build_handoff_context",
+            "handoff_output_keys": sorted(
+                [
+                    "handoff_schema_version",
+                    "merge_log_inputs_rollup",
+                    "primary_followup_check_id",
+                    "registry_inputs_rollup",
+                    "rollup",
+                    "strict",
+                    "top_followups",
+                ]
+            ),
+            "rollup_keys": sorted(["hard_failures", "infos", "total_checks", "warnings"]),
+            "summary_inputs": sorted(
+                [
+                    "followup_topic_ranking",
+                    "merge_log_inputs",
+                    "registry_inputs",
+                    "strict",
+                ]
+            ),
+        },
+    }
 
 
 def _utc_ts() -> str:
@@ -609,6 +663,7 @@ def _build_summary(
         "merge_log_inputs": load_ops_merge_log_inputs(repo_root),
         "followup_topic_ranking": build_followup_topic_ranking(check_dicts),
     }
+    summary["workflow_officer_provenance"] = build_workflow_officer_provenance()
     summary["handoff_context"] = build_handoff_context(summary)
     return summary
 
