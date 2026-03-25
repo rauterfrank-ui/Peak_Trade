@@ -44,6 +44,7 @@ _HANDOFF_CONTEXT_SCHEMA_VERSION = "workflow_officer.handoff_context/v0"
 _PROVENANCE_SCHEMA_VERSION = "workflow_officer.provenance/v0"
 _NEXT_CHAT_PREVIEW_SCHEMA_VERSION = "workflow_officer.next_chat_preview/v0"
 _NEXT_CHAT_PREVIEW_QUEUE_LEN = 3
+_OPERATOR_REPORT_SCHEMA_VERSION = "workflow_officer.operator_report/v0"
 
 # Ops registry pointers under docs/ops/registry (read-only; same line format as
 # scripts/ops/verify_registry_pointer_artifacts.parse_pointer).
@@ -129,6 +130,23 @@ def build_workflow_officer_provenance() -> dict[str, Any]:
             "builder": "build_next_chat_preview",
             "queued_followup_max": _NEXT_CHAT_PREVIEW_QUEUE_LEN,
             "summary_inputs": sorted(["handoff_context", "workflow_officer_provenance"]),
+        },
+        "operator_report": {
+            "builder": "build_operator_report_view",
+            "markdown_builder": "render_operator_report_markdown",
+            "summary_inputs": sorted(
+                [
+                    "followup_topic_ranking",
+                    "handoff_context",
+                    "hard_failures",
+                    "infos",
+                    "next_chat_preview",
+                    "strict",
+                    "total_checks",
+                    "warnings",
+                    "workflow_officer_provenance",
+                ]
+            ),
         },
     }
 
@@ -764,6 +782,262 @@ def render_next_chat_preview_markdown(preview: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def build_operator_report_view(summary: dict[str, Any]) -> dict[str, Any]:
+    """Single read-only operator snapshot built only from an existing summary dict (no I/O)."""
+    ranking = summary.get("followup_topic_ranking")
+    if not isinstance(ranking, list):
+        ranking = []
+    handoff = summary.get("handoff_context")
+    if not isinstance(handoff, dict):
+        handoff = {}
+    preview = summary.get("next_chat_preview")
+    if not isinstance(preview, dict):
+        preview = {}
+    prov = summary.get("workflow_officer_provenance")
+    if not isinstance(prov, dict):
+        prov = {}
+
+    def _safe_int(key: str) -> int:
+        raw = summary.get(key)
+        try:
+            return int(raw)
+        except (TypeError, ValueError):
+            return 0
+
+    primary_followup: dict[str, Any] | None = None
+    if ranking and isinstance(ranking[0], dict):
+        row = ranking[0]
+        h = row.get("followup_rank_heuristic")
+        primary_followup = {
+            "check_id": str(row.get("check_id", "")),
+            "recommended_priority": str(row.get("recommended_priority", "")),
+            "effective_level": str(row.get("effective_level", "")),
+            "followup_rank_heuristic": h if isinstance(h, dict) else None,
+        }
+
+    top_followups: list[dict[str, Any]] = []
+    for row in ranking[:5]:
+        if not isinstance(row, dict):
+            continue
+        cid = row.get("check_id")
+        if not isinstance(cid, str) or not cid:
+            continue
+        rk = row.get("rank")
+        try:
+            rkn = int(rk)
+        except (TypeError, ValueError):
+            rkn = 0
+        top_followups.append(
+            {
+                "check_id": cid,
+                "effective_level": str(row.get("effective_level", "")),
+                "rank": rkn,
+                "recommended_priority": str(row.get("recommended_priority", "")),
+            }
+        )
+
+    ft_prov = prov.get("followup_topic_ranking")
+    ordering_inputs: list[str] = []
+    rank_heuristic_schema_version: str | None = None
+    if isinstance(ft_prov, dict):
+        oi = ft_prov.get("ordering_inputs")
+        if isinstance(oi, list):
+            ordering_inputs = [str(x) for x in oi]
+        rhs = ft_prov.get("rank_heuristic_schema_version")
+        if isinstance(rhs, str) and rhs.strip():
+            rank_heuristic_schema_version = rhs.strip()
+
+    prov_schema = prov.get("provenance_schema_version")
+    prov_schema_s = (
+        prov_schema.strip() if isinstance(prov_schema, str) and prov_schema.strip() else None
+    )
+
+    reg = handoff.get("registry_inputs_rollup")
+    reg_out: dict[str, Any] = {
+        "pointer_count": 0,
+        "primary_run_id": None,
+        "registry_dir_present": False,
+    }
+    if isinstance(reg, dict):
+        reg_out["registry_dir_present"] = bool(reg.get("registry_dir_present", False))
+        try:
+            reg_out["pointer_count"] = int(reg.get("pointer_count", 0))
+        except (TypeError, ValueError):
+            reg_out["pointer_count"] = 0
+        prid = reg.get("primary_run_id")
+        reg_out["primary_run_id"] = (
+            str(prid).strip() if isinstance(prid, str) and str(prid).strip() else None
+        )
+
+    ml = handoff.get("merge_log_inputs_rollup")
+    ml_out: dict[str, Any] = {
+        "canonical_merge_log_count": 0,
+        "latest_merge_commit_sha": None,
+        "latest_pr_number": None,
+        "merge_logs_dir_present": False,
+    }
+    if isinstance(ml, dict):
+        ml_out["merge_logs_dir_present"] = bool(ml.get("merge_logs_dir_present", False))
+        try:
+            ml_out["canonical_merge_log_count"] = int(ml.get("canonical_merge_log_count", 0))
+        except (TypeError, ValueError):
+            ml_out["canonical_merge_log_count"] = 0
+        lpr = ml.get("latest_pr_number")
+        if lpr is not None:
+            try:
+                ml_out["latest_pr_number"] = int(lpr)
+            except (TypeError, ValueError):
+                ml_out["latest_pr_number"] = None
+        sha = ml.get("latest_merge_commit_sha")
+        if isinstance(sha, str) and sha.strip():
+            ml_out["latest_merge_commit_sha"] = sha.strip().lower()
+
+    qc = preview.get("queued_followup_check_ids")
+    queued: list[str] = []
+    if isinstance(qc, list):
+        queued = [str(x).strip() for x in qc if isinstance(x, str) and str(x).strip()]
+
+    prim_prev = preview.get("primary_followup_check_id")
+    prim_prev_s = (
+        str(prim_prev).strip() if prim_prev is not None and str(prim_prev).strip() else None
+    )
+
+    lpr_p = preview.get("latest_pr_number")
+    try:
+        latest_pr_prev = int(lpr_p) if lpr_p is not None else None
+    except (TypeError, ValueError):
+        latest_pr_prev = None
+
+    rpc = preview.get("registry_pointer_count")
+    try:
+        reg_ptr_prev = int(rpc) if rpc is not None else None
+    except (TypeError, ValueError):
+        reg_ptr_prev = None
+
+    return {
+        "merge_log_signals": ml_out,
+        "next_chat_essentials": {
+            "latest_pr_number": latest_pr_prev,
+            "primary_followup_check_id": prim_prev_s,
+            "queued_followup_check_ids": queued,
+            "registry_pointer_count": reg_ptr_prev,
+        },
+        "operator_report_schema_version": _OPERATOR_REPORT_SCHEMA_VERSION,
+        "primary_followup": primary_followup,
+        "provenance_schema_version": prov_schema_s,
+        "ranking_basis": {
+            "ordering_inputs": ordering_inputs,
+            "rank_heuristic_schema_version": rank_heuristic_schema_version,
+        },
+        "registry_signals": reg_out,
+        "rollup": {
+            "hard_failures": _safe_int("hard_failures"),
+            "infos": _safe_int("infos"),
+            "total_checks": _safe_int("total_checks"),
+            "warnings": _safe_int("warnings"),
+        },
+        "strict": bool(summary.get("strict", False)),
+        "top_followups": top_followups,
+    }
+
+
+def render_operator_report_markdown(operator_report: dict[str, Any]) -> str:
+    """Deterministic markdown excerpt for ``summary[\"operator_report\"]`` (read-only, no I/O)."""
+    if not isinstance(operator_report, dict):
+        return ""
+    schema = operator_report.get("operator_report_schema_version")
+    if not isinstance(schema, str) or not schema.strip():
+        return ""
+
+    def _yn(val: bool) -> str:
+        return "yes" if val else "no"
+
+    lines = [
+        "## Operator consolidated view",
+        "",
+        f"- operator_report_schema_version: `{schema.strip()}`",
+        f"- strict: `{_yn(bool(operator_report.get('strict', False)))}`",
+    ]
+    rollup = operator_report.get("rollup")
+    if isinstance(rollup, dict):
+        lines.append(
+            f"- rollup: total `{rollup.get('total_checks', 0)}`, "
+            f"errors `{rollup.get('hard_failures', 0)}`, warnings `{rollup.get('warnings', 0)}`, "
+            f"infos `{rollup.get('infos', 0)}`"
+        )
+    pf = operator_report.get("primary_followup")
+    if isinstance(pf, dict) and pf.get("check_id"):
+        lines.append(
+            f"- primary follow-up: `{pf['check_id']}` "
+            f"(priority `{pf.get('recommended_priority', '')}`, level `{pf.get('effective_level', '')}`)"
+        )
+        hr = pf.get("followup_rank_heuristic")
+        if isinstance(hr, dict):
+            comp = hr.get("components")
+            if isinstance(comp, dict):
+                lines.append(
+                    "- ranking heuristic (primary): "
+                    f"`priority_rank={comp.get('priority_rank')}` "
+                    f"`effective_level_rank={comp.get('effective_level_rank')}` "
+                    f"`outcome_rank={comp.get('outcome_rank')}` "
+                    f"`severity_rank={comp.get('severity_rank')}`"
+                )
+    basis = operator_report.get("ranking_basis")
+    if isinstance(basis, dict):
+        oi = basis.get("ordering_inputs")
+        if isinstance(oi, list) and oi:
+            lines.append("- ranking tie order: " + ", ".join(oi))
+        rhs = basis.get("rank_heuristic_schema_version")
+        if isinstance(rhs, str) and rhs.strip():
+            lines.append(f"- rank heuristic schema: `{rhs.strip()}`")
+
+    tops = operator_report.get("top_followups")
+    if isinstance(tops, list) and tops:
+        parts: list[str] = []
+        for t in tops[:5]:
+            if isinstance(t, dict) and t.get("check_id"):
+                parts.append(f"`{t['check_id']}` rank {t.get('rank', '')}")
+        if parts:
+            lines.append("- top follow-ups: " + ", ".join(parts))
+
+    nce = operator_report.get("next_chat_essentials")
+    if isinstance(nce, dict):
+        lpr = nce.get("latest_pr_number")
+        lpr_s = str(lpr) if lpr is not None else "n/a"
+        lines.append(
+            f"- next-chat essentials: primary `{nce.get('primary_followup_check_id') or 'n/a'}`, "
+            f"latest_pr `{lpr_s}`"
+        )
+        q = nce.get("queued_followup_check_ids")
+        if isinstance(q, list) and q:
+            lines.append("- next-chat queue: " + ", ".join(f"`{x}`" for x in q))
+
+    reg = operator_report.get("registry_signals")
+    if isinstance(reg, dict):
+        lines.append(
+            f"- registry: present=`{_yn(bool(reg.get('registry_dir_present')))}`, "
+            f"pointers=`{reg.get('pointer_count', 0)}`, "
+            f"primary_run_id=`{reg.get('primary_run_id') or 'n/a'}`"
+        )
+
+    ml = operator_report.get("merge_log_signals")
+    if isinstance(ml, dict):
+        mlpr = ml.get("latest_pr_number")
+        mlpr_s = str(mlpr) if mlpr is not None else "n/a"
+        lines.append(
+            f"- merge logs: present=`{_yn(bool(ml.get('merge_logs_dir_present')))}`, "
+            f"count=`{ml.get('canonical_merge_log_count', 0)}`, "
+            f"latest_pr=`{mlpr_s}`"
+        )
+
+    provs = operator_report.get("provenance_schema_version")
+    if isinstance(provs, str) and provs.strip():
+        lines.append(f"- provenance schema: `{provs.strip()}`")
+
+    lines.append("")
+    return "\n".join(lines)
+
+
 def build_handoff_context(summary: dict[str, Any]) -> dict[str, Any]:
     """Derive a small read-only handoff snapshot from an existing summary dict.
 
@@ -849,6 +1123,7 @@ def _build_summary(
     summary["workflow_officer_provenance"] = build_workflow_officer_provenance()
     summary["handoff_context"] = build_handoff_context(summary)
     summary["next_chat_preview"] = build_next_chat_preview(summary)
+    summary["operator_report"] = build_operator_report_view(summary)
     return summary
 
 

@@ -60,7 +60,16 @@ def render_workflow_officer_summary(report: dict[str, Any]) -> str:
     lines.append("")
 
     # Lazy import: ``workflow_officer`` imports this module at load time.
-    from src.ops.workflow_officer import render_next_chat_preview_markdown
+    from src.ops.workflow_officer import (
+        render_next_chat_preview_markdown,
+        render_operator_report_markdown,
+    )
+
+    raw_op = summary.get("operator_report")
+    op = raw_op if isinstance(raw_op, dict) else {}
+    op_block = render_operator_report_markdown(op)
+    if op_block:
+        lines.append(op_block)
 
     raw_preview = summary.get("next_chat_preview")
     preview = raw_preview if isinstance(raw_preview, dict) else {}

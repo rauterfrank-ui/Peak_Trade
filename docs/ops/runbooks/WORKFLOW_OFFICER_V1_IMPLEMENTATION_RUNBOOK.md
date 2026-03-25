@@ -31,6 +31,10 @@
 - Report summary may include `next_chat_preview`: a tiny embedded read-only slice derived only from `handoff_context` and `workflow_officer_provenance` (rollup counts, up to three queued follow-up `check_id`s in ranking order, primary follow-up id, registry pointer count and latest merge-log PR from handoff rollups, provenance schema label). No separate files; no writes.
 - Rendered `summary.md` may include a deterministic **Next chat preview** section (from `render_next_chat_preview_markdown` in `src/ops/workflow_officer.py`, wired via `src/ops/workflow_officer_markdown.py`) when `next_chat_preview` is present with a non-empty `preview_schema_version`.
 
+## Read-only operator consolidated view
+- Report summary may include `operator_report`: a single embedded read-only snapshot from `build_operator_report_view` (only existing summary keys such as rollups, `followup_topic_ranking`, `handoff_context`, `next_chat_preview`, and `workflow_officer_provenance`). No extra files; no writes.
+- Rendered `summary.md` may include a deterministic **Operator consolidated view** section (from `render_operator_report_markdown`, wired via `src/ops/workflow_officer_markdown.py`) when `operator_report` carries a non-empty `operator_report_schema_version`.
+
 ## Next
 - map existing building blocks
 - define snapshot schema
