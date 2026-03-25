@@ -491,6 +491,118 @@ def _uo_preset_display_label(preset: str) -> str:
     return "manual"
 
 
+_U10_SOURCE_MODE_LABELS = {
+    "conflict": "conflict",
+    "explicit_notifier_path": "explicit notifier path",
+    "run_directory": "run directory",
+    "none": "none (omitted)",
+}
+
+
+def build_update_officer_validation_aids(
+    *,
+    conflict: bool,
+    effective_notifier_path: Path | str | None,
+    effective_run_dir: Path | str | None,
+    source_preset: str,
+) -> dict[str, str]:
+    """
+    v10: deterministic read-only explanations derived only from resolved route state and preset.
+    """
+    if conflict:
+        mode = "conflict"
+        resolution = (
+            "After trimming, both update_officer_notifier_path and update_officer_run_dir were "
+            "non-empty. Resolution stops until only one source remains in the query string."
+        )
+        conflict_explanation = (
+            "No notifier payload is loaded while inputs conflict. Use preset focus links or "
+            "clear one field, then Apply (GET)."
+        )
+        safe_default = ""
+    elif effective_notifier_path:
+        mode = "explicit_notifier_path"
+        resolution = (
+            "The consumer reads notifier_payload.json from the explicit path shown under "
+            "Active source (read-only; no latest-run or hidden discovery)."
+        )
+        conflict_explanation = ""
+        safe_default = ""
+    elif effective_run_dir:
+        mode = "run_directory"
+        resolution = (
+            "The consumer resolves notifier_payload.json inside the run directory shown under "
+            "Active source (read-only; no latest-run or hidden discovery)."
+        )
+        conflict_explanation = ""
+        safe_default = ""
+    else:
+        mode = "none"
+        resolution = (
+            "No source parameter resolved after trim — Update Officer uses the standard "
+            "empty/unavailable state."
+        )
+        conflict_explanation = ""
+        safe_default = (
+            "Safe default: nothing is inferred automatically; operators must supply an explicit "
+            "path or run directory."
+        )
+
+    if source_preset == "notifier_path":
+        preset_explanation = (
+            "Active preset notifier path: preset links omit run_dir from the URL to nudge a "
+            "single-source query; v7 conflict rules still apply if both fields are submitted."
+        )
+    elif source_preset == "run_dir":
+        preset_explanation = (
+            "Active preset run directory: preset links omit notifier path from the URL to nudge "
+            "a single-source query; v7 conflict rules still apply if both fields are submitted."
+        )
+    else:
+        preset_explanation = (
+            "Active preset manual: both fields are allowed in the form; supply at most one "
+            "non-empty source for resolution (v7)."
+        )
+
+    return {
+        "source_mode": mode,
+        "source_mode_label": _U10_SOURCE_MODE_LABELS.get(mode, mode),
+        "preset_explanation": preset_explanation,
+        "resolution_explanation": resolution,
+        "conflict_explanation": conflict_explanation,
+        "safe_default_explanation": safe_default,
+    }
+
+
+def _render_update_officer_validation_aids_html(aids: dict[str, str]) -> str:
+    """v10: read-only validation/explainability block (HTML fragment)."""
+    mode = escape(aids["source_mode"])
+    mode_label = escape(aids["source_mode_label"])
+    preset_explanation = escape(aids["preset_explanation"])
+    resolution_explanation = escape(aids["resolution_explanation"])
+    conflict_explanation = escape(aids["conflict_explanation"])
+    safe_default = escape(aids["safe_default_explanation"])
+    conflict_row = ""
+    if aids["conflict_explanation"]:
+        conflict_row = f"<dt>Conflict</dt><dd>{conflict_explanation}</dd>"
+    safe_row = ""
+    if aids["safe_default_explanation"]:
+        safe_row = f"<dt>Safe default</dt><dd>{safe_default}</dd>"
+    return (
+        f'<div class="uo-validation-aids" data-u10-source-mode="{mode}">'
+        "<h3>Validation / explainability (read-only)</h3>"
+        "<p>Derived only from the current query and normalized inputs. No POST, no writes.</p>"
+        "<dl>"
+        f"<dt>Source mode</dt><dd><code>{mode_label}</code></dd>"
+        f"<dt>Preset meaning</dt><dd>{preset_explanation}</dd>"
+        f"<dt>Resolution interpretation</dt><dd>{resolution_explanation}</dd>"
+        f"{conflict_row}"
+        f"{safe_row}"
+        "</dl>"
+        "</div>"
+    )
+
+
 def build_ops_cockpit_payload(
     repo_root: Path | None = None,
     telemetry_root: Path | None = None,
@@ -994,10 +1106,17 @@ def _render_update_officer_source_ergonomics_block(
     effective_run_dir: Path | str | None,
     source_preset: str,
 ) -> str:
-    """v8/v9: visible GET-only source selection; same resolution rules as v7."""
+    """v8/v9/v10: visible GET-only source selection; same resolution rules as v7."""
     esc_np = escape(form_notifier_path)
     esc_rd = escape(form_run_dir)
     esc_preset = escape(source_preset)
+    v10_aids = build_update_officer_validation_aids(
+        conflict=conflict,
+        effective_notifier_path=effective_notifier_path,
+        effective_run_dir=effective_run_dir,
+        source_preset=source_preset,
+    )
+    v10_html = _render_update_officer_validation_aids_html(v10_aids)
     if conflict:
         summary = (
             "Active source: <strong>conflict</strong> — both notifier path and run directory "
@@ -1056,6 +1175,7 @@ def _render_update_officer_source_ergonomics_block(
         '<div class="card truth-card">'
         "<h2>Update Officer source selection</h2>"
         "<p><strong>Read-only.</strong> GET-only navigation; no POST, no write actions.</p>"
+        f"{v10_html}"
         f"<p>{summary}</p>"
         f"{preset_summary}"
         f"{preset_toolbar}"
@@ -1329,6 +1449,9 @@ def render_ops_cockpit_html(
     .uo-source-form input[type="text"] {{ width: 100%; max-width: 52rem; box-sizing: border-box; }}
     .uo-preset-toolbar {{ margin: 0 0 12px 1.2rem; line-height: 1.5; }}
     .uo-preset-context {{ color: #555; font-size: 0.95em; }}
+    .uo-validation-aids {{ border-left: 3px solid #999; padding-left: 12px; margin: 12px 0; }}
+    .uo-validation-aids dt {{ font-weight: 600; margin-top: 6px; }}
+    .uo-validation-aids dd {{ margin-left: 0; margin-bottom: 4px; }}
   </style>
 </head>
 <body>
@@ -1510,4 +1633,5 @@ __all__ = [
     "render_ops_cockpit_html",
     "resolve_update_officer_route_inputs",
     "normalize_update_officer_source_preset",
+    "build_update_officer_validation_aids",
 ]

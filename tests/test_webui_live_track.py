@@ -1010,3 +1010,23 @@ class TestUpdateOfficerV9OperatorPresets:
         assert r.status_code == 200
         assert "Operator presets (GET-only)" in r.text
         assert 'method="post"' not in r.text.lower()
+
+
+# =============================================================================
+# Update Officer v10: validation / explainability aids on /ops
+# =============================================================================
+
+
+class TestUpdateOfficerV10ValidationAids:
+    @pytest.fixture
+    def ops_client(self):
+        from fastapi.testclient import TestClient
+        from src.webui.app import app
+
+        return TestClient(app)
+
+    def test_ops_validation_aids_get_only(self, ops_client):
+        r = ops_client.get("/ops")
+        assert r.status_code == 200
+        assert "uo-validation-aids" in r.text
+        assert 'method="post"' not in r.text.lower()
