@@ -8,7 +8,7 @@ import sys
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 # ensure repo root in path when run as script
 _REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -365,6 +365,51 @@ def main() -> int:
     if args.strict and (summary["warnings"] > 0 or summary["infos"] > 0):
         return 1
     return 0
+
+
+@dataclass(frozen=True)
+class WorkflowOfficerRecommendationSchema:
+    topic_key: str
+    title: str
+    priority: int
+    rationale: tuple[str, ...] = ()
+    sources: tuple[str, ...] = ()
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "topic_key": self.topic_key,
+            "title": self.title,
+            "priority": self.priority,
+            "rationale": list(self.rationale),
+            "sources": list(self.sources),
+        }
+
+
+@dataclass(frozen=True)
+class WorkflowOfficerSnapshotSchema:
+    recommendations: tuple[WorkflowOfficerRecommendationSchema, ...]
+
+    def to_dict(self) -> dict[str, Any]:
+        ordered = sorted(
+            self.recommendations,
+            key=lambda item: (-item.priority, item.title.lower(), item.topic_key.lower()),
+        )
+        return {
+            "recommendations": [item.to_dict() for item in ordered],
+            "recommendation_count": len(ordered),
+        }
+
+
+def build_workflow_officer_snapshot_schema(
+    recommendations: Iterable[WorkflowOfficerRecommendationSchema],
+) -> WorkflowOfficerSnapshotSchema:
+    return WorkflowOfficerSnapshotSchema(recommendations=tuple(recommendations))
+
+
+def serialize_workflow_officer_snapshot_schema(
+    recommendations: Iterable[WorkflowOfficerRecommendationSchema],
+) -> dict[str, Any]:
+    return build_workflow_officer_snapshot_schema(recommendations).to_dict()
 
 
 if __name__ == "__main__":

@@ -7,11 +7,14 @@ from pathlib import Path
 
 from src.ops.workflow_officer import (
     PROFILE_POLICY,
+    WorkflowOfficerRecommendationSchema,
     _recommend_priority_action,
     _resolve_effective_level,
     _resolve_outcome,
     _resolve_severity,
     _resolve_status,
+    build_workflow_officer_snapshot_schema,
+    serialize_workflow_officer_snapshot_schema,
 )
 
 
@@ -113,3 +116,54 @@ def test_recommend_priority_action_mapping() -> None:
     assert _recommend_priority_action("info", "fail", "info")[0] == "p2"
     assert _recommend_priority_action("info", "pass", "info")[0] == "p3"
     assert _recommend_priority_action("ok", "pass", "hard_fail")[0] == "p3"
+
+
+def test_serialize_workflow_officer_snapshot_schema_empty_is_stable() -> None:
+    payload = serialize_workflow_officer_snapshot_schema([])
+    assert payload == {
+        "recommendations": [],
+        "recommendation_count": 0,
+    }
+
+
+def test_serialize_workflow_officer_snapshot_schema_orders_deterministically() -> None:
+    payload = serialize_workflow_officer_snapshot_schema(
+        [
+            WorkflowOfficerRecommendationSchema(
+                topic_key="b",
+                title="Beta follow-up",
+                priority=10,
+                rationale=("second",),
+                sources=("docs/ops/B.md",),
+            ),
+            WorkflowOfficerRecommendationSchema(
+                topic_key="a",
+                title="Alpha follow-up",
+                priority=20,
+                rationale=("first",),
+                sources=("docs/ops/A.md",),
+            ),
+            WorkflowOfficerRecommendationSchema(
+                topic_key="c",
+                title="alpha follow-up",
+                priority=20,
+                rationale=("third",),
+                sources=("docs/ops/C.md",),
+            ),
+        ]
+    )
+    assert payload["recommendation_count"] == 3
+    assert [item["topic_key"] for item in payload["recommendations"]] == ["a", "c", "b"]
+
+
+def test_build_workflow_officer_snapshot_schema_preserves_input_items() -> None:
+    recommendation = WorkflowOfficerRecommendationSchema(
+        topic_key="ops-workflow-officer",
+        title="Workflow Officer follow-up",
+        priority=30,
+        rationale=("schema slice", "read only"),
+        sources=("src/ops/workflow_officer.py",),
+    )
+    snapshot = build_workflow_officer_snapshot_schema([recommendation])
+    assert len(snapshot.recommendations) == 1
+    assert snapshot.recommendations[0] == recommendation
