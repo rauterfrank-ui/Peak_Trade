@@ -15,6 +15,7 @@ from src.ops.workflow_officer import (
     _resolve_severity,
     _resolve_status,
     build_followup_topic_ranking,
+    build_handoff_context,
 )
 
 
@@ -58,6 +59,23 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     assert isinstance(ranking, list)
     assert len(ranking) == len(report["checks"])
     assert [row["rank"] for row in ranking] == list(range(1, len(ranking) + 1))
+
+    handoff = report["summary"]["handoff_context"]
+    assert handoff["handoff_schema_version"] == "workflow_officer.handoff_context/v0"
+    assert handoff["strict"] is report["summary"]["strict"]
+    assert handoff["rollup"] == {
+        "total_checks": report["summary"]["total_checks"],
+        "hard_failures": report["summary"]["hard_failures"],
+        "warnings": report["summary"]["warnings"],
+        "infos": report["summary"]["infos"],
+    }
+    if ranking:
+        assert handoff["primary_followup_check_id"] == ranking[0]["check_id"]
+        assert len(handoff["top_followups"]) == min(5, len(ranking))
+        assert handoff["top_followups"][0]["check_id"] == ranking[0]["check_id"]
+    else:
+        assert handoff["primary_followup_check_id"] is None
+        assert handoff["top_followups"] == []
 
     for check in report["checks"]:
         assert "severity" in check
@@ -204,4 +222,78 @@ def test_build_followup_topic_ranking_orders_by_priority_effective_check_id() ->
             "category",
         }
         for r in ranked
+    )
+
+
+def test_build_handoff_context_empty_ranking_is_stable() -> None:
+    summary = {
+        "strict": False,
+        "total_checks": 0,
+        "hard_failures": 0,
+        "warnings": 0,
+        "infos": 0,
+        "followup_topic_ranking": [],
+    }
+    ctx = build_handoff_context(summary)
+    assert ctx == {
+        "handoff_schema_version": "workflow_officer.handoff_context/v0",
+        "strict": False,
+        "rollup": {
+            "total_checks": 0,
+            "hard_failures": 0,
+            "warnings": 0,
+            "infos": 0,
+        },
+        "primary_followup_check_id": None,
+        "top_followups": [],
+    }
+
+
+def test_build_handoff_context_missing_ranking_treated_as_empty() -> None:
+    summary = {
+        "strict": True,
+        "total_checks": 2,
+        "hard_failures": 0,
+        "warnings": 0,
+        "infos": 1,
+    }
+    ctx = build_handoff_context(summary)
+    assert ctx["primary_followup_check_id"] is None
+    assert ctx["top_followups"] == []
+    assert ctx["rollup"]["total_checks"] == 2
+
+
+def test_build_handoff_context_caps_top_followups() -> None:
+    ranking = [
+        {
+            "rank": i,
+            "check_id": f"chk_{i}",
+            "recommended_priority": "p3",
+            "effective_level": "ok",
+            "surface": "s",
+            "category": "c",
+        }
+        for i in range(1, 7)
+    ]
+    summary = {
+        "strict": False,
+        "total_checks": 6,
+        "hard_failures": 0,
+        "warnings": 0,
+        "infos": 0,
+        "followup_topic_ranking": ranking,
+    }
+    ctx = build_handoff_context(summary)
+    assert ctx["primary_followup_check_id"] == "chk_1"
+    assert len(ctx["top_followups"]) == 5
+    assert [r["check_id"] for r in ctx["top_followups"]] == [
+        "chk_1",
+        "chk_2",
+        "chk_3",
+        "chk_4",
+        "chk_5",
+    ]
+    assert all(
+        set(r.keys()) == {"rank", "check_id", "recommended_priority", "effective_level"}
+        for r in ctx["top_followups"]
     )

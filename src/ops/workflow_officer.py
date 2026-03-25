@@ -32,6 +32,10 @@ PROFILE_CHECKS = PROFILES
 _FOLLOWUP_PRIORITY_RANK = {"p0": 0, "p1": 1, "p2": 2, "p3": 3}
 _FOLLOWUP_EFFECTIVE_RANK = {"error": 0, "warning": 1, "info": 2, "ok": 3}
 
+# Handoff context: bounded excerpt for operators (read-only, no extra I/O).
+_HANDOFF_CONTEXT_TOP_FOLLOWUPS = 5
+_HANDOFF_CONTEXT_SCHEMA_VERSION = "workflow_officer.handoff_context/v0"
+
 
 def _utc_ts() -> str:
     return datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
@@ -328,6 +332,39 @@ def build_followup_topic_ranking(check_dicts: list[dict[str, Any]]) -> list[dict
     ]
 
 
+def build_handoff_context(summary: dict[str, Any]) -> dict[str, Any]:
+    """Derive a small read-only handoff snapshot from an existing summary dict.
+
+    Uses only ``followup_topic_ranking`` and rollup counters already in ``summary``.
+    If ``followup_topic_ranking`` is missing or not a list, it is treated as empty.
+    """
+    ranking = summary.get("followup_topic_ranking")
+    if not isinstance(ranking, list):
+        ranking = []
+    top = ranking[:_HANDOFF_CONTEXT_TOP_FOLLOWUPS]
+    primary: str | None = ranking[0]["check_id"] if ranking else None
+    return {
+        "handoff_schema_version": _HANDOFF_CONTEXT_SCHEMA_VERSION,
+        "strict": bool(summary["strict"]),
+        "rollup": {
+            "total_checks": int(summary["total_checks"]),
+            "hard_failures": int(summary["hard_failures"]),
+            "warnings": int(summary["warnings"]),
+            "infos": int(summary["infos"]),
+        },
+        "primary_followup_check_id": primary,
+        "top_followups": [
+            {
+                "rank": int(row["rank"]),
+                "check_id": str(row["check_id"]),
+                "recommended_priority": str(row["recommended_priority"]),
+                "effective_level": str(row["effective_level"]),
+            }
+            for row in top
+        ],
+    }
+
+
 def _emit_manifest(manifest_path: Path, output_dir: Path) -> None:
     files = []
     for p in sorted(output_dir.iterdir()):
@@ -357,7 +394,7 @@ def _build_summary(check_dicts: list[dict[str, Any]], strict: bool) -> dict[str,
     warnings = sum(1 for r in check_dicts if r["effective_level"] == "warning")
     infos = sum(1 for r in check_dicts if r["effective_level"] == "info")
 
-    return {
+    summary: dict[str, Any] = {
         "total_checks": len(check_dicts),
         "hard_failures": hard_failures,
         "warnings": warnings,
@@ -370,6 +407,8 @@ def _build_summary(check_dicts: list[dict[str, Any]], strict: bool) -> dict[str,
         "strict": strict,
         "followup_topic_ranking": build_followup_topic_ranking(check_dicts),
     }
+    summary["handoff_context"] = build_handoff_context(summary)
+    return summary
 
 
 def parse_args() -> argparse.Namespace:
