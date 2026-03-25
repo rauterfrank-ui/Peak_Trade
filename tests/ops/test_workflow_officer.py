@@ -22,6 +22,7 @@ from src.ops.workflow_officer import (
     load_ops_registry_inputs,
     parse_merge_log_signals,
     parse_ops_pointer_text,
+    render_next_chat_preview_markdown,
 )
 
 
@@ -128,6 +129,10 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     assert preview["warnings"] == handoff["rollup"]["warnings"]
     assert preview["registry_pointer_count"] == handoff["registry_inputs_rollup"]["pointer_count"]
     assert preview["latest_pr_number"] == handoff["merge_log_inputs_rollup"]["latest_pr_number"]
+
+    summary_md = summary_path.read_text(encoding="utf-8")
+    assert "## Next chat preview" in summary_md
+    assert "workflow_officer.next_chat_preview/v0" in summary_md
 
     for check in report["checks"]:
         assert "severity" in check
@@ -376,6 +381,41 @@ def test_build_next_chat_preview_empty_summary_inputs_is_stable() -> None:
         "total_checks": 0,
         "warnings": 0,
     }
+
+
+def test_render_next_chat_preview_markdown_non_dict_or_missing_schema_returns_empty() -> None:
+    assert render_next_chat_preview_markdown({}) == ""
+    assert render_next_chat_preview_markdown({"preview_schema_version": ""}) == ""
+    assert render_next_chat_preview_markdown({"preview_schema_version": "   "}) == ""
+
+
+def test_render_next_chat_preview_markdown_stable_full() -> None:
+    md = render_next_chat_preview_markdown(
+        {
+            "preview_schema_version": "workflow_officer.next_chat_preview/v0",
+            "provenance_schema_version": "workflow_officer.provenance/v0",
+            "total_checks": 2,
+            "hard_failures": 1,
+            "warnings": 0,
+            "primary_followup_check_id": "b",
+            "queued_followup_check_ids": ["b", "a"],
+            "registry_pointer_count": 4,
+            "latest_pr_number": 99,
+        }
+    )
+    assert md == (
+        "## Next chat preview\n"
+        "\n"
+        "- preview_schema_version: `workflow_officer.next_chat_preview/v0`\n"
+        "- provenance_schema_version: `workflow_officer.provenance/v0`\n"
+        "- total_checks: `2`\n"
+        "- hard_failures: `1`\n"
+        "- warnings: `0`\n"
+        "- primary_followup_check_id: `b`\n"
+        "- queued_followup_check_ids (order preserved): `b`, `a`\n"
+        "- registry_pointer_count: `4`\n"
+        "- latest_pr_number: `99`\n"
+    )
 
 
 def test_build_next_chat_preview_follows_handoff_ordering() -> None:

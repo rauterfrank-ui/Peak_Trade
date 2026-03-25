@@ -59,6 +59,15 @@ def render_workflow_officer_summary(report: dict[str, Any]) -> str:
         lines.append(f"- {key}: `{summary['effective_level_counts'][key]}`")
     lines.append("")
 
+    # Lazy import: ``workflow_officer`` imports this module at load time.
+    from src.ops.workflow_officer import render_next_chat_preview_markdown
+
+    raw_preview = summary.get("next_chat_preview")
+    preview = raw_preview if isinstance(raw_preview, dict) else {}
+    preview_block = render_next_chat_preview_markdown(preview)
+    if preview_block:
+        lines.append(preview_block)
+
     lines.append("## By priority")
     lines.append("")
     for prio in ["p0", "p1", "p2", "p3"]:

@@ -61,6 +61,17 @@ def _sample_report() -> dict:
             "effective_level_counts": {"ok": 1, "warning": 1, "error": 0, "info": 0},
             "recommended_priority_counts": {"p0": 0, "p1": 1, "p2": 0, "p3": 1},
             "strict": False,
+            "next_chat_preview": {
+                "preview_schema_version": "workflow_officer.next_chat_preview/v0",
+                "provenance_schema_version": "workflow_officer.provenance/v0",
+                "total_checks": 2,
+                "hard_failures": 0,
+                "warnings": 1,
+                "primary_followup_check_id": "docs_graph_triage",
+                "queued_followup_check_ids": ["docs_graph_triage", "docs_token_policy"],
+                "registry_pointer_count": 3,
+                "latest_pr_number": 100,
+            },
         },
     }
 
@@ -80,6 +91,9 @@ def test_render_workflow_officer_summary_contains_core_sections() -> None:
     assert "docs_graph_triage" in md
     assert "## Notes" in md
     assert "triage warning" in md
+    assert "## Next chat preview" in md
+    assert "docs_graph_triage" in md
+    assert "queued_followup_check_ids (order preserved):" in md
 
 
 def test_workflow_officer_run_writes_summary_md(tmp_path: Path) -> None:
@@ -123,3 +137,4 @@ def test_workflow_officer_run_writes_summary_md(tmp_path: Path) -> None:
     assert report["officer_version"] == "v1-min"
     assert "## By priority" in summary_md
     assert "## Recommended next actions" in summary_md
+    assert "## Next chat preview" in summary_md
