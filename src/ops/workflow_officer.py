@@ -38,6 +38,8 @@ _HANDOFF_CONTEXT_TOP_FOLLOWUPS = 5
 _HANDOFF_CONTEXT_SCHEMA_VERSION = "workflow_officer.handoff_context/v0"
 
 _PROVENANCE_SCHEMA_VERSION = "workflow_officer.provenance/v0"
+_NEXT_CHAT_PREVIEW_SCHEMA_VERSION = "workflow_officer.next_chat_preview/v0"
+_NEXT_CHAT_PREVIEW_QUEUE_LEN = 3
 
 # Ops registry pointers under docs/ops/registry (read-only; same line format as
 # scripts/ops/verify_registry_pointer_artifacts.parse_pointer).
@@ -107,6 +109,11 @@ def build_workflow_officer_provenance() -> dict[str, Any]:
                     "strict",
                 ]
             ),
+        },
+        "next_chat_preview": {
+            "builder": "build_next_chat_preview",
+            "queued_followup_max": _NEXT_CHAT_PREVIEW_QUEUE_LEN,
+            "summary_inputs": sorted(["handoff_context", "workflow_officer_provenance"]),
         },
     }
 
@@ -581,6 +588,85 @@ def build_followup_topic_ranking(check_dicts: list[dict[str, Any]]) -> list[dict
     ]
 
 
+def build_next_chat_preview(summary: dict[str, Any]) -> dict[str, Any]:
+    """Compact read-only cues for the next operator chat (summary dict only, no I/O)."""
+    handoff = summary.get("handoff_context")
+    if not isinstance(handoff, dict):
+        handoff = {}
+    prov = summary.get("workflow_officer_provenance")
+    if not isinstance(prov, dict):
+        prov = {}
+    pv = prov.get("provenance_schema_version")
+    provenance_schema_version: str | None
+    if isinstance(pv, str) and pv.strip():
+        provenance_schema_version = pv.strip()
+    else:
+        provenance_schema_version = None
+
+    rollup = handoff.get("rollup")
+    total_checks = hard_failures = warnings = 0
+    if isinstance(rollup, dict):
+        try:
+            total_checks = int(rollup.get("total_checks", 0))
+        except (TypeError, ValueError):
+            total_checks = 0
+        try:
+            hard_failures = int(rollup.get("hard_failures", 0))
+        except (TypeError, ValueError):
+            hard_failures = 0
+        try:
+            warnings = int(rollup.get("warnings", 0))
+        except (TypeError, ValueError):
+            warnings = 0
+
+    primary_raw = handoff.get("primary_followup_check_id")
+    if primary_raw is not None and isinstance(primary_raw, str) and primary_raw.strip():
+        primary_followup_check_id: str | None = primary_raw.strip()
+    else:
+        primary_followup_check_id = None
+
+    top = handoff.get("top_followups")
+    if not isinstance(top, list):
+        top = []
+    queued_followup_check_ids: list[str] = []
+    for row in top[:_NEXT_CHAT_PREVIEW_QUEUE_LEN]:
+        if not isinstance(row, dict):
+            continue
+        cid = row.get("check_id")
+        if isinstance(cid, str) and cid.strip():
+            queued_followup_check_ids.append(cid.strip())
+
+    reg = handoff.get("registry_inputs_rollup")
+    registry_pointer_count: int | None = None
+    if isinstance(reg, dict):
+        try:
+            registry_pointer_count = int(reg.get("pointer_count", 0))
+        except (TypeError, ValueError):
+            registry_pointer_count = None
+
+    ml = handoff.get("merge_log_inputs_rollup")
+    latest_pr_number: int | None = None
+    if isinstance(ml, dict):
+        raw_pr = ml.get("latest_pr_number")
+        if raw_pr is not None:
+            try:
+                latest_pr_number = int(raw_pr)
+            except (TypeError, ValueError):
+                latest_pr_number = None
+
+    return {
+        "hard_failures": hard_failures,
+        "latest_pr_number": latest_pr_number,
+        "preview_schema_version": _NEXT_CHAT_PREVIEW_SCHEMA_VERSION,
+        "primary_followup_check_id": primary_followup_check_id,
+        "provenance_schema_version": provenance_schema_version,
+        "queued_followup_check_ids": queued_followup_check_ids,
+        "registry_pointer_count": registry_pointer_count,
+        "total_checks": total_checks,
+        "warnings": warnings,
+    }
+
+
 def build_handoff_context(summary: dict[str, Any]) -> dict[str, Any]:
     """Derive a small read-only handoff snapshot from an existing summary dict.
 
@@ -665,6 +751,7 @@ def _build_summary(
     }
     summary["workflow_officer_provenance"] = build_workflow_officer_provenance()
     summary["handoff_context"] = build_handoff_context(summary)
+    summary["next_chat_preview"] = build_next_chat_preview(summary)
     return summary
 
 
