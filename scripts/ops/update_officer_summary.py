@@ -28,7 +28,11 @@ def _resolve_payload_path(payload: str | None, run_dir: str | None) -> Path:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Render a deterministic Update Officer notifier summary."
+        description=(
+            "Render a deterministic Update Officer notifier summary (read-only). "
+            "Use explicit --payload or --run-dir only — same resolution semantics as the "
+            "WebUI operator trace (no latest-run scan)."
+        )
     )
     parser.add_argument(
         "--payload",

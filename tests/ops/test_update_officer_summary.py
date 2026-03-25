@@ -9,6 +9,18 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "scripts/ops/update_officer_summary.py"
 
 
+def test_cli_help_mentions_webui_trace_semantics():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("uo_summary_cli", SCRIPT)
+    assert spec and spec.loader
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    p = mod.build_parser()
+    assert "WebUI" in p.description
+    assert "explicit" in p.description.lower()
+
+
 def _qe(
     rank: int,
     topic_id: str,

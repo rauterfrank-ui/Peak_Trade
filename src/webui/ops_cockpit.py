@@ -9,6 +9,7 @@ from typing import Dict, List, Optional
 from urllib.parse import urlencode
 
 from src.ops.update_officer_consumer import (
+    build_update_officer_source_trace,
     build_update_officer_ui_model,
     build_update_officer_ui_route_conflict,
 )
@@ -603,6 +604,31 @@ def _render_update_officer_validation_aids_html(aids: dict[str, str]) -> str:
     )
 
 
+def _render_update_officer_operator_trace_html(trace: dict[str, str]) -> str:
+    """v11: read-only operator trace aligned with build_update_officer_source_trace."""
+    sm = escape(trace["source_mode"])
+    so = escape(trace["source_origin"])
+    ap = escape(trace["active_preset"])
+    sc = escape(trace["source_conflict"])
+    ert = escape(trace["effective_resolution_target"])
+    sda = escape(trace["safe_default_active"])
+    return (
+        f'<div class="uo-operator-trace" data-u11-source-mode="{sm}">'
+        "<h3>Operator trace (read-only)</h3>"
+        "<p>Deterministic fields shared with the Update Officer consumer; explicit query inputs "
+        "only. No POST, no writes.</p>"
+        "<dl>"
+        f"<dt>source_mode</dt><dd><code>{sm}</code></dd>"
+        f"<dt>source_origin</dt><dd><code>{so}</code></dd>"
+        f"<dt>active_preset</dt><dd><code>{ap}</code></dd>"
+        f"<dt>source_conflict</dt><dd><code>{sc}</code></dd>"
+        f"<dt>effective_resolution_target</dt><dd><code>{ert}</code></dd>"
+        f"<dt>safe_default_active</dt><dd><code>{sda}</code></dd>"
+        "</dl>"
+        "</div>"
+    )
+
+
 def build_ops_cockpit_payload(
     repo_root: Path | None = None,
     telemetry_root: Path | None = None,
@@ -1117,6 +1143,13 @@ def _render_update_officer_source_ergonomics_block(
         source_preset=source_preset,
     )
     v10_html = _render_update_officer_validation_aids_html(v10_aids)
+    v11_trace = build_update_officer_source_trace(
+        conflict=conflict,
+        effective_notifier_path=effective_notifier_path,
+        effective_run_dir=effective_run_dir,
+        source_preset=source_preset,
+    )
+    v11_html = _render_update_officer_operator_trace_html(v11_trace)
     if conflict:
         summary = (
             "Active source: <strong>conflict</strong> — both notifier path and run directory "
@@ -1176,6 +1209,7 @@ def _render_update_officer_source_ergonomics_block(
         "<h2>Update Officer source selection</h2>"
         "<p><strong>Read-only.</strong> GET-only navigation; no POST, no write actions.</p>"
         f"{v10_html}"
+        f"{v11_html}"
         f"<p>{summary}</p>"
         f"{preset_summary}"
         f"{preset_toolbar}"
@@ -1452,6 +1486,9 @@ def render_ops_cockpit_html(
     .uo-validation-aids {{ border-left: 3px solid #999; padding-left: 12px; margin: 12px 0; }}
     .uo-validation-aids dt {{ font-weight: 600; margin-top: 6px; }}
     .uo-validation-aids dd {{ margin-left: 0; margin-bottom: 4px; }}
+    .uo-operator-trace {{ border-left: 3px solid #607d8b; padding-left: 12px; margin: 12px 0; }}
+    .uo-operator-trace dt {{ font-weight: 600; margin-top: 6px; }}
+    .uo-operator-trace dd {{ margin-left: 0; margin-bottom: 4px; }}
   </style>
 </head>
 <body>

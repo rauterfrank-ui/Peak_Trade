@@ -1372,6 +1372,57 @@ def test_ops_route_v9_notifier_path_focus_link_omits_run_dir_param(
     assert "update_officer_run_dir" not in m.group(1)
 
 
+def test_ops_route_v11_operator_trace_visible_default(ops_client: TestClient) -> None:
+    r = ops_client.get("/ops")
+    assert r.status_code == 200
+    assert "uo-operator-trace" in r.text
+    assert 'data-u11-source-mode="none"' in r.text
+    assert "<dt>source_mode</dt>" in r.text
+    assert "<dt>effective_resolution_target</dt>" in r.text
+    assert "NONE_NO_EXPLICIT_SOURCE" in r.text
+    assert "safe_default_active</dt><dd><code>true</code></dd>" in r.text
+    assert 'method="post"' not in r.text.lower()
+
+
+def test_ops_route_v11_operator_trace_conflict_matches_consumer(
+    ops_client: TestClient, tmp_path: Path
+) -> None:
+    from src.ops.update_officer_consumer import build_update_officer_source_trace
+
+    path = tmp_path / "notifier_payload.json"
+    path.write_text(json.dumps(_sample_notifier_payload()), encoding="utf-8")
+    run_dir = tmp_path / "other"
+    run_dir.mkdir()
+    r = ops_client.get(
+        "/ops",
+        params={
+            "update_officer_notifier_path": str(path),
+            "update_officer_run_dir": str(run_dir),
+        },
+    )
+    assert r.status_code == 200
+    assert 'data-u11-source-mode="conflict"' in r.text
+    assert "BLOCKED_ROUTE_CONFLICT" in r.text
+    tr = build_update_officer_source_trace(
+        conflict=True,
+        effective_notifier_path=None,
+        effective_run_dir=None,
+        source_preset="manual",
+    )
+    assert tr["effective_resolution_target"] == "BLOCKED_ROUTE_CONFLICT"
+
+
+def test_ops_route_v11_operator_trace_resolved_path_in_html(
+    ops_client: TestClient, tmp_path: Path
+) -> None:
+    path = tmp_path / "notifier_payload.json"
+    path.write_text(json.dumps(_sample_notifier_payload()), encoding="utf-8")
+    r = ops_client.get("/ops", params={"update_officer_notifier_path": str(path)})
+    assert r.status_code == 200
+    assert 'data-u11-source-mode="explicit_notifier_path"' in r.text
+    assert str(path) in r.text
+
+
 def test_build_update_officer_validation_aids_conflict() -> None:
     from src.webui.ops_cockpit import build_update_officer_validation_aids
 

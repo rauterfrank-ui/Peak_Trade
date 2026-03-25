@@ -118,6 +118,73 @@ def resolve_update_officer_notifier_payload_path(
     return None
 
 
+def _normalize_update_officer_trace_preset(raw: str | None) -> str:
+    v = "" if raw is None else str(raw).strip().lower().replace("-", "_")
+    if v == "notifier_path":
+        return "notifier_path"
+    if v == "run_dir":
+        return "run_dir"
+    return "manual"
+
+
+def build_update_officer_source_trace(
+    *,
+    conflict: bool,
+    effective_notifier_path: str | Path | None,
+    effective_run_dir: str | Path | None,
+    source_preset: str | None,
+) -> dict[str, str]:
+    """
+    v11: deterministic operator trace for read-only surfaces (WebUI, docs, CLI wording).
+    Derived only from explicit route resolution and preset label — no scans, no writes.
+    """
+    preset = _normalize_update_officer_trace_preset(source_preset)
+
+    if conflict:
+        source_mode = "conflict"
+        source_origin = "query_conflict"
+        resolved: Path | None = None
+    elif effective_notifier_path:
+        source_mode = "explicit_notifier_path"
+        source_origin = "query_notifier_path"
+        resolved = resolve_update_officer_notifier_payload_path(
+            payload_path=effective_notifier_path,
+            run_dir=None,
+        )
+    elif effective_run_dir:
+        source_mode = "run_directory"
+        source_origin = "query_run_directory"
+        resolved = resolve_update_officer_notifier_payload_path(
+            payload_path=None,
+            run_dir=effective_run_dir,
+        )
+    else:
+        source_mode = "none"
+        source_origin = "none"
+        resolved = None
+
+    source_conflict_flag = "true" if conflict else "false"
+    safe_default_active = "true" if (not conflict and source_mode == "none") else "false"
+
+    if conflict:
+        eff_target = "BLOCKED_ROUTE_CONFLICT"
+    elif resolved is not None:
+        eff_target = str(resolved)
+    elif source_mode == "none":
+        eff_target = "NONE_NO_EXPLICIT_SOURCE"
+    else:
+        eff_target = "NONE_PAYLOAD_MISSING_AT_EXPLICIT_SOURCE"
+
+    return {
+        "source_mode": source_mode,
+        "source_origin": source_origin,
+        "active_preset": preset,
+        "source_conflict": source_conflict_flag,
+        "effective_resolution_target": eff_target,
+        "safe_default_active": safe_default_active,
+    }
+
+
 def build_update_officer_ui_route_conflict() -> Dict[str, Any]:
     """Deterministic empty-state when route supplies conflicting explicit sources."""
     return _empty_update_officer_ui_model(UPDATE_OFFICER_ROUTE_CONFLICT_MESSAGE)
