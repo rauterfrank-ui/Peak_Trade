@@ -28,6 +28,10 @@ EFFECTIVE_LEVELS = {"ok", "warning", "error", "info"}
 # Re-export for tests and callers that imported from workflow_officer.
 PROFILE_CHECKS = PROFILES
 
+# Follow-up topic queue: lower tuple sorts first (more urgent).
+_FOLLOWUP_PRIORITY_RANK = {"p0": 0, "p1": 1, "p2": 2, "p3": 3}
+_FOLLOWUP_EFFECTIVE_RANK = {"error": 0, "warning": 1, "info": 2, "ok": 3}
+
 
 def _utc_ts() -> str:
     return datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
@@ -293,6 +297,37 @@ def _emit_events(events_path: Path, check_dicts: list[dict[str, Any]]) -> None:
             )
 
 
+def build_followup_topic_ranking(check_dicts: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Rank checks as read-only follow-up topics (no I/O, no mutation).
+
+    Uses only fields already present on each check row. Ordering:
+    1. ``recommended_priority`` (p0 most urgent, then p1, p2, p3)
+    2. ``effective_level`` (error, warning, info, ok)
+    3. ``check_id`` (lexicographic, ASCII)
+    """
+    if not check_dicts:
+        return []
+    ordered = sorted(
+        check_dicts,
+        key=lambda row: (
+            _FOLLOWUP_PRIORITY_RANK[row["recommended_priority"]],
+            _FOLLOWUP_EFFECTIVE_RANK[row["effective_level"]],
+            row["check_id"],
+        ),
+    )
+    return [
+        {
+            "rank": idx,
+            "check_id": row["check_id"],
+            "recommended_priority": row["recommended_priority"],
+            "effective_level": row["effective_level"],
+            "surface": row["surface"],
+            "category": row["category"],
+        }
+        for idx, row in enumerate(ordered, start=1)
+    ]
+
+
 def _emit_manifest(manifest_path: Path, output_dir: Path) -> None:
     files = []
     for p in sorted(output_dir.iterdir()):
@@ -333,6 +368,7 @@ def _build_summary(check_dicts: list[dict[str, Any]], strict: bool) -> dict[str,
         "effective_level_counts": effective_level_counts,
         "recommended_priority_counts": recommended_priority_counts,
         "strict": strict,
+        "followup_topic_ranking": build_followup_topic_ranking(check_dicts),
     }
 
 

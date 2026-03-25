@@ -14,6 +14,7 @@ from src.ops.workflow_officer import (
     _resolve_outcome,
     _resolve_severity,
     _resolve_status,
+    build_followup_topic_ranking,
 )
 
 
@@ -53,6 +54,10 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     assert "severity_counts" in report["summary"]
     assert "outcome_counts" in report["summary"]
     assert "effective_level_counts" in report["summary"]
+    ranking = report["summary"]["followup_topic_ranking"]
+    assert isinstance(ranking, list)
+    assert len(ranking) == len(report["checks"])
+    assert [row["rank"] for row in ranking] == list(range(1, len(ranking) + 1))
 
     for check in report["checks"]:
         assert "severity" in check
@@ -148,3 +153,55 @@ def test_recommend_priority_action_rejects_invalid_inputs() -> None:
         _recommend_priority_action("ok", "bogus", "info")
     with pytest.raises(ValueError, match="severity"):
         _recommend_priority_action("ok", "pass", "bogus")
+
+
+def test_build_followup_topic_ranking_empty_is_stable() -> None:
+    assert build_followup_topic_ranking([]) == []
+
+
+def test_build_followup_topic_ranking_orders_by_priority_effective_check_id() -> None:
+    rows = [
+        {
+            "check_id": "z_check",
+            "recommended_priority": "p2",
+            "effective_level": "ok",
+            "surface": "s",
+            "category": "c",
+        },
+        {
+            "check_id": "a_check",
+            "recommended_priority": "p0",
+            "effective_level": "warning",
+            "surface": "s",
+            "category": "c",
+        },
+        {
+            "check_id": "m_check",
+            "recommended_priority": "p0",
+            "effective_level": "error",
+            "surface": "s",
+            "category": "c",
+        },
+        {
+            "check_id": "b_check",
+            "recommended_priority": "p0",
+            "effective_level": "error",
+            "surface": "s",
+            "category": "c",
+        },
+    ]
+    ranked = build_followup_topic_ranking(rows)
+    assert [r["check_id"] for r in ranked] == ["b_check", "m_check", "a_check", "z_check"]
+    assert [r["rank"] for r in ranked] == [1, 2, 3, 4]
+    assert all(
+        set(r.keys())
+        == {
+            "rank",
+            "check_id",
+            "recommended_priority",
+            "effective_level",
+            "surface",
+            "category",
+        }
+        for r in ranked
+    )
