@@ -16,6 +16,7 @@ from src.ops.workflow_officer import (
     _resolve_status,
     build_followup_topic_ranking,
     build_handoff_context,
+    build_workflow_officer_provenance,
     load_ops_merge_log_inputs,
     load_ops_registry_inputs,
     parse_merge_log_signals,
@@ -105,6 +106,15 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     assert mlr["latest_pr_number"] == pr_seq[0]
     if mlr["latest_merge_commit_sha"] is not None:
         assert len(mlr["latest_merge_commit_sha"]) >= 7
+
+    prov = report["summary"]["workflow_officer_provenance"]
+    assert prov["provenance_schema_version"] == "workflow_officer.provenance/v0"
+    assert prov["followup_topic_ranking"]["ordering_inputs"] == sorted(
+        ["check_id", "effective_level", "recommended_priority"]
+    )
+    assert prov["handoff_context"]["summary_inputs"] == sorted(
+        ["followup_topic_ranking", "merge_log_inputs", "registry_inputs", "strict"]
+    )
 
     for check in report["checks"]:
         assert "severity" in check
@@ -339,6 +349,57 @@ def test_build_handoff_context_caps_top_followups() -> None:
         set(r.keys()) == {"rank", "check_id", "recommended_priority", "effective_level"}
         for r in ctx["top_followups"]
     )
+
+
+def test_build_workflow_officer_provenance_is_stable() -> None:
+    assert build_workflow_officer_provenance() == {
+        "provenance_schema_version": "workflow_officer.provenance/v0",
+        "recommended_priority_and_action": {
+            "builder": "_recommend_priority_action",
+            "check_row_inputs": sorted(["effective_level", "outcome", "severity"]),
+            "profile_plan_fields_appended": sorted(["category", "description", "surface"]),
+        },
+        "followup_topic_ranking": {
+            "builder": "build_followup_topic_ranking",
+            "check_row_inputs": sorted(
+                ["category", "check_id", "effective_level", "recommended_priority", "surface"]
+            ),
+            "ordering_inputs": sorted(["check_id", "effective_level", "recommended_priority"]),
+        },
+        "registry_inputs": {
+            "builder": "load_ops_registry_inputs",
+            "repo_relative_glob": "docs/ops/registry/*.pointer",
+        },
+        "merge_log_inputs": {
+            "builder": "load_ops_merge_log_inputs",
+            "body_signal_parser": "parse_merge_log_signals",
+            "parsed_fields": sorted(["merged_at", "merge_commit_sha"]),
+            "repo_relative_glob": "docs/ops/merge_logs/PR_*_MERGE_LOG.md",
+        },
+        "handoff_context": {
+            "builder": "build_handoff_context",
+            "handoff_output_keys": sorted(
+                [
+                    "handoff_schema_version",
+                    "merge_log_inputs_rollup",
+                    "primary_followup_check_id",
+                    "registry_inputs_rollup",
+                    "rollup",
+                    "strict",
+                    "top_followups",
+                ]
+            ),
+            "rollup_keys": sorted(["hard_failures", "infos", "total_checks", "warnings"]),
+            "summary_inputs": sorted(
+                [
+                    "followup_topic_ranking",
+                    "merge_log_inputs",
+                    "registry_inputs",
+                    "strict",
+                ]
+            ),
+        },
+    }
 
 
 def test_parse_ops_pointer_text_ignores_comments_and_orders_keys_in_payload() -> None:
