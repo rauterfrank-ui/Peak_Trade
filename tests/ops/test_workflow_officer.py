@@ -16,6 +16,7 @@ from src.ops.workflow_officer import (
     _resolve_status,
     build_followup_topic_ranking,
     build_handoff_context,
+    build_next_chat_preview,
     build_workflow_officer_provenance,
     load_ops_merge_log_inputs,
     load_ops_registry_inputs,
@@ -115,6 +116,18 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     assert prov["handoff_context"]["summary_inputs"] == sorted(
         ["followup_topic_ranking", "merge_log_inputs", "registry_inputs", "strict"]
     )
+    preview = report["summary"]["next_chat_preview"]
+    assert preview["preview_schema_version"] == "workflow_officer.next_chat_preview/v0"
+    assert preview["provenance_schema_version"] == prov["provenance_schema_version"]
+    assert preview["primary_followup_check_id"] == handoff["primary_followup_check_id"]
+    assert preview["queued_followup_check_ids"] == [
+        r["check_id"] for r in handoff["top_followups"][:3]
+    ]
+    assert preview["total_checks"] == handoff["rollup"]["total_checks"]
+    assert preview["hard_failures"] == handoff["rollup"]["hard_failures"]
+    assert preview["warnings"] == handoff["rollup"]["warnings"]
+    assert preview["registry_pointer_count"] == handoff["registry_inputs_rollup"]["pointer_count"]
+    assert preview["latest_pr_number"] == handoff["merge_log_inputs_rollup"]["latest_pr_number"]
 
     for check in report["checks"]:
         assert "severity" in check
@@ -351,6 +364,62 @@ def test_build_handoff_context_caps_top_followups() -> None:
     )
 
 
+def test_build_next_chat_preview_empty_summary_inputs_is_stable() -> None:
+    assert build_next_chat_preview({}) == {
+        "hard_failures": 0,
+        "latest_pr_number": None,
+        "preview_schema_version": "workflow_officer.next_chat_preview/v0",
+        "primary_followup_check_id": None,
+        "provenance_schema_version": None,
+        "queued_followup_check_ids": [],
+        "registry_pointer_count": None,
+        "total_checks": 0,
+        "warnings": 0,
+    }
+
+
+def test_build_next_chat_preview_follows_handoff_ordering() -> None:
+    summary = {
+        "workflow_officer_provenance": {
+            "provenance_schema_version": "workflow_officer.provenance/v0",
+        },
+        "handoff_context": {
+            "rollup": {
+                "total_checks": 2,
+                "hard_failures": 1,
+                "warnings": 0,
+                "infos": 0,
+            },
+            "primary_followup_check_id": "b",
+            "top_followups": [
+                {
+                    "rank": 1,
+                    "check_id": "b",
+                    "recommended_priority": "p0",
+                    "effective_level": "error",
+                },
+                {
+                    "rank": 2,
+                    "check_id": "a",
+                    "recommended_priority": "p1",
+                    "effective_level": "warning",
+                },
+            ],
+            "registry_inputs_rollup": {"pointer_count": 4},
+            "merge_log_inputs_rollup": {"latest_pr_number": 99},
+        },
+    }
+    got = build_next_chat_preview(summary)
+    assert got["queued_followup_check_ids"] == ["b", "a"]
+    assert got["primary_followup_check_id"] == "b"
+    assert got["provenance_schema_version"] == "workflow_officer.provenance/v0"
+    assert got["registry_pointer_count"] == 4
+    assert got["latest_pr_number"] == 99
+    assert got["total_checks"] == 2
+    assert got["hard_failures"] == 1
+    assert got["warnings"] == 0
+
+
 def test_build_workflow_officer_provenance_is_stable() -> None:
     assert build_workflow_officer_provenance() == {
         "provenance_schema_version": "workflow_officer.provenance/v0",
@@ -398,6 +467,11 @@ def test_build_workflow_officer_provenance_is_stable() -> None:
                     "strict",
                 ]
             ),
+        },
+        "next_chat_preview": {
+            "builder": "build_next_chat_preview",
+            "queued_followup_max": 3,
+            "summary_inputs": sorted(["handoff_context", "workflow_officer_provenance"]),
         },
     }
 

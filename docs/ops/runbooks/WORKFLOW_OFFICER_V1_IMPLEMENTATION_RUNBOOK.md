@@ -27,6 +27,9 @@
 ## Read-only provenance
 - Report summary may include `workflow_officer_provenance`: deterministic declaration of which check-row fields, profile plan fields, repo globs, and summary keys feed recommendations, `followup_topic_ranking`, registry/merge-log inputs, and `handoff_context`. No extra files; no writes.
 
+## Read-only next chat preview
+- Report summary may include `next_chat_preview`: a tiny embedded read-only slice derived only from `handoff_context` and `workflow_officer_provenance` (rollup counts, up to three queued follow-up `check_id`s in ranking order, primary follow-up id, registry pointer count and latest merge-log PR from handoff rollups, provenance schema label). No separate files; no writes.
+
 ## Next
 - map existing building blocks
 - define snapshot schema
