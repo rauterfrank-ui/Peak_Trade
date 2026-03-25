@@ -1030,3 +1030,24 @@ class TestUpdateOfficerV10ValidationAids:
         assert r.status_code == 200
         assert "uo-validation-aids" in r.text
         assert 'method="post"' not in r.text.lower()
+
+
+# =============================================================================
+# Update Officer v11: operator trace on /ops
+# =============================================================================
+
+
+class TestUpdateOfficerV11OperatorTrace:
+    @pytest.fixture
+    def ops_client(self):
+        from fastapi.testclient import TestClient
+        from src.webui.app import app
+
+        return TestClient(app)
+
+    def test_ops_operator_trace_get_only(self, ops_client):
+        r = ops_client.get("/ops")
+        assert r.status_code == 200
+        assert "uo-operator-trace" in r.text
+        assert "source_origin" in r.text
+        assert 'method="post"' not in r.text.lower()

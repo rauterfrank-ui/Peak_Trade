@@ -7,6 +7,7 @@ import pytest
 from src.ops.update_officer_schema import UpdateOfficerSchemaError
 from src.ops.update_officer_consumer import (
     build_notifier_view_model,
+    build_update_officer_source_trace,
     build_update_officer_ui_model,
     load_notifier_payload,
     render_notifier_text_summary,
@@ -148,3 +149,57 @@ def test_build_update_officer_ui_model_invalid_payload(tmp_path):
     ui = build_update_officer_ui_model(payload_path=path)
     assert ui["available"] is False
     assert "could not be loaded" in ui["empty_state_message"].lower()
+
+
+def test_build_update_officer_source_trace_conflict():
+    tr = build_update_officer_source_trace(
+        conflict=True,
+        effective_notifier_path="/a",
+        effective_run_dir="/b",
+        source_preset="manual",
+    )
+    assert tr["source_mode"] == "conflict"
+    assert tr["source_origin"] == "query_conflict"
+    assert tr["source_conflict"] == "true"
+    assert tr["effective_resolution_target"] == "BLOCKED_ROUTE_CONFLICT"
+    assert tr["safe_default_active"] == "false"
+
+
+def test_build_update_officer_source_trace_none_safe_default():
+    tr = build_update_officer_source_trace(
+        conflict=False,
+        effective_notifier_path=None,
+        effective_run_dir=None,
+        source_preset="manual",
+    )
+    assert tr["source_mode"] == "none"
+    assert tr["source_origin"] == "none"
+    assert tr["effective_resolution_target"] == "NONE_NO_EXPLICIT_SOURCE"
+    assert tr["safe_default_active"] == "true"
+
+
+def test_build_update_officer_source_trace_resolved_explicit_path(tmp_path):
+    path = tmp_path / "notifier_payload.json"
+    path.write_text(json.dumps(_payload()), encoding="utf-8")
+    tr = build_update_officer_source_trace(
+        conflict=False,
+        effective_notifier_path=path,
+        effective_run_dir=None,
+        source_preset="notifier_path",
+    )
+    assert tr["source_mode"] == "explicit_notifier_path"
+    assert tr["source_origin"] == "query_notifier_path"
+    assert tr["active_preset"] == "notifier_path"
+    assert tr["effective_resolution_target"] == str(path)
+    assert tr["safe_default_active"] == "false"
+
+
+def test_build_update_officer_source_trace_missing_payload_at_explicit_source(tmp_path):
+    tr = build_update_officer_source_trace(
+        conflict=False,
+        effective_notifier_path=tmp_path / "missing.json",
+        effective_run_dir=None,
+        source_preset="manual",
+    )
+    assert tr["source_mode"] == "explicit_notifier_path"
+    assert tr["effective_resolution_target"] == "NONE_PAYLOAD_MISSING_AT_EXPLICIT_SOURCE"
