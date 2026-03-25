@@ -990,3 +990,23 @@ class TestUpdateOfficerV8SourceErgonomics:
         assert "Update Officer source selection" in r.text
         assert 'method="get"' in r.text
         assert 'method="post"' not in r.text.lower()
+
+
+# =============================================================================
+# Update Officer v9: read-only operator presets on /ops
+# =============================================================================
+
+
+class TestUpdateOfficerV9OperatorPresets:
+    @pytest.fixture
+    def ops_client(self):
+        from fastapi.testclient import TestClient
+        from src.webui.app import app
+
+        return TestClient(app)
+
+    def test_ops_preset_query_get_only(self, ops_client):
+        r = ops_client.get("/ops", params={"update_officer_source_preset": "run_dir"})
+        assert r.status_code == 200
+        assert "Operator presets (GET-only)" in r.text
+        assert 'method="post"' not in r.text.lower()
