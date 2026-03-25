@@ -18,6 +18,9 @@
 ## Read-only handoff context
 - Report summary may include `handoff_context`: a bounded, deterministic excerpt derived from summary rollups and `followup_topic_ranking` (primary follow-up id, top five follow-ups, strict flag). For human/tool consumption only; no registry writes and no separate handoff artifact files.
 
+## Read-only registry / pointer inputs
+- Report summary may include `registry_inputs`: parsed `docs/ops/registry/*.pointer` files (sorted by filename, `fields` sorted by key). Missing directory yields an empty stable payload. `handoff_context.registry_inputs_rollup` mirrors pointer count and the first `run_id` found in that order (operators/evidence cross-check).
+
 ## Next
 - map existing building blocks
 - define snapshot schema

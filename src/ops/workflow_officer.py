@@ -36,6 +36,10 @@ _FOLLOWUP_EFFECTIVE_RANK = {"error": 0, "warning": 1, "info": 2, "ok": 3}
 _HANDOFF_CONTEXT_TOP_FOLLOWUPS = 5
 _HANDOFF_CONTEXT_SCHEMA_VERSION = "workflow_officer.handoff_context/v0"
 
+# Ops registry pointers under docs/ops/registry (read-only; same line format as
+# scripts/ops/verify_registry_pointer_artifacts.parse_pointer).
+_OPS_REGISTRY_REL = Path("docs/ops/registry")
+
 
 def _utc_ts() -> str:
     return datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
@@ -301,6 +305,87 @@ def _emit_events(events_path: Path, check_dicts: list[dict[str, Any]]) -> None:
             )
 
 
+def parse_ops_pointer_text(text: str) -> dict[str, str]:
+    """Parse ``docs/ops/registry/*.pointer`` body (key=value lines; ``#`` comments ignored)."""
+    d: dict[str, str] = {}
+    for ln in text.splitlines():
+        ln = ln.strip()
+        if not ln or ln.startswith("#"):
+            continue
+        if "=" in ln:
+            k, v = ln.split("=", 1)
+            key = k.strip()
+            if key:
+                d[key] = v.strip()
+    return d
+
+
+def parse_ops_pointer_file(path: Path) -> dict[str, str]:
+    return parse_ops_pointer_text(path.read_text(encoding="utf-8"))
+
+
+def load_ops_registry_inputs(repo_root: Path) -> dict[str, Any]:
+    """Read-only scan of tracked-style pointer files (no writes, no network)."""
+    reg_dir = repo_root / _OPS_REGISTRY_REL
+    if not reg_dir.is_dir():
+        return {
+            "registry_dir_present": False,
+            "pointer_count": 0,
+            "pointers": [],
+        }
+    files = sorted(reg_dir.glob("*.pointer"), key=lambda p: p.name)
+    pointers: list[dict[str, Any]] = []
+    for p in files:
+        if not p.is_file():
+            continue
+        try:
+            raw = parse_ops_pointer_file(p)
+        except OSError:
+            raw = {}
+        fields = dict(sorted(raw.items()))
+        rel = str(p.relative_to(repo_root).as_posix())
+        pointers.append({"name": p.name, "rel_path": rel, "fields": fields})
+    return {
+        "registry_dir_present": True,
+        "pointer_count": len(pointers),
+        "pointers": pointers,
+    }
+
+
+def _registry_inputs_rollup(summary: dict[str, Any]) -> dict[str, Any]:
+    """Handoff-sized digest of ``registry_inputs`` (first ``run_id`` in sorted pointer order)."""
+    reg = summary.get("registry_inputs")
+    if not isinstance(reg, dict):
+        return {
+            "registry_dir_present": False,
+            "pointer_count": 0,
+            "primary_run_id": None,
+        }
+    present = bool(reg.get("registry_dir_present", False))
+    try:
+        count = int(reg.get("pointer_count", 0))
+    except (TypeError, ValueError):
+        count = 0
+    primary: str | None = None
+    pointers = reg.get("pointers")
+    if isinstance(pointers, list):
+        for entry in pointers:
+            if not isinstance(entry, dict):
+                continue
+            fields = entry.get("fields")
+            if not isinstance(fields, dict):
+                continue
+            rid = fields.get("run_id")
+            if isinstance(rid, str) and rid.strip():
+                primary = rid.strip()
+                break
+    return {
+        "registry_dir_present": present,
+        "pointer_count": count,
+        "primary_run_id": primary,
+    }
+
+
 def build_followup_topic_ranking(check_dicts: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Rank checks as read-only follow-up topics (no I/O, no mutation).
 
@@ -335,7 +420,7 @@ def build_followup_topic_ranking(check_dicts: list[dict[str, Any]]) -> list[dict
 def build_handoff_context(summary: dict[str, Any]) -> dict[str, Any]:
     """Derive a small read-only handoff snapshot from an existing summary dict.
 
-    Uses only ``followup_topic_ranking`` and rollup counters already in ``summary``.
+    Uses ``followup_topic_ranking``, check rollups, and optional ``registry_inputs``.
     If ``followup_topic_ranking`` is missing or not a list, it is treated as empty.
     """
     ranking = summary.get("followup_topic_ranking")
@@ -362,6 +447,7 @@ def build_handoff_context(summary: dict[str, Any]) -> dict[str, Any]:
             }
             for row in top
         ],
+        "registry_inputs_rollup": _registry_inputs_rollup(summary),
     }
 
 
@@ -376,7 +462,9 @@ def _emit_manifest(manifest_path: Path, output_dir: Path) -> None:
     )
 
 
-def _build_summary(check_dicts: list[dict[str, Any]], strict: bool) -> dict[str, Any]:
+def _build_summary(
+    check_dicts: list[dict[str, Any]], strict: bool, repo_root: Path
+) -> dict[str, Any]:
     severity_counts = {"hard_fail": 0, "warn": 0, "info": 0}
     status_counts: dict[str, int] = {}
     outcome_counts = {"pass": 0, "fail": 0, "missing": 0}
@@ -405,6 +493,7 @@ def _build_summary(check_dicts: list[dict[str, Any]], strict: bool) -> dict[str,
         "effective_level_counts": effective_level_counts,
         "recommended_priority_counts": recommended_priority_counts,
         "strict": strict,
+        "registry_inputs": load_ops_registry_inputs(repo_root),
         "followup_topic_ranking": build_followup_topic_ranking(check_dicts),
     }
     summary["handoff_context"] = build_handoff_context(summary)
@@ -450,7 +539,7 @@ def main() -> int:
     _emit_events(run_dir / "events.jsonl", check_dicts)
     _emit_manifest(run_dir / "manifest.json", run_dir)
 
-    summary = _build_summary(check_dicts, strict=bool(args.strict))
+    summary = _build_summary(check_dicts, strict=bool(args.strict), repo_root=repo_root)
     success = summary["hard_failures"] == 0
 
     report = WorkflowOfficerReport(
