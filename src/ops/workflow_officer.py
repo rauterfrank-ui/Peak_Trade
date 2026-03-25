@@ -32,6 +32,10 @@ PROFILE_CHECKS = PROFILES
 # Follow-up topic queue: lower tuple sorts first (more urgent).
 _FOLLOWUP_PRIORITY_RANK = {"p0": 0, "p1": 1, "p2": 2, "p3": 3}
 _FOLLOWUP_EFFECTIVE_RANK = {"error": 0, "warning": 1, "info": 2, "ok": 3}
+# Within same priority + effective_level: failed/missing checks surface before pass; hard_fail before warn/info.
+_FOLLOWUP_OUTCOME_URGENCY = {"fail": 0, "missing": 1, "pass": 2}
+_FOLLOWUP_SEVERITY_URGENCY = {"hard_fail": 0, "warn": 1, "info": 2}
+_FOLLOWUP_RANK_HEURISTIC_VERSION = "workflow_officer.followup_rank_heuristic/v0"
 
 # Handoff context: bounded excerpt for operators (read-only, no extra I/O).
 _HANDOFF_CONTEXT_TOP_FOLLOWUPS = 5
@@ -73,9 +77,20 @@ def build_workflow_officer_provenance() -> dict[str, Any]:
         "followup_topic_ranking": {
             "builder": "build_followup_topic_ranking",
             "check_row_inputs": sorted(
-                ["category", "check_id", "effective_level", "recommended_priority", "surface"]
+                [
+                    "category",
+                    "check_id",
+                    "effective_level",
+                    "outcome",
+                    "recommended_priority",
+                    "severity",
+                    "surface",
+                ]
             ),
-            "ordering_inputs": sorted(["check_id", "effective_level", "recommended_priority"]),
+            "ordering_inputs": sorted(
+                ["check_id", "effective_level", "outcome", "recommended_priority", "severity"]
+            ),
+            "rank_heuristic_schema_version": _FOLLOWUP_RANK_HEURISTIC_VERSION,
         },
         "registry_inputs": {
             "builder": "load_ops_registry_inputs",
@@ -557,24 +572,51 @@ def _merge_log_inputs_rollup(summary: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _followup_row_sort_key(row: dict[str, Any]) -> tuple[int, int, int, int, str]:
+    prio = row.get("recommended_priority")
+    eff = row.get("effective_level")
+    out = row.get("outcome")
+    sev = row.get("severity")
+    cid = row.get("check_id", "")
+    pr = _FOLLOWUP_PRIORITY_RANK[prio] if prio in _FOLLOWUP_PRIORITY_RANK else 99
+    er = _FOLLOWUP_EFFECTIVE_RANK[eff] if eff in _FOLLOWUP_EFFECTIVE_RANK else 99
+    or_ = _FOLLOWUP_OUTCOME_URGENCY[out] if out in _FOLLOWUP_OUTCOME_URGENCY else 99
+    sr = _FOLLOWUP_SEVERITY_URGENCY[sev] if sev in _FOLLOWUP_SEVERITY_URGENCY else 99
+    return (pr, er, or_, sr, str(cid))
+
+
+def _followup_rank_heuristic_payload(row: dict[str, Any]) -> dict[str, Any]:
+    pr, er, or_, sr, _ = _followup_row_sort_key(row)
+    return {
+        "heuristic_schema_version": _FOLLOWUP_RANK_HEURISTIC_VERSION,
+        "components": {
+            "priority_rank": pr,
+            "effective_level_rank": er,
+            "outcome_rank": or_,
+            "severity_rank": sr,
+        },
+        "tie_break": "check_id_ascii",
+    }
+
+
 def build_followup_topic_ranking(check_dicts: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Rank checks as read-only follow-up topics (no I/O, no mutation).
 
-    Uses only fields already present on each check row. Ordering:
-    1. ``recommended_priority`` (p0 most urgent, then p1, p2, p3)
+    Uses only fields already present on each check row. Ordering (ascending tuple,
+    more urgent first):
+
+    1. ``recommended_priority`` (p0 … p3)
     2. ``effective_level`` (error, warning, info, ok)
-    3. ``check_id`` (lexicographic, ASCII)
+    3. ``outcome`` (fail, missing, pass)
+    4. ``severity`` (hard_fail, warn, info)
+    5. ``check_id`` (ASCII lexicographic)
+
+    Unknown ``outcome``/``severity``/priority fields sort last within their axis (rank
+    99) for stable behavior on partial rows.
     """
     if not check_dicts:
         return []
-    ordered = sorted(
-        check_dicts,
-        key=lambda row: (
-            _FOLLOWUP_PRIORITY_RANK[row["recommended_priority"]],
-            _FOLLOWUP_EFFECTIVE_RANK[row["effective_level"]],
-            row["check_id"],
-        ),
-    )
+    ordered = sorted(check_dicts, key=_followup_row_sort_key)
     return [
         {
             "rank": idx,
@@ -583,6 +625,7 @@ def build_followup_topic_ranking(check_dicts: list[dict[str, Any]]) -> list[dict
             "effective_level": row["effective_level"],
             "surface": row["surface"],
             "category": row["category"],
+            "followup_rank_heuristic": _followup_rank_heuristic_payload(row),
         }
         for idx, row in enumerate(ordered, start=1)
     ]

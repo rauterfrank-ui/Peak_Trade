@@ -112,8 +112,15 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     prov = report["summary"]["workflow_officer_provenance"]
     assert prov["provenance_schema_version"] == "workflow_officer.provenance/v0"
     assert prov["followup_topic_ranking"]["ordering_inputs"] == sorted(
-        ["check_id", "effective_level", "recommended_priority"]
+        ["check_id", "effective_level", "outcome", "recommended_priority", "severity"]
     )
+    assert (
+        prov["followup_topic_ranking"]["rank_heuristic_schema_version"]
+        == "workflow_officer.followup_rank_heuristic/v0"
+    )
+    for row in ranking:
+        assert "followup_rank_heuristic" in row
+        assert row["followup_rank_heuristic"]["tie_break"] == "check_id_ascii"
     assert prov["handoff_context"]["summary_inputs"] == sorted(
         ["followup_topic_ranking", "merge_log_inputs", "registry_inputs", "strict"]
     )
@@ -240,6 +247,8 @@ def test_build_followup_topic_ranking_orders_by_priority_effective_check_id() ->
             "check_id": "z_check",
             "recommended_priority": "p2",
             "effective_level": "ok",
+            "outcome": "pass",
+            "severity": "info",
             "surface": "s",
             "category": "c",
         },
@@ -247,6 +256,8 @@ def test_build_followup_topic_ranking_orders_by_priority_effective_check_id() ->
             "check_id": "a_check",
             "recommended_priority": "p0",
             "effective_level": "warning",
+            "outcome": "fail",
+            "severity": "warn",
             "surface": "s",
             "category": "c",
         },
@@ -254,6 +265,8 @@ def test_build_followup_topic_ranking_orders_by_priority_effective_check_id() ->
             "check_id": "m_check",
             "recommended_priority": "p0",
             "effective_level": "error",
+            "outcome": "fail",
+            "severity": "hard_fail",
             "surface": "s",
             "category": "c",
         },
@@ -261,6 +274,8 @@ def test_build_followup_topic_ranking_orders_by_priority_effective_check_id() ->
             "check_id": "b_check",
             "recommended_priority": "p0",
             "effective_level": "error",
+            "outcome": "fail",
+            "severity": "hard_fail",
             "surface": "s",
             "category": "c",
         },
@@ -277,9 +292,150 @@ def test_build_followup_topic_ranking_orders_by_priority_effective_check_id() ->
             "effective_level",
             "surface",
             "category",
+            "followup_rank_heuristic",
         }
         for r in ranked
     )
+
+
+def test_build_followup_topic_ranking_tie_break_check_id_after_shared_heuristic() -> None:
+    rows = [
+        {
+            "check_id": "z_same",
+            "recommended_priority": "p1",
+            "effective_level": "warning",
+            "outcome": "fail",
+            "severity": "warn",
+            "surface": "s",
+            "category": "c",
+        },
+        {
+            "check_id": "a_same",
+            "recommended_priority": "p1",
+            "effective_level": "warning",
+            "outcome": "fail",
+            "severity": "warn",
+            "surface": "s",
+            "category": "c",
+        },
+    ]
+    ranked = build_followup_topic_ranking(rows)
+    assert [r["check_id"] for r in ranked] == ["a_same", "z_same"]
+    assert (
+        ranked[0]["followup_rank_heuristic"]["components"]
+        == ranked[1]["followup_rank_heuristic"]["components"]
+    )
+
+
+def test_build_followup_topic_ranking_orders_fail_before_pass_when_priority_effective_match() -> (
+    None
+):
+    rows = [
+        {
+            "check_id": "pass_first_id",
+            "recommended_priority": "p1",
+            "effective_level": "warning",
+            "outcome": "pass",
+            "severity": "warn",
+            "surface": "s",
+            "category": "c",
+        },
+        {
+            "check_id": "fail_second_id",
+            "recommended_priority": "p1",
+            "effective_level": "warning",
+            "outcome": "fail",
+            "severity": "warn",
+            "surface": "s",
+            "category": "c",
+        },
+    ]
+    ranked = build_followup_topic_ranking(rows)
+    assert [r["check_id"] for r in ranked] == ["fail_second_id", "pass_first_id"]
+
+
+def test_build_followup_topic_ranking_orders_hard_fail_before_warn_when_tied_higher() -> None:
+    rows = [
+        {
+            "check_id": "warn_sev",
+            "recommended_priority": "p1",
+            "effective_level": "warning",
+            "outcome": "fail",
+            "severity": "warn",
+            "surface": "s",
+            "category": "c",
+        },
+        {
+            "check_id": "hard_sev",
+            "recommended_priority": "p1",
+            "effective_level": "warning",
+            "outcome": "fail",
+            "severity": "hard_fail",
+            "surface": "s",
+            "category": "c",
+        },
+    ]
+    ranked = build_followup_topic_ranking(rows)
+    assert [r["check_id"] for r in ranked] == ["hard_sev", "warn_sev"]
+
+
+def test_build_followup_topic_ranking_mixed_signals_stable_order() -> None:
+    rows = [
+        {
+            "check_id": "late",
+            "recommended_priority": "p2",
+            "effective_level": "ok",
+            "outcome": "pass",
+            "severity": "info",
+            "surface": "s",
+            "category": "c",
+        },
+        {
+            "check_id": "mid",
+            "recommended_priority": "p1",
+            "effective_level": "warning",
+            "outcome": "pass",
+            "severity": "warn",
+            "surface": "s",
+            "category": "c",
+        },
+        {
+            "check_id": "top",
+            "recommended_priority": "p1",
+            "effective_level": "warning",
+            "outcome": "fail",
+            "severity": "info",
+            "surface": "s",
+            "category": "c",
+        },
+    ]
+    ranked = build_followup_topic_ranking(rows)
+    assert [r["check_id"] for r in ranked] == ["top", "mid", "late"]
+
+
+def test_build_followup_topic_ranking_partial_row_unknown_axis_sorts_last() -> None:
+    rows = [
+        {
+            "check_id": "known_outcome",
+            "recommended_priority": "p1",
+            "effective_level": "warning",
+            "outcome": "pass",
+            "severity": "warn",
+            "surface": "s",
+            "category": "c",
+        },
+        {
+            "check_id": "unknown_outcome",
+            "recommended_priority": "p1",
+            "effective_level": "warning",
+            "severity": "warn",
+            "surface": "s",
+            "category": "c",
+        },
+    ]
+    ranked = build_followup_topic_ranking(rows)
+    assert [r["check_id"] for r in ranked] == ["known_outcome", "unknown_outcome"]
+    assert ranked[1]["followup_rank_heuristic"]["components"]["outcome_rank"] == 99
 
 
 def test_build_handoff_context_empty_ranking_is_stable() -> None:
@@ -471,9 +627,20 @@ def test_build_workflow_officer_provenance_is_stable() -> None:
         "followup_topic_ranking": {
             "builder": "build_followup_topic_ranking",
             "check_row_inputs": sorted(
-                ["category", "check_id", "effective_level", "recommended_priority", "surface"]
+                [
+                    "category",
+                    "check_id",
+                    "effective_level",
+                    "outcome",
+                    "recommended_priority",
+                    "severity",
+                    "surface",
+                ]
             ),
-            "ordering_inputs": sorted(["check_id", "effective_level", "recommended_priority"]),
+            "ordering_inputs": sorted(
+                ["check_id", "effective_level", "outcome", "recommended_priority", "severity"]
+            ),
+            "rank_heuristic_schema_version": "workflow_officer.followup_rank_heuristic/v0",
         },
         "registry_inputs": {
             "builder": "load_ops_registry_inputs",
