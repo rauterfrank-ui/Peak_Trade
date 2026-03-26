@@ -2,7 +2,7 @@
 title: "Finish Plan (MVP→v1.0) — Repo Roadmap + DoD Checklists"
 status: DRAFT
 scope: docs-first (NO-LIVE)
-last_updated: 2026-03-12
+last_updated: 2026-03-26
 ---
 
 # Finish Plan (MVP→v1.0) — Repo Roadmap + DoD Checklists
@@ -46,7 +46,7 @@ last_updated: 2026-03-12
 ### DoD Checklist (MVP)
 
 #### Governance / Safety (NO-LIVE)
-- [ ] **NO-LIVE posture dokumentiert** (klar: research/backtest only).
+- [x] **NO-LIVE posture dokumentiert** (klar: research/backtest only). **Nachweis:** [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md), [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md).
 - [ ] **Kill-Switch posture unverändert** (keine Unlocks; keine “break-glass” Änderungen).
 - [ ] **Docs Gates** lokal reproduzierbar (Snapshot helper PASS).
 

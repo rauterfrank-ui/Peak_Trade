@@ -23,6 +23,8 @@ Peak_Trade ist aktuell ein **Research-/Backtest-/Paper-/Shadow-System**:
 - **Execution**: Paper-/Shadow-Execution (Phase 24), keine echten Orders
 - **Safety-Status**: Live-/Testnet-Executors sind Stubs, alle echten Order-Pfade blockiert
 
+**NO-LIVE Posture (kanonisch):** Der Repo-Default ist **NO-LIVE** im Sinne der [Stop Rules in `FINISH_PLAN.md`](ops/roadmap/FINISH_PLAN.md#stop-rules-non-negotiable) — **research/backtest first**; keine Live-Order-Platzierung und keine Creds/Secrets in Chats oder Commits. Ergänzend: [`SAFETY_POLICY_TESTNET_AND_LIVE.md`](SAFETY_POLICY_TESTNET_AND_LIVE.md).
+
 Diese Governance-Dokumentation bereitet Peak_Trade auf **zukünftige Phasen** vor, in denen Testnet- oder Live-Trading relevant werden könnte.
 
 ---

@@ -104,6 +104,7 @@
 - [Repo Cleanup Inventory (Snapshots)](./ops/_archive/repo_cleanup/2026-01-12/README.md) – Snapshot-based repo hygiene inventory (no actions without approval)
 
 ### Governance & Safety
+- **NO-LIVE default posture** (research/backtest/paper/shadow; no live orders by default): [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) · [Finish Plan — Stop Rules](./ops/roadmap/FINISH_PLAN.md#stop-rules-non-negotiable)
 - [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) – Governance framework and roles
 - [Safety Policy Testnet and Live](./SAFETY_POLICY_TESTNET_AND_LIVE.md) – Safety policies for testing and live operations
 
