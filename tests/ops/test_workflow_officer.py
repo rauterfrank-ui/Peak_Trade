@@ -16,6 +16,7 @@ from src.ops.workflow_officer import (
     _resolve_status,
     build_executive_summary_view,
     build_followup_topic_ranking,
+    build_workflow_officer_dashboard_view,
     build_handoff_context,
     build_next_chat_preview,
     build_operator_report_view,
@@ -771,6 +772,75 @@ def test_build_workflow_officer_provenance_is_stable() -> None:
             ),
         },
     }
+
+
+def test_build_workflow_officer_dashboard_view_missing_output_is_stable(tmp_path: Path) -> None:
+    got = build_workflow_officer_dashboard_view(tmp_path)
+    assert got["present"] is False
+    assert got["dashboard_schema_version"] == "workflow_officer.dashboard_view/v0"
+    assert got["empty_reason"] == "no_officer_output_dir"
+
+
+def test_build_workflow_officer_dashboard_view_reads_latest_report_json(tmp_path: Path) -> None:
+    run_a = tmp_path / "out" / "ops" / "workflow_officer" / "20260101T000000Z"
+    run_b = tmp_path / "out" / "ops" / "workflow_officer" / "20260201T000000Z"
+    run_a.mkdir(parents=True)
+    run_b.mkdir(parents=True)
+    report_a = {
+        "officer_version": "v1-min",
+        "profile": "docs_only_pr",
+        "mode": "audit",
+        "success": True,
+        "finished_at": "2026-01-01",
+        "summary": {
+            "total_checks": 1,
+            "hard_failures": 0,
+            "warnings": 0,
+            "infos": 0,
+            "strict": False,
+            "executive_summary": {
+                "executive_summary_schema_version": "workflow_officer.executive_summary/v0",
+                "urgency_label": "clear",
+                "attention_rationale": "No blocking errors.",
+            },
+            "operator_report": {
+                "operator_report_schema_version": "workflow_officer.operator_report/v0",
+                "primary_followup": {
+                    "check_id": "chk_a",
+                    "recommended_priority": "p3",
+                    "effective_level": "ok",
+                    "recommended_action": "No action.",
+                },
+                "rollup": {
+                    "total_checks": 1,
+                    "hard_failures": 0,
+                    "warnings": 0,
+                    "infos": 0,
+                },
+                "top_followups": [
+                    {
+                        "rank": 1,
+                        "check_id": "chk_a",
+                        "recommended_priority": "p3",
+                        "effective_level": "ok",
+                    }
+                ],
+            },
+        },
+    }
+    (run_a / "report.json").write_text(json.dumps(report_a), encoding="utf-8")
+    (run_b / "report.json").write_text(
+        json.dumps({**report_a, "profile": "other", "success": False}),
+        encoding="utf-8",
+    )
+    got = build_workflow_officer_dashboard_view(tmp_path)
+    assert got["present"] is True
+    assert got["profile"] == "other"
+    assert got["success"] is False
+    assert got["primary_followup"]["check_id"] == "chk_a"
+    assert len(got["top_followups"]) == 1
+    assert got["executive"]["urgency_label"] == "clear"
+    assert "total=1" in got["operator_snapshot_line"]
 
 
 def test_build_executive_summary_view_empty_summary_is_deterministic() -> None:

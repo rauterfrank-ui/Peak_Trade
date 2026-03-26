@@ -40,6 +40,10 @@
 - `followup_topic_ranking` rows include `recommended_action` (copied from each check row) so `operator_report.primary_followup` can surface the same text for executive excerpts.
 - Rendered `summary.md` may include a deterministic **Executive decision package** section (from `render_executive_summary_markdown` in `src/ops/workflow_officer.py`, wired via `src/ops/workflow_officer_markdown.py`) immediately after **Run**, when `executive_summary` carries a non-empty `executive_summary_schema_version`.
 
+## Read-only WebUI dashboard panel
+- `build_workflow_officer_dashboard_view` in `src/ops/workflow_officer.py` reads the latest `report.json` under `out&#47;ops&#47;workflow_officer&#47;<run>&#47;` (lexicographically last run directory name) and returns a compact read-only payload for the home dashboard. No writes; no execution.
+- `build_workflow_officer_panel_context` in `src/webui/ops_cockpit.py` wraps that helper for `src/webui/app.py` (GET `/`). The panel shows primary follow-up, top follow-ups, executive rationale, and rollups when a report exists; otherwise a stable empty state.
+
 ## Next
 - map existing building blocks
 - define snapshot schema

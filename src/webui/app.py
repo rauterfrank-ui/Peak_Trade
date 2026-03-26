@@ -106,6 +106,7 @@ from .r_and_d_api import (
 )
 from .ops_cockpit import (
     build_ops_cockpit_payload,
+    build_workflow_officer_panel_context,
     normalize_update_officer_source_preset,
     render_ops_cockpit_html,
     resolve_update_officer_route_inputs,
@@ -474,6 +475,8 @@ def create_app() -> FastAPI:
         # Session-Statistiken
         live_track["stats"] = get_session_stats()
 
+        workflow_officer_panel = build_workflow_officer_panel_context(BASE_DIR)
+
         return templates.TemplateResponse(
             request,
             "index.html",
@@ -481,6 +484,7 @@ def create_app() -> FastAPI:
                 "status": proj_status,
                 "strategy_tiering": strategy_tiering,
                 "live_track": live_track,
+                "workflow_officer_panel": workflow_officer_panel,
             },
         )
 
