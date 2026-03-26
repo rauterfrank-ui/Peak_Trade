@@ -16,23 +16,21 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ## Active goal (one sentence)
 
-<!-- Edit weekly or when direction changes. Example: "Close Finish Level A MVP DoD for docs gates + minimal backtest verify." -->
-
-_TBD — fill in._
+Docs for **chat continuity** are on `main`: operators can use **this file** plus [PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP](../runbooks/PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md) so every session starts with the same canonical pointers (Workflow Officer vs GitHub PR flow, Finish Plan).
 
 ---
 
 ## Next three concrete steps
 
-1. _TBD_
-2. _TBD_
-3. _TBD_
+1. Edit this file when the **active goal** changes (weekly or on milestone).
+2. Paste the **bootstrap block** from `PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md` into new assistant chats.
+3. Pick the next concrete item from [FINISH_PLAN](FINISH_PLAN.md) when ready to move beyond docs scaffolding.
 
 ---
 
 ## Blockers / risks
 
-- _None / list_
+- None from **PR #2047** itself.
 
 ---
 
@@ -40,14 +38,16 @@ _TBD — fill in._
 
 | Date (UTC) | What was verified | Command or artifact |
 |------------|---------------------|----------------------|
-| _TBD_ | _e.g. docs gates snapshot_ | _paste path or command_ |
+| 2026-03-26 | PR #2047 merged: `CURRENT_FOCUS.md`, `PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md`, FINISH_PLAN cross-link | https://github.com/rauterfrank-ui/Peak_Trade/pull/2047 (merged 2026-03-26T18:40:04Z) |
 
 ---
 
 ## Branch / PR pointer (optional)
 
-- Branch: _e.g. main_
-- Last merged PR touching this focus: _TBD_
+- Branch: **main**
+- Relevant PR / commit: **PR #2047** merged on **2026-03-26T18:40:04Z**
+- Topic: **docs chat continuity bootstrap**
+- State: **CURRENT_FOCUS** + **chat bootstrap** docs landed on `main`
 
 ---
 
