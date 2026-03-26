@@ -371,7 +371,7 @@ class TestDashboardRendering:
         assert response.status_code == 200
         assert "Workflow Officer" in response.text
         assert "Ops snapshot" in response.text
-        assert "Executive decision package" in response.text
+        assert "Executive decision package · read-only" in response.text
 
     def test_dashboard_shows_empty_state(self, test_client, monkeypatch):
         """Test: Dashboard zeigt leeren Zustand wenn keine Sessions."""
