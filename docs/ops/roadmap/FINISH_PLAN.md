@@ -76,7 +76,7 @@ bash scripts/ops/pt_docs_gates_snapshot.sh --changed
 2) **Minimaler Backtest (offline)**:
 
 ```bash
-python3 scripts/run_backtest.py --strategy ma_crossover --symbol BTC/EUR --bars 100 -v
+python3 scripts/run_backtest.py --strategy ma_crossover --data-file <path-to-sample-data> --bars 100 -v
 ```
 
 3) **Minimaler Portfolio-Backtest (offline)**:
@@ -97,7 +97,7 @@ python3 -m pytest -q
 Finish Level A (MVP) — Evidence (Snapshot-only)
 NO-LIVE: YES
 Docs Gates Snapshot: bash scripts/ops/pt_docs_gates_snapshot.sh --changed → <PASS/FAIL>
-Backtest Smoke: python3 scripts/run_backtest.py --strategy ma_crossover --symbol BTC/EUR --bars 100 -v → exit=<0/!0>
+Backtest Smoke: python3 scripts/run_backtest.py --strategy ma_crossover --data-file <path-to-sample-data> --bars 100 -v → exit=<0/!0>
 Portfolio Smoke: python3 scripts/run_portfolio_backtest.py → exit=<0/!0>
 Tests: python3 -m pytest -q → <summary>
 Notes: <max 2 lines>
