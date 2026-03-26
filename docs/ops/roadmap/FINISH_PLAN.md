@@ -10,6 +10,8 @@ last_updated: 2026-03-12
 **Ziel:** Eine konkrete “Finish”-Definition (MVP/Beta/v1.0) mit Workstreams, DoD-Checklisten, PR-Slicing-Plan und operator-freundlichen Verifikationsschritten.  
 **Constraint:** Diese Datei ist **docs-only**. Sie definiert Arbeit und Nachweise — sie führt nichts live aus.
 
+**Siehe auch:** [Current focus (vom Operator gepflegt)](CURRENT_FOCUS.md) — kurzer „wo stehen wir jetzt“-Anker für Chats und Sessions.
+
 ---
 
 ## Rollen (Multi-Agent Chat Mapping)
