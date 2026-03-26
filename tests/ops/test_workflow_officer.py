@@ -779,6 +779,8 @@ def test_build_workflow_officer_dashboard_view_missing_output_is_stable(tmp_path
     assert got["present"] is False
     assert got["dashboard_schema_version"] == "workflow_officer.dashboard_view/v0"
     assert got["empty_reason"] == "no_officer_output_dir"
+    assert got["executive_panel"]["present"] is False
+    assert got["executive_panel"]["empty_reason"] == "no_officer_output_dir"
 
 
 def test_build_workflow_officer_dashboard_view_reads_latest_report_json(tmp_path: Path) -> None:
@@ -841,6 +843,12 @@ def test_build_workflow_officer_dashboard_view_reads_latest_report_json(tmp_path
     assert len(got["top_followups"]) == 1
     assert got["executive"]["urgency_label"] == "clear"
     assert "total=1" in got["operator_snapshot_line"]
+    ep = got["executive_panel"]
+    assert ep["present"] is True
+    assert ep["executive_panel_schema_version"] == "workflow_officer.executive_panel_view/v0"
+    assert ep["urgency_label"] == "clear"
+    assert ep["decision_package_preview_lines"]
+    assert any("Executive decision package" in ln for ln in ep["decision_package_preview_lines"])
 
 
 def test_build_executive_summary_view_empty_summary_is_deterministic() -> None:

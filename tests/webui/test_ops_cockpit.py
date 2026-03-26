@@ -20,6 +20,11 @@ def test_workflow_officer_panel_context_empty_repo(tmp_path: Path) -> None:
     assert ctx["present"] is False
     assert ctx["dashboard_schema_version"] == "workflow_officer.dashboard_view/v0"
     assert ctx["empty_reason"] == "no_officer_output_dir"
+    assert ctx["executive_panel"]["present"] is False
+    assert (
+        ctx["executive_panel"]["executive_panel_schema_version"]
+        == "workflow_officer.executive_panel_view/v0"
+    )
 
 
 def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
