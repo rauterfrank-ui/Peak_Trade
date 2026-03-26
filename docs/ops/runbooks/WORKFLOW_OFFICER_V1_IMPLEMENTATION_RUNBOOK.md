@@ -52,3 +52,4 @@
 - expand next-topic inputs beyond check-derived ranking
 - define operator handoff contract
 - UI polish: executive panel hierarchy tightened for faster operator scanability and clearer no-data wording.
+- Regression coverage: keep explicit assertions for Workflow Officer executive heading, follow-ups, and executive empty-state wording in WebUI / Ops-Cockpit tests.
