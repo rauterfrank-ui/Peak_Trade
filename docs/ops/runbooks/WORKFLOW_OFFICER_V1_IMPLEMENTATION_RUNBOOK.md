@@ -51,3 +51,4 @@
 - define snapshot schema
 - expand next-topic inputs beyond check-derived ranking
 - define operator handoff contract
+- UI polish: executive panel hierarchy tightened for faster operator scanability and clearer no-data wording.
