@@ -26,6 +26,17 @@ def render_workflow_officer_summary(report: dict[str, Any]) -> str:
     lines.append(f"- repo_root: `{report['repo_root']}`")
     lines.append("")
 
+    from src.ops.workflow_officer import (
+        render_executive_summary_markdown,
+        render_next_chat_preview_markdown,
+        render_operator_report_markdown,
+    )
+
+    raw_exec = summary.get("executive_summary")
+    exec_block = render_executive_summary_markdown(raw_exec if isinstance(raw_exec, dict) else {})
+    if exec_block:
+        lines.append(exec_block)
+
     lines.append("## Summary Counts")
     lines.append("")
     lines.append(f"- total_checks: `{summary['total_checks']}`")
@@ -58,12 +69,6 @@ def render_workflow_officer_summary(report: dict[str, Any]) -> str:
     for key in ["ok", "warning", "error", "info"]:
         lines.append(f"- {key}: `{summary['effective_level_counts'][key]}`")
     lines.append("")
-
-    # Lazy import: ``workflow_officer`` imports this module at load time.
-    from src.ops.workflow_officer import (
-        render_next_chat_preview_markdown,
-        render_operator_report_markdown,
-    )
 
     raw_op = summary.get("operator_report")
     op = raw_op if isinstance(raw_op, dict) else {}

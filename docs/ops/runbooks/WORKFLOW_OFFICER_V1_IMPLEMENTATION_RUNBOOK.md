@@ -35,6 +35,11 @@
 - Report summary may include `operator_report`: a single embedded read-only snapshot from `build_operator_report_view` (only existing summary keys such as rollups, `followup_topic_ranking`, `handoff_context`, `next_chat_preview`, and `workflow_officer_provenance`). No extra files; no writes.
 - Rendered `summary.md` may include a deterministic **Operator consolidated view** section (from `render_operator_report_markdown`, wired via `src/ops/workflow_officer_markdown.py`) when `operator_report` carries a non-empty `operator_report_schema_version`.
 
+## Read-only executive decision package
+- Report summary may include `executive_summary`: a compact embedded read-only decision view from `build_executive_summary_view`, derived from `operator_report` plus the same top-level rollups already on the summary (`total_checks`, `hard_failures`, `warnings`, `infos`, `strict`). No separate files; no writes.
+- `followup_topic_ranking` rows include `recommended_action` (copied from each check row) so `operator_report.primary_followup` can surface the same text for executive excerpts.
+- Rendered `summary.md` may include a deterministic **Executive decision package** section (from `render_executive_summary_markdown` in `src/ops/workflow_officer.py`, wired via `src/ops/workflow_officer_markdown.py`) immediately after **Run**, when `executive_summary` carries a non-empty `executive_summary_schema_version`.
+
 ## Next
 - map existing building blocks
 - define snapshot schema

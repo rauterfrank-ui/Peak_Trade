@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 from src.ops.workflow_officer import (
+    build_executive_summary_view,
     build_followup_topic_ranking,
     build_handoff_context,
     build_next_chat_preview,
@@ -94,6 +95,7 @@ def _sample_report() -> dict:
     summary["handoff_context"] = build_handoff_context(summary)
     summary["next_chat_preview"] = build_next_chat_preview(summary)
     summary["operator_report"] = build_operator_report_view(summary)
+    summary["executive_summary"] = build_executive_summary_view(summary)
     return {
         "officer_version": "v1-min",
         "mode": "audit",
@@ -112,6 +114,8 @@ def test_render_workflow_officer_summary_contains_core_sections() -> None:
     md = render_workflow_officer_summary(_sample_report())
     assert "# Workflow Officer Summary" in md
     assert "## Run" in md
+    assert "## Executive decision package" in md
+    assert "workflow_officer.executive_summary/v0" in md
     assert "## Summary Counts" in md
     assert "### Recommended priority counts" in md
     assert "## By priority" in md
