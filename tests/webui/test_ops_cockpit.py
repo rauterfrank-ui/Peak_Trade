@@ -9,9 +9,17 @@ from src.execution.telemetry_health import HealthCheckResult, HealthReport
 from src.ops.update_officer_consumer import UPDATE_OFFICER_ROUTE_CONFLICT_MESSAGE
 from src.webui.ops_cockpit import (
     build_ops_cockpit_payload,
+    build_workflow_officer_panel_context,
     render_ops_cockpit_html,
     resolve_update_officer_route_inputs,
 )
+
+
+def test_workflow_officer_panel_context_empty_repo(tmp_path: Path) -> None:
+    ctx = build_workflow_officer_panel_context(tmp_path)
+    assert ctx["present"] is False
+    assert ctx["dashboard_schema_version"] == "workflow_officer.dashboard_view/v0"
+    assert ctx["empty_reason"] == "no_officer_output_dir"
 
 
 def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:

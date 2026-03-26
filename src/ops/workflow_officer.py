@@ -46,6 +46,7 @@ _NEXT_CHAT_PREVIEW_SCHEMA_VERSION = "workflow_officer.next_chat_preview/v0"
 _NEXT_CHAT_PREVIEW_QUEUE_LEN = 3
 _OPERATOR_REPORT_SCHEMA_VERSION = "workflow_officer.operator_report/v0"
 _EXECUTIVE_SUMMARY_SCHEMA_VERSION = "workflow_officer.executive_summary/v0"
+_DASHBOARD_VIEW_SCHEMA_VERSION = "workflow_officer.dashboard_view/v0"
 
 # Ops registry pointers under docs/ops/registry (read-only; same line format as
 # scripts/ops/verify_registry_pointer_artifacts.parse_pointer).
@@ -1458,6 +1459,137 @@ def _build_summary(
     summary["operator_report"] = build_operator_report_view(summary)
     summary["executive_summary"] = build_executive_summary_view(summary)
     return summary
+
+
+def build_workflow_officer_dashboard_view(repo_root: Path) -> dict[str, Any]:
+    """Read-only WebUI slice: latest ``report.json`` under ``out/ops/workflow_officer`` (no writes)."""
+    out_root = repo_root / "out" / "ops" / "workflow_officer"
+    empty: dict[str, Any] = {
+        "present": False,
+        "dashboard_schema_version": _DASHBOARD_VIEW_SCHEMA_VERSION,
+        "empty_reason": "no_officer_runs",
+    }
+    if not out_root.is_dir():
+        return {**empty, "empty_reason": "no_officer_output_dir"}
+    run_dirs = sorted([p for p in out_root.iterdir() if p.is_dir()], key=lambda p: p.name)
+    if not run_dirs:
+        return empty
+    latest = run_dirs[-1]
+    report_path = latest / "report.json"
+    if not report_path.is_file():
+        return {**empty, "empty_reason": "no_report_json"}
+    try:
+        raw = json.loads(report_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError, json.JSONDecodeError):
+        return {**empty, "empty_reason": "report_unreadable"}
+    if not isinstance(raw, dict):
+        return {**empty, "empty_reason": "invalid_report"}
+    summary = raw.get("summary")
+    if not isinstance(summary, dict):
+        return {**empty, "empty_reason": "invalid_report"}
+
+    ex = summary.get("executive_summary")
+    op = summary.get("operator_report")
+    ranking = summary.get("followup_topic_ranking")
+
+    top_followups: list[dict[str, Any]] = []
+    if isinstance(op, dict) and isinstance(op.get("top_followups"), list):
+        for row in op["top_followups"][:3]:
+            if not isinstance(row, dict):
+                continue
+            cid = row.get("check_id")
+            if not isinstance(cid, str) or not cid.strip():
+                continue
+            top_followups.append(
+                {
+                    "rank": row.get("rank"),
+                    "check_id": cid.strip(),
+                    "recommended_priority": str(row.get("recommended_priority", "")),
+                    "effective_level": str(row.get("effective_level", "")),
+                }
+            )
+    elif isinstance(ranking, list):
+        for row in ranking[:3]:
+            if not isinstance(row, dict):
+                continue
+            cid = row.get("check_id")
+            if not isinstance(cid, str) or not cid.strip():
+                continue
+            top_followups.append(
+                {
+                    "rank": row.get("rank"),
+                    "check_id": cid.strip(),
+                    "recommended_priority": str(row.get("recommended_priority", "")),
+                    "effective_level": str(row.get("effective_level", "")),
+                }
+            )
+
+    primary_followup: dict[str, Any] | None = None
+    if isinstance(op, dict):
+        pf = op.get("primary_followup")
+        if isinstance(pf, dict) and pf.get("check_id"):
+            primary_followup = {
+                "check_id": str(pf.get("check_id", "")),
+                "recommended_priority": str(pf.get("recommended_priority", "")),
+                "effective_level": str(pf.get("effective_level", "")),
+            }
+            ra = pf.get("recommended_action")
+            if isinstance(ra, str) and ra.strip():
+                excerpt = ra.strip()
+                if len(excerpt) > 120:
+                    excerpt = excerpt[:117] + "..."
+                primary_followup["recommended_action_excerpt"] = excerpt
+            else:
+                primary_followup["recommended_action_excerpt"] = None
+
+    urgency: str | None = None
+    attention: str | None = None
+    exec_schema: str | None = None
+    if isinstance(ex, dict):
+        u = ex.get("urgency_label")
+        urgency = str(u).strip() if isinstance(u, str) and u.strip() else None
+        a = ex.get("attention_rationale")
+        attention = str(a).strip() if isinstance(a, str) and a.strip() else None
+        evs = ex.get("executive_summary_schema_version")
+        exec_schema = str(evs).strip() if isinstance(evs, str) and evs.strip() else None
+
+    operator_line = ""
+    if isinstance(op, dict):
+        r = op.get("rollup")
+        if isinstance(r, dict):
+            operator_line = (
+                f"total={r.get('total_checks')} errors={r.get('hard_failures')} "
+                f"warnings={r.get('warnings')} infos={r.get('infos')}"
+            )
+
+    rel = str(report_path.relative_to(repo_root).as_posix())
+    return {
+        "present": True,
+        "dashboard_schema_version": _DASHBOARD_VIEW_SCHEMA_VERSION,
+        "empty_reason": None,
+        "run_dir_name": latest.name,
+        "report_rel_path": rel,
+        "officer_version": raw.get("officer_version"),
+        "profile": raw.get("profile"),
+        "mode": raw.get("mode"),
+        "success": raw.get("success"),
+        "finished_at": raw.get("finished_at"),
+        "rollup": {
+            "total_checks": summary.get("total_checks"),
+            "hard_failures": summary.get("hard_failures"),
+            "warnings": summary.get("warnings"),
+            "infos": summary.get("infos"),
+            "strict": summary.get("strict"),
+        },
+        "executive": {
+            "urgency_label": urgency,
+            "attention_rationale": attention,
+            "schema_version": exec_schema,
+        },
+        "primary_followup": primary_followup,
+        "top_followups": top_followups,
+        "operator_snapshot_line": operator_line,
+    }
 
 
 def parse_args() -> argparse.Namespace:

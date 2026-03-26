@@ -629,6 +629,14 @@ def _render_update_officer_operator_trace_html(trace: dict[str, str]) -> str:
     )
 
 
+def build_workflow_officer_panel_context(repo_root: Path | None = None) -> Dict[str, object]:
+    """Read-only WebUI slice: latest Workflow Officer ``report.json`` (no writes)."""
+    from src.ops.workflow_officer import build_workflow_officer_dashboard_view
+
+    root = repo_root if repo_root is not None else Path.cwd()
+    return build_workflow_officer_dashboard_view(root)
+
+
 def build_ops_cockpit_payload(
     repo_root: Path | None = None,
     telemetry_root: Path | None = None,
@@ -1666,6 +1674,7 @@ __all__ = [
     "build_truth_state",
     "build_ai_boundary_state",
     "build_runtime_unknown_state",
+    "build_workflow_officer_panel_context",
     "build_ops_cockpit_payload",
     "render_ops_cockpit_html",
     "resolve_update_officer_route_inputs",
