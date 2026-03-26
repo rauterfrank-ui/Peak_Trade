@@ -6,7 +6,12 @@ on:
     branches: [main]
   check_suite:
     types: [completed]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to evaluate (merge if labeled + green). Leave empty for no-op."
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -25,6 +30,8 @@ jobs:
     steps:
       - name: Merge PR if labeled + green (API squash)
         uses: actions/github-script@v7
+        env:
+          DISPATCH_PR_NUMBER: ${{ github.event.inputs.pr_number }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -38,6 +45,14 @@ jobs:
             } else if (context.eventName === "check_suite") {
               const prs = (context.payload.check_suite && context.payload.check_suite.pull_requests) || [];
               prNumbers = prs.map(p => p.number).filter(Boolean);
+            } else if (context.eventName === "workflow_dispatch") {
+              const raw = process.env.DISPATCH_PR_NUMBER || "";
+              const n = parseInt(raw.trim(), 10);
+              if (!Number.isFinite(n) || n <= 0) {
+                core.info("workflow_dispatch: set input pr_number (e.g. 2047) to merge that PR; empty = no-op.");
+                return;
+              }
+              prNumbers = [n];
             } else {
               core.info(`Unsupported event: ${context.eventName}`);
               return;
