@@ -82,7 +82,7 @@
 - [Ops README](./ops/README.md) – Complete ops tools and documentation index
 - [Tech-Debt Top-3 ROI bis Finish Runbook](./ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md) – 3 kleine PRs (C/B/E) bis Finish, Cursor Multi-Agent, NO-LIVE
 - [RUNBOOK_BRANCH_CLEANUP_RECOVERY.md](./ops/runbooks/RUNBOOK_BRANCH_CLEANUP_RECOVERY.md) – Branch cleanup recovery (tags + bundles)
-- [Execution Watch Dashboard v0.2 Runbook](./ops/runbooks/RUNBOOK_EXECUTION_WATCH_DASHBOARD.md) – Start/verify the read-only execution watch dashboard
+- [Execution Watch Dashboard v0.2 Runbook](./ops/runbooks/RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md) – Start/verify the read-only execution watch dashboard
 - [Phase 7 Finish/Closeout Runbook](./ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md) – Workflow docs closeout + repo hygiene inventory (snapshot-based)
 - [Finish Plan (MVP→v1.0)](./ops/roadmap/FINISH_PLAN.md)
 - [Finish Runbook A (MVP)](./ops/runbooks/RUNBOOK_FINISH_A_MVP.md) – Backtest → Artifacts → Report → Watch‑Only Dashboard (snapshot-only, NO‑LIVE)
@@ -104,6 +104,7 @@
 - [Repo Cleanup Inventory (Snapshots)](./ops/_archive/repo_cleanup/2026-01-12/README.md) – Snapshot-based repo hygiene inventory (no actions without approval)
 
 ### Governance & Safety
+- **NO-LIVE default posture** (research/backtest/paper/shadow; no live orders by default): [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) · [Finish Plan — Stop Rules](./ops/roadmap/FINISH_PLAN.md#stop-rules-non-negotiable)
 - [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) – Governance framework and roles
 - [Safety Policy Testnet and Live](./SAFETY_POLICY_TESTNET_AND_LIVE.md) – Safety policies for testing and live operations
 
