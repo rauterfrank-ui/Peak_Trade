@@ -47,6 +47,7 @@ _NEXT_CHAT_PREVIEW_QUEUE_LEN = 3
 _OPERATOR_REPORT_SCHEMA_VERSION = "workflow_officer.operator_report/v0"
 _EXECUTIVE_SUMMARY_SCHEMA_VERSION = "workflow_officer.executive_summary/v0"
 _DASHBOARD_VIEW_SCHEMA_VERSION = "workflow_officer.dashboard_view/v0"
+_EXECUTIVE_PANEL_VIEW_SCHEMA_VERSION = "workflow_officer.executive_panel_view/v0"
 
 # Ops registry pointers under docs/ops/registry (read-only; same line format as
 # scripts/ops/verify_registry_pointer_artifacts.parse_pointer).
@@ -1371,6 +1372,68 @@ def render_executive_summary_markdown(executive: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def _build_executive_panel_view_from_summary(summary: dict[str, Any]) -> dict[str, Any]:
+    """Read-only WebUI executive slice: canonical ``build_executive_summary_view`` + markdown preview (no I/O)."""
+    ex = build_executive_summary_view(summary)
+    md = render_executive_summary_markdown(ex)
+    preview_lines = [ln for ln in md.splitlines() if ln.strip()][:32]
+    pr = ex.get("primary_recommendation")
+    primary_out: dict[str, Any] | None = None
+    if isinstance(pr, dict) and pr.get("check_id"):
+        primary_out = {
+            "check_id": pr.get("check_id"),
+            "recommended_priority": pr.get("recommended_priority"),
+            "effective_level": pr.get("effective_level"),
+            "recommended_action_excerpt": pr.get("recommended_action_excerpt"),
+        }
+    tops: list[dict[str, Any]] = []
+    for row in (ex.get("top_followups") or [])[:3]:
+        if isinstance(row, dict) and row.get("check_id"):
+            tops.append(
+                {
+                    "rank": row.get("rank"),
+                    "check_id": str(row.get("check_id", "")).strip(),
+                    "recommended_priority": str(row.get("recommended_priority", "")),
+                    "effective_level": str(row.get("effective_level", "")),
+                }
+            )
+    sigs: list[str] = []
+    for s in (ex.get("supporting_signals") or [])[:8]:
+        if isinstance(s, str) and s.strip():
+            sigs.append(s.strip())
+    nch = ex.get("next_chat_handoff")
+    handoff = nch if isinstance(nch, dict) else None
+    rs = ex.get("rollup_snapshot")
+    rollup_snapshot = rs if isinstance(rs, dict) else None
+    return {
+        "present": True,
+        "executive_panel_schema_version": _EXECUTIVE_PANEL_VIEW_SCHEMA_VERSION,
+        "executive_summary_schema_version": ex.get("executive_summary_schema_version"),
+        "urgency_label": ex.get("urgency_label"),
+        "attention_rationale": ex.get("attention_rationale"),
+        "primary_recommendation": primary_out,
+        "top_followups": tops,
+        "supporting_signals": sigs,
+        "rollup_snapshot": rollup_snapshot,
+        "next_chat_handoff": handoff,
+        "provenance_schema_version": ex.get("provenance_schema_version"),
+        "decision_package_preview_lines": preview_lines,
+    }
+
+
+def _dashboard_empty(reason: str) -> dict[str, Any]:
+    return {
+        "present": False,
+        "dashboard_schema_version": _DASHBOARD_VIEW_SCHEMA_VERSION,
+        "empty_reason": reason,
+        "executive_panel": {
+            "present": False,
+            "executive_panel_schema_version": _EXECUTIVE_PANEL_VIEW_SCHEMA_VERSION,
+            "empty_reason": reason,
+        },
+    }
+
+
 def build_handoff_context(summary: dict[str, Any]) -> dict[str, Any]:
     """Derive a small read-only handoff snapshot from an existing summary dict.
 
@@ -1464,29 +1527,24 @@ def _build_summary(
 def build_workflow_officer_dashboard_view(repo_root: Path) -> dict[str, Any]:
     """Read-only WebUI slice: latest ``report.json`` under ``out/ops/workflow_officer`` (no writes)."""
     out_root = repo_root / "out" / "ops" / "workflow_officer"
-    empty: dict[str, Any] = {
-        "present": False,
-        "dashboard_schema_version": _DASHBOARD_VIEW_SCHEMA_VERSION,
-        "empty_reason": "no_officer_runs",
-    }
     if not out_root.is_dir():
-        return {**empty, "empty_reason": "no_officer_output_dir"}
+        return _dashboard_empty("no_officer_output_dir")
     run_dirs = sorted([p for p in out_root.iterdir() if p.is_dir()], key=lambda p: p.name)
     if not run_dirs:
-        return empty
+        return _dashboard_empty("no_officer_runs")
     latest = run_dirs[-1]
     report_path = latest / "report.json"
     if not report_path.is_file():
-        return {**empty, "empty_reason": "no_report_json"}
+        return _dashboard_empty("no_report_json")
     try:
         raw = json.loads(report_path.read_text(encoding="utf-8"))
     except (OSError, ValueError, json.JSONDecodeError):
-        return {**empty, "empty_reason": "report_unreadable"}
+        return _dashboard_empty("report_unreadable")
     if not isinstance(raw, dict):
-        return {**empty, "empty_reason": "invalid_report"}
+        return _dashboard_empty("invalid_report")
     summary = raw.get("summary")
     if not isinstance(summary, dict):
-        return {**empty, "empty_reason": "invalid_report"}
+        return _dashboard_empty("invalid_report")
 
     ex = summary.get("executive_summary")
     op = summary.get("operator_report")
@@ -1589,6 +1647,7 @@ def build_workflow_officer_dashboard_view(repo_root: Path) -> dict[str, Any]:
         "primary_followup": primary_followup,
         "top_followups": top_followups,
         "operator_snapshot_line": operator_line,
+        "executive_panel": _build_executive_panel_view_from_summary(summary),
     }
 
 
