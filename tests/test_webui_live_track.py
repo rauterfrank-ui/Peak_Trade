@@ -373,6 +373,32 @@ class TestDashboardRendering:
         assert "Ops snapshot" in response.text
         assert "Executive decision package · read-only" in response.text
 
+    def test_dashboard_workflow_officer_empty_state_mentions_executive_snapshot(
+        self, test_client, tmp_path, monkeypatch
+    ):
+        """Regression: leerer Workflow-Officer-Block nennt executive snapshot im Template-Text."""
+        from src.webui import app as app_mod
+        from src.webui.ops_cockpit import build_workflow_officer_panel_context as _build_wf_panel
+
+        monkeypatch.setattr(
+            app_mod,
+            "build_workflow_officer_panel_context",
+            lambda _root=None: _build_wf_panel(tmp_path),
+        )
+        response = test_client.get("/")
+        assert response.status_code == 200
+        assert "No local Workflow Officer report (executive snapshot)" in response.text
+
+    def test_dashboard_workflow_officer_panel_shows_executive_heading_and_followups(
+        self, test_client
+    ):
+        """Regression: Executive-Überschrift und Follow-up-Listen bleiben im Dashboard sichtbar."""
+        response = test_client.get("/")
+        assert response.status_code == 200
+        body = response.text
+        assert "Executive decision package · read-only" in body
+        assert "Top follow-ups" in body
+
     def test_dashboard_shows_empty_state(self, test_client, monkeypatch):
         """Test: Dashboard zeigt leeren Zustand wenn keine Sessions."""
 

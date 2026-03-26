@@ -1516,3 +1516,62 @@ def test_ops_route_v10_help_text_conflict_state(ops_client: TestClient, tmp_path
     assert r.status_code == 200
     assert 'data-u10-source-mode="conflict"' in r.text
     assert "No notifier payload is loaded while inputs conflict" in r.text
+
+
+def test_ops_cockpit_workflow_officer_empty_state_wording(tmp_path: Path) -> None:
+    ctx = build_workflow_officer_panel_context(tmp_path)
+    assert ctx["present"] is False
+    assert ctx["empty_reason"] == "no_officer_output_dir"
+    assert (ctx.get("executive_panel") or {}).get("present") is False
+
+
+def test_ops_cockpit_workflow_officer_report_contains_operator_rollup_label(tmp_path: Path) -> None:
+    run_dir = tmp_path / "out" / "ops" / "workflow_officer" / "20260201T000000Z"
+    run_dir.mkdir(parents=True)
+    report = {
+        "officer_version": "v1-min",
+        "profile": "docs_only_pr",
+        "mode": "audit",
+        "success": True,
+        "finished_at": "2026-02-01",
+        "summary": {
+            "total_checks": 1,
+            "hard_failures": 0,
+            "warnings": 0,
+            "infos": 0,
+            "strict": False,
+            "executive_summary": {
+                "executive_summary_schema_version": "workflow_officer.executive_summary/v0",
+                "urgency_label": "clear",
+                "attention_rationale": "No blocking errors.",
+            },
+            "operator_report": {
+                "operator_report_schema_version": "workflow_officer.operator_report/v0",
+                "primary_followup": {
+                    "check_id": "chk_a",
+                    "recommended_priority": "p3",
+                    "effective_level": "ok",
+                    "recommended_action": "No action.",
+                },
+                "rollup": {
+                    "total_checks": 1,
+                    "hard_failures": 0,
+                    "warnings": 0,
+                    "infos": 0,
+                },
+                "top_followups": [
+                    {
+                        "rank": 1,
+                        "check_id": "chk_a",
+                        "recommended_priority": "p3",
+                        "effective_level": "ok",
+                    }
+                ],
+            },
+        },
+    }
+    (run_dir / "report.json").write_text(json.dumps(report), encoding="utf-8")
+    ctx = build_workflow_officer_panel_context(tmp_path)
+    assert ctx["present"] is True
+    line = str(ctx.get("operator_snapshot_line") or "")
+    assert "total=1" in line
