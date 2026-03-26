@@ -14,6 +14,7 @@ from src.ops.workflow_officer import (
     _resolve_outcome,
     _resolve_severity,
     _resolve_status,
+    build_executive_summary_view,
     build_followup_topic_ranking,
     build_handoff_context,
     build_next_chat_preview,
@@ -23,6 +24,7 @@ from src.ops.workflow_officer import (
     load_ops_registry_inputs,
     parse_merge_log_signals,
     parse_ops_pointer_text,
+    render_executive_summary_markdown,
     render_next_chat_preview_markdown,
     render_operator_report_markdown,
 )
@@ -160,6 +162,10 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     )
     assert op["registry_signals"]["pointer_count"] == rr["pointer_count"]
     assert op["merge_log_signals"]["canonical_merge_log_count"] == mlr["canonical_merge_log_count"]
+    ex = report["summary"]["executive_summary"]
+    assert ex["executive_summary_schema_version"] == "workflow_officer.executive_summary/v0"
+    assert ex["urgency_label"] in {"critical", "elevated", "moderate", "clear", "none"}
+    assert ex["rollup_snapshot"]["total_checks"] == report["summary"]["total_checks"]
     assert prov["operator_report"]["summary_inputs"] == sorted(
         [
             "followup_topic_ranking",
@@ -173,8 +179,20 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
             "workflow_officer_provenance",
         ]
     )
+    assert prov["executive_summary"]["summary_inputs"] == sorted(
+        [
+            "hard_failures",
+            "infos",
+            "operator_report",
+            "strict",
+            "total_checks",
+            "warnings",
+        ]
+    )
 
     summary_md = summary_path.read_text(encoding="utf-8")
+    assert "## Executive decision package" in summary_md
+    assert "workflow_officer.executive_summary/v0" in summary_md
     assert "## Operator consolidated view" in summary_md
     assert "workflow_officer.operator_report/v0" in summary_md
     assert "## Next chat preview" in summary_md
@@ -327,6 +345,7 @@ def test_build_followup_topic_ranking_orders_by_priority_effective_check_id() ->
         == {
             "rank",
             "check_id",
+            "recommended_action",
             "recommended_priority",
             "effective_level",
             "surface",
@@ -671,6 +690,7 @@ def test_build_workflow_officer_provenance_is_stable() -> None:
                     "check_id",
                     "effective_level",
                     "outcome",
+                    "recommended_action",
                     "recommended_priority",
                     "severity",
                     "surface",
@@ -719,6 +739,20 @@ def test_build_workflow_officer_provenance_is_stable() -> None:
             "queued_followup_max": 3,
             "summary_inputs": sorted(["handoff_context", "workflow_officer_provenance"]),
         },
+        "executive_summary": {
+            "builder": "build_executive_summary_view",
+            "markdown_builder": "render_executive_summary_markdown",
+            "summary_inputs": sorted(
+                [
+                    "hard_failures",
+                    "infos",
+                    "operator_report",
+                    "strict",
+                    "total_checks",
+                    "warnings",
+                ]
+            ),
+        },
         "operator_report": {
             "builder": "build_operator_report_view",
             "markdown_builder": "render_operator_report_markdown",
@@ -737,6 +771,83 @@ def test_build_workflow_officer_provenance_is_stable() -> None:
             ),
         },
     }
+
+
+def test_build_executive_summary_view_empty_summary_is_deterministic() -> None:
+    assert build_executive_summary_view({}) == {
+        "attention_rationale": "No checks recorded; nothing to action.",
+        "executive_summary_schema_version": "workflow_officer.executive_summary/v0",
+        "next_chat_handoff": {
+            "latest_pr_number": None,
+            "primary_followup_check_id": None,
+            "queued_followup_check_ids": [],
+            "registry_pointer_count": None,
+        },
+        "primary_recommendation": {
+            "check_id": None,
+            "effective_level": None,
+            "recommended_action_excerpt": None,
+            "recommended_priority": None,
+        },
+        "provenance_schema_version": None,
+        "rollup_snapshot": {
+            "hard_failures": 0,
+            "infos": 0,
+            "strict": False,
+            "total_checks": 0,
+            "warnings": 0,
+        },
+        "supporting_signals": ["strict=no"],
+        "top_followups": [],
+        "urgency_label": "none",
+    }
+
+
+def test_render_executive_summary_markdown_requires_schema_version() -> None:
+    assert render_executive_summary_markdown({}) == ""
+    assert render_executive_summary_markdown({"executive_summary_schema_version": ""}) == ""
+
+
+def test_render_executive_summary_markdown_stable_minimal() -> None:
+    md = render_executive_summary_markdown(
+        {
+            "executive_summary_schema_version": "workflow_officer.executive_summary/v0",
+            "provenance_schema_version": "workflow_officer.provenance/v0",
+            "urgency_label": "elevated",
+            "attention_rationale": "Warning-level findings need review before treating this run as clean.",
+            "primary_recommendation": {
+                "check_id": "docs_graph_triage",
+                "effective_level": "warning",
+                "recommended_action_excerpt": "Review logs.",
+                "recommended_priority": "p1",
+            },
+            "top_followups": [
+                {
+                    "rank": 1,
+                    "check_id": "docs_graph_triage",
+                    "effective_level": "warning",
+                    "recommended_priority": "p1",
+                }
+            ],
+            "supporting_signals": ["rollup_total=2 errors=0 warnings=1 infos=0", "strict=no"],
+            "next_chat_handoff": {
+                "latest_pr_number": 100,
+                "primary_followup_check_id": "docs_graph_triage",
+                "queued_followup_check_ids": ["docs_graph_triage"],
+                "registry_pointer_count": 3,
+            },
+            "rollup_snapshot": {
+                "total_checks": 2,
+                "hard_failures": 0,
+                "warnings": 1,
+                "infos": 0,
+                "strict": False,
+            },
+        }
+    )
+    assert md.startswith("## Executive decision package\n")
+    assert "- urgency_label: `elevated`" in md
+    assert "- why now: Warning-level findings need review before treating this run as clean." in md
 
 
 def test_build_operator_report_view_empty_summary_is_deterministic() -> None:

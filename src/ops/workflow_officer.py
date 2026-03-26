@@ -45,6 +45,7 @@ _PROVENANCE_SCHEMA_VERSION = "workflow_officer.provenance/v0"
 _NEXT_CHAT_PREVIEW_SCHEMA_VERSION = "workflow_officer.next_chat_preview/v0"
 _NEXT_CHAT_PREVIEW_QUEUE_LEN = 3
 _OPERATOR_REPORT_SCHEMA_VERSION = "workflow_officer.operator_report/v0"
+_EXECUTIVE_SUMMARY_SCHEMA_VERSION = "workflow_officer.executive_summary/v0"
 
 # Ops registry pointers under docs/ops/registry (read-only; same line format as
 # scripts/ops/verify_registry_pointer_artifacts.parse_pointer).
@@ -83,6 +84,7 @@ def build_workflow_officer_provenance() -> dict[str, Any]:
                     "check_id",
                     "effective_level",
                     "outcome",
+                    "recommended_action",
                     "recommended_priority",
                     "severity",
                     "surface",
@@ -145,6 +147,20 @@ def build_workflow_officer_provenance() -> dict[str, Any]:
                     "total_checks",
                     "warnings",
                     "workflow_officer_provenance",
+                ]
+            ),
+        },
+        "executive_summary": {
+            "builder": "build_executive_summary_view",
+            "markdown_builder": "render_executive_summary_markdown",
+            "summary_inputs": sorted(
+                [
+                    "hard_failures",
+                    "infos",
+                    "operator_report",
+                    "strict",
+                    "total_checks",
+                    "warnings",
                 ]
             ),
         },
@@ -639,6 +655,7 @@ def build_followup_topic_ranking(check_dicts: list[dict[str, Any]]) -> list[dict
         {
             "rank": idx,
             "check_id": row["check_id"],
+            "recommended_action": str(row.get("recommended_action", "")),
             "recommended_priority": row["recommended_priority"],
             "effective_level": row["effective_level"],
             "surface": row["surface"],
@@ -808,8 +825,11 @@ def build_operator_report_view(summary: dict[str, Any]) -> dict[str, Any]:
     if ranking and isinstance(ranking[0], dict):
         row = ranking[0]
         h = row.get("followup_rank_heuristic")
+        ra_raw = row.get("recommended_action")
+        ra_s = str(ra_raw).strip() if isinstance(ra_raw, str) and str(ra_raw).strip() else None
         primary_followup = {
             "check_id": str(row.get("check_id", "")),
+            "recommended_action": ra_s,
             "recommended_priority": str(row.get("recommended_priority", "")),
             "effective_level": str(row.get("effective_level", "")),
             "followup_rank_heuristic": h if isinstance(h, dict) else None,
@@ -1038,6 +1058,318 @@ def render_operator_report_markdown(operator_report: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def build_executive_summary_view(summary: dict[str, Any]) -> dict[str, Any]:
+    """Embedded decision-package slice from ``operator_report`` plus top-level rollups (read-only, no I/O)."""
+    op = summary.get("operator_report")
+    if not isinstance(op, dict):
+        op = {}
+
+    def _safe_int(key: str) -> int:
+        raw = summary.get(key)
+        try:
+            return int(raw)
+        except (TypeError, ValueError):
+            return 0
+
+    hard_failures = _safe_int("hard_failures")
+    warnings = _safe_int("warnings")
+    infos = _safe_int("infos")
+    total_checks = _safe_int("total_checks")
+    strict = bool(summary.get("strict", False))
+
+    pf = op.get("primary_followup")
+    primary: dict[str, Any] | None = pf if isinstance(pf, dict) else None
+
+    def _urgency_label() -> str:
+        if total_checks == 0:
+            return "none"
+        if hard_failures > 0:
+            return "critical"
+        if primary is None:
+            return "clear"
+        prio = primary.get("recommended_priority")
+        if prio == "p0":
+            return "critical"
+        if prio == "p1":
+            return "elevated"
+        if prio == "p2":
+            return "moderate"
+        return "clear"
+
+    def _attention_rationale() -> str:
+        if total_checks == 0:
+            return "No checks recorded; nothing to action."
+        if hard_failures > 0:
+            return (
+                "One or more hard-fail checks failed or are missing required targets; "
+                "remediate before relying on this path."
+            )
+        if warnings > 0:
+            return "Warning-level findings need review before treating this run as clean."
+        if strict and (warnings > 0 or infos > 0):
+            return "Strict mode flags non-zero warning or info counts."
+        if infos > 0:
+            return "Informational-only signals; verify manually if relevant to your change."
+        return "No blocking errors; routine documentation or hygiene follow-ups only."
+
+    primary_out: dict[str, Any] = {
+        "check_id": None,
+        "effective_level": None,
+        "recommended_action_excerpt": None,
+        "recommended_priority": None,
+    }
+    if primary is not None:
+        cid = primary.get("check_id")
+        primary_out["check_id"] = (
+            str(cid).strip() if isinstance(cid, str) and str(cid).strip() else None
+        )
+        el = primary.get("effective_level")
+        primary_out["effective_level"] = (
+            str(el).strip() if isinstance(el, str) and str(el).strip() else None
+        )
+        rp = primary.get("recommended_priority")
+        primary_out["recommended_priority"] = (
+            str(rp).strip() if isinstance(rp, str) and str(rp).strip() else None
+        )
+        ra = primary.get("recommended_action")
+        if isinstance(ra, str) and ra.strip():
+            excerpt = ra.strip()
+            if len(excerpt) > 160:
+                excerpt = excerpt[:157] + "..."
+            primary_out["recommended_action_excerpt"] = excerpt
+        else:
+            primary_out["recommended_action_excerpt"] = None
+
+    top_slice: list[dict[str, Any]] = []
+    tops = op.get("top_followups")
+    if isinstance(tops, list):
+        for row in tops[:3]:
+            if not isinstance(row, dict):
+                continue
+            cid = row.get("check_id")
+            if not isinstance(cid, str) or not cid.strip():
+                continue
+            rk = row.get("rank")
+            try:
+                rkn = int(rk)
+            except (TypeError, ValueError):
+                rkn = 0
+            top_slice.append(
+                {
+                    "rank": rkn,
+                    "check_id": cid.strip(),
+                    "effective_level": str(row.get("effective_level", "")),
+                    "recommended_priority": str(row.get("recommended_priority", "")),
+                }
+            )
+
+    supporting_signals: list[str] = []
+    rollup = op.get("rollup")
+    if isinstance(rollup, dict):
+        try:
+            tc = int(rollup.get("total_checks", 0))
+        except (TypeError, ValueError):
+            tc = 0
+        try:
+            hf = int(rollup.get("hard_failures", 0))
+        except (TypeError, ValueError):
+            hf = 0
+        try:
+            wn = int(rollup.get("warnings", 0))
+        except (TypeError, ValueError):
+            wn = 0
+        try:
+            inf = int(rollup.get("infos", 0))
+        except (TypeError, ValueError):
+            inf = 0
+        supporting_signals.append(f"rollup_total={tc} errors={hf} warnings={wn} infos={inf}")
+    supporting_signals.append(f"strict={'yes' if strict else 'no'}")
+
+    basis = op.get("ranking_basis")
+    if isinstance(basis, dict):
+        rhs = basis.get("rank_heuristic_schema_version")
+        if isinstance(rhs, str) and rhs.strip():
+            supporting_signals.append(f"rank_heuristic_schema={rhs.strip()}")
+
+    if primary is not None:
+        hr = primary.get("followup_rank_heuristic")
+        if isinstance(hr, dict):
+            comp = hr.get("components")
+            if isinstance(comp, dict):
+                supporting_signals.append(
+                    "primary_heuristic_ranks: "
+                    f"priority={comp.get('priority_rank')} "
+                    f"effective_level={comp.get('effective_level_rank')} "
+                    f"outcome={comp.get('outcome_rank')} "
+                    f"severity={comp.get('severity_rank')}"
+                )
+
+    reg = op.get("registry_signals")
+    if isinstance(reg, dict):
+        prid = reg.get("primary_run_id")
+        prid_s = str(prid).strip() if isinstance(prid, str) and str(prid).strip() else "n/a"
+        try:
+            pc = int(reg.get("pointer_count", 0))
+        except (TypeError, ValueError):
+            pc = 0
+        supporting_signals.append(f"registry_pointers={pc} primary_run_id={prid_s}")
+
+    ml = op.get("merge_log_signals")
+    if isinstance(ml, dict):
+        try:
+            mcc = int(ml.get("canonical_merge_log_count", 0))
+        except (TypeError, ValueError):
+            mcc = 0
+        lpr = ml.get("latest_pr_number")
+        try:
+            lpr_s = str(int(lpr)) if lpr is not None else "n/a"
+        except (TypeError, ValueError):
+            lpr_s = "n/a"
+        supporting_signals.append(f"merge_logs_count={mcc} latest_pr={lpr_s}")
+
+    nce = op.get("next_chat_essentials")
+    handoff_out: dict[str, Any] = {
+        "latest_pr_number": None,
+        "primary_followup_check_id": None,
+        "queued_followup_check_ids": [],
+        "registry_pointer_count": None,
+    }
+    if isinstance(nce, dict):
+        lpr = nce.get("latest_pr_number")
+        try:
+            handoff_out["latest_pr_number"] = int(lpr) if lpr is not None else None
+        except (TypeError, ValueError):
+            handoff_out["latest_pr_number"] = None
+        pfc = nce.get("primary_followup_check_id")
+        handoff_out["primary_followup_check_id"] = (
+            str(pfc).strip() if isinstance(pfc, str) and str(pfc).strip() else None
+        )
+        rpc = nce.get("registry_pointer_count")
+        try:
+            handoff_out["registry_pointer_count"] = int(rpc) if rpc is not None else None
+        except (TypeError, ValueError):
+            handoff_out["registry_pointer_count"] = None
+        qc = nce.get("queued_followup_check_ids")
+        if isinstance(qc, list):
+            handoff_out["queued_followup_check_ids"] = [
+                str(x).strip() for x in qc if isinstance(x, str) and str(x).strip()
+            ][:3]
+
+    prov = op.get("provenance_schema_version")
+    prov_s = prov.strip() if isinstance(prov, str) and prov.strip() else None
+
+    return {
+        "attention_rationale": _attention_rationale(),
+        "executive_summary_schema_version": _EXECUTIVE_SUMMARY_SCHEMA_VERSION,
+        "next_chat_handoff": handoff_out,
+        "primary_recommendation": primary_out,
+        "provenance_schema_version": prov_s,
+        "rollup_snapshot": {
+            "hard_failures": hard_failures,
+            "infos": infos,
+            "strict": strict,
+            "total_checks": total_checks,
+            "warnings": warnings,
+        },
+        "supporting_signals": supporting_signals,
+        "top_followups": top_slice,
+        "urgency_label": _urgency_label(),
+    }
+
+
+def render_executive_summary_markdown(executive: dict[str, Any]) -> str:
+    """Deterministic markdown for ``summary[\"executive_summary\"]`` (read-only, no I/O)."""
+    if not isinstance(executive, dict):
+        return ""
+    schema = executive.get("executive_summary_schema_version")
+    if not isinstance(schema, str) or not schema.strip():
+        return ""
+
+    lines = [
+        "## Executive decision package",
+        "",
+        f"- executive_summary_schema_version: `{schema.strip()}`",
+    ]
+    prov = executive.get("provenance_schema_version")
+    prov_s = prov.strip() if isinstance(prov, str) and prov.strip() else "n/a"
+    lines.append(f"- provenance_schema_version: `{prov_s}`")
+    lines.append(f"- urgency_label: `{executive.get('urgency_label', '')}`")
+
+    pr = executive.get("primary_recommendation")
+    if isinstance(pr, dict) and pr.get("check_id"):
+        lines.append(
+            f"- primary: `{pr['check_id']}` priority `{pr.get('recommended_priority') or 'n/a'}` "
+            f"level `{pr.get('effective_level') or 'n/a'}`"
+        )
+        ex = pr.get("recommended_action_excerpt")
+        if isinstance(ex, str) and ex.strip():
+            lines.append(f"- primary action (excerpt): {ex.strip()}")
+    else:
+        lines.append("- primary: _(none)_")
+
+    ar = executive.get("attention_rationale")
+    if isinstance(ar, str) and ar.strip():
+        lines.append(f"- why now: {ar.strip()}")
+
+    tops = executive.get("top_followups")
+    if isinstance(tops, list) and tops:
+        parts: list[str] = []
+        for t in tops[:3]:
+            if isinstance(t, dict) and t.get("check_id"):
+                parts.append(
+                    f"`{t['check_id']}` rank {t.get('rank', '')} "
+                    f"({t.get('recommended_priority', '')}/{t.get('effective_level', '')})"
+                )
+        if parts:
+            lines.append("- top follow-ups: " + "; ".join(parts))
+    else:
+        lines.append("- top follow-ups: _(none)_")
+
+    sigs = executive.get("supporting_signals")
+    if isinstance(sigs, list) and sigs:
+        lines.append("- supporting signals:")
+        for s in sigs:
+            if isinstance(s, str) and s.strip():
+                lines.append(f"  - {s.strip()}")
+    else:
+        lines.append("- supporting signals: _(none)_")
+
+    nch = executive.get("next_chat_handoff")
+    if isinstance(nch, dict):
+        lpr = nch.get("latest_pr_number")
+        try:
+            lpr_s = str(int(lpr)) if lpr is not None else "n/a"
+        except (TypeError, ValueError):
+            lpr_s = "n/a"
+        q = nch.get("queued_followup_check_ids")
+        if isinstance(q, list) and q:
+            qjoin = ", ".join(f"`{x}`" for x in q if isinstance(x, str))
+            qline = qjoin if qjoin else "_(none)_"
+        else:
+            qline = "_(none)_"
+        pfc = nch.get("primary_followup_check_id") or "n/a"
+        rpc = nch.get("registry_pointer_count")
+        try:
+            rpc_s = str(int(rpc)) if rpc is not None else "n/a"
+        except (TypeError, ValueError):
+            rpc_s = "n/a"
+        lines.append(
+            f"- next-chat handoff: primary `{pfc}` queue {qline} "
+            f"latest_pr `{lpr_s}` registry_pointers `{rpc_s}`"
+        )
+
+    rs = executive.get("rollup_snapshot")
+    if isinstance(rs, dict):
+        lines.append(
+            f"- rollup snapshot: total `{rs.get('total_checks', 0)}` errors `{rs.get('hard_failures', 0)}` "
+            f"warnings `{rs.get('warnings', 0)}` infos `{rs.get('infos', 0)}` "
+            f"strict `{'yes' if rs.get('strict') else 'no'}`"
+        )
+
+    lines.append("")
+    return "\n".join(lines)
+
+
 def build_handoff_context(summary: dict[str, Any]) -> dict[str, Any]:
     """Derive a small read-only handoff snapshot from an existing summary dict.
 
@@ -1124,6 +1456,7 @@ def _build_summary(
     summary["handoff_context"] = build_handoff_context(summary)
     summary["next_chat_preview"] = build_next_chat_preview(summary)
     summary["operator_report"] = build_operator_report_view(summary)
+    summary["executive_summary"] = build_executive_summary_view(summary)
     return summary
 
 
