@@ -130,7 +130,7 @@ Risk: LOW
 - [ ] **Reconciliation Rules** dokumentiert (z.B. “what is source of truth?”).
 
 #### QA / Evidence
-- [ ] **Targeted Unit Tests** existieren (mind. 3: pipeline reject, event-to-ledger, trend ledger).
+- [ ] **Targeted Unit Tests** existieren (Slice‑2 Ledger‑Verify: Double‑Entry, PnL Golden, Slice1→Ledger Integration, Determinism Contract; siehe Quickstart und `RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md`).
 - [ ] **Operator Verify** ist snapshot-only und ohne live side-effects.
 
 ### Operator Quickstart (Beta) — Local Verify (Snapshot-only)
@@ -144,9 +144,10 @@ bash scripts/ops/pt_docs_gates_snapshot.sh --changed
 2) **Targeted tests (ExecutionPipeline + Ledger)**:
 
 ```bash
-python3 -m pytest -q tests/execution/test_wp0d_reject_produces_no_ledger_entry.py
-python3 -m pytest -q tests/execution/test_wp0d_event_to_ledger_fill_maps_to_trade.py
-python3 -m pytest -q tests/ai_orchestration/test_trend_ledger_from_seed.py
+python3 -m pytest -q tests/execution/test_ledger_double_entry.py
+python3 -m pytest -q tests/execution/test_ledger_pnl_golden.py
+python3 -m pytest -q tests/execution/test_execution_slice1_to_ledger_integration.py
+python3 -m pytest -q tests/execution/test_execution_determinism_contract.py
 ```
 
 3) **Optional: Pipeline demo (offline/paper)**:
@@ -162,9 +163,10 @@ Finish Level B (Beta) — Evidence (Snapshot-only)
 NO-LIVE: YES (paper/sim only)
 Docs Gates Snapshot: bash scripts/ops/pt_docs_gates_snapshot.sh --changed → <PASS/FAIL>
 Tests (pipeline/ledger):
- - python3 -m pytest -q tests/execution/test_wp0d_reject_produces_no_ledger_entry.py → <PASS/FAIL>
- - python3 -m pytest -q tests/execution/test_wp0d_event_to_ledger_fill_maps_to_trade.py → <PASS/FAIL>
- - python3 -m pytest -q tests/ai_orchestration/test_trend_ledger_from_seed.py → <PASS/FAIL>
+ - python3 -m pytest -q tests/execution/test_ledger_double_entry.py → <PASS/FAIL>
+ - python3 -m pytest -q tests/execution/test_ledger_pnl_golden.py → <PASS/FAIL>
+ - python3 -m pytest -q tests/execution/test_execution_slice1_to_ledger_integration.py → <PASS/FAIL>
+ - python3 -m pytest -q tests/execution/test_execution_determinism_contract.py → <PASS/FAIL>
 Notes: <max 2 lines>
 Risk: MED (execution-adjacent, still NO-LIVE)
 ```
@@ -280,8 +282,9 @@ Risk: HIGH (broker/live-ops domain; execution-adjacent)
   - Clear mapping: event→ledger semantics
   - Reconciliation rules documented
 - **Tests**:
-  - `tests/execution/test_wp0d_event_to_ledger_fill_maps_to_trade.py`
-  - `tests/ai_orchestration/test_trend_ledger_from_seed.py`
+  - `tests/execution/test_ledger_pnl_golden.py`
+  - `tests/execution/test_execution_slice1_to_ledger_integration.py`
+  - `tests/execution/test_execution_determinism_contract.py`
 
 ### 6) Ops / CI / Docs Gates & Operator UX
 - **Inputs**: PR slices, docs updates, runbooks, evidence artifacts
@@ -328,7 +331,7 @@ Risk: HIGH (broker/live-ops domain; execution-adjacent)
 - **Scope**: Strengthen deterministic behavior and test coverage around pipeline↔ledger mapping
 - **Files (patterns)**: src execution/ledger modules + tests execution/ai_orchestration
 - **Tests**:
-  - targeted pytest: reject/no-ledger, event-to-ledger, trend-ledger-from-seed
+  - targeted pytest: Ledger Double‑Entry, PnL Golden, Slice1→Ledger Integration, Determinism Contract (plus WP0D reject in ExecutionPipeline‑Mapping)
 - **Gates**:
   - lint + pytest matrix (per repo CI)
   - governance-safe (no live unlock)
