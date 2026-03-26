@@ -65,7 +65,7 @@ Ein Operator kann deterministisch einen Backtest laufen lassen und bekommt:
 
 ### Artifacts Contract v1
 
-- Artifacts Contract v1 documented against current local verify outputs (`equity.csv`, trades export, `stats.json`, config snapshot, report snippet markdown, optional `report/backtest.html`; portfolio verify emits `reports/*_portfolio_stats.json` and related CSV outputs).
+- Artifacts Contract v1 documented against current local verify outputs (`equity.csv`, trades export, `stats.json`, config snapshot, report snippet markdown, optional `report&#47;backtest.html`; portfolio verify emits `reports&#47;*_portfolio_stats.json` and related CSV outputs).
 
 ### Watch‑Only API (v0)
 
