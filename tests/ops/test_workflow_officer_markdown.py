@@ -132,6 +132,7 @@ def test_render_workflow_officer_summary_contains_core_sections() -> None:
     assert "## Next chat preview" in md
     assert "docs_graph_triage" in md
     assert "queued_followup_check_ids (order preserved):" in md
+    assert "sequencing_bucket" in md
 
 
 def test_workflow_officer_run_writes_summary_md(tmp_path: Path) -> None:

@@ -39,15 +39,17 @@ _FOLLOWUP_RANK_HEURISTIC_VERSION = "workflow_officer.followup_rank_heuristic/v0"
 
 # Handoff context: bounded excerpt for operators (read-only, no extra I/O).
 _HANDOFF_CONTEXT_TOP_FOLLOWUPS = 5
-_HANDOFF_CONTEXT_SCHEMA_VERSION = "workflow_officer.handoff_context/v0"
+_HANDOFF_CONTEXT_SCHEMA_VERSION = "workflow_officer.handoff_context/v1"
 
 _PROVENANCE_SCHEMA_VERSION = "workflow_officer.provenance/v0"
-_NEXT_CHAT_PREVIEW_SCHEMA_VERSION = "workflow_officer.next_chat_preview/v0"
+_NEXT_CHAT_PREVIEW_SCHEMA_VERSION = "workflow_officer.next_chat_preview/v1"
 _NEXT_CHAT_PREVIEW_QUEUE_LEN = 3
 _OPERATOR_REPORT_SCHEMA_VERSION = "workflow_officer.operator_report/v0"
 _EXECUTIVE_SUMMARY_SCHEMA_VERSION = "workflow_officer.executive_summary/v0"
 _DASHBOARD_VIEW_SCHEMA_VERSION = "workflow_officer.dashboard_view/v0"
 _EXECUTIVE_PANEL_VIEW_SCHEMA_VERSION = "workflow_officer.executive_panel_view/v0"
+
+_SEQUENCING_SCHEMA_VERSION = "workflow_officer.sequencing/v0"
 
 # Ops registry pointers under docs/ops/registry (read-only; same line format as
 # scripts/ops/verify_registry_pointer_artifacts.parse_pointer).
@@ -88,6 +90,7 @@ def build_workflow_officer_provenance() -> dict[str, Any]:
                     "outcome",
                     "recommended_action",
                     "recommended_priority",
+                    "sequencing",
                     "severity",
                     "surface",
                 ]
@@ -114,6 +117,7 @@ def build_workflow_officer_provenance() -> dict[str, Any]:
                     "handoff_schema_version",
                     "merge_log_inputs_rollup",
                     "primary_followup_check_id",
+                    "primary_sequencing",
                     "registry_inputs_rollup",
                     "rollup",
                     "strict",
@@ -635,6 +639,138 @@ def _followup_rank_heuristic_payload(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _gates_incomplete_from_check_dicts(check_dicts: list[dict[str, Any]]) -> bool:
+    for r in check_dicts:
+        el = r.get("effective_level")
+        if el in ("error", "warning"):
+            return True
+    return False
+
+
+def _gates_incomplete_from_summary(summary: dict[str, Any]) -> bool:
+    try:
+        hf = int(summary.get("hard_failures", 0))
+        wn = int(summary.get("warnings", 0))
+    except (TypeError, ValueError):
+        return True
+    return hf > 0 or wn > 0
+
+
+def _sequencing_topic_blob(row: dict[str, Any]) -> str:
+    parts = [
+        str(row.get("check_id", "")),
+        str(row.get("recommended_action", "")),
+        str(row.get("category", "")),
+        str(row.get("surface", "")),
+    ]
+    return " ".join(parts).lower()
+
+
+def classify_workflow_officer_sequencing(
+    row: dict[str, Any],
+    *,
+    gates_incomplete: bool,
+) -> dict[str, Any]:
+    """Classify a follow-up topic into a single sequencing bucket (read-only heuristics).
+
+    ``gates_incomplete`` should reflect whether bounded-pilot / truth / ops rollups still
+    show unresolved error- or warning-level checks (same signal as summary rollups).
+    """
+    text = _sequencing_topic_blob(row)
+    ai_markers = (
+        "ai layer",
+        "provider",
+        "model",
+        "critic",
+        "proposer",
+        "live ai",
+        "llm",
+        "enablement",
+        "full live",
+    )
+    build_markers = (
+        "execution",
+        "ledger",
+        "reconciliation",
+        "pilot",
+        "kill switch",
+        "kill-switch",
+        "incident",
+        "broker",
+        "operator",
+        "truth",
+        "evidence",
+        "verify",
+        "bounded pilot",
+        "gating",
+        "reconcile",
+    )
+    stabilize_markers = (
+        "workflow officer",
+        "dashboard",
+        "wording",
+        "regression",
+        "docs-only",
+        "polish",
+        "markdown",
+    )
+
+    ai_hit = any(m in text for m in ai_markers)
+    build_hit = any(m in text for m in build_markers)
+    stab_hit = any(m in text for m in stabilize_markers)
+
+    if ai_hit and gates_incomplete:
+        return {
+            "sequencing_bucket": "defer_until_prerequisites",
+            "sequencing_rationale": (
+                "topic expands AI-layer breadth before bounded-pilot, truth, and operator "
+                "gating prerequisites are fully satisfied"
+            ),
+            "prerequisite_signals": [
+                "bounded_pilot_clear",
+                "truth_and_ops_gates_green",
+                "operator_gating_clear",
+            ],
+            "blocked_by": ["ai_layer_breadth_before_gates"],
+            "suggested_next_theme_class": "ai_breadth_after_gates",
+            "sequencing_schema_version": _SEQUENCING_SCHEMA_VERSION,
+        }
+    if build_hit:
+        return {
+            "sequencing_bucket": "build_now",
+            "sequencing_rationale": (
+                "execution-adjacent bounded-pilot / truth / ops work is a nearer prerequisite "
+                "than broader AI-layer expansion"
+            ),
+            "prerequisite_signals": ["active_path_hardening"],
+            "blocked_by": [],
+            "suggested_next_theme_class": "bounded_pilot_truth_ops",
+            "sequencing_schema_version": _SEQUENCING_SCHEMA_VERSION,
+        }
+    if stab_hit:
+        return {
+            "sequencing_bucket": "stabilize_only",
+            "sequencing_rationale": (
+                "topic appears to refine an already-built surface rather than unblock the active pilot path"
+            ),
+            "prerequisite_signals": ["existing_surface_operational"],
+            "blocked_by": [],
+            "suggested_next_theme_class": "surface_hardening",
+            "sequencing_schema_version": _SEQUENCING_SCHEMA_VERSION,
+        }
+    return {
+        "sequencing_bucket": "build_now",
+        "sequencing_rationale": (
+            "execution-adjacent bounded-pilot / truth / ops work is a nearer prerequisite "
+            "than broader AI-layer expansion"
+        ),
+        "prerequisite_signals": ["default_active_path"],
+        "blocked_by": [],
+        "suggested_next_theme_class": "bounded_pilot_truth_ops",
+        "sequencing_schema_version": _SEQUENCING_SCHEMA_VERSION,
+    }
+
+
 def build_followup_topic_ranking(check_dicts: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Rank checks as read-only follow-up topics (no I/O, no mutation).
 
@@ -653,6 +789,7 @@ def build_followup_topic_ranking(check_dicts: list[dict[str, Any]]) -> list[dict
     if not check_dicts:
         return []
     ordered = sorted(check_dicts, key=_followup_row_sort_key)
+    gates_incomplete = _gates_incomplete_from_check_dicts(check_dicts)
     return [
         {
             "rank": idx,
@@ -663,6 +800,9 @@ def build_followup_topic_ranking(check_dicts: list[dict[str, Any]]) -> list[dict
             "surface": row["surface"],
             "category": row["category"],
             "followup_rank_heuristic": _followup_rank_heuristic_payload(row),
+            "sequencing": classify_workflow_officer_sequencing(
+                row, gates_incomplete=gates_incomplete
+            ),
         }
         for idx, row in enumerate(ordered, start=1)
     ]
@@ -734,11 +874,16 @@ def build_next_chat_preview(summary: dict[str, Any]) -> dict[str, Any]:
             except (TypeError, ValueError):
                 latest_pr_number = None
 
+    primary_seq = handoff.get("primary_sequencing")
+    if not isinstance(primary_seq, dict):
+        primary_seq = None
+
     return {
         "hard_failures": hard_failures,
         "latest_pr_number": latest_pr_number,
         "preview_schema_version": _NEXT_CHAT_PREVIEW_SCHEMA_VERSION,
         "primary_followup_check_id": primary_followup_check_id,
+        "primary_sequencing": primary_seq,
         "provenance_schema_version": provenance_schema_version,
         "queued_followup_check_ids": queued_followup_check_ids,
         "registry_pointer_count": registry_pointer_count,
@@ -798,6 +943,14 @@ def render_next_chat_preview_markdown(preview: dict[str, Any]) -> str:
         lines.append("- queued_followup_check_ids (order preserved): _(none)_")
     lines.append(f"- registry_pointer_count: `{reg_s}`")
     lines.append(f"- latest_pr_number: `{pr_s}`")
+    pseq = preview.get("primary_sequencing")
+    if isinstance(pseq, dict):
+        bucket = pseq.get("sequencing_bucket")
+        rat = pseq.get("sequencing_rationale")
+        bucket_s = bucket.strip() if isinstance(bucket, str) and bucket.strip() else "n/a"
+        rat_s = rat.strip() if isinstance(rat, str) and rat.strip() else "n/a"
+        lines.append(f"- sequencing_bucket: `{bucket_s}`")
+        lines.append(f"- sequencing_rationale: {rat_s}")
     return "\n".join(lines) + "\n"
 
 
@@ -829,12 +982,14 @@ def build_operator_report_view(summary: dict[str, Any]) -> dict[str, Any]:
         h = row.get("followup_rank_heuristic")
         ra_raw = row.get("recommended_action")
         ra_s = str(ra_raw).strip() if isinstance(ra_raw, str) and str(ra_raw).strip() else None
+        seq = row.get("sequencing")
         primary_followup = {
             "check_id": str(row.get("check_id", "")),
             "recommended_action": ra_s,
             "recommended_priority": str(row.get("recommended_priority", "")),
             "effective_level": str(row.get("effective_level", "")),
             "followup_rank_heuristic": h if isinstance(h, dict) else None,
+            "sequencing": seq if isinstance(seq, dict) else None,
         }
 
     top_followups: list[dict[str, Any]] = []
@@ -849,12 +1004,14 @@ def build_operator_report_view(summary: dict[str, Any]) -> dict[str, Any]:
             rkn = int(rk)
         except (TypeError, ValueError):
             rkn = 0
+        seq_r = row.get("sequencing")
         top_followups.append(
             {
                 "check_id": cid,
                 "effective_level": str(row.get("effective_level", "")),
                 "rank": rkn,
                 "recommended_priority": str(row.get("recommended_priority", "")),
+                "sequencing": seq_r if isinstance(seq_r, dict) else None,
             }
         )
 
@@ -1004,6 +1161,14 @@ def render_operator_report_markdown(operator_report: dict[str, Any]) -> str:
                     f"`outcome_rank={comp.get('outcome_rank')}` "
                     f"`severity_rank={comp.get('severity_rank')}`"
                 )
+        seqp = pf.get("sequencing")
+        if isinstance(seqp, dict):
+            sb = seqp.get("sequencing_bucket")
+            sr = seqp.get("sequencing_rationale")
+            if isinstance(sb, str) and sb.strip():
+                lines.append(f"- primary sequencing_bucket: `{sb.strip()}`")
+            if isinstance(sr, str) and sr.strip():
+                lines.append(f"- primary sequencing_rationale: {sr.strip()}")
     basis = operator_report.get("ranking_basis")
     if isinstance(basis, dict):
         oi = basis.get("ordering_inputs")
@@ -1119,6 +1284,7 @@ def build_executive_summary_view(summary: dict[str, Any]) -> dict[str, Any]:
         "effective_level": None,
         "recommended_action_excerpt": None,
         "recommended_priority": None,
+        "sequencing": None,
     }
     if primary is not None:
         cid = primary.get("check_id")
@@ -1141,6 +1307,8 @@ def build_executive_summary_view(summary: dict[str, Any]) -> dict[str, Any]:
             primary_out["recommended_action_excerpt"] = excerpt
         else:
             primary_out["recommended_action_excerpt"] = None
+        ps = primary.get("sequencing")
+        primary_out["sequencing"] = ps if isinstance(ps, dict) else None
 
     top_slice: list[dict[str, Any]] = []
     tops = op.get("top_followups")
@@ -1156,12 +1324,14 @@ def build_executive_summary_view(summary: dict[str, Any]) -> dict[str, Any]:
                 rkn = int(rk)
             except (TypeError, ValueError):
                 rkn = 0
+            seq_t = row.get("sequencing")
             top_slice.append(
                 {
                     "rank": rkn,
                     "check_id": cid.strip(),
                     "effective_level": str(row.get("effective_level", "")),
                     "recommended_priority": str(row.get("recommended_priority", "")),
+                    "sequencing": seq_t if isinstance(seq_t, dict) else None,
                 }
             )
 
@@ -1306,6 +1476,14 @@ def render_executive_summary_markdown(executive: dict[str, Any]) -> str:
         ex = pr.get("recommended_action_excerpt")
         if isinstance(ex, str) and ex.strip():
             lines.append(f"- primary action (excerpt): {ex.strip()}")
+        sq = pr.get("sequencing")
+        if isinstance(sq, dict):
+            sb = sq.get("sequencing_bucket")
+            sr = sq.get("sequencing_rationale")
+            if isinstance(sb, str) and sb.strip():
+                lines.append(f"- primary sequencing_bucket: `{sb.strip()}`")
+            if isinstance(sr, str) and sr.strip():
+                lines.append(f"- primary sequencing_rationale: {sr.strip()}")
     else:
         lines.append("- primary: _(none)_")
 
@@ -1385,6 +1563,7 @@ def _build_executive_panel_view_from_summary(summary: dict[str, Any]) -> dict[st
             "recommended_priority": pr.get("recommended_priority"),
             "effective_level": pr.get("effective_level"),
             "recommended_action_excerpt": pr.get("recommended_action_excerpt"),
+            "sequencing": pr.get("sequencing"),
         }
     tops: list[dict[str, Any]] = []
     for row in (ex.get("top_followups") or [])[:3]:
@@ -1446,6 +1625,18 @@ def build_handoff_context(summary: dict[str, Any]) -> dict[str, Any]:
         ranking = []
     top = ranking[:_HANDOFF_CONTEXT_TOP_FOLLOWUPS]
     primary: str | None = ranking[0]["check_id"] if ranking else None
+    gi = _gates_incomplete_from_summary(summary)
+
+    def _row_sequencing(row: dict[str, Any]) -> dict[str, Any]:
+        raw = row.get("sequencing")
+        if isinstance(raw, dict) and raw.get("sequencing_schema_version"):
+            return raw
+        return classify_workflow_officer_sequencing(row, gates_incomplete=gi)
+
+    primary_sequencing: dict[str, Any] | None = None
+    if ranking and isinstance(ranking[0], dict):
+        primary_sequencing = _row_sequencing(ranking[0])
+
     return {
         "handoff_schema_version": _HANDOFF_CONTEXT_SCHEMA_VERSION,
         "strict": bool(summary["strict"]),
@@ -1456,12 +1647,14 @@ def build_handoff_context(summary: dict[str, Any]) -> dict[str, Any]:
             "infos": int(summary["infos"]),
         },
         "primary_followup_check_id": primary,
+        "primary_sequencing": primary_sequencing,
         "top_followups": [
             {
                 "rank": int(row["rank"]),
                 "check_id": str(row["check_id"]),
                 "recommended_priority": str(row["recommended_priority"]),
                 "effective_level": str(row["effective_level"]),
+                "sequencing": _row_sequencing(row),
             }
             for row in top
         ],
@@ -1518,6 +1711,8 @@ def _build_summary(
     }
     summary["workflow_officer_provenance"] = build_workflow_officer_provenance()
     summary["handoff_context"] = build_handoff_context(summary)
+    hc = summary["handoff_context"]
+    summary["primary_sequencing"] = hc.get("primary_sequencing") if isinstance(hc, dict) else None
     summary["next_chat_preview"] = build_next_chat_preview(summary)
     summary["operator_report"] = build_operator_report_view(summary)
     summary["executive_summary"] = build_executive_summary_view(summary)
