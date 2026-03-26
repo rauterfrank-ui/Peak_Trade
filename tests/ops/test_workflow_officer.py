@@ -10,6 +10,7 @@ import pytest
 from src.ops.workflow_officer import (
     PROFILE_POLICY,
     _recommend_priority_action,
+    classify_workflow_officer_sequencing,
     _resolve_effective_level,
     _resolve_outcome,
     _resolve_severity,
@@ -73,7 +74,7 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     assert [row["rank"] for row in ranking] == list(range(1, len(ranking) + 1))
 
     handoff = report["summary"]["handoff_context"]
-    assert handoff["handoff_schema_version"] == "workflow_officer.handoff_context/v0"
+    assert handoff["handoff_schema_version"] == "workflow_officer.handoff_context/v1"
     assert handoff["strict"] is report["summary"]["strict"]
     assert handoff["rollup"] == {
         "total_checks": report["summary"]["total_checks"],
@@ -85,6 +86,13 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
         assert handoff["primary_followup_check_id"] == ranking[0]["check_id"]
         assert len(handoff["top_followups"]) == min(5, len(ranking))
         assert handoff["top_followups"][0]["check_id"] == ranking[0]["check_id"]
+        assert handoff["primary_sequencing"] == ranking[0]["sequencing"]
+        assert report["summary"]["primary_sequencing"] == handoff["primary_sequencing"]
+        assert ranking[0]["sequencing"]["sequencing_bucket"] in {
+            "build_now",
+            "stabilize_only",
+            "defer_until_prerequisites",
+        }
     else:
         assert handoff["primary_followup_check_id"] is None
         assert handoff["top_followups"] == []
@@ -130,7 +138,7 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
         ["followup_topic_ranking", "merge_log_inputs", "registry_inputs", "strict"]
     )
     preview = report["summary"]["next_chat_preview"]
-    assert preview["preview_schema_version"] == "workflow_officer.next_chat_preview/v0"
+    assert preview["preview_schema_version"] == "workflow_officer.next_chat_preview/v1"
     assert preview["provenance_schema_version"] == prov["provenance_schema_version"]
     assert preview["primary_followup_check_id"] == handoff["primary_followup_check_id"]
     assert preview["queued_followup_check_ids"] == [
@@ -197,7 +205,7 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     assert "## Operator consolidated view" in summary_md
     assert "workflow_officer.operator_report/v0" in summary_md
     assert "## Next chat preview" in summary_md
-    assert "workflow_officer.next_chat_preview/v0" in summary_md
+    assert "workflow_officer.next_chat_preview/v1" in summary_md
 
     for check in report["checks"]:
         assert "severity" in check
@@ -352,6 +360,7 @@ def test_build_followup_topic_ranking_orders_by_priority_effective_check_id() ->
             "surface",
             "category",
             "followup_rank_heuristic",
+            "sequencing",
         }
         for r in ranked
     )
@@ -508,7 +517,7 @@ def test_build_handoff_context_empty_ranking_is_stable() -> None:
     }
     ctx = build_handoff_context(summary)
     assert ctx == {
-        "handoff_schema_version": "workflow_officer.handoff_context/v0",
+        "handoff_schema_version": "workflow_officer.handoff_context/v1",
         "strict": False,
         "rollup": {
             "total_checks": 0,
@@ -517,6 +526,7 @@ def test_build_handoff_context_empty_ranking_is_stable() -> None:
             "infos": 0,
         },
         "primary_followup_check_id": None,
+        "primary_sequencing": None,
         "top_followups": [],
         "registry_inputs_rollup": {
             "registry_dir_present": False,
@@ -579,7 +589,8 @@ def test_build_handoff_context_caps_top_followups() -> None:
         "chk_5",
     ]
     assert all(
-        set(r.keys()) == {"rank", "check_id", "recommended_priority", "effective_level"}
+        set(r.keys())
+        == {"rank", "check_id", "recommended_priority", "effective_level", "sequencing"}
         for r in ctx["top_followups"]
     )
 
@@ -588,8 +599,9 @@ def test_build_next_chat_preview_empty_summary_inputs_is_stable() -> None:
     assert build_next_chat_preview({}) == {
         "hard_failures": 0,
         "latest_pr_number": None,
-        "preview_schema_version": "workflow_officer.next_chat_preview/v0",
+        "preview_schema_version": "workflow_officer.next_chat_preview/v1",
         "primary_followup_check_id": None,
+        "primary_sequencing": None,
         "provenance_schema_version": None,
         "queued_followup_check_ids": [],
         "registry_pointer_count": None,
@@ -607,12 +619,20 @@ def test_render_next_chat_preview_markdown_non_dict_or_missing_schema_returns_em
 def test_render_next_chat_preview_markdown_stable_full() -> None:
     md = render_next_chat_preview_markdown(
         {
-            "preview_schema_version": "workflow_officer.next_chat_preview/v0",
+            "preview_schema_version": "workflow_officer.next_chat_preview/v1",
             "provenance_schema_version": "workflow_officer.provenance/v0",
             "total_checks": 2,
             "hard_failures": 1,
             "warnings": 0,
             "primary_followup_check_id": "b",
+            "primary_sequencing": {
+                "sequencing_bucket": "build_now",
+                "sequencing_rationale": "execution-adjacent bounded-pilot / truth / ops work is a nearer prerequisite than broader AI-layer expansion",
+                "prerequisite_signals": ["active_path_hardening"],
+                "blocked_by": [],
+                "suggested_next_theme_class": "bounded_pilot_truth_ops",
+                "sequencing_schema_version": "workflow_officer.sequencing/v0",
+            },
             "queued_followup_check_ids": ["b", "a"],
             "registry_pointer_count": 4,
             "latest_pr_number": 99,
@@ -621,7 +641,7 @@ def test_render_next_chat_preview_markdown_stable_full() -> None:
     assert md == (
         "## Next chat preview\n"
         "\n"
-        "- preview_schema_version: `workflow_officer.next_chat_preview/v0`\n"
+        "- preview_schema_version: `workflow_officer.next_chat_preview/v1`\n"
         "- provenance_schema_version: `workflow_officer.provenance/v0`\n"
         "- total_checks: `2`\n"
         "- hard_failures: `1`\n"
@@ -630,6 +650,8 @@ def test_render_next_chat_preview_markdown_stable_full() -> None:
         "- queued_followup_check_ids (order preserved): `b`, `a`\n"
         "- registry_pointer_count: `4`\n"
         "- latest_pr_number: `99`\n"
+        "- sequencing_bucket: `build_now`\n"
+        "- sequencing_rationale: execution-adjacent bounded-pilot / truth / ops work is a nearer prerequisite than broader AI-layer expansion\n"
     )
 
 
@@ -693,6 +715,7 @@ def test_build_workflow_officer_provenance_is_stable() -> None:
                     "outcome",
                     "recommended_action",
                     "recommended_priority",
+                    "sequencing",
                     "severity",
                     "surface",
                 ]
@@ -719,6 +742,7 @@ def test_build_workflow_officer_provenance_is_stable() -> None:
                     "handoff_schema_version",
                     "merge_log_inputs_rollup",
                     "primary_followup_check_id",
+                    "primary_sequencing",
                     "registry_inputs_rollup",
                     "rollup",
                     "strict",
@@ -866,6 +890,7 @@ def test_build_executive_summary_view_empty_summary_is_deterministic() -> None:
             "effective_level": None,
             "recommended_action_excerpt": None,
             "recommended_priority": None,
+            "sequencing": None,
         },
         "provenance_schema_version": None,
         "rollup_snapshot": {
@@ -1112,3 +1137,62 @@ def test_load_ops_merge_log_inputs_orders_by_pr_desc_and_caps(tmp_path: Path) ->
     assert len(recent) == 5
     assert [r["pr_number"] for r in recent] == [107, 106, 105, 104, 103]
     assert recent[0]["merge_commit_sha"] is None
+
+
+def test_classify_sequencing_defer_ai_expansion_when_gates_incomplete() -> None:
+    row = {
+        "check_id": "exp",
+        "recommended_action": "Broaden provider model and critic-proposer expansion.",
+        "category": "ai",
+        "surface": "x",
+    }
+    got = classify_workflow_officer_sequencing(row, gates_incomplete=True)
+    assert got["sequencing_bucket"] == "defer_until_prerequisites"
+    assert got["sequencing_schema_version"] == "workflow_officer.sequencing/v0"
+
+
+def test_classify_sequencing_build_now_execution_path() -> None:
+    row = {
+        "check_id": "ks",
+        "recommended_action": "Verify kill switch and incident operator gating.",
+        "category": "ops",
+        "surface": "x",
+    }
+    got = classify_workflow_officer_sequencing(row, gates_incomplete=True)
+    assert got["sequencing_bucket"] == "build_now"
+
+
+def test_classify_sequencing_stabilize_only_polish() -> None:
+    row = {
+        "check_id": "ui",
+        "recommended_action": "Workflow officer dashboard wording polish.",
+        "category": "ux",
+        "surface": "x",
+    }
+    got = classify_workflow_officer_sequencing(row, gates_incomplete=True)
+    assert got["sequencing_bucket"] == "stabilize_only"
+
+
+def test_sequencing_handoff_matches_ranking_primary() -> None:
+    row = {
+        "check_id": "c1",
+        "recommended_priority": "p3",
+        "effective_level": "ok",
+        "outcome": "pass",
+        "severity": "info",
+        "surface": "docs",
+        "category": "documentation",
+        "recommended_action": "Workflow officer dashboard polish regression.",
+    }
+    ranking = build_followup_topic_ranking([row])
+    summary = {
+        "strict": False,
+        "total_checks": 1,
+        "hard_failures": 0,
+        "warnings": 0,
+        "infos": 0,
+        "followup_topic_ranking": ranking,
+    }
+    hc = build_handoff_context(summary)
+    assert hc["primary_sequencing"] == ranking[0]["sequencing"]
+    assert hc["primary_sequencing"]["sequencing_bucket"] == "stabilize_only"

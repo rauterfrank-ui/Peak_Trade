@@ -114,3 +114,16 @@ def test_validate_report_payload_rejects_bad_priority_count_keys() -> None:
     payload["summary"]["recommended_priority_counts"] = {"p0": 1, "p1": 0}
     with pytest.raises(WorkflowOfficerSchemaError):
         validate_report_payload(payload)
+
+
+def test_validate_report_payload_accepts_optional_primary_sequencing() -> None:
+    payload = _valid_report()
+    payload["summary"]["primary_sequencing"] = {
+        "sequencing_bucket": "build_now",
+        "sequencing_rationale": "execution-adjacent bounded-pilot / truth / ops work is a nearer prerequisite than broader AI-layer expansion",
+        "prerequisite_signals": ["active_path_hardening"],
+        "blocked_by": [],
+        "suggested_next_theme_class": "bounded_pilot_truth_ops",
+        "sequencing_schema_version": "workflow_officer.sequencing/v0",
+    }
+    validate_report_payload(payload)
