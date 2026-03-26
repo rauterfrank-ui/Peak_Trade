@@ -44,6 +44,7 @@
 - `build_workflow_officer_dashboard_view` in `src/ops/workflow_officer.py` reads the latest `report.json` under `out&#47;ops&#47;workflow_officer&#47;<run>&#47;` (lexicographically last run directory name) and returns a compact read-only payload for the home dashboard. No writes; no execution.
 - `build_workflow_officer_panel_context` in `src/webui/ops_cockpit.py` wraps that helper for `src/webui/app.py` (GET `/`). The panel shows primary follow-up, top follow-ups, executive rationale, and rollups when a report exists; otherwise a stable empty state.
 - The home template also renders a nested **Executive decision package** read-only slice (`executive_panel` on the same payload): canonical `build_executive_summary_view` output plus a bounded markdown preview from `render_executive_summary_markdown` (urgency, primary recommendation, top follow-ups, supporting signals). No writes.
+- **UI polish (read-only):** On the home dashboard, the executive slice is ordered first for scanability; **Ops snapshot** (metrics, primary follow-up, ranked list, operator rollup) follows. Empty states spell out the reason code and a short operator checklist. No new actions or semantics.
 
 ## Next
 - map existing building blocks
