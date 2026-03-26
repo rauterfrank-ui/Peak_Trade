@@ -104,75 +104,23 @@
 <section
   class="mt-8 bg-slate-900/60 rounded-2xl border border-slate-800 p-4 text-sm"
 >
-  <div class="flex items-center justify-between mb-3">
-    <h2 class="text-sm font-semibold text-slate-200">
-      Workflow Officer · Ops snapshot
-    </h2>
-    <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
+  <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+    <div>
+      <h2 class="text-sm font-semibold text-slate-200">
+        Workflow Officer
+      </h2>
+      <p class="text-xs text-slate-500 mt-0.5">
+        Ops snapshot · read-only · latest <code class="text-slate-400">report.json</code>
+      </p>
+    </div>
+    <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 shrink-0">
       Read-only
     </span>
   </div>
-  <p class="text-xs text-slate-500 mb-3">
-    Latest run under <code class="text-slate-400">out/ops/workflow_officer/</code>. UI does not execute checks or write registry data.
+  <p class="text-xs text-slate-500 mb-4">
+    Data from <code class="text-slate-400">out/ops/workflow_officer/</code>. This panel does not run checks or write registry data.
   </p>
   {% if workflow_officer_panel.present %}
-  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-    <div class="bg-slate-950/60 rounded-lg border border-slate-800/60 px-3 py-2">
-      <p class="text-xs text-slate-400">Profile</p>
-      <p class="text-sm font-semibold text-slate-200">{{ workflow_officer_panel.profile }}</p>
-    </div>
-    <div class="bg-slate-950/60 rounded-lg border border-slate-800/60 px-3 py-2">
-      <p class="text-xs text-slate-400">Run outcome</p>
-      <p class="text-sm font-semibold {% if workflow_officer_panel.success %}text-emerald-300{% else %}text-amber-300{% endif %}">
-        {% if workflow_officer_panel.success %}pass{% else %}attention{% endif %}
-      </p>
-    </div>
-    <div class="bg-slate-950/60 rounded-lg border border-slate-800/60 px-3 py-2">
-      <p class="text-xs text-slate-400">Errors / warnings</p>
-      <p class="text-sm font-semibold text-slate-200">
-        {{ workflow_officer_panel.rollup.hard_failures }} / {{ workflow_officer_panel.rollup.warnings }}
-      </p>
-    </div>
-    <div class="bg-slate-950/60 rounded-lg border border-slate-800/60 px-3 py-2">
-      <p class="text-xs text-slate-400">Urgency</p>
-      <p class="text-sm font-semibold text-slate-200">
-        {{ workflow_officer_panel.executive.urgency_label or "—" }}
-      </p>
-    </div>
-  </div>
-  {% if workflow_officer_panel.primary_followup %}
-  <div class="mb-3 rounded-lg border border-slate-800/60 bg-slate-950/40 px-3 py-2">
-    <p class="text-xs text-slate-400 mb-1">Primary follow-up</p>
-    <p class="text-sm text-slate-100 font-mono">{{ workflow_officer_panel.primary_followup.check_id }}</p>
-    <p class="text-xs text-slate-400 mt-1">
-      priority {{ workflow_officer_panel.primary_followup.recommended_priority }} ·
-      {{ workflow_officer_panel.primary_followup.effective_level }}
-    </p>
-    {% if workflow_officer_panel.primary_followup.recommended_action_excerpt %}
-    <p class="text-xs text-slate-300 mt-2">{{ workflow_officer_panel.primary_followup.recommended_action_excerpt }}</p>
-    {% endif %}
-  </div>
-  {% endif %}
-  {% if workflow_officer_panel.top_followups %}
-  <div class="mb-3">
-    <p class="text-xs text-slate-400 mb-2">Top follow-ups (ranked)</p>
-    <ul class="space-y-1 text-xs text-slate-300">
-      {% for row in workflow_officer_panel.top_followups %}
-      <li class="font-mono">
-        <span class="text-slate-500">#{{ row.rank }}</span>
-        {{ row.check_id }}
-        <span class="text-slate-500">· {{ row.recommended_priority }} / {{ row.effective_level }}</span>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-  {% endif %}
-  {% if workflow_officer_panel.executive.attention_rationale %}
-  <p class="text-xs text-slate-400 mb-2">Executive rationale</p>
-  <p class="text-xs text-slate-300 leading-relaxed border-l-2 border-slate-700 pl-3 mb-3">
-    {{ workflow_officer_panel.executive.attention_rationale }}
-  </p>
-  {% endif %}
   {% if workflow_officer_panel.executive_panel.present %}
   <div class="mt-4 rounded-lg border border-amber-500/20 bg-amber-950/30 px-3 py-3">
     <div class="flex items-center justify-between mb-2">
@@ -252,21 +200,89 @@
     {% endif %}
   </div>
   {% endif %}
+  <h3 class="text-xs font-semibold text-slate-300 mt-4 mb-2 tracking-wide uppercase">Ops snapshot</h3>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+    <div class="bg-slate-950/60 rounded-lg border border-slate-800/60 px-3 py-2">
+      <p class="text-xs text-slate-400">Profile</p>
+      <p class="text-sm font-semibold text-slate-200">{{ workflow_officer_panel.profile }}</p>
+    </div>
+    <div class="bg-slate-950/60 rounded-lg border border-slate-800/60 px-3 py-2">
+      <p class="text-xs text-slate-400">Run outcome</p>
+      <p class="text-sm font-semibold {% if workflow_officer_panel.success %}text-emerald-300{% else %}text-amber-300{% endif %}">
+        {% if workflow_officer_panel.success %}pass{% else %}attention{% endif %}
+      </p>
+    </div>
+    <div class="bg-slate-950/60 rounded-lg border border-slate-800/60 px-3 py-2">
+      <p class="text-xs text-slate-400">Errors / warnings</p>
+      <p class="text-sm font-semibold text-slate-200">
+        {{ workflow_officer_panel.rollup.hard_failures }} / {{ workflow_officer_panel.rollup.warnings }}
+      </p>
+    </div>
+    <div class="bg-slate-950/60 rounded-lg border border-slate-800/60 px-3 py-2">
+      <p class="text-xs text-slate-400">Urgency</p>
+      <p class="text-sm font-semibold text-slate-200">
+        {{ workflow_officer_panel.executive.urgency_label or "—" }}
+      </p>
+    </div>
+  </div>
+  {% if workflow_officer_panel.primary_followup %}
+  <div class="mb-3 rounded-lg border border-slate-800/60 bg-slate-950/40 px-3 py-2">
+    <p class="text-xs font-semibold text-slate-300 mb-1">Primary follow-up</p>
+    <p class="text-sm text-slate-100 font-mono">{{ workflow_officer_panel.primary_followup.check_id }}</p>
+    <p class="text-xs text-slate-400 mt-1">
+      priority {{ workflow_officer_panel.primary_followup.recommended_priority }} ·
+      {{ workflow_officer_panel.primary_followup.effective_level }}
+    </p>
+    {% if workflow_officer_panel.primary_followup.recommended_action_excerpt %}
+    <p class="text-xs text-slate-300 mt-2 pl-2 border-l border-slate-700">{{ workflow_officer_panel.primary_followup.recommended_action_excerpt }}</p>
+    {% endif %}
+  </div>
+  {% endif %}
+  {% if workflow_officer_panel.top_followups %}
+  <div class="mb-3">
+    <p class="text-xs font-semibold text-slate-300 mb-2">Top follow-ups (ranked)</p>
+    <ul class="divide-y divide-slate-800/80 rounded border border-slate-800/60 overflow-hidden">
+      {% for row in workflow_officer_panel.top_followups %}
+      <li class="font-mono px-2 py-1.5 text-xs text-slate-300 flex flex-wrap gap-x-2 items-baseline">
+        <span class="text-slate-500 shrink-0">#{{ row.rank }}</span>
+        <span class="text-slate-100">{{ row.check_id }}</span>
+        <span class="text-slate-500">{{ row.recommended_priority }} / {{ row.effective_level }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  {% if workflow_officer_panel.executive.attention_rationale %}
+  {% if not workflow_officer_panel.executive_panel.present %}
+  <p class="text-xs font-semibold text-slate-300 mb-1">Executive rationale</p>
+  <p class="text-xs text-slate-300 leading-relaxed border-l-2 border-slate-700 pl-3 mb-3">
+    {{ workflow_officer_panel.executive.attention_rationale }}
+  </p>
+  {% elif not workflow_officer_panel.executive_panel.attention_rationale %}
+  <p class="text-xs font-semibold text-slate-300 mb-1">Executive rationale</p>
+  <p class="text-xs text-slate-300 leading-relaxed border-l-2 border-slate-700 pl-3 mb-3">
+    {{ workflow_officer_panel.executive.attention_rationale }}
+  </p>
+  {% endif %}
+  {% endif %}
   {% if workflow_officer_panel.operator_snapshot_line %}
-  <p class="text-xs text-slate-500 mb-1">Operator snapshot</p>
+  <p class="text-xs text-slate-500 mb-1">Operator rollup</p>
   <p class="text-xs font-mono text-slate-400">{{ workflow_officer_panel.operator_snapshot_line }}</p>
   {% endif %}
-  <p class="text-xs text-slate-500 mt-3">
-    Run dir <code class="text-slate-400">{{ workflow_officer_panel.run_dir_name }}</code> ·
+  <p class="text-xs text-slate-500 mt-3 pt-2 border-t border-slate-800/60">
+    Source · <code class="text-slate-400">{{ workflow_officer_panel.run_dir_name }}</code> ·
     <code class="text-slate-400">{{ workflow_officer_panel.report_rel_path }}</code>
   </p>
   {% else %}
-  <div class="bg-slate-950/60 rounded-lg border border-slate-800/60 px-3 py-3 text-slate-400 text-xs">
-    <p>No Workflow Officer report found locally ({{ workflow_officer_panel.empty_reason }}).</p>
-    <p class="mt-2">
-      Generate <code class="text-slate-300">out/ops/workflow_officer/&lt;timestamp&gt;/report.json</code> via
-      <code class="text-slate-300">python3 src/ops/workflow_officer.py --profile docs_only_pr</code>.
-    </p>
+  <div class="bg-slate-950/60 rounded-lg border border-dashed border-slate-700/80 px-3 py-4 text-slate-400 text-xs">
+    <p class="text-sm font-semibold text-slate-300 mb-1">No local Workflow Officer report</p>
+    <p class="text-slate-500 mb-2">Reason: <span class="font-mono text-slate-400">{{ workflow_officer_panel.empty_reason }}</span></p>
+    <p class="text-slate-500 mb-1">To populate data:</p>
+    <ol class="list-decimal list-inside space-y-1 text-slate-400">
+      <li>Run <code class="text-slate-300">python3 src/ops/workflow_officer.py --profile docs_only_pr</code></li>
+      <li>Confirm <code class="text-slate-300">out/ops/workflow_officer/&lt;timestamp&gt;/report.json</code> exists</li>
+    </ol>
+    <p class="mt-3 text-slate-500">This dashboard only reads existing reports; it never executes checks or writes registry data.</p>
   </div>
   {% endif %}
 </section>
