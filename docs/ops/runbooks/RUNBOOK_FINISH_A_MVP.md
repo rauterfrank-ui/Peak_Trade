@@ -65,10 +65,7 @@ Ein Operator kann deterministisch einen Backtest laufen lassen und bekommt:
 
 ### Artifacts Contract v1
 
-- Canonical Runner erzeugt Run‑Folder mit:
-  - `config_snapshot.json` (inkl. git sha, strategy_id, seed, timeframe, universe)
-  - `equity.csv`, `trades.csv`, `metrics.json`, `run_manifest.json`
-  - optional `report.html` (oder `report.ipynb`)
+- Artifacts Contract v1 documented against current local verify outputs (`equity.csv`, trades export, `stats.json`, config snapshot, report snippet markdown, optional `report&#47;backtest.html`; portfolio verify emits `reports&#47;*_portfolio_stats.json` and related CSV outputs).
 
 ### Watch‑Only API (v0)
 
