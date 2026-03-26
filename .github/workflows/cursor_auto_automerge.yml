@@ -43,8 +43,24 @@ jobs:
             if (context.eventName === "pull_request") {
               prNumbers = [context.payload.pull_request.number];
             } else if (context.eventName === "check_suite") {
-              const prs = (context.payload.check_suite && context.payload.check_suite.pull_requests) || [];
-              prNumbers = prs.map(p => p.number).filter(Boolean);
+              const suite = context.payload.check_suite || {};
+              const fromPayload = (suite.pull_requests || []).map(p => p.number).filter(Boolean);
+              if (fromPayload.length) {
+                prNumbers = fromPayload;
+              } else {
+                // GitHub Actions often delivers an empty pull_requests array on check_suite.
+                // Resolve PRs by head commit SHA instead.
+                const headSha = suite.head_sha;
+                if (headSha) {
+                  const assoc = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                    owner,
+                    repo,
+                    commit_sha: headSha,
+                  });
+                  prNumbers = assoc.data.map(p => p.number).filter(Boolean);
+                  core.info(`check_suite: resolved PR(s) via commit ${headSha}: ${prNumbers.join(", ") || "(none)"}`);
+                }
+              }
             } else if (context.eventName === "workflow_dispatch") {
               const raw = process.env.DISPATCH_PR_NUMBER || "";
               const n = parseInt(raw.trim(), 10);
@@ -69,10 +85,11 @@ jobs:
             };
 
             const isAllChecksGreen = async (sha) => {
-              // 1) Combined status must be success (covers legacy status contexts)
+              // 1) Legacy commit statuses (if any): only enforce when at least one status exists.
+              //    Repos that use Checks-only often have no statuses; combined state is then not "success" and would block merges forever.
               const cs = await github.rest.repos.getCombinedStatusForRef({ owner, repo, ref: sha });
-              if (cs.data.state !== "success") {
-                core.info(`combined_status=${cs.data.state} (not success)`);
+              if (cs.data.total_count > 0 && cs.data.state !== "success") {
+                core.info(`combined_status=${cs.data.state} (not success, total_count=${cs.data.total_count})`);
                 return false;
               }
 
