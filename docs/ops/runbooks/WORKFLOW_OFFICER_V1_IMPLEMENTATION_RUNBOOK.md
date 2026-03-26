@@ -16,7 +16,7 @@
 - Report summary may include `followup_topic_ranking`: ordered follow-up topics derived from check rows (`recommended_priority`, then `effective_level`, then `outcome`, then `severity`, then `check_id`). Each row may include `followup_rank_heuristic` with a versioned `components` map (`priority_rank`, `effective_level_rank`, `outcome_rank`, `severity_rank`) and `tie_break: check_id_ascii` for inspection. No registry writes; no separate handoff artifact beyond embedded summary fields.
 
 ## Sequencing / readiness (additive)
-- Each ranked follow-up may include `sequencing` from `classify_workflow_officer_sequencing` (schema `workflow_officer.sequencing/v0`): `sequencing_bucket`, `sequencing_rationale`, `prerequisite_signals`, `blocked_by`, `suggested_next_theme_class`. Buckets are exactly one of:
+- Each ranked follow-up may include `sequencing` from `classify_workflow_officer_sequencing` (schema `workflow_officer.sequencing&#47;v0`): `sequencing_bucket`, `sequencing_rationale`, `prerequisite_signals`, `blocked_by`, `suggested_next_theme_class`. Buckets are exactly one of:
   - **`build_now`**: execution-, pilot-, truth-, ops-, or incident-adjacent hardening on the active path (keyword/field heuristics; read-only).
   - **`stabilize_only`**: polish or regression-only refinement on an already-built surface (e.g. dashboard/wording/workflow-officer hygiene).
   - **`defer_until_prerequisites`**: AI-layer breadth expansion (provider/model/critic/proposer/live-AI style topics) while summary rollups still show unresolved error- or warning-level checks (`gates_incomplete`).
