@@ -185,20 +185,20 @@ Risk: MED (execution-adjacent, still NO-LIVE)
 ### DoD Checklist (v1.0)
 
 #### Broker / Execution (Governed)
-- [ ] **Broker Interface** klar (Order types, time-in-force, error taxonomy).
-- [ ] **Paper/Testnet Coverage**: Tests und Runbooks vorhanden (mindestens paper broker).
-- [ ] **Rate Limits / Retries** dokumentiert (inkl. Backoff, idempotency keys sofern vorhanden).
-- [ ] **KILL SWITCH**: Drill/Runbook existiert und ist reproduzierbar (snapshot).
+- [x] **Broker Interface** klar (Order types, time-in-force, error taxonomy). **Nachweis:** [`docs/execution/phase0/WP0E_TASK_PACKET.md`](../../execution/phase0/WP0E_TASK_PACKET.md) (Order-/Event-/Fehler-Codes), [`docs/ERROR_HANDLING_GUIDE.md`](../../ERROR_HANDLING_GUIDE.md) (Fehler-Taxonomie), [Operator Quickstart (v1.0)](#operator-quickstart-v10--local-verify-snapshot-only).
+- [x] **Paper/Testnet Coverage**: Tests und Runbooks vorhanden (mindestens paper broker). **Nachweis:** [`tests/execution/test_paper_broker.py`](../../../tests/execution/test_paper_broker.py), [`docs/SAFETY_POLICY_TESTNET_AND_LIVE.md`](../../SAFETY_POLICY_TESTNET_AND_LIVE.md), [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md).
+- [x] **Rate Limits / Retries** dokumentiert (inkl. Backoff, idempotency keys sofern vorhanden). **Nachweis:** [`docs/ops/specs/PILOT_EXECUTION_EDGE_CASE_MATRIX.md`](../../ops/specs/PILOT_EXECUTION_EDGE_CASE_MATRIX.md) (Broker/API — Rate‑Limits, Retries, Idempotenz), [`docs/execution/WP0A_GATE_REPORT.md`](../../execution/WP0A_GATE_REPORT.md) (Retry Policy, Idempotency Keys).
+- [x] **KILL SWITCH**: Drill/Runbook existiert und ist reproduzierbar (snapshot). **Nachweis:** [`README_KILL_SWITCH.md`](../../../README_KILL_SWITCH.md), [`docs/ops/KILL_SWITCH_RUNBOOK.md`](../KILL_SWITCH_RUNBOOK.md), [`scripts/ops/drill_kill_switch.py`](../../../scripts/ops/drill_kill_switch.py) (siehe [Operator Quickstart (v1.0)](#operator-quickstart-v10--local-verify-snapshot-only)).
 
 #### Live-Ops (Runbooks, Observability, Incident Handling)
-- [ ] **Runbooks**: Start/Stop, Pre-Flight, Incident, Post-Mortem, Rollback, DR.
-- [ ] **Observability**: Health signals, status reports, alerting hooks (mind. dokumentiert).
-- [ ] **Audit Trail**: Evidence Index / Merge Logs / Status Reports integriert.
-- [ ] **Permission Model** dokumentiert (wer darf was, wann, mit welcher Evidenz).
+- [x] **Runbooks**: Start/Stop, Pre-Flight, Incident, Post-Mortem, Rollback, DR. **Nachweis:** [`docs/WORKFLOW_FRONTDOOR.md`](../../WORKFLOW_FRONTDOOR.md), [`docs/LIVE_OPERATIONAL_RUNBOOKS.md`](../../LIVE_OPERATIONAL_RUNBOOKS.md), [`docs/INCIDENT_SIMULATION_AND_DRILLS.md`](../../INCIDENT_SIMULATION_AND_DRILLS.md), [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md) (§4.4 Incident-Drills).
+- [x] **Observability**: Health signals, status reports, alerting hooks (mind. dokumentiert). **Nachweis:** [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md) (§4.5 Live Status Reports, §4.7 Monitoring & Observability), [`scripts/generate_live_status_report.py`](../../../scripts/generate_live_status_report.py).
+- [x] **Audit Trail**: Evidence Index / Merge Logs / Status Reports integriert. **Nachweis:** [`README_KILL_SWITCH.md`](../../../README_KILL_SWITCH.md) (Audit‑Pfad/CLI), [`docs/ops/README.md`](../../ops/README.md) (Ops-/Evidence‑Navigation), [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) (Evidence/Audit‑Navigation).
+- [x] **Permission Model** dokumentiert (wer darf was, wann, mit welcher Evidenz). **Nachweis:** [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md) (Abschnitt 3 — Rollen & Verantwortlichkeiten), [`docs/SAFETY_POLICY_TESTNET_AND_LIVE.md`](../../SAFETY_POLICY_TESTNET_AND_LIVE.md).
 
 #### Governance Gates
-- [ ] **No unlock without evidence**: Jede Live-Änderung ist ein eigener PR-Slice mit Risiko-Note + Tests + Operator-Verify.
-- [ ] **Docs Gates** bleiben PASS (Token Policy, Reference Targets, Diff Guard).
+- [x] **No unlock without evidence**: Jede Live-Änderung ist ein eigener PR-Slice mit Risiko-Note + Tests + Operator-Verify. **Nachweis:** [Stop Rules](#stop-rules-non-negotiable), [`docs/SAFETY_POLICY_TESTNET_AND_LIVE.md`](../../SAFETY_POLICY_TESTNET_AND_LIVE.md), [Workstreams & PR‑Disziplin](#workstreams-16--inputs--outputs--contracts--tests).
+- [x] **Docs Gates** bleiben PASS (Token Policy, Reference Targets, Diff Guard). **Nachweis:** [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md), [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md); Snapshot: `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` (siehe [Operator Quickstart (v1.0)](#operator-quickstart-v10--local-verify-snapshot-only)).
 
 ### Operator Quickstart (v1.0) — Local Verify (Snapshot-only)
 
