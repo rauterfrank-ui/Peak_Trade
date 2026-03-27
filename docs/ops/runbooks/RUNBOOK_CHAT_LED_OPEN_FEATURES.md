@@ -36,7 +36,7 @@
 
 **Der Assistent macht (ohne dass du Shell-Wände einfügen musst):**
 
-1. **Scope fixieren** — nur `src/` / nur `docs/ops` / nur ein Modul; NO-LIVE beachten.  
+1. **Scope fixieren** — nur `src/` / nur `docs/ops/` / nur ein Modul; NO-LIVE beachten.  
 2. **Signale sammeln** — gezielt nach `TODO`/`FIXME` im gewählten Bereich, plus Doku-Querverweise.  
 3. **Klassifizieren** — *absichtlicher Stub (Research)* vs. *echte Lücke* vs. *Tech-Debt*.  
 4. **Priorisieren** — Risiko, Nutzen, Abhängigkeiten, ob Tests existieren.  

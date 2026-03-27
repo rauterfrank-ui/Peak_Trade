@@ -2,7 +2,7 @@
 
 > **Zweck:** Überblick über **offene Arbeit** im Repo — **kein** Merge-Gate, sondern **Planungs- und Triage-Hilfe**.  
 > **Scope:** NO-LIVE; Priorisierung erfolgt getrennt von Live-Freigaben.  
-> **Stand:** Automatisierte Tiefen-Stichprobe (`src/**/*.py`, zentrale `scripts/`, Schlüssel-`tests/`, Doku-Hinweise) — **2026-03-27**. Kein vollständiger Beweis, dass **jede** Zeile erfasst ist (Templates, Archiv-`docs/`, generierte Artefakte sind nur stichprobenartig berücksichtigt).
+> **Stand:** Automatisierte Tiefen-Stichprobe (`src&#47;**&#47;*.py`, zentrale `scripts/`, Schlüssel-`tests/`, Doku-Hinweise) — **2026-03-27**. Kein vollständiger Beweis, dass **jede** Zeile erfasst ist (Templates, Archiv-`docs/`, generierte Artefakte sind nur stichprobenartig berücksichtigt).
 
 ---
 
@@ -75,7 +75,7 @@
 | E5 | Ehlers DSP-Filter / Cycle | STUB | `src/strategies/ehlers/ehlers_cycle_filter_strategy.py` |
 | E6 | López de Prado Meta-Labeling-Pipeline | STUB | `src/strategies/lopez_de_prado/meta_labeling_strategy.py` |
 | E7 | El Karoui Vol-Regime-Signale | GAP | `src/strategies/el_karoui/el_karoui_vol_model_strategy.py` |
-| E8 | Strategie-Ideen-Templates | STUB | `src/strategies/ideas/*`, `scripts/new_idea_strategy.py` — Platzhalter für Autoren |
+| E8 | Strategie-Ideen-Templates | STUB | `src&#47;strategies&#47;ideas&#47;*`, `scripts/new_idea_strategy.py` — Platzhalter für Autoren |
 | E9 | Policy-Critic (Regel-Engine) | STUB | `src/governance/policy_critic/rules.py` — ggf. `NotImplementedError` |
 
 ---
