@@ -47,7 +47,7 @@ last_updated: 2026-03-27
 
 #### Governance / Safety (NO-LIVE)
 - [x] **NO-LIVE posture dokumentiert** (klar: research/backtest only). **Nachweis:** [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md), [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md).
-- [x] **Kill-Switch posture unverändert** (keine Unlocks; keine “break-glass” Änderungen). **Nachweis:** [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md), [README Kill Switch](../../README_KILL_SWITCH.md), [`risk/KILL_SWITCH_ARCHITECTURE.md`](../../risk/KILL_SWITCH_ARCHITECTURE.md).
+- [x] **Kill-Switch posture unverändert** (keine Unlocks; keine “break-glass” Änderungen). **Nachweis:** [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md), [README Kill Switch](../../../README_KILL_SWITCH.md), [`risk&#47;KILL_SWITCH_ARCHITECTURE.md`](../../risk/KILL_SWITCH_ARCHITECTURE.md).
 - [x] **Docs Gates** lokal reproduzierbar (Snapshot helper PASS). **Nachweis:** [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md), [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md); Snapshot: `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` (siehe [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only)).
 
 #### Data / Inputs

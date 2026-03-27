@@ -32,7 +32,7 @@ Diese Safety-Policy gilt für alle Aktivitäten, die **nicht** Backtest, Paper o
 - Keine echten Exchange-Verbindungen implementiert
 - Diese Policy ist **vorbereitend**, nicht aktivierend
 
-**Governance-Verknüpfung (MVP):** Kill-Switch-Posture und lokale **Docs-Gates**-Nachweise sind mit [Governance & Safety Overview](../GOVERNANCE_AND_SAFETY_OVERVIEW.md) und [Finish Plan Level A](../ops/roadmap/FINISH_PLAN.md) verknüpft (keine Policy-Änderung an dieser Stelle).
+**Governance-Verknüpfung (MVP):** Kill-Switch-Posture und lokale **Docs-Gates**-Nachweise sind mit [Governance & Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) und [Finish Plan Level A](ops/roadmap/FINISH_PLAN.md) verknüpft (keine Policy-Änderung an dieser Stelle).
 
 ---
 
