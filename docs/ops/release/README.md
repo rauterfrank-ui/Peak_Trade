@@ -1,4 +1,4 @@
-# Release-Dokumentation (`docs/ops/release`)
+# Release-Dokumentation (`docs/ops/release`) <!-- pt:ref-target-ignore -->
 
 **Zweck:** Zentrale Einstiege für **Release-Kandidaten** — Checklisten und eine **Go/No-Go-Rubric**, ausgerichtet auf **Finish Level C** (v1.0, governed).  
 **Geltung:** **NO‑LIVE** in diesem Repo-Kontext: Die Seiten beschreiben **was vor einer Freigabe erfüllt sein soll**, ersetzen aber **keine** Governance-Freigabe und **keine** Ausführung von Live-Schritten.
