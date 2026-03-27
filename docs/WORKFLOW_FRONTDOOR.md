@@ -77,6 +77,7 @@
 ## 🗺️ Related Documentation
 
 ### Operations & Runbooks
+- **Observability / status reports (Finish Plan [PR 7](./ops/roadmap/FINISH_PLAN.md#pr-7-observabilitystatus-report-hardening-code-docs), snapshot-only, NO unlocks):** [Live Status Reports](./LIVE_STATUS_REPORTS.md) (Daily/Weekly) · [`generate_live_status_report.py`](../scripts/generate_live_status_report.py) (CLI) · [`prj_status_report.py`](../scripts/ci/prj_status_report.py) (CI PR-J artifacts)
 - **Live-Ops runbook pack (Finish Plan [PR 6](./ops/roadmap/FINISH_PLAN.md#pr-6-live-ops-runbook-pack-docs-only), docs-only, NO unlocks):** [Live Operational Runbooks](./LIVE_OPERATIONAL_RUNBOOKS.md) (Start/Stop, Standard- & Incident-Katalog) · [Incident Simulation & Drills](./INCIDENT_SIMULATION_AND_DRILLS.md) (kontrollierte Übungen) · [Safety Policy Testnet & Live](./SAFETY_POLICY_TESTNET_AND_LIVE.md) (Anforderungen vor Testnet/Live)
 - [Live Operational Runbooks](./LIVE_OPERATIONAL_RUNBOOKS.md) – 12+ runbooks for live operations and incident handling
 - [Runbooks Landscape 2026-Ready](./runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md) – Comprehensive runbook catalog and quick-reference matrix

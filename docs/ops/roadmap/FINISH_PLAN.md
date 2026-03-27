@@ -370,6 +370,7 @@ Risk: HIGH (broker/live-ops domain; execution-adjacent)
 ### PR 7 — Observability/status report hardening (code + docs)
 - **Scope**: Make status reports reliable and operator-friendly (still snapshot-only)
 - **Files (patterns)**: scripts for status reporting + docs guidance
+- **Navigation (landed in this slice):** [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) · [Live Status Reports](../../LIVE_STATUS_REPORTS.md) · [`generate_live_status_report.py`](../../../scripts/generate_live_status_report.py) · [`prj_status_report.py`](../../../scripts/ci/prj_status_report.py)
 - **Tests**:
   - targeted tests for report generation (if present) + smoke runs
 - **Gates**: CI checks + docs gates

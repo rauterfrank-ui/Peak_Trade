@@ -2,6 +2,8 @@
 
 > **Daily/Weekly Status als „Snapshot" des Live-/Testnet-Systems**
 
+> **Observability pack (Finish Plan PR 7, snapshot-only):** [Workflow Frontdoor](./WORKFLOW_FRONTDOOR.md) · [FINISH_PLAN PR 7](./ops/roadmap/FINISH_PLAN.md#pr-7-observabilitystatus-report-hardening-code-docs) · CI: [`prj_status_report.py`](../scripts/ci/prj_status_report.py) — Navigation und Operator-Verify; **keine** Live-Freigabe.
+
 ---
 
 ## 1. Zweck
