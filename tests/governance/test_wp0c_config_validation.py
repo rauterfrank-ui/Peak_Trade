@@ -249,3 +249,27 @@ class TestRAndDStrategyWarning:
         errors = validate_execution_config(config)
         # Should have no errors at all
         assert len(errors) == 0
+
+    def test_r_and_d_strategy_in_prod_allowed_when_flag_set(self):
+        """R&D pattern in prod with allow_rd_strategy_in_prod => no R&D warning."""
+        config = {
+            "env": "prod",
+            "session_id": "test",
+            "strategy_id": "test_strategy",
+            "risk_limits": {"max_position_size": 1000},
+            "allow_rd_strategy_in_prod": True,
+        }
+        errors = validate_execution_config(config)
+        assert len(errors) == 0
+
+    def test_r_and_d_strategy_in_prod_allowed_when_allowlisted(self):
+        """R&D pattern in prod but strategy_id on allowlist => no R&D warning."""
+        config = {
+            "env": "prod",
+            "session_id": "test",
+            "strategy_id": "experimental_breakout",
+            "risk_limits": {"max_position_size": 1000},
+            "rd_strategy_allowlist": ["experimental_breakout"],
+        }
+        errors = validate_execution_config(config)
+        assert len(errors) == 0

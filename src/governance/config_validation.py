@@ -22,7 +22,10 @@ def validate_execution_config(config: Dict[str, Any]) -> List[str]:
     Can also be used with raise_on_error flag in wrapper function.
 
     Args:
-        config: Configuration dict to validate
+        config: Configuration dict to validate. Optional keys for the R&D
+            prod soft-check: ``allow_rd_strategy_in_prod`` (bool) skips the
+            warning entirely; ``rd_strategy_allowlist`` (list of strategy ids)
+            suppresses the warning for matching ids.
 
     Returns:
         List of error messages (empty if config is valid)
@@ -65,14 +68,12 @@ def validate_execution_config(config: Dict[str, Any]) -> List[str]:
         # (actual enforcement happens in LiveModeGate)
         pass
 
-    # 4. Soft check: R&D strategies in live (TODO: make configurable)
-    # This is a placeholder for future enhancement
-    strategy_id = config.get("strategy_id", "")
-    if env in {"prod", "live"}:
-        r_and_d_patterns = ["test_", "debug_", "experimental_"]
-        if any(pattern in strategy_id.lower() for pattern in r_and_d_patterns):
-            # Soft warning (not blocking, but logged)
-            # In production: this could be a hard error or require extra approval
+    # 4. Soft check: R&D-style strategy ids in production-like envs
+    strategy_id = str(config.get("strategy_id", "") or "")
+    if env == "prod" and not _skip_rd_prod_warning(config, strategy_id):
+        r_and_d_patterns = ("test_", "debug_", "experimental_")
+        sid_lower = strategy_id.lower()
+        if any(p in sid_lower for p in r_and_d_patterns):
             errors.append(
                 f"Warning: Strategy '{strategy_id}' appears to be R&D "
                 f"(contains test/debug/experimental pattern) but env is '{env}'. "
@@ -80,6 +81,16 @@ def validate_execution_config(config: Dict[str, Any]) -> List[str]:
             )
 
     return errors
+
+
+def _skip_rd_prod_warning(config: Dict[str, Any], strategy_id: str) -> bool:
+    """True if operator explicitly allows R&D-style ids for this deployment."""
+    if config.get("allow_rd_strategy_in_prod") is True:
+        return True
+    raw = config.get("rd_strategy_allowlist")
+    if not isinstance(raw, list):
+        return False
+    return strategy_id in raw
 
 
 def validate_execution_config_strict(config: Dict[str, Any]) -> None:
