@@ -5,10 +5,10 @@
 
 ---
 
-## 1. Begriffsklärung (Arbeitstitel „Christopherson“ o. ä.)
+## 1. Wo Themen „stehen“ (WIP / Roadmap)
 
-Unter dem Namen **„Christopherson“** gibt es im Repository **keinen** Treffer in `*.md` / `*.py` / gängigen Configs (Stand: Suche).  
-Das ist **kein** im Code verankerter Feature-Name. Wahrscheinlich **Autokorrektur**, ein **interner Arbeitstitel** oder eine **externe Notiz**. Sobald du den **tatsächlichen Feature-Namen**, ein **Issue**, eine **PR-Nummer** oder eine **Datei** nennst, kann gezielt geprüft werden, ob Code + Docs + Tests zusammenpassen.
+- Ein Thema muss **nicht** als fester String in Code oder Docs vorkommen. Wenn es **nirgends** verankert ist (kein Issue, kein PR, kein Eintrag in `CURRENT_FOCUS` / `FINISH_PLAN`, kein klarer Pfad), dann ist es **kein** aktives WIP im Repo — es gehört zur **späteren** Priorisierung über diese Gap-Sessions oder neue PRs/Issues.
+- Typische **WIP-Anker** sind: `docs/ops/roadmap/CURRENT_FOCUS.md`, offene **GitHub-PRs/-Issues**, und `docs/ops/roadmap/FINISH_PLAN.md` — es gibt **kein** separates, zentrales „WIP“-Register außerhalb dieser üblichen Anker, außer ihr legt eins in `docs/ops/` an.
 
 ---
 
