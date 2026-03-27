@@ -60,8 +60,8 @@ last_updated: 2026-03-27
 - [x] **Keine Side-Effects** außerhalb des Repos (keine Writes nach `~`, keine Secrets). **Nachweis:** [Stop Rules](#stop-rules-non-negotiable), [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md) (globale Stop Rules), [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md).
 
 #### Reporting / Artifacts
-- [ ] **Outputs sind auffindbar** (ein klarer Output-Ordner oder Console Summary).
-- [ ] **Konventionen dokumentiert**: “Wo liegen Reports? Welche Namensschemata?”
+- [x] **Outputs sind auffindbar** (ein klarer Output-Ordner oder Console Summary). **Nachweis:** [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md) (Run‑Folder/Exporter in [Phase A1](../runbooks/RUNBOOK_FINISH_A_MVP.md#phase-a1--artifacts-contract-v1-architect--implementer--test_engineer); [Artifacts Contract v1](../runbooks/RUNBOOK_FINISH_A_MVP.md#artifacts-contract-v1) + [Phase A2](../runbooks/RUNBOOK_FINISH_A_MVP.md#phase-a2--minimal-report-docs_scribe--implementer)), [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only), [Stop Rules](#stop-rules-non-negotiable) (Evidence-first: Artefaktpfade).
+- [x] **Konventionen dokumentiert**: “Wo liegen Reports? Welche Namensschemata?” **Nachweis:** [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md#artifacts-contract-v1) (`equity.csv`, Trades‑Export, `stats.json`, `metrics.json`, optional `report&#47;backtest.html`; Portfolio `reports&#47;*_portfolio_stats.json`; Phase A2: `report.html`).
 
 #### QA / CI Readiness
 - [ ] **Targeted Tests** definiert und lokal ausführbar (mindestens 1 “smoke” + 1 “behavior” Test).
