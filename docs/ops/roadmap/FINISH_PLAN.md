@@ -64,8 +64,8 @@ last_updated: 2026-03-27
 - [x] **Konventionen dokumentiert**: “Wo liegen Reports? Welche Namensschemata?” **Nachweis:** [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md#artifacts-contract-v1) (`equity.csv`, Trades‑Export, `stats.json`, `metrics.json`, optional `report&#47;backtest.html`; Portfolio `reports&#47;*_portfolio_stats.json`; Phase A2: `report.html`).
 
 #### QA / CI Readiness
-- [ ] **Targeted Tests** definiert und lokal ausführbar (mindestens 1 “smoke” + 1 “behavior” Test).
-- [ ] **Operator Evidence Block** ist copy-paste-ready (siehe unten).
+- [x] **Targeted Tests** definiert und lokal ausführbar (mindestens 1 “smoke” + 1 “behavior” Test). **Nachweis:** [`.github/workflows/ci.yml`](../../../.github/workflows/ci.yml) (u. a. **Fast‑Lane** — Stability‑Smoke auf mehreren Modulen inkl. [`tests/test_data_contracts.py`](../../../tests/test_data_contracts.py); **tests** — Matrix-Jobs `tests (3.9)` … `tests (3.11)` mit vollständiger Suite laut Workflow; **strategy-smoke** — siehe [`tests/test_strategy_smoke_cli.py`](../../../tests/test_strategy_smoke_cli.py)), [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only) (`python3 -m pytest -q`).
+- [x] **Operator Evidence Block** ist copy-paste-ready (siehe unten). **Nachweis:** [Operator Evidence Block (MVP)](#operator-evidence-block-mvp), [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md) ([Phase A5 — Evidence Pack](../runbooks/RUNBOOK_FINISH_A_MVP.md#phase-a5--evidence-pack--pr-merge-hygiene-evidence_scribe--ci_guardian)), [Stop Rules](#stop-rules-non-negotiable) (Evidence-first).
 
 ### Operator Quickstart (MVP) — Local Verify (Snapshot-only)
 
