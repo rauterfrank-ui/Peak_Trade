@@ -71,6 +71,15 @@ Ein Operator kann deterministisch einen Backtest laufen lassen und bekommt:
 
 ---
 
+## MVP DoD — Reporting / Artifacts
+
+**Kanone:** [Finish Plan — DoD Checklist (MVP)](../roadmap/FINISH_PLAN.md#dod-checklist-mvp)
+
+- **Outputs auffindbar:** Run‑Folder‑Modell ([Phase A1](#phase-a1--artifacts-contract-v1-architect--implementer--test_engineer)); Artefakt‑ und Report‑Namen unter [Artifacts Contract v1](#artifacts-contract-v1) und [Phase A2](#phase-a2--minimal-report-docs_scribe--implementer).
+- **Konventionen:** Erwartete Dateien und Muster wie in **Artifacts Contract v1** (`equity.csv`, Trades‑Export, `stats.json`, `metrics.json`, optional `report&#47;backtest.html`; Portfolio `reports&#47;*_portfolio_stats.json`).
+
+---
+
 ## Endpunkt (DoD)
 
 ### Artifacts Contract v1
