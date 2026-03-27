@@ -43,12 +43,13 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-03-27 | Finish Plan **PR 7** slice: observability / status report navigation | https://github.com/rauterfrank-ui/Peak_Trade/pull/2060 |
 | 2026-03-27 | Finish Plan **PR 8** slice: release checklist + Go/No-Go rubric (`docs/ops/release/`) | https://github.com/rauterfrank-ui/Peak_Trade/pull/2061 |
 | 2026-03-27 | `CURRENT_FOCUS` refresh post PR 6–8 (this file) | https://github.com/rauterfrank-ui/Peak_Trade/pull/2062 |
+| 2026-03-27 | `CURRENT_FOCUS` post-merge finalize (table + branch pointer on `main`) | https://github.com/rauterfrank-ui/Peak_Trade/pull/2063 |
 
 ---
 
 ## Branch / PR pointer (optional)
 
-- Branch: **`main`** — **CURRENT_FOCUS** post PR 6–8 merged via **#2062**
+- Branch: **`main`** — **CURRENT_FOCUS** post PR 6–8: refresh **#2062**, finalize **#2063**
 - Topic: **Roadmap PR 6–8 landed — operator navigation + release rubric**
 - State: Frontdoor links to **Live-Ops pack**, **Observability / status reports**, **Release checklist / Go–No-Go**; evidence-first posture unchanged (**NO-LIVE** default)
 
