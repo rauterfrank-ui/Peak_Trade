@@ -121,19 +121,19 @@ Risk: LOW
 ### DoD Checklist (Beta)
 
 #### ExecutionPipeline (paper/sim, deterministisch)
-- [ ] **Pipeline Contract** dokumentiert: Inputs → Events → Orders → Fills → Ledger.
-- [ ] **Idempotenz**: Re-run mit gleichem Seed/Input erzeugt gleiche Ledger-Resultate (oder dokumentierte deterministische Abweichungen).
-- [ ] **Reject/Fail-safe**: Rejects erzeugen **keine** falschen Ledger-Einträge.
-- [ ] **Paper Broker** Tests vorhanden und grün.
+- [x] **Pipeline Contract** dokumentiert: Inputs → Events → Orders → Fills → Ledger. **Nachweis:** [RUNBOOK Execution Slice 2 — Ledger / Deterministic PnL](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) (Purpose, Preconditions, Implementation — u. a. [`execution_to_ledger.py`](../../../src/execution/ledger/execution_to_ledger.py)), [Operator Quickstart (Beta)](#operator-quickstart-beta--local-verify-snapshot-only).
+- [x] **Idempotenz**: Re-run mit gleichem Seed/Input erzeugt gleiche Ledger-Resultate (oder dokumentierte deterministische Abweichungen). **Nachweis:** [RUNBOOK Execution Slice 2](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) (Determinism Contract, Replays / stabile Exports), [`tests/execution/test_execution_determinism_contract.py`](../../../tests/execution/test_execution_determinism_contract.py).
+- [x] **Reject/Fail-safe**: Rejects erzeugen **keine** falschen Ledger-Einträge. **Nachweis:** [`tests/execution/test_wp0d_reject_produces_no_ledger_entry.py`](../../../tests/execution/test_wp0d_reject_produces_no_ledger_entry.py), [RUNBOOK Execution Slice 2](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) (Scope / Accounting Invariants).
+- [x] **Paper Broker** Tests vorhanden und grün. **Nachweis:** [`tests/execution/test_paper_broker.py`](../../../tests/execution/test_paper_broker.py), [`.github/workflows/ci.yml`](../../../.github/workflows/ci.yml) (Suite inkl. `tests/execution` bei Code-Änderungen).
 
 #### Ledger (Konsistenz & Reconciliation)
-- [ ] **Event→Ledger Mapping** getestet (Fill → Trade/Position Update).
-- [ ] **Trend/Seed Ledger** kann aus Seed reproduziert werden (Replay-Fähigkeit).
-- [ ] **Reconciliation Rules** dokumentiert (z.B. “what is source of truth?”).
+- [x] **Event→Ledger Mapping** getestet (Fill → Trade/Position Update). **Nachweis:** [`tests/execution/test_execution_slice1_to_ledger_integration.py`](../../../tests/execution/test_execution_slice1_to_ledger_integration.py), [`src/execution/ledger/execution_to_ledger.py`](../../../src/execution/ledger/execution_to_ledger.py), [RUNBOOK Execution Slice 2](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) (Implementation).
+- [x] **Trend/Seed Ledger** kann aus Seed reproduziert werden (Replay-Fähigkeit). **Nachweis:** [RUNBOOK Execution Slice 2](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) (Replays, Determinism Contract), [`tests/execution/test_ledger_pnl_golden.py`](../../../tests/execution/test_ledger_pnl_golden.py), [`tests/execution/test_execution_determinism_contract.py`](../../../tests/execution/test_execution_determinism_contract.py).
+- [x] **Reconciliation Rules** dokumentiert (z.B. “what is source of truth?”). **Nachweis:** [RUNBOOK Execution Slice 2](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) (Accounting Invariants, Scope Lock — Double‑Entry / Cash / PnL‑Semantik als Buchhaltungs‑SoT), [`tests/execution/test_ledger_double_entry.py`](../../../tests/execution/test_ledger_double_entry.py).
 
 #### QA / Evidence
-- [ ] **Targeted Unit Tests** existieren (Slice‑2 Ledger‑Verify: Double‑Entry, PnL Golden, Slice1→Ledger Integration, Determinism Contract; siehe Quickstart und `RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md`).
-- [ ] **Operator Verify** ist snapshot-only und ohne live side-effects.
+- [x] **Targeted Unit Tests** existieren (Slice‑2 Ledger‑Verify: Double‑Entry, PnL Golden, Slice1→Ledger Integration, Determinism Contract; siehe Quickstart und `RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md`). **Nachweis:** [Operator Quickstart (Beta)](#operator-quickstart-beta--local-verify-snapshot-only), [RUNBOOK Execution Slice 2 — Verify Commands](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md#verify-commands-snapshot-only), [`tests/execution/test_ledger_double_entry.py`](../../../tests/execution/test_ledger_double_entry.py), [`tests/execution/test_ledger_pnl_golden.py`](../../../tests/execution/test_ledger_pnl_golden.py), [`tests/execution/test_execution_slice1_to_ledger_integration.py`](../../../tests/execution/test_execution_slice1_to_ledger_integration.py), [`tests/execution/test_execution_determinism_contract.py`](../../../tests/execution/test_execution_determinism_contract.py).
+- [x] **Operator Verify** ist snapshot-only und ohne live side-effects. **Nachweis:** [Stop Rules](#stop-rules-non-negotiable), [RUNBOOK Execution Slice 2](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) (Scope — NO‑LIVE; Verify Commands — Snapshot-only), [Operator Evidence Block (Beta)](#operator-evidence-block-beta).
 
 ### Operator Quickstart (Beta) — Local Verify (Snapshot-only)
 
