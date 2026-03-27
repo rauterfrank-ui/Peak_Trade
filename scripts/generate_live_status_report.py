@@ -8,6 +8,8 @@ Peak_Trade: Live Status Report Generator (Phase 57)
 Generiert Daily/Weekly Live-Status-Reports (Markdown/HTML) basierend auf
 live_ops health und portfolio Commands.
 
+Kanonische Doku: docs/LIVE_STATUS_REPORTS.md · Finish Plan PR 7 (Observability/status report hardening; snapshot-only).
+
 Usage:
     python scripts/generate_live_status_report.py \
       --config config/config.toml \

@@ -1,3 +1,8 @@
+"""PR-J status report (CI): artifacts from GitHub Actions runs JSON.
+
+Siehe docs/LIVE_STATUS_REPORTS.md (Live-Status) und Finish Plan PR 7 — ergänzend; snapshot-only, kein Live-Unlock.
+"""
+
 from __future__ import annotations
 
 import argparse
