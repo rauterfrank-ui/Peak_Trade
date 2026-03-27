@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-03-26
+last_updated: 2026-03-27
 ---
 
 # Current focus
@@ -16,15 +16,15 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ## Active goal (one sentence)
 
-Docs for **chat continuity** are on `main`: operators can use **this file** plus [PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP](../runbooks/PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md) so every session starts with the same canonical pointers (Workflow Officer vs GitHub PR flow, Finish Plan).
+**Finish Plan PR 6 (Live-Ops runbook pack, docs-only):** Cross-links between [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md), [Live Operational Runbooks](../../LIVE_OPERATIONAL_RUNBOOKS.md), [Incident Simulation & Drills](../../INCIDENT_SIMULATION_AND_DRILLS.md), and [Safety Policy Testnet & Live](../../SAFETY_POLICY_TESTNET_AND_LIVE.md) — **NO unlocks**, navigation only (see [FINISH_PLAN PR 6](FINISH_PLAN.md#pr-6-live-ops-runbook-pack-docs-only)).
 
 ---
 
 ## Next three concrete steps
 
-1. Edit this file when the **active goal** changes (weekly or on milestone).
-2. Paste the **bootstrap block** from `PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md` into new assistant chats.
-3. Pick the next concrete item from [FINISH_PLAN](FINISH_PLAN.md) when ready to move beyond docs scaffolding.
+1. Merge the PR for **PR 6** when CI/docs gates are green; then point **Active goal** at [FINISH_PLAN](FINISH_PLAN.md) **PR 7** or refresh chat-continuity focus as needed.
+2. Keep pasting the **bootstrap block** from [PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP](../runbooks/PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md) for new assistant chats.
+3. Run `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` before merge (changed-scope docs gates).
 
 ---
 
@@ -39,15 +39,15 @@ Docs for **chat continuity** are on `main`: operators can use **this file** plus
 | Date (UTC) | What was verified | Command or artifact |
 |------------|---------------------|----------------------|
 | 2026-03-26 | PR #2047 merged: `CURRENT_FOCUS.md`, `PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md`, FINISH_PLAN cross-link | https://github.com/rauterfrank-ui/Peak_Trade/pull/2047 (merged 2026-03-26T18:40:04Z) |
+| 2026-03-27 | Finish Plan **PR 6** slice: Live-Ops pack cross-links in `WORKFLOW_FRONTDOOR`, `LIVE_OPERATIONAL_RUNBOOKS`, `INCIDENT_SIMULATION_AND_DRILLS`, `SAFETY_POLICY_*`, `FINISH_PLAN`, `CURRENT_FOCUS` | `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` → PASS (pending merge) |
 
 ---
 
 ## Branch / PR pointer (optional)
 
-- Branch: **main**
-- Relevant PR / commit: **PR #2047** merged on **2026-03-26T18:40:04Z**
-- Topic: **docs chat continuity bootstrap**
-- State: **CURRENT_FOCUS** + **chat bootstrap** docs landed on `main`
+- Branch: **feat/pr6-live-ops-runbook-pack-docs** (PR 6); merge → **main**
+- Topic: **Finish Plan PR 6 — Live-Ops runbook pack (docs-only)**
+- State: cross-links landed in **WORKFLOW_FRONTDOOR**, **LIVE_OPERATIONAL_RUNBOOKS**, **INCIDENT_SIMULATION_AND_DRILLS**, **SAFETY_POLICY_TESTNET_AND_LIVE**, **FINISH_PLAN**, **CURRENT_FOCUS**
 
 ---
 

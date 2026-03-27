@@ -34,6 +34,8 @@ Diese Safety-Policy gilt für alle Aktivitäten, die **nicht** Backtest, Paper o
 
 **Governance-Verknüpfung (MVP):** Kill-Switch-Posture und lokale **Docs-Gates**-Nachweise sind mit [Governance & Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) und [Finish Plan Level A](ops/roadmap/FINISH_PLAN.md) verknüpft (keine Policy-Änderung an dieser Stelle).
 
+**Live-Ops Pack (Finish Plan PR 6, docs-only):** [Live Operational Runbooks](./LIVE_OPERATIONAL_RUNBOOKS.md) · [Incident Simulation & Drills](./INCIDENT_SIMULATION_AND_DRILLS.md) · [Workflow Frontdoor](./WORKFLOW_FRONTDOOR.md) — Navigation und Runbooks; **keine** Live-Freigabe.
+
 ---
 
 ## 2. Risk-Limits & Konfiguration

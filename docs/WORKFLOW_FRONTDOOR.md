@@ -77,6 +77,7 @@
 ## 🗺️ Related Documentation
 
 ### Operations & Runbooks
+- **Live-Ops runbook pack (Finish Plan [PR 6](./ops/roadmap/FINISH_PLAN.md#pr-6-live-ops-runbook-pack-docs-only), docs-only, NO unlocks):** [Live Operational Runbooks](./LIVE_OPERATIONAL_RUNBOOKS.md) (Start/Stop, Standard- & Incident-Katalog) · [Incident Simulation & Drills](./INCIDENT_SIMULATION_AND_DRILLS.md) (kontrollierte Übungen) · [Safety Policy Testnet & Live](./SAFETY_POLICY_TESTNET_AND_LIVE.md) (Anforderungen vor Testnet/Live)
 - [Live Operational Runbooks](./LIVE_OPERATIONAL_RUNBOOKS.md) – 12+ runbooks for live operations and incident handling
 - [Runbooks Landscape 2026-Ready](./runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md) – Comprehensive runbook catalog and quick-reference matrix
 - [Ops README](./ops/README.md) – Complete ops tools and documentation index
@@ -105,7 +106,7 @@
 
 ### Governance & Safety
 - **NO-LIVE default posture** (research/backtest/paper/shadow; no live orders by default): [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) · [Finish Plan — Stop Rules](./ops/roadmap/FINISH_PLAN.md#stop-rules-non-negotiable)
-- **Kill-Switch posture + Docs Gates (MVP evidence):** [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) · [README Kill Switch](../README_KILL_SWITCH.md) · [Finish Plan — Level A MVP](./ops/roadmap/FINISH_PLAN.md#finish-level-a--level-a-mvp)
+- **Kill-Switch posture + Docs Gates (MVP evidence):** [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) · [README Kill Switch](../README_KILL_SWITCH.md) · [Finish Plan — Level A MVP](./ops/roadmap/FINISH_PLAN.md#finish-level-a-level-a-mvp)
 - [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) – Governance framework and roles
 - [Safety Policy Testnet and Live](./SAFETY_POLICY_TESTNET_AND_LIVE.md) – Safety policies for testing and live operations
 
