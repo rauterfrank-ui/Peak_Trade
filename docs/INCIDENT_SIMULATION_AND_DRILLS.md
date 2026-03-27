@@ -33,6 +33,9 @@ Du hast bereits:
 
 ### Verwandte Dokumente
 
+- [`LIVE_OPERATIONAL_RUNBOOKS.md`](LIVE_OPERATIONAL_RUNBOOKS.md) – Katalog Standard- & Incident-Runbooks (Start/Stop, Rollback)
+- [`SAFETY_POLICY_TESTNET_AND_LIVE.md`](SAFETY_POLICY_TESTNET_AND_LIVE.md) – Safety-Anforderungen vor Testnet/Live
+- [`WORKFLOW_FRONTDOOR.md`](WORKFLOW_FRONTDOOR.md) – zentrale Ops-/Runbook-Navigation (Live-Ops Pack)
 - [`GOVERNANCE_AND_SAFETY_OVERVIEW.md`](GOVERNANCE_AND_SAFETY_OVERVIEW.md) – Governance-Rahmen
 - [`RUNBOOKS_AND_INCIDENT_HANDLING.md`](RUNBOOKS_AND_INCIDENT_HANDLING.md) – Incident-Runbooks
 - [`LIVE_TESTNET_TRACK_STATUS.md`](LIVE_TESTNET_TRACK_STATUS.md) – Live-/Testnet-Status

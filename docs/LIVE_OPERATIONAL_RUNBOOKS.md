@@ -5,6 +5,8 @@
 > **Zweck:** Konkrete Step-by-Step-Anleitungen für Operations
 > **Zielgruppe:** Entwickler, Operatoren
 
+> **Live-Ops Pack (Finish Plan PR 6):** Ergänzend [Incident Simulation & Drills](./INCIDENT_SIMULATION_AND_DRILLS.md), [Safety Policy Testnet & Live](./SAFETY_POLICY_TESTNET_AND_LIVE.md), [Workflow Frontdoor](./WORKFLOW_FRONTDOOR.md) (Navigation). **NO‑LIVE:** keine Aktivierungsanleitungen; nur Dokumentation.
+
 ---
 
 ## Env File Contexts

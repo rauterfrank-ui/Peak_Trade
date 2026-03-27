@@ -362,6 +362,7 @@ Risk: HIGH (broker/live-ops domain; execution-adjacent)
 ### PR 6 — Live-Ops runbook pack (docs-only)
 - **Scope**: Live-Ops procedures (start/stop, incident, rollback) — documentation only, NO unlocks
 - **Files (docs)**: ops/runbooks + cross-links to safety policy
+- **Navigation (landed in this slice):** [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) · [Live Operational Runbooks](../../LIVE_OPERATIONAL_RUNBOOKS.md) · [Incident Simulation & Drills](../../INCIDENT_SIMULATION_AND_DRILLS.md) · [Safety Policy Testnet & Live](../../SAFETY_POLICY_TESTNET_AND_LIVE.md)
 - **Tests/Gates**: docs gates snapshot
 - **Operator verify**:
   - run docs gates; validate link graph (reference targets PASS)
