@@ -51,13 +51,13 @@ last_updated: 2026-03-27
 - [x] **Docs Gates** lokal reproduzierbar (Snapshot helper PASS). **Nachweis:** [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md), [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md); Snapshot: `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` (siehe [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only)).
 
 #### Data / Inputs
-- [ ] **Deterministische Datenquelle** für Backtests definiert (lokal, offline; keine “magischen” externen Dependencies).
-- [ ] **Config/Defaults** dokumentiert (welche Parameter minimal erforderlich sind).
+- [x] **Deterministische Datenquelle** für Backtests definiert (lokal, offline; keine “magischen” externen Dependencies). **Nachweis:** [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md) (Phase A1 — Golden‑Snapshot/Fixtures; expliziter CSV‑Input via `--data-file` im [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only)), [Stop Rules](#stop-rules-non-negotiable) (Snapshot-only, Evidence-first).
+- [x] **Config/Defaults** dokumentiert (welche Parameter minimal erforderlich sind). **Nachweis:** [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md) (Phase A1 — `RunManifest`, `config_hash`, Schema‑Validierung), [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only).
 
 #### Backtest / Research
-- [ ] **Einzel-Backtest** läuft durch (Exit-Code 0) und erzeugt ein Resultat (Stats/Report/Artefakt).
-- [ ] **Portfolio-Backtest** läuft durch (Exit-Code 0) und erzeugt ein Resultat.
-- [ ] **Keine Side-Effects** außerhalb des Repos (keine Writes nach `~`, keine Secrets).
+- [x] **Einzel-Backtest** läuft durch (Exit-Code 0) und erzeugt ein Resultat (Stats/Report/Artefakt). **Nachweis:** [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only), [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md) (Artifacts Contract v1, Phase A1/A2).
+- [x] **Portfolio-Backtest** läuft durch (Exit-Code 0) und erzeugt ein Resultat. **Nachweis:** [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only), [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md) (Artifacts Contract v1 — Portfolio‑Outputs).
+- [x] **Keine Side-Effects** außerhalb des Repos (keine Writes nach `~`, keine Secrets). **Nachweis:** [Stop Rules](#stop-rules-non-negotiable), [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md) (globale Stop Rules), [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md).
 
 #### Reporting / Artifacts
 - [ ] **Outputs sind auffindbar** (ein klarer Output-Ordner oder Console Summary).

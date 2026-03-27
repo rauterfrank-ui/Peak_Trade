@@ -61,6 +61,16 @@ Ein Operator kann deterministisch einen Backtest laufen lassen und bekommt:
 
 ---
 
+## MVP DoD — Data / Inputs + Backtest / Research
+
+**Kanone:** [Finish Plan — DoD Checklist (MVP)](../roadmap/FINISH_PLAN.md#dod-checklist-mvp)
+
+- **Deterministische Datenquelle:** Offline‑CSV über `--data-file` (siehe [Operator Quickstart (MVP) in `FINISH_PLAN.md`](../roadmap/FINISH_PLAN.md#operator-quickstart-mvp--local-verify-snapshot-only)); keine stillen Netzwerk‑Dependencies. Determinismus: [Phase A1](#phase-a1--artifacts-contract-v1-architect--implementer--test_engineer) (Golden‑Snapshot, gleiche Inputs → gleiche `config_hash` + Key Metrics).
+- **Config/Defaults:** `RunManifest`/`config_hash` und Schema in Phase A1; minimale CLI‑Parameter im Quickstart.
+- **Einzel-/Portfolio-Backtest & Side-Effects:** Smoke‑Befehle im Quickstart; globale Stop Rules (dieses Runbook + [Stop Rules in `FINISH_PLAN.md`](../roadmap/FINISH_PLAN.md#stop-rules-non-negotiable)).
+
+---
+
 ## Endpunkt (DoD)
 
 ### Artifacts Contract v1
