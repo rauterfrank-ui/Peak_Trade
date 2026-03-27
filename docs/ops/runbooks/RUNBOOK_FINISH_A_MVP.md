@@ -80,6 +80,15 @@ Ein Operator kann deterministisch einen Backtest laufen lassen und bekommt:
 
 ---
 
+## MVP DoD — QA / CI Readiness
+
+**Kanone:** [Finish Plan — DoD Checklist (MVP)](../roadmap/FINISH_PLAN.md#dod-checklist-mvp)
+
+- **Targeted Tests:** Lokal [Operator Quickstart (MVP) in `FINISH_PLAN.md`](../roadmap/FINISH_PLAN.md#operator-quickstart-mvp--local-verify-snapshot-only); CI [`.github/workflows/ci.yml`](../../../.github/workflows/ci.yml) (Fast‑Lane, Matrix `tests (3.9–3.11)`, Job `strategy-smoke` mit [`tests/test_strategy_smoke_cli.py`](../../../tests/test_strategy_smoke_cli.py)).
+- **Operator Evidence Block:** [Operator Evidence Block (MVP) in `FINISH_PLAN.md`](../roadmap/FINISH_PLAN.md#operator-evidence-block-mvp); [Phase A5](#phase-a5--evidence-pack--pr-merge-hygiene-evidence_scribe--ci_guardian).
+
+---
+
 ## Endpunkt (DoD)
 
 ### Artifacts Contract v1
