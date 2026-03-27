@@ -82,3 +82,13 @@ print(eng.export_snapshot_json(ts_sim=123, mark_prices={"BTC/EUR": Decimal("5100
 - Unit + Golden + Integration Tests grün.
 - Exports sind stabil (bit‑identisch) für identische Inputs.
 - Keine Änderungen, die NO‑LIVE/Governance Locks lockern.
+
+---
+
+## Finish Plan — Beta DoD (Nachweis)
+
+**Kanone:** [Finish Plan — DoD Checklist (Beta)](../roadmap/FINISH_PLAN.md#dod-checklist-beta)
+
+- **ExecutionPipeline (paper/sim):** Contract und Slice‑1→2‑Pfad — **Purpose**, **Preconditions**, **Implementation**; Idempotenz/Replay — **Determinism Contract**; Reject/Fail-safe — [`tests/execution/test_wp0d_reject_produces_no_ledger_entry.py`](../../../tests/execution/test_wp0d_reject_produces_no_ledger_entry.py); Paper Broker — [`tests/execution/test_paper_broker.py`](../../../tests/execution/test_paper_broker.py).
+- **Ledger (Konsistenz):** Event→Ledger — [`tests/execution/test_execution_slice1_to_ledger_integration.py`](../../../tests/execution/test_execution_slice1_to_ledger_integration.py); Replay/Golden — [`tests/execution/test_ledger_pnl_golden.py`](../../../tests/execution/test_ledger_pnl_golden.py); Buchhaltungs‑SoT — **Accounting Invariants**, **Scope Lock**.
+- **QA / Evidence:** [Operator Quickstart (Beta) in `FINISH_PLAN.md`](../roadmap/FINISH_PLAN.md#operator-quickstart-beta--local-verify-snapshot-only), [Operator Evidence Block (Beta)](../roadmap/FINISH_PLAN.md#operator-evidence-block-beta); CI — [`.github/workflows/ci.yml`](../../../.github/workflows/ci.yml) (bei Code‑Änderungen u. a. `tests/execution`).
