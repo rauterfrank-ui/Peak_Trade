@@ -5,10 +5,10 @@
 
 ---
 
-## 1. Wo Themen „stehen“ (WIP / Roadmap)
+## 1. Wo Themen im **Repo** sichtbar sind
 
-- Ein Thema muss **nicht** als fester String in Code oder Docs vorkommen. Wenn es **nirgends** verankert ist (kein Issue, kein PR, kein Eintrag in `CURRENT_FOCUS` / `FINISH_PLAN`, kein klarer Pfad), dann ist es **kein** aktives WIP im Repo — es gehört zur **späteren** Priorisierung über diese Gap-Sessions oder neue PRs/Issues.
-- Typische **WIP-Anker** sind: `docs/ops/roadmap/CURRENT_FOCUS.md`, offene **GitHub-PRs/-Issues**, und `docs/ops/roadmap/FINISH_PLAN.md` — es gibt **kein** separates, zentrales „WIP“-Register außerhalb dieser üblichen Anker, außer ihr legt eins in `docs/ops/` an.
+- Ein Thema muss **nicht** als fester String in Code oder Docs vorkommen. Wenn es **nirgends** im Repo (oder auf GitHub als Issue/PR) verankert ist, ist es **noch nicht** priorisiert — es kann später über Gap-Sessions oder neue PRs/Issues eingeordnet werden.
+- **Sichtbare Anker:** `docs/ops/roadmap/CURRENT_FOCUS.md`, `docs/ops/roadmap/FINISH_PLAN.md`, offene **GitHub-Issues/PRs**, sowie konkrete Pfade unter `src/` und `docs/`. Es gibt **keine** einzelne zentrale Datei für „alles“; Themen werden **verteilt** über diese Stellen (oder bewusst neue Docs unter `docs/ops/`).
 
 ---
 
