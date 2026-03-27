@@ -2,7 +2,7 @@
 title: "Finish Plan (MVP→v1.0) — Repo Roadmap + DoD Checklists"
 status: DRAFT
 scope: docs-first (NO-LIVE)
-last_updated: 2026-03-26
+last_updated: 2026-03-27
 ---
 
 # Finish Plan (MVP→v1.0) — Repo Roadmap + DoD Checklists
@@ -47,8 +47,8 @@ last_updated: 2026-03-26
 
 #### Governance / Safety (NO-LIVE)
 - [x] **NO-LIVE posture dokumentiert** (klar: research/backtest only). **Nachweis:** [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md), [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md).
-- [ ] **Kill-Switch posture unverändert** (keine Unlocks; keine “break-glass” Änderungen).
-- [ ] **Docs Gates** lokal reproduzierbar (Snapshot helper PASS).
+- [x] **Kill-Switch posture unverändert** (keine Unlocks; keine “break-glass” Änderungen). **Nachweis:** [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md), [README Kill Switch](../../../README_KILL_SWITCH.md), [`risk&#47;KILL_SWITCH_ARCHITECTURE.md`](../../risk/KILL_SWITCH_ARCHITECTURE.md).
+- [x] **Docs Gates** lokal reproduzierbar (Snapshot helper PASS). **Nachweis:** [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md), [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md); Snapshot: `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` (siehe [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only)).
 
 #### Data / Inputs
 - [ ] **Deterministische Datenquelle** für Backtests definiert (lokal, offline; keine “magischen” externen Dependencies).

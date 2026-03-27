@@ -105,6 +105,7 @@
 
 ### Governance & Safety
 - **NO-LIVE default posture** (research/backtest/paper/shadow; no live orders by default): [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) · [Finish Plan — Stop Rules](./ops/roadmap/FINISH_PLAN.md#stop-rules-non-negotiable)
+- **Kill-Switch posture + Docs Gates (MVP evidence):** [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) · [README Kill Switch](../README_KILL_SWITCH.md) · [Finish Plan — Level A MVP](./ops/roadmap/FINISH_PLAN.md#finish-level-a--level-a-mvp)
 - [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) – Governance framework and roles
 - [Safety Policy Testnet and Live](./SAFETY_POLICY_TESTNET_AND_LIVE.md) – Safety policies for testing and live operations
 
