@@ -380,6 +380,7 @@ Risk: HIGH (broker/live-ops domain; execution-adjacent)
 ### PR 8 — Release checklist + “Go/No-Go” rubric (docs-only)
 - **Scope**: One page “Go/No-Go” rubric aligned to Finish Level C
 - **Files (docs)**: ops/release/runbooks + cross-links from frontdoor
+- **Navigation (landed in this slice):** [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) · [Release docs index](../release/README.md) · [Release checklist & Go/No-Go rubric](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md)
 - **Tests/Gates**: docs gates snapshot
 - **Operator verify**:
   - evidence template ready for each release candidate
