@@ -71,6 +71,27 @@ def test_build_continuous_back_adjust() -> None:
     assert float(out.loc[b.index[0], "close"]) == 200.0  # last segment unchanged
 
 
+def test_build_continuous_ratio_adjust() -> None:
+    # Same geometry as BACK_ADJUST: a last close=102, b first close=200
+    a = _mk_df("2026-01-01T00:00:00Z", 3, close0=100.0)
+    b = _mk_df("2026-01-01T03:00:00Z", 3, close0=200.0)
+
+    segments = [
+        ContinuousSegment(contract_symbol="NQH2026", start_ts=a.index[0], end_ts=a.index[-1]),
+        ContinuousSegment(contract_symbol="NQM2026", start_ts=b.index[0], end_ts=b.index[-1]),
+    ]
+
+    out = build_continuous_contract(
+        {"NQH2026": a, "NQM2026": b},
+        segments,
+        adjustment=AdjustmentMethod.RATIO_ADJUST,
+    )
+    m = 200.0 / 102.0
+    assert float(out.loc[a.index[-1], "close"]) == pytest.approx(200.0)
+    assert float(out.loc[a.index[0], "close"]) == pytest.approx(100.0 * m)
+    assert float(out.loc[b.index[0], "close"]) == 200.0
+
+
 def test_sha256_of_ohlcv_frame_deterministic() -> None:
     df = _mk_df("2026-01-01T00:00:00Z", 3, close0=123.0)
     h1 = sha256_of_ohlcv_frame(df)
