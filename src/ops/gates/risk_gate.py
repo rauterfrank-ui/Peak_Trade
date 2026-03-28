@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -8,6 +9,21 @@ from typing import Dict, Optional
 
 # Default path aligned with KillSwitch persistence (see config / pipeline bounded_pilot).
 DEFAULT_KILL_SWITCH_STATE_PATH = "data/kill_switch/state.json"
+
+# Env vars for kill-switch state file path (canonical first; legacy alias for older tooling).
+KILL_SWITCH_STATE_PATH_ENV_VARS = (
+    "PEAK_KILL_SWITCH_STATE_PATH",
+    "PEAKTRADE_KILL_SWITCH_STATE_PATH",
+)
+
+
+def kill_switch_state_path_from_env() -> Optional[str]:
+    """Return first non-empty path from env, or ``None`` to use the default file path."""
+    for key in KILL_SWITCH_STATE_PATH_ENV_VARS:
+        raw = os.getenv(key, "").strip()
+        if raw:
+            return raw
+    return None
 
 
 class RiskDenyReason(str, Enum):
@@ -78,6 +94,28 @@ def resolve_kill_switch_limit_from_state_file(
         return None
     if state in ("KILLED", "RECOVERING"):
         return True
+    return False
+
+
+def kill_switch_should_block_trading(*, explicit_active: bool = False) -> bool:
+    """
+    Single source for kill-switch blocking (safety, orchestrator, risk hook).
+
+    - If ``explicit_active`` is True (e.g. orchestrator constructor), block.
+    - Else read state via :func:`kill_switch_state_path_from_env` (default path
+      if unset) and :func:`resolve_kill_switch_limit_from_state_file`.
+    - If resolver returns ``True``, block.
+    - If ``None`` (missing/unreadable file), fall back to ``PEAK_KILL_SWITCH``.
+    - If ``False`` (file says ACTIVE), do not block.
+    """
+    if explicit_active:
+        return True
+    path = kill_switch_state_path_from_env()
+    resolved = resolve_kill_switch_limit_from_state_file(path)
+    if resolved is True:
+        return True
+    if resolved is None:
+        return os.getenv("PEAK_KILL_SWITCH", "0") == "1"
     return False
 
 

@@ -8,6 +8,7 @@ from typing import Optional, Dict, Any
 from decimal import Decimal
 
 from src.execution.contracts import Order, RiskResult, RiskDecision as ContractRiskDecision
+from src.ops.gates.risk_gate import kill_switch_should_block_trading
 from src.execution.risk_runtime import RiskRuntime
 from src.execution.risk_runtime.decisions import RiskDecision as RuntimeRiskDecision
 
@@ -114,17 +115,21 @@ class RuntimeRiskHook:
         """
         Check if kill switch is active.
 
-        Note: Phase 0 doesn't implement kill switch.
-        Future work: add KillSwitchPolicy to runtime.
+        Uses the same state-file + env fallback as ``risk_gate`` / live safety.
 
         Returns:
-            RiskResult with ALLOW (kill switch inactive)
+            RiskResult with BLOCK when blocking, else ALLOW.
         """
-        # Phase 0: No kill switch implementation
+        if kill_switch_should_block_trading(explicit_active=False):
+            return RiskResult(
+                decision=ContractRiskDecision.BLOCK,
+                reason="Kill switch active (state file or PEAK_KILL_SWITCH)",
+                metadata={"kill_switch": "active"},
+            )
         return RiskResult(
             decision=ContractRiskDecision.ALLOW,
-            reason="Kill switch not implemented in Phase 0",
-            metadata={"phase": "0", "kill_switch": "not_implemented"},
+            reason="Kill switch not blocking",
+            metadata={"kill_switch": "inactive"},
         )
 
     def evaluate_position_change(

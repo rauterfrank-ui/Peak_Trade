@@ -63,6 +63,7 @@ from src.execution.ledger_mapper import EventToLedgerMapper
 from src.execution.reconciliation import ReconciliationEngine
 from src.execution.determinism import SimClock, seed_u64, stable_id
 from src.execution.telemetry import FixedJsonlAppendOnlyWriter
+from src.ops.gates.risk_gate import kill_switch_should_block_trading
 
 logger = logging.getLogger(__name__)
 
@@ -509,7 +510,7 @@ class ExecutionOrchestrator:
                 },
             )
 
-            if self.kill_switch_active:
+            if kill_switch_should_block_trading(explicit_active=self.kill_switch_active):
                 self._emit_beta_event(
                     run_id=run_id,
                     session_id=session_id,
