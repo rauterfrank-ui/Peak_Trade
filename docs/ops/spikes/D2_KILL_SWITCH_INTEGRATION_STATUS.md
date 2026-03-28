@@ -4,7 +4,7 @@
 
 ## Kurzfassung
 
-Die Integration von **persistiertem Kill-Switch-State** (`data/kill_switch/state.json`) in **Ops- und Execution-Pfaden** ist umgesetzt. Der Legacy-**`KillSwitchAdapter`** (`src/risk_layer/kill_switch/adapter.py`) und die **`RiskGate`-Klasse** unter `src/risk_layer/risk_gate.py` sind davon **getrennt** und weiterhin Gegenstand des Adapter-Migration-TODOs.
+Die Integration von **persistiertem Kill-Switch-State** (`data&#47;kill_switch&#47;state.json`) in **Ops- und Execution-Pfaden** ist umgesetzt. Der Legacy-**`KillSwitchAdapter`** (`src/risk_layer/kill_switch/adapter.py`) und die **`RiskGate`-Klasse** unter `src/risk_layer/risk_gate.py` sind davon **getrennt** und weiterhin Gegenstand des Adapter-Migration-TODOs.
 
 ## Umgesetzte Bausteine
 

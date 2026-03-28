@@ -17,7 +17,7 @@ Die unten unter „Erreicht“ beschriebene D2-Arbeit betrifft **Ops/Execution**
 
 ## Erreicht: Ops / Execution Kill-Switch (D2, 2026-03)
 
-Kanonische Quelle für den persistierten Zustand: **`data/kill_switch/state.json`** (Feld `state`, u. a. `KILLED` / `RECOVERING`).
+Kanonische Quelle für den persistierten Zustand: **`data&#47;kill_switch&#47;state.json`** (Feld `state`, u. a. `KILLED` / `RECOVERING`).
 
 - **`src/ops/gates/risk_gate.py`:** `resolve_kill_switch_limit_from_state_file`, `kill_switch_state_path_from_env` (Reihenfolge: `PEAK_KILL_SWITCH_STATE_PATH`, dann `PEAKTRADE_KILL_SWITCH_STATE_PATH`), `kill_switch_should_block_trading` (explizites Flag oder Datei oder Fallback `PEAK_KILL_SWITCH`).
 - **`src/live/safety.py`:** Runbook-B-Guards nutzen `kill_switch_should_block_trading(explicit_active=False)`.
