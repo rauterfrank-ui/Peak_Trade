@@ -46,7 +46,7 @@ src/
 │   └── limits.py                 # Legacy Limits
 │
 └── risk_layer/                    # Execution & Enforcement Layer
-    ├── __init__.py               # Exports: RiskGate, KillSwitch, AuditLog
+    ├── __init__.py               # Exports: order_to_dict, to_order, KillSwitchLayer, KillSwitchStatus
     ├── models.py                 # RiskDecision, Violation, RiskResult
     ├── risk_gate.py              # Risk Gate Orchestrator ✅ EXISTIERT
     ├── kill_switch.py            # Kill Switch ✅ EXISTIERT
@@ -256,13 +256,15 @@ stress_results = run_stress_suite(
 # ============================================================
 # Risk Gate (Orchestration) ✅ EXISTIERT
 # ============================================================
-from src.risk_layer import RiskGate, RiskDecision
+from src.core.peak_config import PeakConfig
+from src.risk_layer.risk_gate import RiskGate
 
-gate = RiskGate(config_path="config/config.toml")
-decision: RiskDecision = gate.check_order(order, portfolio_snapshot)
+cfg = PeakConfig(raw={"risk": {"audit_log": {"path": "logs/risk_audit.jsonl"}}})
+gate = RiskGate(cfg)
+result = gate.evaluate(order, portfolio_snapshot)
 
-if not decision.allowed:
-    print(f"Order blocked: {decision.reason}")
+if not result.decision.allowed:
+    print(f"Order blocked: {result.decision.reason}")
 
 # ============================================================
 # VaR Backtesting Suite
@@ -563,29 +565,30 @@ __all__ = [
 
 ### Vor Risk Layer v1.0:
 ```python
-# Legacy: Direkter Import aus risk_layer
-from src.risk_layer import RiskGate
+from src.core.peak_config import PeakConfig
+from src.risk_layer.risk_gate import RiskGate
 
-gate = RiskGate()
-decision = gate.check_order(order)
+cfg = PeakConfig(raw={})
+gate = RiskGate(cfg)
+result = gate.evaluate(order)
 ```
 
 ### Nach Risk Layer v1.0:
 ```python
-# Neu: Config-driven + erweiterte Features
-from src.risk_layer import RiskGate
+from src.core.peak_config import PeakConfig
+from src.risk_layer.risk_gate import RiskGate
 from src.risk import MonteCarloVaRCalculator  # Neu!
 
-# Gate bleibt gleich (Backward Compatible)
-gate = RiskGate(config_path="config/config.toml")
-decision = gate.check_order(order)
+cfg = PeakConfig(raw={})
+gate = RiskGate(cfg)
+result = gate.evaluate(order)
 
 # Optional: Nutze neue MC VaR Features
 mc_calc = MonteCarloVaRCalculator(returns_df, config)
 mc_result = mc_calc.calculate(weights, portfolio_value)
 ```
 
-**Wichtig:** Bestehender Code funktioniert unverändert!
+**Wichtig:** ``RiskGate`` ist **nicht** im Root-Export von ``src.risk_layer`` (siehe ``__all__`` in ``__init__.py``). Import **immer** über ``from src.risk_layer.risk_gate import RiskGate``; Prüfung einer Order erfolgt mit ``RiskGate.evaluate`` (siehe Runbooks und ``tests/risk_layer/test_risk_gate.py``).
 
 ---
 
