@@ -77,3 +77,21 @@ def recon_snapshots_from_context(
         _parse_position(block.get("expected_positions")),
         _parse_position(block.get("observed_positions")),
     )
+
+
+def normalize_pipeline_context_for_recon(
+    context: Optional[Dict[str, Any]],
+) -> Dict[str, Any]:
+    """
+    Shallow copy of ``context`` for SafetyGuard / risk with Runbook-B recon wiring.
+
+    If ``recon`` is absent and ``recon_pipeline`` is a dict, set ``recon`` to that
+    value so callers can attach pipeline-level snapshots without colliding with an
+    explicit ``recon`` key.
+    """
+    if not context or not isinstance(context, dict):
+        return {}
+    out = dict(context)
+    if "recon" not in out and isinstance(out.get("recon_pipeline"), dict):
+        out["recon"] = out["recon_pipeline"]
+    return out
