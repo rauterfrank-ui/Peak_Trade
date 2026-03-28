@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 from typing import Dict, Optional
+
+# Default path aligned with KillSwitch persistence (see config / pipeline bounded_pilot).
+DEFAULT_KILL_SWITCH_STATE_PATH = "data/kill_switch/state.json"
 
 
 class RiskDenyReason(str, Enum):
@@ -43,6 +48,37 @@ class RiskDecision:
     allow: bool
     reason: Optional[RiskDenyReason]
     details: Dict[str, str]
+
+
+def resolve_kill_switch_limit_from_state_file(
+    state_path: Optional[str] = None,
+) -> Optional[bool]:
+    """
+    Map persisted kill-switch state to the ``RiskLimits.kill_switch`` flag.
+
+    Reads ``state`` from JSON (same contract as ``data/kill_switch/state.json``).
+    Returns:
+
+    - ``True`` — state is ``KILLED`` or ``RECOVERING`` (trading should be denied).
+    - ``False`` — file exists, parsed, and state is not blocking (e.g. ``ACTIVE``).
+    - ``None`` — file missing or unreadable; caller should apply env fallback
+      (e.g. ``PEAK_KILL_SWITCH``).
+
+    On parse errors after the file was found, returns ``None`` so operators can
+    still force a block via env without being silently treated as ACTIVE.
+    """
+    path = Path(state_path or DEFAULT_KILL_SWITCH_STATE_PATH)
+    if not path.is_file():
+        return None
+    try:
+        with path.open(encoding="utf-8") as f:
+            data = json.load(f)
+        state = str(data.get("state", "")).strip().upper()
+    except Exception:
+        return None
+    if state in ("KILLED", "RECOVERING"):
+        return True
+    return False
 
 
 def evaluate_risk(limits: RiskLimits, ctx: RiskContext) -> RiskDecision:

@@ -1,10 +1,15 @@
 from __future__ import annotations
 
+import json
+
+import pytest
+
 from src.ops.gates.risk_gate import (
     RiskLimits,
     RiskContext,
     evaluate_risk,
     RiskDenyReason,
+    resolve_kill_switch_limit_from_state_file,
 )
 
 
@@ -57,3 +62,29 @@ def test_allow_happy_path():
     dec = evaluate_risk(lim, base_ctx())
     assert dec.allow is True
     assert dec.reason is None
+
+
+def test_resolve_kill_switch_missing_file(tmp_path):
+    p = tmp_path / "missing.json"
+    assert resolve_kill_switch_limit_from_state_file(str(p)) is None
+
+
+@pytest.mark.parametrize(
+    "state, expected",
+    [
+        ("KILLED", True),
+        ("RECOVERING", True),
+        ("ACTIVE", False),
+        ("DISABLED", False),
+    ],
+)
+def test_resolve_kill_switch_from_file(tmp_path, state, expected):
+    path = tmp_path / "state.json"
+    path.write_text(json.dumps({"state": state}), encoding="utf-8")
+    assert resolve_kill_switch_limit_from_state_file(str(path)) is expected
+
+
+def test_resolve_kill_switch_invalid_json(tmp_path):
+    path = tmp_path / "state.json"
+    path.write_text("{not json", encoding="utf-8")
+    assert resolve_kill_switch_limit_from_state_file(str(path)) is None
