@@ -27,7 +27,7 @@ class TestPhase0Imports:
         assert KillSwitchStatus is not None
 
     def test_kill_switch_layer_emits_deprecation_warning(self):
-        """KillSwitchLayer constructs KillSwitchAdapter; expect DeprecationWarning."""
+        """Only expected KillSwitchAdapter construction in tests: explicit DeprecationWarning."""
         with pytest.warns(DeprecationWarning, match="KillSwitchAdapter"):
             _ = KillSwitchLayer({})
 

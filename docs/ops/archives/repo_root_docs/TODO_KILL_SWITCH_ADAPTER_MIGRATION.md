@@ -79,6 +79,17 @@ if needs_recovery:
 - `docs/risk/KILL_SWITCH.md` - Beispiele aktualisieren
 - `README_KILL_SWITCH.md` - Migration Notes hinzufügen
 
+## Removal criteria (vor Delete-PR)
+
+Ein separater PR-Track soll den Adapter erst entfernen, wenn:
+
+1. **Inventar:** Vollständige Liste der Import-/Call-Sites zu ``KillSwitchAdapter``, ``KillSwitchLayer``, ``KillSwitchStatus`` und ``to_violations`` (mindestens ``src/risk_layer/risk_gate.py``, Tests, ggf. Downstream-Docs).
+2. **Ziel-API:** Festgelegtes Nutzungsmodell (typisch: ``KillSwitch`` + State-Machine, ggf. Trigger/Recovery), abgestimmt mit Ops/Execution-Pfaden aus dem D2-Abschnitt „Erreicht“.
+3. **Regression:** Angepasste oder neue Tests ohne versehentliche Legacy-Konstruktion; bestehende Kill-Switch-Test-Suite grün.
+4. **Doku:** Beispiele unter ``docs&#47;risk&#47;`` und READMEs ohne veraltete ``KillSwitchLayer``-Factory, wo nicht absichtlich historisch.
+
+Bis dahin bleiben Deprecation-Warnungen beim Konstruieren von ``KillSwitchAdapter`` der sichtbare Legacy-Hinweis.
+
 ## Verifizierung
 
 Nach Migration müssen bestehen:
@@ -100,7 +111,8 @@ Nach Migration müssen bestehen:
 
 - **PR #409:** Einführung des Legacy-Adapters
 - **Adapter-Code:** `src/risk_layer/kill_switch/adapter.py`
-- **Deprecation-Notice:** Im Adapter als Kommentar markiert
+- **Deprecation (Spike):** `docs/ops/spikes/D2_RISK_LAYER_ADAPTER_DEPRECATION_SPIKE_2026-03-28.md`
+- **Ops/Execution D2 (Kontext):** `docs/ops/spikes/D2_KILL_SWITCH_INTEGRATION_STATUS.md`
 - **Roadmap:** `docs/risk/roadmaps/ROADMAP_EMERGENCY_KILL_SWITCH.md`
 
 ## Owner
@@ -113,4 +125,4 @@ TBD - Assignment vor Start des Refactorings
 **Priorität:** P2 (Medium)  
 **Erstellt:** 2025-12-28  
 **Target:** Q1 2026  
-**Letzte Doku-Aktualisierung:** 2026-03-28
+**Letzte Doku-Aktualisierung:** 2026-03-29
