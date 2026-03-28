@@ -53,12 +53,9 @@ from typing import Iterator, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 
-try:
-    from scipy.stats import t as student_t
-
-    _HAS_SCIPY = True
-except ImportError:
-    _HAS_SCIPY = False
+from src.data.offline_realtime.synthetic_models.student_t_innovations import (
+    sample_standardized_student_t,
+)
 
 from src.data.safety import (
     DataSafetyContext,
@@ -282,16 +279,8 @@ class RegimeSwitchingVolModel:
         self._sigma_sq = max(self._sigma_sq, 1e-12)
         sigma_t = np.sqrt(self._sigma_sq)
 
-        # 3. Ziehe Innovation aus Student-t Verteilung
-        if _HAS_SCIPY:
-            # Standardisierte Student-t (Varianz = df / (df - 2))
-            # Normalisieren für Varianz = 1
-            scale = np.sqrt((self.student_df - 2) / self.student_df)
-            eps_t = student_t.rvs(df=self.student_df, random_state=self.rng) * scale
-        else:
-            # Fallback: Approximation mit normalverteilten Innovationen
-            # TODO: scipy.stats.t verwenden für korrekte Fat Tails
-            eps_t = self.rng.standard_normal()
+        # 3. Ziehe Innovation aus Student-t Verteilung (NumPy, standardisiert Varianz 1)
+        eps_t = sample_standardized_student_t(self.rng, self.student_df)
 
         # 4. Return berechnen
         return_t = sigma_t * eps_t

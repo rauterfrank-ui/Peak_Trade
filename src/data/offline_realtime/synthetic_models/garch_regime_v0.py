@@ -39,12 +39,7 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 
-try:
-    from scipy.stats import t as student_t_dist
-
-    _HAS_SCIPY = True
-except ImportError:
-    _HAS_SCIPY = False
+from .student_t_innovations import sample_standardized_student_t
 
 
 @dataclass(frozen=True)
@@ -217,14 +212,7 @@ class GarchRegimeModelV0:
         Returns:
             Standardisierte Innovation mit Varianz ≈ 1.
         """
-        if _HAS_SCIPY:
-            # Standardisierte Student-t mit Varianz = 1
-            scale = np.sqrt((nu - 2) / nu)
-            return float(student_t_dist.rvs(df=nu, random_state=self.rng)) * scale
-        else:
-            # Fallback: Normal-Approximation
-            # TODO: scipy.stats.t installieren für korrekte Fat Tails
-            return float(self.rng.standard_normal())
+        return sample_standardized_student_t(self.rng, nu)
 
     def reset(self, seed: Optional[int] = None) -> None:
         """
