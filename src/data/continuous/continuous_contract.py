@@ -7,7 +7,7 @@ Ziel:
   aus mehreren Einzelkontrakten.
 
 MVP:
-- Adjustment: NONE (stitch) und BACK_ADJUST (klassischer Offset-Adjust)
+- Adjustment: NONE (stitch), BACK_ADJUST (additiv), RATIO_ADJUST (multiplikativ)
 - Keine Vendor-Integration, keine Live-Calls.
 
 Input/Output:
@@ -32,7 +32,7 @@ from src.data.contracts import validate_ohlcv
 class AdjustmentMethod(str, Enum):
     NONE = "NONE"
     BACK_ADJUST = "BACK_ADJUST"
-    RATIO_ADJUST = "RATIO_ADJUST"  # reserved (not implemented in MVP)
+    RATIO_ADJUST = "RATIO_ADJUST"
 
 
 @dataclass(frozen=True)
@@ -68,6 +68,15 @@ def _apply_price_offset(df: pd.DataFrame, offset: float) -> pd.DataFrame:
     return out
 
 
+def _apply_price_ratio(df: pd.DataFrame, factor: float) -> pd.DataFrame:
+    if factor == 1.0:
+        return df
+    out = df.copy()
+    for col in ("open", "high", "low", "close"):
+        out[col] = out[col] * float(factor)
+    return out
+
+
 def build_continuous_contract(
     contract_frames: Dict[str, pd.DataFrame],
     segments: Sequence[ContinuousSegment],
@@ -81,12 +90,9 @@ def build_continuous_contract(
     Args:
         contract_frames: Mapping contract_symbol -> OHLCV DataFrame
         segments: ordered Segmente (chronologisch, nicht überlappend)
-        adjustment: NONE oder BACK_ADJUST (RATIO_ADJUST not implemented)
+        adjustment: NONE, BACK_ADJUST (additiv) oder RATIO_ADJUST (multiplikativ)
         validate: Wenn True: validate_ohlcv pro Segment + Ergebnis
     """
-    if adjustment == AdjustmentMethod.RATIO_ADJUST:
-        raise NotImplementedError("RATIO_ADJUST is reserved; not implemented in MVP.")
-
     if not segments:
         raise ValueError("segments must not be empty.")
 
@@ -116,6 +122,8 @@ def build_continuous_contract(
             raise ValueError("segments overlap or are not ordered chronologically.")
 
     offsets: List[float] = [0.0 for _ in seg_frames]
+    ratios: List[float] = [1.0 for _ in seg_frames]
+
     if adjustment == AdjustmentMethod.BACK_ADJUST:
         # Back-adjust historical segments to match the most recent segment.
         offsets[-1] = 0.0
@@ -124,9 +132,26 @@ def build_continuous_contract(
             new_close = float(seg_frames[i + 1].iloc[0]["close"])
             offsets[i] = (new_close + offsets[i + 1]) - old_close
 
+    elif adjustment == AdjustmentMethod.RATIO_ADJUST:
+        # Ratio back-adjust: newest segment unchanged; scale older segments so roll
+        # closes align (m_i * close_last_i = m_{i+1} * close_first_{i+1}).
+        ratios[-1] = 1.0
+        for i in range(len(seg_frames) - 2, -1, -1):
+            last_close = float(seg_frames[i].iloc[-1]["close"])
+            first_next = float(seg_frames[i + 1].iloc[0]["close"])
+            if last_close == 0.0:
+                raise ValueError(
+                    "RATIO_ADJUST: last close of segment is zero; cannot compute ratio."
+                )
+            ratios[i] = ratios[i + 1] * (first_next / last_close)
+
     stitched: List[pd.DataFrame] = []
-    for df, off in zip(seg_frames, offsets):
-        stitched.append(_apply_price_offset(df, off))
+    if adjustment == AdjustmentMethod.RATIO_ADJUST:
+        for df, r in zip(seg_frames, ratios):
+            stitched.append(_apply_price_ratio(df, r))
+    else:
+        for df, off in zip(seg_frames, offsets):
+            stitched.append(_apply_price_offset(df, off))
 
     out = pd.concat(stitched, axis=0)
     out = out[~out.index.duplicated(keep="last")]

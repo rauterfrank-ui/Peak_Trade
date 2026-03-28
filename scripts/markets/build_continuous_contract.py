@@ -61,8 +61,8 @@ def main() -> int:
     ap.add_argument(
         "--adjustment",
         default="NONE",
-        choices=[m.value for m in AdjustmentMethod if m != AdjustmentMethod.RATIO_ADJUST],
-        help="Adjustment method (MVP: NONE, BACK_ADJUST)",
+        choices=[m.value for m in AdjustmentMethod],
+        help="Adjustment method: NONE, BACK_ADJUST, RATIO_ADJUST",
     )
     args = ap.parse_args()
 
