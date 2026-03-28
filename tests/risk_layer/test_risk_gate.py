@@ -12,6 +12,17 @@ from src.execution_simple.types import Order, OrderSide, OrderType
 from src.risk_layer.risk_gate import RiskGate
 
 
+def _kill_switch_section() -> dict:
+    """Minimal KillSwitch dict (matches tests/risk_layer/kill_switch/conftest)."""
+    return {
+        "enabled": True,
+        "mode": "active",
+        "recovery_cooldown_seconds": 1,
+        "require_approval_code": False,
+        "persist_state": False,
+    }
+
+
 @pytest.fixture
 def test_config(tmp_path: Path) -> PeakConfig:
     """Create a minimal test config."""
@@ -32,6 +43,7 @@ def test_risk_gate_initializes_with_config(test_config: PeakConfig) -> None:
     gate = RiskGate(test_config)
     assert gate.cfg == test_config
     assert gate.audit_log is not None
+    assert gate.kill_switch is None
 
 
 def test_risk_gate_blocks_order_with_missing_symbol(test_config: PeakConfig) -> None:
@@ -143,7 +155,7 @@ def test_risk_gate_includes_context_in_audit(test_config: PeakConfig, tmp_path: 
 
 
 def test_risk_gate_multiple_violations(test_config: PeakConfig) -> None:
-    """Test that adapter catches first missing field (symbol checked first)."""
+    """Test that order conversion fails on first missing field (symbol checked first)."""
     gate = RiskGate(test_config)
 
     order = {}  # Missing both symbol and qty
@@ -152,8 +164,81 @@ def test_risk_gate_multiple_violations(test_config: PeakConfig) -> None:
     assert not result.decision.allowed
     assert len(result.decision.violations) >= 1
     assert any(v.code == "ORDER_CONVERSION_FAILED" for v in result.decision.violations)
-    # Adapter will fail on first missing field (symbol)
     assert any("symbol" in v.message for v in result.decision.violations)
+
+
+def test_risk_gate_kill_switch_not_wired_when_disabled(tmp_path: Path) -> None:
+    """When risk.kill_switch.enabled is false, RiskGate does not attach KillSwitch."""
+    audit_path = tmp_path / "audit.jsonl"
+    cfg = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(audit_path)},
+                "kill_switch": {"enabled": False},
+            }
+        }
+    )
+    gate = RiskGate(cfg)
+    assert gate.kill_switch is None
+
+
+def test_risk_gate_blocks_when_kill_switch_killed(tmp_path: Path) -> None:
+    """Valid orders are blocked while kill switch is KILLED."""
+    audit_path = tmp_path / "audit.jsonl"
+    cfg = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(audit_path)},
+                "kill_switch": _kill_switch_section(),
+            }
+        }
+    )
+    gate = RiskGate(cfg)
+    assert gate.kill_switch is not None
+    gate.kill_switch.trigger("test kill")
+    result = gate.evaluate({"symbol": "BTCUSDT", "qty": 1.0})
+
+    assert not result.decision.allowed
+    assert result.decision.severity == "BLOCK"
+    assert any(v.code == "KILL_SWITCH_BLOCKED" for v in result.decision.violations)
+    assert "Kill switch active" in result.decision.reason
+
+
+def test_risk_gate_blocks_when_kill_switch_recovering(tmp_path: Path) -> None:
+    """RECOVERING still blocks (is_killed True)."""
+    audit_path = tmp_path / "audit.jsonl"
+    cfg = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(audit_path)},
+                "kill_switch": _kill_switch_section(),
+            }
+        }
+    )
+    gate = RiskGate(cfg)
+    assert gate.kill_switch is not None
+    gate.kill_switch.trigger("test kill")
+    assert gate.kill_switch.request_recovery("operator")
+
+    result = gate.evaluate({"symbol": "BTCUSDT", "qty": 1.0})
+    assert not result.decision.allowed
+    assert any(v.code == "KILL_SWITCH_BLOCKED" for v in result.decision.violations)
+
+
+def test_risk_gate_allows_when_kill_switch_active(tmp_path: Path) -> None:
+    """With wired KillSwitch in ACTIVE state, normal validation applies."""
+    audit_path = tmp_path / "audit.jsonl"
+    cfg = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(audit_path)},
+                "kill_switch": _kill_switch_section(),
+            }
+        }
+    )
+    gate = RiskGate(cfg)
+    result = gate.evaluate({"symbol": "BTCUSDT", "qty": 1.0})
+    assert result.decision.allowed
 
 
 def test_risk_gate_uses_default_audit_path_if_not_configured(tmp_path: Path) -> None:

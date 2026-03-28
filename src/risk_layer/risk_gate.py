@@ -7,6 +7,7 @@ Central orchestrator for risk evaluation and audit logging.
 
 from __future__ import annotations
 
+from copy import deepcopy
 from datetime import datetime, timezone
 from typing import Any, Optional, Union
 
@@ -14,6 +15,7 @@ from src.core.peak_config import PeakConfig
 from src.execution_simple.types import Order
 from src.risk_layer.adapters import order_to_dict, to_order
 from src.risk_layer.audit_log import AuditLogWriter
+from src.risk_layer.kill_switch import KillSwitch
 from src.risk_layer.models import RiskDecision, RiskResult, Violation
 
 
@@ -39,6 +41,17 @@ class RiskGate:
         audit_path = cfg.get("risk.audit_log.path", "./logs/risk_audit.jsonl")
         self.audit_log = AuditLogWriter(audit_path)
 
+        # Optional in-process kill switch (State-Machine), nested under [risk.kill_switch]
+        self._kill_switch: Optional[KillSwitch] = None
+        ks_raw = cfg.get("risk.kill_switch")
+        if isinstance(ks_raw, dict) and ks_raw.get("enabled", True):
+            self._kill_switch = KillSwitch(deepcopy(ks_raw))
+
+    @property
+    def kill_switch(self) -> Optional[KillSwitch]:
+        """In-process kill switch when ``risk.kill_switch`` is enabled in config; else ``None``."""
+        return self._kill_switch
+
     def evaluate(self, order: Union[Order, dict], context: Optional[dict] = None) -> RiskResult:
         """
         Evaluate an order against risk rules.
@@ -51,6 +64,29 @@ class RiskGate:
             RiskResult with decision and audit event
         """
         violations: list[Violation] = []
+
+        if self._kill_switch is not None and self._kill_switch.check_and_block():
+            violations.append(
+                Violation(
+                    code="KILL_SWITCH_BLOCKED",
+                    message="Trading blocked: kill switch is active",
+                    severity="CRITICAL",
+                    details={
+                        "state": self._kill_switch.state.name,
+                        "is_killed": self._kill_switch.is_killed,
+                    },
+                )
+            )
+            decision = RiskDecision(
+                allowed=False,
+                severity="BLOCK",
+                reason="Kill switch active",
+                violations=violations,
+            )
+            order_for_audit = order if not isinstance(order, Order) else order
+            audit_event = self._build_audit_event(order_for_audit, decision, context)
+            self.audit_log.write(audit_event)
+            return RiskResult(decision=decision, audit_event=audit_event)
 
         # Normalize order to Order object
         try:
