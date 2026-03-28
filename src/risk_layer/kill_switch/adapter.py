@@ -20,9 +20,16 @@ Deprecation Timeline:
 
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Dict, Optional, Iterable, List
+
+_LEGACY_ADAPTER_DEPRECATION_MSG = (
+    "KillSwitchAdapter is deprecated; prefer KillSwitch from "
+    "src.risk_layer.kill_switch and the ops/execution kill-switch integration. "
+    "See TODO_KILL_SWITCH_ADAPTER_MIGRATION.md in the repo root."
+)
 
 
 @dataclass
@@ -59,6 +66,11 @@ class KillSwitchAdapter:
     """
 
     def __init__(self, kill_switch: Any):
+        warnings.warn(
+            _LEGACY_ADAPTER_DEPRECATION_MSG,
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self._kill_switch = kill_switch
         self._last_status: Optional[KillSwitchStatus] = None
 
