@@ -36,6 +36,32 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+_EXCHANGE_CONNECTED_ENV = "PEAK_KILL_SWITCH_EXCHANGE_CONNECTED"
+
+
+def resolve_exchange_connected_for_health(cli_choice: str) -> bool:
+    """
+    Resolve ``exchange_connected`` for ``kill-switch health`` (NO-LIVE).
+
+    Parameters
+    ----------
+    cli_choice:
+        ``\"true\"`` / ``\"false\"`` — explicit override.
+        ``\"auto\"`` — read :envvar:`PEAK_KILL_SWITCH_EXCHANGE_CONNECTED` if set
+        (1/0, true/false, yes/no); otherwise default ``True`` (preserves prior
+        CLI behaviour when operators do not configure anything).
+    """
+    if cli_choice == "true":
+        return True
+    if cli_choice == "false":
+        return False
+    raw = os.environ.get(_EXCHANGE_CONNECTED_ENV, "").strip().lower()
+    if raw in ("0", "false", "no", "off"):
+        return False
+    if raw in ("1", "true", "yes", "on"):
+        return True
+    return True
+
 
 def cmd_status(args, kill_switch: KillSwitch):
     """Show kill switch status."""
@@ -178,9 +204,12 @@ def cmd_health(args, config: dict):
     recovery_config = config.get("kill_switch.recovery", {})
     checker = HealthChecker(recovery_config)
 
+    mode = getattr(args, "exchange_connected_mode", "auto")
+    exchange_ok = resolve_exchange_connected_for_health(mode)
+
     # Build context if possible
     context = {
-        "exchange_connected": True,  # TODO: Get from actual system
+        "exchange_connected": exchange_ok,
         "last_price_update": datetime.utcnow(),
     }
 
@@ -240,7 +269,17 @@ def main():
     audit_parser.add_argument("--limit", type=int, default=50, help="Max events to show")
 
     # Health command
-    subparsers.add_parser("health", help="Check system health")
+    health_parser = subparsers.add_parser("health", help="Check system health")
+    health_parser.add_argument(
+        "--exchange-connected",
+        dest="exchange_connected_mode",
+        choices=("auto", "true", "false"),
+        default="auto",
+        help=(
+            "Assume exchange connectivity for the health check: "
+            "'auto' reads PEAK_KILL_SWITCH_EXCHANGE_CONNECTED or defaults to true when unset."
+        ),
+    )
 
     args = parser.parse_args()
 
