@@ -48,10 +48,9 @@ from src.ops.wiring.execution_guards import (
     GuardInputs,
     apply_execution_guards,
 )
-from src.ops.recon.models import BalanceSnapshot, PositionSnapshot
+from src.ops.recon.context import recon_snapshots_from_context
 from src.ops.recon.providers import NullReconProvider
 from src.ops.recon.recon_hook import (
-    ReconConfig,
     config_from_env as recon_config_from_env,
     run_recon_if_enabled,
 )
@@ -284,18 +283,19 @@ class SafetyGuard:
         # --- End Guards ---
         # --- Runbook-B Reconciliation Hook (B2) ---
         # Default OFF. Enable explicitly: PEAK_RECON_ENABLED=1
-        # NOTE: Pure hook; caller must supply expected/observed snapshots.
-        # TODO(wire): Replace placeholder snapshots with real pre/post state.
+        # When enabled, pass expected/observed snapshots via context["recon"] (see recon_snapshots_from_context).
+        # Slots left None fall back to NullReconProvider (empty matching snapshots).
         recon_cfg = recon_config_from_env()
         if recon_cfg.enabled:
+            eb, ob, ep, op = recon_snapshots_from_context(context)
             provider = NullReconProvider(epoch=0, balances={})
             rep = run_recon_if_enabled(
                 recon_cfg,
                 provider=provider,
-                expected_balances=None,
-                observed_balances=None,
-                expected_positions=None,
-                observed_positions=None,
+                expected_balances=eb,
+                observed_balances=ob,
+                expected_positions=ep,
+                observed_positions=op,
             )
             if not rep.ok:
                 self._log_audit(

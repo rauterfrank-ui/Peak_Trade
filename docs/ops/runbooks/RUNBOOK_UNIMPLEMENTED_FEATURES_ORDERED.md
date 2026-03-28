@@ -56,7 +56,7 @@
 
 | # | Thema | Tag | Hinweis / Ort |
 |---|--------|-----|----------------|
-| D1 | Echte Pre/Post-State-Snapshots statt Platzhalter | GAP | `src/live/safety.py` — `TODO(wire)` |
+| D1 | Echte Pre/Post-State-Snapshots statt Platzhalter | DONE | `context["recon"]` + `src/ops/recon/context.py` — `SafetyGuard` (Runbook-B) |
 | D2 | Kill-Switch Legacy-Adapter | DONE | D2 Slice 3: Adapter entfernt — `TODO_KILL_SWITCH_ADAPTER_MIGRATION.md` |
 | D3 | CLI: `exchange_connected` aus echtem System | GAP | `src/risk_layer/kill_switch/cli.py` — derzeit statisch `True` |
 
