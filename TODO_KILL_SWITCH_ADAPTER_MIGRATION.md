@@ -11,7 +11,7 @@ Der `KillSwitchAdapter` (`src/risk_layer/kill_switch/adapter.py`) wurde als temp
 | Modul | Rolle |
 |--------|--------|
 | `src/ops/gates/risk_gate.py` | Reine Funktion `evaluate_risk(RiskLimits, RiskContext)`; von Live-Safety (`execution_guards`) und ähnlichen Pfaden genutzt. **Kein** `KillSwitchAdapter`. |
-| `src/risk_layer/risk_gate.py` | Eigene `RiskGate`-Klasse (Audit, Order-Checks). **Hier** lag die ursprünglich gedachte Adapter-Brücke; dieser **TODO** betrifft primär diese Datei + Adapter. |
+| `src/risk_layer/risk_gate.py` | Eigene `RiskGate`-Klasse (Audit, Order-Checks). **Slice 1:** optionales `KillSwitch` aus `risk.kill_switch` (kein `KillSwitchAdapter`). Offen: Legacy-Adapter aus dem Paket entfernen (dieser **TODO**). |
 
 Die unten unter „Erreicht“ beschriebene D2-Arbeit betrifft **Ops/Execution** und ersetzt **nicht** automatisch die Adapter-Entfernung in `risk_layer`.
 
@@ -27,45 +27,35 @@ Kanonische Quelle für den persistierten Zustand: **`data&#47;kill_switch&#47;st
 
 Detail-Spike (Code-Auszüge): `docs/ops/spikes/D2_KILL_SWITCH_INTEGRATION_SPIKE_2026-03-28.txt` · Kurzstatus: `docs/ops/spikes/D2_KILL_SWITCH_INTEGRATION_STATUS.md`.
 
-## Migration Plan (weiterhin offen: Adapter + `risk_layer`)
+## Erreicht: D2 Slice 1 — `risk_layer` RiskGate + State-Machine (2026-03)
 
-### 1. Risk-Gate Refactoring (`risk_layer`)
+- **`src/risk_layer/risk_gate.py`:** Optional wird ein **`KillSwitch`** aus **`[risk.kill_switch]`** (PeakConfig: `risk.kill_switch`) gebaut; **`evaluate()`** bricht **vor** Order-Validierung ab, wenn **`check_and_block()`** wahr ist (**`KILLED`** / **`RECOVERING`**). Kein **`KillSwitchAdapter`**.
+- **Tests:** `tests/risk_layer/test_risk_gate.py` deckt aktiv / gekillt / recovering / deaktiviert ab.
+
+Offen für spätere Slices: Trigger-Schleifen und Recovery-Flows **innerhalb** von `RiskGate` (nicht nur Block bei bereits gesetztem Zustand), dann Adapter-Entfernung.
+
+## Migration Plan (weiterhin offen: Legacy-Adapter entfernen)
+
+### 1. Risk-Gate Refactoring (`risk_layer`) — Slice 1 erledigt; Feinarbeit offen
 **Datei:** `src/risk_layer/risk_gate.py`
 
-**Aktuell (Legacy API):**
+**Umgesetzt (State-Machine, Slice 1):**
 ```python
-kill_switch_status = self._kill_switch.evaluate(risk_metrics)
-if kill_switch_status.armed:
-    # Block order
+if self._kill_switch is not None and self._kill_switch.check_and_block():
+    # Block order (KILLED or RECOVERING)
 ```
 
-**Ziel (State-Machine API):**
-```python
-# Direct state access
-if self._kill_switch.is_killed:
-    # Block order
-
-# Trigger evaluation
-for trigger in self._kill_switch.triggers:
-    if trigger.should_trigger(risk_metrics):
-        self._kill_switch.trigger(trigger_id=trigger.id, reason="...")
-
-# Recovery workflow
-if needs_recovery:
-    request = self._kill_switch.request_recovery(operator_id="...")
-    # ... health checks ...
-    self._kill_switch.complete_recovery()
-```
+**Später (optional, nicht Slice 1):** Metrik-getriebene **`trigger()`** / **`request_recovery()`** / **`complete_recovery()`** aus `RiskGate` heraus — nur wenn Produkt/Ops das in dieser Schicht wollen; Ops/Execution nutzen weiter die in „Erreicht: Ops / Execution“ genannten Pfade für persistierten State.
 
 ### 2. Test-Migration
 **Dateien:**
-- `tests/risk_layer/test_risk_gate.py`
-- Alle Tests, die `KillSwitchAdapter` verwenden
+- `tests/risk_layer/test_risk_gate.py` — **Slice 1:** State-Machine-Blockade abgedeckt.
+- Alle Tests, die **`KillSwitchAdapter`** / **`KillSwitchLayer`** noch explizit nutzen (z. B. `tests/risk_layer/test_imports_smoke.py`).
 
-**Änderungen:**
-- Entferne `evaluate()` Aufrufe → nutze direkte State-Checks
-- Entferne `reset()` Aufrufe → nutze Recovery-Workflow
-- Entferne `_last_status` Zugriffe → nutze State-Properties
+**Änderungen (für Adapter-Remove-PR):**
+- Legacy-**`evaluate()`** am Adapter → in neuen Tests wo nötig **State-Checks** / **`KillSwitch`** direkt.
+- Entferne **`reset()`**-Pfade am Adapter → Recovery-Workflow an der State-Machine.
+- Entferne **`_last_status`**-Zugriffe → Status über **`KillSwitch.state`** / **`get_status()`**.
 
 ### 3. Adapter entfernen
 **Datei zu löschen:** `src/risk_layer/kill_switch/adapter.py`
@@ -83,7 +73,7 @@ if needs_recovery:
 
 Ein separater PR-Track soll den Adapter erst entfernen, wenn:
 
-1. **Inventar:** Vollständige Liste der Import-/Call-Sites zu ``KillSwitchAdapter``, ``KillSwitchLayer``, ``KillSwitchStatus`` und ``to_violations`` (mindestens ``src/risk_layer/risk_gate.py``, Tests, ggf. Downstream-Docs).
+1. **Inventar:** Vollständige Liste der Import-/Call-Sites zu ``KillSwitchAdapter``, ``KillSwitchLayer``, ``KillSwitchStatus`` und ``to_violations`` (``src/risk_layer/risk_gate.py`` nutzt **keinen** Adapter — Slice 1; Rest: Tests, Re-Exports, Downstream-Docs).
 2. **Ziel-API:** Festgelegtes Nutzungsmodell (typisch: ``KillSwitch`` + State-Machine, ggf. Trigger/Recovery), abgestimmt mit Ops/Execution-Pfaden aus dem D2-Abschnitt „Erreicht“.
 3. **Regression:** Angepasste oder neue Tests ohne versehentliche Legacy-Konstruktion; bestehende Kill-Switch-Test-Suite grün.
 4. **Doku:** Beispiele unter ``docs&#47;risk&#47;`` und READMEs ohne veraltete ``KillSwitchLayer``-Factory, wo nicht absichtlich historisch.
@@ -121,8 +111,8 @@ TBD - Assignment vor Start des Refactorings
 
 ---
 
-**Status:** 📋 TODO (Adapter + `src/risk_layer/risk_gate.py`; Ops/Execution D2 siehe Abschnitt „Erreicht“)  
+**Status:** 📋 TODO (Legacy-**Adapter**-Entfernung + Doku; **RiskGate** nutzt State-Machine siehe „Erreicht: D2 Slice 1“; Ops/Execution D2 siehe „Erreicht: Ops / Execution“)  
 **Priorität:** P2 (Medium)  
 **Erstellt:** 2025-12-28  
 **Target:** Q1 2026  
-**Letzte Doku-Aktualisierung:** 2026-03-29
+**Letzte Doku-Aktualisierung:** 2026-03-29 (Slice 2: kanonische KillSwitch-Doku, Inventar)

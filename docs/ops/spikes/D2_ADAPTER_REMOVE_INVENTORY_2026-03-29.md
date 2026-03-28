@@ -6,7 +6,7 @@
 
 ## Wichtig: ``risk_layer.risk_gate.RiskGate`` ≠ Kill-Switch-Adapter
 
-Die Klasse ``RiskGate`` in ``src&#47;risk_layer&#47;risk_gate.py`` importiert **keinen** ``KillSwitchAdapter``, ``KillSwitchLayer`` oder ``KillSwitch``. Sie ist ein Order-/Audit-Orchestrator (Skeleton). Die Legacy-Formulierung „used by risk_gate“ im Adapter-Modul bezieht sich auf **historische Planung**, nicht auf einen aktuellen Import in dieser Datei.
+Die Klasse ``RiskGate`` in ``src&#47;risk_layer&#47;risk_gate.py`` importiert **keinen** ``KillSwitchAdapter`` oder ``KillSwitchLayer``. **Slice 1 (2026-03):** optional direktes ``KillSwitch`` aus ``risk.kill_switch`` (PeakConfig); ``evaluate()`` blockiert bei ``check_and_block()`` (**KILLED** oder **RECOVERING**). Die Legacy-Formulierung „used by risk_gate“ im Adapter-Modul bezieht sich auf **historische Planung**, nicht auf einen Import des Adapters in ``risk_gate.py``.
 
 ## ``src`` — Paket-Exports (Root)
 
@@ -15,7 +15,7 @@ Die Klasse ``RiskGate`` in ``src&#47;risk_layer&#47;risk_gate.py`` importiert **
 | Export | Hinweis |
 |--------|---------|
 | ``KillSwitchLayer``, ``KillSwitchStatus`` | Re-Export aus ``kill_switch``; Konstruktion von ``KillSwitchLayer`` löst ``DeprecationWarning`` aus (Adapter). |
-| ``RiskGate`` | **Nicht** aus ``src.risk_layer`` exportiert (nur ``order_to_dict``, ``to_order``, Kill-Switch-Legacy-Symbole). Öffentliche Risk-Docs nutzen ``from src.risk_layer.risk_gate import RiskGate`` (Stand 2026-03, u. a. Runbooks, ``RISK_LAYER_ALIGNMENT.md``). |
+| ``RiskGate`` | **Nicht** aus ``src.risk_layer`` exportiert (nur ``order_to_dict``, ``to_order``, Kill-Switch-Legacy-Symbole). Öffentliche Risk-Docs: ``from src.risk_layer.risk_gate import RiskGate``; Slice 1 verdrahtet optional ``KillSwitch`` aus ``risk.kill_switch`` (Doku: ``RISK_LAYER_ALIGNMENT.md``, ``RISK_METRICS_SCHEMA.md``, ``TODO_KILL_SWITCH_ADAPTER_MIGRATION.md``). |
 
 ## ``src`` — Kill-Switch-Paket
 
