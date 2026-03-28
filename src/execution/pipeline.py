@@ -103,14 +103,21 @@ def _is_kill_switch_blocking(state_path: Optional[str] = None) -> bool:
 
     Delegates to :func:`resolve_kill_switch_limit_from_state_file` in
     ``src.ops.gates.risk_gate`` so JSON parsing matches the ops risk gate and
-    live safety. Fail-open: returns ``False`` when the resolver yields
-    ``None`` (missing file, unreadable).
+    live safety. Uses :func:`kill_switch_state_path_from_env` when
+    ``state_path`` is omitted so ``PEAK_KILL_SWITCH_STATE_PATH`` and
+    ``PEAKTRADE_KILL_SWITCH_STATE_PATH`` both apply. Fail-open: returns
+    ``False`` when the resolver yields ``None`` (missing file, unreadable).
+    Does **not** use ``PEAK_KILL_SWITCH`` env (bounded_pilot is file-only).
 
     Used only for bounded_pilot mode (config: require_kill_switch_active).
     """
-    from src.ops.gates.risk_gate import resolve_kill_switch_limit_from_state_file
+    from src.ops.gates.risk_gate import (
+        kill_switch_state_path_from_env,
+        resolve_kill_switch_limit_from_state_file,
+    )
 
-    return resolve_kill_switch_limit_from_state_file(state_path) is True
+    path = state_path if state_path is not None else kill_switch_state_path_from_env()
+    return resolve_kill_switch_limit_from_state_file(path) is True
 
 
 def _signal_label_from_int(sig: int) -> str:
@@ -1538,8 +1545,7 @@ class ExecutionPipeline:
 
         # 2.5. Kill-Switch-Check (bounded_pilot only; config: require_kill_switch_active)
         bounded_pilot_ok = bool(getattr(self._env_config, "bounded_pilot_mode", False))
-        ks_path = os.getenv("PEAKTRADE_KILL_SWITCH_STATE_PATH")
-        if bounded_pilot_ok and _is_kill_switch_blocking(ks_path):
+        if bounded_pilot_ok and _is_kill_switch_blocking():
             reason = "kill_switch_active"
             logger.warning(
                 "[EXECUTION PIPELINE] Kill switch active - Orders blockiert (bounded_pilot)"

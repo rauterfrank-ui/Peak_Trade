@@ -9,6 +9,8 @@ from src.ops.gates.risk_gate import (
     RiskContext,
     evaluate_risk,
     RiskDenyReason,
+    kill_switch_should_block_trading,
+    kill_switch_state_path_from_env,
     resolve_kill_switch_limit_from_state_file,
 )
 
@@ -88,3 +90,41 @@ def test_resolve_kill_switch_invalid_json(tmp_path):
     path = tmp_path / "state.json"
     path.write_text("{not json", encoding="utf-8")
     assert resolve_kill_switch_limit_from_state_file(str(path)) is None
+
+
+def test_kill_switch_state_path_from_env_prefers_canonical(monkeypatch):
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", "/a/state.json")
+    monkeypatch.setenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", "/b/state.json")
+    assert kill_switch_state_path_from_env() == "/a/state.json"
+
+
+def test_kill_switch_state_path_from_env_legacy_when_canonical_unset(monkeypatch):
+    monkeypatch.delenv("PEAK_KILL_SWITCH_STATE_PATH", raising=False)
+    monkeypatch.setenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", "/legacy/state.json")
+    assert kill_switch_state_path_from_env() == "/legacy/state.json"
+
+
+def test_kill_switch_should_block_trading_explicit():
+    assert kill_switch_should_block_trading(explicit_active=True) is True
+
+
+def test_kill_switch_should_block_trading_file_killed(tmp_path, monkeypatch):
+    path = tmp_path / "ks.json"
+    path.write_text(json.dumps({"state": "KILLED"}), encoding="utf-8")
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
+    monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
+    assert kill_switch_should_block_trading(explicit_active=False) is True
+
+
+def test_kill_switch_should_block_trading_file_active_no_block(tmp_path, monkeypatch):
+    path = tmp_path / "ks.json"
+    path.write_text(json.dumps({"state": "ACTIVE"}), encoding="utf-8")
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
+    monkeypatch.setenv("PEAK_KILL_SWITCH", "1")
+    assert kill_switch_should_block_trading(explicit_active=False) is False
+
+
+def test_kill_switch_should_block_trading_env_when_no_file(monkeypatch, tmp_path):
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(tmp_path / "nope.json"))
+    monkeypatch.setenv("PEAK_KILL_SWITCH", "1")
+    assert kill_switch_should_block_trading(explicit_active=False) is True

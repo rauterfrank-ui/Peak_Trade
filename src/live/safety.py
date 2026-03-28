@@ -41,7 +41,7 @@ from src.ops.gates.armed_gate import ArmedGate, ArmedState
 from src.ops.gates.risk_gate import (
     RiskLimits,
     RiskContext,
-    resolve_kill_switch_limit_from_state_file,
+    kill_switch_should_block_trading,
 )
 from src.ops.wiring.execution_guards import (
     GuardConfig,
@@ -238,17 +238,9 @@ class SafetyGuard:
             token = os.getenv("PEAK_EXEC_GUARDS_TOKEN")
             gate = ArmedGate(secret=secret, token_ttl_seconds=120)
             cfg = GuardConfig(enabled=True, armed_required=True, risk_enabled=True)
-            state_path = os.getenv("PEAK_KILL_SWITCH_STATE_PATH")
-            if not state_path:
-                state_path = None
-            ks_from_file = resolve_kill_switch_limit_from_state_file(state_path)
-            if ks_from_file is None:
-                kill_switch = os.getenv("PEAK_KILL_SWITCH", "0") == "1"
-            else:
-                kill_switch = ks_from_file
             limits = RiskLimits(
                 enabled=True,
-                kill_switch=kill_switch,
+                kill_switch=kill_switch_should_block_trading(explicit_active=False),
                 max_notional_usd=float(os.getenv("PEAK_MAX_NOTIONAL_USD", "0") or 0.0),
                 max_order_size=float(os.getenv("PEAK_MAX_ORDER_SIZE", "0") or 0.0),
                 max_position=float(os.getenv("PEAK_MAX_POSITION", "0") or 0.0),

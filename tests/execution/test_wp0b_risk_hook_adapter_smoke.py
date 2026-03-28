@@ -2,6 +2,7 @@
 WP0B Tests - RuntimeRiskHook Adapter
 """
 
+import json
 from decimal import Decimal
 
 import pytest
@@ -51,15 +52,30 @@ def test_runtime_risk_hook_evaluate_order_block():
 
 
 def test_runtime_risk_hook_check_kill_switch():
-    """Test RuntimeRiskHook.check_kill_switch()"""
+    """Test RuntimeRiskHook.check_kill_switch() when kill switch not blocking."""
     runtime = RiskRuntime(policies=[NoopPolicy()])
     hook = RuntimeRiskHook(runtime)
 
     result = hook.check_kill_switch()
 
-    # Phase 0: No kill switch implementation
     assert result.decision == RiskDecision.ALLOW
-    assert "not implemented" in result.reason
+    assert result.metadata.get("kill_switch") == "inactive"
+
+
+def test_runtime_risk_hook_check_kill_switch_blocks_when_state_killed(tmp_path, monkeypatch):
+    """Kill-switch state file KILLED yields BLOCK from check_kill_switch."""
+    state_file = tmp_path / "ks.json"
+    state_file.write_text(json.dumps({"state": "KILLED"}), encoding="utf-8")
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(state_file))
+    monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
+
+    runtime = RiskRuntime(policies=[NoopPolicy()])
+    hook = RuntimeRiskHook(runtime)
+
+    result = hook.check_kill_switch()
+
+    assert result.decision == RiskDecision.BLOCK
+    assert result.metadata.get("kill_switch") == "active"
 
 
 def test_runtime_risk_hook_evaluate_position_change():
