@@ -16,6 +16,7 @@ from __future__ import annotations
 from src.risk_layer.adapters import order_to_dict, to_order
 
 # Kill Switch (phase 0 governance / safety)
+# Legacy evaluator API: KillSwitchLayer / KillSwitchStatus (DeprecationWarning when adapter is constructed).
 from src.risk_layer.kill_switch import KillSwitchLayer, KillSwitchStatus
 
 __all__ = [

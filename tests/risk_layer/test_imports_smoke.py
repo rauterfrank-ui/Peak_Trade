@@ -26,6 +26,11 @@ class TestPhase0Imports:
         assert KillSwitchLayer is not None
         assert KillSwitchStatus is not None
 
+    def test_kill_switch_layer_emits_deprecation_warning(self):
+        """KillSwitchLayer constructs KillSwitchAdapter; expect DeprecationWarning."""
+        with pytest.warns(DeprecationWarning, match="KillSwitchAdapter"):
+            _ = KillSwitchLayer({})
+
     def test_order_adapters_import(self):
         """Order adapter functions are importable."""
         assert order_to_dict is not None
