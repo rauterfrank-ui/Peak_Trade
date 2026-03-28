@@ -72,7 +72,9 @@ def test_reject_kill_switch_emits_risk_reject(tmp_path: Path):
     assert events[1]["reason_code"] == "RISK_REJECT_KILL_SWITCH"
 
 
-def test_reject_kill_switch_from_state_file_without_explicit_flag(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+def test_reject_kill_switch_from_state_file_without_explicit_flag(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
     """Orchestrator blocks when state file says KILLED even if kill_switch_active is False."""
     log_path = tmp_path / "execution_events.jsonl"
     state_file = tmp_path / "state.json"
