@@ -103,7 +103,7 @@ class KillSwitch:
     def enabled(self) -> bool:
         """Check if Kill Switch is enabled.
 
-        Compatibility property for legacy KillSwitchLayer API.
+        Compatibility property for callers that expect an ``enabled`` flag in config.
 
         Priority:
             1. Override flag (if set via setter)
