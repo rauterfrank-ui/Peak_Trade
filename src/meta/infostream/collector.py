@@ -22,13 +22,53 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List
 
 from .models import IntelEvent, SeverityLevel
 
 logger = logging.getLogger(__name__)
+
+
+def _coerce_non_negative_int(value: Any, default: int = 0) -> int:
+    """Parse int-like summary fields; invalid values fall back to default."""
+    if value is None:
+        return default
+    try:
+        i = int(float(value))
+        return max(0, i)
+    except (TypeError, ValueError):
+        return default
+
+
+def _coerce_health_score(value: Any, default: float = 0.0) -> float:
+    """Parse health_score into [0, 100]; invalid → default."""
+    if value is None:
+        return default
+    try:
+        x = float(value)
+        if math.isnan(x) or math.isinf(x):
+            return default
+        return max(0.0, min(100.0, x))
+    except (TypeError, ValueError):
+        return default
+
+
+def _coerce_profile_name(value: Any, default: str = "unknown") -> str:
+    if value is None:
+        return default
+    s = str(value).strip()
+    return s if s else default
+
+
+def _as_mapping(value: Any) -> Dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def _as_trigger_violations(value: Any) -> List[Any]:
+    return value if isinstance(value, list) else []
 
 
 def build_event_from_test_health_report(report_dir: Path) -> IntelEvent:
@@ -67,7 +107,8 @@ def build_event_from_test_health_report(report_dir: Path) -> IntelEvent:
         - strategy_coverage: dict (optional)
         - switch_sanity: dict (optional)
 
-    TODO: Falls Keys abweichen, defensive Defaults einsetzen.
+    Unbekannte oder falsch typisierte Felder werden mit Defaults bzw. Koercion
+    abgefangen (siehe Hilfsfunktionen oben).
     """
     # Versuche summary.json oder summary_stats.json zu finden
     summary_path = report_dir / "summary.json"
@@ -85,21 +126,21 @@ def build_event_from_test_health_report(report_dir: Path) -> IntelEvent:
     except json.JSONDecodeError as e:
         raise ValueError(f"Fehler beim Parsen von {summary_path}: {e}")
 
-    # Daten extrahieren mit defensiven Defaults
-    health_score = data.get("health_score", 0.0)
-    passed_checks = data.get("passed_checks", 0)
-    failed_checks = data.get("failed_checks", 0)
-    skipped_checks = data.get("skipped_checks", 0)
+    # Daten extrahieren mit defensiven Defaults / Typ-Koercion
+    health_score = _coerce_health_score(data.get("health_score", 0.0))
+    passed_checks = _coerce_non_negative_int(data.get("passed_checks", 0))
+    failed_checks = _coerce_non_negative_int(data.get("failed_checks", 0))
+    skipped_checks = _coerce_non_negative_int(data.get("skipped_checks", 0))
     total_checks = passed_checks + failed_checks + skipped_checks
-    profile_name = data.get("profile_name", "unknown")
+    profile_name = _coerce_profile_name(data.get("profile_name", "unknown"))
 
     # Exit-Code simulieren basierend auf failed_checks
     # (summary.json hat keinen expliziten exit_code)
     exit_code = 0 if failed_checks == 0 else 1
 
     # Trigger-Violations
-    trigger_violations = data.get("trigger_violations", [])
-    num_violations = len(trigger_violations) if isinstance(trigger_violations, list) else 0
+    trigger_violations = _as_trigger_violations(data.get("trigger_violations", []))
+    num_violations = len(trigger_violations)
 
     # Event-ID generieren
     event_id = f"INF-{report_dir.name}"
@@ -137,15 +178,15 @@ def build_event_from_test_health_report(report_dir: Path) -> IntelEvent:
         details.append(f"Trigger-Violations: {num_violations}")
 
     # Strategy-Coverage info
-    strategy_coverage = data.get("strategy_coverage", {})
-    if strategy_coverage and strategy_coverage.get("enabled"):
-        cov_healthy = strategy_coverage.get("is_healthy", True)
+    strategy_coverage = _as_mapping(data.get("strategy_coverage", {}))
+    if strategy_coverage and bool(strategy_coverage.get("enabled")):
+        cov_healthy = bool(strategy_coverage.get("is_healthy", True))
         details.append(f"Strategy-Coverage: {'OK' if cov_healthy else 'Violations'}")
 
     # Switch-Sanity info
-    switch_sanity = data.get("switch_sanity", {})
-    if switch_sanity and switch_sanity.get("enabled"):
-        sanity_ok = switch_sanity.get("is_ok", True)
+    switch_sanity = _as_mapping(data.get("switch_sanity", {}))
+    if switch_sanity and bool(switch_sanity.get("enabled")):
+        sanity_ok = bool(switch_sanity.get("is_ok", True))
         details.append(f"Switch-Sanity: {'OK' if sanity_ok else 'Violations'}")
 
     # Links

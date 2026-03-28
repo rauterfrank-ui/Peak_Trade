@@ -272,6 +272,32 @@ class TestCollector:
         with pytest.raises(FileNotFoundError):
             build_event_from_test_health_report(run_dir)
 
+    def test_build_event_defensive_malformed_types(self, tmp_path: Path):
+        """Test: Abweichende Typen in summary.json werden abgefangen (B3)."""
+        run_dir = tmp_path / "malformed_run"
+        run_dir.mkdir()
+        raw = {
+            "profile_name": "  ",
+            "health_score": "not-a-number",
+            "passed_checks": "3",
+            "failed_checks": -9,
+            "skipped_checks": None,
+            "trigger_violations": "not-a-list",
+            "strategy_coverage": "bad",
+            "switch_sanity": ["also", "bad"],
+            "started_at": "2025-12-11T14:39:20",
+        }
+        (run_dir / "summary.json").write_text(json.dumps(raw), encoding="utf-8")
+
+        event = build_event_from_test_health_report(run_dir)
+
+        assert event.payload["health_score"] == 0.0
+        assert event.payload["profile"] == "unknown"
+        assert event.payload["raw_data"]["failed_checks"] == -9
+        details_text = "\n".join(event.details)
+        assert "Total Checks: 3" in details_text
+        assert "Failed Checks: 0" in details_text
+
     def test_save_and_load_intel_event(self, tmp_path: Path):
         """Test: Event speichern und laden."""
         event = IntelEvent(
