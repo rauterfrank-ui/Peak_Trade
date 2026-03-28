@@ -23,7 +23,9 @@ def _parse_balance(obj: Any) -> Optional[BalanceSnapshot]:
         balances = obj.get("balances")
         if balances is None or not isinstance(balances, dict):
             return None
-        return BalanceSnapshot(epoch=epoch, balances={str(k): float(v) for k, v in balances.items()})
+        return BalanceSnapshot(
+            epoch=epoch, balances={str(k): float(v) for k, v in balances.items()}
+        )
     return None
 
 
@@ -37,7 +39,9 @@ def _parse_position(obj: Any) -> Optional[PositionSnapshot]:
         positions = obj.get("positions")
         if positions is None or not isinstance(positions, dict):
             return None
-        return PositionSnapshot(epoch=epoch, positions={str(k): float(v) for k, v in positions.items()})
+        return PositionSnapshot(
+            epoch=epoch, positions={str(k): float(v) for k, v in positions.items()}
+        )
     return None
 
 
