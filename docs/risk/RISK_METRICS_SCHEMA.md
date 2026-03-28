@@ -156,6 +156,8 @@ if ks.check_and_block():
 
 **Removed (D2 Slice 3, 2026-03):** `KillSwitchAdapter`, `KillSwitchLayer`, `KillSwitchStatus`, and `to_violations` — use **`KillSwitch`** + **`check_and_block()`** / **`is_killed`**, or **`RiskGate`** as above. Historical context: `TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`.
 
+**Doc hygiene (2026-03-29):** Aktive D2-Spikes und Statusdateien unter `docs/ops/spikes/` tragen einen kurzen Nachtrag „Stand nach Slice 3“; archivierte oder mergebezogene Historie (z. B. PR 409) wird nicht umgeschrieben.
+
 ## Audit Logs
 
 All risk audit logs include a `kill_switch.metrics_snapshot` field with canonical structure:

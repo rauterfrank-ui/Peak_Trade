@@ -2,6 +2,8 @@
 
 **Stand:** 2026-03-29 · **Adapter-Migration (risk_layer):** abgeschlossen — [`TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`](../../../TODO_KILL_SWITCH_ADAPTER_MIGRATION.md) (Repo-Root)
 
+**Nachtrag Slice 3 (2026-03-29):** Legacy-**`KillSwitchAdapter`**-Pfad in `risk_layer` ist entfernt; die **Ops/Execution**-Bausteine in der Tabelle unten bleiben die kanonische Anbindung an die persistierte State-Datei (unabhängig vom früheren Adapter).
+
 ## Kurzfassung
 
 Die Integration von **persistiertem Kill-Switch-State** (`data&#47;kill_switch&#47;state.json`) in **Ops- und Execution-Pfaden** ist umgesetzt. Der frühere Legacy-**`KillSwitchAdapter`** wurde in **D2 Slice 3** entfernt; **`RiskGate`** (`src&#47;risk_layer&#47;risk_gate.py`) nutzt optional direkt **`KillSwitch`** aus der Konfiguration (siehe `TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`, abgeschlossen).

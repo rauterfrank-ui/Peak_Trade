@@ -4,6 +4,8 @@
 
 **Ursprüngliches Ziel:** Grundlage für einen Delete-PR zu ``KillSwitchAdapter``, ``KillSwitchLayer`` und ``KillSwitchStatus``. **Erledigt:** ``src&#47;risk_layer&#47;kill_switch&#47;adapter.py`` entfernt, Re-Exports bereinigt, Smoke-Tests angepasst.
 
+**Nachtrag Stand nach Slice 3 (2026-03-29):** Delete-PR ist gemergt; produktive Importe nutzen ``KillSwitch`` bzw. ``RiskGate`` wie unten. Historische Merge-Logs (z. B. PR 409) bleiben unverändert.
+
 ## Wichtig: ``risk_layer.risk_gate.RiskGate``
 
 Die Klasse ``RiskGate`` in ``src&#47;risk_layer&#47;risk_gate.py`` nutzt optional direktes ``KillSwitch`` aus ``risk.kill_switch`` (PeakConfig); **kein** Legacy-Adapter.

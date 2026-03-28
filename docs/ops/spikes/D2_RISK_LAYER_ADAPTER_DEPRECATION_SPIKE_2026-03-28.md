@@ -6,6 +6,11 @@
 
 Legacy-API (`KillSwitchAdapter`, `KillSwitchLayer`, `KillSwitchStatus`) inventarisieren, von der **Ops/Execution-D2-Integration** abgrenzen und Laufzeit-**Deprecation** einziehen, ohne das Verhalten der State-Machine (`KillSwitch`) zu ändern.
 
+## Nachtrag (Stand nach D2 Slice 3, 2026-03-29)
+
+- **`KillSwitchAdapter`** und zugehörige Legacy-Symbole sind **aus dem Code entfernt** (u. a. ehemaliges Modul unter `src&#47;risk_layer&#47;kill_switch&#47;adapter.py`).
+- Die Tabellen unten beschreiben den **Spike-Stand 2026-03-28** und bleiben als **historische** Referenz; kanonischer Abschluss: [`TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`](../../../TODO_KILL_SWITCH_ADAPTER_MIGRATION.md).
+
 ## Begriffsklärung (kurz)
 
 | Begriff | Bedeutung |
