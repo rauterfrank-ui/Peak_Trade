@@ -441,3 +441,72 @@ def test_evidence_pack_with_findings_and_actions(
     assert "Test finding 1" in operator_output
     assert "Test finding 2" in operator_output
     assert "Test action 1" in operator_output
+
+
+class TestRedaction:
+    """Minimal secret redaction for persisted artifact text."""
+
+    def test_redact_content_masks_bearer_sk_and_aws_key(self):
+        gen = EvidencePackGenerator()
+        raw = (
+            "Use Authorization: Bearer eyJhbGciOiJIUzI1NiJ.test\n"
+            "Key sk-12345678901234567890123456789012\n"
+            "AWS AKIA0123456789ABCDEF\n"
+        )
+        red = gen._redact_content(raw)
+        assert "eyJhbGciOiJIUzI1NiJ" not in red
+        assert "Bearer [REDACTED]" in red
+        assert "sk-12345678901234567890123456789012" not in red
+        assert "[REDACTED]" in red
+        assert "AKIA0123456789ABCDEF" not in red
+
+    def test_generate_redacts_proposer_and_critic_json(
+        self,
+        fixed_clock,
+        tmp_evidence_dir,
+        sample_run_manifest,
+        sample_critic_artifact,
+        sample_capability_scope_check,
+    ):
+        secret_sk = "sk-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        bearer = "Bearer supersecret.token.value"
+        proposer = ProposerArtifact(
+            model_id="gpt-5.2-pro",
+            run_id="proposer-run-sec",
+            prompt_hash="sha256:abc",
+            output_hash=EvidencePackGenerator.compute_output_hash(f"Body\n{secret_sk}\n{bearer}\n"),
+            content=f"Body\n{secret_sk}\n{bearer}\n",
+            metadata={},
+        )
+        critic = CriticArtifact(
+            model_id="deepseek-r1",
+            run_id="critic-run-sec",
+            prompt_hash="sha256:xyz",
+            output_hash=EvidencePackGenerator.compute_output_hash("ok"),
+            content="ok",
+            decision="APPROVE",
+            rationale=f"See {bearer} and {secret_sk}",
+            evidence_ids=[],
+            metadata={},
+        )
+        gen = EvidencePackGenerator(clock=fixed_clock)
+        gen.generate(
+            evidence_pack_id="EVP-SEC-001",
+            layer_id="L2",
+            layer_name="Test",
+            run_manifest=sample_run_manifest,
+            proposer_artifact=proposer,
+            critic_artifact=critic,
+            sod_result=SoDResult.PASS,
+            sod_reason="Test",
+            capability_scope_check=sample_capability_scope_check,
+            out_dir=tmp_evidence_dir,
+        )
+        proposer_json = json.loads((tmp_evidence_dir / "proposer_output.json").read_text())
+        critic_json = json.loads((tmp_evidence_dir / "critic_output.json").read_text())
+        assert secret_sk not in proposer_json["content"]
+        assert "supersecret" not in proposer_json["content"]
+        assert "Bearer [REDACTED]" in proposer_json["content"]
+        assert "[REDACTED]" in proposer_json["content"]
+        assert secret_sk not in critic_json["rationale"]
+        assert "supersecret" not in critic_json["rationale"]

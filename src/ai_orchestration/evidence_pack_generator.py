@@ -10,6 +10,7 @@ Reference:
 
 import hashlib
 import json
+import re
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -173,7 +174,7 @@ class EvidencePackGenerator:
             "output_hash": critic_artifact.output_hash,
             "content": self._redact_content(critic_artifact.content),
             "decision": critic_artifact.decision,
-            "rationale": critic_artifact.rationale,
+            "rationale": self._redact_content(critic_artifact.rationale),
             "evidence_ids": sorted(critic_artifact.evidence_ids),
             "metadata": critic_artifact.metadata,
         }
@@ -272,15 +273,29 @@ class EvidencePackGenerator:
 
     def _redact_content(self, content: str) -> str:
         """
-        Redact sensitive content from artifacts.
+        Redact sensitive content from artifacts before writing JSON.
 
-        Currently a pass-through, but can be extended to:
-        - Remove PII
-        - Redact secrets/API keys
-        - Truncate long outputs
+        ``output_hash`` on :class:`ProposerArtifact` / :class:`CriticArtifact`
+        remains the digest of the **original** model output; this method only
+        affects persisted text fields (proposer/critic ``content``, critic
+        ``rationale``).
+
+        Rules (minimal, best-effort):
+        - ``Bearer <token>``-style fragments
+        - ``sk-…`` API key material (OpenAI-style, length >= 24 chars total match)
+        - ``AKIA…`` AWS access key ids (20 chars)
         """
-        # TODO: Add redaction rules if needed
-        return content
+        if not content:
+            return content
+        out = content
+        out = re.sub(
+            r"(?i)\bBearer\s+[A-Za-z0-9_\-\.]+",
+            "Bearer [REDACTED]",
+            out,
+        )
+        out = re.sub(r"sk-[a-zA-Z0-9]{20,}", "[REDACTED]", out)
+        out = re.sub(r"\bAKIA[0-9A-Z]{16}\b", "[REDACTED]", out)
+        return out
 
     @staticmethod
     def compute_output_hash(content: str) -> str:
