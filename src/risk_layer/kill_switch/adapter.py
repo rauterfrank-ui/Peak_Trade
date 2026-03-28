@@ -8,6 +8,18 @@ and the old KillSwitchLayer (Evaluator API) used by risk_gate.
 **This adapter is TEMPORARY and should be removed once risk_gate is refactored
 to use the new API directly.**
 
+Ops/Execution kill-switch integration (state file, shared resolvers) lives under
+``src/ops/gates`` and related paths — see ``docs/ops/spikes/D2_KILL_SWITCH_INTEGRATION_STATUS.md``.
+
+**Dokumentation (Legacy-Adapter / Removal-Plan):**
+
+- Spike (Inventar + Deprecation-Kontext): ``docs/ops/spikes/D2_RISK_LAYER_ADAPTER_DEPRECATION_SPIKE_2026-03-28.md``
+- Migration / Zielbild: ``TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`` (Repo-Root)
+
+**Laufzeit:** ``KillSwitchAdapter`` emits ``DeprecationWarning`` on construction
+(``stacklevel=2``); ``KillSwitchLayer`` in ``kill_switch/__init__.py`` builds an adapter
+internally, so callers receive the same warning.
+
 TODO (Follow-up):
 - Refactor risk_gate to use KillSwitch State Machine API directly
 - Remove this adapter module
@@ -28,7 +40,8 @@ from typing import Any, Dict, Optional, Iterable, List
 _LEGACY_ADAPTER_DEPRECATION_MSG = (
     "KillSwitchAdapter is deprecated; prefer KillSwitch from "
     "src.risk_layer.kill_switch and the ops/execution kill-switch integration. "
-    "See TODO_KILL_SWITCH_ADAPTER_MIGRATION.md in the repo root."
+    "See TODO_KILL_SWITCH_ADAPTER_MIGRATION.md (repo root) and "
+    "docs/ops/spikes/D2_RISK_LAYER_ADAPTER_DEPRECATION_SPIKE_2026-03-28.md."
 )
 
 
@@ -58,6 +71,8 @@ class KillSwitchStatus:
 class KillSwitchAdapter:
     """
     Adapter für alte KillSwitchLayer Evaluator-API.
+
+    Siehe Modul-Docstring für Deprecation, Spike-Notizen und Removal-Plan.
 
     Erwartete Legacy Calls:
       - evaluate(risk_metrics) -> KillSwitchStatus (armed/reason)
