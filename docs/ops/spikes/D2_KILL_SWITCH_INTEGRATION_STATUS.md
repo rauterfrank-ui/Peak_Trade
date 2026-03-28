@@ -1,10 +1,10 @@
 # D2 Kill-Switch Integration — Status (Ops / Execution)
 
-**Stand:** 2026-03-28 · **Quelle der Wahrheit für offene Adapter-Arbeit:** [`TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`](../../../TODO_KILL_SWITCH_ADAPTER_MIGRATION.md) (Repo-Root)
+**Stand:** 2026-03-29 · **Adapter-Migration (risk_layer):** abgeschlossen — [`TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`](../../../TODO_KILL_SWITCH_ADAPTER_MIGRATION.md) (Repo-Root)
 
 ## Kurzfassung
 
-Die Integration von **persistiertem Kill-Switch-State** (`data&#47;kill_switch&#47;state.json`) in **Ops- und Execution-Pfaden** ist umgesetzt. Der Legacy-**`KillSwitchAdapter`** (`src/risk_layer/kill_switch/adapter.py`) und die **`RiskGate`-Klasse** unter `src/risk_layer/risk_gate.py` sind davon **getrennt** und weiterhin Gegenstand des Adapter-Migration-TODOs.
+Die Integration von **persistiertem Kill-Switch-State** (`data&#47;kill_switch&#47;state.json`) in **Ops- und Execution-Pfaden** ist umgesetzt. Der frühere Legacy-**`KillSwitchAdapter`** wurde in **D2 Slice 3** entfernt; **`RiskGate`** (`src&#47;risk_layer&#47;risk_gate.py`) nutzt optional direkt **`KillSwitch`** aus der Konfiguration (siehe `TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`, abgeschlossen).
 
 ## Umgesetzte Bausteine
 

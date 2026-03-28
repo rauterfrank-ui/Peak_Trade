@@ -152,9 +152,9 @@ if ks.check_and_block():
 
 **RiskGate:** If `PeakConfig` includes `risk.kill_switch` with `enabled` not false, `RiskGate` constructs a `KillSwitch` and blocks `evaluate()` while `check_and_block()` is true (`src/risk_layer/risk_gate.py`).
 
-### Legacy evaluator API (deprecated)
+### Legacy evaluator API
 
-`KillSwitchLayer(cfg)` returns a **`KillSwitchAdapter`** (DeprecationWarning on construction). It exposes **`evaluate(risk_metrics)`** for the old evaluator-style API. Prefer **`KillSwitch`** + **`check_and_block()`** / **`is_killed`**, or **`RiskGate`** as above. See `TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`.
+**Removed (D2 Slice 3, 2026-03):** `KillSwitchAdapter`, `KillSwitchLayer`, `KillSwitchStatus`, and `to_violations` — use **`KillSwitch`** + **`check_and_block()`** / **`is_killed`**, or **`RiskGate`** as above. Historical context: `TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`.
 
 ## Audit Logs
 

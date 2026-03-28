@@ -7,44 +7,34 @@ Validates that the risk layer architecture is properly set up:
 - No implementation logic tested (Phase 0 = structure only)
 """
 
-import pytest
-
 # Test Phase 0 canonical exports from risk_layer
-from src.risk_layer import (
-    KillSwitchLayer,
-    KillSwitchStatus,
-    order_to_dict,
-    to_order,
-)
+from src.risk_layer import order_to_dict, to_order
+from src.risk_layer.kill_switch import KillSwitch
 
 
 class TestPhase0Imports:
     """Test that all Phase 0 canonical exports can be imported."""
 
     def test_kill_switch_import(self):
-        """Kill Switch components are importable."""
-        assert KillSwitchLayer is not None
-        assert KillSwitchStatus is not None
+        """Kill Switch state machine is importable."""
+        assert KillSwitch is not None
 
-    def test_kill_switch_layer_emits_deprecation_warning(self):
-        """Only expected KillSwitchAdapter construction in tests: explicit DeprecationWarning."""
-        with pytest.warns(DeprecationWarning, match="KillSwitchAdapter"):
-            _ = KillSwitchLayer({})
+    def test_kill_switch_constructible(self):
+        """KillSwitch can be constructed with minimal config (no legacy adapter)."""
+        ks = KillSwitch(
+            {
+                "enabled": True,
+                "mode": "active",
+                "recovery_cooldown_seconds": 1,
+                "require_approval_code": False,
+            }
+        )
+        assert ks.check_and_block() is False
 
     def test_order_adapters_import(self):
         """Order adapter functions are importable."""
         assert order_to_dict is not None
         assert to_order is not None
-
-
-class TestKillSwitchStatus:
-    """Test that KillSwitchStatus works."""
-
-    def test_status_instantiation(self):
-        """KillSwitchStatus can be instantiated."""
-        status = KillSwitchStatus(armed=False)
-        assert status.armed is False
-        assert status.enabled is True
 
 
 class TestOrderAdapters:

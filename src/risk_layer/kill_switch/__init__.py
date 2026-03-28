@@ -35,49 +35,6 @@ from .config import load_config, get_approval_code
 from .core import KillSwitch, TradingBlockedError
 from .state import KillSwitchEvent, KillSwitchState, StateTransitionError
 from .execution_gate import ExecutionGate
-from .adapter import KillSwitchAdapter, KillSwitchStatus
-
-
-# Legacy compatibility stubs for old risk_gate integration
-def to_violations(kill_switch_status):
-    """Convert kill switch status to violations (legacy compatibility stub)."""
-    from src.risk_layer.models import Violation
-
-    if hasattr(kill_switch_status, "armed") and kill_switch_status.armed:
-        return [
-            Violation(
-                code="KILL_SWITCH_ARMED",
-                message=getattr(kill_switch_status, "reason", "Kill switch is armed"),
-                severity="CRITICAL",
-                details={},
-            )
-        ]
-    return []
-
-
-# Legacy aliases for backwards compatibility with old code
-def KillSwitchLayer(config):
-    """Legacy factory: returns KillSwitchAdapter for old Evaluator API.
-
-    Args:
-        config: Config dict or PeakConfig instance
-
-    Returns:
-        KillSwitchAdapter wrapping a KillSwitch
-    """
-    # Extract kill_switch config from PeakConfig if needed
-    if hasattr(config, "get"):
-        # PeakConfig instance
-        kill_switch_config = config.get("risk.kill_switch", {})
-    elif isinstance(config, dict) and "risk" in config:
-        # Dict with nested structure
-        kill_switch_config = config.get("risk", {}).get("kill_switch", {})
-    else:
-        # Already a kill_switch config dict
-        kill_switch_config = config if isinstance(config, dict) else {}
-
-    return KillSwitchAdapter(KillSwitch(kill_switch_config))
-
 
 __all__ = [
     # Core
@@ -91,9 +48,4 @@ __all__ = [
     # Config
     "load_config",
     "get_approval_code",
-    # Legacy compatibility
-    "to_violations",
-    "KillSwitchLayer",
-    "KillSwitchStatus",
-    "KillSwitchAdapter",
 ]

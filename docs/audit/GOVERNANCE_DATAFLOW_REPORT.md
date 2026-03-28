@@ -121,7 +121,7 @@
 | **ArmedGate** | `src&#47;ops&#47;gates&#47;armed_gate.py` | `ArmedState(enabled, armed, armed_since_epoch)`; `arm()`/`disarm()`; `require_armed()` |
 | **Operator Context** | `src&#47;live&#47;operator_context.py` | `enabled`, `armed` in Context für live_gates |
 | **Feature Activation** | `src&#47;live&#47;feature_activation.py` | `enabled and armed and confirm_ok` für double_play/dynamic_leverage |
-| **Kill Switch** | `src&#47;risk_layer&#47;kill_switch&#47;adapter.py` | `armed`, `enabled`; `is_armed()` |
+| **Kill Switch** | `src&#47;risk_layer&#47;kill_switch&#47;core.py` (`KillSwitch`) | State-Machine; `check_and_block()`, `is_killed` |
 | **AI Activation Gate** | `config&#47;governance&#47;ai_activation_gate_v1.json` | `"enabled": false, "armed": false` |
 | **Network Gate** | `src&#47;infra&#47;escalation&#47;network_gate.py` | `enable_live_trading`, `live_mode_armed` |
 

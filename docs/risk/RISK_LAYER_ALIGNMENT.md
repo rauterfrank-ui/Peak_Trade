@@ -46,7 +46,7 @@ src/
 │   └── limits.py                 # Legacy Limits
 │
 └── risk_layer/                    # Execution & Enforcement Layer
-    ├── __init__.py               # Exports: order_to_dict, to_order, KillSwitchLayer, KillSwitchStatus
+    ├── __init__.py               # Exports: order_to_dict, to_order (KillSwitch: src.risk_layer.kill_switch)
     ├── models.py                 # RiskDecision, Violation, RiskResult
     ├── risk_gate.py              # Risk Gate Orchestrator ✅ EXISTIERT
     ├── kill_switch.py            # Kill Switch ✅ EXISTIERT

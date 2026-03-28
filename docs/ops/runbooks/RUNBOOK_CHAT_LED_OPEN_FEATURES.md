@@ -56,7 +56,7 @@
 | Infostream / KI | Robustere Parser, Konfiguration Modell/API | `src/meta/infostream/evaluator.py` |
 | Evidence / Orchestration | Migrationskette Evidence-Packs | `src/ai_orchestration/evidence_pack_schema.py` |
 | Live / Safety | Platzhalter-Snapshots „wire“ | `src/live/safety.py` (Kommentar TODO wire) |
-| Risk / Kill-Switch | Follow-up am Adapter | `src/risk_layer/kill_switch/adapter.py` |
+| Risk / Kill-Switch | Legacy-Adapter entfernt (Slice 3); optional weitere Doku | `TODO_KILL_SWITCH_ADAPTER_MIGRATION.md` |
 | Backtest / Engine | Tracker-Integration „not yet“ (Test beschreibt Deferral) | `tests/backtest/test_engine_tracking.py` |
 | Research-Stubs | Absichtlich `NotImplementedError` (Research-Phase) | u. a. `src/strategies/bouchaud/`, `src/strategies/gatheral_cont/` |
 | ML / Meta-Labeling | Unvollständige Implementierung / Platzhalter | `src/research/ml/meta/meta_labeling.py` |
