@@ -15,7 +15,7 @@ Die Klasse ``RiskGate`` in ``src&#47;risk_layer&#47;risk_gate.py`` importiert **
 | Export | Hinweis |
 |--------|---------|
 | ``KillSwitchLayer``, ``KillSwitchStatus`` | Re-Export aus ``kill_switch``; Konstruktion von ``KillSwitchLayer`` löst ``DeprecationWarning`` aus (Adapter). |
-| ``RiskGate`` | **Nicht** aus ``src.risk_layer`` exportiert (nur ``order_to_dict``, ``to_order``, Kill-Switch-Legacy-Symbole). Downstream-Imports ``from src.risk_layer import RiskGate`` in Docs sind **inkonsistent** mit dem aktuellen ``__all__``. |
+| ``RiskGate`` | **Nicht** aus ``src.risk_layer`` exportiert (nur ``order_to_dict``, ``to_order``, Kill-Switch-Legacy-Symbole). Öffentliche Risk-Docs nutzen ``from src.risk_layer.risk_gate import RiskGate`` (Stand 2026-03, u. a. Runbooks, ``RISK_LAYER_ALIGNMENT.md``). |
 
 ## ``src`` — Kill-Switch-Paket
 
