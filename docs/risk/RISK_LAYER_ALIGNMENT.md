@@ -287,13 +287,20 @@ print(f"Kupiec p-value: {result.kupiec.p_value}")
 print(f"Basel Zone: {result.basel_zone}")  # GREEN, YELLOW, RED
 
 # ============================================================
-# Kill Switch ✅ EXISTIERT
+# Kill Switch (State-Machine) ✅ EXISTIERT
 # ============================================================
-from src.risk_layer import KillSwitchLayer, KillSwitchStatus
+from src.risk_layer.kill_switch import KillSwitch
 
-kill_switch = KillSwitchLayer()
-if kill_switch.status == KillSwitchStatus.ACTIVE:
-    print("⚠️  Trading halted by kill switch!")
+ks = KillSwitch(
+    {"enabled": True, "mode": "active", "recovery_cooldown_seconds": 300}
+)
+if ks.check_and_block():
+    print("Trading blocked (KILLED or RECOVERING)")
+
+# RiskGate: optional [risk.kill_switch] in PeakConfig → in-process KillSwitch;
+# evaluate() blocks before order validation when killed/recovering.
+# from src.risk_layer.risk_gate import RiskGate
+# gate = RiskGate(cfg)
 ```
 
 ---

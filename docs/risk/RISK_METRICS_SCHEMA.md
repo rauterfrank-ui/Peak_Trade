@@ -139,22 +139,22 @@ result = gate.evaluate(order, context)
 # Internally uses extract_risk_metrics(context)
 ```
 
-### KillSwitch
+### KillSwitch (State-Machine, kanonisch)
 
 ```python
-from src.risk_layer.kill_switch import KillSwitchLayer
-from src.risk_layer.metrics import RiskMetrics
+from src.risk_layer.kill_switch import KillSwitch
 
-ks = KillSwitchLayer(cfg)
-
-# Option 1: Use RiskMetrics (recommended)
-metrics = RiskMetrics(daily_pnl_pct=-0.06, current_drawdown_pct=0.15)
-status = ks.evaluate(metrics)
-
-# Option 2: Use dict (backwards compatible)
-metrics_dict = {"daily_pnl_pct": -0.06, "current_drawdown_pct": 0.15}
-status = ks.evaluate(metrics_dict)
+# Dict keys align with [risk.kill_switch] under PeakConfig (see config examples).
+ks = KillSwitch(cfg.get("risk.kill_switch") or {})
+if ks.check_and_block():
+    ...  # KILLED or RECOVERING — block trading decisions
 ```
+
+**RiskGate:** If `PeakConfig` includes `risk.kill_switch` with `enabled` not false, `RiskGate` constructs a `KillSwitch` and blocks `evaluate()` while `check_and_block()` is true (`src/risk_layer/risk_gate.py`).
+
+### Legacy evaluator API (deprecated)
+
+`KillSwitchLayer(cfg)` returns a **`KillSwitchAdapter`** (DeprecationWarning on construction). It exposes **`evaluate(risk_metrics)`** for the old evaluator-style API. Prefer **`KillSwitch`** + **`check_and_block()`** / **`is_killed`**, or **`RiskGate`** as above. See `TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`.
 
 ## Audit Logs
 
