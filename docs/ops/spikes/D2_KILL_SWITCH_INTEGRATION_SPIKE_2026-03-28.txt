@@ -1,0 +1,1058 @@
+=== src/risk_layer/kill_switch/adapter.py ===
+"""Legacy Adapter for KillSwitchLayer API Compatibility.
+
+⚠️  TEMPORARY / DEPRECATED ⚠️
+================================
+This adapter bridges the gap between the new Kill Switch (State Machine API)
+and the old KillSwitchLayer (Evaluator API) used by risk_gate.
+
+**This adapter is TEMPORARY and should be removed once risk_gate is refactored
+to use the new API directly.**
+
+TODO (Follow-up):
+- Refactor risk_gate to use KillSwitch State Machine API directly
+- Remove this adapter module
+- Update tests to use new API exclusively
+
+Deprecation Timeline:
+- Created: 2025-12-28
+- Target Removal: Q1 2026 (after risk_gate refactoring)
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from typing import Any, Dict, Optional, Iterable, List
+
+
+@dataclass
+class KillSwitchStatus:
+    """Legacy-kompatibles Status-Objekt (KillSwitchLayer API)."""
+
+    armed: bool
+    reason: str = ""
+    enabled: bool = True
+    state: str = ""
+    metadata: Dict[str, Any] = None
+    severity: str = "OK"
+    triggered_by: List[str] = None
+    metrics_snapshot: Dict[str, Any] = None
+    timestamp_utc: str = ""
+
+    def __post_init__(self) -> None:
+        if self.metadata is None:
+            self.metadata = {}
+        if self.triggered_by is None:
+            self.triggered_by = []
+        if self.metrics_snapshot is None:
+            self.metrics_snapshot = {}
+
+
+class KillSwitchAdapter:
+    """
+    Adapter für alte KillSwitchLayer Evaluator-API.
+
+    Erwartete Legacy Calls:
+      - evaluate(risk_metrics) -> KillSwitchStatus (armed/reason)
+      - reset(reason) -> KillSwitchStatus
+      - _last_status attribute
+    """
+
+    def __init__(self, kill_switch: Any):
+        self._kill_switch = kill_switch
+        self._last_status: Optional[KillSwitchStatus] = None
+
+    # --- enabled passthrough ---
+    @property
+    def enabled(self) -> bool:
+        return bool(getattr(self._kill_switch, "enabled", True))
+
+    @enabled.setter
+    def enabled(self, value: bool) -> None:
+        setattr(self._kill_switch, "enabled", bool(value))
+
+    # --- Additional legacy properties ---
+    @property
+    def is_armed(self) -> bool:
+        """Legacy property: True if kill switch is armed."""
+        return bool(getattr(self._kill_switch, "is_killed", False))
+
+    @property
+    def state(self) -> str:
+        """Legacy property: current state name."""
+        state_enum = getattr(self._kill_switch, "state", None)
+        return getattr(state_enum, "name", "UNKNOWN") if state_enum else "UNKNOWN"
+
+    @property
+    def last_status(self) -> Optional[KillSwitchStatus]:
+        """Legacy property: last evaluated status."""
+        return self._last_status
+
+    # --- Legacy API ---
+    def evaluate(self, risk_metrics: Any) -> KillSwitchStatus:
+        """Evaluate kill switch based on risk metrics (legacy API)."""
+        # Convert risk_metrics to dict if needed
+        metrics_dict = self._to_dict(risk_metrics)
+
+        # Disabled → nie armed
+        if not self.enabled:
+            return self._set_last(
+                armed=False,
+                reason="KillSwitch disabled",
+                severity="OK",
+                triggered_by=[],
+                metrics_snapshot=metrics_dict,
+            )
+
+        # 1) Wenn schon killed → sofort armed
+        if bool(getattr(self._kill_switch, "is_killed", False)):
+            return self._set_last(
+                armed=True,
+                reason="Kill Switch is active",
+                severity="BLOCK",
+                triggered_by=[],
+                metrics_snapshot=metrics_dict,
+            )
+
+        # 2) Trigger anhand risk_metrics prüfen
+        trigger_name, triggered_reason = self._maybe_trigger_from_context(metrics_dict)
+
+        armed_now = bool(getattr(self._kill_switch, "is_killed", False))
+        if armed_now:
+            return self._set_last(
+                armed=True,
+                reason=triggered_reason or "Kill Switch triggered",
+                severity="BLOCK",
+                triggered_by=[trigger_name] if trigger_name else [],
+                metrics_snapshot=metrics_dict,
+            )
+
+        return self._set_last(
+            armed=False,
+            reason="OK",
+            severity="OK",
+            triggered_by=[],
+            metrics_snapshot=metrics_dict,
+        )
+
+    def reset(self, reason: str = "Manual reset") -> KillSwitchStatus:
+        """Legacy Reset: immediate reset (bypasses cooldown)."""
+        if not self.enabled:
+            return self._set_last(
+                armed=False,
+                reason="KillSwitch disabled",
+                severity="OK",
+                triggered_by=[],
+                metrics_snapshot={},
+            )
+
+        state_enum = getattr(self._kill_switch, "state", None)
+        is_killed = bool(getattr(self._kill_switch, "is_killed", False))
+
+        if is_killed:
+            # Force immediate reset (legacy behavior, no cooldown)
+            # This bypasses the new API's cooldown enforcement
+            self._force_reset(reason)
+
+        # Return current status
+        return self._set_last(
+            armed=False,
+            reason=f"Kill Switch reset: {reason}",
+            severity="OK",
+            triggered_by=[],
+            metrics_snapshot={},
+        )
+
+    # --- internals ---
+    def _to_dict(self, obj: Any) -> Dict[str, Any]:
+        """Convert risk_metrics to dict."""
+        if hasattr(obj, "to_dict"):
+            return obj.to_dict()
+        elif hasattr(obj, "__dict__"):
+            return {k: v for k, v in obj.__dict__.items() if not k.startswith("_")}
+        elif isinstance(obj, dict):
+            return dict(obj)
+        return {}
+
+    def _set_last(
+        self,
+        armed: bool,
+        reason: str,
+        severity: str,
+        triggered_by: List[str],
+        metrics_snapshot: Dict[str, Any],
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> KillSwitchStatus:
+        """Create and store KillSwitchStatus."""
+        state_enum = getattr(self._kill_switch, "state", None)
+        state_name = getattr(state_enum, "name", "") if state_enum else ""
+
+        status = KillSwitchStatus(
+            armed=bool(armed),
+            reason=reason or "",
+            enabled=self.enabled,
+            state=state_name,
+            metadata=metadata or {},
+            severity=severity,
+            triggered_by=triggered_by or [],
+            metrics_snapshot=metrics_snapshot or {},
+            timestamp_utc=datetime.now(timezone.utc).isoformat(),
+        )
+        self._last_status = status
+        return status
+
+    def _iter_trigger_results(self, context: Dict[str, Any]) -> Iterable[Any]:
+        """Iterate over trigger results."""
+        # Prefer trigger_registry if present
+        reg = getattr(self._kill_switch, "trigger_registry", None) or getattr(
+            self._kill_switch, "_trigger_registry", None
+        )
+        if reg is not None:
+            for method_name in ("check_all", "check", "evaluate"):
+                m = getattr(reg, method_name, None)
+                if callable(m):
+                    try:
+                        res = m(context)
+                        # res kann einzelnes Result oder Liste sein
+                        if isinstance(res, list):
+                            yield from res
+                        elif res is not None:
+                            yield res
+                        return
+                    except Exception:
+                        continue
+
+        # Fallback: triggers list/dict
+        triggers = getattr(self._kill_switch, "triggers", None) or getattr(
+            self._kill_switch, "_triggers", None
+        )
+        if triggers:
+            items = triggers.items() if hasattr(triggers, "items") else enumerate(triggers)
+            for name, t in items:
+                check = getattr(t, "check", None)
+                if callable(check):
+                    try:
+                        yield check(context)
+                    except Exception:
+                        continue
+
+    def _check_hardcoded_thresholds(self, metrics: Dict[str, Any]) -> tuple:
+        """Check hardcoded thresholds (fallback for legacy compatibility)."""
+        # Check daily PnL (< -5%)
+        daily_pnl = metrics.get("daily_pnl_pct")
+        if daily_pnl is not None and daily_pnl < -0.05:
+            return (
+                "daily_loss_limit",
+                f"Daily PnL threshold exceeded: {daily_pnl:.2%} (limit: -5%)",
+            )
+
+        # Check drawdown (> 10%)
+        drawdown = metrics.get("current_drawdown_pct")
+        if drawdown is not None and drawdown > 0.10:
+            return ("drawdown_limit", f"Drawdown threshold exceeded: {drawdown:.2%} (limit: 10%)")
+
+        # Check realized vol (> 50%)
+        realized_vol = metrics.get("realized_vol_pct")
+        if realized_vol is not None and realized_vol > 0.50:
+            return (
+                "volatility_limit",
+                f"Realized volatility threshold exceeded: {realized_vol:.2%} (limit: 50%)",
+            )
+
+=== src/ops/gates/risk_gate.py ===
+from __future__ import annotations
+
+from dataclasses import dataclass
+from enum import Enum
+from typing import Dict, Optional
+
+
+class RiskDenyReason(str, Enum):
+    DISABLED = "disabled"
+    STALE_DATA = "stale_data"
+    MAX_NOTIONAL = "max_notional"
+    MAX_ORDER_SIZE = "max_order_size"
+    MAX_POSITION = "max_position"
+    LOSS_LIMIT = "loss_limit"
+    KILL_SWITCH = "kill_switch"
+    INVALID_CONFIG = "invalid_config"
+
+
+@dataclass(frozen=True)
+class RiskLimits:
+    enabled: bool = True
+    kill_switch: bool = False
+    max_notional_usd: float = 0.0
+    max_order_size: float = 0.0
+    max_position: float = 0.0
+    max_session_loss_usd: float = 0.0
+    max_data_age_seconds: int = 0
+
+
+@dataclass(frozen=True)
+class RiskContext:
+    # values should be precomputed by caller; RiskGate stays pure
+    now_epoch: int
+    market_data_age_seconds: int
+    session_pnl_usd: float
+    current_position: float  # in base units
+    order_size: float  # in base units
+    order_notional_usd: float
+
+
+@dataclass(frozen=True)
+class RiskDecision:
+    allow: bool
+    reason: Optional[RiskDenyReason]
+    details: Dict[str, str]
+
+
+def evaluate_risk(limits: RiskLimits, ctx: RiskContext) -> RiskDecision:
+    if not limits.enabled:
+        return RiskDecision(False, RiskDenyReason.DISABLED, {"enabled": "false"})
+    if limits.kill_switch:
+        return RiskDecision(False, RiskDenyReason.KILL_SWITCH, {"kill_switch": "true"})
+
+    if (
+        limits.max_data_age_seconds > 0
+        and ctx.market_data_age_seconds > limits.max_data_age_seconds
+    ):
+        return RiskDecision(
+            False,
+            RiskDenyReason.STALE_DATA,
+            {"age_s": str(ctx.market_data_age_seconds)},
+        )
+
+    if limits.max_notional_usd > 0 and ctx.order_notional_usd > limits.max_notional_usd:
+        return RiskDecision(
+            False,
+            RiskDenyReason.MAX_NOTIONAL,
+            {"notional_usd": str(ctx.order_notional_usd)},
+        )
+
+    if limits.max_order_size > 0 and abs(ctx.order_size) > limits.max_order_size:
+        return RiskDecision(
+            False,
+            RiskDenyReason.MAX_ORDER_SIZE,
+            {"order_size": str(ctx.order_size)},
+        )
+
+    if limits.max_position > 0 and abs(ctx.current_position + ctx.order_size) > limits.max_position:
+        return RiskDecision(
+            False,
+            RiskDenyReason.MAX_POSITION,
+            {"next_pos": str(ctx.current_position + ctx.order_size)},
+        )
+
+    if limits.max_session_loss_usd > 0 and ctx.session_pnl_usd < -abs(limits.max_session_loss_usd):
+        return RiskDecision(
+            False,
+            RiskDenyReason.LOSS_LIMIT,
+            {"session_pnl_usd": str(ctx.session_pnl_usd)},
+        )
+
+    return RiskDecision(True, None, {})
+
+=== src/live/safety.py ===
+
+        Hebt im Fehlerfall eine Exception aus, BEVOR ein Orderversuch
+        überhaupt technisch abgesetzt wird.
+
+        Args:
+            is_testnet: Ob es sich um eine Testnet-Order handelt
+
+        Raises:
+            PaperModeOrderError: Im Paper-Modus (keine echten Orders)
+            TestnetDryRunOnlyError: Testnet nur im Dry-Run (Phase 17)
+            LiveNotImplementedError: Live ist nicht implementiert (Phase 17)
+            LiveTradingDisabledError: enable_live_trading = False
+            ConfirmTokenInvalidError: Token fehlt oder ungültig
+
+        Note:
+            In Phase 17 wird diese Methode IMMER eine Exception werfen,
+            da echte Orders nicht implementiert sind.
+        """
+        env = self.env_config.environment
+        # --- Peak_Trade Runbook-B Guards (B5/B3) ---
+        # Default OFF. Enable via PEAK_EXEC_GUARDS_ENABLED=1.
+        # When enabled: PEAK_EXEC_GUARDS_SECRET required; optional PEAK_EXEC_GUARDS_TOKEN for arming.
+        guards_enabled = os.getenv("PEAK_EXEC_GUARDS_ENABLED", "0") == "1"
+        if guards_enabled:
+            secret = os.getenv("PEAK_EXEC_GUARDS_SECRET", "").encode("utf-8")
+            if not secret:
+                self._log_audit(
+                    "place_order(runbook_b_guards)",
+                    False,
+                    "Execution blocked: PEAK_EXEC_GUARDS_SECRET required when PEAK_EXEC_GUARDS_ENABLED=1",
+                )
+                raise RuntimeError(
+                    "Execution blocked: PEAK_EXEC_GUARDS_SECRET required when PEAK_EXEC_GUARDS_ENABLED=1"
+                )
+            token = os.getenv("PEAK_EXEC_GUARDS_TOKEN")
+            gate = ArmedGate(secret=secret, token_ttl_seconds=120)
+            cfg = GuardConfig(enabled=True, armed_required=True, risk_enabled=True)
+            limits = RiskLimits(
+                enabled=True,
+                kill_switch=(os.getenv("PEAK_KILL_SWITCH", "0") == "1"),
+                max_notional_usd=float(os.getenv("PEAK_MAX_NOTIONAL_USD", "0") or 0.0),
+                max_order_size=float(os.getenv("PEAK_MAX_ORDER_SIZE", "0") or 0.0),
+                max_position=float(os.getenv("PEAK_MAX_POSITION", "0") or 0.0),
+                max_session_loss_usd=float(os.getenv("PEAK_MAX_SESSION_LOSS_USD", "0") or 0.0),
+                max_data_age_seconds=int(os.getenv("PEAK_MAX_DATA_AGE_SECONDS", "0") or 0),
+            )
+            now_epoch = int(os.getenv("PEAK_NOW_EPOCH", "0") or 0) or int(time.time())
+            ctx = RiskContext(
+                now_epoch=now_epoch,
+                market_data_age_seconds=int(os.getenv("PEAK_MD_AGE_SECONDS", "0") or 0),
+                session_pnl_usd=float(os.getenv("PEAK_SESSION_PNL_USD", "0") or 0.0),
+                current_position=float(os.getenv("PEAK_CURRENT_POSITION", "0") or 0.0),
+                order_size=float(os.getenv("PEAK_ORDER_SIZE", "0") or 0.0),
+                order_notional_usd=float(os.getenv("PEAK_ORDER_NOTIONAL_USD", "0") or 0.0),
+            )
+            inputs = GuardInputs(
+                armed_state=ArmedState(
+                    enabled=True,
+                    armed=False,
+                    armed_since_epoch=None,
+                    token_issued_epoch=None,
+                ),
+                armed_token=token,
+                limits=limits,
+                ctx=ctx,
+            )
+            try:
+                _ = apply_execution_guards(cfg, gate=gate, inputs=inputs)
+                self._log_audit(
+                    "place_order(runbook_b_guards)",
+                    True,
+                    "Runbook-B guards: allow",
+                )
+            except RuntimeError as e:
+                self._log_audit(
+                    "place_order(runbook_b_guards)",
+                    False,
+                    f"Runbook-B guards: deny — {e!s}",
+                )
+                raise
+        # --- End Guards ---
+        # --- Runbook-B Reconciliation Hook (B2) ---
+        # Default OFF. Enable explicitly: PEAK_RECON_ENABLED=1
+        # NOTE: Pure hook; caller must supply expected/observed snapshots.
+        # TODO(wire): Replace placeholder snapshots with real pre/post state.
+        recon_cfg = recon_config_from_env()
+        if recon_cfg.enabled:
+            provider = NullReconProvider(epoch=0, balances={})
+            rep = run_recon_if_enabled(
+                recon_cfg,
+                provider=provider,
+                expected_balances=None,
+                observed_balances=None,
+                expected_positions=None,
+                observed_positions=None,
+            )
+            if not rep.ok:
+                self._log_audit(
+                    "recon(runbook_b)",
+                    False,
+                    "Runbook-B recon drift: " + " | ".join(rep.drifts[:5]),
+                )
+                raise RuntimeError("Execution blocked: reconciliation drift")
+            self._log_audit("recon(runbook_b)", True, "Runbook-B recon: ok")
+        # --- End Reconciliation Hook ---
+        action = f"place_order(is_testnet={is_testnet})"
+
+        # --- PAPER Mode ---
+        if env == TradingEnvironment.PAPER:
+            reason = "Paper-Modus: Keine echten Orders erlaubt"
+            self._log_audit(action, False, reason)
+            raise PaperModeOrderError(
+                f"Im Paper-Modus können keine echten Orders gesendet werden. "
+                f"Verwende PaperOrderExecutor für Simulationen."
+            )
+
+        # --- TESTNET Mode ---
+        if env == TradingEnvironment.TESTNET:
+            if self.env_config.testnet_dry_run:
+                reason = "Testnet Dry-Run Modus aktiv"
+                self._log_audit(action, False, reason)
+
+=== src/execution/pipeline.py ===
+# src/execution/pipeline.py
+"""
+Peak_Trade: Execution-Pipeline (Phase 16A V2 - Governance-aware)
+================================================================
+
+Kapselt die Transformations- und Ausfuehrungslogik von Strategie-Signalen
+zu OrderRequests und OrderExecutionResults.
+
+Workflow:
+    Strategy → OrderIntent → ExecutionPipeline → Risk → Governance → Executor → Result
+
+Die Pipeline ist bewusst leichtgewichtig gehalten und konzentriert sich auf:
+- Signale → gewuenschter Ziel-Exposure
+- Differenz zur aktuellen Position → OrderRequest(s)
+- OrderExecutor (Paper/Shadow/Testnet) fuehrt aus → Fills/Results
+
+Phase 16A V2 Erweiterung (Governance-aware):
+- Environment- und Safety-Checks vor Order-Ausfuehrung
+- Integration mit SafetyGuard und LiveRiskLimits
+- Governance-Check via get_governance_status("live_order_execution")
+- Environment-Executor-Mapping (paper/shadow/testnet/live)
+- Live-Execution ist governance-seitig gesperrt (status="locked")
+- Optionales Run-Logging ueber LiveRunLogger
+
+WICHTIG: Es werden KEINE echten Live-Orders an Boersen gesendet!
+         live_order_execution ist governance-seitig gesperrt (locked).
+         Bei env="live" wird GovernanceViolationError geworfen.
+"""
+
+from __future__ import annotations
+
+import logging
+import os
+import uuid
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, Iterable, List, Literal, Optional, Sequence, TYPE_CHECKING, Union
+from src.observability.nowcast.decision_context_v1 import build_decision_context_v1
+from src.observability.policy.policy_v1 import decide_policy_v1  # v1 cost/edge gate
+from src.observability.policy.policy_v0 import decide_policy_v0  # legacy reference
+from src.execution.policy import PolicyEnforcerV0
+from src.core.performance import performance_monitor
+
+import pandas as pd
+
+from ..orders.base import (
+    OrderRequest,
+    OrderExecutionResult,
+    OrderFill,
+    OrderExecutor,
+    OrderSide,
+)
+from ..orders.paper import PaperOrderExecutor, PaperMarketContext
+from ..orders.shadow import ShadowOrderExecutor, ShadowMarketContext
+from ..governance.go_no_go import (
+    get_governance_status,
+    GovernanceStatus,
+    select_live_order_execution_key,
+)
+
+if TYPE_CHECKING:
+    from ..core.environment import EnvironmentConfig, TradingEnvironment
+    from ..live.safety import SafetyGuard
+    from ..live.risk_limits import LiveRiskLimits, LiveRiskCheckResult
+    from ..live.run_logging import LiveRunLogger, LiveRunEvent
+    from ..orders.testnet_executor import TestnetExchangeOrderExecutor
+    from .telemetry import ExecutionEventEmitter
+
+logger = logging.getLogger(__name__)
+
+try:
+    # Watch-only telemetry; must never fail execution logic.
+    from ..obs import trade_flow_telemetry as _trade_flow_telemetry
+except Exception:  # pragma: no cover
+    _trade_flow_telemetry = None  # type: ignore
+
+try:
+    # Watch-only telemetry; must never fail execution logic.
+    from ..obs import strategy_risk_telemetry as _strategy_risk_telemetry
+except Exception:  # pragma: no cover
+    _strategy_risk_telemetry = None  # type: ignore
+
+try:
+    from src.observability.execution_events import emit as _emit_exec_event
+except Exception:  # pragma: no cover
+    _emit_exec_event = None  # type: ignore
+
+
+def _emit_exec_event_safe(**kwargs: Any) -> None:
+    """Emit execution event; never fails execution logic."""
+    if _emit_exec_event is None:
+        return
+    try:
+        _emit_exec_event(**kwargs)
+    except Exception:
+        pass
+
+
+def _is_kill_switch_blocking(state_path: Optional[str] = None) -> bool:
+    """
+    Check if kill switch state file indicates trading should be blocked.
+
+    Reads data/kill_switch/state.json (or state_path). Returns True when
+    state is KILLED or RECOVERING. Fail-open: returns False on any error
+    (missing file, parse error) so execution is not blocked by I/O issues.
+
+    Used only for bounded_pilot mode (config: require_kill_switch_active).
+    """
+    import json
+    from pathlib import Path
+
+    path = Path(state_path or "data/kill_switch/state.json")
+    try:
+        if not path.exists():
+            return False
+        with path.open(encoding="utf-8") as f:
+            data = json.load(f)
+        state = str(data.get("state", "")).strip().upper()
+        return state in ("KILLED", "RECOVERING")
+    except Exception:
+        return False
+
+
+def _signal_label_from_int(sig: int) -> str:
+    # Contract: buy/sell/flat (mapped from -1/0/+1).
+    if sig > 0:
+        return "buy"
+    if sig < 0:
+        return "sell"
+    return "flat"
+
+
+def _signal_class_from_int(sig: int) -> str:
+    # Contract: long/short/flat (mapped from -1/0/+1).
+    if sig > 0:
+        return "long"
+    if sig < 0:
+        return "short"
+    return "flat"
+
+
+def _strategy_id_from_order_metadata(order: "OrderRequest") -> str:
+    md = getattr(order, "metadata", None) or {}
+    # Prefer stable ids; allow common keys used across components.
+    return str(
+        md.get("strategy_id")
+        or md.get("strategy_key")
+        or md.get("strategy")
+        or md.get("strategy_name")
+        or "na"
+    )
+
+
+# =============================================================================
+# Phase 16A V2: Custom Exceptions
+# =============================================================================
+
+
+class ExecutionPipelineError(Exception):
+    """Basisklasse fuer ExecutionPipeline-Fehler."""
+
+    pass
+
+
+class GovernanceViolationError(ExecutionPipelineError):
+    """
+    Governance-Verletzung: Eine Operation ist governance-seitig gesperrt.
+
+    Wird geworfen wenn:
+    - env="live" und get_governance_status("live_order_execution") == "locked"
+    - Zukuenftige Governance-Regeln verletzt werden
+
+    Attributes:
+        feature_key: Der Governance-Feature-Key (z.B. "live_order_execution")
+        status: Der aktuelle Governance-Status (z.B. "locked")
+        message: Beschreibende Fehlermeldung
+    """
+
+    def __init__(
+        self,
+        message: str,
+        feature_key: str = "live_order_execution",
+        status: GovernanceStatus = "locked",
+    ):
+        super().__init__(message)
+        self.feature_key = feature_key
+        self.status = status
+        self.message = message
+
+
+class LiveExecutionLockedError(GovernanceViolationError):
+    """
+    Live-Execution ist governance-seitig gesperrt.
+
+    Spezialisierte Exception fuer den Fall:
+    - get_governance_status("live_order_execution") == "locked"
+
+    In Phase 16A ist dies der Normalfall - Live-Orders sind nicht erlaubt.
+    """
+
+    def __init__(self, message: Optional[str] = None):
+        default_msg = (
+            "Live-Order-Execution ist governance-seitig gesperrt (status='locked'). "
+            "Governance-Feature: 'live_order_execution'. "
+            "Es werden keine echten Live-Orders ausgefuehrt. "
+            "Nutze paper/shadow/testnet Environments fuer Simulation."
+        )
+        super().__init__(
+            message=message or default_msg,
+            feature_key="live_order_execution",
+            status="locked",
+        )
+
+
+class RiskCheckFailedError(ExecutionPipelineError):
+    """
+    Risk-Check fehlgeschlagen: Orders wurden durch Risk-Limits blockiert.
+
+    Attributes:
+
+=== src/execution/orchestrator.py ===
+"""
+Execution Pipeline Orchestrator (WP0A - Phase 0 Foundation)
+
+Implements the 8-stage execution pipeline from Intent to Recon Hand-off.
+
+Pipeline Stages:
+1. Intent Intake - Receive trading decision from strategy
+2. Contract Validation - Validate order against WP0E invariants
+3. Pre-Trade Risk Gate - Risk evaluation via RiskHook
+4. Route Selection - Select adapter based on execution mode (paper/shadow/testnet/live_blocked)
+5. Adapter Dispatch - Execute order via selected adapter
+6. Execution Event Handling - Process ACK/REJECT/FILL events
+7. Post-Trade Hooks - Update ledgers, emit events
+8. Recon Hand-off - Prepare data for reconciliation
+
+Design Goals:
+- Stage sequencing with clear boundaries
+- Correlation tracking (correlation_id stable across all stages)
+- Idempotency enforcement (idempotency_key prevents duplicate processing)
+- Stop criteria enforcement (BLOCK → halt, TIMEOUT → controlled failure)
+- No live enablement (default blocked/gated)
+- Deterministic audit trail
+
+IMPORTANT: NO live execution. Default remains blocked/gated.
+           All live routing raises GovernanceViolationError.
+"""
+
+from __future__ import annotations
+
+import logging
+import json
+from pathlib import Path
+from datetime import timezone
+import uuid
+import time
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional, Protocol
+
+from decimal import Decimal
+import hashlib
+
+from src.execution.contracts import (
+    Order,
+    OrderState,
+    OrderSide,
+    OrderType,
+    TimeInForce,
+    Fill,
+    LedgerEntry,
+    RiskResult,
+    RiskDecision,
+    validate_order,
+)
+from src.execution.risk_hook import RiskHook, NullRiskHook
+from src.execution.order_state_machine import OrderStateMachine, StateMachineResult
+from src.execution.order_ledger import OrderLedger
+from src.execution.position_ledger import PositionLedger
+from src.execution.audit_log import AuditLog
+from src.execution.retry_policy import RetryPolicy, RetryConfig
+from src.execution.ledger_mapper import EventToLedgerMapper
+from src.execution.reconciliation import ReconciliationEngine
+from src.execution.determinism import SimClock, seed_u64, stable_id
+from src.execution.telemetry import FixedJsonlAppendOnlyWriter
+
+logger = logging.getLogger(__name__)
+
+try:
+    from src.obs.ai_telemetry import record_action as _ai_record_action
+    from src.obs.ai_telemetry import record_decision as _ai_record_decision
+except Exception:  # pragma: no cover
+
+    def _ai_record_action(*args: object, **kwargs: object) -> None:
+        return
+
+    def _ai_record_decision(*args: object, **kwargs: object) -> None:
+        return
+
+
+# ============================================================================
+# Execution Mode & Reason Codes
+# ============================================================================
+
+
+class ExecutionMode(str, Enum):
+    """
+    Execution mode for pipeline routing.
+
+    Values:
+        PAPER: Paper trading (simulated)
+        SHADOW: Shadow mode (dry-run, no real execution)
+        TESTNET: Testnet orders (sandbox environment)
+        LIVE_BLOCKED: Live mode (BLOCKED by governance - Phase 0 default)
+    """
+
+    PAPER = "paper"
+    SHADOW = "shadow"
+    TESTNET = "testnet"
+    LIVE_BLOCKED = "live_blocked"
+
+
+class ReasonCode(str, Enum):
+    """
+    Standardized reason codes for pipeline decisions.
+
+    Categories:
+    - VALIDATION_*: Contract validation failures
+    - RISK_*: Risk gate blocks
+    - POLICY_*: Governance/policy blocks
+    - ADAPTER_*: Adapter execution failures
+    - TIMEOUT_*: Timeout failures
+    """
+
+    # Validation
+    VALIDATION_INVALID_QUANTITY = "VALIDATION_INVALID_QUANTITY"
+    VALIDATION_INVALID_PRICE = "VALIDATION_INVALID_PRICE"
+    VALIDATION_INVALID_SYMBOL = "VALIDATION_INVALID_SYMBOL"
+    VALIDATION_MISSING_FIELD = "VALIDATION_MISSING_FIELD"
+
+    # Risk
+    RISK_LIMIT_EXCEEDED = "RISK_LIMIT_EXCEEDED"
+    RISK_KILL_SWITCH_ACTIVE = "RISK_KILL_SWITCH_ACTIVE"
+    RISK_EVALUATION_FAILED = "RISK_EVALUATION_FAILED"
+    RISK_BLOCKED = "RISK_BLOCKED"
+
+    # Policy/Governance
+    POLICY_BLOCKED = "POLICY_BLOCKED"
+    POLICY_LIVE_NOT_ENABLED = "POLICY_LIVE_NOT_ENABLED"
+    POLICY_NO_EXECUTOR = "POLICY_NO_EXECUTOR"
+
+    # Adapter
+    ADAPTER_REJECTED = "ADAPTER_REJECTED"
+    ADAPTER_TIMEOUT = "ADAPTER_TIMEOUT"
+    ADAPTER_ERROR = "ADAPTER_ERROR"
+
+    # Timeout
+    TIMEOUT_SUBMISSION = "TIMEOUT_SUBMISSION"
+    TIMEOUT_ACKNOWLEDGMENT = "TIMEOUT_ACKNOWLEDGMENT"
+
+
+# ============================================================================
+# Intent & Pipeline Result
+# ============================================================================
+
+
+@dataclass
+class OrderIntent:
+    """
+    Order intent (trading decision before order creation).
+
+    Represents strategy/operator intention before validation and risk checks.
+
+    Attributes:
+        symbol: Trading symbol (e.g., "BTC/EUR")
+        side: Order side (BUY/SELL)
+        quantity: Order quantity (Decimal)
+        order_type: Order type (MARKET/LIMIT)
+        limit_price: Limit price (required if LIMIT)
+        strategy_id: Strategy identifier
+        metadata: Additional metadata
+    """
+
+    symbol: str
+    side: OrderSide
+    quantity: Decimal
+    order_type: OrderType = OrderType.MARKET
+    limit_price: Optional[Decimal] = None
+    time_in_force: TimeInForce = TimeInForce.GTC
+    strategy_id: Optional[str] = None
+    session_id: Optional[str] = None
+    # RUNBOOK B (Slice 1): Optional stable identifiers
+    run_id: Optional[str] = None
+    intent_id: Optional[str] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class PipelineResult:
+    """
+    Result of pipeline execution.
+
+    Attributes:
+        success: True if order successfully processed
+        order: Order object (may be in various states)
+        reason_code: Reason code if blocked/failed
+        reason_detail: Human-readable reason
+        stage_reached: Last stage reached in pipeline
+        correlation_id: Correlation ID for tracking
+        idempotency_key: Idempotency key
+        ledger_entries: Audit trail entries generated
+        metadata: Additional metadata
+    """
+
+    success: bool
+    order: Optional[Order] = None
+    reason_code: Optional[ReasonCode] = None
+    reason_detail: str = ""
+    stage_reached: str = ""
+    correlation_id: str = ""
+    idempotency_key: str = ""
+    ledger_entries: List[LedgerEntry] = field(default_factory=list)
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+# ============================================================================
+# Adapter Protocol (WP0C placeholder)
+# ============================================================================
+
+
+class OrderAdapter(Protocol):
+    """
+    Protocol for order execution adapters (WP0C).
+
+    Adapters encapsulate external interaction (exchange API, paper simulation, etc.).
+    """
+
+    def execute_order(self, order: Order, idempotency_key: str) -> "ExecutionEvent":
+        """
+        Execute order and return execution event.
+
+        Args:
+            order: Order to execute
+            idempotency_key: Idempotency key (prevents duplicate submission)
+
+        Returns:
+            ExecutionEvent (ACK/REJECT/FILL)
+        """
+        ...
+
+
+@dataclass
+class ExecutionEvent:
+    """
+    Execution event from adapter (ACK/REJECT/FILL/CANCEL_ACK).
+
+    Attributes:
+        event_type: Event type (ACK/REJECT/FILL/CANCEL_ACK)
+        order_id: Client order ID
+        exchange_order_id: Exchange order ID (if ACK)
+        fill: Fill details (if FILL)
+        reject_reason: Rejection reason (if REJECT)
+        timestamp: Event timestamp
+    """
+
+    event_type: str  # ACK, REJECT, FILL, CANCEL_ACK
+    order_id: str
+    exchange_order_id: Optional[str] = None
+    fill: Optional[Fill] = None
+    reject_reason: Optional[str] = None
+    timestamp: datetime = field(default_factory=datetime.utcnow)
+
+
+# ============================================================================
+# Null Adapter (Default/Testing)
+# ============================================================================
+
+
+class NullAdapter:
+    """
+
+=== TODO_KILL_SWITCH_ADAPTER_MIGRATION.md ===
+# TODO: Kill Switch Adapter Migration
+
+## Ziel
+Refactoring der Risk-Gate Integration, um direkt die neue KillSwitch State-Machine API zu verwenden und den Legacy-Adapter zu entfernen.
+
+## Problem
+Der `KillSwitchAdapter` (`src/risk_layer/kill_switch/adapter.py`) wurde als temporäre Backward-Kompatibilitätsschicht eingeführt, um die alte evaluator-basierte API für die Risk-Gate Integration beizubehalten.
+
+## Migration Plan
+
+### 1. Risk-Gate Refactoring
+**Datei:** `src/risk_layer/risk_gate.py`
+
+**Aktuell (Legacy API):**
+```python
+kill_switch_status = self._kill_switch.evaluate(risk_metrics)
+if kill_switch_status.armed:
+    # Block order
+```
+
+**Ziel (State-Machine API):**
+```python
+# Direct state access
+if self._kill_switch.is_killed:
+    # Block order
+
+# Trigger evaluation
+for trigger in self._kill_switch.triggers:
+    if trigger.should_trigger(risk_metrics):
+        self._kill_switch.trigger(trigger_id=trigger.id, reason="...")
+
+# Recovery workflow
+if needs_recovery:
+    request = self._kill_switch.request_recovery(operator_id="...")
+    # ... health checks ...
+    self._kill_switch.complete_recovery()
+```
+
+### 2. Test-Migration
+**Dateien:**
+- `tests/risk_layer/test_risk_gate.py`
+- Alle Tests, die `KillSwitchAdapter` verwenden
+
+**Änderungen:**
+- Entferne `evaluate()` Aufrufe → nutze direkte State-Checks
+- Entferne `reset()` Aufrufe → nutze Recovery-Workflow
+- Entferne `_last_status` Zugriffe → nutze State-Properties
+
+### 3. Adapter entfernen
+**Datei zu löschen:** `src/risk_layer/kill_switch/adapter.py`
+
+**Imports aufräumen:**
+- `src/risk_layer/risk_gate.py` - Update imports
+- Alle Tests - Update imports
+
+### 4. Dokumentation aktualisieren
+- `docs/risk/KILL_SWITCH_ARCHITECTURE.md` - Legacy-Adapter Referenzen entfernen
+- `docs/risk/KILL_SWITCH.md` - Beispiele aktualisieren
+- `README_KILL_SWITCH.md` - Migration Notes hinzufügen
+
+## Verifizierung
+
+Nach Migration müssen bestehen:
+- ✅ Alle Kill-Switch Tests (`tests/risk_layer/kill_switch/`)
+- ✅ Alle Risk-Gate Tests (`tests/risk_layer/test_risk_gate.py`)
+- ✅ Integration Tests
+- ✅ Keine Referenzen auf `adapter.py` im Code
+
+## Timeline
+
+**Target:** Q1 2026
+
+**Voraussetzungen:**
+- Risk-Gate läuft stabil in Produktion
+- Keine kritischen Incidents mit Kill-Switch
+- Team hat Zeit für Refactoring
+
+## Referenzen
+
+- **PR #409:** Einführung des Legacy-Adapters
+- **Adapter-Code:** `src/risk_layer/kill_switch/adapter.py`
+- **Deprecation-Notice:** Im Adapter als Kommentar markiert
+- **Roadmap:** `docs/risk/roadmaps/ROADMAP_EMERGENCY_KILL_SWITCH.md`
+
+## Owner
+
+TBD - Assignment vor Start des Refactorings
+
+---
+
+**Status:** 📋 TODO  
+**Priorität:** P2 (Medium)  
+**Erstellt:** 2025-12-28  
+**Target:** Q1 2026
