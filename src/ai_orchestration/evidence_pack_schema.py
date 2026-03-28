@@ -14,11 +14,12 @@ Reference:
 import hashlib
 import json
 import re
+from collections import deque
 from copy import deepcopy
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 
 # Schema versioning
@@ -150,6 +151,37 @@ def register_migration(from_version: str, to_version: str):
     return decorator
 
 
+def _find_migration_path(from_version: str, to_version: str) -> Optional[List[str]]:
+    """
+    Shortest migration path (fewest hops) using BFS on the registry graph.
+
+    Neighbors are processed in sorted order so ties are deterministic.
+    """
+    if from_version == to_version:
+        return [from_version]
+
+    neighbors: Dict[str, List[str]] = {}
+    for a, b in _MIGRATION_REGISTRY.keys():
+        neighbors.setdefault(a, []).append(b)
+    for k in neighbors:
+        neighbors[k].sort()
+
+    queue = deque([(from_version, [from_version])])
+    visited = {from_version}
+
+    while queue:
+        node, path = queue.popleft()
+        for nxt in neighbors.get(node, []):
+            if nxt in visited:
+                continue
+            new_path = path + [nxt]
+            if nxt == to_version:
+                return new_path
+            visited.add(nxt)
+            queue.append((nxt, new_path))
+    return None
+
+
 def migrate(pack: Dict[str, Any], from_version: str, to_version: str) -> Dict[str, Any]:
     """
     Migrate pack from one schema version to another.
@@ -171,23 +203,24 @@ def migrate(pack: Dict[str, Any], from_version: str, to_version: str) -> Dict[st
         # No migration needed
         return pack
 
-    # Check for direct migration
-    migration_key = (from_version, to_version)
-    if migration_key in _MIGRATION_REGISTRY:
-        migrated = _MIGRATION_REGISTRY[migration_key](pack)
-        # Add migration info (for debugging, not used in validation)
-        migrated["migration_info"] = {
-            "migrated_from": from_version,
-            "migrated_to": to_version,
-        }
-        return migrated
+    path = _find_migration_path(from_version, to_version)
+    if path is None:
+        raise SchemaValidationError(
+            code=SchemaErrorCode.EPACK_MIGRATION_FAILED,
+            message=f"No migration path from {from_version} to {to_version}",
+        )
 
-    # TODO: Implement migration chain (multi-hop migrations)
-    # For now, only support direct migrations
-    raise SchemaValidationError(
-        code=SchemaErrorCode.EPACK_MIGRATION_FAILED,
-        message=f"No migration path from {from_version} to {to_version}",
-    )
+    current = pack
+    for i in range(len(path) - 1):
+        a, b = path[i], path[i + 1]
+        current = _MIGRATION_REGISTRY[(a, b)](current)
+
+    current["migration_info"] = {
+        "migrated_from": from_version,
+        "migrated_to": to_version,
+        "chain": path,
+    }
+    return current
 
 
 # ============================================================================
