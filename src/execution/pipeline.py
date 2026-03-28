@@ -101,25 +101,16 @@ def _is_kill_switch_blocking(state_path: Optional[str] = None) -> bool:
     """
     Check if kill switch state file indicates trading should be blocked.
 
-    Reads data/kill_switch/state.json (or state_path). Returns True when
-    state is KILLED or RECOVERING. Fail-open: returns False on any error
-    (missing file, parse error) so execution is not blocked by I/O issues.
+    Delegates to :func:`resolve_kill_switch_limit_from_state_file` in
+    ``src.ops.gates.risk_gate`` so JSON parsing matches the ops risk gate and
+    live safety. Fail-open: returns ``False`` when the resolver yields
+    ``None`` (missing file, unreadable).
 
     Used only for bounded_pilot mode (config: require_kill_switch_active).
     """
-    import json
-    from pathlib import Path
+    from src.ops.gates.risk_gate import resolve_kill_switch_limit_from_state_file
 
-    path = Path(state_path or "data/kill_switch/state.json")
-    try:
-        if not path.exists():
-            return False
-        with path.open(encoding="utf-8") as f:
-            data = json.load(f)
-        state = str(data.get("state", "")).strip().upper()
-        return state in ("KILLED", "RECOVERING")
-    except Exception:
-        return False
+    return resolve_kill_switch_limit_from_state_file(state_path) is True
 
 
 def _signal_label_from_int(sig: int) -> str:
