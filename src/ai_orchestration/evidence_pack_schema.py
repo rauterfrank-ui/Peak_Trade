@@ -161,7 +161,7 @@ def _find_migration_path(from_version: str, to_version: str) -> Optional[List[st
         return [from_version]
 
     neighbors: Dict[str, List[str]] = {}
-    for (a, b) in _MIGRATION_REGISTRY.keys():
+    for a, b in _MIGRATION_REGISTRY.keys():
         neighbors.setdefault(a, []).append(b)
     for k in neighbors:
         neighbors[k].sort()
