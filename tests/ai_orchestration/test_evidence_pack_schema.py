@@ -9,9 +9,11 @@ Coverage:
 - Semantic validation (timestamps, git SHA, config fingerprint)
 """
 
-import pytest
-from datetime import datetime, timezone
+from copy import deepcopy
 
+import pytest
+
+from src.ai_orchestration import evidence_pack_schema as epack_schema
 from src.ai_orchestration.evidence_pack_schema import (
     CURRENT_SCHEMA_VERSION,
     SchemaErrorCode,
@@ -192,6 +194,54 @@ class TestMigration:
             migrate(pack, "1.0.0", "9.9.9")  # No such migration
         assert exc_info.value.code == SchemaErrorCode.EPACK_MIGRATION_FAILED
         assert "No migration path" in str(exc_info.value)
+
+    def test_multi_hop_migration_chain(self):
+        """Two registered hops: 1.0.0 -> 1.1.0 -> 1.2.0."""
+        reg = epack_schema._MIGRATION_REGISTRY
+        snapshot = dict(reg)
+        try:
+
+            @register_migration("1.0.0", "1.1.0")
+            def _m_10_11(p):
+                p2 = deepcopy(p)
+                p2["schema_version"] = "1.1.0"
+                return p2
+
+            @register_migration("1.1.0", "1.2.0")
+            def _m_11_12(p):
+                p2 = deepcopy(p)
+                p2["schema_version"] = "1.2.0"
+                return p2
+
+            pack = {"schema_version": "1.0.0", "data": "x"}
+            out = migrate(pack, "1.0.0", "1.2.0")
+            assert out["schema_version"] == "1.2.0"
+            assert out["data"] == "x"
+            assert out["migration_info"]["chain"] == ["1.0.0", "1.1.0", "1.2.0"]
+            assert out["migration_info"]["migrated_from"] == "1.0.0"
+            assert out["migration_info"]["migrated_to"] == "1.2.0"
+        finally:
+            reg.clear()
+            reg.update(snapshot)
+
+    def test_migration_single_edge_includes_chain(self):
+        """One hop still records chain [from, to]."""
+        reg = epack_schema._MIGRATION_REGISTRY
+        snapshot = dict(reg)
+        try:
+
+            @register_migration("1.0.0", "1.1.0")
+            def _m_10_11(p):
+                p2 = deepcopy(p)
+                p2["schema_version"] = "1.1.0"
+                return p2
+
+            pack = {"schema_version": "1.0.0"}
+            out = migrate(pack, "1.0.0", "1.1.0")
+            assert out["migration_info"]["chain"] == ["1.0.0", "1.1.0"]
+        finally:
+            reg.clear()
+            reg.update(snapshot)
 
 
 class TestCanonicalization:
