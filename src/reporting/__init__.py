@@ -134,7 +134,7 @@ from .trigger_training_report import (
     build_trigger_training_report,
 )
 
-# Psychology Heatmap
+# Psychology Heatmap (Darstellung; Legacy-Score-Extraktion siehe Deprecation)
 from .psychology_heatmap import (
     PsychologyHeatmapCell,
     PsychologyHeatmapRow,
@@ -143,6 +143,12 @@ from .psychology_heatmap import (
     build_example_psychology_heatmap_data,
     calculate_cluster_statistics,
     extract_psychology_scores_from_events,
+)
+
+# Psychology Heuristics (bevorzugte API: Features → Heatmap)
+from .psychology_heuristics import (
+    TriggerTrainingPsychEventFeatures,
+    compute_psychology_heatmap_from_events,
 )
 
 # Offline Paper Trade Integration
@@ -243,6 +249,8 @@ __all__ = [
     "build_example_psychology_heatmap_data",
     "calculate_cluster_statistics",
     "extract_psychology_scores_from_events",
+    "TriggerTrainingPsychEventFeatures",
+    "compute_psychology_heatmap_from_events",
     # Offline Paper Trade Integration
     "OfflinePaperTradeReportConfig",
     "generate_reports_for_offline_paper_trade",

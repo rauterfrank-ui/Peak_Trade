@@ -14,7 +14,7 @@ Die **Psychologie-Heatmap** ist jetzt vollständig in Peak_Trade integriert und 
   - `build_psychology_heatmap_rows()` – Baut strukturierte Rows
   - `serialize_psychology_heatmap_rows()` – Serialisiert für Templates
   - `calculate_cluster_statistics()` – Berechnet aggregierte Statistiken
-  - `extract_psychology_scores_from_events()` – Extrahiert Scores aus Events
+  - Score-Pipeline: `TriggerTrainingPsychEventFeatures` + `compute_psychology_heatmap_from_events()` in `psychology_heuristics.py` (nicht: Legacy `extract_psychology_scores_from_events`, deprecated)
   - Vollständig dokumentiert und typisiert
 
 ### Frontend Templates
