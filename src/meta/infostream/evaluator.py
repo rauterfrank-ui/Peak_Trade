@@ -27,6 +27,28 @@ from .models import IntelEvent, IntelEval, LearningSnippet
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_INFOSTREAM_MODEL = "gpt-4o-mini"
+_ENV_INFOSTREAM_MODEL = "INFOSTREAM_MODEL"
+_VALID_RISK_LEVELS = frozenset({"none", "low", "medium", "high", "critical"})
+
+_EVAL_START = "=== EVAL_PACKAGE ==="
+_EVAL_END = "=== /EVAL_PACKAGE ==="
+_LEARN_START = "=== LEARNING_SNIPPET ==="
+_LEARN_END = "=== /LEARNING_SNIPPET ==="
+
+
+def resolve_infostream_model(explicit: Optional[str] = None) -> str:
+    """
+    Modell-ID für InfoStream-KI-Aufrufe.
+
+    Reihenfolge: explizites Argument → :envvar:`INFOSTREAM_MODEL` →
+    :data:`DEFAULT_INFOSTREAM_MODEL`.
+    """
+    if explicit is not None and str(explicit).strip():
+        return str(explicit).strip()
+    env = os.environ.get(_ENV_INFOSTREAM_MODEL, "").strip()
+    return env if env else DEFAULT_INFOSTREAM_MODEL
+
 
 # =============================================================================
 # InfoStream System Prompt
@@ -239,6 +261,46 @@ status: {event.status}
 # =============================================================================
 
 
+def _extract_tagged_block(text: str, start_marker: str, end_marker: str) -> Optional[str]:
+    """Erster vollständiger Block zwischen Start- und End-Marker (End nur nach Start)."""
+    start_idx = text.find(start_marker)
+    if start_idx == -1:
+        return None
+    search_from = start_idx + len(start_marker)
+    end_idx = text.find(end_marker, search_from)
+    if end_idx == -1:
+        return None
+    return text[search_from:end_idx].strip()
+
+
+def _strip_outer_markdown_fence(block: str) -> str:
+    """Entfernt optionales äußeres ``` … ```, falls das Modell den Block einrahmt."""
+    b = block.strip()
+    if not b.startswith("```"):
+        return b
+    first_nl = b.find("\n")
+    if first_nl == -1:
+        return b
+    inner = b[first_nl + 1 :].rstrip()
+    if inner.endswith("```"):
+        inner = inner[:-3].rstrip()
+    return inner
+
+
+def _normalize_risk_level(raw: str) -> str:
+    s = (raw or "").strip().lower()
+    return s if s in _VALID_RISK_LEVELS else "none"
+
+
+def _bullet_payload(line: str) -> Optional[str]:
+    """Liefert Listeneintrag ohne Präfix oder ``None``."""
+    s = line.strip()
+    for prefix in ("- ", "* ", "• "):
+        if s.startswith(prefix):
+            return s[len(prefix) :].strip()
+    return None
+
+
 def parse_eval_package(text: str) -> Dict[str, Any]:
     """
     Parst ein EVAL_PACKAGE aus der KI-Antwort.
@@ -262,8 +324,10 @@ def parse_eval_package(text: str) -> Dict[str, Any]:
 
     Notes
     -----
-    TODO: Robustere Parser-Implementierung mit besserer Error-Handlung.
-    v0: Einfache String-Suche und naive Zeilen-Parsing-Logik.
+    - Erster vollständiger ``EVAL_PACKAGE``-Block; End-Marker nur nach dem Start-Marker.
+    - Optionale Markdown-Codefences um den Block werden entfernt.
+    - ``risk_level`` wird auf ``none|low|medium|high|critical`` normalisiert.
+    - Listeneinträge unterstützen ``- ``, ``* `` und ``• ``.
     """
     result: Dict[str, Any] = {
         "event_id": "",
@@ -275,73 +339,70 @@ def parse_eval_package(text: str) -> Dict[str, Any]:
         "tags_out": [],
     }
 
-    # Extrahiere Block zwischen === EVAL_PACKAGE === und === /EVAL_PACKAGE ===
-    start_marker = "=== EVAL_PACKAGE ==="
-    end_marker = "=== /EVAL_PACKAGE ==="
-
-    start_idx = text.find(start_marker)
-    end_idx = text.find(end_marker)
-
-    if start_idx == -1 or end_idx == -1:
+    raw_block = _extract_tagged_block(text, _EVAL_START, _EVAL_END)
+    if raw_block is None:
         logger.warning("EVAL_PACKAGE-Block nicht gefunden in Antwort")
         return result
 
-    block = text[start_idx + len(start_marker) : end_idx].strip()
-
-    # Naive Zeilen-Parsing
+    block = _strip_outer_markdown_fence(raw_block)
     current_section: Optional[str] = None
     current_list: List[str] = []
 
-    for line in block.split("\n"):
-        line = line.strip()
+    def flush_list() -> None:
+        if current_section == "key_findings":
+            result["key_findings"] = list(current_list)
+        elif current_section == "recommendations":
+            result["recommendations"] = list(current_list)
+        elif current_section == "tags_out":
+            result["tags_out"] = list(current_list)
 
-        # Sektion erkennen
-        if line.startswith("event_id:"):
-            result["event_id"] = line.split(":", 1)[1].strip()
-        elif line.startswith("short_eval:"):
+    for raw_line in block.splitlines():
+        line_stripped = raw_line.strip()
+
+        if line_stripped.startswith("event_id:"):
+            flush_list()
+            current_list = []
+            result["event_id"] = line_stripped.split(":", 1)[1].strip()
+            current_section = None
+        elif line_stripped.startswith("short_eval:"):
+            flush_list()
+            current_list = []
             current_section = "short_eval"
-            value = line.split(":", 1)[1].strip()
-            if value:
-                result["short_eval"] = value
-        elif line.startswith("key_findings:"):
+            rest = line_stripped.split(":", 1)[1].strip()
+            if rest:
+                result["short_eval"] = rest
+        elif line_stripped.startswith("key_findings:"):
+            flush_list()
             current_section = "key_findings"
             current_list = []
-        elif line.startswith("recommendations:"):
-            # Speichere vorherige Liste
-            if current_section == "key_findings":
-                result["key_findings"] = current_list
+        elif line_stripped.startswith("recommendations:"):
+            flush_list()
             current_section = "recommendations"
             current_list = []
-        elif line.startswith("risk_assessment:"):
-            # Speichere vorherige Liste
-            if current_section == "recommendations":
-                result["recommendations"] = current_list
+        elif line_stripped.startswith("risk_assessment:"):
+            flush_list()
             current_section = "risk_assessment"
             current_list = []
-        elif line.startswith("level:"):
-            result["risk_level"] = line.split(":", 1)[1].strip()
-        elif line.startswith("notes:"):
-            result["risk_notes"] = line.split(":", 1)[1].strip()
-        elif line.startswith("tags_out:"):
+        elif line_stripped.startswith("tags_out:"):
+            flush_list()
             current_section = "tags_out"
             current_list = []
-        elif line.startswith("- "):
-            # Bullet-Point
-            item = line[2:].strip()
-            if current_section in ("key_findings", "recommendations", "tags_out"):
+        elif current_section == "risk_assessment" and line_stripped.startswith("level:"):
+            result["risk_level"] = _normalize_risk_level(line_stripped.split(":", 1)[1])
+        elif current_section == "risk_assessment" and line_stripped.startswith("notes:"):
+            result["risk_notes"] = line_stripped.split(":", 1)[1].strip()
+        else:
+            item = _bullet_payload(raw_line)
+            if item is not None and current_section in (
+                "key_findings",
+                "recommendations",
+                "tags_out",
+            ):
                 current_list.append(item)
-        elif current_section == "short_eval" and line:
-            # Multi-line short_eval
-            result["short_eval"] = (result["short_eval"] + " " + line).strip()
+            elif current_section == "short_eval" and line_stripped:
+                result["short_eval"] = (result["short_eval"] + " " + line_stripped).strip()
 
-    # Letzte Liste speichern
-    if current_section == "key_findings":
-        result["key_findings"] = current_list
-    elif current_section == "recommendations":
-        result["recommendations"] = current_list
-    elif current_section == "tags_out":
-        result["tags_out"] = current_list
-
+    flush_list()
     return result
 
 
@@ -357,33 +418,24 @@ def parse_learning_snippet(text: str) -> List[str]:
     Returns
     -------
     List[str]
-        Liste der Learning-Zeilen (ohne führendes "- ")
+        Liste der Learning-Zeilen (ohne Bullet-Präfix)
 
     Notes
     -----
-    TODO: Robustere Parser-Implementierung.
-    v0: Extrahiert alle Zeilen, die mit '-' beginnen, aus dem LEARNING_SNIPPET-Block.
+    - Erster vollständiger Block; Fences werden wie bei ``parse_eval_package`` entfernt.
+    - Bullets: ``- ``, ``* ``, ``• ``.
     """
-    lines: List[str] = []
-
-    # Extrahiere Block
-    start_marker = "=== LEARNING_SNIPPET ==="
-    end_marker = "=== /LEARNING_SNIPPET ==="
-
-    start_idx = text.find(start_marker)
-    end_idx = text.find(end_marker)
-
-    if start_idx == -1 or end_idx == -1:
+    raw_block = _extract_tagged_block(text, _LEARN_START, _LEARN_END)
+    if raw_block is None:
         logger.warning("LEARNING_SNIPPET-Block nicht gefunden in Antwort")
-        return lines
+        return []
 
-    block = text[start_idx + len(start_marker) : end_idx].strip()
-
-    # Extrahiere Bullet-Points
-    for line in block.split("\n"):
-        line = line.strip()
-        if line.startswith("- "):
-            lines.append(line[2:].strip())
+    block = _strip_outer_markdown_fence(raw_block)
+    lines: List[str] = []
+    for raw_line in block.splitlines():
+        item = _bullet_payload(raw_line)
+        if item is not None:
+            lines.append(item)
 
     return lines
 
@@ -418,12 +470,10 @@ def call_ai_for_event(
     Notes
     -----
     ModelClient aus ai_orchestration (client.complete(ModelRequest(...))).
-
-    TODO: Saubere Konfiguration für Modellname und API-Key.
+    Modell: Parameter ``model`` oder Umgebungsvariable ``INFOSTREAM_MODEL`` oder
+    ``DEFAULT_INFOSTREAM_MODEL`` (``gpt-4o-mini``). API-Credentials verwaltet der Client.
     """
-    # Modellname aus Parameter, ENV oder Default
-    if model is None:
-        model = os.environ.get("INFOSTREAM_MODEL", "gpt-4o-mini")
+    model = resolve_infostream_model(model)
 
     # INFO_PACKET rendern
     info_packet = render_event_as_infopacket(event)

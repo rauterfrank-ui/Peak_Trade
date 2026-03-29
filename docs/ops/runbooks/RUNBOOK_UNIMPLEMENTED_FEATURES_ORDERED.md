@@ -84,7 +84,7 @@
 
 | # | Thema | Tag | Hinweis / Ort |
 |---|--------|-----|----------------|
-| F1 | Infostream: robuster Parser, Modell-/Key-Konfiguration | GAP | `src/meta/infostream/evaluator.py` — mehrere TODOs |
+| F1 | Infostream: robuster Parser, Modell-/Key-Konfiguration | DONE | `evaluator.py` — Block-Extraktion, Fences, Bullets, Risk-Level, `resolve_infostream_model` / `INFOSTREAM_MODEL` |
 | F2 | Learning Loop **Bridge** & **Emitter** (Signale) | DOC | `docs/LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md` — als geplant; **keine** `bridge.py`/`emitter.py` unter `src/meta/learning_loop/` (nur `models.py`) |
 | F3 | Learning/Promotion Roadmap v2 | DOC | dieselbe Doku — Slack, Web-UI, Auto-Rollback, TestHealth Pre-Checks, … |
 | F4 | Knowledge / Vector-DB | STUB | `src/knowledge/vector_db.py` — `NotImplementedError`-Pfade |
