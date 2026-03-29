@@ -117,7 +117,7 @@
 | # | Thema | Tag | Hinweis / Ort |
 |---|--------|-----|----------------|
 | I1 | BacktestEngine **Tracker-Integration** | DONE | `BacktestEngine._safe_tracker_log_params` / `_safe_tracker_log_metrics` in `engine.py` (Legacy + ExecutionPipeline); Fehler im Tracker brechen Backtest nicht ab; `tests/backtest/test_engine_tracking.py` |
-| I2 | Strategien **parameter_schema** | TEST-DEFER | `tests/strategies/test_parameter_schema.py` — Phase 2 |
+| I2 | Strategien **parameter_schema** | DONE | `Param`/`validate_schema` in `parameters.py`; `parameter_schema` auf `MACrossoverStrategy`, `RsiReversionStrategy`, `DonchianBreakoutStrategy`; `tests/strategies/test_parameter_schema.py` |
 
 ---
 
@@ -140,7 +140,7 @@
 5. **Infostream** (F1) — Betrieb KI-gestützter Pfade.  
 6. **Learning Loop Bridge/Emitter** (F2) — nur wenn Promotion/Learning-Produktpriorität.  
 7. **ML/Strategien** (E1–E7) — nach Research-Validierung, nicht blind implementieren.  
-8. **Tests** (I1 erledigt; I2 ausstehend) — wenn Core stabil.  
+8. **Tests** (I1–I2 erledigt) — wenn Core stabil.  
 9. **Scripts/Demos** (J) — wenn operative Daten angebunden werden.
 
 ---

@@ -121,7 +121,6 @@ class TestExtractDefaults:
         assert extract_defaults([]) == {}
 
 
-@pytest.mark.skip(reason="Strategies don't have parameter_schema yet - deferred to Phase 2")
 class TestStrategiesWithSchema:
     """Tests für Strategien mit parameter_schema (TODO: Phase 2)."""
 

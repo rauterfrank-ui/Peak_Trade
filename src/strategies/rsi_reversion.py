@@ -22,6 +22,7 @@ import pandas as pd
 import numpy as np
 
 from .base import BaseStrategy, StrategyMetadata
+from .parameters import Param, validate_schema
 
 
 class RsiReversionStrategy(BaseStrategy):
@@ -60,6 +61,12 @@ class RsiReversionStrategy(BaseStrategy):
     """
 
     KEY = "rsi_reversion"
+
+    parameter_schema = (
+        Param(name="rsi_window", kind="int", default=14, low=2, high=100),
+        Param(name="lower", kind="float", default=30.0, low=0.0, high=50.0),
+        Param(name="upper", kind="float", default=70.0, low=50.0, high=100.0),
+    )
 
     def __init__(
         self,
@@ -347,3 +354,6 @@ Konzept:
 - Entry Short: RSI > {params.get("upper", 70.0)} (überkauft)
 - Exit:        RSI zurück in neutralen Bereich
 """
+
+
+validate_schema(list(RsiReversionStrategy.parameter_schema))

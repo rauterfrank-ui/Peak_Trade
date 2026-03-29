@@ -14,6 +14,7 @@ import pandas as pd
 import numpy as np
 
 from .base import BaseStrategy, StrategyMetadata
+from .parameters import Param, validate_schema
 
 
 class MACrossoverStrategy(BaseStrategy):
@@ -40,6 +41,11 @@ class MACrossoverStrategy(BaseStrategy):
     """
 
     KEY = "ma_crossover"
+
+    parameter_schema = (
+        Param(name="fast_window", kind="int", default=20, low=2, high=200),
+        Param(name="slow_window", kind="int", default=50, low=3, high=500),
+    )
 
     def __init__(
         self,
@@ -225,3 +231,6 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     # Strategie-Instanz erstellen und Signale generieren
     strategy = MACrossoverStrategy(config=config)
     return strategy.generate_signals(df)
+
+
+validate_schema(list(MACrossoverStrategy.parameter_schema))
