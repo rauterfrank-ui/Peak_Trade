@@ -48,7 +48,7 @@ Derived:
 - **Front Month**: nächster aktiv gehandelter Kontrakt (vor Roll Date).
 - **Lead Month**: nach Roll Date üblicherweise „second nearest“.
 - **Continuous Contract**: Zeitreihe, die Kontrakte über Roll Events „stitcht“ oder adjusted.
-- **Adjustment**: NONE (stitch), BACK_ADJUST (klassisch), RATIO_ADJUST (optional, später).
+- **Adjustment**: NONE (stitch), BACK_ADJUST (klassisch), RATIO_ADJUST (multiplikativ; im Offline-Builder umgesetzt).
 
 ---
 
