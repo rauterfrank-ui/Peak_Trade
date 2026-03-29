@@ -43,7 +43,7 @@
 |---|--------|-----|----------------|
 | C1 | Live-Orderpfad / Exchange (bewusst nicht produktiv) | STUB/GAP | `src/orders/exchange.py` — Live-Operationen TODO/kommentiert |
 | C2 | Paper-Orders / Adapter (Teile abstrakt) | STUB | `src/orders/paper.py` — `NotImplementedError`-Pfade in Basisklassen |
-| C3 | Execution-Simple Gates | STUB | `src/execution_simple/gates.py` |
+| C3 | Execution-Simple Gates | DONE | `gates.py` — PriceSanity, ResearchOnly, LotSize, MinNotional; `pipeline.py` + `build_execution_pipeline_from_config`; Tests `tests/execution_simple/test_execution_pipeline.py` |
 | C4 | Multi-Asset Risk-Enforcement | DONE | `src/risk/enforcement.py` — `max_corr` + DataFrame-Returns (Portfolio-Returns für VaR/CVaR) |
 | C5 | Position-Sizing abstrakte Methoden | STUB | `src/core/position_sizing.py` — Basisklasse |
 | C6 | Portfolio-Basis | STUB | `src/portfolio/base.py` |
