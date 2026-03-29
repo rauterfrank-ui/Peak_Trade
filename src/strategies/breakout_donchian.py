@@ -6,6 +6,7 @@ from typing import Any, Dict, Optional
 import pandas as pd
 
 from .base import BaseStrategy, StrategyMetadata
+from .parameters import Param, validate_schema
 
 
 class DonchianBreakoutStrategy(BaseStrategy):
@@ -18,6 +19,16 @@ class DonchianBreakoutStrategy(BaseStrategy):
     """
 
     KEY = "breakout_donchian"
+
+    parameter_schema = (
+        Param(name="lookback", kind="int", default=20, low=2, high=500),
+        Param(
+            name="price_col",
+            kind="choice",
+            default="close",
+            choices=["open", "high", "low", "close"],
+        ),
+    )
 
     def __init__(
         self,
@@ -93,3 +104,6 @@ class DonchianBreakoutStrategy(BaseStrategy):
 class PeakConfigLike:
     def get(self, path: str, default: Any = None) -> Any:  # pragma: no cover - nur Doku
         ...
+
+
+validate_schema(list(DonchianBreakoutStrategy.parameter_schema))
