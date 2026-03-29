@@ -160,15 +160,11 @@ def apply_meta_model(
         y_series = features_a[model_spec.target_col]
         train_mask = y_series.notna()
         if int(train_mask.sum()) < 2:
-            logger.warning(
-                "meta_labeling: fewer than 2 labeled rows; returning signals unchanged"
-            )
+            logger.warning("meta_labeling: fewer than 2 labeled rows; returning signals unchanged")
             return out
         y_train = y_series.loc[train_mask].astype(int).to_numpy()
         if len(np.unique(y_train)) < 2:
-            logger.warning(
-                "meta_labeling: target has a single class; returning signals unchanged"
-            )
+            logger.warning("meta_labeling: target has a single class; returning signals unchanged")
             return out
         X_train = X_df.loc[train_mask].to_numpy(dtype=float)
         model = _create_model(model_spec)
