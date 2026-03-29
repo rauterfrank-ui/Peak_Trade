@@ -10,9 +10,10 @@ Features:
 - Trade-Tracking mit PnL-Berechnung
 """
 
+import math
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Callable, Any
+from typing import Any, Callable, Dict, List, Mapping, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 import logging
@@ -111,6 +112,8 @@ class BacktestEngine:
                             Default: True (neuer Modus mit ExecutionPipeline)
             log_executions: Wenn True, werden Execution-Summaries gesammelt und in
                            _execution_logs gespeichert. Default: False
+            tracker: Optional Objekt mit ``log_params`` / ``log_metrics`` (z. B. NoopTracker);
+                     Fehler beim Tracking werden unterdrückt, damit Ergebnisse unverändert bleiben.
             use_order_layer: DEPRECATED - Alias fuer use_execution_pipeline (backward compat)
         """
         self.config = get_config()
@@ -297,6 +300,62 @@ class BacktestEngine:
         """Loescht alle Execution-Logs."""
         self._execution_logs.clear()
 
+    def _safe_tracker_log_params(self, strategy_params: Mapping[str, Any], **extra: Any) -> None:
+        """
+        Ruft tracker.log_params auf, falls vorhanden.
+
+        Fehler im Tracker dürfen den Backtest nicht abbrechen (Tests / robustes Logging).
+        """
+        if self.tracker is None:
+            return
+        log_fn = getattr(self.tracker, "log_params", None)
+        if not callable(log_fn):
+            return
+        try:
+            payload: Dict[str, Any] = dict(strategy_params)
+            for k, v in extra.items():
+                if v is not None:
+                    payload[str(k)] = v
+            log_fn(payload)
+        except Exception as e:
+            logger.debug("Tracker log_params failed (ignored): %s", e)
+
+    def _safe_tracker_log_metrics(self, stats: Mapping[str, Any]) -> None:
+        """
+        Ruft tracker.log_metrics mit skalaren, endlichen Kennzahlen auf.
+
+        Nicht-numerische / nicht-finite Werte werden übersprungen (MLflow-kompatibel).
+        """
+        if self.tracker is None:
+            return
+        log_fn = getattr(self.tracker, "log_metrics", None)
+        if not callable(log_fn):
+            return
+        flat: Dict[str, float] = {}
+        for k, v in stats.items():
+            try:
+                if v is None or isinstance(v, (str, bytes)):
+                    continue
+                if hasattr(v, "item"):
+                    fv = float(v.item())
+                else:
+                    fv = float(v)
+                if math.isfinite(fv):
+                    flat[str(k)] = fv
+            except (TypeError, ValueError):
+                continue
+        if not flat:
+            return
+        try:
+            log_fn(flat)
+        except TypeError:
+            try:
+                log_fn(flat, None)
+            except Exception as e:
+                logger.debug("Tracker log_metrics failed (ignored): %s", e)
+        except Exception as e:
+            logger.debug("Tracker log_metrics failed (ignored): %s", e)
+
     def run_realistic(
         self,
         df: pd.DataFrame,
@@ -355,6 +414,14 @@ class BacktestEngine:
             ...     strategy_params={'fast_period': 10, 'slow_period': 30, 'stop_pct': 0.02}
             ... )
         """
+        self._safe_tracker_log_params(
+            strategy_params,
+            symbol=symbol,
+            fee_bps=fee_bps,
+            slippage_bps=slippage_bps,
+            mode="execution_pipeline" if self.use_execution_pipeline else "legacy_realistic",
+        )
+
         # Dispatch: ExecutionPipeline oder Legacy-Pfad
         if self.use_execution_pipeline:
             return self._run_with_execution_pipeline(
@@ -668,6 +735,8 @@ class BacktestEngine:
             "blocked_trades": blocked_trades,
         }
         metadata.update(regime_meta)
+
+        self._safe_tracker_log_metrics(stats)
 
         return BacktestResult(
             equity_curve=equity_series,
@@ -1055,6 +1124,8 @@ class BacktestEngine:
                 symbol=symbol,
                 summary=exec_summary,
             )
+
+        self._safe_tracker_log_metrics(stats)
 
         return BacktestResult(
             equity_curve=equity_series,
