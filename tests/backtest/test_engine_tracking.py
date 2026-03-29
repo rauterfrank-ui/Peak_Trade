@@ -100,9 +100,6 @@ class TestTrackingNoop:
         # Equity-Curves müssen identisch sein (deterministisch)
         assert (result1.equity_curve == result2.equity_curve).all()
 
-    @pytest.mark.skip(
-        reason="BacktestEngine tracker integration not yet implemented - deferred to Phase 2"
-    )
     def test_tracker_called_when_enabled(self, sample_data, simple_strategy):
         """NoopTracker: Methoden werden aufgerufen (Spy-Test)."""
 
