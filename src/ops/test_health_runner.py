@@ -1697,15 +1697,13 @@ def run_test_health_profile(
     # 3) Summary aggregieren
     summary = aggregate_health(profile_name, results)
 
-    # 3b) Trigger-Evaluierung (basierend auf aktuellem Run + Historie)
-    # Für jetzt: Stats aus aktuellem Run ableiten
-    # TODO P2: Historie mit einbeziehen für längerfristige Trends
-    stats = TestHealthStats(
-        total_runs=1,  # Aktueller Run
-        failed_runs=1 if summary.failed_checks > 0 else 0,
-        max_consecutive_failures=1 if summary.failed_checks > 0 else 0,
-        hours_since_last_run=None,  # Erster Run (Historie TODO)
-        all_critical_groups_green=(summary.failed_checks == 0),
+    # 3b) Trigger-Evaluierung (aktueller Lauf + gespeicherte Historie, gleicher Pfad wie append)
+    from .test_health_history import compute_test_health_stats_for_triggers
+
+    stats = compute_test_health_stats_for_triggers(
+        profile_name,
+        summary,
+        history_path=None,
     )
 
     violations = evaluate_triggers(triggers, stats)

@@ -571,6 +571,75 @@ class TestHealthHistory:
         entries_all = load_history(history_path, None)
         assert len(entries_all) == 3
 
+    def test_compute_test_health_stats_for_triggers_empty_history(self, tmp_path):
+        """G4: Trigger-Stats nur aus aktuellem Lauf wenn Historie leer."""
+        import datetime as dt
+        from src.ops.test_health_history import compute_test_health_stats_for_triggers
+
+        history_path = tmp_path / "missing.json"
+        summary = TestHealthSummary(
+            profile_name="p1",
+            started_at=dt.datetime(2025, 12, 1, 10, 0, 0),
+            finished_at=dt.datetime(2025, 12, 1, 10, 1, 0),
+            checks=[],
+            health_score=100.0,
+            passed_checks=2,
+            failed_checks=0,
+            skipped_checks=0,
+            total_weight=10,
+            passed_weight=10,
+        )
+        stats = compute_test_health_stats_for_triggers("p1", summary, history_path=history_path)
+        assert stats.total_runs == 1
+        assert stats.failed_runs == 0
+        assert stats.max_consecutive_failures == 0
+        assert stats.hours_since_last_run is None
+        assert stats.all_critical_groups_green is True
+
+    def test_compute_test_health_stats_for_triggers_with_history(self, tmp_path):
+        """G4: Historie + aktueller Lauf für total_runs, fail_rate, consecutive."""
+        import datetime as dt
+        from src.ops.test_health_history import (
+            append_to_history,
+            compute_test_health_stats_for_triggers,
+        )
+
+        history_path = tmp_path / "history.json"
+        base = dt.datetime.utcnow() - dt.timedelta(days=5)
+        for failed in (True, False, True):
+            s = TestHealthSummary(
+                profile_name="p2",
+                started_at=base,
+                finished_at=base,
+                checks=[],
+                health_score=50.0 if failed else 100.0,
+                passed_checks=0 if failed else 1,
+                failed_checks=1 if failed else 0,
+                skipped_checks=0,
+                total_weight=1,
+                passed_weight=0 if failed else 1,
+            )
+            append_to_history(s, report_dir=tmp_path / "r", history_path=history_path)
+            base = base + dt.timedelta(hours=1)
+
+        current = TestHealthSummary(
+            profile_name="p2",
+            started_at=base,
+            finished_at=base + dt.timedelta(minutes=5),
+            checks=[],
+            health_score=0.0,
+            passed_checks=0,
+            failed_checks=1,
+            skipped_checks=0,
+            total_weight=1,
+            passed_weight=0,
+        )
+        stats = compute_test_health_stats_for_triggers("p2", current, history_path=history_path)
+        assert stats.total_runs == 4
+        assert stats.failed_runs == 3
+        assert stats.max_consecutive_failures == 2
+        assert stats.hours_since_last_run is not None
+
 
 # ============================================================================
 # Marker für Slow-Tests (falls gewünscht)

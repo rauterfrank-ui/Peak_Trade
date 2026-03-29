@@ -9,6 +9,7 @@ Features:
   - Append-only History-File (JSON)
   - Laden von Daten für bestimmte Profile/Zeiträume
   - Einfache Statistiken (Trend, Durchschnitt, etc.)
+  - :func:`compute_test_health_stats_for_triggers` für Trigger-Evaluation im Runner
 
 Stand: Dezember 2024
 """
@@ -22,7 +23,9 @@ from pathlib import Path
 from typing import Optional
 
 # Import from sibling module
-from .test_health_runner import TestHealthSummary
+from .test_health_runner import TestHealthStats, TestHealthSummary
+
+_DEFAULT_TRIGGER_LOOKBACK_DAYS = 90
 
 
 @dataclass
@@ -166,6 +169,75 @@ def append_to_history(
         json.dump(data, f, indent=2, ensure_ascii=False)
 
     return history_path
+
+
+def compute_test_health_stats_for_triggers(
+    profile_name: str,
+    current_summary: TestHealthSummary,
+    history_path: Optional[Path] = None,
+    lookback_days: int = _DEFAULT_TRIGGER_LOOKBACK_DAYS,
+) -> TestHealthStats:
+    """
+    Leitet :class:`TestHealthStats` aus gespeicherter Historie + aktuellem Lauf ab.
+
+    Wird für Trigger-Evaluierung genutzt (min_total_runs, max_fail_rate,
+    max_consecutive_failures, max_hours_since_last_run). Die Historie enthält
+    noch **nicht** den aktuellen Lauf (der typischerweise danach per
+    ``append_to_history`` geschrieben wird).
+
+    Parameters
+    ----------
+    profile_name:
+        Profil-Name (Filter).
+    current_summary:
+        Aggregiertes Summary des gerade beendeten Laufs.
+    history_path:
+        Pfad zu ``history.json`` (Default: :func:`_get_default_history_path`).
+    lookback_days:
+        Nur Einträge in diesem Fenster (wie :func:`load_history`).
+    """
+    if history_path is None:
+        history_path = _get_default_history_path()
+
+    entries = load_history(history_path, profile_name, days=lookback_days)
+    current_failed = current_summary.failed_checks > 0
+
+    failed_flags = [e.failed_checks > 0 for e in entries]
+    failed_flags.append(current_failed)
+
+    total_runs = len(entries) + 1
+    failed_runs = sum(1 for e in entries if e.failed_checks > 0) + (1 if current_failed else 0)
+
+    max_consecutive = 0
+    cur = 0
+    for f in failed_flags:
+        if f:
+            cur += 1
+            max_consecutive = max(max_consecutive, cur)
+        else:
+            cur = 0
+
+    hours_since_last_run: Optional[float] = None
+    if entries:
+        last_ts = entries[-1].timestamp
+        try:
+            last_dt = dt.datetime.fromisoformat(last_ts.replace("Z", "+00:00"))
+            if last_dt.tzinfo is not None:
+                last_dt = last_dt.replace(tzinfo=None)
+            delta = dt.datetime.utcnow() - last_dt
+            hours_since_last_run = max(0.0, delta.total_seconds() / 3600.0)
+        except (ValueError, TypeError):
+            hours_since_last_run = None
+
+    all_critical_green = current_summary.failed_checks == 0
+
+    return TestHealthStats(
+        total_runs=total_runs,
+        failed_runs=failed_runs,
+        max_consecutive_failures=max_consecutive,
+        hours_since_last_run=hours_since_last_run,
+        all_critical_groups_green=all_critical_green,
+    )
 
 
 def get_history_stats(
