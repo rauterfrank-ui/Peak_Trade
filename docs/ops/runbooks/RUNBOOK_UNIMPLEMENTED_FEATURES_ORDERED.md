@@ -22,7 +22,7 @@
 | # | Thema | Tag | Hinweis / Ort |
 |---|--------|-----|----------------|
 | A1 | Zentrale Config-Modulstruktur | GAP | `src/core/config.py` — Kommentar „central config module“ |
-| A2 | R&D-Strategien in Live-Kontext konfigurierbar machen | GAP | `src/governance/config_validation.py` — Soft-Check TODO |
+| A2 | R&D-Strategien in Live-Kontext konfigurierbar machen | DONE | `config_validation.py` — Soft-Check prod + `allow_rd_strategy_in_prod` / `rd_strategy_allowlist` |
 | A3 | Legacy-Momentum-Aufräumen | DEBT | `src/strategies/momentum.py` — Entfernen wenn Pipelines migriert |
 
 ---
@@ -33,7 +33,7 @@
 |---|--------|-----|----------------|
 | B1 | Fat-Tails / `scipy.stats.t` in synthetischen Modellen | GAP | `src/data/offline_realtime/synthetic_models/garch_regime_v0.py`, `src/data/feeds/offline_realtime_feed.py` |
 | B2 | `RATIO_ADJUST` für Continuous Contracts | STUB | `src/data/continuous/continuous_contract.py` — „reserved; not implemented in MVP“ |
-| B3 | Infostream-Collector defensive Defaults | GAP | `src/meta/infostream/collector.py` — Keys/Defaults |
+| B3 | Infostream-Collector defensive Defaults | DONE | `collector.py` — Typ-Koercion / Defaults für TestHealth-`summary.json` |
 
 ---
 
