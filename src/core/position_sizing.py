@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from typing import Any, Literal
+from dataclasses import dataclass, field
+from typing import Any, Mapping, Optional, Sequence, Union
 
 
 class BasePositionSizer(ABC):
@@ -93,72 +93,9 @@ class FixedFractionSizer(BasePositionSizer):
         return f"<FixedFractionSizer(fraction={self.fraction:.1%})>"
 
 
-def build_position_sizer_from_config(
-    cfg: Any,
-    section: str = "position_sizing",
-) -> BasePositionSizer:
-    """
-    Fabrik-Funktion, die aus der Config einen passenden PositionSizer baut.
-
-    Args:
-        cfg: Config-Objekt (PeakConfig oder kompatibles Dict-Interface)
-        section: Config-Section für Position Sizing
-
-    Returns:
-        BasePositionSizer-Instanz
-
-    Erwartete Struktur in config.toml:
-
-    [position_sizing]
-    type = "noop"            # oder "fixed_size", "fixed_fraction"
-    units = 1.0              # nur für type="fixed_size"
-    fraction = 0.1           # nur für type="fixed_fraction"
-
-    Example:
-        >>> from src.core.peak_config import load_config
-        >>> cfg = load_config()
-        >>> sizer = build_position_sizer_from_config(cfg)
-    """
-
-    # Config-Zugriff: Unterstützt PeakConfig und Dict
-    if hasattr(cfg, "get"):
-        get_fn = cfg.get
-    elif isinstance(cfg, dict):
-        # Fallback für plain dict
-        def get_fn(path, default=None):
-            keys = path.split(".")
-            node = cfg
-            for key in keys:
-                if isinstance(node, dict) and key in node:
-                    node = node[key]
-                else:
-                    return default
-            return node
-
-    else:
-        raise TypeError(f"Unsupported config type: {type(cfg)}")
-
-    type_value: str = str(get_fn(f"{section}.type", "noop")).lower()
-
-    if type_value == "fixed_size":
-        units = float(get_fn(f"{section}.units", 1.0))
-        return FixedSizeSizer(units=units)
-
-    if type_value == "fixed_fraction":
-        fraction = float(get_fn(f"{section}.fraction", 0.1))
-        return FixedFractionSizer(fraction=fraction)
-
-    # Fallback / Default
-    return NoopPositionSizer()
-
-
 # ============================================================================
 # Overlay / Regime helpers (Public API)
 # ============================================================================
-
-import abc
-from dataclasses import dataclass, field
-from typing import Any, Mapping, Sequence, Optional
 
 
 def _call_base_sizer(base: Any, *args: Any, **kwargs: Any) -> float:
@@ -215,7 +152,7 @@ def _extract_regime(kwargs: Mapping[str, Any], key: str) -> Optional[str]:
     return None
 
 
-class BasePositionOverlay(abc.ABC):
+class BasePositionOverlay(ABC):
     """
     Minimal overlay interface for position sizing.
 
@@ -223,7 +160,7 @@ class BasePositionOverlay(abc.ABC):
     args/kwargs that the sizer received.
     """
 
-    @abc.abstractmethod
+    @abstractmethod
     def apply(self, size: float, *args: Any, **kwargs: Any) -> float:
         raise NotImplementedError
 
@@ -266,102 +203,6 @@ class OverlayPipelinePositionSizer:
 # Backwards-compatible aliases (high chance tests use one of these names)
 OverlayPipelineSizer = OverlayPipelinePositionSizer
 PositionSizingOverlayPipeline = OverlayPipelinePositionSizer
-
-# Export control (if module defines __all__, extend it safely)
-try:
-    __all__  # type: ignore[name-defined]
-except NameError:
-    __all__ = []  # type: ignore[assignment]
-
-try:
-    _existing = list(__all__)  # type: ignore[arg-type]
-except Exception:
-    _existing = []
-
-__all__ = sorted(
-    set(
-        _existing
-        + [  # type: ignore[assignment]
-            "BasePositionOverlay",
-            "OverlayPipelinePositionSizer",
-            "OverlayPipelineSizer",
-            "PositionSizingOverlayPipeline",
-            "VolRegimeOverlaySizer",
-        ]
-    )
-)
-
-
-# === Peak_Trade overlay public API (compat) ===
-# Backwards-compatible overlay & config helpers expected by tests.
-
-import abc
-from dataclasses import dataclass, field
-from typing import Any, Mapping, Optional, Sequence, Union
-
-
-def _call_base_sizer(base: Any, *args: Any, **kwargs: Any) -> float:
-    """
-    Call a base position sizer defensively.
-
-    Supports:
-    - callable(base)(...)
-    - base.size_position(...)
-    - base.size(...)
-    - base.get_position_size(...)
-    - base.compute_position_size(...)
-    """
-    if callable(base):
-        return float(base(*args, **kwargs))
-
-    for meth in ("size_position", "size", "get_position_size", "compute_position_size"):
-        fn = getattr(base, meth, None)
-        if callable(fn):
-            return float(fn(*args, **kwargs))
-
-    raise TypeError(
-        f"Base sizer {base!r} is not callable and has none of the supported methods: "
-        "size_position/size/get_position_size/compute_position_size"
-    )
-
-
-def _extract_regime(kwargs: Mapping[str, Any], key: str) -> Optional[str]:
-    """
-    Extract regime value from kwargs in a flexible way.
-    Looks in:
-      - kwargs[key]
-      - kwargs['context']/kwargs['ctx'] as mapping or object attr
-      - kwargs['state']/kwargs['market_state'] as mapping or object attr
-    """
-    if key in kwargs:
-        v = kwargs.get(key)
-        return None if v is None else str(v)
-
-    for container_key in ("context", "ctx", "state", "market_state"):
-        container = kwargs.get(container_key)
-        if container is None:
-            continue
-
-        if isinstance(container, Mapping) and key in container:
-            v = container.get(key)
-            return None if v is None else str(v)
-
-        if hasattr(container, key):
-            v = getattr(container, key)
-            return None if v is None else str(v)
-
-    return None
-
-
-class BasePositionOverlay(abc.ABC):
-    """Minimal overlay interface: transform a computed size."""
-
-    @abc.abstractmethod
-    def apply(self, size: float, *args: Any, **kwargs: Any) -> float:
-        raise NotImplementedError
-
-    def __call__(self, size: float, *args: Any, **kwargs: Any) -> float:
-        return float(self.apply(float(size), *args, **kwargs))
 
 
 @dataclass(frozen=True)
@@ -744,7 +585,7 @@ def build_position_sizer_from_config(
             section_cfg = config.get(section)
             if section_cfg is None:
                 # No position_sizing section: return default NoOp sizer
-                return NoOpPositionSizer()  # type: ignore[name-defined]
+                return NoopPositionSizer()
             root_cfg = (
                 {section: section_cfg} if not isinstance(section_cfg, Mapping) else section_cfg
             )
@@ -955,26 +796,20 @@ def build_position_sizer_from_config(
     raise ValueError(f"Unknown position sizer config type: {typ!r} (keys={sorted(cfg.keys())})")
 
 
-try:
-    __all__  # type: ignore[name-defined]
-except NameError:
-    __all__ = []  # type: ignore[assignment]
-
-try:
-    _existing = list(__all__)  # type: ignore[arg-type]
-except Exception:
-    _existing = []
-
 __all__ = sorted(
-    set(
-        _existing
-        + [  # type: ignore[assignment]
-            "BasePositionOverlay",
-            "VolRegimeOverlay",
-            "CompositePositionSizer",
-            "VolRegimeOverlaySizer",
-            "VolRegimeOverlaySizerConfig",
-            "build_position_sizer_from_config",
-        ]
-    )
+    {
+        "BasePositionOverlay",
+        "BasePositionSizer",
+        "CompositePositionSizer",
+        "FixedFractionSizer",
+        "FixedSizeSizer",
+        "NoopPositionSizer",
+        "OverlayPipelinePositionSizer",
+        "OverlayPipelineSizer",
+        "PositionSizingOverlayPipeline",
+        "VolRegimeOverlay",
+        "VolRegimeOverlaySizer",
+        "VolRegimeOverlaySizerConfig",
+        "build_position_sizer_from_config",
+    }
 )
