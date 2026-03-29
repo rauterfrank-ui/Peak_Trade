@@ -254,29 +254,31 @@ class PaperOrderExecutor:
 
 
 # -----------------------------------------------------------------------------
-# Stub fuer zukuenftige Exchange-/Testnet-Executor (NICHT implementiert)
+# Platzhalter fuer Live-/Exchange-Executor (bewusst nicht implementiert → C1)
 # -----------------------------------------------------------------------------
 
 
 class ExchangeOrderExecutor:
     """
-    Stub fuer einen echten Exchange-Order-Executor.
+    Platzhalter fuer einen Exchange-Order-Executor (Live/Testnet).
 
-    WICHTIG: Diese Klasse ist NICHT implementiert und dient nur als
-             Platzhalter fuer zukuenftige Testnet-/Live-Integrationen.
-
-    In Phase 15 wird KEIN echter Order-Executor implementiert.
-    Alle Order-Ausfuehrungen erfolgen ueber den PaperOrderExecutor.
+    Nicht der Paper-Pfad: :class:`PaperOrderExecutor` oben ist die unterstuetzte
+    Simulation. Diese Klasse bleibt absichtlich unimplementiert bis eine
+    freigegebene Live-Integration (Runbook C1) existiert.
     """
 
     def __init__(self) -> None:
         raise NotImplementedError(
-            "ExchangeOrderExecutor ist in dieser Phase nicht implementiert. "
-            "Verwende PaperOrderExecutor fuer Paper-/Sandbox-Trading."
+            "ExchangeOrderExecutor ist nicht implementiert (Live/Testnet; siehe Runbook C1). "
+            "Fuer Simulation: PaperOrderExecutor."
         )
 
     def execute_orders(self, orders: Sequence[OrderRequest]) -> List[OrderExecutionResult]:
-        raise NotImplementedError("Echte Order-Ausfuehrung ist in dieser Phase nicht verfuegbar.")
+        raise NotImplementedError(
+            "ExchangeOrderExecutor ist nicht implementiert (Live/Testnet; siehe Runbook C1)."
+        )
 
     def execute_order(self, order: OrderRequest) -> OrderExecutionResult:
-        raise NotImplementedError("Echte Order-Ausfuehrung ist in dieser Phase nicht verfuegbar.")
+        raise NotImplementedError(
+            "ExchangeOrderExecutor ist nicht implementiert (Live/Testnet; siehe Runbook C1)."
+        )
