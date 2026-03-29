@@ -97,6 +97,9 @@
 - [AI Autonomy Control Center](./ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md) – Primary control center entry point (Layer L0-L6)
 - [Control Center Navigation](./ops/control_center/CONTROL_CENTER_NAV.md) – Navigation for control center artifacts
 
+### Configuration
+- [Config-Import-Leitfaden (Peak / Pydantic / Registry / simple)](./project_docs/CONFIG_IMPORT_GUIDE.md) — zentraler Einstieg für Loader- und Import-Semantik
+
 ### CLI & Commands
 - [CLI Cheatsheet](./CLI_CHEATSHEET.md) – Complete CLI command reference (18 sections, 690 lines)
 - [Dev Workflow Shortcuts](./DEV_WORKFLOW_SHORTCUTS.md) – Quick command snippets for development

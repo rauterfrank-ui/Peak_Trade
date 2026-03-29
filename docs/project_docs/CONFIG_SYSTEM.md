@@ -1,7 +1,9 @@
 # Peak_Trade Config-System
 
-**Stand:** 2025-12-02
+**Stand:** 2025-12-02  
 **Komponenten:** Simple TOML Loader + BacktestEngine + Risk-Layer
+
+> **Hinweis (2026):** Für die **gesamte** Config-Landschaft (Peak vs. Pydantic vs. Registry vs. `config_simple`) siehe [CONFIG_IMPORT_GUIDE.md](./CONFIG_IMPORT_GUIDE.md).
 
 ---
 
