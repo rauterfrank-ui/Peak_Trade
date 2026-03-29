@@ -108,7 +108,7 @@
 
 | # | Thema | Tag | Hinweis / Ort |
 |---|--------|-----|----------------|
-| H1 | HTTP-Server auf Port (Session) | GAP | `src/obs/session.py` — TODO |
+| H1 | HTTP-Server auf Port (Session) | DONE | `src/obs/session.py` — `start_session_http` delegiert an `ensure_metrics_server` in `src/obs/metrics_server.py` (in-process `/metrics`, Mode A/B, Port via Env) |
 
 ---
 
