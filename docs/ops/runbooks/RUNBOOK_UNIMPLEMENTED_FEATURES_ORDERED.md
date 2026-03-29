@@ -46,7 +46,7 @@
 | C3 | Execution-Simple Gates | DONE | `gates.py` — PriceSanity, ResearchOnly, LotSize, MinNotional; `pipeline.py` + `build_execution_pipeline_from_config`; Tests `tests/execution_simple/test_execution_pipeline.py` |
 | C4 | Multi-Asset Risk-Enforcement | DONE | `src/risk/enforcement.py` — `max_corr` + DataFrame-Returns (Portfolio-Returns für VaR/CVaR) |
 | C5 | Position-Sizing abstrakte Methoden | DONE | `src/core/position_sizing.py` — `BasePositionSizer` / `BasePositionOverlay` (ABC), konkrete Sizer (`NoopPositionSizer`, `FixedSizeSizer`, `FixedFractionSizer`, Overlays/Pipeline); `build_position_sizer_from_config`; Tests `tests/test_position_sizing_overlay_pipeline.py`, `tests/test_vol_regime_overlay_sizer.py` |
-| C6 | Portfolio-Basis | STUB | `src/portfolio/base.py` |
+| C6 | Portfolio-Basis | DONE | `src/portfolio/base.py` — `PortfolioContext`, `PortfolioStrategy` (Protocol), `BasePortfolioStrategy` (ABC), `make_portfolio_strategy`; Tests `tests/test_portfolio_integration.py`, `tests/test_portfolio_equal_weight.py`, `tests/test_portfolio_vol_target.py`, `tests/test_portfolio_fixed_weights.py` |
 | C7 | Core-Risk abstrakt | STUB | `src/core/risk.py` |
 | C8 | Broker-Basis (Live) | STUB | `src/live/broker_base.py` |
 
