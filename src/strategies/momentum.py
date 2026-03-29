@@ -12,7 +12,6 @@ Konzept:
 from __future__ import annotations
 
 import pandas as pd
-import numpy as np
 from typing import Any, Dict, Optional
 
 from .base import BaseStrategy, StrategyMetadata
@@ -99,6 +98,14 @@ class MomentumStrategy(BaseStrategy):
         # Validierung
         self.validate()
 
+    def compute_momentum_series(self, data: pd.DataFrame) -> pd.Series:
+        """
+        Rohes Momentum: (close / close.shift(N)) - 1.
+
+        Von :meth:`generate_signals` und Legacy-:func:`add_momentum_indicators` genutzt.
+        """
+        return (data["close"] / data["close"].shift(self.lookback_period)) - 1
+
     def validate(self) -> None:
         """Validiert Parameter."""
         if self.lookback_period <= 0:
@@ -159,8 +166,7 @@ class MomentumStrategy(BaseStrategy):
         if len(data) < self.lookback_period:
             raise ValueError(f"Brauche mind. {self.lookback_period} Bars, habe nur {len(data)}")
 
-        # Momentum berechnen: (Close heute / Close vor N Tagen) - 1
-        momentum = (data["close"] / data["close"].shift(self.lookback_period)) - 1
+        momentum = self.compute_momentum_series(data)
 
         # Signale initialisieren
         signals = pd.Series(0, index=data.index, dtype=int)
@@ -177,15 +183,17 @@ class MomentumStrategy(BaseStrategy):
 
 
 # ============================================================================
-# LEGACY API (Backwards Compatibility)
+# Modul-Level API (load_strategy, Demos, PortfolioManager)
 # ============================================================================
-# TODO: Legacy-Funktion entfernen, sobald alle Pipelines auf
-# MomentumStrategy (OOP) umgestellt sind.
+# Delegiert an :class:`MomentumStrategy` — eine Implementierung, keine Duplikate.
 
 
 def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     """
     Generiert Momentum-basierte Signale.
+
+    Thin-Wrapper um :meth:`MomentumStrategy.generate_signals` für
+    ``src.strategies.load_strategy`` und ältere Aufrufer ``(df, params)``.
 
     Args:
         df: OHLCV-DataFrame mit DatetimeIndex
@@ -205,34 +213,15 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
         ... }
         >>> signals = generate_signals(df, params)
     """
-    # Parameter extrahieren
     lookback = params.get("lookback_period", 20)
     entry_threshold = params.get("entry_threshold", 0.02)
     exit_threshold = params.get("exit_threshold", -0.01)
-
-    # Validierung
-    if lookback <= 0:
-        raise ValueError(f"lookback_period ({lookback}) muss > 0 sein")
-
-    if len(df) < lookback:
-        raise ValueError(f"DataFrame zu kurz ({len(df)} Bars), brauche min. {lookback}")
-
-    # Momentum berechnen: (Close heute / Close vor N Tagen) - 1
-    momentum = (df["close"] / df["close"].shift(lookback)) - 1
-
-    # Signale initialisieren
-    signals = pd.Series(0, index=df.index, dtype=int)
-
-    # Entry-Logik: Momentum überschreitet Entry-Threshold
-    # Bedingung: Momentum[t-1] < entry_threshold UND Momentum[t] > entry_threshold
-    cross_up = (momentum.shift(1) < entry_threshold) & (momentum > entry_threshold)
-    signals[cross_up] = 1
-
-    # Exit-Logik: Momentum fällt unter Exit-Threshold
-    cross_down = (momentum.shift(1) > exit_threshold) & (momentum < exit_threshold)
-    signals[cross_down] = -1
-
-    return signals
+    strategy = MomentumStrategy(
+        lookback_period=lookback,
+        entry_threshold=entry_threshold,
+        exit_threshold=exit_threshold,
+    )
+    return strategy.generate_signals(df)
 
 
 def add_momentum_indicators(df: pd.DataFrame, params: Dict) -> pd.DataFrame:
@@ -250,17 +239,16 @@ def add_momentum_indicators(df: pd.DataFrame, params: Dict) -> pd.DataFrame:
         >>> df_with_mom = add_momentum_indicators(df, {'lookback_period': 20})
         >>> print(df_with_mom[['close', 'momentum']].tail())
     """
-    df = df.copy()
-
     lookback = params.get("lookback_period", 20)
-
-    # Momentum berechnen
-    df["momentum"] = (df["close"] / df["close"].shift(lookback)) - 1
-
-    # Optional: Glättung mit EMA
-    df["momentum_ema"] = df["momentum"].ewm(span=5, adjust=False).mean()
-
-    return df
+    strategy = MomentumStrategy(
+        lookback_period=lookback,
+        entry_threshold=params.get("entry_threshold", 0.02),
+        exit_threshold=params.get("exit_threshold", -0.01),
+    )
+    out = df.copy()
+    out["momentum"] = strategy.compute_momentum_series(out)
+    out["momentum_ema"] = out["momentum"].ewm(span=5, adjust=False).mean()
+    return out
 
 
 def get_strategy_description(params: Dict) -> str:

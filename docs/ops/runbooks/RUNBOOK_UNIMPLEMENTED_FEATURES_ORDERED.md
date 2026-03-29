@@ -23,7 +23,7 @@
 |---|--------|-----|----------------|
 | A1 | Zentrale Config-Modulstruktur | DONE | `src/core/config.py` (Facade + `__all__`); Import-Leitfaden [CONFIG_IMPORT_GUIDE.md](../../project_docs/CONFIG_IMPORT_GUIDE.md); Hotspots [A1_CONFIG_MODULE_INVENTORY_2026-03-29.md](../spikes/A1_CONFIG_MODULE_INVENTORY_2026-03-29.md) |
 | A2 | R&D-Strategien in Live-Kontext konfigurierbar machen | DONE | `config_validation.py` — Soft-Check prod + `allow_rd_strategy_in_prod` / `rd_strategy_allowlist` |
-| A3 | Legacy-Momentum-Aufräumen | DEBT | `src/strategies/momentum.py` — Entfernen wenn Pipelines migriert |
+| A3 | Legacy-Momentum-Aufräumen | DONE | `src/strategies/momentum.py` — modulare `generate_signals`/`add_momentum_indicators` delegieren an `MomentumStrategy`; gemeinsame Logik in `compute_momentum_series` (keine doppelte Signal-Pipeline mehr) |
 
 ---
 
@@ -134,7 +134,7 @@
 ## Empfohlene Bearbeitungs-Reihenfolge (hochlevel)
 
 1. **Governance & Safety-Draht** (D1–D3) — wenn Live-nah berührt, nur mit Freigabe.  
-2. **Foundation** (A1/A2 erledigt) — Steuerbarkeit / Konfig-Klarheit für den Rest.  
+2. **Foundation** (A1–A3 erledigt) — Steuerbarkeit / Konfig-Klarheit für den Rest.  
 3. **Daten-Realismus** (B1–B3 erledigt) — vor harten Research-Claims.  
 4. **Evidence/Orchestration** (G1–G4 erledigt) — für auditierbare PRs.  
 5. **Infostream** (F1) — Betrieb KI-gestützter Pfade.  
