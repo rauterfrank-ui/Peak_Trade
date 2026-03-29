@@ -3,10 +3,13 @@ Peak_Trade Core Module
 ======================
 Zentrale Konfiguration und gemeinsame Utilities.
 
-Es gibt zwei Config-Systeme:
-1. config_pydantic.py - Pydantic-basiert (für alte Scripts)
-2. peak_config.py - TOML-basiert (neue OOP-API)
-3. config_registry.py - Registry-basiert (für Portfolio-Backtests)
+Config-Subsysteme (Imports bewusst wählen — Kurzüberblick):
+1. ``config_pydantic`` — Pydantic ``Settings`` (Legacy); Paket-Export ``load_config`` = Pydantic
+2. ``peak_config`` — TOML / ``PeakConfig``; Paket-Export ``load_peak_config``
+3. ``config_registry`` — Portfolio-Registry (Dict); Aliase ``get_registry_config``, …
+4. ``config_simple`` — minimaler TOML→Dict-Loader (ältere Demos)
+
+Leitfaden: ``docs/project_docs/CONFIG_IMPORT_GUIDE.md``.
 """
 
 # Wave A (Stability): Error Taxonomy

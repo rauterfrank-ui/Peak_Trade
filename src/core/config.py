@@ -10,6 +10,9 @@ Config-API für stabile Imports::
 ``load_config`` ohne Qualifier bezeichnet hier den **TOML-/PeakConfig**-Loader
 (:func:`src.core.peak_config.load_config`). Der Legacy-Pydantic-Loader ist
 :func:`load_pydantic_config`.
+
+Vollständige Import-Übersicht (Peak vs. Pydantic vs. Registry vs. simple):
+`docs/project_docs/CONFIG_IMPORT_GUIDE.md`.
 """
 
 from __future__ import annotations
