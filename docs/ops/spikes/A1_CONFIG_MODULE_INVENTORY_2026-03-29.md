@@ -65,7 +65,7 @@ Diese Notiz hält die **Import-Story** und **Hotspots** fest, bevor größere Re
 
 ### `peak_config` (Live, Exchange, Analytics, Risk, Execution, …)
 
-- u. a. `src/sweeps/engine.py`, `src/live/*.py` (mehrere), `src/execution/live_session.py`, `src/exchange/kraken_testnet.py`, `src/analytics/*`, `src/portfolio/config.py`, `src/regime/config.py`, `src/risk_layer/risk_gate.py`, `src/strategies/diagnostics.py`, `src/orders/testnet_executor.py`
+- u. a. `src/sweeps/engine.py`, `src&#47;live&#47;*.py` (mehrere), `src/execution/live_session.py`, `src/exchange/kraken_testnet.py`, `src&#47;analytics&#47;*`, `src/portfolio/config.py`, `src/regime/config.py`, `src/risk_layer/risk_gate.py`, `src/strategies/diagnostics.py`, `src/orders/testnet_executor.py`
 
 ### Namens-Kollisionen (bewusst andere Bedeutung)
 
