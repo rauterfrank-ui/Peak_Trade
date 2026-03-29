@@ -99,7 +99,7 @@
 |---|--------|-----|----------------|
 | G1 | Evidence-Pack **Multi-Hop-Migrationen** | DONE | `src/ai_orchestration/evidence_pack_schema.py` — `_find_migration_path`, `migration_info.chain`; `tests/ai_orchestration/test_evidence_pack_schema.py` |
 | G2 | Evidence-Generator **Redaction**-Regeln | DONE | `src/ai_orchestration/evidence_pack_generator.py` — `_redact_content` auf proposer/critic `content` & `rationale`; `tests/ai_orchestration/test_evidence_pack_generator.py` |
-| G3 | Psychology-Heatmap „echte Analyse“ | GAP | `src/reporting/psychology_heatmap.py` |
+| G3 | Psychology-Heatmap „echte Analyse“ | DONE | `src/reporting/psychology_heuristics.py` — `compute_psychology_heatmap_from_events`, `TriggerTrainingPsychEventFeatures`; Legacy `extract_psychology_scores_from_events` in `psychology_heatmap.py` deprecated; `tests/reporting/test_psychology_heuristics.py` |
 | G4 | TestHealth-Runner Historie für Trends | DONE | Trigger-Stats aus `history.json` via `compute_test_health_stats_for_triggers` (`test_health_history.py`) |
 
 ---
@@ -136,7 +136,7 @@
 1. **Governance & Safety-Draht** (D1–D3) — wenn Live-nah berührt, nur mit Freigabe.  
 2. **Foundation** (A1–A2) — verbessert Steuerbarkeit des Rests.  
 3. **Daten-Realismus** (B1–B3) — vor harten Research-Claims.  
-4. **Evidence/Orchestration** (G3; G1/G2 erledigt) — für auditierbare PRs.  
+4. **Evidence/Orchestration** (G1–G4 erledigt) — für auditierbare PRs.  
 5. **Infostream** (F1) — Betrieb KI-gestützter Pfade.  
 6. **Learning Loop Bridge/Emitter** (F2) — nur wenn Promotion/Learning-Produktpriorität.  
 7. **ML/Strategien** (E1–E7) — nach Research-Validierung, nicht blind implementieren.  
