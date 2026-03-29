@@ -59,9 +59,11 @@ Diese Notiz hält die **Import-Story** und **Hotspots** fest, bevor größere Re
 - `src/data/kraken.py`, `kraken_pipeline.py`
 - `src/experiments/base.py` (lokaler Import)
 
-### Pydantic über `from ..core import …`
+### Pydantic (`config_pydantic`)
 
-- `src/portfolio/manager.py` — `get_config`, `get_strategy_cfg`
+- `src/portfolio/manager.py` — `get_config`, `get_strategy_cfg` via `from ..core.config_pydantic import …` (Slice 1).
+
+**Slice-Stand (Import-Story):** Slice 1 (expliziter Import im PortfolioManager) und Slice 2 (Docstring-/Doctest-Beispiele in `config_pydantic.py` auf explizite Imports) sind umgesetzt. In `src/` gibt es **keine weiteren produktiven** Zeilen mehr vom Muster `from ..core import get_config` / `from src.core import get_config` für die Pydantic-Helfer (Stichprobe `rg`); andere `src.core`-Imports betreffen z. B. `resilience`, Registry, Peak oder eigene APIs.
 
 ### `peak_config` (Live, Exchange, Analytics, Risk, Execution, …)
 

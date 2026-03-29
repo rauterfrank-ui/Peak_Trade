@@ -4,7 +4,7 @@ Peak_Trade Config System (Phase 36 refactored)
 Pydantic-basierte Konfigurationsverwaltung mit Validierung.
 
 Verwendung:
-    from src.core import get_config
+    from src.core.config_pydantic import get_config
 
     cfg = get_config()
     print(cfg.risk.risk_per_trade)
@@ -343,7 +343,7 @@ def get_config(force_reload: bool = False) -> Settings:
         Validierte Settings-Instanz
 
     Usage:
-        >>> from src.core import get_config
+        >>> from src.core.config_pydantic import get_config
         >>> cfg = get_config()
         >>> print(cfg.risk.risk_per_trade)
         0.01
@@ -372,7 +372,7 @@ def reset_config() -> None:
     Reset Config-Cache (für Tests).
 
     Usage:
-        >>> from src.core.config import reset_config, get_config
+        >>> from src.core.config_pydantic import reset_config, get_config
         >>> reset_config()
         >>> cfg = get_config()  # Lädt config.toml neu
     """
@@ -398,7 +398,7 @@ def get_strategy_cfg(name: str) -> Dict[str, Any]:
         KeyError: Wenn Strategie nicht in config.toml definiert ist
 
     Example:
-        >>> from src.core import get_strategy_cfg
+        >>> from src.core.config_pydantic import get_strategy_cfg
         >>> params = get_strategy_cfg("ma_crossover")
         >>> print(params['fast_period'])
         10
@@ -425,7 +425,7 @@ def list_strategies() -> list[str]:
         Sortierte Liste von Strategie-Namen
 
     Example:
-        >>> from src.core import list_strategies
+        >>> from src.core.config_pydantic import list_strategies
         >>> strategies = list_strategies()
         >>> print(strategies)
         ['ma_crossover', 'rsi_strategy']
