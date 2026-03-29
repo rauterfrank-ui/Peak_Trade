@@ -11,19 +11,28 @@ Features:
 - Gross/Net Exposure Limits
 - Position Weight Limits
 - VaR/CVaR Limits
-- Correlation Limits
+- Correlation Limits (paarweise |ρ| vs. ``max_corr`` bei Multi-Asset-Returns)
 - Circuit-Breaker: HARD Breaches -> Trading Halt
 """
 
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Optional, List
-import pandas as pd
-import numpy as np
+from typing import List, Optional, Union
+
 import logging
 
+import pandas as pd
+
 from .types import PortfolioSnapshot, RiskBreach, RiskDecision, BreachSeverity
-from .portfolio import compute_gross_exposure, compute_net_exposure, compute_weights
-from .var import historical_var, historical_cvar
+from .portfolio import (
+    compute_gross_exposure,
+    compute_net_exposure,
+    compute_weights,
+    correlation_matrix,
+    portfolio_returns,
+)
+from .var import historical_cvar, historical_var
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +99,7 @@ class RiskEnforcer:
     def evaluate_portfolio(
         self,
         snapshot: PortfolioSnapshot,
-        returns: Optional[pd.Series],
+        returns: Optional[Union[pd.Series, pd.DataFrame]],
         limits: RiskLimitsV2,
         alpha: Optional[float] = None,
     ) -> RiskDecision:
@@ -99,7 +108,8 @@ class RiskEnforcer:
 
         Args:
             snapshot: Aktueller Portfolio-Snapshot
-            returns: Rolling-Window-Returns für VaR/CVaR (optional)
+            returns: Rolling-Window-Returns für VaR/CVaR (optional): ``Series`` (ein
+                Faktor) oder ``DataFrame`` (Spalten = Symbole) für Multi-Asset.
             limits: Risk-Limits
             alpha: Override für limits.alpha (optional)
 
@@ -110,6 +120,8 @@ class RiskEnforcer:
             - Sammelt alle Breaches
             - HARD Breaches -> allowed=False, action="HALT"
             - Nur Warnings -> allowed=True, action="ALLOW"
+            - Bei ``DataFrame``-Returns: Korrelations-Limit (``max_corr``) auf Paare;
+              VaR/CVaR auf aggregierte Portfolio-Returns (Gewichte aus ``snapshot``).
         """
         alpha_used = alpha if alpha is not None else limits.alpha
         breaches: List[RiskBreach] = []
@@ -120,12 +132,19 @@ class RiskEnforcer:
         # 2. Position Weight Checks
         breaches.extend(self._check_position_weights(snapshot, limits))
 
-        # 3. VaR/CVaR Checks (nur wenn returns vorhanden)
+        returns_for_var: Optional[pd.Series] = None
         if returns is not None and not returns.empty:
-            breaches.extend(self._check_var_cvar(returns, snapshot.equity, limits, alpha_used))
+            if isinstance(returns, pd.DataFrame):
+                breaches.extend(self._check_correlations(returns, limits, snapshot.timestamp))
+                returns_for_var = self._portfolio_returns_series(snapshot, returns)
+            else:
+                returns_for_var = returns
 
-        # 4. Correlation Checks (noch nicht implementiert, optional)
-        # breaches.extend(self._check_correlations(returns, limits))
+        # 3. VaR/CVaR Checks (ein Faktor oder aggregiertes Portfolio)
+        if returns_for_var is not None and not returns_for_var.empty:
+            breaches.extend(
+                self._check_var_cvar(returns_for_var, snapshot.equity, limits, alpha_used)
+            )
 
         # Entscheidung treffen
         has_hard = any(b.severity == BreachSeverity.HARD for b in breaches)
@@ -257,6 +276,21 @@ class RiskEnforcer:
 
         return breaches
 
+    def _portfolio_returns_series(
+        self,
+        snapshot: PortfolioSnapshot,
+        returns: pd.DataFrame,
+    ) -> pd.Series:
+        """Leitet Portfolio-Returns aus Multi-Asset-``returns`` ab."""
+        if snapshot.equity > 0 and snapshot.positions:
+            w = compute_weights(snapshot.positions, snapshot.equity)
+            pr = portfolio_returns(returns, w)
+            if not pr.empty:
+                return pr
+        if returns.shape[1] == 1:
+            return returns.iloc[:, 0]
+        return returns.mean(axis=1)
+
     def _check_var_cvar(
         self,
         returns: pd.Series,
@@ -316,11 +350,41 @@ class RiskEnforcer:
         self,
         returns: pd.DataFrame,
         limits: RiskLimitsV2,
+        timestamp: Optional[pd.Timestamp],
     ) -> List[RiskBreach]:
-        """
-        Prüft Correlation Limits (optional, für Multi-Asset-Portfolios).
+        """Prüft paarweise Korrelation gegen ``limits.max_corr`` (Multi-Asset)."""
+        breaches: List[RiskBreach] = []
+        if limits.max_corr is None:
+            return breaches
+        if returns.shape[1] < 2 or len(returns) < 2:
+            return breaches
 
-        TODO: Implementierung für Multi-Asset-Support
-        """
-        # Placeholder für zukünftige Multi-Asset-Unterstützung
-        return []
+        corr = correlation_matrix(returns)
+        if corr.empty:
+            return breaches
+
+        cols = list(corr.columns)
+        for i, a in enumerate(cols):
+            for b in cols[i + 1 :]:
+                v = corr.loc[a, b]
+                if pd.isna(v):
+                    continue
+                av = float(v)
+                if abs(av) > limits.max_corr:
+                    breaches.append(
+                        RiskBreach(
+                            code="MAX_PAIRWISE_CORRELATION",
+                            message=(
+                                f"|corr({a},{b})|={abs(av):.3f} exceeds limit {limits.max_corr:.3f}"
+                            ),
+                            severity=BreachSeverity.HARD,
+                            metrics={
+                                "symbol_a": a,
+                                "symbol_b": b,
+                                "correlation": av,
+                                "limit": limits.max_corr,
+                            },
+                            timestamp=timestamp,
+                        )
+                    )
+        return breaches

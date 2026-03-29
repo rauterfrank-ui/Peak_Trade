@@ -318,6 +318,67 @@ class TestRiskEnforcerEdgeCases:
         assert decision.allowed is False or decision.allowed is True  # Abhängig von Daten
 
 
+class TestMultiAssetCorrelationEnforcement:
+    """Multi-Asset: paarweise Korrelation vs. ``max_corr``."""
+
+    def test_pairwise_correlation_breach(self):
+        x = [0.01, -0.02, 0.03, -0.01, 0.02, -0.01, 0.01, -0.02]
+        returns = pd.DataFrame(
+            {
+                "BTC/EUR": x,
+                "ETH/EUR": x,
+            }
+        )
+        snapshot = PortfolioSnapshot(equity=100000, positions=[])
+        limits = RiskLimitsV2(max_corr=0.95)
+
+        enforcer = RiskEnforcer()
+        decision = enforcer.evaluate_portfolio(snapshot, returns, limits)
+
+        assert decision.allowed is False
+        assert any(b.code == "MAX_PAIRWISE_CORRELATION" for b in decision.breaches)
+
+    def test_pairwise_correlation_within_limit(self):
+        rng = np.random.default_rng(42)
+        returns = pd.DataFrame(
+            {
+                "BTC/EUR": rng.standard_normal(60),
+                "ETH/EUR": rng.standard_normal(60),
+            }
+        )
+        snapshot = PortfolioSnapshot(equity=100000, positions=[])
+        limits = RiskLimitsV2(max_corr=0.99)
+
+        enforcer = RiskEnforcer()
+        decision = enforcer.evaluate_portfolio(snapshot, returns, limits)
+
+        assert decision.allowed is True
+        assert not any(b.code == "MAX_PAIRWISE_CORRELATION" for b in decision.breaches)
+
+    def test_var_on_portfolio_returns_from_dataframe(self):
+        """DataFrame-Returns: VaR auf aggregierte Portfolio-Returns (Gewichte)."""
+        snapshot = PortfolioSnapshot(
+            equity=100_000,
+            positions=[
+                PositionSnapshot("BTC/EUR", 0.5, 50_000),
+                PositionSnapshot("ETH/EUR", 10, 3_000),
+            ],
+        )
+        returns = pd.DataFrame(
+            {
+                "BTC/EUR": [0.001] * 20,
+                "ETH/EUR": [0.001] * 20,
+            }
+        )
+        limits = RiskLimitsV2(max_var=0.10, alpha=0.05)
+
+        enforcer = RiskEnforcer()
+        decision = enforcer.evaluate_portfolio(snapshot, returns, limits)
+
+        assert decision.allowed is True
+        assert not any(b.code == "MAX_VAR" for b in decision.breaches)
+
+
 class TestRiskDecisionHelpers:
     """Tests for RiskDecision helper methods"""
 
