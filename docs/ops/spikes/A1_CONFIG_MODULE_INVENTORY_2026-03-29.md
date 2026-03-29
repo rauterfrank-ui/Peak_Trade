@@ -87,7 +87,7 @@ Diese Notiz hält die **Import-Story** und **Hotspots** fest, bevor größere Re
 
 ## 6. Nächste mögliche Arbeitsschritte (außerhalb dieser Notiz)
 
-- Kurz-Doku **ein** empfohlenes Muster pro Use-Case (Live-Session, Registry-Backtest, Pydantic-Demos).
+- ~~Kurz-Doku **ein** empfohlenes Muster pro Use-Case~~ — umgesetzt: [CONFIG_IMPORT_GUIDE.md](../../project_docs/CONFIG_IMPORT_GUIDE.md) (2026-03-29).
 - Optional: Deprecation-Warnungen für verwirrende `from src.core import load_config` (Pydantic vs. Peak — nur nach Abstimmung).
 
 ---
