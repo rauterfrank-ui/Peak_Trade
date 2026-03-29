@@ -273,27 +273,26 @@ stats["problem_clusters"] = [
 
 ## Score-Berechnung
 
-### Aus Trigger-Training-Events
+### Aus Trigger-Training-Events (bevorzugt: Heuristik-Modul)
 
-Die Funktion `extract_psychology_scores_from_events()` bietet eine Basis-Implementation
-zur Berechnung von Scores aus Events:
+Die unterstützte Pipeline baut auf strukturierten Features und liefert direkt
+serialisierte Heatmap-Rows für Templates:
 
 ```python
-from src.reporting.psychology_heatmap import extract_psychology_scores_from_events
-from src.reporting.trigger_training_report import TriggerTrainingEvent
+from src.reporting.psychology_heuristics import (
+    TriggerTrainingPsychEventFeatures,
+    compute_psychology_heatmap_from_events,
+)
 
-# Events laden
-events: List[TriggerTrainingEvent] = load_events_from_db()
-
-# Scores extrahieren
-scores = extract_psychology_scores_from_events(events)
-
-# scores = {
-#     "trend_follow": {"fomo": 2.0, "loss_fear": 1.0, ...},
-#     "breakout": {"fomo": 3.0, "loss_fear": 2.0, ...},
-#     ...
-# }
+# events: Liste von TriggerTrainingPsychEventFeatures (aus Rohdaten/ETL gebaut)
+heatmap_rows = compute_psychology_heatmap_from_events(events)
 ```
+
+Details und Achsen-Scoring: `docs/psychology_heuristics.md`, `src/reporting/psychology_heuristics.py`.
+
+**Hinweis:** `extract_psychology_scores_from_events()` in `psychology_heatmap.py` ist
+**deprecated** (vereinfachte Platzhalter-Logik, nur Rückwärtskompatibilität). Neue
+Integrationen sollten `compute_psychology_heatmap_from_events` nutzen.
 
 ### Custom Score-Berechnung
 

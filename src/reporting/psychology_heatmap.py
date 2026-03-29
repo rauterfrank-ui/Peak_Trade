@@ -21,6 +21,7 @@ Jeder Score liegt zwischen 0 und 3:
 
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass, asdict
 from typing import List, Dict, Any, Optional
 
@@ -304,6 +305,11 @@ def extract_psychology_scores_from_events(
     """
     Extrahiert Psychologie-Scores aus Trigger-Training-Events.
 
+    .. deprecated::
+        Nur noch für Rückwärtskompatibilität; die unterstützte Pipeline nutzt
+        :class:`~src.reporting.psychology_heuristics.TriggerTrainingPsychEventFeatures`
+        und :func:`~src.reporting.psychology_heuristics.compute_psychology_heatmap_from_events`.
+
     Diese Funktion analysiert die Tags und Outcomes der Events und berechnet
     aggregierte Scores für verschiedene Trading-Cluster.
 
@@ -319,15 +325,16 @@ def extract_psychology_scores_from_events(
         2.0
 
     Hinweis:
-        Dies ist eine vereinfachte Implementierung. In der Praxis sollte hier
-        eine ausgefeilte Analyse der Event-Daten stattfinden, die z.B.:
-        - Tag-Häufigkeiten auswertet
-        - Outcome-Muster erkennt
-        - Zeitliche Trends berücksichtigt
-        - Reaktionszeiten analysiert
+        Platzhalter-Implementierung; für produktionsnahe Auswertung siehe
+        ``src.reporting.psychology_heuristics``.
     """
-    # TODO: Implementiere echte Analyse-Logik
-    # Für jetzt: Dummy-Implementation als Platzhalter
+    warnings.warn(
+        "extract_psychology_scores_from_events is deprecated; use "
+        "TriggerTrainingPsychEventFeatures + compute_psychology_heatmap_from_events "
+        "from src.reporting.psychology_heuristics (or re-exports on src.reporting).",
+        DeprecationWarning,
+        stacklevel=2,
+    )
 
     from collections import defaultdict
 
