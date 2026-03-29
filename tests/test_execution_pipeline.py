@@ -52,12 +52,14 @@ class FakeSafetyGuard:
         self.allow_orders = allow_orders
         self.raise_exception = raise_exception
         self.called = False
+        self.last_context: Optional[dict] = None
 
     def ensure_may_place_order(
         self, *, is_testnet: bool = False, context: Optional[dict] = None
     ) -> None:
         """Fake ensure_may_place_order."""
         self.called = True
+        self.last_context = context
         if self.raise_exception:
             raise self.raise_exception
         if not self.allow_orders:
@@ -213,6 +215,57 @@ class TestExecutionPipelineWithSafety:
         assert len(result.executed_orders) == 1
         assert result.executed_orders[0].status == "filled"
         assert safety_guard.called is True
+
+    def test_execute_with_safety_maps_recon_pipeline_to_recon_for_safety(self):
+        """recon_pipeline wird zu recon gemappt, damit SafetyGuard Runbook-B lesen kann."""
+        from src.execution import ExecutionPipeline
+        from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
+        from src.orders.base import OrderRequest
+
+        env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
+        safety_guard = FakeSafetyGuard(allow_orders=True)
+        executor = PaperOrderExecutor(PaperMarketContext(prices={"BTC/EUR": 50000.0}))
+        pipeline = ExecutionPipeline(
+            executor=executor,
+            env_config=env_config,
+            safety_guard=safety_guard,
+        )
+        order = OrderRequest(symbol="BTC/EUR", side="buy", quantity=0.01)
+        recon_pipeline = {
+            "expected_positions": {"epoch": 1, "positions": {"BTC/EUR": 0.05}},
+        }
+        pipeline.execute_with_safety(
+            [order],
+            context={"current_price": 50000.0, "recon_pipeline": recon_pipeline},
+        )
+        assert safety_guard.last_context is not None
+        assert safety_guard.last_context["recon"] is recon_pipeline
+
+    def test_execute_with_safety_does_not_overwrite_explicit_recon(self):
+        """Explizites recon hat Vorrang vor recon_pipeline."""
+        from src.execution import ExecutionPipeline
+        from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
+        from src.orders.base import OrderRequest
+
+        env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
+        safety_guard = FakeSafetyGuard(allow_orders=True)
+        executor = PaperOrderExecutor(PaperMarketContext(prices={"BTC/EUR": 50000.0}))
+        pipeline = ExecutionPipeline(
+            executor=executor,
+            env_config=env_config,
+            safety_guard=safety_guard,
+        )
+        order = OrderRequest(symbol="BTC/EUR", side="buy", quantity=0.01)
+        recon = {"expected_positions": {"epoch": 2, "positions": {"BTC/EUR": 0.1}}}
+        other = {"expected_positions": {"epoch": 99, "positions": {"BTC/EUR": 0.0}}}
+        pipeline.execute_with_safety(
+            [order],
+            context={"recon": recon, "recon_pipeline": other},
+        )
+        assert safety_guard.last_context is not None
+        assert safety_guard.last_context["recon"] is recon
 
     def test_execution_pipeline_blocks_on_risk_violation(self):
         """execute_with_safety() blockiert bei Risk-Limit-Verletzung."""

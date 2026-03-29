@@ -36,6 +36,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, Iterable, List, Literal, Optional, Sequence, TYPE_CHECKING, Union
+from src.ops.recon.context import normalize_pipeline_context_for_recon
 from src.observability.nowcast.decision_context_v1 import build_decision_context_v1
 from src.observability.policy.policy_v1 import decide_policy_v1  # v1 cost/edge gate
 from src.observability.policy.policy_v0 import decide_policy_v0  # legacy reference
@@ -1475,6 +1476,7 @@ class ExecutionPipeline:
             )
 
         orders_list = list(orders)
+        exec_context = normalize_pipeline_context_for_recon(context)
         env_str = self._get_current_environment()
         venue_label = env_str
 
@@ -1581,7 +1583,9 @@ class ExecutionPipeline:
                 # SafetyGuard.ensure_may_place_order() wirft Exception bei Blockierung
                 # Wir pruefen nur, ob wir im Testnet sind (fuer is_testnet Flag)
                 is_testnet = self._env_config.is_testnet if self._env_config is not None else False
-                self._safety_guard.ensure_may_place_order(is_testnet=is_testnet, context=context)
+                self._safety_guard.ensure_may_place_order(
+                    is_testnet=is_testnet, context=exec_context
+                )
             except Exception as e:
                 reason = f"safety_guard_blocked: {str(e)}"
                 logger.warning(f"[EXECUTION PIPELINE] SafetyGuard blockiert Orders: {reason}")
@@ -1614,7 +1618,7 @@ class ExecutionPipeline:
         risk_result: Optional["LiveRiskCheckResult"] = None
         if self._risk_limits is not None:
             # Konvertiere OrderRequest zu LiveOrderRequest fuer Risk-Check
-            live_orders = self._convert_to_live_orders(orders_list, context)
+            live_orders = self._convert_to_live_orders(orders_list, exec_context)
             risk_result = self._risk_limits.check_orders(live_orders)
 
             if not risk_result.allowed:

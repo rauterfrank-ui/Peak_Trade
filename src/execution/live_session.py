@@ -814,9 +814,18 @@ class LiveSessionRunner:
         self._metrics.total_orders_generated += len(orders)
 
         # 5. Orders über ExecutionPipeline (mit Safety) ausführen
+        _epoch = int(time.time())
+        _sym = str(self._config.symbol)
+        _pos = float(self._metrics.current_position)
         exec_result = self._pipeline.execute_with_safety(
             orders=orders,
-            context={"current_price": current_price},
+            context={
+                "current_price": current_price,
+                "recon_pipeline": {
+                    "expected_positions": {"epoch": _epoch, "positions": {_sym: _pos}},
+                    "observed_positions": {"epoch": _epoch, "positions": {_sym: _pos}},
+                },
+            },
         )
 
         # Metriken aktualisieren
