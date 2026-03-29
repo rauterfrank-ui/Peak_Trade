@@ -31,7 +31,7 @@
 
 | # | Thema | Tag | Hinweis / Ort |
 |---|--------|-----|----------------|
-| B1 | Fat-Tails / `scipy.stats.t` in synthetischen Modellen | GAP | `src/data/offline_realtime/synthetic_models/garch_regime_v0.py`, `src/data/feeds/offline_realtime_feed.py` |
+| B1 | Fat-Tails / `scipy.stats.t` in synthetischen Modellen | DONE | Student-t-Innovationen via `sample_standardized_student_t` (`student_t_innovations.py`); genutzt in `garch_regime_v0.py`, `offline_realtime_feed.py` — NumPy, kein SciPy-Pflicht im Produktionspfad |
 | B2 | `RATIO_ADJUST` für Continuous Contracts | STUB | `src/data/continuous/continuous_contract.py` — „reserved; not implemented in MVP“ |
 | B3 | Infostream-Collector defensive Defaults | DONE | `collector.py` — Typ-Koercion / Defaults für TestHealth-`summary.json` |
 
@@ -135,7 +135,7 @@
 
 1. **Governance & Safety-Draht** (D1–D3) — wenn Live-nah berührt, nur mit Freigabe.  
 2. **Foundation** (A1–A2) — verbessert Steuerbarkeit des Rests.  
-3. **Daten-Realismus** (B1–B3) — vor harten Research-Claims.  
+3. **Daten-Realismus** (B2 STUB; B1/B3 erledigt) — vor harten Research-Claims.  
 4. **Evidence/Orchestration** (G1–G4 erledigt) — für auditierbare PRs.  
 5. **Infostream** (F1) — Betrieb KI-gestützter Pfade.  
 6. **Learning Loop Bridge/Emitter** (F2) — nur wenn Promotion/Learning-Produktpriorität.  
