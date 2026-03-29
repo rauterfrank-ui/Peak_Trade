@@ -100,7 +100,7 @@
 | G1 | Evidence-Pack **Multi-Hop-Migrationen** | GAP | `src/ai_orchestration/evidence_pack_schema.py` |
 | G2 | Evidence-Generator **Redaction**-Regeln | GAP | `src/ai_orchestration/evidence_pack_generator.py` |
 | G3 | Psychology-Heatmap „echte Analyse“ | GAP | `src/reporting/psychology_heatmap.py` |
-| G4 | TestHealth-Runner Historie für Trends | GAP | `src/ops/test_health_runner.py` — P2 TODO |
+| G4 | TestHealth-Runner Historie für Trends | DONE | Trigger-Stats aus `history.json` via `compute_test_health_stats_for_triggers` (`test_health_history.py`) |
 
 ---
 
