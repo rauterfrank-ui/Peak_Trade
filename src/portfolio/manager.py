@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 import logging
 
-from ..core import get_config, get_strategy_cfg
+from ..core.config_pydantic import get_config, get_strategy_cfg
 from ..backtest.engine import BacktestEngine, BacktestResult
 from ..backtest.stats import compute_basic_stats, compute_sharpe_ratio
 from ..core.resilience_helpers import with_resilience, create_module_circuit_breaker
