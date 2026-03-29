@@ -119,7 +119,7 @@ Geplante Phasen mit **noch nicht umgesetzten** Features:
 
 ### 5.4 Futures/Continuous (docs/markets)
 
-- **RATIO_ADJUST** für Continuous Contracts: reserviert, nicht implementiert (nur NONE, BACK_ADJUST).
+- **RATIO_ADJUST** für Continuous Contracts: **implementiert** — `build_continuous_contract(..., adjustment=RATIO_ADJUST)` in `src/data/continuous/continuous_contract.py`; Tests `tests/data/continuous/test_continuous_contract.py`.
 - Runbook: Risk-Gates, Observability, Paper-Broker-Adapter für Futures als offene Punkte genannt.
 
 ---
