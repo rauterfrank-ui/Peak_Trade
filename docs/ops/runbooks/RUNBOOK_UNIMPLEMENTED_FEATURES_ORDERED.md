@@ -97,7 +97,7 @@
 
 | # | Thema | Tag | Hinweis / Ort |
 |---|--------|-----|----------------|
-| G1 | Evidence-Pack **Multi-Hop-Migrationen** | GAP | `src/ai_orchestration/evidence_pack_schema.py` |
+| G1 | Evidence-Pack **Multi-Hop-Migrationen** | DONE | `src/ai_orchestration/evidence_pack_schema.py` — `_find_migration_path`, `migration_info.chain`; `tests/ai_orchestration/test_evidence_pack_schema.py` |
 | G2 | Evidence-Generator **Redaction**-Regeln | GAP | `src/ai_orchestration/evidence_pack_generator.py` |
 | G3 | Psychology-Heatmap „echte Analyse“ | GAP | `src/reporting/psychology_heatmap.py` |
 | G4 | TestHealth-Runner Historie für Trends | DONE | Trigger-Stats aus `history.json` via `compute_test_health_stats_for_triggers` (`test_health_history.py`) |
@@ -136,7 +136,7 @@
 1. **Governance & Safety-Draht** (D1–D3) — wenn Live-nah berührt, nur mit Freigabe.  
 2. **Foundation** (A1–A2) — verbessert Steuerbarkeit des Rests.  
 3. **Daten-Realismus** (B1–B3) — vor harten Research-Claims.  
-4. **Evidence/Orchestration** (G1–G2) — für auditierbare PRs.  
+4. **Evidence/Orchestration** (G2; G1 Multi-Hop erledigt) — für auditierbare PRs.  
 5. **Infostream** (F1) — Betrieb KI-gestützter Pfade.  
 6. **Learning Loop Bridge/Emitter** (F2) — nur wenn Promotion/Learning-Produktpriorität.  
 7. **ML/Strategien** (E1–E7) — nach Research-Validierung, nicht blind implementieren.  
