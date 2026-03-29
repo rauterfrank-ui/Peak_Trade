@@ -16,6 +16,7 @@ import os
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Any, Dict, Tuple
 
 # Add src to path if running as script
 if __name__ == "__main__":
@@ -23,6 +24,10 @@ if __name__ == "__main__":
 
 from src.risk_layer.kill_switch import KillSwitch, load_config, get_approval_code
 from src.risk_layer.kill_switch.audit import AuditTrail
+from src.risk_layer.kill_switch.exchange_probe import (
+    is_exchange_probe_disabled,
+    probe_exchange_http_public,
+)
 from src.risk_layer.kill_switch.health_check import HealthChecker
 from src.risk_layer.kill_switch.persistence import StatePersistence
 from src.risk_layer.kill_switch.recovery import RecoveryManager
@@ -39,7 +44,7 @@ logger = logging.getLogger(__name__)
 _EXCHANGE_CONNECTED_ENV = "PEAK_KILL_SWITCH_EXCHANGE_CONNECTED"
 
 
-def resolve_exchange_connected_for_health(cli_choice: str) -> bool:
+def resolve_exchange_connected_for_health(cli_choice: str) -> Tuple[bool, Dict[str, Any]]:
     """
     Resolve ``exchange_connected`` for ``kill-switch health`` (NO-LIVE).
 
@@ -48,19 +53,26 @@ def resolve_exchange_connected_for_health(cli_choice: str) -> bool:
     cli_choice:
         ``\"true\"`` / ``\"false\"`` — explicit override.
         ``\"auto\"`` — read :envvar:`PEAK_KILL_SWITCH_EXCHANGE_CONNECTED` if set
-        (1/0, true/false, yes/no); otherwise default ``True`` (preserves prior
-        CLI behaviour when operators do not configure anything).
+        (1/0, true/false, yes/no). If unset, run an HTTP GET to a public exchange URL
+        (default Kraken ``SystemStatus``) unless :envvar:`PEAK_KILL_SWITCH_EXCHANGE_PROBE_DISABLED`
+        is set — then returns ``True`` (air-gapped / legacy behaviour).
     """
     if cli_choice == "true":
-        return True
+        return True, {"exchange_connected_source": "cli_true"}
     if cli_choice == "false":
-        return False
+        return False, {"exchange_connected_source": "cli_false"}
     raw = os.environ.get(_EXCHANGE_CONNECTED_ENV, "").strip().lower()
     if raw in ("0", "false", "no", "off"):
-        return False
+        return False, {"exchange_connected_source": "env", "env": _EXCHANGE_CONNECTED_ENV}
     if raw in ("1", "true", "yes", "on"):
-        return True
-    return True
+        return True, {"exchange_connected_source": "env", "env": _EXCHANGE_CONNECTED_ENV}
+    if is_exchange_probe_disabled():
+        return True, {
+            "exchange_connected_source": "probe_disabled_fallback",
+            "note": "HTTP probe skipped (PEAK_KILL_SWITCH_EXCHANGE_PROBE_DISABLED).",
+        }
+    ok, meta = probe_exchange_http_public()
+    return ok, meta
 
 
 def cmd_status(args, kill_switch: KillSwitch):
@@ -205,7 +217,7 @@ def cmd_health(args, config: dict):
     checker = HealthChecker(recovery_config)
 
     mode = getattr(args, "exchange_connected_mode", "auto")
-    exchange_ok = resolve_exchange_connected_for_health(mode)
+    exchange_ok, exchange_meta = resolve_exchange_connected_for_health(mode)
 
     # Build context if possible
     context = {
@@ -215,6 +227,7 @@ def cmd_health(args, config: dict):
 
     print("Running health checks...\n")
     result = checker.check_all(context)
+    result.metadata.update(exchange_meta)
 
     if result.is_healthy:
         print("✅ HEALTH CHECK PASSED")
@@ -276,8 +289,9 @@ def main():
         choices=("auto", "true", "false"),
         default="auto",
         help=(
-            "Assume exchange connectivity for the health check: "
-            "'auto' reads PEAK_KILL_SWITCH_EXCHANGE_CONNECTED or defaults to true when unset."
+            "Exchange connectivity for health: 'true'/'false' force; "
+            "'auto' uses PEAK_KILL_SWITCH_EXCHANGE_CONNECTED if set, else HTTP public probe "
+            "(unless PEAK_KILL_SWITCH_EXCHANGE_PROBE_DISABLED)."
         ),
     )
 
