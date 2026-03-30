@@ -63,8 +63,8 @@ class TestArmstrongCycleStrategy:
         assert strategy.event_window_days == 90
         assert "RESEARCH" in strategy.meta.description.upper()
 
-    def test_armstrong_generate_signals_returns_flat(self):
-        """Test: Armstrong generate_signals gibt Flat-Signal (Research-Stub)."""
+    def test_armstrong_generate_signals_phase_based(self):
+        """Test: Armstrong mappt pro Bar Datum → Phase → Position (kein Flat-Stub)."""
         from src.strategies.armstrong import ArmstrongCycleStrategy
 
         strategy = ArmstrongCycleStrategy()
@@ -84,10 +84,10 @@ class TestArmstrongCycleStrategy:
 
         signals = strategy.generate_signals(data)
 
-        # Research-Stub: Alle Signale sollten 0 (flat) sein
         assert isinstance(signals, pd.Series)
         assert len(signals) == len(data)
-        assert (signals == 0).all(), "Research-Stub sollte nur Flat-Signale liefern"
+        assert set(signals.unique()).issubset({-1, 0, 1})
+        assert signals.attrs.get("is_research_stub") is False
 
     def test_armstrong_cycle_info(self):
         """Test: get_cycle_info gibt valide Informationen zurück."""
