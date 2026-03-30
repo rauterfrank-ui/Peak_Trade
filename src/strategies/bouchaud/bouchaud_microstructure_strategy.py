@@ -236,9 +236,7 @@ class BouchaudMicrostructureStrategy(BaseStrategy):
             ValueError: Wenn ``close`` fehlt
         """
         if "close" not in data.columns:
-            raise ValueError(
-                f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}"
-            )
+            raise ValueError(f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}")
         if len(data) == 0:
             empty = pd.Series([], dtype=int)
             empty.attrs["is_research_stub"] = False
@@ -260,9 +258,7 @@ class BouchaudMicrostructureStrategy(BaseStrategy):
             signals = (roll > float(self.cfg.imbalance_threshold)).astype(int)
         elif all(c in data.columns for c in ("open", "high", "low")):
             hl = (data["high"] - data["low"]).replace(0, np.nan)
-            pressure = (
-                ((data["close"] - data["open"]) / (hl + 1e-12)).clip(-1.0, 1.0).fillna(0.0)
-            )
+            pressure = ((data["close"] - data["open"]) / (hl + 1e-12)).clip(-1.0, 1.0).fillna(0.0)
             roll = pressure.rolling(window=lb, min_periods=1).mean()
             signals = (roll > float(self.cfg.imbalance_threshold)).astype(int)
         else:
