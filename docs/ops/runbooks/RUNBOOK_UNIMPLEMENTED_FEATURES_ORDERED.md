@@ -88,7 +88,7 @@
 | F2 | Learning Loop **Bridge** & **Emitter** (Signale) | DOC | `docs/LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md` — als geplant; **keine** `bridge.py`/`emitter.py` unter `src/meta/learning_loop/` (nur `models.py`) |
 | F3 | Learning/Promotion Roadmap v2 | DOC | dieselbe Doku — Slack, Web-UI, Auto-Rollback, TestHealth Pre-Checks, … |
 | F4 | Knowledge / Vector-DB | STUB | `src/knowledge/vector_db.py` — `NotImplementedError`-Pfade |
-| F5 | Execution-Telemetry | STUB | `src/execution/telemetry.py` |
+| F5 | Execution-Telemetry | DONE | `src/execution/telemetry.py` — `ExecutionEventEmitter`, `JsonlExecutionLogger` (optional `fixed_filename`), `FixedJsonlAppendOnlyWriter`, `CompositeEmitter`, `NullEmitter`; Tests `tests/execution/test_execution_telemetry.py`; Viewer/Health unter `telemetry_viewer.py`, `telemetry_health.py` |
 | F6 | New-Listings-Collector-Basis | STUB | `src/research/new_listings/collectors/base.py` |
 
 ---

@@ -14,9 +14,10 @@ import pytest
 
 from src.execution.events import ExecutionEvent, event_to_dict
 from src.execution.telemetry import (
+    CompositeEmitter,
+    FixedJsonlAppendOnlyWriter,
     JsonlExecutionLogger,
     NullEmitter,
-    CompositeEmitter,
 )
 
 
@@ -142,6 +143,54 @@ def test_jsonl_logger_creates_directories():
         # Check directory was created
         assert base_path.exists()
         assert (base_path / "test.jsonl").exists()
+
+
+def test_jsonl_logger_fixed_filename():
+    """JsonlExecutionLogger mit fixed_filename schreibt in eine gemeinsame Datei."""
+    with TemporaryDirectory() as tmpdir:
+        base = Path(tmpdir)
+        logger = JsonlExecutionLogger(str(base), fixed_filename="execution_events.jsonl")
+
+        event_a = ExecutionEvent(
+            ts=datetime(2025, 1, 1, 12, 0, 0),
+            session_id="sess_a",
+            symbol="BTC-USD",
+            mode="paper",
+            kind="intent",
+            payload={"n": 1},
+        )
+        event_b = ExecutionEvent(
+            ts=datetime(2025, 1, 1, 12, 0, 1),
+            session_id="sess_b",
+            symbol="ETH-USD",
+            mode="paper",
+            kind="intent",
+            payload={"n": 2},
+        )
+        logger.emit(event_a)
+        logger.emit(event_b)
+
+        log_file = base / "execution_events.jsonl"
+        assert log_file.exists()
+        lines = log_file.read_text().strip().split("\n")
+        assert len(lines) == 2
+        assert json.loads(lines[0])["session_id"] == "sess_a"
+        assert json.loads(lines[1])["session_id"] == "sess_b"
+
+
+def test_fixed_jsonl_append_only_writer():
+    """FixedJsonlAppendOnlyWriter appendet sortierte JSON-Zeilen."""
+    with TemporaryDirectory() as tmpdir:
+        path = Path(tmpdir) / "sub" / "events.jsonl"
+        writer = FixedJsonlAppendOnlyWriter(path)
+        writer.append({"z": 1, "a": 0})
+        writer.append({"z": 2, "a": 1})
+
+        assert path.exists()
+        lines = path.read_text().strip().split("\n")
+        assert len(lines) == 2
+        assert json.loads(lines[0]) == {"a": 0, "z": 1}
+        assert json.loads(lines[1]) == {"a": 1, "z": 2}
 
 
 def test_composite_emitter_emits_to_all():
