@@ -325,11 +325,10 @@ class TestSignalGeneration:
         """Prüft, dass Signale Metadaten enthalten."""
         signals = strategy_default.generate_signals(dummy_ohlcv_data)
 
-        # Research-stub mode: only basic metadata, no regimes/scaling_factors/vol_annualized
         assert "vol_window" in signals.attrs
         assert "vol_target" in signals.attrs
         assert "is_research_stub" in signals.attrs
-        assert signals.attrs["is_research_stub"] is True
+        assert signals.attrs["is_research_stub"] is False
 
     def test_empty_dataframe_handling(self, strategy_default: ElKarouiVolatilityStrategy) -> None:
         """Prüft Handling von leerem DataFrame."""
@@ -388,8 +387,8 @@ class TestSignalGenerationWithDifferentConfigs:
 
         assert flat_conservative >= flat_default
 
-    def test_vol_scaling_affects_metadata(self, dummy_ohlcv_data: pd.DataFrame) -> None:
-        """Prüft, dass Vol-Scaling die Scaling-Faktoren beeinflusst."""
+    def test_vol_scaling_signals_non_stub(self, dummy_ohlcv_data: pd.DataFrame) -> None:
+        """Prüft, dass Signale regime-basiert sind; use_vol_scaling steuert nicht die 0/1-Zuordnung."""
         strategy_with_scaling = ElKarouiVolatilityStrategy(
             use_vol_scaling=True,
             vol_window=10,
@@ -404,14 +403,10 @@ class TestSignalGenerationWithDifferentConfigs:
         signals_with = strategy_with_scaling.generate_signals(dummy_ohlcv_data)
         signals_without = strategy_without_scaling.generate_signals(dummy_ohlcv_data)
 
-        # Research-stub mode: no scaling_factors in metadata
-        # Both strategies should return flat signals regardless of scaling config
-        assert signals_with.attrs["is_research_stub"] is True
-        assert signals_without.attrs["is_research_stub"] is True
-
-        # All signals should be flat (0)
-        assert (signals_with == 0).all()
-        assert (signals_without == 0).all()
+        assert signals_with.attrs["is_research_stub"] is False
+        assert signals_without.attrs["is_research_stub"] is False
+        assert set(signals_with.unique()).issubset({0, 1})
+        assert set(signals_without.unique()).issubset({0, 1})
 
 
 # =============================================================================
