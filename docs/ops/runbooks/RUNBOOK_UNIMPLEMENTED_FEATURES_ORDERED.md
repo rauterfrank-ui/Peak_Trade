@@ -89,7 +89,7 @@
 | F3 | Learning/Promotion Roadmap v2 | DOC | dieselbe Doku — Slack, Web-UI, Auto-Rollback, TestHealth Pre-Checks, … |
 | F4 | Knowledge / Vector-DB | DONE | `src/knowledge/vector_db.py` — `ChromaDBAdapter` vollständig; `MemoryVectorAdapter` ohne optionale Deps (lexikalisches Scoring); `QdrantAdapter`/`PineconeAdapter`: add/search bewusst offen (Embeddings); Tests `tests/knowledge/test_vector_db_memory.py`, `tests/test_knowledge_integration.py` (Chroma optional) |
 | F5 | Execution-Telemetry | DONE | `src/execution/telemetry.py` — `ExecutionEventEmitter`, `JsonlExecutionLogger` (optional `fixed_filename`), `FixedJsonlAppendOnlyWriter`, `CompositeEmitter`, `NullEmitter`; Tests `tests/execution/test_execution_telemetry.py`; Viewer/Health unter `telemetry_viewer.py`, `telemetry_health.py` |
-| F6 | New-Listings-Collector-Basis | STUB | `src/research/new_listings/collectors/base.py` |
+| F6 | New-Listings-Collector-Basis | DONE | `src/research/new_listings/collectors/base.py` — `CollectorContext`, `RawEvent`, `Collector`-Protocol; konkrete Collector u. a. in `src/research/new_listings/collectors/`; Tests u. a. `tests/research/new_listings/test_p1_collector_contract.py`, `tests/research/new_listings/test_p8_ccxt_replay.py` |
 
 ---
 
