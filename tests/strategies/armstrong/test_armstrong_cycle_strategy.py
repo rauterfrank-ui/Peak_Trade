@@ -272,11 +272,10 @@ class TestSignalGeneration:
         """Prüft, dass Signale Metadaten enthalten."""
         signals = strategy_default.generate_signals(dummy_ohlcv_data)
 
-        # Research-stub mode: only basic metadata, no phases/risk_multipliers
         assert "cycle_length_days" in signals.attrs
         assert "reference_date" in signals.attrs
         assert "is_research_stub" in signals.attrs
-        assert signals.attrs["is_research_stub"] is True
+        assert signals.attrs["is_research_stub"] is False
 
     def test_empty_dataframe_handling(self, strategy_default: ArmstrongCycleStrategy) -> None:
         """Prüft Handling von leerem DataFrame."""
@@ -303,8 +302,21 @@ class TestSignalGeneration:
 class TestSignalGenerationWithDifferentConfigs:
     """Tests für Signal-Generierung mit verschiedenen Configs."""
 
-    def test_aggressive_generates_short_signals(self, dummy_ohlcv_data: pd.DataFrame) -> None:
-        """Prüft, dass aggressive Mapping Short-Signale generiert."""
+    def test_aggressive_generates_short_signals(self) -> None:
+        """Prüft, dass aggressive Mapping Short-Signale generiert (CRISIS/PRE_CRISIS → -1)."""
+        dates = pd.date_range(start="2024-01-01", periods=120, freq="D")
+        np.random.seed(42)
+        close = 100 + np.cumsum(np.random.randn(120))
+        data = pd.DataFrame(
+            {
+                "open": close - np.random.rand(120),
+                "high": close + np.random.rand(120) * 2,
+                "low": close - np.random.rand(120) * 2,
+                "close": close,
+                "volume": np.random.randint(1000, 10000, 120),
+            },
+            index=dates,
+        )
         strategy = ArmstrongCycleStrategy(
             phase_position_map="aggressive",
             cycle_length_days=200,  # Zyklus muss > 2*event_window sein
@@ -312,15 +324,11 @@ class TestSignalGenerationWithDifferentConfigs:
             reference_date="2024-01-01",
         )
 
-        signals = strategy.generate_signals(dummy_ohlcv_data)
+        signals = strategy.generate_signals(data)
 
-        # Research-stub mode: only flat signals (0) for safety
-        # Real signal generation is disabled until explicitly approved
-        unique_values = set(signals.unique())
-        assert unique_values == {0}, (
-            f"Expected only flat signals in research-stub mode, got {unique_values}"
-        )
-        assert signals.attrs["is_research_stub"] is True
+        assert set(signals.unique()).issubset({-1, 0, 1})
+        assert signals.attrs["is_research_stub"] is False
+        assert -1 in signals.values
 
     def test_conservative_only_long_or_flat(self, dummy_ohlcv_data: pd.DataFrame) -> None:
         """Prüft, dass conservative Mapping nur long oder flat generiert."""

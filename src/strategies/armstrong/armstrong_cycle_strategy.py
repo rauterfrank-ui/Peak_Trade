@@ -298,19 +298,14 @@ class ArmstrongCycleStrategy(BaseStrategy):
         if len(data) == 0:
             return pd.Series([], dtype=int)
 
-        # RESEARCH-STUB: Nur Flat-Signale zurückgeben
-        # TODO: Implementiere echte ECM-Cycle-basierte Signale wenn validiert
-        #
-        # Die Logik für Cycle-Phase-Detection ist vorhanden im cycle_model,
-        # aber für Research-Sicherheit geben wir nur Flat-Signale zurück.
-        # Dies verhindert versehentlichen Einsatz in Live/Paper ohne explizite Freigabe.
+        # Pro Bar: Index-Zeitstempel → ECM-Phase → Zielposition (phase_position_map).
+        # Research-Only bleibt über IS_LIVE_READY / Tier-Gating erzwungen, nicht über Flat-Stubs.
+        positions = [self.get_position_for_phase(self.get_phase_for_date(ts)) for ts in data.index]
+        signal_series = pd.Series(positions, index=data.index, dtype=int)
 
-        signal_series = pd.Series(0, index=data.index, dtype=int)
-
-        # Metadaten für Analyse (auch bei Flat-Signalen nützlich)
         signal_series.attrs["cycle_length_days"] = self.cycle_length_days
         signal_series.attrs["reference_date"] = self.reference_date_str
-        signal_series.attrs["is_research_stub"] = True
+        signal_series.attrs["is_research_stub"] = False
 
         return signal_series
 
