@@ -43,6 +43,14 @@ from typing import Any, Dict, List, Literal, Optional
 import numpy as np
 import pandas as pd
 
+from src.research.ml.labeling.triple_barrier import (
+    compute_triple_barrier_labels as compute_tb_labels_research,
+)
+from src.research.ml.meta.meta_labeling import (
+    MetaModelSpec,
+    apply_meta_model as apply_meta_model_fn,
+)
+
 from ..base import BaseStrategy, StrategyMetadata
 
 
@@ -336,7 +344,9 @@ class MetaLabelingStrategy(BaseStrategy):
         # - filtered_signals = base_signals.where(predictions > self.cfg.min_confidence, 0)
         # =====================================================================
 
-        # Research-Stub: Flat-Signal für alle Bars
+        # Research-Stub: Flat-Signal für alle Bars (Tests/Registry erwarten weiterhin 0).
+        # Sobald _load_base_strategy() eine Basis-Strategie liefert, kann hier die
+        # Pipeline (TB → Features → apply_meta_model) angebunden werden.
         signals = pd.Series(0, index=data.index, dtype=int)
 
         return signals
@@ -349,17 +359,44 @@ class MetaLabelingStrategy(BaseStrategy):
         """
         Berechnet Triple-Barrier-Labels für Signale.
 
-        TODO: Vollständige Implementierung nach López de Prado.
+        Delegiert an ``src.research.ml.labeling.triple_barrier.compute_triple_barrier_labels``
+        (Close-Preise, Forward-Scan).
 
         Args:
-            data: OHLCV-DataFrame
+            data: OHLCV-DataFrame (benötigt ``close``)
             signals: Basis-Strategie-Signale
 
         Returns:
-            Labels: +1 (TP), -1 (SL), 0 (vertical barrier)
+            Labels: +1 (TP), -1 (SL), 0 (vertical barrier); ohne Signal ``pd.NA`` (Int64)
         """
-        # Placeholder - gibt Nullen zurück
-        return pd.Series(0, index=data.index, dtype=int)
+        if "close" not in data.columns:
+            raise ValueError(f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}")
+        if not self.cfg.use_triple_barrier:
+            return pd.Series(0, index=data.index, dtype=int)
+
+        return compute_tb_labels_research(
+            data["close"],
+            signals,
+            take_profit=self.cfg.take_profit,
+            stop_loss=self.cfg.stop_loss,
+            vertical_barrier_bars=self.cfg.vertical_barrier_bars,
+        )
+
+    def meta_model_spec(self) -> MetaModelSpec:
+        """Spezifikation passend zu :func:`src.research.ml.meta.meta_labeling.apply_meta_model`."""
+        return MetaModelSpec(
+            model_type=self.cfg.meta_model_type,
+            min_confidence=self.cfg.min_confidence,
+        )
+
+    def apply_meta_model(
+        self,
+        signals: pd.Series,
+        features: pd.DataFrame,
+        trained_model: Optional[Any] = None,
+    ) -> pd.Series:
+        """Delegiert an :func:`src.research.ml.meta.meta_labeling.apply_meta_model`."""
+        return apply_meta_model_fn(signals, features, self.meta_model_spec(), trained_model)
 
     def _extract_features(
         self,
@@ -367,22 +404,14 @@ class MetaLabelingStrategy(BaseStrategy):
         signals: pd.Series,
     ) -> pd.DataFrame:
         """
-        Extrahiert Features für das Meta-Modell.
+        Minimale Features für Meta-Modelle (Research): Rolling-Vol der 1-Bar-Returns.
 
-        TODO: Feature-Engineering nach López de Prado:
-        - Fractional Differentiation
-        - Volatility-adjusted Returns
-        - Market-Regime Indicators
-
-        Args:
-            data: OHLCV-DataFrame
-            signals: Basis-Strategie-Signale
-
-        Returns:
-            Feature-DataFrame
+        Optional: später Fractional Differentiation, Regime-Features, …
         """
-        # Placeholder - leeres DataFrame
-        return pd.DataFrame(index=data.index)
+        close = data["close"].astype(float)
+        ret = close.pct_change().fillna(0.0)
+        vol_20 = ret.rolling(20, min_periods=1).std().fillna(0.0)
+        return pd.DataFrame({"vol_20": vol_20}, index=data.index)
 
     def validate(self) -> None:
         """Validiert Parameter."""
