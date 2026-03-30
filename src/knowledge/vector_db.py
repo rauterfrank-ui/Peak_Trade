@@ -9,6 +9,9 @@ Supports multiple vector database backends:
 Usage:
     from src.knowledge.vector_db import VectorDBFactory
 
+    # Keine optionalen Pakete nötig (Tests/CI):
+    mem = VectorDBFactory.create("memory", {})
+
     db = VectorDBFactory.create("chroma", config={
         "persist_directory": "./data/chroma_db"
     })
@@ -298,10 +301,70 @@ class PineconeAdapter(VectorDBInterface):
         logger.info("Cleared Pinecone index")
 
 
+class MemoryVectorAdapter(VectorDBInterface):
+    """
+    In-memory vector store with lexical overlap scoring (no embeddings).
+
+    Für Tests, CI und Offline-Nutzung ohne ``chromadb`` / ``qdrant-client``.
+    ``search`` sortiert deterministisch nach Token-Überlappung Query↔Dokument.
+    """
+
+    def __init__(self, _config: Dict[str, Any]):
+        self._store: Dict[str, tuple[str, Dict[str, Any]]] = {}
+
+    @staticmethod
+    def _meta_ok(meta: Dict[str, Any], filt: Optional[Dict[str, Any]]) -> bool:
+        if not filt:
+            return True
+        return all(meta.get(k) == v for k, v in filt.items())
+
+    def add_documents(
+        self,
+        documents: List[str],
+        metadatas: Optional[List[Dict[str, Any]]] = None,
+        ids: Optional[List[str]] = None,
+    ) -> None:
+        _check_readonly()
+        if ids is None:
+            ids = [f"doc_{i}" for i in range(len(documents))]
+        if metadatas is None:
+            metadatas = [{} for _ in documents]
+        for i, text in enumerate(documents):
+            self._store[ids[i]] = (text, metadatas[i])
+        logger.debug("MemoryVectorAdapter: added %s documents", len(documents))
+
+    def search(
+        self, query: str, top_k: int = 5, filter_dict: Optional[Dict[str, Any]] = None
+    ) -> List[Tuple[str, float, Dict[str, Any]]]:
+        q_tokens = set(query.lower().split())
+        if not q_tokens:
+            return []
+        scored: List[Tuple[str, float, Dict[str, Any]]] = []
+        for _doc_id, (text, meta) in self._store.items():
+            if not self._meta_ok(meta, filter_dict):
+                continue
+            d_tokens = set(text.lower().split())
+            overlap = len(q_tokens & d_tokens)
+            score = float(overlap) / float(len(q_tokens))
+            scored.append((text, score, meta))
+        scored.sort(key=lambda x: (-x[1], x[0]))
+        return scored[:top_k]
+
+    def delete(self, ids: List[str]) -> None:
+        _check_readonly()
+        for i in ids:
+            self._store.pop(i, None)
+
+    def clear(self) -> None:
+        _check_readonly()
+        self._store.clear()
+
+
 class VectorDBFactory:
     """Factory for creating vector database instances."""
 
     _adapters = {
+        "memory": MemoryVectorAdapter,
         "chroma": ChromaDBAdapter,
         "qdrant": QdrantAdapter,
         "pinecone": PineconeAdapter,
@@ -313,7 +376,7 @@ class VectorDBFactory:
         Create a vector database instance.
 
         Args:
-            db_type: Type of database ("chroma", "qdrant", "pinecone")
+            db_type: Type of database ("memory", "chroma", "qdrant", "pinecone")
             config: Configuration dict for the database
 
         Returns:
