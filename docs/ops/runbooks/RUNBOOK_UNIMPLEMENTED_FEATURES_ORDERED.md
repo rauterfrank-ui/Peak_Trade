@@ -64,13 +64,13 @@
 
 ## Stufe E — ML / Research / Strategien (Auswahl)
 
-> Viele Strategien unter `src/strategies/` sind **Research-Stubs** (`NotImplementedError` in `generate_signals`) — **absichtlich**, bis Validierung. Hier nur **repräsentative** offene Punkte.
+> Einige Strategien unter `src/strategies/` sind **Research-Stubs** oder **OHLCV-Proxys** — hier nur **repräsentative** Einträge; Details in den jeweiligen Modulen/Tests.
 
 | # | Thema | Tag | Hinweis / Ort |
 |---|--------|-----|----------------|
 | E1 | Meta-Labeling (ML) vollständig | DONE | `src/research/ml/meta/meta_labeling.py` — `MetaModelSpec`, `apply_meta_model` (trainiert / in-Features-Training), `compute_meta_labels`, `compute_bet_size`, Modell-Fabrik (RandomForest, optional XGBoost); Tests `tests/test_meta_labeling.py` |
 | E2 | Triple-Barrier-Labeling | DONE | `src/research/ml/labeling/triple_barrier.py` — `compute_triple_barrier_labels`, `get_vertical_barrier`, `get_horizontal_barriers`, `apply_pnl_stop_loss` (Platzhalter); Tests `tests/test_triple_barrier.py` |
-| E3 | Bouchaud / Gatheral Vol-Regime (Platzhalter-Signale) | STUB | `src/strategies/bouchaud/`, `src/strategies/gatheral_cont/` |
+| E3 | Bouchaud / Gatheral Vol-Regime (Research 0/1 OHLCV-Proxys) | DONE | `bouchaud_microstructure_strategy.py`, `vol_regime_overlay_strategy.py` — `generate_signals` deterministisch 0/1; Tests u. a. `tests/test_bouchaud_gatheral_cont_strategies.py`, `tests/test_r_and_d_strategy_gating.py` |
 | E4 | Armstrong ECM-Cycle echte Signale | DONE | `src/strategies/armstrong/armstrong_cycle_strategy.py` — `generate_signals` pro Bar: `ArmstrongCycleModel` (`phase_for_date` → `get_position_for_phase`); `is_research_stub=False`; Tests u. a. `tests/strategies/armstrong/`, `tests/test_research_strategies.py` (Armstrong) |
 | E5 | Ehlers DSP-Filter / Cycle | DONE | `src/strategies/ehlers/ehlers_cycle_filter_strategy.py` — Minimal-Slice: Ehlers **Super-Smoother** auf `close`, 0/1 wenn `close > smooth`; Fallback Flat bei `len < lookback`; `is_research_stub=False` in Metadaten; Tests u. a. `tests/test_ehlers_lopez_strategies.py`, `tests/test_r_and_d_strategy_gating.py` (Hilbert/Bandpass weiter optional) |
 | E6 | López de Prado Meta-Labeling-Pipeline | DONE | `src/strategies/lopez_de_prado/meta_labeling_strategy.py` — delegiert Triple-Barrier an `src/research/ml/labeling/triple_barrier.py` und Meta-Modell-Anwendung an `src/research/ml/meta/meta_labeling.py`; `generate_signals` bleibt in diesem Slice bewusst flat |
