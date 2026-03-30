@@ -75,7 +75,7 @@
 | E5 | Ehlers DSP-Filter / Cycle | DONE | `src/strategies/ehlers/ehlers_cycle_filter_strategy.py` — Minimal-Slice: Ehlers **Super-Smoother** auf `close`, 0/1 wenn `close > smooth`; Fallback Flat bei `len < lookback`; `is_research_stub=False` in Metadaten; Tests u. a. `tests/test_ehlers_lopez_strategies.py`, `tests/test_r_and_d_strategy_gating.py` (Hilbert/Bandpass weiter optional) |
 | E6 | López de Prado Meta-Labeling-Pipeline | DONE | `src/strategies/lopez_de_prado/meta_labeling_strategy.py` — delegiert Triple-Barrier an `src/research/ml/labeling/triple_barrier.py` und Meta-Modell-Anwendung an `src/research/ml/meta/meta_labeling.py`; `generate_signals` bleibt in diesem Slice bewusst flat |
 | E7 | El Karoui Vol-Regime-Signale | DONE | `src/strategies/el_karoui/el_karoui_vol_model_strategy.py` — `generate_signals` aus `ElKarouiVolModel.regime_series` → `regime_position_map` (0/1); `is_research_stub=False`; Tests u. a. `tests/strategies/el_karoui/`, `tests/test_research_strategies.py` (El-Karoui) |
-| E8 | Strategie-Ideen-Templates | STUB | `src&#47;strategies&#47;ideas&#47;*`, `scripts/new_idea_strategy.py` — Platzhalter für Autoren |
+| E8 | Strategie-Ideen-Templates | DONE | `src/strategies/ideas/` — `template_example.py`, Generator `scripts/new_idea_strategy.py` (snake_case → Klasse, ASCII-CLI); Signale typ. ``{-1,0,1}``, ``validate()``; Tests `tests/strategies/test_idea_strategy_author_ux.py` |
 | E9 | Policy-Critic (Regel-Engine) | DONE | `src/governance/policy_critic/rules.py` — `PolicyRule`-ABC; konkrete Regeln (`NoSecretsRule`, `NoLiveUnlockRule`, `ExecutionEndpointTouchRule`, `RiskLimitRaiseRule`, `MissingTestPlanRule`), `ALL_RULES`; Tests `tests/governance/policy_critic/test_rules.py` |
 
 ---
@@ -139,7 +139,7 @@
 4. **Evidence/Orchestration** (G1–G4 erledigt) — für auditierbare PRs.  
 5. **Infostream** (F1) — Betrieb KI-gestützter Pfade.  
 6. **Learning Loop Bridge/Emitter** (F2) — nur wenn Promotion/Learning-Produktpriorität.  
-7. **ML/Strategien** (E1–E9) — nach Research-Validierung, nicht blind implementieren; **E4/E5/E7** Signal-Slices (ECM-Phase, Ehlers Super-Smoother+0/1, Vol-Regime) sind umgesetzt, **E3/E8** u. a. weiterhin STUB/Platzhalter.  
+7. **ML/Strategien** (E1–E9) — nach Research-Validierung, nicht blind implementieren; **E3–E7** Signal-Slices in der Registry sind umgesetzt; **E8** ist die Autoren-Sandbox (Idea-Templates/Generator), nicht die produktive Strategy-Library.  
 8. **Tests** (I1–I2 erledigt) — wenn Core stabil.  
 9. **Scripts/Demos** (J) — wenn operative Daten angebunden werden.
 
