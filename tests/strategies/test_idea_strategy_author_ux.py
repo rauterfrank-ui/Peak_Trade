@@ -23,7 +23,9 @@ def _load_new_idea_script():
 
 def test_idea_example_strategy_flat_signals() -> None:
     s = IdeaExampleStrategy(param1=5, param2=0.01)
-    df = pd.DataFrame({"close": range(100, 120)}, index=pd.date_range("2024-01-01", periods=20, freq="h"))
+    df = pd.DataFrame(
+        {"close": range(100, 120)}, index=pd.date_range("2024-01-01", periods=20, freq="h")
+    )
     out = s.generate_signals(df)
     assert isinstance(out, pd.Series)
     assert len(out) == len(df)
