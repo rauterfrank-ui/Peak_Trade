@@ -312,9 +312,10 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
 
         Die Strategie:
         1. Berechnet Returns aus Close-Preisen
-        2. Schätzt realisierte Volatilität
-        3. Klassifiziert Vol-Regime (LOW/MEDIUM/HIGH)
-        4. Mappt Regime auf Positionierungssignal
+        2. Leitet eine Vol-Regime-Serie aus dem ElKarouiVolModel ab
+        3. Mappt pro Bar Regime → Zielposition (0/1) via ``regime_position_map``
+
+        Research-Only bleibt über IS_LIVE_READY / Tier-Gating erzwungen, nicht über Flat-Stubs.
 
         Args:
             data: DataFrame mit OHLCV-Daten (mindestens 'close')
@@ -338,22 +339,28 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
 
         min_required = max(self.vol_window, 10)
         if len(data) < min_required:
-            # Fallback: Flat-Signale wenn zu wenig Daten (Research-Stub)
-            return pd.Series(0, index=data.index, dtype=int)
+            signal_series = pd.Series(0, index=data.index, dtype=int)
+            signal_series.attrs["vol_window"] = self.vol_window
+            signal_series.attrs["vol_target"] = self.vol_target
+            signal_series.attrs["is_research_stub"] = False
+            return signal_series
 
-        # RESEARCH-STUB: Nur Flat-Signale zurückgeben
-        # TODO: Implementiere echte Vol-Regime-basierte Signale wenn validiert
-        #
-        # Die Logik für Vol-Regime-Detection ist vorhanden im vol_model,
-        # aber für Research-Sicherheit geben wir nur Flat-Signale zurück.
-        # Dies verhindert versehentlichen Einsatz in Live/Paper ohne explizite Freigabe.
+        returns = data["close"].pct_change()
+        regimes = self.vol_model.regime_series(returns)
 
-        signal_series = pd.Series(0, index=data.index, dtype=int)
+        def _regime_value_to_position(val: object) -> int:
+            if pd.isna(val):
+                return self.get_position_for_regime(VolRegime.MEDIUM)
+            try:
+                regime = VolRegime(str(val))
+            except ValueError:
+                regime = VolRegime.MEDIUM
+            return self.get_position_for_regime(regime)
 
-        # Metadaten für Analyse (auch bei Flat-Signalen nützlich)
+        signal_series = regimes.map(_regime_value_to_position).astype(int)
         signal_series.attrs["vol_window"] = self.vol_window
         signal_series.attrs["vol_target"] = self.vol_target
-        signal_series.attrs["is_research_stub"] = True
+        signal_series.attrs["is_research_stub"] = False
 
         return signal_series
 

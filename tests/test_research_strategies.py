@@ -146,8 +146,8 @@ class TestElKarouiVolModelStrategy:
         assert 0 < strategy.vol_threshold_high < 1
         assert "RESEARCH" in strategy.meta.description.upper()
 
-    def test_el_karoui_generate_signals_returns_flat(self):
-        """Test: El-Karoui generate_signals gibt Flat-Signal (Research-Stub)."""
+    def test_el_karoui_generate_signals_regime_based(self):
+        """Test: El-Karoui mappt Vol-Regime-Serie auf 0/1-Signale (kein Flat-Stub)."""
         from src.strategies.el_karoui import ElKarouiVolModelStrategy
 
         strategy = ElKarouiVolModelStrategy()
@@ -167,10 +167,10 @@ class TestElKarouiVolModelStrategy:
 
         signals = strategy.generate_signals(data)
 
-        # Research-Stub: Alle Signale sollten 0 (flat) sein
         assert isinstance(signals, pd.Series)
         assert len(signals) == len(data)
-        assert (signals == 0).all(), "Research-Stub sollte nur Flat-Signale liefern"
+        assert set(signals.unique()).issubset({0, 1})
+        assert signals.attrs.get("is_research_stub") is False
 
     def test_el_karoui_vol_analysis(self):
         """Test: get_vol_analysis gibt valide Analyse zurück."""
@@ -192,7 +192,7 @@ class TestElKarouiVolModelStrategy:
         assert "current_vol" in analysis
         assert "vol_regime" in analysis
         assert "vol_percentile" in analysis
-        assert analysis["vol_regime"] in {"low", "medium", "high"}
+        assert analysis["vol_regime"] in {"low", "normal", "high"}
 
     def test_el_karoui_repr_shows_research_only(self):
         """Test: __repr__ zeigt RESEARCH-ONLY an."""
