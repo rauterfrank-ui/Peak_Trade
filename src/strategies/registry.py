@@ -201,12 +201,12 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
         tier="r_and_d",
         allowed_environments=("backtest", "offline_backtest", "research"),
     ),
-    # Skeleton-Strategien (Platzhalter für zukünftige Research)
+    # Research-Strategien (teilweise OHLCV-Proxy-Slices)
     "bouchaud_microstructure": StrategySpec(
         key="bouchaud_microstructure",
         cls=BouchaudMicrostructureStrategy,
         config_section="strategy.bouchaud_microstructure",
-        description="Bouchaud Microstructure (R&D-Skeleton, Tick-/Orderbuch-basiert)",
+        description="Bouchaud Microstructure (R&D, OHLCV-Proxy-Signale)",
         is_live_ready=False,  # NICHT live-ready
         tier="r_and_d",
         allowed_environments=("backtest", "offline_backtest", "research"),
@@ -215,7 +215,7 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
         key="vol_regime_overlay",
         cls=VolRegimeOverlayStrategy,
         config_section="strategy.vol_regime_overlay",
-        description="Gatheral & Cont Vol-Regime-Overlay (R&D-Skeleton, Meta-Layer)",
+        description="Gatheral & Cont Vol-Regime-Overlay (R&D, realized-vol/Quantil-Proxy)",
         is_live_ready=False,  # NICHT live-ready
         tier="r_and_d",
         allowed_environments=("backtest", "offline_backtest", "research"),

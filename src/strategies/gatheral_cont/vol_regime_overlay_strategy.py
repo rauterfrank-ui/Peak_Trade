@@ -1,18 +1,17 @@
 # src/strategies/gatheral_cont/vol_regime_overlay_strategy.py
 """
-Vol Regime Overlay Strategy – Research-Only Skeleton
-=====================================================
+Vol Regime Overlay Strategy – Research-Only (OHLCV Vol-Regime-Proxy)
+====================================================================
 
-Platzhalter-Skelett für eine Volatilitäts-/Regime-Overlay-Strategie
-basierend auf Jim Gatherals und Rama Conts Arbeiten.
+Research-Strategie inspiriert von Jim Gatheral und Rama Cont: deterministische
+0/1-Signale aus realized Volatility (Close-Returns) und rollierenden Quantilen
+— kein Rough-Vol- oder Hurst-Schätzer, sondern ein schlanker Pipeline-Slice.
 
-⚠️ WICHTIG: RESEARCH-ONLY – NICHT FÜR LIVE-TRADING FREIGEGEBEN ⚠️
-⚠️ Dies ist ein PLATZHALTER-SKELETT ohne funktionale Implementierung ⚠️
+⚠️ RESEARCH-ONLY – NICHT FÜR LIVE-TRADING FREIGEGEBEN ⚠️
 
-Diese Strategie ist ausschließlich für:
-- Offline-Backtests
-- Research & Analyse
-- Akademische Experimente mit Vol-/Regime-Modellen
+Geeignet für:
+- Offline-Backtests und Research-Pipelines
+- Akademische Experimente mit Vol-/Regime-Labels
 
 Hintergrund (Gatheral & Cont Konzepte):
 
@@ -46,7 +45,7 @@ Referenzen:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 import pandas as pd
 
@@ -107,52 +106,24 @@ class VolRegimeOverlayConfig:
 
 class VolRegimeOverlayStrategy(BaseStrategy):
     """
-    Vol Regime Overlay Strategy – Meta-Risk-/Regime-Layer.
+    Vol Regime Overlay Strategy – Research-Only mit OHLCV-Vol-Regime-Proxy.
 
     ⚠️ RESEARCH-ONLY – NICHT FÜR LIVE-TRADING FREIGEGEBEN ⚠️
-    ⚠️ PLATZHALTER-SKELETT – Keine funktionale Implementierung ⚠️
 
-    Diese Strategie ist ein strukturelles Skelett für zukünftige Research
-    zu Volatilitäts- und Regime-Konzepten nach Gatheral & Cont.
+    ``generate_signals`` liefert 0/1: **1** = Vol nicht über dem rollierenden
+    High-Vol-Quantil (Research-„Risk-on“-Proxy), **0** = darüber oder bei
+    Drawdown-Breach (optional). Regime-Labels: ``low_vol`` / ``normal`` /
+    ``high_vol`` relativ zu denselben Quantilen.
 
-    Konzept:
-    Diese Strategie fungiert als META-LAYER über bestehenden Strategien:
-    - Keine eigenen Entry/Exit-Signale
-    - Stattdessen: Position-Sizing, Regime-Filter, Vol-Scaling
-
-    Geplante Funktionalität (TODO):
-    1. Regime-Detection:
-       - Low-Vol-Regime: Normale Position-Sizes
-       - Normal-Vol-Regime: Standard-Operation
-       - High-Vol-Regime: Reduzierte Sizes, enger Stops
-
-    2. Vol-Budget-Management:
-       - Tägliches Vol-Budget (z.B. 2% Tages-Vol)
-       - Dynamisches Sizing basierend auf aktuellem Vol-Level
-       - Intraday-Drawdown-Limits
-
-    3. Rough-Vol-Schätzung (optional):
-       - Hurst-Exponent-Schätzung (typisch H ≈ 0.1)
-       - Fractional Brownian Motion Modelle
-
-    Voraussetzungen für echte Implementierung:
-    - Ausreichend historische Daten für Regime-Kalibrierung
-    - Performante Vol-Schätzer (realized vol, Parkinson, etc.)
-    - Integration mit Position-Sizing-Modul
+    Vollständige Rough-Vol-/Meta-Layer-Integration bleibt späterer Research
+    vorbehalten.
 
     Attributes:
         cfg: VolRegimeOverlayConfig mit Strategie-Parametern
 
-    Notes:
-        generate_signals() wirft NotImplementedError, da:
-        1. Dies ein Meta-Layer ist, kein Signal-Generator
-        2. Integration mit bestehenden Strategien fehlt
-        3. Erheblicher Research-Aufwand erforderlich
-
     Example:
-        >>> # NUR FÜR RESEARCH – wirft NotImplementedError
-        >>> strategy = VolRegimeOverlayStrategy(day_vol_budget=0.015)
-        >>> strategy.generate_signals(df)  # Raises NotImplementedError
+        >>> strategy = VolRegimeOverlayStrategy()
+        >>> signals = strategy.generate_signals(df)  # pd.Series int 0/1
     """
 
     KEY = "vol_regime_overlay"
@@ -210,11 +181,11 @@ class VolRegimeOverlayStrategy(BaseStrategy):
             metadata = StrategyMetadata(
                 name="Vol Regime Overlay v0 (Gatheral & Cont, Research)",
                 description=(
-                    "Meta-Risk-/Regime-Layer basierend auf Gatheral & Cont. "
-                    "⚠️ PLATZHALTER-SKELETT – NICHT FÜR LIVE-TRADING. "
-                    "Fungiert als Filter/Scaler für bestehende Strategien."
+                    "Vol-/Regime-Layer basierend auf Gatheral & Cont. "
+                    "⚠️ RESEARCH-ONLY – Signale sind OHLCV realized-vol/Quantil-Proxy, "
+                    "keine Live-Freigabe. Meta-Sizing mit bestehenden Strategien optional."
                 ),
-                version="0.0.1-skeleton",
+                version="0.1.0-ohlcv-proxy",
                 author="Peak_Trade Research",
                 regime="meta_risk_layer",
                 tags=["research", "gatheral", "cont", "rough_vol", "regime", "meta_layer"],
@@ -261,88 +232,108 @@ class VolRegimeOverlayStrategy(BaseStrategy):
             vol_target_scaling=cfg.get(f"{section}.vol_target_scaling", True),
         )
 
+    def _rolling_lookback(self, n: int) -> int:
+        """Effektives Lookback-Fenster (mindestens 10 Bars, wie validate)."""
+        cap = self.cfg.hurst_lookback if self.cfg.use_rough_vol else self.cfg.regime_lookback_bars
+        return max(10, min(int(cap), n))
+
+    def _realized_vol_and_quantiles(
+        self, close: pd.Series
+    ) -> tuple[pd.Series, pd.Series, pd.Series, int]:
+        """Rolling std der Returns plus rollierende Quantile von rv."""
+        n = len(close)
+        lb = self._rolling_lookback(n)
+        rets = close.astype(float).pct_change()
+        rv = rets.rolling(window=lb, min_periods=10).std()
+        low_q = rv.rolling(window=lb, min_periods=10).quantile(self.cfg.low_vol_threshold)
+        high_q = rv.rolling(window=lb, min_periods=10).quantile(self.cfg.high_vol_threshold)
+        return rv, low_q, high_q, lb
+
     def generate_signals(self, data: pd.DataFrame) -> pd.Series:
         """
-        Diese Methode generiert KEINE Trading-Signale.
+        Generiert deterministische 0/1-Signale (Research Vol-Regime-Proxy).
 
-        ⚠️ NICHT IMPLEMENTIERT – PLATZHALTER-SKELETT ⚠️
-
-        Als Meta-Layer erzeugt diese Strategie keine eigenen Entry/Exit-Signale.
-        Stattdessen würde sie:
-        1. Regime-Zustand bestimmen (low/normal/high vol)
-        2. Position-Sizing-Multiplikatoren berechnen
-        3. Filter für andere Strategien bereitstellen
-
-        Geplante Methoden für spätere Implementierung:
-        - get_regime_state(data) -> str: "low_vol" | "normal" | "high_vol"
-        - get_position_scalar(data) -> float: 0.0 - 1.0 Sizing-Multiplikator
-        - should_reduce_exposure(data) -> bool: Intraday-DD-Check
+        Logik:
+        - Realized Vol = rollierende Std der Close-Returns.
+        - **0**, wenn ``rv`` über dem rollierenden ``high_vol_threshold``-Quantil liegt
+          (hohe Vol relativ zur Historie), sonst **1**.
+        - Zusätzlich **0**, wenn Drawdown vom laufenden Hoch ``> max_intraday_dd``.
 
         Args:
-            data: DataFrame mit OHLCV-Daten
+            data: DataFrame mit Spalte ``close``
+
+        Returns:
+            ``pd.Series`` int 0/1; ``attrs['is_research_stub'] == False``
 
         Raises:
-            NotImplementedError: Immer, da dies ein Meta-Layer ist
-
-        Notes:
-            Für echte Implementierung:
-            - Integriere mit Peak_Trade Position-Sizing-Modul
-            - Implementiere als Filter/Wrapper für andere Strategien
-            - Nicht als standalone Signal-Generator verwenden
+            ValueError: Wenn ``close`` fehlt
         """
-        raise NotImplementedError(
-            "VolRegimeOverlayStrategy ist ein Meta-Layer, kein Signal-Generator.\n"
-            "Implementierung erfordert:\n"
-            "  1. Integration mit Position-Sizing-Modul\n"
-            "  2. Wrapper-Logik für bestehende Strategien\n"
-            "  3. Regime-Detection und Vol-Schätzer\n"
-            "\n"
-            "Geplante Nutzung als Meta-Layer:\n"
-            "  - get_regime_state(data) -> 'low_vol' | 'normal' | 'high_vol'\n"
-            "  - get_position_scalar(data) -> float (Sizing-Multiplikator)\n"
-            "  - should_reduce_exposure(data) -> bool (DD-Check)\n"
-            "\n"
-            "Diese Strategie ist RESEARCH-ONLY und dient als strukturelle Basis\n"
-            "für zukünftige Vol-/Regime-basierte Risk-Management-Experimente."
-        )
+        if "close" not in data.columns:
+            raise ValueError(f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}")
+        if len(data) == 0:
+            empty = pd.Series([], dtype=int)
+            empty.attrs["is_research_stub"] = False
+            return empty
+
+        close = data["close"]
+        if len(close) < 10:
+            z = pd.Series(0, index=data.index, dtype=int)
+            z.attrs["is_research_stub"] = False
+            z.attrs["lookback_effective"] = self._rolling_lookback(len(close))
+            return z
+
+        rv, _low_q, high_q, lb = self._realized_vol_and_quantiles(close)
+        # Risk-off wenn Vol über High-Vol-Quantil
+        base = (rv <= high_q).fillna(False)
+        c = close.astype(float)
+        dd = 1.0 - c / c.cummax()
+        dd_breach = dd > float(self.cfg.max_intraday_dd)
+        signals = (base & ~dd_breach).astype(int)
+        signals.index = data.index
+        signals.attrs["is_research_stub"] = False
+        signals.attrs["lookback_effective"] = lb
+        return signals
 
     def get_regime_state(self, data: pd.DataFrame) -> str:
         """
-        Bestimmt aktuellen Volatilitäts-Regime-Zustand.
-
-        TODO: Implementierung in späterer Research-Phase.
+        Letzter Bar: ``low_vol`` / ``normal`` / ``high_vol`` relativ zu Quantilen.
 
         Args:
-            data: DataFrame mit OHLCV-Daten
+            data: DataFrame mit ``close``
 
         Returns:
-            Regime-String: "low_vol", "normal", oder "high_vol"
-
-        Raises:
-            NotImplementedError: Noch nicht implementiert
+            Regime-String (bei zu wenig Daten: ``normal``).
         """
-        raise NotImplementedError(
-            "get_regime_state() ist ein Platzhalter für zukünftige Implementierung."
-        )
+        if "close" not in data.columns or len(data) < 10:
+            return "normal"
+        close = data["close"]
+        rv, low_q, high_q, _lb = self._realized_vol_and_quantiles(close)
+        rvi, lqi, hqi = rv.iloc[-1], low_q.iloc[-1], high_q.iloc[-1]
+        if pd.isna(rvi) or pd.isna(lqi) or pd.isna(hqi):
+            return "normal"
+        if rvi < lqi:
+            return "low_vol"
+        if rvi > hqi:
+            return "high_vol"
+        return "normal"
 
     def get_position_scalar(self, data: pd.DataFrame) -> float:
         """
-        Berechnet Position-Sizing-Multiplikator basierend auf Vol-Regime.
-
-        TODO: Implementierung in späterer Research-Phase.
+        Letztes Signal als Sizing-Skalar ``0.0`` oder ``1.0`` (ggf. mit Vol-Budget).
 
         Args:
-            data: DataFrame mit OHLCV-Daten
+            data: DataFrame mit ``close``
 
         Returns:
-            Scalar zwischen 0.0 und 1.0 für Position-Sizing
-
-        Raises:
-            NotImplementedError: Noch nicht implementiert
+            Skalar in [0.0, 1.0]
         """
-        raise NotImplementedError(
-            "get_position_scalar() ist ein Platzhalter für zukünftige Implementierung."
-        )
+        sig = self.generate_signals(data)
+        if len(sig) == 0:
+            return 0.0
+        last = float(sig.iloc[-1])
+        if not self.cfg.vol_target_scaling:
+            return last
+        return min(1.0, last * float(self.cfg.day_vol_budget) / 0.02)
 
     def validate(self) -> None:
         """Validiert Parameter."""
@@ -366,5 +357,5 @@ class VolRegimeOverlayStrategy(BaseStrategy):
             f"vol_budget={self.cfg.day_vol_budget:.1%}, "
             f"max_dd={self.cfg.max_intraday_dd:.1%}, "
             f"regime_lookback={self.cfg.regime_lookback_bars}bars) "
-            f"[SKELETON – NOT IMPLEMENTED]>"
+            f"[research OHLCV vol proxy]>"
         )

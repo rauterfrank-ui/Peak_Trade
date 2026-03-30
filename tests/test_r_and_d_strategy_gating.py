@@ -10,7 +10,7 @@ Testet das 3-stufige Gate-System in src/strategies/registry.py:
 Testet außerdem Signal-Verhalten der Research-Strategien:
 - Ehlers: generate_signals() → 0/1 (Super-Smoother-Regel)
 - Meta-Labeling: generate_signals() → pd.Series(0) (Stub)
-- VolRegimeOverlay: generate_signals() → NotImplementedError
+- VolRegimeOverlay: generate_signals() → 0/1 (realized-vol Quantil-Proxy)
 - BouchaudMicrostructure: generate_signals() → 0/1 (OHLCV-Proxy)
 """
 
@@ -381,13 +381,13 @@ def test_meta_labeling_stub_returns_flat_signal():
 
 
 # =============================================================================
-# TESTS: Skeleton – NotImplementedError (VolRegime); Bouchaud 0/1
+# TESTS: VolRegime 0/1; Bouchaud 0/1
 # =============================================================================
 
 
-def test_vol_regime_overlay_raises_not_implemented():
+def test_vol_regime_overlay_returns_signals_01():
     """
-    Test: Vol-Regime-Overlay generate_signals() wirft NotImplementedError (Skeleton).
+    Test: Vol-Regime-Overlay generate_signals() liefert 0/1 (Vol-Regime-Proxy).
     """
     cfg = DummyConfig(
         {
@@ -404,11 +404,12 @@ def test_vol_regime_overlay_raises_not_implemented():
     strategy = create_strategy_from_config("vol_regime_overlay", cfg)
     df = create_test_df(n_bars=150)
 
-    # Skeleton: NotImplementedError
-    with pytest.raises(NotImplementedError) as excinfo:
-        strategy.generate_signals(df)
+    signals = strategy.generate_signals(df)
 
-    assert "Meta-Layer" in str(excinfo.value) or "NOT IMPLEMENTED" in str(excinfo.value)
+    assert isinstance(signals, pd.Series)
+    assert len(signals) == len(df)
+    assert set(signals.unique()).issubset({0, 1})
+    assert signals.attrs.get("is_research_stub") is False
 
 
 def test_bouchaud_microstructure_returns_signals_01():

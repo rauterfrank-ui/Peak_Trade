@@ -5,7 +5,7 @@ Tests für Bouchaud & Gatheral/Cont Research-Strategie-Skelette.
 Diese Tests verifizieren:
 1. Registry-Einträge existieren mit korrekten Metadaten
 2. Strategien sind als R&D-Only markiert (nicht live-ready)
-3. Bouchaud: generate_signals liefert 0/1 (Research-Proxy); Gatheral: NotImplementedError (Skeleton)
+3. Bouchaud & Gatheral: generate_signals liefert 0/1 (Research-Proxy)
 4. Safety-Constraints werden eingehalten
 
 Phase: Research-Track Integration (Bouchaud Microstructure + Gatheral/Cont Vol-Regime)
@@ -223,51 +223,63 @@ class TestVolRegimeOverlayStrategy:
         assert strategy.cfg.regime_lookback_bars == 200
         assert strategy.cfg.use_rough_vol is True
 
-    def test_vol_regime_overlay_generate_signals_raises_not_implemented(self):
-        """Test: generate_signals wirft NotImplementedError (Meta-Layer)."""
+    def test_vol_regime_overlay_generate_signals_returns_01(self):
+        """Test: generate_signals liefert deterministische 0/1 (Vol-Regime-Proxy)."""
         from src.strategies.gatheral_cont import VolRegimeOverlayStrategy
 
-        strategy = VolRegimeOverlayStrategy()
+        strategy = VolRegimeOverlayStrategy(regime_lookback_bars=30)
 
-        # Test-Daten erstellen
-        dates = pd.date_range("2020-01-01", periods=100, freq="h")
+        rng = np.random.default_rng(7)
+        dates = pd.date_range("2020-01-01", periods=120, freq="h")
         data = pd.DataFrame(
             {
-                "close": np.random.randn(100).cumsum() + 100,
+                "close": rng.standard_normal(120).cumsum() + 100.0,
             },
             index=dates,
         )
 
-        # Meta-Layer sollte NotImplementedError werfen
-        with pytest.raises(NotImplementedError) as exc_info:
-            strategy.generate_signals(data)
+        signals = strategy.generate_signals(data)
 
-        # Prüfe, dass die Fehlermeldung informativ ist
-        assert (
-            "Meta-Layer" in str(exc_info.value)
-            or "kein Signal-Generator" in str(exc_info.value)
-            or "RESEARCH-ONLY" in str(exc_info.value)
-        )
+        assert isinstance(signals, pd.Series)
+        assert len(signals) == len(data)
+        assert set(signals.unique()).issubset({0, 1})
+        assert signals.attrs.get("is_research_stub") is False
 
-    def test_vol_regime_overlay_get_regime_state_raises_not_implemented(self):
-        """Test: get_regime_state wirft NotImplementedError."""
+    def test_vol_regime_overlay_get_regime_state_short_data(self):
+        """Test: get_regime_state liefert normal bei zu wenig Historie."""
         from src.strategies.gatheral_cont import VolRegimeOverlayStrategy
 
         strategy = VolRegimeOverlayStrategy()
         data = pd.DataFrame({"close": [100, 101, 102]})
 
-        with pytest.raises(NotImplementedError):
-            strategy.get_regime_state(data)
+        assert strategy.get_regime_state(data) == "normal"
 
-    def test_vol_regime_overlay_get_position_scalar_raises_not_implemented(self):
-        """Test: get_position_scalar wirft NotImplementedError."""
+    def test_vol_regime_overlay_get_regime_state_with_history(self):
+        """Test: get_regime_state liefert ein erlaubtes Regime-Label."""
         from src.strategies.gatheral_cont import VolRegimeOverlayStrategy
 
-        strategy = VolRegimeOverlayStrategy()
-        data = pd.DataFrame({"close": [100, 101, 102]})
+        strategy = VolRegimeOverlayStrategy(regime_lookback_bars=40)
+        rng = np.random.default_rng(1)
+        n = 80
+        close = rng.standard_normal(n).cumsum() + 100.0
+        data = pd.DataFrame({"close": close})
 
-        with pytest.raises(NotImplementedError):
-            strategy.get_position_scalar(data)
+        state = strategy.get_regime_state(data)
+        assert state in {"low_vol", "normal", "high_vol"}
+
+    def test_vol_regime_overlay_get_position_scalar_matches_last_signal(self):
+        """Test: get_position_scalar entspricht letztem generate_signals-Wert (skaliert)."""
+        from src.strategies.gatheral_cont import VolRegimeOverlayStrategy
+
+        strategy = VolRegimeOverlayStrategy(regime_lookback_bars=30, vol_target_scaling=False)
+        rng = np.random.default_rng(3)
+        n = 100
+        data = pd.DataFrame({"close": rng.standard_normal(n).cumsum() + 100.0})
+
+        sig = strategy.generate_signals(data)
+        sc = strategy.get_position_scalar(data)
+        assert sc in (0.0, 1.0)
+        assert sc == float(sig.iloc[-1])
 
     def test_vol_regime_overlay_config_dataclass(self):
         """Test: VolRegimeOverlayConfig funktioniert korrekt."""
@@ -288,27 +300,27 @@ class TestVolRegimeOverlayStrategy:
         assert cfg_dict["day_vol_budget"] == 0.025
         assert cfg_dict["max_intraday_dd"] == 0.012
 
-    def test_vol_regime_overlay_repr_shows_skeleton(self):
-        """Test: __repr__ zeigt SKELETON / NOT IMPLEMENTED an."""
+    def test_vol_regime_overlay_repr_shows_research_proxy(self):
+        """Test: __repr__ kennzeichnet Research-OHLCV-Proxy."""
         from src.strategies.gatheral_cont import VolRegimeOverlayStrategy
 
         strategy = VolRegimeOverlayStrategy()
         repr_str = repr(strategy)
 
-        assert "SKELETON" in repr_str or "NOT IMPLEMENTED" in repr_str
+        assert "research" in repr_str.lower() and "proxy" in repr_str.lower()
 
     def test_vol_regime_overlay_metadata_contains_warning(self):
-        """Test: Metadata enthält Warnung über Skeleton/Research-Only."""
+        """Test: Metadata enthält Warnung über Research-Only."""
         from src.strategies.gatheral_cont import VolRegimeOverlayStrategy
 
         strategy = VolRegimeOverlayStrategy()
         desc_upper = strategy.meta.description.upper()
 
         assert (
-            "SKELETON" in desc_upper
-            or "PLATZHALTER" in desc_upper
+            "RESEARCH-ONLY" in desc_upper
             or "NICHT FÜR LIVE" in desc_upper
-            or "META" in desc_upper
+            or "OHLCV" in desc_upper
+            or "GATHERAL" in desc_upper
         )
 
 
