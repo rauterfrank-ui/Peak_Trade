@@ -2,7 +2,7 @@
 
 > **Zweck:** Überblick über **offene Arbeit** im Repo — **kein** Merge-Gate, sondern **Planungs- und Triage-Hilfe**.  
 > **Scope:** NO-LIVE; Priorisierung erfolgt getrennt von Live-Freigaben.  
-> **Stand:** Automatisierte Tiefen-Stichprobe (`src&#47;**&#47;*.py`, zentrale `scripts/`, Schlüssel-`tests/`, Doku-Hinweise) — **2026-03-30** (E4/E7 Runbook-Zeilen nachgezogen). Kein vollständiger Beweis, dass **jede** Zeile erfasst ist (Templates, Archiv-`docs/`, generierte Artefakte sind nur stichprobenartig berücksichtigt).
+> **Stand:** Automatisierte Tiefen-Stichprobe (`src&#47;**&#47;*.py`, zentrale `scripts/`, Schlüssel-`tests/`, Doku-Hinweise) — **2026-03-30** (E4/E7/E5 Runbook-Zeilen nachgezogen). Kein vollständiger Beweis, dass **jede** Zeile erfasst ist (Templates, Archiv-`docs/`, generierte Artefakte sind nur stichprobenartig berücksichtigt).
 
 ---
 
@@ -72,7 +72,7 @@
 | E2 | Triple-Barrier-Labeling | DONE | `src/research/ml/labeling/triple_barrier.py` — `compute_triple_barrier_labels`, `get_vertical_barrier`, `get_horizontal_barriers`, `apply_pnl_stop_loss` (Platzhalter); Tests `tests/test_triple_barrier.py` |
 | E3 | Bouchaud / Gatheral Vol-Regime (Platzhalter-Signale) | STUB | `src/strategies/bouchaud/`, `src/strategies/gatheral_cont/` |
 | E4 | Armstrong ECM-Cycle echte Signale | DONE | `src/strategies/armstrong/armstrong_cycle_strategy.py` — `generate_signals` pro Bar: `ArmstrongCycleModel` (`phase_for_date` → `get_position_for_phase`); `is_research_stub=False`; Tests u. a. `tests/strategies/armstrong/`, `tests/test_research_strategies.py` (Armstrong) |
-| E5 | Ehlers DSP-Filter / Cycle | STUB | `src/strategies/ehlers/ehlers_cycle_filter_strategy.py` |
+| E5 | Ehlers DSP-Filter / Cycle | DONE | `src/strategies/ehlers/ehlers_cycle_filter_strategy.py` — Minimal-Slice: Ehlers **Super-Smoother** auf `close`, 0/1 wenn `close > smooth`; Fallback Flat bei `len < lookback`; `is_research_stub=False` in Metadaten; Tests u. a. `tests/test_ehlers_lopez_strategies.py`, `tests/test_r_and_d_strategy_gating.py` (Hilbert/Bandpass weiter optional) |
 | E6 | López de Prado Meta-Labeling-Pipeline | DONE | `src/strategies/lopez_de_prado/meta_labeling_strategy.py` — delegiert Triple-Barrier an `src/research/ml/labeling/triple_barrier.py` und Meta-Modell-Anwendung an `src/research/ml/meta/meta_labeling.py`; `generate_signals` bleibt in diesem Slice bewusst flat |
 | E7 | El Karoui Vol-Regime-Signale | DONE | `src/strategies/el_karoui/el_karoui_vol_model_strategy.py` — `generate_signals` aus `ElKarouiVolModel.regime_series` → `regime_position_map` (0/1); `is_research_stub=False`; Tests u. a. `tests/strategies/el_karoui/`, `tests/test_research_strategies.py` (El-Karoui) |
 | E8 | Strategie-Ideen-Templates | STUB | `src&#47;strategies&#47;ideas&#47;*`, `scripts/new_idea_strategy.py` — Platzhalter für Autoren |
@@ -139,7 +139,7 @@
 4. **Evidence/Orchestration** (G1–G4 erledigt) — für auditierbare PRs.  
 5. **Infostream** (F1) — Betrieb KI-gestützter Pfade.  
 6. **Learning Loop Bridge/Emitter** (F2) — nur wenn Promotion/Learning-Produktpriorität.  
-7. **ML/Strategien** (E1–E9) — nach Research-Validierung, nicht blind implementieren; **E4/E7** Signal-Slices (ECM-Phase bzw. Vol-Regime) sind umgesetzt, **E3/E5/E8** u. a. weiterhin STUB/Platzhalter.  
+7. **ML/Strategien** (E1–E9) — nach Research-Validierung, nicht blind implementieren; **E4/E5/E7** Signal-Slices (ECM-Phase, Ehlers Super-Smoother+0/1, Vol-Regime) sind umgesetzt, **E3/E8** u. a. weiterhin STUB/Platzhalter.  
 8. **Tests** (I1–I2 erledigt) — wenn Core stabil.  
 9. **Scripts/Demos** (J) — wenn operative Daten angebunden werden.
 
