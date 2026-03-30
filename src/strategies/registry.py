@@ -35,7 +35,7 @@ from .el_karoui import ElKarouiVolatilityStrategy, ElKarouiVolModelStrategy
 from .ehlers import EhlersCycleFilterStrategy
 from .lopez_de_prado import MetaLabelingStrategy
 
-# Research-Track: Bouchaud & Gatheral/Cont Strategien (R&D-Only, Skeleton)
+# Research-Track: Bouchaud (OHLCV-Proxy) & Gatheral/Cont (Skeleton)
 from .bouchaud import BouchaudMicrostructureStrategy
 from .gatheral_cont import VolRegimeOverlayStrategy
 

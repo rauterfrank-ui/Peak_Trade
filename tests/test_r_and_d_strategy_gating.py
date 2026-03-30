@@ -11,7 +11,7 @@ Testet außerdem Signal-Verhalten der Research-Strategien:
 - Ehlers: generate_signals() → 0/1 (Super-Smoother-Regel)
 - Meta-Labeling: generate_signals() → pd.Series(0) (Stub)
 - VolRegimeOverlay: generate_signals() → NotImplementedError
-- BouchaudMicrostructure: generate_signals() → NotImplementedError
+- BouchaudMicrostructure: generate_signals() → 0/1 (OHLCV-Proxy)
 """
 
 from __future__ import annotations
@@ -381,7 +381,7 @@ def test_meta_labeling_stub_returns_flat_signal():
 
 
 # =============================================================================
-# TESTS: Skeleton-Verhalten – NotImplementedError (VolRegime, Bouchaud)
+# TESTS: Skeleton – NotImplementedError (VolRegime); Bouchaud 0/1
 # =============================================================================
 
 
@@ -411,9 +411,9 @@ def test_vol_regime_overlay_raises_not_implemented():
     assert "Meta-Layer" in str(excinfo.value) or "NOT IMPLEMENTED" in str(excinfo.value)
 
 
-def test_bouchaud_microstructure_raises_not_implemented():
+def test_bouchaud_microstructure_returns_signals_01():
     """
-    Test: Bouchaud Microstructure generate_signals() wirft NotImplementedError (Skeleton).
+    Test: Bouchaud Microstructure generate_signals() liefert 0/1 (OHLCV-Proxy).
     """
     cfg = DummyConfig(
         {
@@ -430,11 +430,12 @@ def test_bouchaud_microstructure_raises_not_implemented():
     strategy = create_strategy_from_config("bouchaud_microstructure", cfg)
     df = create_test_df(n_bars=150)
 
-    # Skeleton: NotImplementedError
-    with pytest.raises(NotImplementedError) as excinfo:
-        strategy.generate_signals(df)
+    signals = strategy.generate_signals(df)
 
-    assert "Platzhalter" in str(excinfo.value) or "SKELETON" in str(excinfo.value)
+    assert isinstance(signals, pd.Series)
+    assert len(signals) == len(df)
+    assert set(signals.unique()).issubset({0, 1})
+    assert signals.attrs.get("is_research_stub") is False
 
 
 # =============================================================================

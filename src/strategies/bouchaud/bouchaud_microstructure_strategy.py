@@ -1,17 +1,18 @@
 # src/strategies/bouchaud/bouchaud_microstructure_strategy.py
 """
-Bouchaud Microstructure Strategy – Research-Only Skeleton
-==========================================================
+Bouchaud Microstructure Strategy – Research-Only (OHLCV-Proxy)
+===============================================================
 
-Platzhalter-Skelett für eine Microstructure-Strategie basierend auf
-Jean-Philippe Bouchauds Arbeiten zur Markt-Mikrostruktur.
+Research-Strategie inspiriert von Jean-Philippe Bouchauds Markt-Mikrostruktur;
+`generate_signals` liefert deterministische 0/1-Signale aus OHLCV (Proxy) oder
+optional aus Bid/Ask-Größen, sobald diese Spalten vorhanden sind.
 
-⚠️ WICHTIG: RESEARCH-ONLY – NICHT FÜR LIVE-TRADING FREIGEGEBEN ⚠️
-⚠️ Dies ist ein PLATZHALTER-SKELETT ohne funktionale Implementierung ⚠️
+⚠️ RESEARCH-ONLY – NICHT FÜR LIVE-TRADING FREIGEGEBEN ⚠️
+Echte Tick-/L2-Logik ist hier nicht abgebildet; die Signale dienen Pipeline-
+ und Backtest-Tests mit Standard-OHLCV.
 
 Diese Strategie ist ausschließlich für:
-- Offline-Backtests (sobald Tick-/Orderbuch-Daten verfügbar)
-- Research & Analyse
+- Offline-Backtests und Research-Pipelines
 - Akademische Experimente
 
 Hintergrund (Bouchaud Microstructure-Konzepte):
@@ -39,8 +40,9 @@ Referenzen:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
+import numpy as np
 import pandas as pd
 
 from ..base import BaseStrategy, StrategyMetadata
@@ -95,38 +97,23 @@ class BouchaudMicrostructureConfig:
 
 class BouchaudMicrostructureStrategy(BaseStrategy):
     """
-    Bouchaud Microstructure Strategy – Orderbuch-/Tick-basierte R&D-Strategie.
+    Bouchaud Microstructure Strategy – Research-Only mit OHLCV-/Proxy-Signalen.
 
     ⚠️ RESEARCH-ONLY – NICHT FÜR LIVE-TRADING FREIGEGEBEN ⚠️
-    ⚠️ PLATZHALTER-SKELETT – Keine funktionale Implementierung ⚠️
 
-    Diese Strategie ist ein strukturelles Skelett für zukünftige Research
-    zu Markt-Mikrostruktur-Konzepten nach Jean-Philippe Bouchaud.
+    `generate_signals` ist bewusst simpel und deterministisch:
+    - Mit ``bid_size``/``ask_size``: rollende Orderbuch-Imbalance vs. Schwelle
+    - Mit OHLC: Bar-Druck ``(close-open)/(high-low)`` (Proxy), rollend vs. Schwelle
+    - Nur ``close``: Close vs. gleitendem Mittel (Lookback ``lookback_ticks``)
 
-    Geplante Funktionalität (TODO):
-    - Orderbuch-Imbalance-Signale (Bid/Ask Volume Ratio)
-    - Trade-Sign-Autokorrelation (Metaorder-Detection)
-    - Propagator-basierte Preisvorhersage
-    - Liquiditäts-Filter für Signal-Validität
-
-    Voraussetzungen:
-    - Tick-Daten (Trade Prints mit Timestamp, Price, Size, Side)
-    - Orderbuch-Snapshots (L2: Top-of-Book, L3: Full Depth)
-    - Diese Daten sind in Peak_Trade aktuell NICHT verfügbar
+    Vollständige Tick-/L3-Logik bleibt späterer Research vorbehalten.
 
     Attributes:
         cfg: BouchaudMicrostructureConfig mit Strategie-Parametern
 
-    Notes:
-        generate_signals() wirft NotImplementedError, da:
-        1. Keine Tick-/Orderbuch-Daten in Peak_Trade verfügbar
-        2. Die Implementierung erheblichen Research-Aufwand erfordert
-        3. OHLCV-Daten für Microstructure-Analyse ungeeignet sind
-
     Example:
-        >>> # NUR FÜR RESEARCH – wirft NotImplementedError
         >>> strategy = BouchaudMicrostructureStrategy()
-        >>> strategy.generate_signals(df)  # Raises NotImplementedError
+        >>> signals = strategy.generate_signals(df)  # pd.Series 0/1
     """
 
     KEY = "bouchaud_microstructure"
@@ -179,10 +166,10 @@ class BouchaudMicrostructureStrategy(BaseStrategy):
                 name="Bouchaud Microstructure v0 (Research)",
                 description=(
                     "Microstructure-Strategie basierend auf Bouchauds Arbeiten. "
-                    "⚠️ PLATZHALTER-SKELETT – NICHT FÜR LIVE-TRADING. "
-                    "Benötigt Tick-/Orderbuch-Daten, die aktuell nicht verfügbar sind."
+                    "⚠️ RESEARCH-ONLY – Signale sind OHLCV-/Proxy-Logik, keine Live-Freigabe. "
+                    "Echte Tick-/L2-Features können später ergänzt werden."
                 ),
-                version="0.0.1-skeleton",
+                version="0.1.0-ohlcv-proxy",
                 author="Peak_Trade Research",
                 regime="microstructure",
                 tags=["research", "bouchaud", "microstructure", "orderbook", "tick_data"],
@@ -229,42 +216,64 @@ class BouchaudMicrostructureStrategy(BaseStrategy):
 
     def generate_signals(self, data: pd.DataFrame) -> pd.Series:
         """
-        Generiert Handelssignale basierend auf Microstructure-Analyse.
+        Generiert deterministische 0/1-Signale (Research-Proxy).
 
-        ⚠️ NICHT IMPLEMENTIERT – PLATZHALTER-SKELETT ⚠️
+        Priorität der Eingaben:
+        1. ``bid_size`` + ``ask_size`` (wenn ``use_orderbook_imbalance``): Imbalance [-1, 1]
+        2. ``open``, ``high``, ``low``, ``close``: Bar-Druck in [-1, 1]
+        3. nur ``close``: Close > gleitendes Mittel über ``lookback_ticks`` Bars
 
-        Diese Methode wirft NotImplementedError, da:
-        1. Tick-/Orderbuch-Daten in Peak_Trade nicht standardmäßig verfügbar sind
-        2. OHLCV-Daten für Microstructure-Analyse nicht geeignet sind
-        3. Die Implementierung erheblichen Research-Aufwand erfordert
-
-        Geplante Logik (TODO für spätere Research-Phase):
-        1. Orderbuch-Imbalance berechnen: (bid_vol - ask_vol) / (bid_vol + ask_vol)
-        2. Trade-Signs extrahieren (Lee-Ready Algorithmus)
-        3. Propagator-basierte Preisvorhersage
-        4. Signal-Generierung bei signifikanter Imbalance
+        In (1) und (2) wird die rollende Mittelwert-Serie mit ``imbalance_threshold``
+        verglichen; in (3) entsteht direkt 0/1 ohne dieselbe Schwelle.
 
         Args:
-            data: DataFrame (benötigt Tick-/Orderbuch-Daten, nicht OHLCV!)
+            data: DataFrame mit mindestens Spalte ``close``
+
+        Returns:
+            ``pd.Series`` int 0/1, Index wie ``data``; ``attrs['is_research_stub'] == False``
 
         Raises:
-            NotImplementedError: Immer, da dies ein Platzhalter-Skelett ist
-
-        Notes:
-            Für eine echte Implementierung werden benötigt:
-            - Spalten: bid_price, bid_size, ask_price, ask_size, trade_price, trade_size, trade_side
-            - Tick-by-Tick Auflösung (nicht OHLCV-Bars)
+            ValueError: Wenn ``close`` fehlt
         """
-        raise NotImplementedError(
-            "BouchaudMicrostructureStrategy ist ein Platzhalter-Skelett.\n"
-            "Implementierung erfordert:\n"
-            "  1. Tick-/Orderbuch-Daten (nicht in Peak_Trade verfügbar)\n"
-            "  2. Erheblichen Research-Aufwand\n"
-            "  3. Validierung der Microstructure-Konzepte\n"
-            "\n"
-            "Diese Strategie ist RESEARCH-ONLY und dient als strukturelle Basis\n"
-            "für zukünftige Experimente mit Markt-Mikrostruktur-Daten."
-        )
+        if "close" not in data.columns:
+            raise ValueError(
+                f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}"
+            )
+        if len(data) == 0:
+            empty = pd.Series([], dtype=int)
+            empty.attrs["is_research_stub"] = False
+            return empty
+
+        lb = max(1, min(int(self.cfg.lookback_ticks), len(data)))
+
+        if (
+            self.cfg.use_orderbook_imbalance
+            and "bid_size" in data.columns
+            and "ask_size" in data.columns
+        ):
+            b = data["bid_size"].astype(float)
+            a = data["ask_size"].astype(float)
+            denom = b + a
+            raw = np.where(denom.to_numpy() > 1e-15, (b - a).to_numpy() / denom.to_numpy(), 0.0)
+            pressure = pd.Series(raw, index=data.index)
+            roll = pressure.rolling(window=lb, min_periods=1).mean()
+            signals = (roll > float(self.cfg.imbalance_threshold)).astype(int)
+        elif all(c in data.columns for c in ("open", "high", "low")):
+            hl = (data["high"] - data["low"]).replace(0, np.nan)
+            pressure = (
+                ((data["close"] - data["open"]) / (hl + 1e-12)).clip(-1.0, 1.0).fillna(0.0)
+            )
+            roll = pressure.rolling(window=lb, min_periods=1).mean()
+            signals = (roll > float(self.cfg.imbalance_threshold)).astype(int)
+        else:
+            close = data["close"].astype(float)
+            rolling_mean = close.rolling(window=lb, min_periods=1).mean()
+            signals = (close > rolling_mean).astype(int)
+
+        signals.index = data.index
+        signals.attrs["is_research_stub"] = False
+        signals.attrs["lookback_effective"] = lb
+        return signals
 
     def validate(self) -> None:
         """Validiert Parameter."""
@@ -285,5 +294,5 @@ class BouchaudMicrostructureStrategy(BaseStrategy):
             f"orderbook={self.cfg.use_orderbook_imbalance}, "
             f"trades={self.cfg.use_trade_signs}, "
             f"lookback={self.cfg.lookback_ticks}ticks) "
-            f"[SKELETON – NOT IMPLEMENTED]>"
+            f"[research OHLCV proxy]>"
         )

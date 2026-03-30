@@ -5,7 +5,7 @@ Tests für Bouchaud & Gatheral/Cont Research-Strategie-Skelette.
 Diese Tests verifizieren:
 1. Registry-Einträge existieren mit korrekten Metadaten
 2. Strategien sind als R&D-Only markiert (nicht live-ready)
-3. generate_signals wirft NotImplementedError (Skeleton)
+3. Bouchaud: generate_signals liefert 0/1 (Research-Proxy); Gatheral: NotImplementedError (Skeleton)
 4. Safety-Constraints werden eingehalten
 
 Phase: Research-Track Integration (Bouchaud Microstructure + Gatheral/Cont Vol-Regime)
@@ -79,31 +79,51 @@ class TestBouchaudMicrostructureStrategy:
         assert strategy.cfg.lookback_ticks == 200
         assert strategy.cfg.min_liquidity_filter == 5000.0
 
-    def test_bouchaud_generate_signals_raises_not_implemented(self):
-        """Test: generate_signals wirft NotImplementedError (Skeleton)."""
+    def test_bouchaud_generate_signals_returns_01_close_only(self):
+        """Test: generate_signals liefert deterministische 0/1 (Close-Proxy)."""
         from src.strategies.bouchaud import BouchaudMicrostructureStrategy
 
-        strategy = BouchaudMicrostructureStrategy()
+        strategy = BouchaudMicrostructureStrategy(lookback_ticks=20)
 
-        # Test-Daten erstellen
+        rng = np.random.default_rng(42)
         dates = pd.date_range("2020-01-01", periods=100, freq="h")
         data = pd.DataFrame(
             {
-                "close": np.random.randn(100).cumsum() + 100,
+                "close": rng.standard_normal(100).cumsum() + 100.0,
             },
             index=dates,
         )
 
-        # Skeleton sollte NotImplementedError werfen
-        with pytest.raises(NotImplementedError) as exc_info:
-            strategy.generate_signals(data)
+        signals = strategy.generate_signals(data)
 
-        # Prüfe, dass die Fehlermeldung informativ ist
-        assert (
-            "Platzhalter-Skelett" in str(exc_info.value)
-            or "Tick-/Orderbuch-Daten" in str(exc_info.value)
-            or "RESEARCH-ONLY" in str(exc_info.value)
+        assert isinstance(signals, pd.Series)
+        assert len(signals) == len(data)
+        assert set(signals.unique()).issubset({0, 1})
+        assert signals.attrs.get("is_research_stub") is False
+
+    def test_bouchaud_generate_signals_ohlc_path(self):
+        """Test: mit OHLC wird Bar-Druck-Pfad genutzt (0/1)."""
+        from src.strategies.bouchaud import BouchaudMicrostructureStrategy
+
+        strategy = BouchaudMicrostructureStrategy(lookback_ticks=5, imbalance_threshold=0.0)
+
+        n = 50
+        idx = pd.date_range("2020-01-01", periods=n, freq="h")
+        close = np.linspace(100.0, 110.0, n)
+        data = pd.DataFrame(
+            {
+                "open": close - 0.1,
+                "high": close + 0.2,
+                "low": close - 0.2,
+                "close": close,
+            },
+            index=idx,
         )
+
+        signals = strategy.generate_signals(data)
+        assert isinstance(signals, pd.Series)
+        assert len(signals) == n
+        assert set(signals.unique()).issubset({0, 1})
 
     def test_bouchaud_config_dataclass(self):
         """Test: BouchaudMicrostructureConfig funktioniert korrekt."""
@@ -124,14 +144,14 @@ class TestBouchaudMicrostructureStrategy:
         assert cfg_dict["use_orderbook_imbalance"] is True
         assert cfg_dict["lookback_ticks"] == 50
 
-    def test_bouchaud_repr_shows_skeleton(self):
-        """Test: __repr__ zeigt SKELETON / NOT IMPLEMENTED an."""
+    def test_bouchaud_repr_shows_research_proxy(self):
+        """Test: __repr__ kennzeichnet Research-OHLCV-Proxy."""
         from src.strategies.bouchaud import BouchaudMicrostructureStrategy
 
         strategy = BouchaudMicrostructureStrategy()
         repr_str = repr(strategy)
 
-        assert "SKELETON" in repr_str or "NOT IMPLEMENTED" in repr_str
+        assert "research" in repr_str.lower() and "proxy" in repr_str.lower()
 
     def test_bouchaud_metadata_contains_warning(self):
         """Test: Metadata enthält Warnung über Skeleton/Research-Only."""
