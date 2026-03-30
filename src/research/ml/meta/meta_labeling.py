@@ -197,8 +197,9 @@ def compute_meta_labels(
     Returns:
         Binary Meta-Labels (0 oder 1)
     """
-    # Meta-Label: War das Signal profitabel?
-    meta_labels = (triple_barrier_labels > 0).astype(int)
+    # Meta-Label: War das Signal profitabel? (NA in TB-Labels zählt als nicht profitabel)
+    tb = triple_barrier_labels.fillna(0)
+    meta_labels = (tb > 0).astype(int)
 
     # Nur für Zeitpunkte mit aktiven Signalen
     meta_labels = meta_labels.where(signals != 0, np.nan)
