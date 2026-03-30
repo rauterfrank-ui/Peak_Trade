@@ -121,7 +121,6 @@ from __future__ import annotations
 from typing import Any, Dict, Optional
 
 import pandas as pd
-import numpy as np
 
 from ..base import BaseStrategy, StrategyMetadata
 
@@ -195,6 +194,10 @@ class {class_name}Strategy(BaseStrategy):
         # Optional: Parameter validieren
         self._validate_params()
 
+    def validate(self) -> None:
+        """Validiert Parameter (expliziter Aufruf für Backtests/CLI)."""
+        self._validate_params()
+
     def _validate_params(self) -> None:
         """
         Validiert Parameter.
@@ -207,6 +210,18 @@ class {class_name}Strategy(BaseStrategy):
             raise ValueError(f"param1 muss >= 1 sein, ist {{self.param1}}")
         if self.param2 <= 0:
             raise ValueError(f"param2 muss > 0 sein, ist {{self.param2}}")
+
+    @classmethod
+    def from_config(
+        cls,
+        cfg: Any,
+        section: str = "strategy.ideas.{module_name}",
+    ) -> {class_name}Strategy:
+        """Erstellt die Strategie aus einem Config-Objekt mit ``cfg.get(path, default)``."""
+        p1 = cfg.get(section + ".param1", 20)
+        p2 = cfg.get(section + ".param2", 0.02)
+        price = cfg.get(section + ".price_col", "close")
+        return cls(param1=p1, param2=p2, price_col=price)
 
     def generate_signals(self, data: pd.DataFrame) -> pd.Series:
         """
@@ -224,11 +239,7 @@ class {class_name}Strategy(BaseStrategy):
             data: DataFrame mit OHLCV-Daten (mindestens self.price_col)
 
         Returns:
-            Series mit Signalen:
-            - 1  = long
-            - -1 = short (falls du short-Signale unterstützt)
-            - 0  = flat
-            Index muss identisch zu data.index sein
+            ``pd.Series`` (int), typischerweise Werte in ``{{-1, 0, 1}}``; Index wie ``data.index``.
 
         Raises:
             ValueError: Wenn zu wenig Daten oder Spalte fehlt
@@ -311,20 +322,20 @@ def create_strategy_from_params(**kwargs) -> {class_name}Strategy:
 def main(argv: List[str] | None = None) -> None:
     args = parse_args(argv)
 
-    print("\n🚀 Peak_Trade Idea Strategy Generator")
+    print("\nPeak_Trade Idea Strategy Generator")
     print("=" * 70)
 
     # Name bereinigen
     try:
         module_name = sanitize_name(args.name)
     except ValueError as e:
-        print(f"\n❌ Fehler: {e}")
+        print(f"\n[ERROR] {e}")
         sys.exit(1)
 
     class_name = snake_to_camel(module_name)
     title = args.title or f"{class_name} Strategy"
 
-    print(f"\n📝 Erstelle neue Strategie:")
+    print(f"\nErstelle neue Strategie:")
     print(f"  - Modul-Name (Datei): {module_name}.py")
     print(f"  - Klassen-Name: {class_name}Strategy")
     print(f"  - Titel: {title}")
@@ -337,7 +348,7 @@ def main(argv: List[str] | None = None) -> None:
 
     # Prüfen ob Datei bereits existiert
     if out_file.exists():
-        print(f"\n❌ Fehler: Datei existiert bereits: {out_file}")
+        print(f"\n[ERROR] Datei existiert bereits: {out_file}")
         print("  Tipp: Wähle einen anderen Namen oder lösche die alte Datei.")
         sys.exit(1)
 
@@ -347,15 +358,15 @@ def main(argv: List[str] | None = None) -> None:
     # Datei schreiben
     out_file.write_text(code, encoding="utf-8")
 
-    print(f"\n✅ Strategie-Datei erstellt: {out_file}")
-    print(f"\n📚 Nächste Schritte:")
+    print(f"\n[OK] Strategie-Datei erstellt: {out_file}")
+    print(f"\nNaechste Schritte:")
     print(f"  1. Öffne {out_file}")
     print(f"  2. Implementiere generate_signals() (suche nach TODO-Kommentaren)")
     print(f"  3. Teste mit: python scripts/run_idea_strategy.py \\")
     print(f"       --module {module_name} \\")
     print(f"       --symbol BTC/EUR \\")
     print(f"       --run-name idea_{module_name}_test")
-    print(f"\n🎉 Viel Erfolg mit deiner Strategie!\n")
+    print(f"\nFertig.\n")
 
 
 if __name__ == "__main__":
