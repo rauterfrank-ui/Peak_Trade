@@ -87,8 +87,8 @@ class TestEhlersCycleFilterStrategy:
         assert strategy.cfg.max_cycle_length == 100
         assert strategy.cfg.cycle_threshold == 0.6
 
-    def test_ehlers_generate_signals_returns_flat(self):
-        """Test: Ehlers generate_signals gibt Flat-Signal (Research-Stub)."""
+    def test_ehlers_generate_signals_super_smoother_01(self):
+        """Test: Ehlers generate_signals liefert 0/1 aus Super-Smoother-Regel."""
         from src.strategies.ehlers import EhlersCycleFilterStrategy
 
         strategy = EhlersCycleFilterStrategy()
@@ -108,10 +108,10 @@ class TestEhlersCycleFilterStrategy:
 
         signals = strategy.generate_signals(data)
 
-        # Research-Stub: Alle Signale sollten 0 (flat) sein
         assert isinstance(signals, pd.Series)
         assert len(signals) == len(data)
-        assert (signals == 0).all(), "Research-Stub sollte nur Flat-Signale liefern"
+        assert set(signals.unique()).issubset({0, 1})
+        assert signals.attrs.get("is_research_stub") is False
 
     def test_ehlers_generate_signals_validates_input(self):
         """Test: generate_signals validiert Input korrekt."""
@@ -124,10 +124,12 @@ class TestEhlersCycleFilterStrategy:
         with pytest.raises(ValueError, match="close"):
             strategy.generate_signals(data_no_close)
 
-        # Test mit zu wenig Daten
+        # Zu wenig Bars für lookback → nur Flat, kein Fehler
         data_short = pd.DataFrame({"close": [100] * 10})
-        with pytest.raises(ValueError, match="mind."):
-            strategy.generate_signals(data_short)
+        sig_short = strategy.generate_signals(data_short)
+        assert len(sig_short) == 10
+        assert (sig_short == 0).all()
+        assert sig_short.attrs.get("insufficient_history") is True
 
     def test_ehlers_config_dataclass(self):
         """Test: EhlersCycleFilterConfig funktioniert korrekt."""
