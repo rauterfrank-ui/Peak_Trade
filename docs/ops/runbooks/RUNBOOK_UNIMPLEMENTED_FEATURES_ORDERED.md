@@ -68,8 +68,8 @@
 
 | # | Thema | Tag | Hinweis / Ort |
 |---|--------|-----|----------------|
-| E1 | Meta-Labeling (ML) vollständig | GAP | `src/research/ml/meta/meta_labeling.py` — mehrere TODOs |
-| E2 | Triple-Barrier-Labeling | GAP | `src/research/ml/labeling/triple_barrier.py` |
+| E1 | Meta-Labeling (ML) vollständig | DONE | `src/research/ml/meta/meta_labeling.py` — `MetaModelSpec`, `apply_meta_model` (trainiert / in-Features-Training), `compute_meta_labels`, `compute_bet_size`, Modell-Fabrik (RandomForest, optional XGBoost); Tests `tests/test_meta_labeling.py` |
+| E2 | Triple-Barrier-Labeling | DONE | `src/research/ml/labeling/triple_barrier.py` — `compute_triple_barrier_labels`, `get_vertical_barrier`, `get_horizontal_barriers`, `apply_pnl_stop_loss` (Platzhalter); Tests `tests/test_triple_barrier.py` |
 | E3 | Bouchaud / Gatheral Vol-Regime (Platzhalter-Signale) | STUB | `src/strategies/bouchaud/`, `src/strategies/gatheral_cont/` |
 | E4 | Armstrong ECM-Cycle echte Signale | GAP | `src/strategies/armstrong/armstrong_cycle_strategy.py` |
 | E5 | Ehlers DSP-Filter / Cycle | STUB | `src/strategies/ehlers/ehlers_cycle_filter_strategy.py` |
