@@ -73,7 +73,7 @@
 | E3 | Bouchaud / Gatheral Vol-Regime (Platzhalter-Signale) | STUB | `src/strategies/bouchaud/`, `src/strategies/gatheral_cont/` |
 | E4 | Armstrong ECM-Cycle echte Signale | GAP | `src/strategies/armstrong/armstrong_cycle_strategy.py` |
 | E5 | Ehlers DSP-Filter / Cycle | STUB | `src/strategies/ehlers/ehlers_cycle_filter_strategy.py` |
-| E6 | López de Prado Meta-Labeling-Pipeline | STUB | `src/strategies/lopez_de_prado/meta_labeling_strategy.py` |
+| E6 | López de Prado Meta-Labeling-Pipeline | DONE | `src/strategies/lopez_de_prado/meta_labeling_strategy.py` — delegiert Triple-Barrier an `src/research/ml/labeling/triple_barrier.py` und Meta-Modell-Anwendung an `src/research/ml/meta/meta_labeling.py`; `generate_signals` bleibt in diesem Slice bewusst flat |
 | E7 | El Karoui Vol-Regime-Signale | GAP | `src/strategies/el_karoui/el_karoui_vol_model_strategy.py` |
 | E8 | Strategie-Ideen-Templates | STUB | `src&#47;strategies&#47;ideas&#47;*`, `scripts/new_idea_strategy.py` — Platzhalter für Autoren |
 | E9 | Policy-Critic (Regel-Engine) | STUB | `src/governance/policy_critic/rules.py` — ggf. `NotImplementedError` |
