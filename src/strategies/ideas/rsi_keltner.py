@@ -13,7 +13,6 @@ from __future__ import annotations
 from typing import Any, Dict, Optional
 
 import pandas as pd
-import numpy as np
 
 from ..base import BaseStrategy, StrategyMetadata
 
@@ -87,6 +86,10 @@ class RsiKeltnerStrategy(BaseStrategy):
         # Optional: Parameter validieren
         self._validate_params()
 
+    def validate(self) -> None:
+        """Validiert Parameter (expliziter Aufruf für Backtests/CLI)."""
+        self._validate_params()
+
     def _validate_params(self) -> None:
         """
         Validiert Parameter.
@@ -99,6 +102,18 @@ class RsiKeltnerStrategy(BaseStrategy):
             raise ValueError(f"param1 muss >= 1 sein, ist {self.param1}")
         if self.param2 <= 0:
             raise ValueError(f"param2 muss > 0 sein, ist {self.param2}")
+
+    @classmethod
+    def from_config(
+        cls,
+        cfg: Any,
+        section: str = "strategy.ideas.rsi_keltner",
+    ) -> RsiKeltnerStrategy:
+        """Erstellt die Strategie aus einem Config-Objekt mit ``cfg.get(path, default)``."""
+        p1 = cfg.get(section + ".param1", 20)
+        p2 = cfg.get(section + ".param2", 0.02)
+        price = cfg.get(section + ".price_col", "close")
+        return cls(param1=p1, param2=p2, price_col=price)
 
     def generate_signals(self, data: pd.DataFrame) -> pd.Series:
         """
@@ -116,11 +131,7 @@ class RsiKeltnerStrategy(BaseStrategy):
             data: DataFrame mit OHLCV-Daten (mindestens self.price_col)
 
         Returns:
-            Series mit Signalen:
-            - 1  = long
-            - -1 = short (falls du short-Signale unterstützt)
-            - 0  = flat
-            Index muss identisch zu data.index sein
+            ``pd.Series`` (int), typischerweise Werte in ``{-1, 0, 1}``; Index wie ``data.index``.
 
         Raises:
             ValueError: Wenn zu wenig Daten oder Spalte fehlt
