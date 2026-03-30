@@ -33,8 +33,8 @@ Warnung:
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Literal, Optional
+from dataclasses import dataclass
+from typing import Any, Dict, Literal, Optional
 
 import numpy as np
 import pandas as pd
@@ -120,14 +120,12 @@ class EhlersCycleFilterStrategy(BaseStrategy):
     Example:
         >>> # NUR FÜR RESEARCH
         >>> strategy = EhlersCycleFilterStrategy()
-        >>> signals = strategy.generate_signals(df)  # Research-Stub
+        >>> signals = strategy.generate_signals(df)
 
     Notes:
-        Diese Strategie ist ein Research-Stub. Die vollständige DSP-Logik
-        wird in einer späteren Phase implementiert nach:
-        1. Implementierung der Ehlers-Filter-Bibliothek
-        2. Backtesting auf verschiedenen Timeframes
-        3. Optimierung der Cycle-Detection-Parameter
+        Minimal-Slice: Super-Smoother auf ``close`` und einfache 0/1-Regel (Long, wenn
+        ``close`` über dem geglätteten Wert liegt). Hilbert/Bandpass bleiben optional
+        für spätere Phasen; Research-Only bleibt über Tier/``IS_LIVE_READY`` erzwungen.
     """
 
     KEY = "ehlers_cycle_filter"
@@ -242,80 +240,78 @@ class EhlersCycleFilterStrategy(BaseStrategy):
 
     def generate_signals(self, data: pd.DataFrame) -> pd.Series:
         """
-        Generiert Handelssignale basierend auf Ehlers DSP-Filtern.
+        Generiert Handelssignale aus Super-Smoother und einfacher 0/1-Regel.
 
-        ⚠️ RESEARCH-STUB: Aktuell wird ein Dummy-Signal (flat) zurückgegeben.
-        Die vollständige DSP-Implementierung erfolgt in einer späteren Phase.
-
-        Geplante Logik (TODO):
-        1. Preis-/Return-Serie mit Super Smoother glätten
-        2. Dominante Zyklusperiode via Hilbert Transform messen
-        3. Bandpass-Filter auf dominante Frequenz anwenden
-        4. Cycle-Phase bestimmen (Hilbert Transform)
-        5. Entries bei Zyklus-Tiefs, Exits bei Zyklus-Hochs
+        Pro Bar: ``close`` wird mit dem Ehlers Super-Smoother geglättet; Long (1), wenn
+        `close` über dem geglätteten Wert liegt, sonst Flat (0). Bei zu wenig Historie
+        (``len < lookback``) werden nur Nullen zurückgegeben (kein harter Fehler).
 
         Args:
             data: DataFrame mit OHLCV-Daten (mindestens 'close')
 
         Returns:
-            Series mit Signalen (aktuell: 0 für alle Bars = flat)
-
-        Notes:
-            Die vollständige Implementierung würde folgende Ehlers-Filter nutzen:
-            - Super Smoother (2-Pole Butterworth + 2-Bar SMA)
-            - Bandpass Filter (isoliert Cycle-Frequenz)
-            - Hilbert Transform (misst Cycle-Period und Phase)
+            Series mit 0 (flat) oder 1 (long)
         """
-        # Validierung
         if "close" not in data.columns:
             raise ValueError(f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}")
 
+        if len(data) == 0:
+            return pd.Series([], dtype=int)
+
         if len(data) < self.cfg.lookback:
-            raise ValueError(f"Brauche mind. {self.cfg.lookback} Bars, habe nur {len(data)}")
+            signals = pd.Series(0, index=data.index, dtype=int)
+            signals.attrs["is_research_stub"] = False
+            signals.attrs["insufficient_history"] = True
+            return signals
 
-        # =====================================================================
-        # TODO: Ehlers DSP-Filter implementieren
-        # =====================================================================
-        #
-        # Phase 1: Super Smoother Filter
-        # - Bessere Glättung als EMA, weniger Lag
-        # - smooth = self._super_smoother(data["close"], period=self.cfg.min_cycle_length)
-        #
-        # Phase 2: Dominant Cycle Period
-        # - Hilbert Transform zur Cycle-Messung
-        # - dc_period = self._measure_dominant_cycle(smooth)
-        #
-        # Phase 3: Bandpass Filter
-        # - Isoliert die Cycle-Komponente
-        # - cycle = self._bandpass_filter(smooth, dc_period, self.cfg.bandpass_bandwidth)
-        #
-        # Phase 4: Signal-Generierung
-        # - Entries bei Cycle-Tiefs (Phase ≈ -90°)
-        # - Exits bei Cycle-Hochs (Phase ≈ +90°)
-        # =====================================================================
+        close = data["close"].astype(float)
+        period = max(int(self.cfg.min_cycle_length), 2)
 
-        # Research-Stub: Flat-Signal für alle Bars
-        signals = pd.Series(0, index=data.index, dtype=int)
+        # two_pole / three_pole: noch nicht separat — Super-Smoother als gemeinsamer Pfad
+        smooth = self._super_smoother(close, period=period)
+
+        # Einfache Regel: Long (1), wenn Close über dem Super-Smoother liegt
+        signals = (close > smooth).astype(int)
+        signals.attrs["is_research_stub"] = False
+        signals.attrs["insufficient_history"] = False
+        signals.attrs["smoother_period"] = period
 
         return signals
 
     def _super_smoother(self, series: pd.Series, period: int = 10) -> pd.Series:
         """
-        Super Smoother Filter nach Ehlers.
+        Super Smoother Filter nach Ehlers (2-Pole Butterworth-ähnlich, rekursiv).
 
-        TODO: Implementierung nach Ehlers' Formel:
-        - 2-Pole Butterworth + 2-Bar SMA
-        - Weniger Lag als Standard-EMA bei gleichem Glättungsgrad
+        Referenz: J. Ehlers — „Rocket Science for Traders“ / übliche Tradingview-Implementierung.
 
         Args:
             series: Input-Preisserie
-            period: Glättungsperiode
+            period: Glättungsperiode (≥ 2)
 
         Returns:
-            Geglättete Serie
+            Geglättete Serie (gleicher Index)
         """
-        # Placeholder - gibt Input unverändert zurück
-        return series
+        period = float(max(period, 2))
+        x = series.to_numpy(dtype=float)
+        n = len(x)
+        if n == 0:
+            return pd.Series([], dtype=float, index=series.index)
+
+        a1 = np.exp(-np.sqrt(2.0) * np.pi / period)
+        c2 = 2.0 * a1 * np.cos(np.sqrt(2.0) * np.pi / period)
+        c3 = -a1 * a1
+        c1 = 1.0 - c2 - c3
+
+        out = np.zeros(n)
+        for i in range(n):
+            if i == 0:
+                out[i] = x[i]
+            elif i == 1:
+                out[i] = c1 * (x[i] + x[i - 1]) / 2.0 + c2 * out[i - 1]
+            else:
+                out[i] = c1 * (x[i] + x[i - 1]) / 2.0 + c2 * out[i - 1] + c3 * out[i - 2]
+
+        return pd.Series(out, index=series.index)
 
     def _measure_dominant_cycle(self, series: pd.Series) -> pd.Series:
         """
@@ -400,7 +396,7 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
         params: Parameter-Dict
 
     Returns:
-        Signal-Series (0=flat für Research-Stub)
+        Signal-Series (0=flat, 1=long)
     """
     strategy = EhlersCycleFilterStrategy(config=params)
     return strategy.generate_signals(df)

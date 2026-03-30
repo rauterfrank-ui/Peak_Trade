@@ -7,9 +7,9 @@ Testet das 3-stufige Gate-System in src/strategies/registry.py:
 - Gate B: R&D-Tier-Gate (TIER="r_and_d" + allow_r_and_d_strategies)
 - Gate C: Allowed-Environments-Gate (ALLOWED_ENVIRONMENTS)
 
-Testet außerdem Stub-Verhalten der Research-Strategien:
-- Ehlers: generate_signals() → pd.Series(0)
-- Meta-Labeling: generate_signals() → pd.Series(0)
+Testet außerdem Signal-Verhalten der Research-Strategien:
+- Ehlers: generate_signals() → 0/1 (Super-Smoother-Regel)
+- Meta-Labeling: generate_signals() → pd.Series(0) (Stub)
 - VolRegimeOverlay: generate_signals() → NotImplementedError
 - BouchaudMicrostructure: generate_signals() → NotImplementedError
 """
@@ -320,13 +320,13 @@ def test_gate_c_ehlers_allowed_in_research_mode():
 
 
 # =============================================================================
-# TESTS: Stub-Verhalten – Flat-Signal (Ehlers, Meta-Labeling)
+# TESTS: Signale (Ehlers 0/1, Meta-Labeling Stub)
 # =============================================================================
 
 
-def test_ehlers_stub_returns_flat_signal():
+def test_ehlers_returns_signals_01():
     """
-    Test: Ehlers generate_signals() gibt pd.Series(0) zurück (Stub-Implementierung).
+    Test: Ehlers generate_signals() liefert 0/1 (Super-Smoother vs. Close).
     """
     cfg = DummyConfig(
         {
@@ -346,10 +346,10 @@ def test_ehlers_stub_returns_flat_signal():
 
     signals = strategy.generate_signals(df)
 
-    # Stub: Alle Signale = 0 (flat)
     assert isinstance(signals, pd.Series)
     assert len(signals) == len(df)
-    assert (signals == 0).all()
+    assert set(signals.unique()).issubset({0, 1})
+    assert signals.attrs.get("is_research_stub") is False
 
 
 def test_meta_labeling_stub_returns_flat_signal():
