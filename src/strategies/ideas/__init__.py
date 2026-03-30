@@ -2,13 +2,12 @@
 """
 Peak_Trade Strategy Ideas
 
-Dieses Paket ist der Sandbox-Bereich fuer neue Strategien.
-Hier kannst du schnell neue Ideen als eigene Strategy-Klassen implementieren,
-ohne die produktiven Strategien zu "zumuellen".
+Sandbox für neue Strategien: eigene Klassen unter ``ideas/`` ohne die produktiven
+Strategien in ``src/strategies/`` zu vermischen.
 
 Typischer Workflow:
-- Mit scripts/new_idea_strategy.py eine neue Datei erzeugen
-- Die generierte Klasse inhaltlich ausfuellen
-- Mit scripts/run_idea_strategy.py die Strategie testen
-- Falls gut: optional in die Haupt-Registry uebernehmen
+- ``python scripts/new_idea_strategy.py --name my_idea`` — Datei aus Vorlage erzeugen
+- ``generate_signals`` und Metadaten ausfüllen (TODOs in der Datei)
+- ``python scripts/run_idea_strategy.py --module my_idea --symbol BTC/EUR`` — Smoke-Run
+- Optional: später in die zentrale Registry übernehmen (separater PR)
 """
