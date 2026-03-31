@@ -2,7 +2,7 @@
 
 > **Zweck:** Überblick über **offene Arbeit** im Repo — **kein** Merge-Gate, sondern **Planungs- und Triage-Hilfe**.  
 > **Scope:** NO-LIVE; Priorisierung erfolgt getrennt von Live-Freigaben.  
-> **Stand:** Automatisierte Tiefen-Stichprobe (`src&#47;**&#47;*.py`, zentrale `scripts/`, Schlüssel-`tests/`, Doku-Hinweise) — **2026-03-31** (F2 Learning Loop Emitter/Bridge-Normalizer im Runbook als DONE nachgezogen). Kein vollständiger Beweis, dass **jede** Zeile erfasst ist (Templates, Archiv-`docs/`, generierte Artefakte sind nur stichprobenartig berücksichtigt).
+> **Stand:** Automatisierte Tiefen-Stichprobe (`src&#47;**&#47;*.py`, zentrale `scripts/`, Schlüssel-`tests/`, Doku-Hinweise) — **2026-03-31** (F2 Learning Loop Emitter/Bridge-Normalizer im Runbook als DONE; **F3** in `docs&#47;LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md` §12 und `docs&#47;ops&#47;roadmap&#47;CURRENT_FOCUS.md` als optional/parked markiert). Kein vollständiger Beweis, dass **jede** Zeile erfasst ist (Templates, Archiv-`docs/`, generierte Artefakte sind nur stichprobenartig berücksichtigt).
 
 ---
 
@@ -86,7 +86,7 @@
 |---|--------|-----|----------------|
 | F1 | Infostream: robuster Parser, Modell-/Key-Konfiguration | DONE | `evaluator.py` — Block-Extraktion, Fences, Bullets, Risk-Level, `resolve_infostream_model` / `INFOSTREAM_MODEL` |
 | F2 | Learning Loop **Bridge** & **Emitter** (Signale) | DONE | **Emitter:** `src&#47;meta&#47;learning_loop&#47;emitter.py` (`emit_learning_snippet`). **Bridge:** `src&#47;meta&#47;learning_loop&#47;bridge.py` (`normalize_patches`). Tests `tests&#47;meta&#47;test_learning_loop_emitter.py`, `tests&#47;meta&#47;test_learning_loop_bridge.py`; Doku `docs&#47;LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md` |
-| F3 | Learning/Promotion Roadmap v2 | DOC | dieselbe Doku — Slack, Web-UI, Auto-Rollback, TestHealth Pre-Checks, … |
+| F3 | Learning/Promotion Roadmap v2 | DOC | **Bewusst nicht priorisiert** — optionale v2-Wunschliste in `docs&#47;LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md` §12 („v2 Enhancements“); kein Feature-Fix bis Triage |
 | F4 | Knowledge / Vector-DB | DONE | `src/knowledge/vector_db.py` — `ChromaDBAdapter` vollständig; `MemoryVectorAdapter` ohne optionale Deps (lexikalisches Scoring); `QdrantAdapter`/`PineconeAdapter`: add/search bewusst offen (Embeddings); Tests `tests/knowledge/test_vector_db_memory.py`, `tests/test_knowledge_integration.py` (Chroma optional) |
 | F5 | Execution-Telemetry | DONE | `src/execution/telemetry.py` — `ExecutionEventEmitter`, `JsonlExecutionLogger` (optional `fixed_filename`), `FixedJsonlAppendOnlyWriter`, `CompositeEmitter`, `NullEmitter`; Tests `tests/execution/test_execution_telemetry.py`; Viewer/Health unter `telemetry_viewer.py`, `telemetry_health.py` |
 | F6 | New-Listings-Collector-Basis | DONE | `src/research/new_listings/collectors/base.py` — `CollectorContext`, `RawEvent`, `Collector`-Protocol; konkrete Collector u. a. in `src/research/new_listings/collectors/`; Tests u. a. `tests/research/new_listings/test_p1_collector_contract.py`, `tests/research/new_listings/test_p8_ccxt_replay.py` |
