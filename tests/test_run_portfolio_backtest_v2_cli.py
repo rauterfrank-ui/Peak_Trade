@@ -24,3 +24,10 @@ def test_parse_args_ohlcv_source():
 
     assert parse_args([]).ohlcv_source == "dummy"
     assert parse_args(["--ohlcv-source", "kraken"]).ohlcv_source == "kraken"
+
+
+@pytest.mark.smoke
+def test_parse_args_defaults_timeframe():
+    from run_portfolio_backtest_v2 import parse_args
+
+    assert parse_args([]).timeframe == "1h"

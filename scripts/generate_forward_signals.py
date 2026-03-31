@@ -42,7 +42,8 @@ from src.analytics.risk_monitor import (
     aggregate_strategy_risk,
 )
 from src.analytics.filter_flow import SelectionPolicy, build_strategy_selection
-from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, OHLCV_SOURCES, load_ohlcv
+from _shared_forward_args import add_shared_ohlcv_cli_group
+from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
@@ -76,12 +77,6 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
         help="Zielverzeichnis für Signal-CSV (Default: reports/forward).",
     )
     parser.add_argument(
-        "--n-bars",
-        type=int,
-        default=200,
-        help="Anzahl Bars für Daten-Simulation (Default: 200).",
-    )
-    parser.add_argument(
         "--enforce-selection",
         action="store_true",
         help=(
@@ -89,15 +84,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
             "und nur zugelassen, wenn selection_status='APPROVED' ist."
         ),
     )
-    parser.add_argument(
-        "--ohlcv-source",
-        choices=list(OHLCV_SOURCES),
-        default=OHLCV_SOURCE_DUMMY,
-        help=(
-            "OHLCV-Quelle: dummy (offline, Default) oder kraken (öffentliche REST-OHLCV via "
-            "src.data.kraken; Netzwerk nötig, max. 720 Bars pro Abruf)."
-        ),
-    )
+    add_shared_ohlcv_cli_group(parser)
     return parser.parse_args(argv)
 
 
@@ -122,6 +109,7 @@ def load_data_for_symbol(
     n_bars: int = 200,
     *,
     ohlcv_source: str = OHLCV_SOURCE_DUMMY,
+    timeframe: str = "1h",
 ) -> pd.DataFrame:
     """
     Lädt Daten für ein bestimmtes Symbol.
@@ -132,11 +120,12 @@ def load_data_for_symbol(
         symbol: Trading-Pair (z.B. "BTC/EUR")
         n_bars: Anzahl Bars
         ohlcv_source: ``dummy`` | ``kraken`` (CLI: ``--ohlcv-source``).
+        timeframe: Kraken-Timeframe; Dummy bleibt 1h-synthetisch (siehe Loader).
 
     Returns:
         DataFrame mit OHLCV-Daten
     """
-    return load_ohlcv(symbol, n_bars=n_bars, source=ohlcv_source)
+    return load_ohlcv(symbol, n_bars=n_bars, source=ohlcv_source, timeframe=timeframe)
 
 
 def determine_universe(cfg: Any, symbols_arg: str | None) -> List[str]:
@@ -219,6 +208,7 @@ def main(argv: List[str] | None = None) -> None:
     print(f"  Universe:      {universe}")
     print(f"  Run-Name:      {run_name}")
     print(f"  Bars:          {args.n_bars}")
+    print(f"  Timeframe:     {args.timeframe}")
     print(f"  OHLCV-Quelle:  {args.ohlcv_source}")
 
     signals: List[ForwardSignal] = []
@@ -227,7 +217,12 @@ def main(argv: List[str] | None = None) -> None:
 
     for symbol in universe:
         print(f"\n📊 Verarbeite Symbol: {symbol}")
-        data = load_data_for_symbol(symbol, n_bars=args.n_bars, ohlcv_source=args.ohlcv_source)
+        data = load_data_for_symbol(
+            symbol,
+            n_bars=args.n_bars,
+            ohlcv_source=args.ohlcv_source,
+            timeframe=args.timeframe,
+        )
         if data.empty:
             print(f"  ⚠️  Keine Daten für {symbol}, überspringe.")
             continue
@@ -295,6 +290,7 @@ def main(argv: List[str] | None = None) -> None:
             "signal_csv": str(out_path),
             "n_signals": len(signals),
             "ohlcv_source": args.ohlcv_source,
+            "timeframe": args.timeframe,
         },
     )
     print(f"\n📝 Forward-Signal-Run in Registry geloggt (run_type='forward_signals')")

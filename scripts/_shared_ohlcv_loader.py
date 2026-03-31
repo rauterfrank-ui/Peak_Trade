@@ -11,6 +11,9 @@ Gleicher DataFrame-Vertrag für ``generate_forward_signals``, ``evaluate_forward
 - Read-only: keine Orders, kein C1-Bezug.
 
 J1 Slice 4: ``source="kraken"`` — bis zu 720 Bars pro Request (Kraken/ccxt-Limit), siehe ``KRAKEN_OHLCV_MAX_BARS``.
+
+CLI-Defaults für ``--n-bars``, ``--timeframe``, ``--ohlcv-source`` (Forward-/Portfolio-Skripte):
+``scripts/_shared_forward_args.py`` — ``timeframe`` wirkt auf Kraken; Dummy bleibt 1h-synthetisch.
 """
 
 from __future__ import annotations

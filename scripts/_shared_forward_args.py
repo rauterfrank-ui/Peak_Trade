@@ -1,0 +1,83 @@
+# -*- coding: utf-8 -*-
+"""
+Gemeinsame CLI-Defaults und Argument-Gruppe für Forward-/Portfolio-OHLCV (J1).
+
+Drei Skripte teilen denselben Parametervertrag für ``--n-bars``/``--bars``,
+``--ohlcv-source`` und ``--timeframe`` (Kraken; Dummy ignoriert ``timeframe`` intern 1h).
+
+Keine neuen Datenquellen oder Pagination — nur Normalisierung und einheitliche Hilfetexte.
+"""
+
+from __future__ import annotations
+
+import argparse
+
+from _shared_ohlcv_loader import (
+    KRAKEN_OHLCV_MAX_BARS,
+    OHLCV_SOURCE_DUMMY,
+    OHLCV_SOURCES,
+)
+
+DEFAULT_FORWARD_N_BARS = 200
+DEFAULT_OHLCV_TIMEFRAME = "1h"
+
+# Übliche ccxt/Kraken-Timeframes (an ``fetch_ohlcv_df`` übergeben; Dummy bleibt synthetisch 1h).
+OHLCV_TIMEFRAME_CHOICES = ("1m", "5m", "15m", "1h", "4h", "1d")
+
+
+def parse_symbols_cli_arg(symbols_csv: str | None) -> list[str] | None:
+    """
+    Kommagetrennte Symbole wie ``BTC/EUR,ETH/EUR`` → Liste; ``None``/leer → ``None``.
+    """
+    if not symbols_csv or not str(symbols_csv).strip():
+        return None
+    return [x.strip() for x in str(symbols_csv).split(",") if x.strip()]
+
+
+def add_shared_ohlcv_cli_group(
+    parser: argparse.ArgumentParser,
+    *,
+    n_bars_dest: str = "n_bars",
+    n_bars_flags: tuple[str, ...] = ("--n-bars",),
+    n_bars_metavar: str = "N",
+) -> None:
+    """
+    Fügt ``--n-bars``/``--bars``, ``--ohlcv-source`` und ``--timeframe`` hinzu.
+
+    Args:
+        parser: Ziel-``ArgumentParser``.
+        n_bars_dest: ``dest`` für die Bar-Anzahl (z. B. ``bars`` im Portfolio-Skript).
+        n_bars_flags: Option-Strings (Portfolio: ``--bars`` und ``--n-bars`` mit gleichem dest).
+        n_bars_metavar: Metavar für die Hilfe.
+    """
+    parser.add_argument(
+        *n_bars_flags,
+        type=int,
+        default=DEFAULT_FORWARD_N_BARS,
+        metavar=n_bars_metavar,
+        dest=n_bars_dest,
+        help=(
+            f"Anzahl OHLCV-Bars pro Symbol (Default: {DEFAULT_FORWARD_N_BARS}). "
+            "Gleiche Semantik in generate_forward_signals, evaluate_forward_signals "
+            "und run_portfolio_backtest_v2. Kraken: max. "
+            f"{KRAKEN_OHLCV_MAX_BARS} Bars pro Abruf (ohne Pagination)."
+        ),
+    )
+    parser.add_argument(
+        "--ohlcv-source",
+        choices=list(OHLCV_SOURCES),
+        default=OHLCV_SOURCE_DUMMY,
+        help=(
+            "OHLCV-Quelle: dummy (offline, Default) oder kraken (öffentliche REST-OHLCV; "
+            f"Netzwerk nötig, max. {KRAKEN_OHLCV_MAX_BARS} Bars/Abruf)."
+        ),
+    )
+    parser.add_argument(
+        "--timeframe",
+        choices=OHLCV_TIMEFRAME_CHOICES,
+        default=DEFAULT_OHLCV_TIMEFRAME,
+        help=(
+            "OHLCV-Timeframe für Kraken. Bei ohlcv-source=dummy bleibt die Serie synthetisch "
+            "1h-getaktet; das Argument dient dem Abgleich mit Generate/Evaluate/Portfolio."
+        ),
+    )
