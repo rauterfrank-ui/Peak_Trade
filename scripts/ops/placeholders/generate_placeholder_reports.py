@@ -10,6 +10,9 @@ markers (TODO, FIXME, TBD, XXX, etc.) and generates two local report files:
 
 Output location: .ops_local/inventory/ (git-ignored)
 
+Large or noisy trees (e.g. ``out/``, ``.venv*/``, ``.cursor/``) are skipped by default;
+see ``SKIP_DIRS`` and ``_skip_path_component`` in this file.
+
 Usage:
     python scripts/ops/placeholders/generate_placeholder_reports.py
 
@@ -58,7 +61,20 @@ SKIP_DIRS = {
     ".ruff_cache",
     ".tox",
     "htmlcov",
+    "out",  # generated ops / audit trees (high noise for triage)
+    ".cursor",
 }
+
+
+def _skip_path_component(part: str) -> bool:
+    """True if a single path segment should be excluded from the walk."""
+    if part in SKIP_DIRS:
+        return True
+    # CI/local venv clones: .venv_ci_lint, .venv_obs, …
+    if part.startswith(".venv"):
+        return True
+    return False
+
 
 # File patterns to skip
 SKIP_PATTERNS = [
@@ -82,10 +98,9 @@ def find_repo_root() -> Path:
 
 def should_skip(path: Path, repo_root: Path) -> bool:
     """Determine if a file or directory should be skipped."""
-    # Check if any parent directory is in SKIP_DIRS
     rel_path = path.relative_to(repo_root)
     for part in rel_path.parts:
-        if part in SKIP_DIRS:
+        if _skip_path_component(part):
             return True
 
     # Check file patterns
@@ -197,6 +212,10 @@ def generate_inventory_report(
     lines.append(f"- Repo: {repo_root}")
     lines.append(f"- Commit: {commit}")
     lines.append("- Note: Inventory-only. File is local under .ops_local (do not commit).")
+    lines.append(
+        "- Scan excludes: `out/`, `.cursor/`, `.venv*/`, and other dirs in SKIP_DIRS "
+        "(see `generate_placeholder_reports.py`)."
+    )
     lines.append("")
     lines.append("## Pattern Summary")
     lines.append("")
