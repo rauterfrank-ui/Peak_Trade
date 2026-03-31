@@ -62,9 +62,7 @@ def test_csv_roundtrip_as_of_iso_utc_aligns_with_price_index(tmp_path, monkeypat
 
 
 @pytest.mark.integration
-def test_generate_then_evaluate_with_captured_ohlcv(
-    tmp_path, monkeypatch
-):
+def test_generate_then_evaluate_with_captured_ohlcv(tmp_path, monkeypatch):
     """Generate → CSV → Evaluate mit identischem OHLCV-Fenster (as_of mittig gesetzt)."""
     import generate_forward_signals as gen
     import evaluate_forward_signals as ev
