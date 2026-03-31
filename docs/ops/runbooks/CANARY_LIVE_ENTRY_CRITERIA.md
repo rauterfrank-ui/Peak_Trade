@@ -24,7 +24,7 @@ Die folgenden Felder müssen **jeweils genau einen Wert** haben und **schriftlic
 |------|---------------------------|-------------|
 | Exchange | Kraken | der in der Freigabe benannte Anbieter |
 | Kontotyp | Spot (kein Margin/Futures) | der in der Freigabe benannte Kontotyp |
-| Symbol | `BTC/EUR` | genau ein Paar |
+| Symbol | `BTC&#47;EUR` | genau ein Paar |
 | Strategie-Version | z. B. `ma_crossover` + Git-Revision / Artefakt-ID | exakt eine deployierte Version |
 | Erlaubte Ordertypen | z. B. nur **Limit** (kein Market/Stop ohne Zusatz-Freigabe) | die explizit gelisteten Typen |
 
