@@ -46,9 +46,7 @@ def test_load_ohlcv_dispatches_dummy():
 
 
 def test_load_ohlcv_with_meta_dummy():
-    df, meta = load_ohlcv_with_meta(
-        "BTC/EUR", n_bars=42, source=OHLCV_SOURCE_DUMMY, timeframe="1h"
-    )
+    df, meta = load_ohlcv_with_meta("BTC/EUR", n_bars=42, source=OHLCV_SOURCE_DUMMY, timeframe="1h")
     assert len(df) == 42
     assert meta["symbol"] == "BTC/EUR"
     assert meta["ohlcv_source"] == OHLCV_SOURCE_DUMMY
