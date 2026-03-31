@@ -22,12 +22,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
-# Projekt-Root zum Python-Path hinzufügen
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Projekt-Root und scripts/-Verzeichnis (shared loader) zum Python-Path
+_root = Path(__file__).resolve().parent.parent
+_scripts = Path(__file__).resolve().parent
+sys.path.insert(0, str(_root))
+sys.path.insert(0, str(_scripts))
 
 import pandas as pd
-import numpy as np
-from datetime import timedelta
 
 from src.core.peak_config import load_config, PeakConfig
 from src.core.experiments import log_generic_experiment
@@ -41,6 +42,7 @@ from src.analytics.risk_monitor import (
     aggregate_strategy_risk,
 )
 from src.analytics.filter_flow import SelectionPolicy, build_strategy_selection
+from _shared_ohlcv_loader import load_dummy_ohlcv
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
@@ -94,8 +96,9 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     """
     Lädt Daten für ein bestimmtes Symbol.
 
-    Aktuell: Dummy-Daten mit symbol-spezifischem Seed (wie in scan_markets.py).
-    TODO: Später mit echten Kraken-Daten ersetzen.
+    J1 Slice 1: Dummy-OHLCV über ``scripts/_shared_ohlcv_loader.load_dummy_ohlcv``
+    (read-only, keine Orders/Keys, kein C1-Bezug; Vertrag siehe Modul-Docstring dort).
+    Später: echte Kraken-Daten (J1 weiter); evaluate/portfolio in Slice 2/3 auf denselben Loader.
 
     Args:
         symbol: Trading-Pair (z.B. "BTC/EUR")
@@ -104,56 +107,7 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     Returns:
         DataFrame mit OHLCV-Daten
     """
-    # Symbol-spezifischer Seed für reproduzierbare aber unterschiedliche Daten
-    seed = hash(symbol) % (2**32)
-    np.random.seed(seed)
-
-    # Start-Zeitpunkt
-    start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq="1h")
-
-    # Preis-Simulation mit symbol-spezifischen Eigenschaften
-    if "BTC" in symbol:
-        base_price = 50000
-        volatility = 0.003
-    elif "ETH" in symbol:
-        base_price = 3000
-        volatility = 0.004
-    elif "LTC" in symbol:
-        base_price = 100
-        volatility = 0.005
-    else:
-        base_price = 1000
-        volatility = 0.003
-
-    # Langfristiger Trend
-    trend = np.linspace(0, base_price * 0.06, n_bars)
-
-    # Oszillation
-    cycle = np.sin(np.linspace(0, 4 * np.pi, n_bars)) * base_price * 0.04
-
-    # Random Walk Noise
-    noise = np.random.randn(n_bars).cumsum() * base_price * volatility
-
-    close_prices = base_price + trend + cycle + noise
-
-    # OHLC generieren
-    df = pd.DataFrame(
-        {
-            "open": close_prices * (1 + np.random.randn(n_bars) * volatility),
-            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
-            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
-            "close": close_prices,
-            "volume": np.random.randint(10, 100, n_bars),
-        },
-        index=dates,
-    )
-
-    # Sicherstellen dass High/Low korrekt sind
-    df["high"] = df[["open", "close", "high"]].max(axis=1)
-    df["low"] = df[["open", "close", "low"]].min(axis=1)
-
-    return df
+    return load_dummy_ohlcv(symbol, n_bars=n_bars)
 
 
 def determine_universe(cfg: Any, symbols_arg: str | None) -> List[str]:
