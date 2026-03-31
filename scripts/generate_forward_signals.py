@@ -26,8 +26,6 @@ from typing import Any, Dict, List
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pandas as pd
-import numpy as np
-from datetime import timedelta
 
 from src.core.peak_config import load_config, PeakConfig
 from src.core.experiments import log_generic_experiment
@@ -41,6 +39,7 @@ from src.analytics.risk_monitor import (
     aggregate_strategy_risk,
 )
 from src.analytics.filter_flow import SelectionPolicy, build_strategy_selection
+from src.data.dummy_ohlcv import load_dummy_ohlcv_bars
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
@@ -94,7 +93,7 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     """
     Lädt Daten für ein bestimmtes Symbol.
 
-    Aktuell: Dummy-Daten mit symbol-spezifischem Seed (wie in scan_markets.py).
+    Aktuell: Dummy-OHLCV über ``src.data.dummy_ohlcv`` (J1 Slice 1).
     TODO: Später mit echten Kraken-Daten ersetzen.
 
     Args:
@@ -104,56 +103,7 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     Returns:
         DataFrame mit OHLCV-Daten
     """
-    # Symbol-spezifischer Seed für reproduzierbare aber unterschiedliche Daten
-    seed = hash(symbol) % (2**32)
-    np.random.seed(seed)
-
-    # Start-Zeitpunkt
-    start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq="1h")
-
-    # Preis-Simulation mit symbol-spezifischen Eigenschaften
-    if "BTC" in symbol:
-        base_price = 50000
-        volatility = 0.003
-    elif "ETH" in symbol:
-        base_price = 3000
-        volatility = 0.004
-    elif "LTC" in symbol:
-        base_price = 100
-        volatility = 0.005
-    else:
-        base_price = 1000
-        volatility = 0.003
-
-    # Langfristiger Trend
-    trend = np.linspace(0, base_price * 0.06, n_bars)
-
-    # Oszillation
-    cycle = np.sin(np.linspace(0, 4 * np.pi, n_bars)) * base_price * 0.04
-
-    # Random Walk Noise
-    noise = np.random.randn(n_bars).cumsum() * base_price * volatility
-
-    close_prices = base_price + trend + cycle + noise
-
-    # OHLC generieren
-    df = pd.DataFrame(
-        {
-            "open": close_prices * (1 + np.random.randn(n_bars) * volatility),
-            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
-            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
-            "close": close_prices,
-            "volume": np.random.randint(10, 100, n_bars),
-        },
-        index=dates,
-    )
-
-    # Sicherstellen dass High/Low korrekt sind
-    df["high"] = df[["open", "close", "high"]].max(axis=1)
-    df["low"] = df[["open", "close", "low"]].min(axis=1)
-
-    return df
+    return load_dummy_ohlcv_bars(symbol, n_bars=n_bars)
 
 
 def determine_universe(cfg: Any, symbols_arg: str | None) -> List[str]:
