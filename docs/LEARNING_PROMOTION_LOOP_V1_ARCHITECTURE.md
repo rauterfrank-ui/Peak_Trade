@@ -8,8 +8,8 @@
 |------|--------|
 | **Promotion / Live-Overrides / Governance** (System 2) | Überwiegend umgesetzt — siehe Skripte unter `scripts/` und Tests/Doku zu Overrides. |
 | **Learning Snippets → Overrides** | `scripts&#47;run_learning_apply_cycle.py` liest `reports&#47;learning_snippets&#47;` (`*.json` / `*.jsonl`) und schreibt `config&#47;auto&#47;learning.override.toml`. |
-| **`src&#47;meta&#47;learning_loop&#47;`** | `models.py` (`ConfigPatch`, `PatchStatus`), **`emitter.py`** (`emit_learning_snippet` — atomar, deterministisch nach `reports&#47;learning_snippets&#47;`). |
-| **Bridge** (`bridge.py`) | **Geplant** — Normalisierung verschiedener Domänenquellen auf das Snippet-/Patch-Format; noch kein fester Producer-Vertrag. |
+| **`src&#47;meta&#47;learning_loop&#47;`** | `models.py` (`ConfigPatch`, `PatchStatus`), **`emitter.py`** (`emit_learning_snippet`), **`bridge.py`** (`normalize_patches`). |
+| **Bridge vs. Emitter** | **Bridge:** rein funktional **Domäne → Patch-Liste** (`normalize_patches`, kein I/O). **Emitter:** **Dateischreiben** JSON/JSONL unter `reports&#47;learning_snippets&#47;`. Spätere domänenspezifische Producer bauen auf der Bridge auf. |
 
 *(Ältere Formulierungen „vollständig implementiert“ bezogen sich auf ein Zielbild; die Tabelle oben ist die maßgebliche Abgrenzung **vorhanden vs. geplant**.)*
 
@@ -23,6 +23,8 @@
 
 ## 2. System 1 – Learning Loop (Peak_Trade intern)
 
+Die **Bridge** (`normalize_patches` in `bridge.py`) überführt Rohdaten (z. B. generisches Mapping mit `patches` oder einzelnem `target`) **nur im Speicher** in eine kanonische **Liste von Patch-Dicts** — dieselbe Struktur, die `scripts&#47;run_learning_apply_cycle.py` aus Snippet-Dateien erwartet. Der **Emitter** (`emit_learning_snippet`) ist getrennt davon zuständig: **deterministisches Schreiben** dieser Inhalte nach `reports&#47;learning_snippets&#47;` (JSON oder JSONL). Weder Bridge noch Emitter schreiben TOML; das übernimmt ausschließlich das Apply-Skript.
+
 ### Quelle
 
 * **TestHealthAutomation**
@@ -32,9 +34,9 @@
 
 ### Pfad
 
-1. **Domain-Code erzeugt Signale / Patch-Daten** (Zielbild: `LearningSignal` + `recommended_changes` — **Bridge** noch geplant):
+1. **Domain-Code erzeugt Signale / Patch-Daten** (Zielbild: `LearningSignal` + `recommended_changes`; v1-API: **`normalize_patches`** für generische Mappings):
 
-   * **Geplant:** `bridge.py` (geplant unter `src&#47;meta&#47;learning_loop&#47;`) — einheitliche Normalisierung auf das Snippet-Format
+   * **Vorhanden:** `src&#47;meta&#47;learning_loop&#47;bridge.py` — `normalize_patches` (Domäne/Rohdaten → Liste von Patch-Dicts, ohne I/O)
    * Beispiele (Konzept):
      * `build_test_health_leverage_signal`
      * `build_trigger_timing_signal`
@@ -535,7 +537,7 @@ policy = AutoApplyPolicy(
 * **Learning Loop:**
   * `src&#47;meta&#47;learning_loop&#47;models.py` - ConfigPatch, PatchStatus
   * `src&#47;meta&#47;learning_loop&#47;emitter.py` - emit_learning_snippet (Snippet-Dateien)
-  * `src&#47;meta&#47;learning_loop&#47;bridge.py` (geplant) - Signal-Normalisierung
+  * `src&#47;meta&#47;learning_loop&#47;bridge.py` - `normalize_patches` (Domäne → Patch-Liste)
 
 * **Promotion Loop:**
   * `src/governance/promotion_loop/models.py` - PromotionCandidate, Decision, Proposal
