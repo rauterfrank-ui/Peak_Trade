@@ -85,7 +85,7 @@
 | # | Thema | Tag | Hinweis / Ort |
 |---|--------|-----|----------------|
 | F1 | Infostream: robuster Parser, Modell-/Key-Konfiguration | DONE | `evaluator.py` — Block-Extraktion, Fences, Bullets, Risk-Level, `resolve_infostream_model` / `INFOSTREAM_MODEL` |
-| F2 | Learning Loop **Bridge** & **Emitter** (Signale) | DOC | `docs/LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md` — als geplant; **keine** `bridge.py`/`emitter.py` unter `src/meta/learning_loop/` (nur `models.py`) |
+| F2 | Learning Loop **Bridge** & **Emitter** (Signale) | DOC | **Emitter:** `src&#47;meta&#47;learning_loop&#47;emitter.py` (`emit_learning_snippet` → `reports&#47;learning_snippets&#47;`). **Bridge** (`bridge.py`): geplant — Doku `docs&#47;LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md` (Tabelle „vorhanden vs. geplant“) |
 | F3 | Learning/Promotion Roadmap v2 | DOC | dieselbe Doku — Slack, Web-UI, Auto-Rollback, TestHealth Pre-Checks, … |
 | F4 | Knowledge / Vector-DB | DONE | `src/knowledge/vector_db.py` — `ChromaDBAdapter` vollständig; `MemoryVectorAdapter` ohne optionale Deps (lexikalisches Scoring); `QdrantAdapter`/`PineconeAdapter`: add/search bewusst offen (Embeddings); Tests `tests/knowledge/test_vector_db_memory.py`, `tests/test_knowledge_integration.py` (Chroma optional) |
 | F5 | Execution-Telemetry | DONE | `src/execution/telemetry.py` — `ExecutionEventEmitter`, `JsonlExecutionLogger` (optional `fixed_filename`), `FixedJsonlAppendOnlyWriter`, `CompositeEmitter`, `NullEmitter`; Tests `tests/execution/test_execution_telemetry.py`; Viewer/Health unter `telemetry_viewer.py`, `telemetry_health.py` |

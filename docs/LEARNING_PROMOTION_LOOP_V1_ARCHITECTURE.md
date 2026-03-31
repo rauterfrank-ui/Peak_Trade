@@ -1,7 +1,17 @@
 # Peak_Trade – Learning & Promotion Loop v1
 
-**Status:** ✅ Vollständig implementiert & getestet (2025-12-11)  
-**Ready for Production:** 🚀
+**Dokument-Stand:** Konzept + Referenz für Operator-Flows; **Repo-Stand** siehe unten.
+
+**Implementierungsstand (Repo, kurz):**
+
+| Teil | Status |
+|------|--------|
+| **Promotion / Live-Overrides / Governance** (System 2) | Überwiegend umgesetzt — siehe Skripte unter `scripts/` und Tests/Doku zu Overrides. |
+| **Learning Snippets → Overrides** | `scripts&#47;run_learning_apply_cycle.py` liest `reports&#47;learning_snippets&#47;` (`*.json` / `*.jsonl`) und schreibt `config&#47;auto&#47;learning.override.toml`. |
+| **`src&#47;meta&#47;learning_loop&#47;`** | `models.py` (`ConfigPatch`, `PatchStatus`), **`emitter.py`** (`emit_learning_snippet` — atomar, deterministisch nach `reports&#47;learning_snippets&#47;`). |
+| **Bridge** (`bridge.py`) | **Geplant** — Normalisierung verschiedener Domänenquellen auf das Snippet-/Patch-Format; noch kein fester Producer-Vertrag. |
+
+*(Ältere Formulierungen „vollständig implementiert“ bezogen sich auf ein Zielbild; die Tabelle oben ist die maßgebliche Abgrenzung **vorhanden vs. geplant**.)*
 
 ---
 
@@ -22,18 +32,18 @@
 
 ### Pfad
 
-1. **Domain-Code erzeugt `LearningSignal`:**
+1. **Domain-Code erzeugt Signale / Patch-Daten** (Zielbild: `LearningSignal` + `recommended_changes` — **Bridge** noch geplant):
 
-   * via `src&sol;meta&sol;learning_loop&sol;bridge.py` (planned)
-   * Beispiele:
+   * **Geplant:** `bridge.py` (geplant unter `src&#47;meta&#47;learning_loop&#47;`) — einheitliche Normalisierung auf das Snippet-Format
+   * Beispiele (Konzept):
      * `build_test_health_leverage_signal`
      * `build_trigger_timing_signal`
      * `build_macro_weighting_signal`
 
-2. **Speicherung als JSON:**
+2. **Speicherung als JSON/JSONL unter `reports&#47;learning_snippets&#47;`:**
 
-   * via `src&sol;meta&sol;learning_loop&sol;emitter.py` (planned) →
-   * `reports&#47;learning_snippets&#47;*.json`
+   * **Vorhanden:** `src&#47;meta&#47;learning_loop&#47;emitter.py` — `emit_learning_snippet(...)` (atomar, deterministisch; optional `json` oder `jsonl`, kompatibel mit `scripts&#47;run_learning_apply_cycle.py`)
+   * Alternativ weiterhin manuell oder über andere Skripte dieselbe Verzeichnis-Konvention
 
 3. **Learning Loop laufen lassen:**
 
@@ -523,9 +533,9 @@ policy = AutoApplyPolicy(
 ### Code-Referenzen
 
 * **Learning Loop:**
-  * `src/meta/learning_loop/models.py` - ConfigPatch, PatchStatus
-  * `src&sol;meta&sol;learning_loop&sol;bridge.py` (planned) - Signal-Builder (TODO)
-  * `src&sol;meta&sol;learning_loop&sol;emitter.py` (planned) - Signal-Emitter (TODO)
+  * `src&#47;meta&#47;learning_loop&#47;models.py` - ConfigPatch, PatchStatus
+  * `src&#47;meta&#47;learning_loop&#47;emitter.py` - emit_learning_snippet (Snippet-Dateien)
+  * `src&#47;meta&#47;learning_loop&#47;bridge.py` (geplant) - Signal-Normalisierung
 
 * **Promotion Loop:**
   * `src/governance/promotion_loop/models.py` - PromotionCandidate, Decision, Proposal
