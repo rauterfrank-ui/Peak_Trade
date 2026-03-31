@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-03-27
+last_updated: 2026-03-31
 ---
 
 # Current focus
@@ -31,6 +31,12 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 ## Blockers / risks
 
 - None known for **main** at last verification below; reopen if required CI/docs gates regress.
+
+---
+
+## Parked (bewusst nicht aktiv)
+
+- **F3 — Learning/Promotion Roadmap v2** (optional): Wunschliste in `docs&#47;LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md` §12; Runbook-Stufe F und Tag **DOC** in [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md). Kein Lieferzwang bis Priorisierung.
 
 ---
 

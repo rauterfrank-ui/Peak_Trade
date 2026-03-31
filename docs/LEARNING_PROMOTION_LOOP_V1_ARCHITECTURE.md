@@ -563,21 +563,22 @@ policy = AutoApplyPolicy(
 
 ## 12. Roadmap
 
-### v1 Status (2025-12-11)
+### v1 Status (Repo-Stand, 2026-03-31)
 
 ✅ Promotion Loop vollständig implementiert  
 ✅ Config-Integration fertig  
 ✅ Auto-Apply (bounded_auto) funktioniert  
 ✅ Tests vollständig (19/19)  
 ✅ Dokumentation umfassend  
-⏳ Learning Loop Bridge (TODO)  
-⏳ Learning Loop Emitter (TODO)  
-⏳ Automation-Integration (TODO)  
+✅ **Learning Loop Emitter** vorhanden (`emit_learning_snippet` → Snippets unter `reports&#47;learning_snippets&#47;`)  
+✅ **Learning Loop Bridge** vorhanden (`normalize_patches` — reine Payload-Normalisierung, kein I/O)  
+⏳ **Domänen-/Automation-Anbindung** (TestHealth, Trigger, Macro, …) auf Bridge/Emitter — **optional**, kein Blocker für v1-Overrides  
 
-### v2 Enhancements (geplant)
+### v2 Enhancements (optional / später)
 
-* 📊 Learning Loop Bridge Implementation
-* 📊 Signal-Emitter für TestHealth/Trigger/Macro
+Die folgenden Punkte sind **Wunschliste**, keine feste Roadmap-Phase — Umsetzung nur bei **Produkt- und Governance-Priorität** und weiterhin im **NO-LIVE**-Default, sofern nicht ausdrücklich anders freigegeben.
+
+* 📊 Gezielte Anbindungen konkreter Quellen an `normalize_patches` / `emit_learning_snippet` (statt generischer Mappings allein)
 * 🔔 Slack-Notifications für Proposals
 * 🔄 Auto-Rollback bei Performance-Degradation
 * 📈 Web-UI für Proposal-Review
@@ -587,5 +588,5 @@ policy = AutoApplyPolicy(
 ---
 
 **Version:** v1  
-**Status:** ✅ Production-Ready (mit TODO: Learning Loop Bridge)  
-**Datum:** 2025-12-11
+**Status:** ✅ Production-Ready (Learning Loop: Emitter + Bridge-Normalizer im Repo; siehe §2 und Code-Referenzen)  
+**Datum:** 2026-03-31
