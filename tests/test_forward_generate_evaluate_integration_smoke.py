@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict
 
 import pandas as pd
 import pytest
@@ -25,7 +25,10 @@ from evaluate_forward_signals import (  # noqa: E402
     load_signal_df,
 )
 from generate_forward_signals import format_as_of_iso_utc  # noqa: E402
-from _shared_ohlcv_loader import load_dummy_ohlcv  # noqa: E402
+from _shared_ohlcv_loader import (  # noqa: E402
+    OHLCV_SOURCE_DUMMY,
+    load_dummy_ohlcv,
+)
 
 
 @pytest.mark.smoke
@@ -47,13 +50,21 @@ def test_csv_roundtrip_as_of_iso_utc_aligns_with_price_index(tmp_path, monkeypat
         ]
     ).to_csv(csv_path, index=False)
 
+    ohlcv_meta = {
+        "symbol": "BTC/EUR",
+        "ohlcv_source": OHLCV_SOURCE_DUMMY,
+        "timeframe": "1h",
+        "n_bars_requested": 200,
+        "bars_loaded": len(df_price),
+        "kraken_pagination_used": None,
+    }
     monkeypatch.setattr(
-        "evaluate_forward_signals.load_price_data",
-        lambda *args, **kwargs: df_price,
+        "evaluate_forward_signals.load_ohlcv_with_meta",
+        lambda *args, **kwargs: (df_price, ohlcv_meta),
     )
 
     df_sig = load_signal_df(csv_path)
-    out = evaluate_signals_for_symbol(
+    out, _meta = evaluate_signals_for_symbol(
         df_sig.groupby("symbol").get_group("BTC/EUR"),
         "BTC/EUR",
         horizon_bars=1,
@@ -116,11 +127,21 @@ def test_generate_then_evaluate_with_captured_ohlcv(tmp_path, monkeypatch):
     df_csv.loc[0, "as_of"] = format_as_of_iso_utc(df_p.index[-40])
     df_csv.to_csv(sig_path, index=False)
 
-    monkeypatch.setattr(
-        ev,
-        "load_price_data",
-        lambda sym, n_bars=200, **kw: captured[sym].copy(),
-    )
+    def fake_load_ohlcv_with_meta(
+        sym: str, n_bars: int = 200, **kw: Any
+    ) -> tuple[pd.DataFrame, dict[str, Any]]:
+        df = captured[sym].copy()
+        meta = {
+            "symbol": sym,
+            "ohlcv_source": OHLCV_SOURCE_DUMMY,
+            "timeframe": kw.get("timeframe", "1h"),
+            "n_bars_requested": n_bars,
+            "bars_loaded": len(df),
+            "kraken_pagination_used": None,
+        }
+        return df, meta
+
+    monkeypatch.setattr(ev, "load_ohlcv_with_meta", fake_load_ohlcv_with_meta)
 
     eval_dir = tmp_path / "eval"
     eval_dir.mkdir()

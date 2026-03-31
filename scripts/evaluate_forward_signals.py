@@ -32,7 +32,7 @@ sys.path.insert(0, str(_scripts))
 import pandas as pd
 
 from _shared_forward_args import add_shared_ohlcv_cli_group
-from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv
+from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv_with_meta
 from src.core.peak_config import load_config
 from src.core.experiments import log_generic_experiment
 from src.forward.signals import FORWARD_SIGNALS_COLUMNS
@@ -101,17 +101,18 @@ def load_signal_df(path: Path | str) -> pd.DataFrame:
     return df
 
 
-def load_price_data(
-    symbol: str,
-    n_bars: int = 200,
-    *,
-    ohlcv_source: str = OHLCV_SOURCE_DUMMY,
-    timeframe: str = "1h",
-) -> pd.DataFrame:
-    """
-    Lädt Preisdaten für ein Symbol (J1: ``load_ohlcv`` — dummy oder Kraken).
-    """
-    return load_ohlcv(symbol, n_bars=n_bars, source=ohlcv_source, timeframe=timeframe)
+def _print_ohlcv_load_observability(meta: Dict[str, Any]) -> None:
+    """Stdout: J1-Observability für UTC-/Fenster-Debugging (Evaluate-Pfad)."""
+    pag = meta.get("kraken_pagination_used")
+    if pag is None:
+        pag_s = "n/a (dummy)"
+    else:
+        pag_s = "ja" if pag else "nein"
+    print(
+        f"  📡 OHLCV-Load: {meta['symbol']} | Quelle={meta['ohlcv_source']} | "
+        f"TF={meta['timeframe']} | n_bars={meta['n_bars_requested']} | "
+        f"geladen={meta['bars_loaded']} | Kraken-Pagination={pag_s}"
+    )
 
 
 def evaluate_signals_for_symbol(
@@ -122,7 +123,7 @@ def evaluate_signals_for_symbol(
     *,
     ohlcv_source: str = OHLCV_SOURCE_DUMMY,
     timeframe: str = "1h",
-) -> pd.DataFrame:
+) -> tuple[pd.DataFrame, Dict[str, Any]]:
     """
     Evaluierung der Signale für ein Symbol.
 
@@ -135,14 +136,17 @@ def evaluate_signals_for_symbol(
         flat:  0
 
     Args:
-        n_bars: Länge der OHLCV-Preisreihe (``load_price_data``).
+        n_bars: Länge der OHLCV-Preisreihe (``load_ohlcv_with_meta``).
         ohlcv_source: ``dummy`` | ``kraken`` (mit ``generate_forward_signals`` abstimmen).
         timeframe: Kraken-Timeframe; Dummy siehe Loader.
+
+    Returns:
+        (Evaluations-DataFrame, Observability-Dict für Loader/J1).
     """
-    data = load_price_data(
+    data, ohlcv_meta = load_ohlcv_with_meta(
         symbol,
         n_bars=n_bars,
-        ohlcv_source=ohlcv_source,
+        source=ohlcv_source,
         timeframe=timeframe,
     )
     if data.empty:
@@ -209,21 +213,24 @@ def evaluate_signals_for_symbol(
         )
 
     if not rows:
-        return pd.DataFrame(
-            columns=[
-                "symbol",
-                "as_of",
-                "direction",
-                "entry_ts",
-                "exit_ts",
-                "entry_price",
-                "exit_price",
-                "horizon_bars",
-                "return",
-            ]
+        return (
+            pd.DataFrame(
+                columns=[
+                    "symbol",
+                    "as_of",
+                    "direction",
+                    "entry_ts",
+                    "exit_ts",
+                    "entry_price",
+                    "exit_price",
+                    "horizon_bars",
+                    "return",
+                ]
+            ),
+            ohlcv_meta,
         )
 
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows), ohlcv_meta
 
 
 def compute_eval_stats(df_eval: pd.DataFrame) -> Dict[str, Any]:
@@ -281,10 +288,11 @@ def main(argv: List[str] | None = None) -> None:
     # Nach Symbol gruppieren
     all_rows: List[pd.DataFrame] = []
     stats_per_symbol: Dict[str, Dict[str, Any]] = {}
+    ohlcv_load_by_symbol: Dict[str, Dict[str, Any]] = {}
 
     for symbol, df_sym in df_sig.groupby("symbol"):
         print(f"\n📈 Evaluierung für Symbol: {symbol}")
-        df_eval_sym = evaluate_signals_for_symbol(
+        df_eval_sym, ohlcv_meta = evaluate_signals_for_symbol(
             df_sig_sym=df_sym,
             symbol=symbol,
             horizon_bars=horizon_bars,
@@ -292,6 +300,8 @@ def main(argv: List[str] | None = None) -> None:
             ohlcv_source=args.ohlcv_source,
             timeframe=args.timeframe,
         )
+        ohlcv_load_by_symbol[symbol] = ohlcv_meta
+        _print_ohlcv_load_observability(ohlcv_meta)
         if df_eval_sym.empty:
             print("  ⚠️  Keine auswertbaren Signale.")
             continue
@@ -366,6 +376,7 @@ def main(argv: List[str] | None = None) -> None:
             "n_bars": n_bars,
             "ohlcv_source": args.ohlcv_source,
             "timeframe": args.timeframe,
+            "ohlcv_load_by_symbol": ohlcv_load_by_symbol,
             "stats_per_symbol": stats_per_symbol,
             "eval_csv": str(eval_csv_path),
         },

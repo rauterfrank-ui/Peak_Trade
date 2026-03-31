@@ -14,11 +14,15 @@ J1 Slice 4: ``source="kraken"`` — bis zu 720 Bars pro **Request** (Kraken/ccxt
 
 J1 Pagination: ``n_bars`` > 720 — wiederholte Abrufe (ältere Fenster über ``since_ms``); pro Paginations-Request ``use_cache=False`` (Cache-Datei in ``fetch_ohlcv_df`` ist pro Symbol/TF ein Voll-Snapshot).
 
+``load_ohlcv_with_meta`` liefert dasselbe wie ``load_ohlcv`` plus ein Observability-Dict (u. a. für ``evaluate_forward_signals``).
+
 CLI-Defaults für ``--n-bars``, ``--timeframe``, ``--ohlcv-source`` (Forward-/Portfolio-Skripte):
 ``scripts/_shared_forward_args.py`` — ``timeframe`` wirkt auf Kraken; Dummy bleibt 1h-synthetisch.
 """
 
 from __future__ import annotations
+
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -111,25 +115,16 @@ def load_dummy_ohlcv(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     return df
 
 
-def load_kraken_ohlcv(
+def _load_kraken_ohlcv_inner(
     symbol: str,
     n_bars: int = 200,
     *,
     timeframe: str = "1h",
     use_cache: bool = True,
-) -> pd.DataFrame:
+) -> tuple[pd.DataFrame, bool]:
     """
-    Öffentliche Kraken-OHLCV über ``fetch_ohlcv_df`` (CCXT-Backend).
-
-    Keine API-Keys für reine Kursabfragen nötig. Pro Request maximal
-    ``KRAKEN_OHLCV_MAX_BARS`` Bars; bei ``n_bars`` darüber: Pagination vorwärts
-    ab ``now - n_bars * bar_duration`` (``since_ms``), zusammenführen und
-    ``tail(n_bars)``. Paginations-Requests nutzen ``use_cache=False``, weil der
-    Parquet-Cache in ``fetch_ohlcv_df`` ein Voll-Snapshot ohne ``since``/``limit``
-    ist.
-
-    Cache/``data_dir``: wie ``src.data.kraken`` (ConfigRegistry / ``get_config()``)
-    nur bei einzelnem Abruf ``n_bars <= KRAKEN_OHLCV_MAX_BARS``.
+    Liefert DataFrame plus Flag, ob die Pagination-Schleife genutzt wurde
+    (``n_bars`` > ``KRAKEN_OHLCV_MAX_BARS``).
     """
     from src.data.kraken import fetch_ohlcv_df
 
@@ -149,7 +144,7 @@ def load_kraken_ohlcv(
         if len(df) > n_bars:
             df = df.iloc[-n_bars:].copy()
         validate_ohlcv(df, strict=True, require_tz=True)
-        return df
+        return df, False
 
     td = _timeframe_to_timedelta(timeframe)
     td_ms = int(td.total_seconds() * 1000)
@@ -187,7 +182,33 @@ def load_kraken_ohlcv(
     if len(out) > n_bars:
         out = out.iloc[-n_bars:].copy()
     validate_ohlcv(out, strict=True, require_tz=True)
-    return out
+    return out, True
+
+
+def load_kraken_ohlcv(
+    symbol: str,
+    n_bars: int = 200,
+    *,
+    timeframe: str = "1h",
+    use_cache: bool = True,
+) -> pd.DataFrame:
+    """
+    Öffentliche Kraken-OHLCV über ``fetch_ohlcv_df`` (CCXT-Backend).
+
+    Keine API-Keys für reine Kursabfragen nötig. Pro Request maximal
+    ``KRAKEN_OHLCV_MAX_BARS`` Bars; bei ``n_bars`` darüber: Pagination vorwärts
+    ab ``now - n_bars * bar_duration`` (``since_ms``), zusammenführen und
+    ``tail(n_bars)``. Paginations-Requests nutzen ``use_cache=False``, weil der
+    Parquet-Cache in ``fetch_ohlcv_df`` ein Voll-Snapshot ohne ``since``/``limit``
+    ist.
+
+    Cache/``data_dir``: wie ``src.data.kraken`` (ConfigRegistry / ``get_config()``)
+    nur bei einzelnem Abruf ``n_bars <= KRAKEN_OHLCV_MAX_BARS``.
+    """
+    df, _ = _load_kraken_ohlcv_inner(
+        symbol, n_bars=n_bars, timeframe=timeframe, use_cache=use_cache
+    )
+    return df
 
 
 def load_ohlcv(
@@ -212,4 +233,43 @@ def load_ohlcv(
         return load_dummy_ohlcv(symbol, n_bars=n_bars)
     if source == OHLCV_SOURCE_KRAKEN:
         return load_kraken_ohlcv(symbol, n_bars=n_bars, timeframe=timeframe, use_cache=use_cache)
+    raise ValueError(f"Unbekannte OHLCV-Quelle {source!r}; erlaubt: {list(OHLCV_SOURCES)}")
+
+
+def load_ohlcv_with_meta(
+    symbol: str,
+    n_bars: int = 200,
+    *,
+    source: str = OHLCV_SOURCE_DUMMY,
+    timeframe: str = "1h",
+    use_cache: bool = True,
+) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """
+    Wie ``load_ohlcv``, zusätzlich deterministisches Observability-Dict (J1):
+    symbol, Quelle, Timeframe, angeforderte/effektive Bar-Anzahl, Kraken-Pagination-Flag.
+    """
+    if source == OHLCV_SOURCE_DUMMY:
+        df = load_dummy_ohlcv(symbol, n_bars=n_bars)
+        meta: dict[str, Any] = {
+            "symbol": symbol,
+            "ohlcv_source": OHLCV_SOURCE_DUMMY,
+            "timeframe": timeframe,
+            "n_bars_requested": n_bars,
+            "bars_loaded": int(len(df)),
+            "kraken_pagination_used": None,
+        }
+        return df, meta
+    if source == OHLCV_SOURCE_KRAKEN:
+        df, pagination_used = _load_kraken_ohlcv_inner(
+            symbol, n_bars=n_bars, timeframe=timeframe, use_cache=use_cache
+        )
+        meta = {
+            "symbol": symbol,
+            "ohlcv_source": OHLCV_SOURCE_KRAKEN,
+            "timeframe": timeframe,
+            "n_bars_requested": n_bars,
+            "bars_loaded": int(len(df)),
+            "kraken_pagination_used": pagination_used,
+        }
+        return df, meta
     raise ValueError(f"Unbekannte OHLCV-Quelle {source!r}; erlaubt: {list(OHLCV_SOURCES)}")
