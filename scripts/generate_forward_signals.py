@@ -22,8 +22,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
-# Projekt-Root zum Python-Path hinzufügen
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Projekt-Root und scripts/-Verzeichnis (shared loader) zum Python-Path
+_root = Path(__file__).resolve().parent.parent
+_scripts = Path(__file__).resolve().parent
+sys.path.insert(0, str(_root))
+sys.path.insert(0, str(_scripts))
 
 import pandas as pd
 
@@ -39,7 +42,7 @@ from src.analytics.risk_monitor import (
     aggregate_strategy_risk,
 )
 from src.analytics.filter_flow import SelectionPolicy, build_strategy_selection
-from src.data.dummy_ohlcv import load_dummy_ohlcv_bars
+from _shared_ohlcv_loader import load_dummy_ohlcv
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
@@ -93,9 +96,9 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     """
     Lädt Daten für ein bestimmtes Symbol.
 
-    J1 Slice 1: Dummy-OHLCV über ``src.data.dummy_ohlcv.load_dummy_ohlcv_bars``
-    (read-only, keine Orders/Keys, kein C1-Bezug; Vertrag und OHLC-Konsistenz siehe
-    Modul-Docstring dort). Später: echte Kraken-Daten (J1 weiter).
+    J1 Slice 1: Dummy-OHLCV über ``scripts/_shared_ohlcv_loader.load_dummy_ohlcv``
+    (read-only, keine Orders/Keys, kein C1-Bezug; Vertrag siehe Modul-Docstring dort).
+    Später: echte Kraken-Daten (J1 weiter); evaluate/portfolio in Slice 2/3 auf denselben Loader.
 
     Args:
         symbol: Trading-Pair (z.B. "BTC/EUR")
@@ -104,7 +107,7 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     Returns:
         DataFrame mit OHLCV-Daten
     """
-    return load_dummy_ohlcv_bars(symbol, n_bars=n_bars)
+    return load_dummy_ohlcv(symbol, n_bars=n_bars)
 
 
 def determine_universe(cfg: Any, symbols_arg: str | None) -> List[str]:
