@@ -92,6 +92,22 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+def format_as_of_iso_utc(ts: Any) -> str:
+    """
+    Wandelt einen Strategie-/Daten-Index-Zeitstempel in ISO-8601 **UTC** mit ``Z``-Suffix.
+
+    Gleiche Sekundenauflösung wie ``generated_at``; konsistent mit ``evaluate_forward_signals.parse_as_of_to_utc``.
+    """
+    t = pd.Timestamp(ts)
+    if pd.isna(t):
+        raise ValueError(f"as_of-Zeitstempel ungültig: {ts!r}")
+    if t.tz is None:
+        t = t.tz_localize("UTC")
+    else:
+        t = t.tz_convert("UTC")
+    return t.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     """
     Lädt Daten für ein bestimmtes Symbol.
@@ -224,7 +240,7 @@ def main(argv: List[str] | None = None) -> None:
 
         sig = ForwardSignal(
             generated_at=generated_at,
-            as_of=str(last_ts),
+            as_of=format_as_of_iso_utc(last_ts),
             strategy_key=strategy_key,
             run_name=run_name,
             symbol=symbol,
