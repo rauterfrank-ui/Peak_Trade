@@ -85,3 +85,48 @@ def test_load_ohlcv_kraken_path():
         out = load_ohlcv("ETH/EUR", n_bars=10, source=OHLCV_SOURCE_KRAKEN)
     assert len(out) == 10
     assert list(out.columns) == REQUIRED_OHLCV_COLUMNS
+
+
+def test_load_kraken_ohlcv_pagination_calls_fetch_twice():
+    """n_bars > 720: mehrere fetch_ohlcv_df-Aufrufe, tail auf n_bars."""
+    recent = pd.date_range("2024-03-01", periods=720, freq="1h", tz="UTC")
+    older = pd.date_range("2023-12-01", periods=720, freq="1h", tz="UTC")
+
+    def fake_fetch(*args, **kwargs):
+        since_ms = kwargs.get("since_ms")
+        use_cache = kwargs.get("use_cache", True)
+        assert use_cache is False
+        if since_ms is None:
+            return pd.DataFrame(
+                {
+                    "open": [100.0] * 720,
+                    "high": [101.0] * 720,
+                    "low": [99.0] * 720,
+                    "close": [100.5] * 720,
+                    "volume": [1.0] * 720,
+                },
+                index=recent,
+            )
+        return pd.DataFrame(
+            {
+                "open": [50.0] * 720,
+                "high": [51.0] * 720,
+                "low": [49.0] * 720,
+                "close": [50.5] * 720,
+                "volume": [1.0] * 720,
+            },
+            index=older,
+        )
+
+    with patch("src.data.kraken.fetch_ohlcv_df", side_effect=fake_fetch):
+        out = load_kraken_ohlcv("BTC/EUR", n_bars=1000, timeframe="1h")
+
+    assert len(out) == 1000
+    assert list(out.columns) == REQUIRED_OHLCV_COLUMNS
+
+
+def test_timeframe_to_timedelta_invalid():
+    from _shared_ohlcv_loader import _timeframe_to_timedelta
+
+    with pytest.raises(ValueError, match="nicht unterstützt"):
+        _timeframe_to_timedelta("2w")

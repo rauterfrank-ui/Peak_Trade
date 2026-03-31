@@ -10,7 +10,9 @@ Gleicher DataFrame-Vertrag für ``generate_forward_signals``, ``evaluate_forward
 - Kraken: ``src.data.kraken.fetch_ohlcv_df`` (öffentliche OHLCV, kein Trading; Cache-Pfad via ConfigRegistry).
 - Read-only: keine Orders, kein C1-Bezug.
 
-J1 Slice 4: ``source="kraken"`` — bis zu 720 Bars pro Request (Kraken/ccxt-Limit), siehe ``KRAKEN_OHLCV_MAX_BARS``.
+J1 Slice 4: ``source="kraken"`` — bis zu 720 Bars pro **Request** (Kraken/ccxt-Limit), siehe ``KRAKEN_OHLCV_MAX_BARS``.
+
+J1 Pagination: ``n_bars`` > 720 — wiederholte Abrufe (ältere Fenster über ``since_ms``); pro Paginations-Request ``use_cache=False`` (Cache-Datei in ``fetch_ohlcv_df`` ist pro Symbol/TF ein Voll-Snapshot).
 
 CLI-Defaults für ``--n-bars``, ``--timeframe``, ``--ohlcv-source`` (Forward-/Portfolio-Skripte):
 ``scripts/_shared_forward_args.py`` — ``timeframe`` wirkt auf Kraken; Dummy bleibt 1h-synthetisch.
@@ -29,6 +31,24 @@ KRAKEN_OHLCV_MAX_BARS = 720
 OHLCV_SOURCE_DUMMY = "dummy"
 OHLCV_SOURCE_KRAKEN = "kraken"
 OHLCV_SOURCES = (OHLCV_SOURCE_DUMMY, OHLCV_SOURCE_KRAKEN)
+
+
+def _timeframe_to_timedelta(timeframe: str) -> pd.Timedelta:
+    """Pandas-Timedelta für bekannte Forward-CLI-Timeframes (siehe ``_shared_forward_args``)."""
+    m = {
+        "1m": pd.Timedelta(minutes=1),
+        "5m": pd.Timedelta(minutes=5),
+        "15m": pd.Timedelta(minutes=15),
+        "1h": pd.Timedelta(hours=1),
+        "4h": pd.Timedelta(hours=4),
+        "1d": pd.Timedelta(days=1),
+    }
+    if timeframe not in m:
+        raise ValueError(
+            f"Timeframe {timeframe!r} für Kraken-Pagination nicht unterstützt; "
+            f"erlaubt: {sorted(m.keys())}"
+        )
+    return m[timeframe]
 
 
 def load_dummy_ohlcv(symbol: str, n_bars: int = 200) -> pd.DataFrame:
@@ -101,32 +121,73 @@ def load_kraken_ohlcv(
     """
     Öffentliche Kraken-OHLCV über ``fetch_ohlcv_df`` (CCXT-Backend).
 
-    Keine API-Keys für reine Kursabfragen nötig. ``n_bars`` wird auf
-    ``KRAKEN_OHLCV_MAX_BARS`` begrenzt; bei mehr angefragten Bars wird die
-    letzte Fenster-Sequenz (``tail``) zurückgegeben.
+    Keine API-Keys für reine Kursabfragen nötig. Pro Request maximal
+    ``KRAKEN_OHLCV_MAX_BARS`` Bars; bei ``n_bars`` darüber: Pagination vorwärts
+    ab ``now - n_bars * bar_duration`` (``since_ms``), zusammenführen und
+    ``tail(n_bars)``. Paginations-Requests nutzen ``use_cache=False``, weil der
+    Parquet-Cache in ``fetch_ohlcv_df`` ein Voll-Snapshot ohne ``since``/``limit``
+    ist.
 
-    Cache/``data_dir``: wie ``src.data.kraken`` (ConfigRegistry / ``get_config()``).
+    Cache/``data_dir``: wie ``src.data.kraken`` (ConfigRegistry / ``get_config()``)
+    nur bei einzelnem Abruf ``n_bars <= KRAKEN_OHLCV_MAX_BARS``.
     """
     from src.data.kraken import fetch_ohlcv_df
 
     if n_bars < 1:
         raise ValueError("n_bars muss >= 1 sein.")
 
-    limit = min(n_bars, KRAKEN_OHLCV_MAX_BARS)
-    df = fetch_ohlcv_df(
-        symbol=symbol,
-        timeframe=timeframe,
-        limit=limit,
-        use_cache=use_cache,
-    )
-    if df.empty:
-        raise ValueError(f"Kraken-OHLCV leer für {symbol!r} ({timeframe}, limit={limit}).")
+    if n_bars <= KRAKEN_OHLCV_MAX_BARS:
+        limit = min(n_bars, KRAKEN_OHLCV_MAX_BARS)
+        df = fetch_ohlcv_df(
+            symbol=symbol,
+            timeframe=timeframe,
+            limit=limit,
+            use_cache=use_cache,
+        )
+        if df.empty:
+            raise ValueError(f"Kraken-OHLCV leer für {symbol!r} ({timeframe}, limit={limit}).")
+        if len(df) > n_bars:
+            df = df.iloc[-n_bars:].copy()
+        validate_ohlcv(df, strict=True, require_tz=True)
+        return df
 
-    if len(df) > n_bars:
-        df = df.iloc[-n_bars:].copy()
+    td = _timeframe_to_timedelta(timeframe)
+    td_ms = int(td.total_seconds() * 1000)
 
-    validate_ohlcv(df, strict=True, require_tz=True)
-    return df
+    chunks: list[pd.DataFrame] = []
+    since_ms: int | None = None
+    max_loops = (n_bars // KRAKEN_OHLCV_MAX_BARS) + 5
+
+    for _ in range(max_loops):
+        if sum(len(c) for c in chunks) >= n_bars:
+            break
+        df = fetch_ohlcv_df(
+            symbol=symbol,
+            timeframe=timeframe,
+            limit=KRAKEN_OHLCV_MAX_BARS,
+            since_ms=since_ms,
+            use_cache=False,
+        )
+        if df.empty:
+            break
+        chunks.insert(0, df)
+        oldest_ms = int(df.index[0].timestamp() * 1000)
+        since_ms = oldest_ms - KRAKEN_OHLCV_MAX_BARS * td_ms
+        if since_ms < 0:
+            since_ms = 0
+        if len(df) < KRAKEN_OHLCV_MAX_BARS:
+            break
+
+    if not chunks:
+        raise ValueError(f"Kraken-OHLCV leer für {symbol!r} ({timeframe}, Pagination).")
+
+    out = pd.concat(chunks)
+    out = out[~out.index.duplicated(keep="last")]
+    out = out.sort_index()
+    if len(out) > n_bars:
+        out = out.iloc[-n_bars:].copy()
+    validate_ohlcv(out, strict=True, require_tz=True)
+    return out
 
 
 def load_ohlcv(
@@ -142,7 +203,7 @@ def load_ohlcv(
 
     Args:
         symbol: Trading-Paar (z.B. ``BTC/EUR``).
-        n_bars: Gewünschte Bar-Anzahl (Kraken: max. ``KRAKEN_OHLCV_MAX_BARS`` pro Abruf).
+        n_bars: Gewünschte Bar-Anzahl (Kraken: mehrere Abrufe bei ``n_bars`` > ``KRAKEN_OHLCV_MAX_BARS``).
         source: ``dummy`` | ``kraken``.
         timeframe: Nur Kraken; Default ``1h`` (wie Forward-Pipeline).
         use_cache: Nur Kraken — Parquet-Cache in ``fetch_ohlcv_df``.
