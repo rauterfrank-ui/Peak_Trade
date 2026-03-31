@@ -5,8 +5,9 @@ Gemeinsamer Dummy-OHLCV-Loader für Forward-/Paper-Skripte (J1).
 Gleicher DataFrame-Vertrag für ``generate_forward_signals``, ``evaluate_forward_signals``,
 ``run_portfolio_backtest_v2`` (Slice 1–3: alle drei Skripte nutzen diesen Loader).
 
-- ``DatetimeIndex`` (1h), Spalten open/high/low/close/volume (vgl. ``src.data.REQUIRED_OHLCV_COLUMNS``).
+- ``DatetimeIndex`` (1h, **UTC**), Spalten open/high/low/close/volume (vgl. ``src.data.REQUIRED_OHLCV_COLUMNS``).
 - OHLC-Nachkorrektur zentral: ``high = max(open, close, high)``, ``low = min(open, close, low)``.
+- Vor Rückgabe: ``validate_ohlcv(..., strict=True, require_tz=True)`` (Peak_Trade-Datenvertrag).
 - Read-only: keine Orders, keine API-Keys, kein C1-Bezug; synthetische Daten.
 
 TODO(J1): Optional echte Marktdaten (Kraken/CCXT).
@@ -14,10 +15,10 @@ TODO(J1): Optional echte Marktdaten (Kraken/CCXT).
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
-
 import numpy as np
 import pandas as pd
+
+from src.data.contracts import validate_ohlcv
 
 
 def load_dummy_ohlcv(symbol: str, n_bars: int = 200) -> pd.DataFrame:
@@ -29,13 +30,13 @@ def load_dummy_ohlcv(symbol: str, n_bars: int = 200) -> pd.DataFrame:
         n_bars: Anzahl 1h-Bars
 
     Returns:
-        DataFrame mit OHLCV-Spalten und DatetimeIndex.
+        DataFrame mit OHLCV-Spalten und DatetimeIndex (UTC, vertragstreu).
     """
     seed = hash(symbol) % (2**32)
     np.random.seed(seed)
 
-    start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq="1h")
+    start = pd.Timestamp.now(tz="UTC") - pd.Timedelta(hours=n_bars)
+    dates = pd.date_range(start=start, periods=n_bars, freq="1h", tz="UTC")
 
     if "BTC" in symbol:
         base_price = 50000
@@ -69,4 +70,12 @@ def load_dummy_ohlcv(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     df["high"] = df[["open", "close", "high"]].max(axis=1)
     df["low"] = df[["open", "close", "low"]].min(axis=1)
 
+    # Strikt positiver OHLC (seltener Randfall: Random-Walk unter 0)
+    floor = 1e-9
+    for col in ("open", "high", "low", "close"):
+        df[col] = df[col].clip(lower=floor)
+    df["high"] = df[["open", "close", "high"]].max(axis=1)
+    df["low"] = df[["open", "close", "low"]].min(axis=1)
+
+    validate_ohlcv(df, strict=True, require_tz=True)
     return df
