@@ -41,7 +41,7 @@
 
 | # | Thema | Tag | Hinweis / Ort |
 |---|--------|-----|----------------|
-| C1 | Live-Orderpfad / Exchange (bewusst nicht produktiv) | STUB/GAP | `src/orders/exchange.py` — Live-Operationen TODO/kommentiert |
+| C1 | Live-Orderpfad / Exchange (bewusst nicht produktiv) | STUB/GAP | `src&#47;orders&#47;exchange.py` — `LiveOrderExecutor` nur Dry-Run/Design, kein echter Live-Exchange-Client; `src&#47;orders&#47;paper.py` — `ExchangeOrderExecutor`-Stub (`NotImplementedError`). **Abgrenzung:** `src&#47;orders&#47;testnet_executor.py` (Testnet + API) ist ein separater Pfad und **kein** C1-Live-Freigabe |
 | C2 | Paper-Orders / Adapter (Teile abstrakt) | DONE | `PaperOrderExecutor` + `PaperMarketContext` in `paper.py`; `OrderExecutor`-Protocol in `base.py`; Tests u. a. `tests/test_orders_smoke.py`. `ExchangeOrderExecutor`-Stub bleibt absichtlich (Live → C1) |
 | C3 | Execution-Simple Gates | DONE | `gates.py` — PriceSanity, ResearchOnly, LotSize, MinNotional; `pipeline.py` + `build_execution_pipeline_from_config`; Tests `tests/execution_simple/test_execution_pipeline.py` |
 | C4 | Multi-Asset Risk-Enforcement | DONE | `src/risk/enforcement.py` — `max_corr` + DataFrame-Returns (Portfolio-Returns für VaR/CVaR) |
