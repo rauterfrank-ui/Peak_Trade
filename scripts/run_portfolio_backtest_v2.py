@@ -17,6 +17,7 @@ Usage:
     python scripts/run_portfolio_backtest_v2.py --strategy ma_crossover
     python scripts/run_portfolio_backtest_v2.py --use-portfolio-strategies
     python scripts/run_portfolio_backtest_v2.py --run-name crypto_portfolio --no-symbol-reports
+    python scripts/run_portfolio_backtest_v2.py --n-bars 200
 """
 
 from __future__ import annotations
@@ -96,9 +97,14 @@ Examples:
     )
     parser.add_argument(
         "--bars",
+        "--n-bars",
         type=int,
         default=200,
-        help="Anzahl Bars pro Symbol (default: 200)",
+        metavar="N",
+        help=(
+            "Anzahl OHLCV-Bars pro Symbol (Default: 200). "
+            "Gleiche Semantik wie --n-bars bei generate_forward_signals / evaluate_forward_signals."
+        ),
     )
     parser.add_argument(
         "--no-report",
@@ -362,6 +368,9 @@ def print_portfolio_summary(
 def main(argv: List[str] | None = None) -> None:
     """Main-Funktion für Portfolio-Backtest."""
     args = parse_args(argv)
+    if args.bars < 1:
+        print("\n❌ FEHLER: --bars / --n-bars muss >= 1 sein.")
+        return
 
     print("\n🚀 Peak_Trade Multi-Asset Portfolio Backtest")
     print("=" * 70)
@@ -397,7 +406,7 @@ def main(argv: List[str] | None = None) -> None:
     print(f"  - Gewichte:         {[f'{w:.1%}' for w in weights]}")
     print(f"  - Initial Equity:   {initial_equity:,.2f}")
     print(f"  - Global Strategy:  {global_strategy_key}")
-    print(f"  - Bars pro Symbol:  {args.bars}")
+    print(f"  - OHLCV-Bars/Symbol: {args.bars} (--bars / --n-bars)")
     if symbol_strategies:
         print(f"  - Symbol-Strategien: {symbol_strategies}")
 
