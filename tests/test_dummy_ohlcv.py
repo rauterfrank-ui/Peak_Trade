@@ -21,6 +21,8 @@ def test_load_dummy_ohlcv_shape_and_columns():
     assert len(df) == 50
     assert list(df.columns) == REQUIRED_OHLCV_COLUMNS
     assert isinstance(df.index, pd.DatetimeIndex)
+    assert df.index.tz is not None
+    assert str(df.index.tz) == "UTC"
 
 
 def test_load_dummy_ohlcv_high_low_consistent_with_ohlc():
