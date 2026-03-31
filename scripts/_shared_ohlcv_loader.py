@@ -3,7 +3,7 @@
 Gemeinsamer Dummy-OHLCV-Loader für Forward-/Paper-Skripte (J1).
 
 Gleicher DataFrame-Vertrag für ``generate_forward_signals``, ``evaluate_forward_signals``,
-``run_portfolio_backtest_v2`` (Slice 1: generate; Slice 2: evaluate; Slice 3: Portfolio).
+``run_portfolio_backtest_v2`` (Slice 1–3: alle drei Skripte nutzen diesen Loader).
 
 - ``DatetimeIndex`` (1h), Spalten open/high/low/close/volume (vgl. ``src.data.REQUIRED_OHLCV_COLUMNS``).
 - OHLC-Nachkorrektur zentral: ``high = max(open, close, high)``, ``low = min(open, close, low)``.
