@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 import pytest
@@ -48,7 +49,7 @@ def test_csv_roundtrip_as_of_iso_utc_aligns_with_price_index(tmp_path, monkeypat
 
     monkeypatch.setattr(
         "evaluate_forward_signals.load_price_data",
-        lambda symbol, n_bars=200: df_price,
+        lambda *args, **kwargs: df_price,
     )
 
     df_sig = load_signal_df(csv_path)
@@ -73,7 +74,7 @@ def test_generate_then_evaluate_with_captured_ohlcv(tmp_path, monkeypatch):
 
     captured: dict[str, pd.DataFrame] = {}
 
-    def capture_load(symbol: str, n_bars: int = 200) -> pd.DataFrame:
+    def capture_load(symbol: str, n_bars: int = 200, **kwargs: Any) -> pd.DataFrame:
         df = load_dummy_ohlcv(symbol, n_bars=n_bars)
         captured[symbol] = df
         return df
@@ -115,7 +116,11 @@ def test_generate_then_evaluate_with_captured_ohlcv(tmp_path, monkeypatch):
     df_csv.loc[0, "as_of"] = format_as_of_iso_utc(df_p.index[-40])
     df_csv.to_csv(sig_path, index=False)
 
-    monkeypatch.setattr(ev, "load_price_data", lambda sym, n_bars=200: captured[sym].copy())
+    monkeypatch.setattr(
+        ev,
+        "load_price_data",
+        lambda sym, n_bars=200, **kw: captured[sym].copy(),
+    )
 
     eval_dir = tmp_path / "eval"
     eval_dir.mkdir()

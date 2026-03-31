@@ -16,3 +16,11 @@ def test_parse_args_n_bars_alias():
     assert parse_args(["--n-bars", "150"]).bars == 150
     assert parse_args(["--bars", "99"]).bars == 99
     assert parse_args([]).bars == 200
+
+
+@pytest.mark.smoke
+def test_parse_args_ohlcv_source():
+    from run_portfolio_backtest_v2 import parse_args
+
+    assert parse_args([]).ohlcv_source == "dummy"
+    assert parse_args(["--ohlcv-source", "kraken"]).ohlcv_source == "kraken"

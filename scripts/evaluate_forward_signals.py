@@ -31,7 +31,7 @@ sys.path.insert(0, str(_scripts))
 
 import pandas as pd
 
-from _shared_ohlcv_loader import load_dummy_ohlcv
+from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, OHLCV_SOURCES, load_ohlcv
 from src.core.peak_config import load_config
 from src.core.experiments import log_generic_experiment
 from src.forward.signals import FORWARD_SIGNALS_COLUMNS
@@ -86,9 +86,15 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
         type=int,
         default=200,
         help=(
-            "Anzahl OHLCV-Bars pro Symbol für die Preisreihe (Dummy-Loader). "
+            "Anzahl OHLCV-Bars pro Symbol für die Preisreihe. "
             "Zu generate_forward_signals --n-bars passend wählen. Default: 200."
         ),
+    )
+    parser.add_argument(
+        "--ohlcv-source",
+        choices=list(OHLCV_SOURCES),
+        default=OHLCV_SOURCE_DUMMY,
+        help=("Gleiche Quelle wie beim Generate-Lauf (dummy | kraken); Default dummy."),
     )
     return parser.parse_args(argv)
 
@@ -108,14 +114,16 @@ def load_signal_df(path: Path | str) -> pd.DataFrame:
     return df
 
 
-def load_price_data(symbol: str, n_bars: int = 200) -> pd.DataFrame:
+def load_price_data(
+    symbol: str,
+    n_bars: int = 200,
+    *,
+    ohlcv_source: str = OHLCV_SOURCE_DUMMY,
+) -> pd.DataFrame:
     """
-    Lädt Preisdaten für ein Symbol.
-
-    J1 Slice 2: Dummy-OHLCV über ``scripts/_shared_ohlcv_loader.load_dummy_ohlcv``
-    (gleicher Vertrag wie ``generate_forward_signals``). TODO: echte Kraken-Daten.
+    Lädt Preisdaten für ein Symbol (J1: ``load_ohlcv`` — dummy oder Kraken).
     """
-    return load_dummy_ohlcv(symbol, n_bars=n_bars)
+    return load_ohlcv(symbol, n_bars=n_bars, source=ohlcv_source)
 
 
 def evaluate_signals_for_symbol(
@@ -123,6 +131,8 @@ def evaluate_signals_for_symbol(
     symbol: str,
     horizon_bars: int,
     n_bars: int = 200,
+    *,
+    ohlcv_source: str = OHLCV_SOURCE_DUMMY,
 ) -> pd.DataFrame:
     """
     Evaluierung der Signale für ein Symbol.
@@ -136,9 +146,10 @@ def evaluate_signals_for_symbol(
         flat:  0
 
     Args:
-        n_bars: Länge der OHLCV-Preisreihe (``load_price_data`` / Dummy-Loader).
+        n_bars: Länge der OHLCV-Preisreihe (``load_price_data``).
+        ohlcv_source: ``dummy`` | ``kraken`` (mit ``generate_forward_signals`` abstimmen).
     """
-    data = load_price_data(symbol, n_bars=n_bars)
+    data = load_price_data(symbol, n_bars=n_bars, ohlcv_source=ohlcv_source)
     if data.empty:
         raise ValueError(f"Keine Preisdaten für Symbol {symbol}.")
 
@@ -268,6 +279,7 @@ def main(argv: List[str] | None = None) -> None:
     print(f"  Signals:       {sig_path}")
     print(f"  Horizon bars:  {horizon_bars}")
     print(f"  n-bars (OHLCV): {n_bars}")
+    print(f"  OHLCV-Quelle:  {args.ohlcv_source}")
     print(f"  Signale total: {len(df_sig)}")
 
     # Nach Symbol gruppieren
@@ -281,6 +293,7 @@ def main(argv: List[str] | None = None) -> None:
             symbol=symbol,
             horizon_bars=horizon_bars,
             n_bars=n_bars,
+            ohlcv_source=args.ohlcv_source,
         )
         if df_eval_sym.empty:
             print("  ⚠️  Keine auswertbaren Signale.")
@@ -354,6 +367,7 @@ def main(argv: List[str] | None = None) -> None:
             "signals_csv": str(sig_path),
             "horizon_bars": horizon_bars,
             "n_bars": n_bars,
+            "ohlcv_source": args.ohlcv_source,
             "stats_per_symbol": stats_per_symbol,
             "eval_csv": str(eval_csv_path),
         },

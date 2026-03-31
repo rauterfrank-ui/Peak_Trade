@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Gemeinsamer Dummy-OHLCV-Loader für Forward-/Paper-Skripte (J1).
+Gemeinsamer OHLCV-Loader für Forward-/Paper-Skripte (J1).
 
 Gleicher DataFrame-Vertrag für ``generate_forward_signals``, ``evaluate_forward_signals``,
-``run_portfolio_backtest_v2`` (Slice 1–3: alle drei Skripte nutzen diesen Loader).
+``run_portfolio_backtest_v2`` (Slice 1–3: Dummy; Slice 4: optional Kraken über ``load_ohlcv``).
 
 - ``DatetimeIndex`` (1h, **UTC**), Spalten open/high/low/close/volume (vgl. ``src.data.REQUIRED_OHLCV_COLUMNS``).
-- OHLC-Nachkorrektur zentral: ``high = max(open, close, high)``, ``low = min(open, close, low)``.
-- Vor Rückgabe: ``validate_ohlcv(..., strict=True, require_tz=True)`` (Peak_Trade-Datenvertrag).
-- Read-only: keine Orders, keine API-Keys, kein C1-Bezug; synthetische Daten.
+- Dummy: OHLC-Nachkorrektur zentral; vor Rückgabe ``validate_ohlcv(..., strict=True, require_tz=True)``.
+- Kraken: ``src.data.kraken.fetch_ohlcv_df`` (öffentliche OHLCV, kein Trading; Cache-Pfad via ConfigRegistry).
+- Read-only: keine Orders, kein C1-Bezug.
 
-TODO(J1): Optional echte Marktdaten (Kraken/CCXT).
+J1 Slice 4: ``source="kraken"`` — bis zu 720 Bars pro Request (Kraken/ccxt-Limit), siehe ``KRAKEN_OHLCV_MAX_BARS``.
 """
 
 from __future__ import annotations
@@ -19,6 +19,13 @@ import numpy as np
 import pandas as pd
 
 from src.data.contracts import validate_ohlcv
+
+# Kraken Public-OHLCV: ccxt/Kraken begrenzt ``limit`` (hier konservativ wie ``fetch_ohlcv_df``).
+KRAKEN_OHLCV_MAX_BARS = 720
+
+OHLCV_SOURCE_DUMMY = "dummy"
+OHLCV_SOURCE_KRAKEN = "kraken"
+OHLCV_SOURCES = (OHLCV_SOURCE_DUMMY, OHLCV_SOURCE_KRAKEN)
 
 
 def load_dummy_ohlcv(symbol: str, n_bars: int = 200) -> pd.DataFrame:
@@ -79,3 +86,66 @@ def load_dummy_ohlcv(symbol: str, n_bars: int = 200) -> pd.DataFrame:
 
     validate_ohlcv(df, strict=True, require_tz=True)
     return df
+
+
+def load_kraken_ohlcv(
+    symbol: str,
+    n_bars: int = 200,
+    *,
+    timeframe: str = "1h",
+    use_cache: bool = True,
+) -> pd.DataFrame:
+    """
+    Öffentliche Kraken-OHLCV über ``fetch_ohlcv_df`` (CCXT-Backend).
+
+    Keine API-Keys für reine Kursabfragen nötig. ``n_bars`` wird auf
+    ``KRAKEN_OHLCV_MAX_BARS`` begrenzt; bei mehr angefragten Bars wird die
+    letzte Fenster-Sequenz (``tail``) zurückgegeben.
+
+    Cache/``data_dir``: wie ``src.data.kraken`` (ConfigRegistry / ``get_config()``).
+    """
+    from src.data.kraken import fetch_ohlcv_df
+
+    if n_bars < 1:
+        raise ValueError("n_bars muss >= 1 sein.")
+
+    limit = min(n_bars, KRAKEN_OHLCV_MAX_BARS)
+    df = fetch_ohlcv_df(
+        symbol=symbol,
+        timeframe=timeframe,
+        limit=limit,
+        use_cache=use_cache,
+    )
+    if df.empty:
+        raise ValueError(f"Kraken-OHLCV leer für {symbol!r} ({timeframe}, limit={limit}).")
+
+    if len(df) > n_bars:
+        df = df.iloc[-n_bars:].copy()
+
+    validate_ohlcv(df, strict=True, require_tz=True)
+    return df
+
+
+def load_ohlcv(
+    symbol: str,
+    n_bars: int = 200,
+    *,
+    source: str = OHLCV_SOURCE_DUMMY,
+    timeframe: str = "1h",
+    use_cache: bool = True,
+) -> pd.DataFrame:
+    """
+    Einheitlicher Einstieg: Dummy (Default) oder Kraken.
+
+    Args:
+        symbol: Trading-Paar (z.B. ``BTC/EUR``).
+        n_bars: Gewünschte Bar-Anzahl (Kraken: max. ``KRAKEN_OHLCV_MAX_BARS`` pro Abruf).
+        source: ``dummy`` | ``kraken``.
+        timeframe: Nur Kraken; Default ``1h`` (wie Forward-Pipeline).
+        use_cache: Nur Kraken — Parquet-Cache in ``fetch_ohlcv_df``.
+    """
+    if source == OHLCV_SOURCE_DUMMY:
+        return load_dummy_ohlcv(symbol, n_bars=n_bars)
+    if source == OHLCV_SOURCE_KRAKEN:
+        return load_kraken_ohlcv(symbol, n_bars=n_bars, timeframe=timeframe, use_cache=use_cache)
+    raise ValueError(f"Unbekannte OHLCV-Quelle {source!r}; erlaubt: {list(OHLCV_SOURCES)}")
