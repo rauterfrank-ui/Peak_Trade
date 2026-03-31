@@ -12,6 +12,7 @@ Usage:
     python scripts/evaluate_forward_signals.py reports/forward/forward_demo_signals.csv
     python scripts/evaluate_forward_signals.py reports/forward/forward_demo_signals.csv --horizon-bars 1
     python scripts/evaluate_forward_signals.py reports/forward/forward_demo_signals.csv --horizon-bars 5 --output-dir reports/forward
+    python scripts/evaluate_forward_signals.py signals.csv --n-bars 200
 """
 
 from __future__ import annotations
@@ -80,6 +81,15 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
         default="reports/forward",
         help="Zielverzeichnis für Evaluations-Outputs. Default: reports/forward.",
     )
+    parser.add_argument(
+        "--n-bars",
+        type=int,
+        default=200,
+        help=(
+            "Anzahl OHLCV-Bars pro Symbol für die Preisreihe (Dummy-Loader). "
+            "Zu generate_forward_signals --n-bars passend wählen. Default: 200."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -112,6 +122,7 @@ def evaluate_signals_for_symbol(
     df_sig_sym: pd.DataFrame,
     symbol: str,
     horizon_bars: int,
+    n_bars: int = 200,
 ) -> pd.DataFrame:
     """
     Evaluierung der Signale für ein Symbol.
@@ -123,8 +134,11 @@ def evaluate_signals_for_symbol(
         long:  (close_exit / close_entry) - 1
         short: (close_entry / close_exit) - 1
         flat:  0
+
+    Args:
+        n_bars: Länge der OHLCV-Preisreihe (``load_price_data`` / Dummy-Loader).
     """
-    data = load_price_data(symbol, n_bars=200)
+    data = load_price_data(symbol, n_bars=n_bars)
     if data.empty:
         raise ValueError(f"Keine Preisdaten für Symbol {symbol}.")
 
@@ -246,10 +260,14 @@ def main(argv: List[str] | None = None) -> None:
     df_sig = load_signal_df(sig_path)
 
     horizon_bars = args.horizon_bars
+    n_bars = args.n_bars
+    if n_bars < 1:
+        raise ValueError("--n-bars muss >= 1 sein.")
 
     print(f"\n⚙️  Konfiguration:")
     print(f"  Signals:       {sig_path}")
     print(f"  Horizon bars:  {horizon_bars}")
+    print(f"  n-bars (OHLCV): {n_bars}")
     print(f"  Signale total: {len(df_sig)}")
 
     # Nach Symbol gruppieren
@@ -262,6 +280,7 @@ def main(argv: List[str] | None = None) -> None:
             df_sig_sym=df_sym,
             symbol=symbol,
             horizon_bars=horizon_bars,
+            n_bars=n_bars,
         )
         if df_eval_sym.empty:
             print("  ⚠️  Keine auswertbaren Signale.")
@@ -334,6 +353,7 @@ def main(argv: List[str] | None = None) -> None:
             "runner": "evaluate_forward_signals.py",
             "signals_csv": str(sig_path),
             "horizon_bars": horizon_bars,
+            "n_bars": n_bars,
             "stats_per_symbol": stats_per_symbol,
             "eval_csv": str(eval_csv_path),
         },
