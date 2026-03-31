@@ -1,13 +1,18 @@
 """
 Learning Loop v0: System 1 for autonomous configuration adaptation.
 
-This package provides the foundational models and interfaces for the Learning Loop,
-which generates ConfigPatch recommendations based on performance feedback.
+Models: ``ConfigPatch`` / ``PatchStatus``. Snippets: ``emit_learning_snippet`` schreibt
+deterministisch nach ``reports/learning_snippets/`` (kompatibel mit
+``scripts/run_learning_apply_cycle.py``). Eine domänennahe **Bridge** (Normalisierung
+verschiedener Quellen auf dieses Format) ist bewusst noch nicht Teil dieses Pakets.
 """
 
+from .emitter import DEFAULT_LEARNING_SNIPPETS_DIR, emit_learning_snippet
 from .models import ConfigPatch, PatchStatus
 
 __all__ = [
+    "DEFAULT_LEARNING_SNIPPETS_DIR",
     "ConfigPatch",
     "PatchStatus",
+    "emit_learning_snippet",
 ]
