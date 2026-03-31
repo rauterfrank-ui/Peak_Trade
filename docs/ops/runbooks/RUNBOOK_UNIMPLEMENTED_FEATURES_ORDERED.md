@@ -2,7 +2,7 @@
 
 > **Zweck:** Überblick über **offene Arbeit** im Repo — **kein** Merge-Gate, sondern **Planungs- und Triage-Hilfe**.  
 > **Scope:** NO-LIVE; Priorisierung erfolgt getrennt von Live-Freigaben.  
-> **Stand:** Automatisierte Tiefen-Stichprobe (`src&#47;**&#47;*.py`, zentrale `scripts/`, Schlüssel-`tests/`, Doku-Hinweise) — **2026-03-30** (E4/E7/E5 Runbook-Zeilen nachgezogen). Kein vollständiger Beweis, dass **jede** Zeile erfasst ist (Templates, Archiv-`docs/`, generierte Artefakte sind nur stichprobenartig berücksichtigt).
+> **Stand:** Automatisierte Tiefen-Stichprobe (`src&#47;**&#47;*.py`, zentrale `scripts/`, Schlüssel-`tests/`, Doku-Hinweise) — **2026-03-31** (F2 Learning Loop Emitter/Bridge-Normalizer im Runbook als DONE nachgezogen). Kein vollständiger Beweis, dass **jede** Zeile erfasst ist (Templates, Archiv-`docs/`, generierte Artefakte sind nur stichprobenartig berücksichtigt).
 
 ---
 
@@ -85,7 +85,7 @@
 | # | Thema | Tag | Hinweis / Ort |
 |---|--------|-----|----------------|
 | F1 | Infostream: robuster Parser, Modell-/Key-Konfiguration | DONE | `evaluator.py` — Block-Extraktion, Fences, Bullets, Risk-Level, `resolve_infostream_model` / `INFOSTREAM_MODEL` |
-| F2 | Learning Loop **Bridge** & **Emitter** (Signale) | DOC | **Emitter:** `src&#47;meta&#47;learning_loop&#47;emitter.py` (`emit_learning_snippet` → `reports&#47;learning_snippets&#47;`). **Bridge** (`bridge.py`): geplant — Doku `docs&#47;LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md` (Tabelle „vorhanden vs. geplant“) |
+| F2 | Learning Loop **Bridge** & **Emitter** (Signale) | DONE | **Emitter:** `src&#47;meta&#47;learning_loop&#47;emitter.py` (`emit_learning_snippet`). **Bridge:** `src&#47;meta&#47;learning_loop&#47;bridge.py` (`normalize_patches`). Tests `tests&#47;meta&#47;test_learning_loop_emitter.py`, `tests&#47;meta&#47;test_learning_loop_bridge.py`; Doku `docs&#47;LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md` |
 | F3 | Learning/Promotion Roadmap v2 | DOC | dieselbe Doku — Slack, Web-UI, Auto-Rollback, TestHealth Pre-Checks, … |
 | F4 | Knowledge / Vector-DB | DONE | `src/knowledge/vector_db.py` — `ChromaDBAdapter` vollständig; `MemoryVectorAdapter` ohne optionale Deps (lexikalisches Scoring); `QdrantAdapter`/`PineconeAdapter`: add/search bewusst offen (Embeddings); Tests `tests/knowledge/test_vector_db_memory.py`, `tests/test_knowledge_integration.py` (Chroma optional) |
 | F5 | Execution-Telemetry | DONE | `src/execution/telemetry.py` — `ExecutionEventEmitter`, `JsonlExecutionLogger` (optional `fixed_filename`), `FixedJsonlAppendOnlyWriter`, `CompositeEmitter`, `NullEmitter`; Tests `tests/execution/test_execution_telemetry.py`; Viewer/Health unter `telemetry_viewer.py`, `telemetry_health.py` |
@@ -138,7 +138,7 @@
 3. **Daten-Realismus** (B1–B3 erledigt) — vor harten Research-Claims.  
 4. **Evidence/Orchestration** (G1–G4 erledigt) — für auditierbare PRs.  
 5. **Infostream** (F1) — Betrieb KI-gestützter Pfade.  
-6. **Learning Loop Bridge/Emitter** (F2) — nur wenn Promotion/Learning-Produktpriorität.  
+6. **Learning Loop** (F2 erledigt: Emitter + Bridge-Normalizer) — weitere domänenspezifische Anbindungen nur bei Promotion/Learning-Produktpriorität.  
 7. **ML/Strategien** (E1–E9) — nach Research-Validierung, nicht blind implementieren; **E3–E7** Signal-Slices in der Registry sind umgesetzt; **E8** ist die Autoren-Sandbox (Idea-Templates/Generator), nicht die produktive Strategy-Library.  
 8. **Tests** (I1–I2 erledigt) — wenn Core stabil.  
 9. **Scripts/Demos** (J) — wenn operative Daten angebunden werden.
