@@ -36,6 +36,26 @@ from src.core.experiments import log_generic_experiment
 from src.forward.signals import FORWARD_SIGNALS_COLUMNS
 
 
+def parse_as_of_to_utc(value: Any) -> pd.Timestamp:
+    """
+    Parst einen Signal-Zeitstempel aus CSV/Row und liefert einen UTC-``Timestamp``.
+
+    Preisreihen aus ``load_dummy_ohlcv`` nutzen einen UTC-``DatetimeIndex``; ohne
+    Normalisierung würden naive ``as_of``-Werte mit tz-aware Indizes schlecht
+    vergleichbar sein (pandas-Verhalten / implizite lokale TZ).
+    """
+    ts = pd.to_datetime(value, utc=True)
+    if isinstance(ts, pd.Series):
+        raise TypeError("parse_as_of_to_utc erwartet einen Skalar, keine Series.")
+    if pd.isna(ts):
+        raise ValueError(f"as_of ist kein gültiger Zeitstempel: {value!r}")
+    if not isinstance(ts, pd.Timestamp):
+        ts = pd.Timestamp(ts)
+    if ts.tz is None:
+        return ts.tz_localize("UTC")
+    return ts.tz_convert("UTC")
+
+
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Peak_Trade: Evaluation von Forward-/Paper-Trading-Signalen.",
@@ -73,6 +93,8 @@ def load_signal_df(path: Path | str) -> pd.DataFrame:
     missing = required - set(df.columns)
     if missing:
         raise ValueError(f"Signals-CSV fehlt Spalten: {missing}")
+    df = df.copy()
+    df["as_of"] = df["as_of"].apply(parse_as_of_to_utc)
     return df
 
 
@@ -114,7 +136,7 @@ def evaluate_signals_for_symbol(
     rows: List[Dict[str, Any]] = []
 
     for _, row in df_sig_sym.iterrows():
-        as_of = pd.to_datetime(row["as_of"])
+        as_of = parse_as_of_to_utc(row["as_of"])
         direction = float(row["direction"])
 
         # Passende Position im Kursindex finden
