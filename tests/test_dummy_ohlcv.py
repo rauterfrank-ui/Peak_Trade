@@ -19,6 +19,7 @@ from _shared_ohlcv_loader import (  # noqa: E402
     load_dummy_ohlcv,
     load_kraken_ohlcv,
     load_ohlcv,
+    load_ohlcv_with_meta,
 )
 
 
@@ -42,6 +43,77 @@ def test_load_dummy_ohlcv_high_low_consistent_with_ohlc():
 def test_load_ohlcv_dispatches_dummy():
     df = load_ohlcv("BTC/EUR", n_bars=30, source=OHLCV_SOURCE_DUMMY)
     assert len(df) == 30
+
+
+def test_load_ohlcv_with_meta_dummy():
+    df, meta = load_ohlcv_with_meta(
+        "BTC/EUR", n_bars=42, source=OHLCV_SOURCE_DUMMY, timeframe="1h"
+    )
+    assert len(df) == 42
+    assert meta["symbol"] == "BTC/EUR"
+    assert meta["ohlcv_source"] == OHLCV_SOURCE_DUMMY
+    assert meta["timeframe"] == "1h"
+    assert meta["n_bars_requested"] == 42
+    assert meta["bars_loaded"] == 42
+    assert meta["kraken_pagination_used"] is None
+
+
+def test_load_ohlcv_with_meta_kraken_single_request():
+    idx = pd.date_range("2024-06-01", periods=10, freq="1h", tz="UTC")
+    raw = pd.DataFrame(
+        {
+            "open": [1.0] * 10,
+            "high": [2.0] * 10,
+            "low": [0.5] * 10,
+            "close": [1.5] * 10,
+            "volume": [100.0] * 10,
+        },
+        index=idx,
+    )
+    with patch("src.data.kraken.fetch_ohlcv_df", return_value=raw.copy()):
+        df, meta = load_ohlcv_with_meta(
+            "ETH/EUR", n_bars=10, source=OHLCV_SOURCE_KRAKEN, timeframe="1h"
+        )
+    assert len(df) == 10
+    assert meta["kraken_pagination_used"] is False
+
+
+def test_load_ohlcv_with_meta_kraken_pagination_flag():
+    recent = pd.date_range("2024-03-01", periods=720, freq="1h", tz="UTC")
+    older = pd.date_range("2023-12-01", periods=720, freq="1h", tz="UTC")
+
+    def fake_fetch(*args, **kwargs):
+        since_ms = kwargs.get("since_ms")
+        use_cache = kwargs.get("use_cache", True)
+        assert use_cache is False
+        if since_ms is None:
+            return pd.DataFrame(
+                {
+                    "open": [100.0] * 720,
+                    "high": [101.0] * 720,
+                    "low": [99.0] * 720,
+                    "close": [100.5] * 720,
+                    "volume": [1.0] * 720,
+                },
+                index=recent,
+            )
+        return pd.DataFrame(
+            {
+                "open": [50.0] * 720,
+                "high": [51.0] * 720,
+                "low": [49.0] * 720,
+                "close": [50.5] * 720,
+                "volume": [1.0] * 720,
+            },
+            index=older,
+        )
+
+    with patch("src.data.kraken.fetch_ohlcv_df", side_effect=fake_fetch):
+        df, meta = load_ohlcv_with_meta(
+            "BTC/EUR", n_bars=1000, source=OHLCV_SOURCE_KRAKEN, timeframe="1h"
+        )
+    assert len(df) == 1000
+    assert meta["kraken_pagination_used"] is True
 
 
 def test_load_ohlcv_unknown_source():
