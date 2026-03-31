@@ -212,9 +212,7 @@ def run_single_symbol_backtest(
         BacktestResult mit allen Metriken
     """
     # Daten laden
-    data = load_data_for_symbol(
-        cfg, symbol, n_bars=n_bars, ohlcv_source=ohlcv_source
-    )
+    data = load_data_for_symbol(cfg, symbol, n_bars=n_bars, ohlcv_source=ohlcv_source)
 
     # Strategie erstellen
     strategy = create_strategy_from_config(strategy_key, cfg)

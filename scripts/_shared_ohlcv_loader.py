@@ -147,9 +147,5 @@ def load_ohlcv(
     if source == OHLCV_SOURCE_DUMMY:
         return load_dummy_ohlcv(symbol, n_bars=n_bars)
     if source == OHLCV_SOURCE_KRAKEN:
-        return load_kraken_ohlcv(
-            symbol, n_bars=n_bars, timeframe=timeframe, use_cache=use_cache
-        )
-    raise ValueError(
-        f"Unbekannte OHLCV-Quelle {source!r}; erlaubt: {list(OHLCV_SOURCES)}"
-    )
+        return load_kraken_ohlcv(symbol, n_bars=n_bars, timeframe=timeframe, use_cache=use_cache)
+    raise ValueError(f"Unbekannte OHLCV-Quelle {source!r}; erlaubt: {list(OHLCV_SOURCES)}")

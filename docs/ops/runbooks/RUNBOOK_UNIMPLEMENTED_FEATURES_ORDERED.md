@@ -135,7 +135,7 @@
 - **Datenvertrag:** strikte OHLCV-Validierung (`validate_ohlcv`, UTC-stündlicher Index); keine API-Keys/Orders/C1 in diesem Dummy-Pfad.
 - **Zeiten:** `as_of` in der Signal-CSV als **ISO-8601 UTC** mit **`Z`** (Generate: `format_as_of_iso_utc`); Evaluation: `parse_as_of_to_utc` beim Einlesen.
 - **OHLCV-Fenster:** `generate_forward_signals.py --n-bars` und `evaluate_forward_signals.py --n-bars` **gleich wählen** (Default jeweils 200), damit Dummy-Preisreihe und Signal-Zeitstempel zusammenpassen. Portfolio: `run_portfolio_backtest_v2.py --bars` / **`--n-bars`** (Alias, gleiches `dest`).
-- **Kraken (öffentliche OHLCV):** ``--ohlcv-source kraken`` — Netzwerk nötig; Kraken/ccxt typisch **max. 720 Bars** pro Abruf (`KRAKEN_OHLCV_MAX_BARS` im Loader). Generate/Evaluate/Portfolio weiterhin **dieselbe Quelle und gleiches `--n-bars`/`--bars`-Fenster** wählen. Vollständiger Wegfall von Dummy-Daten und weitere Anbieter: weiterhin **J1** (STUB) — Zeile J1.
+- **Kraken (öffentliche OHLCV):** ``--ohlcv-source kraken`` — Netzwerk nötig; Kraken&#47;ccxt typisch **max. 720 Bars** pro Abruf (`KRAKEN_OHLCV_MAX_BARS` im Loader). Generate&#47;Evaluate&#47;Portfolio weiterhin **dieselbe Quelle und gleiches `--n-bars`/`--bars`-Fenster** wählen. Vollständiger Wegfall von Dummy-Daten und weitere Anbieter: weiterhin **J1** (STUB) — Zeile J1.
 - **Integrationssmoke (Generate/Evaluate):** `tests/test_forward_generate_evaluate_integration_smoke.py`.
 
 ---

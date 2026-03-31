@@ -94,9 +94,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
         "--ohlcv-source",
         choices=list(OHLCV_SOURCES),
         default=OHLCV_SOURCE_DUMMY,
-        help=(
-            "Gleiche Quelle wie beim Generate-Lauf (dummy | kraken); Default dummy."
-        ),
+        help=("Gleiche Quelle wie beim Generate-Lauf (dummy | kraken); Default dummy."),
     )
     return parser.parse_args(argv)
 

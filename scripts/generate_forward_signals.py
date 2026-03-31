@@ -227,9 +227,7 @@ def main(argv: List[str] | None = None) -> None:
 
     for symbol in universe:
         print(f"\n📊 Verarbeite Symbol: {symbol}")
-        data = load_data_for_symbol(
-            symbol, n_bars=args.n_bars, ohlcv_source=args.ohlcv_source
-        )
+        data = load_data_for_symbol(symbol, n_bars=args.n_bars, ohlcv_source=args.ohlcv_source)
         if data.empty:
             print(f"  ⚠️  Keine Daten für {symbol}, überspringe.")
             continue
