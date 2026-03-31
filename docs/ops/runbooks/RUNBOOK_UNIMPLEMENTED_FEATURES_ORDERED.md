@@ -125,17 +125,17 @@
 
 | # | Thema | Tag | Hinweis / Ort |
 |---|--------|-----|----------------|
-| J1 | Kraken-/Marktdaten durch echte Quellen ersetzen | STUB | Dummy-Pfad konsolidiert (`scripts/_shared_ohlcv_loader.py`); echte Quellen noch offen — u. a. `scripts/generate_forward_signals.py`, `scripts/evaluate_forward_signals.py`, `scripts/run_portfolio_backtest_v2.py`; Ops-Hinweis Abschnitt „Forward-Pipeline“ unten |
+| J1 | Kraken-/Marktdaten durch echte Quellen ersetzen | STUB | Dummy + **Slice 4:** opt-in Kraken-OHLCV (`load_kraken_ohlcv` / `load_ohlcv` in `scripts/_shared_ohlcv_loader.py` → `src.data.kraken.fetch_ohlcv_df`); CLI ``--ohlcv-source dummy\|kraken`` in `generate_forward_signals.py`, `evaluate_forward_signals.py`, `run_portfolio_backtest_v2.py`. Voller Ersatz aller Dummy-Pfade / weitere Quellen: weiterhin J1 |
 | J2 | Optuna-Placeholder weiter ausbauen | STUB | `scripts/run_study_optuna_placeholder.py` |
 | J3 | Platzhalter-Inventar regenerieren | TOOL | `scripts/ops/placeholders/generate_placeholder_reports.py` — erzeugt TODO-Inventar-MDs |
 
 ### Forward-Pipeline (J1 — Ops-Hinweis)
 
-- **Gemeinsamer Dummy-OHLCV-Pfad:** `scripts/_shared_ohlcv_loader.py` (`load_dummy_ohlcv`), genutzt von `scripts/generate_forward_signals.py`, `scripts/evaluate_forward_signals.py`, `scripts/run_portfolio_backtest_v2.py`.
+- **Gemeinsamer OHLCV-Pfad:** `scripts/_shared_ohlcv_loader.py` — `load_dummy_ohlcv` / **J1 Slice 4:** `load_kraken_ohlcv` & `load_ohlcv` (Default: dummy); genutzt von `scripts/generate_forward_signals.py`, `scripts/evaluate_forward_signals.py`, `scripts/run_portfolio_backtest_v2.py` (CLI ``--ohlcv-source``).
 - **Datenvertrag:** strikte OHLCV-Validierung (`validate_ohlcv`, UTC-stündlicher Index); keine API-Keys/Orders/C1 in diesem Dummy-Pfad.
 - **Zeiten:** `as_of` in der Signal-CSV als **ISO-8601 UTC** mit **`Z`** (Generate: `format_as_of_iso_utc`); Evaluation: `parse_as_of_to_utc` beim Einlesen.
 - **OHLCV-Fenster:** `generate_forward_signals.py --n-bars` und `evaluate_forward_signals.py --n-bars` **gleich wählen** (Default jeweils 200), damit Dummy-Preisreihe und Signal-Zeitstempel zusammenpassen. Portfolio: `run_portfolio_backtest_v2.py --bars` / **`--n-bars`** (Alias, gleiches `dest`).
-- **Echte Kraken-/Marktdaten** statt Dummy: weiterhin **J1** (STUB) — siehe Zeile J1 oben.
+- **Kraken (öffentliche OHLCV):** ``--ohlcv-source kraken`` — Netzwerk nötig; Kraken/ccxt typisch **max. 720 Bars** pro Abruf (`KRAKEN_OHLCV_MAX_BARS` im Loader). Generate/Evaluate/Portfolio weiterhin **dieselbe Quelle und gleiches `--n-bars`/`--bars`-Fenster** wählen. Vollständiger Wegfall von Dummy-Daten und weitere Anbieter: weiterhin **J1** (STUB) — Zeile J1.
 - **Integrationssmoke (Generate/Evaluate):** `tests/test_forward_generate_evaluate_integration_smoke.py`.
 
 ---

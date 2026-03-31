@@ -38,7 +38,7 @@ sys.path.insert(0, str(_scripts))
 import numpy as np
 import pandas as pd
 
-from _shared_ohlcv_loader import load_dummy_ohlcv
+from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, OHLCV_SOURCES, load_ohlcv
 from src.core.peak_config import load_config, PeakConfig
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
@@ -116,26 +116,37 @@ Examples:
         action="store_true",
         help="Wenn gesetzt, werden keine Einzel-Reports pro Symbol geschrieben.",
     )
+    parser.add_argument(
+        "--ohlcv-source",
+        choices=list(OHLCV_SOURCES),
+        default=OHLCV_SOURCE_DUMMY,
+        help=(
+            "OHLCV-Quelle: dummy (offline, Default) oder kraken (öffentliche API; max. 720 Bars/Abruf)."
+        ),
+    )
     return parser.parse_args(argv)
 
 
-def load_data_for_symbol(cfg: PeakConfig, symbol: str, n_bars: int = 200) -> pd.DataFrame:
+def load_data_for_symbol(
+    cfg: PeakConfig,
+    symbol: str,
+    n_bars: int = 200,
+    *,
+    ohlcv_source: str = OHLCV_SOURCE_DUMMY,
+) -> pd.DataFrame:
     """
-    Lädt Marktdaten für ein Symbol.
-
-    J1 Slice 3: Dummy-OHLCV über ``scripts/_shared_ohlcv_loader.load_dummy_ohlcv``
-    (gleicher Vertrag wie generate/evaluate; ``cfg`` derzeit ungenutzt).
-    TODO: echte Kraken-Daten.
+    Lädt Marktdaten für ein Symbol (J1: ``load_ohlcv`` — dummy oder Kraken; ``cfg`` derzeit ungenutzt).
 
     Args:
         cfg: PeakConfig-Objekt
         symbol: Trading-Pair (z.B. "BTC/EUR")
         n_bars: Anzahl Bars
+        ohlcv_source: ``dummy`` | ``kraken``
 
     Returns:
         DataFrame mit OHLCV-Daten (DatetimeIndex)
     """
-    return load_dummy_ohlcv(symbol, n_bars=n_bars)
+    return load_ohlcv(symbol, n_bars=n_bars, source=ohlcv_source)
 
 
 def get_portfolio_definition(
@@ -185,6 +196,8 @@ def run_single_symbol_backtest(
     symbol: str,
     strategy_key: str,
     n_bars: int = 200,
+    *,
+    ohlcv_source: str = OHLCV_SOURCE_DUMMY,
 ) -> BacktestResult:
     """
     Führt einen einzelnen Backtest für ein Symbol durch.
@@ -199,7 +212,9 @@ def run_single_symbol_backtest(
         BacktestResult mit allen Metriken
     """
     # Daten laden
-    data = load_data_for_symbol(cfg, symbol, n_bars=n_bars)
+    data = load_data_for_symbol(
+        cfg, symbol, n_bars=n_bars, ohlcv_source=ohlcv_source
+    )
 
     # Strategie erstellen
     strategy = create_strategy_from_config(strategy_key, cfg)
@@ -407,6 +422,7 @@ def main(argv: List[str] | None = None) -> None:
     print(f"  - Initial Equity:   {initial_equity:,.2f}")
     print(f"  - Global Strategy:  {global_strategy_key}")
     print(f"  - OHLCV-Bars/Symbol: {args.bars} (--bars / --n-bars)")
+    print(f"  - OHLCV-Quelle:      {args.ohlcv_source}")
     if symbol_strategies:
         print(f"  - Symbol-Strategien: {symbol_strategies}")
 
@@ -431,6 +447,7 @@ def main(argv: List[str] | None = None) -> None:
                 symbol=symbol,
                 strategy_key=strategy_key,
                 n_bars=args.bars,
+                ohlcv_source=args.ohlcv_source,
             )
         except Exception as e:
             print(f"  ❌ FEHLER: {e}")
