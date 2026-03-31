@@ -38,7 +38,8 @@ sys.path.insert(0, str(_scripts))
 import numpy as np
 import pandas as pd
 
-from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, OHLCV_SOURCES, load_ohlcv
+from _shared_forward_args import add_shared_ohlcv_cli_group, parse_symbols_cli_arg
+from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv
 from src.core.peak_config import load_config, PeakConfig
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
@@ -96,14 +97,11 @@ Examples:
         ),
     )
     parser.add_argument(
-        "--bars",
-        "--n-bars",
-        type=int,
-        default=200,
-        metavar="N",
+        "--symbols",
+        default=None,
         help=(
-            "Anzahl OHLCV-Bars pro Symbol (Default: 200). "
-            "Gleiche Semantik wie --n-bars bei generate_forward_signals / evaluate_forward_signals."
+            "Optional: kommagetrennte Symbole (wie generate_forward_signals --symbols). "
+            "Überschreibt [portfolio].symbols für diesen Lauf; Gewichte gleich verteilt."
         ),
     )
     parser.add_argument(
@@ -116,13 +114,10 @@ Examples:
         action="store_true",
         help="Wenn gesetzt, werden keine Einzel-Reports pro Symbol geschrieben.",
     )
-    parser.add_argument(
-        "--ohlcv-source",
-        choices=list(OHLCV_SOURCES),
-        default=OHLCV_SOURCE_DUMMY,
-        help=(
-            "OHLCV-Quelle: dummy (offline, Default) oder kraken (öffentliche API; max. 720 Bars/Abruf)."
-        ),
+    add_shared_ohlcv_cli_group(
+        parser,
+        n_bars_dest="bars",
+        n_bars_flags=("--bars", "--n-bars"),
     )
     return parser.parse_args(argv)
 
@@ -133,6 +128,7 @@ def load_data_for_symbol(
     n_bars: int = 200,
     *,
     ohlcv_source: str = OHLCV_SOURCE_DUMMY,
+    timeframe: str = "1h",
 ) -> pd.DataFrame:
     """
     Lädt Marktdaten für ein Symbol (J1: ``load_ohlcv`` — dummy oder Kraken; ``cfg`` derzeit ungenutzt).
@@ -142,26 +138,44 @@ def load_data_for_symbol(
         symbol: Trading-Pair (z.B. "BTC/EUR")
         n_bars: Anzahl Bars
         ohlcv_source: ``dummy`` | ``kraken``
+        timeframe: Kraken-Timeframe; Dummy siehe Loader.
 
     Returns:
         DataFrame mit OHLCV-Daten (DatetimeIndex)
     """
-    return load_ohlcv(symbol, n_bars=n_bars, source=ohlcv_source)
+    return load_ohlcv(symbol, n_bars=n_bars, source=ohlcv_source, timeframe=timeframe)
 
 
 def get_portfolio_definition(
     cfg: PeakConfig,
+    symbols_override: str | None = None,
 ) -> Tuple[str, List[str], List[float], float, Dict[str, str]]:
     """
     Liest die Portfolio-Definition aus der Config.
+
+    Optional ``symbols_override`` (kommagetrennt, wie ``generate_forward_signals --symbols``):
+    überschreibt die Symbol-Liste; Gewichte gleichverteilt.
 
     Returns:
         Tuple von (portfolio_name, symbols, weights, initial_equity, symbol_strategies)
     """
     portfolio_name = str(cfg.get("portfolio.name", "portfolio"))
+    initial_equity = float(cfg.get("portfolio.initial_equity", 10000.0))
+
+    # Optionale symbol-spezifische Strategien (aus Config; bei Override gefiltert)
+    symbol_strategies_raw = cfg.get("portfolio.strategies", {}) or {}
+
+    parsed_override = parse_symbols_cli_arg(symbols_override)
+    if parsed_override is not None:
+        symbols = parsed_override
+        if not symbols:
+            raise ValueError("--symbols enthält keine gültigen Symbole.")
+        weights = [1.0 / len(symbols)] * len(symbols)
+        symbol_strategies = {k: v for k, v in symbol_strategies_raw.items() if k in symbols}
+        return portfolio_name, list(symbols), weights, initial_equity, symbol_strategies
+
     symbols = cfg.get("portfolio.symbols", [])
     weights = cfg.get("portfolio.asset_weights", [])
-    initial_equity = float(cfg.get("portfolio.initial_equity", 10000.0))
 
     # Fallback auf alte Struktur, falls vorhanden
     if not symbols:
@@ -185,10 +199,7 @@ def get_portfolio_definition(
     weights_arr = weights_arr / weights_arr.sum()
     weights = weights_arr.tolist()
 
-    # Optionale symbol-spezifische Strategien
-    symbol_strategies = cfg.get("portfolio.strategies", {}) or {}
-
-    return portfolio_name, list(symbols), weights, initial_equity, symbol_strategies
+    return portfolio_name, list(symbols), weights, initial_equity, dict(symbol_strategies_raw)
 
 
 def run_single_symbol_backtest(
@@ -198,6 +209,7 @@ def run_single_symbol_backtest(
     n_bars: int = 200,
     *,
     ohlcv_source: str = OHLCV_SOURCE_DUMMY,
+    timeframe: str = "1h",
 ) -> BacktestResult:
     """
     Führt einen einzelnen Backtest für ein Symbol durch.
@@ -212,7 +224,13 @@ def run_single_symbol_backtest(
         BacktestResult mit allen Metriken
     """
     # Daten laden
-    data = load_data_for_symbol(cfg, symbol, n_bars=n_bars, ohlcv_source=ohlcv_source)
+    data = load_data_for_symbol(
+        cfg,
+        symbol,
+        n_bars=n_bars,
+        ohlcv_source=ohlcv_source,
+        timeframe=timeframe,
+    )
 
     # Strategie erstellen
     strategy = create_strategy_from_config(strategy_key, cfg)
@@ -401,7 +419,7 @@ def main(argv: List[str] | None = None) -> None:
     # Portfolio-Definition laden
     try:
         portfolio_name, symbols, weights, initial_equity, symbol_strategies = (
-            get_portfolio_definition(cfg)
+            get_portfolio_definition(cfg, symbols_override=args.symbols)
         )
     except ValueError as e:
         print(f"\n❌ FEHLER bei Portfolio-Definition: {e}")
@@ -420,7 +438,10 @@ def main(argv: List[str] | None = None) -> None:
     print(f"  - Initial Equity:   {initial_equity:,.2f}")
     print(f"  - Global Strategy:  {global_strategy_key}")
     print(f"  - OHLCV-Bars/Symbol: {args.bars} (--bars / --n-bars)")
+    print(f"  - Timeframe:         {args.timeframe}")
     print(f"  - OHLCV-Quelle:      {args.ohlcv_source}")
+    if args.symbols:
+        print(f"  - --symbols (CLI):   {args.symbols}")
     if symbol_strategies:
         print(f"  - Symbol-Strategien: {symbol_strategies}")
 
@@ -446,6 +467,7 @@ def main(argv: List[str] | None = None) -> None:
                 strategy_key=strategy_key,
                 n_bars=args.bars,
                 ohlcv_source=args.ohlcv_source,
+                timeframe=args.timeframe,
             )
         except Exception as e:
             print(f"  ❌ FEHLER: {e}")
