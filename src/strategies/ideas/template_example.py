@@ -24,10 +24,7 @@ class IdeaExampleStrategy(BaseStrategy):
     """
     Template für eine neue Idea-Strategie.
 
-    TODO: Beschreibe hier deine Strategie-Logik:
-    - Welche Indikatoren nutzt sie?
-    - Welche Entry-/Exit-Regeln?
-    - Welche Parameter sind wichtig?
+    Author notes — describe concept, indicators, entry/exit, parameters.
 
     Args:
         param1: Beispiel-Parameter 1 (z.B. Window-Größe)
@@ -53,8 +50,8 @@ class IdeaExampleStrategy(BaseStrategy):
         Initialisiert die Idea-Strategie.
 
         Args:
-            param1: TODO: Beschreibe param1
-            param2: TODO: Beschreibe param2
+            param1: Primary numeric parameter (see class docstring).
+            param2: Secondary parameter (see class docstring).
             price_col: Preis-Spalte
             config: Optional Config-Dict (überschreibt Parameter)
             metadata: Optional Metadata
@@ -97,9 +94,7 @@ class IdeaExampleStrategy(BaseStrategy):
         """
         Validiert Parameter.
 
-        TODO: Füge hier deine Validierungslogik hinzu:
-        - Sind Parameter im erlaubten Bereich?
-        - Sind Kombinationen gültig?
+        Extend validation as needed for your strategy (ranges, combinations).
         """
         if self.param1 < 1:
             raise ValueError(f"param1 muss >= 1 sein, ist {self.param1}")
@@ -122,7 +117,7 @@ class IdeaExampleStrategy(BaseStrategy):
         """
         Generiert Handelssignale aus OHLCV-Daten.
 
-        TODO: Implementiere hier deine Strategie-Logik!
+        Implement your strategy logic (indicators, entry/exit, event→state).
 
         Args:
             data: DataFrame mit OHLCV-Daten (mindestens self.price_col)
@@ -150,7 +145,7 @@ class IdeaExampleStrategy(BaseStrategy):
         df = data.copy()
 
         # ====================================================================
-        # TODO: DEINE STRATEGIE-LOGIK HIER
+        # Author implementation: strategy logic
         # ====================================================================
 
         # Beispiel 1: Indikatoren berechnen

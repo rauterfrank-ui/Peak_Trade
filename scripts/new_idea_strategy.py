@@ -111,10 +111,7 @@ def build_template(module_name: str, class_name: str, title: str) -> str:
 {title}
 {"=" * len(title)}
 
-TODO: Beschreibe hier deine Strategie-Idee:
-- Welches Konzept verfolgst du?
-- Welche Indikatoren/Signale nutzt du?
-- Welche Parameter sind wichtig?
+Author notes — describe your strategy idea (concept, indicators, parameters).
 """
 from __future__ import annotations
 
@@ -129,14 +126,11 @@ class {class_name}Strategy(BaseStrategy):
     """
     {title} Strategy.
 
-    TODO: Füge hier eine detaillierte Beschreibung hinzu:
-    - Entry-Regeln
-    - Exit-Regeln
-    - Parameter-Beschreibung
+    Add a detailed description (entry, exit, parameters).
 
     Args:
-        param1: TODO: Beschreibe param1 (z.B. Window-Größe)
-        param2: TODO: Beschreibe param2 (z.B. Threshold)
+        param1: e.g. window length — document in your implementation
+        param2: e.g. threshold — document in your implementation
         price_col: Spalte für Preisdaten (default: "close")
         config: Optional Config-Dict (überschreibt Konstruktor-Parameter)
         metadata: Optional StrategyMetadata
@@ -158,8 +152,8 @@ class {class_name}Strategy(BaseStrategy):
         Initialisiert {title} Strategy.
 
         Args:
-            param1: TODO: Beschreibe param1
-            param2: TODO: Beschreibe param2
+            param1: Primary numeric parameter (see class docstring).
+            param2: Secondary parameter (see class docstring).
             price_col: Preis-Spalte
             config: Optional Config-Dict (überschreibt Parameter)
             metadata: Optional Metadata
@@ -202,9 +196,7 @@ class {class_name}Strategy(BaseStrategy):
         """
         Validiert Parameter.
 
-        TODO: Füge hier deine Validierungslogik hinzu:
-        - Sind Parameter im erlaubten Bereich?
-        - Sind Kombinationen gültig?
+        Extend validation as needed for your strategy (ranges, combinations).
         """
         if self.param1 < 1:
             raise ValueError(f"param1 muss >= 1 sein, ist {{self.param1}}")
@@ -227,13 +219,7 @@ class {class_name}Strategy(BaseStrategy):
         """
         Generiert Handelssignale aus OHLCV-Daten.
 
-        TODO: Implementiere hier deine Strategie-Logik!
-
-        Schritte:
-        1. Indikatoren berechnen (z.B. RSI, Bollinger Bands, Keltner Channels)
-        2. Entry-/Exit-Bedingungen definieren
-        3. Signale aus Events erzeugen
-        4. Event → State konvertieren (1=long, 0=flat, -1=short)
+        Implement your strategy logic (indicators, entry/exit, event→state).
 
         Args:
             data: DataFrame mit OHLCV-Daten (mindestens self.price_col)
@@ -261,7 +247,7 @@ class {class_name}Strategy(BaseStrategy):
         df = data.copy()
 
         # ====================================================================
-        # TODO: DEINE STRATEGIE-LOGIK HIER
+        # Author implementation: strategy logic
         # ====================================================================
 
         # Beispiel: Indikatoren berechnen
@@ -361,7 +347,7 @@ def main(argv: List[str] | None = None) -> None:
     print(f"\n[OK] Strategie-Datei erstellt: {out_file}")
     print(f"\nNaechste Schritte:")
     print(f"  1. Öffne {out_file}")
-    print(f"  2. Implementiere generate_signals() (suche nach TODO-Kommentaren)")
+    print(f"  2. Implementiere generate_signals() (Abschnitt «strategy logic» / Kommentare)")
     print(f"  3. Teste mit: python scripts/run_idea_strategy.py \\")
     print(f"       --module {module_name} \\")
     print(f"       --symbol BTC/EUR \\")
