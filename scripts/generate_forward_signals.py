@@ -93,8 +93,9 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     """
     Lädt Daten für ein bestimmtes Symbol.
 
-    Aktuell: Dummy-OHLCV über ``src.data.dummy_ohlcv`` (J1 Slice 1).
-    TODO: Später mit echten Kraken-Daten ersetzen.
+    J1 Slice 1: Dummy-OHLCV über ``src.data.dummy_ohlcv.load_dummy_ohlcv_bars``
+    (read-only, keine Orders/Keys, kein C1-Bezug; Vertrag und OHLC-Konsistenz siehe
+    Modul-Docstring dort). Später: echte Kraken-Daten (J1 weiter).
 
     Args:
         symbol: Trading-Pair (z.B. "BTC/EUR")

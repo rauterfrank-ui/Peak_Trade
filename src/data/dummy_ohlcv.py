@@ -2,8 +2,20 @@
 """
 Reproduzierbare Dummy-OHLCV für Forward-/Paper-Skripte (J1).
 
-Gemeinsamer Vertrag: DatetimeIndex (1h), Spalten open/high/low/close/volume.
-High/Low werden gegen open/close konsistent gehalten (wie evaluate/generate bisher).
+J1 Slice 1 (Branch ``feat/j1-shared-ohlcv-loader-slice1``) — fester Scope:
+
+1. Nur ``scripts/generate_forward_signals.py`` wird auf diesen gemeinsamen Loader
+   umgestellt; ``evaluate_forward_signals`` / ``run_portfolio_backtest_v2`` bleiben
+   in Slice 1 unverändert (Folge-Slices separat).
+
+2. DataFrame-Vertrag: ``DatetimeIndex`` (1h) und Spalten
+   ``open``, ``high``, ``low``, ``close``, ``volume`` (analog ``REQUIRED_OHLCV_COLUMNS``).
+
+3. OHLC-Konsistenz wie bisher: nach der Rohgenerierung
+   ``high = max(open, close, high)``, ``low = min(open, close, low)``.
+
+4. Read-only Datenpfad: keine Orders, keine API-Keys, kein C1-Bezug; nur synthetische
+   lokale Daten.
 
 TODO(J1): Optional durch echte Marktdaten (Kraken/CCXT) ersetzen.
 """
