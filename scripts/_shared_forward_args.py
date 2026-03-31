@@ -5,7 +5,7 @@ Gemeinsame CLI-Defaults und Argument-Gruppe für Forward-/Portfolio-OHLCV (J1).
 Drei Skripte teilen denselben Parametervertrag für ``--n-bars``/``--bars``,
 ``--ohlcv-source`` und ``--timeframe`` (Kraken; Dummy ignoriert ``timeframe`` intern 1h).
 
-Keine neuen Datenquellen oder Pagination — nur Normalisierung und einheitliche Hilfetexte.
+Keine neuen Datenquellen — gemeinsame CLI-Normalisierung; Kraken-Pagination für große ``n-bars`` liegt im Loader.
 """
 
 from __future__ import annotations
@@ -59,8 +59,8 @@ def add_shared_ohlcv_cli_group(
         help=(
             f"Anzahl OHLCV-Bars pro Symbol (Default: {DEFAULT_FORWARD_N_BARS}). "
             "Gleiche Semantik in generate_forward_signals, evaluate_forward_signals "
-            "und run_portfolio_backtest_v2. Kraken: max. "
-            f"{KRAKEN_OHLCV_MAX_BARS} Bars pro Abruf (ohne Pagination)."
+            "und run_portfolio_backtest_v2. Kraken: bis "
+            f"{KRAKEN_OHLCV_MAX_BARS} Bars pro Request; bei größerem Wert Pagination im Loader."
         ),
     )
     parser.add_argument(
@@ -69,7 +69,7 @@ def add_shared_ohlcv_cli_group(
         default=OHLCV_SOURCE_DUMMY,
         help=(
             "OHLCV-Quelle: dummy (offline, Default) oder kraken (öffentliche REST-OHLCV; "
-            f"Netzwerk nötig, max. {KRAKEN_OHLCV_MAX_BARS} Bars/Abruf)."
+            f"Netzwerk nötig; große Fenster: mehrere Abrufe à max. {KRAKEN_OHLCV_MAX_BARS} Bars)."
         ),
     )
     parser.add_argument(
