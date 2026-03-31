@@ -9,7 +9,7 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from evaluate_forward_signals import parse_as_of_to_utc
+from evaluate_forward_signals import parse_args, parse_as_of_to_utc
 
 
 @pytest.mark.smoke
@@ -34,3 +34,14 @@ def test_parse_as_of_non_utc_offset_converts():
 def test_parse_as_of_nat_like_raises():
     with pytest.raises(ValueError, match="as_of"):
         parse_as_of_to_utc("")
+
+
+@pytest.mark.smoke
+def test_parse_args_n_bars_default():
+    args = parse_args(["dummy.csv"])
+    assert args.n_bars == 200
+
+
+def test_parse_args_n_bars_custom():
+    args = parse_args(["signals.csv", "--n-bars", "150"])
+    assert args.n_bars == 150
