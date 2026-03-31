@@ -18,16 +18,19 @@ from __future__ import annotations
 
 import sys
 import argparse
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
-# Projekt-Root zum Python-Path hinzufügen
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Projekt-Root und scripts/-Verzeichnis (shared OHLCV-Loader) zum Python-Path
+_root = Path(__file__).resolve().parent.parent
+_scripts = Path(__file__).resolve().parent
+sys.path.insert(0, str(_root))
+sys.path.insert(0, str(_scripts))
 
-import numpy as np
 import pandas as pd
 
+from _shared_ohlcv_loader import load_dummy_ohlcv
 from src.core.peak_config import load_config
 from src.core.experiments import log_generic_experiment
 from src.forward.signals import FORWARD_SIGNALS_COLUMNS
@@ -75,53 +78,12 @@ def load_signal_df(path: Path | str) -> pd.DataFrame:
 
 def load_price_data(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     """
-    Lädt Preisdaten für ein Symbol (Dummy-Implementierung analog zu generate_forward_signals.py).
+    Lädt Preisdaten für ein Symbol.
 
-    TODO: Später mit echten Kraken-Daten synchron halten.
+    J1 Slice 2: Dummy-OHLCV über ``scripts/_shared_ohlcv_loader.load_dummy_ohlcv``
+    (gleicher Vertrag wie ``generate_forward_signals``). TODO: echte Kraken-Daten.
     """
-    # Symbol-spezifischer Seed
-    seed = hash(symbol) % (2**32)
-    np.random.seed(seed)
-
-    # Start-Zeitpunkt
-    start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq="1h")
-
-    # Preis-Simulation
-    if "BTC" in symbol:
-        base_price = 50000
-        volatility = 0.003
-    elif "ETH" in symbol:
-        base_price = 3000
-        volatility = 0.004
-    elif "LTC" in symbol:
-        base_price = 100
-        volatility = 0.005
-    else:
-        base_price = 1000
-        volatility = 0.003
-
-    trend = np.linspace(0, base_price * 0.06, n_bars)
-    cycle = np.sin(np.linspace(0, 4 * np.pi, n_bars)) * base_price * 0.04
-    noise = np.random.randn(n_bars).cumsum() * base_price * volatility
-
-    close_prices = base_price + trend + cycle + noise
-
-    df = pd.DataFrame(
-        {
-            "open": close_prices * (1 + np.random.randn(n_bars) * volatility),
-            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
-            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
-            "close": close_prices,
-            "volume": np.random.randint(10, 100, n_bars),
-        },
-        index=dates,
-    )
-
-    df["high"] = df[["open", "close", "high"]].max(axis=1)
-    df["low"] = df[["open", "close", "low"]].min(axis=1)
-
-    return df
+    return load_dummy_ohlcv(symbol, n_bars=n_bars)
 
 
 def evaluate_signals_for_symbol(
