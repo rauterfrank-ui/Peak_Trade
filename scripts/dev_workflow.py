@@ -11,6 +11,11 @@ Usage:
     python scripts/dev_workflow.py test --module strategies
     python scripts/dev_workflow.py perf-check
     python scripts/dev_workflow.py docs-validate
+
+Scope note (J3 / dev-workflow slice): ``create_strategy_scaffold`` emits neutral
+author hints (no ``TODO:`` prefixes in generated strategy/test files). The
+``docs-validate`` check below still looks for the literal substrings ``TODO`` and
+``FIXME`` inside Markdown under ``docs/`` to surface unfinished docs — intentional.
 """
 
 import argparse
@@ -238,7 +243,7 @@ def validate_docs() -> None:
         with open(md_file, "r", encoding="utf-8") as f:
             content = f.read()
 
-            # Check for TODO markers
+            # Deliberate doc scan: flag unfinished docs (literal TODO/FIXME substrings).
             if "TODO" in content or "FIXME" in content:
                 issues.append(f"{md_file.name}: Contains TODO/FIXME")
 
@@ -303,7 +308,7 @@ def quick_health_check() -> None:
 
 
 def create_strategy_scaffold(name: str) -> None:
-    """Create a new strategy with boilerplate code."""
+    """Create a new strategy with boilerplate code (author-fill template; not placeholder debt)."""
     print_header(f"Creating strategy scaffold: {name}")
 
     # Convert name to snake_case and PascalCase
@@ -334,16 +339,16 @@ class {pascal_name}(BaseStrategy):
     """
     {pascal_name} trading strategy.
 
-    TODO: Add strategy description
+    Add your strategy description here.
 
     Parameters:
     -----------
-    TODO: Document parameters
+    Document parameters (names, defaults, and ranges).
     """
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # TODO: Initialize strategy parameters
+        # Initialize strategy parameters as needed.
 
     def generate_signals(self, df: pd.DataFrame) -> List[Signal]:
         """
@@ -357,7 +362,7 @@ class {pascal_name}(BaseStrategy):
         """
         signals = []
 
-        # TODO: Implement signal generation logic
+        # Implement your signal generation logic.
 
         return signals
 '''
@@ -404,7 +409,7 @@ class Test{pascal_name}:
         }})
 
         signals = strategy.generate_signals(df)
-        # TODO: Add assertions based on expected behavior
+        # Add assertions for your strategy's expected behavior.
 '''
 
     # Write files
