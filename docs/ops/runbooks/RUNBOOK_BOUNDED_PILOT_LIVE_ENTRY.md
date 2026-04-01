@@ -98,7 +98,7 @@ Erwartung: relevante Checks **bestanden** (u. a. Risk-Limits, Live-Risk-Config, 
 
 ### Phase C — Erweiterter Ops-Check (optional, laut live_pilot_execution_plan)
 
-- `./scripts/ops/ops_status.sh` → Exit 0
+- `scripts/ops/ops_status.sh` (Repo-Root) → Exit 0
 - PRBI Live-Pilot-Scorecard: Entscheidung `READY_FOR_LIVE_PILOT`, keine `hard_blocks`
 - Weitere organisatorische Gates (PRBC, PRK, AWS Export Write Smoke)—**wie in eurem Betrieb verbindlich definiert**
 
