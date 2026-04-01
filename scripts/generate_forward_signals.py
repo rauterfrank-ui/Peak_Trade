@@ -43,7 +43,7 @@ from src.analytics.risk_monitor import (
 )
 from src.analytics.filter_flow import SelectionPolicy, build_strategy_selection
 from _shared_forward_args import add_shared_ohlcv_cli_group
-from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv
+from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv_with_meta
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
@@ -104,17 +104,31 @@ def format_as_of_iso_utc(ts: Any) -> str:
     return t.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def _print_ohlcv_load_observability(meta: Dict[str, Any]) -> None:
+    """Stdout: J1-Observability für UTC-/Fenster-Debugging (Generate-Pfad)."""
+    pag = meta.get("kraken_pagination_used")
+    if pag is None:
+        pag_s = "n/a (dummy)"
+    else:
+        pag_s = "ja" if pag else "nein"
+    print(
+        f"  📡 OHLCV-Load: {meta['symbol']} | Quelle={meta['ohlcv_source']} | "
+        f"TF={meta['timeframe']} | n_bars={meta['n_bars_requested']} | "
+        f"geladen={meta['bars_loaded']} | Kraken-Pagination={pag_s}"
+    )
+
+
 def load_data_for_symbol(
     symbol: str,
     n_bars: int = 200,
     *,
     ohlcv_source: str = OHLCV_SOURCE_DUMMY,
     timeframe: str = "1h",
-) -> pd.DataFrame:
+) -> tuple[pd.DataFrame, Dict[str, Any]]:
     """
     Lädt Daten für ein bestimmtes Symbol.
 
-    J1 Slice 1–3: Dummy; J1 Slice 4: optional Kraken über ``load_ohlcv`` (gleicher Vertrag).
+    J1 Slice 1–3: Dummy; J1 Slice 4: optional Kraken über ``load_ohlcv_with_meta`` (gleicher Vertrag).
 
     Args:
         symbol: Trading-Pair (z.B. "BTC/EUR")
@@ -123,9 +137,11 @@ def load_data_for_symbol(
         timeframe: Kraken-Timeframe; Dummy bleibt 1h-synthetisch (siehe Loader).
 
     Returns:
-        DataFrame mit OHLCV-Daten
+        (DataFrame mit OHLCV-Daten, Observability-Dict für Loader/J1)
     """
-    return load_ohlcv(symbol, n_bars=n_bars, source=ohlcv_source, timeframe=timeframe)
+    return load_ohlcv_with_meta(
+        symbol, n_bars=n_bars, source=ohlcv_source, timeframe=timeframe
+    )
 
 
 def determine_universe(cfg: Any, symbols_arg: str | None) -> List[str]:
@@ -212,17 +228,20 @@ def main(argv: List[str] | None = None) -> None:
     print(f"  OHLCV-Quelle:  {args.ohlcv_source}")
 
     signals: List[ForwardSignal] = []
+    ohlcv_load_by_symbol: Dict[str, Dict[str, Any]] = {}
 
     generated_at = datetime.utcnow().isoformat(timespec="seconds") + "Z"
 
     for symbol in universe:
         print(f"\n📊 Verarbeite Symbol: {symbol}")
-        data = load_data_for_symbol(
+        data, ohlcv_meta = load_data_for_symbol(
             symbol,
             n_bars=args.n_bars,
             ohlcv_source=args.ohlcv_source,
             timeframe=args.timeframe,
         )
+        ohlcv_load_by_symbol[symbol] = ohlcv_meta
+        _print_ohlcv_load_observability(ohlcv_meta)
         if data.empty:
             print(f"  ⚠️  Keine Daten für {symbol}, überspringe.")
             continue
@@ -291,6 +310,7 @@ def main(argv: List[str] | None = None) -> None:
             "n_signals": len(signals),
             "ohlcv_source": args.ohlcv_source,
             "timeframe": args.timeframe,
+            "ohlcv_load_by_symbol": ohlcv_load_by_symbol,
         },
     )
     print(f"\n📝 Forward-Signal-Run in Registry geloggt (run_type='forward_signals')")
