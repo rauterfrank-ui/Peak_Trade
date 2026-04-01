@@ -40,6 +40,11 @@ python3 scripts/ops/check_repo_truth_claims.py
 
 Vor Drift-Checks: `git fetch origin`, damit die Basis-Ref (z. B. `origin&#47;main`) existiert.
 
+## CI (GitHub — Pull Requests)
+
+Workflow: `.github/workflows/truth_gates_pr.yml`.  
+Stabile Check-Namen für Branch-Protection / Required Contexts: **`docs-drift-guard`**, **`repo-truth-claims`**.
+
 ## Nicht in Scope (Slice B)
 
 - CI-Workflow-Umbau
