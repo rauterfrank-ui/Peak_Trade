@@ -1,0 +1,52 @@
+# Docs Truth Map — Slice A
+# When a path under `sensitive` changes (prefix match for trailing-slash entries),
+# at least one file in `required_docs` must appear in the same diff vs. the base ref.
+#
+# Matching rules (see check_docs_drift_guard.py):
+# - Entries ending with "/" match any repo-relative path under that directory.
+# - Other entries match exactly (POSIX path).
+
+version: 1
+
+rules:
+  - id: execution-layer
+    sensitive:
+      - "src/execution/"
+    required_docs:
+      - "docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md"
+      - "docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md"
+      - "docs/ops/runbooks/CANARY_LIVE_ENTRY_CRITERIA.md"
+
+  - id: orders-layer
+    sensitive:
+      - "src/orders/"
+    required_docs:
+      - "docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md"
+      - "docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md"
+      - "docs/ops/runbooks/CANARY_LIVE_ENTRY_CRITERIA.md"
+
+  - id: core-environment
+    sensitive:
+      - "src/core/environment.py"
+    required_docs:
+      - "docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md"
+      - "docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md"
+      - "docs/ops/runbooks/CANARY_LIVE_ENTRY_CRITERIA.md"
+
+  - id: governance-overview-canonical
+    sensitive:
+      - "docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md"
+    required_docs:
+      - "docs/ops/registry/DOCS_TRUTH_MAP.md"
+
+  - id: known-limitations-canonical
+    sensitive:
+      - "docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md"
+    required_docs:
+      - "docs/ops/registry/DOCS_TRUTH_MAP.md"
+
+  - id: canary-live-entry-canonical
+    sensitive:
+      - "docs/ops/runbooks/CANARY_LIVE_ENTRY_CRITERIA.md"
+    required_docs:
+      - "docs/ops/registry/DOCS_TRUTH_MAP.md"
