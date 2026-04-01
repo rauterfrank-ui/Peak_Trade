@@ -76,7 +76,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 ## Branch / PR pointer (optional)
 
 - **Merged:** [PR #2168](https://github.com/rauterfrank-ui/Peak_Trade/pull/2168) — J2 Optuna placeholder / minimal study runner + related CI fixes on `main`.
-- **Doc edits to this file:** short-lived `feat/*` branch as usual; Finish Plan **PR 6–8** spine unchanged; **NO-LIVE** default.
+- **Doc edits to this file:** short-lived `feat&#47;*` branch as usual; Finish Plan **PR 6–8** spine unchanged; **NO-LIVE** default.
 
 ---
 
