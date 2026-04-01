@@ -10,9 +10,13 @@ aiohttp==3.13.3
 aiosignal==1.4.0
     # via aiohttp
 alembic==1.16.5 ; python_full_version < '3.10'
-    # via mlflow
+    # via
+    #   mlflow
+    #   optuna
 alembic==1.17.2 ; python_full_version >= '3.10'
-    # via mlflow
+    # via
+    #   mlflow
+    #   optuna
 annotated-doc==0.0.4
     # via fastapi
 annotated-types==0.7.0
@@ -97,11 +101,14 @@ colorama==0.4.6 ; os_name == 'nt' or sys_platform == 'win32'
     # via
     #   build
     #   click
+    #   colorlog
     #   pytest
     #   tqdm
     #   uvicorn
 coloredlogs==15.0.1
     # via onnxruntime
+colorlog==6.10.1
+    # via optuna
 contourpy==1.3.0 ; python_full_version < '3.10'
     # via matplotlib
 contourpy==1.3.2 ; python_full_version == '3.10.*'
@@ -328,6 +335,7 @@ numpy==2.0.2 ; python_full_version < '3.10'
     #   matplotlib
     #   mlflow
     #   onnxruntime
+    #   optuna
     #   pandas
     #   peak-trade
     #   scikit-learn
@@ -339,6 +347,7 @@ numpy==2.2.6 ; python_full_version == '3.10.*'
     #   matplotlib
     #   mlflow
     #   onnxruntime
+    #   optuna
     #   pandas
     #   peak-trade
     #   scikit-learn
@@ -350,6 +359,7 @@ numpy==2.3.5 ; python_full_version >= '3.11'
     #   matplotlib
     #   mlflow
     #   onnxruntime
+    #   optuna
     #   pandas
     #   peak-trade
     #   scikit-learn
@@ -401,6 +411,8 @@ opentelemetry-sdk==1.39.1
     #   peak-trade
 opentelemetry-semantic-conventions==0.60b1
     # via opentelemetry-sdk
+optuna==3.6.2
+    # via peak-trade
 orjson==3.11.5
     # via chromadb
 overrides==7.7.0
@@ -417,6 +429,7 @@ packaging==25.0
     #   mlflow-skinny
     #   mlflow-tracing
     #   onnxruntime
+    #   optuna
     #   pip-audit
     #   pip-requirements-parser
     #   pytest
@@ -552,6 +565,7 @@ pyyaml==6.0.3
     #   huggingface-hub
     #   kubernetes
     #   mlflow-skinny
+    #   optuna
     #   pre-commit
     #   uvicorn
 referencing==0.36.2 ; python_full_version < '3.10'
@@ -630,6 +644,7 @@ sqlalchemy==2.0.45
     # via
     #   alembic
     #   mlflow
+    #   optuna
 sqlparse==0.5.5
     # via mlflow-skinny
 starlette==0.49.3 ; python_full_version < '3.10'
@@ -664,6 +679,7 @@ tqdm==4.67.1
     # via
     #   chromadb
     #   huggingface-hub
+    #   optuna
 typer==0.20.1
     # via chromadb
 typer-slim==0.20.1
