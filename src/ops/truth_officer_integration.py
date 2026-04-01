@@ -185,7 +185,9 @@ def render_unified_truth_status_markdown(block: dict[str, Any]) -> str:
         lines.append(f"- docs drift base: `{gb}`")
     dd = block.get("docs_drift") if isinstance(block.get("docs_drift"), dict) else {}
     rc = block.get("repo_claims") if isinstance(block.get("repo_claims"), dict) else {}
-    lines.append(f"- docs drift: `{dd.get('status', '?')}` — changed files: `{dd.get('changed_files_count', '?')}`")
+    lines.append(
+        f"- docs drift: `{dd.get('status', '?')}` — changed files: `{dd.get('changed_files_count', '?')}`"
+    )
     vids = dd.get("violation_rule_ids") if isinstance(dd.get("violation_rule_ids"), list) else []
     if vids:
         lines.append(f"  - violation rules: {', '.join(f'`{v}`' for v in vids)}")
