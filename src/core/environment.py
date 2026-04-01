@@ -1,5 +1,6 @@
 # src/core/environment.py
 """
+Truth-gates enforcement smoke marker.
 Peak_Trade: Environment-Abstraktion & Konfiguration
 ====================================================
 
