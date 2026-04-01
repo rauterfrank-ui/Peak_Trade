@@ -1,0 +1,27 @@
+# Repo Truth Claims — Slice B (deterministic presence checks)
+#
+# Each claim verifies a repo-relative path exists (file or directory).
+# Extend `check` kinds in src/ops/truth/evaluator.py when adding new semantics.
+
+version: 1
+
+claims:
+  - id: governance-overview-present
+    check: path_exists
+    path: docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md
+
+  - id: known-limitations-present
+    check: path_exists
+    path: docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md
+
+  - id: docs-truth-map-registry-present
+    check: path_exists
+    path: docs/ops/registry/DOCS_TRUTH_MAP.md
+
+  - id: docs-truth-map-config-present
+    check: path_exists
+    path: config/ops/docs_truth_map.yaml
+
+  - id: repo-truth-claims-config-present
+    check: path_exists
+    path: config/ops/repo_truth_claims.yaml
