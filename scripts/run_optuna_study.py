@@ -45,7 +45,6 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
-import tomllib
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -57,7 +56,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.backtest.engine import BacktestEngine
 from src.core.peak_config import load_config
 from src.core.tracking import build_tracker_from_config
-from src.strategies import get_strategy
+from src.strategies.registry import get_strategy_spec
 
 # Optuna (lazy import with graceful error)
 try:
@@ -338,7 +337,7 @@ def run_study(study_cfg: StudyConfig) -> None:
 
     # Get strategy class
     logger.info(f"Loading strategy: {study_cfg.strategy_name}")
-    strategy_cls = get_strategy(study_cfg.strategy_name)
+    strategy_cls = get_strategy_spec(study_cfg.strategy_name).cls
 
     # Verify strategy has parameter_schema
     dummy_strategy = strategy_cls()
