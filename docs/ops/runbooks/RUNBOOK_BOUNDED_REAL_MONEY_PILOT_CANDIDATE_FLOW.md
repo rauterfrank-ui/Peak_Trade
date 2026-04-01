@@ -1,7 +1,7 @@
 # RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW
 
 status: DRAFT
-last_updated: 2026-03-13
+last_updated: 2026-04-01
 owner: Peak_Trade
 purpose: Canonical first-session sequence for the first strictly bounded real-money pilot candidate flow
 docs_token: DOCS_TOKEN_RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW
@@ -74,6 +74,9 @@ Confirm the first candidate session is explicitly bounded:
 ### Step 3 — Start the First Candidate Session
 Run the first bounded real-money candidate session only under explicit operator observation.
 
+**Concrete entry (current repo):** follow **`docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`** — typically  
+`python3 scripts/ops/run_bounded_pilot_session.py` after all gates GREEN (or `python3 scripts/run_execution_session.py --mode bounded_pilot` only if the same preconditions are already verified).
+
 During start:
 - keep the Ops Cockpit visible
 - keep incident posture visible
@@ -123,7 +126,8 @@ The operator should preserve evidence for:
 ## 6. Related Runbooks / Specs
 
 - `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`
-- `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md` (where flow ends, first real-money step operator-driven)
+- `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` (**bounded pilot live entry — Ist-Stand**)
+- `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md` (dry vs first real-money step)
 - `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`
 - `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md`
 - `docs/ops/specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md`
