@@ -179,13 +179,19 @@ def main() -> int:
         print(f"  base={args.base!r}  changed_files={len(changed)}")
         return 0
 
-    print("docs_drift_guard: FAIL — sensitive area changed but no required canonical doc in diff.\n", file=sys.stderr)
+    print(
+        "docs_drift_guard: FAIL — sensitive area changed but no required canonical doc in diff.\n",
+        file=sys.stderr,
+    )
     for rid, triggered, required_docs in violations:
         print(f"  Rule: {rid}", file=sys.stderr)
         print("  Sensitive paths touched:", file=sys.stderr)
         for t in triggered:
             print(f"    - {t}", file=sys.stderr)
-        print("  At least one of these docs should have been updated in the same diff:", file=sys.stderr)
+        print(
+            "  At least one of these docs should have been updated in the same diff:",
+            file=sys.stderr,
+        )
         for r in required_docs:
             print(f"    - {r}", file=sys.stderr)
         print(file=sys.stderr)

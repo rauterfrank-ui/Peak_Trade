@@ -8,7 +8,7 @@
 
 Einige **sensible Code- und Dokumentationspfade** (Execution, Orders, Environment, zentrale Governance-/Limitations-Docs) sollen nicht **still** von den **kanonischen Beschreibungen** im Repo abdriften.
 
-Dieses Mapping verknüpft **Bereiche** (Triggers) mit **Canonical-Docs** (mindestens eine Datei aus der Liste muss bei einer Änderung im Bereich mitgeändert werden — im selben Diff gegenüber dem gewählten Basis-Ref, z. B. `origin/main`).
+Dieses Mapping verknüpft **Bereiche** (Triggers) mit **Canonical-Docs** (mindestens eine Datei aus der Liste muss bei einer Änderung im Bereich mitgeändert werden — im selben Diff gegenüber dem gewählten Basis-Ref, z. B. `origin&#47;main`).
 
 ## Wie das Mapping funktioniert
 
@@ -34,4 +34,4 @@ Pfad-Matching:
 python3 scripts/ops/check_docs_drift_guard.py --base origin/main
 ```
 
-Vor dem ersten Lauf: `git fetch origin` sinnvoll, damit `origin/main` existiert.
+Vor dem ersten Lauf: `git fetch origin` sinnvoll, damit `origin&#47;main` existiert.
