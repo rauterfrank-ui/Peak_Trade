@@ -158,11 +158,9 @@ def test_create_sampler_random():
 @pytest.mark.skipif(not OPTUNA_AVAILABLE, reason="Optuna not installed")
 @pytest.mark.skipif(not STUDY_RUNNER_AVAILABLE, reason="run_optuna_study.py not available")
 def test_create_sampler_grid():
-    """Test GridSampler creation."""
+    """Test GridSampler creation (Optuna 3.6+ requires search_space; create_sampler supplies a default)."""
     sampler = create_sampler("grid", seed=42)
-    # GridSampler requires search_space, so it might fail without it
-    # Just check it's created
-    assert sampler is not None
+    assert isinstance(sampler, optuna.samplers.GridSampler)
 
 
 @pytest.mark.skipif(not OPTUNA_AVAILABLE, reason="Optuna not installed")
