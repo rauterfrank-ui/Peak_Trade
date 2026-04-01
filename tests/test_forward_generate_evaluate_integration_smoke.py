@@ -85,10 +85,20 @@ def test_generate_then_evaluate_with_captured_ohlcv(tmp_path, monkeypatch):
 
     captured: dict[str, pd.DataFrame] = {}
 
-    def capture_load(symbol: str, n_bars: int = 200, **kwargs: Any) -> pd.DataFrame:
+    def capture_load(
+        symbol: str, n_bars: int = 200, **kwargs: Any
+    ) -> tuple[pd.DataFrame, Dict[str, Any]]:
         df = load_dummy_ohlcv(symbol, n_bars=n_bars)
         captured[symbol] = df
-        return df
+        meta = {
+            "symbol": symbol,
+            "ohlcv_source": OHLCV_SOURCE_DUMMY,
+            "timeframe": kwargs.get("timeframe", "1h"),
+            "n_bars_requested": n_bars,
+            "bars_loaded": len(df),
+            "kraken_pagination_used": None,
+        }
+        return df, meta
 
     exp_dir = tmp_path / "experiments"
     exp_csv = exp_dir / "experiments.csv"
