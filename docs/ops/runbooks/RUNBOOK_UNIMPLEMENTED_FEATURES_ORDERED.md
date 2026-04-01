@@ -127,7 +127,7 @@
 |---|--------|-----|----------------|
 | J1 | Kraken-/Marktdaten durch echte Quellen ersetzen | STUB | Dummy + **Slice 4:** opt-in Kraken-OHLCV (`load_kraken_ohlcv` / `load_ohlcv` in `scripts/_shared_ohlcv_loader.py` → `src.data.kraken.fetch_ohlcv_df`); CLI ``--ohlcv-source dummy\|kraken`` in `generate_forward_signals.py`, `evaluate_forward_signals.py`, `run_portfolio_backtest_v2.py`. Voller Ersatz aller Dummy-Pfade / weitere Quellen: weiterhin J1 |
 | J2 | Optuna-Placeholder weiter ausbauen | DONE | Geliefert auf `main` (PR #2168): `run_study_optuna_placeholder.py` + CI; volle Strategie-Optimierung: `scripts/run_optuna_study.py` |
-| J3 | Platzhalter-Inventar regenerieren | TOOL | Lokales Triage-Tool (kein CI-Gate): `python3 scripts/ops/placeholders/generate_placeholder_reports.py` — erzeugt `TODO_PLACEHOLDER_*.md` unter `.ops_local/inventory/` (**nicht committen**). Smoke: `tests/ops/test_generate_placeholder_reports_smoke.py`. |
+| J3 | Platzhalter-Inventar regenerieren | TOOL | Lokales Triage-Tool (kein CI-Gate): `python3 scripts/ops/placeholders/generate_placeholder_reports.py` — erzeugt `TODO_PLACEHOLDER_*.md` unter `.ops_local&#47;inventory&#47;` (**nicht committen**). Smoke: `tests/ops/test_generate_placeholder_reports_smoke.py`. |
 
 ### Forward-Pipeline (J1 — Ops-Hinweis)
 
@@ -172,6 +172,6 @@ python3 scripts/ops/placeholders/generate_placeholder_reports.py
 python3 scripts/ops/placeholders/generate_placeholder_reports.py --help
 ```
 
-Reports landen unter **`.ops_local/inventory/`** (`TODO_PLACEHOLDER_INVENTORY.md`, `TODO_PLACEHOLDER_TARGET_MAP.md`) — Verzeichnis ist git-ignoriert; **nicht committen**. Optional: `--output-dir DIR` für eine andere Ausgabe (z. B. Tests).
+Reports landen unter **`.ops_local&#47;inventory&#47;`** (`TODO_PLACEHOLDER_INVENTORY.md`, `TODO_PLACEHOLDER_TARGET_MAP.md`) — Verzeichnis ist git-ignoriert; **nicht committen**. Optional: `--output-dir DIR` für eine andere Ausgabe (z. B. Tests).
 
 (Ausgabe kann als **Ergänzung** zu dieser manuell kuratierten Liste dienen.)
