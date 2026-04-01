@@ -38,7 +38,7 @@ python3 scripts/ops/check_docs_drift_guard.py --base origin/main
 python3 scripts/ops/check_repo_truth_claims.py
 ```
 
-Vor Drift-Checks: `git fetch origin`, damit die Basis-Ref (z. B. `origin/main`) existiert.
+Vor Drift-Checks: `git fetch origin`, damit die Basis-Ref (z. B. `origin&#47;main`) existiert.
 
 ## Nicht in Scope (Slice B)
 
