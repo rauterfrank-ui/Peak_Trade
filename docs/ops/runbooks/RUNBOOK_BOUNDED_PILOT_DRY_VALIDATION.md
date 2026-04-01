@@ -55,7 +55,7 @@ python3 scripts/ops/pilot_go_no_go_eval_v1.py
 Validate session config and intended session parameters without starting a live session.
 
 ```bash
-python3 scripts/run_execution_session.py --dry_run
+python3 scripts/run_execution_session.py --dry-run
 ```
 
 (Adjust for your env: `--mode`, `--config`, etc. as needed.)
@@ -74,21 +74,23 @@ PT_LIVE_DRY_RUN=YES PT_CONFIRM_TOKEN_EXPECTED=TOKEN PT_CONFIRM_TOKEN=TOKEN \
 scripts/ops/run_live_pilot_session.sh
 ```
 
-**Note:** This wrapper invokes `orchestrate_testnet_runs.py`. For live session dry validation, Step 3 (`run_execution_session.py --dry_run`) is the primary check.
+**Note:** This wrapper invokes `orchestrate_testnet_runs.py`. For live session dry validation, Step 3 (`run_execution_session.py --dry-run`) is the primary check.
 
 ### Step 5: Bounded Pilot Entry Gate (optional)
 
-Verify all Pre-Entry-Checks GREEN via the dedicated gate wrapper. Does **not** start a live session.
+Verify all Pre-Entry-Checks GREEN via the dedicated gate wrapper **without** starting a session.
 
 ```bash
-python3 scripts/ops/run_bounded_pilot_session.py
+python3 scripts/ops/run_bounded_pilot_session.py --no-invoke
 ```
 
-**Expected:** Exit 0 with message "Bounded pilot entry ready; live session start not yet implemented." (Live session start is operator-driven until a bounded-pilot runtime path exists.)
+**Expected:** Exit 0, gates GREEN; **no** `run_execution_session` handoff.
+
+**Note:** Omitting `--no-invoke` starts the **bounded pilot session** (`run_execution_session.py --mode bounded_pilot`). That belongs to **`RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`**, not to dry validation alone.
 
 **If exit 1:** One or more gates RED. Inspect `--json` output and fix blockers.
 
-**Reference:** `BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT`, `bounded_pilot_entry_point_slice_review`
+**Reference:** `BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT`, `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`
 
 ## Evidence
 

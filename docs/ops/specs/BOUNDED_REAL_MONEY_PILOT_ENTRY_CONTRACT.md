@@ -95,9 +95,9 @@ Rule: **ambiguity => `NO_TRADE` / safe stop**
 
 ## 6. Where To Look
 
-**Entry boundary note:** See `docs&#47;ops&#47;specs&#47;BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md` for where the flow ends today and how the first real-money step is invoked (operator-driven until a bounded-pilot entry path exists).
+**Entry boundary note:** See `docs&#47;ops&#47;specs&#47;BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md` for the boundary between dry validation and the first bounded real-money step; **operative invocation:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`.
 
-**Gap note:** See `docs/ops/specs/BOUNDED_PILOT_LIVE_ENTRY_GAP_NOTE.md` for the gap between the gate wrapper and first live session start (blockers B1–B6).
+**Gap note:** See `docs/ops/specs/BOUNDED_PILOT_LIVE_ENTRY_GAP_NOTE.md` for historical gap analysis; **operative procedure:** `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`.
 
 Primary operator evidence:
 
@@ -115,7 +115,7 @@ Primary operator evidence:
 
 Primary docs / scripts:
 
-- `scripts&#47;ops&#47;run_bounded_pilot_session.py` — Pre-Entry-Checks gate (no live start)
+- `scripts&#47;ops&#47;run_bounded_pilot_session.py` — Pre-Entry-Checks gate; with default args invokes bounded pilot session (see `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`); use `--no-invoke` for gates only
 - `docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`
 - `docs&#47;ops&#47;specs&#47;PILOT_GO_NO_GO_CHECKLIST.md`
 - `docs&#47;ops&#47;specs&#47;PILOT_GO_NO_GO_OPERATIONAL_SLICE.md`
@@ -137,5 +137,6 @@ This document does not:
 
 ## 8. Exit Condition For This Contract
 
-This contract remains valid until a more advanced bounded-pilot automation layer exists.
-Until then, this document is the canonical operator entry reference for the first strictly bounded real-money pilot.
+This contract remains the canonical operator reference for the **first strictly bounded real-money pilot**.
+Operational steps (dry validation → gates → session handoff) are detailed in  
+`docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`; future automation layers may extend but do not replace Entry Contract obligations or abort criteria.

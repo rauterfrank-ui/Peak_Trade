@@ -1,54 +1,66 @@
 # Bounded Real-Money Pilot Entry Boundary Note
 
-status: DRAFT
-last_updated: 2026-03-14
-owner: Peak_Trade
-purpose: Clarify where the spec-defined flow ends and how the first real-money step is invoked
+status: DRAFT  
+last_updated: 2026-04-01  
+owner: Peak_Trade  
+purpose: Grenze zwischen **Dry-Validation / Spec-Flow** und **erstem Bounded-Real-Money-Schritt** klären; keinerlei Erweiterung von Execution Authority.  
 docs_token: DOCS_TOKEN_BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE
 
 ## 1. Intent
 
-This note clarifies the **operational boundary** between the spec-defined flow and the first bounded real-money pilot attempt. It does not add execution authority or relax gates.
+This note clarifies the **operational boundary** between the spec-defined flow through **dry validation** and the **first bounded real-money pilot session**. It does not add execution authority or relax gates.
 
-## 2. Where the Flow Ends Today
+**Canonical end-to-end procedure (current repo):**  
+`docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`
 
-The canonical flow defined by Entry Contract, Candidate Flow, and Dry Validation **ends at Dry-Validation**:
+---
+
+## 2. Where the Spec Flow Ends vs. Where Real Money Begins
+
+### 2.1 Flow through dry validation (no real orders)
+
+The canonical **non-real-money** flow **ends** after successful dry validation:
 
 | Step | Command / Action | Status |
 |------|------------------|--------|
 | A1 | `python3 scripts/run_live_dry_run_drills.py` | Implemented |
 | A2 | `python3 scripts/ops/pilot_go_no_go_eval_v1.py` | Implemented |
-| A3 | `python3 scripts/run_execution_session.py --dry_run` | Implemented |
-| B | Ops Cockpit review, gates GREEN | Implemented |
-| **C** | **First bounded real-money step** | **No defined CLI/invocation path** |
+| A3 | `python3 scripts/run_execution_session.py --dry-run` | Implemented (CLI flag: `--dry-run`) |
+| B | Ops Cockpit review, gates GREEN | Operator |
 
-## 3. First Real-Money Step: Operator-Driven
+### 2.2 First bounded real-money step (invocation path exists)
 
-The first bounded real-money step (§4 of BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT) is **operator-driven**:
+After all **Entry Contract** prerequisites and **`GO_FOR_NEXT_PHASE_ONLY`**, the **first bounded real-money session** is started via **one** of:
 
-- There is **no** `--mode bounded_pilot` or equivalent in `run_execution_session.py` today.
-- `run_live_pilot_session.sh` enforces `PT_LIVE_DRY_RUN=YES` and invokes `orchestrate_testnet_runs.py` — i.e. **dry-run / testnet**, not real money.
-- A real-money pilot session would require a **separate, explicitly gated path** (not yet implemented) or manual operator invocation under all gates.
+| Path | Command | Notes |
+|------|---------|--------|
+| **Recommended** | `python3 scripts/ops/run_bounded_pilot_session.py` | Runs go/no-go + cockpit, then hands off to `run_execution_session.py --mode bounded_pilot` unless `--no-invoke`. |
+| **Operator-direct** | `python3 scripts/run_execution_session.py --mode bounded_pilot ...` | Same gates must already be satisfied manually. |
 
-**Rule:** Until a bounded-pilot entry path exists, the first real-money step is **manual / operator-driven**, with all Entry Contract prerequisites and abort criteria applied.
+**Gate-only check (no session):**  
+`python3 scripts/ops/run_bounded_pilot_session.py --no-invoke`
 
-**Gate wrapper:** `scripts&#47;ops&#47;run_bounded_pilot_session.py` runs Pre-Entry-Checks (go/no-go, cockpit). Exit 0 when all gates GREEN; does not start a live session. See `RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION` Step 5.
+See: `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`, `RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md` (Step 5).
 
-## 4. run_live_pilot_session.sh
+---
 
-- **Current scope:** Dry-run and testnet validation only.
-- **PT_LIVE_DRY_RUN=YES** is enforced; the script does not support real-money execution.
-- For a future real-money pilot: a separate invocation path or controlled condition would be required, with all gates explicit.
+## 3. Relationship to Other Wrappers
 
-## 5. Relationship
+- **`run_live_pilot_session.sh`:** Remains oriented toward **dry-run / testnet validation** (`PT_LIVE_DRY_RUN=YES` posture per that script). It is **not** the canonical first real-money bounded pilot path; use **`run_bounded_pilot_session.py`** or explicit **`--mode bounded_pilot`** per the runbook above.
+- **Broad live** (non-pilot) remains **out of scope** here and stays governance-gated separately (`live_order_execution` **locked**).
+
+---
+
+## 4. Relationship
 
 - Companion to: `BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT`
-- Gap documentation: `BOUNDED_PILOT_LIVE_ENTRY_GAP_NOTE` (blockers B1–B6, dependency chain)
+- Operative runbook: `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`
+- Historical gap analysis: `BOUNDED_PILOT_LIVE_ENTRY_GAP_NOTE.md`
 - Companion to: `RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW`
-- Closes documentation gap from: first-bounded-real-money-pilot-execution-readiness-review
+- Dry validation: `RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`
 
-## 6. Non-Goals
+## 5. Non-Goals
 
-- No execution authority
-- No new gates or relaxation
-- No replacement for operator judgment
+- No execution authority  
+- No new gates or relaxation  
+- No replacement for operator judgment  

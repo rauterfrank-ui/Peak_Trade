@@ -36,10 +36,12 @@ Usage:
     # Registry-Logging deaktivieren:
     python scripts/run_execution_session.py --strategy ma_crossover --no-registry
 
-WICHTIG: Es werden NIEMALS echte Orders gesendet!
-         - Shadow-Mode: Simulation ohne API-Calls
-         - Testnet-Mode: Testnet mit validate_only=True (Phase 80: kein echter Testnet-Trade)
-         - LIVE-Mode: NICHT ERLAUBT (wirft Fehler)
+WICHTIG (Modi):
+         - Shadow: Simulation (keine echten Orders).
+         - Testnet: Dry-Run / validate_only (keine echten Testnet-Trades im Standard-Phase-80-Pfad).
+         - bounded_pilot: streng begrenzter Real-Money-Pfad nur nach Gates und Governance
+           (live_order_execution_bounded_pilot); siehe RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md.
+         - Abstrakter env=live ohne Pilot-Kontext bleibt NICHT der Einstieg über diese CLI.
 
 Verfügbare Strategien (aus Registry):
     python scripts/run_execution_session.py --list-strategies
@@ -151,8 +153,8 @@ Beispiele:
   # Für 100 Steps:
   python scripts/run_execution_session.py --strategy ma_crossover --steps 100
 
-WICHTIG: Es werden KEINE echten Orders gesendet!
-         LIVE-Mode ist in Phase 80 NICHT erlaubt.
+WICHTIG: Shadow/Testnet senden keine echten Orders. Modus bounded_pilot kann nach
+         allen Voraussetzungen echte Orders auslösen — nur RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.
         """,
     )
 

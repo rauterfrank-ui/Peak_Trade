@@ -1,0 +1,191 @@
+# RUNBOOK — Bounded Pilot Live Entry (Ist-Zustand Repo)
+
+**status:** ACTIVE  
+**last_updated:** 2026-04-01  
+**owner:** Peak_Trade  
+**purpose:** Einheitliche Operator-Anleitung für den **ersten eng begrenzten Real-Money-Pilot** (Bounded Pilot)—abgestimmt auf den **aktuellen Code- und Governance-Stand** im Repository.  
+**docs_token:** DOCS_TOKEN_RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY
+
+---
+
+## 1. Intent & Abgrenzung
+
+### 1.1 Ziel
+
+Dieses Runbook beschreibt **end-to-end**, wie ein Operator von **Dry-Validation** bis zum **Start einer Bounded-Pilot-Session** vorgeht—ohne „Broad Live“ oder dauerhafte Vollautonomie zu implizieren.
+
+### 1.2 Was dieses Runbook **nicht** tut
+
+- Keine Finanzberatung.
+- **Keine** Freigabe von generellem Live-Trading: Der Governance-Key `live_order_execution` bleibt **`locked`**; erlaubt ist nur der **Bounded-Pilot-Kontext** über `live_order_execution_bounded_pilot` (Stand Code: `approved_2026` in `src/governance/go_no_go.py`).
+- Kein Umgehen von Gates, Kill-Switch oder Confirm-Tokens.
+- Kein Ersatz für menschliches Urteil bei Mehrdeutigkeit (**Mehrdeutigkeit → NO_TRADE / Abbruch**).
+
+### 1.3 Technischer Ist-Zustand (Kurz)
+
+| Komponente | Stand |
+|------------|--------|
+| Entry-Gate + Session-Handoff | `scripts/ops/run_bounded_pilot_session.py` ruft bei grünen Gates **`run_execution_session.py --mode bounded_pilot`** auf (ohne `--no-invoke`). |
+| Session-CLI | `scripts/run_execution_session.py` unterstützt `shadow`, `testnet`, **`bounded_pilot`**. |
+| Runner | `LiveSessionRunner` / Konfiguration für `bounded_pilot` in `src/execution/live_session.py` (u. a. `bounded_pilot_mode`, `live_dry_run_mode=False` im Pilot-Kontext). |
+| Governance | Pipeline wählt bei Bounded-Pilot-Kontext den Key **`live_order_execution_bounded_pilot`** (`select_live_order_execution_key`). |
+
+**Hinweis:** Einige ältere Dokumente (z. B. `BOUNDED_PILOT_LIVE_ENTRY_GAP_NOTE.md`, Schritt 5 in `RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`) sprechen noch von „kein Session-Start“—das ist **überholt**; maßgeblich ist dieses Runbook plus die referenzierten Specs.
+
+---
+
+## 2. Voraussetzungen (hart)
+
+Alle Punkte müssen **vor** dem ersten Aufruf mit echten Orders erfüllt sein.
+
+### 2.1 Vertrags- und Checklisten-Doku
+
+- `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` — Entry Contract (Pilot-Haltung).
+- `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md` — Checklistenbasis für Go/No-Go.
+- Optional: `docs/ops/runbooks/live_pilot_execution_plan.md` — übergeordneter Plan (PRBI, Ops-Status, Export-Smokes).
+
+### 2.2 Konfiguration & Kapital-Grenzen
+
+- Zentrale Config ladbar: z. B. `config/config.toml` (oder `PEAK_TRADE_CONFIG_PATH`).
+- Sektion **`[live_risk]`** mit greifbaren Caps (siehe `scripts/check_live_readiness.py` und `src/live/risk_limits.py`).
+- Pilot-spezifische Caps: siehe `docs/ops/runbooks/live_pilot_caps.md` und `config/ops/live_pilot_caps.toml` (Empfehlungen im Live-Pilot-Plan: sehr kleine Notionale, wenige Orders pro Session).
+
+### 2.3 Börse (Kraken Live im Bounded-Pilot-Pfad)
+
+- `exchange.default_type` muss zum **Live-Kraken-Pfad** passen (siehe Kommentare in `live_session.py`: u. a. **`kraken_live`** für Bounded Pilot).
+- Umgebungsvariablen für echte API-Zugänge müssen **vom Operator gesetzt** sein (siehe `check_live_readiness.py` für Live: u. a. `KRAKEN_API_KEY`, `KRAKEN_API_SECRET`). **Keine** Schlüssel in Git.
+
+### 2.4 Kill-Switch & Operativer Schutz
+
+- Kill-Switch-Disziplin und State gemäß Runbooks (`src/ops/gates/risk_gate.py`, Bounded-Pilot-Pipeline prüft bei aktivem Switch).
+- Operator kennt **sofortigen** Abbruch (siehe Abschnitt 7).
+
+---
+
+## 3. Operator-Ablauf (Reihenfolge)
+
+### Phase A — Dry-Validation (Pflicht)
+
+**Nicht überspringen.** Vollständige Sequenz:
+
+1. **Live-Dry-Run-Drills**  
+   `python3 scripts/run_live_dry_run_drills.py`  
+   Erwartung: Exit 0.
+
+2. **Pilot Go/No-Go**  
+   `python3 scripts/ops/pilot_go_no_go_eval_v1.py`  
+   Erwartung für Entry: `verdict=GO_FOR_NEXT_PHASE_ONLY`.  
+   Bei `NO_GO` oder unklarem `CONDITIONAL`: **stopp**, Payload prüfen (`--json`).
+
+3. **Execution-Session Dry-Run**  
+   `python3 scripts/run_execution_session.py --dry-run`  
+   (bei Bedarf mit eurer geplanten Strategie/Symbol/Config-Flags, **ohne** `bounded_pilot`).  
+   Erwartung: Validierung ohne Live-Start.
+
+4. **Optional: Nur Gate-Check ohne Session**  
+   `python3 scripts/ops/run_bounded_pilot_session.py --no-invoke`  
+   Erwartung: Gates GREEN, **kein** Handoff.
+
+Detaillierte Einordnung: `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md` (Schritt 5 dort ist historisch; Gate-only = `--no-invoke` hier in Phase A.4).
+
+### Phase B — Readiness-Skript (empfohlen)
+
+```bash
+python3 scripts/check_live_readiness.py --stage live --verbose
+```
+
+Erwartung: relevante Checks **bestanden** (u. a. Risk-Limits, Live-Risk-Config, API-Keys). Bei Fehlern: **kein** Pilot.
+
+### Phase C — Erweiterter Ops-Check (optional, laut live_pilot_execution_plan)
+
+- `./scripts/ops/ops_status.sh` → Exit 0
+- PRBI Live-Pilot-Scorecard: Entscheidung `READY_FOR_LIVE_PILOT`, keine `hard_blocks`
+- Weitere organisatorische Gates (PRBC, PRK, AWS Export Write Smoke)—**wie in eurem Betrieb verbindlich definiert**
+
+### Phase D — Bounded Pilot Entry (Handoff + Session)
+
+**Nur** wenn Phase A–B (und verbindlich Phase C) **grün** sind.
+
+1. **Finale Verifikation Go/No-Go** (erneut oder aus Logs bestätigen):  
+   `python3 scripts/ops/pilot_go_no_go_eval_v1.py`
+
+2. **Entry mit Session-Start** (Standardpfad—ruft den Runner auf):  
+   ```bash
+   python3 scripts/ops/run_bounded_pilot_session.py
+   ```  
+   Optionen siehe `--help` (u. a. `--steps`, `--position-fraction`, `--json`).  
+   **Hinweis:** Default ist **extrem klein** steps/sizing im Wrapper-Docstring; Cap an eure Pilot-Tabelle anpassen, aber **immer innerhalb** der konfigurierten `live_risk`-Grenzen.
+
+3. **Alternativ (Operator kontrolliert den Aufruf selbst):**  
+   Nach Gate-Logik manuell:  
+   `python3 scripts/run_execution_session.py --mode bounded_pilot --strategy <key> --steps <n> ...`  
+   Nur nutzen, wenn dieselben Vorbedingungen wie oben erfüllt sind und der Go/No-Go **GO_FOR_NEXT_PHASE_ONLY** ist.
+
+---
+
+## 4. Evidenz & Artefakte
+
+Nach jeder Pilot-Session-Durchführung mindestens:
+
+- Ausgabe / Logs der Session und der Execution-Pipeline.
+- `PT_EXEC_EVENTS_ENABLED` wird für `bounded_pilot` vom Runner gesetzt—Execution-Events JSONL gemäß eurer Observability-Runbooks sichern.
+- Optional: Export über eure **Object-Storage-Kette** (Phase T/W), ohne bestehende Shadow/Paper-Original-Runs zu überschreiben (neue `run_id` / Export-ID).
+
+Referenz: `docs/ops/runbooks/live_pilot_execution_plan.md` (Post-run, Scorecards).
+
+---
+
+## 5. Incident- & Abbruch-Runbooks
+
+Bei Anomalien **sofort** stoppen und dokumentieren:
+
+- `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED.md`
+- `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_UNEXPECTED_EXPOSURE.md`
+- `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md`
+- `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md`
+- `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md`
+- `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY.md`
+- `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md`
+
+---
+
+## 6. Abbruchkriterien vor oder während der Session
+
+**Nicht starten** bzw. **sofort beenden**, wenn z. B.:
+
+- Go/No-Go ≠ `GO_FOR_NEXT_PHASE_ONLY`
+- Kill-Switch aktiv / Trading gebunden
+- Policy oder Cockpit zeigt Block / erfordert Operator-Eingriff
+- Stale-State, Evidence- oder Dependency-Degradation über Pilot-Toleranz
+- Unklarheit, ob **nur** Bounded Pilot mit expliziten Caps aktiv ist (**Unklarheit → NO_TRADE**)
+
+---
+
+## 7. Rollback / NO_TRADE (Operator)
+
+1. Session beenden (Ctrl+C / Prozess stop), falls sicher möglich.  
+2. `PT_LIVE_ARMED` bzw. projektspezifische Arming-Variablen **deaktivieren** (siehe `live_pilot_execution_plan.md` Gate B).  
+3. Kill-Switch gemäß Betriebshandbuch setzen.  
+4. Incident-Evidenz unter `out/ops/` erfassen und ggf. exportieren.
+
+---
+
+## 8. Verwandte Dokumente
+
+| Dokument | Rolle |
+|----------|--------|
+| `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` | Kanonischer Entry-Vertrag |
+| `docs/ops/specs/BOUNDED_PILOT_LIVE_ENTRY_GAP_NOTE.md` | Historische Gap-Analyse; **operative Prozedur = dieses Runbook** |
+| `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md` | Dry-Validation vor Geld-Einsatz |
+| `docs/ops/runbooks/live_pilot_execution_plan.md` | Gesamtplan inkl. PRBI/Export |
+| `docs/governance/BOUNDED_PILOT_LIVE_ORDER_EXECUTION_DECISION_PACKAGE.md` | Governance-Entscheidungsgrundlage |
+| `scripts/ops/run_bounded_pilot_session.py` | Gate + Handoff |
+| `scripts/run_execution_session.py` | Session-CLI |
+
+---
+
+## 9. Non-Goals
+
+- Broad Live aktivieren oder dokumentieren.
+- Testnet mit echten Testnet-Orders (weiterhin separat durch `SafetyGuard` eingeschränkt—nicht Gegenstand dieses Runbooks).
+- Autonomie ohne menschliche Aufsicht.

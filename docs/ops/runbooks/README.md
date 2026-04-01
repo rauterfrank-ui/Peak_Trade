@@ -67,6 +67,13 @@ Runbooks for specific phase implementations and workflows:
 - [Phase U — Data Node Bootstrap (Ubuntu) + Hardening](PHASE_U_DATA_NODE_BOOTSTRAP.md) — Server bootstrap checklist, exporter skeleton, object storage template
 - [Phase W — GitHub Consumer: Download + Verify Export Packs](PHASE_W_EXPORT_PACK_GH_CONSUMER.md) — rclone S3-compatible, read-only secrets
 
+### Bounded Pilot & Live Pilot (governance-first)
+
+- [RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) — **Bounded Pilot Live Entry** (Ist-Zustand Repo): Dry-Validation → Go/No-Go → `run_bounded_pilot_session` / `run_execution_session --mode bounded_pilot`
+- [RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md](RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md) — Trockenvalidierung vor Real-Money-Pilot
+- [live_pilot_execution_plan.md](live_pilot_execution_plan.md) — Gesamtplan inkl. Gates und Caps
+- [live_pilot_kickoff.md](live_pilot_kickoff.md) — Kickoff (Pointer)
+
 ### Runbook B — Execution Gates (B5/B3/B2)
 
 Safety controls for Shadow → Mini-Live (ArmedGate, RiskGate, Reconciliation). **All OFF by default.**
