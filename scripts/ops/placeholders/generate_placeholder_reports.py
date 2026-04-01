@@ -14,7 +14,8 @@ Large or noisy trees (e.g. ``out/``, ``.venv*/``, ``.cursor/``) are skipped by d
 see ``SKIP_DIRS`` and ``_skip_path_component`` in this file.
 
 Usage:
-    python scripts/ops/placeholders/generate_placeholder_reports.py
+    python3 scripts/ops/placeholders/generate_placeholder_reports.py
+    python3 scripts/ops/placeholders/generate_placeholder_reports.py --output-dir /path/to/dir
 
 Exit codes:
     0 — Success
@@ -25,12 +26,13 @@ Requirements:
     - Must be run from within a Git repository
 """
 
+import argparse
 import os
 import re
 import sys
 from pathlib import Path
 from collections import defaultdict
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Sequence, Tuple
 
 # Patterns to search for (pattern_name, regex)
 PATTERNS = [
@@ -345,9 +347,31 @@ def get_git_commit() -> str:
         return "(unknown)"
 
 
-def main() -> int:
+def _build_arg_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Scan the repository for placeholder markers and write inventory reports "
+            "(stdlib only; default output: .ops_local/inventory/)."
+        )
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=None,
+        metavar="DIR",
+        help=(
+            "Directory for TODO_PLACEHOLDER_*.md (default: <repo>/.ops_local/inventory). "
+            "Use an absolute path or a path relative to the current working directory."
+        ),
+    )
+    return parser
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
     """Main entry point."""
     try:
+        args = _build_arg_parser().parse_args(argv)
+
         # Find repo root
         repo_root = find_repo_root()
         print(f"📁 Repository root: {repo_root}")
@@ -362,7 +386,10 @@ def main() -> int:
         print(f"✅ Scanned {len(results)} files with matches")
 
         # Prepare output directory
-        output_dir = repo_root / ".ops_local" / "inventory"
+        if args.output_dir is not None:
+            output_dir = Path(args.output_dir).expanduser().resolve()
+        else:
+            output_dir = repo_root / ".ops_local" / "inventory"
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Generate and write inventory report
