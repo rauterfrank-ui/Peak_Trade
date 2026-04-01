@@ -45,7 +45,6 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
-import tomllib
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -57,7 +56,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.backtest.engine import BacktestEngine
 from src.core.peak_config import load_config
 from src.core.tracking import build_tracker_from_config
-from src.strategies import get_strategy
+from src.strategies.parameters import Param
+from src.strategies.registry import get_strategy_spec
 
 # Optuna (lazy import with graceful error)
 try:
@@ -109,6 +109,35 @@ def check_optuna_available() -> None:
         sys.exit(1)
 
 
+def _grid_search_space_from_schema(schema: List[Param]) -> Dict[str, List[Any]]:
+    """
+    Build a finite discrete search space for GridSampler from strategy parameter_schema.
+
+    Uses up to three values per numeric parameter (low / mid / high) to keep the grid tractable.
+    """
+    space: Dict[str, List[Any]] = {}
+    for p in schema:
+        if p.kind == "int":
+            lo, hi = int(p.low), int(p.high)
+            if lo == hi:
+                space[p.name] = [lo]
+            else:
+                mid = (lo + hi) // 2
+                space[p.name] = sorted({lo, mid, hi})
+        elif p.kind == "float":
+            lo_f, hi_f = float(p.low), float(p.high)
+            if lo_f == hi_f:
+                space[p.name] = [lo_f]
+            else:
+                mid_f = (lo_f + hi_f) / 2.0
+                space[p.name] = [lo_f, mid_f, hi_f]
+        elif p.kind == "choice":
+            space[p.name] = list(p.choices or [])
+        elif p.kind == "bool":
+            space[p.name] = [False, True]
+    return space
+
+
 def create_pruner(pruner_type: str) -> Any:
     """Create Optuna Pruner."""
     if pruner_type == "none":
@@ -121,14 +150,26 @@ def create_pruner(pruner_type: str) -> Any:
         raise ValueError(f"Unknown pruner type: {pruner_type}")
 
 
-def create_sampler(sampler_type: str, seed: Optional[int] = None) -> Any:
-    """Create Optuna Sampler."""
+def create_sampler(
+    sampler_type: str,
+    seed: Optional[int] = None,
+    *,
+    grid_search_space: Optional[Dict[str, List[Any]]] = None,
+) -> Any:
+    """Create Optuna Sampler.
+
+    Optuna 3.6+ requires ``search_space`` for :class:`optuna.samplers.GridSampler`.
+    For ``grid``, pass ``grid_search_space`` from ``_grid_search_space_from_schema`` when
+    running a real study; tests may omit it (minimal placeholder space).
+    """
     if sampler_type == "tpe":
         return TPESampler(seed=seed)
     elif sampler_type == "random":
         return RandomSampler(seed=seed)
     elif sampler_type == "grid":
-        return GridSampler(seed=seed)
+        if grid_search_space is None:
+            grid_search_space = {"_optuna_grid_placeholder": [0.0, 1.0]}
+        return GridSampler(grid_search_space, seed=seed)
     else:
         raise ValueError(f"Unknown sampler type: {sampler_type}")
 
@@ -338,7 +379,7 @@ def run_study(study_cfg: StudyConfig) -> None:
 
     # Get strategy class
     logger.info(f"Loading strategy: {study_cfg.strategy_name}")
-    strategy_cls = get_strategy(study_cfg.strategy_name)
+    strategy_cls = get_strategy_spec(study_cfg.strategy_name).cls
 
     # Verify strategy has parameter_schema
     dummy_strategy = strategy_cls()
@@ -362,7 +403,10 @@ def run_study(study_cfg: StudyConfig) -> None:
 
     # Create pruner and sampler
     pruner = create_pruner(study_cfg.pruner_type)
-    sampler = create_sampler(study_cfg.sampler_type, seed=42)
+    grid_space: Optional[Dict[str, List[Any]]] = None
+    if study_cfg.sampler_type == "grid":
+        grid_space = _grid_search_space_from_schema(schema)
+    sampler = create_sampler(study_cfg.sampler_type, seed=42, grid_search_space=grid_space)
 
     # Determine if single or multi-objective
     is_multi_objective = len(study_cfg.objectives) > 1
