@@ -1,191 +1,187 @@
 #!/usr/bin/env python3
 """
-Peak_Trade Optuna Study Runner (Placeholder)
-=============================================
-Dieser Runner ist ein Placeholder für zukünftige Optuna-Integration.
+Peak_Trade Optuna Study Runner (J2 minimal slice)
+=================================================
+Kleiner, lokaler Demo-Runner ohne Research-/Trading-Logik: Toy-Objective, In-Memory-Study,
+Standard: Dry-Run (keine Optuna-Ausführung). Kein Netzwerk, keine Exchange-/Order-Pfade.
 
-**Status**: Placeholder (nicht funktional)
-**Ziel**: Struktur und CLI definieren, bevor Optuna als Dependency hinzugefügt wird
-
-**Roadmap**:
-Phase 1 (aktuell): Placeholder mit hilfreicher Meldung
-Phase 2: Optuna als optionale Dependency
-Phase 3: Parameter-Schema → Optuna Search Space
-Phase 4: Multi-Objective Optimization
-
-**Usage** (später):
-    python scripts/run_study_optuna_placeholder.py \\
-        --strategy ma_crossover \\
-        --config config.toml \\
-        --n-trials 100 \\
-        --study-name "ma_crossover_optimization"
-
-**Siehe auch**:
-    docs/STRATEGY_LAYER_VNEXT.md
+Siehe auch: ``scripts/run_optuna_study.py`` für die vollständige Strategy-Integration.
 """
+
+from __future__ import annotations
 
 import argparse
 import sys
-from pathlib import Path
+from typing import Any
+
+# ---------------------------------------------------------------------------
+# Optuna (optional)
+# ---------------------------------------------------------------------------
+
+try:
+    import optuna
+
+    OPTUNA_AVAILABLE = True
+except ImportError:
+    optuna = None  # type: ignore[assignment]
+    OPTUNA_AVAILABLE = False
 
 
-def print_placeholder_message():
-    """Gibt hilfreiche Meldung aus."""
-    print("=" * 80)
-    print("Peak_Trade Optuna Study Runner (Placeholder)")
-    print("=" * 80)
-    print()
-    print("⚠️  Dieser Runner ist noch nicht implementiert.")
-    print()
-    print("Status:")
-    print("  - Tracking Interface: ✅ Implementiert (src/core/tracking.py)")
-    print("  - Parameter Schema: ✅ Implementiert (src/strategies/parameters.py)")
-    print("  - Optuna Integration: ⏳ TODO (später)")
-    print()
-    print("Nächste Schritte:")
-    print("  1. Optuna als optionale Dependency installieren:")
-    print("     pip install optuna")
-    print("     # oder: uv pip install optuna")
-    print()
-    print("  2. Study-Runner Implementation:")
-    print("     - Parameter-Schema auslesen (via BaseStrategy.parameter_schema)")
-    print("     - Optuna Search-Space definieren")
-    print("     - Objective-Function implementieren (Backtest-Run → Sharpe)")
-    print("     - MLflow-Tracking für jeden Trial")
-    print()
-    print("  3. Multi-Objective Optimization (optional):")
-    print("     - Ziele: Sharpe vs. Drawdown vs. Win-Rate")
-    print("     - Pareto-Front visualisieren")
-    print()
-    print("Siehe auch:")
-    print("  - Dokumentation: docs/STRATEGY_LAYER_VNEXT.md")
-    print("  - Tracking: src/core/tracking.py")
-    print("  - Parameter Schema: src/strategies/parameters.py")
-    print()
-    print("=" * 80)
-
-
-def parse_args():
-    """Parst CLI-Argumente (für zukünftige Implementierung)."""
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Optuna-basierte Strategy-Optimization (Placeholder)",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Später: MA Crossover optimieren
-  %(prog)s --strategy ma_crossover --n-trials 100
-
-  # Später: Mit Custom-Config
-  %(prog)s --strategy momentum_1h --config config/research.toml --n-trials 50
-
-  # Später: Multi-Objective
-  %(prog)s --strategy rsi_strategy --objectives sharpe,drawdown --n-trials 200
-
-Siehe: docs/STRATEGY_LAYER_VNEXT.md
-        """,
+        description=(
+            "Minimaler Optuna Demo-Study-Runner (Toy-Objective, In-Memory). "
+            "Standard: Dry-Run — keine Study-Ausführung ohne --no-dry-run."
+        ),
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-
-    parser.add_argument(
-        "--strategy",
-        type=str,
-        default="ma_crossover",
-        help="Strategy-Name (z.B. ma_crossover, momentum_1h)",
-    )
-
-    parser.add_argument(
-        "--config",
-        type=str,
-        default="config.toml",
-        help="Pfad zu config.toml (default: config.toml)",
-    )
-
-    parser.add_argument(
-        "--n-trials",
-        type=int,
-        default=100,
-        help="Anzahl Optuna Trials (default: 100)",
-    )
-
     parser.add_argument(
         "--study-name",
         type=str,
-        default=None,
-        help="Optuna Study-Name (default: auto-generiert)",
+        default="peak_trade_j2_toy_demo",
+        help="Name der Optuna-Study (nur Metadaten/In-Memory).",
     )
-
     parser.add_argument(
-        "--objectives",
-        type=str,
-        default="sharpe",
-        help="Optimization-Ziele (comma-separated, z.B. 'sharpe,drawdown')",
-    )
-
-    parser.add_argument(
-        "--storage",
-        type=str,
-        default=None,
-        help="Optuna Storage-URI (z.B. sqlite:///optuna.db, default: in-memory)",
-    )
-
-    parser.add_argument(
-        "--pruner",
-        type=str,
-        default="median",
-        choices=["median", "none", "hyperband"],
-        help="Optuna Pruner (default: median)",
-    )
-
-    parser.add_argument(
-        "--sampler",
-        type=str,
-        default="tpe",
-        choices=["tpe", "random", "grid"],
-        help="Optuna Sampler (default: tpe)",
-    )
-
-    parser.add_argument(
-        "--timeout",
+        "--trials",
         type=int,
-        default=None,
-        help="Timeout in Sekunden (default: unbegrenzt)",
+        default=5,
+        metavar="N",
+        help="Anzahl Trials für die Demo-Study.",
     )
-
     parser.add_argument(
-        "--jobs",
+        "--direction",
+        type=str,
+        choices=("minimize", "maximize"),
+        default="minimize",
+        help="Optimierungsrichtung für das Toy-Objective.",
+    )
+    parser.add_argument(
+        "--seed",
         type=int,
-        default=1,
-        help="Parallel Jobs (default: 1, später: n_jobs für Parallelisierung)",
+        default=42,
+        help="Seed für den RandomSampler (reproduzierbare Demo-Runs).",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Nur Plan ausgeben (Standard: an). Mit --no-dry-run die Demo-Study ausführen.",
+    )
+    return parser.parse_args(argv)
+
+
+def _toy_objective(trial: Any, direction: str) -> float:
+    """Deterministisches Toy-Objective: Optimum bei a=b=0.5."""
+    a = trial.suggest_float("a", 0.0, 1.0)
+    b = trial.suggest_float("b", 0.0, 1.0)
+    loss = (a - 0.5) ** 2 + (b - 0.5) ** 2
+    if direction == "minimize":
+        return float(loss)
+    return float(1.0 - loss)
+
+
+def run_toy_study(
+    *,
+    study_name: str,
+    n_trials: int,
+    direction: str,
+    seed: int,
+) -> dict[str, Any]:
+    """Führt die In-Memory-Demo-Study aus (benötigt Optuna)."""
+    if not OPTUNA_AVAILABLE or optuna is None:
+        raise RuntimeError("Optuna ist nicht installiert.")
+
+    sampler = optuna.samplers.RandomSampler(seed=seed)
+    study = optuna.create_study(
+        study_name=study_name,
+        direction=direction,
+        sampler=sampler,
     )
 
-    return parser.parse_args()
+    def objective(trial: Any) -> float:
+        return _toy_objective(trial, direction)
+
+    study.optimize(objective, n_trials=n_trials, show_progress_bar=False)
+    return {
+        "study_name": study_name,
+        "n_trials_complete": len(study.trials),
+        "best_value": study.best_value,
+        "best_params": study.best_params,
+        "direction": direction,
+        "seed": seed,
+    }
 
 
-def main():
-    """Entry-Point."""
-    args = parse_args()
+def print_plan(args: argparse.Namespace) -> None:
+    """Menschenlesbare Ausgabe: Was passieren würde."""
+    print("=" * 72)
+    print("Peak_Trade — Optuna Demo Study (J2 Placeholder Runner)")
+    print("=" * 72)
+    print()
+    print("Modus:        DRY-RUN (keine Optuna-Optimierung gestartet)")
+    print("Study-Name:  ", args.study_name)
+    print("Trials:      ", args.trials)
+    print("Richtung:    ", args.direction)
+    print("Seed:        ", args.seed)
+    print("Optuna:      ", "verfügbar" if OPTUNA_AVAILABLE else "nicht installiert")
+    print()
+    print("Bei --no-dry-run würde eine reine In-Memory-Demo-Study laufen:")
+    print("  - Toy-Objective: quadratische Abweichung um a=b=0.5 (kein Backtest, kein Markt).")
+    print("  - Kein Storage auf Disk (Standard), kein Netzwerk.")
+    print()
+    if not OPTUNA_AVAILABLE:
+        print("Hinweis: pip install optuna  (oder uv pip install optuna)")
+        print()
+    print("=" * 72)
 
-    # Placeholder-Meldung ausgeben
-    print_placeholder_message()
 
-    # Args ausgeben (für Debugging)
-    print("Übergebene Argumente:")
-    print(f"  Strategy: {args.strategy}")
-    print(f"  Config: {args.config}")
-    print(f"  Trials: {args.n_trials}")
-    print(f"  Study Name: {args.study_name or '(auto)'}")
-    print(f"  Objectives: {args.objectives}")
-    print(f"  Storage: {args.storage or '(in-memory)'}")
-    print(f"  Pruner: {args.pruner}")
-    print(f"  Sampler: {args.sampler}")
+def print_execute_plan(args: argparse.Namespace) -> None:
+    """Kurz vor echter Ausführung."""
+    print("=" * 72)
+    print("Starte Demo-Study (In-Memory, Toy-Objective)")
+    print("=" * 72)
+    print(f"  study-name: {args.study_name}")
+    print(f"  trials:     {args.trials}")
+    print(f"  direction:  {args.direction}")
+    print(f"  seed:       {args.seed}")
     print()
 
-    print("✨ Dieser Runner wird in einer späteren Phase implementiert.")
-    print("   Siehe docs/STRATEGY_LAYER_VNEXT.md für Roadmap.")
-    print()
 
-    # Exit-Code 0 (kein Error - nur Placeholder)
-    sys.exit(0)
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
+
+    if args.trials < 1:
+        print("Fehler: --trials muss >= 1 sein.", file=sys.stderr)
+        return 2
+
+    if args.dry_run:
+        print_plan(args)
+        return 0
+
+    if not OPTUNA_AVAILABLE:
+        print(
+            "Optuna ist nicht installiert — Demo-Study kann nicht ausgeführt werden.\n"
+            "  pip install optuna\n"
+            "Dry-Run: python scripts/run_study_optuna_placeholder.py",
+            file=sys.stderr,
+        )
+        return 1
+
+    print_execute_plan(args)
+    result = run_toy_study(
+        study_name=args.study_name,
+        n_trials=args.trials,
+        direction=args.direction,
+        seed=args.seed,
+    )
+    print("Ergebnis:")
+    print(f"  best_value:   {result['best_value']}")
+    print(f"  best_params:  {result['best_params']}")
+    print(f"  trials (OK): {result['n_trials_complete']}")
+    print()
+    print("Fertig (nur Toy-Objective, keine Strategie-/Marktdaten).")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

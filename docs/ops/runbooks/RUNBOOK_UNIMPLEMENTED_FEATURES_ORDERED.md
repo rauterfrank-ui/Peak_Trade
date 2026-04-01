@@ -126,7 +126,7 @@
 | # | Thema | Tag | Hinweis / Ort |
 |---|--------|-----|----------------|
 | J1 | Kraken-/Marktdaten durch echte Quellen ersetzen | STUB | Dummy + **Slice 4:** opt-in Kraken-OHLCV (`load_kraken_ohlcv` / `load_ohlcv` in `scripts/_shared_ohlcv_loader.py` → `src.data.kraken.fetch_ohlcv_df`); CLI ``--ohlcv-source dummy\|kraken`` in `generate_forward_signals.py`, `evaluate_forward_signals.py`, `run_portfolio_backtest_v2.py`. Voller Ersatz aller Dummy-Pfade / weitere Quellen: weiterhin J1 |
-| J2 | Optuna-Placeholder weiter ausbauen | STUB | `scripts/run_study_optuna_placeholder.py` |
+| J2 | Optuna-Placeholder weiter ausbauen | SLICE | J2: CLI + Dry-Run-Default, In-Memory Toy-Study (`--no-dry-run`); vollständige Strategie-Optimierung: `scripts/run_optuna_study.py` |
 | J3 | Platzhalter-Inventar regenerieren | TOOL | `scripts/ops/placeholders/generate_placeholder_reports.py` — erzeugt TODO-Inventar-MDs |
 
 ### Forward-Pipeline (J1 — Ops-Hinweis)
