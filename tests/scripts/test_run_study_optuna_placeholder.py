@@ -12,7 +12,9 @@ import importlib.util
 
 import pytest
 
-SCRIPT_PATH = Path(__file__).resolve().parent.parent.parent / "scripts" / "run_study_optuna_placeholder.py"
+SCRIPT_PATH = (
+    Path(__file__).resolve().parent.parent.parent / "scripts" / "run_study_optuna_placeholder.py"
+)
 
 OPTUNA_AVAILABLE = importlib.util.find_spec("optuna") is not None
 
@@ -32,7 +34,9 @@ def test_help_exits_zero():
     assert "--study-name" in result.stdout
     assert "--trials" in result.stdout
     assert "--direction" in result.stdout
-    assert "--dry-run" in result.stdout or "dry-run" in result.stdout or "no-dry-run" in result.stdout
+    assert (
+        "--dry-run" in result.stdout or "dry-run" in result.stdout or "no-dry-run" in result.stdout
+    )
 
 
 def test_default_is_dry_run_no_optuna_needed():
