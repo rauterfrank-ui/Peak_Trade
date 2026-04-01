@@ -1,0 +1,73 @@
+# Required-check names (job `name:`) are stable for branch protection:
+#   - docs-drift-guard
+#   - repo-truth-claims
+name: Truth Gates PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  merge_group:
+  workflow_dispatch:
+
+jobs:
+  docs_drift_guard:
+    name: docs-drift-guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch origin
+        run: git fetch --prune origin
+
+      - name: Fetch base ref (merge-base for three-dot diff)
+        shell: bash
+        run: |
+          base_ref="${GITHUB_BASE_REF:-main}"
+          git fetch origin "${base_ref}:refs/remotes/origin/${base_ref}" || true
+
+      - name: Determine base ref
+        id: base
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${GITHUB_BASE_REF:-}" ]]; then
+            echo "base_ref=origin/${GITHUB_BASE_REF}" >> "$GITHUB_OUTPUT"
+          else
+            echo "base_ref=origin/main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install PyYAML (truth loaders)
+        run: python3 -m pip install --disable-pip-version-check --no-cache-dir pyyaml
+
+      - name: Run docs drift guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="${{ steps.base.outputs.base_ref }}"
+          python3 scripts/ops/check_docs_drift_guard.py --base "${base}"
+
+  repo_truth_claims:
+    name: repo-truth-claims
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install PyYAML (truth loaders)
+        run: python3 -m pip install --disable-pip-version-check --no-cache-dir pyyaml
+
+      - name: Run repo truth claims
+        run: python3 scripts/ops/check_repo_truth_claims.py
