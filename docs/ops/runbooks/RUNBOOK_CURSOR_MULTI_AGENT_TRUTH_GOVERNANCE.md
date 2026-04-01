@@ -198,6 +198,7 @@ Vor den Checks: `git fetch origin` sinnvoll, damit die Basis-Ref (z. B. `origin&
 
 - Truth Map / Claims / Registry-Änderungen sind im PR nachvollziehbar committet.
 - Optional: Agent E Kurzblock im PR-Body (betroffene Bereiche, erledigte Checks).
+- **CI (GitHub):** Pull Requests laufen die Jobs **`docs-drift-guard`** und **`repo-truth-claims`** (Workflow `.github/workflows/truth_gates_pr.yml`). Repo-Admins können diese Namen unter Branch Protection als **Required** setzen, sobald die Checks auf dem Ziel-Branch sichtbar sind.
 
 ---
 
