@@ -18,6 +18,14 @@ claims:
     check: path_exists
     path: docs/ops/registry/DOCS_TRUTH_MAP.md
 
+  - id: repo-truth-claims-registry-present
+    check: path_exists
+    path: docs/ops/registry/REPO_TRUTH_CLAIMS.md
+
+  - id: truth-core-registry-present
+    check: path_exists
+    path: docs/ops/registry/TRUTH_CORE.md
+
   - id: docs-truth-map-config-present
     check: path_exists
     path: config/ops/docs_truth_map.yaml
