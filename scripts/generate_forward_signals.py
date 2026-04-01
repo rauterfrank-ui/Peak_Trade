@@ -139,9 +139,7 @@ def load_data_for_symbol(
     Returns:
         (DataFrame mit OHLCV-Daten, Observability-Dict für Loader/J1)
     """
-    return load_ohlcv_with_meta(
-        symbol, n_bars=n_bars, source=ohlcv_source, timeframe=timeframe
-    )
+    return load_ohlcv_with_meta(symbol, n_bars=n_bars, source=ohlcv_source, timeframe=timeframe)
 
 
 def determine_universe(cfg: Any, symbols_arg: str | None) -> List[str]:
