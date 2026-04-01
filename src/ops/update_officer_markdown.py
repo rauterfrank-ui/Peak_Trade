@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from src.ops.truth_officer_integration import render_unified_truth_status_markdown
+
 
 def _bool_text(value: bool) -> str:
     return "yes" if value else "no"
@@ -41,6 +43,14 @@ def render_update_officer_summary(report: dict[str, Any]) -> str:
     if npp:
         lines.append(f"- notifier_payload_path: `{npp}`")
     lines.append("")
+
+    ut_md = render_unified_truth_status_markdown(
+        summary["unified_truth_status"]
+        if isinstance(summary.get("unified_truth_status"), dict)
+        else {}
+    )
+    if ut_md:
+        lines.append(ut_md)
 
     lines.append("## Notifier-ready output")
     lines.append("")

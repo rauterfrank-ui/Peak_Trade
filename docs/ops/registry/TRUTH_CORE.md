@@ -14,7 +14,7 @@
 
 ## Zweck
 
-Docs Drift Guard und Repo Truth Claims nutzen dieselbe **Truth-Schicht**: Loader, Ergebnisobjekte (`PASS` / `FAIL` / `UNKNOWN`) und Evaluatoren ohne GitHub-API und ohne Officer-Logik. Workflow Officer und Update Officer können später dieselben APIs importieren (`from ops.truth import …`).
+Docs Drift Guard und Repo Truth Claims nutzen dieselbe **Truth-Schicht**: Loader, Ergebnisobjekte (`PASS` / `FAIL` / `UNKNOWN`) und Evaluatoren ohne GitHub-API. Workflow Officer und Update Officer binden dieselbe Schicht über `src.ops.truth_officer_integration` ein (Feld `unified_truth_status` im Report-`summary` und Abschnitt in `summary.md`).
 
 ## Komponenten
 

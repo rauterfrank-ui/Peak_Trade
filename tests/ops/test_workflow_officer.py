@@ -68,6 +68,13 @@ def test_workflow_officer_docs_only_pr_emits_report() -> None:
     assert "severity_counts" in report["summary"]
     assert "outcome_counts" in report["summary"]
     assert "effective_level_counts" in report["summary"]
+    uts = report["summary"]["unified_truth_status"]
+    assert uts["unified_truth_status_schema_version"] == "ops.unified_truth_status/v1"
+    assert uts["docs_drift"]["status"] in {"PASS", "FAIL", "UNKNOWN"}
+    assert uts["repo_claims"]["status"] in {"PASS", "FAIL", "UNKNOWN"}
+    summary_md = summary_path.read_text(encoding="utf-8")
+    assert "Unified truth status" in summary_md
+    assert "ops.truth" in summary_md
     ranking = report["summary"]["followup_topic_ranking"]
     assert isinstance(ranking, list)
     assert len(ranking) == len(report["checks"])

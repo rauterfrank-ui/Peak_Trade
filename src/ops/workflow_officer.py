@@ -16,6 +16,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from src.ops.truth_officer_integration import build_unified_truth_status
 from src.ops.workflow_officer_markdown import render_workflow_officer_summary
 from src.ops.workflow_officer_profiles import PROFILE_POLICY, PROFILES
 from src.ops.workflow_officer_schema import validate_report_payload
@@ -1716,6 +1717,7 @@ def _build_summary(
     summary["next_chat_preview"] = build_next_chat_preview(summary)
     summary["operator_report"] = build_operator_report_view(summary)
     summary["executive_summary"] = build_executive_summary_view(summary)
+    summary["unified_truth_status"] = build_unified_truth_status(repo_root)
     return summary
 
 

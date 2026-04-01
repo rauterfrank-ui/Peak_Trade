@@ -13,6 +13,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from src.ops.truth_officer_integration import build_unified_truth_status
 from src.ops.update_officer_markdown import render_update_officer_summary
 from src.ops.update_officer_profiles import (
     PROFILES,
@@ -449,6 +450,7 @@ def run(
     emit_events(run_dir / "events.jsonl", findings)
 
     summary = build_summary(findings)
+    summary["unified_truth_status"] = build_unified_truth_status(repo_root)
     success = summary["blocked"] == 0
     recommended_update_queue = build_recommended_update_queue(findings)
     next_recommended_topic, top_priority_reason = next_recommended_topic_and_reason(

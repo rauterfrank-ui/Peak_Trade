@@ -2,6 +2,11 @@ from __future__ import annotations
 
 from typing import Any
 
+from src.ops.truth_officer_integration import (
+    UnifiedTruthStatusValidationError,
+    validate_unified_truth_status_shape,
+)
+
 
 ALLOWED_CLASSIFICATIONS = {"safe_review", "manual_review", "blocked"}
 ALLOWED_PROFILES = {"dev_tooling_review"}
@@ -71,6 +76,7 @@ REQUIRED_SUMMARY_KEYS = {
     "blocked",
     "priority_counts",
     "category_counts",
+    "unified_truth_status",
 }
 
 
@@ -188,6 +194,11 @@ def validate_summary_payload(summary: dict[str, Any]) -> None:
     for ck, cv in summary["category_counts"].items():
         _require_type(ck, str, f"{scope}.category_counts key")
         _require_type(cv, int, f"{scope}.category_counts[{ck!r}]")
+
+    try:
+        validate_unified_truth_status_shape(summary["unified_truth_status"])
+    except UnifiedTruthStatusValidationError as e:
+        raise UpdateOfficerSchemaError(str(e)) from e
 
 
 def validate_report_payload(report: dict[str, Any]) -> None:
