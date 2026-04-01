@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from src.ops.truth_officer_integration import render_unified_truth_status_markdown
+
 
 def _bool_text(value: bool) -> str:
     return "yes" if value else "no"
@@ -25,6 +27,14 @@ def render_workflow_officer_summary(report: dict[str, Any]) -> str:
     lines.append(f"- output_dir: `{report['output_dir']}`")
     lines.append(f"- repo_root: `{report['repo_root']}`")
     lines.append("")
+
+    ut_md = render_unified_truth_status_markdown(
+        summary["unified_truth_status"]
+        if isinstance(summary.get("unified_truth_status"), dict)
+        else {}
+    )
+    if ut_md:
+        lines.append(ut_md)
 
     from src.ops.workflow_officer import (
         render_executive_summary_markdown,

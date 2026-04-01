@@ -53,6 +53,12 @@ def test_update_officer_dev_tooling_review_emits_report(tmp_path: Path) -> None:
     assert report["summary"]["total_findings"] > 0
     assert "priority_counts" in report["summary"]
     assert "category_counts" in report["summary"]
+    uts = report["summary"]["unified_truth_status"]
+    assert uts["unified_truth_status_schema_version"] == "ops.unified_truth_status/v1"
+    assert uts["docs_drift"]["status"] in {"PASS", "FAIL", "UNKNOWN"}
+    assert uts["repo_claims"]["status"] in {"PASS", "FAIL", "UNKNOWN"}
+    summary_md = summary_path.read_text(encoding="utf-8")
+    assert "Unified truth status" in summary_md
 
     for finding in report["findings"]:
         assert "surface" in finding

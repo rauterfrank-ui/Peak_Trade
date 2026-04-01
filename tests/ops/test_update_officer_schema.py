@@ -39,6 +39,23 @@ def _valid_report() -> dict:
             "blocked": 0,
             "priority_counts": {"p0": 0, "p1": 0, "p2": 0, "p3": 1},
             "category_counts": {"python_dependencies": 1},
+            "unified_truth_status": {
+                "unified_truth_status_schema_version": "ops.unified_truth_status/v1",
+                "git_base": "origin/main",
+                "docs_drift": {
+                    "status": "PASS",
+                    "changed_files_count": 0,
+                    "violation_rule_ids": [],
+                    "detail": None,
+                },
+                "repo_claims": {
+                    "status": "PASS",
+                    "checks_run": 1,
+                    "failed_claim_ids": [],
+                    "unknown_claim_ids": [],
+                    "detail": None,
+                },
+            },
         },
         "next_recommended_topic": "python_dependencies",
         "top_priority_reason": "Topic `python_dependencies` ranks first.",

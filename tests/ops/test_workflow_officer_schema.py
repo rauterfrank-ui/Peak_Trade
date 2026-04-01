@@ -65,6 +65,23 @@ def _valid_report() -> dict:
                 "p3": 1,
             },
             "strict": False,
+            "unified_truth_status": {
+                "unified_truth_status_schema_version": "ops.unified_truth_status/v1",
+                "git_base": "origin/main",
+                "docs_drift": {
+                    "status": "PASS",
+                    "changed_files_count": 0,
+                    "violation_rule_ids": [],
+                    "detail": None,
+                },
+                "repo_claims": {
+                    "status": "PASS",
+                    "checks_run": 1,
+                    "failed_claim_ids": [],
+                    "unknown_claim_ids": [],
+                    "detail": None,
+                },
+            },
         },
     }
 

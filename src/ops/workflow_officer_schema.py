@@ -2,6 +2,11 @@ from __future__ import annotations
 
 from typing import Any
 
+from src.ops.truth_officer_integration import (
+    UnifiedTruthStatusValidationError,
+    validate_unified_truth_status_shape,
+)
+
 
 ALLOWED_MODES = {"audit", "preflight", "advise"}
 ALLOWED_SEVERITIES = {"hard_fail", "warn", "info"}
@@ -48,6 +53,7 @@ REQUIRED_SUMMARY_KEYS = {
     "effective_level_counts",
     "recommended_priority_counts",
     "strict",
+    "unified_truth_status",
 }
 
 
@@ -149,6 +155,11 @@ def validate_summary_payload(summary: dict[str, Any]) -> None:
             int,
             f"{scope}.recommended_priority_counts.{pk}",
         )
+
+    try:
+        validate_unified_truth_status_shape(summary["unified_truth_status"])
+    except UnifiedTruthStatusValidationError as e:
+        raise WorkflowOfficerSchemaError(str(e)) from e
 
 
 def validate_report_payload(report: dict[str, Any]) -> None:
