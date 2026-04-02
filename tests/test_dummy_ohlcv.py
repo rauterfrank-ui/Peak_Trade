@@ -119,6 +119,24 @@ def test_load_ohlcv_unknown_source():
         load_ohlcv("BTC/EUR", source="nope")  # type: ignore[arg-type]
 
 
+def test_load_dummy_ohlcv_n_bars_must_be_positive():
+    with pytest.raises(ValueError, match="n_bars muss >= 1"):
+        load_dummy_ohlcv("BTC/EUR", n_bars=0)
+    with pytest.raises(ValueError, match="n_bars muss >= 1"):
+        load_dummy_ohlcv("BTC/EUR", n_bars=-1)
+
+
+def test_load_ohlcv_source_case_and_whitespace_insensitive():
+    df1 = load_ohlcv("BTC/EUR", n_bars=5, source="DUMMY")
+    df2 = load_ohlcv("BTC/EUR", n_bars=5, source="  dummy  ")
+    assert len(df1) == len(df2) == 5
+
+
+def test_load_ohlcv_source_must_be_str():
+    with pytest.raises(TypeError, match="str"):
+        load_ohlcv("BTC/EUR", source=123)  # type: ignore[arg-type]
+
+
 def test_load_kraken_ohlcv_trims_tail_and_validates():
     idx = pd.date_range("2024-01-01", periods=80, freq="1h", tz="UTC")
     raw = pd.DataFrame(
