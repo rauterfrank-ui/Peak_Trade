@@ -132,6 +132,7 @@
 ### Forward-Pipeline (J1 — Ops-Hinweis)
 
 - **Gemeinsamer OHLCV-Pfad:** `scripts/_shared_ohlcv_loader.py` — `load_dummy_ohlcv` / **J1 Slice 4:** `load_kraken_ohlcv` & `load_ohlcv` (Default: dummy); genutzt von `scripts/generate_forward_signals.py`, `scripts/evaluate_forward_signals.py`, `scripts/run_portfolio_backtest_v2.py` (CLI ``--ohlcv-source``).
+- **CLI-Abgleich Loader:** `scripts/_shared_forward_args.py` — dieselbe Quellen-Normalisierung wie ``load_ohlcv`` (``dummy``/``kraken``); ``--ohlcv-source`` ist **case-insensitive** (z. B. ``Kraken``, ``DUMMY``). **PR #2180.** Weiterhin **NO-LIVE** / **STUB** — kein neuer Anbieter.
 - **Datenvertrag:** strikte OHLCV-Validierung (`validate_ohlcv`, UTC-stündlicher Index); keine API-Keys/Orders/C1 in diesem Dummy-Pfad.
 - **Zeiten:** `as_of` in der Signal-CSV als **ISO-8601 UTC** mit **`Z`** (Generate: `format_as_of_iso_utc`); Evaluation: `parse_as_of_to_utc` beim Einlesen.
 - **OHLCV-Fenster:** `generate_forward_signals.py --n-bars` und `evaluate_forward_signals.py --n-bars` **gleich wählen** (Default jeweils 200), damit Dummy-Preisreihe und Signal-Zeitstempel zusammenpassen. Portfolio: `run_portfolio_backtest_v2.py --bars` / **`--n-bars`** (Alias, gleiches `dest`).
