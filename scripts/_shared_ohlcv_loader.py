@@ -53,6 +53,11 @@ def _normalize_ohlcv_source(source: str) -> str:
     return key
 
 
+def normalize_ohlcv_source(source: str) -> str:
+    """Öffentlicher Alias für gemeinsame CLI (``argparse`` ``type=``); gleiche Semantik wie intern."""
+    return _normalize_ohlcv_source(source)
+
+
 def _timeframe_to_timedelta(timeframe: str) -> pd.Timedelta:
     """Pandas-Timedelta für bekannte Forward-CLI-Timeframes (siehe ``_shared_forward_args``)."""
     m = {

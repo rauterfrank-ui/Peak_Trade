@@ -24,6 +24,8 @@ def test_parse_args_ohlcv_source():
 
     assert parse_args([]).ohlcv_source == "dummy"
     assert parse_args(["--ohlcv-source", "kraken"]).ohlcv_source == "kraken"
+    assert parse_args(["--ohlcv-source", "KRAKEN"]).ohlcv_source == "kraken"
+    assert parse_args(["--ohlcv-source", "  Dummy "]).ohlcv_source == "dummy"
 
 
 @pytest.mark.smoke
