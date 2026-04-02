@@ -164,6 +164,24 @@ Beispiele:
     return parser.parse_args()
 
 
+def resolve_backtest_symbol(cfg: PeakConfig) -> str:
+    """
+    Symbol für Evidence-Chain-Metadaten (nur Config / Defaults, kein I/O).
+
+    Reihenfolge: explizite Backtest-/General-Keys, dann übliche Repo-Defaults.
+    """
+    for key in (
+        "backtest.symbol",
+        "general.symbol",
+        "real_market_smokes.default_market",
+        "shadow_paper.symbol",
+    ):
+        v = cfg.get(key)
+        if isinstance(v, str) and v.strip():
+            return v.strip()
+    return "BTC/EUR"
+
+
 def generate_dummy_ohlcv(
     n_bars: int = 500,
     base_price: float = 50000.0,
@@ -528,7 +546,7 @@ def main() -> int:
     meta = {
         "run_id": run_id,
         "strategy": strategy_name,
-        "symbol": "BTC/EUR",  # TODO: extract from config or args
+        "symbol": resolve_backtest_symbol(cfg),
         "git_sha": git_sha,
         "argv": sys.argv,
         "stage": "backtest",
