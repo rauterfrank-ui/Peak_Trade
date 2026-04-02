@@ -183,9 +183,7 @@ def _load_kraken_ohlcv_inner(
         if len(df) > n_bars:
             df = df.iloc[-n_bars:].copy()
         validate_ohlcv(df, strict=True, require_tz=True)
-        _warn_kraken_shortfall_if_needed(
-            symbol, timeframe, n_bars, len(df), pagination_used=False
-        )
+        _warn_kraken_shortfall_if_needed(symbol, timeframe, n_bars, len(df), pagination_used=False)
         return df, False
 
     td = _timeframe_to_timedelta(timeframe)
@@ -224,9 +222,7 @@ def _load_kraken_ohlcv_inner(
     if len(out) > n_bars:
         out = out.iloc[-n_bars:].copy()
     validate_ohlcv(out, strict=True, require_tz=True)
-    _warn_kraken_shortfall_if_needed(
-        symbol, timeframe, n_bars, len(out), pagination_used=True
-    )
+    _warn_kraken_shortfall_if_needed(symbol, timeframe, n_bars, len(out), pagination_used=True)
     return out, True
 
 
