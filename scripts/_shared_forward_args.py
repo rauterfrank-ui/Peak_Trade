@@ -41,6 +41,7 @@ def append_forward_ohlcv_scope_epilog(parser: argparse.ArgumentParser) -> None:
     else:
         parser.epilog = extra
 
+
 # Übliche ccxt/Kraken-Timeframes (an ``fetch_ohlcv_df`` übergeben; Dummy bleibt synthetisch 1h).
 OHLCV_TIMEFRAME_CHOICES = ("1m", "5m", "15m", "1h", "4h", "1d")
 
