@@ -47,7 +47,7 @@ def _gh_api(method: str, path: str, *, body: Dict[str, Any] | None = None) -> Tu
     cmd.append(path)
     if body is not None:
         cmd.extend(["--input", "-"])
-        inp = json.dumps(body).encode("utf-8")
+        inp = json.dumps(body)
     else:
         inp = None
     p = subprocess.run(cmd, input=inp, capture_output=True, text=True)
