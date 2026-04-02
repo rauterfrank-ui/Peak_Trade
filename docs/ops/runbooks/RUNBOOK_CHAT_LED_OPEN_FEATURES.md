@@ -93,3 +93,4 @@ bash scripts/ops/pt_docs_gates_snapshot.sh --changed
 - [Finish Plan](../roadmap/FINISH_PLAN.md)  
 - [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md)  
 - [Chat continuity bootstrap](./PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md)
+- [Unimplemented features (ordered)](./RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md) — u. a. **Stufe J** (Forward-Pipeline-Stub, Scripts/Demos); ergänzt diese Chat-Triage um priorisierte Repo-Anker (**kein** Ersatz für Gap-Sessions).
