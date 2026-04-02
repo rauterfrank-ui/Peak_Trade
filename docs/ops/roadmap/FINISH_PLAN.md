@@ -371,6 +371,7 @@ Risk: HIGH (broker/live-ops domain; execution-adjacent)
 - **Scope**: Make status reports reliable and operator-friendly (still snapshot-only)
 - **Files (patterns)**: scripts for status reporting + docs guidance
 - **Navigation (landed in this slice):** [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) · [Live Status Reports](../../LIVE_STATUS_REPORTS.md) · [`generate_live_status_report.py`](../../../scripts/generate_live_status_report.py) · [`prj_status_report.py`](../../../scripts/ci/prj_status_report.py)
+- **Operator verify (canonical):** [LIVE_STATUS_REPORTS.md §7](../../LIVE_STATUS_REPORTS.md#7-operator-verify-finish-plan-pr-7) — daily Markdown + optional `prj_status_report.py` + docs gates
 - **Tests**:
   - targeted tests for report generation (if present) + smoke runs
 - **Gates**: CI checks + docs gates

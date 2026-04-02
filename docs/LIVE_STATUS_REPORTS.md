@@ -201,7 +201,43 @@ Erstelle eine "docs\/live_status_notes.md" (future, operator-created) für wiede
 
 ---
 
-## 7. Verwandte Dokumente
+## 7. Operator verify (Finish Plan PR 7)
+
+Skripte **lokal** ausführen (Snapshot-only; **kein** Live-Unlock). Ergebnis-Pfade für Evidence/Runbooks notieren.
+
+### 7.1 Live-Status-Report (Pflicht-Nachweis)
+
+Daily-Report als Markdown erzeugen (Ausgabe unter `reports&#47;live_status&#47;`):
+
+```bash
+python3 scripts/generate_live_status_report.py \
+  --config config/config.toml \
+  --output-dir reports/live_status \
+  --format markdown \
+  --tag daily
+```
+
+Erwartung: Datei `live_status_YYYY-MM-DD_HHMM_daily.md` im Output-Verzeichnis. Optional `--format both` und `--tag weekly` für Weekly-HTML siehe §2.
+
+### 7.2 PR-J CI-Status-Report (optional)
+
+Benötigt eine **Runs-JSON-Datei** (z. B. `out&#47;prj_runs.json` aus CI oder Export). Artefakte nach `reports&#47;status&#47;`:
+
+```bash
+python3 scripts/ci/prj_status_report.py --input out/prj_runs.json --output-dir reports/status
+```
+
+Deterministische Erwartungen: `tests/ci/test_prk_status_report_contract.py`.
+
+### 7.3 Docs-Gates (nach Änderungen an dieser Seite)
+
+```bash
+bash scripts/ops/pt_docs_gates_snapshot.sh --changed
+```
+
+---
+
+## 8. Verwandte Dokumente
 
 - [`CLI_CHEATSHEET.md`](CLI_CHEATSHEET.md) – CLI-Referenz
 - [`LIVE_TESTNET_TRACK_STATUS.md`](LIVE_TESTNET_TRACK_STATUS.md) – Live-/Testnet-Status
