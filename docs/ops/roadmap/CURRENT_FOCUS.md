@@ -33,6 +33,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **Finish Plan PR 7 (operator verify, PR #2177):** kanonischer Ablauf in [LIVE_STATUS_REPORTS.md](../../LIVE_STATUS_REPORTS.md#7-operator-verify-finish-plan-pr-7) · `FINISH_PLAN` PR 7; Docs-only; **NO-LIVE**.
 - **Finish Plan PR 8 (release / Go–No-Go, PR #2178):** Rubric §4 + `CURRENT_FOCUS`/`FINISH_PLAN`-Anker; [Release checklist & Go/No-Go rubric](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md); Docs-only; **NO-LIVE**.
 - **Chat-led gap sync (PR #2182):** Querverweis [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) → [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md) (Stufe J); Docs-only; **NO-LIVE**.
+- **Chat-led mini-slice — backtest evidence symbol (PR #2184):** `scripts/run_backtest.py` — `resolve_backtest_symbol()` für Evidence-Chain-Metadaten (Config-first); Runbook-Stichprobe §5 in [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md); **NO-LIVE**.
 
 **GitHub — Truth-Gate Required Checks auf `main`:** Verifiziert (Apr 2026): **`docs-drift-guard`** und **`repo-truth-claims`** sind als Required Status Checks gesetzt (Namen wie `.github/workflows/truth_gates_pr.yml` Job-`name:`). Re-Check lokal: `python3 scripts/ops/ensure_truth_branch_protection.py --check` · ergänzen mit `--apply` nur mit Admin-Rechten; Registry: [`TRUTH_BRANCH_PROTECTION.md`](../registry/TRUTH_BRANCH_PROTECTION.md).
 
@@ -84,11 +85,13 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-02 | Finish Plan **PR 8** post-merge: `CURRENT_FOCUS` + Release Rubric §4 + `FINISH_PLAN` PR 8 | PR #2178 |
 | 2026-04-03 | Stufe J / J1: Forward-CLI ``--ohlcv-source`` case-insensitive (`_shared_forward_args`); Runbook-Zeile | PR #2180 |
 | 2026-04-03 | Chat-led gaps: Querverweis `RUNBOOK_CHAT_LED_OPEN_FEATURES` → `RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED` (Stufe J) | PR #2182 |
+| 2026-04-02 | Post–PR #2184: `CURRENT_FOCUS` refresh — backtest evidence `symbol` aus Config + Chat-led-Stichprobe §5 | PR #2184 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 
 ---
 
 ## Branch / PR pointer (optional)
 
+- **Merged:** [PR #2184](https://github.com/rauterfrank-ui/Peak_Trade/pull/2184) — Chat-led mini-slice: `run_backtest` evidence `symbol` from config + runbook snapshot row on `main`.
 - **Merged:** [PR #2173](https://github.com/rauterfrank-ui/Peak_Trade/pull/2173) — J1 Kraken shortfall observability + style follow-up on `main`.
 - **Merged:** [PR #2172](https://github.com/rauterfrank-ui/Peak_Trade/pull/2172) — J1 shared OHLCV loader edge-case hardening on `main`.
 - **Merged:** [PR #2170](https://github.com/rauterfrank-ui/Peak_Trade/pull/2170) — J3 placeholder inventory generator smoke + runbook note (`NO-LIVE` tooling).
