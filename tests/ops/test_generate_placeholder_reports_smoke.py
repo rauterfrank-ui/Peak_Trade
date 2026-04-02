@@ -8,6 +8,22 @@ ROOT = Path(__file__).resolve().parents[2]
 _SCRIPT = ROOT / "scripts" / "ops" / "placeholders" / "generate_placeholder_reports.py"
 
 
+def test_generate_placeholder_reports_help_lists_no_live_scope():
+    """CLI --help documents NO-LIVE / local triage scope."""
+    p = subprocess.run(
+        [sys.executable, str(_SCRIPT), "--help"],
+        cwd=str(ROOT),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert p.returncode == 0, p.stderr
+    out = p.stdout
+    assert "NO-LIVE" in out
+    assert "place orders" in out.lower()
+    assert "--output-dir" in out
+
+
 def test_generate_placeholder_reports_exits_zero_and_writes_core_artifacts(tmp_path):
     """Runs the script against the real repo scan; writes reports to a temp dir."""
     cmd = [

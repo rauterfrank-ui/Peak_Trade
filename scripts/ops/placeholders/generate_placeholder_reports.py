@@ -10,6 +10,8 @@ markers (TODO, FIXME, TBD, XXX, etc.) and generates two local report files:
 
 Output location: .ops_local/inventory/ (git-ignored)
 
+NO-LIVE: local inventory / triage only — no brokers, orders, or execution.
+
 Large or noisy trees (e.g. ``out/``, ``.venv*/``, ``.cursor/``) are skipped by default;
 see ``SKIP_DIRS`` and ``_skip_path_component`` in this file.
 
@@ -351,8 +353,16 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
             "Scan the repository for placeholder markers and write inventory reports "
-            "(stdlib only; default output: .ops_local/inventory/)."
-        )
+            "(stdlib only; default output: .ops_local/inventory/).\n\n"
+            "NO-LIVE: local triage tooling only — no exchanges, no orders, no execution."
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Scope (NO-LIVE):
+  Operator-facing inventory only. Does not connect to brokers, place orders, or run
+  live or paper execution. Output is Markdown under --output-dir or
+  <repo>/.ops_local/inventory/ (gitignored by default). Not a CI gate.
+        """.strip(),
     )
     parser.add_argument(
         "--output-dir",
