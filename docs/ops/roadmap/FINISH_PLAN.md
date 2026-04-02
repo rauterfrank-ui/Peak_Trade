@@ -379,12 +379,13 @@ Risk: HIGH (broker/live-ops domain; execution-adjacent)
   - generate daily/weekly status report (local) and store output path as evidence
 
 ### PR 8 — Release checklist + “Go/No-Go” rubric (docs-only)
-- **Scope**: One page “Go/No-Go” rubric aligned to Finish Level C
-- **Files (docs)**: ops/release/runbooks + cross-links from frontdoor
+- **Scope**: Ein kanonischer **Release-/Go–No-Go**-Anker für Kandidaten: Rubric + Evidence-Vorlage + kurzer **Operator-Verify**-Pfad — ausgerichtet auf **Finish Level C**, ohne Produkt- oder Live-Freigabe durch bloßes Lesen der Seiten (**NO‑LIVE**-kompatibel).
+- **Files (docs)**: [Release docs index](../release/README.md) · [Release checklist & Go/No-Go rubric](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md); Querverweise von [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) (bereits gesetzt).
 - **Navigation (landed in this slice):** [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) · [Release docs index](../release/README.md) · [Release checklist & Go/No-Go rubric](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md)
-- **Tests/Gates**: docs gates snapshot
+- **Operator verify (canonical):** [RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md §4](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md#4-operator-verify-finish-plan-pr-8) — Docs-Gates + Rubric §2 + Evidence §3
+- **Tests/Gates**: docs gates snapshot (`bash scripts/ops/pt_docs_gates_snapshot.sh --changed` o. ä.)
 - **Operator verify**:
-  - evidence template ready for each release candidate
+  - Rubric und Evidence für jeden Release-Kandidaten bereithalten; keine Live-Schritte ohne separates Governance-Gate außerhalb dieses Dokuments
 
 ---
 
