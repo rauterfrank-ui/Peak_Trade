@@ -50,6 +50,26 @@ Risk note: <1–3 Sätze>
 
 ---
 
+## 4. Operator verify (Finish Plan PR 8)
+
+Kurzablauf vor einem **Merge als Release-Kandidat** oder vor einem **formalen Go/No-Go-Review** (weiterhin **NO‑LIVE**-Default in diesem Repo; keine Aktivierung von Live-Trading).
+
+1. **Docs-Gates (changed scope)** — lokal oder in CI-Äquivalent:
+
+```bash
+bash scripts/ops/pt_docs_gates_snapshot.sh --changed
+```
+
+Erwartung: alle drei Gates **PASS** (Token Policy, Reference Targets, Diff Guard).
+
+2. **Rubric §2** — Tabelle für den Kandidaten ausfüllen; **Entscheidung** und Begründung setzen.
+
+3. **Evidence** — Block aus **§3** in Merge-Beschreibung, Operator-Log oder kurze Notiz im Repo unterhalb von `docs/` einfügen (genauer Pfad/Artefakt vom Team festgelegt; nicht zwingend committen).
+
+4. **Truth-Gates auf `main` (optional, wenn PR den Truth-Workflow berührt):** `python3 scripts/ops/ensure_truth_branch_protection.py --check` — siehe [`TRUTH_BRANCH_PROTECTION.md`](../../registry/TRUTH_BRANCH_PROTECTION.md).
+
+---
+
 ## Verwandte Dokumente
 
 - [Finish Plan (PR 8)](../../roadmap/FINISH_PLAN.md#pr-8-release-checklist-gono-go-rubric-docs-only)

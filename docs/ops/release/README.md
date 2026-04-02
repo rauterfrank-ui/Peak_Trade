@@ -9,7 +9,7 @@
 
 | Dokument | Beschreibung |
 |----------|----------------|
-| [Release checklist & Go/No-Go rubric](./runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md) | Einseitige Rubric + Evidence-Vorlage pro Release-Kandidat |
+| [Release checklist & Go/No-Go rubric](./runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md) | Rubric + Evidence-Vorlage; **Operator-Verify (Finish Plan PR 8):** §4 im selben Dokument |
 
 ---
 
