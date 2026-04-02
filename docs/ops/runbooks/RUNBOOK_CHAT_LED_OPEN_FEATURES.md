@@ -55,7 +55,7 @@
 | Learning / Promotion | Bridge & Emitter „TODO“, Automation optional | `docs/LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md`, Release-Notes Learning Loop |
 | Infostream / KI | Parser & Modell/API — **iterativ** (Robustheit/Konfig noch offen) | [`evaluator.py`](../../../src/meta/infostream/evaluator.py) · [`test_infostream_basic.py`](../../../tests/meta/test_infostream_basic.py) |
 | Evidence / Orchestration | Evidence-Pack-Schema — **evolutionär** (Migrationskette, nicht alles migriert) | [`evidence_pack_schema.py`](../../../src/ai_orchestration/evidence_pack_schema.py) · [`test_evidence_pack_schema.py`](../../../tests/ai_orchestration/test_evidence_pack_schema.py) |
-| Live / Safety | Platzhalter-Snapshots „wire“ | `src/live/safety.py` (Kommentar TODO wire) |
+| Live / Safety | Platzhalter-Snapshots / „wire“ — **absichtlicher** Stub (**NO-LIVE**) | [`safety.py`](../../../src/live/safety.py) · [`test_safety_exec_guards_wiring.py`](../../../tests/live/test_safety_exec_guards_wiring.py) |
 | Risk / Kill-Switch | Legacy-Adapter entfernt (Slice 3); optional weitere Doku | `TODO_KILL_SWITCH_ADAPTER_MIGRATION.md` |
 | Backtest / Engine | Tracker-Integration „not yet“ — **absichtlicher** Deferral (Test dokumentiert) | [`tests/backtest/test_engine_tracking.py`](../../../tests/backtest/test_engine_tracking.py) |
 | Research-Stubs | Absichtlich `NotImplementedError` (Research-Phase) | u. a. `src/strategies/bouchaud/`, `src/strategies/gatheral_cont/` |
