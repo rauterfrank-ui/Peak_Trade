@@ -38,7 +38,11 @@ sys.path.insert(0, str(_scripts))
 import numpy as np
 import pandas as pd
 
-from _shared_forward_args import add_shared_ohlcv_cli_group, parse_symbols_cli_arg
+from _shared_forward_args import (
+    add_shared_ohlcv_cli_group,
+    append_forward_ohlcv_scope_epilog,
+    parse_symbols_cli_arg,
+)
 from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv
 from src.core.peak_config import load_config, PeakConfig
 from src.core.position_sizing import build_position_sizer_from_config
@@ -56,7 +60,10 @@ from src.strategies.registry import (
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     """Parse CLI-Argumente."""
     parser = argparse.ArgumentParser(
-        description="Peak_Trade: Portfolio-Backtest über mehrere Symbole.",
+        description=(
+            "Peak_Trade: Portfolio-Backtest über mehrere Symbole.\n\n"
+            "NO-LIVE: kein Live-Handel, keine Order-Ausführung; nur Backtest/Artefakte."
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -119,6 +126,7 @@ Examples:
         n_bars_dest="bars",
         n_bars_flags=("--bars", "--n-bars"),
     )
+    append_forward_ohlcv_scope_epilog(parser)
     return parser.parse_args(argv)
 
 

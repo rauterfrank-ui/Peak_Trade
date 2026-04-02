@@ -1,5 +1,6 @@
 """Smoke: gemeinsame Forward-/Portfolio-OHLCV-CLI (J1 Config-Klarheit)."""
 
+import subprocess
 import sys
 from pathlib import Path
 
@@ -78,3 +79,25 @@ def test_generate_forward_signals_ohlcv_source_case_insensitive():
         ["--strategy", "ma_crossover", "--symbols", "BTC/EUR", "--ohlcv-source", "Kraken"]
     )
     assert ns2.ohlcv_source == "kraken"
+
+
+@pytest.mark.smoke
+def test_forward_pipeline_scripts_help_contains_j1_no_live_scope():
+    """--help listet gemeinsamen J1/NO-LIVE-Scope (Epilog + --ohlcv-source)."""
+    for name in (
+        "generate_forward_signals.py",
+        "evaluate_forward_signals.py",
+        "run_portfolio_backtest_v2.py",
+    ):
+        result = subprocess.run(
+            [sys.executable, str(SCRIPTS / name), "--help"],
+            cwd=str(ROOT),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode == 0, (name, result.stderr)
+        out = result.stdout
+        assert "NO-LIVE" in out
+        assert "keine Order" in out or "Keine Orders" in out
+        assert "--ohlcv-source" in out

@@ -42,13 +42,17 @@ from src.analytics.risk_monitor import (
     aggregate_strategy_risk,
 )
 from src.analytics.filter_flow import SelectionPolicy, build_strategy_selection
-from _shared_forward_args import add_shared_ohlcv_cli_group
+from _shared_forward_args import add_shared_ohlcv_cli_group, append_forward_ohlcv_scope_epilog
 from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv_with_meta
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Peak_Trade: Forward-/Paper-Trading-Signale für ein Symbol-Universum erzeugen.",
+        description=(
+            "Peak_Trade: Forward-/Paper-Trading-Signale für ein Symbol-Universum erzeugen.\n\n"
+            "NO-LIVE: kein Live-Handel, keine Order-Ausführung; nur Signale/Artefakte."
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "--strategy",
@@ -85,6 +89,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
         ),
     )
     add_shared_ohlcv_cli_group(parser)
+    append_forward_ohlcv_scope_epilog(parser)
     return parser.parse_args(argv)
 
 
