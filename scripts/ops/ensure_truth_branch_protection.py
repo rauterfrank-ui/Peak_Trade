@@ -146,7 +146,10 @@ def build_put_body(get_data: Dict[str, Any], merged_contexts: List[str]) -> Dict
 def run_check(owner: str, repo: str, branch: str) -> int:
     code, data, err = fetch_protection(owner, repo, branch)
     if code != 0 or data is None:
-        print(f"❌ Branch protection konnte nicht gelesen werden (HTTP/gh exit {code}).", file=sys.stderr)
+        print(
+            f"❌ Branch protection konnte nicht gelesen werden (HTTP/gh exit {code}).",
+            file=sys.stderr,
+        )
         if err:
             print(err, file=sys.stderr)
         return 1
