@@ -52,7 +52,7 @@
 
 | Kategorie | Signal (Kurz) | Beispiel-Ort / Hinweis |
 |-----------|----------------|-------------------------|
-| Learning / Promotion | Bridge & Emitter „TODO“, Automation optional | `docs/LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md`, Release-Notes Learning Loop |
+| Learning / Promotion | Bridge & Emitter „TODO“ — **iterativ** (**NO-LIVE**) | [`LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md`](../../LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md) |
 | Infostream / KI | Parser & Modell/API — **iterativ** (Robustheit/Konfig noch offen) | [`evaluator.py`](../../../src/meta/infostream/evaluator.py) · [`test_infostream_basic.py`](../../../tests/meta/test_infostream_basic.py) |
 | Evidence / Orchestration | Evidence-Pack-Schema — **evolutionär** (Migrationskette, nicht alles migriert) | [`evidence_pack_schema.py`](../../../src/ai_orchestration/evidence_pack_schema.py) · [`test_evidence_pack_schema.py`](../../../tests/ai_orchestration/test_evidence_pack_schema.py) |
 | Live / Safety | Platzhalter-Snapshots / „wire“ — **absichtlicher** Stub (**NO-LIVE**) | [`safety.py`](../../../src/live/safety.py) · [`test_safety_exec_guards_wiring.py`](../../../tests/live/test_safety_exec_guards_wiring.py) |
