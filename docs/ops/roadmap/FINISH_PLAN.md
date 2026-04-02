@@ -2,7 +2,7 @@
 title: "Finish Plan (MVP→v1.0) — Repo Roadmap + DoD Checklists"
 status: DRAFT
 scope: docs-first (NO-LIVE)
-last_updated: 2026-03-27
+last_updated: 2026-04-05
 ---
 
 # Finish Plan (MVP→v1.0) — Repo Roadmap + DoD Checklists
@@ -386,6 +386,8 @@ Risk: HIGH (broker/live-ops domain; execution-adjacent)
 - **Tests/Gates**: docs gates snapshot (`bash scripts/ops/pt_docs_gates_snapshot.sh --changed` o. ä.)
 - **Operator verify**:
   - Rubric und Evidence für jeden Release-Kandidaten bereithalten; keine Live-Schritte ohne separates Governance-Gate außerhalb dieses Dokuments
+
+**Nach PR 6–8:** Der nummerierte PR-Slicing-Block endet hier. Weitere Arbeit: schmale Slices über [Workstreams](#workstreams-16--inputs--outputs--contracts--tests) und Runbooks — **aktueller Fokus** in [CURRENT_FOCUS.md](CURRENT_FOCUS.md); **NO-LIVE**-Default unverändert.
 
 ---
 

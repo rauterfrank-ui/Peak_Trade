@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-04-04
+last_updated: 2026-04-05
 ---
 
 # Current focus
@@ -16,7 +16,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ## Active goal (one sentence)
 
-**Finish Plan PRs 6–8 remain the navigation spine on `main` (docs-only / snapshot-only):** [PR 6 — Live-Ops runbook pack](FINISH_PLAN.md#pr-6-live-ops-runbook-pack-docs-only) · [PR 7 — Observability / status reports](FINISH_PLAN.md#pr-7-observabilitystatus-report-hardening-code-docs) · [PR 8 — Release checklist / Go–No-Go](FINISH_PLAN.md#pr-8-release-checklist-gono-go-rubric-docs-only) — use [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) and [Release docs](../release/README.md); **NO** live unlocks. **Aktueller Slice:** [PR 8 — Release checklist / Go–No-Go](FINISH_PLAN.md#pr-8-release-checklist-gono-go-rubric-docs-only) (Rubric + Operator-Verify §4). **PR 7 (Operator-Verify in [LIVE_STATUS_REPORTS.md](../../LIVE_STATUS_REPORTS.md) §7) ist gelandet** (u. a. PR #2177). **Truth/docs governance, PR truth gates, officer truth integration, bounded-pilot / canary-live-entry docs, J1 forward-pipeline slices, the J2 Optuna demo-runner slice, and the J3 placeholder-inventory tooling smoke are landed** — see **Recently landed** below.
+**Finish Plan PRs 6–8** bilden die **abgeschlossene** Navigations-Spine auf `main` (docs-only / snapshot-only): [PR 6 — Live-Ops runbook pack](FINISH_PLAN.md#pr-6-live-ops-runbook-pack-docs-only) · [PR 7 — Observability / status reports](FINISH_PLAN.md#pr-7-observabilitystatus-report-hardening-code-docs) · [PR 8 — Release checklist / Go–No-Go](FINISH_PLAN.md#pr-8-release-checklist-gono-go-rubric-docs-only) — Einstieg weiter über [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) und [Release docs](../release/README.md); **NO** live unlocks. **Aktueller Fokus:** schmale Slices aus [FINISH_PLAN — Workstreams](FINISH_PLAN.md#workstreams-16--inputs--outputs--contracts--tests) und den Runbooks (z. B. [Stufe J](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md#stufe-j--scripts--demo-daten-operativ-niedrig-priorisiert), [Chat-led gaps](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md)) — kein weiterer nummerierter PR 9+ im Finish-Plan. **Truth/docs governance, PR truth gates, officer truth integration, bounded-pilot / canary-live-entry docs, J1 forward-pipeline slices, the J2 Optuna demo-runner slice, and the J3 placeholder-inventory tooling smoke are landed** — see **Recently landed** below.
 
 ---
 
@@ -31,6 +31,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **J2 (Optuna placeholder slice, PR #2168):** `scripts/run_study_optuna_placeholder.py` — CLI, dry-run default, optional in-memory toy study (`--no-dry-run`); no market/live execution. Full strategy optimization remains `scripts/run_optuna_study.py` (incl. GridSampler / CI alignment with Optuna 3.6).
 - **J3 (placeholder inventory tooling, PR #2170):** `scripts/ops/placeholders/generate_placeholder_reports.py` — local inventory Markdown under `.ops_local` (gitignored); smoke `tests/ops/test_generate_placeholder_reports_smoke.py`; no new CI gate; **NO-LIVE**.
 - **Finish Plan PR 7 (operator verify, PR #2177):** kanonischer Ablauf in [LIVE_STATUS_REPORTS.md](../../LIVE_STATUS_REPORTS.md#7-operator-verify-finish-plan-pr-7) · `FINISH_PLAN` PR 7; Docs-only; **NO-LIVE**.
+- **Finish Plan PR 8 (release / Go–No-Go, PR #2178):** Rubric §4 + `CURRENT_FOCUS`/`FINISH_PLAN`-Anker; [Release checklist & Go/No-Go rubric](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md); Docs-only; **NO-LIVE**.
 
 **GitHub — Truth-Gate Required Checks auf `main`:** Verifiziert (Apr 2026): **`docs-drift-guard`** und **`repo-truth-claims`** sind als Required Status Checks gesetzt (Namen wie `.github/workflows/truth_gates_pr.yml` Job-`name:`). Re-Check lokal: `python3 scripts/ops/ensure_truth_branch_protection.py --check` · ergänzen mit `--apply` nur mit Admin-Rechten; Registry: [`TRUTH_BRANCH_PROTECTION.md`](../registry/TRUTH_BRANCH_PROTECTION.md).
 
@@ -46,8 +47,8 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ## Next small focus (suggestion)
 
-- **Primary:** [Finish Plan PR 8](FINISH_PLAN.md#pr-8-release-checklist-gono-go-rubric-docs-only) — [Release checklist & Go/No-Go rubric](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md) (Operator-Verify §4); [Release docs index](../release/README.md).
-- **Optional:** [J1 forward-pipeline stub follow-up](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md#stufe-j--scripts--demo-daten-operativ-niedrig-priorisiert) (still **STUB** / no live). **Or** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md). Keep scope **narrow**; no new product or live unlock.
+- **Primary:** [Stufe J — Forward-Pipeline / Demo-Stub](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md#stufe-j--scripts--demo-daten-operativ-niedrig-priorisiert) (weiter **STUB**, **NO-LIVE**) oder ein **einzelner** Chat-led Gap aus [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md).
+- **Optional:** Bei einem **Release-Kandidaten** die Rubric nutzen — [Release checklist & Go/No-Go rubric](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md) §4; regelmäßig `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`. Kein Scope-Creep; keine Live-Freigabe durch bloßes Dokumentieren.
 
 ---
 
@@ -79,6 +80,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-03 | Post–J1 (PR #2172 / #2173): `CURRENT_FOCUS` refresh — J1 loader edge cases + Kraken shortfall observability landed | PR #2172 / #2173 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-02 | Truth-Gate `main` branch protection: required checks **`docs-drift-guard`** + **`repo-truth-claims`** verified; `ensure_truth_branch_protection.py` stdin fix on `main` | `python3 scripts/ops/ensure_truth_branch_protection.py --check` (PASS); PR #2176 |
 | 2026-04-02 | Finish Plan **PR 7** operator-verify docs: `CURRENT_FOCUS`, `LIVE_STATUS_REPORTS` §7, `FINISH_PLAN` | PR #2177 |
+| 2026-04-02 | Finish Plan **PR 8** post-merge: `CURRENT_FOCUS` + Release Rubric §4 + `FINISH_PLAN` PR 8 | PR #2178 |
 
 ---
 
