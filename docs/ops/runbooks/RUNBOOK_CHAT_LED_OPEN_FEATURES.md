@@ -59,7 +59,7 @@
 | Risk / Kill-Switch | Legacy-Adapter entfernt (Slice 3); optional weitere Doku | `TODO_KILL_SWITCH_ADAPTER_MIGRATION.md` |
 | Backtest / Engine | Tracker-Integration „not yet“ — **absichtlicher** Deferral (Test dokumentiert) | [`tests/backtest/test_engine_tracking.py`](../../../tests/backtest/test_engine_tracking.py) |
 | Research-Stubs | Absichtlich `NotImplementedError` (Research-Phase) | u. a. `src/strategies/bouchaud/`, `src/strategies/gatheral_cont/` |
-| ML / Meta-Labeling | Unvollständige Implementierung / Platzhalter | `src/research/ml/meta/meta_labeling.py` |
+| ML / Meta-Labeling | Teilweise Platzhalter / Research-Pfad (**NO-LIVE**) | [`meta_labeling.py`](../../../src/research/ml/meta/meta_labeling.py) · [`test_meta_labeling.py`](../../../tests/test_meta_labeling.py) |
 | Scripts | Evidence-Metadaten: Symbol aus Config ableiten | `scripts/run_backtest.py` (`resolve_backtest_symbol`) |
 | Ops / Navigation | Chat-led ↔ Stufe J (geordnete Stub-Liste) verlinkt | PR #2182 — [Verwandte Dokumente](#verwandte-dokumente) · [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](./RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md) |
 
