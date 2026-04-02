@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-04-02
+last_updated: 2026-04-03
 ---
 
 # Current focus
@@ -26,6 +26,8 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **CI:** workflow [.github/workflows/truth_gates_pr.yml](../../../.github/workflows/truth_gates_pr.yml) defines jobs **`docs-drift-guard`** and **`repo-truth-claims`** (PR / merge queue / manual dispatch).
 - **Officers:** [Workflow Officer](#how-workflow-officer-and-update-officer-fit) and [Update Officer](#how-workflow-officer-and-update-officer-fit) include **`summary.unified_truth_status`** (read-only diagnostics from the same core).
 - **Forward / ops context:** J1 forward-pipeline slices and bounded-pilot / canary-live-entry runbooks merged per prior PRs; posture unchanged (**NO-LIVE** default unless a governed runbook explicitly says otherwise).
+- **J1 (shared OHLCV loader edge cases, PR #2172):** `scripts/_shared_ohlcv_loader.py` — u. a. `n_bars >= 1` (Dummy), normalisiertes `ohlcv_source`, Tests in `tests/test_dummy_ohlcv.py`; kein neuer Datenquellen-Scope; **NO-LIVE**.
+- **J1 (Kraken shortfall observability, PR #2173):** bei weniger Bars als angefordert — `UserWarning`, Meta `kraken_bars_shortfall`, Observability in `generate_forward_signals` / `evaluate_forward_signals`; Runbook-Hinweis in [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md); **NO-LIVE**.
 - **J2 (Optuna placeholder slice, PR #2168):** `scripts/run_study_optuna_placeholder.py` — CLI, dry-run default, optional in-memory toy study (`--no-dry-run`); no market/live execution. Full strategy optimization remains `scripts/run_optuna_study.py` (incl. GridSampler / CI alignment with Optuna 3.6).
 - **J3 (placeholder inventory tooling, PR #2170):** `scripts/ops/placeholders/generate_placeholder_reports.py` — local inventory Markdown under `.ops_local` (gitignored); smoke `tests/ops/test_generate_placeholder_reports_smoke.py`; no new CI gate; **NO-LIVE**.
 
@@ -72,11 +74,14 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-01 | Post–truth-layer / gates / officers: `CURRENT_FOCUS` human anchor updated (this file); docs gates snapshot PASS locally | `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-01 | Post–J2 (PR #2168): `CURRENT_FOCUS` refresh — J2 landed, pointer cleaned | PR #2168 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-02 | Post–J3 (PR #2170): `CURRENT_FOCUS` refresh — J3 placeholder inventory smoke landed | PR #2170 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
+| 2026-04-03 | Post–J1 (PR #2172 / #2173): `CURRENT_FOCUS` refresh — J1 loader edge cases + Kraken shortfall observability landed | PR #2172 / #2173 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 
 ---
 
 ## Branch / PR pointer (optional)
 
+- **Merged:** [PR #2173](https://github.com/rauterfrank-ui/Peak_Trade/pull/2173) — J1 Kraken shortfall observability + style follow-up on `main`.
+- **Merged:** [PR #2172](https://github.com/rauterfrank-ui/Peak_Trade/pull/2172) — J1 shared OHLCV loader edge-case hardening on `main`.
 - **Merged:** [PR #2170](https://github.com/rauterfrank-ui/Peak_Trade/pull/2170) — J3 placeholder inventory generator smoke + runbook note (`NO-LIVE` tooling).
 - **Merged:** [PR #2168](https://github.com/rauterfrank-ui/Peak_Trade/pull/2168) — J2 Optuna placeholder / minimal study runner + related CI fixes on `main`.
 - **Doc edits to this file:** short-lived `feat&#47;*` branch as usual; Finish Plan **PR 6–8** spine unchanged; **NO-LIVE** default.
