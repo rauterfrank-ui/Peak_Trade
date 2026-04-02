@@ -108,10 +108,16 @@ def _print_ohlcv_load_observability(meta: Dict[str, Any]) -> None:
         pag_s = "n/a (dummy)"
     else:
         pag_s = "ja" if pag else "nein"
+    sf = meta.get("kraken_bars_shortfall")
+    if sf is None:
+        sf_s = "n/a (dummy)"
+    else:
+        sf_s = "ja" if sf else "nein"
     print(
         f"  📡 OHLCV-Load: {meta['symbol']} | Quelle={meta['ohlcv_source']} | "
         f"TF={meta['timeframe']} | n_bars={meta['n_bars_requested']} | "
-        f"geladen={meta['bars_loaded']} | Kraken-Pagination={pag_s}"
+        f"geladen={meta['bars_loaded']} | Kraken-Pagination={pag_s} | "
+        f"Kraken-Shortfall={sf_s}"
     )
 
 

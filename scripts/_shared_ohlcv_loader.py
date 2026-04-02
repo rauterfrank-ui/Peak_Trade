@@ -14,7 +14,7 @@ J1 Slice 4: ``source="kraken"`` — bis zu 720 Bars pro **Request** (Kraken/ccxt
 
 J1 Pagination: ``n_bars`` > 720 — wiederholte Abrufe (ältere Fenster über ``since_ms``); pro Paginations-Request ``use_cache=False`` (Cache-Datei in ``fetch_ohlcv_df`` ist pro Symbol/TF ein Voll-Snapshot).
 
-``load_ohlcv_with_meta`` liefert dasselbe wie ``load_ohlcv`` plus ein Observability-Dict (u. a. für ``evaluate_forward_signals``).
+``load_ohlcv_with_meta`` liefert dasselbe wie ``load_ohlcv`` plus ein Observability-Dict (u. a. für ``evaluate_forward_signals``); bei Kraken: ``kraken_bars_shortfall`` wenn ``bars_loaded < n_bars_requested``, plus ``UserWarning`` (kein Stillschweigen).
 
 CLI-Defaults für ``--n-bars``, ``--timeframe``, ``--ohlcv-source`` (Forward-/Portfolio-Skripte):
 ``scripts/_shared_forward_args.py`` — ``timeframe`` wirkt auf Kraken; Dummy bleibt 1h-synthetisch.
@@ -22,6 +22,7 @@ CLI-Defaults für ``--n-bars``, ``--timeframe``, ``--ohlcv-source`` (Forward-/Po
 
 from __future__ import annotations
 
+import warnings
 from typing import Any
 
 import numpy as np
@@ -68,6 +69,26 @@ def _timeframe_to_timedelta(timeframe: str) -> pd.Timedelta:
             f"erlaubt: {sorted(m.keys())}"
         )
     return m[timeframe]
+
+
+def _warn_kraken_shortfall_if_needed(
+    symbol: str,
+    timeframe: str,
+    n_bars_requested: int,
+    bars_loaded: int,
+    *,
+    pagination_used: bool,
+) -> None:
+    """Nicht still: weniger Bars als angefordert (History-Ende, dünnes Orderbuch, API-Grenze)."""
+    if bars_loaded >= n_bars_requested:
+        return
+    pag = "ja" if pagination_used else "nein"
+    msg = (
+        f"Kraken-OHLCV: für {symbol!r} ({timeframe}) kamen nur {bars_loaded} "
+        f"von {n_bars_requested} angeforderten Bars zurück "
+        f"(History/Pagination-Ende oder Datenlücke; Pagination={pag})."
+    )
+    warnings.warn(msg, UserWarning, stacklevel=2)
 
 
 def load_dummy_ohlcv(symbol: str, n_bars: int = 200) -> pd.DataFrame:
@@ -162,6 +183,7 @@ def _load_kraken_ohlcv_inner(
         if len(df) > n_bars:
             df = df.iloc[-n_bars:].copy()
         validate_ohlcv(df, strict=True, require_tz=True)
+        _warn_kraken_shortfall_if_needed(symbol, timeframe, n_bars, len(df), pagination_used=False)
         return df, False
 
     td = _timeframe_to_timedelta(timeframe)
@@ -200,6 +222,7 @@ def _load_kraken_ohlcv_inner(
     if len(out) > n_bars:
         out = out.iloc[-n_bars:].copy()
     validate_ohlcv(out, strict=True, require_tz=True)
+    _warn_kraken_shortfall_if_needed(symbol, timeframe, n_bars, len(out), pagination_used=True)
     return out, True
 
 
@@ -226,6 +249,7 @@ def load_kraken_ohlcv(
     df, _ = _load_kraken_ohlcv_inner(
         symbol, n_bars=n_bars, timeframe=timeframe, use_cache=use_cache
     )
+    # Warnung erfolgt bereits in _load_kraken_ohlcv_inner
     return df
 
 
@@ -265,7 +289,8 @@ def load_ohlcv_with_meta(
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
     """
     Wie ``load_ohlcv``, zusätzlich deterministisches Observability-Dict (J1):
-    symbol, Quelle, Timeframe, angeforderte/effektive Bar-Anzahl, Kraken-Pagination-Flag.
+    symbol, Quelle, Timeframe, angeforderte/effektive Bar-Anzahl, Kraken-Pagination-Flag,
+    ``kraken_bars_shortfall`` (nur Kraken: ``True`` wenn ``bars_loaded < n_bars_requested``).
     """
     src = _normalize_ohlcv_source(source)
     if src == OHLCV_SOURCE_DUMMY:
@@ -277,19 +302,23 @@ def load_ohlcv_with_meta(
             "n_bars_requested": n_bars,
             "bars_loaded": int(len(df)),
             "kraken_pagination_used": None,
+            "kraken_bars_shortfall": None,
         }
         return df, meta
     if src == OHLCV_SOURCE_KRAKEN:
         df, pagination_used = _load_kraken_ohlcv_inner(
             symbol, n_bars=n_bars, timeframe=timeframe, use_cache=use_cache
         )
+        loaded = int(len(df))
+        shortfall = loaded < n_bars
         meta = {
             "symbol": symbol,
             "ohlcv_source": OHLCV_SOURCE_KRAKEN,
             "timeframe": timeframe,
             "n_bars_requested": n_bars,
-            "bars_loaded": int(len(df)),
+            "bars_loaded": loaded,
             "kraken_pagination_used": pagination_used,
+            "kraken_bars_shortfall": shortfall,
         }
         return df, meta
     raise AssertionError("unreachable")
