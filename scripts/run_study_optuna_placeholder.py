@@ -31,7 +31,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Minimaler Optuna Demo-Study-Runner (Toy-Objective, In-Memory). "
-            "Standard: Dry-Run — keine Study-Ausführung ohne --no-dry-run."
+            "Standard: Dry-Run — keine Study-Ausführung ohne --no-dry-run. "
+            "NO-LIVE: kein Markt, keine Exchange-/Order-Pfade."
+        ),
+        epilog=(
+            "Dieses Skript ist ein J2-Placeholder/Demo-Pfad (Toy-Objective), "
+            "keine Markt- oder Live-Ausführung. "
+            "Vollständige Strategy-Optimierung: scripts/run_optuna_study.py"
         ),
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
