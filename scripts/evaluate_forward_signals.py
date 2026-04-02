@@ -31,7 +31,7 @@ sys.path.insert(0, str(_scripts))
 
 import pandas as pd
 
-from _shared_forward_args import add_shared_ohlcv_cli_group
+from _shared_forward_args import add_shared_ohlcv_cli_group, append_forward_ohlcv_scope_epilog
 from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv_with_meta
 from src.core.peak_config import load_config
 from src.core.experiments import log_generic_experiment
@@ -60,7 +60,11 @@ def parse_as_of_to_utc(value: Any) -> pd.Timestamp:
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Peak_Trade: Evaluation von Forward-/Paper-Trading-Signalen.",
+        description=(
+            "Peak_Trade: Evaluation von Forward-/Paper-Trading-Signalen.\n\n"
+            "NO-LIVE: kein Live-Handel, keine Order-Ausführung; nur Auswertung/Artefakte."
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "signals_csv",
@@ -83,6 +87,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
         help="Zielverzeichnis für Evaluations-Outputs. Default: reports/forward.",
     )
     add_shared_ohlcv_cli_group(parser)
+    append_forward_ohlcv_scope_epilog(parser)
     return parser.parse_args(argv)
 
 
