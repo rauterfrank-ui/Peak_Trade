@@ -37,6 +37,21 @@ OHLCV_SOURCE_KRAKEN = "kraken"
 OHLCV_SOURCES = (OHLCV_SOURCE_DUMMY, OHLCV_SOURCE_KRAKEN)
 
 
+def _normalize_ohlcv_source(source: str) -> str:
+    """
+    Trim + lower case; ``dummy`` / ``kraken`` only (CLI/Programme oft variieren in der Schreibweise).
+    """
+    if not isinstance(source, str):
+        raise TypeError(f"OHLCV-Quelle muss str sein, nicht {type(source).__name__}.")
+    key = source.strip().lower()
+    if key not in OHLCV_SOURCES:
+        raise ValueError(
+            f"Unbekannte OHLCV-Quelle {source!r}; erlaubt: {list(OHLCV_SOURCES)} "
+            "(Groß-/Kleinschreibung egal)."
+        )
+    return key
+
+
 def _timeframe_to_timedelta(timeframe: str) -> pd.Timedelta:
     """Pandas-Timedelta für bekannte Forward-CLI-Timeframes (siehe ``_shared_forward_args``)."""
     m = {
@@ -66,6 +81,9 @@ def load_dummy_ohlcv(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     Returns:
         DataFrame mit OHLCV-Spalten und DatetimeIndex (UTC, vertragstreu).
     """
+    if n_bars < 1:
+        raise ValueError("n_bars muss >= 1 sein (Dummy-OHLCV).")
+
     seed = hash(symbol) % (2**32)
     np.random.seed(seed)
 
@@ -129,7 +147,7 @@ def _load_kraken_ohlcv_inner(
     from src.data.kraken import fetch_ohlcv_df
 
     if n_bars < 1:
-        raise ValueError("n_bars muss >= 1 sein.")
+        raise ValueError("n_bars muss >= 1 sein (Kraken-OHLCV).")
 
     if n_bars <= KRAKEN_OHLCV_MAX_BARS:
         limit = min(n_bars, KRAKEN_OHLCV_MAX_BARS)
@@ -225,15 +243,16 @@ def load_ohlcv(
     Args:
         symbol: Trading-Paar (z.B. ``BTC/EUR``).
         n_bars: Gewünschte Bar-Anzahl (Kraken: mehrere Abrufe bei ``n_bars`` > ``KRAKEN_OHLCV_MAX_BARS``).
-        source: ``dummy`` | ``kraken``.
+        source: ``dummy`` | ``kraken`` (Groß-/Kleinschreibung wird normalisiert).
         timeframe: Nur Kraken; Default ``1h`` (wie Forward-Pipeline).
         use_cache: Nur Kraken — Parquet-Cache in ``fetch_ohlcv_df``.
     """
-    if source == OHLCV_SOURCE_DUMMY:
+    src = _normalize_ohlcv_source(source)
+    if src == OHLCV_SOURCE_DUMMY:
         return load_dummy_ohlcv(symbol, n_bars=n_bars)
-    if source == OHLCV_SOURCE_KRAKEN:
+    if src == OHLCV_SOURCE_KRAKEN:
         return load_kraken_ohlcv(symbol, n_bars=n_bars, timeframe=timeframe, use_cache=use_cache)
-    raise ValueError(f"Unbekannte OHLCV-Quelle {source!r}; erlaubt: {list(OHLCV_SOURCES)}")
+    raise AssertionError("unreachable")
 
 
 def load_ohlcv_with_meta(
@@ -248,7 +267,8 @@ def load_ohlcv_with_meta(
     Wie ``load_ohlcv``, zusätzlich deterministisches Observability-Dict (J1):
     symbol, Quelle, Timeframe, angeforderte/effektive Bar-Anzahl, Kraken-Pagination-Flag.
     """
-    if source == OHLCV_SOURCE_DUMMY:
+    src = _normalize_ohlcv_source(source)
+    if src == OHLCV_SOURCE_DUMMY:
         df = load_dummy_ohlcv(symbol, n_bars=n_bars)
         meta: dict[str, Any] = {
             "symbol": symbol,
@@ -259,7 +279,7 @@ def load_ohlcv_with_meta(
             "kraken_pagination_used": None,
         }
         return df, meta
-    if source == OHLCV_SOURCE_KRAKEN:
+    if src == OHLCV_SOURCE_KRAKEN:
         df, pagination_used = _load_kraken_ohlcv_inner(
             symbol, n_bars=n_bars, timeframe=timeframe, use_cache=use_cache
         )
@@ -272,4 +292,4 @@ def load_ohlcv_with_meta(
             "kraken_pagination_used": pagination_used,
         }
         return df, meta
-    raise ValueError(f"Unbekannte OHLCV-Quelle {source!r}; erlaubt: {list(OHLCV_SOURCES)}")
+    raise AssertionError("unreachable")
