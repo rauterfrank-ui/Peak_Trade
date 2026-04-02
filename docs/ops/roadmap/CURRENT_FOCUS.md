@@ -81,6 +81,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-02 | Truth-Gate `main` branch protection: required checks **`docs-drift-guard`** + **`repo-truth-claims`** verified; `ensure_truth_branch_protection.py` stdin fix on `main` | `python3 scripts/ops/ensure_truth_branch_protection.py --check` (PASS); PR #2176 |
 | 2026-04-02 | Finish Plan **PR 7** operator-verify docs: `CURRENT_FOCUS`, `LIVE_STATUS_REPORTS` §7, `FINISH_PLAN` | PR #2177 |
 | 2026-04-02 | Finish Plan **PR 8** post-merge: `CURRENT_FOCUS` + Release Rubric §4 + `FINISH_PLAN` PR 8 | PR #2178 |
+| 2026-04-03 | Stufe J / J1: Forward-CLI ``--ohlcv-source`` case-insensitive (`_shared_forward_args`); Runbook-Zeile | PR #2180 |
 
 ---
 
