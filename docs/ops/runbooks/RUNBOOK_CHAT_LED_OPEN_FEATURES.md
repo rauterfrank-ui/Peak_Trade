@@ -54,7 +54,7 @@
 |-----------|----------------|-------------------------|
 | Learning / Promotion | Bridge & Emitter „TODO“, Automation optional | `docs/LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md`, Release-Notes Learning Loop |
 | Infostream / KI | Robustere Parser, Konfiguration Modell/API | `src/meta/infostream/evaluator.py` |
-| Evidence / Orchestration | Migrationskette Evidence-Packs | `src/ai_orchestration/evidence_pack_schema.py` |
+| Evidence / Orchestration | Evidence-Pack-Schema — **evolutionär** (Migrationskette, nicht alles migriert) | [`evidence_pack_schema.py`](../../../src/ai_orchestration/evidence_pack_schema.py) · [`test_evidence_pack_schema.py`](../../../tests/ai_orchestration/test_evidence_pack_schema.py) |
 | Live / Safety | Platzhalter-Snapshots „wire“ | `src/live/safety.py` (Kommentar TODO wire) |
 | Risk / Kill-Switch | Legacy-Adapter entfernt (Slice 3); optional weitere Doku | `TODO_KILL_SWITCH_ADAPTER_MIGRATION.md` |
 | Backtest / Engine | Tracker-Integration „not yet“ — **absichtlicher** Deferral (Test dokumentiert) | [`tests/backtest/test_engine_tracking.py`](../../../tests/backtest/test_engine_tracking.py) |
