@@ -60,7 +60,8 @@
 | Backtest / Engine | Tracker-Integration „not yet“ (Test beschreibt Deferral) | `tests/backtest/test_engine_tracking.py` |
 | Research-Stubs | Absichtlich `NotImplementedError` (Research-Phase) | u. a. `src/strategies/bouchaud/`, `src/strategies/gatheral_cont/` |
 | ML / Meta-Labeling | Unvollständige Implementierung / Platzhalter | `src/research/ml/meta/meta_labeling.py` |
-| Scripts | Konfig extrahieren (Symbol) | `scripts/run_backtest.py` (TODO-Kommentar) |
+| Scripts | Evidence-Metadaten: Symbol aus Config ableiten | `scripts/run_backtest.py` (`resolve_backtest_symbol`) |
+| Ops / Navigation | Chat-led ↔ Stufe J (geordnete Stub-Liste) verlinkt | PR #2182 — [Verwandte Dokumente](#verwandte-dokumente) · [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](./RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md) |
 
 **Interpretation:** Viele Einträge sind **keine** „vergessenen Produktfeatures“, sondern **bewusste** Stufen (Research, NO-LIVE, Phase-X). Der Wert der Liste ist **Transparenz** und **Priorisierung**, nicht Schuldzuweisung.
 
