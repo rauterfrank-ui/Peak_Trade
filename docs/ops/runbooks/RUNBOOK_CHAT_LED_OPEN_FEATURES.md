@@ -58,7 +58,7 @@
 | Live / Safety | Platzhalter-Snapshots / „wire“ — **absichtlicher** Stub (**NO-LIVE**) | [`safety.py`](../../../src/live/safety.py) · [`test_safety_exec_guards_wiring.py`](../../../tests/live/test_safety_exec_guards_wiring.py) |
 | Risk / Kill-Switch | Legacy-Adapter entfernt (Slice 3); Follow-up-Doku offen (**NO-LIVE**) | [`TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`](../../../TODO_KILL_SWITCH_ADAPTER_MIGRATION.md) |
 | Backtest / Engine | Tracker-Integration „not yet“ — **absichtlicher** Deferral (Test dokumentiert) | [`tests/backtest/test_engine_tracking.py`](../../../tests/backtest/test_engine_tracking.py) |
-| Research-Stubs | Absichtlich `NotImplementedError` (Research-Phase) | u. a. `src/strategies/bouchaud/`, `src/strategies/gatheral_cont/` |
+| Research-Stubs | Research-only Stubs; `NotImplementedError` wo vorgesehen (**NO-LIVE**) | [`bouchaud_microstructure_strategy.py`](../../../src/strategies/bouchaud/bouchaud_microstructure_strategy.py) · [`vol_regime_overlay_strategy.py`](../../../src/strategies/gatheral_cont/vol_regime_overlay_strategy.py) · [`test_bouchaud_gatheral_cont_strategies.py`](../../../tests/test_bouchaud_gatheral_cont_strategies.py) |
 | ML / Meta-Labeling | Teilweise Platzhalter / Research-Pfad (**NO-LIVE**) | [`meta_labeling.py`](../../../src/research/ml/meta/meta_labeling.py) · [`test_meta_labeling.py`](../../../tests/test_meta_labeling.py) |
 | Scripts | Evidence-Metadaten `symbol` via `resolve_backtest_symbol()` (**NO-LIVE**) | [`run_backtest.py`](../../../scripts/run_backtest.py) |
 | Ops / Navigation | Chat-led ↔ Stufe J (geordnete Stub-Liste) verlinkt | PR #2182 — [Verwandte Dokumente](#verwandte-dokumente) · [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](./RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md) |
