@@ -61,6 +61,7 @@
 | Research-Stubs | Absichtlich `NotImplementedError` (Research-Phase) | u. a. `src/strategies/bouchaud/`, `src/strategies/gatheral_cont/` |
 | ML / Meta-Labeling | Unvollständige Implementierung / Platzhalter | `src/research/ml/meta/meta_labeling.py` |
 | Scripts | Konfig extrahieren (Symbol) | `scripts/run_backtest.py` (TODO-Kommentar) |
+| Ops / Navigation | Chat-led ↔ Stufe J (geordnete Stub-Liste) verlinkt | PR #2182 — [Verwandte Dokumente](#verwandte-dokumente) · [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](./RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md) |
 
 **Interpretation:** Viele Einträge sind **keine** „vergessenen Produktfeatures“, sondern **bewusste** Stufen (Research, NO-LIVE, Phase-X). Der Wert der Liste ist **Transparenz** und **Priorisierung**, nicht Schuldzuweisung.
 
