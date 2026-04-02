@@ -4,6 +4,10 @@ Peak_Trade – Zentrales Backtest-Script
 ======================================
 Einziger Standard-Einstiegspunkt für Backtests.
 
+NO-LIVE: nur Backtest / Evidence-Artefakte — keine Order-Ausführung, kein Live- oder
+Execution-Scope. Das Handelssymbol für Metadaten kommt aus der Config über
+``resolve_backtest_symbol()`` (kein separates Symbol-CLI).
+
 Workflow:
 1. Config laden (TOML)
 2. Daten-Pipeline aufbauen (CSV oder Kraken API)
@@ -66,9 +70,17 @@ from src.experiments.evidence_chain import (
 def parse_args() -> argparse.Namespace:
     """CLI-Argumente parsen."""
     parser = argparse.ArgumentParser(
-        description="Peak_Trade Backtest Runner",
+        description=(
+            "Peak_Trade Backtest Runner — offline Backtest und Evidence-Kette.\n\n"
+            "NO-LIVE: kein Live-Handel, keine Order-Ausführung, kein Execution-/C1-Scope.\n"
+            "Nur Backtest / Evidence; das Symbol für Evidence-Metadaten kommt aus der "
+            "Config via resolve_backtest_symbol() (kein eigenes Symbol-CLI)."
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
+Scope (Kurz):
+  NO-LIVE · nur Backtest/Evidence · keine Orders · Symbol: Config + resolve_backtest_symbol()
+
 Beispiele:
   # Standard-Backtest mit ma_crossover
   python scripts/run_backtest.py
