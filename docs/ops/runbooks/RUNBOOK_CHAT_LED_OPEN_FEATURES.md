@@ -53,7 +53,7 @@
 | Kategorie | Signal (Kurz) | Beispiel-Ort / Hinweis |
 |-----------|----------------|-------------------------|
 | Learning / Promotion | Bridge & Emitter „TODO“, Automation optional | `docs/LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md`, Release-Notes Learning Loop |
-| Infostream / KI | Robustere Parser, Konfiguration Modell/API | `src/meta/infostream/evaluator.py` |
+| Infostream / KI | Parser & Modell/API — **iterativ** (Robustheit/Konfig noch offen) | [`evaluator.py`](../../../src/meta/infostream/evaluator.py) · [`test_infostream_basic.py`](../../../tests/meta/test_infostream_basic.py) |
 | Evidence / Orchestration | Evidence-Pack-Schema — **evolutionär** (Migrationskette, nicht alles migriert) | [`evidence_pack_schema.py`](../../../src/ai_orchestration/evidence_pack_schema.py) · [`test_evidence_pack_schema.py`](../../../tests/ai_orchestration/test_evidence_pack_schema.py) |
 | Live / Safety | Platzhalter-Snapshots „wire“ | `src/live/safety.py` (Kommentar TODO wire) |
 | Risk / Kill-Switch | Legacy-Adapter entfernt (Slice 3); optional weitere Doku | `TODO_KILL_SWITCH_ADAPTER_MIGRATION.md` |
