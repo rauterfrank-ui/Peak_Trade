@@ -1,7 +1,8 @@
 # Test README
 <!-- MERGE_LOG_EXAMPLES:START -->
-- PR #281 — Test PR 281: docs/ops/PR_281_MERGE_LOG.md
+- PR #999 — docs(grafana): fix DS_LOCAL uid templating in execution watch dashboard: docs/ops/PR_999_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
+
 
 - `docs/ops/specs/OPS_SUITE_DASHBOARD_VNEXT_SPEC.md` — OPS Suite / Dashboard vNext Spezifikation
 - `docs/ops/runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md` — Phasenplan für spätere Umsetzung
