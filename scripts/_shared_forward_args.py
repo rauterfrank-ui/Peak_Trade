@@ -16,6 +16,7 @@ from _shared_ohlcv_loader import (
     KRAKEN_OHLCV_MAX_BARS,
     OHLCV_SOURCE_DUMMY,
     OHLCV_SOURCES,
+    normalize_ohlcv_source,
 )
 
 DEFAULT_FORWARD_N_BARS = 200
@@ -65,11 +66,13 @@ def add_shared_ohlcv_cli_group(
     )
     parser.add_argument(
         "--ohlcv-source",
-        choices=list(OHLCV_SOURCES),
+        type=normalize_ohlcv_source,
         default=OHLCV_SOURCE_DUMMY,
+        metavar="|".join(OHLCV_SOURCES),
         help=(
             "OHLCV-Quelle: dummy (offline, Default) oder kraken (öffentliche REST-OHLCV; "
-            f"Netzwerk nötig; große Fenster: mehrere Abrufe à max. {KRAKEN_OHLCV_MAX_BARS} Bars)."
+            f"Netzwerk nötig; große Fenster: mehrere Abrufe à max. {KRAKEN_OHLCV_MAX_BARS} Bars). "
+            "Groß-/Kleinschreibung egal (wie load_ohlcv)."
         ),
     )
     parser.add_argument(
