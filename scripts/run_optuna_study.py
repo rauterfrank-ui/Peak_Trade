@@ -4,6 +4,9 @@ Peak_Trade Optuna Study Runner
 ===============================
 Vollständige Optuna-Integration für hyperparameter optimization.
 
+Nicht der J2-Placeholder: für den minimalen Toy-/Demo-Pfad siehe
+``scripts/run_study_optuna_placeholder.py`` (Dry-Run default, kein Strategy-Backtest).
+
 **Features**:
 - Parameter-Schema → Optuna Search Space
 - Single/Multi-Objective Optimization
@@ -533,9 +536,20 @@ def run_study(study_cfg: StudyConfig) -> None:
 def parse_args() -> StudyConfig:
     """Parse CLI arguments."""
     parser = argparse.ArgumentParser(
-        description="Optuna-based Strategy Optimization",
+        description=(
+            "Full Optuna study runner: strategy parameter_schema → search space, "
+            "BacktestEngine-backed trials (config-driven).\n\n"
+            "Not the J2 placeholder — for the minimal toy/demo CLI (dry-run default, "
+            "no strategy backtests) use scripts/run_study_optuna_placeholder.py.\n\n"
+            "NO-LIVE: trials evaluate via backtest/historical paths only; no live order execution."
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
+Scope:
+  This entrypoint runs real optimization loops against the strategy registry and
+  backtests. The J2 slice is intentionally separate:
+    scripts/run_study_optuna_placeholder.py
+
 Examples:
   # Basic single-objective (Sharpe)
   %(prog)s --strategy ma_crossover --n-trials 100
