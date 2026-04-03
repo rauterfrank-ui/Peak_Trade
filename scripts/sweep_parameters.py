@@ -119,8 +119,9 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     """
     Lädt Daten für ein bestimmtes Symbol.
 
-    Aktuell: Dummy-Daten mit symbol-spezifischem Seed.
-    TODO: Später mit echten Kraken-Daten ersetzen.
+    Synthetische OHLCV-Daten (symbol-spezifischer Seed) für NO-LIVE-Sweeps und
+    Reproduzierbarkeit; kein Live-Trading und keine Exchange-API. Dieses CLI
+    bleibt absichtlich entkoppelt von historischen Marktdaten oder Exchange-Feeds.
 
     Args:
         symbol: Trading-Pair (z.B. "BTC/EUR")
