@@ -2,6 +2,8 @@
 """
 Auto-fix docs token policy violations by encoding forward slashes in inline-code tokens.
 
+NO-LIVE: edits local Markdown files only — no brokers, orders, or execution.
+
 Conservative strategy:
 - Only modify inline-code tokens (single backticks: `token`)
 - Replace / with &#47;
@@ -18,6 +20,7 @@ Usage:
 import re
 import sys
 from pathlib import Path
+from typing import Optional, Sequence
 
 
 def fix_inline_code_tokens(content: str) -> tuple[str, int]:
@@ -93,8 +96,8 @@ def process_file(file_path: Path, write: bool = False) -> tuple[int, bool]:
     return num_replacements, True
 
 
-def main():
-    args = sys.argv[1:]
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    args = list(sys.argv[1:] if argv is None else argv)
     write = False
 
     if "--write" in args:
@@ -103,7 +106,7 @@ def main():
 
     if not args:
         print(__doc__)
-        sys.exit(1)
+        return 1
 
     files = [Path(f) for f in args]
 
@@ -111,7 +114,7 @@ def main():
     for f in files:
         if not f.exists():
             print(f"❌ File not found: {f}", file=sys.stderr)
-            sys.exit(1)
+            return 1
         if not f.suffix == ".md":
             print(f"⚠️  Warning: {f} is not a Markdown file", file=sys.stderr)
 
@@ -134,8 +137,8 @@ def main():
     if not write and total_replacements > 0:
         print(f"\n💡 Run with --write to apply changes")
 
-    sys.exit(0 if success_count == len(files) else 1)
+    return 0 if success_count == len(files) else 1
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
