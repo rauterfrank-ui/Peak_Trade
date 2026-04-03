@@ -20,10 +20,13 @@ Exit Codes:
     1 = Invalid arguments / file already exists
 """
 
+from __future__ import annotations
+
 import argparse
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import Optional, Sequence
 
 # Schema: Valid categories (case-insensitive, normalized to Title Case)
 VALID_CATEGORIES = {
@@ -121,7 +124,7 @@ def generate_template(
 """
 
 
-def main():
+def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description="Generate evidence entry file",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -182,7 +185,7 @@ Examples:
         help="Output directory. Default: docs/ops/evidence",
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     # Validate inputs
     try:
@@ -190,14 +193,14 @@ Examples:
         datetime.strptime(args.date, "%Y-%m-%d")
     except ValueError:
         print(f"❌ Error: Invalid date format: {args.date} (expected YYYY-MM-DD)", file=sys.stderr)
-        sys.exit(1)
+        return 1
 
     # Validate category
     try:
         category_normalized = normalize_category(args.category)
     except ValueError as e:
         print(f"❌ Error: {e}", file=sys.stderr)
-        sys.exit(1)
+        return 1
 
     # Generate or validate Evidence ID
     if args.id:
@@ -205,15 +208,24 @@ Examples:
         # Validate ID format
         if not evidence_id.startswith("EV-"):
             print(f"❌ Error: Evidence ID must start with 'EV-': {evidence_id}", file=sys.stderr)
-            sys.exit(1)
+            return 1
     else:
-        if not args.tag:
-            print("❌ Error: Either --id or --tag must be provided", file=sys.stderr)
-            sys.exit(1)
-        evidence_id = generate_evidence_id(args.tag, args.date)
+        if not args.tag or not args.tag.strip():
+            print(
+                "❌ Error: Either --id or a non-empty --tag must be provided",
+                file=sys.stderr,
+            )
+            return 1
+        evidence_id = generate_evidence_id(args.tag.strip(), args.date)
 
     # Prepare output path
     out_dir = Path(args.out_dir)
+    if out_dir.exists() and out_dir.is_file():
+        print(
+            f"❌ Error: --out-dir must be a directory, not a file: {out_dir}",
+            file=sys.stderr,
+        )
+        return 1
     out_dir.mkdir(parents=True, exist_ok=True)
 
     out_file = out_dir / f"{evidence_id}.md"
@@ -222,7 +234,7 @@ Examples:
     if out_file.exists():
         print(f"❌ Error: File already exists: {out_file}", file=sys.stderr)
         print("   Use a different --id or --tag to avoid collision.", file=sys.stderr)
-        sys.exit(1)
+        return 1
 
     # Generate content
     content = generate_template(
@@ -246,7 +258,8 @@ Examples:
     print(f"  1. Edit {out_file} to fill in [TBD] placeholders")
     print(f"  2. Add entry to docs/ops/EVIDENCE_INDEX.md (table + category section)")
     print(f"  3. Run: python scripts/ops/validate_evidence_index.py")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
