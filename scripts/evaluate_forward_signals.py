@@ -40,6 +40,8 @@ from _forward_run_manifest import (
 )
 from src.core.peak_config import load_config
 from src.core.experiments import log_generic_experiment
+
+
 def parse_as_of_to_utc(value: Any) -> pd.Timestamp:
     """
     Parst einen Signal-Zeitstempel aus CSV/Row und liefert einen UTC-``Timestamp``.

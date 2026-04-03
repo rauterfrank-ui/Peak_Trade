@@ -70,9 +70,7 @@ def test_generate_forward_exits_1_and_writes_manifest_when_no_signals(
     assert "symbols" in payload and "BTC/EUR" in payload["symbols"]
 
 
-def test_evaluate_forward_exits_1_on_empty_signals_csv(
-    tmp_path, cfg_test_path: Path
-) -> None:
+def test_evaluate_forward_exits_1_on_empty_signals_csv(tmp_path, cfg_test_path: Path) -> None:
     import evaluate_forward_signals as ev
 
     csv_path = tmp_path / "empty.csv"
