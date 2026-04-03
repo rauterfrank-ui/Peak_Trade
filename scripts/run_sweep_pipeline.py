@@ -8,6 +8,8 @@ Ein einziges CLI für den Sweep-Workflow: --run | --report | --promote.
 Artefakte werden unter out/research/<sweep_id>/ abgelegt.
 Idempotent: Neuer run_id pro Aufruf, sofern nicht --sweep-id gesetzt.
 
+NO-LIVE: Research-/Backtest-Sweep und Artefakte — keine Order-Ausführung, kein Live-Handel.
+
 Verwendung:
     # Alle Schritte (run → report → promote)
     python scripts/run_sweep_pipeline.py --sweep-name rsi_reversion_basic --run --report --promote
@@ -174,7 +176,11 @@ def _do_promote(
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="run_sweep_pipeline",
-        description="Unified Sweep Pipeline: run → report → promote with artifacts under out/research/<sweep_id>/.",
+        description=(
+            "Unified Sweep Pipeline: run → report → promote with artifacts under "
+            "out/research/<sweep_id>/.\n\n"
+            "NO-LIVE: offline research/backtest sweep workflow; no live trading or order execution."
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )

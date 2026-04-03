@@ -17,9 +17,12 @@ def test_run_sweep_pipeline_help():
         text=True,
     )
     assert p.returncode == 0, p.stderr or p.stdout
-    assert "Unified Sweep Pipeline" in p.stdout
-    assert "--run" in p.stdout and "--report" in p.stdout and "--promote" in p.stdout
-    assert "out/research" in p.stdout or "sweep_id" in p.stdout
+    out = p.stdout
+    assert "Unified Sweep Pipeline" in out
+    assert "NO-LIVE" in out
+    assert "order execution" in out.lower() or "order-ausführung" in out.lower()
+    assert "--run" in out and "--report" in out and "--promote" in out
+    assert "out/research" in out or "sweep_id" in out
 
 
 def test_run_sweep_pipeline_requires_sweep_name():
