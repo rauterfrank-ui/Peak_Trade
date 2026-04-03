@@ -24,6 +24,7 @@ def test_sweep_parameters_exit_1_missing_config(tmp_path, monkeypatch) -> None:
     payload = json.loads(man.read_text(encoding="utf-8"))
     assert payload["exit_code"] == 1
     assert payload["script_name"] == "sweep_parameters.py"
+    assert "run_id" in payload and len(payload["run_id"]) == 64
 
 
 def test_sweep_parameters_exit_1_no_successful_runs(tmp_path, monkeypatch) -> None:
@@ -68,3 +69,4 @@ def test_sweep_parameters_exit_1_no_successful_runs(tmp_path, monkeypatch) -> No
     payload = json.loads(man.read_text(encoding="utf-8"))
     assert payload["exit_code"] == 1
     assert "error" in payload
+    assert "run_id" in payload and len(payload["run_id"]) == 64

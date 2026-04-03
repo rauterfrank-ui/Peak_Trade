@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess
 import sys
@@ -11,6 +12,31 @@ from pathlib import Path
 from typing import Any, Mapping
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+def compute_deterministic_run_id(
+    *,
+    script_name: str,
+    argv: list[str],
+    config_path: str,
+    git_sha: str | None,
+) -> str:
+    """
+    Stabile Run-ID (SHA-256-Hex) aus Script, CLI-Args, Config-Pfad und Git-HEAD.
+
+    Gleiche Eingaben ergeben dieselbe ID; Änderungen an argv/config/git_sha ändern die ID.
+    """
+    blob = json.dumps(
+        {
+            "script_name": script_name,
+            "argv": argv,
+            "config_path": config_path,
+            "git_sha": git_sha,
+        },
+        sort_keys=True,
+        ensure_ascii=False,
+    )
+    return hashlib.sha256(blob.encode("utf-8")).hexdigest()
 
 
 def try_git_sha() -> str | None:
