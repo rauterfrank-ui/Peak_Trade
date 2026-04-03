@@ -25,6 +25,11 @@ def test_sweep_parameters_exit_1_missing_config(tmp_path, monkeypatch) -> None:
     assert payload["exit_code"] == 1
     assert payload["script_name"] == "sweep_parameters.py"
     assert "run_id" in payload and len(payload["run_id"]) == 64
+    assert payload.get("generated_at_utc") and isinstance(
+        payload["generated_at_utc"], str
+    )
+    assert payload["generated_at_utc"].endswith("Z")
+    assert payload["config_path"] == str(tmp_path / "missing.toml")
 
 
 def test_sweep_parameters_exit_1_no_successful_runs(tmp_path, monkeypatch) -> None:
@@ -70,3 +75,10 @@ def test_sweep_parameters_exit_1_no_successful_runs(tmp_path, monkeypatch) -> No
     assert payload["exit_code"] == 1
     assert "error" in payload
     assert "run_id" in payload and len(payload["run_id"]) == 64
+    assert payload.get("generated_at_utc") and isinstance(
+        payload["generated_at_utc"], str
+    )
+    assert payload["generated_at_utc"].endswith("Z")
+    assert payload["config_path"] == str(cfg)
+    assert payload["strategy"] == "ma_crossover"
+    assert payload["symbols"] == ["BTC/EUR"]
