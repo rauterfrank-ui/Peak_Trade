@@ -795,6 +795,12 @@ class TestSeverityTransitionTracker:
 class TestBuildAlertPipelineFromConfig:
     """Tests für build_alert_pipeline_from_config Factory."""
 
+    def test_factory_docstring_slack_example_is_explicit_placeholder(self):
+        """Docstring-Beispiel-URL darf nicht wie ein echter Slack-Webhook wirken."""
+        doc = build_alert_pipeline_from_config.__doc__ or ""
+        assert "PLACEHOLDER" in doc
+        assert "XXX/YYY/ZZZ" not in doc
+
     def test_empty_config_returns_null_channel(self):
         """Testet dass leere Config Null-Channel zurückgibt."""
         manager = build_alert_pipeline_from_config({})
