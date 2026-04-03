@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, TYPE_CHECKING
 
@@ -207,7 +207,7 @@ def generate_html_report(
     regime_dist = metadata.get("regime_distribution", {})
     regime_cfg = metadata.get("regime_config", {})
 
-    generated_at = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
     # Pfadnamen der bekannten Artefakte
     equity_csv = f"{run_name}_equity.csv"
