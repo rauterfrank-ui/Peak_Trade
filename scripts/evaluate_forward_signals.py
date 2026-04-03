@@ -34,6 +34,7 @@ import pandas as pd
 from _shared_forward_args import add_shared_ohlcv_cli_group, append_forward_ohlcv_scope_epilog
 from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv_with_meta
 from _forward_run_manifest import (
+    compute_deterministic_run_id,
     python_version_short,
     try_git_sha,
     write_forward_run_manifest,
@@ -319,6 +320,12 @@ def main(argv: List[str] | None = None) -> int:
             payload["error"] = error
         if eval_csv is not None:
             payload["eval_csv"] = eval_csv
+        payload["run_id"] = compute_deterministic_run_id(
+            script_name=payload["script_name"],
+            argv=payload["argv"],
+            config_path=str(payload["config_path"]),
+            git_sha=payload.get("git_sha"),
+        )
         write_forward_run_manifest(manifest_path, payload)
 
     print("\n📊 Peak_Trade Forward Signal Evaluator")
