@@ -43,3 +43,7 @@ scripts/ops/verify_from_registry.sh docs/ops/registry/LATEST_POLICY_TELEMETRY_RE
 | Q | Operator entrypoint (`verify_from_registry.sh`) |
 | R | CI operator verify smoke |
 | S | **DONE** — This index |
+
+## Related: CLI run manifests (NO-LIVE)
+
+Forward/sweep CLIs write `*_run_manifest.json` metadata; `run_id` is a deterministic fingerprint (see [`docs/ops/CLI_RUN_MANIFEST_RUN_ID.md`](../CLI_RUN_MANIFEST_RUN_ID.md)).
