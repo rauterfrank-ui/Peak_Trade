@@ -111,9 +111,7 @@ def load_signal_df(path: Path | str) -> pd.DataFrame:
     return df
 
 
-def _print_ohlcv_load_observability(
-    meta: Dict[str, Any], *, run_id: str | None = None
-) -> None:
+def _print_ohlcv_load_observability(meta: Dict[str, Any], *, run_id: str | None = None) -> None:
     """Stdout: J1-Observability für UTC-/Fenster-Debugging (Evaluate-Pfad)."""
     pag = meta.get("kraken_pagination_used")
     if pag is None:
@@ -125,10 +123,7 @@ def _print_ohlcv_load_observability(
         sf_s = "n/a (dummy)"
     else:
         sf_s = "ja" if sf else "nein"
-    tail = (
-        f"Kraken-Shortfall={sf_s}"
-        + (f" | run_id={run_id}" if run_id else "")
-    )
+    tail = f"Kraken-Shortfall={sf_s}" + (f" | run_id={run_id}" if run_id else "")
     print(
         f"  📡 OHLCV-Load: {meta['symbol']} | Quelle={meta['ohlcv_source']} | "
         f"TF={meta['timeframe']} | n_bars={meta['n_bars_requested']} | "
@@ -408,9 +403,7 @@ def main(argv: List[str] | None = None) -> int:
                 timeframe=args.timeframe,
             )
             ohlcv_load_by_symbol[symbol] = ohlcv_meta
-            _print_ohlcv_load_observability(
-                ohlcv_meta, run_id=deterministic_run_id
-            )
+            _print_ohlcv_load_observability(ohlcv_meta, run_id=deterministic_run_id)
             if df_eval_sym.empty:
                 print("  ⚠️  Keine auswertbaren Signale.")
                 continue
