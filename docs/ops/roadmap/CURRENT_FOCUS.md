@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-04-10
+last_updated: 2026-04-11
 ---
 
 # Current focus
@@ -40,6 +40,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **J3 (placeholder inventory CLI NO-LIVE help, PR #2200):** `scripts/ops/placeholders/generate_placeholder_reports.py` — `--help`/Epilog (lokales Triage-Tool, keine Orders); erweiterter Smoke in `tests/ops/test_generate_placeholder_reports_smoke.py`; **NO-LIVE**.
 - **J2 (Optuna placeholder CLI NO-LIVE help, PR #2202):** `scripts/run_study_optuna_placeholder.py` — `--help`/Epilog (Toy/In-Memory, keine Order-Ausführung; vollständige Optimierung: `run_optuna_study.py`); Smoke in `tests/scripts/test_run_study_optuna_placeholder.py`; **NO-LIVE**.
 - **Optuna full study CLI (NO-LIVE help vs. J2 placeholder, PR #2204):** `scripts/run_optuna_study.py` — `--help`/Epilog (Backtest-basierte Strategy-Optimierung; Abgrenzung zu `run_study_optuna_placeholder.py`); Smoke `tests/scripts/test_run_optuna_study_help_smoke.py`; **NO-LIVE**.
+- **Unified sweep pipeline CLI (NO-LIVE help, PR #2206):** `scripts/run_sweep_pipeline.py` — `--help`/Docstring (Research-/Backtest-Sweep, keine Live-Orders); Smoke `tests/scripts/test_run_sweep_pipeline_smoke.py`; **NO-LIVE**.
 
 **GitHub — Truth-Gate Required Checks auf `main`:** Verifiziert (Apr 2026): **`docs-drift-guard`** und **`repo-truth-claims`** sind als Required Status Checks gesetzt (Namen wie `.github/workflows/truth_gates_pr.yml` Job-`name:`). Re-Check lokal: `python3 scripts/ops/ensure_truth_branch_protection.py --check` · ergänzen mit `--apply` nur mit Admin-Rechten; Registry: [`TRUTH_BRANCH_PROTECTION.md`](../registry/TRUTH_BRANCH_PROTECTION.md).
 
@@ -97,11 +98,13 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-08 | Post–PR #2200: J3 placeholder inventory CLI NO-LIVE/`--help` + help smoke; `CURRENT_FOCUS` refresh (this file) | PR #2200 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-09 | Post–PR #2202: J2 Optuna placeholder CLI NO-LIVE/`--help` + help smoke; `CURRENT_FOCUS` refresh (this file) | PR #2202 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-10 | Post–PR #2204: `run_optuna_study` CLI NO-LIVE/Placeholder-Abgrenzung + help smoke; `CURRENT_FOCUS` refresh (this file) | PR #2204 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
+| 2026-04-11 | Post–PR #2206: `run_sweep_pipeline` CLI NO-LIVE + help smoke; `CURRENT_FOCUS` refresh (this file) | PR #2206 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 
 ---
 
 ## Branch / PR pointer (optional)
 
+- **Merged:** [PR #2206](https://github.com/rauterfrank-ui/Peak_Trade/pull/2206) — Unified sweep pipeline CLI NO-LIVE help (`run_sweep_pipeline` + smoke) on `main`.
 - **Merged:** [PR #2204](https://github.com/rauterfrank-ui/Peak_Trade/pull/2204) — Optuna full study CLI NO-LIVE help (`run_optuna_study` vs. placeholder + smoke) on `main`.
 - **Merged:** [PR #2202](https://github.com/rauterfrank-ui/Peak_Trade/pull/2202) — J2 Optuna placeholder CLI NO-LIVE help (`run_study_optuna_placeholder` + smoke) on `main`.
 - **Merged:** [PR #2200](https://github.com/rauterfrank-ui/Peak_Trade/pull/2200) — J3 placeholder inventory CLI NO-LIVE help (`generate_placeholder_reports` + smoke) on `main`.
