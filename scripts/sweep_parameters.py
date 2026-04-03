@@ -15,17 +15,26 @@ from __future__ import annotations
 
 import sys
 import argparse
+import traceback
 from itertools import product
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-# Projekt-Root zum Python-Path hinzuf�gen
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Projekt-Root und scripts/ (shared CLI helpers) zum Python-Path
+_root = Path(__file__).resolve().parent.parent
+_scripts = Path(__file__).resolve().parent
+sys.path.insert(0, str(_root))
+sys.path.insert(0, str(_scripts))
 
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
+from _forward_run_manifest import (
+    python_version_short,
+    try_git_sha,
+    write_forward_run_manifest,
+)
 from src.core.peak_config import load_config, PeakConfig
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
@@ -96,6 +105,11 @@ Examples:
         type=int,
         default=200,
         help="Anzahl Bars pro Backtest (default: 200)",
+    )
+    parser.add_argument(
+        "--config-path",
+        default="config.toml",
+        help="Pfad zur TOML-Config (Default: config.toml).",
     )
     return parser.parse_args(argv)
 
@@ -297,226 +311,279 @@ def print_sweep_table(df: pd.DataFrame, param_names: List[str], n_top: int = 10)
     print("=" * 100 + "\n")
 
 
-def main(argv: List[str] | None = None) -> None:
-    """Main-Funktion."""
+def main(argv: List[str] | None = None) -> int:
+    """Main-Funktion. Exit-Codes: 0 ok, 1 erwarteter fachlicher Fehler, 2 unerwartet."""
     args = parse_args(argv)
+    sweeps_dir = Path("reports") / "sweeps"
+    strategy_key_resolved = ""
+    symbol_resolved = ""
+    run_name_base_resolved = ""
+
+    def manifest_path() -> Path:
+        if strategy_key_resolved and run_name_base_resolved:
+            return (
+                sweeps_dir
+                / f"sweep_{strategy_key_resolved}_{run_name_base_resolved}_run_manifest.json"
+            )
+        return sweeps_dir / "sweep_parameters_run_manifest.json"
+
+    def write_manifest(
+        exit_code: int,
+        *,
+        error: str | None = None,
+        output_csv: str | None = None,
+    ) -> None:
+        sym_list: List[str] = [symbol_resolved] if symbol_resolved else []
+        payload: Dict[str, Any] = {
+            "script_name": "sweep_parameters.py",
+            "git_sha": try_git_sha(),
+            "python_version": python_version_short(),
+            "argv": list(sys.argv),
+            "config_path": str(Path(args.config_path)),
+            "strategy": strategy_key_resolved or None,
+            "symbols": sym_list,
+            "n_bars": args.bars,
+            "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "exit_code": exit_code,
+            "run_name": run_name_base_resolved or None,
+            "top_k_reports": args.top_k_reports,
+            "max_runs": args.max_runs,
+        }
+        if error is not None:
+            payload["error"] = error
+        if output_csv is not None:
+            payload["output_csv"] = output_csv
+        write_forward_run_manifest(manifest_path(), payload)
 
     print("\n=, Peak_Trade Parameter Sweep")
     print("=" * 70)
 
-    # Config laden
-    print("\n�  Lade Konfiguration...")
     try:
-        base_cfg = load_config("config.toml")
-        print(" config.toml erfolgreich geladen")
-    except FileNotFoundError as e:
-        print(f"\nL FEHLER: {e}")
-        print("\nBitte erstelle eine config.toml im Projekt-Root.")
-        return
-
-    # Strategie bestimmen
-    sweep_strategy_key = base_cfg.get("sweep.strategy_key", None)
-    default_strategy_key = base_cfg.get("general.active_strategy", "ma_crossover")
-    strategy_key = args.strategy or sweep_strategy_key or default_strategy_key
-    strategy_key = str(strategy_key)
-
-    # Symbol bestimmen
-    sweep_symbol = base_cfg.get("sweep.symbol", None)
-    symbol = args.symbol or sweep_symbol
-    if not symbol:
-        raise ValueError("Kein Symbol gesetzt  bitte [sweep].symbol oder --symbol verwenden.")
-    symbol = str(symbol)
-
-    # Sortierung
-    sort_by_cfg = base_cfg.get("sweep.sort_by", "total_return")
-    sort_by = args.sort_by or sort_by_cfg
-    sort_desc_cfg = bool(base_cfg.get("sweep.sort_desc", True))
-    ascending = args.ascending if args.ascending else (not sort_desc_cfg)
-
-    sweep_name = str(base_cfg.get("sweep.name", "sweep"))
-    run_name_base = args.run_name or sweep_name
-
-    print(f"\n=� Sweep-Konfiguration:")
-    print(f"  - Strategie: {strategy_key}")
-    print(f"  - Symbol:    {symbol}")
-    print(f"  - Sweep-Name: {run_name_base}")
-    print(f"  - Sortiere nach: {sort_by} ({'ASC' if ascending else 'DESC'})")
-    print(f"  - Bars pro Run: {args.bars}")
-
-    # Parameter-Gitter bauen
-    print(f"\n=( Baue Parameter-Grid...")
-    try:
-        param_names, combos = build_param_grid(base_cfg, strategy_key=strategy_key)
-    except Exception as e:
-        print(f"\nL FEHLER beim Bauen des Parameter-Grids: {e}")
-        return
-
-    total_combos = len(combos)
-    print(f" Parameter: {param_names}")
-    print(f" Kombinationen: {total_combos}")
-
-    if args.max_runs is not None and args.max_runs < total_combos:
-        combos = combos[: args.max_runs]
-        print(f"�  max_runs={args.max_runs} gesetzt � teste nur erste {len(combos)} Kombinationen")
-
-    # Sweeps durchf�hren
-    print(f"\n=� Starte Sweep mit {len(combos)} Kombinationen...")
-    print("-" * 70)
-
-    rows: List[Dict[str, Any]] = []
-    results: List[BacktestResult] = []
-
-    for idx, combo in enumerate(combos, start=1):
-        print(f"\n=== Run {idx}/{len(combos)}  {strategy_key} @ {symbol} ===")
-        print("Parameter:")
-        for name, value in zip(param_names, combo):
-            print(f"  {name} = {value}")
-
+        # Config laden
+        print("\n  Lade Konfiguration...")
         try:
-            result = run_backtest_for_params(
-                base_cfg=base_cfg,
-                strategy_key=strategy_key,
-                symbol=symbol,
-                param_names=param_names,
-                param_values=combo,
-                n_bars=args.bars,
-            )
-        except Exception as e:
-            print(f"L FEHLER: {e}")
-            continue
+            base_cfg = load_config(args.config_path)
+            print("  config geladen")
+        except FileNotFoundError as e:
+            print(f"\nFEHLER: {e}", file=sys.stderr)
+            print("\nBitte eine gueltige TOML-Config angeben (--config-path).", file=sys.stderr)
+            write_manifest(1, error=str(e))
+            return 1
 
-        # Kurze Zusammenfassung
-        print(
-            f"   Return: {result.stats.get('total_return', 0.0):>7.2%} | "
-            f"Sharpe: {result.stats.get('sharpe', 0.0):>6.2f} | "
-            f"Trades: {result.stats.get('total_trades', 0):>4}"
-        )
+        # Strategie bestimmen
+        sweep_strategy_key = base_cfg.get("sweep.strategy_key", None)
+        default_strategy_key = base_cfg.get("general.active_strategy", "ma_crossover")
+        strategy_key = args.strategy or sweep_strategy_key or default_strategy_key
+        strategy_key = str(strategy_key)
+        strategy_key_resolved = strategy_key
 
-        # Experiment-Record für diese Parameter-Kombi loggen
-        param_dict = {name: value for name, value in zip(param_names, combo)}
-        param_suffix = "_".join(f"{k}{v}" for k, v in param_dict.items())
-        if len(param_suffix) > 60:
-            param_suffix = param_suffix[:60]
-        run_name_full = f"{strategy_key}_{symbol.replace('/', '_')}_{run_name_base}_{param_suffix}"
+        # Symbol bestimmen
+        sweep_symbol = base_cfg.get("sweep.symbol", None)
+        symbol = args.symbol or sweep_symbol
+        if not symbol:
+            msg = "Kein Symbol gesetzt � bitte [sweep].symbol oder --symbol verwenden."
+            print(f"\nFEHLER: {msg}", file=sys.stderr)
+            write_manifest(1, error=msg)
+            return 1
+        symbol = str(symbol)
+        symbol_resolved = symbol
 
-        log_experiment_from_result(
-            result=result,
-            run_type="sweep",
-            run_name=run_name_full,
-            strategy_key=strategy_key,
-            symbol=symbol,
-            sweep_name=run_name_base,
-            report_dir=Path("reports") / "sweeps",
-            report_prefix=run_name_full,
-            extra_metadata={
-                "runner": "sweep_parameters.py",
-                "sweep_name": sweep_name,
-                "params": param_dict,
-            },
-        )
+        # Sortierung
+        sort_by_cfg = base_cfg.get("sweep.sort_by", "total_return")
+        sort_by = args.sort_by or sort_by_cfg
+        sort_desc_cfg = bool(base_cfg.get("sweep.sort_desc", True))
+        ascending = args.ascending if args.ascending else (not sort_desc_cfg)
 
-        stats = dict(result.stats)
-        row: Dict[str, Any] = {
-            "symbol": symbol,
-            "strategy_key": strategy_key,
-        }
+        sweep_name = str(base_cfg.get("sweep.name", "sweep"))
+        run_name_base = args.run_name or sweep_name
+        run_name_base_resolved = run_name_base
 
-        # Parameter-Werte als eigene Spalten
-        for name, value in zip(param_names, combo):
-            row[name] = value
+        print(f"\n  Sweep-Konfiguration:")
+        print(f"  - Strategie: {strategy_key}")
+        print(f"  - Symbol:    {symbol}")
+        print(f"  - Sweep-Name: {run_name_base}")
+        print(f"  - Sortiere nach: {sort_by} ({'ASC' if ascending else 'DESC'})")
+        print(f"  - Bars pro Run: {args.bars}")
 
-        # Stats hinzuf�gen
-        row.update(stats)
+        # Parameter-Gitter bauen
+        print(f"\n  Baue Parameter-Grid...")
+        try:
+            param_names, combos = build_param_grid(base_cfg, strategy_key=strategy_key)
+        except ValueError as e:
+            print(f"\nFEHLER beim Bauen des Parameter-Grids: {e}", file=sys.stderr)
+            write_manifest(1, error=str(e))
+            return 1
 
-        # Optional: Regime-Verteilung aus metadata
-        regime_dist = result.metadata.get("regime_distribution", {})
-        for regime_key, frac in regime_dist.items():
-            col_name = f"regime_{regime_key.lower()}"
-            row[col_name] = frac
+        total_combos = len(combos)
+        print(f"  Parameter: {param_names}")
+        print(f"  Kombinationen: {total_combos}")
 
-        rows.append(row)
-        results.append(result)
+        if args.max_runs is not None and args.max_runs < total_combos:
+            combos = combos[: args.max_runs]
+            print(f"  max_runs={args.max_runs} � teste nur erste {len(combos)} Kombinationen")
 
-    if not rows:
-        print("\nL Keine erfolgreichen Backtests. Sweep abgebrochen.")
-        return
+        # Sweeps durchfuehren
+        print(f"\n  Starte Sweep mit {len(combos)} Kombinationen...")
+        print("-" * 70)
 
-    # DataFrame erstellen
-    df = pd.DataFrame(rows)
+        rows: List[Dict[str, Any]] = []
+        results: List[BacktestResult] = []
 
-    # Sortieren
-    if sort_by in df.columns:
-        df = df.sort_values(by=sort_by, ascending=ascending)
-    else:
-        print(f"\n�  Sortierfeld {sort_by!r} nicht in Spalten  keine Sortierung")
-
-    df = df.reset_index(drop=True)
-
-    # Tabelle drucken
-    print_sweep_table(df, param_names, n_top=10)
-
-    # Ordner f�r Sweeps
-    sweeps_dir = Path("reports") / "sweeps"
-    sweeps_dir.mkdir(parents=True, exist_ok=True)
-
-    # CSV speichern
-    csv_filename = f"sweep_{strategy_key}_{run_name_base}.csv"
-    csv_path = sweeps_dir / csv_filename
-    df.to_csv(csv_path, index=False)
-    print(f"=� Sweep-Ergebnis gespeichert: {csv_path}")
-
-    # Optional: vollwertige Reports f�r Top-K
-    top_k = max(args.top_k_reports, 0)
-    if top_k > 0:
-        print(f"\n=� Erstelle vollst�ndige Reports f�r Top {top_k} Konfigurationen...")
-        from src.backtest.reporting import save_full_report
-
-        top_df = df.head(top_k).copy()
-
-        for i, row in top_df.iterrows():
-            params_combo = tuple(row[name] for name in param_names)
-
-            # Passenden BacktestResult finden
-            match = None
-            for res in results:
-                res_params = res.metadata.get("params", {})
-                if all(
-                    res_params.get(name) == value for name, value in zip(param_names, params_combo)
-                ):
-                    match = res
-                    break
-
-            if match is None:
-                continue
-
-            # Run-Name mit Parametern
-            param_tag = "_".join(f"{name}{val}" for name, val in zip(param_names, params_combo))
-            if len(param_tag) > 60:
-                param_tag = param_tag[:60]
-            full_run_name = f"{strategy_key}_{run_name_base}_{param_tag}"
+        for idx, combo in enumerate(combos, start=1):
+            print(f"\n=== Run {idx}/{len(combos)} | {strategy_key} @ {symbol} ===")
+            print("Parameter:")
+            for name, value in zip(param_names, combo):
+                print(f"  {name} = {value}")
 
             try:
-                save_full_report(
-                    result=match,
-                    output_dir=str(sweeps_dir),
-                    run_name=full_run_name,
-                    save_plots_flag=True,
-                    save_html_flag=True,
+                result = run_backtest_for_params(
+                    base_cfg=base_cfg,
+                    strategy_key=strategy_key,
+                    symbol=symbol,
+                    param_names=param_names,
+                    param_values=combo,
+                    n_bars=args.bars,
                 )
-                print(f"   Report: {full_run_name}")
             except Exception as e:
-                print(f"  �  Warnung: Konnte Report nicht erstellen: {e}")
+                print(f"FEHLER: {e}")
+                continue
 
-    print(f"\n Parameter Sweep abgeschlossen!")
-    print(f"   Beste Konfiguration:")
-    best = df.iloc[0]
-    for name in param_names:
-        print(f"     {name} = {best[name]}")
-    print(
-        f"   Performance: {best['total_return']:.2%} Return, Sharpe {best.get('sharpe', 0.0):.2f}"
-    )
-    print()
+            print(
+                f"  Return: {result.stats.get('total_return', 0.0):>7.2%} | "
+                f"Sharpe: {result.stats.get('sharpe', 0.0):>6.2f} | "
+                f"Trades: {result.stats.get('total_trades', 0):>4}"
+            )
+
+            param_dict = {name: value for name, value in zip(param_names, combo)}
+            param_suffix = "_".join(f"{k}{v}" for k, v in param_dict.items())
+            if len(param_suffix) > 60:
+                param_suffix = param_suffix[:60]
+            run_name_full = (
+                f"{strategy_key}_{symbol.replace('/', '_')}_{run_name_base}_{param_suffix}"
+            )
+
+            log_experiment_from_result(
+                result=result,
+                run_type="sweep",
+                run_name=run_name_full,
+                strategy_key=strategy_key,
+                symbol=symbol,
+                sweep_name=run_name_base,
+                report_dir=sweeps_dir,
+                report_prefix=run_name_full,
+                extra_metadata={
+                    "runner": "sweep_parameters.py",
+                    "sweep_name": sweep_name,
+                    "params": param_dict,
+                },
+            )
+
+            stats = dict(result.stats)
+            row: Dict[str, Any] = {
+                "symbol": symbol,
+                "strategy_key": strategy_key,
+            }
+
+            for name, value in zip(param_names, combo):
+                row[name] = value
+
+            row.update(stats)
+
+            regime_dist = result.metadata.get("regime_distribution", {})
+            for regime_key, frac in regime_dist.items():
+                col_name = f"regime_{regime_key.lower()}"
+                row[col_name] = frac
+
+            rows.append(row)
+            results.append(result)
+
+        if not rows:
+            msg = "Keine erfolgreichen Backtests."
+            print(f"\n{msg} Sweep beendet.", file=sys.stderr)
+            write_manifest(1, error=msg)
+            return 1
+
+        df = pd.DataFrame(rows)
+
+        if sort_by in df.columns:
+            df = df.sort_values(by=sort_by, ascending=ascending)
+        else:
+            print(f"\nSortierfeld {sort_by!r} nicht in Spalten � keine Sortierung")
+
+        df = df.reset_index(drop=True)
+
+        print_sweep_table(df, param_names, n_top=10)
+
+        sweeps_dir.mkdir(parents=True, exist_ok=True)
+
+        csv_filename = f"sweep_{strategy_key}_{run_name_base}.csv"
+        csv_path = sweeps_dir / csv_filename
+        df.to_csv(csv_path, index=False)
+        print(f"\nSweep-Ergebnis gespeichert: {csv_path}")
+
+        top_k = max(args.top_k_reports, 0)
+        if top_k > 0:
+            print(f"\nErstelle Reports fuer Top {top_k} Konfigurationen...")
+            from src.backtest.reporting import save_full_report
+
+            top_df = df.head(top_k).copy()
+
+            for _i, row in top_df.iterrows():
+                params_combo = tuple(row[name] for name in param_names)
+
+                match = None
+                for res in results:
+                    res_params = res.metadata.get("params", {})
+                    if all(
+                        res_params.get(name) == value
+                        for name, value in zip(param_names, params_combo)
+                    ):
+                        match = res
+                        break
+
+                if match is None:
+                    continue
+
+                param_tag = "_".join(f"{name}{val}" for name, val in zip(param_names, params_combo))
+                if len(param_tag) > 60:
+                    param_tag = param_tag[:60]
+                full_run_name = f"{strategy_key}_{run_name_base}_{param_tag}"
+
+                try:
+                    save_full_report(
+                        result=match,
+                        output_dir=str(sweeps_dir),
+                        run_name=full_run_name,
+                        save_plots_flag=True,
+                        save_html_flag=True,
+                    )
+                    print(f"  Report: {full_run_name}")
+                except Exception as e:
+                    print(f"  Warnung: Report nicht erstellt: {e}")
+
+        print("\nParameter Sweep abgeschlossen!")
+        print("   Beste Konfiguration:")
+        best = df.iloc[0]
+        for name in param_names:
+            print(f"     {name} = {best[name]}")
+        print(
+            f"   Performance: {best['total_return']:.2%} Return, Sharpe {best.get('sharpe', 0.0):.2f}"
+        )
+        print()
+
+        write_manifest(0, output_csv=str(csv_path))
+        return 0
+
+    except (ValueError, FileNotFoundError) as e:
+        print(f"\nFEHLER: {e}", file=sys.stderr)
+        write_manifest(1, error=str(e))
+        return 1
+    except Exception as e:
+        print(f"\nUnerwarteter Fehler: {e}", file=sys.stderr)
+        traceback.print_exc()
+        write_manifest(2, error=str(e))
+        return 2
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
