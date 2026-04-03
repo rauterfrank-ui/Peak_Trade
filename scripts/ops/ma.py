@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Tracked MA CLI: next | finalize | package | verify | list | journal-verify | dedupe."""
+"""
+Tracked MA CLI: next | finalize | package | verify | list | journal-verify | dedupe.
+
+NO-LIVE: local developer/operator helpers under out/ops and scripts — no brokers, orders,
+or live execution.
+"""
 
 from __future__ import annotations
 
@@ -8,7 +13,18 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional, Sequence
+
+
+def _exit_code_from_system_exit(exc: BaseException) -> int:
+    """Map SystemExit to an integer exit code (for testable main())."""
+    if not isinstance(exc, SystemExit):
+        raise exc
+    if exc.code is None:
+        return 0
+    if isinstance(exc.code, int):
+        return exc.code
+    return 1
 
 
 def root_dir() -> Path:
@@ -134,8 +150,15 @@ def cmd_dedupe(_: argparse.Namespace) -> None:
     run_local(root, "cursor_ma_manifest_verify.sh")
 
 
-def main() -> None:
-    p = argparse.ArgumentParser(prog="ma", add_help=True)
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    p = argparse.ArgumentParser(
+        prog="ma",
+        add_help=True,
+        description=(
+            "Tracked multi-agent (MA) workflow helpers. "
+            "NO-LIVE: local scripts only — not a trading or execution path."
+        ),
+    )
     sub = p.add_subparsers(dest="cmd", required=True)
 
     sp = sub.add_parser("next", help="create/print Cursor context for newest (or given) run")
@@ -164,9 +187,16 @@ def main() -> None:
     sp = sub.add_parser("dedupe", help="dedupe manifest to latest-per-run (index)")
     sp.set_defaults(func=cmd_dedupe)
 
-    args = p.parse_args()
-    args.func(args)
+    try:
+        args = p.parse_args(argv)
+    except SystemExit as e:
+        return _exit_code_from_system_exit(e)
+    try:
+        args.func(args)
+    except SystemExit as e:
+        return _exit_code_from_system_exit(e)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
