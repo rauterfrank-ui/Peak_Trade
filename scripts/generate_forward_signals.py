@@ -225,7 +225,8 @@ def main(argv: List[str] | None = None) -> None:
 
     universe = determine_universe(cfg, args.symbols)
     run_name = (
-        args.run_name or f"forward_{strategy_key}_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}"
+        args.run_name
+        or f"forward_{strategy_key}_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}"
     )
 
     print(f"\n⚙️  Konfiguration:")
