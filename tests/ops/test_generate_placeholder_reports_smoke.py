@@ -52,3 +52,20 @@ def test_generate_placeholder_reports_exits_zero_and_writes_core_artifacts(tmp_p
     assert "## Pattern Summary" in inv_text
     assert tgt_text.startswith("# TODO/Placeholder Target Map (Inventory Addendum)\n")
     assert "## Pattern:" in tgt_text
+
+
+def test_generate_placeholder_reports_rejects_output_dir_that_is_file(tmp_path):
+    """--output-dir must not point at an existing file (fail before repo scan)."""
+    bad = tmp_path / "not_a_dir.txt"
+    bad.write_text("x", encoding="utf-8")
+    p = subprocess.run(
+        [sys.executable, str(_SCRIPT), "--output-dir", str(bad)],
+        cwd=str(ROOT),
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    assert p.returncode == 1
+    combined = (p.stderr or "") + (p.stdout or "")
+    assert "directory" in combined.lower()
+    assert "file" in combined.lower()
