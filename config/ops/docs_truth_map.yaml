@@ -50,3 +50,9 @@ rules:
       - "docs/ops/runbooks/CANARY_LIVE_ENTRY_CRITERIA.md"
     required_docs:
       - "docs/ops/registry/DOCS_TRUTH_MAP.md"
+
+  - id: forward-run-manifest-helper
+    sensitive:
+      - "scripts/_forward_run_manifest.py"
+    required_docs:
+      - "docs/ops/CLI_RUN_MANIFEST_RUN_ID.md"
