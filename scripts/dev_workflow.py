@@ -30,6 +30,9 @@ import time
 REPO_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
+# Same interpreter as this script for nested Python calls (avoids relying on a `python` shim on PATH).
+DEV_PYTHON = sys.executable
+
 try:
     from src.core.performance import performance_monitor
 except ImportError:
@@ -102,7 +105,7 @@ def setup_environment() -> None:
 
     # Check Python version
     print_info("Checking Python version...")
-    result = run_command(["python", "--version"], capture_output=True)
+    result = run_command([DEV_PYTHON, "--version"], capture_output=True)
     if result:
         print_success(f"Python version: {result.stdout.strip()}")
 
@@ -110,7 +113,7 @@ def setup_environment() -> None:
     venv_path = REPO_ROOT / ".venv"
     if not venv_path.exists():
         print_info("Creating virtual environment...")
-        run_command(["python", "-m", "venv", str(venv_path)])
+        run_command([DEV_PYTHON, "-m", "venv", str(venv_path)])
         print_success("Virtual environment created")
     else:
         print_success("Virtual environment already exists")
@@ -151,7 +154,7 @@ def _run_tests_impl(
     module: Optional[str] = None, coverage: bool = False, verbose: bool = False
 ) -> None:
     """Implementation of test running."""
-    cmd = ["python", "-m", "pytest"]
+    cmd = [DEV_PYTHON, "-m", "pytest"]
 
     if module:
         test_path = (
