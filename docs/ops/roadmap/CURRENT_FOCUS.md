@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-04-07
+last_updated: 2026-04-08
 ---
 
 # Current focus
@@ -37,6 +37,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **Chat-led Stichprobe §5 — Scripts (PR #2193):** `run_backtest.py` / Evidence-Metadaten `symbol` (`resolve_backtest_symbol`); [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md); **NO-LIVE**.
 - **Chat-led Stichprobe §5 — Research-Stubs (PR #2194):** Bouchaud / Gatheral-Cont + zugehöriger Test-Stub; [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md); **NO-LIVE**.
 - **J1 (Forward/Portfolio CLI NO-LIVE help, PR #2198):** `scripts/_shared_forward_args.py` — gemeinsamer Epilog/Scope für `generate_forward_signals` / `evaluate_forward_signals` / `run_portfolio_backtest_v2` (`--help`); Smoke `tests/test_shared_forward_args_cli.py`; **NO-LIVE**.
+- **J3 (placeholder inventory CLI NO-LIVE help, PR #2200):** `scripts/ops/placeholders/generate_placeholder_reports.py` — `--help`/Epilog (lokales Triage-Tool, keine Orders); erweiterter Smoke in `tests/ops/test_generate_placeholder_reports_smoke.py`; **NO-LIVE**.
 
 **GitHub — Truth-Gate Required Checks auf `main`:** Verifiziert (Apr 2026): **`docs-drift-guard`** und **`repo-truth-claims`** sind als Required Status Checks gesetzt (Namen wie `.github/workflows/truth_gates_pr.yml` Job-`name:`). Re-Check lokal: `python3 scripts/ops/ensure_truth_branch_protection.py --check` · ergänzen mit `--apply` nur mit Admin-Rechten; Registry: [`TRUTH_BRANCH_PROTECTION.md`](../registry/TRUTH_BRANCH_PROTECTION.md).
 
@@ -91,11 +92,13 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-02 | Post–PR #2184: `CURRENT_FOCUS` refresh — backtest evidence `symbol` aus Config + Chat-led-Stichprobe §5 | PR #2184 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-02 | Post–chat-led §5: PR #2193 (Scripts) + PR #2194 (Research-Stubs) in `RUNBOOK_CHAT_LED_OPEN_FEATURES` | PR #2193 / #2194 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-07 | Post–PR #2198: J1 Forward/Portfolio CLI NO-LIVE/Epilog + help smoke; `CURRENT_FOCUS` refresh (this file) | PR #2198 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
+| 2026-04-08 | Post–PR #2200: J3 placeholder inventory CLI NO-LIVE/`--help` + help smoke; `CURRENT_FOCUS` refresh (this file) | PR #2200 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 
 ---
 
 ## Branch / PR pointer (optional)
 
+- **Merged:** [PR #2200](https://github.com/rauterfrank-ui/Peak_Trade/pull/2200) — J3 placeholder inventory CLI NO-LIVE help (`generate_placeholder_reports` + smoke) on `main`.
 - **Merged:** [PR #2198](https://github.com/rauterfrank-ui/Peak_Trade/pull/2198) — J1 Forward/Portfolio CLI NO-LIVE help (`_shared_forward_args` + three entrypoints) on `main`.
 - **Merged:** [PR #2194](https://github.com/rauterfrank-ui/Peak_Trade/pull/2194) — Chat-led §5 Research-Stubs row (`NO-LIVE`) on `main`.
 - **Merged:** [PR #2193](https://github.com/rauterfrank-ui/Peak_Trade/pull/2193) — Chat-led §5 Scripts row (`resolve_backtest_symbol`) on `main`.
