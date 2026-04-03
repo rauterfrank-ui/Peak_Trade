@@ -35,9 +35,7 @@ def test_help_exits_zero():
     assert "--study-name" in out
     assert "--trials" in out
     assert "--direction" in out
-    assert (
-        "--dry-run" in out or "dry-run" in out or "no-dry-run" in out
-    )
+    assert "--dry-run" in out or "dry-run" in out or "no-dry-run" in out
     assert "NO-LIVE" in out
     assert "order execution" in out.lower()
 
