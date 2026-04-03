@@ -69,9 +69,7 @@ def test_generate_forward_exits_1_and_writes_manifest_when_no_signals(
     assert payload["strategy"] == "ma_crossover"
     assert "symbols" in payload and "BTC/EUR" in payload["symbols"]
     assert "run_id" in payload and len(payload["run_id"]) == 64
-    assert payload.get("generated_at_utc") and isinstance(
-        payload["generated_at_utc"], str
-    )
+    assert payload.get("generated_at_utc") and isinstance(payload["generated_at_utc"], str)
     assert payload["generated_at_utc"].endswith("Z")
     assert payload["config_path"] == str(cfg_test_path)
     assert "python_version" in payload
@@ -102,8 +100,6 @@ def test_evaluate_forward_exits_1_on_empty_signals_csv(tmp_path, cfg_test_path: 
     assert payload["script_name"] == "evaluate_forward_signals.py"
     assert payload["signals_csv"] == str(csv_path)
     assert "run_id" in payload and len(payload["run_id"]) == 64
-    assert payload.get("generated_at_utc") and isinstance(
-        payload["generated_at_utc"], str
-    )
+    assert payload.get("generated_at_utc") and isinstance(payload["generated_at_utc"], str)
     assert payload["generated_at_utc"].endswith("Z")
     assert payload["config_path"] == str(cfg_test_path)
