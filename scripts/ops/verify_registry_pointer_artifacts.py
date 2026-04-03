@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Portable verifier: reads pointer, validates telemetry invariants (download optional)."""
+"""
+Portable verifier: reads pointer, validates telemetry invariants (download optional).
+
+NO-LIVE: local filesystem / optional gh artifact download for audit — not a trading path.
+"""
 
 from __future__ import annotations
 
@@ -9,7 +13,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Sequence, Tuple
 
 FALLBACK_CODE = "AUDIT_MANIFEST_NO_DECISION_CONTEXT"
 VALID_ACTIONS = {"ALLOW", "NO_TRADE"}
@@ -87,8 +91,13 @@ def write_sha256sums(pack_dir: Path) -> Path:
     return sums
 
 
-def main() -> None:
-    ap = argparse.ArgumentParser()
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    ap = argparse.ArgumentParser(
+        description=(
+            "Verify registry pointer artifacts and telemetry_summary.json invariants. "
+            "NO-LIVE: local audit helper — not a trading or execution path."
+        ),
+    )
     ap.add_argument("pointer", type=Path, help="docs/ops/registry/*.pointer")
     ap.add_argument(
         "--out-base",
@@ -107,26 +116,36 @@ def main() -> None:
         default=None,
         help="optional evidence pack output dir",
     )
-    args = ap.parse_args()
+    args = ap.parse_args(argv)
 
     ptr = args.pointer
     if not ptr.exists():
-        raise SystemExit(f"ERR: pointer not found: {ptr}")
+        print(f"ERR: pointer not found: {ptr}", file=sys.stderr)
+        return 1
 
     d = parse_pointer(ptr)
     run_id = d.get("run_id")
     if not run_id:
-        raise SystemExit("ERR: pointer missing run_id=")
+        print("ERR: pointer missing run_id=", file=sys.stderr)
+        return 1
 
     artifacts_root = args.out_base / run_id
     if args.download or not artifacts_root.exists():
         if not args.download and not artifacts_root.exists():
-            raise SystemExit(f"ERR: artifacts missing at {artifacts_root}. Re-run with --download.")
+            print(
+                f"ERR: artifacts missing at {artifacts_root}. Re-run with --download.",
+                file=sys.stderr,
+            )
+            return 1
         maybe_download(run_id, args.out_base)
 
     summaries = find_telemetry_summaries(artifacts_root)
     if not summaries:
-        raise SystemExit(f"ERR: no telemetry_summary.json found under {artifacts_root}")
+        print(
+            f"ERR: no telemetry_summary.json found under {artifacts_root}",
+            file=sys.stderr,
+        )
+        return 1
 
     bad: List[Tuple[Path, str]] = []
     for s in summaries:
@@ -138,7 +157,7 @@ def main() -> None:
         sys.stderr.write("FAIL: telemetry invariants violated\n")
         for p, msg in bad[:200]:
             sys.stderr.write(f"- {p}: {msg}\n")
-        raise SystemExit(3)
+        return 3
 
     print(f"OK: {len(summaries)} telemetry_summary.json validated under {artifacts_root}")
 
@@ -151,7 +170,8 @@ def main() -> None:
         shutil.copytree(artifacts_root, dest)
         sums = write_sha256sums(pack)
         print(f"OK: wrote {sums}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
