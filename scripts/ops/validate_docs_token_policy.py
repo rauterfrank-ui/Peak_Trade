@@ -10,6 +10,8 @@ Exit codes:
   0 - All checks passed
   1 - Violations found
   2 - Script error
+
+NO-LIVE: scans local Markdown / git metadata only — no brokers, orders, or execution.
 """
 
 import argparse
@@ -19,7 +21,7 @@ import subprocess
 import sys
 from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import List, Dict, Set, Optional
+from typing import List, Dict, Set, Optional, Sequence
 from enum import Enum
 
 
@@ -353,9 +355,12 @@ class DocsTokenPolicyValidator:
         return [self.repo_root / p for p in out.splitlines() if p.strip()]
 
 
-def main():
+def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Validate docs token policy for inline-code tokens in Markdown files.",
+        description=(
+            "Validate docs token policy for inline-code tokens in Markdown files. "
+            "NO-LIVE: local docs / git metadata only — not a trading or execution path."
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -399,7 +404,7 @@ Examples:
         help="Path to allowlist file (default: scripts/ops/docs_token_policy_allowlist.txt)",
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     # Find repo root
     try:
@@ -491,4 +496,4 @@ Examples:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())
