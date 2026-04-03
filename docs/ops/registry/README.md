@@ -4,6 +4,8 @@ This directory contains stable pointers to important audit milestones.
 
 **Canonical index:** [INDEX.md](INDEX.md) — Pipeline L→R summary + operator entrypoint.
 
+**CLI run manifests (NO-LIVE):** deterministic `run_id` for `*_run_manifest.json` (forward/sweep scripts) is documented in [`docs/ops/CLI_RUN_MANIFEST_RUN_ID.md`](../CLI_RUN_MANIFEST_RUN_ID.md).
+
 ## Verify a milestone (operator shortcut)
 
 Preferred:
