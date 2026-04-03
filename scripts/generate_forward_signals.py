@@ -115,7 +115,7 @@ def format_as_of_iso_utc(ts: Any) -> str:
     return t.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def _print_ohlcv_load_observability(meta: Dict[str, Any]) -> None:
+def _print_ohlcv_load_observability(meta: Dict[str, Any], *, run_id: str | None = None) -> None:
     """Stdout: J1-Observability für UTC-/Fenster-Debugging (Generate-Pfad)."""
     pag = meta.get("kraken_pagination_used")
     if pag is None:
@@ -127,11 +127,12 @@ def _print_ohlcv_load_observability(meta: Dict[str, Any]) -> None:
         sf_s = "n/a (dummy)"
     else:
         sf_s = "ja" if sf else "nein"
+    tail = f"Kraken-Shortfall={sf_s}" + (f" | run_id={run_id}" if run_id else "")
     print(
         f"  📡 OHLCV-Load: {meta['symbol']} | Quelle={meta['ohlcv_source']} | "
         f"TF={meta['timeframe']} | n_bars={meta['n_bars_requested']} | "
         f"geladen={meta['bars_loaded']} | Kraken-Pagination={pag_s} | "
-        f"Kraken-Shortfall={sf_s}"
+        f"{tail}"
     )
 
 
@@ -279,6 +280,14 @@ def main(argv: List[str] | None = None) -> int:
             or f"forward_{strategy_key}_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}"
         )
 
+        _git_for_run_id = try_git_sha()
+        deterministic_run_id = compute_deterministic_run_id(
+            script_name="generate_forward_signals.py",
+            argv=list(sys.argv),
+            config_path=str(args.config_path),
+            git_sha=_git_for_run_id,
+        )
+
         print(f"\n⚙️  Konfiguration:")
         print(f"  Strategy:      {strategy_key}")
         print(f"  Universe:      {universe}")
@@ -301,7 +310,7 @@ def main(argv: List[str] | None = None) -> int:
                 timeframe=args.timeframe,
             )
             ohlcv_load_by_symbol[symbol] = ohlcv_meta
-            _print_ohlcv_load_observability(ohlcv_meta)
+            _print_ohlcv_load_observability(ohlcv_meta, run_id=deterministic_run_id)
             if data.empty:
                 print(f"  ⚠️  Keine Daten für {symbol}, überspringe.")
                 continue
