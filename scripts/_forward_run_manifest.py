@@ -1,5 +1,9 @@
 # scripts/_forward_run_manifest.py
-"""Kleine Hilfen für Forward-CLI Run-Manifeste (NO-LIVE, nur Metadaten)."""
+"""Kleine Hilfen für Forward-CLI Run-Manifeste (NO-LIVE, nur Metadaten).
+
+Kurz: ``run_id`` = SHA-256 über script_name, argv, config_path, git_sha — siehe
+``docs/ops/CLI_RUN_MANIFEST_RUN_ID.md``. ``generated_at_utc`` ist bewusst *nicht* Teil von ``run_id``.
+"""
 
 from __future__ import annotations
 
@@ -25,6 +29,9 @@ def compute_deterministic_run_id(
     Stabile Run-ID (SHA-256-Hex) aus Script, CLI-Args, Config-Pfad und Git-HEAD.
 
     Gleiche Eingaben ergeben dieselbe ID; Änderungen an argv/config/git_sha ändern die ID.
+
+    ``generated_at_utc`` (im Manifest gesetzt) fließt hier nicht ein — sonst wäre die ID
+    pro Lauf neu und nicht als Eingabe-Fingerprint brauchbar.
     """
     blob = json.dumps(
         {
