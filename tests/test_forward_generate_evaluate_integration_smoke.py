@@ -112,21 +112,24 @@ def test_generate_then_evaluate_with_captured_ohlcv(tmp_path, monkeypatch):
     out_dir = tmp_path / "forward"
     out_dir.mkdir(parents=True)
 
-    gen.main(
-        [
-            "--strategy",
-            "ma_crossover",
-            "--symbols",
-            "BTC/EUR",
-            "--config-path",
-            str(cfg_path),
-            "--output-dir",
-            str(out_dir),
-            "--run-name",
-            "integration_smoke",
-            "--n-bars",
-            "200",
-        ]
+    assert (
+        gen.main(
+            [
+                "--strategy",
+                "ma_crossover",
+                "--symbols",
+                "BTC/EUR",
+                "--config-path",
+                str(cfg_path),
+                "--output-dir",
+                str(out_dir),
+                "--run-name",
+                "integration_smoke",
+                "--n-bars",
+                "200",
+            ]
+        )
+        == 0
     )
 
     sig_files = list(out_dir.glob("*_signals.csv"))
@@ -159,16 +162,19 @@ def test_generate_then_evaluate_with_captured_ohlcv(tmp_path, monkeypatch):
     eval_dir = tmp_path / "eval"
     eval_dir.mkdir()
 
-    ev.main(
-        [
-            str(sig_path),
-            "--horizon-bars",
-            "1",
-            "--config-path",
-            str(cfg_path),
-            "--output-dir",
-            str(eval_dir),
-        ]
+    assert (
+        ev.main(
+            [
+                str(sig_path),
+                "--horizon-bars",
+                "1",
+                "--config-path",
+                str(cfg_path),
+                "--output-dir",
+                str(eval_dir),
+            ]
+        )
+        == 0
     )
 
     eval_files = list(eval_dir.glob("*_eval_*.csv"))

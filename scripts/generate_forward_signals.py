@@ -44,6 +44,11 @@ from src.analytics.risk_monitor import (
 from src.analytics.filter_flow import SelectionPolicy, build_strategy_selection
 from _shared_forward_args import add_shared_ohlcv_cli_group, append_forward_ohlcv_scope_epilog
 from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv_with_meta
+from _forward_run_manifest import (
+    python_version_short,
+    try_git_sha,
+    write_forward_run_manifest,
+)
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
@@ -206,126 +211,179 @@ def enforce_strategy_selection(cfg: PeakConfig, strategy_key: str) -> None:
     )
 
 
-def main(argv: List[str] | None = None) -> None:
+def main(argv: List[str] | None = None) -> int:
     args = parse_args(argv)
+    out_dir = Path(args.output_dir)
+    strategy_key = args.strategy
+    run_name: str | None = None
+    universe: List[str] = []
+
+    def manifest_path() -> Path:
+        if run_name:
+            return out_dir / f"{run_name}_run_manifest.json"
+        return out_dir / "generate_forward_run_manifest.json"
+
+    def write_manifest(
+        exit_code: int,
+        *,
+        universe_override: List[str] | None = None,
+        error: str | None = None,
+        output_csv: str | None = None,
+    ) -> None:
+        sym = universe_override if universe_override is not None else universe
+        payload: Dict[str, Any] = {
+            "script_name": "generate_forward_signals.py",
+            "git_sha": try_git_sha(),
+            "python_version": python_version_short(),
+            "argv": list(sys.argv),
+            "config_path": str(args.config_path),
+            "strategy": strategy_key,
+            "symbols": sym,
+            "ohlcv_source": args.ohlcv_source,
+            "n_bars": args.n_bars,
+            "timeframe": args.timeframe,
+            "run_name": run_name,
+            "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "exit_code": exit_code,
+        }
+        if error is not None:
+            payload["error"] = error
+        if output_csv is not None:
+            payload["output_csv"] = output_csv
+        write_forward_run_manifest(manifest_path(), payload)
 
     print("\n🔮 Peak_Trade Forward Signal Generator")
     print("=" * 70)
 
-    cfg = load_config(args.config_path)
+    try:
+        cfg = load_config(args.config_path)
 
-    strategy_key = args.strategy
-    available = get_available_strategy_keys()
-    if strategy_key not in available:
-        raise ValueError(f"Unbekannter Strategy-Key {strategy_key!r}. Verfügbar: {available}")
+        available = get_available_strategy_keys()
+        if strategy_key not in available:
+            raise ValueError(f"Unbekannter Strategy-Key {strategy_key!r}. Verfügbar: {available}")
 
-    # Filter-Flow Enforcement (optional)
-    if args.enforce_selection:
-        enforce_strategy_selection(cfg, strategy_key)
+        # Filter-Flow Enforcement (optional)
+        if args.enforce_selection:
+            enforce_strategy_selection(cfg, strategy_key)
 
-    universe = determine_universe(cfg, args.symbols)
-    run_name = (
-        args.run_name
-        or f"forward_{strategy_key}_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}"
-    )
-
-    print(f"\n⚙️  Konfiguration:")
-    print(f"  Strategy:      {strategy_key}")
-    print(f"  Universe:      {universe}")
-    print(f"  Run-Name:      {run_name}")
-    print(f"  Bars:          {args.n_bars}")
-    print(f"  Timeframe:     {args.timeframe}")
-    print(f"  OHLCV-Quelle:  {args.ohlcv_source}")
-
-    signals: List[ForwardSignal] = []
-    ohlcv_load_by_symbol: Dict[str, Dict[str, Any]] = {}
-
-    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-    for symbol in universe:
-        print(f"\n📊 Verarbeite Symbol: {symbol}")
-        data, ohlcv_meta = load_data_for_symbol(
-            symbol,
-            n_bars=args.n_bars,
-            ohlcv_source=args.ohlcv_source,
-            timeframe=args.timeframe,
+        universe = determine_universe(cfg, args.symbols)
+        run_name = (
+            args.run_name
+            or f"forward_{strategy_key}_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}"
         )
-        ohlcv_load_by_symbol[symbol] = ohlcv_meta
-        _print_ohlcv_load_observability(ohlcv_meta)
-        if data.empty:
-            print(f"  ⚠️  Keine Daten für {symbol}, überspringe.")
-            continue
 
-        strategy = create_strategy_from_config(strategy_key, cfg)
+        print(f"\n⚙️  Konfiguration:")
+        print(f"  Strategy:      {strategy_key}")
+        print(f"  Universe:      {universe}")
+        print(f"  Run-Name:      {run_name}")
+        print(f"  Bars:          {args.n_bars}")
+        print(f"  Timeframe:     {args.timeframe}")
+        print(f"  OHLCV-Quelle:  {args.ohlcv_source}")
 
-        if not hasattr(strategy, "generate_signals"):
-            raise AttributeError(
-                f"Strategy {strategy!r} hat keine Methode generate_signals(data). "
-                "Bitte sicherstellen, dass die Strategie diese API unterstützt."
+        signals: List[ForwardSignal] = []
+        ohlcv_load_by_symbol: Dict[str, Dict[str, Any]] = {}
+
+        generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        for symbol in universe:
+            print(f"\n📊 Verarbeite Symbol: {symbol}")
+            data, ohlcv_meta = load_data_for_symbol(
+                symbol,
+                n_bars=args.n_bars,
+                ohlcv_source=args.ohlcv_source,
+                timeframe=args.timeframe,
             )
+            ohlcv_load_by_symbol[symbol] = ohlcv_meta
+            _print_ohlcv_load_observability(ohlcv_meta)
+            if data.empty:
+                print(f"  ⚠️  Keine Daten für {symbol}, überspringe.")
+                continue
 
-        # Vollständige Signale berechnen
-        signals_series = strategy.generate_signals(data)
-        if signals_series is None or signals_series.empty:
-            print(f"  ⚠️  generate_signals() liefert keine Signale für {symbol}, überspringe.")
-            continue
+            strategy = create_strategy_from_config(strategy_key, cfg)
 
-        # Letztes Signal als Forward-Signal verwenden
-        last_ts = signals_series.index[-1]
-        last_val = float(signals_series.iloc[-1])
+            if not hasattr(strategy, "generate_signals"):
+                raise AttributeError(
+                    f"Strategy {strategy!r} hat keine Methode generate_signals(data). "
+                    "Bitte sicherstellen, dass die Strategie diese API unterstützt."
+                )
 
-        print(f"  ✅ Letztes Signal: {last_val} @ {last_ts}")
+            # Vollständige Signale berechnen
+            signals_series = strategy.generate_signals(data)
+            if signals_series is None or signals_series.empty:
+                print(f"  ⚠️  generate_signals() liefert keine Signale für {symbol}, überspringe.")
+                continue
 
-        sig = ForwardSignal(
-            generated_at=generated_at,
-            as_of=format_as_of_iso_utc(last_ts),
-            strategy_key=strategy_key,
+            # Letztes Signal als Forward-Signal verwenden
+            last_ts = signals_series.index[-1]
+            last_val = float(signals_series.iloc[-1])
+
+            print(f"  ✅ Letztes Signal: {last_val} @ {last_ts}")
+
+            sig = ForwardSignal(
+                generated_at=generated_at,
+                as_of=format_as_of_iso_utc(last_ts),
+                strategy_key=strategy_key,
+                run_name=run_name,
+                symbol=symbol,
+                direction=last_val,
+                size_hint=None,
+                comment=None,
+                extra={
+                    "raw_last_signal": last_val,
+                },
+            )
+            signals.append(sig)
+
+        if not signals:
+            print("\n⚠️  Keine Forward-Signale erzeugt – nichts zu speichern.")
+            write_manifest(1)
+            return 1
+
+        out_dir.mkdir(parents=True, exist_ok=True)
+        out_path = out_dir / f"{run_name}_signals.csv"
+
+        df_signals = save_signals_to_csv(signals, out_path)
+        print(f"\n💾 Forward-Signale gespeichert: {out_path}")
+        print(f"\n📋 Generierte Signale:")
+        print(df_signals.to_string(index=False))
+
+        # Experiment-Registry-Log (ohne klassische Backtest-Stats)
+        log_generic_experiment(
+            run_type="forward_signals",
             run_name=run_name,
-            symbol=symbol,
-            direction=last_val,
-            size_hint=None,
-            comment=None,
-            extra={
-                "raw_last_signal": last_val,
+            strategy_key=strategy_key,
+            symbol=None,  # mehrere Symbole → im metadata-Block
+            stats=None,
+            report_dir=out_dir,
+            report_prefix=run_name,
+            extra_metadata={
+                "runner": "generate_forward_signals.py",
+                "universe": universe,
+                "signal_csv": str(out_path),
+                "n_signals": len(signals),
+                "ohlcv_source": args.ohlcv_source,
+                "timeframe": args.timeframe,
+                "ohlcv_load_by_symbol": ohlcv_load_by_symbol,
             },
         )
-        signals.append(sig)
+        print(f"\n📝 Forward-Signal-Run in Registry geloggt (run_type='forward_signals')")
+        print(f"✅ Forward-Signal-Generierung abgeschlossen!\n")
 
-    if not signals:
-        print("\n⚠️  Keine Forward-Signale erzeugt – nichts zu speichern.")
-        return
+        write_manifest(0, output_csv=str(out_path))
+        return 0
 
-    out_dir = Path(args.output_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    out_path = out_dir / f"{run_name}_signals.csv"
+    except (ValueError, FileNotFoundError, AttributeError) as e:
+        print(f"\n❌ {e}", file=sys.stderr)
+        write_manifest(1, error=str(e))
+        return 1
+    except Exception as e:
+        print(f"\n❌ Unerwarteter Fehler: {e}", file=sys.stderr)
+        import traceback
 
-    df_signals = save_signals_to_csv(signals, out_path)
-    print(f"\n💾 Forward-Signale gespeichert: {out_path}")
-    print(f"\n📋 Generierte Signale:")
-    print(df_signals.to_string(index=False))
-
-    # Experiment-Registry-Log (ohne klassische Backtest-Stats)
-    log_generic_experiment(
-        run_type="forward_signals",
-        run_name=run_name,
-        strategy_key=strategy_key,
-        symbol=None,  # mehrere Symbole → im metadata-Block
-        stats=None,
-        report_dir=out_dir,
-        report_prefix=run_name,
-        extra_metadata={
-            "runner": "generate_forward_signals.py",
-            "universe": universe,
-            "signal_csv": str(out_path),
-            "n_signals": len(signals),
-            "ohlcv_source": args.ohlcv_source,
-            "timeframe": args.timeframe,
-            "ohlcv_load_by_symbol": ohlcv_load_by_symbol,
-        },
-    )
-    print(f"\n📝 Forward-Signal-Run in Registry geloggt (run_type='forward_signals')")
-    print(f"✅ Forward-Signal-Generierung abgeschlossen!\n")
+        traceback.print_exc()
+        write_manifest(2, error=str(e))
+        return 2
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

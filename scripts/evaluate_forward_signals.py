@@ -33,9 +33,13 @@ import pandas as pd
 
 from _shared_forward_args import add_shared_ohlcv_cli_group, append_forward_ohlcv_scope_epilog
 from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv_with_meta
+from _forward_run_manifest import (
+    python_version_short,
+    try_git_sha,
+    write_forward_run_manifest,
+)
 from src.core.peak_config import load_config
 from src.core.experiments import log_generic_experiment
-from src.forward.signals import FORWARD_SIGNALS_COLUMNS
 
 
 def parse_as_of_to_utc(value: Any) -> pd.Timestamp:
@@ -273,20 +277,90 @@ def compute_eval_stats(df_eval: pd.DataFrame) -> Dict[str, Any]:
     }
 
 
-def main(argv: List[str] | None = None) -> None:
+def main(argv: List[str] | None = None) -> int:
     args = parse_args(argv)
+    out_dir = Path(args.output_dir)
+    sig_path = Path(args.signals_csv)
+    base_name = sig_path.stem
+    manifest_path = out_dir / f"{base_name}_eval_run_manifest.json"
+
+    def write_manifest(
+        exit_code: int,
+        *,
+        df_sig: pd.DataFrame | None = None,
+        error: str | None = None,
+        eval_csv: str | None = None,
+    ) -> None:
+        strategy_val: str | None = None
+        symbols_val: List[str] = []
+        if df_sig is not None and not df_sig.empty:
+            if "strategy_key" in df_sig.columns:
+                sk = df_sig["strategy_key"].dropna()
+                if len(sk):
+                    strategy_val = str(sk.iloc[0])
+            symbols_val = sorted({str(s) for s in df_sig["symbol"].unique()})
+        payload: Dict[str, Any] = {
+            "script_name": "evaluate_forward_signals.py",
+            "git_sha": try_git_sha(),
+            "python_version": python_version_short(),
+            "argv": list(sys.argv),
+            "config_path": str(args.config_path),
+            "strategy": strategy_val,
+            "symbols": symbols_val,
+            "signals_csv": str(sig_path),
+            "ohlcv_source": args.ohlcv_source,
+            "n_bars": args.n_bars,
+            "timeframe": args.timeframe,
+            "horizon_bars": args.horizon_bars,
+            "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "exit_code": exit_code,
+        }
+        if error is not None:
+            payload["error"] = error
+        if eval_csv is not None:
+            payload["eval_csv"] = eval_csv
+        write_forward_run_manifest(manifest_path, payload)
 
     print("\n📊 Peak_Trade Forward Signal Evaluator")
     print("=" * 70)
 
-    cfg = load_config(args.config_path)
-    sig_path = Path(args.signals_csv)
-    df_sig = load_signal_df(sig_path)
+    df_sig: pd.DataFrame | None = None
+
+    try:
+        load_config(args.config_path)
+    except (ValueError, FileNotFoundError) as e:
+        print(f"\n❌ {e}", file=sys.stderr)
+        write_manifest(1, error=str(e))
+        return 1
+    except Exception as e:
+        print(f"\n❌ Unerwarteter Fehler (Config): {e}", file=sys.stderr)
+        write_manifest(2, error=str(e))
+        return 2
 
     horizon_bars = args.horizon_bars
     n_bars = args.n_bars
     if n_bars < 1:
-        raise ValueError("--n-bars muss >= 1 sein.")
+        msg = "--n-bars muss >= 1 sein."
+        print(f"\n❌ {msg}", file=sys.stderr)
+        write_manifest(1, error=msg)
+        return 1
+
+    try:
+        df_sig = load_signal_df(sig_path)
+    except (ValueError, FileNotFoundError) as e:
+        print(f"\n❌ {e}", file=sys.stderr)
+        write_manifest(1, error=str(e))
+        return 1
+    except Exception as e:
+        print(f"\n❌ Unerwarteter Fehler (Signals-CSV): {e}", file=sys.stderr)
+        write_manifest(2, error=str(e))
+        return 2
+
+    if df_sig.empty:
+        msg = "Signals-CSV enthält keine Zeilen."
+        print(f"\n❌ {msg}", file=sys.stderr)
+        write_manifest(1, df_sig=df_sig, error=msg)
+        return 1
 
     print(f"\n⚙️  Konfiguration:")
     print(f"  Signals:       {sig_path}")
@@ -301,100 +375,112 @@ def main(argv: List[str] | None = None) -> None:
     stats_per_symbol: Dict[str, Dict[str, Any]] = {}
     ohlcv_load_by_symbol: Dict[str, Dict[str, Any]] = {}
 
-    for symbol, df_sym in df_sig.groupby("symbol"):
-        print(f"\n📈 Evaluierung für Symbol: {symbol}")
-        df_eval_sym, ohlcv_meta = evaluate_signals_for_symbol(
-            df_sig_sym=df_sym,
-            symbol=symbol,
-            horizon_bars=horizon_bars,
-            n_bars=n_bars,
-            ohlcv_source=args.ohlcv_source,
-            timeframe=args.timeframe,
-        )
-        ohlcv_load_by_symbol[symbol] = ohlcv_meta
-        _print_ohlcv_load_observability(ohlcv_meta)
-        if df_eval_sym.empty:
-            print("  ⚠️  Keine auswertbaren Signale.")
-            continue
+    try:
+        for symbol, df_sym in df_sig.groupby("symbol"):
+            print(f"\n📈 Evaluierung für Symbol: {symbol}")
+            df_eval_sym, ohlcv_meta = evaluate_signals_for_symbol(
+                df_sig_sym=df_sym,
+                symbol=symbol,
+                horizon_bars=horizon_bars,
+                n_bars=n_bars,
+                ohlcv_source=args.ohlcv_source,
+                timeframe=args.timeframe,
+            )
+            ohlcv_load_by_symbol[symbol] = ohlcv_meta
+            _print_ohlcv_load_observability(ohlcv_meta)
+            if df_eval_sym.empty:
+                print("  ⚠️  Keine auswertbaren Signale.")
+                continue
 
-        stats = compute_eval_stats(df_eval_sym)
-        stats_per_symbol[symbol] = stats
-        print(f"  Trades:        {stats['n_trades']}")
-        print(f"  Total Return:  {stats['total_return']:.4f}")
-        print(f"  Avg Return:    {stats['avg_return']:.6f}")
-        if stats["winrate"] is not None:
-            print(f"  Winrate:       {stats['winrate']:.2%}")
+            stats = compute_eval_stats(df_eval_sym)
+            stats_per_symbol[symbol] = stats
+            print(f"  Trades:        {stats['n_trades']}")
+            print(f"  Total Return:  {stats['total_return']:.4f}")
+            print(f"  Avg Return:    {stats['avg_return']:.6f}")
+            if stats["winrate"] is not None:
+                print(f"  Winrate:       {stats['winrate']:.2%}")
+            else:
+                print(f"  Winrate:       n/a")
+            if stats["sharpe"] is not None:
+                print(f"  Sharpe-like:   {stats['sharpe']:.4f}")
+            else:
+                print(f"  Sharpe-like:   n/a")
+
+            all_rows.append(df_eval_sym)
+
+        if not all_rows:
+            msg = "Keine auswertbaren Signale (fachlich)."
+            print(f"\n⚠️  {msg} Evaluation beendet.")
+            write_manifest(1, df_sig=df_sig, error=msg)
+            return 1
+
+        df_eval_all = pd.concat(all_rows, ignore_index=True)
+
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        ts_label = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        eval_csv_path = out_dir / f"{base_name}_eval_h{horizon_bars}_{ts_label}.csv"
+
+        df_eval_all.to_csv(eval_csv_path, index=False)
+        print(f"\n💾 Forward-Evaluation gespeichert: {eval_csv_path}")
+
+        # Aggregierte Gesamt-Stats über alle Symbole
+        overall_stats = compute_eval_stats(df_eval_all)
+        print(f"\n📊 Gesamt-Stats über alle Symbole:")
+        print("=" * 70)
+        print(f"  Trades:        {overall_stats['n_trades']}")
+        print(f"  Total Return:  {overall_stats['total_return']:.4f}")
+        print(f"  Avg Return:    {overall_stats['avg_return']:.6f}")
+        if overall_stats["winrate"] is not None:
+            print(f"  Winrate:       {overall_stats['winrate']:.2%}")
         else:
             print(f"  Winrate:       n/a")
-        if stats["sharpe"] is not None:
-            print(f"  Sharpe-like:   {stats['sharpe']:.4f}")
+        if overall_stats["sharpe"] is not None:
+            print(f"  Sharpe-like:   {overall_stats['sharpe']:.4f}")
         else:
             print(f"  Sharpe-like:   n/a")
 
-        all_rows.append(df_eval_sym)
+        # Experiment-Registry-Log
+        log_generic_experiment(
+            run_type="forward_eval",
+            run_name=f"{base_name}_h{horizon_bars}",
+            strategy_key=None,  # kann bei Bedarf aus Signals-CSV extrahiert werden
+            symbol=None,
+            stats={
+                "total_return": overall_stats["total_return"],
+                "avg_return": overall_stats["avg_return"],
+                "winrate": overall_stats["winrate"],
+                "sharpe": overall_stats["sharpe"],
+                "n_trades": overall_stats["n_trades"],
+            },
+            report_dir=out_dir,
+            report_prefix=f"{base_name}_eval_h{horizon_bars}",
+            extra_metadata={
+                "runner": "evaluate_forward_signals.py",
+                "signals_csv": str(sig_path),
+                "horizon_bars": horizon_bars,
+                "n_bars": n_bars,
+                "ohlcv_source": args.ohlcv_source,
+                "timeframe": args.timeframe,
+                "ohlcv_load_by_symbol": ohlcv_load_by_symbol,
+                "stats_per_symbol": stats_per_symbol,
+                "eval_csv": str(eval_csv_path),
+            },
+        )
+        print(f"\n📝 Forward-Evaluation in Registry geloggt (run_type='forward_eval')")
+        print(f"✅ Forward-Evaluation abgeschlossen!\n")
 
-    if not all_rows:
-        print("\n⚠️  Keine auswertbaren Signale gefunden – Evaluation bricht ab.")
-        return
+        write_manifest(0, df_sig=df_sig, eval_csv=str(eval_csv_path))
+        return 0
 
-    df_eval_all = pd.concat(all_rows, ignore_index=True)
+    except Exception as e:
+        print(f"\n❌ Unerwarteter Fehler: {e}", file=sys.stderr)
+        import traceback
 
-    out_dir = Path(args.output_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    ts_label = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
-    base_name = sig_path.stem
-    eval_csv_path = out_dir / f"{base_name}_eval_h{horizon_bars}_{ts_label}.csv"
-
-    df_eval_all.to_csv(eval_csv_path, index=False)
-    print(f"\n💾 Forward-Evaluation gespeichert: {eval_csv_path}")
-
-    # Aggregierte Gesamt-Stats über alle Symbole
-    overall_stats = compute_eval_stats(df_eval_all)
-    print(f"\n📊 Gesamt-Stats über alle Symbole:")
-    print("=" * 70)
-    print(f"  Trades:        {overall_stats['n_trades']}")
-    print(f"  Total Return:  {overall_stats['total_return']:.4f}")
-    print(f"  Avg Return:    {overall_stats['avg_return']:.6f}")
-    if overall_stats["winrate"] is not None:
-        print(f"  Winrate:       {overall_stats['winrate']:.2%}")
-    else:
-        print(f"  Winrate:       n/a")
-    if overall_stats["sharpe"] is not None:
-        print(f"  Sharpe-like:   {overall_stats['sharpe']:.4f}")
-    else:
-        print(f"  Sharpe-like:   n/a")
-
-    # Experiment-Registry-Log
-    log_generic_experiment(
-        run_type="forward_eval",
-        run_name=f"{base_name}_h{horizon_bars}",
-        strategy_key=None,  # kann bei Bedarf aus Signals-CSV extrahiert werden
-        symbol=None,
-        stats={
-            "total_return": overall_stats["total_return"],
-            "avg_return": overall_stats["avg_return"],
-            "winrate": overall_stats["winrate"],
-            "sharpe": overall_stats["sharpe"],
-            "n_trades": overall_stats["n_trades"],
-        },
-        report_dir=out_dir,
-        report_prefix=f"{base_name}_eval_h{horizon_bars}",
-        extra_metadata={
-            "runner": "evaluate_forward_signals.py",
-            "signals_csv": str(sig_path),
-            "horizon_bars": horizon_bars,
-            "n_bars": n_bars,
-            "ohlcv_source": args.ohlcv_source,
-            "timeframe": args.timeframe,
-            "ohlcv_load_by_symbol": ohlcv_load_by_symbol,
-            "stats_per_symbol": stats_per_symbol,
-            "eval_csv": str(eval_csv_path),
-        },
-    )
-    print(f"\n📝 Forward-Evaluation in Registry geloggt (run_type='forward_eval')")
-    print(f"✅ Forward-Evaluation abgeschlossen!\n")
+        traceback.print_exc()
+        write_manifest(2, df_sig=df_sig if df_sig is not None else None, error=str(e))
+        return 2
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
