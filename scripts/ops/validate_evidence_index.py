@@ -12,6 +12,8 @@ Usage:
 Exit Codes:
     0 = Validation passed
     2 = Validation errors found
+
+NO-LIVE: Validates local Markdown under docs/ — no brokers, orders, or execution.
 """
 
 from __future__ import annotations
@@ -20,6 +22,7 @@ import argparse
 import re
 import sys
 from pathlib import Path
+from typing import Optional, Sequence
 
 # Schema: Valid categories (case-insensitive)
 VALID_CATEGORIES = {
@@ -187,9 +190,12 @@ def validate_index_file(index_path: Path, repo_root: Path) -> tuple:
     return len(errors), errors
 
 
-def main():
+def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Validate Evidence Index structure and references",
+        description=(
+            "Validate Evidence Index structure and references. "
+            "NO-LIVE: local documentation checks only — no brokers, orders, or execution."
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
@@ -200,7 +206,7 @@ def main():
         help="Path to EVIDENCE_INDEX.md (relative to repo root). Default: docs/ops/EVIDENCE_INDEX.md",
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     # Determine repo root (assume script is in scripts/ops/)
     script_path = Path(__file__).resolve()
@@ -216,14 +222,13 @@ def main():
 
     if error_count == 0:
         print("✅ Validation passed: Evidence Index is valid")
-        sys.exit(0)
-    else:
-        print(f"❌ Validation failed: {error_count} error(s) found")
-        print()
-        for error in errors:
-            print(f"  - {error}")
-        sys.exit(2)
+        return 0
+    print(f"❌ Validation failed: {error_count} error(s) found")
+    print()
+    for error in errors:
+        print(f"  - {error}")
+    return 2
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
