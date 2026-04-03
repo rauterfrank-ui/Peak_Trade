@@ -6,6 +6,8 @@ Kleiner, lokaler Demo-Runner ohne Research-/Trading-Logik: Toy-Objective, In-Mem
 Standard: Dry-Run (keine Optuna-Ausführung). Kein Netzwerk, keine Exchange-/Order-Pfade.
 
 Siehe auch: ``scripts/run_optuna_study.py`` für die vollständige Strategy-Integration.
+
+NO-LIVE: keine Order-Ausführung, kein Markt/Exchange — nur lokales Toy-Objective (optional Optuna).
 """
 
 from __future__ import annotations
@@ -27,19 +29,29 @@ except ImportError:
     OPTUNA_AVAILABLE = False
 
 
+class _OptunaPlaceholderHelpFormatter(
+    argparse.ArgumentDefaultsHelpFormatter,
+    argparse.RawDescriptionHelpFormatter,
+):
+    """Defaults in Hilfe + Epilog ohne automatischen Zeilenumbruch."""
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Minimaler Optuna Demo-Study-Runner (Toy-Objective, In-Memory). "
-            "Standard: Dry-Run — keine Study-Ausführung ohne --no-dry-run. "
-            "NO-LIVE: kein Markt, keine Exchange-/Order-Pfade."
+            "Standard: Dry-Run — keine Study-Ausführung ohne --no-dry-run.\n\n"
+            "NO-LIVE: kein Markt, keine Exchange-/Order-Ausführung."
         ),
-        epilog=(
-            "Dieses Skript ist ein J2-Placeholder/Demo-Pfad (Toy-Objective), "
-            "keine Markt- oder Live-Ausführung. "
-            "Vollständige Strategy-Optimierung: scripts/run_optuna_study.py"
-        ),
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        epilog="""
+Scope (NO-LIVE):
+  In-memory toy optimization only (J2 placeholder). No market data, no brokers,
+  no order execution. Default: --dry-run (no Optuna run). Use --no-dry-run for a
+  local demo study when Optuna is installed.
+
+Full strategy optimization (not this script): scripts/run_optuna_study.py
+        """.strip(),
+        formatter_class=_OptunaPlaceholderHelpFormatter,
     )
     parser.add_argument(
         "--study-name",

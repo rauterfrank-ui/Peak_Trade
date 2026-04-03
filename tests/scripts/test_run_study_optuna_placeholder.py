@@ -31,12 +31,13 @@ def test_help_exits_zero():
         check=False,
     )
     assert result.returncode == 0
-    assert "--study-name" in result.stdout
-    assert "--trials" in result.stdout
-    assert "--direction" in result.stdout
-    assert (
-        "--dry-run" in result.stdout or "dry-run" in result.stdout or "no-dry-run" in result.stdout
-    )
+    out = result.stdout
+    assert "--study-name" in out
+    assert "--trials" in out
+    assert "--direction" in out
+    assert "--dry-run" in out or "dry-run" in out or "no-dry-run" in out
+    assert "NO-LIVE" in out
+    assert "order execution" in out.lower()
 
 
 def test_default_is_dry_run_no_optuna_needed():
