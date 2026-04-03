@@ -47,7 +47,7 @@ from src.strategies.registry import create_strategy_from_config
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Peak_Trade: Hyperparameter-Sweeps f�r Strategien.",
+        description="Peak_Trade: Hyperparameter-Sweeps für Strategien.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -57,7 +57,7 @@ Examples:
   # Sweep mit expliziter Strategie und Symbol
   python scripts/sweep_parameters.py --strategy ma_crossover --symbol BTC/EUR
 
-  # Nur Top-2 Konfigurationen mit vollst�ndigen Reports
+  # Nur Top-2 Konfigurationen mit vollständigen Reports
   python scripts/sweep_parameters.py --top-k-reports 2
 
   # Anzahl getesteter Kombinationen limitieren
@@ -67,15 +67,15 @@ Examples:
     parser.add_argument(
         "-s",
         "--strategy",
-        help="Strategie-Key (�berschreibt [sweep].strategy_key)",
+        help="Strategie-Key (Überschreibt [sweep].strategy_key)",
     )
     parser.add_argument(
         "--symbol",
-        help="Symbol (�berschreibt [sweep].symbol)",
+        help="Symbol (Überschreibt [sweep].symbol)",
     )
     parser.add_argument(
         "--run-name",
-        help="Optionaler Name f�r diesen Sweep-Run (f�r Reports)",
+        help="Optionaler Name für diesen Sweep-Run (für Reports)",
     )
     parser.add_argument(
         "--sort-by",
@@ -94,7 +94,7 @@ Examples:
         "--top-k-reports",
         type=int,
         default=3,
-        help="F�r die Top-K-Konfigurationen vollst�ndige Reports schreiben (0 = keine)",
+        help="Für die Top-K-Konfigurationen vollständige Reports schreiben (0 = keine)",
     )
     parser.add_argument(
         "--max-runs",
@@ -117,10 +117,10 @@ Examples:
 
 def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     """
-    L�dt Daten f�r ein bestimmtes Symbol.
+    Lädt Daten für ein bestimmtes Symbol.
 
     Aktuell: Dummy-Daten mit symbol-spezifischem Seed.
-    TODO: Sp�ter mit echten Kraken-Daten ersetzen.
+    TODO: Später mit echten Kraken-Daten ersetzen.
 
     Args:
         symbol: Trading-Pair (z.B. "BTC/EUR")
@@ -129,7 +129,7 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     Returns:
         DataFrame mit OHLCV-Daten
     """
-    # Symbol-spezifischer Seed f�r reproduzierbare aber unterschiedliche Daten
+    # Symbol-spezifischer Seed für reproduzierbare aber unterschiedliche Daten
     seed = hash(symbol) % (2**32)
     np.random.seed(seed)
 
@@ -203,7 +203,7 @@ def build_param_grid(
     param_values: List[List[Any]] = []
 
     for name, values in params_section.items():
-        # Single-Value � Liste
+        # Single-Value → Liste
         if isinstance(values, (list, tuple)):
             vlist = list(values)
         else:
@@ -229,7 +229,7 @@ def run_backtest_for_params(
     n_bars: int = 200,
 ) -> BacktestResult:
     """
-    F�hrt Backtest mit �berschriebenen Strategy-Parametern aus.
+    Führt Backtest mit überschriebenen Strategy-Parametern aus.
 
     Args:
         base_cfg: Basis-Config
@@ -242,7 +242,7 @@ def run_backtest_for_params(
     Returns:
         BacktestResult mit Metadaten
     """
-    # Dotted-Keys f�r Strategy-Section bauen
+    # Dotted-Keys für Strategy-Section bauen
     overrides: Dict[str, Any] = {}
     for name, value in zip(param_names, param_values):
         path = f"strategy.{strategy_key}.{name}"
@@ -260,7 +260,7 @@ def run_backtest_for_params(
     position_sizer = build_position_sizer_from_config(cfg)
     risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
 
-    # Wrapper f�r Legacy-API
+    # Wrapper für Legacy-API
     def strategy_signal_fn(df, params):
         sigs = strategy.generate_signals(df)
         return sigs.replace(-1, 0)  # Long-Only
@@ -269,7 +269,7 @@ def run_backtest_for_params(
     stop_pct = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
     strategy_params = {"stop_pct": stop_pct}
 
-    # Backtest durchf�hren
+    # Backtest durchführen
     engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
     result = engine.run_realistic(
         df=data, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_params
@@ -293,10 +293,10 @@ def print_sweep_table(df: pd.DataFrame, param_names: List[str], n_top: int = 10)
     print("=" * 100)
 
     if len(df) == 0:
-        print("Keine Ergebnisse verf�gbar.")
+        print("Keine Ergebnisse verfügbar.")
         return
 
-    # Spalten f�r Tabelle
+    # Spalten für Tabelle
     cols_to_show = (
         ["symbol"]
         + param_names
@@ -379,7 +379,7 @@ def main(argv: List[str] | None = None) -> int:
             print("  config geladen")
         except FileNotFoundError as e:
             print(f"\nFEHLER: {e}", file=sys.stderr)
-            print("\nBitte eine gueltige TOML-Config angeben (--config-path).", file=sys.stderr)
+            print("\nBitte eine gültige TOML-Config angeben (--config-path).", file=sys.stderr)
             write_manifest(1, error=str(e))
             return 1
 
@@ -394,7 +394,7 @@ def main(argv: List[str] | None = None) -> int:
         sweep_symbol = base_cfg.get("sweep.symbol", None)
         symbol = args.symbol or sweep_symbol
         if not symbol:
-            msg = "Kein Symbol gesetzt � bitte [sweep].symbol oder --symbol verwenden."
+            msg = "Kein Symbol gesetzt – bitte [sweep].symbol oder --symbol verwenden."
             print(f"\nFEHLER: {msg}", file=sys.stderr)
             write_manifest(1, error=msg)
             return 1
@@ -434,9 +434,9 @@ def main(argv: List[str] | None = None) -> int:
 
         if args.max_runs is not None and args.max_runs < total_combos:
             combos = combos[: args.max_runs]
-            print(f"  max_runs={args.max_runs} � teste nur erste {len(combos)} Kombinationen")
+            print(f"  max_runs={args.max_runs} – teste nur erste {len(combos)} Kombinationen")
 
-        # Sweeps durchfuehren
+        # Sweeps durchführen
         print(f"\n  Starte Sweep mit {len(combos)} Kombinationen...")
         print("-" * 70)
 
@@ -522,7 +522,7 @@ def main(argv: List[str] | None = None) -> int:
         if sort_by in df.columns:
             df = df.sort_values(by=sort_by, ascending=ascending)
         else:
-            print(f"\nSortierfeld {sort_by!r} nicht in Spalten � keine Sortierung")
+            print(f"\nSortierfeld {sort_by!r} nicht in Spalten – keine Sortierung")
 
         df = df.reset_index(drop=True)
 
@@ -537,7 +537,7 @@ def main(argv: List[str] | None = None) -> int:
 
         top_k = max(args.top_k_reports, 0)
         if top_k > 0:
-            print(f"\nErstelle Reports fuer Top {top_k} Konfigurationen...")
+            print(f"\nErstelle Reports für Top {top_k} Konfigurationen...")
             from src.backtest.reporting import save_full_report
 
             top_df = df.head(top_k).copy()
