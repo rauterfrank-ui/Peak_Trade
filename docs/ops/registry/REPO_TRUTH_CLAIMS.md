@@ -10,6 +10,8 @@
 
 Die gemeinsame Schicht (Modelle, Loader, Evaluatoren) beschreibt `docs/ops/registry/TRUTH_CORE.md`.
 
+Beispiel (NO-LIVE): Claim `cli-run-manifest-run-id-doc-present` stellt sicher, dass `docs/ops/CLI_RUN_MANIFEST_RUN_ID.md` weiterhin existiert — kanonische Beschreibung des deterministischen `run_id`-Fingerprints für CLI-Run-Manifeste (`*_run_manifest.json`).
+
 ## Betrieb
 
 ```bash

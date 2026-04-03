@@ -33,3 +33,7 @@ claims:
   - id: repo-truth-claims-config-present
     check: path_exists
     path: config/ops/repo_truth_claims.yaml
+
+  - id: cli-run-manifest-run-id-doc-present
+    check: path_exists
+    path: docs/ops/CLI_RUN_MANIFEST_RUN_ID.md
