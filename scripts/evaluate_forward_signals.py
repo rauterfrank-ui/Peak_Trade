@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import sys
 import argparse
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -342,7 +342,7 @@ def main(argv: List[str] | None = None) -> None:
     out_dir = Path(args.output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    ts_label = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    ts_label = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     base_name = sig_path.stem
     eval_csv_path = out_dir / f"{base_name}_eval_h{horizon_bars}_{ts_label}.csv"
 

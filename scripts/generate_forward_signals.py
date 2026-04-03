@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import sys
 import argparse
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -225,7 +225,7 @@ def main(argv: List[str] | None = None) -> None:
 
     universe = determine_universe(cfg, args.symbols)
     run_name = (
-        args.run_name or f"forward_{strategy_key}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
+        args.run_name or f"forward_{strategy_key}_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}"
     )
 
     print(f"\n⚙️  Konfiguration:")
@@ -239,7 +239,7 @@ def main(argv: List[str] | None = None) -> None:
     signals: List[ForwardSignal] = []
     ohlcv_load_by_symbol: Dict[str, Dict[str, Any]] = {}
 
-    generated_at = datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     for symbol in universe:
         print(f"\n📊 Verarbeite Symbol: {symbol}")
