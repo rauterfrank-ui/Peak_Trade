@@ -30,7 +30,7 @@ def test_sweep_parameters_exit_1_missing_config(tmp_path, monkeypatch) -> None:
     assert payload["config_path"] == str(tmp_path / "missing.toml")
 
 
-def test_sweep_parameters_exit_1_no_successful_runs(tmp_path, monkeypatch) -> None:
+def test_sweep_parameters_exit_1_no_successful_runs(tmp_path, monkeypatch, capsys) -> None:
     """Grid ok, aber jeder Backtest schlaegt fehl -> keine Zeilen -> Exit 1."""
     import sweep_parameters as sp
 
@@ -78,3 +78,6 @@ def test_sweep_parameters_exit_1_no_successful_runs(tmp_path, monkeypatch) -> No
     assert payload["config_path"] == str(cfg)
     assert payload["strategy"] == "ma_crossover"
     assert payload["symbols"] == ["BTC/EUR"]
+    out = capsys.readouterr().out
+    assert "  - run_id:" in out
+    assert payload["run_id"] in out

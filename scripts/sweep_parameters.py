@@ -315,6 +315,12 @@ def print_sweep_table(df: pd.DataFrame, param_names: List[str], n_top: int = 10)
 def main(argv: List[str] | None = None) -> int:
     """Main-Funktion. Exit-Codes: 0 ok, 1 erwarteter fachlicher Fehler, 2 unerwartet."""
     args = parse_args(argv)
+    deterministic_run_id = compute_deterministic_run_id(
+        script_name="sweep_parameters.py",
+        argv=list(sys.argv),
+        config_path=str(Path(args.config_path)),
+        git_sha=try_git_sha(),
+    )
     sweeps_dir = Path("reports") / "sweeps"
     strategy_key_resolved = ""
     symbol_resolved = ""
@@ -411,6 +417,7 @@ def main(argv: List[str] | None = None) -> int:
         print(f"  - Sweep-Name: {run_name_base}")
         print(f"  - Sortiere nach: {sort_by} ({'ASC' if ascending else 'DESC'})")
         print(f"  - Bars pro Run: {args.bars}")
+        print(f"  - run_id:     {deterministic_run_id}")
 
         # Parameter-Gitter bauen
         print(f"\n  Baue Parameter-Grid...")
