@@ -21,7 +21,7 @@ Usage:
 
 Exit codes:
     0 — Success
-    1 — Error (missing repo root, write failure, etc.)
+    1 — Error (invalid --output-dir, missing repo root, write failure, etc.)
 
 Requirements:
     - Python 3.7+ (stdlib only, no external dependencies)
@@ -371,7 +371,8 @@ Scope (NO-LIVE):
         metavar="DIR",
         help=(
             "Directory for TODO_PLACEHOLDER_*.md (default: <repo>/.ops_local/inventory). "
-            "Use an absolute path or a path relative to the current working directory."
+            "Use an absolute path or a path relative to the current working directory. "
+            "Must not be an existing file."
         ),
     )
     return parser
@@ -381,6 +382,16 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     """Main entry point."""
     try:
         args = _build_arg_parser().parse_args(argv)
+
+        resolved_output: Optional[Path] = None
+        if args.output_dir is not None:
+            resolved_output = Path(args.output_dir).expanduser().resolve()
+            if resolved_output.exists() and resolved_output.is_file():
+                print(
+                    f"❌ Error: --output-dir must be a directory, not a file: {resolved_output}",
+                    file=sys.stderr,
+                )
+                return 1
 
         # Find repo root
         repo_root = find_repo_root()
@@ -396,8 +407,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         print(f"✅ Scanned {len(results)} files with matches")
 
         # Prepare output directory
-        if args.output_dir is not None:
-            output_dir = Path(args.output_dir).expanduser().resolve()
+        if resolved_output is not None:
+            output_dir = resolved_output
         else:
             output_dir = repo_root / ".ops_local" / "inventory"
         output_dir.mkdir(parents=True, exist_ok=True)
