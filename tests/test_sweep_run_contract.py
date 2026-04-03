@@ -81,3 +81,23 @@ def test_sweep_parameters_exit_1_no_successful_runs(tmp_path, monkeypatch, capsy
     out = capsys.readouterr().out
     assert "  - run_id:" in out
     assert payload["run_id"] in out
+
+
+def test_sweep_parameters_script_file_is_valid_utf8() -> None:
+    """Keine U+FFFD-/Encoding-Bruchstücke im Sweep-Skript (Regression)."""
+    path = ROOT / "scripts" / "sweep_parameters.py"
+    text = path.read_bytes().decode("utf-8")
+    assert "\ufffd" not in text
+    assert "für" in text
+
+
+def test_sweep_parameters_help_prints_utf8_german(capsys: pytest.CaptureFixture[str]) -> None:
+    """Smoke: --help gibt lesbare Umlaute aus (CLI-String-Hygiene)."""
+    import sweep_parameters as sp
+
+    with pytest.raises(SystemExit) as exc_info:
+        sp.parse_args(["--help"])
+    assert exc_info.value.code == 0
+    out = capsys.readouterr().out
+    assert "für" in out
+    assert "Überschreibt" in out
