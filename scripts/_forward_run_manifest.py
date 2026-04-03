@@ -59,7 +59,7 @@ def try_git_sha() -> str | None:
         )
         if proc.returncode == 0:
             return proc.stdout.strip()
-    except OSError:
+    except (OSError, subprocess.TimeoutExpired):
         pass
     return None
 
