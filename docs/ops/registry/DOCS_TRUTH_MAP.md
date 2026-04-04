@@ -35,3 +35,7 @@ python3 scripts/ops/check_docs_drift_guard.py --base origin/main
 ```
 
 Vor dem ersten Lauf: `git fetch origin` sinnvoll, damit `origin&#47;main` existiert.
+
+## Änderungsnachweis (Slice A)
+
+- 2026-04-04 — `docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md`: Referenz auf `LiveOrderExecutor`-Stub in `src/orders/exchange.py` ergänzt (Abgleich orders-layer / known-limitations-canonical).
