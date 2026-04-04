@@ -270,12 +270,12 @@ class MetaLabelingStrategy(BaseStrategy):
         """
         Lädt die Basis-Strategie aus der Registry.
 
-        TODO: Implementierung mit echter Registry-Integration.
+        Research stub: Echte Registry-Anbindung ist noch nicht umgesetzt.
 
         Returns:
             Instanz der Basis-Strategie oder None
         """
-        # TODO: Registry-Integration
+        # Registry-Integration (geplant; siehe Strategy-Registry-Docs)
         # from src.strategies.registry import get_strategy_spec, create_strategy_from_config
         # spec = get_strategy_spec(self.cfg.base_strategy_id)
         # return spec.cls()
@@ -288,7 +288,7 @@ class MetaLabelingStrategy(BaseStrategy):
         ⚠️ RESEARCH-STUB: Aktuell wird ein Dummy-Signal (flat) zurückgegeben.
         Die vollständige ML-Pipeline erfolgt in einer späteren Phase.
 
-        Geplante Logik (TODO):
+        Geplante Logik (Roadmap, nicht implementiert):
         1. Basis-Strategie-Signale abrufen
         2. Triple-Barrier-Labels für jedes Signal berechnen
         3. Features für ML-Modell extrahieren
@@ -313,7 +313,7 @@ class MetaLabelingStrategy(BaseStrategy):
             raise ValueError(f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}")
 
         # =====================================================================
-        # TODO: Meta-Labeling-Pipeline implementieren
+        # Meta-Labeling-Pipeline (Roadmap — hier bewusst nur Stub)
         # =====================================================================
         #
         # Phase 1: Basis-Strategie-Signale
