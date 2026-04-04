@@ -288,8 +288,8 @@ class LiveOrderExecutor:
     aber er ist technisch auf "Dry-Run" verdrahtet.
 
     WICHTIG: In Phase 71 sendet diese Klasse KEINE echten Orders!
-             Alle Live-Operationen sind als TODO/commented-out/NotImplemented
-             gekennzeichnet.
+             Echte Live-Broker-Pfade sind bewusst nicht umgesetzt (Stub:
+             auskommentiert bzw. ``NotImplemented``).
 
     Attributes:
         safety_guard: SafetyGuard für Safety-Prüfungen
