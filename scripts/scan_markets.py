@@ -46,7 +46,7 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     Lädt Daten für ein bestimmtes Symbol.
 
     Aktuell: Dummy-Daten mit symbol-spezifischem Seed.
-    TODO: Später mit echten Kraken-Daten ersetzen.
+    Ausblick: später optional durch Marktdaten (z. B. Exchange-API) ersetzbar.
 
     Args:
         symbol: Trading-Pair (z.B. "BTC/EUR")
