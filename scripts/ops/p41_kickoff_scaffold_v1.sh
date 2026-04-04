@@ -94,7 +94,7 @@ cat > "${OPS_DIR}/${PHASE_UPPER}_TASK.md" <<EOF
 # ${PHASE_UPPER} — ${SLUG}
 
 ## Goal
-<TODO>
+_(Replace with a one-sentence goal.)_
 
 ## Scope
 - IN:
