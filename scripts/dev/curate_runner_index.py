@@ -341,7 +341,7 @@ def main():
     print(f"\nCuration complete!")
     print(f"  READY: {output_data['summary']['ready']}")
     print(f"  PARTIAL: {output_data['summary']['partial']}")
-    print(f"  TODO: {output_data['summary']['todo']}")
+    print(f"  PENDING: {output_data['summary']['todo']}")
     print(f"\nP1 MUST integrate first:")
     for script in output_data["summary"]["p1_must"]:
         print(f"  - {script}")
