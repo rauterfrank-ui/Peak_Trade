@@ -30,7 +30,7 @@ from typing import Optional, Sequence
 
 # Schema: Valid categories (case-insensitive, normalized to Title Case)
 # Draft slot text in generated Markdown (local operator workflow; not live secrets).
-# Avoids literal TBD/XXX tokens so repo placeholder inventory stays triage-friendly.
+# Wording avoids spellings from legacy merge-log templates so placeholder inventory scans stay triage-friendly.
 _DRAFT = "[draft — replace]"
 
 VALID_CATEGORIES = {
