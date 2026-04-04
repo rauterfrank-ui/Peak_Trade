@@ -422,9 +422,7 @@ def main() -> int:
             except (ValueError, AttributeError):
                 pass
 
-        title = (
-            pr_data.get("title", FALLBACK_PR_TITLE) if pr_data else "(title unavailable)"
-        )
+        title = pr_data.get("title", FALLBACK_PR_TITLE) if pr_data else "(title unavailable)"
         update_readme(
             readme_path,
             args.pr,
