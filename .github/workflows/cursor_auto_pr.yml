@@ -56,6 +56,7 @@ jobs:
                 { id: 'ci-workflow-dispatch-guard.yml' },
                 { id: 'docs-token-policy-gate.yml' },
                 { id: 'docs_reference_targets_gate.yml' },
+                { id: 'truth_gates_pr.yml' },
               ];
               for (const w of workflows) {
                 try {
@@ -140,6 +141,7 @@ jobs:
               { id: 'ci-workflow-dispatch-guard.yml' },
               { id: 'docs-token-policy-gate.yml' },
               { id: 'docs_reference_targets_gate.yml' },
+              { id: 'truth_gates_pr.yml' },
             ];
 
             for (const w of workflows) {
