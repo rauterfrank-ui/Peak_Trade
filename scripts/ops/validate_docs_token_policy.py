@@ -375,6 +375,10 @@ Examples:
 
   # Output JSON report
   %(prog)s --json report.json
+
+Markdown tip (illustrative paths):
+  Inline code that looks like a repo path but does not exist must encode each
+  slash as &#47; (e.g. scripts&#47;ops&#47;tool.py), otherwise this gate may fail.
 """,
     )
 

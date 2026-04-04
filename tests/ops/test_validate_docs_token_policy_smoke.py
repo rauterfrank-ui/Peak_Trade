@@ -20,7 +20,9 @@ def test_validate_docs_token_policy_help_contains_no_live() -> None:
         text=True,
     )
     assert p.returncode == 0, p.stderr
-    assert "NO-LIVE" in p.stdout.replace("\n", "")
+    out = p.stdout.replace("\n", "")
+    assert "NO-LIVE" in out
+    assert "&#47;" in p.stdout
 
 
 def test_validate_docs_token_policy_main_returns_2_outside_git_repo(
