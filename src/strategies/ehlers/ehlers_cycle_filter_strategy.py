@@ -317,7 +317,7 @@ class EhlersCycleFilterStrategy(BaseStrategy):
         """
         Misst dominante Zyklusperiode via Hilbert Transform.
 
-        TODO: Implementierung nach Ehlers:
+        Research stub (nicht vollständig): Geplant nach Ehlers wäre u. a.:
         - Hilbert Transform für Quadratur-Komponente
         - Phase-Akkumulation für Periode-Messung
         - Adaptive Cycle-Period (6-50 Bars typisch)
@@ -335,7 +335,7 @@ class EhlersCycleFilterStrategy(BaseStrategy):
         """
         Bandpass Filter zur Isolierung der Cycle-Komponente.
 
-        TODO: Implementierung nach Ehlers:
+        Research stub (nicht vollständig): Geplant nach Ehlers wäre u. a.:
         - Zentriert um dominante Frequenz
         - Bandwidth kontrolliert Selektivität
         - Output ist die isolierte Cycle-Komponente
