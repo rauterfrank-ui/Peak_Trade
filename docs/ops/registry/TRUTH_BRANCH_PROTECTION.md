@@ -17,3 +17,5 @@
 **Standard-Repo:** Owner `rauterfrank-ui`, Repo `Peak_Trade`, Branch `main` (über CLI-Flags überschreibbar).
 
 Siehe auch `docs/ops/registry/TRUTH_CORE.md` für die Truth-Schicht der Checks selbst.
+
+**Betrieb:** Wenn ein PR wegen fehlender oder hängender Required Checks blockiert ist (oder Reviews), Kurzüberblick und Retrigger-Hinweise: `docs/ops/runbooks/github_rulesets_pr_reviews_policy.md` → Abschnitt *Merge blockiert (`BLOCKED`)*.
