@@ -40,6 +40,7 @@ Dieses Dokument listet **bewusst nicht implementierte Features** und **bekannte 
 **Referenz:**
 - `src/live/safety.py` – SafetyGuard-Implementierung
 - `src/core/environment.py` – Environment-Konfiguration
+- `src/orders/exchange.py` – `LiveOrderExecutor` (Stub/Dry-Run; echte Live-Broker-Pfade bewusst nicht umgesetzt)
 
 ---
 
