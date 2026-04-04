@@ -363,8 +363,7 @@ def generate_target_map_report(results: Dict[Path, Dict[str, int]], repo_root: P
             results,
             repo_root,
             pattern_name,
-            "### Top files under `src/` "
-            f"(top {TOP_FILES_PER_PREFIX_LIMIT}; triage slice)",
+            f"### Top files under `src/` (top {TOP_FILES_PER_PREFIX_LIMIT}; triage slice)",
             "src/",
         )
         _append_top_files_for_prefix_section(
@@ -372,8 +371,7 @@ def generate_target_map_report(results: Dict[Path, Dict[str, int]], repo_root: P
             results,
             repo_root,
             pattern_name,
-            "### Top files under `scripts/` "
-            f"(top {TOP_FILES_PER_PREFIX_LIMIT}; triage slice)",
+            f"### Top files under `scripts/` (top {TOP_FILES_PER_PREFIX_LIMIT}; triage slice)",
             "scripts/",
         )
 
