@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Peak_Trade – Evidence Entry Generator (v0.2)
+Peak_Trade – Evidence Entry Generator (v0.3)
 
 Purpose: Generate evidence entry files from command-line arguments.
 Owner: ops
@@ -29,6 +29,10 @@ from pathlib import Path
 from typing import Optional, Sequence
 
 # Schema: Valid categories (case-insensitive, normalized to Title Case)
+# Draft slot text in generated Markdown (local operator workflow; not live secrets).
+# Avoids literal TBD/XXX tokens so repo placeholder inventory stays triage-friendly.
+_DRAFT = "[draft — replace]"
+
 VALID_CATEGORIES = {
     "ci/workflow",
     "drill/operator",
@@ -81,46 +85,46 @@ def generate_template(
 
 ## Claims
 [What does this evidence demonstrate? Be specific and factual.]
-- Claim 1: [TBD]
-- Claim 2: [TBD]
+- Claim 1: {_DRAFT}
+- Claim 2: {_DRAFT}
 
 ---
 
 ## Evidence / Source Links
-- [Primary Source: TBD](TBD)
-- [CI Run / Commit: TBD](TBD)
+- Primary source: {_DRAFT}
+- CI run / commit: {_DRAFT}
 
 ---
 
 ## Verification Steps
 [How can someone verify this evidence?]
-1. Step 1: [TBD]
-2. Step 2: [TBD]
-3. Expected result: [TBD]
+1. Step 1: {_DRAFT}
+2. Step 2: {_DRAFT}
+3. Expected result: {_DRAFT}
 
 ---
 
 ## Risk Notes
 [Optional: Any caveats, limitations, or risk context]
-- [TBD]
+- {_DRAFT}
 
 ---
 
 ## Related PRs / Commits
-- PR #XXX: [TBD](TBD)
-- Commit: [TBD]
+- PR #<pr-number> — {_DRAFT}
+- Commit: {_DRAFT}
 
 ---
 
 ## Owner / Responsibility
 **Owner:** {owner}
-**Contact:** [TBD]
+**Contact:** {_DRAFT}
 
 ---
 
 **Entry Created:** {date}
 **Last Updated:** {date}
-**Template Version:** v0.2
+**Template Version:** v0.3
 """
 
 
@@ -255,7 +259,7 @@ Examples:
     print(f"   Date: {args.date}")
     print()
     print("Next steps:")
-    print(f"  1. Edit {out_file} to fill in [TBD] placeholders")
+    print(f"  1. Edit {out_file} to fill in draft placeholders")
     print(f"  2. Add entry to docs/ops/EVIDENCE_INDEX.md (table + category section)")
     print(f"  3. Run: python scripts/ops/validate_evidence_index.py")
     return 0
