@@ -52,6 +52,8 @@ def test_generate_placeholder_reports_exits_zero_and_writes_core_artifacts(tmp_p
     assert "## Pattern Summary" in inv_text
     assert tgt_text.startswith("# TODO/Placeholder Target Map (Inventory Addendum)\n")
     assert "## Pattern:" in tgt_text
+    assert "### Top files under `src/`" in tgt_text
+    assert "### Top files under `scripts/`" in tgt_text
 
 
 def test_generate_placeholder_reports_rejects_output_dir_that_is_file(tmp_path):

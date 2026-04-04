@@ -6,7 +6,9 @@ Deterministic, stdlib-only script that scans the repository for placeholder
 markers (TODO, FIXME, TBD, XXX, etc.) and generates two local report files:
 
 1. TODO_PLACEHOLDER_INVENTORY.md — Summary counts + top files per pattern
-2. TODO_PLACEHOLDER_TARGET_MAP.md — Path-prefix breakdowns (docs/, src/, config/, etc.)
+2. TODO_PLACEHOLDER_TARGET_MAP.md — Path-prefix breakdowns (docs/, src/, config/, etc.),
+   plus per-pattern top files scoped to `src/` and `scripts/` (so code hotspots are visible
+   even when the global top-20 is dominated by `docs/`).
 
 Output location: .ops_local/inventory/ (git-ignored)
 
@@ -270,6 +272,54 @@ def generate_inventory_report(
     return "\n".join(lines)
 
 
+# Max lines for prefix-scoped "top files" lists (src/, scripts/) per pattern.
+TOP_FILES_PER_PREFIX_LIMIT = 10
+
+
+def _top_files_for_category(
+    results: Dict[Path, Dict[str, int]],
+    repo_root: Path,
+    pattern_name: str,
+    category: str,
+) -> List[Tuple[int, str]]:
+    """
+    Return (count, rel_path) for files in a single categorize_by_prefix bucket, sorted.
+
+    category is e.g. 'src/' or 'scripts/' (must match categorize_by_prefix output).
+    """
+    file_counts: List[Tuple[int, str]] = []
+    for file_path, counts in results.items():
+        if pattern_name not in counts or counts[pattern_name] <= 0:
+            continue
+        if categorize_by_prefix(file_path, repo_root) != category:
+            continue
+        rel_path = file_path.relative_to(repo_root)
+        file_counts.append((counts[pattern_name], str(rel_path)))
+    file_counts.sort(key=lambda x: (-x[0], x[1]))
+    return file_counts
+
+
+def _append_top_files_for_prefix_section(
+    lines: List[str],
+    results: Dict[Path, Dict[str, int]],
+    repo_root: Path,
+    pattern_name: str,
+    heading: str,
+    category: str,
+) -> None:
+    """Append a fenced block of path:count lines for one prefix category."""
+    lines.append(heading)
+    lines.append("")
+    lines.append("```")
+    scoped = _top_files_for_category(results, repo_root, pattern_name, category)
+    for count, path in scoped[:TOP_FILES_PER_PREFIX_LIMIT]:
+        lines.append(f"{path}:{count}")
+    if not scoped:
+        lines.append("(none)")
+    lines.append("```")
+    lines.append("")
+
+
 def generate_target_map_report(results: Dict[Path, Dict[str, int]], repo_root: Path) -> str:
     """Generate the TODO_PLACEHOLDER_TARGET_MAP.md content."""
     lines = []
@@ -306,6 +356,26 @@ def generate_target_map_report(results: Dict[Path, Dict[str, int]], repo_root: P
 
         lines.append("```")
         lines.append("")
+
+        # Prefix-scoped tops: global top-20 is often docs-only; surface code paths explicitly.
+        _append_top_files_for_prefix_section(
+            lines,
+            results,
+            repo_root,
+            pattern_name,
+            "### Top files under `src/` "
+            f"(top {TOP_FILES_PER_PREFIX_LIMIT}; triage slice)",
+            "src/",
+        )
+        _append_top_files_for_prefix_section(
+            lines,
+            results,
+            repo_root,
+            pattern_name,
+            "### Top files under `scripts/` "
+            f"(top {TOP_FILES_PER_PREFIX_LIMIT}; triage slice)",
+            "scripts/",
+        )
 
         # By path prefix
         lines.append("### By path prefix (docs/src/config/.github/other)")
