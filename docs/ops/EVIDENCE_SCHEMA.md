@@ -1,8 +1,10 @@
-# Peak_Trade – Evidence Entry Schema (v0.2)
+# Peak_Trade – Evidence Entry Schema (v0.3)
 
 **Purpose:** Canonical schema for evidence entries in the Evidence Index.  
 **Owner:** ops  
-**Status:** v0.2 (Operational)
+**Status:** v0.3 (Operational)
+
+**Draft entries:** Files produced by `scripts/ops/generate_evidence_entry.py` use **Status: DRAFT** and the literal slot `[draft — replace]` in the Markdown body until an operator fills them in (same wording as [EVIDENCE_ENTRY_TEMPLATE.md](EVIDENCE_ENTRY_TEMPLATE.md) v0.3).
 
 ---
 
@@ -106,7 +108,7 @@ Evidence entries must belong to ONE of these categories:
 
 ---
 
-**Version:** v0.2  
+**Version:** v0.3  
 **Maintained by:** ops  
-**Last Updated:** 2026-01-07  
+**Last Updated:** 2026-04-01  
 **Related:** [EVIDENCE_INDEX.md](EVIDENCE_INDEX.md), [EVIDENCE_ENTRY_TEMPLATE.md](EVIDENCE_ENTRY_TEMPLATE.md)

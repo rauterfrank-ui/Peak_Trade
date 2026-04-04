@@ -1,56 +1,74 @@
-# Evidence Entry Template (v0.2)
+# Evidence Entry Template (v0.3)
 
 **Purpose:** Copy-paste template for creating new evidence entries.  
-**Usage:** Fill in ALL mandatory fields, then add to `EVIDENCE_INDEX.md` (table + category section).
+**Usage:** Fill in mandatory fields, replace `[draft — replace]` slots with real content, then add to `EVIDENCE_INDEX.md` (table + category section).
+
+**Alignment:** Matches `scripts/ops/generate_evidence_entry.py` output (**Template Version:** v0.3). Draft slots use `[draft — replace]` so placeholder-inventory scans stay triage-friendly.
 
 ---
 
 ## Template (Markdown Format)
 
+Use this structure for new files under `docs/ops/evidence/`. After verification, set **Status** to `VERIFIED` (or `ARCHIVED`).
+
 ```markdown
-## Evidence Entry: [SHORT_TITLE]
+# Evidence Entry: [SHORT_TITLE]
 
-**Evidence ID:** EV-YYYYMMDD-<TAG>  
-**Date:** YYYY-MM-DD  
-**Category:** [CI/Workflow | Drill/Operator | Test/Refactor | Incident/RCA | Config Snapshot]  
-**Owner:** [username/team/role]  
-**Status:** VERIFIED
-
-### Scope
-[1–2 sentences: What system/component/process does this evidence cover?]
-
-### Claims
-[What does this evidence demonstrate? Be specific and factual.]
-- Claim 1: [e.g., "138/138 tests passed"]
-- Claim 2: [e.g., "Zero breaking changes"]
-
-### Evidence / Source Links
-- [Primary Source: PR #XXX Merge Log](relative/path/to/merge_log.md)
-- [CI Run: workflow_run_url]
-- [Commit: SHA]
-
-### Verification Steps
-[How can someone verify this evidence?]
-1. Step 1: [e.g., "Check out commit SHA"]
-2. Step 2: [e.g., "Run `pytest tests/test_kupiec.py`"]
-3. Expected result: [e.g., "138/138 tests pass"]
-
-### Risk Notes
-[Optional: Any caveats, limitations, or risk context]
-- [e.g., "Read-only changes, no live trading impact"]
-
-### Related PRs / Commits
-- PR #XXX: [Title](github_url)
-- Commit: [SHA] - [Short description]
-
-### Owner / Responsibility
-**Owner:** [username/team]  
-**Contact:** [Slack channel / email / GitHub handle]
+**Evidence ID:** EV-YYYYMMDD-<TAG>
+**Date:** YYYY-MM-DD
+**Category:** [CI/Workflow | Drill/Operator | Test/Refactor | Incident/RCA | Config Snapshot]
+**Owner:** [username/team/role]
+**Status:** DRAFT
 
 ---
 
-**Entry Created:** YYYY-MM-DD  
+## Scope
+[1–2 sentences: What system/component/process does this evidence cover?]
+
+---
+
+## Claims
+[What does this evidence demonstrate? Be specific and factual.]
+- Claim 1: [draft — replace]
+- Claim 2: [draft — replace]
+
+---
+
+## Evidence / Source Links
+- Primary source: [draft — replace]
+- CI run / commit: [draft — replace]
+
+---
+
+## Verification Steps
+[How can someone verify this evidence?]
+1. Step 1: [draft — replace]
+2. Step 2: [draft — replace]
+3. Expected result: [draft — replace]
+
+---
+
+## Risk Notes
+[Optional: Any caveats, limitations, or risk context]
+- [draft — replace]
+
+---
+
+## Related PRs / Commits
+- PR #<pr-number> — [draft — replace]
+- Commit: [draft — replace]
+
+---
+
+## Owner / Responsibility
+**Owner:** [username/team/role]
+**Contact:** [draft — replace]
+
+---
+
+**Entry Created:** YYYY-MM-DD
 **Last Updated:** YYYY-MM-DD
+**Template Version:** v0.3
 ```
 
 ---
@@ -102,51 +120,66 @@
 ## Example (Filled Template)
 
 ```markdown
-## Evidence Entry: Phase 8A Kupiec POF Deduplication
+# Evidence Entry: Phase 8A Kupiec POF Deduplication
 
-**Evidence ID:** EV-20251228-PHASE8A  
-**Date:** 2025-12-28  
-**Category:** Test/Refactor  
-**Owner:** ops  
+**Evidence ID:** EV-20251228-PHASE8A
+**Date:** 2025-12-28
+**Category:** Test/Refactor
+**Owner:** ops
 **Status:** VERIFIED
 
-### Scope
+---
+
+## Scope
 Phase 8A refactoring: Kupiec POF (Proportion of Failures) test deduplication, single canonical engine established.
 
-### Claims
+---
+
+## Claims
 - 138/138 tests passed (pytest 8.4.2, Python 3.9.6)
 - Single canonical engine established (`src/backtesting/validation/kupiec_pof.py`)
 - Zero breaking changes (all delegation tests verify wrapper correctness)
 
-### Evidence / Source Links
-- [PR #XXX Merge Log](archives/repo_root_docs/PHASE8A_MERGE_LOG.md)
-- Branch: `refactor/kupiec-pof-single-engine`
+---
 
-### Verification Steps
+## Evidence / Source Links
+- Primary source: [PR merge log](archives/repo_root_docs/PHASE8A_MERGE_LOG.md)
+- CI run / commit: Branch `refactor/kupiec-pof-single-engine` (see merge log)
+
+---
+
+## Verification Steps
 1. Check out commit `main@<SHA>`
 2. Run: `pytest tests/backtesting/validation/test_kupiec*.py -v`
 3. Expected: 138/138 tests pass in <10s
 
-### Risk Notes
+---
+
+## Risk Notes
 - Risk: VERY LOW (refactor-only, no behavior changes)
 - Ready for merge
 
-### Related PRs / Commits
-- PR #XXX: Phase 8A Kupiec POF Deduplication
+---
 
-### Owner / Responsibility
-**Owner:** ops  
+## Related PRs / Commits
+- PR #596 — Phase 8A Kupiec POF Deduplication (see merge log for URL)
+
+---
+
+## Owner / Responsibility
+**Owner:** ops
 **Contact:** #peak-trade-ops
 
 ---
 
-**Entry Created:** 2025-12-28  
+**Entry Created:** 2025-12-28
 **Last Updated:** 2025-12-28
+**Template Version:** v0.3
 ```
 
 ---
 
-**Version:** v0.2  
+**Version:** v0.3  
 **Maintained by:** ops  
-**Last Updated:** 2026-01-07  
+**Last Updated:** 2026-04-01  
 **Related:** [EVIDENCE_SCHEMA.md](EVIDENCE_SCHEMA.md), [EVIDENCE_INDEX.md](EVIDENCE_INDEX.md)
