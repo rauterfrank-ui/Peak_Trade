@@ -16,6 +16,15 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+# Draft merge-log strings when gh did not return metadata (offline / --fallback).
+# Explicit fiction — not a real org/repo URL; keeps repo placeholder scans usable.
+FALLBACK_PR_TITLE = "[PR title: not fetched — edit manually]"
+
+
+def fallback_pr_url(pr_number: int) -> str:
+    """Illustrative PR URL only; replace with gh output when available."""
+    return f"https://github.com/example-org/example-repo/pull/{pr_number}"
+
 
 def check_gh_available() -> bool:
     """Prüft ob gh CLI verfügbar ist."""
@@ -371,18 +380,18 @@ def main() -> int:
         # Fallback mode: template with placeholders
         content = generate_merge_log_content(
             pr_number=args.pr,
-            title="[TODO: Add PR title]",
-            pr_url=f"https://github.com/OWNER/REPO/pull/{args.pr}",
+            title=FALLBACK_PR_TITLE,
+            pr_url=fallback_pr_url(args.pr),
             merged_at=None,
             merge_commit=None,
             head_ref=None,
         )
         print("[fallback] Generated template with placeholders")
-        print("Please fill in the TODO sections manually")
+        print("Please fill in the draft outline sections manually")
     else:
         # Use fetched data
-        title = pr_data.get("title", "[TODO: Add PR title]")
-        pr_url = pr_data.get("url", f"https://github.com/OWNER/REPO/pull/{args.pr}")
+        title = pr_data.get("title", FALLBACK_PR_TITLE)
+        pr_url = pr_data.get("url", fallback_pr_url(args.pr))
         merged_at = pr_data.get("mergedAt")
         merge_commit_data = pr_data.get("mergeCommit", {})
         merge_commit = merge_commit_data.get("oid") if merge_commit_data else None
@@ -413,7 +422,7 @@ def main() -> int:
             except (ValueError, AttributeError):
                 pass
 
-        title = pr_data.get("title", "TODO") if pr_data else "TODO"
+        title = pr_data.get("title", FALLBACK_PR_TITLE) if pr_data else "(title unavailable)"
         update_readme(
             readme_path,
             args.pr,
