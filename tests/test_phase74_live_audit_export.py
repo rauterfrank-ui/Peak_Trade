@@ -266,6 +266,8 @@ class TestLiveAuditSnapshot:
         assert "phase71_tests" in snapshot.versions
         assert "phase72_tests" in snapshot.versions
         assert "phase73_tests" in snapshot.versions
+        assert "phase74_tests" in snapshot.versions
+        assert snapshot.versions["phase74_tests"] == "14"
 
     def test_build_live_audit_snapshot_read_only(self):
         """Test: Snapshot-Erstellung ändert keine Config/State."""
