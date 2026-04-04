@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 from pathlib import Path
 from unittest import mock
@@ -46,7 +47,10 @@ def test_fallback_mode_without_gh(tmp_path):
 
     content = output_file.read_text()
     assert "PR #999" in content
-    assert "[TODO: Add PR title]" in content
+    from scripts.ops import new_merge_log
+
+    assert new_merge_log.FALLBACK_PR_TITLE in content
+    assert re.search(r"\bTODO\b", content) is None
     assert "## Summary" in content
     assert "## Why" in content
     assert "## Changes" in content
