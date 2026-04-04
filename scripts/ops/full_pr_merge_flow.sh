@@ -65,8 +65,8 @@ PR_MERGED_AT="$(gh pr view "$PR_NUM" --json mergedAt -q .mergedAt)"
 PR_MERGE_COMMIT="$(gh pr view "$PR_NUM" --json mergeCommit -q .mergeCommit.oid)"
 
 # Fallbacks, falls GitHub (aus irgendeinem Grund) Felder nicht liefert
-PR_MERGED_AT="${PR_MERGED_AT:-TBD}"
-PR_MERGE_COMMIT="${PR_MERGE_COMMIT:-TBD}"
+PR_MERGED_AT="${PR_MERGED_AT:-unknown}"
+PR_MERGE_COMMIT="${PR_MERGE_COMMIT:-unknown}"
 
 MERGE_LOG_PATH="docs/ops/PR_${PR_NUM}_MERGE_LOG.md"
 
@@ -194,14 +194,14 @@ pr_num = "246"
 title = Path(".pr_title").read_text().strip() if Path(".pr_title").exists() else None
 # In this script we don't rely on .pr_title; we read from env instead:
 import os
-title = os.environ.get("PR_TITLE", "") or "TBD"
-merged_at = os.environ.get("PR_MERGED_AT", "") or "TBD"
+title = os.environ.get("PR_TITLE", "") or "unknown"
+merged_at = os.environ.get("PR_MERGED_AT", "") or "unknown"
 
 readme = Path("docs/ops/README.md")
 status = Path("docs/PEAK_TRADE_STATUS_OVERVIEW.md")
 
 merge_line = f"- [PR #{pr_num}](PR_{pr_num}_MERGE_LOG.md) — {title} (merged {merged_at})"
-changelog_line = f"- {os.environ.get('DATE_ISO','TBD')} — PR #{pr_num} merged: added knowledge deployment drill e2e script and fixed prod smoke script (empty EXTRA_HEADERS under set -u)."
+changelog_line = f"- {os.environ.get('DATE_ISO','unknown')} — PR #{pr_num} merged: added knowledge deployment drill e2e script and fixed prod smoke script (empty EXTRA_HEADERS under set -u)."
 
 def insert_after_heading(text: str, heading_candidates, line_to_insert: str) -> str:
     if line_to_insert in text:

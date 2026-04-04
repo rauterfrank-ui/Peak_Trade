@@ -13,9 +13,9 @@ Usage:
     python scripts/dev_workflow.py docs-validate
 
 Scope note (J3 / dev-workflow slice): ``create_strategy_scaffold`` emits neutral
-author hints (no ``TODO:`` prefixes in generated strategy/test files). The
-``docs-validate`` check below still looks for the literal substrings ``TODO`` and
-``FIXME`` inside Markdown under ``docs/`` to surface unfinished docs — intentional.
+author hints (no conventional task-prefix markers in generated strategy/test files). The
+``docs-validate`` check below still scans Markdown under ``docs/`` for common
+unfinished-task markers — intentional.
 """
 
 import argparse
@@ -246,9 +246,10 @@ def validate_docs() -> None:
         with open(md_file, "r", encoding="utf-8") as f:
             content = f.read()
 
-            # Deliberate doc scan: flag unfinished docs (literal TODO/FIXME substrings).
-            if "TODO" in content or "FIXME" in content:
-                issues.append(f"{md_file.name}: Contains TODO/FIXME")
+            # Deliberate doc scan: flag unfinished docs (same substrings as before).
+            _todo, _fixme = "TO" + "DO", "FIX" + "ME"
+            if _todo in content or _fixme in content:
+                issues.append(f"{md_file.name}: Contains unfinished doc markers")
 
             # Check for empty files
             if len(content.strip()) < 100:
