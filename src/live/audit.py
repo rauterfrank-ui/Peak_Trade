@@ -244,7 +244,8 @@ def build_live_audit_snapshot(
         "phase71_tests": "14",
         "phase72_tests": "11",
         "phase73_tests": "18",
-        "phase74_tests": "TBD",  # Wird nach Test-Implementierung aktualisiert
+        # Anzahl der Phase-74-Tests in tests/test_phase74_live_audit_export.py (manuell halten)
+        "phase74_tests": "14",
     }
 
     return LiveAuditSnapshot(
