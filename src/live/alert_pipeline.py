@@ -1200,7 +1200,9 @@ def build_alert_pipeline_from_config(
 
         [alerts.slack]
         enabled = true
-        webhook_url = "https://hooks.slack.com/services/XXX/YYY/ZZZ"
+        # Beispiel-Platzhalter (Dokumentation): keine echten Secrets/URLs ins Repo legen;
+        # produktive Webhooks nur via sichere Config/Secrets/Env.
+        webhook_url = "https://hooks.slack.com/services/PLACEHOLDER/NOT_A_REAL_WEBHOOK/DO_NOT_COMMIT_SECRETS"
         min_severity = "WARN"
         channel = "#peak-trade-alerts"
         username = "peak-trade-bot"
