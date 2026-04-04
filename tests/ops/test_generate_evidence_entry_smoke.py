@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -71,3 +72,6 @@ def test_main_writes_evidence_markdown(tmp_path: Path, monkeypatch: pytest.Monke
     text = md.read_text(encoding="utf-8")
     assert "**Evidence ID:** EV-20260115-SMOKE" in text
     assert "Slice smoke" in text
+    assert "[draft — replace]" in text
+    assert re.search(r"\bTBD\b", text) is None
+    assert re.search(r"\bXXX\b", text) is None
