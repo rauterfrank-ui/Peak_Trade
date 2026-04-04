@@ -90,35 +90,35 @@ def _generate_minimal_template() -> str:
 ---
 
 ## Zusammenfassung
-- _TODO: Was wurde geändert?_
-- _TODO: Welchen Impact/Wert bringt es?_
+- _Ausfüllen: Was wurde geändert?_
+- _Ausfüllen: Welchen Impact/Wert bringt es?_
 
 ## Warum
-- _TODO: Root Cause oder Kontext_
-- _TODO: Warum jetzt?_
+- _Ausfüllen: Root Cause oder Kontext_
+- _Ausfüllen: Warum jetzt?_
 
 ## Änderungen
 **Geändert**
-- `path/to/file` — _TODO: Beschreibung_
+- `path/to/file` — _Ausfüllen: Beschreibung_
 
 **Neu**
-- `path/to/file` — _TODO: Beschreibung_
+- `path/to/file` — _Ausfüllen: Beschreibung_
 
 ## Verifikation
 **CI**
-- _TODO: Check Name_ — PASS/FAIL
+- _Ausfüllen: Check Name_ — PASS/FAIL
 
 **Lokal**
-- _TODO: Durchgeführte Tests_
+- _Ausfüllen: Durchgeführte Tests_
 
 ## Risiko
 **Risk:** 🟢 Minimal / 🟡 Medium / 🔴 High
 **Begründung**
-- _TODO: Warum dieses Risk Level?_
+- _Ausfüllen: Warum dieses Risk Level?_
 
 ## Operator How-To
-- _TODO: Schritt 1_
-- _TODO: Schritt 2_
+- _Ausfüllen: Schritt 1_
+- _Ausfüllen: Schritt 2_
 
 ## Referenzen
 - PR: {{PR_URL}}
