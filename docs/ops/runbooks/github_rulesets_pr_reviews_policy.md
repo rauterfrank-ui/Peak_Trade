@@ -60,6 +60,24 @@ Das ist **nicht** „paradox", sondern drückt aus: „PR-Flow erzwingen, aber k
 5. Falls blockiert: Fehlermeldung ist Source-of-Truth (Review/Queue/Up-to-date/Required Context).
 6. Nur bei wiederkehrender Blockade: Ruleset/Branch-Policy korrigieren (Reviews OFF oder Count ≥ 1).
 
+## Operator: Merge blockiert (`mergeStateStatus: BLOCKED`) — Checks vs. Reviews
+
+Häufig sind **zwei** Dinge zu trennen:
+
+1. **Required Status Checks** (Branch Protection / Rulesets): alle Kontexte müssen auf dem Head-Commit **SUCCESS** sein (keine `pending`/`EXPECTED`-Löcher).
+2. **Reviews** (auch wenn die klassische Branch Protection `required_approving_review_count: 0` zeigt): ausstehende **Review Requests** (z. B. CODEOWNERS) oder fehlende Approvals blockieren den Merge ebenfalls.
+
+**Reihenfolge:**
+
+1. PR → **Checks** in der UI, oder `gh pr checks <N>` / `gh pr checks <N> --required`.
+2. Reviews prüfen: `gh pr view <N> --json reviewRequests,reviewDecision,latestReviews`.
+3. Welche Kontexte auf `main` verpflichtend sind: `gh api repos/<owner>/<repo>/branches/main/protection` → Feld `required_status_checks.contexts` (Snapshot der Namen). Für die Truth-Gates zusätzlich `docs/ops/registry/TRUTH_BRANCH_PROTECTION.md` und `scripts&#47;ops&#47;ensure_truth_branch_protection.py --check`.
+
+**Checks neu triggern** (z. B. nach Push „hängen geblieben“, oder einzelne Kontexte zeigen lange `Waiting`/`Expected`):
+
+- **Automatisiert:** `scripts&#47;ops&#47;pr_ops_v1.sh <N>` — wartet, und führt bei erkanntem EXPECTED/WAITING auf **required** Checks **einmal** einen leeren Commit auf dem Head-Branch aus (siehe Skriptkommentar).
+- **Manuell:** auf dem Feature-Branch `git commit --allow-empty -m "ci: retrigger required checks for PR #<N>"` und `git push origin <branch>` (löst `pull_request` **synchronize** aus und startet die Workflows neu).
+
 ## Änderung in GitHub UI: Klickpfade
 
 ### A) Rulesets (modern, bevorzugt)
@@ -108,3 +126,4 @@ Optional per CLI (Snapshot, ohne `--watch`):
 ## Historie
 - **2025-01-03**: Initial Policy & Runbook nach PR #512 CI-Härtung (fail-open changes + PR concurrency).
 - **2025-01-03**: Added Operator Quickflow bei `mergeable: UNKNOWN`.
+- **2026-04-04**: Abschnitt „Merge blockiert (BLOCKED)“ — Required Checks vs. Reviews, API-Snapshot, Retrigger (leerer Commit / `pr_ops_v1.sh`).
