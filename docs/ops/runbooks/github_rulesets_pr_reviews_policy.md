@@ -71,11 +71,11 @@ Häufig sind **zwei** Dinge zu trennen:
 
 1. PR → **Checks** in der UI, oder `gh pr checks <N>` / `gh pr checks <N> --required`.
 2. Reviews prüfen: `gh pr view <N> --json reviewRequests,reviewDecision,latestReviews`.
-3. Welche Kontexte auf `main` verpflichtend sind: `gh api repos/<owner>/<repo>/branches/main/protection` → Feld `required_status_checks.contexts` (Snapshot der Namen). Für die Truth-Gates zusätzlich `docs/ops/registry/TRUTH_BRANCH_PROTECTION.md` und `scripts/ops/ensure_truth_branch_protection.py --check`.
+3. Welche Kontexte auf `main` verpflichtend sind: `gh api repos/<owner>/<repo>/branches/main/protection` → Feld `required_status_checks.contexts` (Snapshot der Namen). Für die Truth-Gates zusätzlich `docs/ops/registry/TRUTH_BRANCH_PROTECTION.md` und `scripts&#47;ops&#47;ensure_truth_branch_protection.py --check`.
 
 **Checks neu triggern** (z. B. nach Push „hängen geblieben“, oder einzelne Kontexte zeigen lange `Waiting`/`Expected`):
 
-- **Automatisiert:** `scripts/ops/pr_ops_v1.sh <N>` — wartet, und führt bei erkanntem EXPECTED/WAITING auf **required** Checks **einmal** einen leeren Commit auf dem Head-Branch aus (siehe Skriptkommentar).
+- **Automatisiert:** `scripts&#47;ops&#47;pr_ops_v1.sh <N>` — wartet, und führt bei erkanntem EXPECTED/WAITING auf **required** Checks **einmal** einen leeren Commit auf dem Head-Branch aus (siehe Skriptkommentar).
 - **Manuell:** auf dem Feature-Branch `git commit --allow-empty -m "ci: retrigger required checks for PR #<N>"` und `git push origin <branch>` (löst `pull_request` **synchronize** aus und startet die Workflows neu).
 
 ## Änderung in GitHub UI: Klickpfade
