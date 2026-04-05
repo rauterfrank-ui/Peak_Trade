@@ -53,26 +53,26 @@ Post-merge documentation logs for operational PRs.
 ---
 
 ## Zusammenfassung
-- TODO
+- …
 
 ## Warum
-- TODO
+- …
 
 ## Änderungen
 **Geändert**
-- TODO
+- …
 
 ## Verifikation
 **CI**
-- TODO
+- …
 
 ## Risiko
 **Risk:** 🟢 Minimal
 **Begründung**
-- TODO
+- …
 
 ## Operator How-To
-- TODO
+- …
 
 ## Referenzen
 - PR: {{PR_URL}}
