@@ -7,8 +7,9 @@ markers (TODO, FIXME, TBD, XXX, etc.) and generates two local report files:
 
 1. TODO_PLACEHOLDER_INVENTORY.md — Summary counts + top files per pattern
 2. TODO_PLACEHOLDER_TARGET_MAP.md — Path-prefix breakdowns (docs/, src/, config/, etc.),
-   plus per-pattern top files scoped to `src/` and `scripts/` (so code hotspots are visible
-   even when the global top-20 is dominated by `docs/`).
+   plus per-pattern triage slices (default: `src/` and `scripts/` so code hotspots are visible
+   when the global top-20 is dominated by `docs/`). With ``--prefix``, triage slices follow the
+   given prefixes only.
 
 Output location: .ops_local/inventory/ (git-ignored)
 
@@ -19,6 +20,8 @@ see ``SKIP_DIRS`` and ``_skip_path_component`` in this file.
 
 Usage:
     python3 scripts/ops/placeholders/generate_placeholder_reports.py
+    python3 scripts/ops/placeholders/generate_placeholder_reports.py --prefix src/
+    python3 scripts/ops/placeholders/generate_placeholder_reports.py --prefix src/ --prefix scripts/
     python3 scripts/ops/placeholders/generate_placeholder_reports.py --output-dir /path/to/dir
 
 Exit codes:
@@ -102,6 +105,33 @@ def find_repo_root() -> Path:
     raise RuntimeError("Not in a git repository. Cannot find .git directory.")
 
 
+def normalize_path_prefix(raw: str) -> str:
+    """
+    Normalize a repo-relative path prefix for directory-style matching.
+
+    Leading ``./`` is stripped; backslashes become ``/``. A non-empty prefix
+    always ends with ``/`` (e.g. ``src`` → ``src/``, ``docs/ops`` → ``docs/ops/``).
+    """
+    p = raw.strip().replace("\\", "/").strip("./")
+    if not p:
+        raise ValueError("empty prefix")
+    if not p.endswith("/"):
+        p = p + "/"
+    return p
+
+
+def rel_path_matches_prefixes(rel: Path, prefixes: Sequence[str]) -> bool:
+    """True if ``rel`` (repo-relative) is under at least one normalized prefix."""
+    rel_s = rel.as_posix()
+    if rel_s == ".":
+        return False
+    for pre in prefixes:
+        base = pre.rstrip("/")
+        if rel_s == base or rel_s.startswith(base + "/"):
+            return True
+    return False
+
+
 def should_skip(path: Path, repo_root: Path) -> bool:
     """Determine if a file or directory should be skipped."""
     rel_path = path.relative_to(repo_root)
@@ -150,9 +180,16 @@ def scan_file(path: Path, patterns: List[Tuple[str, str]]) -> Dict[str, int]:
     return counts
 
 
-def scan_repository(repo_root: Path, patterns: List[Tuple[str, str]]) -> Dict[Path, Dict[str, int]]:
+def scan_repository(
+    repo_root: Path,
+    patterns: List[Tuple[str, str]],
+    path_prefixes: Optional[Sequence[str]] = None,
+) -> Dict[Path, Dict[str, int]]:
     """
     Scan entire repository for patterns.
+
+    If ``path_prefixes`` is set, only files whose repo-relative path falls under
+    at least one normalized prefix are included.
 
     Returns:
         Dict mapping file_path to pattern_counts
@@ -172,6 +209,10 @@ def scan_repository(repo_root: Path, patterns: List[Tuple[str, str]]) -> Dict[Pa
                 continue
 
             if not is_text_file(file_path):
+                continue
+
+            rel = file_path.relative_to(repo_root)
+            if path_prefixes is not None and not rel_path_matches_prefixes(rel, path_prefixes):
                 continue
 
             counts = scan_file(file_path, patterns)
@@ -209,7 +250,10 @@ def categorize_by_prefix(file_path: Path, repo_root: Path) -> str:
 
 
 def generate_inventory_report(
-    results: Dict[Path, Dict[str, int]], repo_root: Path, commit: str
+    results: Dict[Path, Dict[str, int]],
+    repo_root: Path,
+    commit: str,
+    scope_note: Optional[str] = None,
 ) -> str:
     """Generate the TODO_PLACEHOLDER_INVENTORY.md content."""
     lines = []
@@ -222,6 +266,8 @@ def generate_inventory_report(
         "- Scan excludes: `out/`, `.cursor/`, `.venv*/`, and other dirs in SKIP_DIRS "
         "(see `generate_placeholder_reports.py`)."
     )
+    if scope_note:
+        lines.append(f"- Scan scope: {scope_note}")
     lines.append("")
     lines.append("## Pattern Summary")
     lines.append("")
@@ -299,6 +345,35 @@ def _top_files_for_category(
     return file_counts
 
 
+def _top_files_under_arbitrary_prefix(
+    results: Dict[Path, Dict[str, int]],
+    repo_root: Path,
+    pattern_name: str,
+    prefix_norm: str,
+) -> List[Tuple[int, str]]:
+    """
+    Like ``_top_files_for_category`` but for any normalized repo-relative prefix
+    (e.g. ``docs/ops/``), not only single-segment buckets from ``categorize_by_prefix``.
+    """
+    pfx = prefix_norm.rstrip("/")
+    file_counts: List[Tuple[int, str]] = []
+    for file_path, counts in results.items():
+        if pattern_name not in counts or counts[pattern_name] <= 0:
+            continue
+        rel = file_path.relative_to(repo_root).as_posix()
+        if pfx == "":
+            ok = True
+        elif rel == pfx:
+            ok = True
+        else:
+            ok = rel.startswith(pfx + "/")
+        if not ok:
+            continue
+        file_counts.append((counts[pattern_name], rel))
+    file_counts.sort(key=lambda x: (-x[0], x[1]))
+    return file_counts
+
+
 def _append_top_files_for_prefix_section(
     lines: List[str],
     results: Dict[Path, Dict[str, int]],
@@ -320,7 +395,32 @@ def _append_top_files_for_prefix_section(
     lines.append("")
 
 
-def generate_target_map_report(results: Dict[Path, Dict[str, int]], repo_root: Path) -> str:
+def _append_top_files_for_arbitrary_prefix(
+    lines: List[str],
+    results: Dict[Path, Dict[str, int]],
+    repo_root: Path,
+    pattern_name: str,
+    heading: str,
+    prefix_norm: str,
+) -> None:
+    """Append a fenced block for files under an arbitrary path prefix."""
+    lines.append(heading)
+    lines.append("")
+    lines.append("```")
+    scoped = _top_files_under_arbitrary_prefix(results, repo_root, pattern_name, prefix_norm)
+    for count, path in scoped[:TOP_FILES_PER_PREFIX_LIMIT]:
+        lines.append(f"{path}:{count}")
+    if not scoped:
+        lines.append("(none)")
+    lines.append("```")
+    lines.append("")
+
+
+def generate_target_map_report(
+    results: Dict[Path, Dict[str, int]],
+    repo_root: Path,
+    triage_prefixes: Optional[Sequence[str]] = None,
+) -> str:
     """Generate the TODO_PLACEHOLDER_TARGET_MAP.md content."""
     lines = []
     lines.append("# TODO/Placeholder Target Map (Inventory Addendum)")
@@ -358,22 +458,35 @@ def generate_target_map_report(results: Dict[Path, Dict[str, int]], repo_root: P
         lines.append("")
 
         # Prefix-scoped tops: global top-20 is often docs-only; surface code paths explicitly.
-        _append_top_files_for_prefix_section(
-            lines,
-            results,
-            repo_root,
-            pattern_name,
-            f"### Top files under `src/` (top {TOP_FILES_PER_PREFIX_LIMIT}; triage slice)",
-            "src/",
-        )
-        _append_top_files_for_prefix_section(
-            lines,
-            results,
-            repo_root,
-            pattern_name,
-            f"### Top files under `scripts/` (top {TOP_FILES_PER_PREFIX_LIMIT}; triage slice)",
-            "scripts/",
-        )
+        if triage_prefixes is None:
+            _append_top_files_for_prefix_section(
+                lines,
+                results,
+                repo_root,
+                pattern_name,
+                f"### Top files under `src/` (top {TOP_FILES_PER_PREFIX_LIMIT}; triage slice)",
+                "src/",
+            )
+            _append_top_files_for_prefix_section(
+                lines,
+                results,
+                repo_root,
+                pattern_name,
+                f"### Top files under `scripts/` (top {TOP_FILES_PER_PREFIX_LIMIT}; triage slice)",
+                "scripts/",
+            )
+        else:
+            for prefix_norm in triage_prefixes:
+                label = prefix_norm.rstrip("/")
+                display = f"{label}/" if label else "/"
+                _append_top_files_for_arbitrary_prefix(
+                    lines,
+                    results,
+                    repo_root,
+                    pattern_name,
+                    f"### Top files under `{display}` (top {TOP_FILES_PER_PREFIX_LIMIT}; triage slice)",
+                    prefix_norm,
+                )
 
         # By path prefix
         lines.append("### By path prefix (docs/src/config/.github/other)")
@@ -443,6 +556,18 @@ Scope (NO-LIVE):
             "Must not be an existing file."
         ),
     )
+    parser.add_argument(
+        "--prefix",
+        action="append",
+        dest="prefixes",
+        default=None,
+        metavar="PATH",
+        help=(
+            "Repo-relative path prefix to scan (repeatable). Only files under at least one "
+            "prefix are included (e.g. `src/`, `scripts/`, `docs/ops`). "
+            "Default: scan the whole tree (subject to SKIP_DIRS)."
+        ),
+    )
     return parser
 
 
@@ -469,9 +594,20 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         commit = get_git_commit()
         print(f"📌 Commit: {commit}")
 
+        normalized_prefixes: Optional[List[str]] = None
+        scope_note: Optional[str] = None
+        if args.prefixes:
+            normalized_prefixes = []
+            for raw in args.prefixes:
+                np = normalize_path_prefix(raw)
+                if np not in normalized_prefixes:
+                    normalized_prefixes.append(np)
+            scope_note = " ".join(f"`{p}`" for p in normalized_prefixes)
+            print(f"🔎 Path prefix filter: {', '.join(normalized_prefixes)}")
+
         # Scan repository
         print("🔍 Scanning repository for placeholders...")
-        results = scan_repository(repo_root, PATTERNS)
+        results = scan_repository(repo_root, PATTERNS, path_prefixes=normalized_prefixes)
         print(f"✅ Scanned {len(results)} files with matches")
 
         # Prepare output directory
@@ -484,14 +620,20 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         # Generate and write inventory report
         inventory_path = output_dir / "TODO_PLACEHOLDER_INVENTORY.md"
         print(f"📝 Generating {inventory_path.name}...")
-        inventory_content = generate_inventory_report(results, repo_root, commit)
+        inventory_content = generate_inventory_report(
+            results, repo_root, commit, scope_note=scope_note
+        )
         inventory_path.write_text(inventory_content, encoding="utf-8")
         print(f"✅ Wrote {inventory_path}")
 
         # Generate and write target map report
         target_map_path = output_dir / "TODO_PLACEHOLDER_TARGET_MAP.md"
         print(f"📝 Generating {target_map_path.name}...")
-        target_map_content = generate_target_map_report(results, repo_root)
+        target_map_content = generate_target_map_report(
+            results,
+            repo_root,
+            triage_prefixes=normalized_prefixes,
+        )
         target_map_path.write_text(target_map_content, encoding="utf-8")
         print(f"✅ Wrote {target_map_path}")
 
