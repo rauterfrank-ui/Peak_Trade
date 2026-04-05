@@ -49,7 +49,12 @@ Kurzablauf, wenn **`src/orders/`** (Prefix-Regel) geändert wird:
 
 **Hinweis:** Der Check vergleicht `git diff <base>...HEAD` — Stub-Änderungen nur an Code ohne Canonical-Doc lösen den Gate in CI ab.
 
+## Operator: `truth-branch-protection-canonical`
+
+Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im **selben Diff** **`docs/ops/registry/DOCS_TRUTH_MAP.md`** (diese Datei) einen kurzen Eintrag unter „Änderungsnachweis“ erhalten — damit bleibt die Registry-Landkarte mit der Branch-Protection-Referenz im Einklang (siehe Regel `truth-branch-protection-canonical` in `config/ops/docs_truth_map.yaml`).
+
 ## Änderungsnachweis (Slice A)
 
+- 2026-04-05 — `config/ops/docs_truth_map.yaml`: Regel `truth-branch-protection-canonical` ergänzt; Operator-Abschnitt „truth-branch-protection-canonical“ in dieser Datei.
 - 2026-04-04 — `docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md`: Referenz auf `LiveOrderExecutor`-Stub in `src/orders/exchange.py` ergänzt (Abgleich orders-layer / known-limitations-canonical).
 - 2026-04-04 — Abschnitt „Operator: orders-layer … (PR #2242)“ ergänzt (Playbook für Drift-Guard); Referenzfall PEAK_TRADE als minimaler Nachzug präzisiert.

@@ -51,6 +51,12 @@ rules:
     required_docs:
       - "docs/ops/registry/DOCS_TRUTH_MAP.md"
 
+  - id: truth-branch-protection-canonical
+    sensitive:
+      - "docs/ops/registry/TRUTH_BRANCH_PROTECTION.md"
+    required_docs:
+      - "docs/ops/registry/DOCS_TRUTH_MAP.md"
+
   - id: forward-run-manifest-helper
     sensitive:
       - "scripts/_forward_run_manifest.py"
