@@ -11,7 +11,7 @@ Zweck:
 
 Dieses Script ist bewusst generisch gehalten:
   -> Du musst nur die Funktion `load_data_for_session(...)` an deine
-     bestehende Offline-Session-Pipeline anbinden (TODO-Block unten).
+     bestehende Offline-Session-Pipeline anbinden (Stub unten).
 """
 
 import sys
