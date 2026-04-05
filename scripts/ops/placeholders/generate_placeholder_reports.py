@@ -212,9 +212,7 @@ def scan_repository(
                 continue
 
             rel = file_path.relative_to(repo_root)
-            if path_prefixes is not None and not rel_path_matches_prefixes(
-                rel, path_prefixes
-            ):
+            if path_prefixes is not None and not rel_path_matches_prefixes(rel, path_prefixes):
                 continue
 
             counts = scan_file(file_path, patterns)
@@ -409,9 +407,7 @@ def _append_top_files_for_arbitrary_prefix(
     lines.append(heading)
     lines.append("")
     lines.append("```")
-    scoped = _top_files_under_arbitrary_prefix(
-        results, repo_root, pattern_name, prefix_norm
-    )
+    scoped = _top_files_under_arbitrary_prefix(results, repo_root, pattern_name, prefix_norm)
     for count, path in scoped[:TOP_FILES_PER_PREFIX_LIMIT]:
         lines.append(f"{path}:{count}")
     if not scoped:
