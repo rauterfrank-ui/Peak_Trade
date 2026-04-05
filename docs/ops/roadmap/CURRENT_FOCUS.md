@@ -49,6 +49,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **Merge log test fixture (PR #2261):** `tests/test_ops_merge_log_generator.py` — eingebettetes Mini-Template mit Ellipsen-Platzhaltern statt `- TODO` (weniger Placeholder-Inventar-Rauschen); **NO-LIVE**.
 - **Desktop shortcuts wording (PR #2262):** `scripts/utils/install_desktop_shortcuts.sh` — Nutzer-Text „task board“ statt „TODO board“; Pfade/Dateinamen unverändert; **NO-LIVE**.
 - **Runner index curator docstring (PR #2263):** `scripts/dev/curate_runner_index.py` — Readiness **TODO** als fester Status (neben READY/PARTIAL), kein allgemeiner Aufgaben-Marker; **NO-LIVE**.
+- **Chat-led snapshot §5 (PR #2265):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Stichprobentabelle aktualisiert (u. a. I1 Backtest/Tracker, Truth #2256/#2257, J3 #2259); **NO-LIVE**.
 
 **GitHub — Truth-Gate Required Checks auf `main`:** Verifiziert (Apr 2026): **`docs-drift-guard`** und **`repo-truth-claims`** sind als Required Status Checks gesetzt (Namen wie `.github/workflows/truth_gates_pr.yml` Job-`name:`). Re-Check lokal: `python3 scripts/ops/ensure_truth_branch_protection.py --check` · ergänzen mit `--apply` nur mit Admin-Rechten; Registry: [`TRUTH_BRANCH_PROTECTION.md`](../registry/TRUTH_BRANCH_PROTECTION.md).
 
