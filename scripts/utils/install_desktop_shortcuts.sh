@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # install_desktop_shortcuts.sh
-# Creates desktop symlinks for Peak_Trade TODO board (macOS)
+# Creates desktop symlinks for Peak_Trade task board (macOS)
 
 DRY_RUN=0
 for arg in "$@"; do
@@ -12,7 +12,7 @@ for arg in "$@"; do
       cat <<'TXT'
 install_desktop_shortcuts.sh
 
-Creates desktop symlinks for quick access to TODO board and docs.
+Creates desktop symlinks for quick access to task board and docs.
 
 Usage:
   scripts/install_desktop_shortcuts.sh
@@ -50,7 +50,7 @@ OVERVIEW_DIR="$REPO_ROOT/docs/00_overview"
 
 # Verify targets exist
 if [[ ! -f "$TODO_HTML" ]]; then
-  echo "⚠️  TODO board HTML not found: $TODO_HTML"
+  echo "⚠️  Task board HTML not found: $TODO_HTML"
   echo "   Run: python3 scripts/build_todo_board_html.py"
   exit 1
 fi
@@ -84,6 +84,6 @@ echo "✓ $LINK_OVERVIEW"
 
 echo ""
 echo "✅ OK - Desktop shortcuts created"
-echo "   Double-click icons on Desktop to access TODO board and docs"
+echo "   Double-click icons on Desktop to access task board and docs"
 
 exit 0
