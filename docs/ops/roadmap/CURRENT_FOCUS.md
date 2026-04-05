@@ -45,6 +45,10 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **Truth (docs drift `truth-branch-protection-canonical`, PR #2257):** `config/ops/docs_truth_map.yaml` — Änderungen an `docs/ops/registry/TRUTH_BRANCH_PROTECTION.md` erfordern Mitänderung an `docs/ops/registry/DOCS_TRUTH_MAP.md` im selben Diff; Kurzreferenz in [TRUTH_CORE.md](../registry/TRUTH_CORE.md); **NO-LIVE**.
 - **Ideas package docstring (PR #2258):** `src/strategies/ideas/__init__.py` — Wortlaut „offene Punkte“ statt TODO-Token im Docstring; **NO-LIVE**.
 - **J3 (`--prefix` scan filter, PR #2259):** `scripts/ops/placeholders/generate_placeholder_reports.py` — wiederholbares `--prefix PATH` für repo-relative Teilbäume; Smoke `tests/ops/test_generate_placeholder_reports_smoke.py`; **NO-LIVE**.
+- **Docs sync (CURRENT_FOCUS + J3 runbook, PR #2260):** [CURRENT_FOCUS.md](CURRENT_FOCUS.md) „Recently landed“ für #2256–#2259; [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md) — J3 `--prefix` und Beispielbefehl; **NO-LIVE**.
+- **Merge log test fixture (PR #2261):** `tests/test_ops_merge_log_generator.py` — eingebettetes Mini-Template mit Ellipsen-Platzhaltern statt `- TODO` (weniger Placeholder-Inventar-Rauschen); **NO-LIVE**.
+- **Desktop shortcuts wording (PR #2262):** `scripts/utils/install_desktop_shortcuts.sh` — Nutzer-Text „task board“ statt „TODO board“; Pfade/Dateinamen unverändert; **NO-LIVE**.
+- **Runner index curator docstring (PR #2263):** `scripts/dev/curate_runner_index.py` — Readiness **TODO** als fester Status (neben READY/PARTIAL), kein allgemeiner Aufgaben-Marker; **NO-LIVE**.
 
 **GitHub — Truth-Gate Required Checks auf `main`:** Verifiziert (Apr 2026): **`docs-drift-guard`** und **`repo-truth-claims`** sind als Required Status Checks gesetzt (Namen wie `.github/workflows/truth_gates_pr.yml` Job-`name:`). Re-Check lokal: `python3 scripts/ops/ensure_truth_branch_protection.py --check` · ergänzen mit `--apply` nur mit Admin-Rechten; Registry: [`TRUTH_BRANCH_PROTECTION.md`](../registry/TRUTH_BRANCH_PROTECTION.md).
 
