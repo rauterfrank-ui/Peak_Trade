@@ -26,6 +26,10 @@ claims:
     check: path_exists
     path: docs/ops/registry/TRUTH_CORE.md
 
+  - id: truth-branch-protection-registry-present
+    check: path_exists
+    path: docs/ops/registry/TRUTH_BRANCH_PROTECTION.md
+
   - id: docs-truth-map-config-present
     check: path_exists
     path: config/ops/docs_truth_map.yaml
