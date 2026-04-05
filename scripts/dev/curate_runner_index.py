@@ -8,6 +8,8 @@ Sammelt automatisch Info über Tier-A Runner:
 - Evidence Chain Readiness (READY/PARTIAL/TODO)
 - P1 Priority (basierend auf Docs/CI Referenzen)
 
+Readiness **TODO** ist dabei ein fester Statuswert (neben READY/PARTIAL), kein allgemeiner Aufgaben-TODO-Marker — Inventar-Tools können das sonst fälschlich zählen.
+
 Output: results/dev/runner_index_curation.json
 """
 
