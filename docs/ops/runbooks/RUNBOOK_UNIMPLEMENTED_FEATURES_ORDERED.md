@@ -139,6 +139,14 @@
 - **Kraken (öffentliche OHLCV):** ``--ohlcv-source kraken`` — Netzwerk nötig; Kraken&#47;ccxt typisch **max. 720 Bars** pro Request (`KRAKEN_OHLCV_MAX_BARS`); **größere** ``--n-bars``-Fenster: Pagination im Loader (mehrere Requests, ``use_cache=False`` pro Paginations-Schritt). Generate&#47;Evaluate&#47;Portfolio weiterhin **dieselbe Quelle und gleiches `--n-bars`/`--bars`-Fenster** wählen. **Shortfall:** Es kann weniger History geben als ``--n-bars`` — der Loader setzt Observability (`kraken_bars_shortfall`, Warnung); ``ohlcv_source`` ist normalisiert, Dummy verlangt ``n_bars >= 1``. Vollständiger Wegfall von Dummy-Daten und weitere Anbieter: weiterhin **J1** (STUB) — Zeile J1.
 - **Integrationssmoke (Generate/Evaluate):** `tests/test_forward_generate_evaluate_integration_smoke.py`.
 
+#### Operator-Kurzreferenz (J1 Forward, NO-LIVE)
+
+1. **Standard (ohne Netz):** ``--ohlcv-source dummy`` ist der Default — keine API-Keys, keine Broker-Verbindung. Für konsistente Signale&#47;Preise: ``generate_forward_signals`` und ``evaluate_forward_signals`` mit **demselben** ``--n-bars`` aufrufen (Default jeweils 200).
+2. **Kraken (öffentliche OHLCV):** ``--ohlcv-source kraken`` — Netzwerk nötig; **dieselbe** Quelle und **dieselbe** Fenstergröße (``--n-bars``) in Generate und Evaluate wählen. Wenn weniger Bars zurückkommen als angefordert: **Shortfall** (Warnung, Meta ``kraken_bars_shortfall``); bei großen Fenstern Pagination im Loader (siehe Bullet „Kraken“ oben).
+3. **Portfolio:** ``run_portfolio_backtest_v2.py`` nutzt ``--bars`` &#47; ``--n-bars`` (Alias); bei Abgleich mit Forward-Läufen dieselbe ``--ohlcv-source``-Logik wie oben.
+4. **CLI-Hilfe:** gemeinsamer Epilog/Scope über ``scripts/_shared_forward_args.py`` (``--help`` bei den Forward-CLIs).
+5. **Smoke (optional):** ``python3 -m pytest tests/test_forward_generate_evaluate_integration_smoke.py -q``
+
 ---
 
 ## Empfohlene Bearbeitungs-Reihenfolge (hochlevel)
