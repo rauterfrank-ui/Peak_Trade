@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-04-12
+last_updated: 2026-04-13
 ---
 
 # Current focus
@@ -73,6 +73,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **Chat-led §5 Evidence G3 (PR #2295):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „Evidence (G3)“ (``psychology_heuristics.py`` und ``test_psychology_heuristics.py``; Stufe G3 im geordneten Runbook **DONE**); **NO-LIVE**.
 - **Chat-led §5 Evidence G4 (PR #2296):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „Evidence (G4)“ (``test_health_history.py`` und ``test_test_health_runner.py``; Stufe G4 im geordneten Runbook **DONE**); **NO-LIVE**.
 - **Chat-led §5 J1 Forward Demo (PR #2298):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „J1 Forward (Demo-Stub)“ (``run_forward_dummy_pipeline_demo.sh``, Operator-Kurzreferenz §6); **NO-LIVE**.
+- **Chat-led §5 Learning / Promotion vs F2 (PR #2308):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Zeile „Learning / Promotion“: iteratives End-to-End + domänenspezifische Producer vs. **DONE** Kern-API (Verweis auf Zeile **Learning Loop (F2)**); Links zu Architektur-Doku, ``emitter.py``, ``bridge.py``; **NO-LIVE**.
 
 **GitHub — Truth-Gate Required Checks auf `main`:** Verifiziert (Apr 2026): **`docs-drift-guard`** und **`repo-truth-claims`** sind als Required Status Checks gesetzt (Namen wie `.github/workflows/truth_gates_pr.yml` Job-`name:`). Re-Check lokal: `python3 scripts/ops/ensure_truth_branch_protection.py --check` · ergänzen mit `--apply` nur mit Admin-Rechten; Registry: [`TRUTH_BRANCH_PROTECTION.md`](../registry/TRUTH_BRANCH_PROTECTION.md).
 
