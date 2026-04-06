@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # NO-LIVE: Offline-Demo der Forward-Pipeline (dummy OHLCV) — Generate → CSV-Anpassung
 # (as_of nicht auf letzter Bar, damit Evaluate einen Entry hat) → Evaluate.
-# Siehe RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md — Stufe J / Forward-Pipeline.
+# Kanonisch: docs/ops/runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md — „Operator-Kurzreferenz (J1 Forward, NO-LIVE)“, Punkt 6 (Stufe J / Forward-Pipeline).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
