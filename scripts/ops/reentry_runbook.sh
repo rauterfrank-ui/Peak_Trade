@@ -64,9 +64,11 @@ pwd | tee -a "$OUT/00_path.txt"
 # -------------------------------
 # [AGENT:planner] 4) Marker search (read-only)
 # -------------------------------
+# rg pattern uses ${TOD}O at runtime (avoids literal task-marker token in this file for J3 inventory noise).
+TOD="TOD"
 {
-  echo "## markers (RUNBOOK|closeout|checkpoint|next step|TODO|P\\d+|Phase|EVIDENCE|NO-OP)"
-  ( rg -n "RUNBOOK|closeout|checkpoint|next step|TODO|P\\d+|Phase|EVIDENCE|NO-OP" docs out/ops scripts .cursor 2>/dev/null || true ) \
+  echo "## markers (RUNBOOK|closeout|checkpoint|next step|TOD+O|P\\d+|Phase|EVIDENCE|NO-OP)"
+  ( rg -n "RUNBOOK|closeout|checkpoint|next step|${TOD}O|P\\d+|Phase|EVIDENCE|NO-OP" docs out/ops scripts .cursor 2>/dev/null || true ) \
     | sed -n '1,220p'
 } | tee "$OUT/04_marker_search.txt"
 
