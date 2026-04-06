@@ -21,6 +21,7 @@
 |---|---|---|---|---|---|---|
 | **G-DOCS-TOKEN** `docs-token-policy-gate` | Docs | `.github/workflows/docs-token-policy-gate.yml`; `scripts/ops/validate_docs_token_policy.py`; Allowlist: `scripts/ops/docs_token_policy_allowlist.txt` | PR/MG/Man; workflow itself is “not applicable” if no `*.md` changed | `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base origin&#47;main` | `✅` (keine Violations) / Exit 0 | **Inline-Code Token enthält `/` aber ist illustrativ** → Slashes encoden als `&#47;` im betroffenen `.md`; ggf. erlauben via Allowlist (nur für generische Tokens) in `scripts/ops/docs_token_policy_allowlist.txt` |
 | **G-DOCS-REF-TARGETS** `docs-reference-targets-gate` | Docs | `.github/workflows/docs_reference_targets_gate.yml`; `scripts/ops/verify_docs_reference_targets.sh`; Ignore (full-scan only): `docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt` | PR/MG/Man; not applicable if keine `*.md` changed | `bash scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main` | `All referenced targets exist.` / Exit 0 | **Docs referenzieren nicht-existente Repo-Pfade** → Pfad korrigieren/umbenennen; falls **nur illustrativ** → encoden als `&#47;` im Inline-Code |
+| **G-DOCS-REF-TARGETS-FULLSCAN** `docs-reference-targets-fullscan-warn` | Docs / Ops | `.github/workflows/docs_reference_targets_fullscan_schedule.yml`; `scripts/ops/verify_docs_reference_targets.sh` | Schd (Mo 07:00 UTC) + Man | `bash scripts/ops/verify_docs_reference_targets.sh --warn-only` | Job SUCCESS; Log `All referenced targets exist.` **oder** `::warning` + Step Summary bei fehlenden Zielen (Debt sichtbar, Job bleibt grün) | **Volllauf-Debt auf main** → lokal gleicher Befehl; Trend/Baseline: siehe `Check Docs Link Debt Trend`; Details: `docs/ops/DOCS_REFERENCE_TARGETS_DEBT_GUIDE.md` |
 | **G-DOCS-DIFF-GUARD** `Docs Diff Guard Policy Gate` | Docs / Policy | `.github/workflows/docs_diff_guard_policy_gate.yml`; `scripts/ci/check_docs_diff_guard_section.py`; Inserter: `scripts/ops/insert_docs_diff_guard_section.py` | PR/MG/Man; **triggered** wenn Pfade unter `docs/ops/` bzw. `scripts/ops/docs_diff_guard.sh` o.Ä. geändert (siehe `TRIGGER_PREFIXES` im Script) | `python3 scripts&#47;ci&#47;check_docs_diff_guard_section.py` | `✅ Docs Diff Guard Policy: OK (marker present).` | **Marker fehlt** in required docs (`docs/ops/README.md`, `docs/ops/PR_MANAGEMENT_TOOLKIT.md`, `docs/ops/PR_MANAGEMENT_QUICKSTART.md`) → Insert: `python3 scripts&#47;ops&#47;insert_docs_diff_guard_section.py --files <comma-separated>` |
 | **G-DOCS-SNAPSHOT** `pt_docs_gates_snapshot` (lokaler Wrapper) | Ops | `scripts/ops/pt_docs_gates_snapshot.sh` | Lokal (Operator) | `./scripts/ops/pt_docs_gates_snapshot.sh --changed --base origin/main` | `🎉 All gates passed!` | Wrapper bündelt die 3 Docs-Gates; Failure beheben wie oben in den Einzel-Gates beschrieben |
 | **G-REQ-CHECKS-HYGIENE** `required-checks-hygiene-gate` | CI / Hygiene | `.github/workflows/required-checks-hygiene-gate.yml`; `scripts/ci/validate_required_checks_hygiene.py`; Config: `config/ci/required_status_checks.json` | PR/Push(main) | `python3 scripts&#47;ci&#47;validate_required_checks_hygiene.py --config config&#47;ci&#47;required_status_checks.json --workflows .github&#47;workflows --strict` | `✅ SUCCESS: All N required checks are hygiene-compliant` | **Required check wird nur von path-filtered PR-workflows produziert** → Fix in Workflow YAML: **keine** `on.pull_request.paths` für required checks; statt dessen internal change detection (z.B. `dorny&#47;paths-filter`) |
@@ -86,6 +87,9 @@ Die wichtigsten PR-relevanten Checks (inkl. required contexts config) sind in `c
 - **Workflow `Docs Reference Targets Gate`** (`.github/workflows/docs_reference_targets_gate.yml`)
   - Job/Check: `docs-reference-targets-gate`
 
+- **Workflow `Docs Reference Targets Full Scan (scheduled)`** (`.github/workflows/docs_reference_targets_fullscan_schedule.yml`)
+  - Job/Check: `docs-reference-targets-fullscan-warn`
+
 - **Workflow `Docs Diff Guard Policy Gate`** (`.github/workflows/docs_diff_guard_policy_gate.yml`)
   - Job/Check: `Docs Diff Guard Policy Gate`
 
@@ -132,6 +136,7 @@ Der Audit wird als Evidence unter `.local_tmp&#47;gates_audit_<STAMP>&#47;` abge
 
 ### Schedule/Dispatch/Workflow-run (automation)
 
+- `Docs Reference Targets Full Scan (scheduled)` — `.github&#47;workflows&#47;docs_reference_targets_fullscan_schedule.yml`
 - `Full Audit (Security + Quality)` — `.github&#47;workflows&#47;full_audit_weekly.yml`
 - `InfoStream Cycle` — `.github&#47;workflows&#47;infostream-automation.yml`
 - `Test Knowledge DB with ChromaDB` — `.github&#47;workflows&#47;knowledge_extras_chromadb.yml`
