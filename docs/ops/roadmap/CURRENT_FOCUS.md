@@ -51,6 +51,13 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **Runner index curator docstring (PR #2263):** `scripts/dev/curate_runner_index.py` — Readiness **TODO** als fester Status (neben READY/PARTIAL), kein allgemeiner Aufgaben-Marker; **NO-LIVE**.
 - **Chat-led snapshot §5 (PR #2265):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Stichprobentabelle aktualisiert (u. a. I1 Backtest/Tracker, Truth #2256/#2257, J3 #2259); **NO-LIVE**.
 - **J1 (Forward Operator-Kurzreferenz, PR #2267):** [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md) — „Operator-Kurzreferenz (J1 Forward, NO-LIVE)“ (dummy/kraken, ``--n-bars``/Portfolio, ``scripts/_shared_forward_args.py``, optionaler Integrationssmoke); docs-token-policy-konforme ``&#47;``-Encodings; **NO-LIVE**.
+- **CURRENT_FOCUS sync post–#2267 (PR #2268):** „Recently landed“ + Verifikation für PR #2267; **NO-LIVE**.
+- **Chat-led §5 J1 Forward row (PR #2269):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile J1 Forward (Scripts); **NO-LIVE**.
+- **PLACEHOLDER_POLICY inventory-noise note (PR #2270):** [PLACEHOLDER_POLICY.md](../PLACEHOLDER_POLICY.md) — Hinweis auf erwartete hohe Zähler in der Policy-Datei; **NO-LIVE**.
+- **slice_from_backup Task board wording (PR #2271):** `scripts/utils/slice_from_backup.sh` — „Task board“ statt wörtlichem Marker in Restore-Text; **NO-LIVE**.
+- **curate + reentry J3 false TODO hits (PR #2272):** `scripts/dev/curate_runner_index.py`, `scripts/ops/reentry_runbook.sh` — Readiness- bzw. rg-Pattern ohne wörtlichen ``TODO``-Token im Quelltext; **NO-LIVE**.
+- **Live status report CHECK fixtures (PR #2273):** `tests/test_live_status_report.py` — Checklisten-Beispiele mit ``CHECK:``; **NO-LIVE**.
+- **Placeholder report titles + config/tests J3 noise (PR #2274):** `generate_placeholder_reports.py` — neue Markdown-Überschriften für lokale Inventar-Reports (früherer Heading-Prefix mit „TODO“ und Slash entfällt); Smoke + CLI-Fixtures + ``risk_layer_v1_example.toml``; **NO-LIVE**.
 
 **GitHub — Truth-Gate Required Checks auf `main`:** Verifiziert (Apr 2026): **`docs-drift-guard`** und **`repo-truth-claims`** sind als Required Status Checks gesetzt (Namen wie `.github/workflows/truth_gates_pr.yml` Job-`name:`). Re-Check lokal: `python3 scripts/ops/ensure_truth_branch_protection.py --check` · ergänzen mit `--apply` nur mit Admin-Rechten; Registry: [`TRUTH_BRANCH_PROTECTION.md`](../registry/TRUTH_BRANCH_PROTECTION.md).
 
@@ -110,11 +117,19 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-09 | Post–PR #2202: J2 Optuna placeholder CLI NO-LIVE/`--help` + help smoke; `CURRENT_FOCUS` refresh (this file) | PR #2202 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-10 | Post–PR #2204: `run_optuna_study` CLI NO-LIVE/Placeholder-Abgrenzung + help smoke; `CURRENT_FOCUS` refresh (this file) | PR #2204 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-11 | Post–PR #2206: `run_sweep_pipeline` CLI NO-LIVE + help smoke; `CURRENT_FOCUS` refresh (this file) | PR #2206 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
+| 2026-04-06 | Post–PRs #2268–#2274: `CURRENT_FOCUS` + chat-led + runbooks + J3 noise (scripts/tests/config) | PR #2268–#2274 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 
 ---
 
 ## Branch / PR pointer (optional)
 
+- **Merged:** [PR #2274](https://github.com/rauterfrank-ui/Peak_Trade/pull/2274) — Placeholder report titles + config/tests J3 noise on `main`.
+- **Merged:** [PR #2273](https://github.com/rauterfrank-ui/Peak_Trade/pull/2273) — Live status report CHECK fixtures on `main`.
+- **Merged:** [PR #2272](https://github.com/rauterfrank-ui/Peak_Trade/pull/2272) — curate + reentry J3 false TODO hits on `main`.
+- **Merged:** [PR #2271](https://github.com/rauterfrank-ui/Peak_Trade/pull/2271) — slice_from_backup Task board wording on `main`.
+- **Merged:** [PR #2270](https://github.com/rauterfrank-ui/Peak_Trade/pull/2270) — PLACEHOLDER_POLICY inventory-noise note on `main`.
+- **Merged:** [PR #2269](https://github.com/rauterfrank-ui/Peak_Trade/pull/2269) — Chat-led §5 J1 Forward snapshot row on `main`.
+- **Merged:** [PR #2268](https://github.com/rauterfrank-ui/Peak_Trade/pull/2268) — CURRENT_FOCUS sync post–#2267 on `main`.
 - **Merged:** [PR #2267](https://github.com/rauterfrank-ui/Peak_Trade/pull/2267) — J1 Forward Operator-Kurzreferenz in `RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md` (NO-LIVE) on `main`.
 - **Merged:** [PR #2206](https://github.com/rauterfrank-ui/Peak_Trade/pull/2206) — Unified sweep pipeline CLI NO-LIVE help (`run_sweep_pipeline` + smoke) on `main`.
 - **Merged:** [PR #2204](https://github.com/rauterfrank-ui/Peak_Trade/pull/2204) — Optuna full study CLI NO-LIVE help (`run_optuna_study` vs. placeholder + smoke) on `main`.
