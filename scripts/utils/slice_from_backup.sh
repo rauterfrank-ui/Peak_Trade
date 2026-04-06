@@ -197,12 +197,12 @@ BACKUP_REF="$(resolve_backup_ref)"
 log "🧷 Using backup ref: $BACKUP_REF"
 log "⚠️  Backup-Branch NICHT löschen, bis alles gemerged ist!"
 
-# PR #1 TODO Board
+# PR #1 Task board (wording avoids spurious marker hits in placeholder inventory scans)
 run_slice "$BACKUP_REF" \
   "feat/todo-board-system-v1" \
-  "feat(docs): add TODO board system (config + generator + docs)" \
-  "TODO board system (v1)" \
-  "Imports TODO board generator + config + docs from backup branch." \
+  "feat(docs): add Task board system (config + generator + docs)" \
+  "Task board system (v1)" \
+  "Imports Task board generator + config + docs from backup branch." \
   "config/todo_board.yaml" \
   "scripts/build_todo_board_html.py" \
   "docs/00_overview" \
