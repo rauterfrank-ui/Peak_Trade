@@ -1,21 +1,22 @@
 # Docs Reference Targets Debt Management Guide
 
-**Version:** 1.0  
-**Last Updated:** 2026-01-07  
+**Version:** 1.1  
+**Last Updated:** 2026-04-06  
 **Owner:** Peak_Trade Ops Team
 
 ---
 
 ## Overview
 
-This guide explains how Peak_Trade manages documentation link quality through two complementary mechanisms:
+This guide explains how Peak_Trade manages documentation link quality through **three** complementary mechanisms:
 
 1. **Changed-Files Gate** (strict): Prevents new PRs from introducing broken links
 2. **Full-Scan Trend Gate** (baseline): Prevents debt from growing while allowing gradual paydown
+3. **Scheduled Full Scan** (visibility): Weekly full scan on `main` with **warn-only** semantics so repo-wide drift is visible without failing the workflow
 
 ---
 
-## Two Gates, Two Purposes
+## Gates and schedules
 
 ### Gate 1: Docs Reference Targets (Changed Files) 🔒
 
@@ -59,7 +60,33 @@ scripts/ops/verify_docs_reference_targets_trend.sh
 
 ---
 
-## Why Two Gates?
+### Gate 3: Scheduled full scan on `main` (warn-only) 📅
+
+**Purpose:** Surface **full-repo** reference-target status on the default branch even when no PR is open. Complements Gate 1 (PR-scoped) and Gate 2 (baseline trend): operators see drift in Actions without merge-blocking red.
+
+**Scope:** All tracked Markdown under `docs/` (glob `docs&#47;**&#47;*.md`; same as a local full scan, not `--changed`).
+
+**Enforcement:** **Non-blocking.** Workflow run stays **green**; missing targets are reported via **`::warning`** annotations and the job Step Summary.
+
+**Where:** `.github/workflows/docs_reference_targets_fullscan_schedule.yml`
+
+**Triggers:**
+- **Schedule:** Mondays **07:00 UTC** (`cron: 0 7 * * 1`)
+- **`workflow_dispatch`:** manual run (e.g. validate after merging workflow changes)
+
+**How it works:**
+```bash
+# Equivalent local command (warn-only: exit 2 if missing targets, without failing CI script consumers)
+scripts/ops/verify_docs_reference_targets.sh --warn-only
+```
+
+**Exit-code mapping in CI:** The verifier returns **0** if all targets exist, **2** if targets are missing (`--warn-only`). The workflow maps exit **2** to a **successful job** with **`::warning`** so branch protection is unaffected; other non-zero exits fail the job (script or environment errors).
+
+**Relationship to Gate 2:** Gate 2 compares **missing count vs. baseline** on pushes/PRs. Gate 3 is a **raw full-scan signal** on a schedule—use it for visibility; use Gate 2 for “did we increase debt vs. committed baseline?”.
+
+---
+
+## Why these gates?
 
 ### Problem: Historical Debt
 
@@ -80,6 +107,11 @@ Peak_Trade's documentation has accumulated **118 missing targets** over time. Th
 - ✅ Total debt doesn't grow
 - ✅ Debt reduction is tracked and encouraged
 - ✅ Baseline updates require explicit decision + audit trail
+
+**Scheduled full scan (Gate 3)** ensures:
+- ✅ Operators get a periodic **main-branch** health signal for the full docs tree
+- ✅ Missing targets remain **visible** (warnings + summary) without blocking merges
+- ✅ Same semantics as local `verify_docs_reference_targets.sh --warn-only`
 
 ---
 
