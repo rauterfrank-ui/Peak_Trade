@@ -58,6 +58,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **curate + reentry J3 false TODO hits (PR #2272):** `scripts/dev/curate_runner_index.py`, `scripts/ops/reentry_runbook.sh` — Readiness- bzw. rg-Pattern ohne wörtlichen ``TODO``-Token im Quelltext; **NO-LIVE**.
 - **Live status report CHECK fixtures (PR #2273):** `tests/test_live_status_report.py` — Checklisten-Beispiele mit ``CHECK:``; **NO-LIVE**.
 - **Placeholder report titles + config/tests J3 noise (PR #2274):** `generate_placeholder_reports.py` — neue Markdown-Überschriften für lokale Inventar-Reports (früherer Heading-Prefix mit „TODO“ und Slash entfällt); Smoke + CLI-Fixtures + ``risk_layer_v1_example.toml``; **NO-LIVE**.
+- **Chat-led §5 Infostream-Zyklus (PR #2276):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „Infostream / Zyklus“ (Run-Cycle-CLI, Delivery-Kontext, lokale Artefakte); **NO-LIVE**.
 
 **GitHub — Truth-Gate Required Checks auf `main`:** Verifiziert (Apr 2026): **`docs-drift-guard`** und **`repo-truth-claims`** sind als Required Status Checks gesetzt (Namen wie `.github/workflows/truth_gates_pr.yml` Job-`name:`). Re-Check lokal: `python3 scripts/ops/ensure_truth_branch_protection.py --check` · ergänzen mit `--apply` nur mit Admin-Rechten; Registry: [`TRUTH_BRANCH_PROTECTION.md`](../registry/TRUTH_BRANCH_PROTECTION.md).
 
@@ -118,11 +119,13 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-10 | Post–PR #2204: `run_optuna_study` CLI NO-LIVE/Placeholder-Abgrenzung + help smoke; `CURRENT_FOCUS` refresh (this file) | PR #2204 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-11 | Post–PR #2206: `run_sweep_pipeline` CLI NO-LIVE + help smoke; `CURRENT_FOCUS` refresh (this file) | PR #2206 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-06 | Post–PRs #2268–#2274: `CURRENT_FOCUS` + chat-led + runbooks + J3 noise (scripts/tests/config) | PR #2268–#2274 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
+| 2026-04-06 | Post–PR #2276: Chat-led §5 Infostream-Zyklus + `CURRENT_FOCUS` refresh (this file) | PR #2276 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 
 ---
 
 ## Branch / PR pointer (optional)
 
+- **Merged:** [PR #2276](https://github.com/rauterfrank-ui/Peak_Trade/pull/2276) — Chat-led §5 Infostream cycle snapshot row on `main`.
 - **Merged:** [PR #2274](https://github.com/rauterfrank-ui/Peak_Trade/pull/2274) — Placeholder report titles + config/tests J3 noise on `main`.
 - **Merged:** [PR #2273](https://github.com/rauterfrank-ui/Peak_Trade/pull/2273) — Live status report CHECK fixtures on `main`.
 - **Merged:** [PR #2272](https://github.com/rauterfrank-ui/Peak_Trade/pull/2272) — curate + reentry J3 false TODO hits on `main`.
