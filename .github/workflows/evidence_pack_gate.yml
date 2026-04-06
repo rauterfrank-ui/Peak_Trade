@@ -35,7 +35,7 @@ jobs:
       evidence_pack_changed: ${{ steps.filter.outputs.evidence_pack }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Detect Evidence Pack changes
         uses: dorny/paths-filter@v3
@@ -73,7 +73,7 @@ jobs:
 
       - name: Checkout
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python 3.11
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
@@ -136,7 +136,7 @@ jobs:
 
       - name: Checkout
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python 3.11
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
