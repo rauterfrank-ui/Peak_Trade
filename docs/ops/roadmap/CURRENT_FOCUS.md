@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-04-11
+last_updated: 2026-04-12
 ---
 
 # Current focus
@@ -50,6 +50,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **Desktop shortcuts wording (PR #2262):** `scripts/utils/install_desktop_shortcuts.sh` — Nutzer-Text „task board“ statt „TODO board“; Pfade/Dateinamen unverändert; **NO-LIVE**.
 - **Runner index curator docstring (PR #2263):** `scripts/dev/curate_runner_index.py` — Readiness **TODO** als fester Status (neben READY/PARTIAL), kein allgemeiner Aufgaben-Marker; **NO-LIVE**.
 - **Chat-led snapshot §5 (PR #2265):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Stichprobentabelle aktualisiert (u. a. I1 Backtest/Tracker, Truth #2256/#2257, J3 #2259); **NO-LIVE**.
+- **J1 (Forward Operator-Kurzreferenz, PR #2267):** [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md) — „Operator-Kurzreferenz (J1 Forward, NO-LIVE)“ (dummy/kraken, ``--n-bars``/Portfolio, ``scripts/_shared_forward_args.py``, optionaler Integrationssmoke); docs-token-policy-konforme ``&#47;``-Encodings; **NO-LIVE**.
 
 **GitHub — Truth-Gate Required Checks auf `main`:** Verifiziert (Apr 2026): **`docs-drift-guard`** und **`repo-truth-claims`** sind als Required Status Checks gesetzt (Namen wie `.github/workflows/truth_gates_pr.yml` Job-`name:`). Re-Check lokal: `python3 scripts/ops/ensure_truth_branch_protection.py --check` · ergänzen mit `--apply` nur mit Admin-Rechten; Registry: [`TRUTH_BRANCH_PROTECTION.md`](../registry/TRUTH_BRANCH_PROTECTION.md).
 
@@ -101,6 +102,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-02 | Finish Plan **PR 8** post-merge: `CURRENT_FOCUS` + Release Rubric §4 + `FINISH_PLAN` PR 8 | PR #2178 |
 | 2026-04-03 | Stufe J / J1: Forward-CLI ``--ohlcv-source`` case-insensitive (`_shared_forward_args`); Runbook-Zeile | PR #2180 |
 | 2026-04-03 | Chat-led gaps: Querverweis `RUNBOOK_CHAT_LED_OPEN_FEATURES` → `RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED` (Stufe J) | PR #2182 |
+| 2026-04-06 | Post–PR #2267: J1 Forward Operator-Kurzreferenz im geordneten Runbook; `CURRENT_FOCUS` refresh (this file) | PR #2267 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-02 | Post–PR #2184: `CURRENT_FOCUS` refresh — backtest evidence `symbol` aus Config + Chat-led-Stichprobe §5 | PR #2184 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-02 | Post–chat-led §5: PR #2193 (Scripts) + PR #2194 (Research-Stubs) in `RUNBOOK_CHAT_LED_OPEN_FEATURES` | PR #2193 / #2194 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-07 | Post–PR #2198: J1 Forward/Portfolio CLI NO-LIVE/Epilog + help smoke; `CURRENT_FOCUS` refresh (this file) | PR #2198 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
@@ -113,6 +115,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ## Branch / PR pointer (optional)
 
+- **Merged:** [PR #2267](https://github.com/rauterfrank-ui/Peak_Trade/pull/2267) — J1 Forward Operator-Kurzreferenz in `RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md` (NO-LIVE) on `main`.
 - **Merged:** [PR #2206](https://github.com/rauterfrank-ui/Peak_Trade/pull/2206) — Unified sweep pipeline CLI NO-LIVE help (`run_sweep_pipeline` + smoke) on `main`.
 - **Merged:** [PR #2204](https://github.com/rauterfrank-ui/Peak_Trade/pull/2204) — Optuna full study CLI NO-LIVE help (`run_optuna_study` vs. placeholder + smoke) on `main`.
 - **Merged:** [PR #2202](https://github.com/rauterfrank-ui/Peak_Trade/pull/2202) — J2 Optuna placeholder CLI NO-LIVE help (`run_study_optuna_placeholder` + smoke) on `main`.
