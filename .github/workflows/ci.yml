@@ -48,7 +48,7 @@ jobs:
       workflow_only: ${{ steps.set_outputs.outputs.workflow_only }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Detect changes
         uses: dorny/paths-filter@v3
@@ -112,7 +112,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Validate CI Required Contexts Contract
         run: ./scripts/ops/check_required_ci_contexts_present.sh
@@ -131,7 +131,7 @@ jobs:
     needs: changes
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -164,7 +164,7 @@ jobs:
     needs: changes
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -217,7 +217,7 @@ jobs:
 
       - name: Checkout
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python ${{ matrix.python-version }}
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
@@ -318,7 +318,7 @@ jobs:
 
       - name: Checkout
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python 3.11
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}

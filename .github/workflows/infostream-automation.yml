@@ -72,7 +72,7 @@ jobs:
       # 1. Checkout mit vollem Git-History (für Commits)
       # =========================================================================
       - name: 📥 Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0  # Vollständige History für Commits
           persist-credentials: true
