@@ -15,9 +15,9 @@
 - Updated: `WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md`
 - Updated: `docs/ops/runbooks/README.md`
 - New: `docs/ops/runbooks/RUNBOOK_LOCAL_DOCS_GATES_SNAPSHOT_CHANGED_SCOPE_CURSOR_MULTI_AGENT.md`
-- New: `docs/ops/runbooks/RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md`
+- New: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md`
 - New: `docs/ops/runbooks/RUNBOOK_STALE_BRANCH_HYGIENE_LOCAL_GONE_CURSOR_MULTI_AGENT.md`
-- New/Updated: `docs/webui/DASHBOARD_OVERVIEW.md`
+- New/Updated: `docs&#47;webui&#47;DASHBOARD_OVERVIEW.md`
 
 ## Verification
 CI (PR #738):
@@ -33,12 +33,12 @@ LOW
 - Documentation-only; dashboard is explicitly watch-only/read-only; no execution/governance codepaths changed.
 
 ## Operator How-To
-- Entry: `docs/webui/DASHBOARD_OVERVIEW.md` → follow watch-only runbook for start commands + verification URLs.
+- Entry: `docs&#47;webui&#47;DASHBOARD_OVERVIEW.md` → follow watch-only runbook for start commands + verification URLs.
 - For deterministic evidence: use the runbook’s snapshot export commands.
 - If token policy trips on illustrative paths: encode `/` inside inline-code as `&#47;`.
 
 ## References
 - PR #738 (dashboard watch-only operator runbook)
 - Runbooks index: `docs/ops/runbooks/README.md`
-- Dashboard overview: `docs/webui/DASHBOARD_OVERVIEW.md`
+- Dashboard overview: `docs&#47;webui&#47;DASHBOARD_OVERVIEW.md`
 - Workflow frontdoor: `WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md`

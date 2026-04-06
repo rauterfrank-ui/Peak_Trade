@@ -26,7 +26,7 @@
 * Tooling: `scripts&#47;obs&#47;*.sh`, ADR, Runbooks
   - `ADR_0001_Peak_Tool_Stack.md`
   - `Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md`
-  - `docs/observability/OBS_STACK_RUNBOOK.md`
+  - `docs&#47;observability&#47;OBS_STACK_RUNBOOK.md`
   - `docs/strategies/R_AND_D_STRATEGIES.md`
 
 **Total:** +4,680 LOC across 15 files

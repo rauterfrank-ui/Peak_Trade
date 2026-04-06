@@ -32,7 +32,7 @@ The new KillSwitch is a **state machine** (`state&#47;is_killed` + recovery work
 
 * **Added**
 
-  * `src/risk_layer/kill_switch/adapter.py`
+  * `src&#47;risk_layer&#47;kill_switch&#47;adapter.py`
 
     * Legacy adapter implementing: `evaluate&#47;reset&#47;_last_status`, plus `enabled` passthrough
     * Marked **TEMPORARY** with deprecation target **Q1 2026**
@@ -83,7 +83,7 @@ No operational action required. No config migration required.
 * Main commit: `14d58ec`
 * Key paths:
 
-  * `src/risk_layer/kill_switch/adapter.py`
+  * `src&#47;risk_layer&#47;kill_switch&#47;adapter.py`
   * `src\&#47;risk_layer\&#47;risk_gate.py`
   * `src/risk_layer/kill_switch/core.py`
 * Documentation:

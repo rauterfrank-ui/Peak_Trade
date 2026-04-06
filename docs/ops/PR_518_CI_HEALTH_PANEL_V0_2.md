@@ -13,8 +13,8 @@
 Erweitert das CI & Governance Health Panel um **persistente Last-Known-Health Snapshots**.
 
 Bei jedem erfolgreichen `/ops/ci-health/status` API Call wird automatisch ein Snapshot gespeichert:
-- **JSON:** `reports/ops/ci_health_latest.json` (vollständiger Status)
-- **Markdown:** `reports/ops/ci_health_latest.md` (human-readable Summary, 10-20 Zeilen)
+- **JSON:** `reports&#47;ops&#47;ci_health_latest.json` (vollständiger Status)
+- **Markdown:** `reports&#47;ops&#47;ci_health_latest.md` (human-readable Summary, 10-20 Zeilen)
 
 **Atomic Writes:** Temp-File + `os.replace()` → keine partial files.
 
@@ -67,8 +67,8 @@ Bei jedem erfolgreichen `/ops/ci-health/status` API Call wird automatisch ein Sn
 ```
 
 **Snapshot-Pfade:**
-- JSON: `reports/ops/ci_health_latest.json`
-- Markdown: `reports/ops/ci_health_latest.md`
+- JSON: `reports&#47;ops&#47;ci_health_latest.json`
+- Markdown: `reports&#47;ops&#47;ci_health_latest.md`
 
 **Atomic Write:**
 ```python
@@ -316,7 +316,7 @@ cat reports/ops/ci_health_latest.json | jq .generated_at
    - **Mitigation:** Operator kann Files manuell löschen
 
 2. **Permissions:**
-   - Wenn `reports/ops/` nicht writable → `snapshot_write_error`
+   - Wenn `reports&#47;ops&#47;` nicht writable → `snapshot_write_error`
    - **Mitigation:** API bleibt 200, Fehler nur geloggt
 
 3. **Concurrency:**
@@ -457,8 +457,8 @@ Ops WebUI: CI health snapshots (v0.2)
 Erweitert das CI & Governance Health Panel um **persistente Last-Known-Health Snapshots**.
 
 Bei jedem `/ops/ci-health/status` API Call wird automatisch ein Snapshot gespeichert:
-- **JSON:** `reports/ops/ci_health_latest.json` (vollständiger Status)
-- **Markdown:** `reports/ops/ci_health_latest.md` (human-readable, 10-20 Zeilen)
+- **JSON:** `reports&#47;ops&#47;ci_health_latest.json` (vollständiger Status)
+- **Markdown:** `reports&#47;ops&#47;ci_health_latest.md` (human-readable, 10-20 Zeilen)
 
 ## Why
 

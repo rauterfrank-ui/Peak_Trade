@@ -17,7 +17,7 @@
 ## 📖 Resources
 
 - [Runbook Index](../WP1D_RUNBOOK_INDEX.md)
-- System Status: `reports/ops/wp1d_status_snapshot.json` (generated; not tracked)
+- System Status: `reports&#47;ops&#47;wp1d_status_snapshot.json` (generated; not tracked)
 
 ---
 

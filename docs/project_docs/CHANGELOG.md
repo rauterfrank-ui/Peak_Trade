@@ -67,7 +67,7 @@
 - `src/risk/position_sizer.py`
   Erweiterte Version des Position Sizers (inkl. Kelly-Logik und flexibler Parametrisierung).
 
-- `src/risk/position_sizer_old_backup.py`
+- `src&#47;risk&#47;position_sizer_old_backup.py`
   Backup der alten Position-Sizing-Implementierung (nur zur Referenz, nicht produktiv genutzt).
 
 **Data-Layer**

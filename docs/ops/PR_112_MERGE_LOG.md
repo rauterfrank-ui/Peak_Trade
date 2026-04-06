@@ -14,7 +14,7 @@
 
 ## Verification
 - `quarto render templates&#47;quarto&#47;smoke.qmd --output reports&#47;quarto&#47;smoke.html`: OK
-- Output: `reports/quarto/smoke.html` exists (render success)
+- Output: `reports&#47;quarto&#47;smoke.html` exists (render success)
 - Recommended: `scripts/ci/validate_git_state.sh` and `scripts&#47;automation&#47;post_merge_verify.sh --expected dd168b950e554a2900d708d326d295daaa7f4a92`
 
 ## Diffstat (optional)

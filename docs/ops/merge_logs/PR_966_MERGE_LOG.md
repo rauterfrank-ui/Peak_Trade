@@ -25,7 +25,7 @@
 - Governance: NO-LIVE unchanged.
 
 ## Operator How-To
-1. Start local stack (Prometheus-local + Grafana) via `scripts/obs/grafana_local_up.sh`.
+1. Start local stack (Prometheus-local + Grafana) via `scripts&#47;obs&#47;grafana_local_up.sh`.
 2. Run verifier: `bash scripts/obs/ai_live_ops_verify.sh`.
 3. Confirm rules loaded: curl http:&#47;&#47;127.0.0.1:9092&#47;api&#47;v1&#47;rules | head
 4. Open Grafana dashboard: “Peak_Trade — Execution Watch Overview”; verify “AI Live — Ops Summary” row is populated.

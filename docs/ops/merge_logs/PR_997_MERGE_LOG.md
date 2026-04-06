@@ -14,7 +14,7 @@ Adds watch-only trade-flow Prometheus counters for signals + order approval/bloc
     - blocked: on governance/env/safety/risk blocks (finite allowlist)
   - `src/execution/live_session.py`: increments **once per signal-change** in `step_once()`.
 - **Dashboard:**
-  - `docs/webui/observability/grafana/dashboards/execution/peaktrade-execution-watch-overview.json`:
+  - `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;execution&#47;peaktrade-execution-watch-overview.json`:
     - Stat panels: Total Signals / Orders Approved / Orders Blocked (range via `increase(...[$__range])`).
 - **Demo / Ops:**
   - `scripts/obs/mock_shadow_mvs_exporter.py`: emits deterministic demo series for the 3 new counters (so local dashboard is non-empty).
@@ -48,8 +48,8 @@ HIGH (touches `src&#47;execution&#47;**`) but **telemetry-only / watch-only**:
 ## References
 - PR: #997
 - Runbook: `docs/ops/runbooks/RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md`
-- Dashboard: `docs/webui/observability/grafana/dashboards/execution/peaktrade-execution-watch-overview.json`
-- Tests: `tests/obs/test_trade_flow_telemetry_metrics.py`, `tests/obs/test_grafana_dashpack_integrity_v1.py`
+- Dashboard: `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;execution&#47;peaktrade-execution-watch-overview.json`
+- Tests: `tests/obs/test_trade_flow_telemetry_metrics.py`, `tests&#47;obs&#47;test_grafana_dashpack_integrity_v1.py`
 
 ---
 

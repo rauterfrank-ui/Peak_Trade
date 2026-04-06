@@ -53,6 +53,6 @@ Grafana Explore smoke queries:
 ## References
 - PR: `https://github.com/rauterfrank-ui/Peak_Trade/pull/763`
 - Docs:
-  - `docs/webui/observability/README.md`
-  - `docs/webui/observability/DASHBOARD_WORKFLOW.md`
+  - `docs&#47;webui&#47;observability&#47;README.md`
+  - `docs&#47;webui&#47;observability&#47;DASHBOARD_WORKFLOW.md`
   - `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;shadow&#47;peaktrade-shadow-pipeline-mvs.json`

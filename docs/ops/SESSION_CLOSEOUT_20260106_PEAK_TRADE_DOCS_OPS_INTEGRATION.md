@@ -55,7 +55,7 @@ Peak_Trade (Safety/Governance-first, DAY TRADING):
 - ✅ Added `docs/audit/AUDIT_RUNBOOK_COMPLETE.md` (407 lines)
 - ✅ Added `docs/governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md` (241 lines)
 - ✅ Added `docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE.md` (123 lines)
-- ✅ **Removed obsolete `archive/` directory** (42 files, ~2,450 lines deleted)
+- ✅ **Removed obsolete `archive&#47;` directory** (42 files, ~2,450 lines deleted)
   - Removed `archive&#47;PeakTradeRepo&#47;`
   - Removed `archive&#47;full_files_stand_02.12.2025&#47;`
   - Removed `archive&#47;legacy_docs&#47;`

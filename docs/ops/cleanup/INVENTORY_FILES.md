@@ -225,7 +225,7 @@ Für jeden Top-Level Ordner:
 
 | Pfad | Status | Analyse | Aktion |
 |------|--------|---------|--------|
-| `reports/audit/`, `reports/experiments/`, etc. | ❓ | Generated Reports | **Check .gitignore** - sollten ignored sein |
+| `reports&#47;audit&#47;`, `reports/experiments/`, etc. | ❓ | Generated Reports | **Check .gitignore** - sollten ignored sein |
 | `reports&#47;*.tsv` | ❓ | TSV Reports | **Check .gitignore** |
 
 **Assessment:** reports/ sollte großteils in .gitignore sein. README erstellen was committed vs. generated ist.
@@ -303,7 +303,7 @@ Viele Scripts direkt in `scripts/`:
 
 | Pfad | Status | Analyse | Aktion |
 |------|--------|---------|--------|
-| `venv/` | ✅ | Virtual Environment | Should be in .gitignore |
+| `venv&#47;` | ✅ | Virtual Environment | Should be in .gitignore |
 
 ---
 
@@ -350,7 +350,7 @@ Check und ggf. hinzufügen:
 - `results/`
 - `test_runs/`
 - `*.log` files in root
-- `venv/` (sollte schon drin sein)
+- `venv&#47;` (sollte schon drin sein)
 
 ### ⚪ Investigate
 

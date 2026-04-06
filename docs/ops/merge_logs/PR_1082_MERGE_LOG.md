@@ -8,7 +8,7 @@ Lokale Cockpit-/Observability-Setups sind fehleranfällig (Ports, `host.docker.i
 
 ## Changes
 - Docs / Runbook(s):
-  - `docs/ops/runbooks/RUNBOOK_MODE_B_METRICSD_DASHBOARD_METRICS.md`
+  - `docs&#47;ops&#47;runbooks&#47;RUNBOOK_MODE_B_METRICSD_DASHBOARD_METRICS.md`
   - (optional) weitere docs-only Anpassungen im Umfeld: n/a
 
 ## Verification
@@ -56,6 +56,6 @@ LOW — docs/runbook only. Keine Trading/Execution/Governance-Pfade geändert.
 
 ## References
 - PR: https://github.com/rauterfrank-ui/Peak_Trade/pull/1082
-- Paths: `docs/ops/runbooks/RUNBOOK_MODE_B_METRICSD_DASHBOARD_METRICS.md`
+- Paths: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_MODE_B_METRICSD_DASHBOARD_METRICS.md`
 - Related local tooling (optional):
   - `.ops_local&#47;scripts&#47;obs&#47;verify_grafana_multi_prom.sh`

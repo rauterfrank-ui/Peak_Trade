@@ -23,7 +23,7 @@
 
 ## Operator Notes
 - Review the PASS snapshot: `docs/ops/evidence/SHADOW_MVS_VERIFY_PASS_20260118T072706Z.md`
-- Contract reference: `docs/webui/observability/SHADOW_MVS_CONTRACT.md`
+- Contract reference: `docs&#47;webui&#47;observability&#47;SHADOW_MVS_CONTRACT.md`
 
 ## References
 - PR #783

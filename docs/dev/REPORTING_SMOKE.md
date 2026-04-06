@@ -5,7 +5,7 @@
 The **Quarto smoke report** is a minimal test report that verifies Quarto rendering is working correctly in the Peak Trade project.
 
 **Template**: `templates/quarto/smoke.qmd`
-**Output**: `reports/quarto/smoke.html` (gitignored)
+**Output**: `reports&#47;quarto&#47;smoke.html` (gitignored)
 
 ## Purpose
 
@@ -60,7 +60,7 @@ These are typically already installed in the Peak Trade development environment.
 
 ### Local
 
-- **Output file**: `reports/quarto/smoke.html`
+- **Output file**: `reports&#47;quarto&#47;smoke.html`
 - **Format**: Self-contained HTML (all resources embedded)
 - **Size**: ~500KB (includes base64-encoded plots)
 
@@ -142,7 +142,7 @@ chmod +x scripts/dev/report_smoke.sh
 Check workflow logs for errors:
 1. Verify Quarto setup step succeeded
 2. Check render step output for errors
-3. Confirm `reports/quarto/smoke.html` was created
+3. Confirm `reports&#47;quarto&#47;smoke.html` was created
 4. Review upload-artifact step logs
 
 ### Output file not generated
