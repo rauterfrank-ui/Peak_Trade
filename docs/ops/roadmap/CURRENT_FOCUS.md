@@ -62,6 +62,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **Chat-led §5 Execution C1 (PR #2278):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „Execution / Orders (C1)“ (Stufe C1 im geordneten Runbook; ``exchange.py`` und ``paper.py``); **NO-LIVE**.
 - **Chat-led §5 Market Outlook (PR #2280):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „Market Outlook“ (tägliche Automation: ``generate_market_outlook_daily.py`` und zugehöriger GitHub-Workflow); **NO-LIVE**.
 - **Chat-led §5 Learning Loop F2 (PR #2282):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „Learning Loop (F2)“ (Emitter und Bridge inkl. Tests; Stufe F2 im geordneten Runbook **DONE**); **NO-LIVE**.
+- **Chat-led §5 Observability H1 (PR #2284):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „Observability (H1)“ (HTTP-Session und Metrics-Server; Stufe H1 im geordneten Runbook **DONE**); **NO-LIVE**.
 
 **GitHub — Truth-Gate Required Checks auf `main`:** Verifiziert (Apr 2026): **`docs-drift-guard`** und **`repo-truth-claims`** sind als Required Status Checks gesetzt (Namen wie `.github/workflows/truth_gates_pr.yml` Job-`name:`). Re-Check lokal: `python3 scripts/ops/ensure_truth_branch_protection.py --check` · ergänzen mit `--apply` nur mit Admin-Rechten; Registry: [`TRUTH_BRANCH_PROTECTION.md`](../registry/TRUTH_BRANCH_PROTECTION.md).
 
@@ -126,11 +127,13 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-06 | Post–PR #2278: Chat-led §5 C1 Execution + `CURRENT_FOCUS` refresh (this file) | PR #2278 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-06 | Post–PR #2280: Chat-led §5 Market Outlook + `CURRENT_FOCUS` refresh (this file) | PR #2280 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-06 | Post–PR #2282: Chat-led §5 Learning Loop F2 + `CURRENT_FOCUS` refresh (this file) | PR #2282 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
+| 2026-04-06 | Post–PR #2284: Chat-led §5 Observability H1 + `CURRENT_FOCUS` refresh (this file) | PR #2284 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 
 ---
 
 ## Branch / PR pointer (optional)
 
+- **Merged:** [PR #2284](https://github.com/rauterfrank-ui/Peak_Trade/pull/2284) — Chat-led §5 Observability H1 snapshot row on `main`.
 - **Merged:** [PR #2282](https://github.com/rauterfrank-ui/Peak_Trade/pull/2282) — Chat-led §5 Learning Loop F2 snapshot row on `main`.
 - **Merged:** [PR #2280](https://github.com/rauterfrank-ui/Peak_Trade/pull/2280) — Chat-led §5 Market Outlook snapshot row on `main`.
 - **Merged:** [PR #2278](https://github.com/rauterfrank-ui/Peak_Trade/pull/2278) — Chat-led §5 C1 execution snapshot row on `main`.
