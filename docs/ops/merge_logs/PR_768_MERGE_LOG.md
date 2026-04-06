@@ -12,16 +12,16 @@ Direkt nach `up` waren lokale Snapshot-Verifikationen flakey:
 Ziel: **governance-safe** (NO-LIVE), snapshot-only, keine unbounded loops, aber dennoch reproduzierbares `RESULT=PASS`.
 
 ## Changes
-- `scripts/obs/shadow_mvs_local_verify.sh`
+- `scripts&#47;obs&#47;shadow_mvs_local_verify.sh`
   - bounded retries für Targets + `INFO|targets_retry=...` Evidence
   - bounded Grafana health warmup
   - bounded warmup retry für Golden Queries inkl. NaN/empty handling
   - formatstabile Evidence-Lines (Pipe-delimited)
-- `docs/webui/observability/SHADOW_MVS_CONTRACT.md`
+- `docs&#47;webui&#47;observability&#47;SHADOW_MVS_CONTRACT.md`
   - “Retries & Warmup Semantics” inkl. Defaults + ENV overrides
-- `docs/webui/observability/SHADOW_MVS_FAILURE_MAP_PHASE_F.md`
+- `docs&#47;webui&#47;observability&#47;SHADOW_MVS_FAILURE_MAP_PHASE_F.md`
   - F-0X/F-0Y/F-0Z Failure-Classes (Targets race / Grafana warmup / rate warmup)
-- `docs/webui/observability/RUNBOOK_Peak_Trade_Grafana_Shadow_to_Live_Cursor_Multi_Agent.md`
+- `docs&#47;webui&#47;observability&#47;RUNBOOK_Peak_Trade_Grafana_Shadow_to_Live_Cursor_Multi_Agent.md`
   - Einstieg: “Verify PASS Evidence (Deterministic, Snapshot-only)” inkl. Log + `rg` Extract
 - `tests/obs/test_shadow_mvs_verify_retries.py`
   - Stub-HTTP Test (kein Docker/Netz), validiert bounded retries + warmup retries
@@ -29,7 +29,7 @@ Ziel: **governance-safe** (NO-LIVE), snapshot-only, keine unbounded loops, aber 
 ## Verification
 - PR #768 war mergeStateStatus=CLEAN, mergeable=MERGEABLE, 0 failing/pending.
 - Lokaler Quick Verify (snapshot-only, operator-freundlich):
-  - `bash -n scripts/obs/shadow_mvs_local_verify.sh`
+  - `bash -n scripts&#47;obs&#47;shadow_mvs_local_verify.sh`
   - `python3 -m pytest -q tests&#47;obs&#47;test_shadow_mvs_verify_retries.py`
   - Deterministic evidence log:
     - `LOG="&#47;tmp&#47;pt_shadow_mvs_verify.log"; rm -f "$LOG"; bash scripts&#47;obs&#47;shadow_mvs_local_down.sh 2>&1 | tee -a "$LOG"; bash scripts&#47;obs&#47;shadow_mvs_local_up.sh 2>&1 | tee -a "$LOG"; bash scripts&#47;obs&#47;shadow_mvs_local_verify.sh 2>&1 | tee -a "$LOG"; bash scripts&#47;obs&#47;shadow_mvs_local_down.sh 2>&1 | tee -a "$LOG"`

@@ -13,8 +13,8 @@
 Erweitert das CI & Governance Health Panel um **persistente Last-Known-Health Snapshots**.
 
 Bei jedem erfolgreichen `/ops/ci-health/status` API Call wird automatisch ein Snapshot gespeichert:
-- **JSON:** `reports/ops/ci_health_latest.json` (vollständiger Status)
-- **Markdown:** `reports/ops/ci_health_latest.md` (human-readable Summary, 10-20 Zeilen)
+- **JSON:** `reports&#47;ops&#47;ci_health_latest.json` (vollständiger Status)
+- **Markdown:** `reports&#47;ops&#47;ci_health_latest.md` (human-readable Summary, 10-20 Zeilen)
 
 **Atomic Writes:** Temp-File + `os.replace()` → keine partial files.
 
@@ -35,7 +35,7 @@ Bei jedem erfolgreichen `/ops/ci-health/status` API Call wird automatisch ein Sn
 - JSON-Format → maschinenlesbar für Monitoring/Alerting
 
 **Use Cases:**
-- Operator prüft CI Health via `cat reports/ops/ci_health_latest.md`
+- Operator prüft CI Health via `cat reports&#47;ops/ci_health_latest.md`
 - Monitoring-System liest JSON und triggert Alerts
 - Post-Mortem: Letzter bekannter Status vor Incident
 
@@ -45,7 +45,7 @@ Bei jedem erfolgreichen `/ops/ci-health/status` API Call wird automatisch ein Sn
 
 ### Code Changes
 
-#### 1. `src/webui/ops_ci_health_router.py`
+#### 1. `src&#47;webui/ops_ci_health_router.py`
 
 **Neue Funktionen:**
 - `_get_git_head_sha()`: Liest aktuellen Git HEAD SHA (short)
@@ -67,8 +67,8 @@ Bei jedem erfolgreichen `/ops/ci-health/status` API Call wird automatisch ein Sn
 ```
 
 **Snapshot-Pfade:**
-- JSON: `reports/ops/ci_health_latest.json`
-- Markdown: `reports/ops/ci_health_latest.md`
+- JSON: `reports&#47;ops&#47;ci_health_latest.json`
+- Markdown: `reports&#47;ops&#47;ci_health_latest.md`
 
 **Atomic Write:**
 ```python
@@ -86,7 +86,7 @@ os.replace(json_tmp, json_path)  # POSIX atomic operation
 - API Response enthält `snapshot_write_error` Feld
 - HTTP Status bleibt **200 OK** (API-Funktion nicht beeinträchtigt)
 
-#### 2. `tests/webui/test_ops_ci_health_router.py`
+#### 2. `tests&#47;webui/test_ops_ci_health_router.py`
 
 **Neue Tests (8 zusätzliche):**
 - `test_ci_health_status_includes_v02_fields`: Validiert neue API-Felder
@@ -107,7 +107,7 @@ os.replace(json_tmp, json_path)  # POSIX atomic operation
 
 **Test Results:**
 ```bash
-$ python3 -m pytest tests/webui/test_ops_ci_health_router.py -v
+$ python3 -m pytest tests&#47;webui/test_ops_ci_health_router.py -v
 ============================= test session starts ==============================
 ...
 20 passed in 0.60s
@@ -141,7 +141,7 @@ $ python3 -m pytest tests/webui/test_ops_ci_health_router.py -v
       "duration_ms": 123,
       "timestamp": "2025-01-03T12:34:56.789",
       "script_path": "/path/to/check_required_ci_contexts_present.sh",
-      "docs_refs": ["docs/ops/runbooks/github_rulesets_pr_reviews_policy.md"]
+      "docs_refs": ["docs&#47;ops/runbooks/github_rulesets_pr_reviews_policy.md"]
     },
     {
       "check_id": "docs_reference_validation",
@@ -154,7 +154,7 @@ $ python3 -m pytest tests/webui/test_ops_ci_health_router.py -v
       "duration_ms": 456,
       "timestamp": "2025-01-03T12:34:57.123",
       "script_path": "/path/to/verify_docs_reference_targets.sh",
-      "docs_refs": ["docs/ops/README.md"]
+      "docs_refs": ["docs&#47;ops/README.md"]
     }
   ],
   "generated_at": "2025-01-03T12:34:57.500",
@@ -204,7 +204,7 @@ $ python3 -m pytest tests/webui/test_ops_ci_health_router.py -v
 
 ```bash
 # Run CI Health Panel tests
-python3 -m pytest tests/webui/test_ops_ci_health_router.py -v
+python3 -m pytest tests&#47;webui/test_ops_ci_health_router.py -v
 
 # Expected: 20 passed (8 new v0.2 tests)
 ```
@@ -234,10 +234,10 @@ curl -s http://127.0.0.1:8000/ops/ci-health/status | jq .
 
 ```bash
 # Check JSON snapshot
-cat reports/ops/ci_health_latest.json | jq .overall_status
+cat reports&#47;ops/ci_health_latest.json | jq .overall_status
 
 # Check Markdown snapshot
-cat reports/ops/ci_health_latest.md
+cat reports&#47;ops/ci_health_latest.md
 
 # Expected: Both files exist and contain current status
 ```
@@ -246,7 +246,7 @@ cat reports/ops/ci_health_latest.md
 
 ```bash
 # Check for leftover temp files (should be empty)
-ls -la reports/ops/*.tmp
+ls -la reports&#47;ops/*.tmp
 
 # Expected: No .tmp files
 ```
@@ -255,7 +255,7 @@ ls -la reports/ops/*.tmp
 
 ```bash
 # Make reports dir read-only
-chmod 444 reports/ops
+chmod 444 reports&#47;ops
 
 # Call API (should still return 200)
 curl -s http://127.0.0.1:8000/ops/ci-health/status | jq .snapshot_write_error
@@ -263,7 +263,7 @@ curl -s http://127.0.0.1:8000/ops/ci-health/status | jq .snapshot_write_error
 # Expected: Error message in response, but HTTP 200
 
 # Restore permissions
-chmod 755 reports/ops
+chmod 755 reports&#47;ops
 ```
 
 #### 6. Verify Multiple Calls (Latest Wins)
@@ -275,7 +275,7 @@ sleep 2
 curl -s http://127.0.0.1:8000/ops/ci-health/status > /dev/null
 
 # Check timestamps
-cat reports/ops/ci_health_latest.json | jq .generated_at
+cat reports&#47;ops/ci_health_latest.json | jq .generated_at
 
 # Expected: Latest timestamp
 ```
@@ -305,7 +305,7 @@ cat reports/ops/ci_health_latest.json | jq .generated_at
    - Keine Secrets/Credentials benötigt
 
 5. **Gitignore:**
-   - `reports/` bereits in `.gitignore`
+   - `reports&#47;` bereits in `.gitignore`
    - Snapshots werden NICHT committed
 
 ### Potential Issues
@@ -316,7 +316,7 @@ cat reports/ops/ci_health_latest.json | jq .generated_at
    - **Mitigation:** Operator kann Files manuell löschen
 
 2. **Permissions:**
-   - Wenn `reports/ops/` nicht writable → `snapshot_write_error`
+   - Wenn `reports&#47;ops&#47;` nicht writable → `snapshot_write_error`
    - **Mitigation:** API bleibt 200, Fehler nur geloggt
 
 3. **Concurrency:**
@@ -331,7 +331,7 @@ cat reports/ops/ci_health_latest.json | jq .generated_at
 
 - ✅ WebUI läuft (FastAPI)
 - ✅ CI Health Panel v0.1 deployed
-- ✅ `reports/` in `.gitignore` (bereits vorhanden)
+- ✅ `reports&#47;` in `.gitignore` (bereits vorhanden)
 
 ### Deployment Steps
 
@@ -356,7 +356,7 @@ cat reports/ops/ci_health_latest.json | jq .generated_at
    curl http://127.0.0.1:8000/ops/ci-health/status
 
    # Check files
-   ls -lh reports/ops/ci_health_latest.*
+   ls -lh reports&#47;ops/ci_health_latest.*
    ```
 
 ### Rollback
@@ -385,10 +385,10 @@ uvicorn src.webui.app:app --reload
 ## Documentation Updates
 
 **Neue Docs:**
-- ✅ `docs/ops/PR_518_CI_HEALTH_PANEL_V0_2.md` (dieses Dokument)
+- ✅ `docs&#47;ops/PR_518_CI_HEALTH_PANEL_V0_2.md` (dieses Dokument)
 
 **Zu aktualisieren (optional):**
-- `docs/ops/README.md`: Erwähne v0.2 Snapshot-Feature bei Bedarf
+- `docs&#47;ops/README.md`: Erwähne v0.2 Snapshot-Feature bei Bedarf
 
 ---
 
@@ -400,7 +400,7 @@ uvicorn src.webui.app:app --reload
 - [x] Linter clean (no errors)
 - [x] Atomic writes implementiert
 - [x] Error handling implementiert
-- [x] Gitignore geprüft (`reports/` bereits drin)
+- [x] Gitignore geprüft (`reports&#47;` bereits drin)
 - [x] PR-Dokumentation erstellt
 - [ ] Branch erstellt
 - [ ] Commit erstellt
@@ -418,8 +418,8 @@ Erweitert CI & Governance Health Panel um persistente Snapshots:
 
 Features:
 - Snapshot bei jedem /ops/ci-health/status Call
-- JSON: reports/ops/ci_health_latest.json (vollständig)
-- Markdown: reports/ops/ci_health_latest.md (human-readable)
+- JSON: reports&#47;ops/ci_health_latest.json (vollständig)
+- Markdown: reports&#47;ops/ci_health_latest.md (human-readable)
 - Atomic writes (temp file + os.replace)
 - Error handling (snapshot errors do NOT fail API)
 
@@ -457,8 +457,8 @@ Ops WebUI: CI health snapshots (v0.2)
 Erweitert das CI & Governance Health Panel um **persistente Last-Known-Health Snapshots**.
 
 Bei jedem `/ops/ci-health/status` API Call wird automatisch ein Snapshot gespeichert:
-- **JSON:** `reports/ops/ci_health_latest.json` (vollständiger Status)
-- **Markdown:** `reports/ops/ci_health_latest.md` (human-readable, 10-20 Zeilen)
+- **JSON:** `reports&#47;ops&#47;ci_health_latest.json` (vollständiger Status)
+- **Markdown:** `reports&#47;ops&#47;ci_health_latest.md` (human-readable, 10-20 Zeilen)
 
 ## Why
 
@@ -469,8 +469,8 @@ Bei jedem `/ops/ci-health/status` API Call wird automatisch ein Snapshot gespeic
 ## Changes
 
 ### Code
-- `src/webui/ops_ci_health_router.py`: Snapshot-Persistenz + atomic writes
-- `tests/webui/test_ops_ci_health_router.py`: 8 neue Tests
+- `src&#47;webui/ops_ci_health_router.py`: Snapshot-Persistenz + atomic writes
+- `tests&#47;webui/test_ops_ci_health_router.py`: 8 neue Tests
 
 ### API Response (v0.2)
 ```json
@@ -489,7 +489,7 @@ Bei jedem `/ops/ci-health/status` API Call wird automatisch ein Snapshot gespeic
 
 ### Automated Tests
 ```bash
-python3 -m pytest tests/webui/test_ops_ci_health_router.py -v
+python3 -m pytest tests&#47;webui/test_ops_ci_health_router.py -v
 # ✅ 20 passed (8 new v0.2 tests)
 ```
 
@@ -502,8 +502,8 @@ uvicorn src.webui.app:app --reload
 curl http://127.0.0.1:8000/ops/ci-health/status
 
 # 3. Verify files
-cat reports/ops/ci_health_latest.md
-cat reports/ops/ci_health_latest.json | jq .
+cat reports&#47;ops/ci_health_latest.md
+cat reports&#47;ops/ci_health_latest.json | jq .
 ```
 
 ## Risk
@@ -511,24 +511,24 @@ cat reports/ops/ci_health_latest.json | jq .
 🟢 **LOW**
 - Read-only checks, atomic writes, local-only
 - Snapshot errors do NOT fail API (HTTP 200 + error field)
-- `reports/` already in `.gitignore`
+- `reports&#47;` already in `.gitignore`
 
 ## Operator How-To
 
 **View latest CI health:**
 ```bash
-cat reports/ops/ci_health_latest.md
+cat reports&#47;ops/ci_health_latest.md
 ```
 
 **Machine-readable status:**
 ```bash
-jq .overall_status reports/ops/ci_health_latest.json
+jq .overall_status reports&#47;ops/ci_health_latest.json
 ```
 
 ## Documentation
 
-- ✅ `docs/ops/PR_518_CI_HEALTH_PANEL_V0_2.md` (full spec)
-- 📝 TODO: Update `docs/ops/README.md` (mention v0.2)
+- ✅ `docs&#47;ops/PR_518_CI_HEALTH_PANEL_V0_2.md` (full spec)
+- 📝 TODO: Update `docs&#47;ops/README.md` (mention v0.2)
 
 ## Refs
 

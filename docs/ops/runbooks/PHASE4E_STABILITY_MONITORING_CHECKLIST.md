@@ -337,7 +337,7 @@ Trigger escalation if any of the following are observed:
 **Notes:**
 - Baseline established after PR #656 merge
 - All success criteria met
-- Artifacts downloaded to `artifacts_main_latest/`
+- Artifacts downloaded to `artifacts_main_latest&#47;`
 
 ---
 

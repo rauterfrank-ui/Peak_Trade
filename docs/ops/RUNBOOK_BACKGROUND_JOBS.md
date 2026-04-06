@@ -140,7 +140,7 @@ bash scripts/ops/bg_job.sh follow docs_check      # Terminal 3
 
 ### Automatic Enhancements
 - ✅ **caffeinate** - Mac bleibt wach während der Job läuft (nur macOS)
-- ✅ **venv auto-detection** - Aktiviert automatisch `venv/` oder `.venv/`
+- ✅ **venv auto-detection** - Aktiviert automatisch `venv&#47;` oder `.venv&#47;`
 - ✅ **Exit-code capture** - Sauberer Exit-Code auch bei Ctrl+C
 - ✅ **Process group kill** - Stoppt auch Child-Prozesse sauber
 - ✅ **Git metadata** - Tracked git sha/branch für Reproduzierbarkeit
@@ -291,7 +291,7 @@ bgstatus docs_refs_full
 ## Related
 
 - `scripts/ops/bg_job.sh` - Tool implementation
-- `.logs/` - Artefakte (in `.gitignore`)
+- `.logs&#47;` - Artefakte (in `.gitignore`)
 - `docs/ops/README.md` - Ops tools overview
 
 ---

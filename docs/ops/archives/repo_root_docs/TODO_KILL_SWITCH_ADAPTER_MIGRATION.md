@@ -4,7 +4,7 @@
 Refactoring der Risk-Gate Integration, um direkt die neue KillSwitch State-Machine API zu verwenden und den Legacy-Adapter zu entfernen.
 
 ## Problem
-Der `KillSwitchAdapter` (`src/risk_layer/kill_switch/adapter.py`) wurde als temporäre Backward-Kompatibilitätsschicht eingeführt, um die alte evaluator-basierte API für die Risk-Gate Integration beizubehalten.
+Der `KillSwitchAdapter` (`src&#47;risk_layer&#47;kill_switch&#47;adapter.py`) wurde als temporäre Backward-Kompatibilitätsschicht eingeführt, um die alte evaluator-basierte API für die Risk-Gate Integration beizubehalten.
 
 ## Begriffsklärung: zwei „Risk Gate“-Schichten
 
@@ -68,7 +68,7 @@ if needs_recovery:
 - Entferne `_last_status` Zugriffe → nutze State-Properties
 
 ### 3. Adapter entfernen
-**Datei zu löschen:** `src/risk_layer/kill_switch/adapter.py`
+**Datei zu löschen:** `src&#47;risk_layer&#47;kill_switch&#47;adapter.py`
 
 **Imports aufräumen:**
 - `src/risk_layer/risk_gate.py` - Update imports
@@ -110,7 +110,7 @@ Nach Migration müssen bestehen:
 ## Referenzen
 
 - **PR #409:** Einführung des Legacy-Adapters
-- **Adapter-Code:** `src/risk_layer/kill_switch/adapter.py`
+- **Adapter-Code:** `src&#47;risk_layer&#47;kill_switch&#47;adapter.py`
 - **Deprecation (Spike):** `docs/ops/spikes/D2_RISK_LAYER_ADAPTER_DEPRECATION_SPIKE_2026-03-28.md`
 - **Ops/Execution D2 (Kontext):** `docs/ops/spikes/D2_KILL_SWITCH_INTEGRATION_STATUS.md`
 - **Roadmap:** `docs/risk/roadmaps/ROADMAP_EMERGENCY_KILL_SWITCH.md`

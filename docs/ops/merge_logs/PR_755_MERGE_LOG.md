@@ -13,7 +13,7 @@
 
 ## Changes
 - Updated:
-  - `docs/webui/observability/README.md`
+  - `docs&#47;webui&#47;observability&#47;README.md`
     - Added Quick Verify bullet for: **client present + flag off ⇒ default metrics only; no `peak_trade_http_*`**.
 
 ## Verification
@@ -35,6 +35,6 @@
 
 ## References
 - Docs:
-  - `docs/webui/observability/README.md`
+  - `docs&#47;webui&#47;observability&#47;README.md`
 - Prior observability chain:
   - `docs/ops/merge_logs/PR_753_MERGE_LOG.md`

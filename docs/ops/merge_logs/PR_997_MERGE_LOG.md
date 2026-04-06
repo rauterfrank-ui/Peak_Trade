@@ -14,7 +14,7 @@ Adds watch-only trade-flow Prometheus counters for signals + order approval/bloc
     - blocked: on governance/env/safety/risk blocks (finite allowlist)
   - `src/execution/live_session.py`: increments **once per signal-change** in `step_once()`.
 - **Dashboard:**
-  - `docs/webui/observability/grafana/dashboards/execution/peaktrade-execution-watch-overview.json`:
+  - `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;execution&#47;peaktrade-execution-watch-overview.json`:
     - Stat panels: Total Signals / Orders Approved / Orders Blocked (range via `increase(...[$__range])`).
 - **Demo / Ops:**
   - `scripts/obs/mock_shadow_mvs_exporter.py`: emits deterministic demo series for the 3 new counters (so local dashboard is non-empty).
@@ -27,7 +27,7 @@ Adds watch-only trade-flow Prometheus counters for signals + order approval/bloc
   - `python3 -m pytest -q tests&#47;obs&#47;test_trade_flow_telemetry_metrics.py`
   - `python3 -m pytest -q tests&#47;obs&#47;test_grafana_dashpack_integrity_v1.py -q`
 - Demo-Stack (watch-only):
-  - `bash scripts/obs/shadow_mvs_local_up.sh`
+  - `bash scripts&#47;obs&#47;shadow_mvs_local_up.sh`
   - Verify in Prometheus that `peaktrade_signals_total`, `peaktrade_orders_approved_total`, `peaktrade_orders_blocked_total` exist and are non-zero over time.
   - Grafana: **Peak_Trade → execution → Peak_Trade — Execution Watch Overview** shows non-empty new Stat panels.
 
@@ -37,7 +37,7 @@ HIGH (touches `src&#47;execution&#47;**`) but **telemetry-only / watch-only**:
 - No order IDs / UUIDs / dynamic reason strings are used as labels.
 
 ## Operator How-To
-1. Start demo stack: `bash scripts/obs/shadow_mvs_local_up.sh`
+1. Start demo stack: `bash scripts&#47;obs&#47;shadow_mvs_local_up.sh`
 2. Check metrics endpoint: `curl -s http:&#47;&#47;127.0.0.1:9109&#47;metrics | grep -E '^(peaktrade_(signals|orders_approved|orders_blocked)_total)\\b' | head`
 3. Prometheus queries:
    - `sum(increase(peaktrade_signals_total[15m]))`
@@ -48,8 +48,8 @@ HIGH (touches `src&#47;execution&#47;**`) but **telemetry-only / watch-only**:
 ## References
 - PR: #997
 - Runbook: `docs/ops/runbooks/RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md`
-- Dashboard: `docs/webui/observability/grafana/dashboards/execution/peaktrade-execution-watch-overview.json`
-- Tests: `tests/obs/test_trade_flow_telemetry_metrics.py`, `tests/obs/test_grafana_dashpack_integrity_v1.py`
+- Dashboard: `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;execution&#47;peaktrade-execution-watch-overview.json`
+- Tests: `tests/obs/test_trade_flow_telemetry_metrics.py`, `tests&#47;obs&#47;test_grafana_dashpack_integrity_v1.py`
 
 ---
 

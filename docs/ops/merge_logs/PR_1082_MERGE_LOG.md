@@ -8,7 +8,7 @@ Lokale Cockpit-/Observability-Setups sind fehleranfällig (Ports, `host.docker.i
 
 ## Changes
 - Docs / Runbook(s):
-  - `docs/ops/runbooks/RUNBOOK_MODE_B_METRICSD_DASHBOARD_METRICS.md`
+  - `docs&#47;ops&#47;runbooks&#47;RUNBOOK_MODE_B_METRICSD_DASHBOARD_METRICS.md`
   - (optional) weitere docs-only Anpassungen im Umfeld: n/a
 
 ## Verification
@@ -22,7 +22,7 @@ Executed (lokal, no-live, docs-only):
   - `GET http:&#47;&#47;localhost:{9092..9095}&#47;api&#47;v1&#47;query?query=up` → `up_vector_count=4` (je Port)
   - (optional, Multi-Prom): `count by (stack) (up)` → je Port genau 1 Series mit erwartetem `stack`
 - Grafana health (wenn Cockpit läuft):
-  - `docker compose -p peaktrade-grafana-local -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml up -d grafana`
+  - `docker compose -p peaktrade-grafana-local -f docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_GRAFANA_ONLY.yml up -d grafana`
   - Health (Retry-Window möglich direkt nach Start/Restart):
     - `curl -fsS http:&#47;&#47;localhost:3000&#47;api&#47;health | python3 -c 'import json,sys; print(json.dumps(json.load(sys.stdin), indent=2))'`
 - Grafana Datasources / Proxy Query (falls DS provisioned):
@@ -56,6 +56,6 @@ LOW — docs/runbook only. Keine Trading/Execution/Governance-Pfade geändert.
 
 ## References
 - PR: https://github.com/rauterfrank-ui/Peak_Trade/pull/1082
-- Paths: `docs/ops/runbooks/RUNBOOK_MODE_B_METRICSD_DASHBOARD_METRICS.md`
+- Paths: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_MODE_B_METRICSD_DASHBOARD_METRICS.md`
 - Related local tooling (optional):
   - `.ops_local&#47;scripts&#47;obs&#47;verify_grafana_multi_prom.sh`

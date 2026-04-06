@@ -1,13 +1,13 @@
 # PR #486 — chore(gitignore): ignore .logs from bg jobs
 
 ## Summary
-Adds `.gitignore` entry to ignore runtime background job artifacts (`.logs/`), in preparation for background job tooling.
+Adds `.gitignore` entry to ignore runtime background job artifacts (`.logs&#47;`), in preparation for background job tooling.
 
 ## Why
 Background job runners (future tooling) generate runtime artifacts that should not be tracked in version control. This PR prepares the repository by ignoring these artifacts.
 
 ## Changes
-- Added `.logs/` to `.gitignore` to ignore runtime job artifacts
+- Added `.logs&#47;` to `.gitignore` to ignore runtime job artifacts
 
 ## Verification
 - Git diff shows only `.gitignore` modification

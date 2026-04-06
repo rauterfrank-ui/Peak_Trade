@@ -100,7 +100,7 @@ Failed: None
 **Symptom:** Test fails due to model output format change (e.g., missing "Changed files" section).
 
 **Action:**
-- Review model output (logs in `.artifacts/aiops/`)
+- Review model output (logs in `.artifacts&#47;aiops&#47;`)
 - Update testcase assertions if new format is acceptable
 - Update delivery contract (`.cursor/rules/peak-trade-delivery-contract.mdc`) if needed
 

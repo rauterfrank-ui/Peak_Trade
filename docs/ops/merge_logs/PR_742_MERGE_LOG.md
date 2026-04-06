@@ -3,7 +3,7 @@
 ## Summary
 - Scope: Watch-only dashboard UI v0.1B (observability) + read-only API v0 extensions + operator runbook.
 - Token-Policy fix: illustrative token `live_runs&#47;` (previously written as live_runs/).
-- Key operator doc: `docs/ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md`
+- Key operator doc: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md`
 
 ## Why
 - CI “Docs Token Policy Gate” classified `live_runs&#47;` as an illustrative path token and requires `&#47;` encoding to avoid false positives / unsafe path parsing.

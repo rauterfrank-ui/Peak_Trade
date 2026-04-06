@@ -8,7 +8,7 @@ Provide an operator-visible “data stream” view for Strategy and Risk telemet
 
 ## Changes
 - Updates:
-  - `docs/webui/observability/grafana/dashboards/overview/peaktrade-operator-summary.json`
+  - `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;overview&#47;peaktrade-operator-summary.json`
 - Adds a “Strategy & Risk Telemetry” section (panels/PromQL) over:
   - `peaktrade_strategy_decisions_total`
   - `peaktrade_strategy_signals_total`
