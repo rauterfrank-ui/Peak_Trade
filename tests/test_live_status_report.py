@@ -205,7 +205,7 @@ def test_build_markdown_report_no_positions():
 def test_build_markdown_report_with_notes():
     """Testet, dass Operator-Notizen korrekt eingefügt werden."""
     data = make_dummy_input()
-    notes = "- [ ] TODO: Portfolio-Rebalance in 3 Tagen prüfen\n- [ ] TODO: Incident-Drill planen"
+    notes = "- [ ] CHECK: Portfolio-Rebalance in 3 Tagen prüfen\n- [ ] CHECK: Incident-Drill planen"
     md_text = build_markdown_report(data, notes=notes)
 
     assert "## 4. Notes (Operator)" in md_text
@@ -284,7 +284,7 @@ def test_build_html_report_css_styles():
 def test_build_html_report_with_notes():
     """Testet, dass Operator-Notizen korrekt eingefügt werden."""
     data = make_dummy_input()
-    notes = "- [ ] TODO: Test-Notiz"
+    notes = "- [ ] CHECK: Test-Notiz"
     html_text = build_html_report(data, notes=notes)
 
     assert "<h2>4. Notes (Operator)</h2>" in html_text
