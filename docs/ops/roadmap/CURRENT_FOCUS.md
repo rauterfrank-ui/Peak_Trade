@@ -26,6 +26,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **CI:** workflow [.github/workflows/truth_gates_pr.yml](../../../.github/workflows/truth_gates_pr.yml) defines jobs **`docs-drift-guard`** and **`repo-truth-claims`** (PR / merge queue / manual dispatch).
 - **Officers:** [Workflow Officer](#how-workflow-officer-and-update-officer-fit) and [Update Officer](#how-workflow-officer-and-update-officer-fit) include **`summary.unified_truth_status`** (read-only diagnostics from the same core).
 - **Forward / ops context:** J1 forward-pipeline slices and bounded-pilot / canary-live-entry runbooks merged per prior PRs; posture unchanged (**NO-LIVE** default unless a governed runbook explicitly says otherwise).
+- **Stufe J (Forward-Demo-Stub, PR #2297):** ``scripts/dev/run_forward_dummy_pipeline_demo.sh`` — offline Dummy-Pipeline Generate → Evaluate mit ``as_of``-Korrektur (wie Integrationssmoke); Runbook [Operator-Kurzreferenz (J1)](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md#operator-kurzreferenz-j1-forward-no-live) Punkt 6; **NO-LIVE**.
 - **J1 (shared OHLCV loader edge cases, PR #2172):** `scripts/_shared_ohlcv_loader.py` — u. a. `n_bars >= 1` (Dummy), normalisiertes `ohlcv_source`, Tests in `tests/test_dummy_ohlcv.py`; kein neuer Datenquellen-Scope; **NO-LIVE**.
 - **J1 (Kraken shortfall observability, PR #2173):** bei weniger Bars als angefordert — `UserWarning`, Meta `kraken_bars_shortfall`, Observability in `generate_forward_signals` / `evaluate_forward_signals`; Runbook-Hinweis in [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md); **NO-LIVE**.
 - **J2 (Optuna placeholder slice, PR #2168):** `scripts/run_study_optuna_placeholder.py` — CLI, dry-run default, optional in-memory toy study (`--no-dry-run`); no market/live execution. Full strategy optimization remains `scripts/run_optuna_study.py` (incl. GridSampler / CI alignment with Optuna 3.6).
@@ -144,11 +145,13 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-12 | Post–PR #2294: Chat-led §5 Evidence G2 + `CURRENT_FOCUS` refresh (this file) | PR #2294 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-12 | Post–PR #2295: Chat-led §5 Evidence G3 + `CURRENT_FOCUS` refresh (this file) | PR #2295 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-12 | Post–PR #2296: Chat-led §5 Evidence G4 + `CURRENT_FOCUS` refresh (this file) | PR #2296 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
+| 2026-04-12 | Post–PR #2297: Stufe J Forward-Demo-Stub + `CURRENT_FOCUS` + Runbook (this file) | PR #2297 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 
 ---
 
 ## Branch / PR pointer (optional)
 
+- **Merged:** [PR #2297](https://github.com/rauterfrank-ui/Peak_Trade/pull/2297) — Stufe J Forward-Demo-Stub (`run_forward_dummy_pipeline_demo.sh`) on `main`.
 - **Merged:** [PR #2296](https://github.com/rauterfrank-ui/Peak_Trade/pull/2296) — Chat-led §5 Evidence G4 snapshot row on `main`.
 - **Merged:** [PR #2295](https://github.com/rauterfrank-ui/Peak_Trade/pull/2295) — Chat-led §5 Evidence G3 snapshot row on `main`.
 - **Merged:** [PR #2294](https://github.com/rauterfrank-ui/Peak_Trade/pull/2294) — Chat-led §5 Evidence G2 snapshot row on `main`.

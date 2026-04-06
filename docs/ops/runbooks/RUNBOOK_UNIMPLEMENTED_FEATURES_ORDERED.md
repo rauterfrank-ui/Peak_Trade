@@ -146,6 +146,7 @@
 3. **Portfolio:** ``run_portfolio_backtest_v2.py`` nutzt ``--bars`` &#47; ``--n-bars`` (Alias); bei Abgleich mit Forward-Läufen dieselbe ``--ohlcv-source``-Logik wie oben.
 4. **CLI-Hilfe:** gemeinsamer Epilog/Scope über ``scripts/_shared_forward_args.py`` (``--help`` bei den Forward-CLIs).
 5. **Smoke (optional):** ``python3 -m pytest tests/test_forward_generate_evaluate_integration_smoke.py -q``
+6. **Demo-Pipeline (Stub, offline):** ``bash scripts/dev/run_forward_dummy_pipeline_demo.sh`` — Generate → ``as_of`` so setzen, dass Evaluate mindestens einen Trade auswerten kann (analog Integrationssmoke; reines CLI ohne Anpassung endet oft mit „keine auswertbaren Signale“, wenn ``as_of`` auf der letzten Bar liegt); Artefakte unter ``.ops_local&#47;forward_dummy_pipeline_demo&#47;`` (gitignored). **NO-LIVE.**
 
 ---
 
