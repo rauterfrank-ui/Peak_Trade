@@ -13,6 +13,7 @@ usage() {
 verify_docs_reference_targets.sh
 
 Scans Markdown docs for referenced repo-relative paths and verifies that the targets exist.
+Bare repo paths are not matched inside inline `...` code (avoids false positives on shell lines).
 
 Exit codes:
   0 = OK / not applicable
@@ -256,6 +257,19 @@ def safe_is_within(p: Path, root: Path) -> bool:
     except Exception:
         return False
 
+def inline_code_spans(line: str) -> list[tuple[int, int]]:
+    """Half-open [start, end) ranges for each `...` inline code span (incl. backticks)."""
+    return [(m.start(), m.end()) for m in CODE_RE.finditer(line)]
+
+
+def range_overlaps(a0: int, a1: int, spans: list[tuple[int, int]]) -> bool:
+    """True if [a0, a1) overlaps any span in spans."""
+    for s, e in spans:
+        if a0 < e and a1 > s:
+            return True
+    return False
+
+
 def resolve_target(target: str, doc_file: Path, repo_root: Path) -> Path | None:
     """Resolve a target path to an absolute path.
 
@@ -325,8 +339,13 @@ for f in files:
             t = normalize_target(raw)
             if t:
                 refs.append((str(f), i, t))
-        # bare paths
-        for raw in BARE_RE.findall(line):
+        # bare paths (only outside inline `...` — avoids false positives like
+        # `bash scripts/obs/foo.sh` where BARE would otherwise match scripts/obs/foo.sh)
+        ic_spans = inline_code_spans(line)
+        for m in BARE_RE.finditer(line):
+            if range_overlaps(m.start(), m.end(), ic_spans):
+                continue
+            raw = m.group(0)
             t = normalize_target(raw)
             if t:
                 refs.append((str(f), i, t))
