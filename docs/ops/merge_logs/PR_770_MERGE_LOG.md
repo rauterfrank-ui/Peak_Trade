@@ -38,8 +38,8 @@ Nach dem Merge von PR #768 (Verify Hardening) ist ein kompakter, copy/paste-fäh
 - PR #770: mergeStateStatus=CLEAN, mergeable=MERGEABLE (0 failing/pending)
 
 ### Post-Merge Checks (lokal)
-- `bash scripts/obs/shadow_mvs_local_up.sh` ✅
-- `bash scripts/obs/shadow_mvs_local_verify.sh` ✅
+- `bash scripts&#47;obs&#47;shadow_mvs_local_up.sh` ✅
+- `bash scripts&#47;obs&#47;shadow_mvs_local_verify.sh` ✅
 - Working directory clean ✅
 - main branch synchronized ✅
 

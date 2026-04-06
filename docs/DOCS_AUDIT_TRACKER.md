@@ -83,7 +83,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
   - **Fixes (applied)**: `python` → `python3`, `python -c` → `python3 -c`, `pytest ...` → `python3 -m pytest ...`.
 - `docs/webui/LIVE_STATUS_PANELS.md`
   - **Fixes (applied)**: `python ...` → `python3 ...`.
-- `docs/webui/DASHBOARD_OVERVIEW.md`
+- `docs&#47;webui&#47;DASHBOARD_OVERVIEW.md`
   - **Fixes (applied)**: `python scripts/run_web_dashboard.py`/`python scripts/live_web_server.py ...` → `python3 ...`.
 
 ### 11) Batch 7: Execution / Alerts / Shadow Execution — **done (vorläufig)**
@@ -315,7 +315,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
   - `docs/PEAK_TRADE_COMPLETE_OVERVIEW_2025-12-07.md`: Quickstart-venv-Erstellung auf `python3 -m venv` umgestellt.
   - `docs/ops/README.md`: `python --version` als kommentierter Fallback belassen, primär `python3 --version`.
   - `docs/ops/KILL_SWITCH_TROUBLESHOOTING.md`: `python --version` aus Diagnose entfernt (pyenv-Fall), `python3 --version` bleibt.
-  - `docs/ops/runbooks/RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md`: `python3 -m venv` statt `python -m venv`.
+  - `docs&#47;ops&#47;runbooks&#47;RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md`: `python3 -m venv` statt `python -m venv`.
   - `docs&#47;ops&#47;_archive&#47;installation_roadmap&#47;..._ORIGINAL.md`: python checks/venv auf `python3` umgestellt.
   - Verifikation: `scripts/ops/verify_docs_reference_targets.sh` läuft weiterhin grün.
 

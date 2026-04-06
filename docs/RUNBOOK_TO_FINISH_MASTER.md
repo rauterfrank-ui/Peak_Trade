@@ -299,7 +299,7 @@ Output:
 ## 7) Phase E — D3 „Done“ (Watch‑Only Web/API + Grafana) operational verifizieren
 
 ### Entry
-- D3 Runbook existiert: `docs/runbooks/RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md`.
+- D3 Runbook existiert: `docs&#47;runbooks&#47;RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md` (siehe auch `docs&#47;ops&#47;runbooks&#47;RUNBOOK_TO_FINISH_MASTER.md`).
 
 ### Actions (DoD)
 - API Contract v0: Endpunkte & Pages überprüfbar.

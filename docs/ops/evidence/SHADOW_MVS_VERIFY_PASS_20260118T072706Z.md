@@ -4,7 +4,7 @@ Date (UTC): 20260118T072706Z
 Mode: snapshot-only, NO-LIVE
 
 ## Command
-- `bash scripts/obs/shadow_mvs_local_verify.sh`
+- `bash scripts&#47;obs&#47;shadow_mvs_local_verify.sh`
 
 ## Output (verbatim)
 ```text

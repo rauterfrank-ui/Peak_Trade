@@ -20,12 +20,12 @@ Die Observability-Doku war inkonsistent zum Ist-Zustand:
 - Docker compose example: konsistente Prometheus Target Konfiguration.
 
 ## Files Changed
-- docs/ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md
-- docs/webui/DASHBOARD_OVERVIEW.md
-- docs/webui/DASHBOARD_V0_OVERVIEW.md
-- docs/webui/observability/DOCKER_COMPOSE_PROM_GRAFANA.yml
-- docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml
-- docs/webui/observability/README.md
+- `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md`
+- `docs&#47;webui&#47;DASHBOARD_OVERVIEW.md`
+- `docs&#47;webui&#47;DASHBOARD_V0_OVERVIEW.md`
+- `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_PROM_GRAFANA.yml`
+- `docs&#47;webui&#47;observability&#47;PROMETHEUS_SCRAPE_EXAMPLE.yml`
+- `docs&#47;webui&#47;observability&#47;README.md`
 
 ## Verification
 - Tests:
