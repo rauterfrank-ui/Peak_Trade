@@ -17,15 +17,15 @@
   - `host.docker.internal:8000` (Peak_Trade web `/metrics`, optional)
 - Kept Grafana **file provisioning** and ensured the dashboard provider uses the `Peak_Trade` folder/provider settings.
 - Added operator scripts:
-  - `bash scripts/obs/shadow_mvs_local_up.sh`
-  - `bash scripts/obs/shadow_mvs_local_verify.sh`
-  - `bash scripts/obs/shadow_mvs_local_down.sh`
+  - `bash scripts&#47;obs&#47;shadow_mvs_local_up.sh`
+  - `bash scripts&#47;obs&#47;shadow_mvs_local_verify.sh`
+  - `bash scripts&#47;obs&#47;shadow_mvs_local_down.sh`
 
 ## Verification
 - Local operator proof:
-  - `bash scripts/obs/shadow_mvs_local_up.sh`
-  - `bash scripts/obs/shadow_mvs_local_verify.sh` → PASS (checks exporter reachable, Prometheus targets UP, Grafana datasource + dashboard visible, core PromQL queries return data)
-  - `bash scripts/obs/shadow_mvs_local_down.sh`
+  - `bash scripts&#47;obs&#47;shadow_mvs_local_up.sh`
+  - `bash scripts&#47;obs&#47;shadow_mvs_local_verify.sh` → PASS (checks exporter reachable, Prometheus targets UP, Grafana datasource + dashboard visible, core PromQL queries return data)
+  - `bash scripts&#47;obs&#47;shadow_mvs_local_down.sh`
 - CI: all checks green prior to merge.
 
 ## Merge
@@ -35,11 +35,11 @@
 
 ## Operator How-To
 - Start:
-  - `bash scripts/obs/shadow_mvs_local_up.sh`
+  - `bash scripts&#47;obs&#47;shadow_mvs_local_up.sh`
 - Verify:
-  - `bash scripts/obs/shadow_mvs_local_verify.sh`
+  - `bash scripts&#47;obs&#47;shadow_mvs_local_verify.sh`
 - Stop:
-  - `bash scripts/obs/shadow_mvs_local_down.sh`
+  - `bash scripts&#47;obs&#47;shadow_mvs_local_down.sh`
 
 Key URLs:
 - Grafana: `http://127.0.0.1:3000` (admin/admin)

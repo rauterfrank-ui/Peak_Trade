@@ -49,7 +49,7 @@
   - Source: [PR #783 Merge Log](merge_logs/PR_783_MERGE_LOG.md) · [PR #783](https://github.com/rauterfrank-ui/Peak_Trade/pull/783) · Commit: `9180c3fd`  
   - Claim: Shadow MVS local verify produced RESULT=PASS with contract checks (Prometheus ready, exporter series present, Grafana health, datasource+dashboard provisioned, targets up, golden PromQL non-empty) in snapshot-only mode.  
   - Verification: PR #783 merged (squash, mergedAt 2026-01-18T07:33:50Z, mergeCommit `9180c3fd45db5f5fd4f26dc082128175832a79d4`); required checks PASS.  
-  - Notes: Evidence: [SHADOW_MVS_VERIFY_PASS_20260118T072706Z](evidence/SHADOW_MVS_VERIFY_PASS_20260118T072706Z.md) · Contract: [SHADOW_MVS_CONTRACT.md](../webui/observability/SHADOW_MVS_CONTRACT.md).
+  - Notes: Evidence: [SHADOW_MVS_VERIFY_PASS_20260118T072706Z](evidence/SHADOW_MVS_VERIFY_PASS_20260118T072706Z.md) · Scope / stack notes: [PR #783 merge log](merge_logs/PR_783_MERGE_LOG.md).
 
 <a id="ev-20260114-pr736-legacy-workflow-notes"></a>
 - **EV-20260114-PR736-LEGACY-WORKFLOW-NOTES** | Date: 2026-01-14 | Owner: ops | Scope: docs-only | Risk: LOW  

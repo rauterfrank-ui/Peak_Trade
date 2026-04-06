@@ -27,7 +27,7 @@ Adds watch-only trade-flow Prometheus counters for signals + order approval/bloc
   - `python3 -m pytest -q tests&#47;obs&#47;test_trade_flow_telemetry_metrics.py`
   - `python3 -m pytest -q tests&#47;obs&#47;test_grafana_dashpack_integrity_v1.py -q`
 - Demo-Stack (watch-only):
-  - `bash scripts/obs/shadow_mvs_local_up.sh`
+  - `bash scripts&#47;obs&#47;shadow_mvs_local_up.sh`
   - Verify in Prometheus that `peaktrade_signals_total`, `peaktrade_orders_approved_total`, `peaktrade_orders_blocked_total` exist and are non-zero over time.
   - Grafana: **Peak_Trade → execution → Peak_Trade — Execution Watch Overview** shows non-empty new Stat panels.
 
@@ -37,7 +37,7 @@ HIGH (touches `src&#47;execution&#47;**`) but **telemetry-only / watch-only**:
 - No order IDs / UUIDs / dynamic reason strings are used as labels.
 
 ## Operator How-To
-1. Start demo stack: `bash scripts/obs/shadow_mvs_local_up.sh`
+1. Start demo stack: `bash scripts&#47;obs&#47;shadow_mvs_local_up.sh`
 2. Check metrics endpoint: `curl -s http:&#47;&#47;127.0.0.1:9109&#47;metrics | grep -E '^(peaktrade_(signals|orders_approved|orders_blocked)_total)\\b' | head`
 3. Prometheus queries:
    - `sum(increase(peaktrade_signals_total[15m]))`

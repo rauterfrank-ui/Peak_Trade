@@ -29,7 +29,7 @@ Ziel: **governance-safe** (NO-LIVE), snapshot-only, keine unbounded loops, aber 
 ## Verification
 - PR #768 war mergeStateStatus=CLEAN, mergeable=MERGEABLE, 0 failing/pending.
 - Lokaler Quick Verify (snapshot-only, operator-freundlich):
-  - `bash -n scripts/obs/shadow_mvs_local_verify.sh`
+  - `bash -n scripts&#47;obs&#47;shadow_mvs_local_verify.sh`
   - `python3 -m pytest -q tests&#47;obs&#47;test_shadow_mvs_verify_retries.py`
   - Deterministic evidence log:
     - `LOG="&#47;tmp&#47;pt_shadow_mvs_verify.log"; rm -f "$LOG"; bash scripts&#47;obs&#47;shadow_mvs_local_down.sh 2>&1 | tee -a "$LOG"; bash scripts&#47;obs&#47;shadow_mvs_local_up.sh 2>&1 | tee -a "$LOG"; bash scripts&#47;obs&#47;shadow_mvs_local_verify.sh 2>&1 | tee -a "$LOG"; bash scripts&#47;obs&#47;shadow_mvs_local_down.sh 2>&1 | tee -a "$LOG"`
