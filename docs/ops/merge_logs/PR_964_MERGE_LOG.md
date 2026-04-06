@@ -33,7 +33,7 @@ python3 -m pytest -q tests/obs/test_grafana_operator_dashpacks_v1.py tests/obs/t
 - Smoke: bash scripts/obs/ai_live_smoke_test.sh
 - Verify: bash scripts/obs/ai_live_verify.sh
 - Grafana: Dashboard “Peak_Trade — Execution Watch Overview” öffnen → Top-Row “AI Live — Ops Summary” (Up/Freshness/Errors/Drops/Latency + active alerts).
-- Alerts: Regeln in docs/webui/observability/prometheus/rules/ai_live_alerts_v1.yml (ExporterDown, StaleEvents, ParseErrorsSpike, DroppedEventsSpike, LatencyP95High [+ optional P99]).
+- Alerts: Regeln in `docs&#47;webui&#47;observability&#47;prometheus&#47;rules&#47;ai_live_alerts_v1.yml` (ExporterDown, StaleEvents, ParseErrorsSpike, DroppedEventsSpike, LatencyP95High [+ optional P99]).
 
 ## References
 - PR: https:&#47;&#47;github.com&#47;rauterfrank-ui&#47;Peak_Trade&#47;pull&#47;964

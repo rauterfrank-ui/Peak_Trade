@@ -24,7 +24,7 @@ Final, read-only health snapshot proving **100%** across target areas (Docs / CI
 
 ### Observability
 - Static verify (no auth; expects SKIP on auth-required API calls):
-  - `bash scripts/obs/grafana_dashpack_local_verify_v2.sh`
+  - `bash scripts&#47;obs&#47;grafana_dashpack_local_verify_v2.sh`
   - Result: PASS (Grafana health reachable; auth-required checks correctly SKIP without credentials)
 
 - Runtime endpoints:
