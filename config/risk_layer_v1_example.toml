@@ -39,7 +39,7 @@ max_position_weight = 0.35  # Max 35% of Equity in einer Position
 max_var = 0.08              # Max VaR(95%): 8% of Equity
 max_cvar = 0.12             # Max CVaR(95%): 12% of Equity
 
-# Correlation Limits (TODO: Multi-Asset-Support)
+# Correlation Limits (TBD: Multi-Asset-Support)
 # max_corr = 0.95           # Max pairwise Correlation
 
 

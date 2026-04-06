@@ -49,9 +49,9 @@ def test_generate_placeholder_reports_exits_zero_and_writes_core_artifacts(tmp_p
 
     inv_text = inventory.read_text(encoding="utf-8")
     tgt_text = target_map.read_text(encoding="utf-8")
-    assert inv_text.startswith("# TODO/Placeholder Inventory\n")
+    assert inv_text.startswith("# Placeholder marker inventory\n")
     assert "## Pattern Summary" in inv_text
-    assert tgt_text.startswith("# TODO/Placeholder Target Map (Inventory Addendum)\n")
+    assert tgt_text.startswith("# Placeholder target map (inventory addendum)\n")
     assert "## Pattern:" in tgt_text
     assert "### Top files under `src/`" in tgt_text
     assert "### Top files under `scripts/`" in tgt_text

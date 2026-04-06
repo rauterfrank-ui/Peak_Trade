@@ -232,7 +232,7 @@ def test_generate_live_status_report_with_notes(tmp_path: Path, monkeypatch: pyt
     config_path.write_text("[environment]\nmode = 'testnet'")
 
     notes_file = tmp_path / "notes.md"
-    notes_file.write_text("- [ ] TODO: Test-Notiz\n- [ ] TODO: Weitere Notiz")
+    notes_file.write_text("- [ ] CHECK: Test-Notiz\n- [ ] CHECK: Weitere Notiz")
 
     from scripts.generate_live_status_report import main
 

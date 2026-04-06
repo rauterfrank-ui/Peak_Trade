@@ -257,7 +257,7 @@ def generate_inventory_report(
 ) -> str:
     """Generate the TODO_PLACEHOLDER_INVENTORY.md content."""
     lines = []
-    lines.append("# TODO/Placeholder Inventory")
+    lines.append("# Placeholder marker inventory")
     lines.append("")
     lines.append(f"- Repo: {repo_root}")
     lines.append(f"- Commit: {commit}")
@@ -423,7 +423,7 @@ def generate_target_map_report(
 ) -> str:
     """Generate the TODO_PLACEHOLDER_TARGET_MAP.md content."""
     lines = []
-    lines.append("# TODO/Placeholder Target Map (Inventory Addendum)")
+    lines.append("# Placeholder target map (inventory addendum)")
     lines.append("")
     lines.append(
         "This file groups placeholder density by path-prefix and lists top files per marker type."
