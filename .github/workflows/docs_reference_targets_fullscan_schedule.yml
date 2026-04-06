@@ -1,0 +1,56 @@
+# Full-scan of docs/**/*.md reference targets on a schedule (main).
+# PRs still use docs_reference_targets_gate.yml (--changed). This job surfaces
+# repo-wide drift without blocking merges (warn-only on missing targets).
+name: Docs Reference Targets Full Scan (scheduled)
+
+on:
+  schedule:
+    # Monday 07:00 UTC — low-traffic; adjust as needed
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: docs-reference-targets-fullscan
+  cancel-in-progress: true
+
+jobs:
+  fullscan:
+    name: docs-reference-targets-fullscan-warn
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Full docs scan (warn-only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          set +e
+          ./scripts/ops/verify_docs_reference_targets.sh --warn-only
+          ec=$?
+          set -e
+          if [[ "$ec" -eq 0 ]]; then
+            {
+              echo "## Docs reference targets — full scan"
+              echo ""
+              echo "All referenced targets exist."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          if [[ "$ec" -eq 2 ]]; then
+            echo "::warning title=Docs reference targets debt::Full scan on main reported missing targets. See log above; use scripts/ops/verify_docs_reference_targets.sh locally (full scan) and docs/ops/DOCS_REFERENCE_TARGETS_DEBT_GUIDE.md if applicable."
+            {
+              echo "## Docs reference targets — full scan"
+              echo ""
+              echo "**Status:** missing targets detected (warn-only; this job stays green)."
+              echo ""
+              echo "Run locally: \`bash scripts/ops/verify_docs_reference_targets.sh\`"
+              echo ""
+              echo "Related: trend baseline workflow, \`docs/ops/DOCS_REFERENCE_TARGETS_DEBT_GUIDE.md\`."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          echo "::error::verify_docs_reference_targets.sh exited with $ec"
+          exit "$ec"
