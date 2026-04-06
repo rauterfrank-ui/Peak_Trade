@@ -3,6 +3,8 @@
 **Scope:** Repository-wide standards for placeholder markers in code, docs, and config.  
 **Goal:** Consistent semantics, traceable ownership, and minimal placeholder debt in production paths.
 
+> **Inventory note:** This file explains marker semantics and includes many **literal** ``TODO``, ``FIXME``, ``TBD``, and related tokens inside definitions and fenced examples. Local runs of ``generate_placeholder_reports.py`` will therefore show **high counts** for this path — **expected**, not execution debt. For triage, use ``--prefix`` (e.g. ``src/``, ``scripts/``) to focus on production paths.
+
 ---
 
 ## 1. Marker Definitions
@@ -290,4 +292,4 @@ python3 scripts/ops/placeholders/generate_placeholder_reports.py
 
 **Version:** v0 (Initial Draft)  
 **Owner:** ops  
-**Last Updated:** 2026-01-07
+**Last Updated:** 2026-04-06
