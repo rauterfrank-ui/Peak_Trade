@@ -236,7 +236,7 @@ Für jeden Top-Level Ordner:
 
 | Pfad | Status | Analyse | Aktion |
 |------|--------|---------|--------|
-| `results/` | ❓ | Backtest Results | **Check .gitignore** - sollten ignored sein |
+| `results&#47;` | ❓ | Backtest Results | **Check .gitignore** - sollten ignored sein |
 
 ---
 
@@ -287,7 +287,7 @@ Viele Scripts direkt in `scripts&#47;`:
 
 | Pfad | Status | Analyse | Aktion |
 |------|--------|---------|--------|
-| `test_runs/` | ❓ | Test Artifacts | **Check .gitignore** |
+| `test_runs&#47;` | ❓ | Test Artifacts | **Check .gitignore** |
 
 ---
 
@@ -347,8 +347,8 @@ Check und ggf. hinzufügen:
 - `live_runs&#47;`
 - `logs&#47;`
 - `reports&#47;` (oder Teile davon)
-- `results/`
-- `test_runs/`
+- `results&#47;`
+- `test_runs&#47;`
 - `*.log` files in root
 - `venv&#47;` (sollte schon drin sein)
 
