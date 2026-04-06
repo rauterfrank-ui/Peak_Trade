@@ -67,7 +67,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **Chat-led §5 New Listings F6 (PR #2288):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „New Listings (F6)“ (Collector-Basis ``base.py`` und Contract-Tests; Stufe F6 im geordneten Runbook **DONE**); **NO-LIVE**.
 - **Chat-led §5 Knowledge F4 (PR #2290):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „Knowledge (F4)“ (``vector_db.py`` und Memory-Tests; Stufe F4 im geordneten Runbook **DONE**); **NO-LIVE**.
 - **Chat-led §5 Infostream F1 (PR #2292):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „Infostream (F1)“ (``evaluator.py`` und ``test_infostream_basic.py``; Stufe F1 im geordneten Runbook **DONE**); **NO-LIVE**.
-- **Chat-led §5 Evidence G1:** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „Evidence (G1)“ (``evidence_pack_schema.py`` und ``test_evidence_pack_schema.py``; Stufe G1 im geordneten Runbook **DONE**); **NO-LIVE**.
+- **Chat-led §5 Evidence G1 (PR #2293):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „Evidence (G1)“ (``evidence_pack_schema.py`` und ``test_evidence_pack_schema.py``; Stufe G1 im geordneten Runbook **DONE**); **NO-LIVE**.
 
 **GitHub — Truth-Gate Required Checks auf `main`:** Verifiziert (Apr 2026): **`docs-drift-guard`** und **`repo-truth-claims`** sind als Required Status Checks gesetzt (Namen wie `.github/workflows/truth_gates_pr.yml` Job-`name:`). Re-Check lokal: `python3 scripts/ops/ensure_truth_branch_protection.py --check` · ergänzen mit `--apply` nur mit Admin-Rechten; Registry: [`TRUTH_BRANCH_PROTECTION.md`](../registry/TRUTH_BRANCH_PROTECTION.md).
 
@@ -137,12 +137,13 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-06 | Post–PR #2288: Chat-led §5 New Listings F6 + `CURRENT_FOCUS` refresh (this file) | PR #2288 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-06 | Post–PR #2290: Chat-led §5 Knowledge F4 + `CURRENT_FOCUS` refresh (this file) | PR #2290 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-12 | Post–PR #2292: Chat-led §5 Infostream F1 + `CURRENT_FOCUS` refresh (this file) | PR #2292 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
-| 2026-04-12 | Chat-led §5 Evidence G1 snapshot row; `CURRENT_FOCUS` refresh (this file) | `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
+| 2026-04-12 | Post–PR #2293: Chat-led §5 Evidence G1 + `CURRENT_FOCUS` refresh (this file) | PR #2293 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 
 ---
 
 ## Branch / PR pointer (optional)
 
+- **Merged:** [PR #2293](https://github.com/rauterfrank-ui/Peak_Trade/pull/2293) — Chat-led §5 Evidence G1 snapshot row on `main`.
 - **Merged:** [PR #2292](https://github.com/rauterfrank-ui/Peak_Trade/pull/2292) — Chat-led §5 Infostream F1 snapshot row on `main`.
 - **Merged:** [PR #2290](https://github.com/rauterfrank-ui/Peak_Trade/pull/2290) — Chat-led §5 Knowledge F4 snapshot row on `main`.
 - **Merged:** [PR #2288](https://github.com/rauterfrank-ui/Peak_Trade/pull/2288) — Chat-led §5 New Listings F6 snapshot row on `main`.
