@@ -3,7 +3,7 @@
 **Status:** ACTIVE  
 **Scope:** Docs / CI Gates / Markdown Quality  
 **Risk:** LOW (docs-only gate, non-blocking during 30-day burn-in)  
-**Last Updated:** 2026-01-13
+**Last Updated:** 2026-04-06
 
 ## Purpose
 
@@ -35,6 +35,10 @@ python3 scripts/ops/validate_docs_token_policy.py --changed
 
 # Check git-tracked docs only (docs/**/*.md)
 python3 scripts/ops/validate_docs_token_policy.py --tracked-docs
+
+# Optional: tracked-docs on clean main (CI-parity spot-check for token policy)
+# git fetch origin && git checkout main && git pull --ff-only
+# python3 scripts/ops/validate_docs_token_policy.py --tracked-docs
 
 # Full repo scan (slow, ~30s)
 python3 scripts/ops/validate_docs_token_policy.py --all
@@ -140,7 +144,17 @@ git commit -m "docs(ops): allowlist generic placeholder some/path"
 - One-off examples in a single doc
 - Real repo paths (auto-exempted)
 
-### Pattern 5: Both Gates Fail (Token Policy + Reference Targets)
+### Pattern 5: Local PASS, CI FAIL (illustrative dirs vs. REAL_REPO_TARGET)
+
+**Symptom:** The same branch passes `validate_docs_token_policy.py --changed` locally but **docs-token-policy-gate** fails on GitHub with `ILLUSTRATIVE` for directory-shaped inline-code tokens (e.g. generated **results** or **test_runs** trees) that exist on disk locally but not in CI.
+
+**Cause:** The classifier treats a token as **REAL_REPO_TARGET** when the path resolved from the repository root exists on disk. Developer machines often have **gitignored** or generated directories that **do not exist** in the CI workspace. Those paths are then **ILLUSTRATIVE** in CI and must use slash encoding.
+
+**Fix (preferred):** Encode each `/` as `&#47;` inside the inline-code span, e.g. `` `results&#47;` ``, `` `test_runs&#47;` `` — same rendering in the browser, policy-compliant everywhere.
+
+**Mitigation:** Run `python3 scripts/ops/validate_docs_token_policy.py --tracked-docs` from a **clean** tree when you need parity with CI; removing local-only dirs can also surface the same failures as the runner.
+
+### Pattern 6: Both Gates Fail (Token Policy + Reference Targets)
 
 **Symptom:**
 - Token Policy Gate: PASS
