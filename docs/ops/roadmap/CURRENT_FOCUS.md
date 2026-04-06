@@ -72,7 +72,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **Chat-led §5 Evidence G2 (PR #2294):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „Evidence (G2)“ (``evidence_pack_generator.py`` und ``test_evidence_pack_generator.py``; Stufe G2 im geordneten Runbook **DONE**); **NO-LIVE**.
 - **Chat-led §5 Evidence G3 (PR #2295):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „Evidence (G3)“ (``psychology_heuristics.py`` und ``test_psychology_heuristics.py``; Stufe G3 im geordneten Runbook **DONE**); **NO-LIVE**.
 - **Chat-led §5 Evidence G4 (PR #2296):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „Evidence (G4)“ (``test_health_history.py`` und ``test_test_health_runner.py``; Stufe G4 im geordneten Runbook **DONE**); **NO-LIVE**.
-- **Chat-led §5 J1 Forward Demo:** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „J1 Forward (Demo-Stub)“ (``run_forward_dummy_pipeline_demo.sh``, Operator-Kurzreferenz §6); **NO-LIVE**.
+- **Chat-led §5 J1 Forward Demo (PR #2298):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „J1 Forward (Demo-Stub)“ (``run_forward_dummy_pipeline_demo.sh``, Operator-Kurzreferenz §6); **NO-LIVE**.
 
 **GitHub — Truth-Gate Required Checks auf `main`:** Verifiziert (Apr 2026): **`docs-drift-guard`** und **`repo-truth-claims`** sind als Required Status Checks gesetzt (Namen wie `.github/workflows/truth_gates_pr.yml` Job-`name:`). Re-Check lokal: `python3 scripts/ops/ensure_truth_branch_protection.py --check` · ergänzen mit `--apply` nur mit Admin-Rechten; Registry: [`TRUTH_BRANCH_PROTECTION.md`](../registry/TRUTH_BRANCH_PROTECTION.md).
 
@@ -147,12 +147,13 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-12 | Post–PR #2295: Chat-led §5 Evidence G3 + `CURRENT_FOCUS` refresh (this file) | PR #2295 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-12 | Post–PR #2296: Chat-led §5 Evidence G4 + `CURRENT_FOCUS` refresh (this file) | PR #2296 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-12 | Post–PR #2297: Stufe J Forward-Demo-Stub + `CURRENT_FOCUS` + Runbook (this file) | PR #2297 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
-| 2026-04-12 | Chat-led §5 J1 Forward Demo snapshot row; `CURRENT_FOCUS` refresh (this file) | `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
+| 2026-04-12 | Post–PR #2298: Chat-led §5 J1 Forward Demo + `CURRENT_FOCUS` refresh (this file) | PR #2298 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 
 ---
 
 ## Branch / PR pointer (optional)
 
+- **Merged:** [PR #2298](https://github.com/rauterfrank-ui/Peak_Trade/pull/2298) — Chat-led §5 J1 Forward Demo snapshot row on `main`.
 - **Merged:** [PR #2297](https://github.com/rauterfrank-ui/Peak_Trade/pull/2297) — Stufe J Forward-Demo-Stub (`run_forward_dummy_pipeline_demo.sh`) on `main`.
 - **Merged:** [PR #2296](https://github.com/rauterfrank-ui/Peak_Trade/pull/2296) — Chat-led §5 Evidence G4 snapshot row on `main`.
 - **Merged:** [PR #2295](https://github.com/rauterfrank-ui/Peak_Trade/pull/2295) — Chat-led §5 Evidence G3 snapshot row on `main`.
