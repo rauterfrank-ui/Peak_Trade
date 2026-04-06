@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-04-14
+last_updated: 2026-04-15
 ---
 
 # Current focus
@@ -75,6 +75,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **Chat-led §5 J1 Forward Demo (PR #2298):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Snapshot-Zeile „J1 Forward (Demo-Stub)“ (``run_forward_dummy_pipeline_demo.sh``, Operator-Kurzreferenz §6); **NO-LIVE**.
 - **Chat-led §5 Learning / Promotion vs F2 (PR #2308):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Zeile „Learning / Promotion“: iteratives End-to-End + domänenspezifische Producer vs. **DONE** Kern-API (Verweis auf Zeile **Learning Loop (F2)**); Links zu Architektur-Doku, ``emitter.py``, ``bridge.py``; **NO-LIVE**.
 - **Chat-led §5 ML Meta-Labeling (PR #2310):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Zeile „ML / Meta-Labeling“: Research-only, implementierte Oberfläche (u. a. ``apply_meta_model``, ``compute_meta_labels``, ``_create_model`` mit Random Forest und optionalem XGBoost), unbekannte ``model_type`` → ``NotImplementedError``; **NO-LIVE**.
+- **Chat-led §5 Infostream, Market Outlook, Live/Safety (PR #2312):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Infostream-Zyklus als implementierter Pfad, MarketSentinel v0 (CLI und Workflow, Test-Flag ohne LLM), ``SafetyGuard`` und Execution-Guards ohne echte Live-Order-Calls; **NO-LIVE**.
 
 **GitHub — Truth-Gate Required Checks auf `main`:** Verifiziert (Apr 2026): **`docs-drift-guard`** und **`repo-truth-claims`** sind als Required Status Checks gesetzt (Namen wie `.github/workflows/truth_gates_pr.yml` Job-`name:`). Re-Check lokal: `python3 scripts/ops/ensure_truth_branch_protection.py --check` · ergänzen mit `--apply` nur mit Admin-Rechten; Registry: [`TRUTH_BRANCH_PROTECTION.md`](../registry/TRUTH_BRANCH_PROTECTION.md).
 
