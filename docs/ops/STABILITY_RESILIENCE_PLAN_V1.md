@@ -302,7 +302,7 @@ python3 scripts/health_dashboard.py
 
 **Usage:**
 ```bash
-# Historical: bash scripts/run_smoke_tests.sh
+# Historical: bash scripts/run/run_smoke_tests.sh
 # Current:
 python3 -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
 ```
@@ -506,7 +506,7 @@ python3 -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.p
 - `src/core/resilience.py` (circuit breaker, retry, health checks)
 - `src/data/exchange_client.py` (resilient exchange client)
 - `scripts/health_dashboard.py` (health monitoring dashboard)
-- `scripts&#47;run_smoke_tests.sh` (smoke test runner, historical)
+- `scripts&#47;run&#47;run_smoke_tests.sh` (smoke test runner, historical)
 - `tests/test_resilience.py` (28 resilience tests)
 - `docs/RESILIENCE.md` (comprehensive documentation)
 - `docs/SMOKE_TESTS.md` (smoke test documentation)
