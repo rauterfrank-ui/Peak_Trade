@@ -7,7 +7,7 @@
 | Teil | Status |
 |------|--------|
 | **Promotion / Live-Overrides / Governance** (System 2) | Überwiegend umgesetzt — siehe Skripte unter `scripts/` und Tests/Doku zu Overrides. |
-| **Learning Snippets → Overrides** | `scripts&#47;run_learning_apply_cycle.py` liest `reports&#47;learning_snippets&#47;` (`*.json` / `*.jsonl`) und schreibt `config&#47;auto&#47;learning.override.toml`. |
+| **Learning Snippets → Overrides** | `scripts&#47;run_learning_apply_cycle.py` liest `reports&#47;learning_snippets&#47;` (`*.json` / `*.jsonl`) und schreibt `config&#47;auto&#47;learning.override.toml`. | <!-- pt:ref-target-ignore -->
 | **`src&#47;meta&#47;learning_loop&#47;`** | `models.py` (`ConfigPatch`, `PatchStatus`), **`emitter.py`** (`emit_learning_snippet`), **`bridge.py`** (`normalize_patches`). |
 | **Bridge vs. Emitter** | **Bridge:** rein funktional **Domäne → Patch-Liste** (`normalize_patches`, kein I/O). **Emitter:** **Dateischreiben** JSON/JSONL unter `reports&#47;learning_snippets&#47;`. Spätere domänenspezifische Producer bauen auf der Bridge auf. |
 
