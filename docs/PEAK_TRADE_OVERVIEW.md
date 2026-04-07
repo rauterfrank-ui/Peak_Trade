@@ -55,7 +55,7 @@ Peak_Trade folgt einer klaren Pipeline-Architektur mit strikter Separation of Co
 python3 scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/USDT
 
 # Mit Custom-Config
-python3 scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml
+python3 scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml <!-- pt:ref-target-ignore -->
 ```
 
 ### 2. Programmatischer Backtest (Python)
@@ -96,7 +96,7 @@ print(f"Max Drawdown: {result.max_drawdown:.2%}")
 
 ### 3. Minimal Config-Beispiel
 
-**`config&#47;my_backtest.toml`:**
+**`config&#47;my_backtest.toml`:** <!-- pt:ref-target-ignore -->
 
 ```toml
 [data]
@@ -393,7 +393,7 @@ def load_data_from_my_provider(symbol, start, end):
     return df  # Must return OHLCV DataFrame
 ```
 
-**Integration in `src&#47;data&#47;data_loader.py`:**
+**Integration in `src&#47;data&#47;data_loader.py`:** <!-- pt:ref-target-ignore -->
 ```python
 def load_ohlcv_data(..., provider="my_provider"):
     if provider == "my_provider":
@@ -426,7 +426,7 @@ seed = 42  # Für reproduzierbare Random-Samples
 python3 scripts/run_strategy_from_config.py --strategy ma_crossover
 
 # Mit Custom-Config
-python3 scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml
+python3 scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml <!-- pt:ref-target-ignore -->
 ```
 
 **Variante B: Portfolio-Backtest**
