@@ -305,7 +305,7 @@ Output:
 ## 7) Phase E — D3 „Done“ (Watch‑Only Web/API + Grafana) operational verifizieren
 
 ### Entry
-- D3 Runbook existiert: `docs&#47;runbooks&#47;RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md`.
+- D3 Runbook existiert: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md`.
 
 ### Actions (DoD)
 - API Contract v0: Endpunkte & Pages überprüfbar.
@@ -323,7 +323,7 @@ Output:
 ```text
 TOOL: Cursor Multi-Agent Chat
 
-ORCHESTRATOR: Audit D3 Watch-Only Web/API + Grafana Runbook (docs/runbooks/RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md).
+ORCHESTRATOR: Audit D3 Watch-Only Web/API + Grafana Runbook (docs/ops/runbooks/RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md).
 Ziele:
 1) DoD als testbare Checkliste (API pages/endpoints + read-only assurances + grafana verify snapshot).
 2) Token-policy-safe Darstellung (keine inline backticks mit / in docs; nutze &#47; in inline code).
