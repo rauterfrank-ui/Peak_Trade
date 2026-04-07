@@ -38,7 +38,7 @@ Dieses Runbook beschreibt einen **repo-konformen**, **minimal-invasiven** Ablauf
 ---
 
 ## Phase 1 — Branch (docs-only)
-Branch-Name: `docs&#47;ops-legacy-workflow-notes-reintegration`
+Branch-Name: `docs&#47;ops-legacy-workflow-notes-reintegration` <!-- pt:ref-target-ignore -->
 
 1. `git switch main`
 2. `git pull --ff-only`
