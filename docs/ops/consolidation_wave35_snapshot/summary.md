@@ -35,5 +35,5 @@ Post-alignment consolidation/audit snapshot after PR #1759 (Wave 34) and #1760 (
 
 ## Untracked Local Docs
 
-- `docs&#47;GOVERNANCE_DATAFLOW_REPORT.md` — untouched, untracked ✓
-- `docs&#47;REPO_AUDIT_REPORT.md` — untouched, untracked ✓
+- `docs&#47;GOVERNANCE_DATAFLOW_REPORT.md` — untouched, untracked ✓ <!-- pt:ref-target-ignore -->
+- `docs&#47;REPO_AUDIT_REPORT.md` — untouched, untracked ✓ <!-- pt:ref-target-ignore -->
