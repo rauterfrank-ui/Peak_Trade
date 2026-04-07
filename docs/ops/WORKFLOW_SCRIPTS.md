@@ -40,10 +40,10 @@ Diese Datei dokumentiert die Peak_Trade Ops-Automations-Skripte für **Post-Merg
 
 1. **Branch-Setup:**
    - Checkout `main` + Pull
-   - Erstellt Branch `docs&#47;ops-pr203-merge-log`
+   - Erstellt Branch `docs&#47;ops-pr203-merge-log` <!-- pt:ref-target-ignore -->
 
 2. **Dokumentation erstellen:**
-   - `docs&#47;ops&#47;PR_203_MERGE_LOG.md` – Umfassender Merge Log
+   - `docs&#47;ops&#47;PR_203_MERGE_LOG.md` – Umfassender Merge Log <!-- pt:ref-target-ignore -->
    - `docs/ops/README.md` – Index-Update (PR #203 hinzufügen)
    - `docs/PEAK_TRADE_STATUS_OVERVIEW.md` – Changelog-Eintrag
 
@@ -113,7 +113,7 @@ Für andere PR-Nummern:
 
 2. **Suche & Ersetze:**
    - `203` → `999`
-   - Branch-Name: `docs&#47;ops-pr203-merge-log` → `docs&#47;ops-pr999-merge-log`
+   - Branch-Name: `docs&#47;ops-pr203-merge-log` → `docs&#47;ops-pr999-merge-log` <!-- pt:ref-target-ignore -->
    - PR-Titel/Body anpassen
 
 3. **Merge Log Inhalt:**
@@ -582,7 +582,7 @@ gh pr checks
 
 ### 3. Merge Logs konsistent halten
 
-- Nutze Template aus `docs&#47;ops&#47;PR_203_MERGE_LOG.md`
+- Nutze Template aus `docs&#47;ops&#47;PR_203_MERGE_LOG.md` <!-- pt:ref-target-ignore -->
 - Struktur: Problem/Motivation → Änderungen → CI → Nutzung → Breaking Changes → Follow-ups
 - Metadaten: Status, Merge Commit, Branch, Intent
 
