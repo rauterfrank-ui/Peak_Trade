@@ -182,7 +182,7 @@ Pre-Flight Snapshot:
 **Ziel:** Deterministischer PASS Snapshot (bounded retries) als Evidence.
 
 **Contract SSOT:**
-- `docs&#47;webui&#47;observability&#47;SHADOW_MVS_CONTRACT.md`
+- `docs&#47;webui&#47;observability&#47;SHADOW_MVS_CONTRACT.md` <!-- pt:ref-target-ignore -->
 
 **Verify Command:**
 - `bash scripts&#47;obs&#47;shadow_mvs_local_verify.sh`
