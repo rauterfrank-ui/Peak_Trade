@@ -11,7 +11,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 ### Backtest-Engine: Portfolio-Allocation-Methoden
 
 - [ ] `risk_parity` Allocation-Methode implementieren
-  - Fundstelle: `src&#47;backtest&#47;engine.py:1318` (illustrative)
+  - Fundstelle: `src&#47;backtest&#47;engine.py` (Zeile 1318) (illustrative)
   - Kontext: Portfolio-Allocation-Methode für gleiches Risk-Level pro Strategie
   - Vorschlag: Implementierung basierend auf Volatility/Risk-Metriken
   - Status: implemented (Code PR #1030, merge `af02a6d5`) + Docs/Evidence PR #1031 (merge `c6fc8036`)
@@ -19,7 +19,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Fundstellen: `src/backtest/engine.py`, `tests/backtest/test_engine_allocations.py`, `tests/backtest/test_engine_two_pass_allocation.py`
 
 - [ ] `sharpe_weighted` Allocation-Methode implementieren
-  - Fundstelle: `src&#47;backtest&#47;engine.py:1319` (illustrative)
+  - Fundstelle: `src&#47;backtest&#47;engine.py` (Zeile 1319) (illustrative)
   - Kontext: Portfolio-Allocation basierend auf historischer Sharpe-Ratio
   - Vorschlag: Benötigt historische Backtests als Input
   - Status: implemented (Code PR #1030, merge `af02a6d5`) + Docs/Evidence PR #1031 (merge `c6fc8036`)
@@ -29,7 +29,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 ### Walk-Forward: Parameter-Optimierung
 
 - [ ] Parameter-Optimierung auf Train-Daten implementieren
-  - Fundstelle: `src&#47;backtest&#47;walkforward.py:387` (illustrative)
+  - Fundstelle: `src&#47;backtest&#47;walkforward.py` (Zeile 387) (illustrative)
   - Kontext: Train-Backtest für spätere Optimierung vorbereitet, aber noch nicht aktiv
   - Vorschlag: Integration mit Sweep-System für automatische Parameter-Optimierung
   - Status: implemented (Code PR #1028, merge `f37535c6`) + Docs/Evidence PR #1029 (merge `db4e71bf`)
@@ -39,12 +39,12 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 ### Legacy-API Cleanup
 
 - [ ] Legacy-Funktionen in `macd.py` entfernen
-  - Fundstelle: `src&#47;strategies&#47;macd.py:232` (illustrative)
+  - Fundstelle: `src&#47;strategies&#47;macd.py` (Zeile 232) (illustrative)
   - Kontext: Legacy-Funktion für Backwards Compatibility
   - Vorschlag: Prüfen, ob alle Pipelines auf MACDStrategy (OOP) umgestellt sind, dann entfernen
 
 - [ ] Legacy-Funktionen in `bollinger.py` entfernen
-  - Fundstelle: `src&#47;strategies&#47;bollinger.py:237` (illustrative)
+  - Fundstelle: `src&#47;strategies&#47;bollinger.py` (Zeile 237) (illustrative)
   - Kontext: Legacy-Funktion für Backwards Compatibility
   - Vorschlag: Prüfen, ob alle Pipelines auf BollingerBandsStrategy (OOP) umgestellt sind, dann entfernen
 
@@ -55,27 +55,27 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 ### Echte Daten-Adapter
 
 - [ ] Echten Daten-Adapter in `live_ops.py` integrieren
-  - Fundstelle: `scripts&#47;live_ops.py:189` (illustrative)
+  - Fundstelle: `scripts&#47;live_ops.py` (Zeile 189) (illustrative)
   - Kontext: Aktuell Dummy-Implementation, später mit echtem Daten-Adapter (Kraken API etc.) ersetzen
   - Vorschlag: Integration mit bestehender Kraken-Integration in `src&#47;data&#47;kraken.py`
 
 - [ ] Echten Daten-Adapter in `preview_live_orders.py` integrieren
-  - Fundstelle: `scripts&#47;preview_live_orders.py:157` (illustrative)
+  - Fundstelle: `scripts&#47;preview_live_orders.py` (Zeile 157) (illustrative)
   - Kontext: Aktuell Dummy-Implementation
   - Vorschlag: Integration mit bestehender Kraken-Integration
 
 - [ ] Echte Kraken-Daten in `run_portfolio_backtest.py` verwenden
-  - Fundstelle: `scripts&#47;run_portfolio_backtest.py:119` (illustrative)
+  - Fundstelle: `scripts&#47;run_portfolio_backtest.py` (Zeile 119) (illustrative)
   - Kontext: Aktuell Dummy-Daten, später mit echten Kraken-Daten ersetzen
   - Vorschlag: Integration mit `src&#47;data&#47;kraken.py`
 
 - [ ] Echten Exchange-Client in `preview_live_portfolio.py` integrieren
-  - Fundstelle: `scripts&#47;preview_live_portfolio.py:96` (illustrative)
+  - Fundstelle: `scripts&#47;preview_live_portfolio.py` (Zeile 96) (illustrative)
   - Kontext: Später echten Exchange-Client integrieren (z.B. Kraken)
   - Vorschlag: Integration mit `src&#47;exchange&#47;kraken_testnet.py` oder `src&#47;exchange&#47;ccxt_client.py`
 
 - [ ] Timeframe aus Daten ableiten in `run_shadow_execution.py`
-  - Fundstelle: `scripts&#47;run_shadow_execution.py:502` (illustrative)
+  - Fundstelle: `scripts&#47;run_shadow_execution.py` (Zeile 502) (illustrative)
   - Kontext: Timeframe aktuell hardcoded, sollte aus Daten abgeleitet werden
   - Vorschlag: Automatische Erkennung aus DataFrame-Index oder Config
   - Status: implemented (Code PR #1021, merge `3d6aee01`) + Docs/Evidence PR #1022 (merge `7b16a509`)
@@ -89,7 +89,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 ### Vollständige Implementierungen
 
 - [ ] Vollständige Stress-Test-Implementierung
-  - Fundstelle: `src&#47;experiments&#47;stress_tests.py:389` (illustrative)
+  - Fundstelle: `src&#47;experiments&#47;stress_tests.py` (Zeile 389) (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry für automatisches Laden
   - Status: implemented (Code PR #1023, merge `d218e201`) + Docs/Evidence PR #1024 (merge `acab43a1`)
@@ -97,7 +97,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Fundstellen: `src/experiments/equity_loader.py`, `src/experiments/stress_tests.py`, `tests/experiments/test_equity_loader.py`
 
 - [ ] Vollständige Monte-Carlo-Implementierung
-  - Fundstelle: `src&#47;experiments&#47;monte_carlo.py:303` (illustrative)
+  - Fundstelle: `src&#47;experiments&#47;monte_carlo.py` (Zeile 303) (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry
   - Status: implemented (Code PR #1023, merge `d218e201`) + Docs/Evidence PR #1024 (merge `acab43a1`)
@@ -105,14 +105,14 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Fundstellen: `src/experiments/equity_loader.py`, `src/experiments/monte_carlo.py`, `tests/experiments/test_equity_loader.py`
 
 - [ ] Vollständige Monte-Carlo-Robustness-Implementierung
-  - Fundstelle: `scripts&#47;run_monte_carlo_robustness.py:139` (illustrative)
+  - Fundstelle: `scripts&#47;run_monte_carlo_robustness.py` (Zeile 139) (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry
 
 ### Registry-Logging
 
 - [ ] Registry-Logging in `demo_order_pipeline_backtest.py` implementieren
-  - Fundstelle: `scripts&#47;demo_order_pipeline_backtest.py:306` (illustrative)
+  - Fundstelle: `scripts&#47;demo_order_pipeline_backtest.py` (Zeile 306) (illustrative)
   - Kontext: Registry-Logging für automatisches Tracking
   - Vorschlag: Integration mit `src&#47;core&#47;experiments.py`
 
