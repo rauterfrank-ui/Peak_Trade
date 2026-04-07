@@ -19,3 +19,22 @@ docs/_worklogs/**
 # Archive directories - historical content not maintained
 docs/archive/**
 archive/**
+
+# Historical PR merge logs under docs/ops/ (point-in-time links; not canonical navigation)
+docs/ops/merge_logs/**
+
+# Docs graph triage/remediation outputs (intentionally list or discuss broken references)
+docs/ops/graphs/**
+
+# Planning/analysis drafts (hypothetical or future paths)
+docs/analysis/**
+
+# Ops archive copies (historical snapshots)
+docs/ops/archives/**
+
+# Time-boxed exploratory spikes (may reference removed or superseded paths)
+docs/ops/spikes/**
+
+# Standalone merge-log / final-report markdown at docs/ops/ root (historical)
+docs/ops/PR_*_MERGE_LOG.md
+docs/ops/PR_*_FINAL_REPORT.md

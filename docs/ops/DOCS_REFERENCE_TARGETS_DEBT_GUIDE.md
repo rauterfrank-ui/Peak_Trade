@@ -1,7 +1,7 @@
 # Docs Reference Targets Debt Management Guide
 
-**Version:** 1.1  
-**Last Updated:** 2026-04-06  
+**Version:** 1.2  
+**Last Updated:** 2026-04-07  
 **Owner:** Peak_Trade Ops Team
 
 ---
@@ -316,6 +316,8 @@ docs/api/autogen/**
 - Test fixtures with intentional broken references
 - Auto-generated docs you don't control
 - Legacy docs scheduled for deletion
+
+**Inventory (non-canonical trees, 2026-04):** Full-scan ignores were expanded beyond legacy worklogs and the existing archive-directory entry in this file — see **`DOCS_REFERENCE_TARGETS_IGNORE.txt`** for the exact glob lines (historical merge logs, docs-graph triage outputs, planning drafts under **analysis**, ops **archives**, time-boxed **spikes**, and standalone PR merge-log or final-report markdown at the **docs/ops** root). Those trees are not canonical navigation surfaces; the changed-files gate on PRs is unchanged. A local **`verify_docs_reference_targets.sh`** full scan (no flags) should report fewer missing targets than scanning every historical file; remaining debt is still tracked for gradual paydown.
 
 **When NOT to use:**
 - To hide broken links in active documentation
