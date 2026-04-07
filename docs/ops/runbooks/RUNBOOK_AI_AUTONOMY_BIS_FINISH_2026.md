@@ -498,7 +498,7 @@ Execute on Testnet with real logic (fake money): validate execution pathways, ri
 ### Inputs (Prerequisites)
 - ✅ Kill-Switch drills passed (P9 complete)
 - 🔵 Testnet environment configured (API keys, accounts)
-- 🔵 Bounded-Live config created (`config&#47;bounded_live_testnet.toml`)
+- 🔵 Bounded-Live config created (`config&#47;bounded_live_testnet.toml`) <!-- pt:ref-target-ignore -->
 
 ### Tasks
 
