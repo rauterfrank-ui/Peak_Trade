@@ -10,6 +10,8 @@
 
 Der **Emergency Kill Switch** wurde vollständig gemäß Roadmap v1.0 implementiert. Er ist einsatzbereit als **Layer 4** der Defense-in-Depth Risk Management Architektur.
 
+**D2 (2026-03):** Die frühere **`KillSwitchAdapter`**-/Evaluator-Schicht wurde entfernt; **`KillSwitch`** (State-Machine) und **`RiskGate`** bleiben kanonisch. Details: [`TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`](TODO_KILL_SWITCH_ADAPTER_MIGRATION.md).
+
 ### Was wurde implementiert?
 
 ✅ **Core System** - State Machine, KillSwitch Core, Config  
@@ -519,12 +521,21 @@ export KILL_SWITCH_APPROVAL_CODE='my_secret_code'
 
 ### Pre-Deployment
 
-- [ ] Config angepasst: `config/risk/kill_switch.toml`
+- [ ] Config angepasst: [config/risk/kill_switch.toml](config/risk/kill_switch.toml)
 - [ ] Approval Code generiert und sicher gespeichert
 - [ ] `KILL_SWITCH_APPROVAL_CODE` in Production Env gesetzt
-- [ ] Data Directories existieren: `data/kill_switch/{audit,backups}`
-- [ ] Script ist ausführbar: `chmod +x scripts/ops/kill_switch_ctl.sh`
-- [ ] Tests laufen grün: `pytest tests/risk_layer/kill_switch/`
+- [ ] Data Directories existieren (Beispiel):
+
+  ```text
+  data/kill_switch/{audit,backups}
+  ```
+
+- [ ] Script ausführbar & Tests grün (Beispielbefehle):
+
+  ```bash
+  chmod +x scripts/ops/kill_switch_ctl.sh
+  pytest tests/risk_layer/kill_switch/
+  ```
 
 ### Post-Deployment
 
@@ -540,9 +551,18 @@ export KILL_SWITCH_APPROVAL_CODE='my_secret_code'
 
 ### Bei Problemen
 
-1. **Runbook konsultieren:** `docs/ops/KILL_SWITCH_RUNBOOK.md`
-2. **Logs prüfen:** `logs/kill_switch.log`
-3. **Status prüfen:** `./scripts/ops/kill_switch_ctl.sh status`
+1. **Runbook konsultieren:** [docs/ops/KILL_SWITCH_RUNBOOK.md](docs/ops/KILL_SWITCH_RUNBOOK.md)
+2. **Logs prüfen** (typischer Pfad):
+
+   ```text
+   logs/kill_switch.log
+   ```
+
+3. **Status prüfen:**
+
+   ```bash
+   ./scripts/ops/kill_switch_ctl.sh status
+   ```
 4. **Engineering Team kontaktieren**
 
 ### Eskalation

@@ -10,6 +10,8 @@
 
 Der Emergency Kill Switch ist **Layer 4** im Defense-in-Depth Risk Management System von Peak_Trade. Er ist die letzte Verteidigungslinie und muss **immer funktionieren**, unabhängig von allen anderen Systemkomponenten.
 
+**D2 (2026-03):** Die frühere **`KillSwitchAdapter`**-Schicht ist entfernt; Integration nutzt **`KillSwitch`** direkt. Archiv: [`TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`](../../TODO_KILL_SWITCH_ADAPTER_MIGRATION.md).
+
 ## 🏛️ Architektur-Diagramm
 
 ```mermaid
