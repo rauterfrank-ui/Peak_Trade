@@ -25,7 +25,7 @@ Neuen Exchange/Market-Adapter hinzufügen, der Data-Layer und ggf. Live-Layer nu
 - **Jede neue Exchange-SDK-Dependency** muss in `src&#47;data&#47;providers&#47;**` leben + via lazy Shim/Factory geladen werden.
 
 **Neue Datei erstellen**, z.B.:
-- `src&#47;data&#47;my_exchange.py` (illustrative)
+- `src&#47;data&#47;my_exchange.py` (illustrative) <!-- pt:ref-target-ignore -->
 
 **Schnittstelle an vorhandene Adapter angleichen** (z.B. `src/data/kraken.py`):
 
@@ -303,7 +303,7 @@ Füge den neuen Exchange in der Data-/Exchange-Sektion hinzu.
 
 **Optional: Neues Doku-File:**
 
-Erstelle `docs&#47;EXCHANGE_MY_EXCHANGE.md` (illustrative, optional, nur wenn umfangreich):
+Erstelle `docs&#47;EXCHANGE_MY_EXCHANGE.md` (illustrative, optional, nur wenn umfangreich): <!-- pt:ref-target-ignore -->
 
 ```markdown
 # My Exchange Integration
