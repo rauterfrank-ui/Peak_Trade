@@ -32,10 +32,10 @@ Matrix läuft nur bei Code-Änderungen (siehe Pfad-Logik). Lint Gate, Docs Gates
 
 | Geänderte Pfade (nur diese) | run_matrix | Laufende Jobs (relevant) |
 |-----------------------------|------------|---------------------------|
-| `docs&#47;foo.md` | false | changes, Fast-Lane, tests (skip), strategy-smoke (skip), **PR Gate** |
+| `docs&#47;foo.md` | false | changes, Fast-Lane, tests (skip), strategy-smoke (skip), **PR Gate** | <!-- pt:ref-target-ignore -->
 | `.github&#47;workflows&#47;lint.yml` | false | wie oben |
-| `src&#47;foo.py` | true | changes, Fast-Lane, **tests (3.9/3.10/3.11)**, **strategy-smoke**, **PR Gate** |
-| `tests&#47;test_baz.py`, `scripts&#47;obs&#47;build_foo.py`, `pyproject.toml`, `uv.lock`, `requirements.txt` | true | wie oben |
+| `src&#47;foo.py` | true | changes, Fast-Lane, **tests (3.9/3.10/3.11)**, **strategy-smoke**, **PR Gate** | <!-- pt:ref-target-ignore -->
+| `tests&#47;test_baz.py`, `scripts&#47;obs&#47;build_foo.py`, `pyproject.toml`, `uv.lock`, `requirements.txt` | true | wie oben | <!-- pt:ref-target-ignore -->
 
 ## workflow_dispatch: Matrix erzwingen
 
