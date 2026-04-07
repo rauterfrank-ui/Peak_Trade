@@ -65,7 +65,7 @@ export PY_CMD="python3"
 **Where:** `tests&#47;obs&#47;test_ai_live_ops_pack_v1.py`
 
 - **Inputs (rein kommt)**:
-  - Rules file: `docs&#47;webui&#47;observability&#47;prometheus&#47;rules&#47;ai_live_alerts_v1.yml`
+  - Rules file: `docs&#47;webui&#47;observability&#47;prometheus&#47;rules&#47;ai_live_alerts_v1.yml` <!-- pt:ref-target-ignore -->
   - Dashboard JSON: `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;execution&#47;peaktrade-execution-watch-overview.json *(legacy reference; source dashboard path is not present in the current repo state)*`
 
 - **Outputs (raus geht)**:
