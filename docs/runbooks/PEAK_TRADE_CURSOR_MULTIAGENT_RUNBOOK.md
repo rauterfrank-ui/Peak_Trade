@@ -144,7 +144,7 @@ ruff format --check .
 
 **Exit**
 - `pytest`, `ruff` grün
-- Baseline‑Report in ``docs&#47;evidence&#47;phase0_baseline.md``
+- Baseline‑Report in ``docs&#47;evidence&#47;phase0_baseline.md`` <!-- pt:ref-target-ignore -->
 
 **Agent**
 - ORCH (führt), TEST (validiert), CRIT (checkt “NO‑LIVE” Pfade)
@@ -162,8 +162,8 @@ ruff format --check .
 - “Thin‑slice Plan”: zuerst X‑Epics (Evidence/Obs/Security), dann Feature Epics
 
 **Deliverables**
-- ``docs&#47;backlog&#47;EPICS.md``
-- ``docs&#47;backlog&#47;STORIES.md`` (je Story: AC, tests, metrics, risk)
+- ``docs&#47;backlog&#47;EPICS.md`` <!-- pt:ref-target-ignore -->
+- ``docs&#47;backlog&#47;STORIES.md`` (je Story: AC, tests, metrics, risk) <!-- pt:ref-target-ignore -->
 - ``docs&#47;adr&#47;`` Skeleton (ADR‑0001 …)
 
 **Commands**
@@ -226,7 +226,7 @@ $EDITOR docs/adr/ADR-0005-risk-gate-sim.md
 
 **Implement (MVP)**
 - ``src&#47;core&#47;evidence&#47;`` helpers
-- ``scripts&#47;evidence&#47;make_evidence_pack.sh``
+- ``scripts&#47;evidence&#47;make_evidence_pack.sh`` <!-- pt:ref-target-ignore -->
 - CI job: minimal backtest checksum reproducibility
 
 **Commands**
@@ -432,8 +432,8 @@ git add -A && git commit -m "feat(risk): add var/cvar + stress + sim auto-liquid
 - Live bleibt blockiert: Promote endet bei Testnet/Dry‑Run unless governance exception.
 
 **Deliverables**
-- ``docs&#47;runbooks&#47;PROMOTION_PIPELINE.md``
-- ``scripts&#47;ops&#47;promote_run.sh`` (requires confirm token)
+- ``docs&#47;runbooks&#47;PROMOTION_PIPELINE.md`` <!-- pt:ref-target-ignore -->
+- ``scripts&#47;ops&#47;promote_run.sh`` (requires confirm token) <!-- pt:ref-target-ignore -->
 
 **Commands**
 ```bash
