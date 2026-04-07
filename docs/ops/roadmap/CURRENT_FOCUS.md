@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-04-17
+last_updated: 2026-04-07
 ---
 
 # Current focus
