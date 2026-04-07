@@ -336,7 +336,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 - **Fixes (applied)**:
   - `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md`: illustrative `scripts&#47;example.py` „Before“-Beispiele mit `<!-- pt:ref-target-ignore -->` markiert (damit sie nicht als realer Target-Treffer zählen, aber als „Before“ lesbar bleiben).
   - `docs/ops/runbooks/RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md`: dito (`scripts&#47;example.py` + „Change: scripts/old_name.py …“) mit `<!-- pt:ref-target-ignore -->`.
-  - `docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md`: illustrative `scripts&#47;old_name.py` / `scripts&#47;helper.py` innerhalb von Log-/Command-Beispielen auf `scripts&#47;...` neutralisiert (und „Before/After“ für Encoding klar gemacht).
+  - `docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md`: illustrative `scripts&#47;old_name.py` / `scripts&#47;helper.py` innerhalb von Log-/Command-Beispielen auf `scripts&#47;...` neutralisiert (und „Before/After“ für Encoding klar gemacht). <!-- pt:ref-target-ignore -->
   - `docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md`: illustrative `scripts&#47;run_walkforward.py` im Log-Beispiel auf `scripts&#47;...` neutralisiert; „Before“-Inline-Commands mit `<!-- pt:ref-target-ignore -->` markiert.
   - `docs/ops/PR_691_MERGE_LOG.md`: „Initial Failure“-Block auf `scripts&#47;...` neutralisiert (weil hier die CI-Log-Ausgabe als Beispiel zitiert wird).
   - `docs/runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md`: fehlendes `smoke_test_paper.py` als Beispiel markiert und gate-sicher neutralisiert (`scripts&#47;...`).
@@ -344,7 +344,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
   - `docs/ops/WAVE3_QUICKSTART.md`: fehlendes `run_live.py` als Beispiel markiert und gate-sicher neutralisiert (`scripts&#47;...`).
   - `docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md`: exemplarisches `python scripts&#47;run.py` auf reales Beispiel `python3 scripts/run_backtest.py` umgestellt.
   - `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md`: Policy-Critic-Call auf reales `python3 scripts/run_policy_critic.py --pr-mode` umgestellt.
-  - `docs/ops/workflows/WORKFLOW_NOTES_FRONTDOOR.md`: Log-Beispiel `scripts&#47;my_script.py` auf `scripts&#47;...` neutralisiert.
-  - `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md`: „Violation“-Fenced-Blocks auf `scripts&#47;example.py` umgestellt (damit auch in Raw-Scans keine Phantom-Targets entstehen).
+  - `docs/ops/workflows/WORKFLOW_NOTES_FRONTDOOR.md`: Log-Beispiel `scripts&#47;my_script.py` auf `scripts&#47;...` neutralisiert. <!-- pt:ref-target-ignore -->
+  - `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md`: „Violation“-Fenced-Blocks auf `scripts&#47;example.py` umgestellt (damit auch in Raw-Scans keine Phantom-Targets entstehen). <!-- pt:ref-target-ignore -->
   - Archive/Logs: `DOCS_GATES_OPERATOR_PACK_V1_1_*` und `PR_703_MERGE_LOG.md` „Before“-Tokens mit `<!-- pt:ref-target-ignore -->` markiert.
   - Verifikation: `scripts/ops/verify_docs_reference_targets.sh` läuft weiterhin grün.
