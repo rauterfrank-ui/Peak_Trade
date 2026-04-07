@@ -2,7 +2,7 @@
 
 ## 📋 Status
 
-✅ **Branch erstellt:** `docs&sol;ops-workflow-scripts-docs` (planned directory)  
+✅ **Branch erstellt:** `docs&sol;ops-workflow-scripts-docs` (planned directory)   <!-- pt:ref-target-ignore -->
 ✅ **Commits:** 2 Commits (Dokumentation + Index/Changelog-Updates)  
 ⏳ **Push:** Noch nicht gepusht (SSH-Key-Probleme im Sandbox)  
 ⏳ **PR:** Noch nicht erstellt
