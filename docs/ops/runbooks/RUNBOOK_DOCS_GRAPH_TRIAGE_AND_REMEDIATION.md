@@ -44,7 +44,7 @@ python3 scripts/ops/docs_graph_snapshot.py \
 ```
 
 **Expected Artifacts:**
-- New snapshot JSON at `docs&#47;ops&#47;graphs&#47;snapshots&#47;YYYY-MM-DD&#47;docs_graph_snapshot.json`
+- New snapshot JSON at `docs&#47;ops&#47;graphs&#47;snapshots&#47;YYYY-MM-DD&#47;docs_graph_snapshot.json` <!-- pt:ref-target-ignore -->
 - Exit code 1 if broken links found (expected during triage phase)
 
 **Success Criteria:**
@@ -283,7 +283,7 @@ python3 scripts/ops/docs_graph_snapshot.py \
 
 ### 6.1 Branch Naming
 
-**Convention:** `docs&#47;triage-YYYY-MM-DD-description`
+**Convention:** `docs&#47;triage-YYYY-MM-DD-description` <!-- pt:ref-target-ignore -->
 
 **Example:**
 ```bash
