@@ -221,7 +221,7 @@ scripts/
 | `run_regime_experiments.sh` | Dublette (existiert in `archive&#47;legacy_scripts&#47;`) | ✅ rg: 6 hits | Nur docs/archive refs |
 | `REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` | Dublette (docs/ops/ ist source of truth) | ✅ rg: 20 hits | Konsolidiert in docs/ops/ |
 | `gitignore` | Obsolet (`.gitignore` existiert und ist aktuell) | ✅ rg: 0 hits | Keine Code-Referenzen |
-| ~~`scripts&sol;cleanup_repo.sh`~~ | Obsolet/Test-Script | ✅ rg: 5 hits | Nur self-refs |
+| ~~`scripts&sol;cleanup_repo.sh`~~ | Obsolet/Test-Script | ✅ rg: 5 hits | Nur self-refs | <!-- pt:ref-target-ignore -->
 
 **Alle Deletes safe:** Keine Breaking Changes, alle Dubletten oder obsolete Dateien.
 
