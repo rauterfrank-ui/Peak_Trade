@@ -83,11 +83,11 @@ Use this structure for new files under `docs/ops/evidence/`. After verification,
 
 | Target Location | Relative Path from Evidence Entry | Example Pattern |
 |-----------------|-----------------------------------|-----------------|
-| `config&#47;` files | `..&#47;..&#47;..&#47;config&#47;` | `` `[bounded_live.toml](..&#47;..&#47;..&#47;config&#47;bounded_live.toml)` `` |
-| `.github&#47;workflows&#47;` files | `..&#47;..&#47;..&#47;.github&#47;workflows&#47;` | `` `[ci.yml](..&#47;..&#47;..&#47;.github&#47;workflows&#47;ci.yml)` `` |
-| `scripts&#47;ops&#47;` files | `..&#47;..&#47;..&#47;scripts&#47;ops&#47;` | `` `[run_audit.sh](..&#47;..&#47;..&#47;scripts&#47;ops&#47;run_audit.sh)` `` |
-| `docs&#47;ops&#47;` files (sibling) | `..&#47;` | `` `[EVIDENCE_INDEX.md](..&#47;EVIDENCE_INDEX.md)` `` |
-| Other `docs&#47;` files | `..&#47;..&#47;..&#47;docs&#47;` | `` `[README.md](..&#47;..&#47;..&#47;README.md)` `` |
+| `config&#47;` files | `..&#47;..&#47;..&#47;config&#47;` | `` `[bounded_live.toml](..&#47;..&#47;..&#47;config&#47;bounded_live.toml)` `` | <!-- pt:ref-target-ignore -->
+| `.github&#47;workflows&#47;` files | `..&#47;..&#47;..&#47;.github&#47;workflows&#47;` | `` `[ci.yml](..&#47;..&#47;..&#47;.github&#47;workflows&#47;ci.yml)` `` | <!-- pt:ref-target-ignore -->
+| `scripts&#47;ops&#47;` files | `..&#47;..&#47;..&#47;scripts&#47;ops&#47;` | `` `[run_audit.sh](..&#47;..&#47;..&#47;scripts&#47;ops&#47;run_audit.sh)` `` | <!-- pt:ref-target-ignore -->
+| `docs&#47;ops&#47;` files (sibling) | `..&#47;` | `` `[EVIDENCE_INDEX.md](..&#47;EVIDENCE_INDEX.md)` `` | <!-- pt:ref-target-ignore -->
+| Other `docs&#47;` files | `..&#47;..&#47;..&#47;docs&#47;` | `` `[README.md](..&#47;..&#47;..&#47;README.md)` `` | <!-- pt:ref-target-ignore -->
 
 ### Examples (Correct ✅ vs Incorrect ❌)
 
