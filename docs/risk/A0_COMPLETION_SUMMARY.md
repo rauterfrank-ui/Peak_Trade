@@ -20,8 +20,8 @@ Agent A0 hat die Risk Layer v1.0 Roadmap erfolgreich in das Peak_Trade Repositor
 | Datei | Zeilen | Beschreibung |
 |-------|--------|--------------|
 | `docs/risk/RISK_LAYER_ALIGNMENT.md` | ~800 | Vollständiges Architecture Decision Memo |
-| `docs&#47;risk&#47;AGENT_HANDOFF.md` | ~500 | Detaillierte Handoff-Instructions für A1-A6 (historical) |
-| `docs/risk/FILES_READY_FOR_AGENTS.md` | ~400 | File-Übersicht und Status |
+| `docs/risk/FILES_READY_FOR_AGENTS.md` | ~400 | File-Übersicht, Status und Agent-Orientation (ersetzt das entfernte `AGENT_HANDOFF.md`) |
+| `docs/risk/A0_COMPLETION_SUMMARY.md` | — | Completion-Snapshot (dieses Dokument) |
 
 **Inhalt:**
 - Package Location Decision (Dual-Package System)
@@ -278,8 +278,7 @@ git commit
 ```
 docs/risk/
 ├── RISK_LAYER_ALIGNMENT.md          (~800 lines) ✅
-├── AGENT_HANDOFF.md                 (~500 lines) ✅
-├── FILES_READY_FOR_AGENTS.md        (~400 lines) ✅
+├── FILES_READY_FOR_AGENTS.md        (~400 lines) ✅  # Agent-Orientation (historisches AGENT_HANDOFF.md entfernt)
 └── A0_COMPLETION_SUMMARY.md         (this file)  ✅
 
 config/
@@ -340,7 +339,7 @@ src/risk_layer/var_backtest/
 ### Agent A3 (VaR Backtesting)
 - [x] Placeholder-Module erstellt (`christoffersen_tests.py`, `traffic_light.py`)
 - [x] Exports aktualisiert (`src/risk_layer/var_backtest/__init__.py`)
-- [x] Dokumentation bereitgestellt (`AGENT_HANDOFF.md`)
+- [x] Dokumentation/Agent-Orientation bereitgestellt (`docs/risk/FILES_READY_FOR_AGENTS.md`)
 - [x] Config-Template erstellt (`risk_layer_v1_scaffold.toml`)
 - [ ] Unit Tests (Agent A3 implementiert)
 - [ ] Integration Tests (Agent A6 implementiert)
@@ -348,14 +347,14 @@ src/risk_layer/var_backtest/
 ### Agent A5 (Monte Carlo VaR)
 - [x] Placeholder-Modul erstellt (`monte_carlo.py`)
 - [x] Exports aktualisiert (`src/risk/__init__.py`)
-- [x] Dokumentation bereitgestellt (`AGENT_HANDOFF.md`)
+- [x] Dokumentation/Agent-Orientation bereitgestellt (`docs/risk/FILES_READY_FOR_AGENTS.md`)
 - [x] Config-Template erstellt (`risk_layer_v1_scaffold.toml`)
 - [ ] Unit Tests (Agent A5 implementiert)
 - [ ] Integration Tests (Agent A6 implementiert)
 
 ### Agent A6 (Integration)
 - [x] Architecture Decision Memo (`RISK_LAYER_ALIGNMENT.md`)
-- [x] Handoff Instructions (`AGENT_HANDOFF.md`)
+- [x] Agent-Orientation (`docs/risk/FILES_READY_FOR_AGENTS.md`; historisches `AGENT_HANDOFF.md` entfernt)
 - [ ] End-to-End Tests (Agent A6 implementiert)
 - [ ] User Guide (Agent A6 implementiert)
 - [ ] Example Notebooks (Agent A6 implementiert)
@@ -368,8 +367,7 @@ src/risk_layer/var_backtest/
 
 **Dokumentation:**
 - `docs/risk/RISK_LAYER_ALIGNMENT.md` - Vollständiges Decision Memo
-- `docs&#47;risk&#47;AGENT_HANDOFF.md` - Detaillierte Handoff-Instructions (historical)
-- `docs/risk/FILES_READY_FOR_AGENTS.md` - File-Übersicht
+- `docs/risk/FILES_READY_FOR_AGENTS.md` - File-Übersicht und Agent-Orientation (ersetzt das entfernte `AGENT_HANDOFF.md`)
 
 **Code:**
 - `src/risk/monte_carlo.py` - Monte Carlo VaR Placeholder

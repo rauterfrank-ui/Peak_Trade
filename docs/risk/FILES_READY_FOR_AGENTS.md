@@ -111,7 +111,7 @@ from src.risk_layer.var_backtest import (
 | File | Lines | Status | Purpose |
 |------|-------|--------|---------|
 | `docs/risk/RISK_LAYER_ALIGNMENT.md` | ~800 | ✅ CREATED | Architecture Decision Memo |
-| `docs&#47;risk&#47;AGENT_HANDOFF.md` | ~500 | ✅ CREATED (historical) | Handoff Instructions für A1-A6 |
+| `docs/risk/A0_COMPLETION_SUMMARY.md` | — | ✅ historical snapshot | Completion-/Scaffold-Kontext (historisches `AGENT_HANDOFF.md` entfernt) |
 | `docs/risk/FILES_READY_FOR_AGENTS.md` | ~200 | ✅ CREATED | Diese Datei (File-Übersicht) |
 
 ---
@@ -253,7 +253,7 @@ git add docs/risk/ src/risk/monte_carlo.py src/risk_layer/var_backtest/ config/r
 git commit -m "feat(risk): scaffold Risk Layer v1.0 architecture (Agent A0)
 
 - Add Decision Memo (RISK_LAYER_ALIGNMENT.md)
-- Add Agent Handoff Instructions (AGENT_HANDOFF.md)
+- Add Agent orientation (FILES_READY_FOR_AGENTS.md + A0_COMPLETION_SUMMARY.md; historisches AGENT_HANDOFF.md entfernt)
 - Create Monte Carlo VaR placeholder (monte_carlo.py)
 - Create Christoffersen tests placeholder (christoffersen_tests.py)
 - Create Basel Traffic Light placeholder (traffic_light.py)
@@ -326,7 +326,7 @@ git commit -m "feat(risk): implement Monte Carlo VaR Calculator (Agent A5)"
 
 **Agent A0 (Architect):** Verfügbar für Architektur-Fragen  
 **Documentation:** `docs/risk/RISK_LAYER_ALIGNMENT.md` (vollständiges Decision Memo)  
-**Handoff:** `docs&#47;risk&#47;AGENT_HANDOFF.md` (detaillierte Instructions, historical)
+**Handoff / Agent-Orientation:** `docs/risk/FILES_READY_FOR_AGENTS.md` (dieses Dokument; historisches `AGENT_HANDOFF.md` entfernt)
 
 ---
 

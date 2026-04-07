@@ -1219,25 +1219,25 @@
     {
       "source_file": "docs/risk/A0_COMPLETION_SUMMARY.md",
       "line_number": 23,
-      "target": "docs/risk/AGENT_HANDOFF.md",
+      "target": "docs/risk/FILES_READY_FOR_AGENTS.md",
       "link_text": null
     },
     {
       "source_file": "docs/risk/A0_COMPLETION_SUMMARY.md",
-      "line_number": 371,
-      "target": "docs/risk/AGENT_HANDOFF.md",
+      "line_number": 370,
+      "target": "docs/risk/FILES_READY_FOR_AGENTS.md",
       "link_text": null
     },
     {
       "source_file": "docs/risk/FILES_READY_FOR_AGENTS.md",
       "line_number": 114,
-      "target": "docs/risk/AGENT_HANDOFF.md",
+      "target": "docs/risk/A0_COMPLETION_SUMMARY.md",
       "link_text": null
     },
     {
       "source_file": "docs/risk/FILES_READY_FOR_AGENTS.md",
       "line_number": 329,
-      "target": "docs/risk/AGENT_HANDOFF.md",
+      "target": "docs/risk/FILES_READY_FOR_AGENTS.md",
       "link_text": null
     },
     {
