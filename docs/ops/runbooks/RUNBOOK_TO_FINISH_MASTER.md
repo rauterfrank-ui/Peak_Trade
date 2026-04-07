@@ -126,8 +126,8 @@ git status -sb || true
 **Targets (untracked):**
 - `docs&#47;ops&#47;runbooks&#47;finish_c&#47;RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md`
 - `docs&#47;ops&#47;runbooks&#47;finish_c&#47;RUNBOOK_FINISH_C_MASTER.md`
-- `docs&#47;research&#47;option_b&#47;OPTION_B_GAP_ASSESSMENT.md`
-- `docs&#47;research&#47;option_b&#47;OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md`
+- `docs&#47;research&#47;option_b&#47;OPTION_B_GAP_ASSESSMENT.md` <!-- pt:ref-target-ignore -->
+- `docs&#47;research&#47;option_b&#47;OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md` <!-- pt:ref-target-ignore -->
 
 **Exit:** alle Dateien sind im Index (staged) oder bewusst **explizit** ausgeschlossen (und dokumentiert).
 
@@ -305,7 +305,7 @@ Output:
 ## 7) Phase E — D3 „Done“ (Watch‑Only Web/API + Grafana) operational verifizieren
 
 ### Entry
-- D3 Runbook existiert: `docs&#47;runbooks&#47;RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md`.
+- D3 Runbook existiert: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md`.
 
 ### Actions (DoD)
 - API Contract v0: Endpunkte & Pages überprüfbar.
@@ -323,7 +323,7 @@ Output:
 ```text
 TOOL: Cursor Multi-Agent Chat
 
-ORCHESTRATOR: Audit D3 Watch-Only Web/API + Grafana Runbook (docs/runbooks/RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md).
+ORCHESTRATOR: Audit D3 Watch-Only Web/API + Grafana Runbook (docs/ops/runbooks/RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md).
 Ziele:
 1) DoD als testbare Checkliste (API pages/endpoints + read-only assurances + grafana verify snapshot).
 2) Token-policy-safe Darstellung (keine inline backticks mit / in docs; nutze &#47; in inline code).
@@ -406,8 +406,8 @@ Output:
 ## 11) Optional: Phase I — Option‑B (Research-only, No‑Code Policy Track)
 
 ### Deliverables
-- `docs&#47;research&#47;option_b&#47;OPTION_B_GAP_ASSESSMENT.md`
-- `docs&#47;research&#47;option_b&#47;OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md`
+- `docs&#47;research&#47;option_b&#47;OPTION_B_GAP_ASSESSMENT.md` <!-- pt:ref-target-ignore -->
+- `docs&#47;research&#47;option_b&#47;OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md` <!-- pt:ref-target-ignore -->
 - Phasen A–F (Design/Policy Deliverables):
   - Instrument Meta / Contract Chain
   - Roll Ledger / Continuous Builder + Attribution
