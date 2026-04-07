@@ -254,7 +254,7 @@ python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base main
 ## Related
 
 - **Docs Token Policy Gate:** `.github&#47;workflows&#47;docs-token-policy-gate.yml`
-- **Docs Reference Targets Gate:** `.github&#47;workflows&#47;docs-reference-targets-gate.yml`
+- **Docs Reference Targets Gate:** `.github&#47;workflows&#47;docs_reference_targets_gate.yml`
 - **Full Snapshot Script:** `scripts&#47;ops&#47;pt_docs_gates_snapshot.sh`
 - **Validation Script:** `scripts&#47;ops&#47;validate_docs_token_policy.py`
 - **Reference Targets Script:** `scripts&#47;ops&#47;verify_docs_reference_targets.sh`
