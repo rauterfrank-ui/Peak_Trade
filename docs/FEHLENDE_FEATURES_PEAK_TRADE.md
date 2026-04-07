@@ -28,11 +28,11 @@ Datenquellen → Research & Feature-Engine → Strategie / Signale → Risk Laye
 
 | Feature (Vision) | Status | Anmerkung |
 |------------------|--------|-----------|
-| **Feature-Engine als zentrale Schicht** | ❌ Fehlt | `src/features/` ist nur Placeholder („wird später mit ECM-Features gefüllt“). Kein dediziertes Modul „Research & Feature-Engine“. |
+| **Feature-Engine als zentrale Schicht** | ❌ Fehlt | `src/features/` ist nur Placeholder („wird später mit ECM-Features gefüllt“). Kein dediziertes Modul „Research & Feature-Engine“. | <!-- pt:ref-target-ignore -->
 | **Indikatoren (TA)** | ✅ Teilweise | In Strategien/Regime verteilt (MA, RSI, ATR, Vol-Score etc.), nicht als einheitliche Feature-Pipeline. |
 | **Regime-Labels** | ✅ Vorhanden | `src/regime/`, `src/core/regime.py`, `src/analytics/regimes.py`. |
 | **Volatilitäts-Cluster** | ✅ Teilweise | Vol-Regime/Labels vorhanden; „Cluster“-Pipeline nicht als eigenes Feature-Modul. |
-| **ECM-Fenster / ECM-Features** | ❌ Fehlt | In `src/features/__init__.py` als „später“ genannt, nicht implementiert. |
+| **ECM-Fenster / ECM-Features** | ❌ Fehlt | In `src/features/__init__.py` als „später“ genannt, nicht implementiert. | <!-- pt:ref-target-ignore -->
 | **Sentiment (News/Makro/Krypto-Onchain)** | ❌ Fehlt | In trading_bot_notes als „optional, später“ genannt. |
 | **Orderbuch-/Tickdaten** | ❌ Fehlt | In trading_bot_notes als „später“ genannt. |
 
@@ -126,7 +126,7 @@ Geplante Phasen mit **noch nicht umgesetzten** Features:
 
 ## 6. Feature-Engine & López de Prado (konkret im Code)
 
-- **`src/features/`:** Nur Placeholder; keine ECM- oder allgemeine Feature-Pipeline.
+- **`src/features/`:** Nur Placeholder; keine ECM- oder allgemeine Feature-Pipeline. <!-- pt:ref-target-ignore -->
 - **Meta-Labeling-Strategie:**
   - `compute_triple_barrier_labels`: TODO, Placeholder (gibt Nullen zurück).
   - `_extract_features`: TODO (Fractional Differentiation, Volatility-adjusted Returns, Regime-Indikatoren); gibt leeres DataFrame zurück.
@@ -141,7 +141,7 @@ Geplante Phasen mit **noch nicht umgesetzten** Features:
 | **v1.0 bewusst ausgenommen** | Live-Execution, Multi-Exchange, Web-Auth, WebSocket, ML-Strategien, Auto-Liquidation, 100 % Coverage, API-Doku, Skalierung. |
 | **Roadmap 2026** | Phasen 11–17 (Optimization, Streaming, Live, ML, Cloud, Risk-Parity, Community). |
 | **Research-Track** | Sweeps, Metriken, Heatmaps (inkl. Drawdown) ✅, Vol-Regime-Wrapper, Regime-adaptive Strategien, Auto-Portfolio ✅, Risk-Parity v1 ✅, Nightly-Sweeps, Feature-Importance. |
-| **Stubs/Placeholder** | Kill-Switch RiskHook, PagerDuty, WP0C-Adapter, einige R&D-Strategien, `src&#47;features`, Meta-Labeling Feature-Engineering. |
+| **Stubs/Placeholder** | Kill-Switch RiskHook, PagerDuty, WP0C-Adapter, einige R&D-Strategien, `src&#47;features`, Meta-Labeling Feature-Engineering. | <!-- pt:ref-target-ignore -->
 
 ---
 
