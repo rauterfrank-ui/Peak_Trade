@@ -262,7 +262,7 @@ All 3 gates run automatically on PRs that touch Markdown files.
 
 **Workflow Files:**
 - Token Policy: `.github&#47;workflows&#47;docs-token-policy-gate.yml`
-- Reference Targets: `.github&#47;workflows&#47;docs-reference-targets-gate.yml`
+- Reference Targets: `.github&#47;workflows&#47;docs_reference_targets_gate.yml`
 - Diff Guard Policy: `.github&#47;workflows&#47;ci.yml` (inline check)
 
 **Check Status:**
@@ -321,7 +321,7 @@ git fetch origin main
 ### CI Workflows
 
 - `.github&#47;workflows&#47;docs-token-policy-gate.yml`
-- `.github&#47;workflows&#47;docs-reference-targets-gate.yml`
+- `.github&#47;workflows&#47;docs_reference_targets_gate.yml`
 - `.github&#47;workflows&#47;ci.yml` (includes Diff Guard Policy check)
 
 ### Frontdoors
