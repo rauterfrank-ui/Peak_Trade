@@ -27,7 +27,7 @@ Missing targets: 1
   - docs/tutorial.md:42: config/my_custom.toml
 ```
 
-**Reality:** `config&#47;my_custom.toml` is a hypothetical example, not a real file.
+**Reality:** `config&#47;my_custom.toml` is a hypothetical example, not a real file. <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -192,7 +192,7 @@ repos:
 
 **When writing docs:**
 1. For real repo paths → Use as-is (e.g., `src/core/config.py`)
-2. For hypothetical examples → Encode (e.g., `config&#47;my_example.toml`)
+2. For hypothetical examples → Encode (e.g., `config&#47;my_example.toml`) <!-- pt:ref-target-ignore -->
 3. In code examples → Prefer fenced blocks for complex examples
 4. Test before PR → Run verification script locally
 
@@ -276,7 +276,7 @@ rg -n "config/my_custom.toml" docs/
 
 **Scenario:** User copies command from raw Markdown
 
-**Problem:** Gets `scripts&#47;example.py` instead of:
+**Problem:** Gets `scripts&#47;example.py` instead of: <!-- pt:ref-target-ignore -->
 
 ```text
 scripts/example.py
