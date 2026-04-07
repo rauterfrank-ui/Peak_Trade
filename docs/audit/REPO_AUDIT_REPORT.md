@@ -1,5 +1,5 @@
 > **Historisch / Referenz** — Nicht kanonisch. Snapshot aus Read-only Repo-Audit.  
-> **Origin:** Wave 16 Integration, ursprünglich `docs&#47;REPO_AUDIT_REPORT.md`.  
+> **Origin:** Wave 16 Integration, ursprünglich `docs&#47;REPO_AUDIT_REPORT.md`.   <!-- pt:ref-target-ignore -->
 > **Canonical:** [docs/INDEX.md](../INDEX.md), [docs/audit/README.md](README.md)
 
 ---

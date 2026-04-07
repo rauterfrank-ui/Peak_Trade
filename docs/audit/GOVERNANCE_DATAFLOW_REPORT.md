@@ -1,5 +1,5 @@
 > **Historisch / Referenz** — Nicht kanonisch. Snapshot aus Codebase-Analyse (Read-Only).  
-> **Origin:** Wave 16 Integration, ursprünglich `docs&#47;GOVERNANCE_DATAFLOW_REPORT.md`.  
+> **Origin:** Wave 16 Integration, ursprünglich `docs&#47;GOVERNANCE_DATAFLOW_REPORT.md`.   <!-- pt:ref-target-ignore -->
 > **Canonical:** [docs/governance/](../governance/), [docs/INDEX.md](../INDEX.md)
 
 ---
