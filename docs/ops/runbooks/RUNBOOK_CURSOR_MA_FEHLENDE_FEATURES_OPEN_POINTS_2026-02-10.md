@@ -225,7 +225,7 @@ paths = create_standard_2x2_heatmap(
 
 ### Einstieg
 - Ziel: Eine dekorator-/wrapper-basierte Lösung, die jede Strategie optional mit Regime-Filter (z.B. only trade in specific vol regimes) versieht.
-- Endzustand: Wrapper im `src/strategies/` oder `src&#47;core&#47;strategy_wrappers.py` + tests.
+- Endzustand: Wrapper im `src/strategies/` oder `src&#47;core&#47;strategy_wrappers.py` + tests. <!-- pt:ref-target-ignore -->
 
 ```bash
 set -euo pipefail
