@@ -315,7 +315,7 @@ python3 scripts/ops/docs_graph_snapshot.py \
 1. Check if target is intentionally missing → add to `docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt`
 2. Create stub file or add heading/anchor if target should exist
 3. Fix link path if incorrect
-4. For inline code with "/" that's NOT a repo path, use HTML entity: `docs&#47;branch-name`
+4. For inline code with "/" that's NOT a repo path, use HTML entity: `docs&#47;branch-name` <!-- pt:ref-target-ignore -->
 
 ### Issue: False positive broken anchors
 
