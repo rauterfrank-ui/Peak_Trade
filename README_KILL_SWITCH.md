@@ -26,7 +26,7 @@ Der **Emergency Kill Switch** wurde vollständig gemäß Roadmap v1.0 implementi
 
 ## 📁 Neue/Geänderte Dateien
 
-### Source Code (`src/risk_layer/kill_switch/`)
+### Source Code (`src&#47;risk_layer&#47;kill_switch&#47;`)
 
 ```
 src/risk_layer/kill_switch/
@@ -521,12 +521,12 @@ export KILL_SWITCH_APPROVAL_CODE='my_secret_code'
 
 ### Pre-Deployment
 
-- [ ] Config angepasst: `config/risk/kill_switch.toml`
+- [ ] Config angepasst: `config&#47;risk&#47;kill_switch.toml`
 - [ ] Approval Code generiert und sicher gespeichert
 - [ ] `KILL_SWITCH_APPROVAL_CODE` in Production Env gesetzt
-- [ ] Data Directories existieren: `data/kill_switch/{audit,backups}`
-- [ ] Script ist ausführbar: `chmod +x scripts/ops/kill_switch_ctl.sh`
-- [ ] Tests laufen grün: `pytest tests/risk_layer/kill_switch/`
+- [ ] Data Directories existieren: `data&#47;kill_switch&#47;{audit,backups}`
+- [ ] Script ist ausführbar: `chmod +x scripts&#47;ops&#47;kill_switch_ctl.sh`
+- [ ] Tests laufen grün: `pytest tests&#47;risk_layer&#47;kill_switch&#47;`
 
 ### Post-Deployment
 
@@ -542,9 +542,9 @@ export KILL_SWITCH_APPROVAL_CODE='my_secret_code'
 
 ### Bei Problemen
 
-1. **Runbook konsultieren:** `docs/ops/KILL_SWITCH_RUNBOOK.md`
-2. **Logs prüfen:** `logs/kill_switch.log`
-3. **Status prüfen:** `./scripts/ops/kill_switch_ctl.sh status`
+1. **Runbook konsultieren:** `docs&#47;ops&#47;KILL_SWITCH_RUNBOOK.md`
+2. **Logs prüfen:** `logs&#47;kill_switch.log`
+3. **Status prüfen:** `./scripts&#47;ops&#47;kill_switch_ctl.sh status`
 4. **Engineering Team kontaktieren**
 
 ### Eskalation
