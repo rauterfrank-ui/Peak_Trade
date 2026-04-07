@@ -37,11 +37,11 @@
 
 | Geänderte Pfade | run_matrix | Laufende CI-Jobs (relevant) |
 |-----------------|------------|-----------------------------|
-| `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;overview&#47;foo.json` | false | changes, Fast-Lane, tests (skip), strategy-smoke (skip), **PR Gate** |
-| `docs&#47;foo.md` | false | wie oben |
+| `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;overview&#47;foo.json` | false | changes, Fast-Lane, tests (skip), strategy-smoke (skip), **PR Gate** | <!-- pt:ref-target-ignore -->
+| `docs&#47;foo.md` | false | wie oben | <!-- pt:ref-target-ignore -->
 | `.github&#47;workflows&#47;lint.yml` | false | wie oben (+ Lint Gate, Docs Gates in eigenen Workflows) |
-| `src&#47;foo.py` | true | changes, Fast-Lane, **tests (3.9/3.10/3.11)**, **strategy-smoke**, **PR Gate** |
-| `tests&#47;test_x.py`, `scripts&#47;bar.py`, `pyproject.toml`, `uv.lock`, `requirements.txt` | true | wie oben |
+| `src&#47;foo.py` | true | changes, Fast-Lane, **tests (3.9/3.10/3.11)**, **strategy-smoke**, **PR Gate** | <!-- pt:ref-target-ignore -->
+| `tests&#47;test_x.py`, `scripts&#47;bar.py`, `pyproject.toml`, `uv.lock`, `requirements.txt` | true | wie oben | <!-- pt:ref-target-ignore -->
 
 ## workflow_dispatch: Matrix erzwingen
 
@@ -49,11 +49,11 @@
 
 ## Simulation (expected job outcomes)
 
-**Case A (docs-only):** e.g. only `docs&#47;foo.md` or `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;overview&#47;bar.json` changed.  
+**Case A (docs-only):** e.g. only `docs&#47;foo.md` or `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;overview&#47;bar.json` changed.   <!-- pt:ref-target-ignore -->
 - Expected jobs: changes + Fast-Lane + PR Gate; tests + strategy-smoke run but **SKIP** (step-level) and still **pass**.  
 - PR Gate: SUCCESS after Fast-Lane passes and tests/strategy-smoke report success (skip step).
 
-**Case B (code change):** e.g. `src&#47;foo.py` or `tests&#47;test_x.py` or `pyproject.toml` changed.  
+**Case B (code change):** e.g. `src&#47;foo.py` or `tests&#47;test_x.py` or `pyproject.toml` changed.   <!-- pt:ref-target-ignore -->
 - Expected jobs: changes + Fast-Lane + **tests (3.9)** + **tests (3.10)** + **tests (3.11)** + strategy-smoke + PR Gate.  
 - All run (no skip). PR Gate: SUCCESS only if Fast-Lane + all tests + strategy-smoke pass.
 
