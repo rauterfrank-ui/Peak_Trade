@@ -135,7 +135,7 @@ python3 scripts/research_cli.py portfolio \
 ```
 
 **Was passiert:**
-- Lädt Rezepte aus `config&#47;custom_recipes.toml` (illustrative, statt Default)
+- Lädt Rezepte aus `config&#47;custom_recipes.toml` (illustrative, statt Default) <!-- pt:ref-target-ignore -->
 - Verwendet Preset `my_custom_preset` aus dieser Datei
 
 ---
@@ -478,7 +478,7 @@ Phase 53 fügt neue Strategy-Konfigurationen in `config/config.toml` hinzu:
 
 Diese Konfigurationen folgen dem Naming-Schema: `<family>_<market>_<profile>`.
 
-Siehe auch: `docs&#47;PHASE_53_STRATEGY_AND_PORTFOLIO_LIBRARY_PUSH.md` (historical, falls vorhanden)
+Siehe auch: `docs&#47;PHASE_53_STRATEGY_AND_PORTFOLIO_LIBRARY_PUSH.md` (historical, falls vorhanden) <!-- pt:ref-target-ignore -->
 
 ### End-to-End-Prozess zur Portfolio-Aktivierung
 
