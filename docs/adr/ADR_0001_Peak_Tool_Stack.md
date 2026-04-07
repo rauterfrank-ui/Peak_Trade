@@ -14,9 +14,9 @@ Implement observability and reproducibility infrastructure in three phases:
 **Scope:** Minimum viable production safety net
 
 **Components:**
-- Structured logging (`src&#47;utils&#47;logger.py`)
+- Structured logging (`src&#47;utils&#47;logger.py`) <!-- pt:ref-target-ignore -->
 - CI/CD guards (pre-commit hooks, GitHub Actions)
-- Config validation (`src&#47;config&#47;registry.py`)
+- Config validation (`src&#47;config&#47;registry.py`) <!-- pt:ref-target-ignore -->
 - Basic testing infrastructure
 
 **Status:** Production-ready, in use across all core modules.
@@ -70,7 +70,7 @@ results/<run_id>/
 - Future: `research_cli.py`, `live_ops.py` (minimal evidence chain)
 
 **2. Reporting Ecosystem:**
-- **Templates:** `templates/quarto/backtest_report.qmd` (policy-compliant, no tracked `reports/`)
+- **Templates:** `templates/quarto/backtest_report.qmd` (policy-compliant, no tracked `reports&#47;`)
 - **Rendering:** `scripts/utils/render_last_report.sh` (optional, writes to `results&#47;<run_id>&#47;report&#47;`)
 - **Integration:** Binds to existing `src/reporting/` modules (plots, stats, visualizations)
 
@@ -87,7 +87,7 @@ Evidence Chain core functions **always work**, regardless of optional dependenci
 - ⚠️ Quarto reports: Skipped with warning
 
 #### CI Integration
-- `.gitignore` ensures `results/` and `reports/` are never tracked
+- `.gitignore` ensures `results&#47;` and `reports&#47;` are never tracked
 - Pre-commit hooks validate that no generated reports leak into commits
 - Evidence Chain unit tests (`tests/test_evidence_chain.py`) run on every PR
 
