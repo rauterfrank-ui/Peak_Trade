@@ -400,7 +400,7 @@ bash scripts/ops/verify_docs_reference_targets.sh --changed
 - See [example guide](docs&#47;example_guide.md) for more details.
 ```
 
-**Problem:** If `docs&#47;example_guide.md` does NOT exist (as in this illustrative example), Reference Targets Gate fails.
+**Problem:** If `docs&#47;example_guide.md` does NOT exist (as in this illustrative example), Reference Targets Gate fails. <!-- pt:ref-target-ignore -->
 
 **Fix:**
 
@@ -504,7 +504,7 @@ See canonical runbook for full procedures. This pointer provides navigation only
 **Update Checklist:**
 
 - [ ] Update pointer filename: `RUNBOOK_OLD_POINTER.md` → `RUNBOOK_NEW_POINTER.md`
-- [ ] Update pointer canonical link: `..&#47;..&#47;RUNBOOK_OLD.md` → `..&#47;..&#47;RUNBOOK_NEW.md`
+- [ ] Update pointer canonical link: `..&#47;..&#47;RUNBOOK_OLD.md` → `..&#47;..&#47;RUNBOOK_NEW.md` <!-- pt:ref-target-ignore -->
 - [ ] Update README.md index entry
 - [ ] Search all docs for references to old filename: `grep -r "RUNBOOK_OLD" docs/`
 - [ ] Update any merge logs or evidence referencing old filename
@@ -897,7 +897,7 @@ cat docs/ops/runbooks/RUNBOOK_*_POINTER.md | grep "Canonical Location"
 - [ ] ❌ DON'T use illustrative paths without `&#47;` encoding
 - [ ] ❌ DON'T create pointer before root runbook is finalized
 - [ ] ❌ DON'T forget to update README.md index entry
-- [ ] ❌ DON'T use absolute paths in canonical links (use relative: `..&#47;..&#47;RUNBOOK_X.md`)
+- [ ] ❌ DON'T use absolute paths in canonical links (use relative: `..&#47;..&#47;RUNBOOK_X.md`) <!-- pt:ref-target-ignore -->
 - [ ] ❌ DON'T rename root runbook without updating pointer and README
 - [ ] ❌ DON'T create multiple pointers for same root runbook
 - [ ] ❌ DON'T skip gate verification before committing
