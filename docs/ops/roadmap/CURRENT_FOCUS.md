@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-04-16
+last_updated: 2026-04-17
 ---
 
 # Current focus
@@ -77,6 +77,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - **Chat-led §5 ML Meta-Labeling (PR #2310):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Zeile „ML / Meta-Labeling“: Research-only, implementierte Oberfläche (u. a. ``apply_meta_model``, ``compute_meta_labels``, ``_create_model`` mit Random Forest und optionalem XGBoost), unbekannte ``model_type`` → ``NotImplementedError``; **NO-LIVE**.
 - **Chat-led §5 Infostream, Market Outlook, Live/Safety (PR #2312):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Infostream-Zyklus als implementierter Pfad, MarketSentinel v0 (CLI und Workflow, Test-Flag ohne LLM), ``SafetyGuard`` und Execution-Guards ohne echte Live-Order-Calls; **NO-LIVE**.
 - **Chat-led §5 Risk, Execution C1, Research (PR #2314):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Kill-Switch D2 erledigt, C1 STUB/GAP mit Testnet-Abgrenzung, Research-Stubs mit E3 DONE für Bouchaud/Gatheral; **NO-LIVE**.
+- **Chat-led §5 J1 Forward Demo path (PR #2316):** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — Zeile „J1 Forward (Demo-Stub)“: Ausgabe unter **.ops_local** (Unterordner **forward_dummy_pipeline_demo**); Kommentar in ``run_forward_dummy_pipeline_demo.sh`` mit Verweis auf Operator-Kurzreferenz Punkt 6; **NO-LIVE**.
 
 **GitHub — Truth-Gate Required Checks auf `main`:** Verifiziert (Apr 2026): **`docs-drift-guard`** und **`repo-truth-claims`** sind als Required Status Checks gesetzt (Namen wie `.github/workflows/truth_gates_pr.yml` Job-`name:`). Re-Check lokal: `python3 scripts/ops/ensure_truth_branch_protection.py --check` · ergänzen mit `--apply` nur mit Admin-Rechten; Registry: [`TRUTH_BRANCH_PROTECTION.md`](../registry/TRUTH_BRANCH_PROTECTION.md).
 
