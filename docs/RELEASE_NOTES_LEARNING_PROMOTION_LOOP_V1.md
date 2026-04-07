@@ -15,7 +15,7 @@ Dieses Dokument wurde nachgezogen, sodass alle **Kommandos ausführbar** sind un
 
 **Neu/ergänzt (Stand 2026-01-27):**
 
-* ✅ `scripts&#47;run_learning_apply_cycle.py` (minimaler Bridge-Runner: JSON/JSONL → `config&#47;auto&#47;learning.override.toml`)
+* ✅ `scripts&#47;run_learning_apply_cycle.py` (minimaler Bridge-Runner: JSON/JSONL → `config&#47;auto&#47;learning.override.toml`) <!-- pt:ref-target-ignore -->
 * ✅ `scripts&#47;demo_live_overrides.py`
 * ✅ `scripts&#47;generate_demo_patches_for_promotion.py` (Demo-Input für `reports&#47;learning_snippets&#47;*.json`)
 * ✅ `config&#47;live_overrides&#47;auto.toml` (Template)
@@ -231,7 +231,7 @@ python3 scripts/run_learning_apply_cycle.py --dry-run
 # Optional: Demo-Input erzeugen (landet unter reports/learning_snippets/*.json)
 python3 scripts/generate_demo_patches_for_promotion.py --variant diverse
 
-# Apply (schreibt config/auto/learning.override.toml)
+# Apply (schreibt config/auto/learning.override.toml) <!-- pt:ref-target-ignore -->
 python3 scripts/run_learning_apply_cycle.py
 
 # Tests (schnell)
