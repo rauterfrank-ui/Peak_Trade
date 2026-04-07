@@ -16,7 +16,7 @@ High-signal hygiene friction points identified from current repo state. No specu
 
 ### 1.1 Audit Report Path Ambiguity
 - **Evidence:** `docs&#47;INDEX.md` links to `audit&#47;GOVERNANCE_DATAFLOW_REPORT.md` and `audit&#47;REPO_AUDIT_REPORT.md` (Historical).
-- **Friction:** Untracked `docs&#47;GOVERNANCE_DATAFLOW_REPORT.md` and `docs&#47;REPO_AUDIT_REPORT.md` exist at repo root of docs/. Wave 25 explicitly preserves both; relationship (duplicate? different version? migration artifact?) not documented for operators.
+- **Friction:** Untracked `docs&#47;GOVERNANCE_DATAFLOW_REPORT.md` and `docs&#47;REPO_AUDIT_REPORT.md` exist at repo root of docs/. Wave 25 explicitly preserves both; relationship (duplicate? different version? migration artifact?) not documented for operators. <!-- pt:ref-target-ignore -->
 - **Impact:** Operator confusion; unclear which to use for reference.
 
 ### 1.2 CI Pragmatic Flow Docs Overlap
@@ -58,7 +58,7 @@ High-signal hygiene friction points identified from current repo state. No specu
 - **Impact:** Broken link would reduce discoverability.
 
 ### 3.3 docs/runbooks/ vs docs/ops/runbooks/
-- **Evidence:** `docs&#47;INDEX.md` lists `runbooks&#47;` under Operational. `docs&#47;ops&#47;RUNBOOK_INDEX.md` points to `runbooks&#47;` (relative) and `..&#47;..&#47;PRE_FLIGHT_CHECKLIST_RUNBOOK_OPS.md` (from docs&#47;ops&#47;).
+- **Evidence:** `docs&#47;INDEX.md` lists `runbooks&#47;` under Operational. `docs&#47;ops&#47;RUNBOOK_INDEX.md` points to `runbooks&#47;` (relative) and `..&#47;..&#47;PRE_FLIGHT_CHECKLIST_RUNBOOK_OPS.md` (from docs&#47;ops&#47;). <!-- pt:ref-target-ignore -->
 - **Friction:** INDEX "runbooks/" could resolve to `docs&#47;runbooks&#47;` or `docs&#47;ops&#47;runbooks&#47;`; structure suggests `docs/ops/runbooks/` is canonical.
 - **Impact:** Possible broken or ambiguous link from INDEX.
 
