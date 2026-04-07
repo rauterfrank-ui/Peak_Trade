@@ -28,7 +28,7 @@ appear in inline-code spans, the `docs-reference-targets-gate` interprets them a
 
 The gate scans changed Markdown files (`.md`) for inline-code tokens (single backticks: `` `token` ``) containing `/` and enforces:
 
-1. **ILLUSTRATIVE** paths (e.g., `scripts&#47;fake.py`, `config&#47;example.toml`) → **MUST** use `&#47;` encoding
+1. **ILLUSTRATIVE** paths (e.g., `scripts&#47;fake.py`, `config&#47;example.toml`) → **MUST** use `&#47;` encoding <!-- pt:ref-target-ignore -->
 2. **REAL_REPO_TARGET** (existing files) → **NO** encoding required
 3. **BRANCH_NAME** patterns (e.g., `feature/my-feature`, `feat/my-feature`) → **NO** encoding required
 4. **URL** (http/https) → **NO** encoding required
@@ -42,7 +42,7 @@ The gate scans changed Markdown files (`.md`) for inline-code tokens (single bac
 
 | Token | Classification | Encoding Required? | Reason |
 |-------|----------------|-------------------|--------|
-| `scripts&#47;example.py` | ENCODED | ✅ Already compliant | Forward slash already encoded |
+| `scripts&#47;example.py` | ENCODED | ✅ Already compliant | Forward slash already encoded | <!-- pt:ref-target-ignore -->
 | (See fenced block below) | ILLUSTRATIVE | ❌ **VIOLATION** | Looks like path but doesn't exist |
 | `scripts/ops/validate_docs_token_policy.py` | REAL_REPO_TARGET | ✅ Compliant | File exists in repo |
 | `feature/my-feature` | BRANCH_NAME | ✅ Compliant | Branch name pattern (known prefix) |
@@ -109,7 +109,7 @@ bash scripts/ops/verify_docs_reference_targets.sh --changed
 
 **Option C: Perl One-Liner (File-Specific)**
 
-If the validator names a *different* file than `README.md` (e.g., `docs&#47;ops&#47;README.md`, `docs&#47;GUIDE.md`), apply the most common fixes with a perl one-liner:
+If the validator names a *different* file than `README.md` (e.g., `docs&#47;ops&#47;README.md`, `docs&#47;GUIDE.md`), apply the most common fixes with a perl one-liner: <!-- pt:ref-target-ignore -->
 
 ```bash
 perl -0777 -i -pe 's/allowed=True\/False/allowed=True&#47;False/g; s/allowed=False\/True/allowed=False&#47;True/g; s/True\/False/True&#47;False/g; s/False\/True/False&#47;True/g' <path>
@@ -355,7 +355,7 @@ If you need to adjust how tokens are classified:
 
 | Scenario | Action | Example |
 |----------|--------|---------|
-| Illustrative path | Encode with `&#47;` | `scripts&#47;example.py` |
+| Illustrative path | Encode with `&#47;` | `scripts&#47;example.py` | <!-- pt:ref-target-ignore -->
 | Branch name | No encoding (allowed) | `feature/my-branch` |
 | Real repo file | No encoding | `scripts/ops/validate_docs_token_policy.py` |
 | URL | No encoding | `https://github.com/...` |
