@@ -384,7 +384,7 @@ python3 scripts/run_strategy_from_config.py --config config/my_strategy.toml
 ## Appendix A – Beispiel “Retention Policy” (später)
 - `results&#47;`: behalte letzte N runs (z.B. 200) oder max age (z.B. 30 Tage)
 - `data&#47;lake&#47;`: nur gold dataset + curated partitions
-- optional: `scripts&sol;cleanup_artifacts.py` (noch nicht implementiert) + CI/cron (nur wenn ihr wollt)
+- optional: `scripts&sol;cleanup_artifacts.py` (noch nicht implementiert) + CI/cron (nur wenn ihr wollt) <!-- pt:ref-target-ignore -->
 
 ---
 
