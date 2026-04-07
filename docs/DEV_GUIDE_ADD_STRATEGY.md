@@ -22,7 +22,7 @@ Grundverständnis von:
 ### 1. Strategie-Datei anlegen
 
 Erstelle eine neue Datei in `src&#47;strategies&#47;`, z.B.:
-- `src&#47;strategies&#47;my_new_strategy.py` (illustrative)
+- `src&#47;strategies&#47;my_new_strategy.py` (illustrative) <!-- pt:ref-target-ignore -->
 
 **Minimal-Signatur:** Die Strategie sollte entweder:
 - Von `BaseStrategy` erben (empfohlen für OOP-Strategien)
