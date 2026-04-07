@@ -51,7 +51,7 @@
 
 ## I) Evidence + Artifacts
 - `docs&#47;analysis&#47;p105&#47;README.md` (research notes)
-- runbook: `docs&#47;ops&#47;ai&#47;exchange_execution_runbook_v1.md` (later)
+- runbook: `docs&#47;ops&#47;ai&#47;exchange_execution_runbook_v1.md` (later) <!-- pt:ref-target-ignore -->
 - tests: file existence + minimal lint
 
 ## J) Finish Criteria
