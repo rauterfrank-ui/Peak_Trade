@@ -15,8 +15,8 @@ Ein einziger Required Check (PR Gate) für Branch Protection; bei Docs/Grafana/W
 
 | Geänderte Pfade | run_matrix | Jobs |
 |-----------------|------------|------|
-| `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;...&#47;foo.json` | false | nur Fast-Lane (+ PR Gate) |
-| `docs&#47;foo.md`, `README.md` (nur Docs) | false | nur Fast-Lane |
+| `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;...&#47;foo.json` | false | nur Fast-Lane (+ PR Gate) | <!-- pt:ref-target-ignore -->
+| `docs&#47;foo.md`, `README.md` (nur Docs) | false | nur Fast-Lane | <!-- pt:ref-target-ignore -->
 | `.github&#47;workflows&#47;...` | false | Fast-Lane + workflow checks |
 | `src&#47;...`, `tests&#47;...`, `scripts&#47;...`, `pyproject.toml`, `uv.lock`, `requirements.txt` | true | volle Matrix |
 
