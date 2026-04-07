@@ -117,6 +117,7 @@ fi
 # Feed file list to python for robust parsing + line numbers
 python3 - "$REPO_ROOT" "$WARN_ONLY" "$CHANGED_ONLY" <<'PY' "${md_files[@]}"
 from __future__ import annotations
+import html
 import os, re, sys
 from pathlib import Path
 from typing import Optional
@@ -202,6 +203,10 @@ def normalize_target(raw: str) -> str | None:
 
     # strip leading/trailing punctuation that commonly wraps paths
     t = t.strip().lstrip("(<\"'").rstrip(")>\"'.,;:]")
+
+    # Decode HTML entities (e.g. &#47; from docs token policy) before treating # as anchor.
+    # Otherwise &#47; contains # and splits truncate to a bogus path (e.g. ./scripts&).
+    t = html.unescape(t)
 
     # ignore anchors-only
     if t.startswith("#"):
