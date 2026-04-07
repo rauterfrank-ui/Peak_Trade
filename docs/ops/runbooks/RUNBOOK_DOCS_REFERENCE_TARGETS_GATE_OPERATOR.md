@@ -154,7 +154,7 @@ Missing targets: 5
   - docs/FAQ.md:55: scripts/helper.py
 ```
 
-**Diagnostic:**
+**Diagnostic:** <!-- pt:ref-target-ignore -->
 ```bash
 # Check if file was deleted
 git log --all --full-history -- scripts/helper.py
@@ -244,7 +244,7 @@ Found missing target in docs
 | Pattern Type | Example | Gate Behavior | Action |
 |--------------|---------|---------------|--------|
 | Real repo file | `src/core/config.py` | Validates existence | Keep as-is |
-| Illustrative path | `config&#47;example.toml` | Ignored (not a repo path token) | Use encoding for illustrative inline-code |
+| Illustrative path | `config&#47;example.toml` | Ignored (not a repo path token) | Use encoding for illustrative inline-code | <!-- pt:ref-target-ignore -->
 | Relative path | `./README.md` | Resolves relative to doc | Keep as-is |
 | URL | `https://github.com/...` | Ignored | Keep as-is |
 | Markdown link | `[text](target.md)` | Validates target | Update if broken |
