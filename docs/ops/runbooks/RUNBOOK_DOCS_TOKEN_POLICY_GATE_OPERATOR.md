@@ -170,7 +170,7 @@ See [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](RUNBOOK_DOCS_REFERENCE_T
 
 | Pattern | Example | Action | Reason |
 |---------|---------|--------|--------|
-| ILLUSTRATIVE | `scripts&#47;fake.py` | Encode (`&#47;`) | Doesn't exist in repo |
+| ILLUSTRATIVE | `scripts&#47;fake.py` | Encode (`&#47;`) | Doesn't exist in repo | <!-- pt:ref-target-ignore -->
 | REAL_REPO_TARGET | `src/core/config.py` | NO encoding | File exists |
 | BRANCH_NAME | `feature/x`, `fix/y` | NO encoding | Branch pattern |
 | URL | `https://example.com/path` | NO encoding | URL detected |
