@@ -46,12 +46,12 @@ All inline backticks with "/" in both documents are either:
 **Risk:** Would falsely imply paths don't exist (misleading)
 
 ### Option B: Convert Backticks to Markdown Links (REJECTED)
-**Pattern:** Convert <code>docs&#47;FILE.md</code> → <code>[docs&#47;FILE.md](docs&#47;FILE.md)</code> (markdown link)  
+**Pattern:** Convert <code>docs&#47;FILE.md</code> → <code>[docs&#47;FILE.md](docs&#47;FILE.md)</code> (markdown link)   <!-- pt:ref-target-ignore -->
 **Reason for Rejection:** Changes semantic meaning, not required  
 **Risk:** Over-engineering, violates minimal-change principle
 
 ### Option C: Add HTML Entity Slash Escaping (REJECTED)
-**Pattern:** Convert <code>docs&#47;FILE.md</code> → `docs&#47;FILE.md` (HTML entity)  
+**Pattern:** Convert <code>docs&#47;FILE.md</code> → `docs&#47;FILE.md` (HTML entity)   <!-- pt:ref-target-ignore -->
 **Reason for Rejection:** Reduces readability, not required  
 **Risk:** Makes docs harder to read for humans
 
