@@ -55,7 +55,7 @@ Beispiel-Pfade (lokal):
 
 - Tag-Namespace: `cleanup&#47;...`
 - Branch-Namen werden tag-sicher gemacht, indem `/` zu `__` wird.
-  - Beispiel: `docs&#47;phase9c-broken-targets-wave5` → `docs__phase9c-broken-targets-wave5`
+  - Beispiel: `docs&#47;phase9c-broken-targets-wave5` → `docs__phase9c-broken-targets-wave5` <!-- pt:ref-target-ignore -->
 
 ### Restore (recommended)
 
