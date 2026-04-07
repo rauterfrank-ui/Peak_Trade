@@ -83,7 +83,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
   - **Fixes (applied)**: `python` → `python3`, `python -c` → `python3 -c`, `pytest ...` → `python3 -m pytest ...`.
 - `docs/webui/LIVE_STATUS_PANELS.md`
   - **Fixes (applied)**: `python ...` → `python3 ...`.
-- `docs&#47;webui&#47;DASHBOARD_OVERVIEW.md`
+- `docs&#47;webui&#47;DASHBOARD_OVERVIEW.md` <!-- pt:ref-target-ignore -->
   - **Fixes (applied)**: `python scripts/run_web_dashboard.py`/`python scripts/live_web_server.py ...` → `python3 ...`.
 
 ### 11) Batch 7: Execution / Alerts / Shadow Execution — **done (vorläufig)**
@@ -315,8 +315,8 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
   - `docs/PEAK_TRADE_COMPLETE_OVERVIEW_2025-12-07.md`: Quickstart-venv-Erstellung auf `python3 -m venv` umgestellt.
   - `docs/ops/README.md`: `python --version` als kommentierter Fallback belassen, primär `python3 --version`.
   - `docs/ops/KILL_SWITCH_TROUBLESHOOTING.md`: `python --version` aus Diagnose entfernt (pyenv-Fall), `python3 --version` bleibt.
-  - `docs&#47;ops&#47;runbooks&#47;RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md`: `python3 -m venv` statt `python -m venv`.
-  - `docs&#47;ops&#47;_archive&#47;installation_roadmap&#47;..._ORIGINAL.md`: python checks/venv auf `python3` umgestellt.
+  - `docs&#47;ops&#47;runbooks&#47;RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md`: `python3 -m venv` statt `python -m venv`. <!-- pt:ref-target-ignore -->
+  - `docs&#47;ops&#47;_archive&#47;installation_roadmap&#47;..._ORIGINAL.md`: python checks/venv auf `python3` umgestellt. <!-- pt:ref-target-ignore -->
   - Verifikation: `scripts/ops/verify_docs_reference_targets.sh` läuft weiterhin grün.
 
 ### Runbooks/ops: „non-existent script refs“ — **reduziert (High-Impact)**
@@ -325,9 +325,9 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
   - `docs/runbooks/KILL_SWITCH_DRILL_PROCEDURE.md`: fehlendes `start_shadow_session.py` entfernt/ersetzt durch `run_live_dry_run_drills.py` bzw. Kill-Switch-Status-Checks; Session-Integration als „TBD“ markiert.
   - `docs/runbooks/ROLLBACK_PROCEDURE.md`: `show_positions.py`/`start_shadow_session.py`/`verify_shadow_mode.py` durch `live_ops.py` Snapshots + Dry-Run Drills ersetzt (keine Phantom-CLIs mehr).
   - `docs/runbooks/OFFLINE_REALTIME_PIPELINE_RUNBOOK_V1.md`: optionales Meta-Report-Script als nicht vorhanden gekennzeichnet; Workaround (Listing von `summary.json`) angegeben; Gate-kompatibel formuliert.
-  - `docs/ops/Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md`: „Lake“-Beispiele von nicht existenten `scripts&#47;query_lake.py`/`build_lake_from_results.py` auf `src/data/lake/client.py` (DuckDB LakeClient) umgestellt.
-  - `docs/ops/OPS_SCRIPT_TEMPLATE_GUIDE.md`: Beispiel-Command von nicht existenter `scripts&#47;generate_report.py` auf existentes Script (`generate_live_status_report.py --help`) umgestellt.
-  - `docs/ops/WAVE3_MERGE_READINESS_MATRIX.md`: Hinweis auf nicht existentes `scripts&#47;ci&#47;check_docs_reference_targets.py` ersetzt durch `scripts/ops/verify_docs_reference_targets.sh`.
+  - `docs/ops/Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md`: „Lake“-Beispiele von nicht existenten `scripts&#47;query_lake.py`/`build_lake_from_results.py` auf `src/data/lake/client.py` (DuckDB LakeClient) umgestellt. <!-- pt:ref-target-ignore -->
+  - `docs/ops/OPS_SCRIPT_TEMPLATE_GUIDE.md`: Beispiel-Command von nicht existenter `scripts&#47;generate_report.py` auf existentes Script (`generate_live_status_report.py --help`) umgestellt. <!-- pt:ref-target-ignore -->
+  - `docs/ops/WAVE3_MERGE_READINESS_MATRIX.md`: Hinweis auf nicht existentes `scripts&#47;ci&#47;check_docs_reference_targets.py` ersetzt durch `scripts/ops/verify_docs_reference_targets.sh`. <!-- pt:ref-target-ignore -->
   - `docs/ops/WP5A_PHASE5_NO_LIVE_DRILL_PACK.md`: Phantom-Commands (`health_check.py`, `test_data_feed.py`) durch existierende, read-only Checks ersetzt (`live_ops.py health`, `inspect_exchange.py status&#47;ohlcv`) inkl. `--config config&#47;config.toml`.
   - `docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C_MASTER.md`: kommentierte Verweise auf nicht existierende `check_docs_*` Scripts ersetzt durch echte Gate-Commands (`validate_docs_token_policy.py`, `verify_docs_reference_targets.sh`).
   - Verifikation: `scripts/ops/verify_docs_reference_targets.sh` läuft weiterhin grün.
@@ -336,7 +336,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 - **Fixes (applied)**:
   - `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md`: illustrative `scripts&#47;example.py` „Before“-Beispiele mit `<!-- pt:ref-target-ignore -->` markiert (damit sie nicht als realer Target-Treffer zählen, aber als „Before“ lesbar bleiben).
   - `docs/ops/runbooks/RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md`: dito (`scripts&#47;example.py` + „Change: scripts/old_name.py …“) mit `<!-- pt:ref-target-ignore -->`.
-  - `docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md`: illustrative `scripts&#47;old_name.py` / `scripts&#47;helper.py` innerhalb von Log-/Command-Beispielen auf `scripts&#47;...` neutralisiert (und „Before/After“ für Encoding klar gemacht).
+  - `docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md`: illustrative `scripts&#47;old_name.py` / `scripts&#47;helper.py` innerhalb von Log-/Command-Beispielen auf `scripts&#47;...` neutralisiert (und „Before/After“ für Encoding klar gemacht). <!-- pt:ref-target-ignore -->
   - `docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md`: illustrative `scripts&#47;run_walkforward.py` im Log-Beispiel auf `scripts&#47;...` neutralisiert; „Before“-Inline-Commands mit `<!-- pt:ref-target-ignore -->` markiert.
   - `docs/ops/PR_691_MERGE_LOG.md`: „Initial Failure“-Block auf `scripts&#47;...` neutralisiert (weil hier die CI-Log-Ausgabe als Beispiel zitiert wird).
   - `docs/runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md`: fehlendes `smoke_test_paper.py` als Beispiel markiert und gate-sicher neutralisiert (`scripts&#47;...`).
@@ -344,7 +344,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
   - `docs/ops/WAVE3_QUICKSTART.md`: fehlendes `run_live.py` als Beispiel markiert und gate-sicher neutralisiert (`scripts&#47;...`).
   - `docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md`: exemplarisches `python scripts&#47;run.py` auf reales Beispiel `python3 scripts/run_backtest.py` umgestellt.
   - `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md`: Policy-Critic-Call auf reales `python3 scripts/run_policy_critic.py --pr-mode` umgestellt.
-  - `docs/ops/workflows/WORKFLOW_NOTES_FRONTDOOR.md`: Log-Beispiel `scripts&#47;my_script.py` auf `scripts&#47;...` neutralisiert.
-  - `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md`: „Violation“-Fenced-Blocks auf `scripts&#47;example.py` umgestellt (damit auch in Raw-Scans keine Phantom-Targets entstehen).
+  - `docs/ops/workflows/WORKFLOW_NOTES_FRONTDOOR.md`: Log-Beispiel `scripts&#47;my_script.py` auf `scripts&#47;...` neutralisiert. <!-- pt:ref-target-ignore -->
+  - `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md`: „Violation“-Fenced-Blocks auf `scripts&#47;example.py` umgestellt (damit auch in Raw-Scans keine Phantom-Targets entstehen). <!-- pt:ref-target-ignore -->
   - Archive/Logs: `DOCS_GATES_OPERATOR_PACK_V1_1_*` und `PR_703_MERGE_LOG.md` „Before“-Tokens mit `<!-- pt:ref-target-ignore -->` markiert.
   - Verifikation: `scripts/ops/verify_docs_reference_targets.sh` läuft weiterhin grün.
