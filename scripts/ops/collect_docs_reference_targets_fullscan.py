@@ -33,12 +33,20 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+_REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from src.ops.docs_reference_targets_common import (
+    extract_references_from_markdown_file,
+    resolve_target,
+)
 
 # Tool version for tracking baseline compatibility
 TOOL_VERSION = "1.0.0"
@@ -106,147 +114,6 @@ def should_ignore_file(file_path: Path, repo_root: Path, patterns: list[str]) ->
     return False
 
 
-def is_url(s: str) -> bool:
-    """Check if string is a URL."""
-    s2 = s.strip()
-    return (
-        s2.startswith("http://")
-        or s2.startswith("https://")
-        or s2.startswith("mailto:")
-        or "://" in s2
-    )
-
-
-def normalize_target(raw: str) -> str | None:
-    """Normalize a target path, filtering out non-file references."""
-    t = raw.strip()
-
-    # Strip common wrapping punctuation
-    t = t.strip().lstrip("(<\"'").rstrip(")>\"'.,;:]")
-
-    # Ignore anchors-only
-    if t.startswith("#"):
-        return None
-
-    # Ignore URLs
-    if is_url(t):
-        return None
-
-    # Strip anchor fragments
-    if "#" in t:
-        t = t.split("#", 1)[0].strip()
-
-    # Strip query parameters
-    if "?" in t:
-        t = t.split("?", 1)[0].strip()
-
-    # Ignore empty
-    if not t:
-        return None
-
-    # Ignore wildcards and globs
-    if any(c in t for c in ("*", "?", "[", "]", "<", ">")):
-        return None
-
-    # Ignore commands (space-separated)
-    if " " in t:
-        return None
-
-    # Ignore directory-only references
-    if t.endswith("/"):
-        return None
-
-    # Normalize leading / for absolute repo paths
-    if t.startswith("/"):
-        t = t[1:]
-
-    # Filter: only validate repo-relative or relative paths
-    is_relative = t.startswith("./") or t.startswith("../")
-    roots = ("config/", "docs/", "src/", "scripts/", ".github/")
-
-    if not is_relative and not t.startswith(roots):
-        return None
-
-    return t
-
-
-def resolve_target(target: str, doc_file: Path, repo_root: Path) -> Path | None:
-    """Resolve target to absolute path within repo."""
-    try:
-        if target.startswith("./") or target.startswith("../"):
-            # Relative to doc file's directory
-            resolved = (doc_file.parent / target).resolve()
-        else:
-            # Repo-relative
-            resolved = (repo_root / target).resolve()
-
-        # Ensure within repo
-        if not str(resolved).startswith(str(repo_root)):
-            return None
-
-        return resolved
-    except Exception:
-        return None
-
-
-def extract_references(file_path: Path, repo_root: Path) -> list[tuple[int, str, str]]:
-    """
-    Extract references from markdown file.
-
-    Returns:
-        List of (line_number, target, link_text) tuples
-    """
-    # Regex patterns (matching verify_docs_reference_targets.sh logic)
-    LINK_RE = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
-    CODE_RE = re.compile(r"`([^`]+)`")
-    BARE_RE = re.compile(
-        r"(?<![\w/.\-])"
-        r"(?:(?:config|docs|src|scripts|\.github)/[A-Za-z0-9_\-./]+?\.(?:toml|md|py|yml|yaml|sh|json|txt))"
-        r"(?![\w/.\-])"
-    )
-    IGNORE_MARKER = "<!-- pt:ref-target-ignore -->"
-
-    refs = []
-
-    try:
-        lines = file_path.read_text(encoding="utf-8", errors="replace").splitlines()
-    except Exception:
-        return refs
-
-    in_code_block = False
-
-    for i, line in enumerate(lines, start=1):
-        # Toggle code block state
-        if line.strip().startswith("```"):
-            in_code_block = not in_code_block
-            continue
-
-        # Skip code blocks and ignored lines
-        if in_code_block or IGNORE_MARKER in line:
-            continue
-
-        # Extract markdown links [text](target)
-        for match in LINK_RE.finditer(line):
-            link_text = match.group(1)
-            target = normalize_target(match.group(2))
-            if target:
-                refs.append((i, target, link_text))
-
-        # Extract inline code `target`
-        for match in CODE_RE.finditer(line):
-            target = normalize_target(match.group(1))
-            if target:
-                refs.append((i, target, ""))
-
-        # Extract bare paths
-        for match in BARE_RE.finditer(line):
-            target = normalize_target(match.group(0))
-            if target:
-                refs.append((i, target, ""))
-
-    return refs
-
-
 def scan_docs(repo_root: Path) -> dict[str, Any]:
     """
     Perform full scan of docs/ directory.
@@ -278,10 +145,9 @@ def scan_docs(repo_root: Path) -> dict[str, Any]:
         # Fallback to find
         md_files = list(docs_root.rglob("*.md"))
 
-    # Scan files
-    missing_items = []
-    total_refs = 0
+    # Scan files — build rows then dedupe like verify_docs_reference_targets.sh (stable order)
     ignored_files = 0
+    all_rows: list[tuple[Path, int, str, str]] = []
 
     for md_file in sorted(md_files):
         if not md_file.exists():
@@ -292,29 +158,37 @@ def scan_docs(repo_root: Path) -> dict[str, Any]:
             ignored_files += 1
             continue
 
-        # Extract references
-        refs = extract_references(md_file, repo_root)
-        total_refs += len(refs)
-
-        # Check each reference
+        refs = extract_references_from_markdown_file(md_file)
         for line_no, target, link_text in refs:
-            resolved = resolve_target(target, md_file, repo_root)
+            all_rows.append((md_file.resolve(), line_no, target, link_text))
 
-            if resolved is None or not resolved.exists():
-                # Get relative paths for cleaner output
-                try:
-                    rel_source = str(md_file.relative_to(repo_root))
-                except ValueError:
-                    rel_source = str(md_file)
+    seen_keys: set[tuple[str, int, str]] = set()
+    deduped: list[tuple[Path, int, str, str]] = []
+    for doc_path, line_no, target, link_text in all_rows:
+        key = (str(doc_path), line_no, target)
+        if key not in seen_keys:
+            seen_keys.add(key)
+            deduped.append((doc_path, line_no, target, link_text))
 
-                missing_items.append(
-                    {
-                        "source_file": rel_source,
-                        "line_number": line_no,
-                        "target": target,
-                        "link_text": link_text if link_text else None,
-                    }
-                )
+    total_refs = len(deduped)
+    missing_items = []
+    for doc_path, line_no, target, link_text in deduped:
+        resolved = resolve_target(target, doc_path, repo_root)
+
+        if resolved is None or not resolved.exists() or not resolved.is_file():
+            try:
+                rel_source = str(doc_path.relative_to(repo_root))
+            except ValueError:
+                rel_source = str(doc_path)
+
+            missing_items.append(
+                {
+                    "source_file": rel_source,
+                    "line_number": line_no,
+                    "target": target,
+                    "link_text": link_text if link_text else None,
+                }
+            )
 
     # Sort deterministically: source_file, line_number, target
     missing_items.sort(key=lambda x: (x["source_file"], x["line_number"], x["target"]))
