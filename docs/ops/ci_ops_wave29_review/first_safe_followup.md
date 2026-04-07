@@ -9,7 +9,7 @@
 
 The **first possible future safe docs-only clarification wave** that:
 - Does **not** change workflow YAML, config, scripts, or branch protection
-- Does **not** add, modify, delete, or stage `docs&#47;GOVERNANCE_DATAFLOW_REPORT.md` or `docs&#47;REPO_AUDIT_REPORT.md`
+- Does **not** add, modify, delete, or stage `docs&#47;GOVERNANCE_DATAFLOW_REPORT.md` or `docs&#47;REPO_AUDIT_REPORT.md` <!-- pt:ref-target-ignore -->
 - Only adds clarifying text to existing tracked docs
 
 ---
