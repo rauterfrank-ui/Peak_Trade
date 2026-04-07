@@ -10,6 +10,8 @@
 
 Der **Emergency Kill Switch** wurde vollständig gemäß Roadmap v1.0 implementiert. Er ist einsatzbereit als **Layer 4** der Defense-in-Depth Risk Management Architektur.
 
+**D2 (2026-03):** Die frühere **`KillSwitchAdapter`**-/Evaluator-Schicht wurde entfernt; **`KillSwitch`** (State-Machine) und **`RiskGate`** bleiben kanonisch. Details: [`TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`](TODO_KILL_SWITCH_ADAPTER_MIGRATION.md).
+
 ### Was wurde implementiert?
 
 ✅ **Core System** - State Machine, KillSwitch Core, Config  

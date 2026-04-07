@@ -43,7 +43,7 @@ Detail-Spike: `docs&#47;ops&#47;spikes&#47;D2_KILL_SWITCH_INTEGRATION_SPIKE_2026
 
 ## Optional (niedrige Priorität)
 
-- `docs&#47;risk&#47;KILL_SWITCH_ARCHITECTURE.md`, `docs&#47;risk&#47;KILL_SWITCH.md`, `README_KILL_SWITCH.md` — vereinzelte historische Verweise bei Bedarf bereinigen (nicht blockierend).
+- `docs&#47;risk&#47;KILL_SWITCH_ARCHITECTURE.md`, `docs&#47;risk&#47;KILL_SWITCH.md`, `README_KILL_SWITCH.md` — kurze D2-/Migrations-Verweise ergänzt (2026-04); weitere historische Formulierungen bei Bedarf bereinigen (nicht blockierend).
 
 ## Referenzen
 
@@ -55,4 +55,4 @@ Detail-Spike: `docs&#47;ops&#47;spikes&#47;D2_KILL_SWITCH_INTEGRATION_SPIKE_2026
 ---
 
 **Status:** ✅ Abgeschlossen (Adapter entfernt; State-Machine kanonisch)  
-**Letzte Doku-Aktualisierung:** 2026-03-29 (Slice 3)
+**Letzte Doku-Aktualisierung:** 2026-04-07 (Slice 3; D2-Verweise in `KILL_SWITCH*.md`, `README_KILL_SWITCH.md`, Chat-led §5)
