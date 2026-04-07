@@ -126,8 +126,8 @@ git status -sb || true
 **Targets (untracked):**
 - `docs&#47;ops&#47;runbooks&#47;finish_c&#47;RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md`
 - `docs&#47;ops&#47;runbooks&#47;finish_c&#47;RUNBOOK_FINISH_C_MASTER.md`
-- `docs&#47;research&#47;option_b&#47;OPTION_B_GAP_ASSESSMENT.md`
-- `docs&#47;research&#47;option_b&#47;OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md`
+- `docs&#47;research&#47;option_b&#47;OPTION_B_GAP_ASSESSMENT.md` <!-- pt:ref-target-ignore -->
+- `docs&#47;research&#47;option_b&#47;OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md` <!-- pt:ref-target-ignore -->
 
 **Exit:** alle Dateien sind im Index (staged) oder bewusst **explizit** ausgeschlossen (und dokumentiert).
 
@@ -406,8 +406,8 @@ Output:
 ## 11) Optional: Phase I — Option‑B (Research-only, No‑Code Policy Track)
 
 ### Deliverables
-- `docs&#47;research&#47;option_b&#47;OPTION_B_GAP_ASSESSMENT.md`
-- `docs&#47;research&#47;option_b&#47;OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md`
+- `docs&#47;research&#47;option_b&#47;OPTION_B_GAP_ASSESSMENT.md` <!-- pt:ref-target-ignore -->
+- `docs&#47;research&#47;option_b&#47;OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md` <!-- pt:ref-target-ignore -->
 - Phasen A–F (Design/Policy Deliverables):
   - Instrument Meta / Contract Chain
   - Roll Ledger / Continuous Builder + Attribution
