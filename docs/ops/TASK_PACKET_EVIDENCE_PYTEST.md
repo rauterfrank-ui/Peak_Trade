@@ -13,7 +13,7 @@
 **Preconditions**
 - In normalem Terminal-Kontext ausführen (nicht Sandbox/Agent).
 - venv aktiv: `source .venv&#47;bin&#47;activate`
-- Working tree sauber; `docs&#47;ops` muss zu `origin&#47;main` passen:
+- Working tree sauber; `docs&#47;ops` muss zu `origin&#47;main` passen: <!-- pt:ref-target-ignore -->
   - `docs/ops/README.md` = vollständiges Ops-README (enthält "PR Inventory" / "pr_inventory")
   - `docs/ops/MERGE_LOG_WORKFLOW.md` und `docs/ops/PR_999_MERGE_LOG.md` dürfen **nicht** die kurzen Test-Fixtures sein.
 
