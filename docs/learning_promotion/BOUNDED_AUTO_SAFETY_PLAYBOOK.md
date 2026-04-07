@@ -314,7 +314,7 @@ bounded_auto darf in einem **begrenzten Scope** echte Promotions durchführen:
 
 ### 5.1 Readiness-Check
 
-**Tool:** `scripts&#47;check_bounded_auto_readiness.py` (illustrative)
+**Tool:** `scripts&#47;check_bounded_auto_readiness.py` (illustrative) <!-- pt:ref-target-ignore -->
 
 **Zweck:** Automatische Prüfung der Go/No-Go-Kriterien
 
