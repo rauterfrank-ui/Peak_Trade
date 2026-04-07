@@ -89,7 +89,7 @@ short_window = [5, 10, 20, 30]
 long_window = [50, 100, 150, 200]
 ```
 
-**JSON-Format** (`config&#47;sweeps&#47;ma_crossover.json`, illustrative):
+**JSON-Format** (`config&#47;sweeps&#47;ma_crossover.json`, illustrative): <!-- pt:ref-target-ignore -->
 ```json
 {
   "short_window": [5, 10, 20, 30],
