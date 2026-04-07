@@ -114,14 +114,24 @@ if [[ ${#md_files[@]} -eq 0 ]]; then
   exit 0
 fi
 
+# `src.ops.*` lives in the repo that contains this script; `--repo-root` may be a fixture tree.
+_IMPORT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+export PYTHONPATH="${_IMPORT_ROOT}${PYTHONPATH:+:$PYTHONPATH}"
+
 # Feed file list to python for robust parsing + line numbers
 python3 - "$REPO_ROOT" "$WARN_ONLY" "$CHANGED_ONLY" <<'PY' "${md_files[@]}"
 from __future__ import annotations
-import html
-import os, re, sys
+import os
+import sys
 from pathlib import Path
-from typing import Optional
+
 import fnmatch
+
+from src.ops.docs_reference_targets_common import (
+    IGNORE_MARKER,
+    extract_targets_from_line,
+    resolve_target,
+)
 
 root = Path(sys.argv[1]).resolve()
 warn_only = int(sys.argv[2])
@@ -175,132 +185,6 @@ def should_ignore_file(file_path: Path, repo_root: Path) -> bool:
 
     return False
 
-# Inline ignore marker
-IGNORE_MARKER = "<!-- pt:ref-target-ignore -->"
-
-# Patterns:
-#  - Markdown links: [text](relative/path.ext)
-#  - Inline code blocks: `relative/path.ext`
-#  - Bare paths: config/.../x.toml (etc.)
-LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
-CODE_RE = re.compile(r"`([^`]+)`")
-BARE_RE = re.compile(
-    r"(?<![\w/.\-])"
-    r"(?:(?:config|docs|src|scripts|\.github)/[A-Za-z0-9_\-./]+?\.(?:toml|md|py|yml|yaml|sh|json|txt))"
-    r"(?![\w/.\-])"
-)
-
-def is_url(s: str) -> bool:
-    s2 = s.strip()
-    return (
-        s2.startswith("http://") or s2.startswith("https://")
-        or s2.startswith("mailto:")
-        or "://" in s2
-    )
-
-def normalize_target(raw: str) -> str | None:
-    t = raw.strip()
-
-    # strip leading/trailing punctuation that commonly wraps paths
-    t = t.strip().lstrip("(<\"'").rstrip(")>\"'.,;:]")
-
-    # Decode HTML entities (e.g. &#47; from docs token policy) before treating # as anchor.
-    # Otherwise &#47; contains # and splits truncate to a bogus path (e.g. ./scripts&).
-    t = html.unescape(t)
-
-    # ignore anchors-only
-    if t.startswith("#"):
-        return None
-
-    # ignore URLs
-    if is_url(t):
-        return None
-
-    # strip anchor fragments: file.md#section
-    if "#" in t:
-        t = t.split("#", 1)[0].strip()
-
-    # strip query parameters: file.md?plain=1
-    if "?" in t:
-        t = t.split("?", 1)[0].strip()
-
-    # ignore empty
-    if not t:
-        return None
-
-    # ignore wildcards and globs (*, ?, [, ], <>)
-    if any(c in t for c in ("*", "?", "[", "]", "<", ">")):
-        return None
-
-    # ignore if it looks like a command (ends with subcommand after space)
-    # e.g. "scripts/ops/ops_center.sh doctor"
-    if " " in t:
-        return None
-
-    # ignore directory-only references (trailing slash)
-    if t.endswith("/"):
-        return None
-
-    # check if this is a relative path
-    is_relative = t.startswith("./") or t.startswith("../")
-
-    # normalize leading / for absolute repo paths
-    if t.startswith("/"):
-        t = t[1:]
-
-    # quick filter: we only validate repo-ish paths or relative paths
-    roots = ("config/", "docs/", "src/", "scripts/", ".github/")
-    if not is_relative and not t.startswith(roots):
-        return None
-
-    return t
-
-def safe_is_within(p: Path, root: Path) -> bool:
-    try:
-        rp = p.resolve()
-        return str(rp).startswith(str(root))
-    except Exception:
-        return False
-
-def inline_code_spans(line: str) -> list[tuple[int, int]]:
-    """Half-open [start, end) ranges for each `...` inline code span (incl. backticks)."""
-    return [(m.start(), m.end()) for m in CODE_RE.finditer(line)]
-
-
-def range_overlaps(a0: int, a1: int, spans: list[tuple[int, int]]) -> bool:
-    """True if [a0, a1) overlaps any span in spans."""
-    for s, e in spans:
-        if a0 < e and a1 > s:
-            return True
-    return False
-
-
-def resolve_target(target: str, doc_file: Path, repo_root: Path) -> Path | None:
-    """Resolve a target path to an absolute path.
-
-    Args:
-        target: The target path (can be relative or absolute)
-        doc_file: The markdown file containing the reference
-        repo_root: The repository root
-
-    Returns:
-        Resolved absolute Path, or None if outside repo
-    """
-    # Handle relative paths
-    if target.startswith("./") or target.startswith("../"):
-        # Resolve relative to the markdown file's directory
-        doc_dir = doc_file.parent
-        resolved = (doc_dir / target).resolve()
-    else:
-        # Treat as repo-relative path
-        resolved = (repo_root / target).resolve()
-
-    # Ensure the resolved path is within the repo root
-    if not safe_is_within(resolved, repo_root):
-        return None
-
-    return resolved
-
 refs = []  # (doc_file, line_no, target)
 ignored_files = 0
 for f in files:
@@ -334,26 +218,8 @@ for f in files:
         if IGNORE_MARKER in line:
             continue
 
-        # markdown links
-        for raw in LINK_RE.findall(line):
-            t = normalize_target(raw)
-            if t:
-                refs.append((str(f), i, t))
-        # inline code
-        for raw in CODE_RE.findall(line):
-            t = normalize_target(raw)
-            if t:
-                refs.append((str(f), i, t))
-        # bare paths (only outside inline `...` — avoids false positives like
-        # `bash scripts/obs/foo.sh` where BARE would otherwise match scripts/obs/foo.sh)
-        ic_spans = inline_code_spans(line)
-        for m in BARE_RE.finditer(line):
-            if range_overlaps(m.start(), m.end(), ic_spans):
-                continue
-            raw = m.group(0)
-            t = normalize_target(raw)
-            if t:
-                refs.append((str(f), i, t))
+        for t in extract_targets_from_line(line):
+            refs.append((str(f), i, t))
 
 # Deduplicate by (doc,line,target) but keep stable order
 seen = set()
