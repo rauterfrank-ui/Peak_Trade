@@ -21,6 +21,8 @@ def test_ok_path_networkless_v1_allows_only_no():
     assert d.ok is True
     assert d.reason == "NETWORKLESS_V1"
     assert d.transport_allow == "NO"
+    assert d.canary_live_gate_v1 is not None
+    assert d.canary_live_gate_v1.outbound_live_or_canary_allowed is False
 
 
 def test_default_transport_allow_is_no():
