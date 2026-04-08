@@ -165,8 +165,8 @@ Leverage wird **elegant dynamisch** (vol-/stop-basiert) bestimmt, aber durch **M
 - Evidence: slice-evidence + 1-line summary
 
 **Artefakt-Targets**
-- `src&#47;strategy&#47;models&#47;bull.py` (neu)
-- `src&#47;strategy&#47;models&#47;bear.py` (neu)
+- `src&#47;strategy&#47;models&#47;bull.py` (neu) <!-- pt:ref-target-ignore -->
+- `src&#47;strategy&#47;models&#47;bear.py` (neu) <!-- pt:ref-target-ignore -->
 - Tests: `tests&#47;strategy&#47;test_specialists_contract.py` (neu)
 
 ### S3-S2: Switch-Gate (Hysterese + MinHold + Cooldown + Sideways-Band) (kritisch)
@@ -184,7 +184,7 @@ Leverage wird **elegant dynamisch** (vol-/stop-basiert) bestimmt, aber durch **M
 - Evidence + 1-line summary
 
 **Artefakt-Targets**
-- `src&#47;strategy&#47;meta&#47;switch_gate.py` (neu)
+- `src&#47;strategy&#47;meta&#47;switch_gate.py` (neu) <!-- pt:ref-target-ignore -->
 - Tests: `tests&#47;strategy&#47;test_switch_gate_hysteresis.py` (neu)
 
 ### S3-R1: Risk Sizing “Elegant Leverage” (Vol-/Stop-basiert, capped bei 50×) (kritisch)
@@ -208,8 +208,8 @@ Leverage wird **elegant dynamisch** (vol-/stop-basiert) bestimmt, aber durch **M
 - Evidence + 1-line summary
 
 **Artefakt-Targets**
-- `src&#47;risk&#47;sizing&#47;dynamic_leverage.py` (neu)
-- `src&#47;risk&#47;sizing&#47;__init__.py` (export)
+- `src&#47;risk&#47;sizing&#47;dynamic_leverage.py` (neu) <!-- pt:ref-target-ignore -->
+- `src&#47;risk&#47;sizing&#47;__init__.py` (export) <!-- pt:ref-target-ignore -->
 - Tests: `tests&#47;risk&#47;test_dynamic_leverage_cap50.py` (neu)
 
 ### S3-I: Integration-Policy “double_play” (Strategy→Risk→Execution) (kritisch)
@@ -223,7 +223,7 @@ Leverage wird **elegant dynamisch** (vol-/stop-basiert) bestimmt, aber durch **M
 - Evidence + 1-line summary
 
 **Artefakt-Targets**
-- `src&#47;strategy&#47;policies&#47;double_play.py` (neu)
+- `src&#47;strategy&#47;policies&#47;double_play.py` (neu) <!-- pt:ref-target-ignore -->
 - Tests: `tests&#47;integration&#47;test_double_play_policy_smoke.py` (neu)
 - Docs: kurzer Abschnitt `docs&#47;ops&#47;runbooks&#47;double_play.md` (neu/kurz, operator-first)
 
@@ -546,7 +546,7 @@ paths = create_standard_2x2_heatmap(
 
 #### Einstieg
 - Ziel: Eine dekorator-/wrapper-basierte Lösung, die jede Strategie optional mit Regime-Filter (z.B. only trade in specific vol regimes) versieht.
-- Endzustand: Wrapper im `src/strategies/` oder `src&#47;core&#47;strategy_wrappers.py` + tests.
+- Endzustand: Wrapper im `src/strategies/` oder `src&#47;core&#47;strategy_wrappers.py` + tests. <!-- pt:ref-target-ignore -->
 
 ```bash
 set -euo pipefail
@@ -1077,8 +1077,8 @@ Leverage wird **elegant dynamisch** (vol-/stop-basiert) bestimmt, aber durch **M
 - Evidence: slice-evidence + 1-line summary
 
 **Artefakt-Targets**
-- `src&#47;strategy&#47;models&#47;bull.py` (neu)
-- `src&#47;strategy&#47;models&#47;bear.py` (neu)
+- `src&#47;strategy&#47;models&#47;bull.py` (neu) <!-- pt:ref-target-ignore -->
+- `src&#47;strategy&#47;models&#47;bear.py` (neu) <!-- pt:ref-target-ignore -->
 - Tests: `tests&#47;strategy&#47;test_specialists_contract.py` (neu)
 
 ### S3-S2: Switch-Gate (Hysterese + MinHold + Cooldown + Sideways-Band) (kritisch)
@@ -1096,7 +1096,7 @@ Leverage wird **elegant dynamisch** (vol-/stop-basiert) bestimmt, aber durch **M
 - Evidence + 1-line summary
 
 **Artefakt-Targets**
-- `src&#47;strategy&#47;meta&#47;switch_gate.py` (neu)
+- `src&#47;strategy&#47;meta&#47;switch_gate.py` (neu) <!-- pt:ref-target-ignore -->
 - Tests: `tests/strategy/test_switch_gate_hysteresis.py` (neu)
 
 ### S3-R1: Risk Sizing “Elegant Leverage” (Vol-/Stop-basiert, capped bei 50×) (kritisch)
@@ -1120,8 +1120,8 @@ Leverage wird **elegant dynamisch** (vol-/stop-basiert) bestimmt, aber durch **M
 - Evidence + 1-line summary
 
 **Artefakt-Targets**
-- `src&#47;risk&#47;sizing&#47;dynamic_leverage.py` (neu)
-- `src&#47;risk&#47;sizing&#47;__init__.py` (export)
+- `src&#47;risk&#47;sizing&#47;dynamic_leverage.py` (neu) <!-- pt:ref-target-ignore -->
+- `src&#47;risk&#47;sizing&#47;__init__.py` (export) <!-- pt:ref-target-ignore -->
 - Tests: `tests&#47;risk&#47;test_dynamic_leverage_cap50.py` (neu)
 
 ### S3-I: Integration-Policy “double_play” (Strategy→Risk→Execution) (kritisch)
@@ -1135,7 +1135,7 @@ Leverage wird **elegant dynamisch** (vol-/stop-basiert) bestimmt, aber durch **M
 - Evidence + 1-line summary
 
 **Artefakt-Targets**
-- `src&#47;strategy&#47;policies&#47;double_play.py` (neu)
+- `src&#47;strategy&#47;policies&#47;double_play.py` (neu) <!-- pt:ref-target-ignore -->
 - Tests: `tests&#47;integration&#47;test_double_play_policy_smoke.py` (neu)
 - Docs: kurzer Abschnitt `docs/ops/runbooks/double_play.md` (neu/kurz, operator-first)
 
@@ -1458,7 +1458,7 @@ paths = create_standard_2x2_heatmap(
 
 #### Einstieg
 - Ziel: Eine dekorator-/wrapper-basierte Lösung, die jede Strategie optional mit Regime-Filter (z.B. only trade in specific vol regimes) versieht.
-- Endzustand: Wrapper im `src/strategies/` oder `src&#47;core&#47;strategy_wrappers.py` + tests.
+- Endzustand: Wrapper im `src/strategies/` oder `src&#47;core&#47;strategy_wrappers.py` + tests. <!-- pt:ref-target-ignore -->
 
 ```bash
 set -euo pipefail
