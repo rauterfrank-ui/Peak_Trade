@@ -19,7 +19,7 @@ downstream notifiers, **without** adding notification transport or changing read
 - `generated_at` — ISO-8601 (same run completion instant as report `finished_at`)
 - `next_recommended_topic`, `top_priority_reason`, `recommended_update_queue` — aligned with v2 prioritization
 - `recommended_next_action` — deterministic string (empty queue vs. queued topics)
-- `recommended_review_paths` — e.g. `pyproject.toml` for `python_dependencies`, `.github&#47;workflows` for `ci_integrations`, `[]` for `none`
+- `recommended_review_paths` — e.g. `pyproject.toml` for `python_dependencies`, `.github&#47;workflows` for `ci_integrations`, `[]` for `none` <!-- pt:ref-target-ignore -->
 - `severity` — `info` when no findings; else mapped from worst finding priority (`critical` / `high` / `medium` / `low`)
 - `reminder_class` — `none` | `blocked` | `manual_review` | `hygiene`
 - `requires_manual_review` — boolean derived from severity and classifications
