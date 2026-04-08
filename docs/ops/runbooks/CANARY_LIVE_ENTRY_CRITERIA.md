@@ -34,6 +34,24 @@ Die folgenden Felder müssen **jeweils genau einen Wert** haben und **schriftlic
 
 ---
 
+## Freigabe-Artefakt (LB-APR-001)
+
+> **Blocker-Bezug (Audit):** Explizite **live-approved**-Evidenz ist ein **externes**, menschlich nachweisbares Artefakt (Ticket, Formular, signiertes Dokument). **Git-Commits**, **Merge**, dieses Runbook und das [Manifest-Template](../templates/CANARY_LIVE_MANIFEST_TEMPLATE.md) sind **kein** Ersatz dafür und begründen **keinen** technischen Live-/Canary-Unlock (siehe Governance: NO-LIVE-Default, getrennte technische Gates).
+
+**Nachweisschema (mindestens)** — inhaltlich gegen das Manifest-Template ([§ Session / Freigabe-Metadaten](../templates/CANARY_LIVE_MANIFEST_TEMPLATE.md#session--freigabe-metadaten)) und die Scope-Tabelle oben prüfbar:
+
+| Pflichtfeld | Inhalt |
+|-------------|--------|
+| **Freigabe-Referenz** | Ticket- oder Formular-ID (extern, nachvollziehbar) |
+| **Owner / Systemverantwortlicher** | Benennung laut [`GOVERNANCE_AND_SAFETY_OVERVIEW.md` §3.2](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md#32-owner--systemverantwortlicher) |
+| **Datum & Gültigkeit** | UTC; gültig für eine Session oder bis-Datum |
+| **Risk Officer Review** | ja/nein; bei ja: Wer ([§3.4](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md#34-reviewer--risk-officer)) |
+| **Sign-off** | Schriftliche Zustimmung oder gleichwertiger „approved“-Status im Ticket-System; **Kopplung** an exakt die Manifest-Scope-Felder (Exchange, Kontotyp, Symbol, Strategie-Version, erlaubte Ordertypen) |
+
+**Nicht ausreichend:** Reine Repo-Evidenz, automatisierte Checks allein oder ein Docs-only-PR **ohne** externes Freigabe-Artefakt — **kein** `live-approved`, **keine** Aufhebung von `dry_run`/NO-LIVE im Execution-Pfad durch Dokumentation allein.
+
+---
+
 ## Die 8 Freigabekriterien
 
 ### 1. Scope-Fixierung
