@@ -37,7 +37,7 @@ die direkt das Peak_Trade-Projekt betreffen.
 
 **Key Outcomes:**
 
-- Neue Zielstruktur für `Peak_Trade&#47;` definiert (inkl. `archive&#47;`, `docs&#47;…`, `scripts&#47;`).
+- Neue Zielstruktur für `Peak_Trade&#47;` definiert (inkl. `archive&#47;`, `docs&#47;…`, `scripts&#47;`). <!-- pt:ref-target-ignore -->
 - Skript `scripts/reorganize_peak_trade.py` eingeführt:
   - verschiebt/benennt Dateien idempotent um,
   - unterstützt `--dry-run`.
@@ -80,7 +80,7 @@ die direkt das Peak_Trade-Projekt betreffen.
 **TODO / Open Questions:**
 
 - [ ] Phase 1 Inhalte aus `archive&#47;full_files_stand_02.12.2025` in CHANGELOG.md eintragen
-- [ ] Risk-Profile in separaten Config-Dateien anlegen (z.B. `config&#47;risk_conservative.toml`, illustrative)
+- [ ] Risk-Profile in separaten Config-Dateien anlegen (z.B. `config&#47;risk_conservative.toml`, illustrative) <!-- pt:ref-target-ignore -->
 
 **Links / Referenzen:**
 
