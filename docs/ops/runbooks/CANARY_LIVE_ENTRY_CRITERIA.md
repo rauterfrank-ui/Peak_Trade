@@ -30,6 +30,8 @@ Die folgenden Felder müssen **jeweils genau einen Wert** haben und **schriftlic
 
 **Nicht erlaubt:** parallele Canary-Setups mit anderem Symbol oder anderer Strategie **ohne** separate Freigabe.
 
+**Manifest-Vorlage (Repo):** Eine ausfüllbare Markdown-Vorlage liegt unter [`docs/ops/templates/CANARY_LIVE_MANIFEST_TEMPLATE.md`](../templates/CANARY_LIVE_MANIFEST_TEMPLATE.md). Sie dient nur der **strukturierten Erfassung** der Manifest-Felder — **nicht** als Ersatz für schriftliche Freigabe oder Sign-off; siehe [`GOVERNANCE_AND_SAFETY_OVERVIEW.md`](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md) (Rollen Owner/Risk Officer) und die Default-Posture **NO-LIVE** in diesem Runbook.
+
 ---
 
 ## Die 8 Freigabekriterien

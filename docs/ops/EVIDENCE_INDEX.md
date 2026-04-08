@@ -1,5 +1,10 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260409-canary-manifest-template"></a>
+- **EV-20260409-CANARY-MANIFEST-TEMPLATE** | Date: 2026-04-09 | Owner: ops | Scope: docs-only template | Risk: LOW  
+  - Source: [Canary manifest template](templates/CANARY_LIVE_MANIFEST_TEMPLATE.md) · Runbook: [CANARY_LIVE_ENTRY_CRITERIA.md](runbooks/CANARY_LIVE_ENTRY_CRITERIA.md)  
+  - Claim: Repo-anchored **template** for Canary §Manifest scope fields; **not** a live approval; human sign-off and written release still required per Governance and [`CANARY_LIVE_ENTRY_CRITERIA.md`](runbooks/CANARY_LIVE_ENTRY_CRITERIA.md).
+
 <a id="ev-20260129-metricsd-mode-b-verify"></a>
 - **EV-20260129-METRICSD-MODE-B-VERIFY** | Date: 2026-01-29 | Owner: ops | Scope: local operator verify | Risk: LOW  
   - Source: [Evidence](evidence/EV_METRICSD_MODE_B_VERIFY_20260129.md)  
