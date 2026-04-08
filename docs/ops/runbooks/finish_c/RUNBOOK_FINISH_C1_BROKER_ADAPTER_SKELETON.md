@@ -80,7 +80,7 @@ Ein minimaler, testbarer Broker‑Abstraktionslayer, der spätere Live‑Ops **m
 
 **Code (proposed paths):**
 - ``src&#47;execution&#47;broker&#47;base.py`` (interfaces, dataclasses)
-- ``src&#47;execution&#47;broker&#47;mock_broker.py`` (deterministic mock)
+- ``src&#47;execution&#47;broker&#47;mock_broker.py`` (deterministic mock) <!-- pt:ref-target-ignore -->
 - ``src&#47;execution&#47;broker&#47;idempotency.py``
 - ``src&#47;execution&#47;broker&#47;retry.py``
 
@@ -90,7 +90,7 @@ Ein minimaler, testbarer Broker‑Abstraktionslayer, der spätere Live‑Ops **m
 - ``tests&#47;execution&#47;broker&#47;test_retry_policy.py``
 
 **Evidence (operator-created, optional):**
-- ``docs&#47;ops&#47;evidence&#47;EV-YYYYMMDD-FINISH_C1-ADAPTER-PASS.md``
+- ``docs&#47;ops&#47;evidence&#47;EV-YYYYMMDD-FINISH_C1-ADAPTER-PASS.md`` <!-- pt:ref-target-ignore -->
 
 ---
 
