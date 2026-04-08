@@ -26,3 +26,11 @@ docs/ops/evidence/
 ## Minimal Fields
 
 Siehe `EVIDENCE_SCHEMA_v1.json` → `example`.
+
+---
+
+## Canary-Freigabe-Referenz (LB-APR-001)
+
+Explizite **live-approved**-Freigabe für Canary-Live wird **primär außerhalb** des Repos geführt (Ticket, Formular, signiertes Dokument). Pflichtfelder und Abgrenzung (Merge/Repo ≠ Freigabe) stehen in [`CANARY_LIVE_ENTRY_CRITERIA.md`](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md#freigabe-artefakt-lb-apr-001).
+
+Optional können unter diesem Verzeichnis **Kopien oder Links** als betriebliche Belege abgelegt werden — **Pointer-/Nachweischarakter** allein; **kein** Ersatz für das originale Freigabe-Artefakt und **kein** `live-approved` durch einen Docs-Merge.
