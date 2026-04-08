@@ -762,8 +762,8 @@ git reset --hard origin/main
 
 | Kontext | Muster | Beispiele |
 |---------|--------|-----------|
-| Runbook Phasen | `docs&#47;runbook-<topic>-phases-<n>-<m>` | `docs&#47;runbook-cursor-ma-phases-21-24` |
-| Runbook Fix | `docs&#47;runbook-<topic>-fix-<short>` | `docs&#47;runbook-cursor-ma-fix-token-policy` |
+| Runbook Phasen | `docs&#47;runbook-<topic>-phases-<n>-<m>` | `docs&#47;runbook-cursor-ma-phases-21-24` | <!-- pt:ref-target-ignore -->
+| Runbook Fix | `docs&#47;runbook-<topic>-fix-<short>` | `docs&#47;runbook-cursor-ma-fix-token-policy` | <!-- pt:ref-target-ignore -->
 | Ops/Skripte | `ops&#47;<bereich>-<kurzbeschreibung>` | `ops&#47;validate-docs-token-policy`, `ops&#47;prom-targets-check` |
 | Fix/Backport | `fix&#47;<issue-oder-thema>` oder `backport&#47;<pr>-to-main` | `fix&#47;docs-gate-slash`, `backport&#47;1234-to-main` |
 | Revert | `revert&#47;<commit-oder-pr>` | `revert&#47;runbook-or-scratch` |
@@ -986,7 +986,7 @@ rg -n "L6|Execution.*forbid|LIVE.*block|confirm token|armed" -S src scripts docs
 - **Illustrativ:** Siehe [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md) (Diagnose, Fix A/B, Ignore-Marker).
 
 **2) Optionen bei False Positive**
-- **Fix A (bevorzugt):** Inline-Code-Pfad mit `&#47;` statt `/` (z. B. `docs&#47;runbooks`) — reduziert Parsing als Link-Target; Token-Policy-Gate prüft das.
+- **Fix A (bevorzugt):** Inline-Code-Pfad mit `&#47;` statt `/` (z. B. `docs&#47;runbooks`) — reduziert Parsing als Link-Target; Token-Policy-Gate prüft das. <!-- pt:ref-target-ignore -->
 - **Fix B:** Auf derselben Zeile am Zeilenende: `<!-- pt:ref-target-ignore -->` setzen (wenn Fix A nicht passt, z. B. in Tabellen oder Code-Blöcken).
 
 **3) Nach Fix**
