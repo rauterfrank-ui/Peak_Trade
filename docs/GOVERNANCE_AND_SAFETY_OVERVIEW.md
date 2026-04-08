@@ -27,6 +27,8 @@ Peak_Trade ist aktuell ein **Research-/Backtest-/Paper-/Shadow-System**:
 
 Reine Dokumentations-PRs, die [Finish Plan](ops/roadmap/FINISH_PLAN.md#stop-rules-non-negotiable), diese Übersicht und [Safety Policy Testnet & Live](SAFETY_POLICY_TESTNET_AND_LIVE.md) sprachlich auf denselben Stand bringen, **schärfen nur die Dokumentation**; sie begründen **weder** ein Live-Go **noch** eine `live-approved`-Evidenz und **lockern** die NO-LIVE-Posture **nicht**.
 
+**Canary Live (explizite Ausnahme):** Das im Repo abgelegte [Canary-Manifest-Template](ops/templates/CANARY_LIVE_MANIFEST_TEMPLATE.md) unterstützt die **schriftliche** Scope-Fixierung aus [`CANARY_LIVE_ENTRY_CRITERIA.md`](ops/runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) — es ist **keine** Live-Freigabe und **kein** Ersatz für Owner-/Risk-Sign-off oder Ticket-Referenz. **live-approved** bleibt eine **menschliche**, nachvollziehbar dokumentierte Entscheidung (siehe §3 Rollen, insbesondere Owner / Systemverantwortlicher und Reviewer/Risk Officer).
+
 **Kill-Switch posture (MVP):** Es gibt **keine** vorgesehenen „Live-Unlocks“ oder informellen **break-glass**-Abkürzungen außerhalb dokumentierter Governance. Der Emergency Kill Switch bleibt als **Layer 4** beschrieben und operabel dokumentiert: [README Kill Switch](../README_KILL_SWITCH.md), [`risk&#47;KILL_SWITCH_ARCHITECTURE.md`](risk/KILL_SWITCH_ARCHITECTURE.md), [`ops&#47;KILL_SWITCH_RUNBOOK.md`](ops/KILL_SWITCH_RUNBOOK.md).
 
 **Docs Gates (lokal reproduzierbar):** CI-Docs-Gates (Token Policy, Reference Targets, Diff Guard) sind lokal über den Snapshot-Helper abdeckbar — siehe [Operator Quickstart (MVP) in `FINISH_PLAN.md`](ops/roadmap/FINISH_PLAN.md#operator-quickstart-mvp--local-verify-snapshot-only).
