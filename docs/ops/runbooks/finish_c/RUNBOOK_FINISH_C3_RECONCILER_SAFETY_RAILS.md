@@ -85,15 +85,15 @@ Outputs (beispielhaft):
 ## 6) Proposed File Map
 
 **Code (proposed paths):**
-- ``src&#47;execution&#47;live&#47;reconcile.py``
-- ``src&#47;execution&#47;live&#47;safety.py``
+- ``src&#47;execution&#47;live&#47;reconcile.py`` <!-- pt:ref-target-ignore -->
+- ``src&#47;execution&#47;live&#47;safety.py`` <!-- pt:ref-target-ignore -->
 
 **Tests (proposed paths):**
 - ``tests&#47;execution&#47;live&#47;test_reconcile_failures.py``
 - ``tests&#47;execution&#47;live&#47;test_safety_rails.py``
 
 **Evidence (operator-created, optional):**
-- ``docs&#47;ops&#47;evidence&#47;EV-YYYYMMDD-FINISH_C3-RECONCILE-PASS.md``
+- ``docs&#47;ops&#47;evidence&#47;EV-YYYYMMDD-FINISH_C3-RECONCILE-PASS.md`` <!-- pt:ref-target-ignore -->
 
 ---
 
