@@ -87,7 +87,7 @@ ruff format --check .
 - ``tests&#47;execution&#47;live&#47;test_orchestrator_dryrun.py``
 
 **Evidence (operator-created, optional):**
-- ``docs&#47;ops&#47;evidence&#47;EV-YYYYMMDD-FINISH_C2-ORCH-DRYRUN-PASS.md``
+- ``docs&#47;ops&#47;evidence&#47;EV-YYYYMMDD-FINISH_C2-ORCH-DRYRUN-PASS.md`` <!-- pt:ref-target-ignore -->
 
 ---
 
