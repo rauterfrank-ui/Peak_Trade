@@ -10,7 +10,7 @@ Definitions
 - **LIVE**: full live mode (out of scope here).
 
 Hard prerequisites (must be GREEN)
-1) Ops status: ``.&#47;scripts&#47;ops&#47;ops_status.sh`` exits 0
+1) Ops status: ``.&#47;scripts&#47;ops&#47;ops_status.sh`` exits 0 <!-- pt:ref-target-ignore -->
 2) PRBI latest scorecard:
    - decision: `READY_FOR_LIVE_PILOT`
    - hard_blocks: empty
@@ -32,10 +32,10 @@ Two-man rule (optional but recommended)
 Workflow overview
 A) Preflight (local)
 1. Pull latest artifacts
-   - ``.&#47;scripts&#47;ops&#47;pull_latest_prbi_scorecard.sh``
-   - ``.&#47;scripts&#47;ops&#47;pull_latest_prbg_execution_evidence.sh``
+   - ``.&#47;scripts&#47;ops&#47;pull_latest_prbi_scorecard.sh`` <!-- pt:ref-target-ignore -->
+   - ``.&#47;scripts&#47;ops&#47;pull_latest_prbg_execution_evidence.sh`` <!-- pt:ref-target-ignore -->
 2. Verify gates
-   - ``.&#47;scripts&#47;ops&#47;ops_status.sh`` (must exit 0)
+   - ``.&#47;scripts&#47;ops&#47;ops_status.sh`` (must exit 0) <!-- pt:ref-target-ignore -->
 3. Create pilot plan evidence directory (local out/ops)
    - capture: repo head, gate summaries, intended caps
 
