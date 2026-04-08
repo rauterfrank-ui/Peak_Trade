@@ -39,6 +39,8 @@ Dieses Dokument listet **bewusst nicht implementierte Features** und **bekannte 
 
 **Referenz:**
 - `src/live/safety.py` – SafetyGuard-Implementierung
+
+- `src/execution/live/safety.py` and `src/execution/live/reconcile.py` are a bounded Finish-C3 mock/testability slice for safety-rail and reconcile failure-path coverage; they do **not** represent live approval, exchange enablement, or production-ready live operations.
 - `src/core/environment.py` – Environment-Konfiguration
 - `src/orders/exchange.py` – `LiveOrderExecutor` (Stub/Dry-Run; echte Live-Broker-Pfade bewusst nicht umgesetzt)
 
