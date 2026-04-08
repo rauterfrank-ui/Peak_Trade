@@ -55,6 +55,7 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 ## Änderungsnachweis (Slice A)
 - 2026-04-09 — GAP-004 docs-only: `docs/ops/templates/CANARY_LIVE_MANIFEST_TEMPLATE.md` added; `CANARY_LIVE_ENTRY_CRITERIA.md`, `EVIDENCE_INDEX.md`, `GOVERNANCE_AND_SAFETY_OVERVIEW.md` cross-referenced; template is not live approval; paired with governance-overview-canonical.
+- 2026-04-08 — Finish-C3 reconcile/safety mock slice updated `docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md` to clarify that `src/execution/live/reconcile.py` and `src/execution/live/safety.py` are bounded mock/testability steps and do not imply live approval or exchange enablement.
 - 2026-04-08 — GAP-001 docs-only clarification touched `docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`, `docs/SAFETY_POLICY_TESTNET_AND_LIVE.md`, and `docs/ops/roadmap/FINISH_PLAN.md`; truth-map updated to record canonical alignment only, not live approval.
 
 
