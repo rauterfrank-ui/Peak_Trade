@@ -10,6 +10,8 @@ last_updated: 2026-04-05
 **Ziel:** Eine konkrete “Finish”-Definition (MVP/Beta/v1.0) mit Workstreams, DoD-Checklisten, PR-Slicing-Plan und operator-freundlichen Verifikationsschritten.  
 **Constraint:** Diese Datei ist **docs-only**. Sie definiert Arbeit und Nachweise — sie führt nichts live aus.
 
+**Kanonische Policy-Triade (NO-LIVE):** Die [Stop Rules (NON-NEGOTIABLE)](#stop-rules-non-negotiable) stehen mit [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md) und [Safety Policy Testnet & Live](../../SAFETY_POLICY_TESTNET_AND_LIVE.md) inhaltlich im Einklang. Dokumentations-Klarstellungen zwischen diesen drei Quellen **sind keine** Live-Freigabe, **kein** Live-Go und **ersetzen keine** explizite Canary-/Owner-Freigabe.
+
 **Siehe auch:** [Current focus (vom Operator gepflegt)](CURRENT_FOCUS.md) — kurzer „wo stehen wir jetzt“-Anker für Chats und Sessions.
 
 ---

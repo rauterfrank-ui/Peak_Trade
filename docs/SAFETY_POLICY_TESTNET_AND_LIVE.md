@@ -32,6 +32,8 @@ Diese Safety-Policy gilt für alle Aktivitäten, die **nicht** Backtest, Paper o
 - Keine echten Exchange-Verbindungen implementiert
 - Diese Policy ist **vorbereitend**, nicht aktivierend
 
+**Konsistenz (kanonisch):** Dieselbe NO-LIVE-Posture und der Status „Stubs/blockiert“ werden in [Finish Plan — Stop Rules (NON-NEGOTIABLE)](ops/roadmap/FINISH_PLAN.md#stop-rules-non-negotiable) und [Governance & Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) geteilt. Abstimmungs-PRs **nur** in der Dokumentation **aktivieren** Testnet/Live **nicht** und sind **kein** Live-Go.
+
 **Governance-Verknüpfung (MVP):** Kill-Switch-Posture und lokale **Docs-Gates**-Nachweise sind mit [Governance & Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) und [Finish Plan Level A](ops/roadmap/FINISH_PLAN.md) verknüpft (keine Policy-Änderung an dieser Stelle).
 
 **Live-Ops Pack (Finish Plan PR 6, docs-only):** [Live Operational Runbooks](./LIVE_OPERATIONAL_RUNBOOKS.md) · [Incident Simulation & Drills](./INCIDENT_SIMULATION_AND_DRILLS.md) · [Workflow Frontdoor](./WORKFLOW_FRONTDOOR.md) — Navigation und Runbooks; **keine** Live-Freigabe.
