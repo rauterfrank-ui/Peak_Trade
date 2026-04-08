@@ -291,7 +291,7 @@ git log --oneline -5
 - **PR Template:** `docs/ops/sessions/APPENDIX_C_PR_TEMPLATE.md`
 
 ### Scripts
-- **Worktree Setup:** `scripts&#47;ops&#47;setup_worktree_4b_m2.sh` (historical)
+- **Worktree Setup:** `scripts&#47;ops&#47;setup_worktree_4b_m2.sh` (historical) <!-- pt:ref-target-ignore -->
 
 ---
 
