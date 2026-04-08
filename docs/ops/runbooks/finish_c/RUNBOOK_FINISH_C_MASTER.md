@@ -112,27 +112,27 @@ Finish Level C liefert einen optionalen „live‑nahen“ Track (Broker Adapter
 
 - **PR‑C2**
   - Pfade (proposed):
-    - ``src&#47;live&#47;orchestrator&#47;state.py`` (State Machine)
-    - ``src&#47;live&#47;orchestrator&#47;orchestrator.py``
-    - ``src&#47;live&#47;orchestrator&#47;audit.py``
+    - ``src&#47;live&#47;orchestrator&#47;state.py`` (State Machine) <!-- pt:ref-target-ignore -->
+    - ``src&#47;live&#47;orchestrator&#47;orchestrator.py`` <!-- pt:ref-target-ignore -->
+    - ``src&#47;live&#47;orchestrator&#47;audit.py`` <!-- pt:ref-target-ignore -->
     - ``tests&#47;live&#47;orchestrator&#47;test_dryrun_with_fake_broker.py``
 
 - **PR‑C3**
   - Pfade (proposed):
-    - ``src&#47;live&#47;reconcile&#47;reconciler.py``
-    - ``src&#47;live&#47;safety&#47;rails.py``
+    - ``src&#47;live&#47;reconcile&#47;reconciler.py`` <!-- pt:ref-target-ignore -->
+    - ``src&#47;live&#47;safety&#47;rails.py`` <!-- pt:ref-target-ignore -->
     - ``tests&#47;live&#47;reconcile&#47;test_reconciler_failure_matrix.py``
 
 - **PR‑C4**
   - Pfade (proposed):
-    - ``src&#47;observability&#47;metrics_orders.py`` (order lifecycle metrics)
+    - ``src&#47;observability&#47;metrics_orders.py`` (order lifecycle metrics) <!-- pt:ref-target-ignore -->
     - ``src&#47;webui&#47;...`` (watch‑only views, falls vorhanden)
     - ``tests&#47;observability&#47;test_metrics_smoke.py``
 
 - **PR‑C5**
   - Pfade (proposed):
     - ``docs&#47;ops&#47;runbooks&#47;finish_c&#47;*`` (finalize)
-    - ``docs&#47;ops&#47;evidence&#47;EV-YYYYMMDD-FINISH_C5-READINESS.md`` (operator-created)
+    - ``docs&#47;ops&#47;evidence&#47;EV-YYYYMMDD-FINISH_C5-READINESS.md`` (operator-created) <!-- pt:ref-target-ignore -->
 
 ---
 
