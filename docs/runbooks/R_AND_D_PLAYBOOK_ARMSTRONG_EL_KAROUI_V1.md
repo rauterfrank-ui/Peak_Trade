@@ -194,7 +194,7 @@ Damit ist sichergestellt, dass R&D-Strategien niemals versehentlich Orders an Br
 
 **Was tun?**
 * Starte Runs immer aus dem Repo-Root (`/Users/frnkhrz/Peak_Trade`).
-* Verwende absolute Pfade oder prüfe den relativen Pfad: `config&#47;strategies&#47;armstrong_cycle_default.toml` (illustrative).
+* Verwende absolute Pfade oder prüfe den relativen Pfad: `config&#47;strategies&#47;armstrong_cycle_default.toml` (illustrative). <!-- pt:ref-target-ignore -->
 * Quick-Check: `ls config&#47;strategies&#47;` – existiert die Datei?
 
 ### 3. Run-Typ wird als „live" oder „paper" interpretiert
