@@ -322,7 +322,7 @@ Clone from `https:&#47;&#47;github.com&#47;user&#47;repo`.
 Link points to: docs&#47;ops&#47;runbooks&#47;OPERATOR_GUIDE.md
 ```
 
-(File `docs&#47;ops&#47;runbooks&#47;OPERATOR_GUIDE.md` does not exist as this is an illustrative example)
+(File `docs&#47;ops&#47;runbooks&#47;OPERATOR_GUIDE.md` does not exist as this is an illustrative example) <!-- pt:ref-target-ignore -->
 
 **Decision:**
 
@@ -398,8 +398,8 @@ Create `docs&#47;ops&#47;runbooks&#47;MY_RUNBOOK.md`
 
 | Missing Target | Classification | Remediation Applied |
 |----------------|----------------|---------------------|
-| `docs&#47;ops&#47;runbooks&#47;EXAMPLE.md` | Illustrative | Converted to plain text |
-| `docs&#47;ops&#47;OPERATOR_GUIDE.md` | Real (typo) | Corrected path to `runbooks&#47;OPERATOR_GUIDE.md` |
+| `docs&#47;ops&#47;runbooks&#47;EXAMPLE.md` | Illustrative | Converted to plain text | <!-- pt:ref-target-ignore -->
+| `docs&#47;ops&#47;OPERATOR_GUIDE.md` | Real (typo) | Corrected path to `runbooks&#47;OPERATOR_GUIDE.md` | <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -663,7 +663,7 @@ Use this template to document fix-forward iterations:
 **Local Snapshot:**  
 - Timestamp: YYYY-MM-DD HH:MM:SS UTC  
 - Verdict: PASS (all gates)  
-- Files Evaluated: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_X.md`
+- Files Evaluated: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_X.md` <!-- pt:ref-target-ignore -->
 
 **CI Snapshot (Commit SHA: abc1234):**  
 - Timestamp: YYYY-MM-DD HH:MM:SS UTC  
@@ -693,7 +693,7 @@ Use this template to document fix-forward iterations:
 
 **Post-Merge Verify:**  
 - Merged to `main` at commit SHA: 123abcd  
-- File verified present: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_X.md`  
+- File verified present: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_X.md`   <!-- pt:ref-target-ignore -->
 - Branch cleanup: `feature&#47;add-ci-triage-runbook` deleted
 
 ---
