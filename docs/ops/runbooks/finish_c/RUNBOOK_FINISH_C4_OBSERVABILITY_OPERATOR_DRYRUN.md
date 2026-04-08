@@ -97,8 +97,8 @@ ruff format --check .
 ## 6) Proposed File Map
 
 **Code (proposed paths):**
-- ``src&#47;observability&#47;execution_metrics.py`` (oder passender existing observability layer)
-- ``src&#47;execution&#47;live&#47;status_snapshot.py``
+- ``src&#47;observability&#47;execution_metrics.py`` (oder passender existing observability layer) <!-- pt:ref-target-ignore -->
+- ``src&#47;execution&#47;live&#47;status_snapshot.py`` <!-- pt:ref-target-ignore -->
 
 **Tests (proposed paths):**
 - ``tests&#47;observability&#47;test_execution_metrics.py``
