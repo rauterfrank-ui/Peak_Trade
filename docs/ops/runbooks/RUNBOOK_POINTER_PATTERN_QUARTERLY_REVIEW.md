@@ -761,7 +761,7 @@ Quarterly review of Pointer Pattern architecture (root canonical runbooks + poin
 - [ ] **No broken index:** README.md contains all pointer documents
 - [ ] **No orphans:** All pointer documents have valid root targets
 - [ ] **No drift:** Pointer content matches minimal stub template
-- [ ] **Branch naming:** `docs&#47;pointer-pattern-quarterly-review-YYYYMMDD`
+- [ ] **Branch naming:** `docs&#47;pointer-pattern-quarterly-review-YYYYMMDD` <!-- pt:ref-target-ignore -->
 - [ ] **Commit message:** Follows conventional format `docs(ops): ...`
 - [ ] **Working tree clean:** No uncommitted changes before starting
 - [ ] **Gates GREEN:** All 3 docs gates PASS before and after fixes
