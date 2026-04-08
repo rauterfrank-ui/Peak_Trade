@@ -22,7 +22,7 @@
 
 **Why:** The `docs-reference-targets-gate` CI check verifies that all file paths mentioned in docs actually exist in the repository. This prevents broken references.
 
-**Challenge:** Documentation often includes **illustrative example paths** that don't exist (e.g., `config&#47;my_custom.toml`, `scripts&#47;my_example.py`).
+**Challenge:** Documentation often includes **illustrative example paths** that don't exist (e.g., `config&#47;my_custom.toml`, `scripts&#47;my_example.py`). <!-- pt:ref-target-ignore -->
 
 **Solution:** Use HTML entity encoding (`&#47;`) to neutralize illustrative paths:
 - Replace `&#47;` with `&#47;` in inline code spans (single backticks)
@@ -49,8 +49,8 @@ Example config: `config&#47;my_custom_backtest.toml`
 
 **✅ Neutralize these:**
 1. **Hypothetical examples** in tutorials
-   - `config&#47;my_custom.toml`
-   - `scripts&#47;my_example.py`
+   - `config&#47;my_custom.toml` <!-- pt:ref-target-ignore -->
+   - `scripts&#47;my_example.py` <!-- pt:ref-target-ignore -->
 2. **Template paths** showing patterns
    - `data&#47;backups&#47;YYYY-MM-DD&#47;`
 3. **Placeholder paths** in workflows
