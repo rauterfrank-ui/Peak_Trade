@@ -152,9 +152,9 @@ Du willst *alle Anbieter außer Anthropic*. Das heißt: **Multi‑Provider erlau
    - ``docs&#47;ai&#47;evidence_packs&#47;``
    - ``configs&#47;ai&#47;`` (Layer‑Matrix, allowlists, budgets)
 3. **Config‑Lint Job**
-   - ``scripts&#47;ops&#47;config_lint.sh``: parse TOML/YAML, validate schema
+   - ``scripts&#47;ops&#47;config_lint.sh``: parse TOML/YAML, validate schema <!-- pt:ref-target-ignore -->
 4. **Hard Deny implementieren**
-   - ``src&#47;ai_orchestration&#47;model_policy.py``: deny anthropic/claude
+   - ``src&#47;ai_orchestration&#47;model_policy.py``: deny anthropic/claude <!-- pt:ref-target-ignore -->
    - ``src&#47;ai_orchestration&#47;model_client.py``: deny anthropic/claude
 5. **Observability Basics**
    - Jede LLM‑Call: log line mit `run_id`, `layer`, `role`, `provider`, `model_id`, `request_hash`
