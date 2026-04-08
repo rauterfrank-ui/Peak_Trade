@@ -55,10 +55,10 @@ This runbook operationalizes the standard workflow for a **docs-only** Pull Requ
 
 | Type | Example | Safe? | Fix |
 |------|---------|-------|-----|
-| Real repo path | `docs&#47;ops&#47;runbooks&#47;RUNBOOK_X.md` | ✅ YES | (no escape needed) |
+| Real repo path | `docs&#47;ops&#47;runbooks&#47;RUNBOOK_X.md` | ✅ YES | (no escape needed) | <!-- pt:ref-target-ignore -->
 | Command | `git checkout main` | ✅ YES | (auto-exempted) |
 | URL | `https://github.com/user/repo` | ✅ YES | (auto-exempted) |
-| Illustrative path | `docs&#47;example&#47;file.md` | ❌ NO | `docs&#47;example&#47;file.md` |
+| Illustrative path | `docs&#47;example&#47;file.md` | ❌ NO | `docs&#47;example&#47;file.md` | <!-- pt:ref-target-ignore -->
 | Illustrative branch | `feature/my-branch` | ❌ NO | `feature&#47;my-branch` |
 
 ### Reference Targets Gate
@@ -521,7 +521,7 @@ git status -sb
 **Fix:**
 ```bash
 # Escape illustrative paths with &#47;
-# Example: `docs/example/file.md` → `docs&#47;example&#47;file.md`
+# Example: `docs/example/file.md` → `docs&#47;example&#47;file.md` <!-- pt:ref-target-ignore -->
 
 # Use autofix tool
 python3 scripts/ops/autofix_docs_token_policy_inline_code_v2.py \
