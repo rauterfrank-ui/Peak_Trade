@@ -5,7 +5,7 @@
 ### Risk-Layer
 - ✅ `src/risk/limits.py` - Portfolio Risk Limits & Guards
 - ✅ `src/risk/position_sizer.py` - Erweitert (vorher vorhanden, jetzt mit Kelly)
-- ✅ `src&#47;risk&#47;position_sizer_old_backup.py` - Backup der alten Version
+- ✅ `src&#47;risk&#47;position_sizer_old_backup.py` - Backup der alten Version <!-- pt:ref-target-ignore -->
 
 ### Data-Layer
 - ✅ `src/data/kraken_pipeline.py` - Vollständige Kraken-Pipeline
