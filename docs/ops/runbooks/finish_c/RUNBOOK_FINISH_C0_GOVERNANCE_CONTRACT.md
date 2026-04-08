@@ -95,7 +95,7 @@ Kontrollen (target):
 - ``docs&#47;ops&#47;runbooks&#47;finish_c&#47;TEMPLATES_FINISH_C_INCIDENT_PACK.md``
 
 **Optional (operator-created später):**
-- Evidence Entry unter ``docs&#47;ops&#47;evidence&#47;EV-YYYYMMDD-FINISH_C0-CONTRACT.md``
+- Evidence Entry unter ``docs&#47;ops&#47;evidence&#47;EV-YYYYMMDD-FINISH_C0-CONTRACT.md`` <!-- pt:ref-target-ignore -->
 
 ---
 
