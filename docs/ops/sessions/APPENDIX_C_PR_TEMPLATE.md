@@ -18,7 +18,7 @@ Implement **4B Milestone 2: Cursor Multi-Agent Workflow Integration** for Peak_T
 
 ## Changed Files
 <!-- Auto-generated or manual list -->
-- `scripts&#47;ops&#47;setup_worktree_4b_m2.sh`
+- `scripts&#47;ops&#47;setup_worktree_4b_m2.sh` <!-- pt:ref-target-ignore -->
 - `docs/ops/sessions/SESSION_4B_M2_20260109.md`
 - `docs/ops/sessions/SESSION_4B_M2_TASKBOARD.md`
 - `docs/ops/sessions/SESSION_4B_M2_DECISIONS.md`
