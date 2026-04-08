@@ -3,6 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 
+from src.execution.networked.canary_live_gate_v1 import (
+    CanaryLiveGateDecisionV1,
+    evaluate_canary_live_gate_v1_from_environ,
+)
 from src.execution.networked.entry_contract_v1 import (
     DENY_ENV,
     SECRET_ENV_HINTS,
@@ -32,6 +36,8 @@ class TransportDecisionV1:
     intent: str
     market: str
     qty: float
+    # LB-EXE-001: explicit canary/live preconditions; v1 always denies outbound (audit field).
+    canary_live_gate_v1: Optional[CanaryLiveGateDecisionV1] = None
 
 
 def guard_transport_gate_v1(
@@ -78,6 +84,8 @@ def guard_transport_gate_v1(
     elif allow != "NO":
         raise TransportGateError(f"TRANSPORT_GATE_DENY transport_allow={allow}")
 
+    canary = evaluate_canary_live_gate_v1_from_environ(dry_run=dry_run, mode=mode)
+
     return TransportDecisionV1(
         ok=True,
         reason="NETWORKLESS_V1",
@@ -88,6 +96,7 @@ def guard_transport_gate_v1(
         intent=intent,
         market=market,
         qty=qty,
+        canary_live_gate_v1=canary,
     )
 
 
@@ -99,6 +108,7 @@ def assert_networkless_v1() -> None:
 
 
 __all__ = [
+    "CanaryLiveGateDecisionV1",
     "DENY_ENV",
     "SECRET_ENV_HINTS",
     "TransportDecisionV1",
