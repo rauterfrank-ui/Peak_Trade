@@ -1,5 +1,5 @@
 """
-LB-REC-001 Phase 1 — recorded JSON fixtures for ReconciliationEngine.
+LB-REC-001 — recorded JSON fixtures for ReconciliationEngine (phase 1+2+3).
 
 Loads repo-stable cases from tests/fixtures/reconciliation/lb_rec_001_phase1/.
 Mock-only, deterministic, no network. Reduces LB-REC-001 harness coverage;
@@ -121,4 +121,6 @@ def test_lb_rec_001_phase1_recorded_fixture_contract(fixture_path: Path) -> None
 
 def test_lb_rec_001_phase1_fixture_dir_has_cases() -> None:
     cases = list(FIXTURE_DIR.glob("case_*.json"))
-    assert len(cases) >= 5, "expected at least five recorded cases (phase 1 + phase 2 slice)"
+    assert len(cases) >= 8, (
+        "expected at least eight recorded cases (phase 1 + phase 2 + phase 3 slice)"
+    )
