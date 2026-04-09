@@ -54,6 +54,8 @@ Kurzablauf, wenn **`src/orders/`** (Prefix-Regel) geändert wird:
 Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im **selben Diff** **`docs/ops/registry/DOCS_TRUTH_MAP.md`** (diese Datei) einen kurzen Eintrag unter „Änderungsnachweis“ erhalten — damit bleibt die Registry-Landkarte mit der Branch-Protection-Referenz im Einklang (siehe Regel `truth-branch-protection-canonical` in `config/ops/docs_truth_map.yaml`).
 
 ## Änderungsnachweis (Slice A)
+- 2026-04-09 — LB-EXE-001 Phase 1 updated `docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md` to record deny-by-default guard hardening in `src/execution/networked/entry_contract_v1.py`, `src/execution/networked/transport_gate_v1.py`, and `src/execution/networked/canary_live_gate_v1.py`; no live approval or outbound execution unlock implied.
+
 - 2026-04-09 — LB-OPE-001 Phase 1 updated `docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md` to record the mock-only Finish-C3 hardening in `src/execution/live/safety.py` and `src/execution/live/reconcile.py`; no live approval or execution unlock implied.
 
 - 2026-04-08 — LB-EXE-001: `transport_gate_v1.py` populates `TransportDecisionV1.canary_live_gate_v1` (audit field; still deny outbound); `PEAK_TRADE_V1_KNOWN_LIMITATIONS.md`; paired with `known-limitations-canonical`.
