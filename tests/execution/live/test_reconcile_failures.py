@@ -86,3 +86,18 @@ def test_aligned_no_mismatches() -> None:
 def test_reconcile_mismatch_dataclass() -> None:
     m = ReconcileMismatch("x", "code", "msg")
     assert m.order_id == "x"
+
+
+def test_invariant_negative_qty_short_circuits_reconcile() -> None:
+    local = [LocalOrder("o1", qty=-1.0, filled_qty=0.0, status="open")]
+    broker = [BrokerOrder("o1", qty=1.0, filled_qty=0.0, status="open")]
+    r = reconcile_orders(local, broker)
+    assert any(m.code == "invariant_negative_qty" for m in r.mismatches)
+    assert not any(m.code == "status_mismatch" for m in r.mismatches)
+
+
+def test_invariant_filled_exceeds_qty_short_circuits() -> None:
+    local = [LocalOrder("o1", qty=1.0, filled_qty=2.0, status="open")]
+    broker = [BrokerOrder("o1", qty=1.0, filled_qty=1.0, status="open")]
+    r = reconcile_orders(local, broker)
+    assert any(m.code == "invariant_filled_exceeds_qty" for m in r.mismatches)

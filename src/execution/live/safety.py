@@ -49,6 +49,39 @@ def fill_id_would_duplicate(seen: AbstractSet[str], fill_id: str) -> bool:
     return fill_id in seen
 
 
+_FLOAT_EPS = 1e-9
+
+
+def order_invariant_issues_for_reconcile(
+    order_id: str,
+    qty: float,
+    filled_qty: float,
+) -> list[tuple[str, str]]:
+    """
+    Pure invariant checks for mock reconcile snapshots (no I/O).
+
+    Returns (code, message) pairs for LB-OPE-001 / Finish C3 failure-path reporting.
+    Empty list if values are consistent for Phase-0 floats.
+    """
+    issues: list[tuple[str, str]] = []
+    if qty < -_FLOAT_EPS or filled_qty < -_FLOAT_EPS:
+        issues.append(
+            (
+                "invariant_negative_qty",
+                f"order_id={order_id} qty={qty} filled_qty={filled_qty}",
+            )
+        )
+        return issues
+    if filled_qty > qty + _FLOAT_EPS:
+        issues.append(
+            (
+                "invariant_filled_exceeds_qty",
+                f"order_id={order_id} filled_qty={filled_qty} qty={qty}",
+            )
+        )
+    return issues
+
+
 @dataclass
 class BoundedRetryTracker:
     """
