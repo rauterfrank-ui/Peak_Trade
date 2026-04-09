@@ -121,4 +121,6 @@ def test_lb_rec_001_phase1_recorded_fixture_contract(fixture_path: Path) -> None
 
 def test_lb_rec_001_phase1_fixture_dir_has_cases() -> None:
     cases = list(FIXTURE_DIR.glob("case_*.json"))
-    assert len(cases) >= 8, "expected at least eight recorded cases (phase 1 + phase 2 + phase 3 slice)"
+    assert len(cases) >= 8, (
+        "expected at least eight recorded cases (phase 1 + phase 2 + phase 3 slice)"
+    )
