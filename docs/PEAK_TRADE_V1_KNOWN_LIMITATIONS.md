@@ -43,6 +43,7 @@ Dieses Dokument listet **bewusst nicht implementierte Features** und **bekannte 
 - `src/execution/live/safety.py` and `src/execution/live/reconcile.py` are a bounded Finish-C3 mock/testability slice for safety-rail and reconcile failure-path coverage; they do **not** represent live approval, exchange enablement, or production-ready live operations.
 
 - Finish-C3 LB-OPE-001 Phase 1 further hardens mock-only invariant-first failure handling in `src/execution/live/safety.py` and `src/execution/live/reconcile.py`; this remains non-live, deny-by-default, and is not evidence of live-approved operations.
+- Finish-C3 LB-OPE-001 Phase 2 adds explicit cancel-race reporting in reconcile and non-finite qty invariants in `order_invariant_issues_for_reconcile`; same modules remain mock-only and not live-approved.
 - `src/execution/networked/canary_live_gate_v1.py` (LB-EXE-001 slice) exposes an explicit **decision record** for a future authorized canary/live path: v1 **always denies** outbound live/canary transport; optional `PT_CANARY_SCOPE_REF` is only a pointer to external approval evidence and does **not** enable network execution or live readiness.
 
 - LB-EXE-001 Phase 1 extends deny-by-default guard coverage around `src/execution/networked/entry_contract_v1.py`, `src/execution/networked/transport_gate_v1.py`, and `src/execution/networked/canary_live_gate_v1.py`; this remains non-live, non-outbound, and is not evidence of live-approved execution.

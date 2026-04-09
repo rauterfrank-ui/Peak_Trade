@@ -58,6 +58,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 - 2026-04-09 — LB-OPE-001 Phase 1 updated `docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md` to record the mock-only Finish-C3 hardening in `src/execution/live/safety.py` and `src/execution/live/reconcile.py`; no live approval or execution unlock implied.
 
+- 2026-04-09 — LB-OPE-001 Phase 2 updated `docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md` for cancel-race reconcile reporting and non-finite qty invariants in the same Finish-C3 mock modules; no live approval implied.
+
 - 2026-04-08 — LB-EXE-001: `transport_gate_v1.py` populates `TransportDecisionV1.canary_live_gate_v1` (audit field; still deny outbound); `PEAK_TRADE_V1_KNOWN_LIMITATIONS.md`; paired with `known-limitations-canonical`.
 - 2026-04-08 — LB-EXE-001 minimal code slice: `canary_live_gate_v1.py` + `PEAK_TRADE_V1_KNOWN_LIMITATIONS.md` — explicit gate decision API; v1 denies outbound; `PT_CANARY_SCOPE_REF` is evidence pointer only; paired with `known-limitations-canonical`.
 - 2026-04-09 — LB-APR-001 docs wave: `CANARY_LIVE_ENTRY_CRITERIA.md` — § Freigabe-Artefakt (LB-APR-001): externes Ticket/Owner/Risk/Sign-off-Nachweisschema; explizit kein Live-Unlock durch Repo/Docs allein; `GOVERNANCE_AND_SAFETY_OVERVIEW.md` Querverweis; paired with `canary-live-entry-canonical` + `governance-overview-canonical`.

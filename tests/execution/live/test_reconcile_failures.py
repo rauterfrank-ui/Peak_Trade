@@ -19,14 +19,24 @@ def test_partial_fill_mismatch() -> None:
     assert any(m.code == "partial_fill_mismatch" for m in r.mismatches)
 
 
-def test_status_mismatch_includes_cancel_race_surface() -> None:
+def test_cancel_race_emitted_instead_of_generic_status_mismatch() -> None:
     local = [LocalOrder("o1", qty=1.0, filled_qty=0.0, status="cancelled")]
     broker = [BrokerOrder("o1", qty=1.0, filled_qty=0.0, status="open")]
     r = reconcile_orders(local, broker)
-    assert any(m.code == "status_mismatch" for m in r.mismatches)
-    cr = cancel_race_mismatch("cancelled", "open")
+    assert any(m.code == "cancel_race" for m in r.mismatches)
+    assert not any(m.code == "status_mismatch" for m in r.mismatches)
+    cr = cancel_race_mismatch("o1", "cancelled", "open")
     assert cr is not None
+    assert cr.order_id == "o1"
     assert cr.code == "cancel_race"
+
+
+def test_status_mismatch_when_not_cancel_race() -> None:
+    local = [LocalOrder("o1", qty=1.0, filled_qty=0.0, status="open")]
+    broker = [BrokerOrder("o1", qty=1.0, filled_qty=0.0, status="filled")]
+    r = reconcile_orders(local, broker)
+    assert any(m.code == "status_mismatch" for m in r.mismatches)
+    assert not any(m.code == "cancel_race" for m in r.mismatches)
 
 
 def test_rate_limit_signal() -> None:
@@ -101,3 +111,10 @@ def test_invariant_filled_exceeds_qty_short_circuits() -> None:
     broker = [BrokerOrder("o1", qty=1.0, filled_qty=1.0, status="open")]
     r = reconcile_orders(local, broker)
     assert any(m.code == "invariant_filled_exceeds_qty" for m in r.mismatches)
+
+
+def test_invariant_non_finite_qty_short_circuits_reconcile() -> None:
+    local = [LocalOrder("o1", qty=float("nan"), filled_qty=0.0, status="open")]
+    broker = [BrokerOrder("o1", qty=1.0, filled_qty=0.0, status="open")]
+    r = reconcile_orders(local, broker)
+    assert any(m.code == "invariant_non_finite_qty" for m in r.mismatches)
