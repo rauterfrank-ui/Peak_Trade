@@ -13,3 +13,5 @@ Schema: `lb_rec_001_phase1_v1` (see `case_*.json`).
 `expect` may include `min_warn`, `min_info`, `first_severity` for severity assertions (see newer `case_*.json`).
 
 **Phase 3 (LB-REC-001):** `case_buy_then_sell_warn.json` (multi-fill with SELL); `case_position_and_cash_fail.json` (stacked POSITION + CASH FAIL). Mock-only; not live-approved reconciliation.
+
+**Phase 4 (LB-REC-001):** `case_multi_symbol_exchange_omits_eth.json` (internal two symbols, external omits one row); `case_position_external_zero_qty_fail.json` (external zero qty vs internal position). Mock-only; does not close LB-REC-001 or imply live-approved reconciliation.
