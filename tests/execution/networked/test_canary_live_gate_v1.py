@@ -58,3 +58,14 @@ def test_gate_from_environ_reads_pt_canary_scope_ref() -> None:
     assert d.outbound_live_or_canary_allowed is False
     assert d.external_approval_ref_present is True
     assert d.reason_code == "deny:v1_networkless_no_outbound_transport"
+
+
+def test_gate_denies_whitespace_only_external_ref() -> None:
+    d = evaluate_canary_live_gate_v1(
+        dry_run=True,
+        mode="paper",
+        external_approval_ref="   ",
+    )
+    assert d.outbound_live_or_canary_allowed is False
+    assert d.reason_code == "deny:missing_external_approval_ref_lb_apr_001"
+    assert d.external_approval_ref_present is False

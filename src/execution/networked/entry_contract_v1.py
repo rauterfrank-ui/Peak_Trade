@@ -1,4 +1,8 @@
-"""P124 — Execution Networked Entry Contract v1 (guards only, no transport)."""
+"""P124 — Execution Networked Entry Contract v1 (guards only, no transport).
+
+LB-EXE-001: deny-by-default; callers may pass ``env=`` to isolate validation from process
+environment (tests); default remains ``os.environ`` when ``env`` is omitted.
+"""
 
 from __future__ import annotations
 

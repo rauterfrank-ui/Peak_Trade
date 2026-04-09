@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Dict, Optional
 
 from src.execution.networked.canary_live_gate_v1 import (
     CanaryLiveGateDecisionV1,
@@ -49,6 +49,7 @@ def guard_transport_gate_v1(
     market: str,
     qty: float,
     transport_allow: Optional[str] = None,
+    env: Optional[Dict[str, str]] = None,
 ) -> TransportDecisionV1:
     """
     Networked transport gate (v1).
@@ -58,6 +59,9 @@ def guard_transport_gate_v1(
 
     - Enforces entry-contract guards (mode, dry_run, deny env, secret env)
     - Enforces transport_allow == "NO" (default). Any other value is denied.
+
+    ``env`` is forwarded to :func:`~src.execution.networked.entry_contract_v1.guard_entry_contract_v1`
+    (default: process environment). Tests may pass an empty mapping to isolate from host env.
     """
     # Reuse the entry contract gate as the first choke point
     guard_entry_contract_v1(
@@ -67,6 +71,7 @@ def guard_transport_gate_v1(
         intent=intent,
         market=market,
         qty=qty,
+        env=env,
     )
 
     allow = (transport_allow or "NO").strip().upper()
