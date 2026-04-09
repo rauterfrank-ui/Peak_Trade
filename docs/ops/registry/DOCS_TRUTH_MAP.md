@@ -10,6 +10,11 @@ Einige **sensible Code- und Dokumentationspfade** (Execution, Orders, Environmen
 
 Dieses Mapping verknüpft **Bereiche** (Triggers) mit **Canonical-Docs** (mindestens eine Datei aus der Liste muss bei einer Änderung im Bereich mitgeändert werden — im selben Diff gegenüber dem gewählten Basis-Ref, z. B. `origin&#47;main`).
 
+## Canonical: LB-APR-001 — externes Freigabe-Artefakt (Vorlage)
+
+Kanonische **Arbeitsvorlage** für das **externe** Ticket/Formular (LB-APR-001): [`docs/ops/templates/LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE.md`](../templates/LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE.md).  
+Sie strukturiert nur die **organisatorische** Freigabe-Hülle; **Repo-Merge**, Doku und diese Vorlage **begründen keinen** technischen Canary-/Live-Unlock und **keine** `live-approved`-Eigenschaft im Sinne des Runbooks.
+
 ## Wie das Mapping funktioniert
 
 1. Regeln stehen in `config/ops/docs_truth_map.yaml` (`rules[]`).
@@ -54,6 +59,8 @@ Kurzablauf, wenn **`src/orders/`** (Prefix-Regel) geändert wird:
 Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im **selben Diff** **`docs/ops/registry/DOCS_TRUTH_MAP.md`** (diese Datei) einen kurzen Eintrag unter „Änderungsnachweis“ erhalten — damit bleibt die Registry-Landkarte mit der Branch-Protection-Referenz im Einklang (siehe Regel `truth-branch-protection-canonical` in `config/ops/docs_truth_map.yaml`).
 
 ## Änderungsnachweis (Slice A)
+- 2026-04-09 — LB-APR-001: `DOCS_TRUTH_MAP.md` ergänzt um kanonischen Auffindbarkeits-Hinweis auf `docs/ops/templates/LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE.md` (externe Freigabe-Hülle / Arbeitshilfe; kein technischer Unlock; keine Live-Freigabe impliziert).
+
 - 2026-04-09 — LB-EXE-001 Phase 2 updated `docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md` to record deny-by-default guard hardening around `src/execution/networked/transport_gate_v1.py` and related networked guard tests; no live approval or outbound execution unlock implied.
 
 - 2026-04-09 — LB-EXE-001 Phase 1 updated `docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md` to record deny-by-default guard hardening in `src/execution/networked/entry_contract_v1.py`, `src/execution/networked/transport_gate_v1.py`, and `src/execution/networked/canary_live_gate_v1.py`; no live approval or outbound execution unlock implied.
