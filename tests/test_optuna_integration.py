@@ -365,39 +365,37 @@ def test_multi_objective_study_integration():
 @pytest.mark.skipif(not OPTUNA_AVAILABLE, reason="Optuna not installed")
 @pytest.mark.slow
 def test_pruning_integration():
-    """
-    Integration test: Verify pruning works.
+    """Test Optuna pruning integration deterministically."""
 
-    Note: This is a slow test, marked with @pytest.mark.slow.
-    """
-
-    # Create objective that reports intermediate values
     def objective(trial):
         x = trial.suggest_float("x", -10, 10)
 
-        # Report intermediate values (simulate iterative optimization)
         for step in range(10):
             intermediate_value = (x - 2) ** 2 + step * 0.1
             trial.report(intermediate_value, step)
 
-            # Check if should prune
             if trial.should_prune():
                 raise optuna.TrialPruned()
 
         return (x - 2) ** 2
 
-    # Create study with MedianPruner
+    sampler = optuna.samplers.GridSampler(
+        search_space={"x": [-10.0, -8.0, -6.0, -4.0, 0.0, 2.0, 4.0, 6.0, 8.0, 10.0]}
+    )
+    pruner = optuna.pruners.ThresholdPruner(upper=16.0, n_warmup_steps=0)
     study = optuna.create_study(
         direction="minimize",
-        pruner=optuna.pruners.MedianPruner(n_startup_trials=5, n_warmup_steps=3),
+        sampler=sampler,
+        pruner=pruner,
     )
 
-    # Run optimization
-    study.optimize(objective, n_trials=20, show_progress_bar=False)
+    study.optimize(objective, n_trials=10, show_progress_bar=False)
 
-    # Check that some trials were pruned
     pruned_trials = [t for t in study.trials if t.state == optuna.trial.TrialState.PRUNED]
+    completed_trials = [t for t in study.trials if t.state == optuna.trial.TrialState.COMPLETE]
+
     assert len(pruned_trials) > 0, "Expected some trials to be pruned"
+    assert len(completed_trials) > 0, "Expected some trials to complete"
 
 
 # ============================================================================
