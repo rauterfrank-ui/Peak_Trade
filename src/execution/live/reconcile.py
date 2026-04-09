@@ -10,6 +10,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal, Optional, Sequence
 
+from src.execution.live.safety import order_invariant_issues_for_reconcile
+
 BrokerSignal = Optional[Literal["rate_limit", "timeout", "transient"]]
 
 
@@ -87,6 +89,22 @@ def reconcile_orders(
             mismatches=tuple(mismatches),
             corrective_actions=tuple(actions),
             broker_signal=broker_signal,
+        )
+
+    # Safety invariants before diff (mock-only structured failures; no exceptions)
+    for lo in local:
+        for code, msg in order_invariant_issues_for_reconcile(lo.order_id, lo.qty, lo.filled_qty):
+            mismatches.append(ReconcileMismatch(order_id=lo.order_id, code=code, message=msg))
+            actions.append(f"mock_action: reject_snapshot invariant={code} order_id={lo.order_id}")
+    for bo in broker:
+        for code, msg in order_invariant_issues_for_reconcile(bo.order_id, bo.qty, bo.filled_qty):
+            mismatches.append(ReconcileMismatch(order_id=bo.order_id, code=code, message=msg))
+            actions.append(f"mock_action: reject_snapshot invariant={code} order_id={bo.order_id}")
+    if mismatches:
+        return ReconcileReport(
+            mismatches=tuple(mismatches),
+            corrective_actions=tuple(actions),
+            broker_signal=None,
         )
 
     bmap = {b.order_id: b for b in broker}
