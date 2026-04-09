@@ -47,6 +47,8 @@ Dieses Dokument listet **bewusst nicht implementierte Features** und **bekannte 
 - `src/execution/networked/canary_live_gate_v1.py` (LB-EXE-001 slice) exposes an explicit **decision record** for a future authorized canary/live path: v1 **always denies** outbound live/canary transport; optional `PT_CANARY_SCOPE_REF` is only a pointer to external approval evidence and does **not** enable network execution or live readiness.
 
 - LB-EXE-001 Phase 1 extends deny-by-default guard coverage around `src/execution/networked/entry_contract_v1.py`, `src/execution/networked/transport_gate_v1.py`, and `src/execution/networked/canary_live_gate_v1.py`; this remains non-live, non-outbound, and is not evidence of live-approved execution.
+
+- LB-EXE-001 Phase 2 keeps execution deny-by-default while aligning `transport_gate_v1` canary evaluation with the same explicit environment used by entry validation; this remains non-live, non-outbound, and is not evidence of live-approved execution.
 - `guard_transport_gate_v1` attaches that record on `TransportDecisionV1.canary_live_gate_v1` for auditability; it does **not** weaken NO-LIVE / networkless v1 guards or imply live approval.
 - `src/core/environment.py` – Environment-Konfiguration
 - `src/orders/exchange.py` – `LiveOrderExecutor` (Stub/Dry-Run; echte Live-Broker-Pfade bewusst nicht umgesetzt)

@@ -99,3 +99,22 @@ def test_build_extra_kv_roundtrip() -> None:
     )
     assert ctx.extra.get("foo") == "bar"
     validate_execution_networked_context_v1(ctx, env={})
+
+
+def test_deny_env_live_when_zero_or_false_allows() -> None:
+    validate_execution_networked_context_v1(_ctx(), env={"LIVE": "0"})
+    validate_execution_networked_context_v1(_ctx(), env={"LIVE": "false"})
+
+
+def test_orderbook_intent_allows_zero_qty() -> None:
+    validate_execution_networked_context_v1(
+        _ctx(intent="orderbook", qty=0.0),
+        env={},
+    )
+
+
+def test_markets_intent_allows_zero_qty() -> None:
+    validate_execution_networked_context_v1(
+        _ctx(intent="markets", qty=0.0),
+        env={},
+    )
