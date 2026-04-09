@@ -104,6 +104,40 @@ def test_custom_in_memory_broker() -> None:
     assert r.messages == ("custom_ok dry_run=True",)
 
 
+def test_empty_message_list_is_allowed() -> None:
+    mod = _load_close_module()
+
+    class _Empty(mod.EmergencyBroker):
+        def close_all_positions(self, *, dry_run: bool) -> list[str]:
+            return []
+
+    r = mod.run_emergency_close_all_v1(dry_run=True, broker=_Empty())
+    assert r.messages == ()
+    assert r.exit_code == 0
+
+
+def test_rejects_non_list_return_from_broker() -> None:
+    mod = _load_close_module()
+
+    class _BadReturn(mod.EmergencyBroker):
+        def close_all_positions(self, *, dry_run: bool) -> list[str]:  # type: ignore[empty-body]
+            return "not-a-list"  # type: ignore[return-value]
+
+    with pytest.raises(TypeError, match="must return list\\[str\\]"):
+        mod.run_emergency_close_all_v1(dry_run=True, broker=_BadReturn())
+
+
+def test_rejects_non_str_elements_in_list() -> None:
+    mod = _load_close_module()
+
+    class _BadElt(mod.EmergencyBroker):
+        def close_all_positions(self, *, dry_run: bool) -> list[str]:  # type: ignore[empty-body]
+            return [1, "ok"]  # type: ignore[list-item]
+
+    with pytest.raises(TypeError, match="index 0"):
+        mod.run_emergency_close_all_v1(dry_run=True, broker=_BadElt())
+
+
 def test_module_has_no_network_imports() -> None:
     mod = _load_close_module()
     # Script must not bind network client libs at import/load time.

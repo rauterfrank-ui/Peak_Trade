@@ -1,5 +1,8 @@
 """Emergency flatten / close-all — mock-only, NO-LIVE, no network (LB-EMG-001 slice).
 
+Phase 2 tightens the injectable broker adapter contract: ``close_all_positions`` must
+return a ``list[str]`` at runtime (validated before building :class:`EmergencyCloseResultV1`).
+
 This script does not send orders or open sockets. It exercises a testable emergency-close
 shell with dry_run default True. Real exchange closeout and production paths require
 separate governance (e.g. LB-APR-001) and are out of scope for this module.
@@ -27,6 +30,24 @@ class EmergencyCloseResultV1:
     exit_code: int
 
 
+def _validate_close_messages(raw: object) -> tuple[str, ...]:
+    """Runtime adapter contract: broker output must be list[str] (empty list allowed)."""
+    if not isinstance(raw, list):
+        raise TypeError(
+            "EmergencyBroker.close_all_positions must return list[str], "
+            f"got {type(raw).__name__} (LB-EMG-001 mock boundary)"
+        )
+    out: list[str] = []
+    for i, item in enumerate(raw):
+        if not isinstance(item, str):
+            raise TypeError(
+                "EmergencyBroker.close_all_positions must return list[str]; "
+                f"index {i} is {type(item).__name__} (LB-EMG-001 mock boundary)"
+            )
+        out.append(item)
+    return tuple(out)
+
+
 class MockEmergencyBrokerV1:
     """Deterministic test double — no network, no credentials."""
 
@@ -44,10 +65,11 @@ def run_emergency_close_all_v1(*, dry_run: bool, broker: EmergencyBroker) -> Eme
     """Run the emergency close flow; broker must be mock-only in this repo slice."""
     if not isinstance(broker, EmergencyBroker):
         raise TypeError("broker must implement EmergencyBroker (LB-EMG-001 mock boundary)")
-    msgs = broker.close_all_positions(dry_run=dry_run)
+    raw = broker.close_all_positions(dry_run=dry_run)
+    messages = _validate_close_messages(raw)
     return EmergencyCloseResultV1(
         dry_run=dry_run,
-        messages=tuple(msgs),
+        messages=messages,
         exit_code=0,
     )
 
