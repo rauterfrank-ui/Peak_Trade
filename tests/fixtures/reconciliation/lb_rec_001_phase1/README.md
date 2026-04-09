@@ -11,3 +11,5 @@ Schema: `lb_rec_001_phase1_v1` (see `case_*.json`).
 - `internal.fills`: optional array of fills for multi-symbol ledgers (Phase 2 slice); mutually exclusive with `fill` in practice — use one style per case.
 
 `expect` may include `min_warn`, `min_info`, `first_severity` for severity assertions (see newer `case_*.json`).
+
+**Phase 3 (LB-REC-001):** `case_buy_then_sell_warn.json` (multi-fill with SELL); `case_position_and_cash_fail.json` (stacked POSITION + CASH FAIL). Mock-only; not live-approved reconciliation.

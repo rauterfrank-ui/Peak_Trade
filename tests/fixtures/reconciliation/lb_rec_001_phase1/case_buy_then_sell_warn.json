@@ -1,0 +1,43 @@
+{
+  "schema": "lb_rec_001_phase1_v1",
+  "id": "buy_then_sell_warn",
+  "notes": "LB-REC-001 Phase 3: BUY then SELL on same symbol; net internal 1.5 BTC; external under-reports in WARN band only (harness exercises multi-fill + SELL path).",
+  "as_of_time": "2026-04-08T12:00:00+00:00",
+  "internal": {
+    "initial_cash": "200000.00",
+    "fills": [
+      {
+        "fill_id": "lbrec_fill_p3_buy",
+        "client_order_id": "lbrec_co_p3_b",
+        "exchange_order_id": "lbrec_ex_p3_b",
+        "symbol": "BTC/EUR",
+        "side": "BUY",
+        "quantity": "2.0",
+        "price": "50000.00",
+        "fee": "5.00"
+      },
+      {
+        "fill_id": "lbrec_fill_p3_sell",
+        "client_order_id": "lbrec_co_p3_s",
+        "exchange_order_id": "lbrec_ex_p3_s",
+        "symbol": "BTC/EUR",
+        "side": "SELL",
+        "quantity": "0.5",
+        "price": "51000.00",
+        "fee": "2.00"
+      }
+    ]
+  },
+  "external": {
+    "positions": { "BTC/EUR": "1.488" },
+    "cash_balance": { "mode": "match_internal" }
+  },
+  "expect": {
+    "diff_count": 1,
+    "min_fail": 0,
+    "min_warn": 1,
+    "first_diff_type": "POSITION",
+    "first_severity": "WARN",
+    "all_diff_types": ["POSITION"]
+  }
+}
