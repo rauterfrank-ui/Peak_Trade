@@ -19,3 +19,5 @@ Schema: `lb_rec_001_phase1_v1` (see `case_*.json`).
 **Phase 5 (LB-REC-001):** `case_netted_flat_empty_external.json` (BUY+SELL net flat; ledger row qty 0; external `positions` empty). Mock-only; not an exchange baseline.
 
 **Phase 6 (LB-REC-001):** `case_multi_symbol_both_position_fail.json` (BTC+ETH internal; external wrong on both symbols → two POSITION FAIL). Mock-only; does not close LB-REC-001.
+
+**Phase 7 (LB-REC-001):** `case_multi_symbol_positions_match_cash_fail.json` (BTC+ETH; external positions match internal; fixed external cash wrong → CASH FAIL only). Mock-only; does not close LB-REC-001.
