@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from typing import Dict, Optional
 
@@ -61,7 +62,8 @@ def guard_transport_gate_v1(
     - Enforces transport_allow == "NO" (default). Any other value is denied.
 
     ``env`` is forwarded to :func:`~src.execution.networked.entry_contract_v1.guard_entry_contract_v1`
-    (default: process environment). Tests may pass an empty mapping to isolate from host env.
+    (default: process environment). The same resolved mapping is passed to the canary gate
+    (``env or dict(os.environ)``). Tests may pass an empty mapping to isolate from host env.
     """
     # Reuse the entry contract gate as the first choke point
     guard_entry_contract_v1(
@@ -89,7 +91,14 @@ def guard_transport_gate_v1(
     elif allow != "NO":
         raise TransportGateError(f"TRANSPORT_GATE_DENY transport_allow={allow}")
 
-    canary = evaluate_canary_live_gate_v1_from_environ(dry_run=dry_run, mode=mode)
+    # Match :func:`guard_entry_contract_v1` env resolution so canary sees the same mapping
+    # as entry validation (``env or dict(os.environ)``).
+    resolved_env = env or dict(os.environ)
+    canary = evaluate_canary_live_gate_v1_from_environ(
+        dry_run=dry_run,
+        mode=mode,
+        environ=resolved_env,
+    )
 
     return TransportDecisionV1(
         ok=True,
