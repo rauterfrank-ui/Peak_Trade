@@ -42,6 +42,8 @@ class MockEmergencyBrokerV1:
 
 def run_emergency_close_all_v1(*, dry_run: bool, broker: EmergencyBroker) -> EmergencyCloseResultV1:
     """Run the emergency close flow; broker must be mock-only in this repo slice."""
+    if not isinstance(broker, EmergencyBroker):
+        raise TypeError("broker must implement EmergencyBroker (LB-EMG-001 mock boundary)")
     msgs = broker.close_all_positions(dry_run=dry_run)
     return EmergencyCloseResultV1(
         dry_run=dry_run,
@@ -72,6 +74,15 @@ def main(argv: list[str] | None = None) -> int:
     for line in result.messages:
         print(line)
     return result.exit_code
+
+
+__all__ = [
+    "EmergencyBroker",
+    "EmergencyCloseResultV1",
+    "MockEmergencyBrokerV1",
+    "run_emergency_close_all_v1",
+    "main",
+]
 
 
 if __name__ == "__main__":
