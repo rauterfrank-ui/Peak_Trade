@@ -6,6 +6,7 @@ Invariant checks and bounded-retry bookkeeping. No I/O, no broker calls.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from typing import AbstractSet, MutableSet
 
@@ -64,6 +65,14 @@ def order_invariant_issues_for_reconcile(
     Empty list if values are consistent for Phase-0 floats.
     """
     issues: list[tuple[str, str]] = []
+    if not math.isfinite(qty) or not math.isfinite(filled_qty):
+        issues.append(
+            (
+                "invariant_non_finite_qty",
+                f"order_id={order_id} qty={qty} filled_qty={filled_qty}",
+            )
+        )
+        return issues
     if qty < -_FLOAT_EPS or filled_qty < -_FLOAT_EPS:
         issues.append(
             (

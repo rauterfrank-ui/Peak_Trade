@@ -130,14 +130,19 @@ def reconcile_orders(
             )
             actions.append(f"mock_action: resync_fills order_id={lo.order_id}")
         if lo.status != bo.status:
-            mismatches.append(
-                ReconcileMismatch(
-                    order_id=lo.order_id,
-                    code="status_mismatch",
-                    message=f"status local={lo.status} broker={bo.status}",
+            race = cancel_race_mismatch(lo.order_id, lo.status, bo.status)
+            if race is not None:
+                mismatches.append(race)
+                actions.append(f"mock_action: cancel_race_hold_reconcile order_id={lo.order_id}")
+            else:
+                mismatches.append(
+                    ReconcileMismatch(
+                        order_id=lo.order_id,
+                        code="status_mismatch",
+                        message=f"status local={lo.status} broker={bo.status}",
+                    )
                 )
-            )
-            actions.append(f"mock_action: reconcile_status order_id={lo.order_id}")
+                actions.append(f"mock_action: reconcile_status order_id={lo.order_id}")
 
     l_ids = {o.order_id for o in local}
     for bo in broker:
@@ -158,11 +163,13 @@ def reconcile_orders(
     )
 
 
-def cancel_race_mismatch(local_status: str, broker_status: str) -> Optional[ReconcileMismatch]:
+def cancel_race_mismatch(
+    order_id: str, local_status: str, broker_status: str
+) -> Optional[ReconcileMismatch]:
     """Detect cancel vs open race: local cancelled but broker still open."""
     if local_status == "cancelled" and broker_status == "open":
         return ReconcileMismatch(
-            order_id="(single)",
+            order_id=order_id,
             code="cancel_race",
             message="local cancelled broker still open",
         )

@@ -85,3 +85,9 @@ def test_order_invariant_filled_exceeds_qty() -> None:
     inv = order_invariant_issues_for_reconcile("o1", 1.0, 1.5)
     assert len(inv) == 1
     assert inv[0][0] == "invariant_filled_exceeds_qty"
+
+
+def test_order_invariant_non_finite_qty() -> None:
+    inv = order_invariant_issues_for_reconcile("o1", float("inf"), 0.0)
+    assert len(inv) == 1
+    assert inv[0][0] == "invariant_non_finite_qty"
