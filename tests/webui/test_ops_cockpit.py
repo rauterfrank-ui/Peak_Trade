@@ -45,6 +45,7 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "stale_state" in payload
     assert "session_end_mismatch_state" in payload
     assert "human_supervision_state" in payload
+    assert "phase83_eligibility_snapshot" in payload
     sup = payload["human_supervision_state"]
     assert sup["status"] == "operator_supervised"
     assert sup["mode"] == "intended"
@@ -131,6 +132,35 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert payload["operator_state"]["dry_run"] is True
     assert payload["operator_state"]["blocked"] is True
     assert payload["operator_state"]["kill_switch_active"] is False
+
+
+def test_phase83_eligibility_snapshot_unavailable_in_empty_repo(tmp_path: Path) -> None:
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    snap = payload["phase83_eligibility_snapshot"]
+    assert snap["mode"] == "phase83_eligibility_snapshot_v1"
+    assert snap["status"] == "unavailable"
+    assert snap["strategies_checked"] == 0
+    assert snap["items"] == []
+
+
+def test_ops_cockpit_html_contains_phase83_eligibility_card(tmp_path: Path) -> None:
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Phase 83 — Strategy eligibility" in html
+    assert "Read-only" in html
+    assert "Observation only" in html
+
+
+def test_phase83_eligibility_snapshot_ok_with_real_repo_tiering() -> None:
+    repo = Path(__file__).resolve().parents[2]
+    if not (repo / "config" / "strategy_tiering.toml").exists():
+        pytest.skip("checkout without strategy_tiering.toml")
+    payload = build_ops_cockpit_payload(repo_root=repo)
+    snap = payload["phase83_eligibility_snapshot"]
+    assert snap["mode"] == "phase83_eligibility_snapshot_v1"
+    assert snap["status"] == "ok"
+    assert snap["strategies_checked"] > 0
+    assert "eligible_count" in snap
+    assert isinstance(snap["items"], list)
 
 
 def test_run_state_last_run_status_from_registry(tmp_path: Path) -> None:

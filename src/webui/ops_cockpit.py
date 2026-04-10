@@ -629,6 +629,216 @@ def _render_update_officer_operator_trace_html(trace: dict[str, str]) -> str:
     )
 
 
+PHASE83_ELIGIBILITY_MAX_STRATEGIES = 24
+
+
+def _toml_load_table(path: Path) -> dict:
+    """Load TOML (tomllib on 3.11+, tomli on older)."""
+    try:
+        import tomllib
+    except ImportError:
+        import tomli as tomllib  # type: ignore[no-redef]
+
+    with open(path, "rb") as f:
+        return tomllib.load(f)
+
+
+def _list_core_aux_strategy_ids_from_toml(tiering_path: Path, *, limit: int) -> List[str]:
+    """Strategy IDs with tier core or aux, sorted, capped."""
+    if not tiering_path.exists():
+        return []
+    try:
+        data = _toml_load_table(tiering_path)
+    except Exception:
+        return []
+    block = data.get("strategy") or {}
+    ids: List[str] = []
+    for sid, meta in block.items():
+        if not isinstance(meta, dict):
+            continue
+        tier = str(meta.get("tier", "")).lower()
+        if tier in ("core", "aux"):
+            ids.append(str(sid))
+    ids.sort()
+    return ids[:limit]
+
+
+def _build_phase83_eligibility_snapshot(repo_root: Path | None) -> Dict[str, object]:
+    """
+    Read-only Phase 83 eligibility rows via ``check_strategy_live_eligibility``.
+
+    Does not change gate semantics; surfaces observed outcomes only.
+    """
+    root = repo_root if repo_root is not None else Path.cwd()
+    tiering_path = root / "config" / "strategy_tiering.toml"
+    policies_path = root / "config" / "live_policies.toml"
+    base: Dict[str, object] = {
+        "mode": "phase83_eligibility_snapshot_v1",
+        "source": "src.live.live_gates.check_strategy_live_eligibility",
+        "read_only": True,
+        "truth_posture": "observation_only",
+    }
+    if not tiering_path.exists():
+        return {
+            **base,
+            "status": "unavailable",
+            "detail": "config/strategy_tiering.toml not found for this repo root",
+            "strategies_checked": 0,
+            "eligible_count": 0,
+            "not_eligible_count": 0,
+            "require_allow_live_flag": None,
+            "items": [],
+        }
+    try:
+        from src.live.live_gates import check_strategy_live_eligibility, load_live_policies
+    except ImportError as e:
+        return {
+            **base,
+            "status": "unavailable",
+            "detail": f"live_gates import failed: {e}",
+            "strategies_checked": 0,
+            "eligible_count": 0,
+            "not_eligible_count": 0,
+            "require_allow_live_flag": None,
+            "items": [],
+        }
+
+    policies = load_live_policies(policies_path)
+    require_flag = bool(getattr(policies, "require_allow_live_flag", False))
+    strategies = _list_core_aux_strategy_ids_from_toml(
+        tiering_path, limit=PHASE83_ELIGIBILITY_MAX_STRATEGIES
+    )
+    if not strategies:
+        return {
+            **base,
+            "status": "empty_selection",
+            "detail": "no core/aux entries found in strategy tiering file",
+            "strategies_checked": 0,
+            "eligible_count": 0,
+            "not_eligible_count": 0,
+            "require_allow_live_flag": require_flag,
+            "items": [],
+        }
+
+    items: List[Dict[str, object]] = []
+    eligible_n = 0
+    not_eligible_n = 0
+    for sid in strategies:
+        try:
+            res = check_strategy_live_eligibility(
+                sid,
+                policies=policies,
+                tiering_config_path=tiering_path,
+            )
+            row: Dict[str, object] = {
+                "entity_id": res.entity_id,
+                "entity_type": res.entity_type,
+                "is_eligible": res.is_eligible,
+                "reasons": list(res.reasons)[:8],
+                "tier": res.tier,
+                "allow_live_flag": res.allow_live_flag,
+            }
+        except Exception as e:
+            row = {
+                "entity_id": sid,
+                "entity_type": "strategy",
+                "is_eligible": False,
+                "reasons": [f"evaluation_error:{type(e).__name__}"],
+                "tier": None,
+                "allow_live_flag": None,
+            }
+        items.append(row)
+        if row.get("is_eligible") is True:
+            eligible_n += 1
+        else:
+            not_eligible_n += 1
+
+    try:
+        tier_rel = tiering_path.relative_to(root)
+    except ValueError:
+        tier_rel = tiering_path
+
+    return {
+        **base,
+        "status": "ok",
+        "detail": None,
+        "tiering_path": str(tier_rel),
+        "strategies_checked": len(strategies),
+        "eligible_count": eligible_n,
+        "not_eligible_count": not_eligible_n,
+        "require_allow_live_flag": require_flag,
+        "items": items,
+    }
+
+
+def _render_phase83_eligibility_card(snapshot: Dict[str, object]) -> str:
+    """HTML block: Phase 83 eligibility snapshot (read-only, truth-first wording)."""
+    status = escape(str(snapshot.get("status", "unknown")))
+    mode = escape(str(snapshot.get("mode", "")))
+    detail_raw = snapshot.get("detail")
+    detail = escape(str(detail_raw)) if detail_raw else ""
+    src = escape(str(snapshot.get("source", "")))
+    chk = int(snapshot.get("strategies_checked") or 0)
+    eli = int(snapshot.get("eligible_count") or 0)
+    nel = int(snapshot.get("not_eligible_count") or 0)
+    rflag = snapshot.get("require_allow_live_flag")
+    rflag_s = escape(str(rflag)) if rflag is not None else "n/a"
+    tier_path = snapshot.get("tiering_path")
+    tier_path_s = escape(str(tier_path)) if tier_path else ""
+
+    rows_html: List[str] = []
+    for it in snapshot.get("items") or []:
+        if not isinstance(it, dict):
+            continue
+        eid = escape(str(it.get("entity_id", "")))
+        elig = it.get("is_eligible")
+        if elig is True:
+            elig_s = escape("yes")
+        elif elig is False:
+            elig_s = escape("no")
+        else:
+            elig_s = escape("?")
+        tier = escape(str(it.get("tier") or ""))
+        reasons = it.get("reasons") or []
+        rtext = escape("; ".join(str(r) for r in list(reasons)[:6]))
+        rows_html.append(
+            f"<tr><td><code>{eid}</code></td><td>{elig_s}</td><td>{tier}</td><td>{rtext}</td></tr>"
+        )
+    table_html = ""
+    if rows_html:
+        table_html = (
+            "<table style='width:100%;border-collapse:collapse;font-size:0.9em;'>"
+            "<thead><tr><th align='left'>Strategy</th>"
+            "<th>Observed eligible</th><th>Tier</th><th align='left'>Notes (truncated)</th></tr></thead>"
+            f"<tbody>{''.join(rows_html)}</tbody></table>"
+        )
+
+    intro = (
+        "Observation only from the existing Phase 83 eligibility check. "
+        "Does not grant live access or change enforcement."
+    )
+    detail_block = f"<p><strong>Detail:</strong> {detail}</p>" if detail else ""
+    path_block = (
+        f"<p><strong>Tiering path:</strong> <code>{tier_path_s}</code></p>" if tier_path_s else ""
+    )
+
+    return (
+        f'<div class="card truth-card" style="margin-bottom:20px;">'
+        f"<h2>Phase 83 — Strategy eligibility</h2>"
+        f"<p><strong>Read-only.</strong> {intro}</p>"
+        f"<p><strong>Snapshot mode:</strong> <code>{mode}</code> · "
+        f"<strong>Status:</strong> <code>{status}</code> · "
+        f"<strong>Source:</strong> <code>{src}</code></p>"
+        f"{path_block}"
+        f"<p><strong>Strategies evaluated (cap {PHASE83_ELIGIBILITY_MAX_STRATEGIES}):</strong> {chk} · "
+        f"<strong>Observed eligible / not eligible:</strong> {eli} / {nel} · "
+        f"<strong>Policy require_allow_live_flag:</strong> <code>{rflag_s}</code></p>"
+        f"{detail_block}"
+        f"{table_html}"
+        f"</div>"
+    )
+
+
 def build_workflow_officer_panel_context(repo_root: Path | None = None) -> Dict[str, object]:
     """Read-only WebUI slice: latest Workflow Officer ``report.json`` (no writes)."""
     from src.ops.workflow_officer import build_workflow_officer_dashboard_view
@@ -1094,6 +1304,7 @@ def build_ops_cockpit_payload(
             payload_path=update_officer_notifier_path,
             run_dir=update_officer_run_dir,
         )
+    phase83_eligibility_snapshot = _build_phase83_eligibility_snapshot(repo_root)
     return {
         "system_state": {
             "mode": "truth_first_ops_cockpit_v3",
@@ -1127,6 +1338,7 @@ def build_ops_cockpit_payload(
         "source_coverage_status": v3_summary["source_coverage_status"],
         "critical_flags": v3_summary["critical_flags"],
         "unknown_flags": v3_summary["unknown_flags"],
+        "phase83_eligibility_snapshot": phase83_eligibility_snapshot,
         "update_officer_ui": update_officer_ui,
     }
 
@@ -1449,6 +1661,9 @@ def render_ops_cockpit_html(
     runtime_cards = "".join(_render_doc_card(doc) for doc in groups["runtime_resolution"])
     supporting_cards = "".join(_render_doc_card(doc) for doc in groups["supporting_truth"])
     exec_summary_html = _render_exec_summary_status_grid(payload)
+    phase83_eligibility_html = _render_phase83_eligibility_card(
+        payload.get("phase83_eligibility_snapshot") or {}
+    )
     update_officer_ergonomics_html = _render_update_officer_source_ergonomics_block(
         form_notifier_path=update_officer_form_notifier_path,
         form_run_dir=update_officer_form_run_dir,
@@ -1501,6 +1716,7 @@ def render_ops_cockpit_html(
 </head>
 <body>
   {exec_summary_html}
+  {phase83_eligibility_html}
   <div class="hero">
     <h1>Ops Cockpit v3 — Truth-First</h1>
     <p>Read-only. No write actions.</p>
