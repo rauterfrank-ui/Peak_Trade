@@ -350,7 +350,7 @@ Weitere Einträge der Operator-WebUI-Navigation (u. a. Execution Watch, Alerts, 
 - `/watch/runs/{run_id}` — Run-Detail (Watch)
 - `/sessions/{run_id}` — Alias zum gleichen Run-Detail
 
-Die Companion-Hinweise in live.web verlinken **lesend** auf die Operator-WebUI auf Port **8000** (Navigation only; siehe `src/live/web/app.py`).
+Die **Companion**-Hinweise in live.web (Haupt-Dashboard und Watch-/Session-HTML) verlinken **lesend** (Navigation only) auf **`http://127.0.0.1:8000/`**, **`http://127.0.0.1:8000/ops`**, **`http://127.0.0.1:8000/ops/ci-health`** und den Run-UI-Standard **`http://127.0.0.1:8010/`** — README-Default-Hosts/-Ports, **getrennte Prozesse**, **keine gemeinsame Control Plane** (Implementierung: `src/live/web/app.py`).
 
 Details: [`docs/CLI_CHEATSHEET.md`](docs/CLI_CHEATSHEET.md#18-live-web-dashboard-phase-67), [`docs/LIVE_OPERATIONAL_RUNBOOKS.md`](docs/LIVE_OPERATIONAL_RUNBOOKS.md) Abschnitt 10d.
 
