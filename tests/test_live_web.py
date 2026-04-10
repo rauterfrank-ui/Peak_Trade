@@ -442,6 +442,17 @@ class TestDashboardEndpoint:
         assert "Operator WebUI" in text
         assert "separate process" in text.lower()
 
+    def test_dashboard_contains_ops_cockpit_deeplink(self, test_client: TestClient) -> None:
+        """Haupt-Dashboard (/ und /dashboard) enthält expliziten Companion-Deep-Link zu /ops."""
+        for path in ("/", "/dashboard"):
+            response = test_client.get(path)
+            assert response.status_code == 200
+            text = response.text
+            assert "http://127.0.0.1:8000/ops" in text
+            assert "Ops Cockpit" in text
+            assert "companion navigation" in text.lower()
+            assert "no shared control plane" in text.lower()
+
     def test_watch_overview_contains_companion_strip_to_operator_webui(
         self, test_client: TestClient
     ) -> None:
