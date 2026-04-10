@@ -631,4 +631,15 @@ def build_api_v0_router(
 
         return StreamingResponse(gen(), media_type="text/event-stream")
 
-    return router
+    # Expose inner handlers for HTML watch-only pages (same logic as /api/v0/*, no duplicate semantics).
+    v0_watch_helpers: Dict[str, Any] = {
+        "health": api_v0_health,
+        "runs": api_v0_runs,
+        "run_detail": api_v0_run_detail,
+        "signals": api_v0b_run_signals,
+        "positions": api_v0b_run_positions,
+        "orders": api_v0b_run_orders,
+        "run_dir_for": _run_dir_for,
+    }
+
+    return router, v0_watch_helpers

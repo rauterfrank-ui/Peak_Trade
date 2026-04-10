@@ -442,6 +442,39 @@ class TestDashboardEndpoint:
         assert "Operator WebUI" in text
         assert "separate process" in text.lower()
 
+    def test_watch_overview_contains_companion_strip_to_operator_webui(
+        self, test_client: TestClient
+    ) -> None:
+        """Watch-Only-Übersicht enthält denselben Companion-Hinweis wie das Haupt-Dashboard."""
+        response = test_client.get("/watch")
+        assert response.status_code == 200
+        text = response.text
+        assert "Companion (navigation):" in text
+        assert "http://127.0.0.1:8000/" in text
+        assert "no shared control plane" in text
+
+    def test_watch_run_detail_contains_companion_strip_to_operator_webui(
+        self, test_client: TestClient
+    ) -> None:
+        """Watch-Only Run-Detail enthält Companion-Hinweis zur Operator-WebUI."""
+        run_id = "20251204_180000_paper_ma_crossover_BTC-EUR_1m"
+        response = test_client.get(f"/watch/runs/{run_id}")
+        assert response.status_code == 200
+        text = response.text
+        assert "Companion (navigation):" in text
+        assert "http://127.0.0.1:8000/" in text
+
+    def test_sessions_alias_same_companion_as_watch_run_detail(
+        self, test_client: TestClient
+    ) -> None:
+        """Alias /sessions/{id} liefert dieselbe HTML-Seite inkl. Companion-Strip."""
+        run_id = "20251204_180000_paper_ma_crossover_BTC-EUR_1m"
+        r_watch = test_client.get(f"/watch/runs/{run_id}")
+        r_sess = test_client.get(f"/sessions/{run_id}")
+        assert r_watch.status_code == 200 and r_sess.status_code == 200
+        assert "Companion (navigation):" in r_sess.text
+        assert "http://127.0.0.1:8000/" in r_sess.text
+
     def test_dashboard_alias(self, test_client: TestClient) -> None:
         """Test Dashboard unter /dashboard."""
         response = test_client.get("/dashboard")

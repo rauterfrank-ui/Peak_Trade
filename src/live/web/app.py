@@ -175,6 +175,19 @@ def _calculate_orders_count(events: List[Dict[str, Any]]) -> Dict[str, int]:
     }
 
 
+def _companion_operator_webui_hint_html_watch() -> str:
+    """Read-only companion strip for live.web watch-only HTML pages (PR #2442 wording aligned)."""
+    return (
+        "<div class='companion-strip'>"
+        "<strong>Companion (navigation):</strong> Operator WebUI — "
+        "<a href='http://127.0.0.1:8000/' target='_blank' rel='noopener noreferrer'>"
+        "http://127.0.0.1:8000/</a>"
+        " · default local port per README; separate process, not this app; "
+        "no shared control plane."
+        "</div>"
+    )
+
+
 # =============================================================================
 # HTML Templates
 # =============================================================================
@@ -821,6 +834,15 @@ def create_app(
             logger.warning(f"Error loading alerts for {run_id}: {e}")
             return []
 
+    v0_router, v0_watch = build_api_v0_router(
+        runs_dir=runs_dir,
+        contract_version=DASHBOARD_API_CONTRACT_VERSION,
+        health_check=health_check,
+        get_runs=get_runs,
+        get_run_snapshot_endpoint=get_run_snapshot_endpoint,
+    )
+    app.include_router(v0_router)
+
     # =============================================================================
     # HTML Dashboard
     # =============================================================================
@@ -886,6 +908,8 @@ def create_app(
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
     th, td { padding: 8px 8px; border-bottom: 1px solid rgba(148,163,184,0.18); text-align: left; vertical-align: top; }
     th { color: #9ca3af; font-weight: 600; }
+    .companion-strip { font-size: 11px; color: #9ca3af; line-height: 1.45; margin-bottom: 14px; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.25); background: rgba(56, 189, 248, 0.06); }
+    .companion-strip a { color: #7dd3fc; }
 """
 
     def _polling_js(poll_ms: int, max_backoff_ms: int) -> str:
@@ -934,8 +958,8 @@ def create_app(
     @app.get("/watch", response_class=HTMLResponse)
     async def watch_only_overview():
         # Server-rendered initial state (no JS required)
-        health = await api_v0_health()
-        runs = await api_v0_runs()
+        health = await v0_watch["health"]()
+        runs = await v0_watch["runs"]()
 
         rows_html = ""
         active_strategy = "unknown"
@@ -980,6 +1004,7 @@ def create_app(
 <body>
   <div class="wrap">
     {_watch_only_banner()}
+    {_companion_operator_webui_hint_html_watch()}
     <div class="header">
       <div>
         <div class="title">Peak_Trade Dashboard v0.1B — Watch-Only</div>
@@ -1086,7 +1111,7 @@ def create_app(
     @app.get("/watch/runs/{run_id}", response_class=HTMLResponse)
     async def watch_only_run_detail(run_id: str):
         # Validate existence early
-        _run_dir_for(run_id)
+        v0_watch["run_dir_for"](run_id)
 
         # Server-rendered initial state per panel (no JS required)
         detail_error = None
@@ -1095,13 +1120,13 @@ def create_app(
         orders_error = None
 
         try:
-            detail = await api_v0_run_detail(run_id)
+            detail = await v0_watch["run_detail"](run_id)
         except Exception as e:
             detail = None
             detail_error = str(e)
 
         try:
-            signals = await api_v0b_run_signals(run_id, limit=50)
+            signals = await v0_watch["signals"](run_id, limit=50)
         except Exception as e:
             signals = SignalsResponseV0B(
                 run_id=run_id, asof=datetime.now(timezone.utc).isoformat(), count=0, items=[]
@@ -1109,7 +1134,7 @@ def create_app(
             signals_error = str(e)
 
         try:
-            positions = await api_v0b_run_positions(run_id, limit=50)
+            positions = await v0_watch["positions"](run_id, limit=50)
         except Exception as e:
             positions = PositionsResponseV0B(
                 run_id=run_id, asof=datetime.now(timezone.utc).isoformat(), count=0, items=[]
@@ -1117,7 +1142,7 @@ def create_app(
             positions_error = str(e)
 
         try:
-            orders = await api_v0b_run_orders(run_id, limit=200, only_nonzero=True)
+            orders = await v0_watch["orders"](run_id, limit=200, only_nonzero=True)
         except Exception as e:
             orders = OrdersResponseV0B(
                 run_id=run_id, asof=datetime.now(timezone.utc).isoformat(), count=0, items=[]
@@ -1204,6 +1229,7 @@ def create_app(
 <body>
   <div class="wrap">
     {_watch_only_banner()}
+    {_companion_operator_webui_hint_html_watch()}
     <div class="header">
       <div>
         <div class="title">Session Detail (Run): <span class="pill" id="run-id">{safe_run}</span></div>
@@ -1439,19 +1465,5 @@ def create_app(
     @app.get("/sessions/{run_id}", response_class=HTMLResponse)
     async def watch_only_run_detail_alias(run_id: str):
         return await watch_only_run_detail(run_id)
-
-    # =============================================================================
-    # API v0 (read-only) router
-    # =============================================================================
-
-    app.include_router(
-        build_api_v0_router(
-            runs_dir=runs_dir,
-            contract_version=DASHBOARD_API_CONTRACT_VERSION,
-            health_check=health_check,
-            get_runs=get_runs,
-            get_run_snapshot_endpoint=get_run_snapshot_endpoint,
-        )
-    )
 
     return app
