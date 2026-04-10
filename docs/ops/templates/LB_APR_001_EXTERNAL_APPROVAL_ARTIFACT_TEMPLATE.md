@@ -1,23 +1,37 @@
 # LB-APR-001 — Externes Freigabe-Artefakt
 
-**Status (Pflicht):** ENTWURF / NICHT FREIGEGEBEN — bis ausdrücklich anders vermerkt.
+**Kompakt (1 Seite):** [`LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE_COMPACT.md`](LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE_COMPACT.md)  
+**Startfassung (externes Ticket/Formular):** [`LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_START_COPY.md`](LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_START_COPY.md)
 
-> **Operative Kernaussage:** Solange **Dokumentstatus** nicht **Approved** ist und **Sign-off** nicht erteilt wurde, ist dieses Artefakt **nur** eine Review-/Planungshülle. Es **ändert** den Live-Readiness-**NO-GO**-Zustand **nicht** und **aktiviert** keinen technischen Canary-/Live-Unlock.
->
-> **Scope-Regel:** **Änderung eines Pflichtfelds** (siehe Abschnitt 3) **macht dieses Artefakt ungültig** und **erfordert eine neue Freigabe** (neues Artefakt / neue Version mit eigener Review- und Sign-off-Kette).
->
-> **Repo-Referenzen:** Die unten genannten **festen Repo-Pfade** sind die kanonischen Bezüge — Review und Audit sollen **deterministisch** dieselben Dateien öffnen (nicht nur freie Abschnittsnamen).
+**Status:** ENTWURF / NICHT FREIGEGEBEN
+
+## 0. Geltungshinweis
+
+Dieses Artefakt ist nur wirksam, wenn alle folgenden Bedingungen erfüllt sind:
+
+- Dokumentstatus = Approved
+- Risk-Officer-Review dokumentiert
+- Sign-off erteilt
+- alle Auflagen erfüllt und nachgewiesen
+
+Bis dahin gilt:
+
+- keine aktive Canary-/Live-Freigabe
+- kein technischer Unlock
+- Repo-Dokumentation, Template, Merge oder Pointer ersetzen dieses Artefakt nicht
+
+Änderung eines Pflichtfelds macht dieses Artefakt ungültig und erfordert eine neue Freigabe.
 
 ---
 
 ## 1. Metadaten
 
-- Freigabe-Referenz: `<Ticket-ID &#47; Formular-ID &#47; Vorgangsnummer>`
-- Erstellungsdatum (UTC): `<YYYY-MM-DDTHH:MM:SSZ>`
-- Gültig ab (UTC): `<...>`
-- Gültig bis (UTC): `<...>`
+- Freigabe-Referenz: `<TICKET-ID &#47; FORM-ID &#47; GRC-ID>`
 - Artefakt-Version: `v1`
 - Dokumentstatus: `Draft` / `Pending Review` / `Approved` / `Rejected` / `Expired`
+- Erstellungsdatum (UTC): `<YYYY-MM-DDTHH:MM:SSZ>`
+- Gültig ab (UTC): `<YYYY-MM-DDTHH:MM:SSZ>`
+- Gültig bis (UTC): `<YYYY-MM-DDTHH:MM:SSZ>`
 
 ---
 
@@ -26,74 +40,77 @@
 - Owner / Systemverantwortlicher: `<Name &#47; Rolle>`
 - Risk Officer: `<Name &#47; Rolle>`
 - Reviewer(s): `<Name &#47; Rolle>`
-- Approver / Sign-off: `<Name &#47; Rolle>`
+- Finaler Approver / Sign-off: `<Name &#47; Rolle>`
 
 ---
 
 ## 3. Scope der beantragten Freigabe
 
-**Gilt die Scope-Regel aus dem Kasten oben:** jede Änderung eines der folgenden Pflichtfelder nach erfolgter Freigabe → Artefakt ungültig → **neue** Freigabe erforderlich.
-
-- Exchange: `<...>`
-- Kontotyp: `<...>`
-- Symbol(e): `<...>`
+- Exchange: `<genau ein Wert>`
+- Kontotyp: `<genau ein Wert>`
+- Symbol(e): `<genau definierter Scope>`
 - Strategie-Version: `<Name &#47; Version>`
-- Git-Revision / Commit: `<sha>`
-- Artefakt-ID / Build-Referenz: `<...>`
-- Erlaubte Ordertypen: `<...>`
-- Umgebung: `Canary` / anderes klar benanntes Scope
-- Explizit nicht umfasst: `<z. B. Live, weitere Symbole, weitere Strategien>`
+- Git-Revision: `<commit sha>`
+- Artefakt-ID / Build-Referenz: `<optional, falls vorhanden>`
+- Erlaubte Ordertypen: `<explizite Liste>`
+- Umgebung / Scope: `<Canary &#47; anderer exakt benannter Scope>`
+- Explizit nicht umfasst: `<alles, was ausgeschlossen ist>`
+
+**Regel:** Jede Änderung an Exchange, Kontotyp, Symbol, Strategie-Version, Git-Revision oder erlaubten Ordertypen macht dieses Artefakt ungültig und erfordert neue Prüfung und neue Freigabe.
 
 ---
 
 ## 4. Gating- und Sicherheitsrahmen
 
-- Enabled/Armed-Anforderungen: `<...>`
-- Confirm-Token / Session-Bindung: `<...>`
-- Dry-Run-/Non-Outbound-Grenzen: `<...>`
-- Zusätzliche technische Preconditions: `<...>`
+- Enabled/Armed-Anforderungen: `<konkret>`
+- Confirm-Token / Session-Bindung: `<konkret>`
+- Dry-Run-Grenzen: `<konkret>`
+- Non-Outbound-/Canary-Grenzen: `<konkret>`
+- Zusätzliche technische Preconditions: `<konkret>`
 
 ---
 
 ## 5. Risiko- und Betriebsbedingungen
 
-- Risikolimits: `<...>`
-- Reconciliation-Anforderungen: `<...>`
-- Stop-/Abort-Kriterien: `<...>`
-- Bedingungen für Session-Abbruch: `<...>`
-- Monitoring-/Alerting-Voraussetzungen: `<...>`
+- Risikolimits: `<konkret>`
+- Reconciliation-Anforderungen: `<konkret>`
+- Stop-/Abort-Kriterien: `<konkret>`
+- Bedingungen für Session-Abbruch: `<konkret>`
+- Monitoring-/Alerting-Voraussetzungen: `<konkret>`
 
 ---
 
-## 6. Referenzen in das Repo (feste Pfade)
+## 6. Verbindliche Repo-Referenzen
 
-| Referenz | Repo-Pfad (kanonisch) |
-|----------|------------------------|
-| Canary-Kriterien & Freigabe-Artefakt (LB-APR-001), Manifest, Risiko-/Gating-Abschnitte | [`docs/ops/runbooks/CANARY_LIVE_ENTRY_CRITERIA.md`](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) |
-| Manifest-Struktur & Scope-Tabelle (Vorlage) | [`docs/ops/templates/CANARY_LIVE_MANIFEST_TEMPLATE.md`](CANARY_LIVE_MANIFEST_TEMPLATE.md) |
-| Rollen (Owner, Risk Officer), NO-LIVE-Default | [`docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md) |
-| Evidence-Packs vs. originale Freigabe | [`docs/ops/evidence/README.md`](../evidence/README.md) |
-| Relevante Audit-Referenz (optional): | `<z. B. out&#47;ops&#47;live_readiness_audit&#47;<Audit-ID>&#47;report.json>` |
+- [`docs&#47;ops&#47;runbooks&#47;CANARY_LIVE_ENTRY_CRITERIA.md`](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) — § Freigabe-Artefakt (LB-APR-001)
+- [`docs&#47;ops&#47;templates&#47;CANARY_LIVE_MANIFEST_TEMPLATE.md`](CANARY_LIVE_MANIFEST_TEMPLATE.md)
+- [`docs&#47;GOVERNANCE_AND_SAFETY_OVERVIEW.md`](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md)
+- [`docs&#47;ops&#47;evidence&#47;README.md`](../evidence/README.md)
+- [`docs&#47;ops&#47;templates&#47;LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE.md`](LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE.md) (dieses Template)
+- [`docs&#47;ops&#47;templates&#47;LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE_COMPACT.md`](LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE_COMPACT.md)
+- Optionale Audit-Referenz: `<z. B. out&#47;ops&#47;live_readiness_audit&#47;...&#47;summary.md>`
 
 ---
 
-## 7. Review-Ergebnisse
+## 7. Review-Ergebnis
 
 - Risk-Officer-Review durchgeführt: `Yes` / `No`
-- Datum Review (UTC): `<...>`
-- Ergebnis: `Approved` / `Conditionally Approved` / `Rejected`
-- Offene Auflagen / Bedingungen: `<...>`
+- Review-Datum (UTC): `<YYYY-MM-DDTHH:MM:SSZ oder N&#47;A>`
+- Ergebnis: `Pending Review` / `Approved` / `Conditionally Approved` / `Rejected`
+- Auflagen / Bedingungen: `<Liste oder none>`
+- Frist zur Erfüllung (UTC): `<YYYY-MM-DDTHH:MM:SSZ oder N&#47;A>`
+- Nachweis der Erfüllung: `<Ticket-Kommentar &#47; Link &#47; Anhang &#47; none>`
 
-**Conditional Approval:** Ohne **erfüllte Auflagen**, ohne **Frist** und ohne **Nachweis** der Erfüllung liegt **kein aktiver** Freigabe-Status vor — das Artefakt bleibt **nicht** wirksam für Canary/Live bis zur dokumentierten Erledigung.
+**Regel:** `Conditionally Approved` ist nicht aktiv wirksam, solange Auflagen, Frist und Nachweis nicht vollständig erfüllt und dokumentiert sind.
 
 ---
 
 ## 8. Sign-off
 
 - Sign-off erteilt: `Yes` / `No`
-- Sign-off durch: `<Name &#47; Rolle>`
-- Datum Sign-off (UTC): `<...>`
-- Kommentar / Begründung: `<...>`
+- Sign-off durch: `<Name &#47; Rolle oder N&#47;A>`
+- Sign-off-Datum (UTC): `<YYYY-MM-DDTHH:MM:SSZ oder N&#47;A>`
+- Begründung / Kommentar: `<frei>`
 
 ---
 
@@ -108,5 +125,5 @@
 
 ## 10. Optionale Pointer
 
-- Externes Originalsystem: `<Jira &#47; Formular &#47; anderes System>`
-- Repo-Pointer unter `docs/ops/evidence/`: `<optional, nur Verweis — ersetzt nicht das originale Artefakt>`
+- Externes Originalsystem: `<Jira &#47; Formular &#47; GRC &#47; anderes System>`
+- Repo-Pointer unter `docs&#47;ops&#47;evidence&#47;`: `<optional, nur Verweis>`
