@@ -498,6 +498,29 @@ class TestDashboardEndpoint:
             assert "companion navigation" in text.lower()
             assert "no shared control plane" in text.lower()
 
+    def test_dashboard_contains_ci_health_deeplink(self, test_client: TestClient) -> None:
+        """Haupt-Dashboard (/ und /dashboard) enthält Companion-Deep-Link zu /ops/ci-health."""
+        for path in ("/", "/dashboard"):
+            response = test_client.get(path)
+            assert response.status_code == 200
+            text = response.text
+            assert "http://127.0.0.1:8000/ops/ci-health" in text
+            assert "CI Health" in text
+            assert "companion navigation" in text.lower()
+            assert "no shared control plane" in text.lower()
+
+    def test_watch_pages_contain_ci_health_deeplink(self, test_client: TestClient) -> None:
+        """Watch-/Session-HTML enthält Companion-Deep-Link zu /ops/ci-health (gleicher Block wie Dashboard)."""
+        run_id = "20251204_180000_paper_ma_crossover_BTC-EUR_1m"
+        for path in ("/watch", f"/watch/runs/{run_id}", f"/sessions/{run_id}"):
+            response = test_client.get(path)
+            assert response.status_code == 200
+            text = response.text
+            assert "http://127.0.0.1:8000/ops/ci-health" in text
+            assert "CI Health" in text
+            assert "companion navigation" in text.lower()
+            assert "no shared control plane" in text.lower()
+
     def test_dashboard_alias(self, test_client: TestClient) -> None:
         """Test Dashboard unter /dashboard."""
         response = test_client.get("/dashboard")
