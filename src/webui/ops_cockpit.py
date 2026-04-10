@@ -975,6 +975,60 @@ def _render_incident_observation_card(payload: Dict[str, object]) -> str:
     )
 
 
+def _render_run_state_observation_card(payload: Dict[str, object]) -> str:
+    """HTML block: compact run-state rollup from existing ``run_state`` keys only (read-only wording)."""
+    rs_raw = payload.get("run_state")
+    rs = rs_raw if isinstance(rs_raw, dict) else {}
+
+    def _fmt_val(val: object) -> str:
+        if val is True:
+            return "true"
+        if val is False:
+            return "false"
+        if val is None:
+            return "n/a"
+        return str(val)
+
+    rows_html: List[str] = []
+    for label, key in (
+        ("run_state.status", "status"),
+        ("run_state.active", "active"),
+        ("run_state.last_run_status", "last_run_status"),
+        ("run_state.session_active", "session_active"),
+        ("run_state.generated_at", "generated_at"),
+        ("run_state.freshness_status", "freshness_status"),
+    ):
+        if key not in rs:
+            continue
+        v = escape(_fmt_val(rs.get(key)))
+        rows_html.append(
+            f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>{escape(label)}</code></td>"
+            f"<td style='padding:4px 0;'><code>{v}</code></td></tr>"
+        )
+
+    if not rows_html:
+        return ""
+
+    table_html = (
+        "<table style='width:100%;border-collapse:collapse;font-size:0.9em;'>"
+        "<tbody>"
+        f"{''.join(rows_html)}"
+        "</tbody></table>"
+    )
+    intro = (
+        "Subset of <code>run_state</code> already present in this page’s JSON payload (same object as "
+        "<code>GET /api/ops-cockpit</code>). Observation only — not a control surface; does not start or "
+        "stop runs or change execution semantics."
+    )
+    return (
+        f'<div class="card truth-card" style="margin-bottom:20px;">'
+        f"<h2>Run state — observed rollup</h2>"
+        f"<p><strong>Read-only.</strong> {intro}</p>"
+        f"{table_html}"
+        f"</div>"
+    )
+
+
 def build_workflow_officer_panel_context(repo_root: Path | None = None) -> Dict[str, object]:
     """Read-only WebUI slice: latest Workflow Officer ``report.json`` (no writes)."""
     from src.ops.workflow_officer import build_workflow_officer_dashboard_view
@@ -1800,6 +1854,7 @@ def render_ops_cockpit_html(
     policy_guard_observation_html = _render_policy_guard_observation_card(payload)
     phase57_snapshot_discoverability_html = _render_phase57_snapshot_discoverability_card()
     incident_observation_html = _render_incident_observation_card(payload)
+    run_state_observation_html = _render_run_state_observation_card(payload)
     phase83_eligibility_html = _render_phase83_eligibility_card(
         payload.get("phase83_eligibility_snapshot") or {}
     )
@@ -1858,6 +1913,7 @@ def render_ops_cockpit_html(
   {policy_guard_observation_html}
   {phase57_snapshot_discoverability_html}
   {incident_observation_html}
+  {run_state_observation_html}
   {phase83_eligibility_html}
   <div class="hero">
     <h1>Ops Cockpit v3 — Truth-First</h1>
