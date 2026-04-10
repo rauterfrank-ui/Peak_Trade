@@ -68,7 +68,10 @@ jobs:
                   });
                   core.info(`dispatched ${w.id} on ${head} (PR exists)`);
                 } catch (e) {
-                  core.warning(`failed dispatch ${w.id}: ${e.message}`);
+                  const detail = e?.response?.data?.message || e?.message || String(e);
+                  throw new Error(
+                    `createWorkflowDispatch failed: workflow_id=${w.id} ref=${head}: ${detail}`
+                  );
                 }
               }
               return;
@@ -154,7 +157,10 @@ jobs:
                 });
                 core.info(`dispatched ${w.id} on ${ref}`);
               } catch (e) {
-                core.warning(`failed dispatch ${w.id}: ${e.message}`);
+                const detail = e?.response?.data?.message || e?.message || String(e);
+                throw new Error(
+                  `createWorkflowDispatch failed: workflow_id=${w.id} ref=${ref}: ${detail}`
+                );
               }
             }
 
