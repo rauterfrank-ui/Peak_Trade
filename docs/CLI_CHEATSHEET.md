@@ -676,6 +676,17 @@ python3 scripts/live_web_server.py --reload
 - Run-Events (JSON): `http://localhost:8000/runs/{run_id}/tail?limit=100`
 - Live Alerts (JSON): `http://localhost:8000/runs/{run_id}/alerts?limit=20`
 
+**Operator WebUI** (read-only; **separater Prozess** gegenüber live.web — README-Defaults: Operator `http://127.0.0.1:8000`, live.web `http://127.0.0.1:8010` mit `scripts/ops/run_live_webui.sh`):
+
+Sekundäre Navigationspfade:
+
+- `/execution_watch` — Execution Watch
+- `/live/alerts` — Alerts
+- `/r_and_d` — R&D Experiments
+- `/live/telemetry` — Telemetry
+
+Vollständiger HTTP-Route-Index (Operator-WebUI und live.web): [`README.md`](../README.md), [`docs/ops/README.md`](ops/README.md).
+
 **Siehe:** [`LIVE_OPERATIONAL_RUNBOOKS.md`](LIVE_OPERATIONAL_RUNBOOKS.md) Abschnitt 10d für Details.
 
 ---
