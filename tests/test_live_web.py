@@ -521,6 +521,29 @@ class TestDashboardEndpoint:
             assert "companion navigation" in text.lower()
             assert "no shared control plane" in text.lower()
 
+    def test_dashboard_contains_run_ui_8010_deeplink(self, test_client: TestClient) -> None:
+        """Haupt-Dashboard (/ und /dashboard) enthält Companion-Link zur Run-UI-Default-URL 8010."""
+        for path in ("/", "/dashboard"):
+            response = test_client.get(path)
+            assert response.status_code == 200
+            text = response.text
+            assert "http://127.0.0.1:8010/" in text
+            assert "Run UI" in text
+            assert "companion navigation" in text.lower()
+            assert "separate process" in text.lower()
+
+    def test_watch_pages_contain_run_ui_8010_deeplink(self, test_client: TestClient) -> None:
+        """Watch-/Session-HTML enthält denselben Run-UI-8010-Companion wie das Haupt-Dashboard."""
+        run_id = "20251204_180000_paper_ma_crossover_BTC-EUR_1m"
+        for path in ("/watch", f"/watch/runs/{run_id}", f"/sessions/{run_id}"):
+            response = test_client.get(path)
+            assert response.status_code == 200
+            text = response.text
+            assert "http://127.0.0.1:8010/" in text
+            assert "Run UI" in text
+            assert "companion navigation" in text.lower()
+            assert "separate process" in text.lower()
+
     def test_dashboard_alias(self, test_client: TestClient) -> None:
         """Test Dashboard unter /dashboard."""
         response = test_client.get("/dashboard")
