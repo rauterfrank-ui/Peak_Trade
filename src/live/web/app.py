@@ -394,6 +394,11 @@ def _generate_dashboard_html(
                     <a href="http://127.0.0.1:8000/" target="_blank" rel="noopener noreferrer">http://127.0.0.1:8000/</a>
                     · default local port per README; separate process, not this app.
                 </p>
+                <p class="companion-hint">
+                    Ops Cockpit (companion navigation): read-only Operator WebUI —
+                    <a href="http://127.0.0.1:8000/ops" target="_blank" rel="noopener noreferrer">http://127.0.0.1:8000/ops</a>
+                    · default local host/port per README; separate process; no shared control plane.
+                </p>
             </div>
             <div class="status" id="status">Connecting...</div>
         </header>
