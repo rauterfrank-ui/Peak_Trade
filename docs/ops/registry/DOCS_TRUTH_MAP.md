@@ -69,6 +69,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 - 2026-04-10 — LB-APR-001: `docs/ops/LB_APR_001_ACCOUNT_TYPE_FIELD_MAPPING.md` ergänzt (externes „Account Type“ vs. interne Kontexte; Draft-/Approval-Hilfe; kein technischer Unlock; keine Live-Freigabe impliziert); Pointer in diesem Abschnitt.
 
+- 2026-04-10 — PR #2477–#2479: sichtbare Dashboard-v1.2-Strings in `templates/peak_trade_dashboard/base.html` (`<title>`), `templates/peak_trade_dashboard/index.html` (Session-Explorer-Fußzeile), `templates/peak_trade_dashboard/r_and_d_experiments.html` (R&D-Hub-Unterzeile); `tests/test_r_and_d_api.py` angepasst (#2479); reine Template-/Test-Kohärenz; keine Routing-/Laufzeit-Änderung; kein technischer Unlock.
+
 - 2026-04-09 — LB-APR-001: `DOCS_TRUTH_MAP.md` ergänzt um kanonischen Auffindbarkeits-Hinweis auf `docs/ops/templates/LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE.md` (externe Freigabe-Hülle / Arbeitshilfe; kein technischer Unlock; keine Live-Freigabe impliziert).
 
 - 2026-04-09 — LB-EXE-001 Phase 2 updated `docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md` to record deny-by-default guard hardening around `src/execution/networked/transport_gate_v1.py` and related networked guard tests; no live approval or outbound execution unlock implied.
