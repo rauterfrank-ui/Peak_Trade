@@ -360,7 +360,7 @@ Ports **8000** (Operator-WebUI) und **8010** (live.web mit `scripts/ops/run_live
 
 Zusätzlich stellt live.web **read-only** JSON unter dem Präfix **`/api/v0`** bereit (u. a. für Watch-/Status-Zugriff); Details und Beispiele: [`docs/LIVE_OPERATIONAL_RUNBOOKS.md`](docs/LIVE_OPERATIONAL_RUNBOOKS.md) (Abschnitt 10d.4), Implementierung: [`src/live/web/api_v0.py`](src/live/web/api_v0.py).
 
-Die **Companion**-Hinweise in live.web (Haupt-Dashboard und Watch-/Session-HTML) verlinken **lesend** (Navigation only) auf **`http://127.0.0.1:8000/`**, **`http://127.0.0.1:8000/ops`**, **`http://127.0.0.1:8000/ops/ci-health`** und den Run-UI-Standard **`http://127.0.0.1:8010/`** — README-Default-Hosts/-Ports, **getrennte Prozesse**, **keine gemeinsame Control Plane** (Implementierung: `src/live/web/app.py`).
+Die **Companion**-Hinweise in live.web (Haupt-Dashboard und Watch-/Session-HTML) sind **reine Navigation** (read-only): Sie verweisen auf **`http://127.0.0.1:8000/`**, **`http://127.0.0.1:8000/ops`**, **`http://127.0.0.1:8000/ops/ci-health`**, auf die **sekundären** Operator-Pfade aus der Liste **„Weitere Operator-WebUI-Nav“** oben (dieselben Pfade unter Host `127.0.0.1:8000`) und auf den Run-UI-Standard **`http://127.0.0.1:8010/`**. Auf den Run-Detail-Seiten **`/watch/runs/{run_id}`** und **`/sessions/{run_id}`** gibt es zusätzlich einen Companion-Link zur Operator-WebUI **`/r_and_d/experiment/{run_id}`** mit **demselben** `run_id` wie in der URL. README-Default-Hosts/-Ports, **getrennte Prozesse**, **keine gemeinsame Control Plane** (Implementierung: `src/live/web/app.py`).
 
 Details: [`docs/CLI_CHEATSHEET.md`](docs/CLI_CHEATSHEET.md#18-live-web-dashboard-phase-67), [`docs/LIVE_OPERATIONAL_RUNBOOKS.md`](docs/LIVE_OPERATIONAL_RUNBOOKS.md) Abschnitt 10d.
 
