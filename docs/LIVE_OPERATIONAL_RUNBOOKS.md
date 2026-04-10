@@ -7,6 +7,8 @@
 
 > **Live-Ops Pack (Finish Plan PR 6):** Ergänzend [Incident Simulation & Drills](./INCIDENT_SIMULATION_AND_DRILLS.md), [Safety Policy Testnet & Live](./SAFETY_POLICY_TESTNET_AND_LIVE.md), [Workflow Frontdoor](./WORKFLOW_FRONTDOOR.md) (Navigation). **NO‑LIVE:** keine Aktivierungsanleitungen; nur Dokumentation.
 
+> **[Docs Truth Map](ops/registry/DOCS_TRUTH_MAP.md)** — kanonische Ops-Doku-Registry und Änderungsnachweis (truth-first)
+
 ---
 
 ## Env File Contexts
