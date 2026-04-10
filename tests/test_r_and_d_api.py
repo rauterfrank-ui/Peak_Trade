@@ -655,7 +655,7 @@ class TestRAndDExperimentsPageV11:
         resp = client.get("/r_and_d")
         assert resp.status_code == 200
         assert "R&D Experiments Hub" in resp.text
-        assert "v1.1" in resp.text
+        assert "v1.2" in resp.text
 
     def test_page_shows_daily_summary(self, client):
         """Page zeigt Daily Summary (v1.1)."""
