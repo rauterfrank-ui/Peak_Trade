@@ -158,6 +158,14 @@ def test_ops_cockpit_html_contains_policy_guard_observation_card(tmp_path: Path)
     assert "not a control surface" in html
 
 
+def test_ops_cockpit_html_contains_phase57_snapshot_discoverability_links(tmp_path: Path) -> None:
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Live status snapshot (Phase 57) — endpoints" in html
+    assert "/api/live/status/snapshot.json" in html
+    assert "/api/live/status/snapshot.html" in html
+    assert "observation only" in html.lower()
+
+
 def test_phase83_eligibility_snapshot_ok_with_real_repo_tiering() -> None:
     repo = Path(__file__).resolve().parents[2]
     if not (repo / "config" / "strategy_tiering.toml").exists():
