@@ -22,14 +22,34 @@
             <a href="/" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
               Dashboard
             </a>
+            <a
+              href="/ops"
+              class="text-xs text-slate-400 hover:text-slate-200 transition-colors"
+              title="Read-only Ops Cockpit (navigation only; same Operator WebUI process as this dashboard)."
+            >
+              Ops Cockpit
+            </a>
+            <a
+              href="/ops/ci-health"
+              class="text-xs text-blue-400"
+              title="Read-only CI health dashboard (navigation only; same Operator WebUI process; no new capability beyond the existing page)."
+            >
+              CI Health
+            </a>
             <a href="/ops/stage1" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
               Stage1
             </a>
             <a href="/ops/workflows" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
               Workflows
             </a>
-            <a href="/ops/ci-health" class="text-xs text-blue-400">
-              CI Health
+            <a
+              href="http://127.0.0.1:8010/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs text-slate-400 hover:text-slate-200 transition-colors"
+              title="Separate Run-monitoring UI (companion). Default http://127.0.0.1:8010/ when using scripts/ops/run_live_webui.sh per README — different process than this dashboard."
+            >
+              Run UI (companion)
             </a>
           </nav>
         </div>

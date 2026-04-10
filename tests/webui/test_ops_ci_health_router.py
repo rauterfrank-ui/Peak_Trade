@@ -123,6 +123,17 @@ def client(test_app: FastAPI) -> TestClient:
     return TestClient(test_app)
 
 
+@pytest.fixture
+def client_real_ops_ci_health_template(mock_repo_root: Path) -> TestClient:
+    """GET /ops/ci-health using the repo's ops_ci_health.html (hub nav parity)."""
+    repo_root = Path(__file__).resolve().parents[2]
+    templates = Jinja2Templates(directory=str(repo_root / "templates" / "peak_trade_dashboard"))
+    set_ci_health_config(mock_repo_root, templates)
+    app = FastAPI()
+    app.include_router(ci_health_router)
+    return TestClient(app)
+
+
 # =============================================================================
 # TESTS: HTML Dashboard Endpoint
 # =============================================================================
@@ -135,6 +146,22 @@ def test_ci_health_dashboard_renders(client: TestClient) -> None:
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
     assert "CI & Governance Health" in response.text
+
+
+def test_ci_health_dashboard_standalone_hub_nav(
+    client_real_ops_ci_health_template: TestClient,
+) -> None:
+    """Standalone CI Health page includes same hub crosslinks as other Ops standalones."""
+    response = client_real_ops_ci_health_template.get("/ops/ci-health")
+    assert response.status_code == 200
+    html = response.text
+    assert 'href="/ops"' in html
+    assert "Ops Cockpit" in html
+    assert 'href="/ops/stage1"' in html
+    assert 'href="/ops/workflows"' in html
+    assert 'href="/ops/ci-health"' in html
+    assert "http://127.0.0.1:8010/" in html
+    assert "Run UI (companion)" in html
 
 
 def test_ci_health_dashboard_shows_status(client: TestClient) -> None:
