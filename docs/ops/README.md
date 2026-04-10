@@ -24,7 +24,7 @@ Additional Operator WebUI nav targets (e.g. execution watch, alerts, R&D, teleme
 - `/watch/runs/{run_id}` — run detail (watch)
 - `/sessions/{run_id}` — alias to the same run detail
 
-Companion strips in live.web point read-only at Operator WebUI on port **8000** (see `src/live/web/app.py`).
+The live.web companion strips (main dashboard and watch/session HTML) are **read-only navigation** to **`http://127.0.0.1:8000/`**, **`http://127.0.0.1:8000/ops`**, **`http://127.0.0.1:8000/ops/ci-health`**, and the Run UI default **`http://127.0.0.1:8010/`** — local defaults per README, **separate processes**, **no shared control plane** (see `src/live/web/app.py`).
 
 For scripts and port notes, see the root [`README.md`](../../README.md) section **Web UI**.
 
