@@ -410,6 +410,18 @@ def test_home_includes_companion_link_to_run_ui(test_client):
     assert "Run UI (companion)" in text
 
 
+def test_home_base_nav_includes_ops_hub_links(test_client):
+    """GET / base navigation lists Ops hub routes (discoverability only; read-only wording in titles)."""
+    response = test_client.get("/")
+    assert response.status_code == 200
+    text = response.text
+    assert 'href="/ops"' in text
+    assert 'href="/ops/stage1"' in text
+    assert 'href="/ops/workflows"' in text
+    assert "Ops Cockpit" in text
+    assert "navigation only" in text
+
+
 def test_home_includes_readme_mirror_two_dashboards_card(test_client):
     """GET / enthält README-ausgerichtete Orientierungskarte für Operator-WebUI vs Run UI."""
     response = test_client.get("/")
