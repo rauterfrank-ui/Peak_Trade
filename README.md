@@ -54,6 +54,7 @@ Für Entwickler, die mit Peak_Trade arbeiten oder Strategien entwickeln:
 - 🔒 **[Security Notes](SECURITY_NOTES.md)** — Known vulnerabilities, Python version limitations, CVE tracking
 - 🔍 **[Audit Runbook](docs/audit/AUDIT_RUNBOOK_COMPLETE.md)** — Complete audit procedures (Security, Dependencies, Quality)
 - 🛡️ **[Governance & AI Autonomy](docs/governance/README.md)** — Governance-first guardrails, Policy Critic, Evidence Packs
+- 🗺️ **[Docs Truth Map](docs/ops/registry/DOCS_TRUTH_MAP.md)** — Kanonische Ops-Doku-Registry und Änderungsnachweis (truth-first)
 
 ---
 
