@@ -329,6 +329,29 @@ RELOAD=1 ./scripts/ops/run_live_webui.sh
 | `python3 scripts/live_web_server.py` | 8000 | Empfohlen in Runbooks, CLI-Argumente |
 | `python -m scripts.serve_live_dashboard` | 8000 | Config aus `config/config.toml` |
 
+### HTTP-Routen — Operator-WebUI, Ops-Hub & live.web (Local Defaults)
+
+Ports **8000** (Operator-WebUI) und **8010** (live.web mit `scripts/ops/run_live_webui.sh`) sind **README-Defaults** auf `127.0.0.1`. Die Prozesse sind **getrennt**; es gibt **keine gemeinsame Control Plane**. Die Pfade dienen der **Orientierung** (read-only UI; keine Änderung an Ausführungs- oder Freigabesemantik).
+
+**Operator-WebUI** (Standard `http://127.0.0.1:8000`):
+
+- `/` — Haupt-Dashboard
+- `/ops` — Ops Cockpit
+- `/ops/stage1` — Stage1 Ops Dashboard
+- `/ops/workflows` — Ops-Workflow-Hub
+- `/ops/ci-health` — CI & Governance Health
+
+Weitere Einträge der Operator-WebUI-Navigation (u. a. Execution Watch, Alerts, R&D, Telemetry) sind in `templates/peak_trade_dashboard/base.html` als Pfade hinterlegt.
+
+**live.web** (Standard `http://127.0.0.1:8010` mit `scripts/ops/run_live_webui.sh`):
+
+- `/` und `/dashboard` — Live-Dashboard (Runs)
+- `/watch` — Watch-Übersicht
+- `/watch/runs/{run_id}` — Run-Detail (Watch)
+- `/sessions/{run_id}` — Alias zum gleichen Run-Detail
+
+Die Companion-Hinweise in live.web verlinken **lesend** auf die Operator-WebUI auf Port **8000** (Navigation only; siehe `src/live/web/app.py`).
+
 Details: [`docs/CLI_CHEATSHEET.md`](docs/CLI_CHEATSHEET.md#18-live-web-dashboard-phase-67), [`docs/LIVE_OPERATIONAL_RUNBOOKS.md`](docs/LIVE_OPERATIONAL_RUNBOOKS.md) Abschnitt 10d.
 
 ---
