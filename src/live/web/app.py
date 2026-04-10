@@ -185,6 +185,12 @@ def _companion_operator_webui_hint_html_watch() -> str:
         " · default local port per README; separate process, not this app; "
         "no shared control plane."
         "</div>"
+        "<div class='companion-strip'>"
+        "<strong>Ops Cockpit (companion navigation):</strong> read-only Operator WebUI — "
+        "<a href='http://127.0.0.1:8000/ops' target='_blank' rel='noopener noreferrer'>"
+        "http://127.0.0.1:8000/ops</a>"
+        " · default local host/port per README; separate process; no shared control plane."
+        "</div>"
     )
 
 
