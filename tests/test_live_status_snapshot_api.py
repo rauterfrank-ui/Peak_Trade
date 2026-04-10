@@ -418,7 +418,9 @@ def test_home_base_nav_includes_ops_hub_links(test_client):
     assert 'href="/ops"' in text
     assert 'href="/ops/stage1"' in text
     assert 'href="/ops/workflows"' in text
+    assert 'href="/ops/ci-health"' in text
     assert "Ops Cockpit" in text
+    assert "CI Health" in text
     assert "navigation only" in text
 
 
