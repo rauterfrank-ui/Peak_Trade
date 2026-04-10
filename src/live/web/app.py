@@ -197,6 +197,13 @@ def _companion_operator_webui_hint_html_watch() -> str:
         "http://127.0.0.1:8000/ops/ci-health</a>"
         " · default local host/port per README; separate process; no shared control plane."
         "</div>"
+        "<div class='companion-strip'>"
+        "<strong>Run UI (companion navigation):</strong> separate Run-monitoring UI — "
+        "<a href='http://127.0.0.1:8010/' target='_blank' rel='noopener noreferrer'>"
+        "http://127.0.0.1:8010/</a>"
+        " · default local host/port per README (scripts/ops/run_live_webui.sh); "
+        "separate process from Operator WebUI; no shared control plane."
+        "</div>"
     )
 
 
@@ -415,6 +422,11 @@ def _generate_dashboard_html(
                     CI Health (companion navigation): read-only Operator WebUI —
                     <a href="http://127.0.0.1:8000/ops/ci-health" target="_blank" rel="noopener noreferrer">http://127.0.0.1:8000/ops/ci-health</a>
                     · default local host/port per README; separate process; no shared control plane.
+                </p>
+                <p class="companion-hint">
+                    Run UI (companion navigation): separate Run-monitoring UI —
+                    <a href="http://127.0.0.1:8010/" target="_blank" rel="noopener noreferrer">http://127.0.0.1:8010/</a>
+                    · default local host/port per README (scripts/ops/run_live_webui.sh); separate process from Operator WebUI; no shared control plane.
                 </p>
             </div>
             <div class="status" id="status">Connecting...</div>
