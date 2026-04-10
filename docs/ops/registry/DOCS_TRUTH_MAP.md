@@ -73,6 +73,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 - 2026-04-10 — PR #2481–#2482: `tests/test_r_and_d_api.py` — R&D-Hub-HTML-Testklasse `TestRAndDExperimentsPageV11` → `TestRAndDExperimentsPageV12` und Klassen-Docstring (#2481); Methoden-Docstrings in `TestRAndDExperimentsPageV12` auf v1.2 (#2482); reine Test-/Naming-Hygiene; keine Produktionscode-Änderung; kein technischer Unlock.
 
+- 2026-04-10 — PR #2484–#2486: #2484 — `templates/peak_trade_dashboard/index.html` Dev-/HTML-Kommentare auf v1.2 ausgerichtet (Ergänzung zu den sichtbaren v1.2-Strings aus #2477–#2479; keine Laufzeit- oder Routing-Änderung); #2485 — `README.md` Root-Pointer auf diese Truth-Map; #2486 — `docs/ops/README.md` Truth-Map-Pointer für Ops-Index-Discoverability; reine Template-/Docs-Discoverability; kein technischer Unlock.
+
 - 2026-04-09 — LB-APR-001: `DOCS_TRUTH_MAP.md` ergänzt um kanonischen Auffindbarkeits-Hinweis auf `docs/ops/templates/LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE.md` (externe Freigabe-Hülle / Arbeitshilfe; kein technischer Unlock; keine Live-Freigabe impliziert).
 
 - 2026-04-09 — LB-EXE-001 Phase 2 updated `docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md` to record deny-by-default guard hardening around `src/execution/networked/transport_gate_v1.py` and related networked guard tests; no live approval or outbound execution unlock implied.
