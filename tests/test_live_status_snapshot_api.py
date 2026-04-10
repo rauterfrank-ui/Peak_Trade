@@ -383,3 +383,37 @@ def test_json_panel_status_values(test_client):
 
     for panel in data["panels"]:
         assert panel["status"] in valid_statuses, f"Invalid status: {panel['status']}"
+
+
+# =============================================================================
+# Tests: Home dashboard snapshot card (GET /)
+# =============================================================================
+
+
+def test_home_includes_live_status_snapshot_card(test_client):
+    """GET / renders the Phase 57 snapshot section when builder succeeds."""
+    response = test_client.get("/")
+    assert response.status_code == 200
+    text = response.text
+    assert "Live status snapshot (Phase 57)" in text
+    assert "/api/live/status/snapshot.json" in text
+    assert "/api/live/status/snapshot.html" in text
+    assert "Observed builder output only" in text
+
+
+def test_home_renders_when_snapshot_builder_fails(test_client, monkeypatch):
+    """GET / still returns 200 if home snapshot context fails (fail-soft)."""
+
+    def _boom(*args, **kwargs):
+        raise RuntimeError("simulated snapshot failure")
+
+    monkeypatch.setattr(
+        "src.reporting.live_status_snapshot_builder.build_live_status_snapshot_auto",
+        _boom,
+    )
+
+    response = test_client.get("/")
+    assert response.status_code == 200
+    assert "Live status snapshot (Phase 57)" in response.text
+    assert "Snapshot not available" in response.text
+    assert "RuntimeError" in response.text

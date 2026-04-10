@@ -71,6 +71,7 @@ System:
 
 from __future__ import annotations
 
+import json
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -372,6 +373,70 @@ def load_live_sessions(limit: int = 10) -> Dict[str, Any]:
     }
 
 
+_HOME_SNAPSHOT_DETAILS_PREVIEW_MAX = 200
+_HOME_SNAPSHOT_META_PREVIEW_MAX = 240
+
+
+def load_live_status_snapshot_home_context() -> Dict[str, Any]:
+    """
+    Read-only Live Status Snapshot for the home dashboard.
+
+    Uses the same builder path as ``GET /api/live/status/snapshot.json`` (Phase 57).
+    Fail-soft: does not raise; returns ``available=False`` on failure so ``GET /`` still renders.
+    """
+    try:
+        from src.reporting.live_status_snapshot_builder import build_live_status_snapshot_auto
+        from src.reporting.status_snapshot_schema import model_dump_helper
+
+        snapshot = build_live_status_snapshot_auto(meta={"source": "webui_api"})
+        data = model_dump_helper(snapshot)
+        panels_out: List[Dict[str, Any]] = []
+        for p in data.get("panels") or []:
+            if not isinstance(p, dict):
+                continue
+            det = p.get("details") or {}
+            try:
+                det_str = json.dumps(det, sort_keys=True, ensure_ascii=False)
+            except (TypeError, ValueError):
+                det_str = str(det)
+            if len(det_str) > _HOME_SNAPSHOT_DETAILS_PREVIEW_MAX:
+                det_str = det_str[:_HOME_SNAPSHOT_DETAILS_PREVIEW_MAX] + "…"
+            panels_out.append(
+                {
+                    "id": p.get("id", ""),
+                    "title": p.get("title", ""),
+                    "status": p.get("status", "unknown"),
+                    "details_preview": det_str,
+                }
+            )
+        meta = data.get("meta") or {}
+        try:
+            meta_preview = json.dumps(meta, sort_keys=True, ensure_ascii=False)
+        except (TypeError, ValueError):
+            meta_preview = str(meta)
+        if len(meta_preview) > _HOME_SNAPSHOT_META_PREVIEW_MAX:
+            meta_preview = meta_preview[:_HOME_SNAPSHOT_META_PREVIEW_MAX] + "…"
+
+        return {
+            "available": True,
+            "version": data.get("version"),
+            "generated_at": data.get("generated_at"),
+            "meta_preview": meta_preview,
+            "panels": panels_out,
+            "error": None,
+        }
+    except Exception as e:
+        logger.warning("Home live status snapshot unavailable: %s", e)
+        return {
+            "available": False,
+            "version": None,
+            "generated_at": None,
+            "meta_preview": "",
+            "panels": [],
+            "error": type(e).__name__,
+        }
+
+
 def create_app() -> FastAPI:
     app = FastAPI(
         title="Peak_Trade Dashboard v1.2",
@@ -476,6 +541,7 @@ def create_app() -> FastAPI:
         live_track["stats"] = get_session_stats()
 
         workflow_officer_panel = build_workflow_officer_panel_context(BASE_DIR)
+        live_status_snapshot_home = load_live_status_snapshot_home_context()
 
         return templates.TemplateResponse(
             request,
@@ -485,6 +551,7 @@ def create_app() -> FastAPI:
                 "strategy_tiering": strategy_tiering,
                 "live_track": live_track,
                 "workflow_officer_panel": workflow_officer_panel,
+                "live_status_snapshot_home": live_status_snapshot_home,
             },
         )
 
