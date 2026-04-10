@@ -3,6 +3,30 @@
 - PR #999 — docs(grafana): fix DS_LOCAL uid templating in execution watch dashboard: docs/ops/PR_999_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
 
+## HTTP path index — Operator WebUI & live.web (local defaults)
+
+Ports **8000** (Operator WebUI, `src.webui.app`) and **8010** (live.web, `src.live.web.app` via `./scripts/ops/run_live_webui.sh`) are **local defaults** on `127.0.0.1`. Processes are **separate**; there is **no shared control plane**. Paths below are for **orientation / navigation** (read-only UI posture; no change to execution or approval semantics).
+
+**Operator WebUI** (default `http://127.0.0.1:8000`):
+
+- `/` — main dashboard
+- `/ops` — Ops Cockpit (read-only, local artifacts)
+- `/ops/stage1` — Stage1 ops dashboard
+- `/ops/workflows` — Ops workflow hub
+- `/ops/ci-health` — CI & governance health panel
+
+Additional Operator WebUI nav targets (e.g. execution watch, alerts, R&D, telemetry) live in `templates/peak_trade_dashboard/base.html`.
+
+**live.web** (default `http://127.0.0.1:8010`):
+
+- `/` and `/dashboard` — live runs dashboard HTML
+- `/watch` — watch overview HTML
+- `/watch/runs/{run_id}` — run detail (watch)
+- `/sessions/{run_id}` — alias to the same run detail
+
+Companion strips in live.web point read-only at Operator WebUI on port **8000** (see `src/live/web/app.py`).
+
+For scripts and port notes, see the root [`README.md`](../../README.md) section **Web UI**.
 
 - `docs/ops/specs/OPS_SUITE_DASHBOARD_VNEXT_SPEC.md` — OPS Suite / Dashboard vNext Spezifikation
 - `docs/ops/runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md` — Phasenplan für spätere Umsetzung
