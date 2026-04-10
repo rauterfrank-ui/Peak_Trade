@@ -158,6 +158,14 @@ def test_ops_cockpit_html_contains_policy_guard_observation_card(tmp_path: Path)
     assert "not a control surface" in html
 
 
+def test_ops_cockpit_html_contains_incident_observation_card(tmp_path: Path) -> None:
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Incident — observed rollup" in html
+    assert "incident_state.status" in html
+    assert "incident_state.requires_operator_attention" in html
+    assert "not a control surface" in html
+
+
 def test_ops_cockpit_html_contains_phase57_snapshot_discoverability_links(tmp_path: Path) -> None:
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert "Live status snapshot (Phase 57) — endpoints" in html
