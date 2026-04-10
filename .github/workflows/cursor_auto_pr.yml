@@ -46,34 +46,9 @@ jobs:
 
             if (prs.data.length > 0) {
               core.info(`EXISTS: PR #${prs.data[0].number} ${prs.data[0].html_url}`);
-              // Still dispatch required checks so docs-only PRs get all required contexts
-              const workflows = [
-                { id: 'ci.yml', inputs: { force_matrix: 'true' } },
-                { id: 'lint_gate.yml' },
-                { id: 'policy_critic_gate.yml' },
-                { id: 'policy_tracked_reports_guard.yml' },
-                { id: 'audit.yml' },
-                { id: 'ci-workflow-dispatch-guard.yml' },
-                { id: 'docs-token-policy-gate.yml' },
-                { id: 'docs_reference_targets_gate.yml' },
-                { id: 'truth_gates_pr.yml' },
-              ];
-              for (const w of workflows) {
-                try {
-                  await github.rest.actions.createWorkflowDispatch({
-                    owner, repo,
-                    workflow_id: w.id,
-                    ref: head,
-                    inputs: w.inputs || {}
-                  });
-                  core.info(`dispatched ${w.id} on ${head} (PR exists)`);
-                } catch (e) {
-                  const detail = e?.response?.data?.message || e?.message || String(e);
-                  throw new Error(
-                    `createWorkflowDispatch failed: workflow_id=${w.id} ref=${head}: ${detail}`
-                  );
-                }
-              }
+              core.info(
+                "Required workflows are dispatched once in the next step only (avoids duplicate ci.yml / concurrency cancel)."
+              );
               return;
             }
 
@@ -134,6 +109,8 @@ jobs:
             const owner = context.repo.owner;
             const repo  = context.repo.repo;
             const ref   = context.ref.replace('refs/heads/', '');
+
+            core.info("Single workflow_dispatch sequence for required checks (one pass per cursor_auto_pr run).");
 
             const workflows = [
               { id: 'ci.yml', inputs: { force_matrix: 'true' } },
