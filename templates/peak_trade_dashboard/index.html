@@ -100,6 +100,57 @@
   </section>
 </div>
 
+<!-- README-aligned: two local web UIs (read-only orientation; same defaults as docs/Web UI) -->
+<section
+  class="mt-8 bg-slate-900/60 rounded-2xl border border-slate-800 p-4 text-sm"
+>
+  <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+    <div>
+      <h2 class="text-sm font-semibold text-slate-200">
+        Zwei Web-Oberflächen (README, lokale Defaults)
+      </h2>
+      <p class="text-xs text-slate-500 mt-0.5">
+        Read-only Orientierung — zwei getrennte Prozesse, keine gemeinsame Control Plane.
+      </p>
+    </div>
+    <span class="text-xs px-2 py-0.5 rounded bg-slate-500/10 text-slate-400 border border-slate-600/30 shrink-0">
+      Navigation
+    </span>
+  </div>
+  <div class="grid gap-4 sm:grid-cols-2 text-xs text-slate-300">
+    <div class="rounded-xl border border-slate-800/80 bg-slate-950/40 p-3">
+      <p class="text-[11px] font-semibold text-slate-200 mb-1">Operator-WebUI</p>
+      <p class="text-slate-400 leading-relaxed mb-2">
+        Session Explorer, R&amp;D, Ops Cockpit und verwandte Operator-Ansichten (diese App bei
+        Standard-Start per <code class="text-slate-500">run_webui.sh</code>).
+      </p>
+      <p class="text-slate-500 mb-1">Lokaler Default (README): Port 8000</p>
+      <a
+        href="http://127.0.0.1:8000/"
+        class="text-sky-400 hover:underline font-mono text-[11px] break-all"
+        >http://127.0.0.1:8000/</a>
+    </div>
+    <div class="rounded-xl border border-slate-800/80 bg-slate-950/40 p-3">
+      <p class="text-[11px] font-semibold text-slate-200 mb-1">Run UI / live.web</p>
+      <p class="text-slate-400 leading-relaxed mb-2">
+        Run-zentriertes Monitoring: Runs-Liste, Snapshots, Alerts (Shadow-/Testnet-Beobachtung;
+        <code class="text-slate-500">src.live.web.app</code>).
+      </p>
+      <p class="text-slate-500 mb-1">Lokaler Default (README): Port 8010</p>
+      <a
+        href="http://127.0.0.1:8010/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-sky-400 hover:underline font-mono text-[11px] break-all"
+        >http://127.0.0.1:8010/</a>
+    </div>
+  </div>
+  <p class="text-[10px] text-slate-600 mt-3">
+    Ports gelten als lokale README-Defaults; andere Hosts/Ports sind möglich — keine
+    automatische Erkennung.
+  </p>
+</section>
+
 <!-- Phase 57: Live status snapshot (read-only; same builder as /api/live/status/snapshot.json) -->
 <section
   class="mt-8 bg-slate-900/60 rounded-2xl border border-slate-800 p-4 text-sm"

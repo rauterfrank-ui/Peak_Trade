@@ -410,6 +410,21 @@ def test_home_includes_companion_link_to_run_ui(test_client):
     assert "Run UI (companion)" in text
 
 
+def test_home_includes_readme_mirror_two_dashboards_card(test_client):
+    """GET / enthält README-ausgerichtete Orientierungskarte für Operator-WebUI vs Run UI."""
+    response = test_client.get("/")
+    assert response.status_code == 200
+    text = response.text
+    assert "Zwei Web-Oberflächen (README, lokale Defaults)" in text
+    assert "http://127.0.0.1:8000/" in text
+    assert "http://127.0.0.1:8010/" in text
+    assert "Operator-WebUI" in text
+    assert "Run UI / live.web" in text
+    assert "Lokaler Default (README): Port 8000" in text
+    assert "Lokaler Default (README): Port 8010" in text
+    assert "keine gemeinsame Control Plane" in text
+
+
 def test_home_renders_when_snapshot_builder_fails(test_client, monkeypatch):
     """GET / still returns 200 if home snapshot context fails (fail-soft)."""
 
