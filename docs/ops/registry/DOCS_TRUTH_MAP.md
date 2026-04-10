@@ -17,6 +17,8 @@ Sie strukturiert nur die **organisatorische** Freigabe-Hülle; **Repo-Merge**, D
 
 **Sprach-Mapping (externes Feld „Account Type“):** [`docs/ops/LB_APR_001_ACCOUNT_TYPE_FIELD_MAPPING.md`](../LB_APR_001_ACCOUNT_TYPE_FIELD_MAPPING.md) — Abgrenzung zur LB-APR-„Kontotyp“-Zeile und zu internen Laufzeit-/Phasenbegriffen; **Draft-/Approval-Hilfe**; **kein** technischer Unlock; **keine** implizite Live-Freigabe.
 
+**Sprach-Mapping (externes Feld „Strategy Version“):** [`docs/ops/LB_APR_001_STRATEGY_VERSION_FIELD_MAPPING.md`](../LB_APR_001_STRATEGY_VERSION_FIELD_MAPPING.md) — Registry-Schlüssel vs. Laufzeit-ID vs. Git/Artefakt vs. KI-/Model-Registry; **Draft-/Approval-Hilfe**; **kein** technischer Unlock; **keine** implizite Live-Freigabe.
+
 ## Wie das Mapping funktioniert
 
 1. Regeln stehen in `config/ops/docs_truth_map.yaml` (`rules[]`).
@@ -61,6 +63,8 @@ Kurzablauf, wenn **`src/orders/`** (Prefix-Regel) geändert wird:
 Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im **selben Diff** **`docs/ops/registry/DOCS_TRUTH_MAP.md`** (diese Datei) einen kurzen Eintrag unter „Änderungsnachweis“ erhalten — damit bleibt die Registry-Landkarte mit der Branch-Protection-Referenz im Einklang (siehe Regel `truth-branch-protection-canonical` in `config/ops/docs_truth_map.yaml`).
 
 ## Änderungsnachweis (Slice A)
+- 2026-04-10 — LB-APR-001: `docs/ops/LB_APR_001_STRATEGY_VERSION_FIELD_MAPPING.md` ergänzt (externes „Strategy Version“ vs. `strategy_registry_key` / `active_strategy_id` / Git / Artefakt / KI-Registry; Draft-/Approval-Hilfe; kein technischer Unlock; keine Live-Freigabe impliziert); Pointer in diesem Abschnitt.
+
 - 2026-04-10 — LB-APR-001: `docs/ops/LB_APR_001_ACCOUNT_TYPE_FIELD_MAPPING.md` ergänzt (externes „Account Type“ vs. interne Kontexte; Draft-/Approval-Hilfe; kein technischer Unlock; keine Live-Freigabe impliziert); Pointer in diesem Abschnitt.
 
 - 2026-04-09 — LB-APR-001: `DOCS_TRUTH_MAP.md` ergänzt um kanonischen Auffindbarkeits-Hinweis auf `docs/ops/templates/LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE.md` (externe Freigabe-Hülle / Arbeitshilfe; kein technischer Unlock; keine Live-Freigabe impliziert).
