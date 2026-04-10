@@ -683,6 +683,8 @@ Sekundäre Navigationspfade:
 - `/execution_watch` — Execution Watch
 - `/live/alerts` — Alerts
 - `/r_and_d` — R&D Experiments
+- `/r_and_d/experiment/{run_id}` — R&D Experiment-Detail (HTML, read-only)
+- `/r_and_d/comparison` — R&D Multi-Run-Vergleich (HTML, read-only)
 - `/live/telemetry` — Telemetry
 
 Vollständiger HTTP-Route-Index (Operator-WebUI und live.web): [`README.md`](../README.md), [`docs/ops/README.md`](ops/README.md).
