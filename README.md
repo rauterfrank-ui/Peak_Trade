@@ -341,7 +341,12 @@ Ports **8000** (Operator-WebUI) und **8010** (live.web mit `scripts/ops/run_live
 - `/ops/workflows` — Ops-Workflow-Hub
 - `/ops/ci-health` — CI & Governance Health
 
-Weitere Einträge der Operator-WebUI-Navigation (u. a. Execution Watch, Alerts, R&D, Telemetry) sind in `templates/peak_trade_dashboard/base.html` als Pfade hinterlegt.
+**Weitere Operator-WebUI-Nav** (read-only; Anzeigenamen wie in der Kopfzeile: `templates/peak_trade_dashboard/base.html`):
+
+- `/execution_watch` — Execution Watch
+- `/live/alerts` — Alerts
+- `/r_and_d` — R&D Experiments
+- `/live/telemetry` — Telemetry
 
 **live.web** (Standard `http://127.0.0.1:8010` mit `scripts/ops/run_live_webui.sh`):
 
