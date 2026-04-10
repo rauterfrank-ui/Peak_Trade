@@ -15,7 +15,12 @@ Ports **8000** (Operator WebUI, `src.webui.app`) and **8010** (live.web, `src.li
 - `/ops/workflows` — Ops workflow hub
 - `/ops/ci-health` — CI & governance health panel
 
-Additional Operator WebUI nav targets (e.g. execution watch, alerts, R&D, telemetry) live in `templates/peak_trade_dashboard/base.html`.
+**Additional Operator WebUI nav** (read-only; labels as in the header: `templates/peak_trade_dashboard/base.html`):
+
+- `/execution_watch` — Execution Watch
+- `/live/alerts` — Alerts
+- `/r_and_d` — R&D Experiments
+- `/live/telemetry` — Telemetry
 
 **live.web** (default `http://127.0.0.1:8010`):
 
