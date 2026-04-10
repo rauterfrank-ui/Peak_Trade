@@ -38,6 +38,8 @@ The live.web companion strips (main dashboard and watch/session HTML) are **read
 
 For scripts and port notes, see the root [`README.md`](../../README.md) section **Web UI**.
 
+**Cursor Auto-PR (`feat&#47;**` → `main`):** On pushes to `feat&#47;**`, [`.github/workflows/cursor_auto_pr.yml`](../../.github/workflows/cursor_auto_pr.yml) runs. Each workflow run performs **one** `workflow_dispatch` pass for required checks (the "Dispatch required checks" step); when an open PR already exists, the first step only logs and does **not** dispatch again, so there is no duplicate dispatch sequence in the same run (post–PR #2475).
+
 - `docs/ops/specs/OPS_SUITE_DASHBOARD_VNEXT_SPEC.md` — OPS Suite / Dashboard vNext Spezifikation
 - `docs/ops/runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md` — Phasenplan für spätere Umsetzung
 - `docs/ops/specs/PILOT_READY_EXECUTION_REVIEW_SPEC.md` — Pilot-Ready Execution Review Spezifikation
