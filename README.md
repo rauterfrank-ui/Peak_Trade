@@ -347,6 +347,8 @@ Ports **8000** (Operator-WebUI) und **8010** (live.web mit `scripts/ops/run_live
 - `/execution_watch` — Execution Watch
 - `/live/alerts` — Alerts
 - `/r_and_d` — R&D Experiments
+- `/r_and_d/experiment/{run_id}` — R&D Experiment-Detail (HTML, read-only)
+- `/r_and_d/comparison` — R&D Multi-Run-Vergleich (HTML, read-only)
 - `/live/telemetry` — Telemetry
 
 **live.web** (Standard `http://127.0.0.1:8010` mit `scripts/ops/run_live_webui.sh`):

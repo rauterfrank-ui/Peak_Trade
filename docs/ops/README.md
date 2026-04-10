@@ -21,6 +21,8 @@ Ports **8000** (Operator WebUI, `src.webui.app`) and **8010** (live.web, `src.li
 - `/execution_watch` — Execution Watch
 - `/live/alerts` — Alerts
 - `/r_and_d` — R&D Experiments
+- `/r_and_d/experiment/{run_id}` — R&D experiment detail HTML (read-only)
+- `/r_and_d/comparison` — R&D multi-run comparison HTML (read-only)
 - `/live/telemetry` — Telemetry
 
 **live.web** (default `http://127.0.0.1:8010`):
