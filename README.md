@@ -340,6 +340,7 @@ Ports **8000** (Operator-WebUI) und **8010** (live.web mit `scripts/ops/run_live
 - `/ops/stage1` — Stage1 Ops Dashboard
 - `/ops/workflows` — Ops-Workflow-Hub
 - `/ops/ci-health` — CI & Governance Health
+- `/session/{session_id}` — Session-Detail (HTML, read-only)
 
 **Weitere Operator-WebUI-Nav** (read-only; Anzeigenamen wie in der Kopfzeile: `templates/peak_trade_dashboard/base.html`):
 

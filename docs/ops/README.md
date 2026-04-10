@@ -14,6 +14,7 @@ Ports **8000** (Operator WebUI, `src.webui.app`) and **8010** (live.web, `src.li
 - `/ops/stage1` — Stage1 ops dashboard
 - `/ops/workflows` — Ops workflow hub
 - `/ops/ci-health` — CI & governance health panel
+- `/session/{session_id}` — session detail HTML (read-only)
 
 **Additional Operator WebUI nav** (read-only; labels as in the header: `templates/peak_trade_dashboard/base.html`):
 
