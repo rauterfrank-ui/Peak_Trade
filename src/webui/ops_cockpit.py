@@ -906,6 +906,22 @@ def _render_policy_guard_observation_card(payload: Dict[str, object]) -> str:
     )
 
 
+def _render_phase57_snapshot_discoverability_card() -> str:
+    """HTML block: discoverability links to existing Phase 57 snapshot API (read-only, no new semantics)."""
+    return (
+        f'<div class="card truth-card" style="margin-bottom:20px;">'
+        f"<h2>Live status snapshot (Phase 57) — endpoints</h2>"
+        f"<p><strong>Read-only.</strong> Same JSON/HTML feeds as the home dashboard; observation only — "
+        f"not operational approval or go-live implication.</p>"
+        f"<p style='font-size:0.95em;'>"
+        f'<a href="/api/live/status/snapshot.json">/api/live/status/snapshot.json</a>'
+        f" · "
+        f'<a href="/api/live/status/snapshot.html">/api/live/status/snapshot.html</a>'
+        f"</p>"
+        f"</div>"
+    )
+
+
 def build_workflow_officer_panel_context(repo_root: Path | None = None) -> Dict[str, object]:
     """Read-only WebUI slice: latest Workflow Officer ``report.json`` (no writes)."""
     from src.ops.workflow_officer import build_workflow_officer_dashboard_view
@@ -1729,6 +1745,7 @@ def render_ops_cockpit_html(
     supporting_cards = "".join(_render_doc_card(doc) for doc in groups["supporting_truth"])
     exec_summary_html = _render_exec_summary_status_grid(payload)
     policy_guard_observation_html = _render_policy_guard_observation_card(payload)
+    phase57_snapshot_discoverability_html = _render_phase57_snapshot_discoverability_card()
     phase83_eligibility_html = _render_phase83_eligibility_card(
         payload.get("phase83_eligibility_snapshot") or {}
     )
@@ -1785,6 +1802,7 @@ def render_ops_cockpit_html(
 <body>
   {exec_summary_html}
   {policy_guard_observation_html}
+  {phase57_snapshot_discoverability_html}
   {phase83_eligibility_html}
   <div class="hero">
     <h1>Ops Cockpit v3 — Truth-First</h1>
