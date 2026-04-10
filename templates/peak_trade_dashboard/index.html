@@ -100,6 +100,99 @@
   </section>
 </div>
 
+<!-- Phase 57: Live status snapshot (read-only; same builder as /api/live/status/snapshot.json) -->
+<section
+  class="mt-8 bg-slate-900/60 rounded-2xl border border-slate-800 p-4 text-sm"
+>
+  <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+    <div>
+      <h2 class="text-sm font-semibold text-slate-200">
+        Live status snapshot (Phase 57)
+      </h2>
+      <p class="text-xs text-slate-500 mt-0.5">
+        Read-only status overview — not the same label as “Snapshot-Commit” in Projekt-Status
+      </p>
+    </div>
+    <span class="text-xs px-2 py-0.5 rounded bg-sky-500/10 text-sky-300 border border-sky-500/20 shrink-0">
+      Observation
+    </span>
+  </div>
+  {% if live_status_snapshot_home.available %}
+  <p class="text-xs text-slate-500 mb-3">
+    Observed builder output only. No operational approval or go-live implication.
+  </p>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3 text-xs">
+    <div class="bg-slate-950/50 rounded border border-slate-800/60 px-2 py-1.5">
+      <p class="text-[10px] text-slate-500">Schema version</p>
+      <p class="font-mono text-slate-200">{{ live_status_snapshot_home.version }}</p>
+    </div>
+    <div class="bg-slate-950/50 rounded border border-slate-800/60 px-2 py-1.5 sm:col-span-2">
+      <p class="text-[10px] text-slate-500">generated_at (UTC)</p>
+      <p class="font-mono text-slate-300 break-all">{{ live_status_snapshot_home.generated_at }}</p>
+    </div>
+  </div>
+  {% if live_status_snapshot_home.meta_preview %}
+  <p class="text-[10px] text-slate-500 mb-1">meta (preview)</p>
+  <pre class="text-[10px] leading-snug text-slate-400 whitespace-pre-wrap font-mono bg-slate-950/80 border border-slate-800/80 rounded p-2 max-h-24 overflow-y-auto mb-3">{{ live_status_snapshot_home.meta_preview }}</pre>
+  {% endif %}
+  <p class="text-[10px] text-slate-500 mb-1">Panels (summary)</p>
+  <div class="overflow-x-auto rounded border border-slate-800/80">
+    <table class="w-full text-xs text-left">
+      <thead class="bg-slate-900/80 text-slate-400 uppercase tracking-wide text-[10px]">
+        <tr>
+          <th class="px-2 py-1.5">id</th>
+          <th class="px-2 py-1.5">title</th>
+          <th class="px-2 py-1.5">status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in live_status_snapshot_home.panels %}
+        <tr class="border-t border-slate-800/80">
+          <td class="px-2 py-1 font-mono text-slate-300">{{ row.id }}</td>
+          <td class="px-2 py-1 text-slate-300">{{ row.title }}</td>
+          <td class="px-2 py-1">
+            {% if row.status == "ok" %}
+            <span class="text-emerald-400">{{ row.status }}</span>
+            {% elif row.status == "warn" %}
+            <span class="text-amber-400">{{ row.status }}</span>
+            {% elif row.status == "error" %}
+            <span class="text-rose-400">{{ row.status }}</span>
+            {% else %}
+            <span class="text-slate-400">{{ row.status }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% if row.details_preview %}
+        <tr class="border-t border-slate-800/40 bg-slate-950/40">
+          <td class="px-2 py-1 text-[10px] text-slate-500" colspan="3">
+            <span class="text-slate-500">details preview:</span>
+            <span class="font-mono text-slate-400 break-all">{{ row.details_preview }}</span>
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-xs text-slate-500 mb-2">
+    Snapshot not available for this page load.
+    {% if live_status_snapshot_home.error %}
+    <span class="font-mono text-slate-400">({{ live_status_snapshot_home.error }})</span>
+    {% endif %}
+  </p>
+  <p class="text-xs text-slate-600">
+    Other dashboard sections are unchanged. This is a read-only observation slot.
+  </p>
+  {% endif %}
+  <p class="text-xs text-slate-500 mt-4">
+    Endpoints:
+    <a href="/api/live/status/snapshot.json" class="text-sky-400 hover:underline">/api/live/status/snapshot.json</a>
+    ·
+    <a href="/api/live/status/snapshot.html" class="text-sky-400 hover:underline">/api/live/status/snapshot.html</a>
+  </p>
+</section>
+
 <!-- Workflow Officer (read-only; latest local report.json) -->
 <section
   class="mt-8 bg-slate-900/60 rounded-2xl border border-slate-800 p-4 text-sm"
