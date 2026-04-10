@@ -37,6 +37,8 @@ def test_workflows_html_endpoint():
     assert "Ops Workflow Hub" in content
     assert "scripts/quick_pr_merge.sh" in content
     assert "scripts/post_merge_workflow.sh" in content
+    assert "Run UI (companion)" in content
+    assert "http://127.0.0.1:8010/" in content
 
 
 def test_workflows_json_endpoint():

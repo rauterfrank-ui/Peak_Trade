@@ -41,6 +41,9 @@ def test_stage1_endpoints_in_app():
     response = client.get("/ops/stage1")
     # HTML endpoint should always return 200 (may show empty state)
     assert response.status_code == 200
+    html = response.text
+    assert "Run UI (companion)" in html
+    assert "http://127.0.0.1:8010/" in html
 
 
 def test_stage1_latest_endpoint_with_data(tmp_path):
