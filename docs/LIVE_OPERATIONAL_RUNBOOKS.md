@@ -1486,6 +1486,8 @@ Nach dem Start sind folgende URLs verfügbar:
 - **Run-Events (JSON):** `http://localhost:8000/runs/{run_id}/tail?limit=100`
 - **Run-Alerts (JSON):** `http://localhost:8000/runs/{run_id}/alerts?limit=20`
 
+**Kanonische HTTP-/Route-Orientierung:** Operator-WebUI und live.web laufen **getrennt** (README-Defaults z. B. `127.0.0.1:8000` für die Operator-WebUI, `127.0.0.1:8010` für live.web mit `scripts/ops/run_live_webui.sh`). Vollständige Pfadlisten: [`README.md`](../README.md), [`docs/ops/README.md`](ops/README.md). Kompakte Schnellübersicht für Operator:innen: [`docs/CLI_CHEATSHEET.md`](CLI_CHEATSHEET.md#18-live-web-dashboard-phase-67) (Abschnitt 18).
+
 ### 10d.4 API-Endpunkte
 
 **GET /health**
