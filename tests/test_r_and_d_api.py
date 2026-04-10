@@ -651,32 +651,32 @@ class TestRAndDExperimentsPageV12:
     """Tests für sichtbare R&D Hub HTML-Seite (v1.2-Strings)."""
 
     def test_page_shows_hub_header(self, client):
-        """Page zeigt R&D Hub Header (v1.1)."""
+        """Page zeigt R&D Hub Header (v1.2)."""
         resp = client.get("/r_and_d")
         assert resp.status_code == 200
         assert "R&D Experiments Hub" in resp.text
         assert "v1.2" in resp.text
 
     def test_page_shows_daily_summary(self, client):
-        """Page zeigt Daily Summary (v1.1)."""
+        """Page zeigt Daily Summary (v1.2)."""
         resp = client.get("/r_and_d")
         assert resp.status_code == 200
         assert "Heute fertig" in resp.text or "heute" in resp.text.lower()
 
     def test_page_shows_status_column(self, client):
-        """Page zeigt Status-Spalte (v1.1)."""
+        """Page zeigt Status-Spalte (v1.2)."""
         resp = client.get("/r_and_d")
         assert resp.status_code == 200
         assert "Status" in resp.text
 
     def test_page_shows_type_column(self, client):
-        """Page zeigt Type-Spalte (v1.1)."""
+        """Page zeigt Type-Spalte (v1.2)."""
         resp = client.get("/r_and_d")
         assert resp.status_code == 200
         assert "Type" in resp.text
 
     def test_page_has_run_type_filter(self, client):
-        """Page hat Run-Type Filter (v1.1)."""
+        """Page hat Run-Type Filter (v1.2)."""
         resp = client.get("/r_and_d")
         assert resp.status_code == 200
         assert "Run-Type" in resp.text or "run_type" in resp.text
