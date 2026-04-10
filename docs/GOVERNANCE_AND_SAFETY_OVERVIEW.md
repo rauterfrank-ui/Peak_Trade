@@ -14,6 +14,16 @@ Governance in Peak_Trade umfasst die **organisatorischen Regeln, Prozesse und Ve
 
 Während die technische Architektur (Phasen 1–24) festlegt, **wie** das System funktioniert, definiert die Governance, **wer** was tun darf, **wann** Änderungen erlaubt sind und **wie** mit Risiken umgegangen wird.
 
+### Aktuelles Betriebsmodell: Solo (Owner-led Governance)
+
+Peak_Trade wird **aktuell** im **Solo-Betriebsmodell** geführt — ein **owner-led governance model**:
+
+- Es gibt **einen Owner / einen Betreiber** mit organisatorischer Gesamtverantwortung; **keine separat besetzte Risk-Officer-Rolle** und **kein unabhängiges Vier-Augen- oder Separation-of-Duties-Gate** durch eine zweite Person.
+- **Admin-/Owner-Rechte** ersetzen **kein** unabhängiges Risk-Gate; Verantwortung und Freigaben bleiben **explizit owner-led** und dürfen nicht als „Pseudo-Governance“ ausgegeben werden.
+- **Solo-Betrieb ist zulässig**, begründet aber **keine** falsche Behauptung unabhängiger Freigaben oder Zweitreviews. Review- und Approval-Felder in Checklisten und **externen** Vorlagen (z. B. LB-APR-001) dürfen **nur** dann als erfüllt markiert werden, wenn die jeweilige Anforderung **real** erbracht wurde — nicht zur Symmetrie mit einer Vorlage.
+
+**Späterer Ausbau:** Die Rollen und Abläufe in §3 ff. beschreiben auch ein **Zielbild** mit getrennten Rollen, falls künftig mehr als eine Person beteiligt wird. Bis dahin gelten die obigen Grenzen des Solo-Modells.
+
 ### Bezug zum aktuellen Stand
 
 Peak_Trade ist aktuell ein **Research-/Backtest-/Paper-/Shadow-System**:
@@ -27,7 +37,7 @@ Peak_Trade ist aktuell ein **Research-/Backtest-/Paper-/Shadow-System**:
 
 Reine Dokumentations-PRs, die [Finish Plan](ops/roadmap/FINISH_PLAN.md#stop-rules-non-negotiable), diese Übersicht und [Safety Policy Testnet & Live](SAFETY_POLICY_TESTNET_AND_LIVE.md) sprachlich auf denselben Stand bringen, **schärfen nur die Dokumentation**; sie begründen **weder** ein Live-Go **noch** eine `live-approved`-Evidenz und **lockern** die NO-LIVE-Posture **nicht**.
 
-**Canary Live (explizite Ausnahme):** Das im Repo abgelegte [Canary-Manifest-Template](ops/templates/CANARY_LIVE_MANIFEST_TEMPLATE.md) unterstützt die **schriftliche** Scope-Fixierung aus [`CANARY_LIVE_ENTRY_CRITERIA.md`](ops/runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) — es ist **keine** Live-Freigabe und **kein** Ersatz für Owner-/Risk-Sign-off oder Ticket-Referenz. **live-approved** bleibt eine **menschliche**, nachvollziehbar dokumentierte Entscheidung (siehe §3 Rollen, insbesondere Owner / Systemverantwortlicher und Reviewer/Risk Officer). Das Nachweisschema **Freigabe-Artefakt (LB-APR-001)** im Eintritts-Runbook ([`CANARY_LIVE_ENTRY_CRITERIA.md` § Freigabe-Artefakt](ops/runbooks/CANARY_LIVE_ENTRY_CRITERIA.md#freigabe-artefakt-lb-apr-001)) strukturiert nur **Pflichtfelder** für ein **externes** Ticket/Formular — ein Docs-PR, der diese Scheibe ergänzt, **impliziert** weder Live-Freigabe noch technischen Go-live (**LB-EXE-001** bleibt separat).
+**Canary Live (explizite Ausnahme):** Das im Repo abgelegte [Canary-Manifest-Template](ops/templates/CANARY_LIVE_MANIFEST_TEMPLATE.md) unterstützt die **schriftliche** Scope-Fixierung aus [`CANARY_LIVE_ENTRY_CRITERIA.md`](ops/runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) — es ist **keine** Live-Freigabe und **kein** Ersatz für Owner-/Risk-Sign-off oder Ticket-Referenz. **live-approved** bleibt eine **menschliche**, nachvollziehbar dokumentierte Entscheidung (siehe §3 Rollen sowie den Abschnitt **Aktuelles Betriebsmodell: Solo** oben: im Solo-Modell ist kein unabhängiges Risk-/Reviewer-Gate durch eine zweite Person impliziert, sofern nicht nachweislich anders besetzt). Das Nachweisschema **Freigabe-Artefakt (LB-APR-001)** im Eintritts-Runbook ([`CANARY_LIVE_ENTRY_CRITERIA.md` § Freigabe-Artefakt](ops/runbooks/CANARY_LIVE_ENTRY_CRITERIA.md#freigabe-artefakt-lb-apr-001)) strukturiert nur **Pflichtfelder** für ein **externes** Ticket/Formular — ein Docs-PR, der diese Scheibe ergänzt, **impliziert** weder Live-Freigabe noch technischen Go-live (**LB-EXE-001** bleibt separat).
 
 **Kill-Switch posture (MVP):** Es gibt **keine** vorgesehenen „Live-Unlocks“ oder informellen **break-glass**-Abkürzungen außerhalb dokumentierter Governance. Der Emergency Kill Switch bleibt als **Layer 4** beschrieben und operabel dokumentiert: [README Kill Switch](../README_KILL_SWITCH.md), [`risk&#47;KILL_SWITCH_ARCHITECTURE.md`](risk/KILL_SWITCH_ARCHITECTURE.md), [`ops&#47;KILL_SWITCH_RUNBOOK.md`](ops/KILL_SWITCH_RUNBOOK.md).
 
@@ -81,13 +91,15 @@ Research-Code darf Live-Endpoints **niemals** versehentlich erreichen können.
 
 ## 3. Rollen & Verantwortlichkeiten
 
+Die folgende Tabelle beschreibt **Referenzrollen** — einschließlich eines **möglichen späteren Ausbaus** mit getrennten Verantwortlichkeiten. **Heute** gilt das Solo-Modell im Abschnitt *Aktuelles Betriebsmodell: Solo* (§1): ohne nachgewiesene zweite Person gibt es **kein** unabhängiges Zweitreview und **keine** getrennte Risk-Officer-Funktion.
+
 ### 3.1 Rollenübersicht
 
 | Rolle | Kurzbeschreibung |
 |-------|------------------|
 | **Owner / Systemverantwortlicher** | Gesamtverantwortung, Phasen-Freigaben |
 | **Developer / Quant** | Implementierung, Strategie-Entwicklung |
-| **Reviewer / Risk Officer** | Review von Änderungen, Risk-Bewertung |
+| **Reviewer / Risk Officer** | Review von Änderungen, Risk-Bewertung *(im Solo-Modell nicht automatisch durch eine unabhängige Person besetzt)* |
 | **Operator** (zukünftig) | Betrieb, Monitoring, Incident-Response |
 
 ### 3.2 Owner / Systemverantwortlicher
@@ -124,6 +136,8 @@ Research-Code darf Live-Endpoints **niemals** versehentlich erreichen können.
 - Keine Änderung an Safety-/Live-Pfaden ohne explizite Freigabe
 
 ### 3.4 Reviewer / Risk Officer
+
+**Solo-Modell (heute):** Diese Rolle ist **nicht** durch eine vom Owner unabhängige Person abgedeckt, es sei denn, das ist **extern** oder anderweitig nachweislich dokumentiert. Vorlagen mit „Risk Officer“-Zeilen ersetzen **keine** unabhängige Prüfung.
 
 **Aufgaben:**
 - Review von Änderungen an Risk-Settings und Limits
@@ -184,8 +198,8 @@ Research-Code darf Live-Endpoints **niemals** versehentlich erreichen können.
 5. **Umsetzung**: Änderung in `config/config.toml` mit Commit-Message
 
 **Zwei-Augen-Prinzip:**
-- Änderungen an `[live_risk]` erfordern **immer** Review
-- Keine selbst-genehmigten Änderungen bei kritischen Limits
+- **Zielbild:** Änderungen an `[live_risk]` erfordern **Review** durch eine vorgesehene zweite Instanz, sobald diese **real** besetzt ist; bei kritischen Limits keine selbst-genehmigten Änderungen ohne diese unabhängige Prüfung.
+- **Solo-Modell:** Ein unabhängiges Zwei-Augen-Gate ist **aktuell nicht** durch dieselbe Person ersetzbar; kritische Limit-Änderungen erfordern **externen** Review-Nachweis oder **ehrliche** Kennzeichnung, dass keine unabhängige Prüfung vorliegt — **keine** Schein-Freigaben.
 
 ### 4.3 Phasen-Übergänge (Stufen-Wechsel)
 
@@ -362,6 +376,8 @@ Phase 25 ergänzt den **organisatorischen Layer**:
 ---
 
 ## 7. Changelog
+
+- **2026-04-10:** Solo-Betriebsmodell (Owner-led Governance) kanonisch festgehalten: ein Owner/Betreiber, keine separat besetzte Risk-Officer-Rolle, kein unabhängiges Vier-Augen-/SoD-Gate; Review-/Approval-Felder nur bei realer Erfüllung; Abgrenzung zum späteren Rollen-Ausbau in §3 ff.
 
 - **Phase 25** (2025-12): Initial erstellt
   - Grundprinzipien definiert

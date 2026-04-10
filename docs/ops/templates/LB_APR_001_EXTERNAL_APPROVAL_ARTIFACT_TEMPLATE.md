@@ -20,6 +20,8 @@ Bis dahin gilt:
 - kein technischer Unlock
 - Repo-Dokumentation, Template, Merge oder Pointer ersetzen dieses Artefakt nicht
 
+**Solo-/Owner-led-Betrieb:** Wird Peak_Trade ohne unabhängige zweite Rolle geführt, belegen Einträge zu „Risk Officer“, „Reviewer“ oder ähnlichen Feldern **keine** unabhängige Prüfung, sofern nicht nachweislich anders — siehe kanonisch [`docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md) (Abschnitt *Aktuelles Betriebsmodell: Solo*). Felder nur als erfüllt markieren, wenn die Anforderung **real** erbracht wurde.
+
 Änderung eines Pflichtfelds macht dieses Artefakt ungültig und erfordert eine neue Freigabe.
 
 ---

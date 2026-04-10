@@ -63,6 +63,8 @@ Kurzablauf, wenn **`src/orders/`** (Prefix-Regel) geändert wird:
 Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im **selben Diff** **`docs/ops/registry/DOCS_TRUTH_MAP.md`** (diese Datei) einen kurzen Eintrag unter „Änderungsnachweis“ erhalten — damit bleibt die Registry-Landkarte mit der Branch-Protection-Referenz im Einklang (siehe Regel `truth-branch-protection-canonical` in `config/ops/docs_truth_map.yaml`).
 
 ## Änderungsnachweis (Slice A)
+- 2026-04-10 — Solo-Betriebsmodell: `docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md` — Owner-led Governance (kein unabhängiges Risk-Gate; Review-/Approval-Felder nur bei realer Erfüllung); Pointer in diesem Abschnitt.
+
 - 2026-04-10 — LB-APR-001: `docs/ops/LB_APR_001_STRATEGY_VERSION_FIELD_MAPPING.md` ergänzt (externes „Strategy Version“ vs. `strategy_registry_key` / `active_strategy_id` / Git / Artefakt / KI-Registry; Draft-/Approval-Hilfe; kein technischer Unlock; keine Live-Freigabe impliziert); Pointer in diesem Abschnitt.
 
 - 2026-04-10 — LB-APR-001: `docs/ops/LB_APR_001_ACCOUNT_TYPE_FIELD_MAPPING.md` ergänzt (externes „Account Type“ vs. interne Kontexte; Draft-/Approval-Hilfe; kein technischer Unlock; keine Live-Freigabe impliziert); Pointer in diesem Abschnitt.
