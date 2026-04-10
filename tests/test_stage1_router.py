@@ -44,6 +44,10 @@ def test_stage1_endpoints_in_app():
     html = response.text
     assert "Run UI (companion)" in html
     assert "http://127.0.0.1:8010/" in html
+    assert 'href="/ops"' in html
+    assert 'href="/ops/ci-health"' in html
+    assert "Ops Cockpit" in html
+    assert "CI Health" in html
 
 
 def test_stage1_latest_endpoint_with_data(tmp_path):

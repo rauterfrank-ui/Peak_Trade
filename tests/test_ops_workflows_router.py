@@ -39,6 +39,10 @@ def test_workflows_html_endpoint():
     assert "scripts/post_merge_workflow.sh" in content
     assert "Run UI (companion)" in content
     assert "http://127.0.0.1:8010/" in content
+    assert 'href="/ops"' in content
+    assert 'href="/ops/ci-health"' in content
+    assert "Ops Cockpit" in content
+    assert "CI Health" in content
 
 
 def test_workflows_json_endpoint():
