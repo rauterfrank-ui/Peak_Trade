@@ -52,6 +52,15 @@
             <a href="/live/telemetry" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
               📊 Telemetry
             </a>
+            <a
+              href="http://127.0.0.1:8010/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs text-slate-400 hover:text-slate-200 transition-colors"
+              title="Separate Run-monitoring UI (companion). Default http://127.0.0.1:8010/ when using scripts/ops/run_live_webui.sh per README — different process than this dashboard."
+            >
+              Run UI (companion)
+            </a>
             <span class="text-slate-600">|</span>
             <span class="text-xs text-slate-500">
               {{ status.version }} · {{ status.snapshot_commit }}
@@ -65,8 +74,10 @@
       </main>
 
       <footer class="border-t border-slate-800/50 bg-slate-900/30 mt-8">
-        <div class="max-w-6xl mx-auto px-4 py-3 text-xs text-slate-500 flex items-center justify-between">
-          <span>Peak_Trade Dashboard v1.2 · Read-Only · Shadow/Testnet Mode · R&D Dashboard (Phase 76)</span>
+        <div class="max-w-6xl mx-auto px-4 py-3 text-xs text-slate-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+          <span>Peak_Trade Dashboard v1.2 · Read-Only · Shadow/Testnet Mode · R&D Dashboard (Phase 76)
+            · Companion Run UI default <code class="text-slate-400">127.0.0.1:8010</code> (local;
+            README)</span>
           <span>🔒 Live-Execution ist deaktiviert</span>
         </div>
       </footer>
