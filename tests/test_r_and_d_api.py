@@ -647,8 +647,8 @@ class TestAPICategoriesEndpoint:
         assert "backtest" in data["run_type_labels"]
 
 
-class TestRAndDExperimentsPageV11:
-    """Tests für v1.1 Features der HTML-Page."""
+class TestRAndDExperimentsPageV12:
+    """Tests für sichtbare R&D Hub HTML-Seite (v1.2-Strings)."""
 
     def test_page_shows_hub_header(self, client):
         """Page zeigt R&D Hub Header (v1.1)."""
