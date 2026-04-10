@@ -1515,6 +1515,16 @@ Nach dem Start sind folgende URLs verfügbar:
 - Response: Liste von Alerts (rule_id, severity, message, run_id, timestamp)
 - HTTP 404 wenn Run nicht gefunden
 
+**Zusätzlich: read-only JSON unter `/api/v0` (Watch-/Status-Zugriff)**
+
+Unabhängig von den obigen **Legacy**-Pfaden (`/runs`, … — gleicher live.web-Prozess wie in §10d.3) existiert ein weiterer **read-only**-JSON-Baum mit Präfix **`/api/v0`**, den die Watch-/Dashboard-Oberfläche u. a. per `fetch` nutzt. Kanonische Implementierung: [`src/live/web/api_v0.py`](../src/live/web/api_v0.py). Beispiele (Auszug, nicht vollständig):
+
+- `GET &#47;api&#47;v0&#47;health`
+- `GET &#47;api&#47;v0&#47;runs`
+- `GET &#47;api&#47;v0&#47;runs&#47;{run_id}`
+
+Nur Lesen/Beobachten — keine Order-Erzeugung und kein Start/Stop über diese Oberfläche.
+
 ### 10d.5 Dashboard-Features
 
 Das HTML-Dashboard bietet:
