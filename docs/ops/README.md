@@ -34,7 +34,7 @@ Ports **8000** (Operator WebUI, `src.webui.app`) and **8010** (live.web, `src.li
 
 live.web also exposes **read-only** JSON under the **`/api/v0`** prefix (watch/status API); details and examples: [`LIVE_OPERATIONAL_RUNBOOKS.md`](../LIVE_OPERATIONAL_RUNBOOKS.md) (section 10d.4), implementation: [`src/live/web/api_v0.py`](../../src/live/web/api_v0.py).
 
-The live.web companion strips (main dashboard and watch/session HTML) are **read-only navigation** to **`http://127.0.0.1:8000/`**, **`http://127.0.0.1:8000/ops`**, **`http://127.0.0.1:8000/ops/ci-health`**, and the Run UI default **`http://127.0.0.1:8010/`** — local defaults per README, **separate processes**, **no shared control plane** (see `src/live/web/app.py`).
+The live.web companion strips (main dashboard and watch/session HTML) are **read-only navigation**: they link to **`http://127.0.0.1:8000/`**, **`http://127.0.0.1:8000/ops`**, **`http://127.0.0.1:8000/ops/ci-health`**, to the **secondary** Operator HTML paths listed under **Additional Operator WebUI nav** above (same paths on host `127.0.0.1:8000`), and to the Run UI default **`http://127.0.0.1:8010/`**. On **`/watch/runs/{run_id}`** and **`/sessions/{run_id}`**, there is an additional companion link to Operator WebUI **`/r_and_d/experiment/{run_id}`** using the **same** `run_id` as in the page URL. Local defaults per README, **separate processes**, **no shared control plane** (see `src/live/web/app.py`).
 
 For scripts and port notes, see the root [`README.md`](../../README.md) section **Web UI**.
 
