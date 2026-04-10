@@ -839,6 +839,73 @@ def _render_phase83_eligibility_card(snapshot: Dict[str, object]) -> str:
     )
 
 
+def _render_policy_guard_observation_card(payload: Dict[str, object]) -> str:
+    """HTML block: policy/guard observation from existing payload keys only (read-only wording)."""
+    ps_raw = payload.get("policy_state")
+    gs_raw = payload.get("guard_state")
+    ps = ps_raw if isinstance(ps_raw, dict) else {}
+    gs = gs_raw if isinstance(gs_raw, dict) else {}
+
+    def _fmt_val(val: object) -> str:
+        if val is True:
+            return "true"
+        if val is False:
+            return "false"
+        if val is None:
+            return "n/a"
+        return str(val)
+
+    rows_html: List[str] = []
+    for label, key in (
+        ("policy_state.action", "action"),
+        ("policy_state.summary", "summary"),
+        ("policy_state.enabled", "enabled"),
+        ("policy_state.armed", "armed"),
+        ("policy_state.dry_run", "dry_run"),
+        ("policy_state.blocked", "blocked"),
+        ("policy_state.kill_switch_active", "kill_switch_active"),
+        ("policy_state.confirm_token_required", "confirm_token_required"),
+    ):
+        if key not in ps:
+            continue
+        v = escape(_fmt_val(ps.get(key)))
+        rows_html.append(
+            f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>{escape(label)}</code></td>"
+            f"<td style='padding:4px 0;'><code>{v}</code></td></tr>"
+        )
+    for label, key in (
+        ("guard_state.no_trade_baseline", "no_trade_baseline"),
+        ("guard_state.deny_by_default", "deny_by_default"),
+        ("guard_state.treasury_separation", "treasury_separation"),
+    ):
+        if key not in gs:
+            continue
+        v = escape(_fmt_val(gs.get(key)))
+        rows_html.append(
+            f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>{escape(label)}</code></td>"
+            f"<td style='padding:4px 0;'><code>{v}</code></td></tr>"
+        )
+
+    table_html = (
+        "<table style='width:100%;border-collapse:collapse;font-size:0.9em;'>"
+        "<tbody>"
+        f"{''.join(rows_html)}"
+        "</tbody></table>"
+    )
+    intro = (
+        "Same fields as <code>policy_state</code> / <code>guard_state</code> in the JSON payload for "
+        "this page. Observation only — not a control surface; does not grant live access or change "
+        "enforcement."
+    )
+    return (
+        f'<div class="card truth-card" style="margin-bottom:20px;">'
+        f"<h2>Policy / guard rails — observed state</h2>"
+        f"<p><strong>Read-only.</strong> {intro}</p>"
+        f"{table_html}"
+        f"</div>"
+    )
+
+
 def build_workflow_officer_panel_context(repo_root: Path | None = None) -> Dict[str, object]:
     """Read-only WebUI slice: latest Workflow Officer ``report.json`` (no writes)."""
     from src.ops.workflow_officer import build_workflow_officer_dashboard_view
@@ -1661,6 +1728,7 @@ def render_ops_cockpit_html(
     runtime_cards = "".join(_render_doc_card(doc) for doc in groups["runtime_resolution"])
     supporting_cards = "".join(_render_doc_card(doc) for doc in groups["supporting_truth"])
     exec_summary_html = _render_exec_summary_status_grid(payload)
+    policy_guard_observation_html = _render_policy_guard_observation_card(payload)
     phase83_eligibility_html = _render_phase83_eligibility_card(
         payload.get("phase83_eligibility_snapshot") or {}
     )
@@ -1716,6 +1784,7 @@ def render_ops_cockpit_html(
 </head>
 <body>
   {exec_summary_html}
+  {policy_guard_observation_html}
   {phase83_eligibility_html}
   <div class="hero">
     <h1>Ops Cockpit v3 — Truth-First</h1>

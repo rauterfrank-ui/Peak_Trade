@@ -150,6 +150,14 @@ def test_ops_cockpit_html_contains_phase83_eligibility_card(tmp_path: Path) -> N
     assert "Observation only" in html
 
 
+def test_ops_cockpit_html_contains_policy_guard_observation_card(tmp_path: Path) -> None:
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Policy / guard rails — observed state" in html
+    assert "policy_state.action" in html
+    assert "guard_state.treasury_separation" in html
+    assert "not a control surface" in html
+
+
 def test_phase83_eligibility_snapshot_ok_with_real_repo_tiering() -> None:
     repo = Path(__file__).resolve().parents[2]
     if not (repo / "config" / "strategy_tiering.toml").exists():
