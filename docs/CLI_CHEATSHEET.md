@@ -5,6 +5,7 @@ Schnellreferenz für alle CLI-Tools im Peak_Trade Framework.
 > **Neu bei Peak_Trade?**
 > - Lies zuerst: [`docs/GETTING_STARTED.md`](GETTING_STARTED.md)
 > - Sieh dir danach dieses Cheatsheet für eine Übersicht der wichtigsten Kommandos an.
+> - [Docs Truth Map](ops/registry/DOCS_TRUTH_MAP.md) — kanonische Ops-Doku-Registry und Änderungsnachweis (truth-first)
 >
 > **Hinweis (macOS/pyenv):** In diesem Cheatsheet ist `python3` der Standard-Runner.
 
