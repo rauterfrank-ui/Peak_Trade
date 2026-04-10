@@ -211,7 +211,7 @@ def _generate_dashboard_html(
         header {{
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 30px;
             padding-bottom: 15px;
             border-bottom: 1px solid #333;
@@ -219,6 +219,16 @@ def _generate_dashboard_html(
         h1 {{
             color: #00d4ff;
             font-size: 1.8em;
+        }}
+        .companion-hint {{
+            font-size: 0.75em;
+            color: #888;
+            margin-top: 8px;
+            max-width: 42rem;
+            line-height: 1.4;
+        }}
+        .companion-hint a {{
+            color: #7dd3fc;
         }}
         .status {{
             font-size: 0.9em;
@@ -364,7 +374,14 @@ def _generate_dashboard_html(
 <body>
     <div class="container">
         <header>
-            <h1>Peak_Trade Live Dashboard</h1>
+            <div>
+                <h1>Peak_Trade Live Dashboard</h1>
+                <p class="companion-hint">
+                    Companion (navigation): Operator WebUI —
+                    <a href="http://127.0.0.1:8000/" target="_blank" rel="noopener noreferrer">http://127.0.0.1:8000/</a>
+                    · default local port per README; separate process, not this app.
+                </p>
+            </div>
             <div class="status" id="status">Connecting...</div>
         </header>
 

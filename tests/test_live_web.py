@@ -431,6 +431,17 @@ class TestDashboardEndpoint:
         assert "text/html" in response.headers["content-type"]
         assert "Peak_Trade" in response.text
 
+    def test_dashboard_contains_companion_link_to_operator_webui(
+        self, test_client: TestClient
+    ) -> None:
+        """HTML enthält read-only Companion-Hinweis zur Operator-WebUI (Default-README-Port)."""
+        response = test_client.get("/")
+        assert response.status_code == 200
+        text = response.text
+        assert "http://127.0.0.1:8000/" in text
+        assert "Operator WebUI" in text
+        assert "separate process" in text.lower()
+
     def test_dashboard_alias(self, test_client: TestClient) -> None:
         """Test Dashboard unter /dashboard."""
         response = test_client.get("/dashboard")

@@ -401,6 +401,15 @@ def test_home_includes_live_status_snapshot_card(test_client):
     assert "Observed builder output only" in text
 
 
+def test_home_includes_companion_link_to_run_ui(test_client):
+    """GET / enthält globalen Companion-Link zur Live-Run-UI (Default-README-Port)."""
+    response = test_client.get("/")
+    assert response.status_code == 200
+    text = response.text
+    assert "http://127.0.0.1:8010/" in text
+    assert "Run UI (companion)" in text
+
+
 def test_home_renders_when_snapshot_builder_fails(test_client, monkeypatch):
     """GET / still returns 200 if home snapshot context fails (fail-soft)."""
 
