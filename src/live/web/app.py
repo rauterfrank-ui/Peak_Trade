@@ -27,6 +27,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterator, List, Optional
+from urllib.parse import quote
 
 import pandas as pd
 from fastapi import FastAPI, HTTPException, Query, Request
@@ -175,8 +176,73 @@ def _calculate_orders_count(events: List[Dict[str, Any]]) -> Dict[str, int]:
     }
 
 
-def _companion_operator_webui_hint_html_watch() -> str:
+# README-default Operator WebUI origin for companion navigation (same host/port wording as existing strips).
+_OPERATOR_WEBUI_ORIGIN = "http://127.0.0.1:8000"
+# Secondary HTML routes (read-only); aligned with README / docs/ops index.
+_OPERATOR_WEBUI_SECONDARY_PATHS: tuple[str, ...] = (
+    "/execution_watch",
+    "/live/alerts",
+    "/r_and_d",
+    "/r_and_d/comparison",
+    "/live/telemetry",
+)
+
+
+def _companion_secondary_operator_routes_strip_html() -> str:
+    """Static read-only links to secondary Operator WebUI paths (companion discoverability)."""
+    parts: List[str] = []
+    for path in _OPERATOR_WEBUI_SECONDARY_PATHS:
+        url = f"{_OPERATOR_WEBUI_ORIGIN}{path}"
+        parts.append(f"<a href='{url}' target='_blank' rel='noopener noreferrer'>{url}</a>")
+    joined = " · ".join(parts)
+    return (
+        "<div class='companion-strip'>"
+        "<strong>Secondary Operator routes (companion navigation):</strong> "
+        "read-only Operator WebUI — "
+        f"{joined}"
+        " · default local host/port per README; separate process; no shared control plane; navigation only."
+        "</div>"
+    )
+
+
+def _companion_secondary_operator_routes_paragraph_dashboard_html() -> str:
+    """Same secondary paths as `_companion_secondary_operator_routes_strip_html` for main dashboard HTML."""
+    parts: List[str] = []
+    for path in _OPERATOR_WEBUI_SECONDARY_PATHS:
+        url = f"{_OPERATOR_WEBUI_ORIGIN}{path}"
+        parts.append(f'<a href="{url}" target="_blank" rel="noopener noreferrer">{url}</a>')
+    joined = " · ".join(parts)
+    return (
+        f'<p class="companion-hint">'
+        f"Secondary Operator routes (companion navigation): read-only Operator WebUI — {joined} "
+        f"· default local host/port per README; separate process; no shared control plane; navigation only."
+        f"</p>"
+    )
+
+
+def _companion_operator_rd_experiment_strip_html(run_id: str) -> str:
+    """Link to Operator R&D experiment HTML for the same run_id as the current watch/session page."""
+    seg = quote(run_id, safe="")
+    url = f"{_OPERATOR_WEBUI_ORIGIN}/r_and_d/experiment/{seg}"
+    return (
+        "<div class='companion-strip'>"
+        "<strong>R&amp;D experiment detail (companion navigation):</strong> read-only Operator WebUI — "
+        f"<a href='{url}' target='_blank' rel='noopener noreferrer'>{url}</a>"
+        " · same run_id as this watch/session page; default local host/port per README; "
+        "separate process; no shared control plane; navigation only."
+        "</div>"
+    )
+
+
+def _companion_operator_webui_hint_html_watch(
+    operator_rd_experiment_run_id: Optional[str] = None,
+) -> str:
     """Read-only companion strip for live.web watch-only HTML pages (PR #2442 wording aligned)."""
+    rd_experiment = (
+        _companion_operator_rd_experiment_strip_html(operator_rd_experiment_run_id)
+        if operator_rd_experiment_run_id
+        else ""
+    )
     return (
         "<div class='companion-strip'>"
         "<strong>Companion (navigation):</strong> Operator WebUI — "
@@ -204,6 +270,8 @@ def _companion_operator_webui_hint_html_watch() -> str:
         " · default local host/port per README (scripts/ops/run_live_webui.sh); "
         "separate process from Operator WebUI; no shared control plane."
         "</div>"
+        f"{_companion_secondary_operator_routes_strip_html()}"
+        f"{rd_experiment}"
     )
 
 
@@ -428,6 +496,7 @@ def _generate_dashboard_html(
                     <a href="http://127.0.0.1:8010/" target="_blank" rel="noopener noreferrer">http://127.0.0.1:8010/</a>
                     · default local host/port per README (scripts/ops/run_live_webui.sh); separate process from Operator WebUI; no shared control plane.
                 </p>
+                {_companion_secondary_operator_routes_paragraph_dashboard_html()}
             </div>
             <div class="status" id="status">Connecting...</div>
         </header>
@@ -1263,7 +1332,7 @@ def create_app(
 <body>
   <div class="wrap">
     {_watch_only_banner()}
-    {_companion_operator_webui_hint_html_watch()}
+    {_companion_operator_webui_hint_html_watch(operator_rd_experiment_run_id=run_id)}
     <div class="header">
       <div>
         <div class="title">Session Detail (Run): <span class="pill" id="run-id">{safe_run}</span></div>

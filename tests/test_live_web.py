@@ -544,6 +544,59 @@ class TestDashboardEndpoint:
             assert "companion navigation" in text.lower()
             assert "separate process" in text.lower()
 
+    def test_dashboard_contains_secondary_operator_route_deeplinks(
+        self, test_client: TestClient
+    ) -> None:
+        """Haupt-Dashboard listet statische sekundäre Operator-WebUI-Pfade (README/Companion)."""
+        for path in ("/", "/dashboard"):
+            response = test_client.get(path)
+            assert response.status_code == 200
+            text = response.text
+            assert "Secondary Operator routes (companion navigation)" in text
+            assert "http://127.0.0.1:8000/execution_watch" in text
+            assert "http://127.0.0.1:8000/live/alerts" in text
+            assert "http://127.0.0.1:8000/r_and_d" in text
+            assert "http://127.0.0.1:8000/r_and_d/comparison" in text
+            assert "http://127.0.0.1:8000/live/telemetry" in text
+            assert "r_and_d/experiment" not in text
+
+    def test_watch_pages_contain_secondary_operator_route_deeplinks(
+        self, test_client: TestClient
+    ) -> None:
+        """Watch-/Session-HTML enthält dieselben sekundären Operator-Companion-Links."""
+        run_id = "20251204_180000_paper_ma_crossover_BTC-EUR_1m"
+        for path in ("/watch", f"/watch/runs/{run_id}", f"/sessions/{run_id}"):
+            response = test_client.get(path)
+            assert response.status_code == 200
+            text = response.text
+            assert "Secondary Operator routes (companion navigation)" in text
+            assert "http://127.0.0.1:8000/execution_watch" in text
+            assert "http://127.0.0.1:8000/live/alerts" in text
+            assert "http://127.0.0.1:8000/r_and_d/comparison" in text
+            assert "http://127.0.0.1:8000/live/telemetry" in text
+
+    def test_watch_overview_excludes_rd_experiment_deeplink(self, test_client: TestClient) -> None:
+        """Watch-Übersicht hat keinen kontextabhängigen /r_and_d/experiment/{run_id}-Link."""
+        response = test_client.get("/watch")
+        assert response.status_code == 200
+        assert "R&amp;D experiment detail (companion navigation)" not in response.text
+        assert "/r_and_d/experiment/" not in response.text
+
+    def test_watch_run_detail_contains_rd_experiment_deeplink_for_same_run_id(
+        self, test_client: TestClient
+    ) -> None:
+        """Run-Detail-Seiten verlinken R&D-Experiment-HTML mit demselben run_id."""
+        run_id = "20251204_180000_paper_ma_crossover_BTC-EUR_1m"
+        expected = (
+            "http://127.0.0.1:8000/r_and_d/experiment/20251204_180000_paper_ma_crossover_BTC-EUR_1m"
+        )
+        for path in (f"/watch/runs/{run_id}", f"/sessions/{run_id}"):
+            response = test_client.get(path)
+            assert response.status_code == 200
+            text = response.text
+            assert "R&amp;D experiment detail (companion navigation)" in text
+            assert expected in text
+
     def test_dashboard_alias(self, test_client: TestClient) -> None:
         """Test Dashboard unter /dashboard."""
         response = test_client.get("/dashboard")
