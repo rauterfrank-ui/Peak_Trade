@@ -687,6 +687,8 @@ Sekundäre Navigationspfade:
 
 Vollständiger HTTP-Route-Index (Operator-WebUI und live.web): [`README.md`](../README.md), [`docs/ops/README.md`](ops/README.md).
 
+Zusätzlich stellt live.web **read-only** JSON unter dem Präfix **`/api/v0`** bereit (u. a. für Watch-/Status-Zugriff); Details und Beispiele: [`LIVE_OPERATIONAL_RUNBOOKS.md`](LIVE_OPERATIONAL_RUNBOOKS.md) (Abschnitt 10d.4), Implementierung [`src/live/web/api_v0.py`](../src/live/web/api_v0.py).
+
 **Siehe:** [`LIVE_OPERATIONAL_RUNBOOKS.md`](LIVE_OPERATIONAL_RUNBOOKS.md) Abschnitt 10d für Details.
 
 ---
