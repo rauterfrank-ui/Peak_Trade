@@ -1730,8 +1730,8 @@ def _status_badge_class(status: str) -> str:
     return "status-badge--ok"
 
 
-def _render_exec_summary_status_grid(payload: Dict[str, object]) -> str:
-    """Render compact v3 Executive Summary. 4 status cards, flags only if present. Read-only."""
+def _render_status_at_a_glance_inner(payload: Dict[str, object]) -> str:
+    """Status grid + attribution + flags — reuses badge helpers; read-only."""
     exec_sum = payload.get("executive_summary") or {}
     t_obj = exec_sum.get("truth_status") or {}
     f_obj = exec_sum.get("freshness_status") or {}
@@ -1787,14 +1787,100 @@ def _render_exec_summary_status_grid(payload: Dict[str, object]) -> str:
         flags_html = f'<p class="status-flags">{" ".join(parts)}</p>'
 
     return (
-        '<div class="exec-summary">'
-        "<h2>Executive Summary</h2>"
-        "<p><strong>Read-only.</strong> No write actions. Operator snapshot.</p>"
         '<div class="status-grid">'
         f"{''.join(cards)}"
         "</div>"
         '<p class="status-attribution"><strong>Sources:</strong> operator snapshot, system state, truth sections</p>'
         f"{flags_html}"
+    )
+
+
+def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
+    """vNext-aligned operator summary: system status, go/no-go observation, status at a glance. Read-only."""
+    sys_state = payload.get("system_state") or {}
+    ps = payload.get("policy_state") if isinstance(payload.get("policy_state"), dict) else {}
+    inc = payload.get("incident_state") if isinstance(payload.get("incident_state"), dict) else {}
+    deps = (
+        payload.get("dependencies_state")
+        if isinstance(payload.get("dependencies_state"), dict)
+        else {}
+    )
+    ev = payload.get("evidence_state") if isinstance(payload.get("evidence_state"), dict) else {}
+
+    mode_s = escape(str(sys_state.get("mode", "unknown")))
+    exec_m = escape(str(sys_state.get("execution_model", "unknown")))
+
+    dep_extra = ""
+    dep_sum = deps.get("summary")
+    if dep_sum is not None and str(dep_sum).strip() != "":
+        dep_extra = (
+            "<p><strong>dependencies_state.summary</strong> (observation): "
+            f"<code>{escape(str(dep_sum))}</code></p>"
+        )
+
+    ev_extra = ""
+    ev_sum = ev.get("summary")
+    if ev_sum is not None and str(ev_sum).strip() != "":
+        ev_extra = (
+            "<p><strong>evidence_state.summary</strong> (observation): "
+            f"<code>{escape(str(ev_sum))}</code></p>"
+        )
+
+    action = escape(str(ps.get("action", "unknown")))
+    blocked = ps.get("blocked")
+    blocked_s = escape(str(blocked))
+    ks_ps = bool(ps.get("kill_switch_active"))
+    ks_inc = bool(inc.get("kill_switch_active"))
+    ks_active = ks_ps or ks_inc
+    req_att = inc.get("requires_operator_attention")
+    inc_summary = escape(str(inc.get("summary", "unknown")))
+
+    go_no_go_intro = (
+        "<p><strong>Observation only.</strong> The labels below quote "
+        "<code>policy_state</code> and <code>incident_state</code> from this page&apos;s JSON "
+        "payload. They describe configured gates and rollups — "
+        "<strong>not an approval, not an unlock,</strong> not live permission.</p>"
+    )
+    go_lines = (
+        f"<p><strong>policy_state.action</strong> (observation): <code>{action}</code></p>"
+        f"<p><strong>policy_state.blocked</strong> (observation): <code>{blocked_s}</code></p>"
+        f"<p><strong>incident_state.summary</strong> (observation): <code>{inc_summary}</code></p>"
+        f"<p><strong>incident_state.requires_operator_attention</strong> (observation): "
+        f"<code>{escape(str(req_att))}</code></p>"
+    )
+    if ks_active:
+        go_lines += (
+            "<p><strong>Kill switch signal</strong> (observation): active in payload — "
+            "downstream enforcement remains authoritative; this page does not clear it.</p>"
+        )
+
+    glance_intro = (
+        "<p><strong>Read-only.</strong> Same rollup fields as before (v3 executive summary cards); "
+        "no write actions.</p>"
+    )
+
+    inner = _render_status_at_a_glance_inner(payload)
+
+    return (
+        '<div class="operator-summary-surface exec-summary">'
+        "<h2>Operator summary (read-only)</h2>"
+        '<p class="operator-summary-disclaimer"><strong>Observation only.</strong> '
+        "Read-only snapshot from local artifacts and the <code>GET /api/ops-cockpit</code> "
+        "payload shape. <strong>Not an approval, not an unlock,</strong> not a substitute for "
+        "your governance process.</p>"
+        "<h3>System status (observation)</h3>"
+        "<p><strong>system_state.mode</strong> (observation): "
+        f"<code>{mode_s}</code></p>"
+        "<p><strong>system_state.execution_model</strong> (observation): "
+        f"<code>{exec_m}</code></p>"
+        f"{dep_extra}"
+        f"{ev_extra}"
+        "<h3>Go / No-Go observation (not approval)</h3>"
+        f"{go_no_go_intro}"
+        f"{go_lines}"
+        "<h3>Status at a glance</h3>"
+        f"{glance_intro}"
+        f"{inner}"
         "</div>"
     )
 
@@ -1850,7 +1936,7 @@ def render_ops_cockpit_html(
     canonical_cards = "".join(_render_doc_card(doc) for doc in groups["canonical_boundary"])
     runtime_cards = "".join(_render_doc_card(doc) for doc in groups["runtime_resolution"])
     supporting_cards = "".join(_render_doc_card(doc) for doc in groups["supporting_truth"])
-    exec_summary_html = _render_exec_summary_status_grid(payload)
+    operator_summary_surface_html = _render_operator_summary_surface(payload)
     policy_guard_observation_html = _render_policy_guard_observation_card(payload)
     phase57_snapshot_discoverability_html = _render_phase57_snapshot_discoverability_card()
     incident_observation_html = _render_incident_observation_card(payload)
@@ -1885,6 +1971,8 @@ def render_ops_cockpit_html(
     .group-block {{ margin-top: 22px; }}
     code {{ background: #f5f5f5; padding: 2px 4px; border-radius: 4px; }}
     .exec-summary {{ border: 1px solid #333; border-radius: 12px; padding: 16px; margin-bottom: 20px; background: #fafafa; }}
+    .operator-summary-disclaimer {{ border-left: 4px solid #607d8b; padding-left: 12px; margin: 12px 0; }}
+    .operator-summary-surface h3 {{ font-size: 1.05em; margin-top: 18px; margin-bottom: 8px; }}
     .status-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 12px 0; }}
     .status-card {{ padding: 10px; border-radius: 8px; border: 1px solid #e0e0e0; }}
     .status-label {{ display: block; font-size: 0.85em; color: #555; margin-bottom: 4px; }}
@@ -1909,7 +1997,7 @@ def render_ops_cockpit_html(
   </style>
 </head>
 <body>
-  {exec_summary_html}
+  {operator_summary_surface_html}
   {policy_guard_observation_html}
   {phase57_snapshot_discoverability_html}
   {incident_observation_html}
