@@ -1045,6 +1045,12 @@ def test_v3_html_contains_operator_summary_surface(tmp_path: Path) -> None:
     assert "Operator summary (read-only)" in html
     assert "System status (observation)" in html
     assert "Go / No-Go observation (not approval)" in html
+    assert "Incident observation (read-only)" in html
+    assert "incident_state.status" in html
+    assert "dependencies_state.degraded_count" in html
+    assert "Evidence freshness observation (read-only)" in html
+    assert "evidence_state.freshness_status" in html
+    assert "evidence_state.source_freshness" in html
     assert "Status at a glance" in html
     assert "status-grid" in html
     assert "status-label" in html

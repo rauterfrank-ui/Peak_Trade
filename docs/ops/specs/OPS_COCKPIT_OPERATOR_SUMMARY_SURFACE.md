@@ -17,6 +17,8 @@
 |------------------------------|------------------------------|----------------|
 | System State | `system_state.mode`, `system_state.execution_model`; optional Kurzbezug: `dependencies_state.summary`, `evidence_state.summary` | `src/webui/ops_cockpit.py` — `_render_operator_summary_surface`, section **System status (observation)** |
 | Go / No-Go (observation, not approval) | `policy_state.action`, `policy_state.blocked`, `incident_state.summary`, `incident_state.requires_operator_attention`, kill-switch flags in payload | Same — section **Go / No-Go observation (not approval)** |
+| Incident / Safety (compact observation) | `incident_state.status`, `incident_state.degraded`, `incident_state.requires_operator_attention`; `dependencies_state.summary`, `dependencies_state.degraded` | Same — section **Incident observation (read-only)** |
+| Evidence / Freshness (compact observation) | `evidence_state.summary`, `evidence_state.freshness_status`, `evidence_state.audit_trail`, `evidence_state.source_freshness`, optional `evidence_state.telemetry_evidence` | Same — section **Evidence freshness observation (read-only)** |
 | Kompakte Rollups (Truth / Freshness / Sources) | `executive_summary` (nested levels/labels), top-level `truth_status` / `freshness_status` / `source_coverage_status`, `critical_flags`, `unknown_flags` | `_render_status_at_a_glance_inner` (Status-at-a-glance cards) |
 
 ## Related
