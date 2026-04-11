@@ -1060,6 +1060,10 @@ def test_v3_html_contains_operator_summary_surface(tmp_path: Path) -> None:
     assert "Mode" in html
     assert "operator snapshot, system state, truth sections" in html
     assert "Not an approval, not an unlock" in html
+    summary_start = html.index("Operator summary (read-only)")
+    summary_end = html.index("Status at a glance")
+    summary_segment = html[summary_start:summary_end]
+    assert summary_segment.count("incident_state.requires_operator_attention") == 1
 
 
 def test_v3_unknown_stale_no_data_stable(tmp_path: Path) -> None:
