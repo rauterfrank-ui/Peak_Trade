@@ -2,6 +2,8 @@
 
 > **Modulares Trading-Framework mit Safety-First-Ansatz**
 
+**Docs Truth Map:** [kanonische Ops-Doku-Registry und Änderungsnachweis](ops/registry/DOCS_TRUTH_MAP.md) (truth-first)
+
 ---
 
 ## Architektur-Map
