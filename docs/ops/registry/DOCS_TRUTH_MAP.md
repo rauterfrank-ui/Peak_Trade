@@ -77,6 +77,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 - 2026-04-10 — PR #2488: `docs/CLI_CHEATSHEET.md` — Truth-Map-Pointer im Block „Neu bei Peak_Trade?“ (CLI-Discoverability); reine Docs-Änderung; kein technischer Unlock.
 
+- 2026-04-10 — PR #2490: `docs/LIVE_OPERATIONAL_RUNBOOKS.md` — Truth-Map-Pointer im Kopfbereich nach „Live-Ops Pack“ (Runbook-Discoverability); reine Docs-Änderung; kein technischer Unlock.
+
 - 2026-04-09 — LB-APR-001: `DOCS_TRUTH_MAP.md` ergänzt um kanonischen Auffindbarkeits-Hinweis auf `docs/ops/templates/LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE.md` (externe Freigabe-Hülle / Arbeitshilfe; kein technischer Unlock; keine Live-Freigabe impliziert).
 
 - 2026-04-09 — LB-EXE-001 Phase 2 updated `docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md` to record deny-by-default guard hardening around `src/execution/networked/transport_gate_v1.py` and related networked guard tests; no live approval or outbound execution unlock implied.
