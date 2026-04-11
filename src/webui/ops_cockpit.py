@@ -1840,7 +1840,12 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
 
     incident_status = escape(str(inc.get("status", "unknown")))
     incident_degraded = escape(str(inc.get("degraded", "unknown")))
+    incident_stop_invoked = escape(str(inc.get("incident_stop_invoked", "unknown")))
+    incident_entry_permitted = escape(str(inc.get("entry_permitted", "unknown")))
+    incident_authoritative = escape(str(inc.get("operator_authoritative_state", "unknown")))
     dep_summary = escape(str(deps.get("summary", "unknown")))
+    dep_telemetry = escape(str(deps.get("telemetry", "unknown")))
+    dep_exchange = escape(str(deps.get("exchange", "unknown")))
     dep_degraded = deps.get("degraded")
     dep_degraded_count = 0
     dep_degraded_preview = ""
@@ -1853,8 +1858,18 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"<code>{incident_status}</code></p>"
         "<p><strong>incident_state.degraded</strong> (observation): "
         f"<code>{incident_degraded}</code></p>"
+        "<p><strong>incident_state.incident_stop_invoked</strong> (observation): "
+        f"<code>{incident_stop_invoked}</code></p>"
+        "<p><strong>incident_state.entry_permitted</strong> (observation): "
+        f"<code>{incident_entry_permitted}</code></p>"
+        "<p><strong>incident_state.operator_authoritative_state</strong> (observation): "
+        f"<code>{incident_authoritative}</code></p>"
         "<p><strong>dependencies_state.summary</strong> (observation): "
         f"<code>{dep_summary}</code></p>"
+        "<p><strong>dependencies_state.telemetry</strong> (observation): "
+        f"<code>{dep_telemetry}</code></p>"
+        "<p><strong>dependencies_state.exchange</strong> (observation): "
+        f"<code>{dep_exchange}</code></p>"
         "<p><strong>dependencies_state.degraded_count</strong> (observation): "
         f"<code>{dep_degraded_count}</code></p>"
     )
@@ -1867,6 +1882,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
     evidence_summary = escape(str(ev.get("summary", "unknown")))
     evidence_freshness = escape(str(ev.get("freshness_status", "unknown")))
     evidence_audit = escape(str(ev.get("audit_trail", "unknown")))
+    evidence_last_verified = escape(str(ev.get("last_verified_utc", "unknown")))
     source_freshness = ev.get("source_freshness")
     sf_fresh = sf_stale = sf_older = "unknown"
     if isinstance(source_freshness, dict):
@@ -1880,6 +1896,8 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"<code>{evidence_freshness}</code></p>"
         "<p><strong>evidence_state.audit_trail</strong> (observation): "
         f"<code>{evidence_audit}</code></p>"
+        "<p><strong>evidence_state.last_verified_utc</strong> (observation): "
+        f"<code>{evidence_last_verified}</code></p>"
         "<p><strong>evidence_state.source_freshness</strong> (observation): "
         f"<code>fresh={sf_fresh}, stale={sf_stale}, older={sf_older}</code></p>"
     )

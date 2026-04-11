@@ -1047,9 +1047,15 @@ def test_v3_html_contains_operator_summary_surface(tmp_path: Path) -> None:
     assert "Go / No-Go observation (not approval)" in html
     assert "Incident observation (read-only)" in html
     assert "incident_state.status" in html
+    assert "incident_state.incident_stop_invoked" in html
+    assert "incident_state.entry_permitted" in html
+    assert "incident_state.operator_authoritative_state" in html
     assert "dependencies_state.degraded_count" in html
+    assert "dependencies_state.telemetry" in html
+    assert "dependencies_state.exchange" in html
     assert "Evidence freshness observation (read-only)" in html
     assert "evidence_state.freshness_status" in html
+    assert "evidence_state.last_verified_utc" in html
     assert "evidence_state.source_freshness" in html
     assert "Status at a glance" in html
     assert "status-grid" in html
