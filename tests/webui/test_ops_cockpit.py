@@ -1040,9 +1040,12 @@ def test_v3_executive_summary_keys_present(tmp_path: Path) -> None:
         assert "detail" in obj
 
 
-def test_v3_html_contains_executive_summary(tmp_path: Path) -> None:
+def test_v3_html_contains_operator_summary_surface(tmp_path: Path) -> None:
     html = render_ops_cockpit_html(repo_root=tmp_path)
-    assert "Executive Summary" in html
+    assert "Operator summary (read-only)" in html
+    assert "System status (observation)" in html
+    assert "Go / No-Go observation (not approval)" in html
+    assert "Status at a glance" in html
     assert "status-grid" in html
     assert "status-label" in html
     assert "Truth" in html
@@ -1050,6 +1053,7 @@ def test_v3_html_contains_executive_summary(tmp_path: Path) -> None:
     assert "Sources" in html
     assert "Mode" in html
     assert "operator snapshot, system state, truth sections" in html
+    assert "Not an approval, not an unlock" in html
 
 
 def test_v3_unknown_stale_no_data_stable(tmp_path: Path) -> None:
@@ -1084,9 +1088,9 @@ def test_build_ops_cockpit_payload_includes_v3_executive_summary(tmp_path: Path)
 
 
 def test_render_ops_cockpit_html_renders_v3_summary(tmp_path: Path) -> None:
-    """HTML rendert v3 Executive Summary mit allen Status-Karten."""
+    """HTML rendert Operator Summary Surface mit Status-at-a-glance-Karten (v3-Rollup)."""
     html = render_ops_cockpit_html(repo_root=tmp_path)
-    assert "Executive Summary" in html
+    assert "Operator summary (read-only)" in html
     assert "Truth" in html
     assert "Freshness" in html
     assert "Sources" in html
