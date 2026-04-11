@@ -8,6 +8,8 @@ Dieses Dokument führt dich Schritt für Schritt durch deine erste Stunde mit Pe
 - Live-/Ops-Flow (Health, Portfolio, Status-Reports)
 - **Ohne echte Live-Trades** – alles im Safe-Mode
 
+**Docs Truth Map:** [kanonische Ops-Doku-Registry und Änderungsnachweis](ops/registry/DOCS_TRUTH_MAP.md) (truth-first)
+
 ---
 
 ## 1. Voraussetzungen
