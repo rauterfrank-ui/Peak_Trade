@@ -1810,22 +1810,6 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
     mode_s = escape(str(sys_state.get("mode", "unknown")))
     exec_m = escape(str(sys_state.get("execution_model", "unknown")))
 
-    dep_extra = ""
-    dep_sum = deps.get("summary")
-    if dep_sum is not None and str(dep_sum).strip() != "":
-        dep_extra = (
-            "<p><strong>dependencies_state.summary</strong> (observation): "
-            f"<code>{escape(str(dep_sum))}</code></p>"
-        )
-
-    ev_extra = ""
-    ev_sum = ev.get("summary")
-    if ev_sum is not None and str(ev_sum).strip() != "":
-        ev_extra = (
-            "<p><strong>evidence_state.summary</strong> (observation): "
-            f"<code>{escape(str(ev_sum))}</code></p>"
-        )
-
     action = escape(str(ps.get("action", "unknown")))
     blocked = ps.get("blocked")
     blocked_s = escape(str(blocked))
@@ -1854,6 +1838,60 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             "downstream enforcement remains authoritative; this page does not clear it.</p>"
         )
 
+    incident_status = escape(str(inc.get("status", "unknown")))
+    incident_degraded = escape(str(inc.get("degraded", "unknown")))
+    incident_requires_attention = escape(str(inc.get("requires_operator_attention", "unknown")))
+    dep_summary = escape(str(deps.get("summary", "unknown")))
+    dep_degraded = deps.get("degraded")
+    dep_degraded_count = 0
+    dep_degraded_preview = ""
+    if isinstance(dep_degraded, list):
+        dep_degraded_count = len(dep_degraded)
+        if dep_degraded:
+            dep_degraded_preview = ", ".join(str(item) for item in dep_degraded[:3])
+    incident_observation_lines = (
+        "<p><strong>incident_state.status</strong> (observation): "
+        f"<code>{incident_status}</code></p>"
+        "<p><strong>incident_state.degraded</strong> (observation): "
+        f"<code>{incident_degraded}</code></p>"
+        "<p><strong>incident_state.requires_operator_attention</strong> (observation): "
+        f"<code>{incident_requires_attention}</code></p>"
+        "<p><strong>dependencies_state.summary</strong> (observation): "
+        f"<code>{dep_summary}</code></p>"
+        "<p><strong>dependencies_state.degraded_count</strong> (observation): "
+        f"<code>{dep_degraded_count}</code></p>"
+    )
+    if dep_degraded_preview:
+        incident_observation_lines += (
+            "<p><strong>dependencies_state.degraded_preview</strong> (observation): "
+            f"<code>{escape(dep_degraded_preview)}</code></p>"
+        )
+
+    evidence_summary = escape(str(ev.get("summary", "unknown")))
+    evidence_freshness = escape(str(ev.get("freshness_status", "unknown")))
+    evidence_audit = escape(str(ev.get("audit_trail", "unknown")))
+    source_freshness = ev.get("source_freshness")
+    sf_fresh = sf_stale = sf_older = "unknown"
+    if isinstance(source_freshness, dict):
+        sf_fresh = escape(str(source_freshness.get("fresh", "unknown")))
+        sf_stale = escape(str(source_freshness.get("stale", "unknown")))
+        sf_older = escape(str(source_freshness.get("older", "unknown")))
+    evidence_observation_lines = (
+        "<p><strong>evidence_state.summary</strong> (observation): "
+        f"<code>{evidence_summary}</code></p>"
+        "<p><strong>evidence_state.freshness_status</strong> (observation): "
+        f"<code>{evidence_freshness}</code></p>"
+        "<p><strong>evidence_state.audit_trail</strong> (observation): "
+        f"<code>{evidence_audit}</code></p>"
+        "<p><strong>evidence_state.source_freshness</strong> (observation): "
+        f"<code>fresh={sf_fresh}, stale={sf_stale}, older={sf_older}</code></p>"
+    )
+    if "telemetry_evidence" in ev:
+        evidence_observation_lines += (
+            "<p><strong>evidence_state.telemetry_evidence</strong> (observation): "
+            f"<code>{escape(str(ev.get('telemetry_evidence')))}</code></p>"
+        )
+
     glance_intro = (
         "<p><strong>Read-only.</strong> Same rollup fields as before (v3 executive summary cards); "
         "no write actions.</p>"
@@ -1873,11 +1911,17 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"<code>{mode_s}</code></p>"
         "<p><strong>system_state.execution_model</strong> (observation): "
         f"<code>{exec_m}</code></p>"
-        f"{dep_extra}"
-        f"{ev_extra}"
         "<h3>Go / No-Go observation (not approval)</h3>"
         f"{go_no_go_intro}"
         f"{go_lines}"
+        "<h3>Incident observation (read-only)</h3>"
+        "<p><strong>Observation only.</strong> Existing incident/dependency rollups from this page&apos;s "
+        "JSON payload. <strong>Not approval, not unlock.</strong></p>"
+        f"{incident_observation_lines}"
+        "<h3>Evidence freshness observation (read-only)</h3>"
+        "<p><strong>Observation only.</strong> Existing evidence freshness and audit rollups from this "
+        "page&apos;s JSON payload. <strong>Not approval, not unlock.</strong></p>"
+        f"{evidence_observation_lines}"
         "<h3>Status at a glance</h3>"
         f"{glance_intro}"
         f"{inner}"
