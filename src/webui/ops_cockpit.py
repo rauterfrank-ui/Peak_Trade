@@ -1840,7 +1840,6 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
 
     incident_status = escape(str(inc.get("status", "unknown")))
     incident_degraded = escape(str(inc.get("degraded", "unknown")))
-    incident_requires_attention = escape(str(inc.get("requires_operator_attention", "unknown")))
     dep_summary = escape(str(deps.get("summary", "unknown")))
     dep_degraded = deps.get("degraded")
     dep_degraded_count = 0
@@ -1854,8 +1853,6 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"<code>{incident_status}</code></p>"
         "<p><strong>incident_state.degraded</strong> (observation): "
         f"<code>{incident_degraded}</code></p>"
-        "<p><strong>incident_state.requires_operator_attention</strong> (observation): "
-        f"<code>{incident_requires_attention}</code></p>"
         "<p><strong>dependencies_state.summary</strong> (observation): "
         f"<code>{dep_summary}</code></p>"
         "<p><strong>dependencies_state.degraded_count</strong> (observation): "
@@ -1915,12 +1912,10 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{go_no_go_intro}"
         f"{go_lines}"
         "<h3>Incident observation (read-only)</h3>"
-        "<p><strong>Observation only.</strong> Existing incident/dependency rollups from this page&apos;s "
-        "JSON payload. <strong>Not approval, not unlock.</strong></p>"
+        "<p>Existing incident/dependency rollups from this page&apos;s JSON payload.</p>"
         f"{incident_observation_lines}"
         "<h3>Evidence freshness observation (read-only)</h3>"
-        "<p><strong>Observation only.</strong> Existing evidence freshness and audit rollups from this "
-        "page&apos;s JSON payload. <strong>Not approval, not unlock.</strong></p>"
+        "<p>Existing evidence freshness and audit rollups from this page&apos;s JSON payload.</p>"
         f"{evidence_observation_lines}"
         "<h3>Status at a glance</h3>"
         f"{glance_intro}"
