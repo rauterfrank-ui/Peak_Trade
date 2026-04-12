@@ -2066,14 +2066,26 @@ def render_ops_cockpit_html(
     <p>Read-only operations cockpit aligned to the current canonical truth model.</p>
     <p><strong>Last verified:</strong> {escape(str(truth_state["last_verified_utc"]))}</p>
     <p><strong>Truth coverage:</strong> {escape(str(truth_state["truth_coverage"]))}</p>
-    <p><strong>Available / unavailable:</strong> {escape(str(truth_state["available_count"]))} / {escape(str(truth_state["unavailable_count"]))}</p>
+    <p><strong>Available / unavailable:</strong> {escape(str(truth_state["available_count"]))} / {
+        escape(str(truth_state["unavailable_count"]))
+    }</p>
     <p>
-      <span class="priority-inline"><strong>canonical</strong>={escape(str(counts["canonical_boundary"]))}</span>
-      <span class="priority-inline"><strong>runtime</strong>={escape(str(counts["runtime_resolution"]))}</span>
-      <span class="priority-inline"><strong>supporting</strong>={escape(str(counts["supporting_truth"]))}</span>
+      <span class="priority-inline"><strong>canonical</strong>={
+        escape(str(counts["canonical_boundary"]))
+    }</span>
+      <span class="priority-inline"><strong>runtime</strong>={
+        escape(str(counts["runtime_resolution"]))
+    }</span>
+      <span class="priority-inline"><strong>supporting</strong>={
+        escape(str(counts["supporting_truth"]))
+    }</span>
     </p>
-    <p><strong>Execution model:</strong> {escape(str(payload["system_state"]["execution_model"]))}</p>
-    <p><strong>Final trade authority:</strong> {escape(str(truth_state["final_trade_authority"]))}</p>
+    <p><strong>Execution model:</strong> {
+        escape(str(payload["system_state"]["execution_model"]))
+    }</p>
+    <p><strong>Final trade authority:</strong> {
+        escape(str(truth_state["final_trade_authority"]))
+    }</p>
   </div>
 
   <div class="legend">
@@ -2096,7 +2108,9 @@ def render_ops_cockpit_html(
     <div class="card">
       <h2>Truth State</h2>
       <p><strong>Read-only canonical truth</strong></p>
-      <p><strong>Truth-first positioning:</strong> {escape(str(truth_state["truth_first_positioning"]))}</p>
+      <p><strong>Truth-first positioning:</strong> {
+        escape(str(truth_state["truth_first_positioning"]))
+    }</p>
       <p><strong>Truth coverage:</strong> {escape(str(truth_state["truth_coverage"]))}</p>
       <p><strong>Live autonomy:</strong> {escape(str(truth_state["live_autonomy"]))}</p>
     </div>
@@ -2106,7 +2120,9 @@ def render_ops_cockpit_html(
       <p><strong>Authority boundaries (read-only)</strong></p>
       <p><strong>Proposer:</strong> {escape(str(boundary["proposer_authority"]))}</p>
       <p><strong>Critic:</strong> {escape(str(boundary["critic_authority"]))}</p>
-      <p><strong>Provider binding authority:</strong> {escape(str(boundary["provider_binding_authority"]))}</p>
+      <p><strong>Provider binding authority:</strong> {
+        escape(str(boundary["provider_binding_authority"]))
+    }</p>
       <p><strong>Execution boundary:</strong> {escape(str(boundary["execution_boundary"]))}</p>
       <p><strong>Closest to trade:</strong> {escape(str(boundary["closest_to_trade"]))}</p>
     </div>
@@ -2116,22 +2132,72 @@ def render_ops_cockpit_html(
       <p><strong>Unknown / partial slots (read-only)</strong></p>
       <p><strong>Critic runtime path:</strong> {escape(str(runtime["critic_runtime_path"]))}</p>
       <p><strong>Proposer runtime path:</strong> {escape(str(runtime["proposer_runtime_path"]))}</p>
-      <p><strong>Provider/model runtime slots:</strong> {escape(str(runtime["provider_model_runtime_slots"]))}</p>
-      <p><strong>Execution-adjacent contracts:</strong> {escape(str(runtime["execution_adjacent_contracts"]))}</p>
+      <p><strong>Provider/model runtime slots:</strong> {
+        escape(str(runtime["provider_model_runtime_slots"]))
+    }</p>
+      <p><strong>Execution-adjacent contracts:</strong> {
+        escape(str(runtime["execution_adjacent_contracts"]))
+    }</p>
     </div>
 
     <div class="card">
       <h2>Exposure State</h2>
-      <p><strong>Read-only exposure / risk surface (placeholder)</strong></p>
-      <p><strong>Summary:</strong> <span class="chip"><code>{escape(str(exposure.get("summary", "unknown")))}</code></span></p>
-      <p><strong>Treasury separation:</strong> {escape(str(exposure.get("treasury_separation", "unknown")))}</p>
+      <p><strong>Read-only exposure / risk observation.</strong> Existing payload fields only; not approval, not unlock.</p>
+      <p><strong>Summary:</strong> <span class="chip"><code>{
+        escape(str(exposure.get("summary", "unknown")))
+    }</code></span></p>
+      <p><strong>Treasury separation:</strong> {
+        escape(str(exposure.get("treasury_separation", "unknown")))
+    }</p>
       <p><strong>Risk status:</strong> {escape(str(exposure.get("risk_status", "unknown")))}</p>
+      <p><strong>Observed exposure:</strong> {
+        escape(str(exposure.get("observed_exposure", "n/a")))
+    }</p>
+      <p><strong>Observed currency:</strong> {escape(str(exposure.get("observed_ccy", "n/a")))}</p>
+      <p><strong>Data source:</strong> <code>{
+        escape(str(exposure.get("data_source", "n/a")))
+    }</code></p>
+      <p><strong>Last updated (UTC):</strong> {
+        escape(str(exposure.get("last_updated_utc", "n/a")))
+    }</p>
+      <p><strong>Exposure stale flag:</strong> {escape(str(exposure.get("stale", "n/a")))}</p>
+      <p><strong>stale_state.exposure:</strong> <code>{
+        escape(str(stale.get("exposure", "unknown")))
+    }</code></p>
+      <p><strong>dependencies_state.summary:</strong> <code>{
+        escape(str(dependencies.get("summary", "unknown")))
+    }</code></p>
+      <p><strong>Configured caps:</strong></p>
+      <ul>
+        {
+        "".join(
+            f"<li><code>{escape(str(cap.get('limit_id', 'unknown')))}</code>: "
+            f"{escape(str(cap.get('cap_value', 'n/a')))} "
+            f"{escape(str(cap.get('ccy', '')))}</li>"
+            for cap in list(exposure.get("caps_configured", []))[:6]
+            if isinstance(cap, dict)
+        )
+        or "<li>none</li>"
+    }
+      </ul>
+      <p><strong>Symbol exposures (preview):</strong></p>
+      <ul>
+        {
+        "".join(
+            f"<li><code>{escape(str(sym))}</code>: {escape(str(val))}</li>"
+            for sym, val in list((exposure.get("exposure_by_symbol") or {}).items())[:5]
+        )
+        or "<li>none</li>"
+    }
+      </ul>
     </div>
 
     <div class="card">
       <h2>Stale State</h2>
       <p><strong>Reconciliation hardening: balance / position / order staleness</strong></p>
-      <p><strong>Summary:</strong> <span class="chip"><code>{escape(str(stale.get("summary", "unknown")))}</code></span></p>
+      <p><strong>Summary:</strong> <span class="chip"><code>{
+        escape(str(stale.get("summary", "unknown")))
+    }</code></span></p>
       <p><strong>Balance:</strong> {escape(str(stale.get("balance", "unknown")))}</p>
       <p><strong>Position:</strong> {escape(str(stale.get("position", "unknown")))}</p>
       <p><strong>Order:</strong> {escape(str(stale.get("order", "unknown")))}</p>
@@ -2141,32 +2207,50 @@ def render_ops_cockpit_html(
     <div class="card">
       <h2>Balance Semantics</h2>
       <p><strong>Operator visibility: clear / warning / blocked</strong></p>
-      <p><strong>Semantic state:</strong> <span class="chip"><code>{escape(str(balance_sem.get("balance_semantic_state") or "n/a"))}</code></span></p>
-      <p><strong>Reason code:</strong> {escape(str(balance_sem.get("balance_reason_code") or "n/a"))}</p>
-      <p><strong>Operator-visible state:</strong> {escape(str(balance_sem.get("balance_operator_visible_state") or "n/a"))}</p>
+      <p><strong>Semantic state:</strong> <span class="chip"><code>{
+        escape(str(balance_sem.get("balance_semantic_state") or "n/a"))
+    }</code></span></p>
+      <p><strong>Reason code:</strong> {
+        escape(str(balance_sem.get("balance_reason_code") or "n/a"))
+    }</p>
+      <p><strong>Operator-visible state:</strong> {
+        escape(str(balance_sem.get("balance_operator_visible_state") or "n/a"))
+    }</p>
     </div>
 
     <div class="card">
       <h2>Session End Mismatch</h2>
       <p><strong>Local closeout vs broker at session end; unresolved blocks next session</strong></p>
-      <p><strong>Status:</strong> <span class="chip"><code>{escape(str(session_end_mismatch.get("status", "unknown")))}</code></span></p>
+      <p><strong>Status:</strong> <span class="chip"><code>{
+        escape(str(session_end_mismatch.get("status", "unknown")))
+    }</code></span></p>
       <p><strong>Summary:</strong> {escape(str(session_end_mismatch.get("summary", "unknown")))}</p>
-      <p><strong>Blocked next session:</strong> {escape(str(session_end_mismatch.get("blocked_next_session", False)))}</p>
-      <p><strong>Runbook:</strong> <code>{escape(str(session_end_mismatch.get("runbook", "")))}</code></p>
+      <p><strong>Blocked next session:</strong> {
+        escape(str(session_end_mismatch.get("blocked_next_session", False)))
+    }</p>
+      <p><strong>Runbook:</strong> <code>{
+        escape(str(session_end_mismatch.get("runbook", "")))
+    }</code></p>
     </div>
 
     <div class="card">
       <h2>Human Supervision</h2>
       <p><strong>Pilot design intent (read-only; per PILOT_GO_NO_GO_CHECKLIST row 55)</strong></p>
-      <p><strong>Status:</strong> <span class="chip"><code>{escape(str(human_supervision.get("status", "unknown")))}</code></span></p>
-      <p><strong>Mode:</strong> <span class="chip"><code>{escape(str(human_supervision.get("mode", "unknown")))}</code></span></p>
+      <p><strong>Status:</strong> <span class="chip"><code>{
+        escape(str(human_supervision.get("status", "unknown")))
+    }</code></span></p>
+      <p><strong>Mode:</strong> <span class="chip"><code>{
+        escape(str(human_supervision.get("mode", "unknown")))
+    }</code></span></p>
       <p><strong>Summary:</strong> {escape(str(human_supervision.get("summary", "unknown")))}</p>
     </div>
 
     <div class="card">
       <h2>Evidence State</h2>
       <p><strong>Read-only evidence / audit surface (derived from truth sources)</strong></p>
-      <p><strong>Summary:</strong> <span class="chip"><code>{escape(str(evidence.get("summary", "unknown")))}</code></span></p>
+      <p><strong>Summary:</strong> <span class="chip"><code>{
+        escape(str(evidence.get("summary", "unknown")))
+    }</code></span></p>
       <p><strong>Freshness:</strong> {escape(str(evidence.get("freshness_status", "unknown")))}</p>
       <p><strong>Audit trail:</strong> {escape(str(evidence.get("audit_trail", "unknown")))}</p>
     </div>
@@ -2174,7 +2258,9 @@ def render_ops_cockpit_html(
     <div class="card">
       <h2>Dependencies State</h2>
       <p><strong>Read-only dependencies surface (placeholder)</strong></p>
-      <p><strong>Summary:</strong> <span class="chip"><code>{escape(str(dependencies.get("summary", "unknown")))}</code></span></p>
+      <p><strong>Summary:</strong> <span class="chip"><code>{
+        escape(str(dependencies.get("summary", "unknown")))
+    }</code></span></p>
       <p><strong>Exchange:</strong> {escape(str(dependencies.get("exchange", "unknown")))}</p>
       <p><strong>Telemetry:</strong> {escape(str(dependencies.get("telemetry", "unknown")))}</p>
     </div>
@@ -2186,17 +2272,51 @@ def render_ops_cockpit_html(
     <div class="card truth-card">
       <h2>Incident-state read model</h2>
       <p><strong>Question-specific authority (read-model contract)</strong></p>
-      <p><strong>Incident stop invoked:</strong> {escape(str(incident.get("incident_stop_invoked", False)))}</p>
-      <p><strong>Incident stop source:</strong> <code>{escape(str(incident.get("incident_stop_source", "n/a")))}</code></p>
-      <p><strong>PT_FORCE_NO_TRADE:</strong> {escape(str(incident.get("pt_force_no_trade") if incident.get("pt_force_no_trade") is not None else "n/a"))}</p>
-      <p><strong>PT_ENABLED:</strong> {escape(str(incident.get("pt_enabled") if incident.get("pt_enabled") is not None else "n/a"))}</p>
-      <p><strong>PT_ARMED:</strong> {escape(str(incident.get("pt_armed") if incident.get("pt_armed") is not None else "n/a"))}</p>
-      <p><strong>Kill-switch active:</strong> {escape(str(incident.get("kill_switch_active", False)))}</p>
-      <p><strong>Kill-switch source:</strong> <code>{escape(str(incident.get("kill_switch_source", "n/a")))}</code></p>
-      <p><strong>Entry permitted:</strong> {escape(str(incident.get("entry_permitted") if incident.get("entry_permitted") is not None else "n/a"))}</p>
-      <p><strong>Risk-gate kill-switch active:</strong> {escape(str(incident.get("risk_gate_kill_switch_active", False)))}</p>
-      <p><strong>Operator authoritative state:</strong> <code>{escape(str(incident.get("operator_authoritative_state", "n/a")))}</code></p>
-      <p><strong>Operator state reason:</strong> {escape(str(incident.get("operator_state_reason", "n/a")))}</p>
+      <p><strong>Incident stop invoked:</strong> {
+        escape(str(incident.get("incident_stop_invoked", False)))
+    }</p>
+      <p><strong>Incident stop source:</strong> <code>{
+        escape(str(incident.get("incident_stop_source", "n/a")))
+    }</code></p>
+      <p><strong>PT_FORCE_NO_TRADE:</strong> {
+        escape(
+            str(
+                incident.get("pt_force_no_trade")
+                if incident.get("pt_force_no_trade") is not None
+                else "n/a"
+            )
+        )
+    }</p>
+      <p><strong>PT_ENABLED:</strong> {
+        escape(str(incident.get("pt_enabled") if incident.get("pt_enabled") is not None else "n/a"))
+    }</p>
+      <p><strong>PT_ARMED:</strong> {
+        escape(str(incident.get("pt_armed") if incident.get("pt_armed") is not None else "n/a"))
+    }</p>
+      <p><strong>Kill-switch active:</strong> {
+        escape(str(incident.get("kill_switch_active", False)))
+    }</p>
+      <p><strong>Kill-switch source:</strong> <code>{
+        escape(str(incident.get("kill_switch_source", "n/a")))
+    }</code></p>
+      <p><strong>Entry permitted:</strong> {
+        escape(
+            str(
+                incident.get("entry_permitted")
+                if incident.get("entry_permitted") is not None
+                else "n/a"
+            )
+        )
+    }</p>
+      <p><strong>Risk-gate kill-switch active:</strong> {
+        escape(str(incident.get("risk_gate_kill_switch_active", False)))
+    }</p>
+      <p><strong>Operator authoritative state:</strong> <code>{
+        escape(str(incident.get("operator_authoritative_state", "n/a")))
+    }</code></p>
+      <p><strong>Operator state reason:</strong> {
+        escape(str(incident.get("operator_state_reason", "n/a")))
+    }</p>
     </div>
   </div>
 

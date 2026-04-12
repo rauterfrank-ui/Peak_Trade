@@ -21,6 +21,17 @@
 | Evidence / Freshness (compact observation) | `evidence_state.summary`, `evidence_state.freshness_status`, `evidence_state.audit_trail`, `evidence_state.last_verified_utc`, `evidence_state.source_freshness`, optional `evidence_state.telemetry_evidence` | Same — section **Evidence freshness observation (read-only)** |
 | Kompakte Rollups (Truth / Freshness / Sources) | `executive_summary` (nested levels/labels), top-level `truth_status` / `freshness_status` / `source_coverage_status`, `critical_flags`, `unknown_flags` | `_render_status_at_a_glance_inner` (Status-at-a-glance cards) |
 
+### Exposure / Risk (separate card, read-only)
+
+Presentation-only **Exposure State** card in `render_ops_cockpit_html` — observation of existing keys; not approval, not unlock. Cross-check: [`OPS_SUITE_EXPOSURE_READ_MODEL_CONTRACT.md`](OPS_SUITE_EXPOSURE_READ_MODEL_CONTRACT.md).
+
+| Observation | Payload keys (read from `exposure_state` unless noted) |
+|-------------|--------------------------------------------------------|
+| Summary, treasury, risk | `summary`, `treasury_separation`, `risk_status` |
+| Observed values | `observed_exposure`, `observed_ccy`, `data_source`, `last_updated_utc`, `stale` |
+| Cross-surface context | `stale_state.exposure` (from `stale_state`), `dependencies_state.summary` (from `dependencies_state`) |
+| Caps & breakdown | `caps_configured`, `exposure_by_symbol` (preview) |
+
 ## Related
 
 - [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) — operator-facing target spec.
