@@ -88,6 +88,7 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 
 ## Related
 
+- [`OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md`](OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md) — canonical top-level payload key contract for `build_ops_cockpit_payload` (read-model; not UI layout).
 - [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) — operator-facing target spec.
 - [`RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`](../runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md) — phased plan; RV6 Policy/Governance and Phase 4 Workflow Officer observation surfaces shipped read-only (HTML bundle).
 - [`RUNBOOK_PR_CI_VERIFICATION.md`](../runbooks/RUNBOOK_PR_CI_VERIFICATION.md) — PR/CI events and verification (truth-first).
@@ -109,4 +110,4 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 - Policy / go-no-go observation (aggregate): `build_policy_go_no_go_observation` in `src/ops/policy_go_no_go_observation.py`
 - System / environment observation (aggregate): `build_system_state_observation` in `src/ops/system_state_observation.py`
 - HTML entry: `render_ops_cockpit_html` in `src/webui/ops_cockpit.py`
-- Tests: `tests/webui/test_ops_cockpit.py`, `tests/ops/test_safety_posture_observation.py`, `tests/ops/test_policy_go_no_go_observation.py`, `tests/ops/test_system_state_observation.py`, `tests/ops/test_run_session_observation.py`, `tests/ops/test_health_drift_observation.py`, `tests/ops/test_exposure_risk_observation.py`, `tests/ops/test_incident_safety_observation.py`, `tests/ops/test_evidence_audit_observation.py`, `tests/ops/test_governance_boundary_observation.py`, `tests/live/test_session_end_mismatch_reader.py`, `tests/live/test_transfer_ambiguity_reader.py`, `tests/ops/test_p85_result_reader.py`, `tests/ops/test_market_data_cache_observation_reader.py`
+- Tests: `tests/webui/test_ops_cockpit.py`, `tests/ops/test_ops_cockpit_payload_top_level_contract.py`, `tests/ops/test_safety_posture_observation.py`, `tests/ops/test_policy_go_no_go_observation.py`, `tests/ops/test_system_state_observation.py`, `tests/ops/test_run_session_observation.py`, `tests/ops/test_health_drift_observation.py`, `tests/ops/test_exposure_risk_observation.py`, `tests/ops/test_incident_safety_observation.py`, `tests/ops/test_evidence_audit_observation.py`, `tests/ops/test_governance_boundary_observation.py`, `tests/live/test_session_end_mismatch_reader.py`, `tests/live/test_transfer_ambiguity_reader.py`, `tests/ops/test_p85_result_reader.py`, `tests/ops/test_market_data_cache_observation_reader.py`

@@ -64,6 +64,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 ## Änderungsnachweis (Slice A)
 
+- 2026-04-13: `docs&#47;ops&#47;specs&#47;OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md` ergänzt — kanonischer Top-Level-Read-Model-Contract für `build_ops_cockpit_payload` (Key-Ebene, observation-only; keine Live-Freigabe); Querverweis-Pflege über [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](../specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md) und Runbook Phase B.
+
 - 2026-04-12: `docs&#47;GOVERNANCE_AND_SAFETY_OVERVIEW.md` ergänzt um den Hinweis, dass `bounded_pilot_mode` aus `[environment]` via `get_environment_from_config` gelesen wird und im Ops Cockpit nur als Konfigurationsbeobachtung innerhalb von `system_state` zu verstehen ist, nicht als Broker-/Exchange-Garantie.
 - 2026-04-10 — Solo-Betriebsmodell: `docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md` — Owner-led Governance (kein unabhängiges Risk-Gate; Review-/Approval-Felder nur bei realer Erfüllung); Pointer in diesem Abschnitt.
 

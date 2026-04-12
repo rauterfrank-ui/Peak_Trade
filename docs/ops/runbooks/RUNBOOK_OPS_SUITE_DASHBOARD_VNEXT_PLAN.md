@@ -24,6 +24,7 @@ Create a safe, operator-facing OPS Suite / Dashboard expansion plan that improve
   - incident_state
   - exposure_state
   - evidence_state
+- **Top-level Ops Cockpit payload (builder contract):** [`OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md`](../specs/OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md) — `build_ops_cockpit_payload` in `src&#47;webui&#47;ops_cockpit.py`; key-level, observation-only aggregates; no execution authority.
 
 ## Phase C — UI Surface Design
 - system status banner
