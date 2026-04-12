@@ -76,7 +76,7 @@ The future implementation should prefer read-model payloads that are:
 - decoupled from execution authority
 
 Suggested top-level payload sections:
-- system_state
+- system_state (incl. additive config-derived environment observation — read-only; not broker truth)
 - policy_state
 - safety_state
 - run_state

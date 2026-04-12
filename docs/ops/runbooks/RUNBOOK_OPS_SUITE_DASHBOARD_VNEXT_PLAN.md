@@ -1,7 +1,7 @@
 # RUNBOOK — OPS Suite / Dashboard vNext Plan
 
 status: DRAFT
-last_updated: 2026-03-12
+last_updated: 2026-04-12
 owner: Peak_Trade
 purpose: Phased implementation plan for OPS Suite / Dashboard vNext
 docs_token: DOCS_TOKEN_RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN
@@ -17,7 +17,7 @@ Create a safe, operator-facing OPS Suite / Dashboard expansion plan that improve
 
 ## Phase B — Read-Model Contract
 - define canonical read-model contract for:
-  - system_state
+  - system_state (config-derived environment / load-status observation; no broker guarantee)
   - policy_state
   - safety_state
   - run_state

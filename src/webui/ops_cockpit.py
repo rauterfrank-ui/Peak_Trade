@@ -1523,6 +1523,9 @@ def build_ops_cockpit_payload(
     truth_state = build_truth_state(truth_docs)
     v3_summary = _build_v3_executive_summary(truth_state, group_summaries)
     _config_path = config_path or (repo_root / "config" / "config.toml" if repo_root else None)
+    _config_load_status = "not_loaded"
+    _trading_environment: Optional[str] = None
+    _bounded_pilot_mode: Optional[bool] = None
     _config_enabled = False
     _config_armed = False
     _config_dry_run = True
@@ -1538,8 +1541,11 @@ def build_ops_cockpit_payload(
             _config_armed = bool(env_config.live_mode_armed)
             _config_dry_run = bool(env_config.live_dry_run_mode)
             _config_confirm_token_required = bool(env_config.require_confirm_token)
+            _trading_environment = str(env_config.environment.value)
+            _bounded_pilot_mode = bool(env_config.bounded_pilot_mode)
+            _config_load_status = "loaded"
         except Exception:
-            pass
+            _config_load_status = "unavailable"
     _kill_switch_active = False
     _ks_path = (
         repo_root / "data" / "kill_switch" / "state.json"
@@ -1988,11 +1994,16 @@ def build_ops_cockpit_payload(
         )
     phase83_eligibility_snapshot = _build_phase83_eligibility_snapshot(repo_root)
     workflow_officer_state: Dict[str, object] = build_workflow_officer_panel_context(repo_root)
+    system_state: Dict[str, object] = {
+        "mode": "truth_first_ops_cockpit_v3",
+        "execution_model": "guarded_execution",
+        "config_load_status": _config_load_status,
+        "environment": _trading_environment if _trading_environment is not None else "unknown",
+        "bounded_pilot_mode": _bounded_pilot_mode,
+        "gating_posture_observation": policy_state["summary"],
+    }
     return {
-        "system_state": {
-            "mode": "truth_first_ops_cockpit_v3",
-            "execution_model": "guarded_execution",
-        },
+        "system_state": system_state,
         "guard_state": {
             "no_trade_baseline": guard_state["no_trade_baseline"],
             "deny_by_default": guard_state["deny_by_default"],
@@ -2303,6 +2314,11 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
 
     mode_s = escape(str(sys_state.get("mode", "unknown")))
     exec_m = escape(str(sys_state.get("execution_model", "unknown")))
+    cfg_ld = escape(str(sys_state.get("config_load_status", "unknown")))
+    env_obs = escape(str(sys_state.get("environment", "unknown")))
+    gating_mirror = escape(str(sys_state.get("gating_posture_observation", "unknown")))
+    bp_raw = sys_state.get("bounded_pilot_mode")
+    bp_s = escape(str(bp_raw)) if bp_raw is not None else "n/a"
 
     action = escape(str(ps.get("action", "unknown")))
     blocked = ps.get("blocked")
@@ -2416,10 +2432,21 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         "payload shape. <strong>Not an approval, not an unlock,</strong> not a substitute for "
         "your governance process.</p>"
         "<h3>System status (observation)</h3>"
+        "<p><em>Trading <code>environment</code> is config observation when loaded — "
+        "not a broker or exchange guarantee.</em></p>"
         "<p><strong>system_state.mode</strong> (observation): "
         f"<code>{mode_s}</code></p>"
         "<p><strong>system_state.execution_model</strong> (observation): "
         f"<code>{exec_m}</code></p>"
+        "<p><strong>system_state.config_load_status</strong> (observation): "
+        f"<code>{cfg_ld}</code></p>"
+        "<p><strong>system_state.environment</strong> (observation): "
+        f"<code>{env_obs}</code></p>"
+        "<p><strong>system_state.bounded_pilot_mode</strong> (observation): "
+        f"<code>{bp_s}</code></p>"
+        "<p><strong>system_state.gating_posture_observation</strong> (observation): "
+        f"<code>{gating_mirror}</code> "
+        "(mirror of <code>policy_state.summary</code> at payload build; not a second gate engine)</p>"
         "<h3>Go / No-Go observation (not approval)</h3>"
         f"{go_no_go_intro}"
         f"{go_lines}"
@@ -2580,6 +2607,9 @@ def render_ops_cockpit_html(
     </p>
     <p><strong>Execution model:</strong> {
         escape(str(payload["system_state"]["execution_model"]))
+    }</p>
+    <p><strong>Config environment (observation):</strong> {
+        escape(str(payload["system_state"].get("environment", "unknown")))
     }</p>
     <p><strong>Final trade authority:</strong> {
         escape(str(truth_state["final_trade_authority"]))
