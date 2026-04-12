@@ -77,6 +77,7 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "exposure_state" in payload
     assert "stale_state" in payload
     assert "session_end_mismatch_state" in payload
+    assert "transfer_ambiguity_state" in payload
     assert "human_supervision_state" in payload
     assert "phase83_eligibility_snapshot" in payload
     assert "workflow_officer_state" in payload
@@ -92,6 +93,12 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert sem.get("data_source") == "none"
     assert sem.get("observation_reason") == "no_registry_or_live_runs_artifacts"
     assert sem.get("reader_schema_version") == "session_end_mismatch_reader/v0"
+    ta = payload["transfer_ambiguity_state"]
+    assert ta["runbook_ref"] == "RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY"
+    assert ta["reader_schema_version"] == "transfer_ambiguity_reader/v0"
+    assert ta["status"] == "unknown"
+    assert "transfer_truth_not_observed" in ta["summary"] or ta["summary"] == "no_signal"
+    assert "data_source" in ta
     assert "evidence_state" in payload
     assert "dependencies_state" in payload
     dep = payload["dependencies_state"]
@@ -1010,6 +1017,16 @@ def test_ops_cockpit_html_contains_session_end_mismatch(tmp_path: Path) -> None:
     assert "session-end-mismatch-observation-surface" in html
     assert "RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH" in html
     assert "Blocked next session" in html or "blocked_next_session" in html
+    assert "Observation (read-only)" in html
+
+
+def test_ops_cockpit_html_contains_transfer_ambiguity_observation(tmp_path: Path) -> None:
+    """HTML rendert Transfer / Treasury ambiguity observation (read-only)."""
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Transfer / Treasury ambiguity" in html
+    assert "transfer-ambiguity-observation-surface" in html
+    assert "RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY" in html
+    assert "not approval" in html.lower()
     assert "Observation (read-only)" in html
 
 

@@ -1878,6 +1878,26 @@ def build_ops_cockpit_payload(
             "provenance": {},
             "reader_schema_version": "session_end_mismatch_reader/error",
         }
+    try:
+        from src.live.transfer_ambiguity_reader import build_transfer_ambiguity_state
+
+        transfer_ambiguity_state = build_transfer_ambiguity_state(
+            guard_state=guard_state,
+            stale_state=stale_state,
+            balance_semantics_state=balance_semantics_state,
+            exposure_state=exposure_state,
+        )
+    except Exception:
+        transfer_ambiguity_state = {
+            "status": "unknown",
+            "summary": "no_signal",
+            "data_source": "none",
+            "observation_reason": "reader_unavailable",
+            "runbook_ref": "RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY",
+            "provenance": {},
+            "reader_schema_version": "transfer_ambiguity_reader/error",
+            "operator_attention_hint": False,
+        }
     # Human supervision surface (read-only; design intent per PILOT_GO_NO_GO_CHECKLIST row 55)
     human_supervision_state = {
         "status": "operator_supervised",
@@ -2030,6 +2050,7 @@ def build_ops_cockpit_payload(
         "stale_state": stale_state,
         "balance_semantics_state": balance_semantics_state,
         "session_end_mismatch_state": session_end_mismatch_state,
+        "transfer_ambiguity_state": transfer_ambiguity_state,
         "human_supervision_state": human_supervision_state,
         "evidence_state": evidence_state,
         "dependencies_state": dependencies_state,
@@ -2498,6 +2519,7 @@ def render_ops_cockpit_html(
     stale = payload.get("stale_state") or {}
     balance_sem = payload.get("balance_semantics_state") or {}
     session_end_mismatch = payload.get("session_end_mismatch_state") or {}
+    transfer_ambiguity = payload.get("transfer_ambiguity_state") or {}
     evidence = payload.get("evidence_state") or {}
     dependencies = payload.get("dependencies_state") or {}
     update_officer_ui = payload.get("update_officer_ui") or {}
@@ -2719,6 +2741,32 @@ def render_ops_cockpit_html(
         or "<li>none</li>"
     }
       </ul>
+    </div>
+
+    <div class="card" id="transfer-ambiguity-observation-surface">
+      <h2>Transfer / Treasury ambiguity</h2>
+      <p><em>Observation (read-only). Local cockpit signals only; not broker or exchange truth; not approval; not unlock.</em></p>
+      <p><strong>Human runbook:</strong> <code>{
+        escape(
+            str(transfer_ambiguity.get("runbook_ref", "RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY"))
+        )
+    }</code></p>
+      <p><strong>Status:</strong> <span class="chip"><code>{
+        escape(str(transfer_ambiguity.get("status", "unknown")))
+    }</code></span></p>
+      <p><strong>Summary:</strong> {escape(str(transfer_ambiguity.get("summary", "no_signal")))}</p>
+      <p><strong>Observation reason:</strong> {
+        escape(str(transfer_ambiguity.get("observation_reason", "n/a")))
+    }</p>
+      <p><strong>Data source:</strong> <code>{
+        escape(str(transfer_ambiguity.get("data_source", "unknown")))
+    }</code></p>
+      <p><strong>Operator attention hint:</strong> {
+        escape(str(transfer_ambiguity.get("operator_attention_hint", False)))
+    }</p>
+      <p><strong>Reader schema:</strong> <code>{
+        escape(str(transfer_ambiguity.get("reader_schema_version", "n/a")))
+    }</code></p>
     </div>
 
     <div class="card">
