@@ -2064,6 +2064,7 @@ def build_ops_cockpit_payload(
         "deny_by_default": guard_state["deny_by_default"],
         "treasury_separation": guard_state["treasury_separation"],
     }
+    from src.ops.health_drift_observation import build_health_drift_observation
     from src.ops.run_session_observation import build_run_session_observation
     from src.ops.safety_posture_observation import build_safety_posture_observation
 
@@ -2081,6 +2082,17 @@ def build_ops_cockpit_payload(
         session_end_mismatch_state=session_end_mismatch_state,
         stale_state=stale_state,
         operator_state=operator_state,
+    )
+    health_drift_observation = build_health_drift_observation(
+        truth_status=str(v3_summary["truth_status"]),
+        freshness_status=str(v3_summary["freshness_status"]),
+        source_coverage_status=str(v3_summary["source_coverage_status"]),
+        critical_flags=v3_summary["critical_flags"],
+        unknown_flags=v3_summary["unknown_flags"],
+        evidence_state=evidence_state,
+        dependencies_state=dependencies_state,
+        stale_state=stale_state,
+        executive_summary=v3_summary["executive_summary"],
     )
     return {
         "system_state": system_state,
@@ -2114,6 +2126,7 @@ def build_ops_cockpit_payload(
         "update_officer_ui": update_officer_ui,
         "safety_posture_observation": safety_posture_observation,
         "run_session_observation": run_session_observation,
+        "health_drift_observation": health_drift_observation,
     }
 
 
@@ -2466,6 +2479,25 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{rso_ver}</code></p>"
         )
 
+    hdo_raw = payload.get("health_drift_observation")
+    hdo_block = ""
+    if isinstance(hdo_raw, dict):
+        hdo_status = escape(str(hdo_raw.get("status", "unknown")))
+        hdo_summary = escape(str(hdo_raw.get("summary", "")))
+        hdo_ds = escape(str(hdo_raw.get("data_source", "")))
+        hdo_ver = escape(str(hdo_raw.get("reader_schema_version", "")))
+        hdo_block = (
+            "<h3>Health / drift (observation)</h3>"
+            "<p><strong>Observation only.</strong> Aggregate from top-level truth/freshness/coverage "
+            "rollups, <code>evidence_state</code>, <code>dependencies_state</code>, and "
+            "<code>stale_state</code> — <strong>not a live service health guarantee,</strong> "
+            "<strong>not an approval,</strong> not broker truth.</p>"
+            f"<p><strong>health_drift_observation.status</strong>: <code>{hdo_status}</code></p>"
+            f"<p><strong>Summary:</strong> {hdo_summary}</p>"
+            f"<p><strong>data_source:</strong> <code>{hdo_ds}</code> · "
+            f"<strong>reader_schema_version:</strong> <code>{hdo_ver}</code></p>"
+        )
+
     incident_status = escape(str(inc.get("status", "unknown")))
     incident_degraded = escape(str(inc.get("degraded", "unknown")))
     incident_stop_invoked = escape(str(inc.get("incident_stop_invoked", "unknown")))
@@ -2570,6 +2602,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{go_lines}"
         f"{spo_block}"
         f"{rso_block}"
+        f"{hdo_block}"
         "<h3>Incident observation (read-only)</h3>"
         "<p>Existing incident/dependency rollups from this page&apos;s JSON payload.</p>"
         f"{incident_observation_lines}"
