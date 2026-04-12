@@ -196,6 +196,11 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert spo["data_source"] == "cockpit_payload_aggregate"
     assert spo["reader_schema_version"].startswith("safety_posture_observation/")
     assert "cockpit observation" in spo["summary"].lower()
+    rso = payload["run_session_observation"]
+    assert rso["status"] == "nominal"
+    assert rso["data_source"] == "cockpit_payload_aggregate"
+    assert rso["reader_schema_version"].startswith("run_session_observation/")
+    assert "observation" in rso["summary"].lower()
 
 
 def test_ops_cockpit_safety_posture_observation_in_html(tmp_path: Path) -> None:
@@ -209,6 +214,21 @@ def test_ops_cockpit_safety_posture_observation_in_html(tmp_path: Path) -> None:
     assert "safety_posture_observation.status" in html
     assert "not an approval" in html.lower()
     assert "broker or exchange truth" in html.lower()
+
+
+def test_ops_cockpit_run_session_observation_in_html(tmp_path: Path) -> None:
+    """HTML surfaces run/session aggregate; no session guarantee or approval wording."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Run / session (observation)" in html
+    assert "run_session_observation.status" in html
+    assert "not a session guarantee" in html.lower()
+    rs_block = html.split("Run / session (observation)", 1)[1].split("Incident observation", 1)[0]
+    assert "approval" in rs_block.lower()  # explicit "not ... approval" disclaimer in this block
+    assert "not an approval" in rs_block.lower()
 
 
 def test_system_state_environment_observation_from_config(tmp_path: Path) -> None:

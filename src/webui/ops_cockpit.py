@@ -2064,6 +2064,7 @@ def build_ops_cockpit_payload(
         "deny_by_default": guard_state["deny_by_default"],
         "treasury_separation": guard_state["treasury_separation"],
     }
+    from src.ops.run_session_observation import build_run_session_observation
     from src.ops.safety_posture_observation import build_safety_posture_observation
 
     safety_posture_observation = build_safety_posture_observation(
@@ -2074,6 +2075,12 @@ def build_ops_cockpit_payload(
         system_state=system_state,
         stale_state=stale_state,
         dependencies_state=dependencies_state,
+    )
+    run_session_observation = build_run_session_observation(
+        run_state=run_state,
+        session_end_mismatch_state=session_end_mismatch_state,
+        stale_state=stale_state,
+        operator_state=operator_state,
     )
     return {
         "system_state": system_state,
@@ -2106,6 +2113,7 @@ def build_ops_cockpit_payload(
         "workflow_officer_state": workflow_officer_state,
         "update_officer_ui": update_officer_ui,
         "safety_posture_observation": safety_posture_observation,
+        "run_session_observation": run_session_observation,
     }
 
 
@@ -2439,6 +2447,25 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{spo_ver}</code></p>"
         )
 
+    rso_raw = payload.get("run_session_observation")
+    rso_block = ""
+    if isinstance(rso_raw, dict):
+        rso_status = escape(str(rso_raw.get("status", "unknown")))
+        rso_summary = escape(str(rso_raw.get("summary", "")))
+        rso_ds = escape(str(rso_raw.get("data_source", "")))
+        rso_ver = escape(str(rso_raw.get("reader_schema_version", "")))
+        rso_block = (
+            "<h3>Run / session (observation)</h3>"
+            "<p><strong>Observation only.</strong> Aggregate from <code>run_state</code>, "
+            "<code>session_end_mismatch_state</code>, <code>stale_state</code>, and "
+            "<code>operator_state</code> in this payload — <strong>not a session guarantee,</strong> "
+            "<strong>not an approval,</strong> not live exchange session truth.</p>"
+            f"<p><strong>run_session_observation.status</strong>: <code>{rso_status}</code></p>"
+            f"<p><strong>Summary:</strong> {rso_summary}</p>"
+            f"<p><strong>data_source:</strong> <code>{rso_ds}</code> · "
+            f"<strong>reader_schema_version:</strong> <code>{rso_ver}</code></p>"
+        )
+
     incident_status = escape(str(inc.get("status", "unknown")))
     incident_degraded = escape(str(inc.get("degraded", "unknown")))
     incident_stop_invoked = escape(str(inc.get("incident_stop_invoked", "unknown")))
@@ -2542,6 +2569,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{go_no_go_intro}"
         f"{go_lines}"
         f"{spo_block}"
+        f"{rso_block}"
         "<h3>Incident observation (read-only)</h3>"
         "<p>Existing incident/dependency rollups from this page&apos;s JSON payload.</p>"
         f"{incident_observation_lines}"
