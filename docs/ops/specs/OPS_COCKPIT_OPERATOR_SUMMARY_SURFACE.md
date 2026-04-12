@@ -21,7 +21,7 @@
 | Evidence / Freshness (compact observation) | `evidence_state.summary`, `evidence_state.freshness_status`, `evidence_state.audit_trail`, `evidence_state.last_verified_utc`, `evidence_state.source_freshness`, optional `evidence_state.telemetry_evidence` | Same — section **Evidence freshness observation (read-only)** |
 | Kompakte Rollups (Truth / Freshness / Sources) | `executive_summary` (nested levels/labels), top-level `truth_status` / `freshness_status` / `source_coverage_status`, `critical_flags`, `unknown_flags` | `_render_status_at_a_glance_inner` (Status-at-a-glance cards) |
 | Policy &#47; Governance (vNext RV6) | `policy_state`, `guard_state`, `ai_boundary_state`, `human_supervision_state`; evidence/audit cross-ref from `evidence_state` (full card below) | `_render_policy_governance_observation_surface` — block **Policy &#47; Governance observation (vNext RV6)** (`id=policy-governance-observation-surface`); Evidence State card `id=evidence-state-card` |
-| Operator workflow (vNext Phase 4) | `workflow_officer_state` (from `build_workflow_officer_panel_context` &#47; latest `out/ops/workflow_officer` `report.json` when present) | `_render_workflow_officer_observation_surface` — block **Operator workflow observation (vNext Phase 4)** (`id=operator-workflow-observation-surface`) |
+| Operator workflow (vNext Phase 4) | `workflow_officer_state` (from `build_workflow_officer_panel_context` &#47; latest `out&#47;ops&#47;workflow_officer` `report.json` when present) | `_render_workflow_officer_observation_surface` — block **Operator workflow observation (vNext Phase 4)** (`id=operator-workflow-observation-surface`) |
 
 ### Exposure / Risk (separate card, read-only)
 
