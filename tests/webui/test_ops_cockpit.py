@@ -205,6 +205,10 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert hdo["data_source"] == "cockpit_payload_aggregate"
     assert hdo["reader_schema_version"].startswith("health_drift_observation/")
     assert hdo["status"] in ("nominal", "caution", "degraded")
+    ero = payload["exposure_risk_observation"]
+    assert ero["data_source"] == "cockpit_payload_aggregate"
+    assert ero["reader_schema_version"].startswith("exposure_risk_observation/")
+    assert ero["status"] in ("nominal", "caution", "degraded", "unknown")
 
 
 def test_ops_cockpit_safety_posture_observation_in_html(tmp_path: Path) -> None:
@@ -247,8 +251,24 @@ def test_ops_cockpit_health_drift_observation_in_html(tmp_path: Path) -> None:
     assert "Health / drift (observation)" in html
     assert "health_drift_observation.status" in html
     assert "not a live service health guarantee" in html.lower()
-    hd_block = html.split("Health / drift (observation)", 1)[1].split("Incident observation", 1)[0]
+    hd_block = html.split("Health / drift (observation)", 1)[1].split(
+        "Exposure / risk (observation)", 1
+    )[0]
     assert "not an approval" in hd_block.lower()
+
+
+def test_ops_cockpit_exposure_risk_observation_in_html(tmp_path: Path) -> None:
+    """HTML surfaces exposure/risk aggregate; no approval or broker-truth wording."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Exposure / risk (observation)" in html
+    assert "exposure_risk_observation.status" in html
+    assert "not broker or exchange truth" in html.lower()
+    er_block = html.split("Exposure / risk (observation)", 1)[1].split("Incident observation", 1)[0]
+    assert "not a risk approval" in er_block.lower()
 
 
 def test_system_state_environment_observation_from_config(tmp_path: Path) -> None:

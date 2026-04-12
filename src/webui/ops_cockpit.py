@@ -2064,6 +2064,7 @@ def build_ops_cockpit_payload(
         "deny_by_default": guard_state["deny_by_default"],
         "treasury_separation": guard_state["treasury_separation"],
     }
+    from src.ops.exposure_risk_observation import build_exposure_risk_observation
     from src.ops.health_drift_observation import build_health_drift_observation
     from src.ops.run_session_observation import build_run_session_observation
     from src.ops.safety_posture_observation import build_safety_posture_observation
@@ -2093,6 +2094,12 @@ def build_ops_cockpit_payload(
         dependencies_state=dependencies_state,
         stale_state=stale_state,
         executive_summary=v3_summary["executive_summary"],
+    )
+    exposure_risk_observation = build_exposure_risk_observation(
+        exposure_state=exposure_state,
+        transfer_ambiguity_state=transfer_ambiguity_state,
+        stale_state=stale_state,
+        guard_state=guard_state_payload,
     )
     return {
         "system_state": system_state,
@@ -2127,6 +2134,7 @@ def build_ops_cockpit_payload(
         "safety_posture_observation": safety_posture_observation,
         "run_session_observation": run_session_observation,
         "health_drift_observation": health_drift_observation,
+        "exposure_risk_observation": exposure_risk_observation,
     }
 
 
@@ -2498,6 +2506,25 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{hdo_ver}</code></p>"
         )
 
+    ero_raw = payload.get("exposure_risk_observation")
+    ero_block = ""
+    if isinstance(ero_raw, dict):
+        ero_status = escape(str(ero_raw.get("status", "unknown")))
+        ero_summary = escape(str(ero_raw.get("summary", "")))
+        ero_ds = escape(str(ero_raw.get("data_source", "")))
+        ero_ver = escape(str(ero_raw.get("reader_schema_version", "")))
+        ero_block = (
+            "<h3>Exposure / risk (observation)</h3>"
+            "<p><strong>Observation only.</strong> Aggregate from <code>exposure_state</code>, "
+            "<code>transfer_ambiguity_state</code>, <code>stale_state</code>, and "
+            "<code>guard_state</code> treasury separation — <strong>not broker or exchange truth,</strong> "
+            "<strong>not a risk approval,</strong> not a cap or limit unlock.</p>"
+            f"<p><strong>exposure_risk_observation.status</strong>: <code>{ero_status}</code></p>"
+            f"<p><strong>Summary:</strong> {ero_summary}</p>"
+            f"<p><strong>data_source:</strong> <code>{ero_ds}</code> · "
+            f"<strong>reader_schema_version:</strong> <code>{ero_ver}</code></p>"
+        )
+
     incident_status = escape(str(inc.get("status", "unknown")))
     incident_degraded = escape(str(inc.get("degraded", "unknown")))
     incident_stop_invoked = escape(str(inc.get("incident_stop_invoked", "unknown")))
@@ -2603,6 +2630,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{spo_block}"
         f"{rso_block}"
         f"{hdo_block}"
+        f"{ero_block}"
         "<h3>Incident observation (read-only)</h3>"
         "<p>Existing incident/dependency rollups from this page&apos;s JSON payload.</p>"
         f"{incident_observation_lines}"
