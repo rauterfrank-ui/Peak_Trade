@@ -2122,10 +2122,34 @@ def render_ops_cockpit_html(
 
     <div class="card">
       <h2>Exposure State</h2>
-      <p><strong>Read-only exposure / risk surface (placeholder)</strong></p>
+      <p><strong>Read-only exposure / risk observation.</strong> Existing payload fields only; not approval, not unlock.</p>
       <p><strong>Summary:</strong> <span class="chip"><code>{escape(str(exposure.get("summary", "unknown")))}</code></span></p>
       <p><strong>Treasury separation:</strong> {escape(str(exposure.get("treasury_separation", "unknown")))}</p>
       <p><strong>Risk status:</strong> {escape(str(exposure.get("risk_status", "unknown")))}</p>
+      <p><strong>Observed exposure:</strong> {escape(str(exposure.get("observed_exposure", "n/a")))}</p>
+      <p><strong>Observed currency:</strong> {escape(str(exposure.get("observed_ccy", "n/a")))}</p>
+      <p><strong>Data source:</strong> <code>{escape(str(exposure.get("data_source", "n/a")))}</code></p>
+      <p><strong>Last updated (UTC):</strong> {escape(str(exposure.get("last_updated_utc", "n/a")))}</p>
+      <p><strong>Exposure stale flag:</strong> {escape(str(exposure.get("stale", "n/a")))}</p>
+      <p><strong>stale_state.exposure:</strong> <code>{escape(str(stale.get("exposure", "unknown")))}</code></p>
+      <p><strong>dependencies_state.summary:</strong> <code>{escape(str(dependencies.get("summary", "unknown")))}</code></p>
+      <p><strong>Configured caps:</strong></p>
+      <ul>
+        {''.join(
+            f"<li><code>{escape(str(cap.get('limit_id', 'unknown')))}</code>: "
+            f"{escape(str(cap.get('cap_value', 'n/a')))} "
+            f"{escape(str(cap.get('ccy', '')))}</li>"
+            for cap in list(exposure.get("caps_configured", []))[:6]
+            if isinstance(cap, dict)
+        ) or "<li>none</li>"}
+      </ul>
+      <p><strong>Symbol exposures (preview):</strong></p>
+      <ul>
+        {''.join(
+            f"<li><code>{escape(str(sym))}</code>: {escape(str(val))}</li>"
+            for sym, val in list((exposure.get("exposure_by_symbol") or {}).items())[:5]
+        ) or "<li>none</li>"}
+      </ul>
     </div>
 
     <div class="card">

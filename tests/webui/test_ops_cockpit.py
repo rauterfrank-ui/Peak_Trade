@@ -771,8 +771,15 @@ def test_ops_cockpit_html_contains_exposure_state(tmp_path: Path) -> None:
     """HTML rendert Exposure State Card."""
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert "Exposure State" in html
+    assert "Read-only exposure / risk observation" in html
+    assert "not approval, not unlock" in html
     assert "no_live_context" in html
-    assert "treasury separation" in html or "Treasury separation" in html
+    assert "Treasury separation:" in html
+    assert "Observed exposure:" in html
+    assert "stale_state.exposure:" in html
+    assert "dependencies_state.summary:" in html
+    assert "Configured caps:" in html
+    assert "Symbol exposures (preview):" in html
 
 
 def test_ops_cockpit_html_contains_stale_state(tmp_path: Path) -> None:
