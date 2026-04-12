@@ -110,6 +110,10 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert dep["exchange"] == "unknown"
     assert dep["telemetry"] in ("ok", "warn", "critical", "unknown")
     assert isinstance(dep["degraded"], list)
+    assert "p85_exchange_observation" in dep
+    assert dep["p85_exchange_observation"]["reader_schema_version"].startswith(
+        "p85_exchange_reader"
+    )
     ev = payload["evidence_state"]
     assert "summary" in ev
     assert "last_verified_utc" in ev
@@ -1061,6 +1065,7 @@ def test_dependencies_state_section_present(tmp_path: Path) -> None:
     assert dep["telemetry"] in ("ok", "warn", "critical", "unknown")
     assert "degraded" in dep
     assert isinstance(dep["degraded"], list)
+    assert "p85_exchange_observation" in dep
 
 
 def test_ops_cockpit_html_contains_evidence_state(tmp_path: Path) -> None:
@@ -1095,6 +1100,8 @@ def test_dependencies_state_exchange_from_p85_when_ok(tmp_path: Path) -> None:
     payload = build_ops_cockpit_payload(repo_root=tmp_path)
     dep = payload["dependencies_state"]
     assert dep["exchange"] == "ok"
+    assert dep["p85_exchange_observation"]["data_source"] == "p85_result_json"
+    assert dep["p85_exchange_observation"]["observation_reason"] == "p85_connectivity_ok_true"
 
 
 def test_dependencies_state_exchange_from_p85_when_degraded(tmp_path: Path) -> None:
@@ -1116,6 +1123,7 @@ def test_dependencies_state_exchange_from_p85_when_degraded(tmp_path: Path) -> N
     payload = build_ops_cockpit_payload(repo_root=tmp_path)
     dep = payload["dependencies_state"]
     assert dep["exchange"] == "degraded"
+    assert dep["p85_exchange_observation"]["observation_reason"] == "p85_connectivity_ok_false"
 
 
 def test_dependencies_state_exchange_unknown_when_no_p85(tmp_path: Path) -> None:
@@ -1123,6 +1131,32 @@ def test_dependencies_state_exchange_unknown_when_no_p85(tmp_path: Path) -> None
     payload = build_ops_cockpit_payload(repo_root=tmp_path)
     dep = payload["dependencies_state"]
     assert dep["exchange"] == "unknown"
+    assert dep["p85_exchange_observation"]["observation_reason"] in (
+        "no_p85_artifact",
+        "p85_search_base_missing",
+    )
+
+
+def test_dependencies_state_exchange_unknown_when_p85_stale(tmp_path: Path) -> None:
+    """Stale P85 artifact yields exchange unknown (conservative)."""
+    import json
+    import os
+    import time
+
+    p85_dir = tmp_path / "out" / "ops" / "p85_stale"
+    p85_dir.mkdir(parents=True)
+    p = p85_dir / "P85_RESULT.json"
+    p.write_text(
+        json.dumps({"connectivity": {"ok": True}, "overall_ok": True}),
+        encoding="utf-8",
+    )
+    old = time.time() - 4000.0
+    os.utime(p, (old, old))
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    dep = payload["dependencies_state"]
+    assert dep["exchange"] == "unknown"
+    assert dep["p85_exchange_observation"]["stale"] is True
+    assert dep["p85_exchange_observation"]["observation_reason"] == "artifact_stale"
 
 
 def test_dependencies_state_telemetry_signal_when_path_exists(tmp_path: Path) -> None:
@@ -1166,6 +1200,8 @@ def test_ops_cockpit_html_contains_dependencies_state(tmp_path: Path) -> None:
     assert "Summary:" in html
     assert "Exchange:" in html
     assert "Telemetry:" in html
+    assert "artifact observation only" in html.lower()
+    assert "not a live connectivity check" in html.lower()
 
 
 def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:
