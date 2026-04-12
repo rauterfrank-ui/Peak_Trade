@@ -62,9 +62,11 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 |-------------|----------------|---------------|
 | Run / session rollup | `run_state.status`, `run_state.active`, `run_state.last_run_status`, `run_state.session_active`, optional `run_state.registry_session_count`, `run_state.registry_last_started_at` (when live session registry present), `run_state.generated_at`, `run_state.freshness_status` (subset on page) | `_render_run_state_observation_card` |
 | Stale / reconciliation | `stale_state.summary`, `stale_state.balance`, `stale_state.position`, `stale_state.order`, `stale_state.exposure` | **Stale State** card in `render_ops_cockpit_html` |
-| Session end (read model) | `session_end_mismatch_state.status`, `summary`, `blocked_next_session`, `runbook` | **Session End Mismatch** card in `render_ops_cockpit_html` |
+| Session end (read model) | `session_end_mismatch_state.status`, `summary`, `blocked_next_session` (observation hint only, not enforcement), `runbook`, `data_source`, `observation_reason`, `reader_schema_version`, `provenance` | **Session End Mismatch** card (`id=session-end-mismatch-observation-surface`) in `render_ops_cockpit_html`; builder: `build_session_end_mismatch_state` in `src/live/session_end_mismatch_reader.py` — **local** registry + `live_runs` metadata/events only; not broker truth |
 
 **Note — `stale_state.order`:** When non-empty `live_runs&#47;*&#47;events.*` exist, `stale_state.order` is derived read-only via `get_live_runs_order_staleness` in `src/live/order_staleness_reader.py` (event log **mtime** vs age threshold; same default window as exposure). Values: **`ok`** (recent logs), **`stale`** (old logs), **`unknown`** (no qualifying runs/events). This is **not** exchange order-book state — Stale State card includes an explicit disclaimer line.
+
+**Note — `session_end_mismatch_state`:** Status values are conservative (e.g. `unknown` / `no_signal`, `aligned`, `ambiguous`, `mismatch_signal`). When registry JSONs under `reports&#47;experiments&#47;live_sessions` and/or `live_runs` metadata exist, the reader cross-checks closure hints; it does **not** call brokers or unlock sessions.
 
 ## Related
 
@@ -75,5 +77,6 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 ## Code references
 
 - Payload builder: `build_ops_cockpit_payload` in `src/webui/ops_cockpit.py`
+- Session-end observation: `build_session_end_mismatch_state` in `src/live/session_end_mismatch_reader.py`
 - HTML entry: `render_ops_cockpit_html` in `src/webui/ops_cockpit.py`
-- Tests: `tests/webui/test_ops_cockpit.py`
+- Tests: `tests/webui/test_ops_cockpit.py`, `tests/live/test_session_end_mismatch_reader.py`
