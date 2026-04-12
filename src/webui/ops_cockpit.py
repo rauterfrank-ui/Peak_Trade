@@ -2433,10 +2433,10 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             "<code>stale_state</code>, and <code>dependencies_state</code> rollups in this "
             "payload — <strong>not an approval, not an unlock,</strong> not broker or exchange "
             "truth.</p>"
-            f'<p><strong>safety_posture_observation.status</strong>: <code>{spo_status}</code></p>'
+            f"<p><strong>safety_posture_observation.status</strong>: <code>{spo_status}</code></p>"
             f"<p><strong>Summary:</strong> {spo_summary}</p>"
-            f'<p><strong>data_source:</strong> <code>{spo_ds}</code> · '
-            f'<strong>reader_schema_version:</strong> <code>{spo_ver}</code></p>'
+            f"<p><strong>data_source:</strong> <code>{spo_ds}</code> · "
+            f"<strong>reader_schema_version:</strong> <code>{spo_ver}</code></p>"
         )
 
     incident_status = escape(str(inc.get("status", "unknown")))
