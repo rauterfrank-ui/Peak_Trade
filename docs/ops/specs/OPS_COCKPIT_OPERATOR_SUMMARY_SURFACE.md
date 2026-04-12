@@ -1,7 +1,7 @@
 # OPS Cockpit — Operator Summary Surface (vNext-aligned)
 
 **status:** active  
-**last_updated:** 2026-04-11  
+**last_updated:** 2026-04-12  
 **purpose:** Map OPS Suite / Dashboard vNext „Required Views“ (Teilmenge) to the JSON payload served at `GET &#47;api&#47;ops-cockpit` (same shape as the `/ops` HTML page) and HTML render helpers — read-only, no execution authority.
 
 **docs_token:** `DOCS_TOKEN_OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE`
@@ -52,10 +52,23 @@ Presentation-only **Evidence State** card — `_render_evidence_state_card_body`
 | Source counts | `source_freshness` (`fresh` / `stale` / `older`) |
 | Optional | `telemetry_evidence` (shown as `n&#47;a` when absent in payload) |
 
+### Session / Run / Stale (cards + rollup, read-only)
+
+Maps vNext **Session / Run State** and parts of **Health / Drift** to existing payload objects — observation only; not approval, not unlock. PR/CI context for feature branches: [`RUNBOOK_PR_CI_VERIFICATION.md`](../runbooks/RUNBOOK_PR_CI_VERIFICATION.md).
+
+| Observation | Payload keys | HTML / helper |
+|-------------|----------------|---------------|
+| Run / session rollup | `run_state.status`, `run_state.active`, `run_state.last_run_status`, `run_state.session_active`, `run_state.generated_at`, `run_state.freshness_status` (subset on page) | `_render_run_state_observation_card` |
+| Stale / reconciliation | `stale_state.summary`, `stale_state.balance`, `stale_state.position`, `stale_state.order`, `stale_state.exposure` | **Stale State** card in `render_ops_cockpit_html` |
+| Session end (read model) | `session_end_mismatch_state.status`, `summary`, `blocked_next_session`, `runbook` | **Session End Mismatch** card in `render_ops_cockpit_html` |
+
+**Note:** `stale_state.order` is currently the literal payload value **`unknown`** in the builder where no order-staleness signal is supplied — display is **observation-only**, not a forecast.
+
 ## Related
 
 - [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) — operator-facing target spec.
 - [`RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`](../runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md) — phased plan; Folgeslice: Incident/Evidence-Freshness vertieft.
+- [`RUNBOOK_PR_CI_VERIFICATION.md`](../runbooks/RUNBOOK_PR_CI_VERIFICATION.md) — PR/CI events and verification (truth-first).
 
 ## Code references
 

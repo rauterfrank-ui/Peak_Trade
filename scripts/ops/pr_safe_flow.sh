@@ -10,6 +10,10 @@ set -euo pipefail
 # - Make upstream explicit
 # - Require explicit confirmation for merge automation
 #
+# CI on PRs: feature-branch push does not trigger workflow "CI" on:push (main/master
+# only). Use pull_request runs and gh run watch for full matrix — see
+# docs/ops/runbooks/RUNBOOK_PR_CI_VERIFICATION.md
+#
 # Usage:
 #   ./scripts/ops/pr_safe_flow.sh preflight
 #   ./scripts/ops/pr_safe_flow.sh create --fill
