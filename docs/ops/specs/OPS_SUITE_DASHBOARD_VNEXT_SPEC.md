@@ -60,6 +60,8 @@ This document defines the operator-facing vNext target for the OPS Suite / Dashb
 - confirm-token requirement
 - audit/evidence status
 
+**Ops Cockpit (read-only HTML):** observation bundle for RV6 is implemented as presentation-only (`_render_policy_governance_observation_surface` in `src/webui/ops_cockpit.py`); see [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md).
+
 ### 7. Health / Drift
 - service health
 - stale data

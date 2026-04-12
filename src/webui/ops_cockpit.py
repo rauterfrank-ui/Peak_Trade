@@ -839,21 +839,22 @@ def _render_phase83_eligibility_card(snapshot: Dict[str, object]) -> str:
     )
 
 
-def _render_policy_guard_observation_card(payload: Dict[str, object]) -> str:
-    """HTML block: policy/guard observation from existing payload keys only (read-only wording)."""
+def _fmt_observation_cell(val: object) -> str:
+    if val is True:
+        return "true"
+    if val is False:
+        return "false"
+    if val is None:
+        return "n/a"
+    return str(val)
+
+
+def _policy_guard_observation_table_html(payload: Dict[str, object]) -> str:
+    """Table body rows for ``policy_state`` / ``guard_state`` (existing keys only)."""
     ps_raw = payload.get("policy_state")
     gs_raw = payload.get("guard_state")
     ps = ps_raw if isinstance(ps_raw, dict) else {}
     gs = gs_raw if isinstance(gs_raw, dict) else {}
-
-    def _fmt_val(val: object) -> str:
-        if val is True:
-            return "true"
-        if val is False:
-            return "false"
-        if val is None:
-            return "n/a"
-        return str(val)
 
     rows_html: List[str] = []
     for label, key in (
@@ -868,7 +869,7 @@ def _render_policy_guard_observation_card(payload: Dict[str, object]) -> str:
     ):
         if key not in ps:
             continue
-        v = escape(_fmt_val(ps.get(key)))
+        v = escape(_fmt_observation_cell(ps.get(key)))
         rows_html.append(
             f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>{escape(label)}</code></td>"
             f"<td style='padding:4px 0;'><code>{v}</code></td></tr>"
@@ -880,29 +881,139 @@ def _render_policy_guard_observation_card(payload: Dict[str, object]) -> str:
     ):
         if key not in gs:
             continue
-        v = escape(_fmt_val(gs.get(key)))
+        v = escape(_fmt_observation_cell(gs.get(key)))
         rows_html.append(
             f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>{escape(label)}</code></td>"
             f"<td style='padding:4px 0;'><code>{v}</code></td></tr>"
         )
 
-    table_html = (
+    return (
         "<table style='width:100%;border-collapse:collapse;font-size:0.9em;'>"
         "<tbody>"
         f"{''.join(rows_html)}"
         "</tbody></table>"
     )
-    intro = (
+
+
+def _render_ai_boundary_observation_table(boundary: Dict[str, object]) -> str:
+    """Compact table for ``ai_boundary_state`` (Critic/Proposer/boundary labels, read-only)."""
+    rows_html: List[str] = []
+    for label, key in (
+        ("ai_boundary_state.proposer_authority", "proposer_authority"),
+        ("ai_boundary_state.critic_authority", "critic_authority"),
+        ("ai_boundary_state.provider_binding_authority", "provider_binding_authority"),
+        ("ai_boundary_state.execution_boundary", "execution_boundary"),
+        ("ai_boundary_state.closest_to_trade", "closest_to_trade"),
+    ):
+        if key not in boundary:
+            continue
+        v = escape(_fmt_observation_cell(boundary.get(key)))
+        rows_html.append(
+            f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>{escape(label)}</code></td>"
+            f"<td style='padding:4px 0;'><code>{v}</code></td></tr>"
+        )
+    return (
+        "<table style='width:100%;border-collapse:collapse;font-size:0.9em;'>"
+        "<tbody>"
+        f"{''.join(rows_html)}"
+        "</tbody></table>"
+    )
+
+
+def _render_human_supervision_observation_table(hs: Dict[str, object]) -> str:
+    """Compact table for ``human_supervision_state``."""
+    rows_html: List[str] = []
+    for label, key in (
+        ("human_supervision_state.status", "status"),
+        ("human_supervision_state.mode", "mode"),
+        ("human_supervision_state.summary", "summary"),
+    ):
+        if key not in hs:
+            continue
+        v = escape(_fmt_observation_cell(hs.get(key)))
+        rows_html.append(
+            f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>{escape(label)}</code></td>"
+            f"<td style='padding:4px 0;'><code>{v}</code></td></tr>"
+        )
+    return (
+        "<table style='width:100%;border-collapse:collapse;font-size:0.9em;'>"
+        "<tbody>"
+        f"{''.join(rows_html)}"
+        "</tbody></table>"
+    )
+
+
+def _render_evidence_governance_cross_ref(evidence: Dict[str, object]) -> str:
+    """Short governance cross-surface block for ``evidence_state``; full fields stay in Evidence card."""
+    ev = evidence if isinstance(evidence, dict) else {}
+    summ = escape(str(ev.get("summary", "unknown")))
+    fs = escape(str(ev.get("freshness_status", "unknown")))
+    audit = escape(str(ev.get("audit_trail", "unknown")))
+    lv = escape(str(ev.get("last_verified_utc", "n/a")))
+    return (
+        "<p><strong>Read-only.</strong> Rollup fields from <code>evidence_state</code> on this page. "
+        "<strong>Observation only</strong> — <strong>not approval</strong>, <strong>not unlock</strong>. "
+        "Confirm-token requirement is reported under <code>policy_state.confirm_token_required</code> above.</p>"
+        f"<p><strong>evidence_state.summary</strong> (observation): <code>{summ}</code></p>"
+        f"<p><strong>evidence_state.freshness_status</strong> (observation): <code>{fs}</code></p>"
+        f"<p><strong>evidence_state.audit_trail</strong> (observation): <code>{audit}</code></p>"
+        f"<p><strong>evidence_state.last_verified_utc</strong> (observation): <code>{lv}</code></p>"
+        '<p style="font-size:0.95em;">Full <code>evidence_state</code> fields (including '
+        '<code>source_freshness</code>) appear in the <a href="#evidence-state-card">Evidence State</a> '
+        "card below.</p>"
+    )
+
+
+def _render_policy_governance_observation_surface(payload: Dict[str, object]) -> str:
+    """vNext Required View 6 — Policy / Governance: bundle existing payload slices, read-only wording."""
+    boundary_raw = payload.get("ai_boundary_state")
+    boundary = boundary_raw if isinstance(boundary_raw, dict) else {}
+    hs_raw = payload.get("human_supervision_state")
+    hs = hs_raw if isinstance(hs_raw, dict) else {}
+    ev_raw = payload.get("evidence_state")
+    evidence = ev_raw if isinstance(ev_raw, dict) else {}
+
+    policy_table = _policy_guard_observation_table_html(payload)
+    pg_intro = (
         "Same fields as <code>policy_state</code> / <code>guard_state</code> in the JSON payload for "
-        "this page. Observation only — not a control surface; does not grant live access or change "
-        "enforcement."
+        "this page. <strong>Observation only</strong> — not a control surface; does not grant live "
+        "access or change enforcement."
+    )
+    surface_intro = (
+        "<p><strong>Read-only.</strong> OPS Suite Dashboard vNext <strong>Required View 6 — Policy / "
+        "Governance</strong>: quoted labels from this page&apos;s JSON only. "
+        "<strong>Not approval, not unlock,</strong> not a substitute for your governance process.</p>"
+        "<p>Critic/Proposer and AI-boundary posture: <code>ai_boundary_state</code>. Policy and guard "
+        "rails: <code>policy_state</code>, <code>guard_state</code>. Human supervision intent: "
+        "<code>human_supervision_state</code>. Evidence/audit rollups: <code>evidence_state</code> "
+        "(detail in the Evidence State card).</p>"
+    )
+    b_intro = (
+        "<p><strong>Read-only.</strong> Advisory/supervisory boundary labels from <code>ai_boundary_state"
+        "</code> — observation only; not execution authority.</p>"
+    )
+    hs_intro = (
+        "<p><strong>Read-only.</strong> Design-intent supervision mode from <code>human_supervision_state"
+        "</code> (see PILOT_GO_NO_GO_CHECKLIST row 55 in repo docs). Observation only.</p>"
     )
     return (
-        f'<div class="card truth-card" style="margin-bottom:20px;">'
-        f"<h2>Policy / guard rails — observed state</h2>"
-        f"<p><strong>Read-only.</strong> {intro}</p>"
-        f"{table_html}"
-        f"</div>"
+        f'<div class="group-block policy-governance-observation-surface" '
+        f'id="policy-governance-observation-surface" style="margin-bottom:20px;">'
+        f'<div class="card truth-card">'
+        f"<h2>Policy / Governance observation (vNext RV6)</h2>"
+        f"{surface_intro}"
+        f"<h3>Policy / guard rails — observed state</h3>"
+        f"<p><strong>Read-only.</strong> {pg_intro}</p>"
+        f"{policy_table}"
+        f"<h3>Critic / Proposer / AI boundary (payload)</h3>"
+        f"{b_intro}"
+        f"{_render_ai_boundary_observation_table(boundary)}"
+        f"<h3>Human Supervision (payload)</h3>"
+        f"{hs_intro}"
+        f"{_render_human_supervision_observation_table(hs)}"
+        f"<h3>Evidence / audit (governance cross-surface)</h3>"
+        f"{_render_evidence_governance_cross_ref(evidence)}"
+        f"</div></div>"
     )
 
 
@@ -2019,13 +2130,11 @@ def render_ops_cockpit_html(
         update_officer_source_conflict=update_officer_source_conflict,
     )
     truth_state = payload["truth_state"]
-    boundary = payload["ai_boundary_state"]
     runtime = payload["runtime_unknown_state"]
     exposure = payload.get("exposure_state") or {}
     stale = payload.get("stale_state") or {}
     balance_sem = payload.get("balance_semantics_state") or {}
     session_end_mismatch = payload.get("session_end_mismatch_state") or {}
-    human_supervision = payload.get("human_supervision_state") or {}
     evidence = payload.get("evidence_state") or {}
     dependencies = payload.get("dependencies_state") or {}
     update_officer_ui = payload.get("update_officer_ui") or {}
@@ -2054,7 +2163,9 @@ def render_ops_cockpit_html(
     runtime_cards = "".join(_render_doc_card(doc) for doc in groups["runtime_resolution"])
     supporting_cards = "".join(_render_doc_card(doc) for doc in groups["supporting_truth"])
     operator_summary_surface_html = _render_operator_summary_surface(payload)
-    policy_guard_observation_html = _render_policy_guard_observation_card(payload)
+    policy_governance_observation_surface_html = _render_policy_governance_observation_surface(
+        payload
+    )
     phase57_snapshot_discoverability_html = _render_phase57_snapshot_discoverability_card()
     incident_observation_html = _render_incident_observation_card(payload)
     run_state_observation_html = _render_run_state_observation_card(payload)
@@ -2090,6 +2201,7 @@ def render_ops_cockpit_html(
     .exec-summary {{ border: 1px solid #333; border-radius: 12px; padding: 16px; margin-bottom: 20px; background: #fafafa; }}
     .operator-summary-disclaimer {{ border-left: 4px solid #607d8b; padding-left: 12px; margin: 12px 0; }}
     .operator-summary-surface h3 {{ font-size: 1.05em; margin-top: 18px; margin-bottom: 8px; }}
+    .policy-governance-observation-surface h3 {{ font-size: 1.05em; margin-top: 18px; margin-bottom: 8px; }}
     .status-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 12px 0; }}
     .status-card {{ padding: 10px; border-radius: 8px; border: 1px solid #e0e0e0; }}
     .status-label {{ display: block; font-size: 0.85em; color: #555; margin-bottom: 4px; }}
@@ -2115,7 +2227,7 @@ def render_ops_cockpit_html(
 </head>
 <body>
   {operator_summary_surface_html}
-  {policy_guard_observation_html}
+  {policy_governance_observation_surface_html}
   {phase57_snapshot_discoverability_html}
   {incident_observation_html}
   {run_state_observation_html}
@@ -2173,18 +2285,6 @@ def render_ops_cockpit_html(
     }</p>
       <p><strong>Truth coverage:</strong> {escape(str(truth_state["truth_coverage"]))}</p>
       <p><strong>Live autonomy:</strong> {escape(str(truth_state["live_autonomy"]))}</p>
-    </div>
-
-    <div class="card">
-      <h2>AI Boundary State</h2>
-      <p><strong>Authority boundaries (read-only)</strong></p>
-      <p><strong>Proposer:</strong> {escape(str(boundary["proposer_authority"]))}</p>
-      <p><strong>Critic:</strong> {escape(str(boundary["critic_authority"]))}</p>
-      <p><strong>Provider binding authority:</strong> {
-        escape(str(boundary["provider_binding_authority"]))
-    }</p>
-      <p><strong>Execution boundary:</strong> {escape(str(boundary["execution_boundary"]))}</p>
-      <p><strong>Closest to trade:</strong> {escape(str(boundary["closest_to_trade"]))}</p>
     </div>
 
     <div class="card">
@@ -2293,19 +2393,7 @@ def render_ops_cockpit_html(
     }</code></p>
     </div>
 
-    <div class="card">
-      <h2>Human Supervision</h2>
-      <p><strong>Pilot design intent (read-only; per PILOT_GO_NO_GO_CHECKLIST row 55)</strong></p>
-      <p><strong>Status:</strong> <span class="chip"><code>{
-        escape(str(human_supervision.get("status", "unknown")))
-    }</code></span></p>
-      <p><strong>Mode:</strong> <span class="chip"><code>{
-        escape(str(human_supervision.get("mode", "unknown")))
-    }</code></span></p>
-      <p><strong>Summary:</strong> {escape(str(human_supervision.get("summary", "unknown")))}</p>
-    </div>
-
-    <div class="card">
+    <div class="card" id="evidence-state-card">
       <h2>Evidence State</h2>
       {_render_evidence_state_card_body(evidence)}
     </div>

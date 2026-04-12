@@ -20,6 +20,7 @@
 | Incident / Safety (compact observation) | `incident_state.status`, `incident_state.degraded`, `incident_state.requires_operator_attention`, `incident_state.incident_stop_invoked`, `incident_state.entry_permitted`, `incident_state.operator_authoritative_state`; `dependencies_state.summary`, `dependencies_state.telemetry`, `dependencies_state.exchange`, `dependencies_state.degraded` | Same — section **Incident observation (read-only)** |
 | Evidence / Freshness (compact observation) | `evidence_state.summary`, `evidence_state.freshness_status`, `evidence_state.audit_trail`, `evidence_state.last_verified_utc`, `evidence_state.source_freshness`, optional `evidence_state.telemetry_evidence` | Same — section **Evidence freshness observation (read-only)** |
 | Kompakte Rollups (Truth / Freshness / Sources) | `executive_summary` (nested levels/labels), top-level `truth_status` / `freshness_status` / `source_coverage_status`, `critical_flags`, `unknown_flags` | `_render_status_at_a_glance_inner` (Status-at-a-glance cards) |
+| Policy &#47; Governance (vNext RV6) | `policy_state`, `guard_state`, `ai_boundary_state`, `human_supervision_state`; evidence/audit cross-ref from `evidence_state` (full card below) | `_render_policy_governance_observation_surface` — block **Policy &#47; Governance observation (vNext RV6)** (`id=policy-governance-observation-surface`); Evidence State card `id=evidence-state-card` |
 
 ### Exposure / Risk (separate card, read-only)
 
@@ -67,7 +68,7 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 ## Related
 
 - [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) — operator-facing target spec.
-- [`RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`](../runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md) — phased plan; Folgeslice: Incident/Evidence-Freshness vertieft.
+- [`RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`](../runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md) — phased plan; RV6 Policy/Governance observation surface shipped read-only (HTML bundle).
 - [`RUNBOOK_PR_CI_VERIFICATION.md`](../runbooks/RUNBOOK_PR_CI_VERIFICATION.md) — PR/CI events and verification (truth-first).
 
 ## Code references
