@@ -2068,6 +2068,7 @@ def build_ops_cockpit_payload(
     from src.ops.exposure_risk_observation import build_exposure_risk_observation
     from src.ops.governance_boundary_observation import build_governance_boundary_observation
     from src.ops.health_drift_observation import build_health_drift_observation
+    from src.ops.policy_go_no_go_observation import build_policy_go_no_go_observation
     from src.ops.incident_safety_observation import build_incident_safety_observation
     from src.ops.run_session_observation import build_run_session_observation
     from src.ops.safety_posture_observation import build_safety_posture_observation
@@ -2123,6 +2124,11 @@ def build_ops_cockpit_payload(
         guard_state=guard_state_payload,
         evidence_state=evidence_state,
     )
+    policy_go_no_go_observation = build_policy_go_no_go_observation(
+        policy_state=policy_state,
+        incident_state=incident_state,
+        operator_state=operator_state,
+    )
     return {
         "system_state": system_state,
         "guard_state": guard_state_payload,
@@ -2160,6 +2166,7 @@ def build_ops_cockpit_payload(
         "incident_safety_observation": incident_safety_observation,
         "evidence_audit_observation": evidence_audit_observation,
         "governance_boundary_observation": governance_boundary_observation,
+        "policy_go_no_go_observation": policy_go_no_go_observation,
     }
 
 
@@ -2473,6 +2480,26 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             "downstream enforcement remains authoritative; this page does not clear it.</p>"
         )
 
+    pgngo_raw = payload.get("policy_go_no_go_observation")
+    pgngo_block = ""
+    if isinstance(pgngo_raw, dict):
+        pgngo_status = escape(str(pgngo_raw.get("status", "unknown")))
+        pgngo_summary = escape(str(pgngo_raw.get("summary", "")))
+        pgngo_ds = escape(str(pgngo_raw.get("data_source", "")))
+        pgngo_ver = escape(str(pgngo_raw.get("reader_schema_version", "")))
+        pgngo_block = (
+            "<h3>Policy / go-no-go (observation)</h3>"
+            "<p><strong>Observation only.</strong> Compact aggregate from <code>policy_state</code>, "
+            "<code>incident_state</code>, and <code>operator_state</code> in this payload — "
+            "<strong>not a live go decision,</strong> <strong>not approval or unlock,</strong> "
+            "not broker truth. Holistic gating posture: <code>safety_posture_observation</code> "
+            "(separate snapshot).</p>"
+            f"<p><strong>policy_go_no_go_observation.status</strong>: <code>{pgngo_status}</code></p>"
+            f"<p><strong>Summary:</strong> {pgngo_summary}</p>"
+            f"<p><strong>data_source:</strong> <code>{pgngo_ds}</code> · "
+            f"<strong>reader_schema_version:</strong> <code>{pgngo_ver}</code></p>"
+        )
+
     spo_raw = payload.get("safety_posture_observation")
     spo_block = ""
     if isinstance(spo_raw, dict):
@@ -2711,6 +2738,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         "<h3>Go / No-Go observation (not approval)</h3>"
         f"{go_no_go_intro}"
         f"{go_lines}"
+        f"{pgngo_block}"
         f"{spo_block}"
         f"{gbo_block}"
         f"{rso_block}"

@@ -221,6 +221,27 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert gbo["data_source"] == "cockpit_payload_aggregate"
     assert gbo["reader_schema_version"].startswith("governance_boundary_observation/")
     assert gbo["status"] in ("nominal", "caution", "degraded", "unknown")
+    pgngo = payload["policy_go_no_go_observation"]
+    assert pgngo["data_source"] == "cockpit_payload_aggregate"
+    assert pgngo["reader_schema_version"].startswith("policy_go_no_go_observation/")
+    assert pgngo["status"] == "blocking"
+    assert "not a live go decision" in pgngo["summary"].lower()
+
+
+def test_ops_cockpit_policy_go_no_go_observation_in_html(tmp_path: Path) -> None:
+    """HTML surfaces policy/go-no-go aggregate; no live-go or approval wording."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Policy / go-no-go (observation)" in html
+    assert "policy_go_no_go_observation.status" in html
+    assert "not a live go decision" in html.lower()
+    pg_block = html.split("Policy / go-no-go (observation)", 1)[1].split(
+        "Safety / gating posture (observation)", 1
+    )[0]
+    assert "safety_posture_observation" in pg_block.lower()
 
 
 def test_ops_cockpit_safety_posture_observation_in_html(tmp_path: Path) -> None:
