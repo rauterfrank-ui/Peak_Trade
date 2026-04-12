@@ -39,7 +39,7 @@ Presentation-only **Dependencies State** card — `_render_dependencies_state_ca
 | Observation | Payload keys (`dependencies_state`) |
 |-------------|--------------------------------------|
 | Rollup | `summary`, `exchange`, `telemetry` |
-| Optional feed health | `market_data_cache` (shown as `n/a` when absent) |
+| Optional feed health | `market_data_cache` (shown as `n&#47;a` when absent) |
 | Degraded checklist | `degraded` (list preview) |
 
 ## Related
