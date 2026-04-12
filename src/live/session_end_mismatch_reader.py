@@ -18,7 +18,7 @@ from typing import Any, Dict, List, Optional, Tuple
 logger = logging.getLogger(__name__)
 
 READER_SCHEMA_VERSION = "session_end_mismatch_reader/v0"
-RUNBOOK_TOKEN = "RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH"
+RUNBOOK_REF = "RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH"
 
 _TERMINAL_STATUSES = frozenset({"completed", "failed", "aborted"})
 
@@ -187,7 +187,7 @@ def build_session_end_mismatch_state(
             "status": "unknown",
             "summary": "no_signal",
             "blocked_next_session": False,
-            "runbook": RUNBOOK_TOKEN,
+            "runbook": RUNBOOK_REF,
             "data_source": "none",
             "observation_reason": "no_registry_or_live_runs_artifacts",
             "provenance": provenance,
@@ -288,7 +288,7 @@ def build_session_end_mismatch_state(
         "status": status,
         "summary": summary,
         "blocked_next_session": blocked_hint,
-        "runbook": RUNBOOK_TOKEN,
+        "runbook": RUNBOOK_REF,
         "data_source": data_source,
         "observation_reason": "; ".join(reasons) if reasons else "artifact_observation",
         "provenance": provenance,

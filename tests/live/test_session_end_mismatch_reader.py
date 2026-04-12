@@ -14,7 +14,7 @@ from src.experiments.live_session_registry import (
 )
 from src.live.session_end_mismatch_reader import (
     READER_SCHEMA_VERSION,
-    RUNBOOK_TOKEN,
+    RUNBOOK_REF,
     build_session_end_mismatch_state,
 )
 
@@ -48,7 +48,7 @@ def test_reader_no_artifacts(tmp_path: Path) -> None:
     assert out["summary"] == "no_signal"
     assert out["blocked_next_session"] is False
     assert out["data_source"] == "none"
-    assert out["runbook"] == RUNBOOK_TOKEN
+    assert out["runbook"] == RUNBOOK_REF
     assert out["reader_schema_version"] == READER_SCHEMA_VERSION
 
 
