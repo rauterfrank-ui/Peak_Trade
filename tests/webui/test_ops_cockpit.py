@@ -114,6 +114,10 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert dep["p85_exchange_observation"]["reader_schema_version"].startswith(
         "p85_exchange_reader"
     )
+    assert "market_data_cache_observation" in dep
+    assert dep["market_data_cache_observation"]["reader_schema_version"].startswith(
+        "market_data_cache_observation_reader"
+    )
     ev = payload["evidence_state"]
     assert "summary" in ev
     assert "last_verified_utc" in ev
@@ -1066,6 +1070,7 @@ def test_dependencies_state_section_present(tmp_path: Path) -> None:
     assert "degraded" in dep
     assert isinstance(dep["degraded"], list)
     assert "p85_exchange_observation" in dep
+    assert "market_data_cache_observation" in dep
 
 
 def test_ops_cockpit_html_contains_evidence_state(tmp_path: Path) -> None:
@@ -1202,6 +1207,8 @@ def test_ops_cockpit_html_contains_dependencies_state(tmp_path: Path) -> None:
     assert "Telemetry:" in html
     assert "artifact observation only" in html.lower()
     assert "not a live connectivity check" in html.lower()
+    assert "local parquet" in html.lower()
+    assert "not a live feed check" in html.lower()
 
 
 def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:

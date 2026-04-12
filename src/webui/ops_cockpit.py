@@ -1473,6 +1473,22 @@ def _render_dependencies_state_card_body(dependencies: Dict[str, object]) -> str
             f"<p><strong>P85 reader schema:</strong> <code>"
             f"{escape(str(p85.get('reader_schema_version', 'n/a')))}</code></p>"
         )
+    mdc_obs = dep.get("market_data_cache_observation")
+    mdc_obs_block = ""
+    if isinstance(mdc_obs, dict):
+        mdc_obs_block = (
+            "<p><em>Market data cache label: <strong>local parquet / filesystem observation only</strong> "
+            "(offline QC via <code>check_data_health_only</code>). Not a live feed check; "
+            "not broker truth; not approval.</em></p>"
+            f"<p><strong>Cache observation reason:</strong> <code>"
+            f"{escape(str(mdc_obs.get('observation_reason', 'n/a')))}</code></p>"
+            f"<p><strong>Cache data_source:</strong> <code>"
+            f"{escape(str(mdc_obs.get('data_source', 'n/a')))}</code></p>"
+            f"<p><strong>Cache last_updated_utc (data end hint):</strong> "
+            f"{escape(str(mdc_obs.get('last_updated_utc') or 'n/a'))}</p>"
+            f"<p><strong>Cache reader schema:</strong> <code>"
+            f"{escape(str(mdc_obs.get('reader_schema_version', 'n/a')))}</code></p>"
+        )
     return (
         "<p><strong>Read-only dependencies / health-drift observation.</strong> "
         "Existing payload fields only; not approval, not unlock.</p>"
@@ -1482,8 +1498,11 @@ def _render_dependencies_state_card_body(dependencies: Dict[str, object]) -> str
         "<p><em>Exchange rollup may include persisted P85 ingest-readiness artifacts; "
         "see P85 block below — not a live check performed by the Cockpit build.</em></p>"
         f"{p85_block}"
+        f"{mdc_obs_block}"
         f"<p><strong>Telemetry:</strong> {escape(str(dep.get('telemetry', 'unknown')))}</p>"
         f"<p><strong>market_data_cache:</strong> <code>{escape(mdc_display)}</code></p>"
+        "<p><em>Rollup above mirrors local cache QC when config and cache path exist; "
+        "see cache observation block — not live market data.</em></p>"
         "<p><strong>Degraded signals (preview):</strong></p>"
         f"<ul>{degraded_ul}</ul>"
     )
@@ -1975,31 +1994,22 @@ def build_ops_cockpit_payload(
             "provenance": {},
         }
     _exchange_status = str(_p85_obs.get("exchange") or "unknown")
-    _market_data_cache_status: Optional[str] = None
-    if _config_path and _config_path.exists():
-        try:
-            from src.data.kraken_cache_loader import (
-                check_data_health_only,
-                get_real_market_smokes_config,
-            )
+    try:
+        from src.ops.market_data_cache_observation_reader import read_market_data_cache_observation
 
-            rms = get_real_market_smokes_config(str(_config_path))
-            base_path = repo_root / rms["base_path"] if repo_root else Path(rms["base_path"])
-            if base_path.exists():
-                health = check_data_health_only(
-                    base_path,
-                    market=rms.get("default_market", "BTC/EUR"),
-                    timeframe=rms.get("default_timeframe", "1h"),
-                    min_bars=rms.get("min_bars", 500),
-                )
-                if health.status == "ok":
-                    _market_data_cache_status = "ok"
-                elif health.status in ("missing_file", "too_few_bars", "empty", "invalid_format"):
-                    _market_data_cache_status = "degraded"
-                else:
-                    _market_data_cache_status = "warn"
-        except Exception:
-            pass
+        _mdc_obs = read_market_data_cache_observation(repo_root, _config_path)
+    except Exception:
+        _mdc_obs = {
+            "reader_schema_version": "market_data_cache_observation_reader/error",
+            "market_data_cache": "unknown",
+            "data_source": "none",
+            "observation_reason": "reader_unavailable",
+            "provenance": {},
+            "details": None,
+            "last_updated_utc": None,
+        }
+    _mdc_roll = str(_mdc_obs.get("market_data_cache") or "unknown")
+    _market_data_cache_status: Optional[str] = None if _mdc_roll == "unknown" else _mdc_roll
     _dep_rank = {"ok": 0, "partial": 1, "warn": 1, "degraded": 2, "stale": 2, "unknown": 3}
     _tel_dep = (
         "ok"
@@ -2028,6 +2038,7 @@ def build_ops_cockpit_payload(
         "telemetry": _tel_status,
         "degraded": _degraded,
         "p85_exchange_observation": _p85_obs,
+        "market_data_cache_observation": _mdc_obs,
     }
     if _market_data_cache_status is not None:
         dependencies_state["market_data_cache"] = _market_data_cache_status
