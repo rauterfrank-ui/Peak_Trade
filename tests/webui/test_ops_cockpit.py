@@ -226,6 +226,11 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert pgngo["reader_schema_version"].startswith("policy_go_no_go_observation/")
     assert pgngo["status"] == "blocking"
     assert "not a live go decision" in pgngo["summary"].lower()
+    sso = payload["system_state_observation"]
+    assert sso["data_source"] == "cockpit_payload_aggregate"
+    assert sso["reader_schema_version"].startswith("system_state_observation/")
+    assert sso["status"] == "caution"
+    assert sso["observation_reason"] == "config_not_loaded"
 
 
 def test_ops_cockpit_policy_go_no_go_observation_in_html(tmp_path: Path) -> None:
@@ -242,6 +247,24 @@ def test_ops_cockpit_policy_go_no_go_observation_in_html(tmp_path: Path) -> None
         "Safety / gating posture (observation)", 1
     )[0]
     assert "safety_posture_observation" in pg_block.lower()
+
+
+def test_ops_cockpit_system_state_observation_in_html(tmp_path: Path) -> None:
+    """HTML surfaces system/environment aggregate; no broker guarantee wording."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "System / environment (observation)" in html
+    assert "system_state_observation.status" in html
+    assert "not an environment guarantee" in html.lower()
+    sso_block = html.split("System / environment (observation)", 1)[1].split(
+        "Go / No-Go observation (not approval)", 1
+    )[0]
+    assert "health_drift_observation" in sso_block.lower()
+    assert "safety_posture_observation" in sso_block.lower()
+    assert "policy_go_no_go_observation" in sso_block.lower()
 
 
 def test_ops_cockpit_safety_posture_observation_in_html(tmp_path: Path) -> None:
@@ -379,6 +402,9 @@ def test_system_state_environment_observation_from_config(tmp_path: Path) -> Non
     assert ss["environment"] == "paper"
     assert ss["bounded_pilot_mode"] is True
     assert ss["gating_posture_observation"] == payload["policy_state"]["summary"]
+    sso = payload["system_state_observation"]
+    assert sso["status"] == "nominal"
+    assert "not broker truth" in sso["summary"].lower()
 
 
 def test_system_state_config_unavailable_when_toml_invalid(tmp_path: Path) -> None:
@@ -392,6 +418,7 @@ def test_system_state_config_unavailable_when_toml_invalid(tmp_path: Path) -> No
     assert ss["config_load_status"] == "unavailable"
     assert ss["environment"] == "unknown"
     assert ss["bounded_pilot_mode"] is None
+    assert payload["system_state_observation"]["status"] == "degraded"
 
 
 def test_ops_cockpit_html_contains_system_state_environment_observation(tmp_path: Path) -> None:
