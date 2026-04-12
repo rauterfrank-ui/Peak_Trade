@@ -2072,6 +2072,7 @@ def build_ops_cockpit_payload(
     from src.ops.incident_safety_observation import build_incident_safety_observation
     from src.ops.run_session_observation import build_run_session_observation
     from src.ops.safety_posture_observation import build_safety_posture_observation
+    from src.ops.system_state_observation import build_system_state_observation
 
     safety_posture_observation = build_safety_posture_observation(
         policy_state=policy_state,
@@ -2129,6 +2130,10 @@ def build_ops_cockpit_payload(
         incident_state=incident_state,
         operator_state=operator_state,
     )
+    system_state_observation = build_system_state_observation(
+        system_state=system_state,
+        policy_state=policy_state,
+    )
     return {
         "system_state": system_state,
         "guard_state": guard_state_payload,
@@ -2167,6 +2172,7 @@ def build_ops_cockpit_payload(
         "evidence_audit_observation": evidence_audit_observation,
         "governance_boundary_observation": governance_boundary_observation,
         "policy_go_no_go_observation": policy_go_no_go_observation,
+        "system_state_observation": system_state_observation,
     }
 
 
@@ -2452,6 +2458,27 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
     bp_raw = sys_state.get("bounded_pilot_mode")
     bp_s = escape(str(bp_raw)) if bp_raw is not None else "n/a"
 
+    sso_raw = payload.get("system_state_observation")
+    sso_block = ""
+    if isinstance(sso_raw, dict):
+        sso_status = escape(str(sso_raw.get("status", "unknown")))
+        sso_summary = escape(str(sso_raw.get("summary", "")))
+        sso_ds = escape(str(sso_raw.get("data_source", "")))
+        sso_ver = escape(str(sso_raw.get("reader_schema_version", "")))
+        sso_block = (
+            "<h3>System / environment (observation)</h3>"
+            "<p><strong>Observation only.</strong> Aggregate from <code>system_state</code> in this "
+            "payload — <strong>not broker or exchange truth,</strong> "
+            "<strong>not an environment guarantee.</strong> Truth/freshness posture: "
+            "<code>health_drift_observation</code>; holistic gating: "
+            "<code>safety_posture_observation</code>; policy/go-no-go: "
+            "<code>policy_go_no_go_observation</code>.</p>"
+            f"<p><strong>system_state_observation.status</strong>: <code>{sso_status}</code></p>"
+            f"<p><strong>Summary:</strong> {sso_summary}</p>"
+            f"<p><strong>data_source:</strong> <code>{sso_ds}</code> · "
+            f"<strong>reader_schema_version:</strong> <code>{sso_ver}</code></p>"
+        )
+
     action = escape(str(ps.get("action", "unknown")))
     blocked = ps.get("blocked")
     blocked_s = escape(str(blocked))
@@ -2735,6 +2762,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         "<p><strong>system_state.gating_posture_observation</strong> (observation): "
         f"<code>{gating_mirror}</code> "
         "(mirror of <code>policy_state.summary</code> at payload build; not a second gate engine)</p>"
+        f"{sso_block}"
         "<h3>Go / No-Go observation (not approval)</h3>"
         f"{go_no_go_intro}"
         f"{go_lines}"
