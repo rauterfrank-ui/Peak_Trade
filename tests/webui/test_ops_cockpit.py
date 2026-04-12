@@ -27,6 +27,39 @@ def test_workflow_officer_panel_context_empty_repo(tmp_path: Path) -> None:
     )
 
 
+def test_ops_cockpit_session_end_mismatch_registry_started_integration(tmp_path: Path) -> None:
+    """session_end_mismatch_state reflects live session registry (started → mismatch_signal)."""
+    from datetime import datetime, timezone
+
+    from src.experiments.live_session_registry import (
+        STATUS_STARTED,
+        LiveSessionRecord,
+        register_live_session_run,
+    )
+
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    reg = tmp_path / "reports" / "experiments" / "live_sessions"
+    rec = LiveSessionRecord(
+        session_id="sess_x",
+        run_id=None,
+        run_type="live_session_shadow",
+        mode="shadow",
+        env_name="env",
+        symbol="BTC/EUR",
+        status=STATUS_STARTED,
+        started_at=datetime(2026, 2, 1, tzinfo=timezone.utc),
+    )
+    register_live_session_run(rec, base_dir=reg)
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    sem = payload["session_end_mismatch_state"]
+    assert sem["status"] == "mismatch_signal"
+    assert sem["blocked_next_session"] is True
+    assert sem["data_source"] == "live_session_registry"
+
+
 def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     docs_dir = tmp_path / "docs" / "governance" / "ai"
     docs_dir.mkdir(parents=True, exist_ok=True)
@@ -53,9 +86,12 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert sup["summary"] == "bounded pilot requires operator supervision"
     sem = payload["session_end_mismatch_state"]
     assert sem["status"] == "unknown"
-    assert sem["summary"] == "no_session_end_reconciliation"
+    assert sem["summary"] == "no_signal"
     assert sem["blocked_next_session"] is False
     assert sem["runbook"] == "RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH"
+    assert sem.get("data_source") == "none"
+    assert sem.get("observation_reason") == "no_registry_or_live_runs_artifacts"
+    assert sem.get("reader_schema_version") == "session_end_mismatch_reader/v0"
     assert "evidence_state" in payload
     assert "dependencies_state" in payload
     dep = payload["dependencies_state"]
@@ -971,8 +1007,10 @@ def test_ops_cockpit_html_contains_session_end_mismatch(tmp_path: Path) -> None:
     """HTML rendert Session End Mismatch Card."""
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert "Session End Mismatch" in html
+    assert "session-end-mismatch-observation-surface" in html
     assert "RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH" in html
     assert "Blocked next session" in html or "blocked_next_session" in html
+    assert "Observation (read-only)" in html
 
 
 def test_ops_cockpit_html_contains_human_supervision(tmp_path: Path) -> None:

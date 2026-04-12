@@ -1858,13 +1858,26 @@ def build_ops_cockpit_payload(
         "exposure": _exposure_stale,
         "summary": _stale_summary,
     }
-    # Session-end mismatch surface (placeholder: no runtime reconciliation yet)
-    session_end_mismatch_state = {
-        "status": "unknown",
-        "summary": "no_session_end_reconciliation",
-        "blocked_next_session": False,
-        "runbook": "RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH",
-    }
+    try:
+        from src.live.session_end_mismatch_reader import build_session_end_mismatch_state
+
+        session_end_mismatch_state = build_session_end_mismatch_state(
+            sessions_root=_sessions_root,
+            live_runs_root=_live_runs,
+            stale_state=stale_state,
+            balance_semantics_state=balance_semantics_state,
+        )
+    except Exception:
+        session_end_mismatch_state = {
+            "status": "unknown",
+            "summary": "no_signal",
+            "blocked_next_session": False,
+            "runbook": "RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH",
+            "data_source": "none",
+            "observation_reason": "reader_unavailable",
+            "provenance": {},
+            "reader_schema_version": "session_end_mismatch_reader/error",
+        }
     # Human supervision surface (read-only; design intent per PILOT_GO_NO_GO_CHECKLIST row 55)
     human_supervision_state = {
         "status": "operator_supervised",
@@ -2735,18 +2748,27 @@ def render_ops_cockpit_html(
     }</p>
     </div>
 
-    <div class="card">
+    <div class="card" id="session-end-mismatch-observation-surface">
       <h2>Session End Mismatch</h2>
-      <p><strong>Local closeout vs broker at session end; unresolved blocks next session</strong></p>
+      <p><em>Observation (read-only). Local registry / run metadata / event-table hints only; not broker or exchange truth; not approval; not unlock.</em></p>
+      <p><strong>Human runbook (operative steps):</strong> see <code>{
+        escape(str(session_end_mismatch.get("runbook", "")))
+    }</code> — Cockpit does not replace that process.</p>
       <p><strong>Status:</strong> <span class="chip"><code>{
         escape(str(session_end_mismatch.get("status", "unknown")))
     }</code></span></p>
       <p><strong>Summary:</strong> {escape(str(session_end_mismatch.get("summary", "unknown")))}</p>
-      <p><strong>Blocked next session:</strong> {
+      <p><strong>Observation reason:</strong> {
+        escape(str(session_end_mismatch.get("observation_reason", "n/a")))
+    }</p>
+      <p><strong>Data source:</strong> <code>{
+        escape(str(session_end_mismatch.get("data_source", "unknown")))
+    }</code></p>
+      <p><strong>Blocked next session (observation hint only, not enforcement):</strong> {
         escape(str(session_end_mismatch.get("blocked_next_session", False)))
     }</p>
-      <p><strong>Runbook:</strong> <code>{
-        escape(str(session_end_mismatch.get("runbook", "")))
+      <p><strong>Reader schema:</strong> <code>{
+        escape(str(session_end_mismatch.get("reader_schema_version", "n/a")))
     }</code></p>
     </div>
 
