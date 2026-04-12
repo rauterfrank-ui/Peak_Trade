@@ -32,6 +32,16 @@ Presentation-only **Exposure State** card in `render_ops_cockpit_html` — obser
 | Cross-surface context | `stale_state.exposure` (from `stale_state`), `dependencies_state.summary` (from `dependencies_state`) |
 | Caps & breakdown | `caps_configured`, `exposure_by_symbol` (preview) |
 
+### Dependencies / Health-Drift (separate card, read-only)
+
+Presentation-only **Dependencies State** card — `_render_dependencies_state_card_body` in `render_ops_cockpit_html`; existing keys only; not approval, not unlock. Data-quality context: [`OPS_SUITE_DEPENDENCIES_STATE_DATA_QUALITY_REVIEW.md`](OPS_SUITE_DEPENDENCIES_STATE_DATA_QUALITY_REVIEW.md).
+
+| Observation | Payload keys (`dependencies_state`) |
+|-------------|--------------------------------------|
+| Rollup | `summary`, `exchange`, `telemetry` |
+| Optional feed health | `market_data_cache` (shown as `n&#47;a` when absent) |
+| Degraded checklist | `degraded` (list preview) |
+
 ## Related
 
 - [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) — operator-facing target spec.

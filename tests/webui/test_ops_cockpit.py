@@ -963,9 +963,13 @@ def test_ops_cockpit_html_contains_dependencies_state(tmp_path: Path) -> None:
     """HTML rendert Dependencies State Card."""
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert "Dependencies State" in html
-    assert "unknown" in html
-    assert "Exchange" in html or "exchange" in html
-    assert "Telemetry" in html or "telemetry" in html
+    assert "Read-only dependencies / health-drift observation" in html
+    assert "not approval, not unlock" in html
+    assert "market_data_cache:" in html
+    assert "Degraded signals (preview):" in html
+    assert "Summary:" in html
+    assert "Exchange:" in html
+    assert "Telemetry:" in html
 
 
 def test_ops_cockpit_html_contains_truth_first_text(tmp_path: Path) -> None:

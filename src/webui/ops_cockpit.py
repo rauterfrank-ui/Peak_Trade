@@ -1029,6 +1029,34 @@ def _render_run_state_observation_card(payload: Dict[str, object]) -> str:
     )
 
 
+def _render_dependencies_state_card_body(dependencies: Dict[str, object]) -> str:
+    """HTML inner block for Dependencies State — existing ``dependencies_state`` keys only (read-only)."""
+    dep = dependencies if isinstance(dependencies, dict) else {}
+    deg_raw = dep.get("degraded")
+    degraded_rows: List[str] = []
+    if isinstance(deg_raw, list):
+        degraded_rows = [str(item) for item in deg_raw]
+    elif deg_raw is not None:
+        degraded_rows = [str(deg_raw)]
+    degraded_ul = (
+        "".join(f"<li><code>{escape(item)}</code></li>" for item in degraded_rows[:12])
+        or "<li>none</li>"
+    )
+    mdc = dep.get("market_data_cache")
+    mdc_display = "n/a" if mdc is None else str(mdc)
+    return (
+        "<p><strong>Read-only dependencies / health-drift observation.</strong> "
+        "Existing payload fields only; not approval, not unlock.</p>"
+        f'<p><strong>Summary:</strong> <span class="chip"><code>{escape(str(dep.get("summary", "unknown")))}'
+        f"</code></span></p>"
+        f"<p><strong>Exchange:</strong> {escape(str(dep.get('exchange', 'unknown')))}</p>"
+        f"<p><strong>Telemetry:</strong> {escape(str(dep.get('telemetry', 'unknown')))}</p>"
+        f"<p><strong>market_data_cache:</strong> <code>{escape(mdc_display)}</code></p>"
+        "<p><strong>Degraded signals (preview):</strong></p>"
+        f"<ul>{degraded_ul}</ul>"
+    )
+
+
 def build_workflow_officer_panel_context(repo_root: Path | None = None) -> Dict[str, object]:
     """Read-only WebUI slice: latest Workflow Officer ``report.json`` (no writes)."""
     from src.ops.workflow_officer import build_workflow_officer_dashboard_view
@@ -2257,12 +2285,7 @@ def render_ops_cockpit_html(
 
     <div class="card">
       <h2>Dependencies State</h2>
-      <p><strong>Read-only dependencies surface (placeholder)</strong></p>
-      <p><strong>Summary:</strong> <span class="chip"><code>{
-        escape(str(dependencies.get("summary", "unknown")))
-    }</code></span></p>
-      <p><strong>Exchange:</strong> {escape(str(dependencies.get("exchange", "unknown")))}</p>
-      <p><strong>Telemetry:</strong> {escape(str(dependencies.get("telemetry", "unknown")))}</p>
+      {_render_dependencies_state_card_body(dependencies)}
     </div>
 
     {update_officer_ergonomics_html}
