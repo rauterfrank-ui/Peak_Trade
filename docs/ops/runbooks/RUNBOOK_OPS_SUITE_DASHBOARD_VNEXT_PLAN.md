@@ -51,7 +51,7 @@ Create a safe, operator-facing OPS Suite / Dashboard expansion plan that improve
 3. feat/ops-suite-incident-risk-surface
 4. feat/ops-suite-operator-workflow-visibility
 
-**Ist-Stand (Ops Cockpit HTML):** read-only **Policy &#47; Governance observation (vNext RV6)** bündelt `policy_state`, `guard_state`, `ai_boundary_state`, `human_supervision_state` und einen Evidence-/Audit-Cross-Ref zu `evidence_state` — keine neue Autorität, Presentation-only (`src/webui/ops_cockpit.py`). **Phase 4:** `workflow_officer_state` aus `out&#47;ops&#47;workflow_officer` (read-only, startet den Officer nicht).
+**Ist-Stand (Ops Cockpit HTML):** read-only **Policy &#47; Governance observation (vNext RV6)** bündelt `policy_state`, `guard_state`, `ai_boundary_state`, `human_supervision_state` und einen Evidence-/Audit-Cross-Ref zu `evidence_state` — keine neue Autorität, Presentation-only (`src/webui/ops_cockpit.py`). **Phase 4:** `workflow_officer_state` aus `out&#47;ops&#47;workflow_officer` (read-only, startet den Officer nicht); bounded **`handoff_observation`** &#47; **`next_chat_preview_observation`** aus demselben `report.json`-`summary`, wenn vorhanden.
 
 ## Explicit Non-Goals
 - no live-trading enablement

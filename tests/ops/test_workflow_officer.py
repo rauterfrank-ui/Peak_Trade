@@ -874,12 +874,99 @@ def test_build_workflow_officer_dashboard_view_reads_latest_report_json(tmp_path
     assert len(got["top_followups"]) == 1
     assert got["executive"]["urgency_label"] == "clear"
     assert "total=1" in got["operator_snapshot_line"]
+    assert got["handoff_observation"]["present"] is False
+    assert got["handoff_observation"]["absent_reason"] == "no_handoff_context_in_report"
+    assert got["next_chat_preview_observation"]["present"] is False
+    assert got["next_chat_preview_observation"]["absent_reason"] == "no_next_chat_preview_in_report"
     ep = got["executive_panel"]
     assert ep["present"] is True
     assert ep["executive_panel_schema_version"] == "workflow_officer.executive_panel_view/v0"
     assert ep["urgency_label"] == "clear"
     assert ep["decision_package_preview_lines"]
     assert any("Executive decision package" in ln for ln in ep["decision_package_preview_lines"])
+
+
+def test_build_workflow_officer_dashboard_view_handoff_and_preview_observation_populated(
+    tmp_path: Path,
+) -> None:
+    run_dir = tmp_path / "out" / "ops" / "workflow_officer" / "20260201T000000Z"
+    run_dir.mkdir(parents=True)
+    report = {
+        "officer_version": "v1-min",
+        "profile": "docs_only_pr",
+        "mode": "audit",
+        "success": True,
+        "finished_at": "2026-02-01",
+        "summary": {
+            "total_checks": 1,
+            "hard_failures": 0,
+            "warnings": 0,
+            "infos": 0,
+            "strict": False,
+            "executive_summary": {
+                "executive_summary_schema_version": "workflow_officer.executive_summary/v0",
+                "urgency_label": "clear",
+                "attention_rationale": "No blocking errors.",
+            },
+            "operator_report": {
+                "operator_report_schema_version": "workflow_officer.operator_report/v0",
+                "primary_followup": {
+                    "check_id": "chk_a",
+                    "recommended_priority": "p3",
+                    "effective_level": "ok",
+                    "recommended_action": "No action.",
+                },
+                "rollup": {
+                    "total_checks": 1,
+                    "hard_failures": 0,
+                    "warnings": 0,
+                    "infos": 0,
+                },
+                "top_followups": [
+                    {
+                        "rank": 1,
+                        "check_id": "chk_a",
+                        "recommended_priority": "p3",
+                        "effective_level": "ok",
+                    }
+                ],
+            },
+            "handoff_context": {
+                "handoff_schema_version": "workflow_officer.handoff_context/v1",
+                "primary_followup_check_id": "chk_h",
+                "top_followups": [{"rank": 1, "check_id": "chk_h"}],
+                "registry_inputs_rollup": {"pointer_count": 2},
+                "merge_log_inputs_rollup": {"latest_pr_number": 2505},
+            },
+            "next_chat_preview": {
+                "preview_schema_version": "workflow_officer.next_chat_preview/v1",
+                "provenance_schema_version": "workflow_officer.provenance/v0",
+                "primary_followup_check_id": "chk_ncp",
+                "queued_followup_check_ids": ["c1", "c2"],
+                "latest_pr_number": 2505,
+                "registry_pointer_count": 2,
+                "hard_failures": 0,
+                "warnings": 1,
+                "total_checks": 3,
+            },
+        },
+    }
+    (run_dir / "report.json").write_text(json.dumps(report), encoding="utf-8")
+    got = build_workflow_officer_dashboard_view(tmp_path)
+    ho = got["handoff_observation"]
+    assert ho["present"] is True
+    assert ho["primary_followup_check_id"] == "chk_h"
+    assert ho["top_followups_count"] == 1
+    assert ho["registry_pointer_count"] == 2
+    assert ho["merge_log_latest_pr_number"] == 2505
+    ncp = got["next_chat_preview_observation"]
+    assert ncp["present"] is True
+    assert ncp["queued_followup_check_ids"] == ["c1", "c2"]
+    assert ncp["rollup_echo"] == {
+        "hard_failures": 0,
+        "total_checks": 3,
+        "warnings": 1,
+    }
 
 
 def test_build_executive_summary_view_empty_summary_is_deterministic() -> None:

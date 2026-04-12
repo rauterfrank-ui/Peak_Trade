@@ -49,6 +49,11 @@ _OPERATOR_REPORT_SCHEMA_VERSION = "workflow_officer.operator_report/v0"
 _EXECUTIVE_SUMMARY_SCHEMA_VERSION = "workflow_officer.executive_summary/v0"
 _DASHBOARD_VIEW_SCHEMA_VERSION = "workflow_officer.dashboard_view/v0"
 _EXECUTIVE_PANEL_VIEW_SCHEMA_VERSION = "workflow_officer.executive_panel_view/v0"
+_HANDOFF_OBSERVATION_VIEW_SCHEMA_VERSION = "workflow_officer.handoff_observation_view/v0"
+_NEXT_CHAT_PREVIEW_OBSERVATION_VIEW_SCHEMA_VERSION = (
+    "workflow_officer.next_chat_preview_observation_view/v0"
+)
+_MAX_HANDOFF_PREVIEW_OBS_STR = 128
 
 _SEQUENCING_SCHEMA_VERSION = "workflow_officer.sequencing/v0"
 
@@ -1614,6 +1619,124 @@ def _dashboard_empty(reason: str) -> dict[str, Any]:
     }
 
 
+def _truncate_handoff_preview_obs_str(val: object | None) -> str | None:
+    if val is None:
+        return None
+    if not isinstance(val, str):
+        s = str(val).strip()
+    else:
+        s = val.strip()
+    if not s:
+        return None
+    if len(s) <= _MAX_HANDOFF_PREVIEW_OBS_STR:
+        return s
+    return s[: _MAX_HANDOFF_PREVIEW_OBS_STR - 3] + "..."
+
+
+def build_handoff_observation_view(summary: dict[str, Any]) -> dict[str, Any]:
+    """Bounded read-only digest of ``summary[\"handoff_context\"]`` for Ops Cockpit (no I/O)."""
+    hc = summary.get("handoff_context")
+    if not isinstance(hc, dict) or not hc:
+        return {
+            "absent_reason": "no_handoff_context_in_report",
+            "handoff_observation_schema_version": _HANDOFF_OBSERVATION_VIEW_SCHEMA_VERSION,
+            "present": False,
+        }
+    top = hc.get("top_followups")
+    tcount = len(top) if isinstance(top, list) else 0
+    primary_s = _truncate_handoff_preview_obs_str(hc.get("primary_followup_check_id"))
+    hs_s = _truncate_handoff_preview_obs_str(hc.get("handoff_schema_version"))
+
+    reg = hc.get("registry_inputs_rollup")
+    rpc: int | None = None
+    if isinstance(reg, dict):
+        try:
+            rpc = int(reg.get("pointer_count", 0))
+        except (TypeError, ValueError):
+            rpc = None
+
+    ml = hc.get("merge_log_inputs_rollup")
+    lpr: int | None = None
+    if isinstance(ml, dict):
+        raw_pr = ml.get("latest_pr_number")
+        if raw_pr is not None:
+            try:
+                lpr = int(raw_pr)
+            except (TypeError, ValueError):
+                lpr = None
+
+    return {
+        "handoff_observation_schema_version": _HANDOFF_OBSERVATION_VIEW_SCHEMA_VERSION,
+        "handoff_schema_version": hs_s,
+        "merge_log_latest_pr_number": lpr,
+        "present": True,
+        "primary_followup_check_id": primary_s,
+        "registry_pointer_count": rpc,
+        "top_followups_count": min(int(tcount), 9999),
+    }
+
+
+def build_next_chat_preview_observation_view(summary: dict[str, Any]) -> dict[str, Any]:
+    """Bounded read-only digest of ``summary[\"next_chat_preview\"]`` for Ops Cockpit (no I/O)."""
+    ncp = summary.get("next_chat_preview")
+    if not isinstance(ncp, dict) or not ncp:
+        return {
+            "absent_reason": "no_next_chat_preview_in_report",
+            "next_chat_preview_observation_schema_version": _NEXT_CHAT_PREVIEW_OBSERVATION_VIEW_SCHEMA_VERSION,
+            "present": False,
+        }
+
+    pv_s = _truncate_handoff_preview_obs_str(ncp.get("preview_schema_version"))
+    prov_s = _truncate_handoff_preview_obs_str(ncp.get("provenance_schema_version"))
+    prim_s = _truncate_handoff_preview_obs_str(ncp.get("primary_followup_check_id"))
+
+    q_raw = ncp.get("queued_followup_check_ids")
+    queued: list[str] = []
+    if isinstance(q_raw, list):
+        for x in q_raw[:_NEXT_CHAT_PREVIEW_QUEUE_LEN]:
+            ts = _truncate_handoff_preview_obs_str(x)
+            if ts:
+                queued.append(ts)
+
+    lpr: int | None = None
+    raw_pr = ncp.get("latest_pr_number")
+    if raw_pr is not None:
+        try:
+            lpr = int(raw_pr)
+        except (TypeError, ValueError):
+            lpr = None
+
+    rpc: int | None = None
+    raw_rpc = ncp.get("registry_pointer_count")
+    if raw_rpc is not None:
+        try:
+            rpc = int(raw_rpc)
+        except (TypeError, ValueError):
+            rpc = None
+
+    def _ri(key: str) -> int:
+        try:
+            return int(ncp.get(key, 0))
+        except (TypeError, ValueError):
+            return 0
+
+    return {
+        "latest_pr_number": lpr,
+        "next_chat_preview_observation_schema_version": _NEXT_CHAT_PREVIEW_OBSERVATION_VIEW_SCHEMA_VERSION,
+        "present": True,
+        "preview_schema_version": pv_s,
+        "primary_followup_check_id": prim_s,
+        "provenance_schema_version": prov_s,
+        "queued_followup_check_ids": queued,
+        "registry_pointer_count": rpc,
+        "rollup_echo": {
+            "hard_failures": _ri("hard_failures"),
+            "total_checks": _ri("total_checks"),
+            "warnings": _ri("warnings"),
+        },
+    }
+
+
 def build_handoff_context(summary: dict[str, Any]) -> dict[str, Any]:
     """Derive a small read-only handoff snapshot from an existing summary dict.
 
@@ -1845,6 +1968,8 @@ def build_workflow_officer_dashboard_view(repo_root: Path) -> dict[str, Any]:
         "top_followups": top_followups,
         "operator_snapshot_line": operator_line,
         "executive_panel": _build_executive_panel_view_from_summary(summary),
+        "handoff_observation": build_handoff_observation_view(summary),
+        "next_chat_preview_observation": build_next_chat_preview_observation_view(summary),
     }
 
 

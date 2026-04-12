@@ -1780,6 +1780,82 @@ def test_ops_cockpit_html_contains_operator_workflow_observation_with_report(
     assert "20260201T000000Z" in html
     assert "workflow_officer_state.primary_followup.check_id" in html
     assert "chk_a" in html
+    assert 'id="operator-workflow-handoff-preview-observation"' in html
+    assert "no_handoff_context_in_report" in html
+    assert "no_next_chat_preview_in_report" in html
+
+
+def test_ops_cockpit_html_handoff_and_next_step_preview_when_report_includes_summary_blocks(
+    tmp_path: Path,
+) -> None:
+    run_dir = tmp_path / "out" / "ops" / "workflow_officer" / "20260201T000000Z"
+    run_dir.mkdir(parents=True)
+    report = {
+        "officer_version": "v1-min",
+        "profile": "docs_only_pr",
+        "mode": "audit",
+        "success": True,
+        "finished_at": "2026-02-01",
+        "summary": {
+            "total_checks": 1,
+            "hard_failures": 0,
+            "warnings": 0,
+            "infos": 0,
+            "strict": False,
+            "executive_summary": {
+                "executive_summary_schema_version": "workflow_officer.executive_summary/v0",
+                "urgency_label": "clear",
+                "attention_rationale": "No blocking errors.",
+            },
+            "operator_report": {
+                "operator_report_schema_version": "workflow_officer.operator_report/v0",
+                "primary_followup": {
+                    "check_id": "chk_a",
+                    "recommended_priority": "p3",
+                    "effective_level": "ok",
+                    "recommended_action": "No action.",
+                },
+                "rollup": {
+                    "total_checks": 1,
+                    "hard_failures": 0,
+                    "warnings": 0,
+                    "infos": 0,
+                },
+                "top_followups": [
+                    {
+                        "rank": 1,
+                        "check_id": "chk_a",
+                        "recommended_priority": "p3",
+                        "effective_level": "ok",
+                    }
+                ],
+            },
+            "handoff_context": {
+                "handoff_schema_version": "workflow_officer.handoff_context/v1",
+                "primary_followup_check_id": "chk_h",
+                "top_followups": [{"rank": 1, "check_id": "chk_h"}],
+                "registry_inputs_rollup": {"pointer_count": 2},
+                "merge_log_inputs_rollup": {"latest_pr_number": 2505},
+            },
+            "next_chat_preview": {
+                "preview_schema_version": "workflow_officer.next_chat_preview/v1",
+                "primary_followup_check_id": "chk_ncp",
+                "queued_followup_check_ids": ["c1"],
+                "latest_pr_number": 2505,
+                "registry_pointer_count": 2,
+                "hard_failures": 0,
+                "warnings": 1,
+                "total_checks": 3,
+            },
+        },
+    }
+    (run_dir / "report.json").write_text(json.dumps(report), encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-workflow-handoff-preview-observation"' in html
+    assert "workflow_officer_state.handoff_observation.primary_followup_check_id" in html
+    assert "chk_h" in html
+    assert "workflow_officer_state.next_chat_preview_observation.rollup_echo.warnings" in html
+    assert "c1" in html
 
 
 def test_ops_cockpit_workflow_officer_report_contains_operator_rollup_label(tmp_path: Path) -> None:

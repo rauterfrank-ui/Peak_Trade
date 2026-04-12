@@ -1278,6 +1278,158 @@ def _render_workflow_officer_observation_surface(payload: Dict[str, object]) -> 
         if items:
             top_ul = "<h3>Top follow-ups (preview)</h3><ul>" + "".join(items) + "</ul>"
 
+    ho_raw = wo.get("handoff_observation")
+    ho = ho_raw if isinstance(ho_raw, dict) else {}
+    ncpo_raw = wo.get("next_chat_preview_observation")
+    ncpo = ncpo_raw if isinstance(ncpo_raw, dict) else {}
+
+    hp_intro = (
+        '<h3 id="operator-workflow-handoff-preview-observation">'
+        "Handoff &amp; next-step preview (bounded observation)</h3>"
+        "<p><em>Excerpts from the same report summary JSON — read-only; not approval, not unlock.</em></p>"
+    )
+    ho_rows: List[str] = []
+    if ho.get("present") is True:
+        for label, key in (
+            (
+                "workflow_officer_state.handoff_observation.handoff_observation_schema_version",
+                "handoff_observation_schema_version",
+            ),
+            (
+                "workflow_officer_state.handoff_observation.handoff_schema_version",
+                "handoff_schema_version",
+            ),
+            (
+                "workflow_officer_state.handoff_observation.primary_followup_check_id",
+                "primary_followup_check_id",
+            ),
+            (
+                "workflow_officer_state.handoff_observation.top_followups_count",
+                "top_followups_count",
+            ),
+            (
+                "workflow_officer_state.handoff_observation.registry_pointer_count",
+                "registry_pointer_count",
+            ),
+            (
+                "workflow_officer_state.handoff_observation.merge_log_latest_pr_number",
+                "merge_log_latest_pr_number",
+            ),
+        ):
+            if key not in ho:
+                continue
+            ho_rows.append(
+                f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>{escape(label)}</code></td>"
+                f"<td style='padding:4px 0;'><code>{_cell(ho.get(key))}</code></td></tr>"
+            )
+    else:
+        ar = ho.get("absent_reason")
+        ho_rows.append(
+            f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'>"
+            f"<code>workflow_officer_state.handoff_observation.absent_reason</code></td>"
+            f"<td style='padding:4px 0;'><code>{_cell(ar)}</code></td></tr>"
+        )
+        ho_rows.append(
+            f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'>"
+            f"<code>workflow_officer_state.handoff_observation.present</code></td>"
+            f"<td style='padding:4px 0;'><code>false</code></td></tr>"
+        )
+    ho_table = (
+        "<h4>Handoff observation</h4>"
+        "<table style='width:100%;border-collapse:collapse;font-size:0.9em;'>"
+        "<tbody>"
+        f"{''.join(ho_rows)}"
+        "</tbody></table>"
+    )
+
+    ncp_rows: List[str] = []
+    if ncpo.get("present") is True:
+        for label, key in (
+            (
+                "workflow_officer_state.next_chat_preview_observation."
+                "next_chat_preview_observation_schema_version",
+                "next_chat_preview_observation_schema_version",
+            ),
+            (
+                "workflow_officer_state.next_chat_preview_observation.preview_schema_version",
+                "preview_schema_version",
+            ),
+            (
+                "workflow_officer_state.next_chat_preview_observation.provenance_schema_version",
+                "provenance_schema_version",
+            ),
+            (
+                "workflow_officer_state.next_chat_preview_observation.primary_followup_check_id",
+                "primary_followup_check_id",
+            ),
+            (
+                "workflow_officer_state.next_chat_preview_observation.latest_pr_number",
+                "latest_pr_number",
+            ),
+            (
+                "workflow_officer_state.next_chat_preview_observation.registry_pointer_count",
+                "registry_pointer_count",
+            ),
+        ):
+            if key not in ncpo:
+                continue
+            ncp_rows.append(
+                f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>{escape(label)}</code></td>"
+                f"<td style='padding:4px 0;'><code>{_cell(ncpo.get(key))}</code></td></tr>"
+            )
+        qids = ncpo.get("queued_followup_check_ids")
+        if isinstance(qids, list) and qids:
+            joined = ", ".join(escape(str(x)) for x in qids[:3])
+            ncp_rows.append(
+                "<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>"
+                "workflow_officer_state.next_chat_preview_observation.queued_followup_check_ids"
+                "</code></td>"
+                f"<td style='padding:4px 0;'><code>{joined}</code></td></tr>"
+            )
+        re_echo = ncpo.get("rollup_echo")
+        if isinstance(re_echo, dict):
+            for label, key in (
+                (
+                    "workflow_officer_state.next_chat_preview_observation.rollup_echo.total_checks",
+                    "total_checks",
+                ),
+                (
+                    "workflow_officer_state.next_chat_preview_observation.rollup_echo.hard_failures",
+                    "hard_failures",
+                ),
+                (
+                    "workflow_officer_state.next_chat_preview_observation.rollup_echo.warnings",
+                    "warnings",
+                ),
+            ):
+                if key not in re_echo:
+                    continue
+                ncp_rows.append(
+                    f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>{escape(label)}</code></td>"
+                    f"<td style='padding:4px 0;'><code>{_cell(re_echo.get(key))}</code></td></tr>"
+                )
+    else:
+        arn = ncpo.get("absent_reason")
+        ncp_rows.append(
+            f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'>"
+            f"<code>workflow_officer_state.next_chat_preview_observation.absent_reason</code></td>"
+            f"<td style='padding:4px 0;'><code>{_cell(arn)}</code></td></tr>"
+        )
+        ncp_rows.append(
+            f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'>"
+            f"<code>workflow_officer_state.next_chat_preview_observation.present</code></td>"
+            f"<td style='padding:4px 0;'><code>false</code></td></tr>"
+        )
+    ncp_table = (
+        "<h4>Next-step preview observation</h4>"
+        "<table style='width:100%;border-collapse:collapse;font-size:0.9em;'>"
+        "<tbody>"
+        f"{''.join(ncp_rows)}"
+        "</tbody></table>"
+    )
+
+    hp_block = f"{hp_intro}{ho_table}{ncp_table}"
+
     table_html = (
         "<h3>Workflow Officer snapshot (payload)</h3>"
         "<table style='width:100%;border-collapse:collapse;font-size:0.9em;'>"
@@ -1285,7 +1437,7 @@ def _render_workflow_officer_observation_surface(payload: Dict[str, object]) -> 
         f"{''.join(rows_html)}"
         "</tbody></table>"
     )
-    return f"{head}{snap_p}{table_html}{pf_block}{top_ul}</div></div>"
+    return f"{head}{snap_p}{table_html}{pf_block}{top_ul}{hp_block}</div></div>"
 
 
 def _render_dependencies_state_card_body(dependencies: Dict[str, object]) -> str:
