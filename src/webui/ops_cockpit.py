@@ -1140,6 +1140,152 @@ def _render_run_state_observation_card(payload: Dict[str, object]) -> str:
     )
 
 
+def _render_workflow_officer_observation_surface(payload: Dict[str, object]) -> str:
+    """vNext Phase 4: latest Workflow Officer dashboard view — ``workflow_officer_state`` only (read-only)."""
+    wo_raw = payload.get("workflow_officer_state")
+    wo = wo_raw if isinstance(wo_raw, dict) else {}
+    present = wo.get("present") is True
+    intro = (
+        "<p><strong>Read-only.</strong> Same object as <code>workflow_officer_state</code> in this "
+        "page&apos;s JSON payload — from <code>build_workflow_officer_panel_context</code> "
+        "(latest <code>report.json</code> under <code>out/ops/workflow_officer</code> when present). "
+        "<strong>Observation only</strong> — <strong>not approval</strong>, <strong>not unlock</strong>; "
+        "does not execute Workflow Officer.</p>"
+    )
+    head = (
+        f'<div class="group-block operator-workflow-observation-surface" '
+        f'id="operator-workflow-observation-surface" style="margin-bottom:20px;">'
+        f'<div class="card truth-card">'
+        f"<h2>Operator workflow observation (vNext Phase 4)</h2>"
+        f"{intro}"
+    )
+    if not present:
+        er = wo.get("empty_reason")
+        er_s = escape(str(er)) if er is not None else "unknown"
+        return (
+            f"{head}"
+            f"<p><strong>workflow_officer_state.present</strong> (observation): <code>false</code></p>"
+            f"<p><strong>workflow_officer_state.empty_reason</strong> (observation): <code>{er_s}</code></p>"
+            "<p>No Workflow Officer artifacts observed at this repo root (or report not readable). "
+            "Filesystem observation only — not guidance to skip governance checks.</p>"
+            f"</div></div>"
+        )
+
+    rollup = wo.get("rollup") if isinstance(wo.get("rollup"), dict) else {}
+    ex = wo.get("executive") if isinstance(wo.get("executive"), dict) else {}
+    pf_raw = wo.get("primary_followup")
+    pf = pf_raw if isinstance(pf_raw, dict) else None
+
+    def _cell(val: object) -> str:
+        return escape(_fmt_observation_cell(val))
+
+    rows_html: List[str] = []
+    for label, key in (
+        ("workflow_officer_state.run_dir_name", "run_dir_name"),
+        ("workflow_officer_state.report_rel_path", "report_rel_path"),
+        ("workflow_officer_state.officer_version", "officer_version"),
+        ("workflow_officer_state.profile", "profile"),
+        ("workflow_officer_state.mode", "mode"),
+        ("workflow_officer_state.success", "success"),
+        ("workflow_officer_state.finished_at", "finished_at"),
+    ):
+        if key not in wo:
+            continue
+        rows_html.append(
+            f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>{escape(label)}</code></td>"
+            f"<td style='padding:4px 0;'><code>{_cell(wo.get(key))}</code></td></tr>"
+        )
+    for label, key in (
+        ("workflow_officer_state.rollup.total_checks", "total_checks"),
+        ("workflow_officer_state.rollup.hard_failures", "hard_failures"),
+        ("workflow_officer_state.rollup.warnings", "warnings"),
+        ("workflow_officer_state.rollup.infos", "infos"),
+        ("workflow_officer_state.rollup.strict", "strict"),
+    ):
+        if key not in rollup:
+            continue
+        rows_html.append(
+            f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>{escape(label)}</code></td>"
+            f"<td style='padding:4px 0;'><code>{_cell(rollup.get(key))}</code></td></tr>"
+        )
+    for label, key in (
+        ("workflow_officer_state.executive.urgency_label", "urgency_label"),
+        ("workflow_officer_state.executive.attention_rationale", "attention_rationale"),
+    ):
+        if key not in ex:
+            continue
+        rows_html.append(
+            f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>{escape(label)}</code></td>"
+            f"<td style='padding:4px 0;'><code>{_cell(ex.get(key))}</code></td></tr>"
+        )
+
+    snap = str(wo.get("operator_snapshot_line") or "").strip()
+    snap_p = (
+        f"<p><strong>operator_snapshot_line</strong> (observation): <code>{escape(snap)}</code></p>"
+        if snap
+        else ""
+    )
+
+    pf_block = ""
+    if pf:
+        pf_lines: List[str] = []
+        for label, key in (
+            ("workflow_officer_state.primary_followup.check_id", "check_id"),
+            (
+                "workflow_officer_state.primary_followup.recommended_priority",
+                "recommended_priority",
+            ),
+            ("workflow_officer_state.primary_followup.effective_level", "effective_level"),
+            (
+                "workflow_officer_state.primary_followup.recommended_action_excerpt",
+                "recommended_action_excerpt",
+            ),
+        ):
+            if key not in pf:
+                continue
+            pf_lines.append(
+                f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>{escape(label)}</code></td>"
+                f"<td style='padding:4px 0;'><code>{_cell(pf.get(key))}</code></td></tr>"
+            )
+        if pf_lines:
+            pf_block = (
+                "<h3>Primary follow-up (payload)</h3>"
+                "<table style='width:100%;border-collapse:collapse;font-size:0.9em;'>"
+                "<tbody>"
+                f"{''.join(pf_lines)}"
+                "</tbody></table>"
+            )
+
+    top_raw = wo.get("top_followups")
+    top_ul = ""
+    if isinstance(top_raw, list) and top_raw:
+        items: List[str] = []
+        for row in top_raw[:3]:
+            if not isinstance(row, dict):
+                continue
+            cid = str(row.get("check_id", "")).strip()
+            if not cid:
+                continue
+            items.append(
+                "<li>"
+                f"<code>{escape(cid)}</code> "
+                f"(priority {_cell(row.get('recommended_priority'))}, "
+                f"level {_cell(row.get('effective_level'))})"
+                "</li>"
+            )
+        if items:
+            top_ul = "<h3>Top follow-ups (preview)</h3><ul>" + "".join(items) + "</ul>"
+
+    table_html = (
+        "<h3>Workflow Officer snapshot (payload)</h3>"
+        "<table style='width:100%;border-collapse:collapse;font-size:0.9em;'>"
+        "<tbody>"
+        f"{''.join(rows_html)}"
+        "</tbody></table>"
+    )
+    return f"{head}{snap_p}{table_html}{pf_block}{top_ul}</div></div>"
+
+
 def _render_dependencies_state_card_body(dependencies: Dict[str, object]) -> str:
     """HTML inner block for Dependencies State — existing ``dependencies_state`` keys only (read-only)."""
     dep = dependencies if isinstance(dependencies, dict) else {}
@@ -1666,6 +1812,7 @@ def build_ops_cockpit_payload(
             run_dir=update_officer_run_dir,
         )
     phase83_eligibility_snapshot = _build_phase83_eligibility_snapshot(repo_root)
+    workflow_officer_state: Dict[str, object] = build_workflow_officer_panel_context(repo_root)
     return {
         "system_state": {
             "mode": "truth_first_ops_cockpit_v3",
@@ -1700,6 +1847,7 @@ def build_ops_cockpit_payload(
         "critical_flags": v3_summary["critical_flags"],
         "unknown_flags": v3_summary["unknown_flags"],
         "phase83_eligibility_snapshot": phase83_eligibility_snapshot,
+        "workflow_officer_state": workflow_officer_state,
         "update_officer_ui": update_officer_ui,
     }
 
@@ -2169,6 +2317,7 @@ def render_ops_cockpit_html(
     phase57_snapshot_discoverability_html = _render_phase57_snapshot_discoverability_card()
     incident_observation_html = _render_incident_observation_card(payload)
     run_state_observation_html = _render_run_state_observation_card(payload)
+    workflow_officer_observation_html = _render_workflow_officer_observation_surface(payload)
     phase83_eligibility_html = _render_phase83_eligibility_card(
         payload.get("phase83_eligibility_snapshot") or {}
     )
@@ -2202,6 +2351,7 @@ def render_ops_cockpit_html(
     .operator-summary-disclaimer {{ border-left: 4px solid #607d8b; padding-left: 12px; margin: 12px 0; }}
     .operator-summary-surface h3 {{ font-size: 1.05em; margin-top: 18px; margin-bottom: 8px; }}
     .policy-governance-observation-surface h3 {{ font-size: 1.05em; margin-top: 18px; margin-bottom: 8px; }}
+    .operator-workflow-observation-surface h3 {{ font-size: 1.05em; margin-top: 18px; margin-bottom: 8px; }}
     .status-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 12px 0; }}
     .status-card {{ padding: 10px; border-radius: 8px; border: 1px solid #e0e0e0; }}
     .status-label {{ display: block; font-size: 0.85em; color: #555; margin-bottom: 4px; }}
@@ -2231,6 +2381,7 @@ def render_ops_cockpit_html(
   {phase57_snapshot_discoverability_html}
   {incident_observation_html}
   {run_state_observation_html}
+  {workflow_officer_observation_html}
   {phase83_eligibility_html}
   <div class="hero">
     <h1>Ops Cockpit v3 — Truth-First</h1>

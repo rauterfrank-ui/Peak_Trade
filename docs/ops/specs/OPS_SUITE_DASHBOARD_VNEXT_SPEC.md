@@ -105,6 +105,8 @@ Expose capital separation, exposure, and anomaly summaries.
 ### Phase 4 — Operator Workflow Surface
 Expose explicit go/no-go and acknowledgement flows without changing execution authority.
 
+**Ops Cockpit (read-only HTML):** latest Workflow Officer dashboard view is exposed as `workflow_officer_state` (observation only; does not run the officer) — see [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md).
+
 ## Dependencies / Inputs
 - existing Ops Cockpit truth-first model
 - existing governance docs and runbooks
