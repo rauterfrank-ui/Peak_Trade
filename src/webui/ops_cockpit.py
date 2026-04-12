@@ -1057,6 +1057,38 @@ def _render_dependencies_state_card_body(dependencies: Dict[str, object]) -> str
     )
 
 
+def _render_evidence_state_card_body(evidence: Dict[str, object]) -> str:
+    """HTML inner block for Evidence State — existing ``evidence_state`` keys only (read-only)."""
+    ev = evidence if isinstance(evidence, dict) else {}
+    sf_raw = ev.get("source_freshness")
+    if isinstance(sf_raw, dict):
+        sf_block = (
+            "<p><strong>source_freshness (counts):</strong></p><ul>"
+            f"<li><code>fresh</code>: {escape(str(sf_raw.get('fresh', 'n/a')))}</li>"
+            f"<li><code>stale</code>: {escape(str(sf_raw.get('stale', 'n/a')))}</li>"
+            f"<li><code>older</code>: {escape(str(sf_raw.get('older', 'n/a')))}</li>"
+            "</ul>"
+        )
+    else:
+        sf_block = (
+            f"<p><strong>source_freshness:</strong> <code>"
+            f"{escape(str(sf_raw if sf_raw is not None else 'unknown'))}</code></p>"
+        )
+    tel = ev.get("telemetry_evidence")
+    tel_display = "n/a" if tel is None else str(tel)
+    return (
+        "<p><strong>Read-only evidence / audit observation.</strong> "
+        "Existing payload fields only; not approval, not unlock.</p>"
+        f'<p><strong>Summary:</strong> <span class="chip"><code>{escape(str(ev.get("summary", "unknown")))}'
+        f"</code></span></p>"
+        f"<p><strong>freshness_status:</strong> {escape(str(ev.get('freshness_status', 'unknown')))}</p>"
+        f"<p><strong>audit_trail:</strong> {escape(str(ev.get('audit_trail', 'unknown')))}</p>"
+        f"<p><strong>last_verified_utc:</strong> {escape(str(ev.get('last_verified_utc', 'n/a')))}</p>"
+        f"{sf_block}"
+        f"<p><strong>telemetry_evidence:</strong> <code>{escape(tel_display)}</code></p>"
+    )
+
+
 def build_workflow_officer_panel_context(repo_root: Path | None = None) -> Dict[str, object]:
     """Read-only WebUI slice: latest Workflow Officer ``report.json`` (no writes)."""
     from src.ops.workflow_officer import build_workflow_officer_dashboard_view
@@ -2275,12 +2307,7 @@ def render_ops_cockpit_html(
 
     <div class="card">
       <h2>Evidence State</h2>
-      <p><strong>Read-only evidence / audit surface (derived from truth sources)</strong></p>
-      <p><strong>Summary:</strong> <span class="chip"><code>{
-        escape(str(evidence.get("summary", "unknown")))
-    }</code></span></p>
-      <p><strong>Freshness:</strong> {escape(str(evidence.get("freshness_status", "unknown")))}</p>
-      <p><strong>Audit trail:</strong> {escape(str(evidence.get("audit_trail", "unknown")))}</p>
+      {_render_evidence_state_card_body(evidence)}
     </div>
 
     <div class="card">

@@ -877,7 +877,13 @@ def test_ops_cockpit_html_contains_evidence_state(tmp_path: Path) -> None:
     """HTML rendert Evidence State Card."""
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert "Evidence State" in html
-    assert "audit trail" in html or "Audit trail" in html
+    assert "Read-only evidence / audit observation" in html
+    assert "not approval, not unlock" in html
+    assert "audit_trail:" in html
+    assert "freshness_status:" in html
+    assert "last_verified_utc:" in html
+    assert "source_freshness" in html
+    assert "telemetry_evidence:" in html
 
 
 def test_dependencies_state_exchange_from_p85_when_ok(tmp_path: Path) -> None:
