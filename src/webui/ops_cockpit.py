@@ -1151,8 +1151,11 @@ def _render_workflow_officer_observation_surface(payload: Dict[str, object]) -> 
         "<p><strong>Read-only.</strong> Same object as <code>workflow_officer_state</code> in this "
         "page&apos;s JSON payload — from <code>build_workflow_officer_panel_context</code> "
         "(latest <code>report.json</code> under <code>out/ops/workflow_officer</code> when present). "
-        "<strong>Observation only</strong> — <strong>not approval</strong>, <strong>not unlock</strong>; "
-        "does not execute Workflow Officer.</p>"
+        "<strong>Observation and visibility only</strong> — <strong>not approval</strong>, "
+        "<strong>not unlock</strong>, <strong>not execution authority</strong>, "
+        "<strong>not a release go-signal</strong>; does not start or run Workflow Officer from this page. "
+        "Compact policy posture remains <code>policy_go_no_go_observation</code> (separate payload aggregate; "
+        "not implied here).</p>"
     )
     head = (
         f'<div class="group-block operator-workflow-observation-surface" '
@@ -1252,6 +1255,8 @@ def _render_workflow_officer_observation_surface(payload: Dict[str, object]) -> 
         if pf_lines:
             pf_block = (
                 "<h3>Primary follow-up (payload)</h3>"
+                "<p><em>From the operator report excerpt in the same artifact — visibility hint; "
+                "not approval.</em></p>"
                 "<table style='width:100%;border-collapse:collapse;font-size:0.9em;'>"
                 "<tbody>"
                 f"{''.join(pf_lines)}"
@@ -1276,7 +1281,13 @@ def _render_workflow_officer_observation_surface(payload: Dict[str, object]) -> 
                 "</li>"
             )
         if items:
-            top_ul = "<h3>Top follow-ups (preview)</h3><ul>" + "".join(items) + "</ul>"
+            top_ul = (
+                "<h3>Top follow-ups (bounded preview)</h3>"
+                "<p><em>Up to three rows from the report — ordering hints only; not approval.</em></p>"
+                "<ul>"
+                f"{''.join(items)}"
+                "</ul>"
+            )
 
     ho_raw = wo.get("handoff_observation")
     ho = ho_raw if isinstance(ho_raw, dict) else {}
@@ -1286,7 +1297,9 @@ def _render_workflow_officer_observation_surface(payload: Dict[str, object]) -> 
     hp_intro = (
         '<h3 id="operator-workflow-handoff-preview-observation">'
         "Handoff &amp; next-step preview (bounded observation)</h3>"
-        "<p><em>Excerpts from the same report summary JSON — read-only; not approval, not unlock.</em></p>"
+        "<p><em>Excerpts from the same report <code>summary</code> JSON — read-only. "
+        "Not approval, not unlock, not launch authority, not a release go-signal; "
+        "not a substitute for <code>policy_go_no_go_observation</code>.</em></p>"
     )
     ho_rows: List[str] = []
     if ho.get("present") is True:
@@ -2287,9 +2300,11 @@ def _render_update_officer_card(uo: Dict[str, object]) -> str:
     if not avail:
         msg = escape(str(uo.get("empty_state_message") or "Unavailable."))
         return (
-            '<div class="card truth-card">'
+            '<div class="card truth-card" id="update-officer-visibility-card">'
             "<h2>Update Officer</h2>"
-            "<p><strong>Read-only.</strong> Notifier summary from local payload (if provided).</p>"
+            "<p><strong>Read-only.</strong> Payload key <code>update_officer_ui</code>. "
+            "Notifier summary from local payload (if provided). "
+            "Does not start Workflow Officer; not execution authority.</p>"
             f'<p><strong>Available:</strong> <span class="chip"><code>false</code></span></p>'
             f"<p>{msg}</p>"
             "</div>"
@@ -2310,9 +2325,12 @@ def _render_update_officer_card(uo: Dict[str, object]) -> str:
     rp = uo.get("review_paths") or []
     rp_str = ", ".join(escape(str(p)) for p in rp) if isinstance(rp, list) else ""
     return (
-        '<div class="card truth-card">'
+        '<div class="card truth-card" id="update-officer-visibility-card">'
         "<h2>Update Officer</h2>"
-        "<p><strong>Read-only.</strong> Deterministic notifier view (v4 consumer layer).</p>"
+        "<p><strong>Read-only.</strong> Payload key <code>update_officer_ui</code>. "
+        "Deterministic notifier view (v4 consumer layer). "
+        "Does not start Workflow Officer; GET-only source ergonomics appear above this card when present; "
+        "not execution authority.</p>"
         f'<p><strong>Available:</strong> <span class="chip"><code>true</code></span></p>'
         f"<p><strong>Headline:</strong> {escape(str(uo.get('headline', '')))}</p>"
         f"<p><strong>Status:</strong> <code>{escape(str(uo.get('status', '')))}</code></p>"

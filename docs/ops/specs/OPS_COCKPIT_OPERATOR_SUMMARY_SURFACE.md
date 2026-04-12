@@ -1,7 +1,7 @@
 # OPS Cockpit — Operator Summary Surface (vNext-aligned)
 
 **status:** active  
-**last_updated:** 2026-04-13  
+**last_updated:** 2026-04-12  
 **purpose:** Map OPS Suite / Dashboard vNext „Required Views“ (Teilmenge) to the JSON payload served at `GET &#47;api&#47;ops-cockpit` (same shape as the `/ops` HTML page) and HTML render helpers — read-only, no execution authority.
 
 **docs_token:** `DOCS_TOKEN_OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE`
@@ -30,7 +30,8 @@
 | Evidence / Freshness (detail lines) | `evidence_state.summary`, `evidence_state.freshness_status`, `evidence_state.audit_trail`, `evidence_state.last_verified_utc`, `evidence_state.source_freshness`, optional `evidence_state.telemetry_evidence` | Same — section **Evidence freshness observation (read-only)** |
 | Kompakte Rollups (Truth / Freshness / Sources) | `executive_summary` (nested levels/labels), top-level `truth_status` / `freshness_status` / `source_coverage_status`, `critical_flags`, `unknown_flags` | `_render_status_at_a_glance_inner` (Status-at-a-glance cards) |
 | Policy &#47; Governance (vNext RV6) | `policy_state`, `guard_state`, `ai_boundary_state`, `human_supervision_state`; evidence/audit cross-ref from `evidence_state` (full card below) | `_render_policy_governance_observation_surface` — block **Policy &#47; Governance observation (vNext RV6)** (`id=policy-governance-observation-surface`); Evidence State card `id=evidence-state-card` |
-| Operator workflow (vNext Phase 4) | `workflow_officer_state` (from `build_workflow_officer_panel_context` &#47; latest `out&#47;ops&#47;workflow_officer` `report.json` when present); additive bounded **`workflow_officer_state.handoff_observation`** and **`workflow_officer_state.next_chat_preview_observation`** when `summary` in that JSON includes `handoff_context` &#47; `next_chat_preview` | `_render_workflow_officer_observation_surface` — block **Operator workflow observation (vNext Phase 4)** (`id=operator-workflow-observation-surface`); subsection **Handoff &amp; next-step preview (bounded observation)** (`id=operator-workflow-handoff-preview-observation`) |
+| Operator workflow (vNext Phase 4) | `workflow_officer_state` (from `build_workflow_officer_panel_context` &#47; latest `out&#47;ops&#47;workflow_officer` `report.json` when present); additive bounded **`workflow_officer_state.handoff_observation`** and **`workflow_officer_state.next_chat_preview_observation`** when `summary` in that JSON includes `handoff_context` &#47; `next_chat_preview` | `_render_workflow_officer_observation_surface` — block **Operator workflow observation (vNext Phase 4)** (`id=operator-workflow-observation-surface`); subsection **Handoff &amp; next-step preview (bounded observation)** (`id=operator-workflow-handoff-preview-observation`). Read-only copy stresses: not approval, not unlock, not execution authority, not a release go-signal; **`policy_go_no_go_observation`** remains the compact policy line (separate payload object). |
+| Update Officer (read-only visibility) | `update_officer_ui` — notifier-derived lines when a local payload path resolves (`build_update_officer_ui_model`); route conflict surfaces an empty model with a deterministic message | `_render_update_officer_card` — **`id=update-officer-visibility-card`** (after Dependencies in `render_ops_cockpit_html`); GET-only **Update Officer source ergonomics** (`_render_update_officer_source_ergonomics_block`) render **immediately above** the card on the same page. **Non-Goals:** no POST, no Workflow Officer start, no hidden execution authority. |
 
 ### Exposure / Risk (separate card, read-only)
 
