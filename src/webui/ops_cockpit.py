@@ -2066,6 +2066,7 @@ def build_ops_cockpit_payload(
     }
     from src.ops.evidence_audit_observation import build_evidence_audit_observation
     from src.ops.exposure_risk_observation import build_exposure_risk_observation
+    from src.ops.governance_boundary_observation import build_governance_boundary_observation
     from src.ops.health_drift_observation import build_health_drift_observation
     from src.ops.incident_safety_observation import build_incident_safety_observation
     from src.ops.run_session_observation import build_run_session_observation
@@ -2115,6 +2116,13 @@ def build_ops_cockpit_payload(
         freshness_status=str(v3_summary["freshness_status"]),
         executive_summary=v3_summary["executive_summary"],
     )
+    ai_boundary_state_payload = build_ai_boundary_state()
+    governance_boundary_observation = build_governance_boundary_observation(
+        ai_boundary_state=ai_boundary_state_payload,
+        human_supervision_state=human_supervision_state,
+        guard_state=guard_state_payload,
+        evidence_state=evidence_state,
+    )
     return {
         "system_state": system_state,
         "guard_state": guard_state_payload,
@@ -2131,7 +2139,7 @@ def build_ops_cockpit_payload(
         "evidence_state": evidence_state,
         "dependencies_state": dependencies_state,
         "truth_state": truth_state,
-        "ai_boundary_state": build_ai_boundary_state(),
+        "ai_boundary_state": ai_boundary_state_payload,
         "runtime_unknown_state": build_runtime_unknown_state(),
         "source_groups": groups,
         "source_group_summary": group_summaries,
@@ -2151,6 +2159,7 @@ def build_ops_cockpit_payload(
         "exposure_risk_observation": exposure_risk_observation,
         "incident_safety_observation": incident_safety_observation,
         "evidence_audit_observation": evidence_audit_observation,
+        "governance_boundary_observation": governance_boundary_observation,
     }
 
 
@@ -2484,6 +2493,26 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{spo_ver}</code></p>"
         )
 
+    gbo_raw = payload.get("governance_boundary_observation")
+    gbo_block = ""
+    if isinstance(gbo_raw, dict):
+        gbo_status = escape(str(gbo_raw.get("status", "unknown")))
+        gbo_summary = escape(str(gbo_raw.get("summary", "")))
+        gbo_ds = escape(str(gbo_raw.get("data_source", "")))
+        gbo_ver = escape(str(gbo_raw.get("reader_schema_version", "")))
+        gbo_block = (
+            "<h3>Governance / AI boundary (observation)</h3>"
+            "<p><strong>Observation only.</strong> Aggregate from <code>ai_boundary_state</code> and "
+            "<code>human_supervision_state</code> (optional hints from <code>guard_state</code> / "
+            "<code>evidence_state</code>) — <strong>not governance or AI approval,</strong> "
+            "<strong>not a supervision waiver,</strong> not broker truth. Holistic gating: "
+            "<code>safety_posture_observation</code>; evidence: <code>evidence_audit_observation</code>.</p>"
+            f"<p><strong>governance_boundary_observation.status</strong>: <code>{gbo_status}</code></p>"
+            f"<p><strong>Summary:</strong> {gbo_summary}</p>"
+            f"<p><strong>data_source:</strong> <code>{gbo_ds}</code> · "
+            f"<strong>reader_schema_version:</strong> <code>{gbo_ver}</code></p>"
+        )
+
     rso_raw = payload.get("run_session_observation")
     rso_block = ""
     if isinstance(rso_raw, dict):
@@ -2683,6 +2712,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{go_no_go_intro}"
         f"{go_lines}"
         f"{spo_block}"
+        f"{gbo_block}"
         f"{rso_block}"
         f"{hdo_block}"
         f"{ero_block}"

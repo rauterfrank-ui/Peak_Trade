@@ -217,6 +217,10 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert eao["data_source"] == "cockpit_payload_aggregate"
     assert eao["reader_schema_version"].startswith("evidence_audit_observation/")
     assert eao["status"] in ("nominal", "caution", "degraded", "unknown")
+    gbo = payload["governance_boundary_observation"]
+    assert gbo["data_source"] == "cockpit_payload_aggregate"
+    assert gbo["reader_schema_version"].startswith("governance_boundary_observation/")
+    assert gbo["status"] in ("nominal", "caution", "degraded", "unknown")
 
 
 def test_ops_cockpit_safety_posture_observation_in_html(tmp_path: Path) -> None:
@@ -230,6 +234,23 @@ def test_ops_cockpit_safety_posture_observation_in_html(tmp_path: Path) -> None:
     assert "safety_posture_observation.status" in html
     assert "not an approval" in html.lower()
     assert "broker or exchange truth" in html.lower()
+
+
+def test_ops_cockpit_governance_boundary_observation_in_html(tmp_path: Path) -> None:
+    """HTML surfaces governance/AI boundary aggregate; no approval or waiver wording."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Governance / AI boundary (observation)" in html
+    assert "governance_boundary_observation.status" in html
+    assert "not a supervision waiver" in html.lower()
+    gbo_block = html.split("Governance / AI boundary (observation)", 1)[1].split(
+        "Run / session (observation)", 1
+    )[0]
+    assert "safety_posture_observation" in gbo_block.lower()
+    assert "evidence_audit_observation" in gbo_block.lower()
 
 
 def test_ops_cockpit_run_session_observation_in_html(tmp_path: Path) -> None:
