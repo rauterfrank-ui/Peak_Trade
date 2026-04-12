@@ -133,6 +133,59 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert payload["operator_state"]["dry_run"] is True
     assert payload["operator_state"]["blocked"] is True
     assert payload["operator_state"]["kill_switch_active"] is False
+    ss = payload["system_state"]
+    assert ss["mode"] == "truth_first_ops_cockpit_v3"
+    assert ss["execution_model"] == "guarded_execution"
+    assert ss["config_load_status"] == "not_loaded"
+    assert ss["environment"] == "unknown"
+    assert ss["bounded_pilot_mode"] is None
+    assert ss["gating_posture_observation"] == payload["policy_state"]["summary"]
+
+
+def test_system_state_environment_observation_from_config(tmp_path: Path) -> None:
+    """system_state reflects config-derived environment when config loads."""
+    config_dir = tmp_path / "config"
+    config_dir.mkdir(parents=True)
+    config_path = config_dir / "config.toml"
+    config_path.write_text(
+        "\n".join(
+            [
+                "[environment]",
+                'mode = "paper"',
+                "enable_live_trading = " + str(False).lower(),
+                "bounded_pilot_mode = " + str(True).lower(),
+            ]
+        ),
+        encoding="utf-8",
+    )
+    payload = build_ops_cockpit_payload(repo_root=tmp_path, config_path=config_path)
+    ss = payload["system_state"]
+    assert ss["config_load_status"] == "loaded"
+    assert ss["environment"] == "paper"
+    assert ss["bounded_pilot_mode"] is True
+    assert ss["gating_posture_observation"] == payload["policy_state"]["summary"]
+
+
+def test_system_state_config_unavailable_when_toml_invalid(tmp_path: Path) -> None:
+    """Broken config file yields unavailable load status without raising."""
+    config_dir = tmp_path / "config"
+    config_dir.mkdir(parents=True)
+    config_path = config_dir / "config.toml"
+    config_path.write_text("this is not valid toml [[[\n", encoding="utf-8")
+    payload = build_ops_cockpit_payload(repo_root=tmp_path, config_path=config_path)
+    ss = payload["system_state"]
+    assert ss["config_load_status"] == "unavailable"
+    assert ss["environment"] == "unknown"
+    assert ss["bounded_pilot_mode"] is None
+
+
+def test_ops_cockpit_html_contains_system_state_environment_observation(tmp_path: Path) -> None:
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "system_state.config_load_status" in html
+    assert "system_state.environment" in html
+    assert "system_state.gating_posture_observation" in html
+    assert "Config environment (observation)" in html
+    assert "not a broker or exchange guarantee" in html
 
 
 def test_phase83_eligibility_snapshot_unavailable_in_empty_repo(tmp_path: Path) -> None:

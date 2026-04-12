@@ -192,6 +192,7 @@ def get_environment_from_config(peak_config: PeakConfig) -> EnvironmentConfig:
         max_live_notional_total=peak_config.get("environment.max_live_notional_total", None),
         live_trade_min_size=peak_config.get("environment.live_trade_min_size", None),
         knowledge_readonly=peak_config.get("environment.knowledge_readonly", False),
+        bounded_pilot_mode=peak_config.get("environment.bounded_pilot_mode", False),
     )
 
 

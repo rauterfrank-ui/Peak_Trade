@@ -87,6 +87,10 @@ Research-Code darf Live-Endpoints **niemals** versehentlich erreichen können.
 4. **SafetyGuard** (zusätzliche Prüfungen, Whitelists)
 5. **Governance-Prozesse** (Reviews, Checklisten, Freigaben)
 
+### 2.5 Operational Safety Controls
+
+Environment configuration is part of the safety posture: `bounded_pilot_mode` is read from the `[environment]` section via `get_environment_from_config` and surfaced as configuration observation rather than as a broker or exchange guarantee.
+
 ---
 
 ## 3. Rollen & Verantwortlichkeiten
