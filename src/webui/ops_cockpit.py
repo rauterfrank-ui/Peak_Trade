@@ -1441,7 +1441,7 @@ def _render_workflow_officer_observation_surface(payload: Dict[str, object]) -> 
 
 
 def _render_dependencies_state_card_body(dependencies: Dict[str, object]) -> str:
-    """HTML inner block for Dependencies State — existing ``dependencies_state`` keys only (read-only)."""
+    """HTML inner block for Dependencies State — ``dependencies_state`` keys (read-only)."""
     dep = dependencies if isinstance(dependencies, dict) else {}
     deg_raw = dep.get("degraded")
     degraded_rows: List[str] = []
@@ -1455,12 +1455,33 @@ def _render_dependencies_state_card_body(dependencies: Dict[str, object]) -> str
     )
     mdc = dep.get("market_data_cache")
     mdc_display = "n/a" if mdc is None else str(mdc)
+    p85 = dep.get("p85_exchange_observation")
+    p85_block = ""
+    if isinstance(p85, dict):
+        p85_block = (
+            "<p><em>P85 exchange label: artifact observation only (newest "
+            f"<code>{escape(str(p85.get('provenance', {}).get('selected_artifact', 'P85_RESULT.json')))}</code> "
+            "under search base). Not a live connectivity check from this page; not broker truth.</em></p>"
+            f"<p><strong>P85 observation reason:</strong> <code>"
+            f"{escape(str(p85.get('observation_reason', 'n/a')))}</code></p>"
+            f"<p><strong>P85 artifact (path hint):</strong> <code>"
+            f"{escape(str(p85.get('artifact_path') or 'n/a'))}</code></p>"
+            f"<p><strong>P85 last_updated_utc (artifact mtime):</strong> "
+            f"{escape(str(p85.get('last_updated_utc') or 'n/a'))}</p>"
+            f"<p><strong>P85 stale (age threshold):</strong> "
+            f"{escape(str(p85.get('stale', 'n/a')))}</p>"
+            f"<p><strong>P85 reader schema:</strong> <code>"
+            f"{escape(str(p85.get('reader_schema_version', 'n/a')))}</code></p>"
+        )
     return (
         "<p><strong>Read-only dependencies / health-drift observation.</strong> "
         "Existing payload fields only; not approval, not unlock.</p>"
         f'<p><strong>Summary:</strong> <span class="chip"><code>{escape(str(dep.get("summary", "unknown")))}'
         f"</code></span></p>"
         f"<p><strong>Exchange:</strong> {escape(str(dep.get('exchange', 'unknown')))}</p>"
+        "<p><em>Exchange rollup may include persisted P85 ingest-readiness artifacts; "
+        "see P85 block below — not a live check performed by the Cockpit build.</em></p>"
+        f"{p85_block}"
         f"<p><strong>Telemetry:</strong> {escape(str(dep.get('telemetry', 'unknown')))}</p>"
         f"<p><strong>market_data_cache:</strong> <code>{escape(mdc_display)}</code></p>"
         "<p><strong>Degraded signals (preview):</strong></p>"
@@ -1938,31 +1959,22 @@ def build_ops_cockpit_payload(
     }
     if _tel_status != "unknown":
         evidence_state["telemetry_evidence"] = _tel_status
-    _exchange_status = "unknown"
-    _p85_base = repo_root / "out" / "ops" if repo_root else Path("out/ops")
-    if _p85_base.exists():
-        try:
-            import json
-            import time
+    try:
+        from src.ops.p85_result_reader import read_p85_exchange_observation
 
-            p85_files = sorted(
-                _p85_base.glob("**/P85_RESULT.json"),
-                key=lambda p: p.stat().st_mtime,
-                reverse=True,
-            )
-            if p85_files:
-                p85_path = p85_files[0]
-                age_sec = time.time() - p85_path.stat().st_mtime
-                if age_sec <= 3600:
-                    with open(p85_path, encoding="utf-8") as f:
-                        p85_data = json.load(f)
-                    conn = p85_data.get("connectivity", {})
-                    if conn.get("ok") is True:
-                        _exchange_status = "ok"
-                    else:
-                        _exchange_status = "degraded"
-        except Exception:
-            pass
+        _p85_obs = read_p85_exchange_observation(repo_root)
+    except Exception:
+        _p85_obs = {
+            "reader_schema_version": "p85_exchange_reader/error",
+            "exchange": "unknown",
+            "data_source": "none",
+            "artifact_path": None,
+            "last_updated_utc": None,
+            "stale": False,
+            "observation_reason": "reader_unavailable",
+            "provenance": {},
+        }
+    _exchange_status = str(_p85_obs.get("exchange") or "unknown")
     _market_data_cache_status: Optional[str] = None
     if _config_path and _config_path.exists():
         try:
@@ -2015,6 +2027,7 @@ def build_ops_cockpit_payload(
         "exchange": _exchange_status,
         "telemetry": _tel_status,
         "degraded": _degraded,
+        "p85_exchange_observation": _p85_obs,
     }
     if _market_data_cache_status is not None:
         dependencies_state["market_data_cache"] = _market_data_cache_status

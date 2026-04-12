@@ -41,6 +41,7 @@ Presentation-only **Dependencies State** card — `_render_dependencies_state_ca
 | Observation | Payload keys (`dependencies_state`) |
 |-------------|--------------------------------------|
 | Rollup | `summary`, `exchange`, `telemetry` |
+| P85 artifact observation (read-only) | `p85_exchange_observation` — `reader_schema_version`, `exchange` (duplicate of rollup for self-contained object), `data_source` (`p85_result_json` / `none`), `artifact_path`, `last_updated_utc` (artifact mtime), `stale`, `observation_reason`, `provenance`; newest `P85_RESULT.json` under `out&#47;ops&#47;**` by mtime; **not** a live connectivity check from the Cockpit build — see [`OPS_SUITE_DEPENDENCIES_STATE_DATA_QUALITY_REVIEW.md`](OPS_SUITE_DEPENDENCIES_STATE_DATA_QUALITY_REVIEW.md) |
 | Optional feed health | `market_data_cache` (shown as `n&#47;a` when absent) |
 | Degraded checklist | `degraded` (list preview) |
 
@@ -71,6 +72,8 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 
 **Note — `transfer_ambiguity_state`:** Conservative statuses (`ok`, `warning`, `unknown`, `no_signal`); missing or partial local signals must not read as implicit all-clear. Does **not** assert transfer completion or exchange balances.
 
+**Note — `dependencies_state.exchange` (P85):** Populated from **persisted** P85 ingest-readiness artifacts only (`read_p85_exchange_observation` in `src/ops/p85_result_reader.py`). Stale artifacts (default age threshold 3600s) map to `unknown`. Does **not** call exchanges during payload build.
+
 ## Related
 
 - [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) — operator-facing target spec.
@@ -82,5 +85,6 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 - Payload builder: `build_ops_cockpit_payload` in `src/webui/ops_cockpit.py`
 - Session-end observation: `build_session_end_mismatch_state` in `src/live/session_end_mismatch_reader.py`
 - Transfer / treasury ambiguity observation: `build_transfer_ambiguity_state` in `src/live/transfer_ambiguity_reader.py`
+- P85 exchange observation: `read_p85_exchange_observation` in `src/ops/p85_result_reader.py`
 - HTML entry: `render_ops_cockpit_html` in `src/webui/ops_cockpit.py`
-- Tests: `tests/webui/test_ops_cockpit.py`, `tests/live/test_session_end_mismatch_reader.py`, `tests/live/test_transfer_ambiguity_reader.py`
+- Tests: `tests/webui/test_ops_cockpit.py`, `tests/live/test_session_end_mismatch_reader.py`, `tests/live/test_transfer_ambiguity_reader.py`, `tests/ops/test_p85_result_reader.py`
