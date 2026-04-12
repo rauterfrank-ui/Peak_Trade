@@ -2059,13 +2059,25 @@ def build_ops_cockpit_payload(
         "bounded_pilot_mode": _bounded_pilot_mode,
         "gating_posture_observation": policy_state["summary"],
     }
+    guard_state_payload = {
+        "no_trade_baseline": guard_state["no_trade_baseline"],
+        "deny_by_default": guard_state["deny_by_default"],
+        "treasury_separation": guard_state["treasury_separation"],
+    }
+    from src.ops.safety_posture_observation import build_safety_posture_observation
+
+    safety_posture_observation = build_safety_posture_observation(
+        policy_state=policy_state,
+        guard_state=guard_state_payload,
+        incident_state=incident_state,
+        operator_state=operator_state,
+        system_state=system_state,
+        stale_state=stale_state,
+        dependencies_state=dependencies_state,
+    )
     return {
         "system_state": system_state,
-        "guard_state": {
-            "no_trade_baseline": guard_state["no_trade_baseline"],
-            "deny_by_default": guard_state["deny_by_default"],
-            "treasury_separation": guard_state["treasury_separation"],
-        },
+        "guard_state": guard_state_payload,
         "policy_state": policy_state,
         "operator_state": operator_state,
         "run_state": run_state,
@@ -2093,6 +2105,7 @@ def build_ops_cockpit_payload(
         "phase83_eligibility_snapshot": phase83_eligibility_snapshot,
         "workflow_officer_state": workflow_officer_state,
         "update_officer_ui": update_officer_ui,
+        "safety_posture_observation": safety_posture_observation,
     }
 
 
@@ -2406,6 +2419,26 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             "downstream enforcement remains authoritative; this page does not clear it.</p>"
         )
 
+    spo_raw = payload.get("safety_posture_observation")
+    spo_block = ""
+    if isinstance(spo_raw, dict):
+        spo_status = escape(str(spo_raw.get("status", "unknown")))
+        spo_summary = escape(str(spo_raw.get("summary", "")))
+        spo_ds = escape(str(spo_raw.get("data_source", "")))
+        spo_ver = escape(str(spo_raw.get("reader_schema_version", "")))
+        spo_block = (
+            "<h3>Safety / gating posture (observation)</h3>"
+            "<p><strong>Observation only.</strong> Single aggregate from existing "
+            "<code>policy_state</code>, <code>guard_state</code>, <code>incident_state</code>, "
+            "<code>stale_state</code>, and <code>dependencies_state</code> rollups in this "
+            "payload — <strong>not an approval, not an unlock,</strong> not broker or exchange "
+            "truth.</p>"
+            f"<p><strong>safety_posture_observation.status</strong>: <code>{spo_status}</code></p>"
+            f"<p><strong>Summary:</strong> {spo_summary}</p>"
+            f"<p><strong>data_source:</strong> <code>{spo_ds}</code> · "
+            f"<strong>reader_schema_version:</strong> <code>{spo_ver}</code></p>"
+        )
+
     incident_status = escape(str(inc.get("status", "unknown")))
     incident_degraded = escape(str(inc.get("degraded", "unknown")))
     incident_stop_invoked = escape(str(inc.get("incident_stop_invoked", "unknown")))
@@ -2508,6 +2541,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         "<h3>Go / No-Go observation (not approval)</h3>"
         f"{go_no_go_intro}"
         f"{go_lines}"
+        f"{spo_block}"
         "<h3>Incident observation (read-only)</h3>"
         "<p>Existing incident/dependency rollups from this page&apos;s JSON payload.</p>"
         f"{incident_observation_lines}"
