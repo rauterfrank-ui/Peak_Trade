@@ -42,6 +42,16 @@ Presentation-only **Dependencies State** card — `_render_dependencies_state_ca
 | Optional feed health | `market_data_cache` (shown as `n&#47;a` when absent) |
 | Degraded checklist | `degraded` (list preview) |
 
+### Evidence / Audit (separate card, read-only)
+
+Presentation-only **Evidence State** card — `_render_evidence_state_card_body` in `render_ops_cockpit_html`; same payload keys as the compact operator-summary block; not approval, not unlock.
+
+| Observation | Payload keys (`evidence_state`) |
+|---------------|----------------------------------|
+| Rollup | `summary`, `freshness_status`, `audit_trail`, `last_verified_utc` |
+| Source counts | `source_freshness` (`fresh` / `stale` / `older`) |
+| Optional | `telemetry_evidence` (shown as `n&#47;a` when absent in payload) |
+
 ## Related
 
 - [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) — operator-facing target spec.
