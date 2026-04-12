@@ -46,6 +46,7 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "session_end_mismatch_state" in payload
     assert "human_supervision_state" in payload
     assert "phase83_eligibility_snapshot" in payload
+    assert "workflow_officer_state" in payload
     sup = payload["human_supervision_state"]
     assert sup["status"] == "operator_supervised"
     assert sup["mode"] == "intended"
@@ -1386,6 +1387,8 @@ def test_api_ops_cockpit_query_params_explicit_path(ops_client: TestClient, tmp_
     )
     assert response.status_code == 200
     data = response.json()
+    assert "workflow_officer_state" in data
+    assert isinstance(data["workflow_officer_state"], dict)
     assert data["update_officer_ui"]["available"] is True
     assert data["update_officer_ui"]["next_topic"] == "python_dependencies"
 
@@ -1637,6 +1640,80 @@ def test_ops_cockpit_workflow_officer_empty_state_wording(tmp_path: Path) -> Non
     assert ctx["present"] is False
     assert ctx["empty_reason"] == "no_officer_output_dir"
     assert (ctx.get("executive_panel") or {}).get("present") is False
+
+
+def test_ops_cockpit_payload_contains_workflow_officer_state(tmp_path: Path) -> None:
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert "workflow_officer_state" in payload
+    w = payload["workflow_officer_state"]
+    assert isinstance(w, dict)
+    assert w.get("present") is False
+    assert w.get("empty_reason") == "no_officer_output_dir"
+
+
+def test_ops_cockpit_html_contains_operator_workflow_observation_empty(tmp_path: Path) -> None:
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-workflow-observation-surface"' in html
+    assert "Operator workflow observation (vNext Phase 4)" in html
+    assert "workflow_officer_state.empty_reason" in html
+    assert "no_officer_output_dir" in html
+    assert "not approval" in html.lower()
+    assert "does not execute Workflow Officer" in html
+
+
+def test_ops_cockpit_html_contains_operator_workflow_observation_with_report(
+    tmp_path: Path,
+) -> None:
+    run_dir = tmp_path / "out" / "ops" / "workflow_officer" / "20260201T000000Z"
+    run_dir.mkdir(parents=True)
+    report = {
+        "officer_version": "v1-min",
+        "profile": "docs_only_pr",
+        "mode": "audit",
+        "success": True,
+        "finished_at": "2026-02-01",
+        "summary": {
+            "total_checks": 1,
+            "hard_failures": 0,
+            "warnings": 0,
+            "infos": 0,
+            "strict": False,
+            "executive_summary": {
+                "executive_summary_schema_version": "workflow_officer.executive_summary/v0",
+                "urgency_label": "clear",
+                "attention_rationale": "No blocking errors.",
+            },
+            "operator_report": {
+                "operator_report_schema_version": "workflow_officer.operator_report/v0",
+                "primary_followup": {
+                    "check_id": "chk_a",
+                    "recommended_priority": "p3",
+                    "effective_level": "ok",
+                    "recommended_action": "No action.",
+                },
+                "rollup": {
+                    "total_checks": 1,
+                    "hard_failures": 0,
+                    "warnings": 0,
+                    "infos": 0,
+                },
+                "top_followups": [
+                    {
+                        "rank": 1,
+                        "check_id": "chk_a",
+                        "recommended_priority": "p3",
+                        "effective_level": "ok",
+                    }
+                ],
+            },
+        },
+    }
+    (run_dir / "report.json").write_text(json.dumps(report), encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "workflow_officer_state.run_dir_name" in html
+    assert "20260201T000000Z" in html
+    assert "workflow_officer_state.primary_followup.check_id" in html
+    assert "chk_a" in html
 
 
 def test_ops_cockpit_workflow_officer_report_contains_operator_rollup_label(tmp_path: Path) -> None:

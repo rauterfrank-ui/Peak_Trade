@@ -9,7 +9,7 @@
 ## Non-Goals
 
 - No live unlock, no approval semantics, no gate weakening.
-- No new API routes; payload semantics unchanged (presentation-only HTML).
+- No new API routes; existing payload keys keep the same meaning. Additive **read-only** keys (e.g. `workflow_officer_state`) are allowed when they surface existing artifacts with no new authority.
 
 ## Required View ↔ Payload ↔ Render
 
@@ -21,6 +21,7 @@
 | Evidence / Freshness (compact observation) | `evidence_state.summary`, `evidence_state.freshness_status`, `evidence_state.audit_trail`, `evidence_state.last_verified_utc`, `evidence_state.source_freshness`, optional `evidence_state.telemetry_evidence` | Same — section **Evidence freshness observation (read-only)** |
 | Kompakte Rollups (Truth / Freshness / Sources) | `executive_summary` (nested levels/labels), top-level `truth_status` / `freshness_status` / `source_coverage_status`, `critical_flags`, `unknown_flags` | `_render_status_at_a_glance_inner` (Status-at-a-glance cards) |
 | Policy &#47; Governance (vNext RV6) | `policy_state`, `guard_state`, `ai_boundary_state`, `human_supervision_state`; evidence/audit cross-ref from `evidence_state` (full card below) | `_render_policy_governance_observation_surface` — block **Policy &#47; Governance observation (vNext RV6)** (`id=policy-governance-observation-surface`); Evidence State card `id=evidence-state-card` |
+| Operator workflow (vNext Phase 4) | `workflow_officer_state` (from `build_workflow_officer_panel_context` &#47; latest `out/ops/workflow_officer` `report.json` when present) | `_render_workflow_officer_observation_surface` — block **Operator workflow observation (vNext Phase 4)** (`id=operator-workflow-observation-surface`) |
 
 ### Exposure / Risk (separate card, read-only)
 
@@ -68,7 +69,7 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 ## Related
 
 - [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) — operator-facing target spec.
-- [`RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`](../runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md) — phased plan; RV6 Policy/Governance observation surface shipped read-only (HTML bundle).
+- [`RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`](../runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md) — phased plan; RV6 Policy/Governance and Phase 4 Workflow Officer observation surfaces shipped read-only (HTML bundle).
 - [`RUNBOOK_PR_CI_VERIFICATION.md`](../runbooks/RUNBOOK_PR_CI_VERIFICATION.md) — PR/CI events and verification (truth-first).
 
 ## Code references
