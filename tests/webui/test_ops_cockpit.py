@@ -235,6 +235,8 @@ def test_run_state_last_run_status_from_registry(tmp_path: Path) -> None:
     register_live_session_run(record, base_dir=sessions_dir)
     payload = build_ops_cockpit_payload(repo_root=tmp_path)
     assert payload["run_state"]["last_run_status"] == "completed"
+    assert payload["run_state"]["registry_session_count"] == 1
+    assert "registry_last_started_at" in payload["run_state"]
 
 
 def test_run_state_session_active_when_started_record(tmp_path: Path) -> None:
@@ -654,6 +656,7 @@ def test_stale_state_when_exposure_stale(tmp_path: Path) -> None:
     stale = payload["stale_state"]
     assert stale["position"] == "ok"
     assert stale["exposure"] == "ok"
+    assert stale["order"] == "ok"
     assert stale["summary"] == "ok"
 
     # Mock stale exposure
@@ -669,7 +672,70 @@ def test_stale_state_when_exposure_stale(tmp_path: Path) -> None:
     stale = payload["stale_state"]
     assert stale["position"] == "stale"
     assert stale["exposure"] == "stale"
+    assert stale["order"] == "ok"
     assert stale["summary"] == "stale"
+
+
+def test_stale_state_order_ok_when_fresh_live_runs_events(tmp_path: Path) -> None:
+    """Non-empty live_runs events with recent mtime → stale_state.order ok."""
+    import json
+
+    import pandas as pd
+
+    live_runs = tmp_path / "live_runs"
+    run_dir = live_runs / "20251207_120000_shadow_ma_BTC-EUR_1m"
+    run_dir.mkdir(parents=True)
+    with open(run_dir / "meta.json", "w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "run_id": "x",
+                "mode": "shadow",
+                "strategy_name": "ma",
+                "symbol": "BTC/EUR",
+                "timeframe": "1m",
+            },
+            f,
+        )
+    events = pd.DataFrame([{"step": 1, "position_size": 0.1, "price": 50000.0, "close": 50000.0}])
+    events.to_parquet(run_dir / "events.parquet", index=False)
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["stale_state"]["order"] == "ok"
+
+
+def test_stale_state_order_stale_when_events_mtime_old(tmp_path: Path) -> None:
+    """Old events file mtime → stale_state.order stale (log observation)."""
+    import json
+    import os
+    import time
+
+    import pandas as pd
+
+    live_runs = tmp_path / "live_runs"
+    run_dir = live_runs / "20251207_120000_shadow_ma_BTC-EUR_1m"
+    run_dir.mkdir(parents=True)
+    with open(run_dir / "meta.json", "w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "run_id": "x",
+                "mode": "shadow",
+                "strategy_name": "ma",
+                "symbol": "BTC/EUR",
+                "timeframe": "1m",
+            },
+            f,
+        )
+    events = pd.DataFrame([{"step": 1, "position_size": 0.1, "price": 50000.0, "close": 50000.0}])
+    ep = run_dir / "events.parquet"
+    events.to_parquet(ep, index=False)
+    old = time.time() - 26 * 3600
+    os.utime(ep, (old, old))
+    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    assert payload["stale_state"]["order"] == "stale"
+
+
+def test_ops_cockpit_html_contains_stale_order_log_disclaimer(tmp_path: Path) -> None:
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "not exchange order-book state" in html
 
 
 def test_incident_state_degraded_when_telemetry_warn(tmp_path: Path) -> None:

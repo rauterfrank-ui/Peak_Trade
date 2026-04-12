@@ -60,11 +60,11 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 
 | Observation | Payload keys | HTML / helper |
 |-------------|----------------|---------------|
-| Run / session rollup | `run_state.status`, `run_state.active`, `run_state.last_run_status`, `run_state.session_active`, `run_state.generated_at`, `run_state.freshness_status` (subset on page) | `_render_run_state_observation_card` |
+| Run / session rollup | `run_state.status`, `run_state.active`, `run_state.last_run_status`, `run_state.session_active`, optional `run_state.registry_session_count`, `run_state.registry_last_started_at` (when live session registry present), `run_state.generated_at`, `run_state.freshness_status` (subset on page) | `_render_run_state_observation_card` |
 | Stale / reconciliation | `stale_state.summary`, `stale_state.balance`, `stale_state.position`, `stale_state.order`, `stale_state.exposure` | **Stale State** card in `render_ops_cockpit_html` |
 | Session end (read model) | `session_end_mismatch_state.status`, `summary`, `blocked_next_session`, `runbook` | **Session End Mismatch** card in `render_ops_cockpit_html` |
 
-**Note:** `stale_state.order` is currently the literal payload value **`unknown`** in the builder where no order-staleness signal is supplied — display is **observation-only**, not a forecast.
+**Note — `stale_state.order`:** When non-empty `live_runs&#47;*&#47;events.*` exist, `stale_state.order` is derived read-only via `get_live_runs_order_staleness` in `src/live/order_staleness_reader.py` (event log **mtime** vs age threshold; same default window as exposure). Values: **`ok`** (recent logs), **`stale`** (old logs), **`unknown`** (no qualifying runs/events). This is **not** exchange order-book state — Stale State card includes an explicit disclaimer line.
 
 ## Related
 

@@ -1106,6 +1106,8 @@ def _render_run_state_observation_card(payload: Dict[str, object]) -> str:
         ("run_state.active", "active"),
         ("run_state.last_run_status", "last_run_status"),
         ("run_state.session_active", "session_active"),
+        ("run_state.registry_session_count", "registry_session_count"),
+        ("run_state.registry_last_started_at", "registry_last_started_at"),
         ("run_state.generated_at", "generated_at"),
         ("run_state.freshness_status", "freshness_status"),
     ):
@@ -1442,6 +1444,8 @@ def build_ops_cockpit_payload(
         if repo_root
         else Path("reports/experiments/live_sessions")
     )
+    _registry_session_count: Optional[int] = None
+    _registry_last_started_at: Optional[str] = None
     if _sessions_root.exists():
         try:
             from src.experiments.live_session_registry import (
@@ -1454,9 +1458,13 @@ def build_ops_cockpit_payload(
                 _last_run_status = str(records[0].status or "unknown")
             summary = get_session_summary(base_dir=_sessions_root)
             _session_active = (summary.get("by_status", {}).get("started", 0) or 0) > 0
+            _registry_session_count = int(summary.get("num_sessions", 0) or 0)
+            las = summary.get("last_started_at")
+            if isinstance(las, str) and las.strip():
+                _registry_last_started_at = las.strip()
         except Exception:
             pass
-    run_state = {
+    run_state: Dict[str, object] = {
         "status": "active" if _session_active else "idle",
         "active": _session_active,
         "last_run_status": _last_run_status,
@@ -1464,6 +1472,10 @@ def build_ops_cockpit_payload(
         "generated_at": truth_state["last_verified_utc"],
         "freshness_status": v3_summary["freshness_status"],
     }
+    if _registry_session_count is not None:
+        run_state["registry_session_count"] = _registry_session_count
+    if _registry_last_started_at is not None:
+        run_state["registry_last_started_at"] = _registry_last_started_at
     freshness_ok = v3_summary["freshness_status"] == "ok"
     _tel_root = (
         telemetry_root
@@ -1626,7 +1638,18 @@ def build_ops_cockpit_payload(
     _has_exposure = exposure_state.get("data_source") == "live_runs"
     _position_stale = "stale" if _exp_stale else ("ok" if _has_exposure else "unknown")
     _exposure_stale = "stale" if _exp_stale else ("ok" if _has_exposure else "unknown")
-    _stale_signals = [_position_stale, _exposure_stale]
+    _order_stale = "unknown"
+    if _live_runs.exists():
+        try:
+            from src.live.order_staleness_reader import get_live_runs_order_staleness
+
+            _ord_sig = get_live_runs_order_staleness(_live_runs)
+            _os_val = str(_ord_sig.get("order_staleness", "unknown"))
+            if _os_val in ("ok", "stale"):
+                _order_stale = _os_val
+        except Exception:
+            pass
+    _stale_signals = [_position_stale, _exposure_stale, _order_stale]
     _stale_summary = (
         "stale" if "stale" in _stale_signals else ("ok" if "ok" in _stale_signals else "unknown")
     )
@@ -1673,7 +1696,7 @@ def build_ops_cockpit_payload(
     stale_state = {
         "balance": _balance_stale,
         "position": _position_stale,
-        "order": "unknown",
+        "order": _order_stale,
         "exposure": _exposure_stale,
         "summary": _stale_summary,
     }
@@ -2506,6 +2529,7 @@ def render_ops_cockpit_html(
     <div class="card">
       <h2>Stale State</h2>
       <p><strong>Reconciliation hardening: balance / position / order staleness</strong></p>
+      <p><em>Order row: recency of <code>live_runs</code> event logs (read-only); not exchange order-book state.</em></p>
       <p><strong>Summary:</strong> <span class="chip"><code>{
         escape(str(stale.get("summary", "unknown")))
     }</code></span></p>
