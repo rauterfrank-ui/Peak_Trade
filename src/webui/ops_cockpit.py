@@ -2064,6 +2064,7 @@ def build_ops_cockpit_payload(
         "deny_by_default": guard_state["deny_by_default"],
         "treasury_separation": guard_state["treasury_separation"],
     }
+    from src.ops.evidence_audit_observation import build_evidence_audit_observation
     from src.ops.exposure_risk_observation import build_exposure_risk_observation
     from src.ops.health_drift_observation import build_health_drift_observation
     from src.ops.incident_safety_observation import build_incident_safety_observation
@@ -2108,6 +2109,12 @@ def build_ops_cockpit_payload(
         policy_state=policy_state,
         operator_state=operator_state,
     )
+    evidence_audit_observation = build_evidence_audit_observation(
+        evidence_state=evidence_state,
+        truth_status=str(v3_summary["truth_status"]),
+        freshness_status=str(v3_summary["freshness_status"]),
+        executive_summary=v3_summary["executive_summary"],
+    )
     return {
         "system_state": system_state,
         "guard_state": guard_state_payload,
@@ -2143,6 +2150,7 @@ def build_ops_cockpit_payload(
         "health_drift_observation": health_drift_observation,
         "exposure_risk_observation": exposure_risk_observation,
         "incident_safety_observation": incident_safety_observation,
+        "evidence_audit_observation": evidence_audit_observation,
     }
 
 
@@ -2553,6 +2561,25 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{iso_ver}</code></p>"
         )
 
+    eao_raw = payload.get("evidence_audit_observation")
+    eao_block = ""
+    if isinstance(eao_raw, dict):
+        eao_status = escape(str(eao_raw.get("status", "unknown")))
+        eao_summary = escape(str(eao_raw.get("summary", "")))
+        eao_ds = escape(str(eao_raw.get("data_source", "")))
+        eao_ver = escape(str(eao_raw.get("reader_schema_version", "")))
+        eao_block = (
+            "<h3>Evidence / audit (observation)</h3>"
+            "<p><strong>Observation only.</strong> Aggregate from <code>evidence_state</code> in this "
+            "payload — <strong>not audit clearance,</strong> <strong>not a compliance pass/fail,</strong> "
+            "not broker truth. Service/drift posture stays in "
+            "<code>health_drift_observation</code> (separate snapshot).</p>"
+            f"<p><strong>evidence_audit_observation.status</strong>: <code>{eao_status}</code></p>"
+            f"<p><strong>Summary:</strong> {eao_summary}</p>"
+            f"<p><strong>data_source:</strong> <code>{eao_ds}</code> · "
+            f"<strong>reader_schema_version:</strong> <code>{eao_ver}</code></p>"
+        )
+
     incident_status = escape(str(inc.get("status", "unknown")))
     incident_degraded = escape(str(inc.get("degraded", "unknown")))
     incident_stop_invoked = escape(str(inc.get("incident_stop_invoked", "unknown")))
@@ -2663,6 +2690,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         "<h3>Incident observation (read-only)</h3>"
         "<p>Existing incident/dependency rollups from this page&apos;s JSON payload.</p>"
         f"{incident_observation_lines}"
+        f"{eao_block}"
         "<h3>Evidence freshness observation (read-only)</h3>"
         "<p>Existing evidence freshness and audit rollups from this page&apos;s JSON payload.</p>"
         f"{evidence_observation_lines}"

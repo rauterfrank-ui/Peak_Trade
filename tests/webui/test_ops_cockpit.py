@@ -213,6 +213,10 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert iso["data_source"] == "cockpit_payload_aggregate"
     assert iso["reader_schema_version"].startswith("incident_safety_observation/")
     assert iso["status"] in ("nominal", "caution", "degraded", "unknown")
+    eao = payload["evidence_audit_observation"]
+    assert eao["data_source"] == "cockpit_payload_aggregate"
+    assert eao["reader_schema_version"].startswith("evidence_audit_observation/")
+    assert eao["status"] in ("nominal", "caution", "degraded", "unknown")
 
 
 def test_ops_cockpit_safety_posture_observation_in_html(tmp_path: Path) -> None:
@@ -292,6 +296,23 @@ def test_ops_cockpit_incident_safety_observation_in_html(tmp_path: Path) -> None
     )[0]
     assert "not an approval" in iso_block.lower()
     assert "safety_posture_observation" in iso_block.lower()
+
+
+def test_ops_cockpit_evidence_audit_observation_in_html(tmp_path: Path) -> None:
+    """HTML surfaces evidence/audit aggregate; no clearance or compliance verdict wording."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Evidence / audit (observation)" in html
+    assert "evidence_audit_observation.status" in html
+    assert "not audit clearance" in html.lower()
+    eao_block = html.split("Evidence / audit (observation)", 1)[1].split(
+        "Evidence freshness observation (read-only)", 1
+    )[0]
+    assert "health_drift_observation" in eao_block.lower()
+    assert "pass/fail" in eao_block.lower()
 
 
 def test_system_state_environment_observation_from_config(tmp_path: Path) -> None:
