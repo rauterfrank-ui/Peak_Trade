@@ -158,6 +158,21 @@ def test_ops_cockpit_html_contains_policy_guard_observation_card(tmp_path: Path)
     assert "not a control surface" in html
 
 
+def test_ops_cockpit_html_contains_policy_governance_rv6_surface(tmp_path: Path) -> None:
+    """vNext RV6 — Policy/Governance bundle: boundary + supervision + evidence cross-ref."""
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="policy-governance-observation-surface"' in html
+    assert "Policy / Governance observation (vNext RV6)" in html
+    assert "ai_boundary_state.proposer_authority" in html
+    assert "ai_boundary_state.critic_authority" in html
+    assert "Human Supervision (payload)" in html
+    assert "human_supervision_state.status" in html
+    assert "Evidence / audit (governance cross-surface)" in html
+    assert "not approval" in html.lower()
+    assert 'id="evidence-state-card"' in html
+    assert "#evidence-state-card" in html
+
+
 def test_ops_cockpit_html_contains_incident_observation_card(tmp_path: Path) -> None:
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert "Incident — observed rollup" in html
