@@ -2066,6 +2066,7 @@ def build_ops_cockpit_payload(
     }
     from src.ops.exposure_risk_observation import build_exposure_risk_observation
     from src.ops.health_drift_observation import build_health_drift_observation
+    from src.ops.incident_safety_observation import build_incident_safety_observation
     from src.ops.run_session_observation import build_run_session_observation
     from src.ops.safety_posture_observation import build_safety_posture_observation
 
@@ -2101,6 +2102,12 @@ def build_ops_cockpit_payload(
         stale_state=stale_state,
         guard_state=guard_state_payload,
     )
+    incident_safety_observation = build_incident_safety_observation(
+        incident_state=incident_state,
+        dependencies_state=dependencies_state,
+        policy_state=policy_state,
+        operator_state=operator_state,
+    )
     return {
         "system_state": system_state,
         "guard_state": guard_state_payload,
@@ -2135,6 +2142,7 @@ def build_ops_cockpit_payload(
         "run_session_observation": run_session_observation,
         "health_drift_observation": health_drift_observation,
         "exposure_risk_observation": exposure_risk_observation,
+        "incident_safety_observation": incident_safety_observation,
     }
 
 
@@ -2525,6 +2533,26 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{ero_ver}</code></p>"
         )
 
+    iso_raw = payload.get("incident_safety_observation")
+    iso_block = ""
+    if isinstance(iso_raw, dict):
+        iso_status = escape(str(iso_raw.get("status", "unknown")))
+        iso_summary = escape(str(iso_raw.get("summary", "")))
+        iso_ds = escape(str(iso_raw.get("data_source", "")))
+        iso_ver = escape(str(iso_raw.get("reader_schema_version", "")))
+        iso_block = (
+            "<h3>Incident / safety (observation)</h3>"
+            "<p><strong>Observation only.</strong> Narrow aggregate from <code>incident_state</code> and "
+            "<code>dependencies_state</code> (optional consistency hints from <code>policy_state</code> / "
+            "<code>operator_state</code>) — <strong>not incident resolution,</strong> "
+            "<strong>not an approval or unlock,</strong> not exchange truth. Overall gating posture: "
+            "<code>safety_posture_observation</code>.</p>"
+            f"<p><strong>incident_safety_observation.status</strong>: <code>{iso_status}</code></p>"
+            f"<p><strong>Summary:</strong> {iso_summary}</p>"
+            f"<p><strong>data_source:</strong> <code>{iso_ds}</code> · "
+            f"<strong>reader_schema_version:</strong> <code>{iso_ver}</code></p>"
+        )
+
     incident_status = escape(str(inc.get("status", "unknown")))
     incident_degraded = escape(str(inc.get("degraded", "unknown")))
     incident_stop_invoked = escape(str(inc.get("incident_stop_invoked", "unknown")))
@@ -2631,6 +2659,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{rso_block}"
         f"{hdo_block}"
         f"{ero_block}"
+        f"{iso_block}"
         "<h3>Incident observation (read-only)</h3>"
         "<p>Existing incident/dependency rollups from this page&apos;s JSON payload.</p>"
         f"{incident_observation_lines}"
