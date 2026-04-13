@@ -412,6 +412,28 @@ def test_ops_cockpit_governance_boundary_observation_in_html(tmp_path: Path) -> 
     assert "evidence_audit_observation" in gbo_block.lower()
 
 
+def test_ops_cockpit_operator_summary_policy_governance_rv6_in_html(tmp_path: Path) -> None:
+    """Operator summary mirrors RV6 payload scalars; links to main-page RV6 surface (read-only)."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-policy-governance-rv6"' in html
+    assert "Policy / Governance (vNext RV6) — compact observation" in html
+    assert 'href="#policy-governance-observation-surface"' in html
+    assert "policy_state.action" in html
+    assert "guard_state.treasury_separation" in html
+    assert "human_supervision_state.status" in html
+    assert "evidence_state.summary" in html
+    assert "not a substitute for external governance" in html.lower()
+    assert "not unlock" in html.lower()
+    rv6_block = html.split('id="operator-summary-policy-governance-rv6"', 1)[1].split(
+        'id="operator-summary-workflow-officer"', 1
+    )[0]
+    assert "policy_go_no_go_observation" in rv6_block.lower()
+
+
 def test_ops_cockpit_run_session_observation_in_html(tmp_path: Path) -> None:
     """HTML surfaces run/session aggregate; no session guarantee or approval wording."""
     docs_dir = tmp_path / "docs" / "governance" / "ai"

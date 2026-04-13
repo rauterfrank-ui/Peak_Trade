@@ -1017,6 +1017,61 @@ def _render_policy_governance_observation_surface(payload: Dict[str, object]) ->
     )
 
 
+def _render_operator_summary_policy_governance_rv6(payload: Dict[str, object]) -> str:
+    """Compact RV6 mirror for operator summary; same payload objects as main-page RV6 surface."""
+    ps_raw = payload.get("policy_state")
+    ps = ps_raw if isinstance(ps_raw, dict) else {}
+    gs_raw = payload.get("guard_state")
+    gs = gs_raw if isinstance(gs_raw, dict) else {}
+    boundary_raw = payload.get("ai_boundary_state")
+    boundary = boundary_raw if isinstance(boundary_raw, dict) else {}
+    hs_raw = payload.get("human_supervision_state")
+    hs = hs_raw if isinstance(hs_raw, dict) else {}
+    ev_raw = payload.get("evidence_state")
+    ev = ev_raw if isinstance(ev_raw, dict) else {}
+
+    pa = escape(str(ps.get("action", "n/a")))
+    psu = escape(str(ps.get("summary", "n/a")))
+    pb = escape(str(ps.get("blocked", "n/a")))
+    pct = escape(str(ps.get("confirm_token_required", "n/a")))
+    gts = escape(str(gs.get("treasury_separation", "n/a")))
+    gdb = escape(str(gs.get("deny_by_default", "n/a")))
+    ppa = escape(str(boundary.get("proposer_authority", "n/a")))
+    cca = escape(str(boundary.get("critic_authority", "n/a")))
+    eb = escape(str(boundary.get("execution_boundary", "n/a")))
+    hss = escape(str(hs.get("status", "n/a")))
+    hsm = escape(str(hs.get("mode", "n/a")))
+    evs = escape(str(ev.get("summary", "n/a")))
+    evf = escape(str(ev.get("freshness_status", "n/a")))
+
+    return (
+        '<section class="operator-summary-policy-governance-rv6" '
+        'id="operator-summary-policy-governance-rv6">'
+        "<h3>Policy / Governance (vNext RV6) — compact observation</h3>"
+        "<p><strong>Observation only.</strong> Compact mirror of the same top-level JSON objects as "
+        '<a href="#policy-governance-observation-surface">Policy / Governance observation (vNext RV6)</a> '
+        "below — <strong>not approval,</strong> <strong>not unlock,</strong> "
+        "not a substitute for external governance or <code>policy_go_no_go_observation</code>.</p>"
+        "<p><strong>policy_state.action</strong> (observation): <code>"
+        f"{pa}</code> · <strong>policy_state.summary</strong>: <code>{psu}</code> · "
+        f"<strong>policy_state.blocked</strong>: <code>{pb}</code> · "
+        f"<strong>policy_state.confirm_token_required</strong>: <code>{pct}</code></p>"
+        "<p><strong>guard_state.treasury_separation</strong> (observation): <code>"
+        f'{gts}</code> · <strong>guard_state.deny_by_default</strong>: <code>{gdb}</code></p>'
+        "<p><strong>ai_boundary_state</strong> — <strong>proposer_authority</strong> / "
+        "<strong>critic_authority</strong> / <strong>execution_boundary</strong> (observation): "
+        f"<code>{ppa}</code> / <code>{cca}</code> / <code>{eb}</code></p>"
+        "<p><strong>human_supervision_state.status</strong> / <strong>mode</strong> (observation): "
+        f"<code>{hss}</code> / <code>{hsm}</code></p>"
+        "<p><strong>evidence_state.summary</strong> / <strong>freshness_status</strong> (observation): "
+        f"<code>{evs}</code> / <code>{evf}</code></p>"
+        '<p style="font-size:0.95em;">Detail tables: '
+        '<a href="#policy-governance-observation-surface">RV6 observation surface</a> · '
+        '<a href="#evidence-state-card">Evidence State</a> card.</p>'
+        "</section>"
+    )
+
+
 def _render_phase57_snapshot_discoverability_card() -> str:
     """HTML block: discoverability links to existing Phase 57 snapshot API (read-only, no new semantics)."""
     return (
@@ -3318,6 +3373,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{spo_block}"
         f"{sstate_block}"
         f"{gbo_block}"
+        f"{_render_operator_summary_policy_governance_rv6(payload)}"
         f"{wo_sum_block}"
         f"{uo_sum_block}"
         f"{rso_block}"
