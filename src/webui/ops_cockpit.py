@@ -1453,6 +1453,74 @@ def _render_workflow_officer_observation_surface(payload: Dict[str, object]) -> 
     return f"{head}{snap_p}{table_html}{pf_block}{top_ul}{hp_block}</div></div>"
 
 
+def _render_operator_summary_dependencies_artifact_observations(
+    dependencies_state: object,
+) -> str:
+    """Compact P85 and market-data-cache artifact lines for operator summary (read-only)."""
+    if not isinstance(dependencies_state, dict):
+        return ""
+    p85 = dependencies_state.get("p85_exchange_observation")
+    mdc = dependencies_state.get("market_data_cache_observation")
+    subsections: List[str] = []
+    p85_keys = (
+        "data_source",
+        "stale",
+        "observation_reason",
+        "reader_schema_version",
+        "last_updated_utc",
+        "artifact_path",
+    )
+    if isinstance(p85, dict):
+        p85_lines = [
+            "<h4>P85 exchange artifact</h4>",
+            "<p><em>Persisted ingest-readiness artifact (newest <code>P85_RESULT.json</code> under "
+            "search base) — <strong>not</strong> a live connectivity check from this page, "
+            "<strong>not</strong> exchange execution truth, <strong>not</strong> governance approval.</em></p>",
+        ]
+        for key in p85_keys:
+            if key in p85:
+                p85_lines.append(
+                    f"<p><strong>p85_exchange_observation.{key}</strong>: "
+                    f"<code>{escape(str(p85.get(key)))}</code></p>"
+                )
+        subsections.append("".join(p85_lines))
+    mdc_keys = (
+        "data_source",
+        "observation_reason",
+        "reader_schema_version",
+        "last_updated_utc",
+        "market_data_cache",
+    )
+    if isinstance(mdc, dict):
+        mdc_lines = [
+            "<h4>Market data cache (local QC)</h4>",
+            "<p><em>Offline parquet / filesystem QC — <strong>not</strong> a live feed check, "
+            "<strong>not</strong> broker truth.</em></p>",
+        ]
+        for key in mdc_keys:
+            if key in mdc:
+                mdc_lines.append(
+                    f"<p><strong>market_data_cache_observation.{key}</strong>: "
+                    f"<code>{escape(str(mdc.get(key)))}</code></p>"
+                )
+        subsections.append("".join(mdc_lines))
+    if not subsections:
+        return ""
+    return (
+        '<section class="operator-summary-dependencies-artifacts" '
+        'id="operator-summary-dependencies-artifact-observations">'
+        "<h3>Dependencies — artifact observations (read-only)</h3>"
+        "<p><strong>Observation only.</strong> Nested objects already under "
+        "<code>dependencies_state</code> in this payload — same semantics as the "
+        "<strong>Dependencies State</strong> card below. "
+        "<strong>Not an approval,</strong> <strong>not an unlock,</strong> not a substitute for "
+        "external governance. Compact aggregate line: <code>health_drift_observation</code> "
+        "does not replace these artifact rows.</p>"
+        f"{''.join(subsections)}"
+        "</section>"
+    )
+
+
 def _render_dependencies_state_card_body(dependencies: Dict[str, object]) -> str:
     """HTML inner block for Dependencies State — ``dependencies_state`` keys (read-only)."""
     dep = dependencies if isinstance(dependencies, dict) else {}
@@ -2795,6 +2863,8 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{hdo_ver}</code></p>"
         )
 
+    dep_artifact_block = _render_operator_summary_dependencies_artifact_observations(deps)
+
     ero_raw = payload.get("exposure_risk_observation")
     ero_block = ""
     if isinstance(ero_raw, dict):
@@ -2989,6 +3059,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{wo_sum_block}"
         f"{rso_block}"
         f"{hdo_block}"
+        f"{dep_artifact_block}"
         f"{ero_block}"
         f"{bs_block}"
         f"{iso_block}"
