@@ -103,6 +103,11 @@ keine Netzwerk-Calls). Die WebUI-API `GET /api&#47;r_and_d&#47;experiments` in
 `src&#47;webui&#47;r_and_d_api.py` nutzt diese Schicht und unterstützt Filter sowie
 `sort_by` / `sort_order` wie in §5.2 beschrieben.
 
+**Slice 2 (list UI GET parity):** Die HTML-Route `GET /r_and_d` reicht dieselben
+relevanten Query-Parameter wie `GET /api&#47;r_and_d&#47;experiments` read-only durch
+(Filter, Datumsfenster, `sort_by`/`sort_order`, `limit`; optional zusätzlich UI-`run_type`).
+Keine POST-Routen und keine Job-Trigger in diesem Slice.
+
 ### 4.2 Aggregations-Layer
 
 Für das Dashboard v0 gibt es zwei mögliche Ansätze:

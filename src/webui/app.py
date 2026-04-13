@@ -99,6 +99,7 @@ from .r_and_d_api import (
     filter_experiments,
     extract_flat_fields,
     compute_global_stats,
+    sort_raw_experiments,
     # v1.3 (Phase 78)
     find_experiment_by_run_id,
     build_experiment_detail,
@@ -583,11 +584,19 @@ def create_app() -> FastAPI:
         preset: Optional[str] = Query(None, description="Filter nach Preset-ID"),
         strategy: Optional[str] = Query(None, description="Filter nach Strategy-ID"),
         tag_substr: Optional[str] = Query(None, description="Filter nach Tag-Substring"),
+        date_from: Optional[str] = Query(None, description="Filter ab Datum (YYYY-MM-DD)"),
+        date_to: Optional[str] = Query(None, description="Filter bis Datum (YYYY-MM-DD)"),
         run_type: Optional[str] = Query(None, description="Filter nach Run-Type"),
         with_trades: bool = Query(False, description="Nur Experimente mit Trades"),
-        limit: int = Query(100, ge=1, le=500, description="Max. Anzahl"),
+        limit: int = Query(200, ge=1, le=5000, description="Max. Anzahl (wie Listen-API)"),
+        sort_by: str = Query("timestamp", description="Sortierung: timestamp | sharpe | return"),
+        sort_order: str = Query("desc", description="asc oder desc"),
     ) -> Any:
-        """HTML Overview-Page für R&D-Experimente (Phase 76 v1.1)."""
+        """HTML Overview-Page für R&D-Experimente (Phase 76 v1.1).
+
+        Query-Parameter sind an ``GET /api/r_and_d/experiments`` angeglichen (read-only);
+        zusätzlich optional ``run_type`` (UI-Filter nach extrahiertem Run-Type).
+        """
         from datetime import date
 
         proj_status = get_project_status()
@@ -598,12 +607,14 @@ def create_app() -> FastAPI:
         # Alle Experimente zu flachen Dicts konvertieren (für Stats)
         all_flat = [extract_flat_fields(exp) for exp in all_experiments]
 
-        # Filter anwenden
+        # Filter anwenden (gleiche Signatur wie Listen-API)
         filtered_experiments = filter_experiments(
             all_experiments,
             preset=preset,
             strategy=strategy,
             tag_substr=tag_substr,
+            date_from=date_from,
+            date_to=date_to,
             with_trades=with_trades,
         )
 
@@ -615,8 +626,13 @@ def create_app() -> FastAPI:
                 if extract_flat_fields(exp).get("run_type") == run_type
             ]
 
-        # Limit anwenden
-        limited_experiments = filtered_experiments[:limit]
+        sorted_experiments = sort_raw_experiments(
+            filtered_experiments,
+            sort_by=sort_by,
+            sort_order=sort_order,
+        )
+
+        limited_experiments = sorted_experiments[:limit]
 
         # Zu flachen Dicts konvertieren für Template
         experiments = [extract_flat_fields(exp) for exp in limited_experiments]
@@ -637,13 +653,17 @@ def create_app() -> FastAPI:
         stats["today_failed"] = sum(1 for e in today_experiments if e.get("status") == "failed")
         stats["running_count"] = len(running_experiments)
 
-        # Filter-State für Template
+        # Filter-State für Template (inkl. API-parity-Parameter)
         filters = {
             "preset": preset,
             "strategy": strategy,
             "tag_substr": tag_substr,
+            "date_from": date_from,
+            "date_to": date_to,
             "run_type": run_type,
             "with_trades": with_trades,
+            "sort_by": sort_by,
+            "sort_order": sort_order,
         }
 
         return templates.TemplateResponse(
