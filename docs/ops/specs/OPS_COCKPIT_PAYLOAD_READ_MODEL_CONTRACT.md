@@ -1,7 +1,7 @@
 # OPS Cockpit — Payload Read-Model Contract
 
 **status:** active  
-**last_updated:** 2026-04-12  
+**last_updated:** 2026-04-13  
 **purpose:** Canonical, review-friendly **top-level contract** for the JSON object returned by `build_ops_cockpit_payload` in `src&#47;webui&#47;ops_cockpit.py` (same shape as `GET &#47;api&#47;ops-cockpit` and the `&#47;ops` HTML page payload). **Contract level:** top-level keys and grouping — **not** a guarantee of nested field values, enums, or snapshot stability of rollups.
 
 **docs_token:** `DOCS_TOKEN_OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT`
@@ -135,10 +135,19 @@ Keys ending with `_observation` are **cockpit observations**: conservative rollu
 
 Rendering and section order are **not** part of this key-level contract. For HTML mapping, use [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md).
 
+## Governance interpretation (Phase E)
+
+This contract lists **keys and roles**, not operator procedure. For **read-only interpretation** — what the payload **does not** authorize, and how `policy_state` &#47; `*_observation` &#47; workflow tooling differ — use:
+
+- [`RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`](../runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md) — Phase E closure; canonical anchors and non-claims.  
+- [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md) — section **Phase E — Operator interpretation**.  
+- [`docs/ops/registry/DOCS_TRUTH_MAP.md`](../registry/DOCS_TRUTH_MAP.md) — docs drift registry (pairing sensitive edits with canonical docs).
+
 ## Related
 
 - [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) — vNext operator-facing target.
 - [`RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`](../runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md) — phased plan; Phase B read-model alignment.
+- [`RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`](../runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md) — Phase E governance review and traceability.
 - [`docs/ops/registry/DOCS_TRUTH_MAP.md`](../registry/DOCS_TRUTH_MAP.md) — docs drift and canonical references.
 
 ## Tests
