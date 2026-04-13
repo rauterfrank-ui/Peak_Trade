@@ -689,7 +689,7 @@ def test_ops_cockpit_incident_safety_observation_in_html(tmp_path: Path) -> None
     assert "incident_safety_observation.status" in html
     assert "not incident resolution" in html.lower()
     iso_block = html.split('id="operator-summary-incident-safety-observation"', 1)[1].split(
-        "<h3>Incident observation (read-only)</h3>", 1
+        'id="operator-summary-incident-observation-read-only"', 1
     )[0]
     assert "not an approval" in iso_block.lower()
     assert "safety_posture_observation" in iso_block.lower()
@@ -1840,6 +1840,8 @@ def test_v3_html_contains_operator_summary_surface(tmp_path: Path) -> None:
     assert "System status (observation)" in html
     assert "Go / No-Go observation (not approval)" in html
     assert "Incident observation (read-only)" in html
+    assert 'id="operator-summary-incident-observation-read-only"' in html
+    assert "Existing incident/dependency rollups from this page" in html
     assert "incident_state.status" in html
     assert "incident_state.incident_stop_invoked" in html
     assert "incident_state.entry_permitted" in html
