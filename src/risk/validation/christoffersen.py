@@ -1,18 +1,34 @@
 """
-Christoffersen Independence + Conditional Coverage Tests (Stub for Phase 8C dev).
+Christoffersen Independence + Conditional Coverage Tests (validation layer).
 
-NOTE: This is a minimal stub. Full implementation should come from PR #422.
-For Phase 8C development/testing only.
+Thin wrappers around the canonical stdlib implementation in
+``src.risk_layer.var_backtest.christoffersen_tests`` (Phase 8B), mirroring the
+pattern used for Kupiec in ``kupiec_pof.py``.
+
+Legacy API (``ChristoffersenIndependenceResult``, ``independence_test``, …)
+is preserved for ``suite_runner`` and existing call sites.
+
+References:
+-----------
+- Christoffersen, P. F. (1998). Evaluating Interval Forecasts.
+  International Economic Review, 39(4), 841-862.
 """
+
+from __future__ import annotations
 
 from dataclasses import dataclass
 
 import pandas as pd
 
+from src.risk_layer.var_backtest.christoffersen_tests import (
+    christoffersen_lr_cc as _canonical_christoffersen_lr_cc,
+    christoffersen_lr_ind as _canonical_christoffersen_lr_ind,
+)
+
 
 @dataclass
 class ChristoffersenIndependenceResult:
-    """Stub result for Independence Test."""
+    """Result of Independence Test (legacy shape for suite reports)."""
 
     is_valid: bool
     p_value: float
@@ -21,7 +37,7 @@ class ChristoffersenIndependenceResult:
 
 @dataclass
 class ChristoffersenConditionalCoverageResult:
-    """Stub result for Conditional Coverage Test."""
+    """Result of Conditional Coverage Test (legacy shape for suite reports)."""
 
     is_valid: bool
     p_value: float
@@ -29,15 +45,30 @@ class ChristoffersenConditionalCoverageResult:
 
 
 def independence_test(
-    breaches_bool: pd.Series, significance: float = 0.05
+    breaches_bool: pd.Series,
+    significance: float = 0.05,
 ) -> ChristoffersenIndependenceResult:
     """
-    Stub implementation of Independence Test.
+    Christoffersen independence test (LR-IND) on a breach indicator series.
 
-    In real implementation (PR #422): Tests temporal independence of breaches.
+    Delegates to :func:`christoffersen_lr_ind` with the same breach convention
+    as the suite runner (True = loss exceeds VaR).
     """
-    # Stub: Always return PASS with dummy p-value
-    return ChristoffersenIndependenceResult(is_valid=True, p_value=0.5, lr_statistic=0.0)
+    seq = [bool(x) for x in breaches_bool.tolist()]
+    n = len(seq)
+    if n < 2:
+        return ChristoffersenIndependenceResult(
+            is_valid=False,
+            p_value=1.0,
+            lr_statistic=0.0,
+        )
+
+    r = _canonical_christoffersen_lr_ind(seq, p_threshold=significance)
+    return ChristoffersenIndependenceResult(
+        is_valid=(r.verdict == "PASS"),
+        p_value=float(r.p_value),
+        lr_statistic=float(r.lr_ind),
+    )
 
 
 def conditional_coverage_test(
@@ -48,9 +79,44 @@ def conditional_coverage_test(
     significance: float = 0.05,
 ) -> ChristoffersenConditionalCoverageResult:
     """
-    Stub implementation of Conditional Coverage Test.
+    Christoffersen conditional coverage test (LR-CC).
 
-    In real implementation (PR #422): Combined UC + IND test.
+    ``alpha`` for the joint test is the expected exceedance rate ``1 - confidence_level``
+    (e.g. 95%% VaR → 5%% tail).
+
+    Delegates to :func:`christoffersen_lr_cc`.
     """
-    # Stub: Always return PASS with dummy p-value
-    return ChristoffersenConditionalCoverageResult(is_valid=True, p_value=0.5, lr_cc_statistic=0.0)
+    seq = [bool(x) for x in breaches_bool.tolist()]
+    if len(seq) != observations:
+        raise ValueError(
+            f"breaches_bool length ({len(seq)}) must match observations ({observations})"
+        )
+    if sum(seq) != breaches:
+        raise ValueError(
+            f"breaches_bool sum ({sum(seq)}) must match breaches ({breaches})"
+        )
+
+    n = len(seq)
+    if n < 2:
+        return ChristoffersenConditionalCoverageResult(
+            is_valid=False,
+            p_value=1.0,
+            lr_cc_statistic=0.0,
+        )
+
+    alpha_exceedance = 1.0 - confidence_level
+    if not 0 < alpha_exceedance < 1:
+        raise ValueError(
+            f"Invalid implied exceedance rate {alpha_exceedance} from confidence_level={confidence_level}"
+        )
+
+    r = _canonical_christoffersen_lr_cc(
+        seq,
+        alpha_exceedance,
+        p_threshold=significance,
+    )
+    return ChristoffersenConditionalCoverageResult(
+        is_valid=(r.verdict == "PASS"),
+        p_value=float(r.p_value),
+        lr_cc_statistic=float(r.lr_cc),
+    )
