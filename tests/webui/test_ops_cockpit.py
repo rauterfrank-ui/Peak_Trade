@@ -429,6 +429,27 @@ def test_ops_cockpit_run_session_observation_in_html(tmp_path: Path) -> None:
     assert "not an approval" in rs_block.lower()
 
 
+def test_ops_cockpit_operator_summary_stale_signals_observation_in_html(
+    tmp_path: Path,
+) -> None:
+    """Operator summary surfaces scalar stale_state; order line is observation-only."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-stale-signals"' in html
+    assert "Stale signals (observation)" in html
+    assert "stale_state.summary" in html
+    assert "stale_state.order" in html
+    assert "not exchange order-book state" in html.lower()
+    assert "not an approval" in html.lower()
+    st_block = html.split('id="operator-summary-stale-signals"', 1)[1].split(
+        "Health / drift (observation)", 1
+    )[0]
+    assert "stale_state.exposure" in st_block
+
+
 def test_ops_cockpit_health_drift_observation_in_html(tmp_path: Path) -> None:
     """HTML surfaces health/drift aggregate; no live health guarantee or approval wording."""
     docs_dir = tmp_path / "docs" / "governance" / "ai"
