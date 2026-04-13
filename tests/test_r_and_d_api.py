@@ -676,6 +676,26 @@ class TestRnDSummaryHtmlPage:
         assert 'data-r-and-d-summary-total="0"' in resp.text
 
 
+class TestRnDCanonicalListNavHtml:
+    """Phase 76 Slice 10: primäre Listen-Links zeigen auf GET /r_and_d/experiments."""
+
+    def test_satellite_pages_link_canonical_experiments_list(self, client):
+        for path in (
+            "/r_and_d/summary",
+            "/r_and_d/charts",
+            "/r_and_d/categories",
+            "/r_and_d/today",
+        ):
+            resp = client.get(path)
+            assert resp.status_code == 200
+            assert 'href="/r_and_d/experiments"' in resp.text
+
+    def test_experiment_detail_hub_links_to_canonical_list(self, client):
+        resp = client.get("/r_and_d/experiments/exp_test_v1_20241208_120000")
+        assert resp.status_code == 200
+        assert 'href="/r_and_d/experiments"' in resp.text
+
+
 class TestRnDCategoriesHtmlPage:
     """Phase 76 Slice 8: GET /r_and_d/categories (Parität zu GET /api/r_and_d/categories)."""
 
