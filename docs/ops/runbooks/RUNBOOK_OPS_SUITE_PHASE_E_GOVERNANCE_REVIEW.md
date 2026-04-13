@@ -75,4 +75,5 @@ Separation rule: if two blocks disagree, **do not** treat the Cockpit as arbiter
 ## Related
 
 - [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](../specs/OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) — product vNext target (non-binding on implementation detail).  
+- [`OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md`](../specs/OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md) — Required Views §1–7 ↔ Cockpit payload &#47; HTML &#47; test traceability.  
 - [`GOVERNANCE_AND_SAFETY_OVERVIEW.md`](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md) — repo-wide governance context.
