@@ -123,6 +123,10 @@ read-only HTML-Detailansicht (Metriken, Raw JSON); dieselbe Handler-Logik wie de
 (`load_experiments_from_dir` / `extract_flat_fields`); defensive Empty States, keine neue Persistenz,
 keine zusätzlichen Write-/Trigger-Routen.
 
+**Slice 6 (summary/overview HTML GET):** `GET &#47;r_and_d&#47;summary` — read-only HTML mit derselben Semantik wie
+`GET /api&#47;r_and_d&#47;summary` und `GET /api&#47;r_and_d&#47;stats` (Helfer ``compute_summary`` /
+``compute_global_stats``); defensive Empty State ohne lokale JSONs; keine neuen API-Felder.
+
 ### 4.2 Aggregations-Layer
 
 Für das Dashboard v0 gibt es zwei mögliche Ansätze:
@@ -252,6 +256,7 @@ Für `/api/r_and_d/experiments`:
 | Preset Summary | Aggregation nach Preset | `/r_and_d/presets` |
 | Strategy Summary | Aggregation nach Strategy | `/r_and_d/strategies` |
 | Charts | Visualisierungen (Sharpe-Dist, Scatter) | `/r_and_d/charts` |
+| Summary | Kennzahlen wie JSON summary + stats | `/r_and_d/summary` |
 
 ### 6.2 Experiments List View
 
@@ -334,7 +339,8 @@ Peak_Trade Web-Dashboard
 ├── /r_and_d/experiments/{id} (NEU: Experiment Detail)
 ├── /r_and_d/presets (NEU: Preset Summary)
 ├── /r_and_d/strategies (NEU: Strategy Summary)
-└── /r_and_d/charts (NEU: Charts)
+├── /r_and_d/charts (NEU: Charts)
+└── /r_and_d/summary (NEU: Summary/Overview HTML)
 ```
 
 ### 7.2 Code-Struktur (geplant)
@@ -447,6 +453,7 @@ templates/
 | 2026-04-13 | Slice 3 dokumentiert: read-only HTML-Aggregation für Preset/Strategy (`GET &#47;r_and_d&#47;presets`, `GET &#47;r_and_d&#47;strategies`) aligned zu den JSON-Endpunkten |
 | 2026-04-13 | Slice 4: kanonischer Experiment-Detail-Pfad `GET &#47;r_and_d&#47;experiments&#47;{run_id}` (Alias `&#47;r_and_d&#47;experiment&#47;{run_id}`); JSON `GET /api&#47;r_and_d&#47;experiments&#47;{run_id}` |
 | 2026-04-13 | Slice 5: Charts v0 unter `GET &#47;r_and_d&#47;charts` (Sharpe-Histogramm, Return-vs.-Sharpe-Scatter; read-only) |
+| 2026-04-13 | Slice 6: Summary-HTML `GET &#47;r_and_d&#47;summary` aligned zu `GET /api&#47;r_and_d&#47;summary` und `GET /api&#47;r_and_d&#47;stats` |
 
 ---
 

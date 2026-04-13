@@ -55,12 +55,13 @@ Siehe Milestones/DoD in [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_A
 - [x] Read-only **Listen-API** + defensive Read-Model-Schicht für lokale JSONs
       (`GET /api&#47;r_and_d&#47;experiments`, `src&#47;r_and_d&#47;experiments_read_model.py`) — Slice 1;
       Filter + `sort_by`/`sort_order`; keine Write-/Trigger-Routen.
-- [ ] Backend-/API-Erweiterungen für Summarys/Aggregationen nach Phase-76-Spec §5 (wenn gewünscht; JSON-API für Preset/Strategy ist bereits vorhanden).
+- [x] Summary-/Overview-HTML: `GET &#47;r_and_d&#47;summary` mit gleicher Semantik wie `GET /api&#47;r_and_d&#47;summary` und `GET /api&#47;r_and_d&#47;stats` (bestehende Helfer; keine neuen API-Felder) — Phase 76 Slice 6.
 - [x] List View: GET-Query-Parität zur Listen-API (Filter/Sort/Limit/Datum, read-only) — Phase 76 slice 2; weiterer UI-Ausbau optional.
 - [x] Experiment-Detail inkl. Metriken + JSON-Rohsicht — read-only HTML `GET &#47;r_and_d&#47;experiments&#47;{run_id}` (Alias `&#47;r_and_d&#47;experiment&#47;{run_id}`); API `GET /api&#47;r_and_d&#47;experiments&#47;{run_id}` — Phase 76 slice 4.
 - [x] Aggregationen (Preset / Strategy): read-only HTML (`GET &#47;r_and_d&#47;presets`, `GET &#47;r_and_d&#47;strategies`) aligned zu den bestehenden JSON-Endpunkten — Phase 76 slice 3.
 - [x] Mind. zwei Charts: read-only HTML `GET &#47;r_and_d&#47;charts` (Sharpe-Histogramm, Total Return vs. Sharpe) — Phase 76 slice 5.
 - [x] Tests + Doku für Slice 5 ergänzt (bestehende R&D-API-Testsuite erweitert).
+- [x] Tests + Doku für Slice 6 (Summary-HTML) ergänzt.
 
 ---
 

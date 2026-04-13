@@ -550,10 +550,11 @@ class TestRAndDExperimentsPage:
         assert "aufsteigend" in resp.text
 
     def test_hub_links_to_aggregation_pages(self, client):
-        """Experimentenliste verlinkt read-only auf Preset-/Strategy-Aggregation und Charts."""
+        """Experimentenliste verlinkt read-only auf Summary, Preset-/Strategy-Aggregation und Charts."""
         resp = client.get("/r_and_d")
         assert resp.status_code == 200
         text = resp.text
+        assert 'href="/r_and_d/summary"' in text
         assert 'href="/r_and_d/presets"' in text
         assert 'href="/r_and_d/strategies"' in text
         assert 'href="/r_and_d/charts"' in text
@@ -621,6 +622,30 @@ class TestRnDChartsHtmlPage:
         assert 'data-r-and-d-charts-empty="true"' in resp.text
         assert 'data-empty-state="r-and-d-charts-no-experiments"' in resp.text
         assert "Keine Experimentdateien" in resp.text
+
+
+class TestRnDSummaryHtmlPage:
+    """Phase 76 Slice 6: GET /r_and_d/summary (Parität zu JSON summary + stats)."""
+
+    def test_summary_page_ok_markers_and_parity(self, client):
+        jsum = client.get("/api/r_and_d/summary").json()
+        jstats = client.get("/api/r_and_d/stats").json()
+        resp = client.get("/r_and_d/summary")
+        assert resp.status_code == 200
+        assert "text/html" in resp.headers.get("content-type", "")
+        body = resp.text
+        assert 'data-section="r-and-d-summary"' in body
+        assert f'data-r-and-d-summary-total="{jsum["total_experiments"]}"' in body
+        assert str(jsum["total_experiments"]) in body
+        median_sharpe_fmt = f'{float(jstats["median_sharpe"]):.3f}'
+        assert median_sharpe_fmt in body
+        assert 'method="POST"' not in body
+
+    def test_summary_empty_repo_defensive(self, empty_experiments_client):
+        resp = empty_experiments_client.get("/r_and_d/summary")
+        assert resp.status_code == 200
+        assert 'data-empty-state="r-and-d-summary-no-experiments"' in resp.text
+        assert 'data-r-and-d-summary-total="0"' in resp.text
 
 
 class TestBuildRnDChartsContext:
