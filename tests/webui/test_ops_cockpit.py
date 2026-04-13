@@ -780,6 +780,8 @@ def test_phase83_eligibility_snapshot_unavailable_in_empty_repo(tmp_path: Path) 
 
 def test_ops_cockpit_html_contains_phase83_eligibility_card(tmp_path: Path) -> None:
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="phase83-strategy-eligibility-card"' in html
+    assert html.count('id="phase83-strategy-eligibility-card"') == 1
     assert "Phase 83 — Strategy eligibility" in html
     assert "Read-only" in html
     assert "Observation only" in html

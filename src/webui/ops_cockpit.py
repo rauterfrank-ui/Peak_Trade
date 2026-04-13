@@ -823,7 +823,8 @@ def _render_phase83_eligibility_card(snapshot: Dict[str, object]) -> str:
     )
 
     return (
-        f'<div class="card truth-card" style="margin-bottom:20px;">'
+        f'<div class="card truth-card" id="phase83-strategy-eligibility-card" '
+        f'style="margin-bottom:20px;">'
         f"<h2>Phase 83 — Strategy eligibility</h2>"
         f"<p><strong>Read-only.</strong> {intro}</p>"
         f"<p><strong>Snapshot mode:</strong> <code>{mode}</code> · "
