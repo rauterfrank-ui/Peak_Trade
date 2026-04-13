@@ -352,6 +352,27 @@ def test_ops_cockpit_phase83_eligibility_observation_in_operator_summary_html(
     assert "observation only" in p83_block.lower()
 
 
+def test_ops_cockpit_workflow_officer_observation_in_operator_summary_html(
+    tmp_path: Path,
+) -> None:
+    """Operator summary surfaces workflow_officer_state; observation-only, no go-signal wording."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-workflow-officer"' in html
+    assert "Operator workflow (observation)" in html
+    assert "workflow_officer_state.present" in html
+    assert "workflow_officer_state" in html
+    assert "policy_go_no_go_observation" in html
+    assert "not a release go-signal" in html.lower()
+    wo_block = html.split("Operator workflow (observation)", 1)[1].split(
+        "Run / session (observation)", 1
+    )[0]
+    assert "observation only" in wo_block.lower()
+
+
 def test_ops_cockpit_governance_boundary_observation_in_html(tmp_path: Path) -> None:
     """HTML surfaces governance/AI boundary aggregate; no approval or waiver wording."""
     docs_dir = tmp_path / "docs" / "governance" / "ai"
