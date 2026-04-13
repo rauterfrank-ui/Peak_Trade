@@ -588,8 +588,9 @@ def test_ops_cockpit_operator_summary_truth_state_in_html(tmp_path: Path) -> Non
     assert "truth_state.available_count" in html
     assert "health_drift_observation" in html.lower()
     assert "Status at a glance" in html
+    assert 'id="operator-summary-status-at-a-glance"' in html
     ts_block = html.split('id="operator-summary-truth-state"', 1)[1].split(
-        "<h3>Status at a glance</h3>", 1
+        'id="operator-summary-status-at-a-glance"', 1
     )[0]
     assert "not broker" in ts_block.lower()
     assert "policy_go_no_go_observation" in ts_block.lower()
@@ -610,10 +611,10 @@ def test_ops_cockpit_operator_summary_truth_sources_runtime_in_html(tmp_path: Pa
     assert "canonical_sources" in html
     pos_ts = html.index('id="operator-summary-truth-state"')
     pos_tr = html.index('id="operator-summary-truth-sources-runtime"')
-    pos_gl = html.index("<h3>Status at a glance</h3>")
+    pos_gl = html.index('id="operator-summary-status-at-a-glance"')
     assert pos_ts < pos_tr < pos_gl
     tr_block = html.split('id="operator-summary-truth-sources-runtime"', 1)[1].split(
-        "<h3>Status at a glance</h3>", 1
+        'id="operator-summary-status-at-a-glance"', 1
     )[0]
     assert "not go-live" in tr_block.lower()
     assert "not broker" in tr_block.lower()
@@ -1864,6 +1865,9 @@ def test_v3_html_contains_operator_summary_surface(tmp_path: Path) -> None:
     assert "evidence_state.last_verified_utc" in html
     assert "evidence_state.source_freshness" in html
     assert "Status at a glance" in html
+    assert 'id="operator-summary-status-at-a-glance"' in html
+    assert "Same rollup fields as before" in html
+    assert "no write actions" in html.lower()
     assert "status-grid" in html
     assert "status-label" in html
     assert "Truth" in html
