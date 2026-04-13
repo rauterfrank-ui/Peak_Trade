@@ -551,7 +551,7 @@ def test_ops_cockpit_health_drift_observation_in_html(tmp_path: Path) -> None:
     assert "health_drift_observation.status" in html
     assert "not a live service health guarantee" in html.lower()
     hd_block = html.split('id="operator-summary-health-drift-observation"', 1)[1].split(
-        "Exposure / risk (observation)", 1
+        'id="operator-summary-exposure-risk-observation"', 1
     )[0]
     assert "not an approval" in hd_block.lower()
     assert "health_drift_observation" in hd_block.lower()
@@ -619,7 +619,7 @@ def test_ops_cockpit_operator_summary_dependencies_artifact_observations_in_html
     assert "market_data_cache_observation.reader_schema_version" in html
     assert "not a live feed check" in html.lower()
     art_block = html.split('id="operator-summary-dependencies-artifact-observations"', 1)[1].split(
-        "Exposure / risk (observation)", 1
+        'id="operator-summary-exposure-risk-observation"', 1
     )[0]
     assert "not an approval" in art_block.lower()
     assert "governance" in art_block.lower()
@@ -632,13 +632,15 @@ def test_ops_cockpit_exposure_risk_observation_in_html(tmp_path: Path) -> None:
     (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
     (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-exposure-risk-observation"' in html
     assert "Exposure / risk (observation)" in html
     assert "exposure_risk_observation.status" in html
     assert "not broker or exchange truth" in html.lower()
-    er_block = html.split("Exposure / risk (observation)", 1)[1].split(
-        "Incident / safety (observation)", 1
+    er_block = html.split('id="operator-summary-exposure-risk-observation"', 1)[1].split(
+        'id="operator-summary-exposure-state"', 1
     )[0]
     assert "not a risk approval" in er_block.lower()
+    assert "exposure_risk_observation" in er_block.lower()
 
 
 def test_ops_cockpit_operator_summary_exposure_state_in_html(tmp_path: Path) -> None:
