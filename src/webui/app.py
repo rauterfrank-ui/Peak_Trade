@@ -39,7 +39,7 @@ HTML Pages:
 - GET / (Dashboard Home)
 - GET /session/{session_id} (Session Detail)
 - GET /r_and_d (R&D Experiments Overview - Phase 76)
-- GET /r_and_d/experiments (dieselbe Listenansicht wie /r_and_d — Phase 76 Slice 9, read-only; Slice 10: primäre Hub-Links in R&D-HTML hierhin)
+- GET /r_and_d/experiments (dieselbe Listenansicht wie /r_and_d — Phase 76 Slice 9, read-only; Slices 10–11: Hub-/Global-Nav hierhin)
 - GET /r_and_d/presets (R&D Preset-Aggregation HTML - Phase 76 Slice 3)
 - GET /r_and_d/strategies (R&D Strategy-Aggregation HTML - Phase 76 Slice 3)
 - GET /r_and_d/charts (R&D Charts v0 - Phase 76 Slice 5, read-only)
