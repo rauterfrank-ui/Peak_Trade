@@ -223,7 +223,7 @@ def _companion_secondary_operator_routes_paragraph_dashboard_html() -> str:
 def _companion_operator_rd_experiment_strip_html(run_id: str) -> str:
     """Link to Operator R&D experiment HTML for the same run_id as the current watch/session page."""
     seg = quote(run_id, safe="")
-    url = f"{_OPERATOR_WEBUI_ORIGIN}/r_and_d/experiment/{seg}"
+    url = f"{_OPERATOR_WEBUI_ORIGIN}/r_and_d/experiments/{seg}"
     return (
         "<div class='companion-strip'>"
         "<strong>R&amp;D experiment detail (companion navigation):</strong> read-only Operator WebUI — "

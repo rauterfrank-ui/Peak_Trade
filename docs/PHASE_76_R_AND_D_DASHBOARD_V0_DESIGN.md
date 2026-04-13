@@ -113,6 +113,11 @@ Keine POST-Routen und keine Job-Trigger in diesem Slice.
 `GET /api&#47;r_and_d&#47;presets` bzw. `GET /api&#47;r_and_d&#47;strategies` (Tabellen,
 KPIs, defensive Empty States; keine Charts, keine Writes).
 
+**Slice 4 (experiment detail GET):** `GET &#47;r_and_d&#47;experiments&#47;{run_id}` liefert die
+read-only HTML-Detailansicht (Metriken, Raw JSON); dieselbe Handler-Logik wie der ältere Alias
+`GET &#47;r_and_d&#47;experiment&#47;{run_id}`. JSON-Detail: `GET /api&#47;r_and_d&#47;experiments&#47;{run_id}`
+(unverändert, zentral über `find_experiment_by_run_id` / `build_experiment_detail`).
+
 ### 4.2 Aggregations-Layer
 
 Für das Dashboard v0 gibt es zwei mögliche Ansätze:
@@ -435,6 +440,7 @@ templates/
 |-------|----------|
 | 2025-12-09 | Initiale Design-Version erstellt |
 | 2026-04-13 | Slice 3 dokumentiert: read-only HTML-Aggregation für Preset/Strategy (`GET &#47;r_and_d&#47;presets`, `GET &#47;r_and_d&#47;strategies`) aligned zu den JSON-Endpunkten |
+| 2026-04-13 | Slice 4: kanonischer Experiment-Detail-Pfad `GET &#47;r_and_d&#47;experiments&#47;{run_id}` (Alias `&#47;r_and_d&#47;experiment&#47;{run_id}`); JSON `GET /api&#47;r_and_d&#47;experiments&#47;{run_id}` |
 
 ---
 
