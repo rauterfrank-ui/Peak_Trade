@@ -39,6 +39,7 @@ EXPECTED_OPS_COCKPIT_PAYLOAD_TOP_LEVEL_KEYS = frozenset(
         "run_session_observation",
         "run_state",
         "safety_posture_observation",
+        "safety_state",
         "session_end_mismatch_state",
         "source_coverage_status",
         "source_group_summary",
