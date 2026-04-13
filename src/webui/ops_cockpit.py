@@ -3009,9 +3009,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
     sem_block = _render_operator_summary_session_end_mismatch(
         payload.get("session_end_mismatch_state")
     )
-    ta_block = _render_operator_summary_transfer_ambiguity(
-        payload.get("transfer_ambiguity_state")
-    )
+    ta_block = _render_operator_summary_transfer_ambiguity(payload.get("transfer_ambiguity_state"))
 
     stale_signals_block = _render_operator_summary_stale_signals_observation(
         payload.get("stale_state")
