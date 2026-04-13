@@ -146,6 +146,7 @@ This contract lists **keys and roles**, not operator procedure. For **read-only 
 ## Related
 
 - [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) — vNext operator-facing target.
+- [`OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md`](OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md) — Required Views §1–7 ↔ keys / summary surface / tests.
 - [`RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`](../runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md) — phased plan; Phase B read-model alignment.
 - [`RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`](../runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md) — Phase E governance review and traceability.
 - [`docs/ops/registry/DOCS_TRUTH_MAP.md`](../registry/DOCS_TRUTH_MAP.md) — docs drift and canonical references.

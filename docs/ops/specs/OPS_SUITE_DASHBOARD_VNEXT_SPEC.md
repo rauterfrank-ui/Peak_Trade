@@ -1,7 +1,7 @@
 # OPS Suite / Dashboard vNext Spec
 
 status: DRAFT
-last_updated: 2026-03-12
+last_updated: 2026-04-13
 owner: Peak_Trade
 purpose: Canonical vNext specification for operator-facing OPS Suite / Dashboard expansion
 docs_token: DOCS_TOKEN_OPS_SUITE_DASHBOARD_VNEXT_SPEC
@@ -119,3 +119,7 @@ A future implementation should only be considered complete when:
 - no execution authority is silently introduced
 - audit trail remains intact
 - gating and safety posture are visible and testable
+
+## Traceability — Ops Cockpit read-model (Required Views §1–7)
+
+Payload &#47; HTML mapping for the vNext Required Views (review-friendly, **not** a product completeness verdict): [`OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md`](OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md).
