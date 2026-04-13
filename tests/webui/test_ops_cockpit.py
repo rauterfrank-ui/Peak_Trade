@@ -688,14 +688,16 @@ def test_ops_cockpit_evidence_audit_observation_in_html(tmp_path: Path) -> None:
     (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
     (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-evidence-audit-observation"' in html
     assert "Evidence / audit (observation)" in html
     assert "evidence_audit_observation.status" in html
     assert "not audit clearance" in html.lower()
-    eao_block = html.split("Evidence / audit (observation)", 1)[1].split(
-        "Evidence freshness observation (read-only)", 1
+    eao_block = html.split('id="operator-summary-evidence-audit-observation"', 1)[1].split(
+        "<h3>Evidence freshness observation (read-only)</h3>", 1
     )[0]
     assert "health_drift_observation" in eao_block.lower()
     assert "pass/fail" in eao_block.lower()
+    assert "evidence_audit_observation" in eao_block.lower()
 
 
 def test_system_state_environment_observation_from_config(tmp_path: Path) -> None:
