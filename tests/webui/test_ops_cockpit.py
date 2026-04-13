@@ -1657,6 +1657,9 @@ def test_ops_cockpit_html_contains_update_officer_section(tmp_path: Path) -> Non
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert "Update Officer" in html
     assert "Notifier summary" in html or "notifier" in html.lower()
+    assert 'id="update-officer-visibility-card"' in html
+    assert "update_officer_ui" in html
+    assert "not execution authority" in html.lower()
 
 
 def test_ops_cockpit_html_update_officer_no_write_actions(tmp_path: Path) -> None:
@@ -2066,7 +2069,9 @@ def test_ops_cockpit_html_contains_operator_workflow_observation_empty(tmp_path:
     assert "workflow_officer_state.empty_reason" in html
     assert "no_officer_output_dir" in html
     assert "not approval" in html.lower()
-    assert "does not execute Workflow Officer" in html
+    assert "does not start or run Workflow Officer" in html
+    assert "not execution authority" in html.lower()
+    assert "policy_go_no_go_observation" in html
 
 
 def test_ops_cockpit_html_contains_operator_workflow_observation_with_report(
@@ -2122,6 +2127,7 @@ def test_ops_cockpit_html_contains_operator_workflow_observation_with_report(
     assert "20260201T000000Z" in html
     assert "workflow_officer_state.primary_followup.check_id" in html
     assert "chk_a" in html
+    assert "Top follow-ups (bounded preview)" in html
     assert 'id="operator-workflow-handoff-preview-observation"' in html
     assert "no_handoff_context_in_report" in html
     assert "no_next_chat_preview_in_report" in html
@@ -2194,6 +2200,8 @@ def test_ops_cockpit_html_handoff_and_next_step_preview_when_report_includes_sum
     (run_dir / "report.json").write_text(json.dumps(report), encoding="utf-8")
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert 'id="operator-workflow-handoff-preview-observation"' in html
+    assert "policy_go_no_go_observation" in html
+    assert "launch authority" in html.lower()
     assert "workflow_officer_state.handoff_observation.primary_followup_check_id" in html
     assert "chk_h" in html
     assert "workflow_officer_state.next_chat_preview_observation.rollup_echo.warnings" in html
