@@ -434,7 +434,7 @@ templates/
 | Datum | Änderung |
 |-------|----------|
 | 2025-12-09 | Initiale Design-Version erstellt |
-| 2026-04-13 | Slice 3 dokumentiert: read-only HTML-Aggregation für Preset/Strategy (`GET /r_and_d/presets`, `GET /r_and_d/strategies`) aligned zu den JSON-Endpunkten |
+| 2026-04-13 | Slice 3 dokumentiert: read-only HTML-Aggregation für Preset/Strategy (`GET &#47;r_and_d&#47;presets`, `GET &#47;r_and_d&#47;strategies`) aligned zu den JSON-Endpunkten |
 
 ---
 
