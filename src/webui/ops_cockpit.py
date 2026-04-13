@@ -3689,11 +3689,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         "(mirror of <code>policy_state.summary</code> at payload build; not a second gate engine)</p>"
     )
 
-    go_no_go_inline = (
-        "<h3>Go / No-Go observation (not approval)</h3>"
-        f"{go_no_go_intro}"
-        f"{go_lines}"
-    )
+    go_no_go_inline = f"<h3>Go / No-Go observation (not approval)</h3>{go_no_go_intro}{go_lines}"
 
     return (
         '<div class="operator-summary-surface exec-summary">'
