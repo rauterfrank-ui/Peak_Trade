@@ -576,6 +576,32 @@ def test_ops_cockpit_operator_summary_truth_state_in_html(tmp_path: Path) -> Non
     assert "policy_go_no_go_observation" in ts_block.lower()
 
 
+def test_ops_cockpit_operator_summary_truth_sources_runtime_in_html(tmp_path: Path) -> None:
+    """Operator summary surfaces truth sources & runtime; read-only counts/labels, no broker truth."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-truth-sources-runtime"' in html
+    assert "Truth sources &amp; runtime (payload)" in html
+    assert "runtime_unknown_state.critic_runtime_path" in html
+    assert "source_groups" in html
+    assert "source_group_summary" in html
+    assert "canonical_sources" in html
+    pos_ts = html.index('id="operator-summary-truth-state"')
+    pos_tr = html.index('id="operator-summary-truth-sources-runtime"')
+    pos_gl = html.index("<h3>Status at a glance</h3>")
+    assert pos_ts < pos_tr < pos_gl
+    tr_block = html.split('id="operator-summary-truth-sources-runtime"', 1)[1].split(
+        "<h3>Status at a glance</h3>", 1
+    )[0]
+    assert "not go-live" in tr_block.lower()
+    assert "not broker" in tr_block.lower()
+    assert "policy_go_no_go_observation" in tr_block.lower()
+    assert "health_drift_observation" in tr_block.lower()
+
+
 def test_ops_cockpit_operator_summary_dependencies_artifact_observations_in_html(
     tmp_path: Path,
 ) -> None:
