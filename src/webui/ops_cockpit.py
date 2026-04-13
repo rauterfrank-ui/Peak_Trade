@@ -1139,6 +1139,41 @@ def _render_operator_summary_phase57_snapshot_discoverability() -> str:
     )
 
 
+def _render_operator_summary_truth_state(payload: Dict[str, object]) -> str:
+    """Compact ``truth_state`` snapshot for operator summary (truth doc pipeline; read-only)."""
+    ts_raw = payload.get("truth_state")
+    if not isinstance(ts_raw, dict):
+        return ""
+    rows: List[str] = []
+    for label, key in (
+        ("truth_state.last_verified_utc", "last_verified_utc"),
+        ("truth_state.truth_coverage", "truth_coverage"),
+        ("truth_state.available_count", "available_count"),
+        ("truth_state.unavailable_count", "unavailable_count"),
+        ("truth_state.truth_first_positioning", "truth_first_positioning"),
+        ("truth_state.final_trade_authority", "final_trade_authority"),
+        ("truth_state.live_autonomy", "live_autonomy"),
+    ):
+        if key not in ts_raw:
+            continue
+        v = escape(_fmt_observation_cell(ts_raw.get(key)))
+        rows.append(f"<p><strong>{label}</strong> (observation): <code>{v}</code></p>")
+    if not rows:
+        return ""
+    return (
+        '<section class="operator-summary-truth-state" id="operator-summary-truth-state">'
+        "<h3>Truth pipeline (payload)</h3>"
+        "<p><strong>Observation only.</strong> Local truth-document pipeline snapshot from <code>truth_state</code> "
+        "in this page&apos;s JSON — <strong>not approval,</strong> <strong>not go-live,</strong> "
+        "not broker or exchange truth, not a substitute for governance or "
+        "<code>policy_go_no_go_observation</code>. "
+        "<strong>Status at a glance</strong> below shows v3 executive rollups; "
+        "<code>health_drift_observation</code> is the separate service/drift aggregate.</p>"
+        f"{''.join(rows)}"
+        "</section>"
+    )
+
+
 def _render_incident_observation_card(payload: Dict[str, object]) -> str:
     """HTML block: compact incident rollup from existing ``incident_state`` keys only (read-only wording)."""
     inc_raw = payload.get("incident_state")
@@ -3395,6 +3430,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
     )
 
     inner = _render_status_at_a_glance_inner(payload)
+    truth_state_summary_block = _render_operator_summary_truth_state(payload)
 
     return (
         '<div class="operator-summary-surface exec-summary">'
@@ -3451,6 +3487,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         "<h3>Evidence freshness observation (read-only)</h3>"
         "<p>Existing evidence freshness and audit rollups from this page&apos;s JSON payload.</p>"
         f"{evidence_observation_lines}"
+        f"{truth_state_summary_block}"
         "<h3>Status at a glance</h3>"
         f"{glance_intro}"
         f"{inner}"
