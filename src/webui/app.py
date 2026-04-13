@@ -45,6 +45,7 @@ HTML Pages:
 - GET /r_and_d/summary (R&D Summary/Overview HTML - Phase 76 Slice 6, read-only)
 - GET /r_and_d/today (R&D Today HTML - Phase 76 Slice 7, read-only)
 - GET /r_and_d/running (R&D Running HTML - Phase 76 Slice 7, read-only)
+- GET /r_and_d/categories (R&D Categories HTML - Phase 76 Slice 8, read-only)
 - GET /r_and_d/experiment/{run_id} (R&D Experiment Detail - Phase 77, Alias)
 - GET /r_and_d/experiments/{run_id} (R&D Experiment Detail - Phase 76 kanonisch)
 - GET /r_and_d/comparison (R&D Multi-Run Comparison - Phase 78)
@@ -113,6 +114,7 @@ from .r_and_d_api import (
     build_r_and_d_charts_context,
     build_today_view_payload,
     build_running_view_payload,
+    build_categories_view_payload,
     # v1.3 (Phase 78)
     find_experiment_by_run_id,
     build_experiment_detail,
@@ -752,6 +754,26 @@ def create_app() -> FastAPI:
             {
                 "status": proj_status,
                 "running_payload": running_payload,
+            },
+        )
+
+    @app.get("/r_and_d/categories", response_class=HTMLResponse)
+    async def r_and_d_categories_page(request: Request) -> Any:
+        """
+        HTML-Ansicht: Experiment-Kategorien und Run-Types (Phase 76 Slice 8).
+
+        Gleiche Semantik wie ``GET /api/r_and_d/categories`` (``build_categories_view_payload``). Rein lesend.
+        """
+        proj_status = get_project_status()
+        all_experiments = load_experiments_from_dir()
+        categories_payload = build_categories_view_payload(all_experiments)
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_categories.html",
+            {
+                "status": proj_status,
+                "categories_payload": categories_payload,
+                "total_experiments": len(all_experiments),
             },
         )
 

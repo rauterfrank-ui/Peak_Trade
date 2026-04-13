@@ -131,6 +131,10 @@ keine zusätzlichen Write-/Trigger-Routen.
 derselben Semantik wie `GET /api&#47;r_and_d&#47;today` bzw. `GET /api&#47;r_and_d&#47;running`
 (Helfer ``build_today_view_payload`` und ``build_running_view_payload``); defensive Empty States; keine neuen API-Felder.
 
+**Slice 8 (categories HTML GET):** `GET &#47;r_and_d&#47;categories` — read-only HTML mit derselben Aggregation wie
+`GET /api&#47;r_and_d&#47;categories` (Helfer ``build_categories_view_payload``; Zählungen pro ``experiment_category`` und
+``run_type`` aus ``extract_flat_fields``); defensive Empty State ohne lokale JSONs; keine neuen API-Felder.
+
 ### 4.2 Aggregations-Layer
 
 Für das Dashboard v0 gibt es zwei mögliche Ansätze:
@@ -263,6 +267,7 @@ Für `/api/r_and_d/experiments`:
 | Summary | Kennzahlen wie JSON summary + stats | `/r_and_d/summary` |
 | Today | Heute fertige Experimente (API-Parität) | `/r_and_d/today` |
 | Running | Laufende Experimente (API-Parität) | `/r_and_d/running` |
+| Categories | Zählungen nach Kategorie und Run-Type (API-Parität) | `/r_and_d/categories` |
 
 ### 6.2 Experiments List View
 
@@ -348,7 +353,8 @@ Peak_Trade Web-Dashboard
 ├── /r_and_d/charts (NEU: Charts)
 ├── /r_and_d/summary (NEU: Summary/Overview HTML)
 ├── /r_and_d/today (NEU: Today HTML)
-└── /r_and_d/running (NEU: Running HTML)
+├── /r_and_d/running (NEU: Running HTML)
+└── /r_and_d/categories (NEU: Categories HTML)
 ```
 
 ### 7.2 Code-Struktur (geplant)
@@ -463,6 +469,7 @@ templates/
 | 2026-04-13 | Slice 5: Charts v0 unter `GET &#47;r_and_d&#47;charts` (Sharpe-Histogramm, Return-vs.-Sharpe-Scatter; read-only) |
 | 2026-04-13 | Slice 6: Summary-HTML `GET &#47;r_and_d&#47;summary` aligned zu `GET /api&#47;r_and_d&#47;summary` und `GET /api&#47;r_and_d&#47;stats` |
 | 2026-04-13 | Slice 7: Today-/Running-HTML (`GET &#47;r_and_d&#47;today`, `GET &#47;r_and_d&#47;running`) aligned zu den v1.1-JSON-Endpunkten |
+| 2026-04-13 | Slice 8: Categories-HTML `GET &#47;r_and_d&#47;categories` aligned zu `GET /api&#47;r_and_d&#47;categories` (``build_categories_view_payload``) |
 
 ---
 

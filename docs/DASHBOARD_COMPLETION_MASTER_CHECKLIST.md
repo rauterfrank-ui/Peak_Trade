@@ -64,6 +64,8 @@ Siehe Milestones/DoD in [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_A
 - [x] Tests + Doku für Slice 6 (Summary-HTML) ergänzt.
 - [x] Today-/Running-HTML: `GET &#47;r_and_d&#47;today` und `GET &#47;r_and_d&#47;running` mit gleicher Semantik wie die JSON-APIs — Phase 76 Slice 7.
 - [x] Tests + Doku für Slice 7 ergänzt.
+- [x] Categories-HTML: `GET &#47;r_and_d&#47;categories` mit gleicher Semantik wie `GET /api&#47;r_and_d&#47;categories` — Phase 76 Slice 8.
+- [x] Tests + Doku für Slice 8 ergänzt.
 
 ---
 
