@@ -292,6 +292,25 @@ def test_ops_cockpit_safety_posture_observation_in_html(tmp_path: Path) -> None:
     assert "broker or exchange truth" in html.lower()
 
 
+def test_ops_cockpit_safety_state_projection_in_html(tmp_path: Path) -> None:
+    """HTML surfaces top-level safety_state projection; observation-only, no approval wording."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert "Safety state (vNext projection)" in html
+    assert 'id="operator-summary-safety-state-projection"' in html
+    assert "safety_state.summary" in html
+    assert "reader_schema_version" in html
+    ss_block = html.split("Safety state (vNext projection)", 1)[1].split(
+        "Governance / AI boundary (observation)", 1
+    )[0]
+    assert "safety_state/v" in ss_block or "reader_schema_version" in ss_block
+    assert "not approval" in ss_block.lower()
+    assert "observation only" in ss_block.lower()
+
+
 def test_ops_cockpit_governance_boundary_observation_in_html(tmp_path: Path) -> None:
     """HTML surfaces governance/AI boundary aggregate; no approval or waiver wording."""
     docs_dir = tmp_path / "docs" / "governance" / "ai"
