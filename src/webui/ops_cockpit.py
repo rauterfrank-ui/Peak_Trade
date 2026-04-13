@@ -1057,7 +1057,7 @@ def _render_operator_summary_policy_governance_rv6(payload: Dict[str, object]) -
         f"<strong>policy_state.blocked</strong>: <code>{pb}</code> · "
         f"<strong>policy_state.confirm_token_required</strong>: <code>{pct}</code></p>"
         "<p><strong>guard_state.treasury_separation</strong> (observation): <code>"
-        f'{gts}</code> · <strong>guard_state.deny_by_default</strong>: <code>{gdb}</code></p>'
+        f"{gts}</code> · <strong>guard_state.deny_by_default</strong>: <code>{gdb}</code></p>"
         "<p><strong>ai_boundary_state</strong> — <strong>proposer_authority</strong> / "
         "<strong>critic_authority</strong> / <strong>execution_boundary</strong> (observation): "
         f"<code>{ppa}</code> / <code>{cca}</code> / <code>{eb}</code></p>"
