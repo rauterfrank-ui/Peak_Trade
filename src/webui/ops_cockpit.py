@@ -2029,6 +2029,33 @@ def _render_operator_summary_governance_boundary_observation(gbo_raw: object) ->
     )
 
 
+def _render_operator_summary_run_session_observation(rso_raw: object) -> str:
+    """Compact ``run_session_observation`` block for operator summary (read-only)."""
+    if not isinstance(rso_raw, dict):
+        return ""
+    rso_status = escape(str(rso_raw.get("status", "unknown")))
+    rso_summary = escape(str(rso_raw.get("summary", "")))
+    rso_ds = escape(str(rso_raw.get("data_source", "")))
+    rso_ver = escape(str(rso_raw.get("reader_schema_version", "")))
+    inner = (
+        "<h3>Run / session (observation)</h3>"
+        "<p><strong>Observation only.</strong> Aggregate from <code>run_state</code>, "
+        "<code>session_end_mismatch_state</code>, <code>stale_state</code>, and "
+        "<code>operator_state</code> in this payload — <strong>not a session guarantee,</strong> "
+        "<strong>not an approval,</strong> not live exchange session truth.</p>"
+        f"<p><strong>run_session_observation.status</strong>: <code>{rso_status}</code></p>"
+        f"<p><strong>Summary:</strong> {rso_summary}</p>"
+        f"<p><strong>data_source:</strong> <code>{rso_ds}</code> · "
+        f"<strong>reader_schema_version:</strong> <code>{rso_ver}</code></p>"
+    )
+    return (
+        '<section class="operator-summary-run-session-observation" '
+        'id="operator-summary-run-session-observation">'
+        f"{inner}"
+        "</section>"
+    )
+
+
 def _render_operator_summary_evidence_audit_observation(eao_raw: object) -> str:
     """Compact ``evidence_audit_observation`` block for operator summary (read-only)."""
     if not isinstance(eao_raw, dict):
@@ -3457,24 +3484,9 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
 
     phase57_operator_summary_block = _render_operator_summary_phase57_snapshot_discoverability()
 
-    rso_raw = payload.get("run_session_observation")
-    rso_block = ""
-    if isinstance(rso_raw, dict):
-        rso_status = escape(str(rso_raw.get("status", "unknown")))
-        rso_summary = escape(str(rso_raw.get("summary", "")))
-        rso_ds = escape(str(rso_raw.get("data_source", "")))
-        rso_ver = escape(str(rso_raw.get("reader_schema_version", "")))
-        rso_block = (
-            "<h3>Run / session (observation)</h3>"
-            "<p><strong>Observation only.</strong> Aggregate from <code>run_state</code>, "
-            "<code>session_end_mismatch_state</code>, <code>stale_state</code>, and "
-            "<code>operator_state</code> in this payload — <strong>not a session guarantee,</strong> "
-            "<strong>not an approval,</strong> not live exchange session truth.</p>"
-            f"<p><strong>run_session_observation.status</strong>: <code>{rso_status}</code></p>"
-            f"<p><strong>Summary:</strong> {rso_summary}</p>"
-            f"<p><strong>data_source:</strong> <code>{rso_ds}</code> · "
-            f"<strong>reader_schema_version:</strong> <code>{rso_ver}</code></p>"
-        )
+    rso_block = _render_operator_summary_run_session_observation(
+        payload.get("run_session_observation")
+    )
 
     run_state_summary_block = _render_operator_summary_run_state(payload.get("run_state"))
 
