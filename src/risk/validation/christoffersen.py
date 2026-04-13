@@ -92,9 +92,7 @@ def conditional_coverage_test(
             f"breaches_bool length ({len(seq)}) must match observations ({observations})"
         )
     if sum(seq) != breaches:
-        raise ValueError(
-            f"breaches_bool sum ({sum(seq)}) must match breaches ({breaches})"
-        )
+        raise ValueError(f"breaches_bool sum ({sum(seq)}) must match breaches ({breaches})")
 
     n = len(seq)
     if n < 2:
