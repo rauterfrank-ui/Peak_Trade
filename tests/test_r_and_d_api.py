@@ -63,6 +63,7 @@ from src.webui.r_and_d_api import (
     build_r_and_d_charts_context,
     build_today_view_payload,
     build_running_view_payload,
+    build_categories_view_payload,
     set_base_dir,
     # v1.2 (Phase 77)
     find_report_links,
@@ -563,6 +564,7 @@ class TestRAndDExperimentsPage:
         assert 'href="/r_and_d/presets"' in text
         assert 'href="/r_and_d/strategies"' in text
         assert 'href="/r_and_d/charts"' in text
+        assert 'href="/r_and_d/categories"' in text
 
 
 class TestRnDAggregationHtmlPages:
@@ -651,6 +653,42 @@ class TestRnDSummaryHtmlPage:
         assert resp.status_code == 200
         assert 'data-empty-state="r-and-d-summary-no-experiments"' in resp.text
         assert 'data-r-and-d-summary-total="0"' in resp.text
+
+
+class TestRnDCategoriesHtmlPage:
+    """Phase 76 Slice 8: GET /r_and_d/categories (Parität zu GET /api/r_and_d/categories)."""
+
+    def test_categories_html_ok_markers_and_parity(self, client):
+        j = client.get("/api/r_and_d/categories").json()
+        resp = client.get("/r_and_d/categories")
+        assert resp.status_code == 200
+        assert "text/html" in resp.headers.get("content-type", "")
+        body = resp.text
+        assert 'data-section="r-and-d-categories"' in body
+
+        p = build_categories_view_payload()
+        assert p == j
+        total = sum(j["categories"].values())
+        assert f'data-r-and-d-categories-total-experiments="{total}"' in body
+        for cat_key, cnt in j["categories"].items():
+            assert str(cnt) in body
+            lbl = j["category_labels"].get(cat_key, cat_key)
+            assert lbl in body
+        for rt_key, cnt in j["run_types"].items():
+            assert str(cnt) in body
+            lbl = j["run_type_labels"].get(rt_key, rt_key)
+            assert lbl in body
+        assert 'method="POST"' not in body
+        assert client.post("/r_and_d/categories").status_code == 405
+
+    def test_categories_empty_repo_defensive(self, empty_experiments_client):
+        j = empty_experiments_client.get("/api/r_and_d/categories").json()
+        resp = empty_experiments_client.get("/r_and_d/categories")
+        assert resp.status_code == 200
+        assert j["categories"] == {}
+        assert j["run_types"] == {}
+        assert 'data-empty-state="r-and-d-categories-no-experiments"' in resp.text
+        assert 'data-r-and-d-categories-total-experiments="0"' in resp.text
 
 
 class _FixedTodayDate(date_cls):
