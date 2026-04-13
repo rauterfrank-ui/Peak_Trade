@@ -2686,6 +2686,77 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{gbo_ver}</code></p>"
         )
 
+    wo_sum_raw = payload.get("workflow_officer_state")
+    wo_sum_block = ""
+    if isinstance(wo_sum_raw, dict):
+        wo_intro = (
+            "<p><strong>Observation only.</strong> Compact view of <code>workflow_officer_state</code> in "
+            "this payload — same artifact as <strong>Operator workflow observation (vNext Phase 4)</strong> "
+            "below. <strong>Visibility only</strong> — <strong>not approval,</strong> "
+            "<strong>not unlock,</strong> <strong>not a release go-signal;</strong> "
+            "does not start Workflow Officer from this page. "
+            "<code>policy_go_no_go_observation</code> remains the compact policy aggregate (separate object).</p>"
+        )
+        if wo_sum_raw.get("present") is not True:
+            er = wo_sum_raw.get("empty_reason")
+            er_s = escape(str(er)) if er is not None else "unknown"
+            wo_sum_block = (
+                '<section class="operator-summary-workflow-officer" '
+                'id="operator-summary-workflow-officer">'
+                "<h3>Operator workflow (observation)</h3>"
+                f"{wo_intro}"
+                "<p><strong>workflow_officer_state.present</strong>: <code>false</code></p>"
+                f"<p><strong>workflow_officer_state.empty_reason</strong>: <code>{er_s}</code></p>"
+                "</section>"
+            )
+        else:
+            rollup = wo_sum_raw.get("rollup") if isinstance(wo_sum_raw.get("rollup"), dict) else {}
+            ex = (
+                wo_sum_raw.get("executive") if isinstance(wo_sum_raw.get("executive"), dict) else {}
+            )
+            pf_raw = wo_sum_raw.get("primary_followup")
+            pf = pf_raw if isinstance(pf_raw, dict) else {}
+            tc = rollup.get("total_checks")
+            hf = rollup.get("hard_failures")
+            wrn = rollup.get("warnings")
+            rollup_bits: List[str] = []
+            if tc is not None:
+                rollup_bits.append(f"total_checks={escape(_fmt_observation_cell(tc))}")
+            if hf is not None:
+                rollup_bits.append(f"hard_failures={escape(_fmt_observation_cell(hf))}")
+            if wrn is not None:
+                rollup_bits.append(f"warnings={escape(_fmt_observation_cell(wrn))}")
+            rollup_line = ""
+            if rollup_bits:
+                rollup_line = (
+                    f"<p><strong>rollup</strong> (observation): {', '.join(rollup_bits)}</p>"
+                )
+            ul = ex.get("urgency_label")
+            urg_line = ""
+            if ul is not None:
+                urg_line = (
+                    "<p><strong>executive.urgency_label</strong> (observation): "
+                    f"<code>{escape(_fmt_observation_cell(ul))}</code></p>"
+                )
+            cid = pf.get("check_id")
+            pf_line = ""
+            if cid is not None:
+                pf_line = (
+                    "<p><strong>primary_followup.check_id</strong> (observation): "
+                    f"<code>{escape(_fmt_observation_cell(cid))}</code></p>"
+                )
+            wo_sum_block = (
+                '<section class="operator-summary-workflow-officer" '
+                'id="operator-summary-workflow-officer">'
+                "<h3>Operator workflow (observation)</h3>"
+                f"{wo_intro}"
+                "<p><strong>workflow_officer_state.present</strong>: <code>true</code></p>"
+                f"{rollup_line}"
+                f"{urg_line}"
+                f"{pf_line}"
+                "</section>"
+            )
+
     rso_raw = payload.get("run_session_observation")
     rso_block = ""
     if isinstance(rso_raw, dict):
@@ -2915,6 +2986,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{spo_block}"
         f"{sstate_block}"
         f"{gbo_block}"
+        f"{wo_sum_block}"
         f"{rso_block}"
         f"{hdo_block}"
         f"{ero_block}"
