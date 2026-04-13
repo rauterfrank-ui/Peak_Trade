@@ -202,9 +202,10 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert sstate["reader_schema_version"].startswith("safety_state/")
     assert "not approval" in sstate["summary"].lower()
     assert sstate["posture_observation"]["status"] == spo["status"]
-    assert sstate["incident_safety_observation"]["status"] == payload["incident_safety_observation"][
-        "status"
-    ]
+    assert (
+        sstate["incident_safety_observation"]["status"]
+        == payload["incident_safety_observation"]["status"]
+    )
     assert sstate["incident_signal_subset"]["blocked"] is True
     assert sstate["incident_signal_subset"]["kill_switch_active"] is False
     rso = payload["run_session_observation"]
