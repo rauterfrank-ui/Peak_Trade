@@ -288,15 +288,17 @@ def test_ops_cockpit_system_state_observation_in_html(tmp_path: Path) -> None:
     (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
     (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-system-state-observation"' in html
     assert "System / environment (observation)" in html
     assert "system_state_observation.status" in html
     assert "not an environment guarantee" in html.lower()
-    sso_block = html.split("System / environment (observation)", 1)[1].split(
-        "Go / No-Go observation (not approval)", 1
+    sso_block = html.split('id="operator-summary-system-state-observation"', 1)[1].split(
+        "<h3>Go / No-Go observation (not approval)</h3>", 1
     )[0]
     assert "health_drift_observation" in sso_block.lower()
     assert "safety_posture_observation" in sso_block.lower()
     assert "policy_go_no_go_observation" in sso_block.lower()
+    assert "system_state_observation" in sso_block.lower()
 
 
 def test_ops_cockpit_safety_posture_observation_in_html(tmp_path: Path) -> None:

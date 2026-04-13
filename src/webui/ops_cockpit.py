@@ -1916,6 +1916,35 @@ def _render_operator_summary_incident_safety_observation(iso_raw: object) -> str
     )
 
 
+def _render_operator_summary_system_state_observation(sso_raw: object) -> str:
+    """Compact ``system_state_observation`` block for operator summary (read-only)."""
+    if not isinstance(sso_raw, dict):
+        return ""
+    sso_status = escape(str(sso_raw.get("status", "unknown")))
+    sso_summary = escape(str(sso_raw.get("summary", "")))
+    sso_ds = escape(str(sso_raw.get("data_source", "")))
+    sso_ver = escape(str(sso_raw.get("reader_schema_version", "")))
+    inner = (
+        "<h3>System / environment (observation)</h3>"
+        "<p><strong>Observation only.</strong> Aggregate from <code>system_state</code> in this "
+        "payload — <strong>not broker or exchange truth,</strong> "
+        "<strong>not an environment guarantee.</strong> Truth/freshness posture: "
+        "<code>health_drift_observation</code>; holistic gating: "
+        "<code>safety_posture_observation</code>; policy/go-no-go: "
+        "<code>policy_go_no_go_observation</code>.</p>"
+        f"<p><strong>system_state_observation.status</strong>: <code>{sso_status}</code></p>"
+        f"<p><strong>Summary:</strong> {sso_summary}</p>"
+        f"<p><strong>data_source:</strong> <code>{sso_ds}</code> · "
+        f"<strong>reader_schema_version:</strong> <code>{sso_ver}</code></p>"
+    )
+    return (
+        '<section class="operator-summary-system-state-observation" '
+        'id="operator-summary-system-state-observation">'
+        f"{inner}"
+        "</section>"
+    )
+
+
 def _render_operator_summary_evidence_audit_observation(eao_raw: object) -> str:
     """Compact ``evidence_audit_observation`` block for operator summary (read-only)."""
     if not isinstance(eao_raw, dict):
@@ -3127,26 +3156,9 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
     bp_raw = sys_state.get("bounded_pilot_mode")
     bp_s = escape(str(bp_raw)) if bp_raw is not None else "n/a"
 
-    sso_raw = payload.get("system_state_observation")
-    sso_block = ""
-    if isinstance(sso_raw, dict):
-        sso_status = escape(str(sso_raw.get("status", "unknown")))
-        sso_summary = escape(str(sso_raw.get("summary", "")))
-        sso_ds = escape(str(sso_raw.get("data_source", "")))
-        sso_ver = escape(str(sso_raw.get("reader_schema_version", "")))
-        sso_block = (
-            "<h3>System / environment (observation)</h3>"
-            "<p><strong>Observation only.</strong> Aggregate from <code>system_state</code> in this "
-            "payload — <strong>not broker or exchange truth,</strong> "
-            "<strong>not an environment guarantee.</strong> Truth/freshness posture: "
-            "<code>health_drift_observation</code>; holistic gating: "
-            "<code>safety_posture_observation</code>; policy/go-no-go: "
-            "<code>policy_go_no_go_observation</code>.</p>"
-            f"<p><strong>system_state_observation.status</strong>: <code>{sso_status}</code></p>"
-            f"<p><strong>Summary:</strong> {sso_summary}</p>"
-            f"<p><strong>data_source:</strong> <code>{sso_ds}</code> · "
-            f"<strong>reader_schema_version:</strong> <code>{sso_ver}</code></p>"
-        )
+    sso_block = _render_operator_summary_system_state_observation(
+        payload.get("system_state_observation")
+    )
 
     p83_raw = payload.get("phase83_eligibility_snapshot")
     p83_block = ""
