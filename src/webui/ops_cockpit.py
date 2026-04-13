@@ -1928,6 +1928,20 @@ def _render_operator_summary_incident_observation_read_only(incident_observation
     )
 
 
+def _render_operator_summary_evidence_freshness_observation_read_only(
+    evidence_observation_lines: str,
+) -> str:
+    """Detail ``evidence_state`` freshness lines for operator summary (read-only)."""
+    return (
+        '<section class="operator-summary-evidence-freshness-observation-read-only" '
+        'id="operator-summary-evidence-freshness-observation-read-only">'
+        "<h3>Evidence freshness observation (read-only)</h3>"
+        "<p>Existing evidence freshness and audit rollups from this page&apos;s JSON payload.</p>"
+        f"{evidence_observation_lines}"
+        "</section>"
+    )
+
+
 def _render_operator_summary_system_state_observation(sso_raw: object) -> str:
     """Compact ``system_state_observation`` block for operator summary (read-only)."""
     if not isinstance(sso_raw, dict):
@@ -3686,9 +3700,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{iso_block}"
         f"{_render_operator_summary_incident_observation_read_only(incident_observation_lines)}"
         f"{eao_block}"
-        "<h3>Evidence freshness observation (read-only)</h3>"
-        "<p>Existing evidence freshness and audit rollups from this page&apos;s JSON payload.</p>"
-        f"{evidence_observation_lines}"
+        f"{_render_operator_summary_evidence_freshness_observation_read_only(evidence_observation_lines)}"
         f"{truth_state_summary_block}"
         f"{truth_sources_runtime_block}"
         "<h3>Status at a glance</h3>"

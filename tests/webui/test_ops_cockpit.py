@@ -704,11 +704,12 @@ def test_ops_cockpit_evidence_audit_observation_in_html(tmp_path: Path) -> None:
     (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert 'id="operator-summary-evidence-audit-observation"' in html
+    assert 'id="operator-summary-evidence-freshness-observation-read-only"' in html
     assert "Evidence / audit (observation)" in html
     assert "evidence_audit_observation.status" in html
     assert "not audit clearance" in html.lower()
     eao_block = html.split('id="operator-summary-evidence-audit-observation"', 1)[1].split(
-        "<h3>Evidence freshness observation (read-only)</h3>", 1
+        'id="operator-summary-evidence-freshness-observation-read-only"', 1
     )[0]
     assert "health_drift_observation" in eao_block.lower()
     assert "pass/fail" in eao_block.lower()
@@ -1850,6 +1851,8 @@ def test_v3_html_contains_operator_summary_surface(tmp_path: Path) -> None:
     assert "dependencies_state.telemetry" in html
     assert "dependencies_state.exchange" in html
     assert "Evidence freshness observation (read-only)" in html
+    assert 'id="operator-summary-evidence-freshness-observation-read-only"' in html
+    assert "Existing evidence freshness and audit rollups from this page" in html
     assert "evidence_state.freshness_status" in html
     assert "evidence_state.last_verified_utc" in html
     assert "evidence_state.source_freshness" in html
