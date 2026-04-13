@@ -1838,9 +1838,24 @@ def test_v3_executive_summary_keys_present(tmp_path: Path) -> None:
         assert "detail" in obj
 
 
+def test_ops_cockpit_operator_summary_preamble_in_html(tmp_path: Path) -> None:
+    """Preamble: stabiler Anker, Überschrift und Disclaimer vor System status."""
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-preamble"' in html
+    assert 'class="operator-summary-preamble"' in html
+    assert "Operator summary (read-only)" in html
+    assert "operator-summary-disclaimer" in html
+    assert "Read-only snapshot from local artifacts" in html
+    assert "Not an approval, not an unlock" in html
+    assert html.index('id="operator-summary-preamble"') < html.index(
+        'id="operator-summary-system-status"'
+    )
+
+
 def test_v3_html_contains_operator_summary_surface(tmp_path: Path) -> None:
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert "Operator summary (read-only)" in html
+    assert 'id="operator-summary-preamble"' in html
     assert "System status (observation)" in html
     assert 'id="operator-summary-system-status"' in html
     assert "not a broker or exchange guarantee" in html.lower()

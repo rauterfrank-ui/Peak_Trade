@@ -3305,6 +3305,19 @@ def _render_status_at_a_glance_inner(payload: Dict[str, object]) -> str:
     )
 
 
+def _render_operator_summary_preamble() -> str:
+    """Read-only operator summary heading and disclaimer. Stable id for tests and deep links."""
+    return (
+        '<section class="operator-summary-preamble" id="operator-summary-preamble">'
+        "<h2>Operator summary (read-only)</h2>"
+        '<p class="operator-summary-disclaimer"><strong>Observation only.</strong> '
+        "Read-only snapshot from local artifacts and the <code>GET /api/ops-cockpit</code> "
+        "payload shape. <strong>Not an approval, not an unlock,</strong> not a substitute for "
+        "your governance process.</p>"
+        "</section>"
+    )
+
+
 def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
     """vNext-aligned operator summary: system status, go/no-go observation, status at a glance. Read-only."""
     sys_state = payload.get("system_state") or {}
@@ -3705,11 +3718,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
 
     return (
         '<div class="operator-summary-surface exec-summary">'
-        "<h2>Operator summary (read-only)</h2>"
-        '<p class="operator-summary-disclaimer"><strong>Observation only.</strong> '
-        "Read-only snapshot from local artifacts and the <code>GET /api/ops-cockpit</code> "
-        "payload shape. <strong>Not an approval, not an unlock,</strong> not a substitute for "
-        "your governance process.</p>"
+        f"{_render_operator_summary_preamble()}"
         f"{_render_operator_summary_system_status(system_status_lines)}"
         f"{sso_block}"
         f"{p83_block}"
@@ -3832,6 +3841,7 @@ def render_ops_cockpit_html(
     .group-block {{ margin-top: 22px; }}
     code {{ background: #f5f5f5; padding: 2px 4px; border-radius: 4px; }}
     .exec-summary {{ border: 1px solid #333; border-radius: 12px; padding: 16px; margin-bottom: 20px; background: #fafafa; }}
+    .operator-summary-preamble h2 {{ margin-top: 0; }}
     .operator-summary-disclaimer {{ border-left: 4px solid #607d8b; padding-left: 12px; margin: 12px 0; }}
     .operator-summary-surface h3 {{ font-size: 1.05em; margin-top: 18px; margin-bottom: 8px; }}
     .policy-governance-observation-surface h3 {{ font-size: 1.05em; margin-top: 18px; margin-bottom: 8px; }}
