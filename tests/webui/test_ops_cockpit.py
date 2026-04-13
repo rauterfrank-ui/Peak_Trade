@@ -1448,6 +1448,8 @@ def test_incident_state_read_model_incident_stop_invoked_when_artifact_exists(
 def test_ops_cockpit_html_contains_incident_state_read_model(tmp_path: Path) -> None:
     """HTML renders Incident-state read model section."""
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="incident-state-read-model-observation-card"' in html
+    assert html.count('id="incident-state-read-model-observation-card"') == 1
     assert "Incident-state read model" in html
     assert "Incident stop invoked" in html
     assert "PT_FORCE_NO_TRADE" in html
