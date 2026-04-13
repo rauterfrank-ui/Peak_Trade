@@ -555,6 +555,27 @@ def test_ops_cockpit_health_drift_observation_in_html(tmp_path: Path) -> None:
     assert "not an approval" in hd_block.lower()
 
 
+def test_ops_cockpit_operator_summary_truth_state_in_html(tmp_path: Path) -> None:
+    """Operator summary surfaces truth_state pipeline snapshot; read-only, no approval or broker truth."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-truth-state"' in html
+    assert "Truth pipeline (payload)" in html
+    assert "truth_state.truth_coverage" in html
+    assert "truth_state.last_verified_utc" in html
+    assert "truth_state.available_count" in html
+    assert "health_drift_observation" in html.lower()
+    assert "Status at a glance" in html
+    ts_block = html.split('id="operator-summary-truth-state"', 1)[1].split(
+        "<h3>Status at a glance</h3>", 1
+    )[0]
+    assert "not broker" in ts_block.lower()
+    assert "policy_go_no_go_observation" in ts_block.lower()
+
+
 def test_ops_cockpit_operator_summary_dependencies_artifact_observations_in_html(
     tmp_path: Path,
 ) -> None:
