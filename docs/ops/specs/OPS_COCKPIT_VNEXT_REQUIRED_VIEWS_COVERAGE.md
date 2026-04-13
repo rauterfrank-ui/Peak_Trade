@@ -16,6 +16,7 @@
 
 | Anchor | Role |
 |--------|------|
+| `operator-summary-preamble` | Structural HTML `id` on the operator summary **preamble** (`_render_operator_summary_preamble`): read-only heading + disclaimer; **before** `operator-summary-system-status` (RV1 table row in [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md)). |
 | [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) | Product vNext Required Views §1–7 (target). |
 | [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md) | Payload ↔ operator-summary HTML (primary detail). |
 | [`OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md`](OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md) | Top-level payload keys for `build_ops_cockpit_payload`. |
