@@ -1962,6 +1962,18 @@ def _render_operator_summary_go_no_go_not_approval(go_no_go_inline: str) -> str:
     )
 
 
+def _render_operator_summary_status_at_a_glance(glance_intro: str, glance_inner: str) -> str:
+    """v3 executive rollup cards for operator summary (read-only)."""
+    return (
+        '<section class="operator-summary-status-at-a-glance" '
+        'id="operator-summary-status-at-a-glance">'
+        "<h3>Status at a glance</h3>"
+        f"{glance_intro}"
+        f"{glance_inner}"
+        "</section>"
+    )
+
+
 def _render_operator_summary_system_state_observation(sso_raw: object) -> str:
     """Compact ``system_state_observation`` block for operator summary (read-only)."""
     if not isinstance(sso_raw, dict):
@@ -3727,9 +3739,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{_render_operator_summary_evidence_freshness_observation_read_only(evidence_observation_lines)}"
         f"{truth_state_summary_block}"
         f"{truth_sources_runtime_block}"
-        "<h3>Status at a glance</h3>"
-        f"{glance_intro}"
-        f"{inner}"
+        f"{_render_operator_summary_status_at_a_glance(glance_intro, inner)}"
         "</div>"
     )
 
