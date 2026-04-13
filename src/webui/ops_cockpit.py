@@ -1174,6 +1174,89 @@ def _render_operator_summary_truth_state(payload: Dict[str, object]) -> str:
     )
 
 
+def _render_operator_summary_truth_sources_runtime(payload: Dict[str, object]) -> str:
+    """Compact truth sources & runtime snapshot for operator summary (grouping + labels; read-only)."""
+    rows: List[str] = []
+    ru = payload.get("runtime_unknown_state")
+    if isinstance(ru, dict):
+        for label, key in (
+            ("runtime_unknown_state.critic_runtime_path", "critic_runtime_path"),
+            ("runtime_unknown_state.proposer_runtime_path", "proposer_runtime_path"),
+            (
+                "runtime_unknown_state.provider_model_runtime_slots",
+                "provider_model_runtime_slots",
+            ),
+            (
+                "runtime_unknown_state.execution_adjacent_contracts",
+                "execution_adjacent_contracts",
+            ),
+        ):
+            if key not in ru:
+                continue
+            v = escape(_fmt_observation_cell(ru.get(key)))
+            rows.append(f"<p><strong>{label}</strong> (observation): <code>{v}</code></p>")
+
+    cs = payload.get("canonical_sources")
+    if isinstance(cs, list):
+        rows.append(
+            "<p><strong>canonical_sources</strong> (observation): "
+            f"<code>{len(cs)}</code> truth-doc entries in this payload inventory "
+            "(count only; <strong>not</strong> broker or exchange truth).</p>"
+        )
+
+    sg = payload.get("source_groups")
+    group_order = ("canonical_boundary", "runtime_resolution", "supporting_truth")
+    if isinstance(sg, dict):
+        bits: List[str] = []
+        for name in group_order:
+            if name not in sg:
+                continue
+            g = sg.get(name)
+            if isinstance(g, list):
+                bits.append(f"{escape(name)}: {len(g)}")
+        if bits:
+            rows.append(
+                "<p><strong>source_groups</strong> (observation) — group sizes: "
+                f"<code>{', '.join(bits)}</code></p>"
+            )
+
+    sgs = payload.get("source_group_summary")
+    if isinstance(sgs, dict):
+        summ_bits: List[str] = []
+        for name in group_order:
+            if name not in sgs:
+                continue
+            sm = sgs.get(name)
+            if not isinstance(sm, dict):
+                continue
+            t = sm.get("total", "?")
+            a = sm.get("available", "?")
+            u = sm.get("unavailable", "?")
+            summ_bits.append(f"{escape(str(name))} total={t} avail={a} unavail={u}")
+        if summ_bits:
+            rows.append(
+                "<p><strong>source_group_summary</strong> (observation): "
+                f"<code>{'; '.join(summ_bits)}</code></p>"
+            )
+
+    if not rows:
+        return ""
+    return (
+        '<section class="operator-summary-truth-sources-runtime" '
+        'id="operator-summary-truth-sources-runtime">'
+        "<h3>Truth sources &amp; runtime (payload)</h3>"
+        "<p><strong>Observation only.</strong> Local truth-source and runtime-label snapshot from "
+        "<code>runtime_unknown_state</code>, <code>source_groups</code>, <code>source_group_summary</code>, "
+        "and <code>canonical_sources</code> in this page&apos;s JSON — "
+        "<strong>not approval,</strong> <strong>not go-live,</strong> "
+        "not broker or exchange truth, not a substitute for governance or "
+        "<code>policy_go_no_go_observation</code>. Does not replace "
+        "<strong>Status at a glance</strong> or <code>health_drift_observation</code>.</p>"
+        f"{''.join(rows)}"
+        "</section>"
+    )
+
+
 def _render_incident_observation_card(payload: Dict[str, object]) -> str:
     """HTML block: compact incident rollup from existing ``incident_state`` keys only (read-only wording)."""
     inc_raw = payload.get("incident_state")
@@ -3431,6 +3514,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
 
     inner = _render_status_at_a_glance_inner(payload)
     truth_state_summary_block = _render_operator_summary_truth_state(payload)
+    truth_sources_runtime_block = _render_operator_summary_truth_sources_runtime(payload)
 
     return (
         '<div class="operator-summary-surface exec-summary">'
@@ -3488,6 +3572,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         "<p>Existing evidence freshness and audit rollups from this page&apos;s JSON payload.</p>"
         f"{evidence_observation_lines}"
         f"{truth_state_summary_block}"
+        f"{truth_sources_runtime_block}"
         "<h3>Status at a glance</h3>"
         f"{glance_intro}"
         f"{inner}"
