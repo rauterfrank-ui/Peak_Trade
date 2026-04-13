@@ -112,7 +112,7 @@
     <nav class="flex items-center gap-2 text-sm text-slate-500 mb-4">
       <a href="/" class="hover:text-slate-300 transition-colors">Dashboard</a>
       <span>›</span>
-      <a href="/r_and_d" class="hover:text-slate-300 transition-colors">R&D Hub</a>
+      <a href="/r_and_d/experiments" class="hover:text-slate-300 transition-colors">R&D Hub</a>
       <span>›</span>
       <span class="text-slate-300">Vergleich</span>
     </nav>
@@ -137,7 +137,7 @@
       {# Actions #}
       <div class="flex items-center gap-2">
         <a
-          href="/r_and_d"
+          href="/r_and_d/experiments"
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
         >
           <span>←</span>
@@ -190,7 +190,7 @@
               {% for exp in experiments %}
               <th class="px-3 py-3 text-left min-w-[160px]">
                 <a
-                  href="/r_and_d/experiment/{{ exp.run_id }}"
+                  href="/r_and_d/experiments/{{ exp.run_id }}"
                   class="text-sky-300 hover:text-sky-200 transition-colors text-xs font-medium block truncate"
                   title="{{ exp.run_id }}"
                 >
@@ -331,7 +331,7 @@
               {% for exp in experiments %}
               <td class="px-3 py-2">
                 <a
-                  href="/r_and_d/experiment/{{ exp.run_id }}"
+                  href="/r_and_d/experiments/{{ exp.run_id }}"
                   class="inline-flex items-center gap-1 px-2 py-1 rounded bg-sky-600/20 hover:bg-sky-600/40 text-sky-300 text-xs transition-colors"
                 >
                   Details →
@@ -368,7 +368,7 @@
       Wähle mindestens 2 Experimente in der R&D-Übersicht aus, um sie hier zu vergleichen.
     </p>
     <a
-      href="/r_and_d"
+      href="/r_and_d/experiments"
       class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-colors"
     >
       Zur R&D-Übersicht →

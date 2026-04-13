@@ -54,12 +54,30 @@ Die folgenden Checkboxen spiegeln den **Ist-Stand der read-only Ops-Cockpit-Lini
 
 Siehe Milestones/DoD in [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md).
 
-- [ ] Backend-Service bzw. Anbindung + API für Experimente und Summarys.
-- [ ] List View + Filter (an CLI-Logik angelehnt).
-- [ ] Experiment-Detail inkl. Metriken + JSON-Rohsicht.
-- [ ] Aggregationen (Preset / Strategy).
-- [ ] Mind. zwei Charts (z. B. Sharpe-Verteilung, Sharpe vs. Return).
-- [ ] Tests (Design nennt u. a. mind. zehn API-Tests) + Doku aktualisieren.
+- [x] Read-only **Listen-API** + defensive Read-Model-Schicht für lokale JSONs
+      (`GET /api&#47;r_and_d&#47;experiments`, `src&#47;r_and_d&#47;experiments_read_model.py`) — Slice 1;
+      Filter + `sort_by`/`sort_order`; keine Write-/Trigger-Routen.
+- [x] Summary-/Overview-HTML: `GET &#47;r_and_d&#47;summary` mit gleicher Semantik wie `GET /api&#47;r_and_d&#47;summary` und `GET /api&#47;r_and_d&#47;stats` (bestehende Helfer; keine neuen API-Felder) — Phase 76 Slice 6.
+- [x] List View: GET-Query-Parität zur Listen-API (Filter/Sort/Limit/Datum, read-only) — Phase 76 slice 2; weiterer UI-Ausbau optional.
+- [x] Experiment-Detail inkl. Metriken + JSON-Rohsicht — read-only HTML `GET &#47;r_and_d&#47;experiments&#47;{run_id}` (Alias `&#47;r_and_d&#47;experiment&#47;{run_id}`); API `GET /api&#47;r_and_d&#47;experiments&#47;{run_id}` — Phase 76 slice 4.
+- [x] Aggregationen (Preset / Strategy): read-only HTML (`GET &#47;r_and_d&#47;presets`, `GET &#47;r_and_d&#47;strategies`) aligned zu den bestehenden JSON-Endpunkten — Phase 76 slice 3.
+- [x] Mind. zwei Charts: read-only HTML `GET &#47;r_and_d&#47;charts` (Sharpe-Histogramm, Total Return vs. Sharpe) — Phase 76 slice 5.
+- [x] Tests + Doku für Slice 5 ergänzt (bestehende R&D-API-Testsuite erweitert).
+- [x] Tests + Doku für Slice 6 (Summary-HTML) ergänzt.
+- [x] Today-/Running-HTML: `GET &#47;r_and_d&#47;today` und `GET &#47;r_and_d&#47;running` mit gleicher Semantik wie die JSON-APIs — Phase 76 Slice 7.
+- [x] Tests + Doku für Slice 7 ergänzt.
+- [x] Categories-HTML: `GET &#47;r_and_d&#47;categories` mit gleicher Semantik wie `GET /api&#47;r_and_d&#47;categories` — Phase 76 Slice 8.
+- [x] Tests + Doku für Slice 8 ergänzt.
+- [x] Listen-HTML: `GET &#47;r_and_d&#47;experiments` dieselbe read-only Ansicht wie `GET &#47;r_and_d` (kein neues API) — Phase 76 Slice 9.
+- [x] Tests + Doku für Slice 9 ergänzt.
+- [x] R&D-HTML: primäre Zurück-/Hub-Links auf kanonische Listen-URL `GET &#47;r_and_d&#47;experiments` — Phase 76 Slice 10.
+- [x] Tests + Doku für Slice 10 ergänzt.
+- [x] Globale Web-Nav + Preset-/Strategy-Drilldown: kanonische Listen-URL `GET &#47;r_and_d&#47;experiments` — Phase 76 Slice 11.
+- [x] Tests + Doku für Slice 11 ergänzt.
+
+**Stand R&D Dashboard v0 read-only (Phase 76):** Die Checkboxen oben beschreiben den **gelieferten** Umfang (Slices 1–11). Er entspricht der **read-only**-Zielsetzung in [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md) (§4.1.1). **Keine** darüber hinausgehende „Produktfertig“-Behauptung.
+
+**Optional / später (nicht Teil des v0-DoD):** u. a. Listen-Pagination, zusätzliche Charts (z. B. Boxplot laut Design-Skizze), weiteres UI-Polish — siehe **Backlog** in [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md) §4.1.2.
 
 ---
 

@@ -31,7 +31,9 @@ v1.1: Neue Tests für:
 from __future__ import annotations
 
 import json
+import re
 import sys
+from datetime import date as date_cls
 from pathlib import Path
 from typing import Any, Dict
 
@@ -58,6 +60,10 @@ from src.webui.r_and_d_api import (
     compute_preset_stats,
     compute_strategy_stats,
     compute_global_stats,
+    build_r_and_d_charts_context,
+    build_today_view_payload,
+    build_running_view_payload,
+    build_categories_view_payload,
     set_base_dir,
     # v1.2 (Phase 77)
     find_report_links,
@@ -158,6 +164,21 @@ def client(temp_experiments_dir) -> TestClient:
     app = create_app()
     # Dann überschreibe mit temporärem Verzeichnis
     set_base_dir(temp_experiments_dir)
+    return TestClient(app)
+
+
+@pytest.fixture
+def empty_experiments_dir(tmp_path: Path) -> Path:
+    """Repo-Layout ohne JSON-Dateien (defensive Empty-State)."""
+    exp_dir = tmp_path / "reports" / "r_and_d_experiments"
+    exp_dir.mkdir(parents=True)
+    return tmp_path
+
+
+@pytest.fixture
+def empty_experiments_client(empty_experiments_dir: Path) -> TestClient:
+    app = create_app()
+    set_base_dir(empty_experiments_dir)
     return TestClient(app)
 
 
@@ -331,6 +352,15 @@ class TestAPIExperiments:
         data = resp.json()
         assert data["returned"] <= 1
 
+    def test_list_experiments_sort_params_echo(self, client):
+        """sort_by / sort_order (Phase-76-Design) werden angewendet und zurückgegeben."""
+        resp = client.get("/api/r_and_d/experiments?sort_by=sharpe&sort_order=desc")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["sort_by"] == "sharpe"
+        assert data["sort_order"] == "desc"
+        assert "items" in data
+
 
 class TestAPIExperimentDetail:
     """Tests für /api/r_and_d/experiments/{run_id}."""
@@ -468,6 +498,324 @@ class TestRAndDExperimentsPage:
         """Page mit Run-Type Filter (v1.1)."""
         resp = client.get("/r_and_d?run_type=backtest")
         assert resp.status_code == 200
+
+    def test_page_list_filter_form_has_api_parity_get_controls(self, client):
+        """Listen-Form: GET-Controls für dieselben Kernparameter wie die Experiments-API."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        text = resp.text
+        assert 'name="sort_by"' in text
+        assert 'name="sort_order"' in text
+        assert 'name="date_from"' in text
+        assert 'name="date_to"' in text
+        assert 'name="limit"' in text
+        assert 'name="preset"' in text
+        assert 'name="strategy"' in text
+        assert 'name="tag_substr"' in text
+
+    def test_page_filter_form_is_get_not_post(self, client):
+        """Kein POST auf dem Haupt-Filterformular (read-only)."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        start = resp.text.find("<form")
+        assert start != -1
+        end = resp.text.find("</form>", start)
+        form_html = resp.text[start:end]
+        assert 'method="GET"' in form_html
+        assert 'method="POST"' not in form_html
+
+    def test_page_sort_sharpe_desc_puts_higher_sharpe_first(self, client):
+        """sort_by=sharpe&sort_order=desc: höheres Sharpe zuerst (Fixture: 1.5 vs 0.0)."""
+        resp = client.get("/r_and_d?sort_by=sharpe&sort_order=desc")
+        assert resp.status_code == 200
+        ids = list(dict.fromkeys(re.findall(r'data-run-id="([^"]+)"', resp.text)))
+        assert ids
+        assert ids[0] == "exp_test_v1_20241208_120000"
+
+    def test_page_limit_one_single_row(self, client):
+        """limit=1 liefert genau eine Tabellenzeile mit data-run-id."""
+        resp = client.get("/r_and_d?limit=1&sort_by=timestamp&sort_order=desc")
+        assert resp.status_code == 200
+        ids = list(dict.fromkeys(re.findall(r'data-run-id="([^"]+)"', resp.text)))
+        assert len(ids) == 1
+
+    def test_page_date_from_excludes_older_run(self, client):
+        """date_from filtert nach Experiment-Datum (Fixture leerer Run am Vortag)."""
+        resp = client.get("/r_and_d?date_from=2024-12-08")
+        assert resp.status_code == 200
+        assert "exp_test_v1_20241208_120000" in resp.text
+        assert "exp_empty_20241207_100000" not in resp.text
+
+    def test_page_footer_reflects_sort_query(self, client):
+        """Tabellenfuß nennt gewählte Sortierung (sichtbarer Marker)."""
+        resp = client.get("/r_and_d?sort_by=sharpe&sort_order=asc")
+        assert resp.status_code == 200
+        assert "Sharpe" in resp.text
+        assert "aufsteigend" in resp.text
+
+    def test_hub_links_to_aggregation_pages(self, client):
+        """Experimentenliste verlinkt read-only auf Summary, Preset-/Strategy-Aggregation und Charts."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        text = resp.text
+        assert 'href="/r_and_d/summary"' in text
+        assert 'href="/r_and_d/today"' in text
+        assert 'href="/r_and_d/running"' in text
+        assert 'href="/r_and_d/presets"' in text
+        assert 'href="/r_and_d/strategies"' in text
+        assert 'href="/r_and_d/charts"' in text
+        assert 'href="/r_and_d/categories"' in text
+
+    def test_canonical_experiments_list_path_ok_and_parity(self, client):
+        """GET /r_and_d/experiments gleiche Listenlogik wie /r_and_d (Phase 76 Slice 9)."""
+        q = "preset=test_preset_v1&sort_by=sharpe&sort_order=desc&limit=50"
+        hub = client.get(f"/r_and_d?{q}")
+        canon = client.get(f"/r_and_d/experiments?{q}")
+        assert hub.status_code == 200
+        assert canon.status_code == 200
+        ids_hub = list(dict.fromkeys(re.findall(r'data-run-id="([^"]+)"', hub.text)))
+        ids_canon = list(dict.fromkeys(re.findall(r'data-run-id="([^"]+)"', canon.text)))
+        assert ids_hub == ids_canon
+        assert ids_hub
+        assert 'action="/r_and_d"' in hub.text
+        assert 'action="/r_and_d/experiments"' in canon.text
+        assert 'method="POST"' not in canon.text
+
+    def test_detail_route_not_shadowed_by_list_path(self, client):
+        """Regression: /r_and_d/experiments/{run_id} bleibt Detail, nicht die Liste."""
+        resp = client.get("/r_and_d/experiments/exp_test_v1_20241208_120000")
+        assert resp.status_code == 200
+        assert "R&D Experiment Detail" in resp.text
+
+
+class TestRnDAggregationHtmlPages:
+    """Phase 76 Slice 3: HTML für Preset-/Strategy-Aggregation (Parität zu JSON-API)."""
+
+    def test_presets_page_ok_and_markers(self, client):
+        resp = client.get("/r_and_d/presets")
+        assert resp.status_code == 200
+        assert "text/html" in resp.headers.get("content-type", "")
+        body = resp.text
+        assert 'data-section="r-and-d-preset-aggregation"' in body
+        assert "Aggregation nach Preset" in body
+        assert "test_preset_v1" in body
+        assert 'method="POST"' not in body
+
+    def test_strategies_page_ok_and_markers(self, client):
+        resp = client.get("/r_and_d/strategies")
+        assert resp.status_code == 200
+        body = resp.text
+        assert 'data-section="r-and-d-strategy-aggregation"' in body
+        assert "Aggregation nach Strategy" in body
+        assert "test_strategy" in body
+        assert 'method="POST"' not in body
+
+    def test_presets_html_matches_api_row_count(self, client):
+        api = client.get("/api/r_and_d/presets")
+        assert api.status_code == 200
+        presets = api.json()
+        html = client.get("/r_and_d/presets").text
+        for row in presets:
+            assert row["preset_id"] in html
+
+    def test_empty_repo_presets_and_strategies_defensive(self, empty_experiments_client):
+        p = empty_experiments_client.get("/r_and_d/presets")
+        assert p.status_code == 200
+        assert "Keine Preset-Gruppen" in p.text
+        s = empty_experiments_client.get("/r_and_d/strategies")
+        assert s.status_code == 200
+        assert "Keine Strategy-Gruppen" in s.text
+
+
+class TestRnDChartsHtmlPage:
+    """Phase 76 Slice 5: GET /r_and_d/charts (read-only, zwei Charts)."""
+
+    def test_charts_page_ok_and_markers(self, client):
+        resp = client.get("/r_and_d/charts")
+        assert resp.status_code == 200
+        assert "text/html" in resp.headers.get("content-type", "")
+        body = resp.text
+        assert 'data-section="r-and-d-charts"' in body
+        assert 'data-r-and-d-charts-n-plotted="2"' in body
+        assert 'data-chart="r-and-d-sharpe-histogram"' in body
+        assert 'data-chart="r-and-d-return-vs-sharpe-scatter"' in body
+        assert 'id="r-and-d-charts-payload"' in body
+        assert '"histogram_labels"' in body
+        assert '"scatter_points"' in body
+        assert 'method="POST"' not in body
+
+    def test_charts_empty_repo_defensive(self, empty_experiments_client):
+        resp = empty_experiments_client.get("/r_and_d/charts")
+        assert resp.status_code == 200
+        assert 'data-r-and-d-charts-empty="true"' in resp.text
+        assert 'data-empty-state="r-and-d-charts-no-experiments"' in resp.text
+        assert "Keine Experimentdateien" in resp.text
+
+
+class TestRnDSummaryHtmlPage:
+    """Phase 76 Slice 6: GET /r_and_d/summary (Parität zu JSON summary + stats)."""
+
+    def test_summary_page_ok_markers_and_parity(self, client):
+        jsum = client.get("/api/r_and_d/summary").json()
+        jstats = client.get("/api/r_and_d/stats").json()
+        resp = client.get("/r_and_d/summary")
+        assert resp.status_code == 200
+        assert "text/html" in resp.headers.get("content-type", "")
+        body = resp.text
+        assert 'data-section="r-and-d-summary"' in body
+        assert f'data-r-and-d-summary-total="{jsum["total_experiments"]}"' in body
+        assert str(jsum["total_experiments"]) in body
+        median_sharpe_fmt = f"{float(jstats['median_sharpe']):.3f}"
+        assert median_sharpe_fmt in body
+        assert 'method="POST"' not in body
+
+    def test_summary_empty_repo_defensive(self, empty_experiments_client):
+        resp = empty_experiments_client.get("/r_and_d/summary")
+        assert resp.status_code == 200
+        assert 'data-empty-state="r-and-d-summary-no-experiments"' in resp.text
+        assert 'data-r-and-d-summary-total="0"' in resp.text
+
+
+class TestRnDCanonicalListNavHtml:
+    """Phase 76 Slice 10: primäre Listen-Links zeigen auf GET /r_and_d/experiments."""
+
+    def test_satellite_pages_link_canonical_experiments_list(self, client):
+        for path in (
+            "/r_and_d/summary",
+            "/r_and_d/charts",
+            "/r_and_d/categories",
+            "/r_and_d/today",
+        ):
+            resp = client.get(path)
+            assert resp.status_code == 200
+            assert 'href="/r_and_d/experiments"' in resp.text
+
+    def test_experiment_detail_hub_links_to_canonical_list(self, client):
+        resp = client.get("/r_and_d/experiments/exp_test_v1_20241208_120000")
+        assert resp.status_code == 200
+        assert 'href="/r_and_d/experiments"' in resp.text
+
+
+class TestRnDCanonicalListGlobalNavHtml:
+    """Phase 76 Slice 11: base.html + Preset/Strategy-Drilldown auf /r_and_d/experiments."""
+
+    def test_dashboard_home_includes_base_nav_canonical_list_link(self, client):
+        resp = client.get("/")
+        assert resp.status_code == 200
+        assert 'href="/r_and_d/experiments"' in resp.text
+
+    def test_presets_and_strategies_drilldown_use_canonical_list_path(self, client):
+        presets = client.get("/r_and_d/presets")
+        strategies = client.get("/r_and_d/strategies")
+        assert presets.status_code == 200
+        assert strategies.status_code == 200
+        assert 'href="/r_and_d/experiments?preset=test_preset_v1"' in presets.text
+        assert 'href="/r_and_d/experiments?strategy=test_strategy"' in strategies.text
+
+
+class TestRnDCategoriesHtmlPage:
+    """Phase 76 Slice 8: GET /r_and_d/categories (Parität zu GET /api/r_and_d/categories)."""
+
+    def test_categories_html_ok_markers_and_parity(self, client):
+        j = client.get("/api/r_and_d/categories").json()
+        resp = client.get("/r_and_d/categories")
+        assert resp.status_code == 200
+        assert "text/html" in resp.headers.get("content-type", "")
+        body = resp.text
+        assert 'data-section="r-and-d-categories"' in body
+
+        p = build_categories_view_payload()
+        assert p == j
+        total = sum(j["categories"].values())
+        assert f'data-r-and-d-categories-total-experiments="{total}"' in body
+        for cat_key, cnt in j["categories"].items():
+            assert str(cnt) in body
+            lbl = j["category_labels"].get(cat_key, cat_key)
+            assert lbl in body
+        for rt_key, cnt in j["run_types"].items():
+            assert str(cnt) in body
+            lbl = j["run_type_labels"].get(rt_key, rt_key)
+            assert lbl in body
+        assert 'method="POST"' not in body
+        assert client.post("/r_and_d/categories").status_code == 405
+
+    def test_categories_empty_repo_defensive(self, empty_experiments_client):
+        j = empty_experiments_client.get("/api/r_and_d/categories").json()
+        resp = empty_experiments_client.get("/r_and_d/categories")
+        assert resp.status_code == 200
+        assert j["categories"] == {}
+        assert j["run_types"] == {}
+        assert 'data-empty-state="r-and-d-categories-no-experiments"' in resp.text
+        assert 'data-r-and-d-categories-total-experiments="0"' in resp.text
+
+
+class _FixedTodayDate(date_cls):
+    """Deterministisches ``date.today()`` für Today-HTML/API-Tests (2024-12-08)."""
+
+    @classmethod
+    def today(cls):
+        return date_cls(2024, 12, 8)
+
+
+class TestRnDTodayRunningHtmlPage:
+    """Phase 76 Slice 7: GET /r_and_d/today und /r_and_d/running."""
+
+    def test_today_html_ok_and_parity(self, client, monkeypatch):
+        monkeypatch.setattr("src.webui.r_and_d_api.date", _FixedTodayDate)
+        j = client.get("/api/r_and_d/today").json()
+        resp = client.get("/r_and_d/today")
+        assert resp.status_code == 200
+        body = resp.text
+        assert 'data-section="r-and-d-today"' in body
+        assert f'data-r-and-d-today-count="{j["count"]}"' in body
+        assert j["date"] == "2024-12-08"
+        assert str(j["count"]) == "1"
+        assert "exp_test_v1_20241208_120000" in body
+        assert 'href="/r_and_d/experiments/exp_test_v1_20241208_120000"' in body
+        assert 'method="POST"' not in body
+        p = build_today_view_payload(reference_date=date_cls(2024, 12, 8))
+        assert p["count"] == j["count"]
+        assert len(p["items"]) == len(j["items"])
+
+    def test_running_html_ok_empty_fixture(self, client):
+        j = client.get("/api/r_and_d/running").json()
+        resp = client.get("/r_and_d/running")
+        assert resp.status_code == 200
+        body = resp.text
+        assert 'data-section="r-and-d-running"' in body
+        assert f'data-r-and-d-running-count="{j["count"]}"' in body
+        assert j["count"] == 0
+        assert 'data-empty-state="r-and-d-running-empty"' in body
+        assert 'method="POST"' not in body
+        p = build_running_view_payload()
+        assert p["count"] == j["count"]
+
+    def test_today_running_empty_repo(self, empty_experiments_client):
+        t = empty_experiments_client.get("/r_and_d/today")
+        r = empty_experiments_client.get("/r_and_d/running")
+        assert t.status_code == 200
+        assert r.status_code == 200
+        assert 'data-empty-state="r-and-d-today-empty"' in t.text
+        assert 'data-r-and-d-today-count="0"' in t.text
+        assert 'data-empty-state="r-and-d-running-empty"' in r.text
+
+
+class TestBuildRnDChartsContext:
+    """Hilfsfunktion für Charts-Payload (read-only)."""
+
+    def test_empty_experiments(self):
+        ctx = build_r_and_d_charts_context([])
+        assert ctx["empty"] is True
+        assert ctx["n_plotted"] == 0
+
+    def test_fixture_two_runs(self, sample_experiment, sample_experiment_no_trades):
+        ctx = build_r_and_d_charts_context([sample_experiment, sample_experiment_no_trades])
+        assert ctx["empty"] is False
+        assert ctx["no_plot_points"] is False
+        assert ctx["n_plotted"] == 2
+        assert len(ctx["histogram_labels"]) == 12
+        assert sum(ctx["histogram_counts"]) == 2
+        assert len(ctx["scatter_points"]) == 2
 
 
 # =============================================================================
@@ -1031,32 +1379,60 @@ class TestFormatDuration:
 
 
 class TestHTMLDetailRoute:
-    """Tests für die HTML Detail-Route (Phase 77)."""
+    """Tests für die HTML Detail-Route (Phase 76/77): GET /r_and_d/experiments/{run_id}."""
 
     def test_detail_page_returns_html(self, client):
-        """Detail-Page gibt HTML zurück."""
+        """Detail-Page gibt HTML zurück (kanonischer Pfad)."""
         # Erst ein Experiment finden
         resp = client.get("/api/r_and_d/experiments?limit=1")
         if resp.json()["items"]:
             run_id = resp.json()["items"][0]["run_id"]
-            detail_resp = client.get(f"/r_and_d/experiment/{run_id}")
+            detail_resp = client.get(f"/r_and_d/experiments/{run_id}")
             assert detail_resp.status_code == 200
             assert "text/html" in detail_resp.headers.get("content-type", "")
 
+    def test_detail_singular_experiment_path_alias(self, client):
+        """Älterer Pfad /r_and_d/experiment/{run_id} bleibt Alias (gleiche Antwort)."""
+        resp = client.get("/api/r_and_d/experiments?limit=1")
+        if resp.json()["items"]:
+            run_id = resp.json()["items"][0]["run_id"]
+            canonical = client.get(f"/r_and_d/experiments/{run_id}")
+            alias = client.get(f"/r_and_d/experiment/{run_id}")
+            assert canonical.status_code == 200
+            assert alias.status_code == 200
+            assert canonical.text == alias.text
+
     def test_detail_page_404_for_nonexistent(self, client):
         """Detail-Page gibt 404 für nicht existierendes Experiment."""
-        resp = client.get("/r_and_d/experiment/nonexistent_xyz_123")
-        assert resp.status_code == 404
+        for path in (
+            "/r_and_d/experiments/nonexistent_xyz_123",
+            "/r_and_d/experiment/nonexistent_xyz_123",
+        ):
+            resp = client.get(path)
+            assert resp.status_code == 404
 
     def test_detail_page_contains_run_id(self, client):
         """Detail-Page enthält die Run-ID."""
         resp = client.get("/api/r_and_d/experiments?limit=1")
         if resp.json()["items"]:
             run_id = resp.json()["items"][0]["run_id"]
-            detail_resp = client.get(f"/r_and_d/experiment/{run_id}")
+            detail_resp = client.get(f"/r_and_d/experiments/{run_id}")
             assert detail_resp.status_code == 200
             # Run-ID sollte irgendwo in der HTML-Response sein
             assert run_id in detail_resp.text or run_id.replace("_", "") in detail_resp.text
+
+    def test_detail_page_phase76_markers_and_core_fields(self, client):
+        """Phase 76: Marker + sichtbare Kernfelder (Fixture exp_test_v1)."""
+        resp = client.get("/r_and_d/experiments/exp_test_v1_20241208_120000")
+        assert resp.status_code == 200
+        text = resp.text
+        assert 'data-section="r-and-d-experiment-detail"' in text
+        assert 'data-section="r-and-d-experiment-detail-metrics"' in text
+        assert "test_preset_v1" in text
+        assert "test_strategy" in text
+        assert "Sharpe" in text or "sharpe" in text.lower()
+        assert "Raw JSON" in text
+        assert "BTC/USDT" in text or "BTC" in text
 
 
 class TestReportLinkTypes:

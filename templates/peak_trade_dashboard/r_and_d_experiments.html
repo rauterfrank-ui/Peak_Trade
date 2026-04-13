@@ -147,6 +147,8 @@
 {# ========================================================================= #}
 
 {% block content %}
+{# Kanonische Listen-URL: /r_and_d oder /r_and_d/experiments (Phase 76 Slice 9) #}
+{% set list_path = request.url.path %}
 <div class="space-y-6">
 
   {# ======================================================================= #}
@@ -172,8 +174,64 @@
 
       {# Quick-Actions #}
       <div class="flex flex-wrap items-center gap-2">
-        {{ quick_action("Alle", "/r_and_d", "📋", not filters.with_trades and not filters.preset and not filters.strategy) }}
-        {{ quick_action("Mit Trades", "/r_and_d?with_trades=true", "✅", filters.with_trades) }}
+        {{ quick_action("Alle", list_path, "📋", not filters.with_trades and not filters.preset and not filters.strategy and not filters.tag_substr and not filters.run_type and not filters.date_from and not filters.date_to and filters.sort_by == 'timestamp' and filters.sort_order == 'desc' and limit == 200) }}
+        {{ quick_action("Mit Trades", list_path ~ "?with_trades=true", "✅", filters.with_trades) }}
+        <a
+          href="/r_and_d/summary"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300"
+          title="Summary &amp; Übersicht (read-only)"
+        >
+          <span>📑</span>
+          <span>Summary</span>
+        </a>
+        <a
+          href="/r_and_d/today"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300"
+          title="Heute fertig (read-only)"
+        >
+          <span>📅</span>
+          <span>Today</span>
+        </a>
+        <a
+          href="/r_and_d/running"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300"
+          title="Laufende Experimente (read-only)"
+        >
+          <span>▶️</span>
+          <span>Running</span>
+        </a>
+        <a
+          href="/r_and_d/categories"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300"
+          title="Kategorien &amp; Run-Types (read-only)"
+        >
+          <span>🏷️</span>
+          <span>Categories</span>
+        </a>
+        <a
+          href="/r_and_d/presets"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300"
+          title="Aggregation nach Preset (read-only)"
+        >
+          <span>📊</span>
+          <span>Presets</span>
+        </a>
+        <a
+          href="/r_and_d/strategies"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300"
+          title="Aggregation nach Strategy (read-only)"
+        >
+          <span>🎯</span>
+          <span>Strategies</span>
+        </a>
+        <a
+          href="/r_and_d/charts"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300"
+          title="Charts v0 (read-only)"
+        >
+          <span>📈</span>
+          <span>Charts</span>
+        </a>
         <a
           href="/"
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
@@ -289,7 +347,14 @@
   {# SECTION 4: Filter-Form + aktive Filter                                  #}
   {# ======================================================================= #}
   <section aria-label="Filter">
-    <form method="GET" action="/r_and_d" class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+    {# Labels für Sortierung (API: timestamp | sharpe | return | total_return) #}
+    {% set sort_label_map = {
+      'timestamp': 'Timestamp',
+      'sharpe': 'Sharpe',
+      'return': 'Return',
+      'total_return': 'Return',
+    } %}
+    <form method="GET" action="{{ list_path }}" class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
 
       {# Filter-Inputs Grid (kompakter in v1.1) #}
       <div class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
@@ -385,7 +450,7 @@
               🔍 Filter
             </button>
             <a
-              href="/r_and_d"
+              href="{{ list_path }}"
               class="inline-flex items-center justify-center rounded-lg px-2 py-2 text-sm border border-slate-600 hover:bg-slate-800 hover:border-slate-500 text-slate-400 transition-colors"
               title="Reset"
             >
@@ -395,8 +460,85 @@
         </div>
       </div>
 
+      {# Zeile 2: Datum, Sortierung, Limit — GET-Parität zu /api/r_and_d/experiments #}
+      <div class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 mt-3 pt-3 border-t border-slate-800/40">
+        <div class="flex flex-col gap-1">
+          <label for="filter-date-from" class="text-xs uppercase tracking-wide text-slate-500 font-medium">
+            Von (Datum)
+          </label>
+          <input
+            id="filter-date-from"
+            type="date"
+            name="date_from"
+            value="{{ filters.date_from or '' }}"
+            class="rounded-lg px-3 py-2 bg-slate-950 border border-slate-700 text-sm text-slate-100 focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30 focus:outline-none transition-colors"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="filter-date-to" class="text-xs uppercase tracking-wide text-slate-500 font-medium">
+            Bis (Datum)
+          </label>
+          <input
+            id="filter-date-to"
+            type="date"
+            name="date_to"
+            value="{{ filters.date_to or '' }}"
+            class="rounded-lg px-3 py-2 bg-slate-950 border border-slate-700 text-sm text-slate-100 focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30 focus:outline-none transition-colors"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="filter-sort-by" class="text-xs uppercase tracking-wide text-slate-500 font-medium">
+            Sortierung
+          </label>
+          <select
+            id="filter-sort-by"
+            name="sort_by"
+            class="rounded-lg px-3 py-2 bg-slate-950 border border-slate-700 text-sm text-slate-100 focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30 focus:outline-none transition-colors"
+          >
+            <option value="timestamp" {% if filters.sort_by == 'timestamp' %}selected{% endif %}>Timestamp</option>
+            <option value="sharpe" {% if filters.sort_by == 'sharpe' %}selected{% endif %}>Sharpe</option>
+            <option value="return" {% if filters.sort_by == 'return' or filters.sort_by == 'total_return' %}selected{% endif %}>Return</option>
+          </select>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="filter-sort-order" class="text-xs uppercase tracking-wide text-slate-500 font-medium">
+            Reihenfolge
+          </label>
+          <select
+            id="filter-sort-order"
+            name="sort_order"
+            class="rounded-lg px-3 py-2 bg-slate-950 border border-slate-700 text-sm text-slate-100 focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30 focus:outline-none transition-colors"
+          >
+            <option value="desc" {% if filters.sort_order == 'desc' %}selected{% endif %}>Absteigend</option>
+            <option value="asc" {% if filters.sort_order == 'asc' %}selected{% endif %}>Aufsteigend</option>
+          </select>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="filter-limit" class="text-xs uppercase tracking-wide text-slate-500 font-medium">
+            Limit
+          </label>
+          <input
+            id="filter-limit"
+            type="number"
+            name="limit"
+            min="1"
+            max="5000"
+            value="{{ limit }}"
+            class="rounded-lg px-3 py-2 bg-slate-950 border border-slate-700 text-sm text-slate-100 focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30 focus:outline-none transition-colors"
+          />
+        </div>
+        <div class="flex flex-col gap-1 justify-end">
+          <span class="text-xs text-slate-500 hidden lg:block">&nbsp;</span>
+          <p class="text-xs text-slate-500 leading-snug">
+            Gleiche GET-Parameter wie
+            <code class="bg-slate-800 px-1 rounded text-slate-400">/api/r_and_d/experiments</code>
+            (read-only).
+          </p>
+        </div>
+      </div>
+
       {# Aktive Filter Badges + Result Count #}
-      {% set has_active_filters = filters.preset or filters.strategy or filters.tag_substr or filters.with_trades or filters.run_type %}
+      {% set has_active_filters = filters.preset or filters.strategy or filters.tag_substr or filters.with_trades or filters.run_type or filters.date_from or filters.date_to or filters.sort_by != 'timestamp' or filters.sort_order != 'desc' or limit != 200 %}
       {% if has_active_filters or experiments|length > 0 %}
       <div class="mt-4 pt-3 border-t border-slate-800/50 flex flex-wrap items-center gap-2">
 
@@ -441,6 +583,31 @@
         </span>
         {% endif %}
 
+        {% if filters.date_from %}
+        <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+          ab {{ filters.date_from }}
+        </span>
+        {% endif %}
+
+        {% if filters.date_to %}
+        <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+          bis {{ filters.date_to }}
+        </span>
+        {% endif %}
+
+        {% if filters.sort_by != 'timestamp' or filters.sort_order != 'desc' %}
+        <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">
+          sort: {{ sort_label_map.get(filters.sort_by, filters.sort_by) }}
+          · {% if filters.sort_order == 'desc' %}absteigend{% else %}aufsteigend{% endif %}
+        </span>
+        {% endif %}
+
+        {% if limit != 200 %}
+        <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-300 border border-slate-500/30">
+          limit {{ limit }}
+        </span>
+        {% endif %}
+
         <span class="text-xs text-slate-500 ml-auto">
           ({{ filtered }} von {{ total }} gesamt)
         </span>
@@ -468,7 +635,7 @@
           Deine Filter haben keine Ergebnisse geliefert. Versuche weniger restriktive Kriterien.
         </p>
         <a
-          href="/r_and_d"
+          href="{{ list_path }}"
           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-colors"
         >
           ↺ Filter zurücksetzen
@@ -525,22 +692,22 @@
               </td>
 
               {# Status (v1.1 prominent) #}
-              <td class="px-3 py-2 cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {{ status_badge(exp.status) }}
               </td>
 
               {# Run-Type (v1.1 neu) #}
-              <td class="px-3 py-2 cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {{ run_type_badge(exp.run_type) }}
               </td>
 
               {# Timestamp #}
-              <td class="px-3 py-2 font-mono text-xs text-slate-400 whitespace-nowrap cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 font-mono text-xs text-slate-400 whitespace-nowrap cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {{ exp.timestamp[:8] if exp.timestamp else '-' }}
               </td>
 
               {# Tag #}
-              <td class="px-3 py-2 text-xs max-w-[150px] cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs max-w-[150px] cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.tag %}
                 <span class="truncate block text-slate-200" title="{{ exp.tag }}">
                   {{ exp.tag[:25] }}{{ '...' if exp.tag|length > 25 else '' }}
@@ -551,7 +718,7 @@
               </td>
 
               {# Preset #}
-              <td class="px-3 py-2 text-xs max-w-[140px] cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs max-w-[140px] cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.preset_id %}
                 <span class="truncate block text-sky-300" title="{{ exp.preset_id }}">
                   {{ exp.preset_id[:22] }}{{ '...' if exp.preset_id|length > 22 else '' }}
@@ -562,7 +729,7 @@
               </td>
 
               {# Strategy #}
-              <td class="px-3 py-2 text-xs max-w-[120px] cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs max-w-[120px] cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.strategy %}
                 <span class="truncate block text-purple-300" title="{{ exp.strategy }}">
                   {{ exp.strategy[:18] }}{{ '...' if exp.strategy|length > 18 else '' }}
@@ -573,12 +740,12 @@
               </td>
 
               {# Symbol #}
-              <td class="px-3 py-2 text-xs text-slate-300 whitespace-nowrap cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs text-slate-300 whitespace-nowrap cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {{ exp.symbol or '-' }}
               </td>
 
               {# Trades #}
-              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.total_trades is not none %}
                   {% if exp.total_trades > 0 %}
                   <span class="text-emerald-300 font-medium">{{ exp.total_trades }}</span>
@@ -591,7 +758,7 @@
               </td>
 
               {# Return #}
-              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.total_return is not none %}
                   {% if exp.total_return >= 0 %}
                   <span class="text-emerald-300 font-medium">+{{ "%.2f%%"|format(exp.total_return * 100) }}</span>
@@ -604,7 +771,7 @@
               </td>
 
               {# Sharpe #}
-              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.sharpe is not none %}
                   {% if exp.sharpe >= 1.5 %}
                   <span class="text-emerald-300 font-medium">{{ "%.2f"|format(exp.sharpe) }}</span>
@@ -621,7 +788,7 @@
               </td>
 
               {# MaxDD #}
-              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.max_drawdown is not none %}
                 <span class="text-amber-300">{{ "%.1f%%"|format(exp.max_drawdown * 100) }}</span>
                 {% else %}
@@ -630,7 +797,7 @@
               </td>
 
               {# WinRate #}
-              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.win_rate is not none %}
                   {% if exp.win_rate >= 0.55 %}
                   <span class="text-emerald-300">{{ "%.1f%%"|format(exp.win_rate * 100) }}</span>
@@ -647,7 +814,7 @@
               {# Detail-Link (v1.1 / Phase 77) #}
               <td class="px-3 py-2 text-center">
                 <a
-                  href="/r_and_d/experiment/{{ exp.run_id }}"
+                  href="/r_and_d/experiments/{{ exp.run_id }}"
                   class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-slate-800 hover:bg-sky-600 text-slate-400 hover:text-white transition-colors"
                   title="Details anzeigen"
                 >
@@ -670,7 +837,15 @@
           {% endif %}
         </span>
         <span class="text-xs text-slate-500">
-          Limit: {{ limit }} · Sortiert nach Timestamp (neueste zuerst)
+          Limit: {{ limit }}
+          · Sortierung: {{ sort_label_map.get(filters.sort_by, filters.sort_by) }}
+          {% if filters.sort_by == 'timestamp' and filters.sort_order == 'desc' %}
+          (neueste zuerst)
+          {% elif filters.sort_by == 'timestamp' and filters.sort_order == 'asc' %}
+          (älteste zuerst)
+          {% else %}
+          · {{ 'absteigend' if filters.sort_order == 'desc' else 'aufsteigend' }}
+          {% endif %}
         </span>
       </div>
       {% endif %}

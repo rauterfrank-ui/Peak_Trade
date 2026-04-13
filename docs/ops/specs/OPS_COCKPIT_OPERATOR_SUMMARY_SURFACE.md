@@ -103,7 +103,7 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 
 ## Related
 
-- [`OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md`](OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md) — vNext Required Views §1–7 ↔ payload / summary surface / tests (compact traceability).
+- [`OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md`](OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md) — vNext Required Views §1–7 ↔ payload / summary surface / tests (compact traceability); **§ Supplementary Cockpit surfaces** für repo-vorhandene Keys **außerhalb** der Required-Views-Matrix (z. B. `phase83_eligibility_snapshot`, `workflow_officer_state`, `update_officer_ui`, `balance_semantics_state`) — gleiche Traceability-Tiefe **ohne** RV-Neuzuordnung.
 - [`OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md`](OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md) — canonical top-level payload key contract for `build_ops_cockpit_payload` (read-model; not UI layout).
 - [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) — operator-facing target spec.
 - [`RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`](../runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md) — phased plan; RV6 Policy/Governance and Phase 4 Workflow Officer observation surfaces shipped read-only (HTML bundle).

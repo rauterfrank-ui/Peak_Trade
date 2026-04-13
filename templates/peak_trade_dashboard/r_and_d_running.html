@@ -1,0 +1,92 @@
+<!-- templates/peak_trade_dashboard/r_and_d_running.html -->
+<!-- Phase 76 Slice 7: Running (read-only; Parität zu GET /api/r_and_d/running) -->
+{% extends "base.html" %}
+
+{% block content %}
+<div
+  class="space-y-6 max-w-6xl mx-auto"
+  data-section="r-and-d-running"
+  data-r-and-d-running-count="{{ running_payload.count }}"
+>
+  <header class="bg-gradient-to-r from-slate-900/80 to-slate-900/40 rounded-2xl border border-slate-800 p-6">
+    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+      <div>
+        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">R&D Dashboard v0</p>
+        <h1 class="text-2xl font-bold text-slate-100">Laufende Experimente</h1>
+        <p class="text-sm text-slate-400 mt-2 max-w-2xl">
+          Gleiche Daten wie <code class="text-xs bg-slate-800 px-1 rounded">GET /api/r_and_d/running</code>. Nur lesend.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="/r_and_d/experiments" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-sky-600 text-white hover:bg-sky-500">
+          ← Experimentenliste
+        </a>
+        <a href="/r_and_d/summary" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          Summary
+        </a>
+        <a href="/r_and_d/today" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          Today
+        </a>
+        <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          Dashboard
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section aria-label="Anzahl" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+      <p class="text-xs text-slate-500">Running (count)</p>
+      <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ running_payload.count }}</p>
+    </div>
+  </section>
+
+  {% if running_payload.count == 0 %}
+  <section
+    data-empty-state="r-and-d-running-empty"
+    aria-label="Keine laufenden Experimente"
+    class="bg-slate-900/60 rounded-xl border border-slate-800 p-10 text-center"
+  >
+    <p class="text-sm font-medium text-slate-300 mb-2">Keine laufenden Experimente</p>
+    <p class="text-sm text-slate-500 max-w-lg mx-auto">
+      Kein Eintrag mit Status <code class="text-xs bg-slate-800 px-1 rounded">running</code> in den lokalen JSONs unter
+      <code class="text-xs bg-slate-800 px-1 rounded">reports&#47;r_and_d_experiments&#47;</code>.
+    </p>
+  </section>
+  {% else %}
+  <section aria-label="Laufende Runs" class="bg-slate-900/60 rounded-xl border border-slate-800 overflow-hidden">
+    <div class="px-4 py-3 border-b border-slate-800">
+      <h2 class="text-sm font-medium text-slate-200">Runs</h2>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="bg-slate-900/80 text-left text-xs text-slate-400 uppercase tracking-wide">
+            <th class="px-4 py-3 border-b border-slate-800">Run-ID</th>
+            <th class="px-4 py-3 border-b border-slate-800">Status</th>
+            <th class="px-4 py-3 border-b border-slate-800">Preset</th>
+            <th class="px-4 py-3 border-b border-slate-800">Strategy</th>
+            <th class="px-4 py-3 border-b border-slate-800 tabular-nums">Sharpe</th>
+            <th class="px-4 py-3 border-b border-slate-800">Detail</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800/80">
+          {% for item in running_payload["items"] %}
+          <tr class="hover:bg-slate-800/40">
+            <td class="px-4 py-2.5 font-mono text-xs text-sky-300">{{ item.run_id }}</td>
+            <td class="px-4 py-2.5 text-xs text-slate-300">{{ item.status }}</td>
+            <td class="px-4 py-2.5 text-xs text-slate-400">{{ item.preset_id }}</td>
+            <td class="px-4 py-2.5 text-xs text-slate-400">{{ item.strategy }}</td>
+            <td class="px-4 py-2.5 tabular-nums text-slate-300">{{ "%.4f"|format(item.sharpe) }}</td>
+            <td class="px-4 py-2.5">
+              <a class="text-xs text-sky-400 hover:text-sky-300 underline" href="/r_and_d/experiments/{{ item.run_id }}">Öffnen</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

@@ -39,7 +39,16 @@ HTML Pages:
 - GET / (Dashboard Home)
 - GET /session/{session_id} (Session Detail)
 - GET /r_and_d (R&D Experiments Overview - Phase 76)
-- GET /r_and_d/experiment/{run_id} (R&D Experiment Detail - Phase 77)
+- GET /r_and_d/experiments (dieselbe Listenansicht wie /r_and_d — Phase 76 Slice 9, read-only; Slices 10–11: Hub-/Global-Nav hierhin)
+- GET /r_and_d/presets (R&D Preset-Aggregation HTML - Phase 76 Slice 3)
+- GET /r_and_d/strategies (R&D Strategy-Aggregation HTML - Phase 76 Slice 3)
+- GET /r_and_d/charts (R&D Charts v0 - Phase 76 Slice 5, read-only)
+- GET /r_and_d/summary (R&D Summary/Overview HTML - Phase 76 Slice 6, read-only)
+- GET /r_and_d/today (R&D Today HTML - Phase 76 Slice 7, read-only)
+- GET /r_and_d/running (R&D Running HTML - Phase 76 Slice 7, read-only)
+- GET /r_and_d/categories (R&D Categories HTML - Phase 76 Slice 8, read-only)
+- GET /r_and_d/experiment/{run_id} (R&D Experiment Detail - Phase 77, Alias)
+- GET /r_and_d/experiments/{run_id} (R&D Experiment Detail - Phase 76 kanonisch)
 - GET /r_and_d/comparison (R&D Multi-Run Comparison - Phase 78)
 
 API Endpoints:
@@ -99,6 +108,14 @@ from .r_and_d_api import (
     filter_experiments,
     extract_flat_fields,
     compute_global_stats,
+    compute_summary,
+    compute_preset_stats,
+    compute_strategy_stats,
+    sort_raw_experiments,
+    build_r_and_d_charts_context,
+    build_today_view_payload,
+    build_running_view_payload,
+    build_categories_view_payload,
     # v1.3 (Phase 78)
     find_experiment_by_run_id,
     build_experiment_detail,
@@ -578,16 +595,28 @@ def create_app() -> FastAPI:
         )
 
     @app.get("/r_and_d", response_class=HTMLResponse)
+    @app.get("/r_and_d/experiments", response_class=HTMLResponse)
     async def r_and_d_experiments_page(
         request: Request,
         preset: Optional[str] = Query(None, description="Filter nach Preset-ID"),
         strategy: Optional[str] = Query(None, description="Filter nach Strategy-ID"),
         tag_substr: Optional[str] = Query(None, description="Filter nach Tag-Substring"),
+        date_from: Optional[str] = Query(None, description="Filter ab Datum (YYYY-MM-DD)"),
+        date_to: Optional[str] = Query(None, description="Filter bis Datum (YYYY-MM-DD)"),
         run_type: Optional[str] = Query(None, description="Filter nach Run-Type"),
         with_trades: bool = Query(False, description="Nur Experimente mit Trades"),
-        limit: int = Query(100, ge=1, le=500, description="Max. Anzahl"),
+        limit: int = Query(200, ge=1, le=5000, description="Max. Anzahl (wie Listen-API)"),
+        sort_by: str = Query("timestamp", description="Sortierung: timestamp | sharpe | return"),
+        sort_order: str = Query("desc", description="asc oder desc"),
     ) -> Any:
-        """HTML Overview-Page für R&D-Experimente (Phase 76 v1.1)."""
+        """HTML Overview-Page für R&D-Experimente (Phase 76 v1.1).
+
+        Zwei kanonische Pfade: ``GET /r_and_d`` und ``GET /r_and_d/experiments`` (Slice 9) —
+        identische Listenansicht und Query-Parameter.
+
+        Query-Parameter sind an ``GET /api/r_and_d/experiments`` angeglichen (read-only);
+        zusätzlich optional ``run_type`` (UI-Filter nach extrahiertem Run-Type).
+        """
         from datetime import date
 
         proj_status = get_project_status()
@@ -598,12 +627,14 @@ def create_app() -> FastAPI:
         # Alle Experimente zu flachen Dicts konvertieren (für Stats)
         all_flat = [extract_flat_fields(exp) for exp in all_experiments]
 
-        # Filter anwenden
+        # Filter anwenden (gleiche Signatur wie Listen-API)
         filtered_experiments = filter_experiments(
             all_experiments,
             preset=preset,
             strategy=strategy,
             tag_substr=tag_substr,
+            date_from=date_from,
+            date_to=date_to,
             with_trades=with_trades,
         )
 
@@ -615,8 +646,13 @@ def create_app() -> FastAPI:
                 if extract_flat_fields(exp).get("run_type") == run_type
             ]
 
-        # Limit anwenden
-        limited_experiments = filtered_experiments[:limit]
+        sorted_experiments = sort_raw_experiments(
+            filtered_experiments,
+            sort_by=sort_by,
+            sort_order=sort_order,
+        )
+
+        limited_experiments = sorted_experiments[:limit]
 
         # Zu flachen Dicts konvertieren für Template
         experiments = [extract_flat_fields(exp) for exp in limited_experiments]
@@ -637,13 +673,17 @@ def create_app() -> FastAPI:
         stats["today_failed"] = sum(1 for e in today_experiments if e.get("status") == "failed")
         stats["running_count"] = len(running_experiments)
 
-        # Filter-State für Template
+        # Filter-State für Template (inkl. API-parity-Parameter)
         filters = {
             "preset": preset,
             "strategy": strategy,
             "tag_substr": tag_substr,
+            "date_from": date_from,
+            "date_to": date_to,
             "run_type": run_type,
             "with_trades": with_trades,
+            "sort_by": sort_by,
+            "sort_order": sort_order,
         }
 
         return templates.TemplateResponse(
@@ -660,13 +700,165 @@ def create_app() -> FastAPI:
             },
         )
 
+    @app.get("/r_and_d/summary", response_class=HTMLResponse)
+    async def r_and_d_summary_page(request: Request) -> Any:
+        """
+        HTML-Ansicht: Summary/Overview (Phase 76 Slice 6).
+
+        Gleiche Semantik wie ``GET /api/r_and_d/summary`` und ``GET /api/r_and_d/stats``
+        (``compute_summary`` / ``compute_global_stats``). Rein lesend.
+        """
+        proj_status = get_project_status()
+        all_experiments = load_experiments_from_dir()
+        summary = compute_summary(all_experiments)
+        stats = compute_global_stats(all_experiments)
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_summary.html",
+            {
+                "status": proj_status,
+                "summary": summary,
+                "stats": stats,
+            },
+        )
+
+    @app.get("/r_and_d/today", response_class=HTMLResponse)
+    async def r_and_d_today_page(
+        request: Request,
+        limit: int = Query(50, ge=1, le=500),
+    ) -> Any:
+        """
+        HTML-Ansicht: Heute fertige Experimente (Phase 76 Slice 7).
+
+        Gleiche Semantik wie ``GET /api/r_and_d/today`` (``build_today_view_payload``). Rein lesend.
+        """
+        proj_status = get_project_status()
+        today_payload = build_today_view_payload(limit=limit)
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_today.html",
+            {
+                "status": proj_status,
+                "today_payload": today_payload,
+                "limit": limit,
+            },
+        )
+
+    @app.get("/r_and_d/running", response_class=HTMLResponse)
+    async def r_and_d_running_page(request: Request) -> Any:
+        """
+        HTML-Ansicht: Aktuell laufende Experimente (Phase 76 Slice 7).
+
+        Gleiche Semantik wie ``GET /api/r_and_d/running`` (``build_running_view_payload``). Rein lesend.
+        """
+        proj_status = get_project_status()
+        running_payload = build_running_view_payload()
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_running.html",
+            {
+                "status": proj_status,
+                "running_payload": running_payload,
+            },
+        )
+
+    @app.get("/r_and_d/categories", response_class=HTMLResponse)
+    async def r_and_d_categories_page(request: Request) -> Any:
+        """
+        HTML-Ansicht: Experiment-Kategorien und Run-Types (Phase 76 Slice 8).
+
+        Gleiche Semantik wie ``GET /api/r_and_d/categories`` (``build_categories_view_payload``). Rein lesend.
+        """
+        proj_status = get_project_status()
+        all_experiments = load_experiments_from_dir()
+        categories_payload = build_categories_view_payload(all_experiments)
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_categories.html",
+            {
+                "status": proj_status,
+                "categories_payload": categories_payload,
+                "total_experiments": len(all_experiments),
+            },
+        )
+
+    @app.get("/r_and_d/presets", response_class=HTMLResponse)
+    async def r_and_d_presets_aggregation_page(request: Request) -> Any:
+        """
+        HTML-Ansicht: Kennzahlen pro Preset (Phase 76 Slice 3).
+
+        Nutzt dieselbe Aggregationslogik wie ``GET /api/r_and_d/presets`` (keine Duplikation
+        der Berechnung). Rein lesend, keine Trigger.
+        """
+        proj_status = get_project_status()
+        all_experiments = load_experiments_from_dir()
+        preset_rows = compute_preset_stats(all_experiments)
+        stats = compute_global_stats(all_experiments)
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_presets.html",
+            {
+                "status": proj_status,
+                "preset_rows": preset_rows,
+                "stats": stats,
+                "total_experiments": len(all_experiments),
+            },
+        )
+
+    @app.get("/r_and_d/strategies", response_class=HTMLResponse)
+    async def r_and_d_strategies_aggregation_page(request: Request) -> Any:
+        """
+        HTML-Ansicht: Kennzahlen pro Strategy (Phase 76 Slice 3).
+
+        Nutzt dieselbe Aggregationslogik wie ``GET /api/r_and_d/strategies``. Rein lesend.
+        """
+        proj_status = get_project_status()
+        all_experiments = load_experiments_from_dir()
+        strategy_rows = compute_strategy_stats(all_experiments)
+        stats = compute_global_stats(all_experiments)
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_strategies.html",
+            {
+                "status": proj_status,
+                "strategy_rows": strategy_rows,
+                "stats": stats,
+                "total_experiments": len(all_experiments),
+            },
+        )
+
+    @app.get("/r_and_d/charts", response_class=HTMLResponse)
+    async def r_and_d_charts_page(request: Request) -> Any:
+        """
+        HTML-Ansicht: Charts v0 (Phase 76 Slice 5) — Sharpe-Histogramm und
+        Total-Return-vs.-Sharpe-Scatter aus lokalem Experiment-Read-Model. Rein lesend.
+        """
+        proj_status = get_project_status()
+        all_experiments = load_experiments_from_dir()
+        charts = build_r_and_d_charts_context(all_experiments)
+        stats = compute_global_stats(all_experiments)
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_charts.html",
+            {
+                "status": proj_status,
+                "charts": charts,
+                "stats": stats,
+            },
+        )
+
     @app.get("/r_and_d/experiment/{run_id}", response_class=HTMLResponse)
+    @app.get("/r_and_d/experiments/{run_id}", response_class=HTMLResponse)
     async def r_and_d_experiment_detail_page(
         request: Request,
         run_id: str,
     ) -> Any:
         """
         HTML Detail-Page für ein einzelnes R&D-Experiment (Phase 77 v1.1).
+
+        Zwei Pfade (gleiche Handler-Logik, read-only):
+        - ``GET /r_and_d/experiments/{run_id}`` — Phase-76-kanonisch (Design §6.1)
+        - ``GET /r_and_d/experiment/{run_id}`` — älterer Alias
 
         Zeigt:
         - Vollständige Meta-Daten und Parameter

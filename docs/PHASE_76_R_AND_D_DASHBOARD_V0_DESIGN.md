@@ -1,8 +1,10 @@
 # Phase 76 – R&D Dashboard v0 (Design & Spezifikation)
 
-**Status:** 📋 Design-Phase
-**Abhängigkeiten:** Phase 75 (R&D-Wave v2 Experiments, Operator-View)
-**Zieldatum:** TBD
+**Status:** ✅ **v0 read-only umgesetzt** (Slices 1–11 im Repo; siehe §4.1.1).  
+**Hinweis:** Das ist **keine** externe Produktfreigabe und keine Garantie über Datenqualität oder Betrieb — nur der beschriebene **read-only**-Web-UI-Umfang.
+
+**Abhängigkeiten:** Phase 75 (R&D-Wave v2 Experiments, Operator-View)  
+**Zieldatum (v0):** abgeschlossen (Backlog: §4.1.2)
 
 ---
 
@@ -11,9 +13,9 @@
 Phase 76 liefert ein erstes **R&D Dashboard v0**, das auf den bestehenden
 R&D-Bausteinen aufsetzt:
 
-- Strategy-Profiling via `scripts/research_cli.py strategy-profile`
-- R&D Experiments Viewer CLI `scripts/view_r_and_d_experiments.py`
-- Analyse-Template `notebooks/r_and_d_experiment_analysis_template.py`
+- Strategy-Profiling via `scripts&#47;research_cli.py strategy-profile`
+- R&D Experiments Viewer CLI `scripts&#47;view_r_and_d_experiments.py`
+- Analyse-Template `notebooks&#47;r_and_d_experiment_analysis_template.py`
 - Operator-Workflow aus Phase 75 (R&D-Wave v1/v2)
 
 **Ziel von Phase 76:**
@@ -92,10 +94,88 @@ R&D-Bausteinen aufsetzt:
 
 ### 4.1 Primäre Datenquelle
 
-- **Verzeichnis:** `reports/r_and_d_experiments/`
+- **Verzeichnis:** `reports&#47;r_and_d_experiments&#47;`
 - **Format:** JSON-Dateien pro Experiment
 - **Struktur:** Konsistent mit dem, was `view_r_and_d_experiments.py` und
   `r_and_d_experiment_analysis_template.py` bereits nutzen.
+
+**Slice 1 (read-only Read-Model):** Defensive JSON-Ladung und Sortier-Helfer für
+Listen-Daten liegen in `src&#47;r_and_d&#47;experiments_read_model.py` (keine Schreibpfade,
+keine Netzwerk-Calls). Die WebUI-API `GET /api&#47;r_and_d&#47;experiments` in
+`src&#47;webui&#47;r_and_d_api.py` nutzt diese Schicht und unterstützt Filter sowie
+`sort_by` / `sort_order` wie in §5.2 beschrieben.
+
+**Slice 2 (list UI GET parity):** Die HTML-Route `GET &#47;r_and_d` reicht dieselben
+relevanten Query-Parameter wie `GET /api&#47;r_and_d&#47;experiments` read-only durch
+(Filter, Datumsfenster, `sort_by`/`sort_order`, `limit`; optional zusätzlich UI-`run_type`).
+Keine POST-Routen und keine Job-Trigger in diesem Slice.
+
+**Slice 3 (aggregation UI GET):** Read-only HTML unter `GET &#47;r_and_d&#47;presets` und
+`GET &#47;r_and_d&#47;strategies` nutzt dieselbe Aggregationslogik wie
+`GET /api&#47;r_and_d&#47;presets` bzw. `GET /api&#47;r_and_d&#47;strategies` (Tabellen,
+KPIs, defensive Empty States; keine Charts, keine Writes).
+
+**Slice 4 (experiment detail GET):** `GET &#47;r_and_d&#47;experiments&#47;{run_id}` liefert die
+read-only HTML-Detailansicht (Metriken, Raw JSON); dieselbe Handler-Logik wie der ältere Alias
+`GET &#47;r_and_d&#47;experiment&#47;{run_id}`. JSON-Detail: `GET /api&#47;r_and_d&#47;experiments&#47;{run_id}`
+(unverändert, zentral über `find_experiment_by_run_id` / `build_experiment_detail`).
+
+**Slice 5 (charts v0 GET):** `GET &#47;r_and_d&#47;charts` — read-only HTML mit genau zwei Diagrammen
+(Sharpe-Histogramm, Scatter Total Return vs. Sharpe) aus dem bestehenden lokalen Experiment-Read-Model
+(`load_experiments_from_dir` / `extract_flat_fields`); defensive Empty States, keine neue Persistenz,
+keine zusätzlichen Write-/Trigger-Routen.
+
+**Slice 6 (summary/overview HTML GET):** `GET &#47;r_and_d&#47;summary` — read-only HTML mit derselben Semantik wie
+`GET /api&#47;r_and_d&#47;summary` und `GET /api&#47;r_and_d&#47;stats` (Helfer ``compute_summary`` /
+``compute_global_stats``); defensive Empty State ohne lokale JSONs; keine neuen API-Felder.
+
+**Slice 7 (today/running HTML GET):** `GET &#47;r_and_d&#47;today` und `GET &#47;r_and_d&#47;running` — read-only HTML mit
+derselben Semantik wie `GET /api&#47;r_and_d&#47;today` bzw. `GET /api&#47;r_and_d&#47;running`
+(Helfer ``build_today_view_payload`` und ``build_running_view_payload``); defensive Empty States; keine neuen API-Felder.
+
+**Slice 8 (categories HTML GET):** `GET &#47;r_and_d&#47;categories` — read-only HTML mit derselben Aggregation wie
+`GET /api&#47;r_and_d&#47;categories` (Helfer ``build_categories_view_payload``; Zählungen pro ``experiment_category`` und
+``run_type`` aus ``extract_flat_fields``); defensive Empty State ohne lokale JSONs; keine neuen API-Felder.
+
+**Slice 9 (list path consolidation GET):** `GET &#47;r_and_d&#47;experiments` — dieselbe read-only Listenansicht und dieselben
+Query-Parameter wie `GET &#47;r_and_d` (ein Handler, kein Redirect); Detail bleibt unter
+`GET &#47;r_and_d&#47;experiments&#47;{run_id}`; keine neuen API-Endpunkte.
+
+**Slice 10 (canonical list navigation HTML):** Primäre „Zur Experimentenliste / R&D Hub“-Links in den R&D-Templates zeigen auf
+`GET &#47;r_and_d&#47;experiments` (statt nur `GET &#47;r_and_d`); konsistent zu Slice 9 und §6.1; keine API-Änderungen, rein UI.
+
+**Slice 11 (canonical list global nav):** `templates&#47;peak_trade_dashboard&#47;base.html` verlinkt „R&D Experiments“ auf
+`GET &#47;r_and_d&#47;experiments`; Preset-/Strategy-Aggregationstabellen verlinken gefilterte Listen ebenfalls über diesen Pfad
+(Query unverändert); keine API-Änderungen.
+
+#### 4.1.1 Umsetzungsstand v0 read-only
+
+Die **Slices 1–11** liefern zusammen das in dieser Spezifikation beschriebene **R&D Dashboard v0 read-only**:
+
+| Slice | Kurzinhalt |
+|-------|------------|
+| 1 | Read-Model + Listen-API |
+| 2 | Listen-UI (`GET &#47;r_and_d`) mit API-Query-Parität |
+| 3 | Preset-/Strategy-Aggregation HTML |
+| 4 | Experiment-Detail HTML + Alias |
+| 5 | Charts v0 (zwei Diagramme) |
+| 6 | Summary-HTML |
+| 7 | Today-/Running-HTML |
+| 8 | Categories-HTML |
+| 9 | Kanonischer Listenpfad `GET &#47;r_and_d&#47;experiments` |
+| 10 | Hub-Navigation in R&D-Templates auf kanonische Liste |
+| 11 | Globale Nav + Preset-/Strategy-Drilldown auf kanonische Liste |
+
+**Fazit:** Zielsetzung **Scope v0** (read-only, keine Job-Trigger) für den **hier beschriebenen** Funktionsumfang ist erreicht.
+
+#### 4.1.2 Backlog / optional (nicht Teil von v0 read-only)
+
+Themen, die in dieser Spezifikung **genannt**, aber für **v0** nicht geliefert wurden oder bewusst offen bleiben:
+
+- **Pagination** der Experimentenliste (UI und/oder API) — siehe §6.2 und §10 (Offene Fragen #2).
+- **Zusätzliche Visualisierungen**, z. B. „Return by Preset“ (Boxplot) in §6.4 — v0 liefert die **zwei** Charts aus Slice 5.
+- **Chart-Bibliothek** festlegen (§10 #1) — für die vorhandenen Charts bereits nutzbar; verbindliche Wahl kann später erfolgen.
+- **Weiteres UI-Polish** (z. B. Feintuning der in §6.2 skizzierten Pagination-Komponente), ohne neue Write-Pfade.
 
 ### 4.2 Aggregations-Layer
 
@@ -226,6 +306,10 @@ Für `/api/r_and_d/experiments`:
 | Preset Summary | Aggregation nach Preset | `/r_and_d/presets` |
 | Strategy Summary | Aggregation nach Strategy | `/r_and_d/strategies` |
 | Charts | Visualisierungen (Sharpe-Dist, Scatter) | `/r_and_d/charts` |
+| Summary | Kennzahlen wie JSON summary + stats | `/r_and_d/summary` |
+| Today | Heute fertige Experimente (API-Parität) | `/r_and_d/today` |
+| Running | Laufende Experimente (API-Parität) | `/r_and_d/running` |
+| Categories | Zählungen nach Kategorie und Run-Type (API-Parität) | `/r_and_d/categories` |
 
 ### 6.2 Experiments List View
 
@@ -308,7 +392,11 @@ Peak_Trade Web-Dashboard
 ├── /r_and_d/experiments/{id} (NEU: Experiment Detail)
 ├── /r_and_d/presets (NEU: Preset Summary)
 ├── /r_and_d/strategies (NEU: Strategy Summary)
-└── /r_and_d/charts (NEU: Charts)
+├── /r_and_d/charts (NEU: Charts)
+├── /r_and_d/summary (NEU: Summary/Overview HTML)
+├── /r_and_d/today (NEU: Today HTML)
+├── /r_and_d/running (NEU: Running HTML)
+└── /r_and_d/categories (NEU: Categories HTML)
 ```
 
 ### 7.2 Code-Struktur (geplant)
@@ -363,13 +451,15 @@ templates/
 
 ### 8.2 Definition of Done
 
-- [ ] API-Endpoints liefern korrekte Daten
-- [ ] Filter funktionieren wie im CLI (`view_r_and_d_experiments.py`)
-- [ ] Tabelle ist sortierbar und paginiert
-- [ ] Detailansicht zeigt alle Metriken + JSON
-- [ ] Mindestens 2 Charts (Sharpe-Dist, Scatter)
-- [ ] Tests für API-Endpoints (mind. 10 Tests)
-- [ ] Dokumentation aktualisiert
+**Hinweis (Stand v0 read-only):** Die folgende Checkbox-Liste ist **historisch** (Planungsvorlage). Für **v0** gelten die gelieferten **Slices 1–11** als erfüllender Nachweis; offene Punkte wie **Pagination** sind **Backlog** (§4.1.2), kein Blocker für v0.
+
+- [x] API-Endpoints liefern korrekte Daten (Slices 1, Tests)
+- [x] Filter funktionieren wie im CLI (`view_r_and_d_experiments.py`) (Slice 2 / API)
+- [ ] Tabelle ist sortierbar und **paginiert** — **Backlog** (v0: Sort + Limit)
+- [x] Detailansicht zeigt Metriken + JSON (Slice 4)
+- [x] Mindestens 2 Charts (Sharpe-Dist, Scatter) (Slice 5)
+- [x] Tests für API und Web-Routen (R&D-Testsuite)
+- [x] Dokumentation zu Slices und Ist-Stand (inkl. diesem Abschnitt)
 
 ---
 
@@ -378,7 +468,7 @@ templates/
 | Aspekt | Live-Track Dashboard (Phase 82/85) | R&D Dashboard (Phase 76) |
 |--------|-----------------------------------|--------------------------|
 | **Fokus** | Live-/Shadow-/Testnet-Sessions | Offline R&D-Experimente |
-| **Datenquelle** | `reports/experiments/live_sessions/` | `reports/r_and_d_experiments/` |
+| **Datenquelle** | `reports&#47;experiments&#47;live_sessions&#47;` | `reports&#47;r_and_d_experiments&#47;` |
 | **Zeitbezug** | Laufende/abgeschlossene Sessions | Historische Backtests |
 | **Safety-Relevanz** | Hoch (Live-Monitoring) | Niedrig (Read-Only Research) |
 | **Zielgruppe** | Operatoren | Researcher, Quants |
@@ -418,6 +508,16 @@ templates/
 | Datum | Änderung |
 |-------|----------|
 | 2025-12-09 | Initiale Design-Version erstellt |
+| 2026-04-13 | Slice 3 dokumentiert: read-only HTML-Aggregation für Preset/Strategy (`GET &#47;r_and_d&#47;presets`, `GET &#47;r_and_d&#47;strategies`) aligned zu den JSON-Endpunkten |
+| 2026-04-13 | Slice 4: kanonischer Experiment-Detail-Pfad `GET &#47;r_and_d&#47;experiments&#47;{run_id}` (Alias `&#47;r_and_d&#47;experiment&#47;{run_id}`); JSON `GET /api&#47;r_and_d&#47;experiments&#47;{run_id}` |
+| 2026-04-13 | Slice 5: Charts v0 unter `GET &#47;r_and_d&#47;charts` (Sharpe-Histogramm, Return-vs.-Sharpe-Scatter; read-only) |
+| 2026-04-13 | Slice 6: Summary-HTML `GET &#47;r_and_d&#47;summary` aligned zu `GET /api&#47;r_and_d&#47;summary` und `GET /api&#47;r_and_d&#47;stats` |
+| 2026-04-13 | Slice 7: Today-/Running-HTML (`GET &#47;r_and_d&#47;today`, `GET &#47;r_and_d&#47;running`) aligned zu den v1.1-JSON-Endpunkten |
+| 2026-04-13 | Slice 8: Categories-HTML `GET &#47;r_and_d&#47;categories` aligned zu `GET /api&#47;r_and_d&#47;categories` (``build_categories_view_payload``) |
+| 2026-04-13 | Slice 9: Listen-HTML unter `GET &#47;r_and_d&#47;experiments` identisch zu `GET &#47;r_and_d` (read-only; Detail-Pfad unverändert) |
+| 2026-04-13 | Slice 10: Hub-/Listen-Navigation in R&D-HTML auf `GET &#47;r_and_d&#47;experiments` vereinheitlicht (read-only) |
+| 2026-04-13 | Slice 11: globale Nav (`base.html`) und Preset-/Strategy-Drilldown-Links auf kanonische Listen-URL (read-only) |
+| 2026-04-13 | v0 read-only Abschluss-Doku: §4.1.1/§4.1.2 (Ist Slices 1–11, Backlog), §8.2 Hinweis, Status im Kopf — keine Produktfreigabe |
 
 ---
 

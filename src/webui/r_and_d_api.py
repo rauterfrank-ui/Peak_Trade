@@ -31,18 +31,26 @@ v1.1 Änderungen:
 - Experiment-Kategorien nach R&D-Taxonomie
 
 Basis: reports/r_and_d_experiments/, view_r_and_d_experiments.py, Notebook-Template
+
+Read-model I/O (filesystem JSON only): ``src/r_and_d/experiments_read_model.py``.
 """
 
 from __future__ import annotations
 
-import json
+import math
 from collections import defaultdict
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, TypedDict
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
+
+from src.r_and_d.experiments_read_model import (
+    load_experiment_json_file,
+    load_experiments_from_directory,
+    sort_raw_experiments,
+)
 
 
 # =============================================================================
@@ -258,51 +266,19 @@ def load_experiment_json(filepath: Path) -> Optional[Dict[str, Any]]:
     """
     Lädt eine einzelne Experiment-JSON-Datei.
 
-    Args:
-        filepath: Pfad zur JSON-Datei
-
-    Returns:
-        Experiment-Dict mit Metadaten oder None bei Fehler
+    Delegiert an :func:`src.r_and_d.experiments_read_model.load_experiment_json_file`.
     """
-    try:
-        with open(filepath, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        data["_filepath"] = str(filepath)
-        data["_filename"] = filepath.name
-        return data
-    except (json.JSONDecodeError, FileNotFoundError, IOError):
-        return None
+    return load_experiment_json_file(filepath)
 
 
 def load_experiments_from_dir(dir_path: Optional[Path] = None) -> List[Dict[str, Any]]:
     """
     Lädt alle R&D-Experimente aus dem Verzeichnis.
 
-    Args:
-        dir_path: Pfad zum Experiment-Verzeichnis (default: get_r_and_d_dir())
-
-    Returns:
-        Liste von Experiment-Dicts, sortiert nach Timestamp (neueste zuerst)
+    Delegiert an :func:`src.r_and_d.experiments_read_model.load_experiments_from_directory`.
     """
     experiments_dir = dir_path or get_r_and_d_dir()
-
-    if not experiments_dir.exists():
-        return []
-
-    experiments: List[Dict[str, Any]] = []
-    json_files = list(experiments_dir.glob("*.json"))
-
-    for json_file in json_files:
-        data = load_experiment_json(json_file)
-        if data is not None:
-            experiments.append(data)
-
-    # Sortiere nach Timestamp (neueste zuerst)
-    def get_timestamp(exp: Dict[str, Any]) -> str:
-        return exp.get("experiment", {}).get("timestamp", "")
-
-    experiments.sort(key=get_timestamp, reverse=True)
-    return experiments
+    return load_experiments_from_directory(experiments_dir)
 
 
 def extract_flat_fields(exp: Dict[str, Any]) -> Dict[str, Any]:
@@ -891,6 +867,89 @@ def compute_global_stats(experiments: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
 
+def build_r_and_d_charts_context(
+    experiments: List[Dict[str, Any]],
+    *,
+    num_bins: int = 12,
+) -> Dict[str, Any]:
+    """
+    Read-only Kontext für R&D Charts v0 (Phase 76 Slice 5): Sharpe-Histogramm,
+    Scatter Total Return vs. Sharpe — nur aus ``extract_flat_fields`` / lokale JSONs.
+    """
+    n_exp = len(experiments)
+    if n_exp == 0:
+        return {
+            "empty": True,
+            "no_plot_points": False,
+            "n_experiments": 0,
+            "n_plotted": 0,
+            "histogram_labels": [],
+            "histogram_counts": [],
+            "scatter_points": [],
+        }
+
+    plot_rows: List[Dict[str, Any]] = []
+    for exp in experiments:
+        flat = extract_flat_fields(exp)
+        try:
+            s = float(flat["sharpe"])
+            r = float(flat["total_return"])
+        except (TypeError, ValueError, KeyError):
+            continue
+        if not (math.isfinite(s) and math.isfinite(r)):
+            continue
+        plot_rows.append(
+            {
+                "x": s,
+                "y": r,
+                "run_id": str(flat.get("run_id", "")),
+            }
+        )
+
+    if not plot_rows:
+        return {
+            "empty": False,
+            "no_plot_points": True,
+            "n_experiments": n_exp,
+            "n_plotted": 0,
+            "histogram_labels": [],
+            "histogram_counts": [],
+            "scatter_points": [],
+        }
+
+    sharpes = [float(p["x"]) for p in plot_rows]
+    smin, smax = min(sharpes), max(sharpes)
+    if smin == smax:
+        smin -= 0.5
+        smax += 0.5
+    nb = max(1, num_bins)
+    width = (smax - smin) / nb
+    counts = [0] * nb
+    for s in sharpes:
+        if width <= 0:
+            idx = 0
+        else:
+            raw = int((s - smin) / width)
+            idx = min(max(raw, 0), nb - 1)
+        counts[idx] += 1
+
+    labels: List[str] = []
+    for i in range(nb):
+        left = smin + i * width
+        right = left + width
+        labels.append(f"{left:.2f}–{right:.2f}")
+
+    return {
+        "empty": False,
+        "no_plot_points": False,
+        "n_experiments": n_exp,
+        "n_plotted": len(plot_rows),
+        "histogram_labels": labels,
+        "histogram_counts": counts,
+        "scatter_points": plot_rows,
+    }
+
+
 # =============================================================================
 # API ROUTER
 # =============================================================================
@@ -919,6 +978,11 @@ async def list_experiments(
     date_to: Optional[str] = Query(None, description="Filter bis Datum (YYYY-MM-DD)"),
     with_trades: bool = Query(False, description="Nur Experimente mit Trades > 0"),
     limit: int = Query(200, ge=1, le=5000, description="Maximale Anzahl (1-5000)"),
+    sort_by: str = Query(
+        "timestamp",
+        description="Sortierung: timestamp | sharpe | return (total_return)",
+    ),
+    sort_order: str = Query("desc", description="asc oder desc"),
 ) -> Dict[str, Any]:
     """
     Liste aller R&D-Experimente mit Filtern.
@@ -944,8 +1008,10 @@ async def list_experiments(
 
     filtered_count = len(filtered)
 
-    # Limit anwenden
-    limited = filtered[:limit]
+    sorted_exps = sort_raw_experiments(filtered, sort_by=sort_by, sort_order=sort_order)
+
+    # Limit anwenden (nach Sortierung)
+    limited = sorted_exps[:limit]
 
     # In Summary-Format konvertieren
     items = [extract_flat_fields(exp) for exp in limited]
@@ -955,6 +1021,8 @@ async def list_experiments(
         "total": len(experiments),
         "filtered": filtered_count,
         "returned": len(items),
+        "sort_by": sort_by,
+        "sort_order": sort_order,
     }
 
 
@@ -1245,6 +1313,58 @@ async def get_stats() -> RnDGlobalStats:
 # =============================================================================
 
 
+def build_today_view_payload(
+    experiments: Optional[List[Dict[str, Any]]] = None,
+    *,
+    limit: int = 50,
+    reference_date: Optional[date] = None,
+) -> Dict[str, Any]:
+    """
+    Gleiche Logik wie ``GET /api/r_and_d/today`` (HTML-Parität, Tests).
+
+    ``reference_date`` ist nur für deterministische Tests gedacht (default: ``date.today()``).
+    """
+    if experiments is None:
+        experiments = load_experiments_from_dir()
+    ref = reference_date if reference_date is not None else date.today()
+    today_str = ref.strftime("%Y-%m-%d")
+
+    today_experiments: List[Dict[str, Any]] = []
+    for exp in experiments:
+        flat = extract_flat_fields(exp)
+        if flat["date_str"] == today_str and flat["status"] != "running":
+            today_experiments.append(flat)
+
+    limited = today_experiments[:limit]
+
+    return {
+        "items": limited,
+        "count": len(today_experiments),
+        "date": today_str,
+        "success_count": sum(1 for e in today_experiments if e["status"] == "success"),
+        "failed_count": sum(1 for e in today_experiments if e["status"] == "failed"),
+    }
+
+
+def build_running_view_payload(
+    experiments: Optional[List[Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
+    """Gleiche Logik wie ``GET /api/r_and_d/running``."""
+    if experiments is None:
+        experiments = load_experiments_from_dir()
+
+    running: List[Dict[str, Any]] = []
+    for exp in experiments:
+        flat = extract_flat_fields(exp)
+        if flat["status"] == "running":
+            running.append(flat)
+
+    return {
+        "items": running,
+        "count": len(running),
+    }
+
+
 @router.get(
     "/today",
     response_model=Dict[str, Any],
@@ -1266,28 +1386,7 @@ async def get_today_experiments(
         - count: Anzahl
         - date: Heutiges Datum
     """
-    from datetime import date
-
-    today_str = date.today().strftime("%Y-%m-%d")
-    experiments = load_experiments_from_dir()
-
-    # Filter auf heute
-    today_experiments = []
-    for exp in experiments:
-        flat = extract_flat_fields(exp)
-        if flat["date_str"] == today_str and flat["status"] != "running":
-            today_experiments.append(flat)
-
-    # Limit anwenden
-    limited = today_experiments[:limit]
-
-    return {
-        "items": limited,
-        "count": len(today_experiments),
-        "date": today_str,
-        "success_count": sum(1 for e in today_experiments if e["status"] == "success"),
-        "failed_count": sum(1 for e in today_experiments if e["status"] == "failed"),
-    }
+    return build_today_view_payload(limit=limit)
 
 
 @router.get(
@@ -1307,34 +1406,17 @@ async def get_running_experiments() -> Dict[str, Any]:
         - items: Liste der laufenden Experimente
         - count: Anzahl
     """
-    experiments = load_experiments_from_dir()
-
-    running = []
-    for exp in experiments:
-        flat = extract_flat_fields(exp)
-        if flat["status"] == "running":
-            running.append(flat)
-
-    return {
-        "items": running,
-        "count": len(running),
-    }
+    return build_running_view_payload()
 
 
-@router.get(
-    "/categories",
-    response_model=Dict[str, Any],
-    summary="Experiment-Kategorien (v1.1)",
-    description="Liefert verfügbare Experiment-Kategorien mit Counts.",
-)
-async def get_categories() -> Dict[str, Any]:
+def build_categories_view_payload(
+    experiments: Optional[List[Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
     """
-    Verfügbare Experiment-Kategorien (v1.1).
-
-    Returns:
-        Dict mit Kategorien und deren Experiment-Anzahl
+    Gleiche Logik wie ``GET /api/r_and_d/categories`` (HTML-Parität, Tests).
     """
-    experiments = load_experiments_from_dir()
+    if experiments is None:
+        experiments = load_experiments_from_dir()
 
     categories: Dict[str, int] = {}
     run_types: Dict[str, int] = {}
@@ -1364,3 +1446,19 @@ async def get_categories() -> Dict[str, Any]:
             "walkforward": "Walk-Forward",
         },
     }
+
+
+@router.get(
+    "/categories",
+    response_model=Dict[str, Any],
+    summary="Experiment-Kategorien (v1.1)",
+    description="Liefert verfügbare Experiment-Kategorien mit Counts.",
+)
+async def get_categories() -> Dict[str, Any]:
+    """
+    Verfügbare Experiment-Kategorien (v1.1).
+
+    Returns:
+        Dict mit Kategorien und deren Experiment-Anzahl
+    """
+    return build_categories_view_payload()
