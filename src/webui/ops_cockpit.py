@@ -1942,6 +1942,16 @@ def _render_operator_summary_evidence_freshness_observation_read_only(
     )
 
 
+def _render_operator_summary_system_status(system_status_lines: str) -> str:
+    """Inline ``system_state`` scalar lines for operator summary (read-only)."""
+    return (
+        '<section class="operator-summary-system-status" '
+        'id="operator-summary-system-status">'
+        f"{system_status_lines}"
+        "</section>"
+    )
+
+
 def _render_operator_summary_system_state_observation(sso_raw: object) -> str:
     """Compact ``system_state_observation`` block for operator summary (read-only)."""
     if not isinstance(sso_raw, dict):
@@ -3650,13 +3660,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
     truth_state_summary_block = _render_operator_summary_truth_state(payload)
     truth_sources_runtime_block = _render_operator_summary_truth_sources_runtime(payload)
 
-    return (
-        '<div class="operator-summary-surface exec-summary">'
-        "<h2>Operator summary (read-only)</h2>"
-        '<p class="operator-summary-disclaimer"><strong>Observation only.</strong> '
-        "Read-only snapshot from local artifacts and the <code>GET /api/ops-cockpit</code> "
-        "payload shape. <strong>Not an approval, not an unlock,</strong> not a substitute for "
-        "your governance process.</p>"
+    system_status_lines = (
         "<h3>System status (observation)</h3>"
         "<p><em>Trading <code>environment</code> is config observation when loaded — "
         "not a broker or exchange guarantee.</em></p>"
@@ -3673,6 +3677,16 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         "<p><strong>system_state.gating_posture_observation</strong> (observation): "
         f"<code>{gating_mirror}</code> "
         "(mirror of <code>policy_state.summary</code> at payload build; not a second gate engine)</p>"
+    )
+
+    return (
+        '<div class="operator-summary-surface exec-summary">'
+        "<h2>Operator summary (read-only)</h2>"
+        '<p class="operator-summary-disclaimer"><strong>Observation only.</strong> '
+        "Read-only snapshot from local artifacts and the <code>GET /api/ops-cockpit</code> "
+        "payload shape. <strong>Not an approval, not an unlock,</strong> not a substitute for "
+        "your governance process.</p>"
+        f"{_render_operator_summary_system_status(system_status_lines)}"
         f"{sso_block}"
         f"{p83_block}"
         "<h3>Go / No-Go observation (not approval)</h3>"

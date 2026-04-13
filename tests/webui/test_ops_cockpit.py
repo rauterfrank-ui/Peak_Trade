@@ -290,6 +290,7 @@ def test_ops_cockpit_system_state_observation_in_html(tmp_path: Path) -> None:
     (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
     (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-system-status"' in html
     assert 'id="operator-summary-system-state-observation"' in html
     assert "System / environment (observation)" in html
     assert "system_state_observation.status" in html
@@ -1839,6 +1840,8 @@ def test_v3_html_contains_operator_summary_surface(tmp_path: Path) -> None:
     html = render_ops_cockpit_html(repo_root=tmp_path)
     assert "Operator summary (read-only)" in html
     assert "System status (observation)" in html
+    assert 'id="operator-summary-system-status"' in html
+    assert "not a broker or exchange guarantee" in html.lower()
     assert "Go / No-Go observation (not approval)" in html
     assert "Incident observation (read-only)" in html
     assert 'id="operator-summary-incident-observation-read-only"' in html
