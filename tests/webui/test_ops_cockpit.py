@@ -330,6 +330,26 @@ def test_ops_cockpit_balance_semantics_observation_in_operator_summary_html(tmp_
     assert "observation only" in bs_block.lower()
 
 
+def test_ops_cockpit_phase83_eligibility_observation_in_operator_summary_html(tmp_path: Path) -> None:
+    """Operator summary surfaces phase83_eligibility_snapshot; observation-only, no live-access claims."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-phase83-eligibility"' in html
+    assert "Phase 83 — Strategy eligibility (observation)" in html
+    assert "phase83_eligibility_snapshot" in html
+    assert "strategies_checked" in html
+    assert "eligible_count" in html
+    assert "not_eligible_count" in html
+    assert "does not grant live access" in html.lower()
+    p83_block = html.split("Phase 83 — Strategy eligibility (observation)", 1)[1].split(
+        "Go / No-Go observation (not approval)", 1
+    )[0]
+    assert "observation only" in p83_block.lower()
+
+
 def test_ops_cockpit_governance_boundary_observation_in_html(tmp_path: Path) -> None:
     """HTML surfaces governance/AI boundary aggregate; no approval or waiver wording."""
     docs_dir = tmp_path / "docs" / "governance" / "ai"
