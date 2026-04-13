@@ -311,6 +311,25 @@ def test_ops_cockpit_safety_state_projection_in_html(tmp_path: Path) -> None:
     assert "observation only" in ss_block.lower()
 
 
+def test_ops_cockpit_balance_semantics_observation_in_operator_summary_html(tmp_path: Path) -> None:
+    """Operator summary surfaces balance_semantics_state; observation-only, no exchange-truth claims."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-balance-semantics"' in html
+    assert "Balance semantics (observation)" in html
+    assert "balance_semantic_state" in html
+    assert "balance_reason_code" in html
+    assert "balance_operator_visible_state" in html
+    assert "not exchange balance truth" in html.lower()
+    bs_block = html.split("Balance semantics (observation)", 1)[1].split(
+        "Incident / safety (observation)", 1
+    )[0]
+    assert "observation only" in bs_block.lower()
+
+
 def test_ops_cockpit_governance_boundary_observation_in_html(tmp_path: Path) -> None:
     """HTML surfaces governance/AI boundary aggregate; no approval or waiver wording."""
     docs_dir = tmp_path / "docs" / "governance" / "ai"
