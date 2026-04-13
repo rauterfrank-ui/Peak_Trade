@@ -330,7 +330,9 @@ def test_ops_cockpit_balance_semantics_observation_in_operator_summary_html(tmp_
     assert "observation only" in bs_block.lower()
 
 
-def test_ops_cockpit_phase83_eligibility_observation_in_operator_summary_html(tmp_path: Path) -> None:
+def test_ops_cockpit_phase83_eligibility_observation_in_operator_summary_html(
+    tmp_path: Path,
+) -> None:
     """Operator summary surfaces phase83_eligibility_snapshot; observation-only, no live-access claims."""
     docs_dir = tmp_path / "docs" / "governance" / "ai"
     docs_dir.mkdir(parents=True, exist_ok=True)
