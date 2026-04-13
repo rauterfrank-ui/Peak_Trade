@@ -1072,6 +1072,38 @@ def _render_operator_summary_policy_governance_rv6(payload: Dict[str, object]) -
     )
 
 
+def _render_operator_summary_operator_state(payload: Dict[str, object]) -> str:
+    """Compact ``operator_state`` snapshot for operator summary (payload object only; read-only)."""
+    os_raw = payload.get("operator_state")
+    if not isinstance(os_raw, dict):
+        return ""
+    rows: List[str] = []
+    for label, key in (
+        ("operator_state.disabled", "disabled"),
+        ("operator_state.enabled", "enabled"),
+        ("operator_state.armed", "armed"),
+        ("operator_state.dry_run", "dry_run"),
+        ("operator_state.blocked", "blocked"),
+        ("operator_state.kill_switch_active", "kill_switch_active"),
+    ):
+        if key not in os_raw:
+            continue
+        v = escape(_fmt_observation_cell(os_raw.get(key)))
+        rows.append(f"<p><strong>{label}</strong> (observation): <code>{v}</code></p>")
+    if not rows:
+        return ""
+    return (
+        '<section class="operator-summary-operator-state" id="operator-summary-operator-state">'
+        "<h3>Operator state (payload)</h3>"
+        "<p><strong>Observation only.</strong> Local operator state snapshot from <code>operator_state</code> "
+        "in this page&apos;s JSON — <strong>not approval,</strong> <strong>not unlock,</strong> "
+        "not a substitute for <code>policy_go_no_go_observation</code> (separate aggregate). "
+        'See also <a href="#policy-governance-observation-surface">Policy / Governance (vNext RV6)</a>.</p>'
+        f"{''.join(rows)}"
+        "</section>"
+    )
+
+
 def _render_phase57_snapshot_discoverability_card() -> str:
     """HTML block: discoverability links to existing Phase 57 snapshot API (read-only, no new semantics)."""
     return (
@@ -2950,6 +2982,8 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{pgngo_ver}</code></p>"
         )
 
+    operator_state_summary_block = _render_operator_summary_operator_state(payload)
+
     spo_raw = payload.get("safety_posture_observation")
     spo_block = ""
     if isinstance(spo_raw, dict):
@@ -3370,6 +3404,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{go_no_go_intro}"
         f"{go_lines}"
         f"{pgngo_block}"
+        f"{operator_state_summary_block}"
         f"{spo_block}"
         f"{sstate_block}"
         f"{gbo_block}"
