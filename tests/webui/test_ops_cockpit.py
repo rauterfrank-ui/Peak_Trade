@@ -820,6 +820,8 @@ def test_ops_cockpit_html_contains_incident_observation_card(tmp_path: Path) -> 
 
 def test_ops_cockpit_html_contains_run_state_observation_card(tmp_path: Path) -> None:
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="run-state-observation-card"' in html
+    assert html.count('id="run-state-observation-card"') == 1
     assert "Run state — observed rollup" in html
     assert "run_state.status" in html
     assert "run_state.last_run_status" in html
