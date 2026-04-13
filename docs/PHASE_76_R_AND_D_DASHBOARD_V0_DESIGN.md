@@ -129,7 +129,7 @@ keine zusätzlichen Write-/Trigger-Routen.
 
 **Slice 7 (today/running HTML GET):** `GET &#47;r_and_d&#47;today` und `GET &#47;r_and_d&#47;running` — read-only HTML mit
 derselben Semantik wie `GET /api&#47;r_and_d&#47;today` bzw. `GET /api&#47;r_and_d&#47;running`
-(Helfer ``build_today_view_payload`` / ``build_running_view_payload``); defensive Empty States; keine neuen API-Felder.
+(Helfer ``build_today_view_payload`` und ``build_running_view_payload``); defensive Empty States; keine neuen API-Felder.
 
 ### 4.2 Aggregations-Layer
 
