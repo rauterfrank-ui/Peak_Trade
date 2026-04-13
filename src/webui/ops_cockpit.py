@@ -1120,6 +1120,25 @@ def _render_phase57_snapshot_discoverability_card() -> str:
     )
 
 
+def _render_operator_summary_phase57_snapshot_discoverability() -> str:
+    """Compact Phase 57 live snapshot endpoint discoverability for operator summary (GET links only)."""
+    return (
+        '<section class="operator-summary-phase57-snapshot" '
+        'id="operator-summary-phase57-snapshot-discoverability">'
+        "<h3>Live status snapshot (Phase 57) — endpoints</h3>"
+        "<p><strong>Read-only discoverability.</strong> Same JSON/HTML feeds as the home dashboard and the "
+        "<strong>Live status snapshot (Phase 57) — endpoints</strong> card on this page — "
+        "<strong>not</strong> operational approval, <strong>not</strong> go-live, "
+        "<strong>not</strong> a substitute for governance or <code>policy_go_no_go_observation</code>.</p>"
+        '<p style="font-size:0.95em;">'
+        '<a href="/api/live/status/snapshot.json">/api/live/status/snapshot.json</a>'
+        " · "
+        '<a href="/api/live/status/snapshot.html">/api/live/status/snapshot.html</a>'
+        "</p>"
+        "</section>"
+    )
+
+
 def _render_incident_observation_card(payload: Dict[str, object]) -> str:
     """HTML block: compact incident rollup from existing ``incident_state`` keys only (read-only wording)."""
     inc_raw = payload.get("incident_state")
@@ -3161,6 +3180,8 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         payload.get("update_officer_ui")
     )
 
+    phase57_operator_summary_block = _render_operator_summary_phase57_snapshot_discoverability()
+
     rso_raw = payload.get("run_session_observation")
     rso_block = ""
     if isinstance(rso_raw, dict):
@@ -3411,6 +3432,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{_render_operator_summary_policy_governance_rv6(payload)}"
         f"{wo_sum_block}"
         f"{uo_sum_block}"
+        f"{phase57_operator_summary_block}"
         f"{rso_block}"
         f"{run_state_summary_block}"
         f"{sem_block}"

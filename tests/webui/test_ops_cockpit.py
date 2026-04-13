@@ -758,6 +758,24 @@ def test_ops_cockpit_html_contains_phase57_snapshot_discoverability_links(tmp_pa
     assert "observation only" in html.lower()
 
 
+def test_ops_cockpit_operator_summary_phase57_snapshot_discoverability_in_html(
+    tmp_path: Path,
+) -> None:
+    """Operator summary surfaces Phase 57 snapshot GET links; discoverability only, no approval."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-phase57-snapshot-discoverability"' in html
+    assert "Live status snapshot (Phase 57) — endpoints" in html
+    assert "/api/live/status/snapshot.json" in html
+    assert "/api/live/status/snapshot.html" in html
+    assert "read-only discoverability" in html.lower()
+    assert "policy_go_no_go_observation" in html.lower()
+    assert "not" in html.lower() and "go-live" in html.lower()
+
+
 def test_phase83_eligibility_snapshot_ok_with_real_repo_tiering() -> None:
     repo = Path(__file__).resolve().parents[2]
     if not (repo / "config" / "strategy_tiering.toml").exists():
