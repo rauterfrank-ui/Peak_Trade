@@ -368,9 +368,31 @@ def test_ops_cockpit_workflow_officer_observation_in_operator_summary_html(
     assert "policy_go_no_go_observation" in html
     assert "not a release go-signal" in html.lower()
     wo_block = html.split("Operator workflow (observation)", 1)[1].split(
-        "Run / session (observation)", 1
+        "Update Officer (observation)", 1
     )[0]
     assert "observation only" in wo_block.lower()
+
+
+def test_ops_cockpit_update_officer_observation_in_operator_summary_html(
+    tmp_path: Path,
+) -> None:
+    """Operator summary surfaces update_officer_ui; observation-only, no approval/go wording."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-update-officer"' in html
+    assert "Update Officer (observation)" in html
+    assert "update_officer_ui.available" in html
+    assert "empty_state_message" in html
+    assert "policy_go_no_go_observation" in html
+    assert "not a release go-signal" in html.lower()
+    uo_block = html.split("Update Officer (observation)", 1)[1].split(
+        "Run / session (observation)", 1
+    )[0]
+    assert "observation only" in uo_block.lower()
+    assert "read-only tooling" in uo_block.lower()
 
 
 def test_ops_cockpit_governance_boundary_observation_in_html(tmp_path: Path) -> None:

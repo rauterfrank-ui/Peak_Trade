@@ -1521,6 +1521,57 @@ def _render_operator_summary_dependencies_artifact_observations(
     )
 
 
+def _render_operator_summary_update_officer_observation(uo_raw: object) -> str:
+    """Compact Update Officer notifier lines for operator summary (read-only)."""
+    if not isinstance(uo_raw, dict):
+        return ""
+    uo = uo_raw
+    avail = bool(uo.get("available"))
+    intro = (
+        "<p><strong>Observation only.</strong> Same <code>update_officer_ui</code> payload as the "
+        "<strong>Update Officer</strong> card below — notifier / local artifact visibility. "
+        "<strong>Read-only tooling;</strong> <strong>not approval,</strong> <strong>not unlock,</strong> "
+        "<strong>not a release go-signal;</strong> does not start Workflow Officer from this page. "
+        "GET-only source ergonomics remain on the full page. "
+        "<code>policy_go_no_go_observation</code> remains the compact policy aggregate "
+        "(separate object).</p>"
+    )
+    parts: List[str] = [
+        intro,
+        f"<p><strong>update_officer_ui.available</strong>: <code>{escape(str(avail))}</code></p>",
+    ]
+    if not avail:
+        msg = uo.get("empty_state_message")
+        parts.append(
+            f"<p><strong>empty_state_message</strong>: "
+            f"{escape(str(msg if msg is not None else ''))}</p>"
+        )
+    else:
+        for key in ("headline", "status", "next_topic", "severity", "reminder_class"):
+            val = uo.get(key)
+            if val is None:
+                continue
+            s = str(val).strip()
+            if not s and key in ("headline", "next_topic"):
+                continue
+            parts.append(
+                f"<p><strong>update_officer_ui.{key}</strong>: <code>{escape(s)}</code></p>"
+            )
+        rmr = uo.get("requires_manual_review")
+        if rmr is not None:
+            parts.append(
+                f"<p><strong>update_officer_ui.requires_manual_review</strong>: "
+                f"<code>{escape(str(rmr))}</code></p>"
+            )
+    return (
+        '<section class="operator-summary-update-officer" '
+        'id="operator-summary-update-officer">'
+        "<h3>Update Officer (observation)</h3>"
+        f"{''.join(parts)}"
+        "</section>"
+    )
+
+
 def _render_dependencies_state_card_body(dependencies: Dict[str, object]) -> str:
     """HTML inner block for Dependencies State — ``dependencies_state`` keys (read-only)."""
     dep = dependencies if isinstance(dependencies, dict) else {}
@@ -2825,6 +2876,10 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
                 "</section>"
             )
 
+    uo_sum_block = _render_operator_summary_update_officer_observation(
+        payload.get("update_officer_ui")
+    )
+
     rso_raw = payload.get("run_session_observation")
     rso_block = ""
     if isinstance(rso_raw, dict):
@@ -3057,6 +3112,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{sstate_block}"
         f"{gbo_block}"
         f"{wo_sum_block}"
+        f"{uo_sum_block}"
         f"{rso_block}"
         f"{hdo_block}"
         f"{dep_artifact_block}"
