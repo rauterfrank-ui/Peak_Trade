@@ -1409,20 +1409,14 @@ async def get_running_experiments() -> Dict[str, Any]:
     return build_running_view_payload()
 
 
-@router.get(
-    "/categories",
-    response_model=Dict[str, Any],
-    summary="Experiment-Kategorien (v1.1)",
-    description="Liefert verfügbare Experiment-Kategorien mit Counts.",
-)
-async def get_categories() -> Dict[str, Any]:
+def build_categories_view_payload(
+    experiments: Optional[List[Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
     """
-    Verfügbare Experiment-Kategorien (v1.1).
-
-    Returns:
-        Dict mit Kategorien und deren Experiment-Anzahl
+    Gleiche Logik wie ``GET /api/r_and_d/categories`` (HTML-Parität, Tests).
     """
-    experiments = load_experiments_from_dir()
+    if experiments is None:
+        experiments = load_experiments_from_dir()
 
     categories: Dict[str, int] = {}
     run_types: Dict[str, int] = {}
@@ -1452,3 +1446,19 @@ async def get_categories() -> Dict[str, Any]:
             "walkforward": "Walk-Forward",
         },
     }
+
+
+@router.get(
+    "/categories",
+    response_model=Dict[str, Any],
+    summary="Experiment-Kategorien (v1.1)",
+    description="Liefert verfügbare Experiment-Kategorien mit Counts.",
+)
+async def get_categories() -> Dict[str, Any]:
+    """
+    Verfügbare Experiment-Kategorien (v1.1).
+
+    Returns:
+        Dict mit Kategorien und deren Experiment-Anzahl
+    """
+    return build_categories_view_payload()
