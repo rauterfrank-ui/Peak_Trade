@@ -1713,6 +1713,57 @@ def _render_operator_summary_run_state(rs_raw: object) -> str:
     )
 
 
+def _render_operator_summary_exposure_state(exp_raw: object) -> str:
+    """Compact ``exposure_state`` lines for operator summary (read-only; scalars + tiny list counts)."""
+    if not isinstance(exp_raw, dict):
+        return ""
+    ex = exp_raw
+    scalar_rows: Tuple[Tuple[str, str], ...] = (
+        ("exposure_state.summary", "summary"),
+        ("exposure_state.treasury_separation", "treasury_separation"),
+        ("exposure_state.risk_status", "risk_status"),
+        ("exposure_state.observed_exposure", "observed_exposure"),
+        ("exposure_state.observed_ccy", "observed_ccy"),
+        ("exposure_state.data_source", "data_source"),
+        ("exposure_state.last_updated_utc", "last_updated_utc"),
+        ("exposure_state.stale", "stale"),
+    )
+    parts: List[str] = []
+    for label, key in scalar_rows:
+        if key not in ex:
+            continue
+        parts.append(
+            f"<p><strong>{escape(label)}</strong>: "
+            f"<code>{escape(_format_run_state_observation_value(ex.get(key)))}</code></p>"
+        )
+    caps = ex.get("caps_configured")
+    if isinstance(caps, list) and caps:
+        parts.append(
+            "<p><strong>exposure_state.caps_configured</strong> (count): "
+            f"<code>{len(caps)}</code></p>"
+        )
+    ebs = ex.get("exposure_by_symbol")
+    if isinstance(ebs, dict) and ebs:
+        parts.append(
+            "<p><strong>exposure_state.exposure_by_symbol</strong> (count): "
+            f"<code>{len(ebs)}</code></p>"
+        )
+    if not parts:
+        return ""
+    return (
+        '<section class="operator-summary-exposure-state" '
+        'id="operator-summary-exposure-state">'
+        "<h3>Exposure state (observation)</h3>"
+        "<p><strong>Observation only.</strong> Same <code>exposure_state</code> object as "
+        "<code>GET /api/ops-cockpit</code> and the <strong>Exposure State</strong> card below — "
+        "local read-model snapshot, <strong>not</strong> broker or exchange truth, "
+        "<strong>not</strong> approval or unlock, <strong>not</strong> cap/risk mandate. "
+        "<code>exposure_risk_observation</code> remains the compact aggregate above.</p>"
+        f"{''.join(parts)}"
+        "</section>"
+    )
+
+
 def _render_dependencies_state_card_body(dependencies: Dict[str, object]) -> str:
     """HTML inner block for Dependencies State — ``dependencies_state`` keys (read-only)."""
     dep = dependencies if isinstance(dependencies, dict) else {}
@@ -3091,6 +3142,10 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{ero_ver}</code></p>"
         )
 
+    exposure_state_summary_block = _render_operator_summary_exposure_state(
+        payload.get("exposure_state")
+    )
+
     bal_sem_raw = payload.get("balance_semantics_state")
     bs_block = ""
     if isinstance(bal_sem_raw, dict):
@@ -3273,6 +3328,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{hdo_block}"
         f"{dep_artifact_block}"
         f"{ero_block}"
+        f"{exposure_state_summary_block}"
         f"{bs_block}"
         f"{iso_block}"
         "<h3>Incident observation (read-only)</h3>"
