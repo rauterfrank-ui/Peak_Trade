@@ -587,9 +587,7 @@ class TestDashboardEndpoint:
     ) -> None:
         """Run-Detail-Seiten verlinken R&D-Experiment-HTML mit demselben run_id."""
         run_id = "20251204_180000_paper_ma_crossover_BTC-EUR_1m"
-        expected = (
-            "http://127.0.0.1:8000/r_and_d/experiments/20251204_180000_paper_ma_crossover_BTC-EUR_1m"
-        )
+        expected = "http://127.0.0.1:8000/r_and_d/experiments/20251204_180000_paper_ma_crossover_BTC-EUR_1m"
         for path in (f"/watch/runs/{run_id}", f"/sessions/{run_id}"):
             response = test_client.get(path)
             assert response.status_code == 200
