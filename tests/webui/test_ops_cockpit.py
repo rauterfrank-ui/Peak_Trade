@@ -310,10 +310,16 @@ def test_ops_cockpit_safety_posture_observation_in_html(tmp_path: Path) -> None:
     (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
     (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-safety-posture-observation"' in html
     assert "Safety / gating posture (observation)" in html
     assert "safety_posture_observation.status" in html
     assert "not an approval" in html.lower()
     assert "broker or exchange truth" in html.lower()
+    spo_block = html.split('id="operator-summary-safety-posture-observation"', 1)[1].split(
+        'id="operator-summary-safety-state-projection"', 1
+    )[0]
+    assert "safety_posture_observation" in spo_block.lower()
+    assert "dependencies_state" in spo_block.lower()
 
 
 def test_ops_cockpit_safety_state_projection_in_html(tmp_path: Path) -> None:

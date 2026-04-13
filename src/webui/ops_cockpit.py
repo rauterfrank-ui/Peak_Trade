@@ -1973,6 +1973,34 @@ def _render_operator_summary_policy_go_no_go_observation(pgngo_raw: object) -> s
     )
 
 
+def _render_operator_summary_safety_posture_observation(spo_raw: object) -> str:
+    """Compact ``safety_posture_observation`` block for operator summary (read-only)."""
+    if not isinstance(spo_raw, dict):
+        return ""
+    spo_status = escape(str(spo_raw.get("status", "unknown")))
+    spo_summary = escape(str(spo_raw.get("summary", "")))
+    spo_ds = escape(str(spo_raw.get("data_source", "")))
+    spo_ver = escape(str(spo_raw.get("reader_schema_version", "")))
+    inner = (
+        "<h3>Safety / gating posture (observation)</h3>"
+        "<p><strong>Observation only.</strong> Single aggregate from existing "
+        "<code>policy_state</code>, <code>guard_state</code>, <code>incident_state</code>, "
+        "<code>stale_state</code>, and <code>dependencies_state</code> rollups in this "
+        "payload — <strong>not an approval, not an unlock,</strong> not broker or exchange "
+        "truth.</p>"
+        f"<p><strong>safety_posture_observation.status</strong>: <code>{spo_status}</code></p>"
+        f"<p><strong>Summary:</strong> {spo_summary}</p>"
+        f"<p><strong>data_source:</strong> <code>{spo_ds}</code> · "
+        f"<strong>reader_schema_version:</strong> <code>{spo_ver}</code></p>"
+    )
+    return (
+        '<section class="operator-summary-safety-posture-observation" '
+        'id="operator-summary-safety-posture-observation">'
+        f"{inner}"
+        "</section>"
+    )
+
+
 def _render_operator_summary_evidence_audit_observation(eao_raw: object) -> str:
     """Compact ``evidence_audit_observation`` block for operator summary (read-only)."""
     if not isinstance(eao_raw, dict):
@@ -3254,25 +3282,9 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
 
     operator_state_summary_block = _render_operator_summary_operator_state(payload)
 
-    spo_raw = payload.get("safety_posture_observation")
-    spo_block = ""
-    if isinstance(spo_raw, dict):
-        spo_status = escape(str(spo_raw.get("status", "unknown")))
-        spo_summary = escape(str(spo_raw.get("summary", "")))
-        spo_ds = escape(str(spo_raw.get("data_source", "")))
-        spo_ver = escape(str(spo_raw.get("reader_schema_version", "")))
-        spo_block = (
-            "<h3>Safety / gating posture (observation)</h3>"
-            "<p><strong>Observation only.</strong> Single aggregate from existing "
-            "<code>policy_state</code>, <code>guard_state</code>, <code>incident_state</code>, "
-            "<code>stale_state</code>, and <code>dependencies_state</code> rollups in this "
-            "payload — <strong>not an approval, not an unlock,</strong> not broker or exchange "
-            "truth.</p>"
-            f"<p><strong>safety_posture_observation.status</strong>: <code>{spo_status}</code></p>"
-            f"<p><strong>Summary:</strong> {spo_summary}</p>"
-            f"<p><strong>data_source:</strong> <code>{spo_ds}</code> · "
-            f"<strong>reader_schema_version:</strong> <code>{spo_ver}</code></p>"
-        )
+    spo_block = _render_operator_summary_safety_posture_observation(
+        payload.get("safety_posture_observation")
+    )
 
     sstate_raw = payload.get("safety_state")
     sstate_block = ""
