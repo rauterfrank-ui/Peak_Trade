@@ -252,13 +252,15 @@ def test_ops_cockpit_policy_go_no_go_observation_in_html(tmp_path: Path) -> None
     (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
     (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-policy-go-no-go-observation"' in html
     assert "Policy / go-no-go (observation)" in html
     assert "policy_go_no_go_observation.status" in html
     assert "not a live go decision" in html.lower()
-    pg_block = html.split("Policy / go-no-go (observation)", 1)[1].split(
-        "Safety / gating posture (observation)", 1
+    pg_block = html.split('id="operator-summary-policy-go-no-go-observation"', 1)[1].split(
+        'id="operator-summary-operator-state"', 1
     )[0]
     assert "safety_posture_observation" in pg_block.lower()
+    assert "policy_go_no_go_observation" in pg_block.lower()
 
 
 def test_ops_cockpit_operator_summary_operator_state_in_html(tmp_path: Path) -> None:
