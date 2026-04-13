@@ -2504,6 +2504,38 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{sso_ver}</code></p>"
         )
 
+    p83_raw = payload.get("phase83_eligibility_snapshot")
+    p83_block = ""
+    if isinstance(p83_raw, dict):
+        p83_status = escape(str(p83_raw.get("status", "unknown")))
+        p83_chk = int(p83_raw.get("strategies_checked") or 0)
+        p83_eli = int(p83_raw.get("eligible_count") or 0)
+        p83_nel = int(p83_raw.get("not_eligible_count") or 0)
+        tp_raw = p83_raw.get("truth_posture")
+        tp_s = escape(str(tp_raw)) if tp_raw is not None else "n/a"
+        ro_raw = p83_raw.get("read_only")
+        ro_s = escape(str(ro_raw)) if ro_raw is not None else "n/a"
+        rflag = p83_raw.get("require_allow_live_flag")
+        rflag_s = escape(str(rflag)) if rflag is not None else "n/a"
+        p83_block = (
+            '<section class="operator-summary-phase83-eligibility" '
+            'id="operator-summary-phase83-eligibility">'
+            "<h3>Phase 83 — Strategy eligibility (observation)</h3>"
+            "<p><strong>Observation only.</strong> Compact snapshot from "
+            "<code>phase83_eligibility_snapshot</code> in this payload — same eligibility check as the "
+            "<strong>Phase 83 — Strategy eligibility</strong> card below. "
+            "<strong>Does not grant live access,</strong> <strong>not approval,</strong> "
+            "not a substitute for external governance or <code>policy_go_no_go_observation</code>.</p>"
+            f"<p><strong>status</strong>: <code>{p83_status}</code> · "
+            f"<strong>strategies_checked</strong>: <code>{p83_chk}</code> · "
+            f"<strong>eligible_count</strong> / <strong>not_eligible_count</strong>: "
+            f"<code>{p83_eli}</code> / <code>{p83_nel}</code></p>"
+            f"<p><strong>read_only</strong>: <code>{ro_s}</code> · "
+            f"<strong>truth_posture</strong>: <code>{tp_s}</code> · "
+            f"<strong>require_allow_live_flag</strong> (policy observation): <code>{rflag_s}</code></p>"
+            "</section>"
+        )
+
     action = escape(str(ps.get("action", "unknown")))
     blocked = ps.get("blocked")
     blocked_s = escape(str(blocked))
@@ -2875,6 +2907,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"<code>{gating_mirror}</code> "
         "(mirror of <code>policy_state.summary</code> at payload build; not a second gate engine)</p>"
         f"{sso_block}"
+        f"{p83_block}"
         "<h3>Go / No-Go observation (not approval)</h3>"
         f"{go_no_go_intro}"
         f"{go_lines}"

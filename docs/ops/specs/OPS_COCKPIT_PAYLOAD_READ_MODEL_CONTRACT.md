@@ -126,7 +126,7 @@ Additive changes may introduce **new** top-level keys; removals or renames are *
 
 | Key | Role |
 |-----|------|
-| `phase83_eligibility_snapshot` | Read-only **observation** snapshot from the existing Phase 83 eligibility check (`check_strategy_live_eligibility`); **not** live approval or gate weakening. Traceability (payload &#47; HTML &#47; tests): [`OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md`](OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md) — **§ Supplementary Cockpit surfaces**. |
+| `phase83_eligibility_snapshot` | Read-only **observation** snapshot from the existing Phase 83 eligibility check (`check_strategy_live_eligibility`); **not** live approval or gate weakening. Traceability (payload &#47; HTML &#47; tests): [`OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md`](OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md) — **§ Supplementary Cockpit surfaces**. Operator Summary HTML: [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md) — **Phase 83 — Strategy eligibility (observation)** (`id=operator-summary-phase83-eligibility`). |
 
 ## Observation-only aggregates (`*_observation`)
 
