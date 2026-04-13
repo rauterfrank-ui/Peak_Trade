@@ -11,6 +11,20 @@
 - No live unlock, no approval semantics, no gate weakening.
 - No new API routes; existing payload keys keep the same meaning. Additive **read-only** keys (e.g. `workflow_officer_state`) are allowed when they surface existing artifacts with no new authority.
 
+## Phase E — Operator interpretation (governance, read-only)
+
+This surface maps payload keys and HTML blocks for **visibility** only. **Phase E** closure is documented in [`RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`](../runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md) (traceability to this file, the payload contract, and tests).
+
+**Separation operators should use:**
+
+| Layer | Payload examples | Read as |
+|-------|-------------------|---------|
+| Policy / guard posture | `policy_state`, `guard_state`, `operator_state` | Config and local state-file observation in the builder — **not** an external approval or live mandate. |
+| Compact observations | `*_observation` keys | Conservative rollups — **not** unlock, **not** broker truth. |
+| Workflow / notifier tooling | `workflow_officer_state`, `update_officer_ui` | Artifact/notifier visibility — **not** a substitute for `policy_go_no_go_observation` or go/no-go approval. |
+
+**Non-claims:** The Cockpit does not assert exchange reconciliation correctness, session enforcement on brokers, or audit sign-off. Resolve ambiguities with external governance and runbooks, not by inferring authority from this page alone.
+
 ## Required View ↔ Payload ↔ Render
 
 | vNext Required View (Auszug) | Payload keys (observation) | HTML / helper |
@@ -92,6 +106,7 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 - [`OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md`](OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md) — canonical top-level payload key contract for `build_ops_cockpit_payload` (read-model; not UI layout).
 - [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) — operator-facing target spec.
 - [`RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`](../runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md) — phased plan; RV6 Policy/Governance and Phase 4 Workflow Officer observation surfaces shipped read-only (HTML bundle).
+- [`RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`](../runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md) — Phase E governance review; interpretation vs authority; canonical anchors.
 - [`RUNBOOK_PR_CI_VERIFICATION.md`](../runbooks/RUNBOOK_PR_CI_VERIFICATION.md) — PR/CI events and verification (truth-first).
 
 ## Code references

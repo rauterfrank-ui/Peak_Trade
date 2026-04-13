@@ -135,10 +135,19 @@ Keys ending with `_observation` are **cockpit observations**: conservative rollu
 
 Rendering and section order are **not** part of this key-level contract. For HTML mapping, use [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md).
 
+## Governance interpretation (Phase E)
+
+This contract lists **keys and roles**, not operator procedure. For **read-only interpretation** — what the payload **does not** authorize, and how `policy_state` &#47; `*_observation` &#47; workflow tooling differ — use:
+
+- [`RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`](../runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md) — Phase E closure; canonical anchors and non-claims.  
+- [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md) — section **Phase E — Operator interpretation**.  
+- [`docs/ops/registry/DOCS_TRUTH_MAP.md`](../registry/DOCS_TRUTH_MAP.md) — docs drift registry (pairing sensitive edits with canonical docs).
+
 ## Related
 
 - [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) — vNext operator-facing target.
 - [`RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`](../runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md) — phased plan; Phase B read-model alignment.
+- [`RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`](../runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md) — Phase E governance review and traceability.
 - [`docs/ops/registry/DOCS_TRUTH_MAP.md`](../registry/DOCS_TRUTH_MAP.md) — docs drift and canonical references.
 
 ## Tests
