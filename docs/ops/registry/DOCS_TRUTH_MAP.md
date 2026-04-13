@@ -64,6 +64,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 ## Änderungsnachweis (Slice A)
 
+- 2026-04-13: `docs&#47;ops&#47;specs&#47;OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md` — **§ Supplementary Cockpit surfaces** ergänzt (Traceability für `phase83_eligibility_snapshot`, `workflow_officer_state`, `update_officer_ui`, `balance_semantics_state` **außerhalb** Required Views §1–7; keine RV-Neuzuordnung, keine Produktautorität); knappe Querverweise in `OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md` und `OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md`; reine Doku, keine `src&#47;`-Änderung.
+
 - 2026-04-13: `docs&#47;ops&#47;specs&#47;OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md` neu — vNext Required Views §1–7 ↔ Ops Cockpit Payload &#47; Operator-Summary-Surface &#47; Test-Anker (Traceability, keine Vollständigkeits-Freigabe); `docs&#47;DASHBOARD_COMPLETION_MASTER_CHECKLIST.md` OPS-Spur auf Ist-Stand Phasen A–E + Branch-Folge 1–6; Querverweise in vNext-Spec, vNext-Plan, Phase-E-Runbook; reine Doku, keine `src&#47;`-Änderung.
 
 - 2026-04-13: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md` neu — Phase E Governance Review (Ops Cockpit Interpretation vs. Autorität, Traceability zu Payload-Contract, Operator-Summary-Surface, Truth-Map, Tests); `RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`, `OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`, `OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md` und `OPS_SUITE_OPERATOR_STATE_REAL_SIGNAL_REVIEW.md` (Supersession-Hinweis) angepasst; keine Produkt-Autoritätsänderung.
