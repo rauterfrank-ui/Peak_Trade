@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from html import escape
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from urllib.parse import urlencode
 
 from src.ops.update_officer_consumer import (
@@ -1086,34 +1086,39 @@ def _render_incident_observation_card(payload: Dict[str, object]) -> str:
     )
 
 
+# Same labels and payload keys as ``_render_run_state_observation_card`` / operator-summary run_state block.
+_RUN_STATE_OBSERVATION_FIELD_ROWS: Tuple[Tuple[str, str], ...] = (
+    ("run_state.status", "status"),
+    ("run_state.active", "active"),
+    ("run_state.last_run_status", "last_run_status"),
+    ("run_state.session_active", "session_active"),
+    ("run_state.registry_session_count", "registry_session_count"),
+    ("run_state.registry_last_started_at", "registry_last_started_at"),
+    ("run_state.generated_at", "generated_at"),
+    ("run_state.freshness_status", "freshness_status"),
+)
+
+
+def _format_run_state_observation_value(val: object) -> str:
+    if val is True:
+        return "true"
+    if val is False:
+        return "false"
+    if val is None:
+        return "n/a"
+    return str(val)
+
+
 def _render_run_state_observation_card(payload: Dict[str, object]) -> str:
     """HTML block: compact run-state rollup from existing ``run_state`` keys only (read-only wording)."""
     rs_raw = payload.get("run_state")
     rs = rs_raw if isinstance(rs_raw, dict) else {}
 
-    def _fmt_val(val: object) -> str:
-        if val is True:
-            return "true"
-        if val is False:
-            return "false"
-        if val is None:
-            return "n/a"
-        return str(val)
-
     rows_html: List[str] = []
-    for label, key in (
-        ("run_state.status", "status"),
-        ("run_state.active", "active"),
-        ("run_state.last_run_status", "last_run_status"),
-        ("run_state.session_active", "session_active"),
-        ("run_state.registry_session_count", "registry_session_count"),
-        ("run_state.registry_last_started_at", "registry_last_started_at"),
-        ("run_state.generated_at", "generated_at"),
-        ("run_state.freshness_status", "freshness_status"),
-    ):
+    for label, key in _RUN_STATE_OBSERVATION_FIELD_ROWS:
         if key not in rs:
             continue
-        v = escape(_fmt_val(rs.get(key)))
+        v = escape(_format_run_state_observation_value(rs.get(key)))
         rows_html.append(
             f"<tr><td style='padding:4px 8px 4px 0;vertical-align:top;'><code>{escape(label)}</code></td>"
             f"<td style='padding:4px 0;'><code>{v}</code></td></tr>"
@@ -1674,6 +1679,35 @@ def _render_operator_summary_transfer_ambiguity(ta_raw: object) -> str:
         "<strong>not</strong> all-clear. Same semantics as the "
         "<strong>Transfer / Treasury ambiguity</strong> card. "
         "<code>operator_attention_hint</code> is a nudge only, not a gate.</p>"
+        f"{''.join(parts)}"
+        "</section>"
+    )
+
+
+def _render_operator_summary_run_state(rs_raw: object) -> str:
+    """Compact ``run_state`` lines for operator summary (read-only; same fields as main-page card)."""
+    if not isinstance(rs_raw, dict):
+        return ""
+    rs = rs_raw
+    parts: List[str] = []
+    for label, key in _RUN_STATE_OBSERVATION_FIELD_ROWS:
+        if key not in rs:
+            continue
+        parts.append(
+            f"<p><strong>{escape(label)}</strong>: "
+            f"<code>{escape(_format_run_state_observation_value(rs.get(key)))}</code></p>"
+        )
+    if not parts:
+        return ""
+    return (
+        '<section class="operator-summary-run-state" '
+        'id="operator-summary-run-state">'
+        "<h3>Run state (observation)</h3>"
+        "<p><strong>Observation only.</strong> Same <code>run_state</code> object as "
+        "<code>GET /api/ops-cockpit</code> and the <strong>Run state — observed rollup</strong> card "
+        "below — local snapshot, <strong>not</strong> start/stop control, <strong>not</strong> execution "
+        "authority, <strong>not</strong> governance or go/no-go. "
+        "<code>run_session_observation</code> remains the compact aggregate line above.</p>"
         f"{''.join(parts)}"
         "</section>"
     )
@@ -3006,6 +3040,8 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{rso_ver}</code></p>"
         )
 
+    run_state_summary_block = _render_operator_summary_run_state(payload.get("run_state"))
+
     sem_block = _render_operator_summary_session_end_mismatch(
         payload.get("session_end_mismatch_state")
     )
@@ -3230,6 +3266,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{wo_sum_block}"
         f"{uo_sum_block}"
         f"{rso_block}"
+        f"{run_state_summary_block}"
         f"{sem_block}"
         f"{ta_block}"
         f"{stale_signals_block}"
