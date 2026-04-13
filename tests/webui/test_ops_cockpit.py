@@ -261,6 +261,26 @@ def test_ops_cockpit_policy_go_no_go_observation_in_html(tmp_path: Path) -> None
     assert "safety_posture_observation" in pg_block.lower()
 
 
+def test_ops_cockpit_operator_summary_operator_state_in_html(tmp_path: Path) -> None:
+    """Operator summary surfaces operator_state scalars; not a substitute for policy_go_no_go_observation."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-operator-state"' in html
+    assert "Operator state (payload)" in html
+    assert "operator_state.enabled" in html
+    assert "operator_state.blocked" in html
+    assert "not a substitute for" in html.lower()
+    assert "policy_go_no_go_observation" in html.lower()
+    os_block = html.split('id="operator-summary-operator-state"', 1)[1].split(
+        "Safety / gating posture (observation)", 1
+    )[0]
+    assert "operator_state.kill_switch_active" in os_block
+    assert "not unlock" in os_block.lower()
+
+
 def test_ops_cockpit_system_state_observation_in_html(tmp_path: Path) -> None:
     """HTML surfaces system/environment aggregate; no broker guarantee wording."""
     docs_dir = tmp_path / "docs" / "governance" / "ai"
