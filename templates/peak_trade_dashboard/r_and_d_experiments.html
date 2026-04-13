@@ -175,6 +175,22 @@
         {{ quick_action("Alle", "/r_and_d", "📋", not filters.with_trades and not filters.preset and not filters.strategy and not filters.tag_substr and not filters.run_type and not filters.date_from and not filters.date_to and filters.sort_by == 'timestamp' and filters.sort_order == 'desc' and limit == 200) }}
         {{ quick_action("Mit Trades", "/r_and_d?with_trades=true", "✅", filters.with_trades) }}
         <a
+          href="/r_and_d/presets"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300"
+          title="Aggregation nach Preset (read-only)"
+        >
+          <span>📊</span>
+          <span>Presets</span>
+        </a>
+        <a
+          href="/r_and_d/strategies"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300"
+          title="Aggregation nach Strategy (read-only)"
+        >
+          <span>🎯</span>
+          <span>Strategies</span>
+        </a>
+        <a
           href="/"
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
         >

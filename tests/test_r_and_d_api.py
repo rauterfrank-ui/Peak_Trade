@@ -162,6 +162,21 @@ def client(temp_experiments_dir) -> TestClient:
     return TestClient(app)
 
 
+@pytest.fixture
+def empty_experiments_dir(tmp_path: Path) -> Path:
+    """Repo-Layout ohne JSON-Dateien (defensive Empty-State)."""
+    exp_dir = tmp_path / "reports" / "r_and_d_experiments"
+    exp_dir.mkdir(parents=True)
+    return tmp_path
+
+
+@pytest.fixture
+def empty_experiments_client(empty_experiments_dir: Path) -> TestClient:
+    app = create_app()
+    set_base_dir(empty_experiments_dir)
+    return TestClient(app)
+
+
 # =============================================================================
 # UNIT TESTS - Hilfsfunktionen
 # =============================================================================
@@ -532,6 +547,53 @@ class TestRAndDExperimentsPage:
         assert resp.status_code == 200
         assert "Sharpe" in resp.text
         assert "aufsteigend" in resp.text
+
+    def test_hub_links_to_aggregation_pages(self, client):
+        """Experimentenliste verlinkt read-only auf Preset-/Strategy-Aggregation."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        text = resp.text
+        assert 'href="/r_and_d/presets"' in text
+        assert 'href="/r_and_d/strategies"' in text
+
+
+class TestRnDAggregationHtmlPages:
+    """Phase 76 Slice 3: HTML für Preset-/Strategy-Aggregation (Parität zu JSON-API)."""
+
+    def test_presets_page_ok_and_markers(self, client):
+        resp = client.get("/r_and_d/presets")
+        assert resp.status_code == 200
+        assert "text/html" in resp.headers.get("content-type", "")
+        body = resp.text
+        assert 'data-section="r-and-d-preset-aggregation"' in body
+        assert "Aggregation nach Preset" in body
+        assert "test_preset_v1" in body
+        assert 'method="POST"' not in body
+
+    def test_strategies_page_ok_and_markers(self, client):
+        resp = client.get("/r_and_d/strategies")
+        assert resp.status_code == 200
+        body = resp.text
+        assert 'data-section="r-and-d-strategy-aggregation"' in body
+        assert "Aggregation nach Strategy" in body
+        assert "test_strategy" in body
+        assert 'method="POST"' not in body
+
+    def test_presets_html_matches_api_row_count(self, client):
+        api = client.get("/api/r_and_d/presets")
+        assert api.status_code == 200
+        presets = api.json()
+        html = client.get("/r_and_d/presets").text
+        for row in presets:
+            assert row["preset_id"] in html
+
+    def test_empty_repo_presets_and_strategies_defensive(self, empty_experiments_client):
+        p = empty_experiments_client.get("/r_and_d/presets")
+        assert p.status_code == 200
+        assert "Keine Preset-Gruppen" in p.text
+        s = empty_experiments_client.get("/r_and_d/strategies")
+        assert s.status_code == 200
+        assert "Keine Strategy-Gruppen" in s.text
 
 
 # =============================================================================
