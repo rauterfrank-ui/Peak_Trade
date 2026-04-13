@@ -637,7 +637,7 @@ class TestRnDSummaryHtmlPage:
         assert 'data-section="r-and-d-summary"' in body
         assert f'data-r-and-d-summary-total="{jsum["total_experiments"]}"' in body
         assert str(jsum["total_experiments"]) in body
-        median_sharpe_fmt = f'{float(jstats["median_sharpe"]):.3f}'
+        median_sharpe_fmt = f"{float(jstats['median_sharpe']):.3f}"
         assert median_sharpe_fmt in body
         assert 'method="POST"' not in body
 
