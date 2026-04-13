@@ -74,6 +74,7 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert "operator_state" in payload
     assert "run_state" in payload
     assert "incident_state" in payload
+    assert "safety_state" in payload
     assert "exposure_state" in payload
     assert "stale_state" in payload
     assert "session_end_mismatch_state" in payload
@@ -196,6 +197,17 @@ def test_ops_cockpit_truth_sections_present(tmp_path: Path) -> None:
     assert spo["data_source"] == "cockpit_payload_aggregate"
     assert spo["reader_schema_version"].startswith("safety_posture_observation/")
     assert "cockpit observation" in spo["summary"].lower()
+    sstate = payload["safety_state"]
+    assert sstate["data_source"] == "cockpit_payload_aggregate"
+    assert sstate["reader_schema_version"].startswith("safety_state/")
+    assert "not approval" in sstate["summary"].lower()
+    assert sstate["posture_observation"]["status"] == spo["status"]
+    assert (
+        sstate["incident_safety_observation"]["status"]
+        == payload["incident_safety_observation"]["status"]
+    )
+    assert sstate["incident_signal_subset"]["blocked"] is True
+    assert sstate["incident_signal_subset"]["kill_switch_active"] is False
     rso = payload["run_session_observation"]
     assert rso["status"] == "nominal"
     assert rso["data_source"] == "cockpit_payload_aggregate"

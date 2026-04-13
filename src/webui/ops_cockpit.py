@@ -2085,6 +2085,7 @@ def build_ops_cockpit_payload(
     from src.ops.incident_safety_observation import build_incident_safety_observation
     from src.ops.run_session_observation import build_run_session_observation
     from src.ops.safety_posture_observation import build_safety_posture_observation
+    from src.ops.safety_state import build_safety_state
     from src.ops.system_state_observation import build_system_state_observation
 
     safety_posture_observation = build_safety_posture_observation(
@@ -2124,6 +2125,11 @@ def build_ops_cockpit_payload(
         dependencies_state=dependencies_state,
         policy_state=policy_state,
         operator_state=operator_state,
+    )
+    safety_state = build_safety_state(
+        safety_posture_observation=safety_posture_observation,
+        incident_state=incident_state,
+        incident_safety_observation=incident_safety_observation,
     )
     evidence_audit_observation = build_evidence_audit_observation(
         evidence_state=evidence_state,
@@ -2178,6 +2184,7 @@ def build_ops_cockpit_payload(
         "workflow_officer_state": workflow_officer_state,
         "update_officer_ui": update_officer_ui,
         "safety_posture_observation": safety_posture_observation,
+        "safety_state": safety_state,
         "run_session_observation": run_session_observation,
         "health_drift_observation": health_drift_observation,
         "exposure_risk_observation": exposure_risk_observation,

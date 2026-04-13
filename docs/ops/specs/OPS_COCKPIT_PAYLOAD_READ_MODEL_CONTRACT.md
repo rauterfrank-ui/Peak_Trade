@@ -48,6 +48,7 @@ Additive changes may introduce **new** top-level keys; removals or renames are *
 | Key | Role |
 |-----|------|
 | `safety_posture_observation` | Holistic gating posture aggregate — `src&#47;ops&#47;safety_posture_observation.py`. Observation only. |
+| `safety_state` | vNext-aligned **top-level projection** — `src&#47;ops&#47;safety_state.py` (`build_safety_state`). Bundles references and a small scalar subset from existing `safety_posture_observation`, `incident_safety_observation`, and `incident_state` only — **not** new gating logic, **not** approval or unlock. |
 
 ### Run / session
 
@@ -157,8 +158,8 @@ This contract lists **keys and roles**, not operator procedure. For **read-only 
 
 ## Stable top-level key set (reference)
 
-The following **38** top-level keys are **intended** to be present when `build_ops_cockpit_payload` completes successfully on a minimal repo layout (the set may grow **additively**; new keys should be documented here):
+The following **39** top-level keys are **intended** to be present when `build_ops_cockpit_payload` completes successfully on a minimal repo layout (the set may grow **additively**; new keys should be documented here):
 
-`ai_boundary_state`, `balance_semantics_state`, `canonical_sources`, `critical_flags`, `dependencies_state`, `evidence_audit_observation`, `evidence_state`, `executive_summary`, `exposure_risk_observation`, `exposure_state`, `freshness_status`, `governance_boundary_observation`, `guard_state`, `health_drift_observation`, `human_supervision_state`, `incident_safety_observation`, `incident_state`, `operator_state`, `phase83_eligibility_snapshot`, `policy_go_no_go_observation`, `policy_state`, `runtime_unknown_state`, `run_session_observation`, `run_state`, `safety_posture_observation`, `session_end_mismatch_state`, `source_coverage_status`, `source_group_summary`, `source_groups`, `stale_state`, `system_state`, `system_state_observation`, `transfer_ambiguity_state`, `truth_state`, `truth_status`, `unknown_flags`, `update_officer_ui`, `workflow_officer_state`.
+`ai_boundary_state`, `balance_semantics_state`, `canonical_sources`, `critical_flags`, `dependencies_state`, `evidence_audit_observation`, `evidence_state`, `executive_summary`, `exposure_risk_observation`, `exposure_state`, `freshness_status`, `governance_boundary_observation`, `guard_state`, `health_drift_observation`, `human_supervision_state`, `incident_safety_observation`, `incident_state`, `operator_state`, `phase83_eligibility_snapshot`, `policy_go_no_go_observation`, `policy_state`, `runtime_unknown_state`, `run_session_observation`, `run_state`, `safety_posture_observation`, `safety_state`, `session_end_mismatch_state`, `source_coverage_status`, `source_group_summary`, `source_groups`, `stale_state`, `system_state`, `system_state_observation`, `transfer_ambiguity_state`, `truth_state`, `truth_status`, `unknown_flags`, `update_officer_ui`, `workflow_officer_state`.
 
 **Note:** Nested object shapes and enum-like strings inside these keys are **evolving**; consumers should not rely on undocumented inner fields without checking the builder implementation.
