@@ -118,6 +118,11 @@ read-only HTML-Detailansicht (Metriken, Raw JSON); dieselbe Handler-Logik wie de
 `GET &#47;r_and_d&#47;experiment&#47;{run_id}`. JSON-Detail: `GET /api&#47;r_and_d&#47;experiments&#47;{run_id}`
 (unverändert, zentral über `find_experiment_by_run_id` / `build_experiment_detail`).
 
+**Slice 5 (charts v0 GET):** `GET &#47;r_and_d&#47;charts` — read-only HTML mit genau zwei Diagrammen
+(Sharpe-Histogramm, Scatter Total Return vs. Sharpe) aus dem bestehenden lokalen Experiment-Read-Model
+(`load_experiments_from_dir` / `extract_flat_fields`); defensive Empty States, keine neue Persistenz,
+keine zusätzlichen Write-/Trigger-Routen.
+
 ### 4.2 Aggregations-Layer
 
 Für das Dashboard v0 gibt es zwei mögliche Ansätze:
@@ -441,6 +446,7 @@ templates/
 | 2025-12-09 | Initiale Design-Version erstellt |
 | 2026-04-13 | Slice 3 dokumentiert: read-only HTML-Aggregation für Preset/Strategy (`GET &#47;r_and_d&#47;presets`, `GET &#47;r_and_d&#47;strategies`) aligned zu den JSON-Endpunkten |
 | 2026-04-13 | Slice 4: kanonischer Experiment-Detail-Pfad `GET &#47;r_and_d&#47;experiments&#47;{run_id}` (Alias `&#47;r_and_d&#47;experiment&#47;{run_id}`); JSON `GET /api&#47;r_and_d&#47;experiments&#47;{run_id}` |
+| 2026-04-13 | Slice 5: Charts v0 unter `GET &#47;r_and_d&#47;charts` (Sharpe-Histogramm, Return-vs.-Sharpe-Scatter; read-only) |
 
 ---
 

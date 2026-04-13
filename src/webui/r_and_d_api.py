@@ -37,6 +37,7 @@ Read-model I/O (filesystem JSON only): ``src/r_and_d/experiments_read_model.py``
 
 from __future__ import annotations
 
+import math
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
@@ -863,6 +864,89 @@ def compute_global_stats(experiments: List[Dict[str, Any]]) -> Dict[str, Any]:
         "avg_max_drawdown": sum(drawdowns) / n if n > 0 else 0.0,
         "median_sharpe": median_sharpe,
         "median_return": median_return,
+    }
+
+
+def build_r_and_d_charts_context(
+    experiments: List[Dict[str, Any]],
+    *,
+    num_bins: int = 12,
+) -> Dict[str, Any]:
+    """
+    Read-only Kontext für R&D Charts v0 (Phase 76 Slice 5): Sharpe-Histogramm,
+    Scatter Total Return vs. Sharpe — nur aus ``extract_flat_fields`` / lokale JSONs.
+    """
+    n_exp = len(experiments)
+    if n_exp == 0:
+        return {
+            "empty": True,
+            "no_plot_points": False,
+            "n_experiments": 0,
+            "n_plotted": 0,
+            "histogram_labels": [],
+            "histogram_counts": [],
+            "scatter_points": [],
+        }
+
+    plot_rows: List[Dict[str, Any]] = []
+    for exp in experiments:
+        flat = extract_flat_fields(exp)
+        try:
+            s = float(flat["sharpe"])
+            r = float(flat["total_return"])
+        except (TypeError, ValueError, KeyError):
+            continue
+        if not (math.isfinite(s) and math.isfinite(r)):
+            continue
+        plot_rows.append(
+            {
+                "x": s,
+                "y": r,
+                "run_id": str(flat.get("run_id", "")),
+            }
+        )
+
+    if not plot_rows:
+        return {
+            "empty": False,
+            "no_plot_points": True,
+            "n_experiments": n_exp,
+            "n_plotted": 0,
+            "histogram_labels": [],
+            "histogram_counts": [],
+            "scatter_points": [],
+        }
+
+    sharpes = [float(p["x"]) for p in plot_rows]
+    smin, smax = min(sharpes), max(sharpes)
+    if smin == smax:
+        smin -= 0.5
+        smax += 0.5
+    nb = max(1, num_bins)
+    width = (smax - smin) / nb
+    counts = [0] * nb
+    for s in sharpes:
+        if width <= 0:
+            idx = 0
+        else:
+            raw = int((s - smin) / width)
+            idx = min(max(raw, 0), nb - 1)
+        counts[idx] += 1
+
+    labels: List[str] = []
+    for i in range(nb):
+        left = smin + i * width
+        right = left + width
+        labels.append(f"{left:.2f}–{right:.2f}")
+
+    return {
+        "empty": False,
+        "no_plot_points": False,
+        "n_experiments": n_exp,
+        "n_plotted": len(plot_rows),
+        "histogram_labels": labels,
+        "histogram_counts": counts,
+        "scatter_points": plot_rows,
     }
 
 

@@ -1,0 +1,206 @@
+<!-- templates/peak_trade_dashboard/r_and_d_charts.html -->
+<!-- Phase 76 Slice 5: Charts v0 (read-only, zwei Diagramme: Sharpe-Histogramm, Return vs Sharpe) -->
+{% extends "base.html" %}
+
+{% block content %}
+<div
+  class="space-y-6 max-w-6xl mx-auto"
+  data-section="r-and-d-charts"
+  data-r-and-d-charts-empty="{{ 'true' if charts.empty else 'false' }}"
+  data-r-and-d-charts-no-plot-points="{{ 'true' if charts.no_plot_points else 'false' }}"
+  data-r-and-d-charts-n-plotted="{{ charts.n_plotted }}"
+  data-r-and-d-charts-n-experiments="{{ charts.n_experiments }}"
+>
+  <header class="bg-gradient-to-r from-slate-900/80 to-slate-900/40 rounded-2xl border border-slate-800 p-6">
+    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+      <div>
+        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">R&D Dashboard v0</p>
+        <h1 class="text-2xl font-bold text-slate-100">Charts v0</h1>
+        <p class="text-sm text-slate-400 mt-2 max-w-2xl">
+          Nur-Lese-Ansicht aus lokalen R&D-Experiment-JSONs. Zwei Diagramme: Sharpe-Verteilung (Histogramm)
+          und Total Return vs. Sharpe (Scatter). Keine Writes, keine Trigger.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="/r_and_d" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-sky-600 text-white hover:bg-sky-500">
+          ← Experimentenliste
+        </a>
+        <a href="/r_and_d/presets" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          Presets
+        </a>
+        <a href="/r_and_d/strategies" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          Strategies
+        </a>
+        <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          Dashboard
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section aria-label="Globale Kennzahlen" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+      <p class="text-xs text-slate-500">Experimente gesamt</p>
+      <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ charts.n_experiments }}</p>
+    </div>
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+      <p class="text-xs text-slate-500">Plot-Punkte (Sharpe + Return)</p>
+      <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ charts.n_plotted }}</p>
+    </div>
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+      <p class="text-xs text-slate-500">Ø Sharpe (global)</p>
+      <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ "%.3f"|format(stats.avg_sharpe) }}</p>
+    </div>
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+      <p class="text-xs text-slate-500">Ø Return (global)</p>
+      <p class="text-xl font-semibold text-slate-100 tabular-nums">{{ "%.3f"|format(stats.avg_return) }}</p>
+    </div>
+  </section>
+
+  {% if charts.empty %}
+  <section
+    data-empty-state="r-and-d-charts-no-experiments"
+    aria-label="Leerer Zustand"
+    class="bg-slate-900/60 rounded-xl border border-slate-800 p-10 text-center"
+  >
+    <p class="text-sm font-medium text-slate-300 mb-2">Keine Experimentdateien</p>
+    <p class="text-sm text-slate-500 max-w-lg mx-auto">
+      Unter <code class="text-xs bg-slate-800 px-1 rounded">reports&#47;r_and_d_experiments&#47;</code> wurden keine JSON-Experimente gefunden.
+      Charts werden angezeigt, sobald lokale Runs vorliegen.
+    </p>
+  </section>
+  {% elif charts.no_plot_points %}
+  <section
+    data-empty-state="r-and-d-charts-no-plot-points"
+    aria-label="Keine plotbaren Punkte"
+    class="bg-slate-900/60 rounded-xl border border-slate-800 p-10 text-center"
+  >
+    <p class="text-sm font-medium text-slate-300 mb-2">Keine plotbaren Metrik-Punkte</p>
+    <p class="text-sm text-slate-500 max-w-lg mx-auto">
+      Es liegen zwar {{ charts.n_experiments }} Experiment(e), aber keine endlichen Werte für Sharpe und Total Return — keine Diagramme.
+    </p>
+  </section>
+  {% else %}
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <section
+      aria-label="Sharpe Histogramm"
+      class="bg-slate-900/60 rounded-xl border border-slate-800 p-4"
+      data-chart="r-and-d-sharpe-histogram"
+    >
+      <h2 class="text-sm font-medium text-slate-200 mb-3">Sharpe-Verteilung (Histogramm)</h2>
+      <div class="relative h-72 w-full">
+        <canvas id="chart-r-and-d-sharpe-histogram"></canvas>
+      </div>
+    </section>
+    <section
+      aria-label="Return vs Sharpe Scatter"
+      class="bg-slate-900/60 rounded-xl border border-slate-800 p-4"
+      data-chart="r-and-d-return-vs-sharpe-scatter"
+    >
+      <h2 class="text-sm font-medium text-slate-200 mb-3">Total Return vs. Sharpe</h2>
+      <div class="relative h-72 w-full">
+        <canvas id="chart-r-and-d-return-vs-sharpe-scatter"></canvas>
+      </div>
+    </section>
+  </div>
+  <script type="application/json" id="r-and-d-charts-payload">{{ charts | tojson }}</script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    (function () {
+      const el = document.getElementById("r-and-d-charts-payload");
+      if (!el) return;
+      let payload;
+      try {
+        payload = JSON.parse(el.textContent || "{}");
+      } catch (e) {
+        return;
+      }
+      if (payload.empty || payload.no_plot_points) return;
+      const grid = document.documentElement.classList.contains("dark")
+        ? "rgba(148, 163, 184, 0.15)"
+        : "rgba(148, 163, 184, 0.2)";
+      const tick = "#94a3b8";
+      const bar = "rgba(56, 189, 248, 0.65)";
+      const point = "rgba(167, 139, 250, 0.85)";
+
+      const histCanvas = document.getElementById("chart-r-and-d-sharpe-histogram");
+      if (histCanvas && window.Chart) {
+        new Chart(histCanvas.getContext("2d"), {
+          type: "bar",
+          data: {
+            labels: payload.histogram_labels || [],
+            datasets: [
+              {
+                label: "Runs pro Sharpe-Bin",
+                data: payload.histogram_counts || [],
+                backgroundColor: bar,
+                borderColor: "rgba(56, 189, 248, 0.9)",
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: tick } } },
+            scales: {
+              x: {
+                ticks: { color: tick, maxRotation: 45, minRotation: 45, font: { size: 9 } },
+                grid: { color: grid },
+                title: { display: true, text: "Sharpe-Bins", color: tick },
+              },
+              y: {
+                beginAtZero: true,
+                ticks: { color: tick, precision: 0 },
+                grid: { color: grid },
+                title: { display: true, text: "Anzahl Runs", color: tick },
+              },
+            },
+          },
+        });
+      }
+
+      const scCanvas = document.getElementById("chart-r-and-d-return-vs-sharpe-scatter");
+      if (scCanvas && window.Chart) {
+        const pts = (payload.scatter_points || []).map(function (p) {
+          return { x: p.x, y: p.y };
+        });
+        new Chart(scCanvas.getContext("2d"), {
+          type: "scatter",
+          data: {
+            datasets: [
+              {
+                label: "Runs",
+                data: pts,
+                backgroundColor: point,
+                borderColor: "rgba(167, 139, 250, 1)",
+                borderWidth: 1,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: tick } } },
+            scales: {
+              x: {
+                ticks: { color: tick },
+                grid: { color: grid },
+                title: { display: true, text: "Sharpe", color: tick },
+              },
+              y: {
+                ticks: { color: tick },
+                grid: { color: grid },
+                title: { display: true, text: "Total Return", color: tick },
+              },
+            },
+          },
+        });
+      }
+    })();
+  </script>
+  {% endif %}
+</div>
+{% endblock %}
