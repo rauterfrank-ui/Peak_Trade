@@ -550,6 +550,25 @@ def test_ops_cockpit_exposure_risk_observation_in_html(tmp_path: Path) -> None:
     assert "not a risk approval" in er_block.lower()
 
 
+def test_ops_cockpit_operator_summary_exposure_state_in_html(tmp_path: Path) -> None:
+    """Operator summary mirrors exposure_state scalars; same semantics as Exposure State card."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-exposure-state"' in html
+    assert "Exposure state (observation)" in html
+    assert "exposure_state.treasury_separation" in html
+    assert "exposure_state.risk_status" in html
+    assert "broker or exchange truth" in html.lower()
+    es_block = html.split('id="operator-summary-exposure-state"', 1)[1].split(
+        'id="operator-summary-balance-semantics"', 1
+    )[0]
+    assert "exposure_risk_observation" in es_block.lower()
+    assert "observation only" in es_block.lower()
+
+
 def test_ops_cockpit_incident_safety_observation_in_html(tmp_path: Path) -> None:
     """HTML surfaces incident/safety aggregate; no resolution or approval wording."""
     docs_dir = tmp_path / "docs" / "governance" / "ai"
