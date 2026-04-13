@@ -3927,7 +3927,7 @@ def render_ops_cockpit_html(
   </div>
 
   <div class="grid">
-    <div class="card">
+    <div class="card" id="truth-state-observation-card">
       <h2>Truth State</h2>
       <p><strong>Read-only canonical truth</strong></p>
       <p><strong>Truth-first positioning:</strong> {
@@ -3937,7 +3937,7 @@ def render_ops_cockpit_html(
       <p><strong>Live autonomy:</strong> {escape(str(truth_state["live_autonomy"]))}</p>
     </div>
 
-    <div class="card">
+    <div class="card" id="runtime-unknown-state-observation-card">
       <h2>Runtime Unknown State</h2>
       <p><strong>Unknown / partial slots (read-only)</strong></p>
       <p><strong>Critic runtime path:</strong> {escape(str(runtime["critic_runtime_path"]))}</p>
