@@ -39,6 +39,7 @@ HTML Pages:
 - GET / (Dashboard Home)
 - GET /session/{session_id} (Session Detail)
 - GET /r_and_d (R&D Experiments Overview - Phase 76)
+- GET /r_and_d/experiments (dieselbe Listenansicht wie /r_and_d — Phase 76 Slice 9, read-only)
 - GET /r_and_d/presets (R&D Preset-Aggregation HTML - Phase 76 Slice 3)
 - GET /r_and_d/strategies (R&D Strategy-Aggregation HTML - Phase 76 Slice 3)
 - GET /r_and_d/charts (R&D Charts v0 - Phase 76 Slice 5, read-only)
@@ -594,6 +595,7 @@ def create_app() -> FastAPI:
         )
 
     @app.get("/r_and_d", response_class=HTMLResponse)
+    @app.get("/r_and_d/experiments", response_class=HTMLResponse)
     async def r_and_d_experiments_page(
         request: Request,
         preset: Optional[str] = Query(None, description="Filter nach Preset-ID"),
@@ -608,6 +610,9 @@ def create_app() -> FastAPI:
         sort_order: str = Query("desc", description="asc oder desc"),
     ) -> Any:
         """HTML Overview-Page für R&D-Experimente (Phase 76 v1.1).
+
+        Zwei kanonische Pfade: ``GET /r_and_d`` und ``GET /r_and_d/experiments`` (Slice 9) —
+        identische Listenansicht und Query-Parameter.
 
         Query-Parameter sind an ``GET /api/r_and_d/experiments`` angeglichen (read-only);
         zusätzlich optional ``run_type`` (UI-Filter nach extrahiertem Run-Type).
