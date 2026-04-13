@@ -1,7 +1,7 @@
 # OPS Cockpit — Payload Read-Model Contract
 
 **status:** active  
-**last_updated:** 2026-04-12  
+**last_updated:** 2026-04-13  
 **purpose:** Canonical, review-friendly **top-level contract** for the JSON object returned by `build_ops_cockpit_payload` in `src&#47;webui&#47;ops_cockpit.py` (same shape as `GET &#47;api&#47;ops-cockpit` and the `&#47;ops` HTML page payload). **Contract level:** top-level keys and grouping — **not** a guarantee of nested field values, enums, or snapshot stability of rollups.
 
 **docs_token:** `DOCS_TOKEN_OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT`
@@ -56,7 +56,7 @@ Additive changes may introduce **new** top-level keys; removals or renames are *
 | `run_state` | Run &#47; session rollup from registry &#47; metadata where present. |
 | `session_end_mismatch_state` | Read model — `src&#47;live&#47;session_end_mismatch_reader.py`. |
 | `stale_state` | Stale signals (balance, orders, exposure, etc.). |
-| `balance_semantics_state` | Balance semantics observation. |
+| `balance_semantics_state` | Balance semantics **observation** from local portfolio snapshot when config allows — **not** exchange reconciliation truth. Drives `stale_state.balance` and feeds session &#47; transfer readers where wired; supplementary traceability: [`OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md`](OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md) — **§ Supplementary Cockpit surfaces**. |
 | `run_session_observation` | Compact aggregate — `src&#47;ops&#47;run_session_observation.py`. Observation only. |
 
 ### Health / drift
@@ -116,8 +116,8 @@ Additive changes may introduce **new** top-level keys; removals or renames are *
 
 | Key | Role |
 |-----|------|
-| `workflow_officer_state` | Latest Workflow Officer panel context — does **not** start the officer; `src&#47;ops&#47;workflow_officer.py` (panel builders). Surfaces in HTML as **Operator workflow observation** (`id=operator-workflow-observation-surface`, `_render_workflow_officer_observation_surface`) — visibility and bounded **handoff** &#47; **next-step preview** rows from the same `report.json` `summary` when present; **not** approval, **not** unlock, **not** execution authority, **not** a substitute for `policy_go_no_go_observation`. |
-| `update_officer_ui` | Update-officer GET-only UI model for cockpit forms (`build_update_officer_ui_model`). Surfaces in HTML as **Update Officer** (`id=update-officer-visibility-card`, `_render_update_officer_card`) with GET-only source ergonomics on the same page — **not** Workflow Officer control, **not** POST write actions. |
+| `workflow_officer_state` | Latest Workflow Officer panel context — does **not** start the officer; `src&#47;ops&#47;workflow_officer.py` (panel builders). Surfaces in HTML as **Operator workflow observation** (`id=operator-workflow-observation-surface`, `_render_workflow_officer_observation_surface`) — visibility and bounded **handoff** &#47; **next-step preview** rows from the same `report.json` `summary` when present; **not** approval, **not** unlock, **not** execution authority, **not** a substitute for `policy_go_no_go_observation`. Supplementary traceability: [`OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md`](OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md) — **§ Supplementary Cockpit surfaces**. |
+| `update_officer_ui` | Update-officer GET-only UI model for cockpit forms (`build_update_officer_ui_model`). Surfaces in HTML as **Update Officer** (`id=update-officer-visibility-card`, `_render_update_officer_card`) with GET-only source ergonomics on the same page — **not** Workflow Officer control, **not** POST write actions. Supplementary traceability: [`OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md`](OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md) — **§ Supplementary Cockpit surfaces**. |
 
 **Non-Goals (operator tooling):** No Cockpit-side start of Workflow Officer; no reconciliation or gate authority; no semantic expansion of other `*_observation` aggregates beyond their existing builders.
 
@@ -125,7 +125,7 @@ Additive changes may introduce **new** top-level keys; removals or renames are *
 
 | Key | Role |
 |-----|------|
-| `phase83_eligibility_snapshot` | Phase 83 eligibility snapshot when built. |
+| `phase83_eligibility_snapshot` | Read-only **observation** snapshot from the existing Phase 83 eligibility check (`check_strategy_live_eligibility`); **not** live approval or gate weakening. Traceability (payload &#47; HTML &#47; tests): [`OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md`](OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md) — **§ Supplementary Cockpit surfaces**. |
 
 ## Observation-only aggregates (`*_observation`)
 
