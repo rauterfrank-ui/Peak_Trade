@@ -97,6 +97,12 @@ R&D-Bausteinen aufsetzt:
 - **Struktur:** Konsistent mit dem, was `view_r_and_d_experiments.py` und
   `r_and_d_experiment_analysis_template.py` bereits nutzen.
 
+**Slice 1 (read-only Read-Model):** Defensive JSON-Ladung und Sortier-Helfer für
+Listen-Daten liegen in `src/r_and_d/experiments_read_model.py` (keine Schreibpfade,
+keine Netzwerk-Calls). Die WebUI-API `GET /api/r_and_d/experiments` in
+`src/webui/r_and_d_api.py` nutzt diese Schicht und unterstützt Filter sowie
+`sort_by` / `sort_order` wie in §5.2 beschrieben.
+
 ### 4.2 Aggregations-Layer
 
 Für das Dashboard v0 gibt es zwei mögliche Ansätze:

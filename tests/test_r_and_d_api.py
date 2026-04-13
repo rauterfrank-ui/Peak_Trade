@@ -331,6 +331,15 @@ class TestAPIExperiments:
         data = resp.json()
         assert data["returned"] <= 1
 
+    def test_list_experiments_sort_params_echo(self, client):
+        """sort_by / sort_order (Phase-76-Design) werden angewendet und zurückgegeben."""
+        resp = client.get("/api/r_and_d/experiments?sort_by=sharpe&sort_order=desc")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["sort_by"] == "sharpe"
+        assert data["sort_order"] == "desc"
+        assert "items" in data
+
 
 class TestAPIExperimentDetail:
     """Tests für /api/r_and_d/experiments/{run_id}."""
