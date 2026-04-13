@@ -31,6 +31,7 @@ v1.1: Neue Tests für:
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any, Dict
@@ -477,6 +478,60 @@ class TestRAndDExperimentsPage:
         """Page mit Run-Type Filter (v1.1)."""
         resp = client.get("/r_and_d?run_type=backtest")
         assert resp.status_code == 200
+
+    def test_page_list_filter_form_has_api_parity_get_controls(self, client):
+        """Listen-Form: GET-Controls für dieselben Kernparameter wie die Experiments-API."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        text = resp.text
+        assert 'name="sort_by"' in text
+        assert 'name="sort_order"' in text
+        assert 'name="date_from"' in text
+        assert 'name="date_to"' in text
+        assert 'name="limit"' in text
+        assert 'name="preset"' in text
+        assert 'name="strategy"' in text
+        assert 'name="tag_substr"' in text
+
+    def test_page_filter_form_is_get_not_post(self, client):
+        """Kein POST auf dem Haupt-Filterformular (read-only)."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        start = resp.text.find("<form")
+        assert start != -1
+        end = resp.text.find("</form>", start)
+        form_html = resp.text[start:end]
+        assert 'method="GET"' in form_html
+        assert 'method="POST"' not in form_html
+
+    def test_page_sort_sharpe_desc_puts_higher_sharpe_first(self, client):
+        """sort_by=sharpe&sort_order=desc: höheres Sharpe zuerst (Fixture: 1.5 vs 0.0)."""
+        resp = client.get("/r_and_d?sort_by=sharpe&sort_order=desc")
+        assert resp.status_code == 200
+        ids = list(dict.fromkeys(re.findall(r'data-run-id="([^"]+)"', resp.text)))
+        assert ids
+        assert ids[0] == "exp_test_v1_20241208_120000"
+
+    def test_page_limit_one_single_row(self, client):
+        """limit=1 liefert genau eine Tabellenzeile mit data-run-id."""
+        resp = client.get("/r_and_d?limit=1&sort_by=timestamp&sort_order=desc")
+        assert resp.status_code == 200
+        ids = list(dict.fromkeys(re.findall(r'data-run-id="([^"]+)"', resp.text)))
+        assert len(ids) == 1
+
+    def test_page_date_from_excludes_older_run(self, client):
+        """date_from filtert nach Experiment-Datum (Fixture leerer Run am Vortag)."""
+        resp = client.get("/r_and_d?date_from=2024-12-08")
+        assert resp.status_code == 200
+        assert "exp_test_v1_20241208_120000" in resp.text
+        assert "exp_empty_20241207_100000" not in resp.text
+
+    def test_page_footer_reflects_sort_query(self, client):
+        """Tabellenfuß nennt gewählte Sortierung (sichtbarer Marker)."""
+        resp = client.get("/r_and_d?sort_by=sharpe&sort_order=asc")
+        assert resp.status_code == 200
+        assert "Sharpe" in resp.text
+        assert "aufsteigend" in resp.text
 
 
 # =============================================================================

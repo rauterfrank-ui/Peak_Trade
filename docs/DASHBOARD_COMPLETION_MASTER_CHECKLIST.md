@@ -56,7 +56,7 @@ Siehe Milestones/DoD in [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_A
       (`GET /api&#47;r_and_d&#47;experiments`, `src&#47;r_and_d&#47;experiments_read_model.py`) — Slice 1;
       Filter + `sort_by`/`sort_order`; keine Write-/Trigger-Routen.
 - [ ] Backend-/API-Erweiterungen für Summarys/Aggregationen nach Phase-76-Spec §5 (wenn gewünscht).
-- [ ] List View + Filter (an CLI-Logik angelehnt) — UI weiter ausbauen; API-Liste vorhanden.
+- [x] List View: GET-Query-Parität zur Listen-API (Filter/Sort/Limit/Datum, read-only) — Phase 76 slice 2; weiterer UI-Ausbau optional.
 - [ ] Experiment-Detail inkl. Metriken + JSON-Rohsicht.
 - [ ] Aggregationen (Preset / Strategy).
 - [ ] Mind. zwei Charts (z. B. Sharpe-Verteilung, Sharpe vs. Return).
