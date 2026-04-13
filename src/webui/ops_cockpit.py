@@ -1916,6 +1916,18 @@ def _render_operator_summary_incident_safety_observation(iso_raw: object) -> str
     )
 
 
+def _render_operator_summary_incident_observation_read_only(incident_observation_lines: str) -> str:
+    """Detail ``incident_state`` / ``dependencies_state`` lines for operator summary (read-only)."""
+    return (
+        '<section class="operator-summary-incident-observation-read-only" '
+        'id="operator-summary-incident-observation-read-only">'
+        "<h3>Incident observation (read-only)</h3>"
+        "<p>Existing incident/dependency rollups from this page&apos;s JSON payload.</p>"
+        f"{incident_observation_lines}"
+        "</section>"
+    )
+
+
 def _render_operator_summary_system_state_observation(sso_raw: object) -> str:
     """Compact ``system_state_observation`` block for operator summary (read-only)."""
     if not isinstance(sso_raw, dict):
@@ -3672,9 +3684,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{exposure_state_summary_block}"
         f"{bs_block}"
         f"{iso_block}"
-        "<h3>Incident observation (read-only)</h3>"
-        "<p>Existing incident/dependency rollups from this page&apos;s JSON payload.</p>"
-        f"{incident_observation_lines}"
+        f"{_render_operator_summary_incident_observation_read_only(incident_observation_lines)}"
         f"{eao_block}"
         "<h3>Evidence freshness observation (read-only)</h3>"
         "<p>Existing evidence freshness and audit rollups from this page&apos;s JSON payload.</p>"
