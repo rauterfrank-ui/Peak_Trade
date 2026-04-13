@@ -39,7 +39,7 @@ from __future__ import annotations
 
 import math
 from collections import defaultdict
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, TypedDict
 
@@ -1313,6 +1313,58 @@ async def get_stats() -> RnDGlobalStats:
 # =============================================================================
 
 
+def build_today_view_payload(
+    experiments: Optional[List[Dict[str, Any]]] = None,
+    *,
+    limit: int = 50,
+    reference_date: Optional[date] = None,
+) -> Dict[str, Any]:
+    """
+    Gleiche Logik wie ``GET /api/r_and_d/today`` (HTML-Parität, Tests).
+
+    ``reference_date`` ist nur für deterministische Tests gedacht (default: ``date.today()``).
+    """
+    if experiments is None:
+        experiments = load_experiments_from_dir()
+    ref = reference_date if reference_date is not None else date.today()
+    today_str = ref.strftime("%Y-%m-%d")
+
+    today_experiments: List[Dict[str, Any]] = []
+    for exp in experiments:
+        flat = extract_flat_fields(exp)
+        if flat["date_str"] == today_str and flat["status"] != "running":
+            today_experiments.append(flat)
+
+    limited = today_experiments[:limit]
+
+    return {
+        "items": limited,
+        "count": len(today_experiments),
+        "date": today_str,
+        "success_count": sum(1 for e in today_experiments if e["status"] == "success"),
+        "failed_count": sum(1 for e in today_experiments if e["status"] == "failed"),
+    }
+
+
+def build_running_view_payload(
+    experiments: Optional[List[Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
+    """Gleiche Logik wie ``GET /api/r_and_d/running``."""
+    if experiments is None:
+        experiments = load_experiments_from_dir()
+
+    running: List[Dict[str, Any]] = []
+    for exp in experiments:
+        flat = extract_flat_fields(exp)
+        if flat["status"] == "running":
+            running.append(flat)
+
+    return {
+        "items": running,
+        "count": len(running),
+    }
+
+
 @router.get(
     "/today",
     response_model=Dict[str, Any],
@@ -1334,28 +1386,7 @@ async def get_today_experiments(
         - count: Anzahl
         - date: Heutiges Datum
     """
-    from datetime import date
-
-    today_str = date.today().strftime("%Y-%m-%d")
-    experiments = load_experiments_from_dir()
-
-    # Filter auf heute
-    today_experiments = []
-    for exp in experiments:
-        flat = extract_flat_fields(exp)
-        if flat["date_str"] == today_str and flat["status"] != "running":
-            today_experiments.append(flat)
-
-    # Limit anwenden
-    limited = today_experiments[:limit]
-
-    return {
-        "items": limited,
-        "count": len(today_experiments),
-        "date": today_str,
-        "success_count": sum(1 for e in today_experiments if e["status"] == "success"),
-        "failed_count": sum(1 for e in today_experiments if e["status"] == "failed"),
-    }
+    return build_today_view_payload(limit=limit)
 
 
 @router.get(
@@ -1375,18 +1406,7 @@ async def get_running_experiments() -> Dict[str, Any]:
         - items: Liste der laufenden Experimente
         - count: Anzahl
     """
-    experiments = load_experiments_from_dir()
-
-    running = []
-    for exp in experiments:
-        flat = extract_flat_fields(exp)
-        if flat["status"] == "running":
-            running.append(flat)
-
-    return {
-        "items": running,
-        "count": len(running),
-    }
+    return build_running_view_payload()
 
 
 @router.get(

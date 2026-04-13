@@ -43,6 +43,8 @@ HTML Pages:
 - GET /r_and_d/strategies (R&D Strategy-Aggregation HTML - Phase 76 Slice 3)
 - GET /r_and_d/charts (R&D Charts v0 - Phase 76 Slice 5, read-only)
 - GET /r_and_d/summary (R&D Summary/Overview HTML - Phase 76 Slice 6, read-only)
+- GET /r_and_d/today (R&D Today HTML - Phase 76 Slice 7, read-only)
+- GET /r_and_d/running (R&D Running HTML - Phase 76 Slice 7, read-only)
 - GET /r_and_d/experiment/{run_id} (R&D Experiment Detail - Phase 77, Alias)
 - GET /r_and_d/experiments/{run_id} (R&D Experiment Detail - Phase 76 kanonisch)
 - GET /r_and_d/comparison (R&D Multi-Run Comparison - Phase 78)
@@ -109,6 +111,8 @@ from .r_and_d_api import (
     compute_strategy_stats,
     sort_raw_experiments,
     build_r_and_d_charts_context,
+    build_today_view_payload,
+    build_running_view_payload,
     # v1.3 (Phase 78)
     find_experiment_by_run_id,
     build_experiment_detail,
@@ -708,6 +712,46 @@ def create_app() -> FastAPI:
                 "status": proj_status,
                 "summary": summary,
                 "stats": stats,
+            },
+        )
+
+    @app.get("/r_and_d/today", response_class=HTMLResponse)
+    async def r_and_d_today_page(
+        request: Request,
+        limit: int = Query(50, ge=1, le=500),
+    ) -> Any:
+        """
+        HTML-Ansicht: Heute fertige Experimente (Phase 76 Slice 7).
+
+        Gleiche Semantik wie ``GET /api/r_and_d/today`` (``build_today_view_payload``). Rein lesend.
+        """
+        proj_status = get_project_status()
+        today_payload = build_today_view_payload(limit=limit)
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_today.html",
+            {
+                "status": proj_status,
+                "today_payload": today_payload,
+                "limit": limit,
+            },
+        )
+
+    @app.get("/r_and_d/running", response_class=HTMLResponse)
+    async def r_and_d_running_page(request: Request) -> Any:
+        """
+        HTML-Ansicht: Aktuell laufende Experimente (Phase 76 Slice 7).
+
+        Gleiche Semantik wie ``GET /api/r_and_d/running`` (``build_running_view_payload``). Rein lesend.
+        """
+        proj_status = get_project_status()
+        running_payload = build_running_view_payload()
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_running.html",
+            {
+                "status": proj_status,
+                "running_payload": running_payload,
             },
         )
 

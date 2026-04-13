@@ -33,6 +33,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+from datetime import date as date_cls
 from pathlib import Path
 from typing import Any, Dict
 
@@ -60,6 +61,8 @@ from src.webui.r_and_d_api import (
     compute_strategy_stats,
     compute_global_stats,
     build_r_and_d_charts_context,
+    build_today_view_payload,
+    build_running_view_payload,
     set_base_dir,
     # v1.2 (Phase 77)
     find_report_links,
@@ -555,6 +558,8 @@ class TestRAndDExperimentsPage:
         assert resp.status_code == 200
         text = resp.text
         assert 'href="/r_and_d/summary"' in text
+        assert 'href="/r_and_d/today"' in text
+        assert 'href="/r_and_d/running"' in text
         assert 'href="/r_and_d/presets"' in text
         assert 'href="/r_and_d/strategies"' in text
         assert 'href="/r_and_d/charts"' in text
@@ -646,6 +651,57 @@ class TestRnDSummaryHtmlPage:
         assert resp.status_code == 200
         assert 'data-empty-state="r-and-d-summary-no-experiments"' in resp.text
         assert 'data-r-and-d-summary-total="0"' in resp.text
+
+
+class _FixedTodayDate(date_cls):
+    """Deterministisches ``date.today()`` für Today-HTML/API-Tests (2024-12-08)."""
+
+    @classmethod
+    def today(cls):
+        return date_cls(2024, 12, 8)
+
+
+class TestRnDTodayRunningHtmlPage:
+    """Phase 76 Slice 7: GET /r_and_d/today und /r_and_d/running."""
+
+    def test_today_html_ok_and_parity(self, client, monkeypatch):
+        monkeypatch.setattr("src.webui.r_and_d_api.date", _FixedTodayDate)
+        j = client.get("/api/r_and_d/today").json()
+        resp = client.get("/r_and_d/today")
+        assert resp.status_code == 200
+        body = resp.text
+        assert 'data-section="r-and-d-today"' in body
+        assert f'data-r-and-d-today-count="{j["count"]}"' in body
+        assert j["date"] == "2024-12-08"
+        assert str(j["count"]) == "1"
+        assert "exp_test_v1_20241208_120000" in body
+        assert 'href="/r_and_d/experiments/exp_test_v1_20241208_120000"' in body
+        assert 'method="POST"' not in body
+        p = build_today_view_payload(reference_date=date_cls(2024, 12, 8))
+        assert p["count"] == j["count"]
+        assert len(p["items"]) == len(j["items"])
+
+    def test_running_html_ok_empty_fixture(self, client):
+        j = client.get("/api/r_and_d/running").json()
+        resp = client.get("/r_and_d/running")
+        assert resp.status_code == 200
+        body = resp.text
+        assert 'data-section="r-and-d-running"' in body
+        assert f'data-r-and-d-running-count="{j["count"]}"' in body
+        assert j["count"] == 0
+        assert 'data-empty-state="r-and-d-running-empty"' in body
+        assert 'method="POST"' not in body
+        p = build_running_view_payload()
+        assert p["count"] == j["count"]
+
+    def test_today_running_empty_repo(self, empty_experiments_client):
+        t = empty_experiments_client.get("/r_and_d/today")
+        r = empty_experiments_client.get("/r_and_d/running")
+        assert t.status_code == 200
+        assert r.status_code == 200
+        assert 'data-empty-state="r-and-d-today-empty"' in t.text
+        assert 'data-r-and-d-today-count="0"' in t.text
+        assert 'data-empty-state="r-and-d-running-empty"' in r.text
 
 
 class TestBuildRnDChartsContext:
