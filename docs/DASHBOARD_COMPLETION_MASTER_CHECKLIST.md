@@ -73,6 +73,10 @@ Siehe Milestones/DoD in [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_A
 - [x] Globale Web-Nav + Preset-/Strategy-Drilldown: kanonische Listen-URL `GET &#47;r_and_d&#47;experiments` — Phase 76 Slice 11.
 - [x] Tests + Doku für Slice 11 ergänzt.
 
+**Stand R&D Dashboard v0 read-only (Phase 76):** Die Checkboxen oben beschreiben den **gelieferten** Umfang (Slices 1–11). Er entspricht der **read-only**-Zielsetzung in [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md) (§4.1.1). **Keine** darüber hinausgehende „Produktfertig“-Behauptung.
+
+**Optional / später (nicht Teil des v0-DoD):** u. a. Listen-Pagination, zusätzliche Charts (z. B. Boxplot laut Design-Skizze), weiteres UI-Polish — siehe **Backlog** in [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md) §4.1.2.
+
 ---
 
 ## 4. Querschnitt (empfohlen)

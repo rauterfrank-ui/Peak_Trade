@@ -1,8 +1,10 @@
 # Phase 76 – R&D Dashboard v0 (Design & Spezifikation)
 
-**Status:** 📋 Design-Phase
-**Abhängigkeiten:** Phase 75 (R&D-Wave v2 Experiments, Operator-View)
-**Zieldatum:** TBD
+**Status:** ✅ **v0 read-only umgesetzt** (Slices 1–11 im Repo; siehe §4.1.1).  
+**Hinweis:** Das ist **keine** externe Produktfreigabe und keine Garantie über Datenqualität oder Betrieb — nur der beschriebene **read-only**-Web-UI-Umfang.
+
+**Abhängigkeiten:** Phase 75 (R&D-Wave v2 Experiments, Operator-View)  
+**Zieldatum (v0):** abgeschlossen (Backlog: §4.1.2)
 
 ---
 
@@ -145,6 +147,35 @@ Query-Parameter wie `GET &#47;r_and_d` (ein Handler, kein Redirect); Detail blei
 **Slice 11 (canonical list global nav):** `templates&#47;peak_trade_dashboard&#47;base.html` verlinkt „R&D Experiments“ auf
 `GET &#47;r_and_d&#47;experiments`; Preset-/Strategy-Aggregationstabellen verlinken gefilterte Listen ebenfalls über diesen Pfad
 (Query unverändert); keine API-Änderungen.
+
+#### 4.1.1 Umsetzungsstand v0 read-only
+
+Die **Slices 1–11** liefern zusammen das in dieser Spezifikation beschriebene **R&D Dashboard v0 read-only**:
+
+| Slice | Kurzinhalt |
+|-------|------------|
+| 1 | Read-Model + Listen-API |
+| 2 | Listen-UI (`GET &#47;r_and_d`) mit API-Query-Parität |
+| 3 | Preset-/Strategy-Aggregation HTML |
+| 4 | Experiment-Detail HTML + Alias |
+| 5 | Charts v0 (zwei Diagramme) |
+| 6 | Summary-HTML |
+| 7 | Today-/Running-HTML |
+| 8 | Categories-HTML |
+| 9 | Kanonischer Listenpfad `GET &#47;r_and_d&#47;experiments` |
+| 10 | Hub-Navigation in R&D-Templates auf kanonische Liste |
+| 11 | Globale Nav + Preset-/Strategy-Drilldown auf kanonische Liste |
+
+**Fazit:** Zielsetzung **Scope v0** (read-only, keine Job-Trigger) für den **hier beschriebenen** Funktionsumfang ist erreicht.
+
+#### 4.1.2 Backlog / optional (nicht Teil von v0 read-only)
+
+Themen, die in dieser Spezifikung **genannt**, aber für **v0** nicht geliefert wurden oder bewusst offen bleiben:
+
+- **Pagination** der Experimentenliste (UI und/oder API) — siehe §6.2 und §10 (Offene Fragen #2).
+- **Zusätzliche Visualisierungen**, z. B. „Return by Preset“ (Boxplot) in §6.4 — v0 liefert die **zwei** Charts aus Slice 5.
+- **Chart-Bibliothek** festlegen (§10 #1) — für die vorhandenen Charts bereits nutzbar; verbindliche Wahl kann später erfolgen.
+- **Weiteres UI-Polish** (z. B. Feintuning der in §6.2 skizzierten Pagination-Komponente), ohne neue Write-Pfade.
 
 ### 4.2 Aggregations-Layer
 
@@ -420,13 +451,15 @@ templates/
 
 ### 8.2 Definition of Done
 
-- [ ] API-Endpoints liefern korrekte Daten
-- [ ] Filter funktionieren wie im CLI (`view_r_and_d_experiments.py`)
-- [ ] Tabelle ist sortierbar und paginiert
-- [ ] Detailansicht zeigt alle Metriken + JSON
-- [ ] Mindestens 2 Charts (Sharpe-Dist, Scatter)
-- [ ] Tests für API-Endpoints (mind. 10 Tests)
-- [ ] Dokumentation aktualisiert
+**Hinweis (Stand v0 read-only):** Die folgende Checkbox-Liste ist **historisch** (Planungsvorlage). Für **v0** gelten die gelieferten **Slices 1–11** als erfüllender Nachweis; offene Punkte wie **Pagination** sind **Backlog** (§4.1.2), kein Blocker für v0.
+
+- [x] API-Endpoints liefern korrekte Daten (Slices 1, Tests)
+- [x] Filter funktionieren wie im CLI (`view_r_and_d_experiments.py`) (Slice 2 / API)
+- [ ] Tabelle ist sortierbar und **paginiert** — **Backlog** (v0: Sort + Limit)
+- [x] Detailansicht zeigt Metriken + JSON (Slice 4)
+- [x] Mindestens 2 Charts (Sharpe-Dist, Scatter) (Slice 5)
+- [x] Tests für API und Web-Routen (R&D-Testsuite)
+- [x] Dokumentation zu Slices und Ist-Stand (inkl. diesem Abschnitt)
 
 ---
 
@@ -484,6 +517,7 @@ templates/
 | 2026-04-13 | Slice 9: Listen-HTML unter `GET &#47;r_and_d&#47;experiments` identisch zu `GET &#47;r_and_d` (read-only; Detail-Pfad unverändert) |
 | 2026-04-13 | Slice 10: Hub-/Listen-Navigation in R&D-HTML auf `GET &#47;r_and_d&#47;experiments` vereinheitlicht (read-only) |
 | 2026-04-13 | Slice 11: globale Nav (`base.html`) und Preset-/Strategy-Drilldown-Links auf kanonische Listen-URL (read-only) |
+| 2026-04-13 | v0 read-only Abschluss-Doku: §4.1.1/§4.1.2 (Ist Slices 1–11, Backlog), §8.2 Hinweis, Status im Kopf — keine Produktfreigabe |
 
 ---
 

@@ -10,6 +10,8 @@ Dieses Dokument führt dich Schritt für Schritt durch deine erste Stunde mit Pe
 
 **Docs Truth Map:** [kanonische Ops-Doku-Registry und Änderungsnachweis](ops/registry/DOCS_TRUTH_MAP.md) (truth-first)
 
+**R&D Web-Dashboard (read-only, v0):** Ist-Umfang und Spezifikation in [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md) — keine Job-Trigger aus dem UI.
+
 ---
 
 ## 1. Voraussetzungen
