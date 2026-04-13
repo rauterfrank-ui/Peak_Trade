@@ -1304,7 +1304,7 @@ def _render_incident_observation_card(payload: Dict[str, object]) -> str:
         "Further incident fields appear under Incident-state read model below."
     )
     return (
-        f'<div class="card truth-card" style="margin-bottom:20px;">'
+        f'<div class="card truth-card" id="incident-observed-rollup-observation-card" style="margin-bottom:20px;">'
         f"<h2>Incident — observed rollup</h2>"
         f"<p><strong>Read-only.</strong> {intro}</p>"
         f"{table_html}"
