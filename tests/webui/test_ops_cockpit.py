@@ -622,6 +622,19 @@ def test_ops_cockpit_operator_summary_truth_sources_runtime_in_html(tmp_path: Pa
     assert "health_drift_observation" in tr_block.lower()
 
 
+def test_ops_cockpit_html_contains_truth_state_and_runtime_unknown_main_grid_cards(
+    tmp_path: Path,
+) -> None:
+    """Main-grid Truth State and Runtime Unknown State cards expose stable ids (RV7 surface)."""
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="truth-state-observation-card"' in html
+    assert html.count('id="truth-state-observation-card"') == 1
+    assert 'id="runtime-unknown-state-observation-card"' in html
+    assert html.count('id="runtime-unknown-state-observation-card"') == 1
+    assert "<h2>Truth State</h2>" in html
+    assert "<h2>Runtime Unknown State</h2>" in html
+
+
 def test_ops_cockpit_operator_summary_dependencies_artifact_observations_in_html(
     tmp_path: Path,
 ) -> None:
