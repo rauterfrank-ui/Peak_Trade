@@ -1,7 +1,7 @@
 # OPS Cockpit — Payload Read-Model Contract
 
 **status:** active  
-**last_updated:** 2026-04-13  
+**last_updated:** 2026-04-12  
 **purpose:** Canonical, review-friendly **top-level contract** for the JSON object returned by `build_ops_cockpit_payload` in `src&#47;webui&#47;ops_cockpit.py` (same shape as `GET &#47;api&#47;ops-cockpit` and the `&#47;ops` HTML page payload). **Contract level:** top-level keys and grouping — **not** a guarantee of nested field values, enums, or snapshot stability of rollups.
 
 **docs_token:** `DOCS_TOKEN_OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT`

@@ -1,7 +1,7 @@
 # OPS Cockpit — Operator Summary Surface (vNext-aligned)
 
 **status:** active  
-**last_updated:** 2026-04-13  
+**last_updated:** 2026-04-12  
 **purpose:** Map OPS Suite / Dashboard vNext „Required Views“ (Teilmenge) to the JSON payload served at `GET &#47;api&#47;ops-cockpit` (same shape as the `/ops` HTML page) and HTML render helpers — read-only, no execution authority.
 
 **docs_token:** `DOCS_TOKEN_OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE`
