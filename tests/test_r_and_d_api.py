@@ -696,6 +696,23 @@ class TestRnDCanonicalListNavHtml:
         assert 'href="/r_and_d/experiments"' in resp.text
 
 
+class TestRnDCanonicalListGlobalNavHtml:
+    """Phase 76 Slice 11: base.html + Preset/Strategy-Drilldown auf /r_and_d/experiments."""
+
+    def test_dashboard_home_includes_base_nav_canonical_list_link(self, client):
+        resp = client.get("/")
+        assert resp.status_code == 200
+        assert 'href="/r_and_d/experiments"' in resp.text
+
+    def test_presets_and_strategies_drilldown_use_canonical_list_path(self, client):
+        presets = client.get("/r_and_d/presets")
+        strategies = client.get("/r_and_d/strategies")
+        assert presets.status_code == 200
+        assert strategies.status_code == 200
+        assert 'href="/r_and_d/experiments?preset=test_preset_v1"' in presets.text
+        assert 'href="/r_and_d/experiments?strategy=test_strategy"' in strategies.text
+
+
 class TestRnDCategoriesHtmlPage:
     """Phase 76 Slice 8: GET /r_and_d/categories (Parität zu GET /api/r_and_d/categories)."""
 

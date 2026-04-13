@@ -142,6 +142,10 @@ Query-Parameter wie `GET &#47;r_and_d` (ein Handler, kein Redirect); Detail blei
 **Slice 10 (canonical list navigation HTML):** Primäre „Zur Experimentenliste / R&D Hub“-Links in den R&D-Templates zeigen auf
 `GET &#47;r_and_d&#47;experiments` (statt nur `GET &#47;r_and_d`); konsistent zu Slice 9 und §6.1; keine API-Änderungen, rein UI.
 
+**Slice 11 (canonical list global nav):** `templates&#47;peak_trade_dashboard&#47;base.html` verlinkt „R&D Experiments“ auf
+`GET &#47;r_and_d&#47;experiments`; Preset-/Strategy-Aggregationstabellen verlinken gefilterte Listen ebenfalls über diesen Pfad
+(Query unverändert); keine API-Änderungen.
+
 ### 4.2 Aggregations-Layer
 
 Für das Dashboard v0 gibt es zwei mögliche Ansätze:
@@ -479,6 +483,7 @@ templates/
 | 2026-04-13 | Slice 8: Categories-HTML `GET &#47;r_and_d&#47;categories` aligned zu `GET /api&#47;r_and_d&#47;categories` (``build_categories_view_payload``) |
 | 2026-04-13 | Slice 9: Listen-HTML unter `GET &#47;r_and_d&#47;experiments` identisch zu `GET &#47;r_and_d` (read-only; Detail-Pfad unverändert) |
 | 2026-04-13 | Slice 10: Hub-/Listen-Navigation in R&D-HTML auf `GET &#47;r_and_d&#47;experiments` vereinheitlicht (read-only) |
+| 2026-04-13 | Slice 11: globale Nav (`base.html`) und Preset-/Strategy-Drilldown-Links auf kanonische Listen-URL (read-only) |
 
 ---
 
