@@ -252,6 +252,7 @@ def test_ops_cockpit_policy_go_no_go_observation_in_html(tmp_path: Path) -> None
     (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
     (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-go-no-go-not-approval"' in html
     assert 'id="operator-summary-policy-go-no-go-observation"' in html
     assert "Policy / go-no-go (observation)" in html
     assert "policy_go_no_go_observation.status" in html
@@ -296,7 +297,7 @@ def test_ops_cockpit_system_state_observation_in_html(tmp_path: Path) -> None:
     assert "system_state_observation.status" in html
     assert "not an environment guarantee" in html.lower()
     sso_block = html.split('id="operator-summary-system-state-observation"', 1)[1].split(
-        "<h3>Go / No-Go observation (not approval)</h3>", 1
+        'id="operator-summary-go-no-go-not-approval"', 1
     )[0]
     assert "health_drift_observation" in sso_block.lower()
     assert "safety_posture_observation" in sso_block.lower()
@@ -1843,6 +1844,9 @@ def test_v3_html_contains_operator_summary_surface(tmp_path: Path) -> None:
     assert 'id="operator-summary-system-status"' in html
     assert "not a broker or exchange guarantee" in html.lower()
     assert "Go / No-Go observation (not approval)" in html
+    assert 'id="operator-summary-go-no-go-not-approval"' in html
+    assert "policy_state.action" in html
+    assert "not live permission" in html.lower()
     assert "Incident observation (read-only)" in html
     assert 'id="operator-summary-incident-observation-read-only"' in html
     assert "Existing incident/dependency rollups from this page" in html
