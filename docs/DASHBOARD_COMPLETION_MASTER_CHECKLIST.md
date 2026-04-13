@@ -62,6 +62,8 @@ Siehe Milestones/DoD in [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_A
 - [x] Mind. zwei Charts: read-only HTML `GET &#47;r_and_d&#47;charts` (Sharpe-Histogramm, Total Return vs. Sharpe) — Phase 76 slice 5.
 - [x] Tests + Doku für Slice 5 ergänzt (bestehende R&D-API-Testsuite erweitert).
 - [x] Tests + Doku für Slice 6 (Summary-HTML) ergänzt.
+- [x] Today-/Running-HTML: `GET &#47;r_and_d&#47;today` und `GET &#47;r_and_d&#47;running` mit gleicher Semantik wie die JSON-APIs — Phase 76 Slice 7.
+- [x] Tests + Doku für Slice 7 ergänzt.
 
 ---
 

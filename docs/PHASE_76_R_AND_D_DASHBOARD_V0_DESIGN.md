@@ -127,6 +127,10 @@ keine zusätzlichen Write-/Trigger-Routen.
 `GET /api&#47;r_and_d&#47;summary` und `GET /api&#47;r_and_d&#47;stats` (Helfer ``compute_summary`` /
 ``compute_global_stats``); defensive Empty State ohne lokale JSONs; keine neuen API-Felder.
 
+**Slice 7 (today/running HTML GET):** `GET &#47;r_and_d&#47;today` und `GET &#47;r_and_d&#47;running` — read-only HTML mit
+derselben Semantik wie `GET /api&#47;r_and_d&#47;today` bzw. `GET /api&#47;r_and_d&#47;running`
+(Helfer ``build_today_view_payload`` und ``build_running_view_payload``); defensive Empty States; keine neuen API-Felder.
+
 ### 4.2 Aggregations-Layer
 
 Für das Dashboard v0 gibt es zwei mögliche Ansätze:
@@ -257,6 +261,8 @@ Für `/api/r_and_d/experiments`:
 | Strategy Summary | Aggregation nach Strategy | `/r_and_d/strategies` |
 | Charts | Visualisierungen (Sharpe-Dist, Scatter) | `/r_and_d/charts` |
 | Summary | Kennzahlen wie JSON summary + stats | `/r_and_d/summary` |
+| Today | Heute fertige Experimente (API-Parität) | `/r_and_d/today` |
+| Running | Laufende Experimente (API-Parität) | `/r_and_d/running` |
 
 ### 6.2 Experiments List View
 
@@ -340,7 +346,9 @@ Peak_Trade Web-Dashboard
 ├── /r_and_d/presets (NEU: Preset Summary)
 ├── /r_and_d/strategies (NEU: Strategy Summary)
 ├── /r_and_d/charts (NEU: Charts)
-└── /r_and_d/summary (NEU: Summary/Overview HTML)
+├── /r_and_d/summary (NEU: Summary/Overview HTML)
+├── /r_and_d/today (NEU: Today HTML)
+└── /r_and_d/running (NEU: Running HTML)
 ```
 
 ### 7.2 Code-Struktur (geplant)
@@ -454,6 +462,7 @@ templates/
 | 2026-04-13 | Slice 4: kanonischer Experiment-Detail-Pfad `GET &#47;r_and_d&#47;experiments&#47;{run_id}` (Alias `&#47;r_and_d&#47;experiment&#47;{run_id}`); JSON `GET /api&#47;r_and_d&#47;experiments&#47;{run_id}` |
 | 2026-04-13 | Slice 5: Charts v0 unter `GET &#47;r_and_d&#47;charts` (Sharpe-Histogramm, Return-vs.-Sharpe-Scatter; read-only) |
 | 2026-04-13 | Slice 6: Summary-HTML `GET &#47;r_and_d&#47;summary` aligned zu `GET /api&#47;r_and_d&#47;summary` und `GET /api&#47;r_and_d&#47;stats` |
+| 2026-04-13 | Slice 7: Today-/Running-HTML (`GET &#47;r_and_d&#47;today`, `GET &#47;r_and_d&#47;running`) aligned zu den v1.1-JSON-Endpunkten |
 
 ---
 
