@@ -2711,6 +2711,31 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{ero_ver}</code></p>"
         )
 
+    bal_sem_raw = payload.get("balance_semantics_state")
+    bs_block = ""
+    if isinstance(bal_sem_raw, dict):
+        b_sem = bal_sem_raw.get("balance_semantic_state")
+        b_reason = bal_sem_raw.get("balance_reason_code")
+        b_vis = bal_sem_raw.get("balance_operator_visible_state")
+        bs_block = (
+            '<section class="operator-summary-balance-semantics" '
+            'id="operator-summary-balance-semantics">'
+            "<h3>Balance semantics (observation)</h3>"
+            "<p><strong>Observation only.</strong> Local monitor / portfolio snapshot labels from "
+            "<code>balance_semantics_state</code> in this payload — <strong>not exchange balance truth,</strong> "
+            "<strong>not reconciliation approval,</strong> not treasury clearance. "
+            "Cross-surface context: <code>stale_state.balance</code>, "
+            "<code>transfer_ambiguity_state</code>, <code>session_end_mismatch_state</code> "
+            "(detail cards below).</p>"
+            "<p><strong>balance_semantic_state</strong> (observation): "
+            f"<code>{escape(str(b_sem if b_sem is not None else 'n/a'))}</code></p>"
+            "<p><strong>balance_reason_code</strong> (observation): "
+            f"<code>{escape(str(b_reason if b_reason is not None else 'n/a'))}</code></p>"
+            "<p><strong>balance_operator_visible_state</strong> (observation): "
+            f"<code>{escape(str(b_vis if b_vis is not None else 'n/a'))}</code></p>"
+            "</section>"
+        )
+
     iso_raw = payload.get("incident_safety_observation")
     iso_block = ""
     if isinstance(iso_raw, dict):
@@ -2860,6 +2885,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{rso_block}"
         f"{hdo_block}"
         f"{ero_block}"
+        f"{bs_block}"
         f"{iso_block}"
         "<h3>Incident observation (read-only)</h3>"
         "<p>Existing incident/dependency rollups from this page&apos;s JSON payload.</p>"

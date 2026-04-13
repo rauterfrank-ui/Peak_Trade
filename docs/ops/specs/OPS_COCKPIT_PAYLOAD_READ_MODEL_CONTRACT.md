@@ -57,7 +57,7 @@ Additive changes may introduce **new** top-level keys; removals or renames are *
 | `run_state` | Run &#47; session rollup from registry &#47; metadata where present. |
 | `session_end_mismatch_state` | Read model — `src&#47;live&#47;session_end_mismatch_reader.py`. |
 | `stale_state` | Stale signals (balance, orders, exposure, etc.). |
-| `balance_semantics_state` | Balance semantics **observation** from local portfolio snapshot when config allows — **not** exchange reconciliation truth. Drives `stale_state.balance` and feeds session &#47; transfer readers where wired; supplementary traceability: [`OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md`](OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md) — **§ Supplementary Cockpit surfaces**. |
+| `balance_semantics_state` | Balance semantics **observation** from local portfolio snapshot when config allows — **not** exchange reconciliation truth. Drives `stale_state.balance` and feeds session &#47; transfer readers where wired; supplementary traceability: [`OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md`](OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md) — **§ Supplementary Cockpit surfaces**. Operator Summary HTML: [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md) — **Balance semantics (observation)** (`id=operator-summary-balance-semantics`). |
 | `run_session_observation` | Compact aggregate — `src&#47;ops&#47;run_session_observation.py`. Observation only. |
 
 ### Health / drift
