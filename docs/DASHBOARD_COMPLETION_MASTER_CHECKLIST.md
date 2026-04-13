@@ -46,6 +46,8 @@ Die folgenden Checkboxen spiegeln den **Ist-Stand der read-only Ops-Cockpit-Lini
 5. `feat/ops-suite-phase-e-governance-review`  
 6. `feat/ops-suite-vnext-coverage-matrix` (docs-only: diese Traceability-Matrix + Checklisten-Sync)
 
+- [x] **Branch 6 (Runbook) — docs-only:** Required-Views-Coverage-Matrix [`OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md`](ops&#47;specs&#47;OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md) und diese Checkliste mit Ist-Code/Operator Summary zu **`stale_state.order`** / **`order_staleness_reader`** synchron gehalten ([`RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`](ops&#47;runbooks&#47;RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md) Schritt 6). **Keine** Vollständigkeits- oder Produktfreigabe; nur Traceability.
+
 ---
 
 ## 3. R&D Dashboard v0 (Phase 76 — Auszug Definition of Done)

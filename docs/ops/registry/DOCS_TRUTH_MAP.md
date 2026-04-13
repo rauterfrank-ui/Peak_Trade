@@ -64,6 +64,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 ## Änderungsnachweis (Slice A)
 
+- 2026-04-13: `docs&#47;ops&#47;specs&#47;OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md` — RV7-Zeile und **Notes** ergänzt: repo-belegte Traceability für `stale_state.order` &#47; `get_live_runs_order_staleness` (`src&#47;live&#47;order_staleness_reader.py`), Test-Anker `test_stale_state_order_*` in `tests&#47;webui&#47;test_ops_cockpit.py`; Wortlaut aligned zu [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](../specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md); `docs&#47;DASHBOARD_COMPLETION_MASTER_CHECKLIST.md` — Runbook **Branch 6** (docs-only Matrix + Checklisten-Sync) als erledigt markiert; **keine** Produktfreigabe; reine Doku, keine `src&#47;`-Änderung.
+
 - 2026-04-13: `docs&#47;ops&#47;specs&#47;OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md` neu — vNext Required Views §1–7 ↔ Ops Cockpit Payload &#47; Operator-Summary-Surface &#47; Test-Anker (Traceability, keine Vollständigkeits-Freigabe); `docs&#47;DASHBOARD_COMPLETION_MASTER_CHECKLIST.md` OPS-Spur auf Ist-Stand Phasen A–E + Branch-Folge 1–6; Querverweise in vNext-Spec, vNext-Plan, Phase-E-Runbook; reine Doku, keine `src&#47;`-Änderung.
 
 - 2026-04-13: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md` neu — Phase E Governance Review (Ops Cockpit Interpretation vs. Autorität, Traceability zu Payload-Contract, Operator-Summary-Surface, Truth-Map, Tests); `RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`, `OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`, `OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md` und `OPS_SUITE_OPERATOR_STATE_REAL_SIGNAL_REVIEW.md` (Supersession-Hinweis) angepasst; keine Produkt-Autoritätsänderung.
