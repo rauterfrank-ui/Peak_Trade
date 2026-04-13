@@ -4084,7 +4084,7 @@ def render_ops_cockpit_html(
       {_render_evidence_state_card_body(evidence)}
     </div>
 
-    <div class="card">
+    <div class="card" id="dependencies-state-observation-card">
       <h2>Dependencies State</h2>
       {_render_dependencies_state_card_body(dependencies)}
     </div>

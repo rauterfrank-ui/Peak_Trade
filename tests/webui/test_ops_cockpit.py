@@ -1755,6 +1755,8 @@ def test_dependencies_state_telemetry_worst_of_when_both_roots_exist(tmp_path: P
 def test_ops_cockpit_html_contains_dependencies_state(tmp_path: Path) -> None:
     """HTML rendert Dependencies State Card."""
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="dependencies-state-observation-card"' in html
+    assert html.count('id="dependencies-state-observation-card"') == 1
     assert "Dependencies State" in html
     assert "Read-only dependencies / health-drift observation" in html
     assert "not approval, not unlock" in html
