@@ -1834,6 +1834,33 @@ def _render_operator_summary_stale_signals_observation(stale_raw: object) -> str
     )
 
 
+def _render_operator_summary_health_drift_observation(hdo_raw: object) -> str:
+    """Compact ``health_drift_observation`` block for operator summary (read-only)."""
+    if not isinstance(hdo_raw, dict):
+        return ""
+    hdo_status = escape(str(hdo_raw.get("status", "unknown")))
+    hdo_summary = escape(str(hdo_raw.get("summary", "")))
+    hdo_ds = escape(str(hdo_raw.get("data_source", "")))
+    hdo_ver = escape(str(hdo_raw.get("reader_schema_version", "")))
+    inner = (
+        "<h3>Health / drift (observation)</h3>"
+        "<p><strong>Observation only.</strong> Aggregate from top-level truth/freshness/coverage "
+        "rollups, <code>evidence_state</code>, <code>dependencies_state</code>, and "
+        "<code>stale_state</code> — <strong>not a live service health guarantee,</strong> "
+        "<strong>not an approval,</strong> not broker truth.</p>"
+        f"<p><strong>health_drift_observation.status</strong>: <code>{hdo_status}</code></p>"
+        f"<p><strong>Summary:</strong> {hdo_summary}</p>"
+        f"<p><strong>data_source:</strong> <code>{hdo_ds}</code> · "
+        f"<strong>reader_schema_version:</strong> <code>{hdo_ver}</code></p>"
+    )
+    return (
+        '<section class="operator-summary-health-drift-observation" '
+        'id="operator-summary-health-drift-observation">'
+        f"{inner}"
+        "</section>"
+    )
+
+
 def _render_operator_summary_session_end_mismatch(sem_raw: object) -> str:
     """Compact ``session_end_mismatch_state`` lines for operator summary (read-only)."""
     if not isinstance(sem_raw, dict):
@@ -3330,24 +3357,9 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         payload.get("stale_state")
     )
 
-    hdo_raw = payload.get("health_drift_observation")
-    hdo_block = ""
-    if isinstance(hdo_raw, dict):
-        hdo_status = escape(str(hdo_raw.get("status", "unknown")))
-        hdo_summary = escape(str(hdo_raw.get("summary", "")))
-        hdo_ds = escape(str(hdo_raw.get("data_source", "")))
-        hdo_ver = escape(str(hdo_raw.get("reader_schema_version", "")))
-        hdo_block = (
-            "<h3>Health / drift (observation)</h3>"
-            "<p><strong>Observation only.</strong> Aggregate from top-level truth/freshness/coverage "
-            "rollups, <code>evidence_state</code>, <code>dependencies_state</code>, and "
-            "<code>stale_state</code> — <strong>not a live service health guarantee,</strong> "
-            "<strong>not an approval,</strong> not broker truth.</p>"
-            f"<p><strong>health_drift_observation.status</strong>: <code>{hdo_status}</code></p>"
-            f"<p><strong>Summary:</strong> {hdo_summary}</p>"
-            f"<p><strong>data_source:</strong> <code>{hdo_ds}</code> · "
-            f"<strong>reader_schema_version:</strong> <code>{hdo_ver}</code></p>"
-        )
+    hdo_block = _render_operator_summary_health_drift_observation(
+        payload.get("health_drift_observation")
+    )
 
     dep_artifact_block = _render_operator_summary_dependencies_artifact_observations(deps)
 

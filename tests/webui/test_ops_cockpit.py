@@ -534,7 +534,7 @@ def test_ops_cockpit_operator_summary_stale_signals_observation_in_html(
     assert "not exchange order-book state" in html.lower()
     assert "not an approval" in html.lower()
     st_block = html.split('id="operator-summary-stale-signals"', 1)[1].split(
-        "Health / drift (observation)", 1
+        'id="operator-summary-health-drift-observation"', 1
     )[0]
     assert "stale_state.exposure" in st_block
 
@@ -546,13 +546,15 @@ def test_ops_cockpit_health_drift_observation_in_html(tmp_path: Path) -> None:
     (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
     (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-health-drift-observation"' in html
     assert "Health / drift (observation)" in html
     assert "health_drift_observation.status" in html
     assert "not a live service health guarantee" in html.lower()
-    hd_block = html.split("Health / drift (observation)", 1)[1].split(
+    hd_block = html.split('id="operator-summary-health-drift-observation"', 1)[1].split(
         "Exposure / risk (observation)", 1
     )[0]
     assert "not an approval" in hd_block.lower()
+    assert "health_drift_observation" in hd_block.lower()
 
 
 def test_ops_cockpit_operator_summary_truth_state_in_html(tmp_path: Path) -> None:
