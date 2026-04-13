@@ -423,6 +423,27 @@ def test_ops_cockpit_health_drift_observation_in_html(tmp_path: Path) -> None:
     assert "not an approval" in hd_block.lower()
 
 
+def test_ops_cockpit_operator_summary_dependencies_artifact_observations_in_html(
+    tmp_path: Path,
+) -> None:
+    """Operator summary surfaces P85 and market-data-cache artifact rows; observation-only."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-dependencies-artifact-observations"' in html
+    assert "Dependencies — artifact observations (read-only)" in html
+    assert "p85_exchange_observation.data_source" in html
+    assert "market_data_cache_observation.reader_schema_version" in html
+    assert "not a live feed check" in html.lower()
+    art_block = html.split('id="operator-summary-dependencies-artifact-observations"', 1)[1].split(
+        "Exposure / risk (observation)", 1
+    )[0]
+    assert "not an approval" in art_block.lower()
+    assert "governance" in art_block.lower()
+
+
 def test_ops_cockpit_exposure_risk_observation_in_html(tmp_path: Path) -> None:
     """HTML surfaces exposure/risk aggregate; no approval or broker-truth wording."""
     docs_dir = tmp_path / "docs" / "governance" / "ai"
