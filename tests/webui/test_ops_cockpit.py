@@ -1565,6 +1565,8 @@ starting_capital = 10000.0
 def test_ops_cockpit_html_contains_balance_semantics(tmp_path: Path) -> None:
     """HTML rendert Balance Semantics Card."""
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="balance-semantics-observation-card"' in html
+    assert html.count('id="balance-semantics-observation-card"') == 1
     assert "Balance Semantics" in html
     assert "Operator visibility" in html or "operator visibility" in html.lower()
     assert "Semantic state" in html or "semantic state" in html.lower()
@@ -1978,6 +1980,7 @@ def test_ops_cockpit_shows_balance_semantics(ops_client: TestClient) -> None:
     response = ops_client.get("/ops")
     assert response.status_code == 200
     html = response.text
+    assert 'id="balance-semantics-observation-card"' in html
     assert "Balance Semantics" in html
     assert "Operator visibility" in html or "operator visibility" in html.lower()
     assert "Semantic state" in html or "semantic state" in html.lower()

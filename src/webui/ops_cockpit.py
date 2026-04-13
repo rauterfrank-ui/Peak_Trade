@@ -4041,7 +4041,7 @@ def render_ops_cockpit_html(
       <p><strong>Exposure:</strong> {escape(str(stale.get("exposure", "unknown")))}</p>
     </div>
 
-    <div class="card">
+    <div class="card" id="balance-semantics-observation-card">
       <h2>Balance Semantics</h2>
       <p><strong>Operator visibility: clear / warning / blocked</strong></p>
       <p><strong>Semantic state:</strong> <span class="chip"><code>{
