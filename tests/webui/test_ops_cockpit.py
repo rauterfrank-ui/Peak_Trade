@@ -1523,6 +1523,8 @@ def test_ops_cockpit_html_contains_exposure_state(tmp_path: Path) -> None:
 def test_ops_cockpit_html_contains_stale_state(tmp_path: Path) -> None:
     """HTML rendert Stale State Card."""
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="stale-state-observation-card"' in html
+    assert html.count('id="stale-state-observation-card"') == 1
     assert "Stale State" in html
     assert "balance" in html.lower()
     assert "position" in html.lower()
