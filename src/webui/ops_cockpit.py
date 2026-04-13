@@ -1365,7 +1365,7 @@ def _render_run_state_observation_card(payload: Dict[str, object]) -> str:
         "stop runs or change execution semantics."
     )
     return (
-        f'<div class="card truth-card" style="margin-bottom:20px;">'
+        f'<div class="card truth-card" id="run-state-observation-card" style="margin-bottom:20px;">'
         f"<h2>Run state — observed rollup</h2>"
         f"<p><strong>Read-only.</strong> {intro}</p>"
         f"{table_html}"
