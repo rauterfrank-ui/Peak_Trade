@@ -1952,6 +1952,16 @@ def _render_operator_summary_system_status(system_status_lines: str) -> str:
     )
 
 
+def _render_operator_summary_go_no_go_not_approval(go_no_go_inline: str) -> str:
+    """Inline ``policy_state`` / ``incident_state`` go-no-go lines for operator summary (read-only)."""
+    return (
+        '<section class="operator-summary-go-no-go-not-approval" '
+        'id="operator-summary-go-no-go-not-approval">'
+        f"{go_no_go_inline}"
+        "</section>"
+    )
+
+
 def _render_operator_summary_system_state_observation(sso_raw: object) -> str:
     """Compact ``system_state_observation`` block for operator summary (read-only)."""
     if not isinstance(sso_raw, dict):
@@ -3679,6 +3689,8 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         "(mirror of <code>policy_state.summary</code> at payload build; not a second gate engine)</p>"
     )
 
+    go_no_go_inline = f"<h3>Go / No-Go observation (not approval)</h3>{go_no_go_intro}{go_lines}"
+
     return (
         '<div class="operator-summary-surface exec-summary">'
         "<h2>Operator summary (read-only)</h2>"
@@ -3689,9 +3701,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{_render_operator_summary_system_status(system_status_lines)}"
         f"{sso_block}"
         f"{p83_block}"
-        "<h3>Go / No-Go observation (not approval)</h3>"
-        f"{go_no_go_intro}"
-        f"{go_lines}"
+        f"{_render_operator_summary_go_no_go_not_approval(go_no_go_inline)}"
         f"{pgngo_block}"
         f"{operator_state_summary_block}"
         f"{spo_block}"
