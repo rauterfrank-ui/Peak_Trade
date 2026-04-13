@@ -1861,6 +1861,33 @@ def _render_operator_summary_health_drift_observation(hdo_raw: object) -> str:
     )
 
 
+def _render_operator_summary_exposure_risk_observation(ero_raw: object) -> str:
+    """Compact ``exposure_risk_observation`` block for operator summary (read-only)."""
+    if not isinstance(ero_raw, dict):
+        return ""
+    ero_status = escape(str(ero_raw.get("status", "unknown")))
+    ero_summary = escape(str(ero_raw.get("summary", "")))
+    ero_ds = escape(str(ero_raw.get("data_source", "")))
+    ero_ver = escape(str(ero_raw.get("reader_schema_version", "")))
+    inner = (
+        "<h3>Exposure / risk (observation)</h3>"
+        "<p><strong>Observation only.</strong> Aggregate from <code>exposure_state</code>, "
+        "<code>transfer_ambiguity_state</code>, <code>stale_state</code>, and "
+        "<code>guard_state</code> treasury separation — <strong>not broker or exchange truth,</strong> "
+        "<strong>not a risk approval,</strong> not a cap or limit unlock.</p>"
+        f"<p><strong>exposure_risk_observation.status</strong>: <code>{ero_status}</code></p>"
+        f"<p><strong>Summary:</strong> {ero_summary}</p>"
+        f"<p><strong>data_source:</strong> <code>{ero_ds}</code> · "
+        f"<strong>reader_schema_version:</strong> <code>{ero_ver}</code></p>"
+    )
+    return (
+        '<section class="operator-summary-exposure-risk-observation" '
+        'id="operator-summary-exposure-risk-observation">'
+        f"{inner}"
+        "</section>"
+    )
+
+
 def _render_operator_summary_session_end_mismatch(sem_raw: object) -> str:
     """Compact ``session_end_mismatch_state`` lines for operator summary (read-only)."""
     if not isinstance(sem_raw, dict):
@@ -3363,24 +3390,9 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
 
     dep_artifact_block = _render_operator_summary_dependencies_artifact_observations(deps)
 
-    ero_raw = payload.get("exposure_risk_observation")
-    ero_block = ""
-    if isinstance(ero_raw, dict):
-        ero_status = escape(str(ero_raw.get("status", "unknown")))
-        ero_summary = escape(str(ero_raw.get("summary", "")))
-        ero_ds = escape(str(ero_raw.get("data_source", "")))
-        ero_ver = escape(str(ero_raw.get("reader_schema_version", "")))
-        ero_block = (
-            "<h3>Exposure / risk (observation)</h3>"
-            "<p><strong>Observation only.</strong> Aggregate from <code>exposure_state</code>, "
-            "<code>transfer_ambiguity_state</code>, <code>stale_state</code>, and "
-            "<code>guard_state</code> treasury separation — <strong>not broker or exchange truth,</strong> "
-            "<strong>not a risk approval,</strong> not a cap or limit unlock.</p>"
-            f"<p><strong>exposure_risk_observation.status</strong>: <code>{ero_status}</code></p>"
-            f"<p><strong>Summary:</strong> {ero_summary}</p>"
-            f"<p><strong>data_source:</strong> <code>{ero_ds}</code> · "
-            f"<strong>reader_schema_version:</strong> <code>{ero_ver}</code></p>"
-        )
+    ero_block = _render_operator_summary_exposure_risk_observation(
+        payload.get("exposure_risk_observation")
+    )
 
     exposure_state_summary_block = _render_operator_summary_exposure_state(
         payload.get("exposure_state")
