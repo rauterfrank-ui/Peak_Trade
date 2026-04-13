@@ -1605,6 +1605,80 @@ def _render_operator_summary_stale_signals_observation(stale_raw: object) -> str
     )
 
 
+def _render_operator_summary_session_end_mismatch(sem_raw: object) -> str:
+    """Compact ``session_end_mismatch_state`` lines for operator summary (read-only)."""
+    if not isinstance(sem_raw, dict):
+        return ""
+    sem = sem_raw
+    keys = (
+        "status",
+        "summary",
+        "blocked_next_session",
+        "data_source",
+        "observation_reason",
+        "reader_schema_version",
+        "runbook",
+    )
+    parts: List[str] = []
+    for k in keys:
+        if k in sem:
+            parts.append(
+                f"<p><strong>session_end_mismatch_state.{k}</strong>: "
+                f"<code>{escape(str(sem.get(k)))}</code></p>"
+            )
+    if not parts:
+        return ""
+    return (
+        '<section class="operator-summary-session-end-mismatch" '
+        'id="operator-summary-session-end-mismatch">'
+        "<h3>Session end mismatch (observation)</h3>"
+        "<p><strong>Observation only.</strong> Local session registry / <code>live_runs</code> "
+        "artifact read model — <strong>not</strong> broker enforcement, <strong>not</strong> approval, "
+        "<strong>not</strong> unlock. Same semantics as the <strong>Session End Mismatch</strong> card. "
+        "<code>blocked_next_session</code> is a hint only, not a gate. "
+        "<code>policy_go_no_go_observation</code> remains the compact policy aggregate.</p>"
+        f"{''.join(parts)}"
+        "</section>"
+    )
+
+
+def _render_operator_summary_transfer_ambiguity(ta_raw: object) -> str:
+    """Compact ``transfer_ambiguity_state`` lines for operator summary (read-only)."""
+    if not isinstance(ta_raw, dict):
+        return ""
+    ta = ta_raw
+    keys = (
+        "status",
+        "summary",
+        "data_source",
+        "observation_reason",
+        "runbook_ref",
+        "operator_attention_hint",
+        "reader_schema_version",
+    )
+    parts: List[str] = []
+    for k in keys:
+        if k in ta:
+            parts.append(
+                f"<p><strong>transfer_ambiguity_state.{k}</strong>: "
+                f"<code>{escape(str(ta.get(k)))}</code></p>"
+            )
+    if not parts:
+        return ""
+    return (
+        '<section class="operator-summary-transfer-ambiguity" '
+        'id="operator-summary-transfer-ambiguity">'
+        "<h3>Transfer / treasury ambiguity (observation)</h3>"
+        "<p><strong>Observation only.</strong> Local cockpit signals only — "
+        "<strong>not</strong> exchange transfer truth, <strong>not</strong> approval, "
+        "<strong>not</strong> all-clear. Same semantics as the "
+        "<strong>Transfer / Treasury ambiguity</strong> card. "
+        "<code>operator_attention_hint</code> is a nudge only, not a gate.</p>"
+        f"{''.join(parts)}"
+        "</section>"
+    )
+
+
 def _render_dependencies_state_card_body(dependencies: Dict[str, object]) -> str:
     """HTML inner block for Dependencies State — ``dependencies_state`` keys (read-only)."""
     dep = dependencies if isinstance(dependencies, dict) else {}
@@ -2932,6 +3006,11 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{rso_ver}</code></p>"
         )
 
+    sem_block = _render_operator_summary_session_end_mismatch(
+        payload.get("session_end_mismatch_state")
+    )
+    ta_block = _render_operator_summary_transfer_ambiguity(payload.get("transfer_ambiguity_state"))
+
     stale_signals_block = _render_operator_summary_stale_signals_observation(
         payload.get("stale_state")
     )
@@ -3151,6 +3230,8 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{wo_sum_block}"
         f"{uo_sum_block}"
         f"{rso_block}"
+        f"{sem_block}"
+        f"{ta_block}"
         f"{stale_signals_block}"
         f"{hdo_block}"
         f"{dep_artifact_block}"

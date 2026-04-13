@@ -423,10 +423,38 @@ def test_ops_cockpit_run_session_observation_in_html(tmp_path: Path) -> None:
     assert "run_session_observation.status" in html
     assert "not a session guarantee" in html.lower()
     rs_block = html.split("Run / session (observation)", 1)[1].split(
-        "Health / drift (observation)", 1
+        'id="operator-summary-session-end-mismatch"', 1
     )[0]
     assert "approval" in rs_block.lower()  # explicit "not ... approval" disclaimer in this block
     assert "not an approval" in rs_block.lower()
+
+
+def test_ops_cockpit_operator_summary_session_end_and_transfer_in_html(
+    tmp_path: Path,
+) -> None:
+    """Operator summary mirrors session_end_mismatch_state and transfer_ambiguity_state read-only."""
+    docs_dir = tmp_path / "docs" / "governance" / "ai"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
+    (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
+    html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-session-end-mismatch"' in html
+    assert 'id="operator-summary-transfer-ambiguity"' in html
+    assert "Session end mismatch (observation)" in html
+    assert "Transfer / treasury ambiguity (observation)" in html
+    assert "session_end_mismatch_state.status" in html
+    assert "transfer_ambiguity_state.status" in html
+    assert "broker enforcement" in html.lower()
+    assert "exchange transfer truth" in html.lower()
+    sem_block = html.split('id="operator-summary-session-end-mismatch"', 1)[1].split(
+        'id="operator-summary-transfer-ambiguity"', 1
+    )[0]
+    assert "session_end_mismatch_state.runbook" in sem_block
+    ta_block = html.split('id="operator-summary-transfer-ambiguity"', 1)[1].split(
+        'id="operator-summary-stale-signals"', 1
+    )[0]
+    assert "transfer_ambiguity_state.operator_attention_hint" in ta_block
+    assert "observation only" in ta_block.lower()
 
 
 def test_ops_cockpit_operator_summary_stale_signals_observation_in_html(
