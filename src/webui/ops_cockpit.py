@@ -1945,6 +1945,34 @@ def _render_operator_summary_system_state_observation(sso_raw: object) -> str:
     )
 
 
+def _render_operator_summary_policy_go_no_go_observation(pgngo_raw: object) -> str:
+    """Compact ``policy_go_no_go_observation`` block for operator summary (read-only)."""
+    if not isinstance(pgngo_raw, dict):
+        return ""
+    pgngo_status = escape(str(pgngo_raw.get("status", "unknown")))
+    pgngo_summary = escape(str(pgngo_raw.get("summary", "")))
+    pgngo_ds = escape(str(pgngo_raw.get("data_source", "")))
+    pgngo_ver = escape(str(pgngo_raw.get("reader_schema_version", "")))
+    inner = (
+        "<h3>Policy / go-no-go (observation)</h3>"
+        "<p><strong>Observation only.</strong> Compact aggregate from <code>policy_state</code>, "
+        "<code>incident_state</code>, and <code>operator_state</code> in this payload — "
+        "<strong>not a live go decision,</strong> <strong>not approval or unlock,</strong> "
+        "not broker truth. Holistic gating posture: <code>safety_posture_observation</code> "
+        "(separate snapshot).</p>"
+        f"<p><strong>policy_go_no_go_observation.status</strong>: <code>{pgngo_status}</code></p>"
+        f"<p><strong>Summary:</strong> {pgngo_summary}</p>"
+        f"<p><strong>data_source:</strong> <code>{pgngo_ds}</code> · "
+        f"<strong>reader_schema_version:</strong> <code>{pgngo_ver}</code></p>"
+    )
+    return (
+        '<section class="operator-summary-policy-go-no-go-observation" '
+        'id="operator-summary-policy-go-no-go-observation">'
+        f"{inner}"
+        "</section>"
+    )
+
+
 def _render_operator_summary_evidence_audit_observation(eao_raw: object) -> str:
     """Compact ``evidence_audit_observation`` block for operator summary (read-only)."""
     if not isinstance(eao_raw, dict):
@@ -3220,25 +3248,9 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             "downstream enforcement remains authoritative; this page does not clear it.</p>"
         )
 
-    pgngo_raw = payload.get("policy_go_no_go_observation")
-    pgngo_block = ""
-    if isinstance(pgngo_raw, dict):
-        pgngo_status = escape(str(pgngo_raw.get("status", "unknown")))
-        pgngo_summary = escape(str(pgngo_raw.get("summary", "")))
-        pgngo_ds = escape(str(pgngo_raw.get("data_source", "")))
-        pgngo_ver = escape(str(pgngo_raw.get("reader_schema_version", "")))
-        pgngo_block = (
-            "<h3>Policy / go-no-go (observation)</h3>"
-            "<p><strong>Observation only.</strong> Compact aggregate from <code>policy_state</code>, "
-            "<code>incident_state</code>, and <code>operator_state</code> in this payload — "
-            "<strong>not a live go decision,</strong> <strong>not approval or unlock,</strong> "
-            "not broker truth. Holistic gating posture: <code>safety_posture_observation</code> "
-            "(separate snapshot).</p>"
-            f"<p><strong>policy_go_no_go_observation.status</strong>: <code>{pgngo_status}</code></p>"
-            f"<p><strong>Summary:</strong> {pgngo_summary}</p>"
-            f"<p><strong>data_source:</strong> <code>{pgngo_ds}</code> · "
-            f"<strong>reader_schema_version:</strong> <code>{pgngo_ver}</code></p>"
-        )
+    pgngo_block = _render_operator_summary_policy_go_no_go_observation(
+        payload.get("policy_go_no_go_observation")
+    )
 
     operator_state_summary_block = _render_operator_summary_operator_state(payload)
 
