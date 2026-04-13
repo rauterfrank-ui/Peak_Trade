@@ -2572,6 +2572,68 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{spo_ver}</code></p>"
         )
 
+    sstate_raw = payload.get("safety_state")
+    sstate_block = ""
+    if isinstance(sstate_raw, dict):
+        ss_summary = escape(str(sstate_raw.get("summary", "")))
+        ss_ds = escape(str(sstate_raw.get("data_source", "")))
+        ss_ver = escape(str(sstate_raw.get("reader_schema_version", "")))
+        prov = sstate_raw.get("provenance")
+        prov_reason = ""
+        if isinstance(prov, dict) and prov.get("observation_reason"):
+            prov_reason = escape(str(prov.get("observation_reason", "")))
+        subs_parts: List[str] = []
+        po_ref = sstate_raw.get("posture_observation")
+        if isinstance(po_ref, dict):
+            subs_parts.append(
+                "<p><strong>posture_observation</strong> (projection ref): "
+                f"<code>status={escape(str(po_ref.get('status', '')))}</code> · "
+                "<strong>reader_schema_version:</strong> "
+                f"<code>{escape(str(po_ref.get('reader_schema_version', '')))}</code></p>"
+            )
+        iso_ref = sstate_raw.get("incident_safety_observation")
+        if isinstance(iso_ref, dict):
+            subs_parts.append(
+                "<p><strong>incident_safety_observation</strong> (projection ref): "
+                f"<code>status={escape(str(iso_ref.get('status', '')))}</code> · "
+                "<strong>reader_schema_version:</strong> "
+                f"<code>{escape(str(iso_ref.get('reader_schema_version', '')))}</code></p>"
+            )
+        iss = sstate_raw.get("incident_signal_subset")
+        if isinstance(iss, dict):
+            subs_parts.append(
+                "<p><strong>incident_signal_subset</strong> (projection; scalars from "
+                "<code>incident_state</code>): "
+                f"<code>status={escape(str(iss.get('status', '')))}</code>, "
+                f"<code>kill_switch_active={escape(str(iss.get('kill_switch_active')))}</code>, "
+                f"<code>blocked={escape(str(iss.get('blocked')))}</code>, "
+                f"<code>requires_operator_attention="
+                f"{escape(str(iss.get('requires_operator_attention')))}</code></p>"
+            )
+        subs_html = "".join(subs_parts)
+        reason_line = ""
+        if prov_reason:
+            reason_line = (
+                f"<p><strong>provenance.observation_reason:</strong> <code>{prov_reason}</code></p>"
+            )
+        sstate_block = (
+            '<section class="operator-summary-safety-state" '
+            'id="operator-summary-safety-state-projection">'
+            "<h3>Safety state (vNext projection)</h3>"
+            "<p><strong>Observation only.</strong> Top-level <code>safety_state</code> bundles "
+            "references to <code>safety_posture_observation</code>, "
+            "<code>incident_safety_observation</code>, and scalar <code>incident_state</code> "
+            "rollups already in this payload — <strong>not a new safety verdict,</strong> "
+            "<strong>not approval or unlock,</strong> not broker truth. Holistic gating posture: "
+            "<strong>Safety / gating posture (observation)</strong> above.</p>"
+            f"<p><strong>safety_state.summary</strong>: {ss_summary}</p>"
+            f"<p><strong>data_source:</strong> <code>{ss_ds}</code> · "
+            f"<strong>reader_schema_version:</strong> <code>{ss_ver}</code></p>"
+            f"{reason_line}"
+            f"{subs_html}"
+            "</section>"
+        )
+
     gbo_raw = payload.get("governance_boundary_observation")
     gbo_block = ""
     if isinstance(gbo_raw, dict):
@@ -2793,6 +2855,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{go_lines}"
         f"{pgngo_block}"
         f"{spo_block}"
+        f"{sstate_block}"
         f"{gbo_block}"
         f"{rso_block}"
         f"{hdo_block}"
