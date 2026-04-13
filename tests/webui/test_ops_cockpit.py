@@ -432,14 +432,16 @@ def test_ops_cockpit_governance_boundary_observation_in_html(tmp_path: Path) -> 
     (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
     (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-governance-boundary-observation"' in html
     assert "Governance / AI boundary (observation)" in html
     assert "governance_boundary_observation.status" in html
     assert "not a supervision waiver" in html.lower()
-    gbo_block = html.split("Governance / AI boundary (observation)", 1)[1].split(
-        "Run / session (observation)", 1
+    gbo_block = html.split('id="operator-summary-governance-boundary-observation"', 1)[1].split(
+        'id="operator-summary-policy-governance-rv6"', 1
     )[0]
     assert "safety_posture_observation" in gbo_block.lower()
     assert "evidence_audit_observation" in gbo_block.lower()
+    assert "governance_boundary_observation" in gbo_block.lower()
 
 
 def test_ops_cockpit_operator_summary_policy_governance_rv6_in_html(tmp_path: Path) -> None:
