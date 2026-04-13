@@ -42,6 +42,7 @@ HTML Pages:
 - GET /r_and_d/presets (R&D Preset-Aggregation HTML - Phase 76 Slice 3)
 - GET /r_and_d/strategies (R&D Strategy-Aggregation HTML - Phase 76 Slice 3)
 - GET /r_and_d/charts (R&D Charts v0 - Phase 76 Slice 5, read-only)
+- GET /r_and_d/summary (R&D Summary/Overview HTML - Phase 76 Slice 6, read-only)
 - GET /r_and_d/experiment/{run_id} (R&D Experiment Detail - Phase 77, Alias)
 - GET /r_and_d/experiments/{run_id} (R&D Experiment Detail - Phase 76 kanonisch)
 - GET /r_and_d/comparison (R&D Multi-Run Comparison - Phase 78)
@@ -103,6 +104,7 @@ from .r_and_d_api import (
     filter_experiments,
     extract_flat_fields,
     compute_global_stats,
+    compute_summary,
     compute_preset_stats,
     compute_strategy_stats,
     sort_raw_experiments,
@@ -684,6 +686,28 @@ def create_app() -> FastAPI:
                 "total": len(all_experiments),
                 "filtered": len(filtered_experiments),
                 "limit": limit,
+            },
+        )
+
+    @app.get("/r_and_d/summary", response_class=HTMLResponse)
+    async def r_and_d_summary_page(request: Request) -> Any:
+        """
+        HTML-Ansicht: Summary/Overview (Phase 76 Slice 6).
+
+        Gleiche Semantik wie ``GET /api/r_and_d/summary`` und ``GET /api/r_and_d/stats``
+        (``compute_summary`` / ``compute_global_stats``). Rein lesend.
+        """
+        proj_status = get_project_status()
+        all_experiments = load_experiments_from_dir()
+        summary = compute_summary(all_experiments)
+        stats = compute_global_stats(all_experiments)
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_summary.html",
+            {
+                "status": proj_status,
+                "summary": summary,
+                "stats": stats,
             },
         )
 
