@@ -4093,7 +4093,7 @@ def render_ops_cockpit_html(
 
     {update_officer_card_html}
 
-    <div class="card truth-card">
+    <div class="card truth-card" id="incident-state-read-model-observation-card">
       <h2>Incident-state read model</h2>
       <p><strong>Question-specific authority (read-model contract)</strong></p>
       <p><strong>Incident stop invoked:</strong> {
