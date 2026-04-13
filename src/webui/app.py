@@ -39,6 +39,8 @@ HTML Pages:
 - GET / (Dashboard Home)
 - GET /session/{session_id} (Session Detail)
 - GET /r_and_d (R&D Experiments Overview - Phase 76)
+- GET /r_and_d/presets (R&D Preset-Aggregation HTML - Phase 76 Slice 3)
+- GET /r_and_d/strategies (R&D Strategy-Aggregation HTML - Phase 76 Slice 3)
 - GET /r_and_d/experiment/{run_id} (R&D Experiment Detail - Phase 77)
 - GET /r_and_d/comparison (R&D Multi-Run Comparison - Phase 78)
 
@@ -99,6 +101,8 @@ from .r_and_d_api import (
     filter_experiments,
     extract_flat_fields,
     compute_global_stats,
+    compute_preset_stats,
+    compute_strategy_stats,
     sort_raw_experiments,
     # v1.3 (Phase 78)
     find_experiment_by_run_id,
@@ -677,6 +681,51 @@ def create_app() -> FastAPI:
                 "total": len(all_experiments),
                 "filtered": len(filtered_experiments),
                 "limit": limit,
+            },
+        )
+
+    @app.get("/r_and_d/presets", response_class=HTMLResponse)
+    async def r_and_d_presets_aggregation_page(request: Request) -> Any:
+        """
+        HTML-Ansicht: Kennzahlen pro Preset (Phase 76 Slice 3).
+
+        Nutzt dieselbe Aggregationslogik wie ``GET /api/r_and_d/presets`` (keine Duplikation
+        der Berechnung). Rein lesend, keine Trigger.
+        """
+        proj_status = get_project_status()
+        all_experiments = load_experiments_from_dir()
+        preset_rows = compute_preset_stats(all_experiments)
+        stats = compute_global_stats(all_experiments)
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_presets.html",
+            {
+                "status": proj_status,
+                "preset_rows": preset_rows,
+                "stats": stats,
+                "total_experiments": len(all_experiments),
+            },
+        )
+
+    @app.get("/r_and_d/strategies", response_class=HTMLResponse)
+    async def r_and_d_strategies_aggregation_page(request: Request) -> Any:
+        """
+        HTML-Ansicht: Kennzahlen pro Strategy (Phase 76 Slice 3).
+
+        Nutzt dieselbe Aggregationslogik wie ``GET /api/r_and_d/strategies``. Rein lesend.
+        """
+        proj_status = get_project_status()
+        all_experiments = load_experiments_from_dir()
+        strategy_rows = compute_strategy_stats(all_experiments)
+        stats = compute_global_stats(all_experiments)
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_strategies.html",
+            {
+                "status": proj_status,
+                "strategy_rows": strategy_rows,
+                "stats": stats,
+                "total_experiments": len(all_experiments),
             },
         )
 

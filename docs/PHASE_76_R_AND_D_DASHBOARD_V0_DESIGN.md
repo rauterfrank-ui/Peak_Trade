@@ -108,6 +108,11 @@ relevanten Query-Parameter wie `GET /api&#47;r_and_d&#47;experiments` read-only 
 (Filter, Datumsfenster, `sort_by`/`sort_order`, `limit`; optional zusätzlich UI-`run_type`).
 Keine POST-Routen und keine Job-Trigger in diesem Slice.
 
+**Slice 3 (aggregation UI GET):** Read-only HTML unter `GET &#47;r_and_d&#47;presets` und
+`GET &#47;r_and_d&#47;strategies` nutzt dieselbe Aggregationslogik wie
+`GET /api&#47;r_and_d&#47;presets` bzw. `GET /api&#47;r_and_d&#47;strategies` (Tabellen,
+KPIs, defensive Empty States; keine Charts, keine Writes).
+
 ### 4.2 Aggregations-Layer
 
 Für das Dashboard v0 gibt es zwei mögliche Ansätze:
@@ -429,6 +434,7 @@ templates/
 | Datum | Änderung |
 |-------|----------|
 | 2025-12-09 | Initiale Design-Version erstellt |
+| 2026-04-13 | Slice 3 dokumentiert: read-only HTML-Aggregation für Preset/Strategy (`GET /r_and_d/presets`, `GET /r_and_d/strategies`) aligned zu den JSON-Endpunkten |
 
 ---
 
