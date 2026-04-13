@@ -1157,32 +1157,60 @@ class TestFormatDuration:
 
 
 class TestHTMLDetailRoute:
-    """Tests für die HTML Detail-Route (Phase 77)."""
+    """Tests für die HTML Detail-Route (Phase 76/77): GET /r_and_d/experiments/{run_id}."""
 
     def test_detail_page_returns_html(self, client):
-        """Detail-Page gibt HTML zurück."""
+        """Detail-Page gibt HTML zurück (kanonischer Pfad)."""
         # Erst ein Experiment finden
         resp = client.get("/api/r_and_d/experiments?limit=1")
         if resp.json()["items"]:
             run_id = resp.json()["items"][0]["run_id"]
-            detail_resp = client.get(f"/r_and_d/experiment/{run_id}")
+            detail_resp = client.get(f"/r_and_d/experiments/{run_id}")
             assert detail_resp.status_code == 200
             assert "text/html" in detail_resp.headers.get("content-type", "")
 
+    def test_detail_singular_experiment_path_alias(self, client):
+        """Älterer Pfad /r_and_d/experiment/{run_id} bleibt Alias (gleiche Antwort)."""
+        resp = client.get("/api/r_and_d/experiments?limit=1")
+        if resp.json()["items"]:
+            run_id = resp.json()["items"][0]["run_id"]
+            canonical = client.get(f"/r_and_d/experiments/{run_id}")
+            alias = client.get(f"/r_and_d/experiment/{run_id}")
+            assert canonical.status_code == 200
+            assert alias.status_code == 200
+            assert canonical.text == alias.text
+
     def test_detail_page_404_for_nonexistent(self, client):
         """Detail-Page gibt 404 für nicht existierendes Experiment."""
-        resp = client.get("/r_and_d/experiment/nonexistent_xyz_123")
-        assert resp.status_code == 404
+        for path in (
+            "/r_and_d/experiments/nonexistent_xyz_123",
+            "/r_and_d/experiment/nonexistent_xyz_123",
+        ):
+            resp = client.get(path)
+            assert resp.status_code == 404
 
     def test_detail_page_contains_run_id(self, client):
         """Detail-Page enthält die Run-ID."""
         resp = client.get("/api/r_and_d/experiments?limit=1")
         if resp.json()["items"]:
             run_id = resp.json()["items"][0]["run_id"]
-            detail_resp = client.get(f"/r_and_d/experiment/{run_id}")
+            detail_resp = client.get(f"/r_and_d/experiments/{run_id}")
             assert detail_resp.status_code == 200
             # Run-ID sollte irgendwo in der HTML-Response sein
             assert run_id in detail_resp.text or run_id.replace("_", "") in detail_resp.text
+
+    def test_detail_page_phase76_markers_and_core_fields(self, client):
+        """Phase 76: Marker + sichtbare Kernfelder (Fixture exp_test_v1)."""
+        resp = client.get("/r_and_d/experiments/exp_test_v1_20241208_120000")
+        assert resp.status_code == 200
+        text = resp.text
+        assert 'data-section="r-and-d-experiment-detail"' in text
+        assert 'data-section="r-and-d-experiment-detail-metrics"' in text
+        assert "test_preset_v1" in text
+        assert "test_strategy" in text
+        assert "Sharpe" in text or "sharpe" in text.lower()
+        assert "Raw JSON" in text
+        assert "BTC/USDT" in text or "BTC" in text
 
 
 class TestReportLinkTypes:

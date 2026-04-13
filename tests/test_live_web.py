@@ -576,11 +576,11 @@ class TestDashboardEndpoint:
             assert "http://127.0.0.1:8000/live/telemetry" in text
 
     def test_watch_overview_excludes_rd_experiment_deeplink(self, test_client: TestClient) -> None:
-        """Watch-Übersicht hat keinen kontextabhängigen /r_and_d/experiment/{run_id}-Link."""
+        """Watch-Übersicht hat keinen kontextabhängigen /r_and_d/experiments/{run_id}-Link."""
         response = test_client.get("/watch")
         assert response.status_code == 200
         assert "R&amp;D experiment detail (companion navigation)" not in response.text
-        assert "/r_and_d/experiment/" not in response.text
+        assert "/r_and_d/experiments/" not in response.text
 
     def test_watch_run_detail_contains_rd_experiment_deeplink_for_same_run_id(
         self, test_client: TestClient
@@ -588,7 +588,7 @@ class TestDashboardEndpoint:
         """Run-Detail-Seiten verlinken R&D-Experiment-HTML mit demselben run_id."""
         run_id = "20251204_180000_paper_ma_crossover_BTC-EUR_1m"
         expected = (
-            "http://127.0.0.1:8000/r_and_d/experiment/20251204_180000_paper_ma_crossover_BTC-EUR_1m"
+            "http://127.0.0.1:8000/r_and_d/experiments/20251204_180000_paper_ma_crossover_BTC-EUR_1m"
         )
         for path in (f"/watch/runs/{run_id}", f"/sessions/{run_id}"):
             response = test_client.get(path)

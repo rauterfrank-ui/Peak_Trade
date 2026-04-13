@@ -168,7 +168,7 @@
 {# ========================================================================= #}
 
 {% block content %}
-<div class="space-y-6">
+<div class="space-y-6" data-section="r-and-d-experiment-detail">
 
   {# ======================================================================= #}
   {# SECTION 1: Header mit Breadcrumb & Status                               #}
@@ -264,41 +264,54 @@
   {# ======================================================================= #}
   {# SECTION 3: Results/Metriken Grid                                        #}
   {# ======================================================================= #}
-  <section aria-label="Ergebnisse">
+  <section aria-label="Ergebnisse" data-section="r-and-d-experiment-detail-metrics">
     <h2 class="text-lg font-semibold text-slate-200 mb-3 flex items-center gap-2">
       <span>📊</span> Ergebnisse
     </h2>
 
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-      {# Total Return #}
-      {% set return_val = experiment.results.total_return or 0 %}
+    {% set res = experiment.results %}
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      {# Kernmetriken (immer) #}
+      {% set return_val = res.total_return or 0 %}
       {% set return_color = "text-emerald-300" if return_val >= 0 else "text-rose-400" %}
       {{ metric_card("Total Return", return_val, "percent", return_color, "💰") }}
 
-      {# Sharpe #}
-      {% set sharpe_val = experiment.results.sharpe or 0 %}
+      {% set sharpe_val = res.sharpe or 0 %}
       {% set sharpe_color = "text-emerald-300" if sharpe_val >= 1.5 else ("text-amber-300" if sharpe_val >= 0.5 else "text-slate-300") %}
       {{ metric_card("Sharpe Ratio", sharpe_val, "decimal", sharpe_color, "📈") }}
 
-      {# Max Drawdown #}
-      {% set mdd_val = experiment.results.max_drawdown or 0 %}
+      {% set mdd_val = res.max_drawdown or 0 %}
       {{ metric_card("Max Drawdown", mdd_val, "percent", "text-amber-300", "📉") }}
 
-      {# Total Trades #}
-      {% set trades_val = experiment.results.total_trades or 0 %}
-      {% set trades_color = "text-emerald-300" if trades_val > 0 else "text-slate-500" %}
-      {{ metric_card("Trades", trades_val, "int", trades_color, "🔄") }}
-
-      {# Win Rate #}
-      {% set wr_val = experiment.results.win_rate or 0 %}
+      {% set wr_val = res.win_rate or 0 %}
       {% set wr_color = "text-emerald-300" if wr_val >= 0.55 else ("text-slate-300" if wr_val >= 0.45 else "text-rose-400") %}
       {{ metric_card("Win Rate", wr_val, "percent", wr_color, "🎯") }}
 
-      {# Profit Factor #}
-      {% set pf_val = experiment.results.profit_factor or 0 %}
+      {% set trades_val = res.total_trades or 0 %}
+      {% set trades_color = "text-emerald-300" if trades_val > 0 else "text-slate-500" %}
+      {{ metric_card("Trades", trades_val, "int", trades_color, "🔄") }}
+    </div>
+
+    {% if 'profit_factor' in res or 'sortino' in res or 'calmar' in res or 'calmar_ratio' in res %}
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mt-3">
+      {% if 'profit_factor' in res %}
+      {% set pf_val = res.profit_factor or 0 %}
       {% set pf_color = "text-emerald-300" if pf_val >= 1.5 else ("text-amber-300" if pf_val >= 1.0 else "text-slate-300") %}
       {{ metric_card("Profit Factor", pf_val, "decimal", pf_color, "⚖️") }}
+      {% endif %}
+      {% if 'sortino' in res %}
+      {% set so_val = res.sortino or 0 %}
+      {{ metric_card("Sortino", so_val, "decimal", "text-slate-200", "📐") }}
+      {% endif %}
+      {% if 'calmar' in res %}
+      {% set cm_val = res.calmar or 0 %}
+      {{ metric_card("Calmar", cm_val, "decimal", "text-slate-200", "📊") }}
+      {% elif 'calmar_ratio' in res %}
+      {% set cm_val = res.calmar_ratio or 0 %}
+      {{ metric_card("Calmar", cm_val, "decimal", "text-slate-200", "📊") }}
+      {% endif %}
     </div>
+    {% endif %}
   </section>
 
   {# ======================================================================= #}

@@ -57,7 +57,7 @@ Siehe Milestones/DoD in [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_A
       Filter + `sort_by`/`sort_order`; keine Write-/Trigger-Routen.
 - [ ] Backend-/API-Erweiterungen für Summarys/Aggregationen nach Phase-76-Spec §5 (wenn gewünscht; JSON-API für Preset/Strategy ist bereits vorhanden).
 - [x] List View: GET-Query-Parität zur Listen-API (Filter/Sort/Limit/Datum, read-only) — Phase 76 slice 2; weiterer UI-Ausbau optional.
-- [ ] Experiment-Detail inkl. Metriken + JSON-Rohsicht.
+- [x] Experiment-Detail inkl. Metriken + JSON-Rohsicht — read-only HTML `GET &#47;r_and_d&#47;experiments&#47;{run_id}` (Alias `&#47;r_and_d&#47;experiment&#47;{run_id}`); API `GET /api&#47;r_and_d&#47;experiments&#47;{run_id}` — Phase 76 slice 4.
 - [x] Aggregationen (Preset / Strategy): read-only HTML (`GET &#47;r_and_d&#47;presets`, `GET &#47;r_and_d&#47;strategies`) aligned zu den bestehenden JSON-Endpunkten — Phase 76 slice 3.
 - [ ] Mind. zwei Charts (z. B. Sharpe-Verteilung, Sharpe vs. Return).
 - [ ] Tests (Design nennt u. a. mind. zehn API-Tests) + Doku aktualisieren.

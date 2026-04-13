@@ -41,7 +41,8 @@ HTML Pages:
 - GET /r_and_d (R&D Experiments Overview - Phase 76)
 - GET /r_and_d/presets (R&D Preset-Aggregation HTML - Phase 76 Slice 3)
 - GET /r_and_d/strategies (R&D Strategy-Aggregation HTML - Phase 76 Slice 3)
-- GET /r_and_d/experiment/{run_id} (R&D Experiment Detail - Phase 77)
+- GET /r_and_d/experiment/{run_id} (R&D Experiment Detail - Phase 77, Alias)
+- GET /r_and_d/experiments/{run_id} (R&D Experiment Detail - Phase 76 kanonisch)
 - GET /r_and_d/comparison (R&D Multi-Run Comparison - Phase 78)
 
 API Endpoints:
@@ -730,12 +731,17 @@ def create_app() -> FastAPI:
         )
 
     @app.get("/r_and_d/experiment/{run_id}", response_class=HTMLResponse)
+    @app.get("/r_and_d/experiments/{run_id}", response_class=HTMLResponse)
     async def r_and_d_experiment_detail_page(
         request: Request,
         run_id: str,
     ) -> Any:
         """
         HTML Detail-Page für ein einzelnes R&D-Experiment (Phase 77 v1.1).
+
+        Zwei Pfade (gleiche Handler-Logik, read-only):
+        - ``GET /r_and_d/experiments/{run_id}`` — Phase-76-kanonisch (Design §6.1)
+        - ``GET /r_and_d/experiment/{run_id}`` — älterer Alias
 
         Zeigt:
         - Vollständige Meta-Daten und Parameter

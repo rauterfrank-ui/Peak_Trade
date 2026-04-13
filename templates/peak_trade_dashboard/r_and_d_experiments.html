@@ -650,22 +650,22 @@
               </td>
 
               {# Status (v1.1 prominent) #}
-              <td class="px-3 py-2 cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {{ status_badge(exp.status) }}
               </td>
 
               {# Run-Type (v1.1 neu) #}
-              <td class="px-3 py-2 cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {{ run_type_badge(exp.run_type) }}
               </td>
 
               {# Timestamp #}
-              <td class="px-3 py-2 font-mono text-xs text-slate-400 whitespace-nowrap cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 font-mono text-xs text-slate-400 whitespace-nowrap cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {{ exp.timestamp[:8] if exp.timestamp else '-' }}
               </td>
 
               {# Tag #}
-              <td class="px-3 py-2 text-xs max-w-[150px] cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs max-w-[150px] cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.tag %}
                 <span class="truncate block text-slate-200" title="{{ exp.tag }}">
                   {{ exp.tag[:25] }}{{ '...' if exp.tag|length > 25 else '' }}
@@ -676,7 +676,7 @@
               </td>
 
               {# Preset #}
-              <td class="px-3 py-2 text-xs max-w-[140px] cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs max-w-[140px] cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.preset_id %}
                 <span class="truncate block text-sky-300" title="{{ exp.preset_id }}">
                   {{ exp.preset_id[:22] }}{{ '...' if exp.preset_id|length > 22 else '' }}
@@ -687,7 +687,7 @@
               </td>
 
               {# Strategy #}
-              <td class="px-3 py-2 text-xs max-w-[120px] cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs max-w-[120px] cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.strategy %}
                 <span class="truncate block text-purple-300" title="{{ exp.strategy }}">
                   {{ exp.strategy[:18] }}{{ '...' if exp.strategy|length > 18 else '' }}
@@ -698,12 +698,12 @@
               </td>
 
               {# Symbol #}
-              <td class="px-3 py-2 text-xs text-slate-300 whitespace-nowrap cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs text-slate-300 whitespace-nowrap cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {{ exp.symbol or '-' }}
               </td>
 
               {# Trades #}
-              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.total_trades is not none %}
                   {% if exp.total_trades > 0 %}
                   <span class="text-emerald-300 font-medium">{{ exp.total_trades }}</span>
@@ -716,7 +716,7 @@
               </td>
 
               {# Return #}
-              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.total_return is not none %}
                   {% if exp.total_return >= 0 %}
                   <span class="text-emerald-300 font-medium">+{{ "%.2f%%"|format(exp.total_return * 100) }}</span>
@@ -729,7 +729,7 @@
               </td>
 
               {# Sharpe #}
-              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.sharpe is not none %}
                   {% if exp.sharpe >= 1.5 %}
                   <span class="text-emerald-300 font-medium">{{ "%.2f"|format(exp.sharpe) }}</span>
@@ -746,7 +746,7 @@
               </td>
 
               {# MaxDD #}
-              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.max_drawdown is not none %}
                 <span class="text-amber-300">{{ "%.1f%%"|format(exp.max_drawdown * 100) }}</span>
                 {% else %}
@@ -755,7 +755,7 @@
               </td>
 
               {# WinRate #}
-              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
+              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiments/{{ exp.run_id }}'">
                 {% if exp.win_rate is not none %}
                   {% if exp.win_rate >= 0.55 %}
                   <span class="text-emerald-300">{{ "%.1f%%"|format(exp.win_rate * 100) }}</span>
@@ -772,7 +772,7 @@
               {# Detail-Link (v1.1 / Phase 77) #}
               <td class="px-3 py-2 text-center">
                 <a
-                  href="/r_and_d/experiment/{{ exp.run_id }}"
+                  href="/r_and_d/experiments/{{ exp.run_id }}"
                   class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-slate-800 hover:bg-sky-600 text-slate-400 hover:text-white transition-colors"
                   title="Details anzeigen"
                 >
