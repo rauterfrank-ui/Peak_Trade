@@ -3950,7 +3950,7 @@ def render_ops_cockpit_html(
     }</p>
     </div>
 
-    <div class="card">
+    <div class="card" id="exposure-state-observation-card">
       <h2>Exposure State</h2>
       <p><strong>Read-only exposure / risk observation.</strong> Existing payload fields only; not approval, not unlock.</p>
       <p><strong>Summary:</strong> <span class="chip"><code>{

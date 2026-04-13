@@ -1508,6 +1508,8 @@ def test_evidence_state_audit_trail_present() -> None:
 def test_ops_cockpit_html_contains_exposure_state(tmp_path: Path) -> None:
     """HTML rendert Exposure State Card."""
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="exposure-state-observation-card"' in html
+    assert html.count('id="exposure-state-observation-card"') == 1
     assert "Exposure State" in html
     assert "Read-only exposure / risk observation" in html
     assert "not approval, not unlock" in html
