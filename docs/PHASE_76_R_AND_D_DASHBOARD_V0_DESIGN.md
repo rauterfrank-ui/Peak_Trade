@@ -139,6 +139,9 @@ derselben Semantik wie `GET /api&#47;r_and_d&#47;today` bzw. `GET /api&#47;r_and
 Query-Parameter wie `GET &#47;r_and_d` (ein Handler, kein Redirect); Detail bleibt unter
 `GET &#47;r_and_d&#47;experiments&#47;{run_id}`; keine neuen API-Endpunkte.
 
+**Slice 10 (canonical list navigation HTML):** Primäre „Zur Experimentenliste / R&D Hub“-Links in den R&D-Templates zeigen auf
+`GET &#47;r_and_d&#47;experiments` (statt nur `GET &#47;r_and_d`); konsistent zu Slice 9 und §6.1; keine API-Änderungen, rein UI.
+
 ### 4.2 Aggregations-Layer
 
 Für das Dashboard v0 gibt es zwei mögliche Ansätze:
@@ -475,6 +478,7 @@ templates/
 | 2026-04-13 | Slice 7: Today-/Running-HTML (`GET &#47;r_and_d&#47;today`, `GET &#47;r_and_d&#47;running`) aligned zu den v1.1-JSON-Endpunkten |
 | 2026-04-13 | Slice 8: Categories-HTML `GET &#47;r_and_d&#47;categories` aligned zu `GET /api&#47;r_and_d&#47;categories` (``build_categories_view_payload``) |
 | 2026-04-13 | Slice 9: Listen-HTML unter `GET &#47;r_and_d&#47;experiments` identisch zu `GET &#47;r_and_d` (read-only; Detail-Pfad unverändert) |
+| 2026-04-13 | Slice 10: Hub-/Listen-Navigation in R&D-HTML auf `GET &#47;r_and_d&#47;experiments` vereinheitlicht (read-only) |
 
 ---
 

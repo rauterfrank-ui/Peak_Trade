@@ -68,6 +68,8 @@ Siehe Milestones/DoD in [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_A
 - [x] Tests + Doku für Slice 8 ergänzt.
 - [x] Listen-HTML: `GET &#47;r_and_d&#47;experiments` dieselbe read-only Ansicht wie `GET &#47;r_and_d` (kein neues API) — Phase 76 Slice 9.
 - [x] Tests + Doku für Slice 9 ergänzt.
+- [x] R&D-HTML: primäre Zurück-/Hub-Links auf kanonische Listen-URL `GET &#47;r_and_d&#47;experiments` — Phase 76 Slice 10.
+- [x] Tests + Doku für Slice 10 ergänzt.
 
 ---
 
