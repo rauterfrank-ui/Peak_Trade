@@ -828,6 +828,8 @@ def test_ops_cockpit_html_contains_run_state_observation_card(tmp_path: Path) ->
 
 def test_ops_cockpit_html_contains_phase57_snapshot_discoverability_links(tmp_path: Path) -> None:
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="phase57-live-snapshot-endpoints-card"' in html
+    assert html.count('id="phase57-live-snapshot-endpoints-card"') == 1
     assert "Live status snapshot (Phase 57) — endpoints" in html
     assert "/api/live/status/snapshot.json" in html
     assert "/api/live/status/snapshot.html" in html
