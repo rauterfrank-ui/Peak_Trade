@@ -4028,7 +4028,7 @@ def render_ops_cockpit_html(
     }</code></p>
     </div>
 
-    <div class="card">
+    <div class="card" id="stale-state-observation-card">
       <h2>Stale State</h2>
       <p><strong>Reconciliation hardening: balance / position / order staleness</strong></p>
       <p><em>Order row: recency of <code>live_runs</code> event logs (read-only); not exchange order-book state.</em></p>
