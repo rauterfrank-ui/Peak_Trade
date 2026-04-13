@@ -41,6 +41,7 @@ HTML Pages:
 - GET /r_and_d (R&D Experiments Overview - Phase 76)
 - GET /r_and_d/presets (R&D Preset-Aggregation HTML - Phase 76 Slice 3)
 - GET /r_and_d/strategies (R&D Strategy-Aggregation HTML - Phase 76 Slice 3)
+- GET /r_and_d/charts (R&D Charts v0 - Phase 76 Slice 5, read-only)
 - GET /r_and_d/experiment/{run_id} (R&D Experiment Detail - Phase 77, Alias)
 - GET /r_and_d/experiments/{run_id} (R&D Experiment Detail - Phase 76 kanonisch)
 - GET /r_and_d/comparison (R&D Multi-Run Comparison - Phase 78)
@@ -105,6 +106,7 @@ from .r_and_d_api import (
     compute_preset_stats,
     compute_strategy_stats,
     sort_raw_experiments,
+    build_r_and_d_charts_context,
     # v1.3 (Phase 78)
     find_experiment_by_run_id,
     build_experiment_detail,
@@ -727,6 +729,26 @@ def create_app() -> FastAPI:
                 "strategy_rows": strategy_rows,
                 "stats": stats,
                 "total_experiments": len(all_experiments),
+            },
+        )
+
+    @app.get("/r_and_d/charts", response_class=HTMLResponse)
+    async def r_and_d_charts_page(request: Request) -> Any:
+        """
+        HTML-Ansicht: Charts v0 (Phase 76 Slice 5) — Sharpe-Histogramm und
+        Total-Return-vs.-Sharpe-Scatter aus lokalem Experiment-Read-Model. Rein lesend.
+        """
+        proj_status = get_project_status()
+        all_experiments = load_experiments_from_dir()
+        charts = build_r_and_d_charts_context(all_experiments)
+        stats = compute_global_stats(all_experiments)
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_charts.html",
+            {
+                "status": proj_status,
+                "charts": charts,
+                "stats": stats,
             },
         )
 

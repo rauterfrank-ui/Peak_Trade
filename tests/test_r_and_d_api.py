@@ -59,6 +59,7 @@ from src.webui.r_and_d_api import (
     compute_preset_stats,
     compute_strategy_stats,
     compute_global_stats,
+    build_r_and_d_charts_context,
     set_base_dir,
     # v1.2 (Phase 77)
     find_report_links,
@@ -549,12 +550,13 @@ class TestRAndDExperimentsPage:
         assert "aufsteigend" in resp.text
 
     def test_hub_links_to_aggregation_pages(self, client):
-        """Experimentenliste verlinkt read-only auf Preset-/Strategy-Aggregation."""
+        """Experimentenliste verlinkt read-only auf Preset-/Strategy-Aggregation und Charts."""
         resp = client.get("/r_and_d")
         assert resp.status_code == 200
         text = resp.text
         assert 'href="/r_and_d/presets"' in text
         assert 'href="/r_and_d/strategies"' in text
+        assert 'href="/r_and_d/charts"' in text
 
 
 class TestRnDAggregationHtmlPages:
@@ -594,6 +596,49 @@ class TestRnDAggregationHtmlPages:
         s = empty_experiments_client.get("/r_and_d/strategies")
         assert s.status_code == 200
         assert "Keine Strategy-Gruppen" in s.text
+
+
+class TestRnDChartsHtmlPage:
+    """Phase 76 Slice 5: GET /r_and_d/charts (read-only, zwei Charts)."""
+
+    def test_charts_page_ok_and_markers(self, client):
+        resp = client.get("/r_and_d/charts")
+        assert resp.status_code == 200
+        assert "text/html" in resp.headers.get("content-type", "")
+        body = resp.text
+        assert 'data-section="r-and-d-charts"' in body
+        assert 'data-r-and-d-charts-n-plotted="2"' in body
+        assert 'data-chart="r-and-d-sharpe-histogram"' in body
+        assert 'data-chart="r-and-d-return-vs-sharpe-scatter"' in body
+        assert 'id="r-and-d-charts-payload"' in body
+        assert '"histogram_labels"' in body
+        assert '"scatter_points"' in body
+        assert 'method="POST"' not in body
+
+    def test_charts_empty_repo_defensive(self, empty_experiments_client):
+        resp = empty_experiments_client.get("/r_and_d/charts")
+        assert resp.status_code == 200
+        assert 'data-r-and-d-charts-empty="true"' in resp.text
+        assert 'data-empty-state="r-and-d-charts-no-experiments"' in resp.text
+        assert "Keine Experimentdateien" in resp.text
+
+
+class TestBuildRnDChartsContext:
+    """Hilfsfunktion für Charts-Payload (read-only)."""
+
+    def test_empty_experiments(self):
+        ctx = build_r_and_d_charts_context([])
+        assert ctx["empty"] is True
+        assert ctx["n_plotted"] == 0
+
+    def test_fixture_two_runs(self, sample_experiment, sample_experiment_no_trades):
+        ctx = build_r_and_d_charts_context([sample_experiment, sample_experiment_no_trades])
+        assert ctx["empty"] is False
+        assert ctx["no_plot_points"] is False
+        assert ctx["n_plotted"] == 2
+        assert len(ctx["histogram_labels"]) == 12
+        assert sum(ctx["histogram_counts"]) == 2
+        assert len(ctx["scatter_points"]) == 2
 
 
 # =============================================================================
