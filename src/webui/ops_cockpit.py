@@ -2001,6 +2001,34 @@ def _render_operator_summary_safety_posture_observation(spo_raw: object) -> str:
     )
 
 
+def _render_operator_summary_governance_boundary_observation(gbo_raw: object) -> str:
+    """Compact ``governance_boundary_observation`` block for operator summary (read-only)."""
+    if not isinstance(gbo_raw, dict):
+        return ""
+    gbo_status = escape(str(gbo_raw.get("status", "unknown")))
+    gbo_summary = escape(str(gbo_raw.get("summary", "")))
+    gbo_ds = escape(str(gbo_raw.get("data_source", "")))
+    gbo_ver = escape(str(gbo_raw.get("reader_schema_version", "")))
+    inner = (
+        "<h3>Governance / AI boundary (observation)</h3>"
+        "<p><strong>Observation only.</strong> Aggregate from <code>ai_boundary_state</code> and "
+        "<code>human_supervision_state</code> (optional hints from <code>guard_state</code> / "
+        "<code>evidence_state</code>) — <strong>not governance or AI approval,</strong> "
+        "<strong>not a supervision waiver,</strong> not broker truth. Holistic gating: "
+        "<code>safety_posture_observation</code>; evidence: <code>evidence_audit_observation</code>.</p>"
+        f"<p><strong>governance_boundary_observation.status</strong>: <code>{gbo_status}</code></p>"
+        f"<p><strong>Summary:</strong> {gbo_summary}</p>"
+        f"<p><strong>data_source:</strong> <code>{gbo_ds}</code> · "
+        f"<strong>reader_schema_version:</strong> <code>{gbo_ver}</code></p>"
+    )
+    return (
+        '<section class="operator-summary-governance-boundary-observation" '
+        'id="operator-summary-governance-boundary-observation">'
+        f"{inner}"
+        "</section>"
+    )
+
+
 def _render_operator_summary_evidence_audit_observation(eao_raw: object) -> str:
     """Compact ``evidence_audit_observation`` block for operator summary (read-only)."""
     if not isinstance(eao_raw, dict):
@@ -3348,25 +3376,9 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             "</section>"
         )
 
-    gbo_raw = payload.get("governance_boundary_observation")
-    gbo_block = ""
-    if isinstance(gbo_raw, dict):
-        gbo_status = escape(str(gbo_raw.get("status", "unknown")))
-        gbo_summary = escape(str(gbo_raw.get("summary", "")))
-        gbo_ds = escape(str(gbo_raw.get("data_source", "")))
-        gbo_ver = escape(str(gbo_raw.get("reader_schema_version", "")))
-        gbo_block = (
-            "<h3>Governance / AI boundary (observation)</h3>"
-            "<p><strong>Observation only.</strong> Aggregate from <code>ai_boundary_state</code> and "
-            "<code>human_supervision_state</code> (optional hints from <code>guard_state</code> / "
-            "<code>evidence_state</code>) — <strong>not governance or AI approval,</strong> "
-            "<strong>not a supervision waiver,</strong> not broker truth. Holistic gating: "
-            "<code>safety_posture_observation</code>; evidence: <code>evidence_audit_observation</code>.</p>"
-            f"<p><strong>governance_boundary_observation.status</strong>: <code>{gbo_status}</code></p>"
-            f"<p><strong>Summary:</strong> {gbo_summary}</p>"
-            f"<p><strong>data_source:</strong> <code>{gbo_ds}</code> · "
-            f"<strong>reader_schema_version:</strong> <code>{gbo_ver}</code></p>"
-        )
+    gbo_block = _render_operator_summary_governance_boundary_observation(
+        payload.get("governance_boundary_observation")
+    )
 
     wo_sum_raw = payload.get("workflow_officer_state")
     wo_sum_block = ""
