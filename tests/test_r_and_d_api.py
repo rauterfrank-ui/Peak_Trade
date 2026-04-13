@@ -566,6 +566,27 @@ class TestRAndDExperimentsPage:
         assert 'href="/r_and_d/charts"' in text
         assert 'href="/r_and_d/categories"' in text
 
+    def test_canonical_experiments_list_path_ok_and_parity(self, client):
+        """GET /r_and_d/experiments gleiche Listenlogik wie /r_and_d (Phase 76 Slice 9)."""
+        q = "preset=test_preset_v1&sort_by=sharpe&sort_order=desc&limit=50"
+        hub = client.get(f"/r_and_d?{q}")
+        canon = client.get(f"/r_and_d/experiments?{q}")
+        assert hub.status_code == 200
+        assert canon.status_code == 200
+        ids_hub = list(dict.fromkeys(re.findall(r'data-run-id="([^"]+)"', hub.text)))
+        ids_canon = list(dict.fromkeys(re.findall(r'data-run-id="([^"]+)"', canon.text)))
+        assert ids_hub == ids_canon
+        assert ids_hub
+        assert 'action="/r_and_d"' in hub.text
+        assert 'action="/r_and_d/experiments"' in canon.text
+        assert 'method="POST"' not in canon.text
+
+    def test_detail_route_not_shadowed_by_list_path(self, client):
+        """Regression: /r_and_d/experiments/{run_id} bleibt Detail, nicht die Liste."""
+        resp = client.get("/r_and_d/experiments/exp_test_v1_20241208_120000")
+        assert resp.status_code == 200
+        assert "R&D Experiment Detail" in resp.text
+
 
 class TestRnDAggregationHtmlPages:
     """Phase 76 Slice 3: HTML für Preset-/Strategy-Aggregation (Parität zu JSON-API)."""

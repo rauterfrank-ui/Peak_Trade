@@ -147,6 +147,8 @@
 {# ========================================================================= #}
 
 {% block content %}
+{# Kanonische Listen-URL: /r_and_d oder /r_and_d/experiments (Phase 76 Slice 9) #}
+{% set list_path = request.url.path %}
 <div class="space-y-6">
 
   {# ======================================================================= #}
@@ -172,8 +174,8 @@
 
       {# Quick-Actions #}
       <div class="flex flex-wrap items-center gap-2">
-        {{ quick_action("Alle", "/r_and_d", "📋", not filters.with_trades and not filters.preset and not filters.strategy and not filters.tag_substr and not filters.run_type and not filters.date_from and not filters.date_to and filters.sort_by == 'timestamp' and filters.sort_order == 'desc' and limit == 200) }}
-        {{ quick_action("Mit Trades", "/r_and_d?with_trades=true", "✅", filters.with_trades) }}
+        {{ quick_action("Alle", list_path, "📋", not filters.with_trades and not filters.preset and not filters.strategy and not filters.tag_substr and not filters.run_type and not filters.date_from and not filters.date_to and filters.sort_by == 'timestamp' and filters.sort_order == 'desc' and limit == 200) }}
+        {{ quick_action("Mit Trades", list_path ~ "?with_trades=true", "✅", filters.with_trades) }}
         <a
           href="/r_and_d/summary"
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300"
@@ -352,7 +354,7 @@
       'return': 'Return',
       'total_return': 'Return',
     } %}
-    <form method="GET" action="/r_and_d" class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+    <form method="GET" action="{{ list_path }}" class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
 
       {# Filter-Inputs Grid (kompakter in v1.1) #}
       <div class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
@@ -448,7 +450,7 @@
               🔍 Filter
             </button>
             <a
-              href="/r_and_d"
+              href="{{ list_path }}"
               class="inline-flex items-center justify-center rounded-lg px-2 py-2 text-sm border border-slate-600 hover:bg-slate-800 hover:border-slate-500 text-slate-400 transition-colors"
               title="Reset"
             >
@@ -633,7 +635,7 @@
           Deine Filter haben keine Ergebnisse geliefert. Versuche weniger restriktive Kriterien.
         </p>
         <a
-          href="/r_and_d"
+          href="{{ list_path }}"
           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-colors"
         >
           ↺ Filter zurücksetzen

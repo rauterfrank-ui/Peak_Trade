@@ -135,6 +135,10 @@ derselben Semantik wie `GET /api&#47;r_and_d&#47;today` bzw. `GET /api&#47;r_and
 `GET /api&#47;r_and_d&#47;categories` (Helfer ``build_categories_view_payload``; Zählungen pro ``experiment_category`` und
 ``run_type`` aus ``extract_flat_fields``); defensive Empty State ohne lokale JSONs; keine neuen API-Felder.
 
+**Slice 9 (list path consolidation GET):** `GET &#47;r_and_d&#47;experiments` — dieselbe read-only Listenansicht und dieselben
+Query-Parameter wie `GET &#47;r_and_d` (ein Handler, kein Redirect); Detail bleibt unter
+`GET &#47;r_and_d&#47;experiments&#47;{run_id}`; keine neuen API-Endpunkte.
+
 ### 4.2 Aggregations-Layer
 
 Für das Dashboard v0 gibt es zwei mögliche Ansätze:
@@ -470,6 +474,7 @@ templates/
 | 2026-04-13 | Slice 6: Summary-HTML `GET &#47;r_and_d&#47;summary` aligned zu `GET /api&#47;r_and_d&#47;summary` und `GET /api&#47;r_and_d&#47;stats` |
 | 2026-04-13 | Slice 7: Today-/Running-HTML (`GET &#47;r_and_d&#47;today`, `GET &#47;r_and_d&#47;running`) aligned zu den v1.1-JSON-Endpunkten |
 | 2026-04-13 | Slice 8: Categories-HTML `GET &#47;r_and_d&#47;categories` aligned zu `GET /api&#47;r_and_d&#47;categories` (``build_categories_view_payload``) |
+| 2026-04-13 | Slice 9: Listen-HTML unter `GET &#47;r_and_d&#47;experiments` identisch zu `GET &#47;r_and_d` (read-only; Detail-Pfad unverändert) |
 
 ---
 
