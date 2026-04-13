@@ -1572,6 +1572,39 @@ def _render_operator_summary_update_officer_observation(uo_raw: object) -> str:
     )
 
 
+def _render_operator_summary_stale_signals_observation(stale_raw: object) -> str:
+    """Scalar stale_state lines for operator summary (read-only)."""
+    if not isinstance(stale_raw, dict):
+        return ""
+    st = stale_raw
+    row_parts: List[str] = []
+    for key in ("summary", "balance", "position", "order", "exposure"):
+        if key in st:
+            row_parts.append(
+                f"<p><strong>stale_state.{key}</strong>: "
+                f"<code>{escape(str(st.get(key)))}</code></p>"
+            )
+    if not row_parts:
+        return ""
+    order_note = (
+        "<p><em><strong>stale_state.order</strong> reflects local <code>live_runs</code> event-log "
+        "recency when derivable — <strong>not</strong> exchange order-book state, "
+        "<strong>not</strong> execution truth.</em></p>"
+    )
+    return (
+        '<section class="operator-summary-stale-signals" '
+        'id="operator-summary-stale-signals">'
+        "<h3>Stale signals (observation)</h3>"
+        "<p><strong>Observation only.</strong> Scalar fields from <code>stale_state</code> in this "
+        "payload — same semantics as the <strong>Stale State</strong> card below. "
+        "<strong>Not an approval,</strong> <strong>not an unlock,</strong> not broker or exchange "
+        "reconciliation truth; local reconciliation / recency context only.</p>"
+        f"{order_note}"
+        f"{''.join(row_parts)}"
+        "</section>"
+    )
+
+
 def _render_dependencies_state_card_body(dependencies: Dict[str, object]) -> str:
     """HTML inner block for Dependencies State — ``dependencies_state`` keys (read-only)."""
     dep = dependencies if isinstance(dependencies, dict) else {}
@@ -2899,6 +2932,10 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             f"<strong>reader_schema_version:</strong> <code>{rso_ver}</code></p>"
         )
 
+    stale_signals_block = _render_operator_summary_stale_signals_observation(
+        payload.get("stale_state")
+    )
+
     hdo_raw = payload.get("health_drift_observation")
     hdo_block = ""
     if isinstance(hdo_raw, dict):
@@ -3114,6 +3151,7 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         f"{wo_sum_block}"
         f"{uo_sum_block}"
         f"{rso_block}"
+        f"{stale_signals_block}"
         f"{hdo_block}"
         f"{dep_artifact_block}"
         f"{ero_block}"
