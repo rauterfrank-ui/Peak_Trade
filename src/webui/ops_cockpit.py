@@ -1888,6 +1888,34 @@ def _render_operator_summary_exposure_risk_observation(ero_raw: object) -> str:
     )
 
 
+def _render_operator_summary_incident_safety_observation(iso_raw: object) -> str:
+    """Compact ``incident_safety_observation`` block for operator summary (read-only)."""
+    if not isinstance(iso_raw, dict):
+        return ""
+    iso_status = escape(str(iso_raw.get("status", "unknown")))
+    iso_summary = escape(str(iso_raw.get("summary", "")))
+    iso_ds = escape(str(iso_raw.get("data_source", "")))
+    iso_ver = escape(str(iso_raw.get("reader_schema_version", "")))
+    inner = (
+        "<h3>Incident / safety (observation)</h3>"
+        "<p><strong>Observation only.</strong> Narrow aggregate from <code>incident_state</code> and "
+        "<code>dependencies_state</code> (optional consistency hints from <code>policy_state</code> / "
+        "<code>operator_state</code>) — <strong>not incident resolution,</strong> "
+        "<strong>not an approval or unlock,</strong> not exchange truth. Overall gating posture: "
+        "<code>safety_posture_observation</code>.</p>"
+        f"<p><strong>incident_safety_observation.status</strong>: <code>{iso_status}</code></p>"
+        f"<p><strong>Summary:</strong> {iso_summary}</p>"
+        f"<p><strong>data_source:</strong> <code>{iso_ds}</code> · "
+        f"<strong>reader_schema_version:</strong> <code>{iso_ver}</code></p>"
+    )
+    return (
+        '<section class="operator-summary-incident-safety-observation" '
+        'id="operator-summary-incident-safety-observation">'
+        f"{inner}"
+        "</section>"
+    )
+
+
 def _render_operator_summary_session_end_mismatch(sem_raw: object) -> str:
     """Compact ``session_end_mismatch_state`` lines for operator summary (read-only)."""
     if not isinstance(sem_raw, dict):
@@ -3423,25 +3451,9 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
             "</section>"
         )
 
-    iso_raw = payload.get("incident_safety_observation")
-    iso_block = ""
-    if isinstance(iso_raw, dict):
-        iso_status = escape(str(iso_raw.get("status", "unknown")))
-        iso_summary = escape(str(iso_raw.get("summary", "")))
-        iso_ds = escape(str(iso_raw.get("data_source", "")))
-        iso_ver = escape(str(iso_raw.get("reader_schema_version", "")))
-        iso_block = (
-            "<h3>Incident / safety (observation)</h3>"
-            "<p><strong>Observation only.</strong> Narrow aggregate from <code>incident_state</code> and "
-            "<code>dependencies_state</code> (optional consistency hints from <code>policy_state</code> / "
-            "<code>operator_state</code>) — <strong>not incident resolution,</strong> "
-            "<strong>not an approval or unlock,</strong> not exchange truth. Overall gating posture: "
-            "<code>safety_posture_observation</code>.</p>"
-            f"<p><strong>incident_safety_observation.status</strong>: <code>{iso_status}</code></p>"
-            f"<p><strong>Summary:</strong> {iso_summary}</p>"
-            f"<p><strong>data_source:</strong> <code>{iso_ds}</code> · "
-            f"<strong>reader_schema_version:</strong> <code>{iso_ver}</code></p>"
-        )
+    iso_block = _render_operator_summary_incident_safety_observation(
+        payload.get("incident_safety_observation")
+    )
 
     eao_raw = payload.get("evidence_audit_observation")
     eao_block = ""

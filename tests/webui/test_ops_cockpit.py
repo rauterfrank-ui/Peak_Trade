@@ -344,8 +344,8 @@ def test_ops_cockpit_balance_semantics_observation_in_operator_summary_html(tmp_
     assert "balance_reason_code" in html
     assert "balance_operator_visible_state" in html
     assert "not exchange balance truth" in html.lower()
-    bs_block = html.split("Balance semantics (observation)", 1)[1].split(
-        "Incident / safety (observation)", 1
+    bs_block = html.split('id="operator-summary-balance-semantics"', 1)[1].split(
+        'id="operator-summary-incident-safety-observation"', 1
     )[0]
     assert "observation only" in bs_block.lower()
 
@@ -669,14 +669,16 @@ def test_ops_cockpit_incident_safety_observation_in_html(tmp_path: Path) -> None
     (docs_dir / "AI_LAYER_CANONICAL_SPEC_V1.md").write_text("# ok\n", encoding="utf-8")
     (docs_dir / "AI_UNKNOWN_REDUCTION_V1.md").write_text("# ok\n", encoding="utf-8")
     html = render_ops_cockpit_html(repo_root=tmp_path)
+    assert 'id="operator-summary-incident-safety-observation"' in html
     assert "Incident / safety (observation)" in html
     assert "incident_safety_observation.status" in html
     assert "not incident resolution" in html.lower()
-    iso_block = html.split("Incident / safety (observation)", 1)[1].split(
-        "Incident observation (read-only)", 1
+    iso_block = html.split('id="operator-summary-incident-safety-observation"', 1)[1].split(
+        "<h3>Incident observation (read-only)</h3>", 1
     )[0]
     assert "not an approval" in iso_block.lower()
     assert "safety_posture_observation" in iso_block.lower()
+    assert "incident_safety_observation" in iso_block.lower()
 
 
 def test_ops_cockpit_evidence_audit_observation_in_html(tmp_path: Path) -> None:
