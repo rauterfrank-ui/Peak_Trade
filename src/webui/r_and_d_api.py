@@ -31,11 +31,12 @@ v1.1 Änderungen:
 - Experiment-Kategorien nach R&D-Taxonomie
 
 Basis: reports/r_and_d_experiments/, view_r_and_d_experiments.py, Notebook-Template
+
+Read-model I/O (filesystem JSON only): ``src/r_and_d/experiments_read_model.py``.
 """
 
 from __future__ import annotations
 
-import json
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
@@ -43,6 +44,12 @@ from typing import Any, Dict, List, Optional, TypedDict
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
+
+from src.r_and_d.experiments_read_model import (
+    load_experiment_json_file,
+    load_experiments_from_directory,
+    sort_raw_experiments,
+)
 
 
 # =============================================================================
@@ -258,51 +265,19 @@ def load_experiment_json(filepath: Path) -> Optional[Dict[str, Any]]:
     """
     Lädt eine einzelne Experiment-JSON-Datei.
 
-    Args:
-        filepath: Pfad zur JSON-Datei
-
-    Returns:
-        Experiment-Dict mit Metadaten oder None bei Fehler
+    Delegiert an :func:`src.r_and_d.experiments_read_model.load_experiment_json_file`.
     """
-    try:
-        with open(filepath, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        data["_filepath"] = str(filepath)
-        data["_filename"] = filepath.name
-        return data
-    except (json.JSONDecodeError, FileNotFoundError, IOError):
-        return None
+    return load_experiment_json_file(filepath)
 
 
 def load_experiments_from_dir(dir_path: Optional[Path] = None) -> List[Dict[str, Any]]:
     """
     Lädt alle R&D-Experimente aus dem Verzeichnis.
 
-    Args:
-        dir_path: Pfad zum Experiment-Verzeichnis (default: get_r_and_d_dir())
-
-    Returns:
-        Liste von Experiment-Dicts, sortiert nach Timestamp (neueste zuerst)
+    Delegiert an :func:`src.r_and_d.experiments_read_model.load_experiments_from_directory`.
     """
     experiments_dir = dir_path or get_r_and_d_dir()
-
-    if not experiments_dir.exists():
-        return []
-
-    experiments: List[Dict[str, Any]] = []
-    json_files = list(experiments_dir.glob("*.json"))
-
-    for json_file in json_files:
-        data = load_experiment_json(json_file)
-        if data is not None:
-            experiments.append(data)
-
-    # Sortiere nach Timestamp (neueste zuerst)
-    def get_timestamp(exp: Dict[str, Any]) -> str:
-        return exp.get("experiment", {}).get("timestamp", "")
-
-    experiments.sort(key=get_timestamp, reverse=True)
-    return experiments
+    return load_experiments_from_directory(experiments_dir)
 
 
 def extract_flat_fields(exp: Dict[str, Any]) -> Dict[str, Any]:
@@ -919,6 +894,11 @@ async def list_experiments(
     date_to: Optional[str] = Query(None, description="Filter bis Datum (YYYY-MM-DD)"),
     with_trades: bool = Query(False, description="Nur Experimente mit Trades > 0"),
     limit: int = Query(200, ge=1, le=5000, description="Maximale Anzahl (1-5000)"),
+    sort_by: str = Query(
+        "timestamp",
+        description="Sortierung: timestamp | sharpe | return (total_return)",
+    ),
+    sort_order: str = Query("desc", description="asc oder desc"),
 ) -> Dict[str, Any]:
     """
     Liste aller R&D-Experimente mit Filtern.
@@ -944,8 +924,10 @@ async def list_experiments(
 
     filtered_count = len(filtered)
 
-    # Limit anwenden
-    limited = filtered[:limit]
+    sorted_exps = sort_raw_experiments(filtered, sort_by=sort_by, sort_order=sort_order)
+
+    # Limit anwenden (nach Sortierung)
+    limited = sorted_exps[:limit]
 
     # In Summary-Format konvertieren
     items = [extract_flat_fields(exp) for exp in limited]
@@ -955,6 +937,8 @@ async def list_experiments(
         "total": len(experiments),
         "filtered": filtered_count,
         "returned": len(items),
+        "sort_by": sort_by,
+        "sort_order": sort_order,
     }
 
 

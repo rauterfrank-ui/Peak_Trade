@@ -11,9 +11,9 @@
 Phase 76 liefert ein erstes **R&D Dashboard v0**, das auf den bestehenden
 R&D-Bausteinen aufsetzt:
 
-- Strategy-Profiling via `scripts/research_cli.py strategy-profile`
-- R&D Experiments Viewer CLI `scripts/view_r_and_d_experiments.py`
-- Analyse-Template `notebooks/r_and_d_experiment_analysis_template.py`
+- Strategy-Profiling via `scripts&#47;research_cli.py strategy-profile`
+- R&D Experiments Viewer CLI `scripts&#47;view_r_and_d_experiments.py`
+- Analyse-Template `notebooks&#47;r_and_d_experiment_analysis_template.py`
 - Operator-Workflow aus Phase 75 (R&D-Wave v1/v2)
 
 **Ziel von Phase 76:**
@@ -92,10 +92,16 @@ R&D-Bausteinen aufsetzt:
 
 ### 4.1 Primäre Datenquelle
 
-- **Verzeichnis:** `reports/r_and_d_experiments/`
+- **Verzeichnis:** `reports&#47;r_and_d_experiments&#47;`
 - **Format:** JSON-Dateien pro Experiment
 - **Struktur:** Konsistent mit dem, was `view_r_and_d_experiments.py` und
   `r_and_d_experiment_analysis_template.py` bereits nutzen.
+
+**Slice 1 (read-only Read-Model):** Defensive JSON-Ladung und Sortier-Helfer für
+Listen-Daten liegen in `src&#47;r_and_d&#47;experiments_read_model.py` (keine Schreibpfade,
+keine Netzwerk-Calls). Die WebUI-API `GET /api&#47;r_and_d&#47;experiments` in
+`src&#47;webui&#47;r_and_d_api.py` nutzt diese Schicht und unterstützt Filter sowie
+`sort_by` / `sort_order` wie in §5.2 beschrieben.
 
 ### 4.2 Aggregations-Layer
 
@@ -378,7 +384,7 @@ templates/
 | Aspekt | Live-Track Dashboard (Phase 82/85) | R&D Dashboard (Phase 76) |
 |--------|-----------------------------------|--------------------------|
 | **Fokus** | Live-/Shadow-/Testnet-Sessions | Offline R&D-Experimente |
-| **Datenquelle** | `reports/experiments/live_sessions/` | `reports/r_and_d_experiments/` |
+| **Datenquelle** | `reports&#47;experiments&#47;live_sessions&#47;` | `reports&#47;r_and_d_experiments&#47;` |
 | **Zeitbezug** | Laufende/abgeschlossene Sessions | Historische Backtests |
 | **Safety-Relevanz** | Hoch (Live-Monitoring) | Niedrig (Read-Only Research) |
 | **Zielgruppe** | Operatoren | Researcher, Quants |
