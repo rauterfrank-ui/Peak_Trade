@@ -1108,7 +1108,8 @@ def _render_operator_summary_operator_state(payload: Dict[str, object]) -> str:
 def _render_phase57_snapshot_discoverability_card() -> str:
     """HTML block: discoverability links to existing Phase 57 snapshot API (read-only, no new semantics)."""
     return (
-        f'<div class="card truth-card" style="margin-bottom:20px;">'
+        f'<div class="card truth-card" id="phase57-live-snapshot-endpoints-card" '
+        f'style="margin-bottom:20px;">'
         f"<h2>Live status snapshot (Phase 57) — endpoints</h2>"
         f"<p><strong>Read-only.</strong> Same JSON/HTML feeds as the home dashboard; observation only — "
         f"not operational approval or go-live implication.</p>"
