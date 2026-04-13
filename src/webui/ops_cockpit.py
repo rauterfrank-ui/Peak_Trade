@@ -1916,6 +1916,33 @@ def _render_operator_summary_incident_safety_observation(iso_raw: object) -> str
     )
 
 
+def _render_operator_summary_evidence_audit_observation(eao_raw: object) -> str:
+    """Compact ``evidence_audit_observation`` block for operator summary (read-only)."""
+    if not isinstance(eao_raw, dict):
+        return ""
+    eao_status = escape(str(eao_raw.get("status", "unknown")))
+    eao_summary = escape(str(eao_raw.get("summary", "")))
+    eao_ds = escape(str(eao_raw.get("data_source", "")))
+    eao_ver = escape(str(eao_raw.get("reader_schema_version", "")))
+    inner = (
+        "<h3>Evidence / audit (observation)</h3>"
+        "<p><strong>Observation only.</strong> Aggregate from <code>evidence_state</code> in this "
+        "payload — <strong>not audit clearance,</strong> <strong>not a compliance pass/fail,</strong> "
+        "not broker truth. Service/drift posture stays in "
+        "<code>health_drift_observation</code> (separate snapshot).</p>"
+        f"<p><strong>evidence_audit_observation.status</strong>: <code>{eao_status}</code></p>"
+        f"<p><strong>Summary:</strong> {eao_summary}</p>"
+        f"<p><strong>data_source:</strong> <code>{eao_ds}</code> · "
+        f"<strong>reader_schema_version:</strong> <code>{eao_ver}</code></p>"
+    )
+    return (
+        '<section class="operator-summary-evidence-audit-observation" '
+        'id="operator-summary-evidence-audit-observation">'
+        f"{inner}"
+        "</section>"
+    )
+
+
 def _render_operator_summary_session_end_mismatch(sem_raw: object) -> str:
     """Compact ``session_end_mismatch_state`` lines for operator summary (read-only)."""
     if not isinstance(sem_raw, dict):
@@ -3455,24 +3482,9 @@ def _render_operator_summary_surface(payload: Dict[str, object]) -> str:
         payload.get("incident_safety_observation")
     )
 
-    eao_raw = payload.get("evidence_audit_observation")
-    eao_block = ""
-    if isinstance(eao_raw, dict):
-        eao_status = escape(str(eao_raw.get("status", "unknown")))
-        eao_summary = escape(str(eao_raw.get("summary", "")))
-        eao_ds = escape(str(eao_raw.get("data_source", "")))
-        eao_ver = escape(str(eao_raw.get("reader_schema_version", "")))
-        eao_block = (
-            "<h3>Evidence / audit (observation)</h3>"
-            "<p><strong>Observation only.</strong> Aggregate from <code>evidence_state</code> in this "
-            "payload — <strong>not audit clearance,</strong> <strong>not a compliance pass/fail,</strong> "
-            "not broker truth. Service/drift posture stays in "
-            "<code>health_drift_observation</code> (separate snapshot).</p>"
-            f"<p><strong>evidence_audit_observation.status</strong>: <code>{eao_status}</code></p>"
-            f"<p><strong>Summary:</strong> {eao_summary}</p>"
-            f"<p><strong>data_source:</strong> <code>{eao_ds}</code> · "
-            f"<strong>reader_schema_version:</strong> <code>{eao_ver}</code></p>"
-        )
+    eao_block = _render_operator_summary_evidence_audit_observation(
+        payload.get("evidence_audit_observation")
+    )
 
     incident_status = escape(str(inc.get("status", "unknown")))
     incident_degraded = escape(str(inc.get("degraded", "unknown")))
