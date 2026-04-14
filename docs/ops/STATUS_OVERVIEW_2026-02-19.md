@@ -1,5 +1,10 @@
 # Peak_Trade — Status-Übersicht & Implementierungsliste
 
+
+<!-- STATUS_OVERVIEW role note -->
+> Role note: Use `docs&#47;ops&#47;STATUS_OVERVIEW_2026-02-19.md` for dated narrative context and operator orientation at that point in time.
+> For the compact cross-topic status map, current navigation, and quick lookup, read `docs&#47;ops&#47;STATUS_MATRIX.md`.
+
 **Scope:** Aktueller Projektstatus, Runbook-Landschaft, Implementierungsliste; operativer Snapshot. Für Status-Contract/Evidence-Level siehe [STATUS_MATRIX.md](STATUS_MATRIX.md).
 
 **Stand:** 2026-02-19  
