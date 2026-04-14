@@ -5,6 +5,10 @@
 
 **[Docs Truth Map](registry/DOCS_TRUTH_MAP.md)** — canonical ops documentation registry and change log (truth-first).
 
+<!-- ops readme status navigation note -->
+- Projektstatus / Navigation: `docs&#47;INDEX.md` ist der zentrale Einstieg für Docs-Navigation.
+- Für kompakten Status-/Lookup-Einstieg nutze `docs&#47;ops&#47;STATUS_MATRIX.md`; für datierten narrativen Kontext nutze `docs&#47;ops&#47;STATUS_OVERVIEW_2026-02-19.md`.
+
 ## HTTP path index — Operator WebUI & live.web (local defaults)
 
 Ports **8000** (Operator WebUI, `src.webui.app`) and **8010** (live.web, `src.live.web.app` via `scripts/ops/run_live_webui.sh`) are **local defaults** on `127.0.0.1`. Processes are **separate**; there is **no shared control plane**. Paths below are for **orientation / navigation** (read-only UI posture; no change to execution or approval semantics).
