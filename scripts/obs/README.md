@@ -75,13 +75,13 @@ Siehe `docs/DOCKER_KOMPLETT_UEBERSICHT.md` für die kanonische Docker-Dokumentat
 ### Legacy / drift names (non-canonical)
 Do **not** treat these as current entrypoints; they are missing from the tree or only appear in older docs, evidence, or merge logs:
 
-- `docs&#47;observability&#47;OBS_STACK_RUNBOOK.md`
-- `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_GRAFANA_ONLY.yml`
-- `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml`
-- `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards`
-- `scripts&#47;obs&#47;grafana_local_up.sh`
-- `scripts&#47;obs&#47;grafana_local_down.sh`
-- `scripts&#47;obs&#47;shadow_mvs_local_verify.sh`
+- `docs&#47;observability&#47;OBS_STACK_RUNBOOK.md` <!-- pt:ref-target-ignore -->
+- `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_GRAFANA_ONLY.yml` <!-- pt:ref-target-ignore -->
+- `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml` <!-- pt:ref-target-ignore -->
+- `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards` <!-- pt:ref-target-ignore -->
+- `scripts&#47;obs&#47;grafana_local_up.sh` <!-- pt:ref-target-ignore -->
+- `scripts&#47;obs&#47;grafana_local_down.sh` <!-- pt:ref-target-ignore -->
+- `scripts&#47;obs&#47;shadow_mvs_local_verify.sh` <!-- pt:ref-target-ignore -->
 
 Labeled legacy context: `docs/ops/reviews/grafana_prometheus_operator_entrypoints/REVIEW.md`.
 
@@ -184,7 +184,7 @@ crontab -e
 
 ### Alternative: GitHub Actions
 
-Siehe `.github&#47;workflows&#47;stage1_monitoring.yml` (falls vorhanden).
+Siehe `.github&#47;workflows&#47;stage1_monitoring.yml` (falls vorhanden). <!-- pt:ref-target-ignore -->
 
 ---
 
