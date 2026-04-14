@@ -1,5 +1,10 @@
 # Status Matrix Contract
 
+
+<!-- STATUS_MATRIX role note -->
+> Role note: Use `docs&#47;ops&#47;STATUS_MATRIX.md` as the compact status map.
+> For dated narrative context, change history, and time-scoped operator framing, read `docs&#47;ops&#47;STATUS_OVERVIEW_2026-02-19.md`.
+
 **Scope:** Contract/Status-Werte für Tabellen; normativ für Evidence-Level. Für operativen Projektstatus siehe [STATUS_OVERVIEW_2026-02-19.md](STATUS_OVERVIEW_2026-02-19.md).
 
 ## Motivation
