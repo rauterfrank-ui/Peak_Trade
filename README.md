@@ -54,7 +54,6 @@ Für Entwickler, die mit Peak_Trade arbeiten oder Strategien entwickeln:
 - 🔒 **[Security Notes](SECURITY_NOTES.md)** — Known vulnerabilities, Python version limitations, CVE tracking
 - 🔍 **[Audit Runbook](docs/audit/AUDIT_RUNBOOK_COMPLETE.md)** — Complete audit procedures (Security, Dependencies, Quality)
 - 🛡️ **[Governance & AI Autonomy](docs/governance/README.md)** — Governance-first guardrails, Policy Critic, Evidence Packs
-- 🗺️ **[Docs Truth Map](docs/ops/registry/DOCS_TRUTH_MAP.md)** — Kanonische Ops-Doku-Registry und Änderungsnachweis (truth-first)
 
 ---
 
@@ -299,8 +298,6 @@ uv sync --extra web
 
 ### Run (recommended wrapper)
 
-Operator-Dashboard (Session Explorer, R&D, Ops). **Port 8000** (`http://127.0.0.1:8000/`).
-
 ```bash
 ./scripts/ops/run_webui.sh
 # Reload:
@@ -309,61 +306,11 @@ RELOAD=1 ./scripts/ops/run_webui.sh
 
 ### Live dashboard
 
-Run-zentriertes Dashboard (Runs-Liste, Snapshots, Alerts) für Shadow-/Testnet-Monitoring. **Port 8010** (Override: `PORT=8000 .&#47;scripts&#47;ops&#47;run_live_webui.sh`).
-
 ```bash
 ./scripts/ops/run_live_webui.sh
 # Reload:
 RELOAD=1 ./scripts/ops/run_live_webui.sh
 ```
-
-**Alternativen (nicht alle starten dieselbe App):**
-
-- `python3 scripts/live_web_server.py` → `src.live.web.app` (Live-Dashboard mit `/api/v0/*`, `/runs/*`, `/dashboard`)
-- `bash scripts/ops/run_live_webui.sh` → `src.live.web.app` (Wrapper für das Live-Dashboard)
-- `bash scripts/ops/run_webui.sh` → `src.webui.app` (Operator-WebUI mit `/api/live_sessions`, `/api/execution/*`, `/ops`, `/r_and_d`)
-- `python3 scripts/serve_live_dashboard.py` → `src.live.web.app` (alternativer Live-Dashboard-Entrypoint)
-
-| Entrypoint | Port | Hinweis |
-|------------|------|---------|
-| `run_live_webui.sh` | 8010 | Shell-Wrapper mit `uv` (oben) |
-| `python3 scripts/live_web_server.py` | 8000 | Empfohlen in Runbooks, CLI-Argumente |
-| `python -m scripts.serve_live_dashboard` | 8000 | Config aus `config/config.toml` |
-
-### HTTP-Routen — Operator-WebUI, Ops-Hub & live.web (Local Defaults)
-
-Ports **8000** (Operator-WebUI) und **8010** (live.web mit `scripts/ops/run_live_webui.sh`) sind **README-Defaults** auf `127.0.0.1`. Die Prozesse sind **getrennt**; es gibt **keine gemeinsame Control Plane**. Die Pfade dienen der **Orientierung** (read-only UI; keine Änderung an Ausführungs- oder Freigabesemantik).
-
-**Operator-WebUI** (Standard `http://127.0.0.1:8000`):
-
-- `/` — Haupt-Dashboard
-- `/ops` — Ops Cockpit
-- `/ops/stage1` — Stage1 Ops Dashboard
-- `/ops/workflows` — Ops-Workflow-Hub
-- `/ops/ci-health` — CI & Governance Health
-- `/session/{session_id}` — Session-Detail (HTML, read-only)
-
-**Weitere Operator-WebUI-Nav** (read-only; Anzeigenamen wie in der Kopfzeile: `templates/peak_trade_dashboard/base.html`):
-
-- `/execution_watch` — Execution Watch
-- `/live/alerts` — Alerts
-- `/r_and_d` — R&D Experiments
-- `/r_and_d/experiment/{run_id}` — R&D Experiment-Detail (HTML, read-only)
-- `/r_and_d/comparison` — R&D Multi-Run-Vergleich (HTML, read-only)
-- `/live/telemetry` — Telemetry
-
-**live.web** (Standard `http://127.0.0.1:8010` mit `scripts/ops/run_live_webui.sh`):
-
-- `/` und `/dashboard` — Live-Dashboard (Runs)
-- `/watch` — Watch-Übersicht
-- `/watch/runs/{run_id}` — Run-Detail (Watch)
-- `/sessions/{run_id}` — Alias zum gleichen Run-Detail
-
-Zusätzlich stellt live.web **read-only** JSON unter dem Präfix **`/api/v0`** bereit (u. a. für Watch-/Status-Zugriff); Details und Beispiele: [`docs/LIVE_OPERATIONAL_RUNBOOKS.md`](docs/LIVE_OPERATIONAL_RUNBOOKS.md) (Abschnitt 10d.4), Implementierung: [`src/live/web/api_v0.py`](src/live/web/api_v0.py).
-
-Die **Companion**-Hinweise in live.web (Haupt-Dashboard und Watch-/Session-HTML) verlinken **lesend** (Navigation only) auf **`http://127.0.0.1:8000/`**, **`http://127.0.0.1:8000/ops`**, **`http://127.0.0.1:8000/ops/ci-health`** und den Run-UI-Standard **`http://127.0.0.1:8010/`** — README-Default-Hosts/-Ports, **getrennte Prozesse**, **keine gemeinsame Control Plane** (Implementierung: `src/live/web/app.py`).
-
-Details: [`docs/CLI_CHEATSHEET.md`](docs/CLI_CHEATSHEET.md#18-live-web-dashboard-phase-67), [`docs/LIVE_OPERATIONAL_RUNBOOKS.md`](docs/LIVE_OPERATIONAL_RUNBOOKS.md) Abschnitt 10d.
 
 ---
 
@@ -499,7 +446,3 @@ und den zugehörigen Runbooks/Playbooks dokumentiert.
 ## Lizenz
 
 Privates Projekt – alle Rechte vorbehalten.
-
-## Bounded Acceptance Documentation Chain
-- start here: `docs&#47;ops&#47;reviews&#47;bounded_acceptance_start_here_page&#47;START_HERE.md`
-- index, runbook, cheat sheet, go/no-go snapshot, readiness matrix, and governance framing are linked from there

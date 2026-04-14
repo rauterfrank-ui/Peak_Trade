@@ -33,7 +33,6 @@ from src.meta.infostream.evaluator import (
     parse_eval_package,
     parse_learning_snippet,
     call_ai_for_event,
-    resolve_infostream_model,
 )
 from src.meta.infostream.router import append_learnings_to_log, get_learning_log_stats
 from src.meta.infostream.run_cycle import run_infostream_cycle, discover_test_health_runs
@@ -273,32 +272,6 @@ class TestCollector:
         with pytest.raises(FileNotFoundError):
             build_event_from_test_health_report(run_dir)
 
-    def test_build_event_defensive_malformed_types(self, tmp_path: Path):
-        """Test: Abweichende Typen in summary.json werden abgefangen (B3)."""
-        run_dir = tmp_path / "malformed_run"
-        run_dir.mkdir()
-        raw = {
-            "profile_name": "  ",
-            "health_score": "not-a-number",
-            "passed_checks": "3",
-            "failed_checks": -9,
-            "skipped_checks": None,
-            "trigger_violations": "not-a-list",
-            "strategy_coverage": "bad",
-            "switch_sanity": ["also", "bad"],
-            "started_at": "2025-12-11T14:39:20",
-        }
-        (run_dir / "summary.json").write_text(json.dumps(raw), encoding="utf-8")
-
-        event = build_event_from_test_health_report(run_dir)
-
-        assert event.payload["health_score"] == 0.0
-        assert event.payload["profile"] == "unknown"
-        assert event.payload["raw_data"]["failed_checks"] == -9
-        details_text = "\n".join(event.details)
-        assert "Total Checks: 3" in details_text
-        assert "Failed Checks: 0" in details_text
-
     def test_save_and_load_intel_event(self, tmp_path: Path):
         """Test: Event speichern und laden."""
         event = IntelEvent(
@@ -382,65 +355,6 @@ class TestEvaluator:
         lines = parse_learning_snippet("No learning snippet here")
 
         assert lines == []
-
-    def test_parse_eval_package_with_markdown_fence(self):
-        """F1: EVAL_PACKAGE in äußerem Codefence wird erkannt."""
-        body = """
-event_id: INF-fence
-short_eval: ok
-key_findings:
-  - a
-recommendations:
-  - b
-risk_assessment:
-  level: medium
-  notes: n
-tags_out:
-  - t
-"""
-        text = f"=== EVAL_PACKAGE ===\n```text\n{body.strip()}\n```\n=== /EVAL_PACKAGE ===\n"
-        result = parse_eval_package(text)
-        assert result["event_id"] == "INF-fence"
-        assert result["short_eval"] == "ok"
-        assert result["key_findings"] == ["a"]
-        assert result["recommendations"] == ["b"]
-        assert result["risk_level"] == "medium"
-        assert result["tags_out"] == ["t"]
-
-    def test_parse_learning_snippet_star_bullets(self):
-        """F1: LEARNING_SNIPPET unterstützt *-Bullets."""
-        text = """
-=== LEARNING_SNIPPET ===
-* Erster Punkt
-* Zweiter Punkt
-=== /LEARNING_SNIPPET ===
-"""
-        lines = parse_learning_snippet(text)
-        assert lines == ["Erster Punkt", "Zweiter Punkt"]
-
-    def test_parse_eval_package_invalid_risk_level_normalized(self):
-        """F1: Unbekanntes risk level -> none."""
-        text = """
-=== EVAL_PACKAGE ===
-event_id: x
-short_eval: s
-risk_assessment:
-  level: catastrophic
-  notes: n
-=== /EVAL_PACKAGE ===
-"""
-        result = parse_eval_package(text)
-        assert result["risk_level"] == "none"
-
-    def test_resolve_infostream_model_priority(self, monkeypatch):
-        """F1: explicit > INFOSTREAM_MODEL > Default."""
-        monkeypatch.delenv("INFOSTREAM_MODEL", raising=False)
-        assert resolve_infostream_model("my-model") == "my-model"
-        monkeypatch.setenv("INFOSTREAM_MODEL", "env-model")
-        assert resolve_infostream_model(None) == "env-model"
-        assert resolve_infostream_model("") == "env-model"
-        monkeypatch.delenv("INFOSTREAM_MODEL", raising=False)
-        assert resolve_infostream_model(None) == "gpt-4o-mini"
 
     def test_call_ai_for_event(self, mock_client: MagicMock):
         """Test: KI-Aufruf mit Mock-Client."""

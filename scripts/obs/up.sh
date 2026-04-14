@@ -2,8 +2,16 @@
 set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
+cd ops/observability
 
-echo "ERROR: scripts/obs/up.sh is intentionally disabled."
-echo "Reason: legacy path ops/observability/ does not exist in this repository."
-echo "Safe-next-step: inspect docker/docker-compose.obs.yml and docs/webui/observability before introducing a new start path."
-exit 1
+docker compose up -d --remove-orphans
+
+echo ""
+echo "✅ Observability stack is up"
+echo "Grafana:     http://localhost:3000 (login: .env or GRAFANA_AUTH=user:pass)"
+echo "Prometheus:  http://localhost:9090"
+echo "Tempo:       http://localhost:3200"
+echo "Loki:        http://localhost:3100"
+echo "OTLP gRPC:   localhost:4317"
+echo "OTLP HTTP:   http://localhost:4318"
+echo ""

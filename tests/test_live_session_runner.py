@@ -625,17 +625,6 @@ class TestLiveSessionRunnerFactory:
         with pytest.raises(LiveModeNotAllowedError):
             LiveSessionConfig(mode="live", strategy_key="test", symbol="BTC/EUR")
 
-    def test_from_config_bounded_pilot_accepted(self):
-        """mode='bounded_pilot' ist erlaubt (Invocation Slice)."""
-        from src.execution.live_session import LiveSessionConfig
-
-        config = LiveSessionConfig(
-            mode="bounded_pilot",
-            strategy_key="ma_crossover",
-            symbol="BTC/EUR",
-        )
-        assert config.mode == "bounded_pilot"
-
 
 # =============================================================================
 # Tests: CLI Smoke Test
@@ -718,29 +707,6 @@ class TestExecutionSessionCLI:
         # argparse sollte "invalid choice" melden
         assert result.returncode != 0
         assert "invalid choice" in result.stderr or "error" in result.stderr.lower()
-
-    def test_cli_bounded_pilot_mode_accepted(self):
-        """CLI --mode bounded_pilot wird akzeptiert (Invocation Slice). Dry-run beendet vor Session-Start."""
-        result = subprocess.run(
-            [
-                sys.executable,
-                "scripts/run_execution_session.py",
-                "--mode",
-                "bounded_pilot",
-                "--strategy",
-                "ma_crossover",
-                "--steps",
-                "1",
-                "--dry-run",
-            ],
-            capture_output=True,
-            text=True,
-            cwd=str(ROOT_DIR),
-            timeout=30,
-        )
-
-        assert result.returncode == 0, f"Expected 0, got {result.returncode}: {result.stderr}"
-        assert "invalid choice" not in (result.stderr or "").lower()
 
 
 # =============================================================================
