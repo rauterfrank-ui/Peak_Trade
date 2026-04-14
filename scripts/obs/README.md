@@ -62,6 +62,29 @@ docker compose -f docker/docker-compose.obs.yml run --rm peaktrade-ops stage1-sn
 
 Siehe `docs/DOCKER_KOMPLETT_UEBERSICHT.md` für die kanonische Docker-Dokumentation.
 
+
+### Canonical observability paths (SSOT)
+| Topic | Path |
+|------|------|
+| Ops Runner Compose | `docker/docker-compose.obs.yml` |
+| Prometheus scrape reference | `docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml` |
+| Full Docker / container overview | `docs/DOCKER_KOMPLETT_UEBERSICHT.md` |
+
+`scripts/obs/up.sh` is **intentionally disabled** (it prints an error and exit guidance). Prefer the Compose commands above rather than ad-hoc “bring stack up” scripts.
+
+### Legacy / drift names (non-canonical)
+Do **not** treat these as current entrypoints; they are missing from the tree or only appear in older docs, evidence, or merge logs:
+
+- `docs/observability/OBS_STACK_RUNBOOK.md`
+- `docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml`
+- `docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml`
+- `docs/webui/observability/grafana/dashboards`
+- `scripts/obs/grafana_local_up.sh`
+- `scripts/obs/grafana_local_down.sh`
+- `scripts/obs/shadow_mvs_local_verify.sh`
+
+Labeled legacy context: `docs/ops/reviews/grafana_prometheus_operator_entrypoints/REVIEW.md`.
+
 ---
 
 ## 📊 Script 1: Daily Snapshot
