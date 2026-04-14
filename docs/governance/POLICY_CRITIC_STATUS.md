@@ -102,6 +102,10 @@ tests/governance/policy_critic/
   └── test_auto_apply_gate.py        # Auto-apply tests
 ```
 
+The canonical Policy Critic CI path is `.github&#47;workflows&#47;policy_critic.yml`, which runs `scripts&#47;run_policy_critic.py`.
+The separate `.github&#47;workflows&#47;policy_critic_gate.yml` workflow is an always-run gate for branch-protection continuity and may degrade to a placeholder path.
+It should not be read as the canonical Policy Critic runner.
+
 ---
 
 ## Recent Changes
