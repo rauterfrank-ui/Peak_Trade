@@ -75,13 +75,13 @@ Siehe `docs/DOCKER_KOMPLETT_UEBERSICHT.md` für die kanonische Docker-Dokumentat
 ### Legacy / drift names (non-canonical)
 Do **not** treat these as current entrypoints; they are missing from the tree or only appear in older docs, evidence, or merge logs:
 
-- `docs/observability/OBS_STACK_RUNBOOK.md`
-- `docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml`
-- `docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml`
-- `docs/webui/observability/grafana/dashboards`
-- `scripts/obs/grafana_local_up.sh`
-- `scripts/obs/grafana_local_down.sh`
-- `scripts/obs/shadow_mvs_local_verify.sh`
+- `docs&#47;observability&#47;OBS_STACK_RUNBOOK.md`
+- `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_GRAFANA_ONLY.yml`
+- `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml`
+- `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards`
+- `scripts&#47;obs&#47;grafana_local_up.sh`
+- `scripts&#47;obs&#47;grafana_local_down.sh`
+- `scripts&#47;obs&#47;shadow_mvs_local_verify.sh`
 
 Labeled legacy context: `docs/ops/reviews/grafana_prometheus_operator_entrypoints/REVIEW.md`.
 
