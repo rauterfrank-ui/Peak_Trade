@@ -1,5 +1,10 @@
 # PR-Body (Copy-Paste für Pragmatic-Flow-PR)
 
+
+<!-- ci pragmatic pr body staleness scope note -->
+> Scope note: This document describes pragmatic PR-body flow context and should not be read as the sole canonical source for the current required PR checks.
+> For the current gate catalog and branch-protection view, use `docs&#47;ops&#47;GATES_OVERVIEW.md`, `docs&#47;ops&#47;CI.md`, and `config&#47;ci&#47;required_status_checks.json`.
+
 **Canonical reference:** [GATES_OVERVIEW.md](GATES_OVERVIEW.md) ist SSoT für Gates. Siehe auch [ci_pragmatic_flow_inventory.md](ci_pragmatic_flow_inventory.md), [ci_pragmatic_flow_meta_gate.md](ci_pragmatic_flow_meta_gate.md).
 
 ## Motivation
