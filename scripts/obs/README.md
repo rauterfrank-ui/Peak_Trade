@@ -62,6 +62,29 @@ docker compose -f docker/docker-compose.obs.yml run --rm peaktrade-ops stage1-sn
 
 Siehe `docs/DOCKER_KOMPLETT_UEBERSICHT.md` für die kanonische Docker-Dokumentation.
 
+
+### Canonical observability paths (SSOT)
+| Topic | Path |
+|------|------|
+| Ops Runner Compose | `docker/docker-compose.obs.yml` |
+| Prometheus scrape reference | `docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml` |
+| Full Docker / container overview | `docs/DOCKER_KOMPLETT_UEBERSICHT.md` |
+
+`scripts/obs/up.sh` is **intentionally disabled** (it prints an error and exit guidance). Prefer the Compose commands above rather than ad-hoc “bring stack up” scripts.
+
+### Legacy / drift names (non-canonical)
+Do **not** treat these as current entrypoints; they are missing from the tree or only appear in older docs, evidence, or merge logs:
+
+- `docs&#47;observability&#47;OBS_STACK_RUNBOOK.md` <!-- pt:ref-target-ignore -->
+- `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_GRAFANA_ONLY.yml` <!-- pt:ref-target-ignore -->
+- `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml` <!-- pt:ref-target-ignore -->
+- `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards` <!-- pt:ref-target-ignore -->
+- `scripts&#47;obs&#47;grafana_local_up.sh` <!-- pt:ref-target-ignore -->
+- `scripts&#47;obs&#47;grafana_local_down.sh` <!-- pt:ref-target-ignore -->
+- `scripts&#47;obs&#47;shadow_mvs_local_verify.sh` <!-- pt:ref-target-ignore -->
+
+Labeled legacy context: `docs/ops/reviews/grafana_prometheus_operator_entrypoints/REVIEW.md`.
+
 ---
 
 ## 📊 Script 1: Daily Snapshot
@@ -161,7 +184,7 @@ crontab -e
 
 ### Alternative: GitHub Actions
 
-Siehe `.github&#47;workflows&#47;stage1_monitoring.yml` (falls vorhanden).
+Siehe `.github&#47;workflows&#47;stage1_monitoring.yml` (falls vorhanden). <!-- pt:ref-target-ignore -->
 
 ---
 
