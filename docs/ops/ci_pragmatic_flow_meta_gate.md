@@ -1,5 +1,10 @@
 # CI Pragmatic Flow — PR Gate (Single Required Check)
 
+
+<!-- ci pragmatic flow staleness scope note -->
+> Scope note: This document captures pragmatic CI flow context and may describe a narrower gate view than the current required-check set.
+> For the current gate catalog and branch-protection view, use `docs&#47;ops&#47;GATES_OVERVIEW.md`, `docs&#47;ops&#47;CI.md`, and `config&#47;ci&#47;required_status_checks.json`.
+
 **Canonical reference:** [GATES_OVERVIEW.md](GATES_OVERVIEW.md) ist SSoT für Gates. Dieses Doc beschreibt PR-Gate-Details.
 
 **Ziel:** Für Branch Protection nur **einen** Required Check: **PR Gate**.  

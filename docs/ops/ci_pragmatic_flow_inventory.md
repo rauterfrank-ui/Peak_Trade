@@ -1,5 +1,10 @@
 # CI Pragmatic Flow — Inventar (Workflows & Jobs)
 
+
+<!-- ci pragmatic flow staleness scope note -->
+> Scope note: This document is a pragmatic inventory and should not be read as the canonical source for the current required PR checks by itself.
+> For the current gate catalog and branch-protection view, use `docs&#47;ops&#47;GATES_OVERVIEW.md`, `docs&#47;ops&#47;CI.md`, and `config&#47;ci&#47;required_status_checks.json`.
+
 **Canonical reference:** [GATES_OVERVIEW.md](GATES_OVERVIEW.md) ist SSoT für Gates. Dieses Doc beschreibt pragmatische Flow-Details.
 
 **Stand:** 2026-02-07. Branch Protection: nur **PR Gate** als required check (TODO: in GitHub einstellen).
