@@ -124,7 +124,27 @@ def test_kill_switch_should_block_trading_file_active_no_block(tmp_path, monkeyp
     assert kill_switch_should_block_trading(explicit_active=False) is False
 
 
-def test_kill_switch_should_block_trading_env_when_no_file(monkeypatch, tmp_path):
+@pytest.mark.parametrize(
+    ("peak_kill_switch", "expect_block"),
+    [
+        (None, False),
+        ("0", False),
+        ("1", True),
+        ("true", False),
+        ("01", False),
+        ("1 ", False),
+    ],
+)
+def test_kill_switch_should_block_trading_env_fallback_strict_literal_one(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path,
+    peak_kill_switch: str | None,
+    expect_block: bool,
+) -> None:
+    """When state file is missing, only PEAK_KILL_SWITCH exactly ``1`` blocks (current contract)."""
     monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(tmp_path / "nope.json"))
-    monkeypatch.setenv("PEAK_KILL_SWITCH", "1")
-    assert kill_switch_should_block_trading(explicit_active=False) is True
+    if peak_kill_switch is None:
+        monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
+    else:
+        monkeypatch.setenv("PEAK_KILL_SWITCH", peak_kill_switch)
+    assert kill_switch_should_block_trading(explicit_active=False) is expect_block
