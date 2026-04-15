@@ -12,7 +12,7 @@ import pandas as pd
 import numpy as np
 
 from src.strategies.bollinger import BollingerBandsStrategy
-from src.strategies.macd import generate_signals as macd_signals
+from src.strategies.macd import MACDStrategy
 from src.strategies.ecm import generate_signals as ecm_signals, calculate_ecm_phase
 from src.core import get_strategy_cfg
 from datetime import datetime
@@ -95,7 +95,12 @@ def test_macd_signals():
     df = create_test_data(200)
     params = {"fast_ema": 12, "slow_ema": 26, "signal_ema": 9, "stop_pct": 0.025}
 
-    signals = macd_signals(df, params)
+    strategy = MACDStrategy(
+        fast_ema=params["fast_ema"],
+        slow_ema=params["slow_ema"],
+        signal_ema=params["signal_ema"],
+    )
+    signals = strategy.generate_signals(df)
     assert len(signals) == len(df)
 
 
