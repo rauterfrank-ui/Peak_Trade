@@ -101,3 +101,25 @@ def test_sort_invalid_sort_by_falls_back_to_timestamp() -> None:
     b = _minimal_exp("20240102_120000", 1.0, 0.1, "b.json")
     got = sort_raw_experiments([a, b], sort_by="bogus", sort_order="desc")
     assert [x["_filename"] for x in got] == ["b.json", "a.json"]
+
+
+def test_sort_by_timestamp_stable_when_timestamp_ties() -> None:
+    """Gleicher Timestamp → stabile Reihenfolge wie Eingabe (sorted ist stabil)."""
+    first = _minimal_exp("20240101_120000", 1.0, 0.1, "first.json")
+    second = _minimal_exp("20240101_120000", 9.0, 0.9, "second.json")
+    assert sort_raw_experiments([first, second], sort_by="timestamp", sort_order="desc") == [
+        first,
+        second,
+    ]
+    assert sort_raw_experiments([second, first], sort_by="timestamp", sort_order="desc") == [
+        second,
+        first,
+    ]
+
+
+def test_sort_by_sharpe_stable_when_sharpe_ties() -> None:
+    """Gleicher Sharpe → stabile Reihenfolge wie Eingabe."""
+    a = _minimal_exp("20240101_120000", 2.0, 0.1, "a.json")
+    b = _minimal_exp("20240102_120000", 2.0, 0.2, "b.json")
+    assert sort_raw_experiments([a, b], sort_by="sharpe", sort_order="desc") == [a, b]
+    assert sort_raw_experiments([b, a], sort_by="sharpe", sort_order="desc") == [b, a]
