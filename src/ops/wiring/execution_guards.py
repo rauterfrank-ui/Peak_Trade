@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from typing import Optional
 
@@ -54,9 +55,9 @@ def apply_execution_guards(
     if cfg.risk_enabled:
         risk_dec = evaluate_risk(inputs.limits, inputs.ctx)
         if not risk_dec.allow:
+            details_json = json.dumps(risk_dec.details, sort_keys=True)
             raise RuntimeError(
-                f"Execution blocked: risk_gate deny reason={risk_dec.reason} "
-                f"details={risk_dec.details}"
+                f"Execution blocked: risk_gate deny reason={risk_dec.reason} details={details_json}"
             )
 
     return GuardResult(allow=True, risk=risk_dec)

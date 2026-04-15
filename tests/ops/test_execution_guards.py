@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 import pytest
 from src.ops.wiring.execution_guards import (
     GuardConfig,
@@ -83,5 +85,13 @@ def test_risk_gate_denies_when_enabled():
         limits=limits,
         ctx=base_ctx(order_notional_usd=60),
     )
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError) as ei:
         apply_execution_guards(cfg, gate=gate, inputs=inputs)
+    msg = str(ei.value)
+    assert msg.startswith("Execution blocked: risk_gate deny")
+    assert "details=" in msg
+    _, rest = msg.split("details=", 1)
+    parsed = json.loads(rest)
+    assert list(parsed.keys()) == sorted(parsed.keys())
+    assert float(parsed["max_notional_usd"]) == 50.0
+    assert float(parsed["notional_usd"]) == 60.0
