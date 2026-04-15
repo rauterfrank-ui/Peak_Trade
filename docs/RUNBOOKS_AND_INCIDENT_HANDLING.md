@@ -335,7 +335,7 @@ Der **Kill-Switch** ist die letzte Verteidigungslinie:
 | `SAFETY_POLICY_TESTNET_AND_LIVE.md` | Safety-Policies |
 | `LIVE_READINESS_CHECKLISTS.md` | Checklisten für Stufen-Übergänge |
 | `PHASE_24_SHADOW_EXECUTION.md` | Shadow-Execution-Dokumentation |
-| `ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md` | Tech-Debt Top-3 ROI bis Finish (Cursor Multi-Agent, NO-LIVE) |
+| `docs/ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md` | Tech-Debt Top-3 ROI bis Finish (Cursor Multi-Agent, NO-LIVE) |
 | `INCIDENT_SIMULATION_AND_DRILLS.md` | Incident-Drill-Playbook (Phase 56) |
 | `INCIDENT_DRILL_LOG.md` | Drill-Log für dokumentierte Übungen |
 
@@ -353,4 +353,4 @@ Der **Kill-Switch** ist die letzte Verteidigungslinie:
 - **Phase 56** (2025-12): Incident-Drills ergänzt
   - Verweise auf Incident-Drill-Playbook hinzugefügt
   - Hinweis auf aktive Übung von Runbooks ergänzt
-- **Docs-Audit (2026-04):** Shadow-CLI-Beispiele mit `config/config.toml` abgeglichen; CSV-Beispielpfad an `run_shadow_execution.py` angeglichen; Referenzpfad `RUNBOOK_TECH_DEBT_*` korrigiert (`ops/runbooks/…`).
+- **Docs-Audit (2026-04):** Shadow-CLI-Beispiele mit `config/config.toml` abgeglichen; CSV-Beispielpfad an `run_shadow_execution.py` angeglichen; Referenzpfad `RUNBOOK_TECH_DEBT_*` korrigiert (`docs/ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md`).

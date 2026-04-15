@@ -154,8 +154,8 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 ### `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md` — **done (vorläufig)**
 - **Fixes (applied)**:
   - `scripts/experiments_explorer.py` / `scripts/report_experiment.py`: Subcommand `list` bzw. `--id` im Abschnitt „Ergebnisse prüfen“ (bereits früher; Re-Audit ok).
-  - Shadow-Run-Beispiele: `--config config/config.toml` für Copy/Paste-SSoT; CSV-Beispiel an `run_shadow_execution.py` angeglichen; Troubleshooting-Hinweis zu Config-Pfad.
-  - Referenzen: korrekter Repo-Pfad zu `ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md`.
+  - Shadow-Run-Beispiele: `--config` mit `config/config.toml` für Copy/Paste-SSoT; CSV-Beispiel an `run_shadow_execution.py` angeglichen; Troubleshooting-Hinweis zu Config-Pfad.
+  - Referenzen: korrekter Repo-Pfad zu `docs/ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md`.
 
 ### `docs/WORKFLOW_FRONTDOOR.md` — **done (navigation only)**
 - **Befund**:
