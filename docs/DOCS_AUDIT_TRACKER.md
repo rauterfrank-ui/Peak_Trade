@@ -199,13 +199,19 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 
 ## Batch 3 (Research Playbooks) — Findings (laufend)
 
-### `docs/PEAK_TRADE_RESEARCH_GOLDEN_PATHS.md` — **needs_fix → teilweise gefixt**
+### `docs/PEAK_TRADE_RESEARCH_GOLDEN_PATHS.md` — **done (Audit Follow-up)**
 - **Fixes (applied)**:
   - Stress-/Pipeline-Beispiele nutzen jetzt implementierte Stress-Szenarien (`single_crash_bar`, `vol_spike`, `drawdown_extension`) statt nicht vorhandener (`flash_crash`, `high_volatility`, `trend_reversal`).
   - `preview_live_portfolio.py` wird korrekt als Snapshot/Risk-Check per `--config`/`--no-risk` dokumentiert (kein `--portfolio-preset`/`--validate-only`).
   - Strategy-Profile: Umgestellt auf `research_cli.py strategy-profile` (statt `profile_research_and_portfolio.py`, das ein Benchmark-Tool ist).
   - Strategy Registry Snippet: auf `StrategySpec`/`_STRATEGY_REGISTRY` angepasst; Listing nutzt `get_available_strategy_keys()`.
   - Erwartete Output-Pfade im Sweep/Report korrigiert (`reports&#47;experiments&#47;`, `reports&#47;sweeps&#47;{sweep}_report_<timestamp>.*`).
+- **Audit Follow-up (Repo-Truth)**:
+  - Kein fiktiver Dateiname mehr für vordefinierte Sweeps: Namen wie `rsi_reversion_basic` kommen aus `research_playground.py`, nicht zwingend als gleichnamige TOML unter `config/sweeps/`; TOML-Beispiel verweist auf `breakout.toml`.
+  - Report-Analyse: tatsächliche Report-Dateinamen (`{sweep_name}_report_<timestamp>.*` unter `reports&#47;sweeps&#47;`) statt Unterordner `…&#47;report.html`.
+  - Pipeline-Log-Hinweis: Step-Anzahl abhängig von optionalen Flags; kein fester „Results:-Unterordner“ pro Sweep-Namen.
+  - Tiering-Compliance-Snippet: lauffähiges Beispiel mit `core_balanced` + `config/portfolio_presets/core_balanced.toml`.
+  - Einleitung: keine absolute „Vollständigkeit“-Behauptung; Beispiel-Logs/Metriken als illustrativ gekennzeichnet.
 
 ### `docs/STRATEGY_RESEARCH_PLAYBOOK.md` — **done (quick audit)**
 - **Befund**:
