@@ -121,9 +121,20 @@ def kill_switch_should_block_trading(*, explicit_active: bool = False) -> bool:
 
 def evaluate_risk(limits: RiskLimits, ctx: RiskContext) -> RiskDecision:
     if not limits.enabled:
-        return RiskDecision(False, RiskDenyReason.DISABLED, {"enabled": "false"})
+        return RiskDecision(
+            False,
+            RiskDenyReason.DISABLED,
+            {"enabled": "false", "limits_enabled": str(limits.enabled).lower()},
+        )
     if limits.kill_switch:
-        return RiskDecision(False, RiskDenyReason.KILL_SWITCH, {"kill_switch": "true"})
+        return RiskDecision(
+            False,
+            RiskDenyReason.KILL_SWITCH,
+            {
+                "kill_switch": "true",
+                "limits_kill_switch": str(limits.kill_switch).lower(),
+            },
+        )
 
     if (
         limits.max_data_age_seconds > 0
@@ -132,35 +143,50 @@ def evaluate_risk(limits: RiskLimits, ctx: RiskContext) -> RiskDecision:
         return RiskDecision(
             False,
             RiskDenyReason.STALE_DATA,
-            {"age_s": str(ctx.market_data_age_seconds)},
+            {
+                "age_s": str(ctx.market_data_age_seconds),
+                "max_data_age_seconds": str(limits.max_data_age_seconds),
+            },
         )
 
     if limits.max_notional_usd > 0 and ctx.order_notional_usd > limits.max_notional_usd:
         return RiskDecision(
             False,
             RiskDenyReason.MAX_NOTIONAL,
-            {"notional_usd": str(ctx.order_notional_usd)},
+            {
+                "notional_usd": str(ctx.order_notional_usd),
+                "max_notional_usd": str(limits.max_notional_usd),
+            },
         )
 
     if limits.max_order_size > 0 and abs(ctx.order_size) > limits.max_order_size:
         return RiskDecision(
             False,
             RiskDenyReason.MAX_ORDER_SIZE,
-            {"order_size": str(ctx.order_size)},
+            {
+                "order_size": str(ctx.order_size),
+                "max_order_size": str(limits.max_order_size),
+            },
         )
 
     if limits.max_position > 0 and abs(ctx.current_position + ctx.order_size) > limits.max_position:
         return RiskDecision(
             False,
             RiskDenyReason.MAX_POSITION,
-            {"next_pos": str(ctx.current_position + ctx.order_size)},
+            {
+                "next_pos": str(ctx.current_position + ctx.order_size),
+                "max_position": str(limits.max_position),
+            },
         )
 
     if limits.max_session_loss_usd > 0 and ctx.session_pnl_usd < -abs(limits.max_session_loss_usd):
         return RiskDecision(
             False,
             RiskDenyReason.LOSS_LIMIT,
-            {"session_pnl_usd": str(ctx.session_pnl_usd)},
+            {
+                "session_pnl_usd": str(ctx.session_pnl_usd),
+                "max_session_loss_usd": str(limits.max_session_loss_usd),
+            },
         )
 
     return RiskDecision(True, None, {})
