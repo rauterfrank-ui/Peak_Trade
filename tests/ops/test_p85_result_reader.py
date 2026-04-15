@@ -6,6 +6,7 @@ import json
 import os
 import time
 from pathlib import Path
+from unittest.mock import patch
 
 from src.ops.p85_result_reader import (
     READER_SCHEMA_VERSION,
@@ -63,6 +64,26 @@ def test_reader_unknown_when_stale(tmp_path: Path) -> None:
     assert out["exchange"] == "unknown"
     assert out["stale"] is True
     assert out["observation_reason"] == "artifact_stale"
+
+
+def test_reader_ok_when_artifact_age_equals_max_age_boundary(tmp_path: Path) -> None:
+    """Boundary: age_sec == max_age_sec must not use the stale early-return (strict >)."""
+    fixed_now = 1_700_000_000.0
+    max_age = 250.0
+    mtime = fixed_now - max_age
+    d = tmp_path / "out" / "ops" / "run_boundary"
+    d.mkdir(parents=True)
+    p = d / "P85_RESULT.json"
+    p.write_text(json.dumps({"connectivity": {"ok": True}}), encoding="utf-8")
+    os.utime(p, (mtime, mtime))
+
+    with patch("src.ops.p85_result_reader.time.time", return_value=fixed_now):
+        out = read_p85_exchange_observation(tmp_path, max_age_sec=max_age)
+
+    assert out["stale"] is False
+    assert out["observation_reason"] != "artifact_stale"
+    assert out["observation_reason"] == "p85_connectivity_ok_true"
+    assert out["exchange"] == "ok"
 
 
 def test_reader_unknown_when_malformed_json(tmp_path: Path) -> None:
