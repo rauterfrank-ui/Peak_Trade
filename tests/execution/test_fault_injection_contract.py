@@ -24,14 +24,29 @@ def test_disabled_by_default(monkeypatch: pytest.MonkeyPatch) -> None:
     assert get_latency_ms(config, "call-1") == 0
 
 
-def test_enabled_only_when_explicit(monkeypatch: pytest.MonkeyPatch) -> None:
-    """PT_FAULT_INJECT=1 enables; other values do not."""
-    monkeypatch.setenv("PT_FAULT_INJECT", "1")
-    assert is_enabled() is True
-    monkeypatch.setenv("PT_FAULT_INJECT", "0")
-    assert is_enabled() is False
-    monkeypatch.setenv("PT_FAULT_INJECT", "true")
-    assert is_enabled() is False
+@pytest.mark.parametrize(
+    ("pt_fault_inject", "expect_enabled"),
+    [
+        (None, False),
+        ("0", False),
+        ("1", True),
+        (" 1", True),
+        ("1 ", True),
+        (" 1 ", True),
+        ("true", False),
+    ],
+)
+def test_pt_fault_inject_strip_matches_literal_one(
+    monkeypatch: pytest.MonkeyPatch,
+    pt_fault_inject: str | None,
+    expect_enabled: bool,
+) -> None:
+    """``os.getenv(...).strip() == '1'`` — padding around ``1`` enables; unlike strict ``== '1'`` flags elsewhere."""
+    if pt_fault_inject is None:
+        monkeypatch.delenv("PT_FAULT_INJECT", raising=False)
+    else:
+        monkeypatch.setenv("PT_FAULT_INJECT", pt_fault_inject)
+    assert is_enabled() is expect_enabled
 
 
 def test_deterministic_same_seed_same_results(monkeypatch: pytest.MonkeyPatch) -> None:
