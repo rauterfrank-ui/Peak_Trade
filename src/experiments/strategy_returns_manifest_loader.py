@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import difflib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -46,6 +47,18 @@ def _extract_mapping(data: dict[str, Any]) -> dict[str, str]:
     return out
 
 
+def _missing_strategy_id_message(strategy_id: str, mapping: dict[str, str]) -> str:
+    """Error line for unknown strategy_id; may append close manifest keys (sorted, bounded)."""
+    base = f"strategy_id_missing_in_manifest: {strategy_id}"
+    keys = sorted(mapping.keys())
+    if not keys:
+        return base
+    close = difflib.get_close_matches(strategy_id, keys, n=3, cutoff=0.55)
+    if not close:
+        return base
+    return base + " candidate_strategy_ids=" + ",".join(close)
+
+
 def resolve_strategy_run_dir(
     *,
     strategy_id: str,
@@ -57,7 +70,7 @@ def resolve_strategy_run_dir(
     mapping = _extract_mapping(data)
 
     if strategy_id not in mapping:
-        raise StrategyReturnsManifestError(f"strategy_id_missing_in_manifest: {strategy_id}")
+        raise StrategyReturnsManifestError(_missing_strategy_id_message(strategy_id, mapping))
 
     raw_path = Path(mapping[strategy_id])
     if raw_path.is_absolute():

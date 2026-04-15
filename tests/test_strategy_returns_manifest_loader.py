@@ -93,6 +93,63 @@ strategy_a = "runs/strategy_a"
         )
 
 
+def test_missing_strategy_id_suggests_close_manifest_keys(tmp_path: Path) -> None:
+    manifest = tmp_path / "strategy_returns_map.toml"
+    _write_manifest(
+        manifest,
+        """
+[strategy_returns]
+strategy_a = "runs/strategy_a"
+strategy_bb = "runs/strategy_bb"
+""".strip()
+        + "\n",
+    )
+
+    with pytest.raises(StrategyReturnsManifestError) as ei:
+        resolve_strategy_run_dir(strategy_id="strategy_b", manifest_path=manifest)
+    msg = str(ei.value)
+    assert "strategy_id_missing_in_manifest: strategy_b" in msg
+    assert "candidate_strategy_ids=" in msg
+    assert "strategy_a" in msg
+
+
+def test_missing_strategy_id_no_candidates_when_no_close_match(tmp_path: Path) -> None:
+    manifest = tmp_path / "strategy_returns_map.toml"
+    _write_manifest(
+        manifest,
+        """
+[strategy_returns]
+alpha = "runs/a"
+beta = "runs/b"
+gamma = "runs/g"
+""".strip()
+        + "\n",
+    )
+
+    with pytest.raises(StrategyReturnsManifestError) as ei:
+        resolve_strategy_run_dir(strategy_id="zzzzzzzz", manifest_path=manifest)
+    msg = str(ei.value)
+    assert msg.startswith("strategy_id_missing_in_manifest: zzzzzzzz")
+    assert "candidate_strategy_ids=" not in msg
+
+
+def test_missing_strategy_id_empty_mapping_no_candidates(tmp_path: Path) -> None:
+    manifest = tmp_path / "strategy_returns_map.toml"
+    _write_manifest(
+        manifest,
+        """
+[strategy_returns]
+""".strip()
+        + "\n",
+    )
+
+    with pytest.raises(StrategyReturnsManifestError) as ei:
+        resolve_strategy_run_dir(strategy_id="any", manifest_path=manifest)
+    msg = str(ei.value)
+    assert "strategy_id_missing_in_manifest: any" in msg
+    assert "candidate_strategy_ids=" not in msg
+
+
 def test_load_returns_for_strategy_from_manifest_missing_manifest(tmp_path: Path) -> None:
     manifest = tmp_path / "missing_strategy_returns_map.toml"
 
