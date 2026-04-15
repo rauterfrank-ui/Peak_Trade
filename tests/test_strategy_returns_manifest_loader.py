@@ -140,3 +140,76 @@ strategy_a = "runs/strategy_a"
             strategy_id="strategy_a",
             manifest_path=manifest,
         )
+
+
+def test_resolve_strategy_run_dir_missing_strategy_returns_table(tmp_path: Path) -> None:
+    manifest = tmp_path / "strategy_returns_map.toml"
+    _write_manifest(
+        manifest,
+        """
+[other]
+foo = "bar"
+""".strip()
+        + "\n",
+    )
+
+    with pytest.raises(StrategyReturnsManifestError, match="manifest_invalid: missing"):
+        resolve_strategy_run_dir(strategy_id="strategy_a", manifest_path=manifest)
+
+
+def test_resolve_strategy_run_dir_strategy_returns_not_a_table(tmp_path: Path) -> None:
+    manifest = tmp_path / "strategy_returns_map.toml"
+    _write_manifest(
+        manifest,
+        """
+strategy_returns = "not_a_table"
+""".strip()
+        + "\n",
+    )
+
+    with pytest.raises(StrategyReturnsManifestError, match="manifest_invalid: missing"):
+        resolve_strategy_run_dir(strategy_id="strategy_a", manifest_path=manifest)
+
+
+def test_resolve_strategy_run_dir_non_str_mapping_entries(tmp_path: Path) -> None:
+    manifest = tmp_path / "strategy_returns_map.toml"
+    _write_manifest(
+        manifest,
+        """
+[strategy_returns]
+strategy_a = 123
+""".strip()
+        + "\n",
+    )
+
+    with pytest.raises(
+        StrategyReturnsManifestError, match="manifest_invalid: strategy_returns entries must be str->str"
+    ):
+        resolve_strategy_run_dir(strategy_id="strategy_a", manifest_path=manifest)
+
+
+def test_resolve_strategy_run_dir_run_path_is_file(tmp_path: Path) -> None:
+    fake_run = tmp_path / "runs" / "strategy_a"
+    fake_run.parent.mkdir(parents=True, exist_ok=True)
+    fake_run.write_text("not_a_directory", encoding="utf-8")
+
+    manifest = tmp_path / "strategy_returns_map.toml"
+    _write_manifest(
+        manifest,
+        """
+[strategy_returns]
+strategy_a = "runs/strategy_a"
+""".strip()
+        + "\n",
+    )
+
+    with pytest.raises(StrategyReturnsManifestError, match="run_dir_not_directory"):
+        resolve_strategy_run_dir(strategy_id="strategy_a", manifest_path=manifest)
+
+
+def test_resolve_strategy_run_dir_invalid_toml(tmp_path: Path) -> None:
+    manifest = tmp_path / "strategy_returns_map.toml"
+    _write_manifest(manifest, "[not closed\n")
+
+    with pytest.raises(StrategyReturnsManifestError, match="manifest_invalid: toml_parse_failed"):
+        resolve_strategy_run_dir(strategy_id="strategy_a", manifest_path=manifest)
