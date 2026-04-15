@@ -373,6 +373,74 @@ def mock_args_phase53_preset_manifest(
     )
 
 
+@pytest.fixture
+def mock_args_phase53_strategies_no_returns_contract(
+    phase53_recipe_toml: Path,
+) -> argparse.Namespace:
+    """Phase-53 strategies-Mode ohne Dummy und ohne Manifest (ungültiger Contract)."""
+    return argparse.Namespace(
+        portfolio_preset="rsi_reversion_conservative",
+        recipes_config=str(phase53_recipe_toml),
+        sweep_name=None,
+        config="config/config.toml",
+        top_n=None,
+        portfolio_name=None,
+        weights=None,
+        run_montecarlo=False,
+        mc_num_runs=1000,
+        mc_method="simple",
+        mc_block_size=20,
+        mc_seed=42,
+        run_stress_tests=False,
+        stress_scenarios=["single_crash_bar", "vol_spike"],
+        stress_severity=0.2,
+        stress_window=5,
+        stress_position="middle",
+        stress_seed=42,
+        output_dir=None,
+        format=None,
+        use_dummy_data=False,
+        strategy_returns_manifest=None,
+        dummy_bars=500,
+        verbose=False,
+    )
+
+
+@pytest.fixture
+def mock_args_phase53_nonexistent_manifest(
+    phase53_recipe_toml: Path, tmp_path: Path
+) -> argparse.Namespace:
+    """Phase-53 mit Manifest-Pfad, aber Datei fehlt auf der Platte."""
+    missing = tmp_path / "missing_strategy_returns.toml"
+    assert not missing.exists()
+    return argparse.Namespace(
+        portfolio_preset="rsi_reversion_conservative",
+        recipes_config=str(phase53_recipe_toml),
+        sweep_name=None,
+        config="config/config.toml",
+        top_n=None,
+        portfolio_name=None,
+        weights=None,
+        run_montecarlo=False,
+        mc_num_runs=1000,
+        mc_method="simple",
+        mc_block_size=20,
+        mc_seed=42,
+        run_stress_tests=False,
+        stress_scenarios=["single_crash_bar", "vol_spike"],
+        stress_severity=0.2,
+        stress_window=5,
+        stress_position="middle",
+        stress_seed=42,
+        output_dir=None,
+        format=None,
+        use_dummy_data=False,
+        strategy_returns_manifest=str(missing),
+        dummy_bars=500,
+        verbose=False,
+    )
+
+
 def test_phase53_recipe_loading(phase53_recipe_toml: Path):
     """Testet, dass Phase-53-Rezepte mit direkten Strategienamen geladen werden können."""
     from src.experiments.portfolio_recipes import load_portfolio_recipes
@@ -532,3 +600,48 @@ def test_phase53_run_from_args_uses_manifest_returns_path(
     cfg = mock_run_robustness.call_args[0][0]
     assert cfg.portfolio.name == "RSI Reversion Conservative"
     assert len(cfg.portfolio.components) == 2
+
+
+@patch("scripts.run_portfolio_robustness.load_top_n_configs_for_sweep")
+@patch("scripts.run_portfolio_robustness._build_strategy_returns_cache")
+@patch("scripts.run_portfolio_robustness.run_portfolio_robustness")
+@patch("scripts.run_portfolio_robustness.build_portfolio_robustness_report")
+def test_phase53_run_from_args_fails_without_dummy_or_manifest(
+    mock_report,
+    mock_run_robustness,
+    mock_build_cache,
+    mock_load_topn,
+    mock_args_phase53_strategies_no_returns_contract,
+):
+    """
+    Phase 53: Ohne --use-dummy-data und ohne --strategy-returns-manifest muss der Runner
+    mit Exit 1 abbrechen (kein Sweep, kein Dummy-Cache, keine Robustness).
+    """
+    exit_code = portfolio_script.run_from_args(mock_args_phase53_strategies_no_returns_contract)
+
+    assert exit_code == 1
+    assert mock_load_topn.called is False
+    assert mock_build_cache.called is False
+    assert mock_run_robustness.called is False
+    assert mock_report.called is False
+
+
+@patch("scripts.run_portfolio_robustness.load_top_n_configs_for_sweep")
+@patch("scripts.run_portfolio_robustness._build_strategy_returns_cache")
+@patch("scripts.run_portfolio_robustness.run_portfolio_robustness")
+@patch("scripts.run_portfolio_robustness.build_portfolio_robustness_report")
+def test_phase53_run_from_args_fails_when_manifest_file_missing(
+    mock_report,
+    mock_run_robustness,
+    mock_build_cache,
+    mock_load_topn,
+    mock_args_phase53_nonexistent_manifest,
+):
+    """Phase 53: Existiert die Manifest-Datei nicht, bricht der Lauf vor der Robustness ab."""
+    exit_code = portfolio_script.run_from_args(mock_args_phase53_nonexistent_manifest)
+
+    assert exit_code == 1
+    assert mock_load_topn.called is False
+    assert mock_build_cache.called is False
+    assert mock_run_robustness.called is False
+    assert mock_report.called is False
