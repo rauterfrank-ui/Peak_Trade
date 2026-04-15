@@ -263,6 +263,8 @@ rsi_strategy = 0.34
 
 ### Strategie-Modul-Mapping
 
+Das folgende Snippet ist ein **Auszug** (häufig genutzte Kern-Keys); die **vollständige** Zuordnung Strategie-Name → Modulpfad steht im Quellcode in `src/strategies/__init__.py`. Für den **klassenbasierten**, konfigurationsgetriebenen Einstieg (`StrategySpec`, z. B. `create_strategy_from_config`) siehe `src/strategies/registry.py`.
+
 **File:** `src/strategies/__init__.py`
 
 ```python
