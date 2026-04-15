@@ -296,3 +296,38 @@ s1 = "runs/s1"
     assert isinstance(returns, pd.Series)
     assert len(returns) == 2
     assert returns.notna().all()
+
+
+def test_load_returns_for_strategy_from_manifest_returns_derive_failed_when_equity_flat_zero(
+    tmp_path: Path,
+) -> None:
+    """All-zero equity loads (>=3 rows) but pct_change yields no usable returns."""
+    run_dir = tmp_path / "runs" / "strategy_a"
+    run_dir.mkdir(parents=True)
+    df = pd.DataFrame(
+        {
+            "timestamp": [
+                "2026-01-01T00:00:00Z",
+                "2026-01-02T00:00:00Z",
+                "2026-01-03T00:00:00Z",
+            ],
+            "equity": [0.0, 0.0, 0.0],
+        }
+    )
+    df.to_csv(run_dir / "phase53_equity.csv", index=False)
+
+    manifest = tmp_path / "strategy_returns_map.toml"
+    _write_manifest(
+        manifest,
+        """
+[strategy_returns]
+strategy_a = "runs/strategy_a"
+""".strip()
+        + "\n",
+    )
+
+    with pytest.raises(StrategyReturnsManifestError, match="returns_derive_failed"):
+        load_returns_for_strategy_from_manifest(
+            strategy_id="strategy_a",
+            manifest_path=manifest,
+        )
