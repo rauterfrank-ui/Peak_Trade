@@ -2,7 +2,7 @@
 
 ## Übersicht
 
-Dieses Dokument definiert **3 vollständige End-to-End-Workflows** (Golden Paths) für typische Research-Aufgaben in Peak_Trade. Jeder Golden Path führt von Anfang bis Ende durch alle relevanten Schritte mit konkreten Befehlen.
+Dieses Dokument beschreibt **drei typische Research-Golden-Paths** mit konkreten Befehlen und Code-Snippets. **Beispiel-Logs, Metrik-Zahlen und „Erwartete Ausgabe“-Blöcke sind illustrativ**; referenzierte Skripte, Module und CLI-Flags entsprechen dem aktuellen Stand im Repository.
 
 **Stand:** Phase 81 (v1.0)
 
@@ -10,7 +10,7 @@ Dieses Dokument definiert **3 vollständige End-to-End-Workflows** (Golden Paths
 
 ## Golden Path 1: Neue Strategie entwickeln
 
-**Ziel:** Eine neue Strategie von der Idee bis zum profilierten, getierden Eintrag im System.
+**Ziel:** Eine neue Strategie von der Idee bis zum profilierten, getierten Eintrag im System.
 
 ### Übersicht
 
@@ -292,14 +292,16 @@ for tier, strategies in get_all_tiered_strategies().items():
 
 ### Schritt 2: Sweep-Definition anpassen
 
-Bearbeite oder erstelle eine Sweep-Definition:
+Bearbeite oder erstelle eine Sweep-Definition.
+
+**Hinweis:** Namen wie `rsi_reversion_basic` für `research_cli.py sweep --sweep-name …` sind **vordefinierte Sweeps** in `src/experiments/research_playground.py` (`get_predefined_sweep`, `list_predefined_sweeps`) — dazu existiert **nicht** zwingend eine gleichnamige Datei unter `config/sweeps/`. Dort liegen zusätzlich TOML-Grids (z. B. `[grid]` oder `[sweep]`).
 
 ```bash
-# Bestehende Sweeps anzeigen
+# Dateien unter config/sweeps/ (Formate gemischt: grid- vs. sweep-artig)
 ls config/sweeps/
 
-# Beispiel: rsi_reversion_basic.toml anpassen
-cat config/sweeps/rsi_reversion_basic.toml
+# TOML-Beispiel mit [sweep]-Sektion (Parameter unter [sweep.parameters])
+cat config/sweeps/breakout.toml
 ```
 
 ```toml
@@ -343,26 +345,25 @@ python3 scripts/research_cli.py pipeline \
     --run-stress-tests \
     --stress-scenarios single_crash_bar vol_spike drawdown_extension
 
-# Erwartete Ausgabe:
+# Erwartete Ausgabe (schematisch; Step-Anzahl hängt von optionalen Flags ab):
 # === RESEARCH PIPELINE ===
-# Step 1/5: Running sweep...
-# Step 2/5: Generating report...
-# Step 3/5: Walk-forward testing (top 5)...
-# Step 4/5: Monte-Carlo analysis (top 5)...
-# Step 5/5: Stress tests (top 5)...
-#
+# Step 1/N: Running sweep...
+# Step 2/N: Generating report...
+# ...
 # Pipeline completed!
-# Results: reports/sweeps/rsi_reversion_tuning_v2/
+# Reports liegen unter reports/sweeps/ (pro Lauf Dateinamen mit Timestamp)
 ```
 
 ### Schritt 4: Ergebnisse analysieren
 
-```bash
-# Report öffnen
-open reports/sweeps/rsi_reversion_tuning_v2/report.html
+Reports schreibt `research_cli.py report` nach `reports&#47;sweeps&#47;` mit Dateinamen der Form `{sweep_name}_report_<timestamp>.{md,html}` (siehe `scripts/generate_strategy_sweep_report.py`).
 
-# Oder Markdown anzeigen
-cat reports/sweeps/rsi_reversion_tuning_v2/report.md
+```bash
+# Neueste Artefakte zum Sweep-Namen auflisten
+ls reports/sweeps/rsi_reversion_tuning_v2_report_*.html
+ls reports/sweeps/rsi_reversion_tuning_v2_report_*.md
+
+# HTML-Report: gewünschte Datei aus der ls-Auswahl mit open bzw. xdg-open öffnen
 ```
 
 **Wichtige Metriken prüfen:**
@@ -439,7 +440,7 @@ for s in all_tiered['legacy']:
     print(f'  - {s}')
 "
 
-# Erwartete Ausgabe:
+# Beispielhafte Ausgabe (tatsächliche Zuordnung aus config/strategy_tiering.toml / get_all_tiered_strategies())
 # === CORE (für Hauptportfolio) ===
 #   - rsi_reversion
 #   - ma_crossover
@@ -452,9 +453,7 @@ for s in all_tiered['legacy']:
 #   - ...
 #
 # === LEGACY (nicht verwenden) ===
-#   - breakout_donchian
-#   - my_strategy
-#   - vol_breakout
+#   - ...
 ```
 
 ### Schritt 2: Portfolio-Strategie definieren
@@ -487,6 +486,8 @@ weights = [0.25, 0.20, 0.15, 0.20, 0.20]  # Summe = 1.0
 ```
 
 ### Schritt 3: Portfolio-Preset erstellen
+
+Vorlagen mit gleichem Schema liegen z. B. unter `config/portfolio_presets/core_balanced.toml` oder gesammelt in `config/portfolio_recipes.toml` (siehe `docs/PORTFOLIO_RECIPES_AND_PRESETS.md`).
 
 ```toml
 # config/portfolio_presets/my_custom_portfolio.toml
@@ -521,23 +522,23 @@ tags = ["core", "custom", "tiered"]
 ### Schritt 4: Tiering-Compliance validieren
 
 ```bash
-# Validierung
+# Validierung (Beispiel mit existierendem Preset core_balanced)
 python3 -c "
 from src.experiments.portfolio_presets import validate_preset_tiering_compliance
 from src.experiments.portfolio_recipes import load_portfolio_recipes
 from pathlib import Path
 
-recipes = load_portfolio_recipes(Path('config/portfolio_presets/my_custom_portfolio.toml'))
+recipes = load_portfolio_recipes(Path('config/portfolio_presets/core_balanced.toml'))
 result = validate_preset_tiering_compliance(
-    'my_custom_portfolio',
-    allowed_tiers=['core'],  # Nur Core erlaubt
-    recipe=recipes['my_custom_portfolio'],
+    'core_balanced',
+    allowed_tiers=['core'],
+    recipe=recipes['core_balanced'],
 )
 print(result)
 "
 
 # Erwartete Ausgabe:
-# Tiering Compliance: my_custom_portfolio
+# Tiering Compliance: core_balanced
 # Status: ✅ COMPLIANT
 # Allowed Tiers: core
 # Strategies Checked: 3
