@@ -13,15 +13,15 @@ Peak_Trade ist ein modulares, research-getriebenes Trading-Framework mit konsequ
 pip install -e .
 
 # 2. Ersten Backtest laufen lassen
-python scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/USDT
+python3 scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/USDT
 
 # 3. Tests ausführen
-pytest -m smoke -q  # Schnelle Smoke-Tests (~1 Sekunde)
-pytest -q           # Full Suite (~70 Sekunden)
+python3 -m pytest -m smoke -q  # Schnelle Smoke-Tests (~1 Sekunde)
+python3 -m pytest -q           # Full Suite (~70 Sekunden)
 
 # 4. Optionale Web-UI Dependencies (für Dashboard/API Tests)
 uv sync --extra web  # oder: pip install -e ".[web]"
-pytest -m web        # Web-UI Tests ausführen
+python3 -m pytest -m web        # Web-UI Tests ausführen
 ```
 
 **Hinweis:** Web-UI Tests werden automatisch übersprungen, wenn FastAPI nicht installiert ist. Core-Tests laufen ohne Web-Stack.
@@ -93,10 +93,10 @@ Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entw
 - 🛠️ **Developer Workflow Script**
   Automatisierung häufiger Entwicklungsaufgaben:
   ```bash
-  python scripts/dev_workflow.py --help
-  python scripts/dev_workflow.py setup    # Environment setup
-  python scripts/dev_workflow.py test     # Run tests
-  python scripts/dev_workflow.py health   # Health check
+  python3 scripts/dev_workflow.py --help
+  python3 scripts/dev_workflow.py setup    # Environment setup
+  python3 scripts/dev_workflow.py test     # Run tests
+  python3 scripts/dev_workflow.py health   # Health check
   ```
 
 ---
