@@ -301,6 +301,73 @@ def mock_args_phase53_preset(phase53_recipe_toml: Path) -> argparse.Namespace:
         output_dir=None,
         format=None,
         use_dummy_data=True,
+        strategy_returns_manifest=None,
+        dummy_bars=500,
+        verbose=False,
+    )
+
+
+@pytest.fixture
+def strategy_returns_manifest_phase53(tmp_path: Path) -> Path:
+    """Manifest + Equity-Artefakte für die Preset-IDs von rsi_reversion_conservative."""
+    import pandas as pd
+
+    for name in ("run_btc", "run_eth"):
+        run_dir = tmp_path / name
+        run_dir.mkdir(parents=True, exist_ok=True)
+        df = pd.DataFrame(
+            {
+                "timestamp": [
+                    "2026-01-01T00:00:00Z",
+                    "2026-01-02T00:00:00Z",
+                    "2026-01-03T00:00:00Z",
+                ],
+                "equity": [100.0, 101.0, 103.0],
+            }
+        )
+        df.to_csv(run_dir / "phase53_equity.csv", index=False)
+
+    manifest = tmp_path / "strategy_returns_map.toml"
+    manifest.write_text(
+        """
+[strategy_returns]
+rsi_reversion_btc_conservative = "run_btc"
+rsi_reversion_eth_conservative = "run_eth"
+""".strip()
+        + "\n",
+        encoding="utf-8",
+    )
+    return manifest
+
+
+@pytest.fixture
+def mock_args_phase53_preset_manifest(
+    phase53_recipe_toml: Path, strategy_returns_manifest_phase53: Path
+) -> argparse.Namespace:
+    """Phase-53-Preset mit data-backed Returns über --strategy-returns-manifest (ohne Dummy-Cache)."""
+    return argparse.Namespace(
+        portfolio_preset="rsi_reversion_conservative",
+        recipes_config=str(phase53_recipe_toml),
+        sweep_name=None,
+        config="config/config.toml",
+        top_n=None,
+        portfolio_name=None,
+        weights=None,
+        run_montecarlo=False,
+        mc_num_runs=1000,
+        mc_method="simple",
+        mc_block_size=20,
+        mc_seed=42,
+        run_stress_tests=False,
+        stress_scenarios=["single_crash_bar", "vol_spike"],
+        stress_severity=0.2,
+        stress_window=5,
+        stress_position="middle",
+        stress_seed=42,
+        output_dir=None,
+        format=None,
+        use_dummy_data=False,
+        strategy_returns_manifest=str(strategy_returns_manifest_phase53),
         dummy_bars=500,
         verbose=False,
     )
@@ -424,6 +491,43 @@ def test_phase53_run_from_args_uses_strategies_mode(
     assert exit_code == 0
     assert mock_load_topn.called is False
     assert mock_build_cache.called is True
+
+    cfg = mock_run_robustness.call_args[0][0]
+    assert cfg.portfolio.name == "RSI Reversion Conservative"
+    assert len(cfg.portfolio.components) == 2
+
+
+@patch("scripts.run_portfolio_robustness.load_top_n_configs_for_sweep")
+@patch("scripts.run_portfolio_robustness._build_strategy_returns_cache")
+@patch("scripts.run_portfolio_robustness.run_portfolio_robustness")
+@patch("scripts.run_portfolio_robustness.build_portfolio_robustness_report")
+def test_phase53_run_from_args_uses_manifest_returns_path(
+    mock_report,
+    mock_run_robustness,
+    mock_build_cache,
+    mock_load_topn,
+    mock_args_phase53_preset_manifest,
+):
+    """
+    Phase 53 data-backed: Preset mit strategies=[...] und --strategy-returns-manifest
+    nutzt weder Dummy-Cache noch Sweep/Top-N; returns_loader lädt aus dem Manifest.
+    """
+    import pandas as pd
+
+    mock_run_robustness.return_value = MagicMock()
+    mock_report.return_value = {"md": Path("test.md")}
+
+    exit_code = portfolio_script.run_from_args(mock_args_phase53_preset_manifest)
+
+    assert exit_code == 0
+    assert mock_load_topn.called is False
+    assert mock_build_cache.called is False
+
+    returns_loader = mock_run_robustness.call_args[0][1]
+    s_btc = returns_loader("rsi_reversion_btc_conservative", "rsi_reversion_btc_conservative")
+    assert isinstance(s_btc, pd.Series)
+    assert len(s_btc) >= 2
+    assert bool(s_btc.notna().all())
 
     cfg = mock_run_robustness.call_args[0][0]
     assert cfg.portfolio.name == "RSI Reversion Conservative"
