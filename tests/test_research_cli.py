@@ -421,6 +421,18 @@ class TestMain:
         )
         assert exit_code == 0
 
+    @patch("scripts.research_cli.run_strategy_profile")
+    def test_main_strategy_profile_calls_profile_runner(self, mock_run_profile):
+        """strategy-profile dispatcht auf run_strategy_profile (kein echter Profil-Lauf)."""
+        mock_run_profile.return_value = 0
+
+        exit_code = research_cli.main(["strategy-profile", "--strategy-id", "rsi_reversion"])
+
+        assert exit_code == 0
+        mock_run_profile.assert_called_once()
+        call_args = mock_run_profile.call_args[0][0]
+        assert call_args.command == "strategy-profile"
+
     @patch("scripts.research_cli.run_armstrong_elkaroui_combi")
     def test_main_armstrong_elkaroui_combi_calls_combi_runner(self, mock_run_combi):
         """armstrong-elkaroui-combi dispatcht auf run_armstrong_elkaroui_combi."""
