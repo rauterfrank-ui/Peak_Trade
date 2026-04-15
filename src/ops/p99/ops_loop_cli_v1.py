@@ -18,6 +18,15 @@ def _repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
 
+def _parse_int_env(env_name: str, default_str: str) -> int:
+    """Parse ``os.environ[env_name]`` as base-10 int; invalid values raise ``ValueError`` with context."""
+    raw = os.environ.get(env_name, default_str)
+    try:
+        return int(raw, 10)
+    except ValueError as e:
+        raise ValueError(f"{env_name} must be a decimal integer, got {raw!r}") from e
+
+
 def _write_text(p: Path, s: str) -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(s, encoding="utf-8")
@@ -60,17 +69,20 @@ def _bundle_dir(evi: Path) -> Path:
 
 
 def main(argv: list[str] | None = None) -> int:
+    max_age_default = _parse_int_env("MAX_AGE_SEC", "900")
+    min_ticks_default = _parse_int_env("MIN_TICKS", "2")
+
     ap = argparse.ArgumentParser(prog="p99_ops_loop_cli_v1", add_help=True)
     ap.add_argument("--mode", default=os.environ.get("MODE", "shadow"))
     ap.add_argument(
         "--max-age-sec",
         type=int,
-        default=int(os.environ.get("MAX_AGE_SEC", "900")),
+        default=max_age_default,
     )
     ap.add_argument(
         "--min-ticks",
         type=int,
-        default=int(os.environ.get("MIN_TICKS", "2")),
+        default=min_ticks_default,
     )
     ap.add_argument(
         "--dry-run",
