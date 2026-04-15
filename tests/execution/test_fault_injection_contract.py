@@ -67,3 +67,27 @@ def test_no_trade_safety_preserved(monkeypatch: pytest.MonkeyPatch) -> None:
     # No side effects from reading config
     _ = should_inject(config, FaultScenario.LATENCY, "x")
     _ = get_latency_ms(config, "x")
+
+
+@pytest.mark.parametrize(
+    "env_name",
+    (
+        "PT_FAULT_INJECT_LATENCY_MS",
+        "PT_FAULT_INJECT_TIMEOUT_MS",
+        "PT_FAULT_INJECT_RATE_LIMIT_AFTER",
+        "PT_FAULT_INJECT_500_PROB",
+        "PT_FAULT_INJECT_MALFORMED_PROB",
+    ),
+)
+def test_get_config_invalid_numeric_env_raises_value_error(
+    monkeypatch: pytest.MonkeyPatch, env_name: str
+) -> None:
+    """Non-numeric PT_FAULT_INJECT_* values make int()/float() fail with ValueError.
+
+    Applies even when PT_FAULT_INJECT is unset (disabled): _parse_env still reads
+    numeric knobs. (PT_FAULT_INJECT_SEED is handled separately with a fallback.)
+    """
+    monkeypatch.delenv("PT_FAULT_INJECT", raising=False)
+    monkeypatch.setenv(env_name, "not-a-number")
+    with pytest.raises(ValueError):
+        get_config()
