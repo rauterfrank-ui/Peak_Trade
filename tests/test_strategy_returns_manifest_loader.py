@@ -214,3 +214,85 @@ def test_resolve_strategy_run_dir_invalid_toml(tmp_path: Path) -> None:
 
     with pytest.raises(StrategyReturnsManifestError, match="manifest_invalid: toml_parse_failed"):
         resolve_strategy_run_dir(strategy_id="strategy_a", manifest_path=manifest)
+
+
+def test_resolve_strategy_run_dir_relative_uses_base_dir_not_manifest_parent(
+    tmp_path: Path,
+) -> None:
+    """Relative paths join to base_dir when given; manifest directory is not the anchor."""
+    base_dir = tmp_path / "project_root"
+    run_dir = base_dir / "artifacts" / "strategy_a"
+    run_dir.mkdir(parents=True)
+
+    manifest = tmp_path / "unrelated" / "nested" / "map.toml"
+    manifest.parent.mkdir(parents=True)
+    _write_manifest(
+        manifest,
+        """
+[strategy_returns]
+strategy_a = "artifacts/strategy_a"
+""".strip()
+        + "\n",
+    )
+
+    source = resolve_strategy_run_dir(
+        strategy_id="strategy_a",
+        manifest_path=manifest,
+        base_dir=base_dir,
+    )
+    assert source.strategy_id == "strategy_a"
+    assert source.run_dir == run_dir.resolve()
+
+
+def test_resolve_strategy_run_dir_absolute_path_ignores_base_dir(tmp_path: Path) -> None:
+    """Absolute manifest entries resolve to that path; base_dir must not affect resolution."""
+    run_dir = tmp_path / "storage" / "run_a"
+    run_dir.mkdir(parents=True)
+    abs_run = run_dir.resolve().as_posix()
+
+    manifest = tmp_path / "configs" / "returns.toml"
+    manifest.parent.mkdir(parents=True)
+    _write_manifest(
+        manifest,
+        f"""
+[strategy_returns]
+strategy_a = "{abs_run}"
+""".strip()
+        + "\n",
+    )
+
+    wrong_base = tmp_path / "wrong_root"
+    wrong_base.mkdir(parents=True)
+
+    source = resolve_strategy_run_dir(
+        strategy_id="strategy_a",
+        manifest_path=manifest,
+        base_dir=wrong_base,
+    )
+    assert source.run_dir == run_dir.resolve()
+
+
+def test_load_returns_for_strategy_from_manifest_respects_base_dir(tmp_path: Path) -> None:
+    base_dir = tmp_path / "data"
+    run_dir = base_dir / "runs" / "s1"
+    _write_run_equity_csv(run_dir)
+
+    manifest = tmp_path / "meta" / "map.toml"
+    manifest.parent.mkdir(parents=True)
+    _write_manifest(
+        manifest,
+        """
+[strategy_returns]
+s1 = "runs/s1"
+""".strip()
+        + "\n",
+    )
+
+    returns = load_returns_for_strategy_from_manifest(
+        strategy_id="s1",
+        manifest_path=manifest,
+        base_dir=base_dir,
+    )
+    assert isinstance(returns, pd.Series)
+    assert len(returns) == 2
+    assert returns.notna().all()
