@@ -405,6 +405,22 @@ class TestMain:
         )
         assert exit_code == 0
 
+    def test_main_strategy_profile_list_strategies_exits_zero(self):
+        """strategy-profile --list-strategies beendet mit Code 0 (Registry-IDs, kein Profil-Lauf).
+
+        --strategy-id ist im Parser required; bei --list-strategies wird sie nicht ausgewertet.
+        Beispiel-ID rsi_reversion ist in src/strategies/registry.py registriert.
+        """
+        exit_code = research_cli.main(
+            [
+                "strategy-profile",
+                "--strategy-id",
+                "rsi_reversion",
+                "--list-strategies",
+            ]
+        )
+        assert exit_code == 0
+
     def test_main_unknown_command_returns_error(self):
         """Unbekanntes Command gibt Fehler zurück."""
         with pytest.raises(SystemExit):
