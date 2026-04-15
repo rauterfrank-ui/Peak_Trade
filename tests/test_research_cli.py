@@ -389,6 +389,22 @@ class TestMain:
         exit_code = research_cli.main(["run-experiment", "--list-presets"])
         assert exit_code == 0
 
+    def test_main_run_experiment_dry_run_exits_zero(self):
+        """run-experiment --preset … --dry-run beendet mit Code 0 (Preset-Load + Safety, kein Backtest).
+
+        Preset-ID muss in config/r_and_d_presets.toml unter [preset.<id>] existieren
+        (aktuell: armstrong_ecm_btc_longterm_v1).
+        """
+        exit_code = research_cli.main(
+            [
+                "run-experiment",
+                "--preset",
+                "armstrong_ecm_btc_longterm_v1",
+                "--dry-run",
+            ]
+        )
+        assert exit_code == 0
+
     def test_main_unknown_command_returns_error(self):
         """Unbekanntes Command gibt Fehler zurück."""
         with pytest.raises(SystemExit):
