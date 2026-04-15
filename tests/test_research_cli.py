@@ -421,6 +421,18 @@ class TestMain:
         )
         assert exit_code == 0
 
+    @patch("scripts.research_cli.run_armstrong_elkaroui_combi")
+    def test_main_armstrong_elkaroui_combi_calls_combi_runner(self, mock_run_combi):
+        """armstrong-elkaroui-combi dispatcht auf run_armstrong_elkaroui_combi."""
+        mock_run_combi.return_value = 0
+
+        exit_code = research_cli.main(["armstrong-elkaroui-combi"])
+
+        assert exit_code == 0
+        assert mock_run_combi.called
+        call_args = mock_run_combi.call_args[0][0]
+        assert call_args.command == "armstrong-elkaroui-combi"
+
     def test_main_unknown_command_returns_error(self):
         """Unbekanntes Command gibt Fehler zurück."""
         with pytest.raises(SystemExit):
