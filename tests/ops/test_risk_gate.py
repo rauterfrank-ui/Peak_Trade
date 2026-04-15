@@ -32,12 +32,14 @@ def test_disabled_denies():
     dec = evaluate_risk(RiskLimits(enabled=False), base_ctx())
     assert dec.allow is False
     assert dec.reason == RiskDenyReason.DISABLED
+    assert dec.details.get("limits_enabled") == "false"
 
 
 def test_kill_switch_denies():
     dec = evaluate_risk(RiskLimits(kill_switch=True), base_ctx())
     assert dec.allow is False
     assert dec.reason == RiskDenyReason.KILL_SWITCH
+    assert dec.details.get("limits_kill_switch") == "true"
 
 
 def test_stale_data_denies():
@@ -45,13 +47,44 @@ def test_stale_data_denies():
     dec = evaluate_risk(lim, base_ctx(market_data_age_seconds=11))
     assert dec.allow is False
     assert dec.reason == RiskDenyReason.STALE_DATA
+    assert dec.details.get("age_s") == "11"
+    assert dec.details.get("max_data_age_seconds") == "10"
 
 
 def test_notional_denies():
     lim = RiskLimits(max_notional_usd=50)
-    dec = evaluate_risk(lim, base_ctx(order_notional_usd=51))
+    dec = evaluate_risk(lim, base_ctx(order_notional_usd=51.0))
     assert dec.allow is False
     assert dec.reason == RiskDenyReason.MAX_NOTIONAL
+    assert float(dec.details["notional_usd"]) == 51.0
+    assert float(dec.details["max_notional_usd"]) == 50.0
+
+
+def test_order_size_denies():
+    lim = RiskLimits(max_order_size=2.0)
+    dec = evaluate_risk(lim, base_ctx(order_size=3.0))
+    assert dec.allow is False
+    assert dec.reason == RiskDenyReason.MAX_ORDER_SIZE
+    assert dec.details.get("order_size") == "3.0"
+    assert dec.details.get("max_order_size") == "2.0"
+
+
+def test_max_position_denies():
+    lim = RiskLimits(max_position=5.0)
+    dec = evaluate_risk(lim, base_ctx(current_position=2.0, order_size=4.0))
+    assert dec.allow is False
+    assert dec.reason == RiskDenyReason.MAX_POSITION
+    assert dec.details.get("next_pos") == "6.0"
+    assert dec.details.get("max_position") == "5.0"
+
+
+def test_loss_limit_denies():
+    lim = RiskLimits(max_session_loss_usd=100.0)
+    dec = evaluate_risk(lim, base_ctx(session_pnl_usd=-101.0))
+    assert dec.allow is False
+    assert dec.reason == RiskDenyReason.LOSS_LIMIT
+    assert dec.details.get("session_pnl_usd") == "-101.0"
+    assert dec.details.get("max_session_loss_usd") == "100.0"
 
 
 def test_allow_happy_path():
