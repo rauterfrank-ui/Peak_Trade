@@ -55,7 +55,10 @@ from src.experiments.portfolio_robustness import (
     run_portfolio_robustness,
 )
 from src.experiments.stress_tests import load_returns_for_top_config
-from src.experiments.strategy_returns_manifest_loader import load_returns_for_strategy_from_manifest
+from src.experiments.strategy_returns_manifest_loader import (
+    StrategyReturnsManifestError,
+    load_returns_for_strategy_from_manifest,
+)
 from src.experiments.topn_promotion import load_top_n_configs_for_sweep
 from src.reporting.portfolio_robustness_report import build_portfolio_robustness_report
 
@@ -660,6 +663,10 @@ def run_from_args(args: argparse.Namespace) -> int:
 
         return 0
 
+    except StrategyReturnsManifestError as e:
+        # Expected operator-facing contract failures (manifest / equity / returns derivation).
+        logger.error("Strategy-Returns-Manifest oder Equity-Load fehlgeschlagen: %s", e)
+        return 1
     except Exception as e:
         logger.exception(f"Unerwarteter Fehler: {e}")
         return 1
