@@ -133,7 +133,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 
 ## Nächster Fokus (Start)
 - **Erledigt (2026-04):** `docs/KNOWLEDGE_SOURCES_REGISTRY.md` — Ingestion vs. Repo im Abschnitt **„Repo-Abgleich“** dokumentiert (siehe **Bereits geprüft (5)**).
-- **Erledigt (2026-04):** Hub-Metadaten — `docs/INDEX.md` **Stand** (PR #2615); `docs/KNOWLEDGE_BASE_INDEX.md` **Last Updated** (gleicher Audit-Kontext).
+- **Erledigt (2026-04):** Hub-Metadaten — `docs/INDEX.md` **Stand** (PR #2615); `docs/KNOWLEDGE_BASE_INDEX.md` **Last Updated** (PR #2616).
 - **Optional weiter:** Phase‑53-Ergonomie nur bei Bedarf (siehe **„Zur Einordnung“** unten).
 
 > **Erledigt (Referenz):** Runbooks / Frontdoor / Ops — siehe Abschnitt **„Runbooks/Frontdoor Batch — Findings“** unten (Stand: Audit 2026-04, inkl. `docs/ops/runbooks/README.md`).
