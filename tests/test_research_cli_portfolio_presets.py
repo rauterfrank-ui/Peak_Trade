@@ -645,3 +645,22 @@ def test_phase53_run_from_args_fails_when_manifest_file_missing(
     assert mock_build_cache.called is False
     assert mock_run_robustness.called is False
     assert mock_report.called is False
+
+
+def test_phase53_run_from_args_exit_one_when_manifest_loader_raises(
+    mock_args_phase53_preset_manifest: argparse.Namespace,
+    tmp_path: Path,
+) -> None:
+    """Manifest path is valid, but data-backed loader raises: CLI returns 1."""
+    from src.experiments.strategy_returns_manifest_loader import StrategyReturnsManifestError
+
+    args = argparse.Namespace(**vars(mock_args_phase53_preset_manifest))
+    args.output_dir = str(tmp_path / "portfolio_reports")
+
+    with patch(
+        "scripts.run_portfolio_robustness.load_returns_for_strategy_from_manifest",
+        side_effect=StrategyReturnsManifestError("contract: loader failed"),
+    ):
+        exit_code = portfolio_script.run_from_args(args)
+
+    assert exit_code == 1
