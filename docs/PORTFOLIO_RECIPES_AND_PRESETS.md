@@ -110,6 +110,8 @@ python3 scripts/research_cli.py portfolio \
 - Lädt Preset `rsi_reversion_balanced`
 - Überschreibt `format` von `"both"` (Preset) auf `"md"` (CLI)
 
+**Siehe auch:** Unterschiede zwischen Research-CLI **`md`/`html`/`both`** und **`markdown`** in anderen Report-Tools sind im Repo eingegrenzt; Details und gültige `choices` je CLI stehen in **`docs/DOCS_AUDIT_TRACKER.md`** im Abschnitt *Format-Enums: `md` vs `markdown` — validiert*.
+
 ### 4. Preset + Override: Andere Gewichte
 
 ```bash
