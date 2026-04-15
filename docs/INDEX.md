@@ -1,7 +1,7 @@
 # Peak_Trade Documentation Index
 
 > **Zweck:** Zentraler Einstieg in die Peak_Trade-Dokumentation  
-> **Stand:** 2026-03-10  
+> **Stand:** 2026-04-15  
 > **Status:** canonical
 
 ---
