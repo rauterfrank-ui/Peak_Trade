@@ -4,7 +4,15 @@
 
 Dieses Dokument registriert alle externen Wissensquellen, die in die Peak_Trade Knowledge Databases integriert sind.
 
-**Letzte Aktualisierung:** Dezember 2024
+**Letzte Aktualisierung:** April 2026 (Docs-Audit: Ingestion vs. Repo)
+
+---
+
+## Repo-Abgleich (Truth, Stand 2026-04)
+
+Mehrere unter **„Ingestion-Script“** genannte Pfade unter `scripts/` sind **Zielbild / Platzhalter** und **liegen nicht** als Dateien im Repository; sie sind in den jeweiligen Abschnitten **(illustrative)** gekennzeichnet. Es besteht **keine** implizite Verpflichtung, diese Skripte zu liefern.
+
+**Im Repo vorhanden:** Modul `src/knowledge/timeseries_db.py` (Einbindung Portfolio-Zeitreihen über `src.knowledge.timeseries_db`).
 
 ---
 
@@ -22,7 +30,7 @@ Dieses Dokument registriert alle externen Wissensquellen, die in die Peak_Trade 
 - **Update-Frequenz:** Nach jedem Research-Run
 - **Integration:** Vector DB (ChromaDB)
 - **Metadaten-Tags:** `internal_backtest`, `strategy`, `performance`
-- **Ingestion-Script:** `scripts&#47;ingest_backtest_reports.py` (illustrative) <!-- pt:ref-target-ignore -->
+- **Ingestion-Script:** `scripts&#47;ingest_backtest_reports.py` (illustrative; keine Datei im Repo — siehe „Repo-Abgleich“) <!-- pt:ref-target-ignore -->
 
 **Verantwortlich:** Data Owner  
 **Review-Status:** Approved  
@@ -42,7 +50,7 @@ Dieses Dokument registriert alle externen Wissensquellen, die in die Peak_Trade 
 - **Update-Frequenz:** Täglich (für Live/Testnet)
 - **Integration:** Time-Series DB (Parquet)
 - **Metadaten-Tags:** `portfolio`, `performance`, `equity_curve`
-- **Ingestion-Script:** Automatisch via `src.knowledge.timeseries_db`
+- **Ingestion-Script:** Automatisch via `src.knowledge.timeseries_db` (Modul `src/knowledge/timeseries_db.py` vorhanden)
 
 **Verantwortlich:** Data Owner  
 **Review-Status:** Approved  
@@ -62,7 +70,7 @@ Dieses Dokument registriert alle externen Wissensquellen, die in die Peak_Trade 
 - **Update-Frequenz:** Bei Code-Änderungen
 - **Integration:** Vector DB (ChromaDB)
 - **Metadaten-Tags:** `strategy`, `definition`, `parameters`
-- **Ingestion-Script:** `scripts&#47;ingest_strategy_docs.py` (illustrative) <!-- pt:ref-target-ignore -->
+- **Ingestion-Script:** `scripts&#47;ingest_strategy_docs.py` (illustrative; keine Datei im Repo — siehe „Repo-Abgleich“) <!-- pt:ref-target-ignore -->
 
 **Verantwortlich:** Developer  
 **Review-Status:** Approved  
@@ -125,7 +133,7 @@ Dieses Dokument registriert alle externen Wissensquellen, die in die Peak_Trade 
 - **Update-Frequenz:** Monatlich (manuelle Selektion)
 - **Integration:** Vector DB (ChromaDB)
 - **Metadaten-Tags:** `research`, `paper`, `arxiv`, `ssrn`
-- **Ingestion-Script:** Manuell + `scripts&#47;ingest_research_paper.py` (illustrative) <!-- pt:ref-target-ignore -->
+- **Ingestion-Script:** Manuell + `scripts&#47;ingest_research_paper.py` (illustrative; keine Datei im Repo — siehe „Repo-Abgleich“) <!-- pt:ref-target-ignore -->
 
 **Lizenz:** CC-BY-4.0 (arXiv), SSRN (Check per Paper)  
 **Verantwortlich:** Researcher  
@@ -218,7 +226,7 @@ Benötigte Environment Variables:
 | Datum | Änderung | Autor |
 |-------|----------|-------|
 | 2024-12-20 | Initial Registry erstellt | System |
-| - | - | - |
+| 2026-04-15 | Repo-Abgleich: illustrative vs. vorhandene Ingestion-Pfade | Docs-Audit |
 
 ---
 
