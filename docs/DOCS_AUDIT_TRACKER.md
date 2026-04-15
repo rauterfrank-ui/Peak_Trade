@@ -52,7 +52,8 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 
 ### 5) `docs/KNOWLEDGE_SOURCES_REGISTRY.md` — **done (vorläufig)**
 - **Befund**:
-  - Eher Registry/Prozessdoku, kein harter Runtime-Contract. Später prüfen: ob erwähnte Ingestion-Skripte real/illustrativ sind.
+  - Eher Registry/Prozessdoku, kein harter Runtime-Contract.
+- **Audit Follow-up (2026-04, Truth):** Ingestion-Skript-Namen unter `scripts/` für Backtests/Strategy-Docs/Research-Papers sind **illustrativ** (keine entsprechenden Dateien im Repo); Portfolio-Zeitreihen nutzen `src/knowledge/timeseries_db.py`. Siehe Abschnitt **„Repo-Abgleich“** in der Datei.
 
 ### 6) `docs/KNOWLEDGE_BASE_INDEX.md` — **done (vorläufig)**
 - **Fixes (applied)**:
@@ -131,15 +132,15 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 ---
 
 ## Nächster Fokus (Start)
-**Kleiner Follow-up / optionaler Mini-Audit** (nach abgeschlossenen Ops/Runbook-Batches):
-- `docs/KNOWLEDGE_SOURCES_REGISTRY.md` — siehe **Bereits geprüft (5)**: offenes Feintuning, ob genannte Ingestion-Skripte im Repo real oder nur illustrativ gemeint sind (kein Blocker; Registry ist ohne harten Runtime-Contract).
+- **Erledigt (2026-04):** `docs/KNOWLEDGE_SOURCES_REGISTRY.md` — Ingestion vs. Repo im Abschnitt **„Repo-Abgleich“** dokumentiert (siehe **Bereits geprüft (5)**).
+- **Optional weiter:** kleine Hub-/Index-Pflege ohne Zwang (z. B. `docs/INDEX.md` Standzeile); oder Phase‑53-Ergonomie nur bei Bedarf (siehe **„Zur Einordnung“** unten).
 
 > **Erledigt (Referenz):** Runbooks / Frontdoor / Ops — siehe Abschnitt **„Runbooks/Frontdoor Batch — Findings“** unten (Stand: Audit 2026-04, inkl. `docs/ops/runbooks/README.md`).
 
 ---
 
 ## Offene Top-Gaps (Priorisierung)
-1) **`docs/KNOWLEDGE_SOURCES_REGISTRY.md` (optional)** — Ingestion-/Skript-Hinweise vs. Repo klären (siehe „Bereits geprüft“ Punkt 5); kein Kern-Blocker.
+1) **Kein verpflichtender Top-Gap** nach Knowledge-Sources-Truth (2026-04); siehe **„Bereits geprüft“** Punkt 5 und **„Nächster Fokus“** für optionale Folgearbeiten.
 
 **Zur Einordnung (keine „offenen Top-Gaps“ mehr in diesem Sinne):**
 - **Phase‑53 `strategies` / Manifest:** Preset → Portfolio-Build → Robustness/Report ist umgesetzt; Loader-/Runner-Aspekte sind durch PR #2602/#2604/#2605 testseitig abgedeckt (siehe Phase‑53-Note oben). Verbleibend: ggf. **optionale** Ergonomie- oder Klein-Doku-Punkte—**nicht** „fehlende Kern-Tests“.
