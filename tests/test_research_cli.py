@@ -59,6 +59,13 @@ class TestBuildParser:
             parser.parse_args(["--help"])
         assert exc_info.value.code == 0
 
+    def test_sweep_subcommand_help_exits_zero(self):
+        """sweep --help beendet mit Code 0 (Subparser-Pfad stabil)."""
+        parser = research_cli.build_parser()
+        with pytest.raises(SystemExit) as exc_info:
+            parser.parse_args(["sweep", "--help"])
+        assert exc_info.value.code == 0
+
     def test_sweep_subparser_has_required_args(self):
         """Sweep-Subparser hat erwartete Argumente."""
         parser = research_cli.build_parser()
