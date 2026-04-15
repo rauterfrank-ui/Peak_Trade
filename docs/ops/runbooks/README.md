@@ -10,7 +10,7 @@
 
 ## Research & New Listings (CEX+DEX Crawler, AI Layers)
 
-- [RUNBOOK_CURSOR_MA_FEHLENDE_FEATURES_OPEN_POINTS_2026-02-10.md](RUNBOOK_CURSOR_MA_FEHLENDE_FEATURES_OPEN_POINTS_2026-02-10.md) — Cursor Multi-Agent Runbook für offene Peak_Trade Features (Einstieg→Endpunkt, Blöcke A–J).
+- [RUNBOOK_CURSOR_MA_FEHLENDE_FEATURES_OPEN_POINTS_2026-02-10.md](./RUNBOOK_CURSOR_MA_FEHLENDE_FEATURES_OPEN_POINTS_2026-02-10.md) — Cursor Multi-Agent Runbook für offene Peak_Trade Features (Einstieg→Endpunkt, Blöcke A–J).
 - [New Listings Crawler Runbook](./new_listings_crawler_runbook.md)
 
 ## Runbook Categories
@@ -173,5 +173,5 @@ This hybrid approach balances discoverability (all findable from this index) wit
 
 ---
 
-**Last Updated:** 2026-04-06  
+**Last Updated:** 2026-04-15  
 **Maintainer:** ops
