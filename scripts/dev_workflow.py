@@ -6,11 +6,11 @@ Peak_Trade Developer Workflow Assistant
 Automates common development workflows to improve productivity.
 
 Usage:
-    python scripts/dev_workflow.py --help
-    python scripts/dev_workflow.py setup
-    python scripts/dev_workflow.py test --module strategies
-    python scripts/dev_workflow.py perf-check
-    python scripts/dev_workflow.py docs-validate
+    python3 scripts/dev_workflow.py --help
+    python3 scripts/dev_workflow.py setup
+    python3 scripts/dev_workflow.py test --module strategies
+    python3 scripts/dev_workflow.py perf-check
+    python3 scripts/dev_workflow.py docs-validate
 
 Scope note (J3 / dev-workflow slice): ``create_strategy_scaffold`` emits neutral
 author hints (no conventional task-prefix markers in generated strategy/test files). The
@@ -432,7 +432,7 @@ class Test{pascal_name}:
     print_info(f"1. Edit {strategy_file} to implement your strategy")
     print_info(f"2. Edit {test_file} to add comprehensive tests")
     print_info(
-        f"3. Run tests: python scripts/dev_workflow.py test --module strategies/test_{snake_name}"
+        f"3. Run tests: python3 scripts/dev_workflow.py test --module strategies/test_{snake_name}"
     )
 
 
