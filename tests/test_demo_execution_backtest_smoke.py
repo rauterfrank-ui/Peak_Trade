@@ -86,7 +86,7 @@ class TestGetStrategyFn:
         assert callable(fn)
 
     def test_load_macd(self):
-        """macd Strategie kann geladen werden."""
+        """macd Strategie kann geladen werden (Demo nutzt MACDStrategy, kein modulweites generate_signals)."""
         from scripts.demo_execution_backtest import get_strategy_fn
 
         fn = get_strategy_fn("macd")

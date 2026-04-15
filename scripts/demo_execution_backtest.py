@@ -73,6 +73,17 @@ from src.reporting.execution_reports import (
 # =============================================================================
 
 
+def _macd_generate_signals(df: pd.DataFrame, params: Dict[str, Any]) -> pd.Series:
+    """Signal-Funktion für MACD über :class:`MACDStrategy` (kein modulweites Legacy-API)."""
+    from src.strategies.macd import MACDStrategy
+
+    fast = int(params.get("fast_ema", params.get("fast_period", 12)))
+    slow = int(params.get("slow_ema", params.get("slow_period", 26)))
+    sig = int(params.get("signal_ema", params.get("signal_period", 9)))
+    strategy = MACDStrategy(fast_ema=fast, slow_ema=slow, signal_ema=sig)
+    return strategy.generate_signals(df)
+
+
 def get_strategy_fn(name: str) -> Callable[[pd.DataFrame, Dict[str, Any]], pd.Series]:
     """
     Laedt die Signal-Funktion fuer eine Strategie.
@@ -98,6 +109,9 @@ def get_strategy_fn(name: str) -> Callable[[pd.DataFrame, Dict[str, Any]], pd.Se
     if name not in strategy_map:
         available = ", ".join(sorted(strategy_map.keys()))
         raise ValueError(f"Unbekannte Strategie '{name}'. Verfuegbar: {available}")
+
+    if name == "macd":
+        return _macd_generate_signals
 
     module_path = strategy_map[name]
     module = __import__(module_path, fromlist=["generate_signals"])
