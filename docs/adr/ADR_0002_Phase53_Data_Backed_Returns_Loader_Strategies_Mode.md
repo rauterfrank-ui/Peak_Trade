@@ -1,6 +1,6 @@
 # ADR 0002: Phase-53 data-backed returns loader for strategies_mode
 
-- Status: PROPOSED
+- Status: ACCEPTED
 - Date: 2026-04-15
 - Deciders: Peak_Trade maintainers
 
@@ -49,6 +49,18 @@ A future implementation slice must follow these rules:
 5. **Dummy-data separation**
    - `--use-dummy-data` remains explicit and opt-in.
    - Data-backed mode must not degrade silently into dummy behavior.
+
+## Implementation status
+
+<!-- phase53 implementation status note -->
+
+A manifest-backed `strategies_mode` returns-loader path is now implemented and documented.
+
+Implemented follow-ups:
+- `scripts&#47;run_portfolio_robustness.py` supports `--strategy-returns-manifest` for data-backed `portfolio_recipes.strategies`
+- `src&#47;experiments&#47;strategy_returns_manifest_loader.py` provides manifest resolution plus explicit failure behavior
+- `tests&#47;test_strategy_returns_manifest_loader.py` covers happy-path and negative-path behavior
+- `docs&#47;PORTFOLIO_RECIPES_AND_PRESETS.md` documents the manifest pattern and CLI usage
 
 ## Consequences
 
