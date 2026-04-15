@@ -18,6 +18,12 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 ## Bereits geprüft (bisherige Session)
 
 ### 1) `docs/PORTFOLIO_RECIPES_AND_PRESETS.md` — **done (vorläufig)**
+
+<!-- phase53 manifest loader tracker note -->
+> Update: a manifest-backed strategies-mode returns-loader path is now available via `scripts&#47;run_portfolio_robustness.py --strategy-returns-manifest`.
+> Follow-up work is now about documentation, manifest ergonomics, and additional negative-path tests rather than the original missing loader path.
+> Contract: `docs&#47;adr&#47;ADR_0002_Phase53_Data_Backed_Returns_Loader_Strategies_Mode.md`.
+
 - **Implementiert**:
   - `src/experiments/portfolio_recipes.py` (Loader + Validierung, inkl. `strategies` (Phase 53))
   - `config/portfolio_recipes.toml` (Recipes, inkl. Phase 53/75 Abschnitte)

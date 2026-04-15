@@ -142,6 +142,30 @@ python3 scripts/research_cli.py portfolio \
 
 ## Prioritätsregeln: Preset vs. CLI-Argumente
 
+
+<!-- phase53 strategies_mode manifest loader note -->
+## Data-backed `strategies_mode` via manifest
+
+For `portfolio_recipes.strategies` presets, `scripts&#47;run_portfolio_robustness.py` now supports data-backed execution via `--strategy-returns-manifest`.
+The manifest uses a `[strategy_returns]` table that maps each strategy key from the preset to one explicit run directory.
+Each mapped run directory is expected to follow the existing experiment-run equity convention consumed by the equity loader.
+Use this path when you want explicit, deterministic returns loading without `--use-dummy-data`.
+See `docs&#47;adr&#47;ADR_0002_Phase53_Data_Backed_Returns_Loader_Strategies_Mode.md` for the contract and non-goals.
+
+```toml
+[strategy_returns]
+rsi_reversion_btc_moderate = "runs/rsi_reversion_btc_moderate"
+ma_trend_btc_moderate = "runs/ma_trend_btc_moderate"
+```
+
+Example:
+
+```bash
+python3 scripts/run_portfolio_robustness.py \
+  --portfolio-preset <preset_name> \
+  --strategy-returns-manifest <path/to/strategy_returns_map.toml>
+```
+
 **Grundregel:** CLI-Argumente überschreiben Preset-Werte.
 
 | Parameter | Preset-Wert | CLI-Argument | Ergebnis |
