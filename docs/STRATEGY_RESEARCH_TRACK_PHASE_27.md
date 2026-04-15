@@ -169,7 +169,9 @@ price_col = "close"
 
 ## Registry-Integration
 
-Alle Strategien sind in `STRATEGY_REGISTRY` registriert:
+Die vollständige Zuordnung Strategie-Name → Modulpfad steht in `src/strategies/__init__.py`. Das folgende Snippet ist ein **Auszug** (Phase-27-Track plus Kommentar-Platzhalter) und ersetzt nicht die gesamte `STRATEGY_REGISTRY` (u. a. weitere Keys aus anderen Phasen/R&D). Für die **klassenbasierte** Registry (`StrategySpec`, z. B. `create_strategy_from_config`) siehe `src/strategies/registry.py`.
+
+Die Phase-27-Strategien sind dort unter anderem so eingetragen:
 
 ```python
 STRATEGY_REGISTRY = {
