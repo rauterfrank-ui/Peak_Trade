@@ -55,6 +55,7 @@ from src.experiments.portfolio_robustness import (
     run_portfolio_robustness,
 )
 from src.experiments.stress_tests import load_returns_for_top_config
+from src.experiments.strategy_returns_manifest_loader import load_returns_for_strategy_from_manifest
 from src.experiments.topn_promotion import load_top_n_configs_for_sweep
 from src.reporting.portfolio_robustness_report import build_portfolio_robustness_report
 
@@ -325,6 +326,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="Verwende Dummy-Daten für Tests",
     )
     parser.add_argument(
+        "--strategy-returns-manifest",
+        type=str,
+        default=None,
+        help=(
+            "TOML mit [strategy_returns] strategy_id -> Run-Verzeichnis (relativ zum Manifest "
+            "oder absolut). Data-backed Modus für Presets mit strategies=[...]; "
+            "ohne --use-dummy-data."
+        ),
+    )
+    parser.add_argument(
         "--dummy-bars",
         type=int,
         default=500,
@@ -580,21 +591,33 @@ def run_from_args(args: argparse.Namespace) -> int:
 
         # 6. Erstelle Returns-Loader
         if strategies_mode:
-            if not args.use_dummy_data:
-                logger.error(
-                    "Presets mit 'strategies' benötigen aktuell --use-dummy-data, "
-                    "da kein data-backed Returns-Loader implementiert ist."
+            if args.use_dummy_data:
+                cache = _build_strategy_returns_cache(
+                    strategies,
+                    dummy_bars=args.dummy_bars,
+                    seed=42,
                 )
-                return 1
 
-            cache = _build_strategy_returns_cache(
-                strategies,
-                dummy_bars=args.dummy_bars,
-                seed=42,
-            )
+                def returns_loader(strategy_name: str, config_id: str) -> Optional[pd.Series]:
+                    return cache.get(config_id)
+            else:
+                if not args.strategy_returns_manifest:
+                    logger.error(
+                        "Presets mit 'strategies' benötigen --use-dummy-data oder "
+                        "--strategy-returns-manifest (data-backed Returns aus Manifest)."
+                    )
+                    return 1
 
-            def returns_loader(strategy_name: str, config_id: str) -> Optional[pd.Series]:
-                return cache.get(config_id)
+                manifest_path = Path(args.strategy_returns_manifest)
+                if not manifest_path.is_file():
+                    logger.error(f"Strategy-Returns-Manifest nicht gefunden: {manifest_path}")
+                    return 1
+
+                def returns_loader(strategy_name: str, config_id: str) -> Optional[pd.Series]:
+                    return load_returns_for_strategy_from_manifest(
+                        strategy_id=config_id,
+                        manifest_path=manifest_path,
+                    )
 
         else:
             returns_loader = build_returns_loader(
