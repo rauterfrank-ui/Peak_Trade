@@ -67,6 +67,20 @@ def test_load_experiments_missing_dir(tmp_path: Path) -> None:
     assert load_experiments_from_directory(tmp_path / "nope") == []
 
 
+def test_load_experiments_from_directory_top_level_json_only(tmp_path: Path) -> None:
+    """Regression: glob('*.json') is non-recursive — nested experiment JSON must not load."""
+    root_good = _minimal_exp("20240301_120000", 1.0, 0.1, "root.json")
+    (tmp_path / "root.json").write_text(json.dumps(root_good), encoding="utf-8")
+    nested_dir = tmp_path / "nested"
+    nested_dir.mkdir()
+    nested_raw = _minimal_exp("20240302_120000", 9.0, 0.9, "nested.json")
+    (nested_dir / "nested.json").write_text(json.dumps(nested_raw), encoding="utf-8")
+
+    out = load_experiments_from_directory(tmp_path)
+    assert len(out) == 1
+    assert out[0]["_filename"] == "root.json"
+
+
 def test_sort_by_sharpe_desc() -> None:
     a = _minimal_exp("20240101_120000", 1.0, 0.5, "a.json")
     b = _minimal_exp("20240102_120000", 3.0, 0.1, "b.json")
