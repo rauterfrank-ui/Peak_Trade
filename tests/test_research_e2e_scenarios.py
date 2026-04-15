@@ -271,7 +271,9 @@ class TestScenarioE2EWorkflow:
         for name, config in scenario_configs.items():
             applicable = config["scenario"]["applicable_strategies"]
             primary = applicable["primary"]
-            assert isinstance(primary, list), f"{name}: applicable_strategies.primary must be a list"
+            assert isinstance(primary, list), (
+                f"{name}: applicable_strategies.primary must be a list"
+            )
             assert len(primary) >= 1, f"{name}: applicable_strategies.primary must be non-empty"
 
     def test_scenario_expectations_have_drawdown_limits(self, scenario_configs):
