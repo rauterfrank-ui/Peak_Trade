@@ -44,3 +44,31 @@ def test_config_from_env_invalid_position_abs_raises(monkeypatch: pytest.MonkeyP
     monkeypatch.delenv("PEAK_RECON_ENABLED", raising=False)
     with pytest.raises(ValueError):
         config_from_env()
+
+
+def test_config_from_env_peak_recon_enabled_unset_is_false(monkeypatch: pytest.MonkeyPatch) -> None:
+    """PEAK_RECON_ENABLED unset defaults to disabled (current contract)."""
+    monkeypatch.delenv("PEAK_RECON_ENABLED", raising=False)
+    monkeypatch.setenv("PEAK_RECON_BALANCE_ABS", "0")
+    monkeypatch.setenv("PEAK_RECON_POSITION_ABS", "0")
+    assert config_from_env().enabled is False
+
+
+@pytest.mark.parametrize(
+    ("peak_recon_enabled", "expect_enabled"),
+    [
+        ("1", True),
+        ("0", False),
+        ("true", False),
+        ("yes", False),
+        ("1 ", False),
+    ],
+)
+def test_config_from_env_peak_recon_enabled_strict_literal_one(
+    monkeypatch: pytest.MonkeyPatch, peak_recon_enabled: str, expect_enabled: bool
+) -> None:
+    """Only PEAK_RECON_ENABLED exactly ``1`` enables recon; no truthy strings, no strip (current contract)."""
+    monkeypatch.setenv("PEAK_RECON_ENABLED", peak_recon_enabled)
+    monkeypatch.setenv("PEAK_RECON_BALANCE_ABS", "0")
+    monkeypatch.setenv("PEAK_RECON_POSITION_ABS", "0")
+    assert config_from_env().enabled is expect_enabled
