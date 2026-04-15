@@ -40,13 +40,13 @@ import sys
 from pathlib import Path
 from typing import Optional, Sequence
 
-import numpy as np
 import pandas as pd
 
 # Projekt-Root zum Path hinzufügen
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+from src.experiments.dummy_returns_timeline import create_dummy_returns
 from src.experiments.portfolio_recipes import get_portfolio_recipe
 from src.experiments.portfolio_robustness import (
     PortfolioComponent,
@@ -71,30 +71,6 @@ def setup_logging(verbose: bool = False) -> None:
         format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%H:%M:%S",
     )
-
-
-def create_dummy_returns(n_bars: int = 500, seed: int = 42) -> pd.Series:
-    """
-    Erstellt Dummy-Returns für Tests.
-
-    Args:
-        n_bars: Anzahl der Bars
-        seed: Random Seed
-
-    Returns:
-        Returns-Serie mit DatetimeIndex
-    """
-    np.random.seed(seed)
-    from datetime import datetime, timedelta
-
-    start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq="1h")
-
-    # Simuliere Returns (leicht positiv mit Volatilität)
-    returns = np.random.normal(0.0005, 0.02, n_bars)  # ~0.05% pro Stunde, 2% Vol
-    returns_series = pd.Series(returns, index=dates)
-
-    return returns_series
 
 
 def _build_strategy_returns_cache(
