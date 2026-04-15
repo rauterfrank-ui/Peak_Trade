@@ -384,6 +384,11 @@ class TestMain:
         assert exit_code == 0
         assert mock_run_pipeline.called
 
+    def test_main_run_experiment_list_presets_exits_zero(self):
+        """run-experiment --list-presets beendet mit Code 0 (Preset-Katalog, kein Backtest)."""
+        exit_code = research_cli.main(["run-experiment", "--list-presets"])
+        assert exit_code == 0
+
     def test_main_unknown_command_returns_error(self):
         """Unbekanntes Command gibt Fehler zurück."""
         with pytest.raises(SystemExit):
