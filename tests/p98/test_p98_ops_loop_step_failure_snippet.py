@@ -24,7 +24,9 @@ def test_truncate_for_step_failure_long_gets_ellipsis() -> None:
     assert out.endswith("…")
 
 
-def test_step_failure_runtime_error_includes_truncated_repr(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_step_failure_runtime_error_includes_truncated_repr(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     long_out = "E" * 800
 
     def fake_sh(cmd, env=None, cwd=None):
