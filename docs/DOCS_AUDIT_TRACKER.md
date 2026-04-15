@@ -141,8 +141,11 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 ---
 
 ## Offene Top-Gaps (Priorisierung)
-1) **Phase‑53 `strategies` in Portfolio-Runner end-to-end** (Preset → Portfolio-Build → Robustness/Report)
-2) **Doku/CLI Value-Mismatches** (v.a. `--format` Enum: `md` vs `markdown` je nach CLI)
+1) **Runbooks / Frontdoor / Ops** — nächster Docs-Batch (siehe „Nächste Batch“): operational, viele Quer-Verweise, ggf. Command-Drift.
+
+**Zur Einordnung (keine „offenen Top-Gaps“ mehr in diesem Sinne):**
+- **Phase‑53 `strategies` / Manifest:** Preset → Portfolio-Build → Robustness/Report ist umgesetzt; Loader-/Runner-Aspekte sind durch PR #2602/#2604/#2605 testseitig abgedeckt (siehe Phase‑53-Note oben). Verbleibend: ggf. **optionale** Ergonomie- oder Klein-Doku-Punkte—**nicht** „fehlende Kern-Tests“.
+- **`--format` (`md` vs `markdown`):** Drift in den **bereits geprüften** Docs ist **validiert/geschlossen** — siehe Abschnitt „Format-Enums: `md` vs `markdown` — **validiert**“ weiter unten; bei **neuen** CLIs jeweils die Parser-`choices` beachten.
 
 ---
 
@@ -167,13 +170,14 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 
 ## Implementierte Fixes (Code)
 
-### Phase‑53 `strategies`‑Presets in Portfolio-Robustness — **done (v1, dummy-returns)**
+### Phase‑53 `strategies`‑Presets in Portfolio-Robustness — **done (dummy oder Manifest-Returns)**
 - **Implementiert in**: `scripts/run_portfolio_robustness.py`
 - **Verhalten**:
   - Wenn ein Preset `strategies = [...]` definiert, wird das Portfolio aus diesen Komponenten gebaut (ohne Sweep/Top‑N).
-  - Aktuell ist dafür **`--use-dummy-data` erforderlich** (offline-fähig; data-backed Returns-Loader ist noch offen).
-- **Test**:
-  - `tests/test_research_cli_portfolio_presets.py` (neuer Test: strategies-mode nutzt nicht `load_top_n_configs_for_sweep`)
+  - Für diesen Modus muss **`--use-dummy-data`** oder **`--strategy-returns-manifest`** gesetzt sein (offline-fähig bzw. data-backed über Manifest; Contract: `docs&#47;adr&#47;ADR_0002_Phase53_Data_Backed_Returns_Loader_Strategies_Mode.md`). Die frühere Formulierung „data-backed Returns-Loader noch offen“ ist **überholt** (Manifest-Loader + Tests: PR #2602/#2604/#2605).
+- **Tests**:
+  - `tests/test_research_cli_portfolio_presets.py` (u.a. Runner-Manifest-Pfad, Pflicht Dummy-vs.-Manifest in `run_from_args` — PR #2604/#2605; strategies-mode ohne `load_top_n_configs_for_sweep`)
+  - `tests/test_strategy_returns_manifest_loader.py` (Negative-Pfade Manifest-Loader — PR #2602)
 
 ## Batch 2 (Phase-/Research/Portfolio) — Status
 - `docs/PHASE_47_PORTFOLIO_ROBUSTNESS_AND_STRESS_TESTING.md`: aktualisiert um Phase‑53 `strategies`-Pfad + Hinweis auf `--use-dummy-data` + Beispielkommando.
