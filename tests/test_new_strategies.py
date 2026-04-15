@@ -11,7 +11,7 @@ import pytest
 import pandas as pd
 import numpy as np
 
-from src.strategies.bollinger import generate_signals as bb_signals
+from src.strategies.bollinger import BollingerBandsStrategy
 from src.strategies.macd import generate_signals as macd_signals
 from src.strategies.ecm import generate_signals as ecm_signals, calculate_ecm_phase
 from src.core import get_strategy_cfg
@@ -80,7 +80,13 @@ def test_bollinger_signals():
         "stop_pct": 0.03,
     }
 
-    signals = bb_signals(df, params)
+    strategy = BollingerBandsStrategy(
+        bb_period=params["bb_period"],
+        bb_std=params["bb_std"],
+        entry_threshold=params["entry_threshold"],
+        exit_threshold=params["exit_threshold"],
+    )
+    signals = strategy.generate_signals(df)
     assert len(signals) == len(df)
 
 
