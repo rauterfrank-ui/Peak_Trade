@@ -183,7 +183,8 @@ strategy_a = 123
     )
 
     with pytest.raises(
-        StrategyReturnsManifestError, match="manifest_invalid: strategy_returns entries must be str->str"
+        StrategyReturnsManifestError,
+        match="manifest_invalid: strategy_returns entries must be str->str",
     ):
         resolve_strategy_run_dir(strategy_id="strategy_a", manifest_path=manifest)
 
