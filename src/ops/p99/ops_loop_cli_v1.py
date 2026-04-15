@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import subprocess
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -68,9 +69,17 @@ def _bundle_dir(evi: Path) -> Path:
     return bundle
 
 
+def _env_parse_fail(exc: ValueError) -> int:
+    print(str(exc), file=sys.stderr)
+    return 2
+
+
 def main(argv: list[str] | None = None) -> int:
-    max_age_default = _parse_int_env("MAX_AGE_SEC", "900")
-    min_ticks_default = _parse_int_env("MIN_TICKS", "2")
+    try:
+        max_age_default = _parse_int_env("MAX_AGE_SEC", "900")
+        min_ticks_default = _parse_int_env("MIN_TICKS", "2")
+    except ValueError as e:
+        return _env_parse_fail(e)
 
     ap = argparse.ArgumentParser(prog="p99_ops_loop_cli_v1", add_help=True)
     ap.add_argument("--mode", default=os.environ.get("MODE", "shadow"))
@@ -100,7 +109,24 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     if args.mode not in ("paper", "shadow"):
-        raise SystemExit("mode must be paper|shadow (live/record not supported)")
+        print(
+            "mode must be paper|shadow (live/record not supported)",
+            file=sys.stderr,
+        )
+        return 2
+
+    if args.max_age_sec <= 0:
+        print(
+            "--max-age-sec / MAX_AGE_SEC must be a positive integer",
+            file=sys.stderr,
+        )
+        return 2
+    if args.min_ticks <= 0:
+        print(
+            "--min-ticks / MIN_TICKS must be a positive integer",
+            file=sys.stderr,
+        )
+        return 2
 
     ts = args.ts or _utc_ts()
     root = _repo_root()
