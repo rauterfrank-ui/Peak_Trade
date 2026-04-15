@@ -21,14 +21,14 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 
 <!-- phase53 manifest loader tracker note -->
 > Update: a manifest-backed strategies-mode returns-loader path is now available via `scripts&#47;run_portfolio_robustness.py --strategy-returns-manifest`.
-> Follow-up work is now about documentation, manifest ergonomics, and additional negative-path tests rather than the original missing loader path.
+> Test-/Contract-Stand: Manifest-Loader-Negative-Pfade PR #2602 (`tests&#47;test_strategy_returns_manifest_loader.py`); Runner-Integration data-backed Manifest PR #2604; Pflicht „`--use-dummy-data` oder `--strategy-returns-manifest`“ PR #2605 (`tests&#47;test_research_cli_portfolio_presets.py`). Verbleibend sind ggf. kleinere Doku-/Ergonomie-Punkte—nicht die frühere Lücke „fehlende Loader-/Runner-Tests“.
 > Contract: `docs&#47;adr&#47;ADR_0002_Phase53_Data_Backed_Returns_Loader_Strategies_Mode.md`.
 
 - **Implementiert**:
   - `src/experiments/portfolio_recipes.py` (Loader + Validierung, inkl. `strategies` (Phase 53))
   - `config/portfolio_recipes.toml` (Recipes, inkl. Phase 53/75 Abschnitte)
   - `scripts/run_portfolio_robustness.py` (Preset-Loading + Override-Merge für sweep-basierte Rezepte)
-  - Tests: `tests/test_portfolio_recipes.py`, `tests/test_research_cli_portfolio_presets.py`
+  - Tests: `tests/test_portfolio_recipes.py`, `tests/test_research_cli_portfolio_presets.py` (Phase 53 Presets + Runner), `tests/test_strategy_returns_manifest_loader.py` (Manifest-Loader)
 - **Fix (applied)**:
   - Phase‑53-Recipes mit `strategies=[...]` laufen end-to-end im Portfolio-Runner (aktuell **offline-fähig via `--use-dummy-data`**).
 - **Hinweis (Format-Envs)**:
