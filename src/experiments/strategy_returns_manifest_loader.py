@@ -23,7 +23,10 @@ class StrategyReturnsSource:
 def _load_manifest(manifest_path: Path) -> dict[str, Any]:
     if not manifest_path.exists():
         raise StrategyReturnsManifestError(f"manifest_not_found: {manifest_path}")
-    data = toml.loads(manifest_path.read_text(encoding="utf-8"))
+    try:
+        data = toml.loads(manifest_path.read_text(encoding="utf-8"))
+    except toml.TomlDecodeError as e:
+        raise StrategyReturnsManifestError(f"manifest_invalid: toml_parse_failed: {e}") from e
     if not isinstance(data, dict):
         raise StrategyReturnsManifestError("manifest_invalid: top_level_not_dict")
     return data
