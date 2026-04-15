@@ -6,6 +6,17 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
+# Max characters of stdout+stderr to embed in step failure RuntimeError (deterministic cap).
+_MAX_STEP_FAILURE_OUT_SNIPPET_CHARS = 512
+
+
+def _truncate_for_step_failure(out: str, max_len: int = _MAX_STEP_FAILURE_OUT_SNIPPET_CHARS) -> str:
+    """Return a bounded snippet for error messages; strip outer whitespace; suffix … if truncated."""
+    stripped = out.strip()
+    if len(stripped) <= max_len:
+        return stripped
+    return stripped[: max_len - 1] + "…"
+
 
 @dataclass(frozen=True)
 class P98OpsLoopContextV1:
@@ -41,7 +52,8 @@ def run_ops_loop_orchestrator_v1(ctx: P98OpsLoopContextV1) -> dict:
         rc, out = _sh(cmd, env=env, cwd=str(root))
         steps.append({"name": name, "rc": rc, "out": out})
         if rc != 0:
-            raise RuntimeError(f"{name} failed rc={rc}")
+            snippet = _truncate_for_step_failure(out)
+            raise RuntimeError(f"{name} failed rc={rc} out_snippet={snippet!r}")
 
     # A) Ensure supervisor is alive (status-only; do not start here)
     step("p95_meta_gate", ["bash", str(root / "scripts/ops/p95_ops_health_meta_gate_v1.sh")])
