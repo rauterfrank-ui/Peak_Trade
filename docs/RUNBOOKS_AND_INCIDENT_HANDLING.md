@@ -73,19 +73,21 @@ ls -la data/*.csv
 **Schritt 3: Shadow-Run starten**
 
 ```bash
-# Standard-Run mit ma_crossover
-python3 scripts/run_shadow_execution.py --strategy ma_crossover --verbose
+# Standard-Run mit ma_crossover (Config-SSoT im Repo: config/config.toml)
+python3 scripts/run_shadow_execution.py --config config/config.toml --strategy ma_crossover --verbose
 
-# Mit CSV-Daten und Datumsbeschränkung
+# Mit CSV-Daten und Datumsbeschränkung (Beispielpfad wie im Script; ohne --data-file: Dummy-Daten)
 python3 scripts/run_shadow_execution.py \
+    --config config/config.toml \
     --strategy rsi_strategy \
-    --data-file data/btc_eur_1h.csv \
+    --data-file data/eth_1h.csv \
     --start 2023-01-01 \
     --end 2023-12-31 \
     --tag shadow_run_v1
 
 # Mit Fee-/Slippage-Überschreibung
 python3 scripts/run_shadow_execution.py \
+    --config config/config.toml \
     --fee-rate 0.001 \
     --slippage-bps 10 \
     --verbose
@@ -111,7 +113,7 @@ python3 scripts/report_experiment.py --id <RUN_ID>
 
 | Problem | Mögliche Ursache | Lösung |
 |---------|------------------|--------|
-| "Config nicht gefunden" | Falscher Pfad | `--config` mit korrektem Pfad |
+| "Config nicht gefunden" | Falscher Pfad | `--config` mit korrektem Pfad (im Repo typisch: `config/config.toml`) |
 | "Strategie nicht gefunden" | Tippfehler oder nicht registriert | `get_available_strategy_keys()` prüfen |
 | "Keine Daten" | CSV fehlt oder leer | Datenquelle prüfen |
 | "Shadow disabled" | `[shadow].enabled = false` | Config korrigieren |
@@ -333,7 +335,7 @@ Der **Kill-Switch** ist die letzte Verteidigungslinie:
 | `SAFETY_POLICY_TESTNET_AND_LIVE.md` | Safety-Policies |
 | `LIVE_READINESS_CHECKLISTS.md` | Checklisten für Stufen-Übergänge |
 | `PHASE_24_SHADOW_EXECUTION.md` | Shadow-Execution-Dokumentation |
-| `RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md` | Tech-Debt Top-3 ROI bis Finish (Cursor Multi-Agent, NO-LIVE) |
+| `docs/ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md` | Tech-Debt Top-3 ROI bis Finish (Cursor Multi-Agent, NO-LIVE) |
 | `INCIDENT_SIMULATION_AND_DRILLS.md` | Incident-Drill-Playbook (Phase 56) |
 | `INCIDENT_DRILL_LOG.md` | Drill-Log für dokumentierte Übungen |
 
@@ -351,3 +353,4 @@ Der **Kill-Switch** ist die letzte Verteidigungslinie:
 - **Phase 56** (2025-12): Incident-Drills ergänzt
   - Verweise auf Incident-Drill-Playbook hinzugefügt
   - Hinweis auf aktive Übung von Runbooks ergänzt
+- **Docs-Audit (2026-04):** Shadow-CLI-Beispiele mit `config/config.toml` abgeglichen; CSV-Beispielpfad an `run_shadow_execution.py` angeglichen; Referenzpfad `RUNBOOK_TECH_DEBT_*` korrigiert (`docs/ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md`).
