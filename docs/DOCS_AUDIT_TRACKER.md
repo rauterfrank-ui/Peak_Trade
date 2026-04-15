@@ -130,20 +130,16 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 
 ---
 
-## Nächste Batch (Start)
-**Runbooks / Frontdoor / Ops** (Priorität: operational & viele Quer-Verweise)
-- `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`
-- `docs/WORKFLOW_FRONTDOOR.md`
-- `docs/RUNBOOK_TO_FINISH_MASTER.md`
-- `docs/ops/runbooks/README.md`
-- `docs/ops/runbooks/RUNBOOK_TO_FINISH_MASTER.md` (falls abweichend)
+## Nächster Fokus (Start)
+**Kleiner Follow-up / optionaler Mini-Audit** (nach abgeschlossenen Ops/Runbook-Batches):
+- `docs/KNOWLEDGE_SOURCES_REGISTRY.md` — siehe **Bereits geprüft (5)**: offenes Feintuning, ob genannte Ingestion-Skripte im Repo real oder nur illustrativ gemeint sind (kein Blocker; Registry ist ohne harten Runtime-Contract).
 
-> **Hinweis (2026-04):** Index `docs/ops/runbooks/README.md` auditiert — siehe Findings unten.
+> **Erledigt (Referenz):** Runbooks / Frontdoor / Ops — siehe Abschnitt **„Runbooks/Frontdoor Batch — Findings“** unten (Stand: Audit 2026-04, inkl. `docs/ops/runbooks/README.md`).
 
 ---
 
 ## Offene Top-Gaps (Priorisierung)
-1) **Runbooks / Frontdoor / Ops** — nächster Docs-Batch (siehe „Nächste Batch“): operational, viele Quer-Verweise, ggf. Command-Drift.
+1) **`docs/KNOWLEDGE_SOURCES_REGISTRY.md` (optional)** — Ingestion-/Skript-Hinweise vs. Repo klären (siehe „Bereits geprüft“ Punkt 5); kein Kern-Blocker.
 
 **Zur Einordnung (keine „offenen Top-Gaps“ mehr in diesem Sinne):**
 - **Phase‑53 `strategies` / Manifest:** Preset → Portfolio-Build → Robustness/Report ist umgesetzt; Loader-/Runner-Aspekte sind durch PR #2602/#2604/#2605 testseitig abgedeckt (siehe Phase‑53-Note oben). Verbleibend: ggf. **optionale** Ergonomie- oder Klein-Doku-Punkte—**nicht** „fehlende Kern-Tests“.
@@ -151,7 +147,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 
 ---
 
-## Runbooks/Frontdoor Batch — Findings (laufend)
+## Runbooks/Frontdoor Batch — Findings (abgeschlossen, Stand 2026-04)
 
 ### `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md` — **done (vorläufig)**
 - **Fixes (applied)**:
@@ -197,7 +193,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 
 ---
 
-## Batch 3 (Research Playbooks) — Findings (laufend)
+## Batch 3 (Research Playbooks) — Status (PR #2612 / Audit Follow-up abgeschlossen)
 
 ### `docs/PEAK_TRADE_RESEARCH_GOLDEN_PATHS.md` — **done (Audit Follow-up)**
 - **Fixes (applied)**:
