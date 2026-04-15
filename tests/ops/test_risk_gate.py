@@ -51,6 +51,19 @@ def test_stale_data_denies():
     assert dec.details.get("max_data_age_seconds") == "10"
 
 
+def test_stale_data_allows_when_age_equals_max():
+    """Boundary: data age exactly at limit must not trigger STALE_DATA (strict >)."""
+    lim = RiskLimits(
+        max_notional_usd=1000,
+        max_order_size=10,
+        max_position=10,
+        max_data_age_seconds=10,
+    )
+    dec = evaluate_risk(lim, base_ctx(market_data_age_seconds=10))
+    assert dec.allow is True
+    assert dec.reason is None
+
+
 def test_notional_denies():
     lim = RiskLimits(max_notional_usd=50)
     dec = evaluate_risk(lim, base_ctx(order_notional_usd=51.0))
