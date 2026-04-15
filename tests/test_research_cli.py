@@ -52,6 +52,13 @@ class TestBuildParser:
         assert "portfolio" in subparsers_action.choices
         assert "pipeline" in subparsers_action.choices
 
+    def test_build_parser_help_exits_zero(self):
+        """--help beendet mit Code 0 (Help-/Discoverability-Pfad stabil)."""
+        parser = research_cli.build_parser()
+        with pytest.raises(SystemExit) as exc_info:
+            parser.parse_args(["--help"])
+        assert exc_info.value.code == 0
+
     def test_sweep_subparser_has_required_args(self):
         """Sweep-Subparser hat erwartete Argumente."""
         parser = research_cli.build_parser()
