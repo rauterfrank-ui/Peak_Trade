@@ -276,6 +276,26 @@ class TestScenarioE2EWorkflow:
             )
             assert len(primary) >= 1, f"{name}: applicable_strategies.primary must be non-empty"
 
+    def test_scenario_applicable_strategy_ids_nonblank(self, scenario_configs):
+        """Primary/secondary-Einträge sind non-blank Strings (keine TOML-Typ-/Whitespace-Fallen)."""
+        for name, config in scenario_configs.items():
+            applicable = config["scenario"]["applicable_strategies"]
+            for label in ("primary", "secondary"):
+                if label not in applicable:
+                    continue
+                strategies = applicable[label]
+                assert isinstance(strategies, list), (
+                    f"{name}: applicable_strategies.{label} must be a list"
+                )
+                for sid in strategies:
+                    assert isinstance(sid, str), (
+                        f"{name}: applicable_strategies.{label} entry must be str, "
+                        f"got {type(sid).__name__}"
+                    )
+                    assert sid.strip() != "", (
+                        f"{name}: applicable_strategies.{label} contains blank strategy id"
+                    )
+
     def test_scenario_expectations_have_drawdown_limits(self, scenario_configs):
         """Alle Szenarien haben Drawdown-Limits."""
         for name, config in scenario_configs.items():
