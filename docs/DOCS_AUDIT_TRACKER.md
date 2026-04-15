@@ -138,6 +138,8 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 - `docs/ops/runbooks/README.md`
 - `docs/ops/runbooks/RUNBOOK_TO_FINISH_MASTER.md` (falls abweichend)
 
+> **Hinweis (2026-04):** Index `docs/ops/runbooks/README.md` auditiert — siehe Findings unten.
+
 ---
 
 ## Offene Top-Gaps (Priorisierung)
@@ -164,6 +166,11 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 ### `docs/RUNBOOK_TO_FINISH_MASTER.md` und `docs/ops/runbooks/RUNBOOK_TO_FINISH_MASTER.md` — **done (docs-only runbook)**
 - **Befund**:
   - Referenzierte Runbooks/Targets existieren (D2/D3/D4, Finish-C pointer, Option-B Pfade, etc.).
+
+### `docs/ops/runbooks/README.md` — **done (vorläufig)**
+- **Befund**:
+  - Relativer Index: verlinkte Runbook-/Ops-Ziele existieren; keine `python`-/`python3`-Drift in dieser Datei; Docs-Token-Policy (Inline-Code) ohne Verstöße.
+  - Minimal-Fix: Link-Ziel für `RUNBOOK_CURSOR_MA_FEHLENDE_FEATURES_OPEN_POINTS_2026-02-10.md` mit `./`-Präfix wie bei anderen Einträgen; „Last Updated“ auf Audit-Datum gesetzt.
 
 ---
 
