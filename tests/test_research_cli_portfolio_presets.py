@@ -664,3 +664,90 @@ def test_phase53_run_from_args_exit_one_when_manifest_loader_raises(
         exit_code = portfolio_script.run_from_args(args)
 
     assert exit_code == 1
+
+
+def test_phase53_run_from_args_manifest_data_backed_end_to_end(tmp_path: Path) -> None:
+    """E2E ohne Mocks: Preset (strategies) + Manifest -> run_portfolio_robustness -> Report (MC/Stress aus)."""
+    import pandas as pd
+
+    recipe_path = tmp_path / "recipes.toml"
+    recipe_path.write_text(
+        """
+[portfolio_recipes.rsi_reversion_conservative]
+id = "rsi_reversion_conservative"
+portfolio_name = "RSI Reversion Conservative"
+description = "e2e"
+strategies = ["rsi_reversion_btc_conservative", "rsi_reversion_eth_conservative"]
+weights = [0.6, 0.4]
+run_montecarlo = false
+run_stress_tests = false
+format = "md"
+risk_profile = "conservative"
+""".strip()
+        + "\n",
+        encoding="utf-8",
+    )
+
+    for name in ("run_btc", "run_eth"):
+        run_dir = tmp_path / name
+        run_dir.mkdir(parents=True, exist_ok=True)
+        df = pd.DataFrame(
+            {
+                "timestamp": [
+                    "2026-01-01T00:00:00Z",
+                    "2026-01-02T00:00:00Z",
+                    "2026-01-03T00:00:00Z",
+                ],
+                "equity": [100.0, 101.0, 103.0],
+            }
+        )
+        df.to_csv(run_dir / "phase53_equity.csv", index=False)
+
+    manifest = tmp_path / "strategy_returns_map.toml"
+    manifest.write_text(
+        """
+[strategy_returns]
+rsi_reversion_btc_conservative = "run_btc"
+rsi_reversion_eth_conservative = "run_eth"
+""".strip()
+        + "\n",
+        encoding="utf-8",
+    )
+
+    out_dir = tmp_path / "portfolio_out"
+    cfg_path = tmp_path / "config_stub.toml"
+    cfg_path.write_text("# minimal\n", encoding="utf-8")
+
+    args = argparse.Namespace(
+        portfolio_preset="rsi_reversion_conservative",
+        recipes_config=str(recipe_path),
+        sweep_name=None,
+        config=str(cfg_path),
+        top_n=None,
+        portfolio_name=None,
+        weights=None,
+        run_montecarlo=False,
+        mc_num_runs=1000,
+        mc_method="simple",
+        mc_block_size=20,
+        mc_seed=42,
+        run_stress_tests=False,
+        stress_scenarios=["single_crash_bar", "vol_spike"],
+        stress_severity=0.2,
+        stress_window=5,
+        stress_position="middle",
+        stress_seed=42,
+        output_dir=str(out_dir),
+        format=None,
+        use_dummy_data=False,
+        strategy_returns_manifest=str(manifest),
+        dummy_bars=500,
+        verbose=False,
+    )
+
+    exit_code = portfolio_script.run_from_args(args)
+    assert exit_code == 0
+
+    report_dir = out_dir / "RSI Reversion Conservative"
+    assert report_dir.is_dir()
+    assert (report_dir / "portfolio_robustness_report.md").is_file()
