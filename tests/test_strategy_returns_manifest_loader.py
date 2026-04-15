@@ -91,3 +91,52 @@ strategy_a = "runs/strategy_a"
             strategy_id="strategy_b",
             manifest_path=manifest,
         )
+
+
+def test_load_returns_for_strategy_from_manifest_missing_manifest(tmp_path: Path) -> None:
+    manifest = tmp_path / "missing_strategy_returns_map.toml"
+
+    with pytest.raises(StrategyReturnsManifestError, match="manifest_not_found"):
+        load_returns_for_strategy_from_manifest(
+            strategy_id="strategy_a",
+            manifest_path=manifest,
+        )
+
+
+def test_load_returns_for_strategy_from_manifest_missing_run_dir(tmp_path: Path) -> None:
+    manifest = tmp_path / "strategy_returns_map.toml"
+    _write_manifest(
+        manifest,
+        """
+[strategy_returns]
+strategy_a = "runs/strategy_a"
+""".strip()
+        + "\n",
+    )
+
+    with pytest.raises(StrategyReturnsManifestError, match="run_dir_not_found"):
+        load_returns_for_strategy_from_manifest(
+            strategy_id="strategy_a",
+            manifest_path=manifest,
+        )
+
+
+def test_load_returns_for_strategy_from_manifest_missing_equity_file(tmp_path: Path) -> None:
+    run_dir = tmp_path / "runs" / "strategy_a"
+    run_dir.mkdir(parents=True, exist_ok=True)
+
+    manifest = tmp_path / "strategy_returns_map.toml"
+    _write_manifest(
+        manifest,
+        """
+[strategy_returns]
+strategy_a = "runs/strategy_a"
+""".strip()
+        + "\n",
+    )
+
+    with pytest.raises(StrategyReturnsManifestError, match="equity_load_failed"):
+        load_returns_for_strategy_from_manifest(
+            strategy_id="strategy_a",
+            manifest_path=manifest,
+        )
