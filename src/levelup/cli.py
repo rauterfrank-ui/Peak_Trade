@@ -16,6 +16,11 @@ format exit contract (stdout is one JSON object per invocation):
 - 0 — manifest validated and canonically rewritten
 - 2 — usage / input problem (unreadable path, invalid JSON, UTF-8 decode) or write problem
 - 3 — JSON ok but model / schema validation failed
+
+canonical-check exit contract (stdout is one JSON object per invocation):
+- 0 — manifest validated and already canonical
+- 2 — usage / input problem (unreadable path, invalid JSON, UTF-8 decode)
+- 3 — model / schema validation failed, or manifest is valid but not canonical
 """
 
 from __future__ import annotations
@@ -28,7 +33,7 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from src.levelup.v0_io import read_manifest, write_manifest
+from src.levelup.v0_io import canonical_manifest_json, read_manifest, write_manifest
 from src.levelup.v0_models import LevelUpManifestV0
 
 EXIT_VALIDATION_OK = 0
@@ -175,6 +180,54 @@ def _cmd_format(path: Path) -> int:
     return EXIT_VALIDATION_OK
 
 
+def _cmd_canonical_check(path: Path) -> int:
+    m, error_exit = _read_manifest_with_contract(path)
+    if error_exit is not None:
+        return error_exit
+
+    assert m is not None
+    try:
+        current = path.read_text(encoding="utf-8")
+    except OSError as exc:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "input",
+                "reason": "manifest_read_failed",
+                "message": str(exc),
+            }
+        )
+        return EXIT_INPUT
+    except UnicodeDecodeError as exc:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "input",
+                "reason": "utf8_decode_failed",
+                "message": str(exc),
+            }
+        )
+        return EXIT_INPUT
+
+    expected = canonical_manifest_json(m)
+    if current != expected:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "validation",
+                "reason": "manifest_not_canonical",
+                "message": "manifest is valid but not in canonical serialized form",
+                "canonical": False,
+                "schema": m.schema_version,
+                "slices": len(m.slices),
+            }
+        )
+        return EXIT_VALIDATION_FAILED
+
+    _emit_json({"ok": True, "canonical": True, "schema": m.schema_version, "slices": len(m.slices)})
+    return EXIT_VALIDATION_OK
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m src.levelup.cli")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -194,6 +247,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     p_format.add_argument("manifest", type=Path, help="Path to existing manifest.json")
 
+    p_check = sub.add_parser(
+        "canonical-check",
+        help="Validate a v0 manifest and check if it is already canonical (read-only).",
+    )
+    p_check.add_argument("manifest", type=Path, help="Path to existing manifest.json")
+
     args = parser.parse_args(argv)
     if args.cmd == "validate":
         return _cmd_validate(args.manifest)
@@ -201,6 +260,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_dump_empty(args.manifest)
     if args.cmd == "format":
         return _cmd_format(args.manifest)
+    if args.cmd == "canonical-check":
+        return _cmd_canonical_check(args.manifest)
     return EXIT_INPUT
 
 
