@@ -57,7 +57,8 @@ Alles Folgende bezieht sich auf den **Ist**-Stand der genannten Dateien:
 - **CLI (read-only Doku):** Einstieg `python -m src.levelup.cli` mit Unterbefehlen `validate <manifest>` und `dump-empty <manifest>` (`argparse`-`prog` in `cli.py`). **validate** schreibt **genau eine JSON-Zeile auf stdout** (stderr leer im erwarteten Fehlerpfad):
   - **Erfolg:** `ok: true`, plus `schema`, `slices` (Anzahl).
   - **Fehler:** `ok: false`, `error` (`input` | `validation`), `reason` (z. B. `json_parse_failed`, `manifest_read_failed`, `model_validation_failed`), knappe `message`; bei `validation` zusätzlich `issues` (gekürzte Pydantic-Fehlerliste).
-  - **Exit-Codes:** `0` = Validierung ok; `2` = Usage/Eingabe (u. a. fehlende Datei, Lesefehler, ungültiges JSON, UTF-8-Dekodierung); `3` = JSON parsebar, Modell-/Schema-Validierung fehlgeschlagen. `dump-empty` schreibt ein leeres Manifest und gibt eine JSON-Zeile mit `ok`/`wrote` zurück (Erfolg `0`).
-  - Subprozess-Checks: `test_cli_validate_and_dump_empty` in `tests/levelup/test_v0_manifest.py`, `test_v0_validate_cli.py` in `tests/levelup/`.
+  - **Exit-Codes:** `0` = Validierung ok; `2` = Usage/Eingabe (u. a. fehlende Datei, Lesefehler, ungültiges JSON, UTF-8-Dekodierung); `3` = JSON parsebar, Modell-/Schema-Validierung fehlgeschlagen.
+  - **dump-empty:** schreibt ein leeres Manifest; **Erfolg:** eine JSON-Zeile auf stdout mit `ok: true`, `wrote` (Pfad), Exit `0`, stderr leer. **Fehler (Schreib-/Pfadproblem):** eine JSON-Zeile mit `ok: false`, `error: input`, `reason` (`target_path_is_directory` wenn der Zielpfad ein Verzeichnis ist, sonst bei `OSError` am Schreibpfad typischerweise `manifest_write_failed`), `message`; Exit `2`, stderr leer im erwarteten Operator-Pfad.
+  - Subprozess-Checks: `test_cli_validate_and_dump_empty`, `test_cli_dump_empty_target_path_is_directory`, `test_cli_dump_empty_not_writable_target_file` in `tests/levelup/test_v0_manifest.py`, `test_v0_validate_cli.py` in `tests/levelup/`.
 
 **Non-claims:** Keine Aussage über Integration in Deployments, CI-Pflicht oder Freigabeprozesse — sofern nicht separat und repo-evidenced dokumentiert.

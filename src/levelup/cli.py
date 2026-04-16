@@ -7,6 +7,10 @@ validate exit contract (stdout is one JSON object per invocation):
 - 0 — manifest parsed and model-validated
 - 2 — usage / input problem (unreadable path, invalid JSON, UTF-8 decode)
 - 3 — JSON ok but model / schema validation failed
+
+dump-empty exit contract (stdout is one JSON object per invocation):
+- 0 — empty manifest written
+- 2 — usage / path / write problem (e.g. target is a directory, mkdir/write permission)
 """
 
 from __future__ import annotations
@@ -19,7 +23,7 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from src.levelup.v0_io import read_manifest
+from src.levelup.v0_io import read_manifest, write_manifest
 from src.levelup.v0_models import LevelUpManifestV0
 
 EXIT_VALIDATION_OK = 0
@@ -95,9 +99,29 @@ def _cmd_validate(path: Path) -> int:
 
 def _cmd_dump_empty(path: Path) -> int:
     m = LevelUpManifestV0()
-    from src.levelup.v0_io import write_manifest
+    try:
+        write_manifest(path, m)
+    except IsADirectoryError as exc:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "input",
+                "reason": "target_path_is_directory",
+                "message": str(exc),
+            }
+        )
+        return EXIT_INPUT
+    except OSError as exc:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "input",
+                "reason": "manifest_write_failed",
+                "message": str(exc),
+            }
+        )
+        return EXIT_INPUT
 
-    write_manifest(path, m)
     _emit_json({"ok": True, "wrote": str(path)})
     return EXIT_VALIDATION_OK
 
