@@ -17,6 +17,18 @@ from src.levelup.v0_io import read_manifest, write_manifest
 from src.levelup.v0_models import EvidenceBundleRefV0, LevelUpManifestV0, SliceContractV0
 
 
+def _run_levelup_cli(args: list[str]) -> subprocess.CompletedProcess[str]:
+    env = os.environ.copy()
+    env["PYTHONPATH"] = str(REPO_ROOT)
+    return subprocess.run(
+        [sys.executable, "-m", "src.levelup.cli", *args],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+    )
+
+
 def test_manifest_roundtrip_empty(tmp_path: Path) -> None:
     m = LevelUpManifestV0()
     p = tmp_path / "m.json"
@@ -85,27 +97,52 @@ def test_manifest_root_title_strips_surrounding_whitespace() -> None:
 
 def test_cli_validate_and_dump_empty(tmp_path: Path) -> None:
     manifest = tmp_path / "manifest.json"
-    env = os.environ.copy()
-    env["PYTHONPATH"] = str(REPO_ROOT)
-    exe = subprocess.run(
-        [sys.executable, "-m", "src.levelup.cli", "dump-empty", str(manifest)],
-        cwd=REPO_ROOT,
-        env=env,
-        text=True,
-        capture_output=True,
-    )
+    exe = _run_levelup_cli(["dump-empty", str(manifest)])
     assert exe.returncode == 0, exe.stderr
     out = json.loads(exe.stdout.strip())
     assert out["ok"] is True
 
-    v = subprocess.run(
-        [sys.executable, "-m", "src.levelup.cli", "validate", str(manifest)],
-        cwd=REPO_ROOT,
-        env=env,
-        text=True,
-        capture_output=True,
-    )
+    v = _run_levelup_cli(["validate", str(manifest)])
     assert v.returncode == 0, v.stderr
     meta = json.loads(v.stdout.strip())
     assert meta["ok"] is True
     assert meta["slices"] == 0
+
+
+def test_cli_validate_utf8_decode_failed(tmp_path: Path) -> None:
+    """Invalid UTF-8 bytes → exit 2, reason utf8_decode_failed (Path.read_text)."""
+    bad = tmp_path / "not_utf8.json"
+    bad.write_bytes(b"\xff\xfe\x00")
+    r = _run_levelup_cli(["validate", str(bad)])
+    assert r.returncode == 2, r.stderr
+    assert r.stderr.strip() == ""
+    payload = json.loads(r.stdout.strip())
+    assert payload["ok"] is False
+    assert payload["error"] == "input"
+    assert payload["reason"] == "utf8_decode_failed"
+
+
+def test_cli_validate_path_is_directory(tmp_path: Path) -> None:
+    """A directory path is not a readable manifest file → OSError, manifest_read_failed."""
+    d = tmp_path / "not_a_file"
+    d.mkdir()
+    r = _run_levelup_cli(["validate", str(d)])
+    assert r.returncode == 2, r.stderr
+    assert r.stderr.strip() == ""
+    payload = json.loads(r.stdout.strip())
+    assert payload["ok"] is False
+    assert payload["error"] == "input"
+    assert payload["reason"] == "manifest_read_failed"
+
+
+def test_cli_validate_empty_file_json_parse_failed(tmp_path: Path) -> None:
+    """Empty file is not valid JSON → exit 2, json_parse_failed."""
+    empty = tmp_path / "empty.json"
+    empty.write_text("", encoding="utf-8")
+    r = _run_levelup_cli(["validate", str(empty)])
+    assert r.returncode == 2, r.stderr
+    assert r.stderr.strip() == ""
+    payload = json.loads(r.stdout.strip())
+    assert payload["ok"] is False
+    assert payload["error"] == "input"
+    assert payload["reason"] == "json_parse_failed"
