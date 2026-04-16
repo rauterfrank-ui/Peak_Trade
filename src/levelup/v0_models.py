@@ -10,7 +10,7 @@ from __future__ import annotations
 import re
 from typing import Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 _SCHEMA = "levelup/manifest/v0"
 _EVIDENCE_PREFIX = "out/ops/"
@@ -62,5 +62,22 @@ class LevelUpManifestV0(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
     schema_version: Literal["levelup/manifest/v0"] = _SCHEMA
-    title: str = Field(default="Peak Trade Level-Up (Evidence-first)", max_length=512)
+    title: str = Field(default="Peak Trade Level-Up (Evidence-first)", min_length=1, max_length=512)
     slices: tuple[SliceContractV0, ...] = ()
+
+    @field_validator("title")
+    @classmethod
+    def _root_title_stripped_nonempty(cls, v: str) -> str:
+        s = v.strip()
+        if not s:
+            raise ValueError("manifest title must be non-empty after stripping whitespace")
+        return s
+
+    @model_validator(mode="after")
+    def _slice_ids_unique(self) -> LevelUpManifestV0:
+        seen: set[str] = set()
+        for sl in self.slices:
+            if sl.slice_id in seen:
+                raise ValueError(f"duplicate slice_id in manifest: {sl.slice_id!r}")
+            seen.add(sl.slice_id)
+        return self

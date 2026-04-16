@@ -50,6 +50,8 @@ Ausrichtung an den verbindlichen Vokabular-/Authority-/Provenance-Regeln: [`CANO
 Alles Folgende bezieht sich auf den **Ist**-Stand der genannten Dateien:
 
 - **Schema:** `LevelUpManifestV0.schema_version` ist fix `levelup&#47;manifest&#47;v0` (`src/levelup/v0_models.py`).
+- **Manifest-Titel:** `LevelUpManifestV0.title` wird an den Enden getrimmt; nur nicht-leer nach dem Trim ist gültig (Leer- bzw. Nur-Whitespace-Titel werden abgewiesen). Positiv-/Negativfälle: `test_manifest_root_title_strips_surrounding_whitespace`, `test_manifest_root_title_rejects_empty_after_strip` in `tests/levelup/test_v0_manifest.py`.
+- **Slice-IDs:** `slice_id`-Werte müssen innerhalb eines Manifests **eindeutig** sein (`test_manifest_rejects_duplicate_slice_id` in `tests/levelup/test_v0_manifest.py`).
 - **Evidence-Pfade:** `EvidenceBundleRefV0.relative_dir` muss mit `out/ops/` beginnen; Traversal wird abgewiesen (Validator in `v0_models.py`); abgelehnte Beispiele und Roundtrip-Verhalten sind in `tests/levelup/test_v0_manifest.py` abgedeckt.
 - **IO:** `read_manifest` nutzt `model_validate_json` auf Dateiinhalt; `write_manifest` schreibt formatiertes JSON (inkl. Elternverzeichnis-Anlage).
 - **CLI (read-only Doku):** Einstieg `python -m src.levelup.cli` mit Unterbefehlen `validate <manifest>` und `dump-empty <manifest>` (`argparse`-`prog` in `cli.py`). **validate** schreibt **genau eine JSON-Zeile auf stdout** (stderr leer im erwarteten Fehlerpfad):
