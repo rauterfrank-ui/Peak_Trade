@@ -109,6 +109,37 @@ def test_cli_validate_and_dump_empty(tmp_path: Path) -> None:
     assert meta["slices"] == 0
 
 
+def test_cli_dump_empty_target_path_is_directory(tmp_path: Path) -> None:
+    """Directory as output path → exit 2, reason target_path_is_directory."""
+    d = tmp_path / "out_dir"
+    d.mkdir()
+    r = _run_levelup_cli(["dump-empty", str(d)])
+    assert r.returncode == 2, r.stderr
+    assert r.stderr.strip() == ""
+    payload = json.loads(r.stdout.strip())
+    assert payload["ok"] is False
+    assert payload["error"] == "input"
+    assert payload["reason"] == "target_path_is_directory"
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="chmod write-deny semantics differ on Windows")
+def test_cli_dump_empty_not_writable_target_file(tmp_path: Path) -> None:
+    """Existing file without write permission → exit 2, reason manifest_write_failed."""
+    manifest = tmp_path / "locked.json"
+    manifest.write_text("{}", encoding="utf-8")
+    manifest.chmod(0o444)
+    try:
+        r = _run_levelup_cli(["dump-empty", str(manifest)])
+    finally:
+        manifest.chmod(0o644)
+    assert r.returncode == 2, r.stderr
+    assert r.stderr.strip() == ""
+    payload = json.loads(r.stdout.strip())
+    assert payload["ok"] is False
+    assert payload["error"] == "input"
+    assert payload["reason"] == "manifest_write_failed"
+
+
 def test_cli_validate_utf8_decode_failed(tmp_path: Path) -> None:
     """Invalid UTF-8 bytes → exit 2, reason utf8_decode_failed (Path.read_text)."""
     bad = tmp_path / "not_utf8.json"
