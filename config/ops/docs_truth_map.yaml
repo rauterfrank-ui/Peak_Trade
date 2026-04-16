@@ -62,3 +62,9 @@ rules:
       - "scripts/_forward_run_manifest.py"
     required_docs:
       - "docs/ops/CLI_RUN_MANIFEST_RUN_ID.md"
+
+  - id: levelup-v0-layer
+    sensitive:
+      - "src/levelup/"
+    required_docs:
+      - "docs/ops/specs/LEVELUP_V0_CANONICAL_SURFACE.md"
