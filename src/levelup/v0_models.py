@@ -8,7 +8,7 @@ slice metadata and pointers to under-repo evidence directories (typically ``out/
 from __future__ import annotations
 
 import re
-from typing import Literal, Optional
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -81,3 +81,8 @@ class LevelUpManifestV0(BaseModel):
                 raise ValueError(f"duplicate slice_id in manifest: {sl.slice_id!r}")
             seen.add(sl.slice_id)
         return self
+
+
+def levelup_manifest_v0_json_schema() -> dict[str, Any]:
+    """JSON Schema dict for ``LevelUpManifestV0`` (CLI ``export-json-schema`` / committed artifact)."""
+    return LevelUpManifestV0.model_json_schema()

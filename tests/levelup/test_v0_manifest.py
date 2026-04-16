@@ -14,7 +14,14 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 from pydantic import ValidationError
 
 from src.levelup.v0_io import read_manifest, write_manifest
-from src.levelup.v0_models import EvidenceBundleRefV0, LevelUpManifestV0, SliceContractV0
+from src.levelup.v0_models import (
+    EvidenceBundleRefV0,
+    LevelUpManifestV0,
+    SliceContractV0,
+    levelup_manifest_v0_json_schema,
+)
+
+_COMMITTED_MANIFEST_JSON_SCHEMA = REPO_ROOT / "schemas" / "levelup" / "levelup_manifest_v0.schema.json"
 
 
 def _run_levelup_cli(args: list[str]) -> subprocess.CompletedProcess[str]:
@@ -283,6 +290,12 @@ def test_cli_canonical_check_empty_file_json_parse_failed(tmp_path: Path) -> Non
     assert payload["reason"] == "json_parse_failed"
 
 
+def test_committed_levelup_manifest_json_schema_matches_model() -> None:
+    """Drift guard: committed JSON Schema must match ``LevelUpManifestV0`` (regenerate via sync script)."""
+    committed = json.loads(_COMMITTED_MANIFEST_JSON_SCHEMA.read_text(encoding="utf-8"))
+    assert committed == levelup_manifest_v0_json_schema()
+
+
 def test_cli_export_json_schema_success() -> None:
     r = _run_levelup_cli(["export-json-schema"])
     assert r.returncode == 0, r.stderr
@@ -295,3 +308,4 @@ def test_cli_export_json_schema_success() -> None:
     assert schema["type"] == "object"
     assert "properties" in schema
     assert "schema_version" in schema["properties"]
+    assert schema == json.loads(_COMMITTED_MANIFEST_JSON_SCHEMA.read_text(encoding="utf-8"))
