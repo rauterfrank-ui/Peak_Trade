@@ -1,5 +1,5 @@
 """
-Minimal CLI for Level-Up v0 manifests (validate / round-trip checks).
+Minimal CLI for Level-Up v0 manifests (validate / format / round-trip checks).
 
 Does not connect to exchanges or change execution posture.
 
@@ -11,6 +11,11 @@ validate exit contract (stdout is one JSON object per invocation):
 dump-empty exit contract (stdout is one JSON object per invocation):
 - 0 — empty manifest written
 - 2 — usage / path / write problem (e.g. target is a directory, mkdir/write permission)
+
+format exit contract (stdout is one JSON object per invocation):
+- 0 — manifest validated and canonically rewritten
+- 2 — usage / input problem (unreadable path, invalid JSON, UTF-8 decode) or write problem
+- 3 — JSON ok but model / schema validation failed
 """
 
 from __future__ import annotations
@@ -35,7 +40,7 @@ def _emit_json(payload: object) -> None:
     print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
 
 
-def _cmd_validate(path: Path) -> int:
+def _read_manifest_with_contract(path: Path) -> tuple[LevelUpManifestV0 | None, int | None]:
     try:
         m = read_manifest(path)
     except OSError as exc:
@@ -47,7 +52,7 @@ def _cmd_validate(path: Path) -> int:
                 "message": str(exc),
             }
         )
-        return EXIT_INPUT
+        return None, EXIT_INPUT
     except UnicodeDecodeError as exc:
         _emit_json(
             {
@@ -57,7 +62,7 @@ def _cmd_validate(path: Path) -> int:
                 "message": str(exc),
             }
         )
-        return EXIT_INPUT
+        return None, EXIT_INPUT
     except JSONDecodeError as exc:
         _emit_json(
             {
@@ -67,7 +72,7 @@ def _cmd_validate(path: Path) -> int:
                 "message": str(exc),
             }
         )
-        return EXIT_INPUT
+        return None, EXIT_INPUT
     except ValidationError as exc:
         issues = exc.errors()
         if issues and issues[0].get("type") == "json_invalid":
@@ -80,7 +85,7 @@ def _cmd_validate(path: Path) -> int:
                     "message": msg,
                 }
             )
-            return EXIT_INPUT
+            return None, EXIT_INPUT
         issues = issues[:8]
         _emit_json(
             {
@@ -91,8 +96,17 @@ def _cmd_validate(path: Path) -> int:
                 "issues": issues,
             }
         )
-        return EXIT_VALIDATION_FAILED
+        return None, EXIT_VALIDATION_FAILED
 
+    return m, None
+
+
+def _cmd_validate(path: Path) -> int:
+    m, error_exit = _read_manifest_with_contract(path)
+    if error_exit is not None:
+        return error_exit
+
+    assert m is not None
     _emit_json({"ok": True, "schema": m.schema_version, "slices": len(m.slices)})
     return EXIT_VALIDATION_OK
 
@@ -126,6 +140,41 @@ def _cmd_dump_empty(path: Path) -> int:
     return EXIT_VALIDATION_OK
 
 
+def _cmd_format(path: Path) -> int:
+    m, error_exit = _read_manifest_with_contract(path)
+    if error_exit is not None:
+        return error_exit
+
+    assert m is not None
+    try:
+        write_manifest(path, m)
+    except IsADirectoryError as exc:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "input",
+                "reason": "target_path_is_directory",
+                "message": str(exc),
+            }
+        )
+        return EXIT_INPUT
+    except OSError as exc:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "input",
+                "reason": "manifest_write_failed",
+                "message": str(exc),
+            }
+        )
+        return EXIT_INPUT
+
+    _emit_json(
+        {"ok": True, "wrote": str(path), "schema": m.schema_version, "slices": len(m.slices)}
+    )
+    return EXIT_VALIDATION_OK
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m src.levelup.cli")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -139,11 +188,19 @@ def main(argv: list[str] | None = None) -> int:
     )
     p_dump.add_argument("manifest", type=Path, help="Output path")
 
+    p_format = sub.add_parser(
+        "format",
+        help="Validate and canonically rewrite an existing v0 manifest in place.",
+    )
+    p_format.add_argument("manifest", type=Path, help="Path to existing manifest.json")
+
     args = parser.parse_args(argv)
     if args.cmd == "validate":
         return _cmd_validate(args.manifest)
     if args.cmd == "dump-empty":
         return _cmd_dump_empty(args.manifest)
+    if args.cmd == "format":
+        return _cmd_format(args.manifest)
     return EXIT_INPUT
 
 

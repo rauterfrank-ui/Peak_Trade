@@ -177,3 +177,51 @@ def test_cli_validate_empty_file_json_parse_failed(tmp_path: Path) -> None:
     assert payload["ok"] is False
     assert payload["error"] == "input"
     assert payload["reason"] == "json_parse_failed"
+
+
+def test_cli_format_success_canonical_rewrite(tmp_path: Path) -> None:
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(
+        '{"title":"  Trimmed title  ","schema_version":"levelup/manifest/v0","slices":[]}',
+        encoding="utf-8",
+    )
+    r = _run_levelup_cli(["format", str(manifest)])
+    assert r.returncode == 0, r.stderr
+    assert r.stderr.strip() == ""
+    payload = json.loads(r.stdout.strip())
+    assert payload["ok"] is True
+    assert payload["wrote"] == str(manifest)
+    assert payload["schema"] == "levelup/manifest/v0"
+    assert payload["slices"] == 0
+
+    expected = LevelUpManifestV0(title="  Trimmed title  ").model_dump_json(indent=2) + "\n"
+    assert manifest.read_text(encoding="utf-8") == expected
+
+
+def test_cli_format_invalid_manifest_model_validation_failed(tmp_path: Path) -> None:
+    bad = tmp_path / "bad_manifest.json"
+    bad.write_text('{"schema_version":"not-a-valid-manifest-schema"}', encoding="utf-8")
+    r = _run_levelup_cli(["format", str(bad)])
+    assert r.returncode == 3, r.stderr
+    assert r.stderr.strip() == ""
+    payload = json.loads(r.stdout.strip())
+    assert payload["ok"] is False
+    assert payload["error"] == "validation"
+    assert payload["reason"] == "model_validation_failed"
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="chmod write-deny semantics differ on Windows")
+def test_cli_format_not_writable_target_file(tmp_path: Path) -> None:
+    manifest = tmp_path / "locked.json"
+    write_manifest(manifest, LevelUpManifestV0())
+    manifest.chmod(0o444)
+    try:
+        r = _run_levelup_cli(["format", str(manifest)])
+    finally:
+        manifest.chmod(0o644)
+    assert r.returncode == 2, r.stderr
+    assert r.stderr.strip() == ""
+    payload = json.loads(r.stdout.strip())
+    assert payload["ok"] is False
+    assert payload["error"] == "input"
+    assert payload["reason"] == "manifest_write_failed"
