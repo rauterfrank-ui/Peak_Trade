@@ -281,3 +281,17 @@ def test_cli_canonical_check_empty_file_json_parse_failed(tmp_path: Path) -> Non
     assert payload["ok"] is False
     assert payload["error"] == "input"
     assert payload["reason"] == "json_parse_failed"
+
+
+def test_cli_export_json_schema_success() -> None:
+    r = _run_levelup_cli(["export-json-schema"])
+    assert r.returncode == 0, r.stderr
+    assert r.stderr.strip() == ""
+    payload = json.loads(r.stdout.strip())
+    assert payload["ok"] is True
+    assert payload["schema"] == "levelup/manifest/v0"
+    schema = payload["json_schema"]
+    assert schema["title"] == "LevelUpManifestV0"
+    assert schema["type"] == "object"
+    assert "properties" in schema
+    assert "schema_version" in schema["properties"]
