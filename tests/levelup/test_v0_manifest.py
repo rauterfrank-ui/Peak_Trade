@@ -225,3 +225,59 @@ def test_cli_format_not_writable_target_file(tmp_path: Path) -> None:
     assert payload["ok"] is False
     assert payload["error"] == "input"
     assert payload["reason"] == "manifest_write_failed"
+
+
+def test_cli_canonical_check_already_canonical(tmp_path: Path) -> None:
+    manifest = tmp_path / "manifest.json"
+    write_manifest(manifest, LevelUpManifestV0())
+    r = _run_levelup_cli(["canonical-check", str(manifest)])
+    assert r.returncode == 0, r.stderr
+    assert r.stderr.strip() == ""
+    payload = json.loads(r.stdout.strip())
+    assert payload["ok"] is True
+    assert payload["canonical"] is True
+    assert payload["schema"] == "levelup/manifest/v0"
+    assert payload["slices"] == 0
+
+
+def test_cli_canonical_check_valid_but_not_canonical(tmp_path: Path) -> None:
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(
+        '{"title":"  Trim me  ","schema_version":"levelup/manifest/v0","slices":[]}',
+        encoding="utf-8",
+    )
+    r = _run_levelup_cli(["canonical-check", str(manifest)])
+    assert r.returncode == 3, r.stderr
+    assert r.stderr.strip() == ""
+    payload = json.loads(r.stdout.strip())
+    assert payload["ok"] is False
+    assert payload["error"] == "validation"
+    assert payload["reason"] == "manifest_not_canonical"
+    assert payload["canonical"] is False
+    assert payload["schema"] == "levelup/manifest/v0"
+    assert payload["slices"] == 0
+
+
+def test_cli_canonical_check_invalid_manifest_model_validation_failed(tmp_path: Path) -> None:
+    bad = tmp_path / "bad_manifest.json"
+    bad.write_text('{"schema_version":"not-a-valid-manifest-schema"}', encoding="utf-8")
+    r = _run_levelup_cli(["canonical-check", str(bad)])
+    assert r.returncode == 3, r.stderr
+    assert r.stderr.strip() == ""
+    payload = json.loads(r.stdout.strip())
+    assert payload["ok"] is False
+    assert payload["error"] == "validation"
+    assert payload["reason"] == "model_validation_failed"
+
+
+def test_cli_canonical_check_empty_file_json_parse_failed(tmp_path: Path) -> None:
+    """Leere Datei ist kein gültiges JSON → Exit 2, json_parse_failed (wie validate)."""
+    empty = tmp_path / "empty.json"
+    empty.write_text("", encoding="utf-8")
+    r = _run_levelup_cli(["canonical-check", str(empty)])
+    assert r.returncode == 2, r.stderr
+    assert r.stderr.strip() == ""
+    payload = json.loads(r.stdout.strip())
+    assert payload["ok"] is False
+    assert payload["error"] == "input"
+    assert payload["reason"] == "json_parse_failed"
