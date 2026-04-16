@@ -117,12 +117,15 @@ Klassifikation bezieht sich auf die **typische Fehlinterpretationslage**, nicht 
 - **Business Decision Core** ist nicht identisch mit der **Execution Pipeline**; Entscheidung und Ausfuehrung bleiben getrennte Autoritaetsdomaenen.
 - **AI Orchestrator** ist koordinierend, aber keine eigenstaendige Execution Authority.
 
-## 6) Provenance Boundary Notes
+## 6) Provenance Boundary Notes / Claim-Klassen
 
-- **nachweisbar**: Es existieren lokale Artefakte fuer Replay-/Provenance-Bausteine, die Teilaspekte der Nachvollziehbarkeit dokumentieren.
-- **teilweise nachweisbar**: Mehrere Begriffe und Kontrollgrenzen sind in unterschiedlichen Dokumenten beschrieben, aber nicht durchgaengig als einheitlicher End-to-End-Strang belegt.
-- **unklar**: Einzelne Authority-Uebergaenge zwischen Decision-, Gate- und Execution-Ebenen sind dokumentarisch nicht in jeder Richtung explizit verknuepft.
-- **nicht als kanonischer End-to-End-Pfad nachgewiesen**: Eine vollstaendig kanonisch integrierte E2E-Kette aus Vocabulary, Authority und Provenance wird hier nicht behauptet.
+Die folgenden **Kurzlabels** sind die Kurzform fuer Reviews und Entry-Docs; sie entsprechen eins zu eins den zuvor normierten deutschsprachigen Grenznotizen.
+
+- **`repo-evidenced`** (*nachweisbar*): Es existieren lokale Artefakte fuer Replay-/Provenance-Bausteine, die Teilaspekte der Nachvollziehbarkeit dokumentieren.
+- **`documented`** (*teilweise nachweisbar*): Mehrere Begriffe und Kontrollgrenzen sind in unterschiedlichen Dokumenten beschrieben, aber nicht durchgaengig als einheitlicher End-to-End-Strang belegt.
+- **`unverified`** (*unklar*): Einzelne Authority-Uebergaenge zwischen Decision-, Gate- und Execution-Ebenen sind dokumentarisch nicht in jeder Richtung explizit verknuepft.
+- **`not-claimed`** (*nicht als kanonischer End-to-End-Pfad nachgewiesen*): Eine vollstaendig kanonisch integrierte E2E-Kette aus Vocabulary, Authority und Provenance wird hier nicht behauptet.
+- **`operator-stated`**: Kennzeichnung fuer Operator- oder Review-Sprache ohne zusaetzliche Autoritaetsbehauptung (vgl. Abschnitt 4, E6); kein Grenzzustand neben den vier Eintraegen oben, sondern explizite Attributierung.
 
 ## 7) Offene Luecken / nicht nachgewiesene Punkte
 
@@ -135,7 +138,7 @@ Klassifikation bezieht sich auf die **typische Fehlinterpretationslage**, nicht 
 
 - Keine Runtime-Ableitung aus diesem Dokument ohne subsystem-spezifische Spezifikation.
 - Keine Gleichsetzung der in Abschnitt 3 verbotenen Paare in Design-, Implementierungs- oder Review-Claims.
-- Claims sind ausschliesslich in den Klassen **nachweisbar**, **teilweise nachweisbar**, **unklar** oder **nicht als kanonischer End-to-End-Pfad nachgewiesen** zu formulieren.
+- Claims sind ausschliesslich in den Klassen **`repo-evidenced`**, **`documented`**, **`unverified`** oder **`not-claimed`** zu formulieren (Definitionen Abschnitt 6; deutsch: *nachweisbar*, *teilweise nachweisbar*, *unklar*, *nicht als kanonischer End-to-End-Pfad nachgewiesen*). **`unverified`** und **`not-claimed`** nicht als verifizierte oder vollstaendig belegte Aussagen ausgeben. **`operator-stated`** explizit markieren, wo zutreffend (Abschnitt 6 und Abschnitt 4, E6).
 - Jede spaetere Runtime-Arbeit muss die Authority-Veto-Hierarchie sowie die Provenance-Boundaries explizit referenzieren.
 
 ## Verifizierte Cross-Links (knapp)

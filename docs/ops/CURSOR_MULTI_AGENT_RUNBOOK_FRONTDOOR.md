@@ -27,7 +27,7 @@ Es ist bewusst **kurz, normativ und umsetzungsorientiert**. Detaillierte Inhalte
 
 - Canonical Spec (verbindlich): [docs/ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md)
 - Normative Kurzregel: `Governance > Safety&#47;Kill-Switch > Risk&#47;Exposure Caps`; `Switch-Gate` und `AI Orchestrator` sind Control-Orchestration/advisory, aber keine finale Execution Authority.
-- Claim-Disziplin: Claims nur als `repo-evidenced` oder `documented` formulieren; `operator-stated` explizit markieren; `unverified` und `not-claimed` nicht als Fakt formulieren; keine impliziten E2E-/Runtime-Behauptungen.
+- Claim-Disziplin: Claims nur in den Klassen `repo-evidenced`, `documented`, `unverified`, `not-claimed` formulieren (Abschnitt 6); `unverified` und `not-claimed` nicht als verifizierte Fakten ausgeben; `operator-stated` explizit markieren; keine impliziten E2E-/Runtime-Behauptungen.
 
 ---
 
