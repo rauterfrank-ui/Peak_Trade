@@ -22,7 +22,11 @@ Sie strukturiert nur die **organisatorische** Freigabe-Hülle; **Repo-Merge**, D
 ## Canonical: LevelUp v0 — additive Manifest-/IO-/CLI-Oberfläche
 
 Kanonische **Ops-/Spec-Oberfläche** (Auffindbarkeit, Claim-Grenzen; **keine** neue Governance-/Risk-/Safety-Autorität): [`docs/ops/specs/LEVELUP_V0_CANONICAL_SURFACE.md`](../specs/LEVELUP_V0_CANONICAL_SURFACE.md).  
-**Drift-Guard-Kopplung (Slice A):** Eine explizite Regel in `config/ops/docs_truth_map.yaml` ist für `src/levelup/` zum Zeitpunkt dieses Slices **nicht** vorgesehen; bei künftiger Ergänzung ist die naheliegende Paarung: `sensitive` → Präfix `src/levelup/`, `required_docs` → mindestens `docs/ops/specs/LEVELUP_V0_CANONICAL_SURFACE.md` (gleiches Muster wie z. B. `forward-run-manifest-helper`). Bis dahin: Änderungen unter `src/levelup/` bewusst mit dieser Canonical-Datei oder einem nachfolgenden Truth-Map-Eintrag unter „Änderungsnachweis“ abgleichen.
+**Drift-Guard-Kopplung (Slice A):** Regel `levelup-v0-layer` in `config/ops/docs_truth_map.yaml` — `sensitive` → Präfix `src/levelup/`, `required_docs` → `docs/ops/specs/LEVELUP_V0_CANONICAL_SURFACE.md` (gleiches Muster wie z. B. `forward-run-manifest-helper`).
+
+## Operator: `levelup-v0-layer`
+
+Wenn **`src/levelup/`** (Prefix-Regel) geändert wird, muss im **selben Diff** mindestens **`docs/ops/specs/LEVELUP_V0_CANONICAL_SURFACE.md`** mitaktualisiert werden (siehe Regel `levelup-v0-layer` in `config/ops/docs_truth_map.yaml`).
 
 ## Wie das Mapping funktioniert
 
@@ -69,7 +73,9 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 ## Änderungsnachweis (Slice A)
 
-- 2026-04-16: `docs&#47;ops&#47;specs&#47;LEVELUP_V0_CANONICAL_SURFACE.md` neu — kanonische Ops-/Spec-Oberfläche für LevelUp v0 (Manifest-/IO-/CLI; keine neue Autorität); Querverweise in `docs&#47;KNOWLEDGE_BASE_INDEX.md`, `docs&#47;ops&#47;README.md`, `docs&#47;ops&#47;RUNBOOK_INDEX.md`; Truth-Map-Abschnitt „Canonical: LevelUp v0“; **keine** `config&#47;ops&#47;docs_truth_map.yaml`-Regel in diesem Slice; keine Runtime-/E2E-Ausweitung.
+- 2026-04-16: `docs&#47;ops&#47;specs&#47;LEVELUP_V0_CANONICAL_SURFACE.md` neu — kanonische Ops-/Spec-Oberfläche für LevelUp v0 (Manifest-/IO-/CLI; keine neue Autorität); Querverweise in `docs&#47;KNOWLEDGE_BASE_INDEX.md`, `docs&#47;ops&#47;README.md`, `docs&#47;ops&#47;RUNBOOK_INDEX.md`; Truth-Map-Abschnitt „Canonical: LevelUp v0“; zunächst ohne `docs_truth_map.yaml`-Regel; keine Runtime-/E2E-Ausweitung.
+
+- 2026-04-16: `config&#47;ops&#47;docs_truth_map.yaml` — Regel `levelup-v0-layer` (`src&#47;levelup&#47;` → `docs&#47;ops&#47;specs&#47;LEVELUP_V0_CANONICAL_SURFACE.md`); Truth-Map-Abschnitt „Canonical: LevelUp v0“ + Operator-Stub `levelup-v0-layer` aligned; Drift-Guard wie `forward-run-manifest-helper`; keine neue Autorität.
 
 - 2026-04-16: `docs&#47;GOVERNANCE_AND_SAFETY_OVERVIEW.md` — second-wave canonical hub anchors (PR #2664, docs-only); Truth-Map-Pflege; paired with `governance-overview-canonical`; keine Live-Freigabe.
 
