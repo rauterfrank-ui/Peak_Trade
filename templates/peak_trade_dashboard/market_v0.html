@@ -1,0 +1,127 @@
+<!-- templates/peak_trade_dashboard/market_v0.html -->
+<!-- Market Surface v0 — read-only, Close-Line-Chart (Chart.js) -->
+{% extends "base.html" %}
+
+{% block content %}
+<div
+  class="space-y-6 max-w-6xl mx-auto"
+  data-section="market-v0"
+  data-market-source="{{ query.source }}"
+  data-market-bars="{{ payload.bars_returned }}"
+  data-market-symbol="{{ query.symbol }}"
+>
+  <header class="bg-gradient-to-r from-slate-900/80 to-slate-900/40 rounded-2xl border border-slate-800 p-6">
+    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+      <div>
+        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">Market Surface</p>
+        <h1 class="text-2xl font-bold text-slate-100">v0 · Read-only OHLCV</h1>
+        <p class="text-sm text-slate-400 mt-2 max-w-2xl">
+          READ-ONLY · Keine Orders · Öffentliche OHLCV (Kraken) oder offline Dummy-Daten.
+          Chart: Schlusskurs-Linie (V0 — bewusst minimal, kein Candlestick-Plugin).
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300">
+          ← Dashboard
+        </a>
+        <a href="/r_and_d/charts" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300">
+          R&amp;D Charts
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section aria-label="Parameter" class="bg-slate-900/60 rounded-xl border border-slate-800 p-4 text-xs text-slate-400">
+    <p class="font-medium text-slate-300 mb-2">Aktuelle Abfrage</p>
+    <ul class="font-mono space-y-1">
+      <li>symbol={{ query.symbol }}</li>
+      <li>timeframe={{ query.timeframe }} (Kraken; Dummy bleibt synthetisch 1h)</li>
+      <li>limit={{ query.limit }}</li>
+      <li>source={{ query.source }} — für Live-Daten: <span class="text-sky-400">?source=kraken</span> (Netzwerk)</li>
+    </ul>
+  </section>
+
+  <section
+    aria-label="Close-Preis"
+    class="bg-slate-900/60 rounded-xl border border-slate-800 p-4"
+    data-chart="market-v0-close-line"
+  >
+    <h2 class="text-sm font-medium text-slate-200 mb-3">Schlusskurs (Close)</h2>
+    <div class="relative h-80 w-full">
+      <canvas id="chart-market-v0-close"></canvas>
+    </div>
+  </section>
+
+  <script type="application/json" id="market-v0-payload">{{ payload | tojson }}</script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    (function () {
+      const el = document.getElementById("market-v0-payload");
+      if (!el) return;
+      let payload;
+      try {
+        payload = JSON.parse(el.textContent || "{}");
+      } catch (e) {
+        return;
+      }
+      const bars = payload.bars || [];
+      if (!bars.length) return;
+
+      const labels = bars.map(function (b) { return b.ts; });
+      const closes = bars.map(function (b) { return b.close; });
+
+      const canvas = document.getElementById("chart-market-v0-close");
+      if (!canvas || !window.Chart) return;
+
+      const grid = "rgba(148, 163, 184, 0.15)";
+      const tick = "#94a3b8";
+      const line = "rgba(56, 189, 248, 0.85)";
+
+      new Chart(canvas.getContext("2d"), {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Close",
+              data: closes,
+              borderColor: line,
+              backgroundColor: "rgba(56, 189, 248, 0.12)",
+              borderWidth: 1.5,
+              fill: true,
+              tension: 0.1,
+              pointRadius: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: "index", intersect: false },
+          plugins: {
+            legend: { labels: { color: tick } },
+            tooltip: {
+              callbacks: {
+                label: function (ctx) {
+                  var v = ctx.parsed.y;
+                  return v != null ? "close: " + v.toFixed(2) : "";
+                },
+              },
+            },
+          },
+          scales: {
+            x: {
+              ticks: { color: tick, maxRotation: 45, minRotation: 0, font: { size: 9 } },
+              grid: { color: grid },
+            },
+            y: {
+              ticks: { color: tick },
+              grid: { color: grid },
+            },
+          },
+        },
+      });
+    })();
+  </script>
+</div>
+{% endblock %}

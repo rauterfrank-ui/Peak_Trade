@@ -50,6 +50,7 @@ HTML Pages:
 - GET /r_and_d/experiment/{run_id} (R&D Experiment Detail - Phase 77, Alias)
 - GET /r_and_d/experiments/{run_id} (R&D Experiment Detail - Phase 76 kanonisch)
 - GET /r_and_d/comparison (R&D Multi-Run Comparison - Phase 78)
+- GET /market (Market Surface v0 — read-only OHLCV, Close-Line-Chart)
 
 API Endpoints:
 Live-Track:
@@ -76,6 +77,9 @@ Knowledge DB (v1.0):
 
 System:
 - GET /api/health (Health-Check)
+
+Market Surface v0 (read-only):
+- GET /api/market/ohlcv (JSON — öffentliche OHLCV oder Dummy)
 """
 
 from __future__ import annotations
@@ -179,6 +183,7 @@ from .ops_ci_health_router import (
 
 from .execution_watch_api_v0 import router as execution_watch_v0_router
 from .execution_watch_api_v0_2 import router as execution_watch_v0_2_router
+from .market_surface import create_market_router
 
 
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
@@ -493,6 +498,9 @@ def create_app() -> FastAPI:
     app.include_router(execution_watch_v0_router)
     # Execution Watch Dashboard v0.2 — watch-only (read-only APIs)
     app.include_router(execution_watch_v0_2_router)
+
+    # Market Surface v0 — read-only OHLCV (kein OPS-Cockpit-Bezug)
+    app.include_router(create_market_router(templates, get_project_status))
 
     # JSON API Alias für /api/ops/workflows
     @app.get("/api/ops/workflows")
