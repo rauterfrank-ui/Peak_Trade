@@ -56,6 +56,33 @@ def test_evidence_path_rejected(bad: str) -> None:
         EvidenceBundleRefV0(relative_dir=bad)
 
 
+def test_manifest_rejects_duplicate_slice_id() -> None:
+    sl_a = SliceContractV0(
+        slice_id="SAME",
+        title="First",
+        contract_summary="x",
+    )
+    sl_b = SliceContractV0(
+        slice_id="SAME",
+        title="Second",
+        contract_summary="y",
+    )
+    with pytest.raises(ValidationError) as exc:
+        LevelUpManifestV0(slices=(sl_a, sl_b))
+    assert "duplicate slice_id" in str(exc.value).lower()
+
+
+@pytest.mark.parametrize("bad_title", ["", "   ", "\t\n"])
+def test_manifest_root_title_rejects_empty_after_strip(bad_title: str) -> None:
+    with pytest.raises(ValidationError):
+        LevelUpManifestV0(title=bad_title)
+
+
+def test_manifest_root_title_strips_surrounding_whitespace() -> None:
+    m = LevelUpManifestV0(title="  Trimmed  ")
+    assert m.title == "Trimmed"
+
+
 def test_cli_validate_and_dump_empty(tmp_path: Path) -> None:
     manifest = tmp_path / "manifest.json"
     env = os.environ.copy()
