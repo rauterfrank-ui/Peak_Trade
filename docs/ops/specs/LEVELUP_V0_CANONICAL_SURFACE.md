@@ -39,7 +39,7 @@ Ausrichtung an den verbindlichen Vokabular-/Authority-/Provenance-Regeln: [`CANO
 | Pfad | Rolle |
 |------|--------|
 | `src/levelup/__init__.py` | Öffentliche Re-Exports der v0-API. |
-| `src/levelup/v0_models.py` | Pydantic-Modelle, Schema-String `levelup/manifest/v0`. |
+| `src/levelup/v0_models.py` | Pydantic-Modelle, Schema-String `levelup&#47;manifest&#47;v0`. |
 | `src/levelup/v0_io.py` | JSON einlesen/ausgeben (Path). |
 | `src/levelup/cli.py` | CLI-Einstieg (`validate`, `dump-empty`). |
 | `tests/levelup/test_v0_manifest.py` | Roundtrip-, Validierungs- und CLI-Tests. |
@@ -48,7 +48,7 @@ Ausrichtung an den verbindlichen Vokabular-/Authority-/Provenance-Regeln: [`CANO
 
 Alles Folgende bezieht sich auf den **Ist**-Stand der genannten Dateien:
 
-- **Schema:** `LevelUpManifestV0.schema_version` ist fix `levelup/manifest/v0` (`src/levelup/v0_models.py`).
+- **Schema:** `LevelUpManifestV0.schema_version` ist fix `levelup&#47;manifest&#47;v0` (`src/levelup/v0_models.py`).
 - **Evidence-Pfade:** `EvidenceBundleRefV0.relative_dir` muss mit `out/ops/` beginnen; Traversal wird abgewiesen (Validator in `v0_models.py`); abgelehnte Beispiele und Roundtrip-Verhalten sind in `tests/levelup/test_v0_manifest.py` abgedeckt.
 - **IO:** `read_manifest` nutzt `model_validate_json` auf Dateiinhalt; `write_manifest` schreibt formatiertes JSON (inkl. Elternverzeichnis-Anlage).
 - **CLI (read-only Doku):** Einstieg `python -m src.levelup.cli` mit Unterbefehlen `validate <manifest>` und `dump-empty <manifest>` (`argparse`-`prog` in `cli.py`). `validate` gibt eine JSON-Zeile mit `ok`, `schema`, `slices` aus; `dump-empty` schreibt ein leeres Manifest und gibt `ok`/`wrote` zurück. Subprozess-Checks: `test_cli_validate_and_dump_empty` in `tests/levelup/test_v0_manifest.py`.
