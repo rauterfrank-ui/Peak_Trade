@@ -1,5 +1,5 @@
 """
-Minimal CLI for Level-Up v0 manifests (validate / format / round-trip checks).
+Minimal CLI for Level-Up v0 manifests (validate / format / schema export / round-trip checks).
 
 Does not connect to exchanges or change execution posture.
 
@@ -21,6 +21,9 @@ canonical-check exit contract (stdout is one JSON object per invocation):
 - 0 — manifest validated and already canonical
 - 2 — usage / input problem (unreadable path, invalid JSON, UTF-8 decode)
 - 3 — model / schema validation failed, or manifest is valid but not canonical
+
+export-json-schema exit contract (stdout is one JSON object per invocation):
+- 0 — schema export succeeded
 """
 
 from __future__ import annotations
@@ -228,6 +231,12 @@ def _cmd_canonical_check(path: Path) -> int:
     return EXIT_VALIDATION_OK
 
 
+def _cmd_export_json_schema() -> int:
+    schema = LevelUpManifestV0.model_json_schema()
+    _emit_json({"ok": True, "schema": LevelUpManifestV0().schema_version, "json_schema": schema})
+    return EXIT_VALIDATION_OK
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m src.levelup.cli")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -253,6 +262,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     p_check.add_argument("manifest", type=Path, help="Path to existing manifest.json")
 
+    sub.add_parser(
+        "export-json-schema",
+        help="Export the LevelUpManifestV0 JSON schema as one JSON object on stdout.",
+    )
+
     args = parser.parse_args(argv)
     if args.cmd == "validate":
         return _cmd_validate(args.manifest)
@@ -262,6 +276,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_format(args.manifest)
     if args.cmd == "canonical-check":
         return _cmd_canonical_check(args.manifest)
+    if args.cmd == "export-json-schema":
+        return _cmd_export_json_schema()
     return EXIT_INPUT
 
 
