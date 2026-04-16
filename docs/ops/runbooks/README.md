@@ -5,6 +5,14 @@
 
 ---
 
+## Canonical Vocabulary / Authority / Provenance v0
+
+- Binding spec: [docs/ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](../specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md)
+- **Primary norm** for term discipline, authority/veto precedence, and claim/provenance discipline (details in the spec).
+- Claim classes: `repo-evidenced`, `documented`, `operator-stated`, `unverified`, `not-claimed` (definitions: spec section 6).
+
+---
+
 - [RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md](./RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md): Tech-Debt Top-3 ROI bis Finish (Cursor Multi-Agent)
 
 

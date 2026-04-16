@@ -4,6 +4,14 @@ Governance-Dokumentation für AI-Autonomie, Policy Enforcement und Compliance im
 
 ---
 
+## Canonical Vocabulary / Authority / Provenance v0
+
+- Canonical Spec (verbindlich): [docs/ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](../ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md)
+- **Primärnorm** für Begriffsdisziplin, Authority-/Veto-Precedence und Claim-/Provenance-Disziplin (Veto-Kette und Grenzen in der Spec).
+- Claim-Disziplin: Claims in den Klassen `repo-evidenced`, `documented`, `unverified`, `not-claimed` formulieren (Abschnitt 6); `unverified` und `not-claimed` nicht als verifizierte Fakten ausgeben; `operator-stated` explizit markieren, wo zutreffend; keine impliziten E2E-/Runtime-Behauptungen.
+
+---
+
 ## 📋 Core Governance
 
 - **[AI Autonomy Go/No-Go Overview](AI_AUTONOMY_GO_NO_GO_OVERVIEW.md)** — Governance-first guardrails für Cursor Agent (keine Live-Autonomie)
