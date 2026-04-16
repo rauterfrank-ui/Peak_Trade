@@ -64,6 +64,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 ## Änderungsnachweis (Slice A)
 
+- 2026-04-16: `docs&#47;GOVERNANCE_AND_SAFETY_OVERVIEW.md` — second-wave canonical hub anchors (PR #2664, docs-only); Truth-Map-Pflege; paired with `governance-overview-canonical`; keine Live-Freigabe.
+
 - 2026-04-13: Top-Level-Key **`safety_state`** im Ops-Cockpit-Payload — `src&#47;ops&#47;safety_state.py` (`build_safety_state`); Projektion aus bestehenden `safety_posture_observation`, `incident_safety_observation`, `incident_state`; Contract/Operator-Summary/Coverage-Matrix angepasst; Tests `tests&#47;ops&#47;test_safety_state.py`, `tests&#47;ops&#47;test_ops_cockpit_payload_top_level_contract.py`, `tests&#47;webui&#47;test_ops_cockpit.py`; **keine** Gate-Abschwächung, **keine** Freigabe-Semantik.
 
 - 2026-04-13: Operator-Summary-HTML — **`safety_state`** als read-only Block **Safety state (vNext projection)** in `src&#47;webui&#47;ops_cockpit.py` (`_render_operator_summary_surface`, `id=operator-summary-safety-state-projection`); Doku `OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`, `OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md` (RV1); Test-Anker in `tests&#47;webui&#47;test_ops_cockpit.py`; **keine** neue Autorität, **keine** Freigabe-Semantik.

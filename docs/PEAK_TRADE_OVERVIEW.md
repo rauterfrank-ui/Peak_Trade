@@ -6,6 +6,14 @@
 
 ---
 
+## Canonical Vocabulary / Authority / Provenance v0
+
+- Canonical Spec (verbindlich): [docs/ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md)
+- Normative Kurzregel: `Governance > Safety&#47;Kill-Switch > Risk&#47;Exposure Caps`; `Switch-Gate` und `AI Orchestrator` sind Control-Orchestration/advisory, aber keine finale Execution Authority.
+- Claim-Disziplin: Claims nur in den Klassen `repo-evidenced`, `documented`, `unverified`, `not-claimed` formulieren (Abschnitt 6); `unverified` und `not-claimed` nicht als verifizierte Fakten ausgeben; `operator-stated` explizit markieren; keine impliziten E2E-/Runtime-Behauptungen.
+
+---
+
 ## Architektur-Map
 
 Peak_Trade folgt einer klaren Pipeline-Architektur mit strikter Separation of Concerns:
