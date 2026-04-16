@@ -16,8 +16,8 @@ LevelUp **v0** ist im Repo aktuell eine **kleine, additive** Grundlage: typisier
 |--------|---------------------------|
 | **Modelle** | `EvidenceBundleRefV0`, `SliceContractV0`, `LevelUpManifestV0` — nur soweit aus `src/levelup/v0_models.py` ablesbar. |
 | **JSON/IO** | `read_manifest`, `write_manifest` in `src/levelup/v0_io.py` — **offline**, repo-lokale Pfade. |
-| **CLI** | Nur das, was `src/levelup/cli.py` und `tests/levelup/test_v0_manifest.py` eindeutig belegen (siehe Abschnitt 6). |
-| **Tests** | `tests/levelup/test_v0_manifest.py` als Verifikationsanker. |
+| **CLI** | Nur das, was `src/levelup/cli.py` sowie `tests/levelup/test_v0_manifest.py` und `tests/levelup/test_v0_validate_cli.py` eindeutig belegen (siehe Abschnitt 6). |
+| **Tests** | `tests/levelup/test_v0_manifest.py`, `tests/levelup/test_v0_validate_cli.py` als Verifikationsanker. |
 
 **Out-of-Scope:** LevelUp v1/vNext, Runtime-/E2E-Garantien, Produktions-Gates, Execution- oder Order-Autorität.
 
@@ -42,7 +42,8 @@ Ausrichtung an den verbindlichen Vokabular-/Authority-/Provenance-Regeln: [`CANO
 | `src/levelup/v0_models.py` | Pydantic-Modelle, Schema-String `levelup&#47;manifest&#47;v0`. |
 | `src/levelup/v0_io.py` | JSON einlesen/ausgeben (Path). |
 | `src/levelup/cli.py` | CLI-Einstieg (`validate`, `dump-empty`). |
-| `tests/levelup/test_v0_manifest.py` | Roundtrip-, Validierungs- und CLI-Tests. |
+| `tests/levelup/test_v0_manifest.py` | Roundtrip-, Validierungs- und Basis-CLI-Tests. |
+| `tests/levelup/test_v0_validate_cli.py` | Subprozess-Tests für `validate`-Exit-Codes und JSON-Fehlerobjekt. |
 
 ## 6) Current verified surface (eng, aus Code/Test)
 
@@ -51,6 +52,10 @@ Alles Folgende bezieht sich auf den **Ist**-Stand der genannten Dateien:
 - **Schema:** `LevelUpManifestV0.schema_version` ist fix `levelup&#47;manifest&#47;v0` (`src/levelup/v0_models.py`).
 - **Evidence-Pfade:** `EvidenceBundleRefV0.relative_dir` muss mit `out/ops/` beginnen; Traversal wird abgewiesen (Validator in `v0_models.py`); abgelehnte Beispiele und Roundtrip-Verhalten sind in `tests/levelup/test_v0_manifest.py` abgedeckt.
 - **IO:** `read_manifest` nutzt `model_validate_json` auf Dateiinhalt; `write_manifest` schreibt formatiertes JSON (inkl. Elternverzeichnis-Anlage).
-- **CLI (read-only Doku):** Einstieg `python -m src.levelup.cli` mit Unterbefehlen `validate <manifest>` und `dump-empty <manifest>` (`argparse`-`prog` in `cli.py`). `validate` gibt eine JSON-Zeile mit `ok`, `schema`, `slices` aus; `dump-empty` schreibt ein leeres Manifest und gibt `ok`/`wrote` zurück. Subprozess-Checks: `test_cli_validate_and_dump_empty` in `tests/levelup/test_v0_manifest.py`.
+- **CLI (read-only Doku):** Einstieg `python -m src.levelup.cli` mit Unterbefehlen `validate <manifest>` und `dump-empty <manifest>` (`argparse`-`prog` in `cli.py`). **validate** schreibt **genau eine JSON-Zeile auf stdout** (stderr leer im erwarteten Fehlerpfad):
+  - **Erfolg:** `ok: true`, plus `schema`, `slices` (Anzahl).
+  - **Fehler:** `ok: false`, `error` (`input` | `validation`), `reason` (z. B. `json_parse_failed`, `manifest_read_failed`, `model_validation_failed`), knappe `message`; bei `validation` zusätzlich `issues` (gekürzte Pydantic-Fehlerliste).
+  - **Exit-Codes:** `0` = Validierung ok; `2` = Usage/Eingabe (u. a. fehlende Datei, Lesefehler, ungültiges JSON, UTF-8-Dekodierung); `3` = JSON parsebar, Modell-/Schema-Validierung fehlgeschlagen. `dump-empty` schreibt ein leeres Manifest und gibt eine JSON-Zeile mit `ok`/`wrote` zurück (Erfolg `0`).
+  - Subprozess-Checks: `test_cli_validate_and_dump_empty` in `tests/levelup/test_v0_manifest.py`, `test_v0_validate_cli.py` in `tests/levelup/`.
 
 **Non-claims:** Keine Aussage über Integration in Deployments, CI-Pflicht oder Freigabeprozesse — sofern nicht separat und repo-evidenced dokumentiert.
