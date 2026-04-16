@@ -6,6 +6,14 @@
 
 ---
 
+## Canonical Vocabulary / Authority / Provenance v0
+
+- Canonical Spec (verbindlich): [docs/ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md)
+- Normative Kurzregel: `Governance`, `Safety`, `Kill-Switch` und `Risk&#47;Exposure Caps` sind bindend; `Switch-Gate` und `AI Orchestrator` sind advisory, sofern nicht separat und ausdrücklich anderweitig durch canonical authority definiert.
+- Claim-Disziplin: Ist-/Runtime-/E2E-Behauptungen nur mit verifizierbarer Repo-Evidenz; sonst klar als `Soll` / `intended` / `documented` / `unclear` trennen (Klassen und Definitionen: Spec, Abschnitt 6).
+
+---
+
 ## Runbooks
 
 | Kategorie | Pfad | Hinweis |

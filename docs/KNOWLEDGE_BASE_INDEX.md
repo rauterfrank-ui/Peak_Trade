@@ -68,6 +68,7 @@
 ### 🚦 Live Operations
 
 #### Operations & Monitoring
+- [Ops Runbook Index](ops/RUNBOOK_INDEX.md) - Runbook-Hub (zentraler Ops-Einstieg zu Runbooks, Workflows und Ops-Dokumentation)
 - [Live Ops CLI](PHASE_51_LIVE_OPS_CLI.md) - Live operations tools
 - [Live Status Reports](LIVE_STATUS_REPORTS.md) - Monitoring and reporting
 - [Live Track Dashboard](PHASE_82_LIVE_TRACK_DASHBOARD.md) - Dashboard overview
