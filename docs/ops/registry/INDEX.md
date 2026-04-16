@@ -1,5 +1,11 @@
 # Ops Registry Index
 
+## Canonical Vocabulary / Authority / Provenance v0
+
+- Binding spec: [docs/ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](../specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md)
+- **Primary norm** for term discipline, authority/veto precedence, and claim/provenance discipline (details in the spec).
+- Claim classes: `repo-evidenced`, `documented`, `operator-stated`, `unverified`, `not-claimed` (definitions: spec section 6).
+
 ## Policy Telemetry (Real) — Audit Milestone
 
 This milestone ensures `telemetry_summary.json` is derived from **real** policy decision context (paper session `evidence_manifest.json`), not from fallback policy.
