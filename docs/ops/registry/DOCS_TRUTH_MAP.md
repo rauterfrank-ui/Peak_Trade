@@ -19,6 +19,11 @@ Sie strukturiert nur die **organisatorische** Freigabe-Hülle; **Repo-Merge**, D
 
 **Sprach-Mapping (externes Feld „Strategy Version“):** [`docs/ops/LB_APR_001_STRATEGY_VERSION_FIELD_MAPPING.md`](../LB_APR_001_STRATEGY_VERSION_FIELD_MAPPING.md) — Registry-Schlüssel vs. Laufzeit-ID vs. Git/Artefakt vs. KI-/Model-Registry; **Draft-/Approval-Hilfe**; **kein** technischer Unlock; **keine** implizite Live-Freigabe.
 
+## Canonical: LevelUp v0 — additive Manifest-/IO-/CLI-Oberfläche
+
+Kanonische **Ops-/Spec-Oberfläche** (Auffindbarkeit, Claim-Grenzen; **keine** neue Governance-/Risk-/Safety-Autorität): [`docs/ops/specs/LEVELUP_V0_CANONICAL_SURFACE.md`](../specs/LEVELUP_V0_CANONICAL_SURFACE.md).  
+**Drift-Guard-Kopplung (Slice A):** Eine explizite Regel in `config/ops/docs_truth_map.yaml` ist für `src/levelup/` zum Zeitpunkt dieses Slices **nicht** vorgesehen; bei künftiger Ergänzung ist die naheliegende Paarung: `sensitive` → Präfix `src/levelup/`, `required_docs` → mindestens `docs/ops/specs/LEVELUP_V0_CANONICAL_SURFACE.md` (gleiches Muster wie z. B. `forward-run-manifest-helper`). Bis dahin: Änderungen unter `src/levelup/` bewusst mit dieser Canonical-Datei oder einem nachfolgenden Truth-Map-Eintrag unter „Änderungsnachweis“ abgleichen.
+
 ## Wie das Mapping funktioniert
 
 1. Regeln stehen in `config/ops/docs_truth_map.yaml` (`rules[]`).
@@ -63,6 +68,8 @@ Kurzablauf, wenn **`src/orders/`** (Prefix-Regel) geändert wird:
 Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im **selben Diff** **`docs/ops/registry/DOCS_TRUTH_MAP.md`** (diese Datei) einen kurzen Eintrag unter „Änderungsnachweis“ erhalten — damit bleibt die Registry-Landkarte mit der Branch-Protection-Referenz im Einklang (siehe Regel `truth-branch-protection-canonical` in `config/ops/docs_truth_map.yaml`).
 
 ## Änderungsnachweis (Slice A)
+
+- 2026-04-16: `docs&#47;ops&#47;specs&#47;LEVELUP_V0_CANONICAL_SURFACE.md` neu — kanonische Ops-/Spec-Oberfläche für LevelUp v0 (Manifest-/IO-/CLI; keine neue Autorität); Querverweise in `docs&#47;KNOWLEDGE_BASE_INDEX.md`, `docs&#47;ops&#47;README.md`, `docs&#47;ops&#47;RUNBOOK_INDEX.md`; Truth-Map-Abschnitt „Canonical: LevelUp v0“; **keine** `config&#47;ops&#47;docs_truth_map.yaml`-Regel in diesem Slice; keine Runtime-/E2E-Ausweitung.
 
 - 2026-04-16: `docs&#47;GOVERNANCE_AND_SAFETY_OVERVIEW.md` — second-wave canonical hub anchors (PR #2664, docs-only); Truth-Map-Pflege; paired with `governance-overview-canonical`; keine Live-Freigabe.
 
