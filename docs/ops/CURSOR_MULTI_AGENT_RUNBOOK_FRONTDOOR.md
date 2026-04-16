@@ -23,6 +23,12 @@ Es ist bewusst **kurz, normativ und umsetzungsorientiert**. Detaillierte Inhalte
 - *Front Door* = Wie wir liefern (Rollen, Task-Packet, PR-Contract, Gates, Stop-Regeln).  
 - *Appendices* = Was genau wir liefern (Phase-Matrix, Befehle, Troubleshooting, Repo-Anker/Current Reality).
 
+## Canonical Vocabulary / Authority / Provenance v0
+
+- Canonical Spec (verbindlich): [docs/ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md)
+- Normative Kurzregel: `Governance > Safety&#47;Kill-Switch > Risk&#47;Exposure Caps`; `Switch-Gate` und `AI Orchestrator` sind Control-Orchestration/advisory, aber keine finale Execution Authority.
+- Claim-Disziplin: Claims nur als `repo-evidenced` oder `documented` formulieren; `operator-stated` explizit markieren; `unverified` und `not-claimed` nicht als Fakt formulieren; keine impliziten E2E-/Runtime-Behauptungen.
+
 ---
 
 ## 1.1 Start in 60 Sekunden

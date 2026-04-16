@@ -3,11 +3,24 @@
 - PR #999 — docs(grafana): fix DS_LOCAL uid templating in execution watch dashboard: docs/ops/PR_999_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
 
+
+
+
+
+
+
+
 **[Docs Truth Map](registry/DOCS_TRUTH_MAP.md)** — canonical ops documentation registry and change log (truth-first).
 
 <!-- ops readme status navigation note -->
 - Projektstatus / Navigation: `docs&#47;INDEX.md` ist der zentrale Einstieg für Docs-Navigation.
 - Für kompakten Status-/Lookup-Einstieg nutze `docs&#47;ops&#47;STATUS_MATRIX.md`; für datierten narrativen Kontext nutze `docs&#47;ops&#47;STATUS_OVERVIEW_2026-02-19.md`.
+
+## Canonical Vocabulary / Authority / Provenance v0
+
+- Canonical Spec (verbindlich): [docs/ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md)
+- Normative Kurzregel: `Governance > Safety&#47;Kill-Switch > Risk&#47;Exposure Caps`; `Switch-Gate` und `AI Orchestrator` sind Control-Orchestration/advisory, aber keine finale Execution Authority.
+- Claim-Disziplin: Claims nur als `repo-evidenced` oder `documented` formulieren; `operator-stated` explizit markieren; `unverified` und `not-claimed` nicht als Fakt formulieren; keine impliziten E2E-/Runtime-Behauptungen.
 
 ## HTTP path index — Operator WebUI & live.web (local defaults)
 
