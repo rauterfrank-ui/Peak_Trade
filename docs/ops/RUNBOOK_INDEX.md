@@ -12,6 +12,8 @@
 - Normative Kurzregel: `Governance`, `Safety`, `Kill-Switch` und `Risk&#47;Exposure Caps` sind bindend; `Switch-Gate` und `AI Orchestrator` sind advisory, sofern nicht separat und ausdrücklich anderweitig durch canonical authority definiert.
 - Claim-Disziplin: Ist-/Runtime-/E2E-Behauptungen nur mit verifizierbarer Repo-Evidenz; sonst klar als `Soll` / `intended` / `documented` / `unclear` trennen (Klassen und Definitionen: Spec, Abschnitt 6).
 
+- LevelUp **v0** — kanonische Ops-/Spec-Oberfläche (Manifest-/IO-/CLI, ohne neue Autorität): [`LEVELUP_V0_CANONICAL_SURFACE.md`](specs/LEVELUP_V0_CANONICAL_SURFACE.md)
+
 ---
 
 ## Runbooks

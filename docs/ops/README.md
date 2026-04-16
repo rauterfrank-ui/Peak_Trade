@@ -22,6 +22,8 @@
 - Normative Kurzregel: `Governance > Safety&#47;Kill-Switch > Risk&#47;Exposure Caps`; `Switch-Gate` und `AI Orchestrator` sind Control-Orchestration/advisory, aber keine finale Execution Authority.
 - Claim-Disziplin: Claims nur in den Klassen `repo-evidenced`, `documented`, `unverified`, `not-claimed` formulieren (Abschnitt 6); `unverified` und `not-claimed` nicht als verifizierte Fakten ausgeben; `operator-stated` explizit markieren; keine impliziten E2E-/Runtime-Behauptungen.
 
+- LevelUp **v0** (additive Manifest-/IO-/CLI-Grundlage, keine neue Autorität): [`docs/ops/specs/LEVELUP_V0_CANONICAL_SURFACE.md`](specs/LEVELUP_V0_CANONICAL_SURFACE.md)
+
 ## HTTP path index — Operator WebUI & live.web (local defaults)
 
 Ports **8000** (Operator WebUI, `src.webui.app`) and **8010** (live.web, `src.live.web.app` via `scripts/ops/run_live_webui.sh`) are **local defaults** on `127.0.0.1`. Processes are **separate**; there is **no shared control plane**. Paths below are for **orientation / navigation** (read-only UI posture; no change to execution or approval semantics).

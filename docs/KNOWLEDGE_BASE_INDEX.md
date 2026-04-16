@@ -14,6 +14,10 @@
 - Normative Kurzregel: `Governance > Safety&#47;Kill-Switch > Risk&#47;Exposure Caps`; `Switch-Gate` und `AI Orchestrator` sind Control-Orchestration/advisory, aber keine finale Execution Authority.
 - Claim-Disziplin: Claims nur in den Klassen `repo-evidenced`, `documented`, `unverified`, `not-claimed` formulieren (Abschnitt 6); `unverified` und `not-claimed` nicht als verifizierte Fakten ausgeben; `operator-stated` explizit markieren; keine impliziten E2E-/Runtime-Behauptungen.
 
+### LevelUp v0 (additive Manifest-/IO-/CLI-Oberfläche)
+
+- Kanonische Ops-/Spec-Oberfläche (klein, ohne neue Autorität): [docs/ops/specs/LEVELUP_V0_CANONICAL_SURFACE.md](ops/specs/LEVELUP_V0_CANONICAL_SURFACE.md)
+
 ---
 
 ## Quick Navigation
