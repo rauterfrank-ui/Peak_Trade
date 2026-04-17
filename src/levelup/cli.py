@@ -258,7 +258,9 @@ def _cmd_describe_slice(path: Path, slice_id: str) -> int:
                     "slice_id": sl.slice_id,
                     "title": sl.title,
                     "contract_summary": sl.contract_summary,
-                    "evidence": sl.evidence.model_dump(mode="json") if sl.evidence is not None else None,
+                    "evidence": sl.evidence.model_dump(mode="json")
+                    if sl.evidence is not None
+                    else None,
                 }
             )
             return EXIT_VALIDATION_OK
