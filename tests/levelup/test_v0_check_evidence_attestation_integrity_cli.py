@@ -37,7 +37,9 @@ def _sha256_hex(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def _write_sha256sums(evidence_dir: Path, items: dict[str, bytes], file_name: str = "SHA256SUMS.txt") -> None:
+def _write_sha256sums(
+    evidence_dir: Path, items: dict[str, bytes], file_name: str = "SHA256SUMS.txt"
+) -> None:
     lines: list[str] = []
     for rel_path, content in items.items():
         target = evidence_dir / rel_path
@@ -308,7 +310,9 @@ def test_check_evidence_attestation_integrity_cli_mixed_manifest(tmp_path: Path)
     noncanonical_dir.mkdir(parents=True, exist_ok=True)
     _write_sha256sums(noncanonical_dir, {"x.txt": b"x"})
     _write_sha256sums(noncanonical_dir, {"x.txt": b"x"}, file_name="ALT_SHA256SUMS.txt")
-    _write_attestation(noncanonical_dir, slice_id="noncanonical", sha256sums_file="ALT_SHA256SUMS.txt")
+    _write_attestation(
+        noncanonical_dir, slice_id="noncanonical", sha256sums_file="ALT_SHA256SUMS.txt"
+    )
 
     mismatch_dir = tmp_path / mismatch_rel
     mismatch_dir.mkdir(parents=True, exist_ok=True)
