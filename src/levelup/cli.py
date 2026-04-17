@@ -59,6 +59,11 @@ check-evidence-integrity exit contract (stdout is one JSON object per invocation
 - 0 — manifest parsed, model-validated; every slice with evidence has SHA256-consistent files for SHA256SUMS entries
 - 2 — usage / input problem (same as validate), or repository root could not be resolved from the manifest path
 - 3 — manifest parsed, model-validated; at least one slice with evidence has integrity-readiness issues
+
+check-evidence-attestation exit contract (stdout is one JSON object per invocation):
+- 0 — manifest parsed, model-validated; every slice with evidence has at least one *_ATTESTATION.txt file
+- 2 — usage / input problem (same as validate), or repository root could not be resolved from the manifest path
+- 3 — manifest parsed, model-validated; at least one slice with evidence has no attestation-ready directory state
 """
 
 from __future__ import annotations
@@ -83,6 +88,7 @@ EXIT_VALIDATION_FAILED = 3
 _BUNDLE_REQUIREMENT_FILE_SHA256SUMS = "SHA256SUMS.txt"
 _BUNDLE_REQUIREMENT_GLOB_BUNDLE = "*.bundle.tgz"
 _BUNDLE_REQUIREMENT_GLOB_SUMMARY = "*_CRAWLER_SUMMARY_1LINE.txt"
+_ATTESTATION_REQUIREMENT_GLOB = "*_ATTESTATION.txt"
 _SHA256SUMS_LINE_RE = re.compile(r"^([0-9a-f]{64})\s+(.+)$")
 
 
@@ -854,6 +860,98 @@ def _cmd_check_evidence_integrity(path: Path) -> int:
     return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
 
 
+def _cmd_check_evidence_attestation(path: Path) -> int:
+    m, error_exit = _read_manifest_with_contract(path)
+    if error_exit is not None:
+        return error_exit
+
+    assert m is not None
+    repo_root = _find_peak_trade_repo_root(path)
+    if repo_root is None:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "input",
+                "reason": "repo_root_not_found",
+                "message": (
+                    "could not locate repository root (expected pyproject.toml and src/levelup/ "
+                    "on the parent chain of the manifest path)"
+                ),
+            }
+        )
+        return EXIT_INPUT
+
+    entries: list[dict[str, object]] = []
+    for sl in m.slices:
+        if sl.evidence is None:
+            continue
+
+        rel = sl.evidence.relative_dir
+        target = repo_root / rel
+        exists = target.exists()
+        is_dir = target.is_dir()
+        status = "ok"
+        attestation_matches: list[str] = []
+        missing_requirements: list[str] = []
+
+        if not exists:
+            status = "missing_path"
+            missing_requirements = ["evidence_directory", "attestation_file"]
+        elif not is_dir:
+            status = "not_a_directory"
+            missing_requirements = ["evidence_directory", "attestation_file"]
+        else:
+            try:
+                attestation_matches = sorted(
+                    p.name for p in target.glob(_ATTESTATION_REQUIREMENT_GLOB) if p.is_file()
+                )
+            except OSError as exc:
+                _emit_json(
+                    {
+                        "ok": False,
+                        "error": "input",
+                        "reason": "evidence_read_failed",
+                        "message": str(exc),
+                    }
+                )
+                return EXIT_INPUT
+
+            if not attestation_matches:
+                status = "missing_attestation"
+                missing_requirements = ["attestation_file"]
+
+        entries.append(
+            {
+                "slice_id": sl.slice_id,
+                "evidence": rel,
+                "exists": exists,
+                "is_dir": is_dir,
+                "attestation_matches": attestation_matches,
+                "missing_requirements": missing_requirements,
+                "status": status,
+            }
+        )
+
+    checked_count = len(entries)
+    ready_count = sum(1 for e in entries if e["status"] == "ok")
+    not_ready_count = checked_count - ready_count
+    ok = not_ready_count == 0
+
+    _emit_json(
+        {
+            "ok": ok,
+            "schema": m.schema_version,
+            "command": "check-evidence-attestation",
+            "manifest_path": str(path.resolve()),
+            "checked_count": checked_count,
+            "ready_count": ready_count,
+            "not_ready_count": not_ready_count,
+            "entries": entries,
+        }
+    )
+    return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m src.levelup.cli")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -938,6 +1036,15 @@ def main(argv: list[str] | None = None) -> int:
     )
     p_ev_integrity.add_argument("manifest", type=Path, help="Path to manifest.json")
 
+    p_ev_attestation = sub.add_parser(
+        "check-evidence-attestation",
+        help=(
+            "Check operator attestation file presence in evidence directories "
+            "(read-only; one JSON line)."
+        ),
+    )
+    p_ev_attestation.add_argument("manifest", type=Path, help="Path to manifest.json")
+
     args = parser.parse_args(argv)
     if args.cmd == "validate":
         return _cmd_validate(args.manifest)
@@ -963,6 +1070,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_check_evidence_bundle(args.manifest)
     if args.cmd == "check-evidence-integrity":
         return _cmd_check_evidence_integrity(args.manifest)
+    if args.cmd == "check-evidence-attestation":
+        return _cmd_check_evidence_attestation(args.manifest)
     return EXIT_INPUT
 
 
