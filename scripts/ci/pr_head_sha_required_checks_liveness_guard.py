@@ -193,7 +193,9 @@ query($owner:String!, $repo:String!, $number:Int!) {
     if not nodes:
         return {}
     contexts = (
-        nodes[0].get("commit", {}).get("statusCheckRollup", {}).get("contexts") or {}.get("nodes", [])
+        nodes[0]
+        .get("commit", {})((data.get("statusCheckRollup") or {}).get("contexts") or {})
+        .get("nodes", [])
     )
     result: Dict[str, str] = {}
     for ctx in contexts:
