@@ -1659,7 +1659,9 @@ def _assess_integrity_domain(
             "input_error": False,
         }
 
-    records, invalid_sha256sums_format = _parse_sha256sums_records(sha_file, repo_root, evidence_dir)
+    records, invalid_sha256sums_format = _parse_sha256sums_records(
+        sha_file, repo_root, evidence_dir
+    )
     if invalid_sha256sums_format:
         return {
             **base,
@@ -1837,7 +1839,9 @@ def _assess_attestation_readiness_domain(
     contract_details["attested_at_utc_iso8601_like"] = iso_like
     contract_details["sha256sums_file_valid"] = sha_ref_ok
 
-    attestation_contract_valid = bool(contract_details["non_empty"]) and not (missing_keys or empty_keys)
+    attestation_contract_valid = bool(contract_details["non_empty"]) and not (
+        missing_keys or empty_keys
+    )
     attestation_contract_valid = attestation_contract_valid and iso_like and sha_ref_ok
     missing_requirements: list[str] = []
     status = "ok"
@@ -1965,7 +1969,9 @@ def _cmd_check_evidence_readiness_overall(path: Path) -> int:
         }
         path_ready = coverage_status == "ok"
 
-        bundle = _assess_bundle_domain(evidence_dir, has_evidence=has_evidence, path_ready=path_ready)
+        bundle = _assess_bundle_domain(
+            evidence_dir, has_evidence=has_evidence, path_ready=path_ready
+        )
         integrity = _assess_integrity_domain(
             evidence_dir, repo_root, has_evidence=has_evidence, path_ready=path_ready
         )
@@ -1983,9 +1989,7 @@ def _cmd_check_evidence_readiness_overall(path: Path) -> int:
         if ready:
             final_status = "ok"
         elif input_error:
-            final_status = next(
-                str(d["status"]) for d in domains if bool(d["input_error"])
-            )
+            final_status = next(str(d["status"]) for d in domains if bool(d["input_error"]))
         else:
             final_status = next(str(d["status"]) for d in domains if not bool(d["ready"]))
 

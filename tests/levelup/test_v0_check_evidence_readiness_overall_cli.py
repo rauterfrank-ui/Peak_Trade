@@ -52,7 +52,9 @@ def _write_sha256sums_for_existing_files(evidence_dir: Path) -> None:
     (evidence_dir / "SHA256SUMS.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def _write_attestation(evidence_dir: Path, *, slice_id: str, sha256sums_file: str = "SHA256SUMS.txt") -> None:
+def _write_attestation(
+    evidence_dir: Path, *, slice_id: str, sha256sums_file: str = "SHA256SUMS.txt"
+) -> None:
     lines = [
         f"slice_id: {slice_id}",
         "attested_at_utc: 2026-04-17T12:34:56Z",
@@ -60,7 +62,9 @@ def _write_attestation(evidence_dir: Path, *, slice_id: str, sha256sums_file: st
         "scope: evidence-readiness-overall",
         f"sha256sums_file: {sha256sums_file}",
     ]
-    (evidence_dir / "OPERATOR_ATTESTATION.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (evidence_dir / "OPERATOR_ATTESTATION.txt").write_text(
+        "\n".join(lines) + "\n", encoding="utf-8"
+    )
 
 
 def _mk_slice(slice_id: str, evidence_rel: str | None) -> SliceContractV0:
