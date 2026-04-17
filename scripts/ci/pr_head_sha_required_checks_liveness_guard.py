@@ -88,7 +88,9 @@ def _gh_paginated(endpoint: str, token: str, *, per_page: int = 100) -> List[Any
     while True:
         payload, _ = _gh_api(endpoint, token, query={"per_page": per_page, "page": page})
         if not isinstance(payload, list):
-            raise RuntimeError(f"Expected list payload for {endpoint}, got {type(payload).__name__}")
+            raise RuntimeError(
+                f"Expected list payload for {endpoint}, got {type(payload).__name__}"
+            )
         if not payload:
             break
         all_items.extend(payload)
@@ -187,20 +189,11 @@ query($owner:String!, $repo:String!, $number:Int!) {
         return {}
 
     data = payload.get("data", {})
-    nodes = (
-        data.get("repository", {})
-        .get("pullRequest", {})
-        .get("commits", {})
-        .get("nodes", [])
-    )
+    nodes = data.get("repository", {}).get("pullRequest", {}).get("commits", {}).get("nodes", [])
     if not nodes:
         return {}
     contexts = (
-        nodes[0]
-        .get("commit", {})
-        .get("statusCheckRollup", {})
-        .get("contexts", {})
-        .get("nodes", [])
+        nodes[0].get("commit", {}).get("statusCheckRollup", {}).get("contexts") or {}.get("nodes", [])
     )
     result: Dict[str, str] = {}
     for ctx in contexts:
@@ -254,9 +247,7 @@ def _render_summary(rows: List[Dict[str, str]]) -> str:
     lines.append("| required context | classification | detail |")
     lines.append("|---|---|---|")
     for row in rows:
-        lines.append(
-            f"| `{row['context']}` | `{row['classification']}` | {row['detail']} |"
-        )
+        lines.append(f"| `{row['context']}` | `{row['classification']}` | {row['detail']} |")
     lines.append("")
     return "\n".join(lines)
 
@@ -280,7 +271,9 @@ def main() -> int:
     missing = [ctx for ctx in required_contexts if ctx not in on_head]
 
     prior_commits = _fetch_pr_commits(args.repo, args.pr_number, token)
-    prior_shas = [sha for sha in prior_commits if sha != args.head_sha][: max(args.max_prior_commits, 0)]
+    prior_shas = [sha for sha in prior_commits if sha != args.head_sha][
+        : max(args.max_prior_commits, 0)
+    ]
     prior_seen = _prior_sha_presence(args.repo, prior_shas, missing, token)
 
     rows: List[Dict[str, str]] = []
@@ -338,7 +331,9 @@ def main() -> int:
     )
 
     if has_liveness_gap:
-        print("LIVENESS_GUARD_FAIL: missing required contexts on current PR head SHA", file=sys.stderr)
+        print(
+            "LIVENESS_GUARD_FAIL: missing required contexts on current PR head SHA", file=sys.stderr
+        )
         return 2
     print("LIVENESS_GUARD_OK: all required contexts are reported on current PR head SHA")
     return 0
