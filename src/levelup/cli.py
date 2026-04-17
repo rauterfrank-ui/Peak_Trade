@@ -399,9 +399,7 @@ def _cmd_check_evidence_coverage(path: Path) -> int:
     total_slices = len(entries)
     with_evidence_count = sum(1 for e in entries if e["has_evidence"])
     without_evidence_count = total_slices - with_evidence_count
-    coverage_ratio = (
-        float(with_evidence_count) / float(total_slices) if total_slices > 0 else 1.0
-    )
+    coverage_ratio = float(with_evidence_count) / float(total_slices) if total_slices > 0 else 1.0
     ok = without_evidence_count == 0
 
     _emit_json(
