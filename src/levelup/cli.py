@@ -49,6 +49,11 @@ check-evidence-readiness exit contract (stdout is one JSON object per invocation
 - 0 — manifest parsed, model-validated; every slice has evidence and all evidence paths exist as directories
 - 2 — usage / input problem (same as validate), or repository root could not be resolved from the manifest path
 - 3 — manifest parsed, model-validated; at least one slice has missing evidence or invalid evidence path
+
+check-evidence-bundle exit contract (stdout is one JSON object per invocation):
+- 0 — manifest parsed, model-validated; every slice with evidence has a bundle-ready evidence directory
+- 2 — usage / input problem (same as validate), or repository root could not be resolved from the manifest path
+- 3 — manifest parsed, model-validated; at least one slice with evidence is not bundle-ready
 """
 
 from __future__ import annotations
@@ -67,6 +72,10 @@ from src.levelup.v0_models import LevelUpManifestV0, levelup_manifest_v0_json_sc
 EXIT_VALIDATION_OK = 0
 EXIT_INPUT = 2
 EXIT_VALIDATION_FAILED = 3
+
+_BUNDLE_REQUIREMENT_FILE_SHA256SUMS = "SHA256SUMS.txt"
+_BUNDLE_REQUIREMENT_GLOB_BUNDLE = "*.bundle.tgz"
+_BUNDLE_REQUIREMENT_GLOB_SUMMARY = "*_CRAWLER_SUMMARY_1LINE.txt"
 
 
 def _find_peak_trade_repo_root(manifest_path: Path) -> Path | None:
@@ -507,6 +516,149 @@ def _cmd_check_evidence_readiness(path: Path) -> int:
     return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
 
 
+def _cmd_check_evidence_bundle(path: Path) -> int:
+    m, error_exit = _read_manifest_with_contract(path)
+    if error_exit is not None:
+        return error_exit
+
+    assert m is not None
+    repo_root = _find_peak_trade_repo_root(path)
+    if repo_root is None:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "input",
+                "reason": "repo_root_not_found",
+                "message": (
+                    "could not locate repository root (expected pyproject.toml and src/levelup/ "
+                    "on the parent chain of the manifest path)"
+                ),
+            }
+        )
+        return EXIT_INPUT
+
+    entries: list[dict[str, object]] = []
+    for sl in m.slices:
+        if sl.evidence is None:
+            continue
+
+        rel = sl.evidence.relative_dir
+        target = repo_root / rel
+        exists = target.exists()
+        is_dir = target.is_dir()
+        required_checks: list[dict[str, object]] = []
+        missing_requirements: list[str] = []
+        status = "ok"
+
+        if not exists:
+            status = "missing_path"
+            required_checks = [
+                {
+                    "requirement": "sha256sums_txt",
+                    "pattern": _BUNDLE_REQUIREMENT_FILE_SHA256SUMS,
+                    "ok": False,
+                },
+                {
+                    "requirement": "bundle_archive",
+                    "pattern": _BUNDLE_REQUIREMENT_GLOB_BUNDLE,
+                    "min_count": 1,
+                    "match_count": 0,
+                    "ok": False,
+                },
+                {
+                    "requirement": "crawler_summary_1line",
+                    "pattern": _BUNDLE_REQUIREMENT_GLOB_SUMMARY,
+                    "min_count": 1,
+                    "match_count": 0,
+                    "ok": False,
+                },
+            ]
+            missing_requirements = [c["requirement"] for c in required_checks]
+        elif not is_dir:
+            status = "not_a_directory"
+            required_checks = [
+                {
+                    "requirement": "sha256sums_txt",
+                    "pattern": _BUNDLE_REQUIREMENT_FILE_SHA256SUMS,
+                    "ok": False,
+                },
+                {
+                    "requirement": "bundle_archive",
+                    "pattern": _BUNDLE_REQUIREMENT_GLOB_BUNDLE,
+                    "min_count": 1,
+                    "match_count": 0,
+                    "ok": False,
+                },
+                {
+                    "requirement": "crawler_summary_1line",
+                    "pattern": _BUNDLE_REQUIREMENT_GLOB_SUMMARY,
+                    "min_count": 1,
+                    "match_count": 0,
+                    "ok": False,
+                },
+            ]
+            missing_requirements = [c["requirement"] for c in required_checks]
+        else:
+            sha256_ok = (target / _BUNDLE_REQUIREMENT_FILE_SHA256SUMS).is_file()
+            bundle_count = sum(1 for _ in target.glob(_BUNDLE_REQUIREMENT_GLOB_BUNDLE))
+            summary_count = sum(1 for _ in target.glob(_BUNDLE_REQUIREMENT_GLOB_SUMMARY))
+            required_checks = [
+                {
+                    "requirement": "sha256sums_txt",
+                    "pattern": _BUNDLE_REQUIREMENT_FILE_SHA256SUMS,
+                    "ok": sha256_ok,
+                },
+                {
+                    "requirement": "bundle_archive",
+                    "pattern": _BUNDLE_REQUIREMENT_GLOB_BUNDLE,
+                    "min_count": 1,
+                    "match_count": bundle_count,
+                    "ok": bundle_count >= 1,
+                },
+                {
+                    "requirement": "crawler_summary_1line",
+                    "pattern": _BUNDLE_REQUIREMENT_GLOB_SUMMARY,
+                    "min_count": 1,
+                    "match_count": summary_count,
+                    "ok": summary_count >= 1,
+                },
+            ]
+            missing_requirements = [c["requirement"] for c in required_checks if not c["ok"]]
+            if missing_requirements:
+                status = "missing_bundle_requirements"
+
+        entries.append(
+            {
+                "slice_id": sl.slice_id,
+                "evidence": rel,
+                "exists": exists,
+                "is_dir": is_dir,
+                "required_checks": required_checks,
+                "missing_requirements": missing_requirements,
+                "status": status,
+            }
+        )
+
+    checked_count = len(entries)
+    ready_count = sum(1 for e in entries if e["status"] == "ok")
+    not_ready_count = checked_count - ready_count
+    ok = not_ready_count == 0
+
+    _emit_json(
+        {
+            "ok": ok,
+            "schema": m.schema_version,
+            "command": "check-evidence-bundle",
+            "manifest_path": str(path.resolve()),
+            "checked_count": checked_count,
+            "ready_count": ready_count,
+            "not_ready_count": not_ready_count,
+            "entries": entries,
+        }
+    )
+    return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m src.levelup.cli")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -574,6 +726,14 @@ def main(argv: list[str] | None = None) -> int:
     )
     p_ev_ready.add_argument("manifest", type=Path, help="Path to manifest.json")
 
+    p_ev_bundle = sub.add_parser(
+        "check-evidence-bundle",
+        help=(
+            "Check bundle artifact completeness for evidence directories (read-only; one JSON line)."
+        ),
+    )
+    p_ev_bundle.add_argument("manifest", type=Path, help="Path to manifest.json")
+
     args = parser.parse_args(argv)
     if args.cmd == "validate":
         return _cmd_validate(args.manifest)
@@ -595,6 +755,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_check_evidence_coverage(args.manifest)
     if args.cmd == "check-evidence-readiness":
         return _cmd_check_evidence_readiness(args.manifest)
+    if args.cmd == "check-evidence-bundle":
+        return _cmd_check_evidence_bundle(args.manifest)
     return EXIT_INPUT
 
 
