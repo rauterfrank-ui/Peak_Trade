@@ -24,6 +24,11 @@ canonical-check exit contract (stdout is one JSON object per invocation):
 
 export-json-schema exit contract (stdout is one JSON object per invocation):
 - 0 — schema export succeeded
+
+describe-slice exit contract (stdout is one JSON object per invocation):
+- 0 — manifest parsed, model-validated, slice_id found
+- 2 — usage / input problem (same as validate: unreadable path, invalid JSON, UTF-8 decode)
+- 3 — JSON ok but model / schema validation failed, or manifest valid but slice_id not found
 """
 
 from __future__ import annotations
@@ -237,6 +242,40 @@ def _cmd_export_json_schema() -> int:
     return EXIT_VALIDATION_OK
 
 
+def _cmd_describe_slice(path: Path, slice_id: str) -> int:
+    m, error_exit = _read_manifest_with_contract(path)
+    if error_exit is not None:
+        return error_exit
+
+    assert m is not None
+    for sl in m.slices:
+        if sl.slice_id == slice_id:
+            _emit_json(
+                {
+                    "ok": True,
+                    "schema": m.schema_version,
+                    "command": "describe-slice",
+                    "slice_id": sl.slice_id,
+                    "title": sl.title,
+                    "contract_summary": sl.contract_summary,
+                    "evidence": sl.evidence.model_dump(mode="json") if sl.evidence is not None else None,
+                }
+            )
+            return EXIT_VALIDATION_OK
+
+    _emit_json(
+        {
+            "ok": False,
+            "error": "validation",
+            "reason": "slice_not_found",
+            "message": f"no slice with slice_id {slice_id!r} in manifest",
+            "schema": m.schema_version,
+            "slice_id": slice_id,
+        }
+    )
+    return EXIT_VALIDATION_FAILED
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m src.levelup.cli")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -267,6 +306,13 @@ def main(argv: list[str] | None = None) -> int:
         help="Export the LevelUpManifestV0 JSON schema as one JSON object on stdout.",
     )
 
+    p_desc = sub.add_parser(
+        "describe-slice",
+        help="Print one slice contract from a v0 manifest as one JSON object on stdout (read-only).",
+    )
+    p_desc.add_argument("manifest", type=Path, help="Path to manifest.json")
+    p_desc.add_argument("slice_id", help="slice_id to resolve inside the manifest")
+
     args = parser.parse_args(argv)
     if args.cmd == "validate":
         return _cmd_validate(args.manifest)
@@ -278,6 +324,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_canonical_check(args.manifest)
     if args.cmd == "export-json-schema":
         return _cmd_export_json_schema()
+    if args.cmd == "describe-slice":
+        return _cmd_describe_slice(args.manifest, args.slice_id)
     return EXIT_INPUT
 
 

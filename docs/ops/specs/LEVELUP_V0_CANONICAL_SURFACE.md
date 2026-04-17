@@ -16,8 +16,8 @@ LevelUp **v0** ist im Repo aktuell eine **kleine, additive** Grundlage: typisier
 |--------|---------------------------|
 | **Modelle** | `EvidenceBundleRefV0`, `SliceContractV0`, `LevelUpManifestV0` — nur soweit aus `src/levelup/v0_models.py` ablesbar. |
 | **JSON/IO** | `read_manifest`, `write_manifest` in `src/levelup/v0_io.py` — **offline**, repo-lokale Pfade. |
-| **CLI** | Nur das, was `src/levelup/cli.py` sowie `tests/levelup/test_v0_manifest.py` und `tests/levelup/test_v0_validate_cli.py` eindeutig belegen (siehe Abschnitt 6). |
-| **Tests** | `tests/levelup/test_v0_manifest.py`, `tests/levelup/test_v0_validate_cli.py` als Verifikationsanker; Drift-Check für das committed JSON Schema (siehe Abschnitt 6). |
+| **CLI** | Nur das, was `src/levelup/cli.py` sowie `tests/levelup/test_v0_manifest.py`, `tests/levelup/test_v0_validate_cli.py` und `tests/levelup/test_v0_describe_slice_cli.py` eindeutig belegen (siehe Abschnitt 6). |
+| **Tests** | `tests/levelup/test_v0_manifest.py`, `tests/levelup/test_v0_validate_cli.py`, `tests/levelup/test_v0_describe_slice_cli.py` als Verifikationsanker; Drift-Check für das committed JSON Schema (siehe Abschnitt 6). |
 
 **Out-of-Scope:** LevelUp v1/vNext, Runtime-/E2E-Garantien, Produktions-Gates, Execution- oder Order-Autorität.
 
@@ -41,11 +41,12 @@ Ausrichtung an den verbindlichen Vokabular-/Authority-/Provenance-Regeln: [`CANO
 | `src/levelup/__init__.py` | Öffentliche Re-Exports der v0-API. |
 | `src/levelup/v0_models.py` | Pydantic-Modelle, Schema-String `levelup&#47;manifest&#47;v0`. |
 | `src/levelup/v0_io.py` | JSON einlesen/ausgeben (Path). |
-| `src/levelup/cli.py` | CLI-Einstieg (`validate`, `dump-empty`, `format`, `canonical-check`, `export-json-schema`). |
+| `src/levelup/cli.py` | CLI-Einstieg (`validate`, `dump-empty`, `format`, `canonical-check`, `export-json-schema`, `describe-slice`). |
 | `schemas/levelup/levelup_manifest_v0.schema.json` | Repo-committed JSON Schema für `LevelUpManifestV0` (gleiche Quelle wie `export-json-schema` / `levelup_manifest_v0_json_schema()` in `v0_models.py`). |
 | `scripts/ops/sync_levelup_manifest_json_schema.py` | Regeneriert die committed Schema-Datei nach Modelländerungen. |
 | `tests/levelup/test_v0_manifest.py` | Roundtrip-, Validierungs- und Basis-CLI-Tests. |
 | `tests/levelup/test_v0_validate_cli.py` | Subprozess-Tests für `validate`-Exit-Codes und JSON-Fehlerobjekt. |
+| `tests/levelup/test_v0_describe_slice_cli.py` | Subprozess-Tests für `describe-slice` (Erfolg, `slice_not_found`, Input-/Validierungsfehler). |
 
 **CI- und Docs-Drift-Schutz (repo-evidenced):** In `.github/workflows/ci.yml` zählen Pfade unter `schemas&#47;levelup&#47;**` zur Code-Pfad-Erkennung (`code_changed` / `run_matrix`), damit reine Schema-PRs die Testmatrix inkl. `tests/levelup` nicht mehr fälschlich wie „nur Docs“ überspringen. In `config/ops/docs_truth_map.yaml` erweitert die Regel `levelup-v0-layer` die Sensitivität um `schemas/levelup/` (neben `src/levelup/`): löst ein Diff nur dort aus, muss mindestens eine Änderung an dieser kanonischen Datei (`LEVELUP_V0_CANONICAL_SURFACE.md`) im selben Diff stehen (Truth-Gates-Workflow `docs-drift-guard`).
 
@@ -59,7 +60,7 @@ Alles Folgende bezieht sich auf den **Ist**-Stand der genannten Dateien:
 - **Slice-IDs:** `slice_id`-Werte müssen innerhalb eines Manifests **eindeutig** sein (`test_manifest_rejects_duplicate_slice_id` in `tests/levelup/test_v0_manifest.py`).
 - **Evidence-Pfade:** `EvidenceBundleRefV0.relative_dir` muss mit `out/ops/` beginnen; Traversal wird abgewiesen (Validator in `v0_models.py`); abgelehnte Beispiele und Roundtrip-Verhalten sind in `tests/levelup/test_v0_manifest.py` abgedeckt.
 - **IO:** `read_manifest` nutzt `model_validate_json` auf Dateiinhalt; `write_manifest` schreibt formatiertes JSON (inkl. Elternverzeichnis-Anlage).
-- **CLI (read-only Doku):** Einstieg `python -m src.levelup.cli` mit Unterbefehlen `validate <manifest>`, `dump-empty <manifest>`, `format <manifest>`, `canonical-check <manifest>` und `export-json-schema` (`argparse`-`prog` in `cli.py`). **validate** schreibt **genau eine JSON-Zeile auf stdout** (stderr leer im erwarteten Fehlerpfad):
+- **CLI (read-only Doku):** Einstieg `python -m src.levelup.cli` mit Unterbefehlen `validate <manifest>`, `dump-empty <manifest>`, `format <manifest>`, `canonical-check <manifest>`, `export-json-schema` und `describe-slice <manifest> <slice_id>` (`argparse`-`prog` in `cli.py`). **validate** schreibt **genau eine JSON-Zeile auf stdout** (stderr leer im erwarteten Fehlerpfad):
   - **Erfolg:** `ok: true`, plus `schema`, `slices` (Anzahl).
   - **Fehler:** `ok: false`, `error` (`input` | `validation`), `reason` (z. B. `json_parse_failed`, `manifest_read_failed`, `model_validation_failed`), knappe `message`; bei `validation` zusätzlich `issues` (gekürzte Pydantic-Fehlerliste).
   - **Exit-Codes:** `0` = Validierung ok; `2` = Usage/Eingabe (u. a. fehlende Datei, Lesefehler, ungültiges JSON, UTF-8-Dekodierung); `3` = JSON parsebar, Modell-/Schema-Validierung fehlgeschlagen.
@@ -67,9 +68,11 @@ Alles Folgende bezieht sich auf den **Ist**-Stand der genannten Dateien:
   - **format:** liest ein bestehendes Manifest, validiert gegen `LevelUpManifestV0` und schreibt es kanonisch an denselben Pfad zurück. **Erfolg:** eine JSON-Zeile mit `ok: true`, `wrote`, `schema`, `slices`, Exit `0`, stderr leer. **Fehler:** Read-/Decode-/JSON-Inputfehler wie bei `validate` (`error: input`, Exit `2`), Modell-/Schemafehler wie bei `validate` (`error: validation`, `reason: model_validation_failed`, Exit `3`), sowie Schreibfehler (`error: input`, `reason: manifest_write_failed` oder `target_path_is_directory`, Exit `2`).
   - **canonical-check (read-only):** liest und validiert ein bestehendes Manifest, vergleicht den aktuellen Dateiinhalt gegen die kanonische Serialisierung (gleiche Normalisierung wie `write_manifest`/`format`), schreibt **nichts** zurück. **Erfolg:** eine JSON-Zeile mit `ok: true`, `canonical: true`, `schema`, `slices`, Exit `0`, stderr leer. **Fehler:** Input-/Read-/Decode-/JSON-Pfade wie bei `validate` (Exit `2`); Modell-/Schemafehler wie bei `validate` (Exit `3`); valide aber nicht-kanonische Datei: `ok: false`, `error: validation`, `reason: manifest_not_canonical`, `canonical: false`, Exit `3`.
   - **export-json-schema:** exportiert das JSON-Schema von `LevelUpManifestV0` als **eine** JSON-Zeile auf stdout (`ok: true`, `schema`, `json_schema`), Exit `0`, stderr leer im Erfolgsfall.
-  - Subprozess-Checks: `test_cli_validate_and_dump_empty`, `test_cli_dump_empty_target_path_is_directory`, `test_cli_dump_empty_not_writable_target_file` in `tests/levelup/test_v0_manifest.py`, `test_v0_validate_cli.py` in `tests/levelup/`.
+  - **describe-slice (read-only):** liest und validiert ein Manifest und gibt **eine** JSON-Zeile mit der Slice zu `slice_id` aus (`ok: true`, `schema`, `command`, `slice_id`, `title`, `contract_summary`, `evidence` — letzteres `null` oder Objekt mit `relative_dir`). **Exit `0`** wenn die Slice existiert. **Fehler:** wie `validate` bei Lesen/Decode/JSON (`error: input`, Exit `2`); Modell-/Schemafehler wie bei `validate` (`error: validation`, `reason: model_validation_failed`, Exit `3`); gültiges Manifest, aber unbekannte `slice_id`: `ok: false`, `error: validation`, `reason: slice_not_found`, `slice_id` (Anfrage), `schema`, Exit `3`, stderr leer im erwarteten Operator-Pfad.
+  - Subprozess-Checks: `test_cli_validate_and_dump_empty`, `test_cli_dump_empty_target_path_is_directory`, `test_cli_dump_empty_not_writable_target_file` in `tests/levelup/test_v0_manifest.py`, `test_v0_validate_cli.py` und `test_v0_describe_slice_cli.py` in `tests/levelup/`.
   - Zusätzliche format-Checks: `test_cli_format_success_canonical_rewrite`, `test_cli_format_invalid_manifest_model_validation_failed`, `test_cli_format_not_writable_target_file` in `tests/levelup/test_v0_manifest.py`.
   - Zusätzliche canonical-check-Checks: `test_cli_canonical_check_already_canonical`, `test_cli_canonical_check_valid_but_not_canonical`, `test_cli_canonical_check_invalid_manifest_model_validation_failed`, `test_cli_canonical_check_empty_file_json_parse_failed` in `tests/levelup/test_v0_manifest.py`.
   - Zusätzlicher export-json-schema-Check: `test_cli_export_json_schema_success` in `tests/levelup/test_v0_manifest.py`.
+  - Zusätzliche describe-slice-Checks: `test_describe_slice_cli_success_with_evidence`, `test_describe_slice_cli_success_without_evidence`, `test_describe_slice_cli_slice_not_found`, `test_describe_slice_cli_invalid_json`, `test_describe_slice_cli_model_validation_failure`, `test_describe_slice_cli_missing_file` in `tests/levelup/test_v0_describe_slice_cli.py`.
 
 **Non-claims:** Keine Aussage über Integration in Deployments oder produktionsseitige Freigabeprozesse — sofern nicht separat und repo-evidenced dokumentiert (die oben genannten CI-/Truth-Hooks gelten nur für das hier beschriebene Contract-/Drift-Niveau).
