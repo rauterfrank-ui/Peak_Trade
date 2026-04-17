@@ -35,7 +35,7 @@ jobs:
   # - run_fast: always true. run_fast_lane: alias.
   # - docs_only: true when ONLY docs/out/*.md changed.
   # - workflow_only: true when ONLY .github/workflows changed.
-  # Code paths: src/**, tests/**, scripts/**, config/**, pyproject.toml, uv.lock, requirements*.txt, pytest.ini, Makefile.
+  # Code paths: src/**, tests/**, scripts/**, config/**, schemas/levelup/** (committed JSON Schema), pyproject.toml, uv.lock, requirements*.txt, pytest.ini, Makefile.
   # ============================================================================
   changes:
     runs-on: ubuntu-latest
@@ -60,6 +60,7 @@ jobs:
               - 'tests/**'
               - 'scripts/**'
               - 'config/**'
+              - 'schemas/levelup/**'
               - 'requirements.txt'
               - 'requirements*.txt'
               - 'pyproject.toml'

@@ -47,6 +47,8 @@ Ausrichtung an den verbindlichen Vokabular-/Authority-/Provenance-Regeln: [`CANO
 | `tests/levelup/test_v0_manifest.py` | Roundtrip-, Validierungs- und Basis-CLI-Tests. |
 | `tests/levelup/test_v0_validate_cli.py` | Subprozess-Tests für `validate`-Exit-Codes und JSON-Fehlerobjekt. |
 
+**CI- und Docs-Drift-Schutz (repo-evidenced):** In `.github/workflows/ci.yml` zählen Pfade unter `schemas&#47;levelup&#47;**` zur Code-Pfad-Erkennung (`code_changed` / `run_matrix`), damit reine Schema-PRs die Testmatrix inkl. `tests/levelup` nicht mehr fälschlich wie „nur Docs“ überspringen. In `config/ops/docs_truth_map.yaml` erweitert die Regel `levelup-v0-layer` die Sensitivität um `schemas/levelup/` (neben `src/levelup/`): löst ein Diff nur dort aus, muss mindestens eine Änderung an dieser kanonischen Datei (`LEVELUP_V0_CANONICAL_SURFACE.md`) im selben Diff stehen (Truth-Gates-Workflow `docs-drift-guard`).
+
 ## 6) Current verified surface (eng, aus Code/Test)
 
 Alles Folgende bezieht sich auf den **Ist**-Stand der genannten Dateien:
@@ -70,4 +72,4 @@ Alles Folgende bezieht sich auf den **Ist**-Stand der genannten Dateien:
   - Zusätzliche canonical-check-Checks: `test_cli_canonical_check_already_canonical`, `test_cli_canonical_check_valid_but_not_canonical`, `test_cli_canonical_check_invalid_manifest_model_validation_failed`, `test_cli_canonical_check_empty_file_json_parse_failed` in `tests/levelup/test_v0_manifest.py`.
   - Zusätzlicher export-json-schema-Check: `test_cli_export_json_schema_success` in `tests/levelup/test_v0_manifest.py`.
 
-**Non-claims:** Keine Aussage über Integration in Deployments, CI-Pflicht oder Freigabeprozesse — sofern nicht separat und repo-evidenced dokumentiert.
+**Non-claims:** Keine Aussage über Integration in Deployments oder produktionsseitige Freigabeprozesse — sofern nicht separat und repo-evidenced dokumentiert (die oben genannten CI-/Truth-Hooks gelten nur für das hier beschriebene Contract-/Drift-Niveau).
