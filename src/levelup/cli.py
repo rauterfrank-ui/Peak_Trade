@@ -34,6 +34,11 @@ list-slices exit contract (stdout is one JSON object per invocation):
 - 0 — manifest parsed, model-validated; stdout lists slice_id values in manifest order
 - 2 — usage / input problem (same as validate)
 - 3 — JSON ok but model / schema validation failed
+
+check-evidence exit contract (stdout is one JSON object per invocation):
+- 0 — manifest parsed, model-validated; every slice with evidence has an existing directory at repo-relative path
+- 2 — usage / input problem (same as validate), or repository root could not be resolved from the manifest path
+- 3 — manifest ok but at least one evidence path is missing or not a directory
 """
 
 from __future__ import annotations
@@ -52,6 +57,16 @@ from src.levelup.v0_models import LevelUpManifestV0, levelup_manifest_v0_json_sc
 EXIT_VALIDATION_OK = 0
 EXIT_INPUT = 2
 EXIT_VALIDATION_FAILED = 3
+
+
+def _find_peak_trade_repo_root(manifest_path: Path) -> Path | None:
+    """Walk parents from *manifest_path* for a checkout marker (pyproject + src/levelup)."""
+    resolved = manifest_path.resolve()
+    anchor = resolved.parent if resolved.is_file() else resolved
+    for p in [anchor, *anchor.parents]:
+        if (p / "pyproject.toml").is_file() and (p / "src" / "levelup").is_dir():
+            return p
+    return None
 
 
 def _emit_json(payload: object) -> None:
@@ -302,6 +317,63 @@ def _cmd_list_slices(path: Path) -> int:
     return EXIT_VALIDATION_OK
 
 
+def _cmd_check_evidence(path: Path) -> int:
+    m, error_exit = _read_manifest_with_contract(path)
+    if error_exit is not None:
+        return error_exit
+
+    assert m is not None
+    repo_root = _find_peak_trade_repo_root(path)
+    if repo_root is None:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "input",
+                "reason": "repo_root_not_found",
+                "message": (
+                    "could not locate repository root (expected pyproject.toml and src/levelup/ "
+                    "on the parent chain of the manifest path)"
+                ),
+            }
+        )
+        return EXIT_INPUT
+
+    entries: list[dict[str, object]] = []
+    for sl in m.slices:
+        if sl.evidence is None:
+            continue
+        rel = sl.evidence.relative_dir
+        target = repo_root / rel
+        exists = target.exists()
+        is_dir = target.is_dir()
+        entries.append(
+            {
+                "slice_id": sl.slice_id,
+                "evidence": rel,
+                "exists": exists,
+                "is_dir": is_dir,
+            }
+        )
+
+    missing_count = sum(1 for e in entries if not e["exists"])
+    not_dir_count = sum(1 for e in entries if e["exists"] and not e["is_dir"])
+    ok = missing_count == 0 and not_dir_count == 0
+
+    _emit_json(
+        {
+            "ok": ok,
+            "schema": m.schema_version,
+            "command": "check-evidence",
+            "manifest_path": str(path.resolve()),
+            "checked_count": len(entries),
+            "missing_count": missing_count,
+            "not_dir_count": not_dir_count,
+            "entries": entries,
+        }
+    )
+    return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m src.levelup.cli")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -345,6 +417,14 @@ def main(argv: list[str] | None = None) -> int:
     )
     p_list.add_argument("manifest", type=Path, help="Path to manifest.json")
 
+    p_ev = sub.add_parser(
+        "check-evidence",
+        help=(
+            "Verify repo-relative evidence directories for slices (read-only; one JSON line on stdout)."
+        ),
+    )
+    p_ev.add_argument("manifest", type=Path, help="Path to manifest.json")
+
     args = parser.parse_args(argv)
     if args.cmd == "validate":
         return _cmd_validate(args.manifest)
@@ -360,6 +440,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_describe_slice(args.manifest, args.slice_id)
     if args.cmd == "list-slices":
         return _cmd_list_slices(args.manifest)
+    if args.cmd == "check-evidence":
+        return _cmd_check_evidence(args.manifest)
     return EXIT_INPUT
 
 
