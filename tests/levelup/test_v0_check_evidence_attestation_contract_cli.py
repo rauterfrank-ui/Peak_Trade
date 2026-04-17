@@ -104,6 +104,44 @@ def test_check_evidence_attestation_contract_cli_missing_attestation(tmp_path: P
     assert out["entries"][0]["status"] == "missing_attestation"
 
 
+def test_contract_returns_multiple_attestations_without_parsing_first_file(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_contract/multiple_attestations/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "A_ATTESTATION.txt").write_text(
+        "\n".join(
+            [
+                "slice_id: C_MULTI",
+                "attested_at_utc: not-iso",
+                "attestor: ",
+                "scope: operator",
+                "sha256sums_file: bad.file",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    _write_attestation(evidence_dir, slice_id="C_MULTI", file_name="Z_ATTESTATION.txt")
+
+    sl = SliceContractV0(
+        slice_id="C_MULTI",
+        title="t",
+        contract_summary="c",
+        evidence=EvidenceBundleRefV0(relative_dir=ev_rel),
+    )
+    manifest = tmp_path / "manifest.json"
+    write_manifest(manifest, LevelUpManifestV0(slices=(sl,)))
+
+    r = _run_cli(["check-evidence-attestation-contract", str(manifest)])
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["ok"] is False
+    assert out["entries"][0]["status"] == "multiple_attestations"
+    assert out["entries"][0]["contract_details"]["checked_file"] is None
+    assert "attestation_uniqueness" in out["entries"][0]["missing_requirements"]
+
+
 def test_check_evidence_attestation_contract_cli_unreadable_attestation(tmp_path: Path) -> None:
     _bootstrap_minimal_repo_layout(tmp_path)
     ev_rel = "out/ops/attestation_contract/unreadable/"

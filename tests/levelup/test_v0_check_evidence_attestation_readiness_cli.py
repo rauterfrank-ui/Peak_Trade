@@ -104,6 +104,31 @@ def test_check_evidence_attestation_readiness_cli_missing_attestation(tmp_path: 
     assert out["entries"][0]["status"] == "missing_attestation"
 
 
+def test_attestation_readiness_marks_multiple_attestations_as_not_ready(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/multiple_attestations/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="WRONG", file_name="A_ATTESTATION.txt")
+    _write_attestation(evidence_dir, slice_id="R_MULTI", file_name="Z_ATTESTATION.txt")
+    manifest = _mk_manifest(tmp_path, "R_MULTI", ev_rel)
+
+    r = _run_cli(["check-evidence-attestation-readiness", str(manifest)])
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["ok"] is False
+    assert out["ready_count"] == 0
+    assert out["not_ready_count"] == 1
+    assert out["domain_not_ready_count"] == 1
+    assert out["input_error_count"] == 0
+    assert out["entries"][0]["status"] == "multiple_attestations"
+    assert out["entries"][0]["ready"] is False
+    assert out["entries"][0]["input_error"] is False
+    assert out["entries"][0]["attestation_file"] is None
+    assert "attestation_uniqueness" in out["entries"][0]["missing_requirements"]
+
+
 def test_check_evidence_attestation_readiness_cli_unreadable_attestation(tmp_path: Path) -> None:
     _bootstrap_minimal_repo_layout(tmp_path)
     ev_rel = "out/ops/attestation_readiness/unreadable/"

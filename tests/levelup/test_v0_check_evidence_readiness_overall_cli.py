@@ -217,6 +217,42 @@ def test_check_evidence_readiness_overall_cli_attestation_not_ready(tmp_path: Pa
     assert out["input_error_count"] == 0
 
 
+def test_readiness_overall_marks_multiple_attestations_as_not_ready(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/readiness_overall/multiple_attestations/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    _write_bundle_files(evidence_dir)
+    _write_sha256sums_for_existing_files(evidence_dir)
+    _write_attestation(evidence_dir, slice_id="S_MULTI")
+    (evidence_dir / "SECOND_ATTESTATION.txt").write_text(
+        "\n".join(
+            [
+                "slice_id: S_MULTI",
+                "attested_at_utc: 2026-04-17T12:34:56Z",
+                "attestor: ops",
+                "scope: evidence-readiness-overall",
+                "sha256sums_file: SHA256SUMS.txt",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    manifest = _mk_manifest(tmp_path, (_mk_slice("S_MULTI", ev_rel),))
+
+    r = _run_cli(["check-evidence-readiness-overall", str(manifest)])
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["ok"] is False
+    assert out["ready_count"] == 0
+    assert out["not_ready_count"] == 1
+    assert out["domain_not_ready_count"] == 1
+    assert out["input_error_count"] == 0
+    assert out["entries"][0]["attestation_readiness"]["status"] == "multiple_attestations"
+    assert out["entries"][0]["status"] == "multiple_attestations"
+    assert out["entries"][0]["ready"] is False
+
+
 def test_check_evidence_readiness_overall_cli_mixed_manifest(tmp_path: Path) -> None:
     _bootstrap_minimal_repo_layout(tmp_path)
     ok_rel = "out/ops/readiness_overall/mixed_ok/"
