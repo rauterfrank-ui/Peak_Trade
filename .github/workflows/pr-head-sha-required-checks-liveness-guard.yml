@@ -1,0 +1,50 @@
+name: PR Head SHA Required Checks Liveness Guard
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: read
+  checks: read
+  statuses: read
+
+concurrency:
+  group: pr-head-sha-required-checks-liveness-guard-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  pr-head-sha-required-checks-liveness-guard:
+    name: pr-head-sha-required-checks-liveness-guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Evaluate required-check liveness on PR head SHA
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/ci/pr_head_sha_required_checks_liveness_guard.py \
+            --repo "${{ github.repository }}" \
+            --pr-number "${{ github.event.pull_request.number }}" \
+            --head-sha "${{ github.event.pull_request.head.sha }}" \
+            --required-config "config/ci/required_status_checks.json"
+
+      - name: Upload liveness report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-head-sha-required-checks-liveness-report
+          path: out/ci/pr_head_sha_required_checks_liveness_report.json
+          if-no-files-found: ignore
+          retention-days: 14
