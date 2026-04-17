@@ -44,6 +44,11 @@ check-evidence-coverage exit contract (stdout is one JSON object per invocation)
 - 0 — manifest parsed, model-validated; every slice has a non-empty evidence field
 - 2 — usage / input problem (same as validate)
 - 3 — manifest parsed, model-validated; at least one slice has no evidence field
+
+check-evidence-readiness exit contract (stdout is one JSON object per invocation):
+- 0 — manifest parsed, model-validated; every slice has evidence and all evidence paths exist as directories
+- 2 — usage / input problem (same as validate), or repository root could not be resolved from the manifest path
+- 3 — manifest parsed, model-validated; at least one slice has missing evidence or invalid evidence path
 """
 
 from __future__ import annotations
@@ -418,6 +423,90 @@ def _cmd_check_evidence_coverage(path: Path) -> int:
     return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
 
 
+def _cmd_check_evidence_readiness(path: Path) -> int:
+    m, error_exit = _read_manifest_with_contract(path)
+    if error_exit is not None:
+        return error_exit
+
+    assert m is not None
+    repo_root = _find_peak_trade_repo_root(path)
+    if repo_root is None:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "input",
+                "reason": "repo_root_not_found",
+                "message": (
+                    "could not locate repository root (expected pyproject.toml and src/levelup/ "
+                    "on the parent chain of the manifest path)"
+                ),
+            }
+        )
+        return EXIT_INPUT
+
+    entries: list[dict[str, object]] = []
+    for sl in m.slices:
+        has_evidence = sl.evidence is not None and bool(sl.evidence.relative_dir.strip())
+        if not has_evidence:
+            entries.append(
+                {
+                    "slice_id": sl.slice_id,
+                    "has_evidence": False,
+                    "evidence": None,
+                    "exists": None,
+                    "is_dir": None,
+                    "status": "missing_evidence",
+                }
+            )
+            continue
+
+        rel = sl.evidence.relative_dir
+        target = repo_root / rel
+        exists = target.exists()
+        is_dir = target.is_dir()
+        status = "ok"
+        if not exists:
+            status = "missing_path"
+        elif not is_dir:
+            status = "not_a_directory"
+
+        entries.append(
+            {
+                "slice_id": sl.slice_id,
+                "has_evidence": True,
+                "evidence": rel,
+                "exists": exists,
+                "is_dir": is_dir,
+                "status": status,
+            }
+        )
+
+    total_slices = len(entries)
+    with_evidence_count = sum(1 for e in entries if e["has_evidence"])
+    without_evidence_count = total_slices - with_evidence_count
+    checked_path_count = with_evidence_count
+    missing_path_count = sum(1 for e in entries if e["status"] == "missing_path")
+    not_dir_count = sum(1 for e in entries if e["status"] == "not_a_directory")
+    ok = without_evidence_count == 0 and missing_path_count == 0 and not_dir_count == 0
+
+    _emit_json(
+        {
+            "ok": ok,
+            "schema": m.schema_version,
+            "command": "check-evidence-readiness",
+            "manifest_path": str(path.resolve()),
+            "total_slices": total_slices,
+            "with_evidence_count": with_evidence_count,
+            "without_evidence_count": without_evidence_count,
+            "checked_path_count": checked_path_count,
+            "missing_path_count": missing_path_count,
+            "not_dir_count": not_dir_count,
+            "entries": entries,
+        }
+    )
+    return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m src.levelup.cli")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -477,6 +566,14 @@ def main(argv: list[str] | None = None) -> int:
     )
     p_ev_cov.add_argument("manifest", type=Path, help="Path to manifest.json")
 
+    p_ev_ready = sub.add_parser(
+        "check-evidence-readiness",
+        help=(
+            "One-shot evidence readiness check (coverage + path integrity; read-only; one JSON line)."
+        ),
+    )
+    p_ev_ready.add_argument("manifest", type=Path, help="Path to manifest.json")
+
     args = parser.parse_args(argv)
     if args.cmd == "validate":
         return _cmd_validate(args.manifest)
@@ -496,6 +593,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_check_evidence(args.manifest)
     if args.cmd == "check-evidence-coverage":
         return _cmd_check_evidence_coverage(args.manifest)
+    if args.cmd == "check-evidence-readiness":
+        return _cmd_check_evidence_readiness(args.manifest)
     return EXIT_INPUT
 
 
