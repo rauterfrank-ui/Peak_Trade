@@ -37,7 +37,7 @@ from pathlib import Path
 from pydantic import ValidationError
 
 from src.levelup.v0_io import canonical_manifest_json, read_manifest, write_manifest
-from src.levelup.v0_models import LevelUpManifestV0
+from src.levelup.v0_models import LevelUpManifestV0, levelup_manifest_v0_json_schema
 
 EXIT_VALIDATION_OK = 0
 EXIT_INPUT = 2
@@ -232,7 +232,7 @@ def _cmd_canonical_check(path: Path) -> int:
 
 
 def _cmd_export_json_schema() -> int:
-    schema = LevelUpManifestV0.model_json_schema()
+    schema = levelup_manifest_v0_json_schema()
     _emit_json({"ok": True, "schema": LevelUpManifestV0().schema_version, "json_schema": schema})
     return EXIT_VALIDATION_OK
 

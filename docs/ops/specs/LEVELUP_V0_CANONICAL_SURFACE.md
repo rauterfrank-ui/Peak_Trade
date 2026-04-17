@@ -1,7 +1,7 @@
 # LevelUp v0 — Canonical Ops/Spec Surface (additive)
 
 **status:** active  
-**last_updated:** 2026-04-16  
+**last_updated:** 2026-04-17  
 **purpose:** Kanonische **Auffindbarkeit** und **Claim-Grenzen** für die kleine LevelUp-v0-Schicht (Manifest-/IO-/CLI-Grundlage). Keine neue Governance-, Risk- oder Safety-Autorität.
 
 **docs_token:** `DOCS_TOKEN_LEVELUP_V0_CANONICAL_SURFACE`
@@ -17,7 +17,7 @@ LevelUp **v0** ist im Repo aktuell eine **kleine, additive** Grundlage: typisier
 | **Modelle** | `EvidenceBundleRefV0`, `SliceContractV0`, `LevelUpManifestV0` — nur soweit aus `src/levelup/v0_models.py` ablesbar. |
 | **JSON/IO** | `read_manifest`, `write_manifest` in `src/levelup/v0_io.py` — **offline**, repo-lokale Pfade. |
 | **CLI** | Nur das, was `src/levelup/cli.py` sowie `tests/levelup/test_v0_manifest.py` und `tests/levelup/test_v0_validate_cli.py` eindeutig belegen (siehe Abschnitt 6). |
-| **Tests** | `tests/levelup/test_v0_manifest.py`, `tests/levelup/test_v0_validate_cli.py` als Verifikationsanker. |
+| **Tests** | `tests/levelup/test_v0_manifest.py`, `tests/levelup/test_v0_validate_cli.py` als Verifikationsanker; Drift-Check für das committed JSON Schema (siehe Abschnitt 6). |
 
 **Out-of-Scope:** LevelUp v1/vNext, Runtime-/E2E-Garantien, Produktions-Gates, Execution- oder Order-Autorität.
 
@@ -42,6 +42,8 @@ Ausrichtung an den verbindlichen Vokabular-/Authority-/Provenance-Regeln: [`CANO
 | `src/levelup/v0_models.py` | Pydantic-Modelle, Schema-String `levelup&#47;manifest&#47;v0`. |
 | `src/levelup/v0_io.py` | JSON einlesen/ausgeben (Path). |
 | `src/levelup/cli.py` | CLI-Einstieg (`validate`, `dump-empty`, `format`, `canonical-check`, `export-json-schema`). |
+| `schemas/levelup/levelup_manifest_v0.schema.json` | Repo-committed JSON Schema für `LevelUpManifestV0` (gleiche Quelle wie `export-json-schema` / `levelup_manifest_v0_json_schema()` in `v0_models.py`). |
+| `scripts/ops/sync_levelup_manifest_json_schema.py` | Regeneriert die committed Schema-Datei nach Modelländerungen. |
 | `tests/levelup/test_v0_manifest.py` | Roundtrip-, Validierungs- und Basis-CLI-Tests. |
 | `tests/levelup/test_v0_validate_cli.py` | Subprozess-Tests für `validate`-Exit-Codes und JSON-Fehlerobjekt. |
 
@@ -50,6 +52,7 @@ Ausrichtung an den verbindlichen Vokabular-/Authority-/Provenance-Regeln: [`CANO
 Alles Folgende bezieht sich auf den **Ist**-Stand der genannten Dateien:
 
 - **Schema:** `LevelUpManifestV0.schema_version` ist fix `levelup&#47;manifest&#47;v0` (`src/levelup/v0_models.py`).
+- **Committed JSON Schema (reviewbar):** `schemas/levelup/levelup_manifest_v0.schema.json` materialisiert das Pydantic-JSON-Schema für `LevelUpManifestV0`. Synchronisation: `uv run python scripts/ops/sync_levelup_manifest_json_schema.py` (nutzt dieselbe Erzeugung wie `export-json-schema` über `levelup_manifest_v0_json_schema()`). Drift-Tests: `test_committed_levelup_manifest_json_schema_matches_model` und Abgleich in `test_cli_export_json_schema_success` in `tests/levelup/test_v0_manifest.py`.
 - **Manifest-Titel:** `LevelUpManifestV0.title` wird an den Enden getrimmt; nur nicht-leer nach dem Trim ist gültig (Leer- bzw. Nur-Whitespace-Titel werden abgewiesen). Positiv-/Negativfälle: `test_manifest_root_title_strips_surrounding_whitespace`, `test_manifest_root_title_rejects_empty_after_strip` in `tests/levelup/test_v0_manifest.py`.
 - **Slice-IDs:** `slice_id`-Werte müssen innerhalb eines Manifests **eindeutig** sein (`test_manifest_rejects_duplicate_slice_id` in `tests/levelup/test_v0_manifest.py`).
 - **Evidence-Pfade:** `EvidenceBundleRefV0.relative_dir` muss mit `out/ops/` beginnen; Traversal wird abgewiesen (Validator in `v0_models.py`); abgelehnte Beispiele und Roundtrip-Verhalten sind in `tests/levelup/test_v0_manifest.py` abgedeckt.
