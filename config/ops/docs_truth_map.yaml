@@ -66,5 +66,6 @@ rules:
   - id: levelup-v0-layer
     sensitive:
       - "src/levelup/"
+      - "schemas/levelup/"
     required_docs:
       - "docs/ops/specs/LEVELUP_V0_CANONICAL_SURFACE.md"
