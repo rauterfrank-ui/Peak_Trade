@@ -237,7 +237,10 @@ def test_readiness_overall_marks_noncanonical_sha256sums_target_not_ready(
     assert out["ready_count"] == 0
     assert out["not_ready_count"] == 1
     assert out["domain_not_ready_count"] == 1
-    assert out["entries"][0]["attestation_readiness"]["status"] == "sha256sums_file_target_noncanonical"
+    assert (
+        out["entries"][0]["attestation_readiness"]["status"]
+        == "sha256sums_file_target_noncanonical"
+    )
     assert out["entries"][0]["status"] == "sha256sums_file_target_noncanonical"
 
 
