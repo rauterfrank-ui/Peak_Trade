@@ -435,3 +435,373 @@ def test_check_evidence_attestation_readiness_cli_json_field_stability(tmp_path:
         "ready",
         "input_error",
     }
+
+
+def test_manifest_mode_all_ok(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/manifest_mode_all_ok/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="MA1")
+    manifest = _mk_manifest(tmp_path, "MA1", ev_rel)
+
+    r = _run_cli(["check-evidence-attestation-readiness", str(manifest)])
+    assert r.returncode == 0, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["mode"] == "manifest"
+    assert out["target_path"] is None
+    assert out["summary"]["checked_slices"] == 1
+    assert out["entries"][0]["status"] == "ok"
+
+
+def test_manifest_mode_missing_attestation(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/manifest_mode_missing_attestation/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    manifest = _mk_manifest(tmp_path, "MA2", ev_rel)
+
+    r = _run_cli(["check-evidence-attestation-readiness", str(manifest)])
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["mode"] == "manifest"
+    assert out["entries"][0]["status"] == "missing_attestation"
+
+
+def test_manifest_mode_multiple_attestations(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/manifest_mode_multiple_attestations/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="MA3", file_name="A_ATTESTATION.txt")
+    _write_attestation(evidence_dir, slice_id="MA3", file_name="B_ATTESTATION.txt")
+    manifest = _mk_manifest(tmp_path, "MA3", ev_rel)
+
+    r = _run_cli(["check-evidence-attestation-readiness", str(manifest)])
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["mode"] == "manifest"
+    assert out["entries"][0]["status"] == "multiple_attestations"
+
+
+def test_manifest_mode_noncanonical_target(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/manifest_mode_noncanonical_target/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    (evidence_dir / "ALT_SHA256SUMS.txt").write_text("", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="MA4", sha256sums_file="ALT_SHA256SUMS.txt")
+    manifest = _mk_manifest(tmp_path, "MA4", ev_rel)
+
+    r = _run_cli(["check-evidence-attestation-readiness", str(manifest)])
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["mode"] == "manifest"
+    assert out["entries"][0]["status"] == "sha256sums_file_target_noncanonical"
+
+
+def test_manifest_mode_invalid_sha256sums_format(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/manifest_mode_invalid_sha256sums_format/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("not-a-sha-line\n", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="MA5")
+    manifest = _mk_manifest(tmp_path, "MA5", ev_rel)
+
+    r = _run_cli(["check-evidence-attestation-readiness", str(manifest)])
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["mode"] == "manifest"
+    assert out["entries"][0]["status"] == "invalid_sha256sums_format"
+
+
+def test_manifest_mode_sha256_mismatch(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/manifest_mode_sha256_mismatch/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "payload.txt").write_bytes(b"actual")
+    (evidence_dir / "SHA256SUMS.txt").write_text(f"{'0' * 64}  payload.txt\n", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="MA6")
+    manifest = _mk_manifest(tmp_path, "MA6", ev_rel)
+
+    r = _run_cli(["check-evidence-attestation-readiness", str(manifest)])
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["mode"] == "manifest"
+    assert out["entries"][0]["status"] == "sha256_mismatch"
+
+
+def test_target_mode_all_ok(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/target_mode_all_ok/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="TA1")
+
+    r = _run_cli(["check-evidence-attestation-readiness", ev_rel], cwd=tmp_path)
+    assert r.returncode == 0, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["mode"] == "target"
+    assert out["manifest_path"] is None
+    assert out["target_path"] == str(evidence_dir.resolve())
+    assert out["entries"][0]["slice_id"] is None
+    assert out["entries"][0]["status"] == "ok"
+
+
+def test_target_mode_missing_attestation(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/target_mode_missing_attestation/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+
+    r = _run_cli(["check-evidence-attestation-readiness", ev_rel], cwd=tmp_path)
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["mode"] == "target"
+    assert out["entries"][0]["status"] == "missing_attestation"
+
+
+def test_target_mode_multiple_attestations(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/target_mode_multiple_attestations/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="TA3", file_name="A_ATTESTATION.txt")
+    _write_attestation(evidence_dir, slice_id="TA3", file_name="B_ATTESTATION.txt")
+
+    r = _run_cli(["check-evidence-attestation-readiness", ev_rel], cwd=tmp_path)
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["mode"] == "target"
+    assert out["entries"][0]["status"] == "multiple_attestations"
+
+
+def test_target_mode_noncanonical_target(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/target_mode_noncanonical_target/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    (evidence_dir / "ALT_SHA256SUMS.txt").write_text("", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="TA4", sha256sums_file="ALT_SHA256SUMS.txt")
+
+    r = _run_cli(["check-evidence-attestation-readiness", ev_rel], cwd=tmp_path)
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["mode"] == "target"
+    assert out["entries"][0]["status"] == "sha256sums_file_target_noncanonical"
+
+
+def test_target_mode_invalid_sha256sums_format(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/target_mode_invalid_sha256sums_format/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("not-a-sha-line\n", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="TA5")
+
+    r = _run_cli(["check-evidence-attestation-readiness", ev_rel], cwd=tmp_path)
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["mode"] == "target"
+    assert out["entries"][0]["status"] == "invalid_sha256sums_format"
+
+
+def test_target_mode_sha256_mismatch(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/target_mode_sha256_mismatch/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "payload.txt").write_bytes(b"actual")
+    (evidence_dir / "SHA256SUMS.txt").write_text(f"{'0' * 64}  payload.txt\n", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="TA6")
+
+    r = _run_cli(["check-evidence-attestation-readiness", ev_rel], cwd=tmp_path)
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["mode"] == "target"
+    assert out["entries"][0]["status"] == "sha256_mismatch"
+
+
+def test_missing_path(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/missing_path_target_mode/"
+
+    r = _run_cli(["check-evidence-attestation-readiness", ev_rel], cwd=tmp_path)
+    assert r.returncode == 2, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["mode"] == "target"
+    assert out["entries"][0]["status"] == "missing_path"
+
+
+def test_not_a_directory(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/not_a_directory_target_mode"
+    target = tmp_path / ev_rel
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("x", encoding="utf-8")
+
+    r = _run_cli(["check-evidence-attestation-readiness", ev_rel], cwd=tmp_path)
+    assert r.returncode == 2, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["mode"] == "target"
+    assert out["entries"][0]["status"] == "not_a_directory"
+
+
+def test_repo_root_not_found_if_applicable(tmp_path: Path) -> None:
+    ev_rel = "out/ops/attestation_readiness/no_root_target_mode/"
+    (tmp_path / ev_rel).mkdir(parents=True, exist_ok=True)
+
+    r = _run_cli(["check-evidence-attestation-readiness", ev_rel], cwd=tmp_path)
+    assert r.returncode == 2, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["ok"] is False
+    assert out["error"] == "input"
+    assert out["reason"] == "repo_root_not_found"
+
+
+def test_no_evidence_slices_is_deterministically_green(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    s1 = SliceContractV0(slice_id="A", title="A", contract_summary="c")
+    s2 = SliceContractV0(slice_id="B", title="B", contract_summary="c")
+    manifest = tmp_path / "manifest.json"
+    write_manifest(manifest, LevelUpManifestV0(slices=(s1, s2)))
+
+    r = _run_cli(["check-evidence-attestation-readiness", str(manifest)])
+    assert r.returncode == 0, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["mode"] == "manifest"
+    assert out["summary"]["checked_slices"] == 0
+    assert out["entries"] == []
+
+
+def test_stdout_is_exactly_one_json_object(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_manifest_rel = "out/ops/attestation_readiness/stdout_manifest_mode/"
+    ev_target_rel = "out/ops/attestation_readiness/stdout_target_mode/"
+    manifest_dir = tmp_path / ev_manifest_rel
+    target_dir = tmp_path / ev_target_rel
+    manifest_dir.mkdir(parents=True, exist_ok=True)
+    target_dir.mkdir(parents=True, exist_ok=True)
+    (manifest_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    (target_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    _write_attestation(manifest_dir, slice_id="SO1")
+    _write_attestation(target_dir, slice_id="SO2")
+    manifest = _mk_manifest(tmp_path, "SO1", ev_manifest_rel)
+
+    manifest_r = _run_cli(["check-evidence-attestation-readiness", str(manifest)])
+    target_r = _run_cli(["check-evidence-attestation-readiness", ev_target_rel], cwd=tmp_path)
+    for mode, result in (("manifest", manifest_r), ("target", target_r)):
+        assert result.returncode == 0, result.stderr
+        lines = result.stdout.strip().splitlines()
+        assert len(lines) == 1
+        out = json.loads(lines[0])
+        assert out["ok"] is True
+        assert out["command"] == "check-evidence-attestation-readiness"
+        assert out["mode"] == mode
+
+
+def test_json_field_stability(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_manifest_rel = "out/ops/attestation_readiness/stable_manifest_mode/"
+    ev_target_rel = "out/ops/attestation_readiness/stable_target_mode/"
+    manifest_dir = tmp_path / ev_manifest_rel
+    target_dir = tmp_path / ev_target_rel
+    manifest_dir.mkdir(parents=True, exist_ok=True)
+    target_dir.mkdir(parents=True, exist_ok=True)
+    (manifest_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    (target_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    _write_attestation(manifest_dir, slice_id="FS1")
+    _write_attestation(target_dir, slice_id="FS2")
+    manifest = _mk_manifest(tmp_path, "FS1", ev_manifest_rel)
+
+    manifest_result = _run_cli(["check-evidence-attestation-readiness", str(manifest)])
+    target_result = _run_cli(["check-evidence-attestation-readiness", ev_target_rel], cwd=tmp_path)
+    manifest_out = json.loads(manifest_result.stdout.strip())
+    target_out = json.loads(target_result.stdout.strip())
+
+    for out in (manifest_out, target_out):
+        assert set(out.keys()) >= {
+            "ok",
+            "schema",
+            "command",
+            "mode",
+            "manifest_path",
+            "target_path",
+            "summary",
+            "checked_count",
+            "ready_count",
+            "not_ready_count",
+            "domain_not_ready_count",
+            "input_error_count",
+            "entries",
+        }
+        assert set(out["summary"].keys()) >= {
+            "total_slices",
+            "checked_slices",
+            "ready_slices",
+            "not_ready_slices",
+            "domain_not_ready_slices",
+            "input_error_slices",
+        }
+        ent = out["entries"][0]
+        assert set(ent.keys()) >= {
+            "slice_id",
+            "evidence",
+            "exists",
+            "is_dir",
+            "attestation_present",
+            "attestation_matches",
+            "attestation_file",
+            "attestation_readable_utf8",
+            "attestation_contract_valid",
+            "attestation_slice_id",
+            "attestation_slice_id_matches_manifest",
+            "attestation_sha256sums_file",
+            "sha256sums_file_reference_resolved",
+            "sha256sums_file_target",
+            "sha256sums_file_target_exists",
+            "canonical_integrity_anchor",
+            "canonical_integrity_anchor_exists",
+            "sha256sums_file_targets_canonical_integrity_anchor",
+            "missing_requirements",
+            "contract_details",
+            "status",
+            "ready",
+            "input_error",
+            "repo_root",
+            "resolved_path",
+        }
+
+
+def test_regression_manifest_mode_and_target_mode_are_both_explicitly_supported(
+    tmp_path: Path,
+) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    evidence_rel = "out/ops/attestation_readiness/regression_manifest_target/"
+    evidence_dir = tmp_path / evidence_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="RG1")
+    manifest = _mk_manifest(tmp_path, "RG1", evidence_rel)
+
+    manifest_r = _run_cli(["check-evidence-attestation-readiness", str(manifest)])
+    target_r = _run_cli(["check-evidence-attestation-readiness", evidence_rel], cwd=tmp_path)
+    manifest_out = json.loads(manifest_r.stdout.strip())
+    target_out = json.loads(target_r.stdout.strip())
+
+    assert manifest_r.returncode == 0
+    assert target_r.returncode == 0
+    assert manifest_out["mode"] == "manifest"
+    assert target_out["mode"] == "target"
+    assert manifest_out["entries"][0]["status"] == "ok"
+    assert target_out["entries"][0]["status"] == "ok"
