@@ -64,6 +64,11 @@ check-evidence-attestation exit contract (stdout is one JSON object per invocati
 - 0 — manifest parsed, model-validated; every slice with evidence has at least one *_ATTESTATION.txt file
 - 2 — usage / input problem (same as validate), or repository root could not be resolved from the manifest path
 - 3 — manifest parsed, model-validated; at least one slice with evidence has no attestation-ready directory state
+
+check-evidence-attestation-contract exit contract (stdout is one JSON object per invocation):
+- 0 — manifest parsed, model-validated; every slice with evidence has an attestation file matching the minimal contract
+- 2 — usage / input problem (same as validate), or repository root could not be resolved from the manifest path
+- 3 — manifest parsed, model-validated; at least one slice with evidence violates attestation contract readiness
 """
 
 from __future__ import annotations
@@ -90,6 +95,17 @@ _BUNDLE_REQUIREMENT_GLOB_BUNDLE = "*.bundle.tgz"
 _BUNDLE_REQUIREMENT_GLOB_SUMMARY = "*_CRAWLER_SUMMARY_1LINE.txt"
 _ATTESTATION_REQUIREMENT_GLOB = "*_ATTESTATION.txt"
 _SHA256SUMS_LINE_RE = re.compile(r"^([0-9a-f]{64})\s+(.+)$")
+_ATTESTATION_KEY_VALUE_RE = re.compile(r"^\s*([A-Za-z0-9_]+)\s*:\s*(.*?)\s*$")
+_ATTESTATION_REQUIRED_KEYS = (
+    "slice_id",
+    "attested_at_utc",
+    "attestor",
+    "scope",
+    "sha256sums_file",
+)
+_ATTESTED_AT_UTC_ISO8601_LIKE_RE = re.compile(
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+\-]\d{2}:\d{2})$"
+)
 
 
 def _find_peak_trade_repo_root(manifest_path: Path) -> Path | None:
@@ -155,6 +171,26 @@ def _parse_sha256sums_records(
             }
         )
     return records, False
+
+
+def _parse_attestation_key_values(content: str) -> dict[str, str]:
+    fields: dict[str, str] = {}
+    for raw_line in content.splitlines():
+        stripped = raw_line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        match = _ATTESTATION_KEY_VALUE_RE.fullmatch(raw_line)
+        if match is None:
+            continue
+        fields[match.group(1)] = match.group(2).strip()
+    return fields
+
+
+def _looks_like_sha256sums_file_reference(value: str) -> bool:
+    ref_name = Path(value.strip()).name
+    if ref_name == _BUNDLE_REQUIREMENT_FILE_SHA256SUMS:
+        return True
+    return "SHA256SUMS" in ref_name and ref_name.lower().endswith(".txt")
 
 
 def _read_manifest_with_contract(path: Path) -> tuple[LevelUpManifestV0 | None, int | None]:
@@ -952,6 +988,165 @@ def _cmd_check_evidence_attestation(path: Path) -> int:
     return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
 
 
+def _cmd_check_evidence_attestation_contract(path: Path) -> int:
+    m, error_exit = _read_manifest_with_contract(path)
+    if error_exit is not None:
+        return error_exit
+
+    assert m is not None
+    repo_root = _find_peak_trade_repo_root(path)
+    if repo_root is None:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "input",
+                "reason": "repo_root_not_found",
+                "message": (
+                    "could not locate repository root (expected pyproject.toml and src/levelup/ "
+                    "on the parent chain of the manifest path)"
+                ),
+            }
+        )
+        return EXIT_INPUT
+
+    entries: list[dict[str, object]] = []
+    for sl in m.slices:
+        if sl.evidence is None:
+            continue
+
+        rel = sl.evidence.relative_dir
+        target = repo_root / rel
+        exists = target.exists()
+        is_dir = target.is_dir()
+        status = "ok"
+        attestation_matches: list[str] = []
+        missing_requirements: list[str] = []
+        contract_details: dict[str, object] = {
+            "checked_file": None,
+            "required_keys": list(_ATTESTATION_REQUIRED_KEYS),
+            "missing_keys": [],
+            "empty_keys": [],
+            "parsed_keys": [],
+            "readable_utf8": False,
+            "non_empty": False,
+            "attested_at_utc_iso8601_like": False,
+            "sha256sums_file_valid": False,
+            "slice_id_matches_manifest": False,
+            "parse_mode": "key_value",
+        }
+
+        if not exists:
+            status = "missing_path"
+            missing_requirements = ["evidence_directory", "attestation_contract"]
+        elif not is_dir:
+            status = "not_a_directory"
+            missing_requirements = ["evidence_directory", "attestation_contract"]
+        else:
+            try:
+                attestation_matches = sorted(
+                    p.name for p in target.glob(_ATTESTATION_REQUIREMENT_GLOB) if p.is_file()
+                )
+            except OSError as exc:
+                _emit_json(
+                    {
+                        "ok": False,
+                        "error": "input",
+                        "reason": "evidence_read_failed",
+                        "message": str(exc),
+                    }
+                )
+                return EXIT_INPUT
+
+            if not attestation_matches:
+                status = "missing_attestation"
+                missing_requirements = ["attestation_file", "attestation_contract"]
+            else:
+                checked_file = attestation_matches[0]
+                contract_details["checked_file"] = checked_file
+                attestation_path = target / checked_file
+                try:
+                    text = attestation_path.read_text(encoding="utf-8")
+                except (OSError, UnicodeDecodeError):
+                    status = "unreadable_attestation"
+                    missing_requirements = ["attestation_utf8_readable"]
+                    contract_details["readable_utf8"] = False
+                else:
+                    contract_details["readable_utf8"] = True
+                    contract_details["non_empty"] = bool(text.strip())
+                    fields = _parse_attestation_key_values(text)
+                    contract_details["parsed_keys"] = sorted(fields.keys())
+
+                    missing_keys: list[str] = []
+                    empty_keys: list[str] = []
+                    for key in _ATTESTATION_REQUIRED_KEYS:
+                        if key not in fields:
+                            missing_keys.append(key)
+                        elif not fields[key].strip():
+                            empty_keys.append(key)
+
+                    attested_at_utc = fields.get("attested_at_utc", "")
+                    sha256sums_file = fields.get("sha256sums_file", "")
+                    iso_like = bool(_ATTESTED_AT_UTC_ISO8601_LIKE_RE.fullmatch(attested_at_utc))
+                    sha_ref_ok = _looks_like_sha256sums_file_reference(sha256sums_file)
+
+                    contract_details["missing_keys"] = missing_keys
+                    contract_details["empty_keys"] = empty_keys
+                    contract_details["attested_at_utc_iso8601_like"] = iso_like
+                    contract_details["sha256sums_file_valid"] = sha_ref_ok
+                    contract_details["slice_id_matches_manifest"] = (
+                        bool(fields.get("slice_id", "")) and fields["slice_id"] == sl.slice_id
+                    )
+
+                    if (
+                        not contract_details["non_empty"]
+                        or missing_keys
+                        or empty_keys
+                        or not iso_like
+                        or not sha_ref_ok
+                    ):
+                        status = "invalid_attestation_contract"
+                        if not contract_details["non_empty"]:
+                            missing_requirements.append("attestation_non_empty")
+                        missing_requirements.extend(missing_keys)
+                        missing_requirements.extend(f"{key}_non_empty" for key in empty_keys)
+                        if not iso_like:
+                            missing_requirements.append("attested_at_utc_iso8601_like")
+                        if not sha_ref_ok:
+                            missing_requirements.append("sha256sums_file_reference")
+
+        entries.append(
+            {
+                "slice_id": sl.slice_id,
+                "evidence": rel,
+                "exists": exists,
+                "is_dir": is_dir,
+                "attestation_matches": attestation_matches,
+                "status": status,
+                "missing_requirements": sorted(set(missing_requirements)),
+                "contract_details": contract_details,
+            }
+        )
+
+    checked_count = len(entries)
+    ready_count = sum(1 for e in entries if e["status"] == "ok")
+    not_ready_count = checked_count - ready_count
+    ok = not_ready_count == 0
+
+    _emit_json(
+        {
+            "ok": ok,
+            "schema": m.schema_version,
+            "command": "check-evidence-attestation-contract",
+            "manifest_path": str(path.resolve()),
+            "checked_count": checked_count,
+            "ready_count": ready_count,
+            "not_ready_count": not_ready_count,
+            "entries": entries,
+        }
+    )
+    return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m src.levelup.cli")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -1045,6 +1240,15 @@ def main(argv: list[str] | None = None) -> int:
     )
     p_ev_attestation.add_argument("manifest", type=Path, help="Path to manifest.json")
 
+    p_ev_attestation_contract = sub.add_parser(
+        "check-evidence-attestation-contract",
+        help=(
+            "Check minimal operator attestation content contract in evidence directories "
+            "(read-only; one JSON line)."
+        ),
+    )
+    p_ev_attestation_contract.add_argument("manifest", type=Path, help="Path to manifest.json")
+
     args = parser.parse_args(argv)
     if args.cmd == "validate":
         return _cmd_validate(args.manifest)
@@ -1072,6 +1276,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_check_evidence_integrity(args.manifest)
     if args.cmd == "check-evidence-attestation":
         return _cmd_check_evidence_attestation(args.manifest)
+    if args.cmd == "check-evidence-attestation-contract":
+        return _cmd_check_evidence_attestation_contract(args.manifest)
     return EXIT_INPUT
 
 
