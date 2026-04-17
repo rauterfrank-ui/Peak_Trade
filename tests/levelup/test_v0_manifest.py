@@ -21,7 +21,9 @@ from src.levelup.v0_models import (
     levelup_manifest_v0_json_schema,
 )
 
-_COMMITTED_MANIFEST_JSON_SCHEMA = REPO_ROOT / "schemas" / "levelup" / "levelup_manifest_v0.schema.json"
+_COMMITTED_MANIFEST_JSON_SCHEMA = (
+    REPO_ROOT / "schemas" / "levelup" / "levelup_manifest_v0.schema.json"
+)
 
 
 def _run_levelup_cli(args: list[str]) -> subprocess.CompletedProcess[str]:
