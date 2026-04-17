@@ -1644,7 +1644,9 @@ def _cmd_check_evidence_attestation_uniqueness(path: Path) -> int:
         "total_slices": len(m.slices),
         "checked_slices": len(entries),
         "ok_slices": sum(1 for e in entries if e["status"] == "ok"),
-        "missing_attestation_slices": sum(1 for e in entries if e["status"] == "missing_attestation"),
+        "missing_attestation_slices": sum(
+            1 for e in entries if e["status"] == "missing_attestation"
+        ),
         "multiple_attestations_slices": sum(
             1 for e in entries if e["status"] == "multiple_attestations"
         ),
