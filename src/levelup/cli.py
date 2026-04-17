@@ -1554,7 +1554,9 @@ def _assess_attestation_readiness_entry(
                 attestation_slice_id = fields.get("slice_id")
                 attestation_sha256sums_file = fields.get("sha256sums_file")
                 iso_like = bool(_ATTESTED_AT_UTC_ISO8601_LIKE_RE.fullmatch(attested_at_utc))
-                sha_ref_ok = _looks_like_sha256sums_file_reference(attestation_sha256sums_file or "")
+                sha_ref_ok = _looks_like_sha256sums_file_reference(
+                    attestation_sha256sums_file or ""
+                )
 
                 contract_details["missing_keys"] = missing_keys
                 contract_details["empty_keys"] = empty_keys
@@ -1592,7 +1594,9 @@ def _assess_attestation_readiness_entry(
                         sha256sums_file_reference_resolved
                     )
                     contract_details["sha256sums_file_target"] = sha256sums_file_target
-                    contract_details["sha256sums_file_target_exists"] = sha256sums_file_target_exists
+                    contract_details["sha256sums_file_target_exists"] = (
+                        sha256sums_file_target_exists
+                    )
                     (
                         _canonical_anchor,
                         canonical_integrity_anchor_exists,
