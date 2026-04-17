@@ -100,6 +100,27 @@ def test_check_evidence_attestation_consistency_cli_missing_attestation(tmp_path
     assert out["entries"][0]["status"] == "missing_attestation"
 
 
+def test_consistency_returns_multiple_attestations_without_using_first_file(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_consistency/multiple_attestations/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="WRONG", file_name="A_ATTESTATION.txt")
+    _write_attestation(evidence_dir, slice_id="S_MULTI", file_name="Z_ATTESTATION.txt")
+    manifest = _mk_manifest(tmp_path, "S_MULTI", ev_rel)
+
+    r = _run_cli(["check-evidence-attestation-consistency", str(manifest)])
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["ok"] is False
+    assert out["inconsistency_count"] == 1
+    assert out["input_error_count"] == 0
+    assert out["entries"][0]["status"] == "multiple_attestations"
+    assert out["entries"][0]["attestation_file"] is None
+    assert "attestation_uniqueness" in out["entries"][0]["missing_requirements"]
+
+
 def test_check_evidence_attestation_consistency_cli_unreadable_attestation(tmp_path: Path) -> None:
     _bootstrap_minimal_repo_layout(tmp_path)
     ev_rel = "out/ops/attestation_consistency/unreadable/"

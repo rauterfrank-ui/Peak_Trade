@@ -1080,6 +1080,9 @@ def _cmd_check_evidence_attestation_contract(path: Path) -> int:
             if not attestation_matches:
                 status = "missing_attestation"
                 missing_requirements = ["attestation_file", "attestation_contract"]
+            elif len(attestation_matches) > 1:
+                status = "multiple_attestations"
+                missing_requirements = ["attestation_uniqueness", "attestation_contract"]
             else:
                 checked_file = attestation_matches[0]
                 contract_details["checked_file"] = checked_file
@@ -1234,6 +1237,9 @@ def _cmd_check_evidence_attestation_consistency(path: Path) -> int:
             if not attestation_matches:
                 status = "missing_attestation"
                 missing_requirements = ["attestation_file"]
+            elif len(attestation_matches) > 1:
+                status = "multiple_attestations"
+                missing_requirements = ["attestation_uniqueness"]
             else:
                 attestation_file = attestation_matches[0]
                 attestation_path = target / attestation_file
@@ -1309,6 +1315,7 @@ def _cmd_check_evidence_attestation_consistency(path: Path) -> int:
         if e["status"]
         in {
             "missing_attestation",
+            "multiple_attestations",
             "slice_id_mismatch",
             "sha256sums_file_reference_unresolvable",
             "sha256sums_file_target_missing",
@@ -1423,6 +1430,9 @@ def _cmd_check_evidence_attestation_readiness(path: Path) -> int:
             if not attestation_present:
                 status = "missing_attestation"
                 missing_requirements = ["attestation_file"]
+            elif len(attestation_matches) > 1:
+                status = "multiple_attestations"
+                missing_requirements = ["attestation_uniqueness"]
             else:
                 attestation_file = attestation_matches[0]
                 contract_details["checked_file"] = attestation_file
@@ -1907,6 +1917,16 @@ def _assess_attestation_readiness_domain(
             "attestation_matches": attestation_matches,
             "status": "missing_attestation",
             "missing_requirements": ["attestation_file"],
+            "ready": False,
+            "input_error": False,
+        }
+    if len(attestation_matches) > 1:
+        return {
+            **base,
+            "attestation_present": True,
+            "attestation_matches": attestation_matches,
+            "status": "multiple_attestations",
+            "missing_requirements": ["attestation_uniqueness"],
             "ready": False,
             "input_error": False,
         }
