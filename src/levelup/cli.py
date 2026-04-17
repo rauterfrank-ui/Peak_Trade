@@ -54,12 +54,19 @@ check-evidence-bundle exit contract (stdout is one JSON object per invocation):
 - 0 — manifest parsed, model-validated; every slice with evidence has a bundle-ready evidence directory
 - 2 — usage / input problem (same as validate), or repository root could not be resolved from the manifest path
 - 3 — manifest parsed, model-validated; at least one slice with evidence is not bundle-ready
+
+check-evidence-integrity exit contract (stdout is one JSON object per invocation):
+- 0 — manifest parsed, model-validated; every slice with evidence has SHA256-consistent files for SHA256SUMS entries
+- 2 — usage / input problem (same as validate), or repository root could not be resolved from the manifest path
+- 3 — manifest parsed, model-validated; at least one slice with evidence has integrity-readiness issues
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import re
 import sys
 from json import JSONDecodeError
 from pathlib import Path
@@ -76,6 +83,7 @@ EXIT_VALIDATION_FAILED = 3
 _BUNDLE_REQUIREMENT_FILE_SHA256SUMS = "SHA256SUMS.txt"
 _BUNDLE_REQUIREMENT_GLOB_BUNDLE = "*.bundle.tgz"
 _BUNDLE_REQUIREMENT_GLOB_SUMMARY = "*_CRAWLER_SUMMARY_1LINE.txt"
+_SHA256SUMS_LINE_RE = re.compile(r"^([0-9a-f]{64})\s+(.+)$")
 
 
 def _find_peak_trade_repo_root(manifest_path: Path) -> Path | None:
@@ -90,6 +98,57 @@ def _find_peak_trade_repo_root(manifest_path: Path) -> Path | None:
 
 def _emit_json(payload: object) -> None:
     print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
+
+
+def _is_relative_to(path: Path, base: Path) -> bool:
+    try:
+        path.relative_to(base)
+    except ValueError:
+        return False
+    return True
+
+
+def _resolve_hashed_file_path(raw_path: str, repo_root: Path, evidence_dir: Path) -> Path | None:
+    rel = Path(raw_path)
+    if rel.is_absolute():
+        return None
+    evidence_root = evidence_dir.resolve()
+    candidates = [(evidence_dir / rel).resolve(), (repo_root / rel).resolve()]
+    for candidate in candidates:
+        if _is_relative_to(candidate, evidence_root):
+            return candidate
+    return None
+
+
+def _parse_sha256sums_records(
+    sha_file: Path, repo_root: Path, evidence_dir: Path
+) -> tuple[list[dict[str, object]], bool]:
+    try:
+        content = sha_file.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return [], True
+
+    records: list[dict[str, object]] = []
+    for raw_line in content.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        match = _SHA256SUMS_LINE_RE.fullmatch(line)
+        if match is None:
+            return [], True
+        expected_sha256 = match.group(1)
+        raw_path = match.group(2)
+        target_path = _resolve_hashed_file_path(raw_path, repo_root, evidence_dir)
+        if target_path is None:
+            return [], True
+        records.append(
+            {
+                "path": raw_path,
+                "expected_sha256": expected_sha256,
+                "target_path": target_path,
+            }
+        )
+    return records, False
 
 
 def _read_manifest_with_contract(path: Path) -> tuple[LevelUpManifestV0 | None, int | None]:
@@ -659,6 +718,142 @@ def _cmd_check_evidence_bundle(path: Path) -> int:
     return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
 
 
+def _cmd_check_evidence_integrity(path: Path) -> int:
+    m, error_exit = _read_manifest_with_contract(path)
+    if error_exit is not None:
+        return error_exit
+
+    assert m is not None
+    repo_root = _find_peak_trade_repo_root(path)
+    if repo_root is None:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "input",
+                "reason": "repo_root_not_found",
+                "message": (
+                    "could not locate repository root (expected pyproject.toml and src/levelup/ "
+                    "on the parent chain of the manifest path)"
+                ),
+            }
+        )
+        return EXIT_INPUT
+
+    entries: list[dict[str, object]] = []
+    for sl in m.slices:
+        if sl.evidence is None:
+            continue
+
+        rel = sl.evidence.relative_dir
+        target = repo_root / rel
+        exists = target.exists()
+        is_dir = target.is_dir()
+        status = "ok"
+        checked_files = 0
+        missing_requirements: list[str] = []
+        failed_files: list[dict[str, object]] = []
+
+        if not exists:
+            status = "missing_path"
+            missing_requirements = ["evidence_directory"]
+        elif not is_dir:
+            status = "not_a_directory"
+            missing_requirements = ["evidence_directory"]
+        else:
+            sha_file = target / _BUNDLE_REQUIREMENT_FILE_SHA256SUMS
+            if not sha_file.is_file():
+                status = "missing_sha256sums"
+                missing_requirements = ["sha256sums_txt"]
+            else:
+                records, invalid_sha256sums_format = _parse_sha256sums_records(
+                    sha_file, repo_root, target
+                )
+                if invalid_sha256sums_format:
+                    status = "invalid_sha256sums_format"
+                    missing_requirements = ["sha256sums_format"]
+                else:
+                    checked_files = len(records)
+                    for rec in records:
+                        expected_sha256 = str(rec["expected_sha256"])
+                        target_path = rec["target_path"]
+                        assert isinstance(target_path, Path)
+                        file_path = str(rec["path"])
+
+                        if not target_path.is_file():
+                            failed_files.append(
+                                {
+                                    "path": file_path,
+                                    "status": "missing_hashed_file",
+                                    "expected_sha256": expected_sha256,
+                                }
+                            )
+                            continue
+
+                        try:
+                            actual_sha256 = hashlib.sha256(target_path.read_bytes()).hexdigest()
+                        except OSError as exc:
+                            _emit_json(
+                                {
+                                    "ok": False,
+                                    "error": "input",
+                                    "reason": "evidence_read_failed",
+                                    "message": str(exc),
+                                }
+                            )
+                            return EXIT_INPUT
+
+                        if actual_sha256 != expected_sha256:
+                            failed_files.append(
+                                {
+                                    "path": file_path,
+                                    "status": "hash_mismatch",
+                                    "expected_sha256": expected_sha256,
+                                    "actual_sha256": actual_sha256,
+                                }
+                            )
+
+                    has_missing_hashed_file = any(
+                        f["status"] == "missing_hashed_file" for f in failed_files
+                    )
+                    has_hash_mismatch = any(f["status"] == "hash_mismatch" for f in failed_files)
+                    if has_missing_hashed_file:
+                        status = "missing_hashed_file"
+                    elif has_hash_mismatch:
+                        status = "hash_mismatch"
+
+        entries.append(
+            {
+                "slice_id": sl.slice_id,
+                "evidence": rel,
+                "exists": exists,
+                "is_dir": is_dir,
+                "status": status,
+                "checked_files": checked_files,
+                "missing_requirements": missing_requirements,
+                "failed_files": failed_files,
+            }
+        )
+
+    checked_count = len(entries)
+    ready_count = sum(1 for e in entries if e["status"] == "ok")
+    not_ready_count = checked_count - ready_count
+    ok = not_ready_count == 0
+
+    _emit_json(
+        {
+            "ok": ok,
+            "schema": m.schema_version,
+            "command": "check-evidence-integrity",
+            "manifest_path": str(path.resolve()),
+            "checked_count": checked_count,
+            "ready_count": ready_count,
+            "not_ready_count": not_ready_count,
+            "entries": entries,
+        }
+    )
+    return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m src.levelup.cli")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -734,6 +929,15 @@ def main(argv: list[str] | None = None) -> int:
     )
     p_ev_bundle.add_argument("manifest", type=Path, help="Path to manifest.json")
 
+    p_ev_integrity = sub.add_parser(
+        "check-evidence-integrity",
+        help=(
+            "Check SHA256SUMS-backed evidence integrity for evidence directories "
+            "(read-only; one JSON line)."
+        ),
+    )
+    p_ev_integrity.add_argument("manifest", type=Path, help="Path to manifest.json")
+
     args = parser.parse_args(argv)
     if args.cmd == "validate":
         return _cmd_validate(args.manifest)
@@ -757,6 +961,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_check_evidence_readiness(args.manifest)
     if args.cmd == "check-evidence-bundle":
         return _cmd_check_evidence_bundle(args.manifest)
+    if args.cmd == "check-evidence-integrity":
+        return _cmd_check_evidence_integrity(args.manifest)
     return EXIT_INPUT
 
 
