@@ -1196,10 +1196,7 @@ def _cmd_check_evidence_attestation_contract(path: Path) -> int:
                         elif not contract_details["sha256sums_file_target_exists"]:
                             status = "invalid_attestation_contract"
                             missing_requirements.append("sha256sums_file_target_exists")
-                        elif (
-                            canonical_anchor_exists
-                            and targets_canonical_anchor is False
-                        ):
+                        elif canonical_anchor_exists and targets_canonical_anchor is False:
                             status = "invalid_attestation_contract"
                             missing_requirements.append(
                                 "sha256sums_file_targets_canonical_integrity_anchor"
@@ -2174,9 +2171,7 @@ def _assess_attestation_readiness_domain(
                 and sha256sums_file_targets_canonical_integrity_anchor is False
             ):
                 status = "sha256sums_file_target_noncanonical"
-                missing_requirements.append(
-                    "sha256sums_file_targets_canonical_integrity_anchor"
-                )
+                missing_requirements.append("sha256sums_file_targets_canonical_integrity_anchor")
 
     return {
         **base,
