@@ -86,6 +86,11 @@ check-evidence-attestation-uniqueness exit contract (stdout is one JSON object p
 - 2 — usage / input problem (same as validate), or repository root could not be resolved from the manifest-or-target path
 - 3 — at least one checked target has missing / multiple attestations or path-directory state mismatch
 
+check-evidence-attestation-integrity exit contract (stdout is one JSON object per invocation):
+- 0 — manifest parsed, model-validated; every slice with evidence has one attestation and the attested SHA256SUMS target is canonical + cryptographically valid
+- 2 — usage / input problem (same as validate), repository root could not be resolved, or evidence/attestation read errors occurred
+- 3 — manifest parsed, model-validated; at least one slice with evidence violates attestation-integrity requirements
+
 check-evidence-readiness-overall exit contract (stdout is one JSON object per invocation):
 - 0 — manifest parsed, model-validated; every slice is evidence-ready across coverage/path, bundle, integrity, and attestation-readiness
 - 2 — usage / input problem (same as validate), repository root could not be resolved, or at least one per-slice path/readability input error occurred
@@ -1878,6 +1883,191 @@ def _cmd_check_evidence_attestation_uniqueness(manifest_or_target: Path) -> int:
     return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
 
 
+def _cmd_check_evidence_attestation_integrity(path: Path) -> int:
+    m, error_exit = _read_manifest_with_contract(path)
+    if error_exit is not None:
+        return error_exit
+
+    assert m is not None
+    repo_root = _find_peak_trade_repo_root(path)
+    if repo_root is None:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "input",
+                "reason": "repo_root_not_found",
+                "message": (
+                    "could not locate repository root (expected pyproject.toml and src/levelup/ "
+                    "on the parent chain of the manifest path)"
+                ),
+            }
+        )
+        return EXIT_INPUT
+
+    repo_root_resolved = str(repo_root.resolve())
+    entries: list[dict[str, object]] = []
+    for sl in m.slices:
+        if sl.evidence is None:
+            continue
+
+        rel = sl.evidence.relative_dir
+        target = repo_root / rel
+        resolved_path = str(target.resolve())
+        exists = target.exists()
+        is_dir = target.is_dir()
+        status = "ok"
+        attestation_matches: list[str] = []
+        sha256sums_file: str | None = None
+        resolved_sha256sums_path: str | None = None
+
+        if not exists:
+            status = "missing_path"
+        elif not is_dir:
+            status = "not_a_directory"
+        else:
+            try:
+                attestation_matches = sorted(
+                    p.name for p in target.glob(_ATTESTATION_REQUIREMENT_GLOB) if p.is_file()
+                )
+            except OSError as exc:
+                _emit_json(
+                    {
+                        "ok": False,
+                        "error": "input",
+                        "reason": "evidence_read_failed",
+                        "message": str(exc),
+                    }
+                )
+                return EXIT_INPUT
+
+            if not attestation_matches:
+                status = "missing_attestation"
+            elif len(attestation_matches) > 1:
+                status = "multiple_attestations"
+            else:
+                attestation_path = target / attestation_matches[0]
+                try:
+                    text = attestation_path.read_text(encoding="utf-8")
+                except (OSError, UnicodeDecodeError) as exc:
+                    _emit_json(
+                        {
+                            "ok": False,
+                            "error": "input",
+                            "reason": "attestation_read_failed",
+                            "message": str(exc),
+                        }
+                    )
+                    return EXIT_INPUT
+
+                fields = _parse_attestation_key_values(text)
+                sha256sums_file = fields.get("sha256sums_file")
+                resolved_sha256sums_target: Path | None = None
+                if sha256sums_file:
+                    resolved_sha256sums_target = _resolve_hashed_file_path(
+                        sha256sums_file, repo_root, target
+                    )
+                if resolved_sha256sums_target is not None:
+                    resolved_sha256sums_path = str(resolved_sha256sums_target)
+
+                canonical_anchor = _canonical_integrity_anchor_path(target)
+                if resolved_sha256sums_target is None or not resolved_sha256sums_target.is_file():
+                    status = "missing_sha256sums_file"
+                elif resolved_sha256sums_target.resolve() != canonical_anchor:
+                    status = "sha256sums_file_target_noncanonical"
+                else:
+                    records, invalid_sha256sums_format = _parse_sha256sums_records(
+                        resolved_sha256sums_target, repo_root, target
+                    )
+                    if invalid_sha256sums_format:
+                        status = "invalid_sha256sums_format"
+                    else:
+                        for rec in records:
+                            expected_sha256 = str(rec["expected_sha256"])
+                            target_path = rec["target_path"]
+                            assert isinstance(target_path, Path)
+
+                            if not target_path.is_file():
+                                status = "sha256_mismatch"
+                                break
+                            try:
+                                actual_sha256 = hashlib.sha256(target_path.read_bytes()).hexdigest()
+                            except OSError as exc:
+                                _emit_json(
+                                    {
+                                        "ok": False,
+                                        "error": "input",
+                                        "reason": "evidence_read_failed",
+                                        "message": str(exc),
+                                    }
+                                )
+                                return EXIT_INPUT
+                            if actual_sha256 != expected_sha256:
+                                status = "sha256_mismatch"
+                                break
+
+        entries.append(
+            {
+                "slice_id": sl.slice_id,
+                "evidence": rel,
+                "status": status,
+                "attestation_matches": attestation_matches,
+                "attestation_count": len(attestation_matches),
+                "sha256sums_file": sha256sums_file,
+                "resolved_sha256sums_path": resolved_sha256sums_path,
+                "repo_root": repo_root_resolved,
+                "resolved_path": resolved_path,
+                "exists": exists,
+                "is_dir": is_dir,
+            }
+        )
+
+    summary = {
+        "total_slices": len(m.slices),
+        "checked_slices": len(entries),
+        "ok_slices": sum(1 for e in entries if e["status"] == "ok"),
+        "missing_attestation_slices": sum(
+            1 for e in entries if e["status"] == "missing_attestation"
+        ),
+        "multiple_attestations_slices": sum(
+            1 for e in entries if e["status"] == "multiple_attestations"
+        ),
+        "missing_path_slices": sum(1 for e in entries if e["status"] == "missing_path"),
+        "not_a_directory_slices": sum(1 for e in entries if e["status"] == "not_a_directory"),
+        "missing_sha256sums_file_slices": sum(
+            1 for e in entries if e["status"] == "missing_sha256sums_file"
+        ),
+        "noncanonical_target_slices": sum(
+            1 for e in entries if e["status"] == "sha256sums_file_target_noncanonical"
+        ),
+        "invalid_sha256sums_format_slices": sum(
+            1 for e in entries if e["status"] == "invalid_sha256sums_format"
+        ),
+        "sha256_mismatch_slices": sum(1 for e in entries if e["status"] == "sha256_mismatch"),
+    }
+    ok = (
+        summary["missing_attestation_slices"] == 0
+        and summary["multiple_attestations_slices"] == 0
+        and summary["missing_path_slices"] == 0
+        and summary["not_a_directory_slices"] == 0
+        and summary["missing_sha256sums_file_slices"] == 0
+        and summary["noncanonical_target_slices"] == 0
+        and summary["invalid_sha256sums_format_slices"] == 0
+        and summary["sha256_mismatch_slices"] == 0
+    )
+
+    _emit_json(
+        {
+            "ok": ok,
+            "schema": m.schema_version,
+            "command": "check-evidence-attestation-integrity",
+            "manifest_path": str(path.resolve()),
+            "summary": summary,
+            "entries": entries,
+        }
+    )
+    return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
+
+
 def _assess_bundle_domain(
     evidence_dir: Path, *, has_evidence: bool, path_ready: bool
 ) -> dict[str, object]:
@@ -2517,6 +2707,19 @@ def main(argv: list[str] | None = None) -> int:
         help="Path to manifest.json or evidence target path.",
     )
 
+    p_ev_attestation_integrity = sub.add_parser(
+        "check-evidence-attestation-integrity",
+        help=(
+            "Check that attestation sha256sums_file points to canonical SHA256SUMS.txt "
+            "and that referenced hashes are valid (read-only; one JSON line)."
+        ),
+    )
+    p_ev_attestation_integrity.add_argument(
+        "manifest_or_target",
+        type=Path,
+        help="Path to manifest.json (manifest or target path).",
+    )
+
     p_ev_readiness_overall = sub.add_parser(
         "check-evidence-readiness-overall",
         help=(
@@ -2561,6 +2764,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_check_evidence_attestation_readiness(args.manifest)
     if args.cmd == "check-evidence-attestation-uniqueness":
         return _cmd_check_evidence_attestation_uniqueness(args.manifest_or_target)
+    if args.cmd == "check-evidence-attestation-integrity":
+        return _cmd_check_evidence_attestation_integrity(args.manifest_or_target)
     if args.cmd == "check-evidence-readiness-overall":
         return _cmd_check_evidence_readiness_overall(args.manifest)
     return EXIT_INPUT
