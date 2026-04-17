@@ -39,6 +39,11 @@ check-evidence exit contract (stdout is one JSON object per invocation):
 - 0 — manifest parsed, model-validated; every slice with evidence has an existing directory at repo-relative path
 - 2 — usage / input problem (same as validate), or repository root could not be resolved from the manifest path
 - 3 — manifest ok but at least one evidence path is missing or not a directory
+
+check-evidence-coverage exit contract (stdout is one JSON object per invocation):
+- 0 — manifest parsed, model-validated; every slice has a non-empty evidence field
+- 2 — usage / input problem (same as validate)
+- 3 — manifest parsed, model-validated; at least one slice has no evidence field
 """
 
 from __future__ import annotations
@@ -374,6 +379,45 @@ def _cmd_check_evidence(path: Path) -> int:
     return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
 
 
+def _cmd_check_evidence_coverage(path: Path) -> int:
+    m, error_exit = _read_manifest_with_contract(path)
+    if error_exit is not None:
+        return error_exit
+
+    assert m is not None
+    entries: list[dict[str, object]] = []
+    for sl in m.slices:
+        has_evidence = sl.evidence is not None and bool(sl.evidence.relative_dir.strip())
+        entries.append(
+            {
+                "slice_id": sl.slice_id,
+                "has_evidence": has_evidence,
+                "evidence": sl.evidence.relative_dir if sl.evidence is not None else None,
+            }
+        )
+
+    total_slices = len(entries)
+    with_evidence_count = sum(1 for e in entries if e["has_evidence"])
+    without_evidence_count = total_slices - with_evidence_count
+    coverage_ratio = float(with_evidence_count) / float(total_slices) if total_slices > 0 else 1.0
+    ok = without_evidence_count == 0
+
+    _emit_json(
+        {
+            "ok": ok,
+            "schema": m.schema_version,
+            "command": "check-evidence-coverage",
+            "manifest_path": str(path.resolve()),
+            "total_slices": total_slices,
+            "with_evidence_count": with_evidence_count,
+            "without_evidence_count": without_evidence_count,
+            "coverage_ratio": coverage_ratio,
+            "entries": entries,
+        }
+    )
+    return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m src.levelup.cli")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -425,6 +469,14 @@ def main(argv: list[str] | None = None) -> int:
     )
     p_ev.add_argument("manifest", type=Path, help="Path to manifest.json")
 
+    p_ev_cov = sub.add_parser(
+        "check-evidence-coverage",
+        help=(
+            "Check manifest evidence-field coverage for all slices (read-only; one JSON line on stdout)."
+        ),
+    )
+    p_ev_cov.add_argument("manifest", type=Path, help="Path to manifest.json")
+
     args = parser.parse_args(argv)
     if args.cmd == "validate":
         return _cmd_validate(args.manifest)
@@ -442,6 +494,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_list_slices(args.manifest)
     if args.cmd == "check-evidence":
         return _cmd_check_evidence(args.manifest)
+    if args.cmd == "check-evidence-coverage":
+        return _cmd_check_evidence_coverage(args.manifest)
     return EXIT_INPUT
 
 
