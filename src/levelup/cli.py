@@ -74,6 +74,11 @@ check-evidence-attestation-consistency exit contract (stdout is one JSON object 
 - 0 — manifest parsed, model-validated; every slice with evidence is consistent across manifest slice_id, attestation fields and sha256sums_file target existence
 - 2 — usage / input problem (same as validate), repository root could not be resolved, or per-slice path/readability errors occurred
 - 3 — manifest parsed, model-validated; at least one slice with evidence has a domain-level consistency mismatch
+
+check-evidence-attestation-readiness exit contract (stdout is one JSON object per invocation):
+- 0 — manifest parsed, model-validated; every slice with evidence is attestation-ready (presence + minimal contract + consistency)
+- 2 — usage / input problem (same as validate), repository root could not be resolved, or per-slice path/readability errors occurred
+- 3 — manifest parsed, model-validated; at least one slice with evidence has a domain-level attestation readiness mismatch
 """
 
 from __future__ import annotations
@@ -1322,6 +1327,235 @@ def _cmd_check_evidence_attestation_consistency(path: Path) -> int:
     return EXIT_VALIDATION_FAILED
 
 
+def _cmd_check_evidence_attestation_readiness(path: Path) -> int:
+    m, error_exit = _read_manifest_with_contract(path)
+    if error_exit is not None:
+        return error_exit
+
+    assert m is not None
+    repo_root = _find_peak_trade_repo_root(path)
+    if repo_root is None:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "input",
+                "reason": "repo_root_not_found",
+                "message": (
+                    "could not locate repository root (expected pyproject.toml and src/levelup/ "
+                    "on the parent chain of the manifest path)"
+                ),
+            }
+        )
+        return EXIT_INPUT
+
+    entries: list[dict[str, object]] = []
+    for sl in m.slices:
+        if sl.evidence is None:
+            continue
+
+        rel = sl.evidence.relative_dir
+        target = repo_root / rel
+        exists = target.exists()
+        is_dir = target.is_dir()
+        status = "ok"
+        input_error = False
+        missing_requirements: list[str] = []
+        attestation_matches: list[str] = []
+        attestation_file: str | None = None
+        attestation_present = False
+        attestation_readable_utf8: bool | None = None
+        attestation_contract_valid: bool | None = None
+        attestation_slice_id: str | None = None
+        attestation_slice_id_matches_manifest: bool | None = None
+        attestation_sha256sums_file: str | None = None
+        sha256sums_file_reference_resolved: bool | None = None
+        sha256sums_file_target: str | None = None
+        sha256sums_file_target_exists: bool | None = None
+        contract_details: dict[str, object] = {
+            "checked_file": None,
+            "required_keys": list(_ATTESTATION_REQUIRED_KEYS),
+            "missing_keys": [],
+            "empty_keys": [],
+            "parsed_keys": [],
+            "readable_utf8": False,
+            "non_empty": False,
+            "attested_at_utc_iso8601_like": False,
+            "sha256sums_file_valid": False,
+            "slice_id_matches_manifest": False,
+            "parse_mode": "key_value",
+        }
+
+        if not exists:
+            status = "missing_path"
+            input_error = True
+            missing_requirements = ["evidence_directory"]
+        elif not is_dir:
+            status = "not_a_directory"
+            input_error = True
+            missing_requirements = ["evidence_directory"]
+        else:
+            try:
+                attestation_matches = sorted(
+                    p.name for p in target.glob(_ATTESTATION_REQUIREMENT_GLOB) if p.is_file()
+                )
+            except OSError as exc:
+                _emit_json(
+                    {
+                        "ok": False,
+                        "error": "input",
+                        "reason": "evidence_read_failed",
+                        "message": str(exc),
+                    }
+                )
+                return EXIT_INPUT
+
+            attestation_present = bool(attestation_matches)
+            if not attestation_present:
+                status = "missing_attestation"
+                missing_requirements = ["attestation_file"]
+            else:
+                attestation_file = attestation_matches[0]
+                contract_details["checked_file"] = attestation_file
+                attestation_path = target / attestation_file
+                try:
+                    text = attestation_path.read_text(encoding="utf-8")
+                except (OSError, UnicodeDecodeError):
+                    status = "unreadable_attestation"
+                    input_error = True
+                    attestation_readable_utf8 = False
+                    missing_requirements = ["attestation_utf8_readable"]
+                else:
+                    attestation_readable_utf8 = True
+                    contract_details["readable_utf8"] = True
+                    contract_details["non_empty"] = bool(text.strip())
+                    fields = _parse_attestation_key_values(text)
+                    contract_details["parsed_keys"] = sorted(fields.keys())
+
+                    missing_keys: list[str] = []
+                    empty_keys: list[str] = []
+                    for key in _ATTESTATION_REQUIRED_KEYS:
+                        if key not in fields:
+                            missing_keys.append(key)
+                        elif not fields[key].strip():
+                            empty_keys.append(key)
+
+                    attested_at_utc = fields.get("attested_at_utc", "")
+                    attestation_slice_id = fields.get("slice_id")
+                    attestation_sha256sums_file = fields.get("sha256sums_file")
+                    iso_like = bool(_ATTESTED_AT_UTC_ISO8601_LIKE_RE.fullmatch(attested_at_utc))
+                    sha_ref_ok = _looks_like_sha256sums_file_reference(
+                        attestation_sha256sums_file or ""
+                    )
+
+                    contract_details["missing_keys"] = missing_keys
+                    contract_details["empty_keys"] = empty_keys
+                    contract_details["attested_at_utc_iso8601_like"] = iso_like
+                    contract_details["sha256sums_file_valid"] = sha_ref_ok
+
+                    attestation_contract_valid = bool(contract_details["non_empty"]) and not (
+                        missing_keys or empty_keys
+                    )
+                    attestation_contract_valid = (
+                        attestation_contract_valid and iso_like and sha_ref_ok
+                    )
+
+                    if not attestation_contract_valid:
+                        status = "invalid_attestation_contract"
+                        if not contract_details["non_empty"]:
+                            missing_requirements.append("attestation_non_empty")
+                        missing_requirements.extend(missing_keys)
+                        missing_requirements.extend(f"{key}_non_empty" for key in empty_keys)
+                        if not iso_like:
+                            missing_requirements.append("attested_at_utc_iso8601_like")
+                        if not sha_ref_ok:
+                            missing_requirements.append("sha256sums_file_reference")
+                    else:
+                        attestation_slice_id_matches_manifest = (
+                            attestation_slice_id == sl.slice_id
+                            if attestation_slice_id is not None
+                            else False
+                        )
+                        contract_details["slice_id_matches_manifest"] = (
+                            attestation_slice_id_matches_manifest
+                        )
+                        if not attestation_slice_id_matches_manifest:
+                            status = "slice_id_mismatch"
+                            missing_requirements.append("slice_id_matches_manifest")
+                        else:
+                            resolved_sha256sums_target: Path | None = None
+                            if attestation_sha256sums_file is not None:
+                                resolved_sha256sums_target = _resolve_hashed_file_path(
+                                    attestation_sha256sums_file, repo_root, target
+                                )
+                            sha256sums_file_reference_resolved = (
+                                resolved_sha256sums_target is not None
+                            )
+                            if resolved_sha256sums_target is not None:
+                                sha256sums_file_target = str(resolved_sha256sums_target)
+                                sha256sums_file_target_exists = resolved_sha256sums_target.is_file()
+                            else:
+                                sha256sums_file_target_exists = False
+
+                            if not sha256sums_file_reference_resolved:
+                                status = "sha256sums_file_reference_unresolvable"
+                                missing_requirements.append("sha256sums_file_reference_resolved")
+                            elif not sha256sums_file_target_exists:
+                                status = "sha256sums_file_target_missing"
+                                missing_requirements.append("sha256sums_file_target_exists")
+
+        entries.append(
+            {
+                "slice_id": sl.slice_id,
+                "evidence": rel,
+                "exists": exists,
+                "is_dir": is_dir,
+                "attestation_present": attestation_present,
+                "attestation_matches": attestation_matches,
+                "attestation_file": attestation_file,
+                "attestation_readable_utf8": attestation_readable_utf8,
+                "attestation_contract_valid": attestation_contract_valid,
+                "attestation_slice_id": attestation_slice_id,
+                "attestation_slice_id_matches_manifest": attestation_slice_id_matches_manifest,
+                "attestation_sha256sums_file": attestation_sha256sums_file,
+                "sha256sums_file_reference_resolved": sha256sums_file_reference_resolved,
+                "sha256sums_file_target": sha256sums_file_target,
+                "sha256sums_file_target_exists": sha256sums_file_target_exists,
+                "missing_requirements": sorted(set(missing_requirements)),
+                "contract_details": contract_details,
+                "status": status,
+                "ready": status == "ok",
+                "input_error": input_error,
+            }
+        )
+
+    checked_count = len(entries)
+    ready_count = sum(1 for e in entries if e["ready"])
+    not_ready_count = checked_count - ready_count
+    input_error_count = sum(1 for e in entries if e["input_error"])
+    domain_not_ready_count = not_ready_count - input_error_count
+    ok = not_ready_count == 0
+
+    _emit_json(
+        {
+            "ok": ok,
+            "schema": m.schema_version,
+            "command": "check-evidence-attestation-readiness",
+            "manifest_path": str(path.resolve()),
+            "checked_count": checked_count,
+            "ready_count": ready_count,
+            "not_ready_count": not_ready_count,
+            "domain_not_ready_count": domain_not_ready_count,
+            "input_error_count": input_error_count,
+            "entries": entries,
+        }
+    )
+    if ok:
+        return EXIT_VALIDATION_OK
+    if input_error_count > 0:
+        return EXIT_INPUT
+    return EXIT_VALIDATION_FAILED
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m src.levelup.cli")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -1433,6 +1667,15 @@ def main(argv: list[str] | None = None) -> int:
     )
     p_ev_attestation_consistency.add_argument("manifest", type=Path, help="Path to manifest.json")
 
+    p_ev_attestation_readiness = sub.add_parser(
+        "check-evidence-attestation-readiness",
+        help=(
+            "Check combined attestation readiness (presence + minimal contract + consistency) "
+            "for evidence directories (read-only; one JSON line)."
+        ),
+    )
+    p_ev_attestation_readiness.add_argument("manifest", type=Path, help="Path to manifest.json")
+
     args = parser.parse_args(argv)
     if args.cmd == "validate":
         return _cmd_validate(args.manifest)
@@ -1464,6 +1707,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_check_evidence_attestation_contract(args.manifest)
     if args.cmd == "check-evidence-attestation-consistency":
         return _cmd_check_evidence_attestation_consistency(args.manifest)
+    if args.cmd == "check-evidence-attestation-readiness":
+        return _cmd_check_evidence_attestation_readiness(args.manifest)
     return EXIT_INPUT
 
 
