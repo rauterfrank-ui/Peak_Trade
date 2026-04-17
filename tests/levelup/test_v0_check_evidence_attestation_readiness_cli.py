@@ -212,6 +212,29 @@ def test_check_evidence_attestation_readiness_cli_sha256sums_file_reference_miss
     assert out["entries"][0]["sha256sums_file_target_exists"] is False
 
 
+def test_attestation_readiness_marks_noncanonical_sha256sums_target_not_ready(
+    tmp_path: Path,
+) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_readiness/noncanonical_target/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    (evidence_dir / "ALT_SHA256SUMS.txt").write_text("", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="R_NONCANON", sha256sums_file="ALT_SHA256SUMS.txt")
+    manifest = _mk_manifest(tmp_path, "R_NONCANON", ev_rel)
+
+    r = _run_cli(["check-evidence-attestation-readiness", str(manifest)])
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["ok"] is False
+    assert out["domain_not_ready_count"] == 1
+    assert out["entries"][0]["status"] == "sha256sums_file_target_noncanonical"
+    assert out["entries"][0]["ready"] is False
+    assert out["entries"][0]["canonical_integrity_anchor_exists"] is True
+    assert out["entries"][0]["sha256sums_file_targets_canonical_integrity_anchor"] is False
+
+
 def test_check_evidence_attestation_readiness_cli_missing_path(tmp_path: Path) -> None:
     _bootstrap_minimal_repo_layout(tmp_path)
     ev_rel = "out/ops/attestation_readiness/missing_path/"
@@ -403,6 +426,9 @@ def test_check_evidence_attestation_readiness_cli_json_field_stability(tmp_path:
         "sha256sums_file_reference_resolved",
         "sha256sums_file_target",
         "sha256sums_file_target_exists",
+        "canonical_integrity_anchor",
+        "canonical_integrity_anchor_exists",
+        "sha256sums_file_targets_canonical_integrity_anchor",
         "missing_requirements",
         "contract_details",
         "status",

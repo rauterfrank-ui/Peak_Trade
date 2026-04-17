@@ -57,6 +57,7 @@ def test_check_evidence_attestation_contract_cli_all_ok(tmp_path: Path) -> None:
     ev_rel = "out/ops/attestation_contract/all_ok/"
     evidence_dir = tmp_path / ev_rel
     evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
     _write_attestation(evidence_dir, slice_id="C1")
 
     sl = SliceContractV0(
@@ -255,6 +256,7 @@ def test_check_evidence_attestation_contract_cli_mixed_manifest(tmp_path: Path) 
 
     ok_dir = tmp_path / ok_rel
     ok_dir.mkdir(parents=True, exist_ok=True)
+    (ok_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
     _write_attestation(ok_dir, slice_id="ok")
 
     not_dir_target = tmp_path / not_dir_rel
@@ -375,6 +377,7 @@ def test_check_evidence_attestation_contract_cli_json_field_stability(tmp_path: 
     ev_rel = "out/ops/attestation_contract/stability/"
     evidence_dir = tmp_path / ev_rel
     evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
     _write_attestation(evidence_dir, slice_id="C8", file_name="FINAL_ATTESTATION.txt")
     sl = SliceContractV0(
         slice_id="C8",
@@ -408,3 +411,32 @@ def test_check_evidence_attestation_contract_cli_json_field_stability(tmp_path: 
         "missing_requirements",
         "contract_details",
     }
+
+
+def test_attestation_contract_rejects_noncanonical_sha256sums_target(tmp_path: Path) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/attestation_contract/noncanonical_target/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "SHA256SUMS.txt").write_text("", encoding="utf-8")
+    (evidence_dir / "ALT_SHA256SUMS.txt").write_text("", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="C_NONCANON", sha256sums_file="ALT_SHA256SUMS.txt")
+
+    sl = SliceContractV0(
+        slice_id="C_NONCANON",
+        title="t",
+        contract_summary="c",
+        evidence=EvidenceBundleRefV0(relative_dir=ev_rel),
+    )
+    manifest = tmp_path / "manifest.json"
+    write_manifest(manifest, LevelUpManifestV0(slices=(sl,)))
+
+    r = _run_cli(["check-evidence-attestation-contract", str(manifest)])
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["ok"] is False
+    assert out["entries"][0]["status"] == "invalid_attestation_contract"
+    assert (
+        "sha256sums_file_targets_canonical_integrity_anchor"
+        in out["entries"][0]["missing_requirements"]
+    )
