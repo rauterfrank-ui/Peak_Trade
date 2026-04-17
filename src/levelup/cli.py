@@ -80,6 +80,11 @@ check-evidence-attestation-readiness exit contract (stdout is one JSON object pe
 - 2 — usage / input problem (same as validate), repository root could not be resolved, or per-slice path/readability errors occurred
 - 3 — manifest parsed, model-validated; at least one slice with evidence has a domain-level attestation readiness mismatch
 
+check-evidence-attestation-uniqueness exit contract (stdout is one JSON object per invocation):
+- 0 — manifest parsed, model-validated; every slice with evidence has exactly one *_ATTESTATION.txt file
+- 2 — usage / input problem (same as validate), or repository root could not be resolved from the manifest path
+- 3 — manifest parsed, model-validated; at least one slice with evidence has no attestation or multiple attestations
+
 check-evidence-readiness-overall exit contract (stdout is one JSON object per invocation):
 - 0 — manifest parsed, model-validated; every slice is evidence-ready across coverage/path, bundle, integrity, and attestation-readiness
 - 2 — usage / input problem (same as validate), repository root could not be resolved, or at least one per-slice path/readability input error occurred
@@ -1561,6 +1566,111 @@ def _cmd_check_evidence_attestation_readiness(path: Path) -> int:
     return EXIT_VALIDATION_FAILED
 
 
+def _cmd_check_evidence_attestation_uniqueness(path: Path) -> int:
+    m, error_exit = _read_manifest_with_contract(path)
+    if error_exit is not None:
+        return error_exit
+
+    assert m is not None
+    repo_root = _find_peak_trade_repo_root(path)
+    if repo_root is None:
+        _emit_json(
+            {
+                "ok": False,
+                "error": "input",
+                "reason": "repo_root_not_found",
+                "message": (
+                    "could not locate repository root (expected pyproject.toml and src/levelup/ "
+                    "on the parent chain of the manifest path)"
+                ),
+            }
+        )
+        return EXIT_INPUT
+
+    repo_root_resolved = str(repo_root.resolve())
+    entries: list[dict[str, object]] = []
+    for sl in m.slices:
+        if sl.evidence is None:
+            continue
+
+        rel = sl.evidence.relative_dir
+        target = repo_root / rel
+        resolved_path = str(target.resolve())
+        exists = target.exists()
+        is_dir = target.is_dir()
+        status = "ok"
+        attestation_matches: list[str] = []
+
+        if not exists:
+            status = "missing_path"
+        elif not is_dir:
+            status = "not_a_directory"
+        else:
+            try:
+                attestation_matches = sorted(
+                    p.name for p in target.glob(_ATTESTATION_REQUIREMENT_GLOB) if p.is_file()
+                )
+            except OSError as exc:
+                _emit_json(
+                    {
+                        "ok": False,
+                        "error": "input",
+                        "reason": "evidence_read_failed",
+                        "message": str(exc),
+                    }
+                )
+                return EXIT_INPUT
+
+            if not attestation_matches:
+                status = "missing_attestation"
+            elif len(attestation_matches) > 1:
+                status = "multiple_attestations"
+
+        entries.append(
+            {
+                "slice_id": sl.slice_id,
+                "evidence": rel,
+                "status": status,
+                "attestation_matches": attestation_matches,
+                "attestation_count": len(attestation_matches),
+                "repo_root": repo_root_resolved,
+                "resolved_path": resolved_path,
+                "exists": exists,
+                "is_dir": is_dir,
+            }
+        )
+
+    summary = {
+        "total_slices": len(m.slices),
+        "checked_slices": len(entries),
+        "ok_slices": sum(1 for e in entries if e["status"] == "ok"),
+        "missing_attestation_slices": sum(1 for e in entries if e["status"] == "missing_attestation"),
+        "multiple_attestations_slices": sum(
+            1 for e in entries if e["status"] == "multiple_attestations"
+        ),
+        "missing_path_slices": sum(1 for e in entries if e["status"] == "missing_path"),
+        "not_a_directory_slices": sum(1 for e in entries if e["status"] == "not_a_directory"),
+    }
+    ok = (
+        summary["missing_attestation_slices"] == 0
+        and summary["multiple_attestations_slices"] == 0
+        and summary["missing_path_slices"] == 0
+        and summary["not_a_directory_slices"] == 0
+    )
+
+    _emit_json(
+        {
+            "ok": ok,
+            "schema": m.schema_version,
+            "command": "check-evidence-attestation-uniqueness",
+            "manifest_path": str(path.resolve()),
+            "summary": summary,
+            "entries": entries,
+        }
+    )
+    return EXIT_VALIDATION_OK if ok else EXIT_VALIDATION_FAILED
+
+
 def _assess_bundle_domain(
     evidence_dir: Path, *, has_evidence: bool, path_ready: bool
 ) -> dict[str, object]:
@@ -2155,6 +2265,19 @@ def main(argv: list[str] | None = None) -> int:
     )
     p_ev_attestation_readiness.add_argument("manifest", type=Path, help="Path to manifest.json")
 
+    p_ev_attestation_uniqueness = sub.add_parser(
+        "check-evidence-attestation-uniqueness",
+        help=(
+            "Check that each evidence directory has exactly one operator attestation file "
+            "(read-only; one JSON line)."
+        ),
+    )
+    p_ev_attestation_uniqueness.add_argument(
+        "manifest_or_target",
+        type=Path,
+        help="Path to manifest.json (manifest or target path).",
+    )
+
     p_ev_readiness_overall = sub.add_parser(
         "check-evidence-readiness-overall",
         help=(
@@ -2197,6 +2320,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_check_evidence_attestation_consistency(args.manifest)
     if args.cmd == "check-evidence-attestation-readiness":
         return _cmd_check_evidence_attestation_readiness(args.manifest)
+    if args.cmd == "check-evidence-attestation-uniqueness":
+        return _cmd_check_evidence_attestation_uniqueness(args.manifest_or_target)
     if args.cmd == "check-evidence-readiness-overall":
         return _cmd_check_evidence_readiness_overall(args.manifest)
     return EXIT_INPUT
