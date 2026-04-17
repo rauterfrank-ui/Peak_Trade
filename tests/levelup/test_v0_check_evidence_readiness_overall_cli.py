@@ -217,6 +217,33 @@ def test_check_evidence_readiness_overall_cli_attestation_not_ready(tmp_path: Pa
     assert out["input_error_count"] == 0
 
 
+def test_readiness_overall_marks_noncanonical_sha256sums_target_not_ready(
+    tmp_path: Path,
+) -> None:
+    _bootstrap_minimal_repo_layout(tmp_path)
+    ev_rel = "out/ops/readiness_overall/noncanonical_sha_target/"
+    evidence_dir = tmp_path / ev_rel
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    _write_bundle_files(evidence_dir)
+    _write_sha256sums_for_existing_files(evidence_dir)
+    (evidence_dir / "ALT_SHA256SUMS.txt").write_text("", encoding="utf-8")
+    _write_attestation(evidence_dir, slice_id="S_NONCANON", sha256sums_file="ALT_SHA256SUMS.txt")
+    manifest = _mk_manifest(tmp_path, (_mk_slice("S_NONCANON", ev_rel),))
+
+    r = _run_cli(["check-evidence-readiness-overall", str(manifest)])
+    assert r.returncode == 3, r.stderr
+    out = json.loads(r.stdout.strip())
+    assert out["ok"] is False
+    assert out["ready_count"] == 0
+    assert out["not_ready_count"] == 1
+    assert out["domain_not_ready_count"] == 1
+    assert (
+        out["entries"][0]["attestation_readiness"]["status"]
+        == "sha256sums_file_target_noncanonical"
+    )
+    assert out["entries"][0]["status"] == "sha256sums_file_target_noncanonical"
+
+
 def test_readiness_overall_marks_multiple_attestations_as_not_ready(tmp_path: Path) -> None:
     _bootstrap_minimal_repo_layout(tmp_path)
     ev_rel = "out/ops/readiness_overall/multiple_attestations/"

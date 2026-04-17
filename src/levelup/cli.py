@@ -71,12 +71,12 @@ check-evidence-attestation-contract exit contract (stdout is one JSON object per
 - 3 — manifest parsed, model-validated; at least one slice with evidence violates attestation contract readiness
 
 check-evidence-attestation-consistency exit contract (stdout is one JSON object per invocation):
-- 0 — manifest parsed, model-validated; every slice with evidence is consistent across manifest slice_id, attestation fields and sha256sums_file target existence
+- 0 — manifest parsed, model-validated; every slice with evidence is consistent across manifest slice_id, attestation fields, and canonical integrity target binding
 - 2 — usage / input problem (same as validate), repository root could not be resolved, or per-slice path/readability errors occurred
 - 3 — manifest parsed, model-validated; at least one slice with evidence has a domain-level consistency mismatch
 
 check-evidence-attestation-readiness exit contract (stdout is one JSON object per invocation):
-- 0 — manifest parsed, model-validated; every slice with evidence is attestation-ready (presence + minimal contract + consistency)
+- 0 — manifest parsed, model-validated; every slice with evidence is attestation-ready (presence + minimal contract + canonical target-bound consistency)
 - 2 — usage / input problem (same as validate), repository root could not be resolved, or per-slice path/readability errors occurred
 - 3 — manifest parsed, model-validated; at least one slice with evidence has a domain-level attestation readiness mismatch
 
@@ -160,6 +160,21 @@ def _resolve_hashed_file_path(raw_path: str, repo_root: Path, evidence_dir: Path
         if _is_relative_to(candidate, evidence_root):
             return candidate
     return None
+
+
+def _canonical_integrity_anchor_path(evidence_dir: Path) -> Path:
+    return (evidence_dir / _BUNDLE_REQUIREMENT_FILE_SHA256SUMS).resolve()
+
+
+def _assess_attestation_target_binding_to_canonical_integrity_anchor(
+    resolved_sha256sums_target: Path | None, evidence_dir: Path
+) -> tuple[str, bool, bool | None]:
+    canonical_anchor = _canonical_integrity_anchor_path(evidence_dir)
+    canonical_anchor_exists = canonical_anchor.is_file()
+    targets_canonical_anchor: bool | None = None
+    if canonical_anchor_exists and resolved_sha256sums_target is not None:
+        targets_canonical_anchor = resolved_sha256sums_target.resolve() == canonical_anchor
+    return str(canonical_anchor), canonical_anchor_exists, targets_canonical_anchor
 
 
 def _parse_sha256sums_records(
@@ -1052,6 +1067,12 @@ def _cmd_check_evidence_attestation_contract(path: Path) -> int:
             "attested_at_utc_iso8601_like": False,
             "sha256sums_file_valid": False,
             "slice_id_matches_manifest": False,
+            "canonical_integrity_anchor": str(_canonical_integrity_anchor_path(target)),
+            "canonical_integrity_anchor_exists": False,
+            "sha256sums_file_reference_resolved": None,
+            "sha256sums_file_target": None,
+            "sha256sums_file_target_exists": None,
+            "sha256sums_file_targets_canonical_integrity_anchor": None,
             "parse_mode": "key_value",
         }
 
@@ -1136,6 +1157,50 @@ def _cmd_check_evidence_attestation_contract(path: Path) -> int:
                             missing_requirements.append("attested_at_utc_iso8601_like")
                         if not sha_ref_ok:
                             missing_requirements.append("sha256sums_file_reference")
+                    else:
+                        resolved_sha256sums_target: Path | None = None
+                        if sha256sums_file:
+                            resolved_sha256sums_target = _resolve_hashed_file_path(
+                                sha256sums_file, repo_root, target
+                            )
+                        contract_details["sha256sums_file_reference_resolved"] = (
+                            resolved_sha256sums_target is not None
+                        )
+                        if resolved_sha256sums_target is not None:
+                            contract_details["sha256sums_file_target"] = str(
+                                resolved_sha256sums_target
+                            )
+                            contract_details["sha256sums_file_target_exists"] = (
+                                resolved_sha256sums_target.is_file()
+                            )
+                        else:
+                            contract_details["sha256sums_file_target_exists"] = False
+
+                        (
+                            _canonical_anchor,
+                            canonical_anchor_exists,
+                            targets_canonical_anchor,
+                        ) = _assess_attestation_target_binding_to_canonical_integrity_anchor(
+                            resolved_sha256sums_target, target
+                        )
+                        contract_details["canonical_integrity_anchor_exists"] = (
+                            canonical_anchor_exists
+                        )
+                        contract_details["sha256sums_file_targets_canonical_integrity_anchor"] = (
+                            targets_canonical_anchor
+                        )
+
+                        if not contract_details["sha256sums_file_reference_resolved"]:
+                            status = "invalid_attestation_contract"
+                            missing_requirements.append("sha256sums_file_reference_resolved")
+                        elif not contract_details["sha256sums_file_target_exists"]:
+                            status = "invalid_attestation_contract"
+                            missing_requirements.append("sha256sums_file_target_exists")
+                        elif canonical_anchor_exists and targets_canonical_anchor is False:
+                            status = "invalid_attestation_contract"
+                            missing_requirements.append(
+                                "sha256sums_file_targets_canonical_integrity_anchor"
+                            )
 
         entries.append(
             {
@@ -1211,6 +1276,9 @@ def _cmd_check_evidence_attestation_consistency(path: Path) -> int:
         sha256sums_file_reference_resolved: bool | None = None
         sha256sums_file_target: str | None = None
         sha256sums_file_target_exists: bool | None = None
+        canonical_integrity_anchor = str(_canonical_integrity_anchor_path(target))
+        canonical_integrity_anchor_exists = False
+        sha256sums_file_targets_canonical_integrity_anchor: bool | None = None
 
         if not exists:
             status = "missing_path"
@@ -1271,6 +1339,13 @@ def _cmd_check_evidence_attestation_consistency(path: Path) -> int:
                         sha256sums_file_target_exists = resolved_sha256sums_target.is_file()
                     else:
                         sha256sums_file_target_exists = False
+                    (
+                        _canonical_anchor,
+                        canonical_integrity_anchor_exists,
+                        sha256sums_file_targets_canonical_integrity_anchor,
+                    ) = _assess_attestation_target_binding_to_canonical_integrity_anchor(
+                        resolved_sha256sums_target, target
+                    )
 
                     if attestation_slice_id_matches_manifest is False:
                         missing_requirements.append("slice_id_matches_manifest")
@@ -1278,12 +1353,24 @@ def _cmd_check_evidence_attestation_consistency(path: Path) -> int:
                         missing_requirements.append("sha256sums_file_reference_resolved")
                     elif not sha256sums_file_target_exists:
                         missing_requirements.append("sha256sums_file_target_exists")
+                    elif (
+                        canonical_integrity_anchor_exists
+                        and sha256sums_file_targets_canonical_integrity_anchor is False
+                    ):
+                        missing_requirements.append(
+                            "sha256sums_file_targets_canonical_integrity_anchor"
+                        )
 
                     if missing_requirements:
                         if "slice_id_matches_manifest" in missing_requirements:
                             status = "slice_id_mismatch"
                         elif "sha256sums_file_reference_resolved" in missing_requirements:
                             status = "sha256sums_file_reference_unresolvable"
+                        elif (
+                            "sha256sums_file_targets_canonical_integrity_anchor"
+                            in missing_requirements
+                        ):
+                            status = "sha256sums_file_target_noncanonical"
                         else:
                             status = "sha256sums_file_target_missing"
 
@@ -1302,6 +1389,11 @@ def _cmd_check_evidence_attestation_consistency(path: Path) -> int:
                 "sha256sums_file_reference_resolved": sha256sums_file_reference_resolved,
                 "sha256sums_file_target": sha256sums_file_target,
                 "sha256sums_file_target_exists": sha256sums_file_target_exists,
+                "canonical_integrity_anchor": canonical_integrity_anchor,
+                "canonical_integrity_anchor_exists": canonical_integrity_anchor_exists,
+                "sha256sums_file_targets_canonical_integrity_anchor": (
+                    sha256sums_file_targets_canonical_integrity_anchor
+                ),
                 "missing_requirements": sorted(set(missing_requirements)),
                 "status": status,
             }
@@ -1319,6 +1411,7 @@ def _cmd_check_evidence_attestation_consistency(path: Path) -> int:
             "slice_id_mismatch",
             "sha256sums_file_reference_unresolvable",
             "sha256sums_file_target_missing",
+            "sha256sums_file_target_noncanonical",
         }
     )
     input_error_count = checked_count - consistent_count - inconsistency_count
@@ -1388,6 +1481,9 @@ def _cmd_check_evidence_attestation_readiness(path: Path) -> int:
         sha256sums_file_reference_resolved: bool | None = None
         sha256sums_file_target: str | None = None
         sha256sums_file_target_exists: bool | None = None
+        canonical_integrity_anchor = str(_canonical_integrity_anchor_path(target))
+        canonical_integrity_anchor_exists = False
+        sha256sums_file_targets_canonical_integrity_anchor: bool | None = None
         contract_details: dict[str, object] = {
             "checked_file": None,
             "required_keys": list(_ATTESTATION_REQUIRED_KEYS),
@@ -1399,6 +1495,12 @@ def _cmd_check_evidence_attestation_readiness(path: Path) -> int:
             "attested_at_utc_iso8601_like": False,
             "sha256sums_file_valid": False,
             "slice_id_matches_manifest": False,
+            "canonical_integrity_anchor": canonical_integrity_anchor,
+            "canonical_integrity_anchor_exists": False,
+            "sha256sums_file_reference_resolved": None,
+            "sha256sums_file_target": None,
+            "sha256sums_file_target_exists": None,
+            "sha256sums_file_targets_canonical_integrity_anchor": None,
             "parse_mode": "key_value",
         }
 
@@ -1515,6 +1617,26 @@ def _cmd_check_evidence_attestation_readiness(path: Path) -> int:
                                 sha256sums_file_target_exists = resolved_sha256sums_target.is_file()
                             else:
                                 sha256sums_file_target_exists = False
+                            contract_details["sha256sums_file_reference_resolved"] = (
+                                sha256sums_file_reference_resolved
+                            )
+                            contract_details["sha256sums_file_target"] = sha256sums_file_target
+                            contract_details["sha256sums_file_target_exists"] = (
+                                sha256sums_file_target_exists
+                            )
+                            (
+                                _canonical_anchor,
+                                canonical_integrity_anchor_exists,
+                                sha256sums_file_targets_canonical_integrity_anchor,
+                            ) = _assess_attestation_target_binding_to_canonical_integrity_anchor(
+                                resolved_sha256sums_target, target
+                            )
+                            contract_details["canonical_integrity_anchor_exists"] = (
+                                canonical_integrity_anchor_exists
+                            )
+                            contract_details[
+                                "sha256sums_file_targets_canonical_integrity_anchor"
+                            ] = sha256sums_file_targets_canonical_integrity_anchor
 
                             if not sha256sums_file_reference_resolved:
                                 status = "sha256sums_file_reference_unresolvable"
@@ -1522,6 +1644,14 @@ def _cmd_check_evidence_attestation_readiness(path: Path) -> int:
                             elif not sha256sums_file_target_exists:
                                 status = "sha256sums_file_target_missing"
                                 missing_requirements.append("sha256sums_file_target_exists")
+                            elif (
+                                canonical_integrity_anchor_exists
+                                and sha256sums_file_targets_canonical_integrity_anchor is False
+                            ):
+                                status = "sha256sums_file_target_noncanonical"
+                                missing_requirements.append(
+                                    "sha256sums_file_targets_canonical_integrity_anchor"
+                                )
 
         entries.append(
             {
@@ -1540,6 +1670,11 @@ def _cmd_check_evidence_attestation_readiness(path: Path) -> int:
                 "sha256sums_file_reference_resolved": sha256sums_file_reference_resolved,
                 "sha256sums_file_target": sha256sums_file_target,
                 "sha256sums_file_target_exists": sha256sums_file_target_exists,
+                "canonical_integrity_anchor": canonical_integrity_anchor,
+                "canonical_integrity_anchor_exists": canonical_integrity_anchor_exists,
+                "sha256sums_file_targets_canonical_integrity_anchor": (
+                    sha256sums_file_targets_canonical_integrity_anchor
+                ),
                 "missing_requirements": sorted(set(missing_requirements)),
                 "contract_details": contract_details,
                 "status": status,
@@ -1881,6 +2016,9 @@ def _assess_attestation_readiness_domain(
         "sha256sums_file_reference_resolved": None,
         "sha256sums_file_target": None,
         "sha256sums_file_target_exists": None,
+        "canonical_integrity_anchor": str(_canonical_integrity_anchor_path(evidence_dir)),
+        "canonical_integrity_anchor_exists": False,
+        "sha256sums_file_targets_canonical_integrity_anchor": None,
         "missing_requirements": [],
         "contract_details": contract_details,
     }
@@ -1981,6 +2119,8 @@ def _assess_attestation_readiness_domain(
     sha256sums_file_reference_resolved: bool | None = None
     sha256sums_file_target: str | None = None
     sha256sums_file_target_exists: bool | None = None
+    canonical_integrity_anchor_exists = False
+    sha256sums_file_targets_canonical_integrity_anchor: bool | None = None
 
     if not attestation_contract_valid:
         status = "invalid_attestation_contract"
@@ -2012,6 +2152,13 @@ def _assess_attestation_readiness_domain(
                 sha256sums_file_target_exists = resolved_sha256sums_target.is_file()
             else:
                 sha256sums_file_target_exists = False
+            (
+                _canonical_anchor,
+                canonical_integrity_anchor_exists,
+                sha256sums_file_targets_canonical_integrity_anchor,
+            ) = _assess_attestation_target_binding_to_canonical_integrity_anchor(
+                resolved_sha256sums_target, evidence_dir
+            )
 
             if not sha256sums_file_reference_resolved:
                 status = "sha256sums_file_reference_unresolvable"
@@ -2019,6 +2166,12 @@ def _assess_attestation_readiness_domain(
             elif not sha256sums_file_target_exists:
                 status = "sha256sums_file_target_missing"
                 missing_requirements.append("sha256sums_file_target_exists")
+            elif (
+                canonical_integrity_anchor_exists
+                and sha256sums_file_targets_canonical_integrity_anchor is False
+            ):
+                status = "sha256sums_file_target_noncanonical"
+                missing_requirements.append("sha256sums_file_targets_canonical_integrity_anchor")
 
     return {
         **base,
@@ -2033,6 +2186,10 @@ def _assess_attestation_readiness_domain(
         "sha256sums_file_reference_resolved": sha256sums_file_reference_resolved,
         "sha256sums_file_target": sha256sums_file_target,
         "sha256sums_file_target_exists": sha256sums_file_target_exists,
+        "canonical_integrity_anchor_exists": canonical_integrity_anchor_exists,
+        "sha256sums_file_targets_canonical_integrity_anchor": (
+            sha256sums_file_targets_canonical_integrity_anchor
+        ),
         "missing_requirements": sorted(set(missing_requirements)),
         "status": status,
         "ready": status == "ok",
