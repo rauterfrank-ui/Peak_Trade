@@ -29,6 +29,11 @@ describe-slice exit contract (stdout is one JSON object per invocation):
 - 0 — manifest parsed, model-validated, slice_id found
 - 2 — usage / input problem (same as validate: unreadable path, invalid JSON, UTF-8 decode)
 - 3 — JSON ok but model / schema validation failed, or manifest valid but slice_id not found
+
+list-slices exit contract (stdout is one JSON object per invocation):
+- 0 — manifest parsed, model-validated; stdout lists slice_id values in manifest order
+- 2 — usage / input problem (same as validate)
+- 3 — JSON ok but model / schema validation failed
 """
 
 from __future__ import annotations
@@ -278,6 +283,25 @@ def _cmd_describe_slice(path: Path, slice_id: str) -> int:
     return EXIT_VALIDATION_FAILED
 
 
+def _cmd_list_slices(path: Path) -> int:
+    m, error_exit = _read_manifest_with_contract(path)
+    if error_exit is not None:
+        return error_exit
+
+    assert m is not None
+    ids = [sl.slice_id for sl in m.slices]
+    _emit_json(
+        {
+            "ok": True,
+            "schema": m.schema_version,
+            "command": "list-slices",
+            "count": len(ids),
+            "slices": ids,
+        }
+    )
+    return EXIT_VALIDATION_OK
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m src.levelup.cli")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -315,6 +339,12 @@ def main(argv: list[str] | None = None) -> int:
     p_desc.add_argument("manifest", type=Path, help="Path to manifest.json")
     p_desc.add_argument("slice_id", help="slice_id to resolve inside the manifest")
 
+    p_list = sub.add_parser(
+        "list-slices",
+        help="List slice_id values from a v0 manifest as one JSON object on stdout (read-only).",
+    )
+    p_list.add_argument("manifest", type=Path, help="Path to manifest.json")
+
     args = parser.parse_args(argv)
     if args.cmd == "validate":
         return _cmd_validate(args.manifest)
@@ -328,6 +358,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_export_json_schema()
     if args.cmd == "describe-slice":
         return _cmd_describe_slice(args.manifest, args.slice_id)
+    if args.cmd == "list-slices":
+        return _cmd_list_slices(args.manifest)
     return EXIT_INPUT
 
 
