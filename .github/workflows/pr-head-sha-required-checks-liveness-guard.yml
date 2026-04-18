@@ -38,6 +38,8 @@ jobs:
             --repo "${{ github.repository }}" \
             --pr-number "${{ github.event.pull_request.number }}" \
             --head-sha "${{ github.event.pull_request.head.sha }}" \
+            --liveness-wait-seconds 90 \
+            --poll-interval-seconds 5 \
             --required-config "config/ci/required_status_checks.json"
 
       - name: Upload liveness report

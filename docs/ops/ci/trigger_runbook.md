@@ -39,7 +39,7 @@ Falls Checks dauerhaft fehlen oder Branch Protection inkonsistent wirkt:
 
 2. **Dokumentation**
    - [docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md](../BRANCH_PROTECTION_REQUIRED_CHECKS.md)
-   - [config/ci/required_status_checks.json](../../../config/ci/required_status_checks.json) (Pragmatic Flow: nur "PR Gate" als required)
+   - [config/ci/required_status_checks.json](../../../config/ci/required_status_checks.json) (JSON-SSOT: effective required contexts = required_contexts - ignored_contexts)
 
 3. **Drift Guard (falls vorhanden)**
    ```bash

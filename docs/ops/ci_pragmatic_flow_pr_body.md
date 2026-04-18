@@ -9,7 +9,8 @@
 
 ## Motivation
 
-Ein einziger Required Check (PR Gate) für Branch Protection; bei Docs/Grafana/Workflow-only PRs läuft nur Fast-Lane (keine volle Py-Matrix). Reduziert Wartezeit und vereinheitlicht Merge-Gate.
+Historischer Pragmatic-Flow-Kontext: bei Docs/Grafana/Workflow-only PRs lief nur Fast-Lane (keine volle Py-Matrix), bei Code-Änderungen die volle Matrix.
+Für aktuelle Required-Checks-Verträge ist JSON-SSOT maßgeblich (`config/ci/required_status_checks.json`, effective required contexts).
 
 ## Pragmatischer CI-Flow
 
@@ -25,17 +26,18 @@ Ein einziger Required Check (PR Gate) für Branch Protection; bei Docs/Grafana/W
 | `.github&#47;workflows&#47;...` | false | Fast-Lane + workflow checks |
 | `src&#47;...`, `tests&#47;...`, `scripts&#47;...`, `pyproject.toml`, `uv.lock`, `requirements.txt` | true | volle Matrix |
 
-## Required Check (Branch Protection)
+## Required Checks (SSOT)
 
-**Einziger required check:** **PR Gate**  
-(Alle anderen Checks laufen weiter, sind aber nicht als required eingetragen.)
+Kanonisch ist `config/ci/required_status_checks.json` mit
+`effective_required_contexts = required_contexts - ignored_contexts`.
 
 ## Änderungen
 
 - `.github/workflows/ci.yml`: changes (run_fast, run_matrix, docs_only, workflow_only, force_matrix), Fast-Lane, PR Gate (umbenannt von Meta-Gate), workflow_dispatch mit `force_matrix`.
-- `config/ci/required_status_checks.json`: `required_contexts: ["PR Gate"]`.
+- `config/ci/required_status_checks.json`: SSOT für required/ignored contexts.
 - Docs: `docs/ops/ci_pragmatic_flow_meta_gate.md`, `ci_pragmatic_flow_inventory.md`, kurzer Hinweis in `docs/ops/README.md`.
 
 ## Rollout (Branch Protection)
 
-Nach Merge: In GitHub → Settings → Branches → main → Required status checks nur **PR Gate** eintragen (bestehende andere required checks entfernen oder durch PR Gate ersetzen, je nach Policy).
+Branch-Protection-Rollout folgt der JSON-SSOT-Konfiguration und der aktuellen Ruleset-Policy;
+keine separate PR-Gate-only-Anweisung.

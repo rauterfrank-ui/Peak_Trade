@@ -16,6 +16,7 @@ import argparse
 import json
 import os
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -47,6 +48,18 @@ def _parse_args() -> argparse.Namespace:
         "--report-json",
         default="out/ci/pr_head_sha_required_checks_liveness_report.json",
         help="Where to write structured report JSON",
+    )
+    parser.add_argument(
+        "--liveness-wait-seconds",
+        type=int,
+        default=90,
+        help="Bounded wait window for required contexts to appear on head SHA",
+    )
+    parser.add_argument(
+        "--poll-interval-seconds",
+        type=int,
+        default=5,
+        help="Polling interval while waiting for missing required contexts",
     )
     return parser.parse_args()
 
@@ -245,6 +258,21 @@ def _render_summary(rows: List[Dict[str, str]]) -> str:
     return "\n".join(lines)
 
 
+def _collect_head_snapshot(
+    repo: str,
+    head_sha: str,
+    pr_number: int,
+    token: str,
+) -> Tuple[Set[str], Dict[str, str]]:
+    head_runs = _fetch_head_check_runs(repo, head_sha, token)
+    head_statuses = _fetch_head_status_contexts(repo, head_sha, token)
+    rollup_states = _fetch_pr_checks_states(repo, pr_number, token)
+    run_names = {str(r.get("name", "")).strip() for r in head_runs if r.get("name")}
+    status_names = {str(s.get("context", "")).strip() for s in head_statuses if s.get("context")}
+    on_head = run_names | status_names
+    return on_head, rollup_states
+
+
 def _evaluate_rows(
     required_contexts: Sequence[str],
     ignored_contexts: Set[str],
@@ -312,15 +340,35 @@ def main() -> int:
     required_contexts = config_semantics["required_contexts"]
     ignored_contexts = set(config_semantics["ignored_contexts"])
     effective_required_contexts = config_semantics["effective_required_contexts"]
-    head_runs = _fetch_head_check_runs(args.repo, args.head_sha, token)
-    head_statuses = _fetch_head_status_contexts(args.repo, args.head_sha, token)
-    rollup_states = _fetch_pr_checks_states(args.repo, args.pr_number, token)
+    wait_seconds = max(args.liveness_wait_seconds, 0)
+    poll_interval_seconds = max(args.poll_interval_seconds, 1)
+    deadline = time.monotonic() + wait_seconds
+    on_head: Set[str] = set()
+    rollup_states: Dict[str, str] = {}
+    missing = list(effective_required_contexts)
+    waited = False
 
-    run_names = {str(r.get("name", "")).strip() for r in head_runs if r.get("name")}
-    status_names = {str(s.get("context", "")).strip() for s in head_statuses if s.get("context")}
-    on_head = run_names | status_names
-
-    missing = [ctx for ctx in effective_required_contexts if ctx not in on_head]
+    while True:
+        on_head, rollup_states = _collect_head_snapshot(
+            repo=args.repo,
+            head_sha=args.head_sha,
+            pr_number=args.pr_number,
+            token=token,
+        )
+        missing = [ctx for ctx in effective_required_contexts if ctx not in on_head]
+        if not missing:
+            break
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            break
+        waited = True
+        sleep_for = min(poll_interval_seconds, max(remaining, 0))
+        missing_csv = ", ".join(missing)
+        print(
+            f"LIVENESS_GUARD_WAIT: pending required contexts on head SHA: {missing_csv}; "
+            f"retrying in {sleep_for:.1f}s (time left {remaining:.1f}s)"
+        )
+        time.sleep(sleep_for)
 
     prior_commits = _fetch_pr_commits(args.repo, args.pr_number, token)
     prior_shas = [sha for sha in prior_commits if sha != args.head_sha][
@@ -355,6 +403,9 @@ def main() -> int:
                 "required_contexts": effective_required_contexts,
                 "configured_required_contexts": required_contexts,
                 "ignored_contexts": sorted(ignored_contexts),
+                "liveness_wait_seconds": wait_seconds,
+                "poll_interval_seconds": poll_interval_seconds,
+                "waited_for_liveness_window": waited,
                 "rows": rows,
             },
             indent=2,

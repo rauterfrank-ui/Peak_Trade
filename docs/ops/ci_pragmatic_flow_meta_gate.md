@@ -1,4 +1,4 @@
-# CI Pragmatic Flow — PR Gate (Single Required Check)
+# CI Pragmatic Flow — PR Gate (Historical Context)
 
 
 <!-- ci pragmatic flow staleness scope note -->
@@ -7,19 +7,14 @@
 
 **Canonical reference:** [GATES_OVERVIEW.md](GATES_OVERVIEW.md) ist SSoT für Gates. Dieses Doc beschreibt PR-Gate-Details.
 
-**Ziel:** Für Branch Protection nur **einen** Required Check: **PR Gate**.  
-- Reine Docs/Workflow-Änderungen: nur Fast-Lane + Smoke (keine volle Py-Matrix).  
-- Code-Änderungen: volle Python-Matrix (3.9/3.10/3.11) + strategy-smoke.
+**Hinweis:** Dieses Dokument beschreibt historischen Pragmatic-Flow-Kontext.
+Für aktuelle Required-Checks-Semantik gilt JSON-SSOT (`config/ci/required_status_checks.json` mit
+`effective_required_contexts = required_contexts - ignored_contexts`).
 
-## Required Check = PR Gate
+## PR Gate im historischen Pragmatic-Flow
 
-In **GitHub → Settings → Branches → Branch protection rules → main → Required status checks** nur eintragen:
-
-| Check-Name | Quelle |
-|------------|--------|
-| **PR Gate** | `.github/workflows/ci.yml` Job `pr-gate` |
-
-Matrix läuft nur bei Code-Änderungen (siehe Pfad-Logik). Lint Gate, Docs Gates, CI Health Gate laufen weiter in eigenen Workflows, sind aber nicht als required eingetragen (nur PR Gate).
+PR Gate war ein aggregierender CI-Check im damaligen Flow.
+Aktuelle Required/ignored-Kontexte werden ausschließlich über JSON-SSOT gepflegt.
 
 ## Pfad-Logik (paths-filter)
 
@@ -58,7 +53,7 @@ CI → "Run workflow" → Input **force_matrix** (boolean): bei `true` wird `run
 
 ## Konfiguration
 
-- `config/ci/required_status_checks.json`: `required_contexts: ["PR Gate"]`.
+- `config/ci/required_status_checks.json`: SSOT für required/ignored contexts.
 - Hygiene-Validator: `scripts&#47;ci/validate_required_checks_hygiene.py`.
 - Inventar: `docs/ops/ci_pragmatic_flow_inventory.md`.
 
