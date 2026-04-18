@@ -275,5 +275,5 @@ def test_liveness_workflow_includes_merge_group_path() -> None:
         encoding="utf-8"
     )
     assert "merge_group:" in workflow
-    assert "--subject-kind \"merge_group\"" in workflow
-    assert "--head-sha \"${{ github.sha }}\"" in workflow
+    assert '--subject-kind "merge_group"' in workflow
+    assert '--head-sha "${{ github.sha }}"' in workflow
