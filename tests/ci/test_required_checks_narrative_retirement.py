@@ -44,3 +44,20 @@ def test_ops_required_checks_drift_guard_uses_json_ssot_as_source() -> None:
     script_text = Path("scripts/ops/verify_required_checks_drift.sh").read_text(encoding="utf-8")
     assert "config/ci/required_status_checks.json" in script_text
     assert "docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md" not in script_text
+
+
+def test_required_checks_docs_do_not_reintroduce_doc_as_source_narrative() -> None:
+    branch_protection_doc = Path("docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md").read_text(
+        encoding="utf-8"
+    )
+    drift_guard_notes = Path("docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md").read_text(
+        encoding="utf-8"
+    )
+    trigger_runbook = Path("docs/ops/ci/trigger_runbook.md").read_text(encoding="utf-8")
+
+    assert "Historical snapshot only (not canonical SSOT)." in branch_protection_doc
+    assert "config/ci/required_status_checks.json" in branch_protection_doc
+    assert "doc vs live" not in drift_guard_notes
+    assert "Extracts checks from `docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md`" not in drift_guard_notes
+    assert "config/ci/required_status_checks.json" in drift_guard_notes
+    assert "docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md" not in trigger_runbook

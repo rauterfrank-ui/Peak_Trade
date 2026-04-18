@@ -4,19 +4,24 @@
 **Date:** 2025-12-25  
 **Version:** v1
 
+> Historical note: this v1 document originally described a doc-vs-live model.
+> The canonical semantics are now JSON-SSOT vs live:
+> `config/ci/required_status_checks.json` with
+> `effective_required_contexts = required_contexts - ignored_contexts`.
+
 ---
 
 ## 📦 What Was Delivered
 
 ### 1. Core Script: `verify_required_checks_drift.sh`
 - **Location:** `scripts/ops/verify_required_checks_drift.sh`
-- **Purpose:** Verifies Branch Protection Required Checks (doc vs live)
+- **Purpose:** Verifies Branch Protection Required Checks (JSON-SSOT vs live)
 - **Features:**
-  - Extracts checks from `docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md`
+  - Loads effective required contexts from `config/ci/required_status_checks.json`
   - Fetches live checks via `gh` CLI
   - Compares and reports drift (missing/extra checks)
   - Supports `--warn-only` mode (exit 2 instead of 1)
-  - CLI flags: `--owner`, `--repo`, `--branch`, `--doc`, `--warn-only`
+  - CLI flags: `--owner`, `--repo`, `--branch`, `--required-config`, `--warn-only`
 
 ### 2. Ops Center Integration
 - **File:** `scripts/ops/ops_center.sh`
@@ -59,7 +64,7 @@ scripts/ops/verify_required_checks_drift.sh
 ```
 ✅ Required Checks: No Drift
 
-📖 Doc matches live state
+📖 JSON SSOT effective required contexts match live state
 🔗 rauterfrank-ui/Peak_Trade (main)
 📊 Total checks: 8
 ```
@@ -68,17 +73,17 @@ scripts/ops/verify_required_checks_drift.sh
 ```
 🔍 Required Checks Drift Detected
 
-❌ Missing from Live (in doc, not on GitHub):
+❌ Missing from Live (in JSON SSOT effective required, not on GitHub):
    - Some Check Name
 
-⚠️  Extra in Live (on GitHub, not in doc):
+⚠️  Extra in Live (on GitHub, not in JSON SSOT effective required):
    - Another Check Name
 
-📖 Doc: docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md
+📖 JSON SSOT: config/ci/required_status_checks.json
 🔗 Live: rauterfrank-ui/Peak_Trade (branch: main)
 
 💡 Action Required:
-   Update doc to match live state, or adjust branch protection.
+   Update JSON SSOT or adjust branch protection.
 ```
 
 ### Integrated Check (via Ops Doctor)
@@ -157,11 +162,11 @@ command -v jq     # Should show path to jq
 
 ## 🔍 How It Works
 
-### 1. Doc Extraction
-Parses `docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md`:
-- Finds section: `## Current Required Checks (main)`
-- Extracts numbered list: `1. **Check Name**`
-- Uses: `sed` + `grep` (BSD compatible)
+### 1. JSON SSOT Extraction
+Loads `config/ci/required_status_checks.json`:
+- Reads `required_contexts`
+- Applies `ignored_contexts`
+- Computes `effective_required_contexts = required_contexts - ignored_contexts`
 
 ### 2. Live Fetch
 Queries GitHub API via `gh` CLI:
@@ -172,8 +177,8 @@ Extracts: `.contexts[]` (list of check names)
 
 ### 3. Comparison
 Uses `comm` to find:
-- **Missing:** In doc, not on GitHub
-- **Extra:** On GitHub, not in doc
+- **Missing:** In JSON SSOT effective required list, not on GitHub
+- **Extra:** On GitHub, not in JSON SSOT effective required list
 
 ### 4. Report
 - Zero drift: ✅ PASS (exit 0)
@@ -193,10 +198,10 @@ gh auth login
 brew install jq
 ```
 
-### "No checks found in doc"
-- Verify section exists: `## Current Required Checks (main)`
-- Check format: `1. **Check Name**`
-- Ensure file path: `docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md`
+### "No effective required checks found in JSON SSOT"
+- Verify file exists: `config/ci/required_status_checks.json`
+- Verify JSON includes `required_contexts`
+- Verify `ignored_contexts` do not remove all required contexts
 
 ### "Failed to fetch live checks from GitHub"
 - Check network connectivity
@@ -219,15 +224,15 @@ bash -x scripts/ops/tests/test_verify_required_checks_drift.sh
 - **Before major releases:** Part of release checklist
 - **In CI:** Via ops_doctor integration
 
-### Updating Doc Format
-If you change the doc format, update:
-1. `extract_doc_checks()` function in `verify_required_checks_drift.sh`
-2. Test in `test_verify_required_checks_drift.sh`
+### Updating Required Checks Semantics
+If required-check semantics change, update:
+1. `config/ci/required_status_checks.json`
+2. `required_checks_config.py` and related CI invariants/tests
 
 ### Adding Custom Checks
-1. Update `docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md`
+1. Update `config/ci/required_status_checks.json`
 2. Configure on GitHub (via API or UI)
-3. Run drift guard to verify sync
+3. Run drift guard to verify SSOT/live sync
 
 ---
 
@@ -254,7 +259,7 @@ If you change the doc format, update:
 
 ## 📚 Related Documentation
 
-- **Branch Protection Docs:** `docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md`
+- **Required Checks SSOT:** `config/ci/required_status_checks.json`
 - **Ops Center Guide:** `docs/ops/OPS_OPERATOR_CENTER.md`
 - **Ops Doctor:** `docs/ops/OPS_DOCTOR_README.md`
 
