@@ -449,7 +449,7 @@ bash scripts/ops/check_formatter_policy_ci_enforced.sh
   local drift_exit=0
 
   if [[ -x "$drift_check" ]]; then
-    echo "🔍 Check: Branch Protection Required Checks (doc vs live)"
+    echo "🔍 Check: Branch Protection Required Checks (JSON SSOT vs live)"
 
     # Run in warn-only mode (exit 2 on drift, not 1)
     local drift_output
@@ -458,10 +458,10 @@ bash scripts/ops/check_formatter_policy_ci_enforced.sh
 
     if [[ $drift_status -eq 0 ]]; then
       # No drift
-      echo "   ✅ PASS - Doc matches live state"
+      echo "   ✅ PASS - JSON SSOT effective required contexts match live state"
     elif [[ $drift_status -eq 2 ]]; then
       # Drift detected (warn-only mode)
-      echo "   ⚠️  WARN - Drift detected between doc and live"
+      echo "   ⚠️  WARN - Drift detected between JSON SSOT and live"
       echo ""
       echo "$drift_output" | sed 's/^/      /'
       echo ""

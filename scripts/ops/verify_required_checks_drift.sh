@@ -4,7 +4,7 @@
 #
 # Purpose:
 #   Verify that Branch Protection Required Checks (live on GitHub) match
-#   the documented list in docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md
+#   the canonical JSON SSOT effective required contexts.
 #
 # Usage:
 #   verify_required_checks_drift.sh [options]
@@ -13,7 +13,7 @@
 #   --owner OWNER       GitHub owner/org (default: rauterfrank-ui)
 #   --repo REPO         Repository name (default: Peak_Trade)
 #   --branch BRANCH     Branch name (default: main)
-#   --doc PATH          Path to doc file (default: docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md)
+#   --required-config   Path to JSON SSOT config
 #   --warn-only         Exit 2 instead of 1 on drift (for soft warnings)
 #   --help              Show this help
 #
@@ -40,7 +40,7 @@ set -euo pipefail
 OWNER="${OWNER:-rauterfrank-ui}"
 REPO="${REPO:-Peak_Trade}"
 BRANCH="${BRANCH:-main}"
-DOC_PATH="docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md"
+REQUIRED_CONFIG="config/ci/required_status_checks.json"
 WARN_ONLY=0
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -54,7 +54,7 @@ show_help() {
 🧭 Required Checks Drift Guard
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Verifies that Branch Protection Required Checks (live)
-match the documented list.
+match JSON SSOT effective required contexts.
 
 USAGE:
   verify_required_checks_drift.sh [options]
@@ -63,7 +63,8 @@ OPTIONS:
   --owner OWNER       GitHub owner/org (default: rauterfrank-ui)
   --repo REPO         Repository name (default: Peak_Trade)
   --branch BRANCH     Branch name (default: main)
-  --doc PATH          Path to doc file (default: docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md)
+  --required-config   Path to JSON SSOT config
+                     (default: config/ci/required_status_checks.json)
   --warn-only         Exit 2 instead of 1 on drift
   --help              Show this help
 
@@ -87,8 +88,8 @@ REQUIREMENTS:
   - gh CLI (authenticated): brew install gh
   - jq: brew install jq
 
-DOCUMENTATION:
-  docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md
+CANONICAL SOURCE:
+  config/ci/required_status_checks.json
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 HELP
 }
@@ -110,8 +111,12 @@ while [[ $# -gt 0 ]]; do
       BRANCH="$2"
       shift 2
       ;;
+    --required-config)
+      REQUIRED_CONFIG="$2"
+      shift 2
+      ;;
     --doc)
-      DOC_PATH="$2"
+      echo "⚠️  --doc is deprecated and ignored. JSON SSOT is authoritative."
       shift 2
       ;;
     --warn-only)
@@ -168,9 +173,9 @@ preflight_check() {
     exit 3
   fi
 
-  # Check doc file
-  if [[ ! -f "$REPO_ROOT/$DOC_PATH" ]]; then
-    echo "❌ Doc file not found: $REPO_ROOT/$DOC_PATH"
+  # Check JSON SSOT config
+  if [[ ! -f "$REPO_ROOT/$REQUIRED_CONFIG" ]]; then
+    echo "❌ Required config not found: $REPO_ROOT/$REQUIRED_CONFIG"
     errors=$((errors + 1))
   fi
 
@@ -182,25 +187,17 @@ preflight_check() {
 }
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# Extract Required Checks from Doc
+# Extract Effective Required Checks from JSON SSOT
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# Extracts the numbered list under "## Current Required Checks (main)"
-# Expected format:
-#   1. **Check Name**
-#   2. **Another Check** (optional comment)
-#
 # Output: sorted unique list of check names (one per line)
-extract_doc_checks() {
-  local doc_file="$REPO_ROOT/$DOC_PATH"
-
-  # Extract section between "## Current Required Checks" and next "##" or "---"
-  # Then parse lines like: "1. **Check Name**"
-  # Use sed for better portability
-  sed -n '
-    /^## Current Required Checks/,/^---/p
-  ' "$doc_file" \
-    | grep -E '^[0-9]+\. \*\*' \
-    | sed -E 's/^[0-9]+\. \*\*//; s/\*\*.*$//' \
+extract_expected_checks() {
+  jq -r '
+    (.required_contexts // []) as $required
+    | ((.ignored_contexts // []) | unique) as $ignored
+    | $required[]
+    | tostring
+    | select(($ignored | index(.)) | not)
+  ' "$REPO_ROOT/$REQUIRED_CONFIG" \
     | sort -u
 }
 
@@ -220,27 +217,27 @@ fetch_live_checks() {
 # Compare Sets
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 compare_checks() {
-  local doc_checks="$1"
+  local expected_checks="$1"
   local live_checks="$2"
 
   # Save to temp files for comm
-  local tmp_doc
+  local tmp_expected
   local tmp_live
-  tmp_doc="$(mktemp)"
+  tmp_expected="$(mktemp)"
   tmp_live="$(mktemp)"
 
-  echo "$doc_checks" > "$tmp_doc"
+  echo "$expected_checks" > "$tmp_expected"
   echo "$live_checks" > "$tmp_live"
 
   # comm requires sorted input (already sorted)
-  # comm -23: in doc but not in live (missing from live)
-  # comm -13: in live but not in doc (extra in live)
+  # comm -23: expected in SSOT but not in live (missing from live)
+  # comm -13: in live but not in SSOT effective required list (extra in live)
   local missing
   local extra
-  missing="$(comm -23 "$tmp_doc" "$tmp_live")"
-  extra="$(comm -13 "$tmp_doc" "$tmp_live")"
+  missing="$(comm -23 "$tmp_expected" "$tmp_live")"
+  extra="$(comm -13 "$tmp_expected" "$tmp_live")"
 
-  rm -f "$tmp_doc" "$tmp_live"
+  rm -f "$tmp_expected" "$tmp_live"
 
   # Check for drift
   if [[ -z "$missing" && -z "$extra" ]]; then
@@ -252,7 +249,7 @@ compare_checks() {
     echo ""
 
     if [[ -n "$missing" ]]; then
-      echo "❌ Missing from Live (in doc, not on GitHub):"
+      echo "❌ Missing from Live (in JSON SSOT effective required, not on GitHub):"
       while IFS= read -r check; do
         [[ -n "$check" ]] && echo "   - $check"
       done <<< "$missing"
@@ -260,18 +257,18 @@ compare_checks() {
     fi
 
     if [[ -n "$extra" ]]; then
-      echo "⚠️  Extra in Live (on GitHub, not in doc):"
+      echo "⚠️  Extra in Live (on GitHub, not in JSON SSOT effective required):"
       while IFS= read -r check; do
         [[ -n "$check" ]] && echo "   - $check"
       done <<< "$extra"
       echo ""
     fi
 
-    echo "📖 Doc: $DOC_PATH"
+    echo "📖 JSON SSOT: $REQUIRED_CONFIG"
     echo "🔗 Live: ${OWNER}/${REPO} (branch: ${BRANCH})"
     echo ""
     echo "💡 Action Required:"
-    echo "   Update doc to match live state, or adjust branch protection."
+    echo "   Update JSON SSOT or adjust branch protection."
 
     return 1
   fi
@@ -285,13 +282,12 @@ main() {
   preflight_check
 
   # Extract
-  local doc_checks
-  doc_checks="$(extract_doc_checks)"
+  local expected_checks
+  expected_checks="$(extract_expected_checks)"
 
-  if [[ -z "$doc_checks" ]]; then
-    echo "❌ Error: No checks found in doc"
-    echo "   Doc: $DOC_PATH"
-    echo "   Expected section: ## Current Required Checks (main)"
+  if [[ -z "$expected_checks" ]]; then
+    echo "❌ Error: No effective required checks found in JSON SSOT"
+    echo "   Config: $REQUIRED_CONFIG"
     exit 1
   fi
 
@@ -313,15 +309,15 @@ main() {
   fi
 
   # Compare
-  if compare_checks "$doc_checks" "$live_checks"; then
+  if compare_checks "$expected_checks" "$live_checks"; then
     echo "✅ Required Checks: No Drift"
     echo ""
-    echo "📖 Doc matches live state"
+    echo "📖 JSON SSOT effective required contexts match live state"
     echo "🔗 ${OWNER}/${REPO} (${BRANCH})"
 
     # Show count
     local count
-    count="$(echo "$doc_checks" | wc -l | tr -d ' ')"
+    count="$(echo "$expected_checks" | wc -l | tr -d ' ')"
     echo "📊 Total checks: $count"
 
     exit 0
