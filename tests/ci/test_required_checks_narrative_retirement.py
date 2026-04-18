@@ -58,6 +58,9 @@ def test_required_checks_docs_do_not_reintroduce_doc_as_source_narrative() -> No
     assert "Historical snapshot only (not canonical SSOT)." in branch_protection_doc
     assert "config/ci/required_status_checks.json" in branch_protection_doc
     assert "doc vs live" not in drift_guard_notes
-    assert "Extracts checks from `docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md`" not in drift_guard_notes
+    assert (
+        "Extracts checks from `docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md`"
+        not in drift_guard_notes
+    )
     assert "config/ci/required_status_checks.json" in drift_guard_notes
     assert "docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md" not in trigger_runbook
