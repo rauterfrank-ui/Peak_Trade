@@ -94,65 +94,12 @@ def test_run_check_exits_1_when_missing(capsys):
     assert "repo-truth-claims" in out
 
 
-def test_run_apply_noop_when_already_complete(capsys):
-    sample = {
-        "required_status_checks": {
-            "strict": False,
-            "contexts": ["docs-drift-guard", "repo-truth-claims"],
-            "checks": [],
-        },
-        "enforce_admins": {"enabled": False},
-        "required_pull_request_reviews": {
-            "dismiss_stale_reviews": False,
-            "require_code_owner_reviews": False,
-            "required_approving_review_count": 0,
-        },
-    }
-
-    def fake_fetch(*_a, **_k):
-        return 0, sample, ""
-
-    with patch.object(et, "fetch_protection", fake_fetch):
-        assert et.run_apply("o", "r", "main") == 0
-    assert "nichts zu tun" in capsys.readouterr().out
-
-
-def test_run_apply_calls_put_when_missing():
-    sample = {
-        "required_status_checks": {
-            "strict": False,
-            "contexts": ["Lint Gate"],
-            "checks": [],
-        },
-        "enforce_admins": {"enabled": True},
-        "required_pull_request_reviews": {
-            "dismiss_stale_reviews": False,
-            "require_code_owner_reviews": False,
-            "required_approving_review_count": 0,
-        },
-        "required_linear_history": {"enabled": False},
-        "allow_force_pushes": {"enabled": False},
-        "allow_deletions": {"enabled": False},
-        "block_creations": {"enabled": False},
-        "required_conversation_resolution": {"enabled": False},
-        "lock_branch": {"enabled": False},
-        "allow_fork_syncing": {"enabled": False},
-        "required_signatures": {"enabled": False},
-    }
-    put_calls: list[dict] = []
-
-    def fake_gh_api(method: str, path: str, *, body=None):
-        if method == "PUT":
-            put_calls.append(body or {})
-            return 0, "{}", ""
-        raise AssertionError(method)
-
-    with patch.object(et, "fetch_protection", lambda *a, **k: (0, sample, "")):
-        with patch.object(et, "_gh_api", fake_gh_api):
-            assert et.run_apply("o", "r", "main") == 0
-    assert len(put_calls) == 1
-    ctxs = put_calls[0]["required_status_checks"]["contexts"]
-    assert "docs-drift-guard" in ctxs and "repo-truth-claims" in ctxs
+def test_run_apply_is_blocked_fail_closed(capsys):
+    with patch.object(et, "fetch_protection", side_effect=AssertionError("must not be called")):
+        assert et.run_apply("o", "r", "main") == 2
+    err = capsys.readouterr().err
+    assert "deprecated und absichtlich deaktiviert" in err
+    assert "reconcile_required_checks_branch_protection.py --apply" in err
 
 
 def test_main_check_integration():
@@ -170,3 +117,11 @@ def test_main_check_integration():
     with patch.object(sys, "argv", argv):
         with patch.object(et, "fetch_protection", fake_fetch):
             assert et.main() == 0
+
+
+def test_main_apply_integration_blocked(capsys):
+    argv = ["ensure_truth_branch_protection.py", "--apply"]
+    with patch.object(sys, "argv", argv):
+        assert et.main() == 2
+    err = capsys.readouterr().err
+    assert "deprecated und absichtlich deaktiviert" in err
