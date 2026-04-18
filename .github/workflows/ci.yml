@@ -29,7 +29,7 @@ jobs:
   # ============================================================================
   # Change Detection (pragmatic flow)
   # ============================================================================
-  # Outputs: code_changed (legacy), run_matrix, run_fast_lane, docs_only, workflow_only.
+  # Outputs: code_changed (historical output name), run_matrix, run_fast_lane, docs_only, workflow_only.
   # - run_fast_lane: always true (Fast-Lane always runs).
   # - run_matrix: true when code paths changed (or workflow_dispatch force_matrix=true).
   # - run_fast: always true. run_fast_lane: alias.
@@ -369,11 +369,12 @@ jobs:
           retention-days: 30
 
   # ============================================================================
-  # PR Gate (single required check for branch protection)
+  # PR Gate (informational aggregate check)
   # ============================================================================
   # When run_matrix=false: Fast-Lane + (tests/strategy-smoke skip) → SUCCESS.
   # When run_matrix=true: Fast-Lane + tests (3.9/3.10/3.11) + strategy-smoke → SUCCESS.
-  # Branch protection: require only "PR Gate".
+  # Branch-protection required contexts are managed via
+  # config/ci/required_status_checks.json (required_contexts - ignored_contexts).
   # ============================================================================
   pr-gate:
     name: PR Gate
