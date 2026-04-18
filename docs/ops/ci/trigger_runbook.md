@@ -37,7 +37,7 @@ Falls Checks dauerhaft fehlen oder Branch Protection inkonsistent wirkt:
      | jq -r '.contexts[]' | nl -ba
    ```
 
-2. **Dokumentation**
+2. **Kanonische Quelle + Snapshot**
    - [docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md](../BRANCH_PROTECTION_REQUIRED_CHECKS.md)
    - [config/ci/required_status_checks.json](../../../config/ci/required_status_checks.json) (JSON-SSOT: effective required contexts = required_contexts - ignored_contexts)
 
@@ -45,6 +45,7 @@ Falls Checks dauerhaft fehlen oder Branch Protection inkonsistent wirkt:
    ```bash
    scripts/ops/verify_required_checks_drift.sh
    ```
+   Vergleicht JSON-SSOT gegen Live-Branch-Protection (nicht Doc-vs-Live).
 
 ---
 
