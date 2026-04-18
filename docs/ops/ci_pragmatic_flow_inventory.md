@@ -7,23 +7,23 @@
 
 **Canonical reference:** [GATES_OVERVIEW.md](GATES_OVERVIEW.md) ist SSoT für Gates. Dieses Doc beschreibt pragmatische Flow-Details.
 
-**Stand:** 2026-02-07. Branch Protection: nur **PR Gate** als required check (TODO: in GitHub einstellen).
+**Stand:** 2026-02-07 (historischer Pragmatic-Flow-Kontext). Aktuelle Required-Checks-Semantik ist JSON-SSOT (`config/ci/required_status_checks.json`).
 
 ## Relevante Workflows und Jobs
 
 | Workflow | Job(s) | Kontext-Name (für Branch Protection) | Derzeit required? |
 |----------|--------|--------------------------------------|-------------------|
-| `.github/workflows/ci.yml` | changes | (kein eigener Check) | — |
-| | fast-lane | **Fast-Lane** | nein |
-| | tests | **tests (3.9)**, **tests (3.10)**, **tests (3.11)** | nein (nur PR Gate) |
-| | strategy-smoke | **strategy-smoke** | nein |
-| | pr-gate | **PR Gate** | **ja (einziger)** |
+| `.github/workflows/ci.yml` | changes | (kein eigener Check) | siehe JSON SSOT |
+| | fast-lane | **Fast-Lane** | siehe JSON SSOT |
+| | tests | **tests (3.9)**, **tests (3.10)**, **tests (3.11)** | siehe JSON SSOT |
+| | strategy-smoke | **strategy-smoke** | siehe JSON SSOT |
+| | pr-gate | **PR Gate** | siehe JSON SSOT |
 | `.github/workflows/lint_gate.yml` | lint-gate | **Lint Gate** | nein |
 | `.github/workflows/docs-token-policy-gate.yml` | (job) | **docs-token-policy-gate** | nein |
 | `.github/workflows/docs_reference_targets_gate.yml` | (job) | **docs-reference-targets-gate** | nein |
 | `.github/workflows/test_health.yml` | ci-health-gate | **CI Health Gate (weekly_core)** | nein |
 
-**Branch Protection (main):** Nur **PR Gate** als required eintragen. Lint/Docs/CI Health laufen weiter, blockieren Merge aber nur indirekt, wenn sie in anderen Rulesets gefordert sind.
+**Branch Protection (main):** Required contexts folgen JSON-SSOT (`required_contexts - ignored_contexts`) und der aktuellen Ruleset-Policy.
 
 ## Change-Classification (Outputs vom `changes`-Job)
 
