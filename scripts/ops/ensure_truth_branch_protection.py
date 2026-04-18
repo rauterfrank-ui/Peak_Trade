@@ -2,7 +2,7 @@
 """
 Ensure Truth Gates branch protection — Required status checks on main.
 
-Reads GitHub branch protection via ``gh api`` and verifies (or applies) that the
+Reads GitHub branch protection via ``gh api`` and verifies that the
 stable job names from ``.github/workflows/truth_gates_pr.yml`` are required:
 
   - docs-drift-guard
@@ -10,15 +10,15 @@ stable job names from ``.github/workflows/truth_gates_pr.yml`` are required:
 
 Modes:
   --check   Read-only; exit 0 if both are present, 1 if missing or error.
-  --apply   Merge missing contexts into required status checks (PUT); needs admin.
+  --apply   Deprecated and blocked (fail-closed); use canonical reconciler instead.
 
-Requires: ``gh`` CLI with a token that can read (and for --apply, write) branch
-protection (``repo`` or ``admin`` scope as appropriate).
+Requires: ``gh`` CLI with a token that can read branch protection
+(``repo`` or ``admin`` scope as appropriate).
 
 Exit codes:
-  0 — check passed, or apply succeeded
+  0 — check passed
   1 — missing required checks (check mode), or non-permission failure
-  2 — usage / unexpected error
+  2 — deprecated/blocked mode or usage / unexpected error
 """
 
 from __future__ import annotations
@@ -169,42 +169,23 @@ def run_check(owner: str, repo: str, branch: str) -> int:
     for m in missing:
         print(f"  - {m}")
     print()
-    print("Hinweis: --apply ergänzt die Kontexte (Admin-Rechte nötig).")
+    print(
+        "Hinweis: Apply erfolgt nur noch kanonisch über "
+        "scripts/ops/reconcile_required_checks_branch_protection.py --apply."
+    )
     return 1
 
 
-def run_apply(owner: str, repo: str, branch: str) -> int:
-    code, data, err = fetch_protection(owner, repo, branch)
-    if code != 0 or data is None:
-        print(f"❌ Branch protection konnte nicht gelesen werden: {err}", file=sys.stderr)
-        return 1
-
-    existing = collect_context_names(data)
-    merged = sorted(set(existing) | set(TRUTH_REQUIRED))
-    missing_before = missing_truth_checks(existing)
-
-    print("Vorher — Required contexts:", len(existing))
-    if missing_before:
-        print("Fehlend:", ", ".join(missing_before))
-    else:
-        print("Keine Truth-Gate-Kontexte fehlten; nichts zu tun.")
-        return 0
-
-    put_body = build_put_body(data, merged)
-    path = f"repos/{owner}/{repo}/branches/{branch}/protection"
-    pcode, pout, perr = _gh_api("PUT", path, body=put_body)
-    if pcode != 0:
-        print("❌ PUT branch protection fehlgeschlagen.", file=sys.stderr)
-        print(perr or pout or "", file=sys.stderr)
-        print(
-            "Typische Ursache: fehlende Admin-/repo-Rechte für gh auth token.",
-            file=sys.stderr,
-        )
-        return 1
-
-    print("✅ Branch protection aktualisiert (required_status_checks.contexts ergänzt).")
-    print("Neue Kontext-Anzahl:", len(merged))
-    return 0
+def run_apply(_owner: str, _repo: str, _branch: str) -> int:
+    print(
+        "❌ --apply ist deprecated und absichtlich deaktiviert (fail-closed).",
+        file=sys.stderr,
+    )
+    print(
+        "Nutze stattdessen scripts/ops/reconcile_required_checks_branch_protection.py --apply.",
+        file=sys.stderr,
+    )
+    return 2
 
 
 def main() -> int:
@@ -223,7 +204,7 @@ def main() -> int:
     mode.add_argument(
         "--apply",
         action="store_true",
-        help="Fehlende Truth-Checks zur Required-Liste hinzufügen (schreibend).",
+        help="Deprecated/blocked. Use reconcile_required_checks_branch_protection.py --apply.",
     )
     args = parser.parse_args()
 

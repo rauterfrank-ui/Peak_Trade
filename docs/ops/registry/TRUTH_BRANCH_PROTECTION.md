@@ -10,9 +10,9 @@
 | Modus | Verhalten |
 | --- | --- |
 | `--check` | Nur lesen (`gh api` GET). Exit `0`, wenn beide Kontexte vorhanden sind; sonst `1`. |
-| `--apply` | Fehlende Kontexte in `required_status_checks.contexts` mergen und per PUT setzen (Schreibrechte / Admin nötig). |
+| `--apply` | Deprecated und fail-closed blockiert (Exit `2`). Verwende den kanonischen Writer `scripts&#47;ops&#47;reconcile_required_checks_branch_protection.py --apply`. |
 
-**Voraussetzungen:** `gh` installiert und authentifiziert; Token mit Leserecht auf Branch Protection, für `--apply` zusätzlich Schreibrecht.
+**Voraussetzungen:** `gh` installiert und authentifiziert; Token mit Leserecht auf Branch Protection.
 
 **Standard-Repo:** Owner `rauterfrank-ui`, Repo `Peak_Trade`, Branch `main` (über CLI-Flags überschreibbar).
 
