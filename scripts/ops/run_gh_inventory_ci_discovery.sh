@@ -95,10 +95,10 @@ print(out)
 PY
 
 echo "5) Required checks list + drift detector (capture stdout/stderr to file)"
-test -f .github/required_status_checks_main.txt && cp .github/required_status_checks_main.txt "$OUT/required_status_checks_main.txt" || true
+test -f config/ci/required_status_checks.json && cp config/ci/required_status_checks.json "$OUT/required_status_checks.json" || true
 mkdir -p "$OUT/required_checks_drift"
 python3 scripts/ci/required_checks_drift_detector.py \
-  --required-list .github/required_status_checks_main.txt \
+  --required-config config/ci/required_status_checks.json \
   --workflows-dir .github/workflows \
   2>&1 | tee "$OUT/required_checks_drift/drift_output.txt" || true
 

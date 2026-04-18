@@ -2,7 +2,7 @@ name: PR-U / Required Checks Drift Detector
 on:
   pull_request:
     paths:
-      - ".github/required_status_checks_main.txt"
+      - "config/ci/required_status_checks.json"
       - ".github/workflows/**"
   schedule:
     - cron: "13 2 * * 1"

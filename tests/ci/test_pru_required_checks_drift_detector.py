@@ -8,8 +8,8 @@ import sys
 
 
 def test_detector_ok(tmp_path: Path) -> None:
-    req = tmp_path / "req.txt"
-    req.write_text("X\n", encoding="utf-8")
+    req = tmp_path / "required_status_checks.json"
+    req.write_text('{"required_contexts": ["X"]}\n', encoding="utf-8")
     wfd = tmp_path / "wfs"
     wfd.mkdir()
     (wfd / "a.yml").write_text(
@@ -20,7 +20,7 @@ def test_detector_ok(tmp_path: Path) -> None:
         [
             sys.executable,
             "scripts/ci/required_checks_drift_detector.py",
-            "--required-list",
+            "--required-config",
             str(req),
             "--workflows-dir",
             str(wfd),
@@ -33,8 +33,8 @@ def test_detector_ok(tmp_path: Path) -> None:
 
 
 def test_detector_missing(tmp_path: Path) -> None:
-    req = tmp_path / "req.txt"
-    req.write_text("Y\n", encoding="utf-8")
+    req = tmp_path / "required_status_checks.json"
+    req.write_text('{"required_contexts": ["Y"]}\n', encoding="utf-8")
     wfd = tmp_path / "wfs"
     wfd.mkdir()
     (wfd / "a.yml").write_text(
@@ -45,7 +45,7 @@ def test_detector_missing(tmp_path: Path) -> None:
         [
             sys.executable,
             "scripts/ci/required_checks_drift_detector.py",
-            "--required-list",
+            "--required-config",
             str(req),
             "--workflows-dir",
             str(wfd),

@@ -1,3 +1,6 @@
+# LEGACY MIRROR (non-canonical): required checks are sourced from
+# config/ci/required_status_checks.json by CI/Guard/Ops consumers.
+# This file is retained only for human reference.
 Guard tracked files in reports directories
 audit
 tests (3.11)

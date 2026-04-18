@@ -7,7 +7,6 @@ import json
 import re
 import subprocess
 from pathlib import Path
-import sys
 
 import yaml
 
@@ -17,8 +16,14 @@ def _parse_args() -> argparse.Namespace:
         description="Detect drift between required status checks list and workflows producing them (best-effort)"
     )
     p.add_argument(
+        "--required-config",
+        default="config/ci/required_status_checks.json",
+        help="JSON required checks config path (default: config/ci/required_status_checks.json)",
+    )
+    p.add_argument(
         "--required-list",
-        default=".github/required_status_checks_main.txt",
+        default=None,
+        help="Legacy plain-text required checks list path (deprecated, overrides --required-config)",
     )
     p.add_argument(
         "--workflows-dir",
@@ -88,13 +93,24 @@ query($owner:String!,$repo:String!){
     return sorted(set(ctx))
 
 
+def _load_required_contexts(required_config: str, required_list: str | None) -> list[str]:
+    if required_list:
+        return [
+            l.strip()
+            for l in Path(required_list).read_text(encoding="utf-8").splitlines()
+            if l.strip() and not l.strip().startswith("#")
+        ]
+
+    data = json.loads(Path(required_config).read_text(encoding="utf-8"))
+    required = data.get("required_contexts", [])
+    if not isinstance(required, list):
+        raise RuntimeError("required_contexts must be a list")
+    return [str(ctx).strip() for ctx in required if str(ctx).strip()]
+
+
 def main() -> int:
     args = _parse_args()
-    req = [
-        l.strip()
-        for l in Path(args.required_list).read_text(encoding="utf-8").splitlines()
-        if l.strip() and not l.strip().startswith("#")
-    ]
+    req = _load_required_contexts(args.required_config, args.required_list)
     wf_paths = sorted(Path(args.workflows_dir).glob("*.yml")) + sorted(
         Path(args.workflows_dir).glob("*.yaml")
     )
