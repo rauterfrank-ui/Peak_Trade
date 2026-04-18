@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-PR-head-SHA required-checks liveness guard.
+Required-checks liveness guard on head SHA.
 
 Purpose:
-  Make missing required contexts on the current PR head SHA explicit and
+  Make missing required contexts on the current subject head SHA explicit and
   distinguish between:
     - REQUIRED context reported on head SHA
     - REQUIRED context stuck in EXPECTED/WAITING without head check-run
@@ -28,11 +28,17 @@ from required_checks_config import load_required_checks_config
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Guard required-check liveness on the current PR head SHA"
+        description="Guard required-check liveness on the current head SHA"
+    )
+    parser.add_argument(
+        "--subject-kind",
+        choices=["pull_request", "merge_group"],
+        default="pull_request",
+        help="GitHub event subject being evaluated",
     )
     parser.add_argument("--repo", required=True, help="owner/repo")
-    parser.add_argument("--pr-number", required=True, type=int, help="PR number")
-    parser.add_argument("--head-sha", required=True, help="Current PR head SHA")
+    parser.add_argument("--pr-number", type=int, help="PR number (required for pull_request)")
+    parser.add_argument("--head-sha", required=True, help="Current subject head SHA")
     parser.add_argument(
         "--required-config",
         default="config/ci/required_status_checks.json",
@@ -46,7 +52,7 @@ def _parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--report-json",
-        default="out/ci/pr_head_sha_required_checks_liveness_report.json",
+        default="out/ci/required_checks_liveness_report.json",
         help="Where to write structured report JSON",
     )
     parser.add_argument(
@@ -248,7 +254,7 @@ def _prior_sha_presence(
 
 def _render_summary(rows: List[Dict[str, str]]) -> str:
     lines = []
-    lines.append("# PR Head SHA Required Checks Liveness Guard")
+    lines.append("# Required Checks Liveness Guard")
     lines.append("")
     lines.append("| required context | classification | detail |")
     lines.append("|---|---|---|")
@@ -261,12 +267,14 @@ def _render_summary(rows: List[Dict[str, str]]) -> str:
 def _collect_head_snapshot(
     repo: str,
     head_sha: str,
-    pr_number: int,
+    pr_number: Optional[int],
     token: str,
 ) -> Tuple[Set[str], Dict[str, str]]:
     head_runs = _fetch_head_check_runs(repo, head_sha, token)
     head_statuses = _fetch_head_status_contexts(repo, head_sha, token)
-    rollup_states = _fetch_pr_checks_states(repo, pr_number, token)
+    rollup_states: Dict[str, str] = {}
+    if pr_number is not None:
+        rollup_states = _fetch_pr_checks_states(repo, pr_number, token)
     run_names = {str(r.get("name", "")).strip() for r in head_runs if r.get("name")}
     status_names = {str(s.get("context", "")).strip() for s in head_statuses if s.get("context")}
     on_head = run_names | status_names
@@ -336,6 +344,10 @@ def main() -> int:
         print("ERROR: GITHUB_TOKEN or GH_TOKEN is required", file=sys.stderr)
         return 2
 
+    if args.subject_kind == "pull_request" and args.pr_number is None:
+        print("ERROR: --pr-number is required when --subject-kind=pull_request", file=sys.stderr)
+        return 2
+
     config_semantics = load_required_checks_config(args.required_config)
     required_contexts = config_semantics["required_contexts"]
     ignored_contexts = set(config_semantics["ignored_contexts"])
@@ -370,11 +382,13 @@ def main() -> int:
         )
         time.sleep(sleep_for)
 
-    prior_commits = _fetch_pr_commits(args.repo, args.pr_number, token)
-    prior_shas = [sha for sha in prior_commits if sha != args.head_sha][
-        : max(args.max_prior_commits, 0)
-    ]
-    prior_seen = _prior_sha_presence(args.repo, prior_shas, missing, token)
+    prior_seen: Dict[str, Optional[str]] = {}
+    if args.subject_kind == "pull_request" and args.pr_number is not None:
+        prior_commits = _fetch_pr_commits(args.repo, args.pr_number, token)
+        prior_shas = [sha for sha in prior_commits if sha != args.head_sha][
+            : max(args.max_prior_commits, 0)
+        ]
+        prior_seen = _prior_sha_presence(args.repo, prior_shas, missing, token)
 
     rows, has_liveness_gap = _evaluate_rows(
         required_contexts=required_contexts,
@@ -397,6 +411,7 @@ def main() -> int:
     report_path.write_text(
         json.dumps(
             {
+                "subject_kind": args.subject_kind,
                 "repo": args.repo,
                 "pr_number": args.pr_number,
                 "head_sha": args.head_sha,
@@ -416,11 +431,9 @@ def main() -> int:
     )
 
     if has_liveness_gap:
-        print(
-            "LIVENESS_GUARD_FAIL: missing required contexts on current PR head SHA", file=sys.stderr
-        )
+        print("LIVENESS_GUARD_FAIL: missing required contexts on current head SHA", file=sys.stderr)
         return 2
-    print("LIVENESS_GUARD_OK: all required contexts are reported on current PR head SHA")
+    print("LIVENESS_GUARD_OK: all required contexts are reported on current head SHA")
     return 0
 
 
