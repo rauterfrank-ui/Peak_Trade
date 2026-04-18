@@ -2,7 +2,7 @@
 
 Local operator one-shot checks for:
 - PR-K generators + tests
-- PR-U drift detector
+- PR-U canonical required-checks reconciliation check
 - YAML parse sanity for PR-K/PR-O workflows
 
 Run:

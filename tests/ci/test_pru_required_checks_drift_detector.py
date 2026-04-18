@@ -1,4 +1,4 @@
-"""Tests for required checks drift detector."""
+"""Invariants for PR-U drift engine cutover to canonical reconciler."""
 
 from __future__ import annotations
 
@@ -7,143 +7,32 @@ import subprocess
 import sys
 
 
-def test_detector_ok(tmp_path: Path) -> None:
-    req = tmp_path / "required_status_checks.json"
-    req.write_text('{"required_contexts": ["X"]}\n', encoding="utf-8")
-    wfd = tmp_path / "wfs"
-    wfd.mkdir()
-    (wfd / "a.yml").write_text(
-        "name: X\non: {workflow_dispatch:{}}\njobs:\n  a:\n    runs-on: ubuntu-latest\n    steps: []\n",
-        encoding="utf-8",
+def test_pru_workflow_calls_canonical_reconciler_check() -> None:
+    workflow = Path(".github/workflows/pru-required-checks-drift-detector.yml").read_text(
+        encoding="utf-8"
     )
+    assert "scripts/ops/reconcile_required_checks_branch_protection.py" in workflow
+    assert "--check" in workflow
+    assert "config/ci/required_status_checks.json" in workflow
+    assert "scripts/ci/required_checks_drift_detector.py" not in workflow
+    assert "GH_TOKEN: ${{ github.token }}" in workflow
+
+
+def test_legacy_drift_detector_is_redirect_only() -> None:
+    script = Path("scripts/ci/required_checks_drift_detector.py").read_text(encoding="utf-8")
+    assert "DEPRECATED:" in script
+    assert "reconcile_required_checks_branch_protection.py --check" in script
+    assert "yaml.safe_load" not in script
+    assert "load_effective_required_contexts" not in script
+
+
+def test_legacy_drift_detector_help_mentions_deprecation() -> None:
     r = subprocess.run(
-        [
-            sys.executable,
-            "scripts/ci/required_checks_drift_detector.py",
-            "--required-config",
-            str(req),
-            "--workflows-dir",
-            str(wfd),
-        ],
+        [sys.executable, "scripts/ci/required_checks_drift_detector.py", "--help"],
         capture_output=True,
         text=True,
         cwd=Path(__file__).resolve().parent.parent.parent,
+        check=False,
     )
     assert r.returncode == 0
-
-
-def test_detector_missing(tmp_path: Path) -> None:
-    req = tmp_path / "required_status_checks.json"
-    req.write_text('{"required_contexts": ["Y"]}\n', encoding="utf-8")
-    wfd = tmp_path / "wfs"
-    wfd.mkdir()
-    (wfd / "a.yml").write_text(
-        "name: X\non: {workflow_dispatch:{}}\njobs:\n  a:\n    runs-on: ubuntu-latest\n    steps: []\n",
-        encoding="utf-8",
-    )
-    r = subprocess.run(
-        [
-            sys.executable,
-            "scripts/ci/required_checks_drift_detector.py",
-            "--required-config",
-            str(req),
-            "--workflows-dir",
-            str(wfd),
-        ],
-        capture_output=True,
-        text=True,
-        cwd=Path(__file__).resolve().parent.parent.parent,
-    )
-    assert r.returncode == 2
-
-
-def test_detector_rejects_legacy_required_list_flag(tmp_path: Path) -> None:
-    req = tmp_path / "required_status_checks.json"
-    req.write_text('{"required_contexts": ["X"], "ignored_contexts": []}\n', encoding="utf-8")
-    required_list = tmp_path / "required_checks.txt"
-    required_list.write_text("X\n", encoding="utf-8")
-    wfd = tmp_path / "wfs"
-    wfd.mkdir()
-    (wfd / "a.yml").write_text(
-        "name: X\non: {workflow_dispatch:{}}\njobs:\n  a:\n    runs-on: ubuntu-latest\n    steps: []\n",
-        encoding="utf-8",
-    )
-    r = subprocess.run(
-        [
-            sys.executable,
-            "scripts/ci/required_checks_drift_detector.py",
-            "--required-config",
-            str(req),
-            "--required-list",
-            str(required_list),
-            "--workflows-dir",
-            str(wfd),
-        ],
-        capture_output=True,
-        text=True,
-        cwd=Path(__file__).resolve().parent.parent.parent,
-    )
-    assert r.returncode == 2
-    assert "--required-list" in r.stderr
-    assert "unrecognized arguments" in r.stderr
-
-
-def test_detector_applies_ignored_contexts_from_json(tmp_path: Path) -> None:
-    req = tmp_path / "required_status_checks.json"
-    req.write_text(
-        '{"required_contexts": ["X", "IGNORED_ONLY"], "ignored_contexts": ["IGNORED_ONLY"]}\n',
-        encoding="utf-8",
-    )
-    wfd = tmp_path / "wfs"
-    wfd.mkdir()
-    (wfd / "a.yml").write_text(
-        "name: X\non: {workflow_dispatch:{}}\njobs:\n  a:\n    runs-on: ubuntu-latest\n    steps: []\n",
-        encoding="utf-8",
-    )
-    r = subprocess.run(
-        [
-            sys.executable,
-            "scripts/ci/required_checks_drift_detector.py",
-            "--required-config",
-            str(req),
-            "--workflows-dir",
-            str(wfd),
-        ],
-        capture_output=True,
-        text=True,
-        cwd=Path(__file__).resolve().parent.parent.parent,
-    )
-    assert r.returncode == 0
-    assert "DRIFT_OK" in r.stdout
-
-
-def test_detector_accepts_live_override_flags_without_compare_live(tmp_path: Path) -> None:
-    req = tmp_path / "required_status_checks.json"
-    req.write_text('{"required_contexts": ["X"], "ignored_contexts": []}\n', encoding="utf-8")
-    wfd = tmp_path / "wfs"
-    wfd.mkdir()
-    (wfd / "a.yml").write_text(
-        "name: X\non: {workflow_dispatch:{}}\njobs:\n  a:\n    runs-on: ubuntu-latest\n    steps: []\n",
-        encoding="utf-8",
-    )
-    r = subprocess.run(
-        [
-            sys.executable,
-            "scripts/ci/required_checks_drift_detector.py",
-            "--required-config",
-            str(req),
-            "--workflows-dir",
-            str(wfd),
-            "--owner",
-            "acme",
-            "--repo",
-            "widgets",
-            "--branch-pattern",
-            "release",
-        ],
-        capture_output=True,
-        text=True,
-        cwd=Path(__file__).resolve().parent.parent.parent,
-    )
-    assert r.returncode == 0
-    assert "DRIFT_OK" in r.stdout
+    assert "Deprecated compatibility wrapper" in r.stdout

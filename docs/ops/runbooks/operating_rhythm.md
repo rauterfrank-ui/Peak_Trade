@@ -25,9 +25,9 @@ Commands:
 
 ## Weekly (15–30 min)
 
-1) Drift detector (PR-U):
-- Ensure required checks list stays aligned and no drift is reported.
-- If drift: update .github&#47;required&#95;status&#95;checks&#95;main.txt or workflows producing contexts.
+1) Required checks reconciliation check (PR-U):
+- Ensure JSON-SSOT required checks stay aligned with live branch protection.
+- If drift: update `config&#47;ci&#47;required_status_checks.json` and reconcile via `scripts&#47;ops&#47;reconcile_required_checks_branch_protection.py`.
 
 2) Nightly selfcheck (PR-O):
 - Confirm schema validation stays green.

@@ -1,20 +1,19 @@
-"""Detect drift between required status checks list and workflows producing them (best-effort)."""
+"""Deprecated compatibility wrapper for required checks drift detection."""
 
 from __future__ import annotations
 
 import argparse
-import json
-import re
 import subprocess
 from pathlib import Path
-
-import yaml
-from required_checks_config import load_effective_required_contexts
+import sys
 
 
 def _parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="Detect drift between required status checks list and workflows producing them (best-effort)"
+        description=(
+            "Deprecated compatibility wrapper. "
+            "Use scripts/ops/reconcile_required_checks_branch_protection.py --check."
+        )
     )
     p.add_argument(
         "--required-config",
@@ -24,167 +23,75 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument(
         "--workflows-dir",
         default=".github/workflows",
+        help="Deprecated and ignored (kept for backwards compatibility)",
     )
     p.add_argument(
         "--compare-live",
         action="store_true",
         default=False,
-        help="Compare required list to live branch protection contexts via gh api (best-effort)",
+        help="Deprecated alias. Live compare is the canonical default check behavior.",
     )
     p.add_argument(
         "--strict-live",
         action="store_true",
         default=False,
-        help="Fail if live compare cannot be performed",
+        help="Deprecated and ignored (fail-closed is canonical default).",
     )
     p.add_argument(
         "--owner",
-        default="",
-        help="GitHub owner/org override for live compare (optional)",
+        default="rauterfrank-ui",
+        help="GitHub owner/org for canonical reconciliation check",
     )
     p.add_argument(
         "--repo",
-        default="",
-        help="GitHub repo override for live compare (optional)",
+        default="Peak_Trade",
+        help="GitHub repo for canonical reconciliation check",
     )
     p.add_argument(
         "--branch-pattern",
         default="main",
-        help="Branch protection pattern to compare for live checks (default: main)",
+        help="Branch pattern (mapped to --branch for canonical reconciliation check)",
     )
     return p.parse_args()
 
 
-def _resolve_owner_repo(owner: str, repo: str) -> tuple[str, str]:
-    if owner and repo:
-        return owner, repo
-    remote = subprocess.check_output(["git", "remote", "get-url", "origin"], text=True).strip()
-    m = re.search(r"[:/](?P<owner>[^/]+)/(?P<repo>[^/.]+)(?:\.git)?$", remote)
-    if not m:
-        raise RuntimeError("cannot parse origin remote for owner/repo")
-    return owner or m.group("owner"), repo or m.group("repo")
-
-
-def _live_required_contexts(
-    *,
-    owner: str,
-    repo: str,
-    branch_pattern: str,
-) -> list[str]:
-    """Fetch required status check contexts for a branch protection pattern."""
-    q = """
-query($owner:String!,$repo:String!){
-  repository(owner:$owner,name:$repo){
-    branchProtectionRules(first:50){
-      nodes{
-        pattern
-        requiredStatusCheckContexts
-      }
-    }
-  }
-}
-"""
-    owner, repo = _resolve_owner_repo(owner, repo)
-    r = subprocess.run(
-        [
-            "gh",
-            "api",
-            "graphql",
-            "-f",
-            f"query={q}",
-            "-F",
-            f"owner={owner}",
-            "-F",
-            f"repo={repo}",
-        ],
-        capture_output=True,
-        text=True,
-    )
-    if r.returncode != 0:
-        raise RuntimeError(r.stderr.strip() or "gh api graphql failed")
-    data = json.loads(r.stdout)
-    rules = data["data"]["repository"]["branchProtectionRules"]["nodes"]
-    ctx = []
-    target_patterns = {branch_pattern, f"refs/heads/{branch_pattern}"}
-    if branch_pattern == "main":
-        target_patterns.update({"*", "**"})
-    for rule in rules:
-        pat = rule.get("pattern", "")
-        if pat in target_patterns:
-            for c in rule.get("requiredStatusCheckContexts") or []:
-                if c:
-                    ctx.append(c)
-    return sorted(set(ctx))
+def _build_reconciler_cmd(args: argparse.Namespace) -> list[str]:
+    repo_root = Path(__file__).resolve().parents[2]
+    reconciler = repo_root / "scripts" / "ops" / "reconcile_required_checks_branch_protection.py"
+    return [
+        sys.executable,
+        str(reconciler),
+        "--check",
+        "--required-config",
+        args.required_config,
+        "--owner",
+        args.owner,
+        "--repo",
+        args.repo,
+        "--branch",
+        args.branch_pattern,
+    ]
 
 
 def main() -> int:
     args = _parse_args()
-    req = load_effective_required_contexts(args.required_config)
-    wf_paths = sorted(Path(args.workflows_dir).glob("*.yml")) + sorted(
-        Path(args.workflows_dir).glob("*.yaml")
+    print(
+        "DEPRECATED: scripts/ci/required_checks_drift_detector.py now redirects to "
+        "scripts/ops/reconcile_required_checks_branch_protection.py --check",
+        file=sys.stderr,
     )
-
-    produced = set()
-    for p in wf_paths:
-        d = yaml.safe_load(p.read_text(encoding="utf-8"))
-        name = d.get("name", "")
-        if name:
-            produced.add(name)
-        jobs = d.get("jobs") or {}
-        for jid, j in jobs.items():
-            jname = (j or {}).get("name")
-            if jname:
-                produced.add(jname)
-                # Heuristic: expand matrix job names (e.g. "tests (${{ matrix.python-version }})")
-                if "matrix.python-version" in str(jname):
-                    matrix = (j or {}).get("strategy", {}).get("matrix", {})
-                    pv = matrix.get("python-version", [])
-                    if isinstance(pv, list):
-                        for v in pv:
-                            produced.add(f"tests ({v})")
-                    elif pv:
-                        produced.add(f"tests ({pv})")
-            else:
-                produced.add(jid)
-
-    missing = [r for r in req if r not in produced]
-    if missing:
-        print("DRIFT_MISSING_CONTEXTS:")
-        for m in missing:
-            print("-", m)
-        return 2
-
+    if args.workflows_dir != ".github/workflows":
+        print("NOTE: --workflows-dir is deprecated and ignored.", file=sys.stderr)
     if args.compare_live:
-        try:
-            live = _live_required_contexts(
-                owner=args.owner,
-                repo=args.repo,
-                branch_pattern=args.branch_pattern,
-            )
-            req_set = set(req)
-            live_set = set(live)
-            extra_in_live = sorted(live_set - req_set)
-            missing_in_live = sorted(req_set - live_set)
-            if extra_in_live or missing_in_live:
-                print("LIVE_COMPARE_DIFF:")
-                if missing_in_live:
-                    print("missing_in_live:")
-                    for x in missing_in_live:
-                        print("-", x)
-                if extra_in_live:
-                    print("extra_in_live:")
-                    for x in extra_in_live:
-                        print("-", x)
-                return 3
-            print("LIVE_COMPARE_OK")
-        except Exception as e:
-            msg = str(e)
-            print("LIVE_COMPARE_SKIPPED:", msg)
-            if args.strict_live:
-                return 4
+        print("NOTE: --compare-live is deprecated; live compare is canonical default.", file=sys.stderr)
+    if args.strict_live:
+        print("NOTE: --strict-live is deprecated and ignored (fail-closed default).", file=sys.stderr)
 
-    print("DRIFT_OK")
-    return 0
+    cmd = _build_reconciler_cmd(args)
+    result = subprocess.run(cmd, check=False, cwd=Path(__file__).resolve().parents[2])
+    if result.returncode == 0:
+        return 0
+    return 1
 
 
 if __name__ == "__main__":

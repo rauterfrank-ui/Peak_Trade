@@ -144,3 +144,13 @@ def test_single_writer_contract_for_branch_protection_required_checks() -> None:
     assert 'path = f"repos/{owner}/{repo}/branches/{branch}/protection"' in canonical_writer
     assert '_gh_api("PUT"' in canonical_writer
     assert '_gh_api("PUT"' not in truth_script
+
+
+def test_pru_workflow_uses_canonical_reconciler_cutover_path() -> None:
+    workflow = Path(".github/workflows/pru-required-checks-drift-detector.yml").read_text(
+        encoding="utf-8"
+    )
+    assert "scripts/ops/reconcile_required_checks_branch_protection.py" in workflow
+    assert "--check" in workflow
+    assert "config/ci/required_status_checks.json" in workflow
+    assert "scripts/ci/required_checks_drift_detector.py" not in workflow

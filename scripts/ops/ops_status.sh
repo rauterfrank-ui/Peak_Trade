@@ -15,9 +15,12 @@ uv run ruff check .
 uv run pytest -q tests/ci/test_prk_status_report_contract.py tests/ci/test_prr_prj_status_staleness.py tests/ci/test_prs_prk_health_summary.py
 
 echo ""
-echo "PR-U (required checks drift detector):"
+echo "PR-U (required checks canonical reconciliation check):"
 uv run pytest -q tests/ci/test_pru_required_checks_drift_detector.py
-python3 scripts/ci/required_checks_drift_detector.py
+uv run pytest -q tests/ci/test_prw_live_compare_flag_noop.py
+if ! python3 scripts/ops/verify_required_checks_drift.sh --warn-only; then
+  echo "PR-U reconciliation check returned non-zero (warn-only/missing-gh/drift)."
+fi
 
 echo ""
 echo "PR-O (nightly selfcheck workflow file YAML parse):"

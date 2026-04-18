@@ -1,4 +1,4 @@
-"""Tests for PR-W: --compare-live flag (no network)."""
+"""Compatibility tests for legacy --compare-live flag on redirect wrapper."""
 
 from __future__ import annotations
 
@@ -7,8 +7,8 @@ import sys
 from pathlib import Path
 
 
-def test_compare_live_flag_skips_without_gh(monkeypatch: object) -> None:
-    """Without gh in PATH, --compare-live prints LIVE_COMPARE_SKIPPED and exits 0."""
+def test_compare_live_flag_is_accepted_and_fails_closed_without_gh(monkeypatch: object) -> None:
+    """Legacy --compare-live remains accepted, but canonical check is fail-closed."""
     monkeypatch.setenv("PATH", "")
     r = subprocess.run(
         [
@@ -20,6 +20,6 @@ def test_compare_live_flag_skips_without_gh(monkeypatch: object) -> None:
         text=True,
         cwd=Path(__file__).resolve().parent.parent.parent,
     )
-    assert r.returncode in (0, 2, 3, 4)
-    if r.returncode == 0:
-        assert "LIVE_COMPARE_SKIPPED" in r.stdout or "DRIFT_OK" in r.stdout
+    assert r.returncode == 1
+    assert "DEPRECATED:" in r.stderr
+    assert "--compare-live is deprecated" in r.stderr
