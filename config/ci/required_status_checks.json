@@ -12,8 +12,9 @@
     "docs-reference-targets-gate"
   ],
   "ignored_contexts": [
+    "strategy-smoke",
     "CI Health Gate (weekly_core)",
     "Docs Diff Guard Policy Gate"
   ],
-  "notes": "Aligned to GitHub branch protection (9 required contexts). PR Gate is produced by CI but not in branch protection. Last updated: 2026-03-11."
+  "notes": "JSON-only SSOT semantics: effective required contexts are required_contexts minus ignored_contexts. PR Gate is produced by CI but not in branch protection. Last updated: 2026-04-18."
 }

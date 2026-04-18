@@ -22,7 +22,7 @@ import urllib.request
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
 
-from required_checks_config import load_effective_required_contexts
+from required_checks_config import load_required_checks_config
 
 
 def _parse_args() -> argparse.Namespace:
@@ -252,7 +252,10 @@ def main() -> int:
         print("ERROR: GITHUB_TOKEN or GH_TOKEN is required", file=sys.stderr)
         return 2
 
-    required_contexts = load_effective_required_contexts(args.required_config)
+    config_semantics = load_required_checks_config(args.required_config)
+    required_contexts = config_semantics["required_contexts"]
+    ignored_contexts = set(config_semantics["ignored_contexts"])
+    effective_required_contexts = config_semantics["effective_required_contexts"]
     head_runs = _fetch_head_check_runs(args.repo, args.head_sha, token)
     head_statuses = _fetch_head_status_contexts(args.repo, args.head_sha, token)
     rollup_states = _fetch_pr_checks_states(args.repo, args.pr_number, token)
@@ -261,7 +264,7 @@ def main() -> int:
     status_names = {str(s.get("context", "")).strip() for s in head_statuses if s.get("context")}
     on_head = run_names | status_names
 
-    missing = [ctx for ctx in required_contexts if ctx not in on_head]
+    missing = [ctx for ctx in effective_required_contexts if ctx not in on_head]
 
     prior_commits = _fetch_pr_commits(args.repo, args.pr_number, token)
     prior_shas = [sha for sha in prior_commits if sha != args.head_sha][
@@ -273,6 +276,15 @@ def main() -> int:
     has_liveness_gap = False
 
     for ctx in required_contexts:
+        if ctx in ignored_contexts:
+            classification = "IGNORED_BY_CONFIG_NON_BLOCKING"
+            detail = "ignored_contexts contains context; excluded from blocking liveness evaluation"
+            if ctx in on_head:
+                classification = "IGNORED_BY_CONFIG_REPORTED_ON_HEAD_SHA"
+                detail = "ignored_contexts contains context; context is still reported on head SHA"
+            rows.append({"context": ctx, "classification": classification, "detail": detail})
+            continue
+
         if ctx in on_head:
             rows.append(
                 {
@@ -313,7 +325,9 @@ def main() -> int:
                 "repo": args.repo,
                 "pr_number": args.pr_number,
                 "head_sha": args.head_sha,
-                "required_contexts": required_contexts,
+                "required_contexts": effective_required_contexts,
+                "configured_required_contexts": required_contexts,
+                "ignored_contexts": sorted(ignored_contexts),
                 "rows": rows,
             },
             indent=2,
