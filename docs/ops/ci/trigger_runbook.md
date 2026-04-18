@@ -37,9 +37,9 @@ Falls Checks dauerhaft fehlen oder Branch Protection inkonsistent wirkt:
      | jq -r '.contexts[]' | nl -ba
    ```
 
-2. **Kanonische Quelle + Snapshot**
-   - [docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md](../BRANCH_PROTECTION_REQUIRED_CHECKS.md)
+2. **Kanonische Quelle**
    - [config/ci/required_status_checks.json](../../../config/ci/required_status_checks.json) (JSON-SSOT: effective required contexts = required_contexts - ignored_contexts)
+   - [docs/ops/CI.md](../CI.md) (kanonische CI-/Required-Checks-Semantik)
 
 3. **Drift Guard (falls vorhanden)**
    ```bash

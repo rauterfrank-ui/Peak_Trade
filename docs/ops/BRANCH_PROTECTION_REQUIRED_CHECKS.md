@@ -1,14 +1,19 @@
 # Branch Protection: Required Status Checks
 
+> Historical snapshot only (not canonical SSOT).
+> Canonical required-check semantics live in `config/ci/required_status_checks.json`
+> with `effective_required_contexts = required_contexts - ignored_contexts`.
+> Use this page only as operational context around branch protection APIs.
+
 **Repository:** `rauterfrank-ui&#47;Peak_Trade`  
 **Branch:** `main`  
 **Last Updated:** 2025-12-27
 
 ---
 
-## Current Required Checks (main)
+## Historical Snapshot (main)
 
-The following status checks are **required** and must pass before any PR can be merged to `main`:
+Historical snapshot of required checks observed at the time of last update:
 
 1. **CI Health Gate (weekly_core)**
 2. **Guard tracked files in reports directories**
@@ -62,11 +67,12 @@ gh api -H "Accept: application/vnd.github+json" \
 
 ---
 
-## Automated Drift Guard
+## Automated Drift Guard (JSON-SSOT vs Live)
 
 ### What is it?
 
-The **Required Checks Drift Guard** automatically verifies that the documented list of required checks (above) matches the live state on GitHub. This prevents documentation drift and ensures branch protection stays in sync.
+The **Required Checks Drift Guard** verifies that JSON-SSOT effective required contexts
+(`config/ci/required_status_checks.json`) match live branch protection on GitHub.
 
 ### How to Use
 
@@ -82,22 +88,22 @@ ops_center.sh doctor
 
 ### Exit Codes
 
-- `0` = No drift (doc matches live)
+- `0` = No drift (JSON-SSOT effective required contexts match live)
 - `1` = Drift detected (hard fail)
 - `2` = Drift detected (warn-only mode)
 
 ### Interpreting Results
 
-**✅ PASS:** Doc and live state match perfectly.
+**✅ PASS:** JSON-SSOT effective required contexts and live state match.
 
 **⚠️ WARN:** Drift detected. The script will show:
-- **Missing from Live:** Checks documented but not configured on GitHub
-- **Extra in Live:** Checks configured on GitHub but not documented
+- **Missing from Live:** Checks in JSON-SSOT effective required list but not configured on GitHub
+- **Extra in Live:** Checks configured on GitHub but not in JSON-SSOT effective required list
 
 **Action Required:**
 1. Review the diff output
-2. Update documentation if live state is correct
-3. Or adjust branch protection if doc is correct
+2. Update JSON SSOT if intended required semantics changed
+3. Or adjust branch protection if live settings drifted
 
 ### Troubleshooting
 
@@ -111,9 +117,9 @@ gh auth login
 brew install jq
 ```
 
-**"No checks found in doc":**
-- Verify the "Current Required Checks (main)" section exists
-- Check numbering format: `1. **Check Name**`
+**"No effective required checks found in JSON SSOT":**
+- Verify `config/ci/required_status_checks.json` exists
+- Verify `required_contexts` and `ignored_contexts` produce a non-empty effective set
 
 ---
 
