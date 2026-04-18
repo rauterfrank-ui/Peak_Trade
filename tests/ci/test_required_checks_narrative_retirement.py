@@ -133,7 +133,7 @@ def test_truth_branch_protection_apply_path_is_blocked() -> None:
     script = Path("scripts/ops/ensure_truth_branch_protection.py").read_text(encoding="utf-8")
     assert "deprecated und absichtlich deaktiviert" in script
     assert "reconcile_required_checks_branch_protection.py --apply" in script
-    assert "_gh_api(\"PUT\"" not in script
+    assert '_gh_api("PUT"' not in script
 
 
 def test_single_writer_contract_for_branch_protection_required_checks() -> None:
@@ -142,5 +142,5 @@ def test_single_writer_contract_for_branch_protection_required_checks() -> None:
     )
     truth_script = Path("scripts/ops/ensure_truth_branch_protection.py").read_text(encoding="utf-8")
     assert 'path = f"repos/{owner}/{repo}/branches/{branch}/protection"' in canonical_writer
-    assert "_gh_api(\"PUT\"" in canonical_writer
-    assert "_gh_api(\"PUT\"" not in truth_script
+    assert '_gh_api("PUT"' in canonical_writer
+    assert '_gh_api("PUT"' not in truth_script

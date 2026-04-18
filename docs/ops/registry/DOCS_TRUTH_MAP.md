@@ -73,6 +73,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 ## Änderungsnachweis (Slice A)
 
+- 2026-04-18 — `docs&#47;ops&#47;registry&#47;TRUTH_BRANCH_PROTECTION.md` auf Single-Writer-Contract präzisiert (`ensure_truth_branch_protection.py --apply` fail-closed blockiert; kanonischer Writer `scripts&#47;ops&#47;reconcile_required_checks_branch_protection.py --apply`); dieser Eintrag dokumentiert den verpflichtenden Companion-Nachzug gemäß `truth-branch-protection-canonical`.
+
 - 2026-04-16: `docs&#47;ops&#47;specs&#47;LEVELUP_V0_CANONICAL_SURFACE.md` neu — kanonische Ops-/Spec-Oberfläche für LevelUp v0 (Manifest-/IO-/CLI; keine neue Autorität); Querverweise in `docs&#47;KNOWLEDGE_BASE_INDEX.md`, `docs&#47;ops&#47;README.md`, `docs&#47;ops&#47;RUNBOOK_INDEX.md`; Truth-Map-Abschnitt „Canonical: LevelUp v0“; zunächst ohne `docs_truth_map.yaml`-Regel; keine Runtime-/E2E-Ausweitung.
 
 - 2026-04-16: `config&#47;ops&#47;docs_truth_map.yaml` — Regel `levelup-v0-layer` (`src&#47;levelup&#47;` → `docs&#47;ops&#47;specs&#47;LEVELUP_V0_CANONICAL_SURFACE.md`); Truth-Map-Abschnitt „Canonical: LevelUp v0“ + Operator-Stub `levelup-v0-layer` aligned; Drift-Guard wie `forward-run-manifest-helper`; keine neue Autorität.
