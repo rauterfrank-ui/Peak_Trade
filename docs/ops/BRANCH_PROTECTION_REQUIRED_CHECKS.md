@@ -67,18 +67,23 @@ gh api -H "Accept: application/vnd.github+json" \
 
 ---
 
-## Automated Drift Guard (JSON-SSOT vs Live)
+## Automated Reconciliation Check (JSON-SSOT vs Live)
 
 ### What is it?
 
-The **Required Checks Drift Guard** verifies that JSON-SSOT effective required contexts
-(`config/ci/required_status_checks.json`) match live branch protection on GitHub.
+Der kanonische Reconciliation-Pfad vergleicht JSON-SSOT effective required contexts
+(`config/ci/required_status_checks.json`) deterministisch mit der live branch protection.
 
 ### How to Use
 
 **Quick check:**
 ```bash
-scripts/ops/verify_required_checks_drift.sh
+scripts/ops/reconcile_required_checks_branch_protection.py --check
+```
+
+**Apply (schreibend, fail-closed):**
+```bash
+scripts/ops/reconcile_required_checks_branch_protection.py --apply
 ```
 
 **Integrated check (part of ops_doctor):**
@@ -88,9 +93,9 @@ ops_center.sh doctor
 
 ### Exit Codes
 
-- `0` = No drift (JSON-SSOT effective required contexts match live)
-- `1` = Drift detected (hard fail)
-- `2` = Drift detected (warn-only mode)
+- `0` = Match (JSON-SSOT effective required contexts match live)
+- `1` = Drift oder unsicherer Zustand (hard fail, fail-closed)
+- `2` = Drift in warn-only Wrapper-Mode (`verify_required_checks_drift.sh --warn-only`)
 
 ### Interpreting Results
 
@@ -103,7 +108,7 @@ ops_center.sh doctor
 **Action Required:**
 1. Review the diff output
 2. Update JSON SSOT if intended required semantics changed
-3. Or adjust branch protection if live settings drifted
+3. Oder den kanonischen apply-Pfad ausfuehren
 
 ### Troubleshooting
 

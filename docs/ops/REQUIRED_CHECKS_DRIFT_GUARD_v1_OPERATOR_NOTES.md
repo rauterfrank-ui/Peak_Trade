@@ -13,18 +13,25 @@
 
 ## 📦 What Was Delivered
 
-### 1. Core Script: `verify_required_checks_drift.sh`
-- **Location:** `scripts/ops/verify_required_checks_drift.sh`
-- **Purpose:** Verifies Branch Protection Required Checks (JSON-SSOT vs live)
+### 1. Canonical Reconciliation Script: `reconcile_required_checks_branch_protection.py`
+- **Location:** `scripts/ops/reconcile_required_checks_branch_protection.py`
+- **Purpose:** Deterministic check/apply reconciliation (JSON-SSOT -> live)
 - **Features:**
-  - Delegates execution to canonical engine: `scripts/ci/required_checks_drift_detector.py`
+  - `--check` and `--apply` modes
+  - JSON-SSOT only: `config/ci/required_status_checks.json`
+  - Fail-closed on drift, invalid config, or live API uncertainty
+  - Deterministic required-context set (no wildcard heuristics)
+
+### 2. Ops Wrapper: `verify_required_checks_drift.sh`
+- **Location:** `scripts/ops/verify_required_checks_drift.sh`
+- **Purpose:** Thin wrapper for canonical `--check` reconciliation
+- **Features:**
+  - Delegates execution to canonical engine: `scripts/ops/reconcile_required_checks_branch_protection.py`
   - Loads effective required contexts from `config/ci/required_status_checks.json`
-  - Fetches live checks via `gh` CLI
-  - Compares and reports drift (missing/extra checks)
   - Supports `--warn-only` mode (exit 2 instead of 1)
   - CLI flags: `--owner`, `--repo`, `--branch`, `--required-config`, `--warn-only`
 
-### 2. Ops Center Integration
+### 3. Ops Center Integration
 - **File:** `scripts/ops/ops_center.sh`
 - **Integration Point:** `cmd_doctor()` function
 - **Behavior:**
@@ -33,7 +40,7 @@
   - Displays short diff summary on drift
   - Included in overall doctor exit code
 
-### 3. Documentation Update
+### 4. Documentation Update
 - **File:** `docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md`
 - **New Section:** "Automated Drift Guard"
 - **Content:**
@@ -42,7 +49,7 @@
   - Interpreting WARN vs FAIL
   - Troubleshooting tips
 
-### 4. Smoke Test
+### 5. Smoke Test
 - **Location:** `scripts/ops/tests/test_verify_required_checks_drift.sh`
 - **Coverage:**
   - Bash syntax check
