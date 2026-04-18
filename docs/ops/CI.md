@@ -8,6 +8,8 @@ Peak_Trade uses GitHub Actions for continuous integration. The primary workflow 
 Blocking-Semantik: `effective_required_contexts = required_contexts - ignored_contexts`.
 Event-Parity-Semantik: effective required contexts muessen auf `pull_request` und `merge_group`
 zuverlaessig erzeugt werden.
+Liveness-Semantik: Required-Checks-Liveness wird auf dem jeweiligen Head-SHA fuer
+`pull_request` und `merge_group` fail-closed ausgewertet.
 
 Hinweis: GitHub Branch-Protection wird separat verwaltet; Live-Settings sind ein Abgleichssignal und nicht die zweite Semantikquelle. Aktueller Stand: `gh api repos/<owner>/<repo>/branches/main/protection`.
 
