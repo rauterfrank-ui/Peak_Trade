@@ -1,5 +1,7 @@
 # Required Checks Drift Guard — Quick Start
 
+Kanonische Quelle: `config/ci/required_status_checks.json` (JSON SSOT).
+
 ## 🚀 One-Liner Setup (Copy/Paste)
 
 ```bash
@@ -134,7 +136,7 @@ scripts/ops/run_required_checks_drift_guard_pr.sh
 - `1` — ❌ Fehler in Offline-Checks
 
 ### Live Checks
-- `0` — ✅ Kein Drift (Doc == Live)
+- `0` — ✅ Kein Drift (JSON SSOT effective required == live)
 - `2` — ⚠️ Drift erkannt (warn-only) → **Nicht fatal**, aber Review erforderlich
 - `1` — ❌ Fehler (Preflight: gh/jq/auth Problem)
 
@@ -153,8 +155,8 @@ Ausgabe enthält:
 🧭 Required Checks Drift Guard
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🔍 Check: Branch Protection Required Checks (doc vs live)
-   ✅ PASS - Doc matches live state
+🔍 Check: Branch Protection Required Checks (JSON SSOT effective required vs live)
+   ✅ PASS - JSON SSOT matches live state
 ```
 
 ### CI/CD
@@ -162,7 +164,7 @@ Ausgabe enthält:
 # .github/workflows/ops-checks.yml
 - name: Required Checks Drift Guard
   run: |
-    scripts/ops/verify_required_checks_drift.sh --live --warn-only
+    scripts/ops/verify_required_checks_drift.sh --warn-only
 ```
 
 ---
@@ -190,13 +192,13 @@ git status
 ### "⚠️ Drift detected (warn-only)"
 **Das ist kein Fehler!** Du hast zwei Optionen:
 
-1. **Dokumentation aktualisieren** (wenn Live-State korrekt ist)
+1. **JSON SSOT aktualisieren** (wenn Live-State korrekt ist)
    ```bash
-   # Update docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md
-   # mit den aktuellen Required Checks aus GitHub
+   # Update config/ci/required_status_checks.json
+   # und pruefe effective_required_contexts = required_contexts - ignored_contexts
    ```
 
-2. **Branch Protection anpassen** (wenn Docs korrekt sind)
+2. **Branch Protection anpassen** (wenn JSON SSOT korrekt ist)
    ```bash
    # Gehe zu GitHub Settings > Branches > Branch Protection Rules
    # Passe "Required status checks" an
