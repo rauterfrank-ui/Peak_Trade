@@ -3,6 +3,7 @@ name: Minimal Good Workflow
 on:
   pull_request:
     # NO paths filter - always runs on PR
+  merge_group:
   push:
     branches: [main]
 

@@ -3,6 +3,7 @@ name: Good With Internal Filter
 on:
   pull_request:
     # NO paths filter at workflow level
+  merge_group:
   push:
     branches: [main]
 

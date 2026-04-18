@@ -1,6 +1,7 @@
 name: Matrix Workflow
 on:
   pull_request:
+  merge_group:
 jobs:
   tests:
     name: tests (${{ matrix.python-version }})
