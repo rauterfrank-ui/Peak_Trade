@@ -3,8 +3,8 @@
 # verify_required_checks_drift.sh
 #
 # Purpose:
-#   Thin ops wrapper around the canonical CI drift engine:
-#   scripts/ci/required_checks_drift_detector.py
+#   Thin ops wrapper around the canonical branch-protection reconciliation check:
+#   scripts/ops/reconcile_required_checks_branch_protection.py
 #
 # Usage:
 #   verify_required_checks_drift.sh [options]
@@ -44,7 +44,7 @@ REQUIRED_CONFIG="config/ci/required_status_checks.json"
 WARN_ONLY=0
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-DETECTOR="$REPO_ROOT/scripts/ci/required_checks_drift_detector.py"
+RECONCILER="$REPO_ROOT/scripts/ops/reconcile_required_checks_branch_protection.py"
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Help
@@ -52,11 +52,11 @@ DETECTOR="$REPO_ROOT/scripts/ci/required_checks_drift_detector.py"
 show_help() {
   cat <<'HELP'
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🧭 Required Checks Drift Guard (Single Engine)
+🧭 Required Checks Drift Guard (Reconciliation Check)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Ops wrapper around the canonical CI drift detector:
-  scripts/ci/required_checks_drift_detector.py
-Compares JSON SSOT effective required contexts to live branch protection.
+Ops wrapper around the canonical branch-protection reconciler:
+  scripts/ops/reconcile_required_checks_branch_protection.py
+Runs deterministic JSON-SSOT check against live branch protection.
 
 USAGE:
   verify_required_checks_drift.sh [options]
@@ -94,7 +94,7 @@ CANONICAL SOURCE:
   config/ci/required_status_checks.json
 
 CANONICAL ENGINE:
-  scripts/ci/required_checks_drift_detector.py
+  scripts/ops/reconcile_required_checks_branch_protection.py
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 HELP
 }
@@ -173,8 +173,8 @@ preflight_check() {
     errors=$((errors + 1))
   fi
 
-  if [[ ! -f "$DETECTOR" ]]; then
-    echo "❌ Required drift detector not found: $DETECTOR"
+  if [[ ! -f "$RECONCILER" ]]; then
+    echo "❌ Required reconciler not found: $RECONCILER"
     errors=$((errors + 1))
   fi
 
@@ -193,47 +193,34 @@ main() {
   preflight_check
 
   local output=""
-  local detector_status=0
+  local reconcile_status=0
 
   output="$(
-    python3 "$DETECTOR" \
+    python3 "$RECONCILER" \
+      --check \
       --required-config "$REQUIRED_CONFIG" \
-      --compare-live \
-      --strict-live \
       --owner "$OWNER" \
       --repo "$REPO" \
-      --branch-pattern "$BRANCH" 2>&1
-  )" || detector_status=$?
+      --branch "$BRANCH" 2>&1
+  )" || reconcile_status=$?
 
   if [[ -n "$output" ]]; then
     echo "$output"
   fi
 
-  case "$detector_status" in
+  case "$reconcile_status" in
     0)
       echo "✅ Required Checks: No Drift"
       ;;
-    3)
-      # Drift in live compare.
+    1)
+      # Drift or hard error (fail-closed).
       if [[ $WARN_ONLY -eq 1 ]]; then
         exit 2
       fi
-      exit 1
-      ;;
-    2)
-      # Missing workflow-producing contexts is also drift and should fail-closed.
-      if [[ $WARN_ONLY -eq 1 ]]; then
-        exit 2
-      fi
-      exit 1
-      ;;
-    4)
-      # Strict live compare failure is treated as hard failure after preflight.
-      echo "❌ Live compare failed in canonical drift detector"
       exit 1
       ;;
     *)
-      echo "❌ Drift detector failed unexpectedly (exit $detector_status)"
+      echo "❌ Reconciliation check failed unexpectedly (exit $reconcile_status)"
       exit 1
       ;;
   esac

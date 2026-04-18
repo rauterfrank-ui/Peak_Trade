@@ -45,7 +45,7 @@ def test_secondary_ops_docs_do_not_reintroduce_pr_gate_only_narrative() -> None:
 def test_ops_required_checks_drift_guard_uses_json_ssot_as_source() -> None:
     script_text = Path("scripts/ops/verify_required_checks_drift.sh").read_text(encoding="utf-8")
     assert "config/ci/required_status_checks.json" in script_text
-    assert "scripts/ci/required_checks_drift_detector.py" in script_text
+    assert "scripts/ops/reconcile_required_checks_branch_protection.py" in script_text
 
 
 def test_required_checks_docs_do_not_reintroduce_doc_as_source_narrative() -> None:
@@ -120,3 +120,10 @@ def test_verify_required_checks_drift_no_legacy_doc_flag_path() -> None:
 def test_ci_pr_gate_sanity_script_no_pr_gate_only_contract() -> None:
     script = Path("scripts/ops/ci_pr_gate_sanity.sh").read_text(encoding="utf-8")
     assert 'required_contexts == ["PR Gate"]' not in script
+
+
+def test_legacy_branch_protection_fixer_is_hard_disabled() -> None:
+    script = Path("scripts/ops/check_and_fix_branch_protection.sh").read_text(encoding="utf-8")
+    assert "deprecated and intentionally disabled" in script
+    assert "exit 2" in script
+    assert "reconcile_required_checks_branch_protection.py" in script

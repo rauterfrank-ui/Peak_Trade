@@ -14,6 +14,10 @@
 
 set -euo pipefail
 
+echo "This script is deprecated and intentionally disabled."
+echo "Use scripts/ops/reconcile_required_checks_branch_protection.py (--check|--apply) instead."
+exit 2
+
 ORG="${GITHUB_ORG:-rauterfrank-ui}"
 REPO="${GITHUB_REPO:-Peak_Trade}"
 BRANCH="${GITHUB_BRANCH:-main}"
