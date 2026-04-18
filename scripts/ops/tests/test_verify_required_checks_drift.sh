@@ -101,36 +101,26 @@ else
   fail "Help documents --warn-only flag"
 fi
 
-# Test 6: Doc extraction function (offline test via sourcing)
-# We'll test if the awk pattern at least runs without error
-doc_file="$REPO_ROOT/docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md"
+# Test 6: Single-path detector wiring (offline checks)
+detector="$REPO_ROOT/scripts/ci/required_checks_drift_detector.py"
+config_json="$REPO_ROOT/config/ci/required_status_checks.json"
 
-if [[ -f "$doc_file" ]]; then
-  pass "Documentation file exists"
-
-  # Simple pattern test: does the extraction command run?
-  if sed -n '/^## Current Required Checks/,/^---/p' "$doc_file" \
-      | grep -E '^[0-9]+\. \*\*' \
-      | sed -E 's/^[0-9]+\. \*\*//; s/\*\*.*$//' \
-      >/dev/null 2>&1; then
-    pass "Doc extraction command runs"
-
-    # Check if we actually get output
-    check_count=$(sed -n '/^## Current Required Checks/,/^---/p' "$doc_file" \
-      | grep -E '^[0-9]+\. \*\*' \
-      | sed -E 's/^[0-9]+\. \*\*//; s/\*\*.*$//' \
-      | wc -l | tr -d ' ')
-
-    if [[ "$check_count" -gt 0 ]]; then
-      pass "Doc extraction finds checks ($check_count found)"
-    else
-      fail "Doc extraction finds checks (0 found)"
-    fi
-  else
-    fail "Doc extraction command runs"
-  fi
+if [[ -f "$detector" ]]; then
+  pass "Canonical detector exists"
 else
-  fail "Documentation file exists"
+  fail "Canonical detector exists"
+fi
+
+if [[ -f "$config_json" ]]; then
+  pass "JSON SSOT config exists"
+else
+  fail "JSON SSOT config exists"
+fi
+
+if echo "$help_output" | grep -q -- "--required-config"; then
+  pass "Help documents --required-config flag"
+else
+  fail "Help documents --required-config flag"
 fi
 
 # Test 7: Unknown flag handling

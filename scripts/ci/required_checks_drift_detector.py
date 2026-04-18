@@ -37,11 +37,41 @@ def _parse_args() -> argparse.Namespace:
         default=False,
         help="Fail if live compare cannot be performed",
     )
+    p.add_argument(
+        "--owner",
+        default="",
+        help="GitHub owner/org override for live compare (optional)",
+    )
+    p.add_argument(
+        "--repo",
+        default="",
+        help="GitHub repo override for live compare (optional)",
+    )
+    p.add_argument(
+        "--branch-pattern",
+        default="main",
+        help="Branch protection pattern to compare for live checks (default: main)",
+    )
     return p.parse_args()
 
 
-def _live_required_contexts_main() -> list[str]:
-    """Fetch required status check contexts for main from GitHub API."""
+def _resolve_owner_repo(owner: str, repo: str) -> tuple[str, str]:
+    if owner and repo:
+        return owner, repo
+    remote = subprocess.check_output(["git", "remote", "get-url", "origin"], text=True).strip()
+    m = re.search(r"[:/](?P<owner>[^/]+)/(?P<repo>[^/.]+)(?:\.git)?$", remote)
+    if not m:
+        raise RuntimeError("cannot parse origin remote for owner/repo")
+    return owner or m.group("owner"), repo or m.group("repo")
+
+
+def _live_required_contexts(
+    *,
+    owner: str,
+    repo: str,
+    branch_pattern: str,
+) -> list[str]:
+    """Fetch required status check contexts for a branch protection pattern."""
     q = """
 query($owner:String!,$repo:String!){
   repository(owner:$owner,name:$repo){
@@ -54,12 +84,7 @@ query($owner:String!,$repo:String!){
   }
 }
 """
-    remote = subprocess.check_output(["git", "remote", "get-url", "origin"], text=True).strip()
-    m = re.search(r"[:/](?P<owner>[^/]+)/(?P<repo>[^/.]+)(?:\.git)?$", remote)
-    if not m:
-        raise RuntimeError("cannot parse origin remote for owner/repo")
-    owner = m.group("owner")
-    repo = m.group("repo")
+    owner, repo = _resolve_owner_repo(owner, repo)
     r = subprocess.run(
         [
             "gh",
@@ -80,9 +105,12 @@ query($owner:String!,$repo:String!){
     data = json.loads(r.stdout)
     rules = data["data"]["repository"]["branchProtectionRules"]["nodes"]
     ctx = []
+    target_patterns = {branch_pattern, f"refs/heads/{branch_pattern}"}
+    if branch_pattern == "main":
+        target_patterns.update({"*", "**"})
     for rule in rules:
         pat = rule.get("pattern", "")
-        if pat in ("main", "*", "**", "refs/heads/main"):
+        if pat in target_patterns:
             for c in rule.get("requiredStatusCheckContexts") or []:
                 if c:
                     ctx.append(c)
@@ -128,7 +156,11 @@ def main() -> int:
 
     if args.compare_live:
         try:
-            live = _live_required_contexts_main()
+            live = _live_required_contexts(
+                owner=args.owner,
+                repo=args.repo,
+                branch_pattern=args.branch_pattern,
+            )
             req_set = set(req)
             live_set = set(live)
             extra_in_live = sorted(live_set - req_set)

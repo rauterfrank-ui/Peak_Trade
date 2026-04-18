@@ -43,7 +43,7 @@ def test_secondary_ops_docs_do_not_reintroduce_pr_gate_only_narrative() -> None:
 def test_ops_required_checks_drift_guard_uses_json_ssot_as_source() -> None:
     script_text = Path("scripts/ops/verify_required_checks_drift.sh").read_text(encoding="utf-8")
     assert "config/ci/required_status_checks.json" in script_text
-    assert "docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md" not in script_text
+    assert "scripts/ci/required_checks_drift_detector.py" in script_text
 
 
 def test_required_checks_docs_do_not_reintroduce_doc_as_source_narrative() -> None:
