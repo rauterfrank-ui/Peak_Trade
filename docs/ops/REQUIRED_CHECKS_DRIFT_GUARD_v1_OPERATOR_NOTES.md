@@ -124,7 +124,7 @@ scripts/ops/verify_required_checks_drift.sh --owner rauterfrank-ui --repo Peak_T
 ```
 
 **Expected:**
-- Exit 0 if doc matches live
+- Exit 0 if JSON SSOT effective required matches live
 - Exit 1 if drift detected
 
 ---
@@ -155,7 +155,7 @@ command -v jq     # Should show path to jq
 
 | Code | Meaning | Context |
 |------|---------|---------|
-| 0    | No drift (match) | Doc and live state identical |
+| 0    | No drift (match) | JSON SSOT effective required and live state identical |
 | 1    | Drift detected | Hard fail (or preflight error) |
 | 2    | Drift detected (warn-only) | Soft warning in ops_doctor |
 
@@ -337,7 +337,7 @@ After implementation, verify:
 ```
 feat(ops): implement Required Checks Drift Guard v1
 
-Automates verification that documented Required Checks match live
+Automates verification that JSON SSOT effective required contexts match live
 GitHub Branch Protection state.
 
 Components:
@@ -347,7 +347,7 @@ Components:
 - scripts/ops/tests/test_verify_required_checks_drift.sh (smoke tests)
 
 Features:
-- CLI flags: --owner, --repo, --branch, --doc, --warn-only
+- CLI flags: --owner, --repo, --branch, --required-config, --warn-only
 - Exit codes: 0 (match), 1 (drift), 2 (warn-only drift)
 - BSD/macOS compatible (sed/grep, no GNU extensions)
 - Integrated into ops_doctor workflow

@@ -1,5 +1,7 @@
 # Required Checks Drift Guard — PR Workflow
 
+Kanonische Quelle: `config/ci/required_status_checks.json` (JSON SSOT).
+
 Dieses Workflow-Skript erstellt automatisch einen PR für das **Required Checks Drift Guard** Feature und folgt dem gleichen Operator-Pattern wie `create_and_open_merge_log_pr.sh`.
 
 ## Was das Skript macht
@@ -14,8 +16,8 @@ Dieses Workflow-Skript erstellt automatisch einen PR für das **Required Checks 
 - Führt Live-Check gegen GitHub Branch Protection / Required Checks aus (warn-only möglich).
 
 **Exit Codes (Live-Teil)**
-- `0` — ✅ **Kein Drift** (Doc und Live identisch)
-- `2` — ⚠️ **Drift erkannt (warn-only)** → Review drift, **Docs aktualisieren** oder **Branch Protection** anpassen
+- `0` — ✅ **Kein Drift** (JSON SSOT effective required und live identisch)
+- `2` — ⚠️ **Drift erkannt (warn-only)** → Review drift, **JSON SSOT aktualisieren** oder **Branch Protection** anpassen
 - `1` — ❌ **Fehler** (Preflight failed: `gh`/`jq`/Auth Problem)
 
 ### Phase 3: Commit + Push + PR
@@ -148,8 +150,8 @@ Die `doctor` Ausgabe enthält:
 🧭 Required Checks Drift Guard
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🔍 Check: Branch Protection Required Checks (doc vs live)
-   ✅ PASS - Doc matches live state
+🔍 Check: Branch Protection Required Checks (JSON SSOT effective required vs live)
+   ✅ PASS - JSON SSOT matches live state
 
    oder
 
@@ -187,7 +189,7 @@ git commit -m "feat(ops): add drift guard PR workflow"
 ### "⚠️ Drift detected (warn-only)"
 Das ist **kein Fehler**, sondern eine Warnung. Du hast zwei Optionen:
 1. **Dokumentation aktualisieren** (falls Live-State korrekt ist)
-2. **Branch Protection anpassen** (falls Doc korrekt ist)
+2. **Branch Protection anpassen** (falls JSON SSOT korrekt ist)
 
 Siehe: `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md`
 

@@ -45,12 +45,8 @@ echo "== 1) Offline checks =="
 test -f scripts/ops/verify_required_checks_drift.sh
 chmod +x scripts/ops/verify_required_checks_drift.sh
 
-# a) Script selbst (offline)
-if ./scripts/ops/verify_required_checks_drift.sh --help 2>/dev/null | grep -q -- '--offline'; then
-  ./scripts/ops/verify_required_checks_drift.sh --offline
-else
-  ./scripts/ops/verify_required_checks_drift.sh
-fi
+# a) Script selbst (canonical JSON-SSOT vs live check)
+./scripts/ops/verify_required_checks_drift.sh
 
 # b) Ops doctor (falls vorhanden)
 if [ -x scripts/ops/ops_center.sh ]; then
@@ -67,49 +63,26 @@ if [ -d tests ]; then
 fi
 
 # ──────────────────────────────────────────────────────────────────────────────
-# 2) Optional live drift check (gh auth + jq)
+# 2) Optional warn-only live drift check
 # Exit Codes:
-#   0 = ✅ Match (Doc == Live)
-#   2 = ⚠️ Drift (warn-only) -> Review drift, update doc oder Branch Protection
-#   1 = ❌ Error (Preflight failed: gh/jq/auth Problem)
+#   0 = ✅ Match (JSON SSOT effective required == live)
+#   2 = ⚠️ Drift (warn-only) -> Review drift, update JSON SSOT oder Branch Protection
+#   1 = ❌ Error (Preflight failed)
 # ──────────────────────────────────────────────────────────────────────────────
-echo "== 2) Optional live drift check (requires gh auth + jq) =="
+echo "== 2) Optional live drift check (requires gh auth) =="
+set +e
+./scripts/ops/verify_required_checks_drift.sh --warn-only
+LIVE_RC=$?
+set -e
 
-LIVE_SUPPORTED=0
-if ./scripts/ops/verify_required_checks_drift.sh --help 2>/dev/null | grep -q -- '--live'; then
-  LIVE_SUPPORTED=1
-fi
-
-if [ "$LIVE_SUPPORTED" -eq 1 ]; then
-  if ! command -v gh >/dev/null 2>&1; then
-    echo "❌ gh fehlt. Installiere GitHub CLI oder skippe Live-Check." >&2
-    exit 1
-  fi
-  if ! command -v jq >/dev/null 2>&1; then
-    echo "❌ jq fehlt. Installiere jq oder skippe Live-Check." >&2
-    exit 1
-  fi
-  if ! gh auth status >/dev/null 2>&1; then
-    echo "❌ gh nicht authentifiziert. Führe 'gh auth login' aus." >&2
-    exit 1
-  fi
-
-  set +e
-  ./scripts/ops/verify_required_checks_drift.sh --live --warn-only
-  LIVE_RC=$?
-  set -e
-
-  if [ "$LIVE_RC" -eq 0 ]; then
-    echo "✅ Required Checks: No Drift (ok)"
-  elif [ "$LIVE_RC" -eq 2 ]; then
-    echo "⚠️ Required Checks: Drift detected (warn-only)."
-    echo "   → Action: Drift reviewen und entweder Docs aktualisieren ODER Branch Protection / Required Checks Liste anpassen."
-  else
-    echo "❌ Live drift check error (exit=$LIVE_RC)."
-    exit 1
-  fi
+if [ "$LIVE_RC" -eq 0 ]; then
+  echo "✅ Required Checks: No Drift (ok)"
+elif [ "$LIVE_RC" -eq 2 ]; then
+  echo "⚠️ Required Checks: Drift detected (warn-only)."
+  echo "   → Action: Drift reviewen und entweder JSON SSOT oder Branch Protection anpassen."
 else
-  echo "ℹ️ Live-Check nicht unterstützt (kein --live). Überspringe Schritt 2."
+  echo "❌ Live drift check error (exit=$LIVE_RC)."
+  exit 1
 fi
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -133,11 +106,11 @@ git push -u origin HEAD
 # PR Body (kurz & sauber)
 cat > "$PR_BODY_FILE" <<'EOF'
 ## What
-- Add required checks drift guard (offline) + optional live drift verification (gh+jq)
+- Add required checks drift guard (offline) + optional live drift verification
 - Integrate into Ops Center / docs + smoke coverage
 
 ## Why
-- Prevent silent drift between documented required checks and live Branch Protection settings
+- Prevent silent drift between JSON SSOT effective required contexts and live Branch Protection settings
 - Make drift review explicit (warn-only mode supports safe operations)
 
 ## Verification
