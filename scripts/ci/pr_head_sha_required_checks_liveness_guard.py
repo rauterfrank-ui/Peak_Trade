@@ -245,6 +245,62 @@ def _render_summary(rows: List[Dict[str, str]]) -> str:
     return "\n".join(lines)
 
 
+def _evaluate_rows(
+    required_contexts: Sequence[str],
+    ignored_contexts: Set[str],
+    effective_required_contexts: Sequence[str],
+    on_head: Set[str],
+    rollup_states: Dict[str, str],
+    prior_seen: Dict[str, Optional[str]],
+) -> Tuple[List[Dict[str, str]], bool]:
+    """
+    Evaluate liveness rows with explicit JSON-SSOT semantics.
+
+    Blocking evaluation is performed strictly on effective_required_contexts
+    (= required_contexts - ignored_contexts), while ignored contexts remain
+    visible in the report as non-blocking informational rows.
+    """
+    rows: List[Dict[str, str]] = []
+    has_liveness_gap = False
+
+    for ctx in required_contexts:
+        if ctx in ignored_contexts:
+            classification = "IGNORED_BY_CONFIG_NON_BLOCKING"
+            detail = "ignored_contexts contains context; excluded from blocking liveness evaluation"
+            if ctx in on_head:
+                classification = "IGNORED_BY_CONFIG_REPORTED_ON_HEAD_SHA"
+                detail = "ignored_contexts contains context; context is still reported on head SHA"
+            rows.append({"context": ctx, "classification": classification, "detail": detail})
+
+    for ctx in effective_required_contexts:
+        if ctx in on_head:
+            rows.append(
+                {
+                    "context": ctx,
+                    "classification": "REPORTED_ON_HEAD_SHA",
+                    "detail": "check context exists on current PR head SHA",
+                }
+            )
+            continue
+
+        state = rollup_states.get(ctx, "")
+        prior_sha = prior_seen.get(ctx)
+        if state in {"EXPECTED", "WAITING", "PENDING"}:
+            classification = "EXPECTED_WITHOUT_HEAD_RUN"
+            detail = f"rollup_state={state}; no check-run/status context on head SHA"
+        elif prior_sha:
+            classification = "HEAD_SHA_COUPLING_SUSPECT"
+            detail = f"found on prior PR commit {prior_sha[:12]}, missing on current head SHA"
+        else:
+            classification = "MISSING_ON_HEAD_SHA"
+            detail = "missing on head SHA and not found in inspected prior PR commits"
+
+        has_liveness_gap = True
+        rows.append({"context": ctx, "classification": classification, "detail": detail})
+
+    return rows, has_liveness_gap
+
+
 def main() -> int:
     args = _parse_args()
     token = os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
@@ -272,43 +328,14 @@ def main() -> int:
     ]
     prior_seen = _prior_sha_presence(args.repo, prior_shas, missing, token)
 
-    rows: List[Dict[str, str]] = []
-    has_liveness_gap = False
-
-    for ctx in required_contexts:
-        if ctx in ignored_contexts:
-            classification = "IGNORED_BY_CONFIG_NON_BLOCKING"
-            detail = "ignored_contexts contains context; excluded from blocking liveness evaluation"
-            if ctx in on_head:
-                classification = "IGNORED_BY_CONFIG_REPORTED_ON_HEAD_SHA"
-                detail = "ignored_contexts contains context; context is still reported on head SHA"
-            rows.append({"context": ctx, "classification": classification, "detail": detail})
-            continue
-
-        if ctx in on_head:
-            rows.append(
-                {
-                    "context": ctx,
-                    "classification": "REPORTED_ON_HEAD_SHA",
-                    "detail": "check context exists on current PR head SHA",
-                }
-            )
-            continue
-
-        state = rollup_states.get(ctx, "")
-        prior_sha = prior_seen.get(ctx)
-        if state in {"EXPECTED", "WAITING", "PENDING"}:
-            classification = "EXPECTED_WITHOUT_HEAD_RUN"
-            detail = f"rollup_state={state}; no check-run/status context on head SHA"
-        elif prior_sha:
-            classification = "HEAD_SHA_COUPLING_SUSPECT"
-            detail = f"found on prior PR commit {prior_sha[:12]}, missing on current head SHA"
-        else:
-            classification = "MISSING_ON_HEAD_SHA"
-            detail = "missing on head SHA and not found in inspected prior PR commits"
-
-        has_liveness_gap = True
-        rows.append({"context": ctx, "classification": classification, "detail": detail})
+    rows, has_liveness_gap = _evaluate_rows(
+        required_contexts=required_contexts,
+        ignored_contexts=ignored_contexts,
+        effective_required_contexts=effective_required_contexts,
+        on_head=on_head,
+        rollup_states=rollup_states,
+        prior_seen=prior_seen,
+    )
 
     summary = _render_summary(rows)
     print(summary)
