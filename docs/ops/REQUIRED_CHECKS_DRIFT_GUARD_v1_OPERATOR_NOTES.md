@@ -17,6 +17,7 @@
 - **Location:** `scripts/ops/verify_required_checks_drift.sh`
 - **Purpose:** Verifies Branch Protection Required Checks (JSON-SSOT vs live)
 - **Features:**
+  - Delegates execution to canonical engine: `scripts/ci/required_checks_drift_detector.py`
   - Loads effective required contexts from `config/ci/required_status_checks.json`
   - Fetches live checks via `gh` CLI
   - Compares and reports drift (missing/extra checks)
