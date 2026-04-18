@@ -22,6 +22,8 @@ import urllib.request
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
 
+from required_checks_config import load_effective_required_contexts
+
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -98,15 +100,6 @@ def _gh_paginated(endpoint: str, token: str, *, per_page: int = 100) -> List[Any
             break
         page += 1
     return all_items
-
-
-def _load_required_contexts(config_path: str) -> List[str]:
-    data = json.loads(Path(config_path).read_text(encoding="utf-8"))
-    required = data.get("required_contexts", [])
-    ignored = set(data.get("ignored_contexts", []))
-    if not isinstance(required, list):
-        raise RuntimeError("required_contexts must be a list")
-    return [str(x) for x in required if str(x) not in ignored]
 
 
 def _fetch_head_check_runs(repo: str, sha: str, token: str) -> List[Dict[str, Any]]:
@@ -259,7 +252,7 @@ def main() -> int:
         print("ERROR: GITHUB_TOKEN or GH_TOKEN is required", file=sys.stderr)
         return 2
 
-    required_contexts = _load_required_contexts(args.required_config)
+    required_contexts = load_effective_required_contexts(args.required_config)
     head_runs = _fetch_head_check_runs(args.repo, args.head_sha, token)
     head_statuses = _fetch_head_status_contexts(args.repo, args.head_sha, token)
     rollup_states = _fetch_pr_checks_states(args.repo, args.pr_number, token)

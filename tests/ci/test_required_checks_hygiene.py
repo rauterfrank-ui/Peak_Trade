@@ -327,3 +327,69 @@ def test_fail_when_matrix_expanded_name_truly_missing(fixtures_dir):
         assert len(validator.findings) == 1
         assert validator.findings[0]["context"] == "tests (3.12)"
         assert "not produced" in validator.findings[0]["reason"]
+
+
+def test_pass_when_missing_context_is_ignored(fixtures_dir):
+    """
+    Test PASS case: A missing required context is excluded via ignored_contexts.
+    """
+    with tempfile.TemporaryDirectory() as tmpdir:
+        workflows_dir = Path(tmpdir) / "workflows"
+        workflows_dir.mkdir()
+
+        good_wf = fixtures_dir / "minimal_good.yml"
+        (workflows_dir / "minimal_good.yml").write_text(good_wf.read_text())
+
+        config_path = Path(tmpdir) / "test_config.json"
+        config_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": "1.0.0",
+                    "required_contexts": ["test-check", "missing-but-ignored"],
+                    "ignored_contexts": ["missing-but-ignored"],
+                    "notes": "ignored_contexts removes missing-but-ignored from validation",
+                }
+            )
+        )
+
+        validator = RequiredChecksValidator(
+            config_path=config_path,
+            workflow_dir=workflows_dir,
+            strict=False,
+        )
+        success = validator.validate()
+        assert success is True
+        assert len(validator.findings) == 0
+
+
+def test_report_counts_only_effective_required_contexts(fixtures_dir, capsys):
+    """
+    Ensure report count follows required_contexts - ignored_contexts semantics.
+    """
+    with tempfile.TemporaryDirectory() as tmpdir:
+        workflows_dir = Path(tmpdir) / "workflows"
+        workflows_dir.mkdir()
+        (workflows_dir / "minimal_good.yml").write_text(
+            (fixtures_dir / "minimal_good.yml").read_text()
+        )
+
+        config_path = Path(tmpdir) / "test_config.json"
+        config_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": "1.0.0",
+                    "required_contexts": ["test-check", "ignored-check"],
+                    "ignored_contexts": ["ignored-check"],
+                }
+            )
+        )
+
+        validator = RequiredChecksValidator(
+            config_path=config_path,
+            workflow_dir=workflows_dir,
+            strict=False,
+        )
+        assert validator.validate() is True
+        validator.print_report()
+        captured = capsys.readouterr()
+        assert "All 1 required checks are hygiene-compliant" in captured.out

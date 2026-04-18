@@ -41,6 +41,8 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Set, Tuple
 
+from required_checks_config import load_effective_required_contexts
+
 
 def _require_yaml():
     """
@@ -217,6 +219,7 @@ class RequiredChecksValidator:
         self.workflow_dir = workflow_dir
         self.strict = strict
         self.config: Dict[str, Any] = {}
+        self.effective_required_contexts: List[str] = []
         self.analyzer = WorkflowAnalyzer(workflow_dir)
         self.findings: List[Dict[str, str]] = []
 
@@ -236,13 +239,8 @@ class RequiredChecksValidator:
         self.analyzer.load_workflows()
         pr_workflows = self.analyzer.extract_pr_workflows()
 
-        required_contexts = self.config.get("required_contexts", [])
-        ignored_contexts = set(self.config.get("ignored_contexts", []))
-
-        for context in required_contexts:
-            if context in ignored_contexts:
-                continue
-
+        self.effective_required_contexts = load_effective_required_contexts(self.config_path)
+        for context in self.effective_required_contexts:
             self._validate_context(context, pr_workflows)
 
         return len(self.findings) == 0
@@ -307,7 +305,7 @@ class RequiredChecksValidator:
         print(f"Mode:      {'STRICT' if self.strict else 'NORMAL'}")
         print()
 
-        required_count = len(self.config.get("required_contexts", []))
+        required_count = len(self.effective_required_contexts)
         findings_count = len(self.findings)
 
         if findings_count == 0:
