@@ -61,9 +61,13 @@ def test_run_check_fail_closed_on_diff(tmp_path: Path, capsys) -> None:
 
 def test_run_check_fail_closed_on_empty_effective_required(tmp_path: Path) -> None:
     cfg = tmp_path / "required_status_checks.json"
-    cfg.write_text('{"required_contexts":["IGNORED"],"ignored_contexts":["IGNORED"]}\n', encoding="utf-8")
+    cfg.write_text(
+        '{"required_contexts":["IGNORED"],"ignored_contexts":["IGNORED"]}\n', encoding="utf-8"
+    )
 
-    with patch.object(reconcile, "fetch_protection", side_effect=AssertionError("must not be called")):
+    with patch.object(
+        reconcile, "fetch_protection", side_effect=AssertionError("must not be called")
+    ):
         assert reconcile.run_check("o", "r", "main", str(cfg)) == 1
 
 

@@ -94,7 +94,9 @@ def build_put_body(get_data: dict[str, Any], required_contexts: list[str]) -> di
         body["required_pull_request_reviews"] = {
             "dismiss_stale_reviews": bool(reviews.get("dismiss_stale_reviews", False)),
             "require_code_owner_reviews": bool(reviews.get("require_code_owner_reviews", False)),
-            "required_approving_review_count": int(reviews.get("required_approving_review_count", 0)),
+            "required_approving_review_count": int(
+                reviews.get("required_approving_review_count", 0)
+            ),
         }
         if "require_last_push_approval" in reviews:
             body["required_pull_request_reviews"]["require_last_push_approval"] = bool(
