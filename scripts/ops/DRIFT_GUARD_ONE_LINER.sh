@@ -2,7 +2,7 @@
 #
 # DRIFT_GUARD_ONE_LINER.sh
 #
-# Ultra-quick copy/paste script for Required Checks Drift Guard setup + test
+# Ultra-quick copy/paste script for deterministic Drift Guard checks
 #
 # Usage (copy entire block to terminal):
 #
@@ -23,29 +23,21 @@ echo ""
 REPO_DIR="${REPO_DIR:-$HOME/Peak_Trade}"
 cd "$REPO_DIR"
 
-# 1) Run setup (if exists)
-if [ -x scripts/ops/setup_drift_guard_pr_workflow.sh ]; then
-  echo "📦 1) Running setup_drift_guard_pr_workflow.sh"
-  bash scripts/ops/setup_drift_guard_pr_workflow.sh
-else
-  echo "⚠️  Setup script not found, skipping setup"
-fi
-
-# 2) Run smoke tests
+# 1) Run smoke tests
 if [ -x scripts/ops/tests/test_drift_guard_pr_workflow.sh ]; then
   echo ""
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  echo "🧪 2) Running smoke tests"
+  echo "🧪 1) Running smoke tests"
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo ""
   bash scripts/ops/tests/test_drift_guard_pr_workflow.sh
 fi
 
-# 3) Run dry-run (offline only)
+# 2) Run deterministic dry-run (offline only)
 if [ -x scripts/ops/run_required_checks_drift_guard_pr.sh ]; then
   echo ""
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  echo "🧪 3) Running dry-run (offline only)"
+  echo "🧪 2) Running dry-run (offline only)"
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo ""
   bash scripts/ops/run_required_checks_drift_guard_pr.sh --dry-run --offline-only
@@ -58,7 +50,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 echo "🚀 Next Steps:"
 echo ""
-echo "   # Test with live check (requires gh + jq)"
+echo "   # Test with live check (requires gh auth)"
 echo "   scripts/ops/run_required_checks_drift_guard_pr.sh --dry-run"
 echo ""
 echo "   # Create PR (production)"

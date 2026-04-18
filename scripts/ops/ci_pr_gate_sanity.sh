@@ -10,15 +10,12 @@ python3 scripts/ci/validate_required_checks_hygiene.py \
   --workflows .github/workflows \
   --strict
 
-# 2) required_contexts must be exactly ["PR Gate"]
-jq -e '.required_contexts == ["PR Gate"]' "$CFG" >/dev/null
-rg -n '^\s*"required_contexts"\s*:\s*\[\s*"PR Gate"\s*\]\s*,?\s*$' "$CFG"
+# 2) JSON SSOT must define non-empty required contexts and not regress to PR Gate-only legacy
+jq -e '.required_contexts | type == "array" and length > 0' "$CFG" >/dev/null
+jq -e '.required_contexts != ["PR Gate"]' "$CFG" >/dev/null
+rg -n '^\s*"required_contexts"\s*:' "$CFG"
 
-# 3) workflow must expose visible check name "PR Gate" (job-id is pr-gate)
-rg -n '^\s*pr-gate:\s*$' "$WF"
-rg -n '^\s*name:\s*"?PR Gate"?\s*$' "$WF"
+# 3) workflow must keep required-contexts JSON contract marker
+rg -n 'required_contexts - ignored_contexts' "$WF"
 
-# 4) print the exact block for audit / screenshot
-nl -ba "$WF" | sed -n '334,352p'
-
-echo "OK: required check name matches workflow-visible check name: PR Gate"
+echo "OK: JSON SSOT required-checks contract is present and PR Gate-only legacy is absent."

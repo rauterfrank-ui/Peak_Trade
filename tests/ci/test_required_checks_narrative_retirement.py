@@ -98,3 +98,25 @@ def test_secondary_ops_helper_does_not_reintroduce_legacy_drift_flags() -> None:
     )
     assert "--live" not in helper_script
     assert "--offline" not in helper_script
+
+
+def test_operator_wrapper_uses_deterministic_drift_guard_entrypoint() -> None:
+    wrapper = Path("scripts/ops/run_required_checks_drift_guard_pr.sh").read_text(encoding="utf-8")
+    assert 'SCRIPT="scripts/ops/create_required_checks_drift_guard_pr.sh"' in wrapper
+    assert "grep -E 'drift|required[_-]?checks'" not in wrapper
+
+
+def test_deprecated_setup_script_is_hard_disabled() -> None:
+    setup_script = Path("scripts/ops/setup_drift_guard_pr_workflow.sh").read_text(encoding="utf-8")
+    assert "deprecated and intentionally disabled" in setup_script
+    assert "exit 2" in setup_script
+
+
+def test_verify_required_checks_drift_no_legacy_doc_flag_path() -> None:
+    script = Path("scripts/ops/verify_required_checks_drift.sh").read_text(encoding="utf-8")
+    assert "--doc" not in script
+
+
+def test_ci_pr_gate_sanity_script_no_pr_gate_only_contract() -> None:
+    script = Path("scripts/ops/ci_pr_gate_sanity.sh").read_text(encoding="utf-8")
+    assert 'required_contexts == ["PR Gate"]' not in script
