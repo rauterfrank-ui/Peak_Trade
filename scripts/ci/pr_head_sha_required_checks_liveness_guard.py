@@ -22,6 +22,8 @@ import urllib.request
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
 
+from required_checks_config import load_required_checks_config
+
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -98,15 +100,6 @@ def _gh_paginated(endpoint: str, token: str, *, per_page: int = 100) -> List[Any
             break
         page += 1
     return all_items
-
-
-def _load_required_contexts(config_path: str) -> List[str]:
-    data = json.loads(Path(config_path).read_text(encoding="utf-8"))
-    required = data.get("required_contexts", [])
-    ignored = set(data.get("ignored_contexts", []))
-    if not isinstance(required, list):
-        raise RuntimeError("required_contexts must be a list")
-    return [str(x) for x in required if str(x) not in ignored]
 
 
 def _fetch_head_check_runs(repo: str, sha: str, token: str) -> List[Dict[str, Any]]:
@@ -252,34 +245,34 @@ def _render_summary(rows: List[Dict[str, str]]) -> str:
     return "\n".join(lines)
 
 
-def main() -> int:
-    args = _parse_args()
-    token = os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
-    if not token:
-        print("ERROR: GITHUB_TOKEN or GH_TOKEN is required", file=sys.stderr)
-        return 2
+def _evaluate_rows(
+    required_contexts: Sequence[str],
+    ignored_contexts: Set[str],
+    effective_required_contexts: Sequence[str],
+    on_head: Set[str],
+    rollup_states: Dict[str, str],
+    prior_seen: Dict[str, Optional[str]],
+) -> Tuple[List[Dict[str, str]], bool]:
+    """
+    Evaluate liveness rows with explicit JSON-SSOT semantics.
 
-    required_contexts = _load_required_contexts(args.required_config)
-    head_runs = _fetch_head_check_runs(args.repo, args.head_sha, token)
-    head_statuses = _fetch_head_status_contexts(args.repo, args.head_sha, token)
-    rollup_states = _fetch_pr_checks_states(args.repo, args.pr_number, token)
-
-    run_names = {str(r.get("name", "")).strip() for r in head_runs if r.get("name")}
-    status_names = {str(s.get("context", "")).strip() for s in head_statuses if s.get("context")}
-    on_head = run_names | status_names
-
-    missing = [ctx for ctx in required_contexts if ctx not in on_head]
-
-    prior_commits = _fetch_pr_commits(args.repo, args.pr_number, token)
-    prior_shas = [sha for sha in prior_commits if sha != args.head_sha][
-        : max(args.max_prior_commits, 0)
-    ]
-    prior_seen = _prior_sha_presence(args.repo, prior_shas, missing, token)
-
+    Blocking evaluation is performed strictly on effective_required_contexts
+    (= required_contexts - ignored_contexts), while ignored contexts remain
+    visible in the report as non-blocking informational rows.
+    """
     rows: List[Dict[str, str]] = []
     has_liveness_gap = False
 
     for ctx in required_contexts:
+        if ctx in ignored_contexts:
+            classification = "IGNORED_BY_CONFIG_NON_BLOCKING"
+            detail = "ignored_contexts contains context; excluded from blocking liveness evaluation"
+            if ctx in on_head:
+                classification = "IGNORED_BY_CONFIG_REPORTED_ON_HEAD_SHA"
+                detail = "ignored_contexts contains context; context is still reported on head SHA"
+            rows.append({"context": ctx, "classification": classification, "detail": detail})
+
+    for ctx in effective_required_contexts:
         if ctx in on_head:
             rows.append(
                 {
@@ -305,6 +298,45 @@ def main() -> int:
         has_liveness_gap = True
         rows.append({"context": ctx, "classification": classification, "detail": detail})
 
+    return rows, has_liveness_gap
+
+
+def main() -> int:
+    args = _parse_args()
+    token = os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
+    if not token:
+        print("ERROR: GITHUB_TOKEN or GH_TOKEN is required", file=sys.stderr)
+        return 2
+
+    config_semantics = load_required_checks_config(args.required_config)
+    required_contexts = config_semantics["required_contexts"]
+    ignored_contexts = set(config_semantics["ignored_contexts"])
+    effective_required_contexts = config_semantics["effective_required_contexts"]
+    head_runs = _fetch_head_check_runs(args.repo, args.head_sha, token)
+    head_statuses = _fetch_head_status_contexts(args.repo, args.head_sha, token)
+    rollup_states = _fetch_pr_checks_states(args.repo, args.pr_number, token)
+
+    run_names = {str(r.get("name", "")).strip() for r in head_runs if r.get("name")}
+    status_names = {str(s.get("context", "")).strip() for s in head_statuses if s.get("context")}
+    on_head = run_names | status_names
+
+    missing = [ctx for ctx in effective_required_contexts if ctx not in on_head]
+
+    prior_commits = _fetch_pr_commits(args.repo, args.pr_number, token)
+    prior_shas = [sha for sha in prior_commits if sha != args.head_sha][
+        : max(args.max_prior_commits, 0)
+    ]
+    prior_seen = _prior_sha_presence(args.repo, prior_shas, missing, token)
+
+    rows, has_liveness_gap = _evaluate_rows(
+        required_contexts=required_contexts,
+        ignored_contexts=ignored_contexts,
+        effective_required_contexts=effective_required_contexts,
+        on_head=on_head,
+        rollup_states=rollup_states,
+        prior_seen=prior_seen,
+    )
+
     summary = _render_summary(rows)
     print(summary)
 
@@ -320,7 +352,9 @@ def main() -> int:
                 "repo": args.repo,
                 "pr_number": args.pr_number,
                 "head_sha": args.head_sha,
-                "required_contexts": required_contexts,
+                "required_contexts": effective_required_contexts,
+                "configured_required_contexts": required_contexts,
+                "ignored_contexts": sorted(ignored_contexts),
                 "rows": rows,
             },
             indent=2,

@@ -9,6 +9,7 @@ import subprocess
 from pathlib import Path
 
 import yaml
+from required_checks_config import load_effective_required_contexts
 
 
 def _parse_args() -> argparse.Namespace:
@@ -19,11 +20,6 @@ def _parse_args() -> argparse.Namespace:
         "--required-config",
         default="config/ci/required_status_checks.json",
         help="JSON required checks config path (default: config/ci/required_status_checks.json)",
-    )
-    p.add_argument(
-        "--required-list",
-        default=None,
-        help="Legacy plain-text required checks list path (deprecated, overrides --required-config)",
     )
     p.add_argument(
         "--workflows-dir",
@@ -93,24 +89,9 @@ query($owner:String!,$repo:String!){
     return sorted(set(ctx))
 
 
-def _load_required_contexts(required_config: str, required_list: str | None) -> list[str]:
-    if required_list:
-        return [
-            l.strip()
-            for l in Path(required_list).read_text(encoding="utf-8").splitlines()
-            if l.strip() and not l.strip().startswith("#")
-        ]
-
-    data = json.loads(Path(required_config).read_text(encoding="utf-8"))
-    required = data.get("required_contexts", [])
-    if not isinstance(required, list):
-        raise RuntimeError("required_contexts must be a list")
-    return [str(ctx).strip() for ctx in required if str(ctx).strip()]
-
-
 def main() -> int:
     args = _parse_args()
-    req = _load_required_contexts(args.required_config, args.required_list)
+    req = load_effective_required_contexts(args.required_config)
     wf_paths = sorted(Path(args.workflows_dir).glob("*.yml")) + sorted(
         Path(args.workflows_dir).glob("*.yaml")
     )
