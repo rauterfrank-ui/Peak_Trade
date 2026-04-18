@@ -120,10 +120,6 @@ while [[ $# -gt 0 ]]; do
       REQUIRED_CONFIG="$2"
       shift 2
       ;;
-    --doc)
-      echo "⚠️  --doc is deprecated and ignored. JSON SSOT is authoritative."
-      shift 2
-      ;;
     --warn-only)
       WARN_ONLY=1
       shift

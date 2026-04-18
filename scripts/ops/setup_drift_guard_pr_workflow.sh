@@ -13,6 +13,13 @@
 
 set -euo pipefail
 
+echo "❌ setup_drift_guard_pr_workflow.sh is deprecated and intentionally disabled."
+echo "   Use deterministic operator entrypoints instead:"
+echo "   - scripts/ops/run_required_checks_drift_guard_pr.sh"
+echo "   - scripts/ops/create_required_checks_drift_guard_pr.sh"
+echo "   This prevents generator-style rewrites from reintroducing legacy semantics."
+exit 2
+
 # ──────────────────────────────────────────────────────────────────────────────
 # Peak_Trade — Required Checks Drift Guard: Dry-Run + Smoke Tests + Docs Registry
 # WHERE TO RUN: Terminal / iTerm (im Repo)

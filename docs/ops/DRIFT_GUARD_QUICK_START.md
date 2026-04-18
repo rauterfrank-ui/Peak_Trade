@@ -2,20 +2,15 @@
 
 Kanonische Quelle: `config/ci/required_status_checks.json` (JSON SSOT).
 
-## 🚀 One-Liner Setup (Copy/Paste)
+## 🚀 Deterministischer Entrypoint (Copy/Paste)
 
 ```bash
-cd ~/Peak_Trade && bash scripts/ops/setup_drift_guard_pr_workflow.sh
+cd ~/Peak_Trade && scripts/ops/run_required_checks_drift_guard_pr.sh --dry-run --offline-only
 ```
 
-Das Setup-Skript:
-- ✅ Erstellt/aktualisiert alle Workflow-Skripte
-- ✅ Fügt `--dry-run` und `--offline-only` Flags hinzu
-- ✅ Erstellt Smoke Tests
-- ✅ Generiert vollständige Dokumentation
-- ✅ Aktualisiert README_REGISTRY.md
-- ✅ Führt Tests aus
-- ✅ Committed alle Änderungen
+Der Wrapper nutzt deterministisch den kanonischen Entrypoint
+`scripts/ops/create_required_checks_drift_guard_pr.sh`.
+Das Legacy-Setup-Skript `scripts/ops/setup_drift_guard_pr_workflow.sh` ist deprecated/disabled.
 
 ---
 
@@ -63,7 +58,7 @@ scripts/ops/run_required_checks_drift_guard_pr.sh
 ### Skripte
 ```
 scripts/ops/
-├── setup_drift_guard_pr_workflow.sh          # 🆕 Setup-Skript
+├── setup_drift_guard_pr_workflow.sh          # ⚠️ Deprecated/disabled
 ├── create_required_checks_drift_guard_pr.sh  # ✏️ Updated (+ flags)
 ├── run_required_checks_drift_guard_pr.sh     # ✏️ Updated (+ pass-through)
 ├── verify_required_checks_drift.sh           # ✅ Existing
@@ -216,10 +211,10 @@ git status
 
 ## 💡 Common Workflows
 
-### 1. Initial Setup (einmalig)
+### 1. Initial Check (einmalig)
 ```bash
 cd ~/Peak_Trade
-bash scripts/ops/setup_drift_guard_pr_workflow.sh
+scripts/ops/run_required_checks_drift_guard_pr.sh --dry-run --offline-only
 ```
 
 ### 2. Quick Test (täglich)

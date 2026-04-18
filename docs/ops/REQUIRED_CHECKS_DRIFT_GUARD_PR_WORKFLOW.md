@@ -33,14 +33,15 @@ Dieses Workflow-Skript erstellt automatisch einen PR für das **Required Checks 
 
 ## Quick Start
 
-### Option 1: Wrapper-Skript (empfohlen)
+### Option 1: Wrapper-Skript (empfohlen, deterministisch)
 
 ```bash
 cd ~/Peak_Trade
 scripts/ops/run_required_checks_drift_guard_pr.sh
 ```
 
-Das Wrapper-Skript findet automatisch das passende Drift-Workflow-Skript und führt es aus.
+Das Wrapper-Skript verwendet deterministisch den kanonischen Entrypoint
+`scripts/ops/create_required_checks_drift_guard_pr.sh`.
 
 ### Option 2: Direkt
 
@@ -49,48 +50,10 @@ cd ~/Peak_Trade
 scripts/ops/create_required_checks_drift_guard_pr.sh
 ```
 
-### Option 3: Copy/Paste — Terminal/iTerm (End-to-End)
+### Option 3: Setup-Skript
 
-Dieser Block findet das passende Drift-Workflow-Skript automatisch (falls der Dateiname variiert) und führt es aus:
-
-```bash
-set -euo pipefail
-
-REPO_DIR="${REPO_DIR:-$HOME/Peak_Trade}"
-cd "$REPO_DIR"
-
-echo "🔎 Suche Drift-Guard PR-Workflow Script…"
-SCRIPT="$(
-  git ls-files 'scripts/ops/*.sh' \
-  | grep -E 'drift|required[_-]?checks' \
-  | grep -v 'run_required_checks_drift_guard_pr.sh' \
-  | grep -v 'verify_required_checks_drift.sh' \
-  | grep -v 'test_verify_required_checks_drift.sh' \
-  | head -n 1
-)"
-
-if [ -z "${SCRIPT:-}" ]; then
-  echo "❌ Konnte kein passendes Script finden (Pattern: drift|required_checks)." >&2
-  echo "   Tipp: nenne es z.B. scripts/ops/create_required_checks_drift_guard_pr.sh" >&2
-  exit 1
-fi
-
-echo "✅ Script gefunden: $SCRIPT"
-chmod +x "$SCRIPT"
-
-echo
-echo "== HELP (falls verfügbar) =="
-"$SCRIPT" --help 2>/dev/null || echo "ℹ️ Keine --help Option verfügbar"
-
-echo
-echo "== RUN =="
-# Optional: Overrides (nur relevant, wenn das Script ENV-Overrides unterstützt)
-export BRANCH="${BRANCH:-feat/required-checks-drift-guard-v1}"
-export BASE="${BASE:-main}"
-export LABELS_CSV="${LABELS_CSV:-ops,ci}"
-
-"$SCRIPT"
-```
+`scripts/ops/setup_drift_guard_pr_workflow.sh` ist bewusst deprecated/disabled, um
+generatorische Rewrites und Re-Drift in Operator-Surfaces zu verhindern.
 
 ---
 
@@ -121,7 +84,7 @@ export REPO_DIR="/path/to/your/repo"
 ```
 scripts/ops/
 ├── run_required_checks_drift_guard_pr.sh
-│   └─> Finder + Wrapper (one-block style)
+│   └─> Deterministischer Wrapper (fester Entrypoint)
 │
 └── create_required_checks_drift_guard_pr.sh
     ├─> Phase 1: Offline Checks
@@ -155,7 +118,7 @@ Die `doctor` Ausgabe enthält:
 
    oder
 
-   ⚠️  WARN - Drift detected between doc and live
+   ⚠️  WARN - Drift detected between JSON SSOT effective required and live
       [diff details here]
    📖 Details: scripts/ops/verify_required_checks_drift.sh
 ```
@@ -188,7 +151,7 @@ git commit -m "feat(ops): add drift guard PR workflow"
 
 ### "⚠️ Drift detected (warn-only)"
 Das ist **kein Fehler**, sondern eine Warnung. Du hast zwei Optionen:
-1. **Dokumentation aktualisieren** (falls Live-State korrekt ist)
+1. **JSON SSOT aktualisieren** (falls Live-State korrekt ist)
 2. **Branch Protection anpassen** (falls JSON SSOT korrekt ist)
 
 Siehe: `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md`
