@@ -4,7 +4,7 @@ Required Checks Hygiene Validator
 
 Purpose:
   Validates that all required status checks are reliably produced by
-  always-on PR workflows (no PR-level path filtering).
+  always-on PR workflows and are available on merge_group.
 
 Problem Context (Phase 5C):
   Branch protection "required status checks" can block PRs if the
@@ -15,8 +15,9 @@ Problem Context (Phase 5C):
 Solution:
   This validator ensures that:
   1) Every required context is producible by at least one PR workflow
-  2) No required context relies exclusively on path-filtered workflows
-  3) Findings are audit-stable with clear remediation guidance
+  2) No required context relies exclusively on path-filtered PR workflows
+  3) Every required context is producible by at least one merge_group workflow
+  4) Findings are audit-stable with clear remediation guidance
 
 Usage:
   python scripts/ci/validate_required_checks_hygiene.py \\
@@ -136,9 +137,9 @@ class WorkflowAnalyzer:
             result.append({"job_id": job_id, "job_display": display})
         return result
 
-    def extract_pr_workflows(self) -> List[Dict[str, Any]]:
-        """Extract workflows that trigger on pull_request events."""
-        pr_workflows = []
+    def extract_required_check_surfaces(self) -> List[Dict[str, Any]]:
+        """Extract workflows that trigger on pull_request and/or merge_group."""
+        surfaces = []
 
         for wf in self.workflows:
             content = wf["content"]
@@ -156,16 +157,17 @@ class WorkflowAnalyzer:
             if not isinstance(on_config, dict):
                 continue
 
-            # Check if pull_request trigger exists
-            if "pull_request" not in on_config:
+            has_pr = "pull_request" in on_config
+            has_merge_group = "merge_group" in on_config
+            if not has_pr and not has_merge_group:
                 continue
-
-            pr_config = on_config["pull_request"]
 
             # Determine if PR-level paths filtering is present
             has_pr_paths = False
-            if isinstance(pr_config, dict):
-                has_pr_paths = "paths" in pr_config or "paths-ignore" in pr_config
+            if has_pr:
+                pr_config = on_config["pull_request"]
+                if isinstance(pr_config, dict):
+                    has_pr_paths = "paths" in pr_config or "paths-ignore" in pr_config
 
             # Extract workflow name
             workflow_name = content.get("name", wf["file"].replace(".yml", "").replace(".yaml", ""))
@@ -178,16 +180,18 @@ class WorkflowAnalyzer:
                 if isinstance(job_config, dict):
                     job_list.extend(self._expand_matrix_job_names(job_id, job_config))
 
-            pr_workflows.append(
+            surfaces.append(
                 {
                     "file": wf["file"],
                     "workflow_name": workflow_name,
+                    "has_pull_request": has_pr,
+                    "has_merge_group": has_merge_group,
                     "has_pr_paths": has_pr_paths,
                     "jobs": job_list,
                 }
             )
 
-        return pr_workflows
+        return surfaces
 
     def generate_check_candidates(self, workflow: Dict[str, Any], job: Dict[str, Any]) -> List[str]:
         """
@@ -237,19 +241,19 @@ class RequiredChecksValidator:
         """
         self.load_config()
         self.analyzer.load_workflows()
-        pr_workflows = self.analyzer.extract_pr_workflows()
+        surfaces = self.analyzer.extract_required_check_surfaces()
 
         self.effective_required_contexts = load_effective_required_contexts(self.config_path)
         for context in self.effective_required_contexts:
-            self._validate_context(context, pr_workflows)
+            self._validate_context(context, surfaces)
 
         return len(self.findings) == 0
 
-    def _validate_context(self, context: str, pr_workflows: List[Dict[str, Any]]) -> None:
+    def _validate_context(self, context: str, surfaces: List[Dict[str, Any]]) -> None:
         """Validate a single required context."""
         # Find all matching workflows/jobs
         matches = []
-        for wf in pr_workflows:
+        for wf in surfaces:
             for job in wf["jobs"]:
                 candidates = self.analyzer.generate_check_candidates(wf, job)
                 if context in candidates:
@@ -258,11 +262,16 @@ class RequiredChecksValidator:
                             "workflow_file": wf["file"],
                             "workflow_name": wf["workflow_name"],
                             "job_display": job["job_display"],
+                            "has_pull_request": wf["has_pull_request"],
+                            "has_merge_group": wf["has_merge_group"],
                             "has_pr_paths": wf["has_pr_paths"],
                         }
                     )
 
-        if not matches:
+        pr_matches = [m for m in matches if m["has_pull_request"]]
+        merge_group_matches = [m for m in matches if m["has_merge_group"]]
+
+        if not pr_matches:
             # FAIL: Required context not produced by any PR workflow
             self.findings.append(
                 {
@@ -275,7 +284,7 @@ class RequiredChecksValidator:
             return
 
         # Check if all matches are path-filtered
-        always_on_matches = [m for m in matches if not m["has_pr_paths"]]
+        always_on_matches = [m for m in pr_matches if not m["has_pr_paths"]]
 
         if not always_on_matches:
             # FAIL: Context only produced by path-filtered workflows
@@ -287,6 +296,18 @@ class RequiredChecksValidator:
                     "reason": "Required context only produced by path-filtered workflows",
                     "remediation": f"Remove PR-level 'paths' filter from workflow '{example['workflow_file']}' "
                     f"and use internal change detection (dorny/paths-filter) instead",
+                }
+            )
+            return
+
+        if not merge_group_matches:
+            # FAIL: Required context not produced on merge_group event
+            self.findings.append(
+                {
+                    "context": context,
+                    "status": "FAIL",
+                    "reason": "Required context not produced by any merge_group workflow",
+                    "remediation": f"Add merge_group trigger to a workflow/job producing '{context}'",
                 }
             )
             return
@@ -312,6 +333,7 @@ class RequiredChecksValidator:
             print(f"✅ SUCCESS: All {required_count} required checks are hygiene-compliant")
             print()
             print("All required status checks are produced by always-on PR workflows.")
+            print("All required status checks are also available on merge_group.")
             print("No path-filtering detected on required checks.")
             return
 

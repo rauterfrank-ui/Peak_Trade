@@ -6,6 +6,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     # NO paths filter at workflow level (required checks must always run)
+  merge_group:
   push:
     branches: ["main"]
     paths:

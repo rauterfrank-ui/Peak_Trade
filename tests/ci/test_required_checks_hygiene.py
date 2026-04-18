@@ -6,9 +6,10 @@ Purpose:
   path-filtered required checks and missing required contexts.
 
 Test Coverage:
-  - PASS: Required context produced by always-on workflow
+  - PASS: Required context produced by always-on workflow with merge_group parity
   - FAIL: Required context only produced by path-filtered workflow
   - FAIL: Required context not produced by any workflow
+  - FAIL: Required context missing merge_group producer
 
 Phase: 5D
 Date: 2026-01-12
@@ -218,6 +219,7 @@ def test_validator_handles_multiple_workflows():
 name: Always On Workflow
 on:
   pull_request:
+  merge_group:
 jobs:
   my-check:
     name: my-check
@@ -233,6 +235,7 @@ name: Path Filtered Workflow
 on:
   pull_request:
     paths: [".github/workflows/**"]
+  merge_group:
 jobs:
   my-check:
     name: my-check
@@ -393,3 +396,49 @@ def test_report_counts_only_effective_required_contexts(fixtures_dir, capsys):
         validator.print_report()
         captured = capsys.readouterr()
         assert "All 1 required checks are hygiene-compliant" in captured.out
+
+
+def test_fail_when_required_context_missing_merge_group_surface():
+    """
+    Test FAIL case: Required context exists for PR but not for merge_group.
+    """
+    with tempfile.TemporaryDirectory() as tmpdir:
+        workflows_dir = Path(tmpdir) / "workflows"
+        workflows_dir.mkdir()
+
+        wf = workflows_dir / "pr_only.yml"
+        wf.write_text(
+            """
+name: PR Only Workflow
+on:
+  pull_request:
+jobs:
+  parity-check:
+    name: parity-check
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+""".strip()
+        )
+
+        config_path = Path(tmpdir) / "test_config.json"
+        config_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": "1.0.0",
+                    "required_contexts": ["parity-check"],
+                    "ignored_contexts": [],
+                }
+            )
+        )
+
+        validator = RequiredChecksValidator(
+            config_path=config_path,
+            workflow_dir=workflows_dir,
+            strict=False,
+        )
+        success = validator.validate()
+        assert success is False
+        assert len(validator.findings) == 1
+        assert validator.findings[0]["context"] == "parity-check"
+        assert "merge_group" in validator.findings[0]["reason"]
