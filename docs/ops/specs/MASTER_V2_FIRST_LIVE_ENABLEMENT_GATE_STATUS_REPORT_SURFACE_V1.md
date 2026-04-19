@@ -39,6 +39,27 @@ Canonical steering remains:
 This report surface is subordinate and interpretive.  
 If wording conflicts appear, canonical ladder and underlying canonical specs/runbooks win.
 
+## 3.1) Master V2 Connection Clarification v1 (Bridge / Ladder / Read Model / Report Surface)
+
+Canonical role split for this direct connection is explicit:
+
+- `Master V2 &#47; Canonical Bridge v1 &#47; Readiness Ladder`: navigation anchor, relationship framing, and reader order
+- `Readiness Read Model v1`: status/claim/evidence/blocker interpretation grammar
+- `Gate-Status Report Surface v1` (this file): rendering/status output contract that consumes read-model grammar
+
+Canonical reader path for low-drift review:
+
+1. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md` (includes Canonical Bridge v1)
+2. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`
+3. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`
+4. relevant additive single-gate fill section(s) on this report surface (`First` to `Fourth`)
+
+Explicit non-implication lock for this connection clarification:
+
+- no new gate fill is introduced by this clarification
+- no gate closure is asserted or implied
+- no live authorization, live unlock, or runtime authority is granted
+
 ## 4) Relationship to Readiness Ladder
 
 Gate-status rows must map to ladder framing and remain review-only:
