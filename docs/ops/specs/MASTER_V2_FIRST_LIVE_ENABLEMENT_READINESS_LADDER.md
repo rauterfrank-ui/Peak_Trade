@@ -19,6 +19,7 @@ No other document has equal canonical priority for this specific workstream.
 Companion interpretation layer (read-only, non-authorizing):
 
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`
+- `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`
 
 ## 2) Scope and Non-Goals
 

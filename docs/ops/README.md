@@ -88,6 +88,7 @@ For scripts and port notes, see the root [`README.md`](../../README.md) section 
 - `docs/ops/runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md` — Kanonische First-Session-Sequenz für den ersten strikt begrenzten Echtgeldpilot-Kandidatenfluss
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md` — **Bindende kanonische Steuerdatei** für den aktuellen Master-V2-First-Live-Enablement-Clarification-Workstream (Readiness Contract/Ladder)
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md` — Kanonisches read-only Interpretations-/Statusmodell v1 für Master-V2-Readiness-Reviews (nicht autorisierend, keine Gate-Closure)
+- `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md` — Kanonische docs-only Report-Surface v1 für standardisierte Gate-Status-Tabellen und Per-Gate-Detailformate (read-only, non-authorizing)
 
 - `docs/ops/specs/BOUNDED_PILOT_CAPS_ENFORCEMENT_POINT.md` — Kanonische Einordnung des aktuellen Caps-Enforcement-Punkts im bounded-pilot-Pfad
 
