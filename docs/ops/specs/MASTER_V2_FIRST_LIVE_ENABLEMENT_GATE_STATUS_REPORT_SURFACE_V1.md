@@ -106,6 +106,27 @@ Consolidation v1 effect on this surface:
 - no new single-gate fill is introduced
 - no gate closure is asserted or implied
 
+## 5.2) Read Model ↔ Report Surface Final Alignment v1
+
+Final role split for low-drift review is explicit:
+
+- `Readiness Read Model v1` provides the status/claim/interpretation grammar
+- this report surface renders and instantiates that grammar as summary-table and per-gate output
+- this report surface does not redefine interpretation semantics from the read model
+- this report surface does not set gate closure, approval state, or live authority
+
+Forward constraint for later additive single-gate fills on this surface:
+
+- each fill MUST reuse read-model grammar as-is for status/claim/evidence/blocker interpretation wording
+- each fill MUST remain a bounded report rendering for one gate scope
+- each fill MUST keep authority external and preserve non-authorizing wording
+
+Explicit non-implication lock for this final alignment slice:
+
+- no new gate fill is introduced
+- no gate closure is asserted or implied
+- no live authorization, live unlock, or runtime authority is granted
+
 ## 6) Summary Table Contract
 
 Every gate-status report using this surface MUST include exactly one compact summary table with the following columns:

@@ -101,6 +101,27 @@ Explicit non-implication lock for this connection clarification:
 - no gate closure is asserted or implied
 - no live authorization, live unlock, or runtime authority is granted
 
+## 3.4) Read Model ↔ Gate-Status Report Surface Final Alignment v1
+
+Final role boundary for this workstream is explicit and binding for review wording:
+
+- this read model is the canonical status/claim/interpretation grammar source
+- the gate-status report surface renders and instantiates that grammar in summary/detail output
+- rendering on the report surface does not set gate closure, decision state, or live authority
+- both surfaces remain docs-only and non-authorizing
+
+Forward lock for later additive single-gate fills:
+
+- later single-gate fills MUST reuse this read-model grammar without redefining status/claim semantics
+- later single-gate fills MUST stay bounded report-surface render materializations for one gate scope
+- later single-gate fills MUST NOT be phrased as closure or authorization artifacts
+
+Explicit non-implication lock for this final alignment slice:
+
+- no new gate fill is introduced
+- no gate closure is asserted or implied
+- no live authorization, live unlock, or runtime authority is granted
+
 ## 4) Readiness Read Model Levels
 
 The read model uses six interpretation levels:
