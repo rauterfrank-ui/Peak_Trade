@@ -37,7 +37,7 @@ path	area	kind	current_role_guess	operational_risk_if_changed	initial_bucket
 .github/workflows/docs-token-policy-gate.yml	ci	workflow	Docs token policy (duplicate ref)	HIGH	KEEP_AS_IS
 config/ci/required_status_checks.json	ci	config	Required contexts; branch protection contract	CRITICAL	KEEP_AS_IS
 scripts/ci/validate_required_checks_hygiene.py	ci	script	Required checks hygiene validator	HIGH	KEEP_AS_IS
-scripts/ci/required_checks_drift_detector.py	ci	script	Required checks drift detector	MEDIUM	KEEP_AS_IS
+scripts/ci/required_checks_drift_detector.py	ci	script	Legacy PR-U entry point (retired/unsupported; canonical is scripts/ops/reconcile_required_checks_branch_protection.py --check)	LOW	KEEP_AS_IS
 scripts/ci/scheduled_guardrails.sh	ci	script	Scheduled workflow guardrails	MEDIUM	KEEP_AS_IS
 scripts/ci/check_docs_diff_guard_section.py	ci	script	Docs diff guard section checker	MEDIUM	KEEP_AS_IS
 scripts/ci/guard_no_tracked_reports.sh	ci	script	Guard no tracked reports	MEDIUM	KEEP_AS_IS
