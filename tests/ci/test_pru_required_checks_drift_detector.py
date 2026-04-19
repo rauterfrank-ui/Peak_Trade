@@ -1,10 +1,10 @@
-"""Invariants for PR-U drift engine cutover to canonical reconciler."""
+"""Invariants for canonical PR-U required-checks reconciliation path."""
 
 from __future__ import annotations
 
-from pathlib import Path
 import subprocess
 import sys
+from pathlib import Path
 
 
 def test_pru_workflow_calls_canonical_reconciler_check() -> None:
@@ -18,21 +18,21 @@ def test_pru_workflow_calls_canonical_reconciler_check() -> None:
     assert "GH_TOKEN: ${{ github.token }}" in workflow
 
 
-def test_legacy_drift_detector_is_redirect_only() -> None:
+def test_legacy_drift_detector_is_hard_retired() -> None:
     script = Path("scripts/ci/required_checks_drift_detector.py").read_text(encoding="utf-8")
-    assert "DEPRECATED:" in script
-    assert "reconcile_required_checks_branch_protection.py --check" in script
-    assert "yaml.safe_load" not in script
-    assert "load_effective_required_contexts" not in script
+    assert "retired and unsupported" in script
+    assert "return 2" in script
+    assert "subprocess.run(" not in script
 
 
-def test_legacy_drift_detector_help_mentions_deprecation() -> None:
+def test_legacy_drift_detector_exit_code_is_nonzero_and_points_to_canonical() -> None:
     r = subprocess.run(
-        [sys.executable, "scripts/ci/required_checks_drift_detector.py", "--help"],
+        [sys.executable, "scripts/ci/required_checks_drift_detector.py"],
         capture_output=True,
         text=True,
         cwd=Path(__file__).resolve().parent.parent.parent,
         check=False,
     )
-    assert r.returncode == 0
-    assert "Deprecated compatibility wrapper" in r.stdout
+    assert r.returncode == 2
+    assert "retired and unsupported" in r.stderr
+    assert "reconcile_required_checks_branch_protection.py --check" in r.stderr
