@@ -82,7 +82,6 @@ def test_secondary_drift_guard_docs_remain_json_ssot_only() -> None:
     required_anchors = [
         "config/ci/required_status_checks.json",
         "JSON SSOT",
-        "scripts/ops/reconcile_required_checks_branch_protection.py --check",
         "legacy",
     ]
 
@@ -92,6 +91,10 @@ def test_secondary_drift_guard_docs_remain_json_ssot_only() -> None:
             assert banned not in text, f"{path} reintroduced legacy drift narrative: {banned}"
         for anchor in required_anchors:
             assert anchor in text, f"{path} must include JSON-SSOT anchor: {anchor}"
+        assert (
+            "scripts/ops/reconcile_required_checks_branch_protection.py --check" in text
+            or "scripts&#47;ops&#47;reconcile_required_checks_branch_protection.py --check" in text
+        ), f"{path} must include canonical reconciler --check anchor (escaped or unescaped)"
 
 
 def test_secondary_ops_helper_does_not_reintroduce_legacy_drift_flags() -> None:
