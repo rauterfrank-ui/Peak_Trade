@@ -289,7 +289,22 @@ Read-model alignment for that instantiation:
 - blocker semantics: source-anchored interpretation constraint only
 - authority-safe interpretation: decision authority remains external
 
-## 16) Open Questions / Future Extensions
+## 16) Fifth Additive Instantiation Note (Single-Gate, Non-Authorizing)
+
+The fifth real, additive gate instantiation under this read model is intentionally single-gate and docs-only:
+
+- gate in scope: `L1 Dry Validation Readiness`
+- rendered on canonical report surface: `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md` (section `Fifth Additive Single-Gate Fill`)
+- interpretation status there remains non-authorizing and must not be read as gate closure
+
+Read-model alignment for that instantiation:
+
+- status grammar: uses allowed values from this spec
+- evidence pointers: repository-resolvable canonical paths only
+- blocker semantics: source-anchored interpretation constraint only
+- authority-safe interpretation: decision authority remains external
+
+## 17) Open Questions / Future Extensions
 
 Potential future additive work (out of scope for v1):
 
