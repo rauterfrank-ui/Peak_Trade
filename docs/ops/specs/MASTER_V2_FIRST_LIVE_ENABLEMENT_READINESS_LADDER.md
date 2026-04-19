@@ -63,6 +63,27 @@ Bridge boundary note (explicit):
 - this bridge does not assert or imply gate closure
 - this bridge does not authorize live unlock, live entry, or runtime behavior
 
+## 1.3) Master V2 ↔ Gate-Status Report Surface Connection Clarification v1
+
+This clarification makes the canonical connection explicit for review and low-drift reading:
+
+- `Master V2 &#47; Bridge &#47; Ladder` define navigation, relationship boundaries, and reader order
+- `Readiness Read Model v1` defines status/claim/evidence/blocker interpretation grammar
+- `Gate-Status Report Surface v1` defines rendering/output contract and consumes read-model grammar without redefining authority
+
+Canonical entry and reader path for this connection:
+
+1. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md` (Master V2 anchor, including Canonical Bridge v1 in this file)
+2. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md` (interpretation grammar)
+3. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md` (report/status output contract)
+4. relevant additive single-gate fill section(s) on the report surface (`First` to `Fourth`)
+
+Non-implication lock for this connection clarification:
+
+- no new gate fill is introduced
+- no gate closure is asserted or implied
+- no live authorization, live unlock, or runtime authority is granted
+
 ## 2) Scope and Non-Goals
 
 This document is docs-only steering and mapping guidance:
