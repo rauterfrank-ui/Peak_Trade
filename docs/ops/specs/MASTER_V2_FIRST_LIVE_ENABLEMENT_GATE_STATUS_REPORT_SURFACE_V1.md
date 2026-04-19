@@ -167,7 +167,32 @@ Per-gate detail example:
 - `required_authority`: Governance/operator authority outside this report layer.
 - `next_minimal_slice`: Add one docs-only mapping clarification note for row-level pointer phrasing.
 
-## 12) Open Questions / Future Extensions
+## 12) First Additive Single-Gate Fill (Repo-Evidenced, Non-Authorizing)
+
+This section materializes exactly one real gate fill for review use:
+
+- gate in scope: `L2 Go&#47;No-Go Interpretation`
+- claim discipline: `repo-evidenced` pointers only
+- authority posture: interpretation-only, non-authorizing
+- closure posture: no gate-closure assertion
+
+Summary table (single-gate scope):
+
+| Gate | Status | Evidence Present &#47; Evidence Pointer | Blocking Issue | Required Authority | Next Minimal Slice |
+|---|---|---|---|---|---|
+| `L2 Go&#47;No-Go Interpretation` | `blocked` | `yes: docs&#47;ops&#47;specs&#47;PILOT_GO_NO_GO_CHECKLIST.md; docs&#47;ops&#47;specs&#47;PILOT_GO_NO_GO_OPERATIONAL_SLICE.md; scripts&#47;ops&#47;pilot_go_no_go_eval_v1.py; docs&#47;ops&#47;specs&#47;BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` | Entry contract requires an acceptable pilot verdict (`GO_FOR_NEXT_PHASE_ONLY`) and this docs-only fill does not assert a candidate-specific verdict artifact. | Governance and operator decision authority outside this report surface. | Add one docs-only, repo-pointer-bound verdict evidence slot for this gate (artifact path + verdict stamp + date), without adding authorization semantics. |
+
+Per-gate detail (single-gate scope):
+
+- `gate_name`: `L2 Go&#47;No-Go Interpretation`
+- `current_status`: `blocked`
+- `evidence_used_or_pointer`: `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md`; `docs/ops/specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md`; `scripts/ops/pilot_go_no_go_eval_v1.py`; `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`; `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`
+- `what_remains_open`: A candidate-scoped, repository-resolvable verdict artifact is not asserted in this slice; therefore interpretation is mapped but not closure-eligible.
+- `blocking_condition`: Canonical entry wording requires an acceptable Go/No-Go result for progression (`GO_FOR_NEXT_PHASE_ONLY`) and keeps non-acceptable outcomes explicit (`CONDITIONAL`, `NO_GO`).
+- `required_authority`: Governance/operator authority remains external; this report surface has no closure or live-unlock authority.
+- `next_minimal_slice`: Add one minimal canonical doc hook that records the latest candidate-scoped verdict pointer for `L2` using this surface schema, without touching runtime, policy-core, or risk-core.
+
+## 13) Open Questions / Future Extensions
 
 Potential additive follow-ups (out of scope for v1):
 

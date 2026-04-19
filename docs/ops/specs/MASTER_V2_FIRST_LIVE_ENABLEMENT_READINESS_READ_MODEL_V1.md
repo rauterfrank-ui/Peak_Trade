@@ -156,6 +156,7 @@ Template notes:
 - one row per level (`L0` to `L5`)
 - each row MUST include all required fields
 - include claim class explicitly for each row
+- rows above are illustrative only; real gate fills are published on the canonical gate-status report surface
 
 ## 11) Explicit Non-Authorization Rule
 
@@ -170,7 +171,22 @@ It MUST NOT be used as:
 
 Any such decision remains bound to existing governance, safety, risk, and operator authority sources.
 
-## 12) Open Questions / Future Extensions
+## 12) First Additive Instantiation Note (Single-Gate, Non-Authorizing)
+
+The first real, additive gate instantiation under this read model is intentionally single-gate and docs-only:
+
+- gate in scope: `L2 Go&#47;No-Go Interpretation`
+- rendered on canonical report surface: `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md` (section `First Additive Single-Gate Fill`)
+- interpretation status there remains non-authorizing and must not be read as gate closure
+
+Read-model alignment for that instantiation:
+
+- status grammar: uses allowed values from this spec
+- evidence pointers: repository-resolvable canonical paths only
+- blocker semantics: source-anchored interpretation constraint only
+- authority-safe interpretation: decision authority remains external
+
+## 13) Open Questions / Future Extensions
 
 Potential future additive work (out of scope for v1):
 
