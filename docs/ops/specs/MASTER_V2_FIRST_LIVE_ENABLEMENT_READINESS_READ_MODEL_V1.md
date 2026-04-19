@@ -61,6 +61,26 @@ Consolidation v1 effect for this read model is mapping-only:
 - no new single-gate fill is introduced here
 - no gate closure is asserted or implied here
 
+## 3.2) Canonical Bridge Link (Read Model → Report Surface)
+
+For this workstream, the bridge between interpretation grammar and reporting output is strict:
+
+- this read model defines the allowed interpretation grammar (`status`, claim class, `evidence_pointer`, `blocker`, authority-safe wording)
+- the report surface consumes this grammar as rendering schema and does not redefine semantics
+- additive single-gate fills remain bounded report-surface materializations of individual gate interpretation scopes
+
+Cross-link path for stable navigation:
+
+1. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`
+2. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md` (this file)
+3. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`
+
+Non-authorization lock for this bridge link:
+
+- no new single-gate fill is introduced by this clarification
+- no gate closure is asserted or implied
+- no live authorization or runtime authority is granted
+
 ## 4) Readiness Read Model Levels
 
 The read model uses six interpretation levels:

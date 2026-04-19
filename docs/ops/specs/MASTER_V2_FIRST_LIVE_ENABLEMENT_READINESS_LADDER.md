@@ -39,6 +39,30 @@ Consolidation v1 is mapping-only:
 - no new gate fill is introduced by this ladder consolidation
 - no gate closure is asserted or implied by this ladder consolidation
 
+## 1.2) Canonical Bridge v1 (Master V2 ↔ Readiness Surfaces)
+
+This bridge clarifies how canonical surfaces connect for this workstream without introducing new gate substance:
+
+- `Master V2 (this ladder surface)`: overarching target framing and canonical readiness navigation anchor
+- `Readiness Ladder`: canonical gate sequence and readiness framing (`L0` to `L5`)
+- `Readiness Read Model v1`: canonical interpretation grammar for status/claim/evidence/blocker semantics
+- `Gate-Status Report Surface v1`: canonical reporting schema that renders read-model-aligned gate status
+- `Single-Gate Fills`: bounded, additive, repo-evidenced population of individual gate interpretations rendered on the report surface
+
+Reader order for low-drift interpretation and review:
+
+1. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md` (Master framing + ladder intent)
+2. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md` (interpretation grammar)
+3. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md` (report schema)
+4. relevant single-gate fill section(s) on the report surface (`First` to `Fourth`)
+
+Bridge boundary note (explicit):
+
+- this bridge is docs-only and mapping-only
+- this bridge does not add any new single-gate fill
+- this bridge does not assert or imply gate closure
+- this bridge does not authorize live unlock, live entry, or runtime behavior
+
 ## 2) Scope and Non-Goals
 
 This document is docs-only steering and mapping guidance:
