@@ -16,6 +16,10 @@ Canonical path:
 
 No other document has equal canonical priority for this specific workstream.
 
+Companion interpretation layer (read-only, non-authorizing):
+
+- `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`
+
 ## 2) Scope and Non-Goals
 
 This document is docs-only steering and mapping guidance:
@@ -105,6 +109,10 @@ Use this file as the single starting point when clarifying:
 - current first-live-enablement readiness level
 - missing prerequisites before bounded real-money candidate entry
 - which canonical spec/runbook has binding wording for a disputed interpretation
+
+For normalized status wording and claim discipline during readiness reviews, apply the companion read model:
+
+- `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`
 
 If conflicts appear between supporting docs, this file defines the canonical navigation order for this workstream.
 
