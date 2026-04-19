@@ -47,8 +47,8 @@ The following equalities are explicitly forbidden for Master V2 interpretation:
 
 - `Universe Selection != generic scan or screening utilities`
 - `Doubleplay directional evaluation != generic regime switching`
-- `Bull/Bear specialist contribution != generic strategy selection authority`
-- `Scope / Capital Envelope != downstream Risk or Exposure Caps`
+- `Bull&#47;Bear specialist contribution != generic strategy selection authority`
+- `Scope &#47; Capital Envelope != downstream Risk or Exposure Caps`
 - `strategic switch-gate != safety or kill-switch veto`
 - `advisory AI != authoritative execution decision`
 - `gate status visibility != transition permission`
