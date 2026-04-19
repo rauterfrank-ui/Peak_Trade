@@ -56,7 +56,7 @@ Read model companion:
 Binding coupling rules:
 
 - `Status` values in this report surface MUST reuse the read model status grammar
-- `Evidence Present / Evidence Pointer` MUST follow read model evidence pointer semantics
+- `Evidence Present &#47; Evidence Pointer` MUST follow read model evidence pointer semantics
 - status wording MUST preserve authority-safe interpretation boundaries
 - claim hygiene in status narrative MUST follow read model claim discipline
 
@@ -64,14 +64,14 @@ Binding coupling rules:
 
 Every gate-status report using this surface MUST include exactly one compact summary table with the following columns:
 
-| Gate | Status | Evidence Present / Evidence Pointer | Blocking Issue | Required Authority | Next Minimal Slice |
+| Gate | Status | Evidence Present &#47; Evidence Pointer | Blocking Issue | Required Authority | Next Minimal Slice |
 |---|---|---|---|---|---|
 
 Column contract:
 
 - `Gate`: canonical gate/level name (for example `L0 Baseline Posture`, `L3 Entry Contract Interpretation`)
 - `Status`: one read-model status value (`not-assessed`, `in-review`, `mapped`, `blocked`, `unknown`)
-- `Evidence Present / Evidence Pointer`: `yes/no` signal plus concrete repo path pointer(s); no hypothetical references
+- `Evidence Present &#47; Evidence Pointer`: `yes&#47;no` signal plus concrete repo path pointer(s); no hypothetical references
 - `Blocking Issue`: `none` or concise blocker sentence anchored to canonical wording/evidence
 - `Required Authority`: explicit authority domain required for closure/decision outside this report
 - `Next Minimal Slice`: smallest additive, single-topic docs-first next step for clarification
@@ -121,7 +121,7 @@ Rules:
 - pointers must resolve to existing repo artifacts
 - no generated future artifacts as evidence
 - no telemetry/event-stream introduction by this spec
-- if evidence is missing, mark explicitly in `Evidence Present / Evidence Pointer` and keep status non-authorizing
+- if evidence is missing, mark explicitly in `Evidence Present &#47; Evidence Pointer` and keep status non-authorizing
 
 ## 9) Status / Claim Hygiene
 
@@ -152,14 +152,14 @@ The example below is illustrative template content only and does not assert fact
 
 Summary table example:
 
-| Gate | Status | Evidence Present / Evidence Pointer | Blocking Issue | Required Authority | Next Minimal Slice |
+| Gate | Status | Evidence Present &#47; Evidence Pointer | Blocking Issue | Required Authority | Next Minimal Slice |
 |---|---|---|---|---|---|
-| `L2 Go/No-Go Interpretation` | `in-review` | `yes: docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md` | Clarification pending on row-to-evidence mapping language. | Governance and operator decision authority outside report surface. | Add one docs-only mapping note clarifying row-level evidence pointer style. |
-| `L3 Entry Contract Interpretation` | `mapped` | `yes: docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` | `none` | Live-entry authority remains external and unchanged. | Add one compact review checklist for interpretation consistency only. |
+| `L2 Go&#47;No-Go Interpretation` | `in-review` | `yes: docs&#47;ops&#47;specs&#47;PILOT_GO_NO_GO_CHECKLIST.md` | Clarification pending on row-to-evidence mapping language. | Governance and operator decision authority outside report surface. | Add one docs-only mapping note clarifying row-level evidence pointer style. |
+| `L3 Entry Contract Interpretation` | `mapped` | `yes: docs&#47;ops&#47;specs&#47;BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` | `none` | Live-entry authority remains external and unchanged. | Add one compact review checklist for interpretation consistency only. |
 
 Per-gate detail example:
 
-- `gate_name`: `L2 Go/No-Go Interpretation`
+- `gate_name`: `L2 Go&#47;No-Go Interpretation`
 - `current_status`: `in-review`
 - `evidence_used_or_pointer`: `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md`
 - `what_remains_open`: Clarify wording for checklist row to evidence-pointer linkage.
