@@ -81,6 +81,26 @@ Non-authorization lock for this bridge link:
 - no gate closure is asserted or implied
 - no live authorization or runtime authority is granted
 
+## 3.3) Canonical Bridge v1 ↔ Vocabulary/Boundary Lock v1 (Connection Clarification)
+
+Role split for drift-resistant reading is explicit and non-overlapping:
+
+- `Canonical Bridge v1` (on the readiness ladder surface) is the canonical relationship, reading-order, and navigation clarification across readiness surfaces
+- `Gate-Fill Vocabulary &#47; Boundary Lock v1` is the canonical terminology, forbidden-equality, and boundary-rule lock for gate-fill semantics
+- this read model remains the interpretation grammar layer consumed by the report surface
+
+How later additive single-gate fills must stay aligned with both surfaces:
+
+- use bridge logic for placement and reader navigation path across ladder/read-model/report-surface
+- use vocabulary lock rules for term meaning, dangerous-confusion prevention, and boundary-safe wording
+- keep fill substance additive and one-gate scoped on the report surface
+
+Explicit non-implication lock for this connection clarification:
+
+- no new gate fill is introduced
+- no gate closure is asserted or implied
+- no live authorization, live unlock, or runtime authority is granted
+
 ## 4) Readiness Read Model Levels
 
 The read model uses six interpretation levels:
