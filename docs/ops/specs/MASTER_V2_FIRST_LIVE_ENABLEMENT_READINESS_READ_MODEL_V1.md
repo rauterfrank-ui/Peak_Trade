@@ -201,7 +201,22 @@ Read-model alignment for that instantiation:
 - blocker semantics: source-anchored interpretation constraint only
 - authority-safe interpretation: decision authority remains external
 
-## 14) Open Questions / Future Extensions
+## 14) Third Additive Instantiation Note (Single-Gate, Non-Authorizing)
+
+The third real, additive gate instantiation under this read model is intentionally single-gate and docs-only:
+
+- gate in scope: `L4 Candidate Session Flow Interpretation`
+- rendered on canonical report surface: `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md` (section `Third Additive Single-Gate Fill`)
+- interpretation status there remains non-authorizing and must not be read as gate closure
+
+Read-model alignment for that instantiation:
+
+- status grammar: uses allowed values from this spec
+- evidence pointers: repository-resolvable canonical paths only
+- blocker semantics: source-anchored interpretation constraint only
+- authority-safe interpretation: decision authority remains external
+
+## 15) Open Questions / Future Extensions
 
 Potential future additive work (out of scope for v1):
 
