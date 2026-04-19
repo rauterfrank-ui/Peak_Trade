@@ -43,6 +43,24 @@ Companion canonical interpretation/rendering layers:
 
 This vocabulary lock is subordinate to canonical steering and does not overrule underlying contracts/runbooks.
 
+## 3.1) Connection to Canonical Bridge v1 (Role Boundary Clarification)
+
+For this workstream, `Canonical Bridge v1` is carried by the readiness-ladder surface and remains the canonical navigation/relationship clarification between readiness surfaces:
+
+- `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md` (bridge + reader order anchor)
+
+This vocabulary lock is complementary and narrower in role:
+
+- lock term meaning for gate-fill semantics
+- lock forbidden equalities and dangerous confusions
+- lock boundary-safe wording so interpretation artifacts are not misread as authority outcomes
+
+Co-use rule for future additive single-gate fills:
+
+- navigation/placement must follow bridge reader-order logic
+- term and boundary discipline must follow this vocabulary lock
+- neither surface implies gate closure or live authorization
+
 ## 4) Canonical Terms
 
 The following meanings are locked for Master V2 gate-fill semantics:
@@ -125,6 +143,12 @@ Minimal canonical links required for this vocabulary lock:
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`
+
+Bridge/vocabulary discoverability lock:
+
+- canonical bridge/reader-order clarification is read from the readiness ladder surface
+- canonical terminology/forbidden-equality/boundary lock is read from this vocabulary surface
+- additive single-gate fills must preserve both simultaneously (bridge placement + vocabulary boundary discipline)
 
 Existing additive single-gate fills are consumed through the gate-status report surface sections:
 
