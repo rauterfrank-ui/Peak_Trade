@@ -83,9 +83,14 @@ def main() -> int:
     if args.workflows_dir != ".github/workflows":
         print("NOTE: --workflows-dir is deprecated and ignored.", file=sys.stderr)
     if args.compare_live:
-        print("NOTE: --compare-live is deprecated; live compare is canonical default.", file=sys.stderr)
+        print(
+            "NOTE: --compare-live is deprecated; live compare is canonical default.",
+            file=sys.stderr,
+        )
     if args.strict_live:
-        print("NOTE: --strict-live is deprecated and ignored (fail-closed default).", file=sys.stderr)
+        print(
+            "NOTE: --strict-live is deprecated and ignored (fail-closed default).", file=sys.stderr
+        )
 
     cmd = _build_reconciler_cmd(args)
     result = subprocess.run(cmd, check=False, cwd=Path(__file__).resolve().parents[2])

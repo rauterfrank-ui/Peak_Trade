@@ -19,7 +19,14 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v5
+      - name: PR context skip for unprivileged branch-protection live read
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "PR_U_LIVE_RECONCILE_SKIPPED"
+          echo "pull_request context uses unprivileged integration token for branch protection read."
+          echo "canonical live reconcile remains enforced on schedule/workflow_dispatch."
       - name: Canonical required-checks reconciliation check
+        if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
