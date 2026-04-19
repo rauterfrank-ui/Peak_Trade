@@ -101,14 +101,14 @@ else
   fail "Help documents --warn-only flag"
 fi
 
-# Test 6: Single-path detector wiring (offline checks)
-detector="$REPO_ROOT/scripts/ci/required_checks_drift_detector.py"
+# Test 6: Single-path canonical reconciler wiring (offline checks)
+reconciler="$REPO_ROOT/scripts/ops/reconcile_required_checks_branch_protection.py"
 config_json="$REPO_ROOT/config/ci/required_status_checks.json"
 
-if [[ -f "$detector" ]]; then
-  pass "Canonical detector exists"
+if [[ -f "$reconciler" ]]; then
+  pass "Canonical reconciler exists"
 else
-  fail "Canonical detector exists"
+  fail "Canonical reconciler exists"
 fi
 
 if [[ -f "$config_json" ]]; then

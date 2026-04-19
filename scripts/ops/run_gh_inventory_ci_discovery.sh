@@ -94,13 +94,16 @@ out.write_text(json.dumps(rows, indent=2, sort_keys=True), encoding="utf-8")
 print(out)
 PY
 
-echo "5) Required checks list + drift detector (capture stdout/stderr to file)"
+echo "5) Required checks reconciliation check (capture stdout/stderr to file)"
 test -f config/ci/required_status_checks.json && cp config/ci/required_status_checks.json "$OUT/required_status_checks.json" || true
-mkdir -p "$OUT/required_checks_drift"
-python3 scripts/ci/required_checks_drift_detector.py \
+mkdir -p "$OUT/required_checks_reconcile"
+python3 scripts/ops/reconcile_required_checks_branch_protection.py \
+  --check \
   --required-config config/ci/required_status_checks.json \
-  --workflows-dir .github/workflows \
-  2>&1 | tee "$OUT/required_checks_drift/drift_output.txt" || true
+  --owner rauterfrank-ui \
+  --repo Peak_Trade \
+  --branch main \
+  2>&1 | tee "$OUT/required_checks_reconcile/reconcile_output.txt" || true
 
 echo "6) Recent runs for core pipelines (last 20 each, JSON; best-effort)"
 for WF in \
