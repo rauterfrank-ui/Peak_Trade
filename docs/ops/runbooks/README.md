@@ -56,6 +56,7 @@ Runbooks for AI autonomy workflows and control center operations:
 
 Runbooks for specific phase implementations and workflows:
 
+- [MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) — **Bindende kanonische Steuerdatei** fuer den aktuellen Master-V2-First-Live-Enablement-Clarification-Workstream (Specs-Surface, kein Ausfuehrungs-Runbook)
 - [RUNBOOK_TO_FINISH_MASTER.md](RUNBOOK_TO_FINISH_MASTER.md) — Master: docs-only Branch → PR → D2/D3/D4 DoD → SSoT „Finish“-Definition (NO‑LIVE)
 - [RUNBOOK_CURSOR_MA_P4C_P6_P7CORE_P5B_2026-02-19.md](RUNBOOK_CURSOR_MA_P4C_P6_P7CORE_P5B_2026-02-19.md) — Cursor Multi-Agent: P4C (L2 Market Outlook) → P6 (Shadow) → P7 Core (Paper) → P5B (Evidence CI)
 - [RUNBOOK_FINISH_A_MVP.md](RUNBOOK_FINISH_A_MVP.md) — Finish Level A (MVP): Backtest → Artifacts → Report → Watch‑Only Dashboard (Cursor Multi‑Agent, NO‑LIVE)

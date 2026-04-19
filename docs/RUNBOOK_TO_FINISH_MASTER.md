@@ -1,5 +1,8 @@
 # RUNBOOK — Peak_Trade „bis Finish“ (Master Runbook)
 
+> **Canonical-Note (aktueller Clarification-Workstream):** Die bindende kanonische Steuerdatei fuer **Master V2 + First Live Enablement Readiness Contract/Ladder** ist `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`.  
+> Dieses Runbook bleibt eine operative Companion-Flaeche und ist fuer diesen Workstream nicht der kanonische Winner.
+
 **Ziel:** Dieses Runbook führt dich vom aktuellen **docs-only Branch-Stand** (untracked Files + 1× EOF-Newline) bis zu einem klar definierten „Finish“-Zustand – inkl. PR‑Lieferung, DoD‑Verifikationen für D2/D3/D4 und optionalen (governance‑locked) Finish‑C / Option‑B Tracks.
 
 **Geltungsbereich:** Standardmäßig **docs-only** (kein Code‑Change, keine Live‑Aktivierung).  
