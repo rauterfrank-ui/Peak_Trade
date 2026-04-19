@@ -217,7 +217,32 @@ Per-gate detail (single-gate scope):
 - `required_authority`: Governance/operator authority remains external; this report surface has no closure or live-unlock authority.
 - `next_minimal_slice`: Add one minimal canonical docs-only hook that records a repository-resolvable candidate-scoped prerequisite evidence pointer set for `L3` interpretation (verdict artifact + pre-entry posture snapshot references), without touching runtime, policy-core, or risk-core.
 
-## 14) Open Questions / Future Extensions
+## 14) Third Additive Single-Gate Fill (Repo-Evidenced, Non-Authorizing)
+
+This section materializes exactly one additional real gate fill for review use:
+
+- gate in scope: `L4 Candidate Session Flow Interpretation`
+- claim discipline: `repo-evidenced` pointers only
+- authority posture: interpretation-only, non-authorizing
+- closure posture: no gate-closure assertion
+
+Summary table (single-gate scope):
+
+| Gate | Status | Evidence Present &#47; Evidence Pointer | Blocking Issue | Required Authority | Next Minimal Slice |
+|---|---|---|---|---|---|
+| `L4 Candidate Session Flow Interpretation` | `blocked` | `yes: docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md; docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md; scripts&#47;ops&#47;run_bounded_pilot_session.py; docs&#47;ops&#47;specs&#47;BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` | Candidate-flow sequence is defined, but candidate-scoped session evidence pointers are missing in this slice and the canonical candidate-flow runbook is still `status: DRAFT`. | Governance and operator decision authority outside this report surface. | Add one docs-only canonical pointer slot for the latest candidate-scoped L4 session-flow evidence bundle (start posture snapshot + session outcome + closeout pointer), without adding authorization semantics. |
+
+Per-gate detail (single-gate scope):
+
+- `gate_name`: `L4 Candidate Session Flow Interpretation`
+- `current_status`: `blocked`
+- `evidence_used_or_pointer`: `docs/ops/runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md`; `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`; `scripts/ops/run_bounded_pilot_session.py`; `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`
+- `what_remains_open`: Candidate-scoped repository evidence for an actual L4 session-flow interpretation remains missing (start-state snapshot pointer, session execution outcome pointer, and closeout/reconciliation pointer), so the current mapping is only partial.
+- `blocking_condition`: The candidate-flow runbook defines strict preconditions (including acceptable Go&#47;No-Go verdict and explicit operator-supervised bounded posture) and the wrapper script enforces verdict gating (`GO_FOR_NEXT_PHASE_ONLY`), but this additive slice does not assert a candidate-specific evidence bundle proving that flow path.
+- `required_authority`: Governance/operator authority remains external; this report surface has no closure or live-unlock authority.
+- `next_minimal_slice`: Add one minimal canonical docs-only hook that records the latest repository-resolvable candidate-scoped L4 flow evidence pointers using this surface schema, without touching runtime, policy-core, or risk-core.
+
+## 15) Open Questions / Future Extensions
 
 Potential additive follow-ups (out of scope for v1):
 
