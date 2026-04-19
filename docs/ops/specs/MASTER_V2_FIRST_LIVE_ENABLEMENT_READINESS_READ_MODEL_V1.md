@@ -39,6 +39,10 @@ Canonical steering for the workstream remains:
 This read model is a companion interpretation layer for that canonical ladder.  
 If wording conflicts arise, the canonical ladder and underlying canonical specs/runbooks win.
 
+Companion report surface (docs-only, non-authorizing):
+
+- `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`
+
 ## 4) Readiness Read Model Levels
 
 The read model uses six interpretation levels:
