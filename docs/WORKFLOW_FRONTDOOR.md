@@ -85,6 +85,7 @@
 - [Live Operational Runbooks](./LIVE_OPERATIONAL_RUNBOOKS.md) – 12+ runbooks for live operations and incident handling
 - [Runbooks Landscape 2026-Ready](./runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md) – Comprehensive runbook catalog and quick-reference matrix
 - [Ops README](./ops/README.md) – Complete ops tools and documentation index
+- [Master V2 First Live Enablement Readiness Ladder (canonical)](./ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) – Bindende kanonische Steuerdatei fuer den aktuellen Clarification-Workstream
 - [Tech-Debt Top-3 ROI bis Finish Runbook](./ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md) – 3 kleine PRs (C/B/E) bis Finish, Cursor Multi-Agent, NO-LIVE
 - [RUNBOOK_BRANCH_CLEANUP_RECOVERY.md](./ops/runbooks/RUNBOOK_BRANCH_CLEANUP_RECOVERY.md) – Branch cleanup recovery (tags + bundles)
 - [Execution Watch Dashboard v0.2 Runbook](./ops/runbooks/RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md) – Start/verify the read-only execution watch dashboard
