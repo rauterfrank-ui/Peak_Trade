@@ -15,7 +15,7 @@ path	area	kind	current_role_guess	operational_risk_if_changed	initial_bucket
 .github/workflows/evidence_pack_gate.yml	ci	workflow	Evidence pack validation	MEDIUM	KEEP_AS_IS
 .github/workflows/audit.yml	ci	workflow	Audit workflow	MEDIUM	KEEP_AS_IS
 .github/workflows/test_health.yml	ci	workflow	Test health profile	MEDIUM	KEEP_AS_IS
-.github/workflows/pru-required-checks-drift-detector.yml	ci	workflow	Required checks drift detector (scheduled)	MEDIUM	KEEP_AS_IS
+.github/workflows/pru-required-checks-drift-detector.yml	ci	workflow	PR-U required checks reconciliation check (legacy filename; canonical runtime calls scripts/ops/reconcile_required_checks_branch_protection.py --check)	MEDIUM	KEEP_AS_IS
 .github/workflows/ci-scheduled-paper-and-export-smoke.yml	ci	workflow	Scheduled paper + export smoke	MEDIUM	KEEP_AS_IS
 .github/workflows/ci-export-pack-download-verify.yml	ci	workflow	Export pack download/verify	MEDIUM	KEEP_AS_IS
 .github/workflows/prj-scheduled-shadow-paper-features-smoke.yml	ci	workflow	Scheduled PR-J features smoke	MEDIUM	KEEP_AS_IS
@@ -47,7 +47,7 @@ scripts/ops/verify_docs_reference_targets.sh	ci	script	Docs reference targets ve
 scripts/ops/docs_diff_guard.sh	ci	script	Docs diff guard	MEDIUM	KEEP_AS_IS
 scripts/ops/check_merge_log_hygiene.py	ci	script	Merge log hygiene checker	MEDIUM	KEEP_AS_IS
 scripts/ops/check_requirements_synced_with_uv.sh	ci	script	Deps sync checker	MEDIUM	KEEP_AS_IS
-scripts/ops/create_required_checks_drift_guard_pr.sh	ci	script	Create drift guard PR	LOW	WORKFLOW_HYGIENE_CANDIDATE
+scripts/ops/create_required_checks_drift_guard_pr.sh	ci	script	Legacy PR automation helper (non-canonical operator surface; canonical productive path is scripts/ops/reconcile_required_checks_branch_protection.py --check)	LOW	WORKFLOW_HYGIENE_CANDIDATE
 scripts/ops/ci_pr_checks_retrigger_v1.sh	ci	script	CI PR checks retrigger	LOW	KEEP_AS_IS
 scripts/ops/ci_trigger_required_checks.sh	ci	script	CI trigger required checks	LOW	KEEP_AS_IS
 scripts/ops/p46_required_checks_snapshot.sh	ci	script	Required checks snapshot	LOW	KEEP_AS_IS

@@ -82,6 +82,8 @@ def test_secondary_drift_guard_docs_remain_json_ssot_only() -> None:
     required_anchors = [
         "config/ci/required_status_checks.json",
         "JSON SSOT",
+        "scripts/ops/reconcile_required_checks_branch_protection.py --check",
+        "legacy",
     ]
 
     for path in target_paths:

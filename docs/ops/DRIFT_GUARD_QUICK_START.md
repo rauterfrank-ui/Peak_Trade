@@ -1,15 +1,23 @@
-# Required Checks Drift Guard — Quick Start
+# Required Checks Drift Guard — Quick Start (Legacy Surface)
 
 Kanonische Quelle: `config/ci/required_status_checks.json` (JSON SSOT).
 
-## 🚀 Deterministischer Entrypoint (Copy/Paste)
+> Status: Die PR-Automation-Surface in diesem Dokument ist legacy und **nicht**
+> der kanonische produktive Operator-Einstieg.
+>
+> **Kanonischer produktiver Entry-Point:**  
+> `scripts&#47;ops&#47;reconcile_required_checks_branch_protection.py --check`
+>
+> `scripts/ops/run_required_checks_drift_guard_pr.sh` und
+> `scripts/ops/create_required_checks_drift_guard_pr.sh` bleiben nur als
+> historisch/unterstuetzende Hilfen bestehen.
+
+## 🚀 Kanonischer produktiver Entrypoint (Copy/Paste)
 
 ```bash
-cd ~/Peak_Trade && scripts/ops/run_required_checks_drift_guard_pr.sh --dry-run --offline-only
+cd ~/Peak_Trade && python3 scripts/ops/reconcile_required_checks_branch_protection.py --check
 ```
 
-Der Wrapper nutzt deterministisch den kanonischen Entrypoint
-`scripts/ops/create_required_checks_drift_guard_pr.sh`.
 Das Legacy-Setup-Skript `scripts/ops/setup_drift_guard_pr_workflow.sh` ist deprecated/disabled.
 
 ---

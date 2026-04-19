@@ -11,6 +11,8 @@ def test_pru_workflow_calls_canonical_reconciler_check() -> None:
     workflow = Path(".github/workflows/pru-required-checks-drift-detector.yml").read_text(
         encoding="utf-8"
     )
+    assert "PR-U / Required Checks Reconciliation Check" in workflow
+    assert "required-checks-reconciliation-check" in workflow
     assert "scripts/ops/reconcile_required_checks_branch_protection.py" in workflow
     assert "--check" in workflow
     assert "config/ci/required_status_checks.json" in workflow
