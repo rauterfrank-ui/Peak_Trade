@@ -52,7 +52,7 @@ Canonical reader path for low-drift review:
 1. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md` (includes Canonical Bridge v1)
 2. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`
 3. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`
-4. relevant additive single-gate fill section(s) on this report surface (`First` to `Fourth`)
+4. relevant additive single-gate fill section(s) on this report surface (`First` to `Fifth`)
 
 Explicit non-implication lock for this connection clarification:
 
@@ -99,7 +99,7 @@ Reader order for low-drift interpretation:
 1. ladder framing
 2. read-model grammar
 3. report-surface schema
-4. relevant additive single-gate fill section (`First` to `Fourth`)
+4. relevant additive single-gate fill section (`First` to `Fifth`)
 
 Consolidation v1 effect on this surface:
 
@@ -313,7 +313,32 @@ Per-gate detail (single-gate scope):
 - `required_authority`: Governance/operator authority remains external; this report surface has no closure or live-unlock authority.
 - `next_minimal_slice`: Add one minimal canonical docs-only hook that records a repository-resolvable candidate-scoped L5 incident/safe-stop evidence pointer set under this surface schema, without touching runtime, policy-core, or risk-core.
 
-## 16) Open Questions / Future Extensions
+## 16) Fifth Additive Single-Gate Fill (Repo-Evidenced, Non-Authorizing)
+
+This section materializes exactly one additional real gate fill for review use:
+
+- gate in scope: `L1 Dry Validation Readiness`
+- claim discipline: `repo-evidenced` pointers only
+- authority posture: interpretation-only, non-authorizing
+- closure posture: no gate-closure assertion
+
+Summary table (single-gate scope):
+
+| Gate | Status | Evidence Present &#47; Evidence Pointer | Blocking Issue | Required Authority | Next Minimal Slice |
+|---|---|---|---|---|---|
+| `L1 Dry Validation Readiness` | `blocked` | `yes: docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md; docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md; docs&#47;ops&#47;specs&#47;MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md; scripts&#47;ops&#47;pilot_go_no_go_eval_v1.py; scripts&#47;run_execution_session.py` | Dry-validation sequence is documented, but this slice does not assert a candidate-scoped dry-validation evidence bundle, and the dedicated dry-validation runbook is currently `status: DRAFT`. | Governance and operator decision authority outside this report surface. | Add one docs-only canonical pointer slot for the latest candidate-scoped L1 dry-validation evidence bundle (drills result + go/no-go verdict artifact + execution dry-run output), without adding authorization semantics. |
+
+Per-gate detail (single-gate scope):
+
+- `gate_name`: `L1 Dry Validation Readiness`
+- `current_status`: `blocked`
+- `evidence_used_or_pointer`: `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`; `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`; `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`; `scripts/ops/pilot_go_no_go_eval_v1.py`; `scripts/run_execution_session.py`
+- `what_remains_open`: Candidate-scoped repository evidence showing one complete dry-validation pass for the intended bounded-pilot context (drills outcome, acceptable go/no-go posture, and execution-session dry-run outcome) is not asserted in this additive slice.
+- `blocking_condition`: The canonical ladder maps `L1` to dry-validation sources and the dedicated dry-validation runbook defines required sequence/evidence, but that runbook remains `status: DRAFT` and no candidate-scoped L1 evidence bundle is asserted here.
+- `required_authority`: Governance/operator authority remains external; this report surface has no closure or live-unlock authority.
+- `next_minimal_slice`: Add one minimal canonical docs-only hook that records the latest repository-resolvable candidate-scoped L1 dry-validation evidence pointer set under this surface schema, without touching runtime, policy-core, or risk-core.
+
+## 17) Open Questions / Future Extensions
 
 Potential additive follow-ups (out of scope for v1):
 
