@@ -106,8 +106,8 @@ Surface categories used in this map:
 - `Ladder -> Read Model` framing-to-grammar role split is explicit.
 - `Read Model -> Report Surface` grammar-to-rendering coupling is explicit.
 - `Report Surface -> Single-Gate Fill carriers` bounded one-gate materialization pattern is explicit.
-- `Vocabulary Lock -> Report/Fill wording` boundary/forbidden-equality constraints are explicit.
-- `Reuse/Rewire Inventory -> next higher-order slice targets` preparation intent is explicit.
+- `Vocabulary Lock -> Report&#47;Fill wording` boundary/forbidden-equality constraints are explicit.
+- `Reuse&#47;Rewire Inventory -> next higher-order slice targets` preparation intent is explicit.
 
 ### 6.2 Implicit transitions (documented-only linkage)
 
@@ -154,5 +154,5 @@ Any closure, unlock, or live-authorization decision remains external to this map
 ## 9) Open Questions / Future Extensions
 
 - Should a compact canonical cross-gate evidence-bundle index be added later to reduce documented-only aggregation drift?
-- Should the later decision-authority slice reuse this table schema (`stage/block`, `input`, `transformation`, `output`, `consumer`, `clarity`) for review continuity?
+- Should the later decision-authority slice reuse this table schema (`stage&#47;block`, `input`, `transformation`, `output`, `consumer`, `clarity`) for review continuity?
 - Is one additional minimal discoverability pointer needed in a frontdoor index, or is canonical reader-path usage sufficient?
