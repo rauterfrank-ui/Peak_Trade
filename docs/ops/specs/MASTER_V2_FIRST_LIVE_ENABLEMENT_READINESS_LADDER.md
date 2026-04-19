@@ -21,6 +21,24 @@ Companion interpretation layer (read-only, non-authorizing):
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`
 
+Consolidation companion (vocabulary/boundary lock, read-only, non-authorizing):
+
+- `docs/ops/specs/MASTER_V2_GATE_FILL_VOCABULARY_BOUNDARY_LOCK_V1.md`
+
+## 1.1) Canonical Surface Roles (Consolidation v1)
+
+For this workstream, role boundaries are intentionally strict:
+
+- `Readiness Ladder`: canonical gate/sequence/status framing and navigation order (`L0` to `L5`)
+- `Readiness Read Model v1`: interpretation grammar (`status`, claim class, evidence pointer, blocker, authority-safe wording)
+- `Gate-Status Report Surface v1`: compact reporting/table/detail rendering contract using read-model semantics
+- `Single-Gate Fills` (rendered on report surface): additive, repo-evidenced interpretation materialization for exactly one gate scope per slice
+
+Consolidation v1 is mapping-only:
+
+- no new gate fill is introduced by this ladder consolidation
+- no gate closure is asserted or implied by this ladder consolidation
+
 ## 2) Scope and Non-Goals
 
 This document is docs-only steering and mapping guidance:
@@ -114,6 +132,10 @@ Use this file as the single starting point when clarifying:
 For normalized status wording and claim discipline during readiness reviews, apply the companion read model:
 
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`
+
+For compact gate-status rendering and the already materialized single-gate fills, use the canonical report surface:
+
+- `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`
 
 If conflicts appear between supporting docs, this file defines the canonical navigation order for this workstream.
 

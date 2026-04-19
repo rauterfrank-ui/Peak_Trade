@@ -43,6 +43,24 @@ Companion report surface (docs-only, non-authorizing):
 
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`
 
+Vocabulary/boundary lock companion:
+
+- `docs/ops/specs/MASTER_V2_GATE_FILL_VOCABULARY_BOUNDARY_LOCK_V1.md`
+
+## 3.1) Canonical Surface Roles (Consolidation v1)
+
+This read model is intentionally limited to interpretation grammar:
+
+- ladder remains canonical for gate/sequence/status framing (`L0` to `L5`)
+- read model remains canonical for status/claim/evidence/blocker interpretation semantics
+- report surface remains canonical for compact rendering (summary table + per-gate details)
+- single-gate fills remain additive report-surface sections and must not be treated as gate closure artifacts
+
+Consolidation v1 effect for this read model is mapping-only:
+
+- no new single-gate fill is introduced here
+- no gate closure is asserted or implied here
+
 ## 4) Readiness Read Model Levels
 
 The read model uses six interpretation levels:

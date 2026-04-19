@@ -53,12 +53,37 @@ Read model companion:
 
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`
 
+Vocabulary/boundary lock companion:
+
+- `docs/ops/specs/MASTER_V2_GATE_FILL_VOCABULARY_BOUNDARY_LOCK_V1.md`
+
 Binding coupling rules:
 
 - `Status` values in this report surface MUST reuse the read model status grammar
 - `Evidence Present &#47; Evidence Pointer` MUST follow read model evidence pointer semantics
 - status wording MUST preserve authority-safe interpretation boundaries
 - claim hygiene in status narrative MUST follow read model claim discipline
+
+## 5.1) Canonical Surface Roles (Consolidation v1)
+
+Role boundaries for this surface are intentionally narrow:
+
+- ladder is authoritative for gate/sequence/status framing and navigation intent
+- read model is authoritative for status/claim/evidence/blocker interpretation grammar
+- report surface is authoritative for compact rendering shape only (table + per-gate detail schema)
+- single-gate fills are additive report sections that materialize one gate interpretation scope per slice
+
+Reader order for low-drift interpretation:
+
+1. ladder framing
+2. read-model grammar
+3. report-surface schema
+4. relevant additive single-gate fill section (`First` to `Fourth`)
+
+Consolidation v1 effect on this surface:
+
+- no new single-gate fill is introduced
+- no gate closure is asserted or implied
 
 ## 6) Summary Table Contract
 
