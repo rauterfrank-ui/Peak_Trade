@@ -52,7 +52,7 @@ Policy-Dokumente für illustrative Pfade und Workflow-Konventionen (relevant fü
 | `scripts&#47;ci&#47;validate_required_checks_hygiene.py` | [RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE](runbooks/RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE_OPERATIONS.md) |
 | `scripts&#47;ops&#47;validate_docs_token_policy.py` | [RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR](runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md), [GATES_OVERVIEW](GATES_OVERVIEW.md) |
 | `scripts&#47;ops&#47;verify_docs_reference_targets.sh` | [RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR](runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md), [GATES_OVERVIEW](GATES_OVERVIEW.md) |
-| `scripts&#47;ops&#47;create_required_checks_drift_guard_pr.sh` | [RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE](runbooks/RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE_OPERATIONS.md) |
+| `scripts&#47;ops&#47;reconcile_required_checks_branch_protection.py --check` | [RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE](runbooks/RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE_OPERATIONS.md) |
 
 **Weitere Scripts:** [WORKFLOW_SCRIPTS.md](WORKFLOW_SCRIPTS.md), [OPS_SCRIPT_TEMPLATE_GUIDE.md](OPS_SCRIPT_TEMPLATE_GUIDE.md)
 

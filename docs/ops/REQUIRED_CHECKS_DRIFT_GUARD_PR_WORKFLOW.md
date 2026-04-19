@@ -2,6 +2,16 @@
 
 Kanonische Quelle: `config/ci/required_status_checks.json` (JSON SSOT).
 
+> Status: Diese PR-Workflow-Surface ist legacy und nicht der kanonische
+> produktive Operator-Einstieg fuer Required-Checks-Reconciliation.
+>
+> **Kanonischer produktiver Entry-Point:**  
+> `scripts&#47;ops&#47;reconcile_required_checks_branch_protection.py --check`
+>
+> Legacy-Hinweis: `scripts/ops/run_required_checks_drift_guard_pr.sh` und
+> `scripts/ops/create_required_checks_drift_guard_pr.sh` sind als historische
+> PR-Automation-Helfer einzuordnen.
+
 Dieses Workflow-Skript erstellt automatisch einen PR für das **Required Checks Drift Guard** Feature und folgt dem gleichen Operator-Pattern wie `create_and_open_merge_log_pr.sh`.
 
 ## Was das Skript macht

@@ -35,7 +35,7 @@ Preflight (local)
 - Ensure main is clean and synced.
 - Run: ./scripts/ops/ops_status.sh
 - Confirm YAML parse OK for PR-K/PR-O.
-- Confirm drift detector DRIFT_OK.
+- Confirm PR-U required-checks reconciliation check is OK (`scripts&#47;ops&#47;reconcile_required_checks_branch_protection.py --check`).
 
 Evidence Pull (local)
 - Use the dashboard fetcher to pull latest artifacts:
@@ -58,7 +58,7 @@ LIVE_PILOT Caps (recommended defaults)
 - Hard stop conditions:
   - Any execution error => immediate stop.
   - Any policy critic gate triggers => stop.
-  - Any drift detector mismatch => stop.
+  - Any required-checks reconciliation mismatch => stop.
   - Any stability gate fail => stop.
 - Rollback: revert to NO_TRADE and disable/arm gates.
 
