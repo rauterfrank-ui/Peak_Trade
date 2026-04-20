@@ -59,6 +59,8 @@ Minimal operator read path for First Live readiness review:
 6. Validate provenance constraints: [MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md](MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md), [EVIDENCE_INDEX.md](../EVIDENCE_INDEX.md).
 7. Apply vocabulary lock before any interpretation statement: [MASTER_V2_VOCAB_BOUNDARY_LOCK_V1.md](MASTER_V2_VOCAB_BOUNDARY_LOCK_V1.md).
 
+**Report surface vs this index (interpretation harmony):** Step 4 is a rendering and review-carrier cross-check only. Visible readiness, promotion-interpretation, or gate-status rows there must not be read as live authorization, eligibility for bounded real-money entry, or proof that any gate is closed. Canonical locks and pointers already live in [MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md](MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md#32-interpretation-lock-promotion-readiness-visibility-vs-live-authorization) (§3.2) and in the G10 handoff legibility note in [MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md](MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md#46-g10-authority-handoff-legibility-note-g10) (§4.6). This cross-gate index does not narrow, widen, or restate those boundaries.
+
 ## 5) Interpretation Locks / Non-Authorization Clauses
 
 This index is explicitly not:
