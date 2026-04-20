@@ -65,7 +65,8 @@ Usage:
     python scripts/report_live_sessions.py --bounded-pilot-first-live-frontdoor
     python scripts/report_live_sessions.py --bounded-pilot-first-live-frontdoor --json
 
-    # Bounded-pilot lifecycle / handoff consistency (read-only; registry + pointers + closeout signals):
+    # Bounded-pilot lifecycle / handoff consistency (read-only; registry + pointers + closeout signals;
+    # JSON includes abort_triage_hints derived from existing signals only — not authorization):
     python scripts/report_live_sessions.py --bounded-pilot-lifecycle-consistency
     python scripts/report_live_sessions.py --bounded-pilot-lifecycle-consistency --json
 """
@@ -784,6 +785,124 @@ def _canonical_bounded_pilot_read_only_subcommands() -> dict[str, str]:
     }
 
 
+_ABORT_TRIAGE_HINT_STATIC_DISCLAIMER = (
+    "Navigation aid derived only from existing lifecycle/closeout read-model signals. "
+    "Read-only; not live authorization, not eligibility, not a policy or go/no-go decision. "
+    "See docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md."
+)
+
+
+def _abort_triage_hints_for_lifecycle(
+    *,
+    lifecycle_consistency_summary: str,
+    mismatch_signals: list[str],
+) -> list[dict[str, Any]]:
+    """
+    Non-authorizing triage hints from lifecycle_consistency_summary + mismatch_signals only.
+
+    Aligns with RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md; does not add new
+    incident categories or runtime semantics.
+    """
+    if lifecycle_consistency_summary == "ALIGNED_TERMINAL_REGISTRY_WITH_EXEC_JSONL":
+        return []
+
+    def _one_hint(
+        *,
+        primary_runbook: str,
+        primary_runbook_docs_token: str,
+        section_5_keywords: list[str],
+        extra_matched_signals: list[str],
+    ) -> dict[str, Any]:
+        matched: list[str] = [
+            f"lifecycle_consistency_summary={lifecycle_consistency_summary}",
+            *extra_matched_signals,
+        ]
+        for m in mismatch_signals:
+            matched.append(f"mismatch_signal={m}")
+        return {
+            "disclaimer": _ABORT_TRIAGE_HINT_STATIC_DISCLAIMER,
+            "primary_runbook": primary_runbook,
+            "primary_runbook_docs_token": primary_runbook_docs_token,
+            "section_5_keywords": section_5_keywords,
+            "matched_signals": matched,
+        }
+
+    if lifecycle_consistency_summary == "REGISTRY_ARTIFACT_CONFLICT_STARTED_VS_TERMINAL":
+        return [
+            _one_hint(
+                primary_runbook="docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md",
+                primary_runbook_docs_token="DOCS_TOKEN_RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH",
+                section_5_keywords=[
+                    "session-end mismatch is unresolved",
+                    "stale state is unresolved",
+                    "ambiguity => NO_TRADE / safe stop",
+                ],
+                extra_matched_signals=["derived_from=open_vs_terminal_artifact_conflict"],
+            )
+        ]
+    if lifecycle_consistency_summary == "PARTIAL_TERMINAL_REGISTRY_WITHOUT_EXEC_JSONL":
+        return [
+            _one_hint(
+                primary_runbook="docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md",
+                primary_runbook_docs_token="DOCS_TOKEN_RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED",
+                section_5_keywords=[
+                    "evidence or dependency posture is degraded beyond acceptable pilot tolerance",
+                    "operator cannot clearly determine the current bounded posture",
+                    "ambiguity => NO_TRADE / safe stop",
+                ],
+                extra_matched_signals=[
+                    "derived_from=terminal_registry_without_execution_events_jsonl",
+                ],
+            )
+        ]
+    if lifecycle_consistency_summary == "PARTIAL_NON_TERMINAL_REGISTRY_OPEN_OR_STARTED":
+        return [
+            _one_hint(
+                primary_runbook="docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md",
+                primary_runbook_docs_token="DOCS_TOKEN_RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH",
+                section_5_keywords=[
+                    "stale state is unresolved",
+                    "operator cannot clearly determine the current bounded posture",
+                    "ambiguity => NO_TRADE / safe stop",
+                ],
+                extra_matched_signals=["derived_from=registry_non_terminal_newest_only"],
+            )
+        ]
+    if lifecycle_consistency_summary == "NO_BOUNDED_PILOT_SESSION":
+        return [
+            _one_hint(
+                primary_runbook=(
+                    "docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md"
+                ),
+                primary_runbook_docs_token="DOCS_TOKEN_RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS",
+                section_5_keywords=[
+                    "operator cannot clearly determine the current bounded posture",
+                    "any ambiguity exists about whether trading is allowed",
+                ],
+                extra_matched_signals=["derived_from=no_bounded_pilot_session_in_focus"],
+            )
+        ]
+    if lifecycle_consistency_summary in (
+        "REGISTRY_SCAN_MISMATCH",
+        "UNKNOWN_CLOSEOUT_SIGNAL",
+        "NON_STANDARD_REGISTRY_STATUS_IN_NEWEST_ARTIFACT",
+    ):
+        return [
+            _one_hint(
+                primary_runbook="docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md",
+                primary_runbook_docs_token="DOCS_TOKEN_RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH",
+                section_5_keywords=[
+                    "stale state is unresolved",
+                    "ambiguity => NO_TRADE / safe stop",
+                ],
+                extra_matched_signals=[
+                    f"derived_from=lifecycle_code_{lifecycle_consistency_summary}",
+                ],
+            )
+        ]
+    return []
+
+
 def _build_bounded_pilot_lifecycle_consistency_block(
     session_focus: dict[str, Any],
     closeout: dict[str, Any],
@@ -854,6 +973,11 @@ def _build_bounded_pilot_lifecycle_consistency_block(
         partial = True
         mismatch.append(f"unhandled_closeout_signal_summary={co_sum!r}")
 
+    abort_triage_hints = _abort_triage_hints_for_lifecycle(
+        lifecycle_consistency_summary=lifecycle_code,
+        mismatch_signals=mismatch,
+    )
+
     return {
         "contract": "report_live_sessions.lifecycle_consistency_v1",
         "lifecycle_consistency_summary": lifecycle_code,
@@ -863,6 +987,7 @@ def _build_bounded_pilot_lifecycle_consistency_block(
         "mismatch_signals": mismatch,
         "closeout_signal_summary": co_sum,
         "operator_notes": notes,
+        "abort_triage_hints": abort_triage_hints,
     }
 
 
@@ -1548,6 +1673,12 @@ def _run_bounded_pilot_lifecycle_consistency(
         lines.append(f"    mismatch_signals: {lc['mismatch_signals']}")
     else:
         lines.append("    mismatch_signals: []")
+    hints = lc.get("abort_triage_hints") or []
+    if hints:
+        lines.append("    abort_triage_hints (read-only; not authorization):")
+        for i, h in enumerate(hints):
+            lines.append(f"      [{i}] primary_runbook: {h.get('primary_runbook')}")
+            lines.append(f"      [{i}] section_5_keywords: {h.get('section_5_keywords')}")
     for n in lc.get("operator_notes") or []:
         lines.append(f"    note: {n}")
     lines.extend(
