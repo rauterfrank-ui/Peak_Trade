@@ -1,7 +1,7 @@
 # Bounded Real-Money Pilot Entry Boundary Note
 
 status: DRAFT  
-last_updated: 2026-04-01  
+last_updated: 2026-04-20  
 owner: Peak_Trade  
 purpose: Grenze zwischen **Dry-Validation / Spec-Flow** und **erstem Bounded-Real-Money-Schritt** klären; keinerlei Erweiterung von Execution Authority.  
 docs_token: DOCS_TOKEN_BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE
@@ -58,6 +58,7 @@ See: `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`, `RUNBOOK_BOUNDED_PILOT_DRY_VALIDATIO
 - Historical gap analysis: `BOUNDED_PILOT_LIVE_ENTRY_GAP_NOTE.md`
 - Companion to: `RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW`
 - Dry validation: `RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`
+- Optional docs-only pointer metadata for externally retained §3 prerequisite confirmations (bounded pilot L3; no payloads in git): [`MASTER_V2_BOUNDED_PILOT_L3_ENTRY_PREREQUISITE_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L3_ENTRY_PREREQUISITE_EVIDENCE_POINTER_CONTRACT_V0.md)
 
 ## 5. Non-Goals
 
