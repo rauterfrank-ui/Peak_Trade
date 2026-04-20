@@ -172,6 +172,9 @@ Nach jeder Pilot-Session-Durchführung mindestens:
 - Read-only **First-Live-/Bounded-Pilot-Frontdoor** (ein Aufruf: Overview + Gate-Index + kanonische CLI-Hinweise für alle tieferen read-only Subansichten; gleiche Datenbasis wie Overview/Gate-Index):  
   `python3 scripts/report_live_sessions.py --bounded-pilot-first-live-frontdoor [--json] [--config-path <path>] [--registry-base <dir>]`  
   (kein Live-Unlock; siehe JSON-Feld `disclaimer`; `canonical_read_only_subcommands` ersetzt keine Einzel-CLIs, sondern verweist darauf.)
+- Read-only **Lifecycle-/Handoff-Konsistenz** (Registry-Fokus + Closeout-/Pointer-Signale zu einem kompakten Konsistenz-Read-Model; **ohne** Readiness-/Packet-Lauf):  
+  `python3 scripts/report_live_sessions.py --bounded-pilot-lifecycle-consistency [--json] [--registry-base <dir>]`  
+  (kein Urteil über Handoff-Erfolg; siehe JSON-Felder `disclaimer` und `lifecycle_consistency`.)
 - Optional: Export über eure **Object-Storage-Kette** (Phase T/W), ohne bestehende Shadow/Paper-Original-Runs zu überschreiben (neue `run_id` / Export-ID).
 
 Referenz: `docs/ops/runbooks/live_pilot_execution_plan.md` (Post-run, Scorecards).

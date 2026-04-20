@@ -64,6 +64,10 @@ Usage:
     # Bounded-pilot / first-live frontdoor (read-only; overview + gate index + canonical CLI hints):
     python scripts/report_live_sessions.py --bounded-pilot-first-live-frontdoor
     python scripts/report_live_sessions.py --bounded-pilot-first-live-frontdoor --json
+
+    # Bounded-pilot lifecycle / handoff consistency (read-only; registry + pointers + closeout signals):
+    python scripts/report_live_sessions.py --bounded-pilot-lifecycle-consistency
+    python scripts/report_live_sessions.py --bounded-pilot-lifecycle-consistency --json
 """
 
 from __future__ import annotations
@@ -773,6 +777,92 @@ def _canonical_bounded_pilot_read_only_subcommands() -> dict[str, str]:
             "python scripts/report_live_sessions.py --bounded-pilot-first-live-frontdoor "
             "[--json] [--config-path <path>] [--registry-base <dir>]"
         ),
+        "lifecycle_consistency": (
+            "python scripts/report_live_sessions.py --bounded-pilot-lifecycle-consistency "
+            "[--json] [--registry-base <dir>]"
+        ),
+    }
+
+
+def _build_bounded_pilot_lifecycle_consistency_block(
+    session_focus: dict[str, Any],
+    closeout: dict[str, Any],
+) -> dict[str, Any]:
+    """
+    Read-only lifecycle/handoff *consistency* view from existing session_focus + closeout only.
+
+    Does not infer runner/handoff success; flags partial or mismatched artifact sets only.
+    """
+    sid = session_focus.get("primary_session_id")
+    primary_source = session_focus.get("primary_source")
+    co_sum = closeout.get("closeout_signal_summary")
+    conflict = bool(closeout.get("open_vs_terminal_artifact_conflict"))
+    exec_present = bool(closeout.get("execution_events_jsonl_present"))
+    newest_terminal = bool(closeout.get("registry_terminal_in_newest_artifact"))
+    newest_status = closeout.get("newest_registry_status")
+    pointers = closeout.get("pointers")
+
+    mismatch: list[str] = []
+    partial = False
+    notes: list[str] = [
+        "Operational handoff or runner success is not inferable from registry and pointer "
+        "artifacts alone; this block only compares available read-only signals.",
+    ]
+
+    signals_present: dict[str, Any] = {
+        "primary_session_id_resolved": sid is not None,
+        "registry_json_pointer_resolvable": bool(pointers),
+        "execution_events_jsonl_present": exec_present,
+        "registry_newest_status": newest_status,
+        "registry_terminal_in_newest_artifact": newest_terminal,
+        "registry_artifact_started_vs_terminal_conflict": conflict,
+    }
+
+    if sid is None:
+        lifecycle_code = "NO_BOUNDED_PILOT_SESSION"
+        partial = True
+        notes.append("No bounded_pilot session_id resolved from registry.")
+    elif conflict:
+        lifecycle_code = "REGISTRY_ARTIFACT_CONFLICT_STARTED_VS_TERMINAL"
+        partial = True
+        mismatch.append("newest_artifact_started_coexists_with_older_terminal_artifact")
+    elif co_sum == "REGISTRY_TERMINAL_IN_NEWEST_ARTIFACT":
+        if exec_present:
+            lifecycle_code = "ALIGNED_TERMINAL_REGISTRY_WITH_EXEC_JSONL"
+            partial = False
+        else:
+            lifecycle_code = "PARTIAL_TERMINAL_REGISTRY_WITHOUT_EXEC_JSONL"
+            partial = True
+            mismatch.append("terminal_newest_artifact_but_execution_events_jsonl_missing")
+    elif co_sum == "REGISTRY_NON_TERMINAL_NEWEST_ONLY":
+        lifecycle_code = "PARTIAL_NON_TERMINAL_REGISTRY_OPEN_OR_STARTED"
+        partial = True
+        mismatch.append("newest_registry_artifact_non_terminal_only")
+    elif co_sum == "NO_BOUNDED_PILOT_SESSION_IN_REGISTRY":
+        lifecycle_code = "NO_BOUNDED_PILOT_SESSION"
+        partial = True
+    elif co_sum == "REGISTRY_ROWS_MISSING_AFTER_SELECTION":
+        lifecycle_code = "REGISTRY_SCAN_MISMATCH"
+        partial = True
+        mismatch.append("primary_session_id_resolved_but_no_bounded_pilot_rows_on_scan")
+    elif co_sum == "REGISTRY_STATUS_NON_STANDARD":
+        lifecycle_code = "NON_STANDARD_REGISTRY_STATUS_IN_NEWEST_ARTIFACT"
+        partial = True
+        mismatch.append("non_terminal_non_started_status_in_newest_artifact")
+    else:
+        lifecycle_code = "UNKNOWN_CLOSEOUT_SIGNAL"
+        partial = True
+        mismatch.append(f"unhandled_closeout_signal_summary={co_sum!r}")
+
+    return {
+        "contract": "report_live_sessions.lifecycle_consistency_v1",
+        "lifecycle_consistency_summary": lifecycle_code,
+        "primary_source": primary_source,
+        "partial_status": partial,
+        "signals_present": signals_present,
+        "mismatch_signals": mismatch,
+        "closeout_signal_summary": co_sum,
+        "operator_notes": notes,
     }
 
 
@@ -1370,6 +1460,134 @@ def _run_bounded_pilot_first_live_frontdoor(
     return 0
 
 
+def _bounded_pilot_lifecycle_consistency_flag_conflicts(args: argparse.Namespace) -> str | None:
+    """Same incompatibility surface as closeout status summary (registry-only; no --config-path)."""
+    if args.session_id is not None:
+        return "--session-id is only for --evidence-pointers"
+    if args.latest_bounded_pilot:
+        return "--latest-bounded-pilot is only for --evidence-pointers"
+    if args.bounded_pilot_only or args.latest_bounded_pilot_open:
+        return "--bounded-pilot-only / --latest-bounded-pilot-open require --open-sessions"
+    if args.run_type is not None:
+        return "--run-type is not compatible with --bounded-pilot-lifecycle-consistency"
+    if args.status is not None:
+        return "--status is not compatible with --bounded-pilot-lifecycle-consistency"
+    if args.limit is not None:
+        return "--limit is not compatible with --bounded-pilot-lifecycle-consistency"
+    if args.summary_only:
+        return "--summary-only is not compatible with --bounded-pilot-lifecycle-consistency"
+    if args.output_dir is not None:
+        return "--output-dir is not compatible with --bounded-pilot-lifecycle-consistency"
+    if args.stdout:
+        return "--stdout is not compatible with --bounded-pilot-lifecycle-consistency"
+    if getattr(args, "config_path", None):
+        return (
+            "--config-path is only for --bounded-pilot-readiness-summary, "
+            "--bounded-pilot-operator-overview, --bounded-pilot-gate-index, "
+            "or --bounded-pilot-first-live-frontdoor"
+        )
+    return None
+
+
+def _run_bounded_pilot_lifecycle_consistency(
+    args: argparse.Namespace,
+    logger: logging.Logger,
+) -> int:
+    """
+    Read-only bounded_pilot lifecycle/handoff consistency: session focus + closeout + compact signals.
+
+    Reuses _collect_bounded_pilot_session_focus and _build_bounded_pilot_closeout_analysis only.
+    """
+    base_dir = _registry_base_dir(args)
+    cwd = Path.cwd()
+    session_focus = _collect_bounded_pilot_session_focus(base_dir=base_dir, cwd=cwd)
+    closeout = _build_bounded_pilot_closeout_analysis(
+        session_focus,
+        base_dir=base_dir,
+        cwd=cwd,
+    )
+    lifecycle = _build_bounded_pilot_lifecycle_consistency_block(session_focus, closeout)
+
+    payload: dict[str, Any] = {
+        "contract": "report_live_sessions.bounded_pilot_lifecycle_consistency",
+        "disclaimer": (
+            "Read-only bounded_pilot lifecycle/handoff *consistency* view: compares registry "
+            "selection, closeout/final-status signals, and session-scoped pointer presence. "
+            "Not a live authorization, not proof of successful handoff, session completion, or "
+            "that a process is or is not running."
+        ),
+        "registry_dir": str(base_dir),
+        "lifecycle_consistency": lifecycle,
+        "session_focus": session_focus,
+        "closeout": closeout,
+    }
+
+    logger.info(
+        "Bounded-pilot lifecycle consistency (read-only) primary=%s summary=%s",
+        session_focus.get("primary_session_id"),
+        lifecycle.get("lifecycle_consistency_summary"),
+    )
+
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+
+    lc = lifecycle
+    sf = session_focus
+    co = closeout
+    lines = [
+        "Bounded-pilot lifecycle / handoff consistency (read-only)",
+        f"  disclaimer: {payload['disclaimer']}",
+        "",
+        "  Lifecycle consistency (from existing registry + closeout signals):",
+        f"    lifecycle_consistency_summary: {lc['lifecycle_consistency_summary']}",
+        f"    primary_source: {lc['primary_source']}",
+        f"    partial_status: {lc['partial_status']}",
+    ]
+    if lc.get("mismatch_signals"):
+        lines.append(f"    mismatch_signals: {lc['mismatch_signals']}")
+    else:
+        lines.append("    mismatch_signals: []")
+    for n in lc.get("operator_notes") or []:
+        lines.append(f"    note: {n}")
+    lines.extend(
+        [
+            "",
+            "  Session focus (bounded_pilot):",
+            f"    primary_session_id: {sf['primary_session_id']}",
+            f"    primary_source: {sf['primary_source']}",
+            f"    open started rows: {sf['open_bounded_pilot_sessions'] or []}",
+            f"    latest registry row: {sf.get('latest_bounded_pilot_registry')}",
+            "",
+            "  Closeout / registry:",
+            f"    closeout_signal_summary: {co['closeout_signal_summary']}",
+            f"    newest_registry_status: {co['newest_registry_status']}",
+            f"    execution_events_jsonl_present: {co['execution_events_jsonl_present']}",
+            f"    open_vs_terminal_artifact_conflict: {co['open_vs_terminal_artifact_conflict']}",
+        ]
+    )
+    ptr = co.get("pointers")
+    if ptr:
+        ej = ptr["execution_events_session_jsonl"]
+        lines.append("")
+        lines.append("  Pointers:")
+        lines.append(f"    registry_json: {ptr['registry_json']['resolved']}")
+        lines.append(
+            f"    execution_events_jsonl: {ej['resolved']}  present: "
+            f"{'yes' if ej['present'] else 'no'}"
+        )
+    else:
+        lines.append("")
+        lines.append("  Pointers: none")
+    if co.get("operator_notes"):
+        lines.append("")
+        lines.append("  Closeout notes:")
+        for n in co["operator_notes"]:
+            lines.append(f"    - {n}")
+    print("\n".join(lines))
+    return 0
+
+
 def _run_bounded_pilot_closeout_status_summary(
     args: argparse.Namespace,
     logger: logging.Logger,
@@ -1565,7 +1783,7 @@ Beispiele:
             "JSON output for --evidence-pointers, --open-sessions, "
             "--bounded-pilot-readiness-summary, --bounded-pilot-closeout-status-summary, "
             "--bounded-pilot-operator-overview, --bounded-pilot-gate-index, "
-            "or --bounded-pilot-first-live-frontdoor"
+            "--bounded-pilot-first-live-frontdoor, or --bounded-pilot-lifecycle-consistency"
         ),
     )
     parser.add_argument(
@@ -1643,6 +1861,15 @@ Beispiele:
         ),
     )
     parser.add_argument(
+        "--bounded-pilot-lifecycle-consistency",
+        action="store_true",
+        dest="bounded_pilot_lifecycle_consistency",
+        help=(
+            "Read-only: bounded_pilot lifecycle/handoff consistency from registry + closeout "
+            "(no readiness/packet run)"
+        ),
+    )
+    parser.add_argument(
         "--config-path",
         type=str,
         default=None,
@@ -1673,6 +1900,7 @@ Beispiele:
         + int(bool(args.bounded_pilot_operator_overview))
         + int(bool(args.bounded_pilot_gate_index))
         + int(bool(args.bounded_pilot_first_live_frontdoor))
+        + int(bool(args.bounded_pilot_lifecycle_consistency))
         + int(bool(args.evidence_pointers))
         + int(bool(args.open_sessions))
     )
@@ -1681,6 +1909,7 @@ Beispiele:
             "ERR: use only one of --bounded-pilot-readiness-summary, "
             "--bounded-pilot-closeout-status-summary, --bounded-pilot-operator-overview, "
             "--bounded-pilot-gate-index, --bounded-pilot-first-live-frontdoor, "
+            "--bounded-pilot-lifecycle-consistency, "
             "--evidence-pointers, --open-sessions",
             file=sys.stderr,
         )
@@ -1713,6 +1942,13 @@ Beispiele:
             print(f"ERR: {conflict}", file=sys.stderr)
             return 2
         return _run_bounded_pilot_first_live_frontdoor(args, logger)
+
+    if args.bounded_pilot_lifecycle_consistency:
+        conflict = _bounded_pilot_lifecycle_consistency_flag_conflicts(args)
+        if conflict is not None:
+            print(f"ERR: {conflict}", file=sys.stderr)
+            return 2
+        return _run_bounded_pilot_lifecycle_consistency(args, logger)
 
     if args.bounded_pilot_closeout_status_summary:
         conflict = _bounded_pilot_closeout_status_summary_flag_conflicts(args)
