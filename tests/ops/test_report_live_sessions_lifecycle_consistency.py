@@ -143,6 +143,7 @@ def test_lifecycle_terminal_with_exec_aligned(
     assert lc["lifecycle_consistency_summary"] == "ALIGNED_TERMINAL_REGISTRY_WITH_EXEC_JSONL"
     assert lc["partial_status"] is False
     assert lc["mismatch_signals"] == []
+    assert lc.get("abort_triage_hints") == []
 
 
 def test_lifecycle_json_stable_sorted_output(
@@ -210,6 +211,123 @@ def test_lifecycle_conflicts_run_type(capsys: pytest.CaptureFixture[str]) -> Non
     ):
         assert main() == 2
     assert "run-type" in capsys.readouterr().err.lower()
+
+
+def test_lifecycle_abort_triage_hints_conflict_maps_session_end_mismatch(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    reg = tmp_path / "reports" / "experiments" / "live_sessions"
+    reg.mkdir(parents=True)
+    sid = "bp_conflict"
+    register_live_session_run(
+        _rec(session_id=sid, status="completed", started_at=datetime(2024, 1, 1, 10, 0, 0)),
+        base_dir=reg,
+    )
+    register_live_session_run(
+        _rec(session_id=sid, status="started", started_at=datetime(2024, 6, 1, 10, 0, 0)),
+        base_dir=reg,
+    )
+
+    from scripts.report_live_sessions import main
+
+    with patch.object(
+        sys,
+        "argv",
+        [
+            "report_live_sessions.py",
+            "--bounded-pilot-lifecycle-consistency",
+            "--json",
+            "--log-level",
+            "ERROR",
+        ],
+    ):
+        assert main() == 0
+
+    data = json.loads(capsys.readouterr().out)
+    lc = data["lifecycle_consistency"]
+    assert lc["lifecycle_consistency_summary"] == "REGISTRY_ARTIFACT_CONFLICT_STARTED_VS_TERMINAL"
+    hints = lc["abort_triage_hints"]
+    assert len(hints) == 1
+    h0 = hints[0]
+    assert "not live authorization" in h0["disclaimer"].lower()
+    assert "read-only" in h0["disclaimer"].lower() or "read_only" in h0["disclaimer"].lower()
+    assert h0["primary_runbook"].endswith("RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md")
+    assert (
+        h0["primary_runbook_docs_token"] == "DOCS_TOKEN_RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH"
+    )
+    assert "session-end mismatch is unresolved" in h0["section_5_keywords"]
+    assert any(x.startswith("lifecycle_consistency_summary=") for x in h0["matched_signals"])
+    assert any("mismatch_signal=" in x for x in h0["matched_signals"])
+
+
+def test_lifecycle_abort_triage_hints_partial_no_exec_jsonl_telemetry_degraded(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    reg = tmp_path / "reports" / "experiments" / "live_sessions"
+    reg.mkdir(parents=True)
+    register_live_session_run(_rec(session_id="bp_partial_ev", status="completed"), base_dir=reg)
+
+    from scripts.report_live_sessions import main
+
+    with patch.object(
+        sys,
+        "argv",
+        [
+            "report_live_sessions.py",
+            "--bounded-pilot-lifecycle-consistency",
+            "--json",
+            "--log-level",
+            "ERROR",
+        ],
+    ):
+        assert main() == 0
+
+    data = json.loads(capsys.readouterr().out)
+    lc = data["lifecycle_consistency"]
+    assert lc["lifecycle_consistency_summary"] == "PARTIAL_TERMINAL_REGISTRY_WITHOUT_EXEC_JSONL"
+    hints = lc["abort_triage_hints"]
+    assert len(hints) == 1
+    assert hints[0]["primary_runbook"].endswith("RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md")
+    assert "not live authorization" in hints[0]["disclaimer"].lower()
+    assert "not a policy or go/no-go decision" in hints[0]["disclaimer"].lower()
+
+
+def test_lifecycle_abort_triage_hints_empty_registry_navigates_compass_only(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    reg = tmp_path / "reports" / "experiments" / "live_sessions"
+    reg.mkdir(parents=True)
+
+    from scripts.report_live_sessions import main
+
+    with patch.object(
+        sys,
+        "argv",
+        [
+            "report_live_sessions.py",
+            "--bounded-pilot-lifecycle-consistency",
+            "--json",
+            "--log-level",
+            "ERROR",
+        ],
+    ):
+        assert main() == 0
+
+    data = json.loads(capsys.readouterr().out)
+    lc = data["lifecycle_consistency"]
+    assert lc["lifecycle_consistency_summary"] == "NO_BOUNDED_PILOT_SESSION"
+    hints = lc["abort_triage_hints"]
+    assert len(hints) == 1
+    assert "ABORT_TRIAGE_COMPASS" in hints[0]["primary_runbook"]
 
 
 def test_lifecycle_text_output_keywords(

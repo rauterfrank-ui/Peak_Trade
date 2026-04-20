@@ -133,9 +133,9 @@ These commands are **read-only**; they **do not** unlock live trading or assert 
 | Combined operator snapshot | `python scripts/report_live_sessions.py --bounded-pilot-operator-overview [--json]` |
 | Compact gate / enablement index block | `python scripts/report_live_sessions.py --bounded-pilot-gate-index [--json]` |
 | Frontdoor + canonical subcommand hints | `python scripts/report_live_sessions.py --bounded-pilot-first-live-frontdoor [--json]` |
-| Lifecycle / handoff consistency flags | `python scripts/report_live_sessions.py --bounded-pilot-lifecycle-consistency [--json]` |
+| Lifecycle / handoff consistency + derived `abort_triage_hints` (JSON) | `python scripts/report_live_sessions.py --bounded-pilot-lifecycle-consistency [--json]` — field `lifecycle_consistency.abort_triage_hints` is read-only navigation only; not authorization |
 
-Full usage lines also appear in the script module docstring at `scripts/report_live_sessions.py` (no code changes required by this compass).
+Full usage lines also appear in the script module docstring at `scripts/report_live_sessions.py`. The lifecycle JSON may include machine-readable `abort_triage_hints` derived strictly from existing lifecycle/closeout signals; see script implementation.
 
 ## 9) Failure taxonomy cross-read
 
