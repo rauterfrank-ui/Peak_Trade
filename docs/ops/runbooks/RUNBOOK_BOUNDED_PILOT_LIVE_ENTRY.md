@@ -183,6 +183,8 @@ Referenz: `docs/ops/runbooks/live_pilot_execution_plan.md` (Post-run, Scorecards
 
 ## 5. Incident- & Abbruch-Runbooks
 
+**Triage-Orientierung (Symptom → §5 → Runbook → L5-Pointer → read-only CLIs):** [RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md) (nicht autorisierend).
+
 Bei Anomalien **sofort** stoppen und dokumentieren:
 
 - `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED.md`
