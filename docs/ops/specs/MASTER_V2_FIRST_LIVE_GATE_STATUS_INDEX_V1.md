@@ -193,6 +193,7 @@ This subsection materializes **one** candidate-scoped **L5 incident and safe-sto
 - Failure taxonomy and safe-fallback semantics (interpretation-only): [`MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md`](MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md).
 - Contractual abort / rollback / `NO_TRADE` criteria (when entry must not occur or must stop): [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) §5 (Abort / Rollback / NO_TRADE Criteria).
 - Session-flow surface to which incident discipline attaches during execution (not an incident claim): [§4.4](#44-l4-candidate-session-flow-pointer-record-g7).
+- L5 external incident / safe-stop evidence pointer metadata discipline (docs-only; no incident payloads in-repo): [`MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md).
 
 **Belastbare script references (documentation pointers only; no execution claim):**
 
@@ -204,7 +205,7 @@ This subsection materializes **one** candidate-scoped **L5 incident and safe-sto
 
 **G8 status after this record:** remains `Partial` — this index still does not host a named, immutable in-repo incident response evidence bundle for a specific candidate, and some incident runbooks remain **draft-heavy** relative to production closure standards.
 
-**Next open gap:** operator/governance capture and archival of incident response evidence (per candidate session or drill) under change control **outside** this index; a later slice may add repo-resolvable pointers **if and when** those artifacts become stable, reviewable references.
+**Next open gap:** operator/governance capture and archival of incident response evidence (per candidate session or drill) under change control **outside** this index; a later slice may add repo-resolvable pointers **if and when** those artifacts become stable, reviewable references. Minimal field vocabulary for external pointer records (L5 incident / safe-stop only) lives in [`MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md) and does not by itself close this gap.
 
 ## 4.6) G10 authority handoff legibility note (G10)
 
