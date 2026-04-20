@@ -115,6 +115,7 @@ Primary operator evidence:
 
 Primary docs / scripts:
 
+- `scripts&#47;ops&#47;check_bounded_pilot_readiness.py` — Canonical read-only preflight: bundles live-stage `check_live_readiness` + `pilot_go_no_go_eval_v1`; does not start a session
 - `scripts&#47;ops&#47;run_bounded_pilot_session.py` — Pre-Entry-Checks gate; with default args invokes bounded pilot session (see `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`); use `--no-invoke` for gates only
 - `docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`
 - `docs&#47;ops&#47;specs&#47;PILOT_GO_NO_GO_CHECKLIST.md`

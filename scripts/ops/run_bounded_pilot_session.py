@@ -76,32 +76,49 @@ def main() -> int:
     repo_root = args.repo_root or (_REPO_ROOT if _REPO_ROOT.exists() else Path.cwd())
 
     try:
-        from scripts.ops.pilot_go_no_go_eval_v1 import evaluate
-        from src.webui.ops_cockpit import build_ops_cockpit_payload
+        from scripts.ops.check_bounded_pilot_readiness import (
+            resolve_bounded_pilot_config_path,
+            run_bounded_pilot_readiness,
+        )
 
-        payload = build_ops_cockpit_payload(repo_root=repo_root)
+        config_path = resolve_bounded_pilot_config_path(repo_root, None)
+        ok, readiness_bundle = run_bounded_pilot_readiness(repo_root, config_path, run_tests=False)
     except Exception as e:
-        print(f"ERR: failed to build cockpit payload: {e}", file=sys.stderr)
+        print(f"ERR: bounded pilot preflight failed: {e}", file=sys.stderr)
         return 2
 
-    result = evaluate(payload)
-    verdict = result["verdict"]
+    result = readiness_bundle.get("go_no_go") or {}
+    verdict = result.get("verdict")
 
-    if verdict != "GO_FOR_NEXT_PHASE_ONLY":
+    if not ok:
+        blocked = readiness_bundle.get("blocked_at")
         if args.json:
             out = {
                 "contract": "run_bounded_pilot_session",
                 "verdict": verdict,
                 "entry_permitted": False,
-                "message": f"Gates not satisfied: verdict={verdict}",
-                "go_no_go": result,
+                "message": readiness_bundle.get("message", "Gates not satisfied"),
+                "blocked_at": blocked,
+                "bounded_pilot_readiness": readiness_bundle,
             }
             print(json.dumps(out, indent=2))
         else:
-            print(f"GATES_RED: verdict={verdict}", file=sys.stderr)
-            for r in result["rows"]:
-                if r["status"] != "PASS":
-                    print(f"  Row {r['row']} {r['area']}: {r['status']}", file=sys.stderr)
+            if blocked == "live_readiness":
+                print("GATES_RED: live readiness failed", file=sys.stderr)
+                lr = readiness_bundle.get("live_readiness") or {}
+                for fc in lr.get("failed_checks") or []:
+                    print(
+                        f"  [readiness] {fc.get('name')}: {fc.get('message')}",
+                        file=sys.stderr,
+                    )
+            else:
+                print(f"GATES_RED: verdict={verdict}", file=sys.stderr)
+                for r in result.get("rows") or []:
+                    if r["status"] != "PASS":
+                        print(
+                            f"  Row {r['row']} {r['area']}: {r['status']}",
+                            file=sys.stderr,
+                        )
             print("Entry not permitted. Fix blockers before retrying.", file=sys.stderr)
         return 1
 
@@ -112,10 +129,11 @@ def main() -> int:
         if args.json:
             out = {
                 "contract": "run_bounded_pilot_session",
-                "verdict": verdict,
+                "verdict": result.get("verdict"),
                 "entry_permitted": True,
                 "message": msg,
                 "go_no_go": result,
+                "bounded_pilot_readiness": readiness_bundle,
             }
             print(json.dumps(out, indent=2))
         else:

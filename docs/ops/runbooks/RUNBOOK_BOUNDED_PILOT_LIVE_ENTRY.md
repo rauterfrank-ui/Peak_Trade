@@ -25,7 +25,8 @@ Dieses Runbook beschreibt **end-to-end**, wie ein Operator von **Dry-Validation*
 
 | Komponente | Stand |
 |------------|--------|
-| Entry-Gate + Session-Handoff | `scripts/ops/run_bounded_pilot_session.py` ruft bei grünen Gates **`run_execution_session.py --mode bounded_pilot`** auf (ohne `--no-invoke`). |
+| Kanonischer Preflight (read-only) | `scripts/ops/check_bounded_pilot_readiness.py` bündelt **`check_live_readiness.py --stage live`** und **`pilot_go_no_go_eval_v1`**; Exit 0 nur bei voller Live-Readiness **und** `GO_FOR_NEXT_PHASE_ONLY`. Startet **keine** Session und setzt **kein** Gate-Handoff-Env. |
+| Entry-Gate + Session-Handoff | `scripts/ops/run_bounded_pilot_session.py` nutzt denselben Preflight-Stack, ruft bei grünen Gates **`run_execution_session.py --mode bounded_pilot`** auf (ohne `--no-invoke`). |
 | Session-CLI | `scripts/run_execution_session.py` unterstützt `shadow`, `testnet`, **`bounded_pilot`**. |
 | Runner | `LiveSessionRunner` / Konfiguration für `bounded_pilot` in `src/execution/live_session.py` (u. a. `bounded_pilot_mode`, `live_dry_run_mode=False` im Pilot-Kontext). |
 | Governance | Pipeline wählt bei Bounded-Pilot-Kontext den Key **`live_order_execution_bounded_pilot`** (`select_live_order_execution_key`). |
@@ -88,13 +89,22 @@ Alle Punkte müssen **vor** dem ersten Aufruf mit echten Orders erfüllt sein.
 
 Detaillierte Einordnung: `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md` (Schritt 5 dort ist historisch; Gate-only = `--no-invoke` hier in Phase A.4).
 
-### Phase B — Readiness-Skript (empfohlen)
+### Phase B — Readiness (empfohlen)
+
+**Kanonischer Bounded-Pilot-Preflight (ein Aufruf, technisch + Go/No-Go):**
+
+```bash
+python3 scripts/ops/check_bounded_pilot_readiness.py --repo-root . --json
+```
+
+Erwartung: Exit **0** und `ok: true` nur wenn Live-Readiness **und** Cockpit-Verdict `GO_FOR_NEXT_PHASE_ONLY`. Bei Fehlern: **kein** Pilot.
+
+**Alternativ einzeln (Debugging):**
 
 ```bash
 python3 scripts/check_live_readiness.py --stage live --verbose
+python3 scripts/ops/pilot_go_no_go_eval_v1.py --json
 ```
-
-Erwartung: relevante Checks **bestanden** (u. a. Risk-Limits, Live-Risk-Config, API-Keys). Bei Fehlern: **kein** Pilot.
 
 ### Phase C — Erweiterter Ops-Check (optional, laut live_pilot_execution_plan)
 
