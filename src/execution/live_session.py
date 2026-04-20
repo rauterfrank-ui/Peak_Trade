@@ -541,14 +541,14 @@ class LiveSessionRunner:
                     testnet_dry_run=True,
                 )
             elif session_config.mode == "bounded_pilot":
-                confirm_token = require_bounded_pilot_handoff_env()
+                _bp_confirm = require_bounded_pilot_handoff_env()
                 env_config = EnvironmentConfig(
                     environment=TradingEnvironment.LIVE,
                     enable_live_trading=True,
                     bounded_pilot_mode=True,
                     live_mode_armed=True,  # Gate 2: bounded_pilot has governance approval
                     live_dry_run_mode=False,  # bounded_pilot: governance-approved actual order path
-                    confirm_token=confirm_token,
+                    confirm_token=_bp_confirm,
                     testnet_dry_run=False,
                 )
             else:  # testnet

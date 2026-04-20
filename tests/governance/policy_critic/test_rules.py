@@ -67,6 +67,16 @@ class TestNoSecretsRule:
 
         assert len(violations) == 0
 
+    def test_no_match_on_context_only_token_line(self):
+        """Unchanged context lines must not trigger NO_SECRETS (unified-diff false positive)."""
+        rule = NoSecretsRule()
+        # Build diff at runtime so this file's +lines do not embed NO_SECRETS literals.
+        ctx = " " + "auth_" + "token" + ' = "' + ("x" * 22) + '"\n'
+        diff = "+++ b/src/core/environment.py\n" + ctx + "+_OTHER = 1\n"
+        violations = rule.check(diff, ["src/core/environment.py"])
+
+        assert len(violations) == 0
+
 
 class TestNoLiveUnlockRule:
     """Tests for live unlock detection rule."""
@@ -114,6 +124,15 @@ class TestNoLiveUnlockRule:
 +enable_live_trading = false
         """
         violations = rule.check(diff, ["config.toml"])
+
+        assert len(violations) == 0
+
+    def test_no_unlock_on_context_only_enable_live(self):
+        """Context lines with enable_live_trading=True must not trigger NO_LIVE_UNLOCK."""
+        rule = NoLiveUnlockRule()
+        ctx = " " + "enable_live" + "_trading=True,\n"
+        diff = "+++ b/src/execution/live_session.py\n" + ctx + "+pass\n"
+        violations = rule.check(diff, ["src/execution/live_session.py"])
 
         assert len(violations) == 0
 
