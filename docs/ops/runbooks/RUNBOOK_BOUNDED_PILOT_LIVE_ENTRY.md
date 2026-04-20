@@ -157,6 +157,9 @@ Nach jeder Pilot-Session-Durchführung mindestens:
 - Read-only **offene Sessions** (Registry `status=started`, Operator: OPEN; pro Artefakt inkl. Registry-Pfad und session-scoped Execution-Events-Pfad):  
   `python3 scripts/report_live_sessions.py --open-sessions [--bounded-pilot-only] [--latest-bounded-pilot-open] [--json]`  
   (`status=started` allein belegt keinen laufenden Prozess — siehe CLI-Hinweis `closeout_note`.)
+- Read-only **Zusammenfassung** (aktueller bounded-pilot Readiness-/Go-No-Go-Lauf, Operator-Preflight-Packet-Build, plus Registry-Fokus offene/letzte `bounded_pilot`-Session und Pointer):  
+  `python3 scripts/report_live_sessions.py --bounded-pilot-readiness-summary [--json] [--config-path <path>] [--registry-base <dir>]`  
+  (kein Live-Unlock; nur Momentaufnahme; siehe JSON-Feld `disclaimer`.)
 - Optional: Export über eure **Object-Storage-Kette** (Phase T/W), ohne bestehende Shadow/Paper-Original-Runs zu überschreiben (neue `run_id` / Export-ID).
 
 Referenz: `docs/ops/runbooks/live_pilot_execution_plan.md` (Post-run, Scorecards).

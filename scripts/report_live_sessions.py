@@ -44,6 +44,10 @@ Usage:
     python scripts/report_live_sessions.py --open-sessions
     python scripts/report_live_sessions.py --open-sessions --bounded-pilot-only --json
     python scripts/report_live_sessions.py --open-sessions --latest-bounded-pilot-open
+
+    # Bounded-pilot readiness + preflight packet + registry focus (read-only snapshot):
+    python scripts/report_live_sessions.py --bounded-pilot-readiness-summary
+    python scripts/report_live_sessions.py --bounded-pilot-readiness-summary --json
 """
 
 from __future__ import annotations
@@ -414,6 +418,259 @@ def _run_open_sessions(args: argparse.Namespace, logger: logging.Logger) -> int:
 
 
 # =============================================================================
+# Bounded-pilot readiness + packet + session focus (read-only snapshot)
+# =============================================================================
+
+
+def _registry_base_dir(args: argparse.Namespace) -> Path:
+    from src.experiments.live_session_registry import DEFAULT_LIVE_SESSION_DIR
+
+    return Path(args.registry_base) if args.registry_base else DEFAULT_LIVE_SESSION_DIR
+
+
+def _pointers_for_session_id(
+    session_id: str,
+    *,
+    base_dir: Path,
+    cwd: Path,
+) -> dict[str, Any] | None:
+    """Registry + execution_events paths for one session_id (read-only)."""
+    from src.experiments.live_session_registry import find_live_session_registry_json_for_session_id
+
+    resolved = find_live_session_registry_json_for_session_id(session_id, base_dir=base_dir)
+    if resolved is None:
+        return None
+    record, path = resolved
+    row = _open_session_payload_row(record, path, cwd)
+    return {
+        "session_id": session_id,
+        "registry_json": row["registry_json"],
+        "execution_events_session_jsonl": row["execution_events_session_jsonl"],
+    }
+
+
+def _collect_bounded_pilot_session_focus(
+    *,
+    base_dir: Path,
+    cwd: Path,
+) -> dict[str, Any]:
+    """Reuse open-sessions + latest-registry logic; no writes."""
+    from src.experiments.live_session_registry import (
+        STATUS_STARTED,
+        iter_live_session_registry_entries,
+        list_session_records,
+    )
+
+    open_rows = [
+        (r, p)
+        for r, p in iter_live_session_registry_entries(base_dir=base_dir)
+        if r.status == STATUS_STARTED and r.mode == "bounded_pilot"
+    ]
+    open_rows.sort(
+        key=lambda t: t[0].started_at or datetime(1970, 1, 1),
+        reverse=True,
+    )
+    open_payloads = [_open_session_payload_row(r, p, cwd) for r, p in open_rows]
+
+    records = list_session_records(base_dir=base_dir)
+    latest_rec = next((r for r in records if r.mode == "bounded_pilot"), None)
+    latest_compact: dict[str, Any] | None = None
+    if latest_rec is not None:
+        latest_compact = {
+            "session_id": latest_rec.session_id,
+            "registry_status": latest_rec.status,
+            "run_id": latest_rec.run_id,
+            "started_at": latest_rec.started_at.isoformat() if latest_rec.started_at else None,
+            "finished_at": latest_rec.finished_at.isoformat() if latest_rec.finished_at else None,
+        }
+
+    primary_source = "none"
+    primary_session_id: str | None = None
+    if open_payloads:
+        primary_source = "open_bounded_pilot"
+        primary_session_id = open_payloads[0]["session_id"]
+    elif latest_rec is not None:
+        primary_source = "latest_bounded_pilot_registry"
+        primary_session_id = latest_rec.session_id
+
+    pointers = None
+    if primary_session_id is not None:
+        pointers = _pointers_for_session_id(
+            primary_session_id,
+            base_dir=base_dir,
+            cwd=cwd,
+        )
+
+    return {
+        "primary_session_id": primary_session_id,
+        "primary_source": primary_source,
+        "open_bounded_pilot_sessions": [
+            {"session_id": x["session_id"], "registry_status": x["registry_status"]}
+            for x in open_payloads
+        ],
+        "open_bounded_pilot_detail": open_payloads,
+        "latest_bounded_pilot_registry": latest_compact,
+        "pointers": pointers,
+    }
+
+
+def _run_bounded_pilot_readiness_summary(args: argparse.Namespace, logger: logging.Logger) -> int:
+    """
+    One-shot read-only snapshot: current readiness + operator preflight packet + registry focus.
+
+    Does not authorize live trading or assert gate closure; see payload disclaimer.
+    """
+    from scripts.ops.bounded_pilot_operator_preflight_packet import build_operator_preflight_packet
+    from scripts.ops.check_bounded_pilot_readiness import (
+        resolve_bounded_pilot_config_path,
+        run_bounded_pilot_readiness,
+    )
+
+    repo_root = PROJECT_ROOT
+    explicit_cfg = Path(args.config_path) if getattr(args, "config_path", None) else None
+    config_path = resolve_bounded_pilot_config_path(repo_root, explicit_cfg)
+    base_dir = _registry_base_dir(args)
+    cwd = Path.cwd()
+
+    ok, bundle = run_bounded_pilot_readiness(repo_root, config_path, run_tests=False)
+    readiness_block: dict[str, Any] = {
+        "evaluated": True,
+        "ok": ok,
+        "blocked_at": bundle.get("blocked_at"),
+        "message": bundle.get("message"),
+        "go_no_go": bundle.get("go_no_go"),
+        "live_readiness": bundle.get("live_readiness"),
+    }
+
+    packet_out: dict[str, Any]
+    try:
+        packet, packet_code = build_operator_preflight_packet(
+            repo_root,
+            config_path,
+            run_tests=False,
+        )
+        summary = (packet or {}).get("summary") or {}
+        blocked_list = list(summary.get("blocked") or [])
+        packet_out = {
+            "evaluated": True,
+            "packet_code": packet_code,
+            "packet_ok": bool(summary.get("packet_ok")),
+            "blocked_lines_preview": blocked_list[:12],
+            "blocked_lines_total": len(blocked_list),
+        }
+    except Exception as e:
+        logger.warning("operator preflight packet build failed: %s", e)
+        packet_out = {
+            "evaluated": False,
+            "packet_code": 2,
+            "error": f"{type(e).__name__}: {e}",
+        }
+
+    session_focus = _collect_bounded_pilot_session_focus(base_dir=base_dir, cwd=cwd)
+
+    payload: dict[str, Any] = {
+        "contract": "report_live_sessions.bounded_pilot_readiness_summary",
+        "disclaimer": (
+            "Read-only repo snapshot of current bounded-pilot readiness/preflight evaluation "
+            "plus registry pointers. Not a live authorization, not a gate-closure verdict, "
+            "not a claim that a historical session was packet-GREEN."
+        ),
+        "config_path": str(config_path),
+        "registry_dir": str(base_dir),
+        "bounded_pilot_readiness": readiness_block,
+        "operator_preflight_packet": packet_out,
+        "session_focus": session_focus,
+    }
+
+    logger.info(
+        "Bounded-pilot readiness summary (read-only) primary=%s",
+        session_focus["primary_session_id"],
+    )
+
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+
+    r = readiness_block
+    p = packet_out
+    sf = session_focus
+    lines = [
+        "Bounded-pilot readiness summary (read-only)",
+        f"  disclaimer: {payload['disclaimer']}",
+        f"  config_path: {config_path}",
+        "",
+        "  Current evaluation (repository state now):",
+        f"    readiness evaluated: {r.get('evaluated')}",
+        f"    readiness ok: {r.get('ok')}",
+        f"    blocked_at: {r.get('blocked_at')}",
+        f"    message: {r.get('message')}",
+    ]
+    gng = r.get("go_no_go") or {}
+    if gng:
+        lines.append(f"    go_no_go verdict: {gng.get('verdict')}")
+    lines.append("")
+    lines.append("  Operator preflight packet (build attempt):")
+    lines.append(f"    evaluated: {p.get('evaluated')}")
+    lines.append(f"    packet_code: {p.get('packet_code')}")
+    if p.get("evaluated"):
+        lines.append(f"    packet_ok: {p.get('packet_ok')}")
+        lines.append(
+            f"    blocked_lines: {p.get('blocked_lines_total')} "
+            f"(showing up to {len(p.get('blocked_lines_preview') or [])})"
+        )
+        for b in p.get("blocked_lines_preview") or []:
+            lines.append(f"      - {b}")
+    else:
+        lines.append(f"    error: {p.get('error')}")
+    lines.append("")
+    lines.append("  Session / registry focus (bounded_pilot):")
+    lines.append(f"    primary_session_id: {sf['primary_session_id']}")
+    lines.append(f"    primary_source: {sf['primary_source']}")
+    if sf["open_bounded_pilot_sessions"]:
+        lines.append(f"    open started rows: {sf['open_bounded_pilot_sessions']}")
+    else:
+        lines.append("    open started rows: []")
+    if sf.get("latest_bounded_pilot_registry"):
+        lines.append(f"    latest registry row: {sf['latest_bounded_pilot_registry']}")
+    else:
+        lines.append("    latest registry row: none")
+    ptr = sf.get("pointers")
+    if ptr:
+        ej = ptr["execution_events_session_jsonl"]
+        lines.append(f"    pointers session_id: {ptr['session_id']}")
+        lines.append(f"    registry_json: {ptr['registry_json']['resolved']}")
+        lines.append(
+            f"    execution_events_jsonl: {ej['resolved']}  present: {'yes' if ej['present'] else 'no'}"
+        )
+    else:
+        lines.append("    pointers: none (no primary session_id resolved in registry)")
+    print("\n".join(lines))
+    return 0
+
+
+def _bounded_pilot_readiness_summary_flag_conflicts(args: argparse.Namespace) -> str | None:
+    if args.session_id is not None:
+        return "--session-id is only for --evidence-pointers"
+    if args.latest_bounded_pilot:
+        return "--latest-bounded-pilot is only for --evidence-pointers"
+    if args.bounded_pilot_only or args.latest_bounded_pilot_open:
+        return "--bounded-pilot-only / --latest-bounded-pilot-open require --open-sessions"
+    if args.run_type is not None:
+        return "--run-type is not compatible with --bounded-pilot-readiness-summary"
+    if args.status is not None:
+        return "--status is not compatible with --bounded-pilot-readiness-summary"
+    if args.limit is not None:
+        return "--limit is not compatible with --bounded-pilot-readiness-summary"
+    if args.summary_only:
+        return "--summary-only is not compatible with --bounded-pilot-readiness-summary"
+    if args.output_dir is not None:
+        return "--output-dir is not compatible with --bounded-pilot-readiness-summary"
+    if args.stdout:
+        return "--stdout is not compatible with --bounded-pilot-readiness-summary"
+    return None
+
+
+# =============================================================================
 # Main Entry Point
 # =============================================================================
 
@@ -521,7 +778,7 @@ Beispiele:
     parser.add_argument(
         "--json",
         action="store_true",
-        help="JSON output for --evidence-pointers or --open-sessions",
+        help="JSON output for --evidence-pointers, --open-sessions, or --bounded-pilot-readiness-summary",
     )
     parser.add_argument(
         "--registry-base",
@@ -529,7 +786,7 @@ Beispiele:
         default=None,
         help=(
             "Override live session registry directory "
-            "(default: reports/experiments/live_sessions; used by --evidence-pointers and --open-sessions)"
+            "(default: reports/experiments/live_sessions; used by read-only subcommands)"
         ),
     )
 
@@ -555,6 +812,22 @@ Beispiele:
         ),
     )
 
+    # Bounded-pilot readiness + packet + registry focus (read-only)
+    parser.add_argument(
+        "--bounded-pilot-readiness-summary",
+        action="store_true",
+        help=(
+            "Read-only: current bounded_pilot readiness + operator preflight packet "
+            "+ registry session focus in one view"
+        ),
+    )
+    parser.add_argument(
+        "--config-path",
+        type=str,
+        default=None,
+        help="Optional config.toml path for --bounded-pilot-readiness-summary (else env/default)",
+    )
+
     # Logging
     parser.add_argument(
         "--log-level",
@@ -568,6 +841,26 @@ Beispiele:
 
     # Logging setup
     logger = setup_logging(args.log_level)
+
+    _mode_n = (
+        int(bool(args.bounded_pilot_readiness_summary))
+        + int(bool(args.evidence_pointers))
+        + int(bool(args.open_sessions))
+    )
+    if _mode_n > 1:
+        print(
+            "ERR: use only one of --bounded-pilot-readiness-summary, "
+            "--evidence-pointers, --open-sessions",
+            file=sys.stderr,
+        )
+        return 2
+
+    if args.bounded_pilot_readiness_summary:
+        conflict = _bounded_pilot_readiness_summary_flag_conflicts(args)
+        if conflict is not None:
+            print(f"ERR: {conflict}", file=sys.stderr)
+            return 2
+        return _run_bounded_pilot_readiness_summary(args, logger)
 
     if args.evidence_pointers and args.open_sessions:
         print(

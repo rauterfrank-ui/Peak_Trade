@@ -201,7 +201,8 @@ def test_open_sessions_conflicts_with_evidence_pointers(capsys: pytest.CaptureFi
         ],
     ):
         assert main() == 2
-    assert "not both" in capsys.readouterr().err
+    err = capsys.readouterr().err
+    assert "only one" in err.lower() or "not both" in err.lower()
 
 
 def test_open_sessions_rejects_session_id_flag(capsys: pytest.CaptureFixture[str]) -> None:
