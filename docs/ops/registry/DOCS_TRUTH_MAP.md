@@ -73,6 +73,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 ## Änderungsnachweis (Slice A)
 
+- 2026-04-20 — `docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` — `run_bounded_pilot_session.py --no-invoke` nutzt dasselbe Operator-Preflight-Packet wie der Invoke-Pfad (Gate-only Parität); Ist-Zustand-Tabelle / Phase A.4; **keine** Live-Freigabe.
+
 - 2026-04-20 — `docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` — Phase D.3: direkter `run_execution_session.py --mode bounded_pilot` (non-dry-run) führt dasselbe Operator-Preflight-Packet nach Handoff-Env aus (Defense-in-Depth); **keine** Live-Freigabe.
 
 - 2026-04-20 — `docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` — Phase B: kanonischer Preflight `check_bounded_pilot_readiness.py`; Entry-Wrapper `run_bounded_pilot_session.py` baut vor Runner-Handoff zusätzlich das read-only Operator-Preflight-Packet (`bounded_pilot_operator_preflight_packet.py`); Ist-Zustand-Tabelle / Phase D; **keine** Live-Freigabe; **keine** neue Gate-Theorie.

@@ -27,7 +27,7 @@ Dieses Runbook beschreibt **end-to-end**, wie ein Operator von **Dry-Validation*
 |------------|--------|
 | Kanonischer Preflight (read-only) | `scripts/ops/check_bounded_pilot_readiness.py` bündelt **`check_live_readiness.py --stage live`** und **`pilot_go_no_go_eval_v1`**; Exit 0 nur bei voller Live-Readiness **und** `GO_FOR_NEXT_PHASE_ONLY`. Startet **keine** Session und setzt **kein** Gate-Handoff-Env. |
 | Operator-Preflight-Packet (read-only) | `scripts/ops/bounded_pilot_operator_preflight_packet.py` orchestriert Readiness + **Stop-Signal-Snapshot** (`snapshot_operator_stop_signals`) in ein festes JSON; gleiche fail-closed Hartfehler wie im Skript-Docstring. |
-| Entry-Gate + Session-Handoff | `scripts/ops/run_bounded_pilot_session.py` nutzt den Preflight-Stack, baut **unmittelbar vor** Setzen von `PT_BOUNDED_PILOT_INVOKED_FROM_GATE` / Confirm-Token das Operator-Preflight-Packet erneut; bei `packet_ok` ruft es **`run_execution_session.py --mode bounded_pilot`** auf (ohne `--no-invoke`). Bei Packet-Blockade: **kein** Runner-Handoff. `--no-invoke` prüft nur Readiness+Go/No-Go (kein Packet), wie `--help`. |
+| Entry-Gate + Session-Handoff | `scripts/ops/run_bounded_pilot_session.py` nutzt den Preflight-Stack und dasselbe Operator-Preflight-Packet **vor** jedem erfolgreichen Abschluss (Gate-only **`--no-invoke`** oder vor Handoff); bei `packet_ok` und ohne `--no-invoke` ruft es **`run_execution_session.py --mode bounded_pilot`** auf. Bei Packet-Blockade: **kein** Runner-Handoff / kein „alles grün“ bei `--no-invoke`. |
 | Session-CLI | `scripts/run_execution_session.py` unterstützt `shadow`, `testnet`, **`bounded_pilot`**. |
 | Runner | `LiveSessionRunner` / Konfiguration für `bounded_pilot` in `src/execution/live_session.py` (u. a. `bounded_pilot_mode`, `live_dry_run_mode=False` im Pilot-Kontext). |
 | Governance | Pipeline wählt bei Bounded-Pilot-Kontext den Key **`live_order_execution_bounded_pilot`** (`select_live_order_execution_key`). |
@@ -86,7 +86,7 @@ Alle Punkte müssen **vor** dem ersten Aufruf mit echten Orders erfüllt sein.
 
 4. **Optional: Nur Gate-Check ohne Session**  
    `python3 scripts/ops/run_bounded_pilot_session.py --no-invoke`  
-   Erwartung: Gates GREEN, **kein** Handoff.
+   Erwartung: Readiness + Go/No-Go **und** Operator-Preflight-Packet **GREEN**, **kein** Handoff / keine Session.
 
 Detaillierte Einordnung: `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md` (Schritt 5 dort ist historisch; Gate-only = `--no-invoke` hier in Phase A.4).
 
