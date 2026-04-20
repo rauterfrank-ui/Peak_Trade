@@ -21,7 +21,7 @@ Purpose boundary:
 
 - convert existing canonical readiness, evidence, and authority surfaces into one auditable step path (`S0` to `S6`)
 - reduce review drift from distributed signoff sequencing and inconsistent evidence-intake order
-- enforce conservative `stop / escalate` behavior when evidence or authority posture is `Missing`, `Partial`, or `Unknown`
+- enforce conservative `stop &#47; escalate` behavior when evidence or authority posture is `Missing`, `Partial`, or `Unknown`
 
 This procedure is an operational review and handoff surface only. It does not grant authorization, does not pass gates, and does not enable runtime actions.
 
@@ -205,7 +205,7 @@ Pointer discipline:
 
 Binding matrix rule:
 
-- `unknown => stop / escalate` is mandatory for all steps `S0` to `S6`
+- `unknown => stop &#47; escalate` is mandatory for all steps `S0` to `S6`
 
 ## 7) Abort / Rollback / Kill-Switch Reference Surface
 
