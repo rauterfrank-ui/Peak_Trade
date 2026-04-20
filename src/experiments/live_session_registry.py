@@ -58,7 +58,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Mapping, List, Optional, Sequence
+from typing import Any, Dict, Iterator, Mapping, List, Optional, Sequence
 import json
 from collections import Counter
 import textwrap
@@ -307,6 +307,35 @@ def find_live_session_registry_json_for_session_id(
             return (rec, path)
 
     return None
+
+
+# =============================================================================
+# Query-Funktion: iter_live_session_registry_entries()
+# =============================================================================
+
+
+def iter_live_session_registry_entries(
+    base_dir: Path | str | None = None,
+) -> Iterator[tuple[LiveSessionRecord, Path]]:
+    """
+    Read-only: yield (record, json_path) for each parseable registry file, newest first.
+
+    Unlike find_live_session_registry_json_for_session_id, this exposes the **artifact path**
+    for every JSON row (needed e.g. for status=started rows where a newer completed file may
+    also exist for the same session_id).
+    """
+    base = Path(base_dir) if base_dir is not None else DEFAULT_LIVE_SESSION_DIR
+    if not base.exists():
+        return
+
+    for path in sorted(base.glob("*.json"), reverse=True):
+        try:
+            with path.open("r", encoding="utf-8") as f:
+                raw = json.load(f)
+            rec = LiveSessionRecord.from_dict(raw)
+        except Exception:
+            continue
+        yield rec, path
 
 
 # =============================================================================
@@ -717,6 +746,7 @@ __all__ = [
     # Functions
     "register_live_session_run",
     "find_live_session_registry_json_for_session_id",
+    "iter_live_session_registry_entries",
     "list_session_records",
     "get_session_summary",
     "load_session_record",

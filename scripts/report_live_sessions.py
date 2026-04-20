@@ -39,6 +39,11 @@ Usage:
     # Read-only Evidence-Pointer (Registry + session-scoped execution_events.jsonl):
     python scripts/report_live_sessions.py --evidence-pointers --session-id <id>
     python scripts/report_live_sessions.py --evidence-pointers --latest-bounded-pilot --json
+
+    # Read-only open sessions (registry status=started; per-artifact paths):
+    python scripts/report_live_sessions.py --open-sessions
+    python scripts/report_live_sessions.py --open-sessions --bounded-pilot-only --json
+    python scripts/report_live_sessions.py --open-sessions --latest-bounded-pilot-open
 """
 
 from __future__ import annotations
@@ -49,7 +54,7 @@ import logging
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 # Projekt-Root zum Path hinzufuegen
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -293,6 +298,122 @@ def _run_evidence_pointers(args: argparse.Namespace, logger: logging.Logger) -> 
 
 
 # =============================================================================
+# Open sessions (read-only, registry status=started)
+# =============================================================================
+
+
+def _open_session_payload_row(record: Any, registry_path: Path, cwd: Path) -> dict[str, Any]:
+    """Build one JSON-serializable row; read-only path resolution only."""
+    from src.observability.execution_events import expected_session_scoped_events_jsonl_path
+
+    rel_exec = expected_session_scoped_events_jsonl_path(record.session_id)
+    abs_registry = registry_path.resolve()
+    abs_exec = (cwd / rel_exec).resolve()
+    exec_present = abs_exec.is_file()
+    closeout_note = None
+    if record.status == "started":
+        closeout_note = (
+            "Registry artifact has non-terminal status=started only; "
+            "no completed/failed/aborted in this file. "
+            "Does not prove the process is still running."
+        )
+    return {
+        "session_id": record.session_id,
+        "registry_status": record.status,
+        "operator_lifecycle": "OPEN",
+        "mode": record.mode,
+        "run_type": record.run_type,
+        "run_id": record.run_id,
+        "started_at": record.started_at.isoformat() if record.started_at else None,
+        "finished_at": record.finished_at.isoformat() if record.finished_at else None,
+        "closeout_note": closeout_note,
+        "registry_json": {
+            "path": str(registry_path),
+            "resolved": str(abs_registry),
+            "exists": abs_registry.is_file(),
+        },
+        "execution_events_session_jsonl": {
+            "path": str(rel_exec),
+            "resolved": str(abs_exec),
+            "present": exec_present,
+        },
+    }
+
+
+def _run_open_sessions(args: argparse.Namespace, logger: logging.Logger) -> int:
+    """
+    List registry artifacts with status=started (operator: OPEN). Read-only.
+
+    Returns:
+        0 always (including empty list); usage errors return 2 from main().
+    """
+    from src.experiments.live_session_registry import (
+        DEFAULT_LIVE_SESSION_DIR,
+        STATUS_STARTED,
+        iter_live_session_registry_entries,
+    )
+
+    base_dir = Path(args.registry_base) if args.registry_base else DEFAULT_LIVE_SESSION_DIR
+    cwd = Path.cwd()
+
+    rows_raw = [
+        (r, p)
+        for r, p in iter_live_session_registry_entries(base_dir=base_dir)
+        if r.status == STATUS_STARTED
+    ]
+
+    if args.bounded_pilot_only or args.latest_bounded_pilot_open:
+        rows_raw = [(r, p) for r, p in rows_raw if r.mode == "bounded_pilot"]
+
+    if args.latest_bounded_pilot_open:
+        rows_raw.sort(
+            key=lambda t: t[0].started_at or datetime(1970, 1, 1),
+            reverse=True,
+        )
+        rows_raw = rows_raw[:1]
+
+    sessions = [_open_session_payload_row(r, p, cwd) for r, p in rows_raw]
+    payload: dict[str, Any] = {
+        "contract": "report_live_sessions.open_sessions",
+        "registry_dir": str(base_dir),
+        "count": len(sessions),
+        "sessions": sessions,
+    }
+
+    logger.info("Open sessions (read-only) count=%s", len(sessions))
+
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+
+    if not sessions:
+        print(
+            "Open sessions (read-only): none "
+            "(no registry rows with status=started for the selected filters)."
+        )
+        return 0
+
+    lines = ["Open sessions (read-only)"]
+    for item in sessions:
+        lines.append(f"  session_id: {item['session_id']}")
+        lines.append(
+            f"    operator_lifecycle: {item['operator_lifecycle']} (registry_status={item['registry_status']})"
+        )
+        lines.append(
+            f"    mode: {item['mode']}  run_type: {item['run_type']}  run_id: {item['run_id']}"
+        )
+        if item.get("closeout_note"):
+            lines.append(f"    note: {item['closeout_note']}")
+        lines.append(f"    registry_json: {item['registry_json']['resolved']}")
+        ej = item["execution_events_session_jsonl"]
+        lines.append(
+            f"    execution_events_jsonl: {ej['resolved']}  present: {'yes' if ej['present'] else 'no'}"
+        )
+    print("\n".join(lines))
+    return 0
+
+
+# =============================================================================
 # Main Entry Point
 # =============================================================================
 
@@ -400,13 +521,38 @@ Beispiele:
     parser.add_argument(
         "--json",
         action="store_true",
-        help="JSON output for --evidence-pointers",
+        help="JSON output for --evidence-pointers or --open-sessions",
     )
     parser.add_argument(
         "--registry-base",
         type=str,
         default=None,
-        help="Override live session registry directory (for --evidence-pointers; default: reports/experiments/live_sessions)",
+        help=(
+            "Override live session registry directory "
+            "(default: reports/experiments/live_sessions; used by --evidence-pointers and --open-sessions)"
+        ),
+    )
+
+    # Read-only open sessions (registry status=started)
+    parser.add_argument(
+        "--open-sessions",
+        action="store_true",
+        help="Read-only: list registry artifacts with status=started (operator: OPEN)",
+    )
+    parser.add_argument(
+        "--bounded-pilot-only",
+        action="store_true",
+        dest="bounded_pilot_only",
+        help="With --open-sessions: only rows where mode=bounded_pilot",
+    )
+    parser.add_argument(
+        "--latest-bounded-pilot-open",
+        action="store_true",
+        dest="latest_bounded_pilot_open",
+        help=(
+            "With --open-sessions: single newest started row with mode=bounded_pilot "
+            "(by started_at)"
+        ),
     )
 
     # Logging
@@ -422,6 +568,29 @@ Beispiele:
 
     # Logging setup
     logger = setup_logging(args.log_level)
+
+    if args.evidence_pointers and args.open_sessions:
+        print(
+            "ERR: use either --evidence-pointers or --open-sessions, not both",
+            file=sys.stderr,
+        )
+        return 2
+
+    if args.open_sessions:
+        if args.session_id is not None:
+            print(
+                "ERR: --session-id applies only to --evidence-pointers",
+                file=sys.stderr,
+            )
+            return 2
+        if args.latest_bounded_pilot:
+            print(
+                "ERR: --latest-bounded-pilot applies only to --evidence-pointers; "
+                "use --latest-bounded-pilot-open with --open-sessions",
+                file=sys.stderr,
+            )
+            return 2
+        return _run_open_sessions(args, logger)
 
     if args.evidence_pointers:
         if args.session_id and args.latest_bounded_pilot:
