@@ -48,6 +48,10 @@ Usage:
     # Bounded-pilot readiness + preflight packet + registry focus (read-only snapshot):
     python scripts/report_live_sessions.py --bounded-pilot-readiness-summary
     python scripts/report_live_sessions.py --bounded-pilot-readiness-summary --json
+
+    # Bounded-pilot closeout / final registry status + pointers (read-only; no readiness run):
+    python scripts/report_live_sessions.py --bounded-pilot-closeout-status-summary
+    python scripts/report_live_sessions.py --bounded-pilot-closeout-status-summary --json
 """
 
 from __future__ import annotations
@@ -514,6 +518,141 @@ def _collect_bounded_pilot_session_focus(
     }
 
 
+def _build_bounded_pilot_closeout_analysis(
+    session_focus: dict[str, Any],
+    *,
+    base_dir: Path,
+    cwd: Path,
+) -> dict[str, Any]:
+    """
+    Read-only closeout / final-status view from registry artifacts + pointers.
+
+    Uses the newest registry JSON per session_id (filename order) as authoritative for
+    terminal vs non-terminal; scans all bounded_pilot rows for the same session_id to
+    detect started-vs-terminal conflicts across artifacts.
+    """
+    from src.experiments.live_session_registry import (
+        STATUS_COMPLETED,
+        STATUS_FAILED,
+        STATUS_ABORTED,
+        STATUS_STARTED,
+        iter_live_session_registry_entries,
+    )
+
+    terminal = {STATUS_COMPLETED, STATUS_FAILED, STATUS_ABORTED}
+    sid = session_focus.get("primary_session_id")
+    primary_source = session_focus.get("primary_source")
+
+    if sid is None:
+        return {
+            "primary_session_id": None,
+            "primary_source": primary_source,
+            "registry_bounded_pilot_artifacts_for_session": [],
+            "newest_registry_status": None,
+            "statuses_seen_across_artifacts": [],
+            "closeout_signal_summary": "NO_BOUNDED_PILOT_SESSION_IN_REGISTRY",
+            "registry_terminal_in_newest_artifact": False,
+            "any_terminal_artifact_exists": False,
+            "open_vs_terminal_artifact_conflict": False,
+            "execution_events_jsonl_present": False,
+            "pointers": None,
+            "operator_notes": [
+                "No bounded_pilot session_id resolved from registry (empty or no matching rows).",
+            ],
+        }
+
+    matches = [
+        (r, p)
+        for r, p in iter_live_session_registry_entries(base_dir=base_dir)
+        if r.session_id == sid and r.mode == "bounded_pilot"
+    ]
+    matches.sort(key=lambda t: t[1].name, reverse=True)
+
+    if not matches:
+        return {
+            "primary_session_id": sid,
+            "primary_source": primary_source,
+            "registry_bounded_pilot_artifacts_for_session": [],
+            "newest_registry_status": None,
+            "statuses_seen_across_artifacts": [],
+            "closeout_signal_summary": "REGISTRY_ROWS_MISSING_AFTER_SELECTION",
+            "registry_terminal_in_newest_artifact": False,
+            "any_terminal_artifact_exists": False,
+            "open_vs_terminal_artifact_conflict": False,
+            "execution_events_jsonl_present": False,
+            "pointers": _pointers_for_session_id(sid, base_dir=base_dir, cwd=cwd),
+            "operator_notes": [
+                "primary_session_id was resolved but no bounded_pilot registry rows "
+                "matched during scan; registry may have changed since selection.",
+            ],
+        }
+
+    artifacts_min = [
+        {
+            "registry_status": r.status,
+            "path": str(p),
+            "started_at": r.started_at.isoformat() if r.started_at else None,
+            "finished_at": r.finished_at.isoformat() if r.finished_at else None,
+        }
+        for r, p in matches
+    ]
+
+    any_terminal = any(r.status in terminal for r, _ in matches)
+    newest = matches[0] if matches else None
+    newest_status = newest[0].status if newest else None
+    newest_terminal = bool(newest and newest[0].status in terminal)
+    conflict = bool(newest and newest[0].status == STATUS_STARTED and any_terminal)
+
+    pointers = _pointers_for_session_id(sid, base_dir=base_dir, cwd=cwd)
+    exec_present = (
+        bool(pointers["execution_events_session_jsonl"]["present"]) if pointers else False
+    )
+
+    if newest_terminal:
+        summary_code = "REGISTRY_TERMINAL_IN_NEWEST_ARTIFACT"
+    elif conflict:
+        summary_code = "AMBIGUOUS_NEWEST_STARTED_WITH_OLDER_TERMINAL"
+    elif newest_status == STATUS_STARTED:
+        summary_code = "REGISTRY_NON_TERMINAL_NEWEST_ONLY"
+    else:
+        summary_code = "REGISTRY_STATUS_NON_STANDARD"
+
+    notes: list[str] = []
+    if conflict:
+        notes.append(
+            "Newest registry artifact has status=started but an older terminal "
+            "(completed/failed/aborted) artifact exists for the same session_id; "
+            "inspect every registry JSON path listed below."
+        )
+    if newest_status == STATUS_STARTED and not conflict:
+        notes.append(
+            "Newest registry artifact is non-terminal (started only in newest file); "
+            "no completed/failed/aborted there — does not prove a process is still running."
+        )
+    if newest_terminal:
+        notes.append(
+            "Newest registry artifact has a terminal status; registry-only signal "
+            "(not a handoff-success or business-outcome verdict)."
+        )
+
+    statuses_seen = sorted({r.status for r, _ in matches})
+
+    return {
+        "primary_session_id": sid,
+        "primary_source": primary_source,
+        "registry_bounded_pilot_artifacts_for_session": artifacts_min,
+        "newest_registry_status": newest_status,
+        "statuses_seen_across_artifacts": statuses_seen,
+        "closeout_signal_summary": summary_code,
+        "registry_terminal_in_newest_artifact": newest_terminal,
+        "any_terminal_artifact_exists": any_terminal,
+        "open_vs_terminal_artifact_conflict": conflict,
+        "execution_events_jsonl_present": exec_present,
+        "pointers": pointers,
+        "operator_notes": notes,
+    }
+
+
 def _run_bounded_pilot_readiness_summary(args: argparse.Namespace, logger: logging.Logger) -> int:
     """
     One-shot read-only snapshot: current readiness + operator preflight packet + registry focus.
@@ -670,6 +809,113 @@ def _bounded_pilot_readiness_summary_flag_conflicts(args: argparse.Namespace) ->
     return None
 
 
+def _bounded_pilot_closeout_status_summary_flag_conflicts(args: argparse.Namespace) -> str | None:
+    if args.session_id is not None:
+        return "--session-id is only for --evidence-pointers"
+    if args.latest_bounded_pilot:
+        return "--latest-bounded-pilot is only for --evidence-pointers"
+    if args.bounded_pilot_only or args.latest_bounded_pilot_open:
+        return "--bounded-pilot-only / --latest-bounded-pilot-open require --open-sessions"
+    if args.run_type is not None:
+        return "--run-type is not compatible with --bounded-pilot-closeout-status-summary"
+    if args.status is not None:
+        return "--status is not compatible with --bounded-pilot-closeout-status-summary"
+    if args.limit is not None:
+        return "--limit is not compatible with --bounded-pilot-closeout-status-summary"
+    if args.summary_only:
+        return "--summary-only is not compatible with --bounded-pilot-closeout-status-summary"
+    if args.output_dir is not None:
+        return "--output-dir is not compatible with --bounded-pilot-closeout-status-summary"
+    if args.stdout:
+        return "--stdout is not compatible with --bounded-pilot-closeout-status-summary"
+    if getattr(args, "config_path", None):
+        return "--config-path is only for --bounded-pilot-readiness-summary"
+    return None
+
+
+def _run_bounded_pilot_closeout_status_summary(
+    args: argparse.Namespace,
+    logger: logging.Logger,
+) -> int:
+    """Read-only bounded_pilot closeout / final registry status + pointers (no readiness/packet run)."""
+    base_dir = _registry_base_dir(args)
+    cwd = Path.cwd()
+    session_focus = _collect_bounded_pilot_session_focus(base_dir=base_dir, cwd=cwd)
+    closeout = _build_bounded_pilot_closeout_analysis(
+        session_focus,
+        base_dir=base_dir,
+        cwd=cwd,
+    )
+
+    payload: dict[str, Any] = {
+        "contract": "report_live_sessions.bounded_pilot_closeout_status_summary",
+        "disclaimer": (
+            "Read-only registry and pointer snapshot for bounded_pilot closeout/final-status "
+            "visibility. Terminal status is derived from the newest registry JSON per session_id "
+            "(filename order). Not a live authorization, not proof of handoff success, not proof "
+            "that a process is or is not running."
+        ),
+        "registry_dir": str(base_dir),
+        "session_focus": session_focus,
+        "closeout": closeout,
+    }
+
+    logger.info(
+        "Bounded-pilot closeout status summary (read-only) primary=%s summary=%s",
+        session_focus.get("primary_session_id"),
+        closeout.get("closeout_signal_summary"),
+    )
+
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+
+    co = closeout
+    sf = session_focus
+    lines = [
+        "Bounded-pilot closeout / final-status summary (read-only)",
+        f"  disclaimer: {payload['disclaimer']}",
+        "",
+        "  Session selection (same rules as readiness summary):",
+        f"    primary_session_id: {sf['primary_session_id']}",
+        f"    primary_source: {sf['primary_source']}",
+        "",
+        "  Closeout / registry signals:",
+        f"    closeout_signal_summary: {co['closeout_signal_summary']}",
+        f"    newest_registry_status: {co['newest_registry_status']}",
+        f"    registry_terminal_in_newest_artifact: {co['registry_terminal_in_newest_artifact']}",
+        f"    any_terminal_artifact_exists: {co['any_terminal_artifact_exists']}",
+        f"    open_vs_terminal_artifact_conflict: {co['open_vs_terminal_artifact_conflict']}",
+        f"    execution_events_jsonl_present: {co['execution_events_jsonl_present']}",
+        f"    statuses_seen_across_artifacts: {co['statuses_seen_across_artifacts']}",
+    ]
+    arts = co.get("registry_bounded_pilot_artifacts_for_session") or []
+    if arts:
+        lines.append("    registry artifacts (newest first):")
+        for a in arts:
+            lines.append(f"      - {a['registry_status']}: {a['path']}")
+    ptr = co.get("pointers")
+    if ptr:
+        ej = ptr["execution_events_session_jsonl"]
+        lines.append("")
+        lines.append("  Pointers (session-scoped):")
+        lines.append(f"    registry_json: {ptr['registry_json']['resolved']}")
+        lines.append(
+            f"    execution_events_jsonl: {ej['resolved']}  present: "
+            f"{'yes' if ej['present'] else 'no'}"
+        )
+    else:
+        lines.append("")
+        lines.append("  Pointers: none")
+    if co.get("operator_notes"):
+        lines.append("")
+        lines.append("  Operator notes:")
+        for n in co["operator_notes"]:
+            lines.append(f"    - {n}")
+    print("\n".join(lines))
+    return 0
+
+
 # =============================================================================
 # Main Entry Point
 # =============================================================================
@@ -778,7 +1024,10 @@ Beispiele:
     parser.add_argument(
         "--json",
         action="store_true",
-        help="JSON output for --evidence-pointers, --open-sessions, or --bounded-pilot-readiness-summary",
+        help=(
+            "JSON output for --evidence-pointers, --open-sessions, "
+            "--bounded-pilot-readiness-summary, or --bounded-pilot-closeout-status-summary"
+        ),
     )
     parser.add_argument(
         "--registry-base",
@@ -822,6 +1071,14 @@ Beispiele:
         ),
     )
     parser.add_argument(
+        "--bounded-pilot-closeout-status-summary",
+        action="store_true",
+        help=(
+            "Read-only: bounded_pilot registry closeout/final-status + pointers "
+            "(reuses session-focus selection; no readiness/packet evaluation)"
+        ),
+    )
+    parser.add_argument(
         "--config-path",
         type=str,
         default=None,
@@ -844,13 +1101,14 @@ Beispiele:
 
     _mode_n = (
         int(bool(args.bounded_pilot_readiness_summary))
+        + int(bool(args.bounded_pilot_closeout_status_summary))
         + int(bool(args.evidence_pointers))
         + int(bool(args.open_sessions))
     )
     if _mode_n > 1:
         print(
             "ERR: use only one of --bounded-pilot-readiness-summary, "
-            "--evidence-pointers, --open-sessions",
+            "--bounded-pilot-closeout-status-summary, --evidence-pointers, --open-sessions",
             file=sys.stderr,
         )
         return 2
@@ -861,6 +1119,13 @@ Beispiele:
             print(f"ERR: {conflict}", file=sys.stderr)
             return 2
         return _run_bounded_pilot_readiness_summary(args, logger)
+
+    if args.bounded_pilot_closeout_status_summary:
+        conflict = _bounded_pilot_closeout_status_summary_flag_conflicts(args)
+        if conflict is not None:
+            print(f"ERR: {conflict}", file=sys.stderr)
+            return 2
+        return _run_bounded_pilot_closeout_status_summary(args, logger)
 
     if args.evidence_pointers and args.open_sessions:
         print(
