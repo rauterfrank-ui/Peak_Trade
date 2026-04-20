@@ -1,7 +1,7 @@
 # RUNBOOK — Bounded Pilot Live Entry (Ist-Zustand Repo)
 
 **status:** ACTIVE  
-**last_updated:** 2026-04-01  
+**last_updated:** 2026-04-20  
 **owner:** Peak_Trade  
 **purpose:** Einheitliche Operator-Anleitung für den **ersten eng begrenzten Real-Money-Pilot** (Bounded Pilot)—abgestimmt auf den **aktuellen Code- und Governance-Stand** im Repository.  
 **docs_token:** DOCS_TOKEN_RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY
@@ -26,7 +26,8 @@ Dieses Runbook beschreibt **end-to-end**, wie ein Operator von **Dry-Validation*
 | Komponente | Stand |
 |------------|--------|
 | Kanonischer Preflight (read-only) | `scripts/ops/check_bounded_pilot_readiness.py` bündelt **`check_live_readiness.py --stage live`** und **`pilot_go_no_go_eval_v1`**; Exit 0 nur bei voller Live-Readiness **und** `GO_FOR_NEXT_PHASE_ONLY`. Startet **keine** Session und setzt **kein** Gate-Handoff-Env. |
-| Entry-Gate + Session-Handoff | `scripts/ops/run_bounded_pilot_session.py` nutzt denselben Preflight-Stack, ruft bei grünen Gates **`run_execution_session.py --mode bounded_pilot`** auf (ohne `--no-invoke`). |
+| Operator-Preflight-Packet (read-only) | `scripts/ops/bounded_pilot_operator_preflight_packet.py` orchestriert Readiness + **Stop-Signal-Snapshot** (`snapshot_operator_stop_signals`) in ein festes JSON; gleiche fail-closed Hartfehler wie im Skript-Docstring. |
+| Entry-Gate + Session-Handoff | `scripts/ops/run_bounded_pilot_session.py` nutzt den Preflight-Stack, baut **unmittelbar vor** Setzen von `PT_BOUNDED_PILOT_INVOKED_FROM_GATE` / Confirm-Token das Operator-Preflight-Packet erneut; bei `packet_ok` ruft es **`run_execution_session.py --mode bounded_pilot`** auf (ohne `--no-invoke`). Bei Packet-Blockade: **kein** Runner-Handoff. `--no-invoke` prüft nur Readiness+Go/No-Go (kein Packet), wie `--help`. |
 | Session-CLI | `scripts/run_execution_session.py` unterstützt `shadow`, `testnet`, **`bounded_pilot`**. |
 | Runner | `LiveSessionRunner` / Konfiguration für `bounded_pilot` in `src/execution/live_session.py` (u. a. `bounded_pilot_mode`, `live_dry_run_mode=False` im Pilot-Kontext). |
 | Governance | Pipeline wählt bei Bounded-Pilot-Kontext den Key **`live_order_execution_bounded_pilot`** (`select_live_order_execution_key`). |
@@ -106,6 +107,14 @@ python3 scripts/check_live_readiness.py --stage live --verbose
 python3 scripts/ops/pilot_go_no_go_eval_v1.py --json
 ```
 
+**Vollständiges Operator-Packet (Readiness + Stop-Signale, read-only):**
+
+```bash
+python3 scripts/ops/bounded_pilot_operator_preflight_packet.py --repo-root . --json
+```
+
+Vor **Session-Start ohne `--no-invoke`** wird dieses Packet im Entry-Wrapper intern nochmals gebaut; ein eigener Aufruf bleibt für Logs/Artefakte sinnvoll.
+
 ### Phase C — Erweiterter Ops-Check (optional, laut live_pilot_execution_plan)
 
 - `scripts/ops/ops_status.sh` (Repo-Root) → Exit 0
@@ -124,6 +133,7 @@ python3 scripts/ops/pilot_go_no_go_eval_v1.py --json
    python3 scripts/ops/run_bounded_pilot_session.py
    ```  
    Optionen siehe `--help` (u. a. `--steps`, `--position-fraction`, `--json`).  
+   Unmittelbar vor dem Handoff an den Runner prüft der Wrapper das **Operator-Preflight-Packet** (fail-closed bei Stop-Signal-**error**-Status wie im Packet definiert).  
    **Hinweis:** Default ist **extrem klein** steps/sizing im Wrapper-Docstring; Cap an eure Pilot-Tabelle anpassen, aber **immer innerhalb** der konfigurierten `live_risk`-Grenzen.
 
 3. **Alternativ (Operator kontrolliert den Aufruf selbst):**  

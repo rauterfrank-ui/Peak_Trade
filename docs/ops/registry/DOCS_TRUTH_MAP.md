@@ -73,11 +73,11 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 ## Änderungsnachweis (Slice A)
 
+- 2026-04-20 — `docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` — Phase B: kanonischer Preflight `check_bounded_pilot_readiness.py`; Entry-Wrapper `run_bounded_pilot_session.py` baut vor Runner-Handoff zusätzlich das read-only Operator-Preflight-Packet (`bounded_pilot_operator_preflight_packet.py`); Ist-Zustand-Tabelle / Phase D; **keine** Live-Freigabe; **keine** neue Gate-Theorie.
+
 - 2026-04-20 — `docs&#47;ops&#47;reviews&#47;incident_stop_kill_switch_consistency_review&#47;REVIEW.md` — Companion: read-only `scripts&#47;ops&#47;snapshot_operator_stop_signals.py` (PT_* / incident_stop artifact / kill_switch JSON, Divergenz-Hinweise); **keine** Runtime-Vereinheitlichung; **keine** Live-Freigabe.
 
 - 2026-04-20 — `docs&#47;ops&#47;specs&#47;BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` — Verweis auf kanonischen Preflight `scripts&#47;ops&#47;check_bounded_pilot_readiness.py` (Primary docs / scripts); **read-only**; **keine** Live-Freigabe.
-
-- 2026-04-20 — `docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` — Kanonischer Bounded-Pilot-Preflight `scripts&#47;ops&#47;check_bounded_pilot_readiness.py` (bündelt `check_live_readiness` live + `pilot_go_no_go_eval_v1`); Runbook-Phase B; Companion zu `scripts&#47;ops&#47;run_bounded_pilot_session.py`; **read-only**, **keine** Session, **keine** zusätzliche Live-Freigabe.
 
 - 2026-04-20 — `docs&#47;ops&#47;runbooks&#47;CANARY_LIVE_ENTRY_CRITERIA.md` — Bounded-Pilot fail-closed Handoff (`PT_BOUNDED_PILOT_INVOKED_FROM_GATE`, `PT_LIVE_CONFIRM_TOKEN`), Abgrenzung `--dry-run` ohne Gate-Env, Go/No-Go-Konsistenz `TRADE_READY` vs. `dry_run`; Companion zu `src/execution/live_session.py` / `src/core/environment.py` (Drift-Regeln `execution-layer`, `core-environment`); **keine** zusätzliche Live-Freigabe.
 
