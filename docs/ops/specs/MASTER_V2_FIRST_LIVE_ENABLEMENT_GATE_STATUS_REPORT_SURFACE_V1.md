@@ -1,7 +1,7 @@
 # MASTER V2 — First Live Enablement Gate-Status Report Surface / Summary Table v1 (Canonical, Read-Only)
 
 status: ACTIVE
-last_updated: 2026-04-19
+last_updated: 2026-04-21
 owner: Peak_Trade
 purpose: Canonical docs-only reporting surface for compact, review-friendly Master V2 readiness gate status output
 docs_token: DOCS_TOKEN_MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1
@@ -59,6 +59,23 @@ Explicit non-implication lock for this connection clarification:
 - no new gate fill is introduced by this clarification
 - no gate closure is asserted or implied
 - no live authorization, live unlock, or runtime authority is granted
+
+## 3.2) Interpretation lock — promotion / readiness visibility vs live authorization
+
+This report surface makes visible compact **readiness and promotion-interpretation** posture for human review (summary table and per-gate detail), using the Readiness Read Model grammar and remaining subordinate to the Readiness Ladder.
+
+This report surface explicitly does **not** claim:
+
+- live unlock, live authorization, or eligibility for bounded real-money entry
+- that any gate is closed, passed, or approved for production
+- that rendered `Status` rows or narrative fields **are** a governance decision or external authorization outcome
+
+**Authority boundary pointers (read-only, non-authorizing):**
+
+- Gate status index — G10 handoff legibility (promotion / readiness vs live authorization): [`MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md`](MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md#46-g10-authority-handoff-legibility-note-g10) (§4.6).
+- Decision authority map — staged execution enablement row; promotion vs trading authority locks: [`MASTER_V2_DECISION_AUTHORITY_MAP_V1.md`](MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) §4 and §7.
+
+This surface does **not** name or operationalize external governance actors beyond what those documents already state.
 
 ## 4) Relationship to Readiness Ladder
 
