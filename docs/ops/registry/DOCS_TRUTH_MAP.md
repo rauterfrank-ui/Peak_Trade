@@ -75,6 +75,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 - 2026-04-20 — `scripts&#47;report_live_sessions.py` — read-only `--bounded-pilot-readiness-summary` (Readiness + Operator-Preflight-Packet + Registry-Fokus; keine Autorisierung); Runbook `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` §4; **keine** Live-Freigabe.
 
+- 2026-04-20 — `scripts&#47;report_live_sessions.py` — read-only `--bounded-pilot-closeout-status-summary` (Registry-Terminalstatus im neuesten JSON pro `session_id` + Pointer; ohne Readiness-/Packet-Lauf); Runbook `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` §4; **keine** Live-Freigabe.
+
 - 2026-04-20 — `scripts&#47;report_live_sessions.py` — read-only `--open-sessions` (Registry `status=started`, optional `mode=bounded_pilot` / `--latest-bounded-pilot-open`); Runbook `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` §4; **keine** Live-Freigabe.
 
 - 2026-04-20 — `scripts&#47;report_live_sessions.py` — read-only `--evidence-pointers` (Registry-JSON + session-scoped `out&#47;ops&#47;execution_events&#47;sessions&#47;...&#47;execution_events.jsonl`); Runbook `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` §4; **keine** Live-Freigabe.

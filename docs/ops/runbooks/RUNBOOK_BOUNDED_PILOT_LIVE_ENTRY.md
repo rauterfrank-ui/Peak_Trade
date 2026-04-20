@@ -160,6 +160,9 @@ Nach jeder Pilot-Session-Durchführung mindestens:
 - Read-only **Zusammenfassung** (aktueller bounded-pilot Readiness-/Go-No-Go-Lauf, Operator-Preflight-Packet-Build, plus Registry-Fokus offene/letzte `bounded_pilot`-Session und Pointer):  
   `python3 scripts/report_live_sessions.py --bounded-pilot-readiness-summary [--json] [--config-path <path>] [--registry-base <dir>]`  
   (kein Live-Unlock; nur Momentaufnahme; siehe JSON-Feld `disclaimer`.)
+- Read-only **Closeout-/Final-Status-Sicht** (Registry-Terminalstatus im **neuesten** JSON pro `session_id`, Konflikt-Hinweis bei `started`+älterem Terminal-Artefakt, Pointer wie oben; **ohne** Readiness-/Packet-Lauf):  
+  `python3 scripts/report_live_sessions.py --bounded-pilot-closeout-status-summary [--json] [--registry-base <dir>]`  
+  (kein Urteil über Handoff-Erfolg; siehe JSON-Feld `disclaimer` und `closeout.closeout_signal_summary`.)
 - Optional: Export über eure **Object-Storage-Kette** (Phase T/W), ohne bestehende Shadow/Paper-Original-Runs zu überschreiben (neue `run_id` / Export-ID).
 
 Referenz: `docs/ops/runbooks/live_pilot_execution_plan.md` (Post-run, Scorecards).
