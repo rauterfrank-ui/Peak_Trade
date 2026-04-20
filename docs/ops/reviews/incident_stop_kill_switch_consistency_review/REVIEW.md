@@ -101,6 +101,7 @@ Current posture:
 2. state clearly which surface is operator-authoritative for stop status today
 3. keep incident-stop and kill-switch expectations conservative until alignment is tighter
 4. do not imply full stop-signal unification while RiskHook kill-switch integration remains future work
+5. use read-only tooling for side-by-side visibility: `scripts&#47;ops&#47;snapshot_operator_stop_signals.py` prints process `PT_*` stop-related env, the latest `out&#47;ops&#47;incident_stop_*` state file (if any), and `data&#47;kill_switch&#47;state.json` with explicit `consistency_notes` when signals diverge — **no** state mutation, **no** runtime-path unification
 
 ## Preferred Next Slice
 - `ops_suite_incident_state_real_signal_alignment`
