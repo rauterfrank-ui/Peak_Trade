@@ -1,7 +1,7 @@
 # RUNBOOK — Bounded Pilot Dry Validation
 
 status: DRAFT
-last_updated: 2026-03-13
+last_updated: 2026-04-20
 owner: Peak_Trade
 purpose: Operator sequence for dry validation before any bounded real-money pilot; operationalizes existing dry-run stack without new runtime orchestration
 docs_token: DOCS_TOKEN_RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION
@@ -98,6 +98,7 @@ python3 scripts/ops/run_bounded_pilot_session.py --no-invoke
 - Step 2: `pilot_go_no_go_eval_v1.py` verdict and optional `--json` output
 - Step 3: `run_execution_session.py` dry-run log
 - Capture: repo head, timestamp, operator identity (optional)
+- Optional docs-only pointer metadata vocabulary for externally retained captures (does not import payloads into git): [`../specs/MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md`](../specs/MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md)
 
 ## Success Criteria
 

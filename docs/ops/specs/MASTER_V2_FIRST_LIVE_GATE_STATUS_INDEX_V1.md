@@ -1,7 +1,7 @@
 # MASTER V2 — First Live Gate Status Index v1 (Canonical, Read-Only)
 
 status: ACTIVE
-last_updated: 2026-04-21
+last_updated: 2026-04-20
 owner: Peak_Trade
 purpose: Canonical docs-only gate status index for Master V2 First Live readiness visibility and auditability
 docs_token: DOCS_TOKEN_MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1
@@ -74,6 +74,7 @@ This subsection materializes **one** candidate-scoped **L1 dry-validation eviden
 - Operator sequence and primary artifact types: [`RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md) (Steps 1–3 required; Steps 4–5 optional per that runbook; see [Evidence](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md#evidence)).
 - Contractual prerequisite wording: [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) §3.1 (Dry Validation Completed).
 - Current operator ordering for Phase A: [`RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) §3 (Phase A — Dry-Validation).
+- L1 external pointer metadata discipline (docs-only; no artifact payloads in-repo): [`MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md).
 
 **Belastbare script references (documentation pointers only; no execution claim):**
 
@@ -88,7 +89,7 @@ This subsection materializes **one** candidate-scoped **L1 dry-validation eviden
 
 **G4 status after this record:** remains `Partial` — this index still does not host operator-held drill output, go/no-go JSON, or execution dry-run logs as named, immutable in-repo objects for a specific candidate.
 
-**Next open gap:** operator/governance capture and archival of the three primary artifact classes (dry-validation Steps 1–3) under change control **outside** this index; a later slice may add repo-resolvable pointers **if and when** those artifacts become stable, reviewable references.
+**Next open gap:** operator/governance capture and archival of the three primary artifact classes (dry-validation Steps 1–3) under change control **outside** this index; a later slice may add repo-resolvable pointers **if and when** those artifacts become stable, reviewable references. Minimal field vocabulary for external pointer records (L1 only) lives in [`MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md) and does not by itself close this gap.
 
 ## 4.2) L2 candidate verdict pointer record (G5)
 
