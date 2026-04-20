@@ -164,6 +164,7 @@ This subsection materializes **one** candidate-scoped **L4 first-candidate-sessi
 - Operative live-entry procedure (Phases after dry validation; bounded-pilot invocation and handoff): [`RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md).
 - Contractual definition of the first bounded real-money step: [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) §4 (First Bounded Real-Money Step).
 - Upstream prerequisite discipline cross-mapped for L1–L3 pointer records: [§4.1](#41-l1-candidate-evidence-pointer-record-g4), [§4.2](#42-l2-candidate-verdict-pointer-record-g5), [§4.3](#43-l3-candidate-prerequisite-pointer-record-g6).
+- L4 external session-flow evidence pointer metadata discipline (docs-only; no session/registry/closeout payloads in-repo): [`MASTER_V2_BOUNDED_PILOT_L4_SESSION_FLOW_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L4_SESSION_FLOW_EVIDENCE_POINTER_CONTRACT_V0.md).
 
 **Belastbare script references (documentation pointers only; no execution claim):**
 
@@ -176,7 +177,7 @@ This subsection materializes **one** candidate-scoped **L4 first-candidate-sessi
 
 **G7 status after this record:** remains `Partial` — this index still does not host a named, immutable in-repo session-flow execution bundle for a specific candidate.
 
-**Next open gap:** operator/governance capture and archival of session-flow execution evidence (per candidate session) under change control **outside** this index; a later slice may add repo-resolvable pointers **if and when** those artifacts become stable, reviewable references.
+**Next open gap:** operator/governance capture and archival of session-flow execution evidence (per candidate session) under change control **outside** this index; a later slice may add repo-resolvable pointers **if and when** those artifacts become stable, reviewable references. Minimal field vocabulary for external pointer records (L4 session flow only) lives in [`MASTER_V2_BOUNDED_PILOT_L4_SESSION_FLOW_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L4_SESSION_FLOW_EVIDENCE_POINTER_CONTRACT_V0.md) and does not by itself close this gap.
 
 ## 4.5) L5 candidate incident & safe-stop pointer record (G8)
 
