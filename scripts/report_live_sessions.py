@@ -49,7 +49,8 @@ Usage:
     python scripts/report_live_sessions.py --bounded-pilot-readiness-summary
     python scripts/report_live_sessions.py --bounded-pilot-readiness-summary --json
 
-    # Bounded-pilot closeout / final registry status + pointers (read-only; no readiness run):
+    # Bounded-pilot closeout / final registry status + pointers (read-only; no readiness run;
+    # JSON includes abort_triage_hints derived via same lifecycle consistency rules — not authorization):
     python scripts/report_live_sessions.py --bounded-pilot-closeout-status-summary
     python scripts/report_live_sessions.py --bounded-pilot-closeout-status-summary --json
 
@@ -1732,6 +1733,11 @@ def _run_bounded_pilot_closeout_status_summary(
         base_dir=base_dir,
         cwd=cwd,
     )
+    lifecycle_for_hints = _build_bounded_pilot_lifecycle_consistency_block(
+        session_focus,
+        closeout,
+    )
+    abort_triage_hints = lifecycle_for_hints["abort_triage_hints"]
 
     payload: dict[str, Any] = {
         "contract": "report_live_sessions.bounded_pilot_closeout_status_summary",
@@ -1742,6 +1748,7 @@ def _run_bounded_pilot_closeout_status_summary(
             "that a process is or is not running."
         ),
         "registry_dir": str(base_dir),
+        "abort_triage_hints": abort_triage_hints,
         "session_focus": session_focus,
         "closeout": closeout,
     }
@@ -1798,6 +1805,13 @@ def _run_bounded_pilot_closeout_status_summary(
         lines.append("  Operator notes:")
         for n in co["operator_notes"]:
             lines.append(f"    - {n}")
+    hints = payload.get("abort_triage_hints") or []
+    if hints:
+        lines.append("")
+        lines.append("  Abort triage hints (read-only; not authorization):")
+        for i, h in enumerate(hints):
+            lines.append(f"    hint[{i}].primary_runbook: {h.get('primary_runbook')}")
+            lines.append(f"    hint[{i}].section_5_keywords: {h.get('section_5_keywords')}")
     print("\n".join(lines))
     return 0
 

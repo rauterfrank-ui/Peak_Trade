@@ -74,6 +74,11 @@ def test_closeout_summary_terminal_completed_json(
     data = json.loads(capsys.readouterr().out)
     assert data["contract"] == "report_live_sessions.bounded_pilot_closeout_status_summary"
     assert "disclaimer" in data
+    assert "abort_triage_hints" in data
+    hints = data["abort_triage_hints"]
+    assert len(hints) == 1
+    assert "not live authorization" in hints[0]["disclaimer"].lower()
+    assert hints[0]["primary_runbook"].endswith("RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md")
     co = data["closeout"]
     assert co["primary_session_id"] == "bp_done"
     assert co["closeout_signal_summary"] == "REGISTRY_TERMINAL_IN_NEWEST_ARTIFACT"
@@ -111,6 +116,10 @@ def test_closeout_summary_open_started_non_terminal(
 
     data = json.loads(capsys.readouterr().out)
     assert data["session_focus"]["primary_session_id"] == "bp_open"
+    hints = data["abort_triage_hints"]
+    assert len(hints) == 1
+    assert hints[0]["primary_runbook"].endswith("RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md")
+    assert "stale state is unresolved" in hints[0]["section_5_keywords"]
     co = data["closeout"]
     assert co["closeout_signal_summary"] == "REGISTRY_NON_TERMINAL_NEWEST_ONLY"
     assert co["registry_terminal_in_newest_artifact"] is False
@@ -152,6 +161,10 @@ def test_closeout_summary_conflict_newest_started_older_terminal(
 
     data = json.loads(capsys.readouterr().out)
     co = data["closeout"]
+    hints = data["abort_triage_hints"]
+    assert len(hints) == 1
+    assert hints[0]["primary_runbook"].endswith("RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md")
+    assert "session-end mismatch is unresolved" in hints[0]["section_5_keywords"]
     assert co["primary_session_id"] == sid
     assert co["closeout_signal_summary"] == "AMBIGUOUS_NEWEST_STARTED_WITH_OLDER_TERMINAL"
     assert co["registry_terminal_in_newest_artifact"] is False
@@ -190,6 +203,7 @@ def test_closeout_summary_execution_events_pointer_present(
         assert main() == 0
 
     data = json.loads(capsys.readouterr().out)
+    assert data["abort_triage_hints"] == []
     assert data["closeout"]["execution_events_jsonl_present"] is True
     assert data["closeout"]["pointers"]["execution_events_session_jsonl"]["present"] is True
 
@@ -220,6 +234,9 @@ def test_closeout_summary_empty_registry(
     data = json.loads(capsys.readouterr().out)
     assert data["closeout"]["closeout_signal_summary"] == "NO_BOUNDED_PILOT_SESSION_IN_REGISTRY"
     assert data["closeout"]["primary_session_id"] is None
+    hints = data["abort_triage_hints"]
+    assert len(hints) == 1
+    assert "ABORT_TRIAGE_COMPASS" in hints[0]["primary_runbook"]
 
 
 def test_closeout_summary_text_stable_keywords(
@@ -250,6 +267,7 @@ def test_closeout_summary_text_stable_keywords(
     assert "closeout_signal_summary:" in out
     assert "REGISTRY_TERMINAL_IN_NEWEST_ARTIFACT" in out
     assert "bp_txt" in out
+    assert "abort triage hints" in out.lower()
 
 
 def test_closeout_summary_conflicts_with_readiness(capsys: pytest.CaptureFixture[str]) -> None:
