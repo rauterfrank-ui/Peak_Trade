@@ -92,6 +92,7 @@ Nearest anchor artifacts for this index:
 - [MASTER_V2_DATAFLOW_MAP_V1.md](MASTER_V2_DATAFLOW_MAP_V1.md)
 - [MASTER_V2_VOCAB_BOUNDARY_LOCK_V1.md](MASTER_V2_VOCAB_BOUNDARY_LOCK_V1.md)
 - [MASTER_V2_GATE_FILL_VOCABULARY_BOUNDARY_LOCK_V1.md](MASTER_V2_GATE_FILL_VOCABULARY_BOUNDARY_LOCK_V1.md)
+- [MASTER_V2_BOUNDED_PILOT_CROSS_GATE_CANDIDATE_EVIDENCE_BUNDLE_POINTER_CONTRACT_V0.md](MASTER_V2_BOUNDED_PILOT_CROSS_GATE_CANDIDATE_EVIDENCE_BUNDLE_POINTER_CONTRACT_V0.md) (optional vocabulary for externally held candidate-scoped cross-gate bundle pointers; non-authorizing)
 - [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md)
 - [EVIDENCE_INDEX.md](../EVIDENCE_INDEX.md)
 - [registry/INDEX.md](../registry/INDEX.md)
@@ -102,7 +103,7 @@ Nearest anchor artifacts for this index:
 Current clarity and ambiguity notes:
 
 - The major visibility gap named in the gate-status index for compact cross-gate evidence view is now covered as a dedicated mapping surface.
-- Candidate-scoped evidence bundle consolidation remains outside this slice and stays unresolved.
+- Candidate-scoped evidence bundle consolidation remains outside this slice and stays unresolved; where operators need consistent **pointer** language for external consolidation, see [MASTER_V2_BOUNDED_PILOT_CROSS_GATE_CANDIDATE_EVIDENCE_BUNDLE_POINTER_CONTRACT_V0.md](MASTER_V2_BOUNDED_PILOT_CROSS_GATE_CANDIDATE_EVIDENCE_BUNDLE_POINTER_CONTRACT_V0.md) (metadata only, no payloads).
 - Final live authorization chain remains external to this index and unchanged.
 - Replayability remains partial for causal reconstruction and must not be over-claimed.
 - Incident discipline anchors exist, but maturity is uneven where incident runbooks remain draft-heavy.
