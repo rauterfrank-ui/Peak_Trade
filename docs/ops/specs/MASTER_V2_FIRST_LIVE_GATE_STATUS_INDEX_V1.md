@@ -135,6 +135,7 @@ This subsection materializes **one** candidate-scoped **L3 entry-prerequisite ev
 - Entry boundary (dry-validation / spec flow vs first bounded real-money step): [`BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md).
 - Operative procedure pointer (contract §6): [`RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md).
 - Treasury separation cross-reference named in §3.6: [`TREASURY_BALANCE_SEPARATION_SPEC.md`](TREASURY_BALANCE_SEPARATION_SPEC.md).
+- L3 external §3 prerequisite confirmation pointer metadata discipline (docs-only; no confirmation payloads in-repo): [`MASTER_V2_BOUNDED_PILOT_L3_ENTRY_PREREQUISITE_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L3_ENTRY_PREREQUISITE_EVIDENCE_POINTER_CONTRACT_V0.md).
 
 **Belastbare script references (documentation pointers only; no execution claim):**
 
@@ -147,7 +148,7 @@ This subsection materializes **one** candidate-scoped **L3 entry-prerequisite ev
 
 **G6 status after this record:** remains `Partial` — this index still does not host a named, immutable in-repo prerequisite confirmation bundle for a specific candidate.
 
-**Next open gap:** operator/governance capture and archival of prerequisite confirmation evidence (per §3, for the candidate) under change control **outside** this index; a later slice may add repo-resolvable pointers **if and when** those artifacts become stable, reviewable references.
+**Next open gap:** operator/governance capture and archival of prerequisite confirmation evidence (per §3, for the candidate) under change control **outside** this index; a later slice may add repo-resolvable pointers **if and when** those artifacts become stable, reviewable references. Minimal field vocabulary for external pointer records (L3 entry prerequisites only) lives in [`MASTER_V2_BOUNDED_PILOT_L3_ENTRY_PREREQUISITE_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L3_ENTRY_PREREQUISITE_EVIDENCE_POINTER_CONTRACT_V0.md) and does not by itself close this gap.
 
 ## 4.4) L4 candidate session-flow pointer record (G7)
 
