@@ -1,7 +1,7 @@
 # MASTER V2 — First Live Gate Status Index v1 (Canonical, Read-Only)
 
 status: ACTIVE
-last_updated: 2026-04-20
+last_updated: 2026-04-21
 owner: Peak_Trade
 purpose: Canonical docs-only gate status index for Master V2 First Live readiness visibility and auditability
 docs_token: DOCS_TOKEN_MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1
@@ -52,7 +52,7 @@ Status discipline:
 | G2 | Canonical interpretation grammar availability | `Verified` | yes: [Readiness Read Model](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md) | none for mapping visibility | canonical docs stewardship | none for this index slice |
 | G3 | Canonical report rendering carrier availability | `Verified` | yes: [Gate Status Report Surface](MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md) | none for mapping visibility | canonical docs stewardship | none for this index slice |
 | G4 | Dry validation readiness posture (L1) | `Partial` | yes: [Ladder](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md), [Dry Validation Runbook](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md), [Live Entry Runbook (Phase A)](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md), [Entry Contract §3.1](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md), [§4.1 L1 pointer record](#41-l1-candidate-evidence-pointer-record-g4) | operator-held L1 artifact files (drill log, go/no-go JSON, execution dry-run log) are not asserted as immutable in-repo objects for the bounded-pilot candidate | governance plus operator decision authority | operator/governance archival of Step 1–3 outputs under change control outside this index (optional future repo-resolvable pointer slice) |
-| G5 | Go or no-go interpretation posture (L2) | `Partial` | yes: [Report Surface](MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md), [Go No-Go Checklist](PILOT_GO_NO_GO_CHECKLIST.md), [Go No-Go Operational Slice](PILOT_GO_NO_GO_OPERATIONAL_SLICE.md) | candidate-scoped verdict evidence is not canonically indexed here | governance plus operator decision authority | add one docs-only candidate-scoped L2 verdict pointer record |
+| G5 | Go or no-go interpretation posture (L2) | `Partial` | yes: [Ladder](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) (Level 2), [Report Surface](MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md), [Go No-Go Checklist](PILOT_GO_NO_GO_CHECKLIST.md), [Go No-Go Operational Slice](PILOT_GO_NO_GO_OPERATIONAL_SLICE.md), [Entry Contract — Go/No-Go Acceptable](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md), [§4.2 L2 pointer record](#42-l2-candidate-verdict-pointer-record-g5) | operator-held go/no-go eval capture (for example JSON from the pilot go/no-go eval script) is not asserted as an immutable in-repo object for the bounded-pilot candidate | governance plus operator decision authority | operator/governance archival of go/no-go eval output under change control outside this index (optional future repo-resolvable pointer slice) |
 | G6 | Entry contract interpretation posture (L3) | `Partial` | yes: [Report Surface](MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md), [Entry Contract](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md), [Entry Boundary Note](BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md) | candidate-scoped prerequisite bundle for entry interpretation is not canonically indexed here | governance plus operator decision authority | add one docs-only L3 prerequisite evidence pointer record |
 | G7 | Candidate session flow interpretation posture (L4) | `Partial` | yes: [Report Surface](MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md), [Candidate Flow Runbook](../runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md), [Live Entry Runbook](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) | candidate-scoped flow execution bundle is not canonically indexed here | governance plus operator decision authority | add one docs-only L4 session-flow evidence pointer record |
 | G8 | Incident and safe-stop interpretation posture (L5) | `Partial` | yes: [Report Surface](MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md), [Incident Exchange Degraded](../runbooks/RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED.md), [Incident Unexpected Exposure](../runbooks/RUNBOOK_PILOT_INCIDENT_UNEXPECTED_EXPOSURE.md), [Incident Reconciliation Mismatch](../runbooks/RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md) | candidate-scoped incident bundle is not canonically indexed here and incident runbooks remain draft-heavy | governance plus operator decision authority | add one docs-only L5 incident evidence pointer record |
@@ -90,13 +90,41 @@ This subsection materializes **one** candidate-scoped **L1 dry-validation eviden
 
 **Next open gap:** operator/governance capture and archival of the three primary artifact classes (dry-validation Steps 1–3) under change control **outside** this index; a later slice may add repo-resolvable pointers **if and when** those artifacts become stable, reviewable references.
 
+## 4.2) L2 candidate verdict pointer record (G5)
+
+This subsection materializes **one** candidate-scoped **L2 go/no-go verdict evidence pointer record** for review orientation. It is **not** a live authorization, **not** a gate closure, **not** a claim that any particular verdict occurred, and **not** a substitute for operator-governed evidence retention.
+
+**Gate / ladder mapping:** `G5` in this index maps to **Level 2 — Go/No-Go Interpretation** in [`MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) (§4, Level 2).
+
+**Candidate scope (label):** The **first strictly bounded real-money pilot** described by [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) (title and §1–2). No additional candidate identifier is asserted in this repository pointer record.
+
+**Go/no-go interpretation context (repo-resolvable):**
+
+- Checklist semantics: [`PILOT_GO_NO_GO_CHECKLIST.md`](PILOT_GO_NO_GO_CHECKLIST.md).
+- Checklist → evidence mapping (operator-facing): [`PILOT_GO_NO_GO_OPERATIONAL_SLICE.md`](PILOT_GO_NO_GO_OPERATIONAL_SLICE.md).
+- Contractual prerequisite wording (acceptable vs non-acceptable verdict classes for entry interpretation): [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) §3 prerequisite **2. Go/No-Go Acceptable** (see acceptable `GO_FOR_NEXT_PHASE_ONLY` vs `CONDITIONAL` / `NO_GO` as documented there).
+- Dry-validation ordering context (Step 2 in the bounded-pilot dry-validation sequence): [`RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md) Step 2 (Pilot Go/No-Go Eval).
+- Live-entry Phase A ordering (same eval surface in sequence): [`RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) §3 Phase A — Dry-Validation, item 2 (Pilot Go/No-Go).
+
+**Belastbare script references (documentation pointers only; no execution claim):**
+
+- Automated eval entry point: `scripts&#47;ops&#47;pilot_go_no_go_eval_v1.py` (optional `--json` for machine-readable output; see dry-validation runbook Step 2 and entry contract §3 prerequisite 2).
+
+**What this record makes visible:** which canonical specs and runbooks define **L2** go/no-go interpretation for the bounded-pilot candidate scope, and which **verdict classes** the entry contract treats as acceptable vs non-acceptable for **interpretation** (not as authorization).
+
+**What this record explicitly does not claim:** that any run produced a passing verdict, that Ops Cockpit or config state is current, that bounded real-money entry is permitted, or that operator-held `--json` output is stored immutably inside this repository.
+
+**G5 status after this record:** remains `Partial` — this index still does not host operator-held go/no-go eval output under a named, immutable in-repo object for a specific candidate.
+
+**Next open gap:** operator/governance capture and archival of go/no-go eval output (for example `--json`) under change control **outside** this index; a later slice may add repo-resolvable pointers **if and when** those artifacts become stable, reviewable references.
+
 ## 5) Gate-by-Gate Notes
 
 - G1: Canonical anchor is explicit and active; this index reuses that anchor without redefining steering authority.
 - G2: Interpretation grammar is canonically materialized; this index does not redefine grammar.
 - G3: Reporting carrier is canonically materialized; this index does not alter report schema.
 - G4: L1 mapped sources plus one compact candidate-scoped L1 pointer record ([§4.1](#41-l1-candidate-evidence-pointer-record-g4)); operator-held L1 artifact files remain outside this index, so G4 stays `Partial`.
-- G5: L2 is materially mapped, but no candidate-scoped verdict pointer is canonically consolidated here.
+- G5: L2 mapped sources plus one compact candidate-scoped L2 verdict pointer record ([§4.2](#42-l2-candidate-verdict-pointer-record-g5)); operator-held go/no-go eval capture remains outside this index, so G5 stays `Partial`.
 - G6: L3 contract wording exists, but closure-relevant candidate prerequisite evidence remains open in this index.
 - G7: L4 flow shape exists, but candidate execution evidence bundle is not compactly indexed here.
 - G8: L5 incident boundaries exist, but candidate incident evidence bundle remains open and runbook maturity is uneven.
@@ -138,7 +166,7 @@ Confirmed by this index:
 
 Still open:
 
-- candidate-scoped evidence bundle consolidation for L1 to L5 related gates (L1: operator-held Step 1–3 artifacts remain external to this index; see [§4.1](#41-l1-candidate-evidence-pointer-record-g4))
+- candidate-scoped evidence bundle consolidation for L1 to L5 related gates (L1: operator-held Step 1–3 artifacts remain external to this index; see [§4.1](#41-l1-candidate-evidence-pointer-record-g4)) (L2: operator-held go/no-go eval capture remains external to this index; see [§4.2](#42-l2-candidate-verdict-pointer-record-g5))
 - compact cross-gate evidence index as a standalone canonical artifact
 - final closure handoff chain for live authorization remains external
 
