@@ -11,6 +11,29 @@ from typing import List, Optional
 from .models import Evidence, Severity, Violation
 
 
+POLICY_CRITIC_TEST_PATH_PREFIX = "tests/governance/policy_critic/"
+
+
+def iter_diff_added_lines(diff: str):
+    """
+    Yield (file_path, content) for each added line in a unified diff.
+
+    Context lines (space-prefixed) and removals (-) are ignored so heuristics
+    do not fire on unchanged LIVE_CONFIRM_TOKEN / enable_live_trading lines that
+    only appear as diff context.
+
+    Leading indentation before ``+`` / ``+++`` is ignored so test fixtures and
+    pasted diffs still parse.
+    """
+    current: Optional[str] = None
+    for raw in diff.splitlines():
+        tail = raw.lstrip()
+        if tail.startswith("+++ b/"):
+            current = tail[6:].strip()
+        elif tail.startswith("+") and not tail.startswith("+++"):
+            yield current, tail[1:]
+
+
 class PolicyRule:
     """Base class for policy rules."""
 
@@ -51,40 +74,35 @@ class NoSecretsRule(PolicyRule):
         violations = []
 
         for pattern, message in self.SECRET_PATTERNS:
-            for match in re.finditer(pattern, diff, re.IGNORECASE):
-                # Skip false positives: env var references (e.g. ${VAR}, $VAR, ${VAR:?msg})
-                matched_text = match.group(0)
-                if re.search(r"[\$]\{?[A-Za-z_][A-Za-z0-9_]*", matched_text):
+            for file_path, added in iter_diff_added_lines(diff):
+                if file_path and file_path.startswith(POLICY_CRITIC_TEST_PATH_PREFIX):
                     continue
-
-                # Skip docs: runbooks/specs often show env var examples or detection patterns
-                file_path = self._extract_file_from_diff_position(diff, match.start())
                 if file_path and file_path.startswith("docs/"):
                     continue
+                for match in re.finditer(pattern, added, re.IGNORECASE):
+                    matched_text = match.group(0)
+                    if re.search(r"[\$]\{?[A-Za-z_][A-Za-z0-9_]*", matched_text):
+                        continue
 
-                # Extract context around match
-                start = max(0, match.start() - 50)
-                end = min(len(diff), match.end() + 50)
-                snippet = diff[start:end].replace("\n", " ")
+                    snippet = added.strip()
+                    if len(snippet) > 100:
+                        snippet = snippet[:100] + "..."
 
-                # Try to extract file from diff context
-                file_path = self._extract_file_from_diff_position(diff, match.start())
-
-                evidence = Evidence(
-                    file_path=file_path or "unknown",
-                    snippet=snippet[:100] + "..." if len(snippet) > 100 else snippet,
-                    pattern=pattern,
-                )
-
-                violations.append(
-                    Violation(
-                        rule_id=self.rule_id,
-                        severity=self.severity,
-                        message=f"{message}. Secrets must never be committed.",
-                        evidence=[evidence],
-                        suggested_fix="Remove the secret and use environment variables or secret management.",
+                    evidence = Evidence(
+                        file_path=file_path or "unknown",
+                        snippet=snippet,
+                        pattern=pattern,
                     )
-                )
+
+                    violations.append(
+                        Violation(
+                            rule_id=self.rule_id,
+                            severity=self.severity,
+                            message=f"{message}. Secrets must never be committed.",
+                            evidence=[evidence],
+                            suggested_fix="Remove the secret and use environment variables or secret management.",
+                        )
+                    )
 
         return violations
 
@@ -122,24 +140,25 @@ class NoLiveUnlockRule(PolicyRule):
         violations = []
 
         for pattern, message in self.UNLOCK_PATTERNS:
-            for match in re.finditer(pattern, diff, re.IGNORECASE):
-                file_path = NoSecretsRule._extract_file_from_diff_position(diff, match.start())
-
-                evidence = Evidence(
-                    file_path=file_path or "unknown",
-                    snippet=match.group(0),
-                    pattern=pattern,
-                )
-
-                violations.append(
-                    Violation(
-                        rule_id=self.rule_id,
-                        severity=self.severity,
-                        message=f"{message}. Live unlocks require explicit governance approval.",
-                        evidence=[evidence],
-                        suggested_fix="Remove this change. Live mode changes require manual review and owner approval.",
+            for file_path, added in iter_diff_added_lines(diff):
+                if file_path and file_path.startswith(POLICY_CRITIC_TEST_PATH_PREFIX):
+                    continue
+                for match in re.finditer(pattern, added, re.IGNORECASE):
+                    evidence = Evidence(
+                        file_path=file_path or "unknown",
+                        snippet=match.group(0),
+                        pattern=pattern,
                     )
-                )
+
+                    violations.append(
+                        Violation(
+                            rule_id=self.rule_id,
+                            severity=self.severity,
+                            message=f"{message}. Live unlocks require explicit governance approval.",
+                            evidence=[evidence],
+                            suggested_fix="Remove this change. Live mode changes require manual review and owner approval.",
+                        )
+                    )
 
         return violations
 

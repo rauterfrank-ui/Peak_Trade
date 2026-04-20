@@ -73,6 +73,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 ## Änderungsnachweis (Slice A)
 
+- 2026-04-20 — `docs&#47;ops&#47;runbooks&#47;CANARY_LIVE_ENTRY_CRITERIA.md` — Bounded-Pilot fail-closed Handoff (`PT_BOUNDED_PILOT_INVOKED_FROM_GATE`, `PT_LIVE_CONFIRM_TOKEN`), Abgrenzung `--dry-run` ohne Gate-Env, Go/No-Go-Konsistenz `TRADE_READY` vs. `dry_run`; Companion zu `src/execution/live_session.py` / `src/core/environment.py` (Drift-Regeln `execution-layer`, `core-environment`); **keine** zusätzliche Live-Freigabe.
+
 - 2026-04-18 — `docs&#47;ops&#47;registry&#47;TRUTH_BRANCH_PROTECTION.md` auf Single-Writer-Contract präzisiert (`ensure_truth_branch_protection.py --apply` fail-closed blockiert; kanonischer Writer `scripts&#47;ops&#47;reconcile_required_checks_branch_protection.py --apply`); dieser Eintrag dokumentiert den verpflichtenden Companion-Nachzug gemäß `truth-branch-protection-canonical`.
 
 - 2026-04-16: `docs&#47;ops&#47;specs&#47;LEVELUP_V0_CANONICAL_SURFACE.md` neu — kanonische Ops-/Spec-Oberfläche für LevelUp v0 (Manifest-/IO-/CLI; keine neue Autorität); Querverweise in `docs&#47;KNOWLEDGE_BASE_INDEX.md`, `docs&#47;ops&#47;README.md`, `docs&#47;ops&#47;RUNBOOK_INDEX.md`; Truth-Map-Abschnitt „Canonical: LevelUp v0“; zunächst ohne `docs_truth_map.yaml`-Regel; keine Runtime-/E2E-Ausweitung.

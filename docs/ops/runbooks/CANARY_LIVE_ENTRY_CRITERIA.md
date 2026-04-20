@@ -76,6 +76,8 @@ Vor Start sind **numerische** Obergrenzen definiert und technisch/operativ durch
 - **Confirm-Token** (oder gleichwertiges zweites Kontrollsignal): kein „aus Versehen live“.
 - **Dry-Run / Shadow / Testnet** (je nach Peak_Trade-Setup): **nachweislich** erfolgreich für **dieselbe** Strategie-Version und **dieselbe** Integrationskette **vor** Canary-Live (Evidenz dokumentiert).
 
+**Technischer Bounded-Pilot-Eintritt (Peak_Trade-Repo, fail-closed):** Nach grünem `pilot_go_no_go_eval_v1` startet `scripts&#47;ops&#47;run_bounded_pilot_session.py` die Session nur über einen Subprozess von `scripts&#47;run_execution_session.py --mode bounded_pilot` und setzt dabei `PT_BOUNDED_PILOT_INVOKED_FROM_GATE=1` sowie `PT_LIVE_CONFIRM_TOKEN` auf den kanonischen Wert aus `src&#47;core&#47;environment.py` (gleiche Bedeutung wie `LIVE_CONFIRM_TOKEN`); ohne diese Umgebungsvariablen darf kein echter bounded-pilot-Lauf beginnen (`--dry-run` bleibt ohne sie möglich). Im automatisierten Go/No-Go darf `TRADE_READY` u. a. nicht zusammen mit `policy_state.dry_run == true` oder sonst widersprüchlicher Posture als „grün“ durchgereicht werden.
+
 ### 4. Daten- und Zeit-Sicherheit
 
 - **Live-Marktdaten** sind **aktuell** (kein veralteter Snapshot als Entscheidungsgrundlage).

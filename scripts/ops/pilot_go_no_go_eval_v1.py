@@ -37,10 +37,13 @@ def _get(payload: dict[str, Any], *keys: str, default: Any = None) -> Any:
 
 
 def _eval_row_1_safety_gates(payload: dict[str, Any]) -> str:
-    """Safety Gates: enabled/armed/confirm-token/dry-run explicit?"""
+    """Safety Gates: enabled/armed/confirm-token/dry-run explicit (typed, fail-closed)."""
     ps = _get(payload, "policy_state") or {}
-    if not all(k in ps for k in ("enabled", "armed", "dry_run", "confirm_token_required")):
-        return "UNKNOWN"
+    for key in ("enabled", "armed", "dry_run", "confirm_token_required"):
+        if key not in ps:
+            return "UNKNOWN"
+        if not isinstance(ps[key], bool):
+            return "UNKNOWN"
     return "PASS"
 
 
@@ -53,11 +56,25 @@ def _eval_row_2_kill_switch(payload: dict[str, Any]) -> str:
 
 
 def _eval_row_3_policy_posture(payload: dict[str, Any]) -> str:
-    """Policy Posture: current policy action visible?"""
+    """Policy Posture: action visible and internally consistent (fail-closed for TRADE_READY)."""
     ps = _get(payload, "policy_state") or {}
     action = ps.get("action")
     if action not in ("NO_TRADE", "TRADE_READY"):
         return "UNKNOWN"
+    if action == "NO_TRADE":
+        return "PASS"
+    # TRADE_READY must not be vacuous: require explicit real-order posture signals.
+    if ps.get("kill_switch_active") is True:
+        return "FAIL"
+    if ps.get("blocked") is not False:
+        return "FAIL"
+    if ps.get("enabled") is not True:
+        return "FAIL"
+    if ps.get("armed") is not True:
+        return "FAIL"
+    dry_run = ps.get("dry_run")
+    if dry_run is not False:
+        return "FAIL"
     return "PASS"
 
 

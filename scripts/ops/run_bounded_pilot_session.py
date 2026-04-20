@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -143,7 +144,17 @@ def main() -> int:
         "--position-fraction",
         str(args.position_fraction),
     ]
-    result = subprocess.run(cmd, cwd=repo_root)
+    from src.core.environment import (
+        LIVE_CONFIRM_TOKEN,
+        PT_BOUNDED_PILOT_INVOKED_FROM_GATE,
+        PT_LIVE_CONFIRM_TOKEN_ENV,
+    )
+
+    child_env = os.environ.copy()
+    child_env[PT_BOUNDED_PILOT_INVOKED_FROM_GATE] = "1"
+    child_env[PT_LIVE_CONFIRM_TOKEN_ENV] = LIVE_CONFIRM_TOKEN
+
+    result = subprocess.run(cmd, cwd=repo_root, env=child_env)
     return result.returncode
 
 

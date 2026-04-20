@@ -295,6 +295,19 @@ WICHTIG: Shadow/Testnet senden keine echten Orders. Modus bounded_pilot kann nac
     args = parser.parse_args()
     _ensure_bounded_pilot_events_enabled(args)
 
+    if args.mode == "bounded_pilot" and not args.dry_run:
+        from src.core.environment import PT_BOUNDED_PILOT_INVOKED_FROM_GATE
+
+        if os.environ.get(PT_BOUNDED_PILOT_INVOKED_FROM_GATE) != "1":
+            print(
+                "ERR: bounded_pilot Ausführung (ohne --dry-run) erfordert "
+                f"{PT_BOUNDED_PILOT_INVOKED_FROM_GATE}=1 nach kanonischem Gate-Handoff "
+                "(z. B. scripts/ops/run_bounded_pilot_session.py). "
+                "Direkter Start verhindert implizite Live-Freischaltung.",
+                file=sys.stderr,
+            )
+            return 1
+
     # Strategy-Liste?
     if args.list_strategies:
         list_available_strategies()
