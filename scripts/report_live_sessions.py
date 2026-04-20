@@ -52,6 +52,10 @@ Usage:
     # Bounded-pilot closeout / final registry status + pointers (read-only; no readiness run):
     python scripts/report_live_sessions.py --bounded-pilot-closeout-status-summary
     python scripts/report_live_sessions.py --bounded-pilot-closeout-status-summary --json
+
+    # Bounded-pilot operator overview (read-only: readiness + packet + session focus + closeout):
+    python scripts/report_live_sessions.py --bounded-pilot-operator-overview
+    python scripts/report_live_sessions.py --bounded-pilot-operator-overview --json
 """
 
 from __future__ import annotations
@@ -653,23 +657,15 @@ def _build_bounded_pilot_closeout_analysis(
     }
 
 
-def _run_bounded_pilot_readiness_summary(args: argparse.Namespace, logger: logging.Logger) -> int:
-    """
-    One-shot read-only snapshot: current readiness + operator preflight packet + registry focus.
-
-    Does not authorize live trading or assert gate closure; see payload disclaimer.
-    """
+def _collect_bounded_pilot_readiness_and_packet(
+    *,
+    repo_root: Path,
+    config_path: Path,
+    logger: logging.Logger,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Shared read-only readiness + operator preflight packet blocks (no registry I/O)."""
     from scripts.ops.bounded_pilot_operator_preflight_packet import build_operator_preflight_packet
-    from scripts.ops.check_bounded_pilot_readiness import (
-        resolve_bounded_pilot_config_path,
-        run_bounded_pilot_readiness,
-    )
-
-    repo_root = PROJECT_ROOT
-    explicit_cfg = Path(args.config_path) if getattr(args, "config_path", None) else None
-    config_path = resolve_bounded_pilot_config_path(repo_root, explicit_cfg)
-    base_dir = _registry_base_dir(args)
-    cwd = Path.cwd()
+    from scripts.ops.check_bounded_pilot_readiness import run_bounded_pilot_readiness
 
     ok, bundle = run_bounded_pilot_readiness(repo_root, config_path, run_tests=False)
     readiness_block: dict[str, Any] = {
@@ -681,7 +677,6 @@ def _run_bounded_pilot_readiness_summary(args: argparse.Namespace, logger: loggi
         "live_readiness": bundle.get("live_readiness"),
     }
 
-    packet_out: dict[str, Any]
     try:
         packet, packet_code = build_operator_preflight_packet(
             repo_root,
@@ -690,7 +685,7 @@ def _run_bounded_pilot_readiness_summary(args: argparse.Namespace, logger: loggi
         )
         summary = (packet or {}).get("summary") or {}
         blocked_list = list(summary.get("blocked") or [])
-        packet_out = {
+        packet_out: dict[str, Any] = {
             "evaluated": True,
             "packet_code": packet_code,
             "packet_ok": bool(summary.get("packet_ok")),
@@ -704,6 +699,29 @@ def _run_bounded_pilot_readiness_summary(args: argparse.Namespace, logger: loggi
             "packet_code": 2,
             "error": f"{type(e).__name__}: {e}",
         }
+
+    return readiness_block, packet_out
+
+
+def _run_bounded_pilot_readiness_summary(args: argparse.Namespace, logger: logging.Logger) -> int:
+    """
+    One-shot read-only snapshot: current readiness + operator preflight packet + registry focus.
+
+    Does not authorize live trading or assert gate closure; see payload disclaimer.
+    """
+    from scripts.ops.check_bounded_pilot_readiness import resolve_bounded_pilot_config_path
+
+    repo_root = PROJECT_ROOT
+    explicit_cfg = Path(args.config_path) if getattr(args, "config_path", None) else None
+    config_path = resolve_bounded_pilot_config_path(repo_root, explicit_cfg)
+    base_dir = _registry_base_dir(args)
+    cwd = Path.cwd()
+
+    readiness_block, packet_out = _collect_bounded_pilot_readiness_and_packet(
+        repo_root=repo_root,
+        config_path=config_path,
+        logger=logger,
+    )
 
     session_focus = _collect_bounded_pilot_session_focus(base_dir=base_dir, cwd=cwd)
 
@@ -829,8 +847,134 @@ def _bounded_pilot_closeout_status_summary_flag_conflicts(args: argparse.Namespa
     if args.stdout:
         return "--stdout is not compatible with --bounded-pilot-closeout-status-summary"
     if getattr(args, "config_path", None):
-        return "--config-path is only for --bounded-pilot-readiness-summary"
+        return (
+            "--config-path is only for --bounded-pilot-readiness-summary "
+            "or --bounded-pilot-operator-overview"
+        )
     return None
+
+
+def _bounded_pilot_operator_overview_flag_conflicts(args: argparse.Namespace) -> str | None:
+    """Same incompatibility surface as readiness summary (optional --config-path)."""
+    if args.session_id is not None:
+        return "--session-id is only for --evidence-pointers"
+    if args.latest_bounded_pilot:
+        return "--latest-bounded-pilot is only for --evidence-pointers"
+    if args.bounded_pilot_only or args.latest_bounded_pilot_open:
+        return "--bounded-pilot-only / --latest-bounded-pilot-open require --open-sessions"
+    if args.run_type is not None:
+        return "--run-type is not compatible with --bounded-pilot-operator-overview"
+    if args.status is not None:
+        return "--status is not compatible with --bounded-pilot-operator-overview"
+    if args.limit is not None:
+        return "--limit is not compatible with --bounded-pilot-operator-overview"
+    if args.summary_only:
+        return "--summary-only is not compatible with --bounded-pilot-operator-overview"
+    if args.output_dir is not None:
+        return "--output-dir is not compatible with --bounded-pilot-operator-overview"
+    if args.stdout:
+        return "--stdout is not compatible with --bounded-pilot-operator-overview"
+    return None
+
+
+def _run_bounded_pilot_operator_overview(
+    args: argparse.Namespace,
+    logger: logging.Logger,
+) -> int:
+    """Read-only single view: readiness + packet + session focus + closeout (reuses helpers)."""
+    from scripts.ops.check_bounded_pilot_readiness import resolve_bounded_pilot_config_path
+
+    repo_root = PROJECT_ROOT
+    explicit_cfg = Path(args.config_path) if getattr(args, "config_path", None) else None
+    config_path = resolve_bounded_pilot_config_path(repo_root, explicit_cfg)
+    base_dir = _registry_base_dir(args)
+    cwd = Path.cwd()
+
+    readiness_block, packet_out = _collect_bounded_pilot_readiness_and_packet(
+        repo_root=repo_root,
+        config_path=config_path,
+        logger=logger,
+    )
+    session_focus = _collect_bounded_pilot_session_focus(base_dir=base_dir, cwd=cwd)
+    closeout = _build_bounded_pilot_closeout_analysis(
+        session_focus,
+        base_dir=base_dir,
+        cwd=cwd,
+    )
+
+    payload: dict[str, Any] = {
+        "contract": "report_live_sessions.bounded_pilot_operator_overview",
+        "disclaimer": (
+            "Read-only consolidated bounded_pilot snapshot: current readiness/preflight evaluation, "
+            "registry session focus, closeout/final-status signals, and pointers. "
+            "Not a live authorization, not gate closure, not proof of handoff or session outcome."
+        ),
+        "config_path": str(config_path),
+        "registry_dir": str(base_dir),
+        "bounded_pilot_readiness": readiness_block,
+        "operator_preflight_packet": packet_out,
+        "session_focus": session_focus,
+        "closeout": closeout,
+    }
+
+    logger.info(
+        "Bounded-pilot operator overview (read-only) primary=%s closeout=%s",
+        session_focus.get("primary_session_id"),
+        closeout.get("closeout_signal_summary"),
+    )
+
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+
+    r = readiness_block
+    p = packet_out
+    sf = session_focus
+    co = closeout
+    lines = [
+        "Bounded-pilot operator overview (read-only)",
+        f"  disclaimer: {payload['disclaimer']}",
+        f"  config_path: {config_path}",
+        "",
+        "  Readiness (repository state now):",
+        f"    readiness ok: {r.get('ok')}  blocked_at: {r.get('blocked_at')}",
+        f"    message: {r.get('message')}",
+        "",
+        "  Operator preflight packet:",
+        f"    evaluated: {p.get('evaluated')}  packet_ok: {p.get('packet_ok')}",
+        f"    packet_code: {p.get('packet_code')}",
+        "",
+        "  Session focus (bounded_pilot):",
+        f"    primary_session_id: {sf['primary_session_id']}",
+        f"    primary_source: {sf['primary_source']}",
+        f"    open started rows: {sf['open_bounded_pilot_sessions'] or []}",
+        f"    latest registry row: {sf.get('latest_bounded_pilot_registry')}",
+        "",
+        "  Closeout / registry:",
+        f"    closeout_signal_summary: {co['closeout_signal_summary']}",
+        f"    newest_registry_status: {co['newest_registry_status']}",
+        f"    execution_events_jsonl_present: {co['execution_events_jsonl_present']}",
+    ]
+    ptr = co.get("pointers") or sf.get("pointers")
+    if ptr:
+        ej = ptr["execution_events_session_jsonl"]
+        lines.append("")
+        lines.append("  Pointers:")
+        lines.append(f"    registry_json: {ptr['registry_json']['resolved']}")
+        lines.append(
+            f"    execution_events_jsonl: {ej['resolved']}  present: "
+            f"{'yes' if ej['present'] else 'no'}"
+        )
+    else:
+        lines.append("")
+        lines.append("  Pointers: none")
+    if co.get("operator_notes"):
+        lines.append("")
+        lines.append("  Closeout notes:")
+        for n in co["operator_notes"]:
+            lines.append(f"    - {n}")
+    print("\n".join(lines))
+    return 0
 
 
 def _run_bounded_pilot_closeout_status_summary(
@@ -1026,7 +1170,8 @@ Beispiele:
         action="store_true",
         help=(
             "JSON output for --evidence-pointers, --open-sessions, "
-            "--bounded-pilot-readiness-summary, or --bounded-pilot-closeout-status-summary"
+            "--bounded-pilot-readiness-summary, --bounded-pilot-closeout-status-summary, "
+            "or --bounded-pilot-operator-overview"
         ),
     )
     parser.add_argument(
@@ -1079,10 +1224,20 @@ Beispiele:
         ),
     )
     parser.add_argument(
+        "--bounded-pilot-operator-overview",
+        action="store_true",
+        help=(
+            "Read-only: readiness + preflight packet + session focus + closeout signals in one view"
+        ),
+    )
+    parser.add_argument(
         "--config-path",
         type=str,
         default=None,
-        help="Optional config.toml path for --bounded-pilot-readiness-summary (else env/default)",
+        help=(
+            "Optional config.toml for --bounded-pilot-readiness-summary / "
+            "--bounded-pilot-operator-overview (else env/default)"
+        ),
     )
 
     # Logging
@@ -1102,13 +1257,15 @@ Beispiele:
     _mode_n = (
         int(bool(args.bounded_pilot_readiness_summary))
         + int(bool(args.bounded_pilot_closeout_status_summary))
+        + int(bool(args.bounded_pilot_operator_overview))
         + int(bool(args.evidence_pointers))
         + int(bool(args.open_sessions))
     )
     if _mode_n > 1:
         print(
             "ERR: use only one of --bounded-pilot-readiness-summary, "
-            "--bounded-pilot-closeout-status-summary, --evidence-pointers, --open-sessions",
+            "--bounded-pilot-closeout-status-summary, --bounded-pilot-operator-overview, "
+            "--evidence-pointers, --open-sessions",
             file=sys.stderr,
         )
         return 2
@@ -1119,6 +1276,13 @@ Beispiele:
             print(f"ERR: {conflict}", file=sys.stderr)
             return 2
         return _run_bounded_pilot_readiness_summary(args, logger)
+
+    if args.bounded_pilot_operator_overview:
+        conflict = _bounded_pilot_operator_overview_flag_conflicts(args)
+        if conflict is not None:
+            print(f"ERR: {conflict}", file=sys.stderr)
+            return 2
+        return _run_bounded_pilot_operator_overview(args, logger)
 
     if args.bounded_pilot_closeout_status_summary:
         conflict = _bounded_pilot_closeout_status_summary_flag_conflicts(args)
