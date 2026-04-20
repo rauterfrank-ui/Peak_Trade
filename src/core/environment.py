@@ -44,6 +44,11 @@ class TradingEnvironment(str, Enum):
 # Muss explizit in der Config gesetzt werden
 LIVE_CONFIRM_TOKEN = "I_KNOW_WHAT_I_AM_DOING"
 
+# Bounded-pilot session handoff: set only by scripts/ops/run_bounded_pilot_session.py (subprocess env).
+PT_BOUNDED_PILOT_INVOKED_FROM_GATE = "PT_BOUNDED_PILOT_INVOKED_FROM_GATE"
+# Operator must export the canonical confirm token for bounded_pilot entry (no implicit injection in runner).
+PT_LIVE_CONFIRM_TOKEN_ENV = "PT_LIVE_CONFIRM_TOKEN"
+
 
 @dataclass
 class EnvironmentConfig:

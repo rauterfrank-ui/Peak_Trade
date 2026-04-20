@@ -240,6 +240,35 @@ class SessionSetupError(Exception):
     pass
 
 
+def require_bounded_pilot_handoff_env() -> str:
+    """
+    Fail-closed: bounded_pilot LiveSessionRunner may only start after canonical gate handoff.
+
+    ``scripts/ops/run_bounded_pilot_session.py`` sets these in the subprocess environment
+    after Go/No-Go is GREEN. Direct ``run_execution_session --mode bounded_pilot`` must
+    not implicitly synthesize confirm/live posture.
+    """
+    from ..core.environment import (
+        LIVE_CONFIRM_TOKEN,
+        PT_BOUNDED_PILOT_INVOKED_FROM_GATE,
+        PT_LIVE_CONFIRM_TOKEN_ENV,
+    )
+
+    if os.environ.get(PT_BOUNDED_PILOT_INVOKED_FROM_GATE) != "1":
+        raise SessionSetupError(
+            "bounded_pilot erfordert PT_BOUNDED_PILOT_INVOKED_FROM_GATE=1 im Prozess-Umfeld "
+            "(nach grünen Gates z. B. über scripts/ops/run_bounded_pilot_session.py). "
+            "Direkter CLI-Start ohne Gate-Handoff ist nicht erlaubt."
+        )
+    confirm = os.environ.get(PT_LIVE_CONFIRM_TOKEN_ENV)
+    if confirm != LIVE_CONFIRM_TOKEN:
+        raise SessionSetupError(
+            f"bounded_pilot erfordert Umgebungsvariable {PT_LIVE_CONFIRM_TOKEN_ENV!r} "
+            f"mit dem kanonischen Governance-Confirm-Token (siehe LIVE_CONFIRM_TOKEN)."
+        )
+    return confirm
+
+
 class SessionRuntimeError(Exception):
     """Exception bei Fehlern während der Session-Ausführung."""
 
@@ -491,11 +520,7 @@ class LiveSessionRunner:
 
         try:
             # Lazy imports um Circular Imports zu vermeiden
-            from ..core.environment import (
-                EnvironmentConfig,
-                LIVE_CONFIRM_TOKEN,
-                TradingEnvironment,
-            )
+            from ..core.environment import EnvironmentConfig, TradingEnvironment
             from ..live.safety import SafetyGuard
             from ..live.risk_limits import LiveRiskLimits
 
@@ -516,13 +541,14 @@ class LiveSessionRunner:
                     testnet_dry_run=True,
                 )
             elif session_config.mode == "bounded_pilot":
+                confirm_token = require_bounded_pilot_handoff_env()
                 env_config = EnvironmentConfig(
                     environment=TradingEnvironment.LIVE,
                     enable_live_trading=True,
                     bounded_pilot_mode=True,
                     live_mode_armed=True,  # Gate 2: bounded_pilot has governance approval
                     live_dry_run_mode=False,  # bounded_pilot: governance-approved actual order path
-                    confirm_token=LIVE_CONFIRM_TOKEN,  # bounded_pilot: operator-confirmed actual submit path
+                    confirm_token=confirm_token,
                     testnet_dry_run=False,
                 )
             else:  # testnet
@@ -1102,4 +1128,5 @@ __all__ = [
     "LiveModeNotAllowedError",
     "SessionSetupError",
     "SessionRuntimeError",
+    "require_bounded_pilot_handoff_env",
 ]

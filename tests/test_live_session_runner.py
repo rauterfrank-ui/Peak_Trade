@@ -18,6 +18,7 @@ WICHTIG: Alle Tests verwenden Fake/Stub-Komponenten.
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -741,6 +742,73 @@ class TestExecutionSessionCLI:
 
         assert result.returncode == 0, f"Expected 0, got {result.returncode}: {result.stderr}"
         assert "invalid choice" not in (result.stderr or "").lower()
+
+    def test_cli_bounded_pilot_non_dry_run_blocked_without_gate_handoff(self):
+        """Ohne Gate-Handoff-Env darf bounded_pilot nicht starten (fail-closed)."""
+        from src.core.environment import (
+            PT_BOUNDED_PILOT_INVOKED_FROM_GATE,
+            PT_LIVE_CONFIRM_TOKEN_ENV,
+        )
+
+        child_env = os.environ.copy()
+        child_env.pop(PT_BOUNDED_PILOT_INVOKED_FROM_GATE, None)
+        child_env.pop(PT_LIVE_CONFIRM_TOKEN_ENV, None)
+        result = subprocess.run(
+            [
+                sys.executable,
+                "scripts/run_execution_session.py",
+                "--mode",
+                "bounded_pilot",
+                "--strategy",
+                "ma_crossover",
+                "--steps",
+                "1",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=str(ROOT_DIR),
+            timeout=30,
+            env=child_env,
+        )
+        assert result.returncode == 1
+        assert PT_BOUNDED_PILOT_INVOKED_FROM_GATE in (result.stderr or "")
+
+
+# =============================================================================
+# Bounded pilot handoff environment
+# =============================================================================
+
+
+class TestBoundedPilotHandoffEnv:
+    """PT_* env validation for bounded_pilot LiveSessionRunner entry."""
+
+    def test_require_bounded_pilot_handoff_env_rejects_missing_gate(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from src.core.environment import (
+            PT_BOUNDED_PILOT_INVOKED_FROM_GATE,
+            PT_LIVE_CONFIRM_TOKEN_ENV,
+        )
+        from src.execution.live_session import SessionSetupError, require_bounded_pilot_handoff_env
+
+        monkeypatch.delenv(PT_BOUNDED_PILOT_INVOKED_FROM_GATE, raising=False)
+        monkeypatch.delenv(PT_LIVE_CONFIRM_TOKEN_ENV, raising=False)
+        with pytest.raises(SessionSetupError, match="PT_BOUNDED_PILOT_INVOKED_FROM_GATE"):
+            require_bounded_pilot_handoff_env()
+
+    def test_require_bounded_pilot_handoff_env_accepts_handoff(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from src.core.environment import (
+            LIVE_CONFIRM_TOKEN,
+            PT_BOUNDED_PILOT_INVOKED_FROM_GATE,
+            PT_LIVE_CONFIRM_TOKEN_ENV,
+        )
+        from src.execution.live_session import require_bounded_pilot_handoff_env
+
+        monkeypatch.setenv(PT_BOUNDED_PILOT_INVOKED_FROM_GATE, "1")
+        monkeypatch.setenv(PT_LIVE_CONFIRM_TOKEN_ENV, LIVE_CONFIRM_TOKEN)
+        assert require_bounded_pilot_handoff_env() == LIVE_CONFIRM_TOKEN
 
 
 # =============================================================================

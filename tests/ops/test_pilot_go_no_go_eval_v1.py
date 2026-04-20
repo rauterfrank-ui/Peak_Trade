@@ -97,7 +97,7 @@ def test_evaluate_all_pass_verdict() -> None:
         "policy_state": {
             "enabled": True,
             "armed": True,
-            "dry_run": True,
+            "dry_run": False,
             "confirm_token_required": True,
             "blocked": False,
             "action": "TRADE_READY",
@@ -116,3 +116,76 @@ def test_evaluate_all_pass_verdict() -> None:
     result = mod.evaluate(payload)
     assert result["verdict"] == "GO_FOR_NEXT_PHASE_ONLY"
     assert all(r["status"] == "PASS" for r in result["rows"])
+
+
+def test_evaluate_trade_ready_with_dry_run_true_is_no_go() -> None:
+    """TRADE_READY while dry_run=True is inconsistent → policy row FAIL → NO_GO."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "pilot_go_no_go_eval_v1",
+        SCRIPT,
+    )
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    payload = {
+        "policy_state": {
+            "enabled": True,
+            "armed": True,
+            "dry_run": True,
+            "confirm_token_required": True,
+            "blocked": False,
+            "action": "TRADE_READY",
+            "kill_switch_active": False,
+        },
+        "guard_state": {"treasury_separation": "enforced"},
+        "exposure_state": {
+            "caps_configured": [{"limit_id": "max_total_exposure", "cap_value": 1000}]
+        },
+        "stale_state": {"summary": "ok"},
+        "evidence_state": {"summary": "ok"},
+        "dependencies_state": {"summary": "ok"},
+        "human_supervision_state": {"status": "operator_supervised"},
+        "incident_state": {"requires_operator_attention": False},
+    }
+    result = mod.evaluate(payload)
+    assert result["verdict"] == "NO_GO"
+    assert any(r["row"] == 3 and r["status"] == "FAIL" for r in result["rows"])
+
+
+def test_evaluate_safety_gates_reject_non_bool_fields() -> None:
+    """Row 1 requires real booleans, not stringly-typed flags."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "pilot_go_no_go_eval_v1",
+        SCRIPT,
+    )
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    payload = {
+        "policy_state": {
+            "enabled": "true",
+            "armed": True,
+            "dry_run": False,
+            "confirm_token_required": True,
+            "blocked": False,
+            "action": "TRADE_READY",
+            "kill_switch_active": False,
+        },
+        "guard_state": {"treasury_separation": "enforced"},
+        "exposure_state": {
+            "caps_configured": [{"limit_id": "max_total_exposure", "cap_value": 1000}]
+        },
+        "stale_state": {"summary": "ok"},
+        "evidence_state": {"summary": "ok"},
+        "dependencies_state": {"summary": "ok"},
+        "human_supervision_state": {"status": "operator_supervised"},
+        "incident_state": {"requires_operator_attention": False},
+    }
+    result = mod.evaluate(payload)
+    assert any(r["row"] == 1 and r["status"] == "UNKNOWN" for r in result["rows"])
