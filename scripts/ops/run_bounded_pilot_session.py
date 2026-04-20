@@ -3,13 +3,15 @@
 Bounded Pilot Entry Gate Wrapper — Pre-Entry-Checks + Session Handoff.
 
 Read-only gate for the first strictly bounded real-money pilot.
-Runs Pre-Entry-Checks (go/no-go, cockpit, config). On Gates GREEN, invokes
-run_execution_session --mode bounded_pilot (Slice 4 handoff).
+Runs Pre-Entry-Checks (go/no-go, cockpit, config). On Gates GREEN, runs the
+read-only operator preflight packet (readiness + stop-signal snapshot) once more
+immediately before handoff; on packet_ok, invokes run_execution_session --mode
+bounded_pilot (Slice 4 handoff).
 
 Exit codes:
-  0 — All gates GREEN; session completed successfully (or delegated to runner)
-  1 — One or more gates RED; entry not permitted (or runner failed)
-  2 — Script error (e.g. cockpit build failed)
+  0 — All gates GREEN; operator preflight packet GREEN; session completed successfully (or delegated to runner)
+  1 — One or more gates RED; entry not permitted; or operator preflight packet blocked before handoff (or runner failed)
+  2 — Script error (e.g. cockpit build failed; operator preflight packet orchestration error)
 
 Usage:
   python3 scripts/ops/run_bounded_pilot_session.py
@@ -149,6 +151,66 @@ def main() -> int:
         else:
             print(f"ERR: {err}", file=sys.stderr)
         return 2
+
+    try:
+        from scripts.ops.bounded_pilot_operator_preflight_packet import (
+            build_operator_preflight_packet,
+        )
+
+        packet, packet_code = build_operator_preflight_packet(
+            repo_root,
+            config_path,
+            run_tests=False,
+        )
+    except Exception as e:
+        print(f"ERR: operator preflight packet failed: {e}", file=sys.stderr)
+        return 2
+
+    summary = packet.get("summary") or {}
+    packet_ok = bool(summary.get("packet_ok"))
+    if packet_code == 2 or not packet_ok:
+        blocked_at = "operator_preflight_packet"
+        if packet_code == 2:
+            if args.json:
+                out = {
+                    "contract": "run_bounded_pilot_session",
+                    "verdict": verdict,
+                    "entry_permitted": False,
+                    "message": "operator preflight packet orchestration error (fail-closed before handoff)",
+                    "blocked_at": blocked_at,
+                    "bounded_pilot_readiness": readiness_bundle,
+                    "operator_preflight_packet": packet,
+                }
+                print(json.dumps(out, indent=2))
+            else:
+                print(
+                    "GATES_RED: operator preflight packet failed before handoff",
+                    file=sys.stderr,
+                )
+                for b in summary.get("blocked") or []:
+                    print(f"  [packet] {b}", file=sys.stderr)
+                print("Entry not permitted. Fix blockers before retrying.", file=sys.stderr)
+            return 2
+        if args.json:
+            out = {
+                "contract": "run_bounded_pilot_session",
+                "verdict": verdict,
+                "entry_permitted": False,
+                "message": "operator preflight packet not GREEN (fail-closed before handoff)",
+                "blocked_at": blocked_at,
+                "bounded_pilot_readiness": readiness_bundle,
+                "operator_preflight_packet": packet,
+            }
+            print(json.dumps(out, indent=2))
+        else:
+            print(
+                "GATES_RED: operator preflight packet blocked session handoff",
+                file=sys.stderr,
+            )
+            for b in summary.get("blocked") or []:
+                print(f"  [packet] {b}", file=sys.stderr)
+            print("Entry not permitted. Fix blockers before retrying.", file=sys.stderr)
+        return 1
 
     cmd = [
         sys.executable,
