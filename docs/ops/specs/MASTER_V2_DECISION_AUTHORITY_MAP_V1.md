@@ -1,7 +1,7 @@
 # MASTER V2 — Decision Authority Map v1 (Canonical, Read-Only)
 
 status: ACTIVE
-last_updated: 2026-04-19
+last_updated: 2026-04-21
 owner: Peak_Trade
 purpose: Canonical docs-only, non-authorizing decision-authority mapping for Master V2 First Live Enablement
 docs_token: DOCS_TOKEN_MASTER_V2_DECISION_AUTHORITY_MAP_V1
@@ -116,6 +116,7 @@ Next closure candidate (separate slice, not part of this document):
 
 ## 10) Cross-References
 
+- `docs/ops/specs/MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md` (G10 handoff legibility note: §4.6)
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`
