@@ -453,17 +453,19 @@ def test_failed_trial_handling():
     """Test that failed trials are handled gracefully."""
 
     def objective(trial):
-        # Deterministic failure so the suite is not flaky (random x∈[0,10] can all be ≤5).
+        # Trial 0 fails deterministically; later trials must always complete (no TPE flake
+        # where every suggest_float lands in a "fail" branch after an early failure).
         if trial.number == 0:
             raise ValueError("Simulated failure")
-        x = trial.suggest_float("x", 0, 10)
-        if x > 5:
-            raise ValueError("Simulated failure")
+        x = trial.suggest_float("x", 0.0, 4.0)
         return x
 
-    study = optuna.create_study(direction="minimize")
+    study = optuna.create_study(
+        direction="minimize",
+        sampler=optuna.samplers.RandomSampler(seed=0),
+    )
 
-    # Run optimization (trial 0 fails; others may fail or complete)
+    # Run optimization (trial 0 fails; others complete)
     study.optimize(objective, n_trials=10, show_progress_bar=False, catch=(ValueError,))
 
     # Check that some trials failed
