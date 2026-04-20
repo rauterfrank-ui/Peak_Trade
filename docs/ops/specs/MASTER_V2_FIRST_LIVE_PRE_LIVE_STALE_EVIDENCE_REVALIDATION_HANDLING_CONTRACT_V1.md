@@ -6,7 +6,7 @@ owner: Peak_Trade
 intent: Genau ein additiver docs-only Single-Topic-Contract fuer fail-closed, candidate-scoped Stale-Evidence-Quarantine und Revalidation-Handoff in der operativen Pre-Live-Readiness
 docs_token: DOCS_TOKEN_MASTER_V2_FIRST_LIVE_PRE_LIVE_STALE_EVIDENCE_REVALIDATION_HANDLING_CONTRACT_V1
 
-## 1) Titel + Status / Intent
+## 1) Titel + Status &#47; Intent
 
 Diese Spezifikation materialisiert genau eine neue Pre-Live-Readiness-Slice: die konservative Behandlung von `stale` Evidenzlagen vor jedem First-Live-Review-Eingang.
 
@@ -20,7 +20,7 @@ Verbindliche Boundary:
 
 Diese Spezifikation autorisiert nichts, schliesst kein Gate und erteilt keine Live-Freischaltung.
 
-## 2) Zweck / Scope / Nicht-Ziele
+## 2) Zweck &#47; Scope &#47; Nicht-Ziele
 
 Zweck:
 
@@ -32,7 +32,7 @@ Scope:
 
 - genau ein kandidatenspezifischer Contract fuer Stale-Evidence-Erkennung, Quarantine, Revalidation-Handoff und Review-Zulaessigkeit
 - Required Inputs, Preconditions, Revalidation-Matrix, fail-closed Regeln und Decision-Input-Mindestfelder
-- bindende Sprache fuer `stop / reject / escalate` bei ungeklaerter oder veralteter Evidenzlage
+- bindende Sprache fuer `stop &#47; reject &#47; escalate` bei ungeklaerter oder veralteter Evidenzlage
 
 Nicht-Ziele:
 
@@ -55,7 +55,7 @@ Boundary-Lock:
 - ohne sichtbaren, kanonisch rueckfuehrbaren Revalidation-Input bleibt die Lage blockiert
 - lokale Vollstaendigkeit in diesem Contract hat niemals Freigabecharakter
 
-## 4) Inputs / Preconditions / Required Pointer Surface
+## 4) Inputs &#47; Preconditions &#47; Required Pointer Surface
 
 Required Inputs (reuse-only, pointer-basiert):
 
@@ -91,25 +91,25 @@ Required Pointer Surface (pro stale Befund):
 | stale scenario | minimum pointer condition | mandatory local handling | allowed local output | required handoff fields | fail-closed trigger |
 |---|---|---|---|---|---|
 | `Stale in critical class` | stale Pointer in required kritischer Klasse fuer denselben `candidate_id` | sofort Quarantine aktivieren, Review-Eingang blockieren | `stale critical blocked` | `candidate_id`, `pointer_class`, `source_pointer`, `quarantine_reason` | fehlender Quarantine-Eintrag oder closure-nahe Sprache |
-| `Stale with unresolved conflict` | stale plus offene Konfliktlage auf derselben Klasse oder benachbartem Kontext | keine lokale Priorisierung, direkt `stop / reject / escalate` | `stale conflict unresolved` | `conflict_pointer_refs`, `recency_state_map`, `escalation_route_pointer` | jede lokale Konfliktaufloesung ohne Anchor |
+| `Stale with unresolved conflict` | stale plus offene Konfliktlage auf derselben Klasse oder benachbartem Kontext | keine lokale Priorisierung, direkt `stop &#47; reject &#47; escalate` | `stale conflict unresolved` | `conflict_pointer_refs`, `recency_state_map`, `escalation_route_pointer` | jede lokale Konfliktaufloesung ohne Anchor |
 | `Stale with revalidation request absent` | stale Befund ohne revalidation request pointer | keine Weiterleitung in Review-Packet, nur blocker-Status | `revalidation missing` | `missing_request_reason`, `candidate_id`, `affected_levels_or_gates` | Annahme-basierte Weiterfuehrung ohne Request |
 | `Stale with visible revalidation request` | stale Befund plus tracebarer request pointer | Quarantine bleibt aktiv bis externe Rueckmeldung sichtbar ist | `revalidation pending` | `revalidation_request_pointer`, `timestamp_visibility_note`, `authority_boundary_note` | vorzeitige Aufhebung der Quarantine |
-| `Revalidation visible but still stale/unknown` | request und Rueckmeldung sichtbar, recency bleibt `stale` oder `unknown` | Quarantine nicht aufheben, erneute Eskalation | `still unresolved after revalidation` | `revalidation_result_pointer`, `remaining_ambiguity_flags` | Umdeutung in `fresh` ohne Quelle |
+| `Revalidation visible but still stale&#47;unknown` | request und Rueckmeldung sichtbar, recency bleibt `stale` oder `unknown` | Quarantine nicht aufheben, erneute Eskalation | `still unresolved after revalidation` | `revalidation_result_pointer`, `remaining_ambiguity_flags` | Umdeutung in `fresh` ohne Quelle |
 | `Revalidation visible and fresh` | request und Rueckmeldung sichtbar, recency klar `fresh` und konfliktfrei | Quarantine auf `cleared` setzen, nur als Review-Input-Zulaessigkeit markieren | `revalidation visible for review input` | `clearance_pointer`, `freshness_basis_pointer`, `explicit_non_claims_block` | jede Form von Autorisierungs- oder Gate-Pass-Behauptung |
 
 Verbindliche Matrix-Regel:
 
-- Jede stale Lage bleibt blockierend, bis eine pointer-sichtbare Revalidation-Lage vorliegt, die stale/unknown nicht mehr traegt.
+- Jede stale Lage bleibt blockierend, bis eine pointer-sichtbare Revalidation-Lage vorliegt, die stale&#47;unknown nicht mehr traegt.
 
-## 6) Fail-Closed Stop / Reject / Escalate-Regeln
+## 6) Fail-Closed Stop &#47; Reject &#47; Escalate-Regeln
 
 Bindend fuer jede stale Lage:
 
-- `Missing` -> `stop / reject / escalate`
-- `Partial` -> keine Auffuellung durch Annahme, `stop / reject / escalate`
-- `Unknown` -> keine lokale Aufloesung, `stop / reject / escalate`
-- `Contradiction` -> keine lokale Mittelung/Priorisierung ohne kanonischen Anker, `stop / reject / escalate`
-- `Stale/Unknown recency` in kritischer Klasse -> `stop / reject / escalate`
+- `Missing` -> `stop &#47; reject &#47; escalate`
+- `Partial` -> keine Auffuellung durch Annahme, `stop &#47; reject &#47; escalate`
+- `Unknown` -> keine lokale Aufloesung, `stop &#47; reject &#47; escalate`
+- `Contradiction` -> keine lokale Mittelung/Priorisierung ohne kanonischen Anker, `stop &#47; reject &#47; escalate`
+- `Stale&#47;Unknown recency` in kritischer Klasse -> `stop &#47; reject &#47; escalate`
 
 Globale Stop-Regel:
 
