@@ -39,7 +39,7 @@ This contract depends on, and must remain consistent with, the following canonic
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_TRACEABILITY_LEDGER_CONTRACT_V1.md`
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_OUTCOME_REGISTER_CONTRACT_V1.md`
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_DISPOSITION_RECORD_CONTRACT_V1.md`
-- `docs/ops/specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_DELIVERABLE_MANIFEST_CONTRACT_V1.md`
+- signoff deliverable-manifest contract surface (when materialized in canonical inventory)
 
 ## 4. Delivery receipt intent
 
