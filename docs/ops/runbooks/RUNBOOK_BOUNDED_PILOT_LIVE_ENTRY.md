@@ -137,7 +137,7 @@ Vor **Session-Start ohne `--no-invoke`** wird dieses Packet im Entry-Wrapper int
    **Hinweis:** Default ist **extrem klein** steps/sizing im Wrapper-Docstring; Cap an eure Pilot-Tabelle anpassen, aber **immer innerhalb** der konfigurierten `live_risk`-Grenzen.
 
 3. **Alternativ (Operator kontrolliert den Aufruf selbst):**  
-   Nach Gate-Logik manuell:  
+   Nach Gate-Logik manuell (inkl. kanonischem Handoff-Env und **demselben** read-only Operator-Preflight-Packet wie im Wrapper — `run_execution_session.py` baut es im **non-dry-run**-Pfad nach dem Handoff-Bit erneut, fail-closed):  
    `python3 scripts/run_execution_session.py --mode bounded_pilot --strategy <key> --steps <n> ...`  
    Nur nutzen, wenn dieselben Vorbedingungen wie oben erfüllt sind und der Go/No-Go **GO_FOR_NEXT_PHASE_ONLY** ist.
 

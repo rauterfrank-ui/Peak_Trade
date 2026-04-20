@@ -121,6 +121,54 @@ def _ensure_bounded_pilot_events_enabled(args: argparse.Namespace) -> None:
         os.environ["PT_EXEC_EVENTS_ENABLED"] = "true"
 
 
+def _bounded_pilot_non_dry_run_preflight_packet_ok(repo_root: Path, config_file: str) -> int:
+    """
+    Defense-in-depth: same operator preflight packet as ``run_bounded_pilot_session`` / CLI.
+
+    Read-only; reuses ``build_operator_preflight_packet`` semantics (no new gate rules).
+
+    Returns:
+        0 if packet_ok and orchestration succeeded; 1 if blocked; 2 on orchestration error.
+    """
+    try:
+        from scripts.ops.bounded_pilot_operator_preflight_packet import (
+            build_operator_preflight_packet,
+        )
+        from scripts.ops.check_bounded_pilot_readiness import (
+            resolve_bounded_pilot_config_path,
+        )
+
+        cfg = Path(config_file)
+        config_path = resolve_bounded_pilot_config_path(
+            repo_root,
+            cfg if cfg.is_absolute() else repo_root / cfg,
+        )
+        packet, packet_code = build_operator_preflight_packet(
+            repo_root,
+            config_path,
+            run_tests=False,
+        )
+    except Exception as e:
+        print(
+            f"ERR: bounded_pilot operator preflight packet failed: {e}",
+            file=sys.stderr,
+        )
+        return 2
+
+    summary = packet.get("summary") or {}
+    packet_ok = bool(summary.get("packet_ok"))
+    if packet_code == 2 or not packet_ok:
+        print(
+            "ERR: bounded_pilot Ausführung abgebrochen — Operator-Preflight-Packet nicht GREEN "
+            "(fail-closed; gleiche Semantik wie scripts/ops/bounded_pilot_operator_preflight_packet.py).",
+            file=sys.stderr,
+        )
+        for b in summary.get("blocked") or []:
+            print(f"  [packet] {b}", file=sys.stderr)
+        return 2 if packet_code == 2 else 1
+    return 0
+
+
 # =============================================================================
 # Main Entry Point
 # =============================================================================
@@ -307,6 +355,10 @@ WICHTIG: Shadow/Testnet senden keine echten Orders. Modus bounded_pilot kann nac
                 file=sys.stderr,
             )
             return 1
+
+        preflight_rc = _bounded_pilot_non_dry_run_preflight_packet_ok(PROJECT_ROOT, args.config)
+        if preflight_rc != 0:
+            return preflight_rc
 
     # Strategy-Liste?
     if args.list_strategies:
