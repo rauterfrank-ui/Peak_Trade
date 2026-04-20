@@ -166,6 +166,9 @@ Nach jeder Pilot-Session-Durchführung mindestens:
 - Read-only **Operator-Gesamtübersicht** (Readiness + Preflight-Packet + Registry-Fokus + Closeout-Signale in **einem** Aufruf; gleiche Bausteine wie die Einzel-CLIs):  
   `python3 scripts/report_live_sessions.py --bounded-pilot-operator-overview [--json] [--config-path <path>] [--registry-base <dir>]`  
   (kein Live-Unlock; siehe JSON-Feld `disclaimer`.)
+- Read-only **Gate-/Enablement-Index** (kompakter Index-Block `gate_enablement_index` aus bestehenden Readiness-/Packet-/Session-/Closeout-Signalen **plus** voller Kontext wie Overview):  
+  `python3 scripts/report_live_sessions.py --bounded-pilot-gate-index [--json] [--config-path <path>] [--registry-base <dir>]`  
+  (kein Gate-Closure-Urteil; siehe JSON-Felder `disclaimer` und `gate_enablement_index.index_notes`.)
 - Optional: Export über eure **Object-Storage-Kette** (Phase T/W), ohne bestehende Shadow/Paper-Original-Runs zu überschreiben (neue `run_id` / Export-ID).
 
 Referenz: `docs/ops/runbooks/live_pilot_execution_plan.md` (Post-run, Scorecards).
