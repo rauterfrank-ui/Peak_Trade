@@ -1,7 +1,7 @@
 # MASTER V2 — Failure Taxonomy Safe Fallbacks v1 (Canonical, Read-Only)
 
 status: ACTIVE
-last_updated: 2026-04-19
+last_updated: 2026-04-20
 owner: Peak_Trade
 purpose: Canonical docs-only failure taxonomy and safe-fallback mapping for Master V2
 docs_token: DOCS_TOKEN_MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1
@@ -102,6 +102,7 @@ Potential follow-up slice (separate topic):
 
 ## 9) Cross-References
 
+- Optional docs-only pointer metadata for externally retained bounded-pilot L5 incident / safe-stop evidence (no payloads in git): [MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md](MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md)
 - [MASTER_V2_DECISION_AUTHORITY_MAP_V1.md](MASTER_V2_DECISION_AUTHORITY_MAP_V1.md)
 - [MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md](MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md)
 - [MASTER_V2_PROMOTION_STATE_MACHINE_V1.md](MASTER_V2_PROMOTION_STATE_MACHINE_V1.md)
