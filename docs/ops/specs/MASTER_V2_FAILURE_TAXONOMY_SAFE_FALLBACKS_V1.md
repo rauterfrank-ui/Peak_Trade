@@ -104,6 +104,7 @@ Potential follow-up slice (separate topic):
 
 - Bounded-pilot exchange/broker degradation operator path (runbook; non-authorizing): [RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED.md](../runbooks/RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED.md)
 - Bounded-pilot session end / closeout mismatch operator path (runbook; non-authorizing): [RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md](../runbooks/RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md)
+- Bounded-pilot incident / Entry §5 abort triage compass (orientation only; non-authorizing): [RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md](../runbooks/RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md)
 - Optional docs-only pointer metadata for externally retained bounded-pilot L5 incident / safe-stop evidence (no payloads in git): [MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md](MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md)
 - [MASTER_V2_DECISION_AUTHORITY_MAP_V1.md](MASTER_V2_DECISION_AUTHORITY_MAP_V1.md)
 - [MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md](MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md)
