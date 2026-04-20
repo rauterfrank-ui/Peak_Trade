@@ -129,7 +129,7 @@ These commands are **read-only**; they **do not** unlock live trading or assert 
 | Evidence pointers for one session or latest bounded pilot | `python scripts/report_live_sessions.py --evidence-pointers --session-id <id>` / `--evidence-pointers --latest-bounded-pilot [--json]` |
 | Open registry rows (`started`) | `python scripts/report_live_sessions.py --open-sessions [--bounded-pilot-only] [--latest-bounded-pilot-open] [--json]` |
 | Readiness + preflight packet + registry focus | `python scripts/report_live_sessions.py --bounded-pilot-readiness-summary [--json]` |
-| Closeout / terminal registry signals | `python scripts/report_live_sessions.py --bounded-pilot-closeout-status-summary [--json]` |
+| Closeout / terminal registry signals + derived `abort_triage_hints` (JSON) | `python scripts/report_live_sessions.py --bounded-pilot-closeout-status-summary [--json]` — top-level `abort_triage_hints`; same derivation discipline as lifecycle (read-only; not authorization) |
 | Combined operator snapshot | `python scripts/report_live_sessions.py --bounded-pilot-operator-overview [--json]` |
 | Compact gate / enablement index block | `python scripts/report_live_sessions.py --bounded-pilot-gate-index [--json]` |
 | Frontdoor + canonical subcommand hints | `python scripts/report_live_sessions.py --bounded-pilot-first-live-frontdoor [--json]` |
