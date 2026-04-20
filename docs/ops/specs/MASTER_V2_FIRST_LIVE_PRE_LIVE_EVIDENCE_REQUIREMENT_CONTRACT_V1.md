@@ -14,7 +14,7 @@ Zweck:
 
 - aus verteilter Artefaktlage eine reproduzierbare, fail-closed Intake-Basis machen
 - Required-Pointer-Klassen pro Level `L1` bis `L5` explizit machen
-- unklare/inkonsistente Lage konservativ als `stop / escalate` behandeln
+- unklare/inkonsistente Lage konservativ als `stop &#47; escalate` behandeln
 
 Diese Spezifikation autorisiert nichts und leitet keine Freigabe ab.
 
@@ -43,7 +43,7 @@ Pointer-Klassen nutzen bestehende Evidenzkonventionen und bleiben Pointer-basier
 
 | level | required pointer classes (candidate-scoped) | minimum intake expectation | fail-closed trigger |
 |---|---|---|---|
-| `L1` | dry-validation sequence pointer; go/no-go verdict pointer; execution dry-run pointer; evidence index anchor pointer | alle vier Pointer-Klassen vorhanden und fuer `candidate_id` eindeutig lesbar | eine Klasse `Missing`, `Partial`, `Unknown`, `Contradiction`, oder `Stale/Unknown recency` |
+| `L1` | dry-validation sequence pointer; go/no-go verdict pointer; execution dry-run pointer; evidence index anchor pointer | alle vier Pointer-Klassen vorhanden und fuer `candidate_id` eindeutig lesbar | eine Klasse `Missing`, `Partial`, `Unknown`, `Contradiction`, oder `Stale&#47;Unknown recency` |
 | `L2` | verdict interpretation pointer; checklist/slice pointer; gate-status surface pointer; candidate ledger row pointer | verdict-bezogene Pointer-Klassen sind konsistent und candidate-scoped | jede inkonsistente oder unvollstaendige verdict-Lage |
 | `L3` | entry-contract prerequisite pointer; boundary-note pointer; pre-entry gate posture pointer; cross-gate index pointer | prerequisite-Lage ist pointer-basiert nachweisbar und ohne offene Kernluecke | fehlende/unklare prerequisite-Pointer oder Widerspruch zwischen Quellen |
 | `L4` | candidate session-flow pointer; live-entry runbook pointer; session outcome pointer; handoff continuity pointer | session-flow-Interpretation fuer denselben Candidate ist pointer-konsistent | unklare Session-Fortschreibung oder nicht aufloesbare Pointer-Divergenz |
@@ -59,7 +59,7 @@ Minimales Intake-Template (nur Struktur/Felder/Pointer, ohne Runtime- oder Workf
 | `level` | genau ein Level `L1` bis `L5` pro Intake-Zeile |
 | `pointer_set` | strukturierte Menge required pointer classes fuer das jeweilige Level |
 | `recency_visibility` | sichtbare Zeitnaehe der Pointer-Lage (`fresh`, `stale`, `unknown`) nur als Interpretationssignal |
-| `ambiguity_flags` | explizite Marker fuer `Missing`, `Partial`, `Unknown`, `Contradiction`, `Stale/Unknown recency` |
+| `ambiguity_flags` | explizite Marker fuer `Missing`, `Partial`, `Unknown`, `Contradiction`, `Stale&#47;Unknown recency` |
 | `authority_boundary_note` | expliziter Hinweis, dass Intake keine Autorisierung/Freigabe impliziert |
 
 Bindende Form:
@@ -72,11 +72,11 @@ Bindende Form:
 
 Fuer jede Required-Pointer-Klasse und jedes Level gelten dieselben konservativen Regeln:
 
-- `Missing` -> sofort `stop / escalate`
-- `Partial` -> kein Auffuellen per Annahme; `stop / escalate`
-- `Unknown` -> keine lokale Aufloesung; `stop / escalate`
-- `Contradiction` -> kein Mittelwert/Upward-Resolve; `stop / escalate`
-- `Stale or Unknown recency` -> nicht als aktuell interpretieren; `stop / escalate`
+- `Missing` -> sofort `stop &#47; escalate`
+- `Partial` -> kein Auffuellen per Annahme; `stop &#47; escalate`
+- `Unknown` -> keine lokale Aufloesung; `stop &#47; escalate`
+- `Contradiction` -> kein Mittelwert/Upward-Resolve; `stop &#47; escalate`
+- `Stale or Unknown recency` -> nicht als aktuell interpretieren; `stop &#47; escalate`
 
 Globale Bindung:
 
