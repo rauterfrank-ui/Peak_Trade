@@ -46,8 +46,15 @@ def test_script_json_output() -> None:
     assert data["contract"] == "run_bounded_pilot_session"
     assert "entry_permitted" in data
     assert "verdict" in data
-    assert "go_no_go" in data
-    assert data["go_no_go"]["contract"] == "pilot_go_no_go_eval_v1"
+    assert "bounded_pilot_readiness" in data
+    br = data["bounded_pilot_readiness"]
+    assert br.get("contract") == "bounded_pilot_readiness_v1"
+    if data["entry_permitted"]:
+        assert data["go_no_go"]["contract"] == "pilot_go_no_go_eval_v1"
+    else:
+        assert data.get("blocked_at") == br.get("blocked_at")
+        if br.get("go_no_go"):
+            assert br["go_no_go"]["contract"] == "pilot_go_no_go_eval_v1"
 
 
 def test_main_importable() -> None:
