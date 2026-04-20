@@ -73,6 +73,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 ## Änderungsnachweis (Slice A)
 
+- 2026-04-20 — `scripts&#47;report_live_sessions.py` — read-only `--open-sessions` (Registry `status=started`, optional `mode=bounded_pilot` / `--latest-bounded-pilot-open`); Runbook `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` §4; **keine** Live-Freigabe.
+
 - 2026-04-20 — `scripts&#47;report_live_sessions.py` — read-only `--evidence-pointers` (Registry-JSON + session-scoped `out&#47;ops&#47;execution_events&#47;sessions&#47;...&#47;execution_events.jsonl`); Runbook `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` §4; **keine** Live-Freigabe.
 
 - 2026-04-20 — `docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` — `run_bounded_pilot_session.py --no-invoke` nutzt dasselbe Operator-Preflight-Packet wie der Invoke-Pfad (Gate-only Parität); Ist-Zustand-Tabelle / Phase A.4; **keine** Live-Freigabe.
