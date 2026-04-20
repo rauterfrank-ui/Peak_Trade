@@ -1,7 +1,7 @@
 # Pilot Go/No-Go Operational Slice
 
 status: DRAFT
-last_updated: 2026-03-13
+last_updated: 2026-04-20
 owner: Peak_Trade
 purpose: Operator-facing mapping from PILOT_GO_NO_GO_CHECKLIST to evidence sources (Ops Cockpit, Runbooks, Config)
 docs_token: DOCS_TOKEN_PILOT_GO_NO_GO_OPERATIONAL_SLICE
@@ -13,6 +13,7 @@ This document maps each checklist item in `PILOT_GO_NO_GO_CHECKLIST` to the conc
 - Companion to `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md`
 - References Ops Cockpit payload structure from `src/webui/ops_cockpit.py`
 - No direct activation authority; read-only operator guidance
+- Optional docs-only pointer metadata for externally retained go/no-go **eval** captures (bounded pilot L2; no payloads in git): [`MASTER_V2_BOUNDED_PILOT_L2_GO_NO_GO_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L2_GO_NO_GO_EVIDENCE_POINTER_CONTRACT_V0.md)
 
 ## Checklist → Evidence Mapping
 

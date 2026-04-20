@@ -106,6 +106,7 @@ This subsection materializes **one** candidate-scoped **L2 go/no-go verdict evid
 - Contractual prerequisite wording (acceptable vs non-acceptable verdict classes for entry interpretation): [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) §3 prerequisite **2. Go/No-Go Acceptable** (see acceptable `GO_FOR_NEXT_PHASE_ONLY` vs `CONDITIONAL` / `NO_GO` as documented there).
 - Dry-validation ordering context (Step 2 in the bounded-pilot dry-validation sequence): [`RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md) Step 2 (Pilot Go/No-Go Eval).
 - Live-entry Phase A ordering (same eval surface in sequence): [`RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) §3 Phase A — Dry-Validation, item 2 (Pilot Go/No-Go).
+- L2 external go/no-go eval pointer metadata discipline (docs-only; no verdict payloads in-repo): [`MASTER_V2_BOUNDED_PILOT_L2_GO_NO_GO_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L2_GO_NO_GO_EVIDENCE_POINTER_CONTRACT_V0.md).
 
 **Belastbare script references (documentation pointers only; no execution claim):**
 
@@ -117,7 +118,7 @@ This subsection materializes **one** candidate-scoped **L2 go/no-go verdict evid
 
 **G5 status after this record:** remains `Partial` — this index still does not host operator-held go/no-go eval output under a named, immutable in-repo object for a specific candidate.
 
-**Next open gap:** operator/governance capture and archival of go/no-go eval output (for example `--json`) under change control **outside** this index; a later slice may add repo-resolvable pointers **if and when** those artifacts become stable, reviewable references.
+**Next open gap:** operator/governance capture and archival of go/no-go eval output (for example `--json`) under change control **outside** this index; a later slice may add repo-resolvable pointers **if and when** those artifacts become stable, reviewable references. Minimal field vocabulary for external pointer records (L2 go/no-go only) lives in [`MASTER_V2_BOUNDED_PILOT_L2_GO_NO_GO_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L2_GO_NO_GO_EVIDENCE_POINTER_CONTRACT_V0.md) and does not by itself close this gap.
 
 ## 4.3) L3 candidate prerequisite pointer record (G6)
 
