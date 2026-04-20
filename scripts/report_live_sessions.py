@@ -35,11 +35,16 @@ Usage:
 
     # Report in spezifisches Verzeichnis:
     python scripts/report_live_sessions.py --output-dir reports/custom/
+
+    # Read-only Evidence-Pointer (Registry + session-scoped execution_events.jsonl):
+    python scripts/report_live_sessions.py --evidence-pointers --session-id <id>
+    python scripts/report_live_sessions.py --evidence-pointers --latest-bounded-pilot --json
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import sys
 from datetime import datetime
@@ -186,6 +191,108 @@ def format_summary_html(summary: dict) -> str:
 
 
 # =============================================================================
+# Evidence pointers (read-only, post-session reconstruction)
+# =============================================================================
+
+
+def _run_evidence_pointers(args: argparse.Namespace, logger: logging.Logger) -> int:
+    """
+    Print canonical artifact paths for a session. Read-only; never writes under out/.
+
+    Returns:
+        0 on success (including missing execution_events JSONL),
+        1 if session not found,
+        2 on usage errors (handled before this call).
+    """
+    from src.experiments.live_session_registry import (
+        DEFAULT_LIVE_SESSION_DIR,
+        find_live_session_registry_json_for_session_id,
+        list_session_records,
+    )
+    from src.observability.execution_events import expected_session_scoped_events_jsonl_path
+
+    base_dir = Path(args.registry_base) if args.registry_base else DEFAULT_LIVE_SESSION_DIR
+    cwd = Path.cwd()
+
+    if args.session_id:
+        sid = args.session_id.strip()
+        resolved = find_live_session_registry_json_for_session_id(sid, base_dir=base_dir)
+        if resolved is None:
+            print(
+                f"ERR: no live session registry entry for session_id={sid!r} "
+                f"(registry_dir={base_dir!s})",
+                file=sys.stderr,
+            )
+            return 1
+        record, registry_path = resolved
+    else:
+        records = list_session_records(base_dir=base_dir)
+        record = next((r for r in records if r.mode == "bounded_pilot"), None)
+        if record is None:
+            print(
+                "ERR: no live session registry entry with mode=bounded_pilot "
+                f"(registry_dir={base_dir!s})",
+                file=sys.stderr,
+            )
+            return 1
+        resolved = find_live_session_registry_json_for_session_id(
+            record.session_id,
+            base_dir=base_dir,
+        )
+        if resolved is None:
+            print(
+                f"ERR: registry entry disappeared for session_id={record.session_id!r}",
+                file=sys.stderr,
+            )
+            return 1
+        _, registry_path = resolved
+
+    rel_exec = expected_session_scoped_events_jsonl_path(record.session_id)
+    abs_registry = registry_path.resolve()
+    abs_exec = (cwd / rel_exec).resolve()
+    exec_present = abs_exec.is_file()
+
+    payload = {
+        "contract": "report_live_sessions.evidence_pointers",
+        "session_id": record.session_id,
+        "run_id": record.run_id,
+        "mode": record.mode,
+        "run_type": record.run_type,
+        "status": record.status,
+        "registry_json": {
+            "path": str(registry_path),
+            "resolved": str(abs_registry),
+            "exists": abs_registry.is_file(),
+        },
+        "execution_events_session_jsonl": {
+            "path": str(rel_exec),
+            "resolved": str(abs_exec),
+            "present": exec_present,
+        },
+    }
+
+    logger.info("Evidence pointers (read-only) for session_id=%s", record.session_id)
+
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+
+    lines = [
+        "Evidence pointers (read-only)",
+        f"  session_id: {record.session_id}",
+        f"  run_id: {record.run_id}",
+        f"  mode: {record.mode}",
+        f"  run_type: {record.run_type}",
+        f"  status: {record.status}",
+        f"  registry_json: {abs_registry} (exists: {payload['registry_json']['exists']})",
+        f"  execution_events_jsonl (session-scoped): {abs_exec}",
+        f"    present: {'yes' if exec_present else 'no'}",
+    ]
+    print("\n".join(lines))
+    return 0
+
+
+# =============================================================================
 # Main Entry Point
 # =============================================================================
 
@@ -270,6 +377,38 @@ Beispiele:
         help="Report nach stdout ausgeben (keine Datei schreiben)",
     )
 
+    # Read-only evidence pointers (post-session / reconstruction)
+    parser.add_argument(
+        "--evidence-pointers",
+        action="store_true",
+        help=(
+            "Read-only: print registry + session-scoped execution_events.jsonl paths "
+            "(use with --session-id or --latest-bounded-pilot)"
+        ),
+    )
+    parser.add_argument(
+        "--session-id",
+        type=str,
+        default=None,
+        help="Session id for --evidence-pointers",
+    )
+    parser.add_argument(
+        "--latest-bounded-pilot",
+        action="store_true",
+        help="Use newest registry entry with mode=bounded_pilot for --evidence-pointers",
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="JSON output for --evidence-pointers",
+    )
+    parser.add_argument(
+        "--registry-base",
+        type=str,
+        default=None,
+        help="Override live session registry directory (for --evidence-pointers; default: reports/experiments/live_sessions)",
+    )
+
     # Logging
     parser.add_argument(
         "--log-level",
@@ -283,6 +422,21 @@ Beispiele:
 
     # Logging setup
     logger = setup_logging(args.log_level)
+
+    if args.evidence_pointers:
+        if args.session_id and args.latest_bounded_pilot:
+            print(
+                "ERR: use either --session-id or --latest-bounded-pilot, not both",
+                file=sys.stderr,
+            )
+            return 2
+        if not args.session_id and not args.latest_bounded_pilot:
+            print(
+                "ERR: --evidence-pointers requires --session-id or --latest-bounded-pilot",
+                file=sys.stderr,
+            )
+            return 2
+        return _run_evidence_pointers(args, logger)
 
     # Imports hier um Startup-Zeit zu optimieren
     from src.experiments.live_session_registry import (

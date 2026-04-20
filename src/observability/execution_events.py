@@ -22,6 +22,18 @@ DEFAULT_JSONL_PATH = Path("out/ops/execution_events/execution_events.jsonl")
 _SESSION_CONTEXT: ContextVar[str | None] = ContextVar("execution_events_session_id", default=None)
 
 
+def expected_session_scoped_events_jsonl_path(session_id: str) -> Path:
+    """
+    Canonical repo-relative path for session-scoped execution events JSONL.
+
+    Matches the session branch of _jsonl_path() when set_session_context is active.
+    Read-only helper for operator tooling (no writes, no env).
+    """
+    base = Path("out/ops/execution_events/sessions")
+    safe_id = (session_id or "").replace("/", "_").replace(":", "_").replace(" ", "_")
+    return base / safe_id / "execution_events.jsonl"
+
+
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
