@@ -1,7 +1,7 @@
 # RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW
 
 status: DRAFT
-last_updated: 2026-04-01
+last_updated: 2026-04-20
 owner: Peak_Trade
 purpose: Canonical first-session sequence for the first strictly bounded real-money pilot candidate flow
 docs_token: DOCS_TOKEN_RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW
@@ -122,6 +122,7 @@ The operator should preserve evidence for:
 - incident/mismatch notes, if any
 - session closeout outcome
 - reconciliation outcome
+- Optional docs-only pointer metadata for externally retained session-flow / closeout evidence (bounded pilot L4; no payloads in git): [`../specs/MASTER_V2_BOUNDED_PILOT_L4_SESSION_FLOW_EVIDENCE_POINTER_CONTRACT_V0.md`](../specs/MASTER_V2_BOUNDED_PILOT_L4_SESSION_FLOW_EVIDENCE_POINTER_CONTRACT_V0.md)
 
 ## 6. Related Runbooks / Specs
 
