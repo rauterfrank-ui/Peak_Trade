@@ -149,6 +149,11 @@ Nach jeder Pilot-Session-Durchführung mindestens:
 
 - Ausgabe / Logs der Session und der Execution-Pipeline.
 - `PT_EXEC_EVENTS_ENABLED` wird für `bounded_pilot` vom Runner gesetzt—Execution-Events JSONL gemäß eurer Observability-Runbooks sichern.
+- Read-only Rekonstruktion: kanonische Registry- und (session-scoped) Execution-Events-Pfade für eine Session anzeigen —  
+  `python3 scripts/report_live_sessions.py --evidence-pointers --session-id <SESSION_ID>`  
+  oder letzte Registry-Session mit `mode=bounded_pilot`:  
+  `python3 scripts/report_live_sessions.py --evidence-pointers --latest-bounded-pilot [--json]`  
+  (schreibt keine Artefakte; `present: no` bedeutet: erwarteter Pfad, Datei fehlt noch oder liegt woanders).
 - Optional: Export über eure **Object-Storage-Kette** (Phase T/W), ohne bestehende Shadow/Paper-Original-Runs zu überschreiben (neue `run_id` / Export-ID).
 
 Referenz: `docs/ops/runbooks/live_pilot_execution_plan.md` (Post-run, Scorecards).

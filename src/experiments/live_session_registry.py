@@ -271,6 +271,45 @@ def register_live_session_run(
 
 
 # =============================================================================
+# Query-Funktion: find_live_session_registry_json_for_session_id()
+# =============================================================================
+
+
+def find_live_session_registry_json_for_session_id(
+    session_id: str,
+    base_dir: Path | str | None = None,
+) -> Optional[tuple[LiveSessionRecord, Path]]:
+    """
+    Read-only: find the newest registry JSON for a given session_id.
+
+    Filenames sort newest-first (same glob order as list_session_records);
+    returns the first matching record and its path, or None if missing/empty dir.
+
+    Args:
+        session_id: Session id to match (exact equality on LiveSessionRecord.session_id)
+        base_dir: Registry root (default: DEFAULT_LIVE_SESSION_DIR)
+
+    Returns:
+        (record, path) or None
+    """
+    base = Path(base_dir) if base_dir is not None else DEFAULT_LIVE_SESSION_DIR
+    if not base.exists():
+        return None
+
+    for path in sorted(base.glob("*.json"), reverse=True):
+        try:
+            with path.open("r", encoding="utf-8") as f:
+                raw = json.load(f)
+            rec = LiveSessionRecord.from_dict(raw)
+        except Exception:
+            continue
+        if rec.session_id == session_id:
+            return (rec, path)
+
+    return None
+
+
+# =============================================================================
 # Query-Funktion: list_session_records()
 # =============================================================================
 
@@ -677,6 +716,7 @@ __all__ = [
     "LiveSessionRecord",
     # Functions
     "register_live_session_run",
+    "find_live_session_registry_json_for_session_id",
     "list_session_records",
     "get_session_summary",
     "load_session_record",
