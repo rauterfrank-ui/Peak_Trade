@@ -60,6 +60,10 @@ Usage:
     # Bounded-pilot gate / enablement index (read-only; overview data + compact index block):
     python scripts/report_live_sessions.py --bounded-pilot-gate-index
     python scripts/report_live_sessions.py --bounded-pilot-gate-index --json
+
+    # Bounded-pilot / first-live frontdoor (read-only; overview + gate index + canonical CLI hints):
+    python scripts/report_live_sessions.py --bounded-pilot-first-live-frontdoor
+    python scripts/report_live_sessions.py --bounded-pilot-first-live-frontdoor --json
 """
 
 from __future__ import annotations
@@ -734,6 +738,44 @@ def _collect_bounded_pilot_overview_data(
     return config_path, base_dir, readiness_block, packet_out, session_focus, closeout
 
 
+def _canonical_bounded_pilot_read_only_subcommands() -> dict[str, str]:
+    """Stable operator hints for existing read-only report_live_sessions modes (no execution)."""
+    return {
+        "evidence_pointers_session": (
+            "python scripts/report_live_sessions.py --evidence-pointers "
+            "--session-id <SESSION_ID> [--json]"
+        ),
+        "evidence_pointers_latest_bounded_pilot": (
+            "python scripts/report_live_sessions.py --evidence-pointers "
+            "--latest-bounded-pilot [--json]"
+        ),
+        "open_sessions": (
+            "python scripts/report_live_sessions.py --open-sessions "
+            "[--bounded-pilot-only] [--latest-bounded-pilot-open] [--json]"
+        ),
+        "readiness_summary": (
+            "python scripts/report_live_sessions.py --bounded-pilot-readiness-summary "
+            "[--json] [--config-path <path>] [--registry-base <dir>]"
+        ),
+        "closeout_status_summary": (
+            "python scripts/report_live_sessions.py --bounded-pilot-closeout-status-summary "
+            "[--json] [--registry-base <dir>]"
+        ),
+        "operator_overview": (
+            "python scripts/report_live_sessions.py --bounded-pilot-operator-overview "
+            "[--json] [--config-path <path>] [--registry-base <dir>]"
+        ),
+        "gate_index": (
+            "python scripts/report_live_sessions.py --bounded-pilot-gate-index "
+            "[--json] [--config-path <path>] [--registry-base <dir>]"
+        ),
+        "first_live_frontdoor": (
+            "python scripts/report_live_sessions.py --bounded-pilot-first-live-frontdoor "
+            "[--json] [--config-path <path>] [--registry-base <dir>]"
+        ),
+    }
+
+
 def _build_bounded_pilot_gate_enablement_index(
     readiness_block: dict[str, Any],
     packet_out: dict[str, Any],
@@ -925,7 +967,8 @@ def _bounded_pilot_closeout_status_summary_flag_conflicts(args: argparse.Namespa
     if getattr(args, "config_path", None):
         return (
             "--config-path is only for --bounded-pilot-readiness-summary, "
-            "--bounded-pilot-operator-overview, or --bounded-pilot-gate-index"
+            "--bounded-pilot-operator-overview, --bounded-pilot-gate-index, "
+            "or --bounded-pilot-first-live-frontdoor"
         )
     return None
 
@@ -1176,6 +1219,157 @@ def _run_bounded_pilot_gate_index(
     return 0
 
 
+def _bounded_pilot_first_live_frontdoor_flag_conflicts(args: argparse.Namespace) -> str | None:
+    """Same incompatibility surface as gate index (optional --config-path)."""
+    if args.session_id is not None:
+        return "--session-id is only for --evidence-pointers"
+    if args.latest_bounded_pilot:
+        return "--latest-bounded-pilot is only for --evidence-pointers"
+    if args.bounded_pilot_only or args.latest_bounded_pilot_open:
+        return "--bounded-pilot-only / --latest-bounded-pilot-open require --open-sessions"
+    if args.run_type is not None:
+        return "--run-type is not compatible with --bounded-pilot-first-live-frontdoor"
+    if args.status is not None:
+        return "--status is not compatible with --bounded-pilot-first-live-frontdoor"
+    if args.limit is not None:
+        return "--limit is not compatible with --bounded-pilot-first-live-frontdoor"
+    if args.summary_only:
+        return "--summary-only is not compatible with --bounded-pilot-first-live-frontdoor"
+    if args.output_dir is not None:
+        return "--output-dir is not compatible with --bounded-pilot-first-live-frontdoor"
+    if args.stdout:
+        return "--stdout is not compatible with --bounded-pilot-first-live-frontdoor"
+    return None
+
+
+def _run_bounded_pilot_first_live_frontdoor(
+    args: argparse.Namespace,
+    logger: logging.Logger,
+) -> int:
+    """
+    Read-only single frontdoor: overview data + gate index + canonical CLI hints for sub-views.
+
+    Reuses _collect_bounded_pilot_overview_data and _build_bounded_pilot_gate_enablement_index;
+    does not add new semantics beyond composition.
+    """
+    config_path, base_dir, readiness_block, packet_out, session_focus, closeout = (
+        _collect_bounded_pilot_overview_data(args, logger)
+    )
+    gate_index = _build_bounded_pilot_gate_enablement_index(
+        readiness_block,
+        packet_out,
+        session_focus,
+        closeout,
+    )
+    canonical = _canonical_bounded_pilot_read_only_subcommands()
+
+    payload: dict[str, Any] = {
+        "contract": "report_live_sessions.bounded_pilot_first_live_frontdoor_v1",
+        "disclaimer": (
+            "Read-only bounded_pilot / first-live operator frontdoor: aggregates existing "
+            "readiness, preflight packet, session focus, closeout, and gate/enablement index "
+            "signals plus canonical CLI hints for deeper read-only sub-views. "
+            "Not a live authorization, not gate closure, not proof of handoff or session outcome."
+        ),
+        "config_path": str(config_path),
+        "registry_dir": str(base_dir),
+        "canonical_read_only_subcommands": canonical,
+        "gate_enablement_index": gate_index,
+        "bounded_pilot_readiness": readiness_block,
+        "operator_preflight_packet": packet_out,
+        "session_focus": session_focus,
+        "closeout": closeout,
+    }
+
+    logger.info(
+        "Bounded-pilot first-live frontdoor (read-only) primary=%s closeout=%s",
+        session_focus.get("primary_session_id"),
+        closeout.get("closeout_signal_summary"),
+    )
+
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+
+    r = readiness_block
+    p = packet_out
+    sf = session_focus
+    co = closeout
+    gi = gate_index
+    lines = [
+        "Bounded-pilot / first-live frontdoor (read-only)",
+        f"  disclaimer: {payload['disclaimer']}",
+        f"  config_path: {config_path}",
+        "",
+        "  Canonical read-only subcommands (deeper views; same contracts as dedicated flags):",
+    ]
+    for key in sorted(canonical.keys()):
+        lines.append(f"    {key}: {canonical[key]}")
+    lines.extend(
+        [
+            "",
+            "  Gate / enablement index (normalized from existing signals):",
+            f"    readiness_repository_ok: {gi['readiness_repository_ok']}",
+            f"    readiness_blocked_at: {gi['readiness_blocked_at']}",
+            f"    go_no_go_verdict: {gi['go_no_go_verdict']}",
+            f"    live_readiness_all_passed: {gi['live_readiness_all_passed']}",
+            f"    preflight_packet_evaluated: {gi['preflight_packet_evaluated']}",
+            f"    preflight_packet_ok: {gi['preflight_packet_ok']}",
+            f"    primary_session_id: {gi['primary_session_id']}",
+            f"    primary_source: {gi['primary_source']}",
+            f"    bounded_pilot_open_started_count: {gi['bounded_pilot_open_started_count']}",
+            f"    closeout_signal_summary: {gi['closeout_signal_summary']}",
+            f"    registry_newest_status: {gi['registry_newest_status']}",
+            f"    execution_events_jsonl_present: {gi['execution_events_jsonl_present']}",
+        ]
+    )
+    for n in gi.get("index_notes") or []:
+        lines.append(f"    note: {n}")
+    lines.extend(
+        [
+            "",
+            "  Readiness (repository state now):",
+            f"    readiness ok: {r.get('ok')}  blocked_at: {r.get('blocked_at')}",
+            f"    message: {r.get('message')}",
+            "",
+            "  Operator preflight packet:",
+            f"    evaluated: {p.get('evaluated')}  packet_ok: {p.get('packet_ok')}",
+            f"    packet_code: {p.get('packet_code')}",
+            "",
+            "  Session focus (bounded_pilot):",
+            f"    primary_session_id: {sf['primary_session_id']}",
+            f"    primary_source: {sf['primary_source']}",
+            f"    open started rows: {sf['open_bounded_pilot_sessions'] or []}",
+            f"    latest registry row: {sf.get('latest_bounded_pilot_registry')}",
+            "",
+            "  Closeout / registry:",
+            f"    closeout_signal_summary: {co['closeout_signal_summary']}",
+            f"    newest_registry_status: {co['newest_registry_status']}",
+            f"    execution_events_jsonl_present: {co['execution_events_jsonl_present']}",
+        ]
+    )
+    ptr = co.get("pointers") or sf.get("pointers")
+    if ptr:
+        ej = ptr["execution_events_session_jsonl"]
+        lines.append("")
+        lines.append("  Pointers:")
+        lines.append(f"    registry_json: {ptr['registry_json']['resolved']}")
+        lines.append(
+            f"    execution_events_jsonl: {ej['resolved']}  present: "
+            f"{'yes' if ej['present'] else 'no'}"
+        )
+    else:
+        lines.append("")
+        lines.append("  Pointers: none")
+    if co.get("operator_notes"):
+        lines.append("")
+        lines.append("  Closeout notes:")
+        for n in co["operator_notes"]:
+            lines.append(f"    - {n}")
+    print("\n".join(lines))
+    return 0
+
+
 def _run_bounded_pilot_closeout_status_summary(
     args: argparse.Namespace,
     logger: logging.Logger,
@@ -1370,7 +1564,8 @@ Beispiele:
         help=(
             "JSON output for --evidence-pointers, --open-sessions, "
             "--bounded-pilot-readiness-summary, --bounded-pilot-closeout-status-summary, "
-            "--bounded-pilot-operator-overview, or --bounded-pilot-gate-index"
+            "--bounded-pilot-operator-overview, --bounded-pilot-gate-index, "
+            "or --bounded-pilot-first-live-frontdoor"
         ),
     )
     parser.add_argument(
@@ -1439,12 +1634,22 @@ Beispiele:
         ),
     )
     parser.add_argument(
+        "--bounded-pilot-first-live-frontdoor",
+        action="store_true",
+        dest="bounded_pilot_first_live_frontdoor",
+        help=(
+            "Read-only: bounded_pilot / first-live operator frontdoor "
+            "(overview + gate index + canonical CLI hints for sub-views)"
+        ),
+    )
+    parser.add_argument(
         "--config-path",
         type=str,
         default=None,
         help=(
             "Optional config.toml for --bounded-pilot-readiness-summary / "
-            "--bounded-pilot-operator-overview / --bounded-pilot-gate-index (else env/default)"
+            "--bounded-pilot-operator-overview / --bounded-pilot-gate-index / "
+            "--bounded-pilot-first-live-frontdoor (else env/default)"
         ),
     )
 
@@ -1467,6 +1672,7 @@ Beispiele:
         + int(bool(args.bounded_pilot_closeout_status_summary))
         + int(bool(args.bounded_pilot_operator_overview))
         + int(bool(args.bounded_pilot_gate_index))
+        + int(bool(args.bounded_pilot_first_live_frontdoor))
         + int(bool(args.evidence_pointers))
         + int(bool(args.open_sessions))
     )
@@ -1474,7 +1680,8 @@ Beispiele:
         print(
             "ERR: use only one of --bounded-pilot-readiness-summary, "
             "--bounded-pilot-closeout-status-summary, --bounded-pilot-operator-overview, "
-            "--bounded-pilot-gate-index, --evidence-pointers, --open-sessions",
+            "--bounded-pilot-gate-index, --bounded-pilot-first-live-frontdoor, "
+            "--evidence-pointers, --open-sessions",
             file=sys.stderr,
         )
         return 2
@@ -1499,6 +1706,13 @@ Beispiele:
             print(f"ERR: {conflict}", file=sys.stderr)
             return 2
         return _run_bounded_pilot_gate_index(args, logger)
+
+    if args.bounded_pilot_first_live_frontdoor:
+        conflict = _bounded_pilot_first_live_frontdoor_flag_conflicts(args)
+        if conflict is not None:
+            print(f"ERR: {conflict}", file=sys.stderr)
+            return 2
+        return _run_bounded_pilot_first_live_frontdoor(args, logger)
 
     if args.bounded_pilot_closeout_status_summary:
         conflict = _bounded_pilot_closeout_status_summary_flag_conflicts(args)

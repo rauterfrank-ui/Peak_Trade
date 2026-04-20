@@ -81,6 +81,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 - 2026-04-20 — `scripts&#47;report_live_sessions.py` — read-only `--bounded-pilot-gate-index` (Gate-/Enablement-Index aus bestehenden Signalen + Overview-Kontext); Runbook `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` §4; **keine** Live-Freigabe.
 
+- 2026-04-20 — `scripts&#47;report_live_sessions.py` — read-only `--bounded-pilot-first-live-frontdoor` (Overview + Gate-Index + kanonische CLI-Hinweise für Subansichten); Runbook `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` §4; **keine** Live-Freigabe.
+
 - 2026-04-20 — `scripts&#47;report_live_sessions.py` — read-only `--open-sessions` (Registry `status=started`, optional `mode=bounded_pilot` / `--latest-bounded-pilot-open`); Runbook `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` §4; **keine** Live-Freigabe.
 
 - 2026-04-20 — `scripts&#47;report_live_sessions.py` — read-only `--evidence-pointers` (Registry-JSON + session-scoped `out&#47;ops&#47;execution_events&#47;sessions&#47;...&#47;execution_events.jsonl`); Runbook `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` §4; **keine** Live-Freigabe.
