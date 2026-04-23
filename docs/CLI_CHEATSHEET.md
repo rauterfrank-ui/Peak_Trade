@@ -1,5 +1,15 @@
 # Peak_Trade CLI Cheatsheet
 
+## Bounded Pilot / First-Live Navigation
+
+This cheat-sheet is operator navigation only. It does not authorize live trading, bypass gates, or replace the bounded-pilot contracts/runbooks.
+
+- Entry contract: [BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md](ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md)
+- Entry boundary note: [BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md](ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md)
+- Readiness ladder: [MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md](ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md)
+- Readiness read model: [MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md](ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md)
+- Cross-gate bundle index: [MASTER_V2_FIRST_LIVE_CROSS_GATE_EVIDENCE_BUNDLE_INDEX_V1.md](ops/specs/MASTER_V2_FIRST_LIVE_CROSS_GATE_EVIDENCE_BUNDLE_INDEX_V1.md)
+
 Schnellreferenz für alle CLI-Tools im Peak_Trade Framework.
 
 > **Neu bei Peak_Trade?**
