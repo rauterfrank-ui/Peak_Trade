@@ -50,7 +50,7 @@ When recording a pointer **outside** this repository (for example in a governanc
 | `bounded_pilot_scope` | required | literal label only: use the **first strictly bounded real-money pilot** scope wording from [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) (title and §1–2); do **not** assert a extra candidate identifier unless governance already introduced one outside this repo |
 | `artifact_summary` | required | one short non-sensitive line (what the capture is), not the payload |
 | `retrieval_reference` | required | opaque handle acceptable to your change-control system (ticket ID, object key, URI) — **never** paste the secret-bearing payload into git |
-| `git_head_at_capture` | required when repo state matters | commit SHA of this repo at capture time (see dry-validation Evidence section) |
+| `git_head_at_capture` | required when repo state matters | commit SHA of this repo at capture time (see [`RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md) [**E.** Evidence and pointers (L1 discipline)](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md#e-evidence-and-pointers-l1-discipline)) |
 | `captured_at_utc` | required | timestamp in UTC |
 | `retention_owner` | required | role label only (for example operator vs governance steward), not a home address or direct personal identifier |
 | `change_control_anchor` | optional | link or ID to the governing change-control record, if one exists |
@@ -99,4 +99,4 @@ change_control_anchor: "TICKET_REF_REDACTED"
 
 ## 8) Operator / reviewer use
 
-Use this contract to keep **language alignment** between the dry-validation runbook Evidence section, the `G4` pointer record, and external retention practice. Any promotion, pass, or authorization decision remains outside this document.
+Use this contract to keep **language alignment** between [`RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md) (**sections A–G**; [**E.** Evidence and pointers (L1 discipline)](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md#e-evidence-and-pointers-l1-discipline)), the `G4` pointer record, and external retention practice. Any promotion, pass, or authorization decision remains outside this document.
