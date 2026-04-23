@@ -1,118 +1,113 @@
 # RUNBOOK — Pilot Incident: Session End Mismatch
 
-status: DRAFT
-last_updated: 2026-04-20
+status: OPERATOR-READY
+last_updated: 2026-04-23
 owner: Peak_Trade
-purpose: Operator response when bounded-pilot session closeout state disagrees with broker/exchange truth at or after session end; fail-closed until reconciled or governance directs otherwise outside this document
+purpose: Operator response when bounded-pilot session closeout or registry state disagrees with broker/exchange truth at or immediately after session end; fail-closed until classified, reconciled, or governance directs otherwise outside this document
 docs_token: DOCS_TOKEN_RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH
 
-## 1) Purpose, scope, and non-goals
+## Non-authorization (read first)
 
-**Purpose:** Provide a **repeatable** sequence for detecting and handling **session end / closeout mismatches** during the **first strictly bounded real-money pilot**: local or in-process closeout views that **do not align** with broker/exchange positions, balances, or fill history at the boundary of a session.
+This runbook is an **operator aid** only. It does **not**:
+
+- authorize live trading, start the next session, close any gate, or waive Entry Contract §5;
+- replace the [Entry Contract](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md), governance decisions, or org kill-switch procedures;
+- prove safety from read-only CLI output or in-repo documentation alone.
+
+If there is **any** doubt whether trading is allowed, apply [Entry Contract §5](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#5-abort--rollback--no_trade-criteria): **ambiguity ⇒ `NO_TRADE` / safe stop**.
+
+## A. Purpose and boundaries
+
+**Use this runbook as the primary path when** the **dominant** problem is **closeout or session-boundary truth**: local or registry **session-end / closeout** views **do not align** with **broker/exchange** positions, balances, open orders, or fill history **at or right after** declared session end — including partial or conflicting terminal order/fill state **scoped to that boundary**. Symptom routing: [Abort triage compass §5.4](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md#54-session-end--closeout-disagreement).
+
+**Prefer a different primary path when:**
+
+- **Order/fill/position/balance disagreement** is the **first** job **during** the session **without** a narrow closeout-boundary story → [Reconciliation mismatch](RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md); **overlap is common** — if the **only** unresolved story is **terminal closeout vs broker**, keep **this** runbook as primary.
+- **Venue path unhealthy** (timeouts, rejects, unstable acks) dominates **before** closeout can be read → [Exchange degraded](RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED.md); hold **`NO_TRADE`** until venue reads are **classifiable** for closeout.
+- **Observability / evidence continuity** gaps without a closeout-specific narrative → [Telemetry degraded](RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md).
+- **Cap or envelope surprise** is the main doubt → [Unexpected exposure](RUNBOOK_PILOT_INCIDENT_UNEXPECTED_EXPOSURE.md).
+- **Transfer / funding** unknown → [Transfer ambiguity](RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY.md).
+- **Process restart / cold local state** mid-session → [Restart mid-session](RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md); closeout mismatch may **follow** once continuity is rebuilt.
+- **Symptom routing** → [Abort triage compass](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md).
 
 **Scope:** Bounded-pilot execution and **post-session closeout** only. This runbook does **not** define reconciliation algorithms, registry schema, or automated closeout behavior.
 
-**Non-goals (explicit):**
+## B. Triggers and entry conditions
 
-- This runbook **does not** authorize the next session, live trading, or progression past entry prerequisites.
-- It **does not** claim generic “incident resolved” or that closeout is **proven** correct — only **operator posture**, **classification**, and **external evidence** discipline.
-- It **does not** substitute [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md), governance decisions, or external sign-off.
+**Observable triggers (any can suffice)**
 
-**Canonical anchors (read-only):**
+- **Local closeout or registry snapshot** (session summary, intended flat/risk-off posture) **disagrees** with **broker/exchange** positions, balances, or open orders **at session end**.
+- **Reconciliation** at session end returns **partial** results, **timeouts**, or **conflicting** terminal states for orders or fills **at the boundary**.
+- **Next bounded session** or **risk-increasing steps** would rely on closeout truth the operator **cannot** confirm.
+- **Ambiguity** whether exposure is **flat**, **within envelope**, or **unknown** relative to the entry contract **after** closeout.
 
-- Abort / rollback / `NO_TRADE`, including **session-end mismatch**: [Entry contract §5](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#5-abort--rollback--no_trade-criteria).
-- Failure / safe-fallback framing: [Failure taxonomy](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md) (evidence/provenance gap and operator-visibility rows in §4; ambiguity notes in §6).
-- External **L5** pointer vocabulary (no payloads in git): [L5 incident / safe-stop pointer contract v0](../specs/MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md).
+**Fail-closed rule**
 
-**Related material (supplementary, non-authorizing):**
+- If closeout **cannot** be reconciled within a short, operator-defined window, treat as **`ambiguous`** (unresolved session-end mismatch per Entry Contract §5): **`NO_TRADE`** and **no** new bounded session until classification improves or governance directs otherwise **outside** this document.
 
-- Broader reconciliation incidents: [Reconciliation mismatch runbook](RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md).
-- Design context only: [Reconciliation flow spec](../specs/RECONCILIATION_FLOW_SPEC.md), [Pilot execution edge case matrix](../specs/PILOT_EXECUTION_EDGE_CASE_MATRIX.md).
+## C. Immediate actions (ordered)
 
-## 2) Trigger / symptoms
+1. **Stop progression that assumes clean closeout:** **`NO_TRADE`** for **starting a new** bounded session or **new** risk-increasing actions on top of **unresolved** closeout. Use org **kill-switch / safe-stop** only per [Kill Switch runbook](../../risk/KILL_SWITCH_RUNBOOK.md); this runbook does not redefine that mechanism.
+2. **Freeze the scene:** record **UTC interval**, **session id**, **operator**, and **mismatch domain** (positions vs registry, balances vs internal view, open orders vs expected flat, fill-history gaps — **category labels only** in external notes).
+3. **Confirm bounded-pilot context:** re-anchor on [Entry Contract §1–2 and §4](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md); do not exceed the first bounded real-money step intent.
+4. **Gather broker-trusted truth:** use pilot-approved UI/API **read** paths; capture **non-secret** references (screenshot policy, ticket IDs) under change control — **no** raw dumps into the repository.
+5. **Compare to local registry and closeout evidence trail:** align timestamps, session IDs, and order IDs **only** in external systems; if comparison **cannot** complete in bounded time, classify as **`ambiguous`**.
+6. **Classify:** **`reconciled_explainable`** / **`partial`** / **`ambiguous`** (see §D).
+7. If **`partial`** or **`ambiguous`**: **escalate** per §F; **do not** message “all clear” or “authorized to continue” from this runbook.
 
-Treat the situation as **session end mismatch** when **one or more** of the following hold at or immediately after **declared session end / closeout** (examples, not an exhaustive product spec):
+**Order matters:** **posture before** treating the session as complete for pilot purposes; **broker-trusted closeout** before **next session** narratives.
 
-- **Local closeout or registry snapshot** (session summary, intended flat/risk-off posture) **disagrees** with **broker/exchange** positions, balances, or open orders.
-- **Reconciliation** at session end returns **partial** results, **timeouts**, or **conflicting** terminal states for orders or fills.
-- **Next bounded session** or **risk-increasing steps** would rely on closeout truth that the operator **cannot** confirm.
-- **Ambiguity** remains whether exposure is **flat**, **within envelope**, or **unknown** relative to the entry contract.
+## D. Verification and classification
 
-If the operator **cannot** reconcile closeout within a short, operator-defined verification window, treat as **unresolved mismatch** and apply §5.
+**Definitions**
 
-## 3) Immediate safe posture
+- **Reconciled explainable:** a **single consistent** closeout story — broker-trusted positions, balances, and terminals **align** with registry/session-end views **or** any discrepancy is **fully explained** by a known, operator-trusted cause **without** residual exposure doubt — **still** no authorization from this document to start the next session.
+- **Partial:** some legs or domains **confirmed**, others **missing**, **timeout**, or **unsettled** — **cannot** rely on full closeout for progression.
+- **Ambiguous:** contradictory terminals, **unknown** flat/envelope state, or **cannot** complete verification in bounded time — **unsafe** to assume clean closeout.
 
-Default posture until mismatch is **clearly classified** and **externally recorded** (§7):
+**Suggested checks**
 
-- **`NO_TRADE` / blocked:** do **not** start a **new** bounded session or take **new** risk-increasing actions on top of unresolved closeout (entry contract §5: *session-end mismatch is unresolved*).
-- **Freeze risk expansion:** no additional symbols, size, or leverage until closeout truth is aligned or governance explicitly directs a controlled wind-down **outside** this document.
-- **Prefer fail-closed:** when in doubt, remain blocked; see [Failure taxonomy §6](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md#6-ambiguity-confusion-and-interpretation-risk-map).
+- Re-pull **broker-trusted** views; compare **stable identifiers** (order id, client id, fill id), not only aggregates.
+- If cockpit/registry JSON or `scripts/report_live_sessions.py` outputs are used, treat as **read-only hints**; read **disclaimers**; JSON is **not** proof of safety (see [Compass §8](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md#8-read-only-cli--report-hints-scriptsreport_live_sessionspy)).
+- If **venue** instability dominates, pivot triage context to [Exchange degraded](RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED.md) while holding **`NO_TRADE`**.
 
-## 4) Step-by-step operator actions
+**Return toward normal (non-authorizing)**
 
-Execute in order unless a step is unsafe without new risk; if so, stop and escalate (§6).
+- **No** “next session OK” or “closeout resolved for governance” from this runbook alone after **`partial`** / **`ambiguous`**. **Only** governance or explicit org disposition **outside** this repo can authorize continuation.
+- If **`reconciled_explainable`**, **next session** or **candidate** steps follow [Bounded real-money pilot candidate flow](RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md) and [Live entry](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) only per **your** authorized procedures **outside** this document; posture still follows [Entry Contract §5](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#5-abort--rollback--no_trade-criteria) and [Failure taxonomy §6](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md#6-ambiguity-confusion-and-interpretation-risk-map).
 
-1. **Confirm bounded-pilot context**  
-   Re-anchor on [Entry contract §1–2 and §4](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md); do not exceed the first bounded real-money step intent.
+## E. Evidence and pointers (L5 discipline)
 
-2. **Halt progression that assumes clean closeout**  
-   Do not treat the session as “complete for pilot purposes” until mismatch is classified.
+Capture review material **outside** git per [L5 incident / safe-stop pointer contract](../specs/MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md): **metadata and opaque handles only** — no full registry exports, complete fill logs, ticket bodies with live identifiers, or kill-switch dumps in the repository.
 
-3. **Identify mismatch domain**  
-   Positions vs registry, balances/cash vs internal view, open orders vs expected flat, fill history gaps — record **category labels** only in external notes, not full payloads in git.
+**Minimum narrative to record externally (conceptual)**
 
-4. **Gather broker/exchange truth**  
-   Use your **operative** procedures (UI, API read paths approved for the pilot) to capture **non-secret** references to truth checks (screenshot policy, ticket IDs) under change control — **not** raw dumps into the repository.
+- **Trigger** (closeout symptom, first observation).
+- **Mismatch domain** and **UTC window** at session boundary.
+- **Broker-trusted vs local** summary (what aligned / what did not; identifiers only as appropriate).
+- **Classification** (`reconciled_explainable` / `partial` / `ambiguous`).
+- **Final posture** and **escalation** reference if any.
 
-5. **Compare to local session registry and closeout evidence trail**  
-   Align timestamps, session IDs, and order IDs **only** in external systems; if comparison cannot be completed, classify as **ambiguous**.
+## F. Escalation
 
-6. **Classify**
+Escalate when **any** holds:
 
-   - **Reconciled:** single consistent story; exposure and session end state match broker truth — **still** record external pointers (§7); **resuming** any activity follows [candidate flow](RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md) / [live entry](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) only per **your** authorized procedures, not by this runbook alone.  
-   - **Partial:** some legs confirmed, others not — remain **`NO_TRADE` / blocked** for progression.  
-   - **Ambiguous:** irreconcilable or contradictory — remain **`NO_TRADE` / blocked**; escalate (§6).
+- Classification remains **`partial`** or **`ambiguous`** after bounded checks.
+- **Session-end mismatch** remains **unresolved** per Entry Contract §5.
+- **Policy / kill-switch** blocks progression while closeout is unsettled.
 
-7. **Handoff**  
-   If another operator continues, pass classification, open questions, and external pointer handles (§8).
+**Internal:** pilot owner / governance per bounded-pilot path; state **mismatch class**, **UTC window**, **session id**, and whether exposure is **known**, **partially known**, or **unknown**.
 
-## 5) Abort / `NO_TRADE` / remain-blocked conditions
+**External:** venue or broker support only per org rules; **no** secrets or unnecessary account identifiers in unsecured channels.
 
-Remain **blocked** and treat entry contract §5 as applicable if **any** of the following hold:
+## G. Related runbooks
 
-- **Session-end mismatch is unresolved** (explicit contract bullet).
-- Kill switch active, policy blocked, or other §5 abort criteria apply.
-- **Ambiguity** about whether trading is allowed (*ambiguity => `NO_TRADE` / safe stop*).
-- **Evidence or dependency posture** is degraded beyond acceptable pilot tolerance (§5; operator judgment + governance outside this repo).
+- [Reconciliation mismatch](RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md)
+- [Exchange degraded](RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED.md)
+- [Telemetry degraded](RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md)
+- [Unexpected exposure](RUNBOOK_PILOT_INCIDENT_UNEXPECTED_EXPOSURE.md)
+- [Transfer ambiguity](RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY.md)
+- [Restart mid-session](RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md)
+- [Abort triage compass](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md)
 
-This runbook **does not** narrow §5; it operationalizes a conservative reading for **closeout disagreement**.
-
-## 6) Escalation / communication
-
-- **Internal:** Notify pilot owner / governance per your bounded-pilot escalation path; state **mismatch class**, **UTC window**, and whether exposure is **known**, **partially known**, or **unknown**.
-- **External:** Venue or broker support only per org rules; **no** secrets, API keys, or unnecessary account identifiers in unsecured channels.
-- **Do not** message “all clear” or “authorized to continue” from this runbook — only **posture** and **classification**.
-
-## 7) Evidence handling (pointers only)
-
-Retain material **outside** this repository. Use [L5 pointer contract §3–4](../specs/MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md#3-allowed-pointer-classes-l5) — e.g. `L5_INCIDENT_SAFE_STOP_SUMMARY_CAPTURE` and, when applicable, `L5_INCIDENT_RESPONSE_SUPPORTING_BUNDLE` — with opaque `retrieval_reference` values.
-
-**Forbidden in git:** full registry exports, complete fill logs, ticket bodies with live identifiers, kill-switch dumps.
-
-## 8) Exit, handoff, and unresolved conditions
-
-**This runbook does not declare incident closure or gate completion.**
-
-- **Reconciled classification:** External pointers recorded; **next session** is **not** implied — follow authorized procedures only.  
-- **Unresolved / ambiguous:** Maintain **`NO_TRADE` / blocked** until reconciliation succeeds or governance approves a documented exception **outside** this repo.  
-- **Handoff:** Transfer classification, broker-truth checklist status, and change-control anchor IDs (not secret values in-repo).
-
-## 9) Non-authorization reminder
-
-Using this runbook **does not** mean:
-
-- any gate (including `G8`) is closed, passed, or `Verified`;
-- the bounded pilot may proceed to the next phase;
-- closeout will not recur or that broker truth is permanently trustworthy.
-
-It remains a **draft** operator aid for **safe posture and review discipline** only.
+**Design context (non-authorizing):** [Reconciliation flow spec](../specs/RECONCILIATION_FLOW_SPEC.md); [Pilot execution edge case matrix](../specs/PILOT_EXECUTION_EDGE_CASE_MATRIX.md); [Failure taxonomy](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md) §4 / §6.
