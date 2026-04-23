@@ -71,3 +71,18 @@ def test_pipeline_cli_master_v2_dry_smoke_delegate():
     assert data["ok"] is True
     assert data.get("wire_path_ok") is True
     assert data.get("wire_smoke_version") == "v1"
+
+
+def test_pipeline_cli_master_v2_run_guard_without_run():
+    """Fail-closed when --run is omitted so automation does not see a false success."""
+    cmd = [sys.executable, str(ROOT / "scripts" / "pipeline_cli.py"), "master_v2"]
+    p = subprocess.run(
+        cmd,
+        cwd=str(ROOT),
+        capture_output=True,
+        text=True,
+        env={**os.environ, "PYTHONPATH": str(ROOT / "src")},
+    )
+    assert p.returncode == 2, p.stderr or p.stdout
+    assert "master_v2" in p.stderr
+    assert "-- --run" in p.stderr

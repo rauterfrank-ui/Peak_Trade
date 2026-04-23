@@ -101,6 +101,13 @@ def main() -> int:
         forwarded = list(args.args)
         if forwarded and forwarded[0] == "--":
             forwarded = forwarded[1:]
+        if "--run" not in forwarded and "--help" not in forwarded and "-h" not in forwarded:
+            print(
+                "pipeline_cli master_v2: missing --run (dry smoke not executed). "
+                "Use: python3 scripts/pipeline_cli.py master_v2 -- --run",
+                file=sys.stderr,
+            )
+            return 2
         cmd += forwarded
         src = str(ROOT / "src")
         if env.get("PYTHONPATH"):
