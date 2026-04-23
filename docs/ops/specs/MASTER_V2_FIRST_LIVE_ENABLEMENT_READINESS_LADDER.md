@@ -141,9 +141,10 @@ Canonical checklist and verdict semantics:
 
 ### Level 3 — First Live Enablement Entry Contract
 
-Binding operator-facing entry contract for first strictly bounded real-money pilot:
+Draft operator-facing entry contract anchor for first strictly bounded real-money pilot:
 
 - `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`
+  Non-authorization note: These L3 entry-contract anchors remain review/navigation anchors while their source specs are marked DRAFT; they do not approve live entry, bypass gates, or change runtime, trading, evidence, approval, or live-entry semantics.
 - `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md`
 - `docs/ops/specs/BOUNDED_PILOT_LIVE_ENTRY_GAP_NOTE.md` (historical gap context only)
 
