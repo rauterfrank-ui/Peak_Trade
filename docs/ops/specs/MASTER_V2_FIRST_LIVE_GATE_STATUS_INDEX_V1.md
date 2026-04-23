@@ -71,7 +71,7 @@ This subsection materializes **one** candidate-scoped **L1 dry-validation eviden
 
 **Dry-validation context (repo-resolvable):**
 
-- Operator sequence and primary artifact types: [`RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md) (Steps 1–3 required; Steps 4–5 optional per that runbook; see [Evidence](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md#evidence)).
+- Operator sequence and primary artifact types: [`RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md) (Steps 1–3 required; Steps 4–5 optional per that runbook; see [**E.** Evidence and pointers (L1 discipline)](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md#e-evidence-and-pointers-l1-discipline)).
 - Contractual prerequisite wording: [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) §3.1 (Dry Validation Completed).
 - Current operator ordering for Phase A: [`RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) §3 (Phase A — Dry-Validation).
 - L1 external pointer metadata discipline (docs-only; no artifact payloads in-repo): [`MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md).
@@ -83,7 +83,7 @@ This subsection materializes **one** candidate-scoped **L1 dry-validation eviden
 - Step 3 execution dry-run: `scripts&#47;run_execution_session.py --dry-run` (see dry-validation runbook Step 3).
 - Optional gate-only pre-check: `scripts&#47;ops&#47;run_bounded_pilot_session.py --no-invoke` (see live-entry runbook Phase A.4; dry-validation runbook Step 5).
 
-**What this record makes visible:** which runbooks and operator commands define **L1** dry validation for the bounded-pilot candidate scope, and which **artifact classes** the operator is expected to retain per the dry-validation runbook Evidence section.
+**What this record makes visible:** which runbooks and operator commands define **L1** dry validation for the bounded-pilot candidate scope, and which **artifact classes** the operator is expected to retain per the dry-validation runbook **§ E** (Evidence and pointers).
 
 **What this record explicitly does not claim:** success of any run, acceptable verdicts for real-money entry, pilot readiness, live eligibility, or immutable storage of operator logs inside this repository.
 
@@ -160,7 +160,7 @@ This subsection materializes **one** candidate-scoped **L4 first-candidate-sessi
 
 **Session-flow interpretation context (repo-resolvable):**
 
-- Canonical step sequence and posture for the first candidate session: [`RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md`](../runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md) (Goals, Preconditions, Candidate Session Posture, Step Sequence).
+- Canonical step sequence and posture for the first candidate session: [`RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md`](../runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md) (sections **A–G**; numbered steps under [**C.** Operator sequence (ordered)](../runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md#c-operator-sequence-ordered); evidence discipline under **E.**).
 - Operative live-entry procedure (Phases after dry validation; bounded-pilot invocation and handoff): [`RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md).
 - Contractual definition of the first bounded real-money step: [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) §4 (First Bounded Real-Money Step).
 - Upstream prerequisite discipline cross-mapped for L1–L3 pointer records: [§4.1](#41-l1-candidate-evidence-pointer-record-g4), [§4.2](#42-l2-candidate-verdict-pointer-record-g5), [§4.3](#43-l3-candidate-prerequisite-pointer-record-g6).
@@ -168,8 +168,8 @@ This subsection materializes **one** candidate-scoped **L4 first-candidate-sessi
 
 **Belastbare script references (documentation pointers only; no execution claim):**
 
-- Bounded-pilot gate wrapper and optional `--no-invoke` gate-only path: `scripts&#47;ops&#47;run_bounded_pilot_session.py` (see candidate-flow runbook Step 3; live-entry runbook).
-- Session runner handoff surface: `scripts&#47;run_execution_session.py` with `--mode bounded_pilot` (see candidate-flow runbook Step 3; only after the same preconditions documented there).
+- Bounded-pilot gate wrapper and optional `--no-invoke` gate-only path: `scripts&#47;ops&#47;run_bounded_pilot_session.py` (see candidate-flow runbook **C.** item **3**; live-entry runbook).
+- Session runner handoff surface: `scripts&#47;run_execution_session.py` with `--mode bounded_pilot` (see candidate-flow runbook **C.** item **3**; only after the same preconditions documented there).
 
 **What this record makes visible:** which runbooks define the **L4** operator execution surface for the first bounded-pilot candidate session, how that flow links to the entry contract’s first real-money step, and which **invocation surfaces** the repo documents for starting or gate-checking a session.
 
