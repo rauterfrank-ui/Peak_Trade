@@ -1,121 +1,166 @@
 # RUNBOOK — Bounded Pilot Dry Validation
 
-status: DRAFT
-last_updated: 2026-04-20
+status: OPERATOR-READY
+last_updated: 2026-04-23
 owner: Peak_Trade
-purpose: Operator sequence for dry validation before any bounded real-money pilot; operationalizes existing dry-run stack without new runtime orchestration
+purpose: Canonical operator sequence for dry validation before any bounded real-money pilot session—chaining drills, go/no-go eval, and execution-session dry-run using existing scripts—without authorizing live trading, replacing live entry or candidate flow, or asserting L1 closure in enablement surfaces
 docs_token: DOCS_TOKEN_RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION
 
-## Intent
+## Non-authorization (read first)
 
-This runbook defines the **exact operator sequence** for dry validation before a bounded real-money pilot. It closes the gap identified in the bounded-real-money-pilot-dry-validation-flow review: no single contract that chains drills → go/no-go → session dry-run.
+This runbook is an **operator aid** only. It does **not**:
 
-**Scope:** docs-only. No new runtime orchestration. Uses existing scripts and gates.
+- authorize a **real-funds** bounded pilot session, broad live trading, or any gate closure;
+- replace [Live entry](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md), [Candidate flow](RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md), [Go/No-Go checklist](../specs/PILOT_GO_NO_GO_CHECKLIST.md) / eval semantics, incident runbooks, or org kill-switch procedures;
+- prove safety from read-only CLI output or in-repo documentation alone;
+- **imply** that **L1** or any enablement gate is **passed**, **unblocked**, or **verified** in [First-live gate status report surface](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md) or elsewhere—interpretation and authority remain **outside** this document (see [Decision authority map](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) §4 / §7).
 
-## Trigger
+If there is **any** doubt whether trading is allowed, apply [Entry Contract §5](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#5-abort--rollback--no_trade-criteria): **ambiguity ⇒ `NO_TRADE` / safe stop**.
 
-- Operator intends to run a bounded real-money pilot
-- Dry validation must succeed before any pilot session with real funds
-- `live_pilot_execution_plan` requires "Dry-run first must succeed" but did not define the sequence
+## A. Purpose and boundaries
 
-## Prerequisites
+**Use this runbook as the primary path when** you must run the **documented dry-validation chain** before a bounded real-money pilot: **live dry-run drills** → **pilot go/no-go eval** → **`run_execution_session.py --dry-run`**, using existing repo scripts and **no** new orchestration.
 
-- Repo on `main` (or approved branch)
-- Config present: `config&#47;config.toml` (or `CONFIG_PATH`)
-- Ops Cockpit buildable: `build_ops_cockpit_payload()` succeeds
+**This runbook does not:**
 
-## Operator Sequence (in order)
+- start a **live** bounded pilot session or call `run_execution_session` **without** `--dry-run` for validation purposes—that is [Live entry](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) / [Candidate flow](RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md) after preconditions are met;
+- redefine **Master V2** promotion or enablement semantics—it is **bounded-pilot dry procedure** only;
+- substitute human judgment on ambiguous go/no-go or policy posture.
 
-### Step 1: Live Drills (Phase 73)
+**Prefer specialized paths when:**
 
-Run safety drills to validate gating and dry-run behavior.
+- **End-to-end live entry** (German Ist-stand, phases, real session start) → [Live entry](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) (Phase A references this sequence).
+- **First candidate session narrative** (post-dry) → [Candidate flow](RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md).
+- **Incident or safe-stop** symptoms → [Abort triage compass](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md) and **`RUNBOOK_PILOT_INCIDENT_*.md`**.
 
-```bash
-python3 scripts/run_live_dry_run_drills.py
-```
+**Scope:** docs-only. Uses existing scripts and gates; **no** new runtime orchestration in this slice.
 
-**Expected:** All scenarios pass. Exit 0. No config changes, no orders, no API calls.
+## B. Triggers and entry conditions
 
-**If any drill fails:** Stop. Do not proceed. Fix gates/config before retrying.
+**Typical triggers**
 
-### Step 2: Pilot Go/No-Go Eval
+- Operator intends a **bounded real-money** pilot and must complete **dry validation** first.
+- [Live pilot execution plan](live_pilot_execution_plan.md) and related plans expect **dry-run-first** discipline; this runbook defines the **ordered** check sequence.
 
-Evaluate cockpit payload against PILOT_GO_NO_GO_CHECKLIST.
+**Preconditions (before Step 1)**
 
-```bash
-python3 scripts/ops/pilot_go_no_go_eval_v1.py
-```
+- Repo on `main` (or org-approved branch).
+- Config loadable: e.g. `config/config.toml` (or `PEAK_TRADE_CONFIG_PATH` / `CONFIG_PATH` per your env).
+- Ops Cockpit payload buildable: `build_ops_cockpit_payload()` succeeds (as required by go/no-go eval).
 
-**Expected:** `verdict=GO_FOR_NEXT_PHASE_ONLY` or `verdict=CONDITIONAL` (no FAIL).
+**Fail-closed rule**
 
-**If verdict=NO_GO:** Stop. Inspect `--json` output. Fix blockers (caps, treasury separation, human supervision, etc.) before retrying.
+- If **any** precondition is **unknown** or **not verified**, **do not** treat later steps as satisfied—**stop** and resolve **before** asserting dry validation complete.
 
-### Step 3: Execution Session Dry-Run
+## C. Operator sequence (ordered)
 
-Validate session config and intended session parameters without starting a live session.
+**Minimum required path:** complete **Steps 1–3** successfully before any real-funds pilot. **Steps 4–5** are **optional** pre-checks.
 
-```bash
-python3 scripts/run_execution_session.py --dry-run
-```
+**Abort discipline:** any step **fails** or outcome is **unacceptable** → **stop**; do not proceed down the sequence; fix blockers or escalate **per org** (this document does not authorize retry or waiver).
 
-(Adjust for your env: `--mode`, `--config`, etc. as needed.)
+1. **Live drills (Phase 73)** — validate gating and dry-run behavior.
 
-**Expected:** Config validated, intended session logged, exit 0. No LiveSessionRunner created, no registry write.
+   ```bash
+   python3 scripts/run_live_dry_run_drills.py
+   ```
 
-**If dry-run fails:** Stop. Fix config before retrying.
+   **Expected:** all scenarios pass; exit **0**; no config changes, no orders, no API calls.  
+   **If any drill fails:** **stop**; fix gates/config before retry.
 
-### Step 4: Pilot Session Wrapper (optional pre-check)
+2. **Pilot go/no-go eval** — evaluate cockpit payload against [PILOT_GO_NO_GO_CHECKLIST](../specs/PILOT_GO_NO_GO_CHECKLIST.md).
 
-If using `run_live_pilot_session.sh`, verify gates are satisfied with dry-run enforced:
+   ```bash
+   python3 scripts/ops/pilot_go_no_go_eval_v1.py
+   ```
 
-```bash
-PT_LIVE_ENABLED=YES PT_LIVE_ARMED=YES PT_LIVE_ALLOW_FLAGS=pilot_only \
-PT_LIVE_DRY_RUN=YES PT_CONFIRM_TOKEN_EXPECTED=TOKEN PT_CONFIRM_TOKEN=TOKEN \
-scripts/ops/run_live_pilot_session.sh
-```
+   **Expected:** `verdict=GO_FOR_NEXT_PHASE_ONLY` or `verdict=CONDITIONAL` (**no** `FAIL`).  
+   **If `verdict=NO_GO`:** **stop**; inspect `--json`; fix blockers (caps, treasury separation, human supervision, etc.) before retry.  
+   **Note:** [Live entry](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) expects **`GO_FOR_NEXT_PHASE_ONLY`** for **real-funds entry**; if you hold `CONDITIONAL`, treat **real-funds** progression as **blocked** until disposition **outside** this runbook clarifies acceptable posture.
 
-**Note:** This wrapper invokes `orchestrate_testnet_runs.py`. For live session dry validation, Step 3 (`run_execution_session.py --dry-run`) is the primary check.
+3. **Execution session dry-run** — validate session config and intended parameters **without** starting a live session.
 
-### Step 5: Bounded Pilot Entry Gate (optional)
+   ```bash
+   python3 scripts/run_execution_session.py --dry-run
+   ```
 
-Verify all Pre-Entry-Checks GREEN via the dedicated gate wrapper **without** starting a session.
+   (Adjust `--mode`, `--config`, etc. per your env.)  
+   **Expected:** config validated; intended session logged; exit **0**; no `LiveSessionRunner` created; no registry write.  
+   **If dry-run fails:** **stop**; fix config before retry.
 
-```bash
-python3 scripts/ops/run_bounded_pilot_session.py --no-invoke
-```
+4. **Pilot session wrapper (optional)** — if you use `run_live_pilot_session.sh`, verify gates with dry-run enforced:
 
-**Expected:** Exit 0, gates GREEN; **no** `run_execution_session` handoff.
+   ```bash
+   PT_LIVE_ENABLED=YES PT_LIVE_ARMED=YES PT_LIVE_ALLOW_FLAGS=pilot_only \
+   PT_LIVE_DRY_RUN=YES PT_CONFIRM_TOKEN_EXPECTED=TOKEN PT_CONFIRM_TOKEN=TOKEN \
+   scripts/ops/run_live_pilot_session.sh
+   ```
 
-**Note:** Omitting `--no-invoke` starts the **bounded pilot session** (`run_execution_session.py --mode bounded_pilot`). That belongs to **`RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`**, not to dry validation alone.
+   **Note:** this wrapper invokes `orchestrate_testnet_runs.py`. For session config validation, **Step 3** remains the **primary** dry-run check.
 
-**If exit 1:** One or more gates RED. Inspect `--json` output and fix blockers.
+5. **Bounded pilot entry gate (optional)** — pre-entry checks **without** session start:
 
-**Reference:** `BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT`, `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`
+   ```bash
+   python3 scripts/ops/run_bounded_pilot_session.py --no-invoke
+   ```
 
-## Evidence
+   **Expected:** exit **0**; gates green; **no** `run_execution_session` handoff.  
+   **If exit non-zero:** **stop**; inspect `--json` and fix blockers.
 
-- Step 1: Drill output (text or JSON)
-- Step 2: `pilot_go_no_go_eval_v1.py` verdict and optional `--json` output
-- Step 3: `run_execution_session.py` dry-run log
-- Capture: repo head, timestamp, operator identity (optional)
-- Optional docs-only pointer metadata vocabulary for externally retained captures (does not import payloads into git): [`../specs/MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md`](../specs/MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md)
+   **Critical:** omitting `--no-invoke` can start the **bounded pilot** session (`run_execution_session.py --mode bounded_pilot`)—that path belongs to **[Live entry](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md)**, not to dry validation alone.
 
-## Success Criteria
+**Order matters:** do **not** skip **Step 1** or **Step 2** before **Step 3** unless your org documents a **narrower** exception **outside** this repository.
 
-- All three steps (1–3) complete with exit 0
-- No FAIL in go/no-go eval
-- No config changes, no orders, no API calls
+## D. Verification and stop conditions
 
-## Relationship
+**Dry validation chain complete (minimum)** when:
 
-- **Companion to:** `live_pilot_execution_plan` (Step B: Dry-run first must succeed)
-- **Companion to:** `live_pilot_session_wrapper` (PT_LIVE_DRY_RUN=YES gate)
-- **Closes gap:** bounded-real-money-pilot-dry-validation-flow review (single dry validation contract)
-- **References:** `PILOT_GO_NO_GO_CHECKLIST`, `PILOT_GO_NO_GO_OPERATIONAL_SLICE`
+- **Steps 1–3** finished with exit **0**;
+- go/no-go eval shows **no** `FAIL`;
+- no unintended config mutations, orders, or API calls from these steps.
 
-## Explicit Non-Goals
+**Suggested checks**
 
-- no new runtime orchestration script
-- no new gates
-- no replacement for operator judgment
-- no claim of pilot readiness beyond dry validation
+- Re-read [Entry Contract §5](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#5-abort--rollback--no_trade-criteria) if posture or cockpit signals conflict.
+- Treat read-only CLI/report output as **hints only**; JSON is **not** proof of safety.
+
+**Return toward normal (non-authorizing)**
+
+- Completing this sequence **does not** mean “L1 closed”, “pilot approved”, or “next phase authorized”—only **governance** or explicit org disposition **outside** this repo can mean that.
+- **Next** operational moves (real session, candidate flow, expanded scope) require **[Live entry](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md)** / **[Candidate flow](RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md)** and applicable evidence discipline—**not** this document alone.
+
+## E. Evidence and pointers (L1 discipline)
+
+Retain **review-oriented** material **outside** git where possible; use **metadata and opaque handles** only per [L1 dry-validation evidence pointer contract](../specs/MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md)—**no** full cockpit dumps, secrets, or payloads in the repository.
+
+**Minimum artifacts to associate with this chain (conceptual)**
+
+- Step 1: drill output (text or JSON).  
+- Step 2: `pilot_go_no_go_eval_v1.py` verdict and optional `--json`.  
+- Step 3: `run_execution_session.py --dry-run` log.  
+- Optional: repo head, timestamp, operator identity (org policy).
+
+## F. Escalation
+
+Escalate per **bounded-pilot governance** when:
+
+- Repeated failures in drills, go/no-go, or dry-run with **unclear** root cause;
+- `CONDITIONAL` verdict and **unclear** whether real-funds progression is allowed;
+- Optional Steps 4–5 disagree with Steps 1–3 and disposition is **ambiguous**.
+
+State **UTC window**, **step** that failed, and whether cockpit posture is **known** or **unknown**. This runbook **does not** grant waivers.
+
+## G. Related runbooks and specs
+
+- [Entry Contract](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md); [Entry boundary note](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md)
+- [Live entry](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md); [Candidate flow](RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md)
+- [Go/No-Go checklist](../specs/PILOT_GO_NO_GO_CHECKLIST.md); [Go/No-Go operational slice](../specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md)
+- [Live pilot execution plan](live_pilot_execution_plan.md)
+- [Abort triage compass](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md)
+- **Design context (non-authorizing):** [Failure taxonomy](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md); [Decision authority map](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md); [Readiness ladder](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md)
+
+**Explicit non-goals (unchanged in intent)**
+
+- no new runtime orchestration script in this slice;
+- no new gates;
+- no replacement for operator judgment;
+- no claim of pilot readiness **beyond** documenting this dry-validation sequence.
