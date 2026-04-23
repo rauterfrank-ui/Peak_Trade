@@ -1,7 +1,7 @@
 # RUNBOOK — Bounded Pilot Incident / §5 Abort Triage Compass v0
 
 status: DRAFT
-last_updated: 2026-04-20
+last_updated: 2026-04-23
 owner: Peak_Trade
 purpose: Single canonical orientation surface mapping symptoms and Entry Contract §5 abort posture to pilot incident runbooks, L5 evidence-pointer discipline, and read-only registry/report CLIs (bounded pilot)
 docs_token: DOCS_TOKEN_RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS
@@ -108,7 +108,7 @@ Process or operator continuity interrupted mid-session; need disciplined re-entr
 | [Telemetry degraded](RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md) | `DOCS_TOKEN_RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED` |
 | [Restart mid-session](RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md) | `DOCS_TOKEN_RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION` |
 
-All listed runbooks remain **operator aids**; several are still **DRAFT** in their headers. This compass **does not** upgrade their maturity.
+All indexed **`RUNBOOK_PILOT_INCIDENT_*.md`** runbooks use **`OPERATOR-READY`** in their headers and remain **operator aids** only — **not** live authorization. **This compass** remains **`status: DRAFT`** and **does not** supersede the [Entry contract](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md), governance, or external sign-off.
 
 ## 7) L5 pointer / evidence expectations (external only)
 
