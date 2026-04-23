@@ -203,7 +203,7 @@ This subsection materializes **one** candidate-scoped **L5 incident and safe-sto
 
 **What this record explicitly does not claim:** that any incident response was exercised, that kill-switch or policy posture was safe at a point in time, that recovery succeeded, or that operator-held incident evidence is stored immutably inside this repository.
 
-**G8 status after this record:** remains `Partial` — this index still does not host a named, immutable in-repo incident response evidence bundle for a specific candidate, and some incident runbooks remain **draft-heavy** relative to production closure standards.
+**G8 status after this record:** remains `Partial` — this index still does not host a named, immutable in-repo incident response evidence bundle for a specific candidate; canonical **`RUNBOOK_PILOT_INCIDENT_*.md`** runbooks are now **`OPERATOR-READY`** as operator aids, which does **not** substitute for candidate-scoped incident evidence, external governance, or production-closure sign-off.
 
 **Next open gap:** operator/governance capture and archival of incident response evidence (per candidate session or drill) under change control **outside** this index; a later slice may add repo-resolvable pointers **if and when** those artifacts become stable, reviewable references. Minimal field vocabulary for external pointer records (L5 incident / safe-stop only) lives in [`MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md) and does not by itself close this gap.
 
