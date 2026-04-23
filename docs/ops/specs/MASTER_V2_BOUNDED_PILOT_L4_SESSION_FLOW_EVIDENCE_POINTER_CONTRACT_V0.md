@@ -35,7 +35,7 @@ Each class names **what** external material exists for **review linkage**, not *
 |---|---|
 | `L4_SESSION_FLOW_SUMMARY_CAPTURE` | Short, review-oriented record of session-flow posture or outcome framing (for example operator narrative of steps taken) **without** raw logs, registry JSON, or cockpit dumps |
 | `L4_SESSION_REGISTRY_OR_TRACE_BUNDLE` | Opaque handle to externally stored registry exports, execution-event extracts, or similar **trace** material referenced in gate index §4.4 |
-| `L4_SESSION_CLOSEOUT_RECONCILIATION_BUNDLE` | Opaque handle to externally stored closeout and reconciliation material (per candidate-flow **Required Evidence** intent) — **never** committed to git |
+| `L4_SESSION_CLOSEOUT_RECONCILIATION_BUNDLE` | Opaque handle to externally stored closeout and reconciliation material (per candidate-flow **E.** Evidence and pointers (L4 discipline) intent) — **never** committed to git |
 
 One session may justify multiple rows with distinct `pointer_class` values; use **consistent** `session_flow_scope_reference` and do not publish contradictory `retrieval_reference` values for the same logical object.
 
@@ -47,7 +47,7 @@ When recording a pointer **outside** this repository, use the following fields. 
 |---|---|---|
 | `pointer_class` | required | one of §3 |
 | `bounded_pilot_scope` | required | **first strictly bounded real-money pilot** per [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) (title and §1–2); do **not** invent candidate labels unless governance already did outside this repo |
-| `session_flow_scope_reference` | required | literal reference to **§4 First Bounded Real-Money Step** of the entry contract and/or the canonical candidate session sequence in [`RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md`](../runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md); do **not** paste operational IDs into this repo |
+| `session_flow_scope_reference` | required | literal reference to **§4 First Bounded Real-Money Step** of the entry contract and/or the canonical candidate session sequence (sections **A–G**) in [`RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md`](../runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md); do **not** paste operational IDs into this repo |
 | `artifact_summary` | required | one non-sensitive line (what the external object is), not its contents |
 | `retrieval_reference` | required | opaque handle — **never** paste payloads into git |
 | `git_head_at_capture` | required when repo state matters | commit SHA of this repo at capture time |
@@ -86,7 +86,7 @@ When recording a pointer **outside** this repository, use the following fields. 
 ```yaml
 pointer_class: L4_SESSION_FLOW_SUMMARY_CAPTURE
 bounded_pilot_scope: "First strictly bounded real-money pilot (see entry contract title and §1–2)"
-session_flow_scope_reference: "ENTRY_CONTRACT §4; RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW Required Evidence"
+session_flow_scope_reference: "ENTRY_CONTRACT §4; RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW § E (Evidence and pointers (L4 discipline))"
 artifact_summary: "Operator session-flow summary only; no log payload"
 retrieval_reference: "CHANGE_CONTROL_RECORD_ID_REDACTED"
 git_head_at_capture: "abc1234deadbeef..."
@@ -97,4 +97,4 @@ change_control_anchor: "TICKET_REF_REDACTED"
 
 ## 8) Operator / reviewer use
 
-Align external retention with [`RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md`](../runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md) §5 (Required Evidence) and [`RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md). Cross-check gate index [§4.4](MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md#44-l4-candidate-session-flow-pointer-record-g7). Authorization remains external.
+Align external retention with [`RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md`](../runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md) — [**E.** Evidence and pointers (L4 discipline)](../runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md#e-evidence-and-pointers-l4-discipline) (full operator sequence: sections **A–G**) — and [`RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md). Cross-check gate index [§4.4](MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md#44-l4-candidate-session-flow-pointer-record-g7). Authorization remains external.
