@@ -31,6 +31,8 @@ def test_run_dry_smoke_in_memory() -> None:
     assert out["ok"] is True
     assert out["scenario_count"] == 5
     assert "happy_live_gated" in out["scenarios"]
+    assert out["wire_path_ok"] is True
+    assert out["wire_smoke_version"] == "v1"
 
 
 def test_main_no_run_is_noop(capsys) -> None:
@@ -47,6 +49,8 @@ def test_main_run_ok(capsys) -> None:
     out = json.loads(capsys.readouterr().out)
     assert out["ok"] is True
     assert out["scenario_count"] == 5
+    assert out["wire_path_ok"] is True
+    assert out["wire_smoke_version"] == "v1"
 
 
 def test_subprocess_invocation_repo_root() -> None:
@@ -65,3 +69,5 @@ def test_subprocess_invocation_repo_root() -> None:
     assert r.returncode == 0, (r.stdout, r.stderr)
     o = json.loads(r.stdout)
     assert o["ok"] is True
+    assert o["wire_path_ok"] is True
+    assert o["wire_smoke_version"] == "v1"
