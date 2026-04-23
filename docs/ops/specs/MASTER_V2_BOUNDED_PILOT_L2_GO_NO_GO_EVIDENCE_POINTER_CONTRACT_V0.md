@@ -79,7 +79,7 @@ Same minimum discipline as L1 pointers: when recording a pointer **outside** thi
 - **Gate-Status Report Surface:** remains **non-authorizing**; see [`MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`](MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md) §3.2.
 - **`G10`:** pointer metadata is not final live authorization.
 - **`G11`:** L2-only; not a cross-gate bundle.
-- **L1 contract:** dry-validation Step 2 uses the **same** eval entry point as documented in §4.2; a single external capture may be referenced for **both** L1 Step 2 framing and **L2/G5** framing if governance agrees one object satisfies both review questions — use consistent `retrieval_reference` and clear `artifact_summary` scope.
+- **L1 contract:** dry-validation [**C.** Operator sequence (ordered)](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md#c-operator-sequence-ordered) item **2** (Pilot go/no-go eval) uses the **same** eval entry point as documented in gate index §4.2; a single external capture may be referenced for **both** L1 Step 2 framing and **L2/G5** framing if governance agrees one object satisfies both review questions — use consistent `retrieval_reference` and clear `artifact_summary` scope.
 
 ## 7) Illustrative pointer records (non-binding)
 
@@ -108,4 +108,4 @@ retention_owner: "governance_steward_role"
 
 ## 8) Operator / reviewer use
 
-Align external retention with [`PILOT_GO_NO_GO_CHECKLIST.md`](PILOT_GO_NO_GO_CHECKLIST.md), [`PILOT_GO_NO_GO_OPERATIONAL_SLICE.md`](PILOT_GO_NO_GO_OPERATIONAL_SLICE.md), and runbook ordering in [`RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md) / [`RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md). Authorization remains external.
+Align external retention with [`PILOT_GO_NO_GO_CHECKLIST.md`](PILOT_GO_NO_GO_CHECKLIST.md), [`PILOT_GO_NO_GO_OPERATIONAL_SLICE.md`](PILOT_GO_NO_GO_OPERATIONAL_SLICE.md), and runbook ordering in [`RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md) (**sections A–G**; [**C.** Operator sequence (ordered)](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md#c-operator-sequence-ordered), item **2** — Pilot go/no-go eval) / [`RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md). Authorization remains external.
