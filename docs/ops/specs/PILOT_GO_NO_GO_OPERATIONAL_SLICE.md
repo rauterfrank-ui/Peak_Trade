@@ -28,8 +28,8 @@ This document maps each checklist item in `PILOT_GO_NO_GO_CHECKLIST` to the conc
 | 7 | Fee/Slippage Realism | conservative assumptions documented? | Assumptions Doc + Edge Case Matrix | `FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS`, `PILOT_EXECUTION_EDGE_CASE_MATRIX` Fee/slippage row |
 | 8 | Partial Fill Handling | bounded and understood? | Specs + Engine | `PILOT_EXECUTION_EDGE_CASE_MATRIX`, `ReconciliationEngine` (position/cash recon) |
 | 9 | Stale State Handling | stale balance/order/position handled safely? | Ops Cockpit | `stale_state` (balance, position, order, exposure); `exposure_state.stale` |
-| 10 | Restart / Replay | restart and replay semantics safe? | Edge Case Matrix | `PILOT_EXECUTION_EDGE_CASE_MATRIX` Restart mid-session, Replay ambiguity; no dedicated runbook yet |
-| 11 | Incident Runbooks | critical incident paths exist? | Runbooks | `RUNBOOK_PILOT_INCIDENT_*` (Exchange Degraded, Telemetry Degraded, Reconciliation Mismatch, Transfer Ambiguity, Session End Mismatch, Unexpected Exposure) |
+| 10 | Restart / Replay | restart and replay semantics safe? | Edge Case Matrix + Runbook | `PILOT_EXECUTION_EDGE_CASE_MATRIX` Restart mid-session, Replay ambiguity; `RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION` |
+| 11 | Incident Runbooks | critical incident paths exist? | Runbooks | `RUNBOOK_PILOT_INCIDENT_*` (Exchange Degraded, Telemetry Degraded, Reconciliation Mismatch, Transfer Ambiguity, Session End Mismatch, Unexpected Exposure, Restart Mid-Session) |
 | 12 | Evidence Continuity | evidence/audit trail sufficient? | Ops Cockpit | `evidence_state` (summary, audit_trail, telemetry_evidence) |
 | 13 | Dependency Degradation | degraded exchange/telemetry explicit? | Ops Cockpit | `dependencies_state` (exchange, telemetry, market_data_cache, degraded) |
 | 14 | Human Supervision | pilot explicitly operator-supervised? | Ops Cockpit + Specs | `human_supervision_state` (status, mode, summary); `PILOT_GO_NO_GO_CHECKLIST`, `PILOT_READY_EXECUTION_REVIEW_SPEC` |
@@ -41,7 +41,7 @@ This document maps each checklist item in `PILOT_GO_NO_GO_CHECKLIST` to the conc
 
 ## Known Gaps (Follow-up)
 - ~~Fee/slippage: dedicated conservative-assumptions document~~ (done: `FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS`)
-- Restart mid-session: dedicated runbook
+- ~~Restart mid-session: dedicated runbook~~ (done: `RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION`)
 - ~~Human supervision: explicit cockpit surface (optional)~~ (done: `human_supervision_state` in Ops Cockpit)
 - ~~Go/No-Go script: automated checklist evaluation against cockpit/config (future)~~ (done: `scripts/ops/pilot_go_no_go_eval_v1.py`)
 
