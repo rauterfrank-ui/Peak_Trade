@@ -60,6 +60,8 @@ See: `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`, `RUNBOOK_BOUNDED_PILOT_DRY_VALIDATIO
 - Dry validation: `RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`
 - Optional docs-only pointer metadata for externally retained §3 prerequisite confirmations (bounded pilot L3; no payloads in git): [`MASTER_V2_BOUNDED_PILOT_L3_ENTRY_PREREQUISITE_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L3_ENTRY_PREREQUISITE_EVIDENCE_POINTER_CONTRACT_V0.md)
 
+Entry-contract cross-reference: The companion entry contract's Section 3 now carries the non-authorizing L3 entry-prerequisite pointer note; see [BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) and [MASTER_V2_BOUNDED_PILOT_L3_ENTRY_PREREQUISITE_EVIDENCE_POINTER_CONTRACT_V0.md](MASTER_V2_BOUNDED_PILOT_L3_ENTRY_PREREQUISITE_EVIDENCE_POINTER_CONTRACT_V0.md). This cross-reference is vocabulary/navigation-only and does not change boundary, gate, approval, runtime, trading, or live-entry semantics.
+
 ## 5. Non-Goals
 
 - No execution authority  
