@@ -16,7 +16,10 @@ def run(cmd: list[str], env: dict[str, str]) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(
         prog="pipeline_cli.py",
-        description="Unified pipeline CLI (offline-first): research / live_ops (no-live) / risk",
+        description=(
+            "Unified pipeline CLI (offline-first): research / live_ops (no-live) / risk / "
+            "master_v2 (non-production dry smoke; no live; no orders)"
+        ),
     )
     parser.add_argument("--run-id", default=None, help="Run id for evidence pack directory naming")
     parser.add_argument(
@@ -45,6 +48,19 @@ def main() -> int:
     p_k = sub.add_parser("risk", help="Delegate to scripts/risk_cli.py")
     p_k.add_argument(
         "args", nargs=argparse.REMAINDER, help="Args forwarded to risk_cli.py (prefix with --)"
+    )
+
+    # Master V2 dry smoke (dev-only, non-production)
+    p_m = sub.add_parser(
+        "master_v2",
+        help=(
+            "Delegate to scripts/dev/master_v2_dry_smoke_v1.py (non-production; no live; no orders)"
+        ),
+    )
+    p_m.add_argument(
+        "args",
+        nargs=argparse.REMAINDER,
+        help="Args forwarded to master_v2_dry_smoke_v1.py (e.g. -- --run)",
     )
 
     args = parser.parse_args()
@@ -78,6 +94,19 @@ def main() -> int:
         if getattr(args, "artifacts_dir", None):
             cmd += ["--artifacts-dir", args.artifacts_dir]
         cmd += args.args
+        return run(cmd, env)
+
+    if args.cmd == "master_v2":
+        cmd = [sys.executable, str(ROOT / "scripts" / "dev" / "master_v2_dry_smoke_v1.py")]
+        forwarded = list(args.args)
+        if forwarded and forwarded[0] == "--":
+            forwarded = forwarded[1:]
+        cmd += forwarded
+        src = str(ROOT / "src")
+        if env.get("PYTHONPATH"):
+            env["PYTHONPATH"] = src + os.pathsep + env["PYTHONPATH"]
+        else:
+            env["PYTHONPATH"] = src
         return run(cmd, env)
 
     return 2

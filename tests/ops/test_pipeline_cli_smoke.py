@@ -1,6 +1,7 @@
 """Smoke test for pipeline_cli delegating to risk_cli (offline-first)."""
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -47,3 +48,26 @@ def test_pipeline_cli_risk_smoke(tmp_path):
     assert data["var"] >= 0
     assert (tmp_path / "smoke_pipeline" / "meta.json").exists()
     assert (tmp_path / "smoke_pipeline" / "results" / "var.json").exists()
+
+
+def test_pipeline_cli_master_v2_dry_smoke_delegate():
+    """Delegates to scripts/dev/master_v2_dry_smoke_v1.py (non-production)."""
+    cmd = [
+        sys.executable,
+        str(ROOT / "scripts" / "pipeline_cli.py"),
+        "master_v2",
+        "--",
+        "--run",
+    ]
+    p = subprocess.run(
+        cmd,
+        cwd=str(ROOT),
+        capture_output=True,
+        text=True,
+        env={**os.environ, "PYTHONPATH": str(ROOT / "src")},
+    )
+    assert p.returncode == 0, p.stderr or p.stdout
+    data = json.loads(p.stdout)
+    assert data["ok"] is True
+    assert data.get("wire_path_ok") is True
+    assert data.get("wire_smoke_version") == "v1"
