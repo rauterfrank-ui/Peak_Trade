@@ -298,3 +298,5 @@ Siehe [`docs/CLI_CHEATSHEET.md`](CLI_CHEATSHEET.md)
 ---
 
 **Built with ❤️ and safety-first architecture**
+Bounded Pilot / First-Live navigation: For the operator-navigation-only entry points into the bounded-pilot / first-live docs, start with [CLI_CHEATSHEET.md](CLI_CHEATSHEET.md#bounded-pilot--first-live-navigation). This reference is navigation-only and does not authorize live trading, bypass gates, or change runtime, trading, evidence, approval, or live-entry semantics.
+
