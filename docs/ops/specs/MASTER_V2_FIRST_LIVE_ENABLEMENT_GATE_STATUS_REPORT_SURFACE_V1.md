@@ -314,7 +314,7 @@ Summary table (single-gate scope):
 
 | Gate | Status | Evidence Present &#47; Evidence Pointer | Blocking Issue | Required Authority | Next Minimal Slice |
 |---|---|---|---|---|---|
-| `L4 Candidate Session Flow Interpretation` | `blocked` | `yes: docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md; docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md; scripts&#47;ops&#47;run_bounded_pilot_session.py; docs&#47;ops&#47;specs&#47;BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` | Candidate-flow sequence is defined, but candidate-scoped session evidence pointers are missing in this slice and the canonical candidate-flow runbook is still `status: DRAFT`. | Governance and operator decision authority outside this report surface. | Add one docs-only canonical pointer slot for the latest candidate-scoped L4 session-flow evidence bundle (start posture snapshot + session outcome + closeout pointer), without adding authorization semantics. |
+| `L4 Candidate Session Flow Interpretation` | `blocked` | `yes: docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md; docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md; scripts&#47;ops&#47;run_bounded_pilot_session.py; docs&#47;ops&#47;specs&#47;BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` | The canonical candidate-flow runbook is `OPERATOR-READY` in-repo, but candidate-scoped session evidence pointers are missing in this slice, so L4 interpretation remains partial. | Governance and operator decision authority outside this report surface. | Add one docs-only canonical pointer slot for the latest candidate-scoped L4 session-flow evidence bundle (start posture snapshot + session outcome + closeout pointer), without adding authorization semantics. |
 
 Per-gate detail (single-gate scope):
 
@@ -322,7 +322,7 @@ Per-gate detail (single-gate scope):
 - `current_status`: `blocked`
 - `evidence_used_or_pointer`: `docs/ops/runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md`; `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`; `scripts/ops/run_bounded_pilot_session.py`; `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`
 - `what_remains_open`: Candidate-scoped repository evidence for an actual L4 session-flow interpretation remains missing (start-state snapshot pointer, session execution outcome pointer, and closeout/reconciliation pointer), so the current mapping is only partial.
-- `blocking_condition`: The candidate-flow runbook defines strict preconditions (including acceptable Go&#47;No-Go verdict and explicit operator-supervised bounded posture) and the wrapper script enforces verdict gating (`GO_FOR_NEXT_PHASE_ONLY`), but this additive slice does not assert a candidate-specific evidence bundle proving that flow path.
+- `blocking_condition`: The in-repo candidate-flow runbook (`RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md`) is `OPERATOR-READY` and defines strict preconditions (including acceptable Go&#47;No-Go verdict and explicit operator-supervised bounded posture) and the wrapper script enforces verdict gating (`GO_FOR_NEXT_PHASE_ONLY`), but this additive slice does not assert a candidate-specific evidence bundle proving that flow path.
 - `required_authority`: Governance/operator authority remains external; this report surface has no closure or live-unlock authority.
 - `next_minimal_slice`: Add one minimal canonical docs-only hook that records the latest repository-resolvable candidate-scoped L4 flow evidence pointers using this surface schema, without touching runtime, policy-core, or risk-core.
 
@@ -364,7 +364,7 @@ Summary table (single-gate scope):
 
 | Gate | Status | Evidence Present &#47; Evidence Pointer | Blocking Issue | Required Authority | Next Minimal Slice |
 |---|---|---|---|---|---|
-| `L1 Dry Validation Readiness` | `blocked` | `yes: docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md; docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md; docs&#47;ops&#47;specs&#47;MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md; scripts&#47;ops&#47;pilot_go_no_go_eval_v1.py; scripts&#47;run_execution_session.py` | Dry-validation sequence is documented, but this slice does not assert a candidate-scoped dry-validation evidence bundle, and the dedicated dry-validation runbook is currently `status: DRAFT`. | Governance and operator decision authority outside this report surface. | Add one docs-only canonical pointer slot for the latest candidate-scoped L1 dry-validation evidence bundle (drills result + go/no-go verdict artifact + execution dry-run output), without adding authorization semantics. |
+| `L1 Dry Validation Readiness` | `blocked` | `yes: docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md; docs&#47;ops&#47;runbooks&#47;RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md; docs&#47;ops&#47;specs&#47;MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md; scripts&#47;ops&#47;pilot_go_no_go_eval_v1.py; scripts&#47;run_execution_session.py` | The dedicated dry-validation runbook is `OPERATOR-READY` in-repo, but this slice does not assert a candidate-scoped dry-validation evidence bundle, so L1 interpretation remains partial. | Governance and operator decision authority outside this report surface. | Add one docs-only canonical pointer slot for the latest candidate-scoped L1 dry-validation evidence bundle (drills result + go/no-go verdict artifact + execution dry-run output), without adding authorization semantics. |
 
 Per-gate detail (single-gate scope):
 
@@ -372,7 +372,7 @@ Per-gate detail (single-gate scope):
 - `current_status`: `blocked`
 - `evidence_used_or_pointer`: `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`; `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`; `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`; `scripts/ops/pilot_go_no_go_eval_v1.py`; `scripts/run_execution_session.py`
 - `what_remains_open`: Candidate-scoped repository evidence showing one complete dry-validation pass for the intended bounded-pilot context (drills outcome, acceptable go/no-go posture, and execution-session dry-run outcome) is not asserted in this additive slice.
-- `blocking_condition`: The canonical ladder maps `L1` to dry-validation sources and the dedicated dry-validation runbook defines required sequence/evidence, but that runbook remains `status: DRAFT` and no candidate-scoped L1 evidence bundle is asserted here.
+- `blocking_condition`: The canonical ladder maps `L1` to dry-validation sources; the dedicated dry-validation runbook (`RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`) is `OPERATOR-READY` in-repo and defines required sequence/evidence, but no candidate-scoped L1 evidence bundle is asserted here.
 - `required_authority`: Governance/operator authority remains external; this report surface has no closure or live-unlock authority.
 - `next_minimal_slice`: Add one minimal canonical docs-only hook that records the latest repository-resolvable candidate-scoped L1 dry-validation evidence pointer set under this surface schema, without touching runtime, policy-core, or risk-core.
 
