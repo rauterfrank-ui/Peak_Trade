@@ -27,7 +27,7 @@ Usage:
 
 Exit Codes:
   0: All required checks are hygiene-compliant
-  2: Hygiene violations found (required checks unreliable)
+  2: Hygiene violations found (required checks unreliable), or strict-mode YAML load errors
 
 Phase: 5D
 Date: 2026-01-12
@@ -67,9 +67,11 @@ class WorkflowAnalyzer:
     def __init__(self, workflow_dir: Path):
         self.workflow_dir = workflow_dir
         self.workflows: List[Dict[str, Any]] = []
+        self.load_errors: List[Tuple[str, str]] = []
 
     def load_workflows(self) -> None:
         """Load and parse all workflow YAML files."""
+        self.load_errors = []
         yaml = _require_yaml()
         patterns = ["*.yml", "*.yaml"]
         workflow_files = []
@@ -89,6 +91,8 @@ class WorkflowAnalyzer:
                             }
                         )
             except Exception as e:
+                msg = f"{type(e).__name__}: {e}"
+                self.load_errors.append((wf_file.name, msg))
                 print(f"WARNING: Failed to parse {wf_file.name}: {e}", file=sys.stderr)
 
     def _expand_matrix_job_names(
@@ -241,6 +245,20 @@ class RequiredChecksValidator:
         """
         self.load_config()
         self.analyzer.load_workflows()
+
+        if self.strict and self.analyzer.load_errors:
+            for fname, err in self.analyzer.load_errors:
+                self.findings.append(
+                    {
+                        "context": f"workflow YAML ({fname})",
+                        "status": "FAIL",
+                        "reason": f"Failed to parse workflow file: {err}",
+                        "remediation": (
+                            f"Fix YAML syntax in {fname} so the hygiene validator can analyze all workflows."
+                        ),
+                    }
+                )
+
         surfaces = self.analyzer.extract_required_check_surfaces()
 
         self.effective_required_contexts = load_effective_required_contexts(self.config_path)
@@ -335,6 +353,8 @@ class RequiredChecksValidator:
             print("All required status checks are produced by always-on PR workflows.")
             print("All required status checks are also available on merge_group.")
             print("No path-filtering detected on required checks.")
+            if self.strict:
+                print("Strict mode: all workflow YAML files parsed successfully.")
             return
 
         print(f"❌ FAILURE: {findings_count} hygiene violation(s) found")
@@ -397,7 +417,7 @@ Examples:
     parser.add_argument(
         "--strict",
         action="store_true",
-        help="Strict mode (treat warnings as failures)",
+        help="Strict mode: fail if any workflow YAML cannot be parsed (load errors)",
     )
 
     args = parser.parse_args()

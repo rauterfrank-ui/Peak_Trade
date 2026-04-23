@@ -442,3 +442,53 @@ jobs:
         assert len(validator.findings) == 1
         assert validator.findings[0]["context"] == "parity-check"
         assert "merge_group" in validator.findings[0]["reason"]
+
+
+def test_strict_mode_fails_closed_on_unparseable_workflow_yaml(fixtures_dir):
+    """Strict: invalid YAML in the workflows dir must surface as a hygiene failure."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        workflows_dir = Path(tmpdir) / "workflows"
+        workflows_dir.mkdir()
+
+        good_wf = fixtures_dir / "minimal_good.yml"
+        (workflows_dir / "minimal_good.yml").write_text(good_wf.read_text())
+        (workflows_dir / "broken_syntax.yml").write_text(
+            "this: is: not: valid: yaml: structure: [\n"
+        )
+
+        config = fixtures_dir / "test_config_good.json"
+        validator = RequiredChecksValidator(
+            config_path=config,
+            workflow_dir=workflows_dir,
+            strict=True,
+        )
+        success = validator.validate()
+        assert success is False
+        yaml_findings = [f for f in validator.findings if f["context"].startswith("workflow YAML")]
+        assert len(yaml_findings) >= 1
+        assert "broken_syntax.yml" in yaml_findings[0]["context"]
+        assert "Failed to parse" in yaml_findings[0]["reason"]
+
+
+def test_non_strict_keeps_success_when_contexts_ok_despite_unparseable_yaml(fixtures_dir):
+    """Non-strict: parse warnings do not add findings; required contexts may still pass."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        workflows_dir = Path(tmpdir) / "workflows"
+        workflows_dir.mkdir()
+
+        good_wf = fixtures_dir / "minimal_good.yml"
+        (workflows_dir / "minimal_good.yml").write_text(good_wf.read_text())
+        (workflows_dir / "broken_syntax.yml").write_text(
+            "this: is: not: valid: yaml: structure: [\n"
+        )
+
+        config = fixtures_dir / "test_config_good.json"
+        validator = RequiredChecksValidator(
+            config_path=config,
+            workflow_dir=workflows_dir,
+            strict=False,
+        )
+        success = validator.validate()
+        assert success is True
+        assert len(validator.findings) == 0
+        assert len(validator.analyzer.load_errors) >= 1
