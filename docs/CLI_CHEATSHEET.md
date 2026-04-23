@@ -548,6 +548,27 @@ python3 scripts/preview_live_orders.py \
 
 Die Developer-Guides erklären typische Erweiterungen Schritt für Schritt, inkl. CLI-Beispiele für Tests und Integration.
 
+**Pipeline CLI (offline-first) — Master V2 dry smoke (non-production):**
+
+- Einheitlicher Einstieg über [`scripts/pipeline_cli.py`](../scripts/pipeline_cli.py) (Subcommand `master_v2`). **Nicht produktiv** — kein Live, **keine** Orders, **kein** Broker; delegiert ausschließlich an den opt-in-Dry-Smoke-Entry [`scripts/dev/master_v2_dry_smoke_v1.py`](../scripts/dev/master_v2_dry_smoke_v1.py).
+- Trockenlauf (JSON mit `ok` / `wire_path_ok` u. a. auf stdout):
+
+```bash
+python3 scripts/pipeline_cli.py master_v2 -- --run
+```
+
+- Alternative: Dry-Skript **direkt** (repo root, `PYTHONPATH=src` setzen, wie in Dev-Tests; oder `uv run python …`):
+
+```bash
+PYTHONPATH=src python3 scripts/dev/master_v2_dry_smoke_v1.py --run
+```
+
+- Optional, schmaler **JSON-Dryflow** (Adapter + optional Evaluator) aus dem `trading`-Paket — ebenfalls lokal, nicht produktiv:
+
+```bash
+PYTHONPATH=src python3 -m trading.master_v2.local_debug_cli_v1 --help
+```
+
 ---
 
 ## Siehe auch
