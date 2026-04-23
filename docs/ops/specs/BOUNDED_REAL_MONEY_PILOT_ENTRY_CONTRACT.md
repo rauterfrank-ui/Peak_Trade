@@ -65,6 +65,8 @@ The operator must confirm all of the following before entry:
    - `guard_state.treasury_separation == enforced`
    - See `docs&#47;ops&#47;specs&#47;TREASURY_BALANCE_SEPARATION_SPEC.md`
 
+Pointer note: For the external-metadata-only pointer vocabulary around L3 entry prerequisites, see [MASTER_V2_BOUNDED_PILOT_L3_ENTRY_PREREQUISITE_EVIDENCE_POINTER_CONTRACT_V0.md](MASTER_V2_BOUNDED_PILOT_L3_ENTRY_PREREQUISITE_EVIDENCE_POINTER_CONTRACT_V0.md). This note is non-authorizing and does not change gate, approval, runtime, trading, or live-entry semantics.
+
 ## 4. First Bounded Real-Money Step
 
 The first bounded real-money step is defined as:
