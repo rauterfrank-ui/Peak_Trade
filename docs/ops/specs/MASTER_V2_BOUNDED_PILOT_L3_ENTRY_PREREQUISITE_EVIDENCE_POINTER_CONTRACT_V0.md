@@ -76,6 +76,7 @@ When recording a pointer **outside** this repository, use the following fields. 
 - **Boundary note:** entry vs first real-money framing stays in [`BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md); this contract does not move the boundary.
 - **Gate-Status Report Surface:** non-authorizing; [`MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`](MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md) §3.2.
 - **`G10` / `G11`:** pointers are not final authorization and not a cross-gate material bundle.
+- Back-references: the bounded real-money pilot entry contract Section 3 and boundary note Section 4 may point back to this L3 pointer vocabulary; see [BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) and [BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md](BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md). These references are vocabulary/navigation-only and do not change prerequisite, boundary, gate, approval, runtime, trading, or live-entry semantics.
 
 ## 7) Illustrative pointer record (non-binding)
 
