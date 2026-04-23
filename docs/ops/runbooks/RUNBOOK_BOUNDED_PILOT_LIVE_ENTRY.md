@@ -45,6 +45,9 @@ Alle Punkte müssen **vor** dem ersten Aufruf mit echten Orders erfüllt sein.
 - `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` — Entry Contract (Pilot-Haltung).
 - `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md` — Checklistenbasis für Go/No-Go.
 - Optional: `docs/ops/runbooks/live_pilot_execution_plan.md` — übergeordneter Plan (PRBI, Ops-Status, Export-Smokes).
+- `docs/ops/specs/MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md` — Evidence-Pointer-Disziplin L1 (Dry-Validation-Bezug; extern, ohne Payloads in Git).
+- `docs/ops/specs/MASTER_V2_BOUNDED_PILOT_L2_GO_NO_GO_EVIDENCE_POINTER_CONTRACT_V0.md` — Evidence-Pointer-Disziplin L2 (Go/No-Go; extern, ohne Payloads in Git).
+- `docs/ops/specs/MASTER_V2_BOUNDED_PILOT_L3_ENTRY_PREREQUISITE_EVIDENCE_POINTER_CONTRACT_V0.md` — Evidence-Pointer-Disziplin L3 (Entry Contract §3 Prerequisites; extern, ohne Payloads in Git).
 
 ### 2.2 Konfiguration & Kapital-Grenzen
 
@@ -89,6 +92,8 @@ Alle Punkte müssen **vor** dem ersten Aufruf mit echten Orders erfüllt sein.
    Erwartung: Readiness + Go/No-Go **und** Operator-Preflight-Packet **GREEN**, **kein** Handoff / keine Session.
 
 Detaillierte Einordnung: `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md` (Schritt 5 dort ist historisch; Gate-only = `--no-invoke` hier in Phase A.4).
+
+Zum Zuordnen **extern** gehaltener Nachweise aus dieser Phase: die L1–L3 Pointer-Contract-Specs in §2.1 — **ohne** zusätzliche Gate-, Readiness- oder Freigabeaussage (siehe Non-Claims in den Specs).
 
 ### Phase B — Readiness (empfohlen)
 
