@@ -1,113 +1,114 @@
 # RUNBOOK — Pilot Incident: Exchange Degraded
 
-status: DRAFT
-last_updated: 2026-04-20
+status: OPERATOR-READY
+last_updated: 2026-04-23
 owner: Peak_Trade
-purpose: Operator response for degraded exchange/broker behavior during bounded pilot activity
+purpose: Operator response when exchange or broker API behavior is degraded during the bounded pilot—latency, errors, rate limits, or unstable order/ack/fill truth—such that venue trust is insufficient for risk-increasing steps until classified and reconciled or governance directs otherwise outside this document
 docs_token: DOCS_TOKEN_RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED
 
-## 1) Purpose, scope, and non-goals
+## Non-authorization (read first)
 
-**Purpose:** Give operators a **repeatable** sequence for recognizing exchange/broker degradation during the **first strictly bounded real-money pilot** and for adopting a **conservative safe posture** (`NO_TRADE` / safe stop) until truth sources reconcile or governance directs otherwise **outside** this document.
+This runbook is an **operator aid** only. It does **not**:
 
-**Scope:** Bounded-pilot execution only. This runbook addresses **unreliable or degraded** exchange/broker truth (latency, errors, rate limits, ambiguous order/ack state). It does **not** define product behavior, policy rules, or kill-switch implementation.
+- authorize live trading, resume a session, or close any gate;
+- replace the [Entry Contract](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md), governance decisions, or org kill-switch procedures;
+- prove safety from read-only CLI output or in-repo documentation alone.
 
-**Non-goals (explicit):**
+If there is **any** doubt whether trading is allowed, apply [Entry Contract §5](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#5-abort--rollback--no_trade-criteria): **ambiguity ⇒ `NO_TRADE` / safe stop**.
 
-- This runbook **does not** authorize live trading, close any gate, or claim that the pilot is safe to continue.
-- It **does not** assert that an incident is “resolved” generically; it only describes **operator posture**, **blocking conditions**, and **external evidence** discipline.
-- It **does not** substitute [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md), governance decisions, or external sign-off.
+## A. Purpose and boundaries
 
-**Canonical anchors (read-only):**
+**Use this runbook as the primary path when** the **dominant** problem is **degraded or unreliable exchange/broker API or venue truth**: elevated latency or timeouts, error/reject spikes, rate-limit or capacity signals, or **unstable** order/ack/fill state across refresh cycles—**before** you have a clean, systematic ledger story. Symptom routing: [Abort triage compass §5.1](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md#51-exchange--broker-path-unhealthy).
 
-- Abort / rollback / `NO_TRADE`: [Entry contract §5](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#5-abort--rollback--no_trade-criteria).
-- Failure / safe-fallback framing: [Failure taxonomy](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md) (safety-boundary and operator-visibility rows in §4).
-- External **L5** pointer vocabulary (no payloads in git): [L5 incident / safe-stop pointer contract v0](../specs/MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md).
+**Prefer a different primary path when:**
 
-## 2) Trigger / symptoms
+- **Systematic ledger comparison** (orders, fills, positions, balances, transfers) is the **first** job on **stable enough** venue reads → [Reconciliation mismatch](RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md); **overlap is common** — remain **`NO_TRADE`** while the venue is **also** too flaky to trust those reads, then **return** here as primary until venue class improves.
+- **Observability / evidence continuity** is the main gap **without** a clear venue-outage pattern → [Telemetry degraded](RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md); if **venue** symptoms dominate, treat **this** runbook as **primary** and hold `NO_TRADE` while telemetry is incomplete.
+- **Closeout / session-end** terminal disagreement at the **session boundary** → [Session end mismatch](RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md).
+- **Cap or envelope surprise** is the main doubt → [Unexpected exposure](RUNBOOK_PILOT_INCIDENT_UNEXPECTED_EXPOSURE.md); **overlap is common** — stabilize venue **and** hold `NO_TRADE` if exposure is unclear.
+- **Transfer / funding** state unknown → [Transfer ambiguity](RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY.md).
+- **Process restart / cold local state** mid-session → [Restart mid-session](RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md); venue degradation may **co-occur** after restart.
+- **Symptom routing** → [Abort triage compass](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md).
 
-Treat the situation as **exchange degraded** when **one or more** of the following are observed during pilot activity (examples, not an exhaustive product spec):
+## B. Triggers and entry conditions
 
-- **Latency or timeouts** increase materially on order, cancel, or query paths compared to normal pilot baseline.
-- **Error or reject rate** spikes (HTTP/API errors, exchange error codes, sustained `reject`-class outcomes).
-- **Rate-limit or capacity** signals indicate throttling or degraded service from the venue.
-- **Order / ack / fill state** becomes **unstable or inconsistent** across refresh cycles (state “flicker,” missing acks, delayed fills without clear terminal state).
-- **Position or exposure truth** from the exchange or broker **cannot be reconciled** with the operator’s internal session view within a short, operator-defined verification window.
+**Observable triggers (any can suffice)**
 
-If the operator **cannot** determine whether the venue is healthy enough for bounded pilot activity, treat that as **ambiguity** and apply §5.
+- **Latency or timeouts** on order, cancel, or query paths **materially** above your pilot baseline.
+- **Error or reject rate** spikes (HTTP/API errors, venue error codes, sustained reject-class outcomes).
+- **Rate-limit or capacity** signals (throttling, HTTP 429-class behavior, documented venue degradation).
+- **Order / ack / fill** state **flickers** or **fails to reach** a terminal state you can verify within a short, operator-defined window.
+- **Position or exposure** from the venue **cannot** be aligned with the operator’s session view in that same bounded window.
 
-## 3) Immediate safe posture
+**Fail-closed rule**
 
-Until the situation is **clearly** classified as **degraded-but-reconcilable** with **stable** truth (§7), default posture is:
+- If you **cannot** classify venue health for the **next** bounded action, treat as **`ambiguous`**: **`NO_TRADE`** and **freeze** risk expansion until classification improves or governance directs otherwise **outside** this document.
 
-- **`NO_TRADE` / safe stop:** do **not** open new risk-increasing positions; do **not** rely on automation to “work through” venue flakiness without explicit human confirmation aligned with entry contract §5.
-- **Do not expand risk** (size, leverage, new symbols) while exchange truth is unreliable.
-- **Prefer fail-closed:** when in doubt, remain blocked; see [Failure taxonomy §6](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md#6-ambiguity-confusion-and-interpretation-risk-map) (fail-closed vs strategic no-trade distinction remains governance-visible, not rewritten here).
+## C. Immediate actions (ordered)
 
-## 4) Step-by-step operator actions
+1. **Stop new risk:** **`NO_TRADE`** and **no** deliberate risk-increasing orders or size increases until classification completes. Use org **kill-switch / safe-stop** only per [Kill Switch runbook](../../risk/KILL_SWITCH_RUNBOOK.md); this runbook does not redefine that mechanism.
+2. **Freeze the scene:** record **UTC interval**, **session id**, **operator**, and **symptom class** (timeouts / rejects / rate limit / state ambiguity).
+3. **Confirm bounded-pilot context:** re-read [Entry Contract §1–2](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) mentally; do not exceed the documented bounded real-money step intent.
+4. **Verify policy visibility:** if kill-switch, policy, or session posture is **not** visible per your procedure, treat as **blocked** per Entry Contract §5 (*operator cannot clearly determine the current bounded posture*).
+5. **Reconcile venue-trusted truth:** compare orders, fills, cancels, and positions using **independent** checks your pilot already uses (e.g. venue UI vs registry vs internal summaries). Document **discrepancies** externally—**no** raw payloads or secrets in git.
+6. **Classify:** **`reconciled_explainable`** / **`partial`** / **`ambiguous`** (see §D).
+7. If **`partial`** or **`ambiguous`**: **escalate** per §F; **do not** “trade through” venue flakiness.
 
-Execute in order unless a later step proves impossible without new risk; if so, stop and escalate (§6).
+**Order matters:** **posture and venue-trusted terminals** before any “resume” narrative.
 
-1. **Confirm bounded-pilot context**  
-   Re-read [Entry contract §1–2](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) mentally; do not exceed the documented first bounded real-money step intent.
+## D. Verification and classification
 
-2. **Freeze new risk-increasing actions**  
-   Stop placing new orders that increase exposure or widen ambiguity until classification completes.
+**Definitions**
 
-3. **Verify safety and policy visibility**  
-   Confirm kill-switch / policy / session posture is **visible** to the operator per your **operative** cockpit or procedure (this runbook does not invoke tooling). If posture is **not** visible, treat as **blocked** per entry contract §5 (*operator cannot clearly determine the current bounded posture*).
+- **Reconciled explainable:** degradation is **bounded** (known window, explainable lag or single-class errors) **and** **terminal** order/fill/position states are **establishable** via broker-trusted channels **without** residual exposure doubt for the pilot envelope — **still** no authorization from this document to resume.
+- **Partial:** some checks succeed, others **timeout** or **conflict**; **incomplete** picture of terminals or net exposure.
+- **Ambiguous:** contradictory venue snapshots, **unknown** terminals after bounded tries, or venue truth **unstable** — **unsafe** to extend risk.
 
-4. **Capture a minimal timestamped operator note (outside git)**  
-   One line: symptom class (timeouts / rejects / rate limit / state ambiguity), UTC time, and “bounded pilot — exchange degraded path” — **no** secrets, API keys, or full log paste.
+**Suggested checks**
 
-5. **Reconcile truth sources**  
-   Compare order, fill, cancel, and position views using **independent** checks where your process allows (for example venue UI vs session registry vs internal summaries). Document **discrepancies**, not raw payloads, in change control.
+- Re-pull **venue-trusted** views; compare **stable identifiers** (order id, client id, fill id), not only aggregates.
+- If cockpit/registry JSON or `scripts/report_live_sessions.py` outputs are used, treat as **read-only hints**; read **disclaimers**; JSON is **not** proof of safety (see [Compass §8](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md#8-read-only-cli--report-hints-scriptsreport_live_sessionspy)).
+- If **observability** gaps dominate **without** a venue-primary story, pivot triage context to [Telemetry degraded](RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md) while holding **`NO_TRADE`**.
 
-6. **Classify**
+**Return toward normal (non-authorizing)**
 
-   - **Degraded but reconcilable:** stable explanation, terminal order states known, exposure matches intended bounded envelope — **still** no new risk until governance/operator policy outside this doc allows continuation.  
-   - **Ambiguous / irreconcilable:** exposure or order state **unclear** — remain **`NO_TRADE` / blocked** until reconciled; do **not** claim “all clear” from this runbook alone.
+- **No** “resume trading” from this runbook alone after **`partial`** / **`ambiguous`**. **Only** governance or explicit org disposition **outside** this repo can authorize continuation.
+- If **`reconciled_explainable`**, posture still follows [Entry Contract §5](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#5-abort--rollback--no_trade-criteria) and [Failure taxonomy §6](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md#6-ambiguity-confusion-and-interpretation-risk-map); this runbook does not grant go-ahead. For **next session** or **candidate** steps, follow [Bounded real-money pilot candidate flow](RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md) and [Live entry](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) only per **your** authorized procedures **outside** this document.
 
-7. **Session and handoff**  
-   If another operator takes over, hand off **classification**, **current posture**, and **open discrepancies** via your standard channel; see §8.
+## E. Evidence and pointers (L5 discipline)
 
-## 5) Abort / `NO_TRADE` / remain-blocked conditions
+Capture review material **outside** git per [L5 incident / safe-stop pointer contract](../specs/MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md): **metadata and opaque handles only** — no log dumps, secrets, full API traces, or kill-switch dumps in the repository.
 
-Remain in **blocked / `NO_TRADE`** posture (and escalate per §6) if **any** of the following hold:
+**Minimum narrative to record externally (conceptual)**
 
-- Kill switch active, policy blocked, or entry contract §5 abort criteria apply.
-- Order or position **terminal state** cannot be established.
-- **Ambiguity** remains about whether trading is allowed (entry contract §5: **ambiguity => `NO_TRADE` / safe stop**).
-- **Evidence or dependency posture** is degraded beyond acceptable pilot tolerance (entry contract §5 bullet; operator judgment + governance outside this repo).
+- **Trigger** (symptom class, first observation).
+- **Venue / channel** (categories only) and **UTC window**.
+- **Reconciliation summary** (what could / could not be verified; identifiers only as appropriate).
+- **Classification** (`reconciled_explainable` / `partial` / `ambiguous`).
+- **Final posture** and **escalation** reference if any.
 
-This runbook **does not** downgrade or override §5; it operationalizes a conservative reading for venue degradation.
+## F. Escalation
 
-## 6) Escalation / communication
+Escalate when **any** holds:
 
-- **Internal:** Notify pilot owner / governance channel per your **existing** bounded-pilot escalation path (this document does not define roster or tooling).
-- **External:** Broker or venue support only as appropriate to your **operational** rules; **do not** paste secrets, keys, or full account identifiers into shared tickets without your org’s redaction policy.
-- **What to communicate:** symptom category, time window (UTC), whether exposure is **known** or **unknown**, and current **`NO_TRADE` / blocked** posture — not a claim that the system is “safe” or “authorized.”
+- Classification remains **`partial`** or **`ambiguous`** after bounded checks.
+- **Terminal** order or position state **cannot** be established via broker-trusted paths.
+- **Policy / kill-switch** blocks progression while venue degradation is unresolved.
 
-## 7) Evidence handling (pointers only)
+**Internal:** pilot owner / governance channel per your existing bounded-pilot path (this document does not define roster).
 
-Retain material **outside** this repository under change control. Use the **L5 pointer contract** classes and fields ([§3–4](../specs/MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md#3-allowed-pointer-classes-l5)) — for example `L5_INCIDENT_SAFE_STOP_SUMMARY_CAPTURE` and, when applicable, `L5_INCIDENT_RESPONSE_SUPPORTING_BUNDLE` — with **opaque** `retrieval_reference` values.
+**External:** venue or broker support only per org rules; **do not** paste secrets or raw account identifiers without redaction policy.
 
-**Do not** commit incident logs, ticket exports, full API traces, or kill-switch dumps into git as “evidence of compliance.”
+State **symptom class**, **UTC window**, **session id**, and whether exposure is **known**, **partially known**, or **unknown**.
 
-## 8) Exit, handoff, and unresolved conditions
+## G. Related runbooks
 
-**This runbook does not declare incident closure.**
+- [Reconciliation mismatch](RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md)
+- [Telemetry degraded](RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md)
+- [Session end mismatch](RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md)
+- [Unexpected exposure](RUNBOOK_PILOT_INCIDENT_UNEXPECTED_EXPOSURE.md)
+- [Transfer ambiguity](RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY.md)
+- [Restart mid-session](RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md)
+- [Abort triage compass](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md)
 
-- **Handoff:** Next operator receives classification, posture, reconciliation status, and external pointer handles (titles/IDs only in chat — not secret values in-repo).
-- **Unresolved:** If reconciliation fails or ambiguity persists, maintain **`NO_TRADE` / blocked** and record **external** pointers only; revisit when venue truth and governance allow.
-- **Degraded-but-reconcilable:** Even with a stable explanation, **resuming** risk-increasing activity is **not** implied here; follow [candidate flow](../runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md) and [live entry](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) only per **your** authorized procedures — this runbook stays a **degradation** path only.
-
-## 9) Non-authorization reminder
-
-Following this runbook **does not** mean:
-
-- any gate (including `G8`) is closed, passed, or `Verified`;
-- the bounded pilot is live-authorized or eligible for the next phase;
-- exchange degradation is fully mitigated or will not recur.
-
-It is a **draft** operator aid for **safe posture and review discipline** only.
+**Design context (non-authorizing):** [Failure taxonomy](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md) §4 / §6; [Reconciliation flow spec](../specs/RECONCILIATION_FLOW_SPEC.md); [Pilot execution edge case matrix](../specs/PILOT_EXECUTION_EDGE_CASE_MATRIX.md) (broker/API degradation rows).
