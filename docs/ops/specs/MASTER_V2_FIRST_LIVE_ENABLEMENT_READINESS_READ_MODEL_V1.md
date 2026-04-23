@@ -195,6 +195,7 @@ Rules:
 - pointers MUST be concrete and repository-resolvable
 - no generated or hypothetical future path as evidence
 - no telemetry/event stream references introduced by this spec
+Pointer-vocabulary boundary: This read model's in-repo `evidence_pointer` fields describe repo-local evidence references for read-model materialization. They are separate from the bounded-pilot external metadata-only pointer-contract vocabulary summarized in [MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md). This boundary note is vocabulary/navigation-only and does not change evidence, gate, approval, runtime, trading, or live-entry semantics.
 
 ## 8) Blocker Semantics
 
