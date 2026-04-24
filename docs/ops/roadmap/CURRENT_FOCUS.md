@@ -22,6 +22,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ## Recently landed (truth, docs governance, officers)
 
+- PR #2874: Added CLI cheatsheet discoverability for the J2 Optuna placeholder surface (`--help` / `--dry-run` on `scripts&#47;run_study_optuna_placeholder.py`), explicitly separate from `scripts&#47;run_optuna_study.py` and NO-LIVE with no broker/exchange-order, Paper/Shadow/Evidence, or gate changes.
 - PR #2868: Added CLI cheatsheet discoverability for the J1 local OHLCV CSV source, including `csv`, `fixture`, `--ohlcv-csv PATH`, `{symbol}` path expansion, and NO-LIVE/local-only notes.
 - PR #2869: Added a subprocess smoke for `generate_forward_signals.py` with local CSV OHLCV input; test-only, tempfile/local, no live/broker/order/evidence/gate changes.
 - PR #2870: Added a subprocess smoke for `evaluate_forward_signals.py` with local CSV OHLCV input after generated signals; test-only and local-only.
@@ -170,6 +171,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-24 | Post–PRs #2857–#2861: bounded-pilot operator-navigation + DRAFT maturity wording; `CURRENT_FOCUS` refresh (this file) | PR #2857–#2861 merge; `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-24 | J1 local OHLCV CSV source (#2865) | `uv run python -m pytest tests/test_dummy_ohlcv.py tests/test_shared_forward_args_cli.py tests/test_forward_generate_evaluate_integration_smoke.py tests/test_run_portfolio_backtest_v2_cli.py`; `uv run ruff check scripts/_shared_ohlcv_loader.py scripts/_shared_forward_args.py scripts/generate_forward_signals.py scripts/evaluate_forward_signals.py scripts/run_portfolio_backtest_v2.py tests/test_dummy_ohlcv.py tests/test_shared_forward_args_cli.py tests/test_forward_generate_evaluate_integration_smoke.py`; `uv run ruff format` (same paths) | Local/file-based only; no live/broker/order/evidence/gate changes. |
 | 2026-04-24 | J1 local CSV follow-up closure (#2868-#2872) | `uv run python -m pytest tests/test_dummy_ohlcv.py tests/test_forward_generate_evaluate_integration_smoke.py -q`; `uv run ruff check tests/test_dummy_ohlcv.py tests/test_forward_generate_evaluate_integration_smoke.py`; `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` — *Outcome:* J1 local CSV is pausierbar (loader/template tests, Generate/Evaluate subprocess smokes, negative Evaluate validation, runbook/CURRENT_FOCUS and cheatsheet coverage). |
+| 2026-04-24 | J2 Optuna placeholder cheatsheet sync (#2874) | `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; docs-only discoverability for placeholder/dry-run surface, NO-LIVE. |
 
 ---
 
