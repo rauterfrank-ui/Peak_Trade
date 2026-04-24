@@ -388,3 +388,43 @@ def test_normalize_fixture_alias_is_csv():
 def test_load_ohlcv_csv_requires_path():
     with pytest.raises(ValueError, match="ohlcv_csv_path"):
         load_ohlcv("BTC/EUR", source=OHLCV_SOURCE_CSV, n_bars=10)
+
+
+def test_csv_ohlcv_source_resolves_symbol_template_per_symbol(tmp_path):
+    """Zwei Symbole laden getrennte CSVs über dasselbe `{symbol}`-Pfad-Template."""
+    template = tmp_path / "{symbol}.csv"
+
+    (tmp_path / "BTC_EUR.csv").write_text(
+        "timestamp,open,high,low,close,volume\n"
+        "1700000000,100,110,90,105,1.0\n"
+        "1700000060,105,115,95,110,1.1\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "ETH_EUR.csv").write_text(
+        "timestamp,open,high,low,close,volume\n"
+        "1700000000,200,210,190,205,2.0\n"
+        "1700000060,205,215,195,212,2.1\n",
+        encoding="utf-8",
+    )
+
+    df_btc, meta_btc = load_ohlcv_with_meta(
+        "BTC/EUR",
+        n_bars=2,
+        source=OHLCV_SOURCE_CSV,
+        timeframe="1h",
+        ohlcv_csv_path=template,
+    )
+    df_eth, meta_eth = load_ohlcv_with_meta(
+        "ETH/EUR",
+        n_bars=2,
+        source=OHLCV_SOURCE_CSV,
+        timeframe="1h",
+        ohlcv_csv_path=template,
+    )
+
+    assert df_btc["close"].tolist() == [105.0, 110.0]
+    assert df_eth["close"].tolist() == [205.0, 212.0]
+    assert meta_btc["ohlcv_csv_resolved"].endswith("BTC_EUR.csv")
+    assert meta_eth["ohlcv_csv_resolved"].endswith("ETH_EUR.csv")
+    assert meta_btc["csv_bars_shortfall"] is False
+    assert meta_eth["csv_bars_shortfall"] is False
