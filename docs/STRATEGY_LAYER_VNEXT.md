@@ -186,9 +186,11 @@ class BaseStrategy(ABC):
 
 ### Strategie-Registry
 
+**Authority-Hinweis (Dieser Abschnitt):** vNext-**Doku-/Katalog-Überblick** über die Registry-Ausrichtung; Begriffe wie (historisch) *Production-Ready* sind **kein** Echtgeld-Live-Go, **keine** Testnet-, Paper- oder Shadow-Readiness, **kein** Gate, kein Signoff, **keine** Evidence und **keine** Order-, Exchange-, Arming- oder Enablement-Autorität. **Keine** Strategy-Promotion; Master-V2- bzw. Double-Play-Handoff entsteht **nicht** aus diesem Text. Maßgeblich: [STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md](ops/specs/STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md), [STRATEGY_REGISTRY_TIERING_DUAL_SOURCE_CONTRACT_V1.md](ops/specs/STRATEGY_REGISTRY_TIERING_DUAL_SOURCE_CONTRACT_V1.md), [STRATEGY_REGISTRY_TIERING_MV2_RECONCILIATION_TABLE_V0.md](ops/specs/STRATEGY_REGISTRY_TIERING_MV2_RECONCILIATION_TABLE_V0.md). Konsolidierte Navigations-Read-Modelle: [AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md](ops/AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md).
+
 Derzeit registriert in `src/strategies/__init__.py`:
 
-- **Production-Ready**: `ma_crossover`, `momentum_1h`, `rsi_strategy`, `bollinger_bands`, `macd`
+- **Doku- / Katalog-Label (informell: „Production-Ready“; siehe Authority-Hinweis):** `ma_crossover`, `momentum_1h`, `rsi_strategy`, `bollinger_bands`, `macd`
 - **Research Track**: `trend_following`, `mean_reversion`, `vol_breakout`, `breakout`, etc.
 - **Theory/R&D Only**: `armstrong_cycle`, `el_karoui_vol_model`, `ehlers_cycle_filter`, `meta_labeling`
 
