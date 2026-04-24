@@ -444,6 +444,6 @@ For issues, questions, or contributions:
 
 ---
 
-**Risk Layer v1.0 is production-ready and fully tested!** 🎉
+**Snapshot (Engineering / Tests, Stand dieser Seite):** Risk Layer v1.0 war im dokumentierten Umfang **implementiert und testabgedeckt**; das ist **kein** operatives Echtgeld-Live-Go, **keine** First-Live-, Master-V2- oder Double-Play-Freigabe und ersetzt **keine** Governance-, Readiness- oder Signoff-Pfade.
 
 **Last Updated:** 2025-12-28 by Agent A6
