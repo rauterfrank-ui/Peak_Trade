@@ -383,8 +383,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--strategy-id",
         "-s",
         type=str,
-        required=True,
-        help="Strategy-ID aus der Registry (z.B. rsi_reversion, ma_crossover, breakout)",
+        default=None,
+        help=(
+            "Strategy-ID aus der Registry (z.B. rsi_reversion, ma_crossover, breakout). "
+            "Pflicht außer bei --list-strategies."
+        ),
     )
     profile_parser.add_argument(
         "--config",
@@ -986,7 +989,13 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
                 print(f"  {key}")
         return 0
 
-    strategy_id = args.strategy_id
+    strategy_id = getattr(args, "strategy_id", None)
+    if not strategy_id or not str(strategy_id).strip():
+        logger.error("--strategy-id ist erforderlich (außer mit --list-strategies).")
+        logger.info("Tipp: `python3 scripts/research_cli.py strategy-profile --list-strategies`")
+        return 1
+
+    strategy_id = str(strategy_id).strip()
 
     # Validiere Strategy-ID
     available = get_available_strategy_keys()
@@ -1705,6 +1714,18 @@ def run_armstrong_elkaroui_combi(args: argparse.Namespace) -> int:
     return 0
 
 
+def _command_needs_research_evidence_bootstrap(args: argparse.Namespace) -> bool:
+    """
+    True, wenn vor dem Subcommand das Research-Evidence-Pack unter ``artifacts/research/``
+    angelegt werden soll.
+
+    ``strategy-profile`` ist Discoverability/Inspect-first: kein Evidence-Bootstrap, damit
+    z. B. ``--list-strategies`` und reine Profil-Läufe keine ``meta.json`` unter
+    ``artifacts/research/<run_id>/`` erzwingen (Subcommand schreibt nach Bedarf woanders).
+    """
+    return args.command != "strategy-profile"
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     """Haupt-Entry-Point."""
     parser = build_parser()
@@ -1714,18 +1735,22 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     else:
         args = parser.parse_args(list(argv))
 
-    # Evidence-Pack: run_id und Basisverzeichnis anlegen, meta.json schreiben
-    run_id = getattr(args, "run_id", None) or (
-        f"research_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
-    )
-    base_dir = project_root / "artifacts" / "research" / run_id
-    ensure_evidence_dirs(base_dir)
-    write_meta(
-        base_dir / "meta.json",
-        extra={"command": args.command, "run_id": run_id},
-    )
-    args.run_id = run_id
-    args.evidence_base_dir = base_dir
+    # Evidence-Pack nur für Subcommands, die diesen Run-Ordner nutzen (nicht strategy-profile).
+    if _command_needs_research_evidence_bootstrap(args):
+        run_id = getattr(args, "run_id", None) or (
+            f"research_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
+        )
+        base_dir = project_root / "artifacts" / "research" / run_id
+        ensure_evidence_dirs(base_dir)
+        write_meta(
+            base_dir / "meta.json",
+            extra={"command": args.command, "run_id": run_id},
+        )
+        args.run_id = run_id
+        args.evidence_base_dir = base_dir
+    else:
+        args.run_id = getattr(args, "run_id", None)
+        args.evidence_base_dir = None
 
     if args.command == "sweep":
         return run_sweep_from_args(args)

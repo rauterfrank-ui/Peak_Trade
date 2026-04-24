@@ -408,8 +408,7 @@ class TestMain:
     def test_main_strategy_profile_list_strategies_exits_zero(self):
         """strategy-profile --list-strategies beendet mit Code 0 (Registry-IDs, kein Profil-Lauf).
 
-        --strategy-id ist im Parser required; bei --list-strategies wird sie nicht ausgewertet.
-        Beispiel-ID rsi_reversion ist in src/strategies/registry.py registriert.
+        Optional kann weiterhin eine --strategy-id mitgegeben werden; sie wird im List-Modus ignoriert.
         """
         exit_code = research_cli.main(
             [
@@ -420,6 +419,33 @@ class TestMain:
             ]
         )
         assert exit_code == 0
+
+    def test_main_strategy_profile_list_strategies_without_strategy_id(self):
+        """--list-strategies ohne --strategy-id (Inspect/Discoverability)."""
+        exit_code = research_cli.main(["strategy-profile", "--list-strategies"])
+        assert exit_code == 0
+
+    @patch("scripts.research_cli.write_meta")
+    @patch("scripts.research_cli.ensure_evidence_dirs")
+    def test_main_strategy_profile_skips_evidence_bootstrap(self, mock_ensure, mock_write):
+        """strategy-profile erzeugt kein artifacts/research/<run_id>/ vor dem Subcommand."""
+        exit_code = research_cli.main(["strategy-profile", "--list-strategies"])
+        assert exit_code == 0
+        mock_ensure.assert_not_called()
+        mock_write.assert_not_called()
+
+    @patch("scripts.research_cli.write_meta")
+    @patch("scripts.research_cli.ensure_evidence_dirs")
+    @patch("scripts.research_cli.run_sweep_from_args")
+    def test_main_sweep_still_bootstraps_evidence(self, mock_run_sweep, mock_ensure, mock_write):
+        """Andere Subcommands behalten das Evidence-Bootstrap."""
+        mock_run_sweep.return_value = 0
+        exit_code = research_cli.main(
+            ["sweep", "--sweep-name", "dummy", "--config", "config/config.toml"]
+        )
+        assert exit_code == 0
+        mock_ensure.assert_called_once()
+        mock_write.assert_called_once()
 
     @patch("scripts.research_cli.run_strategy_profile")
     def test_main_strategy_profile_calls_profile_runner(self, mock_run_profile):
