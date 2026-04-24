@@ -92,6 +92,14 @@ Boundary lock:
 - advisory AI and models vs authoritative execution decisions: orchestration is not execution authority.
 - promotion authority vs runtime trading authority: readiness or promotion visibility is not live authorization.
 
+## Doubleplay packet/runtime separation
+
+`DoubleplayResolutionHandoffV1` in the Master V2 decision packet is a declarative handoff field. It is not a runtime mirror of `evaluate_double_play`.
+
+The ops/live double-play evaluator may produce runtime observations such as selected specialist, switch-gate state, scores, labels, or diagnostic details. Those observations remain non-authorizing unless a separate Master-V2-compatible contract explicitly defines a source of truth, field mapping, veto relationship, and review semantics.
+
+Do not silently add runtime double-play fields such as `active_specialist`, `switch_state`, switch score, or trend labels to the Master V2 decision packet as a bugfix. Any synchronization between packet doubleplay and ops/live double-play evaluation is an `Adapt to Master V2` design change and must be reviewed as such.
+
 ## 8) Non-Authorizing Constraint
 
 This spec authorizes nothing.
