@@ -631,3 +631,27 @@ class TestCLI:
             module = importlib.util.module_from_spec(spec)
             # Nur prüfen dass Import klappt, nicht ausführen
             assert module is not None
+
+
+def test_generate_market_outlook_daily_help_subprocess_smoke():
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    script = root / "scripts" / "generate_market_outlook_daily.py"
+
+    result = subprocess.run(
+        [sys.executable, str(script), "--help"],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    combined_output = result.stdout + result.stderr
+    assert "usage:" in combined_output.lower()
+    assert "--skip-llm" in combined_output
+    assert "--config-path" in combined_output
