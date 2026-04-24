@@ -85,6 +85,8 @@ This note does not claim that the wiring is correct, incorrect, complete, unused
 
 No code, registry, TOML, or runtime conclusion should be inferred from this note.
 
+For a **read-only** inventory of observed ECM/Armstrong-related naming and wiring surfaces (modules, loader map vs. central registry, config section names, docs pointers), see [STRATEGY_ECM_ARMSTRONG_WIRING_INVENTORY_READ_MODEL_V0.md](STRATEGY_ECM_ARMSTRONG_WIRING_INVENTORY_READ_MODEL_V0.md). That document is a **reading map / inventory only**; it does not authorize an alias, registry or TOML change, loader priority, promotion, live or First-Live enablement, Master V2 handoff, Double Play selection, or any technical wiring outcome, and it does not replace a future separately approved implementation decision.
+
 ## 7) Master V2 / Double Play Boundary
 
 Name alignment is not authority alignment.
