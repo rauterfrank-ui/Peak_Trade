@@ -173,6 +173,24 @@ python3 scripts/run_market_scan.py \
 
 ---
 
+## J1 Local OHLCV CSV Source
+
+Forward/portfolio CLI demos can use deterministic local OHLCV input without network access:
+
+```bash
+python3 scripts/generate_forward_signals.py --strategy ma_crossover --symbols BTC/EUR --ohlcv-source csv --ohlcv-csv data/BTC_EUR.csv
+python3 scripts/generate_forward_signals.py --strategy ma_crossover --symbols BTC/EUR,ETH/EUR --ohlcv-source fixture --ohlcv-csv 'data/{symbol}.csv'
+```
+
+Notes:
+
+- `csv` and `fixture` use the same local/file-based loader path.
+- `--ohlcv-csv PATH` is required for `csv` / `fixture` and is rejected for other sources.
+- `{symbol}` expands symbols such as `BTC&#47;EUR` to `BTC_EUR` for per-symbol files.
+- This is NO-LIVE / local input only: no broker/exchange orders, no Paper/Shadow/Evidence mutation, and no gate changes.
+
+---
+
 ## 5. Forward-Signals (Out-of-Sample)
 
 ```bash
