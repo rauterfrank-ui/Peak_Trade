@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-04-07
+last_updated: 2026-04-24
 ---
 
 # Current focus
@@ -22,6 +22,11 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ## Recently landed (truth, docs governance, officers)
 
+- PR #2857: Added a CLI cheatsheet Bounded Pilot / First-Live navigation box; operator-navigation-only, no live authorization or gate bypass.
+- PR #2858: Added a GETTING_STARTED pointer to that CLI cheatsheet navigation box; navigation-only.
+- PR #2859: Aligned Readiness Ladder L3 wording with DRAFT entry-contract / boundary-note maturity; no DRAFT status uplift.
+- PR #2860: Aligned bounded-pilot L3 entry contract and candidate-flow wording to DRAFT anchor / candidate-scoped review language.
+- PR #2861: Aligned the bounded-pilot incident abort triage compass purpose wording to DRAFT orientation-anchor maturity.
 - **Unified Truth Core** (`src/ops/truth/`): shared loaders + deterministic evaluators for docs drift and repo truth claims — [TRUTH_CORE.md](../registry/TRUTH_CORE.md).
 - **CI:** workflow [.github/workflows/truth_gates_pr.yml](../../../.github/workflows/truth_gates_pr.yml) defines jobs **`docs-drift-guard`** and **`repo-truth-claims`** (PR / merge queue / manual dispatch).
 - **Officers:** [Workflow Officer](#how-workflow-officer-and-update-officer-fit) and [Update Officer](#how-workflow-officer-and-update-officer-fit) include **`summary.unified_truth_status`** (read-only diagnostics from the same core).
@@ -156,6 +161,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-12 | Post–PR #2296: Chat-led §5 Evidence G4 + `CURRENT_FOCUS` refresh (this file) | PR #2296 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-12 | Post–PR #2297: Stufe J Forward-Demo-Stub + `CURRENT_FOCUS` + Runbook (this file) | PR #2297 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-12 | Post–PR #2298: Chat-led §5 J1 Forward Demo + `CURRENT_FOCUS` refresh (this file) | PR #2298 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
+| 2026-04-24 | Post–PRs #2857–#2861: bounded-pilot operator-navigation + DRAFT maturity wording; `CURRENT_FOCUS` refresh (this file) | PR #2857–#2861 merge; `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 
 ---
 
