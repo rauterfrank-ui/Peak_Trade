@@ -251,3 +251,101 @@ def test_generate_forward_signals_accepts_local_csv_source_smoke(tmp_path):
     combined = result.stdout + result.stderr
     assert "csv" in combined.lower()
     assert str(csv_path.resolve()) in combined
+
+
+@pytest.mark.smoke
+@pytest.mark.integration
+def test_evaluate_forward_signals_accepts_local_csv_source_smoke(tmp_path):
+    """Subprozess: Generate (CSV) → Signal-CSV mit mittigem as_of → Evaluate-CLI mit gleicher CSV-Quelle."""
+    cfg_path = ROOT / "config" / "config.test.toml"
+    if not cfg_path.is_file():
+        pytest.skip(f"fehlt: {cfg_path}")
+
+    csv_path = tmp_path / "BTC_EUR.csv"
+    n = 80
+    idx = pd.date_range("2024-06-01", periods=n, freq="1h", tz="UTC")
+    pd.DataFrame(
+        {
+            "timestamp": idx.strftime("%Y-%m-%dT%H:%M:%S%z"),
+            "open": [100.0 + i * 0.1 for i in range(n)],
+            "high": [101.0 + i * 0.1 for i in range(n)],
+            "low": [99.0 + i * 0.1 for i in range(n)],
+            "close": [100.5 + i * 0.1 for i in range(n)],
+            "volume": [10.0] * n,
+        }
+    ).to_csv(csv_path, index=False)
+
+    gen_dir = tmp_path / "forward_out"
+    run_name = "csv_evaluate_smoke"
+
+    gen = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "generate_forward_signals.py"),
+            "--strategy",
+            "ma_crossover",
+            "--symbols",
+            "BTC/EUR",
+            "--config-path",
+            str(cfg_path),
+            "--output-dir",
+            str(gen_dir),
+            "--run-name",
+            run_name,
+            "--n-bars",
+            str(n),
+            "--ohlcv-source",
+            "csv",
+            "--ohlcv-csv",
+            str(csv_path),
+        ],
+        cwd=ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    assert gen.returncode == 0, gen.stderr
+
+    sig_path = gen_dir / f"{run_name}_signals.csv"
+    assert sig_path.is_file()
+
+    df_sig = pd.read_csv(sig_path)
+    assert "as_of" in df_sig.columns
+    df_sig.loc[0, "as_of"] = format_as_of_iso_utc(idx[40])
+    df_sig.to_csv(sig_path, index=False)
+
+    eval_dir = tmp_path / "eval_out"
+    ev = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "evaluate_forward_signals.py"),
+            str(sig_path),
+            "--horizon-bars",
+            "1",
+            "--config-path",
+            str(cfg_path),
+            "--output-dir",
+            str(eval_dir),
+            "--n-bars",
+            str(n),
+            "--ohlcv-source",
+            "csv",
+            "--ohlcv-csv",
+            str(csv_path),
+        ],
+        cwd=ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    assert ev.returncode == 0, ev.stderr
+    eval_files = list(eval_dir.glob("*_eval_*.csv"))
+    assert len(eval_files) >= 1
+    df_eval = pd.read_csv(eval_files[0])
+    assert not df_eval.empty
+    assert "return" in df_eval.columns
+    combined = ev.stdout + ev.stderr
+    assert "csv" in combined.lower()
+    assert str(csv_path.resolve()) in combined
