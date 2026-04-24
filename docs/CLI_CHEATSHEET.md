@@ -139,6 +139,20 @@ Notes:
 - Start with `--help` and choose the concrete research/dry-run mode explicitly; do not infer live readiness from sweep output.
 - This is NO-LIVE/local-research guidance: no broker/exchange orders, no Paper/Shadow/Evidence mutation, and no gate changes.
 
+## Research CLI Strategy Profile
+
+Use the `strategy-profile` subcommand for local research/inspection of strategy metadata before choosing a deeper research path:
+
+```bash
+python3 scripts/research_cli.py strategy-profile --help
+python3 scripts/research_cli.py strategy-profile ma_crossover
+```
+
+Notes:
+- This is a local research/discoverability surface for strategy-profile inspection.
+- Keep deeper research modes such as walk-forward, Monte Carlo, stress, sweeps, or optimization as separate, explicit follow-up choices.
+- This is NO-LIVE/research-only: no broker/exchange orders, no Paper/Shadow/Evidence mutation, and no gate changes.
+
 ## 3b. Report-Tools
 
 Es gibt zwei getrennte Report-Flows:
