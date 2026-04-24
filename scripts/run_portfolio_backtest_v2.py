@@ -122,6 +122,11 @@ Examples:
         action="store_true",
         help="Wenn gesetzt, werden keine Einzel-Reports pro Symbol geschrieben.",
     )
+    parser.add_argument(
+        "--config-path",
+        default="config.toml",
+        help="Pfad zur TOML-Config (Default: config.toml, relativ zum Arbeitsverzeichnis).",
+    )
     add_shared_ohlcv_cli_group(
         parser,
         n_bars_dest="bars",
@@ -415,17 +420,17 @@ def print_portfolio_summary(
     print("\n" + "=" * 80 + "\n")
 
 
-def main(argv: List[str] | None = None) -> None:
-    """Main-Funktion für Portfolio-Backtest."""
+def main(argv: List[str] | None = None) -> int:
+    """Main-Funktion für Portfolio-Backtest. Exit-Code: 0 Erfolg, 1 fachlicher/Validierungsfehler."""
     args = parse_args(argv)
     if args.bars < 1:
         print("\n❌ FEHLER: --bars / --n-bars muss >= 1 sein.")
-        return
+        return 1
     try:
         validate_forward_ohlcv_cli_args(args)
     except ValueError as e:
         print(f"\n❌ FEHLER: {e}")
-        return
+        return 1
 
     print("\n🚀 Peak_Trade Multi-Asset Portfolio Backtest")
     print("=" * 70)
@@ -433,12 +438,14 @@ def main(argv: List[str] | None = None) -> None:
     # Config laden
     print("\n⚙️  Lade Konfiguration...")
     try:
-        cfg = load_config("config.toml")
-        print("✅ config.toml erfolgreich geladen")
-    except FileNotFoundError as e:
+        cfg = load_config(args.config_path)
+        print(f"✅ Konfiguration geladen: {args.config_path}")
+    except (FileNotFoundError, ValueError) as e:
         print(f"\n❌ FEHLER: {e}")
-        print("\nBitte erstelle eine config.toml im Projekt-Root.")
-        return
+        print(
+            f"\nBitte prüfe --config-path (aktuell: {args.config_path!r}) oder lege die Datei an."
+        )
+        return 1
 
     # Portfolio-Definition laden
     try:
@@ -447,7 +454,7 @@ def main(argv: List[str] | None = None) -> None:
         )
     except ValueError as e:
         print(f"\n❌ FEHLER bei Portfolio-Definition: {e}")
-        return
+        return 1
 
     # Strategie bestimmen
     global_strategy_key_cfg = cfg.get("portfolio.strategy_key", None)
@@ -509,7 +516,7 @@ def main(argv: List[str] | None = None) -> None:
 
     if not symbol_results:
         print("\n❌ Keine Symbol-Resultate vorhanden – Portfolio-Backtest abgebrochen.")
-        return
+        return 1
 
     # Portfolio-Equity berechnen
     print("\n📊 Berechne Portfolio-Equity...")
@@ -522,7 +529,7 @@ def main(argv: List[str] | None = None) -> None:
         )
     except Exception as e:
         print(f"❌ FEHLER bei Portfolio-Equity-Berechnung: {e}")
-        return
+        return 1
 
     # Portfolio-Stats berechnen
     portfolio_dd = stats_mod.compute_drawdown(portfolio_equity)
@@ -572,7 +579,7 @@ def main(argv: List[str] | None = None) -> None:
     # Reports speichern
     if args.no_report:
         print("ℹ️  Portfolio-Report wurde aufgrund von --no-report nicht geschrieben.")
-        return
+        return 0
 
     print("\n💾 Speichere Reports...")
 
@@ -620,7 +627,8 @@ def main(argv: List[str] | None = None) -> None:
     print(f"\n✅ Portfolio-Backtest abgeschlossen!")
     print(f"   Reports: {reports_dir}")
     print()
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
