@@ -256,6 +256,19 @@ python3 scripts/run_forward_signals.py \
 
 ---
 
+## Forward Dummy Pipeline Demo
+
+Use the forward dummy pipeline demo for local operator-orchestration checks without touching live, paper, shadow, or evidence paths:
+
+```bash
+bash scripts/dev/run_forward_dummy_pipeline_demo.sh
+```
+
+Notes:
+- This is a local demo-shell path for the forward dummy pipeline, not a live or paper execution path.
+- Use it after reading the Forward-Signals and J1 local OHLCV notes in this cheatsheet when you need a quick operator-facing demo reference.
+- This is NO-LIVE/local-only: no broker/exchange orders, no Paper/Shadow/Evidence mutation, and no gate changes.
+
 ## 6. Live-Workflows
 
 ### Order-Preview
