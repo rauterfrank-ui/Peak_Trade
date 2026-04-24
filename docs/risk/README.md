@@ -4,6 +4,10 @@
 
 Diese Dokumentation beschreibt das Risk-Management-System von Peak_Trade, einschließlich implementierter Features, Roadmaps und Operator-Guides.
 
+### Authority & Begriffsklärung (Doku, keine operative Freigabe)
+
+Diese **Risk-Layer**-Dokumentation ersetzt **keine** Master-V2-konforme Governance, **kein** Readiness-, Evidence- oder Signoff-Paket und **kein** operatives Gating. **Keine** Order-, Exchange-, Arming- oder Enablement-Autorität entsteht aus dieser Doku. Der Risk-Layer sitzt in einem **Schutz- / Policy**-Kontext in Software; er ist **kein** eigenständiger Live-Autorisierer. **„Live on main“** bezeichnet ausschließlich **VCS-Status** (Code auf dem Default-Branch, historischer Merge-Snapshot), **nicht** Echtgeld-Live-Trading, Testnet-Go oder Exchange-Freigabe. **„Production-ready“** / **Engineering-Readiness** bezieht sich auf **Implementierung und Tests** im **hier** beschriebenen Backtest- bzw. Validierungsumfang, **nicht** auf First-Live, Master-V2-Handoff oder Double Play. Kontext: [STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md](../ops/specs/STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md).
+
 ---
 
 ## Documentation Index
@@ -50,7 +54,7 @@ Diese Dokumentation beschreibt das Risk-Management-System von Peak_Trade, einsch
 
 ### Current Implementation (Risk Layer v1 + v1.1)
 
-**Status:** ✅ Production-Ready (Backtests)
+**Status:** ✅ Engineering-Ready / Backtest-Scope (Tests; *kein* operatives Echtgeld-Go, *kein* Master-V2- oder Double-Play-Signoff)
 
 **Features:**
 - Portfolio-Level Risk Management (Exposures, Weights)
@@ -94,7 +98,7 @@ result = engine.run_realistic(df, strategy_fn, params)
 
 ### Phases 9A/9B/10: VaR Backtest Suite 🆕
 
-**Status:** ✅ Live on main (merged 2025-12-29)
+**VCS- / Repo-Status (nicht operatives Live):** Code auf `main` gemergt (2025-12-29) — *nur* Branch-/Repository-Stand, **kein** Echtgeld-Live, **keine** freistehende Freigabe.
 
 **Features:**
 - **Phase 9A: Duration-Based Independence Diagnostic** - Detects temporal clustering in VaR violations
@@ -125,7 +129,7 @@ python3 scripts/risk/run_var_backtest_suite_snapshot.py \
 
 ### Phase 2: VaR Validation 🆕
 
-**Status:** ✅ Live on main (PR #413 merged 2025-12-28)
+**VCS- / Repo-Status (nicht operatives Live):** PR #413 auf `main` (2025-12-28) — *nur* Code-/Merge-Stand, **kein** Echtgeld-Live, **keine** freistehende Freigabe.
 
 **Features:**
 - **Kupiec POF Test** - Statistical validation of VaR breach rate
@@ -241,7 +245,7 @@ python3 scripts/run_risk_stress_report.py --symbol BTC/EUR --output reports/stre
 - **Overall Result Logic:** PASS only if all tests green (else FAIL)
 - **Stdlib-only:** No external dependencies beyond pandas
 - **Operator Guide:** [VAR_BACKTEST_SUITE_QUICKSTART.md](VAR_BACKTEST_SUITE_QUICKSTART.md)
-- **Status:** ✅ Production-Ready (regression-safe, deterministic)
+- **Status (Engineering, beschriebener Umfang):** ✅ implementiert/Tests regression-safe, deterministisch — *kein* operatives Go
 
 ### 2026-01-04: Phase 8B - Christoffersen VaR Backtests 🆕
 - **47 new tests** for Christoffersen tests (100% pass)
@@ -267,11 +271,11 @@ python3 scripts/run_risk_stress_report.py --symbol BTC/EUR --output reports/stre
 - Safety-First approach with staged rollout
 - Timeline: Q1 2026 - Q4 2026
 
-### 2025-12-23: Risk Layer v1 Production-Ready
+### 2025-12-23: Risk Layer v1 — Backtest-Engineering-Status (historisch)
 - 96 Tests (100% Pass)
 - Comprehensive Documentation
 - Stress-Testing Script
-- Status: ✅ Production-Ready for Backtests
+- **Status (historisch, Backtest-/Risk-Scope):** ✅ Engineering-/Test-Readiness *für den dokumentierten Umfang* — *kein* Echtgeld-Live, *kein* Master-V2- oder Double-Play-Signoff
 
 ### 2025-12-23: Risk Layer v1 Implementation
 - Portfolio-Level Risk Management
