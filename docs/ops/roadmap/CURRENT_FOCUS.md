@@ -2,6 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
+last_updated: 2026-04-24
 P26-04-24
 ---
 
@@ -22,6 +23,8 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ## Recently landed (truth, docs governance, officers)
 
+- PR #2913: Added the OPS Cockpit Master V2 non-authority contract; cockpit remains read-only observation/navigation and not Master-V2, Double-Play, gate, evidence, execution, or live authority.
+- PR #2914: Surfaced the Master-V2 / Double-Play non-authority wording in the OPS Cockpit preamble and locked it with a WebUI regression test.
 - PR #2892: Added CLI cheatsheet discoverability for `scripts&#47;research_cli.py strategy-profile`, NO-LIVE/research-only.
 - PR #2893: Corrected the strategy-profile cheatsheet example to use the real `--strategy-id ma_crossover` contract.
 - PR #2894: Hardened `strategy-profile` as an inspect/discoverability command without the global `artifacts&#47;research` bootstrap; artifact-producing research commands still bootstrap evidence.
@@ -191,6 +194,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-24 | Chat-led Forward Scripts cheatsheet sync (#2887) | `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; docs-only navigation link from Chat-led Scripts row to CLI_CHEATSHEET, three-column table preserved. |
 | 2026-04-24 | J1 Portfolio local CSV contract closure (#2889-#2890) | `uv run python -m pytest tests/test_run_portfolio_backtest_v2_cli.py -q`; `uv run python -m pytest tests/test_shared_forward_args_cli.py -q`; `uv run ruff check scripts/run_portfolio_backtest_v2.py tests/test_run_portfolio_backtest_v2_cli.py`; `uv run ruff format --check scripts/run_portfolio_backtest_v2.py tests/test_run_portfolio_backtest_v2_cli.py`; `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; J1 local CSV pausierbar after Generate/Evaluate/Portfolio coverage and portfolio CLI contract hardening. |
 | 2026-04-24 | Research strategy-profile inspect closure (#2892-#2894) | `python3 scripts/research_cli.py strategy-profile --help`; `uv run python -m pytest tests/test_research_cli.py tests/test_strategy_profile_cli.py -q`; `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; strategy-profile is an inspect/discoverability surface without global `artifacts&#47;research` bootstrap. |
+| 2026-04-24 | OPS Cockpit non-authority closure (#2913-#2914) | `uv run python -m pytest tests/webui/test_ops_cockpit.py -q`; `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; *Outcome:* OPS Cockpit is visibly and contractually non-authorizing for Master V2 / Double Play; no live, execution, gate, Paper, Shadow, or Evidence authority added. |
 
 ---
 
