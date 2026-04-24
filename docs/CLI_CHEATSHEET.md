@@ -216,6 +216,20 @@ Notes:
 - Use it for CLI discoverability and orchestration checks before any real Optuna study path is selected.
 - This is NO-LIVE: no broker/exchange orders, no Paper/Shadow/Evidence mutation, and no gate changes.
 
+## J3 Placeholder Reports
+
+Use the J3 placeholder report generator to exercise local report-output plumbing without touching live, paper, shadow, or evidence paths:
+
+```bash
+python3 scripts/ops/placeholders/generate_placeholder_reports.py --help
+python3 scripts/ops/placeholders/generate_placeholder_reports.py --prefix src/ --output-dir .ops_local/j3_placeholder_reports
+```
+
+Notes:
+- Keep output under `.ops_local` or another explicitly local scratch directory.
+- `--prefix` limits the scan to repo-relative paths (repeatable); e.g. `src/` or `docs/ops/`.
+- This is NO-LIVE/local-only: no broker/exchange orders, no Paper/Shadow/Evidence mutation, and no gate changes.
+
 ## 5. Forward-Signals (Out-of-Sample)
 
 ```bash
