@@ -1,6 +1,21 @@
-# Peak_Trade Strategien-Übersicht
+# Peak_Trade Strategien-Übersicht (historische Beispielauswahl)
 
-## 🎯 Alle 6 Strategien im Detail
+## Authority and Coverage Note
+
+This document is a historical and example-oriented strategy overview. It is not the complete current strategy registry, not a live-readiness source, not a Master V2 authority source, and not a Double Play authority source.
+
+For current strategy-authority interpretation, use the dedicated governance and reconciliation documents:
+
+- [`STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md`](ops/specs/STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md)
+- [`STRATEGY_REGISTRY_TIERING_DUAL_SOURCE_CONTRACT_V1.md`](ops/specs/STRATEGY_REGISTRY_TIERING_DUAL_SOURCE_CONTRACT_V1.md)
+- [`STRATEGY_REGISTRY_TIERING_MV2_RECONCILIATION_TABLE_V0.md`](ops/specs/STRATEGY_REGISTRY_TIERING_MV2_RECONCILIATION_TABLE_V0.md)
+- [`STRATEGY_REGISTRY_SOURCE_COMMENT_DISCORD_NON_AUTHORITY_NOTE_V0.md`](ops/specs/STRATEGY_REGISTRY_SOURCE_COMMENT_DISCORD_NON_AUTHORITY_NOTE_V0.md)
+
+The strategy registry, tiering configuration, and Master V2 documentation remain separate authority surfaces. A strategy appearing in this overview does not imply production readiness, live readiness, promotion approval, or Double Play selection authority.
+
+Known follow-up audit topics include historical naming and epoch drift around ECM/Armstrong-style cycle references and TOML-only surfaces such as `vol_breakout`. Those topics are not resolved by this overview note.
+
+## 🎯 Beispielhafte Darstellung: sechs Strategien
 
 ---
 
