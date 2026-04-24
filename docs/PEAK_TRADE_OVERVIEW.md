@@ -150,10 +150,12 @@ Alle verfügbaren Strategien sind in der **Strategy Registry** registriert (`src
 
 ### Research-Track Strategien (R&D)
 
+**Authority-Hinweis (Diese Übersicht):** Diese Tabelle ersetzt keine Strategy-Promotion und keine Live-, Testnet-, Paper- oder Shadow-Freigabe. R&D- bzw. Research-Status hier ist **keine** Master-V2- oder Double-Play-Handoff-Autorität. Maßgeblich bleiben die expliziten Master-V2-konformen Verträge und Reconciliation-Read-Models, u. a. [STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md](ops/specs/STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md), [STRATEGY_REGISTRY_TIERING_DUAL_SOURCE_CONTRACT_V1.md](ops/specs/STRATEGY_REGISTRY_TIERING_DUAL_SOURCE_CONTRACT_V1.md) und [STRATEGY_REGISTRY_TIERING_MV2_RECONCILIATION_TABLE_V0.md](ops/specs/STRATEGY_REGISTRY_TIERING_MV2_RECONCILIATION_TABLE_V0.md). Namens- und Nicht-Autorität für die Armstrong-/ECM-Fläche siehe [STRATEGY_ECM_AND_ARMSTRONG_NAME_SURFACES_NON_AUTHORITY_NOTE_V0.md](ops/specs/STRATEGY_ECM_AND_ARMSTRONG_NAME_SURFACES_NON_AUTHORITY_NOTE_V0.md).
+
 | Key | Beschreibung | Status |
 |-----|-------------|--------|
-| `armstrong_cycle` | Armstrong ECM Cycle Model | ✅ Live-Ready |
-| `el_karoui_vol_model` | El Karoui Stochastic Vol | ✅ Live-Ready |
+| `armstrong_cycle` | Armstrong ECM Cycle Model | 🔬 R&D-Only |
+| `el_karoui_vol_model` | El Karoui Stochastic Vol | 🔬 R&D-Only |
 | `ehlers_cycle_filter` | Ehlers DSP Cycle Filter | 🔬 R&D-Only |
 | `meta_labeling` | López de Prado Meta-Labeling | 🔬 R&D-Only |
 | `bouchaud_microstructure` | Bouchaud Microstructure | 🔬 Skeleton |
