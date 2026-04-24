@@ -13,6 +13,8 @@
 - Canonical Spec (verbindlich): [docs/ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md)
 - Normative Kurzregel: `Governance > Safety&#47;Kill-Switch > Risk&#47;Exposure Caps`; `Switch-Gate` und `AI Orchestrator` sind Control-Orchestration/advisory, aber keine finale Execution Authority.
 - Claim-Disziplin: Claims nur in den Klassen `repo-evidenced`, `documented`, `unverified`, `not-claimed` formulieren (Abschnitt 6); `unverified` und `not-claimed` nicht als verifizierte Fakten ausgeben; `operator-stated` explizit markieren; keine impliziten E2E-/Runtime-Behauptungen.
+- Master-V2 Readiness (canonical pair): [Readiness Ladder](ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) + [Readiness Read Model v1 (read-only interpretation)](ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md)
+- Master-V2 Gate-Status Report Surface v1 (docs-only reporting layer): [Gate-Status Report Surface / Summary Table v1](ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md)
 - Authority Recovery (Navigations-&#47;Konsolidierungsindex, **non-authorizing**): [AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md](ops/AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md) — Review- und Re-Onboarding-Navigation zu **bereits gelandeten** Authority-Boundary-Dokumenten (P0-Bereiche u. a.); **weder** Gate **noch** Signoff, **weder** Evidence-Paket **noch** Live-, First-Live-, Master-V2- oder Double-Play-Freigabe; ersetzt **nicht** die kanonischen Verträge oberhalb.
 
 ### LevelUp v0 (additive Manifest-/IO-/CLI-Oberfläche)
