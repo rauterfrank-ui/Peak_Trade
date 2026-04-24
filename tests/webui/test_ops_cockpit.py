@@ -2674,3 +2674,13 @@ def test_ops_cockpit_workflow_officer_report_contains_operator_rollup_label(tmp_
     assert ctx["present"] is True
     line = str(ctx.get("operator_snapshot_line") or "")
     assert "total=1" in line
+
+
+def test_ops_cockpit_preamble_is_master_v2_non_authorizing(ops_client: TestClient) -> None:
+    response = ops_client.get("/ops")
+    assert response.status_code == 200
+    body = response.text
+    assert "read-only and non-authorizing" in body
+    assert "Master V2 decision-authority chain" in body
+    assert "Double Play semantics" in body
+    assert "not controlled by the cockpit" in body
