@@ -31,3 +31,19 @@ def test_risk_cli_var_smoke(tmp_path):
     assert "var" in j and j["var"] >= 0.0
     assert (tmp_path / run_id / "meta.json").exists()
     assert (tmp_path / run_id / "results" / "var.json").exists()
+
+
+def test_risk_cli_help_subprocess_smoke():
+    root = Path(__file__).resolve().parent.parent.parent
+    result = subprocess.run(
+        [sys.executable, str(root / "scripts" / "risk_cli.py"), "--help"],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    combined_output = result.stdout + result.stderr
+    assert "usage:" in combined_output.lower()
+    assert "risk" in combined_output.lower()
