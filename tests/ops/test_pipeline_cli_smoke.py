@@ -86,3 +86,19 @@ def test_pipeline_cli_master_v2_run_guard_without_run():
     assert p.returncode == 2, p.stderr or p.stdout
     assert "master_v2" in p.stderr
     assert "-- --run" in p.stderr
+
+
+def test_pipeline_cli_help_subprocess_smoke():
+    result = subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "pipeline_cli.py"), "--help"],
+        cwd=str(ROOT),
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    combined_output = result.stdout + result.stderr
+    assert "usage:" in combined_output.lower()
+    assert "pipeline" in combined_output.lower()
