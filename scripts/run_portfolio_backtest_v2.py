@@ -44,7 +44,7 @@ from _shared_forward_args import (
     parse_symbols_cli_arg,
     validate_forward_ohlcv_cli_args,
 )
-from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv
+from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv_with_meta
 from src.core.peak_config import load_config, PeakConfig
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
@@ -144,9 +144,9 @@ def load_data_for_symbol(
     ohlcv_source: str = OHLCV_SOURCE_DUMMY,
     timeframe: str = "1h",
     ohlcv_csv_path: Path | str | None = None,
-) -> pd.DataFrame:
+) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     """
-    Lädt Marktdaten für ein Symbol (J1: ``load_ohlcv`` — dummy, Kraken oder CSV; ``cfg`` derzeit ungenutzt).
+    Lädt Marktdaten für ein Symbol (J1: ``load_ohlcv_with_meta`` — dummy, Kraken oder CSV; ``cfg`` derzeit ungenutzt).
 
     Args:
         cfg: PeakConfig-Objekt
@@ -157,9 +157,9 @@ def load_data_for_symbol(
         ohlcv_csv_path: CSV-Pfad bei ``csv``.
 
     Returns:
-        DataFrame mit OHLCV-Daten (DatetimeIndex)
+        (DataFrame mit OHLCV-Daten, Loader-Observability-Meta — gleicher Vertrag wie Forward-Skripte)
     """
-    return load_ohlcv(
+    return load_ohlcv_with_meta(
         symbol,
         n_bars=n_bars,
         source=ohlcv_source,
@@ -246,8 +246,8 @@ def run_single_symbol_backtest(
     Returns:
         BacktestResult mit allen Metriken
     """
-    # Daten laden
-    data = load_data_for_symbol(
+    # Daten laden (J1: gleicher Meta-Vertrag wie generate/evaluate_forward_signals)
+    data, ohlcv_meta = load_data_for_symbol(
         cfg,
         symbol,
         n_bars=n_bars,
@@ -282,6 +282,7 @@ def run_single_symbol_backtest(
     result.metadata.setdefault("symbol", symbol)
     result.metadata.setdefault("strategy_key", strategy_key)
     result.metadata.setdefault("name", f"{symbol} – {strategy_key}")
+    result.metadata["ohlcv_load"] = ohlcv_meta
 
     return result
 
@@ -555,6 +556,9 @@ def main(argv: List[str] | None = None) -> int:
         "symbols_regimes": {
             symbol: res.metadata.get("regime_distribution", {})
             for symbol, res in symbol_results.items()
+        },
+        "ohlcv_load_by_symbol": {
+            sym: res.metadata.get("ohlcv_load", {}) for sym, res in symbol_results.items()
         },
     }
 
