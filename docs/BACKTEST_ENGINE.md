@@ -376,7 +376,9 @@ result.stats = {
 
 ---
 
-## Live-Trading-Validierung
+## Heuristische Post-Backtest-Prüfung (Screening, kein operatives Go)
+
+**Authority-Hinweis:** `validate_for_live_trading` wertet **nur** aggregierte **Backtest-`stats`** anhand fester **Schwellwerte** aus — ein Research- bzw. Screening-Hilfsmittel. Das ist **weder** eine Live-Freigabe **noch** Testnet-, Paper- oder Shadow-Autorisierung, **weder** First-Live-**noch** Master-V2- oder Double-Play-Signoff, **weder** Evidence-**noch** operatives Trading. Es entsteht **keine** Order-, Exchange-, Arming- oder Enablement-Autorität. Operative Nutzung verlangt getrennte, Master-V2-kompatible Governance- und Readiness-Pfade, u. a. [STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md](ops/specs/STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md), [STRATEGY_REGISTRY_TIERING_DUAL_SOURCE_CONTRACT_V1.md](ops/specs/STRATEGY_REGISTRY_TIERING_DUAL_SOURCE_CONTRACT_V1.md) und (First-Live-Readiness-Rahmen) [MASTER_V2_FIRST_LIVE_PRE_LIVE_READINESS_VERDICT_PACKET_CONTRACT_V1.md](ops/specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_READINESS_VERDICT_PACKET_CONTRACT_V1.md).
 
 ```python
 from src.backtest.stats import validate_for_live_trading
@@ -384,18 +386,20 @@ from src.backtest.stats import validate_for_live_trading
 passed, warnings = validate_for_live_trading(result.stats)
 
 if passed:
-    print("✅ Strategie für Live-Trading freigegeben")
+    print("Hinweis: Heuristische Mindestkriterien am Backtest erfüllt (kein operatives Go)")
 else:
-    print("❌ Nicht freigegeben:")
+    print("Hinweis: Heuristik am Backtest nicht erfüllt; Details:")
     for warning in warnings:
         print(f"  - {warning}")
 ```
 
-**Kriterien:**
+**Heuristische Mindestfilter (Beispiel-Implementierung, Research-Screening):**
 - Sharpe Ratio >= 1.5
 - Min. 50 Trades
 - Profit Factor >= 1.3
 - Max Drawdown < 30%
+
+Diese Werte sind **keine** verbindlichen Produktions- oder Live-Policy-Limits; sie dienen ausschließlich der schnellen Doku-Illustration der Hilfsfunktion.
 
 ---
 
