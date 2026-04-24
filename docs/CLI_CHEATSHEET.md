@@ -182,6 +182,17 @@ python3 scripts/generate_forward_signals.py --strategy ma_crossover --symbols BT
 python3 scripts/generate_forward_signals.py --strategy ma_crossover --symbols BTC/EUR,ETH/EUR --ohlcv-source fixture --ohlcv-csv 'data/{symbol}.csv'
 ```
 
+Evaluate the generated forward signals with the same local CSV source:
+
+```bash
+python3 scripts/evaluate_forward_signals.py reports/forward/csv_demo_signals.csv --config-path config/config.test.toml --ohlcv-source csv --ohlcv-csv data/BTC_EUR.csv --output-dir reports/forward/evaluation
+```
+
+Evaluate notes:
+- The signal CSV carries `as_of`; choose a generated signal set whose `as_of` leaves an entry bar available in the local OHLCV series.
+- Use the same `--ohlcv-csv` file or `{symbol}` template used during generation when reproducing local CSV runs.
+- Keep `--output-dir` explicit for demos so evaluation artifacts do not land in an unexpected default path.
+
 Notes:
 
 - `csv` and `fixture` use the same local/file-based loader path.
