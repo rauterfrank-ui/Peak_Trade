@@ -174,6 +174,21 @@ Notes:
 - Keep runs local and review generated files before sharing them.
 - This is NO-LIVE/operator-discoverability guidance: no broker/exchange orders, no Paper/Shadow/Evidence mutation, and no gate changes.
 
+## Infostream Cycle
+
+Use the Infostream cycle CLI only as an explicit operator action. Start with `--help`, then prefer `--dry-run` and `--skip-ai` while inspecting the local path:
+
+```bash
+python3 scripts/infostream_run_cycle.py --help
+python3 scripts/infostream_run_cycle.py --dry-run --skip-ai --project-root .
+```
+
+Notes:
+- `--dry-run` is the default safe entrypoint for operator discovery.
+- `--skip-ai` avoids the AI/LLM step; it does not convert the command into an approval or delivery action.
+- The delivery contract is documented separately in [INFOSTREAM_DELIVERY_CONTRACT.md](ops/INFOSTREAM_DELIVERY_CONTRACT.md).
+- This is NO-LIVE/operator-discoverability guidance: no broker/exchange orders, no Paper/Shadow/Evidence mutation, and no gate changes.
+
 ## 3b. Report-Tools
 
 Es gibt zwei getrennte Report-Flows:
