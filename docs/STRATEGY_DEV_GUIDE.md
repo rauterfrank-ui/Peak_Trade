@@ -511,7 +511,9 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
 
 #### Beispiele
 
-**Production-Ready Strategie:**
+**Authority-Hinweis (Registry-Beispiele in diesem Guide):** Didaktische **Doku-/Code-Beispiele** zum `StrategySpec`-Layout; Bezeichnungen wie (informell) *Production-Ready* oder *Live* beziehen sich **nicht** auf operatives Echtgeld-Go, **keine** Testnet-, Paper- oder Shadow-Readiness im Governance-Sinn, **kein** Gate, kein Signoff, **keine** Evidence und **keine** Order-, Exchange-, Arming- oder Enablement-Autorität. **Keine** Strategy-Promotion; Master-V2- bzw. Double-Play-Handoff entsteht **nicht** aus diesen Snippets. Technische `is_live_ready`/`tier`-Semantik bleibt **Code-/Loader**-Kontext; maßgeblich für Integrations- und Tiering-Grenzen: [STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md](ops/specs/STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md), [STRATEGY_REGISTRY_TIERING_DUAL_SOURCE_CONTRACT_V1.md](ops/specs/STRATEGY_REGISTRY_TIERING_DUAL_SOURCE_CONTRACT_V1.md), [STRATEGY_REGISTRY_TIERING_MV2_RECONCILIATION_TABLE_V0.md](ops/specs/STRATEGY_REGISTRY_TIERING_MV2_RECONCILIATION_TABLE_V0.md). Konsolidierte Navigations-Read-Modelle: [AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md](ops/AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md).
+
+**Doku- / Katalog-Beispiel (informell: „Production-Ready“; siehe Authority-Hinweis):**
 ```python
 "ma_crossover": StrategySpec(
     key="ma_crossover",
