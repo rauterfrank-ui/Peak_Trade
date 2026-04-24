@@ -37,7 +37,7 @@ If there is **any** doubt whether trading is allowed, apply [Entry Contract §5]
 **All of the following must already be true** before starting the candidate session sequence:
 
 - **Dry validation completed** per [Dry validation](RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md).
-- **[Entry contract](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md)** accepted and boundaries understood ([boundary note](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md)).
+- **[Entry contract](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md)** and [boundary note](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md) reviewed as repo-local **DRAFT** anchors; boundaries acknowledged for this candidate sequence only (not approval, not gate bypass).
 - **Pilot go/no-go** verdict **acceptable** — e.g. `GO_FOR_NEXT_PHASE_ONLY` from `scripts/ops/pilot_go_no_go_eval_v1.py` per your procedure ([operational slice](../specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md)).
 - **Ops Cockpit** reviewed for at least: `policy_state`, `operator_state`, `run_state`, `incident_state`, `exposure_state`, `evidence_state`, `dependencies_state`, `stale_state`, `session_end_mismatch_state`, `human_supervision_state` (see [Entry Contract §6](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#6-where-to-look)).
 

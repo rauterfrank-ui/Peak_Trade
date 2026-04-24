@@ -3,12 +3,14 @@
 status: DRAFT
 last_updated: 2026-03-13
 owner: Peak_Trade
-purpose: Canonical operator-facing entry contract for the first strictly bounded real-money pilot
+purpose: Draft operator-facing entry contract anchor for the first strictly bounded real-money pilot
 docs_token: DOCS_TOKEN_BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT
 
 ## 1. Goal
 
-This document defines the single operator-facing contract for entering the first strictly bounded real-money pilot.
+This document defines the draft operator-facing contract anchor for entering the first strictly bounded real-money pilot.
+
+Draft-maturity note: This contract is a repo-local **DRAFT** anchor for candidate-scoped review. It does not by itself approve bounded real-money execution, bypass gates, or change runtime, trading, evidence, approval, or live-entry semantics.
 
 It does **not** authorize broad live trading.
 It defines the minimal bounded entry posture under explicit operator supervision.
@@ -140,6 +142,6 @@ This document does not:
 
 ## 8. Exit Condition For This Contract
 
-This contract remains the canonical operator reference for the **first strictly bounded real-money pilot**.
+This contract remains the operator-facing **DRAFT** reference anchor for the **first strictly bounded real-money pilot**.
 Operational steps (dry validation → gates → session handoff) are detailed in  
 `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`; future automation layers may extend but do not replace Entry Contract obligations or abort criteria.
