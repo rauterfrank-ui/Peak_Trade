@@ -65,6 +65,8 @@ If any answer is uncertain, treat the step as **No-Go for execution** and reduce
 
 ## 6. Related references
 
+- [PEAK_TRADE_V1_KNOWN_LIMITATIONS.md — §2: Live-Trading & order execution](../../PEAK_TRADE_V1_KNOWN_LIMITATIONS.md#2-live-trading--order-execution)
+- [SAFETY_POLICY_TESTNET_AND_LIVE.md](../../SAFETY_POLICY_TESTNET_AND_LIVE.md)
 - [CURRENT_FOCUS.md](../roadmap/CURRENT_FOCUS.md)
 - [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](RUNBOOK_CHAT_LED_OPEN_FEATURES.md)
 - [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md)
