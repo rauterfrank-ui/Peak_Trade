@@ -242,12 +242,14 @@ else:
 
 ## Exit Codes
 
-| Code | Status | Meaning | Operator Action |
-|------|--------|---------|----------------|
-| `0` | OK | All checks passed | Proceed |
-| `1` | WARN | Non-blocking warnings (e.g., >5 strategies) | Review warnings |
-| `2` | FAIL | Blocking violations (e.g., R&D in allowed) | Fix config before live |
-| `3` | ERROR | Script error (config not found, invalid TOML) | Check logs, fix paths |
+> **Authority:** Exit codes and “operator action” here mean **local sanity / CI / documentation workflow** for this check — not a go/no-go, not a live-execution decision, and not First-Live, PRE_LIVE, signoff, or Master V2 / Double Play authorization.
+
+| Code | Status | Meaning | Suggested follow-up (non-authorizing) |
+|------|--------|---------|--------------------------------------|
+| `0` | OK | All checks passed | Proceed to the next **documentation or repository-review** step (not an operational or trading go) |
+| `1` | WARN | Non-blocking warnings (e.g., >5 strategies) | Review warnings in **CI/sanity** context only |
+| `2` | FAIL | Blocking violations (e.g., R&D in allowed) | **Fix the config** and re-run the check — **governance/CI** context; **not** a live, First-Live, or product-level approval to trade |
+| `3` | ERROR | Script error (config not found, invalid TOML) | Check logs, fix paths (tooling); **not** a gate “pass” or signoff result |
 
 ---
 
@@ -472,23 +474,23 @@ python3 scripts/run_test_health_profile.py --profile governance_strategy_switch_
 python3 -m pytest tests/governance/test_strategy_switch_sanity_check.py -v
 ```
 
-**Expected**: All commands should succeed (exit 0) for healthy config.
+**Expected** (in a well-formed local/CI test fixture): commands should return exit `0` when config matches this runbook’s assumptions — a **test/CI outcome**, not an operational, live, or First-Live authorization.
 
 ---
 
-## Approval Chain
+## Runbook / documentation closeout (non-authorizing)
 
-- **Implementation**: ✅ Cursor Agent (Multi-Agent: ORCHESTRATOR, FACTS_COLLECTOR, SCOPE_KEEPER, CI_GUARDIAN, EVIDENCE_SCRIBE, RISK_OFFICER)
-- **Verification**: ✅ 30 Tests (all green)
-- **Documentation**: ✅ Complete (Runbook, Evidence, Operator Guide)
-- **Risk Assessment**: ✅ MINIMAL (3-line code change, read-only)
-- **Operator Review**: 🔄 Pending (this runbook)
+- **Implementation** (runbook delivery): documented Multi-Agent roles (e.g. ORCHESTRATOR, FACTS_COLLECTOR, SCOPE_KEEPER, CI_GUARDIAN, EVIDENCE_SCRIBE, RISK_OFFICER) — **storytelling/structure**, not a runtime mandate or org signoff.
+- **Verification**: test suite state as of the dated changelog; **CI green** describes repository checks, not an operational, live, or First-Live approval.
+- **Documentation**: runbook and linked artifacts are **as-complete as stated for that epoch**; not Evidence of a product go or signoff.
+- **Risk assessment**: read-only, small surface — **governance/CI** perspective; not order/exchange/arming enablement.
+- **Operator read-through (documentation)**: treat as optional follow-up to keep this file aligned with process — **not** a pending approval queue, not signoff, not gate pass.
 
 ---
 
 ## Changelog
 
-- **2026-01-12**: Phase 6 complete (PYTHONPATH fix, hermetic test fix, full docs)
+- **2026-01-12**: Phase 6 **documentation & sanity-check workstream** complete (PYTHONPATH fix, hermetic test fix, full docs) — *epochal deliverable; not a product, operational, or Master V2 / Double Play go*
 - **2026-01-12**: Core implementation already existed (Phase 5 or earlier)
 - **2026-01-12**: Evidence Pack + Runbook created
 
@@ -506,5 +508,5 @@ See [PR #677 Merge Log](../merge_logs/PR_677_MERGE_LOG.md) for full contract det
 
 ---
 
-**Status**: ✅ Production-Ready  
-**Next Steps**: Operator Review → PR Merge → CI/CD Monitoring
+**Status (runbook maturity, docs/operator + Cursor MA context)**: ✅ Production-Ready  
+**Next steps (repo hygiene only)**: optional documentation/operator read-through, then **normal** PR/merge/CI monitoring as **codebase workflow** — **not** an operational Echtgeld-Go, **not** First-Live/PRE_LIVE, **not** signoff, Evidence, or gate pass, and **not** a Master V2 / Double Play handoff
