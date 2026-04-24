@@ -78,6 +78,7 @@
 
 ### Operations & Runbooks
 - **Chat-led open features / gap discovery:** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](./ops/runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — backlog triage (NO-LIVE; assistant-led sessions, not shell-command lists)
+- **Chat continuity bootstrap (new ChatGPT/Cursor session):** [PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md](./ops/runbooks/PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md) — copy-paste session bootstrap, including Bounded-Pilot / First-Live navigation context; **navigation-only** (no live authorization, gate bypass, or runtime, trading, evidence, approval, or live-entry semantics change).
 - **Unimplemented features (ordered backlog):** [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](./ops/runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md) — deep-scan snapshot + logical staging (NO-LIVE)
 - **Release checklist / Go–No-Go (Finish Plan [PR 8](./ops/roadmap/FINISH_PLAN.md#pr-8-release-checklist-gono-go-rubric-docs-only), docs-only, NO unlocks):** [Release docs (index)](./ops/release/README.md) · [Checklist & rubric](./ops/release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md)
 - **Observability / status reports (Finish Plan [PR 7](./ops/roadmap/FINISH_PLAN.md#pr-7-observabilitystatus-report-hardening-code-docs), snapshot-only, NO unlocks):** [Live Status Reports](./LIVE_STATUS_REPORTS.md) (Daily/Weekly) · [`generate_live_status_report.py`](../scripts/generate_live_status_report.py) (CLI) · [`prj_status_report.py`](../scripts/ci/prj_status_report.py) (CI PR-J artifacts)
