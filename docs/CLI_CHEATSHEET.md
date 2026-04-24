@@ -145,7 +145,7 @@ Use the `strategy-profile` subcommand for local research/inspection of strategy 
 
 ```bash
 python3 scripts/research_cli.py strategy-profile --help
-python3 scripts/research_cli.py strategy-profile ma_crossover
+python3 scripts/research_cli.py strategy-profile --strategy-id ma_crossover
 ```
 
 Notes:
