@@ -8,6 +8,8 @@
 
 ## Überblick
 
+**Authority-Hinweis (Nicht-Autorität dieses Doku-Checks):** Der beschriebene **Sanity-Check** ist ein **lokaler**, read-only **Config-/Registry-Konsistenz-** und **Review-Helfer** für `live_profile.strategy_switch`. Er ersetzt **keine** Master-V2-**Handoff-**Entscheidung, **kein** operatives Echtgeld-**Go**, **keine** Testnet-, Paper- oder Shadow-**Readiness** im Governance-Sinn, **kein** First-Live-**Gate** im **PRE_LIVE-**/Enablement-**Rahmen**, **kein** Signoff, **keine** Evidence und **keine** Order-, Exchange-, Arming- oder Enablement-**Autorität**. **Keine** Strategy-Promotion. *„live-ready“* und *„Live-Trading“* in diesem Dokument beziehen sich auf die **technische** Zulässigkeits- und Registry-**Kontext**-Semantik **innerhalb** dieses **Offline-**Checks, **nicht** auf operatives Echtgeld-Trading, Master-V2-**Abschluss** oder **Double-Play-**Beweis. **„Governance-Gate“** (unten) = **lokale** Validationsregel, **nicht** Ersatz für die kanonischen Verträge. Maßgeblich: [STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md](specs/STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md), [STRATEGY_REGISTRY_TIERING_DUAL_SOURCE_CONTRACT_V1.md](specs/STRATEGY_REGISTRY_TIERING_DUAL_SOURCE_CONTRACT_V1.md), [STRATEGY_REGISTRY_TIERING_MV2_RECONCILIATION_TABLE_V0.md](specs/STRATEGY_REGISTRY_TIERING_MV2_RECONCILIATION_TABLE_V0.md). Konsolidierte Navigations-Read-Modelle: [AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md](AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md).
+
 Der **Strategy-Switch Sanity Check** ist eine Governance-Prüfung für die `[live_profile.strategy_switch]`-Konfiguration in `config/config.toml`. Er validiert, dass nur sichere, live-ready Strategien für Live-Trading freigegeben sind.
 
 ### Zweck
