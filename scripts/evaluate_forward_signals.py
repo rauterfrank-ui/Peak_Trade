@@ -31,7 +31,11 @@ sys.path.insert(0, str(_scripts))
 
 import pandas as pd
 
-from _shared_forward_args import add_shared_ohlcv_cli_group, append_forward_ohlcv_scope_epilog
+from _shared_forward_args import (
+    add_shared_ohlcv_cli_group,
+    append_forward_ohlcv_scope_epilog,
+    validate_forward_ohlcv_cli_args,
+)
 from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv_with_meta
 from _forward_run_manifest import (
     compute_deterministic_run_id,
@@ -124,11 +128,15 @@ def _print_ohlcv_load_observability(meta: Dict[str, Any], *, run_id: str | None 
     else:
         sf_s = "ja" if sf else "nein"
     tail = f"Kraken-Shortfall={sf_s}" + (f" | run_id={run_id}" if run_id else "")
+    csv_bit = ""
+    cr = meta.get("ohlcv_csv_resolved")
+    if cr:
+        csv_bit = f" | csv={cr}"
     print(
         f"  📡 OHLCV-Load: {meta['symbol']} | Quelle={meta['ohlcv_source']} | "
         f"TF={meta['timeframe']} | n_bars={meta['n_bars_requested']} | "
         f"geladen={meta['bars_loaded']} | Kraken-Pagination={pag_s} | "
-        f"{tail}"
+        f"{tail}{csv_bit}"
     )
 
 
@@ -140,6 +148,7 @@ def evaluate_signals_for_symbol(
     *,
     ohlcv_source: str = OHLCV_SOURCE_DUMMY,
     timeframe: str = "1h",
+    ohlcv_csv_path: Path | str | None = None,
 ) -> tuple[pd.DataFrame, Dict[str, Any]]:
     """
     Evaluierung der Signale für ein Symbol.
@@ -154,8 +163,9 @@ def evaluate_signals_for_symbol(
 
     Args:
         n_bars: Länge der OHLCV-Preisreihe (``load_ohlcv_with_meta``).
-        ohlcv_source: ``dummy`` | ``kraken`` (mit ``generate_forward_signals`` abstimmen).
+        ohlcv_source: ``dummy`` | ``kraken`` | ``csv`` (mit ``generate_forward_signals`` abstimmen).
         timeframe: Kraken-Timeframe; Dummy siehe Loader.
+        ohlcv_csv_path: CSV-Pfad bei ``csv``.
 
     Returns:
         (Evaluations-DataFrame, Observability-Dict für Loader/J1).
@@ -165,6 +175,7 @@ def evaluate_signals_for_symbol(
         n_bars=n_bars,
         source=ohlcv_source,
         timeframe=timeframe,
+        ohlcv_csv_path=ohlcv_csv_path,
     )
     if data.empty:
         raise ValueError(f"Keine Preisdaten für Symbol {symbol}.")
@@ -354,6 +365,13 @@ def main(argv: List[str] | None = None) -> int:
         return 1
 
     try:
+        validate_forward_ohlcv_cli_args(args)
+    except ValueError as e:
+        print(f"\n❌ {e}", file=sys.stderr)
+        write_manifest(1, error=str(e))
+        return 1
+
+    try:
         df_sig = load_signal_df(sig_path)
     except (ValueError, FileNotFoundError) as e:
         print(f"\n❌ {e}", file=sys.stderr)
@@ -401,6 +419,7 @@ def main(argv: List[str] | None = None) -> int:
                 n_bars=n_bars,
                 ohlcv_source=args.ohlcv_source,
                 timeframe=args.timeframe,
+                ohlcv_csv_path=args.ohlcv_csv,
             )
             ohlcv_load_by_symbol[symbol] = ohlcv_meta
             _print_ohlcv_load_observability(ohlcv_meta, run_id=deterministic_run_id)

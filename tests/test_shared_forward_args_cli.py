@@ -16,7 +16,9 @@ from _shared_forward_args import (  # noqa: E402
     DEFAULT_OHLCV_TIMEFRAME,
     OHLCV_TIMEFRAME_CHOICES,
     parse_symbols_cli_arg,
+    validate_forward_ohlcv_cli_args,
 )
+from _shared_ohlcv_loader import OHLCV_SOURCE_CSV  # noqa: E402
 
 
 def test_parse_symbols_cli_arg():
@@ -101,3 +103,26 @@ def test_forward_pipeline_scripts_help_contains_j1_no_live_scope():
         assert "NO-LIVE" in out
         assert "keine Order" in out or "Keine Orders" in out
         assert "--ohlcv-source" in out
+        assert "--ohlcv-csv" in out
+
+
+def test_parse_args_ohlcv_csv_default_none():
+    from run_portfolio_backtest_v2 import parse_args
+
+    assert parse_args([]).ohlcv_csv is None
+
+
+def test_validate_forward_ohlcv_cli_csv_requires_path():
+    import argparse
+
+    args = argparse.Namespace(ohlcv_source=OHLCV_SOURCE_CSV, ohlcv_csv=None)
+    with pytest.raises(ValueError, match="--ohlcv-csv"):
+        validate_forward_ohlcv_cli_args(args)
+
+
+def test_validate_forward_ohlcv_cli_csv_path_only_with_csv(tmp_path):
+    import argparse
+
+    args = argparse.Namespace(ohlcv_source="dummy", ohlcv_csv=tmp_path / "x.csv")
+    with pytest.raises(ValueError, match="nur mit"):
+        validate_forward_ohlcv_cli_args(args)

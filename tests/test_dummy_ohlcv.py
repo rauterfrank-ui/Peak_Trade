@@ -14,12 +14,16 @@ if str(_scripts) not in sys.path:
     sys.path.insert(0, str(_scripts))
 
 from _shared_ohlcv_loader import (  # noqa: E402
+    OHLCV_SOURCE_CSV,
     OHLCV_SOURCE_DUMMY,
     OHLCV_SOURCE_KRAKEN,
+    load_csv_ohlcv,
     load_dummy_ohlcv,
     load_kraken_ohlcv,
     load_ohlcv,
     load_ohlcv_with_meta,
+    normalize_ohlcv_source,
+    resolve_ohlcv_csv_path,
 )
 
 
@@ -55,6 +59,8 @@ def test_load_ohlcv_with_meta_dummy():
     assert meta["bars_loaded"] == 42
     assert meta["kraken_pagination_used"] is None
     assert meta["kraken_bars_shortfall"] is None
+    assert meta["ohlcv_csv_resolved"] is None
+    assert meta["csv_bars_shortfall"] is None
 
 
 def test_load_ohlcv_with_meta_kraken_single_request():
@@ -76,6 +82,8 @@ def test_load_ohlcv_with_meta_kraken_single_request():
     assert len(df) == 10
     assert meta["kraken_pagination_used"] is False
     assert meta["kraken_bars_shortfall"] is False
+    assert meta["ohlcv_csv_resolved"] is None
+    assert meta["csv_bars_shortfall"] is None
 
 
 def test_load_ohlcv_with_meta_kraken_pagination_flag():
@@ -115,6 +123,8 @@ def test_load_ohlcv_with_meta_kraken_pagination_flag():
     assert len(df) == 1000
     assert meta["kraken_pagination_used"] is True
     assert meta["kraken_bars_shortfall"] is False
+    assert meta["ohlcv_csv_resolved"] is None
+    assert meta["csv_bars_shortfall"] is None
 
 
 def test_load_ohlcv_with_meta_kraken_shortfall_warning_and_meta():
@@ -140,6 +150,8 @@ def test_load_ohlcv_with_meta_kraken_shortfall_warning_and_meta():
     assert meta["bars_loaded"] == 12
     assert meta["kraken_bars_shortfall"] is True
     assert meta["kraken_pagination_used"] is False
+    assert meta["ohlcv_csv_resolved"] is None
+    assert meta["csv_bars_shortfall"] is None
 
 
 def test_load_ohlcv_unknown_source():
@@ -264,3 +276,115 @@ def test_timeframe_to_timedelta_invalid():
 
     with pytest.raises(ValueError, match="nicht unterstützt"):
         _timeframe_to_timedelta("2w")
+
+
+def _write_minimal_ohlcv_csv(path: Path, n: int = 30) -> None:
+    idx = pd.date_range("2024-06-01", periods=n, freq="1h", tz="UTC")
+    df = pd.DataFrame(
+        {
+            "timestamp": idx.strftime("%Y-%m-%dT%H:%M:%S%z"),
+            "open": [100.0 + i * 0.1 for i in range(n)],
+            "high": [101.0 + i * 0.1 for i in range(n)],
+            "low": [99.0 + i * 0.1 for i in range(n)],
+            "close": [100.5 + i * 0.1 for i in range(n)],
+            "volume": [10.0] * n,
+        }
+    )
+    df.to_csv(path, index=False)
+
+
+def test_load_csv_ohlcv_respects_n_bars_tail(tmp_path):
+    p = tmp_path / "s.csv"
+    _write_minimal_ohlcv_csv(p, n=50)
+    df = load_csv_ohlcv(p, "BTC/EUR", n_bars=20)
+    assert len(df) == 20
+    assert list(df.columns) == REQUIRED_OHLCV_COLUMNS
+
+
+def test_load_ohlcv_with_meta_csv(tmp_path):
+    p = tmp_path / "s.csv"
+    _write_minimal_ohlcv_csv(p, n=25)
+    df, meta = load_ohlcv_with_meta(
+        "BTC/EUR",
+        n_bars=10,
+        source=OHLCV_SOURCE_CSV,
+        timeframe="1h",
+        ohlcv_csv_path=p,
+    )
+    assert len(df) == 10
+    assert meta["ohlcv_source"] == OHLCV_SOURCE_CSV
+    assert meta["bars_loaded"] == 10
+    assert meta["n_bars_requested"] == 10
+    assert meta["csv_bars_shortfall"] is False
+    assert meta["ohlcv_csv_resolved"] == str(p.resolve())
+
+
+def test_load_ohlcv_csv_shortfall_warns(tmp_path):
+    p = tmp_path / "s.csv"
+    _write_minimal_ohlcv_csv(p, n=5)
+    with pytest.warns(UserWarning, match="nur 5"):
+        df, meta = load_ohlcv_with_meta(
+            "ETH/EUR",
+            n_bars=100,
+            source=OHLCV_SOURCE_CSV,
+            ohlcv_csv_path=p,
+        )
+    assert len(df) == 5
+    assert meta["csv_bars_shortfall"] is True
+
+
+def test_load_csv_duplicate_timestamp_fails(tmp_path):
+    p = tmp_path / "bad.csv"
+    idx = pd.date_range("2024-06-01", periods=5, freq="1h", tz="UTC")
+    ts = list(idx.strftime("%Y-%m-%dT%H:%M:%S%z"))
+    ts[2] = ts[1]
+    pd.DataFrame(
+        {
+            "timestamp": ts,
+            "open": [1.0] * 5,
+            "high": [2.0] * 5,
+            "low": [0.5] * 5,
+            "close": [1.5] * 5,
+            "volume": [1.0] * 5,
+        }
+    ).to_csv(p, index=False)
+    with pytest.raises(ValueError, match="doppelte"):
+        load_csv_ohlcv(p, "BTC/EUR", n_bars=10)
+
+
+def test_load_csv_high_lt_low_fails(tmp_path):
+    p = tmp_path / "bad2.csv"
+    idx = pd.date_range("2024-06-01", periods=3, freq="1h", tz="UTC")
+    pd.DataFrame(
+        {
+            "timestamp": idx.strftime("%Y-%m-%dT%H:%M:%S%z"),
+            "open": [10.0, 10.0, 10.0],
+            "high": [9.0, 10.0, 10.0],
+            "low": [10.0, 9.0, 9.0],
+            "close": [10.0, 10.0, 10.0],
+            "volume": [1.0, 1.0, 1.0],
+        }
+    ).to_csv(p, index=False)
+    from src.data.contracts import DataContractError
+
+    with pytest.raises(DataContractError, match="high < low"):
+        load_csv_ohlcv(p, "BTC/EUR", n_bars=10)
+
+
+def test_resolve_ohlcv_csv_path_symbol_placeholder(tmp_path):
+    sub = tmp_path / "data"
+    sub.mkdir()
+    target = sub / "BTC_EUR.csv"
+    target.write_text("x", encoding="utf-8")
+    resolved = resolve_ohlcv_csv_path(str(tmp_path / "data" / "{symbol}.csv"), "BTC/EUR")
+    assert resolved == target.resolve()
+
+
+def test_normalize_fixture_alias_is_csv():
+    assert normalize_ohlcv_source("fixture") == OHLCV_SOURCE_CSV
+    assert normalize_ohlcv_source("FiXtUrE") == OHLCV_SOURCE_CSV
+
+
+def test_load_ohlcv_csv_requires_path():
+    with pytest.raises(ValueError, match="ohlcv_csv_path"):
+        load_ohlcv("BTC/EUR", source=OHLCV_SOURCE_CSV, n_bars=10)
