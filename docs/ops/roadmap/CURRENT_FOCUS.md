@@ -22,6 +22,8 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ## Recently landed (truth, docs governance, officers)
 
+- PR #2889: Added a Portfolio CLI subprocess smoke for local OHLCV CSV input with temp `config.toml`, local CSV, and `--no-report`; test-only; no repo-root reports; no Paper/Shadow/Evidence mutation; no gate changes.
+- PR #2890: Hardened the Portfolio CLI contract with `--config-path`, explicit `main()` exit codes, `SystemExit(main())`, and subprocess validation for missing CSV/config inputs; J1 local CSV parity is now covered across Generate, Evaluate, and Portfolio paths and is pausierbar.
 - PR #2887: Added a Chat-led J1 Forward Scripts operator quick reference to [CLI_CHEATSHEET.md](../../CLI_CHEATSHEET.md), keeping the existing three-column table shape despite the `dummy|kraken` source text in the row; navigation-only and NO-LIVE.
 - PR #2885: Added a Chat-led J1 Forward Demo-Stub operator quick reference to [CLI_CHEATSHEET.md](../../CLI_CHEATSHEET.md), with the Demo-Stub link in the existing table cell; navigation-only and NO-LIVE.
 - PR #2882: Added CLI cheatsheet discoverability for the full Optuna study CLI (`scripts&#47;run_optuna_study.py --help`), explicitly separated from the J2 placeholder surface and kept NO-LIVE/research-scoped.
@@ -184,6 +186,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-24 | Optuna study CLI cheatsheet sync (#2882) | `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; docs-only discoverability for `scripts&#47;run_optuna_study.py --help`, NO-LIVE/research-scoped. |
 | 2026-04-24 | Chat-led Forward Demo cheatsheet sync (#2885) | `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; docs-only navigation link from Chat-led Demo-Stub row to CLI_CHEATSHEET, NO-LIVE. |
 | 2026-04-24 | Chat-led Forward Scripts cheatsheet sync (#2887) | `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; docs-only navigation link from Chat-led Scripts row to CLI_CHEATSHEET, three-column table preserved. |
+| 2026-04-24 | J1 Portfolio local CSV contract closure (#2889-#2890) | `uv run python -m pytest tests/test_run_portfolio_backtest_v2_cli.py -q`; `uv run python -m pytest tests/test_shared_forward_args_cli.py -q`; `uv run ruff check scripts/run_portfolio_backtest_v2.py tests/test_run_portfolio_backtest_v2_cli.py`; `uv run ruff format --check scripts/run_portfolio_backtest_v2.py tests/test_run_portfolio_backtest_v2_cli.py`; `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; J1 local CSV pausierbar after Generate/Evaluate/Portfolio coverage and portfolio CLI contract hardening. |
 
 ---
 
