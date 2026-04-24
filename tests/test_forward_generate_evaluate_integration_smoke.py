@@ -349,3 +349,47 @@ def test_evaluate_forward_signals_accepts_local_csv_source_smoke(tmp_path):
     combined = ev.stdout + ev.stderr
     assert "csv" in combined.lower()
     assert str(csv_path.resolve()) in combined
+
+
+@pytest.mark.integration
+def test_evaluate_forward_signals_csv_source_requires_csv_path_subprocess(tmp_path):
+    """Negativ: Evaluate-CLI mit csv-Quelle ohne --ohlcv-csv → Validierung schlägt fehl."""
+    cfg_path = ROOT / "config" / "config.test.toml"
+    if not cfg_path.is_file():
+        pytest.skip(f"fehlt: {cfg_path}")
+
+    signals_path = tmp_path / "signals.csv"
+    pd.DataFrame(
+        [
+            {
+                "symbol": "BTC/EUR",
+                "as_of": "2024-01-01T00:40:00+00:00",
+                "direction": 1.0,
+            }
+        ]
+    ).to_csv(signals_path, index=False)
+
+    out_dir = tmp_path / "eval_negative"
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "evaluate_forward_signals.py"),
+            str(signals_path),
+            "--config-path",
+            str(cfg_path),
+            "--output-dir",
+            str(out_dir),
+            "--ohlcv-source",
+            "csv",
+        ],
+        cwd=ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+
+    assert result.returncode == 1
+    combined = result.stdout + result.stderr
+    assert "--ohlcv-csv" in combined
+    assert "csv" in combined.lower()
