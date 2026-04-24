@@ -3316,6 +3316,12 @@ def _render_operator_summary_preamble() -> str:
         "Read-only snapshot from local artifacts and the <code>GET /api/ops-cockpit</code> "
         "payload shape. <strong>Not an approval, not an unlock,</strong> not a substitute for "
         "your governance process.</p>"
+        '<p class="operator-summary-master-v2-non-authority">'
+        "This OPS Cockpit view is read-only and non-authorizing. "
+        "It does not grant live, testnet, paper, shadow, execution, promotion, or evidence authority. "
+        "Canonical authority remains in the Master V2 decision-authority chain and related runbooks. "
+        "Double Play semantics are displayed only as read-only observations and are not controlled by the cockpit."
+        "</p>"
         "</section>"
     )
 
