@@ -3,6 +3,10 @@
 ## Purpose
 Operator workflow for a conservative acceptance-oriented bounded-pilot run aligned to the acceptance evidence standard.
 
+> **Authority and scope**  
+> This file is an **acceptance- / bounded-run operator runbook** and **review / operator navigation** for a bounded-pilot path. Wording about operators, runs, launches, acceptance, bounded scope, or credentials is **not** an automatic **operational authorization**: it does **not** grant real-money go, any **live** / first-live / `PRE_LIVE` release, **signoff**, **evidence**, or a **gate pass** in the current **Master V2** enablement sense. It confers **no** order, exchange, arming, routing, or enablement authority, and it does **not** create a **Master V2** or **Double Play** handoff. **Master V2 / Double Play** and the canonical **PRE_LIVE** / readiness / signoff contracts remain the governing authority.  
+> Optional pointers: [`../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) · [`../specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md`](../specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md) · [`../BOUNDED_ACCEPTANCE_AUTHORITY_FRONTDOOR_INDEX_V0.md`](../BOUNDED_ACCEPTANCE_AUTHORITY_FRONTDOOR_INDEX_V0.md) · [`../AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md`](../AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md)
+
 ## Bounded Acceptance Index
 - `docs&#47;ops&#47;reviews&#47;bounded_acceptance_index_page&#47;INDEX.md`
 
