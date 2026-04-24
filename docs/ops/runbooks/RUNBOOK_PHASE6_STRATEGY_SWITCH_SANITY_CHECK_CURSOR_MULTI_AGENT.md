@@ -7,6 +7,8 @@
 **Owner:** ops  
 **Risk Level:** MINIMAL (read-only, 3-line code change)
 
+> **Authority- und Scope-Hinweis (Runbook):** *Production-Ready*, *Phase 6* und PR-/Merge-Nähe in diesem Dokument beziehen sich auf **Cursor-Multi-Agent-**/**Docs-**/**Operator-**Runbook-**Kontext** und den **Sanity-Check-**Ablauf für **Strategy-**Switch-**Governance-**Doku **—** **nicht** auf einen operativen Echtgeld-Go, First-Live- oder PRE_LIVE-Freigabe, Signoff, Evidence, Gate-Pass, Order-, Exchange-, Arming- oder Enablement-**Autorität** oder eine **Dokumentations-**/**CI-**Merge-**Freigabe** als generelles **Produkt-Go**. **Kein** Master-V2- oder Double-Play-**Handoff** entsteht aus diesem Runbook. **Master V2** / **Double Play** und die kanonischen PRE_LIVE-, Readiness- und Signoff-**Verträge** bleiben maßgeblich. **Nur** Navigation, kein Go: [Readiness Ladder](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md), [PRE_LIVE Navigation Read-Model](../specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md), [Authority Recovery Consolidation Index](../AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md) (Doku-Index, kein Freigabesignal).
+
 ---
 
 ## Executive Summary
