@@ -21,6 +21,10 @@ Companion interpretation layer (read-only, non-authorizing):
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`
 
+PRE_LIVE `*_CONTRACT_V1` pack — navigation read model (read-only index, non-authorizing):
+
+- [MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md](MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md) — optional suggested read order for the many adjacent `MASTER_V2_FIRST_LIVE_PRE_LIVE_*_CONTRACT_V1` specifications. It is a **navigation/reading map only**; it does not create a gate, signoff, evidence, live or First-Live enablement, Master V2 handoff, or Double Play authority, and it does not change the substantive meaning of any PRE_LIVE contract or the ladder levels in this file.
+
 Consolidation companion (vocabulary/boundary lock, read-only, non-authorizing):
 
 - `docs/ops/specs/MASTER_V2_GATE_FILL_VOCABULARY_BOUNDARY_LOCK_V1.md`
