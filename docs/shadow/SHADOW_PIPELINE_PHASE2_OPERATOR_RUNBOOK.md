@@ -4,6 +4,8 @@
 **Status:** Production-Ready (Shadow/Dev contexts only)  
 **Owner:** Peak_Trade Ops Team
 
+> **Authority and scope (non-authorizing):** *Production-Ready* in this runbook means **Shadow/Dev operator-runbook** documentation maturity for the described pipeline. It is **not** an operational real-money go, a First-Live or PRE_LIVE release, a signoff, evidence, a gate pass, or order / exchange / arming / enablement authority. This document does **not** create a **Master V2** or **Double Play** handoff. **Master V2** and **Double Play** remain the top trading and selection frames, together with the canonical PRE_LIVE / Readiness / Signoff contracts. Navigation only (not a go): [Readiness Ladder](../ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md), [PRE_LIVE navigation read model](../ops/specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md), [Authority Recovery Consolidation Index](../ops/AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md) (doc index, not an approval).
+
 ---
 
 ## Purpose
