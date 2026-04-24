@@ -3,6 +3,10 @@
 ## Purpose
 Operator workflow for bounded/acceptance sessions without repeated manual secret copy-paste.
 
+> **Authority and scope**  
+> This file is a **local** **bounded** **secret** **launcher** **operator** **runbook** and **review / operator navigation** for the `.bounded_pilot.env` + bounded secret launcher path. Wording about *secret* **source**, `KRAKEN`, `.bounded_pilot.env`, *launcher*, *bounded*, *trial*, *run*, or *local* **ops** is **not** an automatic **operational authorization** — it does **not** grant real-money go, any **live** / first-live / `PRE_LIVE` release, **signoff**, **evidence**, or a **gate pass** in the current **Master V2** enablement sense. **Secret** and **credential** steps are **local**, **technical**, and *fails closed* by design; they do **not** substitute for a governed signoff. This runbook confers **no** order, exchange, arming, routing, or enablement authority, and it does **not** create a **Master V2** or **Double Play** handoff. **Master V2 / Double Play** and the canonical **PRE_LIVE** / readiness / signoff contracts remain the governing authority.  
+> Optional pointers: [`../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) · [`../specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md`](../specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md) · [`../BOUNDED_ACCEPTANCE_AUTHORITY_FRONTDOOR_INDEX_V0.md`](../BOUNDED_ACCEPTANCE_AUTHORITY_FRONTDOOR_INDEX_V0.md) · [`../AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md`](../AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md)
+
 ## Secret Source
 Expected local non-git env file:
 - `.bounded_pilot.env`
