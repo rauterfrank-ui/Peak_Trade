@@ -730,3 +730,28 @@ class TestIntegration:
         log_content = log_path.read_text()
         assert "# InfoStream Learning Log" in log_content
         assert "INF-" in log_content
+
+
+def test_infostream_run_cycle_help_subprocess_smoke():
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[2]
+    script = root / "scripts" / "infostream_run_cycle.py"
+
+    result = subprocess.run(
+        [sys.executable, str(script), "--help"],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    combined_output = result.stdout + result.stderr
+    assert "usage:" in combined_output.lower()
+    assert "--dry-run" in combined_output
+    assert "--skip-ai" in combined_output
+    assert "--project-root" in combined_output
