@@ -13,6 +13,7 @@
 - Canonical Spec (verbindlich): [docs/ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md)
 - Normative Kurzregel: `Governance > Safety&#47;Kill-Switch > Risk&#47;Exposure Caps`; `Switch-Gate` und `AI Orchestrator` sind Control-Orchestration/advisory, aber keine finale Execution Authority.
 - Claim-Disziplin: Claims nur in den Klassen `repo-evidenced`, `documented`, `unverified`, `not-claimed` formulieren (Abschnitt 6); `unverified` und `not-claimed` nicht als verifizierte Fakten ausgeben; `operator-stated` explizit markieren; keine impliziten E2E-/Runtime-Behauptungen.
+- Authority Recovery (Navigations-&#47;Konsolidierungsindex, **non-authorizing**): [AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md](ops/AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md) — Review- und Re-Onboarding-Navigation zu **bereits gelandeten** Authority-Boundary-Dokumenten (P0-Bereiche u. a.); **weder** Gate **noch** Signoff, **weder** Evidence-Paket **noch** Live-, First-Live-, Master-V2- oder Double-Play-Freigabe; ersetzt **nicht** die kanonischen Verträge oberhalb.
 
 ### LevelUp v0 (additive Manifest-/IO-/CLI-Oberfläche)
 
