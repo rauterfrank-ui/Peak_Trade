@@ -126,6 +126,19 @@ python3 scripts/run_sweep.py \
 
 ---
 
+### Unified sweep pipeline
+
+Use the unified sweep pipeline entry point for CLI discoverability and local/research orchestration checks:
+
+```bash
+python3 scripts/run_sweep_pipeline.py --help
+```
+
+Notes:
+- This is separate from the lower-level `scripts/run_sweep.py` grid sweep helpers and from `research_cli.py sweep` / `scripts/run_strategy_sweep.py` preset-oriented flows.
+- Start with `--help` and choose the concrete research/dry-run mode explicitly; do not infer live readiness from sweep output.
+- This is NO-LIVE/local-research guidance: no broker/exchange orders, no Paper/Shadow/Evidence mutation, and no gate changes.
+
 ## 3b. Report-Tools
 
 Es gibt zwei getrennte Report-Flows:
