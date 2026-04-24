@@ -58,6 +58,23 @@ class TestStrategyProfileCLIHelp:
         assert result.returncode == 0
         assert "Strategy-ID" in result.stdout or "rsi_reversion" in result.stdout
 
+    def test_list_strategies_without_strategy_id(self):
+        """--list-strategies ohne --strategy-id (Inspect)."""
+        result = subprocess.run(
+            [
+                sys.executable,
+                "scripts/research_cli.py",
+                "strategy-profile",
+                "--list-strategies",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=Path(__file__).parent.parent,
+        )
+
+        assert result.returncode == 0
+        assert "Verfügbare Strategy-IDs" in result.stdout or "rsi_reversion" in result.stdout
+
 
 class TestStrategyProfileCLIExecution:
     """Tests für CLI-Ausführung mit Dummy-Daten."""
