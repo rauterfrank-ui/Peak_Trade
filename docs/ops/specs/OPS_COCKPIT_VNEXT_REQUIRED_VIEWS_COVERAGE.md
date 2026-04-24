@@ -1,8 +1,8 @@
 # OPS Cockpit — vNext Required Views Coverage (Traceability)
 
 **status:** active  
-**last_updated:** 2026-04-13  
-**purpose:** Review-friendly **mapping** from [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) **Required Views §1–7** to Ops Cockpit **payload keys**, **operator summary / HTML surface** (see [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md)), and **test anchors**; plus a **supplementary** subsection for additional Cockpit surfaces that are **repo-present** but **outside** the vNext Required-Views matrix (§1–7). **Not** a completeness guarantee for every bullet under each view; **not** an execution or approval claim.
+**last_updated:** 2026-04-24  
+**purpose:** Review-friendly **mapping** from [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) **Required Views §1–7** to Ops Cockpit **payload keys**, **operator summary / HTML surface** (see [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md)), and **test anchors**; plus a **supplementary** subsection for additional Cockpit surfaces that are **repo-present** but **outside** the vNext Required-Views matrix (§1–7). **Not** a completeness guarantee for every bullet under each view; **not** an execution or approval claim. **Master V2 / Double Play non-authority** for the operator summary shell is **not** redefined here — see [`OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md`](OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md) and the **preamble** row under **Canonical anchors** (PR **#2913** / **#2914**).
 
 **docs_token:** `DOCS_TOKEN_OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE`
 
@@ -10,13 +10,15 @@
 
 - **Not** broker, exchange, or reconciliation truth — same semantics as [`OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md`](OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md) and [`RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`](../runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md).  
 - **Not** a substitute for [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md) (detailed row-level mapping).  
-- **Not** coverage of **R&amp;D Dashboard** (Phase 76) or non-Cockpit UIs.
+- **Not** coverage of **R&amp;D Dashboard** (Phase 76) or non-Cockpit UIs.  
+- **Not** a substitute for [`OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md`](OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md) — the Cockpit is **read-only and non-authorizing**; Master V2 and Double Play **semantics and authority** remain outside the cockpit (contract §2–3, §8 wording surfaced in the HTML preamble as of PR **#2914**).
 
 ## Canonical anchors
 
 | Anchor | Role |
 |--------|------|
-| `operator-summary-preamble` | Structural HTML `id` on the operator summary **preamble** (`_render_operator_summary_preamble`): read-only heading + disclaimer; **before** `operator-summary-system-status` (RV1 table row in [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md)). |
+| `operator-summary-preamble` | Structural HTML `id` on the operator summary **preamble** (`_render_operator_summary_preamble` in `src&#47;webui&#47;ops_cockpit.py`): (1) read-only **`<h2>`** and **Observation only** disclaimer tied to the `GET &#47;api&#47;ops-cockpit` payload shape — not approval, not unlock; (2) **second paragraph** (`class=operator-summary-master-v2-non-authority`) with **Master V2 / Double Play non-authority** wording aligned to [`OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md`](OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md) **§8** (landed **PR #2914**); `tests&#47;webui&#47;test_ops_cockpit.py` — `test_ops_cockpit_preamble_is_master_v2_non_authorizing`. **Before** `operator-summary-system-status` (RV1 row in [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md)). |
+| [`OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md`](OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md) | **Docs-only** contract (PR **#2913**): boundary between Ops Cockpit and Master V2 &#47; Double Play; compatibility labels; required preamble-style wording in **§8**. **Read** before changing M-V2-adjacent cockpit copy or new surfaces. |
 | [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) | Product vNext Required Views §1–7 (target). |
 | [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md) | Payload ↔ operator-summary HTML (primary detail). |
 | [`OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md`](OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md) | Top-level payload keys for `build_ops_cockpit_payload`. |
@@ -52,6 +54,7 @@ These surfaces are **in the Ops Cockpit read model** and **documented** here for
 
 ## Related
 
+- [`OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md`](OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md) — Master V2 &#47; Double Play non-authority; preamble **§8** and UI alignment (**#2913** / **#2914**).  
 - [`RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`](../runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md) — phased plan and Ist-Stand.  
 - [`RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`](../runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md) — interpretation vs authority.  
 - [`docs/ops/registry/DOCS_TRUTH_MAP.md`](../registry/DOCS_TRUTH_MAP.md) — docs drift registry.
