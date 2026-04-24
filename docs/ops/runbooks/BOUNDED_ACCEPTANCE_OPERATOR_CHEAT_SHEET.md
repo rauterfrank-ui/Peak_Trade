@@ -3,6 +3,10 @@
 ## Purpose
 Ultra-compact operator reference for bounded / acceptance runs.
 
+> **Authority and scope**  
+> This file is a **bounded / acceptance operator cheat sheet** and **review / operator navigation** for quick local reference. Wording about *operator*, *go/no-go*, *checklist*, *pass*, *acceptance*, *bounded* scope, or similar **decision language** is **not** an automatic **operational authorization** — it does **not** grant real-money go, any **live** / first-live / `PRE_LIVE` release, **signoff**, **evidence**, or a **gate pass** in the current **Master V2** enablement sense. It confers **no** order, exchange, arming, routing, or enablement authority, and it does **not** create a **Master V2** or **Double Play** handoff. **Master V2 / Double Play** and the canonical **PRE_LIVE** / readiness / signoff contracts remain the governing authority.  
+> Optional pointers: [`../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) · [`../specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md`](../specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md) · [`../BOUNDED_ACCEPTANCE_AUTHORITY_FRONTDOOR_INDEX_V0.md`](../BOUNDED_ACCEPTANCE_AUTHORITY_FRONTDOOR_INDEX_V0.md) · [`../AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md`](../AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md)
+
 ## Bounded Acceptance Index
 - `docs&#47;ops&#47;reviews&#47;bounded_acceptance_index_page&#47;INDEX.md`
 
