@@ -162,3 +162,62 @@ def test_run_portfolio_backtest_v2_accepts_local_csv_source_smoke(tmp_path):
     assert "OHLCV-Quelle" in combined_output
     assert "--no-report" in combined_output or "nicht geschrieben" in combined_output.lower()
     assert not (tmp_path / "reports").exists()
+
+
+def test_portfolio_backtest_ohlcv_load_meta_parity_kraken_shortfall(monkeypatch):
+    """
+    J1: Loader-Meta (z. B. kraken_bars_shortfall) muss wie bei Evaluate in Result- und
+    Aggregat-Metadaten erscheinen; kein Netz: nur load_dummy_ohlcv + synthetische Meta.
+    """
+    from src.core.peak_config import load_config
+
+    import run_portfolio_backtest_v2 as mod
+
+    repo_root = Path(__file__).resolve().parents[1]
+    cfg = load_config(str(repo_root / "config" / "config.test.toml"))
+
+    from _shared_ohlcv_loader import load_dummy_ohlcv
+
+    def _fake_with_meta(
+        symbol: str,
+        n_bars: int = 200,
+        *,
+        source: str = "dummy",
+        timeframe: str = "1h",
+        ohlcv_csv_path=None,
+        use_cache: bool = True,
+    ):
+        df = load_dummy_ohlcv(symbol, n_bars=n_bars)
+        meta = {
+            "symbol": symbol,
+            "ohlcv_source": "kraken",
+            "timeframe": timeframe,
+            "n_bars_requested": n_bars,
+            "bars_loaded": len(df),
+            "kraken_pagination_used": False,
+            "kraken_bars_shortfall": True,
+            "ohlcv_csv_resolved": None,
+            "csv_bars_shortfall": None,
+        }
+        return df, meta
+
+    monkeypatch.setattr(mod, "load_ohlcv_with_meta", _fake_with_meta)
+
+    res = mod.run_single_symbol_backtest(
+        cfg=cfg,
+        symbol="BTC/EUR",
+        strategy_key="ma_crossover",
+        n_bars=60,
+        ohlcv_source="dummy",
+        timeframe="1h",
+        ohlcv_csv_path=None,
+    )
+
+    ohlcv_load = res.metadata.get("ohlcv_load", {})
+    assert ohlcv_load.get("kraken_bars_shortfall") is True
+    assert ohlcv_load.get("symbol") == "BTC/EUR"
+
+    ohlcv_by_sym = {
+        "BTC/EUR": res.metadata.get("ohlcv_load", {}),
+    }
+    assert ohlcv_by_sym["BTC/EUR"].get("kraken_bars_shortfall") is True
