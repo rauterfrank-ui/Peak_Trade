@@ -3,7 +3,7 @@
 status: DRAFT
 last_updated: 2026-04-23
 owner: Peak_Trade
-purpose: Single canonical orientation surface mapping symptoms and Entry Contract §5 abort posture to pilot incident runbooks, L5 evidence-pointer discipline, and read-only registry/report CLIs (bounded pilot)
+purpose: Draft orientation anchor mapping symptoms and Entry Contract §5 abort posture to pilot incident runbooks, L5 evidence-pointer discipline, and read-only registry/report CLIs (bounded pilot)
 docs_token: DOCS_TOKEN_RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS
 
 ## 1) Purpose, scope, and non-goals
@@ -17,6 +17,7 @@ docs_token: DOCS_TOKEN_RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS
 - This compass **does not** authorize live trading, close any gate, or claim that an incident is generically “resolved.”
 - It **does not** replace the [Entry contract](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md), [Failure taxonomy](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md), [Decision authority map](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md), or external governance.
 - It **does not** import operator-held evidence into git or assert immutable in-repo bundles (see [Gate index `G8`](../specs/MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md) and [Report surface §3.2](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md#32-interpretation-lock-promotion--readiness-visibility-vs-live-authorization)).
+Draft-maturity note: This compass remains a DRAFT orientation anchor. It does not supersede operator-ready incident runbooks, approve bounded-pilot continuation, bypass abort gates, or change runtime, trading, evidence, approval, or live-entry semantics.
 
 ## 2) Non-authorization note
 
