@@ -22,6 +22,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ## Recently landed (truth, docs governance, officers)
 
+- PR #2865: Added deterministic local OHLCV `csv` source with `fixture` alias for J1 forward/portfolio CLIs; requires `--ohlcv-csv PATH`, supports `{symbol}` path expansion, and remains local/file-based with no live, broker, exchange-order, Paper/Shadow/Evidence, or gate changes.
 - PR #2857: Added a CLI cheatsheet Bounded Pilot / First-Live navigation box; operator-navigation-only, no live authorization or gate bypass.
 - PR #2858: Added a GETTING_STARTED pointer to that CLI cheatsheet navigation box; navigation-only.
 - PR #2859: Aligned Readiness Ladder L3 wording with DRAFT entry-contract / boundary-note maturity; no DRAFT status uplift.
@@ -162,6 +163,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-12 | Post–PR #2297: Stufe J Forward-Demo-Stub + `CURRENT_FOCUS` + Runbook (this file) | PR #2297 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-12 | Post–PR #2298: Chat-led §5 J1 Forward Demo + `CURRENT_FOCUS` refresh (this file) | PR #2298 merge; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
 | 2026-04-24 | Post–PRs #2857–#2861: bounded-pilot operator-navigation + DRAFT maturity wording; `CURRENT_FOCUS` refresh (this file) | PR #2857–#2861 merge; `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` |
+| 2026-04-24 | J1 local OHLCV CSV source (#2865) | `uv run python -m pytest tests/test_dummy_ohlcv.py tests/test_shared_forward_args_cli.py tests/test_forward_generate_evaluate_integration_smoke.py tests/test_run_portfolio_backtest_v2_cli.py`; `uv run ruff check scripts/_shared_ohlcv_loader.py scripts/_shared_forward_args.py scripts/generate_forward_signals.py scripts/evaluate_forward_signals.py scripts/run_portfolio_backtest_v2.py tests/test_dummy_ohlcv.py tests/test_shared_forward_args_cli.py tests/test_forward_generate_evaluate_integration_smoke.py`; `uv run ruff format` (same paths) | Local/file-based only; no live/broker/order/evidence/gate changes. |
 
 ---
 

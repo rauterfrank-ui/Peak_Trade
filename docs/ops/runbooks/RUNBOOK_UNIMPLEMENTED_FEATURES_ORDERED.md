@@ -150,6 +150,8 @@
 
 ---
 
+J1 local OHLCV note: the forward/portfolio CLI path now has a deterministic local source via `--ohlcv-source csv` plus alias `fixture`; `--ohlcv-csv PATH` is required for those sources. For multi-symbol runs, `PATH` may include `{symbol}` and resolves symbols such as `BTC&#47;EUR` to `BTC_EUR`. This is local/file-based only and does not enable live trading, broker/exchange orders, Paper/Shadow/Evidence mutation, or gate changes.
+
 ## Empfohlene Bearbeitungs-Reihenfolge (hochlevel)
 
 1. **Governance & Safety-Draht** (D1–D3) — wenn Live-nah berührt, nur mit Freigabe.  
