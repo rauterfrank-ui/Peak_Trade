@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-04-24
+P26-04-24
 ---
 
 # Current focus
@@ -22,6 +22,9 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ## Recently landed (truth, docs governance, officers)
 
+- PR #2892: Added CLI cheatsheet discoverability for `scripts&#47;research_cli.py strategy-profile`, NO-LIVE/research-only.
+- PR #2893: Corrected the strategy-profile cheatsheet example to use the real `--strategy-id ma_crossover` contract.
+- PR #2894: Hardened `strategy-profile` as an inspect/discoverability command without the global `artifacts&#47;research` bootstrap; artifact-producing research commands still bootstrap evidence.
 - PR #2889: Added a Portfolio CLI subprocess smoke for local OHLCV CSV input with temp `config.toml`, local CSV, and `--no-report`; test-only; no repo-root reports; no Paper/Shadow/Evidence mutation; no gate changes.
 - PR #2890: Hardened the Portfolio CLI contract with `--config-path`, explicit `main()` exit codes, `SystemExit(main())`, and subprocess validation for missing CSV/config inputs; J1 local CSV parity is now covered across Generate, Evaluate, and Portfolio paths and is pausierbar.
 - PR #2887: Added a Chat-led J1 Forward Scripts operator quick reference to [CLI_CHEATSHEET.md](../../CLI_CHEATSHEET.md), keeping the existing three-column table shape despite the `dummy|kraken` source text in the row; navigation-only and NO-LIVE.
@@ -187,6 +190,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-24 | Chat-led Forward Demo cheatsheet sync (#2885) | `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; docs-only navigation link from Chat-led Demo-Stub row to CLI_CHEATSHEET, NO-LIVE. |
 | 2026-04-24 | Chat-led Forward Scripts cheatsheet sync (#2887) | `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; docs-only navigation link from Chat-led Scripts row to CLI_CHEATSHEET, three-column table preserved. |
 | 2026-04-24 | J1 Portfolio local CSV contract closure (#2889-#2890) | `uv run python -m pytest tests/test_run_portfolio_backtest_v2_cli.py -q`; `uv run python -m pytest tests/test_shared_forward_args_cli.py -q`; `uv run ruff check scripts/run_portfolio_backtest_v2.py tests/test_run_portfolio_backtest_v2_cli.py`; `uv run ruff format --check scripts/run_portfolio_backtest_v2.py tests/test_run_portfolio_backtest_v2_cli.py`; `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; J1 local CSV pausierbar after Generate/Evaluate/Portfolio coverage and portfolio CLI contract hardening. |
+| 2026-04-24 | Research strategy-profile inspect closure (#2892-#2894) | `python3 scripts/research_cli.py strategy-profile --help`; `uv run python -m pytest tests/test_research_cli.py tests/test_strategy_profile_cli.py -q`; `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; strategy-profile is an inspect/discoverability surface without global `artifacts&#47;research` bootstrap. |
 
 ---
 

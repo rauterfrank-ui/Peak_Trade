@@ -149,7 +149,14 @@ python3 scripts/research_cli.py strategy-profile --strategy-id ma_crossover
 ```
 
 Notes:
-- This is a local research/discoverability surface for strategy-profile inspection.
+- List available strategy profiles without selecting one:
+
+```bash
+python3 scripts/research_cli.py strategy-profile --list-strategies
+```
+
+- This is a local research/discoverability surface; `research_cli` does not run the global `artifacts&#47;research` evidence-bootstrap path for `strategy-profile` (other research subcommands still do).
+- With `--strategy-id`, a full run may write profile outputs to the default export paths in `--help` / `--output-dir` (separate from that bootstrap; generated files are not the global `artifacts&#47;research` run folder).
 - Keep deeper research modes such as walk-forward, Monte Carlo, stress, sweeps, or optimization as separate, explicit follow-up choices.
 - This is NO-LIVE/research-only: no broker/exchange orders, no Paper/Shadow/Evidence mutation, and no gate changes.
 
