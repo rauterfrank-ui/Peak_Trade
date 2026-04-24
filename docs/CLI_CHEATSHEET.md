@@ -160,6 +160,20 @@ python3 scripts/research_cli.py strategy-profile --list-strategies
 - Keep deeper research modes such as walk-forward, Monte Carlo, stress, sweeps, or optimization as separate, explicit follow-up choices.
 - This is NO-LIVE/research-only: no broker/exchange orders, no Paper/Shadow/Evidence mutation, and no gate changes.
 
+## Market Outlook / Market Sentinel Daily Outlook
+
+Use the daily market-outlook generator for local operator-facing outlook reports. Start with `--skip-llm` when you want to avoid any LLM/API call:
+
+```bash
+python3 scripts/generate_market_outlook_daily.py --help
+python3 scripts/generate_market_outlook_daily.py --skip-llm --config-path config/market_outlook/daily_market_outlook.yaml --out-dir .ops_local/market_outlook
+```
+
+Notes:
+- `--skip-llm` skips the LLM call only; market data behavior still depends on the selected YAML config and local data paths (see `--data-dir` / defaults in `--help`).
+- Keep runs local and review generated files before sharing them.
+- This is NO-LIVE/operator-discoverability guidance: no broker/exchange orders, no Paper/Shadow/Evidence mutation, and no gate changes.
+
 ## 3b. Report-Tools
 
 Es gibt zwei getrennte Report-Flows:
