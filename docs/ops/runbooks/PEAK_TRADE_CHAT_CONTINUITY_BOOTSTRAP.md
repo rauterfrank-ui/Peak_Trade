@@ -2,7 +2,7 @@
 title: "Peak_Trade — chat continuity bootstrap (copy-paste)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-03-26
+last_updated: 2026-04-24
 ---
 
 # Peak_Trade — chat continuity bootstrap
@@ -23,6 +23,8 @@ last_updated: 2026-03-26
 **Canonical roadmap:** `docs/ops/roadmap/FINISH_PLAN.md`  
 **Human “where we are now” (edit weekly):** `docs/ops/roadmap/CURRENT_FOCUS.md`  
 **MVP finish runbook:** `docs/ops/runbooks/RUNBOOK_FINISH_A_MVP.md`
+
+**Bounded-Pilot / First-Live navigation:** `docs/CLI_CHEATSHEET.md` (Bounded Pilot / First-Live Navigation); `docs/GETTING_STARTED.md` points to the same operator-navigation-only entry; `docs/ops/roadmap/CURRENT_FOCUS.md` (Recently landed) records the #2857–#2861 docs-only sequence. Navigation-only: no live authorization, gate bypass, or runtime, trading, evidence, approval, or live-entry semantics change.
 
 **Workflow Officer** (check orchestration, read-only summaries):
 - Implementation: `src/ops/workflow_officer.py`, `src/ops/workflow_officer_markdown.py`
