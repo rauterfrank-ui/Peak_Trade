@@ -22,6 +22,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ## Recently landed (truth, docs governance, officers)
 
+- PR #2880: Added CLI cheatsheet discoverability for the forward dummy pipeline demo (`scripts&#47;dev&#47;run_forward_dummy_pipeline_demo.sh`), with NO-LIVE/local-only notes and no broker/exchange-order, Paper/Shadow/Evidence, or gate changes.
 - PR #2878: Added CLI cheatsheet discoverability for the unified sweep pipeline (`scripts&#47;run_sweep_pipeline.py --help`), with explicit separation from lower-level grid/preset sweep helpers and NO-LIVE/local-research notes.
 - PR #2876: Added CLI cheatsheet discoverability for the J3 placeholder report generator (`scripts&#47;ops&#47;placeholders&#47;generate_placeholder_reports.py --help`, `--prefix src&#47;`, `.ops_local` output), with NO-LIVE/local-only notes and no broker/exchange-order, Paper/Shadow/Evidence, or gate changes.
 - PR #2874: Added CLI cheatsheet discoverability for the J2 Optuna placeholder surface (`--help` / `--dry-run` on `scripts&#47;run_study_optuna_placeholder.py`), explicitly separate from `scripts&#47;run_optuna_study.py` and NO-LIVE with no broker/exchange-order, Paper/Shadow/Evidence, or gate changes.
@@ -176,6 +177,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-24 | J2 Optuna placeholder cheatsheet sync (#2874) | `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; docs-only discoverability for placeholder/dry-run surface, NO-LIVE. |
 | 2026-04-24 | J3 placeholder reports cheatsheet sync (#2876) | `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; docs-only discoverability for placeholder report generator, NO-LIVE/local-only. |
 | 2026-04-24 | Unified sweep pipeline cheatsheet sync (#2878) | `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; docs-only discoverability for `scripts&#47;run_sweep_pipeline.py --help`, NO-LIVE/local-research. |
+| 2026-04-24 | Forward dummy pipeline demo cheatsheet sync (#2880) | `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; docs-only discoverability for `scripts&#47;dev&#47;run_forward_dummy_pipeline_demo.sh`, NO-LIVE/local-only. |
 
 ---
 
