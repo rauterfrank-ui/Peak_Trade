@@ -1053,6 +1053,8 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
 
 ### Live-Track – Alerts & Incident-Handling (Cluster 82–85)
 
+> **Authority- und Scope-Hinweis (Status-Overview):** Die folgenden Statuszeilen (z. B. *Production-Ready*, *2026-ready*, *operative Baseline*) beschreiben **Engineering-, Dokumentations- und Runbook-Reife** bzw. **historischen** Phasenstand in diesem Übersichtsdokument. Sie stellen **kein** operatives Echtgeld-Go, **keine** First-Live- oder PRE_LIVE-Freigabe, **keinen** Signoff, **keine** Evidence, **keinen** Gate-Pass, **keine** Order-, Exchange-, Arming- oder Enablement-Autorität und **kein** Master-V2- oder Double-Play-**Handoff** her. Maßgeblich bleiben **Master V2** / **Double Play** und die kanonischen PRE_LIVE-, Readiness- und Signoff-Verträge. Orientierung (Navigation, kein operatives Go): [Readiness Ladder](ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md), [PRE_LIVE Navigation Read-Model](ops/specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md), [Authority Recovery Consolidation Index](ops/AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md) (Doku-Index, kein Freigabesignal).
+
 **Status:** ✅ Production-Ready v1.1 (inkl. Escalation)  
 **Implementierung:** Q4 2025 – **2026-ready**
 
