@@ -35,6 +35,76 @@ def test_parse_args_defaults_timeframe():
     assert parse_args([]).timeframe == "1h"
 
 
+@pytest.mark.smoke
+def test_parse_args_config_path():
+    from run_portfolio_backtest_v2 import parse_args
+
+    assert parse_args([]).config_path == "config.toml"
+    assert parse_args(["--config-path", "custom/x.toml"]).config_path == "custom/x.toml"
+
+
+def test_portfolio_rejects_ohlcv_csv_without_ohlcv_csv_subprocess(tmp_path):
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    repo_root = Path(__file__).resolve().parents[1]
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(repo_root / "scripts" / "run_portfolio_backtest_v2.py"),
+            "--ohlcv-source",
+            "csv",
+            "--n-bars",
+            "10",
+            "--symbols",
+            "BTC/EUR",
+            "--no-report",
+        ],
+        cwd=tmp_path,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    assert result.returncode == 1
+    out = (result.stdout + result.stderr).lower()
+    assert "ohlcv-csv" in out
+    assert "fehler" in out
+
+
+def test_portfolio_rejects_missing_config_path_subprocess(tmp_path):
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    repo_root = Path(__file__).resolve().parents[1]
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(repo_root / "scripts" / "run_portfolio_backtest_v2.py"),
+            "--config-path",
+            "nope_does_not_exist.toml",
+            "--ohlcv-source",
+            "dummy",
+            "--n-bars",
+            "10",
+            "--symbols",
+            "BTC/EUR",
+            "--no-report",
+        ],
+        cwd=tmp_path,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    assert result.returncode == 1
+    out = result.stdout + result.stderr
+    assert "FEHLER" in out
+    assert "nope_does_not_exist.toml" in out or "Config-Datei" in out
+
+
 def test_run_portfolio_backtest_v2_accepts_local_csv_source_smoke(tmp_path):
     import subprocess
     import sys
