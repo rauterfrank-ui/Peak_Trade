@@ -12,6 +12,10 @@ This checklist defines the minimum read-only preflight needed before starting th
 
 It is intended to preserve paper-test stability, ensure a quiet runtime surface, and make the intended run goal explicit before any operator starts a new bounded trial or acceptance-oriented step.
 
+> **Authority and scope**  
+> This file is a **read-only** **next** **bounded**-**trial** **preflight** **checklist** and **operator / review navigation**; terms such as *preflight*, *trial*, *checklist*, *evidence*, *closeout*, *pass* / *fail*, *ready*, or *read-only* are **not** by themselves **operational** **approvals** or a substitute for the governing enablement path. The checklist does **not** grant real-money go, any **live** / bounded-live / first-live / `PRE_LIVE` release, **signoff**, **evidence** as a verdict, or a **gate pass** in the current **Master V2** enablement sense, and it confers **no** order, exchange, arming, routing, or enablement authority. Working through or completing this document does **not** create a **Master V2** or **Double Play** handoff. **Master V2 / Double Play** and the canonical **PRE_LIVE** / readiness / signoff contracts remain the governing **authority**. References to **Trial-5** closeouts, session paths, and **evidence** are **epochal** **read-only** **context**; they do **not** prove **current** approval for **today**’s run by narrative alone.  
+> Optional pointers: [`../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) · [`../specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md`](../specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md) · [`../BOUNDED_ACCEPTANCE_AUTHORITY_FRONTDOOR_INDEX_V0.md`](../BOUNDED_ACCEPTANCE_AUTHORITY_FRONTDOOR_INDEX_V0.md) · [`../AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md`](../AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md)
+
 ## Preconditions
 - repository baseline is clean
 - no unintended runtime processes are active
