@@ -135,7 +135,9 @@ daily_loss_limit = 0.05
 
 Alle verfügbaren Strategien sind in der **Strategy Registry** registriert (`src&#47;strategies&#47;registry.py`).
 
-### Production-Ready Strategien
+### Historische / engineering-orientierte Strategieübersicht (Katalog, kein operatives Go)
+
+**Authority-Hinweis (Diese Tabelle):** Katalog- und **Registry-Übersicht** im Dokumentationskontext; früher „Production-Ready“ benannte Keys sind **keine** Zusage operativer Echtgeld-Live-Freigabe, **keine** Testnet-, Paper- oder Shadow-Readiness, **kein** Gate, kein Signoff, **keine** Evidence und **keine** Order-, Exchange-, Arming- oder Enablement-Autorität. **Keine** Strategy-Promotion; Master-V2- bzw. Double-Play-Handoff entsteht **nicht** aus dieser Tabelle. Maßgeblich: [STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md](ops/specs/STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md), [STRATEGY_REGISTRY_TIERING_DUAL_SOURCE_CONTRACT_V1.md](ops/specs/STRATEGY_REGISTRY_TIERING_DUAL_SOURCE_CONTRACT_V1.md), [STRATEGY_REGISTRY_TIERING_MV2_RECONCILIATION_TABLE_V0.md](ops/specs/STRATEGY_REGISTRY_TIERING_MV2_RECONCILIATION_TABLE_V0.md). Konsolidierte Review-Navigation zu Authority-Work: [AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md](ops/AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md).
 
 | Key | Beschreibung | Config Section |
 |-----|-------------|----------------|
