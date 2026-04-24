@@ -202,6 +202,20 @@ Notes:
 
 ---
 
+## J2 Optuna Placeholder
+
+Use the J2 placeholder to exercise the study CLI surface without running real optimization or live trading:
+
+```bash
+python3 scripts/run_study_optuna_placeholder.py --help
+python3 scripts/run_study_optuna_placeholder.py --dry-run
+```
+
+Notes:
+- This is a placeholder/dry-run surface only; it is separate from `scripts/run_optuna_study.py`.
+- Use it for CLI discoverability and orchestration checks before any real Optuna study path is selected.
+- This is NO-LIVE: no broker/exchange orders, no Paper/Shadow/Evidence mutation, and no gate changes.
+
 ## 5. Forward-Signals (Out-of-Sample)
 
 ```bash
