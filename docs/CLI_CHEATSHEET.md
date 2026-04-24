@@ -229,6 +229,19 @@ Notes:
 - Use it for CLI discoverability and orchestration checks before any real Optuna study path is selected.
 - This is NO-LIVE: no broker/exchange orders, no Paper/Shadow/Evidence mutation, and no gate changes.
 
+## Optuna Study CLI
+
+Use the full Optuna study CLI only after intentionally leaving the J2 placeholder/dry-run surface:
+
+```bash
+python3 scripts/run_optuna_study.py --help
+```
+
+Notes:
+- This is separate from the J2 placeholder `scripts/run_study_optuna_placeholder.py` surface.
+- Start with `--help`; select any real study configuration explicitly and keep the run in research/dry-run scope unless a separate approved workflow says otherwise.
+- This cheatsheet entry is NO-LIVE/research guidance: no broker/exchange orders, no Paper/Shadow/Evidence mutation, and no gate changes.
+
 ## J3 Placeholder Reports
 
 Use the J3 placeholder report generator to exercise local report-output plumbing without touching live, paper, shadow, or evidence paths:
