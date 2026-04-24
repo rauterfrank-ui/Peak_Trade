@@ -42,6 +42,7 @@ from _shared_forward_args import (
     add_shared_ohlcv_cli_group,
     append_forward_ohlcv_scope_epilog,
     parse_symbols_cli_arg,
+    validate_forward_ohlcv_cli_args,
 )
 from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv
 from src.core.peak_config import load_config, PeakConfig
@@ -137,21 +138,29 @@ def load_data_for_symbol(
     *,
     ohlcv_source: str = OHLCV_SOURCE_DUMMY,
     timeframe: str = "1h",
+    ohlcv_csv_path: Path | str | None = None,
 ) -> pd.DataFrame:
     """
-    Lädt Marktdaten für ein Symbol (J1: ``load_ohlcv`` — dummy oder Kraken; ``cfg`` derzeit ungenutzt).
+    Lädt Marktdaten für ein Symbol (J1: ``load_ohlcv`` — dummy, Kraken oder CSV; ``cfg`` derzeit ungenutzt).
 
     Args:
         cfg: PeakConfig-Objekt
         symbol: Trading-Pair (z.B. "BTC/EUR")
         n_bars: Anzahl Bars
-        ohlcv_source: ``dummy`` | ``kraken``
+        ohlcv_source: ``dummy`` | ``kraken`` | ``csv``
         timeframe: Kraken-Timeframe; Dummy siehe Loader.
+        ohlcv_csv_path: CSV-Pfad bei ``csv``.
 
     Returns:
         DataFrame mit OHLCV-Daten (DatetimeIndex)
     """
-    return load_ohlcv(symbol, n_bars=n_bars, source=ohlcv_source, timeframe=timeframe)
+    return load_ohlcv(
+        symbol,
+        n_bars=n_bars,
+        source=ohlcv_source,
+        timeframe=timeframe,
+        ohlcv_csv_path=ohlcv_csv_path,
+    )
 
 
 def get_portfolio_definition(
@@ -218,6 +227,7 @@ def run_single_symbol_backtest(
     *,
     ohlcv_source: str = OHLCV_SOURCE_DUMMY,
     timeframe: str = "1h",
+    ohlcv_csv_path: Path | str | None = None,
 ) -> BacktestResult:
     """
     Führt einen einzelnen Backtest für ein Symbol durch.
@@ -238,6 +248,7 @@ def run_single_symbol_backtest(
         n_bars=n_bars,
         ohlcv_source=ohlcv_source,
         timeframe=timeframe,
+        ohlcv_csv_path=ohlcv_csv_path,
     )
 
     # Strategie erstellen
@@ -410,6 +421,11 @@ def main(argv: List[str] | None = None) -> None:
     if args.bars < 1:
         print("\n❌ FEHLER: --bars / --n-bars muss >= 1 sein.")
         return
+    try:
+        validate_forward_ohlcv_cli_args(args)
+    except ValueError as e:
+        print(f"\n❌ FEHLER: {e}")
+        return
 
     print("\n🚀 Peak_Trade Multi-Asset Portfolio Backtest")
     print("=" * 70)
@@ -476,6 +492,7 @@ def main(argv: List[str] | None = None) -> None:
                 n_bars=args.bars,
                 ohlcv_source=args.ohlcv_source,
                 timeframe=args.timeframe,
+                ohlcv_csv_path=args.ohlcv_csv,
             )
         except Exception as e:
             print(f"  ❌ FEHLER: {e}")

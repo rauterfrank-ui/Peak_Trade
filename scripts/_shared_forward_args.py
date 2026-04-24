@@ -5,7 +5,7 @@ Gemeinsame CLI-Defaults und Argument-Gruppe für Forward-/Portfolio-OHLCV (J1).
 Drei Skripte teilen denselben Parametervertrag für ``--n-bars``/``--bars``,
 ``--ohlcv-source`` und ``--timeframe`` (Kraken; Dummy ignoriert ``timeframe`` intern 1h).
 
-Keine neuen Datenquellen — gemeinsame CLI-Normalisierung; Kraken-Pagination für große ``n-bars`` liegt im Loader.
+Gemeinsame CLI-Normalisierung inkl. lokaler CSV (``--ohlcv-csv``); Kraken-Pagination für große ``n-bars`` liegt im Loader.
 
 NO-LIVE: keine Order-Ausführung; Kraken-Pfad nur öffentliche OHLCV (Stub), siehe Epilog-Helfer unten.
 """
@@ -13,9 +13,11 @@ NO-LIVE: keine Order-Ausführung; Kraken-Pfad nur öffentliche OHLCV (Stub), sie
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 
 from _shared_ohlcv_loader import (
     KRAKEN_OHLCV_MAX_BARS,
+    OHLCV_SOURCE_CSV,
     OHLCV_SOURCE_DUMMY,
     OHLCV_SOURCES,
     normalize_ohlcv_source,
@@ -29,8 +31,21 @@ FORWARD_PIPELINE_OHLCV_SCOPE_EPILOG = """
 Scope (J1, NO-LIVE):
   Kein Live-Handel und keine Order-Ausführung (kein C1-/Execution-Scope).
   OHLCV: Default --ohlcv-source=dummy (offline); kraken = öffentliche REST-OHLCV nur zum
-  Laden von Kursreihen; opt-in, Netzwerk nötig. Kein neuer Anbieter.
+  Laden von Kursreihen; opt-in, Netzwerk nötig. csv/fixture = lokale Datei (--ohlcv-csv), kein Netzwerk.
+  Kein neuer Anbieter.
 """.strip()
+
+
+def validate_forward_ohlcv_cli_args(args: argparse.Namespace) -> None:
+    """Pflicht: --ohlcv-csv bei csv; --ohlcv-csv nur bei csv."""
+    p = getattr(args, "ohlcv_csv", None)
+    src = getattr(args, "ohlcv_source", None)
+    if src == OHLCV_SOURCE_CSV and not p:
+        raise ValueError(
+            "--ohlcv-csv ist erforderlich, wenn --ohlcv-source csv (oder fixture) gesetzt ist."
+        )
+    if p is not None and src != OHLCV_SOURCE_CSV:
+        raise ValueError("--ohlcv-csv ist nur mit --ohlcv-source csv/fixture erlaubt.")
 
 
 def append_forward_ohlcv_scope_epilog(parser: argparse.ArgumentParser) -> None:
@@ -90,9 +105,21 @@ def add_shared_ohlcv_cli_group(
         default=OHLCV_SOURCE_DUMMY,
         metavar="|".join(OHLCV_SOURCES),
         help=(
-            "OHLCV-Quelle: dummy (offline, Default, NO-LIVE) oder kraken (öffentliche REST-OHLCV; "
-            f"Netzwerk nötig; große Fenster: mehrere Abrufe à max. {KRAKEN_OHLCV_MAX_BARS} Bars). "
-            "Groß-/Kleinschreibung egal (wie load_ohlcv). Keine Orders."
+            "OHLCV-Quelle: dummy (offline, Default, NO-LIVE), kraken (öffentliche REST-OHLCV; "
+            f"Netzwerk nötig; große Fenster: mehrere Abrufe à max. {KRAKEN_OHLCV_MAX_BARS} Bars), "
+            "oder csv (Alias fixture; lokale CSV, setzt --ohlcv-csv). "
+            "Groß-/Kleinschreibung egal. Keine Orders."
+        ),
+    )
+    parser.add_argument(
+        "--ohlcv-csv",
+        type=Path,
+        default=None,
+        metavar="PATH",
+        help=(
+            "Nur bei --ohlcv-source=csv: Pfad zur OHLCV-CSV (Spalten open/high/low/close/volume "
+            "plus timestamp|datetime|date|time oder erste Spalte = Zeit). "
+            "Optional {symbol} im Pfad (BTC/EUR → …/BTC_EUR…). Nur lokal; kein Netzwerk."
         ),
     )
     parser.add_argument(

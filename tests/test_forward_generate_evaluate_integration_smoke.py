@@ -58,6 +58,8 @@ def test_csv_roundtrip_as_of_iso_utc_aligns_with_price_index(tmp_path, monkeypat
         "bars_loaded": len(df_price),
         "kraken_pagination_used": None,
         "kraken_bars_shortfall": None,
+        "ohlcv_csv_resolved": None,
+        "csv_bars_shortfall": None,
     }
     monkeypatch.setattr(
         "evaluate_forward_signals.load_ohlcv_with_meta",
@@ -99,6 +101,8 @@ def test_generate_then_evaluate_with_captured_ohlcv(tmp_path, monkeypatch):
             "bars_loaded": len(df),
             "kraken_pagination_used": None,
             "kraken_bars_shortfall": None,
+            "ohlcv_csv_resolved": None,
+            "csv_bars_shortfall": None,
         }
         return df, meta
 
@@ -154,6 +158,8 @@ def test_generate_then_evaluate_with_captured_ohlcv(tmp_path, monkeypatch):
             "bars_loaded": len(df),
             "kraken_pagination_used": None,
             "kraken_bars_shortfall": None,
+            "ohlcv_csv_resolved": None,
+            "csv_bars_shortfall": None,
         }
         return df, meta
 

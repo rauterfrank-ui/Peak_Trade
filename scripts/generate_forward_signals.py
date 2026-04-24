@@ -42,7 +42,11 @@ from src.analytics.risk_monitor import (
     aggregate_strategy_risk,
 )
 from src.analytics.filter_flow import SelectionPolicy, build_strategy_selection
-from _shared_forward_args import add_shared_ohlcv_cli_group, append_forward_ohlcv_scope_epilog
+from _shared_forward_args import (
+    add_shared_ohlcv_cli_group,
+    append_forward_ohlcv_scope_epilog,
+    validate_forward_ohlcv_cli_args,
+)
 from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv_with_meta
 from _forward_run_manifest import (
     compute_deterministic_run_id,
@@ -128,11 +132,15 @@ def _print_ohlcv_load_observability(meta: Dict[str, Any], *, run_id: str | None 
     else:
         sf_s = "ja" if sf else "nein"
     tail = f"Kraken-Shortfall={sf_s}" + (f" | run_id={run_id}" if run_id else "")
+    csv_bit = ""
+    cr = meta.get("ohlcv_csv_resolved")
+    if cr:
+        csv_bit = f" | csv={cr}"
     print(
         f"  📡 OHLCV-Load: {meta['symbol']} | Quelle={meta['ohlcv_source']} | "
         f"TF={meta['timeframe']} | n_bars={meta['n_bars_requested']} | "
         f"geladen={meta['bars_loaded']} | Kraken-Pagination={pag_s} | "
-        f"{tail}"
+        f"{tail}{csv_bit}"
     )
 
 
@@ -142,22 +150,31 @@ def load_data_for_symbol(
     *,
     ohlcv_source: str = OHLCV_SOURCE_DUMMY,
     timeframe: str = "1h",
+    ohlcv_csv_path: Path | str | None = None,
 ) -> tuple[pd.DataFrame, Dict[str, Any]]:
     """
     Lädt Daten für ein bestimmtes Symbol.
 
     J1 Slice 1–3: Dummy; J1 Slice 4: optional Kraken über ``load_ohlcv_with_meta`` (gleicher Vertrag).
+    J1 CSV: ``ohlcv_source=csv`` + ``ohlcv_csv_path``.
 
     Args:
         symbol: Trading-Pair (z.B. "BTC/EUR")
         n_bars: Anzahl Bars
-        ohlcv_source: ``dummy`` | ``kraken`` (CLI: ``--ohlcv-source``).
+        ohlcv_source: ``dummy`` | ``kraken`` | ``csv`` (CLI: ``--ohlcv-source``).
         timeframe: Kraken-Timeframe; Dummy bleibt 1h-synthetisch (siehe Loader).
+        ohlcv_csv_path: Pfad zur CSV bei ``csv``.
 
     Returns:
         (DataFrame mit OHLCV-Daten, Observability-Dict für Loader/J1)
     """
-    return load_ohlcv_with_meta(symbol, n_bars=n_bars, source=ohlcv_source, timeframe=timeframe)
+    return load_ohlcv_with_meta(
+        symbol,
+        n_bars=n_bars,
+        source=ohlcv_source,
+        timeframe=timeframe,
+        ohlcv_csv_path=ohlcv_csv_path,
+    )
 
 
 def determine_universe(cfg: Any, symbols_arg: str | None) -> List[str]:
@@ -215,6 +232,11 @@ def enforce_strategy_selection(cfg: PeakConfig, strategy_key: str) -> None:
 
 def main(argv: List[str] | None = None) -> int:
     args = parse_args(argv)
+    try:
+        validate_forward_ohlcv_cli_args(args)
+    except ValueError as e:
+        print(f"\n❌ {e}", file=sys.stderr)
+        return 1
     out_dir = Path(args.output_dir)
     strategy_key = args.strategy
     run_name: str | None = None
@@ -308,6 +330,7 @@ def main(argv: List[str] | None = None) -> int:
                 n_bars=args.n_bars,
                 ohlcv_source=args.ohlcv_source,
                 timeframe=args.timeframe,
+                ohlcv_csv_path=args.ohlcv_csv,
             )
             ohlcv_load_by_symbol[symbol] = ohlcv_meta
             _print_ohlcv_load_observability(ohlcv_meta, run_id=deterministic_run_id)
