@@ -23,6 +23,7 @@
 - Master-V2 Readiness (canonical pair): [Readiness Ladder](ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) + [Readiness Read Model v1 (read-only interpretation)](ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md)
 - Master-V2 Gate-Status Report Surface v1 (docs-only reporting layer): [Gate-Status Report Surface / Summary Table v1](ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md)
 - Authority Recovery (Navigations-&#47;Konsolidierungsindex, **non-authorizing**): [AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md](ops/AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md) — Review- und Re-Onboarding-Navigation zu **bereits gelandeten** Authority-Boundary-Dokumenten (P0-Bereiche u. a.); **weder** Gate **noch** Signoff, **weder** Evidence-Paket **noch** Live-, First-Live-, Master-V2- oder Double-Play-Freigabe; ersetzt **nicht** die kanonischen Verträge oberhalb.
+- Bounded / Acceptance Authority Frontdoor (P0-D, Navigations-&#47;Read-Model-Frontdoor, **non-authorizing**): [BOUNDED_ACCEPTANCE_AUTHORITY_FRONTDOOR_INDEX_V0.md](ops/BOUNDED_ACCEPTANCE_AUTHORITY_FRONTDOOR_INDEX_V0.md) — read-only Einstiegs- und **Inventar-**Karte zu **bounded/acceptance-** und First-Live-**nahen** Doku-**Oberflächen**; **weder** Gate **noch** Signoff, **weder** Evidence **noch** Live-, First-Live-, **bounded-live**-, Master-V2- oder Double-Play-Freigabe; **keine** zweite **Autoritäts-**Quelle; ersetzt **nicht** die maßgeblichen kanonischen Verträge und Specs oberhalb.
 
 ---
 
