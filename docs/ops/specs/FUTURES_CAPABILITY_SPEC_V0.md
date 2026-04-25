@@ -157,6 +157,8 @@ Exit criteria:
 
 ### F5 — Read-only dashboard
 
+- F5 contract: [Futures Read-only Market Dashboard Contract v0](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md)
+
 Goal: expose futures capability and state without controls or mutation.
 
 Allowed dashboard behavior:
