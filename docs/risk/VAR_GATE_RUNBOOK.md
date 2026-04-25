@@ -1,5 +1,12 @@
 # VaR Gate Runbook
 
+
+## Authority and epoch note
+
+This runbook preserves historical and component-level VAR gate / RiskGate operator context. Phrases such as allowing trades, gate pass/fail, `BLOCK` / `WARN`, TOML defaults, operational deployment, or live-gate behavior are not, by themselves, current Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, or permission to route orders into any live capital path.
+
+VAR Gate checks can support risk enforcement and promotion discussions, but they are not a standalone promotion gate and do not replace the full staged enablement chain. Any live or first-live promotion remains governed by current gate, evidence, and signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This note is docs-only and changes no runtime behavior.
+
 ## Overview
 
 The **VaR Gate** is a portfolio-level risk control that evaluates Value-at-Risk (VaR) against configured thresholds before allowing trades.
