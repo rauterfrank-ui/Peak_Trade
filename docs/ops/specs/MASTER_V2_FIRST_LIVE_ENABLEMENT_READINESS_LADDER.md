@@ -20,6 +20,7 @@ Companion interpretation layer (read-only, non-authorizing):
 
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`
+- `docs/ops/specs/MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md` — compact G1–G12 gate-status **mapping** index; read-only visibility companion, **not** live authorization, gate closure, or operator signoff
 
 PRE_LIVE `*_CONTRACT_V1` pack — navigation read model (read-only index, non-authorizing):
 

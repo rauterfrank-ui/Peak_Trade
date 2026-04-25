@@ -1,7 +1,7 @@
 # MASTER V2 — First Live Gate Status Index v1 (Canonical, Read-Only)
 
 status: ACTIVE
-last_updated: 2026-04-20
+last_updated: 2026-04-25
 owner: Peak_Trade
 purpose: Canonical docs-only gate status index for Master V2 First Live readiness visibility and auditability
 docs_token: DOCS_TOKEN_MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1
@@ -28,6 +28,10 @@ Out of scope:
 - reuse or rewire inventory updates
 - vocabulary or boundary lock expansion
 - scope implementation work
+
+## 2.1) Related navigation (companion, non-authority)
+
+For **suggested read order** and cluster grouping of the `MASTER_V2_FIRST_LIVE_PRE_LIVE_*_CONTRACT_V1.md` filename set, see [`MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md`](MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md). That document is a **navigation and read-order read model only**; it is **not** a gate schedule, not signoff, not evidence, not a live or First-Live go, and it does not change the meaning of any contract in this index.
 
 ## 3) Canonical Status Model
 
