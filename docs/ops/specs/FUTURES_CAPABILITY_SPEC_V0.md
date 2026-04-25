@@ -217,6 +217,8 @@ Exit criteria:
 
 ### F7 — Candidate evidence package
 
+- F7 contract: [Futures Candidate Evidence Package Contract v0](FUTURES_CANDIDATE_EVIDENCE_PACKAGE_CONTRACT_V0.md)
+
 Goal: produce candidate-specific evidence for the governed readiness ladder.
 
 Required evidence includes:
