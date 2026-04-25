@@ -43,6 +43,7 @@ Read **context** (optional but useful) **before** or **alongside** the PRE_LIVE 
 | Step | Existing spec (link) | Role in review (reading aid) | What it does **not** authorize |
 |------|----------------------|--------------------------------|---------------------------------|
 | C0 | [STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md](STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md) | Strategy / MV2 **boundary** and vocabulary | Live go, Double Play, registry as sole authority |
+| C0b | [MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md](MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md) | **Canonical** Master V2 / Double Play **trading-logic** target semantics (State-Switch vs Kill-All, dynamic scope envelope) | Order placement, execution, sessions, testnet/live authorization |
 | C1 | [MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) | **Canonical** L0–L5 enablement **steering** for the clarification workstream | A finished ladder state, green gates, or live enablement |
 | C2 | [MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md) | Interpretation grammar for readiness claims (companion) | Evidence, signoff, or gate completion |
 | C3 | [MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md](MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md) | **Compact** G1–G12 gate-status **mapping** index (read-only visibility) | Gate closure, live authorization, or operator signoff |
