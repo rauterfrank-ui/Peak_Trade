@@ -1,0 +1,117 @@
+name: Real Market Forward Evidence Smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  real-market-forward-evidence-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install project (uv)
+        run: uv sync --dev
+
+      - name: Create minimal numeric signal CSV
+        run: |
+          set -euo pipefail
+          mkdir -p out/ops/real_market_forward_evidence_smoke
+          cat > out/ops/real_market_forward_evidence_smoke/signals.csv <<'EOF'
+          symbol,as_of,direction
+          BTC/EUR,2026-01-01T00:00:00Z,1.0
+          EOF
+
+      - name: Run read-only Kraken forward evidence smoke
+        run: |
+          set -euo pipefail
+          uv run python scripts/evaluate_forward_signals.py \
+            out/ops/real_market_forward_evidence_smoke/signals.csv \
+            --output-dir out/ops/real_market_forward_evidence_smoke/out_eval \
+            --ohlcv-source kraken \
+            --timeframe 1m \
+            --n-bars 20
+
+      - name: Validate market_data_provenance manifest
+        run: |
+          set -euo pipefail
+          uv run python - <<'PY'
+          import json
+          from pathlib import Path
+
+          out = Path("out/ops/real_market_forward_evidence_smoke/out_eval")
+          manifests = sorted(out.glob("*eval_run_manifest*.json"))
+          if len(manifests) != 1:
+              raise SystemExit(f"expected exactly one eval manifest, got {len(manifests)}")
+
+          manifest = manifests[0]
+          payload = json.loads(manifest.read_text())
+          mdp = payload.get("market_data_provenance")
+          if not isinstance(mdp, dict):
+              raise SystemExit("missing market_data_provenance")
+
+          checks = {
+              "schema_version": mdp.get("schema_version") == "market_data_provenance_v1",
+              "source_kind": mdp.get("source_kind") == "historical_real",
+              "provider": mdp.get("provider") == "kraken",
+              "exchange": mdp.get("exchange") == "kraken",
+              "is_synthetic": mdp.get("is_synthetic") is False,
+              "is_fixture": mdp.get("is_fixture") is False,
+              "dry_run_execution": mdp.get("dry_run_execution") is True,
+              "symbols": bool(mdp.get("symbols")),
+              "timeframe": bool(mdp.get("timeframe")),
+              "n_bars": isinstance(mdp.get("n_bars"), int) and mdp.get("n_bars") > 0,
+              "fetched_at_utc": bool(mdp.get("fetched_at_utc")),
+          }
+          failed = [k for k, ok in checks.items() if not ok]
+          if failed:
+              raise SystemExit(f"market_data_provenance checks failed: {failed}; mdp={mdp}")
+
+          summary = {
+              "manifest": str(manifest),
+              "market_data_provenance": {
+                  k: mdp.get(k)
+                  for k in [
+                      "schema_version",
+                      "source_kind",
+                      "provider",
+                      "exchange",
+                      "ohlcv_source",
+                      "symbols",
+                      "timeframe",
+                      "n_bars",
+                      "fetched_at_utc",
+                      "is_mock",
+                      "is_synthetic",
+                      "is_fixture",
+                      "dry_run_execution",
+                  ]
+              },
+              "checks": checks,
+          }
+          Path("out/ops/real_market_forward_evidence_smoke/summary.json").write_text(
+              json.dumps(summary, indent=2) + "\n"
+          )
+          print(json.dumps(summary, indent=2))
+          PY
+
+      - name: Upload real market forward evidence smoke artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-market-forward-evidence-smoke
+          path: |
+            out/ops/real_market_forward_evidence_smoke/signals.csv
+            out/ops/real_market_forward_evidence_smoke/out_eval/*
+            out/ops/real_market_forward_evidence_smoke/summary.json
+          if-no-files-found: error
