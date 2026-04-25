@@ -9,6 +9,8 @@ Risk Layer material can support risk review, architecture review, and safety dis
 
 Any live or first-live promotion remains governed by current gate, evidence, and signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This note is docs-only and changes no runtime behavior.
 
+**Glossary crosslink:** See [Risk surfaces glossary v0](RISK_SURFACES_GLOSSARY_V0.md) for the non-authoritative glossary distinguishing RiskGate, ops gates, live gates, execution risk hooks, KillSwitch, diagnostics, Scope / Capital Envelope, Risk / Exposure Caps, and staged Execution Enablement.
+
 **Version:** 1.0  
 **Date:** 2025-12-28  
 **Agent:** A6 (Integration & Documentation)
