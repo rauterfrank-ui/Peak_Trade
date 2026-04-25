@@ -187,3 +187,51 @@ def test_main_json_green(monkeypatch: pytest.MonkeyPatch, capsys: pytest.Capture
     out = json.loads(capsys.readouterr().out.strip())
     assert out["contract"] == mod.CONTRACT_ID
     assert out["summary"]["packet_ok"] is True
+
+
+def test_main_json_exit_2_invalid_repo_root_is_fail_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    import scripts.ops.bounded_pilot_operator_preflight_packet as mod
+
+    not_a_dir = tmp_path / "file_instead_of_dir.txt"
+    not_a_dir.write_text("x", encoding="utf-8")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "bounded_pilot_operator_preflight_packet",
+            "--json",
+            "--repo-root",
+            str(not_a_dir),
+        ],
+    )
+    assert mod.main() == 2
+    data = json.loads(capsys.readouterr().out.strip())
+    assert data["contract"] == mod.CONTRACT_ID
+    assert "not a directory" in str(data.get("error", ""))
+
+
+def test_main_json_exit_2_when_build_packet_raises(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    import scripts.ops.bounded_pilot_operator_preflight_packet as mod
+
+    def _outer_boom(*a, **k):
+        raise RuntimeError("orchestrator outer failure")
+
+    monkeypatch.setattr(mod, "build_operator_preflight_packet", _outer_boom)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "bounded_pilot_operator_preflight_packet",
+            "--json",
+            "--repo-root",
+            str(ROOT),
+        ],
+    )
+    assert mod.main() == 2
+    data = json.loads(capsys.readouterr().out.strip())
+    assert data["contract"] == mod.CONTRACT_ID
+    assert "orchestrator outer failure" in str(data.get("error", ""))
