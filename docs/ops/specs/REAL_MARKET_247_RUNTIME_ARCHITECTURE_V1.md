@@ -94,6 +94,30 @@ The workflow or runner must fail closed if any required field is missing or cont
 3. **Optionally** attach export to S3 or registry in a follow-on slice, with read-after-verify and least-privilege object prefixes—only after the manifest contract is stable.
 4. **Consider Class B** (daemon) only if continuous near-real-time read-only state is required and Class A is insufficient.
 
+## AWS read-only inventory checklist (pre-build)
+
+**Before** creating or changing AWS resources, complete a read-only pass with the intended account/role (Console, CloudShell, or CLI with a **read-only** policy). This list is a checklist, not a deployment recipe.
+
+- [ ] `sts get-caller-identity` (confirm account, no secrets in logs)
+- [ ] Identify existing: EventBridge **rules** / **Scheduler** schedules, ECS **clusters** / **services** (if any), Batch **job queues** / **definitions** (if any)
+- [ ] Confirm **no** change is being made in this pass (inventory only)
+- [ ] If credentials are missing, **stop** and use an approved read-only profile or operator session—**do not** create keys or inline policies ad hoc
+- [ ] Map who owns alarm/escalation for a future scheduled **Class A** job (even if the job is not created yet)
+- [ ] Reconcile with this file: evidence contract and safety boundaries must match what will be automated
+
+S3, registry export, and IAM are **out of band** of the runner contract until a separate, explicit follow-on slice and least-privilege design.
+
+## Stop conditions (operator)
+
+Stop work on a given rollout track when any of the following occur:
+
+- Market data or API errors persist (e.g. sustained Kraken/REST failures, rate limits) and the run cannot complete the evidence contract
+- **Provenance** checks fail: `is_synthetic` or `is_fixture` true when real evidence was intended, or `source_kind` not in the allowed set
+- **Secrets** appear in logs, artifacts, or CI output
+- Any step attempts **orders**, **live/testnet** execution, or **governance bypass**—fail closed and file an incident
+- **Cost/Actions budget** is exceeded without a written operator decision
+- A scheduled job repeatedly overlaps or backlogs such that **evidence** is not trustworthy (timestamps, race conditions, partial artifacts)
+
 ## Optional future extensions (out of scope for v1)
 
 - Streaming or websocket-based provenance (different `source_kind` and schema revision).
