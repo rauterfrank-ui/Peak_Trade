@@ -39,6 +39,7 @@
 
 ### Operational (Runbooks, Ops)
 - [ops/RUNBOOK_INDEX.md](ops/RUNBOOK_INDEX.md) — Runbook-Index (Ops-Runbooks, Workflows)
+- [ops/runbooks/futures/FUTURES_TRADING_READINESS_RUNBOOK_V0.md](ops/runbooks/futures/FUTURES_TRADING_READINESS_RUNBOOK_V0.md) — Futures-/Perp-**Readiness** (Stufenplan, docs-only, non-authority)
 - [ops/](ops/) — Ops-Docs, Merge-Logs
 - [runbooks/](runbooks/) — Runbooks (docs&#47;runbooks&#47;; Ops-Runbooks siehe ops&#47;RUNBOOK_INDEX.md)
 
