@@ -12,6 +12,10 @@ This document is **docs-only**. It is the **canonical trading-logic manifest** f
 - The **hot path** may update **lightweight runtime scope state** only. It must **not** run heavy **AI**, full **governance**, or full **risk** recomputation in the hot path.
 - This manifest carries **no live authorization**; live remains blocked until separate governed steps.
 
+## Related specifications (docs-only, non-authority)
+
+- [MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTRACT_V0.md) — **Futures arithmetic** and **sequence survival** **envelope** for Double Play (complements this manifest; not an execution permit).
+
 ---
 **Status:** Konzept-/Architektur-Manifest, nicht Live-Freigabe  
 **Scope:** Master V2 / Double Play Handelslogik für Futures/Perpetuals  
