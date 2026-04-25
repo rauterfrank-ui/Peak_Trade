@@ -43,6 +43,7 @@ from _forward_run_manifest import (
     try_git_sha,
     write_forward_run_manifest,
 )
+from _market_data_provenance import build_market_data_provenance_v1
 from src.core.peak_config import load_config
 from src.core.experiments import log_generic_experiment
 
@@ -337,6 +338,14 @@ def main(argv: List[str] | None = None) -> int:
             argv=payload["argv"],
             config_path=str(payload["config_path"]),
             git_sha=payload.get("git_sha"),
+        )
+        payload["market_data_provenance"] = build_market_data_provenance_v1(
+            ohlcv_source=args.ohlcv_source,
+            symbols=symbols_val,
+            timeframe=args.timeframe,
+            n_bars=args.n_bars,
+            fetched_at_utc=payload["generated_at_utc"],
+            dry_run_execution=True,
         )
         write_forward_run_manifest(manifest_path, payload)
 
