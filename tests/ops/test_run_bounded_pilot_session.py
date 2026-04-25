@@ -375,3 +375,166 @@ def test_invoke_json_shows_operator_preflight_packet_when_blocked(
     assert data["blocked_at"] == "operator_preflight_packet"
     blocked_txt = " ".join(data["operator_preflight_packet"]["summary"]["blocked"])
     assert "incident_stop_artifact" in blocked_txt
+
+
+def test_main_exits_2_when_run_bounded_pilot_readiness_raises(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    """Outer try/except: readiness orchestration error → fail-closed exit 2, stderr only (no JSON)."""
+    mod = _load_session_module()
+
+    def _boom(*a, **k) -> object:
+        raise RuntimeError("readiness orchestration boom")
+
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        _boom,
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_bounded_pilot_session", "--repo-root", str(ROOT), "--no-invoke"],
+    )
+    assert mod.main() == 2
+    cap = capsys.readouterr()
+    assert "ERR: bounded pilot preflight failed" in cap.err
+    assert "readiness orchestration boom" in cap.err
+    assert not cap.out.strip()
+
+
+def test_main_exits_2_readiness_exception_still_no_stdout_json_with_flags(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    """readiness exception path does not emit contract JSON to stdout, even with --json."""
+    mod = _load_session_module()
+
+    def _boom(*a, **k) -> object:
+        raise RuntimeError("synthetic readiness failure")
+
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        _boom,
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_bounded_pilot_session",
+            "--repo-root",
+            str(ROOT),
+            "--json",
+            "--no-invoke",
+        ],
+    )
+    assert mod.main() == 2
+    cap = capsys.readouterr()
+    assert not cap.out.strip()
+    assert "synthetic readiness failure" in cap.err
+
+
+def test_no_invoke_exits_2_when_build_operator_preflight_packet_raises(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    """_evaluate: build_operator_preflight_packet exception → exit 2, stderr, no result JSON on exception path."""
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _packet_boom(*a, **k) -> object:
+        raise OSError("packet build boom")
+
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        _packet_boom,
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_bounded_pilot_session", "--repo-root", str(ROOT), "--no-invoke"],
+    )
+    assert mod.main() == 2
+    cap = capsys.readouterr()
+    assert "ERR: operator preflight packet failed" in cap.err
+    assert "packet build boom" in cap.err
+    assert not cap.out.strip()
+
+
+def test_no_invoke_exits_2_build_packet_exception_no_stdout_with_json(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    """Exception before packet dict exists: no JSON to stdout; stderr documents failure (fail-closed)."""
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _forced_packet_exc(*a, **k) -> object:
+        raise ValueError("forced packet exception")
+
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        _forced_packet_exc,
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_bounded_pilot_session",
+            "--repo-root",
+            str(ROOT),
+            "--json",
+            "--no-invoke",
+        ],
+    )
+    assert mod.main() == 2
+    cap = capsys.readouterr()
+    assert not cap.out.strip()
+    assert "ERR: operator preflight packet failed" in cap.err
+    assert "forced packet exception" in cap.err
+
+
+def test_invoke_exits_2_when_build_operator_preflight_packet_raises(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    """Invoke path: same _evaluate exception semantics before subprocess."""
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _invoke_boom(*a, **k) -> object:
+        raise RuntimeError("invoke preflight build boom")
+
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        _invoke_boom,
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called when packet build raises")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_bounded_pilot_session", "--repo-root", str(ROOT)],
+    )
+    assert mod.main() == 2
+    cap = capsys.readouterr()
+    assert "ERR: operator preflight packet failed" in cap.err
+    assert "invoke preflight build boom" in cap.err
+    assert not cap.out.strip()
