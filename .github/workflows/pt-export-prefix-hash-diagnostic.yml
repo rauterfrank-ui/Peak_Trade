@@ -1,0 +1,43 @@
+name: PT Export Prefix Hash Diagnostic
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Diagnose PT_EXPORT_PREFIX without revealing it
+        env:
+          PT_EXPORT_PREFIX: ${{ secrets.PT_EXPORT_PREFIX }}
+          PT_EXPORT_REMOTE: ${{ secrets.PT_EXPORT_REMOTE }}
+          PT_RCLONE_CONF_B64: ${{ secrets.PT_RCLONE_CONF_B64 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import os
+
+          prefix = os.environ.get("PT_EXPORT_PREFIX", "")
+          remote = os.environ.get("PT_EXPORT_REMOTE", "")
+          conf = os.environ.get("PT_RCLONE_CONF_B64", "")
+
+          def sha16(value: str) -> str:
+              return hashlib.sha256(value.encode("utf-8")).hexdigest()[:16] if value else ""
+
+          parts = [p for p in prefix.strip("/").split("/") if p]
+          safe_hint = parts[0] + "/..." if parts else ""
+
+          print("PT_EXPORT_PREFIX_SET=", bool(prefix))
+          print("PT_EXPORT_PREFIX_DEPTH=", len(parts))
+          print("PT_EXPORT_PREFIX_HINT=", safe_hint)
+          print("PT_EXPORT_PREFIX_SHA16=", sha16(prefix))
+          print("PT_EXPORT_REMOTE_SET=", bool(remote))
+          print("PT_EXPORT_REMOTE_SHA16=", sha16(remote))
+          print("PT_RCLONE_CONF_B64_SET=", bool(conf))
+          print("PT_RCLONE_CONF_B64_SHA16=", sha16(conf))
+          PY
