@@ -15,6 +15,14 @@ Risk Layer alignment remains downstream of distinct Scope / Capital Envelope sem
 
 ---
 
+## Current wiring snapshot note
+
+This wiring snapshot is docs-only and reflects a read-only audit of current repo shape. The alignment memo remains valuable as planning/provenance and must not be discarded merely because some tree, API, rollout, or scaffold sketches are historical.
+
+Current observed wiring surfaces include `src/risk_layer/risk_gate.py` with `RiskGate` and the package-based `src/risk_layer/kill_switch/` surface, where `KillSwitch` is implemented under `core.py` and exported through `__init__.py`. Imports such as `from src.risk_layer.risk_gate import RiskGate` and `from src.risk_layer.kill_switch import KillSwitch` should be treated as current observed surfaces unless a later audit proves otherwise.
+
+Older tree or API sketches that imply multiple separate top-level gate modules should be read as planning/scaffold until independently verified. Missing or unclear gate surfaces are not dropped; they remain Park / retain or Needs deeper audit items for a later Master-V2-compatible wiring audit. This note changes no code, config, imports, tests, runtime behavior, evidence state, or market-data state, and it does not create Live authorization. Any future wiring alignment must be handled in a separate governed slice after read-only evidence and must preserve Master V2 and Doubleplay boundaries.
+
 ## Executive Summary
 
 Die Risk Layer v1.0 Roadmap wird in das **bestehende Dual-Package-System** integriert:
