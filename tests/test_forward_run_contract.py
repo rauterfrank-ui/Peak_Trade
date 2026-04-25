@@ -103,3 +103,7 @@ def test_evaluate_forward_exits_1_on_empty_signals_csv(tmp_path, cfg_test_path: 
     assert payload.get("generated_at_utc") and isinstance(payload["generated_at_utc"], str)
     assert payload["generated_at_utc"].endswith("Z")
     assert payload["config_path"] == str(cfg_test_path)
+    mdp = payload.get("market_data_provenance")
+    assert mdp and mdp.get("schema_version") == "market_data_provenance_v1"
+    assert mdp.get("source_kind") == "synthetic"
+    assert mdp.get("ohlcv_source") == "dummy"
