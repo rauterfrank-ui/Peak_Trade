@@ -1,5 +1,12 @@
 # Peak_Trade – Projekt-Status Overview (Phasen 1–86)
 
+
+## Entry framing note
+
+This overview is a historical/status navigation surface, not a standalone readiness or promotion authority. Status percentages, phase labels, completion wording, and production/readiness language must be interpreted together with the current Master V2 / PRE_LIVE / gate / evidence / signoff sections.
+
+This overview does not grant Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, production readiness, or permission to route orders into any live capital path. Any live or first-live promotion remains governed by current gate, evidence, and signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This docs-only note changes no runtime behavior and changes no status values.
+
 Dieses Dokument beschreibt den aktuellen Gesamtstatus von **Peak_Trade**
 (Phasen **1–86**, inkl. Research-/Portfolio-Track und Live-/Testnet-Track).
 
