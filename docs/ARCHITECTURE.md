@@ -241,6 +241,22 @@ Siehe: [BACKTEST_ENGINE.md](BACKTEST_ENGINE.md)
 **Signale-Format:**
 - `generated_at`, `as_of`, `strategy_key`, `symbol`, `direction`, `size_hint`
 
+### market_data_provenance Realness Guard
+
+Forward evaluation manifests may include `market_data_provenance` metadata. This metadata must not be interpreted as real-market evidence from `is_mock == false` alone.
+
+Real-market evidence requires the combined provenance guard:
+
+```text
+source_kind in {"historical_real", "real"}
+AND is_synthetic == false
+AND is_fixture == false
+AND provider/exchange/source metadata is present
+AND symbol/timeframe/time/market-series metadata is present
+```
+
+If `source_kind == "synthetic"` or `is_synthetic == true`, the run must not be read as real-market ground truth, regardless of `is_mock`. In v1, `is_mock` is not a standalone realness predicate.
+
 ---
 
 ## 9. Live Layer (`src/live/`)
