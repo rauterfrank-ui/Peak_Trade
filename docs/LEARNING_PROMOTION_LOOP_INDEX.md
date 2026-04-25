@@ -4,6 +4,12 @@
 **Status:** ✅ Production-Ready  
 **Datum:** 2025-12-11
 
+## Authority and epoch note
+
+This document is a learning/promotion-loop architecture and governance navigation surface, not a standalone promotion authority. `Production-Ready`, `Production-Readiness`, promotion, readiness, registry, or Live-session wording in this document does not, by itself, grant Master V2 approval, Doubleplay authority, PRE_LIFE completion, First-Live readiness, operator authorization, production readiness, experiment authorization, training authorization, or permission to route orders into any live capital path.
+
+Interpret this document together with current gate/evidence/signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, staged Execution Enablement, manual-only controls, and the explicit blacklist / P0 / P1 governance in this document. This docs-only note changes no runtime behavior, learning/promotion logic, registry behavior, experiment/training behavior, MLflow behavior, or status/history/checklist content.
+
 ---
 
 ## 🎯 Schnellstart
