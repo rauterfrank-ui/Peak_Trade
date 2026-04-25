@@ -3,6 +3,8 @@
 ## Purpose
 Interpret what the canonical acceptance-oriented bounded path now proves for governance and operations, and what it still does not prove.
 
+> **Authority and scope (governance / ops interpretation):** *Governance*, *ops*, *canonical* **acceptance** **path**, *proven*, *not yet proven*, and *interpretation* in this file describe a **governance/ops** **review** and **read-model navigation** for the bounded/acceptance documentation chain — not an operational Echtgeld go, not **bounded**-**live** or unrestricted **live** release, not First-Live or `PRE_LIVE` approval, not signoff, not Evidence, not a current Master V2 enablement **gate pass**, and not order, exchange, arming, routing, or enablement **authority** from the **What Is Now Proven** or **What Is Not Yet Proven** sections alone. **No** Master V2 or **Double Play** handoff is created from this document. **Master V2** / **Double Play** and the canonical **PRE_LIVE**, Readiness, and signoff **contracts** remain **authoritative**. **Navigation only, not a go:** [Readiness Ladder](../../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md), [PRE_LIVE navigation read model](../../specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md), [Bounded / acceptance authority frontdoor (P0-D light)](../../BOUNDED_ACCEPTANCE_AUTHORITY_FRONTDOOR_INDEX_V0.md), [Authority recovery consolidation index](../../AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md) (consolidation map, not approval).
+
 ## Current Evidence Position
 The project now has documented evidence for:
 - rejected-order bounded evidence
