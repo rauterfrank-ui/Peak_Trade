@@ -76,6 +76,8 @@ Exit criteria:
 
 ### F2 — Market data provenance
 
+- F2 contract: [Futures Market Data Provenance Contract v0](FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md)
+
 Goal: distinguish market-data read surfaces from cache/report/artifact write surfaces.
 
 Required fields include:
