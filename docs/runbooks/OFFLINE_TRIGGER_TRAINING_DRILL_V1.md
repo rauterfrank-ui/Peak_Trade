@@ -1,5 +1,12 @@
 # Offline Trigger-Training Drill – v0
 
+
+## Einstiegseinordnung
+
+Dieses Runbook bewahrt historischen und operativen Trigger-Training-/Drill-Kontext. Begriffe wie Trigger-Training, Drill, abgeschlossen, einsatzbereit, Go/No-Go, Operator-Readiness, Live oder Deployment sind für sich genommen keine aktuelle Master-V2-Freigabe, keine Doubleplay-Autorität, kein PRE_LIVE-Abschluss, keine First-Live-Readiness, keine Operator-Autorisierung, keine Produktionsreife und keine Live-Erlaubnis.
+
+Drill-Ergebnisse können Review und Operator-Disziplin unterstützen, ersetzen aber keine aktuellen Gate-/Evidence-/Signoff-Artefakte. Jede Live- oder First-Live-Promotion bleibt an Scope / Capital Envelope, Risk / Exposure Caps, Safety / Kill-Switches und staged Execution Enablement gebunden. Dieser docs-only Hinweis ändert kein Laufzeitverhalten und keine Drill-Schritte, Checklisten, Schwellen, Daten oder historischen Aussagen.
+
 ## Meta
 
 | Attribut | Wert |
