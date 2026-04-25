@@ -1,5 +1,14 @@
 # Risk Layer v1.0 - Repository Alignment Decision
 
+
+## Authority and epoch note
+
+This document preserves historical and component-level Risk Layer alignment, dual-package, configuration, API-sketch, rollout, migration, and RiskGate integration context. Terms such as FINAL, READY FOR IMPLEMENTATION, Production Readiness, Live Trading, rollout, scaffold, placeholder, or API sketch are not, by themselves, current Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, system certification, production readiness, or permission to route orders into any live capital path.
+
+The alignment logic is valuable and must be preserved for later read-only wiring / architecture audits. This note does not validate every path, import, placeholder, scaffold, API sketch, or rollout claim as current repo truth. Any future code, config, test, import, or API alignment must be handled in a separate governed slice after read-only evidence.
+
+Risk Layer alignment remains downstream of distinct Scope / Capital Envelope semantics and upstream of Safety / Kill-Switch fail-closed boundaries where applicable. Any live or first-live promotion remains governed by current gate, evidence, and signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This note is docs-only and changes no runtime behavior.
+
 **Agent:** A0 (Architect & Repo Alignment)  
 **Datum:** 2025-12-28  
 **Status:** FINAL
