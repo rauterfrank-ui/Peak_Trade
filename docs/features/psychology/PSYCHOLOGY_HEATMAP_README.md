@@ -1,5 +1,12 @@
 # Psychologie-Heatmap Integration – Zusammenfassung
 
+
+## Einstiegseinordnung
+
+Dieses Dokument bewahrt historischen und komponentenorientierten Trading-Psychologie-Kontext. Begriffe wie produktionsbereit, produktionsfertig, vollständig implementiert, betriebsbereit, Erfolg, Readiness, Heatmap, Heuristik, Tests oder Trades sind für sich genommen keine aktuelle Master-V2-Freigabe, keine Doubleplay-Autorität, kein PRE_LIVE-Abschluss, keine First-Live-Readiness, keine Operator-Autorisierung, keine Produktionsreife und keine Live-Erlaubnis.
+
+Psychologie- und Reporting-Material kann Disziplin und Review unterstützen, ersetzt aber keine Gate-/Evidence-/Signoff-Artefakte. Jede Live- oder First-Live-Promotion bleibt an Scope / Capital Envelope, Risk / Exposure Caps, Safety / Kill-Switches und staged Execution Enablement gebunden. Dieser docs-only Hinweis ändert kein Laufzeitverhalten und keine Heuristik-Regeln, Schwellen, Checklisten, Tabellen, Daten oder historischen Aussagen.
+
 ## ✅ Was wurde implementiert?
 
 Die **Psychologie-Heatmap** ist jetzt vollständig in Peak_Trade integriert und produktionsbereit.

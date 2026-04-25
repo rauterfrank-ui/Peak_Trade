@@ -1,3 +1,9 @@
+## Einstiegseinordnung
+
+Diese Datei bewahrt historischen und operativen Live-/Testnet-/Workflow-/How-to-Kontext. Begriffe wie Live, Testnet, Workflow, Deployment, produktionsbereit, produktionsfertig, Go/No-Go, Checkliste, abgeschlossen, Erfolg oder Readiness sind für sich genommen keine aktuelle Master-V2-Freigabe, keine Doubleplay-Autorität, kein PRE_LIVE-Abschluss, keine First-Live-Readiness, keine Operator-Autorisierung, keine Produktionsreife und keine Live-Erlaubnis.
+
+Diese Datei muss zusammen mit aktuellen Gate-/Evidence-/Signoff-Artefakten, Scope / Capital Envelope, Risk / Exposure Caps, Safety / Kill-Switches und staged Execution Enablement gelesen werden. Dieser docs-only Hinweis ändert kein Laufzeitverhalten und keine Workflow-Schritte, Checklisten, Schwellen, Statuswerte, Daten, Tabellen oder historischen Aussagen.
+
 ## How-To: Live-Track v1.1 in 3 Minuten nutzen
 
 Ziel: In **3 Minuten** den kompletten Live-Track-Stack im Demo-Mode einmal anfassen – von CLI bis Dashboard.  
