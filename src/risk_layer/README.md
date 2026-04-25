@@ -47,7 +47,7 @@ This module provides **operational risk management** for live trading:
 
 ## Key Components
 
-### Kill Switch (`kill_switch/`)
+### Kill Switch (`kill_switch&#47;`)
 
 **Purpose:** Emergency halt mechanism (Layer 4 of Defense-in-Depth)
 
@@ -55,7 +55,7 @@ This module provides **operational risk management** for live trading:
 - `core.py` - KillSwitch class (state machine)
 - `state.py` - State definitions (ACTIVE, KILLED, RECOVERING)
 - `execution_gate.py` - ExecutionGate (blocks orders when killed)
-- `triggers/` - Trigger mechanisms (manual, threshold, watchdog, external)
+- `triggers&#47;` - Trigger mechanisms (manual, threshold, watchdog, external)
 - `persistence.py` - State persistence (survive restarts)
 - `audit.py` - Audit trail
 - `cli.py` - Command-line interface
@@ -101,7 +101,7 @@ python -m src.risk_layer.kill_switch.cli complete-recovery
 
 ---
 
-### Alerting (`alerting/`)
+### Alerting (`alerting&#47;`)
 
 **Purpose:** Risk event notification and dispatch
 
@@ -110,7 +110,7 @@ python -m src.risk_layer.kill_switch.cli complete-recovery
 - `alert_dispatcher.py` - AlertDispatcher (routing)
 - `alert_types.py` - Alert severity and types
 - `alert_event.py` - AlertEvent dataclass
-- `channels/` - Notification channels
+- `channels&#47;` - Notification channels
 
 **Channels:**
 - `slack_channel.py` - Slack notifications
@@ -137,7 +137,7 @@ manager.send_alert(
 
 ---
 
-### VaR Backtesting (`var_backtest/`)
+### VaR Backtesting (`var_backtest&#47;`)
 
 **Purpose:** Validation of VaR models (regulatory compliance)
 
