@@ -1,5 +1,12 @@
 # VaR Backtest Guide – Operator Manual
 
+
+## Authority and epoch note
+
+This guide preserves historical and component-level VaR backtest operator context. Phrases such as `production-ready`, deployment, live-gate, or operational readiness are not, by themselves, current Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, or permission to route orders into any live capital path.
+
+VaR backtesting can support risk review, diagnostics, and promotion discussions, but it is not a standalone promotion gate. Any live or first-live promotion remains governed by current gate, evidence, and signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This note is docs-only and changes no runtime behavior.
+
 **Module:** `src/risk_layer/var_backtest/`  
 **Purpose:** Research & Backtesting Only  
 **Status:** ✅ Production Ready (Backtest/Research)
