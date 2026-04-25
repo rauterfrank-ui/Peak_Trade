@@ -1,5 +1,12 @@
 # Duration-Based Independence Diagnostic Guide
 
+
+## Authority and epoch note
+
+This guide preserves historical and component-level duration-diagnostic context. Duration diagnostics can support VaR / risk review, independence analysis, and model-quality discussions, but they are not, by themselves, current Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, a primary production rejection gate, or permission to route orders into any live capital path.
+
+Duration diagnostics do not replace Christoffersen / Kupiec validation, current gate, evidence, and signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, or staged Execution Enablement. This note is docs-only and changes no runtime behavior.
+
 **Phase 9A Implementation**  
 **Status:** ✅ Optional Diagnostic (NOT a primary gate)  
 **Purpose:** Supplementary evidence for VaR violation independence
