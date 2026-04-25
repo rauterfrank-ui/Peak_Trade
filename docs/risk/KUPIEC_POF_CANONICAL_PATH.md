@@ -1,5 +1,12 @@
 # Kupiec POF: Canonical Import Path Guide
 
+
+## Authority and epoch note
+
+This guide preserves historical and component-level Kupiec POF canonical-path context. Phrases such as active status, canonical path, valid model, migration complete, or test success are not, by themselves, current Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, model certification, or permission to route orders into any live capital path.
+
+Kupiec POF can support VaR / risk review and model-quality discussions, but it is not a standalone promotion gate. Canonical import guidance does not collapse validation-suite and risk-layer surfaces into a single trading-authority path. Any live or first-live promotion remains governed by current gate, evidence, and signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This note is docs-only and changes no runtime behavior.
+
 **Version:** Phase 8A (2025-12-28)  
 **Status:** ✅ Active
 
