@@ -10,6 +10,10 @@ Diese **Risk-Layer**-Dokumentation ersetzt **keine** Master-V2-konforme Governan
 
 ---
 
+## Risk surface glossary
+
+See [Risk Surfaces Glossary v0](RISK_SURFACES_GLOSSARY_V0.md) for the non-authoritative, docs-only glossary distinguishing risk, gate, safety, diagnostic, evidence, and promotion surfaces. It preserves Master V2 / Doubleplay boundaries by separating Scope / Capital Envelope from Risk / Exposure Caps and by distinguishing RiskGate, ops gates, live gates, execution risk hooks, KillSwitch, diagnostics, and staged Execution Enablement. The glossary changes no runtime behavior and grants no Live authorization.
+
 ## Documentation Index
 
 ### Implementation Guides
