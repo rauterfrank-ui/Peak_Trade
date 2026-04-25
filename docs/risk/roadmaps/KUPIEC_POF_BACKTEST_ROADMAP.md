@@ -1,5 +1,14 @@
 # Kupiec POF Backtest – Implementierungs-Roadmap
 
+
+## Authority and epoch note
+
+This roadmap preserves historical and component-level Kupiec POF backtest planning context. Roadmap status, implementation readiness, production-readiness language, shadow / live mentions, pseudocode, or `is_valid` examples are not, by themselves, current Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, model certification, production readiness, or permission to route orders into any live capital path.
+
+Kupiec POF roadmap material can support risk-validation planning and later implementation review, but it is not a standalone promotion gate. Canonical-path, dependency, or implementation-alignment questions must be handled in a separate governed slice; this note does not rewrite paths, dependencies, code, tests, or architecture.
+
+Any live or first-live promotion remains governed by current gate, evidence, and signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This note is docs-only and changes no runtime behavior.
+
 **Projekt:** Peak_Trade Risk Layer  
 **Komponente:** VaR Backtesting / Kupiec Proportion of Failures (POF) Test  
 **Erstellt:** 2025-12-27  
