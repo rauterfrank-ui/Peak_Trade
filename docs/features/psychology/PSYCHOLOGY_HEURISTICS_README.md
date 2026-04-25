@@ -1,5 +1,12 @@
 # 🧠 Psychologie-Heuristik-System – Quick Start
 
+
+## Authority and epoch note
+
+This document preserves historical and component-level trading psychology context. Psychology readiness, production-ready, complete, success, operational, or readiness wording is not, by itself, current Master V2 approval, Doubleplay authority, PRE_LIVE completion, First-Live readiness, operator authorization, production readiness, or permission to route orders into any live capital path.
+
+Psychology material can support operator discipline and review, but it is not a standalone promotion gate. Any live or first-live promotion remains governed by current gate/evidence/signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This docs-only note changes no runtime behavior and changes no checklist items, tables, dates, or historical claims.
+
 **Status:** ✅ Production-Ready  
 **Version:** 1.0  
 **Tests:** 47/47 passing ✅
