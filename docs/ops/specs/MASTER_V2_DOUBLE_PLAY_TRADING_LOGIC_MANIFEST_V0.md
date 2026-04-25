@@ -15,6 +15,7 @@ This document is **docs-only**. It is the **canonical trading-logic manifest** f
 ## Related specifications (docs-only, non-authority)
 
 - [MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTRACT_V0.md) — **Futures arithmetic** and **sequence survival** **envelope** for Double Play (complements this manifest; not an execution permit).
+- [MASTER_V2_DOUBLE_PLAY_STRATEGY_SUITABILITY_PROJECTION_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_STRATEGY_SUITABILITY_PROJECTION_CONTRACT_V0.md) — **Strategy suitability projection** (metadata and side-compatibility only; not activation or execution authority).
 
 ---
 **Status:** Konzept-/Architektur-Manifest, nicht Live-Freigabe  
