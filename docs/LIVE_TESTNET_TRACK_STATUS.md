@@ -7,6 +7,13 @@ Stand: 2025-12-07 (nach Phase 54)
 
 ---
 
+## Einstiegseinordnung
+
+Diese Datei ist eine historische Status- und Navigationsfläche für den Live-/Testnet-Track, keine eigenständige Freigabe- oder Promotionsautorität. Prozentwerte, Statuslabels, Begriffe wie funktional einsatzbereit, live-reif, Testnet/Live und Legenden müssen zusammen mit aktuellem Master V2 / PRE_LIVE / Gate / Evidence / Signoff-Kontext gelesen werden.
+
+Diese Datei erteilt keine Master-V2-Freigabe, keine Doubleplay-Autorität, keine First-Live-Readiness, keine Operator-Autorisierung, keine Produktionsreife und keine Live-Erlaubnis. Jede Live- oder First-Live-Promotion bleibt an aktuelle Gate-/Evidence-/Signoff-Artefakte, Scope / Capital Envelope, Risk / Exposure Caps, Safety / Kill-Switches und staged Execution Enablement gebunden. Dieser docs-only Hinweis ändert kein Laufzeitverhalten und keine Statuswerte.
+
+
 ## 1. Zusammenfassung in Prozent
 
 | Bereich                                     | Status   |
