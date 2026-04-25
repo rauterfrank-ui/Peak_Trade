@@ -2,7 +2,7 @@
 title: "Master V2 First Live PRE_LIVE Navigation Read Model v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-24"
+last_updated: "2026-04-25"
 docs_token: "DOCS_TOKEN_MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0"
 ---
 
@@ -45,6 +45,8 @@ Read **context** (optional but useful) **before** or **alongside** the PRE_LIVE 
 | C0 | [STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md](STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md) | Strategy / MV2 **boundary** and vocabulary | Live go, Double Play, registry as sole authority |
 | C1 | [MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) | **Canonical** L0–L5 enablement **steering** for the clarification workstream | A finished ladder state, green gates, or live enablement |
 | C2 | [MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md) | Interpretation grammar for readiness claims (companion) | Evidence, signoff, or gate completion |
+| C3 | [MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md](MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md) | **Compact** G1–G12 gate-status **mapping** index (read-only visibility) | Gate closure, live authorization, or operator signoff |
+| C4 | [MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md](MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md) | Docs-only **report/table rendering** carrier aligned with the read model (companion) | A rendered status row as a governance decision, evidence, or go |
 
 **Suggested first pass — PRE_LIVE contract cluster (order is a reading aid, not a mandate):**
 
