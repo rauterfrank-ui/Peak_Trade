@@ -3,6 +3,12 @@
 ## Purpose
 Compact review packet for bounded / acceptance status, evidence position, operator path, and governance framing.
 
+## Authority and scope (review packet; P0-D partial)
+
+> This file is a **bounded / acceptance** **review packet** — **navigation**, **read-model**, and **handover** context for adjacent docs. Phrases such as **what is proven**, **what is allowed now**, **delivery**, **exec**, **handover**, **review packet**, **evidence**, or **allowed** describe **documentation** and **review** semantics unless a **separate** governed record says otherwise; they are **not** automatic **operational** real-money go, **bounded-live** / unrestricted-**live** / **First-Live** / **PRE_LIVE** approval, **signoff**, **Evidence** as authority, **gate** pass in the current **Master V2** enablement sense, **order** / **routing** / **exchange** / **arming** / **enablement** authority, **Master V2** handoff, or **Double Play** proof. **Master V2** / **Double Play** and the canonical **PRE_LIVE**, **readiness**, and **signoff** **contracts** remain **authoritative**.
+
+**Navigation (non-authorizing):** [Readiness Ladder](../../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) · [PRE_LIVE navigation read model](../../specs/MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md) · [Bounded / acceptance authority frontdoor](../../BOUNDED_ACCEPTANCE_AUTHORITY_FRONTDOOR_INDEX_V0.md) · [Authority recovery consolidation index](../../AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md).
+
 ## Canonical Entry
 - start here:
   `docs&#47;ops&#47;reviews&#47;bounded_acceptance_start_here_page&#47;START_HERE.md`
