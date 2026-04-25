@@ -46,6 +46,8 @@ Exit criteria:
 
 ### F1 — Instrument metadata
 
+- F1 contract: [Futures Instrument Metadata Contract v0](FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md)
+
 Goal: define a futures instrument metadata contract.
 
 Required fields include:
