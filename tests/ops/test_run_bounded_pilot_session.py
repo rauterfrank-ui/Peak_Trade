@@ -538,3 +538,109 @@ def test_invoke_exits_2_when_build_operator_preflight_packet_raises(
     assert "ERR: operator preflight packet failed" in cap.err
     assert "invoke preflight build boom" in cap.err
     assert not cap.out.strip()
+
+
+def test_invoke_propagates_subprocess_nonzero_returncode(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Handoff: subprocess.run returncode is passed through; cmd/env match wrapper contract."""
+    from src.core.environment import (
+        LIVE_CONFIRM_TOKEN,
+        PT_BOUNDED_PILOT_INVOKED_FROM_GATE,
+        PT_LIVE_CONFIRM_TOKEN_ENV,
+    )
+
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        lambda *a, **k: (_green_operator_packet(), 0),
+    )
+    last: dict = {}
+
+    def _fake_run(cmd, *, cwd, env, **kwargs):
+        last["cmd"] = list(cmd)
+        last["cwd"] = cwd
+        last["env"] = env
+        return subprocess.CompletedProcess(args=cmd, returncode=13)
+
+    monkeypatch.setattr(subprocess, "run", _fake_run)
+    monkeypatch.setattr(sys, "argv", ["run_bounded_pilot_session", "--repo-root", str(ROOT)])
+    assert mod.main() == 13
+    expect_runner = str(ROOT / "scripts" / "run_execution_session.py")
+    assert last["cmd"] == [
+        sys.executable,
+        expect_runner,
+        "--mode",
+        "bounded_pilot",
+        "--strategy",
+        "ma_crossover",
+        "--steps",
+        "1",
+        "--position-fraction",
+        "0.0005",
+    ]
+    assert last["cwd"] == ROOT
+    assert last["env"][PT_BOUNDED_PILOT_INVOKED_FROM_GATE] == "1"
+    assert last["env"][PT_LIVE_CONFIRM_TOKEN_ENV] == LIVE_CONFIRM_TOKEN
+
+
+def test_invoke_returns_2_when_runner_script_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    """No scripts/run_execution_session.py under repo_root: fail before packet/subprocess (exit 2)."""
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called when runner is absent")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_bounded_pilot_session", "--repo-root", str(tmp_path)],
+    )
+    assert mod.main() == 2
+    cap = capsys.readouterr()
+    want = str(tmp_path / "scripts" / "run_execution_session.py")
+    assert f"ERR: Runner not found: {want}" in cap.err
+    assert not cap.out.strip()
+
+
+def test_invoke_returns_2_json_when_runner_script_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    """--json: runner missing emits error JSON to stdout, exit 2."""
+    mod = _load_session_module()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called when runner is absent")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_bounded_pilot_session",
+            "--repo-root",
+            str(tmp_path),
+            "--json",
+        ],
+    )
+    assert mod.main() == 2
+    cap = capsys.readouterr()
+    data = json.loads(cap.out.strip())
+    assert data["contract"] == "run_bounded_pilot_session"
+    assert "Runner not found" in (data.get("error") or "")
+    assert not cap.err.strip()
