@@ -2,7 +2,7 @@
 title: "Strategy ECM/Armstrong Wiring Inventory Read Model v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-24"
+last_updated: "2026-04-25"
 docs_token: "DOCS_TOKEN_STRATEGY_ECM_ARMSTRONG_WIRING_INVENTORY_READ_MODEL_V0"
 ---
 
@@ -62,6 +62,14 @@ Any future **adapt-to-Master-V2** or wiring-unification work is a **separate** i
 | “`ecm.py` and Armstrong both mention ECM, so they are the same live strategy.” | Treat as **related math/naming** until a design ties loader, registry, and config **explicitly**. |
 | “Tags in tiering say `ecm`, so ECM is live.” | Tags are **metadata**; [reconciliation + MV2](STRATEGY_REGISTRY_TIERING_MV2_RECONCILIATION_TABLE_V0.md) govern authority. |
 | “Overview tables list Armstrong as R&D-only row — done.” | Overview is **not** a substitute for **contracts** and **runtime** policy readers. |
+
+## Live-readiness metadata tension note
+
+There is an observed **source-level tension** between registry-facing metadata for `armstrong_cycle` in `src/strategies/registry.py` (for example `StrategySpec` fields such as `is_live_ready`, `tier`, and `allowed_environments`) and **counter-surfaces** including `config/strategy_tiering.toml` (for example `allow_live = false`), class-level R&D / no-live indicators on `ArmstrongCycleStrategy`, and tests that describe a non-live or research-oriented posture. This section records an **inventory / interpretation risk** only; it is **not** a claim about runtime behavior having changed and **not** an instruction to alter code, configuration, or execution paths from this read model.
+
+Registry metadata alone must not be read as Master V2 approval, Double Play authority, live readiness, first-live readiness, operator authorization, or permission to route ECM / Armstrong behavior into any live capital path. Observed counter-surfaces — including `allow_live = false`, class-level R&D / no-live indicators, and the relevant tests — remain material and must be read **alongside** registry fields, not discarded.
+
+This note does not resolve the tension, does not change registry or TOML behavior, and does not create aliases, renames, promotion, Live permission, or strategy authority. Any future alignment of registry metadata, tiering, class constants, tests, or Master V2 strategy surfaces must be a **separately governed** implementation slice. It must not be inferred from this read model and must not be bundled with this docs-only clarification.
 
 ## 8) Safe future audit path
 
