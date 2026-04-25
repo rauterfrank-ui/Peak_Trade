@@ -33,6 +33,9 @@ jobs:
           BTC/EUR,2026-01-01T00:00:00Z,1.0
           EOF
 
+      - name: Install Kraken market-data dependency
+        run: uv pip install ccxt
+
       - name: Run read-only Kraken forward evidence smoke
         run: |
           set -euo pipefail
