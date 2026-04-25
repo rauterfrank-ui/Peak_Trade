@@ -1,7 +1,7 @@
 # MASTER V2 — First Live Enablement Readiness Ladder (Canonical)
 
 status: ACTIVE
-last_updated: 2026-04-19
+last_updated: 2026-04-25
 owner: Peak_Trade
 purpose: Canonical steering file for the Master V2 clarification workstream, including First Live Enablement readiness contract ladder
 docs_token: DOCS_TOKEN_MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER
@@ -58,7 +58,7 @@ Reader order for low-drift interpretation and review:
 1. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md` (Master framing + ladder intent)
 2. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md` (interpretation grammar)
 3. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md` (report schema)
-4. relevant single-gate fill section(s) on the report surface (`First` to `Fourth`)
+4. relevant single-gate fill section(s) on the report surface (additive sections named `First` through `Fifth` on that report surface, per its current headings)
 
 Bridge boundary note (explicit):
 
@@ -80,7 +80,7 @@ Canonical entry and reader path for this connection:
 1. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md` (Master V2 anchor, including Canonical Bridge v1 in this file)
 2. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md` (interpretation grammar)
 3. `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md` (report/status output contract)
-4. relevant additive single-gate fill section(s) on the report surface (`First` to `Fourth`)
+4. relevant additive single-gate fill section(s) on the report surface (named `First` through `Fifth` on that report surface, per its current headings)
 
 Non-implication lock for this connection clarification:
 
