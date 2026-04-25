@@ -1,5 +1,14 @@
 # Risk Layer v1.0 - Architecture Overview
 
+
+## Authority and epoch note
+
+This overview preserves historical and component-level Risk Layer v1.0 architecture context. Terms such as battle-tested, completed, 100%, production-ready, roadmap completion, or deployment confidence are not, by themselves, current Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, system certification, production readiness, or permission to route orders into any live capital path.
+
+Risk Layer material can support risk review, architecture review, and safety discussions, but it is not a standalone promotion gate and does not replace the full staged enablement chain. Risk Layer guidance remains downstream of distinct Scope / Capital Envelope semantics and upstream of Safety / Kill-Switch fail-closed boundaries where applicable.
+
+Any live or first-live promotion remains governed by current gate, evidence, and signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This note is docs-only and changes no runtime behavior.
+
 **Version:** 1.0  
 **Date:** 2025-12-28  
 **Agent:** A6 (Integration & Documentation)
