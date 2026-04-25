@@ -1,5 +1,12 @@
 # VaR Validation - Operator Guide
 
+
+## Authority and epoch note
+
+This guide preserves historical and component-level VAR validation operator context. Phrases such as `production-ready`, `merged to main`, `live deployment`, `live trading`, or `promoting to live` are not, by themselves, current Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, or permission to route orders into any live capital path.
+
+VAR validation can support risk review and promotion discussions, but it is not a standalone promotion gate. Any live or first-live promotion remains governed by current gate, evidence, and signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This note is docs-only and changes no runtime behavior.
+
 **Version:** 1.0  
 **Date:** 2025-12-28  
 **Status:** ✅ Production-Ready (Phase 2 merged to main)
