@@ -192,6 +192,8 @@ Exit criteria:
 
 ### F6 — Testnet / dry-run proof
 
+- F6 contract: [Futures Testnet Dry-run Proof Contract v0](FUTURES_TESTNET_DRY_RUN_PROOF_CONTRACT_V0.md)
+
 Goal: prove a futures testnet path without Live authority.
 
 Required proof includes:
