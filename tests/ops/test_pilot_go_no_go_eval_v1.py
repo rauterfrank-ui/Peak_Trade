@@ -189,3 +189,34 @@ def test_evaluate_safety_gates_reject_non_bool_fields() -> None:
     }
     result = mod.evaluate(payload)
     assert any(r["row"] == 1 and r["status"] == "UNKNOWN" for r in result["rows"])
+
+
+def test_main_exits_3_when_cockpit_payload_build_fails(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    """Cockpit build failure is script error: exit 3, stderr, no result JSON (fail-closed)."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "pilot_go_no_go_eval_v1",
+        SCRIPT,
+    )
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    def _no_cockpit(**kw) -> object:
+        raise RuntimeError("cockpit down")
+
+    monkeypatch.setattr("src.webui.ops_cockpit.build_ops_cockpit_payload", _no_cockpit)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["pilot_go_no_go_eval_v1", "--json", "--repo-root", str(ROOT)],
+    )
+    assert mod.main() == 3
+    captured = capsys.readouterr()
+    assert "failed to build cockpit payload" in captured.err
+    assert "cockpit down" in captured.err
+    # No eval result JSON (script exits before evaluate / stdout remains empty for this path)
+    assert not captured.out.strip()
