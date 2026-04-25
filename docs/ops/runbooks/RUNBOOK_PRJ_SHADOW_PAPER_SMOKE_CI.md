@@ -2,7 +2,7 @@
 title: "PR-J Shadow/Paper Features Smoke CI Authority Boundary"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-24"
+last_updated: "2026-04-25"
 docs_token: "DOCS_TOKEN_PRJ_SHADOW_PAPER_SMOKE_CI_AUTHORITY_BOUNDARY_V1"
 ---
 
@@ -112,7 +112,35 @@ The existence of an uploaded artifact does not prove:
 - Double Play authority
 - Master V2 authority
 
-## 8) Safe Operator Reading
+## 8) Real market data evidence (read-only interpretation)
+
+This workflow can produce or surface smoke, CI, P5B evidence-pack, paper, or shadow artifacts. **Integrity and CI success** (for example, completed runs, file presence, or P5B hash checks) are **not** the same thing as **real market data provenance**. Treat those concepts separately.
+
+Legitimate **fixture, mock, dry-run, synthetic, or offline** context can appear in smoke and CI. That is expected for repeatability. It does **not**, by itself, establish that any uploaded object reflects live exchange market data, or that it should be read as "real market evidence" without explicit metadata in the **artifact** you are reviewing.
+
+**Orientation (code, not a gate here):** For trading data paths, the repository models explicit source usage via `DataSafetyGate` / `DataSafetyContext` and `DataSourceKind` values such as `real`, `historical`, and `synthetic_offline_rt` in `src/data/safety/data_safety_gate.py`. This runbook does not invoke that gate. Use it only as a vocabulary and design pointer when you need to reason about *declared* source semantics elsewhere—not as proof that a given CI artifact used live exchange feeds.
+
+**S3 and evidence storage:** Inspect objects or registry pointers **read-only** when your process allows. Do not dump credentials, do not run write operations, and do not start production pipelines or live flows from this runbook. This document is a navigation and interpretation aid, not a signoff, gate, or live enablement.
+
+**Warning signs** that an output may **not** be real-market evidence on its own (non-exhaustive):
+
+- paths under `tests/fixtures/`, or other repository fixture files named as inputs
+- flags or labels such as `--dry-run`, or environment smoke inputs (for example `PT_DRY_RUN`) when present
+- `mock` / `fake` / `synthetic` / `sample` / `demo` / `offline` in paths, scripts, or logs
+- missing **provider** / **source_kind** / **data_source** / **fetched_at** / **symbol** / **timeframe** (or similar) fields **when** the artifact class you are using is supposed to carry them, and the absence is unexplained
+
+If provenance is unclear, **do not** count the object as real-market evidence. That is conservative interpretation, not a claim that any specific artifact in storage is wrong.
+
+**Read-only operator checklist**
+
+1. Read artifact and manifest **metadata** (if present) before drawing conclusions.
+2. Check **source** fields such as `provider`, `source_kind` / `DataSourceKind`, and `data_source` **when** the artifact or report schema includes them.
+3. Check for **mock**, **fixture**, **dry-run**, and **synthetic** flags and file paths in workflow logs, script arguments, and output paths.
+4. Use **S3** or **registry** references only in **read-only** ways permitted by your environment; do not expose secrets in tickets or runbooks.
+5. Never print or share **secrets** to prove a point; use redaction and separate secure channels.
+6. If you cannot establish real-market provenance to your standard, **treat the material as not established** for that purpose. Escalation belongs under your governance, not as an implicit approval from this workflow.
+
+## 9) Safe Operator Reading
 
 Safe reading:
 
@@ -128,8 +156,9 @@ Unsafe reading:
 - "A green smoke result is promotion approval."
 - "Artifacts from this workflow are validated evidence without separate checks."
 - "This workflow can substitute for Master V2 readiness."
+- "CI or P5B integrity (for example, matching hashes) means the data is real exchange market evidence."
 
-## 9) Change Discipline
+## 10) Change Discipline
 
 Any future change that expands this workflow's authority surface requires explicit review.
 
@@ -144,7 +173,7 @@ Examples requiring review include:
 - new generated artifacts that appear authoritative
 - new integration with Master V2, Double Play, promotion, readiness, or evidence validation
 
-## 10) Validation
+## 11) Validation
 
 For documentation-only changes to this runbook, run from the repository root:
 
