@@ -101,6 +101,8 @@ Exit criteria:
 
 ### F3 — Backtest realism
 
+- F3 contract: [Futures Backtest Realism Contract v0](FUTURES_BACKTEST_REALISM_CONTRACT_V0.md)
+
 Goal: futures backtests must model futures-specific mechanics.
 
 Required mechanics include:
