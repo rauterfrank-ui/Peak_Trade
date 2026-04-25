@@ -130,6 +130,8 @@ Exit criteria:
 
 ### F4 — Risk and safety contracts
 
+- F4 contract: [Futures Risk Safety KillSwitch Contract v0](FUTURES_RISK_SAFETY_KILLSWITCH_CONTRACT_V0.md)
+
 Goal: ensure futures risk is governed before any testnet or live-like path.
 
 Required controls include:
