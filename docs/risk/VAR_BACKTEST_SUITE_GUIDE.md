@@ -1,6 +1,12 @@
 # VaR Backtest Suite – Operator Guide
 
-**Phases 9A/9B/10** · **Status:** ✅ Live on main
+## Authority and epoch note
+
+This guide preserves historical and component-level VaR backtest suite context. References to suite availability on `main`, production-oriented readiness, or validation status are not, by themselves, current Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, or permission to route orders into any live capital path.
+
+VaR backtest output can support risk review and promotion discussions, but it is not a standalone promotion gate. Any live or first-live promotion remains governed by current gate, evidence, and signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. Validation-suite surfaces and risk-layer suite surfaces are documentation and analysis surfaces unless a future governed slice explicitly proves and rewires a canonical authority path. This note is docs-only and changes no runtime behavior.
+
+**Phases 9A/9B/10** · **Status:** ✅ Available on main (repository availability, not live-trading authority)
 
 ---
 

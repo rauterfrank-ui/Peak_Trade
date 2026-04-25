@@ -1,5 +1,11 @@
 # VaR Backtest Suite – Quick Start Guide
 
+## Authority and epoch note
+
+This quickstart preserves historical and component-level VaR backtest suite usage context. Backtest or validation output is support evidence for risk review, not standalone Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, or permission to route orders into any live capital path.
+
+Validation-suite surfaces and risk-layer suite surfaces are documentation and analysis surfaces unless a future governed slice explicitly proves and rewires a canonical authority path. This note is docs-only and changes no runtime behavior.
+
 **Phase:** 8C + 8D  
 **Feature:** Suite Runner, Report Formatter, Index & Compare Tools  
 **Status:** ✅ Production-Ready  
@@ -18,7 +24,7 @@ Die **VaR Backtest Suite** aggregiert alle VaR-Validierungstests in einem einzig
 
 **Overall Result:** `PASS` wenn alle Tests grün, sonst `FAIL`.
 
-⚠️ **Note:** `src/risk/validation/christoffersen.py` ist aktuell ein **Stub/Placeholder**. Die Christoffersen Tests (IND/CC) liefern dummy-Werte und sind noch nicht vollständig implementiert. Vollständige Implementation folgt in PR #422.
+⚠️ **Note (current implementation):** Christoffersen coverage in the validation suite delegates through `src/risk/validation/christoffersen.py` to the canonical functions in `src.risk_layer.var_backtest.christoffersen_tests` (not a free-standing historical stub; behavior follows that delegation path and tests).
 
 ---
 
@@ -489,4 +495,4 @@ print(f"Breaches: {breaches}, Expected: {expected:.1f}")
 
 **Last Updated:** 2026-01-04  
 **Phase:** 8C + 8D  
-**Status:** ✅ Production-Ready Human: continue
+**Status:** ✅ Production-Ready
