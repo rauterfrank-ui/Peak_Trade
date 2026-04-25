@@ -1,5 +1,12 @@
 # Risk Layer (Live Trading)
 
+
+## Authority and epoch note
+
+This README may contain historical or component-level `PRODUCTION-READY`, gate, kill-switch, integration, and test-evidence wording. Such wording is not, by itself, current Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, or permission to route orders into any live capital path.
+
+Risk-layer material remains downstream of distinct Scope / Capital Envelope semantics and upstream of Safety / Kill-Switch fail-closed boundaries where applicable. Test counts and integration references are useful provenance, not current readiness proof unless validated by current CI and evidence. This note is docs-only and changes no runtime behavior.
+
 **Location:** `src/risk_layer/`  
 **Purpose:** Operational risk management for live trading  
 **Status:** Production-ready (Layer 4 Defense-in-Depth)
