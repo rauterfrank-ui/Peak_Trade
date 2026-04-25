@@ -10,6 +10,12 @@
 
 ---
 
+## Capability spec
+
+- [Futures Capability Spec v0](../../specs/FUTURES_CAPABILITY_SPEC_V0.md) — non-authority capability ladder and boundaries; complements this runbook’s operational sequence.
+
+---
+
 ## 0. Executive Summary
 
 Peak_Trade should treat futures/perpetual trading as a separate capability class, not as “spot trading with leverage.” Futures require explicit models for instrument metadata, contract sizing, margin, leverage, liquidation, funding, position mode, order flags, exchange-specific constraints, testnet/sandbox routing, and non-live safety gates.
