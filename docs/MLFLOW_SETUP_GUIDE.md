@@ -4,6 +4,15 @@
 **Audience**: Research Team, Strategy Developers  
 **Status**: Production-Ready (Phase 2)
 
+
+## Authority and epoch note
+
+This document is an MLflow setup, experiment-tracking, and backend-configuration guide, not a standalone promotion or production authority. `Production-Ready`, tracking, backend, model registry, artifact store, experiment registry, promotion, readiness, or deployment wording in this document does not, by itself, grant Master V2 approval, Doubleplay authority, PRE_LIFE completion, First-Live readiness, operator authorization, production readiness, experiment authorization, training authorization, model-promotion authorization, or permission to route orders into any live capital path.
+
+MLflow setup may create or use local or server-backed tracking stores, artifact stores, registry metadata, or experiment records depending on the executed commands. This docs-only note itself runs nothing and changes no storage behavior. Interpret MLflow material together with current gate/evidence/signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, staged Execution Enablement, and manual governance controls.
+
+This note changes no runtime behavior, MLflow behavior, experiment/training behavior, registry behavior, artifact-store behavior, or setup commands.
+
 ---
 
 ## Quick Start (5 Minuten)
@@ -135,7 +144,7 @@ tracker.log_artifact("equity_curve.png", artifact_path="plots/")
 tracker.log_artifact("backtest_report.txt", artifact_path="reports/")
 ```
 
-**Best Practice**: Strukturierte Artifact-Pfade (`plots/`, `reports/`, `models/`).
+**Best Practice**: Strukturierte Artifact-Pfade (`plots&#47;`, `reports&#47;`, `models&#47;`).
 
 ### Tags
 
@@ -446,7 +455,7 @@ finally:
 
 1. Runs nach Metrik sortieren (z.B. "sharpe_ratio")
 2. Filter nutzen: `metrics.sharpe_ratio > 1.5`
-3. Tags filtern: `tags.market = "BTC/EUR"`
+3. Tags filtern: `tags.market = "BTC&#47;EUR"`
 
 ### Artifacts anzeigen
 
