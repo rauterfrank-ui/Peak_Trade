@@ -1,5 +1,12 @@
 # Kupiec POF Test – Theoretischer Hintergrund
 
+
+## Authority and epoch note
+
+This guide preserves historical and component-level Kupiec POF theory context. Statistical terms such as H0 acceptance, exception-rate fit, Basel traffic-light interpretation, green / yellow / red zones, valid VaR model, or theory-backed validation are not, by themselves, current Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, model certification, regulatory approval, or permission to route orders into any live capital path.
+
+Kupiec POF theory can support VaR / risk review and model-quality discussions, but it is not a standalone promotion gate. Any live or first-live promotion remains governed by current gate, evidence, and signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This note is docs-only and changes no runtime behavior.
+
 **Autor:** Peak_Trade Risk Team  
 **Datum:** 2024-12-27  
 **Zweck:** Theoretische Grundlagen für VaR Backtesting
