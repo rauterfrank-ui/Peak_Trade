@@ -1,5 +1,12 @@
 # Risk Layer (Live Trading)
 
+
+## Authority and epoch note
+
+This README may contain historical or component-level `PRODUCTION-READY`, gate, kill-switch, integration, and test-evidence wording. Such wording is not, by itself, current Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, or permission to route orders into any live capital path.
+
+Risk-layer material remains downstream of distinct Scope / Capital Envelope semantics and upstream of Safety / Kill-Switch fail-closed boundaries where applicable. Test counts and integration references are useful provenance, not current readiness proof unless validated by current CI and evidence. This note is docs-only and changes no runtime behavior.
+
 **Location:** `src/risk_layer/`  
 **Purpose:** Operational risk management for live trading  
 **Status:** Production-ready (Layer 4 Defense-in-Depth)
@@ -40,7 +47,7 @@ This module provides **operational risk management** for live trading:
 
 ## Key Components
 
-### Kill Switch (`kill_switch/`)
+### Kill Switch (`kill_switch&#47;`)
 
 **Purpose:** Emergency halt mechanism (Layer 4 of Defense-in-Depth)
 
@@ -48,7 +55,7 @@ This module provides **operational risk management** for live trading:
 - `core.py` - KillSwitch class (state machine)
 - `state.py` - State definitions (ACTIVE, KILLED, RECOVERING)
 - `execution_gate.py` - ExecutionGate (blocks orders when killed)
-- `triggers/` - Trigger mechanisms (manual, threshold, watchdog, external)
+- `triggers&#47;` - Trigger mechanisms (manual, threshold, watchdog, external)
 - `persistence.py` - State persistence (survive restarts)
 - `audit.py` - Audit trail
 - `cli.py` - Command-line interface
@@ -94,7 +101,7 @@ python -m src.risk_layer.kill_switch.cli complete-recovery
 
 ---
 
-### Alerting (`alerting/`)
+### Alerting (`alerting&#47;`)
 
 **Purpose:** Risk event notification and dispatch
 
@@ -103,7 +110,7 @@ python -m src.risk_layer.kill_switch.cli complete-recovery
 - `alert_dispatcher.py` - AlertDispatcher (routing)
 - `alert_types.py` - Alert severity and types
 - `alert_event.py` - AlertEvent dataclass
-- `channels/` - Notification channels
+- `channels&#47;` - Notification channels
 
 **Channels:**
 - `slack_channel.py` - Slack notifications
@@ -130,7 +137,7 @@ manager.send_alert(
 
 ---
 
-### VaR Backtesting (`var_backtest/`)
+### VaR Backtesting (`var_backtest&#47;`)
 
 **Purpose:** Validation of VaR models (regulatory compliance)
 

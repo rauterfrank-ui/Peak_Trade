@@ -396,3 +396,8 @@ Phase 25 ergänzt den **organisatorischen Layer**:
   - Rollen & Verantwortlichkeiten beschrieben
   - Entscheidungsprozesse dokumentiert
   - Keine Code-Änderungen
+
+## Execution and risk-layer README authority boundary
+
+Module-level README files under `src&#47;execution&#47;` and `src&#47;risk_layer&#47;` may preserve historical or component-level readiness wording for operator context. That wording is not, by itself, Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, or Live permission. Current execution authority remains governed by this overview, current gate/evidence/signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement.
+

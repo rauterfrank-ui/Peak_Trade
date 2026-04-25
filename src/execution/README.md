@@ -1,5 +1,12 @@
 # Execution Module (Full-Featured)
 
+
+## Authority and epoch note
+
+This README may contain historical or component-level `production-ready` / execution wording. Such wording is not, by itself, current Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, or permission to route orders into any live capital path.
+
+Execution components remain downstream of current Master V2 decision authority, Scope / Capital Envelope, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. Paper, Shadow, and Live references in this README describe environment or integration context only unless a current gate, evidence, and signoff artifact proves promotion. This note is docs-only and changes no runtime behavior.
+
 **Location:** `src/execution/`  
 **Purpose:** Production execution pipeline with full feature set  
 **Status:** Production-ready
