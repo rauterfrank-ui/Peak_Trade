@@ -1,5 +1,12 @@
 # Christoffersen Independence & Conditional Coverage Tests
 
+
+## Authority and epoch note
+
+This guide preserves historical and component-level Christoffersen validation context. Phrases such as `fully validated`, regulatory, operations, production, or deployment context are not, by themselves, current Master V2 approval, Doubleplay authority, First-Live readiness, operator authorization, regulatory certification, or permission to route orders into any live capital path.
+
+Christoffersen tests can support VaR model review, independence / conditional-coverage diagnostics, and risk validation discussions, but they are not a standalone promotion gate. Any live or first-live promotion remains governed by current gate, evidence, and signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This note is docs-only and changes no runtime behavior.
+
 **Status:** Phase 8B Complete  
 **Date:** 2025-12-28  
 **Module:** `src.risk_layer.var_backtest.christoffersen_tests`
