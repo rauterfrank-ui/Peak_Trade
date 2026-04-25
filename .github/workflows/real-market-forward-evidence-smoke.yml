@@ -2,9 +2,15 @@ name: Real Market Forward Evidence Smoke
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
 
 permissions:
   contents: read
+
+concurrency:
+  group: real-market-forward-evidence-smoke
+  cancel-in-progress: false
 
 jobs:
   real-market-forward-evidence-smoke:
@@ -118,3 +124,4 @@ jobs:
             out/ops/real_market_forward_evidence_smoke/out_eval/*
             out/ops/real_market_forward_evidence_smoke/summary.json
           if-no-files-found: error
+          retention-days: 14
