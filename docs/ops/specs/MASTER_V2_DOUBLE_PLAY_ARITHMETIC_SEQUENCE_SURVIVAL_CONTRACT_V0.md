@@ -2,7 +2,7 @@
 title: "Master V2 Double Play Arithmetic Sequence Survival Contract v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-26"
+last_updated: "2026-04-25"
 docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTRACT_V0"
 ---
 
@@ -199,6 +199,7 @@ If **any** of the following is **unknown** or **invalid** under the venue model,
 ## 19. References
 
 - [MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md](MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md) — Double Play state machine, **Scope**, **Kill-All** vs **State-Switch**, **hot** **path** rules.
+- [MASTER_V2_DOUBLE_PLAY_STRATEGY_SUITABILITY_PROJECTION_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_STRATEGY_SUITABILITY_PROJECTION_CONTRACT_V0.md) — strategy **suitability** **projection** (metadata; **not** **activation** or **registry** **authority**).
 - [STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md](STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md) — strategy / Master V2 **boundary** (docs-only).
 - [FUTURES_BACKTEST_REALISM_CONTRACT_V0.md](FUTURES_BACKTEST_REALISM_CONTRACT_V0.md) — futures **realism** **discipline** (if present; **read** for alignment).
 - [FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md](FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md) — **tick** / **step** / **metadata** (if present; **read** for alignment).
