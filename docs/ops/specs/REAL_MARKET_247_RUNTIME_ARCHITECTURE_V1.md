@@ -1,5 +1,14 @@
 # Real Market 24/7 Runtime Architecture v1
 
+
+## Write-surface clarification
+
+`build_market_data_provenance_v1` should be read narrowly as provenance metadata construction, not as a claim that the surrounding real-market evaluation path is fully no-write. Broader forward-evaluation or real-market smoke paths may write local run manifests, evaluation CSVs, experiment-registry rows, runner `out/ops` artifacts, or local market-data cache files depending on the invoked command and data fetcher.
+
+Kraken / OHLCV fetch caching can persist real market data under local cache paths. Current baseline workflow evidence does not include an S3 write step; any S3 or external archive upload remains out-of-band unless a future governed slice adds it.
+
+Use `read-only`, `dry-run`, `no orders`, and `provenance-only` precisely: no orders/live execution is not the same as no local file writes; a provenance-only function is not the same as no writes in its caller; local cache/report writes are not Live authorization. This docs-only note changes no runtime behavior, workflow behavior, cache behavior, or evidence behavior.
+
 ## Purpose
 
 This document defines the runtime contract for a future always-on or near-always-on Paper/Shadow real-market evidence runner.
