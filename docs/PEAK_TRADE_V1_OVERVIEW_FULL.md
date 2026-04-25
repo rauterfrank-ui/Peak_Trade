@@ -1,5 +1,12 @@
 # Peak_Trade v1.0 – Vollständige Übersicht & Rollen-Guide
 
+
+## Authority and epoch note
+
+This document preserves historical, narrative, and status overview context. Production-ready, complete, success, deployment, live, go/no-go, checklist, phase, percentage, or readiness wording is not, by itself, current Master V2 approval, Doubleplay authority, PRE_LIVE completion, First-Live readiness, operator authorization, production readiness, or permission to route orders into any live capital path.
+
+Interpret this document together with current gate/evidence/signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This docs-only note changes no runtime behavior and changes no status values, tables, dates, or historical claims.
+
 > **Status:** Phase 63 – v1.0 Gesamtübersicht & Rollen-Guide
 > **Zielgruppe:** Entwickler:innen, die bereits GETTING_STARTED gelesen haben und verstehen wollen, wie alles zusammenhängt
 

@@ -1,5 +1,12 @@
 # Peak_Trade – Live-Deployment-Playbook
 
+
+## Authority and epoch note
+
+This playbook preserves historical and operational deployment context. Deployment, live, go/no-go, checklist, production-ready, complete, or readiness wording is not, by itself, current Master V2 approval, Doubleplay authority, PRE_LIVE completion, First-Live readiness, operator authorization, production readiness, or permission to route orders into any live capital path.
+
+Any live or first-live promotion remains governed by current candidate-specific gate/evidence/signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This docs-only note changes no runtime behavior and changes no checklist items, status values, tables, dates, or historical claims.
+
 > **Phase:** 39 – Live-Deployment-Playbook & Ops-Runbooks
 > **Version:** v1.1
 > **Zweck:** Stufenplan für den Weg von Research zu Live-Trading

@@ -1,5 +1,12 @@
 # Go/No-Go 2026 – Live Alerts & Escalation (Cluster 82–85)
 
+
+## Authority and epoch note
+
+This document preserves the historical Cluster 82–85 alert / Go-No-Go context. Its alert, go/no-go, live, deployment, or readiness wording is scoped to that cluster context and is not, by itself, current Master V2 approval, Doubleplay authority, PRE_LIVE completion, First-Live readiness, operator authorization, production readiness, or permission to route orders into any live capital path.
+
+This document is not a general live-trading authorization and is not a substitute for current candidate-specific gate, evidence, and signoff artifacts. Any live or first-live promotion remains governed by current gate/evidence/signoff artifacts, Scope / Capital Envelope boundaries, Risk / Exposure Caps, Safety / Kill-Switches, and staged Execution Enablement. This docs-only note changes no runtime behavior and changes no alert thresholds, tables, dates, or historical claims.
+
 **Datum:** 2025-12-09  
 **Status:** ✅ Freigegeben für 2026-Betrieb  
 **Verantwortlich:** Doku-Governance-Lead
