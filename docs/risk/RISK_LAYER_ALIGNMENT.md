@@ -23,6 +23,8 @@ Current observed wiring surfaces include `src/risk_layer/risk_gate.py` with `Ris
 
 Older tree or API sketches that imply multiple separate top-level gate modules should be read as planning/scaffold until independently verified. Missing or unclear gate surfaces are not dropped; they remain Park / retain or Needs deeper audit items for a later Master-V2-compatible wiring audit. This note changes no code, config, imports, tests, runtime behavior, evidence state, or market-data state, and it does not create Live authorization. Any future wiring alignment must be handled in a separate governed slice after read-only evidence and must preserve Master V2 and Doubleplay boundaries.
 
+**Glossary crosslink:** See [Risk surfaces glossary v0](RISK_SURFACES_GLOSSARY_V0.md) for the non-authoritative glossary distinguishing RiskGate, ops gates, live gates, execution risk hooks, KillSwitch, diagnostics, Scope / Capital Envelope, Risk / Exposure Caps, and staged Execution Enablement.
+
 ## Executive Summary
 
 Die Risk Layer v1.0 Roadmap wird in das **bestehende Dual-Package-System** integriert:
