@@ -2,7 +2,7 @@
 title: "Master V2 Double Play Strategy Suitability Projection Contract v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-25"
+last_updated: "2026-04-26"
 docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_STRATEGY_SUITABILITY_PROJECTION_CONTRACT_V0"
 ---
 
@@ -229,3 +229,4 @@ When this file changes, run the repository docs validation scripts (for example 
 - [MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTRACT_V0.md) — arithmetic and sequence survival envelope; blockers.
 - [STRATEGY_ECM_AND_ARMSTRONG_NAME_SURFACES_NON_AUTHORITY_NOTE_V0.md](STRATEGY_ECM_AND_ARMSTRONG_NAME_SURFACES_NON_AUTHORITY_NOTE_V0.md) — ECM/Armstrong name surfaces.
 - [OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md](OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md) — ops cockpit and dashboard non-authority (read for alignment).
+- [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md) — Futures Input Snapshot mapping toward instrument intelligence **presence** fields (docs-only; not scanner or Live).
