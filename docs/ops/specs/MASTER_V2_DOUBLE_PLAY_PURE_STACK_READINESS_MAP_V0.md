@@ -2,7 +2,7 @@
 title: "Master V2 Double Play Pure Stack Readiness Map v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-25"
+last_updated: "2026-04-26"
 docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0"
 ---
 
@@ -144,6 +144,7 @@ Suggested **engineering** order when building **outside** pure `master_v2` (non-
 
 ## 18. References
 
+- [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) — future WebUI read-only **route contract** for dashboard JSON (docs-only; complements the display map).
 - [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) — read-only dashboard **display** map for pure-stack labels (docs-only; not routes or Live).
 - [MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md](MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md) — canonical Double Play trading-logic semantics; non-authority.
 - [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md) — Futures Input Snapshot read model.
