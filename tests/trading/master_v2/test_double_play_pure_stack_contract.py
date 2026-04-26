@@ -11,6 +11,15 @@ import ast
 from dataclasses import replace
 from pathlib import Path
 
+from trading.master_v2.double_play_capital_slot import (
+    CapitalSlotBlockReason,
+    CapitalSlotConfig,
+    CapitalSlotReleaseReason,
+    CapitalSlotState,
+    CapitalSlotStatus,
+    evaluate_capital_slot_ratchet,
+    evaluate_capital_slot_release,
+)
 from trading.master_v2.double_play_composition import (
     DoublePlayCompositionInput,
     DoublePlayCompositionStatus,
@@ -166,6 +175,42 @@ def _suit_in(
 
 def _suit_allows_from_envelope(surv) -> bool:
     return surv.status == SurvivalEnvelopeStatus.OK and surv.pre_authorization_eligible
+
+
+def _cs_cfg_ok() -> CapitalSlotConfig:
+    return CapitalSlotConfig(
+        profit_step_pct=0.10,
+        cashflow_lock_fraction=0.30,
+        reinvest_fraction=0.70,
+        allow_auto_top_up=False,
+        live_authorization=False,
+        min_realized_volatility=0.05,
+        min_atr_or_range=0.05,
+        max_time_without_cashflow_step=10_000,
+        min_opportunity_score=0.2,
+    )
+
+
+def _cs_state_ok(
+    *,
+    future: str = "BTC-USD-PERP",
+    base: float = 300.0,
+    realized: float = 340.0,
+    survival_allows_slot: bool = True,
+) -> CapitalSlotState:
+    return CapitalSlotState(
+        selected_future=future,
+        initial_slot_base=base,
+        active_slot_base=base,
+        realized_or_settled_slot_equity=realized,
+        unrealized_pnl=0.0,
+        locked_cashflow=0.0,
+        time_without_cashflow_step=0,
+        realized_volatility=0.5,
+        atr_or_range=0.5,
+        opportunity_score=0.8,
+        survival_allows_slot=survival_allows_slot,
+    )
 
 
 def test_contract_1_valid_long_bull_path_eligible_model_only() -> None:
@@ -377,6 +422,192 @@ def test_contract_7_live_authorization_false_all_layers() -> None:
     assert not suit.projection.live_authorization
     assert not suit.live_authorization
     assert not comp.live_authorization
+    assert GOOD_ENVELOPE.live_authorization is False
+
+
+def test_contract_10_long_bull_stack_with_capital_slot_ratchet_context_eligible_model_only() -> (
+    None
+):
+    s1, st1, t1 = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    s2, st2, t2 = _ts(s1, ScopeEvent.UPSCOPE_CONFIRMED, st1, 1)
+    assert s2 == SideState.LONG_ACTIVE
+
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="cs-long",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+        )
+    )
+    assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
+
+    cfg = _cs_cfg_ok()
+    cs_st = _cs_state_ok(future="ETH-USD-PERP", realized=340.0, survival_allows_slot=True)
+    rat = evaluate_capital_slot_ratchet(cfg, cs_st)
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+    assert rat.can_ratchet
+    assert rat.ratchet_target == 330.0
+    assert rat.new_active_slot_base == 340.0
+    assert not rel.released
+    assert rel.status is CapitalSlotStatus.ACTIVE
+    assert not rat.live_authorization
+    assert not rel.live_authorization
+    assert not rel.authorizes_new_future_selection
+    assert not rel.authorizes_new_trade
+    assert not comp.live_authorization
+
+
+def test_contract_11_short_bear_stack_with_capital_slot_ratchet_context_eligible_model_only() -> (
+    None
+):
+    s1, st1, t1 = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.DOWNSCOPE_CONFIRMED, EMPTY_ST, 0)
+    s2, st2, t2 = _ts(s1, ScopeEvent.DOWNSCOPE_CONFIRMED, st1, 1)
+    assert s2 == SideState.SHORT_ACTIVE
+
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="cs-short",
+        strategy_family="m",
+        declared_side=SideCompatibility.SHORT_BEAR,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.SHORT_BEAR,
+        )
+    )
+    assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
+
+    cfg = _cs_cfg_ok()
+    cs_st = _cs_state_ok(future="SOL-USD-PERP", realized=340.0, survival_allows_slot=True)
+    rat = evaluate_capital_slot_ratchet(cfg, cs_st)
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+    assert rat.can_ratchet
+    assert not rel.released
+    assert not rat.live_authorization
+    assert not rel.live_authorization
+    assert not rel.authorizes_new_trade
+
+
+def test_contract_12_capital_slot_survival_blocks_ratchet_without_trade_or_release_authority() -> (
+    None
+):
+    s1, st1, _ = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    s2, st2, t2 = _ts(s1, ScopeEvent.UPSCOPE_CONFIRMED, st1, 1)
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="cs-surv-slot",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+        )
+    )
+    assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
+
+    cfg = _cs_cfg_ok()
+    cs_st = _cs_state_ok(realized=400.0, survival_allows_slot=False)
+    rat = evaluate_capital_slot_ratchet(cfg, cs_st)
+    assert not rat.can_ratchet
+    assert CapitalSlotBlockReason.SURVIVAL_NOT_ALLOWED in rat.block_reasons
+    assert not rat.live_authorization
+
+    rel_ok = evaluate_capital_slot_release(cfg, cs_st)
+    assert not rel_ok.authorizes_new_trade
+    assert not rel_ok.authorizes_new_future_selection
+
+    rel_inact = evaluate_capital_slot_release(
+        cfg,
+        replace(cs_st, realized_volatility=0.01, atr_or_range=0.01),
+    )
+    assert rel_inact.released
+    assert rel_inact.release_reason is CapitalSlotReleaseReason.INACTIVITY
+    assert not rel_inact.authorizes_new_trade
+    assert not rel_inact.authorizes_new_future_selection
+
+
+def test_contract_13_inactivity_release_is_data_only_no_new_future_or_trade() -> None:
+    cfg = _cs_cfg_ok()
+    cs_st = replace(
+        _cs_state_ok(),
+        realized_volatility=0.01,
+        atr_or_range=0.01,
+    )
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+    assert rel.released
+    assert rel.status is CapitalSlotStatus.RELEASED
+    assert rel.release_reason is CapitalSlotReleaseReason.INACTIVITY
+    assert not rel.live_authorization
+    assert not rel.authorizes_new_future_selection
+    assert not rel.authorizes_new_trade
+
+
+def test_contract_14_opportunity_release_is_data_only_no_new_future_or_trade() -> None:
+    cfg = _cs_cfg_ok()
+    cs_st = replace(_cs_state_ok(), opportunity_score=0.05)
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+    assert rel.released
+    assert rel.release_reason is CapitalSlotReleaseReason.OPPORTUNITY_COST
+    assert not rel.authorizes_new_future_selection
+    assert not rel.authorizes_new_trade
+    assert not rel.live_authorization
+
+
+def test_contract_15_live_authorization_false_all_layers_including_capital_slot() -> None:
+    s1, st1, _ = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    s2, st2, t2 = _ts(s1, ScopeEvent.UPSCOPE_CONFIRMED, st1, 1)
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="cs-live",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+        )
+    )
+    cfg = _cs_cfg_ok()
+    cs_st = _cs_state_ok()
+    rat = evaluate_capital_slot_ratchet(cfg, cs_st)
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+
+    assert not t2.live_authorization_granted
+    assert not surv.live_authorization
+    assert not suit.projection.live_authorization
+    assert not suit.live_authorization
+    assert not comp.live_authorization
+    assert not rat.live_authorization
+    assert not rel.live_authorization
     assert GOOD_ENVELOPE.live_authorization is False
 
 
