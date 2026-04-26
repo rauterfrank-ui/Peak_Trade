@@ -2,9 +2,12 @@
 from __future__ import annotations
 
 import ast
+import json
 from dataclasses import replace
 from enum import Enum
 from pathlib import Path
+
+import pytest
 
 from trading.master_v2.double_play_capital_slot import (
     CapitalSlotConfig,
@@ -298,3 +301,181 @@ def test_snapshot_invariants_always() -> None:
     assert not snap.live_ready
     assert not snap.live_authorization
     assert snap.no_live_banner_visible
+
+
+# --- snapshot_to_jsonable (same mapper as WebUI read-only JSON route; tests avoid HTTP) ---
+# Keep key surfaces aligned with tests/webui/test_double_play_dashboard_display_json_route.py
+
+_EXPECTED_JSON_TOP_LEVEL_KEYS = frozenset(
+    {
+        "panels",
+        "overall_status",
+        "no_live_banner_visible",
+        "display_only",
+        "trading_ready",
+        "testnet_ready",
+        "live_ready",
+        "live_authorization",
+        "warnings",
+    }
+)
+
+_EXPECTED_JSON_PANEL_KEYS = frozenset(
+    {
+        "name",
+        "status",
+        "summary",
+        "blockers",
+        "missing_inputs",
+        "live_authorization",
+        "is_authority",
+        "is_signal",
+    }
+)
+
+# Dict keys anywhere in the serialized tree must not include these (control / runtime / secrets).
+# `live_authorization` is an explicit safety flag: forbid as *unexpected* key elsewhere only via
+# disjoint check — it is allowed on top-level and panels and must be false (asserted separately).
+_FORBIDDEN_JSON_KEYS = frozenset(
+    {
+        "start",
+        "stop",
+        "arm",
+        "enable",
+        "allocate",
+        "release",
+        "trade",
+        "fetch",
+        "scan",
+        "select",
+        "promote",
+        "approve",
+        "sign_off",
+        "live",
+        "order",
+        "orders",
+        "execute",
+        "execution",
+        "action",
+        "action_url",
+        "control",
+        "control_url",
+        "live_enable",
+        "live_enabled",
+        "live_armed",
+        "confirm_token",
+        "api_key",
+        "secret",
+        "exchange",
+        "provider",
+        "scanner",
+        "runtime_handle",
+        "producer",
+        "session_id",
+        "testnet_authorization",
+    }
+)
+
+
+def _require_snapshot_to_jsonable():
+    pytest.importorskip("fastapi")
+    from src.webui.double_play_dashboard_display_json_route_v0 import snapshot_to_jsonable
+
+    return snapshot_to_jsonable
+
+
+def _collect_object_keys(obj: object, out: set[str]) -> None:
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if isinstance(k, str):
+                out.add(k)
+            _collect_object_keys(v, out)
+    elif isinstance(obj, list):
+        for item in obj:
+            _collect_object_keys(item, out)
+
+
+def _assert_json_native_values(obj: object) -> None:
+    """Reject handles / callables / opaque objects in the serialized tree."""
+    if obj is None or isinstance(obj, (str, int, float, bool)):
+        return
+    if isinstance(obj, list):
+        for x in obj:
+            _assert_json_native_values(x)
+        return
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            assert isinstance(k, str)
+            _assert_json_native_values(v)
+        return
+    raise AssertionError(f"non-JSON-native value remains after snapshot_to_jsonable: {type(obj)!r}")
+
+
+def _assert_serialized_dashboard_authority_invariants(data: dict) -> None:
+    assert set(data.keys()) == _EXPECTED_JSON_TOP_LEVEL_KEYS
+    assert data["display_only"] is True
+    assert data["no_live_banner_visible"] is True
+    assert data["trading_ready"] is False
+    assert data["testnet_ready"] is False
+    assert data["live_ready"] is False
+    assert data["live_authorization"] is False
+
+    assert isinstance(data["panels"], list)
+    for panel in data["panels"]:
+        assert isinstance(panel, dict)
+        assert set(panel.keys()) == _EXPECTED_JSON_PANEL_KEYS
+        assert panel["live_authorization"] is False
+        assert panel["is_authority"] is False
+        assert panel["is_signal"] is False
+
+    keys: set[str] = set()
+    _collect_object_keys(data, keys)
+    assert keys.isdisjoint(_FORBIDDEN_JSON_KEYS)
+
+    _assert_json_native_values(data)
+    json.dumps(data)
+
+
+def test_snapshot_to_jsonable_full_stack_matches_route_contract() -> None:
+    snapshot_to_jsonable = _require_snapshot_to_jsonable()
+    fi, t2, surv, suit, rat, rel, comp = _full_stack_decisions()
+    snap = build_dashboard_display_snapshot(
+        futures_input=fi,
+        transition=t2,
+        survival=surv,
+        suitability=suit,
+        capital_slot_ratchet=rat,
+        capital_slot_release=rel,
+        composition=comp,
+    )
+    data = snapshot_to_jsonable(snap)
+    _assert_serialized_dashboard_authority_invariants(data)
+    assert len(data["panels"]) == 7
+
+
+def test_snapshot_to_jsonable_blocked_survival_still_matches_contract() -> None:
+    snapshot_to_jsonable = _require_snapshot_to_jsonable()
+    fi, t2, _, suit, rat, rel, comp = _full_stack_decisions()
+    bad_surv = SurvivalEnvelopeDecision(
+        status=SurvivalEnvelopeStatus.BLOCKED,
+        pre_authorization_eligible=False,
+        block_reasons=(),
+    )
+    snap = build_dashboard_display_snapshot(
+        futures_input=fi,
+        transition=t2,
+        survival=bad_surv,
+        suitability=suit,
+        capital_slot_ratchet=rat,
+        capital_slot_release=rel,
+        composition=comp,
+    )
+    data = snapshot_to_jsonable(snap)
+    _assert_serialized_dashboard_authority_invariants(data)
+
+
+def test_snapshot_to_jsonable_empty_snapshot_still_matches_contract() -> None:
+    snapshot_to_jsonable = _require_snapshot_to_jsonable()
+    snap = build_dashboard_display_snapshot()
+    data = snapshot_to_jsonable(snap)
+    _assert_serialized_dashboard_authority_invariants(data)
