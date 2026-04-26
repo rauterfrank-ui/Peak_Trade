@@ -1,0 +1,181 @@
+name: Class A Shadow Paper Scheduled Probe v1
+
+on:
+  workflow_dispatch:
+  # v1: schedule deliberately off. Enable only after ops review, e.g.:
+  # schedule:
+  #   - cron: "0 6 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: class-a-shadow-paper-probe-v1-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  class-a-shadow-paper-probe:
+    name: class-a-shadow-paper-probe
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      PEAK_TRADE_LIVE_ENABLED: "false"
+      PEAK_TRADE_LIVE_ARMED: "false"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install project (uv)
+        run: uv sync --dev
+
+      - name: Preflight safety and config
+        run: |
+          set -euo pipefail
+          test -f config/config.toml
+          uv run python3 - <<'PY'
+          import os
+          import tomllib
+          from pathlib import Path
+
+          _confirm = "PT_LIVE_" + "CONFIRM_TOKEN"
+          if os.environ.get(_confirm):
+              raise SystemExit("refusing to run: live confirm secret is set in environment")
+
+          for v in ("PEAK_TRADE_LIVE_ENABLED", "PEAK_TRADE_LIVE_ARMED"):
+              val = os.environ.get(v, "")
+              if val in ("true", "1"):
+                  raise SystemExit(f"unsafe {v}={val}")
+
+          p = Path("config/config.toml")
+          data = tomllib.loads(p.read_text(encoding="utf-8"))
+          env = data.get("environment") or {}
+          mode = env.get("mode")
+          if mode != "paper":
+              raise SystemExit(
+                  f"config [environment] mode must be paper for this probe, got {mode!r}"
+              )
+          print("preflight_ok: config/config.toml [environment].mode=paper")
+          PY
+          echo "PEAK_TRADE_LIVE_ENABLED=${PEAK_TRADE_LIVE_ENABLED}"
+          echo "PEAK_TRADE_LIVE_ARMED=${PEAK_TRADE_LIVE_ARMED}"
+
+      - name: Run Class A shadow paper probe
+        run: |
+          set -euo pipefail
+          LOGROOT="out/ops/gh_class_a_shadow_paper/${{ github.run_id }}"
+          mkdir -p "${LOGROOT}"
+          uv run python3 -m scripts.run_shadow_paper_session \
+            --config config/config.toml \
+            --strategy ma_crossover \
+            --duration 3 \
+            --log-dir "${LOGROOT}"
+
+      - name: Post-run evidence summary and gates
+        if: always()
+        env:
+          LOGROOT: out/ops/gh_class_a_shadow_paper/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          echo "== Files under ${LOGROOT} =="
+          if [[ ! -d "${LOGROOT}" ]]; then
+            echo "::error::LOGROOT missing: ${LOGROOT}"
+            exit 1
+          fi
+          find "${LOGROOT}" -type f | sort
+
+          uv run python3 - <<'PY'
+          from __future__ import annotations
+
+          import json
+          import os
+          import sys
+          from pathlib import Path
+
+          root = Path(os.environ["LOGROOT"])
+          metas = sorted(root.rglob("meta.json"))
+          if not metas:
+              print("::error::meta.json missing under", root)
+              sys.exit(1)
+
+          meta_path = metas[0]
+          if len(metas) > 1:
+              print("::warning::multiple meta.json files; summarizing", meta_path)
+
+          data = json.loads(meta_path.read_text(encoding="utf-8"))
+          mode = (data.get("mode") or "").strip().lower()
+          if mode != "paper":
+              print("::error::meta.mode must be paper, got", data.get("mode"))
+              sys.exit(1)
+
+          cs = data.get("config_snapshot") or {}
+          if isinstance(cs, dict):
+              env_snap = cs.get("environment")
+              if isinstance(env_snap, dict):
+                  em = env_snap.get("mode")
+                  if em is not None and str(em).strip().lower() != "paper":
+                      print("::error::config_snapshot.environment.mode is not paper:", em)
+                      sys.exit(1)
+
+          _risk_keys = frozenset(
+              (
+                  "live_enabled",
+                  "live_armed",
+                  "test" + "net_only",
+              )
+          )
+
+          def _looks_non_paper_flags(obj: object) -> bool:
+              if isinstance(obj, dict):
+                  for k, v in obj.items():
+                      lk = str(k).lower()
+                      if lk in _risk_keys and v in (True, "true", "1", 1):
+                          return True
+                      if _looks_non_paper_flags(v):
+                          return True
+              if isinstance(obj, list):
+                  return any(_looks_non_paper_flags(x) for x in obj)
+              return False
+
+          if _looks_non_paper_flags(data):
+              print("::error::metadata implies disallowed execution flags")
+              sys.exit(1)
+
+          safe_summary = {
+              "run_id": data.get("run_id"),
+              "mode": data.get("mode"),
+              "strategy_name": data.get("strategy_name"),
+              "symbol": data.get("symbol"),
+              "timeframe": data.get("timeframe"),
+              "started_at": data.get("started_at"),
+              "ended_at": data.get("ended_at"),
+              "notes": data.get("notes"),
+          }
+          print("== meta.json (sanitized summary) ==")
+          print(json.dumps(safe_summary, indent=2, sort_keys=True))
+
+          has_parquet = any(root.rglob("events.parquet"))
+          has_csv = any(root.rglob("events.csv"))
+          if not has_parquet and not has_csv:
+              print("::warning::no events.parquet or events.csv found (non-fatal)")
+          else:
+              print("events_file_ok:", "events.parquet" if has_parquet else "events.csv")
+
+          print("meta_path=", meta_path)
+          PY
+
+      - name: Upload probe artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: class-a-shadow-paper-probe-${{ github.run_id }}
+          path: |
+            out/ops/gh_class_a_shadow_paper/${{ github.run_id }}/**
+          retention-days: 14
