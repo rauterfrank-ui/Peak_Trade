@@ -2,9 +2,14 @@ name: Class A Shadow Paper Scheduled Probe v1
 
 on:
   workflow_dispatch:
-  # v1: schedule deliberately off. Enable only after ops review, e.g.:
-  # schedule:
-  #   - cron: "0 6 * * 1"
+  schedule:
+    # ~4 runs/day, minute 17 avoids top-of-hour congestion.
+    # Inactive for scheduled runs until repo variable is set (see job `if:`):
+    # Settings → Secrets and variables → Actions → Variables:
+    #   CLASS_A_SHADOW_PAPER_SCHEDULE_ENABLED = true
+    # Manual workflow_dispatch always runs; schedule events still appear in the
+    # Actions UI but skip the job when the variable is absent or not 'true'.
+    - cron: "17 */6 * * *"
 
 permissions:
   contents: read
@@ -18,6 +23,9 @@ jobs:
     name: class-a-shadow-paper-probe
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # Same guard pattern as prj-scheduled-shadow-paper-features-smoke: manual
+    # dispatch always; cron only when CLASS_A_SHADOW_PAPER_SCHEDULE_ENABLED is 'true'.
+    if: ${{ vars.CLASS_A_SHADOW_PAPER_SCHEDULE_ENABLED == 'true' || github.event_name == 'workflow_dispatch' }}
 
     env:
       PEAK_TRADE_LIVE_ENABLED: "false"
