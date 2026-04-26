@@ -2,7 +2,7 @@
 title: "Master V2 Double Play WebUI Read-only Route Contract v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-26"
+last_updated: "2026-04-27"
 docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0"
 ---
 
@@ -43,7 +43,7 @@ This file is **non-authorizing**. It does not:
 - **DTO source strategy** for v0 (pure fixtures; no runtime producer requirement)
 - **JSON response boundary** and caching guidance
 - **forbidden imports** and operational boundaries
-- **test anchors** for the **read-only JSON route** (`TestClient` **authority-invariant** coverage; see §9)
+- **test anchors** for the **read-only JSON route** (`TestClient` **authority-invariant** coverage; see §9) and **route-independent** **`snapshot_to_jsonable`** **JSON serialization** (see §9; Dashboard Display Map §20)
 - **implementation staging** (order of future work)
 
 **Out of scope:**
@@ -114,6 +114,8 @@ For the **pure stack** regression story of **`FuturesProducerPacket` → `adapt_
 
 **Test file:** `tests&#47;webui&#47;test_double_play_dashboard_display_json_route.py` — **non-authorizing** **authority-invariant test coverage** for the **read-only JSON route** (`GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json`) using `TestClient(create_app())`. It guards the **downstream display surface** only; it does **not** prove operational **producer** wiring, **market-data ingestion**, WebUI **HTML** or control UI, Testnet or Live operational **readiness**, permission to **trade**, or any external sign-off treated as execution permission.
 
+**Route-independent JSON serialization test anchor:** `tests&#47;trading&#47;master_v2&#47;test_double_play_dashboard_display.py` — **non-authorizing** **test anchors** for the same **`snapshot_to_jsonable`** **JSON serialization** mapping **without** HTTP or `TestClient`, summarized in [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) **§20** (full-stack snapshot, blocked survival / **display-blocked** path, empty snapshot; **JSON-native** values; **`json.dumps`**; exact key surfaces; **display-only** / **non-authorizing** flags; recursive forbidden keys). This **complements** the WebUI route **test anchors** above and **does not** replace the route-module AST guard, cache/header HTTP checks, or [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) **§20** producer-adapter **test anchors**.
+
 **Linkage:** This route remains **downstream** of the **pure** dashboard DTO. Cross-module **pure stack** and producer-adapter anchors stay in [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) **§20** (`test_contract_32`–`37`). The WebUI tests below do **not** substitute for those anchors.
 
 **Coverage (summary):**
@@ -147,7 +149,7 @@ A future **HTML** page may render the same snapshot (Jinja under `templates&#47;
 
 ## 12. Tests / TestClient boundary
 
-**Present:** **`TestClient`** **authority-invariant** coverage for this route is documented in **§9** (`tests&#47;webui&#47;test_double_play_dashboard_display_json_route.py`).
+**Present:** **`TestClient`** **authority-invariant** coverage for this route is documented in **§9** (`tests&#47;webui&#47;test_double_play_dashboard_display_json_route.py`). **Route-independent** **`snapshot_to_jsonable`** **JSON serialization** **test anchors** are documented in **§9** (`tests&#47;trading&#47;master_v2&#47;test_double_play_dashboard_display.py`) and cross-linked from the Dashboard Display Map **§20**.
 
 **Future extensions (non-authoritative):** additional assertions may follow the same patterns (e.g. cache headers, expanded key hygiene) without changing **display-only** / **non-authorizing** semantics. Follow precedents in `tests&#47;test_live_status_snapshot_api.py` and `tests&#47;live&#47;test_execution_watch_api_v0.py`.
 
