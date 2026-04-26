@@ -21,6 +21,7 @@ from trading.master_v2.double_play_capital_slot import (
     evaluate_capital_slot_release,
 )
 from trading.master_v2.double_play_composition import (
+    DoublePlayCompositionBlockReason,
     DoublePlayCompositionInput,
     DoublePlayCompositionStatus,
     RequestedSide,
@@ -440,17 +441,6 @@ def test_contract_10_long_bull_stack_with_capital_slot_ratchet_context_eligible_
         explicit_side_evidence=True,
     )
     suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
-    comp = compose_double_play_decision(
-        DoublePlayCompositionInput(
-            transition=t2,
-            resulting_side_state=s2,
-            survival=surv,
-            suitability=suit,
-            requested_side=RequestedSide.LONG_BULL,
-        )
-    )
-    assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
-
     cfg = _cs_cfg_ok()
     cs_st = _cs_state_ok(future="ETH-USD-PERP", realized=340.0, survival_allows_slot=True)
     rat = evaluate_capital_slot_ratchet(cfg, cs_st)
@@ -464,6 +454,19 @@ def test_contract_10_long_bull_stack_with_capital_slot_ratchet_context_eligible_
     assert not rel.live_authorization
     assert not rel.authorizes_new_future_selection
     assert not rel.authorizes_new_trade
+
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+            capital_slot_ratchet_decision=rat,
+            capital_slot_release_decision=rel,
+        )
+    )
+    assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
     assert not comp.live_authorization
 
 
@@ -482,17 +485,6 @@ def test_contract_11_short_bear_stack_with_capital_slot_ratchet_context_eligible
         explicit_side_evidence=True,
     )
     suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
-    comp = compose_double_play_decision(
-        DoublePlayCompositionInput(
-            transition=t2,
-            resulting_side_state=s2,
-            survival=surv,
-            suitability=suit,
-            requested_side=RequestedSide.SHORT_BEAR,
-        )
-    )
-    assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
-
     cfg = _cs_cfg_ok()
     cs_st = _cs_state_ok(future="SOL-USD-PERP", realized=340.0, survival_allows_slot=True)
     rat = evaluate_capital_slot_ratchet(cfg, cs_st)
@@ -502,6 +494,19 @@ def test_contract_11_short_bear_stack_with_capital_slot_ratchet_context_eligible
     assert not rat.live_authorization
     assert not rel.live_authorization
     assert not rel.authorizes_new_trade
+
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.SHORT_BEAR,
+            capital_slot_ratchet_decision=rat,
+            capital_slot_release_decision=rel,
+        )
+    )
+    assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
 
 
 def test_contract_12_capital_slot_survival_blocks_ratchet_without_trade_or_release_authority() -> (
@@ -534,6 +539,19 @@ def test_contract_12_capital_slot_survival_blocks_ratchet_without_trade_or_relea
     assert not rat.can_ratchet
     assert CapitalSlotBlockReason.SURVIVAL_NOT_ALLOWED in rat.block_reasons
     assert not rat.live_authorization
+
+    comp_cs = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+            capital_slot_ratchet_decision=rat,
+        )
+    )
+    assert comp_cs.status is DoublePlayCompositionStatus.BLOCKED
+    assert DoublePlayCompositionBlockReason.CAPITAL_SLOT_RATCHET_BLOCKED in comp_cs.block_reasons
 
     rel_ok = evaluate_capital_slot_release(cfg, cs_st)
     assert not rel_ok.authorizes_new_trade
@@ -587,6 +605,10 @@ def test_contract_15_live_authorization_false_all_layers_including_capital_slot(
         explicit_side_evidence=True,
     )
     suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    cfg = _cs_cfg_ok()
+    cs_st = _cs_state_ok()
+    rat = evaluate_capital_slot_ratchet(cfg, cs_st)
+    rel = evaluate_capital_slot_release(cfg, cs_st)
     comp = compose_double_play_decision(
         DoublePlayCompositionInput(
             transition=t2,
@@ -594,12 +616,10 @@ def test_contract_15_live_authorization_false_all_layers_including_capital_slot(
             survival=surv,
             suitability=suit,
             requested_side=RequestedSide.LONG_BULL,
+            capital_slot_ratchet_decision=rat,
+            capital_slot_release_decision=rel,
         )
     )
-    cfg = _cs_cfg_ok()
-    cs_st = _cs_state_ok()
-    rat = evaluate_capital_slot_ratchet(cfg, cs_st)
-    rel = evaluate_capital_slot_release(cfg, cs_st)
 
     assert not t2.live_authorization_granted
     assert not surv.live_authorization
@@ -609,6 +629,78 @@ def test_contract_15_live_authorization_false_all_layers_including_capital_slot(
     assert not rat.live_authorization
     assert not rel.live_authorization
     assert GOOD_ENVELOPE.live_authorization is False
+    assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
+
+
+def test_contract_16_pure_stack_blocked_when_capital_slot_inactivity_released() -> None:
+    s1, st1, _ = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    s2, st2, t2 = _ts(s1, ScopeEvent.UPSCOPE_CONFIRMED, st1, 1)
+    assert s2 == SideState.LONG_ACTIVE
+
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="cs-inact",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+
+    cfg = _cs_cfg_ok()
+    cs_st = replace(
+        _cs_state_ok(),
+        realized_volatility=0.01,
+        atr_or_range=0.01,
+    )
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+    assert rel.released
+
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+            capital_slot_release_decision=rel,
+        )
+    )
+    assert comp.status is DoublePlayCompositionStatus.BLOCKED
+    assert DoublePlayCompositionBlockReason.CAPITAL_SLOT_RELEASED in comp.block_reasons
+
+
+def test_contract_17_pure_stack_blocked_when_capital_slot_opportunity_released() -> None:
+    s1, st1, _ = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    s2, st2, t2 = _ts(s1, ScopeEvent.UPSCOPE_CONFIRMED, st1, 1)
+    assert s2 == SideState.LONG_ACTIVE
+
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="cs-opp",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+
+    cfg = _cs_cfg_ok()
+    cs_st = replace(_cs_state_ok(), opportunity_score=0.05)
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+    assert rel.released
+    assert rel.release_reason is CapitalSlotReleaseReason.OPPORTUNITY_COST
+
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+            capital_slot_release_decision=rel,
+        )
+    )
+    assert comp.status is DoublePlayCompositionStatus.BLOCKED
+    assert DoublePlayCompositionBlockReason.CAPITAL_SLOT_RELEASED in comp.block_reasons
 
 
 def _forbidden_toplevels() -> frozenset[str]:

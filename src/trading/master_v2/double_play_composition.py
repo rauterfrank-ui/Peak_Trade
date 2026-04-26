@@ -10,7 +10,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import Optional
 
+from trading.master_v2.double_play_capital_slot import (
+    CapitalSlotRatchetDecision,
+    CapitalSlotReleaseDecision,
+)
 from trading.master_v2.double_play_state import SideState, TransitionDecision
 from trading.master_v2.double_play_survival import SurvivalEnvelopeDecision, SurvivalEnvelopeStatus
 from trading.master_v2.double_play_suitability import (
@@ -40,6 +45,8 @@ class DoublePlayCompositionBlockReason(str, Enum):
     STATE_CHOP_GUARD = "state_chop_guard"
     STATE_NOT_ACTIVE_OR_ARMED = "state_not_active_or_armed"
     LIVE_NOT_AUTHORIZED = "live_not_authorized"
+    CAPITAL_SLOT_RATCHET_BLOCKED = "capital_slot_ratchet_blocked"
+    CAPITAL_SLOT_RELEASED = "capital_slot_released"
 
 
 class RequestedSide(str, Enum):
@@ -55,6 +62,9 @@ class DoublePlayCompositionInput:
 
     ``resulting_side_state`` must be the first return value from
     ``transition_state`` (same step as ``transition``).
+
+    Optional capital-slot decisions are data-only gating inputs; omit both for
+    backward-compatible composition without capital-slot context.
     """
 
     transition: TransitionDecision
@@ -62,6 +72,8 @@ class DoublePlayCompositionInput:
     survival: SurvivalEnvelopeDecision
     suitability: SuitabilityProjectionDecision
     requested_side: RequestedSide
+    capital_slot_ratchet_decision: Optional[CapitalSlotRatchetDecision] = None
+    capital_slot_release_decision: Optional[CapitalSlotReleaseDecision] = None
 
 
 @dataclass(frozen=True)
@@ -88,11 +100,16 @@ def compose_double_play_decision(
     proj = suit.projection
     req = inp.requested_side
 
+    rat = inp.capital_slot_ratchet_decision
+    rel = inp.capital_slot_release_decision
+
     if (
         tr.live_authorization_granted
         or suit.live_authorization
         or proj.live_authorization
         or surv.live_authorization
+        or (rat is not None and rat.live_authorization)
+        or (rel is not None and rel.live_authorization)
     ):
         return DoublePlayCompositionDecision(
             status=DoublePlayCompositionStatus.BLOCKED,
@@ -182,6 +199,30 @@ def compose_double_play_decision(
             status=DoublePlayCompositionStatus.OBSERVE_ONLY,
             block_reasons=(),
             reason="Neutral observe path; model-level observe only.",
+            live_authorization=False,
+        )
+
+    if rel is not None and rel.released:
+        if req in (RequestedSide.LONG_BULL, RequestedSide.SHORT_BEAR):
+            return DoublePlayCompositionDecision(
+                status=DoublePlayCompositionStatus.BLOCKED,
+                block_reasons=(DoublePlayCompositionBlockReason.CAPITAL_SLOT_RELEASED,),
+                reason="Capital slot released (inactivity or opportunity cost); no directional model eligibility.",
+                live_authorization=False,
+            )
+        if req == RequestedSide.NEUTRAL_OBSERVE:
+            return DoublePlayCompositionDecision(
+                status=DoublePlayCompositionStatus.OBSERVE_ONLY,
+                block_reasons=(),
+                reason="Capital slot released; neutral observe only (model-level).",
+                live_authorization=False,
+            )
+
+    if rat is not None and rat.block_reasons:
+        return DoublePlayCompositionDecision(
+            status=DoublePlayCompositionStatus.BLOCKED,
+            block_reasons=(DoublePlayCompositionBlockReason.CAPITAL_SLOT_RATCHET_BLOCKED,),
+            reason="Capital slot ratchet pre-authorization blocked.",
             live_authorization=False,
         )
 

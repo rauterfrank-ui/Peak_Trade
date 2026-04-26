@@ -3,7 +3,15 @@ from __future__ import annotations
 
 import ast
 from pathlib import Path
+from typing import Optional
 
+from trading.master_v2.double_play_capital_slot import (
+    CapitalSlotBlockReason,
+    CapitalSlotRatchetDecision,
+    CapitalSlotReleaseDecision,
+    CapitalSlotReleaseReason,
+    CapitalSlotStatus,
+)
 from trading.master_v2.double_play_composition import (
     DOUBLE_PLAY_COMPOSITION_LAYER_VERSION,
     DoublePlayCompositionBlockReason,
@@ -81,6 +89,8 @@ def _compose(
     surv: SurvivalEnvelopeDecision,
     suit: SuitabilityProjectionDecision,
     req: RequestedSide,
+    capital_slot_ratchet_decision: Optional[CapitalSlotRatchetDecision] = None,
+    capital_slot_release_decision: Optional[CapitalSlotReleaseDecision] = None,
 ):
     return compose_double_play_decision(
         DoublePlayCompositionInput(
@@ -89,6 +99,8 @@ def _compose(
             survival=surv,
             suitability=suit,
             requested_side=req,
+            capital_slot_ratchet_decision=capital_slot_ratchet_decision,
+            capital_slot_release_decision=capital_slot_release_decision,
         )
     )
 
@@ -358,6 +370,196 @@ def test_neutral_observe_blocks_directional_request() -> None:
 
 def test_layer_version() -> None:
     assert DOUBLE_PLAY_COMPOSITION_LAYER_VERSION == "v0"
+
+
+def test_15_long_eligible_with_allowed_capital_slot_ratchet_no_release() -> None:
+    rat = CapitalSlotRatchetDecision(
+        status=CapitalSlotStatus.ACTIVE,
+        ratchet_target=330.0,
+        can_ratchet=True,
+        block_reasons=(),
+        reason="ok",
+        live_authorization=False,
+        new_active_slot_base=340.0,
+    )
+    d = _compose(
+        transition=TransitionDecision(True, "X", False),
+        state=SideState.LONG_ACTIVE,
+        surv=_surv_ok(),
+        suit=_suit(
+            sclass=SuitabilityClass.LONG_ONLY_CANDIDATE,
+            can_long=True,
+            can_short=False,
+            can_neutral=False,
+        ),
+        req=RequestedSide.LONG_BULL,
+        capital_slot_ratchet_decision=rat,
+        capital_slot_release_decision=None,
+    )
+    assert d.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
+
+
+def test_16_short_eligible_with_allowed_capital_slot_ratchet_no_release() -> None:
+    rat = CapitalSlotRatchetDecision(
+        status=CapitalSlotStatus.ACTIVE,
+        ratchet_target=330.0,
+        can_ratchet=True,
+        block_reasons=(),
+        reason="ok",
+        live_authorization=False,
+        new_active_slot_base=340.0,
+    )
+    d = _compose(
+        transition=TransitionDecision(True, "X", False),
+        state=SideState.SHORT_ACTIVE,
+        surv=_surv_ok(),
+        suit=_suit(
+            sclass=SuitabilityClass.SHORT_ONLY_CANDIDATE,
+            can_long=False,
+            can_short=True,
+            can_neutral=False,
+            side_c=SideCompatibility.SHORT_BEAR,
+        ),
+        req=RequestedSide.SHORT_BEAR,
+        capital_slot_ratchet_decision=rat,
+    )
+    assert d.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
+
+
+def test_17_capital_slot_ratchet_blocked_blocks_composition() -> None:
+    rat = CapitalSlotRatchetDecision(
+        status=CapitalSlotStatus.ACTIVE,
+        ratchet_target=330.0,
+        can_ratchet=False,
+        block_reasons=(CapitalSlotBlockReason.SURVIVAL_NOT_ALLOWED,),
+        reason="survival",
+        live_authorization=False,
+    )
+    d = _compose(
+        transition=TransitionDecision(True, "X", False),
+        state=SideState.LONG_ACTIVE,
+        surv=_surv_ok(),
+        suit=_suit(
+            sclass=SuitabilityClass.LONG_ONLY_CANDIDATE,
+            can_long=True,
+            can_short=False,
+            can_neutral=False,
+        ),
+        req=RequestedSide.LONG_BULL,
+        capital_slot_ratchet_decision=rat,
+    )
+    assert d.status is DoublePlayCompositionStatus.BLOCKED
+    assert DoublePlayCompositionBlockReason.CAPITAL_SLOT_RATCHET_BLOCKED in d.block_reasons
+
+
+def test_18_inactivity_release_blocks_directional_composition() -> None:
+    rel = CapitalSlotReleaseDecision(
+        status=CapitalSlotStatus.RELEASED,
+        released=True,
+        release_reason=CapitalSlotReleaseReason.INACTIVITY,
+        block_reasons=(),
+        reason="inactivity",
+        live_authorization=False,
+        authorizes_new_future_selection=False,
+        authorizes_new_trade=False,
+    )
+    d = _compose(
+        transition=TransitionDecision(True, "X", False),
+        state=SideState.LONG_ACTIVE,
+        surv=_surv_ok(),
+        suit=_suit(
+            sclass=SuitabilityClass.LONG_ONLY_CANDIDATE,
+            can_long=True,
+            can_short=False,
+            can_neutral=False,
+        ),
+        req=RequestedSide.LONG_BULL,
+        capital_slot_release_decision=rel,
+    )
+    assert d.status is DoublePlayCompositionStatus.BLOCKED
+    assert DoublePlayCompositionBlockReason.CAPITAL_SLOT_RELEASED in d.block_reasons
+
+
+def test_19_opportunity_release_observe_only_for_neutral_request() -> None:
+    rel = CapitalSlotReleaseDecision(
+        status=CapitalSlotStatus.RELEASED,
+        released=True,
+        release_reason=CapitalSlotReleaseReason.OPPORTUNITY_COST,
+        block_reasons=(),
+        reason="opp",
+        live_authorization=False,
+        authorizes_new_future_selection=False,
+        authorizes_new_trade=False,
+    )
+    d = _compose(
+        transition=TransitionDecision(True, "X", False),
+        state=SideState.LONG_ACTIVE,
+        surv=_surv_ok(),
+        suit=_suit(
+            sclass=SuitabilityClass.NEUTRAL_RANGE_CANDIDATE,
+            can_long=False,
+            can_short=False,
+            can_neutral=True,
+            side_c=SideCompatibility.NEUTRAL_RANGE,
+        ),
+        req=RequestedSide.NEUTRAL_OBSERVE,
+        capital_slot_release_decision=rel,
+    )
+    assert d.status is DoublePlayCompositionStatus.OBSERVE_ONLY
+
+
+def test_20_opportunity_release_blocks_directional() -> None:
+    rel = CapitalSlotReleaseDecision(
+        status=CapitalSlotStatus.RELEASED,
+        released=True,
+        release_reason=CapitalSlotReleaseReason.OPPORTUNITY_COST,
+        block_reasons=(),
+        reason="opp",
+        live_authorization=False,
+        authorizes_new_future_selection=False,
+        authorizes_new_trade=False,
+    )
+    d = _compose(
+        transition=TransitionDecision(True, "X", False),
+        state=SideState.LONG_ACTIVE,
+        surv=_surv_ok(),
+        suit=_suit(
+            sclass=SuitabilityClass.LONG_ONLY_CANDIDATE,
+            can_long=True,
+            can_short=False,
+            can_neutral=False,
+        ),
+        req=RequestedSide.LONG_BULL,
+        capital_slot_release_decision=rel,
+    )
+    assert d.status is DoublePlayCompositionStatus.BLOCKED
+    assert DoublePlayCompositionBlockReason.CAPITAL_SLOT_RELEASED in d.block_reasons
+
+
+def test_21_capital_slot_live_authorization_blocks_composition() -> None:
+    rat = CapitalSlotRatchetDecision(
+        status=CapitalSlotStatus.ACTIVE,
+        ratchet_target=0.0,
+        can_ratchet=False,
+        block_reasons=(),
+        reason="bad",
+        live_authorization=True,
+    )
+    d = _compose(
+        transition=TransitionDecision(True, "X", False),
+        state=SideState.LONG_ACTIVE,
+        surv=_surv_ok(),
+        suit=_suit(
+            sclass=SuitabilityClass.LONG_ONLY_CANDIDATE,
+            can_long=True,
+            can_short=False,
+            can_neutral=False,
+        ),
+        req=RequestedSide.LONG_BULL,
+        capital_slot_ratchet_decision=rat,
+    )
+    assert d.status is DoublePlayCompositionStatus.BLOCKED
+    assert DoublePlayCompositionBlockReason.LIVE_NOT_AUTHORIZED in d.block_reasons
 
 
 def test_live_flag_on_subdecision_blocks() -> None:
