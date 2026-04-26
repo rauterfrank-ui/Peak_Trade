@@ -420,6 +420,7 @@ def test_contract_9_ast_no_bad_imports_in_pure_modules() -> None:
         "double_play_survival.py",
         "double_play_suitability.py",
         "double_play_composition.py",
+        "double_play_capital_slot.py",
     )
     bad = {"requests", "urllib3", "ccxt", "httpx", "socket", "aiohttp"}
     for name in files:
