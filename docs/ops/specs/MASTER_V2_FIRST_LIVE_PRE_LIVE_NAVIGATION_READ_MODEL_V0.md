@@ -2,7 +2,7 @@
 title: "Master V2 First Live PRE_LIVE Navigation Read Model v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-26"
+last_updated: "2026-04-28"
 docs_token: "DOCS_TOKEN_MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0"
 ---
 
@@ -52,6 +52,8 @@ Read **context** (optional but useful) **before** or **alongside** the PRE_LIVE 
 | C0g | [MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md) | **Pure stack** readiness map (pure `master_v2` modules + contract tests vs runtime) | Runtime readiness, execution, sessions, Testnet/Live authorization |
 | C0h | [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) | **Pure stack** read-only **dashboard display** map (WebUI placement guidance; docs-only) | Route implementation, market-data fetch, scanner, Live/Testnet go |
 | C0i | [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) | **WebUI read-only route** contract for future Double Play dashboard JSON (`GET` planning boundary; docs-only) | HTTP handler implementation, Live/Testnet go, scanner, exchange calls |
+| C0j | [MASTER_V2_DOUBLE_PLAY_PURE_DISPLAY_BASELINE_CLOSEOUT_INDEX_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_DISPLAY_BASELINE_CLOSEOUT_INDEX_V0.md) | **Closeout index** — **navigation pointer** with **safe reading order** for the **pure display baseline** (docs-only; **non-authorizing**) | **Readiness** or **approval** as **go**, **runtime enablement**, trading **authority**, or operator **go** |
+| C0k | [MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md) | **Parking map** — **parked** **prerequisites** and reopening triggers for hypothetical **runtime producer** → **downstream display** work (docs-only; **does not reopen** implementation) | **Runtime producer** implementation, scanner, exchange, provider, session, Testnet/Live **enablement**, trading **authority** |
 | C1 | [MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) | **Canonical** L0–L5 enablement **steering** for the clarification workstream | A finished ladder state, green gates, or live enablement |
 | C2 | [MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md) | Interpretation grammar for readiness claims (companion) | Evidence, signoff, or gate completion |
 | C3 | [MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md](MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md) | **Compact** G1–G12 gate-status **mapping** index (read-only visibility) | Gate closure, live authorization, or operator signoff |
