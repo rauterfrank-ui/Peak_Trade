@@ -15,6 +15,35 @@ pytestmark = pytest.mark.web
 
 ROUTE_PATH = "/api/master-v2/double-play/dashboard-display.json"
 
+_EXPECTED_TOP_LEVEL_KEYS = frozenset(
+    {
+        "panels",
+        "overall_status",
+        "no_live_banner_visible",
+        "display_only",
+        "trading_ready",
+        "testnet_ready",
+        "live_ready",
+        "live_authorization",
+        "warnings",
+    }
+)
+
+_EXPECTED_PANEL_KEYS = frozenset(
+    {
+        "name",
+        "status",
+        "summary",
+        "blockers",
+        "missing_inputs",
+        "live_authorization",
+        "is_authority",
+        "is_signal",
+    }
+)
+
+# Dict keys anywhere in the payload must not include these (control / runtime / secrets).
+# Keys that are legitimate DTO safety flags (e.g. live_authorization) are asserted false separately.
 _FORBIDDEN_JSON_KEYS = frozenset(
     {
         "start",
@@ -31,6 +60,22 @@ _FORBIDDEN_JSON_KEYS = frozenset(
         "approve",
         "sign_off",
         "live",
+        "order",
+        "orders",
+        "execute",
+        "execution",
+        "live_enable",
+        "live_enabled",
+        "live_armed",
+        "confirm_token",
+        "api_key",
+        "secret",
+        "exchange",
+        "provider",
+        "scanner",
+        "runtime_handle",
+        "session_id",
+        "testnet_authorization",
     }
 )
 
@@ -75,6 +120,21 @@ def test_dashboard_display_json_required_no_live_fields(client: TestClient) -> N
     assert data["live_authorization"] is False
 
 
+def test_dashboard_display_json_top_level_key_surface_is_display_only_contract(
+    client: TestClient,
+) -> None:
+    """Payload top-level keys match the read-only DTO serialization exactly (no extra control fields)."""
+    r = client.get(ROUTE_PATH)
+    data = r.json()
+    assert set(data.keys()) == _EXPECTED_TOP_LEVEL_KEYS
+    assert data["display_only"] is True
+    assert data["no_live_banner_visible"] is True
+    assert data["trading_ready"] is False
+    assert data["testnet_ready"] is False
+    assert data["live_ready"] is False
+    assert data["live_authorization"] is False
+
+
 def test_dashboard_display_json_panels_and_warnings(client: TestClient) -> None:
     r = client.get(ROUTE_PATH)
     data = r.json()
@@ -105,6 +165,20 @@ def test_dashboard_display_json_representative_panels_are_display_ready(client: 
     assert data["overall_status"] == "display_ready"
 
 
+def test_dashboard_display_json_panel_key_surface_and_no_panel_authority_flags(
+    client: TestClient,
+) -> None:
+    r = client.get(ROUTE_PATH)
+    data = r.json()
+    for panel in data["panels"]:
+        assert isinstance(panel, dict)
+        assert set(panel.keys()) == _EXPECTED_PANEL_KEYS
+        assert panel["live_authorization"] is False
+        assert panel["is_authority"] is False
+        assert panel["is_signal"] is False
+        assert panel["status"] == "display_ready"
+
+
 def test_dashboard_display_json_no_forbidden_control_keys(client: TestClient) -> None:
     r = client.get(ROUTE_PATH)
     data = r.json()
@@ -125,6 +199,8 @@ def test_route_module_import_surface_is_safe() -> None:
             "httpx",
             "urllib3",
             "socket",
+            "subprocess",
+            "backtest",
         }
     )
     banned_modules = frozenset(
@@ -133,6 +209,7 @@ def test_route_module_import_surface_is_safe() -> None:
             "src.live.web",
             "src.data.kraken",
             "src.execution",
+            "src.exchange",
             "scripts",
         }
     )
