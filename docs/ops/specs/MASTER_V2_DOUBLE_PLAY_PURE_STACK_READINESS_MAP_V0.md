@@ -144,6 +144,7 @@ Suggested **engineering** order when building **outside** pure `master_v2` (non-
 
 ## 18. References
 
+- [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) — futures input **producer** contract: operational sources vs `FuturesInputSnapshot` handoff (outside `master_v2`).
 - [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) — future WebUI read-only **route contract** for dashboard JSON (docs-only; complements the display map).
 - [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) — read-only dashboard **display** map for pure-stack labels (docs-only; not routes or Live).
 - [MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md](MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md) — canonical Double Play trading-logic semantics; non-authority.
