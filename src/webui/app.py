@@ -184,6 +184,9 @@ from .ops_ci_health_router import (
 from .execution_watch_api_v0 import router as execution_watch_v0_router
 from .execution_watch_api_v0_2 import router as execution_watch_v0_2_router
 from .market_surface import create_market_router
+from .double_play_dashboard_display_json_route_v0 import (
+    router as double_play_dashboard_display_json_v0_router,
+)
 
 
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
@@ -501,6 +504,9 @@ def create_app() -> FastAPI:
 
     # Market Surface v0 — read-only OHLCV (kein OPS-Cockpit-Bezug)
     app.include_router(create_market_router(templates, get_project_status))
+
+    # Master V2 Double Play — read-only dashboard display JSON (pure snapshot; no I/O)
+    app.include_router(double_play_dashboard_display_json_v0_router)
 
     # JSON API Alias für /api/ops/workflows
     @app.get("/api/ops/workflows")
