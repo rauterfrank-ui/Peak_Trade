@@ -18,6 +18,7 @@ This document is **docs-only**. It is the **canonical trading-logic manifest** f
 - [MASTER_V2_DOUBLE_PLAY_STRATEGY_SUITABILITY_PROJECTION_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_STRATEGY_SUITABILITY_PROJECTION_CONTRACT_V0.md) — **Strategy suitability projection** (metadata and side-compatibility only; not activation or execution authority).
 - [MASTER_V2_DOUBLE_PLAY_CAPITAL_SLOT_RATCHET_RELEASE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_CAPITAL_SLOT_RATCHET_RELEASE_CONTRACT_V0.md) — **Per-future capital slot**, ratchet, release, and reallocation (docs-only; not allocation, execution, or Live).
 - [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md) — **Futures Input Snapshot** read model (docs-only; precomputed data shape; not scanner, exchange, selector, or Live).
+- [MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md) — **Pure stack readiness map** (docs-only; inventory of pure `master_v2` modules and contract tests vs runtime; not execution or Live).
 
 ---
 **Status:** Konzept-/Architektur-Manifest, nicht Live-Freigabe  
