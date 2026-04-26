@@ -214,11 +214,37 @@ Summary aligned with `evaluate_futures_input_snapshot`:
 
 Contradictions between producer claims and venue reality are resolved **outside** this contract in governance; this spec grants **no waiver**.
 
-## 20. Validation / future tests
+## 20. Regression test anchors (non-authority, pure stack)
 
-**This docs slice** does not add tests.
+**Test anchors** below reference **pure stack** contract tests only. They are **read-only** pointers for reviewers and operators. They are **non-authorizing**: they do **not** state or imply external **approval**, **certification**, **production** permission, **live-ready** status, or operational **go**. They prove **in-repo pure behavior** only, not runtime wiring.
 
-Future tests (out of scope here) may include:
+### 20.1 Positive-path anchor
+
+- **`test_contract_32_producer_adapter_packet_full_stack_dashboard_long_bull_capital`** in `tests/trading/master_v2/test_double_play_pure_stack_contract.py`  
+  **Producer packet** → `adapt_producer_packet_to_futures_input_snapshot` → **`FuturesInputSnapshot`** and readiness → existing pure gates → composition → **`build_dashboard_display_snapshot`**.
+
+### 20.2 Fail-closed anchors
+
+- **`test_contract_33_producer_adapter_fail_closed_incomplete_instrument_metadata_dashboard`** — incomplete instrument metadata; readiness not data-ready; dashboard futures panel / overall **`DISPLAY_BLOCKED`**.
+- **`test_contract_34_producer_adapter_fail_closed_incomplete_provenance_dashboard`** — incomplete market-data provenance; same fail-closed display pattern.
+- **`test_contract_35_producer_adapter_fail_closed_perp_like_missing_funding_dashboard`** — **`PERPETUAL`** and **`SWAP`** without funding; **`DISPLAY_BLOCKED`**.
+- **`test_contract_36_producer_adapter_fail_closed_runtime_handle_no_readiness_dashboard_gap`** — runtime handle in packet → adapter **`BLOCKED`**, no snapshot or readiness; display with missing futures input → **`DISPLAY_MISSING`** and overall **`DISPLAY_WARNING`** (no silent **`DATA_READY`**).
+- **`test_contract_37_producer_adapter_live_authorization_stripped_full_stack_dashboard`** — producer candidate `live_authorization=True` **stripped** to false on the snapshot; stack remains **non-authorizing**.
+
+### 20.3 What these anchors do not prove
+
+- **Not** scanner execution, exchange or provider integration, or market-data **ingestion**.
+- **Not** WebUI HTML, HTTP routes, or static fixture **provider** behavior in production.
+- **Not** Testnet, Live, or **trading authority**.
+- **Not** governance **approval** or selector **authority** outside the pure test surface.
+
+Cross-module coverage lives in `test_double_play_pure_stack_contract.py` (**`test_contract_32`–`37`**); adapter unit tests in `test_double_play_futures_input_producer.py`. **`test_contract_9`** in the pure stack contract file extends the **pure-module** AST import guard to include `double_play_futures_input_producer.py` (and **`subprocess`** in the banned surface alongside other operational imports).
+
+## 21. Validation / future tests
+
+This file is **docs-only**; it does not add tests. **Regression anchors** are documented in §20.
+
+Additional future tests (non-exhaustive) may still include:
 
 - pure round-trip: producer fixture → `FuturesInputSnapshot` → `evaluate_futures_input_snapshot` without network imports,
 - invariant: snapshot payloads never set `live_authorization` true at pure evaluation,
@@ -235,14 +261,14 @@ If supported:
 
 - `bash scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main`
 
-## 21. Implementation staging
+## 22. Implementation staging
 
 1. **Docs** — this producer contract and cross-links (current slice).
 2. **Adapters (future)** — operational code maps allowed sources to `FuturesInputSnapshot` **outside** `master_v2`; network and registry writes stay here.
 3. **Pure tests (future)** — fixtures only; no ccxt, no `scripts/` imports inside `master_v2`.
 4. **Dashboard (future)** — static display of precomputed snapshots only, per §18.
 
-## 22. References
+## 23. References
 
 - [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md) — Futures Input Snapshot vocabulary and non-authority.
 - [MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md) — pure stack inventory; producer stays outside `master_v2`.

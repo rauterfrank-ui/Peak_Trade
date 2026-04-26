@@ -100,6 +100,8 @@ Cross-module coverage: `test_double_play_pure_stack_contract.py` exercises **Fut
 - **Role:** prove cross-module **invariants** and **no-live** behavior across layers (including optional capital-slot context and futures-input scenario gating).
 - **Not implied:** CI green on these tests does **not** mean runtime integration is ready, evidence is complete, or Live is authorized.
 
+**Producer adapter → pure stack → dashboard (test anchors, non-authority):** [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) §20 lists **`test_contract_32`–`37`** in `test_double_play_pure_stack_contract.py` — positive adapter handoff through composition and **`build_dashboard_display_snapshot`**, plus fail-closed cases (metadata, provenance, perp/swap funding, runtime handle, stripped `live_authorization`). These anchors prove **pure stack** and **read-only** display aggregation only. They do **not** prove scanner or provider wiring, market-data **ingestion**, WebUI HTML or routes, Testnet/Live **readiness**, **trading authority**, or external **approval**.
+
 ## 12. What this enables
 
 - **Engineering:** a **shared vocabulary** for Double Play pure layers and where to extend them next (adapters **outside** `master_v2`).

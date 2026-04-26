@@ -167,6 +167,8 @@ A **no-live banner** (or equivalent persistent disclosure) is **required** on an
 
 ## 20. Validation / future tests
 
+**Pure stack producer adapter → dashboard (test anchors, read-only, non-authority):** Cross-module tests in `tests/trading/master_v2/test_double_play_pure_stack_contract.py` include **`test_contract_32`–`37`**, summarized in [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) §20. Display semantics exercised there include **`DISPLAY_READY`** (contracts 32 and 37), **`DISPLAY_BLOCKED`** on the futures panel and overall (contracts 33–35), and **`DISPLAY_MISSING`** / overall **`DISPLAY_WARNING`** when no readiness decision exists after an adapter block (contract 36). These are **test anchors** for **pure** behavior only; they do **not** prove WebUI implementation, scanner runs, provider pipelines, market-data fetch, Testnet/Live **readiness**, **trading authority**, or any external sign-off treated as permission to trade or go operational.
+
 When code exists, future tests may include:
 
 - JSON schema or contract tests for **DoublePlayPureStackDisplaySnapshotV0**
