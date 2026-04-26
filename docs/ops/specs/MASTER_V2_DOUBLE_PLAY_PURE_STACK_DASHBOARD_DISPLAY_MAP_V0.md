@@ -2,7 +2,7 @@
 title: "Master V2 Double Play Pure Stack Dashboard Display Map v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-26"
+last_updated: "2026-04-27"
 docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0"
 ---
 
@@ -171,9 +171,11 @@ A **no-live banner** (or equivalent persistent disclosure) is **required** on an
 
 **Read-only JSON route (downstream):** `tests&#47;webui&#47;test_double_play_dashboard_display_json_route.py` provides **authority-invariant test coverage** for the **GET** JSON **read-only route** (exact key surfaces, **display-only** flags, forbidden control/runtime-style keys, route-module import guard), documented in [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **§9**. It does **not** replace §20 **pure stack** anchors or imply operational **producer** integration.
 
+**Route-independent JSON serialization (test anchors, non-authority):** `tests&#47;trading&#47;master_v2&#47;test_double_play_dashboard_display.py` includes **test anchors** that exercise **`snapshot_to_jsonable`** on a **pure dashboard snapshot** **without** HTTP or `TestClient` — the same **JSON serialization** path the **downstream display surface** uses for JSON bodies. Scenarios include a **full-stack** snapshot, a **blocked survival** / **display-blocked** panel path, and an **empty** default snapshot. Assertions include **JSON-native** values, **`json.dumps`** compatibility, exact top-level and per-panel key surfaces aligned with the WebUI JSON route contract, **display-only** semantics (`display_only` true, `no_live_banner_visible` true), **non-authorizing** readiness booleans (`trading_ready`, `testnet_ready`, `live_ready`, and `live_authorization` false at the top level), panel **non-authority** / **non-signal** flags (`live_authorization`, `is_authority`, `is_signal` false), and a recursive forbidden-key scan for order/control/runtime/provider/scanner/exchange/session/credential-like key names, while explicit false **safety** booleans are asserted separately rather than banned by name. These anchors **complement** the WebUI route **test anchors** and **do not replace** [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) **§20** producer-adapter → **pure stack** → dashboard anchors. Boundary: they prove **JSON serialization** and key-surface **invariants** only — not operational **producer** integration, market-data ingestion, WebUI **HTML** or control UI, Testnet or Live **readiness**, execution permission, or external sign-off treated as permission to trade.
+
 When code exists, future tests may include:
 
-- JSON schema or contract tests for **DoublePlayPureStackDisplaySnapshotV0**
+- optional JSON schema layering for **DoublePlayPureStackDisplaySnapshotV0** (partially overlapped by the **route-independent** **JSON serialization** **test anchors** above)
 - WebUI route tests asserting **no** POST side effects on read-only Double Play endpoints
 - invariant: snapshot JSON never contains `live_authorization: true` for this path
 
