@@ -239,6 +239,7 @@ When this file changes, run `validate_docs_token_policy`, `verify_docs_reference
 
 ## 22. References
 
+- [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) — **producer boundary**: how future operational sources may hand off precomputed data compatible with this read model (docs-only; not a runtime).
 - [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) — dashboard **display** boundaries for pure-stack panels including Futures Input (docs-only; not WebUI implementation).
 - [MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md) — pure Double Play stack inventory and boundaries (code modules + tests; not runtime or Live).
 - [MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md](MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md) — Double Play State-Switch, dynamic scope envelope, non-authority.
