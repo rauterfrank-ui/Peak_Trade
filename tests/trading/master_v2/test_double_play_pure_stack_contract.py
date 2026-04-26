@@ -1,8 +1,8 @@
 # tests/trading/master_v2/test_double_play_pure_stack_contract.py
 """
 Cross-module contract tests:
-Futures Input (upstream) -> State -> Survival -> Suitability -> Capital Slot -> Composition
--> Dashboard Display snapshot (read-only aggregate).
+Futures Input (upstream, hand-built or producer-adapter) -> State -> Survival -> Suitability
+-> Capital Slot -> Composition -> Dashboard Display snapshot (read-only aggregate).
 
 Futures input is data-only context; composition does not consume it — scenario tests gate
 eligibility explicitly. No runtime integration, registry, execution, or exchange
@@ -51,6 +51,19 @@ from trading.master_v2.double_play_futures_input import (
     FuturesReadinessStatus,
     FuturesVolatilityProfile,
     evaluate_futures_input_snapshot,
+)
+from trading.master_v2.double_play_futures_input_producer import (
+    FuturesProducerAdapterStatus,
+    FuturesProducerCandidate,
+    FuturesProducerDerivatives,
+    FuturesProducerLiquidity,
+    FuturesProducerMarketDataProvenance,
+    FuturesProducerOpportunity,
+    FuturesProducerPacket,
+    FuturesProducerRanking,
+    FuturesProducerInstrumentMetadata,
+    FuturesProducerVolatility,
+    adapt_producer_packet_to_futures_input_snapshot,
 )
 from trading.master_v2.double_play_state import (
     ScopeEvent,
@@ -367,6 +380,136 @@ def _fi_snapshot(**overrides: object) -> FuturesInputSnapshot:
     }
     parts.update(overrides)
     return FuturesInputSnapshot(**parts)
+
+
+# --- producer packet fixtures (mirror _fi_* for adapter/stack contract) ---
+def _prod_candidate(**overrides: object) -> FuturesProducerCandidate:
+    d: dict = {
+        "candidate_id": "c1",
+        "instrument_id": "inst-btc-perp",
+        "symbol": "BTC-USDT-PERP",
+        "market_type": FuturesMarketType.PERPETUAL,
+        "exchange": "example",
+        "base_currency": "BTC",
+        "quote_currency": "USDT",
+        "live_authorization": False,
+    }
+    d.update(overrides)
+    return FuturesProducerCandidate(**d)
+
+
+def _prod_ranking(**overrides: object) -> FuturesProducerRanking:
+    d: dict = {
+        "source_universe_size": 200,
+        "selected_top_n": 20,
+        "rank": 3,
+        "score": 0.91,
+        "score_components_complete": True,
+        "is_top_n_member": True,
+    }
+    d.update(overrides)
+    return FuturesProducerRanking(**d)
+
+
+def _prod_instrument(**overrides: object) -> FuturesProducerInstrumentMetadata:
+    d: dict = {
+        "complete": True,
+        "contract_size_known": True,
+        "tick_size_known": True,
+        "step_size_known": True,
+        "min_qty_known": True,
+        "min_notional_known": True,
+        "margin_asset_known": True,
+        "settlement_asset_known": True,
+        "leverage_bounds_known": True,
+        "missing_fields": (),
+    }
+    d.update(overrides)
+    return FuturesProducerInstrumentMetadata(**d)
+
+
+def _prod_provenance(**overrides: object) -> FuturesProducerMarketDataProvenance:
+    d: dict = {
+        "complete": True,
+        "freshness_state": FuturesFreshnessState.FRESH,
+        "dataset_id": "ds-1",
+        "source": "fixture",
+        "mark_available": True,
+        "index_available": True,
+        "last_available": True,
+        "ohlcv_available": True,
+        "funding_available": True,
+        "open_interest_available": True,
+        "missing_fields": (),
+    }
+    d.update(overrides)
+    return FuturesProducerMarketDataProvenance(**d)
+
+
+def _prod_volatility(**overrides: object) -> FuturesProducerVolatility:
+    d: dict = {
+        "realized_volatility": 0.42,
+        "atr_or_rolling_range": 120.0,
+        "volatility_regime": "medium",
+        "dynamic_scope_usable": True,
+    }
+    d.update(overrides)
+    return FuturesProducerVolatility(**d)
+
+
+def _prod_liquidity(**overrides: object) -> FuturesProducerLiquidity:
+    d: dict = {
+        "spread_bps": 1.5,
+        "average_spread_bps": 1.8,
+        "volume": 1_000_000.0,
+        "quote_volume": 50_000_000.0,
+        "liquidity_regime": "deep",
+        "spread_quality": "tight",
+    }
+    d.update(overrides)
+    return FuturesProducerLiquidity(**d)
+
+
+def _prod_derivatives(**overrides: object) -> FuturesProducerDerivatives:
+    d: dict = {
+        "funding_available": True,
+        "funding_rate": 0.0001,
+        "funding_regime": "neutral",
+        "open_interest_available": True,
+        "open_interest": 1e9,
+        "open_interest_regime": "high",
+    }
+    d.update(overrides)
+    return FuturesProducerDerivatives(**d)
+
+
+def _prod_opportunity(**overrides: object) -> FuturesProducerOpportunity:
+    d: dict = {
+        "opportunity_score": 0.75,
+        "inactivity_score": 0.1,
+        "movement_above_fee_slippage_breakeven": True,
+        "chop_risk": "low",
+        "candidate_is_inactive": False,
+    }
+    d.update(overrides)
+    return FuturesProducerOpportunity(**d)
+
+
+def _prod_packet(**overrides: object) -> FuturesProducerPacket:
+    parts: dict = {
+        "candidate": _prod_candidate(),
+        "ranking": _prod_ranking(),
+        "instrument": _prod_instrument(),
+        "provenance": _prod_provenance(),
+        "volatility": _prod_volatility(),
+        "liquidity": _prod_liquidity(),
+        "derivatives": _prod_derivatives(),
+        "opportunity": _prod_opportunity(),
+        "dashboard_label": None,
+        "ai_summary": None,
+    }
+    parts.update(overrides)
+    return FuturesProducerPacket(**parts)
 
 
 def _full_long_bull_stack_with_capital():
@@ -1492,6 +1635,75 @@ def test_contract_31_dashboard_display_missing_composition_is_display_warning() 
     _assert_dashboard_snapshot_invariants(snap)
 
 
+def test_contract_32_producer_adapter_packet_full_stack_dashboard_long_bull_capital() -> None:
+    """
+    Adapter-produced futures input flows through the same pure stack + dashboard path as
+    hand-built snapshots. Tests-only: no WebUI route or fixture provider changes.
+    """
+    packet = _prod_packet()
+    adapter_dec = adapt_producer_packet_to_futures_input_snapshot(packet)
+    assert adapter_dec.adapter_status is FuturesProducerAdapterStatus.OK
+    assert adapter_dec.adapter_block_reasons == ()
+    assert adapter_dec.snapshot is not None
+    fi = adapter_dec.readiness
+    assert fi is not None
+    assert fi.status is FuturesReadinessStatus.DATA_READY
+    assert fi.ready_for_downstream_model_use
+    assert not fi.live_authorization
+
+    s1, st1, _ = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    s2, st2, t2 = _ts(s1, ScopeEvent.UPSCOPE_CONFIRMED, st1, 1)
+    assert s2 == SideState.LONG_ACTIVE
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="dash-adapter-long",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    cfg = _cs_cfg_ok()
+    cs_st = _cs_state_ok(future="ETH-USD-PERP", realized=340.0, survival_allows_slot=True)
+    rat = evaluate_capital_slot_ratchet(cfg, cs_st)
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+            capital_slot_ratchet_decision=rat,
+            capital_slot_release_decision=rel,
+        )
+    )
+    assert _stack_eligible_with_futures_gate(fi, comp)
+    snap = build_dashboard_display_snapshot(
+        futures_input=fi,
+        transition=t2,
+        survival=surv,
+        suitability=suit,
+        capital_slot_ratchet=rat,
+        capital_slot_release=rel,
+        composition=comp,
+    )
+    assert len(snap.panels) == 7
+    assert snap.overall_status is DashboardDisplayStatus.DISPLAY_READY
+    for p in snap.panels:
+        assert p.status is DashboardDisplayStatus.DISPLAY_READY
+    _assert_dashboard_snapshot_invariants(snap)
+    _assert_no_live_authorization_pure_stack(
+        fi=fi,
+        transition=t2,
+        surv=surv,
+        suit=suit,
+        rat=rat,
+        rel=rel,
+        comp=comp,
+        snap=snap,
+    )
+
+
 def _forbidden_toplevels() -> frozenset[str]:
     return frozenset(
         {
@@ -1536,6 +1748,7 @@ def test_contract_9_ast_no_bad_imports_in_pure_modules() -> None:
         "double_play_composition.py",
         "double_play_capital_slot.py",
         "double_play_futures_input.py",
+        "double_play_futures_input_producer.py",
         "double_play_dashboard_display.py",
     )
     bad = {"requests", "urllib3", "ccxt", "httpx", "socket", "aiohttp"}
