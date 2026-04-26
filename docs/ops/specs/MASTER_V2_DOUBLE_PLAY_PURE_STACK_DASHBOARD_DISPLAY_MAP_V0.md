@@ -2,7 +2,7 @@
 title: "Master V2 Double Play Pure Stack Dashboard Display Map v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-27"
+last_updated: "2026-04-28"
 docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0"
 ---
 
@@ -192,6 +192,7 @@ This docs change: run `validate_docs_token_policy`, `verify_docs_reference_targe
 
 - [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) — producer boundary: snapshot data must be precomputed **before** read-only display (no fetch in route).
 - [MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md) — **parked** runtime-producer → **downstream display** **prerequisites** (**non-authorizing** **parking map**).
+- [MASTER_V2_DOUBLE_PLAY_PURE_DISPLAY_BASELINE_CLOSEOUT_INDEX_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_DISPLAY_BASELINE_CLOSEOUT_INDEX_V0.md) — **closeout index**; **reading order** for **pure display baseline** (**non-authorizing**).
 - [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) — future WebUI **GET** read-only JSON route boundary for this display DTO (docs-only; no implementation here).
 - [MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md) — pure stack inventory and model boundaries.
 - [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md) — Futures Input Snapshot read model.
