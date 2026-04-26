@@ -5,8 +5,9 @@ Futures Input (upstream, hand-built or producer-adapter) -> State -> Survival ->
 -> Capital Slot -> Composition -> Dashboard Display snapshot (read-only aggregate).
 
 Futures input is data-only context; composition does not consume it — scenario tests gate
-eligibility explicitly. No runtime integration, registry, execution, or exchange
-(import checks below).
+eligibility explicitly. Producer-adapter fail-closed paths (blocked readiness or adapter
+BLOCKED) are covered through the same dashboard display surface. No runtime integration,
+registry, execution, or exchange (import checks below).
 """
 
 from __future__ import annotations
@@ -40,6 +41,7 @@ from trading.master_v2.double_play_futures_input import (
     FuturesCandidateSnapshot,
     FuturesDerivativesProfile,
     FuturesFreshnessState,
+    FuturesInputBlockReason,
     FuturesInputReadinessDecision,
     FuturesInputSnapshot,
     FuturesInstrumentMetadataStatus,
@@ -53,6 +55,7 @@ from trading.master_v2.double_play_futures_input import (
     evaluate_futures_input_snapshot,
 )
 from trading.master_v2.double_play_futures_input_producer import (
+    FuturesProducerAdapterBlockReason,
     FuturesProducerAdapterStatus,
     FuturesProducerCandidate,
     FuturesProducerDerivatives,
@@ -510,6 +513,37 @@ def _prod_packet(**overrides: object) -> FuturesProducerPacket:
     }
     parts.update(overrides)
     return FuturesProducerPacket(**parts)
+
+
+def _long_bull_capital_composition_stack():
+    """Long-bull + capital-slot composition without futures-input evaluation (adapter tests)."""
+    s1, st1, _ = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    s2, st2, t2 = _ts(s1, ScopeEvent.UPSCOPE_CONFIRMED, st1, 1)
+    assert s2 == SideState.LONG_ACTIVE
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="dash-adapter-fail-closed",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    cfg = _cs_cfg_ok()
+    cs_st = _cs_state_ok(future="ETH-USD-PERP", realized=340.0, survival_allows_slot=True)
+    rat = evaluate_capital_slot_ratchet(cfg, cs_st)
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+            capital_slot_ratchet_decision=rat,
+            capital_slot_release_decision=rel,
+        )
+    )
+    return t2, surv, suit, rat, rel, comp
 
 
 def _full_long_bull_stack_with_capital():
@@ -1704,6 +1738,221 @@ def test_contract_32_producer_adapter_packet_full_stack_dashboard_long_bull_capi
     )
 
 
+def test_contract_33_producer_adapter_fail_closed_incomplete_instrument_metadata_dashboard() -> (
+    None
+):
+    t2, surv, suit, rat, rel, comp = _long_bull_capital_composition_stack()
+    packet = _prod_packet(
+        instrument=_prod_instrument(complete=False, missing_fields=("tick_size",))
+    )
+    dec = adapt_producer_packet_to_futures_input_snapshot(packet)
+    assert dec.adapter_status is FuturesProducerAdapterStatus.OK
+    assert dec.snapshot is not None
+    assert not dec.snapshot.candidate.live_authorization
+    fi = dec.readiness
+    assert fi is not None
+    assert fi.status is FuturesReadinessStatus.BLOCKED
+    assert not fi.ready_for_downstream_model_use
+    assert FuturesInputBlockReason.INSTRUMENT_METADATA_INCOMPLETE in fi.block_reasons
+    assert not _stack_eligible_with_futures_gate(fi, comp)
+    snap = build_dashboard_display_snapshot(
+        futures_input=fi,
+        transition=t2,
+        survival=surv,
+        suitability=suit,
+        capital_slot_ratchet=rat,
+        capital_slot_release=rel,
+        composition=comp,
+    )
+    assert snap.panels[0].status is DashboardDisplayStatus.DISPLAY_BLOCKED
+    assert snap.overall_status is DashboardDisplayStatus.DISPLAY_BLOCKED
+    _assert_dashboard_snapshot_invariants(snap)
+    _assert_no_live_authorization_pure_stack(
+        fi=fi,
+        transition=t2,
+        surv=surv,
+        suit=suit,
+        rat=rat,
+        rel=rel,
+        comp=comp,
+        snap=snap,
+    )
+
+
+def test_contract_34_producer_adapter_fail_closed_incomplete_provenance_dashboard() -> None:
+    t2, surv, suit, rat, rel, comp = _long_bull_capital_composition_stack()
+    packet = _prod_packet(
+        provenance=_prod_provenance(complete=False, missing_fields=("dataset_id",)),
+    )
+    dec = adapt_producer_packet_to_futures_input_snapshot(packet)
+    assert dec.adapter_status is FuturesProducerAdapterStatus.OK
+    assert dec.snapshot is not None
+    assert not dec.snapshot.candidate.live_authorization
+    fi = dec.readiness
+    assert fi is not None
+    assert fi.status is FuturesReadinessStatus.BLOCKED
+    assert not fi.ready_for_downstream_model_use
+    assert FuturesInputBlockReason.MARKET_DATA_PROVENANCE_INCOMPLETE in fi.block_reasons
+    assert not _stack_eligible_with_futures_gate(fi, comp)
+    snap = build_dashboard_display_snapshot(
+        futures_input=fi,
+        transition=t2,
+        survival=surv,
+        suitability=suit,
+        capital_slot_ratchet=rat,
+        capital_slot_release=rel,
+        composition=comp,
+    )
+    assert snap.panels[0].status is DashboardDisplayStatus.DISPLAY_BLOCKED
+    assert snap.overall_status is DashboardDisplayStatus.DISPLAY_BLOCKED
+    _assert_dashboard_snapshot_invariants(snap)
+    _assert_no_live_authorization_pure_stack(
+        fi=fi,
+        transition=t2,
+        surv=surv,
+        suit=suit,
+        rat=rat,
+        rel=rel,
+        comp=comp,
+        snap=snap,
+    )
+
+
+def test_contract_35_producer_adapter_fail_closed_perp_like_missing_funding_dashboard() -> None:
+    t2, surv, suit, rat, rel, comp = _long_bull_capital_composition_stack()
+    for market_type in (FuturesMarketType.PERPETUAL, FuturesMarketType.SWAP):
+        packet = _prod_packet(
+            candidate=_prod_candidate(market_type=market_type),
+            derivatives=_prod_derivatives(funding_available=False, funding_rate=None),
+        )
+        dec = adapt_producer_packet_to_futures_input_snapshot(packet)
+        assert dec.adapter_status is FuturesProducerAdapterStatus.OK
+        assert dec.snapshot is not None
+        assert not dec.snapshot.candidate.live_authorization
+        fi = dec.readiness
+        assert fi is not None
+        assert fi.status is FuturesReadinessStatus.BLOCKED
+        assert FuturesInputBlockReason.PERPETUAL_FUNDING_INCOMPLETE in fi.block_reasons
+        assert not _stack_eligible_with_futures_gate(fi, comp)
+        snap = build_dashboard_display_snapshot(
+            futures_input=fi,
+            transition=t2,
+            survival=surv,
+            suitability=suit,
+            capital_slot_ratchet=rat,
+            capital_slot_release=rel,
+            composition=comp,
+        )
+        assert snap.panels[0].status is DashboardDisplayStatus.DISPLAY_BLOCKED
+        assert snap.overall_status is DashboardDisplayStatus.DISPLAY_BLOCKED
+        _assert_dashboard_snapshot_invariants(snap)
+        _assert_no_live_authorization_pure_stack(
+            fi=fi,
+            transition=t2,
+            surv=surv,
+            suit=suit,
+            rat=rat,
+            rel=rel,
+            comp=comp,
+            snap=snap,
+        )
+
+
+def test_contract_36_producer_adapter_fail_closed_runtime_handle_no_readiness_dashboard_gap() -> (
+    None
+):
+    bad_packet = _prod_packet(dashboard_label=object())  # type: ignore[arg-type]
+    dec = adapt_producer_packet_to_futures_input_snapshot(bad_packet)
+    assert dec.adapter_status is FuturesProducerAdapterStatus.BLOCKED
+    assert FuturesProducerAdapterBlockReason.RUNTIME_HANDLE_DETECTED in dec.adapter_block_reasons
+    assert dec.snapshot is None
+    assert dec.readiness is None
+    t2, surv, suit, rat, rel, comp = _long_bull_capital_composition_stack()
+    snap = build_dashboard_display_snapshot(
+        futures_input=None,
+        transition=t2,
+        survival=surv,
+        suitability=suit,
+        capital_slot_ratchet=rat,
+        capital_slot_release=rel,
+        composition=comp,
+    )
+    assert snap.panels[0].status is DashboardDisplayStatus.DISPLAY_MISSING
+    assert snap.overall_status is DashboardDisplayStatus.DISPLAY_WARNING
+    assert "one_or_more_panels_missing_optional_pure_inputs" in snap.warnings
+    _assert_dashboard_snapshot_invariants(snap)
+    assert not t2.live_authorization_granted
+    assert not surv.live_authorization
+    assert not suit.live_authorization
+    assert not suit.projection.live_authorization
+    assert not rat.live_authorization
+    assert not rel.live_authorization
+    assert not comp.live_authorization
+    assert not snap.live_authorization
+
+
+def test_contract_37_producer_adapter_live_authorization_stripped_full_stack_dashboard() -> None:
+    packet = _prod_packet(candidate=_prod_candidate(live_authorization=True))
+    assert packet.candidate.live_authorization is True
+    adapter_dec = adapt_producer_packet_to_futures_input_snapshot(packet)
+    assert adapter_dec.adapter_status is FuturesProducerAdapterStatus.OK
+    assert adapter_dec.snapshot is not None
+    assert adapter_dec.snapshot.candidate.live_authorization is False
+    fi = adapter_dec.readiness
+    assert fi is not None
+    assert fi.status is FuturesReadinessStatus.DATA_READY
+    assert not fi.live_authorization
+
+    s1, st1, _ = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    s2, st2, t2 = _ts(s1, ScopeEvent.UPSCOPE_CONFIRMED, st1, 1)
+    assert s2 == SideState.LONG_ACTIVE
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="dash-adapter-live-strip",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    cfg = _cs_cfg_ok()
+    cs_st = _cs_state_ok(future="ETH-USD-PERP", realized=340.0, survival_allows_slot=True)
+    rat = evaluate_capital_slot_ratchet(cfg, cs_st)
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+            capital_slot_ratchet_decision=rat,
+            capital_slot_release_decision=rel,
+        )
+    )
+    assert _stack_eligible_with_futures_gate(fi, comp)
+    snap = build_dashboard_display_snapshot(
+        futures_input=fi,
+        transition=t2,
+        survival=surv,
+        suitability=suit,
+        capital_slot_ratchet=rat,
+        capital_slot_release=rel,
+        composition=comp,
+    )
+    assert snap.overall_status is DashboardDisplayStatus.DISPLAY_READY
+    _assert_dashboard_snapshot_invariants(snap)
+    _assert_no_live_authorization_pure_stack(
+        fi=fi,
+        transition=t2,
+        surv=surv,
+        suit=suit,
+        rat=rat,
+        rel=rel,
+        comp=comp,
+        snap=snap,
+    )
+
+
 def _forbidden_toplevels() -> frozenset[str]:
     return frozenset(
         {
@@ -1751,7 +2000,7 @@ def test_contract_9_ast_no_bad_imports_in_pure_modules() -> None:
         "double_play_futures_input_producer.py",
         "double_play_dashboard_display.py",
     )
-    bad = {"requests", "urllib3", "ccxt", "httpx", "socket", "aiohttp"}
+    bad = {"requests", "urllib3", "ccxt", "httpx", "socket", "aiohttp", "subprocess"}
     for name in files:
         tree = ast.parse((root / name).read_text(encoding="utf-8"))
         for node in ast.walk(tree):
