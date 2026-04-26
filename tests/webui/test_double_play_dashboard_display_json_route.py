@@ -86,6 +86,25 @@ def test_dashboard_display_json_panels_and_warnings(client: TestClient) -> None:
     assert "overall_status" in data
 
 
+def test_dashboard_display_json_representative_panels_are_display_ready(client: TestClient) -> None:
+    r = client.get(ROUTE_PATH)
+    data = r.json()
+    by_name = {p["name"]: p for p in data["panels"]}
+    expected = (
+        "futures_input",
+        "state_transition",
+        "survival_envelope",
+        "strategy_suitability",
+        "capital_slot_ratchet",
+        "capital_slot_release",
+        "composition",
+    )
+    for name in expected:
+        assert name in by_name
+        assert by_name[name]["status"] == "display_ready"
+    assert data["overall_status"] == "display_ready"
+
+
 def test_dashboard_display_json_no_forbidden_control_keys(client: TestClient) -> None:
     r = client.get(ROUTE_PATH)
     data = r.json()
@@ -123,9 +142,17 @@ def test_route_module_import_surface_is_safe() -> None:
                 base = n.name.split(".")[0]
                 if base in banned_roots:
                     raise AssertionError(f"unexpected import: {n.name}")
+                if base == "trading" and not n.name.startswith("trading.master_v2"):
+                    raise AssertionError(f"unexpected import: {n.name}")
         if isinstance(node, ast.ImportFrom) and node.module:
             mod = node.module
             if mod in banned_modules or any(mod.startswith(p + ".") for p in banned_modules):
+                raise AssertionError(f"unexpected from-import: {mod}")
+            if (
+                mod.startswith("trading.")
+                and mod != "trading.master_v2"
+                and not mod.startswith("trading.master_v2.")
+            ):
                 raise AssertionError(f"unexpected from-import: {mod}")
             top = mod.split(".")[0]
             if top in banned_roots:
