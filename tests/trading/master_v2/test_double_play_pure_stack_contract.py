@@ -1,8 +1,11 @@
 # tests/trading/master_v2/test_double_play_pure_stack_contract.py
 """
-Cross-module contract tests: State -> Survival -> Suitability -> Composition.
+Cross-module contract tests:
+Futures Input (upstream) -> State -> Survival -> Suitability -> Capital Slot -> Composition.
 
-No runtime integration, registry, execution, or exchange (import checks below).
+Futures input is data-only context; composition does not consume it — scenario tests gate
+eligibility explicitly. No runtime integration, registry, execution, or exchange
+(import checks below).
 """
 
 from __future__ import annotations
@@ -23,9 +26,26 @@ from trading.master_v2.double_play_capital_slot import (
 from trading.master_v2.double_play_composition import (
     DoublePlayCompositionBlockReason,
     DoublePlayCompositionInput,
+    DoublePlayCompositionDecision,
     DoublePlayCompositionStatus,
     RequestedSide,
     compose_double_play_decision,
+)
+from trading.master_v2.double_play_futures_input import (
+    FuturesCandidateSnapshot,
+    FuturesDerivativesProfile,
+    FuturesFreshnessState,
+    FuturesInputReadinessDecision,
+    FuturesInputSnapshot,
+    FuturesInstrumentMetadataStatus,
+    FuturesLiquidityProfile,
+    FuturesMarketDataProvenanceStatus,
+    FuturesMarketType,
+    FuturesOpportunityProfile,
+    FuturesRankingSnapshot,
+    FuturesReadinessStatus,
+    FuturesVolatilityProfile,
+    evaluate_futures_input_snapshot,
 )
 from trading.master_v2.double_play_state import (
     ScopeEvent,
@@ -214,6 +234,151 @@ def _cs_state_ok(
     )
 
 
+# --- futures input fixtures (aligned with test_double_play_futures_input) ---
+def _fi_candidate(**overrides: object) -> FuturesCandidateSnapshot:
+    d: dict = {
+        "candidate_id": "c1",
+        "instrument_id": "inst-btc-perp",
+        "symbol": "BTC-USDT-PERP",
+        "market_type": FuturesMarketType.PERPETUAL,
+        "exchange": "example",
+        "base_currency": "BTC",
+        "quote_currency": "USDT",
+        "live_authorization": False,
+    }
+    d.update(overrides)
+    return FuturesCandidateSnapshot(**d)
+
+
+def _fi_ranking(**overrides: object) -> FuturesRankingSnapshot:
+    d: dict = {
+        "source_universe_size": 200,
+        "selected_top_n": 20,
+        "rank": 3,
+        "score": 0.91,
+        "score_components_complete": True,
+        "is_top_n_member": True,
+    }
+    d.update(overrides)
+    return FuturesRankingSnapshot(**d)
+
+
+def _fi_instrument(**overrides: object) -> FuturesInstrumentMetadataStatus:
+    d: dict = {
+        "complete": True,
+        "contract_size_known": True,
+        "tick_size_known": True,
+        "step_size_known": True,
+        "min_qty_known": True,
+        "min_notional_known": True,
+        "margin_asset_known": True,
+        "settlement_asset_known": True,
+        "leverage_bounds_known": True,
+        "missing_fields": (),
+    }
+    d.update(overrides)
+    return FuturesInstrumentMetadataStatus(**d)
+
+
+def _fi_provenance(**overrides: object) -> FuturesMarketDataProvenanceStatus:
+    d: dict = {
+        "complete": True,
+        "freshness_state": FuturesFreshnessState.FRESH,
+        "dataset_id": "ds-1",
+        "source": "fixture",
+        "mark_available": True,
+        "index_available": True,
+        "last_available": True,
+        "ohlcv_available": True,
+        "funding_available": True,
+        "open_interest_available": True,
+        "missing_fields": (),
+    }
+    d.update(overrides)
+    return FuturesMarketDataProvenanceStatus(**d)
+
+
+def _fi_volatility(**overrides: object) -> FuturesVolatilityProfile:
+    d: dict = {
+        "realized_volatility": 0.42,
+        "atr_or_rolling_range": 120.0,
+        "volatility_regime": "medium",
+        "dynamic_scope_usable": True,
+    }
+    d.update(overrides)
+    return FuturesVolatilityProfile(**d)
+
+
+def _fi_liquidity(**overrides: object) -> FuturesLiquidityProfile:
+    d: dict = {
+        "spread_bps": 1.5,
+        "average_spread_bps": 1.8,
+        "volume": 1_000_000.0,
+        "quote_volume": 50_000_000.0,
+        "liquidity_regime": "deep",
+        "spread_quality": "tight",
+    }
+    d.update(overrides)
+    return FuturesLiquidityProfile(**d)
+
+
+def _fi_derivatives(**overrides: object) -> FuturesDerivativesProfile:
+    d: dict = {
+        "funding_available": True,
+        "funding_rate": 0.0001,
+        "funding_regime": "neutral",
+        "open_interest_available": True,
+        "open_interest": 1e9,
+        "open_interest_regime": "high",
+    }
+    d.update(overrides)
+    return FuturesDerivativesProfile(**d)
+
+
+def _fi_opportunity(**overrides: object) -> FuturesOpportunityProfile:
+    d: dict = {
+        "opportunity_score": 0.75,
+        "inactivity_score": 0.1,
+        "movement_above_fee_slippage_breakeven": True,
+        "chop_risk": "low",
+        "candidate_is_inactive": False,
+    }
+    d.update(overrides)
+    return FuturesOpportunityProfile(**d)
+
+
+def _fi_snapshot(**overrides: object) -> FuturesInputSnapshot:
+    parts: dict = {
+        "candidate": _fi_candidate(),
+        "ranking": _fi_ranking(),
+        "instrument": _fi_instrument(),
+        "provenance": _fi_provenance(),
+        "volatility": _fi_volatility(),
+        "liquidity": _fi_liquidity(),
+        "derivatives": _fi_derivatives(),
+        "opportunity": _fi_opportunity(),
+        "dashboard_label": None,
+        "ai_summary": None,
+    }
+    parts.update(overrides)
+    return FuturesInputSnapshot(**parts)
+
+
+def _stack_eligible_with_futures_gate(
+    fi: FuturesInputReadinessDecision,
+    comp: DoublePlayCompositionDecision,
+) -> bool:
+    """
+    Scenario-level gate: pure composition may pass while futures input is blocked.
+    Downstream eligibility in this contract requires both.
+    """
+    return (
+        fi.status is FuturesReadinessStatus.DATA_READY
+        and fi.ready_for_downstream_model_use
+        and comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
+    )
+
+
 def test_contract_1_valid_long_bull_path_eligible_model_only() -> None:
     s1, st1, t1 = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
     assert s1 == SideState.LONG_ARMED
@@ -250,6 +415,14 @@ def test_contract_1_valid_long_bull_path_eligible_model_only() -> None:
     assert t1.live_authorization_granted is False
     assert t2.live_authorization_granted is False
 
+    fi = evaluate_futures_input_snapshot(_fi_snapshot())
+    assert fi.status is FuturesReadinessStatus.DATA_READY
+    assert fi.ready_for_downstream_model_use
+    assert not fi.is_authority
+    assert not fi.is_signal
+    assert not fi.live_authorization
+    assert _stack_eligible_with_futures_gate(fi, comp)
+
 
 def test_contract_2_valid_short_bear_path_eligible_model_only() -> None:
     s1, st1, t1 = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.DOWNSCOPE_CONFIRMED, EMPTY_ST, 0)
@@ -281,6 +454,10 @@ def test_contract_2_valid_short_bear_path_eligible_model_only() -> None:
     )
     assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
     assert comp.live_authorization is False
+
+    fi = evaluate_futures_input_snapshot(_fi_snapshot())
+    assert fi.status is FuturesReadinessStatus.DATA_READY
+    assert _stack_eligible_with_futures_gate(fi, comp)
 
 
 def test_contract_3_survival_blocker_prevents_composition() -> None:
@@ -468,6 +645,8 @@ def test_contract_10_long_bull_stack_with_capital_slot_ratchet_context_eligible_
     )
     assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
     assert not comp.live_authorization
+    fi = evaluate_futures_input_snapshot(_fi_snapshot())
+    assert _stack_eligible_with_futures_gate(fi, comp)
 
 
 def test_contract_11_short_bear_stack_with_capital_slot_ratchet_context_eligible_model_only() -> (
@@ -507,6 +686,8 @@ def test_contract_11_short_bear_stack_with_capital_slot_ratchet_context_eligible
         )
     )
     assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
+    fi = evaluate_futures_input_snapshot(_fi_snapshot())
+    assert _stack_eligible_with_futures_gate(fi, comp)
 
 
 def test_contract_12_capital_slot_survival_blocks_ratchet_without_trade_or_release_authority() -> (
@@ -703,6 +884,195 @@ def test_contract_17_pure_stack_blocked_when_capital_slot_opportunity_released()
     assert DoublePlayCompositionBlockReason.CAPITAL_SLOT_RELEASED in comp.block_reasons
 
 
+def test_contract_18_futures_input_missing_metadata_blocks_scenario_eligibility() -> None:
+    s1, st1, _ = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    s2, st2, t2 = _ts(s1, ScopeEvent.UPSCOPE_CONFIRMED, st1, 1)
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="fi-meta",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+        )
+    )
+    assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
+
+    fi = evaluate_futures_input_snapshot(
+        _fi_snapshot(instrument=_fi_instrument(complete=False, missing_fields=("tick_size",)))
+    )
+    assert fi.status is FuturesReadinessStatus.BLOCKED
+    assert not fi.ready_for_downstream_model_use
+    assert not _stack_eligible_with_futures_gate(fi, comp)
+
+
+def test_contract_19_futures_input_stale_provenance_blocks_scenario_eligibility() -> None:
+    s1, st1, _ = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    s2, st2, t2 = _ts(s1, ScopeEvent.UPSCOPE_CONFIRMED, st1, 1)
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="fi-stale",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+        )
+    )
+    fi = evaluate_futures_input_snapshot(
+        _fi_snapshot(provenance=_fi_provenance(freshness_state=FuturesFreshnessState.STALE))
+    )
+    assert fi.status is FuturesReadinessStatus.BLOCKED
+    assert not _stack_eligible_with_futures_gate(fi, comp)
+
+
+def test_contract_20_futures_input_unknown_freshness_blocks_scenario_eligibility() -> None:
+    s1, st1, _ = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    s2, st2, t2 = _ts(s1, ScopeEvent.UPSCOPE_CONFIRMED, st1, 1)
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="fi-fresh-unknown",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+        )
+    )
+    fi = evaluate_futures_input_snapshot(
+        _fi_snapshot(provenance=_fi_provenance(freshness_state=FuturesFreshnessState.UNKNOWN))
+    )
+    assert fi.status is FuturesReadinessStatus.BLOCKED
+    assert not _stack_eligible_with_futures_gate(fi, comp)
+
+
+def test_contract_21_futures_input_missing_perp_funding_blocks_scenario_eligibility() -> None:
+    s1, st1, _ = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    s2, st2, t2 = _ts(s1, ScopeEvent.UPSCOPE_CONFIRMED, st1, 1)
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="fi-fund",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+        )
+    )
+    fi = evaluate_futures_input_snapshot(
+        _fi_snapshot(
+            candidate=_fi_candidate(market_type=FuturesMarketType.PERPETUAL),
+            derivatives=_fi_derivatives(funding_available=False, funding_rate=None),
+        )
+    )
+    assert fi.status is FuturesReadinessStatus.BLOCKED
+    assert not fi.ready_for_capital_slot
+    assert not _stack_eligible_with_futures_gate(fi, comp)
+
+
+def test_contract_22_futures_input_top_rank_alone_non_authority() -> None:
+    s1, st1, _ = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    s2, st2, t2 = _ts(s1, ScopeEvent.UPSCOPE_CONFIRMED, st1, 1)
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="fi-rank",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+        )
+    )
+    fi = evaluate_futures_input_snapshot(
+        _fi_snapshot(
+            ranking=_fi_ranking(rank=1, is_top_n_member=True, score=0.99),
+            instrument=_fi_instrument(complete=False, missing_fields=("contract_size",)),
+            dashboard_label="Top-20 official selection",
+        )
+    )
+    assert fi.status is FuturesReadinessStatus.BLOCKED
+    assert not fi.is_authority
+    assert not _stack_eligible_with_futures_gate(fi, comp)
+    assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
+
+
+def test_contract_23_futures_input_live_authorization_false_full_stack_with_capital_slot() -> None:
+    s1, st1, _ = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    s2, st2, t2 = _ts(s1, ScopeEvent.UPSCOPE_CONFIRMED, st1, 1)
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="fi-live",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    cfg = _cs_cfg_ok()
+    cs_st = _cs_state_ok()
+    rat = evaluate_capital_slot_ratchet(cfg, cs_st)
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t2,
+            resulting_side_state=s2,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+            capital_slot_ratchet_decision=rat,
+            capital_slot_release_decision=rel,
+        )
+    )
+    fi = evaluate_futures_input_snapshot(
+        _fi_snapshot(candidate=_fi_candidate(live_authorization=True)),
+    )
+    assert not t2.live_authorization_granted
+    assert not surv.live_authorization
+    assert not suit.projection.live_authorization
+    assert not suit.live_authorization
+    assert not rat.live_authorization
+    assert not rel.live_authorization
+    assert not comp.live_authorization
+    assert not fi.live_authorization
+    assert fi.status is FuturesReadinessStatus.DATA_READY
+    assert _stack_eligible_with_futures_gate(fi, comp)
+
+
 def _forbidden_toplevels() -> frozenset[str]:
     return frozenset(
         {
@@ -744,6 +1114,7 @@ def test_contract_9_ast_no_bad_imports_in_pure_modules() -> None:
         "double_play_suitability.py",
         "double_play_composition.py",
         "double_play_capital_slot.py",
+        "double_play_futures_input.py",
     )
     bad = {"requests", "urllib3", "ccxt", "httpx", "socket", "aiohttp"}
     for name in files:
