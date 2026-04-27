@@ -10,6 +10,7 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -26,6 +27,18 @@ def run_report_live_sessions(*args: str) -> subprocess.CompletedProcess[str]:
         capture_output=True,
         check=False,
     )
+
+
+def load_session_review_pack() -> dict[str, Any]:
+    """Load JSON pack with INFO logs suppressed (stderr)."""
+    result = run_report_live_sessions(
+        "--session-review-pack",
+        "--json",
+        "--log-level",
+        "ERROR",
+    )
+    assert result.returncode == 0, result.stderr
+    return json.loads(result.stdout)
 
 
 def test_report_live_sessions_help_exposes_session_review_pack_read_only() -> None:
@@ -90,26 +103,124 @@ def test_session_review_pack_requires_json() -> None:
     assert "--json" in combined
 
 
-def test_session_review_pack_json_shape() -> None:
-    """Static v0 pack matches contract-oriented keys and non-authorizing posture."""
+def test_session_review_pack_json_top_level_keys_are_stable() -> None:
+    pack = load_session_review_pack()
 
-    result = run_report_live_sessions("--session-review-pack", "--json")
+    expected_keys = {
+        "authority_boundary",
+        "contract",
+        "disclaimer",
+        "missing_fields",
+        "mode",
+        "non_authorizing",
+        "references",
+        "schema_version",
+        "session",
+        "source_contract",
+    }
+    assert set(pack) == expected_keys
+
+
+def test_session_review_pack_contract_identifiers_are_stable() -> None:
+    pack = load_session_review_pack()
+
+    assert pack["contract"] == "report_live_sessions.session_review_pack_v0"
+    assert pack["schema_version"] == "master_v2/session_review_pack/v0"
+    assert pack["source_contract"] == (
+        "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md"
+    )
+
+
+def test_session_review_pack_authority_boundary_shape_is_exactly_false() -> None:
+    pack = load_session_review_pack()
+
+    expected_boundary = {
+        "autonomy_ready": False,
+        "gate_passed": False,
+        "live_authorization": False,
+        "signoff_complete": False,
+        "strategy_ready": False,
+    }
+    assert pack["authority_boundary"] == expected_boundary
+    assert all(value is False for value in pack["authority_boundary"].values())
+
+
+def test_session_review_pack_session_and_reference_key_sets_are_stable() -> None:
+    pack = load_session_review_pack()
+
+    assert set(pack["session"]) == {
+        "mode_or_environment",
+        "run_timestamp",
+        "session_id",
+    }
+    assert set(pack["references"]) == {
+        "artifacts_manifest_reference",
+        "dashboard_observer_summary_reference",
+        "evidence_references",
+        "execution_gate_summary_reference",
+        "handoff_reference",
+        "learning_loop_feedback_reference",
+        "operator_notes",
+        "provenance_reference",
+        "readiness_summary_reference",
+        "registry_reference",
+        "risk_kill_switch_summary_reference",
+        "strategy_context_summary_reference",
+    }
+
+
+def test_session_review_pack_missing_fields_are_sorted_and_cover_empty_values() -> None:
+    pack = load_session_review_pack()
+
+    missing_fields = pack["missing_fields"]
+    assert missing_fields == sorted(missing_fields)
+
+    for key, value in pack["session"].items():
+        if value is None:
+            assert f"session.{key}" in missing_fields
+
+    for key, value in pack["references"].items():
+        if value is None or value == []:
+            assert f"references.{key}" in missing_fields
+
+
+def test_session_review_pack_disclaimer_is_non_authorizing_without_positive_claims() -> None:
+    pack = load_session_review_pack()
+
+    disclaimer = pack["disclaimer"]
+    assert isinstance(disclaimer, str)
+    lowered = disclaimer.lower()
+
+    assert "read-only" in lowered
+    assert "not live authorization" in lowered
+    # Negations for gate/signoff; must not use unqualified success phrases.
+    forbidden_positive_claims = [
+        "live authorization granted",
+        "signoff complete",
+        "gate passed",
+        "autonomy ready",
+        "strategy ready",
+        "externally authorized",
+    ]
+    for claim in forbidden_positive_claims:
+        assert claim not in lowered
+
+
+def test_session_review_pack_json_stdout_is_clean_and_round_trippable() -> None:
+    result = run_report_live_sessions(
+        "--session-review-pack",
+        "--json",
+        "--log-level",
+        "ERROR",
+    )
+
     assert result.returncode == 0, result.stderr
-    data = json.loads(result.stdout)
-    assert data["contract"] == "report_live_sessions.session_review_pack_v0"
-    assert data["schema_version"] == "master_v2/session_review_pack/v0"
-    assert data["non_authorizing"] is True
-    assert data["mode"] == "session_review_pack"
-    assert data["source_contract"] == "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md"
-    ab = data["authority_boundary"]
-    assert ab["live_authorization"] is False
-    assert ab["signoff_complete"] is False
-    assert ab["gate_passed"] is False
-    assert ab["autonomy_ready"] is False
-    assert ab["strategy_ready"] is False
-    assert "session" in data and "references" in data
-    assert isinstance(data["missing_fields"], list)
-    assert "session.session_id" in data["missing_fields"]
+    assert result.stderr == ""
+
+    parsed = json.loads(result.stdout)
+    round_trip = json.loads(json.dumps(parsed, sort_keys=True))
+    assert round_trip == parsed
+    assert parsed["mode"] == "session_review_pack"
 
 
 def test_help_keeps_report_script_read_or_report_oriented() -> None:
