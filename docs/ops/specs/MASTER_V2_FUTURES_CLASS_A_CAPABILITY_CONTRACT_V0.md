@@ -18,7 +18,7 @@ This contract:
 - introduces **no** runtime wiring, code, workflow, or config change by its existence alone,
 - does **not** enable Testnet or Live,
 - does **not** call exchanges, private APIs, AWS, S3, or rclone,
-- does **not** alter the **current** Class A **BTC/EUR** spot-like workflow (`.github/workflows/class-a-shadow-paper-scheduled-probe-v1.yml`).
+- does **not** alter the **current** Class A **BTC/EUR** spot-like workflow (`.github&#47;workflows&#47;class-a-shadow-paper-scheduled-probe-v1.yml`).
 
 Operational Class A runs (manual or guarded schedule) remain governed by their **separate** workflow and repository settings; this document **does not** dispatch or start them.
 
@@ -27,7 +27,7 @@ Operational Class A runs (manual or guarded schedule) remain governed by their *
 The **current** Class A probe on **`main`**:
 
 - uses **`workflow_dispatch`** and a **guarded** `schedule` (repository variable gate) on the workflow above,
-- runs a **bounded** paper-mode session via `scripts/run_shadow_paper_session` (typical **BTC/EUR**, **ma_crossover**, short duration, artifact upload),
+- runs a **bounded** paper-mode session via `scripts&#47;run_shadow_paper_session.py` (typical **BTC/EUR**, **ma_crossover**, short duration, artifact upload),
 - has produced **success** conclusions for **manual** and **scheduled** runs with downloadable artifacts,
 - artifacts include **`meta.json`** and typically **`events.parquet`** (or CSV per logging config), **mode paper**,
 
@@ -43,19 +43,19 @@ Cross-layer labels (read-only assessment; **non-authorizing**):
 
 | Layer | Classification |
 |-------|----------------|
-| Runner (`scripts/run_shadow_paper_session` + Kraken live candle source) | **SPOT_ONLY** |
+| Runner (`scripts&#47;run_shadow_paper_session.py` + Kraken live candle source) | **SPOT_ONLY** |
 | Paper/Shadow execution loop (`ShadowPaperSession` + paper order path) | **FUTURES_ADJACENT_BUT_INCOMPLETE** |
-| WP1B `src/execution/paper` engine | **SPOT_SIM_ONLY** |
+| WP1B `src&#47;execution&#47;paper&#47;engine.py` engine | **SPOT_SIM_ONLY** |
 | Master V2 Futures DTO / Producer (`trading.master_v2.double_play_futures_input*`) | **PURE_DTO_READY**; binding to Shadow runner: **RUNTIME_NOT_WIRED** |
 | Provider path used by Class A | **SPOT_PUBLIC_ONLY** |
 
-**pure DTO ready** means the read-model and adapter tests can evaluate **futures-shaped** packets **without** exchange I/O. **runtime not wired** means those surfaces are **not** connected to `run_shadow_paper_session` or the Class A workflow today.
+**pure DTO ready** means the read-model and adapter tests can evaluate **futures-shaped** packets **without** exchange I/O. **runtime not wired** means those surfaces are **not** connected to `scripts&#47;run_shadow_paper_session.py` or the Class A workflow today.
 
 ## 4. Futures Class A gap map (top 10)
 
 Before any **Futures Class A** **runtime** probe, these **prerequisites** remain open (order is not a priority ranking):
 
-1. **Instrument / symbol convention** — Perp/Future vs **spot** naming and exchange mapping (not only `BTC/EUR`).
+1. **Instrument / symbol convention** — Perp/Future vs **spot** naming and exchange mapping (not only `BTC&#47;EUR`).
 2. **Futures public market-data feed / market type** — configurable **market type** and correct **public** endpoint (not assumed spot OHLC only).
 3. **Contract size / tick / step** — sizing math for notionals vs contracts.
 4. **Margin and leverage model** — account state beyond **spot** cash + scalar position.
@@ -92,7 +92,7 @@ A future **Futures Class A** bounded probe should not be scheduled until **at le
 
 - **Futures symbol convention** and exchange mapping.
 - **Market type** field and feed selection (future / perpetual / swap vs spot).
-- **Instrument metadata DTO** alignment (peer: futures instrument metadata specs in `docs/ops/specs/`).
+- **Instrument metadata DTO** alignment (peer: futures instrument metadata specs in `docs&#47;ops&#47;specs&#47;`).
 - **Funding / readiness data** policy for Perp, if Perp is in scope.
 - **Margin / leverage** configuration semantics (simulation bounds).
 - **Contract sizing** rules (tick, step, multiplier).
