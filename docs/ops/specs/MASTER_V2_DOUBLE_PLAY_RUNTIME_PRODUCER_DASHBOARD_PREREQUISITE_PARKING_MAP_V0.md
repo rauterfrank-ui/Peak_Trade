@@ -23,6 +23,7 @@ The following **test anchors** and contracts describe the **pure stack** and **r
 - **Futures Input read model:** [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md) — data-only snapshot vocabulary.
 - **Dashboard display map:** [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) **§20** — includes **route-independent** **`snapshot_to_jsonable`** **JSON serialization** **test anchors** in `tests&#47;trading&#47;master_v2&#47;test_double_play_dashboard_display.py` (**non-authority**).
 - **WebUI read-only JSON route:** [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **§8** (producer adapter stack **test anchors**) and **§9** (HTTP **`TestClient`** **authority-invariant** **test anchors** plus the same **route-independent** serialization cross-link).
+- **Futures Class A capability / non-claims (spot vs Perp boundary):** [MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0.md](MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0.md) — **non-authorizing**; **spot infrastructure smoke** vs **Futures Class A** **prerequisite** checklist (**no** Double Play **runtime** implication).
 
 Together, these show: adapter + **pure stack** + **JSON serialization** + **read-only** HTTP JSON surface are **test-anchored** and **display-only**; **runtime producer** integration is **not** implied.
 
@@ -72,6 +73,7 @@ Work may **only** move off this **parked** list when **all** of the following ho
 
 - [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) — producer boundary; **§20** **test anchors**.
 - [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md) — Futures Input Snapshot read model.
+- [MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0.md](MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0.md) — **capability contract** / **non-claims** for Class A **spot** probe vs **Futures Class A** prerequisites.
 - [MASTER_V2_DOUBLE_PLAY_PURE_DISPLAY_BASELINE_CLOSEOUT_INDEX_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_DISPLAY_BASELINE_CLOSEOUT_INDEX_V0.md) — **closeout index**; **reading order** for **pure display baseline** (**non-authorizing**).
 - [MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md) — **pure stack** inventory.
 - [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) — **downstream display** map; **§20** **test anchors**.
