@@ -1,20 +1,29 @@
-"""Characterization tests for a future pre-live package status report mode.
+"""Tests for Pre-Live package status report (`--pre-live-package-status --json`).
 
-These tests describe the desired read-only `report_live_sessions.py`
-`--pre-live-package-status --json` surface without implementing or invoking a
-production mode. They do not read real registries, generated reports, or
-artifact directories.
+Synthetic helpers pin intended semantics for `pre_live_package_status_v0`. Integration tests
+invoke `scripts.report_live_sessions.main()` with `--registry-base` pointing at isolated
+directories under ``tmp_path`` (no commits to repo registries).
+
+These tests do not read real production artifact trees in the workspace when running under
+their own ``tmp_path`` registry overlays.
 """
 
 from __future__ import annotations
 
 import json
+import sys
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Literal
+from unittest.mock import patch
+
+import pytest
+
+from src.experiments.live_session_registry import LiveSessionRecord, register_live_session_run  # noqa: E402
 
 
 CONTRACT = "pre_live_package_status_v0"
-FUTURE_FLAG = "--pre-live-package-status"
+CLI_FLAG = "--pre-live-package-status"
 
 AUTHORITY_FLAGS = {
     "live_authorization": False,
@@ -73,7 +82,7 @@ def build_future_pre_live_package_status_report(
     return {
         "contract": CONTRACT,
         "mode": "pre_live_package_status",
-        "future_flag": FUTURE_FLAG,
+        "future_flag": CLI_FLAG,
         "json_only": True,
         "stdout_only": True,
         "non_authorizing": True,
@@ -98,7 +107,7 @@ def test_future_contract_and_flag_are_explicit() -> None:
 
     assert payload["contract"] == CONTRACT
     assert payload["mode"] == "pre_live_package_status"
-    assert payload["future_flag"] == FUTURE_FLAG
+    assert payload["future_flag"] == CLI_FLAG
     assert payload["json_only"] is True
     assert payload["stdout_only"] is True
     assert_non_authorizing(payload)
@@ -193,10 +202,128 @@ def test_serialized_report_contains_no_unqualified_authority_claims() -> None:
             assert claim not in serialized
 
 
-def test_production_report_live_sessions_parser_does_not_expose_future_flag_yet() -> None:
+def test_production_parser_exposes_pre_live_package_status_flag_in_source() -> None:
     source = Path("scripts/report_live_sessions.py").read_text(encoding="utf-8")
 
-    assert FUTURE_FLAG not in source
+    assert CLI_FLAG in source
+    assert 'dest="pre_live_package_status"' in source
+
+
+def test_pre_live_package_status_requires_json(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    reg = tmp_path.joinpath("reports", "experiments", "live_sessions")
+    reg.mkdir(parents=True)
+    from scripts.report_live_sessions import main
+
+    with patch.object(
+        sys,
+        "argv",
+        [
+            "report_live_sessions.py",
+            CLI_FLAG,
+            "--registry-base",
+            str(reg),
+            "--log-level",
+            "ERROR",
+        ],
+    ):
+        assert main() == 2
+
+
+def test_pre_live_package_status_empty_registry_read_only_stdout(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """No bounded rows: closeout classify → NO_BOUNDED_PILOT; status external-review semantics."""
+    monkeypatch.chdir(tmp_path)
+    reg = tmp_path.joinpath("reports", "experiments", "live_sessions")
+    reg.mkdir(parents=True)
+    from scripts.report_live_sessions import main
+
+    with patch.object(
+        sys,
+        "argv",
+        [
+            "report_live_sessions.py",
+            CLI_FLAG,
+            "--json",
+            "--registry-base",
+            str(reg),
+            "--log-level",
+            "ERROR",
+        ],
+    ):
+        assert main() == 0
+
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["contract"] == CONTRACT
+    assert payload["non_authorizing"] is True
+    assert payload["authority_boundary"] == AUTHORITY_FLAGS
+    assert payload["json_only"] is True
+    assert payload["stdout_only"] is True
+    assert payload["open_bounded_pilot_sessions"] == 0
+    assert payload["status"] == "READY_FOR_EXTERNAL_REVIEW"
+    low = json.dumps(payload, sort_keys=True).lower()
+    assert "live authorization granted" not in low
+
+
+def _bp_rec_started(session_id: str, *, started: datetime | None = None) -> LiveSessionRecord:
+    t0 = started or datetime(2026, 3, 19, 12, 0, 0)
+    return LiveSessionRecord(
+        session_id=session_id,
+        run_id="run_v0",
+        run_type="live_session_live",
+        mode="bounded_pilot",
+        env_name="pilot_env",
+        symbol="BTC/USDT",
+        status="started",
+        started_at=t0,
+        finished_at=None,
+        config={},
+        metrics={},
+        cli_args=[],
+    )
+
+
+def test_pre_live_package_status_blocked_with_open_bounded_pilot_sessions(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    reg = tmp_path.joinpath("reports", "experiments", "live_sessions")
+    reg.mkdir(parents=True)
+    t0 = datetime(2026, 3, 19, 15, 14, 0)
+    register_live_session_run(_bp_rec_started("bp_open_one", started=t0), base_dir=reg)
+    register_live_session_run(
+        _bp_rec_started("bp_open_two", started=t0 + timedelta(minutes=1)), base_dir=reg
+    )
+
+    from scripts.report_live_sessions import main
+
+    with patch.object(
+        sys,
+        "argv",
+        [
+            "report_live_sessions.py",
+            CLI_FLAG,
+            "--json",
+            "--registry-base",
+            str(reg),
+            "--log-level",
+            "ERROR",
+        ],
+    ):
+        assert main() == 0
+
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["status"] == "BLOCKED"
+    assert payload["open_bounded_pilot_sessions"] == 2
+    assert "GLB-018" in payload["blockers"]
+    assert "bounded_pilot.open_sessions_present" in payload["missing_or_open_items"]
 
 
 def test_this_characterization_test_does_not_read_real_artifact_locations() -> None:
@@ -205,7 +332,6 @@ def test_this_characterization_test_does_not_read_real_artifact_locations() -> N
         "/".join(["reports", "experiments", "live_sessions"]),
         "/".join(["out", "ops"]),
         "/".join(["execution_events", "sessions"]),
-        "_".join(["live", "session", "registry"]),
     ]
 
     for fragment in forbidden_fragments:

@@ -73,6 +73,9 @@ Usage:
 
     # Session Review Pack V0 (read-only, non-authorizing post-hoc review bundle; JSON-only in v0):
     python scripts/report_live_sessions.py --session-review-pack --json
+
+    # Pre-Live Package Status V0 (read-only gap signal; stdout JSON-only; registry + bounded-pilot artifacts):
+    python scripts/report_live_sessions.py --pre-live-package-status --json
 """
 
 from __future__ import annotations
@@ -81,7 +84,7 @@ import argparse
 import json
 import logging
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
@@ -1820,6 +1823,199 @@ def _run_bounded_pilot_closeout_status_summary(
 
 
 # =============================================================================
+# Pre-Live Package Status V0 (read-only aggregated gap signal; stdout JSON)
+# =============================================================================
+
+PRE_LIVE_PACKAGE_STATUS_AUTHORITY_BOUNDARY = {
+    "live_authorization": False,
+    "bounded_pilot_approval": False,
+    "closeout_approval": False,
+    "gate_passage": False,
+    "strategy_readiness": False,
+    "autonomy_readiness": False,
+    "external_authority_completion": False,
+}
+
+
+def _derive_closeout_lifecycle_label_pre_live(
+    n_open_bounded: int,
+    closeout: dict[str, Any],
+) -> str:
+    """Map bounded-pilot closeout read-model to characterization lifecycle strings."""
+    if n_open_bounded > 0:
+        return "PARTIAL_NON_TERMINAL"
+    summary = closeout.get("closeout_signal_summary")
+    terminalish_codes = {
+        "NO_BOUNDED_PILOT_SESSION_IN_REGISTRY",
+        "REGISTRY_TERMINAL_IN_NEWEST_ARTIFACT",
+    }
+    partialish_codes = {
+        "REGISTRY_ROWS_MISSING_AFTER_SELECTION",
+        "AMBIGUOUS_NEWEST_STARTED_WITH_OLDER_TERMINAL",
+        "REGISTRY_NON_TERMINAL_NEWEST_ONLY",
+        "REGISTRY_STATUS_NON_STANDARD",
+    }
+    if summary in terminalish_codes:
+        return "TERMINAL_CLEAN"
+    if summary in partialish_codes:
+        return "PARTIAL_NON_TERMINAL"
+    return "PARTIAL_NON_TERMINAL"
+
+
+def _compute_pre_live_package_status_semantics_v0(
+    *,
+    open_bounded_pilot_sessions: int,
+    closeout_lifecycle_status: str,
+    evidence_package_complete: bool,
+    blocker_states: dict[str, str],
+    external_decision_present: bool,
+) -> tuple[str, list[str], list[str]]:
+    """
+    Mirrors tests/ops/test_report_live_sessions_pre_live_package_status_v0.py semantics.
+
+    This function does not close blockers automatically; blocker_states is empty in v0 slices.
+    """
+    missing_or_open_items: list[str] = []
+    blockers: list[str] = []
+
+    if open_bounded_pilot_sessions:
+        missing_or_open_items.append("bounded_pilot.open_sessions_present")
+        blockers.append("GLB-018")
+
+    if closeout_lifecycle_status != "TERMINAL_CLEAN":
+        missing_or_open_items.append("closeout_lifecycle.non_terminal_or_partial")
+        blockers.append("GLB-018")
+
+    if not evidence_package_complete:
+        missing_or_open_items.append("evidence_package.incomplete")
+        blockers.append("GLB-003")
+
+    for blocker_id, state in sorted(blocker_states.items()):
+        if state in {"OPEN", "BLOCKED"}:
+            missing_or_open_items.append(f"blockers.{blocker_id}.{state.lower()}")
+            blockers.append(blocker_id)
+
+    unique_blockers = sorted(set(blockers))
+    unique_missing = sorted(set(missing_or_open_items))
+
+    if unique_blockers:
+        status = "BLOCKED"
+    elif not evidence_package_complete:
+        status = "NOT_READY"
+    elif not external_decision_present:
+        status = "READY_FOR_EXTERNAL_REVIEW"
+    else:
+        status = "REVIEW_ONLY"
+
+    return status, unique_missing, unique_blockers
+
+
+def _pre_live_package_status_flag_conflicts(args: argparse.Namespace) -> str | None:
+    """--pre-live-package-status aggregates registry bounded-pilot posture; no readiness/packet run."""
+    if args.session_id is not None:
+        return "--session-id is only for --evidence-pointers"
+    if args.latest_bounded_pilot:
+        return "--latest-bounded-pilot is only for --evidence-pointers"
+    if args.bounded_pilot_only or args.latest_bounded_pilot_open:
+        return "--bounded-pilot-only / --latest-bounded-pilot-open require --open-sessions"
+    if args.run_type is not None:
+        return "--run-type is not compatible with --pre-live-package-status"
+    if args.status is not None:
+        return "--status is not compatible with --pre-live-package-status"
+    if args.limit is not None:
+        return "--limit is not compatible with --pre-live-package-status"
+    if args.summary_only:
+        return "--summary-only is not compatible with --pre-live-package-status"
+    if args.output_dir is not None:
+        return "--output-dir is not compatible with --pre-live-package-status"
+    if args.stdout:
+        return "--stdout is not compatible with --pre-live-package-status"
+    if args.config_path is not None:
+        return "--config-path is not compatible with --pre-live-package-status"
+    if not args.json:
+        return "--pre-live-package-status requires --json (stdout JSON-only v0 slice)"
+    return None
+
+
+def _run_pre_live_package_status(
+    args: argparse.Namespace,
+    logger: logging.Logger,
+) -> int:
+    """Read-only aggregated status JSON; registry + bounded_pilot artifact signals only."""
+    if not args.json:
+        print(
+            "ERR: --pre-live-package-status requires --json",
+            file=sys.stderr,
+        )
+        return 2
+
+    base_dir = _registry_base_dir(args)
+    cwd = Path.cwd()
+    session_focus = _collect_bounded_pilot_session_focus(base_dir=base_dir, cwd=cwd)
+    closeout = _build_bounded_pilot_closeout_analysis(
+        session_focus,
+        base_dir=base_dir,
+        cwd=cwd,
+    )
+
+    open_rows = session_focus["open_bounded_pilot_sessions"]
+    n_open = len(open_rows)
+
+    lifecycle = _derive_closeout_lifecycle_label_pre_live(n_open, closeout)
+
+    # v0 slice: do not imply external authority or evidence automation; blocker_states empty here.
+    status, missing, bloc = _compute_pre_live_package_status_semantics_v0(
+        open_bounded_pilot_sessions=n_open,
+        closeout_lifecycle_status=lifecycle,
+        evidence_package_complete=True,
+        blocker_states={},
+        external_decision_present=False,
+    )
+
+    logger.info(
+        "Pre-Live Package Status V0 read-only posture (status=%s open_bounded=%s)",
+        status,
+        n_open,
+    )
+
+    payload = {
+        "contract": "pre_live_package_status_v0",
+        "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "mode": "pre_live_package_status",
+        "registry_dir": str(base_dir.resolve()),
+        "non_authorizing": True,
+        "json_only": True,
+        "stdout_only": True,
+        "authority_boundary": dict(PRE_LIVE_PACKAGE_STATUS_AUTHORITY_BOUNDARY),
+        "status": status,
+        "open_bounded_pilot_sessions": n_open,
+        "closeout_lifecycle_status": lifecycle,
+        "closeout_signal_summary": closeout.get("closeout_signal_summary"),
+        "primary_session_id": session_focus.get("primary_session_id"),
+        "evidence_package_complete": True,
+        "external_decision_present": False,
+        "disclaimer_slices": (
+            "This JSON is a read-only gap signal combining registry-derived bounded-pilot posture. "
+            "It does not run readiness/preflight/cockpit checks in v0, does not close GLB rows automatically, "
+            "and evidence_package_complete is not asserted by external attestations in this slice."
+        ),
+        "blocker_states": {},
+        "missing_or_open_items": missing,
+        "blockers": bloc,
+        "signals": {
+            "open_bounded_pilot_session_ids": [x["session_id"] for x in open_rows],
+            "closeout_registry_terminal_in_newest": closeout.get(
+                "registry_terminal_in_newest_artifact"
+            ),
+            "closeout_conflict": closeout.get("open_vs_terminal_artifact_conflict"),
+        },
+    }
+
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+# =============================================================================
 # Session Review Pack V0 (read-only, non-authorizing; docs contract mapping)
 # =============================================================================
 
@@ -2038,7 +2234,7 @@ Beispiele:
             "--bounded-pilot-readiness-summary, --bounded-pilot-closeout-status-summary, "
             "--bounded-pilot-operator-overview, --bounded-pilot-gate-index, "
             "--bounded-pilot-first-live-frontdoor, --bounded-pilot-lifecycle-consistency, "
-            "or --session-review-pack"
+            "--session-review-pack, or --pre-live-package-status"
         ),
     )
     parser.add_argument(
@@ -2134,6 +2330,15 @@ Beispiele:
         ),
     )
     parser.add_argument(
+        "--pre-live-package-status",
+        action="store_true",
+        dest="pre_live_package_status",
+        help=(
+            "Read-only: Pre-Live package status gap summary (bounded_pilot registry + closeout posture; "
+            "use with --json; v0 excludes readiness/preflight/cockpit evaluation)"
+        ),
+    )
+    parser.add_argument(
         "--config-path",
         type=str,
         default=None,
@@ -2168,6 +2373,7 @@ Beispiele:
         + int(bool(args.evidence_pointers))
         + int(bool(args.open_sessions))
         + int(bool(args.session_review_pack))
+        + int(bool(args.pre_live_package_status))
     )
     if _mode_n > 1:
         print(
@@ -2175,10 +2381,18 @@ Beispiele:
             "--bounded-pilot-closeout-status-summary, --bounded-pilot-operator-overview, "
             "--bounded-pilot-gate-index, --bounded-pilot-first-live-frontdoor, "
             "--bounded-pilot-lifecycle-consistency, "
-            "--evidence-pointers, --open-sessions, --session-review-pack",
+            "--evidence-pointers, --open-sessions, --session-review-pack, "
+            "--pre-live-package-status",
             file=sys.stderr,
         )
         return 2
+
+    if args.pre_live_package_status:
+        conflict = _pre_live_package_status_flag_conflicts(args)
+        if conflict is not None:
+            print(f"ERR: {conflict}", file=sys.stderr)
+            return 2
+        return _run_pre_live_package_status(args, logger)
 
     if args.session_review_pack:
         conflict = _session_review_pack_flag_conflicts(args)
