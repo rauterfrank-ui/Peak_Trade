@@ -7,6 +7,17 @@ last_updated: 2026-04-27
 
 # Master V2 Operator / Audit Flat Path Index V0
 
+## Master V2 Go-Live planning chain (navigation only)
+
+The following documents provide the current non-authorizing operator navigation path for Go-Live planning:
+
+- [Master V2 Go-Live Roadmap V0](./MASTER_V2_GO_LIVE_ROADMAP_V0.md)
+- [Master V2 First Live Execution Sequence V0](./MASTER_V2_FIRST_LIVE_EXECUTION_SEQUENCE_V0.md)
+- [Runbook: Master V2 First Live Pilot Sequence V0](../runbooks/RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md)
+- [Master V2 Go-Live Blocker Register V0](./MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md)
+
+This subsection is navigation-only and **non-authorizing**. It is **not** **live** **authorization**. It does not authorize bounded-pilot entry, closeout approval, gate passage, strategy readiness, autonomy readiness, or external signoff.
+
 ## 1. Executive Summary
 
 This document is a **non-authorizing** **flat** **path** **index** for **operator**, **reviewer**, and **audit** **review** **surfaces** across the **current** **Master** **V2** **documentation** **chain**.
