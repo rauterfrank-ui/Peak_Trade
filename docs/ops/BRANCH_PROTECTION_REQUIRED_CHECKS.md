@@ -69,6 +69,27 @@ gh api -H "Accept: application/vnd.github+json" \
 
 ## Automated Reconciliation Check (JSON-SSOT vs Live)
 
+### Observation: read-only `RECONCILE_DIFF` with extra live contexts
+
+A read-only reconciliation probe may report `RECONCILE_DIFF` where the live Branch Protection set contains contexts that are not part of the effective JSON-SSOT set. As of the current observation, the reported `extra_in_live` contexts are:
+
+- `docs-drift-guard`
+- `repo-truth-claims`
+- `strategy-smoke`
+
+This is reconciliation/report data only. It does **not** imply trading authority, live authorization, signoff completion, gate passage, strategy readiness, autonomy readiness, or external authority completion.
+
+Operator decision options remain separate from this observation:
+
+1. keep the extra live contexts as accepted Branch Protection drift;
+2. update `config&#47;ci&#47;required_status_checks.json` so the JSON-SSOT models the intended live context set;
+3. use the reconciler `--apply` path to align live Branch Protection with the JSON-SSOT;
+4. defer / STOP until a CI failure, audit request, or operator mandate requires action.
+
+Options 2 and 3 require an explicit operator/owner decision. This note does not choose among those options and does not authorize branch-protection, workflow, config, runtime, or trading changes.
+
+The offline characterization test `tests&#47;ci&#47;test_required_checks_reconcile_diff_characterization_v0.py` covers these contexts as reconciliation/report concepts rather than authority signals.
+
 ### What is it?
 
 Der kanonische Reconciliation-Pfad vergleicht JSON-SSOT effective required contexts
