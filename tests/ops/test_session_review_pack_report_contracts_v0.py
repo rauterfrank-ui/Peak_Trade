@@ -244,3 +244,109 @@ def test_help_keeps_report_script_read_or_report_oriented() -> None:
     ]
     for term in forbidden_order_terms:
         assert term not in lowered
+
+
+def test_session_review_pack_json_stdout_contains_single_clean_object() -> None:
+    result = run_report_live_sessions(
+        "--session-review-pack",
+        "--json",
+        "--log-level",
+        "ERROR",
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert result.stderr == ""
+
+    stdout = result.stdout.strip()
+    assert stdout.startswith("{")
+    assert stdout.endswith("}")
+    assert stdout.count("{") >= 1
+    assert json.loads(stdout)["mode"] == "session_review_pack"
+
+
+def test_session_review_pack_serialized_json_has_no_positive_authority_claims() -> None:
+    result = run_report_live_sessions(
+        "--session-review-pack",
+        "--json",
+        "--log-level",
+        "ERROR",
+    )
+
+    assert result.returncode == 0, result.stderr
+    serialized = result.stdout.lower()
+
+    forbidden_positive_claims = [
+        "live authorization granted",
+        "live authorized",
+        "signoff complete",
+        "gate passed",
+        "autonomy ready",
+        "autonomous-ready",
+        "strategy ready",
+        "externally authorized",
+        "approved for live",
+        "trade approved",
+    ]
+    for claim in forbidden_positive_claims:
+        assert claim not in serialized
+
+
+def test_session_review_pack_authority_values_are_booleans_not_strings() -> None:
+    pack = load_session_review_pack()
+
+    authority_boundary = pack["authority_boundary"]
+    assert authority_boundary
+    for key, value in authority_boundary.items():
+        assert isinstance(value, bool), key
+        assert value is False, key
+
+
+def test_session_review_pack_missing_fields_are_unique_and_known_paths() -> None:
+    pack = load_session_review_pack()
+
+    missing_fields = pack["missing_fields"]
+    assert len(missing_fields) == len(set(missing_fields))
+
+    known_paths = {
+        *(f"session.{key}" for key in pack["session"]),
+        *(f"references.{key}" for key in pack["references"]),
+    }
+    assert set(missing_fields) <= known_paths
+
+
+def test_session_review_pack_missing_fields_match_null_or_empty_values() -> None:
+    pack = load_session_review_pack()
+
+    for path in pack["missing_fields"]:
+        section_name, key = path.split(".", 1)
+        section = pack[section_name]
+        value = section[key]
+        assert value is None or value == []
+
+
+def test_session_review_pack_no_unexpected_missing_null_or_empty_values() -> None:
+    pack = load_session_review_pack()
+
+    expected_missing_fields = set()
+    for key, value in pack["session"].items():
+        if value is None or value == []:
+            expected_missing_fields.add(f"session.{key}")
+
+    for key, value in pack["references"].items():
+        if value is None or value == []:
+            expected_missing_fields.add(f"references.{key}")
+
+    assert set(pack["missing_fields"]) == expected_missing_fields
+
+
+def test_session_review_pack_rejects_registry_base_in_v0() -> None:
+    result = run_report_live_sessions(
+        "--session-review-pack",
+        "--json",
+        "--registry-base",
+        "/tmp/should-not-be-read",
+    )
+
+    assert result.returncode != 0
+    combined = result.stdout + result.stderr
+    assert "session-review-pack" in combined
