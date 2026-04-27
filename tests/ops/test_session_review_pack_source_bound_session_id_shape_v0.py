@@ -258,3 +258,74 @@ def test_this_shape_test_does_not_read_real_artifact_locations() -> None:
 
     for fragment in forbidden_fragments:
         assert fragment not in source_text
+
+
+def test_selected_session_id_not_found_fails_closed() -> None:
+    payload = build_source_bound_srp_shape(
+        candidates=[SyntheticSessionCandidate(session_id="session_a")],
+        selected_session_id="session_missing",
+    )
+
+    assert payload["valid"] is False
+    assert payload["error"] == "selected_session_id_not_found_or_not_unique"
+    assert payload["selected_session_id"] == "session_missing"
+    assert payload["missing_fields"] == ["source.registry_session_record"]
+    assert_authority_false(payload)
+
+
+def test_duplicate_selected_session_id_fails_closed_not_unique() -> None:
+    payload = build_source_bound_srp_shape(
+        candidates=[
+            SyntheticSessionCandidate(session_id="session_duplicate"),
+            SyntheticSessionCandidate(session_id="session_duplicate"),
+        ],
+        selected_session_id="session_duplicate",
+    )
+
+    assert payload["valid"] is False
+    assert payload["error"] == "selected_session_id_not_found_or_not_unique"
+    assert payload["selected_session_id"] == "session_duplicate"
+    assert payload["candidate_count"] == 2
+    assert "source.registry_session_record" in payload["missing_fields"]
+    assert_authority_false(payload)
+
+
+def test_empty_candidate_list_with_explicit_session_id_fails_closed() -> None:
+    payload = build_source_bound_srp_shape(
+        candidates=[],
+        selected_session_id="session_a",
+    )
+
+    assert payload["valid"] is False
+    assert payload["error"] == "selected_session_id_not_found_or_not_unique"
+    assert payload["candidate_count"] == 0
+    assert payload["missing_fields"] == ["source.registry_session_record"]
+    assert_authority_false(payload)
+
+
+def test_blank_selected_session_id_fails_closed_as_missing_selector() -> None:
+    selected_session_id = ""
+    normalized_selected_session_id = selected_session_id or None
+
+    payload = build_source_bound_srp_shape(
+        candidates=[SyntheticSessionCandidate(session_id="session_a")],
+        selected_session_id=normalized_selected_session_id,
+    )
+
+    assert payload["valid"] is False
+    assert payload["error"] == "explicit_session_id_required"
+    assert payload["missing_fields"] == ["selection.session_id"]
+    assert_authority_false(payload)
+
+
+def test_unsupported_malformed_candidate_does_not_match_and_fails_closed() -> None:
+    malformed_candidate = SyntheticSessionCandidate(session_id="unsupported_source")
+    payload = build_source_bound_srp_shape(
+        candidates=[malformed_candidate],
+        selected_session_id="session_a",
+    )
+
+    assert payload["valid"] is False
+    assert payload["error"] == "selected_session_id_not_found_or_not_unique"
+    assert payload["missing_fields"] == ["source.registry_session_record"]
+    assert_authority_false(payload)
