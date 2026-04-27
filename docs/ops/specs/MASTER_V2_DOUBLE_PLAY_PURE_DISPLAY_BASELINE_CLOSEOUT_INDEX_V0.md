@@ -69,3 +69,7 @@ This **closeout index** does **not** claim or enable:
 - Any future implementation must remain **separate**, **gated**, **read-only** first, and **non-authorizing** until **external** authority surfaces exist outside this **pure display baseline** documentation set.
 
 Peer navigation (outside this **reading order**, **non-authority**): [MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md](MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md).
+
+## 7. Peer: Class A spot infrastructure vs Futures Class A (non-authority)
+
+- [MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0.md](MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0.md) — **capability contract** and **non-claims** separating **spot** GitHub Actions Class A smoke from **Futures Class A** **prerequisite** work. Does **not** extend the **pure display baseline** proof in §2.
