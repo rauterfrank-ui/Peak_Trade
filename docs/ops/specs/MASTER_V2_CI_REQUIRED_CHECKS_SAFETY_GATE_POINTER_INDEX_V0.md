@@ -107,7 +107,7 @@ bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs
 
 ## 13. Validation Notes
 
-From repo root (when changing this file or any tracked `docs/**` **Markdown**):
+From repo root (when changing this file or any tracked `docs&#47;**` **Markdown**):
 
 ```bash
 uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs
