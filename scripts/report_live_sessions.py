@@ -70,6 +70,9 @@ Usage:
     # JSON includes abort_triage_hints derived from existing signals only — not authorization):
     python scripts/report_live_sessions.py --bounded-pilot-lifecycle-consistency
     python scripts/report_live_sessions.py --bounded-pilot-lifecycle-consistency --json
+
+    # Session Review Pack V0 (read-only, non-authorizing post-hoc review bundle; JSON-only in v0):
+    python scripts/report_live_sessions.py --session-review-pack --json
 """
 
 from __future__ import annotations
@@ -1817,6 +1820,109 @@ def _run_bounded_pilot_closeout_status_summary(
 
 
 # =============================================================================
+# Session Review Pack V0 (read-only, non-authorizing; docs contract mapping)
+# =============================================================================
+
+
+def _session_review_pack_flag_conflicts(args: argparse.Namespace) -> str | None:
+    """--session-review-pack is a static JSON pack in v0; no registry or report filters."""
+    if args.session_id is not None:
+        return "--session-id is only for --evidence-pointers"
+    if args.latest_bounded_pilot:
+        return "--latest-bounded-pilot is only for --evidence-pointers"
+    if args.bounded_pilot_only or args.latest_bounded_pilot_open:
+        return "--bounded-pilot-only / --latest-bounded-pilot-open require --open-sessions"
+    if args.run_type is not None:
+        return "--run-type is not compatible with --session-review-pack"
+    if args.status is not None:
+        return "--status is not compatible with --session-review-pack"
+    if args.limit is not None:
+        return "--limit is not compatible with --session-review-pack"
+    if args.summary_only:
+        return "--summary-only is not compatible with --session-review-pack"
+    if args.output_dir is not None:
+        return "--output-dir is not compatible with --session-review-pack"
+    if args.stdout:
+        return "--stdout is not compatible with --session-review-pack"
+    if args.config_path is not None:
+        return "--config-path is not compatible with --session-review-pack"
+    if args.registry_base is not None:
+        return "--registry-base is not compatible with --session-review-pack (v0 is static JSON)"
+    if not args.json:
+        return "--session-review-pack requires --json (read-only pack output; v0 JSON-only)"
+    return None
+
+
+def _build_session_review_pack_v0_payload() -> dict[str, Any]:
+    """Build static v0 pack shape; session/reference fields are unpopulated until future slices."""
+    session: dict[str, Any] = {
+        "session_id": None,
+        "run_timestamp": None,
+        "mode_or_environment": None,
+    }
+    references: dict[str, Any] = {
+        "provenance_reference": None,
+        "evidence_references": [],
+        "readiness_summary_reference": None,
+        "handoff_reference": None,
+        "registry_reference": None,
+        "operator_notes": None,
+        "risk_kill_switch_summary_reference": None,
+        "execution_gate_summary_reference": None,
+        "strategy_context_summary_reference": None,
+        "dashboard_observer_summary_reference": None,
+        "learning_loop_feedback_reference": None,
+        "artifacts_manifest_reference": None,
+    }
+    missing: list[str] = []
+    for k, v in session.items():
+        if v is None:
+            missing.append(f"session.{k}")
+    for k, v in references.items():
+        if k == "evidence_references":
+            if not v:
+                missing.append("references.evidence_references")
+        elif v is None:
+            missing.append(f"references.{k}")
+    missing = sorted(missing)
+    return {
+        "contract": "report_live_sessions.session_review_pack_v0",
+        "schema_version": "master_v2/session_review_pack/v0",
+        "non_authorizing": True,
+        "disclaimer": (
+            "Read-only Session Review Pack V0: post-hoc review bundle shape; not live authorization, "
+            "not signoff, not gate pass, not strategy or autonomy readiness."
+        ),
+        "authority_boundary": {
+            "live_authorization": False,
+            "signoff_complete": False,
+            "gate_passed": False,
+            "autonomy_ready": False,
+            "strategy_ready": False,
+        },
+        "mode": "session_review_pack",
+        "session": session,
+        "references": references,
+        "source_contract": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md",
+        "missing_fields": missing,
+    }
+
+
+def _run_session_review_pack(
+    args: argparse.Namespace,
+    logger: logging.Logger,
+) -> int:
+    """Emit static Session Review Pack V0 JSON (read-only, no registry I/O in v0)."""
+    if not args.json:
+        print("ERR: --session-review-pack requires --json (read-only pack output; v0 JSON-only)", file=sys.stderr)
+        return 2
+    logger.info("Session Review Pack V0 (read-only, static shape)")
+    payload = _build_session_review_pack_v0_payload()
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+# =============================================================================
 # Main Entry Point
 # =============================================================================
 
@@ -1928,7 +2034,8 @@ Beispiele:
             "JSON output for --evidence-pointers, --open-sessions, "
             "--bounded-pilot-readiness-summary, --bounded-pilot-closeout-status-summary, "
             "--bounded-pilot-operator-overview, --bounded-pilot-gate-index, "
-            "--bounded-pilot-first-live-frontdoor, or --bounded-pilot-lifecycle-consistency"
+            "--bounded-pilot-first-live-frontdoor, --bounded-pilot-lifecycle-consistency, "
+            "or --session-review-pack"
         ),
     )
     parser.add_argument(
@@ -2015,6 +2122,15 @@ Beispiele:
         ),
     )
     parser.add_argument(
+        "--session-review-pack",
+        action="store_true",
+        dest="session_review_pack",
+        help=(
+            "Read-only: Session Review Pack V0 (non-authorizing post-hoc review bundle; "
+            "use with --json; see docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md)"
+        ),
+    )
+    parser.add_argument(
         "--config-path",
         type=str,
         default=None,
@@ -2048,6 +2164,7 @@ Beispiele:
         + int(bool(args.bounded_pilot_lifecycle_consistency))
         + int(bool(args.evidence_pointers))
         + int(bool(args.open_sessions))
+        + int(bool(args.session_review_pack))
     )
     if _mode_n > 1:
         print(
@@ -2055,10 +2172,17 @@ Beispiele:
             "--bounded-pilot-closeout-status-summary, --bounded-pilot-operator-overview, "
             "--bounded-pilot-gate-index, --bounded-pilot-first-live-frontdoor, "
             "--bounded-pilot-lifecycle-consistency, "
-            "--evidence-pointers, --open-sessions",
+            "--evidence-pointers, --open-sessions, --session-review-pack",
             file=sys.stderr,
         )
         return 2
+
+    if args.session_review_pack:
+        conflict = _session_review_pack_flag_conflicts(args)
+        if conflict is not None:
+            print(f"ERR: {conflict}", file=sys.stderr)
+            return 2
+        return _run_session_review_pack(args, logger)
 
     if args.bounded_pilot_readiness_summary:
         conflict = _bounded_pilot_readiness_summary_flag_conflicts(args)
