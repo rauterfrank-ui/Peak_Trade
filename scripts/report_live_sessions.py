@@ -1914,7 +1914,10 @@ def _run_session_review_pack(
 ) -> int:
     """Emit static Session Review Pack V0 JSON (read-only, no registry I/O in v0)."""
     if not args.json:
-        print("ERR: --session-review-pack requires --json (read-only pack output; v0 JSON-only)", file=sys.stderr)
+        print(
+            "ERR: --session-review-pack requires --json (read-only pack output; v0 JSON-only)",
+            file=sys.stderr,
+        )
         return 2
     logger.info("Session Review Pack V0 (read-only, static shape)")
     payload = _build_session_review_pack_v0_payload()
