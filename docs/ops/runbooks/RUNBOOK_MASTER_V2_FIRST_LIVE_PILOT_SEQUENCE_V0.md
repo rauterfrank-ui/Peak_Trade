@@ -112,6 +112,29 @@ uv run pytest tests/ops/test_session_review_pack_source_bound_cli_shape_v0.py \
 - [ ] [Source-Bound SRP Report Implementation Plan](../specs/MASTER_V2_SESSION_REVIEW_PACK_SOURCE_BOUND_REPORT_IMPLEMENTATION_PLAN_V0.md) — understood as **planning** surface, not runtime permission.
 - [ ] No claim that SRP or review **alone** approves live, closeout, or gate passage.
 
+### Pre-Live package status and bounded-pilot open-session triage (read-only)
+
+These two commands print **read-only JSON** to stdout (use **`--log-level ERROR`** so logs do not mix with the JSON block):
+
+```bash
+uv run python scripts/report_live_sessions.py --pre-live-package-status --json --log-level ERROR
+uv run python scripts/report_live_sessions.py --bounded-pilot-open-session-triage --json --log-level ERROR
+```
+
+**GLB-018 (blocker):** when either payload lists **`GLB-018`** under **`blockers`**, treat it as the **bounded-pilot open-session / non-terminal closeout posture** signal (open bounded-pilot sessions or equivalent gap items per the Pre-Live contract). It is **not** an instruction to change registry or `out/ops` files from the CLI, and it is **not** live authorization.
+
+**Per-session `triage_state` (bounded-pilot open-session triage):**
+
+| Value | Meaning (operator read) |
+|---|---|
+| `REVIEW_WITH_EVENTS` | Session-scoped execution-events pointer is present; still review under authority (not “green” by itself). |
+| `EVIDENCE_POINTER_MISSING` | Session-scoped execution-events pointer is absent; evidence path must be addressed under authority before treating the session as review-complete. |
+| `CLOSEOUT_REVIEW_NEEDED` | Registry/closeout posture is non-terminal or otherwise requires explicit closeout/review per policy before narrowing to events-only vs pointer-missing semantics. |
+
+**Hard constraints:** do **not** mutate tracked registry JSON or `out&#47;ops` artifacts from these read-only reports. **`non_authorizing`** remains **true**; all **`authority_boundary`** flags stay **false**. These outputs do **not** grant live authorization, bounded-pilot approval, closeout approval, **or** gate passage.
+
+**STOP** if who may close or defer sessions, wire evidence, or clear blockers under your program is **unclear** — ambiguity defaults to **STOP** (see §11).
+
 ## 7. Preflight Checklist
 
 Before any handoff toward bounded pilot **as described in the bounded-pilot runbooks**, complete **their** preflight; this list is a **companion** only:
