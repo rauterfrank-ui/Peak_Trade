@@ -76,6 +76,9 @@ Usage:
 
     # Pre-Live Package Status V0 (read-only gap signal; stdout JSON-only; registry + bounded-pilot artifacts):
     python scripts/report_live_sessions.py --pre-live-package-status --json
+
+    # Bounded Pilot Open Session Triage V0 (read-only per-session triage counts; stdout JSON-only):
+    python scripts/report_live_sessions.py --bounded-pilot-open-session-triage --json
 """
 
 from __future__ import annotations
@@ -1837,6 +1840,167 @@ PRE_LIVE_PACKAGE_STATUS_AUTHORITY_BOUNDARY = {
 }
 
 
+BOUNDED_PILOT_OPEN_SESSION_TRIAGE_V0_CONTRACT = "bounded_pilot_open_session_triage_v0"
+BOUNDED_PILOT_OPEN_SESSION_TRIAGE_V0_AUTHORITY_BOUNDARY = PRE_LIVE_PACKAGE_STATUS_AUTHORITY_BOUNDARY
+
+
+def classify_bounded_pilot_open_session_triage_row(
+    *,
+    execution_events_present: bool,
+    closeout_note: Optional[str],
+    lifecycle_state: str,
+) -> str:
+    """Match tests/ops/test_report_live_sessions_bounded_pilot_open_session_triage_v0.py semantics."""
+    if lifecycle_state != "TERMINAL_CLEAN" or not closeout_note:
+        return "CLOSEOUT_REVIEW_NEEDED"
+    if execution_events_present:
+        return "REVIEW_WITH_EVENTS"
+    return "EVIDENCE_POINTER_MISSING"
+
+
+def build_bounded_pilot_open_session_triage_v0_payload(
+    rows: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Build JSON payload for bounded_pilot_open_session_triage_v0 read-only CLI output."""
+    session_items: list[dict[str, Any]] = []
+    counts: dict[str, int] = {
+        "total_open_sessions": len(rows),
+        "events_present": 0,
+        "events_missing": 0,
+        "closeout_review_needed": 0,
+    }
+
+    boundary = dict(BOUNDED_PILOT_OPEN_SESSION_TRIAGE_V0_AUTHORITY_BOUNDARY)
+
+    for row in rows:
+        exec_present = bool(row["execution_events_present"])
+        if exec_present:
+            counts["events_present"] += 1
+        else:
+            counts["events_missing"] += 1
+
+        lifecycle = str(row.get("lifecycle_state", "PARTIAL_NON_TERMINAL"))
+        close_note = row.get("closeout_note")
+
+        triage_state = classify_bounded_pilot_open_session_triage_row(
+            execution_events_present=exec_present,
+            closeout_note=close_note if isinstance(close_note, str) else None,
+            lifecycle_state=lifecycle,
+        )
+        if triage_state == "CLOSEOUT_REVIEW_NEEDED":
+            counts["closeout_review_needed"] += 1
+
+        session_items.append(
+            {
+                "session_id": str(row["session_id"]),
+                "status": str(row.get("status", "started")),
+                "execution_events_present": exec_present,
+                "closeout_note_present": close_note is not None,
+                "lifecycle_state": lifecycle,
+                "triage_state": triage_state,
+                "suggested_operator_action": "review_or_defer_by_authority",
+                "authority_boundary": dict(boundary),
+            }
+        )
+
+    blockers: list[str] = []
+    missing_or_open_items: list[str] = []
+    if rows:
+        blockers.append("GLB-018")
+        missing_or_open_items.append("bounded_pilot.open_sessions_present")
+    if counts["events_missing"]:
+        missing_or_open_items.append("bounded_pilot.execution_events_missing")
+    if counts["closeout_review_needed"]:
+        missing_or_open_items.append("bounded_pilot.closeout_review_needed")
+
+    status_val = "BLOCKED" if blockers else "REVIEW_ONLY"
+
+    return {
+        "contract": BOUNDED_PILOT_OPEN_SESSION_TRIAGE_V0_CONTRACT,
+        "non_authorizing": True,
+        "status": status_val,
+        "sessions": session_items,
+        "counts": counts,
+        "blockers": sorted(set(blockers)),
+        "missing_or_open_items": sorted(set(missing_or_open_items)),
+        "authority_boundary": dict(boundary),
+    }
+
+
+def _open_bounded_pilot_detail_to_triage_rows(
+    open_detail: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Map open_bounded_pilot_detail rows (from open-sessions payloads) into triage input rows."""
+    out: list[dict[str, Any]] = []
+    for row in open_detail:
+        ej = row.get("execution_events_session_jsonl") or {}
+        out.append(
+            {
+                "session_id": row["session_id"],
+                "status": row.get("registry_status", ""),
+                "execution_events_present": bool(ej.get("present")),
+                "closeout_note": row.get("closeout_note"),
+                "lifecycle_state": "PARTIAL_NON_TERMINAL",
+            }
+        )
+    return out
+
+
+def _bounded_pilot_open_session_triage_flag_conflicts(args: argparse.Namespace) -> Optional[str]:
+    if args.session_id is not None:
+        return "--session-id is only for --evidence-pointers"
+    if args.latest_bounded_pilot:
+        return "--latest-bounded-pilot is only for --evidence-pointers"
+    if args.bounded_pilot_only or args.latest_bounded_pilot_open:
+        return "--bounded-pilot-only / --latest-bounded-pilot-open require --open-sessions"
+    if args.run_type is not None:
+        return "--run-type is not compatible with --bounded-pilot-open-session-triage"
+    if args.status is not None:
+        return "--status is not compatible with --bounded-pilot-open-session-triage"
+    if args.limit is not None:
+        return "--limit is not compatible with --bounded-pilot-open-session-triage"
+    if args.summary_only:
+        return "--summary-only is not compatible with --bounded-pilot-open-session-triage"
+    if args.output_dir is not None:
+        return "--output-dir is not compatible with --bounded-pilot-open-session-triage"
+    if args.stdout:
+        return "--stdout is not compatible with --bounded-pilot-open-session-triage"
+    if args.config_path is not None:
+        return "--config-path is not compatible with --bounded-pilot-open-session-triage"
+    if not args.json:
+        return "--bounded-pilot-open-session-triage requires --json (stdout JSON-only v0 slice)"
+    return None
+
+
+def _run_bounded_pilot_open_session_triage(
+    args: argparse.Namespace,
+    logger: logging.Logger,
+) -> int:
+    """Read-only bounded-pilot open-session triage JSON derived from registry + pointer presence."""
+    if not args.json:
+        print(
+            "ERR: --bounded-pilot-open-session-triage requires --json",
+            file=sys.stderr,
+        )
+        return 2
+
+    base_dir = _registry_base_dir(args)
+    cwd = Path.cwd()
+    session_focus = _collect_bounded_pilot_session_focus(base_dir=base_dir, cwd=cwd)
+    inputs = _open_bounded_pilot_detail_to_triage_rows(session_focus["open_bounded_pilot_detail"])
+
+    payload = build_bounded_pilot_open_session_triage_v0_payload(inputs)
+
+    logger.info(
+        "Bounded Pilot Open Session Triage V0 read-only (status=%s open=%s)",
+        payload.get("status"),
+        payload["counts"].get("total_open_sessions"),
+    )
+
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
 def _derive_closeout_lifecycle_label_pre_live(
     n_open_bounded: int,
     closeout: dict[str, Any],
@@ -2234,7 +2398,8 @@ Beispiele:
             "--bounded-pilot-readiness-summary, --bounded-pilot-closeout-status-summary, "
             "--bounded-pilot-operator-overview, --bounded-pilot-gate-index, "
             "--bounded-pilot-first-live-frontdoor, --bounded-pilot-lifecycle-consistency, "
-            "--session-review-pack, or --pre-live-package-status"
+            "--session-review-pack, --pre-live-package-status, or "
+            "--bounded-pilot-open-session-triage"
         ),
     )
     parser.add_argument(
@@ -2339,6 +2504,15 @@ Beispiele:
         ),
     )
     parser.add_argument(
+        "--bounded-pilot-open-session-triage",
+        action="store_true",
+        dest="bounded_pilot_open_session_triage",
+        help=(
+            "Read-only: bounded-pilot OPEN session triage (execution_events presence + closeout cues; "
+            "use with --json; non-authorizing; stdout JSON-only v0)"
+        ),
+    )
+    parser.add_argument(
         "--config-path",
         type=str,
         default=None,
@@ -2374,6 +2548,7 @@ Beispiele:
         + int(bool(args.open_sessions))
         + int(bool(args.session_review_pack))
         + int(bool(args.pre_live_package_status))
+        + int(bool(args.bounded_pilot_open_session_triage))
     )
     if _mode_n > 1:
         print(
@@ -2382,10 +2557,17 @@ Beispiele:
             "--bounded-pilot-gate-index, --bounded-pilot-first-live-frontdoor, "
             "--bounded-pilot-lifecycle-consistency, "
             "--evidence-pointers, --open-sessions, --session-review-pack, "
-            "--pre-live-package-status",
+            "--pre-live-package-status, --bounded-pilot-open-session-triage",
             file=sys.stderr,
         )
         return 2
+
+    if args.bounded_pilot_open_session_triage:
+        conflict = _bounded_pilot_open_session_triage_flag_conflicts(args)
+        if conflict is not None:
+            print(f"ERR: {conflict}", file=sys.stderr)
+            return 2
+        return _run_bounded_pilot_open_session_triage(args, logger)
 
     if args.pre_live_package_status:
         conflict = _pre_live_package_status_flag_conflicts(args)

@@ -1,29 +1,30 @@
-"""Synthetic bounded-pilot open-session triage characterization tests.
+"""Bounded-pilot open-session triage characterization and CLI integration tests.
 
-These tests model a future read-only triage surface for open bounded-pilot
-sessions. They do not import production report code, read real registries, read
-generated artifacts, close sessions, or authorize live trading.
+Synthetic helpers delegate to scripts.report_live_sessions (single source of truth).
+Integration tests monkeypatch.chdir(tmp_path) registry overlays — no edits to tracked
+workspace registries. No live authorization; no automated closeout.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 import json
+import sys
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Literal
+from unittest.mock import patch
 
+import pytest
 
-CONTRACT = "bounded_pilot_open_session_triage_v0"
+from scripts.report_live_sessions import (
+    BOUNDED_PILOT_OPEN_SESSION_TRIAGE_V0_CONTRACT,
+    BOUNDED_PILOT_OPEN_SESSION_TRIAGE_V0_AUTHORITY_BOUNDARY,
+    build_bounded_pilot_open_session_triage_v0_payload,
+)
 
-AUTHORITY_FLAGS = {
-    "live_authorization": False,
-    "bounded_pilot_approval": False,
-    "closeout_approval": False,
-    "gate_passage": False,
-    "strategy_readiness": False,
-    "autonomy_readiness": False,
-    "external_authority_completion": False,
-}
+CONTRACT = BOUNDED_PILOT_OPEN_SESSION_TRIAGE_V0_CONTRACT
+AUTHORITY_FLAGS = BOUNDED_PILOT_OPEN_SESSION_TRIAGE_V0_AUTHORITY_BOUNDARY
 
 SessionTriageState = Literal[
     "REVIEW_WITH_EVENTS",
@@ -31,6 +32,8 @@ SessionTriageState = Literal[
     "CLOSEOUT_REVIEW_NEEDED",
 ]
 ReportStatus = Literal["BLOCKED", "REVIEW_ONLY"]
+
+from src.experiments.live_session_registry import LiveSessionRecord, register_live_session_run  # noqa: E402
 
 
 @dataclass(frozen=True)
@@ -42,70 +45,21 @@ class SyntheticOpenSessionRow:
     lifecycle_state: str = "PARTIAL_NON_TERMINAL"
 
 
-def classify_open_session(row: SyntheticOpenSessionRow) -> SessionTriageState:
-    if row.lifecycle_state != "TERMINAL_CLEAN" or not row.closeout_note:
-        return "CLOSEOUT_REVIEW_NEEDED"
-    if row.execution_events_present:
-        return "REVIEW_WITH_EVENTS"
-    return "EVIDENCE_POINTER_MISSING"
-
-
 def build_bounded_pilot_open_session_triage_v0(
     rows: list[SyntheticOpenSessionRow],
 ) -> dict[str, object]:
-    session_items: list[dict[str, object]] = []
-    counts = {
-        "total_open_sessions": len(rows),
-        "events_present": 0,
-        "events_missing": 0,
-        "closeout_review_needed": 0,
-    }
-
-    for row in rows:
-        if row.execution_events_present:
-            counts["events_present"] += 1
-        else:
-            counts["events_missing"] += 1
-
-        triage_state = classify_open_session(row)
-        if triage_state == "CLOSEOUT_REVIEW_NEEDED":
-            counts["closeout_review_needed"] += 1
-
-        session_items.append(
+    return build_bounded_pilot_open_session_triage_v0_payload(
+        [
             {
-                "session_id": row.session_id,
-                "status": row.status,
-                "execution_events_present": row.execution_events_present,
-                "closeout_note_present": row.closeout_note is not None,
-                "lifecycle_state": row.lifecycle_state,
-                "triage_state": triage_state,
-                "suggested_operator_action": "review_or_defer_by_authority",
-                "authority_boundary": dict(AUTHORITY_FLAGS),
+                "session_id": r.session_id,
+                "status": r.status,
+                "execution_events_present": r.execution_events_present,
+                "closeout_note": r.closeout_note,
+                "lifecycle_state": r.lifecycle_state,
             }
-        )
-
-    blockers: list[str] = []
-    missing_or_open_items: list[str] = []
-    if rows:
-        blockers.append("GLB-018")
-        missing_or_open_items.append("bounded_pilot.open_sessions_present")
-    if counts["events_missing"]:
-        missing_or_open_items.append("bounded_pilot.execution_events_missing")
-    if counts["closeout_review_needed"]:
-        missing_or_open_items.append("bounded_pilot.closeout_review_needed")
-
-    status: ReportStatus = "BLOCKED" if blockers else "REVIEW_ONLY"
-
-    return {
-        "contract": CONTRACT,
-        "non_authorizing": True,
-        "status": status,
-        "sessions": session_items,
-        "counts": counts,
-        "blockers": sorted(set(blockers)),
-        "missing_or_open_items": sorted(set(missing_or_open_items)),
-        "authority_boundary": dict(AUTHORITY_FLAGS),
-    }
+            for r in rows
+        ]
+    )
 
 
 def assert_authority_false(payload: dict[str, object]) -> None:
@@ -230,13 +184,149 @@ def test_serialized_output_contains_no_unqualified_authority_claims() -> None:
 
 
 def test_this_triage_test_does_not_read_real_artifact_locations() -> None:
+    """Guardrail: contiguous production path literals are not pasted into this module body.
+
+    (Import paths may include ``live_session_registry``; exclude that substring match.)
+    """
     source_text = Path(__file__).read_text(encoding="utf-8")
     forbidden_fragments = [
         "/".join(["reports", "experiments", "live_sessions"]),
         "/".join(["out", "ops"]),
         "/".join(["execution_events", "sessions"]),
-        "_".join(["live", "session", "registry"]),
     ]
 
     for fragment in forbidden_fragments:
         assert fragment not in source_text
+
+
+def test_bounded_pilot_open_session_triage_help_exposes_cli_flag(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    from scripts.report_live_sessions import main
+
+    with pytest.raises(SystemExit) as exc:
+        with patch.object(sys, "argv", ["report_live_sessions.py", "--help"]):
+            main()
+    assert exc.value.code == 0
+    merged = capsys.readouterr()
+    combo = merged.out + merged.err
+    assert "--bounded-pilot-open-session-triage" in combo
+
+
+def _bp_started(session_id: str, *, started: datetime | None = None) -> LiveSessionRecord:
+    t0 = started or datetime(2026, 3, 19, 15, 0, 0)
+    return LiveSessionRecord(
+        session_id=session_id,
+        run_id="run_triage",
+        run_type="live_session_bounded_pilot",
+        mode="bounded_pilot",
+        env_name="pilot_env",
+        symbol="BTC/USDT",
+        status="started",
+        started_at=t0,
+        finished_at=None,
+        config={"strategy_name": "test"},
+        metrics={"realized_pnl": 0.0},
+        cli_args=[],
+    )
+
+
+def test_bounded_pilot_open_session_triage_integration_five_sessions_two_exec_present(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    reg = tmp_path.joinpath("reports", "experiments", "live_sessions")
+    reg.mkdir(parents=True)
+
+    from src.observability.execution_events import expected_session_scoped_events_jsonl_path  # noqa: E402
+
+    base = datetime(2026, 3, 19, 14, 0, 0)
+    ids_order = []
+    for i in range(5):
+        sid = f"sess_bp_triage_{i}"
+        ids_order.append(sid)
+        register_live_session_run(
+            _bp_started(sid, started=base + timedelta(minutes=i)),
+            base_dir=reg,
+        )
+
+    for sid in ids_order[:2]:
+        rel = expected_session_scoped_events_jsonl_path(sid)
+        path = tmp_path.joinpath(rel)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("{}\n", encoding="utf-8")
+
+    from scripts.report_live_sessions import main
+
+    with patch.object(
+        sys,
+        "argv",
+        [
+            "report_live_sessions.py",
+            "--bounded-pilot-open-session-triage",
+            "--json",
+            "--registry-base",
+            str(reg),
+            "--log-level",
+            "ERROR",
+        ],
+    ):
+        assert main() == 0
+
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["contract"] == CONTRACT
+    assert payload["non_authorizing"] is True
+    assert payload["authority_boundary"] == AUTHORITY_FLAGS
+    assert payload["status"] == "BLOCKED"
+    assert payload["blockers"] == ["GLB-018"]
+    assert payload["counts"] == {
+        "total_open_sessions": 5,
+        "events_present": 2,
+        "events_missing": 3,
+        "closeout_review_needed": 5,
+    }
+    assert "bounded_pilot.open_sessions_present" in payload["missing_or_open_items"]
+    serialized = json.dumps(payload, sort_keys=True).lower()
+    assert all(
+        forbidden not in serialized
+        for forbidden in (
+            "live authorization granted",
+            "bounded pilot approved",
+        )
+    )
+
+
+def test_bounded_pilot_open_session_triage_integration_empty_review_only_no_glb(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    reg = tmp_path.joinpath("reports", "experiments", "live_sessions")
+    reg.mkdir(parents=True)
+
+    from scripts.report_live_sessions import main
+
+    with patch.object(
+        sys,
+        "argv",
+        [
+            "report_live_sessions.py",
+            "--bounded-pilot-open-session-triage",
+            "--json",
+            "--registry-base",
+            str(reg),
+            "--log-level",
+            "ERROR",
+        ],
+    ):
+        assert main() == 0
+
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["status"] == "REVIEW_ONLY"
+    assert payload["sessions"] == []
+    assert payload["blockers"] == []
+    assert payload["counts"]["total_open_sessions"] == 0
+    assert payload["authority_boundary"] == AUTHORITY_FLAGS
