@@ -216,6 +216,19 @@ def build_parser() -> argparse.ArgumentParser:
         help="Anzahl Bars für Dummy-Daten (default: 500)",
     )
 
+    parser.add_argument(
+        "--experiments-dir",
+        type=str,
+        default="reports/experiments",
+        help="Basisverzeichnis für Sweep-/Experiment-Artefakte (default: reports/experiments)",
+    )
+    parser.add_argument(
+        "--sweeps-output-dir",
+        type=str,
+        default="reports/sweeps",
+        help="Verzeichnis für Top-N-TOML-/Sweep-Metadaten (default: reports/sweeps)",
+    )
+
     # Weitere Optionen
     parser.add_argument(
         "--verbose",
@@ -239,14 +252,17 @@ def run_from_args(args: argparse.Namespace) -> int:
     """
     logger = logging.getLogger(__name__)
 
+    experiments_dir = Path(args.experiments_dir)
+    sweeps_output_dir = Path(args.sweeps_output_dir)
+
     # 1. Lade Top-N-Konfigurationen (optional Dummy-Fallback wie run_stress_tests.py)
     logger.info(f"Lade Top-{args.top_n} Konfigurationen für Sweep '{args.sweep_name}'")
     try:
         configs = load_top_n_configs_for_sweep(
             args.sweep_name,
             n=args.top_n,
-            experiments_dir=Path("reports/experiments"),
-            output_path=Path("reports/sweeps"),
+            experiments_dir=experiments_dir,
+            output_path=sweeps_output_dir,
         )
     except Exception as e:
         logger.error(f"Fehler beim Laden der Top-N-Konfigurationen: {e}")
@@ -293,7 +309,7 @@ def run_from_args(args: argparse.Namespace) -> int:
         # Lade Returns
         returns = load_returns_for_config(
             config,
-            Path("reports/experiments"),
+            experiments_dir,
             use_dummy_data=args.use_dummy_data,
             dummy_bars=args.dummy_bars,
         )
