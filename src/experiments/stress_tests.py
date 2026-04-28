@@ -364,6 +364,7 @@ def load_returns_for_top_config(
     *,
     use_dummy_data: bool = False,
     dummy_bars: int = 500,
+    shared_returns: Optional[pd.Series] = None,
 ) -> pd.Series:
     """
     Lädt Returns für eine Top-N-Konfiguration aus einem Sweep.
@@ -374,6 +375,7 @@ def load_returns_for_top_config(
         experiments_dir: Verzeichnis mit Experiment-Ergebnissen
         use_dummy_data: Wenn True, werden Dummy-Daten verwendet
         dummy_bars: Anzahl Bars für Dummy-Daten
+        shared_returns: Optional preloaded returns (CLI ``--ohlcv-file``), overrides Dummy
 
     Returns:
         Returns-Serie oder None
@@ -383,6 +385,10 @@ def load_returns_for_top_config(
         Implementierung würde man die Equity-Curves aus den Backtest-Result-Objekten
         laden. Für Phase 46 verwenden wir Dummy-Daten oder Approximationen.
     """
+    if shared_returns is not None:
+        logger.info("Verwende Returns aus OHLCV-CLI (--ohlcv-file)")
+        return shared_returns.copy()
+
     if use_dummy_data:
         logger.info(f"Verwende Dummy-Daten für Config Rank {config_rank}")
         np.random.seed(42 + config_rank)

@@ -51,6 +51,7 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from src.experiments.dummy_returns_timeline import create_dummy_returns
+from src.experiments.ohlcv_returns_file import load_close_returns_from_ohlcv_parquet
 from src.experiments.monte_carlo import (
     MonteCarloConfig,
     run_monte_carlo_from_returns,
@@ -97,6 +98,7 @@ def load_returns_for_config(
     *,
     use_dummy_data: bool = False,
     dummy_bars: int = 500,
+    shared_returns: Optional[pd.Series] = None,
 ) -> Optional[pd.Series]:
     """
     Lädt Returns für eine Top-N-Konfiguration.
@@ -114,15 +116,21 @@ def load_returns_for_config(
         Aktuell ist dies eine vereinfachte Implementierung. In einer vollständigen
         Implementierung würde man die Equity-Curves aus den Backtest-Result-Objekten
         laden. Für Phase 45 verwenden wir Dummy-Daten oder Approximationen.
+        ``shared_returns`` (aus ``--ohlcv-file``) überschreibt Dummy-/Placeholder-Returns.
     """
+    logger = logging.getLogger(__name__)
+    if shared_returns is not None:
+        logger.info(
+            f"Verwende OHLCV-CLI-Returns (--ohlcv-file) für {config.get('config_id', 'unknown')}"
+        )
+        return shared_returns.copy()
+
     if use_dummy_data:
-        logger = logging.getLogger(__name__)
         logger.info(f"Verwende Dummy-Daten für Config {config.get('config_id', 'unknown')}")
         return create_dummy_returns(dummy_bars)
 
     # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Vollständige Monte-Carlo-Robustness-Implementierung")
     # Aktuell: Placeholder - würde hier die Equity-Curve aus dem Experiment-Run laden
-    logger = logging.getLogger(__name__)
     logger.warning(
         f"load_returns_for_config ist noch nicht vollständig implementiert "
         f"für config_id={config.get('config_id', 'unknown')}. "
@@ -215,6 +223,16 @@ def build_parser() -> argparse.ArgumentParser:
         default=500,
         help="Anzahl Bars für Dummy-Daten (default: 500)",
     )
+    parser.add_argument(
+        "--ohlcv-file",
+        type=str,
+        default=None,
+        metavar="PATH",
+        help=(
+            "Parquet OHLCV (Spalte 'close'); gemeinsame close-to-close-Returns für alle Configs "
+            "(überschreibt Dummy-Returns)."
+        ),
+    )
 
     parser.add_argument(
         "--experiments-dir",
@@ -254,6 +272,18 @@ def run_from_args(args: argparse.Namespace) -> int:
 
     experiments_dir = Path(args.experiments_dir)
     sweeps_output_dir = Path(args.sweeps_output_dir)
+
+    shared_returns = None  # OHLCV --ohlcv-file
+    if getattr(args, "ohlcv_file", None):
+        ohlcv = Path(args.ohlcv_file).expanduser()
+        if not ohlcv.is_file():
+            logger.error(f"OHLCV-Datei nicht gefunden: {ohlcv}")
+            return 1
+        try:
+            shared_returns = load_close_returns_from_ohlcv_parquet(ohlcv)
+        except Exception as e:
+            logger.error(f"Laden OHLCV/Returns fehlgeschlagen ({ohlcv}): {e}")
+            return 1
 
     # 1. Lade Top-N-Konfigurationen (optional Dummy-Fallback wie run_stress_tests.py)
     logger.info(f"Lade Top-{args.top_n} Konfigurationen für Sweep '{args.sweep_name}'")
@@ -312,6 +342,7 @@ def run_from_args(args: argparse.Namespace) -> int:
             experiments_dir,
             use_dummy_data=args.use_dummy_data,
             dummy_bars=args.dummy_bars,
+            shared_returns=shared_returns,
         )
 
         if returns is None:

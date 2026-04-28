@@ -52,7 +52,7 @@ import numpy as np
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.experiments.dummy_returns_timeline import create_dummy_returns
+from src.experiments.ohlcv_returns_file import load_close_returns_from_ohlcv_parquet
 from src.experiments.stress_tests import (
     StressScenarioConfig,
     StressTestSuiteResult,
@@ -180,6 +180,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="Anzahl Bars für Dummy-Daten (default: 500)",
     )
     parser.add_argument(
+        "--ohlcv-file",
+        type=str,
+        default=None,
+        metavar="PATH",
+        help=(
+            "Parquet OHLCV (Spalte 'close'); gemeinsame close-to-close-Returns für jeden Stress-Lauf "
+            "(überschreibt Dummy-Returns)."
+        ),
+    )
+    parser.add_argument(
         "--experiments-dir",
         type=str,
         default="reports/experiments",
@@ -230,6 +240,18 @@ def run_from_args(args: argparse.Namespace) -> int:
         logger.info(f"Lade Top-{args.top_n} Konfigurationen für Sweep '{args.sweep_name}'...")
         experiments_dir = Path(args.experiments_dir)
         sweeps_output_dir = Path(args.sweeps_output_dir)
+
+        shared_returns = None
+        if getattr(args, "ohlcv_file", None):
+            ohlcv = Path(args.ohlcv_file).expanduser()
+            if not ohlcv.is_file():
+                logger.error(f"OHLCV-Datei nicht gefunden: {ohlcv}")
+                return 1
+            try:
+                shared_returns = load_close_returns_from_ohlcv_parquet(ohlcv)
+            except Exception as e:
+                logger.error(f"Laden OHLCV/Returns fehlgeschlagen ({ohlcv}): {e}")
+                return 1
 
         try:
             top_configs = load_top_n_configs_for_sweep(
@@ -288,6 +310,7 @@ def run_from_args(args: argparse.Namespace) -> int:
                 experiments_dir=experiments_dir,
                 use_dummy_data=args.use_dummy_data,
                 dummy_bars=args.dummy_bars,
+                shared_returns=shared_returns,
             )
 
             if returns is None:
