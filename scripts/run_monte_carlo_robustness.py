@@ -60,6 +60,11 @@ from src.experiments.topn_promotion import load_top_n_configs_for_sweep
 from src.reporting.monte_carlo_report import build_monte_carlo_report
 
 
+def _dummy_top_configs(top_n: int) -> list[dict]:
+    """Minimal synthetic Top-N rows for offline/dummy smoke (parity with run_stress_tests.py)."""
+    return [{"config_id": f"dummy_config_{i + 1}", "rank": i + 1} for i in range(top_n)]
+
+
 def setup_logging(verbose: bool = False) -> None:
     """Konfiguriert Logging."""
     level = logging.DEBUG if verbose else logging.INFO
@@ -234,7 +239,7 @@ def run_from_args(args: argparse.Namespace) -> int:
     """
     logger = logging.getLogger(__name__)
 
-    # 1. Lade Top-N-Konfigurationen
+    # 1. Lade Top-N-Konfigurationen (optional Dummy-Fallback wie run_stress_tests.py)
     logger.info(f"Lade Top-{args.top_n} Konfigurationen für Sweep '{args.sweep_name}'")
     try:
         configs = load_top_n_configs_for_sweep(
@@ -245,11 +250,19 @@ def run_from_args(args: argparse.Namespace) -> int:
         )
     except Exception as e:
         logger.error(f"Fehler beim Laden der Top-N-Konfigurationen: {e}")
-        return 1
+        if args.use_dummy_data:
+            logger.info("Erstelle Dummy-Konfigurationen für Tests...")
+            configs = _dummy_top_configs(args.top_n)
+        else:
+            return 1
 
     if not configs:
-        logger.error(f"Keine Konfigurationen gefunden für Sweep '{args.sweep_name}'")
-        return 1
+        if args.use_dummy_data:
+            logger.info("Erstelle Dummy-Konfigurationen für Tests...")
+            configs = _dummy_top_configs(args.top_n)
+        else:
+            logger.error(f"Keine Konfigurationen gefunden für Sweep '{args.sweep_name}'")
+            return 1
 
     logger.info(f"{len(configs)} Konfigurationen geladen")
 
