@@ -52,6 +52,10 @@ from scripts.run_offline_realtime_ma_crossover import (
 
 logger = logging.getLogger(__name__)
 
+# Subprocess timeout for `job_pytest_fast` (full `pytest -q -x --tb=short` run).
+# Must stay below the GitHub Actions job budget in offline_suites.yml (30m for daily).
+PYTEST_FAST_TIMEOUT_SEC = 600
+
 
 # =============================================================================
 # Job Result Model
@@ -115,7 +119,7 @@ def job_pytest_fast(dry_run: bool = False) -> JobResult:
             cwd=project_root,
             capture_output=True,
             text=True,
-            timeout=120,  # 2 Minuten Timeout
+            timeout=PYTEST_FAST_TIMEOUT_SEC,
         )
 
         duration = time.perf_counter() - start_time
@@ -148,7 +152,7 @@ def job_pytest_fast(dry_run: bool = False) -> JobResult:
             job_name=job_name,
             status="failed",
             duration_sec=duration,
-            error_msg="Pytest timeout after 120s",
+            error_msg=f"Pytest timeout after {PYTEST_FAST_TIMEOUT_SEC}s",
         )
 
     except Exception as e:
