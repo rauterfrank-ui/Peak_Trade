@@ -205,6 +205,13 @@ Examples:
         help="CSV-Export der Ergebnisse",
     )
     output_group.add_argument(
+        "--diagnostics-dir",
+        type=str,
+        default=None,
+        metavar="PATH",
+        help="Optional: Verzeichnis für research-only Diagnostik (JSON pro Parameterkombination)",
+    )
+    output_group.add_argument(
         "--no-registry",
         action="store_true",
         help="Kein Registry-Logging (für Tests)",
@@ -497,6 +504,83 @@ def export_results(summary: SweepSummary, export_path: str) -> None:
     print(f"\nErgebnisse exportiert nach: {export_path}")
 
 
+def _serialize_diagnostic_value(value: Any) -> Any:
+    """Konvertiert typische Backtest-Diagnostik in JSON-sichere Werte."""
+    if value is None:
+        return None
+    if isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, dict):
+        return {str(k): _serialize_diagnostic_value(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_serialize_diagnostic_value(v) for v in value]
+
+    try:
+        if isinstance(value, pd.DataFrame):
+            return value.reset_index().to_dict(orient="records")
+        if isinstance(value, pd.Series):
+            return value.reset_index().to_dict(orient="records")
+    except Exception:
+        pass
+
+    if hasattr(value, "model_dump"):
+        return _serialize_diagnostic_value(value.model_dump())
+    if hasattr(value, "__dict__"):
+        return _serialize_diagnostic_value(vars(value))
+
+    return str(value)
+
+
+def _extract_backtest_diagnostics(result: Any) -> Dict[str, Any]:
+    """Extrahiert Research-Diagnostik aus einem Backtest-Resultat."""
+    diagnostics: Dict[str, Any] = {}
+    for attr in (
+        "trades",
+        "equity_curve",
+        "drawdown",
+        "drawdown_curve",
+        "positions",
+        "signals",
+        "stats",
+        "metrics",
+    ):
+        if hasattr(result, attr):
+            diagnostics[attr] = _serialize_diagnostic_value(getattr(result, attr))
+    return diagnostics
+
+
+def _write_sweep_diagnostics(
+    diagnostics_dir: Optional[str],
+    combo_index: int,
+    params: Dict[str, Any],
+    stats: Dict[str, Any],
+    success: bool,
+    error: Optional[str],
+    result: Any = None,
+) -> None:
+    """Schreibt optionale, nicht-autorisierende Research-Diagnostik für eine Kombination."""
+    if diagnostics_dir is None:
+        return
+
+    out_dir = Path(diagnostics_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    payload = {
+        "combo_index": combo_index,
+        "params": _serialize_diagnostic_value(params),
+        "stats": _serialize_diagnostic_value(stats),
+        "success": bool(success),
+        "error": error,
+        "backtest_diagnostics": _extract_backtest_diagnostics(result) if result is not None else {},
+    }
+
+    target = out_dir / f"combo_{combo_index:04d}.json"
+    target.write_text(
+        json.dumps(payload, indent=2, sort_keys=False, default=str) + "\n",
+        encoding="utf-8",
+    )
+
+
 # =============================================================================
 # MAIN
 # =============================================================================
@@ -616,10 +700,29 @@ def main(argv: Optional[List[str]] = None) -> int:
             progress_callback=None if args.verbose else progress_callback,
         )
 
+        def diagnostics_callback(
+            combo_index: int,
+            combo_params: Dict[str, Any],
+            combo_stats: Dict[str, Any],
+            combo_success: bool,
+            combo_error: Optional[str],
+            bt_result: Any,
+        ) -> None:
+            _write_sweep_diagnostics(
+                args.diagnostics_dir,
+                combo_index,
+                combo_params,
+                combo_stats,
+                combo_success,
+                combo_error,
+                bt_result,
+            )
+
         summary = engine.run_sweep(
             config=config,
             data=data,
             skip_registry=args.no_registry,
+            diagnostics_callback=diagnostics_callback if args.diagnostics_dir else None,
         )
 
     except Exception as e:

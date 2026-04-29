@@ -28,6 +28,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import pandas as pd
 
+from src.backtest.result import BacktestResult
 from src.core.experiments import log_sweep_run, RUN_TYPE_SWEEP
 from src.core.peak_config import PeakConfig, load_config
 from src.core.position_sizing import build_position_sizer_from_config
@@ -347,6 +348,20 @@ class SweepEngine:
         config: SweepConfig,
         data: pd.DataFrame,
         skip_registry: bool = False,
+        *,
+        diagnostics_callback: Optional[
+            Callable[
+                [
+                    int,
+                    Dict[str, Any],
+                    Dict[str, Any],
+                    bool,
+                    Optional[str],
+                    Optional[BacktestResult],
+                ],
+                None,
+            ]
+        ] = None,
     ) -> SweepSummary:
         """
         Führt einen kompletten Hyperparameter-Sweep aus.
@@ -355,6 +370,7 @@ class SweepEngine:
             config: Sweep-Konfiguration
             data: OHLCV-DataFrame für Backtests
             skip_registry: Wenn True, kein Registry-Logging (für Tests)
+            diagnostics_callback: Optional; pro Kombination (1-basiierter Index, params, stats, success, error, result)
 
         Returns:
             SweepSummary mit allen Ergebnissen
@@ -395,7 +411,7 @@ class SweepEngine:
                 print(f"  [{i}/{len(combinations)}] {params}")
 
             try:
-                stats = self._run_single_backtest(
+                stats, bt_result = self._run_single_backtest(
                     data=data,
                     strategy_key=config.strategy_key,
                     params=params,
@@ -424,6 +440,9 @@ class SweepEngine:
                 else:
                     run_id = f"test_{uuid.uuid4().hex[:8]}"
 
+                if diagnostics_callback is not None:
+                    diagnostics_callback(i, params, stats, True, None, bt_result)
+
                 results.append(
                     SweepResult(
                         params=params,
@@ -436,6 +455,9 @@ class SweepEngine:
             except Exception as e:
                 if self.verbose:
                     print(f"    FEHLER: {e}")
+
+                if diagnostics_callback is not None:
+                    diagnostics_callback(i, params, {}, False, str(e), None)
 
                 results.append(
                     SweepResult(
@@ -496,7 +518,7 @@ class SweepEngine:
         strategy_key: str,
         params: Dict[str, Any],
         cfg: PeakConfig,
-    ) -> Dict[str, Any]:
+    ) -> Tuple[Dict[str, Any], BacktestResult]:
         """
         Führt einen einzelnen Backtest mit spezifischen Parametern aus.
 
@@ -507,7 +529,7 @@ class SweepEngine:
             cfg: Peak-Config
 
         Returns:
-            Stats-Dict mit Backtest-Ergebnissen
+            Tuple aus Stats-Dict und BacktestResult
         """
         # Position-Sizer und Risk-Manager aus Config
         position_sizer = build_position_sizer_from_config(cfg)
@@ -549,7 +571,7 @@ class SweepEngine:
             strategy_params=params,
         )
 
-        return result.stats or {}
+        return result.stats or {}, result
 
     def _find_best_result(
         self,
