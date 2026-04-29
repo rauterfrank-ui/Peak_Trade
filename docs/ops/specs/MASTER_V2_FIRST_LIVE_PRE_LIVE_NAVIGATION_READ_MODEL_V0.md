@@ -61,6 +61,16 @@ Read **context** (optional but useful) **before** or **alongside** the PRE_LIVE 
 | C3 | [MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md](MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md) | **Compact** G1–G12 gate-status **mapping** index (read-only visibility) | Gate closure, live authorization, or operator signoff |
 | C4 | [MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md](MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md) | Docs-only **report/table rendering** carrier aligned with the read model (companion) | A rendered status row as a governance decision, evidence, or go |
 
+**C0-Class-A — optional operator command pointer (read-only):** The repository includes a **non-authorizing** summarizer for recent GitHub Actions runs of the Class-A workflow (`scripts/ops/report_class_a_spot_paper_snapshot_v0.py`, contract id `class_a_spot_paper_snapshot_report_v0`). It restates the **same** interpretation boundaries as the C0-Class-A row above (spot/paper **infrastructure-smoke** only; **not** Futures/Perp readiness; **not** Testnet/Live approval; **not** Double Play, execution, or gate permission). Treat **`skipped`** conclusions like any other non-success until the run logs are reviewed. **`gh`** must be available and authenticated for `gh run list`.
+
+```bash
+gh run list \
+  --workflow class-a-shadow-paper-scheduled-probe-v1.yml \
+  --limit 12 \
+  --json databaseId,status,conclusion,event,createdAt,updatedAt,headBranch,headSha,url \
+| uv run python scripts/ops/report_class_a_spot_paper_snapshot_v0.py --stdin-json
+```
+
 **Suggested first pass — PRE_LIVE contract cluster (order is a reading aid, not a mandate):**
 
 | Step | Existing spec (link) | Role in review (reading aid) | What it does **not** authorize |
