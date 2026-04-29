@@ -40,6 +40,8 @@ Dieses Dokument listet **bewusst nicht implementierte Features** und **bekannte 
 **Referenz:**
 - `src/live/safety.py` – SafetyGuard-Implementierung
 
+- **Offline Futures-Paper-Accounting v0:** `src&#47;execution&#47;paper&#47;futures_accounting.py` — **reines** Hilfsmodul für deterministische Long/Short- und Margin-**Schätzungen** (keine Exchange-Calls, keine Runner-Verdrahtung, keine venue-getreue Liquidation); **keine** Strategieautorität und **kein** Live-/Testnet- oder Futures-Class-A-Readiness-Nachweis.
+
 - `src/execution/live/safety.py` and `src/execution/live/reconcile.py` are a bounded Finish-C3 mock/testability slice for safety-rail and reconcile failure-path coverage; they do **not** represent live approval, exchange enablement, or production-ready live operations.
 
 - Finish-C3 LB-OPE-001 Phase 1 further hardens mock-only invariant-first failure handling in `src/execution/live/safety.py` and `src/execution/live/reconcile.py`; this remains non-live, deny-by-default, and is not evidence of live-approved operations.

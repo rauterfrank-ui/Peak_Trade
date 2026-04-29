@@ -39,6 +39,7 @@ Peak_Trade ist aktuell ein **Research-/Backtest-/Paper-/Shadow-System**:
 - **Strategien & Research**: Playground mit `ma_crossover`, `trend_following`, `mean_reversion`, etc.
 - **Analytics & Reporting**: Experiment Explorer, HTML-Reports, Regime-Analyse
 - **Execution**: Paper-/Shadow-Execution (Phase 24), keine echten Orders
+- **Execution-Paper (rein offline):** `src&#47;execution&#47;paper&#47;futures_accounting.py` enthält ein **deterministisches Futures-Paper-Accounting v0** (Notional, lineares Long/Short-PnL, Margin-**Schätzungen**, Funding-/Liquidations-**Platzhalter**) — **ohne** Exchange-I/O, **ohne** Anbindung an WP1B-Runner oder Class-A-Workflow, **nicht** venue-getreu, **keine** Live-/Testnet-Freigabe und **kein** Futures-Class-A- oder Go-Live-Nachweis.
 - **Safety-Status**: Live-/Testnet-Executors sind Stubs, alle echten Order-Pfade blockiert
 
 **NO-LIVE Posture (kanonisch):** Der Repo-Default ist **NO-LIVE** im Sinne der [Stop Rules in `FINISH_PLAN.md`](ops/roadmap/FINISH_PLAN.md#stop-rules-non-negotiable) — **research/backtest first**; keine Live-Order-Platzierung und keine Creds/Secrets in Chats oder Commits. Ergänzend: [`SAFETY_POLICY_TESTNET_AND_LIVE.md`](SAFETY_POLICY_TESTNET_AND_LIVE.md).
