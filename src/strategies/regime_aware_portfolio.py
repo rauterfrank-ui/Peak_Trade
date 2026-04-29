@@ -39,6 +39,40 @@ from .base import BaseStrategy, StrategyMetadata
 
 logger = logging.getLogger(__name__)
 
+_FULL_VOL_REGIME_KEY_PREFIX = "strategy.vol_regime_filter."
+_SHORT_VOL_REGIME_KEY_PREFIX = "vol_regime_filter."
+
+
+class _ConfigGetOverlay:
+    """Minimale cfg-Hülle: überschreibt nur explizit gesetzte dotted keys für .get()."""
+
+    __slots__ = ("_base", "_overrides")
+
+    def __init__(self, base: Any, overrides: Dict[str, Any]) -> None:
+        self._base = base
+        self._overrides = overrides
+
+    def get(self, path: str, default: Any = None) -> Any:
+        if path in self._overrides:
+            return self._overrides[path]
+        return self._base.get(path, default)
+
+
+def _extract_vol_regime_filter_cfg_overrides(
+    param_overrides: Optional[Dict[str, Any]],
+) -> Dict[str, Any]:
+    """Mappt Sweep-keys auf strategy.vol_regime_filter.* Pfade für VolRegimeFilter.from_config."""
+    out: Dict[str, Any] = {}
+    if not param_overrides:
+        return out
+    for k, v in param_overrides.items():
+        if k.startswith(_FULL_VOL_REGIME_KEY_PREFIX):
+            out[k] = v
+        elif k.startswith(_SHORT_VOL_REGIME_KEY_PREFIX):
+            suffix = k[len(_SHORT_VOL_REGIME_KEY_PREFIX) :]
+            out[f"{_FULL_VOL_REGIME_KEY_PREFIX}{suffix}"] = v
+    return out
+
 
 class RegimeAwarePortfolioStrategy(BaseStrategy):
     """
@@ -89,6 +123,7 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
         signal_threshold: float = 0.3,
         config: Optional[Dict[str, Any]] = None,
         metadata: Optional[StrategyMetadata] = None,
+        regime_component_cfg_overrides: Optional[Dict[str, Any]] = None,
     ) -> None:
         """
         Initialisiert Regime-Aware Portfolio Strategy.
@@ -128,6 +163,10 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
         )
 
         super().__init__(config=base_cfg, metadata=meta)
+
+        self._regime_component_cfg_overrides: Dict[str, Any] = dict(
+            regime_component_cfg_overrides or {}
+        )
 
         # Parameter extrahieren
         self.components = list(self.config.get("components", []))
@@ -209,6 +248,8 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
         risk_off_scale = pick("risk_off_scale", 0.0)
         signal_threshold = pick("signal_threshold", 0.3)
 
+        embedded = _extract_vol_regime_filter_cfg_overrides(po)
+
         return cls(
             components=components,
             base_weights=base_weights,
@@ -218,7 +259,19 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
             neutral_scale=neutral_scale,
             risk_off_scale=risk_off_scale,
             signal_threshold=signal_threshold,
+            regime_component_cfg_overrides=embedded or None,
         )
+
+    def _merge_vol_regime_filter_cfg_overrides(self) -> Dict[str, Any]:
+        """from_config-Overrides plus Einträge in self.config (z. B. nach Sweep-Engine setattr)."""
+        merged: Dict[str, Any] = dict(self._regime_component_cfg_overrides)
+        for k, v in self.config.items():
+            if k.startswith(_FULL_VOL_REGIME_KEY_PREFIX):
+                merged.setdefault(k, v)
+            elif k.startswith(_SHORT_VOL_REGIME_KEY_PREFIX):
+                suffix = k[len(_SHORT_VOL_REGIME_KEY_PREFIX) :]
+                merged.setdefault(f"{_FULL_VOL_REGIME_KEY_PREFIX}{suffix}", v)
+        return merged
 
     def _load_strategies(self, data: pd.DataFrame) -> None:
         """
@@ -230,7 +283,7 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
         if self._component_strategies:
             return  # Bereits geladen
 
-        from .registry import create_strategy_from_config
+        from .registry import create_strategy_from_config, get_strategy_spec
         from ..core.peak_config import load_config
 
         cfg = load_config()
@@ -246,7 +299,17 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
 
         # Lade Regime-Strategie
         try:
-            self._regime_strategy = create_strategy_from_config(self.regime_strategy_name, cfg)
+            overrides = self._merge_vol_regime_filter_cfg_overrides()
+            if self.regime_strategy_name == "vol_regime_filter" and overrides:
+                from .vol_regime_filter import VolRegimeFilter
+
+                spec = get_strategy_spec("vol_regime_filter")
+                cfg_ov = _ConfigGetOverlay(cfg, overrides)
+                self._regime_strategy = VolRegimeFilter.from_config(
+                    cfg_ov, section=spec.config_section
+                )
+            else:
+                self._regime_strategy = create_strategy_from_config(self.regime_strategy_name, cfg)
             # Prüfe ob Regime-Mode aktiviert ist
             if (
                 hasattr(self._regime_strategy, "regime_mode")
