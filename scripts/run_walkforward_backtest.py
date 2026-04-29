@@ -54,6 +54,7 @@ sys.path.insert(0, str(project_root))
 
 from src.backtest.walkforward import (
     WalkForwardConfig,
+    run_walkforward_for_candidate_presets,
     run_walkforward_for_top_n_from_sweep,
 )
 from src.reporting.walkforward_report import (
@@ -242,6 +243,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="Fallback-Metrik (default: metric_total_return)",
     )
     parser.add_argument(
+        "--candidate-presets",
+        type=str,
+        default=None,
+        help=(
+            "Optional JSON mit expliziten Kandidaten "
+            "(schema walkforward_candidate_presets/v0). "
+            "Wenn gesetzt, werden diese Kandidaten statt Top-N aus Sweep-Ergebnissen genutzt."
+        ),
+    )
+    parser.add_argument(
         "--output-dir",
         "-o",
         type=str,
@@ -310,17 +321,29 @@ def run_from_args(args: argparse.Namespace) -> int:
         )
 
         # 3. Walk-Forward ausführen
-        logger.info(
-            f"Starte Walk-Forward-Analyse für Top-{args.top_n} aus Sweep: {args.sweep_name}"
-        )
-        results = run_walkforward_for_top_n_from_sweep(
-            sweep_name=args.sweep_name,
-            wf_config=wf_config,
-            top_n=args.top_n,
-            df=df,
-            metric_primary=args.metric_primary,
-            metric_fallback=args.metric_fallback,
-        )
+        if args.candidate_presets:
+            preset_path = Path(args.candidate_presets)
+            logger.info(
+                f"Starte Walk-Forward mit Kandidaten-Presets: {preset_path} (Sweep-Label: {args.sweep_name})"
+            )
+            results = run_walkforward_for_candidate_presets(
+                preset_path,
+                args.sweep_name,
+                wf_config,
+                df=df,
+            )
+        else:
+            logger.info(
+                f"Starte Walk-Forward-Analyse für Top-{args.top_n} aus Sweep: {args.sweep_name}"
+            )
+            results = run_walkforward_for_top_n_from_sweep(
+                sweep_name=args.sweep_name,
+                wf_config=wf_config,
+                top_n=args.top_n,
+                df=df,
+                metric_primary=args.metric_primary,
+                metric_fallback=args.metric_fallback,
+            )
 
         logger.info(f"{len(results)} Walk-Forward-Ergebnisse erzeugt")
 
@@ -363,7 +386,10 @@ def run_from_args(args: argparse.Namespace) -> int:
         print("Walk-Forward Analysis Summary")
         print("=" * 70)
         print(f"Sweep:           {args.sweep_name}")
-        print(f"Top N:           {args.top_n}")
+        if args.candidate_presets:
+            print(f"Mode:            candidate_presets ({args.candidate_presets})")
+        else:
+            print(f"Top N:           {args.top_n}")
         print(f"Train Window:    {wf_config.train_window}")
         print(f"Test Window:     {wf_config.test_window}")
         print(f"Configs Tested:  {len(results)}")
