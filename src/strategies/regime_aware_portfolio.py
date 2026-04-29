@@ -508,5 +508,9 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
         "signal_threshold": params.get("signal_threshold", 0.3),
     }
 
-    strategy = RegimeAwarePortfolioStrategy(config=config)
+    embedded = _extract_vol_regime_filter_cfg_overrides(params)
+    strategy = RegimeAwarePortfolioStrategy(
+        config=config,
+        regime_component_cfg_overrides=embedded or None,
+    )
     return strategy.generate_signals(df)
