@@ -858,3 +858,136 @@ def run_walkforward_for_top_n_from_sweep(
     )
 
     return results
+
+
+# =============================================================================
+# EXPLICIT CANDIDATE PRESETS (RESEARCH / NON-LIVE)
+# =============================================================================
+
+WALKFORWARD_CANDIDATE_PRESETS_SCHEMA_V0 = "walkforward_candidate_presets/v0"
+
+
+def _unique_preset_config_id(name: str, used: set[str]) -> str:
+    """Derive a unique filesystem/report-safe config_id for a preset candidate."""
+    safe = _safe_filename(name)
+    candidate_id = safe
+    suffix = 2
+    while candidate_id in used:
+        candidate_id = f"{safe}_{suffix}"
+        suffix += 1
+    used.add(candidate_id)
+    return candidate_id
+
+
+def load_walkforward_candidate_presets(path: Union[str, Path]) -> Tuple[str, List[Dict[str, Any]]]:
+    """
+    Load explicit walk-forward candidate presets from JSON (schema v0).
+
+    Returns:
+        strategy: Strategy key passed to ``load_strategy``.
+        candidates: List of ``{"name": str, "params": dict}`` entries.
+    """
+    p = Path(path)
+    if not p.is_file():
+        raise FileNotFoundError(f"Candidate presets file not found: {p}")
+    try:
+        raw = p.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise FileNotFoundError(f"Cannot read candidate presets: {p}") from exc
+    try:
+        doc = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Invalid JSON in candidate presets {p}: {exc}") from exc
+
+    if not isinstance(doc, dict):
+        raise ValueError(f"Candidate presets root must be a JSON object: {p}")
+
+    schema = doc.get("schema_version")
+    if schema != WALKFORWARD_CANDIDATE_PRESETS_SCHEMA_V0:
+        raise ValueError(
+            f"Unsupported schema_version {schema!r} in {p} "
+            f"(expected {WALKFORWARD_CANDIDATE_PRESETS_SCHEMA_V0!r})"
+        )
+
+    strategy = doc.get("strategy")
+    if not strategy or not isinstance(strategy, str):
+        raise ValueError(f"Candidate presets must include non-empty string 'strategy': {p}")
+
+    raw_list = doc.get("candidates")
+    if not isinstance(raw_list, list) or len(raw_list) == 0:
+        raise ValueError(f"Candidate presets 'candidates' must be a non-empty list: {p}")
+
+    candidates: List[Dict[str, Any]] = []
+    for i, item in enumerate(raw_list):
+        if not isinstance(item, dict):
+            raise ValueError(f"candidates[{i}] must be an object: {p}")
+        cand_name = item.get("name")
+        if not cand_name or not isinstance(cand_name, str):
+            raise ValueError(f"candidates[{i}] must have non-empty string 'name': {p}")
+        params = item.get("params")
+        if not isinstance(params, dict):
+            raise ValueError(f"candidates[{i}] 'params' must be an object: {p}")
+        candidates.append({"name": cand_name, "params": dict(params)})
+
+    return strategy, candidates
+
+
+def run_walkforward_for_candidate_presets(
+    preset_path: Union[str, Path],
+    sweep_name: str,
+    wf_config: WalkForwardConfig,
+    *,
+    df: pd.DataFrame,
+    logger: Optional[logging.Logger] = None,
+) -> List[WalkForwardResult]:
+    """
+    Run walk-forward for each explicit candidate in a JSON preset file.
+
+    ``sweep_name`` is only used for logging and report directory grouping (CLI contract).
+
+    Args:
+        preset_path: Path to JSON (schema ``walkforward_candidate_presets/v0``).
+        sweep_name: Sweep / run label (output layout).
+        wf_config: Window and output settings.
+        df: OHLCV DataFrame (DatetimeIndex).
+        logger: Optional logger.
+    """
+    if logger is None:
+        logger = logging.getLogger(__name__)
+
+    strategy, candidates = load_walkforward_candidate_presets(preset_path)
+    logger.info(
+        f"Walk-forward from candidate presets: {len(candidates)} candidate(s), "
+        f"strategy={strategy!r}, sweep label={sweep_name!r}"
+    )
+
+    used_ids: set[str] = set()
+    results: List[WalkForwardResult] = []
+
+    for i, cand in enumerate(candidates, start=1):
+        name = cand["name"]
+        params = cand["params"]
+        config_id = _unique_preset_config_id(name, used_ids)
+        logger.info(f"Preset candidate {i}/{len(candidates)}: {name!r} → config_id={config_id!r}")
+
+        try:
+            result = run_walkforward_for_config(
+                config_id=config_id,
+                wf_config=wf_config,
+                df=df,
+                strategy_name=strategy,
+                strategy_params=params,
+                logger=logger,
+            )
+            results.append(result)
+        except Exception as exc:  # pragma: no cover - defensive path
+            logger.error(f"Walk-forward failed for preset {name!r} ({config_id}): {exc}")
+            continue
+
+    if len(results) == 0:
+        raise ValueError("No successful walk-forward results from candidate presets")
+
+    logger.info(
+        f"Walk-forward presets finished: {len(results)}/{len(candidates)} candidate(s) successful"
+    )
+    return results
