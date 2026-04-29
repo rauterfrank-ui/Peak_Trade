@@ -18,9 +18,7 @@ from typing import Any, TextIO
 
 CONTRACT = "class_a_spot_paper_snapshot_report_v0"
 DEFAULT_WORKFLOW = "class-a-shadow-paper-scheduled-probe-v1.yml"
-GH_JSON_FIELDS = (
-    "databaseId,status,conclusion,event,createdAt,updatedAt,headBranch,headSha,url"
-)
+GH_JSON_FIELDS = "databaseId,status,conclusion,event,createdAt,updatedAt,headBranch,headSha,url"
 
 
 def normalize_run_record(raw: dict[str, Any]) -> dict[str, Any]:
@@ -63,9 +61,7 @@ def summarize_runs(runs: list[dict[str, Any]]) -> dict[str, Any]:
         r = raw if "databaseId" in raw else normalize_run_record(raw)
         status = (r.get("status") or "").strip().lower()
         conclusion = r.get("conclusion")
-        conclusion_l = (
-            conclusion.strip().lower() if isinstance(conclusion, str) else None
-        )
+        conclusion_l = conclusion.strip().lower() if isinstance(conclusion, str) else None
         event = (r.get("event") or "").strip().lower()
         if event == "schedule":
             schedule_rows += 1
@@ -172,7 +168,15 @@ def render_markdown(
     ]
     for c in summary["caveats"]:
         lines.append(f"- {c}")
-    lines.extend(["", "## Recent runs (newest first as provided)", "", "| databaseId | status | conclusion | event | createdAt |", "| --- | --- | --- | --- | --- |"])
+    lines.extend(
+        [
+            "",
+            "## Recent runs (newest first as provided)",
+            "",
+            "| databaseId | status | conclusion | event | createdAt |",
+            "| --- | --- | --- | --- | --- |",
+        ]
+    )
     for raw in runs:
         r = normalize_run_record(raw) if isinstance(raw, dict) else {}
         lines.append(

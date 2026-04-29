@@ -54,9 +54,9 @@ def test_summarize_runs_counts_skipped_separately() -> None:
     assert summary["completed_success"] == 1
     assert summary["completed_skipped"] == 1
     assert summary["schedule_event_rows"] == 2
-    assert any(
-        "skipped" in c.lower() for c in summary["caveats"]
-    ), "expected explicit skipped caveat"
+    assert any("skipped" in c.lower() for c in summary["caveats"]), (
+        "expected explicit skipped caveat"
+    )
 
 
 def test_coerce_run_list_rejects_non_list() -> None:
