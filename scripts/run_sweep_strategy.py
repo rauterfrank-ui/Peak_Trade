@@ -139,7 +139,7 @@ Examples:
     data_group.add_argument(
         "--data-file",
         type=str,
-        help="Pfad zur CSV-Datei mit OHLCV-Daten (optional, sonst Dummy-Daten)",
+        help="Pfad zur CSV- oder Parquet-Datei mit OHLCV-Daten (optional, sonst Dummy-Daten)",
     )
     data_group.add_argument(
         "--symbol",
@@ -405,7 +405,7 @@ def load_ohlcv_data(
     n_bars: int,
     verbose: bool = False,
 ) -> pd.DataFrame:
-    """Lädt OHLCV-Daten aus CSV oder generiert Dummy-Daten."""
+    """Lädt OHLCV-Daten aus CSV/Parquet oder generiert Dummy-Daten."""
     if data_file:
         from src.data import DataNormalizer, CsvLoader, KrakenCsvLoader
 
@@ -415,6 +415,15 @@ def load_ohlcv_data(
 
         if verbose:
             print(f"  Lade Daten aus: {data_file}")
+
+        suffix = path.suffix.lower()
+        if suffix in {".parquet", ".pq"}:
+            df = pd.read_parquet(path)
+            df.columns = df.columns.str.lower()
+            if not isinstance(df.index, pd.DatetimeIndex) and "timestamp" in df.columns:
+                df = df.set_index(pd.DatetimeIndex(pd.to_datetime(df.pop("timestamp"), utc=True)))
+            normalizer = DataNormalizer()
+            return normalizer.normalize(df)
 
         if "kraken" in str(path).lower():
             loader = KrakenCsvLoader()
