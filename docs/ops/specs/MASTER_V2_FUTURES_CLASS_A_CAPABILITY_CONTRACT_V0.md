@@ -82,12 +82,67 @@ This section is **non-claims** language only; it does not accuse past runs of mi
 ## 6. Safe future route
 
 - **Retain** the **current** **spot** Class A workflow as **spot infrastructure smoke** (bounded, paper, public data, artifacts).
-- **Offline futures paper accounting v0 (pure-model anchor):** `src&#47;execution&#47;paper&#47;futures_accounting.py` is a **side-effect-free**, **deterministic** kernel for notional, linear long/short PnL, margin **estimates**, funding **placeholder**, and a **conservative** liquidation-proximity label — **not** venue-accurate liquidation, **not** wired to the Class A runner or WP1B hot path, **non-authorizing**, and **does not** close §4–§7 or Futures Class A by itself.
+- **Offline futures paper accounting v0 (pure-model anchor):** `src&#47;execution&#47;paper&#47;futures_accounting.py` is a **side-effect-free**, **deterministic** kernel for notional, linear long/short PnL, margin **estimates**, funding **placeholder**, and a **conservative** liquidation-proximity label — **not** venue-accurate liquidation, **not** wired to the Class A runner or WP1B hot path, **non-authorizing**, and **does not** close §4–§8 or Futures Class A by itself.
 - Keep **next Futures work** in **docs** / **pure-model** / **read-only** lanes first until §4 gaps have **explicit** contracts and tests.
 - Any **first** **Futures Class A** **runtime** candidate should be **separate** from the **spot** workflow (new workflow or gated path), with its own **non-live** / **no-testnet** guards and **evidence schema**.
 - Require, before such a probe: **Futures instrument metadata** contract alignment, **public read-only** provider contract, a **futures paper accounting** model (even if minimal), **risk** gates, and **evidence** fields — none of which are satisfied by **BTC/EUR** Class A alone.
 
-## 7. Minimal prerequisites before Futures Class A runtime (checklist)
+## 7. WP1B / Futures Accounting adapter seam planning v0
+
+This subsection is **seam planning only** (hypothetical adapter boundary). It **does not** implement wiring, **does not** change `PaperExecutionEngine` or WP1B behavior, and **does not** grant authority.
+
+### 7.1 Current boundary
+
+- `src&#47;execution&#47;paper&#47;futures_accounting.py` is a **pure / offline** accounting kernel (deterministic primitives; not venue-accurate liquidation).
+- WP1B (`src&#47;execution&#47;paper&#47;engine.py`) remains **SPOT_SIM_ONLY** and is **not** wired to Futures Accounting v0 today.
+- `tests&#47;execution&#47;paper&#47;test_paper_engine_futures_seam_v0.py` **characterizes** import/runtime separation: paper-engine modules do not import the futures accounting kernel, and the kernel does not import engine/broker/runtime stacks.
+- Accounting regression and projection coverage live in `tests&#47;execution&#47;paper&#47;test_futures_accounting_v0.py` and `tests&#47;execution&#47;paper&#47;test_futures_accounting_invariants_v0.py` — **tests-only**; **non-authorizing**.
+
+### 7.2 Hypothetical future adapter inputs (preconditions only)
+
+If a **future** governed adapter were introduced (**not** part of current `main`), it would need upstream to supply at minimum:
+
+- **F1** instrument metadata projected onto `FuturesInstrumentSpec` (subset only; full **F1** is not required in the v0 kernel).
+- **F1** margin metadata projected onto `FuturesMarginSpec`.
+- **F2** semantics: an **explicit mark-price scalar** chosen by an upstream selector — the kernel does not choose last vs index vs mark (see [FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md](FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md)).
+- Position state: side, quantity, entry price, mark price, plus realized/funding/fees as carried by the adapter.
+- **Wallet / equity** context where liquidation-proximity estimates are required (`estimate_liquidation_proximity_v0` is a conservative placeholder).
+- **Funding** rate or payment source when funding PnL is applied.
+- **Fee policy** (e.g. bps-on-notional) aligned with simulation bounds.
+
+### 7.3 Hypothetical future adapter outputs (preconditions only)
+
+Outputs already expressible from the v0 API surface (still **not** wired to WP1B today):
+
+- Notional (`notional_value`).
+- Initial and maintenance margin requirements (`initial_margin_required`, `maintenance_margin_required`).
+- Unrealized PnL (`unrealized_pnl`).
+- Realized PnL on reduce/close (`reduce_position`, `realize_pnl_on_close`).
+- Funding PnL (`apply_funding_payment`, `funding_payment_quote`).
+- Fees (`apply_fee_on_notional` or explicit `fee_quote` on close paths).
+- Liquidation proximity v0 (`estimate_liquidation_proximity_v0`).
+
+Whether a **stable snapshot DTO** wraps these values is a **separate** design decision for a future slice; this contract **does not** mandate one.
+
+### 7.4 Preconditions before any wiring
+
+Before any change under `src&#47;execution&#47;` that connects WP1B to Futures Accounting v0:
+
+- A **proven** upstream path supplies **mark price** with **F2**-consistent provenance and explicit price-type discipline.
+- F1/F2 projection into accounting specs remains **deterministic** and **test-backed** (see projection tests in `test_futures_accounting_v0.py`).
+- A **snapshot/DTO** choice is made **if** it reduces adapter ambiguity; otherwise primitive outputs remain explicit.
+- **Characterization / adapter tests** are added **before** behavioral implementation (extend `test_paper_engine_futures_seam_v0.py` or add adjacent tests); **`docs_truth_map.yaml`** execution-layer rules require **paired** canonical doc updates whenever code under `src&#47;execution&#47;` changes.
+- **No** additional Master V2 / Double Play **runtime** authority, **no** Live/Testnet approval, **no** bypass of Scope/Capital, Risk/KillSwitch, or Execution/Live Gates.
+
+### 7.5 Explicit non-claims
+
+- **No** `PaperExecutionEngine` wiring on **`main`** from this planning text alone.
+- **No** exchange or provider implementation obligation.
+- **No** Futures Class A **readiness** from documentation or pure tests alone.
+- **No** Testnet or Live permission.
+- **No** implied derogation from Master V2 / Double Play governance, Scope/Capital, Risk/KillSwitch, or staged execution enablement.
+
+## 8. Minimal prerequisites before Futures Class A runtime (checklist)
 
 A future **Futures Class A** bounded probe should not be scheduled until **at least** the following are specified and reviewed (docs + tests as appropriate):
 
@@ -102,7 +157,7 @@ A future **Futures Class A** bounded probe should not be scheduled until **at le
 - **Evidence / log fields** for futures context in **`meta.json`** and events.
 - **Explicit non-live / no-testnet** guards and **no private API** default for Class-A-style probes.
 
-## 8. References
+## 9. References
 
 **Master V2 / Double Play (pure, non-authority):**
 
@@ -119,7 +174,7 @@ A future **Futures Class A** bounded probe should not be scheduled until **at le
 
 **Futures capability — F1/F2 peer contracts (gap-owner navigation only):**
 
-These entries are **read-order / ownership pointers** for themes named in §4–§7 (instrument identity, `market_type`, sizing, public market-data shape, mark/index/last, freshness, provenance). They **do not** close Futures Class A gaps by reference alone, **do not** authorize Testnet or Live, **do not** wire runtime or providers, and **do not** bypass Master V2 / Double Play, Scope/Capital, Risk/KillSwitch, or Execution Gates.
+These entries are **read-order / ownership pointers** for themes named in §4–§8 (instrument identity, `market_type`, sizing, public market-data shape, mark/index/last, freshness, provenance). They **do not** close Futures Class A gaps by reference alone, **do not** authorize Testnet or Live, **do not** wire runtime or providers, and **do not** bypass Master V2 / Double Play, Scope/Capital, Risk/KillSwitch, or Execution Gates.
 
 - [FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md](FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md) — **F1** instrument metadata contract (docs-only): symbol and exchange-facing identity, explicit `market_type`, contract size / tick / step / lot expectations, and related fields — **not** runtime implementation.
 - [FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md](FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md) — **F2** market-data provenance contract (docs-only): data identity, last/mark/index boundaries where applicable, funding availability, freshness and source metadata — **not** Fetch execution or dashboard wiring.
