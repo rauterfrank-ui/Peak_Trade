@@ -2,7 +2,7 @@
 title: "Master V2 Futures Class A Capability Contract v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-28"
+last_updated: "2026-04-29"
 docs_token: "DOCS_TOKEN_MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0"
 ---
 
@@ -115,6 +115,14 @@ A future **Futures Class A** bounded probe should not be scheduled until **at le
 **Runtime architecture (context, not permission):**
 
 - [REAL_MARKET_247_RUNTIME_ARCHITECTURE_V1.md](REAL_MARKET_247_RUNTIME_ARCHITECTURE_V1.md) — high-level runtime narrative; **non-authorizing** consumption only.
+
+**Futures capability — F1/F2 peer contracts (gap-owner navigation only):**
+
+These entries are **read-order / ownership pointers** for themes named in §4–§7 (instrument identity, `market_type`, sizing, public market-data shape, mark/index/last, freshness, provenance). They **do not** close Futures Class A gaps by reference alone, **do not** authorize Testnet or Live, **do not** wire runtime or providers, and **do not** bypass Master V2 / Double Play, Scope/Capital, Risk/KillSwitch, or Execution Gates.
+
+- [FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md](FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md) — **F1** instrument metadata contract (docs-only): symbol and exchange-facing identity, explicit `market_type`, contract size / tick / step / lot expectations, and related fields — **not** runtime implementation.
+- [FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md](FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md) — **F2** market-data provenance contract (docs-only): data identity, last/mark/index boundaries where applicable, funding availability, freshness and source metadata — **not** Fetch execution or dashboard wiring.
+- [FUTURES_CAPABILITY_SPEC_V0.md](FUTURES_CAPABILITY_SPEC_V0.md) — staged futures capability program (**F1**, **F2**, later stages); use for **inventory and exit-criteria context** only — **not** evidence of completion.
 
 **Navigation (peer index):**
 
