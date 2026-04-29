@@ -21,6 +21,7 @@ from src.execution.paper.futures_accounting import (
     initial_margin_required,
     maintenance_margin_required,
     notional_value,
+    realize_pnl_on_close,
     reduce_position,
     unrealized_pnl,
     validate_futures_accounting_inputs,
@@ -221,3 +222,310 @@ def test_no_forbidden_imports_in_module() -> None:
 def test_apply_fee_on_notional_matches_bps_idiom() -> None:
     fee = apply_fee_on_notional(notional=Decimal("10000"), fee_bps=Decimal("10"))
     assert fee == Decimal("10")
+
+
+def test_reduce_position_full_close_zero_qty() -> None:
+    pos = FuturesPosition(
+        symbol="PF",
+        side=FuturesSide.LONG,
+        qty=Decimal("2"),
+        entry_price=Decimal("100"),
+        mark_price=Decimal("110"),
+        realized_pnl=Decimal("0"),
+        funding_pnl=Decimal("0"),
+    )
+    closed = reduce_position(
+        pos,
+        contract_size=Decimal("1"),
+        close_qty=Decimal("2"),
+        close_price=Decimal("120"),
+        fee_quote=Decimal("2"),
+    )
+    assert closed.qty == Decimal("0")
+    assert closed.realized_pnl == Decimal("38")
+    assert closed.fees_paid == Decimal("2")
+    expected_realized = realize_pnl_on_close(
+        side=FuturesSide.LONG,
+        entry_price=Decimal("100"),
+        close_price=Decimal("120"),
+        close_qty=Decimal("2"),
+        contract_size=Decimal("1"),
+        fee_quote=Decimal("2"),
+    )
+    assert closed.realized_pnl == expected_realized
+
+
+def test_reduce_position_rejects_over_reduction() -> None:
+    pos = FuturesPosition(
+        symbol="PF",
+        side=FuturesSide.LONG,
+        qty=Decimal("1"),
+        entry_price=Decimal("100"),
+        mark_price=Decimal("100"),
+        realized_pnl=Decimal("0"),
+        funding_pnl=Decimal("0"),
+    )
+    with pytest.raises(ValueError, match="must not exceed"):
+        reduce_position(
+            pos,
+            contract_size=Decimal("1"),
+            close_qty=Decimal("1.1"),
+            close_price=Decimal("100"),
+        )
+
+
+def test_reduce_position_rejects_non_positive_close_qty() -> None:
+    pos = FuturesPosition(
+        symbol="PF",
+        side=FuturesSide.SHORT,
+        qty=Decimal("1"),
+        entry_price=Decimal("100"),
+        mark_price=Decimal("100"),
+        realized_pnl=Decimal("0"),
+        funding_pnl=Decimal("0"),
+    )
+    with pytest.raises(ValueError, match="close_qty must be > 0"):
+        reduce_position(
+            pos,
+            contract_size=Decimal("1"),
+            close_qty=Decimal("0"),
+            close_price=Decimal("100"),
+        )
+    with pytest.raises(ValueError, match="close_qty must be > 0"):
+        reduce_position(
+            pos,
+            contract_size=Decimal("1"),
+            close_qty=Decimal("-1"),
+            close_price=Decimal("100"),
+        )
+
+
+def test_partial_reduce_preserves_identity_fields() -> None:
+    pos = FuturesPosition(
+        symbol="SYM",
+        side=FuturesSide.SHORT,
+        qty=Decimal("3"),
+        entry_price=Decimal("50"),
+        mark_price=Decimal("48"),
+        realized_pnl=Decimal("0"),
+        funding_pnl=Decimal("0"),
+    )
+    new_p = reduce_position(
+        pos,
+        contract_size=Decimal("2"),
+        close_qty=Decimal("1"),
+        close_price=Decimal("49"),
+        fee_quote=Decimal("0"),
+    )
+    assert new_p.symbol == "SYM"
+    assert new_p.side is FuturesSide.SHORT
+    assert new_p.entry_price == Decimal("50")
+    assert new_p.mark_price == Decimal("48")
+    assert new_p.qty == Decimal("2")
+    assert new_p.realized_pnl == Decimal("2")
+    assert new_p.funding_pnl == Decimal("0")
+
+
+def test_apply_funding_payment_short_opposite_sign_from_long() -> None:
+    n = Decimal("5000")
+    rate = Decimal("0.0002")
+    long_delta = funding_payment_quote(side=FuturesSide.LONG, notional=n, funding_rate=rate)
+    short_delta = funding_payment_quote(side=FuturesSide.SHORT, notional=n, funding_rate=rate)
+    assert long_delta == -short_delta
+    assert long_delta < Decimal("0")
+    assert short_delta > Decimal("0")
+    pos_s = FuturesPosition(
+        symbol="PF",
+        side=FuturesSide.SHORT,
+        qty=Decimal("1"),
+        entry_price=Decimal("100"),
+        mark_price=Decimal("100"),
+        realized_pnl=Decimal("0"),
+        funding_pnl=Decimal("0"),
+    )
+    after = apply_funding_payment(pos_s, notional=n, funding_rate=rate)
+    assert after.funding_pnl == short_delta
+
+
+def test_liquidation_proximity_boundary_exact_safe_threshold() -> None:
+    mm = Decimal("100")
+    wf = Decimal("0.05")
+    st, buf = estimate_liquidation_proximity_v0(
+        equity=Decimal("105"), maintenance_margin=mm, warning_buffer_fraction=wf
+    )
+    assert st is LiquidationProximityV0.SAFE
+    assert buf == Decimal("5")
+
+    st_warn, buf_warn = estimate_liquidation_proximity_v0(
+        equity=Decimal("104.99"), maintenance_margin=mm, warning_buffer_fraction=wf
+    )
+    assert st_warn is LiquidationProximityV0.WARNING_INSUFFICIENT_BUFFER
+    assert buf_warn == Decimal("4.99")
+
+
+def test_liquidation_proximity_blocked_strictly_below_maintenance() -> None:
+    st, buf = estimate_liquidation_proximity_v0(
+        equity=Decimal("99.99"),
+        maintenance_margin=Decimal("100"),
+    )
+    assert st is LiquidationProximityV0.BLOCKED_BELOW_MAINTENANCE
+    assert buf == Decimal("-0.01")
+
+
+def test_liquidation_proximity_rejects_invalid_warning_fraction() -> None:
+    with pytest.raises(ValueError, match="warning_buffer_fraction"):
+        estimate_liquidation_proximity_v0(
+            equity=Decimal("100"),
+            maintenance_margin=Decimal("50"),
+            warning_buffer_fraction=Decimal("1"),
+        )
+
+
+def test_validate_rejects_invalid_instrument_fields() -> None:
+    inst, margin = _spec()
+    for bad in (
+        FuturesInstrumentSpec("X", Decimal("0"), Decimal("1"), Decimal("1"), "USD"),
+        FuturesInstrumentSpec("X", Decimal("-1"), Decimal("1"), Decimal("1"), "USD"),
+        FuturesInstrumentSpec("X", Decimal("1"), Decimal("0"), Decimal("1"), "USD"),
+        FuturesInstrumentSpec("X", Decimal("1"), Decimal("1"), Decimal("0"), "USD"),
+    ):
+        with pytest.raises(ValueError):
+            validate_futures_accounting_inputs(instrument=bad, margin=margin)
+
+
+def test_validate_rejects_invalid_margin_fields() -> None:
+    inst, good = _spec()
+    with pytest.raises(ValueError):
+        validate_futures_accounting_inputs(
+            instrument=inst,
+            margin=FuturesMarginSpec(
+                initial_margin_rate=Decimal("0"),
+                maintenance_margin_rate=Decimal("0.05"),
+                max_leverage=Decimal("10"),
+            ),
+        )
+    with pytest.raises(ValueError):
+        validate_futures_accounting_inputs(
+            instrument=inst,
+            margin=FuturesMarginSpec(
+                initial_margin_rate=Decimal("1"),
+                maintenance_margin_rate=Decimal("0.05"),
+                max_leverage=Decimal("10"),
+            ),
+        )
+    with pytest.raises(ValueError):
+        validate_futures_accounting_inputs(
+            instrument=inst,
+            margin=FuturesMarginSpec(
+                initial_margin_rate=Decimal("0.1"),
+                maintenance_margin_rate=Decimal("0"),
+                max_leverage=Decimal("10"),
+            ),
+        )
+    with pytest.raises(ValueError):
+        validate_futures_accounting_inputs(
+            instrument=inst,
+            margin=FuturesMarginSpec(
+                initial_margin_rate=Decimal("0.1"),
+                maintenance_margin_rate=Decimal("1"),
+                max_leverage=Decimal("10"),
+            ),
+        )
+    with pytest.raises(ValueError, match="must not exceed"):
+        validate_futures_accounting_inputs(
+            instrument=inst,
+            margin=FuturesMarginSpec(
+                initial_margin_rate=Decimal("0.1"),
+                maintenance_margin_rate=Decimal("0.15"),
+                max_leverage=Decimal("10"),
+            ),
+        )
+    with pytest.raises(ValueError, match="max_leverage must be"):
+        validate_futures_accounting_inputs(
+            instrument=inst,
+            margin=FuturesMarginSpec(
+                initial_margin_rate=Decimal("0.1"),
+                maintenance_margin_rate=Decimal("0.05"),
+                max_leverage=Decimal("0.5"),
+            ),
+        )
+    with pytest.raises(ValueError, match="inconsistent margin"):
+        validate_futures_accounting_inputs(
+            instrument=inst,
+            margin=FuturesMarginSpec(
+                initial_margin_rate=Decimal("0.05"),
+                maintenance_margin_rate=Decimal("0.04"),
+                max_leverage=Decimal("10"),
+            ),
+        )
+
+
+def test_validate_allows_maintenance_equal_initial() -> None:
+    inst, _ = _spec()
+    validate_futures_accounting_inputs(
+        instrument=inst,
+        margin=FuturesMarginSpec(
+            initial_margin_rate=Decimal("0.1"),
+            maintenance_margin_rate=Decimal("0.1"),
+            max_leverage=Decimal("10"),
+        ),
+    )
+
+
+def test_validate_rejects_negative_wallet_equity() -> None:
+    inst, margin = _spec()
+    with pytest.raises(ValueError, match="wallet_equity"):
+        validate_futures_accounting_inputs(
+            instrument=inst, margin=margin, wallet_equity=Decimal("-0.01")
+        )
+
+
+def test_apply_fee_on_notional_zero_and_positive_bps() -> None:
+    assert apply_fee_on_notional(notional=Decimal("1000"), fee_bps=Decimal("0")) == Decimal("0")
+    assert apply_fee_on_notional(notional=Decimal("10000"), fee_bps=Decimal("7")) == Decimal("7")
+
+
+def test_apply_fee_on_notional_rejects_negative_bps() -> None:
+    with pytest.raises(ValueError, match="fee_bps"):
+        apply_fee_on_notional(notional=Decimal("100"), fee_bps=Decimal("-1"))
+
+
+def test_realize_pnl_on_close_decimal_exactness_no_floats() -> None:
+    out = realize_pnl_on_close(
+        side=FuturesSide.LONG,
+        entry_price=Decimal("0.1"),
+        close_price=Decimal("0.3"),
+        close_qty=Decimal("3"),
+        contract_size=Decimal("0.25"),
+        fee_quote=Decimal("0.01"),
+    )
+    assert out == Decimal("0.14")
+
+
+def test_reduce_position_accumulates_fees_across_partial_closes() -> None:
+    pos = FuturesPosition(
+        symbol="PF",
+        side=FuturesSide.LONG,
+        qty=Decimal("2"),
+        entry_price=Decimal("10"),
+        mark_price=Decimal("10"),
+        realized_pnl=Decimal("0"),
+        funding_pnl=Decimal("0"),
+    )
+    step1 = reduce_position(
+        pos,
+        contract_size=Decimal("1"),
+        close_qty=Decimal("1"),
+        close_price=Decimal("12"),
+        fee_quote=Decimal("0.5"),
+    )
+    step2 = reduce_position(
+        step1,
+        contract_size=Decimal("1"),
+        close_qty=Decimal("1"),
+        close_price=Decimal("11"),
+        fee_quote=Decimal("0.25"),
+    )
+    assert step2.qty == Decimal("0")
+    assert step2.fees_paid == Decimal("0.75")
+    assert step2.realized_pnl == Decimal("2.25")
