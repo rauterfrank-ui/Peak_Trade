@@ -31,6 +31,15 @@ Verwendung:
         --use-dummy-data \
         --dummy-bars 1000
 
+    # Explizite Kandidaten (JSON schema walkforward_candidate_presets/v0)
+    python scripts/run_walkforward_backtest.py \
+        --sweep-name my_run_label \
+        --train-window 90d \
+        --test-window 30d \
+        --data-file path/to/ohlcv.parquet \
+        --candidate-presets path/to/presets.json \
+        --output-dir /tmp/wf_out
+
 Output:
     - reports/walkforward/{sweep_name}/{config_id}_walkforward_YYYYMMDD.md
     - reports/walkforward/{sweep_name}/comparison_YYYYMMDD.md (Multi-Config)
