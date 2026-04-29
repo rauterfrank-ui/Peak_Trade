@@ -180,6 +180,7 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "portfolio.regime_aware_breakout_rsi",
+        param_overrides: Optional[Dict[str, Any]] = None,
     ) -> "RegimeAwarePortfolioStrategy":
         """
         Fabrikmethode für Core-Config.
@@ -187,21 +188,26 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
         Args:
             cfg: Config-Objekt (PeakConfig)
             section: Dotted-Path zum Config-Abschnitt
+            param_overrides: Sweep-Parameter; überschreiben Werte aus cfg (z. B. [base_config] aus TOML)
 
         Returns:
             RegimeAwarePortfolioStrategy-Instanz
         """
-        # Lazy import
-        from .registry import create_strategy_from_config
+        po = param_overrides or {}
 
-        components = cfg.get(f"{section}.components", [])
-        base_weights = cfg.get(f"{section}.base_weights", {})
-        regime_strategy = cfg.get(f"{section}.regime_strategy", None)
-        mode = cfg.get(f"{section}.mode", "scale")
-        risk_on_scale = cfg.get(f"{section}.risk_on_scale", 1.0)
-        neutral_scale = cfg.get(f"{section}.neutral_scale", 0.5)
-        risk_off_scale = cfg.get(f"{section}.risk_off_scale", 0.0)
-        signal_threshold = cfg.get(f"{section}.signal_threshold", 0.3)
+        def pick(key: str, default: Any) -> Any:
+            if key in po:
+                return po[key]
+            return cfg.get(f"{section}.{key}", default)
+
+        components = pick("components", [])
+        base_weights = pick("base_weights", {})
+        regime_strategy = pick("regime_strategy", None)
+        mode = pick("mode", "scale")
+        risk_on_scale = pick("risk_on_scale", 1.0)
+        neutral_scale = pick("neutral_scale", 0.5)
+        risk_off_scale = pick("risk_off_scale", 0.0)
+        signal_threshold = pick("signal_threshold", 0.3)
 
         return cls(
             components=components,

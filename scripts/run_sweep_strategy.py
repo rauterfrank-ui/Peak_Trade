@@ -237,15 +237,48 @@ Examples:
 # =============================================================================
 
 
+def _coerce_param_grid_lists(raw: Dict[str, Any]) -> Dict[str, List[Any]]:
+    """Normalisiert ein Roh-Grid: Jeder Wert ist eine nicht-leere Liste."""
+    out: Dict[str, List[Any]] = {}
+    for key, values in raw.items():
+        if isinstance(values, list):
+            if len(values) == 0:
+                raise ValueError(f"Parameter '{key}' hat keine Werte")
+            out[key] = values
+        else:
+            out[key] = [values]
+    return out
+
+
+def _merge_base_config_into_grid(
+    base_config: Dict[str, Any], grid: Dict[str, Any]
+) -> Dict[str, List[Any]]:
+    """
+    Vereinigt [base_config] mit [grid]: Basis-Keys werden zu Ein-Wert-Sweep-Dimensionen;
+    Grid-Keys überschreiben bei Namenskollision.
+
+    So bleibt expand_parameter_grid / SweepEngine unverändert nutzbar.
+    """
+    merged: Dict[str, List[Any]] = {}
+    for k, v in base_config.items():
+        merged[k] = [v]
+    for k, v in grid.items():
+        merged[k] = v if isinstance(v, list) else [v]
+    return merged
+
+
 def load_parameter_grid(grid_arg: str) -> Dict[str, List[Any]]:
     """
     Lädt ein Parameter-Grid aus TOML-Datei, JSON-Datei oder JSON-String.
+
+    TOML mit optionaler [base_config]- und [grid]-Sektion: beide werden zu einem
+    gemeinsamen param_grid zusammengeführt (Grid gewinnt bei Schlüsselkollision).
 
     Args:
         grid_arg: Pfad zu TOML/JSON-Datei oder JSON-String
 
     Returns:
-        Parameter-Grid als Dict
+        Parameter-Grid als Dict[str, List[Any]]
     """
     grid_path = Path(grid_arg)
 
@@ -258,19 +291,31 @@ def load_parameter_grid(grid_arg: str) -> Dict[str, List[Any]]:
                 import tomli as tomllib
             with grid_path.open("rb") as f:
                 data = tomllib.load(f)
-            # Erwarte "grid" Sektion oder Top-Level
-            return data.get("grid", data)
-        elif grid_path.suffix == ".json":
+            if "grid" in data:
+                grid_section = data["grid"]
+                if not isinstance(grid_section, dict):
+                    raise ValueError("[grid] muss eine TOML-Tabelle sein")
+                base_section = dict(data.get("base_config", {}))
+                return _merge_base_config_into_grid(base_section, grid_section)
+            return _coerce_param_grid_lists(data)
+        if grid_path.suffix == ".json":
             with grid_path.open("r", encoding="utf-8") as f:
-                return json.load(f)
-        else:
-            raise ValueError(f"Unbekanntes Dateiformat: {grid_path.suffix}")
+                loaded = json.load(f)
+            if not isinstance(loaded, dict):
+                raise ValueError("JSON-Grid muss ein Objekt sein")
+            return _coerce_param_grid_lists(loaded)
+        raise ValueError(f"Unbekanntes Dateiformat: {grid_path.suffix}")
 
     # Versuche als JSON-String zu parsen
     try:
-        return json.loads(grid_arg)
+        loaded = json.loads(grid_arg)
     except json.JSONDecodeError as e:
-        raise ValueError(f"Konnte Grid nicht laden. Weder gültige Datei noch JSON-String: {e}")
+        raise ValueError(
+            f"Konnte Grid nicht laden. Weder gültige Datei noch JSON-String: {e}"
+        ) from e
+    if not isinstance(loaded, dict):
+        raise ValueError("JSON-Grid muss ein Objekt sein")
+    return _coerce_param_grid_lists(loaded)
 
 
 def parse_cli_params(params: List[str]) -> Dict[str, List[Any]]:
