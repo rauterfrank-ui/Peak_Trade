@@ -82,6 +82,7 @@ This section is **non-claims** language only; it does not accuse past runs of mi
 ## 6. Safe future route
 
 - **Retain** the **current** **spot** Class A workflow as **spot infrastructure smoke** (bounded, paper, public data, artifacts).
+- **Offline futures paper accounting v0 (pure-model anchor):** `src&#47;execution&#47;paper&#47;futures_accounting.py` is a **side-effect-free**, **deterministic** kernel for notional, linear long/short PnL, margin **estimates**, funding **placeholder**, and a **conservative** liquidation-proximity label — **not** venue-accurate liquidation, **not** wired to the Class A runner or WP1B hot path, **non-authorizing**, and **does not** close §4–§7 or Futures Class A by itself.
 - Keep **next Futures work** in **docs** / **pure-model** / **read-only** lanes first until §4 gaps have **explicit** contracts and tests.
 - Any **first** **Futures Class A** **runtime** candidate should be **separate** from the **spot** workflow (new workflow or gated path), with its own **non-live** / **no-testnet** guards and **evidence schema**.
 - Require, before such a probe: **Futures instrument metadata** contract alignment, **public read-only** provider contract, a **futures paper accounting** model (even if minimal), **risk** gates, and **evidence** fields — none of which are satisfied by **BTC/EUR** Class A alone.
