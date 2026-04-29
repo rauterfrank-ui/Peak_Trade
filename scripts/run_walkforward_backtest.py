@@ -149,7 +149,16 @@ def load_data_from_file(filepath: Path) -> pd.DataFrame:
         raise ValueError(f"Fehlende Spalten: {missing}")
 
     if not isinstance(df.index, pd.DatetimeIndex):
-        raise ValueError("DataFrame muss einen DatetimeIndex haben")
+        if "timestamp" in df.columns:
+            df = df.set_index(pd.to_datetime(df["timestamp"], utc=True))
+            df = df.drop(columns=["timestamp"], errors="ignore")
+        else:
+            raise ValueError(
+                "DataFrame muss einen DatetimeIndex oder eine 'timestamp'-Spalte haben"
+            )
+
+    if not df.index.is_monotonic_increasing:
+        df = df.sort_index()
 
     return df
 
