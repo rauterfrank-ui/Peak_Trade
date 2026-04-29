@@ -32,6 +32,28 @@ _MODULE_PATH = (
 )
 
 
+def _f1_minimal_instrument_to_spec(meta: dict[str, str]) -> FuturesInstrumentSpec:
+    """Project F1-sized field subset (instrument sizing) onto accounting v0 — not full F1."""
+
+    return FuturesInstrumentSpec(
+        symbol=meta["symbol"],
+        contract_size=Decimal(meta["contract_size"]),
+        tick_size=Decimal(meta["tick_size"]),
+        min_qty=Decimal(meta["min_qty"]),
+        quote_currency=meta["quote_currency"],
+    )
+
+
+def _f1_margin_to_spec(meta: dict[str, str]) -> FuturesMarginSpec:
+    """Project F1 margin/leverage subset onto accounting v0."""
+
+    return FuturesMarginSpec(
+        initial_margin_rate=Decimal(meta["initial_margin_rate"]),
+        maintenance_margin_rate=Decimal(meta["maintenance_margin_rate"]),
+        max_leverage=Decimal(meta["max_leverage"]),
+    )
+
+
 def _spec() -> tuple[FuturesInstrumentSpec, FuturesMarginSpec]:
     inst = FuturesInstrumentSpec(
         symbol="PF_XBTUSD",
@@ -529,3 +551,148 @@ def test_reduce_position_accumulates_fees_across_partial_closes() -> None:
     assert step2.qty == Decimal("0")
     assert step2.fees_paid == Decimal("0.75")
     assert step2.realized_pnl == Decimal("2.25")
+
+
+def test_f1_minimal_instrument_projection_notional_uses_contract_size() -> None:
+    """F1-style metadata dict → FuturesInstrumentSpec; notional scales with projected contract_size."""
+
+    f1_like = {
+        "symbol": "PF_ETHUSD",
+        "contract_size": "0.1",
+        "tick_size": "0.01",
+        "min_qty": "0.01",
+        "quote_currency": "USD",
+    }
+    inst = _f1_minimal_instrument_to_spec(f1_like)
+    assert inst.symbol == f1_like["symbol"]
+    assert inst.contract_size == Decimal("0.1")
+    assert inst.tick_size == Decimal("0.01")
+    assert inst.min_qty == Decimal("0.01")
+    assert inst.quote_currency == "USD"
+
+    margin = _f1_margin_to_spec(
+        {
+            "initial_margin_rate": "0.1",
+            "maintenance_margin_rate": "0.05",
+            "max_leverage": "10",
+        }
+    )
+    validate_futures_accounting_inputs(instrument=inst, margin=margin)
+
+    n = notional_value(
+        mark_price=Decimal("2000"), qty=Decimal("3"), contract_size=inst.contract_size
+    )
+    assert n == Decimal("600")
+
+
+def test_f1_margin_projection_initial_and_maintenance_deterministic() -> None:
+    """F1-style margin dict → FuturesMarginSpec; margin quote amounts are deterministic."""
+
+    inst = _f1_minimal_instrument_to_spec(
+        {
+            "symbol": "PF_XBTUSD",
+            "contract_size": "1",
+            "tick_size": "0.5",
+            "min_qty": "0.001",
+            "quote_currency": "USD",
+        }
+    )
+    margin = _f1_margin_to_spec(
+        {
+            "initial_margin_rate": "0.08",
+            "maintenance_margin_rate": "0.04",
+            "max_leverage": "25",
+        }
+    )
+    validate_futures_accounting_inputs(instrument=inst, margin=margin)
+
+    n = Decimal("10000")
+    assert initial_margin_required(
+        notional=n, initial_margin_rate=margin.initial_margin_rate
+    ) == Decimal("800")
+    assert maintenance_margin_required(
+        notional=n, maintenance_margin_rate=margin.maintenance_margin_rate
+    ) == Decimal("400")
+
+
+def test_f2_explicit_mark_price_drives_unrealized_pnl_no_implicit_price_selection() -> None:
+    """F2: accounting accepts only an explicit mark scalar; there is no last/index selection inside v0."""
+
+    obs = {"price_type": "mark", "mark_price": "101.5"}
+    assert obs["price_type"] == "mark"
+    mark = Decimal(obs["mark_price"])
+    pnl = unrealized_pnl(
+        side=FuturesSide.LONG,
+        entry_price=Decimal("100"),
+        mark_price=mark,
+        qty=Decimal("2"),
+        contract_size=Decimal("1"),
+    )
+    assert pnl == Decimal("3")
+
+
+def test_f2_last_and_mark_in_observation_caller_must_supply_mark_scalar() -> None:
+    """Observation may carry both last and mark; v0 PnL follows only the caller-supplied mark_price."""
+
+    obs = {"last_price": "50000", "mark_price": "49900"}
+    mark = Decimal(obs["mark_price"])
+    last_px = Decimal(obs["last_price"])
+
+    pnl_using_mark = unrealized_pnl(
+        side=FuturesSide.SHORT,
+        entry_price=Decimal("50000"),
+        mark_price=mark,
+        qty=Decimal("1"),
+        contract_size=Decimal("1"),
+    )
+    assert pnl_using_mark == Decimal("100")
+
+    pnl_if_last_substituted = unrealized_pnl(
+        side=FuturesSide.SHORT,
+        entry_price=Decimal("50000"),
+        mark_price=last_px,
+        qty=Decimal("1"),
+        contract_size=Decimal("1"),
+    )
+    assert pnl_if_last_substituted == Decimal("0")
+    assert pnl_using_mark != pnl_if_last_substituted
+
+
+def test_f1_f2_mark_notional_with_margin_projection_liquidation_proximity_deterministic() -> None:
+    """F1 margin + explicit F2 mark notionals → maintenance compare (conservative v0 proximity)."""
+
+    inst = _f1_minimal_instrument_to_spec(
+        {
+            "symbol": "LINEAR-PERP-DEMO",
+            "contract_size": "5",
+            "tick_size": "0.1",
+            "min_qty": "0.01",
+            "quote_currency": "USD",
+        }
+    )
+    margin = _f1_margin_to_spec(
+        {
+            "initial_margin_rate": "0.1",
+            "maintenance_margin_rate": "0.05",
+            "max_leverage": "10",
+        }
+    )
+    validate_futures_accounting_inputs(instrument=inst, margin=margin)
+
+    obs = {"price_type": "mark", "mark_price": "50"}
+    mark = Decimal(obs["mark_price"])
+    qty = Decimal("4")
+    n = notional_value(mark_price=mark, qty=qty, contract_size=inst.contract_size)
+    mm = maintenance_margin_required(
+        notional=n, maintenance_margin_rate=margin.maintenance_margin_rate
+    )
+    im = initial_margin_required(notional=n, initial_margin_rate=margin.initial_margin_rate)
+
+    st_safe, _ = estimate_liquidation_proximity_v0(equity=im, maintenance_margin=mm)
+    assert st_safe is LiquidationProximityV0.SAFE
+
+    st_blk, buf = estimate_liquidation_proximity_v0(
+        equity=mm * Decimal("0.99"), maintenance_margin=mm
+    )
+    assert st_blk is LiquidationProximityV0.BLOCKED_BELOW_MAINTENANCE
+    assert buf < 0
