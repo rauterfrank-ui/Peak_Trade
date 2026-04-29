@@ -513,8 +513,18 @@ class SweepEngine:
         position_sizer = build_position_sizer_from_config(cfg)
         risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
 
-        # Strategie erstellen
-        strategy = create_strategy_from_config(strategy_key, cfg)
+        # Strategie erstellen (Sweep-Parameter müssen vor __init__/validate gelten)
+        if strategy_key == "regime_aware_portfolio":
+            from src.strategies.regime_aware_portfolio import RegimeAwarePortfolioStrategy
+
+            spec_ra = get_strategy_spec(strategy_key)
+            strategy = RegimeAwarePortfolioStrategy.from_config(
+                cfg,
+                section=spec_ra.config_section,
+                param_overrides=params,
+            )
+        else:
+            strategy = create_strategy_from_config(strategy_key, cfg)
 
         # Parameter auf Strategie anwenden
         for key, value in params.items():
