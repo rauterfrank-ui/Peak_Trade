@@ -73,6 +73,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 ## Änderungsnachweis (Slice A)
 
+- 2026-04-29 — `src&#47;execution&#47;paper&#47;futures_accounting.py` (Pure-Model v0) mit begleitenden Verweisen in `docs&#47;GOVERNANCE_AND_SAFETY_OVERVIEW.md` und `docs&#47;PEAK_TRADE_V1_KNOWN_LIMITATIONS.md` — offline/deterministisch, ohne Runner/Exchange; **keine** Live-/Testnet-Freigabe, **kein** Futures-Class-A-Abschluss; erfüllt **governance-overview-canonical** / **known-limitations-canonical** Kaskade.
+
 - 2026-04-25 — `docs&#47;GOVERNANCE_AND_SAFETY_OVERVIEW.md` — Abschnitt „Execution and risk-layer README authority boundary“ (Spiegel zu `src&#47;execution&#47;README.md` / `src&#47;risk_layer&#47;README.md`; P0-C Epoch-/Autoritätsgrenze; **keine** Live-Freigabe); paired with `governance-overview-canonical`.
 
 - 2026-04-20 — `scripts&#47;report_live_sessions.py` — read-only `--bounded-pilot-readiness-summary` (Readiness + Operator-Preflight-Packet + Registry-Fokus; keine Autorisierung); Runbook `RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` §4; **keine** Live-Freigabe.
