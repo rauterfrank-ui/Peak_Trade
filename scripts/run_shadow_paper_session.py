@@ -84,6 +84,25 @@ from src.execution.pipeline import ExecutionPipeline
 from src.strategies.base import BaseStrategy
 
 
+class ShadowPaperCliPreflightError(Exception):
+    """Umgebungsvariablen verletzen Fail-Closed-Kriterien (analog Class-A-Probe-Workflow)."""
+
+
+def shadow_paper_cli_assert_safe_environment() -> None:
+    """Verweigert Start bei Live-/Confirm-Umgebungsvariablen — keine Orders, nur Fail-Closed."""
+    import os
+
+    _confirm = "PT_LIVE_" + "CONFIRM_TOKEN"
+    if os.environ.get(_confirm):
+        raise ShadowPaperCliPreflightError(
+            "refusing to run: live confirm token env is set",
+        )
+    for v in ("PEAK_TRADE_LIVE_ENABLED", "PEAK_TRADE_LIVE_ARMED"):
+        val = os.environ.get(v, "")
+        if val in ("true", "1"):
+            raise ShadowPaperCliPreflightError(f"unsafe {v}={val}")
+
+
 # =============================================================================
 # Logging Setup
 # =============================================================================
@@ -430,6 +449,8 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
     logger.info("=" * 60)
 
     try:
+        shadow_paper_cli_assert_safe_environment()
+
         # Config laden
         config_path = Path(args.config)
         if not config_path.exists():
@@ -480,6 +501,10 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
             )
 
         return 0
+
+    except ShadowPaperCliPreflightError as e:
+        logger.error("Preflight: %s", e)
+        return 1
 
     except EnvironmentNotAllowedError as e:
         logger.error(f"Environment-Fehler: {e}")
