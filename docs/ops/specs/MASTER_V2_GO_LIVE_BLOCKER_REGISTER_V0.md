@@ -2,7 +2,7 @@
 docs_token: DOCS_TOKEN_MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0
 status: draft
 scope: docs-only, non-authorizing Master V2 Go-Live blocker register
-last_updated: 2026-04-28
+last_updated: 2026-04-30
 ---
 
 # Master V2 Go-Live Blocker Register V0
@@ -119,6 +119,27 @@ Blockers are grouped as:
 | GLB-019 | Closeout/post-pilot | Event stream missing or inconsistent. | Missing event posture recorded. | Evidence owner / operator | OPEN | Missing events are ignored. |
 | GLB-020 | Promotion | Promotion would be automatic or PnL-only. | Explicit promotion decision criteria. | Promotion authority | BLOCKED | Promotion bypasses review. |
 
+### 6.1 GLB-006 — Binding session selection scope (clarification)
+
+GLB-006 applies when **binding** session identity would be chosen implicitly (for example newest-started **open** bounded-pilot session, or a **latest bounded-pilot registry** row) for any workflow that **claims** an explicit session tie-in without an operator/session-owner **`session_id` decision**.
+
+**In scope for GLB-006 (implicit selection is STOP for these):**
+
+- Source-bound Session Review Pack construction (present or future mode that binds registry or evidence to a session).
+- Signoff, promotion, or any gate/decision record that asserts **which session** was reviewed or approved.
+- Any artifact or narrative that treats auto-resolved focus as proof of **explicit** `session_id` selection.
+
+**Out of scope for GLB-006 (allowed as non-authorizing navigation only):**
+
+- Read-only bounded-pilot **overview / snapshot / triage** JSON from `scripts/report_live_sessions.py` (and similar) that exposes a **`session_focus`** (including `primary_session_id` and **`primary_source`** such as `open_bounded_pilot` or **`latest_bounded_pilot_registry`**).
+
+For those snapshots:
+
+- They are **navigation/triage provenance**, not authorization, not a gate pass, not live readiness, and not external signoff.
+- A `primary_source` of **`latest_bounded_pilot_registry`** (or newest open row) **does not** satisfy **explicit** `session_id` selection for binding Source-bound SRP, signoff, or promotion; the operator/session owner must still **explicitly** choose and record `session_id` for binding flows.
+
+Operator sequence posture for explicit selection: [First Live Execution Sequence](./MASTER_V2_FIRST_LIVE_EXECUTION_SEQUENCE_V0.md), Step 3.
+
 ## 7. No-Green Claim Rule
 
 This register may show that a blocker is OPEN, BLOCKED, DEFERRED, ACCEPTED_BY_AUTHORITY, or CLOSED.
@@ -141,7 +162,7 @@ STOP applies immediately when:
 
 - any BLOCKED item lacks resolution;
 - evidence is missing and not explicitly accepted by authority;
-- source selection is implicit;
+- binding session selection is implicit (GLB-006; see §6.1);
 - KillSwitch or risk posture is unclear;
 - live gate semantics are unclear;
 - external/operator authority is missing;
