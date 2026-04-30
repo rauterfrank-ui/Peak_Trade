@@ -2,7 +2,7 @@
 title: "Master V2 Double Play Futures Input Producer Contract v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-27"
+last_updated: "2026-04-30"
 docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0"
 ---
 
@@ -97,6 +97,16 @@ Producer inputs may include, **non-exclusively**:
 - **Top50 / Top20 ranks** (or any shortlist stage) are **context only**. They **do not** select an instrument into trading, Testnet, or Live.
 - **Producer output must not select Top20 into trading.** Ranking fields may populate `FuturesRankingSnapshot` **only** as non-authoritative labels (for example `rank`, `score`, `is_top_n_member`).
 - Until a **separate governed schema** exists for Top50→Top20, producers must treat stage labels as **opaque** and **non-binding** for execution.
+
+### Producer-side discourse — pointer to “Top-20 candidate intelligence”
+
+The informal operator phrase **“Top-20 candidate intelligence”** may appear in discussions of **upstream producer inputs** or producer **packet context** destined for adaptation into **`FuturesInputSnapshot`**.
+
+**Canonical definition and vocabulary** remain only in [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md), **§3** (*Working label — “Top-20 candidate intelligence” (non-authoritative)*), read together with §§6–17. **This contract does not restate those field groups.**
+
+Reuse of the phrase **does not** imply a Top-20 **selector implementation**, a ranking **product**, a candidate **card** schema, any **readiness / evidence / report / index / handoff surface**, capital **approval**, strategy **authorization**, a gate **pass**, Testnet/Live readiness, or autonomous trading **activation**. Producer output stays **non-authorizing** under §§2, 14–17 and bounded by Strategy/Authority/Scope‑Capital norms ([STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md](STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md); [MASTER_V2_DECISION_AUTHORITY_MAP_V1.md](MASTER_V2_DECISION_AUTHORITY_MAP_V1.md); [MASTER_V2_SCOPE_CAPITAL_ENVELOPE_CLARIFICATION_V1.md](MASTER_V2_SCOPE_CAPITAL_ENVELOPE_CLARIFICATION_V1.md)); [MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md](MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) remains **inventory/navigation semantics only**.
+
+**§7 above stays controlling** for Top50→Top20/Universe Selector **context**: shortlist semantics are **conceptual/non-binding here** unless a separately governed Producer or Selector slice elevates them. **Nothing in this pointer** overrides §7 or establishes runtime wiring.
 
 ## 8. Instrument metadata requirements
 
