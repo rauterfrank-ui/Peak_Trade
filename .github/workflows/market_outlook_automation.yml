@@ -48,9 +48,19 @@ jobs:
       - name: Run MarketSentinel v0 – Daily Market Outlook
         run: |
           mkdir -p reports/market_outlook
-          python scripts/generate_market_outlook_daily.py \
-            --config-path config/market_outlook/daily_market_outlook.yaml \
-            --out-dir reports/market_outlook/
+          # Scheduled runs: degrade to placeholder (--skip-llm) so cron does not require
+          # PT_AI_* gates / policy chain for outbound LLM. Manual dispatch unchanged.
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "::notice title=MarketSentinel::Scheduled run uses --skip-llm (placeholder report)."
+            python scripts/generate_market_outlook_daily.py \
+              --config-path config/market_outlook/daily_market_outlook.yaml \
+              --out-dir reports/market_outlook/ \
+              --skip-llm
+          else
+            python scripts/generate_market_outlook_daily.py \
+              --config-path config/market_outlook/daily_market_outlook.yaml \
+              --out-dir reports/market_outlook/
+          fi
 
       - name: Upload daily market outlook reports
         uses: actions/upload-artifact@v4
