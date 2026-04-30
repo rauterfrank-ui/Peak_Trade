@@ -307,8 +307,11 @@ def test_single_objective_study_integration():
         x = trial.suggest_float("x", -10, 10)
         return (x - 2) ** 2  # Minimize (x-2)^2, optimal at x=2
 
-    # Create study
-    study = optuna.create_study(direction="minimize")
+    # Use a seeded sampler to avoid flaky behavior across CI runs.
+    study = optuna.create_study(
+        direction="minimize",
+        sampler=optuna.samplers.RandomSampler(seed=0),
+    )
 
     # Run optimization
     study.optimize(objective, n_trials=20, show_progress_bar=False)
