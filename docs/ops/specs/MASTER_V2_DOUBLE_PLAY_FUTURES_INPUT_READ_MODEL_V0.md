@@ -2,7 +2,7 @@
 title: "Master V2 Double Play Futures Input Read Model v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-26"
+last_updated: "2026-04-30"
 docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0"
 ---
 
@@ -43,6 +43,24 @@ This file is **docs-only** and **non-authorizing**. It does not:
 
 - concrete scanner algorithms, ranking formulas, or venue-specific adapters
 - OHLCV storage format, database schemas, or CI wiring
+
+### Working label — “Top-20 candidate intelligence” (non-authoritative)
+
+In operator and architecture discussion, **“Top-20 candidate intelligence”** is an informal working term for **this same** Futures Input Snapshot **input vocabulary** (§§6–17). It does **not** create a new product, report, index, readiness surface, candidate card schema, gate, selector implementation, capital approval, strategy authorization, autonomous trading activation, or live/testnet readiness claim.
+
+The term names **precomputed per-candidate context** already modeled here:
+
+- universe / candidate identity and optional ranking labels (§§6–7),
+- instrument-metadata and market-data provenance **status**, microstructure proxies, funding/OI pointers where applicable (§§8–12),
+- opportunity / inactivity proxies (§13),
+- mappings toward strategy-fit / suitability **presence** semantics ([MASTER_V2_DOUBLE_PLAY_STRATEGY_SUITABILITY_PROJECTION_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_STRATEGY_SUITABILITY_PROJECTION_CONTRACT_V0.md); §15) and Scope/Capital–relevant inputs only ([MASTER_V2_SCOPE_CAPITAL_ENVELOPE_CLARIFICATION_V1.md](MASTER_V2_SCOPE_CAPITAL_ENVELOPE_CLARIFICATION_V1.md), capital slot semantics in §§14 and 16; [MASTER_V2_DOUBLE_PLAY_CAPITAL_SLOT_RATCHET_RELEASE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_CAPITAL_SLOT_RATCHET_RELEASE_CONTRACT_V0.md)),
+- opaque upstream run/evidence pointers (§6) bounded by §§18–19 and fail-closed rules.
+
+Rankings—including **Top-20 / Top-50** staging—remain **non-authoritative context** (§§6–7). Upstream Universe Selector or Producer-contract semantics ([MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md](MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md), [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md)) govern how those stages may **later** be defined; **this read model does not** implement them.
+
+Governance anchors (unchanged): strategy/registry non-authority — [STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md](STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0.md); decision-stage authority clarity — [MASTER_V2_DECISION_AUTHORITY_MAP_V1.md](MASTER_V2_DECISION_AUTHORITY_MAP_V1.md); go-live blocker inventory (navigation-only here) — [MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md](MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md).
+
+This subsection is **advisory read-model framing only** (see §2).
 
 ## 4. Current repo baseline
 
