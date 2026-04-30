@@ -54,6 +54,112 @@ class FuturesPosition:
     fees_paid: Decimal = Decimal("0")
 
 
+FUTURES_PAPER_ACCOUNTING_SNAPSHOT_SCHEMA_V0 = "futures_paper_accounting/snapshot/v0"
+
+
+@dataclass(frozen=True)
+class FuturesPaperAccountingSnapshotV0:
+    """
+    Pure read-model bundle over the v0 accounting kernel.
+
+    Not venue-accurate; not wired to engines, runners, or providers; non-authorizing.
+    """
+
+    schema_version: str
+    symbol: str
+    side: FuturesSide
+    quantity: Decimal
+    entry_price: Decimal
+    mark_price: Decimal
+    notional: Decimal
+    initial_margin_required: Decimal
+    maintenance_margin_required: Decimal
+    unrealized_pnl: Decimal
+    realized_pnl: Decimal
+    fees_paid: Decimal
+    funding_paid: Decimal
+    liquidation_proximity: Optional[LiquidationProximityV0]
+
+
+def build_futures_paper_accounting_snapshot_v0(
+    *,
+    instrument: FuturesInstrumentSpec,
+    margin: FuturesMarginSpec,
+    position: FuturesPosition,
+    mark_price: Union[Decimal, float, int, str],
+    equity: Optional[Decimal] = None,
+    warning_buffer_fraction: Union[Decimal, float, int, str] = Decimal("0.05"),
+) -> FuturesPaperAccountingSnapshotV0:
+    """
+    Build a deterministic snapshot at ``mark_price`` without mutating ``position``.
+
+    ``mark_price`` may differ from ``position.mark_price`` (e.g. fresh mark-to-market).
+    ``equity`` optional: when omitted, ``liquidation_proximity`` is ``None``.
+    """
+    mp = _to_decimal("mark_price", mark_price)
+    if position.symbol != instrument.symbol:
+        raise ValueError("position.symbol must match instrument.symbol")
+
+    pos_for_validation = FuturesPosition(
+        symbol=position.symbol,
+        side=position.side,
+        qty=position.qty,
+        entry_price=position.entry_price,
+        mark_price=mp,
+        realized_pnl=position.realized_pnl,
+        funding_pnl=position.funding_pnl,
+        fees_paid=position.fees_paid,
+    )
+    validate_futures_accounting_inputs(
+        instrument=instrument,
+        margin=margin,
+        wallet_equity=equity,
+        position=pos_for_validation,
+    )
+    qty = position.qty
+    cs = instrument.contract_size
+    n = notional_value(mark_price=mp, qty=qty, contract_size=cs)
+    im = initial_margin_required(notional=n, initial_margin_rate=margin.initial_margin_rate)
+    mm = maintenance_margin_required(
+        notional=n, maintenance_margin_rate=margin.maintenance_margin_rate
+    )
+    upnl = unrealized_pnl(
+        side=position.side,
+        entry_price=position.entry_price,
+        mark_price=mp,
+        qty=qty,
+        contract_size=cs,
+    )
+
+    liq: Optional[LiquidationProximityV0]
+    if equity is None:
+        liq = None
+    else:
+        st, _ = estimate_liquidation_proximity_v0(
+            equity=equity,
+            maintenance_margin=mm,
+            warning_buffer_fraction=warning_buffer_fraction,
+        )
+        liq = st
+
+    return FuturesPaperAccountingSnapshotV0(
+        schema_version=FUTURES_PAPER_ACCOUNTING_SNAPSHOT_SCHEMA_V0,
+        symbol=instrument.symbol,
+        side=position.side,
+        quantity=qty,
+        entry_price=position.entry_price,
+        mark_price=mp,
+        notional=n,
+        initial_margin_required=im,
+        maintenance_margin_required=mm,
+        unrealized_pnl=upnl,
+        realized_pnl=position.realized_pnl,
+        fees_paid=position.fees_paid,
+        funding_paid=position.funding_pnl,
+        liquidation_proximity=liq,
+    )
+
+
 def _to_decimal(name: str, value: Union[Decimal, float, int, str]) -> Decimal:
     if isinstance(value, Decimal):
         d = value
