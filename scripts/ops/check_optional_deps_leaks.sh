@@ -14,10 +14,11 @@ echo
 # - Tests/Docs sind ausgenommen (dürfen Snippets/Mocks enthalten).
 #
 # NOTE: We use different regex flavors for rg vs grep:
-# - ripgrep supports \s
-# - POSIX grep -E does NOT (use [[:space:]] instead)
+# - ripgrep supports \s and \b
+# - POSIX grep -E does NOT support \s; use [[:space:]] instead
+# - GNU grep -E does not treat \b as a word boundary; use \> (end of word)
 PATTERN_RG='^\s*(import\s+ccxt\b|from\s+ccxt\b)'
-PATTERN_GREP='^[[:space:]]*(import[[:space:]]+ccxt\\b|from[[:space:]]+ccxt\\b)'
+PATTERN_GREP='^[[:space:]]*(import[[:space:]]+ccxt\>|from[[:space:]]+ccxt\>)'
 
 ALLOW_GLOBS=(
   "src/data/providers/**"
