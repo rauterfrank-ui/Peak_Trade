@@ -2,7 +2,7 @@
 docs_token: DOCS_TOKEN_MASTER_V2_FIRST_LIVE_EXECUTION_SEQUENCE_V0
 status: draft
 scope: docs-only, non-authorizing Master V2 First Live execution sequence
-last_updated: 2026-04-28
+last_updated: 2026-04-30
 ---
 
 # Master V2 First Live Execution Sequence V0
@@ -152,6 +152,12 @@ Relevant tests:
 - Multiple candidates are auto-selected.
 - `out&#47;ops` artifacts are mutated.
 - Session selection is treated as closeout approval.
+
+### Session focus vs explicit binding (GLB-006)
+
+Cross-reference: [Go-Live Blocker Register](./MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.1 (**GLB-006** — binding session selection scope).
+
+Read-only bounded-pilot **overview / snapshot / triage** JSON from `scripts/report_live_sessions.py` may include a visible **`session_focus`** (for example `primary_session_id` and **`primary_source`** such as `open_bounded_pilot` or **`latest_bounded_pilot_registry`**). That output is **navigation and provenance only**. It does **not** create a gate pass, live readiness, external signoff, or any **authorization**. Snapshot **`session_focus` / `primary_source` does not replace** an **explicit operator-documented `session_id`** for **binding** source-bound Session Review Pack work, signoff, promotion, or any decision surface that claims **which session** was bound or reviewed.
 
 ## 8. Step 4 — Review Gates / Readiness / Blockers
 
