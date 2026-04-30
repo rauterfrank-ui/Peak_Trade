@@ -140,6 +140,20 @@ For those snapshots:
 
 Operator sequence posture for explicit selection: [First Live Execution Sequence](./MASTER_V2_FIRST_LIVE_EXECUTION_SEQUENCE_V0.md), Step 3.
 
+### 6.2 GLB-010 / GLB-011 — Capital, scope, and pure-model non-confusion (clarification)
+
+**GLB-010** (*capital slot or maximum loss boundary unclear*) and **GLB-011** (*instrument/scope undefined*) remain **BLOCKED** until there is an **explicit**, **bounded** **operator / capital / risk owner** decision on **deployable capital/scope** and on **pilot instrument and scope** — recorded **outside** the inference chain of “tests pass” or “pure models exist.”
+
+The repo may contain **useful** scope/capital **contracts**, **pure models**, and **tests** (for example Double Play capital-slot ratchet/release semantics and scope-envelope vocabulary). That material is **implementation and governance evidence** only. It **does not** close **GLB-010** or **GLB-011** by itself, **does not** imply a **gate pass**, **does not** assert **live** or **bounded-pilot readiness**, and **does not** substitute for **external** or **operator** documentation of the real capital and pilot envelope.
+
+Until the required **bounded capital/scope** and **pilot instrument/scope** decisions exist and are properly attributed, **STOP** remains for progression that would treat open-ended capital or unstated pilot scope as acceptable.
+
+**Canonical read-order (existing specs; no new surface):**
+
+- [Scope and Capital Envelope Clarification](./MASTER_V2_SCOPE_CAPITAL_ENVELOPE_CLARIFICATION_V1.md)
+- [Capital Slot, Ratchet, and Release](./MASTER_V2_DOUBLE_PLAY_CAPITAL_SLOT_RATCHET_RELEASE_CONTRACT_V0.md)
+- [Decision Authority Map](./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md)
+
 ## 7. No-Green Claim Rule
 
 This register may show that a blocker is OPEN, BLOCKED, DEFERRED, ACCEPTED_BY_AUTHORITY, or CLOSED.
