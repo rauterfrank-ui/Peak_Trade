@@ -171,6 +171,25 @@ Until that confirmation exists, **BLOCKED** remains.
 - [Futures Risk Safety KillSwitch Contract v0](./FUTURES_RISK_SAFETY_KILLSWITCH_CONTRACT_V0.md) — RiskGate / SafetyGuard / KillSwitch / LiveRiskLimits **boundary** semantics (docs-only)
 - [Kill Switch Runbook](../../risk/KILL_SWITCH_RUNBOOK.md) — operational reference
 
+### 6.4 GLB-012 / GLB-013 — Execution, live gates, and dry-run vs. repo artifacts (clarification)
+
+**GLB-012** (*Live gates or arming semantics unclear*) and **GLB-013** (*Dry-run/live semantics ambiguous*) remain **BLOCKED** until **execution owner / operator** provides **explicit** confirmation for the **chosen pilot or bounded scope** that:
+
+- **Gate-state semantics** are **understood and bounded** (what it means for gates to be satisfied, armed, or incomplete for **this** activity).
+- The **arming / enabled / confirm-token / preflight** chain is **explainable** end-to-end to reviewers for **that** scope.
+- **Dry-run**, **bounded-pilot**, and **live** (if applicable) **modes** are **distinguished with evidence** tied to the **intended** pilot envelope — **not** inferred solely from generic CI success, drill harness defaults, or passing tests without an operator narrative.
+
+The repo may contain **Execution / live-gate specifications**, **bounded-pilot runbooks**, **dry-run/live drills**, and **automated tests** — useful **implementation and readiness evidence**. That material **does not** close **GLB-012** or **GLB-013** by itself, **does not** imply a **gate pass**, **does not** assert **live** or **bounded-pilot authorization**, and **does not** substitute for **execution-owner/operator** confirmation. If gate state or mode remains unclear, **STOP** / **BLOCKED** remains per the register rows.
+
+Until that confirmation exists, **BLOCKED** remains.
+
+**Canonical read-order (existing surfaces; no new surface):**
+
+- [First Live Execution Sequence](./MASTER_V2_FIRST_LIVE_EXECUTION_SEQUENCE_V0.md) — preflight and sequencing posture (non-authorizing)
+- [First Live Gate Status Index](./MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md)
+- [Pilot Go/No-Go operational slice](./PILOT_GO_NO_GO_OPERATIONAL_SLICE.md)
+- [Bounded real-money pilot entry boundary note](./BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md)
+
 ## 7. No-Green Claim Rule
 
 This register may show that a blocker is OPEN, BLOCKED, DEFERRED, ACCEPTED_BY_AUTHORITY, or CLOSED.
