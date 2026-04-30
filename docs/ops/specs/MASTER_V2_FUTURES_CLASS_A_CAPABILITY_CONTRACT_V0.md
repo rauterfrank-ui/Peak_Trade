@@ -2,7 +2,7 @@
 title: "Master V2 Futures Class A Capability Contract v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-29"
+last_updated: "2026-04-30"
 docs_token: "DOCS_TOKEN_MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0"
 ---
 
@@ -122,7 +122,9 @@ Outputs already expressible from the v0 API surface (still **not** wired to WP1B
 - Fees (`apply_fee_on_notional` or explicit `fee_quote` on close paths).
 - Liquidation proximity v0 (`estimate_liquidation_proximity_v0`).
 
-Whether a **stable snapshot DTO** wraps these values is a **separate** design decision for a future slice; this contract **does not** mandate one.
+**Snapshot DTO v0 (pure/offline, `RUNTIME_NOT_WIRED`):** `FuturesPaperAccountingSnapshotV0` and `build_futures_paper_accounting_snapshot_v0` in `src&#47;execution&#47;paper&#47;futures_accounting.py` bundle the primitives above into one frozen read-model for deterministic, side-effect-free use. The DTO is **not** wired to `PaperExecutionEngine`, Class A runners, workflows, providers, Live, or Testnet; it is **non-authorizing** and **does not** imply venue accuracy, Futures Class A completion, or gate passage. §7.4 **wiring** preconditions remain **not started** until an explicit future approval and mark-price discipline are satisfied.
+
+Characterization: `tests&#47;execution&#47;paper&#47;test_futures_accounting_snapshot_dto_v0.py`.
 
 ### 7.4 Preconditions before any wiring
 
