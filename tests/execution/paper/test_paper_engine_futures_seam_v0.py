@@ -1,6 +1,6 @@
 """Characterization tests: PaperExecutionEngine (WP1B) vs pure Futures Paper Accounting v0.
 
-Non-authorizing: documents current import/runtime boundaries only — no wiring, no source edits.
+Non-authorizing: documents current import/runtime boundaries only — no wiring; no edits to WP1B production modules in this suite.
 See MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0 (WP1B spot-sim vs offline futures kernel).
 """
 
@@ -112,6 +112,39 @@ def test_paper_execution_engine_source_has_no_futures_accounting_type_references
             pytest.fail(f"{_ENGINE_SRC.name}: unexpected Name reference {node.id!r}")
         if isinstance(node, ast.Attribute) and node.attr in _FUTURES_TYPE_NAMES:
             pytest.fail(f"{_ENGINE_SRC.name}: unexpected Attribute {node.attr!r}")
+
+
+def test_paper_execution_engine_source_has_no_um_paper_prep_or_snapshot_wire_tokens_v0() -> None:
+    """BTC/ETH paper-prep charters (Binance UM-style labels / slot language) remain external."""
+
+    forbidden_names = frozenset(
+        {
+            "FuturesPaperAccountingSnapshotV0",
+            "build_futures_paper_accounting_snapshot_v0",
+        }
+    )
+    forbidden_substrings = (
+        "FuturesPaperAccountingSnapshotV0",
+        "build_futures_paper_accounting_snapshot_v0",
+        "futures_accounting",
+        "BTCUSDT",
+        "ETHUSDT",
+        "paper_slot",
+        "max_loss",
+    )
+
+    text = _ENGINE_SRC.read_text(encoding="utf-8")
+    tree = ast.parse(text)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Name) and node.id in forbidden_names:
+            pytest.fail(f"{_ENGINE_SRC.name}: unexpected Name reference {node.id!r}")
+        if isinstance(node, ast.Attribute) and node.attr in forbidden_names:
+            pytest.fail(f"{_ENGINE_SRC.name}: unexpected Attribute {node.attr!r}")
+    for token in forbidden_substrings:
+        assert token not in text, (
+            f"{_ENGINE_SRC.name}: forbidden substring {token!r}; "
+            "offline futures snapshot/kernel + UM worksheet prep stays unwired."
+        )
 
 
 def test_import_engine_and_futures_accounting_modules_without_coupling() -> None:
