@@ -56,20 +56,21 @@ else
   echo "WARN: rg not found, falling back to grep."
   echo
 
-  # Build grep excludes (directories)
-  # providers + research/new_listings excluded (allowlist)
-  GREP_EXCLUDES=(
-    "--exclude-dir=src/data/providers"
-    "--exclude-dir=new_listings"
-    "--exclude-dir=tests"
-    "--exclude-dir=docs"
-    "--exclude-dir=.git"
-    "--exclude-dir=__pycache__"
-  )
-
-  # grep -R: recursive, -n: line numbers, -I: ignore binary, -E: extended regex
-  # IMPORTANT: options must come BEFORE the path, otherwise grep treats them as filenames.
-  RESULTS="$(grep -RInIE "${PATTERN_GREP}" "${GREP_EXCLUDES[@]}" . 2>/dev/null || true)"
+  # grep's --exclude-dir only matches each directory's *basename*, so paths like
+  # `src/data/providers` are not excluded. Mirror rg's directory exclusions with
+  # find -path … -prune, then grep the remaining regular files only.
+  RESULTS="$(
+    find . \
+      -path './src/data/providers' -prune -o \
+      -path './src/research/new_listings' -prune -o \
+      -path './tests' -prune -o \
+      -path './docs' -prune -o \
+      -path './src/docs' -prune -o \
+      -path './.git' -prune -o \
+      -path '*/__pycache__' -prune -o \
+      -type f -print0 \
+      | xargs -0 grep -nIHE "${PATTERN_GREP}" 2>/dev/null || true
+  )"
 fi
 
 if [[ -n "${RESULTS}" ]]; then
