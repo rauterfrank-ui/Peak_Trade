@@ -126,6 +126,8 @@ Outputs already expressible from the v0 API surface (still **not** wired to WP1B
 
 Characterization: `tests&#47;execution&#47;paper&#47;test_futures_accounting_snapshot_dto_v0.py`.
 
+**JSONability (tests-only, test-local mapping):** `tests&#47;execution&#47;paper&#47;test_futures_accounting_snapshot_jsonability_v0.py` defines an explicit, **test-local** conversion of the snapshot DTO to JSON-safe primitives (`Decimal` → string, enums → `.value`, `liquidation_proximity` → a small primitive dict or `null`) and asserts `json.dumps` / `json.loads` round-trip for a deterministic gold payload. This is **not** a production JSON API; **not** a report, registry, readiness, evidence, index, or handoff surface; **not** `PaperExecutionEngine`, runner, provider, Live, or Testnet wiring.
+
 ### 7.4 Preconditions before any wiring
 
 Before any change under `src&#47;execution&#47;` that connects WP1B to Futures Accounting v0:
