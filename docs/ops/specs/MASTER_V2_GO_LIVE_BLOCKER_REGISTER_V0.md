@@ -154,6 +154,23 @@ Until the required **bounded capital/scope** and **pilot instrument/scope** deci
 - [Capital Slot, Ratchet, and Release](./MASTER_V2_DOUBLE_PLAY_CAPITAL_SLOT_RATCHET_RELEASE_CONTRACT_V0.md)
 - [Decision Authority Map](./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md)
 
+### 6.3 GLB-008 / GLB-009 — KillSwitch and risk boundary vs. repo artifacts (clarification)
+
+**GLB-008** (*KillSwitch behavior uncertain*) and **GLB-009** (*Risk limits unclear*) remain **BLOCKED** until **risk owner / operator** provides **explicit** confirmation for the **chosen pilot or bounded scope** that:
+
+- **KillSwitch posture** is **understood and explainable** (what blocks trading; how it is verified; who owns operational response).
+- **Risk limits** and the **stop path** are **bounded, documented, and explainable** for **that scope** — evidenced for the **intended** pilot envelope, **not** inferred solely from generic repository tests or CI success.
+
+The repo may contain **KillSwitch/Risk specifications, integration notes, drills, contracts, and automated tests** — useful **implementation and safety-engineering evidence**. That material **does not** close **GLB-008** or **GLB-009** by itself, **does not** imply a **gate pass**, **does not** assert **live** or **bounded-pilot readiness**, and **does not** substitute for **risk-owner/operator** confirmation tied to the **specific** pilot.
+
+Until that confirmation exists, **BLOCKED** remains.
+
+**Canonical read-order (existing surfaces; no new surface):**
+
+- [Decision Authority Map](./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) — Safety and Kill-Switch veto layering versus other authorities
+- [Futures Risk Safety KillSwitch Contract v0](./FUTURES_RISK_SAFETY_KILLSWITCH_CONTRACT_V0.md) — RiskGate / SafetyGuard / KillSwitch / LiveRiskLimits **boundary** semantics (docs-only)
+- [Kill Switch Runbook](../../risk/KILL_SWITCH_RUNBOOK.md) — operational reference
+
 ## 7. No-Green Claim Rule
 
 This register may show that a blocker is OPEN, BLOCKED, DEFERRED, ACCEPTED_BY_AUTHORITY, or CLOSED.
