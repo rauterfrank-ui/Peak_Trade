@@ -12,7 +12,7 @@
 >
   <section
     aria-label="Einordnung dieser Seite"
-    class="rounded-xl border border-amber-900/40 bg-amber-950/25 px-4 py-3 text-xs text-amber-100/95"
+    class="rounded-xl border border-amber-900/40 bg-amber-950/25 px-5 py-4 text-xs text-amber-100/95"
     data-observability-safety-banner="true"
   >
     <p class="font-semibold text-amber-200/95 tracking-wide uppercase text-[11px] mb-2">
@@ -31,22 +31,26 @@
   </section>
 
   <header class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-    <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">Peak_Trade</p>
-    <h1 class="text-2xl font-bold text-slate-100">Observability-Hub</h1>
-    <p class="text-sm text-slate-400 mt-2 max-w-3xl">
-      Zentrale Link- und Hinweisleiste: bestehende, sichere Lese-Angebote durchklickbar machen —
-      keine neue Autorität, keine Steuerlogik für Handel oder Runner.
-    </p>
+    <div class="space-y-1.5">
+      <p class="text-xs uppercase tracking-wide text-slate-500">Peak_Trade</p>
+      <h1 class="text-2xl font-bold text-slate-100">Observability-Hub</h1>
+      <p class="text-sm text-slate-400 mt-0 max-w-3xl leading-relaxed">
+        Zentrale Link- und Hinweisleiste: bestehende, sichere Lese-Angebote durchklickbar machen —
+        keine neue Autorität, keine Steuerlogik für Handel oder Runner.
+      </p>
+    </div>
   </header>
 
   <section
-    class="rounded-xl border border-slate-700/80 bg-slate-900/45 px-4 py-3 text-xs text-slate-300"
+    class="rounded-xl border border-slate-700/80 bg-slate-900/45 px-5 py-4 text-xs text-slate-300 space-y-4"
     aria-label="Globale Systemgrenze"
     data-observability-boundary-legend="true"
   >
-    <p class="font-semibold text-slate-200 tracking-wide uppercase text-[11px] mb-2">
-      Globale Grenz-Legende (display-only)
-    </p>
+    <div class="space-y-1.5">
+      <p class="font-semibold text-slate-200 tracking-wide uppercase text-[11px]">
+        Globale Grenz-Legende (display-only)
+      </p>
+    </div>
     <ul class="list-disc pl-5 space-y-1 leading-relaxed text-slate-400">
       <li>Keine Orders.</li>
       <li>Keine Testnet-/Live-Aktivierung.</li>
@@ -58,15 +62,15 @@
   </section>
 
   <section
-    class="rounded-xl border border-cyan-900/35 bg-cyan-950/10 px-5 py-4 space-y-3"
+    class="rounded-xl border border-cyan-900/35 bg-cyan-950/10 px-5 py-4 space-y-4"
     aria-label="System Status Snapshot — display-only"
     data-observability-status-summary="true"
   >
-    <div>
+    <div class="space-y-1.5">
       <h2 class="text-sm font-semibold text-cyan-200/95 tracking-wide uppercase text-[11px]">
         System Status Snapshot
       </h2>
-      <p class="text-xs text-cyan-100/85 mt-1.5 leading-relaxed">
+      <p class="text-xs text-cyan-100/85 leading-relaxed">
         Display-only status snapshot. No backend health certification. No provider readiness.
         No Paper/Testnet/Live/order readiness.
       </p>
@@ -104,17 +108,17 @@
   </section>
 
   <section
-    class="rounded-xl border border-emerald-900/40 bg-emerald-950/15 px-5 py-4 space-y-3"
+    class="rounded-xl border border-emerald-900/40 bg-emerald-950/15 px-5 py-4 space-y-4"
     aria-label="Health Status — display-only"
     data-observability-health-panel="true"
     data-observability-health-readonly="true"
     data-observability-health-no-actions="true"
   >
-    <div>
+    <div class="space-y-1.5">
       <h2 class="text-sm font-semibold text-emerald-200/95 tracking-wide uppercase text-[11px]">
         Health Status Panel
       </h2>
-      <p class="text-xs text-emerald-100/85 mt-1.5 leading-relaxed">
+      <p class="text-xs text-emerald-100/85 leading-relaxed">
         read-only / display-only — keine Steuerbuttons, keine Formulare auf dieser Hub-Seite.
         Dieses Panel löst keine Health-Checks oder Workflows aus, aktiviert weder Live noch Testnet und keine Orders,
         und erlaubt keinen Risk- oder KillSwitch-Override.
@@ -129,8 +133,13 @@
       {{ status.version }} · {{ status.snapshot_commit }}
     </p>
     {% endif %}
-    <div>
-      <h3 class="text-xs font-medium text-slate-300 mb-2">Bestehende Health-GET-Endpunkte</h3>
+    <div
+      class="rounded-lg border border-slate-800/50 bg-slate-950/30 px-3 py-3 space-y-2"
+      data-observability-panel-link-block="true"
+    >
+      <h3 class="text-xs font-medium text-slate-400 uppercase tracking-wide text-[11px]">
+        GET-Ziele
+      </h3>
       <ul class="space-y-2 text-sm text-sky-400 font-mono text-xs">
         <li><a class="underline hover:text-sky-300" href="/health">GET /health</a></li>
         <li><a class="underline hover:text-sky-300" href="/health/detailed">GET /health/detailed</a></li>
@@ -142,18 +151,18 @@
   </section>
 
   <section
-    class="rounded-xl border border-sky-900/35 bg-sky-950/10 px-5 py-4 space-y-3"
+    class="rounded-xl border border-sky-900/35 bg-sky-950/10 px-5 py-4 space-y-4"
     aria-label="Market Surface v0 — display-only"
     data-observability-market-panel="true"
     data-observability-market-provenance="true"
     data-observability-market-no-fetch="true"
     data-observability-market-no-readiness="true"
   >
-    <div>
+    <div class="space-y-1.5">
       <h2 class="text-sm font-semibold text-sky-200/95 tracking-wide uppercase text-[11px]">
         Market Surface v0 Panel
       </h2>
-      <p class="text-xs text-sky-100/80 mt-1.5 leading-relaxed">
+      <p class="text-xs text-sky-100/80 leading-relaxed">
         read-only OHLCV — Dummy/Offline nur informativ; optional öffentliche OHLCV ebenfalls nur Anzeige
         ohne Trading-, Live- oder Readiness-Aussage. Keine Ausführung, keine Ordersemantik.
       </p>
@@ -170,33 +179,41 @@
       <li>Market display is not Paper/Testnet/Live/order readiness.</li>
       <li>Market display is not trading authority.</li>
     </ul>
-    <ul class="space-y-2 text-sm text-sky-400">
-      <li>
-        <a class="underline hover:text-sky-300 font-mono text-xs break-all"
-           href="/market?source=dummy&amp;timeframe=1h&amp;limit=30&amp;symbol=BTC%2FUSD">GET /market</a>
-        — HTML-Anzeige (Dummy-Beispielparameter).
-      </li>
-      <li>
-        <a class="underline hover:text-sky-300 font-mono text-xs break-all"
-           href="/api/market/ohlcv?symbol=BTC%2FUSD&amp;timeframe=1h&amp;limit=30&amp;source=dummy">
-          GET /api/market/ohlcv</a>
-        — JSON (Dummy).
-      </li>
-    </ul>
+    <div
+      class="rounded-lg border border-slate-800/50 bg-slate-950/30 px-3 py-3 space-y-2"
+      data-observability-panel-link-block="true"
+    >
+      <h3 class="text-xs font-medium text-slate-400 uppercase tracking-wide text-[11px]">
+        GET-Ziele
+      </h3>
+      <ul class="space-y-2 text-sm text-sky-400">
+        <li>
+          <a class="underline hover:text-sky-300 font-mono text-xs break-all"
+             href="/market?source=dummy&amp;timeframe=1h&amp;limit=30&amp;symbol=BTC%2FUSD">GET /market</a>
+          — HTML-Anzeige (Dummy-Beispielparameter).
+        </li>
+        <li>
+          <a class="underline hover:text-sky-300 font-mono text-xs break-all"
+             href="/api/market/ohlcv?symbol=BTC%2FUSD&amp;timeframe=1h&amp;limit=30&amp;source=dummy">
+            GET /api/market/ohlcv</a>
+          — JSON (Dummy).
+        </li>
+      </ul>
+    </div>
   </section>
 
   <section
-    class="rounded-xl border border-violet-900/35 bg-violet-950/10 px-5 py-4 space-y-3"
+    class="rounded-xl border border-violet-900/35 bg-violet-950/10 px-5 py-4 space-y-4"
     aria-label="Double Play Display JSON — display-only"
     data-observability-double-play-panel="true"
     data-observability-double-play-display-json="true"
     data-observability-double-play-no-authority="true"
   >
-    <div>
+    <div class="space-y-1.5">
       <h2 class="text-sm font-semibold text-violet-200/95 tracking-wide uppercase text-[11px]">
         Double Play Display Panel
       </h2>
-      <p class="text-xs text-violet-100/85 mt-1.5 leading-relaxed">
+      <p class="text-xs text-violet-100/85 leading-relaxed">
         Reiner Snapshot/Display-Vertrag für Dashboard-Payload — keine Session, keine Exchange-Anbindung,
         keine Ausführungsautorität.
       </p>
@@ -210,29 +227,37 @@
       <li>no Capital/Scope approval</li>
       <li>no Risk/KillSwitch override</li>
     </ul>
-    <ul class="text-sm">
-      <li>
-        <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs break-all"
-           href="/api/master-v2/double-play/dashboard-display.json">
-          GET /api/master-v2/double-play/dashboard-display.json
-        </a>
-      </li>
-    </ul>
+    <div
+      class="rounded-lg border border-slate-800/50 bg-slate-950/30 px-3 py-3 space-y-2"
+      data-observability-panel-link-block="true"
+    >
+      <h3 class="text-xs font-medium text-slate-400 uppercase tracking-wide text-[11px]">
+        GET-Ziele
+      </h3>
+      <ul class="text-sm space-y-2">
+        <li>
+          <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs break-all"
+             href="/api/master-v2/double-play/dashboard-display.json">
+            GET /api/master-v2/double-play/dashboard-display.json
+          </a>
+        </li>
+      </ul>
+    </div>
   </section>
 
   <section
-    class="rounded-xl border border-indigo-900/35 bg-indigo-950/10 px-5 py-4 space-y-3"
+    class="rounded-xl border border-indigo-900/35 bg-indigo-950/10 px-5 py-4 space-y-4"
     aria-label="R and D experiments — visibility only"
     data-observability-rd-panel="true"
     data-observability-rd-research-only="true"
     data-observability-rd-no-deployment="true"
     data-observability-rd-no-strategy-authority="true"
   >
-    <div>
+    <div class="space-y-1.5">
       <h2 class="text-sm font-semibold text-indigo-200/95 tracking-wide uppercase text-[11px]">
         R&amp;D Experiments Panel
       </h2>
-      <p class="text-xs text-indigo-100/85 mt-1.5 leading-relaxed">
+      <p class="text-xs text-indigo-100/85 leading-relaxed">
         R&amp;D experiments are research visibility only.
       </p>
     </div>
@@ -245,34 +270,42 @@
       <li>R&amp;D display is not Paper/Testnet/Live/order readiness.</li>
       <li>R&amp;D display is not trading authority.</li>
     </ul>
-    <ul class="space-y-2 text-sm">
-      <li>
-        <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/r_and_d/experiments">
-          GET /r_and_d/experiments
-        </a>
-      </li>
-      <li>
-        <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs break-all"
-           href="/api/r_and_d/experiments?limit=20">
-          GET /api/r_and_d/experiments?limit=20
-        </a>
-      </li>
-    </ul>
+    <div
+      class="rounded-lg border border-slate-800/50 bg-slate-950/30 px-3 py-3 space-y-2"
+      data-observability-panel-link-block="true"
+    >
+      <h3 class="text-xs font-medium text-slate-400 uppercase tracking-wide text-[11px]">
+        GET-Ziele
+      </h3>
+      <ul class="space-y-2 text-sm">
+        <li>
+          <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/r_and_d/experiments">
+            GET /r_and_d/experiments
+          </a>
+        </li>
+        <li>
+          <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs break-all"
+             href="/api/r_and_d/experiments?limit=20">
+            GET /api/r_and_d/experiments?limit=20
+          </a>
+        </li>
+      </ul>
+    </div>
   </section>
 
   <section
-    class="rounded-xl border border-orange-900/35 bg-orange-950/10 px-5 py-4 space-y-3"
+    class="rounded-xl border border-orange-900/35 bg-orange-950/10 px-5 py-4 space-y-4"
     aria-label="OPS CI Health — hub links read-only"
     data-observability-ops-ci-panel="true"
     data-observability-ops-ci-readonly-links="true"
     data-observability-ops-ci-no-workflow-trigger="true"
     data-observability-ops-ci-no-approval="true"
   >
-    <div>
+    <div class="space-y-1.5">
       <h2 class="text-sm font-semibold text-orange-200/95 tracking-wide uppercase text-[11px]">
         OPS — CI Health Panel
       </h2>
-      <p class="text-xs text-orange-100/85 mt-1.5 leading-relaxed">
+      <p class="text-xs text-orange-100/85 leading-relaxed">
         Nur Navigations-Verweise hier — löst keine Prüfluft aus. Die HTML-Oberfläche unter „CI Health“ kann
         an anderer Stelle eigene Schritte anbieten; dieser Hub triggert nichts.
       </p>
@@ -293,21 +326,29 @@
       <li>CI status display is not Live/Testnet/order readiness.</li>
       <li>CI status display is not trading authority.</li>
     </ul>
-    <ul class="space-y-2 text-sm">
-      <li>
-        <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/ops/ci-health">
-          GET /ops/ci-health</a>
-        <span class="text-slate-500 text-xs"> — HTML-Dashboard</span>
-      </li>
-      <li>
-        <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/ops/ci-health/status">
-          GET /ops/ci-health/status</a>
-        <span class="text-slate-500 text-xs"> — JSON (Lesestatus)</span>
-      </li>
-    </ul>
+    <div
+      class="rounded-lg border border-slate-800/50 bg-slate-950/30 px-3 py-3 space-y-2"
+      data-observability-panel-link-block="true"
+    >
+      <h3 class="text-xs font-medium text-slate-400 uppercase tracking-wide text-[11px]">
+        GET-Ziele
+      </h3>
+      <ul class="space-y-2 text-sm">
+        <li>
+          <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/ops/ci-health">
+            GET /ops/ci-health</a>
+          <span class="text-slate-500 text-xs"> — HTML-Dashboard</span>
+        </li>
+        <li>
+          <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/ops/ci-health/status">
+            GET /ops/ci-health/status</a>
+          <span class="text-slate-500 text-xs"> — JSON (Lesestatus)</span>
+        </li>
+      </ul>
+    </div>
   </section>
 
-  <section class="rounded-xl border border-slate-800 bg-slate-900/40 p-4 text-xs text-slate-500" aria-label="Hinweise">
+  <section class="rounded-xl border border-slate-800 bg-slate-900/40 px-5 py-4 text-xs text-slate-500" aria-label="Hinweise">
     <p class="leading-relaxed">
       Knowledge API und andere geschriebene Oberflächen sind absichtlich nicht verlinkt
       — dieser Hub soll nur bestehende, uneingeschränkte GET-/Angebote sammeln, ohne neue Autorisierung zu suggerieren.

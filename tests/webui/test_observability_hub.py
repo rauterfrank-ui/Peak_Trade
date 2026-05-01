@@ -122,6 +122,9 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
 
     assert "data-observability-health-project-snapshot=" in body
 
+    assert body.count('data-observability-panel-link-block="true"') == 5
+    assert "GET-Ziele" in body
+
 
 def test_observability_hub_template_knowledge_exclusion_banner() -> None:
     tmpl = (
@@ -200,6 +203,8 @@ def test_observability_hub_template_health_panel_markers_and_no_post() -> None:
     assert "The Observability Hub only links to OPS CI GET surfaces." in txt
     assert "The Hub does not start GitHub Actions." in txt
     assert "CI status display is not deployment approval." in txt
+    assert txt.count('data-observability-panel-link-block="true"') == 5
+    assert "GET-Ziele" in txt
     assert 'method="POST"' not in txt
     assert "<form" not in txt.lower()
     assert 'type="submit"' not in txt

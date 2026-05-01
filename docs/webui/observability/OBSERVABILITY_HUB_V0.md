@@ -31,6 +31,20 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 | R&amp;D Experiments | HTML-Liste und **`GET &#47;api&#47;r_and_d&#47;experiments`** |
 | OPS CI Health | **`GET &#47;ops&#47;ci-health`** (dediziertes CI-Dashboard) und **`GET &#47;ops&#47;ci-health&#47;status`** (bevorzugter read-only Status, JSON) — Hub nur GET-Links, v0.6 |
 
+## Visual/UX consolidation (v0.7)
+
+Ab v0.7 sind **Panel-Hierarchie** (einheitliche Ueberschriften-/Subtitel-Abstaende) und **GET-Link-Darstellung** auf `GET &#47;observability` optisch konsolidiert:
+
+- gleiche innere Abstaende in den Haupt-Panels,
+- GET-Link-Listen in einem gemeinsamen Rahmenblock,
+- optionaler sichtbarer Zwischenueberschrift-Text **GET-Ziele** — reine Layout-/Scan-Hilfe, **keine** zusaetzliche semantische Aussage zu Datenquellen, Readiness, Freigaben oder Autoritaet.
+
+Stabiler Anzeige-/Test-Anker (nur Darstellung):
+
+- `data-observability-panel-link-block=&quot;true&quot;`
+
+Es gibt **keine** Aenderung an Backend-Routen, Links (`href`), Autoritaetsgrenzen, `fetch(`, Formular-/POST-Semantik oder Panel-Reihenfolge.
+
 ## R&amp;D Experiments Panel (v0.5)
 
 Das R&amp;D-Panel auf `GET &#47;observability` bleibt eine **statische Erklaer- und Linkflaeche**:
@@ -127,6 +141,7 @@ Stabile Marker fuer Tests/Vertrag:
 - `data-observability-ops-ci-no-workflow-trigger`
 - `data-observability-ops-ci-no-approval`
 - `data-observability-status-summary`
+- `data-observability-panel-link-block` (v0.7 — Link-Block-Wrapper, display-only)
 
 Kein `method=&quot;POST&quot;`, kein `<form>`, kein eingebettetes `fetch(` im Hub-Template.
 
