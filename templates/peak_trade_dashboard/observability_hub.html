@@ -264,6 +264,9 @@
     class="rounded-xl border border-orange-900/35 bg-orange-950/10 px-5 py-4 space-y-3"
     aria-label="OPS CI Health — hub links read-only"
     data-observability-ops-ci-panel="true"
+    data-observability-ops-ci-readonly-links="true"
+    data-observability-ops-ci-no-workflow-trigger="true"
+    data-observability-ops-ci-no-approval="true"
   >
     <div>
       <h2 class="text-sm font-semibold text-orange-200/95 tracking-wide uppercase text-[11px]">
@@ -274,6 +277,22 @@
         an anderer Stelle eigene Schritte anbieten; dieser Hub triggert nichts.
       </p>
     </div>
+    <ul class="list-disc pl-5 space-y-1.5 text-xs text-orange-100/90 leading-relaxed">
+      <li>The Observability Hub only links to OPS CI GET surfaces.</li>
+      <li>
+        <span class="font-mono">GET /ops/ci-health/status</span> is the preferred read-only status path.
+      </li>
+      <li>
+        <span class="font-mono">GET /ops/ci-health</span> may show the dedicated CI dashboard, but the Hub itself
+        triggers nothing.
+      </li>
+      <li>The Hub does not trigger workflows.</li>
+      <li>The Hub does not start GitHub Actions.</li>
+      <li>CI status display is not readiness approval.</li>
+      <li>CI status display is not deployment approval.</li>
+      <li>CI status display is not Live/Testnet/order readiness.</li>
+      <li>CI status display is not trading authority.</li>
+    </ul>
     <ul class="space-y-2 text-sm">
       <li>
         <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/ops/ci-health">

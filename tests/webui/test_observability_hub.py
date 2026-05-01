@@ -47,6 +47,9 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert 'data-observability-rd-no-deployment="true"' in body
     assert 'data-observability-rd-no-strategy-authority="true"' in body
     assert 'data-observability-ops-ci-panel="true"' in body
+    assert 'data-observability-ops-ci-readonly-links="true"' in body
+    assert 'data-observability-ops-ci-no-workflow-trigger="true"' in body
+    assert 'data-observability-ops-ci-no-approval="true"' in body
     assert 'data-observability-health-panel="true"' in body
     assert 'data-observability-health-readonly="true"' in body
     assert 'data-observability-health-no-actions="true"' in body
@@ -98,7 +101,18 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert "/api/master-v2/double-play/dashboard-display.json" in body
     assert "/r_and_d/experiments" in body
     assert "/api/r_and_d/experiments?limit=20" in body
+    assert 'href="/ops/ci-health"' in body
     assert "/ops/ci-health/status" in body
+
+    assert "The Observability Hub only links to OPS CI GET surfaces." in body
+    assert "is the preferred read-only status path." in body
+    assert "may show the dedicated CI dashboard, but the Hub itself" in body
+    assert "The Hub does not trigger workflows." in body
+    assert "The Hub does not start GitHub Actions." in body
+    assert "CI status display is not readiness approval." in body
+    assert "CI status display is not deployment approval." in body
+    assert "CI status display is not Live/Testnet/order readiness." in body
+    assert "CI status display is not trading authority." in body
 
     assert 'method="POST"' not in body
     assert "<form" not in body.lower()
@@ -146,6 +160,9 @@ def test_observability_hub_template_health_panel_markers_and_no_post() -> None:
     assert 'data-observability-rd-no-deployment="true"' in txt
     assert 'data-observability-rd-no-strategy-authority="true"' in txt
     assert 'data-observability-ops-ci-panel="true"' in txt
+    assert 'data-observability-ops-ci-readonly-links="true"' in txt
+    assert 'data-observability-ops-ci-no-workflow-trigger="true"' in txt
+    assert 'data-observability-ops-ci-no-approval="true"' in txt
     assert 'data-observability-display-only="true"' in txt
     assert "read-only / display-only" in txt
     assert "Display-only status snapshot" in txt
@@ -180,6 +197,9 @@ def test_observability_hub_template_health_panel_markers_and_no_post() -> None:
     assert "R&amp;D display is not Paper/Testnet/Live/order readiness." in txt
     assert "R&amp;D display is not trading authority." in txt
     assert "/api/r_and_d/experiments?limit=20" in txt
+    assert "The Observability Hub only links to OPS CI GET surfaces." in txt
+    assert "The Hub does not start GitHub Actions." in txt
+    assert "CI status display is not deployment approval." in txt
     assert 'method="POST"' not in txt
     assert "<form" not in txt.lower()
     assert 'type="submit"' not in txt

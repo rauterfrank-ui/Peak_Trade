@@ -29,7 +29,7 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 | Market Surface v0 | Dummy-Links **`GET &#47;market`** und **`GET &#47;api&#47;market&#47;ohlcv`** |
 | Double Play Display | **`GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json`** (display-only Snapshot/Display-Vertrag, ohne Autorität) |
 | R&amp;D Experiments | HTML-Liste und **`GET &#47;api&#47;r_and_d&#47;experiments`** |
-| OPS CI Health | **`GET &#47;ops&#47;ci-health`** und **`GET &#47;ops&#47;ci-health&#47;status`** (Hub nur GET-Links) |
+| OPS CI Health | **`GET &#47;ops&#47;ci-health`** (dediziertes CI-Dashboard) und **`GET &#47;ops&#47;ci-health&#47;status`** (bevorzugter read-only Status, JSON) — Hub nur GET-Links, v0.6 |
 
 ## R&amp;D Experiments Panel (v0.5)
 
@@ -55,6 +55,31 @@ Stabile Marker fuer Tests/Vertrag:
 - `data-observability-rd-research-only=&quot;true&quot;`
 - `data-observability-rd-no-deployment=&quot;true&quot;`
 - `data-observability-rd-no-strategy-authority=&quot;true&quot;`
+
+## OPS CI Health Panel (v0.6)
+
+Das OPS-CI-Panel auf `GET &#47;observability` bleibt eine **statische Erklaer- und Linkflaeche** zu den bestehenden OPS-CI-**GET**-Oberflaechen:
+
+- **`GET &#47;ops&#47;ci-health`** — HTML-Dashboard (dedizierte CI-Health-Oberflaeche; kann dort eigene Schritte anbieten).
+- **`GET &#47;ops&#47;ci-health&#47;status`** — **bevorzugter read-only Status-Pfad** (JSON-Lesestatus vom Server; der Hub aggregiert nicht und ruft nichts serverseitig ab).
+
+Semantik und Grenzen (explizit):
+
+- The Observability Hub only links to OPS CI GET surfaces.
+- **`GET &#47;ops&#47;ci-health&#47;status`** ist der bevorzugte read-only Status-Pfad.
+- **`GET &#47;ops&#47;ci-health`** kann das dedizierte CI-Dashboard zeigen; der Hub selbst loest nichts aus.
+- The Hub does not trigger workflows.
+- The Hub does not start GitHub Actions.
+- CI status display is not readiness approval.
+- CI status display is not deployment approval.
+- CI status display is not Live&#47;Testnet&#47;order readiness.
+- CI status display is not trading authority.
+
+Stabile Marker fuer Tests/Vertrag (zusaetzlich zu `data-observability-ops-ci-panel`):
+
+- `data-observability-ops-ci-readonly-links=&quot;true&quot;`
+- `data-observability-ops-ci-no-workflow-trigger=&quot;true&quot;`
+- `data-observability-ops-ci-no-approval=&quot;true&quot;`
 
 ## Market/Data Provenance Panel (v0.4)
 
@@ -98,6 +123,9 @@ Stabile Marker fuer Tests/Vertrag:
 - `data-observability-double-play-no-authority`
 - `data-observability-rd-panel`
 - `data-observability-ops-ci-panel`
+- `data-observability-ops-ci-readonly-links`
+- `data-observability-ops-ci-no-workflow-trigger`
+- `data-observability-ops-ci-no-approval`
 - `data-observability-status-summary`
 
 Kein `method=&quot;POST&quot;`, kein `<form>`, kein eingebettetes `fetch(` im Hub-Template.
