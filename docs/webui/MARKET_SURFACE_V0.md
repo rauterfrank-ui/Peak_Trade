@@ -26,3 +26,21 @@ Keine Kopplung an OPS Cockpit (`/ops`). Keine Trading-Aktionen.
 - **`kraken`** hier nur **öffentliche OHLCV‑Darstellung**, **keine** Ableitung von Futures‑Readiness noch von Testnet/Live‑Freigaben.
 
 **Read-only / non-authorizing:** Keine Orders, keine Paper-/Testnet-/Live‑Aktivierung, keine Scope/Capital‑Billigung, kein Bypass von Risk/KillSwitch‑Enforcement, keine Ausführungs‑ oder Strategieautorität. Keine Schlussfolgerung auf Futures‑„Readiness“ oder Provider‑Bereitschaft über diese View hinaus.
+
+## Safety banner and stable markers
+
+Das HTML-Template für **`GET &#47;market`** rendert oberhalb der Chart-Fläche ein **sichtbares** Safety-Banner (**read-only**, **non-authorizing**) mit Quellen-spezifischem Kurztext (`source=dummy` \| `source=kraken`).
+
+Stabile `data-*`‑Marker (Anker für Anzeige und automatisierte Tests — **keine** neue Autorität, **keine** Readiness):
+
+- `data-market-readonly="true"`
+- `data-market-non-authorizing="true"`
+- `data-market-safety-banner="true"`
+- `data-market-surface-v0="true"`
+
+`data-market-source-kind` unterscheidet aktuell:
+
+- `dummy-offline-synthetic`
+- `kraken-public-ohlcv-network`
+
+Banner‑Inhalt fasst u. a.: keine Orders, kein Testnet/Live, keine Capital/Scope‑Freigabe, kein Risk-/KillSwitch‑Bypass — rein erklärend; **kein** Gate, **keine** Strategie- oder Ausführungsfreigabe.
