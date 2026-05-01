@@ -43,6 +43,9 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert 'data-observability-double-play-display-json="true"' in body
     assert 'data-observability-double-play-no-authority="true"' in body
     assert 'data-observability-rd-panel="true"' in body
+    assert 'data-observability-rd-research-only="true"' in body
+    assert 'data-observability-rd-no-deployment="true"' in body
+    assert 'data-observability-rd-no-strategy-authority="true"' in body
     assert 'data-observability-ops-ci-panel="true"' in body
     assert 'data-observability-health-panel="true"' in body
     assert 'data-observability-health-readonly="true"' in body
@@ -76,6 +79,14 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert "no Live/Testnet/order path" in body
     assert "no Capital/Scope approval" in body
     assert "no Risk/KillSwitch override" in body
+    assert "R&amp;D experiments are research visibility only." in body
+    assert "The hub does not fetch experiment data." in body
+    assert "The hub does not promote experiments." in body
+    assert "The hub does not deploy strategies." in body
+    assert "The hub does not authorize strategy output." in body
+    assert "R&amp;D display is not readiness approval." in body
+    assert "R&amp;D display is not Paper/Testnet/Live/order readiness." in body
+    assert "R&amp;D display is not trading authority." in body
 
     assert 'href="/market' in body
     assert "/api/market/ohlcv" in body
@@ -86,6 +97,7 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert "/api/health" in body
     assert "/api/master-v2/double-play/dashboard-display.json" in body
     assert "/r_and_d/experiments" in body
+    assert "/api/r_and_d/experiments?limit=20" in body
     assert "/ops/ci-health/status" in body
 
     assert 'method="POST"' not in body
@@ -130,6 +142,9 @@ def test_observability_hub_template_health_panel_markers_and_no_post() -> None:
     assert 'data-observability-double-play-display-json="true"' in txt
     assert 'data-observability-double-play-no-authority="true"' in txt
     assert 'data-observability-rd-panel="true"' in txt
+    assert 'data-observability-rd-research-only="true"' in txt
+    assert 'data-observability-rd-no-deployment="true"' in txt
+    assert 'data-observability-rd-no-strategy-authority="true"' in txt
     assert 'data-observability-ops-ci-panel="true"' in txt
     assert 'data-observability-display-only="true"' in txt
     assert "read-only / display-only" in txt
@@ -156,6 +171,15 @@ def test_observability_hub_template_health_panel_markers_and_no_post() -> None:
     assert "no Live/Testnet/order path" in txt
     assert "no Capital/Scope approval" in txt
     assert "no Risk/KillSwitch override" in txt
+    assert "R&amp;D experiments are research visibility only." in txt
+    assert "The hub does not fetch experiment data." in txt
+    assert "The hub does not promote experiments." in txt
+    assert "The hub does not deploy strategies." in txt
+    assert "The hub does not authorize strategy output." in txt
+    assert "R&amp;D display is not readiness approval." in txt
+    assert "R&amp;D display is not Paper/Testnet/Live/order readiness." in txt
+    assert "R&amp;D display is not trading authority." in txt
+    assert "/api/r_and_d/experiments?limit=20" in txt
     assert 'method="POST"' not in txt
     assert "<form" not in txt.lower()
     assert 'type="submit"' not in txt

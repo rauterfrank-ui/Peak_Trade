@@ -224,15 +224,27 @@
     class="rounded-xl border border-indigo-900/35 bg-indigo-950/10 px-5 py-4 space-y-3"
     aria-label="R and D experiments — visibility only"
     data-observability-rd-panel="true"
+    data-observability-rd-research-only="true"
+    data-observability-rd-no-deployment="true"
+    data-observability-rd-no-strategy-authority="true"
   >
     <div>
       <h2 class="text-sm font-semibold text-indigo-200/95 tracking-wide uppercase text-[11px]">
         R&amp;D Experiments Panel
       </h2>
       <p class="text-xs text-indigo-100/85 mt-1.5 leading-relaxed">
-        Forschungs-/Experiment-Sichtbarkeit — keine Deploy- oder Produktionsfreigabe über diese Links.
+        R&amp;D experiments are research visibility only.
       </p>
     </div>
+    <ul class="list-disc pl-5 space-y-1.5 text-xs text-indigo-100/90 leading-relaxed">
+      <li>The hub does not fetch experiment data.</li>
+      <li>The hub does not promote experiments.</li>
+      <li>The hub does not deploy strategies.</li>
+      <li>The hub does not authorize strategy output.</li>
+      <li>R&amp;D display is not readiness approval.</li>
+      <li>R&amp;D display is not Paper/Testnet/Live/order readiness.</li>
+      <li>R&amp;D display is not trading authority.</li>
+    </ul>
     <ul class="space-y-2 text-sm">
       <li>
         <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/r_and_d/experiments">
