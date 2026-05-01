@@ -1,0 +1,129 @@
+<!-- templates/peak_trade_dashboard/observability_hub.html -->
+<!-- Read-only Navigations-/Observability-Hub — keine Datenabfragen, keine Steuerzentrale -->
+{% extends "base.html" %}
+
+{% block content %}
+<div
+  class="space-y-8 max-w-5xl mx-auto"
+  data-section="observability-hub-v0"
+  data-observability-hub="true"
+  data-observability-readonly="true"
+>
+  <section
+    aria-label="Einordnung dieser Seite"
+    class="rounded-xl border border-amber-900/40 bg-amber-950/25 px-4 py-3 text-xs text-amber-100/95"
+    data-observability-safety-banner="true"
+  >
+    <p class="font-semibold text-amber-200/95 tracking-wide uppercase text-[11px] mb-2">
+      Observability-Hub · rein read-only · non-authorizing
+    </p>
+    <ul class="list-disc pl-5 space-y-1.5 leading-relaxed text-amber-100/90">
+      <li>Keine Orders.</li>
+      <li>Keine Live-/Testnet-Aktivierung.</li>
+      <li>Keine Capital-/Scope-Freigabe.</li>
+      <li>Kein Risk-/KillSwitch-Override.</li>
+      <li>
+        Diese Seite enthält keine POSTs und kein eigener Datenabruf gegen Provider oder Exchanges
+        — nur Verweise zu bestehenden GET-/Anzeige-Flächen.
+      </li>
+    </ul>
+  </section>
+
+  <header class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+    <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">Peak_Trade</p>
+    <h1 class="text-2xl font-bold text-slate-100">Observability-Hub</h1>
+    <p class="text-sm text-slate-400 mt-2 max-w-3xl">
+      Zentrale Link- und Hinweisleiste: bestehende, sichere Lese-Angebote durchklickbar machen —
+      keine neue Autorität, keine Steuerlogik für Handel oder Runner.
+    </p>
+  </header>
+
+  <section class="rounded-xl border border-slate-800 bg-slate-900/50 p-5" aria-label="Market Surface v0">
+    <h2 class="text-sm font-semibold text-slate-200 mb-3">Market Surface v0 (read-only OHLCV)</h2>
+    <ul class="space-y-2 text-sm text-sky-400">
+      <li>
+        <a class="underline hover:text-sky-300 font-mono text-xs break-all"
+           href="/market?source=dummy&amp;timeframe=1h&amp;limit=30&amp;symbol=BTC%2FUSD">GET /market</a>
+        — HTML-Anzeige (Dummy-Beispielparameter).
+      </li>
+      <li>
+        <a class="underline hover:text-sky-300 font-mono text-xs break-all"
+           href="/api/market/ohlcv?symbol=BTC%2FUSD&amp;timeframe=1h&amp;limit=30&amp;source=dummy">
+          GET /api/market/ohlcv</a>
+        — JSON (Dummy).
+      </li>
+    </ul>
+  </section>
+
+  <section class="rounded-xl border border-slate-800 bg-slate-900/50 p-5" aria-label="Health">
+    <h2 class="text-sm font-semibold text-slate-200 mb-3">Health &amp; Metriken (GET)</h2>
+    <ul class="space-y-2 text-sm text-sky-400 font-mono text-xs">
+      <li><a class="underline hover:text-sky-300" href="/health">GET /health</a></li>
+      <li><a class="underline hover:text-sky-300" href="/health/detailed">GET /health/detailed</a></li>
+      <li><a class="underline hover:text-sky-300" href="/health/metrics">GET /health/metrics</a></li>
+      <li><a class="underline hover:text-sky-300" href="/health/prometheus">GET /health/prometheus</a></li>
+      <li><a class="underline hover:text-sky-300" href="/api/health">GET /api/health</a> <span class="text-slate-500 font-sans text-xs">(minimaler Alias)</span></li>
+    </ul>
+  </section>
+
+  <section class="rounded-xl border border-slate-800 bg-slate-900/50 p-5" aria-label="Master V2 Double Play">
+    <h2 class="text-sm font-semibold text-slate-200 mb-3">Master V2 — Double Play (Display-JSON)</h2>
+    <p class="text-xs text-slate-400 mb-2 leading-relaxed">
+      Read-only Snapshot laut Vertrag — reine Darstellungs-/Fixture-Schicht für das Dashboard-Payload,
+      keine Live-Session oder Exchange-Anbindung.
+    </p>
+    <ul class="text-sm">
+      <li>
+        <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs break-all"
+           href="/api/master-v2/double-play/dashboard-display.json">
+          GET /api/master-v2/double-play/dashboard-display.json
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="rounded-xl border border-slate-800 bg-slate-900/50 p-5" aria-label="R and D">
+    <h2 class="text-sm font-semibold text-slate-200 mb-3">R&amp;D Experimente (read-only)</h2>
+    <ul class="space-y-2 text-sm">
+      <li>
+        <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/r_and_d/experiments">
+          GET /r_and_d/experiments
+        </a>
+      </li>
+      <li>
+        <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs break-all"
+           href="/api/r_and_d/experiments?limit=20">
+          GET /api/r_and_d/experiments?limit=20
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="rounded-xl border border-slate-800 bg-slate-900/50 p-5" aria-label="OPS CI Health">
+    <h2 class="text-sm font-semibold text-slate-200 mb-3">OPS — CI Health</h2>
+    <p class="text-xs text-slate-400 mb-2 leading-relaxed">
+      Die HTML-Oberfläche kann eigene Buttons für Prüfungsläufe enthalten (POST dort, nicht hier).
+      Für reinen Lesestatus eignet sich der JSON-Status.
+    </p>
+    <ul class="space-y-2 text-sm">
+      <li>
+        <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/ops/ci-health">
+          GET /ops/ci-health</a>
+        <span class="text-slate-500 text-xs"> — HTML-Dashboard</span>
+      </li>
+      <li>
+        <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/ops/ci-health/status">
+          GET /ops/ci-health/status</a>
+        <span class="text-slate-500 text-xs"> — JSON (Lesestatus)</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="rounded-xl border border-slate-800 bg-slate-900/40 p-4 text-xs text-slate-500" aria-label="Hinweise">
+    <p class="leading-relaxed">
+      Knowledge API und andere geschriebene Oberflächen sind absichtlich nicht verlinkt
+      — dieser Hub soll nur bestehende, uneingeschränkte GET-/Angebote sammeln, ohne neue Autorisierung zu suggerieren.
+    </p>
+  </section>
+</div>
+{% endblock %}

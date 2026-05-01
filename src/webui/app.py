@@ -51,6 +51,7 @@ HTML Pages:
 - GET /r_and_d/experiments/{run_id} (R&D Experiment Detail - Phase 76 kanonisch)
 - GET /r_and_d/comparison (R&D Multi-Run Comparison - Phase 78)
 - GET /market (Market Surface v0 — read-only OHLCV, Close-Line-Chart)
+- GET /observability (Observability-Hub — read-only Link-/Hinweisleiste, keine neue Autorität)
 
 API Endpoints:
 Live-Track:
@@ -542,6 +543,20 @@ def create_app() -> FastAPI:
             {
                 "status": proj_status,
             },
+        )
+
+    @app.get("/observability", response_class=HTMLResponse)
+    async def observability_hub_page(request: Request) -> Any:
+        """
+        Read-only Observability-Hub — curated links to existing GET surfaces only.
+
+        No POST, no provider/exchange orchestration by this endpoint; navigation layer only.
+        """
+        proj_status = get_project_status()
+        return templates.TemplateResponse(
+            request,
+            "observability_hub.html",
+            {"status": proj_status},
         )
 
     @app.get("/", response_class=HTMLResponse)
