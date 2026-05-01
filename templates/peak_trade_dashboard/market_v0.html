@@ -78,6 +78,19 @@
     data-chart="market-v0-close-line"
   >
     <h2 class="text-sm font-medium text-slate-200 mb-3">Schlusskurs (Close)</h2>
+    <div
+      id="market-v0-chart-status"
+      role="status"
+      class="text-xs text-slate-400 mb-2 min-h-[1.25rem]"
+      data-market-chart-status="{% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}"
+      {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
+    >
+      {% if payload.bars_returned == 0 %}
+      No OHLCV bars available for this query.
+      {% else %}
+      Chart ready — read-only OHLCV display.
+      {% endif %}
+    </div>
     <div class="relative h-80 w-full">
       <canvas id="chart-market-v0-close"></canvas>
     </div>
@@ -87,71 +100,116 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
     (function () {
-      const el = document.getElementById("market-v0-payload");
-      if (!el) return;
-      let payload;
+      function setMarketChartStatus(kind) {
+        var node = document.getElementById("market-v0-chart-status");
+        if (!node) return;
+        var copy = {
+          ready: "Chart ready — read-only OHLCV display.",
+          empty: "No OHLCV bars available for this query.",
+          error:
+            "Chart payload could not be rendered; no trading action is available.",
+        };
+        node.setAttribute("data-market-chart-status", kind);
+        node.removeAttribute("data-market-empty-state");
+        node.removeAttribute("data-market-error-state");
+        if (kind === "empty") {
+          node.setAttribute("data-market-empty-state", "true");
+        }
+        if (kind === "error") {
+          node.setAttribute("data-market-error-state", "true");
+        }
+        node.textContent = copy[kind] || "";
+      }
+
+      var el = document.getElementById("market-v0-payload");
+      if (!el) {
+        setMarketChartStatus("error");
+        return;
+      }
+
+      var payload;
       try {
         payload = JSON.parse(el.textContent || "{}");
       } catch (e) {
+        setMarketChartStatus("error");
         return;
       }
-      const bars = payload.bars || [];
-      if (!bars.length) return;
 
-      const labels = bars.map(function (b) { return b.ts; });
-      const closes = bars.map(function (b) { return b.close; });
+      var bars = payload.bars || [];
+      if (!bars.length) {
+        setMarketChartStatus("empty");
+        return;
+      }
 
-      const canvas = document.getElementById("chart-market-v0-close");
-      if (!canvas || !window.Chart) return;
+      var canvas = document.getElementById("chart-market-v0-close");
+      if (!canvas || !window.Chart) {
+        setMarketChartStatus("error");
+        return;
+      }
 
-      const grid = "rgba(148, 163, 184, 0.15)";
-      const tick = "#94a3b8";
-      const line = "rgba(56, 189, 248, 0.85)";
+      var grid = "rgba(148, 163, 184, 0.15)";
+      var tick = "#94a3b8";
+      var line = "rgba(56, 189, 248, 0.85)";
 
-      new Chart(canvas.getContext("2d"), {
-        type: "line",
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: "Close",
-              data: closes,
-              borderColor: line,
-              backgroundColor: "rgba(56, 189, 248, 0.12)",
-              borderWidth: 1.5,
-              fill: true,
-              tension: 0.1,
-              pointRadius: 0,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: { mode: "index", intersect: false },
-          plugins: {
-            legend: { labels: { color: tick } },
-            tooltip: {
-              callbacks: {
-                label: function (ctx) {
-                  var v = ctx.parsed.y;
-                  return v != null ? "close: " + v.toFixed(2) : "";
+      try {
+        new Chart(canvas.getContext("2d"), {
+          type: "line",
+          data: {
+            labels: bars.map(function (b) {
+              return b.ts;
+            }),
+            datasets: [
+              {
+                label: "Close",
+                data: bars.map(function (b) {
+                  return b.close;
+                }),
+                borderColor: line,
+                backgroundColor: "rgba(56, 189, 248, 0.12)",
+                borderWidth: 1.5,
+                fill: true,
+                tension: 0.1,
+                pointRadius: 0,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: "index", intersect: false },
+            plugins: {
+              legend: { labels: { color: tick } },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) {
+                    var v = ctx.parsed.y;
+                    return v != null ? "close: " + v.toFixed(2) : "";
+                  },
                 },
               },
             },
-          },
-          scales: {
-            x: {
-              ticks: { color: tick, maxRotation: 45, minRotation: 0, font: { size: 9 } },
-              grid: { color: grid },
+            scales: {
+              x: {
+                ticks: {
+                  color: tick,
+                  maxRotation: 45,
+                  minRotation: 0,
+                  font: { size: 9 },
+                },
+                grid: { color: grid },
+              },
+              y: {
+                ticks: { color: tick },
+                grid: { color: grid },
+              },
             },
-            y: {
-              ticks: { color: tick },
-              grid: { color: grid },
-            },
           },
-        },
-      });
+        });
+      } catch (e2) {
+        setMarketChartStatus("error");
+        return;
+      }
+      setMarketChartStatus("ready");
     })();
   </script>
 </div>

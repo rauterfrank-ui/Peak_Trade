@@ -82,6 +82,9 @@ class TestMarketSurfaceHtml:
         assert "KillSwitch" in body or "Risk" in body
         assert "chart.js@4.4.1" in body.lower() or "chart.umd.min.js" in body
         assert 'method="POST"' not in body
+        assert 'id="market-v0-chart-status"' in body
+        assert 'data-market-chart-status="ready"' in body
+        assert "Chart ready — read-only OHLCV display." in body
 
     def test_market_html_invalid_timeframe_422(self, client: TestClient) -> None:
         r = client.get("/market", params={"source": "dummy", "timeframe": "bad"})
@@ -104,3 +107,7 @@ def test_market_v0_template_kraken_banner_markers_in_source() -> None:
     assert 'data-market-source-kind="kraken-public-ohlcv-network"' in txt
     assert "Futures" in txt
     assert "read-only · non-authorizing" in txt
+    assert 'id="market-v0-chart-status"' in txt
+    assert "data-market-chart-status" in txt
+    assert "data-market-empty-state" in txt
+    assert "Chart ready — read-only OHLCV display." in txt
