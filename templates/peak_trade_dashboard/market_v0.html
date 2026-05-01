@@ -6,10 +6,41 @@
 <div
   class="space-y-6 max-w-6xl mx-auto"
   data-section="market-v0"
+  data-market-surface-v0="true"
+  data-market-readonly="true"
+  data-market-non-authorizing="true"
   data-market-source="{{ query.source }}"
   data-market-bars="{{ payload.bars_returned }}"
   data-market-symbol="{{ query.symbol }}"
 >
+  <section
+    aria-label="Read-only und Datenquelle"
+    class="rounded-xl border border-amber-900/40 bg-amber-950/25 px-4 py-3 text-xs text-amber-100/95"
+    data-market-safety-banner="true"
+    {% if query.source == 'dummy' %}
+    data-market-source-kind="dummy-offline-synthetic"
+    {% elif query.source == 'kraken' %}
+    data-market-source-kind="kraken-public-ohlcv-network"
+    {% endif %}
+  >
+    <p class="font-semibold text-amber-200/95 tracking-wide uppercase text-[11px] mb-1.5">
+      Market Surface v0 · read-only · non-authorizing
+    </p>
+    {% if query.source == 'dummy' %}
+    <p class="leading-relaxed text-amber-100/90">
+      <span class="text-sky-200/95 font-medium">Dummy / Offline / synthetisch</span>
+      — keine Orders, kein Testnet, kein Live, keine Paper-Aktivierung.
+      Keine Capital-/Scope-Freigabe, kein Risk-/KillSwitch-Bypass, keine Ausführungsautorität.
+    </p>
+    {% elif query.source == 'kraken' %}
+    <p class="leading-relaxed text-amber-100/90">
+      <span class="text-sky-200/95 font-medium">Öffentliche OHLCV über Netzwerk (Kraken)</span>
+      — rein anzeigend (read-only), non-authorizing, <strong class="font-medium text-amber-200">kein Nachweis von Futures‑Readiness</strong>.
+      Keine Orders, kein Testnet, kein Live.
+    </p>
+    {% endif %}
+  </section>
+
   <header class="bg-gradient-to-r from-slate-900/80 to-slate-900/40 rounded-2xl border border-slate-800 p-6">
     <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
       <div>
@@ -37,7 +68,7 @@
       <li>symbol={{ query.symbol }}</li>
       <li>timeframe={{ query.timeframe }} (Kraken; Dummy bleibt synthetisch 1h)</li>
       <li>limit={{ query.limit }}</li>
-      <li>source={{ query.source }} — für Live-Daten: <span class="text-sky-400">?source=kraken</span> (Netzwerk)</li>
+      <li>source={{ query.source }} — für Netzwerk-OHLCV: <span class="text-sky-400">?source=kraken</span></li>
     </ul>
   </section>
 

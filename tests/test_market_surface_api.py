@@ -65,9 +65,34 @@ class TestMarketSurfaceHtml:
         assert "text/html" in resp.headers.get("content-type", "")
         body = resp.text
         assert 'data-section="market-v0"' in body
+        assert 'data-market-surface-v0="true"' in body
+        assert 'data-market-readonly="true"' in body
+        assert 'data-market-non-authorizing="true"' in body
+        assert 'data-market-source-kind="dummy-offline-synthetic"' in body
+        assert 'data-market-safety-banner="true"' in body
         assert 'data-market-source="dummy"' in body
         assert 'data-market-bars="20"' in body
         assert 'data-chart="market-v0-close-line"' in body
         assert 'id="market-v0-payload"' in body
+        assert "read-only · non-authorizing" in body
+        assert "Keine Orders" in body or "keine Orders" in body
+        assert "Testnet" in body
+        assert "Live" in body
+        assert "Capital" in body or "Scope" in body
+        assert "KillSwitch" in body or "Risk" in body
         assert "chart.js@4.4.1" in body.lower() or "chart.umd.min.js" in body
         assert 'method="POST"' not in body
+
+
+def test_market_v0_template_kraken_banner_markers_in_source() -> None:
+    """Kraken-Pfad ohne Netzwerk: Banner-Zweig muss im Template existieren."""
+    tmpl_path = (
+        Path(__file__).resolve().parents[1]
+        / "templates"
+        / "peak_trade_dashboard"
+        / "market_v0.html"
+    )
+    txt = tmpl_path.read_text(encoding="utf-8")
+    assert 'data-market-source-kind="kraken-public-ohlcv-network"' in txt
+    assert "Futures" in txt
+    assert "read-only · non-authorizing" in txt
