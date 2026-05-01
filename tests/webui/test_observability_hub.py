@@ -32,17 +32,29 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert 'data-observability-hub="true"' in body
     assert 'data-observability-readonly="true"' in body
     assert 'data-observability-safety-banner="true"' in body
-    assert "Keine Orders" in body
-    assert "Testnet" in body or "Live" in body
-    assert "Capital" in body or "Scope" in body
+    assert 'data-observability-health-panel="true"' in body
+    assert 'data-observability-health-readonly="true"' in body
+    assert 'data-observability-health-no-actions="true"' in body
+    assert "read-only / display-only" in body
+    assert "Workflows" in body
+    assert "Live" in body and "Testnet" in body and "Orders" in body
     assert "KillSwitch" in body or "Risk" in body
+    assert "Keine Orders" in body
+    assert "Capital" in body or "Scope" in body
     assert 'href="/market' in body
     assert "/api/market/ohlcv" in body
     assert "/health/detailed" in body
+    assert 'href="/health"' in body
+    assert "/health/metrics" in body
+    assert "/health/prometheus" in body
+    assert "/api/health" in body
     assert "/api/master-v2/double-play/dashboard-display.json" in body
     assert "/r_and_d/experiments" in body
     assert "/ops/ci-health/status" in body
     assert 'method="POST"' not in body
+    assert "<form" not in body.lower()
+    assert 'type="submit"' not in body
+    assert "data-observability-health-project-snapshot=" in body
 
 
 def test_observability_hub_template_knowledge_exclusion_banner() -> None:
@@ -55,3 +67,19 @@ def test_observability_hub_template_knowledge_exclusion_banner() -> None:
     txt = tmpl.read_text(encoding="utf-8")
     assert "Knowledge API" in txt
     assert "/api/knowledge" not in txt
+
+
+def test_observability_hub_template_health_panel_markers_and_no_post() -> None:
+    tmpl = (
+        Path(__file__).resolve().parents[2]
+        / "templates"
+        / "peak_trade_dashboard"
+        / "observability_hub.html"
+    )
+    txt = tmpl.read_text(encoding="utf-8")
+    assert 'data-observability-health-panel="true"' in txt
+    assert 'data-observability-health-readonly="true"' in txt
+    assert 'data-observability-health-no-actions="true"' in txt
+    assert "read-only / display-only" in txt
+    assert "Workflows" in txt
+    assert 'method="POST"' not in txt
