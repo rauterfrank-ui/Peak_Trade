@@ -58,6 +58,52 @@
   </section>
 
   <section
+    class="rounded-xl border border-cyan-900/35 bg-cyan-950/10 px-5 py-4 space-y-3"
+    aria-label="System Status Snapshot — display-only"
+    data-observability-status-summary="true"
+  >
+    <div>
+      <h2 class="text-sm font-semibold text-cyan-200/95 tracking-wide uppercase text-[11px]">
+        System Status Snapshot
+      </h2>
+      <p class="text-xs text-cyan-100/85 mt-1.5 leading-relaxed">
+        Display-only status snapshot. No backend health certification. No provider readiness.
+        No Paper/Testnet/Live/order readiness.
+      </p>
+    </div>
+    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-xs">
+      <div>
+        <dt class="text-slate-400">Version</dt>
+        <dd class="font-mono text-slate-200">{{ status.version if status and status.version else "not provided" }}</dd>
+      </div>
+      <div>
+        <dt class="text-slate-400">Snapshot Commit</dt>
+        <dd class="font-mono text-slate-200">
+          {{ status.snapshot_commit if status and status.snapshot_commit else "not provided" }}
+        </dd>
+      </div>
+      <div>
+        <dt class="text-slate-400">Environment</dt>
+        <dd class="font-mono text-slate-200">
+          {{
+            status.environment if status and status.environment
+            else (status.env if status and status.env else "not provided")
+          }}
+        </dd>
+      </div>
+      <div>
+        <dt class="text-slate-400">Mode</dt>
+        <dd class="font-mono text-slate-200">
+          {{
+            status.mode if status and status.mode
+            else (status.run_mode if status and status.run_mode else "not provided")
+          }}
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section
     class="rounded-xl border border-emerald-900/40 bg-emerald-950/15 px-5 py-4 space-y-3"
     aria-label="Health Status — display-only"
     data-observability-health-panel="true"
