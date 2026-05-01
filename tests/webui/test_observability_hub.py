@@ -31,16 +31,26 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     body = r.text
     assert 'data-observability-hub="true"' in body
     assert 'data-observability-readonly="true"' in body
+    assert 'data-observability-display-only="true"' in body
     assert 'data-observability-safety-banner="true"' in body
+    assert 'data-observability-boundary-legend="true"' in body
+    assert 'data-observability-market-panel="true"' in body
+    assert 'data-observability-double-play-panel="true"' in body
+    assert 'data-observability-rd-panel="true"' in body
+    assert 'data-observability-ops-ci-panel="true"' in body
     assert 'data-observability-health-panel="true"' in body
     assert 'data-observability-health-readonly="true"' in body
     assert 'data-observability-health-no-actions="true"' in body
+
     assert "read-only / display-only" in body
     assert "Workflows" in body
-    assert "Live" in body and "Testnet" in body and "Orders" in body
-    assert "KillSwitch" in body or "Risk" in body
     assert "Keine Orders" in body
-    assert "Capital" in body or "Scope" in body
+    assert "Testnet" in body and "Live" in body
+    assert "Capital" in body and "Scope" in body
+    assert "Risk" in body and "KillSwitch" in body
+    assert "Workflow-Trigger" in body
+    assert "PaperExecutionEngine" in body
+
     assert 'href="/market' in body
     assert "/api/market/ohlcv" in body
     assert "/health/detailed" in body
@@ -51,9 +61,12 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert "/api/master-v2/double-play/dashboard-display.json" in body
     assert "/r_and_d/experiments" in body
     assert "/ops/ci-health/status" in body
+
     assert 'method="POST"' not in body
     assert "<form" not in body.lower()
     assert 'type="submit"' not in body
+    assert "fetch(" not in body
+
     assert "data-observability-health-project-snapshot=" in body
 
 
@@ -80,6 +93,33 @@ def test_observability_hub_template_health_panel_markers_and_no_post() -> None:
     assert 'data-observability-health-panel="true"' in txt
     assert 'data-observability-health-readonly="true"' in txt
     assert 'data-observability-health-no-actions="true"' in txt
+    assert 'data-observability-boundary-legend="true"' in txt
+    assert 'data-observability-market-panel="true"' in txt
+    assert 'data-observability-double-play-panel="true"' in txt
+    assert 'data-observability-rd-panel="true"' in txt
+    assert 'data-observability-ops-ci-panel="true"' in txt
+    assert 'data-observability-display-only="true"' in txt
     assert "read-only / display-only" in txt
     assert "Workflows" in txt
+    assert "PaperExecutionEngine" in txt
+    assert "Workflow-Trigger" in txt
     assert 'method="POST"' not in txt
+    assert "<form" not in txt.lower()
+    assert "fetch(" not in txt
+
+
+def test_observability_hub_doc_exists_and_tokens() -> None:
+    doc = (
+        Path(__file__).resolve().parents[2]
+        / "docs"
+        / "webui"
+        / "observability"
+        / "OBSERVABILITY_HUB_V0.md"
+    )
+    assert doc.exists()
+    t = doc.read_text(encoding="utf-8")
+    assert "PaperExecutionEngine" in t
+    assert "`/api/knowledge`" not in t
+    assert "GET &#47;observability" in t
+    assert "data-observability-" in t
+    assert "Paper/Shadow" in t.lower() or "Paper" in t

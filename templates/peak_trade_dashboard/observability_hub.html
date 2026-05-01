@@ -8,6 +8,7 @@
   data-section="observability-hub-v0"
   data-observability-hub="true"
   data-observability-readonly="true"
+  data-observability-display-only="true"
 >
   <section
     aria-label="Einordnung dieser Seite"
@@ -37,6 +38,24 @@
       keine neue Autorität, keine Steuerlogik für Handel oder Runner.
     </p>
   </header>
+
+  <section
+    class="rounded-xl border border-slate-700/80 bg-slate-900/45 px-4 py-3 text-xs text-slate-300"
+    aria-label="Globale Systemgrenze"
+    data-observability-boundary-legend="true"
+  >
+    <p class="font-semibold text-slate-200 tracking-wide uppercase text-[11px] mb-2">
+      Globale Grenz-Legende (display-only)
+    </p>
+    <ul class="list-disc pl-5 space-y-1 leading-relaxed text-slate-400">
+      <li>Keine Orders.</li>
+      <li>Keine Testnet-/Live-Aktivierung.</li>
+      <li>Keine Capital-/Scope-Freigabe.</li>
+      <li>Kein Risk-/KillSwitch-Override.</li>
+      <li>Kein Workflow-Trigger von dieser Hub-Seite.</li>
+      <li>Kein PaperExecutionEngine-Wiring über diesen Hub.</li>
+    </ul>
+  </section>
 
   <section
     class="rounded-xl border border-emerald-900/40 bg-emerald-950/15 px-5 py-4 space-y-3"
@@ -76,8 +95,20 @@
     </div>
   </section>
 
-  <section class="rounded-xl border border-slate-800 bg-slate-900/50 p-5" aria-label="Market Surface v0">
-    <h2 class="text-sm font-semibold text-slate-200 mb-3">Market Surface v0 (read-only OHLCV)</h2>
+  <section
+    class="rounded-xl border border-sky-900/35 bg-sky-950/10 px-5 py-4 space-y-3"
+    aria-label="Market Surface v0 — display-only"
+    data-observability-market-panel="true"
+  >
+    <div>
+      <h2 class="text-sm font-semibold text-sky-200/95 tracking-wide uppercase text-[11px]">
+        Market Surface v0 Panel
+      </h2>
+      <p class="text-xs text-sky-100/80 mt-1.5 leading-relaxed">
+        read-only OHLCV — Dummy/Offline nur informativ; optional öffentliche OHLCV ebenfalls nur Anzeige
+        ohne Trading-, Live- oder Readiness-Aussage. Keine Ausführung, keine Ordersemantik.
+      </p>
+    </div>
     <ul class="space-y-2 text-sm text-sky-400">
       <li>
         <a class="underline hover:text-sky-300 font-mono text-xs break-all"
@@ -93,12 +124,20 @@
     </ul>
   </section>
 
-  <section class="rounded-xl border border-slate-800 bg-slate-900/50 p-5" aria-label="Master V2 Double Play">
-    <h2 class="text-sm font-semibold text-slate-200 mb-3">Master V2 — Double Play (Display-JSON)</h2>
-    <p class="text-xs text-slate-400 mb-2 leading-relaxed">
-      Read-only Snapshot laut Vertrag — reine Darstellungs-/Fixture-Schicht für das Dashboard-Payload,
-      keine Live-Session oder Exchange-Anbindung.
-    </p>
+  <section
+    class="rounded-xl border border-violet-900/35 bg-violet-950/10 px-5 py-4 space-y-3"
+    aria-label="Double Play Display JSON — display-only"
+    data-observability-double-play-panel="true"
+  >
+    <div>
+      <h2 class="text-sm font-semibold text-violet-200/95 tracking-wide uppercase text-[11px]">
+        Double Play Display Panel
+      </h2>
+      <p class="text-xs text-violet-100/85 mt-1.5 leading-relaxed">
+        Reiner Snapshot/Display-Vertrag für Dashboard-Payload — keine Session, keine Exchange-Anbindung,
+        keine Ausführungsautorität.
+      </p>
+    </div>
     <ul class="text-sm">
       <li>
         <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs break-all"
@@ -109,8 +148,19 @@
     </ul>
   </section>
 
-  <section class="rounded-xl border border-slate-800 bg-slate-900/50 p-5" aria-label="R and D">
-    <h2 class="text-sm font-semibold text-slate-200 mb-3">R&amp;D Experimente (read-only)</h2>
+  <section
+    class="rounded-xl border border-indigo-900/35 bg-indigo-950/10 px-5 py-4 space-y-3"
+    aria-label="R and D experiments — visibility only"
+    data-observability-rd-panel="true"
+  >
+    <div>
+      <h2 class="text-sm font-semibold text-indigo-200/95 tracking-wide uppercase text-[11px]">
+        R&amp;D Experiments Panel
+      </h2>
+      <p class="text-xs text-indigo-100/85 mt-1.5 leading-relaxed">
+        Forschungs-/Experiment-Sichtbarkeit — keine Deploy- oder Produktionsfreigabe über diese Links.
+      </p>
+    </div>
     <ul class="space-y-2 text-sm">
       <li>
         <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/r_and_d/experiments">
@@ -126,12 +176,20 @@
     </ul>
   </section>
 
-  <section class="rounded-xl border border-slate-800 bg-slate-900/50 p-5" aria-label="OPS CI Health">
-    <h2 class="text-sm font-semibold text-slate-200 mb-3">OPS — CI Health</h2>
-    <p class="text-xs text-slate-400 mb-2 leading-relaxed">
-      Die HTML-Oberfläche kann eigene Buttons für Prüfungsläufe enthalten (POST dort, nicht hier).
-      Für reinen Lesestatus eignet sich der JSON-Status.
-    </p>
+  <section
+    class="rounded-xl border border-orange-900/35 bg-orange-950/10 px-5 py-4 space-y-3"
+    aria-label="OPS CI Health — hub links read-only"
+    data-observability-ops-ci-panel="true"
+  >
+    <div>
+      <h2 class="text-sm font-semibold text-orange-200/95 tracking-wide uppercase text-[11px]">
+        OPS — CI Health Panel
+      </h2>
+      <p class="text-xs text-orange-100/85 mt-1.5 leading-relaxed">
+        Nur Navigations-Verweise hier — löst keine Prüfluft aus. Die HTML-Oberfläche unter „CI Health“ kann
+        an anderer Stelle eigene Schritte anbieten; dieser Hub triggert nichts.
+      </p>
+    </div>
     <ul class="space-y-2 text-sm">
       <li>
         <a class="text-sky-400 underline hover:text-sky-300 font-mono text-xs" href="/ops/ci-health">
