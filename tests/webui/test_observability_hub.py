@@ -34,6 +34,7 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert 'data-observability-display-only="true"' in body
     assert 'data-observability-safety-banner="true"' in body
     assert 'data-observability-boundary-legend="true"' in body
+    assert 'data-observability-status-summary="true"' in body
     assert 'data-observability-market-panel="true"' in body
     assert 'data-observability-double-play-panel="true"' in body
     assert 'data-observability-rd-panel="true"' in body
@@ -43,6 +44,10 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert 'data-observability-health-no-actions="true"' in body
 
     assert "read-only / display-only" in body
+    assert "Display-only status snapshot" in body
+    assert "No backend health certification" in body
+    assert "No provider readiness" in body
+    assert "No Paper/Testnet/Live/order readiness" in body
     assert "Workflows" in body
     assert "Keine Orders" in body
     assert "Testnet" in body and "Live" in body
@@ -66,6 +71,7 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert "<form" not in body.lower()
     assert 'type="submit"' not in body
     assert "fetch(" not in body
+    assert "/api/knowledge" not in body
 
     assert "data-observability-health-project-snapshot=" in body
 
@@ -94,12 +100,17 @@ def test_observability_hub_template_health_panel_markers_and_no_post() -> None:
     assert 'data-observability-health-readonly="true"' in txt
     assert 'data-observability-health-no-actions="true"' in txt
     assert 'data-observability-boundary-legend="true"' in txt
+    assert 'data-observability-status-summary="true"' in txt
     assert 'data-observability-market-panel="true"' in txt
     assert 'data-observability-double-play-panel="true"' in txt
     assert 'data-observability-rd-panel="true"' in txt
     assert 'data-observability-ops-ci-panel="true"' in txt
     assert 'data-observability-display-only="true"' in txt
     assert "read-only / display-only" in txt
+    assert "Display-only status snapshot" in txt
+    assert "No backend health certification" in txt
+    assert "No provider readiness" in txt
+    assert "No Paper/Testnet/Live/order readiness" in txt
     assert "Workflows" in txt
     assert "PaperExecutionEngine" in txt
     assert "Workflow-Trigger" in txt

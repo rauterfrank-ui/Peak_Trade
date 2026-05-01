@@ -41,8 +41,19 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 - `data-observability-double-play-panel`
 - `data-observability-rd-panel`
 - `data-observability-ops-ci-panel`
+- `data-observability-status-summary`
 
 Kein `method=&quot;POST&quot;`, kein `<form>`, kein eingebettetes `fetch(` im Hub-Template.
+
+## System Status Summary (v0.2)
+
+Auf `GET &#47;observability` gibt es ein kleines, rein visuelles Panel **System Status Snapshot** mit dem Marker `data-observability-status-summary=&quot;true&quot;`.
+
+Das Panel zeigt nur Werte aus dem bereits vorhandenen Template-Kontext `status` (z. B. `version`, `snapshot_commit`, optional `environment`/`mode`). Fehlende Felder werden als `not provided` dargestellt.
+
+Es gibt dabei **kein** Polling, **kein** `fetch(`, **keine** API-Aufrufe aus dem Panel und keine neuen Backend-Pfade.
+
+Wichtig: Das Panel ist rein deklarativ und macht **keine** Aussagen zu Backend-Health-Zertifizierung, Provider-Readiness oder Paper/Testnet/Live/Order-Readiness.
 
 ## Lokale Vorschau
 
