@@ -38,6 +38,44 @@
     </p>
   </header>
 
+  <section
+    class="rounded-xl border border-emerald-900/40 bg-emerald-950/15 px-5 py-4 space-y-3"
+    aria-label="Health Status — display-only"
+    data-observability-health-panel="true"
+    data-observability-health-readonly="true"
+    data-observability-health-no-actions="true"
+  >
+    <div>
+      <h2 class="text-sm font-semibold text-emerald-200/95 tracking-wide uppercase text-[11px]">
+        Health Status Panel
+      </h2>
+      <p class="text-xs text-emerald-100/85 mt-1.5 leading-relaxed">
+        read-only / display-only — keine Steuerbuttons, keine Formulare auf dieser Hub-Seite.
+        Dieses Panel löst keine Health-Checks oder Workflows aus, aktiviert weder Live noch Testnet und keine Orders,
+        und erlaubt keinen Risk- oder KillSwitch-Override.
+        Nutze die Links, um bestehende JSON-/Text-Endpunkte im Browser oder per Client abzufragen
+        (Polling oder Automatisierung gehört hierher nicht).
+      </p>
+    </div>
+    {% if status %}
+    <p class="text-xs text-slate-400 font-mono border border-slate-800/80 rounded-lg px-3 py-2 bg-slate-950/40"
+       data-observability-health-project-snapshot="{{ status.version }} {{ status.snapshot_commit }}">
+      Projekt-/Dashboard-Kontext (wie übrige Seiten — kein Gesundheitssignal):
+      {{ status.version }} · {{ status.snapshot_commit }}
+    </p>
+    {% endif %}
+    <div>
+      <h3 class="text-xs font-medium text-slate-300 mb-2">Bestehende Health-GET-Endpunkte</h3>
+      <ul class="space-y-2 text-sm text-sky-400 font-mono text-xs">
+        <li><a class="underline hover:text-sky-300" href="/health">GET /health</a></li>
+        <li><a class="underline hover:text-sky-300" href="/health/detailed">GET /health/detailed</a></li>
+        <li><a class="underline hover:text-sky-300" href="/health/metrics">GET /health/metrics</a></li>
+        <li><a class="underline hover:text-sky-300" href="/health/prometheus">GET /health/prometheus</a></li>
+        <li><a class="underline hover:text-sky-300" href="/api/health">GET /api/health</a> <span class="text-slate-500 font-sans text-xs">(minimaler Alias)</span></li>
+      </ul>
+    </div>
+  </section>
+
   <section class="rounded-xl border border-slate-800 bg-slate-900/50 p-5" aria-label="Market Surface v0">
     <h2 class="text-sm font-semibold text-slate-200 mb-3">Market Surface v0 (read-only OHLCV)</h2>
     <ul class="space-y-2 text-sm text-sky-400">
@@ -52,17 +90,6 @@
           GET /api/market/ohlcv</a>
         — JSON (Dummy).
       </li>
-    </ul>
-  </section>
-
-  <section class="rounded-xl border border-slate-800 bg-slate-900/50 p-5" aria-label="Health">
-    <h2 class="text-sm font-semibold text-slate-200 mb-3">Health &amp; Metriken (GET)</h2>
-    <ul class="space-y-2 text-sm text-sky-400 font-mono text-xs">
-      <li><a class="underline hover:text-sky-300" href="/health">GET /health</a></li>
-      <li><a class="underline hover:text-sky-300" href="/health/detailed">GET /health/detailed</a></li>
-      <li><a class="underline hover:text-sky-300" href="/health/metrics">GET /health/metrics</a></li>
-      <li><a class="underline hover:text-sky-300" href="/health/prometheus">GET /health/prometheus</a></li>
-      <li><a class="underline hover:text-sky-300" href="/api/health">GET /api/health</a> <span class="text-slate-500 font-sans text-xs">(minimaler Alias)</span></li>
     </ul>
   </section>
 
