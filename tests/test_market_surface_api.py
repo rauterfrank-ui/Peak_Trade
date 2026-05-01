@@ -84,7 +84,7 @@ class TestMarketSurfaceHtml:
         assert 'method="POST"' not in body
         assert 'id="market-v0-chart-status"' in body
         assert 'data-market-chart-status="ready"' in body
-        assert "Chart ready — read-only OHLCV display." in body
+        assert "Chart bereit — read-only OHLCV-Anzeige." in body
 
     def test_market_html_invalid_timeframe_422(self, client: TestClient) -> None:
         r = client.get("/market", params={"source": "dummy", "timeframe": "bad"})
@@ -110,4 +110,6 @@ def test_market_v0_template_kraken_banner_markers_in_source() -> None:
     assert 'id="market-v0-chart-status"' in txt
     assert "data-market-chart-status" in txt
     assert "data-market-empty-state" in txt
-    assert "Chart ready — read-only OHLCV display." in txt
+    assert "Chart bereit — read-only OHLCV-Anzeige." in txt
+    assert "Keine OHLCV-Bars für diese Abfrage verfügbar." in txt
+    assert "Chart-Daten konnten nicht gerendert werden; keine Trading-Aktion verfügbar." in txt

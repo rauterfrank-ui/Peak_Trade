@@ -86,9 +86,9 @@
       {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
     >
       {% if payload.bars_returned == 0 %}
-      No OHLCV bars available for this query.
+      Keine OHLCV-Bars für diese Abfrage verfügbar.
       {% else %}
-      Chart ready — read-only OHLCV display.
+      Chart bereit — read-only OHLCV-Anzeige.
       {% endif %}
     </div>
     <div class="relative h-80 w-full">
@@ -104,10 +104,10 @@
         var node = document.getElementById("market-v0-chart-status");
         if (!node) return;
         var copy = {
-          ready: "Chart ready — read-only OHLCV display.",
-          empty: "No OHLCV bars available for this query.",
+          ready: "Chart bereit — read-only OHLCV-Anzeige.",
+          empty: "Keine OHLCV-Bars für diese Abfrage verfügbar.",
           error:
-            "Chart payload could not be rendered; no trading action is available.",
+            "Chart-Daten konnten nicht gerendert werden; keine Trading-Aktion verfügbar.",
         };
         node.setAttribute("data-market-chart-status", kind);
         node.removeAttribute("data-market-empty-state");
