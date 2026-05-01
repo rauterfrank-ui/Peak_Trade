@@ -145,6 +145,9 @@
     class="rounded-xl border border-sky-900/35 bg-sky-950/10 px-5 py-4 space-y-3"
     aria-label="Market Surface v0 — display-only"
     data-observability-market-panel="true"
+    data-observability-market-provenance="true"
+    data-observability-market-no-fetch="true"
+    data-observability-market-no-readiness="true"
   >
     <div>
       <h2 class="text-sm font-semibold text-sky-200/95 tracking-wide uppercase text-[11px]">
@@ -155,6 +158,18 @@
         ohne Trading-, Live- oder Readiness-Aussage. Keine Ausführung, keine Ordersemantik.
       </p>
     </div>
+    <ul class="list-disc pl-5 space-y-1.5 text-xs text-sky-100/90 leading-relaxed">
+      <li><span class="font-mono">source=dummy</span> is offline/synthetic display data.</li>
+      <li>
+        <span class="font-mono">source=kraken</span> is optional public OHLCV/network display if opened directly.
+      </li>
+      <li>The Observability Hub itself does not fetch OHLCV.</li>
+      <li>The Observability Hub itself does not call Kraken.</li>
+      <li>Market display is not provider readiness.</li>
+      <li>Market display is not Futures readiness.</li>
+      <li>Market display is not Paper/Testnet/Live/order readiness.</li>
+      <li>Market display is not trading authority.</li>
+    </ul>
     <ul class="space-y-2 text-sm text-sky-400">
       <li>
         <a class="underline hover:text-sky-300 font-mono text-xs break-all"

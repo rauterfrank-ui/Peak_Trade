@@ -36,6 +36,9 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert 'data-observability-boundary-legend="true"' in body
     assert 'data-observability-status-summary="true"' in body
     assert 'data-observability-market-panel="true"' in body
+    assert 'data-observability-market-provenance="true"' in body
+    assert 'data-observability-market-no-fetch="true"' in body
+    assert 'data-observability-market-no-readiness="true"' in body
     assert 'data-observability-double-play-panel="true"' in body
     assert 'data-observability-double-play-display-json="true"' in body
     assert 'data-observability-double-play-no-authority="true"' in body
@@ -50,6 +53,15 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert "No backend health certification" in body
     assert "No provider readiness" in body
     assert "No Paper/Testnet/Live/order readiness" in body
+    assert "source=dummy" in body
+    assert "source=kraken" in body
+    assert "offline/synthetic" in body
+    assert "does not fetch OHLCV" in body
+    assert "does not call Kraken" in body
+    assert "not provider readiness" in body
+    assert "not Futures readiness" in body
+    assert "not Paper/Testnet/Live/order readiness" in body
+    assert "not trading authority" in body
     assert "Workflows" in body
     assert "Keine Orders" in body
     assert "Testnet" in body and "Live" in body
@@ -111,6 +123,9 @@ def test_observability_hub_template_health_panel_markers_and_no_post() -> None:
     assert 'data-observability-boundary-legend="true"' in txt
     assert 'data-observability-status-summary="true"' in txt
     assert 'data-observability-market-panel="true"' in txt
+    assert 'data-observability-market-provenance="true"' in txt
+    assert 'data-observability-market-no-fetch="true"' in txt
+    assert 'data-observability-market-no-readiness="true"' in txt
     assert 'data-observability-double-play-panel="true"' in txt
     assert 'data-observability-double-play-display-json="true"' in txt
     assert 'data-observability-double-play-no-authority="true"' in txt
@@ -122,6 +137,15 @@ def test_observability_hub_template_health_panel_markers_and_no_post() -> None:
     assert "No backend health certification" in txt
     assert "No provider readiness" in txt
     assert "No Paper/Testnet/Live/order readiness" in txt
+    assert "source=dummy" in txt
+    assert "source=kraken" in txt
+    assert "offline/synthetic" in txt
+    assert "does not fetch OHLCV" in txt
+    assert "does not call Kraken" in txt
+    assert "not provider readiness" in txt
+    assert "not Futures readiness" in txt
+    assert "not Paper/Testnet/Live/order readiness" in txt
+    assert "not trading authority" in txt
     assert "Workflows" in txt
     assert "PaperExecutionEngine" in txt
     assert "Workflow-Trigger" in txt
