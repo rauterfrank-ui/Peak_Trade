@@ -31,6 +31,31 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 | R&amp;D Experiments | HTML-Liste und **`GET &#47;api&#47;r_and_d&#47;experiments`** |
 | OPS CI Health | **`GET &#47;ops&#47;ci-health`** und **`GET &#47;ops&#47;ci-health&#47;status`** (Hub nur GET-Links) |
 
+## R&amp;D Experiments Panel (v0.5)
+
+Das R&amp;D-Panel auf `GET &#47;observability` bleibt eine **statische Erklaer- und Linkflaeche**:
+
+- **`GET &#47;r_and_d&#47;experiments`**
+- **`GET &#47;api&#47;r_and_d&#47;experiments?limit=20`**
+
+Semantik und Grenzen (explizit):
+
+- R&amp;D experiments are research visibility only.
+- The hub does not fetch experiment data.
+- The hub does not promote experiments.
+- The hub does not deploy strategies.
+- The hub does not authorize strategy output.
+- R&amp;D display is not readiness approval.
+- R&amp;D display is not Paper/Testnet/Live/order readiness.
+- R&amp;D display is not trading authority.
+
+Stabile Marker fuer Tests/Vertrag:
+
+- `data-observability-rd-panel=&quot;true&quot;`
+- `data-observability-rd-research-only=&quot;true&quot;`
+- `data-observability-rd-no-deployment=&quot;true&quot;`
+- `data-observability-rd-no-strategy-authority=&quot;true&quot;`
+
 ## Market/Data Provenance Panel (v0.4)
 
 Das Market Surface Panel im Hub bleibt eine **reine Anzeige- und Navigationsflaeche**. Es dient zur Einordnung der Datenherkunft (Provenance), nicht als Readiness- oder Trading-Signal.
