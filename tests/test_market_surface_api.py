@@ -83,6 +83,14 @@ class TestMarketSurfaceHtml:
         assert "chart.js@4.4.1" in body.lower() or "chart.umd.min.js" in body
         assert 'method="POST"' not in body
 
+    def test_market_html_invalid_timeframe_422(self, client: TestClient) -> None:
+        r = client.get("/market", params={"source": "dummy", "timeframe": "bad"})
+        assert r.status_code == 422
+
+    def test_market_html_invalid_source_422(self, client: TestClient) -> None:
+        r = client.get("/market", params={"source": "invalid", "timeframe": "1d"})
+        assert r.status_code == 422
+
 
 def test_market_v0_template_kraken_banner_markers_in_source() -> None:
     """Kraken-Pfad ohne Netzwerk: Banner-Zweig muss im Template existieren."""
