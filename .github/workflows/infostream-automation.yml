@@ -18,6 +18,13 @@
 #   - Kein Live-Trading - nur Datenverarbeitung
 #   - Keine Exchange-API-Keys erforderlich
 #   - Bei KI-Fehler wird Fallback-Learning erstellt
+#
+# Schedule + AI hard gate:
+#   - Scheduled runs invoke the Python cycle only when repo Variables
+#     PT_AI_MODELS_ENABLED and PT_PAPERTRAIL_READY are both affirmative (YES/TRUE/ON/1/Y),
+#     matching src/ai/gates/ai_model_hard_gate_v1.py. No secrets or fake YES values are set.
+#   - workflow_dispatch is unchanged except that the same Variables are passed through as env
+#     when the cycle runs (mirrors what GitHub would inject for visibility).
 # ============================================================================
 
 name: InfoStream Automation
@@ -116,13 +123,46 @@ jobs:
             || echo "⚠️  TestHealth completed with some issues (expected)"
 
       # =========================================================================
+      # 4b. Scheduled gate: skip Python cycle unless repo Variables arm AI + Papertrail
+      # =========================================================================
+      - name: 🔒 Scheduled AI gate check (repo Variables)
+        if: github.event_name == 'schedule'
+        env:
+          PT_AI_MODELS_ENABLED: ${{ vars.PT_AI_MODELS_ENABLED }}
+          PT_PAPERTRAIL_READY: ${{ vars.PT_PAPERTRAIL_READY }}
+        run: |
+          set -euo pipefail
+          norm() {
+            echo "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr '[:lower:]' '[:upper:]'
+          }
+          ena=$(norm "${PT_AI_MODELS_ENABLED:-}")
+          ptr=$(norm "${PT_PAPERTRAIL_READY:-}")
+          if [[ "$ena" =~ ^(1|TRUE|YES|Y|ON)$ ]] && [[ "$ptr" =~ ^(1|TRUE|YES|Y|ON)$ ]]; then
+            echo "::notice::Scheduled InfoStream: PT_AI_MODELS_ENABLED and PT_PAPERTRAIL_READY are affirmative; Python cycle will run (runtime hard gates still apply)."
+            echo "INFOSTREAM_SKIP_SCHEDULE_CYCLE=false" >> "$GITHUB_ENV"
+          else
+            echo "::notice::Scheduled InfoStream skipped: set repo Variables PT_AI_MODELS_ENABLED and PT_PAPERTRAIL_READY to YES when owner-approved to run model clients on schedule."
+            echo "INFOSTREAM_SKIP_SCHEDULE_CYCLE=true" >> "$GITHUB_ENV"
+          fi
+
+      - name: ⏭️ Scheduled InfoStream cycle not invoked (AI gates off)
+        if: github.event_name == 'schedule' && env.INFOSTREAM_SKIP_SCHEDULE_CYCLE == 'true'
+        run: |
+          echo "======================================================================"
+          echo "⏭️  Python InfoStream cycle was not invoked (scheduled run; repo Variables did not affirm AI + Papertrail)."
+          echo "======================================================================"
+
+      # =========================================================================
       # 5. InfoStream Cycle ausführen
       # =========================================================================
       - name: 🔄 Run InfoStream Cycle
         id: infostream_run
+        if: ${{ github.event_name != 'schedule' || env.INFOSTREAM_SKIP_SCHEDULE_CYCLE == 'false' }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           INFOSTREAM_MODEL: "gpt-4o-mini"
+          PT_AI_MODELS_ENABLED: ${{ vars.PT_AI_MODELS_ENABLED }}
+          PT_PAPERTRAIL_READY: ${{ vars.PT_PAPERTRAIL_READY }}
         run: |
           echo "======================================================================"
           echo "🔄 InfoStream Cycle v1"
