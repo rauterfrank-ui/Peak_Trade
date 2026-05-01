@@ -37,6 +37,8 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert 'data-observability-status-summary="true"' in body
     assert 'data-observability-market-panel="true"' in body
     assert 'data-observability-double-play-panel="true"' in body
+    assert 'data-observability-double-play-display-json="true"' in body
+    assert 'data-observability-double-play-no-authority="true"' in body
     assert 'data-observability-rd-panel="true"' in body
     assert 'data-observability-ops-ci-panel="true"' in body
     assert 'data-observability-health-panel="true"' in body
@@ -55,6 +57,13 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert "Risk" in body and "KillSwitch" in body
     assert "Workflow-Trigger" in body
     assert "PaperExecutionEngine" in body
+    assert "Display JSON only" in body
+    assert "pure snapshot/display contract" in body
+    assert "no execution authority" in body
+    assert "no strategy authorization" in body
+    assert "no Live/Testnet/order path" in body
+    assert "no Capital/Scope approval" in body
+    assert "no Risk/KillSwitch override" in body
 
     assert 'href="/market' in body
     assert "/api/market/ohlcv" in body
@@ -103,6 +112,8 @@ def test_observability_hub_template_health_panel_markers_and_no_post() -> None:
     assert 'data-observability-status-summary="true"' in txt
     assert 'data-observability-market-panel="true"' in txt
     assert 'data-observability-double-play-panel="true"' in txt
+    assert 'data-observability-double-play-display-json="true"' in txt
+    assert 'data-observability-double-play-no-authority="true"' in txt
     assert 'data-observability-rd-panel="true"' in txt
     assert 'data-observability-ops-ci-panel="true"' in txt
     assert 'data-observability-display-only="true"' in txt
@@ -114,8 +125,16 @@ def test_observability_hub_template_health_panel_markers_and_no_post() -> None:
     assert "Workflows" in txt
     assert "PaperExecutionEngine" in txt
     assert "Workflow-Trigger" in txt
+    assert "Display JSON only" in txt
+    assert "pure snapshot/display contract" in txt
+    assert "no execution authority" in txt
+    assert "no strategy authorization" in txt
+    assert "no Live/Testnet/order path" in txt
+    assert "no Capital/Scope approval" in txt
+    assert "no Risk/KillSwitch override" in txt
     assert 'method="POST"' not in txt
     assert "<form" not in txt.lower()
+    assert 'type="submit"' not in txt
     assert "fetch(" not in txt
 
 

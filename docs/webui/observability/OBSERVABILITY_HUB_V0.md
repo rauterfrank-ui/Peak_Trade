@@ -27,7 +27,7 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 | Globale Grenz-Legende | Kompakte Wiederholung der Systemgrenze inkl. Workflow/PaperExecutionEngine |
 | Health Status Panel | Links zu **`GET &#47;health`**, **`&#47;health&#47;detailed`**, **`&#47;metrics`**, **`&#47;prometheus`**, **`GET &#47;api&#47;health`** |
 | Market Surface v0 | Dummy-Links **`GET &#47;market`** und **`GET &#47;api&#47;market&#47;ohlcv`** |
-| Double Play Display | **`GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json`** (Snapshot/Display-Vertrag) |
+| Double Play Display | **`GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json`** (display-only Snapshot/Display-Vertrag, ohne Autorität) |
 | R&amp;D Experiments | HTML-Liste und **`GET &#47;api&#47;r_and_d&#47;experiments`** |
 | OPS CI Health | **`GET &#47;ops&#47;ci-health`** und **`GET &#47;ops&#47;ci-health&#47;status`** (Hub nur GET-Links) |
 
@@ -39,6 +39,8 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 - `data-observability-health-panel`, `data-observability-health-readonly`, `data-observability-health-no-actions`
 - `data-observability-market-panel`
 - `data-observability-double-play-panel`
+- `data-observability-double-play-display-json`
+- `data-observability-double-play-no-authority`
 - `data-observability-rd-panel`
 - `data-observability-ops-ci-panel`
 - `data-observability-status-summary`
@@ -54,6 +56,28 @@ Das Panel zeigt nur Werte aus dem bereits vorhandenen Template-Kontext `status` 
 Es gibt dabei **kein** Polling, **kein** `fetch(`, **keine** API-Aufrufe aus dem Panel und keine neuen Backend-Pfade.
 
 Wichtig: Das Panel ist rein deklarativ und macht **keine** Aussagen zu Backend-Health-Zertifizierung, Provider-Readiness oder Paper/Testnet/Live/Order-Readiness.
+
+## Double Play Display JSON (v0.3)
+
+Das Double-Play-Panel auf `GET &#47;observability` bleibt eine reine Erklaer- und Linkflaeche zu:
+
+- **`GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json`**
+
+Die sichtbare Einordnung ist explizit:
+
+- `Display JSON only`
+- `pure snapshot&#47;display contract`
+- `no execution authority`
+- `no strategy authorization`
+- `no Live&#47;Testnet&#47;order path`
+- `no Capital&#47;Scope approval`
+- `no Risk&#47;KillSwitch override`
+
+Damit gilt fuer v0.3 weiterhin:
+
+- kein Polling und kein `fetch(` im Hub
+- keine Formular- oder POST-Semantik
+- keine Ausfuehrungs-/Strategie-Freigabe, keine Readiness- oder Override-Autoritaet
 
 ## Lokale Vorschau
 
