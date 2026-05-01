@@ -31,6 +31,36 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 | R&amp;D Experiments | HTML-Liste und **`GET &#47;api&#47;r_and_d&#47;experiments`** |
 | OPS CI Health | **`GET &#47;ops&#47;ci-health`** und **`GET &#47;ops&#47;ci-health&#47;status`** (Hub nur GET-Links) |
 
+## Market/Data Provenance Panel (v0.4)
+
+Das Market Surface Panel im Hub bleibt eine **reine Anzeige- und Navigationsflaeche**. Es dient zur Einordnung der Datenherkunft (Provenance), nicht als Readiness- oder Trading-Signal.
+
+Bestehende GET-Links im Hub:
+
+- **`GET &#47;market?source=dummy&amp;timeframe=1h&amp;limit=30&amp;symbol=BTC%2FUSD`** (HTML-Ansicht)
+- **`GET &#47;api&#47;market&#47;ohlcv?symbol=BTC%2FUSD&amp;timeframe=1h&amp;limit=30&amp;source=dummy`** (JSON-Ansicht)
+
+Bedeutung der Quellenhinweise:
+
+- `source=dummy` bedeutet **offline/synthetic** Darstellungsdaten.
+- `source=kraken` bedeutet optionale **public OHLCV/network display** nur dann, wenn die Market-Route direkt geoeffnet wird.
+- Der Observability Hub selbst **does not fetch OHLCV**.
+- Der Observability Hub selbst **does not call Kraken**.
+
+Readiness-/Autoritaetsgrenze (explizit):
+
+- Market display is not provider readiness.
+- Market display is not Futures readiness.
+- Market display is not Paper/Testnet/Live/order readiness.
+- Market display is not trading authority.
+
+Stabile Marker fuer Tests/Vertrag:
+
+- `data-observability-market-panel=&quot;true&quot;`
+- `data-observability-market-provenance=&quot;true&quot;`
+- `data-observability-market-no-fetch=&quot;true&quot;`
+- `data-observability-market-no-readiness=&quot;true&quot;`
+
 ### Stabile `data-observability-*` Marker (Auszug)
 
 - `data-observability-hub`, `data-observability-readonly`, `data-observability-display-only`
