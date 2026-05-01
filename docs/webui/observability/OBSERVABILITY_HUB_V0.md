@@ -17,6 +17,12 @@ Es gibt **kein** eingebettetes Client-Polling auf dieser Hub-HTML, **keine** zus
 - **Knowledge API** wird bewusst **nicht** verlinkt (geschriebene/POST-relevante Flächen gehören nicht in dieses Link-Inventar).
 - **Kein Paper/Shadow-Artifact-Panel** in dieser Phase — kein zusätzlicher Readiness-/Handoff-/Evidence-Narrativ-Anker.
 
+## Paper/Shadow Artifact Read-model (v0.8 — docs only)
+
+Paper/Shadow-Artefakt-Anzeige ist im Hub **bewusst nicht** umgesetzt. Ein zukünftiges Panel darf erst folgen, wenn der Vertrag [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) erfüllt ist.
+
+Operator-lokale Reviews unter **`&#47;tmp`** (z. B. PR-J Shadow+Paper Trend/Semantic Reviews) sind **keine** WebUI-Datenquellen und werden vom Hub **nicht** gelesen. Es gibt auf **`GET &#47;observability`** keine Artefakt-Fetches, kein Polling und keine Readiness-, Freigabe- oder Evidence-Semantik für Paper/Shadow.
+
 ## Aktuelle Panels (Display-only)
 
 Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness oder Strategie-/Ausführungsfreigabe.
