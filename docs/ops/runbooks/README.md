@@ -13,6 +13,17 @@
 
 ---
 
+## Workflow / policy references
+
+Markdown workflow-policy notes live under `docs&#47;ops&#47;workflows&#47;`:
+
+- [WORKFLOW_NOTES_FRONTDOOR.md](../workflows/WORKFLOW_NOTES_FRONTDOOR.md)
+- [PEAK_TRADE_WORKFLOW_NOTES_2025-12-03.md](../workflows/PEAK_TRADE_WORKFLOW_NOTES_2025-12-03.md)
+
+Broader Ops runbook/script orientation stays in [`RUNBOOK_INDEX.md`](../RUNBOOK_INDEX.md).
+
+---
+
 - [RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md](./RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md): Tech-Debt Top-3 ROI bis Finish (Cursor Multi-Agent)
 
 
