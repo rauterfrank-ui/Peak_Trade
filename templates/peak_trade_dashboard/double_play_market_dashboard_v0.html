@@ -1,4 +1,4 @@
-<!-- Double-Play Market Dashboard — SSR cockpit layout v1.1 (charts + DP rail); same payloads as v1 SSR -->
+<!-- Double-Play Market Dashboard — cockpit v1.1 + candlesticks & visual panels v1.2 (SSR payloads unchanged) -->
 {% extends "base.html" %}
 
 {% block content %}
@@ -18,7 +18,6 @@
   data-double-play-market-bars="{{ payload.bars_returned }}"
   data-double-play-market-symbol="{{ query.symbol }}"
 >
-  {# --- Compact cockpit header --- #}
   <header
     class="rounded-2xl border border-slate-800/95 bg-gradient-to-br from-slate-950 via-slate-900/95 to-slate-950 px-5 py-4 shadow-xl shadow-black/30 ring-1 ring-slate-800/90"
     data-double-play-market-cockpit-header="true"
@@ -35,7 +34,7 @@
           Double-Play Market Dashboard v1
         </h1>
         <p class="text-xs text-slate-500 mt-1 m-0">
-          Read-only · non-authority · Chart-first
+          v1.2 read-only · Candlestick view · non-authority
         </p>
       </div>
       <div class="flex flex-wrap items-center gap-2">
@@ -75,7 +74,6 @@
     </div>
   </header>
 
-  {# --- Safety: compact chips + optional detail --- #}
   <section
     aria-label="Safety boundaries"
     class="rounded-xl border border-amber-900/45 bg-amber-950/15 px-3 py-2.5"
@@ -100,12 +98,10 @@
     </details>
   </section>
 
-  {# --- Main cockpit grid: chart (dominant) + DP rail --- #}
   <div
-    class="flex flex-col gap-6 xl:grid xl:grid-cols-[minmax(0,1fr)_min(20.5rem,100%)] xl:items-start xl:gap-6"
+    class="flex flex-col gap-6 xl:grid xl:grid-cols-[minmax(0,1fr)_min(21rem,100%)] xl:items-start xl:gap-6"
     data-double-play-market-cockpit-grid="true"
   >
-    {# --- Chart column --- #}
     <div
       class="min-w-0 flex flex-col gap-4"
       data-double-play-market-cockpit-chart-column="true"
@@ -122,93 +118,268 @@
         {% endif %}
       </div>
 
+      {# --- Candlestick (dominant) — custom canvas, no financial plugin --- #}
       <section
-        aria-label="Close-Preis"
-        class="flex flex-col flex-1 rounded-xl border border-slate-800 bg-slate-950/55 ring-1 ring-slate-800/70 shadow-lg shadow-black/25 overflow-hidden min-h-[22rem]"
-        data-chart="double-play-market-close-line"
-        data-double-play-market-chart-block="true"
+        aria-label="Candlestick chart read-only"
+        class="rounded-xl border border-slate-800 bg-slate-950/60 ring-1 ring-cyan-900/30 shadow-xl shadow-black/30 overflow-hidden"
+        data-double-play-market-candlestick-v1-2="true"
+        data-double-play-market-candlestick-no-plugin="true"
+        data-double-play-market-ohlc-source="embedded-ssr-bars"
       >
-        <div class="flex items-center justify-between gap-2 border-b border-slate-800/90 px-4 py-2.5 bg-slate-950/80">
-          <h2 class="text-sm font-semibold text-slate-100 m-0">Close — read-only</h2>
-          <span class="text-[10px] font-mono text-slate-500">{{ query.symbol }}</span>
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/95 px-4 py-3 bg-gradient-to-r from-slate-950 via-slate-900/95 to-slate-950">
+          <div>
+            <h2 class="text-sm font-semibold text-slate-50 m-0 tracking-tight">Candlestick view</h2>
+            <p class="text-[10px] text-slate-400 m-0 mt-1 leading-relaxed">
+              <span class="text-sky-400/95">Embedded OHLC bars</span>
+              · <span class="text-slate-300">No external financial chart plugin</span>
+              · Read-only OHLCV visualization
+            </p>
+          </div>
+          <span class="font-mono text-[10px] text-slate-500">{{ query.symbol }}</span>
         </div>
 
-        <div class="relative flex-1 min-h-[20rem] sm:min-h-[24rem] p-3">
+        <div class="relative min-h-[22rem] sm:min-h-[26rem] p-3 md:p-4">
           <div
-            id="dp-market-v0-chart-status"
+            id="dp-market-candlestick-status"
             role="status"
             class="text-[11px] text-slate-400 mb-2 min-h-[1.25rem] font-medium px-1"
+            data-double-play-market-candlestick-status="true"
             data-market-chart-status="{% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}"
             {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
           >
             {% if payload.bars_returned == 0 %}
-            Keine OHLCV-Bars für diese Abfrage verfügbar.
+            Keine OHLCV-Bars eingebettet — Candlesticks nicht zeichenbar.
             {% else %}
-            Chart bereit — read-only OHLCV-Anzeige.
+            Candlestick Renderer bereit — read-only OHLCV visualization.
             {% endif %}
           </div>
-          <div class="relative h-[calc(100%-2rem)] min-h-[17rem] w-full rounded-lg border border-slate-800 bg-slate-950/70">
-            <canvas id="chart-dp-market-v0-close" class="block w-full h-full"></canvas>
-          </div>
-        </div>
-
-        <div
-          class="border-t border-slate-800/90 bg-slate-950/60 px-4 py-3 space-y-2"
-          data-double-play-market-cockpit-diagnostics-secondary="true"
-          data-market-v11-chart-diagnostics="true"
-        >
-          <p class="text-[10px] font-semibold uppercase tracking-wide text-slate-500 m-0">Diagnostics</p>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px] font-mono text-slate-300" data-market-v11-diagnostics-inner="true">
-            <div data-market-v11-chart-library-status="true">
-              <span class="text-slate-500 block text-[9px] uppercase tracking-wide mb-0.5">Chart.js</span>
-              <span id="dp-market-v11-chartjs-state" class="text-sky-400/95">SSR only — verified in browser</span>
-            </div>
-            <div data-market-v11-payload-bars="true">
-              <span class="text-slate-500 block text-[9px] uppercase tracking-wide mb-0.5">Bars</span>
-              <span id="dp-market-v11-embedded-bar-count">{{ payload.bars_returned }}</span>
-            </div>
-            <div>
-              <span class="text-slate-500 block text-[9px] uppercase tracking-wide mb-0.5">Render</span>
-              <span id="dp-market-v11-client-render-flag">SSR: {% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}</span>
-            </div>
-          </div>
-          <div
-            id="dp-market-v11-render-fallback"
-            data-market-v11-render-fallback="true"
-            data-market-v11-fallback-mode="{% if payload.bars_returned == 0 %}empty-ssr{% else %}client-alert{% endif %}"
-            role="alert"
-            class="rounded-lg border-2 px-3 py-2 text-xs {% if payload.bars_returned == 0 %}block border-amber-600/75 bg-amber-950/40 text-amber-50{% else %}hidden border-rose-600/75 bg-rose-950/35 text-rose-50{% endif %}"
-            {% if payload.bars_returned != 0 %}aria-hidden="true"{% endif %}
-          >
-            {% if payload.bars_returned == 0 %}
-            <p class="m-0 font-medium">Embedded bars: keine OHLCV-Serie eingebettet.</p>
-            {% endif %}
-            <p id="dp-market-v11-render-fallback-msg" class="{% if payload.bars_returned == 0 %}hidden m-0{% else %}hidden m-0 font-semibold{% endif %}"></p>
-          </div>
-          <div
-            class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-slate-500"
-            data-market-v1-api-reference="true"
-            data-double-play-market-market-link="true"
-          >
-            <a
-              href="/market?source={{ query.source }}&amp;symbol={{ query.symbol | replace('/', '%2F') }}&amp;timeframe={{ query.timeframe }}&amp;limit={{ query.limit }}"
-              class="text-sky-400 hover:text-sky-300 underline underline-offset-2 font-mono"
-            >Market HTML</a>
-            <span class="text-slate-600">·</span>
-            <a
-              href="/api/market/ohlcv?source={{ query.source }}&amp;symbol={{ query.symbol | replace('/', '%2F') }}&amp;timeframe={{ query.timeframe }}&amp;limit={{ query.limit }}"
-              class="text-sky-400 hover:text-sky-300 underline underline-offset-2 font-mono"
-            >OHLCV JSON</a>
-            <span class="text-slate-600">·</span>
-            <span class="font-mono text-slate-600">legacy: {{ legacy_demo_href }}</span>
+          <div class="relative w-full rounded-lg border border-slate-800 bg-[#070b14] shadow-inner shadow-black/50" style="height: clamp(280px, 48vh, 520px);">
+            <canvas
+              id="chart-dp-market-candlestick-v12"
+              class="absolute inset-0 block h-full w-full"
+              width="800"
+              height="480"
+              data-double-play-market-candlestick-canvas="true"
+            ></canvas>
           </div>
         </div>
       </section>
+
+      {# --- Close-line secondary (existing Chart.js) --- #}
+      <details class="rounded-xl border border-slate-800/90 bg-slate-950/40 group">
+        <summary class="cursor-pointer list-none px-4 py-2.5 text-xs font-medium text-slate-300 hover:text-slate-100 border-b border-slate-800/80">
+          <span class="text-sky-400/90">Secondary:</span> Close-line (Chart.js, close only)
+        </summary>
+        <div class="p-4 space-y-2">
+          <p class="text-[10px] text-slate-500 m-0">Optional Vergleichsansicht · gleiche eingebettete Bars.</p>
+          <div class="relative min-h-[12rem] w-full rounded-lg border border-slate-800 bg-slate-950/70">
+            <canvas id="chart-dp-market-v0-close" class="block h-48 w-full"></canvas>
+          </div>
+        </div>
+      </details>
+
+      <div
+        class="rounded-xl border border-slate-800/90 bg-slate-950/60 px-4 py-3 space-y-2"
+        data-double-play-market-cockpit-diagnostics-secondary="true"
+        data-market-v11-chart-diagnostics="true"
+      >
+        <p class="text-[10px] font-semibold uppercase tracking-wide text-slate-500 m-0">Diagnostics</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px] font-mono text-slate-300" data-market-v11-diagnostics-inner="true">
+          <div data-market-v11-chart-library-status="true">
+            <span class="text-slate-500 block text-[9px] uppercase tracking-wide mb-0.5">Chart.js</span>
+            <span id="dp-market-v11-chartjs-state" class="text-sky-400/95">SSR only — verified in browser</span>
+          </div>
+          <div data-market-v11-payload-bars="true">
+            <span class="text-slate-500 block text-[9px] uppercase tracking-wide mb-0.5">Bars</span>
+            <span id="dp-market-v11-embedded-bar-count">{{ payload.bars_returned }}</span>
+          </div>
+          <div>
+            <span class="text-slate-500 block text-[9px] uppercase tracking-wide mb-0.5">Line render</span>
+            <span id="dp-market-v11-client-render-flag">SSR: {% if payload.bars_returned == 0 %}empty{% else %}pending{% endif %}</span>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-slate-500 font-mono">
+          <span id="dp-market-candle-diag-chip">Candlesticks: SSR</span>
+        </div>
+        <div
+          id="dp-market-v11-render-fallback"
+          data-market-v11-render-fallback="true"
+          data-market-v11-fallback-mode="{% if payload.bars_returned == 0 %}empty-ssr{% else %}client-alert{% endif %}"
+          role="alert"
+          class="rounded-lg border-2 px-3 py-2 text-xs {% if payload.bars_returned == 0 %}block border-amber-600/75 bg-amber-950/40 text-amber-50{% else %}hidden border-rose-600/75 bg-rose-950/35 text-rose-50{% endif %}"
+          {% if payload.bars_returned != 0 %}aria-hidden="true"{% endif %}
+        >
+          {% if payload.bars_returned == 0 %}
+          <p class="m-0 font-medium">Embedded bars: keine OHLCV-Serie eingebettet.</p>
+          {% endif %}
+          <p id="dp-market-v11-render-fallback-msg" class="{% if payload.bars_returned == 0 %}hidden m-0{% else %}hidden m-0 font-semibold{% endif %}"></p>
+        </div>
+        <div
+          class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-slate-500"
+          data-market-v1-api-reference="true"
+          data-double-play-market-market-link="true"
+        >
+          <a href="/market?source={{ query.source }}&amp;symbol={{ query.symbol | replace('/', '%2F') }}&amp;timeframe={{ query.timeframe }}&amp;limit={{ query.limit }}" class="text-sky-400 hover:text-sky-300 underline underline-offset-2 font-mono">Market HTML</a>
+          <span class="text-slate-600">·</span>
+          <a href="/api/market/ohlcv?source={{ query.source }}&amp;symbol={{ query.symbol | replace('/', '%2F') }}&amp;timeframe={{ query.timeframe }}&amp;limit={{ query.limit }}" class="text-sky-400 hover:text-sky-300 underline underline-offset-2 font-mono">OHLCV JSON</a>
+          <span class="text-slate-600">·</span>
+          <span class="font-mono text-slate-600">legacy: {{ legacy_demo_href }}</span>
+        </div>
+      </div>
 
       <script type="application/json" id="dp-market-ssr-payload">{{ payload | tojson }}</script>
       <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
       <script>
         (function () {
+          function num(x) {
+            var n = typeof x === "number" ? x : parseFloat(x);
+            return isFinite(n) ? n : null;
+          }
+
+          function validBar(b) {
+            return (
+              b &&
+              num(b.open) != null &&
+              num(b.high) != null &&
+              num(b.low) != null &&
+              num(b.close) != null &&
+              typeof b.ts === "string"
+            );
+          }
+
+          function setCandleStatus(kind, detail) {
+            var node = document.getElementById("dp-market-candlestick-status");
+            var diag = document.getElementById("dp-market-candle-diag-chip");
+            var messages = {
+              ready: "Candlesticks gezeichnet — read-only OHLCV visualization.",
+              empty: "Keine gültigen OHLC-Bars eingebettet — Candlesticks nicht zeichenbar.",
+              error:
+                "Candlesticks konnten nicht gezeichnet werden; keine Trading-Aktion verfügbar.",
+            };
+            if (node) {
+              node.setAttribute("data-market-chart-status", kind);
+              node.textContent =
+                detail != null ? messages[kind] + " · " + detail : messages[kind];
+            }
+            if (diag) {
+              diag.textContent =
+                kind === "ready"
+                  ? "Candlesticks: drawn (canvas)"
+                  : kind === "empty"
+                  ? "Candlesticks: empty"
+                  : "Candlesticks: error";
+            }
+          }
+
+          function resizeCanvas(canvas) {
+            var wrap = canvas.parentElement;
+            if (!wrap) return { w: canvas.width || 600, h: canvas.height || 480 };
+            var dpr =
+              typeof window.devicePixelRatio === "undefined" ? 1 : window.devicePixelRatio;
+            var w = wrap.clientWidth;
+            var h = wrap.clientHeight;
+            canvas.width = Math.max(320, Math.floor(w * dpr));
+            canvas.height = Math.max(240, Math.floor(h * dpr));
+            canvas.style.width = "100%";
+            canvas.style.height = "100%";
+            var ctx = canvas.getContext("2d");
+            if (ctx && dpr !== 1) {
+              ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            }
+            return {
+              ctx: ctx,
+              wCss: Math.max(320, Math.floor(w)),
+              hCss: Math.max(240, Math.floor(h)),
+              dpr: dpr,
+            };
+          }
+
+          function drawCandlesticks(canvas, bars) {
+            var out = resizeCanvas(canvas);
+            var ctx = out.ctx || canvas.getContext("2d");
+            if (!ctx || !bars || !bars.length) {
+              return false;
+            }
+            var padL = 6;
+            var padR = 6;
+            var padT = 8;
+            var padB = 10;
+            var wCss = out.wCss;
+            var hCss = out.hCss;
+            ctx.clearRect(0, 0, wCss, hCss);
+
+            ctx.fillStyle = "#070b14";
+            ctx.fillRect(0, 0, wCss, hCss);
+
+            var minL = Infinity;
+            var maxH = -Infinity;
+            for (var i = 0; i < bars.length; i++) {
+              var lb = bars[i];
+              minL = Math.min(minL, lb.low);
+              maxH = Math.max(maxH, lb.high);
+            }
+            var span = maxH - minL;
+            if (!isFinite(span) || span <= 0) {
+              span = Math.max(Math.abs(minL || 1) * 0.002, 1e-12);
+              minL -= span * 0.5;
+              maxH += span * 0.5;
+              span = maxH - minL;
+            }
+
+            function y(px) {
+              return padT + (1 - (px - minL) / span) * (hCss - padT - padB);
+            }
+
+            var slot = (wCss - padL - padR) / bars.length;
+            var bodyMax = Math.max(3, slot * 0.58);
+            var bodyW = Math.min(14, bodyMax);
+
+            ctx.strokeStyle = "rgba(100,116,139,0.35)";
+            ctx.lineWidth = 1;
+            for (var g = 0; g <= 4; g++) {
+              var gy = padT + ((hCss - padT - padB) / 4) * g;
+              ctx.beginPath();
+              ctx.moveTo(padL, gy);
+              ctx.lineTo(wCss - padR, gy);
+              ctx.stroke();
+            }
+
+            var upFill = "rgba(56, 189, 248, 0.55)";
+            var downFill = "rgba(251, 146, 60, 0.52)";
+            var wickStroke = "rgba(148, 163, 184, 0.75)";
+
+            for (var j = 0; j < bars.length; j++) {
+              var bb = bars[j];
+              var cx = padL + j * slot + slot / 2;
+              var o = bb.open;
+              var hc = bb.high;
+              var lc = bb.low;
+              var c = bb.close;
+              var yH = y(hc);
+              var yL = y(lc);
+              var yO = y(o);
+              var yC = y(c);
+
+              ctx.strokeStyle = wickStroke;
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(cx, yH);
+              ctx.lineTo(cx, yL);
+              ctx.stroke();
+
+              var topBody = Math.min(yO, yC);
+              var botBody = Math.max(yO, yC);
+              var bodyPx = Math.max(1, botBody - topBody);
+
+              ctx.fillStyle = c >= o ? upFill : downFill;
+              ctx.strokeStyle = "rgba(15, 23, 42, 0.9)";
+              ctx.lineWidth = 0.75;
+              ctx.fillRect(cx - bodyW / 2, topBody, bodyW, bodyPx);
+              ctx.strokeRect(cx - bodyW / 2, topBody, bodyW, bodyPx);
+            }
+            return true;
+          }
+
           function setDiagRender(kind) {
             var r = document.getElementById("dp-market-v11-client-render-flag");
             if (r) {
@@ -216,22 +387,23 @@
             }
           }
 
-          function syncChartJsLine() {
+          function syncChartJsLineState() {
             var n = document.getElementById("dp-market-v11-chartjs-state");
             if (!n) return;
-            n.textContent = typeof window.Chart !== "undefined"
-              ? "library available (client)"
-              : "Chart library missing or blocked";
+            n.textContent =
+              typeof window.Chart !== "undefined"
+                ? "library available (client)"
+                : "Chart library missing or blocked";
           }
 
           function syncEmbeddedBarsCount(len) {
-            var n = document.getElementById("dp-market-v11-embedded-bar-count");
-            if (n) {
-              n.textContent = String(len);
+            var node = document.getElementById("dp-market-v11-embedded-bar-count");
+            if (node) {
+              node.textContent = String(len);
             }
           }
 
-          function showClientFallback(copy) {
+          function showLineFallback(copy) {
             var wrap = document.getElementById("dp-market-v11-render-fallback");
             var msg = document.getElementById("dp-market-v11-render-fallback-msg");
             if (!wrap || !msg || wrap.getAttribute("data-market-v11-fallback-mode") !== "client-alert") {
@@ -243,7 +415,7 @@
             msg.textContent = copy;
           }
 
-          function hideClientFallbackOnly() {
+          function hideLineFallback() {
             var wrap = document.getElementById("dp-market-v11-render-fallback");
             var msg = document.getElementById("dp-market-v11-render-fallback-msg");
             if (!wrap || !msg || wrap.getAttribute("data-market-v11-fallback-mode") !== "client-alert") {
@@ -255,205 +427,303 @@
             msg.textContent = "";
           }
 
-          function setMarketChartStatus(kind) {
-            var node = document.getElementById("dp-market-v0-chart-status");
-            if (!node) return;
-            var copy = {
-              ready: "Chart bereit — read-only OHLCV-Anzeige.",
-              empty: "Keine OHLCV-Bars für diese Abfrage verfügbar.",
-              error:
-                "Chart-Daten konnten nicht gerendert werden; keine Trading-Aktion verfügbar.",
-            };
-            node.setAttribute("data-market-chart-status", kind);
-            node.removeAttribute("data-market-empty-state");
-            node.removeAttribute("data-market-error-state");
-            node.classList.remove("text-red-300", "ring-2", "ring-red-900/70", "rounded-lg", "px-2", "py-1");
-            if (kind === "empty") {
-              node.setAttribute("data-market-empty-state", "true");
-            }
-            if (kind === "error") {
-              node.setAttribute("data-market-error-state", "true");
-              node.classList.add("text-red-300", "ring-2", "ring-red-900/70", "rounded-lg", "px-2", "py-1");
-            }
-            node.textContent = copy[kind] || "";
-            setDiagRender(kind);
-          }
+          syncChartJsLineState();
 
-          syncChartJsLine();
-
-          var el = document.getElementById("dp-market-ssr-payload");
-          if (!el) {
-            setMarketChartStatus("error");
-            showClientFallback("Chart render error");
+          var payloadEl = document.getElementById("dp-market-ssr-payload");
+          if (!payloadEl) {
+            setCandleStatus("error", "payload missing");
+            setDiagRender("SSR: empty");
             return;
           }
 
           var payload;
           try {
-            payload = JSON.parse(el.textContent || "{}");
-          } catch (e) {
-            setMarketChartStatus("error");
-            showClientFallback("Chart render error");
+            payload = JSON.parse(payloadEl.textContent || "{}");
+          } catch (err) {
+            setCandleStatus("error", "JSON parse failed");
+            setDiagRender("SSR: empty");
             return;
           }
 
-          var bars = payload.bars || [];
-          syncEmbeddedBarsCount(bars.length);
-          if (!bars.length) {
-            setMarketChartStatus("empty");
-            return;
+          var rawBars = payload.bars || [];
+          syncEmbeddedBarsCount(rawBars.length);
+          var bars = [];
+          for (var k = 0; k < rawBars.length; k++) {
+            if (!validBar(rawBars[k])) {
+              continue;
+            }
+            bars.push({
+              ts: rawBars[k].ts,
+              open: num(rawBars[k].open),
+              high: num(rawBars[k].high),
+              low: num(rawBars[k].low),
+              close: num(rawBars[k].close),
+            });
           }
 
-          var canvas = document.getElementById("chart-dp-market-v0-close");
-          if (!canvas || typeof window.Chart === "undefined") {
-            setMarketChartStatus("error");
-            showClientFallback("Chart library missing or blocked");
-            return;
+          var cCanvas = document.getElementById("chart-dp-market-candlestick-v12");
+
+          function syncCandles() {
+            if (!cCanvas || !bars.length) {
+              if (!bars.length) {
+                setCandleStatus("empty", null);
+              } else if (!cCanvas) {
+                setCandleStatus("error", "canvas missing");
+              }
+              return bars.length !== 0;
+            }
+            try {
+              window.__dpRedrawCandles = function () {
+                drawCandlesticks(cCanvas, bars);
+              };
+              drawCandlesticks(cCanvas, bars);
+              window.addEventListener("resize", function () {
+                if (typeof window.__dpRedrawCandles === "function") {
+                  window.__dpRedrawCandles();
+                }
+              });
+              setCandleStatus("ready", null);
+              return true;
+            } catch (drawErr) {
+              setCandleStatus("error", drawErr.message || "draw failure");
+              return false;
+            }
           }
 
-          hideClientFallbackOnly();
-
-          var grid = "rgba(148, 163, 184, 0.15)";
-          var tick = "#94a3b8";
-          var line = "rgba(56, 189, 248, 0.85)";
-
-          try {
-            new Chart(canvas.getContext("2d"), {
-              type: "line",
-              data: {
-                labels: bars.map(function (b) {
-                  return b.ts;
-                }),
-                datasets: [
-                  {
-                    label: "Close",
-                    data: bars.map(function (b) {
-                      return b.close;
+          if (!syncCandles()) {
+            setDiagRender("SSR: empty");
+            var lineCv0 = document.getElementById("chart-dp-market-v0-close");
+            if (
+              lineCv0 &&
+              bars.length &&
+              typeof window.Chart !== "undefined"
+            ) {
+              try {
+                hideLineFallback();
+                var grid = "rgba(148, 163, 184, 0.15)";
+                var tickCol = "#94a3b8";
+                var lineCol = "rgba(56, 189, 248, 0.85)";
+                new Chart(lineCv0.getContext("2d"), {
+                  type: "line",
+                  data: {
+                    labels: bars.map(function (b) {
+                      return b.ts;
                     }),
-                    borderColor: line,
-                    backgroundColor: "rgba(56, 189, 248, 0.12)",
-                    borderWidth: 1.5,
-                    fill: true,
-                    tension: 0.1,
-                    pointRadius: 0,
+                    datasets: [
+                      {
+                        label: "Close",
+                        data: bars.map(function (b) {
+                          return b.close;
+                        }),
+                        borderColor: lineCol,
+                        backgroundColor: "rgba(56, 189, 248, 0.12)",
+                        borderWidth: 1.5,
+                        fill: true,
+                        tension: 0.1,
+                        pointRadius: 0,
+                      },
+                    ],
                   },
-                ],
-              },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { mode: "index", intersect: false },
-                plugins: {
-                  legend: { labels: { color: tick } },
-                  tooltip: {
-                    callbacks: {
-                      label: function (ctx) {
-                        var v = ctx.parsed.y;
-                        return v != null ? "close: " + v.toFixed(2) : "";
+                  options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: "index", intersect: false },
+                    plugins: {
+                      legend: { labels: { color: tickCol } },
+                      tooltip: {
+                        callbacks: {
+                          label: function (ctx) {
+                            var v = ctx.parsed.y;
+                            return v != null ? "close: " + v.toFixed(2) : "";
+                          },
+                        },
+                      },
+                    },
+                    scales: {
+                      x: {
+                        ticks: {
+                          color: tickCol,
+                          maxRotation: 45,
+                          minRotation: 0,
+                          font: { size: 9 },
+                        },
+                        grid: { color: grid },
+                      },
+                      y: {
+                        ticks: { color: tickCol },
+                        grid: { color: grid },
                       },
                     },
                   },
-                },
-                scales: {
-                  x: {
-                    ticks: {
-                      color: tick,
-                      maxRotation: 45,
-                      minRotation: 0,
-                      font: { size: 9 },
-                    },
-                    grid: { color: grid },
-                  },
-                  y: {
-                    ticks: { color: tick },
-                    grid: { color: grid },
-                  },
-                },
-              },
-            });
-          } catch (e2) {
-            setMarketChartStatus("error");
-            showClientFallback("Chart render error");
+                });
+                syncChartJsLineState();
+                setDiagRender("ready");
+              } catch (chartErr2) {
+                setDiagRender("error");
+              }
+            }
             return;
           }
-          syncChartJsLine();
-          setMarketChartStatus("ready");
+
+          hideLineFallback();
+          syncChartJsLineState();
+
+          var lineCanvas = document.getElementById("chart-dp-market-v0-close");
+          if (
+            lineCanvas &&
+            typeof window.Chart !== "undefined"
+          ) {
+            try {
+              new Chart(lineCanvas.getContext("2d"), {
+                type: "line",
+                data: {
+                  labels: bars.map(function (b) {
+                    return b.ts;
+                  }),
+                  datasets: [
+                    {
+                      label: "Close",
+                      data: bars.map(function (b) {
+                        return b.close;
+                      }),
+                      borderColor: "rgba(56, 189, 248, 0.7)",
+                      backgroundColor: "rgba(56, 189, 248, 0.1)",
+                      borderWidth: 1.2,
+                      fill: true,
+                      tension: 0.08,
+                      pointRadius: 0,
+                    },
+                  ],
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  interaction: { mode: "index", intersect: false },
+                  plugins: { legend: { display: false } },
+                  scales: {
+                    x: {
+                      ticks: { color: "#64748b", maxTicksLimit: 6, font: { size: 8 } },
+                      grid: { display: false },
+                    },
+                    y: {
+                      ticks: { color: "#64748b", font: { size: 8 } },
+                      grid: { color: "rgba(51,65,85,0.25)" },
+                    },
+                  },
+                },
+              });
+              setDiagRender("ready");
+              syncChartJsLineState();
+            } catch (eLine) {
+              setDiagRender("error");
+              showLineFallback("Chart render error");
+            }
+          }
         })();
       </script>
     </div>
 
-    {# --- Double-Play rail --- #}
     <aside
-      class="rounded-xl border border-slate-800 bg-slate-950/85 p-4 shadow-lg shadow-black/30 ring-1 ring-slate-800/70 xl:sticky xl:top-4"
+      class="rounded-xl border border-slate-900/95 bg-gradient-to-b from-black/85 via-slate-950 to-slate-950 p-4 shadow-2xl shadow-black/45 ring-1 ring-cyan-950/45 xl:sticky xl:top-4"
       aria-label="Double-Play snapshot rail"
       data-double-play-market-cockpit-rail="true"
       data-double-play-display-ssr-v1="true"
+      data-double-play-market-visual-panels-v1-2="true"
     >
-      <h2 class="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2 m-0">Double-Play · Rail</h2>
-      <p class="text-[11px] text-slate-400 mb-3 m-0 leading-snug">
+      <div class="flex flex-wrap gap-1.5 mb-3" data-double-play-market-status-chip="true">
+        <span class="rounded-full border border-cyan-900/55 bg-cyan-950/40 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-cyan-200">DISPLAY ONLY</span>
+        <span class="rounded-full border border-slate-700/80 bg-slate-900/90 px-2 py-0.5 text-[9px] font-semibold uppercase text-slate-300">SSR snapshot</span>
+        <span class="rounded-full border border-amber-900/55 bg-amber-950/30 px-2 py-0.5 text-[9px] font-semibold uppercase text-amber-200/95">Not trading ready</span>
+        <span class="rounded-full border border-slate-700 px-2 py-0.5 text-[9px] font-semibold uppercase text-slate-400">No authority</span>
+        <span class="rounded-full border border-slate-700 px-2 py-0.5 text-[9px] font-semibold text-slate-500">Diagnostics (not approval)</span>
+        <span class="rounded-full border border-dashed border-slate-700 px-2 py-0.5 text-[9px] text-slate-500">Model label only</span>
+      </div>
+
+      <h2 class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-2 m-0">Double-Play · Rail</h2>
+      <p class="text-[11px] text-slate-400 mb-3 m-0 leading-snug border-b border-slate-800 pb-3">
         Display-only Snapshot — keine Operational-Freigabe.
         <a href="{{ double_play_json_url }}" class="text-sky-400 underline underline-offset-2 font-mono break-all block mt-2" data-double-play-market-display-json-link="true">{{ double_play_json_url }}</a>
       </p>
 
-      <div class="space-y-2 rounded-lg border border-slate-800 bg-slate-900/70 p-3 mb-3">
-        <div class="flex items-baseline justify-between gap-2">
-          <span class="text-[10px] uppercase text-slate-500 tracking-wide">Overall</span>
-          <span class="font-mono text-sm text-sky-300/95">{{ dp_display.overall_status }}</span>
+      <div class="grid gap-2 mb-3">
+        <div class="rounded-lg border border-emerald-900/35 bg-emerald-950/15 px-3 py-2.5">
+          <p class="text-[9px] uppercase tracking-wider text-emerald-500/95 m-0 mb-1">overall_status</p>
+          <p class="text-lg font-mono font-bold text-emerald-200/95 m-0 leading-none">{{ dp_display.overall_status }}</p>
         </div>
-        <div class="flex items-baseline justify-between gap-2 border-t border-slate-800/80 pt-2">
-          <span class="text-[10px] uppercase text-slate-500 tracking-wide">display_only</span>
-          <span class="font-mono text-slate-200">{{ dp_display.display_only }}</span>
+        <div class="flex items-center justify-between gap-2 rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2">
+          <span class="text-[10px] uppercase text-slate-500 tracking-wide font-medium">display_only</span>
+          <span class="font-mono text-sm font-semibold text-slate-100">{{ dp_display.display_only }}</span>
         </div>
+        {% if dp_display.warnings %}
+        <div class="rounded-lg border border-amber-900/35 bg-amber-950/20 px-3 py-2">
+          <p class="text-[10px] font-semibold text-amber-500 m-0 mb-1">warnings</p>
+          <ul class="m-0 pl-4 list-disc text-[11px] text-amber-100/85 space-y-0.5">
+            {% for w in dp_display.warnings %}<li class="font-mono break-words">{{ w }}</li>{% endfor %}
+          </ul>
+        </div>
+        {% endif %}
       </div>
 
-      <div class="text-[10px] text-slate-500 mb-2 uppercase tracking-wide">Diagnostics (nicht Approval)</div>
-      <dl class="grid grid-cols-1 gap-1.5 text-[11px] text-slate-400 mb-3 font-mono">
-        <div class="flex justify-between gap-2"><dt class="text-slate-500 font-sans normal-case">Trading</dt><dd class="m-0">{{ dp_display.trading_ready }}</dd></div>
-        <div class="flex justify-between gap-2"><dt class="text-slate-500 font-sans normal-case">Testnet</dt><dd class="m-0">{{ dp_display.testnet_ready }}</dd></div>
-        <div class="flex justify-between gap-2"><dt class="text-slate-500 font-sans normal-case">Live</dt><dd class="m-0">{{ dp_display.live_ready }}</dd></div>
-        <div class="flex justify-between gap-2 border-t border-slate-800/80 pt-1.5"><dt class="text-slate-500 font-sans normal-case text-[10px]">No-live-Banner</dt><dd class="m-0">{{ dp_display.no_live_banner_visible }}</dd></div>
-        <div class="flex justify-between gap-2"><dt class="text-slate-500 font-sans normal-case text-[10px]">Live-Freigabe-Feld</dt><dd class="m-0">{{ dp_display.live_authorization }}</dd></div>
-      </dl>
-
-      {% if dp_display.warnings %}
-      <div class="mb-3">
-        <p class="text-[10px] font-semibold uppercase text-slate-500 mb-1 m-0">warnings</p>
-        <ul class="m-0 pl-4 list-disc text-[11px] text-slate-400 space-y-0.5 marker:text-slate-600">
-          {% for w in dp_display.warnings %}
-          <li class="font-mono break-words">{{ w }}</li>
-          {% endfor %}
-        </ul>
+      <div
+        class="rounded-xl border border-slate-800/90 bg-black/55 p-3 mb-3"
+        data-double-play-market-diagnostics-chip="true"
+      >
+        <p class="text-[10px] text-slate-500 mb-2 uppercase tracking-wide font-semibold">Diagnostics · read-only Flags</p>
+        <dl class="grid gap-2 text-[11px] text-slate-300 font-mono">
+          <div class="flex justify-between gap-2 rounded-md bg-slate-950/50 px-2 py-1">
+            <dt class="text-slate-500 font-sans text-[10px] normal-case">No-live banner visible</dt>
+            <dd class="m-0">{{ dp_display.no_live_banner_visible }}</dd>
+          </div>
+          <div class="flex justify-between gap-2 rounded-md bg-slate-950/50 px-2 py-1">
+            <dt class="text-slate-500 font-sans text-[10px] normal-case">trading_ready</dt>
+            <dd class="m-0">{{ dp_display.trading_ready }}</dd>
+          </div>
+          <div class="flex justify-between gap-2 rounded-md bg-slate-950/50 px-2 py-1">
+            <dt class="text-slate-500 font-sans text-[10px] normal-case">testnet_ready</dt>
+            <dd class="m-0">{{ dp_display.testnet_ready }}</dd>
+          </div>
+          <div class="flex justify-between gap-2 rounded-md bg-slate-950/50 px-2 py-1">
+            <dt class="text-slate-500 font-sans text-[10px] normal-case">live_ready</dt>
+            <dd class="m-0">{{ dp_display.live_ready }}</dd>
+          </div>
+          <div class="flex justify-between gap-2 rounded-md bg-slate-950/50 px-2 py-1">
+            <dt class="text-slate-500 font-sans text-[10px] normal-case">Live-Freigabe-Feld</dt>
+            <dd class="m-0">{{ dp_display.live_authorization }}</dd>
+          </div>
+        </dl>
       </div>
-      {% endif %}
 
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-3">
         {% for panel in dp_display.panels %}
         <article
-          class="rounded-lg border border-slate-800/90 bg-black/35 p-2.5 text-[11px]"
+          class="relative overflow-hidden rounded-xl border border-slate-700/85 bg-gradient-to-br from-slate-950 via-slate-900/96 to-black p-3 text-[11px] shadow-inner shadow-black/40 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-cyan-800/55 before:to-slate-800/20"
+          data-double-play-market-panel-tile="true"
           data-double-play-panel="{{ panel.name }}"
         >
-          <div class="flex items-center justify-between gap-2 mb-1">
-            <h3 class="text-xs font-semibold text-slate-100 m-0 font-mono truncate">{{ panel.name }}</h3>
-            <span class="font-mono text-emerald-300/85 shrink-0">{{ panel.status }}</span>
+          <div class="flex items-start justify-between gap-2 mb-2">
+            <h3 class="text-xs font-bold text-slate-50 m-0 font-mono tracking-tight leading-tight max-w-[14rem] break-words">
+              {{ panel.name }}
+            </h3>
+            <span class="rounded-md border border-slate-600/85 bg-black/55 px-2 py-0.5 text-[10px] font-mono text-sky-200/95 shrink-0" data-double-play-market-status-chip="true">{{ panel.status }}</span>
           </div>
           {% if panel.summary %}
-          <p class="text-slate-400 leading-snug m-0 line-clamp-3">{{ panel.summary }}</p>
+          <p class="text-slate-400 leading-snug m-0 text-[11px] line-clamp-4 border-t border-slate-800/80 pt-2 mt-2">{{ panel.summary }}</p>
           {% endif %}
-          <div class="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-slate-500 font-mono">
-            <span>LA {{ panel.live_authorization }}</span>
-            <span>auth {{ panel.is_authority }}</span>
-            <span>sig {{ panel.is_signal }}</span>
+          <div class="mt-2 flex flex-wrap gap-2 font-mono text-[10px] text-slate-500">
+            <span class="rounded border border-slate-800 px-1.5 py-0.5 bg-black/35">LA {{ panel.live_authorization }}</span>
+            <span class="rounded border border-slate-800 px-1.5 py-0.5 bg-black/35">auth {{ panel.is_authority }}</span>
+            <span class="rounded border border-slate-800 px-1.5 py-0.5 bg-black/35">sig {{ panel.is_signal }}</span>
           </div>
           {% if panel.blockers %}
-          <details class="mt-1">
-            <summary class="cursor-pointer text-slate-500 text-[10px]">blockers ({{ panel.blockers|length }})</summary>
-            <ul class="m-1 pl-4 list-disc text-slate-400">{% for b in panel.blockers %}<li>{{ b }}</li>{% endfor %}</ul>
+          <details class="mt-2 text-[10px]">
+            <summary class="cursor-pointer text-slate-500 hover:text-slate-300 outline-none select-none font-medium px-2 py-1 rounded bg-slate-950/65 border border-slate-800/80 inline-block">blockers ({{ panel.blockers|length }})</summary>
+            <ul class="m-1 pl-4 list-disc text-slate-400 mt-2">{% for b in panel.blockers %}<li>{{ b }}</li>{% endfor %}</ul>
           </details>
           {% endif %}
           {% if panel.missing_inputs %}
-          <details class="mt-1">
-            <summary class="cursor-pointer text-slate-500 text-[10px]">missing_inputs ({{ panel.missing_inputs|length }})</summary>
-            <ul class="m-1 pl-4 list-disc text-slate-400">{% for m in panel.missing_inputs %}<li>{{ m }}</li>{% endfor %}</ul>
+          <details class="mt-2 text-[10px]">
+            <summary class="cursor-pointer text-slate-500 hover:text-slate-300 outline-none select-none font-medium px-2 py-1 rounded bg-slate-950/65 border border-slate-800/80 inline-block">missing_inputs ({{ panel.missing_inputs|length }})</summary>
+            <ul class="m-1 pl-4 list-disc text-slate-400 mt-2">{% for m in panel.missing_inputs %}<li>{{ m }}</li>{% endfor %}</ul>
           </details>
           {% endif %}
         </article>
