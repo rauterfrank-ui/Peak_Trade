@@ -151,11 +151,7 @@ def _dir_json_slot(
     if not dir_path.is_dir():
         errors.append(missing_code)
         return False
-    json_files = [
-        p
-        for p in dir_path.iterdir()
-        if p.is_file() and p.suffix.lower() == ".json"
-    ]
+    json_files = [p for p in dir_path.iterdir() if p.is_file() and p.suffix.lower() == ".json"]
     if not json_files:
         errors.append(missing_code)
         return False

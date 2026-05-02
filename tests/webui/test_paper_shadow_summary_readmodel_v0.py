@@ -18,12 +18,7 @@ from src.webui.paper_shadow_summary_readmodel_v0 import (
     to_json_dict,
 )
 
-FIXTURES = (
-    project_root
-    / "tests"
-    / "fixtures"
-    / "paper_shadow_summary_readmodel_v0"
-)
+FIXTURES = project_root / "tests" / "fixtures" / "paper_shadow_summary_readmodel_v0"
 
 
 def _fixture(name: str) -> Path:
@@ -101,9 +96,7 @@ def test_malformed_fills_error_and_absent_fill_slot() -> None:
 
 def test_bundle_root_must_exist() -> None:
     with pytest.raises(ValueError, match="bundle_root"):
-        build_paper_shadow_summary_readmodel_v0(
-            Path("/nonexistent/paper_shadow_bundle_xyz")
-        )
+        build_paper_shadow_summary_readmodel_v0(Path("/nonexistent/paper_shadow_bundle_xyz"))
 
 
 def test_policy_stamp_overrides_prj_smoke_discovery(tmp_path: Path) -> None:
@@ -165,4 +158,3 @@ def test_prj_smoke_ambiguous_stamp_errors(tmp_path: Path) -> None:
     assert "prj_smoke_stamp_ambiguous" in m.errors
     assert "stamp_unresolved_bundle_partial" in m.warnings
     assert m.manifest_present is False
-
