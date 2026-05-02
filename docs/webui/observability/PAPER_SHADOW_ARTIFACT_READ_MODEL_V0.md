@@ -105,6 +105,14 @@ For hub context, see [**Observability Hub v0**](OBSERVABILITY_HUB_V0.md).
 - It **does not** make **`&#47;tmp`**, **GitHub Actions** artifacts, or **PR-J** packs **WebUI runtime** data sources.
 - The **Observability Hub** must remain **without** a wired Paper/Shadow panel until **one** source path is **separately** approved, **mapped** to §7 fields, and documented under §11.
 
+## Dedicated summary schema v0
+
+**Candidate C** (future dedicated Paper/Shadow summary read-model) is now described by the docs-only schema contract [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) (**`paper_shadow_summary_readmodel_v0`**).
+
+- This is **planning documentation only**.
+- It does **not** approve any **runtime** source, **endpoint**, **UI** panel, **artifact** fetch, or **readiness** semantics.
+- Implementation remains blocked until §11 prerequisites are satisfied for the chosen producer and **`GET`** path.
+
 ## 7. Allowed future display fields (examples)
 
 When a read-model exists, a **display-only** panel may surface **non-endorsement** facts, for example:
@@ -176,4 +184,5 @@ Stop and **do not** add UI if:
 ## 13. References
 
 - [**Observability Hub v0**](OBSERVABILITY_HUB_V0.md) — current hub scope; **no** Paper/Shadow artifact panel today.
+- [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) — docs-only JSON shape for **`paper_shadow_summary_readmodel_v0`** (Candidate C).
 - [**Market Surface v0**](../MARKET_SURFACE_V0.md) — example of read-only display boundaries (orthogonal domain).

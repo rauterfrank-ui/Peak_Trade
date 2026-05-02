@@ -25,6 +25,8 @@ Operator-lokale Reviews unter **`&#47;tmp`** (z. B. PR-J Shadow+Paper Trend/Sema
 
 **v0.8b — Quellen-Ranking (nur Planung):** Ein Paper/Shadow-Panel bleibt **unverdrahtet**. Die priorisierte Kandidaten-Reihenfolge (Execution-Watch API zuerst, dann u. a. live.web-Snapshot, dedizierter Summary-Endpoint, Repo-Fixture, zuletzt CI-Ingestion) steht ausschließlich im Vertrag [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) unter *Source decision matrix v0.8b*. **Keine** Laufzeit-Quelle ist damit freigegeben.
 
+Das dedizierte Summary-Schema [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) (**`paper_shadow_summary_readmodel_v0`**) ist **nur dokumentiert**; es gibt weiterhin **keinen** Endpoint und **kein** Panel.
+
 ## Aktuelle Panels (Display-only)
 
 Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness oder Strategie-/Ausführungsfreigabe.
