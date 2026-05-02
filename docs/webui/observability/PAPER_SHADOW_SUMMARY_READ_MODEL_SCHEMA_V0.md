@@ -53,7 +53,7 @@ The schema is now backed by a **fixture-only**, stdlib **builder** (offline; exp
 
 ### Runtime source boundary (planning)
 
-- WebUI **runtime** bundle configuration and **forbidden** source modes for any future **`GET`** are governed by [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md).
+- WebUI **runtime** bundle configuration and **forbidden** source modes for any future **`GET`** are governed by [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md), including **Env/config contract v0** (variable names, **503** diagnostic envelopes).
 - **This schema** does **not**, by itself, approve an **endpoint** or **runtime** source.
 - The **fixture-only builder** remains **separate** from an approved **runtime** source until that contract and [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) §11 gates are satisfied.
 
