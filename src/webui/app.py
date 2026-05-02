@@ -51,6 +51,7 @@ HTML Pages:
 - GET /r_and_d/experiments/{run_id} (R&D Experiment Detail - Phase 76 kanonisch)
 - GET /r_and_d/comparison (R&D Multi-Run Comparison - Phase 78)
 - GET /market (Market Surface v0 — read-only OHLCV, Close-Line-Chart)
+- GET /market/double-play (Double-Play Market Dashboard v0 — statische Links, kein Fetch)
 - GET /observability (Observability-Hub — read-only Link-/Hinweisleiste, keine neue Autorität)
 
 API Endpoints:
@@ -378,7 +379,15 @@ def load_strategy_tiering(include_research: bool = False) -> Dict[str, Any]:
     }
 
 
+
 templates = Jinja2Templates(directory=str(TEMPLATE_DIR))
+
+# Double-Play Market Dashboard v0 — static URL examples (no runtime I/O)
+_DP_MARKET_V0_DEMO_URL = "/market?source=dummy&symbol=BTC/EUR&timeframe=1d&limit=120"
+_DP_MARKET_V0_API_URL = "/api/market/ohlcv?source=dummy&symbol=BTC/EUR&timeframe=1d&limit=120"
+_DP_MARKET_V0_DEMO_HREF = "/market?source=dummy&symbol=BTC%2FEUR&timeframe=1d&limit=120"
+_DP_MARKET_V0_API_HREF = "/api/market/ohlcv?source=dummy&symbol=BTC%2FEUR&timeframe=1d&limit=120"
+_DP_DOUBLE_PLAY_DISPLAY_JSON_URL = "/api/master-v2/double-play/dashboard-display.json"
 
 
 def load_live_sessions(limit: int = 10) -> Dict[str, Any]:
@@ -564,6 +573,27 @@ def create_app() -> FastAPI:
             request,
             "observability_hub.html",
             {"status": proj_status},
+        )
+
+    @app.get("/market/double-play", response_class=HTMLResponse)
+    async def double_play_market_dashboard_v0_page(request: Request) -> Any:
+        """
+        Double-Play Market Dashboard v0 — static read-only shell.
+
+        Links only; no HTTP calls to Market or Double-Play JSON endpoints; no client fetch wired here.
+        """
+        proj_status = get_project_status()
+        return templates.TemplateResponse(
+            request,
+            "double_play_market_dashboard_v0.html",
+            {
+                "status": proj_status,
+                "market_demo_url": _DP_MARKET_V0_DEMO_URL,
+                "market_api_url": _DP_MARKET_V0_API_URL,
+                "market_demo_href": _DP_MARKET_V0_DEMO_HREF,
+                "market_api_href": _DP_MARKET_V0_API_HREF,
+                "double_play_json_url": _DP_DOUBLE_PLAY_DISPLAY_JSON_URL,
+            },
         )
 
     @app.get("/", response_class=HTMLResponse)

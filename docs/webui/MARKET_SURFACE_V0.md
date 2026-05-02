@@ -5,6 +5,7 @@
 | Methode | Pfad | Beschreibung |
 |---------|------|----------------|
 | GET | `/market` | HTML: Close-Line-Chart (Chart.js), Parameter per Query |
+| GET | `/market/double-play` | HTML: statische read-only Kompositions-Hülle (Links zu Market + Double-Play display JSON; **kein** Fetch) |
 | GET | `/api/market/ohlcv` | JSON: OHLCV-Bars (`open`/`high`/`low`/`close`/`volume`, Zeit `ts`) |
 
 ## Query-Parameter (beide Endpunkte)
@@ -65,6 +66,16 @@ Banner‑Inhalt fasst u. a.: keine Orders, kein Testnet/Live, keine Capital/Sc
 - **Keine** lokale Chart.js‑Vendor‑ oder Static‑Asset‑Einbindung; **GET &#47;api&#47;market&#47;ohlcv** bleibt unverändert.
 - **Keine** Double‑Play‑Komposition oder Trading‑/Risk‑/Capital‑Interpretation durch diese Diagnosemarker.
 - **v1.2** kann einen **lokalen Chart.js‑Fallback** planen, falls CDN‑Blocking **evidenziert** ist.
+
+## Double-Play Market Dashboard v0
+
+**Route:** **`GET &#47;market&#47;double-play`**
+
+Statische **read-only**‑Kompositions‑Hülle (Templates/HTML): verlinkt die **pure Market Surface** (**`GET &#47;market`**, **`GET &#47;api&#47;market&#47;ohlcv`**) sowie das bestehende **Double‑Play‑Display‑JSON** (**`GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json`**) als **navigation only**.
+
+- **Kein** automatischer Fetch, **keine** Client‑Polling‑Logik durch diese Seite, **keine** serverseitige JSON‑Aggregation hier.
+- **`GET &#47;market`** bleibt die Chart‑/Marktdaten‑Fläche; **`dashboard‑display.json`** bleibt **display‑only** (keine Orders, **keine** Strategie-/Side‑Schalt‑Autorität, **keine** Scope/Capital‑Billigung, **kein** Risk/KillSwitch‑Override, **kein** Live/Testnet‑Activate).
+- Eine spätere dynamische Komposition gehört in einen **eigenen** Read‑model‑/Kontrakt‑Slice.
 
 ## Chart status states
 
