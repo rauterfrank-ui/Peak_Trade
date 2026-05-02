@@ -5,7 +5,7 @@
 | Methode | Pfad | Beschreibung |
 |---------|------|----------------|
 | GET | `/market` | HTML: Close-Line-Chart (Chart.js), Parameter per Query |
-| GET | `/market/double-play` | HTML: SSR read-only Komposition (ein Server-Render) — **v1.2:** dominanter **Canvas-Candlestick** aus eingebetteten OHLCV-Bars (**gleiche Payload-/Query-Semantik wie** **`GET`** **`/market`**) plus sekundärer Chart.js‑Close-Line; Double-Play-Display-Snapshot (**gleicher JSON-Vertrag wie** **`GET`** **`/api/master-v2/double-play/dashboard-display.json`** in-process); **kein** client-fetch zu diesen Routen durch die Seite, **kein** automatisches Nachladen |
+| GET | `/market/double-play` | HTML: SSR read-only Komposition (ein Server-Render) — **v1.2** dominanter Canvas-Candlestick + **v1.3** menschenlesbare Double‑Play‑Rail‑Feldzuordnung (weiterhin **gleiche** eingebettete Payload-/JSON‑Semantik), sekundärer Chart.js‑Close-Line (**gleicher JSON-Vertrag wie** **`GET`** **`/api/master-v2/double-play/dashboard-display.json`** in-process); **kein** client-fetch, **kein** automatisches Nachladen |
 | GET | `/api/market/ohlcv` | JSON: OHLCV-Bars (`open`/`high`/`low`/`close`/`volume`, Zeit `ts`) |
 
 ## Query-Parameter (`GET &#47;market`, `GET &#47;api&#47;market&#47;ohlcv`, eingebetter Marktblock auf **`GET`** **`&#47;market&#47;double-play`**)
@@ -102,7 +102,17 @@ Stabile neue **Markup‑Marker** unter anderem **`data-double-play-market-cockpi
 
 Die **visual Double‑Play**‑Rail (**Chips**, **Tiles**, **Diagnostics**) ist **strikt display-only**. **`display_ready`** und sämtliche angezeigten Status-/Label‑Felder (**`trading_ready`**, **`testnet_ready`**, **`live_ready`**, Overlays wie **DISPLAY ONLY** / **Not trading ready**) sind **nicht** Handelsbereitschaft, **nicht** Freigabe/Autorisierung zu Live/Testnet, **keine** Scope/Capital‑Billigung und **kein** Risk-/KillSwitch‑Override.
 
-**Ein späteres Arbeitspaket** kann Orderbuch/Tiefe, reichhaltigere Feldzuordnung oder CDN‑Ausfall‑Mitigation (**lokaler Chart.js‑Fallback**) **separat** planen.
+**Ein späteres Arbeitspaket** kann Orderbuch/Tiefe oder CDN‑Ausfall‑Mitigation (**lokaler Chart.js‑Fallback**) **separat** planen — **v1.3** liefert **template‑gebundene** Rail‑Zuordnung (kein neues JSON‑Feld).
+
+## Double-Play Market Dashboard v1.3 rail field mapping
+
+**Route:** **`GET &#47;market&#47;double-play`** (unverändert)
+
+**v1.3** ergänzt **nur Templates/Tests/Docs**: menschenlesbare **Panel‑Titel/Untertitel** und deutschsprachige **„Anzeige: …“**‑Beschriftungen für die **`display_*`**‑Status‑Strings des bestehenden **Double‑Play‑Display‑Snapshots** (**kein** neues Feld im JSON, **keine** Änderung an **`GET`** **`&#47;api&#47;master‑v2&#47;double‑play&#47;dashboard‑display.json`**, keine Trading‑ oder Runtime‑Logik).
+
+- Roh‑ **`display_ready`** **`/`** Panel‑ **`display_*`** werden **nicht** als Handelsbereitschaft dargestellt; **„Anzeige: OK“** bedeutet **„Karte beschriftbar vorhanden im Snapshot“**, **nicht** Order‑Freigabe.
+- **`Bull`**/**`Bear`**/**`Long`**/**`Short`** werden **nicht** aus Panel‑Schlüsseln **abgeleitet** — nur bereits in **`summary`**/**Listen** vorhandene Wörter erscheinen als **übernommener Fließtext**.
+- weiterhin **keine** operative Autorität, **keine** Live/Testnet‑Aktivierung, **keine** Order-/Scope/Capital/Risk‑Override‑Semantik über die neue Copy hinaus.
 
 ## Chart status states
 
