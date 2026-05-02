@@ -101,17 +101,16 @@ For hub context, see [**Observability Hub v0**](OBSERVABILITY_HUB_V0.md).
 
 - This **ranking** is a **planning decision only**.
 - It **does not** approve any source for **runtime** hub display.
-- It **does not** implement a read-model, route, or artifact fetch.
+- It **does not** implement a **runtime hub** read-model **`GET`**, production **ingest** route, or **artifact** fetch.
 - It **does not** make **`&#47;tmp`**, **GitHub Actions** artifacts, or **PR-J** packs **WebUI runtime** data sources.
 - The **Observability Hub** must remain **without** a wired Paper/Shadow panel until **one** source path is **separately** approved, **mapped** to §7 fields, and documented under §11.
 
 ## Dedicated summary schema v0
 
-**Candidate C** (future dedicated Paper/Shadow summary read-model) is now described by the docs-only schema contract [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) (**`paper_shadow_summary_readmodel_v0`**).
+**Candidate C** (future dedicated Paper/Shadow summary read-model) is described by [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) (**`paper_shadow_summary_readmodel_v0`**). A **fixture-only** in-repo **builder** materializes that schema for tests and explicit offline **`bundle_root`**; it is **not** a runtime hub source (**see that document**, Implementation status).
 
-- This is **planning documentation only**.
-- It does **not** approve any **runtime** source, **endpoint**, **UI** panel, **artifact** fetch, or **readiness** semantics.
-- Implementation remains blocked until §11 prerequisites are satisfied for the chosen producer and **`GET`** path.
+- The schema doc remains **planning** for **approved runtime `GET`s** and **hub** display.
+- It does **not** approve a **hub** **`GET`**, **Observability** template wiring for this read-model, **browser-side artifact** fetch, or **readiness** semantics for operator truth.
 
 ## 7. Allowed future display fields (examples)
 
@@ -171,7 +170,7 @@ Before adding a hub panel or route:
 4. **Tests** that assert markers, forbidden phrases, and no `fetch(` in the hub template (aligned with existing hub tests).
 5. **Docs update** to [**OBSERVABILITY_HUB_V0**](OBSERVABILITY_HUB_V0.md) panel table and non-goals.
 6. **Drift&#47;token policy** pass for new docs paths.
-7. **Fixture&#47;input path rules** — documented only in [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) (*Appendix: fixture and input path rules v0*); **docs-only** — **no** fixture files or builder implementation exists until separately shipped.
+7. **Fixture&#47;input path rules** — documented in [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) (*Appendix: fixture and input path rules v0*). A **fixture-only** builder and curated **test** fixtures **exist** in-repo (see that document’s **Implementation status**). They are **not** an approved **runtime** or **hub** operator data plane; **no** **`GET &#47;observability`** wiring and **no** canonical operator **`GET`** for live bundle truth until items **1–2** and reviews **3–6** are satisfied. **No** **`&#47;tmp`** runtime source and **no** **GitHub Actions** artifact fetch **from the WebUI** without a **separate** approved design (unchanged).
 
 ## 12. Stop conditions
 
@@ -185,5 +184,5 @@ Stop and **do not** add UI if:
 ## 13. References
 
 - [**Observability Hub v0**](OBSERVABILITY_HUB_V0.md) — current hub scope; **no** Paper/Shadow artifact panel today.
-- [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) — docs-only JSON shape for **`paper_shadow_summary_readmodel_v0`** (Candidate C).
+- [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) — normative JSON shape for **`paper_shadow_summary_readmodel_v0`** (Candidate C); fixture-only builder **shipped** (see Implementation status there); **no** hub **`GET`** approved here.
 - [**Market Surface v0**](../MARKET_SURFACE_V0.md) — example of read-only display boundaries (orthogonal domain).

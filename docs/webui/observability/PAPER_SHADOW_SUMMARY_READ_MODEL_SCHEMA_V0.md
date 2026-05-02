@@ -1,10 +1,10 @@
-# Paper/Shadow Summary Read-model Schema v0 (planning only)
+# Paper/Shadow Summary Read-model Schema v0
 
 ## 1. Purpose
 
-This document defines a **docs-only JSON schema contract** for **`paper_shadow_summary_readmodel_v0`**, the future **dedicated** Paper/Shadow **artifact presence** summary aligned with [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) §7 (allowed facts) and §8 (forbidden claims).
+This document defines the **normative JSON schema contract** for **`paper_shadow_summary_readmodel_v0`**, the **dedicated** Paper/Shadow **artifact presence** summary aligned with [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) §7 (allowed facts) and §8 (forbidden claims).
 
-It does **not** implement a backend route, runtime reader, UI panel, artifact fetch, CI integration, or any **readiness** / **evidence authority** surface.
+A **fixture-only** builder materializes this shape for **explicit local `bundle_root`** (tests and offline invocation); see **Implementation status**. **This document** still does **not** register a backend route, **approved** runtime reader for the hub, UI panel, artifact fetch, CI integration, or any **readiness** / **evidence authority** surface.
 
 ## 2. Non-authority note
 
@@ -16,7 +16,7 @@ The read-model is **display-only** and **non-authorizing** when consumed (future
 
 - The [**artifact read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) is the **parent hub contract** (gates, forbidden semantics, observability boundaries).
 - **This schema** is **Candidate C**: the **canonical shape** for a **future** summary document that could back **§7**-style presence display **after** separate implementation approval.
-- Until a producer and **`GET`** (or approved file contract) exist, **no** hub panel may imply this schema is live data.
+- A **fixture-only** producer (builder + tests) exists; until an **approved runtime** **`GET`** (or approved file contract) exists for hub consumption, **no** hub panel may imply this schema is live **operator** data.
 
 ## 4. Adjacent surfaces (not this schema)
 
@@ -33,7 +33,25 @@ These remain **companion** observability links — **not** substitutes for **`pa
 
 - Payload MUST include `schema_version` with value **`paper_shadow_summary_readmodel.v0`** (or a documented alias locked to this doc).
 
-## 6. Future endpoint placeholder (unimplemented)
+## 6. Implementation status (fixture-only builder)
+
+The schema is now backed by a **fixture-only**, stdlib **builder** (offline; explicit **`bundle_root`** only):
+
+- **Builder package:** [`src/webui/paper_shadow_summary_readmodel_v0/`](../../../src/webui/paper_shadow_summary_readmodel_v0/)
+- **Unit tests:** [`tests/webui/test_paper_shadow_summary_readmodel_v0.py`](../../../tests/webui/test_paper_shadow_summary_readmodel_v0.py)
+- **Curated fixtures:** [`tests/fixtures/paper_shadow_summary_readmodel_v0/`](../../../tests/fixtures/paper_shadow_summary_readmodel_v0/)
+
+**Not implemented (unchanged):**
+
+- **`GET &#47;api&#47;observability&#47;paper-shadow-summary`** (or any registered hub **`GET`** for this read-model)
+- **Observability Hub** panel or template wiring for Paper/Shadow summary
+- **Runtime** ingest source, **artifact fetch**, or **GitHub Actions** integration inside this chain
+- **`&#47;tmp`** as an approved **WebUI-facing** runtime source
+- **Readiness**, **evidence authority**, **handoff**, or **sign-off** surface semantics
+
+**Implementation notes (non-normative):** The builder may support an explicit stamp override type (`PaperShadowPathPolicyV0`) and deterministic `generated_at_utc` for tests via environment variable. These are **not** a public HTTP contract.
+
+## 7. Future endpoint placeholder (unimplemented)
 
 A **possible** future read-only route namespace ( **not** registered; **no** implementation today ):
 
@@ -41,7 +59,7 @@ A **possible** future read-only route namespace ( **not** registered; **no** imp
 
 Any real path may change under governance, but MUST remain a **single** documented **`GET`** with **no** browser-side GitHub Artifact API and **no** **`&#47;tmp`** runtime source. This section is **naming only**.
 
-## 7. Envelope fields
+## 8. Envelope fields
 
 | Field | Type | Meaning |
 |--------|------|---------|
@@ -56,7 +74,7 @@ Any real path may change under governance, but MUST remain a **single** document
 | `warnings` | array of string | Non-fatal caveats (no authority semantics). |
 | `errors` | array of string | Fatal-to-trust issues (e.g. `manifest_unreadable`); still **not** “CI failed = go/no-go”. |
 
-## 8. Run / source identity fields
+## 9. Run / source identity fields
 
 | Field | Type | Meaning |
 |--------|------|---------|
@@ -66,7 +84,7 @@ Any real path may change under governance, but MUST remain a **single** document
 | `artifact_bundle_id` | string | Opaque id for the bundle root (e.g. timestamp-scoped smoke dir id). |
 | `artifact_bundle_label` | string | Human-readable label for the same bundle (non-authorizing). |
 
-## 9. Artifact presence fields (bundle / pack)
+## 10. Artifact presence fields (bundle / pack)
 
 | Field | Type | Meaning |
 |--------|------|---------|
@@ -75,7 +93,7 @@ Any real path may change under governance, but MUST remain a **single** document
 | `summary_present` | boolean | Root **`summary.json`** (or equivalent root summary) present. |
 | `operator_context_present` | boolean | Optional operator/debug context slice present (path policy TBD; **not** extra authority). |
 
-## 10. Paper presence fields
+## 11. Paper presence fields
 
 | Field | Type | Meaning |
 |--------|------|---------|
@@ -83,7 +101,7 @@ Any real path may change under governance, but MUST remain a **single** document
 | `paper_fills_present` | boolean | Paper **`fills`** JSON present. |
 | `paper_evidence_manifest_present` | boolean | Paper **`evidence_manifest`** present. |
 
-## 11. Shadow presence fields
+## 12. Shadow presence fields
 
 | Field | Type | Meaning |
 |--------|------|---------|
@@ -92,7 +110,7 @@ Any real path may change under governance, but MUST remain a **single** document
 | `p4c_present` | boolean | P4c JSON artifact(s) present per policy (e.g. under **`shadow&#47;p4c`**). |
 | `p5a_present` | boolean | P5a JSON artifact(s) present per policy (e.g. under **`shadow&#47;p5a`**). |
 
-## 12. Safe aggregate fields (optional)
+## 13. Safe aggregate fields (optional)
 
 Included **only** if **source-bound** and **explicitly labeled** as counts from the ingest path (not interpretive):
 
@@ -106,7 +124,7 @@ Rules:
 - MUST NOT derive **good/bad** or **ranking** from these integers.
 - If counts are omitted, presence booleans still suffice for v0.
 
-## 13. Forbidden payload semantics
+## 14. Forbidden payload semantics
 
 The following MUST **not** appear as claims in this read-model (see §2 and parent §8):
 
@@ -121,7 +139,7 @@ The following MUST **not** appear as claims in this read-model (see §2 and pare
 - **GitHub Actions** artifact fetch **from the WebUI** without a **separate** approved design
 - Framing as **evidence index**, **handoff**, or **sign-off** surface
 
-## 14. Example JSON object (illustrative)
+## 15. Example JSON object (illustrative)
 
 Illustrative object only — not live data:
 
@@ -158,28 +176,31 @@ Illustrative object only — not live data:
 }
 ```
 
-## 15. Required future tests (when implemented)
+## 16. Required tests (builder vs hub)
 
-When a producer or endpoint exists:
+**Fixture-only builder (shipped):**
 
-1. **Schema shape** tests (required keys, types, enum bounds).
+1. **Schema-shape / presence** unit tests for the builder (required keys, types, missing and malformed fixtures) — see **Implementation status**.
+
+**Still future when a hub panel or runtime `GET` exists:**
+
 2. **Hub / template** tests: reserved **`data-observability-paper-shadow-*`** markers; forbidden **readiness** phrases; **no** `fetch(` in hub unless separately approved.
 3. **Regression** tests: counts present → still **no** authority strings in rendered copy.
 
-Until then, **docs-only**; tests are **planned**, not required for merge of this schema document alone.
+Until a **hub** consumer exists, schema coverage for **templates** remains optional for merge of builder-only changes.
 
-## 16. Stop conditions
+## 17. Stop conditions
 
-Do **not** implement producer, **`GET`**, or UI if:
+Do **not** implement an **approved runtime** **`GET`** for hub display, **hub** Paper/Shadow UI wiring, or **CI-backed** ingest for WebUI if:
 
 - The only path is **`&#47;tmp`** operator mirrors without an approved staging contract.
 - Browser or hub template would call **GitHub Artifact API** without server-side proxy design.
 - Stakeholders treat **`workflow_run_id`** or **`source_commit`** as **approval**.
 - Copy drifts into **readiness**, **handoff**, or **promotion** language.
 
-## 17. Future implementation phases (ordered)
+## 18. Future implementation phases (ordered)
 
-1. **Fixture-only** builder — deterministic JSON fixture checked into **`tests`** or **`docs`** example dirs (governed).
+1. **Fixture-only** builder — **shipped** (deterministic repo fixtures under **`tests&#47;fixtures&#47;...`**, governed).
 2. **Source-bound reader** — trusted server component reads **approved** storage only; **no** WebUI secrets.
 3. **Optional read-only endpoint** — e.g. **`GET &#47;api&#47;observability&#47;paper-shadow-summary`** (name may change); **GET** only.
 4. **Observability display panel** — **`GET &#47;observability`** static link or server-rendered stub; **display-only**.
@@ -190,20 +211,20 @@ Each phase requires docs + security review before the next.
 
 ### A.1 Purpose
 
-This appendix defines **normative path and input rules** for a **future** fixture builder / bundle scanner that materializes **`paper_shadow_summary_readmodel_v0`**.
+This appendix defines **normative path and input rules** for the fixture **builder** / bundle scanner that materializes **`paper_shadow_summary_readmodel_v0`** from an explicit **`bundle_root`**.
 
-- **Docs-only:** no builder code, **no** fixture files in repo, **no** runtime reader, **no** endpoint, **no** UI exist at the time of this appendix.
+- **Fixture-only scope:** curated builder + **test** fixtures exist in-repo (see **Implementation status**). There is **no** approved **runtime** reader for **`GET &#47;observability`**, **no** registered **hub `GET`** for this schema, and **no** WebUI **panel** for this read-model until separately approved.
 - **Intent:** lock **mechanical** rules early so implementation cannot silently broaden scope.
 
-### A.2 Allowed future fixture root
+### A.2 Fixture root (repo)
 
-When implemented, curated fixtures are **expected** under:
+Curated fixtures live under:
 
 - **`tests&#47;fixtures&#47;paper_shadow_summary_readmodel_v0&#47;...`**
 
-This path is **planning-only** until separately approved; **no** tree is required to exist for this document to be valid.
+Additional example dirs under **`docs&#47;...`** remain **governed** if added later; this appendix does not require them.
 
-### A.3 Allowed future input bundle shape (relative to bundle root)
+### A.3 Allowed input bundle shape (relative to bundle root)
 
 The builder assumes a **single explicit root directory** (`bundle_root`) passed by CLI or tests — **never** an implicit global scan. Relative paths under that root:
 
@@ -257,14 +278,14 @@ The builder MUST NOT emit summary semantics that imply:
 
 (Structural **`errors`** about missing files are allowed — they are **not** CI go/no-go.)
 
-### A.9 Future test strategy (when builder exists)
+### A.9 Test strategy (fixture builder)
 
-- **Fixture-only** unit tests under **`tests&#47;fixtures&#47;paper_shadow_summary_readmodel_v0&#47;...`**
+- **Fixture-only** unit tests under **`tests&#47;fixtures&#47;paper_shadow_summary_readmodel_v0&#47;...`** (**shipped**).
 - Optional **golden** JSON comparison (deterministic key order policy).
 - **No** **`gh`**, **no** network, in the default test path.
-- Assert **exact** **`warnings`** / **`errors`** for missing and malformed files in negative fixtures.
+- Negative fixtures SHOULD assert stable **`warnings`** / **`errors`** codes (exact tuple or subset per project test policy).
 
-## 18. References
+## 19. References
 
 - [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) — parent contract, §7–§8, source matrix v0.8b.
 - [**Observability Hub v0**](OBSERVABILITY_HUB_V0.md) — hub boundaries; no wired Paper/Shadow panel today.
