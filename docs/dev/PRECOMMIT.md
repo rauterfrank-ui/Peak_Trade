@@ -23,7 +23,7 @@ pre-commit install
 | `trailing-whitespace` | Entfernt trailing whitespace |
 | `end-of-file-fixer` | Stellt newline am Dateiende sicher |
 | `check-yaml` | Validiert YAML-Syntax |
-| `check-added-large-files` | Warnt bei Dateien >1MB |
+| `check-added-large-files` | Warnt bei Dateien >1024 KB (`--maxkb=1024`; ca. 1 MB) |
 | `check-merge-conflict` | Erkennt ungelöste Merge-Konflikte |
 
 ## Nutzung
