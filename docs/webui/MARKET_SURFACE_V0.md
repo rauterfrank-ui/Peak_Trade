@@ -124,6 +124,114 @@ Die **additive** Display‑Schicht für **`GET`** **`&#47;api&#47;master‑v2&#4
 - **Keine** **`active_side`**, **`recommended_side`**, Order-/Session‑Handles oder Aktions‑Freigaben im beschriebenen **Scope**.
 - **Keine** Trading-/UI‑Autorität durch die neuen Metadaten; Markt‑Surface‑Docs bleiben konsistent mit „read-only / display-only“ oben.
 
+
+## Market Depth / Orderbook Readmodel Contract v0 (planned, read-only)
+
+This section defines the planned read-only contract boundary for a future Market Depth / Orderbook display on the Market and Double-Play Market dashboard surfaces.
+
+Status: **planned / not implemented**.
+
+Planned endpoint placeholder:
+
+- `GET &#47;api&#47;market&#47;depth`
+
+This planned endpoint must remain separate from order placement, execution, exchange session handling, Live/Testnet enablement, Scope/Capital approval, Risk/KillSwitch override, and Double-Play side selection. It may only expose a diagnostic market-data readmodel for UI rendering and operator inspection.
+
+### Planned readmodel identity
+
+A future response should use an explicit readmodel identifier, for example:
+
+- `market_depth_readmodel.v0`
+
+The identifier is only a schema/display contract marker. It must not imply readiness, tradability, route authority, execution capability, or provider health.
+
+### Planned envelope fields
+
+A future envelope may include:
+
+- `readmodel_id`
+- `symbol`
+- `source`
+- `limit`
+- `generated_at_iso`
+- `runtime_source_status`
+- `stale`
+- `stale_reason`
+- `depth`
+
+The `source` value may describe a read-only provider such as `dummy` or `kraken`, but the field must not expose exchange handles, API keys, session objects, authenticated account state, balances, order permissions, or mutable provider controls.
+
+### Planned depth structure
+
+The `depth` object may include:
+
+- `bids`
+- `asks`
+- `levels_returned`
+- `level_limit`
+
+Each bid/ask level may include:
+
+- `price`
+- `size`
+- optionally `notional`
+
+Sorting expectations:
+
+- bids sorted descending by price
+- asks sorted ascending by price
+
+The UI may render these levels as a visual depth ladder or compact orderbook table. The UI must not provide order entry affordances, clickable trading actions, pre-filled orders, buy/sell controls, or side recommendations.
+
+### Deferred derived fields
+
+The following fields are useful but deferred until a concrete implementation slice defines their exact semantics:
+
+- `spread`
+- `mid_price`
+- `best_bid`
+- `best_ask`
+- `depth_imbalance`
+- `source_latency_ms`
+- provider-specific freshness metadata
+
+If introduced later, these fields must remain diagnostic market-data values only. They must not become readiness gates, strategy signals, execution triggers, or Double-Play authority inputs without a separate Master-V2-compatible contract.
+
+### Failure and empty-state semantics
+
+A future implementation must fail closed for UI interpretation:
+
+- disabled/unconfigured source: diagnostic unavailable state
+- provider error: diagnostic error state
+- empty bids/asks: diagnostic empty state
+- stale bundle/source: visible stale diagnostic state
+
+None of these states may be converted into trading permission, side switching, Risk/KillSwitch override, Scope/Capital approval, or Live/Testnet activation.
+
+### Fixture and source policy
+
+A future implementation should prefer deterministic fixtures or a dummy provider as the default test/development path. Kraken or other provider-backed depth should be opt-in and read-only, with explicit failure semantics and without authenticated trading capability.
+
+The dashboard must not infer orderbook/depth from OHLCV candles. OHLCV and depth are distinct market-data readmodels.
+
+### UI consumption boundary
+
+The Double-Play Market Dashboard may later consume this readmodel only as display-only market context. It may not use orderbook/depth data to emit or imply:
+
+- `recommended_side`
+- `active_side`
+- `buy`
+- `sell`
+- `go`
+- `approved`
+- `ready_to_trade`
+- order intent
+- execution readiness
+- Live/Testnet readiness
+
+Any future client refresh or polling behavior requires a separate contract covering cadence, failure display, rate-limit behavior, provider isolation, and no-authority semantics.
+
+
 ## Double-Play Market Dashboard konsumiert strukturierte Metadaten v2
 
 **Route:** **`GET &#47;market&#47;double-play`** (SSR unverändert).
