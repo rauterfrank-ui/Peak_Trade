@@ -8,11 +8,11 @@
 | GET | `/market/double-play` | HTML: SSR read-only Komposition (ein Server-Render) — eingebetteter Market-Close-Line-Chart (**gleiche Payload-/Query-Semantik wie** **`GET`** **`/market`**) plus Double-Play-Display-Snapshot (**gleicher JSON-Vertrag wie** **`GET`** **`/api/master-v2/double-play/dashboard-display.json`** in-process); **kein** client-fetch zu diesen Routen durch die Seite, **kein** automatisches Nachladen |
 | GET | `/api/market/ohlcv` | JSON: OHLCV-Bars (`open`/`high`/`low`/`close`/`volume`, Zeit `ts`) |
 
-## Query-Parameter (`GET /market`, `GET /api/market/ohlcv`, eingebetter Marktblock auf **`GET`** **`/market/double-play`**)
+## Query-Parameter (`GET &#47;market`, `GET &#47;api&#47;market&#47;ohlcv`, eingebetter Marktblock auf **`GET`** **`&#47;market&#47;double-play`**)
 
-- `symbol` — z. B. `BTC&#47;USD` (**Default** auf **`GET`** **`/market/double-play`**: `BTC&#47;EUR`; auf **`GET`** **`/market`**: weiterhin `BTC&#47;USD` gemäß Server-Defaults)
-- `timeframe` — `1m` \| `5m` \| `15m` \| `1h` \| `4h` \| `1d` (Kraken-Pfad; Dummy bleibt synthetisch 1h); **Default** auf **`GET`** **`/market/double-play`**: **`1d`**
-- `limit` — 1 … 720 (Default **`120`** auf **`GET`** **`/market/double-play`**; **`/market`**-Default bleibt serverseitig **`120`** **`1h`**-Pfad soweit unverändert)
+- `symbol` — z. B. `BTC&#47;USD` (**Default** auf **`GET`** **`&#47;market&#47;double-play`**: `BTC&#47;EUR`; auf **`GET`** **`&#47;market`**: weiterhin `BTC&#47;USD` gemäß Server-Defaults)
+- `timeframe` — `1m` \| `5m` \| `15m` \| `1h` \| `4h` \| `1d` (Kraken-Pfad; Dummy bleibt synthetisch 1h); **Default** auf **`GET`** **`&#47;market&#47;double-play`**: **`1d`**
+- `limit` — 1 … 720 (Default **`120`** auf **`GET`** **`&#47;market&#47;double-play`**; **`&#47;market`**-Default bleibt serverseitig **`120`** **`1h`**-Pfad soweit unverändert)
 - `source` — `dummy` (Default, offline) \| `kraken` (öffentliche OHLCV, Netzwerk)
 
 Keine Kopplung an OPS Cockpit (`/ops`). Keine Trading-Aktionen.
