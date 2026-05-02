@@ -23,6 +23,8 @@ Paper/Shadow-Artefakt-Anzeige ist im Hub **bewusst nicht** umgesetzt. Ein zukün
 
 Operator-lokale Reviews unter **`&#47;tmp`** (z. B. PR-J Shadow+Paper Trend/Semantic Reviews) sind **keine** WebUI-Datenquellen und werden vom Hub **nicht** gelesen. Es gibt auf **`GET &#47;observability`** keine Artefakt-Fetches, kein Polling und keine Readiness-, Freigabe- oder Evidence-Semantik für Paper/Shadow.
 
+**v0.8b — Quellen-Ranking (nur Planung):** Ein Paper/Shadow-Panel bleibt **unverdrahtet**. Die priorisierte Kandidaten-Reihenfolge (Execution-Watch API zuerst, dann u. a. live.web-Snapshot, dedizierter Summary-Endpoint, Repo-Fixture, zuletzt CI-Ingestion) steht ausschließlich im Vertrag [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) unter *Source decision matrix v0.8b*. **Keine** Laufzeit-Quelle ist damit freigegeben.
+
 ## Aktuelle Panels (Display-only)
 
 Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness oder Strategie-/Ausführungsfreigabe.
