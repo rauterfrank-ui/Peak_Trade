@@ -56,6 +56,63 @@ The following MUST **not** be used (now or without a **new** governed contract r
 - **Network** I/O, **polling**, or **workflow execution** inside the handler to “refresh” bundles.
 - **Recursive scan** of the host filesystem outside the **single** configured **`bundle_root`** (scan rules remain those of the **fixture builder**: only governed paths under that root; see schema appendix).
 
+## Env/config contract v0
+
+**Docs-only.** Names and semantics for a **future** handler; **no** code reads these variables today.
+
+### Future route and source mode
+
+- **Route (placeholder):** **`GET &#47;api&#47;observability&#47;paper-shadow-summary`**
+- **Preferred source mode when enabled:** **explicit local bundle root** on the server host, identical mechanical shape to [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) appendix A.3.
+
+### Environment variables
+
+| Variable | Semantics |
+|----------|-----------|
+| **`PEAK_TRADE_PAPER_SHADOW_SUMMARY_ENABLED`** | **`0`** or **`1`** only. **Default when unset:** treat as **`0`** (**disabled**). If not **`1`**, the handler MUST return **HTTP 503** with the **disabled** envelope below (no builder run). |
+| **`PEAK_TRADE_PAPER_SHADOW_SUMMARY_BUNDLE_ROOT`** | **Required** only when **`ENABLED`** is **`1`**. **Server-side only** (process environment or equivalent server config); **never** from query, path, header, or body. MUST refer to an **existing directory** after `Path` resolution (implementation detail). **No** default value when required; **never** default to **`&#47;tmp`**. If **`ENABLED`** is **`1`** but this variable is **missing, empty, or not a directory**, the handler MUST return **HTTP 503** with the **unconfigured** envelope below (no builder run). |
+
+### Request constraints (unchanged)
+
+- **Browser &#47; client** MUST **not** supply a **filesystem path** for the bundle.
+- **No** query parameter that encodes **`bundle_root`** or arbitrary FS paths.
+- **`GET`** only; **no** **`POST`**.
+- **No** network I/O or **GitHub Actions** artifact fetch in the handler.
+
+### HTTP 503 JSON envelopes (disabled / unconfigured)
+
+These bodies are **diagnostic envelopes** for **503** responses when **no** bundle scan runs. They reuse **`schema_version`** for versioning alignment but are **not** full [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) **§7–§12** payloads (presence booleans and other required read-model fields are **absent** by design). Clients MUST **not** infer artifact presence from omitted keys.
+
+**Disabled** (`PEAK_TRADE_PAPER_SHADOW_SUMMARY_ENABLED` unset or not **`1`**):
+
+```json
+{
+  "schema_version": "paper_shadow_summary_readmodel.v0",
+  "generated_at_utc": "<server-time>",
+  "source_kind": "disabled",
+  "stale": true,
+  "warnings": ["paper_shadow_summary_source_disabled"],
+  "errors": ["runtime_source_unavailable"],
+  "runtime_source_status": "disabled"
+}
+```
+
+**Unconfigured** (`ENABLED` is **`1`** but **`PEAK_TRADE_PAPER_SHADOW_SUMMARY_BUNDLE_ROOT`** missing, empty, or not a directory):
+
+```json
+{
+  "schema_version": "paper_shadow_summary_readmodel.v0",
+  "generated_at_utc": "<server-time>",
+  "source_kind": "disabled",
+  "stale": true,
+  "warnings": ["paper_shadow_summary_bundle_root_unconfigured"],
+  "errors": ["runtime_source_unavailable"],
+  "runtime_source_status": "unconfigured"
+}
+```
+
+**Extension field:** **`runtime_source_status`** is **not** part of the normative read-model field tables; it exists **only** on these **503** envelopes for client routing. **`200`** success responses MUST use the full read-model shape per schema (or governance-approved subset documented in OpenAPI).
+
 ## 8. Proposed future endpoint placeholder (unimplemented)
 
 **Naming only** — not registered in code by this document:
@@ -84,7 +141,7 @@ When a handler exists and the **runtime source mode** is not **disabled**:
 | Situation | Status | Rationale |
 |-----------|--------|-----------|
 | Handler ran; bundle read &#47; builder completed (including domain **`warnings`** &#47; **`errors`**) | **200** | **Read-model** is the success carrier; trust caveats live in **`stale`**, **`warnings`**, **`errors`**. |
-| Runtime source **disabled** or **not configured** (no valid server-side **`bundle_root`**, or mode = off) | **503 Service Unavailable** | Distinguishes **misconfiguration &#47; intentional off** from a successful scan; avoids emitting a **full** read-model that pretends a bundle was read. Response: small JSON object, e.g. `{"error":"runtime_source_unavailable","reason":"disabled"|"unconfigured"}` with JSON response headers (e.g. **Content-Type:** `application&#47;json`; shape MAY be refined at implementation; MUST stay non-authorizing and MUST NOT echo secrets). |
+| Runtime source **disabled** or **not configured** (no valid server-side **`bundle_root`**, or mode = off) | **503 Service Unavailable** | **Canonical JSON bodies:** [**Env/config contract v0**](#envconfig-contract-v0) (disabled vs unconfigured). **Not** a full read-model payload; avoids implying a bundle was scanned. Headers: JSON (**Content-Type:** `application&#47;json`). |
 | Route not mounted or feature not shipped | **404** **or** omission from OpenAPI | Deployment choice; if the route is registered but permanently off, prefer **503** with **`reason`**. |
 | Unexpected handler failure (bug, uncaught exception) | **500** | Operator incident; not a domain **`errors`** list inside read-model. |
 
