@@ -114,6 +114,14 @@ Die **visual Double‑Play**‑Rail (**Chips**, **Tiles**, **Diagnostics**) ist 
 - **`Bull`**/**`Bear`**/**`Long`**/**`Short`** werden **nicht** aus Panel‑Schlüsseln **abgeleitet** — nur bereits in **`summary`**/**Listen** vorhandene Wörter erscheinen als **übernommener Fließtext**.
 - weiterhin **keine** operative Autorität, **keine** Live/Testnet‑Aktivierung, **keine** Order-/Scope/Capital/Risk‑Override‑Semantik über die neue Copy hinaus.
 
+## Double-Play structured display contract v2 planning
+
+**Kontext:** Operative Specs planen eine **additive**, **non-authorizing** **Struktur-Schicht** (**`display_layer_version`**, **`display_snapshot_meta`**, pro Panel **`ordinal`**, **`panel_group`**, **`severity_rank`**) für **`GET`** **`&#47;api&#47;master‑v2&#47;double‑play&#47;dashboard-display.json`** — siehe [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](../ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **§19** und [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](../ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) **§21**.
+
+- **`GET`** **`&#47;market&#47;double-play`** nutzt derzeit **v1.3 Template-Mapping** ohne diese JSON-Felder; geplante **v2**-Metadaten können **später** harte Template-Zuordnung zu **Reihenfolge/Gruppe/Schwere** ersetzen (**separates Implementierungs-PR** nach Spec + Tests).
+- **Keine** geplanten **`active_side`**, **`recommended_side`**, Order-/Session-Handles oder Aktions-Freigaben im beschriebenen **MVP-Umfang**.
+- **Keine** Trading-/UI-Autorität durch die neuen Metadaten; Markt-Surface-Docs bleiben konsistent mit „read-only / display-only“ oben.
+
 ## Chart status states
 
 Das HTML für **`GET &#47;market`** enthält beim Chart‑Bereich ein Status‑Element **`#market-v0-chart-status`** (read‑only‑Formulierung, **non‑authorizing**).
