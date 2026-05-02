@@ -5,14 +5,14 @@
 | Methode | Pfad | Beschreibung |
 |---------|------|----------------|
 | GET | `/market` | HTML: Close-Line-Chart (Chart.js), Parameter per Query |
-| GET | `/market/double-play` | HTML: statische read-only Kompositions-Hülle (Links zu Market + Double-Play display JSON; **kein** Fetch) |
+| GET | `/market/double-play` | HTML: SSR read-only Komposition (ein Server-Render) — eingebetteter Market-Close-Line-Chart (**gleiche Payload-/Query-Semantik wie** **`GET`** **`/market`**) plus Double-Play-Display-Snapshot (**gleicher JSON-Vertrag wie** **`GET`** **`/api/master-v2/double-play/dashboard-display.json`** in-process); **kein** client-fetch zu diesen Routen durch die Seite, **kein** automatisches Nachladen |
 | GET | `/api/market/ohlcv` | JSON: OHLCV-Bars (`open`/`high`/`low`/`close`/`volume`, Zeit `ts`) |
 
-## Query-Parameter (beide Endpunkte)
+## Query-Parameter (`GET &#47;market`, `GET &#47;api&#47;market&#47;ohlcv`, eingebetter Marktblock auf **`GET`** **`&#47;market&#47;double-play`**)
 
-- `symbol` — z. B. `BTC&#47;USD`
-- `timeframe` — `1m` \| `5m` \| `15m` \| `1h` \| `4h` \| `1d` (Kraken-Pfad; Dummy bleibt synthetisch 1h)
-- `limit` — 1 … 720
+- `symbol` — z. B. `BTC&#47;USD` (**Default** auf **`GET`** **`&#47;market&#47;double-play`**: `BTC&#47;EUR`; auf **`GET`** **`&#47;market`**: weiterhin `BTC&#47;USD` gemäß Server-Defaults)
+- `timeframe` — `1m` \| `5m` \| `15m` \| `1h` \| `4h` \| `1d` (Kraken-Pfad; Dummy bleibt synthetisch 1h); **Default** auf **`GET`** **`&#47;market&#47;double-play`**: **`1d`**
+- `limit` — 1 … 720 (Default **`120`** auf **`GET`** **`&#47;market&#47;double-play`**; **`&#47;market`**-Default bleibt serverseitig **`120`** **`1h`**-Pfad soweit unverändert)
 - `source` — `dummy` (Default, offline) \| `kraken` (öffentliche OHLCV, Netzwerk)
 
 Keine Kopplung an OPS Cockpit (`/ops`). Keine Trading-Aktionen.
@@ -67,15 +67,16 @@ Banner‑Inhalt fasst u. a.: keine Orders, kein Testnet/Live, keine Capital/Sc
 - **Keine** Double‑Play‑Komposition oder Trading‑/Risk‑/Capital‑Interpretation durch diese Diagnosemarker.
 - **v1.2** kann einen **lokalen Chart.js‑Fallback** planen, falls CDN‑Blocking **evidenziert** ist.
 
-## Double-Play Market Dashboard v0
+## Double-Play Market Dashboard v1 SSR
 
 **Route:** **`GET &#47;market&#47;double-play`**
 
-Statische **read-only**‑Kompositions‑Hülle (Templates/HTML): verlinkt die **pure Market Surface** (**`GET &#47;market`**, **`GET &#47;api&#47;market&#47;ohlcv`**) sowie das bestehende **Double‑Play‑Display‑JSON** (**`GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json`**) als **navigation only**.
+**SSR read-only**‑Kompositionsseite: **ein** Server-Render liefert (1) **Market Surface OHLCV** und **Chart.js**‑Close-Line (Diagnose-/Status-Marker analog **`GET`** **`/market`**, jedoch mit **elementeigenen** DOM-IDs vor Kollisionen bei parallelem Tab), und (2) **Double‑Play‑Display‑Felder**, die denselben **reinen JSON‑Kontrakt** verwenden wie **`GET`** **`/api&#47;master‑v2&#47;double‑play&#47;dashboard‑display.json`** (**`build_static_dashboard_display_dict`** in-process mit **`snapshot_to_jsonable`** — **ohne** internen **`TestClient`/`httpx`**‑Aufruf), siehe Operatorspezifikation **[MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](../ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md)**.
 
-- **Kein** automatischer Fetch, **keine** Client‑Polling‑Logik durch diese Seite, **keine** serverseitige JSON‑Aggregation hier.
-- **`GET &#47;market`** bleibt die Chart‑/Marktdaten‑Fläche; **`dashboard‑display.json`** bleibt **display‑only** (keine Orders, **keine** Strategie-/Side‑Schalt‑Autorität, **keine** Scope/Capital‑Billigung, **kein** Risk/KillSwitch‑Override, **kein** Live/Testnet‑Activate).
-- Eine spätere dynamische Komposition gehört in einen **eigenen** Read‑model‑/Kontrakt‑Slice.
+- **Kein** **`fetch()`** zum Nachladen von Market- oder Double-Play-JSON **durch diese Seite**, **kein** automatisches Polling/Re-Render — nur **SSR + Chart.js‑Bootstrap aus eingebettetem JSON‑Script‑Tag**.
+- **`GET`** **`/market`** und **`GET`** **`/api&#47;market&#47;ohlcv`** bleiben **kanonisch**; **`dashboard‑display.json`** bleibt **display‑only** (**keine** Orders, **keine** Strategie-/Side-Schalt‑Autorität, **keine** Scope/Capital‑Billigung als Gate, **kein** Risk/KillSwitch‑Override, **kein** Live/Testnet‑Activate durch die Darstellung).
+
+**Konstante Legacy-Verweise** auf der Seite (BTC/EUR, `1d`) dienen weiterhin Dokumentations-/Navigations-Spiegeln und **gewähren keine** Operational-Berechtigung — Live-Datenbasis folgt **`source`/`symbol`/…** der **`GET`**‑Query dieser Route.
 
 ## Chart status states
 
