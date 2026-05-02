@@ -142,6 +142,68 @@ def test_double_play_market_dashboard_v1_2_candlesticks_and_visual_panels(
     assert "setinterval" not in lower
 
 
+def test_double_play_market_dashboard_v1_3_field_mapping_rail(client: TestClient) -> None:
+    r = client.get("/market/double-play")
+    assert r.status_code == 200
+    body = r.text
+
+    assert 'data-double-play-market-field-mapping-v1-3="true"' in body
+    assert 'data-double-play-market-diagnostic-only-label="true"' in body
+    assert 'data-double-play-market-panel-human-title="true"' in body
+    assert 'data-double-play-market-display-status-label="true"' in body
+    assert 'data-double-play-market-blocker-count="true"' in body
+    assert 'data-double-play-market-missing-input-count="true"' in body
+
+    assert "Diagnostic only" in body
+    assert "Keine Trading-Freigabe" in body
+    assert "Panel titles are display labels" in body
+    assert "Status labels describe the display snapshot, not trading permission" in body
+
+    for title in (
+        "Futures Input Snapshot",
+        "State Transition Envelope",
+        "Survival / Scope Envelope",
+        "Strategy Suitability",
+        "Capital Slot Ratchet",
+        "Capital Slot Release",
+        "Composition Summary",
+    ):
+        assert title in body
+
+    assert "Instrument and input completeness for display only" in body
+    assert "Display-only composition of panel diagnostics" in body
+
+    assert 'data-double-play-overall-display-status="display_ready"' in body
+    assert "Anzeige: OK" in body
+    assert "No blockers reported" in body or "Blockers:" in body
+    assert "No missing inputs reported" in body or "Missing inputs:" in body
+
+    assert 'data-double-play-panel="futures_input"' in body
+    assert "Panel key ·" in body
+    forbidden = (
+        "BUY",
+        "SELL",
+        "GO",
+        "APPROVED",
+        "ACTIVE TRADE",
+        "Trade long",
+        "Trade short",
+        "Bull active",
+        "Bear active",
+    )
+    for w in forbidden:
+        assert w not in body
+
+    lower = body.lower()
+    assert "live_authorization" not in lower
+    assert "<form" not in lower
+    assert 'method="post"' not in lower
+    assert "<button" not in lower
+    assert 'type="submit"' not in lower
+    assert "fetch(" not in body
+    assert "setinterval" not in lower
+
+
 def test_double_play_market_dashboard_bad_timeframe_422(client: TestClient) -> None:
     r = client.get("/market/double-play", params={"timeframe": "bogus"})
     assert r.status_code == 422

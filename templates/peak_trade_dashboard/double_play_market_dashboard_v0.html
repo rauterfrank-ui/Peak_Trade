@@ -629,7 +629,30 @@
       data-double-play-market-cockpit-rail="true"
       data-double-play-display-ssr-v1="true"
       data-double-play-market-visual-panels-v1-2="true"
+      data-double-play-market-field-mapping-v1-3="true"
     >
+      {% set _dp_snap_status = {
+        'display_ready': {'lab': 'Anzeige: OK', 'hint': 'Karteninhalt vorhanden · keine Trading-Freigabe'},
+        'display_warning': {'lab': 'Anzeige: Hinweis', 'hint': 'Diagnosehinweis · keine Freigabe'},
+        'display_blocked': {'lab': 'Anzeige: blockiert', 'hint': 'Blocker auf Display-Ebene'},
+        'display_missing': {'lab': 'Darstellung unvollständig', 'hint': 'Fehlende Eingaben für diese Karte'},
+        'display_error': {'lab': 'Diagnosefehler', 'hint': 'Fehlerlage im Display-Snapshot'},
+      } %}
+      {% set _dp_panel_human = {
+        'futures_input': {'title': 'Futures Input Snapshot', 'subtitle': 'Instrument and input completeness for display only'},
+        'state_transition': {'title': 'State Transition Envelope', 'subtitle': 'State-switch context shown as diagnostics, not action'},
+        'survival_envelope': {'title': 'Survival / Scope Envelope', 'subtitle': 'Scope and survival context without approval semantics'},
+        'strategy_suitability': {'title': 'Strategy Suitability', 'subtitle': 'Model suitability display; not a strategy signal'},
+        'capital_slot_ratchet': {'title': 'Capital Slot Ratchet', 'subtitle': 'Capital-slot display context; no allocation approval'},
+        'capital_slot_release': {'title': 'Capital Slot Release', 'subtitle': 'Release context display; no capital action'},
+        'composition': {'title': 'Composition Summary', 'subtitle': 'Display-only composition of panel diagnostics'},
+      } %}
+      <div class="rounded-lg border border-slate-800/95 bg-slate-950/60 px-3 py-2.5 mb-3 space-y-1.5 text-[11px] text-slate-300 leading-snug" data-double-play-market-diagnostic-only-label="true">
+        <p class="font-semibold text-slate-200 m-0">Diagnostic only</p>
+        <p class="m-0">Keine Trading-Freigabe</p>
+        <p class="m-0">Panel titles are display labels</p>
+        <p class="m-0">Status labels describe the display snapshot, not trading permission</p>
+      </div>
       <div class="flex flex-wrap gap-1.5 mb-3" data-double-play-market-status-chip="true">
         <span class="rounded-full border border-cyan-900/55 bg-cyan-950/40 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-cyan-200">DISPLAY ONLY</span>
         <span class="rounded-full border border-slate-700/80 bg-slate-900/90 px-2 py-0.5 text-[9px] font-semibold uppercase text-slate-300">SSR snapshot</span>
@@ -646,9 +669,10 @@
       </p>
 
       <div class="grid gap-2 mb-3">
-        <div class="rounded-lg border border-emerald-900/35 bg-emerald-950/15 px-3 py-2.5">
-          <p class="text-[9px] uppercase tracking-wider text-emerald-500/95 m-0 mb-1">overall_status</p>
-          <p class="text-lg font-mono font-bold text-emerald-200/95 m-0 leading-none">{{ dp_display.overall_status }}</p>
+        <div class="rounded-lg border border-emerald-900/35 bg-emerald-950/15 px-3 py-2.5" data-double-play-overall-snapshot-pack="true" data-double-play-overall-display-status="{{ dp_display.overall_status }}">
+          <p class="text-[9px] uppercase tracking-wider text-emerald-500/95 m-0 mb-1">Overall · Display snapshot</p>
+          <p class="text-lg font-semibold text-emerald-200/95 m-0 leading-none" data-double-play-market-display-status-label="true">{{ _dp_snap_status[dp_display.overall_status]['lab'] if dp_display.overall_status in _dp_snap_status else 'Anzeige: unbekannt' }}</p>
+          <p class="text-[10px] text-emerald-200/75 m-0 mt-1 leading-snug">{{ _dp_snap_status[dp_display.overall_status]['hint'] if dp_display.overall_status in _dp_snap_status else 'Unbekannter Display-Status' }}</p>
         </div>
         <div class="flex items-center justify-between gap-2 rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2">
           <span class="text-[10px] uppercase text-slate-500 tracking-wide font-medium">display_only</span>
@@ -695,34 +719,46 @@
 
       <div class="flex flex-col gap-3">
         {% for panel in dp_display.panels %}
+        {% set _hum = _dp_panel_human[panel.name] if panel.name in _dp_panel_human else {'title': panel.name, 'subtitle': 'Display-only panel; unmapped label'} %}
+        {% set _sl = _dp_snap_status[panel.status] if panel.status in _dp_snap_status else {'lab': 'Anzeige: unbekannt', 'hint': 'Unbekannter Display-Status'} %}
+        {% set _nb = panel.blockers | length %}
+        {% set _nm = panel.missing_inputs | length %}
         <article
           class="relative overflow-hidden rounded-xl border border-slate-700/85 bg-gradient-to-br from-slate-950 via-slate-900/96 to-black p-3 text-[11px] shadow-inner shadow-black/40 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-cyan-800/55 before:to-slate-800/20"
           data-double-play-market-panel-tile="true"
           data-double-play-panel="{{ panel.name }}"
+          data-double-play-display-status="{{ panel.status }}"
         >
-          <div class="flex items-start justify-between gap-2 mb-2">
-            <h3 class="text-xs font-bold text-slate-50 m-0 font-mono tracking-tight leading-tight max-w-[14rem] break-words">
-              {{ panel.name }}
-            </h3>
-            <span class="rounded-md border border-slate-600/85 bg-black/55 px-2 py-0.5 text-[10px] font-mono text-sky-200/95 shrink-0" data-double-play-market-status-chip="true">{{ panel.status }}</span>
+          <div class="flex flex-col gap-0.5 mb-2 border-b border-slate-800/80 pb-2">
+            <p class="font-mono text-[9px] uppercase tracking-wide text-slate-500 m-0">Panel key · {{ panel.name }}</p>
+            <h3 class="text-xs font-bold text-slate-50 m-0 tracking-tight leading-tight max-w-[18rem] break-words font-sans" data-double-play-market-panel-human-title="true">{{ _hum.title }}</h3>
+            <p class="text-[10px] text-slate-500 m-0 leading-snug">{{ _hum.subtitle }}</p>
+          </div>
+          <div class="flex items-start justify-between gap-2 mb-2 flex-wrap">
+            <span class="rounded-md border border-slate-700/85 bg-black/65 px-2 py-1 text-[11px] font-semibold text-sky-100/95" data-double-play-market-display-status-label="true">{{ _sl.lab }}</span>
+            <span class="rounded-md border border-slate-800/85 bg-black/45 px-2 py-1 text-[9px] text-slate-500 font-mono shrink-0">{{ _sl.hint }}</span>
           </div>
           {% if panel.summary %}
-          <p class="text-slate-400 leading-snug m-0 text-[11px] line-clamp-4 border-t border-slate-800/80 pt-2 mt-2">{{ panel.summary }}</p>
+          <p class="text-slate-400 leading-snug m-0 text-[11px] line-clamp-4 border-t border-slate-800/80 pt-2 mt-1">{{ panel.summary }}</p>
           {% endif %}
+          <div class="mt-2 grid gap-1 text-[10px] text-slate-400">
+            <p class="m-0" data-double-play-market-blocker-count="true">{% if _nb > 0 %}Blockers: {{ _nb }}{% else %}No blockers reported{% endif %}</p>
+            <p class="m-0" data-double-play-market-missing-input-count="true">{% if _nm > 0 %}Missing inputs: {{ _nm }}{% else %}No missing inputs reported{% endif %}</p>
+          </div>
           <div class="mt-2 flex flex-wrap gap-2 font-mono text-[10px] text-slate-500">
             <span class="rounded border border-slate-800 px-1.5 py-0.5 bg-black/35">LA {{ panel.live_authorization }}</span>
             <span class="rounded border border-slate-800 px-1.5 py-0.5 bg-black/35">auth {{ panel.is_authority }}</span>
             <span class="rounded border border-slate-800 px-1.5 py-0.5 bg-black/35">sig {{ panel.is_signal }}</span>
           </div>
-          {% if panel.blockers %}
-          <details class="mt-2 text-[10px]">
-            <summary class="cursor-pointer text-slate-500 hover:text-slate-300 outline-none select-none font-medium px-2 py-1 rounded bg-slate-950/65 border border-slate-800/80 inline-block">blockers ({{ panel.blockers|length }})</summary>
+          {% if _nb > 0 %}
+          <details class="mt-2 text-[10px]" data-double-play-market-blockers-list="true">
+            <summary class="cursor-pointer text-slate-500 hover:text-slate-300 outline-none select-none font-medium px-2 py-1 rounded bg-slate-950/65 border border-slate-800/80 inline-block">Blockers detail ({{ _nb }})</summary>
             <ul class="m-1 pl-4 list-disc text-slate-400 mt-2">{% for b in panel.blockers %}<li>{{ b }}</li>{% endfor %}</ul>
           </details>
           {% endif %}
-          {% if panel.missing_inputs %}
-          <details class="mt-2 text-[10px]">
-            <summary class="cursor-pointer text-slate-500 hover:text-slate-300 outline-none select-none font-medium px-2 py-1 rounded bg-slate-950/65 border border-slate-800/80 inline-block">missing_inputs ({{ panel.missing_inputs|length }})</summary>
+          {% if _nm > 0 %}
+          <details class="mt-2 text-[10px]" data-double-play-market-missing-list="true">
+            <summary class="cursor-pointer text-slate-500 hover:text-slate-300 outline-none select-none font-medium px-2 py-1 rounded bg-slate-950/65 border border-slate-800/80 inline-block">Missing inputs detail ({{ _nm }})</summary>
             <ul class="m-1 pl-4 list-disc text-slate-400 mt-2">{% for m in panel.missing_inputs %}<li>{{ m }}</li>{% endfor %}</ul>
           </details>
           {% endif %}
