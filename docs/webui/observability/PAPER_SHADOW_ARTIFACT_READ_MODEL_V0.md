@@ -64,15 +64,15 @@ For hub context, see [**Observability Hub v0**](OBSERVABILITY_HUB_V0.md).
 | **Blockers before UI** | Explicit **owner** and **boundary** (separate host/port or path); **schema version** for snapshot fields used; **stale/snapshot** and **no-readiness** copy; security/ops review if cross-origin or credential boundaries apply. |
 | **Risk notes** | **Second app** — easy to **confuse** with “hub truth”; must **not** imply Observability **aggregated** this data. Snapshot may reflect **execution** metrics — still **not** performance endorsement (§8). |
 
-### Rank 3 — Candidate C: future dedicated Paper/Shadow summary endpoint
+### Rank 3 — Candidate C: dedicated Paper/Shadow summary endpoint
 
 | Field | Detail |
 |--------|--------|
-| **Rank** | 3 — **target architecture** slot, not an existing GET today |
-| **Existing owner/surface** | **None** yet; would be a **new** read-only **`GET`** (or equivalent server contract) designed for **bundle presence** / **manifest**-class fields (§7). |
-| **Why ranked here** | **Cleanest** eventual fit for **PR-J / smoke bundle** shaped **presence** facts without overloading Execution-Watch or live snapshot fields; aligns with **single canonical** read-model story. |
-| **Allowed future use** | **Canonical** display-only JSON (or file) with **schema version**, **generated_at**, **source label**, and **only** §7-safe fields; hub consumes **only** that contract. |
-| **Blockers before UI** | **Design + implementation** (larger than wiring B/A); **owner**; **security review**; **tests**; **docs** change control; explicit **no GitHub from browser** if ingestion backs the endpoint. |
+| **Rank** | 3 — **target architecture** slot for PR-J-shaped **presence** JSON |
+| **Existing owner/surface** | Read-only **`GET &#47;api&#47;observability&#47;paper-shadow-summary`** in [`src/webui/paper_shadow_summary_api_v0.py`](../../../src/webui/paper_shadow_summary_api_v0.py) (router in [`src/webui/app.py`](../../../src/webui/app.py)), env-gated per [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md). **Not** an Observability Hub template consumer. |
+| **Why ranked here** | **Cleanest** fit for **PR-J / smoke bundle** shaped **presence** facts without overloading Execution-Watch or live snapshot fields; aligns with **single canonical** read-model story. |
+| **Allowed future use** | **Canonical** display-only JSON with **schema version**, **generated_at**, **source label**, and **only** §7-safe fields; a **hub** panel would consume **only** that contract when §11 gates are met. |
+| **Blockers before hub UI** | **Hub** panel + copy review; **owner**; explicit **no GitHub from browser** if future ingestion backs the endpoint; **no** implication that **`GET` existence** == **readiness** or **evidence authority**. |
 | **Risk notes** | **Scope creep** into **readiness/evidence** language — contract and copy must stay §2 / §8 clean. |
 
 ### Rank 4 — Candidate D: repo-local fixture / read-model file
@@ -100,17 +100,17 @@ For hub context, see [**Observability Hub v0**](OBSERVABILITY_HUB_V0.md).
 ### Planning-only disclaimer (v0.8b)
 
 - This **ranking** is a **planning decision only**.
-- It **does not** approve any source for **runtime** hub display.
-- It **does not** implement a **runtime hub** read-model **`GET`**, production **ingest** route, or **artifact** fetch.
-- It **does not** make **`&#47;tmp`**, **GitHub Actions** artifacts, or **PR-J** packs **WebUI runtime** data sources.
-- The **Observability Hub** must remain **without** a wired Paper/Shadow panel until **one** source path is **separately** approved, **mapped** to §7 fields, and documented under §11.
+- It **does not** approve any source for **runtime** hub **display** (template wiring) without §11.
+- It **does not** implement a **hub** read-model **`GET`** on **`GET &#47;observability`**, production **ingest** for hub HTML, or **artifact** fetch from the browser.
+- It **does not** make **`&#47;tmp`**, **GitHub Actions** artifacts, or **PR-J** packs **default** WebUI runtime sources.
+- The **Observability Hub** must remain **without** a wired Paper/Shadow **panel** until **one** consumption path is **separately** approved, **mapped** to §7 fields, and documented under §11. **Existence** of the backend summary **`GET`** is **not** hub approval.
 
 ## Dedicated summary schema v0
 
-**Candidate C** (future dedicated Paper/Shadow summary read-model) is described by [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) (**`paper_shadow_summary_readmodel_v0`**). A **fixture-only** in-repo **builder** materializes that schema for tests and explicit offline **`bundle_root`**; it is **not** a runtime hub source (**see that document**, Implementation status).
+**Candidate C** (dedicated Paper/Shadow summary read-model) is described by [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) (**`paper_shadow_summary_readmodel_v0`**). A **fixture-only** in-repo **builder** materializes that schema for tests and explicit offline **`bundle_root`**; an **env-gated** **`GET &#47;api&#47;observability&#47;paper-shadow-summary`** returns the same schema on **200** when configured (see **Implementation status** there). **Neither** path is an approved **hub** operator display plane until §11 gates are met.
 
-- The schema doc remains **planning** for **approved runtime `GET`s** and **hub** display.
-- It does **not** approve a **hub** **`GET`**, **Observability** template wiring for this read-model, **browser-side artifact** fetch, or **readiness** semantics for operator truth.
+- The schema doc remains authoritative for JSON shape, builder rules, and API tests.
+- **Endpoint existence** does **not** approve **Observability** hub template wiring, **browser-side artifact** fetch, or **readiness** semantics for operator truth.
 
 ## 7. Allowed future display fields (examples)
 
@@ -170,8 +170,8 @@ Before adding a hub panel or route:
 4. **Tests** that assert markers, forbidden phrases, and no `fetch(` in the hub template (aligned with existing hub tests).
 5. **Docs update** to [**OBSERVABILITY_HUB_V0**](OBSERVABILITY_HUB_V0.md) panel table and non-goals.
 6. **Drift&#47;token policy** pass for new docs paths.
-7. **Fixture&#47;input path rules** — documented in [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) (*Appendix: fixture and input path rules v0*). A **fixture-only** builder and curated **test** fixtures **exist** in-repo (see that document’s **Implementation status**). They are **not** an approved **runtime** or **hub** operator data plane; **no** **`GET &#47;observability`** wiring and **no** canonical operator **`GET`** for live bundle truth until items **1–2** and reviews **3–6** are satisfied. **No** **`&#47;tmp`** runtime source and **no** **GitHub Actions** artifact fetch **from the WebUI** without a **separate** approved design (unchanged).
-8. **Runtime source contract** — before mounting any **server-side** **`GET`** that reads a **`bundle_root`**, adopt [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md) (server-side configuration only; **no** browser-supplied path; **no** **`&#47;tmp`** default). **Env/config contract v0** in that document defines **`PEAK_TRADE_PAPER_SHADOW_SUMMARY_ENABLED`**, **`PEAK_TRADE_PAPER_SHADOW_SUMMARY_BUNDLE_ROOT`**, and **HTTP 503** diagnostic envelopes. **No** implementation is implied by that document alone.
+7. **Fixture&#47;input path rules** — documented in [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) (*Appendix: fixture and input path rules v0*). A **fixture-only** builder, curated **test** fixtures, and **env-gated** summary **`GET`** tests **exist** in-repo (see that document’s **Implementation status**). They are **not** an approved **hub** **`GET &#47;observability`** wiring or canonical operator **panel** until items **1–2** and reviews **3–6** are satisfied. **No** **`&#47;tmp`** runtime default, **no** browser-supplied **`bundle_root`**, **no** **GitHub Actions** artifact fetch **from the WebUI** without a **separate** approved design (unchanged).
+8. **Runtime source contract** — [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md) defines the env/config boundary (**`PEAK_TRADE_PAPER_SHADOW_SUMMARY_ENABLED`**, **`PEAK_TRADE_PAPER_SHADOW_SUMMARY_BUNDLE_ROOT`**, **503** diagnostic envelopes) implemented in [`src/webui/paper_shadow_summary_api_v0.py`](../../../src/webui/paper_shadow_summary_api_v0.py). **Hub** display remains gated by §11; **contract text alone** never implied promotion or readiness semantics.
 
 ## 12. Stop conditions
 
@@ -184,7 +184,7 @@ Stop and **do not** add UI if:
 
 ## 13. References
 
-- [**Observability Hub v0**](OBSERVABILITY_HUB_V0.md) — current hub scope; **no** Paper/Shadow artifact panel today.
-- [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) — normative JSON shape for **`paper_shadow_summary_readmodel_v0`** (Candidate C); fixture-only builder **shipped** (see Implementation status there); **no** hub **`GET`** approved here.
-- [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md) — planning-only **runtime source** boundary for a future read-only **`GET`**; **no** route or config shipped by this doc alone.
+- [**Observability Hub v0**](OBSERVABILITY_HUB_V0.md) — current hub scope; **no** Paper/Shadow artifact **panel** **`GET &#47;observability`** today.
+- [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) — normative JSON shape for **`paper_shadow_summary_readmodel_v0`** (Candidate C); builder + **env-gated** summary **`GET`** **shipped** (see Implementation status there); **hub** consumption **not** approved here.
+- [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md) — **runtime source** boundary and env/config contract for the **shipped** read-only **`GET`**; **hub** wiring remains out of scope for this doc.
 - [**Market Surface v0**](../MARKET_SURFACE_V0.md) — example of read-only display boundaries (orthogonal domain).

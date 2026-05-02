@@ -4,7 +4,7 @@
 
 This document defines the **normative JSON schema contract** for **`paper_shadow_summary_readmodel_v0`**, the **dedicated** Paper/Shadow **artifact presence** summary aligned with [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) §7 (allowed facts) and §8 (forbidden claims).
 
-A **fixture-only** builder materializes this shape for **explicit local `bundle_root`** (tests and offline invocation); see **Implementation status**. **This document** still does **not** register a backend route, **approved** runtime reader for the hub, UI panel, artifact fetch, CI integration, or any **readiness** / **evidence authority** surface.
+A **fixture-only** builder materializes this shape for **explicit local `bundle_root`** (tests and offline invocation); see **Implementation status**. An **env-gated** read-only **`GET`** exposes the same **`paper_shadow_summary_readmodel.v0`** JSON when the server configures **`PEAK_TRADE_PAPER_SHADOW_SUMMARY_*`** (see [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md)). **This document** still does **not** approve an **Observability Hub** panel, **artifact fetch**, **CI integration**, or any **readiness** / **evidence authority** surface.
 
 ## 2. Non-authority note
 
@@ -15,8 +15,8 @@ The read-model is **display-only** and **non-authorizing** when consumed (future
 ## 3. Relationship to `PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md`
 
 - The [**artifact read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) is the **parent hub contract** (gates, forbidden semantics, observability boundaries).
-- **This schema** is **Candidate C**: the **canonical shape** for a **future** summary document that could back **§7**-style presence display **after** separate implementation approval.
-- A **fixture-only** producer (builder + tests) exists; until an **approved runtime** **`GET`** (or approved file contract) exists for hub consumption, **no** hub panel may imply this schema is live **operator** data.
+- **This schema** is **Candidate C**: the **canonical shape** for the Paper/Shadow summary document backing **§7**-style presence display when separately approved for **UI**.
+- A **fixture-only** producer (builder + tests) and an **env-gated** summary **`GET`** exist; **until** a hub panel **consumes** that **`GET`** (or another approved file contract) with explicit copy review per [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) §11, **no** hub template may imply this schema is live **operator** truth.
 
 ## 4. Adjacent surfaces (not this schema)
 
@@ -33,37 +33,43 @@ These remain **companion** observability links — **not** substitutes for **`pa
 
 - Payload MUST include `schema_version` with value **`paper_shadow_summary_readmodel.v0`** (or a documented alias locked to this doc).
 
-## 6. Implementation status (fixture-only builder)
+## 6. Implementation status (builder + env-gated `GET`)
 
-The schema is now backed by a **fixture-only**, stdlib **builder** (offline; explicit **`bundle_root`** only):
+**Fixture-only builder** (offline; explicit **`bundle_root`**):
 
 - **Builder package:** [`src/webui/paper_shadow_summary_readmodel_v0/`](../../../src/webui/paper_shadow_summary_readmodel_v0/)
 - **Unit tests:** [`tests/webui/test_paper_shadow_summary_readmodel_v0.py`](../../../tests/webui/test_paper_shadow_summary_readmodel_v0.py)
 - **Curated fixtures:** [`tests/fixtures/paper_shadow_summary_readmodel_v0/`](../../../tests/fixtures/paper_shadow_summary_readmodel_v0/)
 
+**Read-only WebUI API v0** (server env-gated; not a hub template consumer):
+
+- **Route:** **`GET &#47;api&#47;observability&#47;paper-shadow-summary`**
+- **Implementation:** [`src/webui/paper_shadow_summary_api_v0.py`](../../../src/webui/paper_shadow_summary_api_v0.py); router in [`src/webui/app.py`](../../../src/webui/app.py)
+- **Contract tests:** [`tests/webui/test_paper_shadow_summary_api_v0.py`](../../../tests/webui/test_paper_shadow_summary_api_v0.py)
+- **Semantics:** **`200`** body is the **`paper_shadow_summary_readmodel.v0`** payload produced via the builder; **503** responses use **diagnostic envelopes** (availability / configuration), **not** the full **§8–§13** artifact field set — see [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md).
+
 **Not implemented (unchanged):**
 
-- **`GET &#47;api&#47;observability&#47;paper-shadow-summary`** (or any registered hub **`GET`** for this read-model)
-- **Observability Hub** panel or template wiring for Paper/Shadow summary
-- **Runtime** ingest source, **artifact fetch**, or **GitHub Actions** integration inside this chain
-- **`&#47;tmp`** as an approved **WebUI-facing** runtime source
+- **Observability Hub** panel or template wiring that **consumes** this **`GET`**
+- **Runtime** ingest source, **artifact fetch**, or **GitHub Actions** integration inside this chain (beyond reading a **server-configured** local **`bundle_root`**)
+- **`&#47;tmp`** as an approved **WebUI-facing** default or browser-selected source
 - **Readiness**, **evidence authority**, **handoff**, or **sign-off** surface semantics
 
-**Implementation notes (non-normative):** The builder may support an explicit stamp override type (`PaperShadowPathPolicyV0`) and deterministic `generated_at_utc` for tests via environment variable. These are **not** a public HTTP contract.
+**Implementation notes (non-normative):** The builder and **503** envelopes may honor deterministic `generated_at_utc` via **`PEAK_TRADE_FIXED_GENERATED_AT_UTC`** in tests. These are **not** normative product **freshness** guarantees.
 
-### Runtime source boundary (planning)
+### Runtime source boundary
 
-- WebUI **runtime** bundle configuration and **forbidden** source modes for any future **`GET`** are governed by [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md), including **Env/config contract v0** (variable names, **503** diagnostic envelopes).
-- **This schema** does **not**, by itself, approve an **endpoint** or **runtime** source.
-- The **fixture-only builder** remains **separate** from an approved **runtime** source until that contract and [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) §11 gates are satisfied.
+- WebUI **runtime** bundle configuration and **forbidden** source modes for the summary **`GET`** are governed by [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md), including **Env/config contract v0** (variable names, **503** diagnostic envelopes).
+- **This schema** describes the **200** payload shape; it does **not** grant **hub display approval** or **promotion/readiness** semantics.
+- An **env-gated** **`GET`** is **not** an **Observability Hub** **`GET &#47;observability`** artifact read; hub **panel** gates in [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) §11 remain **separate**.
 
-## 7. Future endpoint placeholder (unimplemented)
+## 7. Read-only endpoint (shipped)
 
-A **possible** future read-only route namespace ( **not** registered; **no** implementation today ):
+The following **`GET`** is **registered** in the default Operator WebUI app:
 
 - **`GET &#47;api&#47;observability&#47;paper-shadow-summary`**
 
-Any real path may change under governance, but MUST remain a **single** documented **`GET`** with **no** browser-side GitHub Artifact API and **no** **`&#47;tmp`** runtime source. This section is **naming only**.
+The path MAY change under governance, but MUST remain a **single** documented **`GET`** with **no** browser-side GitHub Artifact API, **no** **`&#47;tmp`** default, and **no** query-supplied **`bundle_root`**. **Disabled** or **unconfigured** server env yields **503** diagnostic JSON per the **runtime source contract**, not a fabricated **200** read-model.
 
 ## 8. Envelope fields
 
@@ -188,16 +194,20 @@ Illustrative object only — not live data:
 
 1. **Schema-shape / presence** unit tests for the builder (required keys, types, missing and malformed fixtures) — see **Implementation status**.
 
-**Still future when a hub panel or runtime `GET` exists:**
+**Env-gated summary `GET` (shipped):**
 
-2. **Hub / template** tests: reserved **`data-observability-paper-shadow-*`** markers; forbidden **readiness** phrases; **no** `fetch(` in hub unless separately approved.
-3. **Regression** tests: counts present → still **no** authority strings in rendered copy.
+2. **API contract tests** — [`tests/webui/test_paper_shadow_summary_api_v0.py`](../../../tests/webui/test_paper_shadow_summary_api_v0.py) (**503** disabled/unconfigured; **200** with temp bundle).
 
-Until a **hub** consumer exists, schema coverage for **templates** remains optional for merge of builder-only changes.
+**Still future when a hub panel consumes this read-model:**
+
+3. **Hub / template** tests: reserved **`data-observability-paper-shadow-*`** markers; forbidden **readiness** phrases; **no** `fetch(` in hub unless separately approved.
+4. **Regression** tests: counts present → still **no** authority strings in rendered copy.
+
+Until a **hub** consumer exists, schema coverage for **templates** remains optional except for API + builder tests above.
 
 ## 17. Stop conditions
 
-Do **not** implement an **approved runtime** **`GET`** for hub display, **hub** Paper/Shadow UI wiring, or **CI-backed** ingest for WebUI if:
+Do **not** add **hub** Paper/Shadow UI wiring, **CI-backed** ingest for WebUI **browser paths**, or treat this **`GET`** as **readiness** if:
 
 - The only path is **`&#47;tmp`** operator mirrors without an approved staging contract.
 - Browser or hub template would call **GitHub Artifact API** without server-side proxy design.
@@ -207,9 +217,9 @@ Do **not** implement an **approved runtime** **`GET`** for hub display, **hub** 
 ## 18. Future implementation phases (ordered)
 
 1. **Fixture-only** builder — **shipped** (deterministic repo fixtures under **`tests&#47;fixtures&#47;...`**, governed).
-2. **Source-bound reader** — trusted server component reads **approved** storage only; **no** WebUI secrets.
-3. **Optional read-only endpoint** — e.g. **`GET &#47;api&#47;observability&#47;paper-shadow-summary`** (name may change); **GET** only.
-4. **Observability display panel** — **`GET &#47;observability`** static link or server-rendered stub; **display-only**.
+2. **Source-bound reader** — trusted server component reads **approved** storage only; **no** WebUI secrets (partially satisfied by env-configured **`bundle_root`** on the server).
+3. **Read-only summary endpoint** — **`GET &#47;api&#47;observability&#47;paper-shadow-summary`** — **shipped** (env-gated; name may change under governance).
+4. **Observability display panel** — **`GET &#47;observability`** link or server-rendered stub that **consumes** the **`GET`**, if approved; **display-only**.
 
 Each phase requires docs + security review before the next.
 
@@ -219,7 +229,7 @@ Each phase requires docs + security review before the next.
 
 This appendix defines **normative path and input rules** for the fixture **builder** / bundle scanner that materializes **`paper_shadow_summary_readmodel_v0`** from an explicit **`bundle_root`**.
 
-- **Fixture-only scope:** curated builder + **test** fixtures exist in-repo (see **Implementation status**). There is **no** approved **runtime** reader for **`GET &#47;observability`**, **no** registered **hub `GET`** for this schema, and **no** WebUI **panel** for this read-model until separately approved.
+- **Fixture + API scope:** curated builder + **test** fixtures exist in-repo (see **Implementation status**). An **env-gated** summary **`GET`** reads a **server-configured** **`bundle_root`** only. There is **no** **`GET &#47;observability`** template wiring, **no** hub **`GET`** that substitutes for operator artifact truth, and **no** WebUI **panel** for this read-model until [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) §11 is satisfied.
 - **Intent:** lock **mechanical** rules early so implementation cannot silently broaden scope.
 
 ### A.2 Fixture root (repo)
@@ -293,7 +303,7 @@ The builder MUST NOT emit summary semantics that imply:
 
 ## 19. References
 
-- [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md) — planning-only **runtime source** boundary for a future **`GET`** (server-side config; no browser path).
+- [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md) — **runtime source** boundary for the shipped env-gated **`GET`** (server-side config; no browser path).
 - [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) — parent contract, §7–§8, source matrix v0.8b.
-- [**Observability Hub v0**](OBSERVABILITY_HUB_V0.md) — hub boundaries; no wired Paper/Shadow panel today.
+- [**Observability Hub v0**](OBSERVABILITY_HUB_V0.md) — hub boundaries; summary **`GET`** exists; **no** wired Paper/Shadow panel **`GET &#47;observability`** yet.
 - [**Market Surface v0**](../MARKET_SURFACE_V0.md) — orthogonal read-only display precedent.
