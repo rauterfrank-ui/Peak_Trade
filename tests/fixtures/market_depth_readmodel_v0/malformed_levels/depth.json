@@ -1,0 +1,17 @@
+{
+  "symbol": "BTC/EUR",
+  "source": "dummy",
+  "limit": 3,
+  "bids": [
+    {
+      "price": "-1",
+      "size": "0.5"
+    }
+  ],
+  "asks": [
+    {
+      "price": "63020.00",
+      "size": "0.3"
+    }
+  ]
+}
