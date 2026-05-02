@@ -186,6 +186,84 @@ Do **not** implement producer, **`GET`**, or UI if:
 
 Each phase requires docs + security review before the next.
 
+## Appendix: fixture and input path rules v0
+
+### A.1 Purpose
+
+This appendix defines **normative path and input rules** for a **future** fixture builder / bundle scanner that materializes **`paper_shadow_summary_readmodel_v0`**.
+
+- **Docs-only:** no builder code, **no** fixture files in repo, **no** runtime reader, **no** endpoint, **no** UI exist at the time of this appendix.
+- **Intent:** lock **mechanical** rules early so implementation cannot silently broaden scope.
+
+### A.2 Allowed future fixture root
+
+When implemented, curated fixtures are **expected** under:
+
+- **`tests&#47;fixtures&#47;paper_shadow_summary_readmodel_v0&#47;...`**
+
+This path is **planning-only** until separately approved; **no** tree is required to exist for this document to be valid.
+
+### A.3 Allowed future input bundle shape (relative to bundle root)
+
+The builder assumes a **single explicit root directory** (`bundle_root`) passed by CLI or tests — **never** an implicit global scan. Relative paths under that root:
+
+| Relative path | Role |
+|---------------|------|
+| **`evidence_packs&#47;pack_prj_smoke_&lt;stamp&gt;&#47;manifest.json`** | Primary pack manifest |
+| **`evidence_packs&#47;pack_prj_smoke_&lt;stamp&gt;&#47;index.json`** | Pack index (optional **`artifact_count`**) |
+| **`prj_smoke&#47;&lt;stamp&gt;&#47;summary.json`** | Root summary |
+| **`prj_smoke&#47;&lt;stamp&gt;&#47;paper&#47;account.json`** | Paper account |
+| **`prj_smoke&#47;&lt;stamp&gt;&#47;paper&#47;fills.json`** | Paper fills |
+| **`prj_smoke&#47;&lt;stamp&gt;&#47;paper&#47;evidence_manifest.json`** | Paper evidence manifest |
+| **`prj_smoke&#47;&lt;stamp&gt;&#47;shadow&#47;shadow_session_summary.json`** | Shadow session summary |
+| **`prj_smoke&#47;&lt;stamp&gt;&#47;shadow&#47;evidence_manifest.json`** | Shadow evidence manifest |
+| **`prj_smoke&#47;&lt;stamp&gt;&#47;shadow&#47;p4c&#47;*.json`** | At least one P4c JSON (glob) |
+| **`prj_smoke&#47;&lt;stamp&gt;&#47;shadow&#47;p5a&#47;*.json`** | At least one P5a JSON (glob) |
+
+`<stamp>` is an opaque token (e.g. UTC compact timestamp); **`artifact_bundle_id`** in the summary SHOULD align with it when the directory names match.
+
+### A.4 Required vs optional semantics
+
+- **Complete mirror (PR-J-shaped):** **`manifest_present`**, **`index_present`**, **`summary_present`**, **`paper_account_present`**, **`paper_fills_present`**, **`paper_evidence_manifest_present`**, **`shadow_session_summary_present`**, **`shadow_evidence_manifest_present`**, **`p4c_present`**, **`p5a_present`** all reflect successful path resolution and (where applicable) minimum parse checks per implementation spec.
+- **`operator_context_present`:** **not** defined in v0; reserved until a **separate** path policy exists.
+- **Partial bundle:** builder MUST set **`stale: true`**, populate **`warnings`** / **`errors`**, and MUST **not** coerce missing slots to **`true`**.
+
+### A.5 Mapping rules
+
+- **Presence** is **`true`** only when the governed path exists (and glob rule satisfied for P4c/P5a).
+- **`artifact_count`** / **`paper_fill_count`:** only from **successful** parse of **`index.json`** / **`fills.json`** per written rules; on failure → `null` + warning.
+- **`workflow_run_id`**, **`workflow_name`**, **`source_commit`:** only from **explicit** builder input (CLI args or **approved** sidecar JSON) — **no** hidden **network** or **git** inference.
+
+### A.6 Missing / malformed handling
+
+- **Missing file** → corresponding **`_present`** field **`false`**; add **`warnings`** or **`errors`** per severity.
+- **Malformed JSON** where **parse is required** for that slot → **`_present`** **`false`** (or keep **`false`** for derived counts), record **`errors`** (e.g. `fills_json_unreadable`).
+- **Never** coerce unknown or ambiguous state to **`true`**.
+
+### A.7 Forbidden runtime / source behavior
+
+- **No** **`&#47;tmp`** as an approved **runtime** source for WebUI-facing chains (parent contract §5).
+- **No** **GitHub Actions** artifact **fetch** inside the builder for **v0** tests; fixtures are **local directory** only.
+- **No** **network** I/O, **no** **polling**, **no** recursive scan outside **`bundle_root`**.
+
+### A.8 Forbidden inference
+
+The builder MUST NOT emit summary semantics that imply:
+
+- **Readiness**, **sign-off**, **handoff**
+- **PnL&#47;performance endorsement**, strategy merit, promotion, deployment approval
+- **Order** or **execution authority**, **Paper&#47;Testnet&#47;Live** readiness
+- **Capital&#47;Scope** approval, **Risk&#47;KillSwitch** override
+
+(Structural **`errors`** about missing files are allowed — they are **not** CI go/no-go.)
+
+### A.9 Future test strategy (when builder exists)
+
+- **Fixture-only** unit tests under **`tests&#47;fixtures&#47;paper_shadow_summary_readmodel_v0&#47;...`**
+- Optional **golden** JSON comparison (deterministic key order policy).
+- **No** **`gh`**, **no** network, in the default test path.
+- Assert **exact** **`warnings`** / **`errors`** for missing and malformed files in negative fixtures.
+
 ## 18. References
 
 - [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) — parent contract, §7–§8, source matrix v0.8b.

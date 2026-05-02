@@ -171,6 +171,7 @@ Before adding a hub panel or route:
 4. **Tests** that assert markers, forbidden phrases, and no `fetch(` in the hub template (aligned with existing hub tests).
 5. **Docs update** to [**OBSERVABILITY_HUB_V0**](OBSERVABILITY_HUB_V0.md) panel table and non-goals.
 6. **Drift&#47;token policy** pass for new docs paths.
+7. **Fixture&#47;input path rules** — documented only in [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) (*Appendix: fixture and input path rules v0*); **docs-only** — **no** fixture files or builder implementation exists until separately shipped.
 
 ## 12. Stop conditions
 
