@@ -42,6 +42,7 @@
 - [ops/runbooks/futures/FUTURES_TRADING_READINESS_RUNBOOK_V0.md](ops/runbooks/futures/FUTURES_TRADING_READINESS_RUNBOOK_V0.md) — Futures-/Perp-**Readiness** (Stufenplan, docs-only, non-authority)
 - [ops/](ops/) — Ops-Docs, Merge-Logs
 - [runbooks/](runbooks/) — Runbooks (docs&#47;runbooks&#47;; Ops-Runbooks siehe ops&#47;RUNBOOK_INDEX.md)
+- **Ops-Runbook-Baum:** die meisten operativen Runbooks liegen unter `docs&#47;ops&#47;runbooks&#47;` (Einstieg weiter über [ops/RUNBOOK_INDEX.md](ops/RUNBOOK_INDEX.md)).
 
 <!-- docs INDEX status navigation note -->
 - `docs&#47;ops&#47;STATUS_MATRIX.md` — kompakte Status-Matrix und schneller Navigations-/Lookup-Einstieg.
