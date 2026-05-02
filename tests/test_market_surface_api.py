@@ -71,6 +71,17 @@ class TestMarketSurfaceHtml:
         assert 'data-market-v1-readonly-banner="true"' in body
         assert body.count('data-market-v1-stat-card="true"') >= 6
         assert 'data-market-v1-api-reference="true"' in body
+        assert 'data-market-v11-chart-diagnostics="true"' in body
+        assert 'data-market-v11-chart-library-status="true"' in body
+        assert 'data-market-v11-payload-bars="true"' in body
+        assert 'data-market-v11-render-fallback="true"' in body
+        assert "Chart diagnostics" in body
+        assert "Chart.js status" in body
+        assert "Embedded bars" in body
+        assert "Chart render status" in body
+        assert "Chart library missing or blocked" in body
+        assert "Chart render error" in body
+        assert "No backend/API/provider change" in body
         assert 'data-market-readonly="true"' in body
         assert 'data-market-non-authorizing="true"' in body
         assert 'data-market-source-kind="dummy-offline-synthetic"' in body
@@ -126,6 +137,10 @@ def test_market_v0_template_kraken_banner_markers_in_source() -> None:
     assert 'data-market-v1-readonly-banner="true"' in txt
     assert 'data-market-v1-context="true"' in txt
     assert 'data-market-v1-api-reference="true"' in txt
+    assert 'data-market-v11-chart-diagnostics="true"' in txt
+    assert 'data-market-v11-chart-library-status="true"' in txt
+    assert 'data-market-v11-payload-bars="true"' in txt
+    assert 'data-market-v11-render-fallback="true"' in txt
     assert txt.count('data-market-v1-stat-card="true"') >= 6
     assert "Read-only market display" in txt
     assert "Futures" in txt
