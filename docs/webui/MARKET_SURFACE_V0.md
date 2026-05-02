@@ -110,7 +110,7 @@ Die **visual Double‑Play**‑Rail (**Chips**, **Tiles**, **Diagnostics**) ist 
 
 **v1.3** ergänzt **nur Templates/Tests/Docs**: menschenlesbare **Panel‑Titel/Untertitel** und deutschsprachige **„Anzeige: …“**‑Beschriftungen für die **`display_*`**‑Status‑Strings des bestehenden **Double‑Play‑Display‑Snapshots** (**keine** neue **Trading**/Runtime‑Logik).
 
-**Structured display metadata v2 (JSON):** **`GET`** **`&#47;api&#47;master‑v2&#47;double‑play&#47;dashboard‑display.json`** enthält zusätzliche **additive** Felder (**`display_layer_version`**, **`display_snapshot_meta`**, pro Panel **`ordinal`**, **`panel_group`**, **`severity_rank`**) wie in [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](../ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **§19** beschrieben. **`GET`** **`&#47;market&#47;double-play`** (**v1.3**) konsumiert diese JSON‑Felder **nicht**.
+**Structured display metadata v2:** **`GET`** **`&#47;api&#47;master‑v2&#47;double‑play&#47;dashboard‑display.json`** enthält zusätzliche **additive** Felder (**`display_layer_version`**, **`display_snapshot_meta`**, pro Panel **`ordinal`**, **`panel_group`**, **`severity_rank`**) wie in [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](../ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **§19** beschrieben. Dieselben Werte erreichen **`GET`** **`&#47;market&#47;double-play`** bereits über eingebettetes **`dp_display`** (**SSR** — siehe **[Double‑Play Market Dashboard konsumiert strukturierte Metadaten v2](#double-play-market-dashboard-konsumiert-strukturierte-metadaten-v2)**).
 
 - Roh‑ **`display_ready`** **`/`** Panel‑ **`display_*`** werden **nicht** als Handelsbereitschaft dargestellt; **„Anzeige: OK“** bedeutet **„Karte beschriftbar vorhanden im Snapshot“**, **nicht** Order‑Freigabe.
 - **`Bull`**/**`Bear`**/**`Long`**/**`Short`** werden **nicht** aus Panel‑Schlüsseln **abgeleitet** — nur bereits in **`summary`**/**Listen** vorhandene Wörter erscheinen als **übernommener Fließtext**.
@@ -120,9 +120,21 @@ Die **visual Double‑Play**‑Rail (**Chips**, **Tiles**, **Diagnostics**) ist 
 
 Die **additive** Display‑Schicht für **`GET`** **`&#47;api&#47;master‑v2&#47;double‑play&#47;dashboard‑display.json`** ist in **`snapshot_to_jsonable`** (**`src/webui/double_play_dashboard_display_json_route_v0.py`**) umgesetzt — siehe [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](../ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **§19** und [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](../ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) **§21**.
 
-- **`GET`** **`&#47;market&#47;double-play`** nutzt weiterhin **v1.3 Template‑Mapping** ohne Nutzung der neuen JSON‑Strukturfelder; ein **HTML‑Consumer** dieser Metadaten wäre ein **separates** Arbeitspaket.
+- **`GET`** **`&#47;market&#47;double-play`** zeigt dieselben strukturierten v2‑Metadaten **sichtbar**, soweit sie bereits im SSR‑**`dp_display`** enthalten sind — Details unter **[Double‑Play Market Dashboard konsumiert strukturierte Metadaten v2](#double-play-market-dashboard-konsumiert-strukturierte-metadaten-v2)** (Templates/Tests/Docs‑Schicht **ohne** neue Backend‑Keys).
 - **Keine** **`active_side`**, **`recommended_side`**, Order-/Session‑Handles oder Aktions‑Freigaben im beschriebenen **Scope**.
 - **Keine** Trading-/UI‑Autorität durch die neuen Metadaten; Markt‑Surface‑Docs bleiben konsistent mit „read-only / display-only“ oben.
+
+## Double-Play Market Dashboard konsumiert strukturierte Metadaten v2
+
+**Route:** **`GET &#47;market&#47;double-play`** (SSR unverändert).
+
+Diese Dokumentations‑Schicht beschreibt die **sichtbare** Aufbereitung von **bereits vorhandenen** strukturierten Metadaten v2 (**`display_layer_version`**, **`display_snapshot_meta`**, pro Panel **`ordinal`**, **`panel_group`**, **`severity_rank`**) aus dem eingebetteten **`dp_display`** (**gleicher Aufbau wie** **`GET`** **`&#47;api&#47;master‑v2&#47;double‑play&#47;dashboard‑display.json`**, weiterhin **in‑process** ohne Client‑Fetch).
+
+- **Keine** Backend‑ oder API‑Erweiterung in diesem Template-/Docs-/Test‑Schritt; **keine** neuen JSON‑Felder und **keine** neue Route.
+- **`assembled_at_iso`** und **`display_snapshot_meta`** sind **Display‑Assembly/provenance**, **nicht** Kurszeit, Evidence‑Zeit oder Operational‑Readiness.
+- **`severity_rank`** ist **Anzeige-/Sortier‑Skala** (**Styling/Ordnung**), **kein** Handels‑ oder Freigabe‑Signal.
+- **`panel_group`** ist eine **UI‑Kategorie**/Clusterbezeichnung (**keine** operative Autorität, **kein** Scope/Capital/Risk‑Bypass).
+- weiterhin **kein** `fetch()`, **kein** Polling, **keine** Formulare oder POST‑Aktionen durch diese Seite.
 
 ## Chart status states
 

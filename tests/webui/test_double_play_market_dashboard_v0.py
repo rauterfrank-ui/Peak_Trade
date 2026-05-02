@@ -204,6 +204,61 @@ def test_double_play_market_dashboard_v1_3_field_mapping_rail(client: TestClient
     assert "setinterval" not in lower
 
 
+def test_double_play_market_dashboard_consumes_structured_metadata_v2(client: TestClient) -> None:
+    """Rail surfaces display-layer v2 metadata from SSR dp_display (no new backend keys)."""
+    r = client.get("/market/double-play")
+    assert r.status_code == 200
+    body = r.text
+
+    assert 'data-double-play-market-ui-consumes-v2-metadata="true"' in body
+    assert 'data-double-play-market-display-layer-version="true"' in body
+    assert 'data-double-play-market-display-snapshot-meta="true"' in body
+    assert 'data-double-play-market-panel-ordinal="true"' in body
+    assert 'data-double-play-market-panel-group="true"' in body
+    assert 'data-double-play-market-severity-rank="true"' in body
+
+    assert "Display layer:" in body
+    assert "Source kind:" in body
+    assert "Source id:" in body
+    assert "Assembled:" in body
+    assert "Display metadata only" in body
+    assert "Assembly timestamp, not market/evidence/readiness time" in body
+    assert "Severity rank is display ordering metadata, not trading readiness" in body
+    assert "Panel group is a display category" in body
+
+    assert "Display layer: v2" in body
+    assert "static_display_v0" in body
+    assert "webui_dashboard_display_static_v0" in body
+
+    assert "Group: input" in body
+    assert "Group: state" in body
+    assert "Group: scope" in body
+    assert "Group: strategy" in body
+    assert "Group: capital" in body
+    assert "Group: composition" in body
+    assert "Severity rank: 0" in body
+    assert "Ordinal: 0" in body
+
+    lower_keys = body.lower()
+    assert "recommended_side" not in lower_keys
+    assert "active_side" not in lower_keys
+    assert "ready_to_trade" not in lower_keys
+
+    assert "fetch(" not in body
+    assert "setinterval" not in body.lower()
+    assert "<form" not in body.lower()
+    assert 'method="post"' not in body.lower()
+    assert "<button" not in body.lower()
+    assert 'type="submit"' not in body.lower()
+
+    forbidden = ("BUY", "SELL", "GO", "APPROVED", "ACTIVE TRADE")
+    for w in forbidden:
+        assert w not in body
+
+    lower = body.lower()
+    assert "live_authorization" not in lower
+
+
 def test_double_play_market_dashboard_bad_timeframe_422(client: TestClient) -> None:
     r = client.get("/market/double-play", params={"timeframe": "bogus"})
     assert r.status_code == 422

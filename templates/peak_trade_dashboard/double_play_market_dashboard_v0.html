@@ -630,6 +630,7 @@
       data-double-play-display-ssr-v1="true"
       data-double-play-market-visual-panels-v1-2="true"
       data-double-play-market-field-mapping-v1-3="true"
+      data-double-play-market-ui-consumes-v2-metadata="true"
     >
       {% set _dp_snap_status = {
         'display_ready': {'lab': 'Anzeige: OK', 'hint': 'Karteninhalt vorhanden · keine Trading-Freigabe'},
@@ -667,6 +668,25 @@
         Display-only Snapshot — keine Operational-Freigabe.
         <a href="{{ double_play_json_url }}" class="text-sky-400 underline underline-offset-2 font-mono break-all block mt-2" data-double-play-market-display-json-link="true">{{ double_play_json_url }}</a>
       </p>
+
+      <div
+        class="rounded-lg border border-slate-800/90 bg-slate-950/70 px-3 py-2.5 mb-3 space-y-1 font-mono text-[10px] text-slate-300"
+        data-double-play-market-display-snapshot-meta="true"
+      >
+        <p class="text-[9px] uppercase tracking-wide text-slate-500 m-0 font-sans font-semibold">
+          Structured display metadata (SSR)
+        </p>
+        <p class="m-0" data-double-play-market-display-layer-version="true">
+          Display layer: {{ dp_display.display_layer_version }}
+        </p>
+        <p class="m-0">Source kind: {{ dp_display.display_snapshot_meta.source_kind }}</p>
+        <p class="m-0">Source id: {{ dp_display.display_snapshot_meta.source_id }}</p>
+        <p class="m-0">Assembled: {{ dp_display.display_snapshot_meta.assembled_at_iso }}</p>
+        <p class="m-0 text-slate-400 font-sans text-[10px] leading-snug">Display metadata only</p>
+        <p class="m-0 text-slate-500 font-sans text-[9px] leading-snug">
+          Assembly timestamp, not market/evidence/readiness time
+        </p>
+      </div>
 
       <div class="grid gap-2 mb-3">
         <div class="rounded-lg border border-emerald-900/35 bg-emerald-950/15 px-3 py-2.5" data-double-play-overall-snapshot-pack="true" data-double-play-overall-display-status="{{ dp_display.overall_status }}">
@@ -734,6 +754,28 @@
             <h3 class="text-xs font-bold text-slate-50 m-0 tracking-tight leading-tight max-w-[18rem] break-words font-sans" data-double-play-market-panel-human-title="true">{{ _hum.title }}</h3>
             <p class="text-[10px] text-slate-500 m-0 leading-snug">{{ _hum.subtitle }}</p>
           </div>
+          <div class="mt-1 flex flex-wrap gap-1.5 text-[10px] text-slate-400">
+            <span
+              class="rounded border border-slate-800/90 bg-black/45 px-1.5 py-0.5 font-mono text-slate-300"
+              data-double-play-market-panel-ordinal="true"
+            >Ordinal: {{ panel.ordinal }}</span>
+            <span
+              class="rounded border border-slate-800/90 bg-black/45 px-1.5 py-0.5 font-mono text-slate-300"
+              data-double-play-market-panel-group="true"
+            >Group: {{ panel.panel_group }}</span>
+            <span
+              class="rounded border border-slate-800/90 bg-black/45 px-1.5 py-0.5 font-mono text-slate-300"
+              data-double-play-market-severity-rank="true"
+            >Severity rank: {{ panel.severity_rank }}</span>
+          </div>
+          {% if loop.first %}
+          <p class="m-0 mt-1.5 text-[9px] text-slate-500 leading-snug font-sans">
+            Severity rank is display ordering metadata, not trading readiness
+          </p>
+          <p class="m-0 text-[9px] text-slate-500 leading-snug font-sans">
+            Panel group is a display category
+          </p>
+          {% endif %}
           <div class="flex items-start justify-between gap-2 mb-2 flex-wrap">
             <span class="rounded-md border border-slate-700/85 bg-black/65 px-2 py-1 text-[11px] font-semibold text-sky-100/95" data-double-play-market-display-status-label="true">{{ _sl.lab }}</span>
             <span class="rounded-md border border-slate-800/85 bg-black/45 px-2 py-1 text-[9px] text-slate-500 font-mono shrink-0">{{ _sl.hint }}</span>
