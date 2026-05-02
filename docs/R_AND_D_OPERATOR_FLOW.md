@@ -148,7 +148,7 @@ Button **← Zurück zum R&D Hub** oder Browser-Back.
 ### Schritt 1 – Experimente auswählen
 
 - In der R&D-Übersicht (`/r_and_d`) gibt es jetzt eine Checkbox-Spalte (⚖️)
-- Klicke die Checkbox bei 2–4 Experimenten, die du vergleichen möchtest
+- Klicke die Checkbox bei 2–10 Experimenten, die du vergleichen möchtest
 - Die Compare-Leiste erscheint automatisch mit einem Counter
 
 ### Schritt 2 – Vergleich starten
@@ -176,7 +176,7 @@ Die Comparison-View zeigt:
 
 - Vergleiche Runs mit **gleichem Symbol/Timeframe** für aussagekräftige Ergebnisse
 - Nutze die **Preset-Filter** in der Übersicht, um ähnliche Runs zu finden
-- Maximal **4 Runs** gleichzeitig vergleichen für Übersichtlichkeit
+- Maximal **10 Runs** gleichzeitig vergleichen; für Übersichtlichkeit ähnliche Runs gruppieren
 
 ---
 

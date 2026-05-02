@@ -475,7 +475,7 @@ Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde 
 **Phase 78 – R&D Report-Gallery & Multi-Run Comparison v1:**
 
 * R&D API auf v1.3 erweitert: Neuer Batch-Endpoint `/api/r_and_d/experiments/batch` für Multi-Run-Abfragen
-* Multi-Run Comparison View `/r_and_d/comparison` für den direkten Vergleich von 2–4 Experimenten
+* Multi-Run Comparison View `/r_and_d/comparison` für den direkten Vergleich von 2–10 Experimenten
 * Checkbox-Auswahl in der R&D-Übersicht mit Counter und Compare-Button
 * Best-Metric-Hervorhebung (★) im Comparison-View für schnelle Identifikation der besten Runs
 * Validierung: Min. 2, max. 10 Run-IDs pro Batch; teilweise ungültige IDs werden transparent gemeldet

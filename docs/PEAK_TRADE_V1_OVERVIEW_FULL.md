@@ -276,7 +276,7 @@ Phase 76 und 77 erweitern das Web-Dashboard um einen vollständigen **R&D-Experi
 **Phase 78 – R&D Report-Gallery & Multi-Run Comparison v1:**
 
 - R&D API auf v1.3 erweitert: Neuer Batch-Endpoint `/api/r_and_d/experiments/batch`
-- Multi-Run Comparison View `/r_and_d/comparison` für den direkten Vergleich von 2–4 Experimenten
+- Multi-Run Comparison View `/r_and_d/comparison` für den direkten Vergleich von 2–10 Experimenten
 - Checkbox-Auswahl in der R&D-Übersicht mit Compare-Button
 - Best-Metric-Hervorhebung (★) im Comparison-View
 - Validierung für Min./Max. Run-IDs und transparente Fehlerbehandlung

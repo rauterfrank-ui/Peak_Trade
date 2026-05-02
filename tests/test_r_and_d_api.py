@@ -1703,6 +1703,13 @@ class TestRAndDExperimentsPageV13:
         assert "openComparison" in resp.text
         assert "MAX_SELECTION" in resp.text
 
+    def test_page_comparison_selection_limit_matches_batch_contract(self, client):
+        """Page limitiert die Auswahl passend zum 2-10 Batch-Contract."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        assert "const MAX_SELECTION = 10;" in resp.text
+        assert "const MAX_SELECTION = 4;" not in resp.text
+
     def test_page_shows_updated_version(self, client):
         """Page zeigt v1.3 im Footer."""
         resp = client.get("/r_and_d")
