@@ -1,5 +1,5 @@
 <!-- templates/peak_trade_dashboard/market_v0.html -->
-<!-- Market Surface v0 — read-only, Close-Line-Chart (Chart.js) -->
+<!-- Market Surface v0 — read-only, Close-Line-Chart (Chart.js); v1 dashboard shell framing -->
 {% extends "base.html" %}
 
 {% block content %}
@@ -7,12 +7,27 @@
   class="space-y-6 max-w-6xl mx-auto"
   data-section="market-v0"
   data-market-surface-v0="true"
+  data-market-v1-dashboard-shell="true"
   data-market-readonly="true"
   data-market-non-authorizing="true"
   data-market-source="{{ query.source }}"
   data-market-bars="{{ payload.bars_returned }}"
   data-market-symbol="{{ query.symbol }}"
 >
+  <section
+    aria-label="Read-only market constraints"
+    class="rounded-xl border border-slate-700/60 bg-slate-900/50 px-4 py-3 text-xs text-slate-300"
+    data-market-v1-readonly-banner="true"
+  >
+    <ul class="m-0 p-0 list-none grid gap-x-4 gap-y-1 sm:grid-cols-2 lg:grid-cols-5">
+      <li>Read-only market display</li>
+      <li>No orders</li>
+      <li>No strategy authority</li>
+      <li>No Live/Testnet action</li>
+      <li>No Risk/KillSwitch override</li>
+    </ul>
+  </section>
+
   <section
     aria-label="Read-only und Datenquelle"
     class="rounded-xl border border-amber-900/40 bg-amber-950/25 px-4 py-3 text-xs text-amber-100/95"
@@ -45,7 +60,7 @@
     <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
       <div>
         <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">Market Surface</p>
-        <h1 class="text-2xl font-bold text-slate-100">v0 · Read-only OHLCV</h1>
+        <h1 class="text-2xl font-bold text-slate-100">v1 Shell · PeakTrade Dashboard (read-only)</h1>
         <p class="text-sm text-slate-400 mt-2 max-w-2xl">
           READ-ONLY · Keine Orders · Öffentliche OHLCV (Kraken) oder offline Dummy-Daten.
           Chart: Schlusskurs-Linie (V0 — bewusst minimal, kein Candlestick-Plugin).
@@ -62,19 +77,83 @@
     </div>
   </header>
 
-  <section aria-label="Parameter" class="bg-slate-900/60 rounded-xl border border-slate-800 p-4 text-xs text-slate-400">
-    <p class="font-medium text-slate-300 mb-2">Aktuelle Abfrage</p>
-    <ul class="font-mono space-y-1">
-      <li>symbol={{ query.symbol }}</li>
-      <li>timeframe={{ query.timeframe }} (Kraken; Dummy bleibt synthetisch 1h)</li>
-      <li>limit={{ query.limit }}</li>
-      <li>source={{ query.source }} — für Netzwerk-OHLCV: <span class="text-sky-400">?source=kraken</span></li>
-    </ul>
+  <section
+    aria-label="Market query context"
+    class="bg-slate-900/70 rounded-xl border border-slate-800 p-4"
+    data-market-v1-context="true"
+  >
+    <h2 class="text-sm font-medium text-slate-200 mb-3">PeakTrade Market Dashboard · context</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
+      <div
+        class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2"
+        data-market-v1-stat-card="true"
+      >
+        <span class="text-slate-500 block mb-1">Source</span>
+        <span class="font-mono text-sky-300/95">{{ query.source }}</span>
+      </div>
+      <div
+        class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2"
+        data-market-v1-stat-card="true"
+      >
+        <span class="text-slate-500 block mb-1">Symbol</span>
+        <span class="font-mono text-slate-200">{{ query.symbol }}</span>
+      </div>
+      <div
+        class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2"
+        data-market-v1-stat-card="true"
+      >
+        <span class="text-slate-500 block mb-1">Timeframe</span>
+        <span class="font-mono text-slate-200">{{ query.timeframe }}</span>
+      </div>
+      <div
+        class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2"
+        data-market-v1-stat-card="true"
+      >
+        <span class="text-slate-500 block mb-1">Limit</span>
+        <span class="font-mono text-slate-200">{{ query.limit }}</span>
+      </div>
+      <div
+        class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2"
+        data-market-v1-stat-card="true"
+      >
+        <span class="text-slate-500 block mb-1">Bars returned</span>
+        <span class="font-mono text-slate-200">{{ payload.bars_returned }}</span>
+      </div>
+      <div
+        class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2"
+        data-market-v1-stat-card="true"
+      >
+        <span class="text-slate-500 block mb-1">Chart hint (SSR)</span>
+        <span
+          class="font-mono {% if payload.bars_returned == 0 %}text-amber-300/95{% else %}text-emerald-300/95{% endif %}"
+        >
+          {% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}
+        </span>
+      </div>
+    </div>
+    <p class="mt-3 text-[11px] text-slate-500 leading-relaxed">
+      Kraken verwendet timeframe; Dummy bleibt synthetisch 1h —
+      öffentliche Netzwerk-OHLCV: <span class="text-sky-400 font-mono">?source=kraken</span>
+    </p>
+  </section>
+
+  <section
+    aria-label="OHLCV API reference"
+    class="rounded-lg border border-dashed border-slate-700/70 bg-slate-950/40 px-4 py-3 text-xs text-slate-400"
+    data-market-v1-api-reference="true"
+  >
+    <p class="font-medium text-slate-300 mb-1">Read-only JSON (gleiche Query wie diese Seite)</p>
+    <p class="font-mono leading-relaxed break-all">
+      <a
+        href="/api/market/ohlcv?source={{ query.source }}&amp;symbol={{ query.symbol | replace('/', '%2F') }}&amp;timeframe={{ query.timeframe }}&amp;limit={{ query.limit }}"
+        class="text-sky-400 hover:text-sky-300 underline underline-offset-2"
+      >/api/market/ohlcv</a>
+    </p>
   </section>
 
   <section
     aria-label="Close-Preis"
-    class="bg-slate-900/60 rounded-xl border border-slate-800 p-4"
+    class="bg-slate-900/60 rounded-xl border border-slate-800 ring-1 ring-slate-700/50 shadow-lg shadow-black/20 p-4"
     data-chart="market-v0-close-line"
   >
     <h2 class="text-sm font-medium text-slate-200 mb-3">Schlusskurs (Close)</h2>
