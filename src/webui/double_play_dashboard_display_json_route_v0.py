@@ -10,8 +10,9 @@ See docs/ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md.
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict
+from typing import Any, Dict, Mapping
 
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
@@ -28,6 +29,7 @@ from trading.master_v2.double_play_composition import (
     compose_double_play_decision,
 )
 from trading.master_v2.double_play_dashboard_display import (
+    DashboardDisplayStatus,
     DoublePlayDashboardDisplaySnapshot,
     DoublePlayDashboardPanel,
     build_dashboard_display_snapshot,
@@ -76,6 +78,36 @@ router = APIRouter(
     prefix="/api/master-v2/double-play",
     tags=["master-v2", "double-play", "dashboard-display-readonly"],
 )
+
+_DISPLAY_JSON_LAYER_VERSION = "v2"
+
+_DISPLAY_PANEL_GROUP: Mapping[str, str] = {
+    "futures_input": "input",
+    "state_transition": "state",
+    "survival_envelope": "scope",
+    "strategy_suitability": "strategy",
+    "capital_slot_ratchet": "capital",
+    "capital_slot_release": "capital",
+    "composition": "composition",
+}
+
+_DISPLAY_SEVERITY_RANK: Mapping[DashboardDisplayStatus, int] = {
+    DashboardDisplayStatus.DISPLAY_READY: 0,
+    DashboardDisplayStatus.DISPLAY_WARNING: 10,
+    DashboardDisplayStatus.DISPLAY_MISSING: 20,
+    DashboardDisplayStatus.DISPLAY_BLOCKED: 30,
+    DashboardDisplayStatus.DISPLAY_ERROR: 40,
+}
+
+
+def _display_severity_rank(status: DashboardDisplayStatus) -> int:
+    return _DISPLAY_SEVERITY_RANK[status]
+
+
+def _assembled_at_iso_utc() -> str:
+    dt = datetime.now(timezone.utc).replace(microsecond=0)
+    return dt.isoformat().replace("+00:00", "Z")
+
 
 _GOOD_LIMITS = StaticHardLimits(
     max_notional=1.0,
@@ -349,9 +381,10 @@ def _build_static_double_play_dashboard_display_snapshot_v0() -> DoublePlayDashb
     )
 
 
-def _jsonable_panel(panel: DoublePlayDashboardPanel) -> Dict[str, Any]:
+def _jsonable_panel(panel: DoublePlayDashboardPanel, ordinal: int) -> Dict[str, Any]:
     st = panel.status
     status_val = st.value if isinstance(st, Enum) else str(st)
+    panel_group = _DISPLAY_PANEL_GROUP.get(panel.name, "unknown")
     return {
         "name": panel.name,
         "status": status_val,
@@ -361,6 +394,9 @@ def _jsonable_panel(panel: DoublePlayDashboardPanel) -> Dict[str, Any]:
         "live_authorization": panel.live_authorization,
         "is_authority": panel.is_authority,
         "is_signal": panel.is_signal,
+        "ordinal": ordinal,
+        "panel_group": panel_group,
+        "severity_rank": _display_severity_rank(st),
     }
 
 
@@ -369,7 +405,13 @@ def snapshot_to_jsonable(snap: DoublePlayDashboardDisplaySnapshot) -> Dict[str, 
     overall = snap.overall_status
     overall_val = overall.value if isinstance(overall, Enum) else str(overall)
     return {
-        "panels": [_jsonable_panel(p) for p in snap.panels],
+        "display_layer_version": _DISPLAY_JSON_LAYER_VERSION,
+        "display_snapshot_meta": {
+            "source_kind": "static_display_v0",
+            "source_id": "webui_dashboard_display_static_v0",
+            "assembled_at_iso": _assembled_at_iso_utc(),
+        },
+        "panels": [_jsonable_panel(p, i) for i, p in enumerate(snap.panels)],
         "overall_status": overall_val,
         "no_live_banner_visible": snap.no_live_banner_visible,
         "display_only": snap.display_only,

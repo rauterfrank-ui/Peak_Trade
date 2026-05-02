@@ -4,6 +4,7 @@ from __future__ import annotations
 import ast
 import json
 from dataclasses import replace
+from datetime import datetime
 from enum import Enum
 from pathlib import Path
 
@@ -308,6 +309,8 @@ def test_snapshot_invariants_always() -> None:
 
 _EXPECTED_JSON_TOP_LEVEL_KEYS = frozenset(
     {
+        "display_layer_version",
+        "display_snapshot_meta",
         "panels",
         "overall_status",
         "no_live_banner_visible",
@@ -320,6 +323,10 @@ _EXPECTED_JSON_TOP_LEVEL_KEYS = frozenset(
     }
 )
 
+_EXPECTED_JSON_DISPLAY_SNAPSHOT_META_KEYS = frozenset(
+    {"source_kind", "source_id", "assembled_at_iso"}
+)
+
 _EXPECTED_JSON_PANEL_KEYS = frozenset(
     {
         "name",
@@ -330,6 +337,9 @@ _EXPECTED_JSON_PANEL_KEYS = frozenset(
         "live_authorization",
         "is_authority",
         "is_signal",
+        "ordinal",
+        "panel_group",
+        "severity_rank",
     }
 )
 
@@ -413,6 +423,13 @@ def _assert_json_native_values(obj: object) -> None:
 
 def _assert_serialized_dashboard_authority_invariants(data: dict) -> None:
     assert set(data.keys()) == _EXPECTED_JSON_TOP_LEVEL_KEYS
+    assert data["display_layer_version"] == "v2"
+    meta = data["display_snapshot_meta"]
+    assert set(meta.keys()) == _EXPECTED_JSON_DISPLAY_SNAPSHOT_META_KEYS
+    assert isinstance(meta["assembled_at_iso"], str)
+    datetime.fromisoformat(meta["assembled_at_iso"].replace("Z", "+00:00"))
+    assert meta["source_kind"] == "static_display_v0"
+    assert meta["source_id"] == "webui_dashboard_display_static_v0"
     assert data["display_only"] is True
     assert data["no_live_banner_visible"] is True
     assert data["trading_ready"] is False
@@ -451,6 +468,21 @@ def test_snapshot_to_jsonable_full_stack_matches_route_contract() -> None:
     data = snapshot_to_jsonable(snap)
     _assert_serialized_dashboard_authority_invariants(data)
     assert len(data["panels"]) == 7
+    expected_rows = (
+        ("futures_input", "input", 0, 0),
+        ("state_transition", "state", 1, 0),
+        ("survival_envelope", "scope", 2, 0),
+        ("strategy_suitability", "strategy", 3, 0),
+        ("capital_slot_ratchet", "capital", 4, 0),
+        ("capital_slot_release", "capital", 5, 0),
+        ("composition", "composition", 6, 0),
+    )
+    for row, panel in zip(expected_rows, data["panels"]):
+        name, grp, ordinal, rank = row
+        assert panel["name"] == name
+        assert panel["panel_group"] == grp
+        assert panel["ordinal"] == ordinal
+        assert panel["severity_rank"] == rank
 
 
 def test_snapshot_to_jsonable_blocked_survival_still_matches_contract() -> None:
@@ -472,6 +504,9 @@ def test_snapshot_to_jsonable_blocked_survival_still_matches_contract() -> None:
     )
     data = snapshot_to_jsonable(snap)
     _assert_serialized_dashboard_authority_invariants(data)
+    survival_p = next(p for p in data["panels"] if p["name"] == "survival_envelope")
+    assert survival_p["status"] == "display_blocked"
+    assert survival_p["severity_rank"] == 30
 
 
 def test_snapshot_to_jsonable_empty_snapshot_still_matches_contract() -> None:
@@ -479,3 +514,8 @@ def test_snapshot_to_jsonable_empty_snapshot_still_matches_contract() -> None:
     snap = build_dashboard_display_snapshot()
     data = snapshot_to_jsonable(snap)
     _assert_serialized_dashboard_authority_invariants(data)
+    assert data["overall_status"] == "display_warning"
+    for i, p in enumerate(data["panels"]):
+        assert p["status"] == "display_missing"
+        assert p["severity_rank"] == 20
+        assert p["ordinal"] == i

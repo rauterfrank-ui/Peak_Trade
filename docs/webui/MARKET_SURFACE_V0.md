@@ -108,19 +108,21 @@ Die **visual Double‑Play**‑Rail (**Chips**, **Tiles**, **Diagnostics**) ist 
 
 **Route:** **`GET &#47;market&#47;double-play`** (unverändert)
 
-**v1.3** ergänzt **nur Templates/Tests/Docs**: menschenlesbare **Panel‑Titel/Untertitel** und deutschsprachige **„Anzeige: …“**‑Beschriftungen für die **`display_*`**‑Status‑Strings des bestehenden **Double‑Play‑Display‑Snapshots** (**kein** neues Feld im JSON, **keine** Änderung an **`GET`** **`&#47;api&#47;master‑v2&#47;double‑play&#47;dashboard‑display.json`**, keine Trading‑ oder Runtime‑Logik).
+**v1.3** ergänzt **nur Templates/Tests/Docs**: menschenlesbare **Panel‑Titel/Untertitel** und deutschsprachige **„Anzeige: …“**‑Beschriftungen für die **`display_*`**‑Status‑Strings des bestehenden **Double‑Play‑Display‑Snapshots** (**keine** neue **Trading**/Runtime‑Logik).
+
+**Structured display metadata v2 (JSON):** **`GET`** **`&#47;api&#47;master‑v2&#47;double‑play&#47;dashboard‑display.json`** enthält zusätzliche **additive** Felder (**`display_layer_version`**, **`display_snapshot_meta`**, pro Panel **`ordinal`**, **`panel_group`**, **`severity_rank`**) wie in [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](../ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **§19** beschrieben. **`GET`** **`&#47;market&#47;double-play`** (**v1.3**) konsumiert diese JSON‑Felder **nicht**.
 
 - Roh‑ **`display_ready`** **`/`** Panel‑ **`display_*`** werden **nicht** als Handelsbereitschaft dargestellt; **„Anzeige: OK“** bedeutet **„Karte beschriftbar vorhanden im Snapshot“**, **nicht** Order‑Freigabe.
 - **`Bull`**/**`Bear`**/**`Long`**/**`Short`** werden **nicht** aus Panel‑Schlüsseln **abgeleitet** — nur bereits in **`summary`**/**Listen** vorhandene Wörter erscheinen als **übernommener Fließtext**.
 - weiterhin **keine** operative Autorität, **keine** Live/Testnet‑Aktivierung, **keine** Order-/Scope/Capital/Risk‑Override‑Semantik über die neue Copy hinaus.
 
-## Double-Play structured display contract v2 planning
+## Double-Play structured display contract v2 (JSON route)
 
-**Kontext:** Operative Specs planen eine **additive**, **non-authorizing** **Struktur-Schicht** (**`display_layer_version`**, **`display_snapshot_meta`**, pro Panel **`ordinal`**, **`panel_group`**, **`severity_rank`**) für **`GET`** **`&#47;api&#47;master‑v2&#47;double‑play&#47;dashboard-display.json`** — siehe [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](../ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **§19** und [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](../ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) **§21**.
+Die **additive** Display‑Schicht für **`GET`** **`&#47;api&#47;master‑v2&#47;double‑play&#47;dashboard‑display.json`** ist in **`snapshot_to_jsonable`** (**`src/webui/double_play_dashboard_display_json_route_v0.py`**) umgesetzt — siehe [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](../ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **§19** und [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](../ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) **§21**.
 
-- **`GET`** **`&#47;market&#47;double-play`** nutzt derzeit **v1.3 Template-Mapping** ohne diese JSON-Felder; geplante **v2**-Metadaten können **später** harte Template-Zuordnung zu **Reihenfolge/Gruppe/Schwere** ersetzen (**separates Implementierungs-PR** nach Spec + Tests).
-- **Keine** geplanten **`active_side`**, **`recommended_side`**, Order-/Session-Handles oder Aktions-Freigaben im beschriebenen **MVP-Umfang**.
-- **Keine** Trading-/UI-Autorität durch die neuen Metadaten; Markt-Surface-Docs bleiben konsistent mit „read-only / display-only“ oben.
+- **`GET`** **`&#47;market&#47;double-play`** nutzt weiterhin **v1.3 Template‑Mapping** ohne Nutzung der neuen JSON‑Strukturfelder; ein **HTML‑Consumer** dieser Metadaten wäre ein **separates** Arbeitspaket.
+- **Keine** **`active_side`**, **`recommended_side`**, Order-/Session‑Handles oder Aktions‑Freigaben im beschriebenen **Scope**.
+- **Keine** Trading-/UI‑Autorität durch die neuen Metadaten; Markt‑Surface‑Docs bleiben konsistent mit „read-only / display-only“ oben.
 
 ## Chart status states
 
