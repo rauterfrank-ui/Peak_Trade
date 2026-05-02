@@ -101,6 +101,23 @@ pre-commit run ruff --all-files
 6. **check-added-large-files** - Prevent large files (>500KB)
 7. **check-merge-conflict** - Detect merge conflict markers
 
+## Documentation gates (Markdown)
+
+Markdown edits can trip multiple documentation validators in CI. For a quick spot-check locally, run:
+
+```bash
+# Token policy (inline-code / illustrative path encoding rules)
+uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs
+
+# Reference targets (Markdown link resolution under the docs tree)
+bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs
+
+# Drift guard (expected doc companions for certain sensitive edits vs base branch)
+python3 scripts/ops/check_docs_drift_guard.py --base origin/main
+```
+
+For operator guidance—in particular decoding **ILLUSTRATIVE** token-policy failures—see the [Docs Token Policy Gate runbook](../ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md).
+
 ## CI Workflow
 
 The lint workflow (`.github/workflows/lint.yml`) runs on:
