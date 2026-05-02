@@ -10,7 +10,7 @@ docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0"
 
 ## 1. Purpose
 
-This contract defines the **future** boundary for a **read-only** WebUI HTTP route that **displays** the Master V2 / Double Play **Dashboard Display DTO** (`DoublePlayDashboardDisplaySnapshot` from `build_dashboard_display_snapshot`), without granting **control authority**, trading permission, or Live/Testnet enablement.
+This contract defines the **normative read-only** WebUI HTTP route boundary that **displays** the Master V2 / Double Play **Dashboard Display DTO** (`DoublePlayDashboardDisplaySnapshot` from `build_dashboard_display_snapshot`), without granting **control authority**, trading permission, or Live/Testnet enablement. **§9** and **§19** reference **already landed** repo tests and the **display-layer v2** JSON mapper as **anchors**; other sections may still describe forward-looking staging where marked.
 
 It exists to prevent confusion between:
 
@@ -34,12 +34,16 @@ This file is **non-authorizing**. It does not:
 
 **Displaying a snapshot does not authorize it.** Responses must preserve **display-only** semantics: **`live_authorization` remains false**, **`display_only` true**, **`no_live_banner_visible` true**, and **`trading_ready` / `testnet_ready` / `live_ready` false** for the v0 fixture-backed path described here.
 
+### 2.1 Document status vs shipped test/code anchors
+
+Frontmatter **`status: DRAFT`** marks this file as an **evolving contract lens** (wording and boundaries may change in follow-up PRs). It does **not** deny that the read-only route module, `snapshot_to_jsonable`, and the tests named in **§9** already exist in the repository. Where **§19** states **Implemented**, it refers **only** to **structured display metadata v2** in the JSON mapper — **not** Live or Testnet readiness, **not** PRE_LIVE or First-Live closure, **not** substitution for Risk/KillSwitch/execution gates, and **not** operational Master V2 runtime producer wiring.
+
 ## 3. Scope
 
 **In scope (this contract):**
 
 - target application and **attachment pattern** (`create_app()` on the general WebUI)
-- **HTTP shape** for a future v0 route (GET-only, read-only)
+- **HTTP shape** for the v0 route (GET-only, read-only)
 - **DTO source strategy** for v0 (pure fixtures; no runtime producer requirement)
 - **JSON response boundary** and caching guidance
 - **forbidden imports** and operational boundaries
@@ -126,6 +130,8 @@ For the **pure stack** regression story of **`FuturesProducerPacket` → `adapt_
 - **Panel-level flags** — each panel keeps **`live_authorization`**, **`is_authority`**, **`is_signal`** false for the static fixture path.
 - **Forbidden JSON keys** — recursive key scan rejects control / runtime / **provider** / **scanner** / **exchange** / session / credential-like key names in the payload tree (keys that are legitimate DTO safety flags are asserted false separately, not banned by name).
 - **Route-module AST guard** — static parse of `double_play_dashboard_display_json_route_v0.py` forbids imports from scanner / **exchange** / session / **backtest** / network-style roots (e.g. `ccxt`, `requests`, `subprocess`, `src.exchange`) outside the allowed **`trading.master_v2`** surface.
+
+**Forbidden-key frozensets (two anchors, same intent):** `tests&#47;webui&#47;test_double_play_dashboard_display_json_route.py` and `tests&#47;trading&#47;master_v2&#47;test_double_play_dashboard_display.py` each define a `_FORBIDDEN_JSON_KEYS` frozenset used in a recursive payload key scan; the master_v2 test module includes a few **additional** conservative tokens (e.g. `producer`, `action`). Treat these as **module-local regression anchors** for the same **non-authority** goal — not as competing normative lists, not as an exhaustive denylist outside those tests, and **not** as a reason to duplicate a third list in documentation.
 
 ## 10. JSON response boundary
 

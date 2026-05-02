@@ -34,6 +34,10 @@ This file is **non-authorizing**. It does not:
 
 **Displaying a decision does not authorize it.** **`live_authorization` remains false** in all pure-stack semantics; the dashboard must not override that with UI copy or badges.
 
+### 2.1 Document status vs shipped test/code anchors
+
+Frontmatter **`status: DRAFT`** marks this display map as an **evolving contract lens**. It does **not** deny that the read-only JSON mapper and **`snapshot_to_jsonable`** hooks documented in **§20–§21** already exist. **§21 “Implemented”** refers **only** to **presentation-layer JSON metadata v2** atop **`DoublePlayDashboardDisplaySnapshot`** — **not** Live/Testnet readiness, **not** gate closure, **not** Risk/KillSwitch/execution authority, and **not** runtime producer wiring.
+
 ## 3. Scope
 
 **In scope:**
@@ -127,6 +131,8 @@ Future implementations should use a **versioned display snapshot** (conceptual n
 - includes explicit `live_authorization: false` (or omits any live flag; never `true` from this path)
 - never embeds raw exchange credentials or unfettered OHLCV payloads as mandatory fields for Double Play v0
 
+The **shipping** pure display DTO uses the concrete dataclass **`DoublePlayDashboardDisplaySnapshot`** and builder **`build_dashboard_display_snapshot`** in `src&#47;trading&#47;master_v2&#47;double_play_dashboard_display.py` — same role as this section’s conceptual snapshot, **not** a second authority surface or a parallel DTO family.
+
 Pure modules remain **I/O-free**; snapshot **assembly** for the dashboard belongs **outside** `master_v2` when implemented.
 
 ## 15. Route boundary
@@ -173,9 +179,11 @@ A **no-live banner** (or equivalent persistent disclosure) is **required** on an
 
 **Route-independent JSON serialization (test anchors, non-authority):** `tests&#47;trading&#47;master_v2&#47;test_double_play_dashboard_display.py` includes **test anchors** that exercise **`snapshot_to_jsonable`** on a **pure dashboard snapshot** **without** HTTP or `TestClient` — the same **JSON serialization** path the **downstream display surface** uses for JSON bodies. Scenarios include a **full-stack** snapshot, a **blocked survival** / **display-blocked** panel path, and an **empty** default snapshot. Assertions include **JSON-native** values, **`json.dumps`** compatibility, exact top-level and per-panel key surfaces aligned with the WebUI JSON route contract (including **display-layer v2** **`display_layer_version`**, **`display_snapshot_meta`**, **`ordinal`**, **`panel_group`**, **`severity_rank`**), **display-only** semantics (`display_only` true, `no_live_banner_visible` true), **non-authorizing** readiness booleans (`trading_ready`, `testnet_ready`, `live_ready`, and `live_authorization` false at the top level), panel **non-authority** / **non-signal** flags (`live_authorization`, `is_authority`, `is_signal` false), and a recursive forbidden-key scan for order/control/runtime/provider/scanner/exchange/session/credential-like key names, while explicit false **safety** booleans are asserted separately rather than banned by name. These anchors **complement** the WebUI route **test anchors** and **do not replace** [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) **§20** producer-adapter → **pure stack** → dashboard anchors. Boundary: they prove **JSON serialization** and key-surface **invariants** only — not operational **producer** integration, market-data ingestion, WebUI **HTML** or control UI, Testnet or Live **readiness**, execution permission, or external sign-off treated as permission to trade.
 
+**Forbidden-key frozensets:** the WebUI route test and this module-local test each carry a `_FORBIDDEN_JSON_KEYS` set; the master_v2 variant is a **superset for extra conservatism** in the serialization path (see also [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **§9**). Neither list is documented here as a standalone denylist contract.
+
 When code exists, future tests may include:
 
-- optional JSON schema layering for **DoublePlayPureStackDisplaySnapshotV0** (partially overlapped by the **route-independent** **JSON serialization** **test anchors** above)
+- optional JSON schema layering for **DoublePlayPureStackDisplaySnapshotV0** (historical conceptual label; concrete type **`DoublePlayDashboardDisplaySnapshot`** — partially overlapped by the **route-independent** **JSON serialization** **test anchors** above)
 - WebUI route tests asserting **no** POST side effects on read-only Double Play endpoints
 - invariant: snapshot JSON never contains `live_authorization: true` for this path
 
