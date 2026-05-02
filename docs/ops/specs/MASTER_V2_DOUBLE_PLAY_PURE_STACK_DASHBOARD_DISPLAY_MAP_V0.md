@@ -169,9 +169,9 @@ A **no-live banner** (or equivalent persistent disclosure) is **required** on an
 
 **Pure stack producer adapter → dashboard (test anchors, read-only, non-authority):** Cross-module tests in `tests/trading/master_v2/test_double_play_pure_stack_contract.py` include **`test_contract_32`–`37`**, summarized in [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) §20. Display semantics exercised there include **`DISPLAY_READY`** (contracts 32 and 37), **`DISPLAY_BLOCKED`** on the futures panel and overall (contracts 33–35), and **`DISPLAY_MISSING`** / overall **`DISPLAY_WARNING`** when no readiness decision exists after an adapter block (contract 36). These are **test anchors** for **pure** behavior only; they do **not** prove WebUI implementation, scanner runs, provider pipelines, market-data fetch, Testnet/Live **readiness**, **trading authority**, or any external sign-off treated as permission to trade or go operational.
 
-**Read-only JSON route (downstream):** `tests&#47;webui&#47;test_double_play_dashboard_display_json_route.py` provides **authority-invariant test coverage** for the **GET** JSON **read-only route** (exact key surfaces, **display-only** flags, forbidden control/runtime-style keys, route-module import guard), documented in [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **§9**. It does **not** replace §20 **pure stack** anchors or imply operational **producer** integration.
+**Read-only JSON route (downstream):** `tests&#47;webui&#47;test_double_play_dashboard_display_json_route.py` provides **authority-invariant test coverage** for the **GET** JSON **read-only route** (exact key surfaces, **display-layer v2** metadata, **display-only** flags, forbidden control/runtime-style keys, route-module import guard), documented in [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **§9**. It does **not** replace §20 **pure stack** anchors or imply operational **producer** integration.
 
-**Route-independent JSON serialization (test anchors, non-authority):** `tests&#47;trading&#47;master_v2&#47;test_double_play_dashboard_display.py` includes **test anchors** that exercise **`snapshot_to_jsonable`** on a **pure dashboard snapshot** **without** HTTP or `TestClient` — the same **JSON serialization** path the **downstream display surface** uses for JSON bodies. Scenarios include a **full-stack** snapshot, a **blocked survival** / **display-blocked** panel path, and an **empty** default snapshot. Assertions include **JSON-native** values, **`json.dumps`** compatibility, exact top-level and per-panel key surfaces aligned with the WebUI JSON route contract, **display-only** semantics (`display_only` true, `no_live_banner_visible` true), **non-authorizing** readiness booleans (`trading_ready`, `testnet_ready`, `live_ready`, and `live_authorization` false at the top level), panel **non-authority** / **non-signal** flags (`live_authorization`, `is_authority`, `is_signal` false), and a recursive forbidden-key scan for order/control/runtime/provider/scanner/exchange/session/credential-like key names, while explicit false **safety** booleans are asserted separately rather than banned by name. These anchors **complement** the WebUI route **test anchors** and **do not replace** [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) **§20** producer-adapter → **pure stack** → dashboard anchors. Boundary: they prove **JSON serialization** and key-surface **invariants** only — not operational **producer** integration, market-data ingestion, WebUI **HTML** or control UI, Testnet or Live **readiness**, execution permission, or external sign-off treated as permission to trade.
+**Route-independent JSON serialization (test anchors, non-authority):** `tests&#47;trading&#47;master_v2&#47;test_double_play_dashboard_display.py` includes **test anchors** that exercise **`snapshot_to_jsonable`** on a **pure dashboard snapshot** **without** HTTP or `TestClient` — the same **JSON serialization** path the **downstream display surface** uses for JSON bodies. Scenarios include a **full-stack** snapshot, a **blocked survival** / **display-blocked** panel path, and an **empty** default snapshot. Assertions include **JSON-native** values, **`json.dumps`** compatibility, exact top-level and per-panel key surfaces aligned with the WebUI JSON route contract (including **display-layer v2** **`display_layer_version`**, **`display_snapshot_meta`**, **`ordinal`**, **`panel_group`**, **`severity_rank`**), **display-only** semantics (`display_only` true, `no_live_banner_visible` true), **non-authorizing** readiness booleans (`trading_ready`, `testnet_ready`, `live_ready`, and `live_authorization` false at the top level), panel **non-authority** / **non-signal** flags (`live_authorization`, `is_authority`, `is_signal` false), and a recursive forbidden-key scan for order/control/runtime/provider/scanner/exchange/session/credential-like key names, while explicit false **safety** booleans are asserted separately rather than banned by name. These anchors **complement** the WebUI route **test anchors** and **do not replace** [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) **§20** producer-adapter → **pure stack** → dashboard anchors. Boundary: they prove **JSON serialization** and key-surface **invariants** only — not operational **producer** integration, market-data ingestion, WebUI **HTML** or control UI, Testnet or Live **readiness**, execution permission, or external sign-off treated as permission to trade.
 
 When code exists, future tests may include:
 
@@ -181,24 +181,24 @@ When code exists, future tests may include:
 
 This docs change: run `validate_docs_token_policy`, `verify_docs_reference_targets`, and `pt_docs_gates_snapshot` as for sibling ops specs.
 
-## 21. Structured display metadata v2 planning
+## 21. Structured display metadata v2
 
-**Status:** docs-only envelope — **not** wired to code yet.
+**Status:** **Implemented** in **`src/webui/double_play_dashboard_display_json_route_v0.py`** (**`snapshot_to_jsonable`** + GET JSON route mapper). **Pure** **`DoublePlayDashboardDisplaySnapshot`** dataclasses in **`master_v2`** are unchanged.
 
-**v2** metadata is **only** an optional **presentation layer** atop the existing **`DoublePlayDashboardDisplaySnapshot` → `snapshot_to_jsonable`** serialization. It **does not** alter **`master_v2`** pure decision meanings, evaluator outcomes, composition logic, Scope/Capital runtime, Risk/KillSwitch semantics, or any trading/execution pathway.
+**v2** metadata is an optional **presentation layer** atop **`DoublePlayDashboardDisplaySnapshot` → `snapshot_to_jsonable`** serialization only. It **does not** alter **`master_v2`** pure decision meanings, evaluator outcomes, composition logic, Scope/Capital runtime, Risk/KillSwitch semantics, or any trading/execution pathway.
 
 Purpose:
 
-- Reduce **hardcoded rail mapping** in HTML by carrying **ordinal**, **grouping**, **layer version**, **assembly provenance**, and reproducible **`severity_rank`** in JSON (**still non-authoritative**).
+- Reduce **hardcoded rail mapping** in downstream consumers by carrying **ordinal**, **grouping**, **layer version**, **assembly provenance**, and reproducible **`severity_rank`** in JSON (**still non-authoritative**).
 
-### 21.A Derivation table (planned metadata)
+### 21.A Derivation table (**shipping** mapper)
 
-| Existing source field / signal | Planned metadata | Planned derivation rule | Safety note |
+| Existing source field / signal | Serialized metadata | Derivation rule | Safety note |
 |---|---|---|---|
-| Canonical panel fixture order (`futures_input` → … → `composition`) | `ordinal` | Fixed **0‑based or 1‑based** ladder published with spec | Describes **ordering in the snapshot renderer**, **not** priority to trade |
+| Canonical panel fixture order (`futures_input` → … → `composition`) | `ordinal` | **0‑based** ladder emitted in **`snapshot_to_jsonable`** | Describes **ordering in the snapshot renderer**, **not** priority to trade |
 | Panel `name` key | `panel_group` | Static map: keys → **`input`** / **`state`** / **`scope`** / **`strategy`** / **`capital`** / **`composition`** | Semantic **cluster** for dashboards only |
-| Panel `status` (**`DashboardDisplayStatus`**) | `severity_rank` | Integer ladder (ready 0 … error 40) | **Sorting / UX severity** — **repeat**: **not** operational readiness despite numeric ordering |
-| Server-side display serialization moment | `display_snapshot_meta.assembled_at_iso` | Set when JSON is built for this route/HTML bundle | Assembly clock — **not** market candle time, evidence clock, gate approval |
+| Panel `status` (**`DashboardDisplayStatus`**) | `severity_rank` | Integer ladder (ready **0**, warning **10**, missing **20**, blocked **30**, error **40**) per [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **§19** | **Sorting / UX severity** — **not** operational readiness despite numeric ordering |
+| Server-side display serialization moment | `display_snapshot_meta.assembled_at_iso` | Set when JSON dict is assembled for **`snapshot_to_jsonable`** callers | Assembly clock — **not** market candle time, evidence clock, gate approval |
 
 ### 21.B Forbidden / deferred display keys (explicit non-goals)
 
@@ -213,21 +213,21 @@ The following identifiers (and obvious casing variants repurposed as **JSON keys
 
 Operational rule: **`live_authorization` remains false** for this display path (see [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **§17 Fail-closed semantics**); dashboards **cannot** resurrect authority via cleverly named sibling flags.
 
-Cross-link canonical **planned additive key list**: [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) §19 (**Structured display contract v2 planning**).
+Cross-link canonical **additive key list**: [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) §19 (**Structured display contract v2**).
 
 ## 22. Implementation staging
 
 1. **Docs** — this display map and cross-links (current slice).
 2. **Fixture pack** (future) — static JSON under `tests/` or `docs` examples only if governed.
 3. **Adapter** (future) — maps allowed inputs to display snapshot; **no** exchange inside `master_v2`.
-4. **WebUI** (future) — new router + template; operator runbook for local only.
+4. **WebUI** — read-only **`GET`** JSON mapper implemented (**structured display metadata v2** in **`snapshot_to_jsonable`**); HTML template consumption remains future work.
 
 ## 23. References
 
 - [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) — producer boundary: snapshot data must be precomputed **before** read-only display (no fetch in route).
 - [MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md) — **parked** runtime-producer → **downstream display** **prerequisites** (**non-authorizing** **parking map**).
 - [MASTER_V2_DOUBLE_PLAY_PURE_DISPLAY_BASELINE_CLOSEOUT_INDEX_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_DISPLAY_BASELINE_CLOSEOUT_INDEX_V0.md) — **closeout index**; **reading order** for **pure display baseline** (**non-authorizing**).
-- [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) — future WebUI **GET** read-only JSON route boundary for this display DTO (docs-only; no implementation here).
+- [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) — WebUI **GET** read-only JSON route boundary for this display DTO (**§9**, **§19**).
 - [MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md) — pure stack inventory and model boundaries.
 - [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md) — Futures Input Snapshot read model.
 - [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) — futures read-only dashboard display contract (F5).

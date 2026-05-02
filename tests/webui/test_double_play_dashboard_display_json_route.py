@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import ast
+from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -17,6 +18,8 @@ ROUTE_PATH = "/api/master-v2/double-play/dashboard-display.json"
 
 _EXPECTED_TOP_LEVEL_KEYS = frozenset(
     {
+        "display_layer_version",
+        "display_snapshot_meta",
         "panels",
         "overall_status",
         "no_live_banner_visible",
@@ -29,6 +32,10 @@ _EXPECTED_TOP_LEVEL_KEYS = frozenset(
     }
 )
 
+_EXPECTED_DISPLAY_SNAPSHOT_META_KEYS = frozenset(
+    {"source_kind", "source_id", "assembled_at_iso"},
+)
+
 _EXPECTED_PANEL_KEYS = frozenset(
     {
         "name",
@@ -39,6 +46,9 @@ _EXPECTED_PANEL_KEYS = frozenset(
         "live_authorization",
         "is_authority",
         "is_signal",
+        "ordinal",
+        "panel_group",
+        "severity_rank",
     }
 )
 
@@ -127,6 +137,14 @@ def test_dashboard_display_json_top_level_key_surface_is_display_only_contract(
     r = client.get(ROUTE_PATH)
     data = r.json()
     assert set(data.keys()) == _EXPECTED_TOP_LEVEL_KEYS
+    assert data["display_layer_version"] == "v2"
+    meta = data["display_snapshot_meta"]
+    assert set(meta.keys()) == _EXPECTED_DISPLAY_SNAPSHOT_META_KEYS
+    assert meta["source_kind"] == "static_display_v0"
+    assert meta["source_id"] == "webui_dashboard_display_static_v0"
+    assembled = meta["assembled_at_iso"]
+    assert isinstance(assembled, str)
+    datetime.fromisoformat(assembled.replace("Z", "+00:00"))
     assert data["display_only"] is True
     assert data["no_live_banner_visible"] is True
     assert data["trading_ready"] is False
@@ -177,6 +195,28 @@ def test_dashboard_display_json_panel_key_surface_and_no_panel_authority_flags(
         assert panel["is_authority"] is False
         assert panel["is_signal"] is False
         assert panel["status"] == "display_ready"
+        assert isinstance(panel["ordinal"], int)
+        assert isinstance(panel["panel_group"], str)
+        assert panel["severity_rank"] == 0
+
+
+def test_dashboard_display_json_display_layer_panel_order_and_groups(client: TestClient) -> None:
+    r = client.get(ROUTE_PATH)
+    data = r.json()
+    expected = (
+        ("futures_input", "input", 0),
+        ("state_transition", "state", 1),
+        ("survival_envelope", "scope", 2),
+        ("strategy_suitability", "strategy", 3),
+        ("capital_slot_ratchet", "capital", 4),
+        ("capital_slot_release", "capital", 5),
+        ("composition", "composition", 6),
+    )
+    by_name = {p["name"]: p for p in data["panels"]}
+    for name, group, ordinal in expected:
+        p = by_name[name]
+        assert p["panel_group"] == group
+        assert p["ordinal"] == ordinal
 
 
 def test_dashboard_display_json_no_forbidden_control_keys(client: TestClient) -> None:
