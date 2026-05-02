@@ -81,6 +81,9 @@ System:
 
 Market Surface v0 (read-only):
 - GET /api/market/ohlcv (JSON — öffentliche OHLCV oder Dummy)
+
+Paper/Shadow summary read-model v0 (read-only, server-configured bundle only):
+- GET /api/observability/paper-shadow-summary
 """
 
 from __future__ import annotations
@@ -184,6 +187,7 @@ from .ops_ci_health_router import (
 
 from .execution_watch_api_v0 import router as execution_watch_v0_router
 from .execution_watch_api_v0_2 import router as execution_watch_v0_2_router
+from .paper_shadow_summary_api_v0 import router as paper_shadow_summary_api_v0_router
 from .market_surface import create_market_router
 from .double_play_dashboard_display_json_route_v0 import (
     router as double_play_dashboard_display_json_v0_router,
@@ -502,6 +506,9 @@ def create_app() -> FastAPI:
     app.include_router(execution_watch_v0_router)
     # Execution Watch Dashboard v0.2 — watch-only (read-only APIs)
     app.include_router(execution_watch_v0_2_router)
+
+    # Paper/Shadow Summary read-model v0 — read-only JSON (server-side bundle root only)
+    app.include_router(paper_shadow_summary_api_v0_router)
 
     # Market Surface v0 — read-only OHLCV (kein OPS-Cockpit-Bezug)
     app.include_router(create_market_router(templates, get_project_status))
