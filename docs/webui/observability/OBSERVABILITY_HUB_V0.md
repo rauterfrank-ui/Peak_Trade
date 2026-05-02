@@ -15,17 +15,17 @@ Es gibt **kein** eingebettetes Client-Polling auf dieser Hub-HTML, **keine** zus
 - **Kein Workflow-Trigger** von dieser Hub-Seite.
 - **Kein PaperExecutionEngine-Wiring** über diesen Hub.
 - **Knowledge API** wird bewusst **nicht** verlinkt (geschriebene/POST-relevante Flächen gehören nicht in dieses Link-Inventar).
-- **Kein Paper/Shadow-Artifact-Panel** in dieser Phase — kein zusätzlicher Readiness-/Handoff-/Evidence-Narrativ-Anker.
+- **Kein** Paper/Shadow-**Artifact-Render-Panel** (keine eingebettete JSON-/Status-Anzeige, kein serverseitiger Abruf des Summary-Endpunkts beim Laden von **`GET &#47;observability`**).
 
 ## Paper/Shadow Artifact Read-model (v0.8 — docs only)
 
-Paper/Shadow-Artefakt-Anzeige ist im Hub **bewusst nicht** umgesetzt. Ein zukünftiges Panel darf erst folgen, wenn der Vertrag [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) erfüllt ist.
+Paper/Shadow-Artefakt-**Daten** werden auf **`GET &#47;observability`** **nicht** gelesen und der Summary-Endpunkt **nicht** serverseitig aufgerufen. Ein **statisches Placeholder-Panel** verlinkt den env-gated **`GET &#47;api&#47;observability&#47;paper-shadow-summary`** und die zugehörigen **Docs-Pfade** (Runtime-Contract, Summary-Schema) — **ohne** `fetch(`, **ohne** Artefakt-Fetch, **ohne** Readiness- oder Autoritätssemantik.
 
 Operator-lokale Reviews unter **`&#47;tmp`** (z. B. PR-J Shadow+Paper Trend/Semantic Reviews) sind **keine** WebUI-Datenquellen und werden vom Hub **nicht** gelesen. Es gibt auf **`GET &#47;observability`** keine Artefakt-Fetches, kein Polling und keine Readiness-, Freigabe- oder Evidence-Semantik für Paper/Shadow.
 
-**v0.8b — Quellen-Ranking (nur Planung):** Ein Paper/Shadow-Panel bleibt **unverdrahtet**. Die priorisierte Kandidaten-Reihenfolge (Execution-Watch API zuerst, dann u. a. live.web-Snapshot, dedizierter Summary-Endpoint, Repo-Fixture, zuletzt CI-Ingestion) steht ausschließlich im Vertrag [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) unter *Source decision matrix v0.8b*. **Keine** Laufzeit-Quelle ist damit freigegeben.
+**v0.8b — Quellen-Ranking (nur Planung):** Vollständige Paper/Shadow-**Anzeige** aus einem Read-model bleibt **unverdrahtet**, bis der Vertrag [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) erfüllt ist. Die priorisierte Kandidaten-Reihenfolge (Execution-Watch API zuerst, dann u. a. live.web-Snapshot, dedizierter Summary-Endpoint, Repo-Fixture, zuletzt CI-Ingestion) steht ausschließlich dort unter *Source decision matrix v0.8b*. **Keine** zusätzliche Laufzeit-Quellen-Freigabe durch das Placeholder-Panel.
 
-Das dedizierte Summary-Schema [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) (**`paper_shadow_summary_readmodel_v0`**) hat einen **fixture-only** Builder im Repo (explizites **`bundle_root`**, Tests und **`tests&#47;fixtures&#47;...`**) und einen **serverseitig env-gated** Endpunkt **`GET &#47;api&#47;observability&#47;paper-shadow-summary`** (siehe [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md)). **`GET &#47;observability`** hat weiterhin **kein** Paper/Shadow-**Panel**, liest **keine** Artefakte und **ruft diesen API-Pfad nicht** vom Hub-Template aus auf. Die Existenz des Endpunkts begründet **keine** Readiness-, Freigabe- oder Evidence-Autorität.
+Das dedizierte Summary-Schema [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) (**`paper_shadow_summary_readmodel_v0`**) und [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md) beschreiben den env-gated Endpunkt. Die Existenz des Endpunkts und des Placeholder-Panels begründet **keine** Readiness-, Freigabe- oder Evidence-Autorität.
 
 ## Aktuelle Panels (Display-only)
 
@@ -40,6 +40,7 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 | Double Play Display | **`GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json`** (display-only Snapshot/Display-Vertrag, ohne Autorität) |
 | R&amp;D Experiments | HTML-Liste und **`GET &#47;api&#47;r_and_d&#47;experiments`** |
 | OPS CI Health | **`GET &#47;ops&#47;ci-health`** (dediziertes CI-Dashboard) und **`GET &#47;ops&#47;ci-health&#47;status`** (bevorzugter read-only Status, JSON) — Hub nur GET-Links, v0.6 |
+| Paper/Shadow Summary (Placeholder v0) | Statischer Link zu **`GET &#47;api&#47;observability&#47;paper-shadow-summary`** + Doc-Pfad-Hinweise; **kein** serverseitiger Aufruf, **kein** Artefakt-Lesen beim Rendern von **`GET &#47;observability`** |
 
 ## Visual/UX consolidation (v0.7)
 
@@ -53,7 +54,7 @@ Stabiler Anzeige-/Test-Anker (nur Darstellung):
 
 - `data-observability-panel-link-block=&quot;true&quot;`
 
-Es gibt **keine** Aenderung an Backend-Routen, Links (`href`), Autoritaetsgrenzen, `fetch(`, Formular-/POST-Semantik oder Panel-Reihenfolge.
+Es gibt **keine** Änderung an Backend-Routen (außer der bestehenden Hub-Route), **Autoritätsgrenzen**, `fetch(`, Formular-/POST-Semantik; die **Panel-Reihenfolge** ergänzt das Placeholder-Panel **nach** OPS CI Health.
 
 ## R&amp;D Experiments Panel (v0.5)
 
@@ -150,10 +151,32 @@ Stabile Marker fuer Tests/Vertrag:
 - `data-observability-ops-ci-readonly-links`
 - `data-observability-ops-ci-no-workflow-trigger`
 - `data-observability-ops-ci-no-approval`
+- `data-observability-paper-shadow-panel`, `data-observability-paper-shadow-readmodel`, `data-observability-paper-shadow-no-readiness`, `data-observability-paper-shadow-no-authority`, `data-observability-paper-shadow-placeholder`
 - `data-observability-status-summary`
 - `data-observability-panel-link-block` (v0.7 — Link-Block-Wrapper, display-only)
 
 Kein `method=&quot;POST&quot;`, kein `<form>`, kein eingebettetes `fetch(` im Hub-Template.
+
+## Paper/Shadow Summary Placeholder Panel (v0.8c — static only)
+
+Statisches Panel auf **`GET &#47;observability`**:
+
+- **`GET &#47;api&#47;observability&#47;paper-shadow-summary`** — nur als **Benutzer-Link**, kein serverseitiger Template-Aufruf.
+- Repo-Pfad-Text: **`docs/webui/observability/PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md`**, **`docs/webui/observability/PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md`** (kein erfundener Docs-HTTP-Endpunkt).
+
+Grenzen:
+
+- **`GET &#47;observability`** **ruft** den Summary-Endpunkt **nicht** auf und **liest** keine Paper/Shadow-Artefakte.
+- **Kein** **`&#47;tmp`**-Runtime-Datenpfad, **kein** GitHub-Actions-Artefakt-Fetch über diesen Hub.
+- **Keine** Readiness-, Freigabe- oder Evidence-Autorität.
+
+Stabile Marker:
+
+- `data-observability-paper-shadow-panel=&quot;true&quot;`
+- `data-observability-paper-shadow-readmodel=&quot;true&quot;`
+- `data-observability-paper-shadow-no-readiness=&quot;true&quot;`
+- `data-observability-paper-shadow-no-authority=&quot;true&quot;`
+- `data-observability-paper-shadow-placeholder=&quot;true&quot;`
 
 ## System Status Summary (v0.2)
 

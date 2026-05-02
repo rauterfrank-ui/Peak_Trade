@@ -53,6 +53,11 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert 'data-observability-health-panel="true"' in body
     assert 'data-observability-health-readonly="true"' in body
     assert 'data-observability-health-no-actions="true"' in body
+    assert 'data-observability-paper-shadow-panel="true"' in body
+    assert 'data-observability-paper-shadow-readmodel="true"' in body
+    assert 'data-observability-paper-shadow-no-readiness="true"' in body
+    assert 'data-observability-paper-shadow-no-authority="true"' in body
+    assert 'data-observability-paper-shadow-placeholder="true"' in body
 
     assert "read-only / display-only" in body
     assert "Display-only status snapshot" in body
@@ -114,15 +119,27 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert "CI status display is not Live/Testnet/order readiness." in body
     assert "CI status display is not trading authority." in body
 
+    assert "env-gated" in body
+    assert "does not call that endpoint server-side." in body
+    assert "does not read Paper/Shadow artifacts." in body
+    assert "/api/observability/paper-shadow-summary" in body
+    assert "PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md" in body
+    assert "PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md" in body
+    assert "This placeholder is not readiness approval." in body
+    assert "Not Paper/Testnet/Live/order readiness." in body
+    assert "Not trading, execution, or strategy authority." in body
+    assert "no GitHub Actions artifact fetch" in body
+
     assert 'method="POST"' not in body
     assert "<form" not in body.lower()
     assert 'type="submit"' not in body
+    assert "<button" not in body.lower()
     assert "fetch(" not in body
     assert "/api/knowledge" not in body
 
     assert "data-observability-health-project-snapshot=" in body
 
-    assert body.count('data-observability-panel-link-block="true"') == 5
+    assert body.count('data-observability-panel-link-block="true"') == 6
     assert "GET-Ziele" in body
 
 
@@ -167,6 +184,11 @@ def test_observability_hub_template_health_panel_markers_and_no_post() -> None:
     assert 'data-observability-ops-ci-no-workflow-trigger="true"' in txt
     assert 'data-observability-ops-ci-no-approval="true"' in txt
     assert 'data-observability-display-only="true"' in txt
+    assert 'data-observability-paper-shadow-panel="true"' in txt
+    assert 'data-observability-paper-shadow-readmodel="true"' in txt
+    assert 'data-observability-paper-shadow-no-readiness="true"' in txt
+    assert 'data-observability-paper-shadow-no-authority="true"' in txt
+    assert 'data-observability-paper-shadow-placeholder="true"' in txt
     assert "read-only / display-only" in txt
     assert "Display-only status snapshot" in txt
     assert "No backend health certification" in txt
@@ -203,11 +225,19 @@ def test_observability_hub_template_health_panel_markers_and_no_post() -> None:
     assert "The Observability Hub only links to OPS CI GET surfaces." in txt
     assert "The Hub does not start GitHub Actions." in txt
     assert "CI status display is not deployment approval." in txt
-    assert txt.count('data-observability-panel-link-block="true"') == 5
+    assert "env-gated" in txt
+    assert "does not call that endpoint server-side." in txt
+    assert "does not read Paper/Shadow artifacts." in txt
+    assert "/api/observability/paper-shadow-summary" in txt
+    assert "PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md" in txt
+    assert "PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md" in txt
+    assert "This placeholder is not readiness approval." in txt
+    assert txt.count('data-observability-panel-link-block="true"') == 6
     assert "GET-Ziele" in txt
     assert 'method="POST"' not in txt
     assert "<form" not in txt.lower()
     assert 'type="submit"' not in txt
+    assert "<button" not in txt.lower()
     assert "fetch(" not in txt
 
 
@@ -226,3 +256,5 @@ def test_observability_hub_doc_exists_and_tokens() -> None:
     assert "GET &#47;observability" in t
     assert "data-observability-" in t
     assert "Paper/Shadow" in t.lower() or "Paper" in t
+    assert "data-observability-paper-shadow-placeholder" in t
+    assert "paper-shadow-summary" in t

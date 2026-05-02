@@ -348,6 +348,57 @@
     </div>
   </section>
 
+  <section
+    class="rounded-xl border border-rose-900/35 bg-rose-950/10 px-5 py-4 space-y-4"
+    aria-label="Paper Shadow summary API — placeholder links only"
+    data-observability-paper-shadow-panel="true"
+    data-observability-paper-shadow-readmodel="true"
+    data-observability-paper-shadow-no-readiness="true"
+    data-observability-paper-shadow-no-authority="true"
+    data-observability-paper-shadow-placeholder="true"
+  >
+    <div class="space-y-1.5">
+      <h2 class="text-sm font-semibold text-rose-200/95 tracking-wide uppercase text-[11px]">
+        Paper/Shadow Summary API — Placeholder
+      </h2>
+      <p class="text-xs text-rose-100/85 leading-relaxed">
+        A read-only Paper/Shadow summary <span class="font-mono">GET</span> exists and is <strong>env-gated</strong>
+        on the server. This panel is static navigation only.
+      </p>
+    </div>
+    <ul class="list-disc pl-5 space-y-1.5 text-xs text-rose-100/90 leading-relaxed">
+      <li><span class="font-mono">GET /observability</span> does not call that endpoint server-side.</li>
+      <li>The Observability Hub does not read Paper/Shadow artifacts.</li>
+      <li>No <span class="font-mono">/tmp</span> runtime source and no GitHub Actions artifact fetch from this page.</li>
+      <li>This placeholder is not readiness approval.</li>
+      <li>Not Paper/Testnet/Live/order readiness.</li>
+      <li>Not trading, execution, or strategy authority.</li>
+    </ul>
+    <div
+      class="rounded-lg border border-slate-800/50 bg-slate-950/30 px-3 py-3 space-y-2"
+      data-observability-panel-link-block="true"
+    >
+      <h3 class="text-xs font-medium text-slate-400 uppercase tracking-wide text-[11px]">
+        GET-Ziele und Doc-Pfade
+      </h3>
+      <ul class="space-y-2 text-sm">
+        <li>
+          <a
+            class="text-sky-400 underline hover:text-sky-300 font-mono text-xs break-all"
+            href="/api/observability/paper-shadow-summary"
+          >GET /api/observability/paper-shadow-summary</a>
+          <span class="text-slate-500 text-xs"> — JSON (env-gated; may return 503)</span>
+        </li>
+        <li>
+          <span class="text-slate-300 font-mono text-xs">docs/webui/observability/PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md</span>
+        </li>
+        <li>
+          <span class="text-slate-300 font-mono text-xs">docs/webui/observability/PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
   <section class="rounded-xl border border-slate-800 bg-slate-900/40 px-5 py-4 text-xs text-slate-500" aria-label="Hinweise">
     <p class="leading-relaxed">
       Knowledge API und andere geschriebene Oberflächen sind absichtlich nicht verlinkt
