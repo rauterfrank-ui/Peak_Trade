@@ -66,6 +66,11 @@ class TestMarketSurfaceHtml:
         body = resp.text
         assert 'data-section="market-v0"' in body
         assert 'data-market-surface-v0="true"' in body
+        assert 'data-market-v1-dashboard-shell="true"' in body
+        assert 'data-market-v1-context="true"' in body
+        assert 'data-market-v1-readonly-banner="true"' in body
+        assert body.count('data-market-v1-stat-card="true"') >= 6
+        assert 'data-market-v1-api-reference="true"' in body
         assert 'data-market-readonly="true"' in body
         assert 'data-market-non-authorizing="true"' in body
         assert 'data-market-source-kind="dummy-offline-synthetic"' in body
@@ -75,12 +80,24 @@ class TestMarketSurfaceHtml:
         assert 'data-chart="market-v0-close-line"' in body
         assert 'id="market-v0-payload"' in body
         assert "read-only · non-authorizing" in body
+        assert "Read-only market display" in body
+        assert "No orders" in body
+        assert "No strategy authority" in body
+        assert "No Live/Testnet action" in body
+        assert "No Risk/KillSwitch override" in body
+        assert "/api/market/ohlcv" in body
         assert "Keine Orders" in body or "keine Orders" in body
         assert "Testnet" in body
         assert "Live" in body
         assert "Capital" in body or "Scope" in body
         assert "KillSwitch" in body or "Risk" in body
         assert "chart.js@4.4.1" in body.lower() or "chart.umd.min.js" in body
+        lower = body.lower()
+        assert "<form" not in lower
+        assert 'method="post"' not in lower
+        assert "<button" not in lower
+        assert 'type="submit"' not in lower
+        assert "fetch(" not in body
         assert 'method="POST"' not in body
         assert 'id="market-v0-chart-status"' in body
         assert 'data-market-chart-status="ready"' in body
@@ -105,6 +122,12 @@ def test_market_v0_template_kraken_banner_markers_in_source() -> None:
     )
     txt = tmpl_path.read_text(encoding="utf-8")
     assert 'data-market-source-kind="kraken-public-ohlcv-network"' in txt
+    assert 'data-market-v1-dashboard-shell="true"' in txt
+    assert 'data-market-v1-readonly-banner="true"' in txt
+    assert 'data-market-v1-context="true"' in txt
+    assert 'data-market-v1-api-reference="true"' in txt
+    assert txt.count('data-market-v1-stat-card="true"') >= 6
+    assert "Read-only market display" in txt
     assert "Futures" in txt
     assert "read-only · non-authorizing" in txt
     assert 'id="market-v0-chart-status"' in txt
