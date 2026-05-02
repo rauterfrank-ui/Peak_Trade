@@ -1,13 +1,15 @@
-<!-- Double-Play Market Dashboard v1 — SSR OHLCV + Chart.js + Double-Play display snapshot -->
+<!-- Double-Play Market Dashboard — SSR cockpit layout v1.1 (charts + DP rail); same payloads as v1 SSR -->
 {% extends "base.html" %}
 
 {% block content %}
 <div
-  class="space-y-6 max-w-6xl mx-auto px-4 py-8"
+  class="space-y-5 max-w-7xl mx-auto px-4 py-6 pb-12"
   data-double-play-market-dashboard-v0="true"
   data-double-play-market-composition-ssr-v1="true"
   data-double-play-market-ssr-only="true"
+  data-double-play-market-cockpit-layout-v1-1="true"
   data-double-play-market-readonly="true"
+  data-double-play-market-no-fetch="true"
   data-double-play-market-no-live="true"
   data-double-play-market-no-orders="true"
   data-double-play-market-no-authority="true"
@@ -16,477 +18,448 @@
   data-double-play-market-bars="{{ payload.bars_returned }}"
   data-double-play-market-symbol="{{ query.symbol }}"
 >
-  <header class="rounded-2xl border border-slate-800 bg-gradient-to-r from-slate-900/90 to-slate-900/40 p-6">
-    <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">PeakTrade Dashboard</p>
-    <h1 class="text-2xl font-bold text-slate-100">Double-Play Market Dashboard v1 (SSR)</h1>
-    <p class="text-sm text-slate-400 mt-2 max-w-3xl">
-      Read-only composition: eingebetteter Market-Close-Line-Chart (gleiche SSR-Payload wie
-      <span class="font-mono text-sky-400/95">GET /market</span>) und Double-Play-Display-Snapshot aus derselben
-      Pure-Stack-Kette wie
-      <span class="font-mono text-sky-400/95">dashboard-display.json</span> · ein Server-Render · kein automatisches Nachladen.
-    </p>
-    <div class="mt-4 flex flex-wrap gap-2">
-      <a href="/" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">Dashboard</a>
-      <a href="/market?source={{ query.source }}&amp;symbol={{ query.symbol | replace('/', '%2F') }}&amp;timeframe={{ query.timeframe }}&amp;limit={{ query.limit }}" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono">Market (gleiche Query)</a>
-      <a href="/observability" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">Observability</a>
-    </div>
-  </header>
-
-  <section
-    aria-label="Safety boundaries"
-    class="rounded-xl border border-amber-900/50 bg-amber-950/20 px-4 py-3 text-xs text-amber-100/95"
-    data-double-play-market-safety="true"
-  >
-    <p class="font-semibold text-amber-200 uppercase tracking-wide text-[11px] mb-2">Read-only / non-authority</p>
-    <ul class="m-0 pl-5 space-y-1 list-disc marker:text-amber-500">
-      <li>No orders</li>
-      <li>No Live/Testnet action</li>
-      <li>No strategy authority</li>
-      <li>No side-switch authority</li>
-      <li>No Scope/Capital approval</li>
-      <li>No Risk/KillSwitch override</li>
-      <li>SSR snapshot only — keine client-fetch-Polling-Schleifen durch diese Seite</li>
-    </ul>
-    <p class="mt-3 text-[11px] text-amber-200/85 leading-relaxed m-0">
-      Double-Play-Felder sind <strong class="font-medium">display-only</strong>; keine Schlussfolgerung auf Operational-Readiness
-      oder Handelsfreigabe.
-    </p>
-  </section>
-
-  {# --- Market Surface block (adapted from market_v0.html; distinct element IDs for this page) --- #}
-<div
-  class="space-y-6"
-  data-section="double-play-market-embedded-market"
-  data-market-surface-v0="true"
-  data-market-readonly="true"
-  data-market-non-authorizing="true"
->
-  <section
-    aria-label="Read-only market constraints"
-    class="rounded-xl border border-slate-700/60 bg-slate-900/50 px-4 py-3 text-xs text-slate-300"
-    data-market-v1-readonly-banner="true"
-  >
-    <ul class="m-0 p-0 list-none grid gap-x-4 gap-y-1 sm:grid-cols-2 lg:grid-cols-5">
-      <li>Read-only market display</li>
-      <li>No orders</li>
-      <li>No strategy authority</li>
-      <li>No Live/Testnet action</li>
-      <li>No Risk/KillSwitch override</li>
-    </ul>
-  </section>
-
-  <section
-    aria-label="Read-only und Datenquelle"
-    class="rounded-xl border border-amber-900/40 bg-amber-950/25 px-4 py-3 text-xs text-amber-100/95"
-    data-market-safety-banner="true"
+  {# --- Compact cockpit header --- #}
+  <header
+    class="rounded-2xl border border-slate-800/95 bg-gradient-to-br from-slate-950 via-slate-900/95 to-slate-950 px-5 py-4 shadow-xl shadow-black/30 ring-1 ring-slate-800/90"
+    data-double-play-market-cockpit-header="true"
     {% if query.source == 'dummy' %}
     data-market-source-kind="dummy-offline-synthetic"
     {% elif query.source == 'kraken' %}
     data-market-source-kind="kraken-public-ohlcv-network"
     {% endif %}
   >
-    <p class="font-semibold text-amber-200/95 tracking-wide uppercase text-[11px] mb-1.5">
-      Market Surface (embedded) · read-only · non-authorizing
-    </p>
-    {% if query.source == 'dummy' %}
-    <p class="leading-relaxed text-amber-100/90">
-      <span class="text-sky-200/95 font-medium">Dummy / Offline / synthetisch</span>
-      — keine Orders, kein Testnet, kein Live, keine Paper-Aktivierung.
-      Keine Capital-/Scope-Freigabe, kein Risk-/KillSwitch-Bypass, keine Ausführungsautorität.
-    </p>
-    {% elif query.source == 'kraken' %}
-    <p class="leading-relaxed text-amber-100/90">
-      <span class="text-sky-200/95 font-medium">Öffentliche OHLCV über Netzwerk (Kraken)</span>
-      — rein anzeigend (read-only), non-authorizing, <strong class="font-medium text-amber-200">kein Nachweis von Futures‑Readiness</strong>.
-      Keine Orders, kein Testnet, kein Live.
-    </p>
-    {% endif %}
-  </section>
-
-  <section
-    aria-label="Market query context"
-    class="bg-slate-900/70 rounded-xl border border-slate-800 p-4"
-    data-market-v1-context="true"
-    data-double-play-market-market-link="true"
-  >
-    <h2 class="text-sm font-medium text-slate-200 mb-3">PeakTrade Market · Kontext</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
-      <div class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2" data-market-v1-stat-card="true">
-        <span class="text-slate-500 block mb-1">Source</span>
-        <span class="font-mono text-sky-300/95">{{ query.source }}</span>
+    <div class="flex flex-wrap items-start justify-between gap-3">
+      <div class="min-w-0">
+        <p class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">PeakTrade · Cockpit</p>
+        <h1 class="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">
+          Double-Play Market Dashboard v1
+        </h1>
+        <p class="text-xs text-slate-500 mt-1 m-0">
+          Read-only · non-authority · Chart-first
+        </p>
       </div>
-      <div class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2" data-market-v1-stat-card="true">
-        <span class="text-slate-500 block mb-1">Symbol</span>
-        <span class="font-mono text-slate-200">{{ query.symbol }}</span>
-      </div>
-      <div class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2" data-market-v1-stat-card="true">
-        <span class="text-slate-500 block mb-1">Timeframe</span>
-        <span class="font-mono text-slate-200">{{ query.timeframe }}</span>
-      </div>
-      <div class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2" data-market-v1-stat-card="true">
-        <span class="text-slate-500 block mb-1">Limit</span>
-        <span class="font-mono text-slate-200">{{ query.limit }}</span>
-      </div>
-      <div class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2" data-market-v1-stat-card="true">
-        <span class="text-slate-500 block mb-1">Bars returned</span>
-        <span class="font-mono text-slate-200">{{ payload.bars_returned }}</span>
-      </div>
-      <div class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2" data-market-v1-stat-card="true">
-        <span class="text-slate-500 block mb-1">Chart hint (SSR)</span>
-        <span class="font-mono {% if payload.bars_returned == 0 %}text-amber-300/95{% else %}text-emerald-300/95{% endif %}">
-          {% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}
+      <div class="flex flex-wrap items-center gap-2">
+        <span
+          class="inline-flex items-center gap-1.5 rounded-lg border border-amber-800/60 bg-amber-950/40 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-amber-200/95"
+          title="Keine Ausführung, kein Live/Testnet aus dieser Oberfläche"
+        >
+          <span aria-hidden="true">🔒</span> Read-only
         </span>
+        <div class="flex flex-wrap gap-1.5 text-[11px]">
+          <a href="/" class="rounded-md border border-slate-700/80 bg-slate-900/80 px-2 py-1 text-slate-300 hover:bg-slate-800">Dashboard</a>
+          <a href="/market?source={{ query.source }}&amp;symbol={{ query.symbol | replace('/', '%2F') }}&amp;timeframe={{ query.timeframe }}&amp;limit={{ query.limit }}" class="rounded-md border border-slate-700/80 bg-slate-900/80 px-2 py-1 font-mono text-sky-300/90 hover:bg-slate-800">Market</a>
+          <a href="/observability" class="rounded-md border border-slate-700/80 bg-slate-900/80 px-2 py-1 text-slate-300 hover:bg-slate-800">Observability</a>
+        </div>
       </div>
     </div>
-    <p class="mt-3 text-[11px] text-slate-500 leading-relaxed">
-      Canonical Market Surface ohne Double-Play: <a href="/market?source={{ query.source }}&amp;symbol={{ query.symbol | replace('/', '%2F') }}&amp;timeframe={{ query.timeframe }}&amp;limit={{ query.limit }}" class="text-sky-400 underline underline-offset-2">GET /market</a>
-      · Legacy-Link (BTC/EUR fixed): <a href="{{ legacy_demo_href }}" class="text-sky-400/90 underline underline-offset-2 font-mono">demo</a>
-    </p>
-  </section>
+    <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2 border-t border-slate-800/80 pt-3 text-xs">
+      <div class="font-mono text-slate-100">
+        <span class="text-slate-500 font-sans text-[10px] uppercase tracking-wide mr-1">Instrument</span>{{ query.symbol }}
+      </div>
+      <div class="font-mono text-sky-300/90">
+        <span class="text-slate-500 font-sans text-[10px] uppercase tracking-wide mr-1">Source</span>{{ query.source }}
+      </div>
+      <div class="font-mono text-slate-200">
+        <span class="text-slate-500 font-sans text-[10px] uppercase tracking-wide mr-1">TF</span>{{ query.timeframe }}
+      </div>
+      <div class="font-mono text-slate-200">
+        <span class="text-slate-500 font-sans text-[10px] uppercase tracking-wide mr-1">Limit</span>{{ query.limit }}
+      </div>
+      <div class="font-mono text-slate-200">
+        <span class="text-slate-500 font-sans text-[10px] uppercase tracking-wide mr-1">Bars</span>{{ payload.bars_returned }}
+      </div>
+      <div class="text-[11px] text-slate-400 min-w-0">
+        <span class="text-slate-500">Snapshot bei Seitenladen</span>
+        <span class="font-mono text-slate-300 ml-1">{{ payload.generated_at_utc }}</span>
+      </div>
+    </div>
+  </header>
 
+  {# --- Safety: compact chips + optional detail --- #}
   <section
-    aria-label="OHLCV API reference"
-    class="rounded-lg border border-dashed border-slate-700/70 bg-slate-950/40 px-4 py-3 text-xs text-slate-400"
-    data-market-v1-api-reference="true"
+    aria-label="Safety boundaries"
+    class="rounded-xl border border-amber-900/45 bg-amber-950/15 px-3 py-2.5"
+    data-double-play-market-safety="true"
+    data-double-play-market-cockpit-safety-chips="true"
   >
-    <p class="font-medium text-slate-300 mb-1">Read-only JSON (gleiche Query wie eingebetteter Block)</p>
-    <p class="font-mono leading-relaxed break-all">
-      <a
-        href="/api/market/ohlcv?source={{ query.source }}&amp;symbol={{ query.symbol | replace('/', '%2F') }}&amp;timeframe={{ query.timeframe }}&amp;limit={{ query.limit }}"
-        class="text-sky-400 hover:text-sky-300 underline underline-offset-2"
-      >/api/market/ohlcv</a>
-      <span class="text-slate-600 mx-1">·</span>
-      <a href="{{ legacy_api_href }}" class="text-slate-500 underline underline-offset-2">Legacy JSON</a>
-    </p>
+    <div class="flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-wide text-amber-100/95">
+      <span class="rounded-md border border-amber-800/55 bg-amber-950/50 px-2 py-0.5">No orders</span>
+      <span class="rounded-md border border-amber-800/55 bg-amber-950/50 px-2 py-0.5">No live</span>
+      <span class="rounded-md border border-amber-800/55 bg-amber-950/50 px-2 py-0.5">No strategy authority</span>
+      <span class="rounded-md border border-amber-800/55 bg-amber-950/50 px-2 py-0.5">No side-switch authority</span>
+      <span class="rounded-md border border-amber-800/55 bg-amber-950/50 px-2 py-0.5">No Scope/Capital approval</span>
+      <span class="rounded-md border border-amber-800/55 bg-amber-950/50 px-2 py-0.5">No Risk/KillSwitch override</span>
+    </div>
+    <details class="mt-2 text-xs text-amber-100/85">
+      <summary class="cursor-pointer text-amber-200/95 font-medium outline-none hover:text-amber-100">Weitere Hinweise zur Read-only‑Oberfläche</summary>
+      <ul class="m-2 pl-5 space-y-1 list-disc marker:text-amber-600 text-[11px] leading-relaxed text-amber-100/80">
+        <li>No Live/Testnet action — keine Aktivierung von Testbetrieb oder Live aus dieser Ansicht.</li>
+        <li>SSR‑Snapshot ohne client-fetch‑Polling-Schleifen; keine neue Autorität.</li>
+        <li>Double‑Play‑Felder sind display‑only; keine Schlussfolgerung auf Operational‑Readiness oder Handelsfreigabe.</li>
+      </ul>
+    </details>
   </section>
 
-  <section
-    aria-label="Close-Preis"
-    class="bg-slate-900/60 rounded-xl border border-slate-800 ring-1 ring-slate-700/50 shadow-lg shadow-black/20 p-4 min-h-[28rem]"
-    data-chart="double-play-market-close-line"
-    data-market-v11-chart-diagnostics="true"
-    data-double-play-market-chart-block="true"
+  {# --- Main cockpit grid: chart (dominant) + DP rail --- #}
+  <div
+    class="flex flex-col gap-6 xl:grid xl:grid-cols-[minmax(0,1fr)_min(20.5rem,100%)] xl:items-start xl:gap-6"
+    data-double-play-market-cockpit-grid="true"
   >
-    <h2 class="text-sm font-medium text-slate-200 mb-3">Schlusskurs (Close)</h2>
-
-    <div class="mb-4 rounded-lg border border-slate-700/90 bg-slate-950/70 p-4 text-xs text-slate-300 space-y-2" data-market-v11-diagnostics-inner="true">
-      <h3 class="text-sm font-semibold text-slate-100 tracking-tight">Chart diagnostics</h3>
-      <p class="text-[11px] text-slate-400 leading-relaxed m-0">
-        Chart.js per CDN wie auf <span class="font-mono text-sky-400/90">GET /market</span>.
-      </p>
-      <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-[11px] mt-3">
-        <div>
-          <dt class="text-slate-500 uppercase tracking-wide text-[10px] mb-1" data-market-v11-chart-library-status="true">Chart.js status</dt>
-          <dd id="dp-market-v11-chartjs-state" class="text-sky-300/95 m-0">SSR only — verified in browser</dd>
-        </div>
-        <div>
-          <dt class="text-slate-500 uppercase tracking-wide text-[10px] mb-1" data-market-v11-payload-bars="true">Embedded bars</dt>
-          <dd id="dp-market-v11-embedded-bar-count" class="text-slate-200 m-0">{{ payload.bars_returned }}</dd>
-        </div>
-        <div>
-          <dt class="text-slate-500 uppercase tracking-wide text-[10px] mb-1">Chart render status</dt>
-          <dd id="dp-market-v11-client-render-flag" class="text-slate-200 m-0">
-            SSR: {% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}
-          </dd>
-        </div>
-      </dl>
-    </div>
-
+    {# --- Chart column --- #}
     <div
-      id="dp-market-v11-render-fallback"
-      data-market-v11-render-fallback="true"
-      data-market-v11-fallback-mode="{% if payload.bars_returned == 0 %}empty-ssr{% else %}client-alert{% endif %}"
-      role="alert"
-      class="mb-4 rounded-xl border-2 px-4 py-4 {% if payload.bars_returned == 0 %}block border-amber-500/80 bg-amber-950/50 text-amber-50{% else %}hidden border-rose-600/85 bg-rose-950/40 text-rose-50{% endif %}"
-      {% if payload.bars_returned != 0 %}aria-hidden="true"{% endif %}
+      class="min-w-0 flex flex-col gap-4"
+      data-double-play-market-cockpit-chart-column="true"
+      data-section="double-play-market-embedded-market"
+      data-market-surface-v0="true"
+      data-market-readonly="true"
+      data-market-non-authorizing="true"
     >
-      {% if payload.bars_returned == 0 %}
-      <p class="m-0 text-sm font-semibold leading-snug">
-        Embedded bars: keine OHLCV-Serie eingebettet — Chart bleibt leer bis Daten vorliegen.
-      </p>
-      {% endif %}
-      <p id="dp-market-v11-render-fallback-msg" class="{% if payload.bars_returned == 0 %}hidden m-0{% else %}hidden m-0 text-sm font-semibold{% endif %}"></p>
-    </div>
+      <div class="rounded-lg border border-slate-800/80 bg-slate-950/50 px-3 py-2 text-[11px] text-slate-400">
+        {% if query.source == 'dummy' %}
+        <span class="text-sky-300/90 font-medium">Dummy / offline</span> — synthetische OHLCV, keine Netzwerk‑Orders.
+        {% elif query.source == 'kraken' %}
+        <span class="text-sky-300/90 font-medium">Öffentliche OHLCV (Kraken)</span> — read-only; kein Futures‑Readiness‑Nachweis.
+        {% endif %}
+      </div>
 
-    <div
-      id="dp-market-v0-chart-status"
-      role="status"
-      class="text-xs text-slate-300 mb-2 min-h-[1.5rem] font-medium"
-      data-market-chart-status="{% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}"
-      {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
-    >
-      {% if payload.bars_returned == 0 %}
-      Keine OHLCV-Bars für diese Abfrage verfügbar.
-      {% else %}
-      Chart bereit — read-only OHLCV-Anzeige.
-      {% endif %}
-    </div>
-    <div class="relative min-h-[20rem] h-96 w-full rounded-lg border border-slate-700/70 bg-slate-950/30">
-      <canvas id="chart-dp-market-v0-close" class="block w-full h-full"></canvas>
-    </div>
-  </section>
+      <section
+        aria-label="Close-Preis"
+        class="flex flex-col flex-1 rounded-xl border border-slate-800 bg-slate-950/55 ring-1 ring-slate-800/70 shadow-lg shadow-black/25 overflow-hidden min-h-[22rem]"
+        data-chart="double-play-market-close-line"
+        data-double-play-market-chart-block="true"
+      >
+        <div class="flex items-center justify-between gap-2 border-b border-slate-800/90 px-4 py-2.5 bg-slate-950/80">
+          <h2 class="text-sm font-semibold text-slate-100 m-0">Close — read-only</h2>
+          <span class="text-[10px] font-mono text-slate-500">{{ query.symbol }}</span>
+        </div>
 
-  <script type="application/json" id="dp-market-ssr-payload">{{ payload | tojson }}</script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script>
-    (function () {
-      function setDiagRender(kind) {
-        var r = document.getElementById("dp-market-v11-client-render-flag");
-        if (r) {
-          r.textContent = kind;
-        }
-      }
+        <div class="relative flex-1 min-h-[20rem] sm:min-h-[24rem] p-3">
+          <div
+            id="dp-market-v0-chart-status"
+            role="status"
+            class="text-[11px] text-slate-400 mb-2 min-h-[1.25rem] font-medium px-1"
+            data-market-chart-status="{% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}"
+            {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
+          >
+            {% if payload.bars_returned == 0 %}
+            Keine OHLCV-Bars für diese Abfrage verfügbar.
+            {% else %}
+            Chart bereit — read-only OHLCV-Anzeige.
+            {% endif %}
+          </div>
+          <div class="relative h-[calc(100%-2rem)] min-h-[17rem] w-full rounded-lg border border-slate-800 bg-slate-950/70">
+            <canvas id="chart-dp-market-v0-close" class="block w-full h-full"></canvas>
+          </div>
+        </div>
 
-      function syncChartJsLine() {
-        var n = document.getElementById("dp-market-v11-chartjs-state");
-        if (!n) return;
-        n.textContent = typeof window.Chart !== "undefined"
-          ? "library available (client)"
-          : "Chart library missing or blocked";
-      }
+        <div
+          class="border-t border-slate-800/90 bg-slate-950/60 px-4 py-3 space-y-2"
+          data-double-play-market-cockpit-diagnostics-secondary="true"
+          data-market-v11-chart-diagnostics="true"
+        >
+          <p class="text-[10px] font-semibold uppercase tracking-wide text-slate-500 m-0">Diagnostics</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px] font-mono text-slate-300" data-market-v11-diagnostics-inner="true">
+            <div data-market-v11-chart-library-status="true">
+              <span class="text-slate-500 block text-[9px] uppercase tracking-wide mb-0.5">Chart.js</span>
+              <span id="dp-market-v11-chartjs-state" class="text-sky-400/95">SSR only — verified in browser</span>
+            </div>
+            <div data-market-v11-payload-bars="true">
+              <span class="text-slate-500 block text-[9px] uppercase tracking-wide mb-0.5">Bars</span>
+              <span id="dp-market-v11-embedded-bar-count">{{ payload.bars_returned }}</span>
+            </div>
+            <div>
+              <span class="text-slate-500 block text-[9px] uppercase tracking-wide mb-0.5">Render</span>
+              <span id="dp-market-v11-client-render-flag">SSR: {% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}</span>
+            </div>
+          </div>
+          <div
+            id="dp-market-v11-render-fallback"
+            data-market-v11-render-fallback="true"
+            data-market-v11-fallback-mode="{% if payload.bars_returned == 0 %}empty-ssr{% else %}client-alert{% endif %}"
+            role="alert"
+            class="rounded-lg border-2 px-3 py-2 text-xs {% if payload.bars_returned == 0 %}block border-amber-600/75 bg-amber-950/40 text-amber-50{% else %}hidden border-rose-600/75 bg-rose-950/35 text-rose-50{% endif %}"
+            {% if payload.bars_returned != 0 %}aria-hidden="true"{% endif %}
+          >
+            {% if payload.bars_returned == 0 %}
+            <p class="m-0 font-medium">Embedded bars: keine OHLCV-Serie eingebettet.</p>
+            {% endif %}
+            <p id="dp-market-v11-render-fallback-msg" class="{% if payload.bars_returned == 0 %}hidden m-0{% else %}hidden m-0 font-semibold{% endif %}"></p>
+          </div>
+          <div
+            class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-slate-500"
+            data-market-v1-api-reference="true"
+            data-double-play-market-market-link="true"
+          >
+            <a
+              href="/market?source={{ query.source }}&amp;symbol={{ query.symbol | replace('/', '%2F') }}&amp;timeframe={{ query.timeframe }}&amp;limit={{ query.limit }}"
+              class="text-sky-400 hover:text-sky-300 underline underline-offset-2 font-mono"
+            >Market HTML</a>
+            <span class="text-slate-600">·</span>
+            <a
+              href="/api/market/ohlcv?source={{ query.source }}&amp;symbol={{ query.symbol | replace('/', '%2F') }}&amp;timeframe={{ query.timeframe }}&amp;limit={{ query.limit }}"
+              class="text-sky-400 hover:text-sky-300 underline underline-offset-2 font-mono"
+            >OHLCV JSON</a>
+            <span class="text-slate-600">·</span>
+            <span class="font-mono text-slate-600">legacy: {{ legacy_demo_href }}</span>
+          </div>
+        </div>
+      </section>
 
-      function syncEmbeddedBarsCount(len) {
-        var n = document.getElementById("dp-market-v11-embedded-bar-count");
-        if (n) {
-          n.textContent = String(len);
-        }
-      }
+      <script type="application/json" id="dp-market-ssr-payload">{{ payload | tojson }}</script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+      <script>
+        (function () {
+          function setDiagRender(kind) {
+            var r = document.getElementById("dp-market-v11-client-render-flag");
+            if (r) {
+              r.textContent = kind;
+            }
+          }
 
-      function showClientFallback(copy) {
-        var wrap = document.getElementById("dp-market-v11-render-fallback");
-        var msg = document.getElementById("dp-market-v11-render-fallback-msg");
-        if (!wrap || !msg || wrap.getAttribute("data-market-v11-fallback-mode") !== "client-alert") {
-          return;
-        }
-        wrap.classList.remove("hidden");
-        wrap.removeAttribute("aria-hidden");
-        msg.classList.remove("hidden");
-        msg.textContent = copy;
-      }
+          function syncChartJsLine() {
+            var n = document.getElementById("dp-market-v11-chartjs-state");
+            if (!n) return;
+            n.textContent = typeof window.Chart !== "undefined"
+              ? "library available (client)"
+              : "Chart library missing or blocked";
+          }
 
-      function hideClientFallbackOnly() {
-        var wrap = document.getElementById("dp-market-v11-render-fallback");
-        var msg = document.getElementById("dp-market-v11-render-fallback-msg");
-        if (!wrap || !msg || wrap.getAttribute("data-market-v11-fallback-mode") !== "client-alert") {
-          return;
-        }
-        wrap.classList.add("hidden");
-        wrap.setAttribute("aria-hidden", "true");
-        msg.classList.add("hidden");
-        msg.textContent = "";
-      }
+          function syncEmbeddedBarsCount(len) {
+            var n = document.getElementById("dp-market-v11-embedded-bar-count");
+            if (n) {
+              n.textContent = String(len);
+            }
+          }
 
-      function setMarketChartStatus(kind) {
-        var node = document.getElementById("dp-market-v0-chart-status");
-        if (!node) return;
-        var copy = {
-          ready: "Chart bereit — read-only OHLCV-Anzeige.",
-          empty: "Keine OHLCV-Bars für diese Abfrage verfügbar.",
-          error:
-            "Chart-Daten konnten nicht gerendert werden; keine Trading-Aktion verfügbar.",
-        };
-        node.setAttribute("data-market-chart-status", kind);
-        node.removeAttribute("data-market-empty-state");
-        node.removeAttribute("data-market-error-state");
-        node.classList.remove("text-red-300", "ring-2", "ring-red-900/70", "rounded-lg", "px-2", "py-1");
-        if (kind === "empty") {
-          node.setAttribute("data-market-empty-state", "true");
-        }
-        if (kind === "error") {
-          node.setAttribute("data-market-error-state", "true");
-          node.classList.add("text-red-300", "ring-2", "ring-red-900/70", "rounded-lg", "px-2", "py-1");
-        }
-        node.textContent = copy[kind] || "";
-        setDiagRender(kind);
-      }
+          function showClientFallback(copy) {
+            var wrap = document.getElementById("dp-market-v11-render-fallback");
+            var msg = document.getElementById("dp-market-v11-render-fallback-msg");
+            if (!wrap || !msg || wrap.getAttribute("data-market-v11-fallback-mode") !== "client-alert") {
+              return;
+            }
+            wrap.classList.remove("hidden");
+            wrap.removeAttribute("aria-hidden");
+            msg.classList.remove("hidden");
+            msg.textContent = copy;
+          }
 
-      syncChartJsLine();
+          function hideClientFallbackOnly() {
+            var wrap = document.getElementById("dp-market-v11-render-fallback");
+            var msg = document.getElementById("dp-market-v11-render-fallback-msg");
+            if (!wrap || !msg || wrap.getAttribute("data-market-v11-fallback-mode") !== "client-alert") {
+              return;
+            }
+            wrap.classList.add("hidden");
+            wrap.setAttribute("aria-hidden", "true");
+            msg.classList.add("hidden");
+            msg.textContent = "";
+          }
 
-      var el = document.getElementById("dp-market-ssr-payload");
-      if (!el) {
-        setMarketChartStatus("error");
-        showClientFallback("Chart render error");
-        return;
-      }
+          function setMarketChartStatus(kind) {
+            var node = document.getElementById("dp-market-v0-chart-status");
+            if (!node) return;
+            var copy = {
+              ready: "Chart bereit — read-only OHLCV-Anzeige.",
+              empty: "Keine OHLCV-Bars für diese Abfrage verfügbar.",
+              error:
+                "Chart-Daten konnten nicht gerendert werden; keine Trading-Aktion verfügbar.",
+            };
+            node.setAttribute("data-market-chart-status", kind);
+            node.removeAttribute("data-market-empty-state");
+            node.removeAttribute("data-market-error-state");
+            node.classList.remove("text-red-300", "ring-2", "ring-red-900/70", "rounded-lg", "px-2", "py-1");
+            if (kind === "empty") {
+              node.setAttribute("data-market-empty-state", "true");
+            }
+            if (kind === "error") {
+              node.setAttribute("data-market-error-state", "true");
+              node.classList.add("text-red-300", "ring-2", "ring-red-900/70", "rounded-lg", "px-2", "py-1");
+            }
+            node.textContent = copy[kind] || "";
+            setDiagRender(kind);
+          }
 
-      var payload;
-      try {
-        payload = JSON.parse(el.textContent || "{}");
-      } catch (e) {
-        setMarketChartStatus("error");
-        showClientFallback("Chart render error");
-        return;
-      }
+          syncChartJsLine();
 
-      var bars = payload.bars || [];
-      syncEmbeddedBarsCount(bars.length);
-      if (!bars.length) {
-        setMarketChartStatus("empty");
-        return;
-      }
+          var el = document.getElementById("dp-market-ssr-payload");
+          if (!el) {
+            setMarketChartStatus("error");
+            showClientFallback("Chart render error");
+            return;
+          }
 
-      var canvas = document.getElementById("chart-dp-market-v0-close");
-      if (!canvas || typeof window.Chart === "undefined") {
-        setMarketChartStatus("error");
-        showClientFallback("Chart library missing or blocked");
-        return;
-      }
+          var payload;
+          try {
+            payload = JSON.parse(el.textContent || "{}");
+          } catch (e) {
+            setMarketChartStatus("error");
+            showClientFallback("Chart render error");
+            return;
+          }
 
-      hideClientFallbackOnly();
+          var bars = payload.bars || [];
+          syncEmbeddedBarsCount(bars.length);
+          if (!bars.length) {
+            setMarketChartStatus("empty");
+            return;
+          }
 
-      var grid = "rgba(148, 163, 184, 0.15)";
-      var tick = "#94a3b8";
-      var line = "rgba(56, 189, 248, 0.85)";
+          var canvas = document.getElementById("chart-dp-market-v0-close");
+          if (!canvas || typeof window.Chart === "undefined") {
+            setMarketChartStatus("error");
+            showClientFallback("Chart library missing or blocked");
+            return;
+          }
 
-      try {
-        new Chart(canvas.getContext("2d"), {
-          type: "line",
-          data: {
-            labels: bars.map(function (b) {
-              return b.ts;
-            }),
-            datasets: [
-              {
-                label: "Close",
-                data: bars.map(function (b) {
-                  return b.close;
+          hideClientFallbackOnly();
+
+          var grid = "rgba(148, 163, 184, 0.15)";
+          var tick = "#94a3b8";
+          var line = "rgba(56, 189, 248, 0.85)";
+
+          try {
+            new Chart(canvas.getContext("2d"), {
+              type: "line",
+              data: {
+                labels: bars.map(function (b) {
+                  return b.ts;
                 }),
-                borderColor: line,
-                backgroundColor: "rgba(56, 189, 248, 0.12)",
-                borderWidth: 1.5,
-                fill: true,
-                tension: 0.1,
-                pointRadius: 0,
+                datasets: [
+                  {
+                    label: "Close",
+                    data: bars.map(function (b) {
+                      return b.close;
+                    }),
+                    borderColor: line,
+                    backgroundColor: "rgba(56, 189, 248, 0.12)",
+                    borderWidth: 1.5,
+                    fill: true,
+                    tension: 0.1,
+                    pointRadius: 0,
+                  },
+                ],
               },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: { mode: "index", intersect: false },
-            plugins: {
-              legend: { labels: { color: tick } },
-              tooltip: {
-                callbacks: {
-                  label: function (ctx) {
-                    var v = ctx.parsed.y;
-                    return v != null ? "close: " + v.toFixed(2) : "";
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: "index", intersect: false },
+                plugins: {
+                  legend: { labels: { color: tick } },
+                  tooltip: {
+                    callbacks: {
+                      label: function (ctx) {
+                        var v = ctx.parsed.y;
+                        return v != null ? "close: " + v.toFixed(2) : "";
+                      },
+                    },
+                  },
+                },
+                scales: {
+                  x: {
+                    ticks: {
+                      color: tick,
+                      maxRotation: 45,
+                      minRotation: 0,
+                      font: { size: 9 },
+                    },
+                    grid: { color: grid },
+                  },
+                  y: {
+                    ticks: { color: tick },
+                    grid: { color: grid },
                   },
                 },
               },
-            },
-            scales: {
-              x: {
-                ticks: {
-                  color: tick,
-                  maxRotation: 45,
-                  minRotation: 0,
-                  font: { size: 9 },
-                },
-                grid: { color: grid },
-              },
-              y: {
-                ticks: { color: tick },
-                grid: { color: grid },
-              },
-            },
-          },
-        });
-      } catch (e2) {
-        setMarketChartStatus("error");
-        showClientFallback("Chart render error");
-        return;
-      }
-      syncChartJsLine();
-      setMarketChartStatus("ready");
-    })();
-  </script>
-</div>
+            });
+          } catch (e2) {
+            setMarketChartStatus("error");
+            showClientFallback("Chart render error");
+            return;
+          }
+          syncChartJsLine();
+          setMarketChartStatus("ready");
+        })();
+      </script>
+    </div>
 
-  {# --- Double-Play display snapshot (SSR) --- #}
-  <section
-    aria-label="Double-Play display snapshot"
-    class="rounded-xl border border-slate-800 bg-slate-900/60 p-5"
-    data-double-play-display-ssr-v1="true"
-  >
-    <h2 class="text-sm font-medium text-slate-200 mb-2">Double-Play display snapshot (SSR)</h2>
-    <p class="text-xs text-slate-400 mb-4 leading-relaxed">
-      Gleicher reiner JSON-Vertrag wie
-      <a href="{{ double_play_json_url }}" class="text-sky-400 underline underline-offset-2 font-mono" data-double-play-market-display-json-link="true">{{ double_play_json_url }}</a>
-      · nur Darstellung zum Seitenzeitpunkt; keine Operational-Freigabe.
-    </p>
+    {# --- Double-Play rail --- #}
+    <aside
+      class="rounded-xl border border-slate-800 bg-slate-950/85 p-4 shadow-lg shadow-black/30 ring-1 ring-slate-800/70 xl:sticky xl:top-4"
+      aria-label="Double-Play snapshot rail"
+      data-double-play-market-cockpit-rail="true"
+      data-double-play-display-ssr-v1="true"
+    >
+      <h2 class="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2 m-0">Double-Play · Rail</h2>
+      <p class="text-[11px] text-slate-400 mb-3 m-0 leading-snug">
+        Display-only Snapshot — keine Operational-Freigabe.
+        <a href="{{ double_play_json_url }}" class="text-sky-400 underline underline-offset-2 font-mono break-all block mt-2" data-double-play-market-display-json-link="true">{{ double_play_json_url }}</a>
+      </p>
 
-    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs border border-slate-800/90 rounded-lg p-4 bg-slate-950/40 mb-4">
-      <div>
-        <dt class="text-slate-500">overall_status</dt>
-        <dd class="font-mono text-sky-300/95 m-0">{{ dp_display.overall_status }}</dd>
+      <div class="space-y-2 rounded-lg border border-slate-800 bg-slate-900/70 p-3 mb-3">
+        <div class="flex items-baseline justify-between gap-2">
+          <span class="text-[10px] uppercase text-slate-500 tracking-wide">Overall</span>
+          <span class="font-mono text-sm text-sky-300/95">{{ dp_display.overall_status }}</span>
+        </div>
+        <div class="flex items-baseline justify-between gap-2 border-t border-slate-800/80 pt-2">
+          <span class="text-[10px] uppercase text-slate-500 tracking-wide">display_only</span>
+          <span class="font-mono text-slate-200">{{ dp_display.display_only }}</span>
+        </div>
       </div>
-      <div>
-        <dt class="text-slate-500">display_only</dt>
-        <dd class="font-mono text-slate-200 m-0">{{ dp_display.display_only }}</dd>
-      </div>
-      <div>
-        <dt class="text-slate-500">no_live_banner_visible</dt>
-        <dd class="font-mono text-slate-200 m-0">{{ dp_display.no_live_banner_visible }}</dd>
-      </div>
-      <div>
-        <dt class="text-slate-500">trading_ready / testnet_ready / live_ready</dt>
-        <dd class="font-mono text-slate-200 m-0">{{ dp_display.trading_ready }} / {{ dp_display.testnet_ready }} / {{ dp_display.live_ready }}</dd>
-      </div>
-      <div class="sm:col-span-2">
-        <dt class="text-slate-500">live_authorization (top-level)</dt>
-        <dd class="font-mono text-slate-200 m-0">{{ dp_display.live_authorization }}</dd>
-      </div>
-    </dl>
 
-    {% if dp_display.warnings %}
-    <div class="mb-4">
-      <p class="text-xs font-medium text-slate-300 mb-2">warnings</p>
-      <ul class="m-0 pl-5 list-disc text-xs text-slate-400 space-y-1 marker:text-slate-600">
-        {% for w in dp_display.warnings %}
-        <li class="font-mono">{{ w }}</li>
+      <div class="text-[10px] text-slate-500 mb-2 uppercase tracking-wide">Diagnostics (nicht Approval)</div>
+      <dl class="grid grid-cols-1 gap-1.5 text-[11px] text-slate-400 mb-3 font-mono">
+        <div class="flex justify-between gap-2"><dt class="text-slate-500 font-sans normal-case">Trading</dt><dd class="m-0">{{ dp_display.trading_ready }}</dd></div>
+        <div class="flex justify-between gap-2"><dt class="text-slate-500 font-sans normal-case">Testnet</dt><dd class="m-0">{{ dp_display.testnet_ready }}</dd></div>
+        <div class="flex justify-between gap-2"><dt class="text-slate-500 font-sans normal-case">Live</dt><dd class="m-0">{{ dp_display.live_ready }}</dd></div>
+        <div class="flex justify-between gap-2 border-t border-slate-800/80 pt-1.5"><dt class="text-slate-500 font-sans normal-case text-[10px]">No-live-Banner</dt><dd class="m-0">{{ dp_display.no_live_banner_visible }}</dd></div>
+        <div class="flex justify-between gap-2"><dt class="text-slate-500 font-sans normal-case text-[10px]">Live-Freigabe-Feld</dt><dd class="m-0">{{ dp_display.live_authorization }}</dd></div>
+      </dl>
+
+      {% if dp_display.warnings %}
+      <div class="mb-3">
+        <p class="text-[10px] font-semibold uppercase text-slate-500 mb-1 m-0">warnings</p>
+        <ul class="m-0 pl-4 list-disc text-[11px] text-slate-400 space-y-0.5 marker:text-slate-600">
+          {% for w in dp_display.warnings %}
+          <li class="font-mono break-words">{{ w }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <div class="flex flex-col gap-2">
+        {% for panel in dp_display.panels %}
+        <article
+          class="rounded-lg border border-slate-800/90 bg-black/35 p-2.5 text-[11px]"
+          data-double-play-panel="{{ panel.name }}"
+        >
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <h3 class="text-xs font-semibold text-slate-100 m-0 font-mono truncate">{{ panel.name }}</h3>
+            <span class="font-mono text-emerald-300/85 shrink-0">{{ panel.status }}</span>
+          </div>
+          {% if panel.summary %}
+          <p class="text-slate-400 leading-snug m-0 line-clamp-3">{{ panel.summary }}</p>
+          {% endif %}
+          <div class="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-slate-500 font-mono">
+            <span>LA {{ panel.live_authorization }}</span>
+            <span>auth {{ panel.is_authority }}</span>
+            <span>sig {{ panel.is_signal }}</span>
+          </div>
+          {% if panel.blockers %}
+          <details class="mt-1">
+            <summary class="cursor-pointer text-slate-500 text-[10px]">blockers ({{ panel.blockers|length }})</summary>
+            <ul class="m-1 pl-4 list-disc text-slate-400">{% for b in panel.blockers %}<li>{{ b }}</li>{% endfor %}</ul>
+          </details>
+          {% endif %}
+          {% if panel.missing_inputs %}
+          <details class="mt-1">
+            <summary class="cursor-pointer text-slate-500 text-[10px]">missing_inputs ({{ panel.missing_inputs|length }})</summary>
+            <ul class="m-1 pl-4 list-disc text-slate-400">{% for m in panel.missing_inputs %}<li>{{ m }}</li>{% endfor %}</ul>
+          </details>
+          {% endif %}
+        </article>
         {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
-
-    <div class="grid gap-3 md:grid-cols-2">
-      {% for panel in dp_display.panels %}
-      <article
-        class="rounded-lg border border-slate-800 bg-slate-950/50 p-4 text-xs"
-        data-double-play-panel="{{ panel.name }}"
-      >
-        <h3 class="text-sm font-semibold text-slate-100 mb-2 font-mono">{{ panel.name }}</h3>
-        <p class="text-slate-400 m-0 mb-2"><span class="text-slate-500">status:</span> <span class="font-mono text-emerald-300/90">{{ panel.status }}</span></p>
-        {% if panel.summary %}
-        <p class="text-slate-300 leading-snug m-0 mb-2">{{ panel.summary }}</p>
-        {% endif %}
-        <dl class="grid grid-cols-2 gap-2 mt-2 text-[11px] text-slate-500">
-          <div><dt class="inline">live_authorization</dt> <dd class="inline font-mono text-slate-300">{{ panel.live_authorization }}</dd></div>
-          <div><dt class="inline">is_authority</dt> <dd class="inline font-mono text-slate-300">{{ panel.is_authority }}</dd></div>
-          <div><dt class="inline">is_signal</dt> <dd class="inline font-mono text-slate-300">{{ panel.is_signal }}</dd></div>
-        </dl>
-        {% if panel.blockers %}
-        <div class="mt-2">
-          <p class="text-slate-500 mb-1">blockers</p>
-          <ul class="m-0 pl-4 list-disc text-slate-400 space-y-0.5">{% for b in panel.blockers %}<li>{{ b }}</li>{% endfor %}</ul>
-        </div>
-        {% endif %}
-        {% if panel.missing_inputs %}
-        <div class="mt-2">
-          <p class="text-slate-500 mb-1">missing_inputs</p>
-          <ul class="m-0 pl-4 list-disc text-slate-400 space-y-0.5">{% for m in panel.missing_inputs %}<li>{{ m }}</li>{% endfor %}</ul>
-        </div>
-        {% endif %}
-      </article>
-      {% endfor %}
-    </div>
-
-    <p class="text-[11px] text-slate-500 mt-4 m-0">
-      Konstante Legacy-Referenz ohne Query-Spiegel:
-      <span class="font-mono">{{ legacy_demo_href }}</span>
-    </p>
-  </section>
-
+      </div>
+    </aside>
+  </div>
 </div>
 {% endblock %}
