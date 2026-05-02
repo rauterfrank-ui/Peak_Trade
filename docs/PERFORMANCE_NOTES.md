@@ -45,6 +45,8 @@ Peak_Trade v1.0 ist funktional fertig. Dieses Dokument sammelt Performance-Messu
 
 ## 3. Benchmark-Szenarien
 
+Die folgenden drei Szenarien sind **illustrative Workload-Beschreibungen** (Kommandos + erwartete Arbeitsphasen). **`TBD`-Laufzeiten und alle nachfolgenden Bottleneck-Stichworte beschreiben keinen bereits in diesem Dokument eingetragenen Messwert** — der Status ist **`not-yet-baselined`**, bis operativ gemessene Zeilen in Abschnitt 4 ergänzt werden.
+
 ### Scenario A – Portfolio-Research `multi_style_moderate`
 
 **Command:**
@@ -134,9 +136,17 @@ python3 scripts/run_portfolio_robustness.py \
 > **Stand 2025-12-07:** Die Benchmark-Szenarien erfordern vorbereitete Daten (Sweep-Results, Top-Candidates).
 > Die Profiling-Infrastruktur ist vollständig, konkrete Baseline-Messungen werden bei vollständigem Daten-Setup ergänzt.
 
+**Baseline-Messstatus (Dokumentseite):** Alle Einträge in der Ergebnis-Tabelle unten sind **`TBD` / not-yet-baselined`** — hier werden **keine** aus diesem Repo-Verzeichnis belegten Laufzeitwerte angegeben oder aus Profilern „rückrekonstruiert“.
+
+**Vorhandene Mess-/Inventar-Flächen (nur Referenz; in diesem Slice nicht ausgeführt):**
+
+- `scripts/profile_research_and_portfolio.py` — optionaler Operator-Schritt zur Zeitmessung per `time.perf_counter()` um reale CLI-Aufrufe.
+- `tests/test_data_layer_performance.py` — Data-Layer-Performance-Regressionstests (`data_perf`-Marker/lokale Budgets).
+- `src/core/performance.py` — leichtgewichtige In-Process Timer-/Summary-Hilfen; **nicht** die kanonische Baseline-Tabelle dieses Dokuments.
+
 ### Zusammenfassung
 
-**Durchschnitt aus 3 Runs (TBD bei vollständigem Daten-Setup):**
+**Durchschnitt aus 3 Runs (`TBD` / not-yet-baselined bis zur ersten dokumentierten Messreihe bei vollständigem Daten-Setup):**
 
 | Scenario                               | Dauer (s) | Notizen                         |
 |----------------------------------------|-----------|----------------------------------|
@@ -154,9 +164,9 @@ python3 scripts/profile_research_and_portfolio.py
 python3 scripts/profile_research_and_portfolio.py --scenario portfolio_multi_style_moderate
 ```
 
-**Erwartete Regression-Schwelle:**
+**Erwartete Regression-Schwelle (erst nach erster dokumentierter Baseline):**
 
-- Wenn sich Laufzeiten um >50% verschlechtern, sollte geprüft werden:
+- Sobald echte Sekundenwerte in der Tabelle stehen — wenn sich Laufzeiten danach um **>50%** verschlechtern — sollte geprüft werden:
   - Recent Changes / Profiling-Output
   - Ggf. Optimierungs-Ideen aus Abschnitt 5 aufgreifen
 
@@ -164,7 +174,9 @@ python3 scripts/profile_research_and_portfolio.py --scenario portfolio_multi_sty
 
 ## 5. Bekannte Bottlenecks & Optimierungsideen
 
-> **Hinweis:** Diese Beobachtungen werden nach dem ersten Durchlauf ergänzt. Ziel ist es, Ideen zu sammeln, **ohne sie alle sofort umzusetzen**.
+> **Hinweis:** Alle **`(TBD)`-Beobachtungen** hier sind **Hypothesen** für künftige Profilerläufe — **keine** aus Abschnitt 4 abgeleiteten Messergebnisse. Ziel ist es, Ideen zu sammeln, **ohne sie alle sofort umzusetzen**.
+
+> **Zusatz:** Diese Beobachtungen werden nach dem ersten dokumentierten Messdurchlauf ergänzt bzw. bestätigt.
 
 ### Data Loading
 
@@ -234,6 +246,8 @@ python3 scripts/profile_research_and_portfolio.py --scenario portfolio_multi_sty
    - Gleiche Daten (falls möglich)
 
 ### Durchführung
+
+Die Shell-Beispiele in diesem Unterabschnitt sind **Dokumentation / Operator-Anleitung** — **kein** Ausführungsauftrag aus diesem docs-only Kontext und **kein** Substitut für fehlende `TBD`-Baseline-Zahlen solange keine Messreihe dokumentiert wurde.
 
 **Alle Szenarien ausführen:**
 
