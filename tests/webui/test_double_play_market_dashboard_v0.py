@@ -84,6 +84,64 @@ def test_double_play_market_dashboard_v1_cockpit_layout_ok_defaults(client: Test
     assert "live_authorization" not in lower
 
 
+def test_double_play_market_dashboard_v1_2_candlesticks_and_visual_panels(
+    client: TestClient,
+) -> None:
+    """Markers and copy anchors for Candlestick cockpit v1.2 + visual DP rail."""
+    r = client.get("/market/double-play")
+    assert r.status_code == 200
+    body = r.text
+
+    assert 'data-double-play-market-candlestick-v1-2="true"' in body
+    assert 'data-double-play-market-candlestick-canvas="true"' in body
+    assert 'data-double-play-market-candlestick-status="true"' in body
+    assert 'data-double-play-market-candlestick-no-plugin="true"' in body
+    assert 'data-double-play-market-ohlc-source="embedded-ssr-bars"' in body
+
+    assert "Candlestick view" in body
+    assert "Embedded OHLC bars" in body
+    assert "No external financial chart plugin" in body
+    assert "Read-only OHLCV visualization" in body
+
+    assert "chartjs-chart-financial" not in body.lower()
+    assert "candlestick plugin" not in body.lower()
+    assert "financial plugin" not in body.lower()
+
+    forbidden = ("BUY", "SELL", "APPROVED", "ACTIVE TRADE")
+    for w in forbidden:
+        assert w not in body
+
+    assert 'data-double-play-market-visual-panels-v1-2="true"' in body
+    assert 'data-double-play-market-status-chip="true"' in body
+    assert 'data-double-play-market-panel-tile="true"' in body
+    assert 'data-double-play-market-diagnostics-chip="true"' in body
+    assert "DISPLAY ONLY" in body
+    assert "SSR snapshot" in body
+    assert "Diagnostics (not approval)" in body
+    assert "Not trading ready" in body
+    assert "No authority" in body
+    assert "Model label only" in body
+
+    assert 'data-double-play-market-dashboard-v0="true"' in body
+    assert 'data-double-play-market-composition-ssr-v1="true"' in body
+    assert 'data-double-play-market-cockpit-layout-v1-1="true"' in body
+
+    assert 'data-double-play-panel="futures_input"' in body
+    assert 'data-double-play-panel="state_transition"' in body
+    assert 'data-double-play-panel="survival_envelope"' in body
+
+    assert "/market?source=dummy&amp;symbol=BTC%2FEUR&amp;timeframe=1d&amp;limit=120" in body
+    assert "/api/master-v2/double-play/dashboard-display.json" in body
+
+    lower = body.lower()
+    assert "<form" not in lower
+    assert 'method="post"' not in lower
+    assert "<button" not in lower
+    assert 'type="submit"' not in lower
+    assert "fetch(" not in body
+    assert "setinterval" not in lower
+
+
 def test_double_play_market_dashboard_bad_timeframe_422(client: TestClient) -> None:
     r = client.get("/market/double-play", params={"timeframe": "bogus"})
     assert r.status_code == 422

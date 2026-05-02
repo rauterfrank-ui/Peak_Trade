@@ -5,7 +5,7 @@
 | Methode | Pfad | Beschreibung |
 |---------|------|----------------|
 | GET | `/market` | HTML: Close-Line-Chart (Chart.js), Parameter per Query |
-| GET | `/market/double-play` | HTML: SSR read-only Komposition (ein Server-Render) — eingebetteter Market-Close-Line-Chart (**gleiche Payload-/Query-Semantik wie** **`GET`** **`/market`**) plus Double-Play-Display-Snapshot (**gleicher JSON-Vertrag wie** **`GET`** **`/api/master-v2/double-play/dashboard-display.json`** in-process); **kein** client-fetch zu diesen Routen durch die Seite, **kein** automatisches Nachladen |
+| GET | `/market/double-play` | HTML: SSR read-only Komposition (ein Server-Render) — **v1.2:** dominanter **Canvas-Candlestick** aus eingebetteten OHLCV-Bars (**gleiche Payload-/Query-Semantik wie** **`GET`** **`/market`**) plus sekundärer Chart.js‑Close-Line; Double-Play-Display-Snapshot (**gleicher JSON-Vertrag wie** **`GET`** **`/api/master-v2/double-play/dashboard-display.json`** in-process); **kein** client-fetch zu diesen Routen durch die Seite, **kein** automatisches Nachladen |
 | GET | `/api/market/ohlcv` | JSON: OHLCV-Bars (`open`/`high`/`low`/`close`/`volume`, Zeit `ts`) |
 
 ## Query-Parameter (`GET &#47;market`, `GET &#47;api&#47;market&#47;ohlcv`, eingebetter Marktblock auf **`GET`** **`&#47;market&#47;double-play`**)
@@ -89,6 +89,20 @@ Banner‑Inhalt fasst u. a.: keine Orders, kein Testnet/Live, keine Capital/Sc
 - **Chart‑first** Raster: große Chart‑Spalte, **Double‑Play‑Rail** seitlich (ab **`xl`**), kompaktes **Safety‑Chip‑Band** sowie ausklappbare **`details`** für längeren Kontext (**weiterhin** read-only/non-authority beschrieben).
 
 Stabile neue **Markup‑Marker** unter anderem **`data-double-play-market-cockpit-layout-v1-1`** und **`data-double-play-market-cockpit-chart-column`** / **`data-double-play-market-cockpit-rail`** (Tests/Docs-Anker ohne neue Autorität).
+
+## Double-Play Market Dashboard v1.2 candlestick and visual panels
+
+**Route:** **`GET &#47;market&#47;double-play`** (unverändert)
+
+**v1.2** ist eine **Templates-/Tests-/Docs-only**‑Erweiterung auf demselben **SSR‑Pfad**:
+
+- Nutzt die **bereits eingebetteten OHLCV-Bars** im Market-Payload (**`open`/`high`/`low`/`close`/`volume`/`ts`**) — **keine** Änderungen an **`GET`** **`&#47;api&#47;market&#47;ohlcv`**, Provider-/Kraken-/Backend- oder Doppel-Spiel‑JSON‑Router.
+- **Custom Canvas‑Candlesticks** aus dem eingebetteten JSON‑Payload (**kein** externes Finanz-/Candlestick-Chart‑Plugin, **kein** lokales Vendor‑Chart‑SDK als Ersatz, **bleibt** bestehendes Chart.js CDN nur für die **sekundäre** Close-Line).
+- **Kein** `fetch()`, **kein** Polling, **keine** neuen Formularkontrollen.
+
+Die **visual Double‑Play**‑Rail (**Chips**, **Tiles**, **Diagnostics**) ist **strikt display-only**. **`display_ready`** und sämtliche angezeigten Status-/Label‑Felder (**`trading_ready`**, **`testnet_ready`**, **`live_ready`**, Overlays wie **DISPLAY ONLY** / **Not trading ready**) sind **nicht** Handelsbereitschaft, **nicht** Freigabe/Autorisierung zu Live/Testnet, **keine** Scope/Capital‑Billigung und **kein** Risk-/KillSwitch‑Override.
+
+**Ein späteres Arbeitspaket** kann Orderbuch/Tiefe, reichhaltigere Feldzuordnung oder CDN‑Ausfall‑Mitigation (**lokaler Chart.js‑Fallback**) **separat** planen.
 
 ## Chart status states
 
