@@ -5,6 +5,12 @@
 
 ---
 
+## Dokumentgrenzen
+
+Die Angabe **„implementiert & getestet“** am Dokumentkopf bezieht sich auf die **vorhandene Registry-/Backtest-API-Oberfläche** und die in diesem Dokument als **lauffähig beschriebenen** Pfade (**Single-Strategy** aus der Registry sowie **Portfolio-Backtests** mit den hier dokumentierten **Capital-Allocation-Modi `equal` und `manual`**, inklusive der beschriebenen Filter/Workflow-Schritte). **Nicht** jede spätere oder in Konfigurationsbeispielen genannte Allocator-Variante ist damit bereits als produktiv gelieferte Semantik zu lesen.
+
+**Offene Erweiterungspunkte:** Allocator-Kennzeichnungen wie **`risk_parity`** und **`sharpe_weighted`** sowie **Dynamic Rebalancing** sind in diesem Dokument im **Portfolio-Workflow** (Schritt **Capital Allocation** unter **„2. Portfolio-Backtest“ → Workflow**) sowie in **„5. Erweiterungspunkte“** ausdrücklich als **TODO** bzw. **Roadmap** geführt — solange dort **`TODO`**-/Stub-Inhalt dokumentiert ist, handelt es sich nicht um einen abgeschlossenen, produktreifen Lieferpfad. Daraus **keine** Live-, Trading-, Strategy-Readiness oder Gate-/Freigabe-Claims ableiten.
+
 ## Überblick
 
 Die **Registry-Backtest-Integration** erweitert die bestehende `BacktestEngine` um zwei neue, konfigurationsbasierte Entry-Points:
