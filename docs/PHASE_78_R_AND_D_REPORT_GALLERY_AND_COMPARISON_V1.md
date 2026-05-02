@@ -60,7 +60,7 @@ Phase 78 erweitert den R&D-Hub um zwei zentrale Features: eine **Report-Gallery*
 
 | # | User Story |
 |---|------------|
-| R1 | Als Researcher möchte ich 2–4 Experimente hinsichtlich Sharpe, MaxDD, Trades und Status direkt im Browser vergleichen können. |
+| R1 | Als Researcher möchte ich 2–10 Experimente hinsichtlich Sharpe, MaxDD, Trades und Status direkt im Browser vergleichen können. |
 | R2 | Als Researcher möchte ich in der Vergleichsansicht die besten Werte pro Metrik hervorgehoben sehen, um Muster schneller zu erkennen. |
 
 ---
@@ -188,9 +188,9 @@ GET /api/r_and_d/experiments/batch?run_ids=id1,id2,id3
 |-------|----------|
 | `src/webui/r_and_d_api.py` | Neuer Batch-Endpoint |
 | `src/webui/app.py` | Neue Route `/r_and_d/comparison` |
-| `templates/.../r_and_d_experiments.html` | Checkbox-Auswahl, Vergleichs-Button |
-| `templates/.../r_and_d_experiment_detail.html` | Report-Gallery-Section |
-| `templates/.../r_and_d_experiment_comparison.html` | **NEU**: Comparison-View |
+| `templates&#47;...&#47;r_and_d_experiments.html` | Checkbox-Auswahl, Vergleichs-Button |
+| `templates&#47;...&#47;r_and_d_experiment_detail.html` | Report-Gallery-Section |
+| `templates&#47;...&#47;r_and_d_experiment_comparison.html` | **NEU**: Comparison-View |
 
 ### 5.2 Batch-Endpoint Implementierung
 
@@ -365,11 +365,11 @@ flowchart LR
 | # | Kriterium | Status |
 |---|-----------|--------|
 | A1 | API-Tests für Batch-Endpoint grün | ✅ |
-| A2 | Multi-Run Comparison View rendert für 2–4 valide Runs mit allen Kernmetriken | ✅ |
+| A2 | Multi-Run Comparison View rendert für 2–10 valide Runs mit allen Kernmetriken | ✅ |
 | A3 | Report-Gallery wird angezeigt, wenn `report_links` nicht leer ist | ✅ (Phase 77) |
 | A4 | Best-Metric-Hervorhebung funktioniert korrekt für alle numerischen Spalten | ✅ |
 | A5 | Fehlerbehandlung bei ungültigen/fehlenden Run-IDs funktioniert | ✅ |
-| A6 | Checkbox-Auswahl in Übersicht limitiert auf 4 Runs | ✅ |
+| A6 | Checkbox-Auswahl in Übersicht limitiert auf 10 Runs | ✅ |
 | A7 | Gesamtsuite weiterhin grün (bestehende Tests nicht gebrochen) | ✅ |
 
 ### 6.2 Test-Abdeckung
@@ -377,7 +377,7 @@ flowchart LR
 | Test-Datei | Neue Tests | Beschreibung |
 |------------|------------|--------------|
 | `tests/test_r_and_d_api.py` | ~15 | Batch-Endpoint Tests |
-| `tests/test_webui.py` | ~5 | Comparison-Route Tests |
+| `tests&#47;test_webui.py` | ~5 | Comparison-Route Tests |
 
 ---
 
