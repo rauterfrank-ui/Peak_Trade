@@ -1,5 +1,5 @@
 <!-- templates/peak_trade_dashboard/market_v0.html -->
-<!-- Market Surface v0 — read-only, Close-Line-Chart (Chart.js); v1 dashboard shell framing -->
+<!-- Market Surface v0 — read-only, Close-Line-Chart (Chart.js); v1 shell; v1.1 chart diagnostics -->
 {% extends "base.html" %}
 
 {% block content %}
@@ -153,14 +153,68 @@
 
   <section
     aria-label="Close-Preis"
-    class="bg-slate-900/60 rounded-xl border border-slate-800 ring-1 ring-slate-700/50 shadow-lg shadow-black/20 p-4"
+    class="bg-slate-900/60 rounded-xl border border-slate-800 ring-1 ring-slate-700/50 shadow-lg shadow-black/20 p-4 min-h-[28rem]"
     data-chart="market-v0-close-line"
+    data-market-v11-chart-diagnostics="true"
   >
     <h2 class="text-sm font-medium text-slate-200 mb-3">Schlusskurs (Close)</h2>
+
+    <div
+      class="mb-4 rounded-lg border border-slate-700/90 bg-slate-950/70 p-4 text-xs text-slate-300 space-y-2"
+      data-market-v11-diagnostics-inner="true"
+    >
+      <h3 class="text-sm font-semibold text-slate-100 tracking-tight">Chart diagnostics</h3>
+      <p class="text-[11px] text-slate-400 leading-relaxed m-0">
+        No backend/API/provider change. Chart.js loads from CDN; if blank:
+        <span class="text-rose-400/95 font-medium">Chart library missing or blocked</span>
+        oder
+        <span class="text-rose-400/95 font-medium">Chart render error</span>.
+      </p>
+      <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-[11px] mt-3">
+        <div>
+          <dt class="text-slate-500 uppercase tracking-wide text-[10px] mb-1" data-market-v11-chart-library-status="true">
+            Chart.js status
+          </dt>
+          <dd id="market-v11-chartjs-state" class="text-sky-300/95 m-0">SSR only — verified in browser</dd>
+        </div>
+        <div>
+          <dt class="text-slate-500 uppercase tracking-wide text-[10px] mb-1" data-market-v11-payload-bars="true">
+            Embedded bars
+          </dt>
+          <dd id="market-v11-embedded-bar-count" class="text-slate-200 m-0">{{ payload.bars_returned }}</dd>
+        </div>
+        <div>
+          <dt class="text-slate-500 uppercase tracking-wide text-[10px] mb-1">Chart render status</dt>
+          <dd id="market-v11-client-render-flag" class="text-slate-200 m-0">
+            SSR: {% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+    <div
+      id="market-v11-render-fallback"
+      data-market-v11-render-fallback="true"
+      data-market-v11-fallback-mode="{% if payload.bars_returned == 0 %}empty-ssr{% else %}client-alert{% endif %}"
+      role="alert"
+      class="mb-4 rounded-xl border-2 px-4 py-4 {% if payload.bars_returned == 0 %}block border-amber-500/80 bg-amber-950/50 text-amber-50{% else %}hidden border-rose-600/85 bg-rose-950/40 text-rose-50{% endif %}"
+      {% if payload.bars_returned != 0 %}aria-hidden="true"{% endif %}
+    >
+      {% if payload.bars_returned == 0 %}
+      <p class="m-0 text-sm font-semibold leading-snug">
+        Embedded bars: keine OHLCV-Serie eingebettet — Chart bleibt leer bis Daten vorliegen.
+      </p>
+      {% endif %}
+      <p
+        id="market-v11-render-fallback-msg"
+        class="{% if payload.bars_returned == 0 %}hidden m-0{% else %}hidden m-0 text-sm font-semibold{% endif %}"
+      ></p>
+    </div>
+
     <div
       id="market-v0-chart-status"
       role="status"
-      class="text-xs text-slate-400 mb-2 min-h-[1.25rem]"
+      class="text-xs text-slate-300 mb-2 min-h-[1.5rem] font-medium"
       data-market-chart-status="{% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}"
       {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
     >
@@ -170,8 +224,8 @@
       Chart bereit — read-only OHLCV-Anzeige.
       {% endif %}
     </div>
-    <div class="relative h-80 w-full">
-      <canvas id="chart-market-v0-close"></canvas>
+    <div class="relative min-h-[20rem] h-96 w-full rounded-lg border border-slate-700/70 bg-slate-950/30">
+      <canvas id="chart-market-v0-close" class="block w-full h-full"></canvas>
     </div>
   </section>
 
@@ -179,6 +233,52 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
     (function () {
+      function setDiagRender(kind) {
+        var r = document.getElementById("market-v11-client-render-flag");
+        if (r) {
+          r.textContent = kind;
+        }
+      }
+
+      function syncChartJsLine() {
+        var n = document.getElementById("market-v11-chartjs-state");
+        if (!n) return;
+        n.textContent = typeof window.Chart !== "undefined"
+          ? "library available (client)"
+          : "Chart library missing or blocked";
+      }
+
+      function syncEmbeddedBarsCount(len) {
+        var n = document.getElementById("market-v11-embedded-bar-count");
+        if (n) {
+          n.textContent = String(len);
+        }
+      }
+
+      function showClientFallback(copy) {
+        var wrap = document.getElementById("market-v11-render-fallback");
+        var msg = document.getElementById("market-v11-render-fallback-msg");
+        if (!wrap || !msg || wrap.getAttribute("data-market-v11-fallback-mode") !== "client-alert") {
+          return;
+        }
+        wrap.classList.remove("hidden");
+        wrap.removeAttribute("aria-hidden");
+        msg.classList.remove("hidden");
+        msg.textContent = copy;
+      }
+
+      function hideClientFallbackOnly() {
+        var wrap = document.getElementById("market-v11-render-fallback");
+        var msg = document.getElementById("market-v11-render-fallback-msg");
+        if (!wrap || !msg || wrap.getAttribute("data-market-v11-fallback-mode") !== "client-alert") {
+          return;
+        }
+        wrap.classList.add("hidden");
+        wrap.setAttribute("aria-hidden", "true");
+        msg.classList.add("hidden");
+        msg.textContent = "";
+      }
+
       function setMarketChartStatus(kind) {
         var node = document.getElementById("market-v0-chart-status");
         if (!node) return;
@@ -191,18 +291,24 @@
         node.setAttribute("data-market-chart-status", kind);
         node.removeAttribute("data-market-empty-state");
         node.removeAttribute("data-market-error-state");
+        node.classList.remove("text-red-300", "ring-2", "ring-red-900/70", "rounded-lg", "px-2", "py-1");
         if (kind === "empty") {
           node.setAttribute("data-market-empty-state", "true");
         }
         if (kind === "error") {
           node.setAttribute("data-market-error-state", "true");
+          node.classList.add("text-red-300", "ring-2", "ring-red-900/70", "rounded-lg", "px-2", "py-1");
         }
         node.textContent = copy[kind] || "";
+        setDiagRender(kind);
       }
+
+      syncChartJsLine();
 
       var el = document.getElementById("market-v0-payload");
       if (!el) {
         setMarketChartStatus("error");
+        showClientFallback("Chart render error");
         return;
       }
 
@@ -211,20 +317,25 @@
         payload = JSON.parse(el.textContent || "{}");
       } catch (e) {
         setMarketChartStatus("error");
+        showClientFallback("Chart render error");
         return;
       }
 
       var bars = payload.bars || [];
+      syncEmbeddedBarsCount(bars.length);
       if (!bars.length) {
         setMarketChartStatus("empty");
         return;
       }
 
       var canvas = document.getElementById("chart-market-v0-close");
-      if (!canvas || !window.Chart) {
+      if (!canvas || typeof window.Chart === "undefined") {
         setMarketChartStatus("error");
+        showClientFallback("Chart library missing or blocked");
         return;
       }
+
+      hideClientFallbackOnly();
 
       var grid = "rgba(148, 163, 184, 0.15)";
       var tick = "#94a3b8";
@@ -286,8 +397,10 @@
         });
       } catch (e2) {
         setMarketChartStatus("error");
+        showClientFallback("Chart render error");
         return;
       }
+      syncChartJsLine();
       setMarketChartStatus("ready");
     })();
   </script>
