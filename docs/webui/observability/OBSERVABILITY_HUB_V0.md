@@ -25,7 +25,7 @@ Operator-lokale Reviews unter **`&#47;tmp`** (z. B. PR-J Shadow+Paper Trend/Sema
 
 **v0.8b — Quellen-Ranking (nur Planung):** Ein Paper/Shadow-Panel bleibt **unverdrahtet**. Die priorisierte Kandidaten-Reihenfolge (Execution-Watch API zuerst, dann u. a. live.web-Snapshot, dedizierter Summary-Endpoint, Repo-Fixture, zuletzt CI-Ingestion) steht ausschließlich im Vertrag [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) unter *Source decision matrix v0.8b*. **Keine** Laufzeit-Quelle ist damit freigegeben.
 
-Das dedizierte Summary-Schema [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) (**`paper_shadow_summary_readmodel_v0`**) hat einen **fixture-only** Builder im Repo (explizites **`bundle_root`**, Tests und **`tests&#47;fixtures&#47;...`**); es gibt weiterhin **keinen** freigegebenen **Observability-`GET`** und **kein** Panel **`GET &#47;observability`**. **`GET &#47;observability`** liest weiterhin **keine** Paper/Shadow-Artefakte.
+Das dedizierte Summary-Schema [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) (**`paper_shadow_summary_readmodel_v0`**) hat einen **fixture-only** Builder im Repo (explizites **`bundle_root`**, Tests und **`tests&#47;fixtures&#47;...`**); es gibt weiterhin **keinen** freigegebenen **Observability-`GET`** und **kein** Panel **`GET &#47;observability`**. **`GET &#47;observability`** liest weiterhin **keine** Paper/Shadow-Artefakte. Die **rein dokumentierte** Laufzeit-Quellen-Grenze liegt in [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md) (**noch** kein Endpoint, **keine** Hub-Verdrahtung).
 
 ## Aktuelle Panels (Display-only)
 
