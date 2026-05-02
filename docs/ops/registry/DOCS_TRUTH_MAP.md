@@ -73,6 +73,8 @@ Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im 
 
 ## Änderungsnachweis (Slice A)
 
+- 2026-05-02 — `docs&#47;ops&#47;specs&#47;MASTER_V2_GO_LIVE_ROADMAP_V0.md` — Informative **`### 3.1 Autonomy stage crosswalk (informative only)`** (planning vocabulary vs §4–§10; distributed recurring verification; **kein** neuer **`24&#47;7 Paper-Test-Daemon`**); **docs-only / non-authorizing**; **keine** Live-&#47;Testnet-&#47;Execution-Freigabe; Gates &#47; KillSwitch &#47; Risk dominieren weiterhin.
+
 - 2026-05-02 — `docs&#47;ops&#47;README.md` — Discoverability-Zeilen zu PR **#3237** (Double Play WebUI **read-only** Route-Contract ↔ Pure-Stack **Display-Map**) und PR **#3238** (Observability Readmodel **Contract-Tests**); **display/read-only** bzw. **tests-only**; **keine** Live-/Operational-Freigabe; **kein** Gate-Ersatz und **keine** Abweichung von Master V2 &#47; Risk &#47; Kill-Switch &#47; Execution-Gates.
 
 - 2026-04-30 — `src&#47;execution&#47;paper&#47;futures_accounting.py`: **`FuturesPaperAccountingSnapshotV0`** + `build_futures_paper_accounting_snapshot_v0` (rein/offline, ohne WP1B&#47;Runner&#47;Provider); begleitend `docs&#47;ops&#47;specs&#47;MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0.md` §7.3, `docs&#47;PEAK_TRADE_V1_KNOWN_LIMITATIONS.md`, `tests&#47;execution&#47;paper&#47;test_futures_accounting_snapshot_dto_v0.py`; **keine** Live-&#47;Testnet-Freigabe; **RUNTIME_NOT_WIRED**.

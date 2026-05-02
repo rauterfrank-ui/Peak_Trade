@@ -2,7 +2,7 @@
 docs_token: DOCS_TOKEN_MASTER_V2_GO_LIVE_ROADMAP_V0
 status: draft
 scope: docs-only, non-authorizing Master V2 Go-Live roadmap
-last_updated: 2026-04-28
+last_updated: 2026-05-02
 ---
 
 # Master V2 Go-Live Roadmap V0
@@ -81,6 +81,41 @@ Relevant focused tests include:
 - `tests/ops/test_session_review_pack_source_bound_temp_resolver_v0.py`
 - `tests/ops/test_session_review_pack_source_bound_payload_builder_v0.py`
 - `tests/ops/test_session_review_pack_report_contracts_v0.py`
+
+### 3.1 Autonomy stage crosswalk (informative only)
+
+This subsection is **informative orientation only**. It does **not** authorize live trading, testnet trading, execution, bounded-pilot entry, strategy readiness, autonomy readiness, or external signoff. It does **not** introduce a new readiness / evidence / report / index / handoff surface. It does **not** introduce a new canonical **`24&#47;7 Paper-Test-Daemon`** repo surface; recurring verification remains **distributed** across existing offline suites, scheduled probes, paper/shadow audits, and optional manual operator tooling until explicitly decided otherwise.
+
+**Label note:** **Autonomy stages 0–7** below are a planning vocabulary used alongside Master V2 autonomy memo material; **Go-Live roadmap stages** remain §4–§10 (numbered Stage 1–7 **within this document**). Disambiguate numbering when comparing charts.
+
+**Authority inequalities (always):**
+
+- Signal ≠ trade.
+- Strategy ≠ authority.
+- AI ≠ authority.
+- Dashboard ≠ approval or gate passage.
+- Paper ≠ live.
+- Testnet ≠ live.
+- Risk / KillSwitch / execution gates dominate downstream authority.
+
+For **autonomy stages 0–2**, interpret posture as **operator / distributed recurring verification** only (no consolidation into one daemon narrative here). For **autonomy stages 3–7**, treat advancement as **HOLD / approval-only** until explicit governance and evidence gates outside this roadmap are satisfied.
+
+| Autonomy stage | Roadmap anchor | Current posture | Required boundary before promotion |
+|---|---|---|---|
+| Stage 0 — Research / Backtest only | §4 Stage 1 — Research / Backtest / Robustness | Offline research/backtest only; non-authorizing | Meet §4 exit criteria; never infer live readiness from backtests alone |
+| Stage 1 — Shadow advisory | §5 Stage 2 — Shadow / Paper Evidence | Advisory evidence posture; isolated from live authority | Meet §5 exit criteria; no dashboard/report treated as approval |
+| Stage 2 — 24/7 Paper observation / distributed recurring verification | §5 Stage 2 — Shadow / Paper Evidence | Distributed recurring verification posture only (no new canonical daemon named here) | Keep evidence reviewable per §5; preserve distributed posture unless externally re-baselined |
+| Stage 3 — Paper autonomous candidate loop | §5 Stage 2 + downstream wiring posture | HOLD: autonomous loops imply tighter contracts than observation alone | Explicit governance approval for wiring paths referenced in Futures capability §7 (WP1B / futures seam HOLD); fail-closed gates unchanged |
+| Stage 4 — Testnet autonomous bounded loop | §6 Stage 3 — Testnet Evidence | Testnet-only bounded posture when chartered | Meet §6 exit criteria; never treat testnet as live authorization |
+| Stage 5 — Gated Live pilot | §9 Stage 6 — Bounded Real-Money Pilot | Only with explicit bounded-pilot authority | Meet §9 entry + exit criteria; kill/scope/capital clarity |
+| Stage 6 — Bounded autonomous Live | §9–§10 Stages 6–7 | Extension of bounded pilot with no automatic promotion | Post-pilot review / explicit promotion decision per §10 |
+| Stage 7 — Self-improving autonomy with hard gates | §2 Non-Goals + governance adjacency | Learning/change loops remain subordinate to gates | Bound model/policy change to learning-inventory boundaries; no online adaptation claims from this roadmap |
+
+Further reading (same specs directory):
+
+- [First Live Readiness Ladder](./MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md)
+- [Learning AI Autonomy Inventory](./MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md)
+- [Futures Class A Capability Contract](./MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0.md) — §7 WP1B / futures wiring HOLD posture remains unchanged unless separately approved.
 
 ## 4. Stage 1 — Research / Backtest / Robustness
 
