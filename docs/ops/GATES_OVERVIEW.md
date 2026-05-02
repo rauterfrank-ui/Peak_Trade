@@ -67,6 +67,8 @@ Die wichtigsten PR-relevanten Checks (inkl. required contexts config) sind in `c
 
 **Branch Protection:** Die Config ist an die GitHub Branch-Protection ausgerichtet (9 required contexts). Siehe `config&#47;ci&#47;required_status_checks.json` und `gh api repos/<owner>/<repo>/branches/main/protection` für den aktuellen Stand.
 
+**Lesart:** Branch-Protection-relevante Required-Check-Namen folgen `config&#47;ci&#47;required_status_checks.json` (`required_contexts` minus `ignored_contexts`; Erläuterung in dessen Feld `notes`); einzelne Gate- oder Jobnamen aus Prosa oder dem `CI`-Workflow (z. B. zu „PR Gate“) nicht isoliert dagegen lesen — JSON und GitHub-Schutzliste als Abgleich nutzen.
+
 - **Workflow `CI`** (`.github/workflows/ci.yml`)
   - Job/Check: `ci-required-contexts-contract` (runs always)
   - Job/Check: `tests (3.9)`, `tests (3.10)`, `tests (3.11)` (runs always; step-level skip auf docs-only)
