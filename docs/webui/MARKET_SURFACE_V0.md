@@ -78,6 +78,18 @@ Banner‑Inhalt fasst u. a.: keine Orders, kein Testnet/Live, keine Capital/Sc
 
 **Konstante Legacy-Verweise** auf der Seite (BTC/EUR, `1d`) dienen weiterhin Dokumentations-/Navigations-Spiegeln und **gewähren keine** Operational-Berechtigung — Live-Datenbasis folgt **`source`/`symbol`/…** der **`GET`**‑Query dieser Route.
 
+## Double-Play Market Dashboard v1.1 cockpit layout
+
+**Route:** **`GET &#47;market&#47;double-play`** (unverändert)
+
+**v1.1** ist eine **rein layout-/UX‑bezogene Cockpit‑Politur** desselben **SSR‑v1 Datenpfads**:
+
+- Gleiche **Market‑Payload**‑Semantik wie **`GET &#47;market`** (**`build_market_payload`**) · gleicher **Double‑Play‑Display**‑Kontrakt wie **`GET &#47;api&#47;master‑v2&#47;double‑play&#47;dashboard‑display.json`** (In‑process **`build_static_dashboard_display_dict`** / **`snapshot_to_jsonable`**).
+- **Keine** Backend-/API-/Route‑Änderung **durch diese Layout‑Version** · **kein** client-fetch · **kein** Polling · **keine** neuen Operational‑Freigaben oder Readiness‑Semantiken.
+- **Chart‑first** Raster: große Chart‑Spalte, **Double‑Play‑Rail** seitlich (ab **`xl`**), kompaktes **Safety‑Chip‑Band** sowie ausklappbare **`details`** für längeren Kontext (**weiterhin** read-only/non-authority beschrieben).
+
+Stabile neue **Markup‑Marker** unter anderem **`data-double-play-market-cockpit-layout-v1-1`** und **`data-double-play-market-cockpit-chart-column`** / **`data-double-play-market-cockpit-rail`** (Tests/Docs-Anker ohne neue Autorität).
+
 ## Chart status states
 
 Das HTML für **`GET &#47;market`** enthält beim Chart‑Bereich ein Status‑Element **`#market-v0-chart-status`** (read‑only‑Formulierung, **non‑authorizing**).
