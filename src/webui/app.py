@@ -379,7 +379,6 @@ def load_strategy_tiering(include_research: bool = False) -> Dict[str, Any]:
     }
 
 
-
 templates = Jinja2Templates(directory=str(TEMPLATE_DIR))
 
 # Double-Play Market Dashboard v0 — static URL examples (no runtime I/O)
