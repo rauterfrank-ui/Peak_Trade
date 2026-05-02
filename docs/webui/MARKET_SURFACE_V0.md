@@ -125,29 +125,32 @@ Die **additive** Display‑Schicht für **`GET`** **`&#47;api&#47;master‑v2&#4
 - **Keine** Trading-/UI‑Autorität durch die neuen Metadaten; Markt‑Surface‑Docs bleiben konsistent mit „read-only / display-only“ oben.
 
 
-## Market Depth / Orderbook Readmodel Contract v0 (planned, read-only)
+## Market Depth / Orderbook Readmodel Contract v0 (offline fixture readmodel, no route)
 
-This section defines the planned read-only contract boundary for a future Market Depth / Orderbook display on the Market and Double-Play Market dashboard surfaces.
+This section separates (a) the **fixture/offline** Market Depth JSON readmodel that exists in-repo today from (b) any **future** HTTP/UI/provider consumption paths. Nothing here grants trading, live/testnet, provider, execution, readiness, Risk/KillSwitch, or Scope/Capital authority.
 
-Status: **planned / not implemented**.
+### Implementation boundary (truth vs. deferral)
 
-Planned endpoint placeholder:
+- **Implemented (offline/fixture-backed only):** a pure JSON-native readmodel builder under `src/webui/market_depth_readmodel_v0/` consumes checked-in fixtures under `tests/fixtures/market_depth_readmodel_v0` (deterministic scans; **no** network/CCXT/Kraken/HTTP client/session wiring in that module surface). Contract shape and exclusions are pinned by `tests/webui/test_market_depth_readmodel_v0.py`, including **`readmodel_id` `market_depth_readmodel.v0`**, stable envelope keys (`readmodel_id`, `symbol`, `source`, `limit`, `generated_at_iso`, `runtime_source_status`, `stale`, `stale_reason`, `depth`), sorted bid/ask ladders, truncation on `limit`, and absence of forbidden authority/order keys from JSON output.
+- **Not implemented / not delivered by this document:** `GET &#47;api&#47;market&#47;depth` (**no HTTP route**), Dashboard/Double‑Play HTML wiring, client fetch/polling, and live Kraken/other provider-backed depth ingestion. Any future attachment must stay display-only/non-authoritative and keep OHLCV and depth strictly distinct readmodels (`OHLCV` vs. `depth`).
+
+Planned endpoint placeholder (still deferred):
 
 - `GET &#47;api&#47;market&#47;depth`
 
-This planned endpoint must remain separate from order placement, execution, exchange session handling, Live/Testnet enablement, Scope/Capital approval, Risk/KillSwitch override, and Double-Play side selection. It may only expose a diagnostic market-data readmodel for UI rendering and operator inspection.
+Whenever implemented, this planned endpoint must remain separate from order placement, execution, exchange session handling, Live/Testnet enablement, Scope/Capital approval, Risk/KillSwitch override, and Double-Play side selection. It may only expose a diagnostic market-data readmodel for UI rendering and operator inspection.
 
-### Planned readmodel identity
+### Current offline readmodel identity
 
-A future response should use an explicit readmodel identifier, for example:
+The implemented offline builder uses the explicit readmodel identifier asserted by contract tests:
 
 - `market_depth_readmodel.v0`
 
 The identifier is only a schema/display contract marker. It must not imply readiness, tradability, route authority, execution capability, or provider health.
 
-### Planned envelope fields
+### Current offline envelope fields
 
-A future envelope may include:
+The offline builder emits the envelope fields below. In this contract, **`runtime_source_status` is `offline_bundle`**, **`stale` is `true`**, and **`stale_reason` is `offline_bundle_scan`**; these values reflect fixture scanning, not provider connectivity. A future HTTP layer would carry the **same identifiers** without adding readiness or execution semantics:
 
 - `readmodel_id`
 - `symbol`
@@ -159,29 +162,29 @@ A future envelope may include:
 - `stale_reason`
 - `depth`
 
-The `source` value may describe a read-only provider such as `dummy` or `kraken`, but the field must not expose exchange handles, API keys, session objects, authenticated account state, balances, order permissions, or mutable provider controls.
+For the current readmodel, `source` is fixture metadata from `depth.json` (for example `dummy` in the checked-in fixture). It is **not** a runtime provider source and must not imply Kraken depth fetches, network calls, exchange handles, API keys, session objects, authenticated account state, balances, order permissions, or mutable provider controls.
 
-### Planned depth structure
+### Current offline depth structure
 
-The `depth` object may include:
+The `depth` object includes:
 
 - `bids`
 - `asks`
 - `levels_returned`
 - `level_limit`
 
-Each bid/ask level may include:
+Each bid/ask level includes:
 
 - `price`
 - `size`
-- optionally `notional`
+- `notional`
 
 Sorting expectations:
 
 - bids sorted descending by price
 - asks sorted ascending by price
 
-The UI may render these levels as a visual depth ladder or compact orderbook table. The UI must not provide order entry affordances, clickable trading actions, pre-filled orders, buy/sell controls, or side recommendations.
+No current Market or Double-Play dashboard consumes this output. A future UI may render these levels as a visual depth ladder or compact orderbook table, but it must not provide order entry affordances, clickable trading actions, pre-filled orders, buy/sell controls, or side recommendations.
 
 ### Deferred derived fields
 
@@ -199,18 +202,20 @@ If introduced later, these fields must remain diagnostic market-data values only
 
 ### Failure and empty-state semantics
 
-A future implementation must fail closed for UI interpretation:
+The implemented offline contract pins fail-closed fixture/readmodel states:
 
-- disabled/unconfigured source: diagnostic unavailable state
-- provider error: diagnostic error state
-- empty bids/asks: diagnostic empty state
-- stale bundle/source: visible stale diagnostic state
+- missing bundle root: readmodel build error
+- missing `depth.json`: readmodel build error
+- malformed JSON: readmodel build error
+- malformed levels: readmodel build error
+- empty bids/asks: JSON-native diagnostic empty state
+- offline bundle scan: visible stale diagnostic state
 
-None of these states may be converted into trading permission, side switching, Risk/KillSwitch override, Scope/Capital approval, or Live/Testnet activation.
+Future provider-specific states such as disabled/unconfigured source, provider error, provider latency, or provider freshness remain deferred. None of these current or future states may be converted into trading permission, side switching, Risk/KillSwitch override, Scope/Capital approval, or Live/Testnet activation.
 
 ### Fixture and source policy
 
-A future implementation should prefer deterministic fixtures or a dummy provider as the default test/development path. Kraken or other provider-backed depth should be opt-in and read-only, with explicit failure semantics and without authenticated trading capability.
+The current v0 readmodel uses deterministic local fixtures only. Kraken or other provider-backed depth remains out of scope for this slice and would require a separate opt-in, read-only contract with explicit failure semantics and without authenticated trading capability.
 
 The dashboard must not infer orderbook/depth from OHLCV candles. OHLCV and depth are distinct market-data readmodels.
 
