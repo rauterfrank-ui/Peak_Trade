@@ -12,6 +12,12 @@
 
 **[Docs Truth Map](registry/DOCS_TRUTH_MAP.md)** — canonical ops documentation registry and change log (truth-first).
 
+### Recent safe contract anchors (discoverability)
+
+- **PR #3237** — Double Play WebUI **read-only** route contract aligned with the pure-stack **dashboard display map** (docs coherence): [`MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md`](specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md), [`MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md`](specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md). **Display/read-only only**; **no** live authorization; **no** order or execution authority; **no** gate bypass and **no** replacement for Master V2, Double Play execution semantics, Risk, Kill Switch, or execution gates.
+
+- **PR #3238** — Observability **read-model** contract **tests** (`tests/webui/test_market_depth_readmodel_v0.py`, `tests/webui/test_paper_shadow_summary_readmodel_v0.py`): **tests-only** fixture-backed regression/readability anchors; **not** operational readiness, telemetry guarantees, or authorization.
+
 <!-- ops readme status navigation note -->
 - Projektstatus / Navigation: `docs&#47;INDEX.md` ist der zentrale Einstieg für Docs-Navigation.
 - Für kompakten Status-/Lookup-Einstieg nutze `docs&#47;ops&#47;STATUS_MATRIX.md`; für datierten narrativen Kontext nutze `docs&#47;ops&#47;STATUS_OVERVIEW_2026-02-19.md`.
