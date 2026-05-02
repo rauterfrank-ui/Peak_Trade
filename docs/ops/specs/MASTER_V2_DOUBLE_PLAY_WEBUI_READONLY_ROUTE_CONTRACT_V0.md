@@ -2,7 +2,7 @@
 title: "Master V2 Double Play WebUI Read-only Route Contract v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-27"
+last_updated: "2026-05-02"
 docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0"
 ---
 
@@ -212,18 +212,71 @@ bash scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
 
 **Route module:** `pytest` coverage for the JSON handler is anchored in **§9**; extend tests in future PRs if governance adds fields or routes.
 
-## 19. Implementation staging
+## 19. Structured display contract v2 planning
+
+**Status:** planned only — **no** implementation in this docs slice.
+
+This section sketches **additive** JSON keys intended for **`GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json`** in a **later** code PR. Until then, consumers **must** tolerate their **absence**; the existing **exact key surface** asserted in **§9** remains the **canonical shipping** shape until tests and serializers are intentionally updated.
+
+Design goals:
+
+- **Non-authorizing** structured **display-layer** metadata (labels, grouping, ordinal, reproducible severity rank for UX only).
+- **Additive only**: no renaming or removal of current fields in the same versioning step.
+- **No control semantics**: optional keys describe **presentation** assembly, not readiness to trade or operate.
+
+### 19.A Planned top-level keys
+
+| Planned key | Type | Example | Meaning |
+|---|---|---|---|
+| `display_layer_version` | string | `v2` | Display-contract/schema layer — **not** runtime, **not** live version marker |
+| `display_snapshot_meta` | object | (see §19.B) | Provenance/time for **this display assembly** |
+
+### 19.B `display_snapshot_meta` fields
+
+| Field | Type | Guidance |
+|---|---|---|
+| `source_kind` | enum-like string | Examples only: **`fixture_v0`**, **`static_display_v0`**, **`adapter_snapshot_v0`** — describes **construction class**, not scanner/exchange invocation |
+| `source_id` | string | Short, non-secret **label** (fixture id / adapter nickname) — **not** an order, session, or exchange handle |
+| `assembled_at_iso` | ISO-8601 string | **Display assembly timestamp** — **not** a market quotation time, **not** evidence/sign-off timestamp, **not** operational readiness time |
+
+### 19.C Planned per-panel keys
+
+| Planned key | Type | Meaning |
+|---|---|---|
+| `ordinal` | integer | Stable **display ordering** hint only |
+| `panel_group` | enum-like string | One of: **`input`**, **`state`**, **`scope`**, **`strategy`**, **`capital`**, **`composition`** — **UI grouping** only |
+| `severity_rank` | integer | Derived from **`status`** (**`DashboardDisplayStatus`**) for sort/visual tint only |
+
+Suggested derivation map (presentation-only; **not** operational severity):
+
+```text
+display_ready   →  0
+display_warning → 10
+display_missing → 20
+display_blocked → 30
+display_error   → 40
+```
+
+### 19.D Rejected deferred fields / claims (explicit non-goals)
+
+See [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) **§21.B** (*Forbidden / deferred display keys*). This route **must not** introduce actionable trading, side recommendation, readiness promotion, overrides, or control handles via these or any sister keys.
+
+### 19.E Consumer expectations
+
+Implementations MAY emit v2 metadata under this plan; consumers MUST NOT treat absence as permission to bypass **display-only / no-live** disclosures. Existing safety booleans and fail-closed rules in **§10**, **§16**, **§17** survive unchanged.
+
+## 20. Implementation staging
 
 1. **Docs** — this contract + cross-links (current slice).
 2. **Router module** (implemented) — GET JSON handler + `include_router` in `create_app()`; keep **read-only** semantics.
 3. **Tests** — **`TestClient`** **authority-invariant** anchors in **§9**; extend if JSON shape evolves.
 4. **Optional HTML** (future) — template page consuming the same snapshot payload.
 
-## 20. References
+## 21. References
 
 - [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) — producer handoff boundary; **§20** **test anchors** for **`test_contract_32`–`37`** (**non-authority**).
 - [MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md) — **parked** runtime-producer → **downstream display** **prerequisites** (**non-authorizing** **parking map**).
-- [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) — display panels and DTO vocabulary (docs-only).
+- [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) — display panels and DTO vocabulary; **§21** structured display metadata v2 planning (docs-only).
 - [MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md) — pure stack inventory vs runtime.
 - [MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md](MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md) — PRE_LIVE reading index; peer context only.
 - [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) — style reference for read-only dashboard contracts (different surface).

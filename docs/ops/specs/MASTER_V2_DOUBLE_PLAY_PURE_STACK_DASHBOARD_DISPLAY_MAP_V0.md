@@ -2,7 +2,7 @@
 title: "Master V2 Double Play Pure Stack Dashboard Display Map v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-28"
+last_updated: "2026-05-02"
 docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0"
 ---
 
@@ -181,14 +181,48 @@ When code exists, future tests may include:
 
 This docs change: run `validate_docs_token_policy`, `verify_docs_reference_targets`, and `pt_docs_gates_snapshot` as for sibling ops specs.
 
-## 21. Implementation staging
+## 21. Structured display metadata v2 planning
+
+**Status:** docs-only envelope — **not** wired to code yet.
+
+**v2** metadata is **only** an optional **presentation layer** atop the existing **`DoublePlayDashboardDisplaySnapshot` → `snapshot_to_jsonable`** serialization. It **does not** alter **`master_v2`** pure decision meanings, evaluator outcomes, composition logic, Scope/Capital runtime, Risk/KillSwitch semantics, or any trading/execution pathway.
+
+Purpose:
+
+- Reduce **hardcoded rail mapping** in HTML by carrying **ordinal**, **grouping**, **layer version**, **assembly provenance**, and reproducible **`severity_rank`** in JSON (**still non-authoritative**).
+
+### 21.A Derivation table (planned metadata)
+
+| Existing source field / signal | Planned metadata | Planned derivation rule | Safety note |
+|---|---|---|---|
+| Canonical panel fixture order (`futures_input` → … → `composition`) | `ordinal` | Fixed **0‑based or 1‑based** ladder published with spec | Describes **ordering in the snapshot renderer**, **not** priority to trade |
+| Panel `name` key | `panel_group` | Static map: keys → **`input`** / **`state`** / **`scope`** / **`strategy`** / **`capital`** / **`composition`** | Semantic **cluster** for dashboards only |
+| Panel `status` (**`DashboardDisplayStatus`**) | `severity_rank` | Integer ladder (ready 0 … error 40) | **Sorting / UX severity** — **repeat**: **not** operational readiness despite numeric ordering |
+| Server-side display serialization moment | `display_snapshot_meta.assembled_at_iso` | Set when JSON is built for this route/HTML bundle | Assembly clock — **not** market candle time, evidence clock, gate approval |
+
+### 21.B Forbidden / deferred display keys (explicit non-goals)
+
+The following identifiers (and obvious casing variants repurposed as **JSON keys**) are **rejected or deferred indefinitely** until a **separate** governed contract proves they remain non-authorizing:
+
+- `recommended_side`, `active_side`, `target_position`, `order_intent`, `trade_signal`
+- `buy`, `sell`, `go`, `approved`, `ready_to_trade`
+- `enable_live`, `enable_testnet`
+- `risk_override`, `killswitch_override`
+- `scope_approval`, `capital_approval`
+- Order / session / live execution **handles**, exchange API keys, webhook secrets, credential blobs
+
+Operational rule: **`live_authorization` remains false** for this display path (see [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **§17 Fail-closed semantics**); dashboards **cannot** resurrect authority via cleverly named sibling flags.
+
+Cross-link canonical **planned additive key list**: [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) §19 (**Structured display contract v2 planning**).
+
+## 22. Implementation staging
 
 1. **Docs** — this display map and cross-links (current slice).
 2. **Fixture pack** (future) — static JSON under `tests/` or `docs` examples only if governed.
 3. **Adapter** (future) — maps allowed inputs to display snapshot; **no** exchange inside `master_v2`.
 4. **WebUI** (future) — new router + template; operator runbook for local only.
 
-## 22. References
+## 23. References
 
 - [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) — producer boundary: snapshot data must be precomputed **before** read-only display (no fetch in route).
 - [MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md) — **parked** runtime-producer → **downstream display** **prerequisites** (**non-authorizing** **parking map**).
