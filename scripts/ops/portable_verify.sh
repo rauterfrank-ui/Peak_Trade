@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd "$(git rev-parse --show-toplevel)"
+ROOT="$(git rev-parse --show-toplevel)" || {
+  echo "portable_verify: must be run inside a git repository (git rev-parse failed)" >&2
+  exit 2
+}
+cd "$ROOT"
 
 have() { command -v "$1" >/dev/null 2>&1; }
 
