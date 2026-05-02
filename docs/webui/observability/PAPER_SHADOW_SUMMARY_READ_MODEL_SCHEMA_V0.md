@@ -51,6 +51,12 @@ The schema is now backed by a **fixture-only**, stdlib **builder** (offline; exp
 
 **Implementation notes (non-normative):** The builder may support an explicit stamp override type (`PaperShadowPathPolicyV0`) and deterministic `generated_at_utc` for tests via environment variable. These are **not** a public HTTP contract.
 
+### Runtime source boundary (planning)
+
+- WebUI **runtime** bundle configuration and **forbidden** source modes for any future **`GET`** are governed by [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md).
+- **This schema** does **not**, by itself, approve an **endpoint** or **runtime** source.
+- The **fixture-only builder** remains **separate** from an approved **runtime** source until that contract and [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) §11 gates are satisfied.
+
 ## 7. Future endpoint placeholder (unimplemented)
 
 A **possible** future read-only route namespace ( **not** registered; **no** implementation today ):
@@ -287,6 +293,7 @@ The builder MUST NOT emit summary semantics that imply:
 
 ## 19. References
 
+- [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md) — planning-only **runtime source** boundary for a future **`GET`** (server-side config; no browser path).
 - [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) — parent contract, §7–§8, source matrix v0.8b.
 - [**Observability Hub v0**](OBSERVABILITY_HUB_V0.md) — hub boundaries; no wired Paper/Shadow panel today.
 - [**Market Surface v0**](../MARKET_SURFACE_V0.md) — orthogonal read-only display precedent.
