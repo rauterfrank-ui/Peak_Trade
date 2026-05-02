@@ -51,7 +51,7 @@ HTML Pages:
 - GET /r_and_d/experiments/{run_id} (R&D Experiment Detail - Phase 76 kanonisch)
 - GET /r_and_d/comparison (R&D Multi-Run Comparison - Phase 78)
 - GET /market (Market Surface v0 — read-only OHLCV, Close-Line-Chart)
-- GET /market/double-play (Double-Play Market Dashboard v0 — statische Links, kein Fetch)
+- GET /market/double-play (Double-Play Market Dashboard v1 — SSR OHLCV chart + Double-Play display snapshot; kein Fetch)
 - GET /observability (Observability-Hub — read-only Link-/Hinweisleiste, keine neue Autorität)
 
 API Endpoints:
@@ -92,7 +92,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 
 import toml
 from fastapi import FastAPI, HTTPException, Query, Request
@@ -189,8 +189,14 @@ from .ops_ci_health_router import (
 from .execution_watch_api_v0 import router as execution_watch_v0_router
 from .execution_watch_api_v0_2 import router as execution_watch_v0_2_router
 from .paper_shadow_summary_api_v0 import router as paper_shadow_summary_api_v0_router
-from .market_surface import create_market_router
+from .market_surface import (
+    MAX_OHLCV_LIMIT,
+    MARKET_TIMEFRAMES,
+    build_market_payload,
+    create_market_router,
+)
 from .double_play_dashboard_display_json_route_v0 import (
+    build_static_dashboard_display_dict,
     router as double_play_dashboard_display_json_v0_router,
 )
 
@@ -389,6 +395,16 @@ _DP_MARKET_V0_API_HREF = "/api/market/ohlcv?source=dummy&symbol=BTC%2FEUR&timefr
 _DP_DOUBLE_PLAY_DISPLAY_JSON_URL = "/api/master-v2/double-play/dashboard-display.json"
 
 
+def _normalize_market_surface_source_for_double_play(raw: str) -> Literal["kraken", "dummy"]:
+    key = (raw or "dummy").strip().lower()
+    if key not in ("kraken", "dummy"):
+        raise HTTPException(
+            status_code=422,
+            detail=f"source muss 'kraken' oder 'dummy' sein, nicht {raw!r}",
+        )
+    return key  # type: ignore[return-value]
+
+
 def load_live_sessions(limit: int = 10) -> Dict[str, Any]:
     """
     Lädt Live-Sessions für das Dashboard-Template.
@@ -575,23 +591,46 @@ def create_app() -> FastAPI:
         )
 
     @app.get("/market/double-play", response_class=HTMLResponse)
-    async def double_play_market_dashboard_v0_page(request: Request) -> Any:
+    async def double_play_market_dashboard_v1_ssr_page(
+        request: Request,
+        symbol: str = Query("BTC/EUR", description="Trading-Paar, z.B. BTC/EUR"),
+        timeframe: str = Query("1d", description="Timeframe (Kraken); Dummy ignoriert Serie"),
+        limit: int = Query(120, ge=1, le=MAX_OHLCV_LIMIT, description="Bars (max 720)"),
+        source: str = Query("dummy", description="dummy | kraken"),
+    ) -> Any:
         """
-        Double-Play Market Dashboard v0 — static read-only shell.
+        Double-Play Market Dashboard v1 — SSR composition (read-only).
 
-        Links only; no HTTP calls to Market or Double-Play JSON endpoints; no client fetch wired here.
+        Embedded market OHLCV/chart semantics match GET /market; Double-Play panel snapshot uses
+        the same pure-stack dict as GET /api/master-v2/double-play/dashboard-display.json (in-process).
         """
+        if timeframe not in MARKET_TIMEFRAMES:
+            raise HTTPException(
+                status_code=422,
+                detail=f"timeframe muss einer von {list(MARKET_TIMEFRAMES)} sein, nicht {timeframe!r}",
+            )
+        src = _normalize_market_surface_source_for_double_play(source)
+        payload = build_market_payload(symbol=symbol, timeframe=timeframe, limit=limit, source=src)
         proj_status = get_project_status()
+
+        dp_display = build_static_dashboard_display_dict()
+
         return templates.TemplateResponse(
             request,
             "double_play_market_dashboard_v0.html",
             {
                 "status": proj_status,
-                "market_demo_url": _DP_MARKET_V0_DEMO_URL,
-                "market_api_url": _DP_MARKET_V0_API_URL,
-                "market_demo_href": _DP_MARKET_V0_DEMO_HREF,
-                "market_api_href": _DP_MARKET_V0_API_HREF,
+                "payload": payload,
+                "query": {
+                    "symbol": symbol,
+                    "timeframe": timeframe,
+                    "limit": limit,
+                    "source": src,
+                },
+                "dp_display": dp_display,
                 "double_play_json_url": _DP_DOUBLE_PLAY_DISPLAY_JSON_URL,
+                "legacy_demo_href": _DP_MARKET_V0_DEMO_HREF,
+                "legacy_api_href": _DP_MARKET_V0_API_HREF,
             },
         )
 

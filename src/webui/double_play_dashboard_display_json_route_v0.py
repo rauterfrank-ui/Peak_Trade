@@ -381,11 +381,16 @@ def snapshot_to_jsonable(snap: DoublePlayDashboardDisplaySnapshot) -> Dict[str, 
     }
 
 
+def build_static_dashboard_display_dict() -> Dict[str, Any]:
+    """Same JSON-shaped dict as GET /dashboard-display.json (SSR helpers; no HTTP)."""
+    snap = _build_static_double_play_dashboard_display_snapshot_v0()
+    return snapshot_to_jsonable(snap)
+
+
 @router.get("/dashboard-display.json")
 async def get_double_play_dashboard_display_json() -> JSONResponse:
     """Read-only JSON snapshot: representative pure-stack display (fixture-backed)."""
-    snap = _build_static_double_play_dashboard_display_snapshot_v0()
     return JSONResponse(
-        content=snapshot_to_jsonable(snap),
+        content=build_static_dashboard_display_dict(),
         headers={"Cache-Control": "no-store"},
     )
