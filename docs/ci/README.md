@@ -1,11 +1,13 @@
-# CI Documentation
+# CI documentation (index)
 
-Status: PLACEHOLDER (reference target)
+This folder provides a **small entry point** for CI-oriented documentation links. It does **not** describe branch protection, merge requirements, or required GitHub checks, and it does **not** change how workflows run.
 
-This file exists to satisfy `docs-reference-targets-gate`.
+- Navigation for operators and contributors lives in the workflow frontdoor linked below.
+- Typical **local Markdown checks** before a docs change are documented under development tooling (documentation gates).
+- **Workflow definitions** themselves live as YAML under `.github/workflows/` at the repository root; treat those files as authoritative for what Actions executes.
 
-## Intended contents (TBD)
-- Overview of CI workflows and required checks
-- Policy guards and reference-target validation
-- Local verification commands and troubleshooting playbooks
-- Conventions for docs-only PRs and safety gates
+**Links**
+
+- [Workflow documentation frontdoor](../WORKFLOW_FRONTDOOR.md)
+- [Development tooling (includes Documentation gates for Markdown)](../dev/tooling.md)
+- [GitHub Actions workflows directory](../../.github/workflows/)
