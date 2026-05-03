@@ -12,6 +12,8 @@ Dieses Dokument führt dich Schritt für Schritt durch deine erste Stunde mit Pe
 
 **R&D Web-Dashboard (read-only, v0):** Ist-Umfang und Spezifikation in [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md) — keine Job-Trigger aus dem UI.
 
+**Dokumentations-Übersicht:** [Zentrale Übersicht über alle Themenbereiche (Docs-Frontdoor)](README.md)
+
 ---
 
 ## 1. Voraussetzungen
