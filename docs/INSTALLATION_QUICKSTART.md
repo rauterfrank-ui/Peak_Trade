@@ -58,6 +58,7 @@
 
 ### Setup & Configuration
 - [Dev Setup Guide](./DEV_SETUP.md) – Developer-specific setup
+- [Docs overview](./README.md) – topic index for the docs tree
 - [README.md](../README.md) – Project overview + quick start
 - [CLI Cheatsheet](./CLI_CHEATSHEET.md) – Complete CLI reference (18 sections)
 
