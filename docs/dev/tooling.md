@@ -98,7 +98,7 @@ pre-commit run ruff --all-files
 3. **trailing-whitespace** - Remove trailing whitespace
 4. **end-of-file-fixer** - Ensure files end with newline
 5. **check-yaml** - Validate YAML syntax
-6. **check-added-large-files** - Prevent large files (>500KB)
+6. **check-added-large-files** - Warn when staged files exceed **1024 KB** (`args: [--maxkb=1024]` in `.pre-commit-config.yaml`, approx. **1 MB**)
 7. **check-merge-conflict** - Detect merge conflict markers
 
 ## Documentation gates (Markdown)
