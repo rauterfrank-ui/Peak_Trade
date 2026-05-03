@@ -50,6 +50,12 @@ docs/
 │   └── REPO_STRUCTURE.md        # Diese Datei
 │
 ├── dev/                         # 👨‍💻 Developer Guides
+│   ├── PRECOMMIT.md
+│   ├── REPORTING.md
+│   ├── REPORTING_SMOKE.md
+│   ├── RUNNER_INDEX.md
+│   ├── UV_QUICKSTART.md
+│   ├── tooling.md
 │   └── knowledge/               # Knowledge DB Dokumentation
 │       ├── IMPLEMENTATION_SUMMARY_KNOWLEDGE_DB.md
 │       ├── KNOWLEDGE_API_IMPLEMENTATION_SUMMARY.md
