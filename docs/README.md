@@ -68,6 +68,7 @@
 - [DEVELOPER_WORKFLOW_GUIDE.md](DEVELOPER_WORKFLOW_GUIDE.md) – Workflows & automation
 - [DEV_SETUP.md](DEV_SETUP.md) – Development environment
 - [DEV_WORKFLOW_SHORTCUTS.md](DEV_WORKFLOW_SHORTCUTS.md) – Productivity tips
+- [ci/README.md](ci/README.md) – CI documentation index (workflow navigation, local Markdown checks, Actions workflows)
 
 **Extending the System:**
 - [BACKTEST_ENGINE.md](BACKTEST_ENGINE.md) – Extension hooks
