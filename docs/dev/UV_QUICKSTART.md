@@ -2,6 +2,8 @@
 
 [uv](https://github.com/astral-sh/uv) ist ein extrem schneller Python-Paketmanager, geschrieben in Rust.
 
+Für den **Peak Trade–Kanon** (englischer Überblick) siehe [Development Tooling](tooling.md) — dieser Text ist eine **kurze deutschsprachige** Einstiegshilfe und folgt dort demselben **`uv sync`‑first**‑Setup.
+
 ## Installation
 
 ```bash
@@ -15,22 +17,40 @@ brew install uv
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-## Projekt-Setup
+## Projekt-Setup ( empfohlener Pfad )
+
+Das Repository enthält bereits **`pyproject.toml`** und ein **`uv.lock`** (von git versioniert). Arbeite im geklonten Repo-Root:
 
 ```bash
-# Virtual Environment erstellen
-uv venv
+# Abhängigkeiten aus Lockfile/projektbezug installieren (legt bei Bedarf .venv an)
+uv sync
+
+# Mit Dev-/Tooling‑Gruppe (dependency groups / dev extras wie in pyproject.toml)
+uv sync --dev
 
 # Aktivieren
-source .venv/bin/activate  # Linux/macOS
-# .venv\Scripts\activate   # Windows
+source .venv/bin/activate   # Linux/macOS
+# .venv\Scripts\activate    # Windows
+```
 
-# Dependencies aus pyproject.toml installieren
+So bleiben Peak Trade und die englischen **Development Tooling**‑Doku konsistent (**`tooling.md`**: `uv sync`, `uv sync --dev`, `uv add`, `uv add --dev`).
+
+### Legacy / Alternative (ohne Primärstellung)
+
+Ältere Anleitungen nutzen häufig `uv pip`‑ oder klassische‑pip‑Pfade — die sind **nachrangig**, wenn ihr mit **`uv.lock`** arbeiten wollt:
+
+```bash
+# Nachrangig (manuellen venv anlegen — sync legt ihn i. d. R. selbst an)
+uv venv
+source .venv/bin/activate
+
+# Nachrangig: editable install ohne sync-first Narrativ des Repos
 uv pip install -e ".[dev]"
-
-# Oder nur requirements.txt
+# Nur requirements.txt ohne Lockfile-Fokus
 uv pip install -r requirements.txt
 ```
+
+Bevorzuge **immer** Kombination **`uv sync`** plus bei Bedarf **`uv sync --dev`**, wenn keine spezielle Legacy‑Notwendigkeit vorliegt.
 
 ## Tägliche Nutzung
 
@@ -59,23 +79,23 @@ ruff format src tests scripts
 
 ## Paket hinzufügen
 
-```bash
-# Neues Paket installieren
-uv pip install <package-name>
+Wie **`tooling.md`**: Abhängigkeiten ins Projekt über **`uv add`** aufnehmen (nicht `uv pip install` für den Routine-Umgang):
 
-# Dev-Dependency
-uv pip install --extra dev <package-name>
+```bash
+# Runtime-Abhängigkeit
+uv add <package-name>
+
+# Dev-/Gruppenbezug (--dev entspricht dem üblichen Dev-Workflow hier)
+uv add --dev <package-name>
 ```
 
-## Parallel zu pip/poetry
+## Parallel zu klassischem pip
 
-uv arbeitet mit Standard-`pyproject.toml` und `requirements.txt`. Du kannst jederzeit zwischen uv und pip wechseln:
+`uv pip` und `pip` sind weiterhin möglich, verlassen aber den **Sync‑ und Lockfile‑Kanon** mit `uv.lock`. Nutze sie nach Bedarf bei Integration in externe Umgebungen, nicht für den Standard‑Onboardingspfad dieses Repos.
 
 ```bash
-# Mit pip (klassisch)
+# Beispiele (Alternative, nicht Hauptpfad)
 pip install -r requirements.txt
-
-# Mit uv (schneller)
 uv pip install -r requirements.txt
 ```
 
@@ -96,6 +116,5 @@ uv cache clean
 ### Virtualenv neu erstellen
 ```bash
 rm -rf .venv
-uv venv
-uv pip install -e ".[dev]"
+uv sync --dev
 ```
