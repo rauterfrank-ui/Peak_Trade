@@ -4,6 +4,7 @@ Contract test for GET /health (src.webui.health_endpoint): minimal stable JSON s
 
 from __future__ import annotations
 
+from datetime import datetime
 from unittest.mock import patch
 
 import pytest
@@ -38,6 +39,7 @@ def test_health_basic_json_contract_stable_keys(health_client: TestClient) -> No
     assert data["status"] == "healthy"
     assert isinstance(data["timestamp"], str)
     assert len(data["timestamp"]) >= 10
+    assert datetime.fromisoformat(data["timestamp"].replace("Z", "+00:00"))
 
 
 def test_health_basic_json_contract_unhealthy_returns_503(health_client: TestClient) -> None:
@@ -53,3 +55,5 @@ def test_health_basic_json_contract_unhealthy_returns_503(health_client: TestCli
     assert isinstance(data, dict)
     assert data["status"] == "unhealthy"
     assert "timestamp" in data
+    assert isinstance(data["timestamp"], str)
+    assert datetime.fromisoformat(data["timestamp"].replace("Z", "+00:00"))
