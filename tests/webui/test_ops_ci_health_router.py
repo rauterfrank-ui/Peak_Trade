@@ -7,6 +7,7 @@ Smoke tests for the CI Health Panel v0.2 (with snapshot persistence).
 from __future__ import annotations
 
 import json
+from datetime import datetime
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -199,6 +200,11 @@ def test_ci_health_status_json(client: TestClient) -> None:
     assert "summary" in data
     assert "checks" in data
     assert "generated_at" in data
+    assert "server_timestamp_utc" in data
+    assert isinstance(data["generated_at"], str)
+    assert isinstance(data["server_timestamp_utc"], str)
+    assert datetime.fromisoformat(data["generated_at"].replace("Z", "+00:00"))
+    assert datetime.fromisoformat(data["server_timestamp_utc"].replace("Z", "+00:00"))
 
     # Validate summary
     summary = data["summary"]
@@ -637,6 +643,10 @@ def test_ci_health_run_endpoint_returns_200(client: TestClient) -> None:
     assert "checks" in data
     assert "generated_at" in data
     assert "server_timestamp_utc" in data
+    assert isinstance(data["generated_at"], str)
+    assert isinstance(data["server_timestamp_utc"], str)
+    assert datetime.fromisoformat(data["generated_at"].replace("Z", "+00:00"))
+    assert datetime.fromisoformat(data["server_timestamp_utc"].replace("Z", "+00:00"))
     assert "git_head_sha" in data
     assert "app_version" in data
 
