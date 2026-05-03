@@ -10,6 +10,8 @@
 
 Successfully implemented external knowledge databases and learning data integration for AI-based research and decision-making processes in Peak_Trade.
 
+For the **WebUI Knowledge HTTP API** layer see [Knowledge DB API Implementation Summary](./KNOWLEDGE_API_IMPLEMENTATION_SUMMARY.md); for **manual curl smokes** on those endpoints see [Knowledge DB API Smoke Tests](./KNOWLEDGE_API_SMOKE_TESTS.md).
+
 ---
 
 ## What Was Implemented

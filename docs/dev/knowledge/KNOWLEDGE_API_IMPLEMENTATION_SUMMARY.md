@@ -10,6 +10,8 @@
 
 Die Knowledge DB API wurde vollständig implementiert und ist in die Peak_Trade WebUI integriert. Alle geforderten Endpoints, Sicherheitsmechanismen und Tests sind vorhanden und funktionieren.
 
+Für **[manuelle API-Smoke-Tests](./KNOWLEDGE_API_SMOKE_TESTS.md)** sowie die **[übergeordnete Knowledge-/Research-Infrastruktur](./IMPLEMENTATION_SUMMARY_KNOWLEDGE_DB.md)** (über die HTTP-Schicht hinaus) siehe die verlinkten Dateien.
+
 ---
 
 ## ✅ Implementierte Features
