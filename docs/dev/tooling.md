@@ -6,6 +6,8 @@ This document describes the development tools used in Peak Trade.
 
 We use [uv](https://docs.astral.sh/uv/) as our Python package manager. It's fast, reliable, and handles virtual environments automatically.
 
+For a concise **German-language** uv onboarding that mirrors these commands (same **`uv sync` / `uv sync --dev`** path), see [UV Quickstart](UV_QUICKSTART.md).
+
 After syncing dependencies, activate the virtual environment and run tools directly.
 
 ### Installation
