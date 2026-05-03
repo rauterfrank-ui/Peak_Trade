@@ -13,6 +13,7 @@ Fokus:
 - Einfache Erweiterbarkeit: neue Strategien, neue Sizing-Methoden, neue Risk-Module
 - Konfiguration über eine zentrale **`config.toml`**
 - Vollständiges Experiment-Tracking aller Runs
+- [Docs-Übersicht](./README.md) — zentraler Einstieg in die Dokumentation unter `docs/`
 
 ---
 
