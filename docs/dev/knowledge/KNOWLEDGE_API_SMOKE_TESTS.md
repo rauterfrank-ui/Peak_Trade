@@ -2,6 +2,8 @@
 
 Manuelle Smoke Tests für die Knowledge DB WebUI API Endpoints.
 
+Siehe **[Knowledge DB API Implementation Summary](./KNOWLEDGE_API_IMPLEMENTATION_SUMMARY.md)** zur Architektur und zum Flag-Gating. Siehe **[Implementation Summary: Knowledge Databases](./IMPLEMENTATION_SUMMARY_KNOWLEDGE_DB.md)** für den Überblick über den `src/knowledge/`-Stack jenseits der HTTP-Schicht.
+
 ## Prerequisites
 
 Starte die WebUI:
