@@ -73,6 +73,23 @@ class TestTokenClassification:
         assert validator._classify_token("docs/update-readme") == TokenType.BRANCH_NAME
         assert validator._classify_token("fix/bug-123") == TokenType.BRANCH_NAME
 
+    @pytest.mark.parametrize(
+        "token",
+        (
+            "docs/manual.md",
+            "feat/patch.py",
+            "feature/extra/path",
+        ),
+    )
+    def test_classify_path_with_extension_or_multi_segment_not_branch_name(
+        self,
+        validator: DocsTokenPolicyValidator,
+        token: str,
+    ) -> None:
+        """Repo-like suffixes block BRANCH_NAME; multi-segment paths miss the branch regex."""
+
+        assert validator._classify_token(token) == TokenType.ILLUSTRATIVE
+
     def test_classify_local_path(self, validator):
         """Local paths should be classified as LOCAL_PATH."""
         assert validator._classify_token("./scripts/run.py") == TokenType.LOCAL_PATH
