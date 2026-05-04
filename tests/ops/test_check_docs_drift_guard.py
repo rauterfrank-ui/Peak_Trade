@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+import subprocess
+import sys
 
 from ops.truth import TruthStatus, evaluate_docs_drift
 
@@ -76,9 +78,6 @@ def test_script_exists() -> None:
 
 
 def test_cli_reports_git_diff_failure_for_missing_base_ref(tmp_path: Path) -> None:
-    import subprocess
-import sys
-
     repo = tmp_path / "repo"
     repo.mkdir()
     subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
@@ -94,7 +93,12 @@ import sys
     result = subprocess.run(
         [
             sys.executable,
-            str(Path(__file__).resolve().parents[2] / "scripts" / "ops" / "check_docs_drift_guard.py"),
+            str(
+                Path(__file__).resolve().parents[2]
+                / "scripts"
+                / "ops"
+                / "check_docs_drift_guard.py"
+            ),
             "--base",
             "definitely_missing_base_ref_for_contract_probe",
             "--repo-root",
