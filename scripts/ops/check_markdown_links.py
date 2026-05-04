@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import argparse
-import os
 import re
 import sys
 from dataclasses import dataclass
@@ -122,9 +121,19 @@ def _read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace")
 
 
+def _is_resolved_path_under_root(path: Path, root: Path) -> bool:
+    """True if path is the root directory or contained in it (both paths resolved)."""
+    try:
+        path.resolve().relative_to(root)
+        return True
+    except ValueError:
+        return False
+
+
 def check_links(root: Path, paths: Sequence[str]) -> List[BrokenLink]:
     broken: List[BrokenLink] = []
 
+    root = root.resolve()
     md_files = sorted({p for p in _iter_markdown_files(root, paths)})
 
     # cache anchors per file
@@ -172,6 +181,16 @@ def check_links(root: Path, paths: Sequence[str]) -> List[BrokenLink]:
 
             # Resolve referenced file
             ref_path = (src_dir / path_part).resolve()
+
+            if not _is_resolved_path_under_root(ref_path, root):
+                broken.append(
+                    BrokenLink(
+                        src_rel,
+                        raw_target,
+                        "target escapes repository root",
+                    )
+                )
+                continue
 
             # Allow links to directories? (rare) -> treat as broken
             if not ref_path.exists():
