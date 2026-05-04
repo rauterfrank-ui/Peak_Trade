@@ -311,6 +311,10 @@ class TrafficLightMonitor:
 
     def __post_init__(self):
         """Initialize monitoring state."""
+        if self.window <= 0:
+            raise ValueError(f"window must be > 0, got {self.window}")
+        if not 0 < self.alpha < 1:
+            raise ValueError(f"alpha must be in (0, 1), got {self.alpha}")
         self.violations: list[bool] = []
         self.current_zone: Optional[BaselZone] = None
 
