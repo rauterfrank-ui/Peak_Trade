@@ -163,6 +163,11 @@ def label_combined_regime(
     Kombiniert Trend- und Vol-Regime zu einem String-Label pro Zeitstempel.
     Beispiel: TREND_UP_HIGH_VOL, RANGE_LOW_VOL, ...
     """
+    if not trend_labels.index.equals(vol_labels.index):
+        raise ValueError(
+            "trend and volatility label indexes must match "
+            f"(trend len={len(trend_labels.index)}, vol len={len(vol_labels.index)})"
+        )
     trend = trend_labels.astype("string").fillna("UNKNOWN")
     vol = vol_labels.astype("string").fillna("UNKNOWN")
 
