@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+import json
 from dataclasses import asdict, is_dataclass
 from typing import Any
 
 
+def _jsonable_sort_key(value: Any) -> str:
+    return json.dumps(value, sort_keys=True, default=str, ensure_ascii=True)
+
+
 def to_jsonable_v1(obj: Any) -> Any:
-    """Convert dataclasses / Pathlike / Enum into JSON-able structures.
+    """Convert dataclasses / Pathlike / Enum / set / frozenset into JSON-able structures.
 
     Boundary contract: ops entrypoints should return only JSON-able data.
     """
@@ -21,6 +26,9 @@ def to_jsonable_v1(obj: Any) -> Any:
         return {str(k): to_jsonable_v1(v) for k, v in obj.items()}
     if isinstance(obj, (list, tuple)):
         return [to_jsonable_v1(x) for x in obj]
+    if isinstance(obj, (set, frozenset)):
+        converted = [to_jsonable_v1(x) for x in obj]
+        return sorted(converted, key=_jsonable_sort_key)
     try:
         import os
 
