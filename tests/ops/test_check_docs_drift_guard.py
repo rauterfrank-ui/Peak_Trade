@@ -77,6 +77,7 @@ def test_script_exists() -> None:
 
 def test_cli_reports_git_diff_failure_for_missing_base_ref(tmp_path: Path) -> None:
     import subprocess
+import sys
 
     repo = tmp_path / "repo"
     repo.mkdir()
@@ -92,16 +93,14 @@ def test_cli_reports_git_diff_failure_for_missing_base_ref(tmp_path: Path) -> No
 
     result = subprocess.run(
         [
-            "uv",
-            "run",
-            "python",
-            "scripts/ops/check_docs_drift_guard.py",
+            sys.executable,
+            str(Path(__file__).resolve().parents[2] / "scripts" / "ops" / "check_docs_drift_guard.py"),
             "--base",
             "definitely_missing_base_ref_for_contract_probe",
             "--repo-root",
             str(repo),
             "--config",
-            "config/ops/docs_truth_map.yaml",
+            str(Path(__file__).resolve().parents[2] / "config" / "ops" / "docs_truth_map.yaml"),
         ],
         cwd=Path(__file__).resolve().parents[2],
         text=True,
