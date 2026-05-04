@@ -2,7 +2,7 @@
 title: "Master V2 Double Play Pure Display Baseline Closeout Index v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-04-28"
+last_updated: "2026-05-04"
 docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_PURE_DISPLAY_BASELINE_CLOSEOUT_INDEX_V0"
 ---
 
@@ -45,7 +45,7 @@ Relevant **test anchors** (non-exhaustive listing; see contracts for exact asser
 
 - `tests&#47;trading&#47;master_v2&#47;test_double_play_pure_stack_contract.py` — cross-module **`test_contract_32`–`37`** (producer adapter → **pure stack** → dashboard display).
 - `tests&#47;trading&#47;master_v2&#47;test_double_play_futures_input_producer.py` — adapter-focused coverage (peer to **§20**).
-- `tests&#47;trading&#47;master_v2&#47;test_double_play_dashboard_display.py` — dashboard DTO and **route-independent** **`snapshot_to_jsonable`** **JSON serialization** **test anchors** (requires FastAPI import path for the mapper).
+- `tests&#47;trading&#47;master_v2&#47;test_double_play_dashboard_display.py` — dashboard DTO and **route-independent** **`snapshot_to_jsonable`** **JSON serialization** **test anchors** (import **`snapshot_to_jsonable`** from **`trading.master_v2.double_play_dashboard_display`; **no FastAPI required**).
 - `tests&#47;webui&#47;test_double_play_dashboard_display_json_route.py` — WebUI JSON route **authority-invariant** **test anchors** (`TestClient`).
 
 These **test anchors** do **not** prove operational runtime integration, HTML/control UI, or execution permission.

@@ -101,6 +101,18 @@ def _collect_object_keys(obj, out: set[str]) -> None:
             _collect_object_keys(item, out)
 
 
+def test_snapshot_to_jsonable_route_module_delegates_to_core_module() -> None:
+    """Route module re-exports the canonical mapper from trading.master_v2 (PR #3300 layering)."""
+    from trading.master_v2.double_play_dashboard_display import (
+        snapshot_to_jsonable as core_snapshot_to_jsonable,
+    )
+    from src.webui.double_play_dashboard_display_json_route_v0 import (
+        snapshot_to_jsonable as route_snapshot_to_jsonable,
+    )
+
+    assert route_snapshot_to_jsonable is core_snapshot_to_jsonable
+
+
 @pytest.fixture
 def client() -> TestClient:
     from src.webui.app import create_app

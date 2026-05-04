@@ -2,7 +2,7 @@
 docs_token: DOCS_TOKEN_MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0
 status: draft
 scope: docs-only, non-authorizing dashboard and cockpit observer surface inventory
-last_updated: 2026-04-27
+last_updated: 2026-05-04
 ---
 
 # Master V2 Dashboard / Cockpit / Observer Surface Inventory V0
@@ -38,10 +38,10 @@ For this inventory, an **observer** **surface** is a read, **display** **,** **s
 
 | Surface / Path | Category | Observes | Consumer | Output Type | Authority Boundary |
 | --- | --- | --- | --- | --- | --- |
-| `src/webui/double_play_dashboard_display_json_route_v0.py` | Dashboard / Cockpit | Master V2 **Double** **Play** **dashboard** DTO, static **fixture** path | **operator** / **reviewer** | read-only **JSON** **route** | **Does** not place **orders**; not **live** **authorization**; not **signoff** |
+| `src/webui/double_play_dashboard_display_json_route_v0.py` | Dashboard / Cockpit | Double Play **GET** JSON **route** **+** static **fixture** **helpers** **;** **`snapshot_to_jsonable`** **canonical** **`→`** **`src/trading/master_v2/double_play_dashboard_display.py`** **(route** **imports** / **re-exports**) | **operator** / **reviewer** | read-only **JSON** **route** | **Does** not place **orders**; not **live** **authorization**; not **signoff** |
 | `src/webui/ops_cockpit.py` | Dashboard / Cockpit | ops **truth** / limits / run state, **Double** **Play** as read-only **context** | **operator** | **HTML** + **payload** | **Observation**-first; not **control** **authority** |
 | `src/webui/app.py` | Dashboard / Cockpit | **Route** **graph** (cockpit + **Double** **Play** read-only **JSON** **+** **others) **| **operator** / **dev** | **Python** | **Wiring** is **not** **trading** **permission** **by** **itself** **. |
-| `src/trading/master_v2/double_play_dashboard_display.py` | Dashboard / Cockpit | **pure** **Double** **Play** **dashboard** **display** DTOs | **webui** / **tests** | **Python** | DTOs are **not** an **order** path; **authority** in **execution** / **gate** code |
+| `src/trading/master_v2/double_play_dashboard_display.py` | Dashboard / Cockpit | **pure** **Double** **Play** **dashboard** **DTOs** **;** **`snapshot_to_jsonable`** (**JSON v2**) | **webui** / **tests** | **Python** | DTOs are **not** an **order** path; **authority** in **execution** / **gate** code |
 | `docs/ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md` | Dashboard / Cockpit | **GET** read-only **JSON** **route** **(contract) **| **author** / **reviewer** | **Markdown** | **Contract**; **not** **proof** of **wiring** or **live** **readiness** **alone** **. |
 | `docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md` | Dashboard / Cockpit | **pure** **stack** **vs** **display** **mapping** (Double **Play) **| **author** / **planning** | **Markdown** | **Map**; not **runtime** **signoff** **. |
 | `docs/ops/specs/OPS_SUITE_DASHBOARD_VNEXT_SPEC.md` | Dashboard / Cockpit | **ops**-**suite** **dashboard** (vNext **plan) **| **operator** / **author** | **Markdown** | **Planning**; not **production**-**ready** from **text** **alone** **. |
@@ -99,7 +99,7 @@ For this inventory, an **observer** **surface** is a read, **display** **,** **s
 
 ## 7. Relationship to Master V2 / Double Play
 
-- **Core** **Double** **Play** code lives in **`src/trading/master_v2/`** and **`src/ops/double_play/`** **(for** **operator**-**facing** **helpers) **,** in **addition** to **the** **WebUI** **read-only** **JSON** **router** [**double_play_dashboard_display_json_route_v0.py**](../../../src/webui/double_play_dashboard_display_json_route_v0.py) **.**
+- **Core** **Double** **Play** **display** **code** lives in **`src/trading/master_v2/`** **(including** **`snapshot_to_jsonable`** **in **`double_play_dashboard_display.py`**)** **and** **`src/ops/double_play/`** **(for** **operator**-**facing** **helpers)** **.** **The** **WebUI** **read-only** **JSON** **router** [**double_play_dashboard_display_json_route_v0.py**](../../../src/webui/double_play_dashboard_display_json_route_v0.py) **hosts** **the** **GET** **handler** **and** **static** **fixture** **helpers** **and** **imports** / **re-exports** **`snapshot_to_jsonable`** **from **`trading.master_v2`** **.**
 - **Read-only** **contract** **: [**MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0**](./MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) **.**
 - **Bull** / **Bear** **specialist** and **protected** **Double** **Play** **semantics** are **not** **changed** **by** **this** **inventory** **.**
 
