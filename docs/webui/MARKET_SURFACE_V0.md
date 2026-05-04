@@ -170,7 +170,7 @@ The `depth` object includes:
 
 - `bids`
 - `asks`
-- `levels_returned`
+- `levels_returned` — object shaped as `{ "bids": n, "asks": n }`; counts reflect the bid/ask levels returned by the current offline builder after sorting and `level_limit` truncation.
 - `level_limit`
 
 Each bid/ask level includes:
