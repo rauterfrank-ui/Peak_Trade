@@ -81,6 +81,24 @@ def test_load_experiments_from_directory_top_level_json_only(tmp_path: Path) -> 
     assert out[0]["_filename"] == "root.json"
 
 
+def test_load_experiments_equal_timestamp_uses_deterministic_filename_order(
+    tmp_path: Path,
+) -> None:
+    """Equal ``experiment.timestamp`` → stable sort preserves sorted-glob filename order."""
+
+    ts = "20240601_120000"
+    first = _minimal_exp(ts, 1.0, 0.1, "a_first.json")
+    second = _minimal_exp(ts, 2.0, 0.2, "b_second.json")
+    # Write lexicographically later file first: result order must still follow sorted(glob).
+    (tmp_path / "b_second.json").write_text(json.dumps(second), encoding="utf-8")
+    (tmp_path / "a_first.json").write_text(json.dumps(first), encoding="utf-8")
+
+    out = load_experiments_from_directory(tmp_path)
+    assert len(out) == 2
+    assert [x["_filename"] for x in out] == ["a_first.json", "b_second.json"]
+    assert out[0]["experiment"]["timestamp"] == ts == out[1]["experiment"]["timestamp"]
+
+
 def test_sort_by_sharpe_desc() -> None:
     a = _minimal_exp("20240101_120000", 1.0, 0.5, "a.json")
     b = _minimal_exp("20240102_120000", 3.0, 0.1, "b.json")
