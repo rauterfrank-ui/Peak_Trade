@@ -37,6 +37,23 @@ def test_adapt_with_evaluator() -> None:
     assert r.local_flow.packet == r.packet
 
 
+def test_adapt_with_evaluator_with_snapshot_false_omits_local_flow_snapshot() -> None:
+    """Adapter forwards ``with_snapshot=False`` into local flow; no decision snapshot dict is attached.
+
+    Offline contract only — not a readiness/gate/authority claim.
+    """
+    raw = build_master_v2_happy_scenario_raw_input_v1()
+    r = adapt_inputs_to_master_v2_flow_v1(raw, run_evaluator=True, with_snapshot=False)
+    assert r.ok is True
+    assert r.rejection_reason is None
+    assert r.packet is not None
+    assert r.local_flow is not None
+    assert r.local_flow.flow_ok is True
+    assert r.local_flow.snapshot is None
+    assert r.local_flow.rejection_reason is None
+    assert r.local_flow.packet == r.packet
+
+
 def test_optional_layers_minimal_raw() -> None:
     c = get_master_v2_scenario_case_v1(SCENARIO_OPTIONAL_LAYERS_MISSING)
     p = c.packet
