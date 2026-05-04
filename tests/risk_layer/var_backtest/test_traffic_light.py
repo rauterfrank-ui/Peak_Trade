@@ -98,6 +98,18 @@ def test_traffic_light_recommendation_is_non_empty_and_avoids_live_authority_cla
         assert bad not in lowered
 
 
+@pytest.mark.parametrize("window", [0, -1])
+def test_traffic_light_monitor_rejects_non_positive_window(window: int) -> None:
+    with pytest.raises(ValueError, match="window"):
+        TrafficLightMonitor(alpha=ALPHA_99, window=window)
+
+
+@pytest.mark.parametrize("alpha", [0.0, 1.0, -0.01, 1.01])
+def test_traffic_light_monitor_rejects_invalid_alpha(alpha: float) -> None:
+    with pytest.raises(ValueError, match="alpha"):
+        TrafficLightMonitor(alpha=alpha, window=5)
+
+
 def test_traffic_light_monitor_update_matches_basel_traffic_light() -> None:
     monitor = TrafficLightMonitor(alpha=ALPHA_99, window=5)
     r1 = monitor.update(realized_loss=1.0, var_estimate=0.5)  # violation
