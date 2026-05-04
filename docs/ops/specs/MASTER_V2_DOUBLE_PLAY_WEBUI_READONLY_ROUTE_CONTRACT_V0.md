@@ -2,7 +2,7 @@
 title: "Master V2 Double Play WebUI Read-only Route Contract v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-05-02"
+last_updated: "2026-05-04"
 docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0"
 ---
 
@@ -220,7 +220,7 @@ bash scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
 
 ## 19. Structured display contract v2
 
-**Status:** **Implemented** — the read-only route and **`snapshot_to_jsonable`** expose **additive display-layer metadata** (**§19.A–§19.C**); **Master-v2 runtime / evaluator semantics** remain unchanged.
+**Status:** **Implemented** — the read-only route returns JSON bodies built with **`snapshot_to_jsonable`** (canonical implementation in **`src/trading/master_v2/double_play_dashboard_display.py`**; this route module **imports**/**re-exports** the same callable), exposing **additive display-layer metadata** (**§19.A–§19.C**); **Master-v2 runtime / evaluator semantics** remain unchanged.
 
 Older consumers **must** tolerate **presence or absence** of these keys depending on serializer version (current tests assert presence for the shipping route mapper). Existing **authority / display-only booleans** in **§10**, **§16**, **§17** are unchanged.
 
@@ -269,12 +269,12 @@ See [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](MASTER_V2_DOU
 
 ### 19.E Consumer expectations
 
-The shipping GET JSON mapper **emits v2 metadata** (**§19.A–§19.C**); older clients **must** tolerate **presence or absence** across versions — treat **presence** strictly as display-layer cues. Consumers MUST NOT treat **`severity_rank`** or **`panel_group`** as permission to bypass **display-only / no-live** disclosures. Existing safety booleans and fail-closed rules in **§10**, **§16**, **§17** survive unchanged.
+The shipping GET JSON handler **returns** a response body produced by **`snapshot_to_jsonable`**, which **emits v2 metadata** (**§19.A–§19.C**); older clients **must** tolerate **presence or absence** across versions — treat **presence** strictly as display-layer cues. Consumers MUST NOT treat **`severity_rank`** or **`panel_group`** as permission to bypass **display-only / no-live** disclosures. Existing safety booleans and fail-closed rules in **§10**, **§16**, **§17** survive unchanged.
 
 ## 20. Implementation staging
 
 1. **Docs** — this contract + cross-links (maintained with serializers).
-2. **Router module** (implemented) — GET JSON handler + `include_router` in `create_app()`; **`snapshot_to_jsonable`** emits **structured display metadata v2** — keep **read-only** semantics.
+2. **Router module** (implemented) — GET JSON handler + `include_router` in `create_app()`; handler uses **`snapshot_to_jsonable`** imported from **`trading.master_v2.double_play_dashboard_display`** (**structured display metadata v2**) — keep **read-only** semantics.
 3. **Tests** — **`TestClient`** **authority-invariant** anchors in **§9**; extend if JSON shape evolves beyond **§19**.
 4. **Optional HTML** (future) — template page consuming the same snapshot payload.
 
@@ -282,7 +282,7 @@ The shipping GET JSON mapper **emits v2 metadata** (**§19.A–§19.C**); older 
 
 - [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) — producer handoff boundary; **§20** **test anchors** for **`test_contract_32`–`37`** (**non-authority**).
 - [MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md) — **parked** runtime-producer → **downstream display** **prerequisites** (**non-authorizing** **parking map**).
-- [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) — display panels and DTO vocabulary; **§21** structured display metadata v2 (**implemented** in **`snapshot_to_jsonable`** **/** **read-only JSON route** mapper).
+- [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) — display panels and DTO vocabulary; **§21** structured display metadata v2 (**canonical** **`snapshot_to_jsonable`** in **`master_v2`**; read-only JSON route **imports**/**re-exports** that mapper).
 - [MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md) — pure stack inventory vs runtime.
 - [MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md](MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md) — PRE_LIVE reading index; peer context only.
 - [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) — style reference for read-only dashboard contracts (different surface).

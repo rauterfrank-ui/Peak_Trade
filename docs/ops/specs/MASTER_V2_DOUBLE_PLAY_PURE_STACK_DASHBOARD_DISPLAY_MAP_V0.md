@@ -2,7 +2,7 @@
 title: "Master V2 Double Play Pure Stack Dashboard Display Map v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-05-02"
+last_updated: "2026-05-04"
 docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0"
 ---
 
@@ -191,7 +191,7 @@ This docs change: run `validate_docs_token_policy`, `verify_docs_reference_targe
 
 ## 21. Structured display metadata v2
 
-**Status:** **Implemented** in **`src/webui/double_play_dashboard_display_json_route_v0.py`** (**`snapshot_to_jsonable`** + GET JSON route mapper). **Pure** **`DoublePlayDashboardDisplaySnapshot`** dataclasses in **`master_v2`** are unchanged.
+**Status:** **Implemented** — **`snapshot_to_jsonable`** (structured display metadata v2) lives canonically in **`src/trading/master_v2/double_play_dashboard_display.py`**. **`src/webui/double_play_dashboard_display_json_route_v0.py`** hosts the read-only GET JSON route and fixture/SSR helpers and **imports**/**re-exports** **`snapshot_to_jsonable`** for compatibility; routing payload semantics are unchanged. **Pure** **`DoublePlayDashboardDisplaySnapshot`** dataclasses in **`master_v2`** are unchanged as DTO carriers.
 
 **v2** metadata is an optional **presentation layer** atop **`DoublePlayDashboardDisplaySnapshot` → `snapshot_to_jsonable`** serialization only. It **does not** alter **`master_v2`** pure decision meanings, evaluator outcomes, composition logic, Scope/Capital runtime, Risk/KillSwitch semantics, or any trading/execution pathway.
 
@@ -228,7 +228,7 @@ Cross-link canonical **additive key list**: [MASTER_V2_DOUBLE_PLAY_WEBUI_READONL
 1. **Docs** — this display map and cross-links (current slice).
 2. **Fixture pack** (future) — static JSON under `tests/` or `docs` examples only if governed.
 3. **Adapter** (future) — maps allowed inputs to display snapshot; **no** exchange inside `master_v2`.
-4. **WebUI** — read-only **`GET`** JSON mapper implemented (**structured display metadata v2** in **`snapshot_to_jsonable`**); HTML template consumption remains future work.
+4. **WebUI** — read-only **`GET`** JSON route implemented; body built via canonical **`snapshot_to_jsonable`** (**structured display metadata v2**); HTML template consumption remains future work.
 
 ## 23. References
 
