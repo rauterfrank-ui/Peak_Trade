@@ -75,7 +75,7 @@ class MetricSnapshot:
         return {
             "name": self.name,
             "value": self.value,
-            "labels": self.labels,
+            "labels": dict(self.labels),
             "timestamp": self.timestamp.isoformat(),
         }
 

@@ -11,6 +11,7 @@ Verwendung:
     )
 """
 
+import copy
 import os
 from pathlib import Path
 from typing import Optional, Dict, Any, List
@@ -74,7 +75,8 @@ class StrategyConfig:
 
     def to_dict(self) -> Dict[str, Any]:
         """Merged Dict aller Parameter."""
-        return {**self.defaults, **self.params}
+        merged = {**self.defaults, **self.params}
+        return copy.deepcopy(merged)
 
 
 class ConfigRegistry:
