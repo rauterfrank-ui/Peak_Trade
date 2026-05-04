@@ -84,6 +84,126 @@ def test_complete_paper_only_still_blocks_on_testnet() -> None:
     assert_non_authorizing(payload)
 
 
+def test_blocked_when_only_paper_evidence_missing() -> None:
+    proc = run_report(
+        "--paper-robustness-present",
+        "--paper-stress-present",
+        "--testnet-evidence-present",
+        "--testnet-robustness-present",
+        "--testnet-stress-present",
+    )
+    payload = parse_payload(proc)
+
+    assert proc.returncode == 0
+    assert payload["status"] == "BLOCKED"
+    assert payload["blockers"] == ["paper.evidence_missing"]
+    assert_non_authorizing(payload)
+
+
+def test_blocked_when_only_testnet_evidence_missing() -> None:
+    proc = run_report(
+        "--paper-evidence-present",
+        "--paper-robustness-present",
+        "--paper-stress-present",
+        "--testnet-robustness-present",
+        "--testnet-stress-present",
+    )
+    payload = parse_payload(proc)
+
+    assert proc.returncode == 0
+    assert payload["status"] == "BLOCKED"
+    assert payload["blockers"] == ["testnet.evidence_missing"]
+    assert_non_authorizing(payload)
+
+
+def test_blocked_when_robustness_and_stress_missing_but_evidence_present() -> None:
+    proc = run_report(
+        "--paper-evidence-present",
+        "--testnet-evidence-present",
+    )
+    payload = parse_payload(proc)
+
+    assert proc.returncode == 0
+    assert payload["status"] == "BLOCKED"
+    assert payload["blockers"] == [
+        "paper.robustness_missing",
+        "paper.stress_missing",
+        "testnet.robustness_missing",
+        "testnet.stress_missing",
+    ]
+    assert payload["paper"] == {
+        "evidence_present": True,
+        "robustness_present": False,
+        "stress_present": False,
+    }
+    assert payload["testnet"] == {
+        "evidence_present": True,
+        "robustness_present": False,
+        "stress_present": False,
+    }
+    assert_non_authorizing(payload)
+
+
+def test_blocked_when_only_paper_evidence_missing() -> None:
+    proc = run_report(
+        "--paper-robustness-present",
+        "--paper-stress-present",
+        "--testnet-evidence-present",
+        "--testnet-robustness-present",
+        "--testnet-stress-present",
+    )
+    payload = parse_payload(proc)
+
+    assert proc.returncode == 0
+    assert payload["status"] == "BLOCKED"
+    assert payload["blockers"] == ["paper.evidence_missing"]
+    assert_non_authorizing(payload)
+
+
+def test_blocked_when_only_testnet_evidence_missing() -> None:
+    proc = run_report(
+        "--paper-evidence-present",
+        "--paper-robustness-present",
+        "--paper-stress-present",
+        "--testnet-robustness-present",
+        "--testnet-stress-present",
+    )
+    payload = parse_payload(proc)
+
+    assert proc.returncode == 0
+    assert payload["status"] == "BLOCKED"
+    assert payload["blockers"] == ["testnet.evidence_missing"]
+    assert_non_authorizing(payload)
+
+
+def test_blocked_when_robustness_and_stress_missing_but_evidence_present() -> None:
+    proc = run_report(
+        "--paper-evidence-present",
+        "--testnet-evidence-present",
+    )
+    payload = parse_payload(proc)
+
+    assert proc.returncode == 0
+    assert payload["status"] == "BLOCKED"
+    assert payload["blockers"] == [
+        "paper.robustness_missing",
+        "paper.stress_missing",
+        "testnet.robustness_missing",
+        "testnet.stress_missing",
+    ]
+    assert payload["paper"] == {
+        "evidence_present": True,
+        "robustness_present": False,
+        "stress_present": False,
+    }
+    assert payload["testnet"] == {
+        "evidence_present": True,
+        "robustness_present": False,
+        "stress_present": False,
+    }
+    assert_non_authorizing(payload)
+
+
 def test_complete_paper_and_testnet_without_external_decision_is_ready_for_review() -> None:
     proc = run_report(
         "--paper-evidence-present",
