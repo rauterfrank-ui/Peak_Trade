@@ -73,3 +73,44 @@ def test_script_exists() -> None:
     root = Path(__file__).resolve().parents[2]
     script = root / "scripts" / "ops" / "check_docs_drift_guard.py"
     assert script.is_file()
+
+
+def test_cli_reports_git_diff_failure_for_missing_base_ref(tmp_path: Path) -> None:
+    import subprocess
+
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+    subprocess.run(["git", "config", "user.email", "test@example.invalid"], cwd=repo, check=True)
+    subprocess.run(["git", "config", "user.name", "Test User"], cwd=repo, check=True)
+    (repo / "docs").mkdir()
+    (repo / "src").mkdir()
+    (repo / "docs" / "README.md").write_text("# Probe\n", encoding="utf-8")
+    (repo / "src" / "probe.py").write_text('print("probe")\n', encoding="utf-8")
+    subprocess.run(["git", "add", "."], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "init"], cwd=repo, check=True)
+
+    result = subprocess.run(
+        [
+            "uv",
+            "run",
+            "python",
+            "scripts/ops/check_docs_drift_guard.py",
+            "--base",
+            "definitely_missing_base_ref_for_contract_probe",
+            "--repo-root",
+            str(repo),
+            "--config",
+            "config/ops/docs_truth_map.yaml",
+        ],
+        cwd=Path(__file__).resolve().parents[2],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 2
+    assert result.stdout == ""
+    assert "ERR: git diff failed (exit 128)." in result.stderr
+    assert "definitely_missing_base_ref_for_contract_probe...HEAD" in result.stderr
+    assert "Hint: ensure the base ref exists" in result.stderr
