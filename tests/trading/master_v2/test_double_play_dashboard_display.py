@@ -20,6 +20,7 @@ from trading.master_v2.double_play_composition import (
     compose_double_play_decision,
 )
 from trading.master_v2.double_play_dashboard_display import (
+    DISPLAY_JSON_LAYER_VERSION,
     DOUBLE_PLAY_DASHBOARD_DISPLAY_LAYER_VERSION,
     DashboardDisplayStatus,
     build_dashboard_display_snapshot,
@@ -415,7 +416,7 @@ def _assert_json_native_values(obj: object) -> None:
 
 def _assert_serialized_dashboard_authority_invariants(data: dict) -> None:
     assert set(data.keys()) == _EXPECTED_JSON_TOP_LEVEL_KEYS
-    assert data["display_layer_version"] == "v2"
+    assert data["display_layer_version"] == DISPLAY_JSON_LAYER_VERSION
     meta = data["display_snapshot_meta"]
     assert set(meta.keys()) == _EXPECTED_JSON_DISPLAY_SNAPSHOT_META_KEYS
     assert isinstance(meta["assembled_at_iso"], str)
@@ -443,6 +444,22 @@ def _assert_serialized_dashboard_authority_invariants(data: dict) -> None:
 
     _assert_json_native_values(data)
     json.dumps(data)
+
+
+def test_display_json_layer_version_and_metadata_contract_v0() -> None:
+    """Structured display JSON metadata aligns with ``DISPLAY_JSON_LAYER_VERSION`` (non-authority).
+
+    Locks core constants vs ``snapshot_to_jsonable`` output without asserting ``assembled_at_iso`` value.
+    """
+    assert DISPLAY_JSON_LAYER_VERSION == "v2"
+    payload = snapshot_to_jsonable(build_dashboard_display_snapshot())
+    assert payload["display_layer_version"] == DISPLAY_JSON_LAYER_VERSION
+    meta = payload["display_snapshot_meta"]
+    assert set(meta.keys()) == _EXPECTED_JSON_DISPLAY_SNAPSHOT_META_KEYS
+    assert meta["source_kind"] == "static_display_v0"
+    assert meta["source_id"] == "webui_dashboard_display_static_v0"
+    assert isinstance(meta["assembled_at_iso"], str)
+    assert meta["assembled_at_iso"].strip() != ""
 
 
 def test_snapshot_to_jsonable_full_stack_matches_route_contract() -> None:
