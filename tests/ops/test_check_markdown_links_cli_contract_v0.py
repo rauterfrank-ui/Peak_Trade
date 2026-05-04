@@ -42,6 +42,39 @@ def test_cli_exit_0_when_no_broken_internal_links(tmp_path: Path) -> None:
     assert p.stderr == ""
 
 
+def test_cli_exit_1_when_target_escapes_repository_root(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    docs = repo / "docs"
+    docs.mkdir(parents=True, exist_ok=True)
+    outside = tmp_path / "outside"
+    outside.mkdir(parents=True, exist_ok=True)
+    target = outside / "target.md"
+    target.write_text("# Outside\n\n", encoding="utf-8")
+    (docs / "index.md").write_text(
+        "# Index\n\n[escape](../../outside/target.md)\n",
+        encoding="utf-8",
+    )
+
+    p = _run_cli(repo, "docs/index.md")
+
+    assert p.returncode == 1
+    assert "❌ Markdown link check: BROKEN LINKS FOUND" in p.stdout
+    assert "target escapes repository root" in p.stdout
+    assert re.search(
+        r"^- docs/index\.md: \(\.\./\.\./outside/target\.md\) -> target escapes repository root$",
+        p.stdout,
+        flags=re.MULTILINE,
+    )
+    assert "Total broken links: 1" in p.stdout
+    assert p.stderr == ""
+
+    target.unlink()
+    p2 = _run_cli(repo, "docs/index.md")
+    assert p2.returncode == 1
+    assert "target escapes repository root" in p2.stdout
+    assert p2.stderr == ""
+
+
 def test_cli_exit_1_when_target_file_missing(tmp_path: Path) -> None:
     docs = tmp_path / "docs"
     docs.mkdir(parents=True, exist_ok=True)
