@@ -13,6 +13,30 @@ from trading.master_v2.local_debug_cli_v1 import (
     master_v2_debug_result_to_dict,
     run_master_v2_local_debug_cli_v1,
 )
+from trading.master_v2.scenario_matrix_v1 import (
+    SCENARIO_SAFETY_BLOCKED,
+    get_master_v2_scenario_case_v1,
+)
+
+
+def _build_safety_blocked_raw_input_wire_v1() -> dict[str, object]:
+    """Wire mapping for ``SCENARIO_SAFETY_BLOCKED`` (adapter + optional evaluator), tests-only helper."""
+    c = get_master_v2_scenario_case_v1(SCENARIO_SAFETY_BLOCKED)
+    p = c.packet
+    assert p.safety is not None
+    return {
+        "correlation_id": p.correlation_id,
+        "staged": {
+            "current_stage": p.staged.current_stage.value,
+            "requested_stage": p.staged.requested_stage.value,
+            "safety_decision_allowed": p.staged.safety_decision_allowed,
+            "live_authority_acknowledged": p.staged.live_authority_acknowledged,
+        },
+        "safety": {
+            "layer_version": p.safety.layer_version,
+            "safety_decision_allowed": p.safety.safety_decision_allowed,
+        },
+    }
 
 
 def test_debug_cli_version() -> None:
@@ -66,6 +90,24 @@ def test_master_v2_debug_result_to_dict_adapter_fail() -> None:
     d = master_v2_debug_result_to_dict(ar)
     assert d["adapter_ok"] is False
     assert d.get("flow_ok") is None
+
+
+def test_run_safety_blocked_adapter_ok_flow_fail() -> None:
+    """Adapter accepts structural wire input; evaluator reports validate failure — offline CLI surface only."""
+    out = run_master_v2_local_debug_cli_v1(
+        json_text=json.dumps(_build_safety_blocked_raw_input_wire_v1()),
+        run_evaluator=True,
+        with_snapshot=True,
+    )
+    assert out["adapter_ok"] is True
+    assert out["rejection_reason"] is None
+    assert out["flow_ok"] is False
+    assert out["validate_ok"] is False
+    assert "SAFETY_HANDOFF_STAGED_INPUT_MISMATCH" in out["validate_reason_codes"]
+    assert out["local_flow_rejection"] is None
+    assert out["critic_has_error_findings"] is True
+    assert "SAFETY_ENABLEMENT_MISMATCH" in out["critic_finding_codes"]
+    assert out["snapshot"] is None
 
 
 def test_file_input(tmp_path) -> None:
