@@ -433,3 +433,31 @@ due_jobs = get_due_jobs(jobs)
 - [CLI_CHEATSHEET.md](CLI_CHEATSHEET.md) - Schnellreferenz aller CLI-Befehle
 - [LIVE_WORKFLOWS.md](LIVE_WORKFLOWS.md) - Live-Trading-Workflows
 - [AUTO_PORTFOLIOS.md](AUTO_PORTFOLIOS.md) - Automatische Portfolio-Generierung
+
+## Paper/Shadow 24/7 boundary — canonical activation status
+
+As of this scheduler daemon contract, there is no approved one-command activation path for a Paper/Shadow 24/7 daemon.
+
+The scheduler may be inspected with a dry-run only command:
+
+```bash
+python3 scripts/run_scheduler.py --config config/scheduler/jobs.toml --dry-run --once --verbose
+```
+
+That dry-run is a planning and diagnostics step only. It must not be treated as daemon activation, Paper runtime activation, Shadow runtime activation, Testnet activation, or Live enablement.
+
+Before any future Paper/Shadow 24/7 activation can be considered, a separate canonical runbook or contract must define all of the following:
+
+- the single owner entrypoint for the daemon or scheduler path;
+- the exact Paper and Shadow job set that would run;
+- the output directories, state files, logs, and retention behavior;
+- explicit stop and emergency-stop commands;
+- dry-run proof that no jobs execute unexpectedly;
+- no-Live, no-Testnet, no-broker, no-exchange, and no-order boundaries;
+- Paper/Shadow data protection rules, including no accidental overwrite of existing paper runs;
+- monitoring expectations and failure escalation behavior.
+
+Until those conditions are met, the correct operator decision is **STOP: do not activate Paper/Shadow 24/7**.
+
+This section does not create a new scheduler surface and does not authorize any runtime behavior. It only records the current boundary so operators do not confuse existing scheduler, launchd, workflow, or autonomous-script surfaces with a canonical Paper/Shadow 24/7 daemon.
+
