@@ -30,3 +30,13 @@ def test_prom_json_safe_parse_non_json_body_fails_with_diagnostics() -> None:
     assert proc.returncode != 0
     assert "prom_json_parse_error=" in proc.stderr
     assert "not json" in proc.stderr
+
+
+def test_prom_json_safe_parse_truncated_json_fails_with_diagnostics() -> None:
+    body = b'{"status":"success"'
+    proc = _run_parser(body)
+    assert proc.returncode != 0
+    assert proc.stdout.strip() == ""
+    assert "prom_json_parse_error=" in proc.stderr
+    assert "prom_body_first_200_bytes" in proc.stderr
+    assert '{"status":"success"' in proc.stderr
