@@ -25,7 +25,7 @@ def create_dummy_returns(n_bars: int = 500, seed: int = 42) -> pd.Series:
     Returns:
         Returns-Serie mit DatetimeIndex (UTC, stündlich ab DUMMY_RETURNS_TIMELINE_START)
     """
-    np.random.seed(seed)
+    rng = np.random.RandomState(seed)
     dates = pd.date_range(DUMMY_RETURNS_TIMELINE_START, periods=n_bars, freq="1h")
-    returns = np.random.normal(0.0005, 0.02, n_bars)
+    returns = rng.normal(0.0005, 0.02, n_bars)
     return pd.Series(returns, index=dates)
