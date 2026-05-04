@@ -461,3 +461,5 @@ Until those conditions are met, the correct operator decision is **STOP: do not 
 
 This section does not create a new scheduler surface and does not authorize any runtime behavior. It only records the current boundary so operators do not confuse existing scheduler, launchd, workflow, or autonomous-script surfaces with a canonical Paper/Shadow 24/7 daemon.
 
+Formal field-level preflight contract (status model, non-authority, informative JSON shape): [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md).
+
