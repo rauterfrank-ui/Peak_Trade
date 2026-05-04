@@ -8,8 +8,6 @@ from datetime import datetime
 from enum import Enum
 from pathlib import Path
 
-import pytest
-
 from trading.master_v2.double_play_capital_slot import (
     CapitalSlotConfig,
     CapitalSlotState,
@@ -25,6 +23,7 @@ from trading.master_v2.double_play_dashboard_display import (
     DOUBLE_PLAY_DASHBOARD_DISPLAY_LAYER_VERSION,
     DashboardDisplayStatus,
     build_dashboard_display_snapshot,
+    snapshot_to_jsonable,
 )
 from trading.master_v2.double_play_futures_input import evaluate_futures_input_snapshot
 from trading.master_v2.double_play_state import ScopeEvent, SideState
@@ -304,7 +303,7 @@ def test_snapshot_invariants_always() -> None:
     assert snap.no_live_banner_visible
 
 
-# --- snapshot_to_jsonable (same mapper as WebUI read-only JSON route; tests avoid HTTP) ---
+# --- snapshot_to_jsonable (canonical mapper in trading.master_v2; aligned with WebUI route) ---
 # Keep key surfaces aligned with tests/webui/test_double_play_dashboard_display_json_route.py
 
 _EXPECTED_JSON_TOP_LEVEL_KEYS = frozenset(
@@ -387,13 +386,6 @@ _FORBIDDEN_JSON_KEYS = frozenset(
 )
 
 
-def _require_snapshot_to_jsonable():
-    pytest.importorskip("fastapi")
-    from src.webui.double_play_dashboard_display_json_route_v0 import snapshot_to_jsonable
-
-    return snapshot_to_jsonable
-
-
 def _collect_object_keys(obj: object, out: set[str]) -> None:
     if isinstance(obj, dict):
         for k, v in obj.items():
@@ -454,7 +446,6 @@ def _assert_serialized_dashboard_authority_invariants(data: dict) -> None:
 
 
 def test_snapshot_to_jsonable_full_stack_matches_route_contract() -> None:
-    snapshot_to_jsonable = _require_snapshot_to_jsonable()
     fi, t2, surv, suit, rat, rel, comp = _full_stack_decisions()
     snap = build_dashboard_display_snapshot(
         futures_input=fi,
@@ -486,7 +477,6 @@ def test_snapshot_to_jsonable_full_stack_matches_route_contract() -> None:
 
 
 def test_snapshot_to_jsonable_blocked_survival_still_matches_contract() -> None:
-    snapshot_to_jsonable = _require_snapshot_to_jsonable()
     fi, t2, _, suit, rat, rel, comp = _full_stack_decisions()
     bad_surv = SurvivalEnvelopeDecision(
         status=SurvivalEnvelopeStatus.BLOCKED,
@@ -510,7 +500,6 @@ def test_snapshot_to_jsonable_blocked_survival_still_matches_contract() -> None:
 
 
 def test_snapshot_to_jsonable_empty_snapshot_still_matches_contract() -> None:
-    snapshot_to_jsonable = _require_snapshot_to_jsonable()
     snap = build_dashboard_display_snapshot()
     data = snapshot_to_jsonable(snap)
     _assert_serialized_dashboard_authority_invariants(data)

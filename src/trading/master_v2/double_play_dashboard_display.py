@@ -10,8 +10,9 @@ See docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from enum import Enum
-from typing import Optional, Tuple
+from typing import Any, Dict, Mapping, Optional, Tuple
 
 from trading.master_v2.double_play_capital_slot import (
     CapitalSlotRatchetDecision,
@@ -75,6 +76,28 @@ class DoublePlayDashboardDisplaySnapshot:
     live_ready: bool = False
     live_authorization: bool = False
     warnings: Tuple[str, ...] = ()
+
+
+# HTTP / JSON payload schema for read-only dashboard display (structured metadata v2).
+DISPLAY_JSON_LAYER_VERSION = "v2"
+
+_DISPLAY_JSON_PANEL_GROUP: Mapping[str, str] = {
+    "futures_input": "input",
+    "state_transition": "state",
+    "survival_envelope": "scope",
+    "strategy_suitability": "strategy",
+    "capital_slot_ratchet": "capital",
+    "capital_slot_release": "capital",
+    "composition": "composition",
+}
+
+_DISPLAY_JSON_PAYLOAD_SEVERITY: Mapping[DashboardDisplayStatus, int] = {
+    DashboardDisplayStatus.DISPLAY_READY: 0,
+    DashboardDisplayStatus.DISPLAY_WARNING: 10,
+    DashboardDisplayStatus.DISPLAY_MISSING: 20,
+    DashboardDisplayStatus.DISPLAY_BLOCKED: 30,
+    DashboardDisplayStatus.DISPLAY_ERROR: 40,
+}
 
 
 def _panel(
@@ -424,3 +447,50 @@ def build_dashboard_display_snapshot(
         live_authorization=False,
         warnings=warnings,
     )
+
+
+def _assembled_at_iso_utc() -> str:
+    dt = datetime.now(timezone.utc).replace(microsecond=0)
+    return dt.isoformat().replace("+00:00", "Z")
+
+
+def _jsonable_dashboard_panel(panel: DoublePlayDashboardPanel, ordinal: int) -> Dict[str, Any]:
+    st = panel.status
+    status_val = st.value if isinstance(st, Enum) else str(st)
+    panel_group = _DISPLAY_JSON_PANEL_GROUP.get(panel.name, "unknown")
+    return {
+        "name": panel.name,
+        "status": status_val,
+        "summary": panel.summary,
+        "blockers": list(panel.blockers),
+        "missing_inputs": list(panel.missing_inputs),
+        "live_authorization": panel.live_authorization,
+        "is_authority": panel.is_authority,
+        "is_signal": panel.is_signal,
+        "ordinal": ordinal,
+        "panel_group": panel_group,
+        "severity_rank": _DISPLAY_JSON_PAYLOAD_SEVERITY[st],
+    }
+
+
+def snapshot_to_jsonable(snap: DoublePlayDashboardDisplaySnapshot) -> Dict[str, Any]:
+    """Convert display snapshot to JSON-serializable dict (enum values as strings)."""
+    overall = snap.overall_status
+    overall_val = overall.value if isinstance(overall, Enum) else str(overall)
+    return {
+        "display_layer_version": DISPLAY_JSON_LAYER_VERSION,
+        "display_snapshot_meta": {
+            "source_kind": "static_display_v0",
+            "source_id": "webui_dashboard_display_static_v0",
+            "assembled_at_iso": _assembled_at_iso_utc(),
+        },
+        "panels": [_jsonable_dashboard_panel(p, i) for i, p in enumerate(snap.panels)],
+        "overall_status": overall_val,
+        "no_live_banner_visible": snap.no_live_banner_visible,
+        "display_only": snap.display_only,
+        "trading_ready": snap.trading_ready,
+        "testnet_ready": snap.testnet_ready,
+        "live_ready": snap.live_ready,
+        "live_authorization": snap.live_authorization,
+        "warnings": list(snap.warnings),
+    }
