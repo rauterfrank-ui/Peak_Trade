@@ -160,6 +160,43 @@ jobs:
     assert "Job-level if detected on 'tests'" in p.stderr
 
 
+def test_fails_when_strategy_smoke_has_job_level_if(tmp_path: Path) -> None:
+    _write_ci(
+        tmp_path,
+        """name: synthetic-ci
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.event.pull_request.number }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: tests (${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+    steps:
+      - run: echo tests
+
+  strategy-smoke:
+    name: strategy-smoke
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo strategy
+""",
+    )
+    p = _run(tmp_path)
+    assert p.returncode == 1
+    assert "Job-level if detected on 'strategy-smoke'" in p.stderr
+    assert "Concurrency group is PR-isolated" in p.stdout
+    assert "tests job naming + no job-level if: OK" in p.stdout
+
+
 def test_fails_when_matrix_missing_python_311(tmp_path: Path) -> None:
     _write_ci(
         tmp_path,
