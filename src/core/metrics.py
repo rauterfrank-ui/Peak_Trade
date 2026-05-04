@@ -374,9 +374,10 @@ class MetricsCollector:
             else:
                 snapshots = dict(self.snapshots)
 
-            # Limit and convert to dicts
+            # Limit and convert to dicts.
+            # `limit == 0` must return no snapshots; `lst[-0:]` would incorrectly return all.
             return {
-                metric_name: [s.to_dict() for s in snapshots_list[-limit:]]
+                metric_name: [s.to_dict() for s in ([] if limit == 0 else snapshots_list[-limit:])]
                 for metric_name, snapshots_list in snapshots.items()
             }
 
