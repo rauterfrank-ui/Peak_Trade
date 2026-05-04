@@ -99,6 +99,31 @@ def test_reject_missing_correlation() -> None:
     assert r.rejection_reason == "INVALID_CORRELATION_ID"
 
 
+def test_reject_raw_input_not_object() -> None:
+    """Offline structural contract: non-mapping JSON root fails closed before evaluator."""
+    r = adapt_inputs_to_master_v2_flow_v1([], run_evaluator=True)  # type: ignore[arg-type]
+    assert r.ok is False
+    assert r.rejection_reason == "RAW_INPUT_NOT_OBJECT"
+    assert r.correlation_id is None
+    assert r.staged is None
+    assert r.packet is None
+    assert r.local_flow is None
+
+
+def test_reject_missing_staged() -> None:
+    """Offline structural contract: ``staged`` is required once ``correlation_id`` is valid."""
+    r = adapt_inputs_to_master_v2_flow_v1(
+        {"correlation_id": "op-contract-missing-staged"},
+        run_evaluator=True,
+    )
+    assert r.ok is False
+    assert r.rejection_reason == "MISSING_STAGED"
+    assert r.correlation_id is None
+    assert r.staged is None
+    assert r.packet is None
+    assert r.local_flow is None
+
+
 def test_reject_null_handoff() -> None:
     raw = build_master_v2_happy_scenario_raw_input_v1()
     raw["universe"] = None  # type: ignore[assignment]
