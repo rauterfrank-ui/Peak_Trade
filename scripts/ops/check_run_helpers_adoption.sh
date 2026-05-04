@@ -18,7 +18,11 @@ for arg in "$@"; do
       echo "Usage: $0 [--warn-only] [--all-ops]"
       exit 0
       ;;
-    *) ;;
+    *)
+      echo "ERROR: unknown argument: ${arg}" >&2
+      echo "Usage: $0 [--warn-only] [--all-ops]" >&2
+      exit 2
+      ;;
   esac
 done
 
