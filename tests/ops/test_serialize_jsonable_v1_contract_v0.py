@@ -54,6 +54,56 @@ def test_to_jsonable_v1_list_and_tuple_recursive_contract_v0() -> None:
     _assert_json_dumps_round_trip(tup)
 
 
+def test_to_jsonable_v1_primitive_set_deterministic_jsonable_contract_v0() -> None:
+    raw = {3, 1, 2}
+    first = to_jsonable_v1(raw)
+    second = to_jsonable_v1(raw)
+    assert isinstance(first, list)
+    assert first == second
+    assert sorted(first) == [1, 2, 3]
+    json.dumps(first, sort_keys=True)
+    assert json.dumps(to_jsonable_v1({"s": raw}), sort_keys=True) == json.dumps(
+        {"s": first}, sort_keys=True
+    )
+
+
+def test_to_jsonable_v1_frozenset_list_jsonable_deterministic_contract_v0() -> None:
+    raw = frozenset((9, 1, 5))
+    outs = [to_jsonable_v1(raw) for _ in range(5)]
+    assert all(o == outs[0] for o in outs)
+    assert isinstance(outs[0], list)
+    json.dumps(outs[0], sort_keys=True)
+    assert sorted(outs[0]) == [1, 5, 9]
+
+
+def test_to_jsonable_v1_nested_set_and_frozenset_recursive_contract_v0() -> None:
+    raw = {
+        "nums": {3, 1},
+        "nested": [frozenset({2, 4}), {"inner": frozenset({"a", "b"})}],
+    }
+    out = to_jsonable_v1(raw)
+    assert out["nums"] == [1, 3]
+    assert out["nested"][0] == [2, 4]
+    assert out["nested"][1]["inner"] == ["a", "b"]
+    one = to_jsonable_v1(raw)
+    two = to_jsonable_v1(raw)
+    assert one == two
+    json.dumps(one, sort_keys=True)
+
+
+def test_to_jsonable_v1_heterogeneous_set_no_sort_typeerror_contract_v0() -> None:
+    raw = {1, "1"}
+    one = to_jsonable_v1(raw)
+    two = to_jsonable_v1(raw)
+    assert one == two
+    assert isinstance(one, list)
+    json.dumps(one, sort_keys=True)
+    tup_raw = {1, ("x", 2)}
+    out_t = to_jsonable_v1(tup_raw)
+    assert to_jsonable_v1(tup_raw) == out_t
+    json.dumps(out_t, sort_keys=True)
+
+
 @dataclass
 class Inner:
     n: int
