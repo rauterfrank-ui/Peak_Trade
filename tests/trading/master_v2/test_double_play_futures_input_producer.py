@@ -2,9 +2,13 @@
 from __future__ import annotations
 
 import ast
+import json
+from dataclasses import fields
 from pathlib import Path
 
 import pytest
+
+from src.ops.common.serialize_v1 import to_jsonable_v1
 
 from trading.master_v2.double_play_futures_input import (
     FuturesFreshnessState,
@@ -199,6 +203,45 @@ def _walk_data_only(obj: object, *, _seen: set[int]) -> None:
             _walk_data_only(getattr(obj, f.name), _seen=_seen)
         return
     raise AssertionError(f"disallowed value in adapter output: {type(obj)!r}")
+
+
+def _assert_json_native(obj: object, *, depth: int = 0) -> None:
+    if depth > 24:
+        raise AssertionError("json structure too deep for contract bound")
+    if obj is None or isinstance(obj, (bool, int, float, str)):
+        return
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            assert isinstance(k, str), (type(k), obj)
+            _assert_json_native(v, depth=depth + 1)
+        return
+    if isinstance(obj, list):
+        for item in obj:
+            _assert_json_native(item, depth=depth + 1)
+        return
+    raise AssertionError(f"non-json-native type after serialization: {type(obj)!r}")
+
+
+def test_futures_producer_packet_jsonable_stdlib_roundtrip_v0() -> None:
+    """Frozen producer packet survives ops ``to_jsonable_v1`` and stdlib ``json`` roundtrip.
+
+    Non-authorizing wire reproducibility fixture: ``live_authorization`` is False on the packet.
+    """
+    packet = _ppacket()
+    assert packet.candidate.live_authorization is False
+    assert not producer_packet_has_runtime_handles(packet)
+
+    jsonable = to_jsonable_v1(packet)
+    assert frozenset(jsonable.keys()) == {f.name for f in fields(FuturesProducerPacket)}
+    _assert_json_native(jsonable)
+
+    wire = json.dumps(jsonable, sort_keys=True)
+    decoded = json.loads(wire)
+    assert decoded == jsonable
+
+    cand = jsonable["candidate"]
+    assert isinstance(cand, dict)
+    assert cand["live_authorization"] is False
 
 
 def test_producer_layer_version_v0() -> None:
