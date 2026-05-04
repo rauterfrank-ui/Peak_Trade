@@ -101,6 +101,7 @@ def test_invalid_decision_exits_one(tmp_path: Path) -> None:
     assert proc.returncode == 1
     assert payload["ok"] is False
     assert "invalid_operator_decision" in payload["errors"]
+    assert "unexpected_decision_counts" in payload["errors"]
 
 
 def test_malformed_json_exits_two(tmp_path: Path) -> None:
@@ -125,6 +126,153 @@ def test_missing_packet_exits_two(tmp_path: Path) -> None:
     assert payload["ok"] is False
     assert payload["errors"] == ["packet_read_or_parse_failed"]
     assert payload["non_authorizing"] is True
+
+
+def test_invalid_input_contract_exits_one(tmp_path: Path) -> None:
+    packet = canonical_packet()
+    packet["contract"] = "wrong_contract"
+
+    proc = run_validator(write_packet(tmp_path, packet))
+    payload = parse_stdout(proc)
+
+    assert proc.returncode == 1
+    assert payload["ok"] is False
+    assert "invalid_input_contract" in payload["errors"]
+    assert payload["non_authorizing"] is True
+    assert payload["authority_boundary"] == AUTHORITY_FLAGS
+
+
+def test_non_authorizing_must_be_strict_true_exits_one(tmp_path: Path) -> None:
+    packet = canonical_packet()
+    packet["non_authorizing"] = False
+
+    proc = run_validator(write_packet(tmp_path, packet))
+    payload = parse_stdout(proc)
+
+    assert proc.returncode == 1
+    assert payload["ok"] is False
+    assert "non_authorizing_required" in payload["errors"]
+    assert payload["non_authorizing"] is True
+    assert payload["authority_boundary"] == AUTHORITY_FLAGS
+
+
+def test_duplicate_session_id_exits_one(tmp_path: Path) -> None:
+    packet = canonical_packet()
+    rows = packet["session_decisions"]
+    assert isinstance(rows, list)
+    rows[1]["session_id"] = rows[0]["session_id"]
+
+    proc = run_validator(write_packet(tmp_path, packet))
+    payload = parse_stdout(proc)
+
+    assert proc.returncode == 1
+    assert payload["ok"] is False
+    assert "duplicate_session_id" in payload["errors"]
+
+
+def test_fewer_than_five_session_rows_exits_one(tmp_path: Path) -> None:
+    packet = canonical_packet()
+    rows = packet["session_decisions"]
+    assert isinstance(rows, list)
+    packet["session_decisions"] = rows[:4]
+
+    proc = run_validator(write_packet(tmp_path, packet))
+    payload = parse_stdout(proc)
+
+    assert proc.returncode == 1
+    assert payload["ok"] is False
+    assert "expected_exactly_5_session_decisions" in payload["errors"]
+    assert "unexpected_decision_counts" in payload["errors"]
+
+
+def test_reported_decision_counts_mismatch_exits_one(tmp_path: Path) -> None:
+    packet = canonical_packet()
+    packet["decision_counts"] = {"closeout_path_required": 5}
+
+    proc = run_validator(write_packet(tmp_path, packet))
+    payload = parse_stdout(proc)
+
+    assert proc.returncode == 1
+    assert payload["ok"] is False
+    assert "reported_decision_counts_mismatch" in payload["errors"]
+
+
+def test_actual_decision_counts_mismatch_without_invalid_decision_exits_one(
+    tmp_path: Path,
+) -> None:
+    packet = canonical_packet()
+    rows = packet["session_decisions"]
+    assert isinstance(rows, list)
+    rows[0]["operator_decision"] = "evidence_missing_review"
+
+    proc = run_validator(write_packet(tmp_path, packet))
+    payload = parse_stdout(proc)
+
+    assert proc.returncode == 1
+    assert payload["ok"] is False
+    assert "unexpected_decision_counts" in payload["errors"]
+
+
+def test_session_decisions_not_a_list_exits_one(tmp_path: Path) -> None:
+    packet = canonical_packet()
+    packet["session_decisions"] = "not-a-list"
+
+    proc = run_validator(write_packet(tmp_path, packet))
+    payload = parse_stdout(proc)
+
+    assert proc.returncode == 1
+    assert payload["ok"] is False
+    assert "session_decisions_must_be_list" in payload["errors"]
+    assert "expected_exactly_5_session_decisions" in payload["errors"]
+    assert "unexpected_decision_counts" in payload["errors"]
+
+
+def test_session_decision_row_not_an_object_exits_one(tmp_path: Path) -> None:
+    packet = canonical_packet()
+    rows = list(packet["session_decisions"])
+    assert isinstance(rows, list)
+    rows[0] = []
+    packet["session_decisions"] = rows
+
+    proc = run_validator(write_packet(tmp_path, packet))
+    payload = parse_stdout(proc)
+
+    assert proc.returncode == 1
+    assert payload["ok"] is False
+    assert "session_decision_row_must_be_object" in payload["errors"]
+
+
+def test_missing_session_id_exits_one(tmp_path: Path) -> None:
+    rows = [
+        {"operator_decision": "closeout_path_required"},
+        {
+            "session_id": "session_20260319_151416_bounded_pilot_579507",
+            "operator_decision": "closeout_path_required",
+        },
+        {
+            "session_id": "session_20260318_154852_bounded_pilot_979b86",
+            "operator_decision": "evidence_missing_review",
+        },
+        {
+            "session_id": "session_20260318_122341_bounded_pilot_02c8eb",
+            "operator_decision": "evidence_missing_review",
+        },
+        {
+            "session_id": "session_20260318_122123_bounded_pilot_8c7be9",
+            "operator_decision": "evidence_missing_review",
+        },
+    ]
+    packet = {
+        **canonical_packet(),
+        "session_decisions": rows,
+    }
+
+    proc = run_validator(write_packet(tmp_path, packet))
+    payload = parse_stdout(proc)
+
+    assert proc.returncode == 1
+    assert payload["ok"] is False
+    assert "missing_session_id" in payload["errors"]
 
 
 def test_true_authority_flag_exits_one(tmp_path: Path) -> None:
