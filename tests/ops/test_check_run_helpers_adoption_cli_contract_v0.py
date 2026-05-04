@@ -131,3 +131,12 @@ def test_all_ops_fails_when_script_missing_helpers(tmp_path: Path) -> None:
     assert "bad.sh" in p.stdout
     assert "❌ Adoption guard failed." in p.stdout
     assert p.stderr == ""
+
+
+def test_unknown_argument_fails_closed(tmp_path: Path) -> None:
+    script = _install_script(tmp_path)
+    p = _run(script, "--warn-onyl")
+    assert p.returncode == 2
+    assert "unknown argument: --warn-onyl" in p.stderr
+    assert "Usage:" in p.stderr
+    assert p.stdout == ""
