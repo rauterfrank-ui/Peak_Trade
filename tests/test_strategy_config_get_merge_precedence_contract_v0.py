@@ -70,3 +70,19 @@ def test_strategy_config_to_dict_does_not_mutate_internal_maps_contract_v0() -> 
     _ = cfg.to_dict()
     assert cfg.params == before_params
     assert cfg.defaults == before_defaults
+
+
+def test_strategy_config_to_dict_output_isolation_nested_mutation_contract_v0() -> None:
+    defaults = {"a": {"x": 1}, "shared": [1, 2]}
+    params = {"b": {"y": 2}, "shared": [9]}
+    cfg = StrategyConfig(name="iso", active=True, params=params, defaults=defaults)
+    out = cfg.to_dict()
+
+    out["a"]["x"] = 999
+    out["b"]["y"] = 888
+    out["shared"].append(7)
+
+    assert cfg.defaults["a"]["x"] == 1
+    assert cfg.params["b"]["y"] == 2
+    assert cfg.defaults["shared"] == [1, 2]
+    assert cfg.params["shared"] == [9]
