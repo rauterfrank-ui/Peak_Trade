@@ -211,3 +211,64 @@ def test_cli_accepts_comma_separated_runs(tmp_path: Path) -> None:
     payload = json.loads(result.stdout)
     assert payload["run_count"] == 1
     assert payload["runs"][0]["run_id"] == "run_002"
+
+
+def test_cli_json_with_explicit_runs_is_bounded_and_non_authorizing(tmp_path: Path) -> None:
+    campaign = _campaign(tmp_path, run_count=3)
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--campaign-dir",
+            str(campaign),
+            "--expected-runs",
+            "2",
+            "--runs",
+            "run_001,run_003",
+            "--json",
+        ],
+        cwd=REPO_ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    assert result.stderr == ""
+
+    payload = json.loads(result.stdout)
+    assert payload["contract"] == "p7_shadow_repeated_campaign_summary_v0"
+    assert payload["campaign_status"] == "PASS"
+    assert payload["run_count"] == 2
+    assert payload["expected_runs"] == 2
+    assert payload["expected_run_count_met"] is True
+    assert [run["run_id"] for run in payload["runs"]] == ["run_001", "run_003"]
+
+    assert payload["campaign_checks"] == {
+        "per_run_acceptance_pass": True,
+        "relative_artifact_set_stable": True,
+        "stable_business_artifacts_unchanged": True,
+        "risk_scan_clean": True,
+    }
+
+    for key in (
+        "activation_authorized",
+        "scheduler_authorized",
+        "daemon_authorized",
+        "paper_shadow_24_7_authorized",
+        "testnet_authorized",
+        "live_authorized",
+        "broker_authorized",
+        "exchange_authorized",
+        "order_submission_authorized",
+    ):
+        assert payload[key] is False
+
+    for run in payload["runs"]:
+        assert run["pass_line_present"] is True
+        assert run["stderr_empty"] is True
+        assert run["json_valid"] is True
+        assert run["expected_artifacts_present"] is True
+        assert run["risk_scan_clean"] is True
+        assert run["artifact_count"] == 11
