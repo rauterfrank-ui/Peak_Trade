@@ -54,6 +54,7 @@ For 24/7 preflight status and activation boundaries, see
 - Use a **fresh empty** `--outdir`; `p7_ctl` rejects non-empty outdirs.
 - After a real dry-run, compare only **relative** filenames under the outdir to the fixture set; normalize machine-specific absolute paths before committing (repo-relative strings only).
 - Do not point production or personal `/tmp` trees at tests; fixtures and tests read only `tests&#47;fixtures&#47;...` and `tmp_path` copies.
+- For **manual repeated** dry-runs (campaign rules, retention, stop conditions), see [P7_SHADOW_REPEATED_ONE_SHOT_DRY_RUN_GOVERNANCE_V0.md](P7_SHADOW_REPEATED_ONE_SHOT_DRY_RUN_GOVERNANCE_V0.md).
 
 ## 5. Implementation references
 
