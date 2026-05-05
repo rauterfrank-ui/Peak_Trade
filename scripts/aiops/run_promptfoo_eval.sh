@@ -8,6 +8,8 @@ set -euo pipefail
 # === VERSION PINS (for reproducibility) ===
 PROMPTFOO_VERSION="0.120.8"  # Update this for new promptfoo releases
 CANONICAL_NODE_VERSION="v25.2.1"  # Canonical Node version (see .nvmrc)
+PROMPTFOO_OPENAI_MODEL="${PROMPTFOO_OPENAI_MODEL:-gpt-5.5}"
+export PROMPTFOO_OPENAI_MODEL
 
 # === PRE-FLIGHT ===
 echo "==> AI-Ops Eval Runner: Pre-Flight"
@@ -55,6 +57,7 @@ if [ ! -f "$config_path" ]; then
 fi
 
 echo "Config found: $config_path"
+echo "OpenAI model: ${PROMPTFOO_OPENAI_MODEL}"
 echo "Promptfoo version (pinned): $PROMPTFOO_VERSION"
 
 # 4) Check OPENAI_API_KEY (skip gracefully if missing)
@@ -85,6 +88,7 @@ echo "Log file: $log_file"
   echo "Node version: $node_version"
   echo "npx version: $npx_version"
   echo "Promptfoo version: $PROMPTFOO_VERSION"
+  echo "OpenAI model: ${PROMPTFOO_OPENAI_MODEL}"
   echo "Config path: $config_path"
   echo "==========================="
   echo ""
@@ -95,7 +99,24 @@ echo ""
 echo "==> Running promptfoo eval..."
 echo ""
 
-npx promptfoo@${PROMPTFOO_VERSION} eval -c "$config_path" 2>&1 | tee -a "$log_file"
+RESOLVED_CONFIG_PATH="${TMPDIR:-/tmp}/peak_trade_promptfooconfig_${GITHUB_RUN_ID:-local}_${GITHUB_RUN_ATTEMPT:-0}.yaml"
+python3 - "$config_path" "$RESOLVED_CONFIG_PATH" "$PROMPTFOO_OPENAI_MODEL" <<'PY'
+from pathlib import Path
+import sys
+
+src = Path(sys.argv[1])
+dst = Path(sys.argv[2])
+model = sys.argv[3]
+if not model or any(ch.isspace() for ch in model):
+    raise SystemExit("invalid PROMPTFOO_OPENAI_MODEL")
+text = src.read_text(encoding="utf-8")
+if "__PROMPTFOO_OPENAI_MODEL__" not in text:
+    raise SystemExit("promptfoo model placeholder missing")
+dst.write_text(text.replace("__PROMPTFOO_OPENAI_MODEL__", model), encoding="utf-8")
+print(f"[promptfoo] Resolved config: {dst}")
+PY
+
+npx promptfoo@${PROMPTFOO_VERSION} eval -c "$RESOLVED_CONFIG_PATH" 2>&1 | tee -a "$log_file"
 
 exit_code=${PIPESTATUS[0]}
 

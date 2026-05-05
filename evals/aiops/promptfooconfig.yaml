@@ -1,6 +1,6 @@
 description: "Peak_Trade AI Ops evals (V1)"
 providers:
-  - openai:gpt-4
+  - "openai:chat:__PROMPTFOO_OPENAI_MODEL__"
 
 prompts:
   - id: docs_link_fixer
