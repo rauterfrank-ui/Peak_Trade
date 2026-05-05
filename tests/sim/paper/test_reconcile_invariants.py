@@ -18,8 +18,10 @@ def test_ledger_has_snapshots_and_reconcile_returns_last() -> None:
     assert len(sim.ledger) >= 3  # before each execute + final snapshot
 
 
-def test_reconcile_empty_ledger_fails() -> None:
+def test_reconcile_no_orders_returns_initial_account() -> None:
     acct = PaperAccount(cash=1000.0)
     sim = PaperTradingSimulator()
-    with pytest.raises(RuntimeError, match="EMPTY_LEDGER"):
-        sim.reconcile(acct)
+    cash, pos = sim.reconcile(acct)
+    assert cash == 1000.0
+    assert pos == {}
+    assert len(sim.ledger) == 1

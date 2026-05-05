@@ -66,12 +66,13 @@ class PaperTradingSimulator:
         )
 
     def reconcile(self, acct: PaperAccount) -> Tuple[float, Dict[str, float]]:
-        if self.ledger:
-            self.ledger.append(
-                snapshot(
-                    step=len(self.ledger),
-                    cash=acct.cash,
-                    positions=acct.positions,
-                )
+        # Always record a terminal snapshot. With zero orders the ledger would otherwise
+        # stay empty and verify_invariants would raise EMPTY_LEDGER.
+        self.ledger.append(
+            snapshot(
+                step=len(self.ledger),
+                cash=acct.cash,
+                positions=acct.positions,
             )
+        )
         return verify_invariants(self.ledger)
