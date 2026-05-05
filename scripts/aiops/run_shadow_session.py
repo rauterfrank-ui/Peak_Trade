@@ -66,7 +66,10 @@ def main() -> int:
         "--evidence", type=int, default=1, help="Write evidence manifest (1 default, 0 disable)"
     )
     ap.add_argument(
-        "--dry-run", action="store_true", default=True, help="Dry-run only (default true)"
+        "--dry-run",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Dry-run for P4C/P5A sub-steps (default: on)",
     )
     ap.add_argument(
         "--p7-spec",
@@ -116,6 +119,7 @@ def main() -> int:
     if not p5a_runner.is_file():
         raise FileNotFoundError(p5a_runner)
 
+    dr = ["--dry-run"] if args.dry_run else []
     # Step 1: P4C (no evidence here; session handles evidence)
     p4c_out_lines = _run(
         [
@@ -127,7 +131,7 @@ def main() -> int:
             str(outdir / "p4c"),
             "--evidence",
             "0",
-            "--dry-run",
+            *dr,
         ],
         cwd=repo,
     )
@@ -146,7 +150,7 @@ def main() -> int:
             str(outdir / "p5a"),
             "--evidence",
             "0",
-            "--dry-run",
+            *dr,
         ],
         cwd=repo,
     )
@@ -176,21 +180,21 @@ def main() -> int:
 
         p7_subdir = outdir / "p7"
         p7_subdir.mkdir(parents=True, exist_ok=True)
-        p7_out_lines = _run(
-            [
-                sys.executable,
-                str(p7_runner),
-                "--spec",
-                str(p7_spec_path),
-                "--run-id",
-                args.run_id.strip() or outdir.name,
-                "--outdir",
-                str(p7_subdir),
-                "--evidence",
-                str(args.p7_evidence),
-            ],
-            cwd=repo,
-        )
+        # P7 paper step materializes deterministic sim outputs; do not pass shadow --dry-run
+        # into run_paper_trading_session (that flag means validate-only / no artifact writes).
+        p7_argv = [
+            sys.executable,
+            str(p7_runner),
+            "--spec",
+            str(p7_spec_path),
+            "--run-id",
+            args.run_id.strip() or outdir.name,
+            "--outdir",
+            str(p7_subdir),
+            "--evidence",
+            str(args.p7_evidence),
+        ]
+        p7_out_lines = _run(p7_argv, cwd=repo)
         p7_fills = p7_subdir / "fills.json"
         p7_acct = p7_subdir / "account.json"
         p7_manifest = p7_subdir / "evidence_manifest.json"
