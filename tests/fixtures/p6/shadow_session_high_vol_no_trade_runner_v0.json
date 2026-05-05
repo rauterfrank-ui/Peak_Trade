@@ -1,0 +1,28 @@
+{
+  "activation_authorized": false,
+  "broker_authorized": false,
+  "capsule_path": "tests/fixtures/p4c/capsule_high_vol_no_trade_v0.json",
+  "daemon_authorized": false,
+  "exchange_authorized": false,
+  "expected_decision": "NO_TRADE",
+  "expected_fills": [],
+  "expected_positions": {
+    "BTC": 0.0
+  },
+  "expected_regime": "VOL_EXTREME",
+  "live_authorized": false,
+  "notes": [
+    "runner_compatible_fixture_only",
+    "derived_from_shadow_session_high_vol_no_trade_v0",
+    "does_not_run_shadow",
+    "does_not_run_paper"
+  ],
+  "order_submission_authorized": false,
+  "p5a_input_path": "tests/fixtures/p5a/input_high_vol_no_trade_v0.json",
+  "p7_spec_path": "tests/fixtures/p7/paper_run_high_vol_no_trade_v0.json",
+  "profile": "high_vol_no_trade",
+  "scenario": "high_vol_no_trade",
+  "scheduler_authorized": false,
+  "schema_version": "p6.shadow_session_runner_spec.v0",
+  "testnet_authorized": false
+}
