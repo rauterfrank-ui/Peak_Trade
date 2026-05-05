@@ -120,12 +120,26 @@ def ensure_outdir(repo: Path, run_id: str) -> Path:
     return out.resolve()
 
 
+def planned_paper_outdir(repo: Path, run_id: str, outdir_override: str) -> Path:
+    if outdir_override:
+        p = Path(outdir_override).expanduser()
+        return p.resolve() if p.is_absolute() else (repo / p).resolve()
+    rid = run_id.strip() or datetime.now().strftime("%Y%m%d_%H%M%S")
+    return (repo / "out" / "ops" / "p7" / f"paper_{rid}").resolve()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--spec", type=str, required=True, help="Paper run spec JSON")
     ap.add_argument("--run-id", type=str, default="", help="Deterministic run id (optional)")
     ap.add_argument("--outdir", type=str, default="", help="Override output dir (optional)")
     ap.add_argument("--evidence", type=int, default=1, help="Write evidence manifest (1 default)")
+    ap.add_argument(
+        "--dry-run",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Validate spec and outdir only; do not write output files (default: off)",
+    )
     args = ap.parse_args()
 
     repo = _repo_root
@@ -135,12 +149,26 @@ def main() -> int:
         else (repo / args.spec).resolve()
     )
     spec = load_json(spec_path)
+    outdir = planned_paper_outdir(repo, args.run_id, args.outdir)
 
-    outdir = (
-        Path(args.outdir).expanduser().resolve()
-        if args.outdir
-        else ensure_outdir(repo, args.run_id)
-    )
+    if args.dry_run:
+        if outdir.exists() and any(outdir.iterdir()):
+            print(
+                f"run_paper_trading_session: output directory is not empty: {outdir}",
+                file=sys.stderr,
+            )
+            return 2
+        print(f"P7_PAPER_DRY_RUN_OK {spec_path} {outdir}")
+        return 0
+
+    if args.outdir:
+        outdir = (
+            Path(args.outdir).expanduser().resolve()
+            if Path(args.outdir).is_absolute()
+            else (repo / args.outdir).resolve()
+        )
+    else:
+        outdir = ensure_outdir(repo, args.run_id)
     outdir.mkdir(parents=True, exist_ok=True)
 
     acct = PaperAccount(cash=float(spec["initial_cash"]))

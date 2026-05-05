@@ -8,9 +8,33 @@ import subprocess
 import sys
 from pathlib import Path
 
+_P7_ERR_OUTDIR_NOT_EMPTY = 2
+
 
 def root_dir() -> Path:
     return Path(__file__).resolve().parents[2]
+
+
+def resolve_repo_path(root: Path, raw: str) -> Path:
+    p = Path(raw).expanduser()
+    return p.resolve() if p.is_absolute() else (root / p).resolve()
+
+
+def reject_nonempty_outdir(outdir: Path) -> int | None:
+    """If outdir exists and is non-empty, print to stderr and return exit code; else None."""
+    if not outdir.exists():
+        return None
+    try:
+        if any(outdir.iterdir()):
+            print(
+                f"p7_ctl: output directory is not empty (refusing to reuse): {outdir}",
+                file=sys.stderr,
+            )
+            return _P7_ERR_OUTDIR_NOT_EMPTY
+    except OSError as exc:
+        print(f"p7_ctl: cannot inspect output directory {outdir}: {exc}", file=sys.stderr)
+        return _P7_ERR_OUTDIR_NOT_EMPTY
+    return None
 
 
 def runpy(script: Path, *args: str) -> int:
@@ -52,17 +76,19 @@ def cmd_run_paper(args: argparse.Namespace) -> int:
     if not runner.is_file():
         print(f"missing {runner}", file=sys.stderr)
         return 1
-    spec = (root / args.spec).resolve() if not Path(args.spec).is_absolute() else Path(args.spec)
+    spec = resolve_repo_path(root, args.spec)
     cmd = [sys.executable, str(runner), "--spec", str(spec)]
     if args.run_id:
         cmd.extend(["--run-id", str(args.run_id)])
     if args.outdir:
-        outdir = (
-            (root / args.outdir).resolve()
-            if not Path(args.outdir).is_absolute()
-            else Path(args.outdir)
-        )
+        outdir = resolve_repo_path(root, args.outdir)
+        if (bad := reject_nonempty_outdir(outdir)) is not None:
+            return bad
         cmd.extend(["--outdir", str(outdir)])
+    if args.dry_run:
+        cmd.append("--dry-run")
+    else:
+        cmd.append("--no-dry-run")
     cmd.extend(["--evidence", str(args.evidence)])
     return subprocess.run(cmd, cwd=str(root)).returncode
 
@@ -74,10 +100,10 @@ def cmd_run_shadow(args: argparse.Namespace) -> int:
     if not runner.is_file():
         print(f"missing {runner}", file=sys.stderr)
         return 1
-    spec = (root / args.spec).resolve() if not Path(args.spec).is_absolute() else Path(args.spec)
-    outdir = (
-        (root / args.outdir).resolve() if not Path(args.outdir).is_absolute() else Path(args.outdir)
-    )
+    spec = resolve_repo_path(root, args.spec)
+    outdir = resolve_repo_path(root, args.outdir)
+    if (bad := reject_nonempty_outdir(outdir)) is not None:
+        return bad
     cmd = [
         sys.executable,
         str(runner),
@@ -92,6 +118,10 @@ def cmd_run_shadow(args: argparse.Namespace) -> int:
         "--p7-evidence",
         str(args.p7_evidence),
     ]
+    if args.dry_run:
+        cmd.append("--dry-run")
+    else:
+        cmd.append("--no-dry-run")
     return subprocess.run(cmd, cwd=str(root)).returncode
 
 
@@ -109,6 +139,12 @@ def main() -> int:
     sp.add_argument("--run-id", type=str, default="", help="Deterministic run id")
     sp.add_argument("--outdir", type=str, default="", help="Override output dir")
     sp.add_argument("--evidence", type=int, default=1, help="Write evidence manifest (1 default)")
+    sp.add_argument(
+        "--dry-run",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Propagate dry-run to the paper runner (default: on; validate only, no output files)",
+    )
     sp.set_defaults(func=cmd_run_paper)
 
     sp = sub.add_parser("run-shadow", help="run shadow session with P7 enabled")
@@ -116,6 +152,12 @@ def main() -> int:
     sp.add_argument("--run-id", type=str, default="p7_ctl", help="Run id")
     sp.add_argument("--outdir", type=str, required=True, help="Output dir")
     sp.add_argument("--p7-evidence", type=int, default=1, help="Write P7 evidence manifest")
+    sp.add_argument(
+        "--dry-run",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Propagate dry-run to the shadow session runner (default: on)",
+    )
     sp.set_defaults(func=cmd_run_shadow)
 
     args = p.parse_args()
