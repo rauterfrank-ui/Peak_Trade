@@ -150,3 +150,101 @@ def validate_p7_shadow_one_shot_artifact_bundle(bundle_root: Path) -> None:
     _validate_p7_account(_load_json(root / "p7" / "account.json"))
     _validate_root_evidence_manifest(_load_json(root / "evidence_manifest.json"))
     _validate_p7_evidence_manifest(_load_json(root / "p7" / "evidence_manifest.json"))
+
+
+VOLATILE_REPEATED_RUN_KEYS_V0: frozenset[str] = frozenset(
+    {
+        "created_at",
+        "created_at_utc",
+        "generated_at",
+        "timestamp",
+        "ts",
+        "started_at",
+        "completed_at",
+        "run_started_at",
+        "run_completed_at",
+        "sha256",
+        "digest",
+        "hash",
+        "path",
+        "paths",
+        "outdir",
+        "output_dir",
+        "output_path",
+    }
+)
+
+VOLATILE_REPEATED_RUN_PATH_PARTS_V0: frozenset[str] = frozenset(
+    {
+        "run_001",
+        "run_002",
+        "run_003",
+        "peak_trade_manual_p7_shadow_repeated_campaign_scope_20260505T162028Z",
+    }
+)
+
+STABLE_REPEATED_RUN_ARTIFACTS_V0: frozenset[str] = frozenset(
+    {
+        "shadow_session_summary.json",
+        "p5a/l3_trade_plan_advisory.json",
+        "p7/fills.json",
+        "p7/account.json",
+        "p7_fills.json",
+        "p7_account.json",
+    }
+)
+
+
+def normalize_p7_shadow_repeated_run_value_v0(value: Any) -> Any:
+    """Normalize expected run-local volatility for repeated-run stability checks."""
+    if isinstance(value, dict):
+        return {
+            key: normalize_p7_shadow_repeated_run_value_v0(item)
+            for key, item in sorted(value.items())
+            if key not in VOLATILE_REPEATED_RUN_KEYS_V0
+        }
+
+    if isinstance(value, list):
+        return [normalize_p7_shadow_repeated_run_value_v0(item) for item in value]
+
+    if isinstance(value, str):
+        normalized = value
+        for part in VOLATILE_REPEATED_RUN_PATH_PARTS_V0:
+            normalized = normalized.replace(part, "<RUN_LOCAL>")
+        return normalized
+
+    return value
+
+
+def stable_repeated_run_artifact_paths_v0() -> frozenset[str]:
+    """Return artifact paths that must remain stable across repeated one-shot runs."""
+    return STABLE_REPEATED_RUN_ARTIFACTS_V0
+
+
+def assert_p7_shadow_repeated_run_stability_v0(
+    run_payloads_by_relpath: dict[str, dict[str, Any]],
+) -> None:
+    """Assert normalized stable artifacts are identical across repeated runs.
+
+    The input shape is:
+    {
+        "run_001": {"relative/artifact.json": parsed_json, ...},
+        "run_002": {"relative/artifact.json": parsed_json, ...},
+        ...
+    }
+    """
+    run_names = sorted(run_payloads_by_relpath)
+    assert run_names, "at least one run is required"
+
+    baseline = run_names[0]
+    baseline_payloads = run_payloads_by_relpath[baseline]
+
+    for relpath in STABLE_REPEATED_RUN_ARTIFACTS_V0:
+        assert relpath in baseline_payloads, f"missing stable artifact in {baseline}: {relpath}"
+        expected = normalize_p7_shadow_repeated_run_value_v0(baseline_payloads[relpath])
+
+        for run_name in run_names[1:]:
+            run_payloads = run_payloads_by_relpath[run_name]
+            assert relpath in run_payloads, f"missing stable artifact in {run_name}: {relpath}"
+            actual = normalize_p7_shadow_repeated_run_value_v0(run_payloads[relpath])
+            assert actual == expected, f"stable artifact drifted after normalization: {relpath}"

@@ -125,6 +125,14 @@ Do not interpret a successful dry-run or passing repo tests as Paper/Shadow 24/7
 - Do not commit personal machine paths or secrets into fixtures or docs.
 - When updating golden fixtures, follow [P7_SHADOW_ONE_SHOT_ACCEPTANCE_CONTRACT_V0.md](P7_SHADOW_ONE_SHOT_ACCEPTANCE_CONTRACT_V0.md) and normalize paths to repo-relative strings.
 
+## Repeated-run stability interpretation
+
+Repeated-run campaign comparison must allow expected run-local volatility while still rejecting **business-critical artifact drift**.
+
+Allowed volatility includes `created_at_utc`, run-local output paths, and **Evidence-Manifest hashes** for timestamped or path-bearing artifacts.
+
+The campaign must fail if stable business-critical artifacts drift after volatility normalization. Stable artifacts include the Shadow session summary, the P5a trade plan advisory, P7 fills (including `p7&#47;fills.json`), and P7 account state.
+
 ## 11. Revision
 
 - **v0** — Initial governance: manual repeated one-shot dry-runs only; no scheduler or daemon authority.

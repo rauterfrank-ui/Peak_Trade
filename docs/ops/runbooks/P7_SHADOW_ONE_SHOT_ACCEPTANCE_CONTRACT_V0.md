@@ -64,4 +64,12 @@ For 24/7 preflight status and activation boundaries, see
 | `tests/ops/p7_shadow_one_shot_acceptance_bundle_v0.py` | Validator |
 | `tests/ops/test_p7_shadow_one_shot_acceptance_contract_v0.py` | Contract tests |
 
+## Repeated-run stability boundary
+
+For repeated manual one-shot dry-runs, the acceptance layer distinguishes **volatile repeated-run fields** from **stable business-critical artifacts**.
+
+Allowed volatile repeated-run fields include timestamps such as `created_at_utc`, run-local output paths, and **Evidence-Manifest hashes** for artifacts whose contents include run-local timestamps or paths.
+
+Stable business-critical artifacts include `shadow_session_summary.json`, `p5a&#47;l3_trade_plan_advisory.json`, `p7&#47;fills.json`, and `p7&#47;account.json`. Drift in those stable artifacts after volatility normalization is a failed repeated-run stability check.
+
 This document does **not** require invoking `p7_ctl` in CI; tests are static against committed fixtures.
