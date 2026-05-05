@@ -1,0 +1,75 @@
+{
+  "asof_utc": "2026-02-11T14:00:00Z",
+  "decision": "NO_TRADE",
+  "no_trade": false,
+  "notes": [
+    "dry_run_only",
+    "no_execution"
+  ],
+  "outputs": {
+    "decision": "NO_TRADE",
+    "p4c_out": "p4c/l2_market_outlook.json",
+    "p5a_out": "p5a/l3_trade_plan_advisory.json",
+    "p7_account": "p7_account.json",
+    "p7_evidence_manifest": "p7_evidence_manifest.json",
+    "p7_fills": "p7_fills.json",
+    "regime": "VOL_EXTREME",
+    "scenario": "high_vol_no_trade",
+    "trade_allowed": false
+  },
+  "p7_account_summary": {
+    "cash": 999.6,
+    "decision": "NO_TRADE",
+    "positions": {
+      "BTC": 0.0,
+      "decision": "NO_TRADE",
+      "regime": "VOL_EXTREME",
+      "scenario": "high_vol_no_trade",
+      "trade_allowed": false
+    },
+    "regime": "VOL_EXTREME",
+    "scenario": "high_vol_no_trade",
+    "schema_version": "p7.account.v0",
+    "trade_allowed": false
+  },
+  "p7_outputs": {
+    "decision": "NO_TRADE",
+    "p7_account": "p7_account.json",
+    "p7_evidence_manifest": "p7_evidence_manifest.json",
+    "p7_fills": "p7_fills.json",
+    "regime": "VOL_EXTREME",
+    "scenario": "high_vol_no_trade",
+    "trade_allowed": false
+  },
+  "regime": "VOL_EXTREME",
+  "run_id": "p7_ctl",
+  "scenario": "high_vol_no_trade",
+  "schema_version": "p6.shadow_session.v0",
+  "steps": [
+    {
+      "decision": "NO_TRADE",
+      "name": "p4c",
+      "out": "p4c/l2_market_outlook.json",
+      "regime": "VOL_EXTREME",
+      "scenario": "high_vol_no_trade",
+      "trade_allowed": false
+    },
+    {
+      "decision": "NO_TRADE",
+      "name": "p5a",
+      "out": "p5a/l3_trade_plan_advisory.json",
+      "regime": "VOL_EXTREME",
+      "scenario": "high_vol_no_trade",
+      "trade_allowed": false
+    },
+    {
+      "decision": "NO_TRADE",
+      "name": "p7",
+      "out": "p7_fills.json",
+      "regime": "VOL_EXTREME",
+      "scenario": "high_vol_no_trade",
+      "trade_allowed": false
+    }
+  ],
+  "trade_allowed": false
+}
