@@ -22,6 +22,19 @@ from src.aiops.p4c.evidence import build_manifest, write_json
 from src.aiops.p6.session_schema import ShadowSessionSummary
 
 
+def _shadow_session_summary_metadata_v0(spec: Dict[str, Any]) -> Dict[str, Any]:
+    """Copy non-authorizing campaign metadata from the runner spec into the session summary."""
+    allowed = (
+        "scenario",
+        "profile",
+        "expected_decision",
+        "expected_regime",
+        "expected_fills",
+        "expected_positions",
+    )
+    return {k: spec[k] for k in allowed if k in spec}
+
+
 def utc_now_iso() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
@@ -213,6 +226,7 @@ def main() -> int:
             p7_printed.append(out_p7_manifest)
 
     summary = ShadowSessionSummary(
+        **_shadow_session_summary_metadata_v0(spec),
         run_id=(args.run_id.strip() or outdir.name),
         asof_utc=str(spec.get("asof_utc", "")),
         steps=[
