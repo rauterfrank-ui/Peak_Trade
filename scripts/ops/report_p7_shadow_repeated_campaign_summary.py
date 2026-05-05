@@ -30,9 +30,11 @@ from tests.ops.p7_shadow_one_shot_acceptance_bundle_v0 import (  # noqa: E402
 
 
 CONTRACT = "p7_shadow_repeated_campaign_summary_v0"
+# Word boundaries avoid false positives on governance keys like live_authorized.
 RISK_PATTERN = re.compile(
-    r"live|testnet|broker|exchange|api_key|secret|network|http|websocket|"
-    r"ERROR|FAIL|Traceback|exception|submit_order|real_order",
+    r"\b(?:live|testnet|broker|exchange|api_key|secret|network|http|websocket)\b|"
+    r"https?://|wss://|"
+    r"\b(?:ERROR|FAIL|Traceback|exception|submit_order|real_order)\b",
     re.IGNORECASE,
 )
 
@@ -50,7 +52,9 @@ def _run_pass_line(campaign_dir: Path, run_name: str) -> bool:
     if not result.exists():
         return False
     text = result.read_text(encoding="utf-8")
-    return f"PASS: {run_name} completed and passed acceptance checks" in text
+    legacy = f"PASS: {run_name} completed and passed acceptance checks" in text
+    high_vol = "PASS: high_vol_no_trade" in text and "passed acceptance checks" in text
+    return legacy or high_vol
 
 
 def _stderr_empty(campaign_dir: Path, run_name: str) -> bool:
@@ -141,10 +145,18 @@ def build_p7_shadow_repeated_campaign_summary(
     campaign_dir: Path,
     *,
     expected_runs: int | None = None,
+    runs: list[str] | None = None,
 ) -> dict[str, Any]:
     campaign = campaign_dir.resolve()
-    run_dirs = sorted(path for path in (campaign / "runs").glob("run_*") if path.is_dir())
-    run_names = [path.name for path in run_dirs]
+    if runs is not None:
+        run_names = list(runs)
+        for name in run_names:
+            if not (campaign / "runs" / name).is_dir():
+                msg = f"missing run outdir: {campaign / 'runs' / name}"
+                raise FileNotFoundError(msg)
+    else:
+        run_dirs = sorted(path for path in (campaign / "runs").glob("run_*") if path.is_dir())
+        run_names = [path.name for path in run_dirs]
     runs = [_run_payload(campaign, run_name) for run_name in run_names]
 
     per_run_pass = all(
@@ -204,12 +216,24 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--campaign-dir", required=True, help="Campaign directory to inspect.")
     parser.add_argument("--expected-runs", type=int, default=None)
+    parser.add_argument(
+        "--runs",
+        default=None,
+        help="Comma-separated names of runs/ subdirs to include (default: all run_*).",
+    )
     parser.add_argument("--json", action="store_true", help="Emit JSON output.")
     args = parser.parse_args(argv)
+
+    run_names: list[str] | None = None
+    if args.runs is not None:
+        run_names = [part.strip() for part in args.runs.split(",") if part.strip()]
+        if not run_names:
+            parser.error("--runs must list at least one run name")
 
     payload = build_p7_shadow_repeated_campaign_summary(
         Path(args.campaign_dir),
         expected_runs=args.expected_runs,
+        runs=run_names,
     )
 
     if args.json:

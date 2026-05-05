@@ -134,3 +134,80 @@ def test_reporter_fails_when_business_artifact_drifts(tmp_path: Path) -> None:
 
     assert payload["campaign_status"] == "FAIL"
     assert payload["campaign_checks"]["stable_business_artifacts_unchanged"] is False
+
+
+def test_high_vol_pass_line_is_recognized(tmp_path: Path) -> None:
+    campaign = _campaign(tmp_path, run_count=1)
+    (campaign / "run_001_RESULT.md").write_text(
+        "PASS: high_vol_no_trade run_001 completed and passed acceptance checks.\n",
+        encoding="utf-8",
+    )
+    payload = build_p7_shadow_repeated_campaign_summary(campaign, expected_runs=1)
+    assert payload["runs"][0]["pass_line_present"] is True
+    assert payload["campaign_status"] == "PASS"
+
+
+def test_risk_scan_ignores_governance_suffix_keys(tmp_path: Path) -> None:
+    campaign = _campaign(tmp_path)
+    outlook = campaign / "runs" / "run_001" / "p4c" / "market_outlook.json"
+    data = json.loads(outlook.read_text(encoding="utf-8"))
+    data["live_authorized"] = False
+    data["testnet_authorized"] = False
+    outlook.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+    payload = build_p7_shadow_repeated_campaign_summary(campaign, expected_runs=3)
+
+    assert payload["campaign_checks"]["risk_scan_clean"] is True
+    assert payload["campaign_status"] == "PASS"
+
+
+def test_explicit_run_subset_skips_extra_run_dirs(tmp_path: Path) -> None:
+    campaign = tmp_path / "campaign"
+    campaign.mkdir()
+    for name in ("run_001", "run_001_clean_main_after_reconcile_fix", "run_002", "run_003"):
+        _copy_fixture_run(campaign, name)
+
+    payload = build_p7_shadow_repeated_campaign_summary(
+        campaign,
+        expected_runs=3,
+        runs=["run_001_clean_main_after_reconcile_fix", "run_002", "run_003"],
+    )
+
+    assert payload["run_count"] == 3
+    assert payload["expected_run_count_met"] is True
+    assert [run["run_id"] for run in payload["runs"]] == [
+        "run_001_clean_main_after_reconcile_fix",
+        "run_002",
+        "run_003",
+    ]
+    assert payload["campaign_status"] == "PASS"
+
+
+def test_cli_accepts_comma_separated_runs(tmp_path: Path) -> None:
+    campaign = tmp_path / "campaign"
+    campaign.mkdir()
+    for name in ("run_001", "run_002", "run_003"):
+        _copy_fixture_run(campaign, name)
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--campaign-dir",
+            str(campaign),
+            "--expected-runs",
+            "1",
+            "--runs",
+            "run_002",
+            "--json",
+        ],
+        cwd=REPO_ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    payload = json.loads(result.stdout)
+    assert payload["run_count"] == 1
+    assert payload["runs"][0]["run_id"] == "run_002"

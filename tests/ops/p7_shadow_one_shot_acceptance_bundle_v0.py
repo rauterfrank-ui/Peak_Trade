@@ -189,9 +189,11 @@ VOLATILE_REPEATED_RUN_KEYS_V0: frozenset[str] = frozenset(
 VOLATILE_REPEATED_RUN_PATH_PARTS_V0: frozenset[str] = frozenset(
     {
         "run_001",
+        "run_001_clean_main_after_reconcile_fix",
         "run_002",
         "run_003",
         "peak_trade_manual_p7_shadow_repeated_campaign_scope_20260505T162028Z",
+        "peak_trade_high_vol_no_trade_runner_campaign_scope_20260505T193414Z",
     }
 )
 
@@ -205,6 +207,25 @@ STABLE_REPEATED_RUN_ARTIFACTS_V0: frozenset[str] = frozenset(
         "p7_account.json",
     }
 )
+
+# Optional spec/campaign metadata on shadow summaries (may be absent on older runs).
+SHADOW_SUMMARY_REPEATED_RUN_IGNORE_KEYS_V0: frozenset[str] = frozenset(
+    {
+        "scenario",
+        "profile",
+        "expected_decision",
+        "expected_regime",
+        "expected_fills",
+        "expected_positions",
+    }
+)
+
+
+def _strip_shadow_summary_for_repeated_run_compare(data: dict[str, Any]) -> dict[str, Any]:
+    out = dict(data)
+    for key in SHADOW_SUMMARY_REPEATED_RUN_IGNORE_KEYS_V0:
+        out.pop(key, None)
+    return out
 
 
 def normalize_p7_shadow_repeated_run_value_v0(value: Any) -> Any:
@@ -221,7 +242,8 @@ def normalize_p7_shadow_repeated_run_value_v0(value: Any) -> Any:
 
     if isinstance(value, str):
         normalized = value
-        for part in VOLATILE_REPEATED_RUN_PATH_PARTS_V0:
+        # Longest first so e.g. run_001_clean_main... is not corrupted by run_001.
+        for part in sorted(VOLATILE_REPEATED_RUN_PATH_PARTS_V0, key=len, reverse=True):
             normalized = normalized.replace(part, "<RUN_LOCAL>")
         return normalized
 
@@ -253,12 +275,20 @@ def assert_p7_shadow_repeated_run_stability_v0(
 
     for relpath in STABLE_REPEATED_RUN_ARTIFACTS_V0:
         assert relpath in baseline_payloads, f"missing stable artifact in {baseline}: {relpath}"
-        expected = normalize_p7_shadow_repeated_run_value_v0(baseline_payloads[relpath])
+        baseline_raw = baseline_payloads[relpath]
+        if relpath == "shadow_session_summary.json":
+            baseline_raw = _strip_shadow_summary_for_repeated_run_compare(baseline_raw)
+
+        expected = normalize_p7_shadow_repeated_run_value_v0(baseline_raw)
 
         for run_name in run_names[1:]:
             run_payloads = run_payloads_by_relpath[run_name]
             assert relpath in run_payloads, f"missing stable artifact in {run_name}: {relpath}"
-            actual = normalize_p7_shadow_repeated_run_value_v0(run_payloads[relpath])
+            actual_raw = run_payloads[relpath]
+            if relpath == "shadow_session_summary.json":
+                actual_raw = _strip_shadow_summary_for_repeated_run_compare(actual_raw)
+
+            actual = normalize_p7_shadow_repeated_run_value_v0(actual_raw)
             assert actual == expected, f"stable artifact drifted after normalization: {relpath}"
 
 
