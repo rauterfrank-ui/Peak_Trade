@@ -248,3 +248,25 @@ def assert_p7_shadow_repeated_run_stability_v0(
             assert relpath in run_payloads, f"missing stable artifact in {run_name}: {relpath}"
             actual = normalize_p7_shadow_repeated_run_value_v0(run_payloads[relpath])
             assert actual == expected, f"stable artifact drifted after normalization: {relpath}"
+
+
+P7_SHADOW_ACCEPTANCE_FIXTURE_PROFILES_V0 = {
+    "baseline": {
+        "fixture_dir": "tests/fixtures/p7_shadow_one_shot_acceptance_v0",
+        "expected_scenario": None,
+        "expected_decision": None,
+        "fills_may_be_empty": False,
+    },
+    "high_vol_no_trade": {
+        "fixture_dir": "tests/fixtures/p7_shadow_one_shot_acceptance_high_vol_no_trade_v0",
+        "expected_scenario": "high_vol_no_trade",
+        "expected_decision": "NO_TRADE",
+        "fills_may_be_empty": True,
+    },
+}
+
+
+def p7_shadow_acceptance_fixture_profiles_v0():
+    """Return supported offline P7 Shadow acceptance fixture profiles."""
+
+    return P7_SHADOW_ACCEPTANCE_FIXTURE_PROFILES_V0
