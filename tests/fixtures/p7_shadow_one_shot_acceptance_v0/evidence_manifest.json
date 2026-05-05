@@ -1,0 +1,45 @@
+{
+  "files": [
+    {
+      "bytes": 466,
+      "name": "l2_market_outlook.json",
+      "relpath": "p4c/l2_market_outlook.json",
+      "sha256": "adc347bc925650acb7328541cddf2adcd955e0eb0864204a0c633f32f597319a"
+    },
+    {
+      "bytes": 364,
+      "name": "l3_trade_plan_advisory.json",
+      "relpath": "p5a/l3_trade_plan_advisory.json",
+      "sha256": "d228bc5f54d20f936d25d5a976b571709799c001e4b1769b1d1e4db3ad6fce9a"
+    },
+    {
+      "bytes": 94,
+      "name": "p7_account.json",
+      "relpath": "p7_account.json",
+      "sha256": "ee263b02ac3c125797ecb24dda8b14e01752131008c22e9af949eefec86d21ba"
+    },
+    {
+      "bytes": 516,
+      "name": "p7_evidence_manifest.json",
+      "relpath": "p7_evidence_manifest.json",
+      "sha256": "b9f0eca52ebaaa67c69ee24b3f04631619f9e698250adae646fb48b2222e1378"
+    },
+    {
+      "bytes": 289,
+      "name": "p7_fills.json",
+      "relpath": "p7_fills.json",
+      "sha256": "1880eda16fa9b5b96dcfa02b0fbd2b374b86bd2e88679ebf16420f2410893115"
+    },
+    {
+      "bytes": 942,
+      "name": "shadow_session_summary.json",
+      "relpath": "shadow_session_summary.json",
+      "sha256": "63fb609d6e7739beec9dcc20c4066108f27a4ee76bf57f4ae8dc890164a74bfb"
+    }
+  ],
+  "meta": {
+    "created_at_utc": "2026-05-05T15:09:21.000900Z",
+    "kind": "p6_shadow_session_manifest",
+    "schema_version": "p6.shadow_session.v0"
+  }
+}

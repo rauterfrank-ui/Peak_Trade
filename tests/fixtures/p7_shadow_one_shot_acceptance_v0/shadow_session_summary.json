@@ -1,0 +1,43 @@
+{
+  "asof_utc": "2026-02-11T14:00:00Z",
+  "no_trade": false,
+  "notes": [
+    "dry_run_only",
+    "no_execution"
+  ],
+  "outputs": {
+    "p4c_out": "p4c/l2_market_outlook.json",
+    "p5a_out": "p5a/l3_trade_plan_advisory.json",
+    "p7_account": "p7_account.json",
+    "p7_evidence_manifest": "p7_evidence_manifest.json",
+    "p7_fills": "p7_fills.json"
+  },
+  "p7_account_summary": {
+    "cash": 999.6,
+    "positions": {
+      "BTC": 0.0
+    },
+    "schema_version": "p7.account.v0"
+  },
+  "p7_outputs": {
+    "p7_account": "p7_account.json",
+    "p7_evidence_manifest": "p7_evidence_manifest.json",
+    "p7_fills": "p7_fills.json"
+  },
+  "run_id": "p7_ctl",
+  "schema_version": "p6.shadow_session.v0",
+  "steps": [
+    {
+      "name": "p4c",
+      "out": "p4c/l2_market_outlook.json"
+    },
+    {
+      "name": "p5a",
+      "out": "p5a/l3_trade_plan_advisory.json"
+    },
+    {
+      "name": "p7",
+      "out": "p7_fills.json"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "files": [
+    {
+      "bytes": 94,
+      "name": "account.json",
+      "relpath": "p7/account.json",
+      "sha256": "ee263b02ac3c125797ecb24dda8b14e01752131008c22e9af949eefec86d21ba"
+    },
+    {
+      "bytes": 289,
+      "name": "fills.json",
+      "relpath": "p7/fills.json",
+      "sha256": "1880eda16fa9b5b96dcfa02b0fbd2b374b86bd2e88679ebf16420f2410893115"
+    }
+  ],
+  "meta": {
+    "created_at_utc": "2026-05-05T15:09:20.999375Z",
+    "kind": "p7_paper_manifest",
+    "schema_version": "p7.paper_run.v0"
+  }
+}
