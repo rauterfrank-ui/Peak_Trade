@@ -99,10 +99,18 @@ def _validate_shadow_session_summary(data: dict[str, Any]) -> None:
     assert isinstance(steps, list) and len(steps) >= 3
 
 
-def _validate_p7_fills(data: dict[str, Any]) -> None:
-    assert data.get("schema_version") == "p7.fills.v0"
+def _validate_p7_fills(data: dict[str, Any], *, fills_may_be_empty: bool) -> None:
     fills = data.get("fills")
-    assert isinstance(fills, list) and len(fills) >= 1
+    assert isinstance(fills, list), "fills must be a list"
+
+    if fills_may_be_empty and len(fills) == 0:
+        return
+
+    if not fills_may_be_empty and len(fills) < 1:
+        raise AssertionError("expected at least one fill")
+
+    assert data.get("schema_version") == "p7.fills.v0"
+    assert len(fills) >= 1
 
 
 def _validate_p7_account(data: dict[str, Any]) -> None:
@@ -126,8 +134,11 @@ def _validate_p7_evidence_manifest(data: dict[str, Any]) -> None:
     assert isinstance(files, list) and len(files) == 2
 
 
-def validate_p7_shadow_one_shot_artifact_bundle(bundle_root: Path) -> None:
+def validate_p7_shadow_one_shot_artifact_bundle(
+    bundle_root: Path, *, profile_name: str = "baseline"
+) -> None:
     """Raise AssertionError when the bundle does not satisfy the v0 acceptance contract."""
+    profile = _profile_config_v0(profile_name)
     root = bundle_root.resolve()
     if not root.is_dir():
         raise AssertionError(f"bundle root is not a directory: {root}")
@@ -144,8 +155,9 @@ def validate_p7_shadow_one_shot_artifact_bundle(bundle_root: Path) -> None:
     _forbidden_scan(root)
 
     _validate_shadow_session_summary(_load_json(root / "shadow_session_summary.json"))
-    _validate_p7_fills(_load_json(root / "p7_fills.json"))
-    _validate_p7_fills(_load_json(root / "p7" / "fills.json"))
+    allow_empty = profile["fills_may_be_empty"]
+    _validate_p7_fills(_load_json(root / "p7_fills.json"), fills_may_be_empty=allow_empty)
+    _validate_p7_fills(_load_json(root / "p7" / "fills.json"), fills_may_be_empty=allow_empty)
     _validate_p7_account(_load_json(root / "p7_account.json"))
     _validate_p7_account(_load_json(root / "p7" / "account.json"))
     _validate_root_evidence_manifest(_load_json(root / "evidence_manifest.json"))
@@ -264,6 +276,15 @@ P7_SHADOW_ACCEPTANCE_FIXTURE_PROFILES_V0 = {
         "fills_may_be_empty": True,
     },
 }
+
+
+def _profile_config_v0(profile_name: str) -> dict[str, Any]:
+    try:
+        return P7_SHADOW_ACCEPTANCE_FIXTURE_PROFILES_V0[profile_name]
+    except KeyError as exc:
+        raise AssertionError(
+            f"unknown P7 Shadow acceptance fixture profile: {profile_name}"
+        ) from exc
 
 
 def p7_shadow_acceptance_fixture_profiles_v0():
