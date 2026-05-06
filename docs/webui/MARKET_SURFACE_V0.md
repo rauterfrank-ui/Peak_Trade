@@ -237,6 +237,33 @@ The Double-Play Market Dashboard may later consume this readmodel only as displa
 
 Any future client refresh or polling behavior requires a separate contract covering cadence, failure display, rate-limit behavior, provider isolation, and no-authority semantics.
 
+### Market Depth display integration posture v0 (plan-only)
+
+This subsection is **documentation only** (**no** template, **no** route, **no** test edits in this slice). It records how a **future** read-only display attachment should respect **current `main`**.
+
+**Facts on `main` today**
+
+- **`GET`** **`&#47;api&#47;market&#47;depth`** exists and is **env-gated** (see **Implementation boundary** above). **Templates** under `templates/peak_trade_dashboard/` **do not** consume this route yet (no browser `fetch`/`XMLHttpRequest`/polling wiring for depth in Market Surface v0 or Double-Play Market Dashboard v0 as of this plan).
+- Canonical **HTML** market surfaces remain **`GET`** **`&#47;market`** (**`market_v0.html`**) and **`GET`** **`&#47;market&#47;double-play`** (**double_play** template, **SSR** `dp_display` snapshot **without** client fetch for that snapshot per this document).
+
+**Canonical first owner surface (phase 1)**
+
+- **Primary display owner for a first depth visualization slice:** **`GET`** **`&#47;market`** (**Market Surface v0** / **`market_v0.html`**). Rationale: depth and OHLCV are **distinct readmodels** under this page’s contract; the page already owns primary market **read-only** copy, safety banners, and chart diagnostics for OHLCV — a compact, **non-authorizing** depth ladder or table fits the same **broad market surface** without opening a new dashboard hub.
+- **`GET`** **`&#47;market&#47;double-play`** remains a **secondary candidate** only after phase 1 clarity: it is the Double-Play cockpit and must keep **`dp_display`** semantics **separate** from orderbook JSON; any later depth context there must remain **display-only** and obey the **UI consumption boundary** list above (no side/ready signals from depth). Prefer **not** to fold depth into **`dp_display`** JSON payloads.
+
+**SSR-only next implementation slice (whenever built)**
+
+- The **next** implementation slice after this plan should be **SSR-first**: the server may pass **precomputed** depth readmodel fields into the template context (mirroring how market payload is assembled today) **or** render a neutral „depth unavailable/read-only“ strip when the HTTP route is disabled by env — **without** introducing **browser polling**, **client fetch** to **`GET`** **`&#47;api&#47;market&#47;depth`**, or **auto-refresh** timers. Any **client-fetch** or polling design requires a **later**, separate contract (cadence, failures, rate limits, authority) and is **out of scope** for the immediate slice after this doc.
+- Operators should treat **503** JSON from **`GET`** **`&#47;api&#47;market&#47;depth`** as **diagnostic** only; SSR copy must **not** imply trading readiness, Live/Testnet activation, execution permission, or secrets exposure.
+
+**Suggested sequence after this plan (not executed here)**
+
+1. **Docs** (this subsection) — posture locked.
+2. **Optional tests-only / template markers** — characterize HTML `data-*`/copy once SSR shape is chosen.
+3. **Template SSR implementation** — bounded to phase 1 owner and **no** polling.
+
+Do **not** add a new Observability/Evidence/readiness **hub** solely for depth; reuse **Market Surface v0** navigation patterns already described in **Verwandte read-only WebUI-Fläche**.
+
 
 ## Double-Play Market Dashboard konsumiert strukturierte Metadaten v2
 
