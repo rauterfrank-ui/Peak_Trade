@@ -1,43 +1,27 @@
-import json
-import subprocess
-import sys
 from decimal import Decimal
 from pathlib import Path
 
+from tests.aiops.p7.paper_runner_test_helpers_v0 import (
+    PAPER_RUN_MIN_SPEC,
+    assert_json_outputs_do_not_contain_live_markers,
+    load_json,
+    run_paper_session,
+)
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-RUNNER = REPO_ROOT / "scripts" / "aiops" / "run_paper_trading_session.py"
-SPEC = REPO_ROOT / "tests" / "fixtures" / "p7" / "paper_run_min_v0.json"
-
-
-def _load(path: Path) -> dict:
-    return json.loads(path.read_text(encoding="utf-8"))
+SPEC = PAPER_RUN_MIN_SPEC
 
 
 def test_paper_runner_two_order_roundtrip_writes_deterministic_outputs(tmp_path: Path) -> None:
     outdir = tmp_path / "paper_two_order_roundtrip"
 
-    result = subprocess.run(
-        [
-            sys.executable,
-            str(RUNNER),
-            "--spec",
-            str(SPEC),
-            "--outdir",
-            str(outdir),
-        ],
-        cwd=REPO_ROOT,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
+    result = run_paper_session(SPEC, outdir)
 
     assert result.returncode == 0
     assert result.stderr == ""
 
-    fills = _load(outdir / "fills.json")
-    account = _load(outdir / "account.json")
-    manifest = _load(outdir / "evidence_manifest.json")
+    fills = load_json(outdir / "fills.json")
+    account = load_json(outdir / "account.json")
+    manifest = load_json(outdir / "evidence_manifest.json")
 
     assert fills["schema_version"] == "p7.fills.v0"
     assert len(fills["fills"]) == 2
@@ -67,37 +51,16 @@ def test_paper_runner_two_order_roundtrip_writes_deterministic_outputs(tmp_path:
 def test_paper_runner_two_order_roundtrip_output_is_portable_and_non_live(tmp_path: Path) -> None:
     outdir = tmp_path / "paper_two_order_roundtrip_portable"
 
-    result = subprocess.run(
-        [
-            sys.executable,
-            str(RUNNER),
-            "--spec",
-            str(SPEC),
-            "--outdir",
-            str(outdir),
-        ],
-        cwd=REPO_ROOT,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
+    result = run_paper_session(SPEC, outdir)
 
     assert result.returncode == 0
     assert result.stderr == ""
 
-    for path in sorted(outdir.rglob("*.json")):
-        text = path.read_text(encoding="utf-8")
-        assert "/Users/" not in text
-        assert "api_key" not in text.lower()
-        assert "secret" not in text.lower()
-        assert "submit_order" not in text.lower()
-        assert "real_order" not in text.lower()
-        assert "broker_connect" not in text.lower()
-        assert "exchange_connect" not in text.lower()
+    assert_json_outputs_do_not_contain_live_markers(outdir)
 
 
 def test_paper_runner_two_order_fixture_is_minimal_and_offline() -> None:
-    spec = _load(SPEC)
+    spec = load_json(SPEC)
 
     assert spec["schema_version"] == "p7.paper_run.v0"
     assert len(spec["orders"]) == 2
