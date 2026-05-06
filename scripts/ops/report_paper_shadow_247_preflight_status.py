@@ -10,14 +10,21 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
 
 
 CONTRACT = "paper_shadow_247_preflight_status_v0"
 CONTRACT_DOC = "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 SCHEDULER_DOC = "docs/SCHEDULER_DAEMON.md"
 SCHEDULER_CONFIG = "config/scheduler/jobs.toml"
+PAPER_SHADOW_247_PREFLIGHT_METADATA = Path("config") / "ops" / "paper_shadow_247_preflight.toml"
 DRY_RUN_COMMAND = (
     "python3 scripts/run_scheduler.py --config config/scheduler/jobs.toml "
     "--dry-run --once --verbose"
@@ -28,8 +35,17 @@ def _repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
 
 
+def _load_paper_shadow_247_preflight_metadata(root: Path) -> dict[str, Any]:
+    cfg = root / PAPER_SHADOW_247_PREFLIGHT_METADATA
+    if not cfg.is_file():
+        return {}
+    return tomllib.loads(cfg.read_text(encoding="utf-8"))
+
+
 def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> dict[str, Any]:
     root = (repo_root or _repo_root()).resolve()
+    metadata = _load_paper_shadow_247_preflight_metadata(root)
+
     contract_path = root / CONTRACT_DOC
     scheduler_doc_path = root / SCHEDULER_DOC
     scheduler_config_path = root / SCHEDULER_CONFIG
@@ -48,13 +64,29 @@ def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> di
         SCHEDULER_CONFIG: scheduler_config_path.exists(),
     }
 
-    blockers = [
-        "canonical_owner_missing",
-        "paper_shadow_job_set_missing",
-        "output_paths_missing",
-        "stop_commands_missing",
-    ]
+    canonical_owner_any = metadata.get("canonical_owner")
+    canonical_owner = canonical_owner_any if isinstance(canonical_owner_any, str) else None
 
+    paper_jobs = [str(x) for x in metadata.get("paper_jobs", []) if isinstance(x, str)]
+    shadow_jobs = [str(x) for x in metadata.get("shadow_jobs", []) if isinstance(x, str)]
+    output_paths = [str(x) for x in metadata.get("output_paths", []) if isinstance(x, str)]
+
+    stop_any = metadata.get("stop_command")
+    emergency_any = metadata.get("emergency_stop_command")
+    stop_command = stop_any if isinstance(stop_any, str) else None
+    emergency_stop_command = emergency_any if isinstance(emergency_any, str) else None
+
+    blockers: list[str] = []
+    if not canonical_owner:
+        blockers.append("canonical_owner_missing")
+    if not paper_jobs or not shadow_jobs:
+        blockers.append("paper_shadow_job_set_missing")
+    if not output_paths:
+        blockers.append("output_paths_missing")
+    if not stop_command or not emergency_stop_command:
+        blockers.append("stop_commands_missing")
+
+    # Authorization flags: never inferred from metadata alone (documentation-only TOML keys).
     return {
         "contract": CONTRACT,
         "schema_version": 0,
@@ -65,6 +97,9 @@ def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> di
         "shadow_runtime_authorized": False,
         "testnet_authorized": False,
         "live_authorized": False,
+        "broker_authorized": False,
+        "exchange_authorized": False,
+        "order_submission_authorized": False,
         "scheduler_execution_authorized": False,
         "dry_run_command": DRY_RUN_COMMAND,
         "dry_run_only": True,
@@ -83,15 +118,15 @@ def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> di
                 for token in ("paper_shadow_247", "paper-shadow-247", "24/7")
             ),
         },
-        "canonical_owner": None,
-        "paper_jobs": [],
-        "shadow_jobs": [],
+        "canonical_owner": canonical_owner,
+        "paper_jobs": paper_jobs,
+        "shadow_jobs": shadow_jobs,
         "commands": [],
-        "output_paths": [],
+        "output_paths": output_paths,
         "state_files": [],
         "log_paths": [],
-        "stop_command": None,
-        "emergency_stop_command": None,
+        "stop_command": stop_command,
+        "emergency_stop_command": emergency_stop_command,
         "risk_flags": {
             "live": False,
             "testnet": False,
