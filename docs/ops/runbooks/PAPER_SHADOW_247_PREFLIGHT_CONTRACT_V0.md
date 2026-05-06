@@ -221,3 +221,11 @@ Observed result:
 This evidence is non-authorizing. It proves only that the tag-gated Paper-only runtime-min scheduler daemon can run for the bounded window, execute the min Paper runtime job once, produce the expected BUY/SELL roundtrip artifacts, and then remain idle. It does not prove multi-symbol Paper runtime stability, longer-horizon Paper runtime stability, Shadow runtime stability, broker connectivity, exchange connectivity, order submission, Testnet readiness, or Live readiness.
 
 Next gate: either repeat with a longer bound, add another Paper-only runtime fixture class, or promote a strictly bounded Paper-only runtime job only through an explicit non-live governance gate. Do not use this evidence to authorize Testnet, Live, broker, exchange, or order paths.
+
+## Operator Python Environment Note v0
+
+Bounded Paper-only scheduler and runtime daemon runs should be launched with the project environment, preferably through `uv run python`, not a system Python such as `/usr/bin/python3`.
+
+Reason: `prometheus_client` is available in the project-managed environment, while Apple Command Line Tools Python may not include it. If the scheduler is started with system Python, stderr may show the optional warning `prometheus_client not installed`. This warning is non-fatal for the current Paper-only evidence gates, but it reduces observability quality and can confuse operator triage.
+
+This note does **not** change runtime authorization. It does not authorize daemon execution, scheduler execution, Paper runtime, Shadow runtime, Testnet, Live, broker, exchange, or order submission paths. It only documents the preferred interpreter boundary for future bounded Paper-only operator runs.
