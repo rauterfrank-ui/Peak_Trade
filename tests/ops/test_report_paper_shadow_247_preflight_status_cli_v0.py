@@ -81,6 +81,31 @@ def _assert_command_inventory_shape(payload: dict[str, object]) -> None:
     assert args_min["script"] == "scripts/aiops/run_paper_trading_session.py"
     assert args_min["spec"] == "tests/fixtures/p7/paper_run_min_v0.json"
 
+    high_job = by_name["paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0"]
+    assert high_job["found"] is True
+    assert high_job["enabled"] is False
+    assert high_job["command"] == "python"
+    assert high_job["timeout_seconds"] == 600
+    safety_high = high_job["safety_classification"]
+    assert isinstance(safety_high, dict)
+    assert safety_high["paper_only"] is True
+    assert safety_high["dry_run_visible"] is True
+    assert safety_high["paper_runtime_job"] is True
+    assert safety_high["enabled"] is False
+    assert safety_high["disabled_by_default"] is True
+    assert safety_high["authorization_flags"] == {
+        "testnet_authorized": False,
+        "live_authorized": False,
+        "broker_authorized": False,
+        "exchange_authorized": False,
+        "order_submission_authorized": False,
+    }
+    assert safety_high["non_authorizing"] is True
+    args_high = high_job["args"]
+    assert isinstance(args_high, dict)
+    assert args_high["script"] == "scripts/aiops/run_paper_trading_session.py"
+    assert args_high["spec"] == "tests/fixtures/p7/paper_run_high_vol_no_trade_v0.json"
+
     assert any(str(c["name"]).startswith("paper_runner_") and c["found"] is False for c in commands)
     for c in commands:
         if str(c["name"]).startswith("paper_runner_") and c["found"] is False:
