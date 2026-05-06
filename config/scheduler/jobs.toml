@@ -234,3 +234,32 @@ live_authorized = false
 broker_authorized = false
 exchange_authorized = false
 order_submission_authorized = false
+
+# Paper-only runtime min fixture job gate v0
+#
+# This job is intentionally disabled by default.
+# It is a scheduler-visible Paper runtime command shape for a later explicit bounded run.
+# It must not be treated as Testnet/Live/Broker/Exchange/Order authorization.
+[[job]]
+name = "paper_shadow_247_paper_only_runtime_min_v0"
+enabled = false
+schedule_type = "once"
+command = "python"
+description = "Paper-only runtime min fixture runner; disabled until explicit bounded gate."
+tags = ["paper_shadow_247", "paper_runtime", "paper_runtime_min", "disabled_by_default"]
+paper_only = true
+paper_runtime_job = true
+dry_run_visible = true
+runtime_fixture = "tests/fixtures/p7/paper_run_min_v0.json"
+runtime_outdir_template = "out/paper_shadow_247/runtime/min/{timestamp}"
+testnet_authorized = false
+live_authorized = false
+broker_authorized = false
+exchange_authorized = false
+order_submission_authorized = false
+
+[job.args]
+script = "scripts/aiops/run_paper_trading_session.py"
+spec = "tests/fixtures/p7/paper_run_min_v0.json"
+outdir = "out/paper_shadow_247/runtime/min/__DRY_RUN_PLACEHOLDER__"
+
