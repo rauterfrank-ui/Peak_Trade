@@ -76,7 +76,7 @@ def test_build_paper_shadow_247_preflight_status_reuses_existing_contract_surfac
     assert payload["contract_markers"]["contract_mentions_stop"] is True
     assert payload["contract_markers"]["contract_non_authority"] is True
     assert payload["contract_markers"]["scheduler_doc_links_contract"] is True
-    assert payload["contract_markers"]["scheduler_config_has_direct_247_job"] is False
+    assert payload["contract_markers"]["scheduler_config_has_direct_247_job"] is True
 
 
 def test_cli_json_output_is_json_native_and_does_not_execute_scheduler() -> None:

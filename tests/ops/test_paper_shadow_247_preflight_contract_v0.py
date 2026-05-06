@@ -74,9 +74,13 @@ def test_scheduler_daemon_links_to_paper_shadow_247_contract() -> None:
     assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in scheduler_text
 
 
-def test_scheduler_config_is_not_a_direct_paper_shadow_247_activation() -> None:
-    jobs_text = JOBS_TOML.read_text(encoding="utf-8").lower()
+def test_scheduler_config_exposes_read_only_paper_shadow_247_preflight_job_only() -> None:
+    jobs_text = JOBS_TOML.read_text(encoding="utf-8")
 
-    assert "paper_shadow_247" not in jobs_text
-    assert "paper-shadow-247" not in jobs_text
-    assert "24/7" not in jobs_text
+    assert "paper_shadow_247_paper_only_preflight_status_v0" in jobs_text
+    assert "report_paper_shadow_247_preflight_status.py" in jobs_text
+    assert "paper_only = true" in jobs_text.lower()
+    assert "dry_run_visible = true" in jobs_text.lower()
+
+    lowered = jobs_text.lower()
+    assert "run_shadow_paper_session" not in lowered
