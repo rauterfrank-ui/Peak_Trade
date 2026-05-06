@@ -5,6 +5,9 @@ Read-only Market Surface v0 — öffentliche OHLCV + minimale Chart-UI.
 - GET /market — HTML (Close-Line-Chart, Chart.js)
 - GET /api/market/ohlcv — JSON (OHLCV-Bars)
 
+GET /market embeds offline Market Depth read-model state SSR-only via
+``market_depth_json_payload_v0`` (no in-page Depth JSON route, no fetch).
+
 Keine Orders, kein OPS-Cockpit-Bezug. Dummy-Quelle für Offline/CI; Kraken über fetch_ohlcv_df.
 """
 
@@ -20,6 +23,8 @@ import pandas as pd
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+
+from .market_depth_runtime_v0 import market_depth_json_payload_v0
 
 logger = logging.getLogger(__name__)
 
@@ -126,6 +131,34 @@ def dataframe_to_bars(df: pd.DataFrame) -> List[Dict[str, Any]]:
     return bars
 
 
+def build_market_depth_display_context() -> Dict[str, Any]:
+    """SSR-only snapshot for templates: tuple from helper, unchanged semantics."""
+
+    depth_http_status, depth_payload = market_depth_json_payload_v0()
+    readmodel_id = str(depth_payload.get("readmodel_id", ""))
+    if depth_http_status == 200:
+        display_status = "ok"
+        depth_obj = depth_payload.get("depth") or {}
+        levels = depth_obj.get("levels_returned") or {}
+        bids_n = levels.get("bids", "—")
+        asks_n = levels.get("asks", "—")
+        sym = depth_payload.get("symbol", "")
+        summary_line = f"{sym} — bids {bids_n}, asks {asks_n} (offline bundle, read-only display)"
+    else:
+        display_status = str(depth_payload.get("runtime_source_status", "unavailable"))
+        warnings = depth_payload.get("warnings")
+        if isinstance(warnings, list) and warnings:
+            summary_line = str(warnings[0])
+        else:
+            summary_line = str(depth_payload.get("stale_reason", display_status))
+    return {
+        "depth_http_status": depth_http_status,
+        "display_status": display_status,
+        "readmodel_id": readmodel_id,
+        "summary_line": summary_line,
+    }
+
+
 def build_market_payload(
     *,
     symbol: str,
@@ -195,12 +228,14 @@ def create_market_router(
         src = _normalize_source(source)
         payload = build_market_payload(symbol=symbol, timeframe=timeframe, limit=limit, source=src)
         proj_status = get_project_status()
+        market_depth = build_market_depth_display_context()
         return templates.TemplateResponse(
             request,
             "market_v0.html",
             {
                 "status": proj_status,
                 "payload": payload,
+                "market_depth": market_depth,
                 "query": {
                     "symbol": symbol,
                     "timeframe": timeframe,
