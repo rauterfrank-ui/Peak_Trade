@@ -37,6 +37,21 @@ def _assert_command_inventory_shape(payload: dict[str, object]) -> None:
     assert preflight["found"] is True
     assert preflight["enabled"] is True
     assert preflight["command"] == "python"
+    safety_pf = preflight["safety_classification"]
+    assert isinstance(safety_pf, dict)
+    assert safety_pf["paper_only"] is True
+    assert safety_pf["dry_run_visible"] is True
+    assert safety_pf["paper_runtime_job"] is None
+    assert safety_pf["enabled"] is True
+    assert safety_pf["disabled_by_default"] is False
+    assert safety_pf["authorization_flags"] == {
+        "testnet_authorized": False,
+        "live_authorized": False,
+        "broker_authorized": False,
+        "exchange_authorized": False,
+        "order_submission_authorized": False,
+    }
+    assert safety_pf["non_authorizing"] is True
     args_pf = preflight["args"]
     assert isinstance(args_pf, dict)
     assert args_pf["script"] == "scripts/ops/report_paper_shadow_247_preflight_status.py"
@@ -45,15 +60,35 @@ def _assert_command_inventory_shape(payload: dict[str, object]) -> None:
     assert min_job["found"] is True
     assert min_job["enabled"] is False
     assert min_job["command"] == "python"
+    safety_min = min_job["safety_classification"]
+    assert isinstance(safety_min, dict)
+    assert safety_min["paper_only"] is True
+    assert safety_min["dry_run_visible"] is True
+    assert safety_min["paper_runtime_job"] is True
+    assert safety_min["enabled"] is False
+    assert safety_min["disabled_by_default"] is True
+    assert safety_min["authorization_flags"] == {
+        "testnet_authorized": False,
+        "live_authorized": False,
+        "broker_authorized": False,
+        "exchange_authorized": False,
+        "order_submission_authorized": False,
+    }
+    assert safety_min["non_authorizing"] is True
     args_min = min_job["args"]
     assert isinstance(args_min, dict)
     assert args_min["script"] == "scripts/aiops/run_paper_trading_session.py"
     assert args_min["spec"] == "tests/fixtures/p7/paper_run_min_v0.json"
 
     assert any(str(c["name"]).startswith("paper_runner_") and c["found"] is False for c in commands)
+    for c in commands:
+        if str(c["name"]).startswith("paper_runner_") and c["found"] is False:
+            assert "safety_classification" not in c
+            break
     shadow_entry = by_name["p7_shadow_high_vol_no_trade_runner_manual_v0"]
     assert shadow_entry["source"] == "shadow"
     assert shadow_entry["found"] is False
+    assert "safety_classification" not in shadow_entry
 
 
 def _run_json() -> dict[str, object]:
@@ -128,6 +163,7 @@ def test_cli_json_output_is_json_native_and_does_not_execute_scheduler() -> None
     assert "does_not_run_scheduler" in payload["notes"]
     assert "does_not_start_daemon" in payload["notes"]
     assert "scheduler_command_inventory_v0" in payload["notes"]
+    assert "scheduler_command_safety_classification_v0" in payload["notes"]
     _assert_command_inventory_shape(payload)
 
 
