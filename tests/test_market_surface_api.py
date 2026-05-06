@@ -114,6 +114,27 @@ class TestMarketSurfaceHtml:
         assert 'data-market-chart-status="ready"' in body
         assert "Chart bereit — read-only OHLCV-Anzeige." in body
 
+    def test_market_page_pre_depth_ui_baseline_not_integrated_yet(
+        self,
+        client: TestClient,
+    ) -> None:
+        """Pre-UI freeze: GET /market must stay free of Market Depth display integration.
+
+        Plan-of-record owner for a later SSR depth slice is documented in
+        ``MARKET_SURFACE_V0.md`` (#3358); this test locks the *current* baseline only.
+        """
+        resp = client.get("/market", params={"source": "dummy", "limit": 20})
+        assert resp.status_code == 200
+        assert "text/html" in resp.headers.get("content-type", "")
+        body = resp.text
+
+        assert "/api/market/depth" not in body
+        assert "data-market-depth" not in body
+        assert 'id="market-depth' not in body.lower()
+        assert "market-depth-" not in body.lower()
+        assert "market_depth" not in body
+        assert "XMLHttpRequest" not in body
+
     def test_market_html_invalid_timeframe_422(self, client: TestClient) -> None:
         r = client.get("/market", params={"source": "dummy", "timeframe": "bad"})
         assert r.status_code == 422
