@@ -122,6 +122,40 @@ The operator command in this object is a readiness reference only. It is not exe
 
 - **v0** — Initial contract: BLOCKED default, status model, non-authority, informative JSON shape.
 
+## Post-PR3376 operator readiness closeout v0
+
+After PRs **#3371** through **#3376**, the repository completed a focused **tests and reporting-contract** slice for Paper/Shadow 24/7 **read-only diagnostics** (prometheus declaration contract, preflight command inventory, safety classification, runtime-min timeout, high-vol inventory parity, runtime `outdir` placeholders in reporter inventory). This section is an operator-facing closeout. It does **not** authorize scheduler execution, daemon execution, Paper runtime, Shadow runtime, Testnet, Live, broker, exchange, or order submission.
+
+### Canonical surfaces (reuse only)
+
+Treat these as the coordinated sources for this topic—**do not** add parallel readiness maps, handoffs, or evidence indexes:
+
+- `config/ops/paper_shadow_247_preflight.toml` — canonical owner `ops-paper-shadow-247-readiness`, job identifiers, output paths, stop commands; metadata only, not execution authority.
+- `config/scheduler/jobs.toml` — scheduler-visible job shapes; Paper runtime jobs remain **disabled by default** unless a future gate explicitly enables them.
+- `scripts/ops/report_paper_shadow_247_preflight_status.py` — read-only JSON reporter (`status` remains **BLOCKED** in normal operation); command inventory and safety classification are diagnostic.
+- `tests/ops/test_report_paper_shadow_247_preflight_status_cli_v0.py` — contract tests for reporter output, including runtime job inventory fields.
+
+### Read-only diagnostics (examples)
+
+Manual inspection only; they do not start daemons, schedulers in non-dry modes, or external trading paths:
+
+```bash
+python3 scripts/ops/report_paper_shadow_247_preflight_status.py --json --repo-root .
+python3 scripts/ops/snapshot_operator_stop_signals.py --json --repo-root .
+```
+
+Prefer `uv run python` for interpreter parity (see **Operator Python Environment Note v0**).
+
+### Evidence sections above
+
+The tag-gated daemon and Paper-only runtime evidence sections in this contract remain **non-authorizing**: they describe bounded historical runs and flat/no-fill or roundtrip artifacts only. They do **not** approve continuous 24/7 operation, Shadow runtime, broker/exchange connectivity, Testnet, or Live.
+
+### Operator decision
+
+- Contract status stays **BLOCKED**; reporter `dry_activation_readiness.ready` remains **false** until a **separate explicit governance** step authorizes otherwise.
+- **STOP — do not activate Paper/Shadow 24/7** based on this closeout alone.
+- The next gate should be an explicit reviewed readiness or arming process—not implicit activation and not another single-field micro-contract unless a concrete safety defect requires it.
+
 ## Paper-only Tag-Gated Scheduler Daemon Stability Evidence v0
 
 A controlled Paper-only, tag-gated scheduler daemon run completed successfully under a 120-minute bound.
