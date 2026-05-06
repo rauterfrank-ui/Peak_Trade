@@ -1,5 +1,11 @@
-import tomllib
+from __future__ import annotations
+
 from pathlib import Path
+
+try:
+    import tomllib
+except ImportError:
+    import tomli as tomllib
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
