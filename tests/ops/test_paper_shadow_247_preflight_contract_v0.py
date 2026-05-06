@@ -69,6 +69,17 @@ def test_paper_shadow_247_contract_example_report_is_blocked_json() -> None:
     assert "paper_shadow_247_canonical_job_set_missing" in reasons
 
 
+def test_paper_shadow_247_contract_includes_post_pr3376_readiness_closeout() -> None:
+    text = _read_contract()
+
+    assert "## Post-PR3376 operator readiness closeout v0" in text
+    assert "ops-paper-shadow-247-readiness" in text
+    assert "#3371" in text and "#3376" in text
+    assert "does **not** authorize scheduler execution" in text
+    assert "scripts/ops/report_paper_shadow_247_preflight_status.py" in text
+    assert "scripts/ops/snapshot_operator_stop_signals.py" in text
+
+
 def test_scheduler_daemon_links_to_paper_shadow_247_contract() -> None:
     scheduler_text = SCHEDULER_DAEMON.read_text(encoding="utf-8")
     assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in scheduler_text
