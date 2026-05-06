@@ -11,9 +11,49 @@ from scripts.ops.report_paper_shadow_247_preflight_status import (
     build_paper_shadow_247_preflight_status,
 )
 
+try:
+    import tomllib
+except ImportError:
+    import tomli as tomllib
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "scripts" / "ops" / "report_paper_shadow_247_preflight_status.py"
+PREFLIGHT_CONFIG = REPO_ROOT / "config" / "ops" / "paper_shadow_247_preflight.toml"
+
+
+def _assert_command_inventory_shape(payload: dict[str, object]) -> None:
+    meta = tomllib.loads(PREFLIGHT_CONFIG.read_text(encoding="utf-8"))
+    paper = [str(x) for x in meta["paper_jobs"]]
+    shadow = [str(x) for x in meta["shadow_jobs"]]
+    commands = payload["commands"]
+    assert isinstance(commands, list)
+    assert len(commands) == len(paper) + len(shadow)
+    assert [c["name"] for c in commands] == paper + shadow
+    assert [c["source"] for c in commands] == ["paper"] * len(paper) + ["shadow"] * len(shadow)
+
+    by_name = {str(c["name"]): c for c in commands}
+    preflight = by_name["paper_shadow_247_paper_only_preflight_status_v0"]
+    assert preflight["found"] is True
+    assert preflight["enabled"] is True
+    assert preflight["command"] == "python"
+    args_pf = preflight["args"]
+    assert isinstance(args_pf, dict)
+    assert args_pf["script"] == "scripts/ops/report_paper_shadow_247_preflight_status.py"
+
+    min_job = by_name["paper_shadow_247_paper_only_runtime_min_v0"]
+    assert min_job["found"] is True
+    assert min_job["enabled"] is False
+    assert min_job["command"] == "python"
+    args_min = min_job["args"]
+    assert isinstance(args_min, dict)
+    assert args_min["script"] == "scripts/aiops/run_paper_trading_session.py"
+    assert args_min["spec"] == "tests/fixtures/p7/paper_run_min_v0.json"
+
+    assert any(str(c["name"]).startswith("paper_runner_") and c["found"] is False for c in commands)
+    shadow_entry = by_name["p7_shadow_high_vol_no_trade_runner_manual_v0"]
+    assert shadow_entry["source"] == "shadow"
+    assert shadow_entry["found"] is False
 
 
 def _run_json() -> dict[str, object]:
@@ -49,7 +89,7 @@ def test_build_paper_shadow_247_preflight_status_is_blocked_and_non_authorizing(
     assert payload["canonical_owner"] == "ops-paper-shadow-247-readiness"
     assert payload["paper_jobs"]
     assert payload["shadow_jobs"]
-    assert payload["commands"] == []
+    _assert_command_inventory_shape(payload)
     assert payload["output_paths"]
     assert isinstance(payload["stop_command"], str)
     assert payload["stop_command"]
@@ -87,6 +127,8 @@ def test_cli_json_output_is_json_native_and_does_not_execute_scheduler() -> None
     assert payload["dry_run_command"].endswith("--dry-run --once --verbose")
     assert "does_not_run_scheduler" in payload["notes"]
     assert "does_not_start_daemon" in payload["notes"]
+    assert "scheduler_command_inventory_v0" in payload["notes"]
+    _assert_command_inventory_shape(payload)
 
 
 def test_cli_human_output_is_bounded_status_only() -> None:

@@ -42,6 +42,86 @@ def _load_paper_shadow_247_preflight_metadata(root: Path) -> dict[str, Any]:
     return tomllib.loads(cfg.read_text(encoding="utf-8"))
 
 
+def _load_scheduler_jobs_by_name(root: Path) -> dict[str, dict[str, Any]]:
+    path = root / SCHEDULER_CONFIG
+    if not path.is_file():
+        return {}
+    data = tomllib.loads(path.read_text(encoding="utf-8"))
+    jobs_raw = data.get("job", [])
+    if not isinstance(jobs_raw, list):
+        return {}
+    out: dict[str, dict[str, Any]] = {}
+    for item in jobs_raw:
+        if not isinstance(item, dict):
+            continue
+        name_any = item.get("name")
+        if isinstance(name_any, str):
+            out[name_any] = item
+    return out
+
+
+def _job_to_command_inventory_entry(
+    job_name: str,
+    source: str,
+    job: dict[str, Any] | None,
+) -> dict[str, Any]:
+    if job is None:
+        return {
+            "name": job_name,
+            "source": source,
+            "found": False,
+            "command": None,
+            "args": None,
+            "enabled": None,
+            "schedule_type": None,
+            "tags": None,
+            "timeout_seconds": None,
+        }
+
+    tags_raw = job.get("tags")
+    tags_out: list[Any] | None
+    if isinstance(tags_raw, list):
+        tags_out = list(tags_raw)
+    else:
+        tags_out = None
+
+    args_raw = job.get("args")
+    args_out: dict[str, Any] | None
+    if isinstance(args_raw, dict):
+        args_out = {str(k): v for k, v in args_raw.items()}
+    else:
+        args_out = None
+
+    return {
+        "name": job_name,
+        "source": source,
+        "found": True,
+        "command": job["command"] if isinstance(job.get("command"), str) else None,
+        "args": args_out,
+        "enabled": job.get("enabled") if "enabled" in job else None,
+        "schedule_type": job.get("schedule_type")
+        if isinstance(job.get("schedule_type"), str)
+        else None,
+        "tags": tags_out,
+        "timeout_seconds": job.get("timeout_seconds")
+        if isinstance(job.get("timeout_seconds"), int)
+        else None,
+    }
+
+
+def _build_scheduler_command_inventory(
+    paper_jobs: list[str],
+    shadow_jobs: list[str],
+    jobs_by_name: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    commands: list[dict[str, Any]] = []
+    for name in paper_jobs:
+        commands.append(_job_to_command_inventory_entry(name, "paper", jobs_by_name.get(name)))
+    for name in shadow_jobs:
+        commands.append(_job_to_command_inventory_entry(name, "shadow", jobs_by_name.get(name)))
+    return commands
+
+
 def _build_dry_activation_readiness(payload: dict[str, Any]) -> dict[str, Any]:
     """Return non-authorizing readiness details for a later manual paper-only dry activation."""
 
@@ -122,6 +202,7 @@ def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> di
     paper_jobs = [str(x) for x in metadata.get("paper_jobs", []) if isinstance(x, str)]
     shadow_jobs = [str(x) for x in metadata.get("shadow_jobs", []) if isinstance(x, str)]
     output_paths = [str(x) for x in metadata.get("output_paths", []) if isinstance(x, str)]
+    scheduler_jobs_by_name = _load_scheduler_jobs_by_name(root)
 
     stop_any = metadata.get("stop_command")
     emergency_any = metadata.get("emergency_stop_command")
@@ -173,7 +254,9 @@ def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> di
         "canonical_owner": canonical_owner,
         "paper_jobs": paper_jobs,
         "shadow_jobs": shadow_jobs,
-        "commands": [],
+        "commands": _build_scheduler_command_inventory(
+            paper_jobs, shadow_jobs, scheduler_jobs_by_name
+        ),
         "output_paths": output_paths,
         "state_files": [],
         "log_paths": [],
@@ -194,6 +277,7 @@ def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> di
             "does_not_run_scheduler",
             "does_not_start_daemon",
             "does_not_activate_paper_or_shadow_runtime",
+            "scheduler_command_inventory_v0",
         ],
     }
     payload["dry_activation_readiness"] = _build_dry_activation_readiness(payload)
