@@ -110,6 +110,14 @@ The read-only metadata source for this preflight is `config/ops/paper_shadow_247
 
 This metadata may populate canonical owner, paper/shadow job identifiers, output path declarations, and stop-command declarations for the preflight reporter. It does **not** authorize daemon execution, scheduler execution, Testnet, Live, broker, exchange, or order submission paths. Runtime activation remains blocked unless separate explicit governance gates authorize it.
 
+## Controlled Paper-only Dry Activation Readiness v0
+
+The preflight reporter exposes a nested `dry_activation_readiness` object with schema version `paper_shadow_247_dry_activation_readiness.v0`.
+
+This object is **non-authorizing**. It may confirm that metadata, output-path declarations, stop controls, and paper/shadow job declarations are present, but it must keep `ready=false` until a separate explicit governance step authorizes a manual paper-only dry activation. The top-level daemon, scheduler, Paper/Shadow runtime, Testnet, Live, broker, exchange, and order authorization flags remain `false`.
+
+The operator command in this object is a readiness reference only. It is not executed by the reporter and does not start a daemon, scheduler, Paper runtime, Shadow runtime, Testnet, Live, broker, exchange, or order path.
+
 ## 8. Revision
 
 - **v0** — Initial contract: BLOCKED default, status model, non-authority, informative JSON shape.

@@ -42,6 +42,58 @@ def _load_paper_shadow_247_preflight_metadata(root: Path) -> dict[str, Any]:
     return tomllib.loads(cfg.read_text(encoding="utf-8"))
 
 
+def _build_dry_activation_readiness(payload: dict[str, Any]) -> dict[str, Any]:
+    """Return non-authorizing readiness details for a later manual paper-only dry activation."""
+
+    metadata_ready = bool(
+        payload.get("canonical_owner")
+        and payload.get("paper_jobs")
+        and payload.get("output_paths")
+        and payload.get("stop_command")
+        and payload.get("emergency_stop_command")
+    )
+    authorization_flags_false = all(
+        payload.get(key) is False
+        for key in (
+            "activation_authorized",
+            "daemon_activation_authorized",
+            "scheduler_execution_authorized",
+            "paper_runtime_authorized",
+            "shadow_runtime_authorized",
+            "testnet_authorized",
+            "live_authorized",
+            "broker_authorized",
+            "exchange_authorized",
+            "order_submission_authorized",
+        )
+    )
+    stop_controls_declared = bool(
+        payload.get("stop_command") and payload.get("emergency_stop_command")
+    )
+    output_paths_declared = bool(payload.get("output_paths"))
+
+    checks = {
+        "metadata_ready": metadata_ready,
+        "authorization_flags_false": authorization_flags_false,
+        "stop_controls_declared": stop_controls_declared,
+        "output_paths_declared": output_paths_declared,
+        "paper_jobs_declared": bool(payload.get("paper_jobs")),
+        "shadow_jobs_declared": bool(payload.get("shadow_jobs")),
+    }
+
+    return {
+        "schema_version": "paper_shadow_247_dry_activation_readiness.v0",
+        "ready": False,
+        "mode": "paper_only_dry_activation_readiness",
+        "dry_run_only": True,
+        "checks": checks,
+        "operator_command": payload.get("dry_run_command"),
+        "stop_command": payload.get("stop_command"),
+        "emergency_stop_command": payload.get("emergency_stop_command"),
+        "decision": "BLOCKED_NON_AUTHORIZING_READINESS_ONLY",
+    }
+
+
 def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> dict[str, Any]:
     root = (repo_root or _repo_root()).resolve()
     metadata = _load_paper_shadow_247_preflight_metadata(root)
@@ -87,7 +139,7 @@ def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> di
         blockers.append("stop_commands_missing")
 
     # Authorization flags: never inferred from metadata alone (documentation-only TOML keys).
-    return {
+    payload: dict[str, Any] = {
         "contract": CONTRACT,
         "schema_version": 0,
         "status": "BLOCKED",
@@ -144,6 +196,8 @@ def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> di
             "does_not_activate_paper_or_shadow_runtime",
         ],
     }
+    payload["dry_activation_readiness"] = _build_dry_activation_readiness(payload)
+    return payload
 
 
 def main(argv: list[str] | None = None) -> int:
