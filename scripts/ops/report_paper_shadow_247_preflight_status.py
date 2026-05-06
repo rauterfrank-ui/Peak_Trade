@@ -29,6 +29,13 @@ DRY_RUN_COMMAND = (
     "python3 scripts/run_scheduler.py --config config/scheduler/jobs.toml "
     "--dry-run --once --verbose"
 )
+JOB_AUTHORIZATION_FLAGS = (
+    "testnet_authorized",
+    "live_authorized",
+    "broker_authorized",
+    "exchange_authorized",
+    "order_submission_authorized",
+)
 
 
 def _repo_root() -> Path:
@@ -58,6 +65,37 @@ def _load_scheduler_jobs_by_name(root: Path) -> dict[str, dict[str, Any]]:
         if isinstance(name_any, str):
             out[name_any] = item
     return out
+
+
+def _job_bool_or_none(job: dict[str, Any], key: str) -> bool | None:
+    value = job.get(key)
+    return value if isinstance(value, bool) else None
+
+
+def _build_job_safety_classification(job: dict[str, Any]) -> dict[str, Any]:
+    enabled = _job_bool_or_none(job, "enabled")
+    authorization_flags = {
+        key: _job_bool_or_none(job, key) if key in job else None for key in JOB_AUTHORIZATION_FLAGS
+    }
+    non_authorizing = (
+        all(value is False for value in authorization_flags.values())
+        if all(value is not None for value in authorization_flags.values())
+        else None
+    )
+
+    return {
+        "paper_only": _job_bool_or_none(job, "paper_only") if "paper_only" in job else None,
+        "dry_run_visible": _job_bool_or_none(job, "dry_run_visible")
+        if "dry_run_visible" in job
+        else None,
+        "paper_runtime_job": _job_bool_or_none(job, "paper_runtime_job")
+        if "paper_runtime_job" in job
+        else None,
+        "enabled": enabled,
+        "disabled_by_default": (enabled is False) if enabled is not None else None,
+        "authorization_flags": authorization_flags,
+        "non_authorizing": non_authorizing,
+    }
 
 
 def _job_to_command_inventory_entry(
@@ -106,6 +144,7 @@ def _job_to_command_inventory_entry(
         "timeout_seconds": job.get("timeout_seconds")
         if isinstance(job.get("timeout_seconds"), int)
         else None,
+        "safety_classification": _build_job_safety_classification(job),
     }
 
 
@@ -278,6 +317,7 @@ def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> di
             "does_not_start_daemon",
             "does_not_activate_paper_or_shadow_runtime",
             "scheduler_command_inventory_v0",
+            "scheduler_command_safety_classification_v0",
         ],
     }
     payload["dry_activation_readiness"] = _build_dry_activation_readiness(payload)
