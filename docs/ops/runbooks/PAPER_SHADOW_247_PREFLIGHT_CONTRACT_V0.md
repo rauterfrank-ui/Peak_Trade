@@ -104,6 +104,12 @@ Field names and enums may be refined in a later contract version; v0 only fixes 
 - Shadow session runbook: [runbook_shadow_session.md](../p6/runbook_shadow_session.md) (single-run, no daemon).
 - Paper trading runbook: [runbook_paper_trading.md](../p7/runbook_paper_trading.md).
 
+## Paper/Shadow 24/7 Preflight Metadata v0
+
+The read-only metadata source for this preflight is `config/ops/paper_shadow_247_preflight.toml`.
+
+This metadata may populate canonical owner, paper/shadow job identifiers, output path declarations, and stop-command declarations for the preflight reporter. It does **not** authorize daemon execution, scheduler execution, Testnet, Live, broker, exchange, or order submission paths. Runtime activation remains blocked unless separate explicit governance gates authorize it.
+
 ## 8. Revision
 
 - **v0** — Initial contract: BLOCKED default, status model, non-authority, informative JSON shape.

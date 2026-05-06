@@ -1,0 +1,41 @@
+# Paper/Shadow 24/7 Preflight Metadata v0
+#
+# Read-only operational metadata for scripts/ops/report_paper_shadow_247_preflight_status.py.
+# This file does not authorize scheduler, daemon, testnet, live, broker, exchange, or order paths.
+
+schema_version = "paper_shadow_247_preflight.v0"
+canonical_owner = "ops-paper-shadow-247-readiness"
+
+paper_jobs = [
+  "paper_runner_no_order_no_fill_contract_v0",
+  "paper_runner_single_order_contract_v0",
+  "paper_runner_two_order_roundtrip_contract_v0",
+  "paper_runner_fail_closed_contract_v0",
+  "paper_runner_insufficient_cash_contract_v0",
+  "paper_runner_multisymbol_contract_v0",
+  "paper_runner_partial_sell_contract_v0",
+]
+
+shadow_jobs = [
+  "p7_shadow_high_vol_no_trade_runner_manual_v0",
+]
+
+output_paths = [
+  "out/paper_shadow_247/paper",
+  "out/paper_shadow_247/shadow",
+  "out/paper_shadow_247/logs",
+]
+
+stop_command = "uv run python scripts/ops/report_paper_shadow_247_preflight_status.py --json"
+emergency_stop_command = "uv run python scripts/ops/snapshot_operator_stop_signals.py --json"
+
+activation_authorized = false
+daemon_activation_authorized = false
+scheduler_execution_authorized = false
+paper_runtime_authorized = false
+shadow_runtime_authorized = false
+testnet_authorized = false
+live_authorized = false
+broker_authorized = false
+exchange_authorized = false
+order_submission_authorized = false
