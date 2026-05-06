@@ -113,56 +113,29 @@ class TestMarketSurfaceHtml:
         assert 'id="market-v0-chart-status"' in body
         assert 'data-market-chart-status="ready"' in body
         assert "Chart bereit — read-only OHLCV-Anzeige." in body
+        assert 'data-market-depth-panel="true"' in body
+        assert 'data-market-depth-status="disabled"' in body
 
-    def test_market_page_pre_depth_ui_baseline_not_integrated_yet(
+    def test_market_page_depth_ssr_forbids_client_depth_route_and_xhr(
         self,
         client: TestClient,
     ) -> None:
-        """Pre-UI freeze: GET /market must stay free of Market Depth display integration.
+        """Depth is embedded SSR-only; page must not steer browsers to the JSON route or XHR."""
 
-        Plan-of-record owner for a later SSR depth slice is documented in
-        ``MARKET_SURFACE_V0.md`` (#3358); this test locks the *current* baseline only.
-        """
         resp = client.get("/market", params={"source": "dummy", "limit": 20})
         assert resp.status_code == 200
         assert "text/html" in resp.headers.get("content-type", "")
         body = resp.text
 
         assert "/api/market/depth" not in body
-        assert "data-market-depth" not in body
-        assert 'id="market-depth' not in body.lower()
-        assert "market-depth-" not in body.lower()
-        assert "market_depth" not in body
+        assert "fetch(" not in body
         assert "XMLHttpRequest" not in body
 
-    @pytest.mark.xfail(
-        reason=(
-            "SSR Market Depth on GET /market not wired: embed display state from "
-            "market_depth_json_payload_v0() only; remove xfail when Phase-2 SSR lands "
-            "(and relax #3359 negative markers in the same slice)."
-        ),
-        strict=False,
-    )
     def test_market_depth_ssr_context_contract_v0_future_seam(
         self,
         client: TestClient,
     ) -> None:
-        """Tests-first contract: future GET /market SSR depth seam vs current system helper.
-
-        Non-negotiables (must hold once implemented):
-        - Depth display context comes from ``market_depth_json_payload_v0()`` (no builder/API
-          shape changes to satisfy HTML).
-        - ``GET /market`` stays HTTP 200 even when the tuple status is ``503`` diagnostics
-          for the standalone JSON route; depth outcome is embedded read-only context, not page
-          status.
-        - No ``fetch()``, XMLHttpRequest, polling, or in-page ``/api/market/depth`` usage.
-
-        This slice does not set ``PEAK_TRADE_MARKET_DEPTH_*`` — default env matches production
-        "disabled" characterization without touching filesystem bundles.
-
-        Narrow stable markers are intentionally spelled here so the eventual template can mirror
-        them without broad ``data-market-depth-*`` wildcard tests.
-        """
+        """Contract: GET /market carries narrow depth markers and no client Depth fetch."""
         resp = client.get("/market", params={"source": "dummy", "limit": 20})
         assert resp.status_code == 200
         assert "text/html" in resp.headers.get("content-type", "")
@@ -174,6 +147,58 @@ class TestMarketSurfaceHtml:
 
         assert 'data-market-depth-panel="true"' in body
         assert 'data-market-depth-status="' in body
+
+    def test_market_depth_ssr_page_stays_200_when_helper_returns_diagnostic_tuple(
+        self,
+        client: TestClient,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """Page HTTP status stays 200 when JSON route would use 503 (monkeypatch, no bundles)."""
+
+        def _fake_diagnostic() -> tuple[int, dict[str, object]]:
+            return 503, {
+                "readmodel_id": "market_depth_readmodel.v0",
+                "generated_at_iso": "2026-05-06T12:00:00+00:00",
+                "runtime_source_status": "builder_error",
+                "warnings": ["market_depth_bundle_build_failed"],
+                "stale_reason": "bundle_build_failed",
+            }
+
+        monkeypatch.setattr(
+            "src.webui.market_surface.market_depth_json_payload_v0",
+            _fake_diagnostic,
+        )
+
+        resp = client.get("/market", params={"source": "dummy", "limit": 20})
+        assert resp.status_code == 200
+        body = resp.text
+        assert 'data-market-depth-status="builder_error"' in body
+        assert "/api/market/depth" not in body
+
+    def test_market_depth_ssr_ok_branch_uses_display_status_ok(
+        self,
+        client: TestClient,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """When helper succeeds, SSR shows display_status ok (mocked tuple, env-independent)."""
+
+        def _fake_ok() -> tuple[int, dict[str, object]]:
+            return 200, {
+                "readmodel_id": "market_depth_readmodel.v0",
+                "symbol": "BTC/EUR",
+                "depth": {"levels_returned": {"bids": 2, "asks": 3}},
+            }
+
+        monkeypatch.setattr(
+            "src.webui.market_surface.market_depth_json_payload_v0",
+            _fake_ok,
+        )
+
+        resp = client.get("/market", params={"source": "dummy", "limit": 20})
+        assert resp.status_code == 200
+        body = resp.text
+        assert 'data-market-depth-status="ok"' in body
+        assert "/api/market/depth" not in body
 
     def test_market_html_invalid_timeframe_422(self, client: TestClient) -> None:
         r = client.get("/market", params={"source": "dummy", "timeframe": "bad"})
@@ -212,3 +237,5 @@ def test_market_v0_template_kraken_banner_markers_in_source() -> None:
     assert "Chart bereit — read-only OHLCV-Anzeige." in txt
     assert "Keine OHLCV-Bars für diese Abfrage verfügbar." in txt
     assert "Chart-Daten konnten nicht gerendert werden; keine Trading-Aktion verfügbar." in txt
+    assert 'data-market-depth-panel="true"' in txt
+    assert "data-market-depth-status" in txt

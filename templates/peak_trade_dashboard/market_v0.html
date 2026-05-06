@@ -56,6 +56,27 @@
     {% endif %}
   </section>
 
+  <section
+    id="market-v0-depth-ssr"
+    aria-label="Market depth read-model (SSR, offline or disabled)"
+    class="rounded-xl border border-slate-700/70 bg-slate-900/55 px-4 py-3 text-xs text-slate-300"
+    data-market-depth-panel="true"
+    data-market-depth-status="{{ market_depth.display_status }}"
+    {% if market_depth.readmodel_id %}
+    data-market-depth-readmodel-id="{{ market_depth.readmodel_id }}"
+    {% endif %}
+  >
+    <p class="font-semibold text-slate-200/95 tracking-wide uppercase text-[11px] mb-1.5">
+      Market Depth (read-only)
+    </p>
+    <p class="leading-relaxed text-slate-300/90 m-0" data-market-depth-summary="true">
+      {{ market_depth.summary_line|e }}
+    </p>
+    <p class="mt-1.5 text-[11px] text-slate-500 m-0">
+      SSR only — keine Browser-Abfrage der Depth-JSON-Route; keine Orders oder Ausführung.
+    </p>
+  </section>
+
   <header class="bg-gradient-to-r from-slate-900/80 to-slate-900/40 rounded-2xl border border-slate-800 p-6">
     <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
       <div>
