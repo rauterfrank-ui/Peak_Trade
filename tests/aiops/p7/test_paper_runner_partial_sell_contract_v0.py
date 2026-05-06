@@ -1,61 +1,36 @@
-import json
-import subprocess
-import sys
 from decimal import Decimal
 from pathlib import Path
 
+from tests.aiops.p7.paper_runner_test_helpers_v0 import (
+    PAPER_RUN_MIN_SPEC,
+    assert_json_outputs_do_not_contain_live_markers,
+    load_json,
+    run_paper_session,
+    write_json_spec,
+)
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-RUNNER = REPO_ROOT / "scripts" / "aiops" / "run_paper_trading_session.py"
-BASE_SPEC = REPO_ROOT / "tests" / "fixtures" / "p7" / "paper_run_min_v0.json"
-
-
-def _load(path: Path) -> dict:
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def _write_spec(tmp_path: Path, payload: dict, name: str) -> Path:
-    path = tmp_path / name
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return path
-
-
-def _run(spec: Path, outdir: Path) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        [
-            sys.executable,
-            str(RUNNER),
-            "--spec",
-            str(spec),
-            "--outdir",
-            str(outdir),
-        ],
-        cwd=REPO_ROOT,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
+BASE_SPEC = PAPER_RUN_MIN_SPEC
 
 
 def test_paper_runner_partial_sell_keeps_remaining_position(tmp_path: Path) -> None:
-    payload = _load(BASE_SPEC)
+    payload = load_json(BASE_SPEC)
     payload["orders"] = [
         {"symbol": "BTC", "side": "BUY", "qty": 2.0},
         {"symbol": "BTC", "side": "SELL", "qty": 1.0},
     ]
     payload["mid_prices"] = {"BTC": 100.0}
 
-    spec = _write_spec(tmp_path, payload, "buy2_sell1_same_symbol.json")
+    spec = write_json_spec(tmp_path, payload, "buy2_sell1_same_symbol.json")
     outdir = tmp_path / "buy2_sell1_same_symbol_out"
 
-    result = _run(spec, outdir)
+    result = run_paper_session(spec, outdir)
 
     assert result.returncode == 0
     assert result.stderr == ""
 
-    fills = _load(outdir / "fills.json")
-    account = _load(outdir / "account.json")
-    manifest = _load(outdir / "evidence_manifest.json")
+    fills = load_json(outdir / "fills.json")
+    account = load_json(outdir / "account.json")
+    manifest = load_json(outdir / "evidence_manifest.json")
 
     assert fills["schema_version"] == "p7.fills.v0"
     assert [(fill["symbol"], fill["side"], fill["qty"]) for fill in fills["fills"]] == [
@@ -79,7 +54,7 @@ def test_paper_runner_partial_sell_keeps_remaining_position(tmp_path: Path) -> N
 
 
 def test_paper_runner_repeated_partial_sells_reduce_position_stepwise(tmp_path: Path) -> None:
-    payload = _load(BASE_SPEC)
+    payload = load_json(BASE_SPEC)
     payload["orders"] = [
         {"symbol": "BTC", "side": "BUY", "qty": 3.0},
         {"symbol": "BTC", "side": "SELL", "qty": 1.0},
@@ -87,16 +62,16 @@ def test_paper_runner_repeated_partial_sells_reduce_position_stepwise(tmp_path: 
     ]
     payload["mid_prices"] = {"BTC": 100.0}
 
-    spec = _write_spec(tmp_path, payload, "buy3_sell1_sell1_same_symbol.json")
+    spec = write_json_spec(tmp_path, payload, "buy3_sell1_sell1_same_symbol.json")
     outdir = tmp_path / "buy3_sell1_sell1_same_symbol_out"
 
-    result = _run(spec, outdir)
+    result = run_paper_session(spec, outdir)
 
     assert result.returncode == 0
     assert result.stderr == ""
 
-    fills = _load(outdir / "fills.json")
-    account = _load(outdir / "account.json")
+    fills = load_json(outdir / "fills.json")
+    account = load_json(outdir / "account.json")
 
     assert [(fill["symbol"], fill["side"], fill["qty"]) for fill in fills["fills"]] == [
         ("BTC", "BUY", 3.0),
@@ -117,27 +92,19 @@ def test_paper_runner_repeated_partial_sells_reduce_position_stepwise(tmp_path: 
 
 
 def test_paper_runner_partial_sell_outputs_are_portable_and_non_live(tmp_path: Path) -> None:
-    payload = _load(BASE_SPEC)
+    payload = load_json(BASE_SPEC)
     payload["orders"] = [
         {"symbol": "BTC", "side": "BUY", "qty": 2.0},
         {"symbol": "BTC", "side": "SELL", "qty": 1.0},
     ]
     payload["mid_prices"] = {"BTC": 100.0}
 
-    spec = _write_spec(tmp_path, payload, "partial_sell_portable.json")
+    spec = write_json_spec(tmp_path, payload, "partial_sell_portable.json")
     outdir = tmp_path / "partial_sell_portable_out"
 
-    result = _run(spec, outdir)
+    result = run_paper_session(spec, outdir)
 
     assert result.returncode == 0
     assert result.stderr == ""
 
-    for path in sorted(outdir.rglob("*.json")):
-        text = path.read_text(encoding="utf-8")
-        assert "/Users/" not in text
-        assert "api_key" not in text.lower()
-        assert "secret" not in text.lower()
-        assert "submit_order" not in text.lower()
-        assert "real_order" not in text.lower()
-        assert "broker_connect" not in text.lower()
-        assert "exchange_connect" not in text.lower()
+    assert_json_outputs_do_not_contain_live_markers(outdir)
