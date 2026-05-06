@@ -162,3 +162,43 @@ def test_paper_shadow_247_preflight_metadata_removes_missing_field_blockers() ->
         "order_submission_authorized",
     ):
         assert payload[key] is False
+
+
+def test_paper_shadow_247_preflight_reports_dry_activation_readiness_without_authorization() -> (
+    None
+):
+    payload = _run_json()
+    readiness = payload["dry_activation_readiness"]
+
+    assert readiness["schema_version"] == "paper_shadow_247_dry_activation_readiness.v0"
+    assert readiness["ready"] is False
+    assert readiness["mode"] == "paper_only_dry_activation_readiness"
+    assert readiness["dry_run_only"] is True
+    assert readiness["decision"] == "BLOCKED_NON_AUTHORIZING_READINESS_ONLY"
+
+    assert readiness["operator_command"] == payload["dry_run_command"]
+    assert readiness["stop_command"] == payload["stop_command"]
+    assert readiness["emergency_stop_command"] == payload["emergency_stop_command"]
+
+    assert readiness["checks"] == {
+        "metadata_ready": True,
+        "authorization_flags_false": True,
+        "stop_controls_declared": True,
+        "output_paths_declared": True,
+        "paper_jobs_declared": True,
+        "shadow_jobs_declared": True,
+    }
+
+    for key in (
+        "activation_authorized",
+        "daemon_activation_authorized",
+        "scheduler_execution_authorized",
+        "paper_runtime_authorized",
+        "shadow_runtime_authorized",
+        "testnet_authorized",
+        "live_authorized",
+        "broker_authorized",
+        "exchange_authorized",
+        "order_submission_authorized",
+    ):
+        assert payload[key] is False
