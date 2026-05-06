@@ -80,6 +80,7 @@ def _assert_command_inventory_shape(payload: dict[str, object]) -> None:
     assert isinstance(args_min, dict)
     assert args_min["script"] == "scripts/aiops/run_paper_trading_session.py"
     assert args_min["spec"] == "tests/fixtures/p7/paper_run_min_v0.json"
+    assert args_min["outdir"] == "out/paper_shadow_247/runtime/min/__DRY_RUN_PLACEHOLDER__"
 
     high_job = by_name["paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0"]
     assert high_job["found"] is True
@@ -105,6 +106,10 @@ def _assert_command_inventory_shape(payload: dict[str, object]) -> None:
     assert isinstance(args_high, dict)
     assert args_high["script"] == "scripts/aiops/run_paper_trading_session.py"
     assert args_high["spec"] == "tests/fixtures/p7/paper_run_high_vol_no_trade_v0.json"
+    assert (
+        args_high["outdir"]
+        == "out/paper_shadow_247/runtime/high_vol_no_trade/__DRY_RUN_PLACEHOLDER__"
+    )
 
     assert any(str(c["name"]).startswith("paper_runner_") and c["found"] is False for c in commands)
     for c in commands:
