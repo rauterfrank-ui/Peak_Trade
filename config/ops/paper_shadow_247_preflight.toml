@@ -7,6 +7,7 @@ schema_version = "paper_shadow_247_preflight.v0"
 canonical_owner = "ops-paper-shadow-247-readiness"
 
 paper_jobs = [
+  "paper_shadow_247_paper_only_preflight_status_v0",
   "paper_runner_no_order_no_fill_contract_v0",
   "paper_runner_single_order_contract_v0",
   "paper_runner_two_order_roundtrip_contract_v0",

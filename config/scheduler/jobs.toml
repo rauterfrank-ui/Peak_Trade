@@ -182,3 +182,29 @@ interval_seconds = 3600  # 1 Stunde
 enabled = false  # Manuell aktivieren bei Bedarf
 tags = ["autonomous", "ai", "monitoring"]
 timeout_seconds = 180
+
+
+# =============================================================================
+# Paper-Shadow 247 — read-only preflight reporter (scheduler visibility only)
+# =============================================================================
+# Non-authorizing: runs only scripts/ops/report_paper_shadow_247_preflight_status.py.
+# Safe to inspect with:
+#   python3 scripts/run_scheduler.py --config config/scheduler/jobs.toml --dry-run --once --verbose
+# Not Testnet/Live/Broker/Exchange/order authorization.
+
+[[job]]
+name = "paper_shadow_247_paper_only_preflight_status_v0"
+enabled = true
+schedule_type = "once"
+command = "python"
+args = { script = "scripts/ops/report_paper_shadow_247_preflight_status.py", json = true }
+description = "Paper/Shadow 24/7 preflight status reporter; dry-run-visible, non-authorizing."
+tags = ["paper_shadow_247", "preflight", "readonly"]
+timeout_seconds = 120
+paper_only = true
+dry_run_visible = true
+testnet_authorized = false
+live_authorized = false
+broker_authorized = false
+exchange_authorized = false
+order_submission_authorized = false
