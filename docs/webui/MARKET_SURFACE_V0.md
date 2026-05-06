@@ -7,6 +7,7 @@
 | GET | `/market` | HTML: Close-Line-Chart (Chart.js), Parameter per Query |
 | GET | `/market/double-play` | HTML: SSR read-only Komposition (ein Server-Render) — **v1.2** dominanter Canvas-Candlestick + **v1.3** menschenlesbare Double‑Play‑Rail‑Feldzuordnung (weiterhin **gleiche** eingebettete Payload-/JSON‑Semantik), sekundärer Chart.js‑Close-Line (**gleicher JSON-Vertrag wie** **`GET`** **`/api/master-v2/double-play/dashboard-display.json`** in-process); **kein** client-fetch, **kein** automatisches Nachladen |
 | GET | `/api/market/ohlcv` | JSON: OHLCV-Bars (`open`/`high`/`low`/`close`/`volume`, Zeit `ts`) |
+| GET | `/api/market/depth` | JSON: Market Depth readmodel v0 — **read-only**, **env-gated** (**`PEAK_TRADE_MARKET_DEPTH_ENABLED`** muss **`1`** sein), Bundle nur über **`PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT`** (kein Query-/Pfad‑Override); bei Erfolg Builder‑Payload (**`200`**), sonst kurzes Diagnose‑JSON (**`503`**); ohne Dashboard‑Template oder Polling‑Vertrag in diesem Doc |
 
 ## Query-Parameter (`GET &#47;market`, `GET &#47;api&#47;market&#47;ohlcv`, eingebetter Marktblock auf **`GET`** **`&#47;market&#47;double-play`**)
 
@@ -20,6 +21,7 @@ Keine Kopplung an OPS Cockpit (`/ops`). Keine Trading-Aktionen.
 ## Current surface vs. Futures Read-only Market Dashboard
 
 - **`GET &#47;market`** und **`GET &#47;api&#47;market&#47;ohlcv`** sind **Market Surface v0**: minimale **read-only**‑OHLCV‑Anzeige mit `source=dummy` (offline/synthetisch) oder optional **`source=kraken`** (öffentliche OHLCV, Netzwerk).
+- **`GET &#47;api&#47;market&#47;depth`** (wenn über Env aktiviert, siehe unten) ist **read-only** Fixture/Bundle‑**Tiefen**‑Readmodel v0 — **kein** Ausführungsweg, **kein** Orderbuch‑Handel, **kein** Tiefe‑Provider‑Fetch über diesen Slice; Vertragsdetails unter **Market Depth / Orderbook Readmodel Contract v0**.
 - **Nicht** Ziel dieser Seite ist das vollständige **Futures Read-only Market Dashboard** (F5‑Semantik) — Kanon dort: [Futures Read-only Market Dashboard Contract v0](../ops/specs/FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md).
 - Provenance-/Display‑Pflichtfelder für governanceten Futures‑Kontext: [Futures Market Data Provenance Contract v0](../ops/specs/FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md).
 - Warnungen zu `env_name`, Exchange‑Labels und **non‑authority**: [Session env_name and exchange surfaces non-authority v0](../ops/specs/SESSION_ENV_NAME_AND_EXCHANGE_SURFACES_NON_AUTHORITY_V0.md).
@@ -125,20 +127,17 @@ Die **additive** Display‑Schicht (**`snapshot_to_jsonable`**, strukturierte Me
 - **Keine** Trading-/UI‑Autorität durch die neuen Metadaten; Markt‑Surface‑Docs bleiben konsistent mit „read-only / display-only“ oben.
 
 
-## Market Depth / Orderbook Readmodel Contract v0 (offline fixture readmodel, no route)
+## Market Depth / Orderbook Readmodel Contract v0 (offline readmodel + env-gated HTTP v0)
 
-This section separates (a) the **fixture/offline** Market Depth JSON readmodel that exists in-repo today from (b) any **future** HTTP/UI/provider consumption paths. Nothing here grants trading, live/testnet, provider, execution, readiness, Risk/KillSwitch, or Scope/Capital authority.
+This section covers (a) the **fixture/offline** Market Depth JSON readmodel builder that exists in-repo under `src/webui/market_depth_readmodel_v0/`, (b) the **read-only** HTTP v0 route **`GET`** **`&#47;api&#47;market&#47;depth`** wired in `src/webui/market_depth_api_v0.py`, and (c) **deferred** Dashboard/Double‑Play HTML wiring, client fetch/polling, and live Kraken/other provider-backed depth ingestion. Nothing here grants trading, live/testnet, provider, execution, readiness, Risk/KillSwitch, or Scope/Capital authority.
 
 ### Implementation boundary (truth vs. deferral)
 
-- **Implemented (offline/fixture-backed only):** a pure JSON-native readmodel builder under `src/webui/market_depth_readmodel_v0/` consumes checked-in fixtures under `tests/fixtures/market_depth_readmodel_v0` (deterministic scans; **no** network/CCXT/Kraken/HTTP client/session wiring in that module surface). Contract shape and exclusions are pinned by `tests/webui/test_market_depth_readmodel_v0.py`, including **`readmodel_id` `market_depth_readmodel.v0`**, stable envelope keys (`readmodel_id`, `symbol`, `source`, `limit`, `generated_at_iso`, `runtime_source_status`, `stale`, `stale_reason`, `depth`), sorted bid/ask ladders, truncation on `limit`, and absence of forbidden authority/order keys from JSON output.
-- **Not implemented / not delivered by this document:** `GET &#47;api&#47;market&#47;depth` (**no HTTP route**), Dashboard/Double‑Play HTML wiring, client fetch/polling, and live Kraken/other provider-backed depth ingestion. Any future attachment must stay display-only/non-authoritative and keep OHLCV and depth strictly distinct readmodels (`OHLCV` vs. `depth`).
+- **Implemented (offline/fixture-backed builder only):** a pure JSON-native readmodel builder under `src/webui/market_depth_readmodel_v0/` consumes on-disk bundles rooted at a caller-supplied directory (for example checked-in fixtures under `tests/fixtures/market_depth_readmodel_v0`; deterministic scans; **no** network/CCXT/Kraken/HTTP client/session wiring in that module surface). Contract shape and exclusions are pinned by `tests/webui/test_market_depth_readmodel_v0.py`, including **`readmodel_id` `market_depth_readmodel.v0`**, stable envelope keys (`readmodel_id`, `symbol`, `source`, `limit`, `generated_at_iso`, `runtime_source_status`, `stale`, `stale_reason`, `depth`), sorted bid/ask ladders, truncation on `limit`, and absence of forbidden authority/order keys from JSON output.
+- **Implemented (read-only HTTP v0, env-gated):** **`GET`** **`&#47;api&#47;market&#47;depth`** exposes **only** the existing builder readmodel as JSON when enabled. The route is **not** a dashboard or template; it does not add browser polling or client fetch contracts in this slice. It does not accept query or path parameters that override the bundle root; **`PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT`** is the **only** server-configured bundle-root source for this route. **`PEAK_TRADE_MARKET_DEPTH_ENABLED`** must be set to **`1`** (**only** this value after trim) for the route to attempt a read; any other unset or other value keeps the route disabled. When disabled, when the bundle root is missing/invalid, or when the builder rejects the bundle, the route returns a **diagnostic `503`** JSON envelope (operators see stable status fields such as `runtime_source_status` **`disabled`** / **`unconfigured`** / **`builder_error`**; **no** intent to expose raw filesystem paths, raw exception payloads, or other sensitive operational strings). When the bundle builds successfully, the route returns **`200`** JSON preserving the builder payload shape (`depth.levels_returned` remains an object **`{ "bids": n, "asks": n }`**, consistent with **Current offline depth structure** below). **`Cache-Control: no-store`** applies to responses for this endpoint.
+- **Not implemented / not delivered by this document:** Dashboard/Double‑Play HTML wiring for this payload, standalone browser polling specifications, client-driven refresh contracts, and live Kraken/other provider-backed depth ingestion. Any future attachment must stay display-only/non-authoritative and keep OHLCV and depth strictly distinct readmodels (`OHLCV` vs. `depth`).
 
-Planned endpoint placeholder (still deferred):
-
-- `GET &#47;api&#47;market&#47;depth`
-
-Whenever implemented, this planned endpoint must remain separate from order placement, execution, exchange session handling, Live/Testnet enablement, Scope/Capital approval, Risk/KillSwitch override, and Double-Play side selection. It may only expose a diagnostic market-data readmodel for UI rendering and operator inspection.
+Operational rule for **`GET`** **`&#47;api&#47;market&#47;depth`:** remain separate from order placement, execution, exchange session handling, Live/Testnet enablement, Scope/Capital approval, Risk/KillSwitch override, Double-Play side selection, and secrets/API‑key surfaces. Use only diagnostic market-readmodel JSON suitable for rendering or operator inspection; no provider/network calls and no authenticated trading capability on this slice.
 
 ### Current offline readmodel identity
 
@@ -150,7 +149,7 @@ The identifier is only a schema/display contract marker. It must not imply readi
 
 ### Current offline envelope fields
 
-The offline builder emits the envelope fields below. In this contract, **`runtime_source_status` is `offline_bundle`**, **`stale` is `true`**, and **`stale_reason` is `offline_bundle_scan`**; these values reflect fixture scanning, not provider connectivity. A future HTTP layer would carry the **same identifiers** without adding readiness or execution semantics:
+The offline builder emits the envelope fields below when building from a valid bundle. In the **builder-owned** contract slice, **`runtime_source_status` is `offline_bundle`**, **`stale` is `true`**, and **`stale_reason` is `offline_bundle_scan`**; these values reflect fixture scanning, not provider connectivity. The **HTTP v0** success path (**`200`**) returns **`to_json_dict`** from the same builder (`src/webui/market_depth_api_v0.py`); it therefore carries the **same field identifiers and `depth` shape** without adding readiness or execution semantics:
 
 - `readmodel_id`
 - `symbol`
@@ -202,16 +201,18 @@ If introduced later, these fields must remain diagnostic market-data values only
 
 ### Failure and empty-state semantics
 
-The implemented offline contract pins fail-closed fixture/readmodel states:
+The implemented offline contract pins fail-closed fixture/readmodel states inside the builder:
 
-- missing bundle root: readmodel build error
+- missing bundle root at build time (builder input): readmodel build error
 - missing `depth.json`: readmodel build error
 - malformed JSON: readmodel build error
 - malformed levels: readmodel build error
 - empty bids/asks: JSON-native diagnostic empty state
 - offline bundle scan: visible stale diagnostic state
 
-Future provider-specific states such as disabled/unconfigured source, provider error, provider latency, or provider freshness remain deferred. None of these current or future states may be converted into trading permission, side switching, Risk/KillSwitch override, Scope/Capital approval, or Live/Testnet activation.
+When the route is invoked, **disabled**, **unconfigured** (`PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT` absent/invalid), or **builder failures** surface as **HTTP `503`** with a small diagnostic JSON envelope (**no** query/path bundle-root override; **no** expectation of filesystem path or exception leakage in the response contract). Provider-grade transport errors, latency SLOs, and authenticated exchange freshness remain **out of scope** for this v0 slice unless covered by a separate read-only contract.
+
+None of these current or future diagnostic states may be converted into trading permission, side switching, Risk/KillSwitch override, Scope/Capital approval, or Live/Testnet activation.
 
 ### Fixture and source policy
 
