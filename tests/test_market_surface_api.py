@@ -135,6 +135,46 @@ class TestMarketSurfaceHtml:
         assert "market_depth" not in body
         assert "XMLHttpRequest" not in body
 
+    @pytest.mark.xfail(
+        reason=(
+            "SSR Market Depth on GET /market not wired: embed display state from "
+            "market_depth_json_payload_v0() only; remove xfail when Phase-2 SSR lands "
+            "(and relax #3359 negative markers in the same slice)."
+        ),
+        strict=False,
+    )
+    def test_market_depth_ssr_context_contract_v0_future_seam(
+        self,
+        client: TestClient,
+    ) -> None:
+        """Tests-first contract: future GET /market SSR depth seam vs current system helper.
+
+        Non-negotiables (must hold once implemented):
+        - Depth display context comes from ``market_depth_json_payload_v0()`` (no builder/API
+          shape changes to satisfy HTML).
+        - ``GET /market`` stays HTTP 200 even when the tuple status is ``503`` diagnostics
+          for the standalone JSON route; depth outcome is embedded read-only context, not page
+          status.
+        - No ``fetch()``, XMLHttpRequest, polling, or in-page ``/api/market/depth`` usage.
+
+        This slice does not set ``PEAK_TRADE_MARKET_DEPTH_*`` — default env matches production
+        "disabled" characterization without touching filesystem bundles.
+
+        Narrow stable markers are intentionally spelled here so the eventual template can mirror
+        them without broad ``data-market-depth-*`` wildcard tests.
+        """
+        resp = client.get("/market", params={"source": "dummy", "limit": 20})
+        assert resp.status_code == 200
+        assert "text/html" in resp.headers.get("content-type", "")
+        body = resp.text
+
+        assert "/api/market/depth" not in body
+        assert "fetch(" not in body
+        assert "XMLHttpRequest" not in body
+
+        assert 'data-market-depth-panel="true"' in body
+        assert 'data-market-depth-status="' in body
+
     def test_market_html_invalid_timeframe_422(self, client: TestClient) -> None:
         r = client.get("/market", params={"source": "dummy", "timeframe": "bad"})
         assert r.status_code == 422
