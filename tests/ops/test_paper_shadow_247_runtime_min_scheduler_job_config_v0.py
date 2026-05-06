@@ -33,6 +33,7 @@ def test_paper_only_runtime_min_scheduler_job_is_present_disabled_and_non_author
     assert target["paper_only"] is True
     assert target["paper_runtime_job"] is True
     assert target["dry_run_visible"] is True
+    assert target["timeout_seconds"] == 600
     assert target["runtime_fixture"] == "tests/fixtures/p7/paper_run_min_v0.json"
     assert target["runtime_outdir_template"] == "out/paper_shadow_247/runtime/min/{timestamp}"
 
