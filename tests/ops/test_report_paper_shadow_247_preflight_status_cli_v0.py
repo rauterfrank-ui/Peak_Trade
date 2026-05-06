@@ -60,6 +60,7 @@ def _assert_command_inventory_shape(payload: dict[str, object]) -> None:
     assert min_job["found"] is True
     assert min_job["enabled"] is False
     assert min_job["command"] == "python"
+    assert min_job["timeout_seconds"] == 600
     safety_min = min_job["safety_classification"]
     assert isinstance(safety_min, dict)
     assert safety_min["paper_only"] is True

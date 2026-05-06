@@ -247,6 +247,7 @@ schedule_type = "once"
 command = "python"
 description = "Paper-only runtime min fixture runner; disabled until explicit bounded gate."
 tags = ["paper_shadow_247", "paper_runtime", "paper_runtime_min", "disabled_by_default"]
+timeout_seconds = 600
 paper_only = true
 paper_runtime_job = true
 dry_run_visible = true
