@@ -121,3 +121,30 @@ The operator command in this object is a readiness reference only. It is not exe
 ## 8. Revision
 
 - **v0** — Initial contract: BLOCKED default, status model, non-authority, informative JSON shape.
+
+## Paper-only Tag-Gated Scheduler Daemon Stability Evidence v0
+
+A controlled Paper-only, tag-gated scheduler daemon run completed successfully under a 120-minute bound.
+
+Local evidence bundle:
+
+- `/tmp/peak_trade_paper_only_daemon_120min_20260506T041114Z/PAPER_ONLY_DAEMON_120MIN_RESULT.md`
+- `/tmp/peak_trade_paper_only_daemon_120min_20260506T041114Z/DAEMON_ANALYSIS.json`
+- `/tmp/peak_trade_paper_only_daemon_120min_20260506T041114Z/PREFLIGHT_AFTER.json`
+
+Observed result:
+
+- tag gate: `paper_shadow_247`
+- target job: `paper_shadow_247_paper_only_preflight_status_v0`
+- bounded runtime: 7200 seconds
+- scheduler iterations: 240
+- executed jobs: 1
+- no-due-job observations: 239
+- error mentions: 0
+- post-run preflight status: `BLOCKED`
+- `dry_activation_readiness.ready`: `false`
+- all daemon, scheduler, Paper/Shadow runtime, Testnet, Live, broker, exchange, and order authorization flags remained `false`
+
+This evidence is non-authorizing. It proves only that the tag-gated scheduler daemon can run for the bounded window while executing the Paper/Shadow 24/7 preflight-status job once and then remaining idle. It does not prove Paper runtime stability, Shadow runtime stability, broker connectivity, exchange connectivity, order submission, Testnet readiness, or Live readiness.
+
+Next gate: add or select a Paper-only runtime job and prove it first under explicit tag gating and bounded execution. Do not use this evidence to authorize Testnet, Live, broker, exchange, or order paths.
