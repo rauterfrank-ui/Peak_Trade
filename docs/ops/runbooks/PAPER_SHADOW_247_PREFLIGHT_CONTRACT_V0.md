@@ -148,3 +148,39 @@ Observed result:
 This evidence is non-authorizing. It proves only that the tag-gated scheduler daemon can run for the bounded window while executing the Paper/Shadow 24/7 preflight-status job once and then remaining idle. It does not prove Paper runtime stability, Shadow runtime stability, broker connectivity, exchange connectivity, order submission, Testnet readiness, or Live readiness.
 
 Next gate: add or select a Paper-only runtime job and prove it first under explicit tag gating and bounded execution. Do not use this evidence to authorize Testnet, Live, broker, exchange, or order paths.
+
+## Paper-only Runtime Daemon 120-Minute Stability Evidence v0
+
+A controlled Paper-only runtime scheduler daemon run completed successfully under a 120-minute bound.
+
+Local evidence bundle:
+
+- `/tmp/peak_trade_paper_only_runtime_daemon_120min_20260506T111003Z/PAPER_ONLY_RUNTIME_DAEMON_120MIN_RESULT.md`
+- `/tmp/peak_trade_paper_only_runtime_daemon_120min_20260506T111003Z/DAEMON_ANALYSIS.json`
+- `/tmp/peak_trade_paper_only_runtime_daemon_120min_20260506T111003Z/PREFLIGHT_AFTER.json`
+- `/tmp/peak_trade_paper_only_runtime_daemon_120min_20260506T111003Z/runtime_out/account.json`
+- `/tmp/peak_trade_paper_only_runtime_daemon_120min_20260506T111003Z/runtime_out/fills.json`
+- `/tmp/peak_trade_paper_only_runtime_daemon_120min_20260506T111003Z/runtime_out/evidence_manifest.json`
+
+Observed result:
+
+- tag gate: `paper_runtime`
+- target job: `paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0`
+- runtime fixture: `tests/fixtures/p7/paper_run_high_vol_no_trade_v0.json`
+- bounded runtime: 7200 seconds
+- runtime job mentions: 3
+- no-due-job observations: 239
+- error mentions: 0
+- fills count: 0
+- account cash: 1000.0
+- positions shape: `{}`
+- flat positions accepted: `true`
+- post-run preflight status: `BLOCKED`
+- `dry_activation_readiness.ready`: `false`
+- all daemon, scheduler, Paper/Shadow runtime, Testnet, Live, broker, exchange, and order authorization flags remained `false`
+
+The empty positions object `{}` is accepted as the flat position representation for this evidence because there were no fills and the account remained flat. This is equivalent to no open BTC exposure for the high-vol no-trade fixture, even though the fixture-level expectation may name `BTC: 0.0`.
+
+This evidence is non-authorizing. It proves only that the tag-gated Paper-only runtime scheduler daemon can run for the bounded window, execute the high-vol no-trade Paper runtime job once, produce flat/no-fill runtime artifacts, and then remain idle. It does not prove multi-run Paper runtime stability, Shadow runtime stability, broker connectivity, exchange connectivity, order submission, Testnet readiness, or Live readiness.
+
+Next gate: either repeat the Paper-only runtime daemon with a longer bound or introduce a second Paper-only runtime fixture type under explicit tag gating and bounded execution. Do not use this evidence to authorize Testnet, Live, broker, exchange, or order paths.
