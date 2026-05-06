@@ -82,6 +82,7 @@ System:
 
 Market Surface v0 (read-only):
 - GET /api/market/ohlcv (JSON — öffentliche OHLCV oder Dummy)
+- GET /api/market/depth (Market Depth fixture read-model v0 — read-only JSON, nur server-seitiges Bundle via Env)
 
 Paper/Shadow summary read-model v0 (read-only, server-configured bundle only):
 - GET /api/observability/paper-shadow-summary
@@ -189,6 +190,7 @@ from .ops_ci_health_router import (
 from .execution_watch_api_v0 import router as execution_watch_v0_router
 from .execution_watch_api_v0_2 import router as execution_watch_v0_2_router
 from .paper_shadow_summary_api_v0 import router as paper_shadow_summary_api_v0_router
+from .market_depth_api_v0 import router as market_depth_api_v0_router
 from .market_surface import (
     MAX_OHLCV_LIMIT,
     MARKET_TIMEFRAMES,
@@ -533,6 +535,7 @@ def create_app() -> FastAPI:
 
     # Paper/Shadow Summary read-model v0 — read-only JSON (server-side bundle root only)
     app.include_router(paper_shadow_summary_api_v0_router)
+    app.include_router(market_depth_api_v0_router)
 
     # Market Surface v0 — read-only OHLCV (kein OPS-Cockpit-Bezug)
     app.include_router(create_market_router(templates, get_project_status))
