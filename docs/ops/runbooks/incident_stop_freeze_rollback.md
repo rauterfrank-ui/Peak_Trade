@@ -31,6 +31,20 @@ Ziel: System in bekanntem Zustand halten, keine weiteren Aktionen.
 3. Keine manuellen Orders platzieren.
 4. Evidence-Snapshot erstellen (siehe Evidence Capture).
 
+## HOLD-Klassifikation nach Incident Stop
+Ziel: Unter `HOLD_NO_PAPER_RUN` eindeutig festhalten, ob ein vorhandenes Stop-Signal noch aktiv, stale/geschlossen oder unbekannt ist.
+
+Wenn ein aktuelles `out&#47;ops&#47;incident_stop_*&#47;incident_stop_state.env` Artefakt oder gleichwertige Stop-Semantik vorhanden ist, bleibt bounded Paper-only Validation blockiert, bis ein Operator die Lage explizit klassifiziert hat.
+
+Klassifikation:
+- `active`: Stop-Signal ist weiterhin gültig; HOLD bleibt aktiv.
+- `stale&#47;closed`: Stop-Signal ist fachlich geschlossen; weitere Freigaben bleiben separate Operator-Entscheidungen.
+- `unknown`: Lage ist nicht eindeutig; Standard bleibt HOLD, keine Paper-Validation starten.
+
+Diese Klassifikation ist nur Entscheidung und Recordkeeping im Runbook. Sie autorisiert keine operative Freigabe und beschreibt hier keine Schritte zum Löschen, Bereinigen, Überschreiben oder Umdeuten von Stop-Artefakten.
+
+Für die read-only Inspektion kann `scripts&#47;ops&#47;snapshot_operator_stop_signals.py` genutzt werden. Der Snapshot ändert keinen Zustand und ist nicht autorisierend.
+
 ## ROLLBACK
 Ziel: Rückkehr auf einen bekannten, verifizierten Zustand.
 
