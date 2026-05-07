@@ -18,7 +18,7 @@ from src.meta.infostream import IntelEvent, InfoPacket, LearningSnippet
 class TestIntelEvent:
     """Tests für IntelEvent."""
 
-    def test_roundtrip_basic(self) -> None:
+    def test_intel_event_roundtrip_basic(self) -> None:
         """Test: Einfacher Roundtrip mit to_dict/from_dict."""
         event = IntelEvent(
             source="GLOBAL_MACRO",
@@ -52,7 +52,7 @@ class TestIntelEvent:
         assert event.created_at.tzinfo is not None
         assert event.created_at.tzinfo == timezone.utc
 
-    def test_json_serializable(self) -> None:
+    def test_intel_event_json_serializable(self) -> None:
         """Test: to_dict() Ergebnis ist JSON-serialisierbar."""
         event = IntelEvent(
             source="TEST",
@@ -83,7 +83,7 @@ class TestIntelEvent:
 class TestInfoPacket:
     """Tests für InfoPacket."""
 
-    def test_roundtrip_basic(self) -> None:
+    def test_info_packet_roundtrip_basic(self) -> None:
         """Test: Einfacher Roundtrip mit eingebettetem IntelEvent."""
         event = IntelEvent(source="TEST_SOURCE", topic="Test Topic")
         packet = InfoPacket(
@@ -132,7 +132,7 @@ class TestInfoPacket:
             cloned = InfoPacket.from_dict(data)
             assert cloned.status == status
 
-    def test_json_serializable(self) -> None:
+    def test_info_packet_json_serializable(self) -> None:
         """Test: Komplettes InfoPacket ist JSON-serialisierbar."""
         event = IntelEvent(source="JSON_TEST", payload={"key": [1, 2, 3]})
         packet = InfoPacket(
@@ -151,7 +151,7 @@ class TestInfoPacket:
 class TestLearningSnippet:
     """Tests für LearningSnippet."""
 
-    def test_roundtrip_basic(self) -> None:
+    def test_learning_snippet_roundtrip_basic(self) -> None:
         """Test: Einfacher Roundtrip mit allen Feldern."""
         snippet = LearningSnippet(
             source_packet_id="packet_123",
@@ -196,7 +196,7 @@ class TestLearningSnippet:
 
         assert cloned.quality_score == 0.75
 
-    def test_json_serializable(self) -> None:
+    def test_learning_snippet_json_serializable(self) -> None:
         """Test: LearningSnippet ist JSON-serialisierbar."""
         snippet = LearningSnippet(
             topic="JSON Test",

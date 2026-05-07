@@ -133,7 +133,7 @@ def mock_client(mock_ai_response_text: str) -> MagicMock:
 class TestIntelEvent:
     """Tests für IntelEvent-Dataclass."""
 
-    def test_create_default(self):
+    def test_intel_event_create_default(self):
         """Test: Event mit Default-Werten erstellen."""
         event = IntelEvent()
 
@@ -143,7 +143,7 @@ class TestIntelEvent:
         assert event.status == "new"
         assert isinstance(event.created_at, datetime)
 
-    def test_create_with_values(self):
+    def test_intel_event_create_with_values(self):
         """Test: Event mit spezifischen Werten erstellen."""
         event = IntelEvent(
             event_id="INF-test123",
@@ -185,7 +185,7 @@ class TestIntelEvent:
 class TestIntelEval:
     """Tests für IntelEval-Dataclass."""
 
-    def test_create_default(self):
+    def test_intel_eval_create_default(self):
         """Test: Eval mit Default-Werten erstellen."""
         eval_obj = IntelEval()
 
@@ -193,7 +193,7 @@ class TestIntelEval:
         assert eval_obj.risk_level == "none"
         assert eval_obj.key_findings == []
 
-    def test_create_with_values(self):
+    def test_intel_eval_create_with_values(self):
         """Test: Eval mit spezifischen Werten erstellen."""
         eval_obj = IntelEval(
             event_id="INF-test",
@@ -213,7 +213,7 @@ class TestIntelEval:
 class TestLearningSnippet:
     """Tests für LearningSnippet-Dataclass."""
 
-    def test_create_default(self):
+    def test_learning_snippet_create_default(self):
         """Test: Snippet mit Default-Werten erstellen."""
         snippet = LearningSnippet()
 
