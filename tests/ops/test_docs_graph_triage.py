@@ -159,7 +159,7 @@ class TestCategorizeOrphans:
 class TestGenerateBrokenTargetsMd:
     """Test broken targets markdown generation."""
 
-    def test_generate_output_file(self):
+    def test_generate_output_file_writes_expected_sections(self):
         """Should generate a valid markdown file."""
         broken = MINIMAL_SNAPSHOT["broken_targets"]
 
@@ -180,7 +180,7 @@ class TestGenerateBrokenTargetsMd:
             assert "file not found" in content.lower()
             assert "outside repo" in content.lower()
 
-    def test_path_escaping_in_output(self):
+    def test_path_escaping_in_output_for_primary_report(self):
         """Paths in output should be escaped per Token Policy."""
         broken = MINIMAL_SNAPSHOT["broken_targets"]
 
@@ -214,7 +214,7 @@ class TestGenerateBrokenTargetsMd:
 class TestGenerateOrphansMd:
     """Test orphans markdown generation."""
 
-    def test_generate_output_file(self):
+    def test_generate_output_file_preserves_expected_triage_content(self):
         """Should generate a valid markdown file."""
         orphans = MINIMAL_SNAPSHOT["orphans"]
 
@@ -248,7 +248,7 @@ class TestGenerateOrphansMd:
 
             assert out_path1.read_text() == out_path2.read_text()
 
-    def test_path_escaping_in_output(self):
+    def test_path_escaping_in_output_for_reference_entries(self):
         """Paths in output should be escaped per Token Policy."""
         orphans = MINIMAL_SNAPSHOT["orphans"]
 

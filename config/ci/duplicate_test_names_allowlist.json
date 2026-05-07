@@ -19,13 +19,6 @@
       ],
       "reason": "legacy duplicate test names; tracked for future cleanup"
     },
-    "tests/ops/test_docs_graph_triage.py": {
-      "names": [
-        "test_generate_output_file",
-        "test_path_escaping_in_output"
-      ],
-      "reason": "legacy duplicate test names; tracked for future cleanup"
-    },
     "tests/ops/test_test_health_v1.py": {
       "names": [
         "test_default_values",
