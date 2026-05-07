@@ -19,20 +19,6 @@
       ],
       "reason": "legacy duplicate test names; tracked for future cleanup"
     },
-    "tests/meta/test_infostream_basic.py": {
-      "names": [
-        "test_create_default",
-        "test_create_with_values"
-      ],
-      "reason": "legacy duplicate test names; tracked for future cleanup"
-    },
-    "tests/meta/test_infostream_models.py": {
-      "names": [
-        "test_json_serializable",
-        "test_roundtrip_basic"
-      ],
-      "reason": "legacy duplicate test names; tracked for future cleanup"
-    },
     "tests/ops/test_docs_graph_triage.py": {
       "names": [
         "test_generate_output_file",
