@@ -7,6 +7,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 from scripts.ops.report_paper_shadow_247_preflight_status import (
     build_paper_shadow_247_preflight_status,
 )
@@ -20,6 +22,89 @@ except ImportError:
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "scripts" / "ops" / "report_paper_shadow_247_preflight_status.py"
 PREFLIGHT_CONFIG = REPO_ROOT / "config" / "ops" / "paper_shadow_247_preflight.toml"
+SCHEDULER_CONFIG_REL = "config/scheduler/jobs.toml"
+
+
+def _materialize_minimal_preflight_repo(root: Path, *, include_scheduler_jobs: bool) -> None:
+    """Tiny repo layout for offline contract tests (no real Peak_Trade checkout)."""
+
+    contract = root / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+    contract.parent.mkdir(parents=True, exist_ok=True)
+    contract.write_text(
+        "\n".join(
+            [
+                "# Minimal contract fixture for offline tests",
+                "",
+                "Current status: **BLOCKED**.",
+                "",
+                "STOP — do not activate Paper/Shadow 24/7 until operators explicitly lift the block.",
+                "",
+                "Non-authority: this document is not trading authority.",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    sched_doc = root / "docs" / "SCHEDULER_DAEMON.md"
+    sched_doc.parent.mkdir(parents=True, exist_ok=True)
+    sched_doc.write_text(
+        "Preflight: PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md\n",
+        encoding="utf-8",
+    )
+    meta = root / "config" / "ops" / "paper_shadow_247_preflight.toml"
+    meta.parent.mkdir(parents=True, exist_ok=True)
+    meta.write_text(
+        "\n".join(
+            [
+                'schema_version = "paper_shadow_247_preflight.v0"',
+                'canonical_owner = "ops-test-offline-min"',
+                "",
+                "paper_jobs = [",
+                '  "paper_shadow_247_paper_only_preflight_status_v0",',
+                "]",
+                "",
+                "shadow_jobs = [",
+                '  "p7_shadow_high_vol_no_trade_runner_manual_v0",',
+                "]",
+                "",
+                "output_paths = [",
+                '  "out/paper_shadow_247/paper",',
+                "]",
+                "",
+                'stop_command = "echo stop"',
+                'emergency_stop_command = "echo emergency"',
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    if include_scheduler_jobs:
+        jobs = root / "config" / "scheduler" / "jobs.toml"
+        jobs.parent.mkdir(parents=True, exist_ok=True)
+        jobs.write_text(
+            "\n".join(
+                [
+                    "[[job]]",
+                    'name = "paper_shadow_247_paper_only_preflight_status_v0"',
+                    "enabled = true",
+                    'schedule_type = "once"',
+                    'command = "python"',
+                    "paper_only = true",
+                    "dry_run_visible = true",
+                    "testnet_authorized = false",
+                    "live_authorized = false",
+                    "broker_authorized = false",
+                    "exchange_authorized = false",
+                    "order_submission_authorized = false",
+                    "",
+                ]
+            ),
+            encoding="utf-8",
+        )
+
+
+def _tree_snapshot(root: Path) -> set[str]:
+    return {str(p.relative_to(root)) for p in root.rglob("*")}
 
 
 def _assert_command_inventory_shape(payload: dict[str, object]) -> None:
@@ -353,3 +438,54 @@ def test_paper_shadow_247_preflight_reports_dry_activation_readiness_without_aut
         "order_submission_authorized",
     ):
         assert payload[key] is False
+
+
+def test_build_preflight_on_minimal_tmp_repo_is_deterministic_and_writes_no_files(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Reporter is read-only: same tmp tree before/after, stable sorted JSON across builds."""
+
+    for key in ("PT_INCIDENT_STOP", "PT_FORCE_NO_TRADE", "PT_ENABLED", "PT_ARMED"):
+        monkeypatch.delenv(key, raising=False)
+    _materialize_minimal_preflight_repo(tmp_path, include_scheduler_jobs=True)
+    before = _tree_snapshot(tmp_path)
+    payload_a = build_paper_shadow_247_preflight_status(tmp_path)
+    mid = _tree_snapshot(tmp_path)
+    payload_b = build_paper_shadow_247_preflight_status(tmp_path)
+    after = _tree_snapshot(tmp_path)
+
+    assert before == mid == after
+    stable_a = json.dumps(payload_a, sort_keys=True)
+    stable_b = json.dumps(payload_b, sort_keys=True)
+    assert stable_a == stable_b
+    assert payload_a["status"] == "BLOCKED"
+    assert payload_a["activation_authorized"] is False
+    assert payload_a["required_files"][SCHEDULER_CONFIG_REL] is True
+    commands = payload_a["commands"]
+    assert isinstance(commands, list)
+    assert any(
+        c.get("name") == "paper_shadow_247_paper_only_preflight_status_v0"
+        and c.get("found") is True
+        for c in commands
+    )
+
+
+def test_build_preflight_missing_scheduler_jobs_toml_marks_config_absent_and_non_authorizing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """If jobs.toml is absent the inventory is explicit: no scheduler jobs resolved, still blocked."""
+
+    for key in ("PT_INCIDENT_STOP", "PT_FORCE_NO_TRADE", "PT_ENABLED", "PT_ARMED"):
+        monkeypatch.delenv(key, raising=False)
+    _materialize_minimal_preflight_repo(tmp_path, include_scheduler_jobs=False)
+    before = _tree_snapshot(tmp_path)
+    payload = build_paper_shadow_247_preflight_status(tmp_path)
+    assert _tree_snapshot(tmp_path) == before
+
+    assert payload["required_files"][SCHEDULER_CONFIG_REL] is False
+    assert payload["contract_markers"]["scheduler_config_has_direct_247_job"] is False
+    assert payload["status"] == "BLOCKED"
+    assert payload["activation_authorized"] is False
+    assert payload["scheduler_execution_authorized"] is False
+    for c in payload["commands"]:
+        assert c["found"] is False

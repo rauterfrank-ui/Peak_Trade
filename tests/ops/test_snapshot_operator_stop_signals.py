@@ -1,6 +1,7 @@
 """Tests for scripts/ops/snapshot_operator_stop_signals.py — read-only stop signal snapshot."""
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -107,3 +108,38 @@ def test_main_json(
     assert mod.main() == 0
     out = json.loads(capsys.readouterr().out)
     assert out["contract"] == mod.CONTRACT_ID
+
+
+def test_build_stop_signal_snapshot_selects_newest_incident_stop_directory(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """When multiple incident_stop_* dirs exist, the newest by directory mtime wins."""
+
+    import scripts.ops.snapshot_operator_stop_signals as mod
+
+    for k in mod.PT_STOP_KEYS:
+        monkeypatch.delenv(k, raising=False)
+
+    out_ops = tmp_path / "out" / "ops"
+    older = out_ops / "incident_stop_20990101T000001Z_first"
+    newer = out_ops / "incident_stop_20990101T000002Z_second"
+    older.mkdir(parents=True)
+    newer.mkdir(parents=True)
+    (older / "incident_stop_state.env").write_text(
+        "PT_FORCE_NO_TRADE=0\nPT_ENABLED=0\nPT_ARMED=0\n",
+        encoding="utf-8",
+    )
+    (newer / "incident_stop_state.env").write_text(
+        "PT_FORCE_NO_TRADE=1\nPT_ENABLED=0\nPT_ARMED=0\n",
+        encoding="utf-8",
+    )
+    os.utime(older, (100, 100))
+    os.utime(newer, (300, 300))
+
+    snap = mod.build_stop_signal_snapshot(tmp_path)
+    assert snap["incident_stop_artifact"]["status"] == "ok"
+    art_path = snap["incident_stop_artifact"]["path"]
+    assert "20990101T000002Z_second" in str(art_path)
+    parsed = snap["incident_stop_artifact"]["parsed"]
+    assert isinstance(parsed, dict)
+    assert parsed.get("PT_FORCE_NO_TRADE") == "1"
