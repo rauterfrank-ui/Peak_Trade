@@ -374,7 +374,107 @@ def test_unknown_hold_context_v0_is_present_in_build_and_cli_json() -> None:
     )
 
 
-def test_cli_human_output_includes_unknown_hold_context() -> None:
+def test_operator_decision_context_v0_absent_without_decision_record() -> None:
+    payload = build_paper_shadow_247_preflight_status(REPO_ROOT)
+    assert "operator_decision_context_v0" not in payload
+    moment = payload["operator_moment_snapshot_v0"]["stop_signal_snapshot"]
+    assert "operator_decision_context_v0" not in moment
+
+
+def test_build_paper_shadow_247_preflight_status_operator_decision_context_v0_when_record_provided(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    for key in ("PT_INCIDENT_STOP", "PT_FORCE_NO_TRADE", "PT_ENABLED", "PT_ARMED"):
+        monkeypatch.delenv(key, raising=False)
+    _materialize_minimal_preflight_repo(tmp_path, include_scheduler_jobs=True)
+    decision = tmp_path / "op_decision.md"
+    decision.write_text(
+        "\n".join(
+            [
+                "OPERATOR_CLASSIFICATION=stale_closed",
+                "CURRENT_STATE=HOLD_NO_PAPER_RUN_PENDING_RERUN",
+                "GO_LIVE_NEXT_STEP=read_only_snapshot_and_preflight_rerun",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    payload = build_paper_shadow_247_preflight_status(
+        tmp_path,
+        operator_decision_record=decision,
+    )
+    ctx = payload["operator_decision_context_v0"]
+    assert ctx["schema_version"] == "operator_decision_context.v0"
+    assert ctx["operator_classification"] == "stale_closed"
+    assert ctx["non_authorizing"] is True
+    assert ctx["permits_scheduler_runtime_paper_testnet_live"] is False
+    assert "operator_decision_context_v0" in payload["notes"]
+
+    _assert_hold_context_v0(payload)
+    assert payload["status"] == "BLOCKED"
+    assert payload["activation_authorized"] is False
+
+    stop = payload["operator_moment_snapshot_v0"]["stop_signal_snapshot"]
+    assert stop["operator_decision_context_v0"] == ctx
+
+
+def test_build_paper_shadow_247_preflight_status_invalid_operator_record_raises(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    for key in ("PT_INCIDENT_STOP", "PT_FORCE_NO_TRADE", "PT_ENABLED", "PT_ARMED"):
+        monkeypatch.delenv(key, raising=False)
+    _materialize_minimal_preflight_repo(tmp_path, include_scheduler_jobs=True)
+    missing = tmp_path / "missing.md"
+    with pytest.raises(ValueError, match="not a file"):
+        build_paper_shadow_247_preflight_status(tmp_path, operator_decision_record=missing)
+
+
+def test_preflight_cli_operator_decision_record_propagates_to_json(tmp_path: Path) -> None:
+    decision = tmp_path / "decision.md"
+    decision.write_text("OPERATOR_CLASSIFICATION=stale_closed\n", encoding="utf-8")
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--json",
+            "--repo-root",
+            str(REPO_ROOT),
+            "--operator-decision-record",
+            str(decision),
+        ],
+        cwd=REPO_ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0
+    assert result.stderr == ""
+    payload = json.loads(result.stdout)
+    assert payload["operator_decision_context_v0"]["operator_classification"] == "stale_closed"
+    stop = payload["operator_moment_snapshot_v0"]["stop_signal_snapshot"]
+    assert stop["operator_decision_context_v0"]["operator_classification"] == "stale_closed"
+    _assert_hold_context_v0(payload)
+
+
+def test_preflight_cli_operator_decision_record_missing_file_exits_2(tmp_path: Path) -> None:
+    missing = tmp_path / "missing.md"
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--repo-root",
+            str(REPO_ROOT),
+            "--operator-decision-record",
+            str(missing),
+        ],
+        cwd=REPO_ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 2
+    assert "ERR:" in result.stderr
     result = subprocess.run(
         [sys.executable, str(SCRIPT), "--repo-root", str(REPO_ROOT)],
         cwd=REPO_ROOT,

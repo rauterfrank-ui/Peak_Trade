@@ -28,6 +28,13 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 CONTRACT_ID = "operator_stop_signal_snapshot_v1"
+OPERATOR_DECISION_CONTEXT_SCHEMA_VERSION = "operator_decision_context.v0"
+
+OPERATOR_DECISION_CONTEXT_REASON = (
+    "Operator-supplied decision record context only. "
+    "Does not clear, move, overwrite, or reinterpret incident-stop artifacts; "
+    "does not authorize scheduler, daemon, paper-validation, testnet, live, broker, exchange, or order paths."
+)
 
 # Aligned with ``scripts/ops/incident_stop_now.sh`` and cockpit incident_state PT_* fields.
 PT_STOP_KEYS = (
@@ -127,6 +134,48 @@ def _read_kill_switch(repo_root: Path) -> Dict[str, Any]:
         }
 
 
+def resolve_operator_decision_record_path(operator_decision_record: Path) -> Path:
+    """Resolve an operator decision record path; raise if it is not a readable file."""
+
+    rec = operator_decision_record.expanduser().resolve()
+    if not rec.is_file():
+        raise ValueError(f"operator decision record not a file: {operator_decision_record}")
+    return rec
+
+
+def _parse_operator_decision_record_key_values(text: str) -> Dict[str, str]:
+    keys = ("OPERATOR_CLASSIFICATION", "CURRENT_STATE", "GO_LIVE_NEXT_STEP")
+    out: Dict[str, str] = {}
+    for line in text.splitlines():
+        stripped = line.strip()
+        for key in keys:
+            prefix = f"{key}="
+            if stripped.startswith(prefix) and key not in out:
+                out[key] = stripped[len(prefix) :].strip()
+                break
+    return out
+
+
+def build_operator_decision_context_v0(record_path: Path) -> Dict[str, Any]:
+    """Parse a human-readable operator decision record into a non-authorizing JSON context."""
+
+    resolved = record_path.resolve()
+    text = resolved.read_text(encoding="utf-8")
+    kv = _parse_operator_decision_record_key_values(text)
+    return {
+        "schema_version": OPERATOR_DECISION_CONTEXT_SCHEMA_VERSION,
+        "record_path": str(resolved),
+        "record_present": True,
+        "operator_classification": kv.get("OPERATOR_CLASSIFICATION"),
+        "current_state": kv.get("CURRENT_STATE"),
+        "go_live_next_step": kv.get("GO_LIVE_NEXT_STEP"),
+        "non_authorizing": True,
+        "raw_artifacts_preserved": True,
+        "permits_scheduler_runtime_paper_testnet_live": False,
+        "reason": OPERATOR_DECISION_CONTEXT_REASON,
+    }
+
+
 def _build_consistency_notes(
     pt_env: Dict[str, Any],
     artifact: Dict[str, Any],
@@ -162,7 +211,10 @@ def _build_consistency_notes(
     return notes
 
 
-def build_stop_signal_snapshot(repo_root: Path) -> Dict[str, Any]:
+def build_stop_signal_snapshot(
+    repo_root: Path,
+    operator_decision_record: Optional[Path] = None,
+) -> Dict[str, Any]:
     root = repo_root.resolve()
     pt_env = _snapshot_process_pt()
     latest_sf = _find_latest_incident_stop_state_file(root)
@@ -193,7 +245,7 @@ def build_stop_signal_snapshot(repo_root: Path) -> Dict[str, Any]:
     if notes:
         summary_parts.append("consistency_notes=see_json")
 
-    return {
+    out: Dict[str, Any] = {
         "contract": CONTRACT_ID,
         "repo_root": str(root),
         "process_environment_pt": pt_env,
@@ -202,6 +254,10 @@ def build_stop_signal_snapshot(repo_root: Path) -> Dict[str, Any]:
         "consistency_notes": notes,
         "summary": "; ".join(summary_parts),
     }
+    if operator_decision_record is not None:
+        rec = resolve_operator_decision_record_path(operator_decision_record)
+        out["operator_decision_context_v0"] = build_operator_decision_context_v0(rec)
+    return out
 
 
 def _print_text(snapshot: Dict[str, Any]) -> None:
@@ -230,6 +286,12 @@ def _print_text(snapshot: Dict[str, Any]) -> None:
         print("--- consistency_notes ---")
         for n in notes:
             print(f"  - {n}")
+    ctx = snapshot.get("operator_decision_context_v0")
+    if isinstance(ctx, dict):
+        print("--- operator_decision_context_v0 ---")
+        print(f"  record_path={ctx.get('record_path')!r}")
+        print(f"  operator_classification={ctx.get('operator_classification')!r}")
+        print(f"  non_authorizing={ctx.get('non_authorizing')!r}")
 
 
 def main() -> int:
@@ -247,13 +309,28 @@ def main() -> int:
         action="store_true",
         help="Emit full snapshot as JSON",
     )
+    parser.add_argument(
+        "--operator-decision-record",
+        type=Path,
+        default=None,
+        help=(
+            "Optional path to an operator decision record; adds operator_decision_context_v0 "
+            "(read-only, non-authorizing; does not change stop artifacts)."
+        ),
+    )
     args = parser.parse_args()
     repo_root = args.repo_root or _REPO_ROOT
     if not repo_root.is_dir():
         print(f"ERR: repo root not a directory: {repo_root}", file=sys.stderr)
         return 2
     try:
-        snapshot = build_stop_signal_snapshot(repo_root)
+        snapshot = build_stop_signal_snapshot(
+            repo_root,
+            operator_decision_record=args.operator_decision_record,
+        )
+    except ValueError as e:
+        print(f"ERR: {e}", file=sys.stderr)
+        return 2
     except Exception as e:
         print(f"ERR: {e}", file=sys.stderr)
         return 2
