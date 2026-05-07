@@ -207,6 +207,38 @@ def _assert_command_inventory_shape(payload: dict[str, object]) -> None:
     assert "safety_classification" not in shadow_entry
 
 
+def _assert_hold_context_v0(payload: dict[str, object]) -> None:
+    hc = payload["hold_context_v0"]
+    assert isinstance(hc, dict)
+    assert hc["schema_version"] == "unknown_hold_context.v0"
+    assert hc["current_state"] == "HOLD_NO_PAPER_RUN"
+    assert hc["operator_classification"] == "unknown"
+    assert hc["go_live_next_step"] == "blocked"
+    assert hc["non_authorizing"] is True
+    assert isinstance(hc.get("reason"), str) and "unknown" in hc["reason"].lower()
+    refs = hc["canonical_doc_refs"]
+    assert refs == [
+        "docs/ops/runbooks/incident_stop_freeze_rollback.md",
+        "docs/SCHEDULER_DAEMON.md",
+        "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
+    ]
+    prog = hc["progression_authorization"]
+    assert isinstance(prog, dict)
+    for key in (
+        "activation_authorized",
+        "daemon_activation_authorized",
+        "scheduler_execution_authorized",
+        "paper_runtime_authorized",
+        "shadow_runtime_authorized",
+        "testnet_authorized",
+        "live_authorized",
+        "broker_authorized",
+        "exchange_authorized",
+        "order_submission_authorized",
+    ):
+        assert prog[key] is False
+
+
 def _assert_operator_moment_snapshot_v0(payload: dict[str, object]) -> None:
     moment = payload["operator_moment_snapshot_v0"]
     assert isinstance(moment, dict)
@@ -228,6 +260,8 @@ def _assert_operator_moment_snapshot_v0(payload: dict[str, object]) -> None:
     assert mirror["scheduler_execution_authorized"] is False
     assert mirror["dry_run_only"] is True
     assert moment["dry_activation_readiness_ready"] is False
+    assert moment["hold_context_v0"] == payload["hold_context_v0"]
+    _assert_hold_context_v0(payload)
     summary = moment["command_inventory_summary"]
     assert isinstance(summary, dict)
     commands = payload["commands"]
@@ -295,6 +329,7 @@ def test_build_paper_shadow_247_preflight_status_is_blocked_and_non_authorizing(
     assert payload["blockers"] == []
     assert payload["status_reasons"] == []
     assert "operator_moment_snapshot_v0" in payload["notes"]
+    assert "unknown_hold_context_v0" in payload["notes"]
     _assert_operator_moment_snapshot_v0(payload)
 
 
@@ -321,8 +356,22 @@ def test_cli_json_output_is_json_native_and_does_not_execute_scheduler() -> None
     assert "scheduler_command_inventory_v0" in payload["notes"]
     assert "scheduler_command_safety_classification_v0" in payload["notes"]
     assert "operator_moment_snapshot_v0" in payload["notes"]
+    assert "unknown_hold_context_v0" in payload["notes"]
     _assert_command_inventory_shape(payload)
     _assert_operator_moment_snapshot_v0(payload)
+
+
+def test_unknown_hold_context_v0_is_present_in_build_and_cli_json() -> None:
+    built = build_paper_shadow_247_preflight_status(REPO_ROOT)
+    _assert_hold_context_v0(built)
+
+    cli_payload = _run_json()
+    _assert_hold_context_v0(cli_payload)
+    assert cli_payload["hold_context_v0"] == built["hold_context_v0"]
+    assert all(
+        cli_payload["hold_context_v0"]["progression_authorization"][k] is False
+        for k in cli_payload["hold_context_v0"]["progression_authorization"]
+    )
 
 
 def test_cli_human_output_is_bounded_status_only() -> None:

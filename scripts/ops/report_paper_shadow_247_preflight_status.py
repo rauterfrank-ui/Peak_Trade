@@ -22,6 +22,7 @@ else:
 
 CONTRACT = "paper_shadow_247_preflight_status_v0"
 CONTRACT_DOC = "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+INCIDENT_STOP_DOC = "docs/ops/runbooks/incident_stop_freeze_rollback.md"
 SCHEDULER_DOC = "docs/SCHEDULER_DAEMON.md"
 SCHEDULER_CONFIG = "config/scheduler/jobs.toml"
 PAPER_SHADOW_247_PREFLIGHT_METADATA = Path("config") / "ops" / "paper_shadow_247_preflight.toml"
@@ -251,6 +252,39 @@ def _command_inventory_summary(commands: list[dict[str, Any]]) -> dict[str, Any]
     }
 
 
+def _build_hold_context_v0() -> dict[str, Any]:
+    """Explicit unknown-HOLD audit projection: non-authorizing, JSON-native, deterministic."""
+
+    return {
+        "schema_version": "unknown_hold_context.v0",
+        "current_state": "HOLD_NO_PAPER_RUN",
+        "operator_classification": "unknown",
+        "go_live_next_step": "blocked",
+        "non_authorizing": True,
+        "reason": (
+            "OPERATOR_CLASSIFICATION=unknown is not a clearance state; HOLD_NO_PAPER_RUN "
+            "remains active until incident-stop and governance boundaries are explicitly resolved."
+        ),
+        "canonical_doc_refs": [
+            INCIDENT_STOP_DOC,
+            SCHEDULER_DOC,
+            CONTRACT_DOC,
+        ],
+        "progression_authorization": {
+            "activation_authorized": False,
+            "daemon_activation_authorized": False,
+            "scheduler_execution_authorized": False,
+            "paper_runtime_authorized": False,
+            "shadow_runtime_authorized": False,
+            "testnet_authorized": False,
+            "live_authorized": False,
+            "broker_authorized": False,
+            "exchange_authorized": False,
+            "order_submission_authorized": False,
+        },
+    }
+
+
 def _build_operator_moment_snapshot_v0(payload: dict[str, Any], repo_root: Path) -> dict[str, Any]:
     """Derived, non-authorizing operator snapshot: preflight mirror + inventory stats + stop signals."""
 
@@ -280,6 +314,7 @@ def _build_operator_moment_snapshot_v0(payload: dict[str, Any], repo_root: Path)
             "dry_run_only": payload.get("dry_run_only"),
         },
         "dry_activation_readiness_ready": dry_ready,
+        "hold_context_v0": payload.get("hold_context_v0"),
         "command_inventory_summary": _command_inventory_summary(commands),
         "stop_signal_snapshot": stop_snapshot,
     }
@@ -391,8 +426,10 @@ def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> di
             "scheduler_command_inventory_v0",
             "scheduler_command_safety_classification_v0",
             "operator_moment_snapshot_v0",
+            "unknown_hold_context_v0",
         ],
     }
+    payload["hold_context_v0"] = _build_hold_context_v0()
     payload["dry_activation_readiness"] = _build_dry_activation_readiness(payload)
     payload["operator_moment_snapshot_v0"] = _build_operator_moment_snapshot_v0(payload, root)
     return payload
