@@ -124,6 +124,10 @@ The read-only preflight reporter includes a nested `hold_context_v0` object with
 
 This object is **non-authorizing**. It records the conservative operating posture when `OPERATOR_CLASSIFICATION=unknown`: `current_state=HOLD_NO_PAPER_RUN`, `go_live_next_step=blocked`, and all listed progression authorization flags remain `false`. Canonical references are documentation pointers only (`docs/ops/runbooks/incident_stop_freeze_rollback.md`, `docs/SCHEDULER_DAEMON.md`, and this contract). It does not clear incident stops, authorize daemon or scheduler execution, or activate Paper, Shadow, Testnet, Live, broker, exchange, or order paths.
 
+## Operator decision record context v0 (optional)
+
+The read-only preflight reporter (`scripts/ops/report_paper_shadow_247_preflight_status.py`) and stop-signal snapshot (`scripts/ops/snapshot_operator_stop_signals.py`) accept an optional `--operator-decision-record <path>` argument. When supplied, JSON includes `operator_decision_context_v0` (schema `operator_decision_context.v0`). This object is **non-authorizing**: it records parsed `OPERATOR_CLASSIFICATION`, `CURRENT_STATE`, and `GO_LIVE_NEXT_STEP` lines from the file for operator traceability only. It does not remove, move, overwrite, or reinterpret incident-stop artifacts; it does not change `hold_context_v0` (which remains the conservative unknown-HOLD projection); and it does not authorize scheduler, daemon, paper-validation, Testnet, Live, broker, exchange, or order paths.
+
 ## 8. Revision
 
 - **v0** — Initial contract: BLOCKED default, status model, non-authority, informative JSON shape.

@@ -214,7 +214,10 @@ def _build_dry_activation_readiness(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _build_stop_signal_snapshot_for_repo(repo_root: Path) -> dict[str, Any]:
+def _build_stop_signal_snapshot_for_repo(
+    repo_root: Path,
+    operator_decision_record: Path | None = None,
+) -> dict[str, Any]:
     """Resolve `build_stop_signal_snapshot` when this module is CLI-invoked from `scripts/ops/`."""
 
     root_s = str(repo_root.resolve())
@@ -222,7 +225,7 @@ def _build_stop_signal_snapshot_for_repo(repo_root: Path) -> dict[str, Any]:
         sys.path.insert(0, root_s)
     from scripts.ops.snapshot_operator_stop_signals import build_stop_signal_snapshot
 
-    return build_stop_signal_snapshot(repo_root)
+    return build_stop_signal_snapshot(repo_root, operator_decision_record=operator_decision_record)
 
 
 def _command_inventory_summary(commands: list[dict[str, Any]]) -> dict[str, Any]:
@@ -285,7 +288,11 @@ def _build_hold_context_v0() -> dict[str, Any]:
     }
 
 
-def _build_operator_moment_snapshot_v0(payload: dict[str, Any], repo_root: Path) -> dict[str, Any]:
+def _build_operator_moment_snapshot_v0(
+    payload: dict[str, Any],
+    repo_root: Path,
+    operator_decision_record: Path | None = None,
+) -> dict[str, Any]:
     """Derived, non-authorizing operator snapshot: preflight mirror + inventory stats + stop signals."""
 
     commands_raw = payload.get("commands")
@@ -293,7 +300,7 @@ def _build_operator_moment_snapshot_v0(payload: dict[str, Any], repo_root: Path)
     dry = payload.get("dry_activation_readiness")
     dry_ready = dry.get("ready") if isinstance(dry, dict) else None
 
-    stop_snapshot = _build_stop_signal_snapshot_for_repo(repo_root)
+    stop_snapshot = _build_stop_signal_snapshot_for_repo(repo_root, operator_decision_record)
 
     return {
         "schema_version": "paper_shadow_247_operator_moment_snapshot.v0",
@@ -320,8 +327,19 @@ def _build_operator_moment_snapshot_v0(payload: dict[str, Any], repo_root: Path)
     }
 
 
-def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> dict[str, Any]:
+def build_paper_shadow_247_preflight_status(
+    repo_root: Path | None = None,
+    operator_decision_record: Path | None = None,
+) -> dict[str, Any]:
     root = (repo_root or _repo_root()).resolve()
+    op_rec: Path | None = None
+    if operator_decision_record is not None:
+        root_s = str(root)
+        if root_s not in sys.path:
+            sys.path.insert(0, root_s)
+        from scripts.ops.snapshot_operator_stop_signals import resolve_operator_decision_record_path
+
+        op_rec = resolve_operator_decision_record_path(operator_decision_record)
     metadata = _load_paper_shadow_247_preflight_metadata(root)
 
     contract_path = root / CONTRACT_DOC
@@ -364,6 +382,19 @@ def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> di
         blockers.append("output_paths_missing")
     if not stop_command or not emergency_stop_command:
         blockers.append("stop_commands_missing")
+
+    notes_list = [
+        "read_only_reporter",
+        "does_not_run_scheduler",
+        "does_not_start_daemon",
+        "does_not_activate_paper_or_shadow_runtime",
+        "scheduler_command_inventory_v0",
+        "scheduler_command_safety_classification_v0",
+        "operator_moment_snapshot_v0",
+        "unknown_hold_context_v0",
+    ]
+    if op_rec is not None:
+        notes_list.append("operator_decision_context_v0")
 
     # Authorization flags: never inferred from metadata alone (documentation-only TOML keys).
     payload: dict[str, Any] = {
@@ -418,20 +449,16 @@ def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> di
         },
         "status_reasons": blockers,
         "blockers": blockers,
-        "notes": [
-            "read_only_reporter",
-            "does_not_run_scheduler",
-            "does_not_start_daemon",
-            "does_not_activate_paper_or_shadow_runtime",
-            "scheduler_command_inventory_v0",
-            "scheduler_command_safety_classification_v0",
-            "operator_moment_snapshot_v0",
-            "unknown_hold_context_v0",
-        ],
+        "notes": notes_list,
     }
     payload["hold_context_v0"] = _build_hold_context_v0()
     payload["dry_activation_readiness"] = _build_dry_activation_readiness(payload)
-    payload["operator_moment_snapshot_v0"] = _build_operator_moment_snapshot_v0(payload, root)
+    payload["operator_moment_snapshot_v0"] = _build_operator_moment_snapshot_v0(
+        payload, root, op_rec
+    )
+    stop_snap = payload["operator_moment_snapshot_v0"].get("stop_signal_snapshot")
+    if isinstance(stop_snap, dict) and "operator_decision_context_v0" in stop_snap:
+        payload["operator_decision_context_v0"] = stop_snap["operator_decision_context_v0"]
     return payload
 
 
@@ -443,10 +470,26 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="Repository root to inspect. Defaults to the current Peak_Trade checkout.",
     )
+    parser.add_argument(
+        "--operator-decision-record",
+        type=Path,
+        default=None,
+        help=(
+            "Optional path to an operator decision record; adds operator_decision_context_v0 "
+            "(read-only, non-authorizing; does not change stop artifacts)."
+        ),
+    )
     args = parser.parse_args(argv)
 
-    root = Path(args.repo_root).resolve() if args.repo_root else None
-    payload = build_paper_shadow_247_preflight_status(root)
+    root = Path(args.repo_root).resolve() if args.repo_root else _repo_root().resolve()
+    try:
+        payload = build_paper_shadow_247_preflight_status(
+            root,
+            operator_decision_record=args.operator_decision_record,
+        )
+    except ValueError as e:
+        print(f"ERR: {e}", file=sys.stderr)
+        return 2
 
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))

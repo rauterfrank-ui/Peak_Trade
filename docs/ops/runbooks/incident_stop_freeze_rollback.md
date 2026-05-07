@@ -67,7 +67,7 @@ Klassifikation:
 
 Diese Klassifikation ist nur Entscheidung und Recordkeeping im Runbook. Sie autorisiert keine operative Freigabe und beschreibt hier keine Schritte zum Löschen, Bereinigen, Überschreiben oder Umdeuten von Stop-Artefakten.
 
-Für die read-only Inspektion kann `scripts&#47;ops&#47;snapshot_operator_stop_signals.py` genutzt werden. Der Snapshot ändert keinen Zustand und ist nicht autorisierend.
+Für die read-only Inspektion kann `scripts&#47;ops&#47;snapshot_operator_stop_signals.py` genutzt werden. Der Snapshot ändert keinen Zustand und ist nicht autorisierend. Optional kann `--operator-decision-record &lt;path&gt;` gesetzt werden, um ein maschinenlesbares `operator_decision_context_v0`-Feld zu ergänzen; das löscht keine Stop-Artefakte und autorisiert keine Laufzeitpfade.
 
 ## ROLLBACK
 Ziel: Rückkehr auf einen bekannten, verifizierten Zustand.
