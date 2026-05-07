@@ -192,7 +192,7 @@ class TestGarchRegimeModelValidation:
                 transition_matrix=[],
             )
 
-    def test_negative_omega_raises(self):
+    def test_negative_omega_raises_for_primary_validation(self):
         """Negatives omega wird abgelehnt."""
         with pytest.raises(ValueError, match="omega"):
             GarchRegimeModelV0(
@@ -202,7 +202,7 @@ class TestGarchRegimeModelValidation:
                 transition_matrix=[[1.0]],
             )
 
-    def test_invalid_nu_raises(self):
+    def test_invalid_nu_raises_for_primary_validation(self):
         """nu <= 2 wird abgelehnt."""
         with pytest.raises(ValueError, match="nu"):
             GarchRegimeModelV0(
@@ -312,7 +312,7 @@ class TestRegimeParams:
         assert d["beta"] == 0.85
         assert d["nu"] == 5.0
 
-    def test_negative_omega_raises(self):
+    def test_negative_omega_raises_for_config_validation(self):
         """Negatives omega wird abgelehnt."""
         with pytest.raises(ValueError, match="omega"):
             RegimeParams(omega=-1e-5, alpha=0.1, beta=0.85, nu=5.0)
@@ -322,7 +322,7 @@ class TestRegimeParams:
         with pytest.raises(ValueError, match="alpha"):
             RegimeParams(omega=1e-5, alpha=1.5, beta=0.85, nu=5.0)
 
-    def test_invalid_nu_raises(self):
+    def test_invalid_nu_raises_for_config_validation(self):
         """nu <= 2 wird abgelehnt."""
         with pytest.raises(ValueError, match="nu"):
             RegimeParams(omega=1e-5, alpha=0.1, beta=0.85, nu=1.5)

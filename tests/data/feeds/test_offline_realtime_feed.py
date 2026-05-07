@@ -135,7 +135,7 @@ class TestSyntheticTick:
 class TestRegimeConfig:
     """Tests für RegimeConfig."""
 
-    def test_valid_config(self):
+    def test_valid_config_accepts_required_fields(self):
         """Gültige Konfiguration wird akzeptiert."""
         config = RegimeConfig(
             regime_id=0,
@@ -180,7 +180,7 @@ class TestRegimeConfig:
 class TestOfflineRealtimeFeedConfig:
     """Tests für OfflineRealtimeFeedConfig."""
 
-    def test_valid_config(self):
+    def test_valid_config_accepts_extended_feed_options(self):
         """Gültige Konfiguration wird akzeptiert."""
         config = create_simple_config()
         assert config.symbol == "BTC/USD"

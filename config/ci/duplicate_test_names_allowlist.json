@@ -6,19 +6,6 @@
       ],
       "reason": "legacy duplicate test names; tracked for future cleanup"
     },
-    "tests/data/feeds/test_offline_realtime_feed.py": {
-      "names": [
-        "test_valid_config"
-      ],
-      "reason": "legacy duplicate test names; tracked for future cleanup"
-    },
-    "tests/data/offline_realtime/test_offline_realtime_feed_v0.py": {
-      "names": [
-        "test_invalid_nu_raises",
-        "test_negative_omega_raises"
-      ],
-      "reason": "legacy duplicate test names; tracked for future cleanup"
-    },
     "tests/ops/test_test_health_v1.py": {
       "names": [
         "test_default_values",
