@@ -195,3 +195,18 @@ This hybrid approach balances discoverability (all findable from this index) wit
 
 **Last Updated:** 2026-04-15  
 **Maintainer:** ops
+
+## Incident-stop / HOLD classification discoverability
+
+For operator classification of incident-stop artifacts under `HOLD_NO_PAPER_RUN`, use
+`docs/ops/runbooks/incident_stop_freeze_rollback.md` as the canonical runbook. It
+clarifies the conservative classification vocabulary:
+
+- `active`: keep `HOLD_NO_PAPER_RUN` active.
+- `unknown`: keep `HOLD_NO_PAPER_RUN` active; this is not a clearance state.
+- `stale_closed`: only after a human operator records this decision may the documented
+  follow-up procedure be used before rerunning read-only snapshot/preflight checks.
+
+Scheduler/preflight boundaries under HOLD are documented in `docs/SCHEDULER_DAEMON.md`.
+These references are discoverability pointers only; they do not create a new readiness,
+evidence, or go-live authorization surface.

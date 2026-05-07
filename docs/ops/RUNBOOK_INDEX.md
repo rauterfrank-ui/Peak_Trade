@@ -78,3 +78,14 @@ Für eine zentrale Workflow- und Runbook-Übersicht siehe:
 - [live_pilot_session_wrapper.md](runbooks/live_pilot_session_wrapper.md)
 - [KILL_SWITCH_DRILL_PROCEDURE.md](../runbooks/KILL_SWITCH_DRILL_PROCEDURE.md)
 
+## Incident-stop / HOLD classification discoverability
+
+- Canonical incident-stop runbook: `docs/ops/runbooks/incident_stop_freeze_rollback.md`
+- Scheduler/preflight HOLD boundary: `docs/SCHEDULER_DAEMON.md`
+- Paper/Shadow-247 preflight contract: `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md`
+
+Use these as index pointers only. Under `HOLD_NO_PAPER_RUN`, `active` and `unknown`
+classifications keep runtime and go-live progression blocked. `stale_closed` requires
+the documented follow-up procedure before read-only snapshot/preflight checks are rerun.
+This index is non-authorizing and must not become a duplicate readiness or evidence
+surface.
