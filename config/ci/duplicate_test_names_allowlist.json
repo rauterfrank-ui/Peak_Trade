@@ -1,0 +1,238 @@
+{
+  "allowed": {
+    "tests/ai_orchestration/test_models.py": {
+      "names": [
+        "test_sod_fail_same_models"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/data/feeds/test_offline_realtime_feed.py": {
+      "names": [
+        "test_valid_config"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/data/offline_realtime/test_offline_realtime_feed_v0.py": {
+      "names": [
+        "test_invalid_nu_raises",
+        "test_negative_omega_raises"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/meta/test_infostream_basic.py": {
+      "names": [
+        "test_create_default",
+        "test_create_with_values"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/meta/test_infostream_models.py": {
+      "names": [
+        "test_json_serializable",
+        "test_roundtrip_basic"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/ops/test_docs_graph_triage.py": {
+      "names": [
+        "test_generate_output_file",
+        "test_path_escaping_in_output"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/ops/test_test_health_v1.py": {
+      "names": [
+        "test_default_values",
+        "test_load_from_toml"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/risk/test_portfolio.py": {
+      "names": [
+        "test_empty_positions"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/risk_layer/var_backtest/test_christoffersen.py": {
+      "names": [
+        "test_validation_too_few_observations"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/risk_layer/var_backtest/test_duration_diagnostics.py": {
+      "names": [
+        "test_empty_exceedances",
+        "test_with_datetime_index"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_alert_pipeline.py": {
+      "names": [
+        "test_from_string",
+        "test_properties",
+        "test_send_failure_does_not_raise",
+        "test_send_success",
+        "test_severity_filtering"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_autonomous_monitors.py": {
+      "names": [
+        "test_custom_thresholds",
+        "test_monitor_initialization"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_backup_recovery.py": {
+      "names": [
+        "test_restore_dry_run"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_environment_and_safety.py": {
+      "names": [
+        "test_live_mode_blocked_by_armed_flag",
+        "test_testnet_dry_run_blocks_orders"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_escalation_manager.py": {
+      "names": [
+        "test_construction",
+        "test_from_dict",
+        "test_name",
+        "test_to_dict"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_experiments_base.py": {
+      "names": [
+        "test_basic_creation",
+        "test_to_dict"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_experiments_regime_sweeps.py": {
+      "names": [
+        "test_all_values_are_lists",
+        "test_returns_list"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_live_readiness_script.py": {
+      "names": [
+        "test_shadow_with_valid_config",
+        "test_warning_count"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_market_sentinel_v0_daily.py": {
+      "names": [
+        "test_create_valid_config"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_orders_smoke.py": {
+      "names": [
+        "test_basic_instantiation",
+        "test_basic_mapping"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_performance.py": {
+      "names": [
+        "test_func"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_portfolio_presets_tiering.py": {
+      "names": [
+        "test_builds_valid_preset",
+        "test_weights_sum_to_one"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_r_and_d_api.py": {
+      "names": [
+        "test_status_no_trades"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_regime_detection.py": {
+      "names": [
+        "test_detect_regimes_returns_series",
+        "test_detect_regimes_valid_labels"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_reporting_experiment_report.py": {
+      "names": [
+        "test_creates_section",
+        "test_empty_df"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_reporting_v2.py": {
+      "names": [
+        "test_build_parser",
+        "test_create_minimal",
+        "test_parser_all_options"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_research_e2e_scenarios.py": {
+      "names": [
+        "test_is_regime_category"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_run_logging_and_reporting.py": {
+      "names": [
+        "test_to_dict"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_strategies_research_playground.py": {
+      "names": [
+        "test_generate_signals_requires_ohlc",
+        "test_generate_signals_returns_series",
+        "test_generate_signals_too_few_bars",
+        "test_generate_signals_values",
+        "test_import",
+        "test_instantiation_custom_params",
+        "test_instantiation_default_params",
+        "test_metadata",
+        "test_validation_invalid_lookback",
+        "test_validation_invalid_thresholds"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_strategy_profiles.py": {
+      "names": [
+        "test_to_dict"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_sweeps.py": {
+      "names": [
+        "test_basic_instantiation",
+        "test_import"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_testnet_limits.py": {
+      "names": [
+        "test_custom_values",
+        "test_default_values"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    },
+    "tests/test_webui_live_track.py": {
+      "names": [
+        "test_client"
+      ],
+      "reason": "legacy duplicate test names; tracked for future cleanup"
+    }
+  },
+  "version": 1
+}
