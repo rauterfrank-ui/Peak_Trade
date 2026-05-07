@@ -122,6 +122,44 @@ def _assert_command_inventory_shape(payload: dict[str, object]) -> None:
     assert "safety_classification" not in shadow_entry
 
 
+def _assert_operator_moment_snapshot_v0(payload: dict[str, object]) -> None:
+    moment = payload["operator_moment_snapshot_v0"]
+    assert isinstance(moment, dict)
+    assert moment["schema_version"] == "paper_shadow_247_operator_moment_snapshot.v0"
+    assert moment["non_authorizing"] is True
+    assert moment["does_not_activate_runtime"] is True
+    mirror = moment["mirror_top_level"]
+    assert isinstance(mirror, dict)
+    assert mirror["status"] == "BLOCKED"
+    assert mirror["activation_authorized"] is False
+    assert mirror["daemon_activation_authorized"] is False
+    assert mirror["paper_runtime_authorized"] is False
+    assert mirror["shadow_runtime_authorized"] is False
+    assert mirror["testnet_authorized"] is False
+    assert mirror["live_authorized"] is False
+    assert mirror["broker_authorized"] is False
+    assert mirror["exchange_authorized"] is False
+    assert mirror["order_submission_authorized"] is False
+    assert mirror["scheduler_execution_authorized"] is False
+    assert mirror["dry_run_only"] is True
+    assert moment["dry_activation_readiness_ready"] is False
+    summary = moment["command_inventory_summary"]
+    assert isinstance(summary, dict)
+    commands = payload["commands"]
+    assert isinstance(commands, list)
+    assert summary["commands_total"] == len(commands)
+    assert summary["found_true"] + summary["found_false"] == summary["commands_total"]
+    assert (
+        summary["enabled_true"] + summary["enabled_false"] + summary["enabled_unset"]
+        == summary["commands_total"]
+    )
+    assert summary["paper_runtime_jobs_scheduled_disabled"] == 2
+    stop = moment["stop_signal_snapshot"]
+    assert isinstance(stop, dict)
+    assert stop["contract"] == "operator_stop_signal_snapshot_v1"
+    assert isinstance(stop.get("summary"), str)
+
+
 def _run_json() -> dict[str, object]:
     result = subprocess.run(
         [sys.executable, str(SCRIPT), "--json", "--repo-root", str(REPO_ROOT)],
@@ -171,6 +209,8 @@ def test_build_paper_shadow_247_preflight_status_is_blocked_and_non_authorizing(
     }
     assert payload["blockers"] == []
     assert payload["status_reasons"] == []
+    assert "operator_moment_snapshot_v0" in payload["notes"]
+    _assert_operator_moment_snapshot_v0(payload)
 
 
 def test_build_paper_shadow_247_preflight_status_reuses_existing_contract_surfaces() -> None:
@@ -195,7 +235,9 @@ def test_cli_json_output_is_json_native_and_does_not_execute_scheduler() -> None
     assert "does_not_start_daemon" in payload["notes"]
     assert "scheduler_command_inventory_v0" in payload["notes"]
     assert "scheduler_command_safety_classification_v0" in payload["notes"]
+    assert "operator_moment_snapshot_v0" in payload["notes"]
     _assert_command_inventory_shape(payload)
+    _assert_operator_moment_snapshot_v0(payload)
 
 
 def test_cli_human_output_is_bounded_status_only() -> None:
