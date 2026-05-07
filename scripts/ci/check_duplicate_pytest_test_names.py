@@ -5,6 +5,10 @@ AST-only: does not import test modules, does not run pytest, no network.
 
 Allowlist (see config/ci/duplicate_test_names_allowlist.json) tolerates known legacy
 duplicate names until cleaned up.
+
+Allowlist integrity: entries whose paths fall under the current scan roots must point to
+an existing file, and each allowlisted name must currently be duplicated in that file.
+Entries for paths outside a scoped ``--paths`` scan are not validated.
 """
 
 from __future__ import annotations
@@ -49,6 +53,65 @@ def _collect_files_from_roots(repo_root: Path, roots: list[Path]) -> list[Path]:
 
 def _default_scan_roots(repo_root: Path) -> list[Path]:
     return [repo_root / "tests"]
+
+
+def _allowlist_path_covered_by_scan(rel: str, repo_root: Path, roots: list[Path]) -> bool:
+    """Whether allowlist key ``rel`` is under one of ``roots`` (scan scope)."""
+    repo_resolved = repo_root.resolve()
+    rel_key = str(rel).replace("\\", "/")
+    target = (repo_resolved / rel_key).resolve()
+    try:
+        target.relative_to(repo_resolved)
+    except ValueError:
+        return False
+    for r in roots:
+        base = (repo_resolved / r).resolve() if not r.is_absolute() else r.resolve()
+        try:
+            base.relative_to(repo_resolved)
+        except ValueError:
+            continue
+        if base.is_file():
+            if target == base:
+                return True
+        elif base.is_dir():
+            try:
+                target.relative_to(base)
+                return True
+            except ValueError:
+                pass
+    return False
+
+
+def collect_allowlist_integrity_violations(
+    *,
+    repo_root: Path,
+    roots: list[Path],
+    allowed_map_raw: dict[str, Any],
+) -> list[str]:
+    """Stale allowlist entries that fall under the current scan roots."""
+    repo_resolved = repo_root.resolve()
+    violations: list[str] = []
+    for rel, entry in allowed_map_raw.items():
+        rel_key = str(rel).replace("\\", "/")
+        if not _allowlist_path_covered_by_scan(rel_key, repo_root, roots):
+            continue
+        path = (repo_resolved / rel_key).resolve()
+        if not path.is_file():
+            violations.append(f"{rel_key}: allowlisted file missing under scan scope")
+            continue
+        names = entry.get("names") or []
+        if not isinstance(names, list):
+            continue
+        dups = find_duplicate_test_names(path)
+        dup_names = set(dups.keys())
+        for name in names:
+            if not isinstance(name, str):
+                continue
+            if name not in dup_names:
+                violations.append(
+                    f"{rel_key}: allowlisted name {name!r} is not duplicated in this file"
+                )
+    return violations
 
 
 def find_duplicate_test_names(path: Path) -> dict[str, list[int]]:
@@ -150,10 +213,23 @@ def main(argv: list[str] | None = None) -> int:
             if name not in permitted:
                 violations.append(f"{rel}: duplicate {name!r} at lines {lines}")
 
+    integrity: list[str] = []
+    if not args.no_allowlist and allowed_map_raw:
+        integrity = collect_allowlist_integrity_violations(
+            repo_root=repo_root,
+            roots=roots,
+            allowed_map_raw=allowed_map_raw,
+        )
+
     if violations:
         print("duplicate pytest test names (same file, unallowlisted):", file=sys.stderr)
         for line in violations:
             print(f"  {line}", file=sys.stderr)
+    if integrity:
+        print("allowlist integrity errors:", file=sys.stderr)
+        for line in integrity:
+            print(f"  {line}", file=sys.stderr)
+    if violations or integrity:
         return 1
     return 0
 
