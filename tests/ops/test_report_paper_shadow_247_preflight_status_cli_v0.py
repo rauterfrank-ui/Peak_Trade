@@ -374,7 +374,7 @@ def test_unknown_hold_context_v0_is_present_in_build_and_cli_json() -> None:
     )
 
 
-def test_cli_human_output_is_bounded_status_only() -> None:
+def test_cli_human_output_includes_unknown_hold_context() -> None:
     result = subprocess.run(
         [sys.executable, str(SCRIPT), "--repo-root", str(REPO_ROOT)],
         cwd=REPO_ROOT,
@@ -389,6 +389,15 @@ def test_cli_human_output_is_bounded_status_only() -> None:
         "status=BLOCKED",
         "activation_authorized=false",
         "dry_run_only=true",
+        "hold_current_state=HOLD_NO_PAPER_RUN",
+        "hold_operator_classification=unknown",
+        "hold_go_live_next_step=blocked",
+        "hold_non_authorizing=true",
+        "hold_daemon_activation_authorized=false",
+        "hold_scheduler_activation_authorized=false",
+        "hold_paper_validation_authorized=false",
+        "hold_testnet_authorized=false",
+        "hold_live_authorized=false",
     ]
 
 

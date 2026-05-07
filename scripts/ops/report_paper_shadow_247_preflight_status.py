@@ -451,9 +451,38 @@ def main(argv: list[str] | None = None) -> int:
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))
     else:
+        hold_context = payload.get("hold_context_v0") or {}
+        progression = hold_context.get("progression_authorization") or {}
+
         print(f"status={payload['status']}")
         print(f"activation_authorized={str(payload['activation_authorized']).lower()}")
-        print("dry_run_only=true")
+        print(f"dry_run_only={str(payload['dry_run_only']).lower()}")
+        print(f"hold_current_state={hold_context.get('current_state', 'unknown')}")
+        print(
+            f"hold_operator_classification={hold_context.get('operator_classification', 'unknown')}"
+        )
+        print(f"hold_go_live_next_step={hold_context.get('go_live_next_step', 'blocked')}")
+        print(
+            f"hold_non_authorizing={str(bool(hold_context.get('non_authorizing', True))).lower()}"
+        )
+        print(
+            "hold_daemon_activation_authorized="
+            f"{str(bool(progression.get('daemon_activation_authorized', False))).lower()}"
+        )
+        print(
+            "hold_scheduler_activation_authorized="
+            f"{str(bool(progression.get('scheduler_execution_authorized', False))).lower()}"
+        )
+        print(
+            "hold_paper_validation_authorized="
+            f"{str(bool(progression.get('paper_runtime_authorized', False))).lower()}"
+        )
+        print(
+            f"hold_testnet_authorized={str(bool(progression.get('testnet_authorized', False))).lower()}"
+        )
+        print(
+            f"hold_live_authorized={str(bool(progression.get('live_authorized', False))).lower()}"
+        )
 
     return 0
 
