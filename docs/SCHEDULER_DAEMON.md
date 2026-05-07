@@ -463,3 +463,27 @@ This section does not create a new scheduler surface and does not authorize any 
 
 Formal field-level preflight contract (status model, non-authority, informative JSON shape): [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md).
 
+## HOLD_NO_PAPER_RUN boundary for scheduler/preflight surfaces
+
+When `HOLD_NO_PAPER_RUN` is active, scheduler and preflight surfaces remain inspection
+surfaces only. They may expose configured jobs, disabled/enabled metadata, timeout
+metadata, dry-run placeholders, safety classification, and operator-facing notes, but
+they do not clear or override stop conditions.
+
+Under `HOLD_NO_PAPER_RUN`, the scheduler daemon must not be started for runtime,
+paper-validation, testnet, live, broker, exchange, or order-submission purposes.
+Preflight output is non-authorizing: it can explain why a bounded Paper-only run is
+blocked or what would need operator review, but it is not itself permission to start
+that run.
+
+Incident-stop artifacts remain authoritative blockers until a human operator classifies
+them through the documented incident-stop procedure. If the classification is
+`unknown` or `active`, `HOLD_NO_PAPER_RUN` remains in force. If the classification is
+`stale_closed`, the documented procedure must be followed first, and only then may
+read-only snapshot/preflight checks be rerun.
+
+The canonical Paper/Shadow-247 preflight contract remains
+`docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md`. This document describes
+scheduler-daemon boundaries; it must not become a duplicate readiness, evidence, or
+go-live authorization surface.
+
