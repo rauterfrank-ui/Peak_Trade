@@ -213,6 +213,78 @@ def _build_dry_activation_readiness(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _build_stop_signal_snapshot_for_repo(repo_root: Path) -> dict[str, Any]:
+    """Resolve `build_stop_signal_snapshot` when this module is CLI-invoked from `scripts/ops/`."""
+
+    root_s = str(repo_root.resolve())
+    if root_s not in sys.path:
+        sys.path.insert(0, root_s)
+    from scripts.ops.snapshot_operator_stop_signals import build_stop_signal_snapshot
+
+    return build_stop_signal_snapshot(repo_root)
+
+
+def _command_inventory_summary(commands: list[dict[str, Any]]) -> dict[str, Any]:
+    total = len(commands)
+    found_true = sum(1 for c in commands if c.get("found") is True)
+    found_false = sum(1 for c in commands if c.get("found") is False)
+    enabled_true = sum(1 for c in commands if c.get("enabled") is True)
+    enabled_false = sum(1 for c in commands if c.get("enabled") is False)
+    enabled_unset = sum(1 for c in commands if c.get("enabled") is None)
+    paper_runtime_disabled = 0
+    for c in commands:
+        sc = c.get("safety_classification")
+        if (
+            isinstance(sc, dict)
+            and sc.get("paper_runtime_job") is True
+            and c.get("enabled") is False
+        ):
+            paper_runtime_disabled += 1
+    return {
+        "commands_total": total,
+        "found_true": found_true,
+        "found_false": found_false,
+        "enabled_true": enabled_true,
+        "enabled_false": enabled_false,
+        "enabled_unset": enabled_unset,
+        "paper_runtime_jobs_scheduled_disabled": paper_runtime_disabled,
+    }
+
+
+def _build_operator_moment_snapshot_v0(payload: dict[str, Any], repo_root: Path) -> dict[str, Any]:
+    """Derived, non-authorizing operator snapshot: preflight mirror + inventory stats + stop signals."""
+
+    commands_raw = payload.get("commands")
+    commands: list[dict[str, Any]] = commands_raw if isinstance(commands_raw, list) else []
+    dry = payload.get("dry_activation_readiness")
+    dry_ready = dry.get("ready") if isinstance(dry, dict) else None
+
+    stop_snapshot = _build_stop_signal_snapshot_for_repo(repo_root)
+
+    return {
+        "schema_version": "paper_shadow_247_operator_moment_snapshot.v0",
+        "non_authorizing": True,
+        "does_not_activate_runtime": True,
+        "mirror_top_level": {
+            "status": payload.get("status"),
+            "activation_authorized": payload.get("activation_authorized"),
+            "daemon_activation_authorized": payload.get("daemon_activation_authorized"),
+            "paper_runtime_authorized": payload.get("paper_runtime_authorized"),
+            "shadow_runtime_authorized": payload.get("shadow_runtime_authorized"),
+            "testnet_authorized": payload.get("testnet_authorized"),
+            "live_authorized": payload.get("live_authorized"),
+            "broker_authorized": payload.get("broker_authorized"),
+            "exchange_authorized": payload.get("exchange_authorized"),
+            "order_submission_authorized": payload.get("order_submission_authorized"),
+            "scheduler_execution_authorized": payload.get("scheduler_execution_authorized"),
+            "dry_run_only": payload.get("dry_run_only"),
+        },
+        "dry_activation_readiness_ready": dry_ready,
+        "command_inventory_summary": _command_inventory_summary(commands),
+        "stop_signal_snapshot": stop_snapshot,
+    }
+
+
 def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> dict[str, Any]:
     root = (repo_root or _repo_root()).resolve()
     metadata = _load_paper_shadow_247_preflight_metadata(root)
@@ -318,9 +390,11 @@ def build_paper_shadow_247_preflight_status(repo_root: Path | None = None) -> di
             "does_not_activate_paper_or_shadow_runtime",
             "scheduler_command_inventory_v0",
             "scheduler_command_safety_classification_v0",
+            "operator_moment_snapshot_v0",
         ],
     }
     payload["dry_activation_readiness"] = _build_dry_activation_readiness(payload)
+    payload["operator_moment_snapshot_v0"] = _build_operator_moment_snapshot_v0(payload, root)
     return payload
 
 
