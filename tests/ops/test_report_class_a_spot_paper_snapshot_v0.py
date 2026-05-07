@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import io
 import json
 import subprocess
 import sys
@@ -16,6 +17,7 @@ from scripts.ops.report_class_a_spot_paper_snapshot_v0 import (  # noqa: E402
     build_json_payload,
     coerce_run_list,
     fetch_runs_via_gh,
+    load_runs_from_json_stream,
     render_markdown,
     summarize_runs,
 )
@@ -134,6 +136,107 @@ def test_cli_input_file(tmp_path: Path) -> None:
     )
     assert proc.returncode == 0
     assert json.loads(proc.stdout)["summary"]["run_count"] == 2
+
+
+def test_cli_stdin_json_and_input_file_emit_identical_sorted_payloads(tmp_path: Path) -> None:
+    """Same run list via stdin and via --input-file must yield identical JSON output."""
+
+    payload_text = json.dumps(_sample_runs())
+    from_stdin = subprocess.run(
+        [sys.executable, str(SCRIPT), "--stdin-json", "--json"],
+        input=payload_text,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert from_stdin.returncode == 0
+    assert from_stdin.stderr == ""
+
+    p = tmp_path / "runs.json"
+    p.write_text(payload_text, encoding="utf-8")
+    from_file = subprocess.run(
+        [sys.executable, str(SCRIPT), "--input-file", str(p), "--json"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert from_file.returncode == 0
+    assert from_file.stderr == ""
+    assert from_stdin.stdout == from_file.stdout
+
+
+def test_cli_json_stdout_is_deterministic_across_two_invocations() -> None:
+    proc_a = subprocess.run(
+        [sys.executable, str(SCRIPT), "--stdin-json", "--json"],
+        input=json.dumps(_sample_runs()),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    proc_b = subprocess.run(
+        [sys.executable, str(SCRIPT), "--stdin-json", "--json"],
+        input=json.dumps(_sample_runs()),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc_a.returncode == proc_b.returncode == 0
+    assert proc_a.stdout == proc_b.stdout
+
+
+def test_cli_malformed_stdin_json_exits_2() -> None:
+    proc = subprocess.run(
+        [sys.executable, str(SCRIPT), "--stdin-json", "--json"],
+        input="{not-json",
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc.returncode == 2
+    assert "error:" in proc.stderr.lower()
+
+
+def test_cli_input_file_invalid_json_exits_2(tmp_path: Path) -> None:
+    p = tmp_path / "bad.json"
+    p.write_text("{", encoding="utf-8")
+    proc = subprocess.run(
+        [sys.executable, str(SCRIPT), "--input-file", str(p), "--json"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc.returncode == 2
+    assert "error:" in proc.stderr.lower()
+
+
+def test_load_runs_from_json_stream_rejects_non_object_elements_like_cli() -> None:
+    stream = io.StringIO(json.dumps([{"ok": True}, 99]))
+    with pytest.raises(ValueError, match="index 1"):
+        load_runs_from_json_stream(stream)
+
+
+def test_render_markdown_with_none_optional_fields_does_not_raise() -> None:
+    runs: list[dict[str, object]] = [
+        {
+            "databaseId": 9,
+            "status": "completed",
+            "conclusion": None,
+            "event": "schedule",
+            "createdAt": "2026-04-29T19:00:00Z",
+            "updatedAt": None,
+            "headBranch": None,
+            "headSha": "abc",
+            "url": "https://example.com/9",
+        },
+    ]
+    summary = summarize_runs(runs)
+    md = render_markdown(
+        workflow="class-a-shadow-paper-scheduled-probe-v1.yml",
+        runs=runs,
+        summary=summary,
+    )
+    assert "| 9 |" in md
+    assert "Class-A Spot/Paper workflow snapshot" in md
 
 
 def test_fetch_runs_via_gh_parses_stdout() -> None:
