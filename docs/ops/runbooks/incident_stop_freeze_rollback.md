@@ -32,6 +32,30 @@ Ziel: System in bekanntem Zustand halten, keine weiteren Aktionen.
 4. Evidence-Snapshot erstellen (siehe Evidence Capture).
 
 ## HOLD-Klassifikation nach Incident Stop
+
+### Classification vocabulary and scheduler boundary
+
+Use the machine-readable value `stale_closed` for operator records and generated
+closeout artifacts. In prose, `stale&#47;closed` may be used as a human-readable label,
+but it must map to the same conservative meaning: the incident is believed to be
+closed, and the stale stop artifact may only be handled through the documented
+procedure before any read-only snapshot or preflight check is rerun.
+
+`unknown` is not an intermediate clearance state. If the artifact set is unknown,
+ambiguous, or not explicitly classified by a human operator, keep
+`HOLD_NO_PAPER_RUN` active.
+
+`active` and `unknown` both keep runtime and go-live progression blocked. Only a
+recorded `stale_closed` decision can lead to the documented follow-up procedure,
+and that procedure still does not authorize scheduler, runtime daemon,
+paper-validation, testnet, live, broker, exchange, or order-submission paths by
+itself.
+
+Scheduler/preflight surfaces remain inspection-only under `HOLD_NO_PAPER_RUN`; see
+`docs/SCHEDULER_DAEMON.md` for the scheduler-side boundary. The canonical
+Paper/Shadow-247 preflight contract remains
+`docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md`; this runbook must
+not become a duplicate readiness, evidence, or go-live authorization surface.
 Ziel: Unter `HOLD_NO_PAPER_RUN` eindeutig festhalten, ob ein vorhandenes Stop-Signal noch aktiv, stale/geschlossen oder unbekannt ist.
 
 Wenn ein aktuelles `out&#47;ops&#47;incident_stop_*&#47;incident_stop_state.env` Artefakt oder gleichwertige Stop-Semantik vorhanden ist, bleibt bounded Paper-only Validation blockiert, bis ein Operator die Lage explizit klassifiziert hat.
