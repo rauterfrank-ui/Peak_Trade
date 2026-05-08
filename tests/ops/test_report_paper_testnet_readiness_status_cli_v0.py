@@ -220,3 +220,96 @@ def test_this_cli_test_does_not_read_real_artifact_locations() -> None:
 
     for fragment in forbidden_fragments:
         assert fragment not in source_text
+
+
+def test_paper_runtime_closeout_review_surfaces_in_json_and_stays_blocked(tmp_path: Path) -> None:
+    closeout = tmp_path / "closeout.md"
+    closeout.write_text(
+        "\n".join(
+            [
+                "# x",
+                "VERDICT=7200S_SCHEDULER_PAPER_RUNTIME_EVIDENCE_PASS",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    proc = run_report("--paper-runtime-evidence-review", str(closeout))
+    assert proc.returncode == 0
+    payload = parse_payload(proc)
+
+    assert payload["status"] == "BLOCKED"
+    assert payload["testnet_authorized"] is False
+    assert payload["live_authorized"] is False
+    assert payload["paper"]["evidence_present"] is True
+    pr = payload["paper_runtime_evidence_v0"]
+    assert isinstance(pr, dict)
+    assert pr["accepted"] is True
+    assert pr["non_authorizing"] is True
+    assert pr["verdict"] == "7200S_SCHEDULER_PAPER_RUNTIME_EVIDENCE_PASS"
+    assert pr["does_not_authorize"] == [
+        "testnet",
+        "live",
+        "broker",
+        "exchange",
+        "order_submission",
+    ]
+    assert_non_authorizing(payload)
+
+
+def test_paper_runtime_review_json_pass_surfaces_accepted(tmp_path: Path) -> None:
+    review = tmp_path / "review.json"
+    review.write_text(
+        '{"issues": [], "metrics": {"fills_count": 1}, "verdict": "PASS"}\n',
+        encoding="utf-8",
+    )
+    proc = run_report("--paper-runtime-evidence-review", str(review))
+    assert proc.returncode == 0
+    payload = parse_payload(proc)
+    pr = payload["paper_runtime_evidence_v0"]
+    assert pr["accepted"] is True
+    assert pr["verdict"] == "PASS"
+    assert payload["status"] == "BLOCKED"
+    assert payload["testnet_authorized"] is False
+
+
+def test_paper_runtime_review_missing_file_exits_2(tmp_path: Path) -> None:
+    missing = tmp_path / "nope.md"
+    proc = subprocess.run(
+        [sys.executable, str(SCRIPT), "--json", "--paper-runtime-evidence-review", str(missing)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+    assert proc.stdout.strip() == ""
+
+
+def test_paper_runtime_review_invalid_content_exits_2(tmp_path: Path) -> None:
+    bad = tmp_path / "bad.md"
+    bad.write_text("VERDICT=NOT_A_REAL_CLOSEOUT\n", encoding="utf-8")
+    proc = subprocess.run(
+        [sys.executable, str(SCRIPT), "--json", "--paper-runtime-evidence-review", str(bad)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+
+
+def test_human_summary_includes_evidence_line_without_json(tmp_path: Path) -> None:
+    closeout = tmp_path / "c.md"
+    closeout.write_text(
+        "VERDICT=SIXTY_MIN_SCHEDULER_PAPER_RUNTIME_EVIDENCE_PASS\n", encoding="utf-8"
+    )
+    proc = subprocess.run(
+        [sys.executable, str(SCRIPT), "--paper-runtime-evidence-review", str(closeout)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 0
+    assert "paper_runtime_evidence_accepted=true" in proc.stdout
+    assert "testnet_authorized=false" in proc.stdout
+    assert "live_authorized=false" in proc.stdout
+    assert "testnet ready" not in proc.stdout.lower()
