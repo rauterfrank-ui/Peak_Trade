@@ -101,6 +101,21 @@ def test_default_invocation_is_blocked_with_missing_paper_and_testnet_items() ->
     assert cr["non_authorizing"] is True
     assert cr["contributes_to"] == "testnet_prerequisite_checker_context_only"
     assert cr["does_not_authorize"] == EVIDENCE_INPUTS_DO_NOT_AUTHORIZE
+    te = payload["testnet_evidence_v0"]
+    assert isinstance(te, dict)
+    assert te["accepted"] is False
+    assert te["contributes_to"] == "testnet_evidence_only"
+    assert te["schema_version"] == "peak_trade.testnet_evidence_input.v0"
+    trb = payload["testnet_robustness_evidence_v0"]
+    assert isinstance(trb, dict)
+    assert trb["accepted"] is False
+    assert trb["contributes_to"] == "testnet_robustness_only"
+    assert trb["schema_version"] == "peak_trade.testnet_robustness_evidence_input.v0"
+    tst = payload["testnet_stress_evidence_v0"]
+    assert isinstance(tst, dict)
+    assert tst["accepted"] is False
+    assert tst["contributes_to"] == "testnet_stress_only"
+    assert tst["schema_version"] == "peak_trade.testnet_stress_evidence_input.v0"
 
 
 def test_complete_paper_only_still_blocks_on_testnet() -> None:
@@ -358,6 +373,9 @@ def test_human_summary_includes_evidence_line_without_json(tmp_path: Path) -> No
     assert "paper_runtime_evidence_accepted=true" in proc.stdout
     assert "paper_robustness_evidence_accepted=false" in proc.stdout
     assert "paper_stress_evidence_accepted=false" in proc.stdout
+    assert "testnet_evidence_accepted=false" in proc.stdout
+    assert "testnet_robustness_evidence_accepted=false" in proc.stdout
+    assert "testnet_stress_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisite_checker_report_accepted=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
@@ -491,6 +509,9 @@ def test_human_summary_includes_robustness_evidence_line(tmp_path: Path) -> None
     assert proc.returncode == 0
     assert "paper_robustness_evidence_accepted=true" in proc.stdout
     assert "paper_stress_evidence_accepted=false" in proc.stdout
+    assert "testnet_evidence_accepted=false" in proc.stdout
+    assert "testnet_robustness_evidence_accepted=false" in proc.stdout
+    assert "testnet_stress_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisite_checker_report_accepted=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
@@ -651,6 +672,9 @@ def test_human_summary_includes_stress_evidence_line(tmp_path: Path) -> None:
     assert proc.returncode == 0
     assert "paper_stress_evidence_accepted=true" in proc.stdout
     assert "paper_stress_evidence_verdict=STRESS_EVIDENCE_PASS" in proc.stdout
+    assert "testnet_evidence_accepted=false" in proc.stdout
+    assert "testnet_robustness_evidence_accepted=false" in proc.stdout
+    assert "testnet_stress_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisite_checker_report_accepted=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
@@ -833,6 +857,9 @@ def test_human_summary_includes_testnet_prerequisites_evidence_line(tmp_path: Pa
     assert proc.returncode == 0
     assert "testnet_prerequisites_evidence_accepted=true" in proc.stdout
     assert "testnet_prerequisites_evidence_verdict=TESTNET_PREREQUISITES_REVIEW_PASS" in proc.stdout
+    assert "testnet_evidence_accepted=false" in proc.stdout
+    assert "testnet_robustness_evidence_accepted=false" in proc.stdout
+    assert "testnet_stress_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisite_checker_report_accepted=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
@@ -908,6 +935,9 @@ def test_human_summary_includes_authorization_boundary_when_all_evidence_inputs_
     )
     assert proc.returncode == 0
     assert "testnet_prerequisite_checker_report_accepted=false" in proc.stdout
+    assert "testnet_evidence_accepted=false" in proc.stdout
+    assert "testnet_robustness_evidence_accepted=false" in proc.stdout
+    assert "testnet_stress_evidence_accepted=false" in proc.stdout
     assert "authorization_boundary_non_authorizing_evidence_inputs=true" in proc.stdout
     assert "authorization_boundary_testnet_authorized=false" in proc.stdout
     assert "authorization_boundary_order_submission_authorized=false" in proc.stdout
@@ -1101,6 +1131,9 @@ def test_human_summary_includes_checker_report_lines(
     assert "testnet_prerequisite_checker_report_accepted=true" in proc.stdout
     assert "testnet_prerequisite_checker_status=BLOCKED" in proc.stdout
     assert "testnet_prerequisite_checker_missing_count=2" in proc.stdout
+    assert "testnet_evidence_accepted=false" in proc.stdout
+    assert "testnet_robustness_evidence_accepted=false" in proc.stdout
+    assert "testnet_stress_evidence_accepted=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
 
@@ -1139,3 +1172,277 @@ def test_combined_all_evidence_reviews_and_checker_report_still_blocked_non_auth
     assert out["testnet_authorized"] is False
     assert out["live_authorized"] is False
     assert_non_authorizing(out)
+
+
+def test_combined_all_evidence_including_testnet_layer_ready_for_review_non_authorizing(
+    tmp_path: Path,
+) -> None:
+    rt = tmp_path / "rt.md"
+    rt.write_text("VERDICT=7200S_SCHEDULER_PAPER_RUNTIME_EVIDENCE_PASS\n", encoding="utf-8")
+    rb = tmp_path / "rb.md"
+    rb.write_text("VERDICT=PAPER_ROBUSTNESS_EVIDENCE_PASS\n", encoding="utf-8")
+    st = tmp_path / "st.md"
+    st.write_text("VERDICT=PAPER_STRESS_EVIDENCE_PASS\n", encoding="utf-8")
+    tp = tmp_path / "tp.md"
+    tp.write_text("VERDICT=TESTNET_PREREQUISITES_REVIEW_PASS\n", encoding="utf-8")
+    chk = tmp_path / "chk.json"
+    p = dict(_checker_payload_blocked_extra_note())
+    del p["_archive_note"]
+    _write_checker_json(chk, p)
+    tne = tmp_path / "tne.md"
+    tne.write_text("VERDICT=TESTNET_EVIDENCE_PASS\n", encoding="utf-8")
+    tnr = tmp_path / "tnr.md"
+    tnr.write_text("VERDICT=TESTNET_ROBUSTNESS_EVIDENCE_PASS\n", encoding="utf-8")
+    tns = tmp_path / "tns.md"
+    tns.write_text("VERDICT=TESTNET_STRESS_EVIDENCE_PASS\n", encoding="utf-8")
+    proc = run_report(
+        "--paper-runtime-evidence-review",
+        str(rt),
+        "--paper-robustness-evidence-review",
+        str(rb),
+        "--paper-stress-evidence-review",
+        str(st),
+        "--testnet-prerequisites-review",
+        str(tp),
+        "--testnet-prerequisites-checker-report",
+        str(chk),
+        "--testnet-evidence-review",
+        str(tne),
+        "--testnet-robustness-evidence-review",
+        str(tnr),
+        "--testnet-stress-evidence-review",
+        str(tns),
+    )
+    assert proc.returncode == 0
+    out = parse_payload(proc)
+    assert out["status"] == "READY_FOR_REVIEW"
+    assert out["blockers"] == []
+    assert out["testnet_prerequisite_checker_report_v0"]["accepted"] is True
+    assert out["testnet_evidence_v0"]["accepted"] is True
+    assert out["testnet_robustness_evidence_v0"]["accepted"] is True
+    assert out["testnet_stress_evidence_v0"]["accepted"] is True
+    assert out["testnet_authorized"] is False
+    assert out["live_authorized"] is False
+    assert_non_authorizing(out)
+
+
+def test_testnet_evidence_closeout_surfaces_in_json_and_completes_modeled_flag(
+    tmp_path: Path,
+) -> None:
+    md = tmp_path / "te.md"
+    md.write_text("VERDICT=TESTNET_EVIDENCE_PASS\n", encoding="utf-8")
+    proc = run_report(
+        "--paper-evidence-present",
+        "--paper-robustness-present",
+        "--paper-stress-present",
+        "--testnet-robustness-present",
+        "--testnet-stress-present",
+        "--testnet-evidence-review",
+        str(md),
+    )
+    assert proc.returncode == 0
+    out = parse_payload(proc)
+    assert out["testnet"]["evidence_present"] is True
+    te = out["testnet_evidence_v0"]
+    assert te["accepted"] is True
+    assert te["verdict"] == "TESTNET_EVIDENCE_PASS"
+    assert te["contributes_to"] == "testnet_evidence_only"
+    assert out["testnet_authorized"] is False
+    assert_non_authorizing(out)
+
+
+def test_testnet_evidence_json_pass_surfaces_accepted(tmp_path: Path) -> None:
+    js = tmp_path / "te.json"
+    js.write_text(
+        '{"evidence_kind": "testnet_evidence", "issues": [], "verdict": "PASS"}\n',
+        encoding="utf-8",
+    )
+    proc = run_report("--testnet-evidence-review", str(js))
+    out = parse_payload(proc)
+    assert out["testnet_evidence_v0"]["accepted"] is True
+    assert out["testnet_evidence_v0"]["verdict"] == "PASS"
+    assert out["testnet_authorized"] is False
+
+
+def test_testnet_robustness_closeout_surfaces_accepted(tmp_path: Path) -> None:
+    md = tmp_path / "tr.md"
+    md.write_text("VERDICT=TESTNET_ROBUSTNESS_EVIDENCE_PASS\n", encoding="utf-8")
+    proc = run_report("--testnet-robustness-evidence-review", str(md))
+    out = parse_payload(proc)
+    trb = out["testnet_robustness_evidence_v0"]
+    assert trb["accepted"] is True
+    assert trb["verdict"] == "TESTNET_ROBUSTNESS_EVIDENCE_PASS"
+    assert out["testnet"]["robustness_present"] is True
+
+
+def test_testnet_robustness_json_pass_surfaces_accepted(tmp_path: Path) -> None:
+    js = tmp_path / "tr.json"
+    js.write_text(
+        '{"issues": [], "kind": "testnet_robustness", "verdict": "PASS"}\n',
+        encoding="utf-8",
+    )
+    proc = run_report("--testnet-robustness-evidence-review", str(js))
+    out = parse_payload(proc)
+    assert out["testnet_robustness_evidence_v0"]["accepted"] is True
+
+
+def test_testnet_stress_closeout_surfaces_accepted(tmp_path: Path) -> None:
+    md = tmp_path / "ts.md"
+    md.write_text("VERDICT=TESTNET_STRESS_EVIDENCE_PASS\n", encoding="utf-8")
+    proc = run_report("--testnet-stress-evidence-review", str(md))
+    out = parse_payload(proc)
+    ts = out["testnet_stress_evidence_v0"]
+    assert ts["accepted"] is True
+    assert ts["verdict"] == "TESTNET_STRESS_EVIDENCE_PASS"
+    assert out["testnet"]["stress_present"] is True
+
+
+def test_testnet_stress_json_pass_surfaces_accepted(tmp_path: Path) -> None:
+    js = tmp_path / "ts.json"
+    js.write_text(
+        '{"issues": [], "testnet_stress_evidence": true, "verdict": "PASS"}\n',
+        encoding="utf-8",
+    )
+    proc = run_report("--testnet-stress-evidence-review", str(js))
+    out = parse_payload(proc)
+    assert out["testnet_stress_evidence_v0"]["accepted"] is True
+
+
+def test_testnet_evidence_review_missing_file_exits_2(tmp_path: Path) -> None:
+    missing = tmp_path / "nope.json"
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--json",
+            "--testnet-evidence-review",
+            str(missing),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+    assert proc.stdout.strip() == ""
+
+
+def test_testnet_evidence_review_invalid_markdown_exits_2(tmp_path: Path) -> None:
+    bad = tmp_path / "bad.md"
+    bad.write_text("VERDICT=PAPER_STRESS_EVIDENCE_PASS\n", encoding="utf-8")
+    proc = subprocess.run(
+        [sys.executable, str(SCRIPT), "--json", "--testnet-evidence-review", str(bad)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+    assert proc.stdout.strip() == ""
+
+
+def test_paper_runtime_json_not_accepted_as_testnet_evidence(tmp_path: Path) -> None:
+    js = tmp_path / "x.json"
+    js.write_text(
+        '{"issues": [], "metrics": {}, "verdict": "PASS"}\n',
+        encoding="utf-8",
+    )
+    proc = subprocess.run(
+        [sys.executable, str(SCRIPT), "--json", "--testnet-evidence-review", str(js)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+
+
+def test_testnet_evidence_json_not_accepted_as_robustness_path(tmp_path: Path) -> None:
+    js = tmp_path / "x.json"
+    js.write_text(
+        '{"evidence_kind": "testnet_evidence", "issues": [], "verdict": "PASS"}\n',
+        encoding="utf-8",
+    )
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--json",
+            "--testnet-robustness-evidence-review",
+            str(js),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+
+
+def test_testnet_prerequisite_checker_json_not_accepted_as_testnet_stress_path(
+    tmp_path: Path,
+) -> None:
+    rep = tmp_path / "chk.json"
+    _write_checker_json(rep, dict(_checker_payload_blocked_extra_note()))
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--json",
+            "--testnet-stress-evidence-review",
+            str(rep),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+
+
+def test_human_summary_includes_testnet_layer_evidence_verdict_lines(
+    tmp_path: Path,
+) -> None:
+    te = tmp_path / "te.md"
+    te.write_text("VERDICT=TESTNET_EVIDENCE_PASS\n", encoding="utf-8")
+    tr = tmp_path / "tr.md"
+    tr.write_text("VERDICT=TESTNET_ROBUSTNESS_EVIDENCE_PASS\n", encoding="utf-8")
+    ts = tmp_path / "ts.md"
+    ts.write_text("VERDICT=TESTNET_STRESS_EVIDENCE_PASS\n", encoding="utf-8")
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--testnet-evidence-review",
+            str(te),
+            "--testnet-robustness-evidence-review",
+            str(tr),
+            "--testnet-stress-evidence-review",
+            str(ts),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 0
+    assert "testnet_evidence_accepted=true" in proc.stdout
+    assert "testnet_robustness_evidence_accepted=true" in proc.stdout
+    assert "testnet_stress_evidence_accepted=true" in proc.stdout
+    assert "testnet_evidence_verdict=TESTNET_EVIDENCE_PASS" in proc.stdout
+    assert "testnet_robustness_evidence_verdict=TESTNET_ROBUSTNESS_EVIDENCE_PASS" in proc.stdout
+    assert "testnet_stress_evidence_verdict=TESTNET_STRESS_EVIDENCE_PASS" in proc.stdout
+    assert "testnet_authorized=false" in proc.stdout
+
+
+def test_testnet_evidence_json_does_not_copy_extra_fields_to_readiness_output(
+    tmp_path: Path,
+) -> None:
+    js = tmp_path / "te.json"
+    js.write_text(
+        "".join(
+            [
+                '{"evidence_kind": "testnet_evidence", "issues": [], ',
+                '"verdict": "PASS", "operator_secret_note": "LEAK_MARKER_XYZZY99"}\n',
+            ]
+        ),
+        encoding="utf-8",
+    )
+    proc = run_report("--testnet-evidence-review", str(js))
+    assert "LEAK_MARKER_XYZZY99" not in proc.stdout
+    out = parse_payload(proc)
+    assert "operator_secret_note" not in json.dumps(out)
