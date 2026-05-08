@@ -29,6 +29,10 @@ Optional ``--testnet-evidence-review``, ``--testnet-robustness-evidence-review``
 and ``--testnet-stress-evidence-review`` ingest Testnet-layer **review or
 closeout** artifacts only; they clear modeled Testnet readiness flags without
 authorizing execution.
+
+Optional ``--external-operator-testnet-gate-record`` ingests a non-runtime
+**external operator** gate record (Markdown or JSON). It records review-gate
+context only and does not authorize Testnet execution, Live, or order paths.
 """
 
 from __future__ import annotations
@@ -49,6 +53,7 @@ TESTNET_ROBUSTNESS_EVIDENCE_SCHEMA = "peak_trade.testnet_robustness_evidence_inp
 TESTNET_STRESS_EVIDENCE_SCHEMA = "peak_trade.testnet_stress_evidence_input.v0"
 TESTNET_PREREQUISITE_CHECKER_REPORT_SCHEMA = "peak_trade.testnet_prerequisite_checker_report.v0"
 TESTNET_PREREQUISITES_READONLY_CHECKER_SCHEMA = "peak_trade.testnet_prerequisites_readonly.v0"
+EXTERNAL_OPERATOR_TESTNET_GATE_RECORD_SCHEMA = "peak_trade.external_operator_testnet_gate_record.v0"
 AUTHORIZATION_BOUNDARY_V0_SCHEMA = "peak_trade.authorization_boundary.v0"
 
 CLOSEOUT_VERDICTS_ACCEPTED = frozenset(
@@ -98,6 +103,13 @@ AUTHORITY_FLAGS = {
 }
 
 DOES_NOT_AUTHORIZE = ["testnet", "live", "broker", "exchange", "order_submission"]
+EXTERNAL_OPERATOR_GATE_DOES_NOT_AUTHORIZE = [
+    "testnet_execution",
+    "live",
+    "broker",
+    "exchange",
+    "order_submission",
+]
 
 MISSING_REVIEW_EXIT = 2
 
@@ -221,6 +233,91 @@ def default_testnet_stress_evidence_v0() -> dict[str, Any]:
         "contributes_to": "testnet_stress_only",
         "does_not_authorize": list(DOES_NOT_AUTHORIZE),
     }
+
+
+def default_external_operator_testnet_gate_record_v0() -> dict[str, Any]:
+    return {
+        "schema_version": EXTERNAL_OPERATOR_TESTNET_GATE_RECORD_SCHEMA,
+        "record_path": None,
+        "record_present": False,
+        "verdict": None,
+        "accepted": False,
+        "non_authorizing": True,
+        "non_execution_authority": True,
+        "contributes_to": "external_operator_testnet_review_gate_only",
+        "does_not_authorize": list(EXTERNAL_OPERATOR_GATE_DOES_NOT_AUTHORIZE),
+    }
+
+
+EXTERNAL_OPERATOR_GATE_MD_VERDICT = "EXTERNAL_OPERATOR_TESTNET_GATE_REVIEW_PASS"
+
+
+def _parse_external_operator_gate_markdown(text: str) -> str | None:
+    required = {
+        "VERDICT": EXTERNAL_OPERATOR_GATE_MD_VERDICT,
+        "OPERATOR_APPROVES_TESTNET_REVIEW_GATE": "yes",
+        "NON_EXECUTION_AUTHORITY": "true",
+        "TESTNET_EXECUTION_AUTHORIZED": "false",
+        "LIVE_AUTHORIZED": "false",
+    }
+    found: dict[str, str] = {}
+    for raw in text.splitlines():
+        line = raw.strip()
+        if "=" not in line or line.startswith("#"):
+            continue
+        key, _, val = line.partition("=")
+        key = key.strip()
+        val = val.strip()
+        found[key] = val
+    for k, exp in required.items():
+        if found.get(k) != exp:
+            return None
+    return EXTERNAL_OPERATOR_GATE_MD_VERDICT
+
+
+def _parse_external_operator_gate_json_dict(data: dict[str, Any]) -> str | None:
+    if data.get("schema_version") != EXTERNAL_OPERATOR_TESTNET_GATE_RECORD_SCHEMA:
+        return None
+    if data.get("verdict") != "PASS":
+        return None
+    issues = data.get("issues")
+    if issues is not None and issues != []:
+        return None
+    if data.get("operator_approves_testnet_review_gate") is not True:
+        return None
+    if data.get("non_execution_authority") is not True:
+        return None
+    if data.get("testnet_execution_authorized") is not False:
+        return None
+    if data.get("live_authorized") is not False:
+        return None
+    if data.get("broker_exchange_order_paths_authorized") is True:
+        return None
+    if data.get("order_submission_authorized") is True:
+        return None
+    return "PASS"
+
+
+def _parse_external_operator_gate_json_text(text: str) -> str | None:
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(data, dict):
+        return None
+    return _parse_external_operator_gate_json_dict(data)
+
+
+def load_external_operator_testnet_gate_record(path: Path) -> str | None:
+    """Return verdict string if gate record is valid; otherwise None."""
+    text = path.read_text(encoding="utf-8", errors="replace")
+    stripped = text.lstrip()
+    if stripped.startswith("{"):
+        vj = _parse_external_operator_gate_json_text(text)
+        if vj is not None:
+            return vj
+        return None
+    return _parse_external_operator_gate_markdown(text)
 
 
 def _checker_boundary_v0_is_valid(boundary: Any) -> bool:
@@ -757,6 +854,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             "or Testnet stress success closeout markdown."
         ),
     )
+    parser.add_argument(
+        "--external-operator-testnet-gate-record",
+        type=Path,
+        default=None,
+        metavar="PATH",
+        help=(
+            "Optional path to external operator Testnet review gate record "
+            f"(JSON {EXTERNAL_OPERATOR_TESTNET_GATE_RECORD_SCHEMA} or strict markdown)."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -800,6 +907,11 @@ def main(argv: list[str] | None = None) -> int:
     testnet_stress_evidence_path = (
         args.testnet_stress_evidence_review.expanduser().resolve()
         if args.testnet_stress_evidence_review is not None
+        else None
+    )
+    external_operator_gate_path = (
+        args.external_operator_testnet_gate_record.expanduser().resolve()
+        if args.external_operator_testnet_gate_record is not None
         else None
     )
 
@@ -1035,6 +1147,35 @@ def main(argv: list[str] | None = None) -> int:
         testnet_stress_evidence_v0["verdict"] = ts_verdict
         testnet_stress_evidence_v0["accepted"] = True
 
+    external_operator_gate_v0 = default_external_operator_testnet_gate_record_v0()
+    external_operator_gate_accepted = False
+    external_operator_gate_verdict: str | None = None
+
+    if external_operator_gate_path is not None:
+        external_operator_gate_v0["record_present"] = True
+        external_operator_gate_v0["record_path"] = str(external_operator_gate_path)
+        if not external_operator_gate_path.is_file():
+            print(
+                "report_paper_testnet_readiness_status: "
+                f"--external-operator-testnet-gate-record not a file: "
+                f"{external_operator_gate_path}",
+                file=sys.stderr,
+            )
+            return MISSING_REVIEW_EXIT
+        og_verdict = load_external_operator_testnet_gate_record(external_operator_gate_path)
+        if og_verdict is None:
+            print(
+                "report_paper_testnet_readiness_status: "
+                "external operator Testnet gate record is not valid strict markdown or JSON "
+                f"({EXTERNAL_OPERATOR_TESTNET_GATE_RECORD_SCHEMA}).",
+                file=sys.stderr,
+            )
+            return MISSING_REVIEW_EXIT
+        external_operator_gate_verdict = og_verdict
+        external_operator_gate_accepted = True
+        external_operator_gate_v0["verdict"] = og_verdict
+        external_operator_gate_v0["accepted"] = True
+
     effective_paper_evidence = bool(args.paper_evidence_present) or runtime_accepted
     effective_paper_robustness = bool(args.paper_robustness_present) or robustness_accepted
     effective_paper_stress = bool(args.paper_stress_present) or stress_accepted
@@ -1061,6 +1202,7 @@ def main(argv: list[str] | None = None) -> int:
     payload["testnet_evidence_v0"] = testnet_evidence_v0
     payload["testnet_robustness_evidence_v0"] = testnet_robustness_evidence_v0
     payload["testnet_stress_evidence_v0"] = testnet_stress_evidence_v0
+    payload["external_operator_testnet_gate_record_v0"] = external_operator_gate_v0
     payload["authorization_boundary_v0"] = build_authorization_boundary_v0()
 
     if args.json:
@@ -1079,6 +1221,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"testnet_prerequisites_evidence_accepted={str(testnet_prereq_accepted).lower()}")
         print(
             f"testnet_prerequisite_checker_report_accepted={str(checker_report_accepted).lower()}"
+        )
+        print(
+            "external_operator_testnet_gate_record_accepted="
+            f"{str(external_operator_gate_accepted).lower()}"
         )
         print("testnet_authorized=false")
         print("live_authorized=false")
@@ -1102,6 +1248,12 @@ def main(argv: list[str] | None = None) -> int:
             print(f"testnet_stress_evidence_verdict={testnet_stress_evidence_verdict}")
         if testnet_prereq_path is not None and testnet_prereq_verdict is not None:
             print(f"testnet_prerequisites_evidence_verdict={testnet_prereq_verdict}")
+        if external_operator_gate_path is not None and external_operator_gate_verdict is not None:
+            print(f"external_operator_testnet_gate_record_verdict={external_operator_gate_verdict}")
+        print(
+            "external_operator_testnet_gate_non_execution_authority="
+            f"{str(external_operator_gate_accepted).lower()}"
+        )
         ab = payload["authorization_boundary_v0"]
         print(
             "authorization_boundary_non_authorizing_evidence_inputs="
