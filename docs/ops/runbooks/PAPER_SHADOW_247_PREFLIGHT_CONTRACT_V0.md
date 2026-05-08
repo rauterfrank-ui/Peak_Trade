@@ -142,6 +142,7 @@ Treat these as the coordinated sources for this topic—**do not** add parallel 
 
 - `config/ops/paper_shadow_247_preflight.toml` — canonical owner `ops-paper-shadow-247-readiness`, job identifiers, output paths, stop commands; metadata only, not execution authority.
 - `config/scheduler/jobs.toml` — scheduler-visible job shapes; Paper runtime jobs remain **disabled by default** unless a future gate explicitly enables them.
+- `scripts/ops/make_scheduler_temp_config.py` — helper from PR **#3394** that writes a **temporary** scheduler TOML derived from `config/scheduler/jobs.toml`, enabling exactly one operator-selected job key and replacing Paper-runtime dry-run `outdir` placeholders with an operator-provided **absolute** path. It **does not** execute the scheduler or daemon, does not start Paper/Shadow/Testnet/Live/broker/exchange/order paths, and does not modify the canonical `jobs.toml` or evidence bundles; generated files are planning/diagnostics material only (not a new readiness, authority, or evidence surface).
 - `scripts/ops/report_paper_shadow_247_preflight_status.py` — read-only JSON reporter (`status` remains **BLOCKED** in normal operation); command inventory and safety classification are diagnostic.
 - `tests/ops/test_report_paper_shadow_247_preflight_status_cli_v0.py` — contract tests for reporter output, including runtime job inventory fields.
 
