@@ -116,6 +116,20 @@ def test_default_invocation_is_blocked_with_missing_paper_and_testnet_items() ->
     assert tst["accepted"] is False
     assert tst["contributes_to"] == "testnet_stress_only"
     assert tst["schema_version"] == "peak_trade.testnet_stress_evidence_input.v0"
+    og = payload["external_operator_testnet_gate_record_v0"]
+    assert isinstance(og, dict)
+    assert og["accepted"] is False
+    assert og["non_authorizing"] is True
+    assert og["non_execution_authority"] is True
+    assert og["contributes_to"] == "external_operator_testnet_review_gate_only"
+    assert og["schema_version"] == "peak_trade.external_operator_testnet_gate_record.v0"
+    assert og["does_not_authorize"] == [
+        "testnet_execution",
+        "live",
+        "broker",
+        "exchange",
+        "order_submission",
+    ]
 
 
 def test_complete_paper_only_still_blocks_on_testnet() -> None:
@@ -378,6 +392,8 @@ def test_human_summary_includes_evidence_line_without_json(tmp_path: Path) -> No
     assert "testnet_stress_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisite_checker_report_accepted=false" in proc.stdout
+    assert "external_operator_testnet_gate_record_accepted=false" in proc.stdout
+    assert "external_operator_testnet_gate_non_execution_authority=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
     assert "authorization_boundary_non_authorizing_evidence_inputs=true" in proc.stdout
@@ -514,6 +530,8 @@ def test_human_summary_includes_robustness_evidence_line(tmp_path: Path) -> None
     assert "testnet_stress_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisite_checker_report_accepted=false" in proc.stdout
+    assert "external_operator_testnet_gate_record_accepted=false" in proc.stdout
+    assert "external_operator_testnet_gate_non_execution_authority=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
     assert "authorization_boundary_non_authorizing_evidence_inputs=true" in proc.stdout
@@ -677,6 +695,8 @@ def test_human_summary_includes_stress_evidence_line(tmp_path: Path) -> None:
     assert "testnet_stress_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisite_checker_report_accepted=false" in proc.stdout
+    assert "external_operator_testnet_gate_record_accepted=false" in proc.stdout
+    assert "external_operator_testnet_gate_non_execution_authority=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
     assert "authorization_boundary_non_authorizing_evidence_inputs=true" in proc.stdout
@@ -861,6 +881,8 @@ def test_human_summary_includes_testnet_prerequisites_evidence_line(tmp_path: Pa
     assert "testnet_robustness_evidence_accepted=false" in proc.stdout
     assert "testnet_stress_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisite_checker_report_accepted=false" in proc.stdout
+    assert "external_operator_testnet_gate_record_accepted=false" in proc.stdout
+    assert "external_operator_testnet_gate_non_execution_authority=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
     assert "authorization_boundary_non_authorizing_evidence_inputs=true" in proc.stdout
@@ -935,6 +957,8 @@ def test_human_summary_includes_authorization_boundary_when_all_evidence_inputs_
     )
     assert proc.returncode == 0
     assert "testnet_prerequisite_checker_report_accepted=false" in proc.stdout
+    assert "external_operator_testnet_gate_record_accepted=false" in proc.stdout
+    assert "external_operator_testnet_gate_non_execution_authority=false" in proc.stdout
     assert "testnet_evidence_accepted=false" in proc.stdout
     assert "testnet_robustness_evidence_accepted=false" in proc.stdout
     assert "testnet_stress_evidence_accepted=false" in proc.stdout
@@ -1128,9 +1152,12 @@ def test_human_summary_includes_checker_report_lines(
         text=True,
     )
     assert proc.returncode == 0
+    assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisite_checker_report_accepted=true" in proc.stdout
     assert "testnet_prerequisite_checker_status=BLOCKED" in proc.stdout
     assert "testnet_prerequisite_checker_missing_count=2" in proc.stdout
+    assert "external_operator_testnet_gate_record_accepted=false" in proc.stdout
+    assert "external_operator_testnet_gate_non_execution_authority=false" in proc.stdout
     assert "testnet_evidence_accepted=false" in proc.stdout
     assert "testnet_robustness_evidence_accepted=false" in proc.stdout
     assert "testnet_stress_evidence_accepted=false" in proc.stdout
@@ -1426,6 +1453,8 @@ def test_human_summary_includes_testnet_layer_evidence_verdict_lines(
     assert "testnet_evidence_verdict=TESTNET_EVIDENCE_PASS" in proc.stdout
     assert "testnet_robustness_evidence_verdict=TESTNET_ROBUSTNESS_EVIDENCE_PASS" in proc.stdout
     assert "testnet_stress_evidence_verdict=TESTNET_STRESS_EVIDENCE_PASS" in proc.stdout
+    assert "external_operator_testnet_gate_record_accepted=false" in proc.stdout
+    assert "external_operator_testnet_gate_non_execution_authority=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
 
 
@@ -1446,3 +1475,237 @@ def test_testnet_evidence_json_does_not_copy_extra_fields_to_readiness_output(
     assert "LEAK_MARKER_XYZZY99" not in proc.stdout
     out = parse_payload(proc)
     assert "operator_secret_note" not in json.dumps(out)
+
+
+EXTERNAL_OPERATOR_GATE_SCHEMA = "peak_trade.external_operator_testnet_gate_record.v0"
+
+
+def _external_operator_gate_md_text() -> str:
+    return (
+        "VERDICT=EXTERNAL_OPERATOR_TESTNET_GATE_REVIEW_PASS\n"
+        "OPERATOR_APPROVES_TESTNET_REVIEW_GATE=yes\n"
+        "NON_EXECUTION_AUTHORITY=true\n"
+        "TESTNET_EXECUTION_AUTHORIZED=false\n"
+        "LIVE_AUTHORIZED=false\n"
+    )
+
+
+def _external_operator_gate_json_base() -> dict[str, object]:
+    return {
+        "schema_version": EXTERNAL_OPERATOR_GATE_SCHEMA,
+        "verdict": "PASS",
+        "operator_approves_testnet_review_gate": True,
+        "non_execution_authority": True,
+        "testnet_execution_authorized": False,
+        "live_authorized": False,
+    }
+
+
+def test_external_operator_gate_valid_markdown_surfaces_in_json(tmp_path: Path) -> None:
+    md = tmp_path / "gate.md"
+    md.write_text(_external_operator_gate_md_text(), encoding="utf-8")
+    proc = run_report("--external-operator-testnet-gate-record", str(md))
+    assert proc.returncode == 0
+    out = parse_payload(proc)
+    og = out["external_operator_testnet_gate_record_v0"]
+    assert isinstance(og, dict)
+    assert og["accepted"] is True
+    assert og["record_present"] is True
+    assert og["verdict"] == "EXTERNAL_OPERATOR_TESTNET_GATE_REVIEW_PASS"
+    assert og["schema_version"] == EXTERNAL_OPERATOR_GATE_SCHEMA
+    assert og["non_authorizing"] is True
+    assert og["non_execution_authority"] is True
+    assert og["contributes_to"] == "external_operator_testnet_review_gate_only"
+    assert og["does_not_authorize"] == [
+        "testnet_execution",
+        "live",
+        "broker",
+        "exchange",
+        "order_submission",
+    ]
+    assert out["testnet_authorized"] is False
+    assert out["live_authorized"] is False
+    assert_non_authorizing(out)
+
+
+def test_external_operator_gate_valid_json_surfaces_in_json(tmp_path: Path) -> None:
+    js = tmp_path / "gate.json"
+    js.write_text(
+        json.dumps(_external_operator_gate_json_base(), indent=2) + "\n",
+        encoding="utf-8",
+    )
+    proc = run_report("--external-operator-testnet-gate-record", str(js))
+    assert proc.returncode == 0
+    out = parse_payload(proc)
+    og = out["external_operator_testnet_gate_record_v0"]
+    assert isinstance(og, dict)
+    assert og["accepted"] is True
+    assert og["verdict"] == "PASS"
+    assert_non_authorizing(out)
+
+
+def test_external_operator_gate_missing_path_json_exits_2(tmp_path: Path) -> None:
+    missing = tmp_path / "gone.md"
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--json",
+            "--external-operator-testnet-gate-record",
+            str(missing),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+    assert proc.stdout.strip() == ""
+
+
+def test_external_operator_gate_invalid_markdown_json_exits_2(tmp_path: Path) -> None:
+    bad = tmp_path / "bad.md"
+    bad.write_text("VERDICT=EXTERNAL_OPERATOR_TESTNET_GATE_REVIEW_PASS\n", encoding="utf-8")
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--json",
+            "--external-operator-testnet-gate-record",
+            str(bad),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+    assert proc.stdout.strip() == ""
+
+
+def _reject_gate(tmp_path: Path, extra: dict[str, object]) -> subprocess.CompletedProcess[str]:
+    p = tmp_path / "bad.json"
+    base = dict(_external_operator_gate_json_base())
+    base.update(extra)
+    p.write_text(json.dumps(base) + "\n", encoding="utf-8")
+    return subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--json",
+            "--external-operator-testnet-gate-record",
+            str(p),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+
+def test_external_operator_gate_rejects_testnet_execution_authorized_true(
+    tmp_path: Path,
+) -> None:
+    proc = _reject_gate(tmp_path, {"testnet_execution_authorized": True})
+    assert proc.returncode == 2
+    assert proc.stdout.strip() == ""
+
+
+def test_external_operator_gate_rejects_live_authorized_true(tmp_path: Path) -> None:
+    proc = _reject_gate(tmp_path, {"live_authorized": True})
+    assert proc.returncode == 2
+    assert proc.stdout.strip() == ""
+
+
+def test_external_operator_gate_rejects_broker_exchange_order_paths_authorized_true(
+    tmp_path: Path,
+) -> None:
+    proc = _reject_gate(tmp_path, {"broker_exchange_order_paths_authorized": True})
+    assert proc.returncode == 2
+    assert proc.stdout.strip() == ""
+
+
+def test_external_operator_gate_rejects_order_submission_authorized_true(
+    tmp_path: Path,
+) -> None:
+    proc = _reject_gate(tmp_path, {"order_submission_authorized": True})
+    assert proc.returncode == 2
+    assert proc.stdout.strip() == ""
+
+
+def test_human_summary_includes_external_operator_gate_lines(tmp_path: Path) -> None:
+    md = tmp_path / "gate.md"
+    md.write_text(_external_operator_gate_md_text(), encoding="utf-8")
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--external-operator-testnet-gate-record",
+            str(md),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 0
+    assert "external_operator_testnet_gate_record_accepted=true" in proc.stdout
+    assert (
+        "external_operator_testnet_gate_record_verdict=EXTERNAL_OPERATOR_TESTNET_GATE_REVIEW_PASS"
+        in proc.stdout
+    )
+    assert "external_operator_testnet_gate_non_execution_authority=true" in proc.stdout
+    assert "testnet_authorized=false" in proc.stdout
+    assert "live_authorized=false" in proc.stdout
+
+
+def test_full_modeled_e2e_with_checker_and_external_gate_stays_ready_non_authorizing(
+    tmp_path: Path,
+) -> None:
+    rt = tmp_path / "rt.md"
+    rt.write_text("VERDICT=7200S_SCHEDULER_PAPER_RUNTIME_EVIDENCE_PASS\n", encoding="utf-8")
+    rb = tmp_path / "rb.md"
+    rb.write_text("VERDICT=PAPER_ROBUSTNESS_EVIDENCE_PASS\n", encoding="utf-8")
+    st = tmp_path / "st.md"
+    st.write_text("VERDICT=PAPER_STRESS_EVIDENCE_PASS\n", encoding="utf-8")
+    tp = tmp_path / "tp.md"
+    tp.write_text("VERDICT=TESTNET_PREREQUISITES_REVIEW_PASS\n", encoding="utf-8")
+    chk = tmp_path / "chk.json"
+    p = dict(_checker_payload_blocked_extra_note())
+    del p["_archive_note"]
+    _write_checker_json(chk, p)
+    tne = tmp_path / "tne.md"
+    tne.write_text("VERDICT=TESTNET_EVIDENCE_PASS\n", encoding="utf-8")
+    tnr = tmp_path / "tnr.md"
+    tnr.write_text("VERDICT=TESTNET_ROBUSTNESS_EVIDENCE_PASS\n", encoding="utf-8")
+    tns = tmp_path / "tns.md"
+    tns.write_text("VERDICT=TESTNET_STRESS_EVIDENCE_PASS\n", encoding="utf-8")
+    gate = tmp_path / "gate.md"
+    gate.write_text(_external_operator_gate_md_text(), encoding="utf-8")
+    proc = run_report(
+        "--paper-runtime-evidence-review",
+        str(rt),
+        "--paper-robustness-evidence-review",
+        str(rb),
+        "--paper-stress-evidence-review",
+        str(st),
+        "--testnet-prerequisites-review",
+        str(tp),
+        "--testnet-prerequisites-checker-report",
+        str(chk),
+        "--testnet-evidence-review",
+        str(tne),
+        "--testnet-robustness-evidence-review",
+        str(tnr),
+        "--testnet-stress-evidence-review",
+        str(tns),
+        "--external-operator-testnet-gate-record",
+        str(gate),
+    )
+    assert proc.returncode == 0
+    out = parse_payload(proc)
+    assert out["status"] == "READY_FOR_REVIEW"
+    assert out["blockers"] == []
+    assert out["testnet_prerequisite_checker_report_v0"]["accepted"] is True
+    og = out["external_operator_testnet_gate_record_v0"]
+    assert isinstance(og, dict)
+    assert og["accepted"] is True
+    assert out["testnet_authorized"] is False
+    assert out["live_authorized"] is False
+    assert_non_authorizing(out)
