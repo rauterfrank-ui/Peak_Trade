@@ -19,6 +19,11 @@ context and never authorizes Testnet or Live.
 Optional ``--testnet-prerequisites-review`` ingests a Testnet prerequisites
 **review or inventory** artifact only; it records non-authorizing prerequisites
 context and never enables Testnet or Live.
+
+Optional ``--testnet-prerequisites-checker-report`` ingests JSON emitted by
+``check_testnet_prerequisites_readonly.py`` only (read from disk). The reporter
+never runs the checker, never validates credentials, and never authorizes
+Testnet or Live from this input.
 """
 
 from __future__ import annotations
@@ -34,6 +39,8 @@ PAPER_RUNTIME_EVIDENCE_SCHEMA = "peak_trade.paper_runtime_evidence_input.v0"
 PAPER_ROBUSTNESS_EVIDENCE_SCHEMA = "peak_trade.paper_robustness_evidence_input.v0"
 PAPER_STRESS_EVIDENCE_SCHEMA = "peak_trade.paper_stress_evidence_input.v0"
 TESTNET_PREREQUISITES_EVIDENCE_SCHEMA = "peak_trade.testnet_prerequisites_evidence_input.v0"
+TESTNET_PREREQUISITE_CHECKER_REPORT_SCHEMA = "peak_trade.testnet_prerequisite_checker_report.v0"
+TESTNET_PREREQUISITES_READONLY_CHECKER_SCHEMA = "peak_trade.testnet_prerequisites_readonly.v0"
 AUTHORIZATION_BOUNDARY_V0_SCHEMA = "peak_trade.authorization_boundary.v0"
 
 CLOSEOUT_VERDICTS_ACCEPTED = frozenset(
@@ -146,6 +153,72 @@ def default_testnet_prerequisites_evidence_v0() -> dict[str, Any]:
         "contributes_to": "testnet_prerequisites_only",
         "does_not_authorize": list(DOES_NOT_AUTHORIZE),
     }
+
+
+def default_testnet_prerequisite_checker_report_v0() -> dict[str, Any]:
+    return {
+        "schema_version": TESTNET_PREREQUISITE_CHECKER_REPORT_SCHEMA,
+        "record_path": None,
+        "record_present": False,
+        "accepted": False,
+        "checker_status": None,
+        "missing_count": None,
+        "required_count": None,
+        "non_authorizing": True,
+        "contributes_to": "testnet_prerequisite_checker_context_only",
+        "does_not_authorize": list(DOES_NOT_AUTHORIZE),
+    }
+
+
+def _checker_boundary_v0_is_valid(boundary: Any) -> bool:
+    if not isinstance(boundary, dict):
+        return False
+    return (
+        boundary.get("non_authorizing") is True
+        and boundary.get("testnet_authorized") is False
+        and boundary.get("live_authorized") is False
+        and boundary.get("broker_exchange_order_paths_authorized") is False
+        and boundary.get("order_submission_authorized") is False
+        and boundary.get("checker_does_not_connect_to_exchange") is True
+        and boundary.get("checker_does_not_validate_credentials") is True
+    )
+
+
+def _parse_testnet_prerequisite_checker_report_json(text: str) -> dict[str, Any] | None:
+    """Parse and validate read-only checker JSON; return summary fields or None."""
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(data, dict):
+        return None
+    if data.get("schema_version") != TESTNET_PREREQUISITES_READONLY_CHECKER_SCHEMA:
+        return None
+    if not _checker_boundary_v0_is_valid(data.get("checker_boundary_v0")):
+        return None
+    status = data.get("status")
+    if status not in ("BLOCKED", "READY_FOR_OPERATOR_REVIEW"):
+        return None
+    missing = data.get("missing")
+    if missing is not None and not isinstance(missing, list):
+        return None
+    req_raw = data.get("required_key_count")
+    if not isinstance(req_raw, int) or req_raw < 0:
+        return None
+    miss_raw = data.get("missing_count")
+    if not isinstance(miss_raw, int) or miss_raw < 0:
+        return None
+    return {
+        "checker_status": status,
+        "missing_count": miss_raw,
+        "required_count": req_raw,
+    }
+
+
+def load_testnet_prerequisite_checker_report(path: Path) -> dict[str, Any] | None:
+    """Return summary dict if file is valid checker JSON; otherwise None."""
+    text = path.read_text(encoding="utf-8", errors="replace")
+    return _parse_testnet_prerequisite_checker_report_json(text)
 
 
 def _parse_review_json(text: str) -> str | None:
@@ -456,6 +529,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             "or Testnet prerequisites success closeout markdown."
         ),
     )
+    parser.add_argument(
+        "--testnet-prerequisites-checker-report",
+        type=Path,
+        default=None,
+        metavar="PATH",
+        help=(
+            "Optional path to JSON emitted by check_testnet_prerequisites_readonly.py "
+            f"({TESTNET_PREREQUISITES_READONLY_CHECKER_SCHEMA})."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -479,6 +562,11 @@ def main(argv: list[str] | None = None) -> int:
     testnet_prereq_path = (
         args.testnet_prerequisites_review.expanduser().resolve()
         if args.testnet_prerequisites_review is not None
+        else None
+    )
+    checker_report_path = (
+        args.testnet_prerequisites_checker_report.expanduser().resolve()
+        if args.testnet_prerequisites_checker_report is not None
         else None
     )
 
@@ -597,6 +685,35 @@ def main(argv: list[str] | None = None) -> int:
         testnet_prereq_v0["verdict"] = tp_verdict
         testnet_prereq_v0["accepted"] = True
 
+    checker_report_v0 = default_testnet_prerequisite_checker_report_v0()
+    checker_report_accepted = False
+    checker_summary: dict[str, Any] | None = None
+
+    if checker_report_path is not None:
+        checker_report_v0["record_present"] = True
+        checker_report_v0["record_path"] = str(checker_report_path)
+        if not checker_report_path.is_file():
+            print(
+                "report_paper_testnet_readiness_status: "
+                f"--testnet-prerequisites-checker-report not a file: {checker_report_path}",
+                file=sys.stderr,
+            )
+            return MISSING_REVIEW_EXIT
+        checker_summary = load_testnet_prerequisite_checker_report(checker_report_path)
+        if checker_summary is None:
+            print(
+                "report_paper_testnet_readiness_status: "
+                "testnet prerequisites checker report is not valid read-only checker JSON "
+                f"({TESTNET_PREREQUISITES_READONLY_CHECKER_SCHEMA}, checker_boundary_v0).",
+                file=sys.stderr,
+            )
+            return MISSING_REVIEW_EXIT
+        checker_report_accepted = True
+        checker_report_v0["accepted"] = True
+        checker_report_v0["checker_status"] = checker_summary["checker_status"]
+        checker_report_v0["missing_count"] = checker_summary["missing_count"]
+        checker_report_v0["required_count"] = checker_summary["required_count"]
+
     effective_paper_evidence = bool(args.paper_evidence_present) or runtime_accepted
     effective_paper_robustness = bool(args.paper_robustness_present) or robustness_accepted
     effective_paper_stress = bool(args.paper_stress_present) or stress_accepted
@@ -614,6 +731,7 @@ def main(argv: list[str] | None = None) -> int:
     payload["paper_robustness_evidence_v0"] = robustness_v0
     payload["paper_stress_evidence_v0"] = stress_v0
     payload["testnet_prerequisites_evidence_v0"] = testnet_prereq_v0
+    payload["testnet_prerequisite_checker_report_v0"] = checker_report_v0
     payload["authorization_boundary_v0"] = build_authorization_boundary_v0()
 
     if args.json:
@@ -624,8 +742,14 @@ def main(argv: list[str] | None = None) -> int:
         print(f"paper_robustness_evidence_accepted={str(robustness_accepted).lower()}")
         print(f"paper_stress_evidence_accepted={str(stress_accepted).lower()}")
         print(f"testnet_prerequisites_evidence_accepted={str(testnet_prereq_accepted).lower()}")
+        print(
+            f"testnet_prerequisite_checker_report_accepted={str(checker_report_accepted).lower()}"
+        )
         print("testnet_authorized=false")
         print("live_authorized=false")
+        if checker_report_accepted and checker_summary is not None:
+            print(f"testnet_prerequisite_checker_status={checker_summary['checker_status']}")
+            print(f"testnet_prerequisite_checker_missing_count={checker_summary['missing_count']}")
         if review_path is not None and runtime_verdict is not None:
             print(f"paper_runtime_evidence_verdict={runtime_verdict}")
         if robustness_path is not None and robustness_verdict is not None:

@@ -93,6 +93,14 @@ def test_default_invocation_is_blocked_with_missing_paper_and_testnet_items() ->
     assert tp["accepted"] is False
     assert tp["non_authorizing"] is True
     assert tp["contributes_to"] == "testnet_prerequisites_only"
+    cr = payload["testnet_prerequisite_checker_report_v0"]
+    assert isinstance(cr, dict)
+    assert cr["schema_version"] == "peak_trade.testnet_prerequisite_checker_report.v0"
+    assert cr["record_present"] is False
+    assert cr["accepted"] is False
+    assert cr["non_authorizing"] is True
+    assert cr["contributes_to"] == "testnet_prerequisite_checker_context_only"
+    assert cr["does_not_authorize"] == EVIDENCE_INPUTS_DO_NOT_AUTHORIZE
 
 
 def test_complete_paper_only_still_blocks_on_testnet() -> None:
@@ -351,6 +359,7 @@ def test_human_summary_includes_evidence_line_without_json(tmp_path: Path) -> No
     assert "paper_robustness_evidence_accepted=false" in proc.stdout
     assert "paper_stress_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
+    assert "testnet_prerequisite_checker_report_accepted=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
     assert "authorization_boundary_non_authorizing_evidence_inputs=true" in proc.stdout
@@ -483,6 +492,7 @@ def test_human_summary_includes_robustness_evidence_line(tmp_path: Path) -> None
     assert "paper_robustness_evidence_accepted=true" in proc.stdout
     assert "paper_stress_evidence_accepted=false" in proc.stdout
     assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
+    assert "testnet_prerequisite_checker_report_accepted=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
     assert "authorization_boundary_non_authorizing_evidence_inputs=true" in proc.stdout
@@ -642,6 +652,7 @@ def test_human_summary_includes_stress_evidence_line(tmp_path: Path) -> None:
     assert "paper_stress_evidence_accepted=true" in proc.stdout
     assert "paper_stress_evidence_verdict=STRESS_EVIDENCE_PASS" in proc.stdout
     assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
+    assert "testnet_prerequisite_checker_report_accepted=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
     assert "authorization_boundary_non_authorizing_evidence_inputs=true" in proc.stdout
@@ -822,6 +833,7 @@ def test_human_summary_includes_testnet_prerequisites_evidence_line(tmp_path: Pa
     assert proc.returncode == 0
     assert "testnet_prerequisites_evidence_accepted=true" in proc.stdout
     assert "testnet_prerequisites_evidence_verdict=TESTNET_PREREQUISITES_REVIEW_PASS" in proc.stdout
+    assert "testnet_prerequisite_checker_report_accepted=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
     assert "authorization_boundary_non_authorizing_evidence_inputs=true" in proc.stdout
@@ -895,6 +907,235 @@ def test_human_summary_includes_authorization_boundary_when_all_evidence_inputs_
         text=True,
     )
     assert proc.returncode == 0
+    assert "testnet_prerequisite_checker_report_accepted=false" in proc.stdout
     assert "authorization_boundary_non_authorizing_evidence_inputs=true" in proc.stdout
     assert "authorization_boundary_testnet_authorized=false" in proc.stdout
     assert "authorization_boundary_order_submission_authorized=false" in proc.stdout
+
+
+CHECKER_READONLY_SCHEMA = "peak_trade.testnet_prerequisites_readonly.v0"
+
+_CHECKER_BOUNDARY_OK: dict[str, bool] = {
+    "non_authorizing": True,
+    "testnet_authorized": False,
+    "live_authorized": False,
+    "broker_exchange_order_paths_authorized": False,
+    "order_submission_authorized": False,
+    "checker_does_not_connect_to_exchange": True,
+    "checker_does_not_validate_credentials": True,
+}
+
+
+def _checker_payload_blocked_extra_note() -> dict[str, object]:
+    return {
+        "schema_version": CHECKER_READONLY_SCHEMA,
+        "status": "BLOCKED",
+        "required_key_count": 2,
+        "required_present_count": 0,
+        "missing_count": 2,
+        "prerequisites": [],
+        "missing": [
+            "PEAK_TRADE_TESTNET_OPERATOR_GATE_ACK",
+            "PEAK_TRADE_TESTNET_CONFIG_DECLARED",
+        ],
+        "checker_boundary_v0": dict(_CHECKER_BOUNDARY_OK),
+        "_archive_note": "SHOULD_NOT_LEAK_IN_READINESS_OUTPUT_99zz",
+    }
+
+
+def _write_checker_json(path: Path, payload: dict[str, object]) -> None:
+    path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+
+
+def test_valid_testnet_prerequisite_checker_report_surfaces_in_json(
+    tmp_path: Path,
+) -> None:
+    rep = tmp_path / "checker.json"
+    _write_checker_json(rep, _checker_payload_blocked_extra_note())
+    proc = run_report("--testnet-prerequisites-checker-report", str(rep))
+    assert proc.returncode == 0
+    out = parse_payload(proc)
+    cr = out["testnet_prerequisite_checker_report_v0"]
+    assert isinstance(cr, dict)
+    assert cr["accepted"] is True
+    assert cr["schema_version"] == "peak_trade.testnet_prerequisite_checker_report.v0"
+    assert cr["record_present"] is True
+    assert cr["checker_status"] == "BLOCKED"
+    assert cr["missing_count"] == 2
+    assert cr["required_count"] == 2
+    assert cr["non_authorizing"] is True
+    assert cr["contributes_to"] == "testnet_prerequisite_checker_context_only"
+    assert cr["does_not_authorize"] == EVIDENCE_INPUTS_DO_NOT_AUTHORIZE
+    assert "SHOULD_NOT_LEAK" not in proc.stdout
+    assert_non_authorizing(out)
+
+
+def test_valid_checker_report_ready_for_operator_review_keeps_auth_false(
+    tmp_path: Path,
+) -> None:
+    rep = tmp_path / "c.json"
+    payload: dict[str, object] = {
+        "schema_version": CHECKER_READONLY_SCHEMA,
+        "status": "READY_FOR_OPERATOR_REVIEW",
+        "required_key_count": 2,
+        "required_present_count": 2,
+        "missing_count": 0,
+        "prerequisites": [],
+        "missing": [],
+        "checker_boundary_v0": dict(_CHECKER_BOUNDARY_OK),
+    }
+    _write_checker_json(rep, payload)
+    proc = run_report("--testnet-prerequisites-checker-report", str(rep))
+    out = parse_payload(proc)
+    assert out["testnet_authorized"] is False
+    assert out["live_authorized"] is False
+    cr = out["testnet_prerequisite_checker_report_v0"]
+    assert cr["accepted"] is True
+    assert cr["checker_status"] == "READY_FOR_OPERATOR_REVIEW"
+    assert cr["missing_count"] == 0
+    assert_non_authorizing(out)
+
+
+def test_checker_report_missing_file_exits_2(tmp_path: Path) -> None:
+    missing = tmp_path / "no.json"
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--json",
+            "--testnet-prerequisites-checker-report",
+            str(missing),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+    assert proc.stdout.strip() == ""
+
+
+def test_runtime_review_json_not_accepted_as_checker_report(
+    tmp_path: Path,
+) -> None:
+    rep = tmp_path / "runtime.json"
+    rep.write_text(
+        '{"issues": [], "metrics": {"fills_count": 1}, "verdict": "PASS"}\n',
+        encoding="utf-8",
+    )
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--json",
+            "--testnet-prerequisites-checker-report",
+            str(rep),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+    assert proc.stdout.strip() == ""
+
+
+def test_checker_report_invalid_boundary_exits_2(tmp_path: Path) -> None:
+    rep = tmp_path / "bad.json"
+    p = dict(_checker_payload_blocked_extra_note())
+    b = dict(_CHECKER_BOUNDARY_OK)
+    b["testnet_authorized"] = True
+    p["checker_boundary_v0"] = b
+    del p["_archive_note"]
+    _write_checker_json(rep, p)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--json",
+            "--testnet-prerequisites-checker-report",
+            str(rep),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+    assert proc.stdout.strip() == ""
+
+
+def test_wrong_checker_schema_version_exits_2(tmp_path: Path) -> None:
+    rep = tmp_path / "wrong.json"
+    p = dict(_checker_payload_blocked_extra_note())
+    p["schema_version"] = "peak_trade.other.v0"
+    del p["_archive_note"]
+    _write_checker_json(rep, p)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--json",
+            "--testnet-prerequisites-checker-report",
+            str(rep),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+    assert proc.stdout.strip() == ""
+
+
+def test_human_summary_includes_checker_report_lines(
+    tmp_path: Path,
+) -> None:
+    rep = tmp_path / "c.json"
+    p = dict(_checker_payload_blocked_extra_note())
+    del p["_archive_note"]
+    _write_checker_json(rep, p)
+    proc = subprocess.run(
+        [sys.executable, str(SCRIPT), "--testnet-prerequisites-checker-report", str(rep)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 0
+    assert "testnet_prerequisite_checker_report_accepted=true" in proc.stdout
+    assert "testnet_prerequisite_checker_status=BLOCKED" in proc.stdout
+    assert "testnet_prerequisite_checker_missing_count=2" in proc.stdout
+    assert "testnet_authorized=false" in proc.stdout
+    assert "live_authorized=false" in proc.stdout
+
+
+def test_combined_all_evidence_reviews_and_checker_report_still_blocked_non_authorizing(
+    tmp_path: Path,
+) -> None:
+    rt = tmp_path / "rt.md"
+    rt.write_text("VERDICT=7200S_SCHEDULER_PAPER_RUNTIME_EVIDENCE_PASS\n", encoding="utf-8")
+    rb = tmp_path / "rb.md"
+    rb.write_text("VERDICT=PAPER_ROBUSTNESS_EVIDENCE_PASS\n", encoding="utf-8")
+    st = tmp_path / "st.md"
+    st.write_text("VERDICT=PAPER_STRESS_EVIDENCE_PASS\n", encoding="utf-8")
+    tp = tmp_path / "tp.md"
+    tp.write_text("VERDICT=TESTNET_PREREQUISITES_REVIEW_PASS\n", encoding="utf-8")
+    chk = tmp_path / "chk.json"
+    p = dict(_checker_payload_blocked_extra_note())
+    del p["_archive_note"]
+    _write_checker_json(chk, p)
+    proc = run_report(
+        "--paper-runtime-evidence-review",
+        str(rt),
+        "--paper-robustness-evidence-review",
+        str(rb),
+        "--paper-stress-evidence-review",
+        str(st),
+        "--testnet-prerequisites-review",
+        str(tp),
+        "--testnet-prerequisites-checker-report",
+        str(chk),
+    )
+    assert proc.returncode == 0
+    out = parse_payload(proc)
+    assert out["status"] == "BLOCKED"
+    assert out["testnet_prerequisite_checker_report_v0"]["accepted"] is True
+    assert out["testnet_authorized"] is False
+    assert out["live_authorized"] is False
+    assert_non_authorizing(out)
