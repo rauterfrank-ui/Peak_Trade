@@ -20,6 +20,14 @@ AUTHORITY_FLAGS = {
     "external_authority_completion": False,
 }
 
+EVIDENCE_INPUTS_DO_NOT_AUTHORIZE = [
+    "testnet",
+    "live",
+    "broker",
+    "exchange",
+    "order_submission",
+]
+
 
 def run_report(*args: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
@@ -34,9 +42,24 @@ def parse_payload(proc: subprocess.CompletedProcess[str]) -> dict[str, object]:
     return json.loads(proc.stdout)
 
 
+def assert_authorization_boundary_v0(payload: dict[str, object]) -> None:
+    b = payload["authorization_boundary_v0"]
+    assert isinstance(b, dict)
+    assert b["schema_version"] == "peak_trade.authorization_boundary.v0"
+    assert b["non_authorizing_evidence_inputs"] is True
+    assert b["evidence_inputs_do_not_authorize"] == EVIDENCE_INPUTS_DO_NOT_AUTHORIZE
+    assert b["testnet_authorized"] is False
+    assert b["live_authorized"] is False
+    assert b["broker_exchange_order_paths_authorized"] is False
+    assert b["order_submission_authorized"] is False
+    assert b["authorization_requires_external_operator_gate"] is True
+    assert b["readiness_status_is_not_execution_authority"] is True
+
+
 def assert_non_authorizing(payload: dict[str, object]) -> None:
     assert payload["non_authorizing"] is True
     assert payload["authority_boundary"] == AUTHORITY_FLAGS
+    assert_authorization_boundary_v0(payload)
 
 
 def test_default_invocation_is_blocked_with_missing_paper_and_testnet_items() -> None:
@@ -330,6 +353,9 @@ def test_human_summary_includes_evidence_line_without_json(tmp_path: Path) -> No
     assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
+    assert "authorization_boundary_non_authorizing_evidence_inputs=true" in proc.stdout
+    assert "authorization_boundary_testnet_authorized=false" in proc.stdout
+    assert "authorization_boundary_order_submission_authorized=false" in proc.stdout
     assert "testnet ready" not in proc.stdout.lower()
 
 
@@ -459,6 +485,9 @@ def test_human_summary_includes_robustness_evidence_line(tmp_path: Path) -> None
     assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
+    assert "authorization_boundary_non_authorizing_evidence_inputs=true" in proc.stdout
+    assert "authorization_boundary_testnet_authorized=false" in proc.stdout
+    assert "authorization_boundary_order_submission_authorized=false" in proc.stdout
 
 
 def test_combined_runtime_and_robustness_accepted_still_blocked_without_stress(
@@ -615,6 +644,9 @@ def test_human_summary_includes_stress_evidence_line(tmp_path: Path) -> None:
     assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
+    assert "authorization_boundary_non_authorizing_evidence_inputs=true" in proc.stdout
+    assert "authorization_boundary_testnet_authorized=false" in proc.stdout
+    assert "authorization_boundary_order_submission_authorized=false" in proc.stdout
 
 
 def test_combined_runtime_robustness_and_stress_accepted_still_blocked_on_testnet(
@@ -792,6 +824,9 @@ def test_human_summary_includes_testnet_prerequisites_evidence_line(tmp_path: Pa
     assert "testnet_prerequisites_evidence_verdict=TESTNET_PREREQUISITES_REVIEW_PASS" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
+    assert "authorization_boundary_non_authorizing_evidence_inputs=true" in proc.stdout
+    assert "authorization_boundary_testnet_authorized=false" in proc.stdout
+    assert "authorization_boundary_order_submission_authorized=false" in proc.stdout
 
 
 def test_combined_all_paper_reviews_and_testnet_prerequisites_still_blocked_on_testnet(
@@ -828,3 +863,38 @@ def test_combined_all_paper_reviews_and_testnet_prerequisites_still_blocked_on_t
     assert payload["testnet_prerequisites_evidence_v0"]["accepted"] is True
     assert payload["testnet_authorized"] is False
     assert payload["live_authorized"] is False
+    assert_non_authorizing(payload)
+
+
+def test_human_summary_includes_authorization_boundary_when_all_evidence_inputs_accepted(
+    tmp_path: Path,
+) -> None:
+    rt = tmp_path / "rt.md"
+    rt.write_text("VERDICT=7200S_SCHEDULER_PAPER_RUNTIME_EVIDENCE_PASS\n", encoding="utf-8")
+    rb = tmp_path / "rb.md"
+    rb.write_text("VERDICT=PAPER_ROBUSTNESS_EVIDENCE_PASS\n", encoding="utf-8")
+    st = tmp_path / "st.md"
+    st.write_text("VERDICT=PAPER_STRESS_EVIDENCE_PASS\n", encoding="utf-8")
+    tp = tmp_path / "tp.md"
+    tp.write_text("VERDICT=TESTNET_PREREQUISITES_REVIEW_PASS\n", encoding="utf-8")
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--paper-runtime-evidence-review",
+            str(rt),
+            "--paper-robustness-evidence-review",
+            str(rb),
+            "--paper-stress-evidence-review",
+            str(st),
+            "--testnet-prerequisites-review",
+            str(tp),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 0
+    assert "authorization_boundary_non_authorizing_evidence_inputs=true" in proc.stdout
+    assert "authorization_boundary_testnet_authorized=false" in proc.stdout
+    assert "authorization_boundary_order_submission_authorized=false" in proc.stdout

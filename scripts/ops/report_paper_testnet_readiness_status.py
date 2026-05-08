@@ -34,6 +34,7 @@ PAPER_RUNTIME_EVIDENCE_SCHEMA = "peak_trade.paper_runtime_evidence_input.v0"
 PAPER_ROBUSTNESS_EVIDENCE_SCHEMA = "peak_trade.paper_robustness_evidence_input.v0"
 PAPER_STRESS_EVIDENCE_SCHEMA = "peak_trade.paper_stress_evidence_input.v0"
 TESTNET_PREREQUISITES_EVIDENCE_SCHEMA = "peak_trade.testnet_prerequisites_evidence_input.v0"
+AUTHORIZATION_BOUNDARY_V0_SCHEMA = "peak_trade.authorization_boundary.v0"
 
 CLOSEOUT_VERDICTS_ACCEPTED = frozenset(
     {
@@ -78,6 +79,21 @@ AUTHORITY_FLAGS = {
 DOES_NOT_AUTHORIZE = ["testnet", "live", "broker", "exchange", "order_submission"]
 
 MISSING_REVIEW_EXIT = 2
+
+
+def build_authorization_boundary_v0() -> dict[str, Any]:
+    """Static contract: evidence inputs and readiness status never authorize execution."""
+    return {
+        "schema_version": AUTHORIZATION_BOUNDARY_V0_SCHEMA,
+        "non_authorizing_evidence_inputs": True,
+        "evidence_inputs_do_not_authorize": list(DOES_NOT_AUTHORIZE),
+        "testnet_authorized": False,
+        "live_authorized": False,
+        "broker_exchange_order_paths_authorized": False,
+        "order_submission_authorized": False,
+        "authorization_requires_external_operator_gate": True,
+        "readiness_status_is_not_execution_authority": True,
+    }
 
 
 def default_paper_runtime_evidence_v0() -> dict[str, Any]:
@@ -598,6 +614,7 @@ def main(argv: list[str] | None = None) -> int:
     payload["paper_robustness_evidence_v0"] = robustness_v0
     payload["paper_stress_evidence_v0"] = stress_v0
     payload["testnet_prerequisites_evidence_v0"] = testnet_prereq_v0
+    payload["authorization_boundary_v0"] = build_authorization_boundary_v0()
 
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))
@@ -617,6 +634,16 @@ def main(argv: list[str] | None = None) -> int:
             print(f"paper_stress_evidence_verdict={stress_verdict}")
         if testnet_prereq_path is not None and testnet_prereq_verdict is not None:
             print(f"testnet_prerequisites_evidence_verdict={testnet_prereq_verdict}")
+        ab = payload["authorization_boundary_v0"]
+        print(
+            "authorization_boundary_non_authorizing_evidence_inputs="
+            f"{str(ab['non_authorizing_evidence_inputs']).lower()}"
+        )
+        print(f"authorization_boundary_testnet_authorized={str(ab['testnet_authorized']).lower()}")
+        print(
+            "authorization_boundary_order_submission_authorized="
+            f"{str(ab['order_submission_authorized']).lower()}"
+        )
 
     return 0
 
