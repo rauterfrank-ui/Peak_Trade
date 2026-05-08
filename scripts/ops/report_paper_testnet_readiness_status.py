@@ -15,6 +15,10 @@ Paper readiness context and never authorizes Testnet or Live.
 Optional ``--paper-stress-evidence-review`` ingests a Paper stress **review or
 closeout** artifact only; it satisfies the stress slice of Paper readiness
 context and never authorizes Testnet or Live.
+
+Optional ``--testnet-prerequisites-review`` ingests a Testnet prerequisites
+**review or inventory** artifact only; it records non-authorizing prerequisites
+context and never enables Testnet or Live.
 """
 
 from __future__ import annotations
@@ -29,6 +33,7 @@ CONTRACT = "paper_testnet_readiness_status_v0"
 PAPER_RUNTIME_EVIDENCE_SCHEMA = "peak_trade.paper_runtime_evidence_input.v0"
 PAPER_ROBUSTNESS_EVIDENCE_SCHEMA = "peak_trade.paper_robustness_evidence_input.v0"
 PAPER_STRESS_EVIDENCE_SCHEMA = "peak_trade.paper_stress_evidence_input.v0"
+TESTNET_PREREQUISITES_EVIDENCE_SCHEMA = "peak_trade.testnet_prerequisites_evidence_input.v0"
 
 CLOSEOUT_VERDICTS_ACCEPTED = frozenset(
     {
@@ -48,6 +53,13 @@ STRESS_CLOSEOUT_VERDICTS_ACCEPTED = frozenset(
     {
         "PAPER_STRESS_EVIDENCE_PASS",
         "STRESS_EVIDENCE_PASS",
+    }
+)
+
+TESTNET_PREREQUISITES_CLOSEOUT_VERDICTS_ACCEPTED = frozenset(
+    {
+        "TESTNET_PREREQUISITES_EVIDENCE_PASS",
+        "TESTNET_PREREQUISITES_REVIEW_PASS",
     }
 )
 
@@ -103,6 +115,19 @@ def default_paper_stress_evidence_v0() -> dict[str, Any]:
         "accepted": False,
         "non_authorizing": True,
         "contributes_to": "paper_stress_only",
+        "does_not_authorize": list(DOES_NOT_AUTHORIZE),
+    }
+
+
+def default_testnet_prerequisites_evidence_v0() -> dict[str, Any]:
+    return {
+        "schema_version": TESTNET_PREREQUISITES_EVIDENCE_SCHEMA,
+        "record_path": None,
+        "record_present": False,
+        "verdict": None,
+        "accepted": False,
+        "non_authorizing": True,
+        "contributes_to": "testnet_prerequisites_only",
         "does_not_authorize": list(DOES_NOT_AUTHORIZE),
     }
 
@@ -201,6 +226,40 @@ def _parse_stress_closeout_markdown(text: str) -> str | None:
     return None
 
 
+def _parse_testnet_prerequisites_review_json(text: str) -> str | None:
+    """Accept PASS JSON only when explicitly tagged as testnet prerequisites evidence."""
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(data, dict):
+        return None
+    if data.get("verdict") != "PASS":
+        return None
+    issues = data.get("issues")
+    if issues is not None and issues != []:
+        return None
+    explicit = (
+        data.get("evidence_kind") == "testnet_prerequisites"
+        or data.get("kind") == "testnet_prerequisites"
+        or data.get("testnet_prerequisites_evidence") is True
+    )
+    if not explicit:
+        return None
+    return "PASS"
+
+
+def _parse_testnet_prerequisites_closeout_markdown(text: str) -> str | None:
+    for line in text.splitlines():
+        line = line.strip()
+        if not line.startswith("VERDICT="):
+            continue
+        verdict = line.split("=", 1)[1].strip()
+        if verdict in TESTNET_PREREQUISITES_CLOSEOUT_VERDICTS_ACCEPTED:
+            return verdict
+    return None
+
+
 def load_paper_runtime_evidence_review(path: Path) -> str | None:
     """Return verdict string if accepted; otherwise None."""
     text = path.read_text(encoding="utf-8", errors="replace")
@@ -240,6 +299,21 @@ def load_paper_stress_evidence_review(path: Path) -> str | None:
         return verdict_json
 
     verdict_md = _parse_stress_closeout_markdown(text)
+    if verdict_md is not None:
+        return verdict_md
+
+    return None
+
+
+def load_testnet_prerequisites_review(path: Path) -> str | None:
+    """Return verdict string if accepted; otherwise None."""
+    text = path.read_text(encoding="utf-8", errors="replace")
+
+    verdict_json = _parse_testnet_prerequisites_review_json(text)
+    if verdict_json is not None:
+        return verdict_json
+
+    verdict_md = _parse_testnet_prerequisites_closeout_markdown(text)
     if verdict_md is not None:
         return verdict_md
 
@@ -356,6 +430,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             "or Paper stress success closeout markdown."
         ),
     )
+    parser.add_argument(
+        "--testnet-prerequisites-review",
+        type=Path,
+        default=None,
+        metavar="PATH",
+        help=(
+            "Optional path to JSON (verdict PASS, explicit testnet_prerequisites tag) "
+            "or Testnet prerequisites success closeout markdown."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -374,6 +458,11 @@ def main(argv: list[str] | None = None) -> int:
     stress_path = (
         args.paper_stress_evidence_review.expanduser().resolve()
         if args.paper_stress_evidence_review is not None
+        else None
+    )
+    testnet_prereq_path = (
+        args.testnet_prerequisites_review.expanduser().resolve()
+        if args.testnet_prerequisites_review is not None
         else None
     )
 
@@ -463,6 +552,35 @@ def main(argv: list[str] | None = None) -> int:
         stress_v0["verdict"] = st_verdict
         stress_v0["accepted"] = True
 
+    testnet_prereq_v0 = default_testnet_prerequisites_evidence_v0()
+    testnet_prereq_accepted = False
+    testnet_prereq_verdict: str | None = None
+
+    if testnet_prereq_path is not None:
+        testnet_prereq_v0["record_present"] = True
+        testnet_prereq_v0["record_path"] = str(testnet_prereq_path)
+        if not testnet_prereq_path.is_file():
+            print(
+                "report_paper_testnet_readiness_status: "
+                f"--testnet-prerequisites-review not a file: {testnet_prereq_path}",
+                file=sys.stderr,
+            )
+            return MISSING_REVIEW_EXIT
+        tp_verdict = load_testnet_prerequisites_review(testnet_prereq_path)
+        if tp_verdict is None:
+            print(
+                "report_paper_testnet_readiness_status: "
+                "testnet prerequisites file is not a valid review JSON "
+                "(verdict PASS, explicit testnet_prerequisites marker, optional empty issues) "
+                "or an accepted closeout markdown verdict line.",
+                file=sys.stderr,
+            )
+            return MISSING_REVIEW_EXIT
+        testnet_prereq_verdict = tp_verdict
+        testnet_prereq_accepted = True
+        testnet_prereq_v0["verdict"] = tp_verdict
+        testnet_prereq_v0["accepted"] = True
+
     effective_paper_evidence = bool(args.paper_evidence_present) or runtime_accepted
     effective_paper_robustness = bool(args.paper_robustness_present) or robustness_accepted
     effective_paper_stress = bool(args.paper_stress_present) or stress_accepted
@@ -479,6 +597,7 @@ def main(argv: list[str] | None = None) -> int:
     payload["paper_runtime_evidence_v0"] = runtime_v0
     payload["paper_robustness_evidence_v0"] = robustness_v0
     payload["paper_stress_evidence_v0"] = stress_v0
+    payload["testnet_prerequisites_evidence_v0"] = testnet_prereq_v0
 
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))
@@ -487,6 +606,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"paper_runtime_evidence_accepted={str(runtime_accepted).lower()}")
         print(f"paper_robustness_evidence_accepted={str(robustness_accepted).lower()}")
         print(f"paper_stress_evidence_accepted={str(stress_accepted).lower()}")
+        print(f"testnet_prerequisites_evidence_accepted={str(testnet_prereq_accepted).lower()}")
         print("testnet_authorized=false")
         print("live_authorized=false")
         if review_path is not None and runtime_verdict is not None:
@@ -495,6 +615,8 @@ def main(argv: list[str] | None = None) -> int:
             print(f"paper_robustness_evidence_verdict={robustness_verdict}")
         if stress_path is not None and stress_verdict is not None:
             print(f"paper_stress_evidence_verdict={stress_verdict}")
+        if testnet_prereq_path is not None and testnet_prereq_verdict is not None:
+            print(f"testnet_prerequisites_evidence_verdict={testnet_prereq_verdict}")
 
     return 0
 
