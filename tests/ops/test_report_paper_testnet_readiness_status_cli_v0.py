@@ -65,6 +65,11 @@ def test_default_invocation_is_blocked_with_missing_paper_and_testnet_items() ->
     assert ps["accepted"] is False
     assert ps["non_authorizing"] is True
     assert ps["contributes_to"] == "paper_stress_only"
+    tp = payload["testnet_prerequisites_evidence_v0"]
+    assert isinstance(tp, dict)
+    assert tp["accepted"] is False
+    assert tp["non_authorizing"] is True
+    assert tp["contributes_to"] == "testnet_prerequisites_only"
 
 
 def test_complete_paper_only_still_blocks_on_testnet() -> None:
@@ -322,6 +327,7 @@ def test_human_summary_includes_evidence_line_without_json(tmp_path: Path) -> No
     assert "paper_runtime_evidence_accepted=true" in proc.stdout
     assert "paper_robustness_evidence_accepted=false" in proc.stdout
     assert "paper_stress_evidence_accepted=false" in proc.stdout
+    assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
     assert "testnet ready" not in proc.stdout.lower()
@@ -450,6 +456,7 @@ def test_human_summary_includes_robustness_evidence_line(tmp_path: Path) -> None
     assert proc.returncode == 0
     assert "paper_robustness_evidence_accepted=true" in proc.stdout
     assert "paper_stress_evidence_accepted=false" in proc.stdout
+    assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
 
@@ -605,6 +612,7 @@ def test_human_summary_includes_stress_evidence_line(tmp_path: Path) -> None:
     assert proc.returncode == 0
     assert "paper_stress_evidence_accepted=true" in proc.stdout
     assert "paper_stress_evidence_verdict=STRESS_EVIDENCE_PASS" in proc.stdout
+    assert "testnet_prerequisites_evidence_accepted=false" in proc.stdout
     assert "testnet_authorized=false" in proc.stdout
     assert "live_authorized=false" in proc.stdout
 
@@ -636,5 +644,187 @@ def test_combined_runtime_robustness_and_stress_accepted_still_blocked_on_testne
     assert payload["paper_runtime_evidence_v0"]["accepted"] is True
     assert payload["paper_robustness_evidence_v0"]["accepted"] is True
     assert payload["paper_stress_evidence_v0"]["accepted"] is True
+    assert payload["testnet_authorized"] is False
+    assert payload["live_authorized"] is False
+
+
+def test_testnet_prerequisites_closeout_review_surfaces_in_json_and_stays_blocked(
+    tmp_path: Path,
+) -> None:
+    closeout = tmp_path / "tp.md"
+    closeout.write_text(
+        "\n".join(
+            [
+                "# x",
+                "VERDICT=TESTNET_PREREQUISITES_EVIDENCE_PASS",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    proc = run_report("--testnet-prerequisites-review", str(closeout))
+    assert proc.returncode == 0
+    payload = parse_payload(proc)
+
+    assert payload["status"] == "BLOCKED"
+    assert payload["testnet_authorized"] is False
+    assert payload["live_authorized"] is False
+    tp = payload["testnet_prerequisites_evidence_v0"]
+    assert isinstance(tp, dict)
+    assert tp["accepted"] is True
+    assert tp["non_authorizing"] is True
+    assert tp["verdict"] == "TESTNET_PREREQUISITES_EVIDENCE_PASS"
+    assert tp["contributes_to"] == "testnet_prerequisites_only"
+    assert tp["does_not_authorize"] == [
+        "testnet",
+        "live",
+        "broker",
+        "exchange",
+        "order_submission",
+    ]
+    assert_non_authorizing(payload)
+
+
+def test_testnet_prerequisites_review_json_pass_surfaces_accepted(tmp_path: Path) -> None:
+    review = tmp_path / "tp.json"
+    review.write_text(
+        '{"issues": [], "evidence_kind": "testnet_prerequisites", "verdict": "PASS"}\n',
+        encoding="utf-8",
+    )
+    proc = run_report("--testnet-prerequisites-review", str(review))
+    assert proc.returncode == 0
+    payload = parse_payload(proc)
+    tp = payload["testnet_prerequisites_evidence_v0"]
+    assert tp["accepted"] is True
+    assert tp["verdict"] == "PASS"
+    assert payload["status"] == "BLOCKED"
+    assert payload["testnet_authorized"] is False
+
+
+def test_testnet_prerequisites_review_missing_file_exits_2(tmp_path: Path) -> None:
+    missing = tmp_path / "nope.md"
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--json",
+            "--testnet-prerequisites-review",
+            str(missing),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+    assert proc.stdout.strip() == ""
+
+
+def test_testnet_prerequisites_review_invalid_content_exits_2(tmp_path: Path) -> None:
+    bad = tmp_path / "bad.md"
+    bad.write_text("VERDICT=PAPER_STRESS_EVIDENCE_PASS\n", encoding="utf-8")
+    proc = subprocess.run(
+        [sys.executable, str(SCRIPT), "--json", "--testnet-prerequisites-review", str(bad)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+
+
+def test_runtime_json_not_accepted_as_testnet_prerequisites_evidence(tmp_path: Path) -> None:
+    review = tmp_path / "runtime_style.json"
+    review.write_text(
+        '{"issues": [], "metrics": {"fills_count": 1}, "verdict": "PASS"}\n',
+        encoding="utf-8",
+    )
+    proc = subprocess.run(
+        [sys.executable, str(SCRIPT), "--json", "--testnet-prerequisites-review", str(review)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+
+
+def test_robustness_json_not_accepted_as_testnet_prerequisites_evidence(
+    tmp_path: Path,
+) -> None:
+    review = tmp_path / "rb.json"
+    review.write_text(
+        '{"issues": [], "evidence_kind": "paper_robustness", "verdict": "PASS"}\n',
+        encoding="utf-8",
+    )
+    proc = subprocess.run(
+        [sys.executable, str(SCRIPT), "--json", "--testnet-prerequisites-review", str(review)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+
+
+def test_stress_json_not_accepted_as_testnet_prerequisites_evidence(tmp_path: Path) -> None:
+    review = tmp_path / "st.json"
+    review.write_text(
+        '{"issues": [], "evidence_kind": "paper_stress", "verdict": "PASS"}\n',
+        encoding="utf-8",
+    )
+    proc = subprocess.run(
+        [sys.executable, str(SCRIPT), "--json", "--testnet-prerequisites-review", str(review)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 2
+
+
+def test_human_summary_includes_testnet_prerequisites_evidence_line(tmp_path: Path) -> None:
+    closeout = tmp_path / "c.md"
+    closeout.write_text("VERDICT=TESTNET_PREREQUISITES_REVIEW_PASS\n", encoding="utf-8")
+    proc = subprocess.run(
+        [sys.executable, str(SCRIPT), "--testnet-prerequisites-review", str(closeout)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 0
+    assert "testnet_prerequisites_evidence_accepted=true" in proc.stdout
+    assert "testnet_prerequisites_evidence_verdict=TESTNET_PREREQUISITES_REVIEW_PASS" in proc.stdout
+    assert "testnet_authorized=false" in proc.stdout
+    assert "live_authorized=false" in proc.stdout
+
+
+def test_combined_all_paper_reviews_and_testnet_prerequisites_still_blocked_on_testnet(
+    tmp_path: Path,
+) -> None:
+    rt = tmp_path / "rt.md"
+    rt.write_text("VERDICT=7200S_SCHEDULER_PAPER_RUNTIME_EVIDENCE_PASS\n", encoding="utf-8")
+    rb = tmp_path / "rb.md"
+    rb.write_text("VERDICT=PAPER_ROBUSTNESS_EVIDENCE_PASS\n", encoding="utf-8")
+    st = tmp_path / "st.md"
+    st.write_text("VERDICT=PAPER_STRESS_EVIDENCE_PASS\n", encoding="utf-8")
+    tp = tmp_path / "tp.md"
+    tp.write_text("VERDICT=TESTNET_PREREQUISITES_REVIEW_PASS\n", encoding="utf-8")
+    proc = run_report(
+        "--paper-runtime-evidence-review",
+        str(rt),
+        "--paper-robustness-evidence-review",
+        str(rb),
+        "--paper-stress-evidence-review",
+        str(st),
+        "--testnet-prerequisites-review",
+        str(tp),
+    )
+    assert proc.returncode == 0
+    payload = parse_payload(proc)
+    assert payload["status"] == "BLOCKED"
+    assert payload["paper"]["evidence_present"] is True
+    assert payload["paper"]["robustness_present"] is True
+    assert payload["paper"]["stress_present"] is True
+    assert "testnet.evidence_missing" in payload["blockers"]
+    assert payload["paper_runtime_evidence_v0"]["accepted"] is True
+    assert payload["paper_robustness_evidence_v0"]["accepted"] is True
+    assert payload["paper_stress_evidence_v0"]["accepted"] is True
+    assert payload["testnet_prerequisites_evidence_v0"]["accepted"] is True
     assert payload["testnet_authorized"] is False
     assert payload["live_authorized"] is False
