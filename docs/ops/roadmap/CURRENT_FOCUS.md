@@ -2,8 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-04-24
-P26-04-24
+last_updated: 2026-05-08
 ---
 
 # Current focus
@@ -22,6 +21,10 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 ---
 
 ## Recently landed (truth, docs governance, officers)
+
+### Paper/Shadow 24/7 preflight (diagnostics + helpers, landed #3390–#3395)
+
+- **PRs #3390–#3395:** Read-only Paper/Shadow-24/7 preflight diagnostics — e.g. `unknown_hold_context` in reporter/human output, optional `operator_decision_context` for preflight/stop snapshots, macOS `run_with_timeout` helper, `make_scheduler_temp_config` to mint **temporary** scheduler TOML with absolute paper-runtime `outdir`, plus docs pointer in [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md). **Does not** authorize scheduler/daemon execution, paper-runtime activation, Shadow sessions, Testnet, Live, broker, exchange, or orders; the canonical preflight contract remains **BLOCKED** unless a governed runbook explicitly says otherwise (**NO-LIVE** default).
 
 - PR #2913: Added the OPS Cockpit Master V2 non-authority contract; cockpit remains read-only observation/navigation and not Master-V2, Double-Play, gate, evidence, execution, or live authority.
 - PR #2914: Surfaced the Master-V2 / Double-Play non-authority wording in the OPS Cockpit preamble and locked it with a WebUI regression test.
@@ -195,6 +198,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 | 2026-04-24 | J1 Portfolio local CSV contract closure (#2889-#2890) | `uv run python -m pytest tests/test_run_portfolio_backtest_v2_cli.py -q`; `uv run python -m pytest tests/test_shared_forward_args_cli.py -q`; `uv run ruff check scripts/run_portfolio_backtest_v2.py tests/test_run_portfolio_backtest_v2_cli.py`; `uv run ruff format --check scripts/run_portfolio_backtest_v2.py tests/test_run_portfolio_backtest_v2_cli.py`; `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; J1 local CSV pausierbar after Generate/Evaluate/Portfolio coverage and portfolio CLI contract hardening. |
 | 2026-04-24 | Research strategy-profile inspect closure (#2892-#2894) | `python3 scripts/research_cli.py strategy-profile --help`; `uv run python -m pytest tests/test_research_cli.py tests/test_strategy_profile_cli.py -q`; `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; strategy-profile is an inspect/discoverability surface without global `artifacts&#47;research` bootstrap. |
 | 2026-04-24 | OPS Cockpit non-authority closure (#2913-#2914) | `uv run python -m pytest tests/webui/test_ops_cockpit.py -q`; `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `bash scripts/ops/pt_docs_gates_snapshot.sh --changed`; *Outcome:* OPS Cockpit is visibly and contractually non-authorizing for Master V2 / Double Play; no live, execution, gate, Paper, Shadow, or Evidence authority added. |
+| 2026-05-08 | Paper/Shadow-24/7 preflight diagnostics cluster (#3390–#3395): `CURRENT_FOCUS` recently-landed + verification row (this file) | `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs`; `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs`; `git diff --check` — docs-only freshness alignment; **NO-LIVE** / non-authorizing (no scheduler/daemon/Testnet/Live/broker/exchange/order activation implied). |
 
 ---
 
