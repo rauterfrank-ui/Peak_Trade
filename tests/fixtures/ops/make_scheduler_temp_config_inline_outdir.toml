@@ -1,0 +1,6 @@
+[[job]]
+name = "inline_outdir_job"
+enabled = false
+schedule_type = "once"
+command = "python"
+args = { script = "scripts/aiops/run_paper_trading_session.py", spec = "tests/fixtures/p7/paper_run_min_v0.json", outdir = "out/paper/__DRY_RUN_PLACEHOLDER__" }
