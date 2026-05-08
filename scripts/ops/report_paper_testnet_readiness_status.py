@@ -7,6 +7,10 @@ artifacts, registries, out/ops data, execution state, or live state.
 Optional ``--paper-runtime-evidence-review`` ingests a bounded scheduler
 Paper-runtime **review or closeout** artifact only; it is necessary-but-not-
 sufficient for Paper layer readiness and never authorizes Testnet or Live.
+
+Optional ``--paper-robustness-evidence-review`` ingests a Paper robustness
+**review or closeout** artifact only; it satisfies the robustness slice of
+Paper readiness context and never authorizes Testnet or Live.
 """
 
 from __future__ import annotations
@@ -19,11 +23,19 @@ from typing import Any, Literal
 
 CONTRACT = "paper_testnet_readiness_status_v0"
 PAPER_RUNTIME_EVIDENCE_SCHEMA = "peak_trade.paper_runtime_evidence_input.v0"
+PAPER_ROBUSTNESS_EVIDENCE_SCHEMA = "peak_trade.paper_robustness_evidence_input.v0"
 
 CLOSEOUT_VERDICTS_ACCEPTED = frozenset(
     {
         "7200S_SCHEDULER_PAPER_RUNTIME_EVIDENCE_PASS",
         "SIXTY_MIN_SCHEDULER_PAPER_RUNTIME_EVIDENCE_PASS",
+    }
+)
+
+ROBUSTNESS_CLOSEOUT_VERDICTS_ACCEPTED = frozenset(
+    {
+        "PAPER_ROBUSTNESS_EVIDENCE_PASS",
+        "ROBUSTNESS_EVIDENCE_PASS",
     }
 )
 
@@ -57,6 +69,19 @@ def default_paper_runtime_evidence_v0() -> dict[str, Any]:
     }
 
 
+def default_paper_robustness_evidence_v0() -> dict[str, Any]:
+    return {
+        "schema_version": PAPER_ROBUSTNESS_EVIDENCE_SCHEMA,
+        "record_path": None,
+        "record_present": False,
+        "verdict": None,
+        "accepted": False,
+        "non_authorizing": True,
+        "contributes_to": "paper_robustness_only",
+        "does_not_authorize": list(DOES_NOT_AUTHORIZE),
+    }
+
+
 def _parse_review_json(text: str) -> str | None:
     try:
         data = json.loads(text)
@@ -83,6 +108,40 @@ def _parse_closeout_markdown(text: str) -> str | None:
     return None
 
 
+def _parse_robustness_review_json(text: str) -> str | None:
+    """Accept PASS JSON only when explicitly tagged as paper robustness evidence."""
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(data, dict):
+        return None
+    if data.get("verdict") != "PASS":
+        return None
+    issues = data.get("issues")
+    if issues is not None and issues != []:
+        return None
+    explicit = (
+        data.get("evidence_kind") == "paper_robustness"
+        or data.get("kind") == "paper_robustness"
+        or data.get("paper_robustness_evidence") is True
+    )
+    if not explicit:
+        return None
+    return "PASS"
+
+
+def _parse_robustness_closeout_markdown(text: str) -> str | None:
+    for line in text.splitlines():
+        line = line.strip()
+        if not line.startswith("VERDICT="):
+            continue
+        verdict = line.split("=", 1)[1].strip()
+        if verdict in ROBUSTNESS_CLOSEOUT_VERDICTS_ACCEPTED:
+            return verdict
+    return None
+
+
 def load_paper_runtime_evidence_review(path: Path) -> str | None:
     """Return verdict string if accepted; otherwise None."""
     text = path.read_text(encoding="utf-8", errors="replace")
@@ -92,6 +151,21 @@ def load_paper_runtime_evidence_review(path: Path) -> str | None:
         return verdict_json
 
     verdict_md = _parse_closeout_markdown(text)
+    if verdict_md is not None:
+        return verdict_md
+
+    return None
+
+
+def load_paper_robustness_evidence_review(path: Path) -> str | None:
+    """Return verdict string if accepted; otherwise None."""
+    text = path.read_text(encoding="utf-8", errors="replace")
+
+    verdict_json = _parse_robustness_review_json(text)
+    if verdict_json is not None:
+        return verdict_json
+
+    verdict_md = _parse_robustness_closeout_markdown(text)
     if verdict_md is not None:
         return verdict_md
 
@@ -188,6 +262,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             "(verdict PASS, empty issues) or Paper-runtime success closeout markdown."
         ),
     )
+    parser.add_argument(
+        "--paper-robustness-evidence-review",
+        type=Path,
+        default=None,
+        metavar="PATH",
+        help=(
+            "Optional path to JSON (verdict PASS, explicit paper_robustness tag) "
+            "or Paper robustness success closeout markdown."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -196,6 +280,11 @@ def main(argv: list[str] | None = None) -> int:
     review_path = (
         args.paper_runtime_evidence_review.expanduser().resolve()
         if args.paper_runtime_evidence_review is not None
+        else None
+    )
+    robustness_path = (
+        args.paper_robustness_evidence_review.expanduser().resolve()
+        if args.paper_robustness_evidence_review is not None
         else None
     )
 
@@ -227,11 +316,41 @@ def main(argv: list[str] | None = None) -> int:
         runtime_v0["verdict"] = verdict
         runtime_v0["accepted"] = True
 
+    robustness_v0 = default_paper_robustness_evidence_v0()
+    robustness_accepted = False
+    robustness_verdict: str | None = None
+
+    if robustness_path is not None:
+        robustness_v0["record_present"] = True
+        robustness_v0["record_path"] = str(robustness_path)
+        if not robustness_path.is_file():
+            print(
+                "report_paper_testnet_readiness_status: "
+                f"--paper-robustness-evidence-review not a file: {robustness_path}",
+                file=sys.stderr,
+            )
+            return MISSING_REVIEW_EXIT
+        rb_verdict = load_paper_robustness_evidence_review(robustness_path)
+        if rb_verdict is None:
+            print(
+                "report_paper_testnet_readiness_status: "
+                "paper robustness evidence file is not a valid review JSON "
+                "(verdict PASS, explicit paper_robustness marker, optional empty issues) "
+                "or an accepted closeout markdown verdict line.",
+                file=sys.stderr,
+            )
+            return MISSING_REVIEW_EXIT
+        robustness_verdict = rb_verdict
+        robustness_accepted = True
+        robustness_v0["verdict"] = rb_verdict
+        robustness_v0["accepted"] = True
+
     effective_paper_evidence = bool(args.paper_evidence_present) or runtime_accepted
+    effective_paper_robustness = bool(args.paper_robustness_present) or robustness_accepted
 
     payload = build_status(
         paper_evidence_present=effective_paper_evidence,
-        paper_robustness_present=args.paper_robustness_present,
+        paper_robustness_present=effective_paper_robustness,
         paper_stress_present=args.paper_stress_present,
         testnet_evidence_present=args.testnet_evidence_present,
         testnet_robustness_present=args.testnet_robustness_present,
@@ -239,16 +358,20 @@ def main(argv: list[str] | None = None) -> int:
         external_review_decision_present=args.external_review_decision_present,
     )
     payload["paper_runtime_evidence_v0"] = runtime_v0
+    payload["paper_robustness_evidence_v0"] = robustness_v0
 
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))
     else:
         print(f"status={payload['status']}")
         print(f"paper_runtime_evidence_accepted={str(runtime_accepted).lower()}")
+        print(f"paper_robustness_evidence_accepted={str(robustness_accepted).lower()}")
         print("testnet_authorized=false")
         print("live_authorized=false")
         if review_path is not None and runtime_verdict is not None:
             print(f"paper_runtime_evidence_verdict={runtime_verdict}")
+        if robustness_path is not None and robustness_verdict is not None:
+            print(f"paper_robustness_evidence_verdict={robustness_verdict}")
 
     return 0
 
