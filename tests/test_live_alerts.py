@@ -21,6 +21,7 @@ import json
 import logging
 import urllib.request
 from datetime import datetime, timezone
+from pathlib import Path
 
 import pytest
 
@@ -819,3 +820,59 @@ def test_live_alerts_config_from_dict_webhook_urls_string():
     )
 
     assert config.webhook_urls == ["https://example.com/hook"]
+
+
+def test_live_alerts_sensitive_output_visibility_contract_v0() -> None:
+    """Static owner-review surface for live-alerts sensitive output markers.
+
+    This test reads source text only. It must not send alerts, call webhooks,
+    import live modules, start runtime components, or change logging behavior.
+    """
+    repo_root = Path(__file__).resolve().parents[1]
+    source = (repo_root / "src" / "live" / "alerts.py").read_text(encoding="utf-8")
+    lowered = source.lower()
+
+    sensitive_markers = {
+        "webhook",
+        "webhook_url",
+        "slack_webhook",
+    }
+    output_markers = {
+        "logger.",
+        "stderr",
+    }
+    redaction_markers = {
+        "redact",
+        "redacted",
+        "mask",
+        "masked",
+        "sanitize",
+        "sanitized",
+        "scrub",
+        "safe_secret",
+        "safe_token",
+    }
+
+    missing_sensitive_markers = [
+        marker for marker in sorted(sensitive_markers) if marker not in lowered
+    ]
+    missing_output_markers = [marker for marker in sorted(output_markers) if marker not in lowered]
+    present_redaction_markers = [
+        marker for marker in sorted(redaction_markers) if marker in lowered
+    ]
+
+    assert not missing_sensitive_markers
+    assert not missing_output_markers
+    assert present_redaction_markers == []
+
+    forbidden_network_fragments = [
+        "".join(["re", "quests", "."]),
+        "".join(["htt", "px", "."]),
+        "".join(["soc", "ket", "."]),
+        "".join(["slack", "_sdk"]),
+        ".".join(["webhook", "send"]),
+    ]
+
+    test_source = Path(__file__).read_text(encoding="utf-8")
+    found = [fragment for fragment in forbidden_network_fragments if fragment in test_source]
+    assert not found, f"static live-alerts visibility contract must not use network hooks: {found}"
