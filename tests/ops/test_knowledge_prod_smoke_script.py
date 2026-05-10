@@ -215,3 +215,27 @@ def test_script_handles_graceful_degradation(script_path: Path) -> None:
     assert "EXPECT_501_OK" in content or "degraded" in content.lower(), (
         "Script should have logic for handling degraded state"
     )
+
+
+def test_knowledge_prod_smoke_contract_keeps_temp_cleanup_scoped(script_path: Path) -> None:
+    """R-005: cleanup may remove only the script-owned temporary directory."""
+    assert script_path.exists(), f"Script not found: {script_path}"
+
+    text = script_path.read_text(encoding="utf-8")
+
+    assert 'rm -rf "$TEMP_DIR"' in text
+    assert "trap" in text
+    assert "TEMP_DIR" in text
+
+    forbidden_fragments = (
+        "rm -rf /",
+        "rm -rf .git",
+        "rm -rf $REPO_ROOT",
+        "rm -rf ${REPO_ROOT}",
+        'rm -rf "$REPO_ROOT"',
+        "git clean -fdx",
+        "git reset --hard",
+    )
+
+    found = [fragment for fragment in forbidden_fragments if fragment in text]
+    assert not found, f"knowledge prod smoke cleanup must stay scoped: {found}"
