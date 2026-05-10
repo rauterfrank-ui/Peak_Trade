@@ -1,0 +1,113 @@
+"""Static contract tests for GitHub workflows avoiding pull_request_target.
+
+Parses workflow YAML files as UTF-8 text only. Never dispatches workflows,
+never calls GitHub APIs, never executes scripts, and never touches runtime,
+scheduler, daemon, testnet/live, broker/exchange, or order-submission paths.
+"""
+
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+WORKFLOW_ROOT = REPO_ROOT / ".github" / "workflows"
+
+
+def _workflow_files() -> list[Path]:
+    return sorted(
+        path
+        for pattern in ("*.yml", "*.yaml")
+        for path in WORKFLOW_ROOT.glob(pattern)
+        if path.is_file()
+    )
+
+
+def _workflow_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
+
+
+def test_workflows_no_pull_request_target_contract_has_workflows_to_check() -> None:
+    workflows = _workflow_files()
+
+    assert WORKFLOW_ROOT.exists()
+    assert workflows
+
+
+def test_workflows_no_pull_request_target_contract_module_avoids_execution_hooks() -> None:
+    test_text = Path(__file__).read_text(encoding="utf-8")
+    import_lines = [
+        line.strip()
+        for line in test_text.splitlines()
+        if line.strip().startswith(("import ", "from "))
+    ]
+
+    forbidden_import_prefixes = [
+        "import os",
+        "from os",
+        "import subprocess",
+        "from subprocess",
+        "import runpy",
+        "from runpy",
+        "import importlib",
+        "from importlib",
+        "import requests",
+        "from requests",
+        "import httpx",
+        "from httpx",
+        "import urllib",
+        "from urllib",
+        "import socket",
+        "from socket",
+    ]
+
+    found = [
+        prefix
+        for prefix in forbidden_import_prefixes
+        if any(line.startswith(prefix) for line in import_lines)
+    ]
+    assert not found, f"static workflow contract must not import execution/network hooks: {found}"
+
+
+def test_workflows_no_pull_request_target_contract_forbids_event() -> None:
+    """No workflow may use the high-risk pull_request_target event."""
+    offenders: list[str] = []
+
+    event_pattern = re.compile(r"^\s*pull_request_target\s*:", re.MULTILINE)
+
+    for workflow in _workflow_files():
+        text = _workflow_text(workflow)
+        if event_pattern.search(text):
+            offenders.append(workflow.relative_to(REPO_ROOT).as_posix())
+
+    assert not offenders, f"pull_request_target is forbidden in workflows: {offenders}"
+
+
+def test_workflows_no_pull_request_target_contract_retains_static_local_scope() -> None:
+    test_text = Path(__file__).read_text(encoding="utf-8")
+
+    # Built dynamically so this guard does not match its own string table.
+    forbidden_fragments = [
+        "".join(("subprocess", ".")),
+        "".join(("os", ".system")),
+        "".join(("runpy", ".")),
+        "".join(("importlib", ".import_module")),
+        "".join(("requests", ".")),
+        "".join(("httpx", ".")),
+        "".join(("urllib", ".")),
+        "".join(("socket", ".")),
+        " ".join(("gh", "workflow", "run")),
+        " ".join(("gh", "api")),
+    ]
+
+    found = [fragment for fragment in forbidden_fragments if fragment in test_text]
+    assert not found, f"contract must remain static/local-only: {found}"
+
+
+def test_workflows_no_pull_request_target_contract_covers_all_workflow_files() -> None:
+    workflows = _workflow_files()
+    workflow_names = {path.name for path in workflows}
+
+    assert len(workflows) >= 1
+    assert any(name.endswith(".yml") or name.endswith(".yaml") for name in workflow_names)
