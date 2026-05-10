@@ -28,6 +28,14 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+CLOSEOUT_24H_TIMEOUT_LINE = (
+    "run_with_timeout: exceeded --timeout-seconds=86400.0; "
+    "terminated: ['uv', 'run', 'python', 'scripts/run_scheduler.py', '--config', "
+    "'/tmp/example_plan/jobs.toml', '--include-tags', 'paper_runtime_min', "
+    "'--no-registry', '--no-alerts']\n"
+)
+
+
 def _write_pass_fixture(
     tmp_path: Path,
     *,
@@ -186,6 +194,101 @@ def test_rejects_missing_timeout_text(tmp_path: Path) -> None:
     assert any("timeout semantics" in issue for issue in result["issues"])
 
 
+def test_pass_24h_style_run_with_timeout_stderr_json(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    mod = _load_mod()
+    outroot, logroot = _write_pass_fixture(tmp_path, timeout_text=CLOSEOUT_24H_TIMEOUT_LINE)
+    monkeypatch.setattr(sys, "stderr", StringIO())
+
+    assert (
+        mod.main(
+            [
+                "review_scheduler_paper_runtime_evidence.py",
+                "--outroot",
+                str(outroot),
+                "--logroot",
+                str(logroot),
+                "--expected-timeout-seconds",
+                "86400",
+                "--json",
+            ]
+        )
+        == 0
+    )
+
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["verdict"] == "PASS"
+    assert payload["issues"] == []
+    assert payload["metrics"]["timeout_observed"] is True
+    assert payload["metrics"]["manifest_references_computed_hashes"] is True
+
+
+def test_review_required_when_stderr_empty(
+    tmp_path: Path,
+) -> None:
+    mod = _load_mod()
+    outroot, logroot = _write_pass_fixture(tmp_path, timeout_text="")
+
+    result = mod.review_evidence(
+        outroot=outroot,
+        logroot=logroot,
+        expected_timeout_seconds=3600,
+    )
+
+    assert result["verdict"] == mod.REVIEW_REQUIRED
+    assert result["metrics"]["timeout_observed"] is False
+    assert result["metrics"]["manifest_references_computed_hashes"] is True
+    assert any(
+        "scheduler_stderr.log does not contain matching run_with_timeout timeout semantics" in issue
+        for issue in result["issues"]
+    )
+
+
+def test_review_required_manifest_hash_mismatch_not_pass(
+    tmp_path: Path,
+) -> None:
+    mod = _load_mod()
+    outroot, logroot = _write_pass_fixture(tmp_path)
+    manifest = json.loads((outroot / "evidence_manifest.json").read_text(encoding="utf-8"))
+    bad_digest = "0" * 64
+    for entry in manifest["files"]:
+        if entry["name"] == "fills.json":
+            entry["sha256"] = bad_digest
+    (outroot / "evidence_manifest.json").write_text(
+        json.dumps(manifest, sort_keys=True),
+        encoding="utf-8",
+    )
+
+    result = mod.review_evidence(
+        outroot=outroot,
+        logroot=logroot,
+        expected_timeout_seconds=3600,
+    )
+
+    assert result["verdict"] != mod.PASS
+    assert result["verdict"] == mod.REVIEW_REQUIRED
+    assert result["metrics"]["manifest_references_computed_hashes"] is False
+    assert any("sha256" in issue for issue in result["issues"])
+
+
+def test_pass_expected_timeout_integer_matches_float_in_stderr(tmp_path: Path) -> None:
+    mod = _load_mod()
+    outroot, logroot = _write_pass_fixture(
+        tmp_path,
+        timeout_text="run_with_timeout: exceeded --timeout-seconds=7200.0; terminated: []\n",
+    )
+    result = mod.review_evidence(
+        outroot=outroot,
+        logroot=logroot,
+        expected_timeout_seconds=7200,
+    )
+    assert result["verdict"] == mod.PASS
+    assert result["metrics"]["timeout_observed"] is True
+
+
 def test_json_output_shape(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
@@ -299,3 +402,29 @@ def test_cli_invocation_matches_module_returncode(tmp_path: Path) -> None:
     )
     assert proc.returncode == 0
     assert "VERDICT: PASS" in proc.stdout
+
+
+def test_cli_subprocess_24h_style_timeout_passes_json(tmp_path: Path) -> None:
+    outroot, logroot = _write_pass_fixture(tmp_path, timeout_text=CLOSEOUT_24H_TIMEOUT_LINE)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--outroot",
+            str(outroot),
+            "--logroot",
+            str(logroot),
+            "--expected-timeout-seconds",
+            "86400",
+            "--json",
+        ],
+        cwd=str(ROOT),
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 0
+    payload = json.loads(proc.stdout)
+    assert payload["verdict"] == "PASS"
+    assert payload["issues"] == []
+    assert payload["metrics"]["timeout_observed"] is True
