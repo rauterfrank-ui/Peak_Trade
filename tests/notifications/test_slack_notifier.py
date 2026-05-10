@@ -12,6 +12,7 @@ from __future__ import annotations
 import datetime as dt
 import json
 import os
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -225,3 +226,62 @@ class TestSendTestHealthSlackNotification:
                 report_path="test",
                 webhook_env_var="TEST_WEBHOOK",
             )
+
+
+def test_slack_notifier_sensitive_output_visibility_contract_v0() -> None:
+    """Static owner-review surface for Slack notifier sensitive output markers.
+
+    This test reads source text only. It must not send Slack messages, call
+    webhooks, perform network I/O, start runtime components, or change logging
+    behavior.
+    """
+    repo_root = Path(__file__).resolve().parents[2]
+    source = (repo_root / "src" / "notifications" / "slack.py").read_text(encoding="utf-8")
+    lowered = source.lower()
+
+    sensitive_markers = {
+        "webhook",
+        "webhook_url",
+        "slack",
+    }
+    output_markers = {
+        "print(",
+        "report",
+    }
+    redaction_markers = {
+        "redact",
+        "redacted",
+        "mask",
+        "masked",
+        "sanitize",
+        "sanitized",
+        "scrub",
+        "safe_secret",
+        "safe_token",
+    }
+
+    missing_sensitive_markers = [
+        marker for marker in sorted(sensitive_markers) if marker not in lowered
+    ]
+    missing_output_markers = [marker for marker in sorted(output_markers) if marker not in lowered]
+    present_redaction_markers = [
+        marker for marker in sorted(redaction_markers) if marker in lowered
+    ]
+
+    assert not missing_sensitive_markers
+    assert not missing_output_markers
+    assert present_redaction_markers == []
+
+    forbidden_network_fragments = [
+        "".join(["re", "quests", "."]),
+        "".join(["htt", "px", "."]),
+        "".join(["soc", "ket", "."]),
+        "".join(["slack", "_sdk"]),
+        ".".join(["webhook", "send"]),
+    ]
+
+    test_source = Path(__file__).read_text(encoding="utf-8")
+    found = [fragment for fragment in forbidden_network_fragments if fragment in test_source]
+    assert not found, (
+        f"static Slack notifier visibility contract must not use network hooks: {found}"
+    )
