@@ -655,3 +655,76 @@ def test_generate_market_outlook_daily_help_subprocess_smoke():
     assert "usage:" in combined_output.lower()
     assert "--skip-llm" in combined_output
     assert "--config-path" in combined_output
+
+
+def test_market_sentinel_daily_outlook_sensitive_output_visibility_contract_v0() -> None:
+    """Static owner-review surface for Market Sentinel daily-outlook sensitive output markers.
+
+    This test reads source text only. It must not import market-sentinel modules,
+    generate reports, call OpenAI/webhooks/market-data/network paths, start runtime
+    components, or change logging/report/redaction behavior.
+    """
+    repo_root = Path(__file__).resolve().parents[1]
+    source = (repo_root / "src" / "market_sentinel" / "v0_daily_outlook.py").read_text(
+        encoding="utf-8"
+    )
+    lowered = source.lower()
+
+    sensitive_markers = {
+        "api_key",
+        "openai",
+        "llm",
+    }
+    output_markers = {
+        "report",
+        "logger.",
+        "markdown",
+    }
+    market_report_markers = {
+        "market",
+        "sentinel",
+        "outlook",
+        "daily",
+    }
+    redaction_markers = {
+        "redact",
+        "redacted",
+        "mask",
+        "masked",
+        "sanitize",
+        "sanitized",
+        "scrub",
+        "safe_secret",
+        "safe_token",
+    }
+
+    missing_sensitive_markers = [
+        marker for marker in sorted(sensitive_markers) if marker not in lowered
+    ]
+    missing_output_markers = [marker for marker in sorted(output_markers) if marker not in lowered]
+    missing_market_report_markers = [
+        marker for marker in sorted(market_report_markers) if marker not in lowered
+    ]
+    present_redaction_markers = [
+        marker for marker in sorted(redaction_markers) if marker in lowered
+    ]
+
+    assert not missing_sensitive_markers
+    assert not missing_output_markers
+    assert not missing_market_report_markers
+    assert present_redaction_markers == []
+
+    forbidden_network_fragments = [
+        "".join(["re", "quests", "."]),
+        "".join(["htt", "px", "."]),
+        "".join(["soc", "ket", "."]),
+        "".join(["openai", "."]),
+        ".".join(["webhook", "send"]),
+    ]
+
+    test_source = Path(__file__).read_text(encoding="utf-8")
+    found = [fragment for fragment in forbidden_network_fragments if fragment in test_source]
+    assert not found, (
+        "static Market Sentinel daily-outlook visibility contract must not use "
+        f"network/API hooks: {found}"
+    )
