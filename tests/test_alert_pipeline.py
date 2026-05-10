@@ -1381,3 +1381,62 @@ class TestPhase84RunbookIntegration:
         assert sent_alerts[0].context.get("number") == 42
         # Und Runbooks hinzugefügt wurden
         assert "runbooks" in sent_alerts[0].context
+
+
+def test_alert_pipeline_sensitive_output_visibility_contract_v0() -> None:
+    """Static owner-review surface for alert-pipeline sensitive output markers.
+
+    This test reads source text only. It must not send alerts, call webhooks,
+    execute live pipeline code as part of THIS contract, start runtime
+    components, or change logging behavior.
+    """
+    from pathlib import Path
+
+    repo_root = Path(__file__).resolve().parents[1]
+    source = (repo_root / "src" / "live" / "alert_pipeline.py").read_text(encoding="utf-8")
+    lowered = source.lower()
+
+    sensitive_markers = {
+        "webhook_url",
+        "password",
+    }
+    output_markers = {
+        "logger.",
+        "summary",
+    }
+    redaction_markers = {
+        "redact",
+        "redacted",
+        "mask",
+        "masked",
+        "sanitize",
+        "sanitized",
+        "scrub",
+        "safe_secret",
+        "safe_token",
+    }
+
+    missing_sensitive_markers = [
+        marker for marker in sorted(sensitive_markers) if marker not in lowered
+    ]
+    missing_output_markers = [marker for marker in sorted(output_markers) if marker not in lowered]
+    present_redaction_markers = [
+        marker for marker in sorted(redaction_markers) if marker in lowered
+    ]
+
+    assert not missing_sensitive_markers
+    assert not missing_output_markers
+    assert present_redaction_markers == []
+
+    forbidden_test_fragments = [
+        "".join(("requests", ".")),
+        "".join(("httpx", ".")),
+        "".join(("socket", ".")),
+        "".join(("slack", "_sdk")),
+        "".join(("webhook", ".send")),
+    ]
+    test_source = Path(__file__).read_text(encoding="utf-8")
+    found = [fragment for fragment in forbidden_test_fragments if fragment in test_source]
+    assert not found, (
+        f"static alert-pipeline visibility contract must not use network hooks: {found}"
+    )
