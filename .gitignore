@@ -49,6 +49,7 @@ secrets.toml
 *.pem
 *_secret*
 !docs/ops/CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md
+!tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py
 *_key*
 
 # Logs
