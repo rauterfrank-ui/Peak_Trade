@@ -15,6 +15,8 @@ from __future__ import annotations
 import base64
 import hashlib
 import json
+from pathlib import Path
+
 import pytest
 from datetime import datetime, timezone
 from typing import Any, Dict
@@ -547,3 +549,73 @@ class TestConfig:
         assert config.timeout_seconds == 60.0
         assert config.max_retries == 5
         assert config.rate_limit_ms == 2000
+
+
+def test_kraken_testnet_sensitive_output_visibility_contract_v0() -> None:
+    """Static owner-review surface for Kraken testnet sensitive output markers.
+
+    This test reads source text only. It must not import exchange modules, call
+    Kraken, call network/API paths, create orders, start runtime components, or
+    change logging/redaction behavior.
+    """
+    repo_root = Path(__file__).resolve().parents[1]
+    source = (repo_root / "src" / "exchange" / "kraken_testnet.py").read_text(encoding="utf-8")
+    lowered = source.lower()
+
+    sensitive_markers = {
+        "api_key",
+        "secret",
+        "credential",
+    }
+    output_markers = {
+        "logger.",
+        "logging.",
+    }
+    exchange_markers = {
+        "kraken",
+        "testnet",
+        "order",
+        "balance",
+    }
+    redaction_markers = {
+        "redact",
+        "redacted",
+        "mask",
+        "masked",
+        "sanitize",
+        "sanitized",
+        "scrub",
+        "safe_secret",
+        "safe_token",
+    }
+
+    missing_sensitive_markers = [
+        marker for marker in sorted(sensitive_markers) if marker not in lowered
+    ]
+    missing_output_markers = [marker for marker in sorted(output_markers) if marker not in lowered]
+    missing_exchange_markers = [
+        marker for marker in sorted(exchange_markers) if marker not in lowered
+    ]
+    present_redaction_markers = [
+        marker for marker in sorted(redaction_markers) if marker in lowered
+    ]
+
+    assert not missing_sensitive_markers
+    assert not missing_output_markers
+    assert not missing_exchange_markers
+    assert present_redaction_markers == []
+
+    # Whole-file scan: skip literal "requests." (existing patches reference requests.Session).
+    forbidden_network_fragments = [
+        "".join(["htt", "px", "."]),
+        "".join(["soc", "ket", "."]),
+        "".join(["ccxt", "."]),
+        ".".join(["kraken", "fetch"]),
+        ".".join(["kraken", "create_order"]),
+    ]
+
+    test_source = Path(__file__).read_text(encoding="utf-8")
+    found = [fragment for fragment in forbidden_network_fragments if fragment in test_source]
+    assert not found, (
+        f"static Kraken testnet visibility contract must not use network/API hooks: {found}"
+    )
