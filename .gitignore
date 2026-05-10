@@ -48,6 +48,7 @@ secrets.toml
 *.key
 *.pem
 *_secret*
+!docs/ops/CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md
 *_key*
 
 # Logs
