@@ -119,6 +119,7 @@ def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> No
     assert 'data-market-v0-pro-shell="true"' in market_html
     assert 'data-market-v0-pro-grid="true"' in market_html
     assert 'data-market-v0-chart-panel="true"' in market_html
+    assert 'data-market-v0-chart-candle-stack="true"' in market_html
     assert 'data-market-v0-orderbook-placeholder="true"' in market_html
     assert 'data-market-v0-depth-chart-placeholder="true"' in market_html
     assert 'data-market-v0-pro-boundary="true"' in market_html
