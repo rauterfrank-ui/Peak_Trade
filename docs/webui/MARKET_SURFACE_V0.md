@@ -283,6 +283,12 @@ Das HTML für **`GET &#47;market`** enthält beim Chart‑Bereich ein Status‑E
 - **`data-market-empty-state="true"`** und **`data-market-error-state="true"`** sind **Display/Test‑Anker** wie andere **`data-market-*`**‑Marker.
 - **Keine** Schlussfolgerung auf Backend‑Betriebssicherheit, **Provider‑Readiness**, **Futures‑Readiness**, **Trading‑ oder Strategieautorität** oder **Capital/Scope/Risk/KillSwitch**‑Laufzeit über diese Marker hinaus.
 
+## Dokument‑Reconciliation gegen `main`
+
+- **Kanonischer Eigentümer:** Dieses Dokument beschreibt die **aktuellen** Market‑Surface‑Routen (**`GET`** **`&#47;market`**, **`GET`** **`&#47;market&#47;double-play`**, **`GET`** **`&#47;api&#47;market&#47;ohlcv`**, **`GET`** **`&#47;api&#47;market&#47;depth`**) und die zugehörigen SSR‑/`data‑*‑`‑Marker — **read-only**, **nicht autorisiert**, **ohne** Order‑/Live‑/Testnet‑Aktivierung.
+- **Vor weiteren Arbeitspaketen:** Abschnitte oben («Routen» bis «Market Depth SSR v0», Double‑Play v1–v1.3, Depth‑Kontrakt) sowie die Verweise auf **`docs&#47;ops&#47;specs&#47;`** gegen Ist‑Implementierung unter **`main`** abstimmen; **keine** neuen Evidence‑/Readiness‑/Handoff‑Karten ohne **reuse‑before‑new**.
+- **Abgeschlossene Sicherheits-/Static‑Contract‑Slices:** Tests-/CI‑Marker‑ oder Visibility‑Nachzüge (ohne neue Runtime‑Semantics) erwarten **keine** Änderung an Tiefe‑Kontrakten, JSON‑Shapes, Routen‑Formen oder Master‑V2/Doppel‑Spiel‑Entscheidlogik — **Operatorenkontext** z. B. sauber geschlossenes 24h‑Paper‑Fenster + **`HEAD`** **`3170ecd7303e`** (PR **#3432**, e2e‑Verification‑Netzwerk‑Marker) als dokumentierter Freeze‑Checkpoint für diese Reconciliation‑Notiz (**keine** technische Freeze‑Garantie, nur Doku‑Anker).
+
 ## Verwandte read-only WebUI-Fläche
 
 - [**Observability Hub v0**](observability/OBSERVABILITY_HUB_V0.md) — zentraler Display-/Navigations‑Kontext mit Verweisen u. a. auf diese Market‑Surface‑GET‑Routen; **ohne** zusätzliche Autorität oder Steuerlogik.
