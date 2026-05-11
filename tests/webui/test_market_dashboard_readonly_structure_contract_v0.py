@@ -117,6 +117,7 @@ def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> No
     market_html = _html(client, "/market")
 
     assert 'data-market-v0-pro-shell="true"' in market_html
+    assert 'data-market-v0-one-page-link-cleanup-v1="true"' in market_html
     assert 'data-market-v0-pro-grid="true"' in market_html
     assert 'data-market-v0-chart-panel="true"' in market_html
     assert 'data-market-v0-chart-candle-stack="true"' in market_html
