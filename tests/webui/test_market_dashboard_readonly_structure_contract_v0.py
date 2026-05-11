@@ -145,9 +145,13 @@ def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> No
     assert 'data-market-v0-ohlcv-preview="true"' in market_html
     assert 'data-market-v0-depth-preview="true"' in market_html
     assert 'data-market-v0-ssr-metrics-strip="true"' in market_html
-    assert 'data-market-v0-ssr-candle-strip="true"' in market_html
     assert 'data-market-v0-close-chart-integrated-frame="true"' in market_html
-    assert 'data-market-v0-ssr-candle="true"' in market_html
+    assert 'data-market-v0-in-chart-ohlc-svg-v1="true"' in market_html
+    assert 'data-market-v0-in-chart-ohlc-svg-root="true"' in market_html
+    assert (
+        'data-market-v0-in-chart-ohlc-candle-up="true"' in market_html
+        or 'data-market-v0-in-chart-ohlc-candle-down="true"' in market_html
+    )
     assert "chartjs-chart-financial" not in market_html.lower()
 
     lowered = market_html.lower()

@@ -1,5 +1,5 @@
 <!-- templates/peak_trade_dashboard/market_v0.html -->
-<!-- Market Surface v0 — read-only, Close-Line-Chart (Chart.js); v1 shell; v1.1 chart diagnostics -->
+<!-- Market Surface v0 — read-only, in-chart OHLC (SSR SVG); Chart.js diagnostics optional; v1 shell -->
 {% extends "base.html" %}
 
 {% block content %}
@@ -508,76 +508,115 @@
     <div
       class="relative flex flex-col min-h-[22rem] h-[28rem] sm:h-[30rem] w-full rounded-none border-0 border-t border-slate-800/70 bg-gradient-to-b from-slate-950/45 to-slate-950/80 shadow-inner shadow-black/35"
       data-market-v0-close-chart-integrated-frame="true"
-      aria-label="Close line chart with integrated SSR candle rail"
+      data-market-v0-in-chart-ohlc-svg-v1="true"
+      aria-label="OHLC chart (SSR, read-only)"
     >
-      <div
-        class="shrink-0 bg-slate-950/80 px-3 py-2.5 border-b border-slate-800/60"
-        data-market-v0-ssr-candle-strip="true"
-        aria-label="Read-only OHLCV SSR candle snapshot"
-      >
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+      <div class="shrink-0 bg-slate-950/80 px-3 py-2.5 border-b border-slate-800/60">
+        <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h3 class="text-[11px] font-semibold text-slate-100 tracking-tight m-0">Read-only OHLCV candles</h3>
-            <p class="text-[9px] text-slate-500 m-0 mt-0.5 leading-snug">SSR snapshot · Not live · No polling · Visual only (O/H/L/C), keine Handlungsaufforderung</p>
+            <h3 class="text-[11px] font-semibold text-slate-100 tracking-tight m-0">OHLC chart (SSR)</h3>
+            <p class="text-[9px] text-slate-500 m-0 mt-0.5 leading-snug">Kerzen im Plot· dieselbe Preisskala · Not live · No polling · read-only</p>
           </div>
           {% if payload.bars and payload.bars|length > 0 %}
-          {% set _cmax = 32 %}
-          {% set _blen = payload.bars|length %}
-          {% set _cshown = _blen if _blen < _cmax else _cmax %}
-          <span class="rounded border border-slate-700/70 bg-slate-900/70 px-1.5 py-0.5 text-[8px] font-semibold text-slate-400 tabular-nums uppercase">Last {{ _cshown }} bars</span>
+          {% set _cmax_ic = 96 %}
+          {% set _blen_ic = payload.bars|length %}
+          {% set _cshown_ic = _blen_ic if _blen_ic < _cmax_ic else _cmax_ic %}
+          <span class="rounded border border-slate-700/70 bg-slate-900/70 px-1.5 py-0.5 text-[8px] font-semibold text-slate-400 tabular-nums uppercase">Plot {{ _cshown_ic }} bars</span>
           {% endif %}
         </div>
-        {% if not payload.bars or payload.bars|length == 0 %}
-        <p class="text-[10px] text-slate-500 m-0" data-market-v0-ssr-candle-empty="true">
-          No embedded OHLCV rows — candle strip empty (SSR).
-        </p>
-        {% else %}
-        {% set cmax = 32 %}
-        {% set blen = payload.bars|length %}
-        {% set cstart = blen - cmax if blen > cmax else 0 %}
-        <div class="flex items-end gap-0.5 h-14 overflow-x-auto pb-0.5" role="img" aria-label="SSR OHLCV candle glyphs, older left newer right">
-          {% for bar in payload.bars[cstart:] %}
-            {% set o = bar.open|float %}
-            {% set h = bar.high|float %}
-            {% set l = bar.low|float %}
-            {% set c = bar.close|float %}
-            {% set rngv = h - l %}
-            {% if rngv < 1e-12 %}
-              {% set rngv = 1e-12 %}
-            {% endif %}
-            {% set body_lo = o if o < c else c %}
-            {% set body_hi = o if o > c else c %}
-            {% set body_bottom = (body_lo - l) / rngv * 100.0 %}
-            {% set body_h = (body_hi - body_lo) / rngv * 100.0 %}
-            {% set body_h = body_h if body_h > 3.0 else 3.0 %}
-            {% set body_bottom = body_bottom if body_bottom > 0.0 else 0.0 %}
-            {% set body_bottom = body_bottom if body_bottom + body_h <= 100.0 else 100.0 - body_h %}
-            {% set up = c >= o %}
-          <div
-            class="relative shrink-0 w-2 h-14 rounded-sm bg-slate-900/50 border border-slate-800/70"
-            data-market-v0-ssr-candle="true"
-            {% if up %}
-            data-market-v0-ssr-candle-up="true"
-            {% else %}
-            data-market-v0-ssr-candle-down="true"
-            {% endif %}
-          >
-            <div class="absolute inset-x-0 top-0 bottom-0 flex justify-center pointer-events-none" aria-hidden="true">
-              <div class="w-px h-full bg-slate-500/55"></div>
-            </div>
-            <div
-              class="absolute left-0.5 right-0.5 rounded-[1px] pointer-events-none {% if up %}bg-emerald-400/50 border border-emerald-400/30{% else %}bg-rose-400/45 border border-rose-400/28{% endif %}"
-              style="bottom: {{ body_bottom|round(2) }}%; height: {{ body_h|round(2) }}%;"
-              aria-hidden="true"
-            ></div>
-          </div>
-          {% endfor %}
-        </div>
-        {% endif %}
       </div>
 
-      <div class="relative flex-1 min-h-0 w-full">
-        <canvas id="chart-market-v0-close" class="block w-full h-full"></canvas>
+      <div class="relative flex-1 min-h-0 w-full bg-slate-950/40">
+        {% if not payload.bars or payload.bars|length == 0 %}
+        <div
+          class="flex h-full min-h-[16rem] items-center justify-center px-4 text-center text-[11px] text-slate-500"
+          data-market-v0-in-chart-ohlc-svg-empty="true"
+        >
+          <p class="m-0 max-w-md leading-snug">No embedded OHLCV rows — chart area empty (SSR). Keine synthetischen Kerzen.</p>
+        </div>
+        {% else %}
+        {% set cmax_ic = 96 %}
+        {% set blen_ic = payload.bars|length %}
+        {% set cstart_ic = blen_ic - cmax_ic if blen_ic > cmax_ic else 0 %}
+        {% set chart_bars_ic = payload.bars[cstart_ic:] %}
+        {% set n_ic = chart_bars_ic|length %}
+        {% set mm_ic = namespace(minv=0.0, maxv=0.0, first=true) %}
+        {% for bar in chart_bars_ic %}
+          {% set lo = bar.low|float %}
+          {% set hi = bar.high|float %}
+          {% if mm_ic.first %}
+            {% set mm_ic.minv = lo %}
+            {% set mm_ic.maxv = hi %}
+            {% set mm_ic.first = false %}
+          {% else %}
+            {% if lo < mm_ic.minv %}{% set mm_ic.minv = lo %}{% endif %}
+            {% if hi > mm_ic.maxv %}{% set mm_ic.maxv = hi %}{% endif %}
+          {% endif %}
+        {% endfor %}
+        {% set sp_raw = mm_ic.maxv - mm_ic.minv %}
+        {% set sp_use = sp_raw if sp_raw >= 1e-12 else 1e-12 %}
+        {% set vb_w_ic = 1000 %}
+        {% set vb_h_ic = 420 %}
+        {% set pad_l_ic = 52 %}
+        {% set pad_r_ic = 14 %}
+        {% set pad_t_ic = 18 %}
+        {% set pad_b_ic = 38 %}
+        {% set plot_w_ic = vb_w_ic - pad_l_ic - pad_r_ic %}
+        {% set plot_h_ic = vb_h_ic - pad_t_ic - pad_b_ic %}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 {{ vb_w_ic }} {{ vb_h_ic }}"
+          preserveAspectRatio="none"
+          class="block h-full w-full"
+          role="img"
+          aria-label="SSR OHLC candlesticks in plot coordinates, older left newer right, read-only"
+          data-market-v0-in-chart-ohlc-svg-root="true"
+        >
+          <rect x="0" y="0" width="{{ vb_w_ic }}" height="{{ vb_h_ic }}" fill="rgba(15,23,42,0.35)" />
+          {% for gi in range(5) %}
+          {% set gy = pad_t_ic + (plot_h_ic * gi / 4) %}
+          <line x1="{{ pad_l_ic }}" y1="{{ gy }}" x2="{{ vb_w_ic - pad_r_ic }}" y2="{{ gy }}" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+          {% endfor %}
+          {% for bar in chart_bars_ic %}
+          {% set loop_idx = loop.index0 %}
+          {% set o = bar.open|float %}
+          {% set h = bar.high|float %}
+          {% set l = bar.low|float %}
+          {% set c = bar.close|float %}
+          {% if o >= c %}
+            {% set top_pri = o %}
+            {% set bot_pri = c %}
+          {% else %}
+            {% set top_pri = c %}
+            {% set bot_pri = o %}
+          {% endif %}
+          {% set up_ic = c >= o %}
+          {% set slot_w = plot_w_ic / n_ic %}
+          {% set cx = pad_l_ic + (loop_idx + 0.5) * slot_w %}
+          {% set cw0 = [12, slot_w * 0.62]|min %}
+          {% set cw = [3.0, cw0]|max %}
+          {% set y_hi = pad_t_ic + (mm_ic.maxv - h) / sp_use * plot_h_ic %}
+          {% set y_lo = pad_t_ic + (mm_ic.maxv - l) / sp_use * plot_h_ic %}
+          {% set y_body_top = pad_t_ic + (mm_ic.maxv - top_pri) / sp_use * plot_h_ic %}
+          {% set y_body_bot = pad_t_ic + (mm_ic.maxv - bot_pri) / sp_use * plot_h_ic %}
+          {% set bh0 = y_body_bot - y_body_top %}
+          {% set bh = [bh0, 1.2]|max %}
+          <g
+            data-market-v0-in-chart-ohlc-candle="true"
+            {% if up_ic %}
+            data-market-v0-in-chart-ohlc-candle-up="true"
+            {% else %}
+            data-market-v0-in-chart-ohlc-candle-down="true"
+            {% endif %}
+          >
+            <line x1="{{ cx|round(2) }}" y1="{{ y_hi|round(2) }}" x2="{{ cx|round(2) }}" y2="{{ y_lo|round(2) }}" stroke="{% if up_ic %}rgba(52,211,153,0.85){% else %}rgba(244,63,94,0.88){% endif %}" stroke-width="1.1" />
+            <rect x="{{ (cx - cw / 2)|round(2) }}" y="{{ y_body_top|round(2) }}" width="{{ cw|round(2) }}" height="{{ bh|round(2) }}" rx="0.6" fill="{% if up_ic %}rgba(52,211,153,0.35){% else %}rgba(244,63,94,0.32){% endif %}" stroke="{% if up_ic %}rgba(52,211,153,0.55){% else %}rgba(244,63,94,0.5){% endif %}" stroke-width="0.9" />
+          </g>
+          {% endfor %}
+          <text x="{{ pad_l_ic }}" y="{{ vb_h_ic - 10 }}" fill="#64748b" font-size="11" font-family="ui-monospace, monospace">low {{ mm_ic.minv|round(8) }}</text>
+          <text x="{{ vb_w_ic - pad_r_ic }}" y="{{ pad_t_ic + 12 }}" text-anchor="end" fill="#64748b" font-size="11" font-family="ui-monospace, monospace">high {{ mm_ic.maxv|round(8) }}</text>
+        </svg>
+        {% endif %}
       </div>
     </div>
     </div>
@@ -967,78 +1006,7 @@
         return;
       }
 
-      var canvas = document.getElementById("chart-market-v0-close");
-      if (!canvas || typeof window.Chart === "undefined") {
-        setMarketChartStatus("error");
-        showClientFallback("Chart library missing or blocked");
-        return;
-      }
-
       hideClientFallbackOnly();
-
-      var grid = "rgba(148, 163, 184, 0.15)";
-      var tick = "#94a3b8";
-      var line = "rgba(56, 189, 248, 0.85)";
-
-      try {
-        new Chart(canvas.getContext("2d"), {
-          type: "line",
-          data: {
-            labels: bars.map(function (b) {
-              return b.ts;
-            }),
-            datasets: [
-              {
-                label: "Close",
-                data: bars.map(function (b) {
-                  return b.close;
-                }),
-                borderColor: line,
-                backgroundColor: "rgba(56, 189, 248, 0.12)",
-                borderWidth: 1.5,
-                fill: true,
-                tension: 0.1,
-                pointRadius: 0,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: { mode: "index", intersect: false },
-            plugins: {
-              legend: { labels: { color: tick } },
-              tooltip: {
-                callbacks: {
-                  label: function (ctx) {
-                    var v = ctx.parsed.y;
-                    return v != null ? "close: " + v.toFixed(2) : "";
-                  },
-                },
-              },
-            },
-            scales: {
-              x: {
-                ticks: {
-                  color: tick,
-                  maxRotation: 45,
-                  minRotation: 0,
-                  font: { size: 9 },
-                },
-                grid: { color: grid },
-              },
-              y: {
-                ticks: { color: tick },
-                grid: { color: grid },
-              },
-            },
-          },
-        });
-      } catch (e2) {
-        setMarketChartStatus("error");
-        showClientFallback("Chart render error");
-        return;
-      }
       syncChartJsLine();
       setMarketChartStatus("ready");
     })();
