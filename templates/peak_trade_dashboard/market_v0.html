@@ -587,17 +587,32 @@
         </ul>
       </section>
 
+      <div class="space-y-3 min-w-0" data-market-v0-lower-depth-orderbook-visuals-v1="true">
+
       <section
-        class="rounded-lg border border-dashed border-slate-600/70 bg-slate-950/55 px-2.5 py-2 text-[11px] text-slate-400"
+        class="rounded-xl border border-slate-600/55 bg-gradient-to-b from-slate-950/92 via-slate-900/80 to-slate-950/88 ring-1 ring-emerald-900/15 shadow-lg shadow-black/20 overflow-hidden"
         data-market-v0-orderbook-placeholder="true"
         aria-label="Price ladder (read-only)"
       >
-        <p class="font-semibold text-slate-200 uppercase tracking-wide text-[10px] mb-1 leading-snug">
-          Price ladder · order book slice
-        </p>
-        <p class="mt-0 mb-2 leading-snug text-[10px] text-slate-500">
-          Read-only · offline depth bundle · Top&nbsp;{{ market_depth.top_levels_limit }} levels · no order controls.
-        </p>
+        <div class="flex items-center gap-2 px-2.5 py-2 border-b border-slate-800/80 bg-slate-950/75">
+          <div class="h-8 w-1 rounded-full bg-gradient-to-b from-emerald-400/70 to-rose-400/55 shrink-0" aria-hidden="true"></div>
+          <div class="min-w-0 flex-1">
+            <p class="font-semibold text-slate-100 uppercase tracking-wide text-[10px] m-0 leading-snug">
+              Price ladder · order book slice
+            </p>
+            <p class="mt-0.5 m-0 leading-snug text-[9px] text-slate-500">
+              Read-only · offline depth bundle · Top&nbsp;{{ market_depth.top_levels_limit }} · display sizes only · no order controls
+            </p>
+          </div>
+          {% if market_depth.has_depth_levels and market_depth.top_bids and market_depth.top_asks %}
+          <div class="hidden sm:block shrink-0 text-right font-mono text-[9px] tabular-nums text-slate-400">
+            <span class="text-emerald-300/90">Bid {{ market_depth.top_bids[0].price|e }}</span>
+            <span class="text-slate-600 px-0.5">/</span>
+            <span class="text-rose-300/90">Ask {{ market_depth.top_asks[0].price|e }}</span>
+          </div>
+          {% endif %}
+        </div>
+        <div class="px-2.5 pb-2.5 pt-2.5 text-[11px] text-slate-400">
         <div
           data-market-v0-orderbook-topn="true"
           {% if market_depth.has_depth_levels %}
@@ -686,7 +701,7 @@
           </div>
           {% else %}
           <div
-            class="rounded-md border border-dashed border-slate-600/60 bg-slate-950/50 px-2.5 py-2 text-[10px] text-slate-400 leading-snug"
+            class="rounded-md border border-dashed border-slate-600/60 bg-slate-950/50 px-2.5 py-3 text-[10px] text-slate-400 leading-snug"
             data-market-v0-orderbook-empty="true"
             role="note"
           >
@@ -694,22 +709,71 @@
             <p class="m-0 mt-1 text-slate-500">
               No ladder rows · depth disabled, unconfigured, or empty SSR snapshot · display-only diagnostics.
             </p>
+            <div class="mt-3 grid grid-cols-2 gap-2 opacity-70" aria-hidden="true">
+              <div class="space-y-1.5 rounded-lg border border-slate-800/70 bg-slate-900/40 p-2">
+                <div class="h-2 rounded bg-slate-700/50 w-3/4"></div>
+                <div class="h-2 rounded bg-slate-700/40 w-1/2"></div>
+                <div class="h-2 rounded bg-slate-700/35 w-2/3"></div>
+              </div>
+              <div class="space-y-1.5 rounded-lg border border-slate-800/70 bg-slate-900/40 p-2">
+                <div class="h-2 rounded bg-slate-700/50 w-2/3"></div>
+                <div class="h-2 rounded bg-slate-700/40 w-4/5"></div>
+                <div class="h-2 rounded bg-slate-700/35 w-1/2"></div>
+              </div>
+            </div>
           </div>
           {% endif %}
+        </div>
         </div>
       </section>
 
       <section
-        class="rounded-lg border border-dashed border-slate-600/70 bg-slate-950/55 px-2.5 py-2.5 text-[10px] text-slate-400"
+        class="rounded-xl border border-amber-900/35 bg-gradient-to-br from-amber-950/22 via-slate-950/88 to-slate-900/85 px-2.5 py-2.5 text-[10px] text-slate-400 ring-1 ring-amber-900/20 shadow-inner shadow-black/25"
         data-market-v0-depth-chart-placeholder="true"
         aria-label="Depth chart placeholder (read-only)"
       >
-        <div class="flex flex-wrap items-start justify-between gap-2 mb-1.5">
-          <p class="font-semibold text-slate-200 uppercase tracking-wide leading-snug m-0">
+        <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+          <p class="font-semibold text-slate-100 uppercase tracking-wide leading-snug m-0">
             Displayed top-level depth (static)
           </p>
-          <span class="inline-flex items-center rounded border border-amber-900/50 bg-amber-950/40 px-1.5 py-0.5 text-[9px] font-semibold text-amber-100/90 tabular-nums">Not cumulative</span>
+          <span class="inline-flex items-center rounded border border-amber-800/50 bg-amber-950/45 px-1.5 py-0.5 text-[9px] font-semibold text-amber-100/90 tabular-nums">Not cumulative</span>
         </div>
+        {% if market_depth.has_depth_levels and market_depth.top_bids and market_depth.top_asks %}
+        {% set _mini = namespace(i=0) %}
+        <div class="grid grid-cols-2 gap-2 mb-2" role="img" aria-label="Miniature SSR bid versus ask displayed sizes, top levels only">
+          <div class="rounded-lg border border-emerald-900/30 bg-slate-950/65 p-2 space-y-1.5">
+            <p class="text-[8px] font-bold uppercase tracking-wide text-emerald-400/90 m-0">Bids (display)</p>
+            {% for row in market_depth.top_bids %}
+              {% if _mini.i < 3 %}
+              {% set szv = (row.size|string)|replace(',', '')|float(0) %}
+              <div class="flex items-center gap-1.5 font-mono tabular-nums text-[9px] text-slate-300">
+                <span class="w-14 shrink-0 truncate text-emerald-200/90">{{ row.price|e }}</span>
+                <div class="flex-1 h-2 rounded bg-slate-800/90 overflow-hidden border border-slate-800/70">
+                  <div class="h-full bg-emerald-400/35 rounded-sm" style="width: {% if szv > 0 %}100%{% else %}8%{% endif %};"></div>
+                </div>
+              </div>
+              {% set _mini.i = _mini.i + 1 %}
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div class="rounded-lg border border-rose-900/30 bg-slate-950/65 p-2 space-y-1.5">
+            <p class="text-[8px] font-bold uppercase tracking-wide text-rose-300/90 m-0">Asks (display)</p>
+            {% set _mini.i = 0 %}
+            {% for row in market_depth.top_asks %}
+              {% if _mini.i < 3 %}
+              {% set szv = (row.size|string)|replace(',', '')|float(0) %}
+              <div class="flex items-center gap-1.5 font-mono tabular-nums text-[9px] text-slate-300">
+                <span class="w-14 shrink-0 truncate text-rose-200/90">{{ row.price|e }}</span>
+                <div class="flex-1 h-2 rounded bg-slate-800/90 overflow-hidden border border-slate-800/70">
+                  <div class="h-full bg-rose-400/30 rounded-sm" style="width: {% if szv > 0 %}100%{% else %}8%{% endif %};"></div>
+                </div>
+              </div>
+              {% set _mini.i = _mini.i + 1 %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
         <p class="m-0 leading-snug">
           Visual impression only from SSR Top-N levels — <strong class="font-semibold text-slate-200">not</strong> a full cumulative depth chart, <strong class="font-semibold text-slate-200">no</strong> live feed, <strong class="font-semibold text-slate-200">no</strong> polling. Canonical diagnostic strip remains the depth summary below.
         </p>
@@ -718,23 +782,31 @@
       <section
         id="market-v0-depth-ssr"
         aria-label="Market depth read-model (SSR, offline or disabled)"
-        class="rounded-lg border border-slate-700/70 bg-slate-900/60 px-3 py-2.5 text-[11px] text-slate-300"
+        class="rounded-xl border border-slate-700/70 border-l-4 {% if market_depth.display_status == 'ok' %}border-l-emerald-500/55{% else %}border-l-amber-500/50{% endif %} bg-slate-900/70 px-3 py-3 text-[11px] text-slate-300 shadow-md shadow-black/20"
         data-market-depth-panel="true"
         data-market-depth-status="{{ market_depth.display_status }}"
         {% if market_depth.readmodel_id %}
         data-market-depth-readmodel-id="{{ market_depth.readmodel_id }}"
         {% endif %}
       >
-        <p class="font-semibold text-slate-200/95 tracking-wide uppercase text-[11px] mb-1.5">
-          Market Depth (read-only)
-        </p>
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+          <p class="font-semibold text-slate-100 tracking-wide uppercase text-[11px] m-0">
+            Market Depth (read-only)
+          </p>
+          <span class="inline-flex items-center gap-1.5 rounded-md border border-slate-700/70 bg-slate-950/70 px-2 py-0.5 text-[9px] font-semibold font-mono text-slate-300 tabular-nums" data-market-v0-depth-status-pill="true">
+            <span class="h-1.5 w-1.5 rounded-full {% if market_depth.display_status == 'ok' %}bg-emerald-400/90{% else %}bg-amber-400/85{% endif %}" aria-hidden="true"></span>
+            {{ market_depth.display_status|e }}
+          </span>
+        </div>
         <p class="leading-relaxed text-slate-300/90 m-0" data-market-depth-summary="true">
           {{ market_depth.summary_line|e }}
         </p>
-        <p class="mt-1.5 text-[11px] text-slate-500 m-0">
+        <p class="mt-2 text-[10px] text-slate-500 m-0 leading-snug">
           Depth/offline display only — SSR only; keine Browser-Abfrage der Depth-JSON-Route; keine Orders oder Ausführung.
         </p>
       </section>
+
+      </div>
 
       <section
         class="rounded-lg border border-slate-700/60 bg-slate-900/60 px-2.5 py-2 text-[10px] text-slate-400"
