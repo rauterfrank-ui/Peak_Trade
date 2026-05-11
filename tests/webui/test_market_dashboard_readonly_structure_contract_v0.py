@@ -112,6 +112,12 @@ def test_market_dashboard_readonly_banner_markers(client: TestClient) -> None:
     assert 'data-market-non-authorizing="true"' in market_html
 
 
+def test_market_dashboard_ranking_funnel_empty_state_v0_marker(client: TestClient) -> None:
+    """Contract-first funnel panel: stable marker only; no ranking data wired on /market."""
+    market_html = _html(client, "/market")
+    assert 'data-market-v0-ranking-funnel-empty-state-v0="true"' in market_html
+
+
 def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> None:
     """Read-only IA shell on GET /market: stable markers, no order-affordance attributes."""
     market_html = _html(client, "/market")
