@@ -1,13 +1,18 @@
-"""Static visibility contract for GitHub workflow secrets references.
+"""Static visibility contract for GitHub workflow secrets and vars references.
 
-Parses workflow YAML files as UTF-8 text only. Never reads credential payloads,
-never calls GitHub APIs, never dispatches workflows, never executes scripts,
-and never touches runtime, scheduler, daemon, paper/shadow/testnet/live,
-broker/exchange, or order-submission paths.
+Parses workflow YAML files as UTF-8 text only. Never reads credential payloads
+or repository variable values, never calls GitHub APIs, never dispatches
+workflows, never executes scripts, and never touches runtime, scheduler, daemon,
+paper/shadow/testnet/live, broker/exchange, or order-submission paths.
 
 This contract freezes the current workflow `secrets.*` reference inventory as
 an owner-review surface. It does not require workflow YAML changes and does
 not treat the current set as a new hard failure without owner decision.
+
+Follow-up (github_actions_vars_context_visibility_v1): collects repo-local
+`vars.<NAME>` identifier references (expression or `${{ }}` forms) as a sorted
+inventory only; new vars references do not fail CI because no frozen vars allowlist
+is enforced here.
 """
 
 from __future__ import annotations
@@ -21,6 +26,9 @@ WORKFLOW_ROOT = REPO_ROOT / ".github" / "workflows"
 
 SECRET_REF_RX = re.compile(r"\$\{\{\s*secrets\.([A-Za-z0-9_]+)\s*\}\}", re.I)
 LOOSE_SECRETS_RX = re.compile(r"secrets\.", re.I)
+
+# Matches `vars.NAME` in `${{ vars.NAME }}`, `if: vars.NAME == ...`, etc.
+VAR_NAME_RX = re.compile(r"(?<![A-Za-z0-9_])vars\.([A-Za-z0-9_]+)", re.I)
 
 KNOWN_WORKFLOWS_WITH_SECRETS_REFERENCES = frozenset(
     {
@@ -85,6 +93,27 @@ def _workflows_with_secrets_references() -> dict[str, set[str]]:
             result[workflow.name] = names
 
     return result
+
+
+def _var_reference_names(text: str) -> set[str]:
+    return {m.upper() for m in VAR_NAME_RX.findall(text)}
+
+
+def _workflows_with_vars_references() -> dict[str, set[str]]:
+    result: dict[str, set[str]] = {}
+
+    for workflow in _workflow_files():
+        text = _workflow_text(workflow)
+        names = _var_reference_names(text)
+        if names:
+            result[workflow.name] = names
+
+    return result
+
+
+def _sorted_vars_reference_inventory() -> dict[str, list[str]]:
+    raw = _workflows_with_vars_references()
+    return {wf: sorted(names) for wf, names in sorted(raw.items())}
 
 
 def test_workflow_secrets_reference_visibility_contract_has_workflows_to_check() -> None:
@@ -192,3 +221,64 @@ def test_workflow_secrets_reference_visibility_contract_retains_static_local_sco
 
     found = [fragment for fragment in forbidden_fragments if fragment in test_text]
     assert not found, f"contract must remain static/local-only: {found}"
+
+
+_SYNTHETIC_VARS_SNIPPET = (
+    "jobs:\n"
+    "  x:\n"
+    "    if: vars.FEATURE_TOGGLE == 'true'\n"
+    "    env:\n"
+    "      A: ${{ vars.MY_REPO_VAR }}\n"
+)
+
+
+def test_github_actions_vars_context_visibility_v1_parser_detects_expression_and_braced_forms() -> (
+    None
+):
+    names = _var_reference_names(_SYNTHETIC_VARS_SNIPPET)
+    assert names == {"FEATURE_TOGGLE", "MY_REPO_VAR"}
+
+
+def test_github_actions_vars_context_visibility_v1_inventory_sorted_deterministic() -> None:
+    first = _sorted_vars_reference_inventory()
+    second = _sorted_vars_reference_inventory()
+    assert first == second
+    assert list(first.keys()) == sorted(first.keys())
+    for names in first.values():
+        assert names == sorted(names)
+
+
+def test_github_actions_vars_context_visibility_v1_inventory_shape() -> None:
+    inventory = _sorted_vars_reference_inventory()
+
+    assert inventory
+    for filename, names in inventory.items():
+        assert filename.endswith((".yml", ".yaml"))
+        assert names
+        assert len(names) == len(set(names))
+        for name in names:
+            assert name == name.upper()
+            assert name.isascii()
+            assert name.replace("_", "").isalnum()
+
+
+def test_github_actions_vars_context_visibility_v1_ci_scheduled_smoke_lists_scheduling_vars() -> (
+    None
+):
+    inventory = _sorted_vars_reference_inventory()
+    row = inventory.get("ci-scheduled-paper-and-export-smoke.yml")
+    assert row is not None
+    assert "PT_SCHEDULED_PAPER_TESTS_ENABLED" in row
+    assert "PT_SCHEDULED_EXPORT_VERIFY_ENABLED" in row
+
+
+def test_github_actions_vars_context_visibility_v1_never_checks_variable_values() -> None:
+    test_text = Path(__file__).read_text(encoding="utf-8").lower()
+
+    forbidden_value_access_markers = [
+        " ".join(("gh", "variable", "get")),
+        " ".join(("gh", "api")),
+    ]
+
+    found = [marker for marker in forbidden_value_access_markers if marker in test_text]
+    assert not found, f"contract must not resolve GitHub variable values: {found}"
