@@ -118,6 +118,12 @@ def test_market_dashboard_ranking_funnel_empty_state_v0_marker(client: TestClien
     assert 'data-market-v0-ranking-funnel-empty-state-v0="true"' in market_html
 
 
+def test_market_dashboard_ranking_funnel_dynamic_labels_v0_marker(client: TestClient) -> None:
+    """Funnel stages use dynamic labels (no fixed final-count wording in UI contract)."""
+    market_html = _html(client, "/market")
+    assert 'data-market-v0-ranking-funnel-dynamic-labels-v0="true"' in market_html
+
+
 def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> None:
     """Read-only IA shell on GET /market: stable markers, no order-affordance attributes."""
     market_html = _html(client, "/market")
