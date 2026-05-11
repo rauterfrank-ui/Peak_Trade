@@ -62,6 +62,23 @@ Auf **`GET`** **`/market`** zeigt das Template einen **Futures-Ranking-Funnel** 
 
 **Dashboard ≠ Freigabe:** der Funnel begründet **keine** Orders, **kein** Live/Testnet/Paper, **keine** Scope/Capital-, Risk-/KillSwitch- oder Strategieautorität.
 
+### Marker / IA crosswalk policy v0
+
+`market_v0.html` deliberately exposes many `data-market-v0-*` markers for SSR structure, visual grouping, and regression tests. `MARKET_SURFACE_V0.md` is the canonical product/contract surface, not a complete attribute registry: it should describe marker families and authority boundaries rather than duplicate every template attribute.
+
+Current marker families are consolidated as:
+
+- **Read-only / non-authority shell**: markers that prove the Market Dashboard remains display-only and cannot approve, arm, or submit trades.
+- **SSR metric and candle/OHLC surface**: markers for server-rendered market context, candle stack continuity, and supplemental chart framing.
+- **Depth / orderbook readmodel display**: markers for read-only bid/ask/top-N/depth summaries; these do not create broker, exchange, or order authority.
+- **Visual Cockpit tiles**: markers for grouped Market Snapshot, Chart/OHLCV, Depth, and Safety Rail presentation. These are IA/test anchors, not a separate dashboard surface.
+- **Ranking funnel empty-state / dynamic labels**: markers for producer-defined stages such as `Top Universe`, `Shortlist`, `Top Ranking`, and `Selected Candidates`; the funnel is not fixed to `Top 50&#47;20&#47;5`.
+- **Diagnostic/helper markers**: compact template anchors may exist without individual doc bullets when they are subordinate to the families above.
+
+The canonical test owner for structural marker invariants is `tests/webui/test_market_dashboard_readonly_structure_contract_v0.py`. New marker assertions should be added there only when they protect a user-visible/read-only contract or prevent authority regression. Avoid creating parallel marker registries, duplicate docs, or separate evidence/readiness/map/handoff/package/pointer surfaces.
+
+Dashboard markers remain non-authorizing: **Dashboard ≠ Freigabe**; no marker may imply order UI, broker access, exchange submission, testnet/live authorization, Risk/KillSwitch bypass, or Master V2 / Double Play authority.
+
 ## Market Surface v1 visual framing
 
 **v1** ist eine **rein visuelle Dashboard‑Rahmenfläche** auf **`GET &#47;market`** (Templates/Tests/Docs nur): zusätzliche `data‑market‑v1‑*`‑Marker, Kontext-/Stat‑Karten aus **bereits vorhandenen** Payload‑Feldern (`source`, `symbol`, `timeframe`, `bars_returned`, SSR‑Chart‑Hint), englisches **Read‑only / no‑authority**‑Band sowie ein **referenzierender** Link auf **`GET &#47;api&#47;market&#47;ohlcv`** (gleiche Query wie die Seite, **navigation only**).
