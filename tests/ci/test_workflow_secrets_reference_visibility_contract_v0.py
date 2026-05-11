@@ -17,6 +17,11 @@ is enforced here.
 Follow-up (github_actions_braced_env_matrix_expression_visibility_v1): braced
 `${{ env.NAME }}` names are normalized uppercase (like secrets/vars); braced
 `${{ matrix.NAME }}` axis keys preserve YAML spelling (may include hyphens).
+
+Follow-up (github_actions_braced_needs_github_event_inputs_visibility_v1): braced
+`${{ needs.<segment> ... }}` inventories only the first path segment after `needs.`
+(job id / needs-key spelling preserved); braced `${{ github.event.inputs.NAME }}`
+lists dispatch input names only (no values).
 """
 
 from __future__ import annotations
@@ -36,6 +41,12 @@ VAR_NAME_RX = re.compile(r"(?<![A-Za-z0-9_])vars\.([A-Za-z0-9_]+)", re.I)
 
 ENV_BRACED_RX = re.compile(r"\$\{\{\s*env\.([A-Za-z0-9_]+)\s*\}\}", re.I)
 MATRIX_BRACED_RX = re.compile(r"\$\{\{\s*matrix\.([A-Za-z0-9_-]+)\s*\}\}")
+
+# First segment after `needs.` inside a braced expression (job id / needs key).
+NEEDS_BRACED_SEGMENT_RX = re.compile(r"\$\{\{\s*needs\.([A-Za-z0-9_-]+)")
+GITHUB_EVENT_INPUTS_BRACED_RX = re.compile(
+    r"\$\{\{\s*github\.event\.inputs\.([A-Za-z0-9_-]+)\s*\}\}"
+)
 
 KNOWN_WORKFLOWS_WITH_SECRETS_REFERENCES = frozenset(
     {
@@ -162,6 +173,48 @@ def _workflows_with_braced_matrix_references() -> dict[str, set[str]]:
 
 def _sorted_braced_matrix_reference_inventory() -> dict[str, list[str]]:
     raw = _workflows_with_braced_matrix_references()
+    return {wf: sorted(names) for wf, names in sorted(raw.items())}
+
+
+def _braced_needs_segment_names(text: str) -> set[str]:
+    return set(NEEDS_BRACED_SEGMENT_RX.findall(text))
+
+
+def _workflows_with_braced_needs_segments() -> dict[str, set[str]]:
+    result: dict[str, set[str]] = {}
+
+    for workflow in _workflow_files():
+        text = _workflow_text(workflow)
+        names = _braced_needs_segment_names(text)
+        if names:
+            result[workflow.name] = names
+
+    return result
+
+
+def _sorted_braced_needs_segment_inventory() -> dict[str, list[str]]:
+    raw = _workflows_with_braced_needs_segments()
+    return {wf: sorted(names) for wf, names in sorted(raw.items())}
+
+
+def _braced_github_event_inputs_names(text: str) -> set[str]:
+    return set(GITHUB_EVENT_INPUTS_BRACED_RX.findall(text))
+
+
+def _workflows_with_braced_github_event_inputs() -> dict[str, set[str]]:
+    result: dict[str, set[str]] = {}
+
+    for workflow in _workflow_files():
+        text = _workflow_text(workflow)
+        names = _braced_github_event_inputs_names(text)
+        if names:
+            result[workflow.name] = names
+
+    return result
+
+
+def _sorted_braced_github_event_inputs_inventory() -> dict[str, list[str]]:
+    raw = _workflows_with_braced_github_event_inputs()
     return {wf: sorted(names) for wf, names in sorted(raw.items())}
 
 
@@ -410,3 +463,83 @@ def test_github_actions_braced_env_matrix_expression_visibility_v1_ci_matrix_smo
     row = inventory.get("ci.yml")
     assert row is not None
     assert "python-version" in row
+
+
+_SYNTHETIC_BRACED_NEEDS_GITHUB_EVENT_INPUTS_SNIPPET = (
+    "jobs:\n"
+    "  x:\n"
+    "    steps:\n"
+    "      - run: |\n"
+    "          echo '${{ needs.fast-lane.result }}'\n"
+    "          echo '${{ needs.my-job.outputs.shard }}'\n"
+    "          echo '${{ github.event.inputs.confirm_token }}'\n"
+)
+
+
+def test_github_actions_braced_needs_github_event_inputs_visibility_v1_parser_synthetic_snippet() -> (
+    None
+):
+    text = _SYNTHETIC_BRACED_NEEDS_GITHUB_EVENT_INPUTS_SNIPPET
+    assert _braced_needs_segment_names(text) == {"fast-lane", "my-job"}
+    assert _braced_github_event_inputs_names(text) == {"confirm_token"}
+
+
+def test_github_actions_braced_needs_github_event_inputs_visibility_v1_inventory_deterministic() -> (
+    None
+):
+    needs_first = _sorted_braced_needs_segment_inventory()
+    needs_second = _sorted_braced_needs_segment_inventory()
+    assert needs_first == needs_second
+    assert list(needs_first.keys()) == sorted(needs_first.keys())
+    for names in needs_first.values():
+        assert names == sorted(names)
+
+    gin_first = _sorted_braced_github_event_inputs_inventory()
+    gin_second = _sorted_braced_github_event_inputs_inventory()
+    assert gin_first == gin_second
+    assert list(gin_first.keys()) == sorted(gin_first.keys())
+    for names in gin_first.values():
+        assert names == sorted(names)
+
+
+def test_github_actions_braced_needs_github_event_inputs_visibility_v1_inventory_shape() -> None:
+    needs_inv = _sorted_braced_needs_segment_inventory()
+    gin_inv = _sorted_braced_github_event_inputs_inventory()
+
+    assert needs_inv
+    assert gin_inv
+
+    for filename, names in needs_inv.items():
+        assert filename.endswith((".yml", ".yaml"))
+        assert names
+        assert len(names) == len(set(names))
+        for name in names:
+            assert name.isascii()
+            assert re.fullmatch(r"[A-Za-z0-9_-]+", name)
+
+    for filename, names in gin_inv.items():
+        assert filename.endswith((".yml", ".yaml"))
+        assert names
+        assert len(names) == len(set(names))
+        for name in names:
+            assert name.isascii()
+            assert re.fullmatch(r"[A-Za-z0-9_-]+", name)
+
+
+def test_github_actions_braced_needs_github_event_inputs_visibility_v1_ci_needs_segments_smoke() -> (
+    None
+):
+    inventory = _sorted_braced_needs_segment_inventory()
+    row = inventory.get("ci.yml")
+    assert row is not None
+    assert "changes" in row
+    assert "fast-lane" in row
+
+
+def test_github_actions_braced_needs_github_event_inputs_visibility_v1_prcd_github_event_inputs_smoke() -> (
+    None
+):
+    inventory = _sorted_braced_github_event_inputs_inventory()
+    row = inventory.get("prcd-aws-export-write-smoke.yml")
+    assert row is not None
+    assert "confirm_token" in row
