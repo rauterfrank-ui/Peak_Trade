@@ -1,4 +1,4 @@
-"""Static visibility contract for GitHub workflow secrets and vars references.
+"""Static visibility contract for GitHub workflow secrets, vars, and braced contexts.
 
 Parses workflow YAML files as UTF-8 text only. Never reads credential payloads
 or repository variable values, never calls GitHub APIs, never dispatches
@@ -13,6 +13,10 @@ Follow-up (github_actions_vars_context_visibility_v1): collects repo-local
 `vars.<NAME>` identifier references (expression or `${{ }}` forms) as a sorted
 inventory only; new vars references do not fail CI because no frozen vars allowlist
 is enforced here.
+
+Follow-up (github_actions_braced_env_matrix_expression_visibility_v1): braced
+`${{ env.NAME }}` names are normalized uppercase (like secrets/vars); braced
+`${{ matrix.NAME }}` axis keys preserve YAML spelling (may include hyphens).
 """
 
 from __future__ import annotations
@@ -29,6 +33,9 @@ LOOSE_SECRETS_RX = re.compile(r"secrets\.", re.I)
 
 # Matches `vars.NAME` in `${{ vars.NAME }}`, `if: vars.NAME == ...`, etc.
 VAR_NAME_RX = re.compile(r"(?<![A-Za-z0-9_])vars\.([A-Za-z0-9_]+)", re.I)
+
+ENV_BRACED_RX = re.compile(r"\$\{\{\s*env\.([A-Za-z0-9_]+)\s*\}\}", re.I)
+MATRIX_BRACED_RX = re.compile(r"\$\{\{\s*matrix\.([A-Za-z0-9_-]+)\s*\}\}")
 
 KNOWN_WORKFLOWS_WITH_SECRETS_REFERENCES = frozenset(
     {
@@ -113,6 +120,48 @@ def _workflows_with_vars_references() -> dict[str, set[str]]:
 
 def _sorted_vars_reference_inventory() -> dict[str, list[str]]:
     raw = _workflows_with_vars_references()
+    return {wf: sorted(names) for wf, names in sorted(raw.items())}
+
+
+def _braced_env_reference_names(text: str) -> set[str]:
+    return {m.upper() for m in ENV_BRACED_RX.findall(text)}
+
+
+def _workflows_with_braced_env_references() -> dict[str, set[str]]:
+    result: dict[str, set[str]] = {}
+
+    for workflow in _workflow_files():
+        text = _workflow_text(workflow)
+        names = _braced_env_reference_names(text)
+        if names:
+            result[workflow.name] = names
+
+    return result
+
+
+def _sorted_braced_env_reference_inventory() -> dict[str, list[str]]:
+    raw = _workflows_with_braced_env_references()
+    return {wf: sorted(names) for wf, names in sorted(raw.items())}
+
+
+def _braced_matrix_reference_names(text: str) -> set[str]:
+    return set(MATRIX_BRACED_RX.findall(text))
+
+
+def _workflows_with_braced_matrix_references() -> dict[str, set[str]]:
+    result: dict[str, set[str]] = {}
+
+    for workflow in _workflow_files():
+        text = _workflow_text(workflow)
+        names = _braced_matrix_reference_names(text)
+        if names:
+            result[workflow.name] = names
+
+    return result
+
+
+def _sorted_braced_matrix_reference_inventory() -> dict[str, list[str]]:
+    raw = _workflows_with_braced_matrix_references()
     return {wf: sorted(names) for wf, names in sorted(raw.items())}
 
 
@@ -282,3 +331,82 @@ def test_github_actions_vars_context_visibility_v1_never_checks_variable_values(
 
     found = [marker for marker in forbidden_value_access_markers if marker in test_text]
     assert not found, f"contract must not resolve GitHub variable values: {found}"
+
+
+_SYNTHETIC_BRACED_ENV_MATRIX_SNIPPET = (
+    "jobs:\n"
+    "  j:\n"
+    "    env:\n"
+    "      X: ${{ env.MY_ENV_VAR }}\n"
+    "    steps:\n"
+    "      - run: echo '${{ matrix.shard }}' '${{ matrix.python-version }}'\n"
+)
+
+
+def test_github_actions_braced_env_matrix_expression_visibility_v1_parser_synthetic_snippet() -> (
+    None
+):
+    assert _braced_env_reference_names(_SYNTHETIC_BRACED_ENV_MATRIX_SNIPPET) == {"MY_ENV_VAR"}
+    assert _braced_matrix_reference_names(_SYNTHETIC_BRACED_ENV_MATRIX_SNIPPET) == {
+        "shard",
+        "python-version",
+    }
+
+
+def test_github_actions_braced_env_matrix_expression_visibility_v1_inventory_deterministic() -> (
+    None
+):
+    env_first = _sorted_braced_env_reference_inventory()
+    env_second = _sorted_braced_env_reference_inventory()
+    assert env_first == env_second
+    assert list(env_first.keys()) == sorted(env_first.keys())
+    for names in env_first.values():
+        assert names == sorted(names)
+
+    matrix_first = _sorted_braced_matrix_reference_inventory()
+    matrix_second = _sorted_braced_matrix_reference_inventory()
+    assert matrix_first == matrix_second
+    assert list(matrix_first.keys()) == sorted(matrix_first.keys())
+    for names in matrix_first.values():
+        assert names == sorted(names)
+
+
+def test_github_actions_braced_env_matrix_expression_visibility_v1_inventory_shape() -> None:
+    env_inv = _sorted_braced_env_reference_inventory()
+    matrix_inv = _sorted_braced_matrix_reference_inventory()
+
+    assert env_inv
+    assert matrix_inv
+
+    for filename, names in env_inv.items():
+        assert filename.endswith((".yml", ".yaml"))
+        assert names
+        assert len(names) == len(set(names))
+        for name in names:
+            assert name == name.upper()
+            assert name.isascii()
+            assert name.replace("_", "").isalnum()
+
+    for filename, names in matrix_inv.items():
+        assert filename.endswith((".yml", ".yaml"))
+        assert names
+        assert len(names) == len(set(names))
+        for name in names:
+            assert name.isascii()
+            assert re.fullmatch(r"[A-Za-z0-9_-]+", name)
+
+
+def test_github_actions_braced_env_matrix_expression_visibility_v1_aiops_trend_ledger_env_smoke() -> (
+    None
+):
+    inventory = _sorted_braced_env_reference_inventory()
+    row = inventory.get("aiops-trend-ledger-from-seed.yml")
+    assert row is not None
+    assert "ARTIFACT_NAME" in row
+
+
+def test_github_actions_braced_env_matrix_expression_visibility_v1_ci_matrix_smoke() -> None:
+    inventory = _sorted_braced_matrix_reference_inventory()
+    row = inventory.get("ci.yml")
+    assert row is not None
+    assert "python-version" in row
