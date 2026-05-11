@@ -84,7 +84,13 @@ class TestMarketSurfaceHtml:
         assert 'data-market-v0-ohlcv-preview="true"' in body
         assert 'data-market-v0-depth-preview="true"' in body
         assert 'data-market-v0-ssr-metrics-strip="true"' in body
-        assert 'data-market-v11-chart-diagnostics="true"' in body
+        assert 'data-market-v0-ssr-candle-strip="true"' in body
+        assert 'data-market-v0-ssr-candle="true"' in body
+        assert (
+            'data-market-v0-ssr-candle-up="true"' in body
+            or 'data-market-v0-ssr-candle-down="true"' in body
+        )
+        assert "chartjs-chart-financial" not in body.lower()
         assert 'data-market-v11-chart-library-status="true"' in body
         assert 'data-market-v11-payload-bars="true"' in body
         assert 'data-market-v11-render-fallback="true"' in body
@@ -287,6 +293,9 @@ def test_market_v0_template_kraken_banner_markers_in_source() -> None:
     assert 'data-market-v0-ohlcv-preview="true"' in txt
     assert 'data-market-v0-depth-preview="true"' in txt
     assert 'data-market-v0-ssr-metrics-strip="true"' in txt
+    assert 'data-market-v0-ssr-candle-strip="true"' in txt
+    assert 'data-market-v0-ssr-candle="true"' in txt
+    assert "chartjs-chart-financial" not in txt.lower()
     assert 'data-market-v11-chart-diagnostics="true"' in txt
     assert 'data-market-v11-chart-library-status="true"' in txt
     assert 'data-market-v11-payload-bars="true"' in txt
