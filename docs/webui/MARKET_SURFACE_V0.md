@@ -283,6 +283,49 @@ Das HTML für **`GET &#47;market`** enthält beim Chart‑Bereich ein Status‑E
 - **`data-market-empty-state="true"`** und **`data-market-error-state="true"`** sind **Display/Test‑Anker** wie andere **`data-market-*`**‑Marker.
 - **Keine** Schlussfolgerung auf Backend‑Betriebssicherheit, **Provider‑Readiness**, **Futures‑Readiness**, **Trading‑ oder Strategieautorität** oder **Capital/Scope/Risk/KillSwitch**‑Laufzeit über diese Marker hinaus.
 
+## Market Dashboard Visual Contract v0 (Kraken-like, read-only target)
+
+**Zweck:** UX-/Produkt‑Leitplan für einen **späteren** visuellen Markt‑Dashboard‑Slice („professionelles Trading‑Cockpit“-**Informationsarchitektur**). **Keine** Implementationspflicht und **keine** neue Autorität durch dieses Doku‑Kapitel.
+
+**Kraken‑like (nur IA):** „Kraken Pro“ oder vergleichbare Profi‑Oberflächen dienen **ausschließlich** als **nicht‑verbindliche** Inspiration für Informationsarchitektur (Panels, Informationsdichte, Lesbarkeit von Bid/Ask). **Keine** Übernahme von Branding, Logos, proprietären UI‑Assets, exaktem Layout/Farbschema oder Order‑Entry‑Verhalten eines Drittanbieters. **Keine** Verlinkung auf externe Angebote in diesem Kontrakt.
+
+### Verpflichtende Leitlinien
+
+1. **Read-only und non-authorizing:** Market Dashboard‑Flächen bleiben **rein darstellend** — keine Orders, kein Broker/Exchange‑Handlungsbezug, keine Live‑/Testnet‑/Paper‑**Aktivierung**, kein Bypass von Risk/KillSwitch oder Scope/Capital‑Enforcement über die Oberfläche.
+2. **Informationsarchitektur:** Orientierung an einem **multi‑panel**‑„Pro“-**Denkmodell**, ohne einen konkreten Drittanbieter nachzuzeichnen.
+
+### Zielpanels (priorisierte Zielrichtung)
+
+- **Market‑/Chart‑Panel:** Zeitreihe/OHLCV‑Darstellung (read‑only); **Basis** weiterhin eingebetteter Market‑Payload bzw. **`GET`** **`&#47;api&#47;market&#47;ohlcv`**‑Semantik wie in diesem Dokument beschrieben. **Zusätzliche oder ersetzende** Chart-/Candle‑Datenquellen **über** diese kanonischen Pfade hinaus bedürfen eines **expliziten, kanonischen Readmodel‑/Route‑Vertrags** vor Implementierung.
+- **Orderbuch / Price‑Ladder‑Panel:** read‑only Bid/Ask‑Stufen dort, wo Daten verfügbar sind — **über** **`market_depth_readmodel.v0`** (**`depth.bids`** / **`depth.asks`**), **wenn** Market Depth über Env/Bundle (**`GET`** **`&#47;api&#47;market&#47;depth`**, SSR‑Kontext **`GET`** **`&#47;market`**) aktiv und gebaut wird; keine Order‑Handles.
+- **Depth‑Chart‑Panel:** kumulative Tiefe gegen Preis (**read‑only Diagramm**) als **Ableitung** aus derselben Bid/Ask‑Readmodel‑Form, sobald Panel‑Umsetzung ansteht — **ohne** neue Netz-/Provider‑Abfrage durch diesen Platzhalter‑Vertrag.
+- **Market‑Trades / Tape‑Panel:** **nur** nach Einführung eines **kanonischen, read‑only** Tape‑Readmodels (**derzeit nicht** Teil von Market Surface v0); **kein** Alias für Run‑Trade‑Listen anderer Apps — bis dahin ausdrücklich **nicht** implementierungspflichtig.
+- **Double‑Play / Master V2 Status‑Rail:** bestehendes **display‑only** Snapshot‑/`dp_display`‑Muster (**`GET`** **`&#47;market&#47;double-play`** bzw. JSON‑Parallelroute wie in diesem Dokument referenziert); **Diagnostics bleiben Anzeige**, nie Freigabe.
+
+### Explizite Nicht‑Ziele (Non‑Goals)
+
+- **Kein** Order‑Formular, **keine** Order‑Buttons, **kein** Platzen/Stornieren/Ändern von Orders über das Dashboard.
+- **Keine** Broker‑/Exchange‑/Order‑Aktion und **keine** Ausweitung Ausführungs‑ oder Kontosession‑Handles.
+- **Keine** Live‑**Authorisierung**, **kein** Aktivieren von Scheduler/Runtime/Paper/Testnet/Live‑Prozessen **aus der Dashboard‑Oberfläche** oder im Zuge eines rein visuellen Slices ohne separate operative Freigaben.
+- **Kein** Polling **und** keine Auto‑Refresh‑Animation — **außer** ein **gesonderter**, schriftlich kanonisierter Vertrag definiert Cadence, Fail‑Display und **non‑authority** ausdrücklich neu.
+- **Keine** neuen Observability‑/Evidence‑/Readiness‑/`Handoff`‑„Hub“-Duplikate — **reuse‑before‑new** gegenüber diesem Dokument und bestehenden Ops‑Specs.
+
+### Daten‑Readiness (Kurzfassung)
+
+- **Market Depth readmodel:** kann **Orderbuch‑ähnliche** und **Depth‑Chart**‑Visuals **unterstützend** tragen **wenn** Builder/Env wie in **[Market Depth / Orderbook Readmodel Contract v0](#market-depth--orderbook-readmodel-contract-v0-offline-readmodel--env-gated-http-v0)** konfiguriert ist; Daten bleiben **Fixture/offline‑Bundle‑gebunden** in v0 mit **`stale`**/Diagnose‑Semantik gemäß Readmodel‑Kontrakt; **keine** Live‑Ausführung.
+- **Market Trades/Tape sowie erweiterte Chart-/Candle‑Readmodels:** erst mit **expliziten** kanonischen Readmodels/Routes; bis dahin **keine** Implementationsannahme durch diesen Vertrag.
+
+### Erste Umsetzungsschicht (minimal, später)
+
+- Vorzugsweise **`templates`** / **CSS**/Tailwind‑Anpassungen und **bestehende** Payload‑/SSR‑Kanäle; **fokussierte HTML‑/`data‑*`**‑Strukturtests (**`tests&#47;webui&#47;`**‑Kontraktstil wie **`test_market_dashboard_readonly_structure_contract_v0`**).
+- **Read‑only** statische oder readmodel‑unterstützte **Karten**/Panel‑Shell ohne Runtime‑Prozessstart; **Master V2 / Double‑Play**‑Tradinglogik bleibt **unverändert**.
+- Änderungen an **`src`** **nur** in einem **nachfolgenden**, explizit abgegrenzten Slice (nicht Teil dieses Doku‑`v0`‑Commits).
+
+### Sicherheitsgrenze
+
+- **Master V2 / Double Play**: keine Änderungen an Entscheidlogik, Gates, Scope/Capital, Risk/KillSwitch, Ausführung oder Signalautorität im Rahmen dieses UX‑Vertrags.
+- **Dashboard‑Darstellung wird niemals Autorität** — alle Status-/„ready“-/Label‑Felder bleiben **display‑interpretiert**, analog zu den bestehenden Double‑Play‑ und Market‑Safety‑Abschnitten oben.
+
 ## Dokument‑Reconciliation gegen `main`
 
 - **Kanonischer Eigentümer:** Dieses Dokument beschreibt die **aktuellen** Market‑Surface‑Routen (**`GET`** **`&#47;market`**, **`GET`** **`&#47;market&#47;double-play`**, **`GET`** **`&#47;api&#47;market&#47;ohlcv`**, **`GET`** **`&#47;api&#47;market&#47;depth`**) und die zugehörigen SSR‑/`data‑*‑`‑Marker — **read-only**, **nicht autorisiert**, **ohne** Order‑/Live‑/Testnet‑Aktivierung.
