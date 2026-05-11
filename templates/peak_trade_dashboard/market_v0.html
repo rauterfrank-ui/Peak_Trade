@@ -693,13 +693,18 @@
       </section>
 
       <div
-        class="space-y-3 min-w-0"
+        class="rounded-xl border border-slate-600/45 bg-gradient-to-b from-slate-950/92 via-slate-900/55 to-slate-950/90 ring-1 ring-slate-800/45 shadow-lg shadow-black/20 overflow-hidden"
+        data-market-v0-visual-density-lower-band-v1="true"
+        aria-label="Unified lower band: ladder, depth visuals, read-model summary, and diagnostics (read-only)"
+      >
+      <div
+        class="min-w-0 divide-y divide-slate-800/65"
         data-market-v0-lower-depth-orderbook-visuals-v1="true"
         data-market-v0-lower-disabled-depth-visual-state-v1="true"
       >
 
       <section
-        class="rounded-xl border border-slate-600/55 bg-gradient-to-b from-slate-950/92 via-slate-900/80 to-slate-950/88 ring-1 ring-emerald-900/15 shadow-lg shadow-black/20 overflow-hidden"
+        class="bg-gradient-to-b from-slate-950/92 via-slate-900/80 to-slate-950/88 overflow-hidden"
         data-market-v0-orderbook-placeholder="true"
         aria-label="Price ladder (read-only)"
       >
@@ -879,7 +884,7 @@
       </section>
 
       <section
-        class="rounded-xl border border-amber-900/35 bg-gradient-to-br from-amber-950/22 via-slate-950/88 to-slate-900/85 px-2.5 py-2.5 text-[10px] text-slate-400 ring-1 ring-amber-900/20 shadow-inner shadow-black/25"
+        class="bg-gradient-to-br from-amber-950/22 via-slate-950/88 to-slate-900/85 px-2.5 py-2.5 text-[10px] text-slate-400 shadow-inner shadow-black/25"
         data-market-v0-depth-chart-placeholder="true"
         aria-label="Depth chart placeholder (read-only)"
       >
@@ -983,7 +988,7 @@
       <section
         id="market-v0-depth-ssr"
         aria-label="Market depth read-model (SSR, offline or disabled)"
-        class="rounded-xl border border-slate-700/70 border-l-4 {% if market_depth.display_status == 'ok' %}border-l-emerald-500/55{% else %}border-l-amber-500/50{% endif %} bg-slate-900/70 px-3 py-3 text-[11px] text-slate-300 shadow-md shadow-black/20"
+        class="border-0 border-l-4 {% if market_depth.display_status == 'ok' %}border-l-emerald-500/55{% else %}border-l-amber-500/50{% endif %} bg-slate-900/70 px-3 py-3 text-[11px] text-slate-300"
         data-market-depth-panel="true"
         data-market-depth-status="{{ market_depth.display_status }}"
         {% if market_depth.readmodel_id %}
@@ -1010,7 +1015,7 @@
       </div>
 
       <section
-        class="rounded-lg border border-slate-700/60 bg-slate-900/60 px-2.5 py-2.5 text-[10px] text-slate-400 space-y-2"
+        class="border-0 border-t border-slate-800/60 bg-slate-900/60 px-2.5 py-2.5 text-[10px] text-slate-400 space-y-2"
         data-market-v0-status-panel="true"
         data-market-v0-status-diagnostics-visual-rails-v1="true"
         aria-label="Market diagnostic status (read-only)"
@@ -1053,6 +1058,7 @@
           </div>
         </div>
       </section>
+      </div>
     </aside>
   </div>
 

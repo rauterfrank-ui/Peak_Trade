@@ -122,6 +122,7 @@ def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> No
     """Read-only IA shell on GET /market: stable markers, no order-affordance attributes."""
     market_html = _html(client, "/market")
 
+    assert 'data-market-v0-visual-density-lower-band-v1="true"' in market_html
     assert 'data-market-v0-pro-shell="true"' in market_html
     assert 'data-market-v0-one-page-link-cleanup-v1="true"' in market_html
     assert 'data-market-v0-pro-grid="true"' in market_html
