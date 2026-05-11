@@ -154,57 +154,31 @@
     <div class="space-y-3" data-market-v0-visual-surface-strip="true">
   <section
     aria-label="Available read-only surfaces"
-    class="rounded-xl border border-slate-700/70 bg-slate-900/75 p-3 sm:p-4 ring-1 ring-emerald-900/20 shadow-sm shadow-black/20"
+    class="rounded-lg border border-slate-700/70 bg-slate-900/80 px-2.5 py-2 ring-1 ring-emerald-900/15"
     data-market-v0-surface-links="true"
   >
-    <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
-      <h2 class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">Surface previews · navigation</h2>
-      <span class="text-[9px] font-semibold uppercase tracking-wide text-slate-500">Secondary links</span>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-      <a
-        href="/"
-        class="group flex flex-col rounded-lg border border-emerald-900/35 bg-gradient-to-br from-slate-950/80 to-slate-900/60 p-3 text-left shadow-sm shadow-black/15 ring-1 ring-emerald-900/10 transition hover:border-emerald-700/50 hover:bg-slate-900/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500/60"
-        data-market-v0-dashboard-surface="true"
-        data-market-v0-dashboard-preview="true"
-      >
-        <div class="flex items-center justify-between gap-2 mb-2">
-          <span class="text-[10px] font-bold uppercase tracking-wide text-emerald-300/90">Dashboard shell</span>
-          <span class="rounded border border-emerald-800/50 bg-emerald-950/40 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide text-emerald-200/90">Visible here</span>
-        </div>
-        <div class="mb-2 h-14 rounded-lg border border-slate-800/80 bg-slate-950/80 flex items-end gap-0.5 px-2 pb-1.5" aria-hidden="true">
-          <div class="w-1 rounded-sm bg-emerald-400/35" style="height: 35%"></div>
-          <div class="w-1 rounded-sm bg-emerald-400/45" style="height: 55%"></div>
-          <div class="w-1 rounded-sm bg-emerald-400/30" style="height: 25%"></div>
-          <div class="w-1 rounded-sm bg-emerald-400/50" style="height: 70%"></div>
-          <div class="w-1 rounded-sm bg-emerald-400/40" style="height: 45%"></div>
-          <div class="w-1 rounded-sm bg-sky-400/25" style="height: 50%"></div>
-        </div>
-        <span class="text-sm font-semibold text-slate-100">PeakTrade home</span>
-        <span class="mt-1.5 text-[10px] leading-snug text-slate-400">Route <span class="font-mono text-sky-400/90">/</span> — read-only shell, keine Order-Steuerung.</span>
-        <span class="mt-2 text-[10px] font-semibold text-slate-500 group-hover:text-sky-400/90">Secondary · open dashboard →</span>
-      </a>
-      <a
-        href="/r_and_d/charts"
-        class="group flex flex-col rounded-lg border border-violet-900/35 bg-gradient-to-br from-slate-950/80 to-slate-900/60 p-3 text-left shadow-sm shadow-black/15 ring-1 ring-violet-900/10 transition hover:border-violet-700/50 hover:bg-slate-900/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500/60"
-        data-market-v0-rd-charts-surface="true"
-        data-market-v0-rd-preview="true"
-      >
-        <div class="flex items-center justify-between gap-2 mb-2">
-          <span class="text-[10px] font-bold uppercase tracking-wide text-violet-300/90">R&amp;D charts</span>
-          <span class="rounded border border-violet-800/50 bg-violet-950/40 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide text-violet-200/90">Preview strip</span>
-        </div>
-        <div class="mb-2 h-14 rounded-lg border border-slate-800/80 bg-slate-950/80 flex items-end gap-0.5 px-2 pb-1.5" aria-hidden="true">
-          <div class="w-1 rounded-sm bg-violet-400/40" style="height: 40%"></div>
-          <div class="w-1 rounded-sm bg-violet-400/35" style="height: 65%"></div>
-          <div class="w-1 rounded-sm bg-fuchsia-400/30" style="height: 30%"></div>
-          <div class="w-1 rounded-sm bg-violet-400/45" style="height: 50%"></div>
-          <div class="w-1 rounded-sm bg-violet-400/38" style="height: 38%"></div>
-        </div>
-        <span class="text-sm font-semibold text-slate-100">Experimentelle Chart-Fläche</span>
-        <span class="mt-1.5 text-[10px] leading-snug text-slate-400">Separates read-only R&amp;D-Readmodel — nicht mit Depth-JSON verwechseln.</span>
-        <span class="mt-2 text-[10px] font-semibold text-slate-500 group-hover:text-sky-400/90">Secondary · open R&amp;D charts →</span>
-      </a>
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="text-[9px] font-semibold uppercase tracking-wide text-slate-500 shrink-0">Terminal rail</span>
+      <div class="flex flex-wrap gap-1.5 flex-1 min-w-0 items-center">
+        <a
+          href="/"
+          class="inline-flex items-center gap-1 rounded-md border border-emerald-900/40 bg-slate-950/70 px-2 py-1 text-[10px] font-semibold text-emerald-200/90 hover:bg-slate-900/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500/60 transition"
+          data-market-v0-dashboard-surface="true"
+          data-market-v0-dashboard-preview="true"
+        >
+          <span class="font-mono text-sky-300/90">/</span>
+          <span class="text-slate-200">Dashboard shell</span>
+        </a>
+        <a
+          href="/r_and_d/charts"
+          class="inline-flex items-center gap-1 rounded-md border border-violet-900/40 bg-slate-950/70 px-2 py-1 text-[10px] font-semibold text-violet-200/90 hover:bg-slate-900/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500/60 transition"
+          data-market-v0-rd-charts-surface="true"
+          data-market-v0-rd-preview="true"
+        >
+          <span class="text-slate-200">R&amp;D charts</span>
+        </a>
+        <span class="text-[9px] text-slate-500 hidden sm:inline">Secondary · read-only navigation</span>
+      </div>
     </div>
   </section>
 
@@ -214,7 +188,7 @@
     data-market-v0-data-surfaces="true"
   >
     <div class="flex flex-wrap items-center justify-between gap-2">
-      <h2 class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">OHLCV · Depth · inline auf dieser Seite</h2>
+      <h2 class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">Data rails · OHLCV · Depth</h2>
       <div class="flex flex-wrap gap-1.5">
         <span class="rounded border border-slate-700/80 bg-slate-900/70 px-1.5 py-0.5 text-[9px] font-semibold text-slate-400 tabular-nums">No Live authorization</span>
         <span class="rounded border border-slate-700/80 bg-slate-900/70 px-1.5 py-0.5 text-[9px] font-semibold text-slate-400 tabular-nums">SSR snapshot</span>
@@ -229,22 +203,18 @@
       >
         <div class="flex flex-wrap items-center gap-2">
           <span class="text-[10px] font-bold uppercase tracking-wide text-sky-300/90">OHLCV source</span>
-          <span class="rounded border border-emerald-900/40 bg-emerald-950/30 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-200/90">Visible here · close-line</span>
-        </div>
-        <div class="h-12 rounded-md border border-slate-800/70 bg-slate-950/75 flex items-end gap-0.5 px-2 pb-1" aria-hidden="true">
-          {% for bar_h in [35, 55, 40, 70, 45, 60, 50, 65] %}
-          <div class="w-1 rounded-sm bg-sky-400/30" style="height: {{ bar_h }}%"></div>
-          {% endfor %}
+          <span class="rounded border border-emerald-900/40 bg-emerald-950/30 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-200/90">SSR · close-line + candles</span>
         </div>
         <p class="text-[11px] leading-snug text-slate-400 m-0">
-          Dieselbe OHLCV-Serie, die oben eingebettet ist, kann als read-only JSON abgerufen werden — identische Query wie diese Seite.
+          Eingebettete Serie — read-only JSON mit identischer Query (sekundärer Link).
         </p>
-        <p class="font-mono text-[11px] text-slate-300 m-0 break-all leading-snug">
+        <div class="flex flex-wrap items-center gap-2">
           <a
             href="/api/market/ohlcv?source={{ query.source }}&amp;symbol={{ query.symbol | replace('/', '%2F') }}&amp;timeframe={{ query.timeframe }}&amp;limit={{ query.limit }}"
-            class="text-sky-400 hover:text-sky-300 underline underline-offset-2"
-          >OHLCV JSON öffnen</a>
-        </p>
+            class="inline-flex items-center rounded-md border border-sky-800/50 bg-slate-950/70 px-2 py-1 text-[10px] font-semibold text-sky-300/95 hover:bg-slate-900/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-500/60"
+          >OHLCV JSON</a>
+          <span class="text-[9px] text-slate-500">Secondary · not live</span>
+        </div>
         <p class="text-[10px] text-slate-500 m-0 tabular-nums">
           Bars (SSR): <span class="font-mono text-slate-300">{{ payload.bars_returned }}</span>
           · Source: <span class="font-mono text-slate-300">{{ query.source }}</span>
@@ -424,6 +394,73 @@
       Chart bereit — read-only OHLCV-Anzeige.
       {% endif %}
     </div>
+
+    <div
+      class="mb-3 rounded-xl border border-slate-700/80 bg-slate-950/85 px-3 py-2.5 ring-1 ring-sky-900/10"
+      data-market-v0-ssr-candle-strip="true"
+      aria-label="Read-only OHLCV SSR candle snapshot"
+    >
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+        <div>
+          <h3 class="text-[11px] font-semibold text-slate-100 tracking-tight m-0">Read-only OHLCV candles</h3>
+          <p class="text-[9px] text-slate-500 m-0 mt-0.5 leading-snug">SSR snapshot · Not live · No polling · Visual only (O/H/L/C), keine Handlungsaufforderung</p>
+        </div>
+        {% if payload.bars and payload.bars|length > 0 %}
+        {% set _cmax = 32 %}
+        {% set _blen = payload.bars|length %}
+        {% set _cshown = _blen if _blen < _cmax else _cmax %}
+        <span class="rounded border border-slate-700/70 bg-slate-900/70 px-1.5 py-0.5 text-[8px] font-semibold text-slate-400 tabular-nums uppercase">Last {{ _cshown }} bars</span>
+        {% endif %}
+      </div>
+      {% if not payload.bars or payload.bars|length == 0 %}
+      <p class="text-[10px] text-slate-500 m-0" data-market-v0-ssr-candle-empty="true">
+        No embedded OHLCV rows — candle strip empty (SSR).
+      </p>
+      {% else %}
+      {% set cmax = 32 %}
+      {% set blen = payload.bars|length %}
+      {% set cstart = blen - cmax if blen > cmax else 0 %}
+      <div class="flex items-end gap-0.5 h-14 overflow-x-auto pb-0.5" role="img" aria-label="SSR OHLCV candle glyphs, older left newer right">
+        {% for bar in payload.bars[cstart:] %}
+          {% set o = bar.open|float %}
+          {% set h = bar.high|float %}
+          {% set l = bar.low|float %}
+          {% set c = bar.close|float %}
+          {% set rngv = h - l %}
+          {% if rngv < 1e-12 %}
+            {% set rngv = 1e-12 %}
+          {% endif %}
+          {% set body_lo = o if o < c else c %}
+          {% set body_hi = o if o > c else c %}
+          {% set body_bottom = (body_lo - l) / rngv * 100.0 %}
+          {% set body_h = (body_hi - body_lo) / rngv * 100.0 %}
+          {% set body_h = body_h if body_h > 3.0 else 3.0 %}
+          {% set body_bottom = body_bottom if body_bottom > 0.0 else 0.0 %}
+          {% set body_bottom = body_bottom if body_bottom + body_h <= 100.0 else 100.0 - body_h %}
+          {% set up = c >= o %}
+        <div
+          class="relative shrink-0 w-2 h-14 rounded-sm bg-slate-900/50 border border-slate-800/70"
+          data-market-v0-ssr-candle="true"
+          {% if up %}
+          data-market-v0-ssr-candle-up="true"
+          {% else %}
+          data-market-v0-ssr-candle-down="true"
+          {% endif %}
+        >
+          <div class="absolute inset-x-0 top-0 bottom-0 flex justify-center pointer-events-none" aria-hidden="true">
+            <div class="w-px h-full bg-slate-500/55"></div>
+          </div>
+          <div
+            class="absolute left-0.5 right-0.5 rounded-[1px] pointer-events-none {% if up %}bg-emerald-400/50 border border-emerald-400/30{% else %}bg-rose-400/45 border border-rose-400/28{% endif %}"
+            style="bottom: {{ body_bottom|round(2) }}%; height: {{ body_h|round(2) }}%;"
+            aria-hidden="true"
+          ></div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
     <div class="relative min-h-[22rem] h-[28rem] sm:h-[30rem] w-full rounded-xl border border-slate-700/70 bg-gradient-to-b from-slate-950/40 to-slate-950/70 shadow-inner shadow-black/30">
       <canvas id="chart-market-v0-close" class="block w-full h-full"></canvas>
     </div>
