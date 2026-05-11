@@ -86,7 +86,7 @@
     <div class="xl:col-span-8 space-y-6 min-w-0" data-market-v0-chart-panel="true">
   <header class="relative overflow-hidden rounded-xl border border-sky-900/35 bg-gradient-to-br from-slate-900/95 via-slate-900/80 to-slate-950/90 p-4 sm:p-6 shadow-lg shadow-black/25 ring-1 ring-sky-900/20">
     <div class="pointer-events-none absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(ellipse_at_top,_rgba(56,189,248,0.12),_transparent_55%)]" aria-hidden="true"></div>
-    <div class="relative flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+    <div class="relative flex flex-col gap-4">
       <div class="min-w-0 space-y-2">
         <p class="text-[11px] uppercase tracking-[0.14em] text-sky-400/80 font-semibold m-0">Market Surface</p>
         <h1 class="text-2xl sm:text-3xl font-bold text-slate-50 tracking-tight m-0">
@@ -100,18 +100,101 @@
           <span class="inline-flex items-center rounded-md border border-emerald-900/45 bg-emerald-950/35 px-2 py-0.5 text-[10px] font-semibold text-emerald-200/90 tabular-nums">Read-only</span>
           <span class="inline-flex items-center rounded-md border border-sky-900/45 bg-sky-950/30 px-2 py-0.5 text-[10px] font-semibold text-sky-200/90 tabular-nums">Non-authorizing</span>
           <span class="inline-flex items-center rounded-md border border-slate-700/80 bg-slate-950/60 px-2 py-0.5 text-[10px] font-semibold text-slate-300/90 tabular-nums">SSR ladder</span>
+          <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-950/55 px-2 py-0.5 text-[10px] font-medium text-slate-400/90 tabular-nums">No polling</span>
         </div>
-      </div>
-      <div class="flex flex-wrap gap-2 shrink-0">
-        <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700/80">
-          ← Dashboard
-        </a>
-        <a href="/r_and_d/charts" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700/80">
-          R&amp;D Charts
-        </a>
+        <p class="text-[10px] text-slate-500 m-0 pt-0.5">Weitere Ziele unten als Karten — nicht nur kleine Header-Buttons.</p>
       </div>
     </div>
   </header>
+
+  <section
+    aria-label="Available read-only surfaces"
+    class="rounded-xl border border-slate-700/70 bg-slate-900/75 p-3 sm:p-4 ring-1 ring-emerald-900/20 shadow-sm shadow-black/20"
+    data-market-v0-surface-links="true"
+  >
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+      <h2 class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">Available surfaces</h2>
+      <span class="text-[9px] font-semibold uppercase tracking-wide text-slate-500">Read-only navigation</span>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+      <a
+        href="/"
+        class="group flex flex-col rounded-lg border border-emerald-900/35 bg-gradient-to-br from-slate-950/80 to-slate-900/60 p-3 text-left shadow-sm shadow-black/15 ring-1 ring-emerald-900/10 transition hover:border-emerald-700/50 hover:bg-slate-900/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500/60"
+        data-market-v0-dashboard-surface="true"
+      >
+        <span class="text-[10px] font-bold uppercase tracking-wide text-emerald-300/90">Dashboard shell</span>
+        <span class="mt-1 text-sm font-semibold text-slate-100">PeakTrade home</span>
+        <span class="mt-1.5 text-[10px] leading-snug text-slate-400">Öffnet die Haupt-Dashboard-Ansicht (<span class="font-mono text-sky-400/90">/</span>) — Anzeige, keine Order-Steuerung.</span>
+        <span class="mt-2 text-[10px] font-semibold text-sky-400/90 group-hover:underline">Zum Dashboard →</span>
+      </a>
+      <a
+        href="/r_and_d/charts"
+        class="group flex flex-col rounded-lg border border-violet-900/35 bg-gradient-to-br from-slate-950/80 to-slate-900/60 p-3 text-left shadow-sm shadow-black/15 ring-1 ring-violet-900/10 transition hover:border-violet-700/50 hover:bg-slate-900/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500/60"
+        data-market-v0-rd-charts-surface="true"
+      >
+        <span class="text-[10px] font-bold uppercase tracking-wide text-violet-300/90">R&amp;D charts</span>
+        <span class="mt-1 text-sm font-semibold text-slate-100">Experimentelle Chart-Fläche</span>
+        <span class="mt-1.5 text-[10px] leading-snug text-slate-400">Separates read-only R&amp;D-Readmodel — nicht mit Depth-JSON verwechseln.</span>
+        <span class="mt-2 text-[10px] font-semibold text-sky-400/90 group-hover:underline">Zu R&amp;D Charts →</span>
+      </a>
+    </div>
+  </section>
+
+  <section
+    aria-label="Read-only data and API surfaces"
+    class="rounded-xl border border-slate-700/70 bg-slate-950/55 p-3 sm:p-4 ring-1 ring-sky-900/15 space-y-3"
+    data-market-v0-data-surfaces="true"
+  >
+    <div class="flex flex-wrap items-center justify-between gap-2">
+      <h2 class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">Data source · API surface</h2>
+      <div class="flex flex-wrap gap-1.5">
+        <span class="rounded border border-slate-700/80 bg-slate-900/70 px-1.5 py-0.5 text-[9px] font-semibold text-slate-400 tabular-nums">No Live authorization</span>
+        <span class="rounded border border-slate-700/80 bg-slate-900/70 px-1.5 py-0.5 text-[9px] font-semibold text-slate-400 tabular-nums">SSR snapshot</span>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-2.5">
+      <div
+        class="rounded-lg border border-sky-800/40 bg-slate-900/65 p-3 flex flex-col gap-2 min-w-0"
+        data-market-v0-ohlcv-surface="true"
+        data-market-v1-api-reference="true"
+      >
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-[10px] font-bold uppercase tracking-wide text-sky-300/90">OHLCV source</span>
+          <span class="rounded border border-emerald-900/40 bg-emerald-950/30 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-200/90">Powers close-line chart</span>
+        </div>
+        <p class="text-[11px] leading-snug text-slate-400 m-0">
+          Dieselbe OHLCV-Serie, die oben eingebettet ist, kann als read-only JSON abgerufen werden — identische Query wie diese Seite.
+        </p>
+        <p class="font-mono text-[11px] text-slate-300 m-0 break-all leading-snug">
+          <a
+            href="/api/market/ohlcv?source={{ query.source }}&amp;symbol={{ query.symbol | replace('/', '%2F') }}&amp;timeframe={{ query.timeframe }}&amp;limit={{ query.limit }}"
+            class="text-sky-400 hover:text-sky-300 underline underline-offset-2"
+          >OHLCV JSON öffnen</a>
+        </p>
+        <p class="text-[10px] text-slate-500 m-0 tabular-nums">
+          Bars (SSR): <span class="font-mono text-slate-300">{{ payload.bars_returned }}</span>
+          · Source: <span class="font-mono text-slate-300">{{ query.source }}</span>
+        </p>
+      </div>
+      <div
+        class="rounded-lg border border-amber-900/35 bg-slate-900/60 p-3 flex flex-col gap-2 min-w-0"
+        data-market-v0-depth-surface="true"
+      >
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-[10px] font-bold uppercase tracking-wide text-amber-200/90">Depth SSR</span>
+          <span class="rounded border border-slate-700/70 bg-slate-950/55 px-1.5 py-0.5 text-[9px] font-semibold text-slate-400">Offline / bundle</span>
+        </div>
+        <p class="text-[11px] leading-snug text-slate-400 m-0">
+          Markttiefe für Leiter &amp; Diagnostik kommt nur per Server-Side Rendering in diese Seite — <strong class="text-slate-300 font-semibold">kein</strong> direkter Browser-Abruf einer separaten Depth-JSON-Route von hier.
+        </p>
+        <p class="text-[10px] text-slate-500 m-0 tabular-nums">
+          Depth status (SSR): <span class="font-mono text-slate-300">{{ market_depth.display_status }}</span>
+          · Top levels: <span class="font-mono text-slate-300">{{ market_depth.top_levels_limit }}</span>
+        </p>
+        <p class="text-[10px] text-slate-500 m-0 leading-snug">Siehe rechts: SSR depth panel &amp; angezeigte Top-N-Stufen — rein Anzeige.</p>
+      </div>
+    </div>
+  </section>
 
   <section
     aria-label="Market query context"
@@ -173,20 +256,6 @@
     <p class="mt-2.5 text-[10px] text-slate-500 leading-snug m-0">
       Kraken nutzt <span class="font-mono text-slate-400">timeframe</span>; Dummy bleibt 1h synthetisch — öffentliche OHLCV:
       <span class="text-sky-400 font-mono">?source=kraken</span>
-    </p>
-  </section>
-
-  <section
-    aria-label="OHLCV API reference"
-    class="rounded-lg border border-dashed border-slate-700/70 bg-slate-950/45 px-3 py-2.5 text-[11px] text-slate-400 flex flex-wrap items-center justify-between gap-2"
-    data-market-v1-api-reference="true"
-  >
-    <p class="font-semibold text-slate-300 m-0">Read-only JSON</p>
-    <p class="font-mono leading-snug break-all m-0 text-right min-w-[12rem] flex-1">
-      <a
-        href="/api/market/ohlcv?source={{ query.source }}&amp;symbol={{ query.symbol | replace('/', '%2F') }}&amp;timeframe={{ query.timeframe }}&amp;limit={{ query.limit }}"
-        class="text-sky-400 hover:text-sky-300 underline underline-offset-2"
-      >/api/market/ohlcv</a>
     </p>
   </section>
 
