@@ -401,73 +401,79 @@
     </div>
 
     <div
-      class="bg-slate-950/80 px-3 py-2.5 mb-0"
-      data-market-v0-ssr-candle-strip="true"
-      aria-label="Read-only OHLCV SSR candle snapshot"
+      class="relative flex flex-col min-h-[22rem] h-[28rem] sm:h-[30rem] w-full rounded-none border-0 border-t border-slate-800/70 bg-gradient-to-b from-slate-950/45 to-slate-950/80 shadow-inner shadow-black/35"
+      data-market-v0-close-chart-integrated-frame="true"
+      aria-label="Close line chart with integrated SSR candle rail"
     >
-      <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-        <div>
-          <h3 class="text-[11px] font-semibold text-slate-100 tracking-tight m-0">Read-only OHLCV candles</h3>
-          <p class="text-[9px] text-slate-500 m-0 mt-0.5 leading-snug">SSR snapshot · Not live · No polling · Visual only (O/H/L/C), keine Handlungsaufforderung</p>
+      <div
+        class="shrink-0 bg-slate-950/80 px-3 py-2.5 border-b border-slate-800/60"
+        data-market-v0-ssr-candle-strip="true"
+        aria-label="Read-only OHLCV SSR candle snapshot"
+      >
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+          <div>
+            <h3 class="text-[11px] font-semibold text-slate-100 tracking-tight m-0">Read-only OHLCV candles</h3>
+            <p class="text-[9px] text-slate-500 m-0 mt-0.5 leading-snug">SSR snapshot · Not live · No polling · Visual only (O/H/L/C), keine Handlungsaufforderung</p>
+          </div>
+          {% if payload.bars and payload.bars|length > 0 %}
+          {% set _cmax = 32 %}
+          {% set _blen = payload.bars|length %}
+          {% set _cshown = _blen if _blen < _cmax else _cmax %}
+          <span class="rounded border border-slate-700/70 bg-slate-900/70 px-1.5 py-0.5 text-[8px] font-semibold text-slate-400 tabular-nums uppercase">Last {{ _cshown }} bars</span>
+          {% endif %}
         </div>
-        {% if payload.bars and payload.bars|length > 0 %}
-        {% set _cmax = 32 %}
-        {% set _blen = payload.bars|length %}
-        {% set _cshown = _blen if _blen < _cmax else _cmax %}
-        <span class="rounded border border-slate-700/70 bg-slate-900/70 px-1.5 py-0.5 text-[8px] font-semibold text-slate-400 tabular-nums uppercase">Last {{ _cshown }} bars</span>
+        {% if not payload.bars or payload.bars|length == 0 %}
+        <p class="text-[10px] text-slate-500 m-0" data-market-v0-ssr-candle-empty="true">
+          No embedded OHLCV rows — candle strip empty (SSR).
+        </p>
+        {% else %}
+        {% set cmax = 32 %}
+        {% set blen = payload.bars|length %}
+        {% set cstart = blen - cmax if blen > cmax else 0 %}
+        <div class="flex items-end gap-0.5 h-14 overflow-x-auto pb-0.5" role="img" aria-label="SSR OHLCV candle glyphs, older left newer right">
+          {% for bar in payload.bars[cstart:] %}
+            {% set o = bar.open|float %}
+            {% set h = bar.high|float %}
+            {% set l = bar.low|float %}
+            {% set c = bar.close|float %}
+            {% set rngv = h - l %}
+            {% if rngv < 1e-12 %}
+              {% set rngv = 1e-12 %}
+            {% endif %}
+            {% set body_lo = o if o < c else c %}
+            {% set body_hi = o if o > c else c %}
+            {% set body_bottom = (body_lo - l) / rngv * 100.0 %}
+            {% set body_h = (body_hi - body_lo) / rngv * 100.0 %}
+            {% set body_h = body_h if body_h > 3.0 else 3.0 %}
+            {% set body_bottom = body_bottom if body_bottom > 0.0 else 0.0 %}
+            {% set body_bottom = body_bottom if body_bottom + body_h <= 100.0 else 100.0 - body_h %}
+            {% set up = c >= o %}
+          <div
+            class="relative shrink-0 w-2 h-14 rounded-sm bg-slate-900/50 border border-slate-800/70"
+            data-market-v0-ssr-candle="true"
+            {% if up %}
+            data-market-v0-ssr-candle-up="true"
+            {% else %}
+            data-market-v0-ssr-candle-down="true"
+            {% endif %}
+          >
+            <div class="absolute inset-x-0 top-0 bottom-0 flex justify-center pointer-events-none" aria-hidden="true">
+              <div class="w-px h-full bg-slate-500/55"></div>
+            </div>
+            <div
+              class="absolute left-0.5 right-0.5 rounded-[1px] pointer-events-none {% if up %}bg-emerald-400/50 border border-emerald-400/30{% else %}bg-rose-400/45 border border-rose-400/28{% endif %}"
+              style="bottom: {{ body_bottom|round(2) }}%; height: {{ body_h|round(2) }}%;"
+              aria-hidden="true"
+            ></div>
+          </div>
+          {% endfor %}
+        </div>
         {% endif %}
       </div>
-      {% if not payload.bars or payload.bars|length == 0 %}
-      <p class="text-[10px] text-slate-500 m-0" data-market-v0-ssr-candle-empty="true">
-        No embedded OHLCV rows — candle strip empty (SSR).
-      </p>
-      {% else %}
-      {% set cmax = 32 %}
-      {% set blen = payload.bars|length %}
-      {% set cstart = blen - cmax if blen > cmax else 0 %}
-      <div class="flex items-end gap-0.5 h-14 overflow-x-auto pb-0.5" role="img" aria-label="SSR OHLCV candle glyphs, older left newer right">
-        {% for bar in payload.bars[cstart:] %}
-          {% set o = bar.open|float %}
-          {% set h = bar.high|float %}
-          {% set l = bar.low|float %}
-          {% set c = bar.close|float %}
-          {% set rngv = h - l %}
-          {% if rngv < 1e-12 %}
-            {% set rngv = 1e-12 %}
-          {% endif %}
-          {% set body_lo = o if o < c else c %}
-          {% set body_hi = o if o > c else c %}
-          {% set body_bottom = (body_lo - l) / rngv * 100.0 %}
-          {% set body_h = (body_hi - body_lo) / rngv * 100.0 %}
-          {% set body_h = body_h if body_h > 3.0 else 3.0 %}
-          {% set body_bottom = body_bottom if body_bottom > 0.0 else 0.0 %}
-          {% set body_bottom = body_bottom if body_bottom + body_h <= 100.0 else 100.0 - body_h %}
-          {% set up = c >= o %}
-        <div
-          class="relative shrink-0 w-2 h-14 rounded-sm bg-slate-900/50 border border-slate-800/70"
-          data-market-v0-ssr-candle="true"
-          {% if up %}
-          data-market-v0-ssr-candle-up="true"
-          {% else %}
-          data-market-v0-ssr-candle-down="true"
-          {% endif %}
-        >
-          <div class="absolute inset-x-0 top-0 bottom-0 flex justify-center pointer-events-none" aria-hidden="true">
-            <div class="w-px h-full bg-slate-500/55"></div>
-          </div>
-          <div
-            class="absolute left-0.5 right-0.5 rounded-[1px] pointer-events-none {% if up %}bg-emerald-400/50 border border-emerald-400/30{% else %}bg-rose-400/45 border border-rose-400/28{% endif %}"
-            style="bottom: {{ body_bottom|round(2) }}%; height: {{ body_h|round(2) }}%;"
-            aria-hidden="true"
-          ></div>
-        </div>
-        {% endfor %}
-      </div>
-      {% endif %}
-    </div>
 
-    <div class="relative min-h-[22rem] h-[28rem] sm:h-[30rem] w-full rounded-none border-0 border-t border-slate-800/70 bg-gradient-to-b from-slate-950/45 to-slate-950/80 shadow-inner shadow-black/35">
-      <canvas id="chart-market-v0-close" class="block w-full h-full"></canvas>
+      <div class="relative flex-1 min-h-0 w-full">
+        <canvas id="chart-market-v0-close" class="block w-full h-full"></canvas>
+      </div>
     </div>
     </div>
   </section>
