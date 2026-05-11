@@ -77,6 +77,13 @@ class TestMarketSurfaceHtml:
         assert 'data-market-v0-data-surfaces="true"' in body
         assert 'data-market-v0-ohlcv-surface="true"' in body
         assert 'data-market-v0-depth-surface="true"' in body
+        assert 'data-market-v0-visual-cockpit="true"' in body
+        assert 'data-market-v0-visual-surface-strip="true"' in body
+        assert 'data-market-v0-dashboard-preview="true"' in body
+        assert 'data-market-v0-rd-preview="true"' in body
+        assert 'data-market-v0-ohlcv-preview="true"' in body
+        assert 'data-market-v0-depth-preview="true"' in body
+        assert 'data-market-v0-ssr-metrics-strip="true"' in body
         assert 'data-market-v11-chart-diagnostics="true"' in body
         assert 'data-market-v11-chart-library-status="true"' in body
         assert 'data-market-v11-payload-bars="true"' in body
@@ -273,6 +280,13 @@ def test_market_v0_template_kraken_banner_markers_in_source() -> None:
     assert 'data-market-v0-data-surfaces="true"' in txt
     assert 'data-market-v0-ohlcv-surface="true"' in txt
     assert 'data-market-v0-depth-surface="true"' in txt
+    assert 'data-market-v0-visual-cockpit="true"' in txt
+    assert 'data-market-v0-visual-surface-strip="true"' in txt
+    assert 'data-market-v0-dashboard-preview="true"' in txt
+    assert 'data-market-v0-rd-preview="true"' in txt
+    assert 'data-market-v0-ohlcv-preview="true"' in txt
+    assert 'data-market-v0-depth-preview="true"' in txt
+    assert 'data-market-v0-ssr-metrics-strip="true"' in txt
     assert 'data-market-v11-chart-diagnostics="true"' in txt
     assert 'data-market-v11-chart-library-status="true"' in txt
     assert 'data-market-v11-payload-bars="true"' in txt
