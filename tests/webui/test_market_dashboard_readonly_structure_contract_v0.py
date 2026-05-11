@@ -69,6 +69,16 @@ def test_double_play_market_dashboard_does_not_embed_market_depth_api_fetch(
     assert "XMLHttpRequest" not in html
 
 
+def test_double_play_dashboard_excludes_market_depth_ssr_markers_v0(
+    client: TestClient,
+) -> None:
+    """Double-Play page must not carry `/market` SSR Market Depth strip markup."""
+    html = _html(client, "/market/double-play")
+
+    assert "data-market-depth-panel" not in html
+    assert "market-v0-depth-ssr" not in html
+
+
 def test_market_dashboard_has_no_trade_action_affordance(client: TestClient) -> None:
     combined_html = "\n".join(
         [
