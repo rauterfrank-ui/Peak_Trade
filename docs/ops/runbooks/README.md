@@ -50,6 +50,12 @@ Runbooks for operating and troubleshooting documentation quality gates:
 - [RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md](RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md) — Docs graph triage and remediation
 - [RUNBOOK_DOCS_GATES_FIX_FORWARD_CI_TRIAGE_CURSOR_MULTI_AGENT.md](RUNBOOK_DOCS_GATES_FIX_FORWARD_CI_TRIAGE_CURSOR_MULTI_AGENT.md) — Fix-forward CI triage for Token Policy and Reference Targets gate failures
 
+### Non-execution readiness & observation gates (planning only)
+
+- [TESTNET_CHECKER_PREREQUISITES_V0.md](TESTNET_CHECKER_PREREQUISITES_V0.md) — Read-only Testnet prerequisite keys (non-authorizing)
+- [ORPHAN_SCHEDULER_AFTER_RUN_WITH_TIMEOUT_V0.md](ORPHAN_SCHEDULER_AFTER_RUN_WITH_TIMEOUT_V0.md) — Orphan scheduler classification after bounded timeout (no auto-kill in doc)
+- [DAEMON_PAPER_24H_PLUS_OBSERVATION_GATE_BEFORE_TESTNET_V0.md](DAEMON_PAPER_24H_PLUS_OBSERVATION_GATE_BEFORE_TESTNET_V0.md) — Gate runbook for planning a future 24h+ Daemon Paper-Observation before Testnet review (no start commands; prose only; not “demo”)
+
 ### AI Autonomy & Control Center
 
 Runbooks for AI autonomy workflows and control center operations:
@@ -193,7 +199,7 @@ This hybrid approach balances discoverability (all findable from this index) wit
 
 ---
 
-**Last Updated:** 2026-04-15  
+**Last Updated:** 2026-05-11
 **Maintainer:** ops
 
 ## Incident-stop / HOLD classification discoverability
