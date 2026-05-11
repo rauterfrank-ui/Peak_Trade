@@ -640,7 +640,11 @@
         </ul>
       </section>
 
-      <div class="space-y-3 min-w-0" data-market-v0-lower-depth-orderbook-visuals-v1="true">
+      <div
+        class="space-y-3 min-w-0"
+        data-market-v0-lower-depth-orderbook-visuals-v1="true"
+        data-market-v0-lower-disabled-depth-visual-state-v1="true"
+      >
 
       <section
         class="rounded-xl border border-slate-600/55 bg-gradient-to-b from-slate-950/92 via-slate-900/80 to-slate-950/88 ring-1 ring-emerald-900/15 shadow-lg shadow-black/20 overflow-hidden"
@@ -754,26 +758,68 @@
           </div>
           {% else %}
           <div
-            class="rounded-md border border-dashed border-slate-600/60 bg-slate-950/50 px-2.5 py-3 text-[10px] text-slate-400 leading-snug"
+            class="rounded-lg border border-slate-600/55 bg-gradient-to-b from-slate-950/92 via-slate-900/65 to-slate-950/88 px-2.5 py-3 text-[10px] text-slate-400 leading-snug ring-1 ring-slate-800/40"
             data-market-v0-orderbook-empty="true"
             role="note"
           >
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+              <p class="m-0 font-semibold text-slate-200 uppercase tracking-wide text-[10px]">
+                Price ladder — unavailable in this snapshot
+              </p>
+              <span class="inline-flex items-center gap-1 rounded-md border border-amber-800/50 bg-amber-950/45 px-2 py-0.5 text-[9px] font-bold text-amber-100/90 tabular-nums">
+                Not live · SSR only
+              </span>
+            </div>
             <p class="m-0 font-medium text-slate-500">Diagnostics — empty ladder</p>
             <p class="m-0 mt-1 text-slate-500">
               No ladder rows · depth disabled, unconfigured, or empty SSR snapshot · display-only diagnostics.
+              <span class="text-slate-500">No orders · no polling · not streamed after load.</span>
             </p>
-            <div class="mt-3 grid grid-cols-2 gap-2 opacity-70" aria-hidden="true">
-              <div class="space-y-1.5 rounded-lg border border-slate-800/70 bg-slate-900/40 p-2">
-                <div class="h-2 rounded bg-slate-700/50 w-3/4"></div>
-                <div class="h-2 rounded bg-slate-700/40 w-1/2"></div>
-                <div class="h-2 rounded bg-slate-700/35 w-2/3"></div>
+            <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2" aria-hidden="true">
+              <div class="relative rounded-lg border border-emerald-900/30 bg-slate-950/75 p-2 min-h-[5.75rem] shadow-inner shadow-black/20">
+                <p class="text-[8px] font-bold uppercase tracking-wide text-emerald-400/85 m-0 mb-1">
+                  Bid-side silhouette (shape only)
+                </p>
+                <svg viewBox="0 0 120 56" class="w-full h-14 opacity-95" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="mv0-ldb-ob-bid" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="rgba(52,211,153,0.07)" />
+                      <stop offset="100%" stop-color="rgba(52,211,153,0.38)" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M4 50 L4 30 Q34 26 56 18 L116 6 L116 50 Z"
+                    fill="url(#mv0-ldb-ob-bid)"
+                    stroke="rgba(52,211,153,0.5)"
+                    stroke-width="0.85"
+                  />
+                  <line x1="4" y1="50" x2="116" y2="50" stroke="rgba(51,65,85,0.75)" stroke-width="0.7" />
+                </svg>
               </div>
-              <div class="space-y-1.5 rounded-lg border border-slate-800/70 bg-slate-900/40 p-2">
-                <div class="h-2 rounded bg-slate-700/50 w-2/3"></div>
-                <div class="h-2 rounded bg-slate-700/40 w-4/5"></div>
-                <div class="h-2 rounded bg-slate-700/35 w-1/2"></div>
+              <div class="relative rounded-lg border border-rose-900/30 bg-slate-950/75 p-2 min-h-[5.75rem] shadow-inner shadow-black/20">
+                <p class="text-[8px] font-bold uppercase tracking-wide text-rose-300/85 m-0 mb-1">
+                  Ask-side silhouette (shape only)
+                </p>
+                <svg viewBox="0 0 120 56" class="w-full h-14 opacity-95" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="mv0-ldb-ob-ask" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="rgba(244,63,94,0.36)" />
+                      <stop offset="100%" stop-color="rgba(244,63,94,0.07)" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M4 6 L64 18 Q86 26 116 30 L116 50 L4 50 Z"
+                    fill="url(#mv0-ldb-ob-ask)"
+                    stroke="rgba(244,63,94,0.5)"
+                    stroke-width="0.85"
+                  />
+                  <line x1="4" y1="50" x2="116" y2="50" stroke="rgba(51,65,85,0.75)" stroke-width="0.7" />
+                </svg>
               </div>
             </div>
+            <p class="m-0 mt-2 text-[9px] text-slate-600 leading-snug">
+              Static ladder-weight curves · not cumulative book depth · no fabricated price levels.
+            </p>
           </div>
           {% endif %}
         </div>
@@ -825,6 +871,56 @@
               {% endif %}
             {% endfor %}
           </div>
+        </div>
+        {% else %}
+        <div
+          class="mb-2 rounded-lg border border-slate-700/55 bg-slate-950/72 px-2 py-2 ring-1 ring-slate-800/45 shadow-inner shadow-black/15"
+          data-market-v0-depth-chart-disabled-envelope="true"
+          aria-hidden="true"
+        >
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+            <p class="m-0 text-[9px] font-semibold uppercase tracking-wide text-slate-400">
+              Bid/ask depth envelope (placeholder)
+            </p>
+            <span class="inline-flex items-center rounded border border-slate-600/70 bg-slate-900/80 px-1.5 py-0.5 text-[8px] font-bold text-slate-400 tabular-nums">
+              No polling · SSR snapshot
+            </span>
+          </div>
+          <svg viewBox="0 0 240 72" class="w-full h-[4.25rem]" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="mv0-ldb-dc-bid" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="rgba(52,211,153,0.12)" />
+                <stop offset="100%" stop-color="rgba(52,211,153,0.04)" />
+              </linearGradient>
+              <linearGradient id="mv0-ldb-dc-ask" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="rgba(244,63,94,0.04)" />
+                <stop offset="100%" stop-color="rgba(244,63,94,0.12)" />
+              </linearGradient>
+            </defs>
+            <line x1="120" y1="8" x2="120" y2="64" stroke="rgba(100,116,139,0.45)" stroke-width="0.9" stroke-dasharray="3 3" />
+            <path
+              d="M8 58 L8 40 Q52 34 118 22 L118 58 Z"
+              fill="url(#mv0-ldb-dc-bid)"
+              stroke="rgba(52,211,153,0.42)"
+              stroke-width="0.8"
+            />
+            <path
+              d="M122 22 Q188 34 232 40 L232 58 L122 58 Z"
+              fill="url(#mv0-ldb-dc-ask)"
+              stroke="rgba(244,63,94,0.42)"
+              stroke-width="0.8"
+            />
+            <line x1="8" y1="58" x2="232" y2="58" stroke="rgba(51,65,85,0.8)" stroke-width="0.75" />
+            <text x="12" y="14" fill="rgba(148,163,184,0.95)" font-size="8" font-family="ui-sans-serif, system-ui, sans-serif">
+              bid-side
+            </text>
+            <text x="188" y="14" text-anchor="end" fill="rgba(148,163,184,0.95)" font-size="8" font-family="ui-sans-serif, system-ui, sans-serif">
+              ask-side
+            </text>
+          </svg>
+          <p class="m-0 mt-1 text-[8px] text-slate-600 leading-snug">
+            Decorative split · no level data · offline / disabled depth state.
+          </p>
         </div>
         {% endif %}
         <p class="m-0 leading-snug">
