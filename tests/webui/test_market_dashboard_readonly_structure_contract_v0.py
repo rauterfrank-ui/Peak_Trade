@@ -124,6 +124,7 @@ def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> No
     assert 'data-market-v0-depth-chart-placeholder="true"' in market_html
     assert 'data-market-v0-pro-boundary="true"' in market_html
     assert 'data-market-v0-status-panel="true"' in market_html
+    assert 'data-market-v0-status-diagnostics-visual-rails-v1="true"' in market_html
 
     assert 'data-market-v0-orderbook-topn="true"' in market_html
     assert 'data-market-v0-orderbook-has-levels="false"' in market_html

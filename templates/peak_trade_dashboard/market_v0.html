@@ -437,24 +437,37 @@
         oder
         <span class="text-rose-400/95 font-medium">Chart render error</span>.
       </p>
-      <dl class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-[11px]">
-        <div>
-          <dt class="text-slate-500 uppercase tracking-wide text-[10px] mb-1" data-market-v11-chart-library-status="true">
-            Chart.js status
-          </dt>
-          <dd id="market-v11-chartjs-state" class="text-sky-300/95 m-0">SSR only — verified in browser</dd>
+      <dl
+        class="m-0 flex flex-col sm:flex-row gap-2 font-mono text-[11px]"
+        data-market-v11-diagnostics-visual-rails="true"
+        aria-label="Chart diagnostics summary"
+      >
+        <div class="flex-1 min-w-0 rounded-lg border border-slate-800/80 bg-slate-950/55 overflow-hidden flex shadow-sm shadow-black/15">
+          <div class="w-1 shrink-0 bg-sky-500/55 self-stretch" aria-hidden="true"></div>
+          <div class="min-w-0 flex-1 px-2.5 py-2">
+            <dt class="text-slate-500 uppercase tracking-wide text-[10px] mb-1 m-0" data-market-v11-chart-library-status="true">
+              Chart.js status
+            </dt>
+            <dd id="market-v11-chartjs-state" class="text-sky-300/95 m-0">SSR only — verified in browser</dd>
+          </div>
         </div>
-        <div>
-          <dt class="text-slate-500 uppercase tracking-wide text-[10px] mb-1" data-market-v11-payload-bars="true">
-            Embedded bars
-          </dt>
-          <dd id="market-v11-embedded-bar-count" class="text-slate-200 m-0">{{ payload.bars_returned }}</dd>
+        <div class="flex-1 min-w-0 rounded-lg border border-slate-800/80 bg-slate-950/55 overflow-hidden flex shadow-sm shadow-black/15">
+          <div class="w-1 shrink-0 bg-emerald-500/45 self-stretch" aria-hidden="true"></div>
+          <div class="min-w-0 flex-1 px-2.5 py-2">
+            <dt class="text-slate-500 uppercase tracking-wide text-[10px] mb-1 m-0" data-market-v11-payload-bars="true">
+              Embedded bars
+            </dt>
+            <dd id="market-v11-embedded-bar-count" class="text-slate-200 m-0">{{ payload.bars_returned }}</dd>
+          </div>
         </div>
-        <div>
-          <dt class="text-slate-500 uppercase tracking-wide text-[10px] mb-1">Chart render status</dt>
-          <dd id="market-v11-client-render-flag" class="text-slate-200 m-0">
-            SSR: {% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}
-          </dd>
+        <div class="flex-1 min-w-0 rounded-lg border border-slate-800/80 bg-slate-950/55 overflow-hidden flex shadow-sm shadow-black/15">
+          <div class="w-1 shrink-0 {% if payload.bars_returned == 0 %}bg-amber-500/50{% else %}bg-emerald-500/45{% endif %} self-stretch" aria-hidden="true"></div>
+          <div class="min-w-0 flex-1 px-2.5 py-2">
+            <dt class="text-slate-500 uppercase tracking-wide text-[10px] mb-1 m-0">Chart render status</dt>
+            <dd id="market-v11-client-render-flag" class="text-slate-200 m-0">
+              SSR: {% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}
+            </dd>
+          </div>
         </div>
       </dl>
     </div>
@@ -809,8 +822,9 @@
       </div>
 
       <section
-        class="rounded-lg border border-slate-700/60 bg-slate-900/60 px-2.5 py-2 text-[10px] text-slate-400"
+        class="rounded-lg border border-slate-700/60 bg-slate-900/60 px-2.5 py-2.5 text-[10px] text-slate-400 space-y-2"
         data-market-v0-status-panel="true"
+        data-market-v0-status-diagnostics-visual-rails-v1="true"
         aria-label="Market diagnostic status (read-only)"
       >
         <div class="flex flex-wrap items-center justify-between gap-2">
@@ -819,9 +833,37 @@
           </p>
           <span class="inline-flex rounded border border-slate-700/80 bg-slate-950/60 px-1.5 py-0.5 text-[9px] font-semibold text-slate-400 tabular-nums">SSR snapshot</span>
         </div>
-        <p class="m-0 mt-1.5 leading-snug text-slate-500">
-          Single load — non-authorizing. No polling, no auto-refresh, no Live authorization. Chart block owns render state.
-        </p>
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 gap-2"
+          role="list"
+          data-market-v0-status-diagnostic-rails="true"
+          aria-label="Read-only load and chart posture"
+        >
+          <div role="listitem" class="flex rounded-md border border-slate-800/75 bg-slate-950/50 overflow-hidden">
+            <div class="w-1 shrink-0 bg-slate-500/60 self-stretch" aria-hidden="true"></div>
+            <div class="min-w-0 flex-1 px-2 py-1.5">
+              <p class="m-0 text-[9px] font-bold uppercase tracking-wide text-slate-500">Load mode</p>
+              <p class="m-0 mt-0.5 text-[11px] font-semibold text-slate-200">Single page load</p>
+              <p class="m-0 mt-0.5 text-[9px] text-slate-500 leading-snug">Non-authorizing snapshot only.</p>
+            </div>
+          </div>
+          <div role="listitem" class="flex rounded-md border border-slate-800/75 bg-slate-950/50 overflow-hidden">
+            <div class="w-1 shrink-0 bg-amber-500/55 self-stretch" aria-hidden="true"></div>
+            <div class="min-w-0 flex-1 px-2 py-1.5">
+              <p class="m-0 text-[9px] font-bold uppercase tracking-wide text-slate-500">Refresh</p>
+              <p class="m-0 mt-0.5 text-[11px] font-semibold text-amber-100/90">No polling</p>
+              <p class="m-0 mt-0.5 text-[9px] text-slate-500 leading-snug">No auto-refresh; no Live authorization.</p>
+            </div>
+          </div>
+          <div role="listitem" class="flex rounded-md border border-slate-800/75 bg-slate-950/50 overflow-hidden sm:col-span-2">
+            <div class="w-1 shrink-0 bg-sky-500/50 self-stretch" aria-hidden="true"></div>
+            <div class="min-w-0 flex-1 px-2 py-1.5">
+              <p class="m-0 text-[9px] font-bold uppercase tracking-wide text-slate-500">Chart block</p>
+              <p class="m-0 mt-0.5 text-[11px] font-semibold text-sky-100/90">Owns client render state</p>
+              <p class="m-0 mt-0.5 text-[9px] text-slate-500 leading-snug">Chart diagnostics above reflect SSR inputs; library line updates after load.</p>
+            </div>
+          </div>
+        </div>
       </section>
     </aside>
   </div>
