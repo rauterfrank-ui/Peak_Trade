@@ -4,7 +4,7 @@
 
 {% block content %}
 <div
-  class="space-y-6 max-w-7xl mx-auto px-2 sm:px-0"
+  class="space-y-5 max-w-7xl mx-auto px-2 sm:px-0 pb-1"
   data-section="market-v0"
   data-market-surface-v0="true"
   data-market-v1-dashboard-shell="true"
@@ -59,11 +59,11 @@
 
   <!-- Pro cockpit grid: chart/main column + read-only side panels (IA inspiration only; no order UI) -->
   <div
-    class="grid grid-cols-1 xl:grid-cols-12 gap-4 lg:gap-6 items-start"
+    class="grid grid-cols-1 xl:grid-cols-12 gap-3 lg:gap-5 xl:gap-6 items-start"
     data-market-v0-pro-grid="true"
   >
     <div class="xl:col-span-8 space-y-6 min-w-0" data-market-v0-chart-panel="true">
-  <header class="bg-gradient-to-r from-slate-900/80 to-slate-900/40 rounded-2xl border border-slate-800 p-6">
+  <header class="bg-gradient-to-r from-slate-900/85 to-slate-900/45 rounded-xl border border-slate-800/90 p-4 sm:p-5 shadow-sm shadow-black/20">
     <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
       <div>
         <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">Market Surface</p>
@@ -86,48 +86,48 @@
 
   <section
     aria-label="Market query context"
-    class="bg-slate-900/70 rounded-xl border border-slate-800 p-4"
+    class="bg-slate-900/75 rounded-xl border border-slate-800 p-3 sm:p-4"
     data-market-v1-context="true"
   >
-    <h2 class="text-sm font-medium text-slate-200 mb-3">PeakTrade Market Dashboard · context</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
+    <h2 class="text-xs sm:text-sm font-medium text-slate-200 mb-2 tracking-tight">PeakTrade Market Dashboard · context</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-2.5 text-[11px]">
       <div
-        class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2"
+        class="rounded-md border border-slate-800/90 bg-slate-950/55 px-2.5 py-1.5"
         data-market-v1-stat-card="true"
       >
         <span class="text-slate-500 block mb-1">Source</span>
         <span class="font-mono text-sky-300/95">{{ query.source }}</span>
       </div>
       <div
-        class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2"
+        class="rounded-md border border-slate-800/90 bg-slate-950/55 px-2.5 py-1.5"
         data-market-v1-stat-card="true"
       >
         <span class="text-slate-500 block mb-1">Symbol</span>
         <span class="font-mono text-slate-200">{{ query.symbol }}</span>
       </div>
       <div
-        class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2"
+        class="rounded-md border border-slate-800/90 bg-slate-950/55 px-2.5 py-1.5"
         data-market-v1-stat-card="true"
       >
         <span class="text-slate-500 block mb-1">Timeframe</span>
         <span class="font-mono text-slate-200">{{ query.timeframe }}</span>
       </div>
       <div
-        class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2"
+        class="rounded-md border border-slate-800/90 bg-slate-950/55 px-2.5 py-1.5"
         data-market-v1-stat-card="true"
       >
         <span class="text-slate-500 block mb-1">Limit</span>
         <span class="font-mono text-slate-200">{{ query.limit }}</span>
       </div>
       <div
-        class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2"
+        class="rounded-md border border-slate-800/90 bg-slate-950/55 px-2.5 py-1.5"
         data-market-v1-stat-card="true"
       >
         <span class="text-slate-500 block mb-1">Bars returned</span>
         <span class="font-mono text-slate-200">{{ payload.bars_returned }}</span>
       </div>
       <div
-        class="rounded-lg border border-slate-800/90 bg-slate-950/50 px-3 py-2"
+        class="rounded-md border border-slate-800/90 bg-slate-950/55 px-2.5 py-1.5"
         data-market-v1-stat-card="true"
       >
         <span class="text-slate-500 block mb-1">Chart hint (SSR)</span>
@@ -238,30 +238,30 @@
     </div>
 
     <aside
-      class="xl:col-span-4 space-y-4 min-w-0"
+      class="xl:col-span-4 space-y-3 min-w-0"
       aria-label="Read-only market side panels (no order controls)"
     >
       <section
-        class="rounded-xl border border-slate-700/70 bg-slate-900/60 px-3 py-2.5 text-[11px] text-slate-300"
+        class="rounded-lg border border-slate-600/50 bg-slate-900/75 px-2.5 py-2 text-[10px] text-slate-300 leading-tight"
         data-market-v0-pro-boundary="true"
         aria-label="Read-only boundaries"
       >
-        <ul class="m-0 p-0 list-none flex flex-wrap gap-x-4 gap-y-1">
+        <ul class="m-0 p-0 list-none flex flex-wrap gap-x-3 gap-y-1 items-center">
           <li class="text-emerald-300/95 font-semibold uppercase tracking-wide">Read-only</li>
           <li class="text-sky-300/90 font-semibold uppercase tracking-wide">Non-authorizing</li>
-          <li class="text-slate-400">No order controls</li>
+          <li class="text-slate-400 font-medium">No order controls · offline depth · Top levels</li>
         </ul>
       </section>
 
       <section
-        class="rounded-xl border border-dashed border-slate-600/80 bg-slate-950/50 px-3 py-3 text-xs text-slate-400"
+        class="rounded-lg border border-dashed border-slate-600/70 bg-slate-950/55 px-2.5 py-2 text-[11px] text-slate-400"
         data-market-v0-orderbook-placeholder="true"
         aria-label="Price ladder (read-only)"
       >
-        <p class="font-semibold text-slate-200 uppercase tracking-wide text-[10px] mb-1.5">
+        <p class="font-semibold text-slate-200 uppercase tracking-wide text-[10px] mb-1 leading-snug">
           Price ladder · order book slice
         </p>
-        <p class="mt-0 mb-3 leading-relaxed text-[11px] text-slate-500">
+        <p class="mt-0 mb-2 leading-snug text-[10px] text-slate-500">
           Read-only · offline depth bundle · Top&nbsp;{{ market_depth.top_levels_limit }} levels · no order controls.
         </p>
         <div
@@ -273,77 +273,92 @@
           {% endif %}
         >
           {% if market_depth.has_depth_levels %}
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 mt-0.5">
             <div
-              class="rounded-lg border border-slate-700/70 bg-slate-900/40 overflow-hidden"
+              class="rounded-md border border-slate-700/80 bg-slate-900/50 overflow-hidden flex flex-col min-h-0"
               data-market-v0-orderbook-bids="true"
             >
-              <p class="text-[10px] font-semibold uppercase tracking-wide text-emerald-300/90 px-2 py-1.5 border-b border-slate-700/60 bg-slate-950/50">
+              <p class="text-[10px] font-semibold uppercase tracking-wide text-emerald-300/90 px-2 py-1 border-b border-slate-700/60 bg-slate-950/60 shrink-0">
                 Levels · bid-side (display only)
               </p>
-              <table class="w-full text-left font-mono text-[11px] text-slate-300">
-                <thead class="text-slate-500 border-b border-slate-700/50">
-                  <tr>
-                    <th class="px-2 py-1 font-normal">Price</th>
-                    <th class="px-2 py-1 font-normal">Size</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <div class="max-h-[min(19rem,42vh)] overflow-y-auto overscroll-y-contain">
+                <table class="w-full text-left font-mono tabular-nums text-[10px] text-slate-300">
+                  <thead class="text-slate-500 border-b border-slate-700/50 bg-slate-950/80 sticky top-0 z-[1] backdrop-blur-[2px]">
+                    <tr>
+                      <th scope="col" class="px-2 py-1 font-medium text-left w-[36%]">Price</th>
+                      <th scope="col" class="px-2 py-1 font-medium text-right">Size</th>
+                      <th scope="col" class="px-2 py-1 font-medium text-right text-slate-500">Notional</th>
+                    </tr>
+                  </thead>
+                  <tbody>
                   {% for row in market_depth.top_bids %}
-                  <tr class="border-b border-slate-800/80 last:border-b-0">
-                    <td class="px-2 py-0.5">{{ row.price|e }}</td>
-                    <td class="px-2 py-0.5 text-slate-400">{{ row.size|e }}</td>
+                  <tr class="border-b border-slate-800/70 last:border-b-0 hover:bg-slate-800/25">
+                    <td class="px-2 py-0.5 align-middle text-slate-100">{{ row.price|e }}</td>
+                    <td class="px-2 py-0.5 align-middle text-right text-slate-400">{{ row.size|e }}</td>
+                    <td class="px-2 py-0.5 align-middle text-right text-slate-500 text-[9px]">
+                      {% if row.notional %}{{ row.notional|e }}{% else %}—{% endif %}
+                    </td>
                   </tr>
                   {% endfor %}
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
             </div>
             <div
-              class="rounded-lg border border-slate-700/70 bg-slate-900/40 overflow-hidden"
+              class="rounded-md border border-slate-700/80 bg-slate-900/50 overflow-hidden flex flex-col min-h-0"
               data-market-v0-orderbook-asks="true"
             >
-              <p class="text-[10px] font-semibold uppercase tracking-wide text-rose-300/90 px-2 py-1.5 border-b border-slate-700/60 bg-slate-950/50">
+              <p class="text-[10px] font-semibold uppercase tracking-wide text-rose-300/90 px-2 py-1 border-b border-slate-700/60 bg-slate-950/60 shrink-0">
                 Levels · ask-side (display only)
               </p>
-              <table class="w-full text-left font-mono text-[11px] text-slate-300">
-                <thead class="text-slate-500 border-b border-slate-700/50">
-                  <tr>
-                    <th class="px-2 py-1 font-normal">Price</th>
-                    <th class="px-2 py-1 font-normal">Size</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <div class="max-h-[min(19rem,42vh)] overflow-y-auto overscroll-y-contain">
+                <table class="w-full text-left font-mono tabular-nums text-[10px] text-slate-300">
+                  <thead class="text-slate-500 border-b border-slate-700/50 bg-slate-950/80 sticky top-0 z-[1] backdrop-blur-[2px]">
+                    <tr>
+                      <th scope="col" class="px-2 py-1 font-medium text-left w-[36%]">Price</th>
+                      <th scope="col" class="px-2 py-1 font-medium text-right">Size</th>
+                      <th scope="col" class="px-2 py-1 font-medium text-right text-slate-500">Notional</th>
+                    </tr>
+                  </thead>
+                  <tbody>
                   {% for row in market_depth.top_asks %}
-                  <tr class="border-b border-slate-800/80 last:border-b-0">
-                    <td class="px-2 py-0.5">{{ row.price|e }}</td>
-                    <td class="px-2 py-0.5 text-slate-400">{{ row.size|e }}</td>
+                  <tr class="border-b border-slate-800/70 last:border-b-0 hover:bg-slate-800/25">
+                    <td class="px-2 py-0.5 align-middle text-slate-100">{{ row.price|e }}</td>
+                    <td class="px-2 py-0.5 align-middle text-right text-slate-400">{{ row.size|e }}</td>
+                    <td class="px-2 py-0.5 align-middle text-right text-slate-500 text-[9px]">
+                      {% if row.notional %}{{ row.notional|e }}{% else %}—{% endif %}
+                    </td>
                   </tr>
                   {% endfor %}
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
           {% else %}
           <div
-            class="rounded-lg border border-slate-800/70 bg-slate-950/40 px-2 py-2 text-[11px] text-slate-500 leading-relaxed"
+            class="rounded-md border border-dashed border-slate-600/60 bg-slate-950/50 px-2.5 py-2 text-[10px] text-slate-400 leading-snug"
             data-market-v0-orderbook-empty="true"
             role="note"
           >
-            No ladder rows · depth disabled, unconfigured, or empty SSR snapshot · display-only diagnostics.
+            <p class="m-0 font-medium text-slate-500">Diagnostics — empty ladder</p>
+            <p class="m-0 mt-1 text-slate-500">
+              No ladder rows · depth disabled, unconfigured, or empty SSR snapshot · display-only diagnostics.
+            </p>
           </div>
           {% endif %}
         </div>
       </section>
 
       <section
-        class="rounded-xl border border-dashed border-slate-600/80 bg-slate-950/50 px-3 py-3 text-xs text-slate-400"
+        class="rounded-lg border border-dashed border-slate-600/70 bg-slate-950/50 px-2.5 py-2 text-[10px] text-slate-400"
         data-market-v0-depth-chart-placeholder="true"
         aria-label="Depth chart placeholder (read-only)"
       >
-        <p class="font-semibold text-slate-200 uppercase tracking-wide text-[10px] mb-1.5">
+        <p class="font-semibold text-slate-200 uppercase tracking-wide mb-1 leading-snug">
           Depth chart (cumulative)
         </p>
-        <p class="m-0 leading-relaxed">
+        <p class="m-0 leading-snug">
           Read-only placeholder — cumulative visualization deferred. SSR depth summary remains the canonical diagnostic strip below.
         </p>
       </section>
@@ -351,7 +366,7 @@
       <section
         id="market-v0-depth-ssr"
         aria-label="Market depth read-model (SSR, offline or disabled)"
-        class="rounded-xl border border-slate-700/70 bg-slate-900/55 px-4 py-3 text-xs text-slate-300"
+        class="rounded-lg border border-slate-700/70 bg-slate-900/60 px-3 py-2.5 text-[11px] text-slate-300"
         data-market-depth-panel="true"
         data-market-depth-status="{{ market_depth.display_status }}"
         {% if market_depth.readmodel_id %}
@@ -370,14 +385,14 @@
       </section>
 
       <section
-        class="rounded-xl border border-slate-700/60 bg-slate-900/50 px-3 py-3 text-xs text-slate-400"
+        class="rounded-lg border border-slate-700/60 bg-slate-900/55 px-2.5 py-2 text-[10px] text-slate-400"
         data-market-v0-status-panel="true"
         aria-label="Market diagnostic status (read-only)"
       >
-        <p class="font-semibold text-slate-200 uppercase tracking-wide text-[10px] mb-1.5">
+        <p class="font-semibold text-slate-200 uppercase tracking-wide mb-1 leading-snug">
           Status · diagnostics
         </p>
-        <p class="m-0 leading-relaxed">
+        <p class="m-0 leading-snug">
           Snapshot at page load — non-authorizing. No polling, no auto-refresh, no Live authorization. See chart block for render state.
         </p>
       </section>
