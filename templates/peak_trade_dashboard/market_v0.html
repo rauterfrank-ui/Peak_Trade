@@ -4,10 +4,11 @@
 
 {% block content %}
 <div
-  class="space-y-6 max-w-6xl mx-auto"
+  class="space-y-6 max-w-7xl mx-auto px-2 sm:px-0"
   data-section="market-v0"
   data-market-surface-v0="true"
   data-market-v1-dashboard-shell="true"
+  data-market-v0-pro-shell="true"
   data-market-readonly="true"
   data-market-non-authorizing="true"
   data-market-source="{{ query.source }}"
@@ -56,27 +57,12 @@
     {% endif %}
   </section>
 
-  <section
-    id="market-v0-depth-ssr"
-    aria-label="Market depth read-model (SSR, offline or disabled)"
-    class="rounded-xl border border-slate-700/70 bg-slate-900/55 px-4 py-3 text-xs text-slate-300"
-    data-market-depth-panel="true"
-    data-market-depth-status="{{ market_depth.display_status }}"
-    {% if market_depth.readmodel_id %}
-    data-market-depth-readmodel-id="{{ market_depth.readmodel_id }}"
-    {% endif %}
+  <!-- Pro cockpit grid: chart/main column + read-only side panels (IA inspiration only; no order UI) -->
+  <div
+    class="grid grid-cols-1 xl:grid-cols-12 gap-4 lg:gap-6 items-start"
+    data-market-v0-pro-grid="true"
   >
-    <p class="font-semibold text-slate-200/95 tracking-wide uppercase text-[11px] mb-1.5">
-      Market Depth (read-only)
-    </p>
-    <p class="leading-relaxed text-slate-300/90 m-0" data-market-depth-summary="true">
-      {{ market_depth.summary_line|e }}
-    </p>
-    <p class="mt-1.5 text-[11px] text-slate-500 m-0">
-      SSR only — keine Browser-Abfrage der Depth-JSON-Route; keine Orders oder Ausführung.
-    </p>
-  </section>
-
+    <div class="xl:col-span-8 space-y-6 min-w-0" data-market-v0-chart-panel="true">
   <header class="bg-gradient-to-r from-slate-900/80 to-slate-900/40 rounded-2xl border border-slate-800 p-6">
     <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
       <div>
@@ -249,6 +235,85 @@
       <canvas id="chart-market-v0-close" class="block w-full h-full"></canvas>
     </div>
   </section>
+    </div>
+
+    <aside
+      class="xl:col-span-4 space-y-4 min-w-0"
+      aria-label="Read-only market side panels (no order controls)"
+    >
+      <section
+        class="rounded-xl border border-slate-700/70 bg-slate-900/60 px-3 py-2.5 text-[11px] text-slate-300"
+        data-market-v0-pro-boundary="true"
+        aria-label="Read-only boundaries"
+      >
+        <ul class="m-0 p-0 list-none flex flex-wrap gap-x-4 gap-y-1">
+          <li class="text-emerald-300/95 font-semibold uppercase tracking-wide">Read-only</li>
+          <li class="text-sky-300/90 font-semibold uppercase tracking-wide">Non-authorizing</li>
+          <li class="text-slate-400">No order controls</li>
+        </ul>
+      </section>
+
+      <section
+        class="rounded-xl border border-dashed border-slate-600/80 bg-slate-950/50 px-3 py-3 text-xs text-slate-400"
+        data-market-v0-orderbook-placeholder="true"
+        aria-label="Price ladder placeholder (read-only)"
+      >
+        <p class="font-semibold text-slate-200 uppercase tracking-wide text-[10px] mb-1.5">
+          Price ladder · order book slice
+        </p>
+        <p class="m-0 leading-relaxed">
+          Display-only placeholder — read-only IA target. Bid/Ask ladder wiring deferred (depth/offline display only elsewhere). No broker or exchange interaction.
+        </p>
+      </section>
+
+      <section
+        class="rounded-xl border border-dashed border-slate-600/80 bg-slate-950/50 px-3 py-3 text-xs text-slate-400"
+        data-market-v0-depth-chart-placeholder="true"
+        aria-label="Depth chart placeholder (read-only)"
+      >
+        <p class="font-semibold text-slate-200 uppercase tracking-wide text-[10px] mb-1.5">
+          Depth chart (cumulative)
+        </p>
+        <p class="m-0 leading-relaxed">
+          Read-only placeholder — cumulative visualization deferred. SSR depth summary remains the canonical diagnostic strip below.
+        </p>
+      </section>
+
+      <section
+        id="market-v0-depth-ssr"
+        aria-label="Market depth read-model (SSR, offline or disabled)"
+        class="rounded-xl border border-slate-700/70 bg-slate-900/55 px-4 py-3 text-xs text-slate-300"
+        data-market-depth-panel="true"
+        data-market-depth-status="{{ market_depth.display_status }}"
+        {% if market_depth.readmodel_id %}
+        data-market-depth-readmodel-id="{{ market_depth.readmodel_id }}"
+        {% endif %}
+      >
+        <p class="font-semibold text-slate-200/95 tracking-wide uppercase text-[11px] mb-1.5">
+          Market Depth (read-only)
+        </p>
+        <p class="leading-relaxed text-slate-300/90 m-0" data-market-depth-summary="true">
+          {{ market_depth.summary_line|e }}
+        </p>
+        <p class="mt-1.5 text-[11px] text-slate-500 m-0">
+          Depth/offline display only — SSR only; keine Browser-Abfrage der Depth-JSON-Route; keine Orders oder Ausführung.
+        </p>
+      </section>
+
+      <section
+        class="rounded-xl border border-slate-700/60 bg-slate-900/50 px-3 py-3 text-xs text-slate-400"
+        data-market-v0-status-panel="true"
+        aria-label="Market diagnostic status (read-only)"
+      >
+        <p class="font-semibold text-slate-200 uppercase tracking-wide text-[10px] mb-1.5">
+          Status · diagnostics
+        </p>
+        <p class="m-0 leading-relaxed">
+          Snapshot at page load — non-authorizing. No polling, no auto-refresh, no Live authorization. See chart block for render state.
+        </p>
+      </section>
+    </aside>
+  </div>
 
   <script type="application/json" id="market-v0-payload">{{ payload | tojson }}</script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
