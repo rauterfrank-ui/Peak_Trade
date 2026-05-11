@@ -4,7 +4,7 @@
 
 | Methode | Pfad | Beschreibung |
 |---------|------|----------------|
-| GET | `/market` | HTML: Close-Line-Chart (Chart.js), Parameter per Query; **read-only Market Depth SSR-Anzeige v0** (**`data-market-depth-*`**; Zustand in-process über **`market_depth_json_payload_v0()`** — siehe **[Market Depth display on GET /market (SSR v0 implemented)](#market-depth-display-on-get-market-ssr-v0-implemented)**) |
+| GET | `/market` | HTML: **read-only** Market-Dashboard — **SSR-OHLC-/Kerzendisplay** (serverseitig aus eingebettetem Market-Payload); ergänzend **Chart.js**‑Close-Line/Diagnose gemäß **Chart-status**‑Semantik in diesem Dokument (**kein** clientseitiges Ranking-/Live-Nachladen). **Futures-Ranking-Funnel** als **contract-first Empty-State** mit **producer-definierten** Stufengrößen (**kein** festes `Top 50&#47;20&#47;5`); Details **[Ranking funnel empty state (dynamic labels)](#ranking-funnel-empty-state-dynamic-labels)**. **read-only Market Depth SSR-Anzeige v0** (**`data-market-depth-*`**; Zustand in-process über **`market_depth_json_payload_v0()`** — siehe **[Market Depth display on GET /market (SSR v0 implemented)](#market-depth-display-on-get-market-ssr-v0-implemented)**) |
 | GET | `/market/double-play` | HTML: SSR read-only Komposition (ein Server-Render) — **v1.2** dominanter Canvas-Candlestick + **v1.3** menschenlesbare Double‑Play‑Rail‑Feldzuordnung (weiterhin **gleiche** eingebettete Payload-/JSON‑Semantik), sekundärer Chart.js‑Close-Line (**gleicher JSON-Vertrag wie** **`GET`** **`/api/master-v2/double-play/dashboard-display.json`** in-process); **kein** client-fetch, **kein** automatisches Nachladen |
 | GET | `/api/market/ohlcv` | JSON: OHLCV-Bars (`open`/`high`/`low`/`close`/`volume`, Zeit `ts`) |
 | GET | `/api/market/depth` | JSON: Market Depth readmodel v0 — **read-only**, **env-gated** (**`PEAK_TRADE_MARKET_DEPTH_ENABLED`** muss **`1`** sein), Bundle nur über **`PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT`** (kein Query-/Pfad‑Override); bei Erfolg Builder‑Payload (**`200`**), sonst kurzes Diagnose‑JSON (**`503`**); **`HTTP 200`**/**`503`** gelten für **diese JSON‑Route**. **`GET`** **`/market`** nutzt denselben Hilfstupel **nur serverseitig**, **nicht** per Browser‑Request auf diese URL; **kein** Polling‑Vertrag hier |
@@ -41,6 +41,8 @@ Stabile `data-*`‑Marker (Anker für Anzeige und automatisierte Tests — **kei
 - `data-market-safety-banner="true"`
 - `data-market-surface-v0="true"`
 - **Market Depth SSR v0 (**`GET`** **`&#47;market`**):** `data-market-depth-panel="true"`, `data-market-depth-status="<status>"` — bei Hilfs‑**HTTP 200** zeigt das Template **`display_status` `ok`**; sonst **`runtime_source_status`** aus Diagnose‑JSON (z. B. **`disabled`**, **`unconfigured`**, **`builder_error`**); optional `data-market-depth-readmodel-id`, `data-market-depth-summary`; **Darstellung/Test‑Anker**, **keine** operationalen Freigaben
+- **Futures-Ranking-Funnel (contract-first Empty-State, `GET` `/market`):** `data-market-v0-ranking-funnel-empty-state-v0="true"` — **keine** Live-Ranking-Daten, **keine** erfundenen Scores/Symbole/Kandidatenlisten; reiner SSR-Platzhalter, bis ein kanonischer **Producer**/`readmodel`‑Vertrag existiert.
+- **Dynamische Funnel-Labels:** `data-market-v0-ranking-funnel-dynamic-labels-v0="true"` — Stufen heißen **Top Universe**, **Shortlist**, **Top Ranking / Selected Candidates**; **Zählwerte pro Stufe** sind **vom Producer** bzw. Datenstand abhängig (**nicht** als statisches `Top 50&#47;20&#47;5` ausgewiesen).
 
 `data-market-source-kind` unterscheidet aktuell:
 
@@ -48,6 +50,17 @@ Stabile `data-*`‑Marker (Anker für Anzeige und automatisierte Tests — **kei
 - `kraken-public-ohlcv-network`
 
 Banner‑Inhalt fasst u. a.: keine Orders, kein Testnet/Live, keine Capital/Scope‑Freigabe, kein Risk-/KillSwitch‑Bypass — rein erklärend; **kein** Gate, **keine** Strategie- oder Ausführungsfreigabe.
+
+## Ranking funnel empty state (dynamic labels)
+
+Auf **`GET`** **`/market`** zeigt das Template einen **Futures-Ranking-Funnel** ausschließlich als **read-only**, **non-authorizing** **Empty-State** / Platzhalter:
+
+- **Sichtbare Stufen-Bezeichner:** **Top Universe** → **Shortlist** → **Top Ranking / Selected Candidates** (sprachlicher Zielpfad auf **einer** Seite; **keine** separate Ranking-Route).
+- **Keine festen Endgrößen:** frühere illustrative Größen wie `Top 50&#47;20&#47;5` sind **kein** vertragliches Versprechen — **Umfang** jeder Stufe bleibt **producer-definiert** / datengetrieben.
+- **Stabile Marker:** `data-market-v0-ranking-funnel-empty-state-v0="true"`, `data-market-v0-ranking-funnel-dynamic-labels-v0="true"` (Tests/Strukturvertrag — **keine** operationalen Freigaben).
+- **Kein** Ranking-Producer in diesem Markt-Slice dokumentiert oder impliziert; reale Listen/Scores folgen erst mit **explizitem** kanonischen Contract — bis dahin **keine** Umsetzungsannahme durch dieses Dokument.
+
+**Dashboard ≠ Freigabe:** der Funnel begründet **keine** Orders, **kein** Live/Testnet/Paper, **keine** Scope/Capital-, Risk-/KillSwitch- oder Strategieautorität.
 
 ## Market Surface v1 visual framing
 
