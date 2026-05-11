@@ -124,6 +124,10 @@ def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> No
     assert 'data-market-v0-pro-boundary="true"' in market_html
     assert 'data-market-v0-status-panel="true"' in market_html
 
+    assert 'data-market-v0-orderbook-topn="true"' in market_html
+    assert 'data-market-v0-orderbook-has-levels="false"' in market_html
+    assert 'data-market-v0-orderbook-empty="true"' in market_html
+
     lowered = market_html.lower()
     assert "place order" not in lowered
     assert "data-order-form" not in lowered

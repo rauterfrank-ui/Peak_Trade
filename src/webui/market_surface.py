@@ -31,6 +31,7 @@ logger = logging.getLogger(__name__)
 # Aligniert mit scripts/_shared_forward_args.OHLCV_TIMEFRAME_CHOICES / Kraken-ccxt-Übliches
 MARKET_TIMEFRAMES: tuple[str, ...] = ("1m", "5m", "15m", "1h", "4h", "1d")
 MAX_OHLCV_LIMIT = 720
+MARKET_DEPTH_SSR_TOP_LEVELS = 8
 DEFAULT_SYMBOL = "BTC/USD"
 DEFAULT_TIMEFRAME = "1h"
 DEFAULT_LIMIT = 120
@@ -113,6 +114,57 @@ def load_ohlcv_dataframe(
     return df, meta
 
 
+def _sanitize_depth_level_item(item: object) -> Dict[str, str] | None:
+    """Normalize a bid/ask level for template display only (strings, JSON-safe subset)."""
+
+    if not isinstance(item, dict):
+        return None
+
+    raw_price = item.get("price")
+    raw_size = item.get("size")
+    if raw_price is None and raw_size is None:
+        return None
+
+    price = str(raw_price).strip()
+    size = str(raw_size).strip()
+    row: Dict[str, str] = {"price": price, "size": size}
+    if "notional" in item and item["notional"] is not None:
+        row["notional"] = str(item["notional"]).strip()
+    return row
+
+
+def _top_depth_level_rows(
+    depth_obj: Any, *, limit: int
+) -> tuple[List[Dict[str, str]], List[Dict[str, str]]]:
+    """Return sanitized top-N bids/asks from offline depth envelope (deterministic slicing only)."""
+
+    if not isinstance(depth_obj, dict) or limit <= 0:
+        return [], []
+
+    bids_out: List[Dict[str, str]] = []
+    asks_out: List[Dict[str, str]] = []
+
+    raw_bids = depth_obj.get("bids")
+    if isinstance(raw_bids, list):
+        for it in raw_bids:
+            if len(bids_out) >= limit:
+                break
+            row = _sanitize_depth_level_item(it)
+            if row is not None and (row["price"] or row["size"]):
+                bids_out.append(row)
+
+    raw_asks = depth_obj.get("asks")
+    if isinstance(raw_asks, list):
+        for it in raw_asks:
+            if len(asks_out) >= limit:
+                break
+            row = _sanitize_depth_level_item(it)
+            if row is not None and (row["price"] or row["size"]):
+                asks_out.append(row)
+
+    return bids_out, asks_out
+
+
 def dataframe_to_bars(df: pd.DataFrame) -> List[Dict[str, Any]]:
     """Serialisiert DataFrame mit open/high/low/close/volume in JSON-Bar-Objekte."""
     bars: List[Dict[str, Any]] = []
@@ -134,16 +186,29 @@ def dataframe_to_bars(df: pd.DataFrame) -> List[Dict[str, Any]]:
 def build_market_depth_display_context() -> Dict[str, Any]:
     """SSR-only snapshot for templates: tuple from helper, unchanged semantics."""
 
+    top_limit = MARKET_DEPTH_SSR_TOP_LEVELS
+
     depth_http_status, depth_payload = market_depth_json_payload_v0()
     readmodel_id = str(depth_payload.get("readmodel_id", ""))
+
+    top_bids: List[Dict[str, str]] = []
+    top_asks: List[Dict[str, str]] = []
+    summary_line = ""
+
     if depth_http_status == 200:
         display_status = "ok"
         depth_obj = depth_payload.get("depth") or {}
-        levels = depth_obj.get("levels_returned") or {}
+        levels = (
+            depth_obj.get("levels_returned")
+            if isinstance(depth_obj.get("levels_returned"), dict)
+            else {}
+        )
         bids_n = levels.get("bids", "—")
         asks_n = levels.get("asks", "—")
         sym = depth_payload.get("symbol", "")
         summary_line = f"{sym} — bids {bids_n}, asks {asks_n} (offline bundle, read-only display)"
+        if isinstance(depth_obj, dict):
+            top_bids, top_asks = _top_depth_level_rows(depth_obj, limit=top_limit)
     else:
         display_status = str(depth_payload.get("runtime_source_status", "unavailable"))
         warnings = depth_payload.get("warnings")
@@ -151,11 +216,18 @@ def build_market_depth_display_context() -> Dict[str, Any]:
             summary_line = str(warnings[0])
         else:
             summary_line = str(depth_payload.get("stale_reason", display_status))
+
+    has_depth_levels = len(top_bids) > 0 or len(top_asks) > 0
+
     return {
         "depth_http_status": depth_http_status,
         "display_status": display_status,
         "readmodel_id": readmodel_id,
         "summary_line": summary_line,
+        "top_bids": top_bids,
+        "top_asks": top_asks,
+        "top_levels_limit": top_limit,
+        "has_depth_levels": has_depth_levels,
     }
 
 
