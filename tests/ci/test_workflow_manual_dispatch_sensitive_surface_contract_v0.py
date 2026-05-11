@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
+from typing import Any
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -81,6 +82,98 @@ def _workflow_text(path: Path) -> str:
 
 def _has_workflow_dispatch(text: str) -> bool:
     return bool(re.search(r"^\s*workflow_dispatch\s*:", text, re.MULTILINE))
+
+
+_SENSITIVE_INPUT_NAME_MARKERS: tuple[str, ...] = (
+    "token",
+    "secret",
+    "password",
+    "key",
+    "credential",
+    "auth",
+    "live",
+    "testnet",
+    "broker",
+    "exchange",
+    "order",
+    "deploy",
+    "publish",
+)
+
+
+def _extract_workflow_dispatch_input_keys(text: str) -> list[str]:
+    """Best-effort keys under ``workflow_dispatch`` → ``inputs`` (indent-heuristic).
+
+    GitHub Actions-shaped YAML only; avoids PyYAML. Multiple ``workflow_dispatch``
+    blocks in one file are merged in document order.
+    """
+    lines = text.splitlines()
+    collected: list[str] = []
+    i = 0
+    while i < len(lines):
+        m_dispatch = re.match(r"^(\s*)workflow_dispatch\s*:", lines[i])
+        if not m_dispatch:
+            i += 1
+            continue
+        indent_d = len(m_dispatch.group(1))
+        i += 1
+        inputs_indent: int | None = None
+        child_indent: int | None = None
+        while i < len(lines):
+            raw = lines[i]
+            if not raw.strip():
+                i += 1
+                continue
+            indent = len(raw) - len(raw.lstrip(" \t"))
+            if raw.strip().startswith("#"):
+                i += 1
+                continue
+            if indent <= indent_d:
+                break
+            if inputs_indent is None:
+                if re.match(r"^\s*inputs\s*:", raw):
+                    inputs_indent = indent
+                i += 1
+                continue
+            if indent <= inputs_indent:
+                break
+            m_key = re.match(r"^\s*([A-Za-z0-9_-]+)\s*:\s*(?:#.*)?$", raw)
+            if m_key:
+                if child_indent is None:
+                    child_indent = indent
+                elif indent < child_indent:
+                    break
+                if indent == child_indent:
+                    collected.append(m_key.group(1))
+            i += 1
+    return collected
+
+
+def _input_keys_flagged_for_sensitive_name_markers(keys: list[str]) -> list[str]:
+    flagged: list[str] = []
+    for key in keys:
+        lowered = key.lower()
+        if any(marker in lowered for marker in _SENSITIVE_INPUT_NAME_MARKERS):
+            flagged.append(key)
+    return sorted(flagged)
+
+
+def _workflow_dispatch_inputs_inventory_v1() -> dict[str, dict[str, Any]]:
+    inventory: dict[str, dict[str, Any]] = {}
+
+    for workflow in _workflow_files():
+        text = _workflow_text(workflow)
+        if not _has_workflow_dispatch(text):
+            continue
+        keys = sorted(set(_extract_workflow_dispatch_input_keys(text)))
+        inventory[workflow.name] = {
+            "workflow_dispatch_present": True,
+            "input_keys": keys,
+            "sensitive_input_name_markers": _input_keys_flagged_for_sensitive_name_markers(keys),
+            "defines_inputs_block": bool(keys),
+        }
+
+    return inventory
 
 
 def _sensitive_signals(text: str) -> set[str]:
@@ -201,3 +294,37 @@ def test_manual_dispatch_sensitive_surface_contract_retains_static_local_scope()
 
     found = [fragment for fragment in forbidden_fragments if fragment in test_text]
     assert not found, f"contract must remain static/local-only: {found}"
+
+
+def test_workflow_dispatch_inputs_visibility_followup_v1_inventory_shape() -> None:
+    inventory = _workflow_dispatch_inputs_inventory_v1()
+
+    assert inventory
+    for filename, row in inventory.items():
+        assert filename.endswith((".yml", ".yaml"))
+        assert row["workflow_dispatch_present"] is True
+        assert isinstance(row["input_keys"], list)
+        assert isinstance(row["sensitive_input_name_markers"], list)
+        assert isinstance(row["defines_inputs_block"], bool)
+
+
+def test_workflow_dispatch_inputs_visibility_followup_v1_some_workflows_define_inputs() -> None:
+    inventory = _workflow_dispatch_inputs_inventory_v1()
+    assert any(row["defines_inputs_block"] for row in inventory.values())
+
+
+def test_workflow_dispatch_inputs_visibility_followup_v1_prcd_write_smoke_lists_confirm_token() -> (
+    None
+):
+    inventory = _workflow_dispatch_inputs_inventory_v1()
+    row = inventory.get("prcd-aws-export-write-smoke.yml")
+    assert row is not None
+    assert "confirm_token" in row["input_keys"]
+    assert "confirm_token" in row["sensitive_input_name_markers"]
+
+
+def test_workflow_dispatch_inputs_visibility_followup_v1_weekly_audit_lists_note_input() -> None:
+    inventory = _workflow_dispatch_inputs_inventory_v1()
+    row = inventory.get("weekly_core_audit.yml")
+    assert row is not None
+    assert "note" in row["input_keys"]
