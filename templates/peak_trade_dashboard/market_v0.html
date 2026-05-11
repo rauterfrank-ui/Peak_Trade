@@ -102,7 +102,7 @@
           <span class="inline-flex items-center rounded-md border border-slate-700/80 bg-slate-950/60 px-2 py-0.5 text-[10px] font-semibold text-slate-300/90 tabular-nums">SSR ladder</span>
           <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-950/55 px-2 py-0.5 text-[10px] font-medium text-slate-400/90 tabular-nums">No polling</span>
         </div>
-        <p class="text-[10px] text-slate-500 m-0 pt-0.5">Cockpit-Strip direkt unter dem Header — danach Kontext, dominant Chart und SSR-Leiter.</p>
+        <p class="text-[10px] text-slate-500 m-0 pt-0.5">Visual cockpit uses SSR tiles below — dann Kontext, dominant Chart und SSR-Leiter.</p>
       </div>
     </div>
   </header>
@@ -111,44 +111,136 @@
     aria-label="Single-page visual cockpit"
     class="rounded-xl border border-slate-600/50 bg-gradient-to-b from-slate-950/90 via-slate-900/80 to-slate-950/70 p-3 sm:p-4 ring-1 ring-sky-900/25 shadow-lg shadow-black/25 space-y-3"
     data-market-v0-visual-cockpit="true"
+    data-market-v0-visual-cockpit-v1="true"
   >
     <div class="flex flex-wrap items-end justify-between gap-2">
       <div>
         <h2 class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">Visual cockpit</h2>
-        <p class="text-[10px] text-slate-500 m-0 mt-0.5">Same-page preview · read-only · visible here</p>
+        <p class="text-[10px] text-slate-500 m-0 mt-0.5">SSR overview · read-only snapshot · not live</p>
       </div>
-      <span class="text-[9px] font-semibold uppercase tracking-wide text-emerald-400/90">Integrated strip</span>
+      <span class="text-[9px] font-semibold uppercase tracking-wide text-emerald-400/90">v1 tiles</span>
     </div>
 
+    {% set lim = query.limit|int %}
+    {% if lim > 0 %}
+      {% set raw_pct = (100.0 * payload.bars_returned / lim)|round(0)|int %}
+      {% set fill_pct = ([100, raw_pct]|sort)[0] %}
+    {% else %}
+      {% set fill_pct = 0 %}
+    {% endif %}
+    {% if payload.bars_returned == 0 %}
+      {% set chart_arc = 0 %}
+    {% else %}
+      {% set _arc = ((360 * fill_pct) / 100)|round(0)|int %}
+      {% set chart_arc = ([360, _arc]|sort)[0] %}
+    {% endif %}
+
     <div
-      class="flex flex-wrap gap-1.5 sm:gap-2 rounded-lg border border-slate-800/80 bg-slate-950/70 px-2.5 py-2"
+      class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 rounded-xl border border-slate-800/80 bg-slate-950/65 p-2.5 sm:p-3 ring-1 ring-slate-800/50"
       data-market-v0-ssr-metrics-strip="true"
       aria-label="SSR metrics snapshot"
     >
-      <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-900/80 px-2 py-0.5 text-[10px] font-semibold text-slate-200 tabular-nums">
-        <span class="text-slate-500 mr-1">Source</span><span class="font-mono text-sky-300/95">{{ query.source }}</span>
-      </span>
-      <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-900/80 px-2 py-0.5 text-[10px] font-semibold text-slate-200 tabular-nums">
-        <span class="text-slate-500 mr-1">Symbol</span><span class="font-mono text-slate-200">{{ query.symbol }}</span>
-      </span>
-      <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-900/80 px-2 py-0.5 text-[10px] font-semibold text-slate-200 tabular-nums">
-        <span class="text-slate-500 mr-1">TF</span><span class="font-mono text-slate-200">{{ query.timeframe }}</span>
-      </span>
-      <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-900/80 px-2 py-0.5 text-[10px] font-semibold text-slate-200 tabular-nums">
-        <span class="text-slate-500 mr-1">Limit</span><span class="font-mono text-slate-200">{{ query.limit }}</span>
-      </span>
-      <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-900/80 px-2 py-0.5 text-[10px] font-semibold text-slate-200 tabular-nums">
-        <span class="text-slate-500 mr-1">Bars</span><span class="font-mono text-slate-200">{{ payload.bars_returned }}</span>
-      </span>
-      <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-900/80 px-2 py-0.5 text-[10px] font-semibold {% if payload.bars_returned == 0 %}text-amber-300/95{% else %}text-emerald-300/95{% endif %} tabular-nums">
-        <span class="text-slate-500 mr-1">Chart</span><span class="font-mono">{% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}</span>
-      </span>
-      <span class="inline-flex items-center rounded-md border border-amber-900/40 bg-amber-950/35 px-2 py-0.5 text-[10px] font-semibold text-amber-100/90 tabular-nums">
-        <span class="text-slate-500 mr-1">Depth</span><span class="font-mono text-amber-200/95">{{ market_depth.display_status }}</span>
-      </span>
-      <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-900/80 px-2 py-0.5 text-[10px] font-medium text-slate-400 tabular-nums">Top-N {{ market_depth.top_levels_limit }}</span>
-      <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-950/60 px-2 py-0.5 text-[9px] font-semibold text-slate-400">No polling</span>
-      <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-950/60 px-2 py-0.5 text-[9px] font-semibold text-slate-400">No order controls</span>
+      <div
+        class="relative overflow-hidden rounded-lg border border-sky-800/45 bg-gradient-to-br from-slate-900/90 to-slate-950/95 p-3 min-h-[7.5rem] flex flex-col gap-2 shadow-inner shadow-black/20"
+        data-market-v0-cockpit-tile="snapshot"
+        data-market-v0-cockpit-source="{{ query.source }}"
+      >
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <p class="text-[9px] font-bold uppercase tracking-[0.12em] text-sky-400/85 m-0">Market snapshot</p>
+            <p class="text-lg sm:text-xl font-bold font-mono text-slate-50 tracking-tight m-0 mt-1 truncate" title="{{ query.symbol }}">{{ query.symbol }}</p>
+          </div>
+          <span class="shrink-0 inline-flex items-center rounded-md border border-slate-700/70 bg-slate-950/80 px-1.5 py-0.5 text-[9px] font-semibold text-slate-300 tabular-nums">{{ query.timeframe }}</span>
+        </div>
+        <div class="flex flex-wrap gap-1.5 text-[10px] text-slate-400">
+          <span class="rounded border border-slate-800/80 bg-slate-950/70 px-1.5 py-0.5 font-mono text-sky-300/90">src · {{ query.source }}</span>
+          <span class="rounded border border-slate-800/80 bg-slate-950/70 px-1.5 py-0.5 font-mono tabular-nums">limit {{ query.limit }}</span>
+        </div>
+        <div class="mt-auto space-y-1">
+          <div class="flex items-center justify-between text-[9px] text-slate-500 tabular-nums">
+            <span>Bars returned</span>
+            <span class="font-mono text-slate-300">{{ payload.bars_returned }} / {{ query.limit }}</span>
+          </div>
+          <div class="h-2 rounded-full bg-slate-800/90 overflow-hidden border border-slate-800/80" role="img" aria-label="Relative fill of request limit from embedded bars, not a live feed">
+            <div
+              class="h-full rounded-full bg-gradient-to-r from-sky-500/55 to-cyan-400/45 transition-[width] duration-300"
+              style="width: {{ fill_pct }}%; min-width: {% if payload.bars_returned > 0 %}4px{% else %}0{% endif %};"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="relative overflow-hidden rounded-lg border {% if payload.bars_returned == 0 %}border-amber-800/50 bg-amber-950/20{% else %}border-emerald-900/40 bg-emerald-950/15{% endif %} p-3 min-h-[7.5rem] flex flex-row items-center gap-3 shadow-inner shadow-black/15"
+        data-market-v0-cockpit-tile="chart"
+        data-market-v0-cockpit-chart-state="{% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}"
+      >
+        <div
+          class="relative h-16 w-16 shrink-0 rounded-full border-2 {% if payload.bars_returned == 0 %}border-amber-700/50{% else %}border-emerald-600/45{% endif %} bg-slate-950/80"
+          style="background: conic-gradient({% if payload.bars_returned == 0 %}rgba(251,191,36,0.35){% else %}rgba(52,211,153,0.55){% endif %} {{ chart_arc }}deg, rgba(30,41,59,0.85) 0);"
+          aria-hidden="true"
+        ></div>
+        <div class="min-w-0 flex-1 space-y-1">
+          <p class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 m-0">Chart / OHLCV</p>
+          <p class="text-sm font-semibold {% if payload.bars_returned == 0 %}text-amber-200/95{% else %}text-emerald-200/95{% endif %} m-0">
+            {% if payload.bars_returned == 0 %}No embedded bars{% else %}Ready for close-line{% endif %}
+          </p>
+          <p class="text-[10px] text-slate-500 m-0 leading-snug">
+            SSR snapshot only · integrated candle rail below in chart frame · not live
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="rounded-lg border {% if market_depth.has_depth_levels %}border-amber-900/45 bg-gradient-to-br from-amber-950/25 to-slate-950/90{% else %}border-slate-700/70 bg-slate-950/75{% endif %} p-3 min-h-[7.5rem] flex flex-col gap-2 shadow-inner shadow-black/15"
+        data-market-v0-cockpit-tile="depth"
+        data-market-v0-cockpit-depth-levels="{{ 'true' if market_depth.has_depth_levels else 'false' }}"
+      >
+        <p class="text-[9px] font-bold uppercase tracking-[0.12em] text-amber-200/80 m-0">Depth (SSR)</p>
+        <p class="text-[11px] font-mono text-amber-100/90 m-0 leading-snug">{{ market_depth.display_status }}</p>
+        {% if market_depth.has_depth_levels %}
+        <div class="flex-1 flex items-end gap-2 mt-1" aria-hidden="true">
+          <div class="flex-1 flex flex-col justify-end gap-0.5 h-14 rounded-md bg-slate-950/60 border border-slate-800/80 p-1">
+            <div class="h-2.5 rounded-sm bg-emerald-400/30 border border-emerald-500/25" style="width: 78%"></div>
+            <div class="h-2.5 rounded-sm bg-emerald-400/22 border border-emerald-500/18" style="width: 52%"></div>
+          </div>
+          <div class="flex-1 flex flex-col justify-end gap-0.5 h-14 rounded-md bg-slate-950/60 border border-slate-800/80 p-1">
+            <div class="h-2.5 rounded-sm bg-rose-400/28 border border-rose-500/22" style="width: 71%"></div>
+            <div class="h-2.5 rounded-sm bg-rose-400/20 border border-rose-500/15" style="width: 48%"></div>
+          </div>
+        </div>
+        <p class="text-[9px] text-slate-500 m-0">Top-N {{ market_depth.top_levels_limit }} · display-only · not cumulative</p>
+        {% else %}
+        <div class="flex-1 flex items-center justify-center rounded-md border border-dashed border-slate-600/70 bg-slate-900/40 px-2 py-3">
+          <p class="text-[10px] text-slate-500 text-center m-0 leading-snug">No ladder rows in this snapshot — depth disabled, empty, or unavailable.</p>
+        </div>
+        {% endif %}
+      </div>
+
+      <div
+        class="rounded-lg border border-slate-700/70 bg-slate-900/85 p-3 min-h-[7.5rem] flex flex-col gap-2 shadow-inner shadow-black/20"
+        data-market-v0-cockpit-tile="safety"
+      >
+        <p class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 m-0">Safety rail</p>
+        <ul class="m-0 p-0 list-none grid grid-cols-2 gap-1.5 flex-1 content-center">
+          <li class="flex items-center gap-1.5 rounded-md border border-emerald-900/40 bg-emerald-950/25 px-2 py-1.5 text-[9px] font-semibold text-emerald-200/95">
+            <span class="h-2 w-2 rounded-full bg-emerald-400/90 shrink-0" aria-hidden="true"></span>
+            Read-only
+          </li>
+          <li class="flex items-center gap-1.5 rounded-md border border-sky-900/40 bg-sky-950/20 px-2 py-1.5 text-[9px] font-semibold text-sky-200/90">
+            <span class="h-2 w-2 rounded-full bg-sky-400/85 shrink-0" aria-hidden="true"></span>
+            Non-authorizing
+          </li>
+          <li class="flex items-center gap-1.5 rounded-md border border-slate-700/70 bg-slate-950/60 px-2 py-1.5 text-[9px] font-semibold text-slate-300">
+            <span class="h-2 w-2 rounded-full bg-slate-500 shrink-0" aria-hidden="true"></span>
+            No polling
+          </li>
+          <li class="flex items-center gap-1.5 rounded-md border border-slate-700/70 bg-slate-950/60 px-2 py-1.5 text-[9px] font-semibold text-slate-300">
+            <span class="h-2 w-2 rounded-full bg-slate-500 shrink-0" aria-hidden="true"></span>
+            No orders
+          </li>
+        </ul>
+      </div>
     </div>
 
     <div class="space-y-3" data-market-v0-visual-surface-strip="true">

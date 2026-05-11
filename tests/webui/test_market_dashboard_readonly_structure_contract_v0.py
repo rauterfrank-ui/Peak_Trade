@@ -136,6 +136,7 @@ def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> No
     assert 'data-market-v0-ohlcv-surface="true"' in market_html
     assert 'data-market-v0-depth-surface="true"' in market_html
     assert 'data-market-v0-visual-cockpit="true"' in market_html
+    assert 'data-market-v0-visual-cockpit-v1="true"' in market_html
     assert 'data-market-v0-visual-surface-strip="true"' in market_html
     assert 'data-market-v0-dashboard-preview="true"' in market_html
     assert 'data-market-v0-rd-preview="true"' in market_html
