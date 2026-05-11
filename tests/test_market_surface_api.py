@@ -115,6 +115,9 @@ class TestMarketSurfaceHtml:
         assert "Chart bereit — read-only OHLCV-Anzeige." in body
         assert 'data-market-depth-panel="true"' in body
         assert 'data-market-depth-status="disabled"' in body
+        assert 'data-market-v0-orderbook-topn="true"' in body
+        assert 'data-market-v0-orderbook-has-levels="false"' in body
+        assert 'data-market-v0-orderbook-empty="true"' in body
 
     def test_market_page_depth_ssr_forbids_client_depth_route_and_xhr(
         self,
@@ -173,6 +176,8 @@ class TestMarketSurfaceHtml:
         assert resp.status_code == 200
         body = resp.text
         assert 'data-market-depth-status="builder_error"' in body
+        assert 'data-market-v0-orderbook-has-levels="false"' in body
+        assert 'data-market-v0-orderbook-empty="true"' in body
         assert "/api/market/depth" not in body
 
     def test_market_depth_ssr_ok_branch_uses_display_status_ok(
@@ -198,7 +203,40 @@ class TestMarketSurfaceHtml:
         assert resp.status_code == 200
         body = resp.text
         assert 'data-market-depth-status="ok"' in body
+        assert 'data-market-v0-orderbook-has-levels="false"' in body
+        assert 'data-market-v0-orderbook-empty="true"' in body
         assert "/api/market/depth" not in body
+
+    def test_market_dashboard_orderbook_topn_ssr_with_fixture_bundle(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        bundle = (
+            Path(__file__).resolve().parents[1]
+            / "tests"
+            / "fixtures"
+            / "market_depth_readmodel_v0"
+            / "complete_minimal"
+        )
+        monkeypatch.setenv("PEAK_TRADE_MARKET_DEPTH_ENABLED", "1")
+        monkeypatch.setenv("PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT", str(bundle.resolve()))
+        monkeypatch.setenv("PEAK_TRADE_FIXED_GENERATED_AT_UTC", "2026-05-02T12:00:00+00:00")
+        client = TestClient(create_app())
+
+        resp = client.get("/market", params={"source": "dummy", "limit": 20})
+        assert resp.status_code == 200
+        body = resp.text
+        assert 'data-market-v0-orderbook-topn="true"' in body
+        assert 'data-market-v0-orderbook-has-levels="true"' in body
+        assert 'data-market-v0-orderbook-bids="true"' in body
+        assert 'data-market-v0-orderbook-asks="true"' in body
+        assert 'data-market-v0-orderbook-empty="true"' not in body
+        assert "63010" in body
+        assert "63020" in body
+        assert 'data-market-depth-status="ok"' in body
+        assert "/api/market/depth" not in body
+        assert "fetch(" not in body
+        assert "XMLHttpRequest" not in body
 
     def test_market_html_invalid_timeframe_422(self, client: TestClient) -> None:
         r = client.get("/market", params={"source": "dummy", "timeframe": "bad"})
@@ -239,3 +277,4 @@ def test_market_v0_template_kraken_banner_markers_in_source() -> None:
     assert "Chart-Daten konnten nicht gerendert werden; keine Trading-Aktion verfügbar." in txt
     assert 'data-market-depth-panel="true"' in txt
     assert "data-market-depth-status" in txt
+    assert 'data-market-v0-orderbook-topn="true"' in txt
