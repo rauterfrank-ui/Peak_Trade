@@ -112,6 +112,25 @@ def test_market_dashboard_readonly_banner_markers(client: TestClient) -> None:
     assert 'data-market-non-authorizing="true"' in market_html
 
 
+def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> None:
+    """Read-only IA shell on GET /market: stable markers, no order-affordance attributes."""
+    market_html = _html(client, "/market")
+
+    assert 'data-market-v0-pro-shell="true"' in market_html
+    assert 'data-market-v0-pro-grid="true"' in market_html
+    assert 'data-market-v0-chart-panel="true"' in market_html
+    assert 'data-market-v0-orderbook-placeholder="true"' in market_html
+    assert 'data-market-v0-depth-chart-placeholder="true"' in market_html
+    assert 'data-market-v0-pro-boundary="true"' in market_html
+    assert 'data-market-v0-status-panel="true"' in market_html
+
+    lowered = market_html.lower()
+    assert "place order" not in lowered
+    assert "data-order-form" not in lowered
+    assert "data-order-submit" not in lowered
+    assert "market-v0-order-form" not in lowered
+
+
 def test_market_dashboard_forms_do_not_target_order_or_live_paths(
     client: TestClient,
 ) -> None:
