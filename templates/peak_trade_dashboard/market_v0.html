@@ -330,7 +330,12 @@
     </div>
 
     <div
-      class="mb-3 rounded-lg border border-slate-700/90 bg-slate-950/75 p-3 sm:p-3.5 text-xs text-slate-300"
+      class="rounded-xl border border-slate-700/75 bg-slate-950/55 ring-1 ring-sky-900/15 shadow-inner shadow-black/25 overflow-hidden"
+      data-market-v0-chart-candle-stack="true"
+    >
+
+    <div
+      class="border-b border-slate-800/80 bg-slate-950/65 p-3 sm:p-3.5 text-xs text-slate-300"
       data-market-v11-diagnostics-inner="true"
     >
       <h3 class="text-sm font-semibold text-slate-100 tracking-tight m-0 mb-2">Chart diagnostics</h3>
@@ -367,7 +372,7 @@
       data-market-v11-render-fallback="true"
       data-market-v11-fallback-mode="{% if payload.bars_returned == 0 %}empty-ssr{% else %}client-alert{% endif %}"
       role="alert"
-      class="mb-3 rounded-xl border-2 px-4 py-3 {% if payload.bars_returned == 0 %}block border-amber-500/80 bg-amber-950/50 text-amber-50{% else %}hidden border-rose-600/85 bg-rose-950/40 text-rose-50{% endif %}"
+      class="mb-0 rounded-none border-x-0 border-t-0 border-b-2 px-4 py-3 {% if payload.bars_returned == 0 %}block border-b-amber-500/80 bg-amber-950/50 text-amber-50{% else %}hidden border-b-rose-600/85 bg-rose-950/40 text-rose-50{% endif %}"
       {% if payload.bars_returned != 0 %}aria-hidden="true"{% endif %}
     >
       {% if payload.bars_returned == 0 %}
@@ -384,7 +389,7 @@
     <div
       id="market-v0-chart-status"
       role="status"
-      class="text-xs text-slate-300 mb-2 min-h-[1.5rem] font-medium"
+      class="text-xs text-slate-300 mb-0 min-h-[1.5rem] font-medium border-b border-slate-800/80 px-3 py-2.5 bg-slate-950/50"
       data-market-chart-status="{% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}"
       {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
     >
@@ -396,7 +401,7 @@
     </div>
 
     <div
-      class="mb-3 rounded-xl border border-slate-700/80 bg-slate-950/85 px-3 py-2.5 ring-1 ring-sky-900/10"
+      class="bg-slate-950/80 px-3 py-2.5 mb-0"
       data-market-v0-ssr-candle-strip="true"
       aria-label="Read-only OHLCV SSR candle snapshot"
     >
@@ -461,8 +466,9 @@
       {% endif %}
     </div>
 
-    <div class="relative min-h-[22rem] h-[28rem] sm:h-[30rem] w-full rounded-xl border border-slate-700/70 bg-gradient-to-b from-slate-950/40 to-slate-950/70 shadow-inner shadow-black/30">
+    <div class="relative min-h-[22rem] h-[28rem] sm:h-[30rem] w-full rounded-none border-0 border-t border-slate-800/70 bg-gradient-to-b from-slate-950/45 to-slate-950/80 shadow-inner shadow-black/35">
       <canvas id="chart-market-v0-close" class="block w-full h-full"></canvas>
+    </div>
     </div>
   </section>
     </div>
