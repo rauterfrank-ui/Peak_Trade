@@ -44,6 +44,8 @@ Tailscale / private access architecture was **reviewed** for Peak_Trade and is *
 
 Docs-only marker — **not** a Tailscale runbook, **not** implementation approval, **not** a CI or trading authorization.
 
+**Secret Handling (planning-first) operator runbook:** [RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md](runbooks/RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md) — Cursor/docs boundaries, human-only GitHub/vault/credential work; **non-authorizing**.
+
 ## Workflow Surface Counts
 
 - Total workflow files: `73`
