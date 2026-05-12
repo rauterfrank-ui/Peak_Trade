@@ -51,6 +51,8 @@ Stabile `data-*`‑Marker (Anker für Anzeige und automatisierte Tests — **kei
 
 Banner‑Inhalt fasst u. a.: keine Orders, kein Testnet/Live, keine Capital/Scope‑Freigabe, kein Risk-/KillSwitch‑Bypass — rein erklärend; **kein** Gate, **keine** Strategie- oder Ausführungsfreigabe.
 
+**Guardrails-Kurzzeile (Templates):** **`GET &#47;market`** und **`GET &#47;market&#47;double-play`** rendern dieselbe sichtbare **Guardrails**-Botschaft: **Dashboard ≠ Freigabe** · **AI ≠ Authority** · **Signal ≠ Trade** · **Docs ≠ Approval** — rein darstellend; **keine** Broker-/Order-/Live-Autorität.
+
 ## Ranking funnel empty state (dynamic labels)
 
 Auf **`GET`** **`/market`** zeigt das Template einen **Futures-Ranking-Funnel** ausschließlich als **read-only**, **non-authorizing** **Empty-State** / Platzhalter:
