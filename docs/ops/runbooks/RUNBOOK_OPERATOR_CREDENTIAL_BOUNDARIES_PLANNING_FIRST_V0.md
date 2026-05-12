@@ -77,7 +77,23 @@ Use **only** clearly fake names for illustrations in docs and examples:
 ## 8. GitHub Secret Protection / Push Protection
 
 - **Intent:** reduce accidental secret commits at the **platform** boundary.
-- **Operator:** verify availability and enablement in GitHub UI for **this** org/repo/plan — exact status is **not** asserted here (`unverified` for billing/feature matrix).
+- **Baseline (no snapshot below):** feature availability depends on GitHub plan/repo type; treat billing/feature matrix as **`unverified`** in-repo until a human confirms in the GitHub UI.
+
+### Operator-verified GitHub UI snapshot (`operator-stated`)
+
+**Method:** Human observation in **GitHub web UI** only — **not** Cursor, **not** `gh`/API reads of secret **values**, **not** automated scanning of credentials by AI in this repo.
+
+- **Repository:** `rauterfrank-ui&#47;Peak_Trade`
+- **Recorded (UTC):** `2026-05-12T22:42Z`
+- **Secret scanning alerts:** enabled; **open alerts:** `0`; **closed alerts:** `0` (UI: no unresolved secrets / none open).
+- **Secret Protection** (Advanced Security area): **enabled** (UI: active; disable control present).
+- **Push protection:** **enabled** (UI: active; disable control present).
+
+**Planning slice interpretation:** For **enabling Secret Protection + Push Protection + secret scanning alerts** on this repo, **no further GitHub account/security toggle is required *right now*** — **if** the above UI state still holds. Re-check after plan, org policy, transfers, or GitHub product changes.
+
+**Explicitly not covered here (separate workstreams — do not expand this marker):** Dependabot alerts / security updates / grouped updates / version updates; Code scanning / CodeQL; Copilot Autofix; private vulnerability reporting; repository **Security policy** (`SECURITY.md`) authoring.
+
+**Cursor boundary (unchanged):** Cursor/AI must **never** see, request, print, validate, rotate, fetch, infer, or test **real** secret values. This snapshot does **not** relax that rule and is **not** a gate pass or live approval.
 
 ---
 
@@ -123,3 +139,4 @@ No secret values should appear in command output or committed files.
 ## 13. Revision
 
 - **v0:** Planning-first operator runbook; docs-only; aligns with Tailscale **parked_not_discarded** marker and Secret Handling planning layer in the CI audit index.
+- **v0.1:** Added `operator-stated` GitHub UI snapshot (Secret Protection, Push protection, secret scanning alert counts) for `rauterfrank-ui&#47;Peak_Trade`, recorded UTC `2026-05-12T22:42Z`. Docs-only; **non-authorizing**.
