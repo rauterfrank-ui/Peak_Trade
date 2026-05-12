@@ -81,6 +81,12 @@ Use **only** clearly fake names for illustrations in docs and examples:
 | **Live trading** | `KRAKEN_API_KEY`, `KRAKEN_API_SECRET` (e.g. `src/exchange/kraken_live.py`, bounded local launcher contract) | **Highest** | **Unusable by default** for Cursor, agents, or ad-hoc tests; requires separate Peak_Trade **gates** — **not** permitted by reading this runbook |
 | Vault / secret-manager **machine** identity (future) | Illustrative only: §5 `PEAK_TRADE_EXAMPLE_*` — not live names | Varies | Real issuance **human-only**; Cursor never holds values |
 
+**Exchange-side order permission ≠ Peak_Trade live approval (`operator-stated` nuance):** An exchange API identity may **intentionally** retain **Kraken-side** permission to **query**, **create/modify**, and **cancel** orders — aligned with a **long-term** Peak_Trade goal of **autonomous** execution **within** this codebase’s governance model. That exchange permission is **only technical capability** at the venue; it does **not**, by itself, constitute **current** live trading authorization, nor does it bypass Peak_Trade.
+
+**What still gates real use:** **Master V2 / Double Play** contracts and semantics, **risk / KillSwitch** posture, **Live Gates**, explicit **enabled / armed** (and related) states where your config/runbooks require them, **confirm-token** requirements, **dry-run vs. non-dry-run** boundaries per the documented live/bounded-pilot flows (including criteria aligned with `is_live_execution_allowed()`), and **operator-approved** operational steps. **AI orchestration is not execution authority** (canonical vocabulary).
+
+**Cursor:** may only work with **ENV / classification / runbook reference names** — **never** secret **values** or exchange key **aliases** recorded only in external systems. The **Live trading** table row remains **highest-risk** and **default unusable** for Cursor, agents, and impromptu validation calls.
+
 **Pipeline guardrail:** Any Kraken credential use must preserve **Research → Shadow → Testnet → Live**; advancing toward **Live** remains **strictly gated** elsewhere (Master V2 / Double Play / risk / kill-switch docs — **not** overridden here).
 
 **Cursor / AI:** Only **placeholders** and **reference names** per §2, §3, and §5 — **no** Kraken login, **no** API test calls, **no** runtime, scheduler, paper, testnet, or live starts to “confirm” keys.
@@ -165,3 +171,4 @@ No secret values should appear in command output or committed files.
 - **v0:** Planning-first operator runbook; docs-only; aligns with Tailscale **parked_not_discarded** marker and Secret Handling planning layer in the CI audit index.
 - **v0.1:** Added `operator-stated` GitHub UI snapshot (Secret Protection, Push protection, secret scanning alert counts) for `rauterfrank-ui&#47;Peak_Trade`, recorded UTC `2026-05-12T22:42Z`. Docs-only; **non-authorizing**.
 - **v0.2:** Added §7 Kraken **credential classification** table (names-only; `operator-stated` custody; active boundary management). No Kraken setup guide; **non-authorizing**.
+- **v0.3:** §7 — clarified that **exchange-side** order permissions are **technical capability only** and **not** a Peak_Trade live/gate approval; restated gate stack and **highest-risk** default for Cursor. Docs-only; **non-authorizing**.
