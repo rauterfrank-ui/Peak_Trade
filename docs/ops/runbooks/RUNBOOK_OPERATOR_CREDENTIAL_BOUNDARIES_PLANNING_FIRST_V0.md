@@ -67,14 +67,38 @@ Use **only** clearly fake names for illustrations in docs and examples:
 
 ---
 
-## 7. GitHub Actions Secrets (Names vs Values)
+## 7. Kraken credential classification (names-only)
+
+**`operator-stated`:** Kraken-related credentials may already exist in the operator environment. **Secret Handling** is therefore **active boundary management**, not hypothetical future work. This subsection lists **categories** and **reference ENV identifiers** that appear in **tracked** repo sources — **never** values, never live key material.
+
+**Not derivable from Git (`unverified` in-repo):** Kraken account settings, per-key **permissions** (e.g. trade vs. read-only vs. withdraw), effective **scopes**, **rotation** cadence, and whether **separate** keys are used per use-case. Operators must verify in the **Kraken / account UI** and out-of-band records.
+
+| Category | Reference ENV names (`documented` in repo) | Relative risk | Default / note |
+|----------|----------------------------------------------|---------------|----------------|
+| Private / authenticated **market data** | May require exchange keys for some feeds; public OHLCV paths often need **none** (`unverified` per deployment) | Medium–High if over-permissioned | Least privilege on Kraken side; do not infer from code alone |
+| **Testnet / paper** exchange API | `KRAKEN_TESTNET_API_KEY`, `KRAKEN_TESTNET_API_SECRET` (e.g. `src/exchange/kraken_testnet.py`, CI workflows referencing `secrets.*`) | Medium (real API; not prod cash) | Must stay inside **Research → Shadow → Testnet → Live** ordering |
+| Live **read-only** monitoring | No fixed repo-wide convention — operators may use dedicated read-only keys (`operator-stated`) | Medium if keys are not read-only | If introduced, pick **distinct** `*_ENV` names via **human** decision + separate small docs PR — do not overload live-trading names |
+| **Live trading** | `KRAKEN_API_KEY`, `KRAKEN_API_SECRET` (e.g. `src/exchange/kraken_live.py`, bounded local launcher contract) | **Highest** | **Unusable by default** for Cursor, agents, or ad-hoc tests; requires separate Peak_Trade **gates** — **not** permitted by reading this runbook |
+| Vault / secret-manager **machine** identity (future) | Illustrative only: §5 `PEAK_TRADE_EXAMPLE_*` — not live names | Varies | Real issuance **human-only**; Cursor never holds values |
+
+**Pipeline guardrail:** Any Kraken credential use must preserve **Research → Shadow → Testnet → Live**; advancing toward **Live** remains **strictly gated** elsewhere (Master V2 / Double Play / risk / kill-switch docs — **not** overridden here).
+
+**Cursor / AI:** Only **placeholders** and **reference names** per §2, §3, and §5 — **no** Kraken login, **no** API test calls, **no** runtime, scheduler, paper, testnet, or live starts to “confirm” keys.
+
+**Vaults (Bitwarden Secrets Manager / 1Password):** Central custody becomes **more plausible** when multiple Kraken key sets exist; **all** setup, login, and secret **values** stay **human-gated** and **outside** Cursor, repo, prompts, and logs.
+
+This is **not** a Kraken setup guide — **no** step-by-step exchange onboarding and **no** commands that authenticate to Kraken or dump environment values.
+
+---
+
+## 8. GitHub Actions Secrets (Names vs Values)
 
 - Workflows may reference `${{ secrets.NAME }}` — **names** are reviewable in-repo; **values** exist only in GitHub.
 - Cursor may adjust workflow **names** or docs **only** with explicit approval for repo edits and **never** to set or read values.
 
 ---
 
-## 8. GitHub Secret Protection / Push Protection
+## 9. GitHub Secret Protection / Push Protection
 
 - **Intent:** reduce accidental secret commits at the **platform** boundary.
 - **Baseline (no snapshot below):** feature availability depends on GitHub plan/repo type; treat billing/feature matrix as **`unverified`** in-repo until a human confirms in the GitHub UI.
@@ -97,13 +121,13 @@ Use **only** clearly fake names for illustrations in docs and examples:
 
 ---
 
-## 9. Secret Managers (Future, Human-Managed)
+## 10. Secret Managers (Future, Human-Managed)
 
 **Bitwarden Secrets Manager** and **1Password** (or equivalents) may hold real material **outside** the repo. Target architecture may be documented in planning artifacts; **no** vault login, CLI session, or token setup belongs in this runbook as executable steps with real credentials.
 
 ---
 
-## 10. Existing Repo Anchors (Reuse)
+## 11. Existing Repo Anchors (Reuse)
 
 - CI / permissions / secrets audit index: [CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md](../CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md)
 - Workflow secret reference visibility (names only): `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py`
@@ -111,7 +135,7 @@ Use **only** clearly fake names for illustrations in docs and examples:
 
 ---
 
-## 11. Validation (Docs-Only Changes)
+## 12. Validation (Docs-Only Changes)
 
 After editing related docs, operators may run:
 
@@ -124,7 +148,7 @@ No secret values should appear in command output or committed files.
 
 ---
 
-## 12. Stop Conditions
+## 13. Stop Conditions
 
 **Stop immediately** if any party requests:
 
@@ -136,7 +160,8 @@ No secret values should appear in command output or committed files.
 
 ---
 
-## 13. Revision
+## 14. Revision
 
 - **v0:** Planning-first operator runbook; docs-only; aligns with Tailscale **parked_not_discarded** marker and Secret Handling planning layer in the CI audit index.
 - **v0.1:** Added `operator-stated` GitHub UI snapshot (Secret Protection, Push protection, secret scanning alert counts) for `rauterfrank-ui&#47;Peak_Trade`, recorded UTC `2026-05-12T22:42Z`. Docs-only; **non-authorizing**.
+- **v0.2:** Added §7 Kraken **credential classification** table (names-only; `operator-stated` custody; active boundary management). No Kraken setup guide; **non-authorizing**.
