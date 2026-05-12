@@ -30,6 +30,22 @@ Out of scope for this index:
 - hot-path changes
 - duplicate Evidence, Readiness, Map, Registry, Handoff, Package, or Pointer surfaces
 
+## Access parking note: Tailscale + next secret-handling planning layer
+
+Tailscale / private access architecture was **reviewed** for Peak_Trade and is **`parked_not_discarded`** (not rejected).
+
+- **`local_only`** remains the **default** for dashboard/admin/ops-style surfaces.
+- **No** Tailscale install, account/tailnet setup, network changes, or runtime/workflow changes are approved **by this note**.
+- **No** public dashboard exposure, **Tailscale Funnel**, or **open admin ports** are approved **by this note**.
+
+**Revisit triggers** (human-led planning only): dashboard/admin/ops access from another device; hosting on a separate machine/server/VPS/NAS; private Shadow/Testnet/Ops monitoring across machines; operational need to avoid public dashboard exposure or open admin ports **without** granting trading or gate authority.
+
+**Secret Handling** (e.g. GitHub org/repo policies, CI secrets posture, operator vaults, local bounded env discipline) is the **next planning layer** and stays **human-gated**. Cursor/AI may draft **docs-only** material (names, examples, pointers) and must **never** see, print, validate, rotate, fetch, or infer **real** secret values.
+
+Docs-only marker — **not** a Tailscale runbook, **not** implementation approval, **not** a CI or trading authorization.
+
+**Secret Handling (planning-first) operator runbook:** [RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md](runbooks/RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md) — Cursor/docs boundaries, human-only GitHub/vault/credential work; **non-authorizing**.
+
 ## Workflow Surface Counts
 
 - Total workflow files: `73`
