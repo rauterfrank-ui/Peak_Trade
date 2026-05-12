@@ -61,8 +61,8 @@ Use **only** clearly fake names for illustrations in docs and examples:
 
 ## 6. Local `.env` and Examples
 
-- **Untracked:** real `.env`, `.cursor/.env`, `docker/.env`, `.bounded_pilot.env`, `.bounded_launch.env` (see `.gitignore`).
-- **Tracked examples only:** placeholder names — e.g. `docker/.env.example`, `.cursor/.env.example` — **no** real credentials.
+- **Untracked:** real `.env`, `.cursor&#47;.env`, `docker&#47;.env`, `.bounded_pilot.env`, `.bounded_launch.env` (see `.gitignore`).
+- **Tracked examples only:** placeholder names — e.g. `docker&#47;.env.example`, `.cursor&#47;.env.example` — **no** real credentials.
 - **Bounded pilot / acceptance:** follow [LOCAL_BOUNDED_SECRET_ENV_FILE_CONTRACT.md](../specs/LOCAL_BOUNDED_SECRET_ENV_FILE_CONTRACT.md) and [LOCAL_BOUNDED_SECRET_LAUNCHER_RUNBOOK.md](LOCAL_BOUNDED_SECRET_LAUNCHER_RUNBOOK.md).
 
 ---
