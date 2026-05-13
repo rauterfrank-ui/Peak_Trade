@@ -2,7 +2,7 @@
 docs_token: DOCS_TOKEN_MASTER_V2_PAPER_TESTNET_READINESS_GAP_MAP_V0
 status: draft
 scope: docs-only, non-authorizing Paper / Testnet readiness gap map
-last_updated: 2026-04-27
+last_updated: 2026-05-13
 ---
 
 # Master V2 Paper / Testnet Readiness Gap Map V0
@@ -160,7 +160,15 @@ This **inventory** is **conservative**. A **listed** **surface** is **review**-*
 - **Dashboard**/**cockpit** **authority** **changes**;
 - **Live** **enablement**.
 
-## 13. Validation Notes
+## 13. Related pre-Testnet operator runbooks (discoverability pointers)
+
+The **following** are **existing**, **canonical** **operator** **runbooks** **elsewhere** **in** **the** **repo**. **Links** **here** **are** **for** **discoverability** **only**; **they** **do** **not** **duplicate** **runbook** **content**, **do** **not** **approve** **Paper**, **daemon**, **scheduler**, **runtime**, **Testnet**, **or** **Live** **starts**, **and** **do** **not** **imply** **live** **authorization** **or** **gate** **passage**. **Master** **V2** / **Double** **Play** **semantics**, **Risk**, **KillSwitch**, **and** **Live** **Gates** **remain** **governed** **outside** **this** **map**; **this** **file** **stays** **docs**-**only** **and** **non**-**authorizing**.
+
+- [`TESTNET_CHECKER_PREREQUISITES_V0.md`](../runbooks/TESTNET_CHECKER_PREREQUISITES_V0.md) — read-only Testnet prerequisite keys for the checker script (non-authorizing).
+- [`DAEMON_PAPER_24H_PLUS_OBSERVATION_GATE_BEFORE_TESTNET_V0.md`](../runbooks/DAEMON_PAPER_24H_PLUS_OBSERVATION_GATE_BEFORE_TESTNET_V0.md) — planning gate for a possible future daemon-attended paper observation before Testnet review (no start commands in-file).
+- [`DAEMON_PAPER_24H_PLUS_OPERATOR_SCOPE_PREFLIGHT_V0.md`](../runbooks/DAEMON_PAPER_24H_PLUS_OPERATOR_SCOPE_PREFLIGHT_V0.md) — companion operator scope / preflight worksheet (decisions only; gate runbook wins on conflicts).
+
+## 14. Validation Notes
 
 **Validate** this **docs**-**only** **file** with:
 
