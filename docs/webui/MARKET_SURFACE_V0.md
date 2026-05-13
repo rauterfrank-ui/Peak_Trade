@@ -367,6 +367,28 @@ Das HTML für **`GET &#47;market`** enthält beim Chart‑Bereich ein Status‑E
 - **Struktur‑/SSR‑Contract (read-only, nicht autorisierend):** Regressions‑Anker für die Market‑Dashboard‑HTML‑**Struktur** (u. a. SSR‑Markttiefe‑Marker auf **`GET`** **`&#47;market`**, **kein** Browser‑Bezug zur JSON‑Route **`GET`** **`&#47;api&#47;market&#47;depth`**, Read‑only‑Banner‑Marker, einfache „kein Trade‑Affordance“‑Heuristik) in **`tests&#47;webui&#47;test_market_dashboard_readonly_structure_contract_v0.py`** — **keine** Live‑/Order‑/Execution‑Freigabe; nur Beobachtungs‑/Template‑Struktur (kontextuell PR **#3434**).
 - **SSR Top‑N Ladder (`main`):** Dokumentierte Marker/Display‑Keys und **deferred** Depth‑Chart siehe **[Market Depth display on GET /market (SSR v0 implemented)](#market-depth-display-on-get-market-ssr-v0-implemented)**; kontextuell Merge **PR #3439** nach der Depth‑SSR‑Basis — **read‑only**, **non‑authorizing**, **kein** Polling/Runtime‑Prozess.
 
+## Operator‑Downloads — Ingest‑Ledger (nicht kanonisch, v0)
+
+**Authority / Lesereihenfolge:** Markdown- oder PDF‑Exporte, die außerhalb des Repos unter einem **„Downloads“‑Ordner** des Operators liegen, sind **Hilfs-/Entwurfsspuren**. Sie ersetzen **keine** `docs/ops/specs/`‑Verträge, **keine** Runbooks und **keinen** dieser Market‑Surface‑Abschnitte. **`GET`** **`&#47;market&#47;double-play`** und **`GET`** **`&#47;api&#47;master‑v2&#47;double‑play&#47;dashboard-display.json`** bleiben an die **bereits eingecheckten** Read‑only‑Kontrakte gekoppelt ([**MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0**](../ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md); reine Dokumentation, **ohne** Steuerbefugnis).
+
+### Typische Peak‑Trade‑/Double‑Play‑Treffer dort (Orientierung nur)
+
+| Themengebiet | Kanonische Repo‑Verankerung (weiter dort vertiefen) |
+|--------------|-------------------------------------------------------|
+| **Double‑Play WebUI / Dashboard‑JSON** | [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0](../ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md), [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0](../ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) |
+| **Trading‑Logic‑Manifest** | [MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0](../ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md) — lokale Downloads‑Varianten können **von** diesem Stand **abweichen** (`diff`), gehören aber **nicht** ins Repo ohne Review |
+| **Futures‑Sequenz-/Survival‑Forschungszettel** | [MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTRACT_V0](../ops/specs/MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTRACT_V0.md) |
+| **Master‑V2 Autonomie‑/Richtungs‑Roadmaps / Merge‑Forensik‑Briefings** | [DOCS Truth Map](../ops/registry/DOCS_TRUTH_MAP.md), [AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0](../ops/AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md); **keine** doppelte „Second SSOT“ aus Downloads |
+| **OPS‑Cockpit Cursor‑Briefs** | Eingecheckte Ops‑Doku und Cockpit‑Specs unter `docs&#47;ops&#47;` — OPS‑Briefings in Downloads sind **Projekt‑/Agent‑Scratch**, nicht Runtime‑Kontrakt |
+| **Strategie‑Diagramme als PDF** | Keine PDF‑Einbettung im Repo hier; ohne sichere Textextraktion **nur** manuelle optische Abgleiche — **nicht** als Kanon übernehmen |
+
+### Ingest‑Disziplin (Operator)
+
+- Vor **„Copy‑Paste‑Import“**: dieses Ledger lesen → **reuse‑before‑new** gegenüber bestehenden Specs.
+- **Keine Secrets** aus Downloads committen; keine API‑Keys, Kraken‑Materialien, Seeds oder Vault‑Exports kopieren.
+- Abweichende lokale Kopien eines Manifests (**`master_v2_double_play_trading_logic_manifest_v0.md`**) zuerst per `diff` gegen [MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0](../ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md) prüfen; normative Änderungen **nur** per PR auf die canonical Spec‑Datei.
+- Für archivierte Bewegungen aus Downloads führt eine Ingest-Spur‑Tabelle (z. B. `DOUBLE_PLAY_DOWNLOADS_INGEST_V0_RESULT.md` unter **`/tmp`**) Filename → Aktion; automatisierte Läufe verschieben **keine** Quelldateien ohne gesonderte operatorische Freigaben.
+
 ## Verwandte read-only WebUI-Fläche
 
 - [**Observability Hub v0**](observability/OBSERVABILITY_HUB_V0.md) — zentraler Display-/Navigations‑Kontext mit Verweisen u. a. auf diese Market‑Surface‑GET‑Routen; **ohne** zusätzliche Autorität oder Steuerlogik.
