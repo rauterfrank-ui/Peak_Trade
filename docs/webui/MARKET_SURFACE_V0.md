@@ -100,7 +100,9 @@ Dashboard markers remain non-authorizing: **Dashboard ≠ Freigabe**; no marker 
 - **Prominenter Fallback‑Kasten** bei **SSR‑Empty** sowie ein **client‑gesteuerter** Fehler‑Kasten für **Chart library missing or blocked** bzw. **Chart render error** (**keine** neue Autorität).
 - **Keine** lokale Chart.js‑Vendor‑ oder Static‑Asset‑Einbindung; **GET &#47;api&#47;market&#47;ohlcv** bleibt unverändert.
 - **Keine** Double‑Play‑Komposition oder Trading‑/Risk‑/Capital‑Interpretation durch diese Diagnosemarker.
-- **v1.2** kann einen **lokalen Chart.js‑Fallback** planen, falls CDN‑Blocking **evidenziert** ist.
+- **v0 CDN load attribution (template):** Die Chart.js‑Einbindung über **jsdelivr** setzt am `<script>`‑Tag ein **`onerror`**, markiert das Skript bei Ladefehler mit **`data-chartjs-cdn-load-error`** und spiegelt den Zustand auf den jeweiligen Dashboard‑Shell‑Container (**`data-chartjs-cdn-load-error`** auf **`#market-v0-shell`**, **`#double-play-market-v0-shell`**, bzw. **`#r-and-d-charts-shell`** wenn Diagramme geladen werden). Zusätzlich **`data-chartjs-cdn-monitored-v0="true"`** kennzeichnet Oberflächen mit dieser Überwachung. **Lokaler Vendor‑Chart.js‑Fallback** bleibt **separates** Arbeitspaket (siehe Hinweis zu **v1.2** unten); Oberflächen bleiben **read-only** und **non-authorizing**.
+
+**v1.2** kann einen **lokalen Chart.js‑Fallback** planen, falls CDN‑Blocking **evidenziert** ist.
 
 ## Double-Play Market Dashboard v1 SSR
 

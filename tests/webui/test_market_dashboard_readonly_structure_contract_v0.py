@@ -79,6 +79,30 @@ def test_double_play_dashboard_excludes_market_depth_ssr_markers_v0(
     assert "market-v0-depth-ssr" not in html
 
 
+def test_market_and_double_play_chartjs_cdn_failure_attribution_v0(
+    client: TestClient,
+) -> None:
+    """Chart.js loads from CDN; templates attribute CDN load failures (read-only markers)."""
+    for path, cdn_id, shell_id in (
+        ("/market", "peak-trade-market-chartjs-cdn-v0", "market-v0-shell"),
+        (
+            "/market/double-play",
+            "peak-trade-double-play-chartjs-cdn-v0",
+            "double-play-market-v0-shell",
+        ),
+    ):
+        html = _html(client, path)
+        assert "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" in html
+        assert f'id="{cdn_id}"' in html
+        assert f'id="{shell_id}"' in html
+        assert 'data-chartjs-cdn-script-v0="true"' in html
+        assert 'data-chartjs-cdn-monitored-v0="true"' in html
+        assert "data-chartjs-cdn-load-error" in html
+        assert "onerror=" in html.lower()
+        assert "fetch(" not in html
+        assert "XMLHttpRequest" not in html
+
+
 def test_market_dashboard_has_no_trade_action_affordance(client: TestClient) -> None:
     combined_html = "\n".join(
         [

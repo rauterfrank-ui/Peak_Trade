@@ -640,6 +640,12 @@ class TestRnDChartsHtmlPage:
         assert 'data-chart="r-and-d-sharpe-histogram"' in body
         assert 'data-chart="r-and-d-return-vs-sharpe-scatter"' in body
         assert 'id="r-and-d-charts-payload"' in body
+        assert 'id="peak-trade-r-and-d-chartjs-cdn-v0"' in body
+        assert 'id="r-and-d-charts-shell"' in body
+        assert 'data-chartjs-cdn-script-v0="true"' in body
+        assert 'data-chartjs-cdn-monitored-v0="true"' in body
+        assert "data-chartjs-cdn-load-error" in body
+        assert "onerror=" in body.lower()
         assert '"histogram_labels"' in body
         assert '"scatter_points"' in body
         assert 'method="POST"' not in body
