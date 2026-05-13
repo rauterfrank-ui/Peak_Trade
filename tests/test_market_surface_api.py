@@ -138,6 +138,9 @@ class TestMarketSurfaceHtml:
         assert 'data-market-v0-orderbook-topn="true"' in body
         assert 'data-market-v0-orderbook-has-levels="false"' in body
         assert 'data-market-v0-orderbook-empty="true"' in body
+        assert 'data-market-v0-ladder-empty-explain="true"' in body
+        assert "Depth SSR is" in body
+        assert 'data-market-depth-operator-hint="true"' in body
 
     def test_market_page_depth_ssr_forbids_client_depth_route_and_xhr(
         self,
@@ -199,6 +202,9 @@ class TestMarketSurfaceHtml:
         assert 'data-market-v0-orderbook-has-levels="false"' in body
         assert 'data-market-v0-orderbook-empty="true"' in body
         assert "/api/market/depth" not in body
+        assert "failed build" in body
+        assert "validation" in body
+        assert 'data-market-depth-operator-hint="true"' in body
 
     def test_market_depth_ssr_ok_branch_uses_display_status_ok(
         self,
@@ -226,6 +232,8 @@ class TestMarketSurfaceHtml:
         assert 'data-market-v0-orderbook-has-levels="false"' in body
         assert 'data-market-v0-orderbook-empty="true"' in body
         assert "/api/market/depth" not in body
+        assert "no bid/ask rows" in body
+        assert 'data-market-depth-operator-hint="true"' in body
 
     def test_market_dashboard_orderbook_topn_ssr_with_fixture_bundle(
         self,
