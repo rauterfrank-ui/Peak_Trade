@@ -69,6 +69,10 @@ Docs-only marker — **not** a Tailscale runbook, **not** implementation approva
 - `secrets.*`, artifact upload/download, and manual dispatch surfaces are present and should remain covered by narrow static contracts rather than broad workflow rewrites.
 - Existing static workflow/dispatch contract tests should be reused before adding new validators.
 
+## Optional Semgrep/SAST Adoption Concept (default-off)
+
+Optional static-pattern analysis (**Semgrep** or similar) is documented only as a **manual-first, default-off** posture in [`specs&#47;SEMGREP_SAST_ADOPTION_CONCEPT_V0.md`](specs&#47;SEMGREP_SAST_ADOPTION_CONCEPT_V0.md). That spec is non-authorizing, does **not** add workflows or gates by itself, and defers installs, scans, and any **`workflow_dispatch`** automation to explicit future PRs consistent with this index boundary.
+
 ## Workflow Files By Signal
 
 ### `workflow_dispatch`
