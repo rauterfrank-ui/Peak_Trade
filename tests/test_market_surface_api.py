@@ -123,6 +123,12 @@ class TestMarketSurfaceHtml:
         assert "Capital" in body or "Scope" in body
         assert "KillSwitch" in body or "Risk" in body
         assert "chart.js@4.4.1" in body.lower() or "chart.umd.min.js" in body
+        assert 'data-chartjs-cdn-script-v0="true"' in body
+        assert 'data-chartjs-cdn-monitored-v0="true"' in body
+        assert 'id="peak-trade-market-chartjs-cdn-v0"' in body
+        assert 'id="market-v0-shell"' in body
+        assert "data-chartjs-cdn-load-error" in body
+        assert "onerror=" in body.lower()
         lower = body.lower()
         assert "<form" not in lower
         assert 'method="post"' not in lower
