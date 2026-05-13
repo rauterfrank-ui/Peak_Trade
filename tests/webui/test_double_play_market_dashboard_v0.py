@@ -259,6 +259,37 @@ def test_double_play_market_dashboard_consumes_structured_metadata_v2(client: Te
     assert "live_authorization" not in lower
 
 
+def test_double_play_market_dashboard_operator_reading_guide_v0(client: TestClient) -> None:
+    """Orientation block: OHLC SSR vs DP display rail semantics (readonly, display metadata)."""
+    r = client.get("/market/double-play")
+    assert r.status_code == 200
+    body = r.text
+
+    assert 'data-double-play-market-operator-reading-guide-v0="true"' in body
+    assert "So lesen Sie diese Ansicht" in body
+    assert "Marktkontext" in body
+    assert "Double-Play-Display-Snapshot" in body
+    assert "dashboard-display.json" in body
+    assert "Ordinal" in body
+    assert "Panel group" in body
+    assert "Severity rank" in body
+    assert "Display-/Readout-Hinweise" in body
+    assert "Ausführungs-Priorität" in body
+
+    forbidden = ("BUY", "SELL", "GO", "APPROVED", "ACTIVE TRADE")
+    for w in forbidden:
+        assert w not in body
+
+    lower = body.lower()
+    assert "<form" not in lower
+    assert 'method="post"' not in lower
+    assert "<button" not in lower
+    assert 'type="submit"' not in lower
+    assert "fetch(" not in body
+    assert "setinterval" not in lower
+    assert "live_authorization" not in lower
+
+
 def test_double_play_market_dashboard_bad_timeframe_422(client: TestClient) -> None:
     r = client.get("/market/double-play", params={"timeframe": "bogus"})
     assert r.status_code == 422

@@ -102,6 +102,36 @@
     </details>
   </section>
 
+  <section
+    aria-label="Operator reading guide"
+    class="rounded-xl border border-slate-800/90 bg-slate-950/40 px-3 py-2.5 ring-1 ring-slate-800/60"
+    data-double-play-market-operator-reading-guide-v0="true"
+  >
+    <p class="text-[10px] font-semibold uppercase tracking-wide text-slate-500 m-0 mb-1.5">
+      So lesen Sie diese Ansicht
+    </p>
+    <ul class="m-0 pl-4 list-disc text-[11px] text-slate-300/95 space-y-1 leading-snug marker:text-slate-600">
+      <li>
+        <span class="text-slate-200 font-medium">Linke Spalte:</span>
+        eingebetteter OHLC- und Candlestick-Snapshot (SSR) — nur
+        <span class="font-medium text-slate-200">Marktkontext</span>; read-only Visualization, keine Operational-Freigabe.
+      </li>
+      <li>
+        <span class="text-slate-200 font-medium">Rechte Rail:</span>
+        Double-Play-Display-Snapshot (gleicher Anzeige-Vertrag wie
+        <span class="font-mono text-sky-400/90">dashboard-display.json</span>) —
+        nur diagnostische Metadaten; keine Order-, Broker- oder Live-Autorität.
+      </li>
+      <li>
+        <span class="font-medium text-slate-400">Ordinal</span>,
+        <span class="font-medium text-slate-400">Panel group</span>
+        und
+        <span class="font-medium text-slate-400">Severity rank</span>
+        sind Display-/Readout-Hinweise für diese Oberfläche — keine Ausführungs-Priorität, kein Routing- oder Freigabe-Signal.
+      </li>
+    </ul>
+  </section>
+
   <div
     class="flex flex-col gap-6 xl:grid xl:grid-cols-[minmax(0,1fr)_min(21rem,100%)] xl:items-start xl:gap-6"
     data-double-play-market-cockpit-grid="true"
