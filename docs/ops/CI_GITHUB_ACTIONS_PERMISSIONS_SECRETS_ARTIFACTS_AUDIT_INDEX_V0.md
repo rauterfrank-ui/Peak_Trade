@@ -73,6 +73,10 @@ Docs-only marker — **not** a Tailscale runbook, **not** implementation approva
 
 Optional static-pattern analysis (**Semgrep** or similar) is documented only as a **manual-first, default-off** posture in [`specs&#47;SEMGREP_SAST_ADOPTION_CONCEPT_V0.md`](specs&#47;SEMGREP_SAST_ADOPTION_CONCEPT_V0.md). That spec is non-authorizing, does **not** add workflows or gates by itself, and defers installs, scans, and any **`workflow_dispatch`** automation to explicit future PRs consistent with this index boundary.
 
+## Optional ZAP/DAST Shadow–Staging Adoption Concept (default-off)
+
+Optional dynamic analysis (**OWASP ZAP** or similar **DAST**) against **explicitly allowlisted** local/shadow/staging HTTP surfaces is documented only as a **manual-first, default-off** posture in [`specs&#47;ZAP_DAST_SHADOW_CONCEPT_V0.md`](specs&#47;ZAP_DAST_SHADOW_CONCEPT_V0.md). That spec is non-authorizing, does **not** add workflows, installs, scans, targets, or web-server starts by itself, and defers any execution and **`workflow_dispatch`** automation to explicit future PRs consistent with this index boundary (no live/public targets by default; passive/baseline default until explicitly approved).
+
 ## Workflow Files By Signal
 
 ### `workflow_dispatch`
