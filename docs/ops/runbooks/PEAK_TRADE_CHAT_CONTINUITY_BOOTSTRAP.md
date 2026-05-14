@@ -2,7 +2,7 @@
 title: "Peak_Trade — chat continuity bootstrap (copy-paste)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-04-24
+last_updated: 2026-05-14
 ---
 
 # Peak_Trade — chat continuity bootstrap
@@ -61,3 +61,25 @@ python3 src/ops/workflow_officer.py --mode audit --profile docs_only_pr
 ```
 
 Latest outputs: each run directory under the Workflow Officer output root contains `report.json` and `summary.md` (see `--output-root` on the CLI).
+
+## Cursor Ask-Mode / Result Robustness Note v0
+
+When using `cursor-agent --print --mode ask` for operator planning, treat the agent output as best-effort console output, not as a guaranteed file writer.
+
+Recommended operator-side pattern:
+
+- write the prompt and intended result path under `/tmp`;
+- capture raw agent output to `CURSOR_AGENT_OUTPUT.txt`;
+- extract a Markdown block or structured section into the intended result file deterministically;
+- always create a fallback result if extraction fails;
+- record timeout/error metadata under the same `/tmp` package;
+- keep the repo working tree clean unless a later explicit patch is approved.
+
+Timeout note for macOS operators:
+
+- GNU `timeout` is not available on default macOS shells;
+- use `gtimeout` only if GNU coreutils is installed;
+- otherwise prefer a small Python wrapper around `subprocess.run(..., timeout=...)`;
+- do not rely on a missing `timeout` command as a safety boundary.
+
+This note is operator-workflow guidance only. It does not authorize runtime, scheduler, Paper, Testnet, Live, Broker, Kraken, exchange, order-submission, credential, or secret handling changes.
