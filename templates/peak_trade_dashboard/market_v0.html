@@ -6,6 +6,8 @@
 <div
   class="space-y-5 max-w-7xl mx-auto px-2 sm:px-0 pb-1"
   id="market-v0-shell"
+  role="region"
+  aria-labelledby="market-v0-landmark-page-title"
   data-section="market-v0"
   data-chartjs-cdn-monitored-v0="true"
   data-market-surface-v0="true"
@@ -19,10 +21,12 @@
   data-market-v0-one-page-link-cleanup-v1="true"
 >
   <section
-    aria-label="Read-only market constraints"
+    role="region"
+    aria-labelledby="market-v0-landmark-readonly-constraints-h2"
     class="rounded-xl border border-slate-700/60 bg-slate-900/55 px-3 py-2.5 sm:px-4"
     data-market-v1-readonly-banner="true"
   >
+    <h2 id="market-v0-landmark-readonly-constraints-h2" class="sr-only">Read-only market constraints</h2>
     <ul class="m-0 p-0 list-none flex flex-wrap gap-2">
       <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
         <span class="h-1.5 w-1.5 rounded-full bg-emerald-400/90 shrink-0" aria-hidden="true"></span>
@@ -48,7 +52,8 @@
   </section>
 
   <section
-    aria-label="Read-only und Datenquelle"
+    role="region"
+    aria-labelledby="market-v0-landmark-safety-banner-h2"
     class="rounded-xl border border-amber-900/45 bg-gradient-to-br from-amber-950/35 via-slate-950/35 to-slate-950/20 px-3 py-2.5 sm:px-4 text-xs text-amber-100/95"
     data-market-safety-banner="true"
     {% if query.source == 'dummy' %}
@@ -58,9 +63,9 @@
     {% endif %}
   >
     <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-      <p class="font-semibold text-amber-200/95 tracking-wide uppercase text-[11px] m-0">
+      <h2 id="market-v0-landmark-safety-banner-h2" class="font-semibold text-amber-200/95 tracking-wide uppercase text-[11px] m-0">
         Market Surface v0 · read-only · non-authorizing
-      </p>
+      </h2>
       <div class="flex flex-wrap gap-1.5">
         <span class="inline-flex items-center rounded-md border border-amber-800/50 bg-amber-950/45 px-2 py-0.5 text-[10px] font-semibold text-amber-100/90 tabular-nums">SSR only</span>
         <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-950/55 px-2 py-0.5 text-[10px] font-semibold text-slate-200/90 tabular-nums">No order controls</span>
@@ -86,14 +91,15 @@
   </section>
 
   <section
-    aria-label="Ranking funnel empty state"
+    role="region"
+    aria-labelledby="market-v0-landmark-ranking-funnel-h2"
     class="rounded-xl border border-violet-900/45 bg-gradient-to-br from-slate-950/92 via-violet-950/22 to-slate-950/85 px-3 py-3 sm:px-4 ring-1 ring-violet-900/25 shadow-md shadow-black/20"
     data-market-v0-ranking-funnel-empty-state-v0="true"
     data-market-v0-ranking-funnel-dynamic-labels-v0="true"
   >
     <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
       <div class="min-w-0 space-y-1">
-        <h2 class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">
+        <h2 id="market-v0-landmark-ranking-funnel-h2" class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">
           Futures ranking funnel · contract-first (empty)
         </h2>
         <p class="text-[10px] text-slate-500 m-0 max-w-2xl leading-snug">
@@ -149,7 +155,7 @@
     <div class="relative flex flex-col gap-4">
       <div class="min-w-0 space-y-2">
         <p class="text-[11px] uppercase tracking-[0.14em] text-sky-400/80 font-semibold m-0">Market Surface</p>
-        <h1 class="text-2xl sm:text-3xl font-bold text-slate-50 tracking-tight m-0">
+        <h1 id="market-v0-landmark-page-title" class="text-2xl sm:text-3xl font-bold text-slate-50 tracking-tight m-0">
           Read-only cockpit · <span class="text-sky-300/95">Close-line chart</span>
         </h1>
         <p class="text-sm text-slate-400 max-w-2xl m-0 leading-snug">
@@ -168,14 +174,15 @@
   </header>
 
   <section
-    aria-label="Single-page visual cockpit"
+    role="region"
+    aria-labelledby="market-v0-landmark-visual-cockpit-h2"
     class="rounded-xl border border-slate-600/50 bg-gradient-to-b from-slate-950/90 via-slate-900/80 to-slate-950/70 p-3 sm:p-4 ring-1 ring-sky-900/25 shadow-lg shadow-black/25 space-y-3"
     data-market-v0-visual-cockpit="true"
     data-market-v0-visual-cockpit-v1="true"
   >
     <div class="flex flex-wrap items-end justify-between gap-2">
       <div>
-        <h2 class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">Visual cockpit</h2>
+        <h2 id="market-v0-landmark-visual-cockpit-h2" class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">Visual cockpit</h2>
         <p class="text-[10px] text-slate-500 m-0 mt-0.5">SSR overview · read-only snapshot · not live</p>
       </div>
       <span class="text-[9px] font-semibold uppercase tracking-wide text-emerald-400/90">v1 tiles</span>
@@ -305,10 +312,12 @@
 
     <div class="space-y-3" data-market-v0-visual-surface-strip="true">
   <section
-    aria-label="Available read-only surfaces"
+    role="region"
+    aria-labelledby="market-v0-landmark-surface-links-h2"
     class="rounded-lg border border-slate-700/70 bg-slate-900/80 px-2.5 py-2 ring-1 ring-emerald-900/15"
     data-market-v0-surface-links="true"
   >
+    <h2 id="market-v0-landmark-surface-links-h2" class="sr-only">Available read-only surfaces</h2>
     <div class="flex flex-wrap items-center gap-2">
       <span class="text-[9px] font-semibold uppercase tracking-wide text-slate-500 shrink-0">Terminal rail</span>
       <div class="flex flex-wrap gap-1.5 flex-1 min-w-0 items-center">
@@ -335,12 +344,13 @@
   </section>
 
   <section
-    aria-label="Read-only data and API surfaces"
+    role="region"
+    aria-labelledby="market-v0-landmark-data-rails-h2"
     class="rounded-xl border border-slate-700/70 bg-slate-950/55 p-3 sm:p-4 ring-1 ring-sky-900/15 space-y-3"
     data-market-v0-data-surfaces="true"
   >
     <div class="flex flex-wrap items-center justify-between gap-2">
-      <h2 class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">Data rails · OHLCV · Depth</h2>
+      <h2 id="market-v0-landmark-data-rails-h2" class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">Data rails · OHLCV · Depth</h2>
       <div class="flex flex-wrap gap-1.5">
         <span class="rounded border border-slate-700/80 bg-slate-900/70 px-1.5 py-0.5 text-[9px] font-semibold text-slate-400 tabular-nums">No Live authorization</span>
         <span class="rounded border border-slate-700/80 bg-slate-900/70 px-1.5 py-0.5 text-[9px] font-semibold text-slate-400 tabular-nums">SSR snapshot</span>
@@ -408,12 +418,13 @@
   </section>
 
   <section
-    aria-label="Market query context"
+    role="region"
+    aria-labelledby="market-v0-landmark-query-context-h2"
     class="bg-slate-900/80 rounded-xl border border-slate-800/90 p-3 sm:p-4 ring-1 ring-slate-800/60"
     data-market-v1-context="true"
   >
     <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2.5">
-      <h2 class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">PeakTrade Market Dashboard · context</h2>
+      <h2 id="market-v0-landmark-query-context-h2" class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">PeakTrade Market Dashboard · context</h2>
       <span class="text-[10px] font-medium uppercase tracking-wide text-slate-500">Snapshot · keine Live-Autorisierung</span>
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-2.5 text-[11px]">
@@ -471,13 +482,14 @@
   </section>
 
   <section
-    aria-label="Close-Preis"
+    role="region"
+    aria-labelledby="market-v0-landmark-close-chart-h2"
     class="bg-slate-900/65 rounded-xl border border-slate-800 ring-2 ring-sky-900/15 shadow-xl shadow-black/30 p-4 sm:p-5 min-h-[30rem]"
     data-chart="market-v0-close-line"
     data-market-v11-chart-diagnostics="true"
   >
     <div class="flex flex-wrap items-end justify-between gap-2 mb-3">
-      <h2 class="text-base font-semibold text-slate-100 m-0 tracking-tight">Schlusskurs (Close)</h2>
+      <h2 id="market-v0-landmark-close-chart-h2" class="text-base font-semibold text-slate-100 m-0 tracking-tight">Schlusskurs (Close)</h2>
       <span class="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Dominant panel · keine Order-UI</span>
     </div>
 

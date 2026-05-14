@@ -200,6 +200,58 @@ def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> No
     assert "market-v0-order-form" not in lowered
 
 
+def test_market_dashboard_landmarks_and_labelled_regions_v0(client: TestClient) -> None:
+    """Stable region landmarks + aria-labelledby hooks; read-only markers unchanged."""
+    html = _html(client, "/market")
+    assert 'id="market-v0-shell"' in html
+    assert 'role="region"' in html
+    assert 'aria-labelledby="market-v0-landmark-page-title"' in html
+    assert 'id="market-v0-landmark-page-title"' in html
+    assert 'id="market-v0-landmark-readonly-constraints-h2"' in html
+    assert 'aria-labelledby="market-v0-landmark-readonly-constraints-h2"' in html
+    assert 'id="market-v0-landmark-safety-banner-h2"' in html
+    assert 'aria-labelledby="market-v0-landmark-safety-banner-h2"' in html
+    assert 'id="market-v0-landmark-ranking-funnel-h2"' in html
+    assert 'aria-labelledby="market-v0-landmark-ranking-funnel-h2"' in html
+    assert 'id="market-v0-landmark-visual-cockpit-h2"' in html
+    assert 'aria-labelledby="market-v0-landmark-visual-cockpit-h2"' in html
+    assert 'id="market-v0-landmark-surface-links-h2"' in html
+    assert 'aria-labelledby="market-v0-landmark-surface-links-h2"' in html
+    assert 'id="market-v0-landmark-data-rails-h2"' in html
+    assert 'aria-labelledby="market-v0-landmark-data-rails-h2"' in html
+    assert 'id="market-v0-landmark-query-context-h2"' in html
+    assert 'aria-labelledby="market-v0-landmark-query-context-h2"' in html
+    assert 'id="market-v0-landmark-close-chart-h2"' in html
+    assert 'aria-labelledby="market-v0-landmark-close-chart-h2"' in html
+    assert 'data-market-readonly="true"' in html
+    assert 'data-market-non-authorizing="true"' in html
+    lowered = html.lower()
+    assert "<form" not in lowered
+    assert "<button" not in lowered
+
+
+def test_double_play_market_dashboard_landmarks_and_labelled_regions_v0(
+    client: TestClient,
+) -> None:
+    html = _html(client, "/market/double-play")
+    assert 'id="double-play-market-v0-shell"' in html
+    assert 'aria-labelledby="double-play-market-v0-landmark-page-title"' in html
+    assert 'id="double-play-market-v0-landmark-page-title"' in html
+    assert 'id="double-play-market-v0-landmark-safety-h2"' in html
+    assert 'aria-labelledby="double-play-market-v0-landmark-safety-h2"' in html
+    assert 'id="double-play-market-v0-landmark-reading-guide-h2"' in html
+    assert 'aria-labelledby="double-play-market-v0-landmark-reading-guide-h2"' in html
+    assert 'id="double-play-market-v0-landmark-candlestick-h2"' in html
+    assert 'aria-labelledby="double-play-market-v0-landmark-candlestick-h2"' in html
+    assert 'aria-labelledby="double-play-market-v0-landmark-rail-h2"' in html
+    assert 'id="double-play-market-v0-landmark-rail-h2"' in html
+    assert 'data-double-play-market-readonly="true"' in html
+    assert 'data-double-play-market-no-orders="true"' in html
+    assert 'data-double-play-market-no-authority="true"' in html
+    lowered = html.lower()
+    assert "<form" not in lowered
+
+
 def test_market_dashboard_forms_do_not_target_order_or_live_paths(
     client: TestClient,
 ) -> None:
