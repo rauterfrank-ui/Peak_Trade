@@ -602,6 +602,7 @@ class TestnetOrchestrator:
             run_info = self._runs[run_id]
 
             if run_info.state in (RunState.STOPPED, RunState.ERROR):
+                self._finalize_persisted_run_record(run_info)
                 logger.info(f"[ORCHESTRATOR] Run bereits gestoppt: {run_id}")
                 return
 
@@ -614,10 +615,6 @@ class TestnetOrchestrator:
                 elif run_info.session and hasattr(run_info.session, "_shutdown_requested"):
                     run_info.session._shutdown_requested = True
 
-                # Run-Logger finalisieren
-                if run_info.run_logger:
-                    run_info.run_logger.finalize()
-
                 run_info.state = RunState.STOPPED
                 run_info.stopped_at = datetime.now(timezone.utc)
 
@@ -627,6 +624,23 @@ class TestnetOrchestrator:
                 logger.error(f"[ORCHESTRATOR] Fehler beim Stoppen des Runs: {run_id}, {e}")
                 run_info.state = RunState.ERROR
                 run_info.last_error = str(e)
+                run_info.stopped_at = datetime.now(timezone.utc)
+
+            finally:
+                self._finalize_persisted_run_record(run_info)
+
+    def _finalize_persisted_run_record(self, run_info: RunInfo) -> None:
+        """
+        Schließt persistierte ``meta.json`` ab (``ended_at``), falls ein Logger oder eine Datei existiert.
+        """
+        from .run_logging import finalize_persisted_run_metadata_if_unfinished
+
+        if run_info.run_logger is not None:
+            run_info.run_logger.finalize()
+            return
+
+        run_dir = self._persisted_runs_base_dir() / run_info.run_id
+        finalize_persisted_run_metadata_if_unfinished(run_dir)
 
     def get_status(self, run_id: Optional[str] = None) -> RunInfo | List[RunInfo]:
         """
