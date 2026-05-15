@@ -642,6 +642,38 @@ def load_run_metadata(run_dir: str | Path) -> LiveRunMetadata:
     return LiveRunMetadata.from_dict(data)
 
 
+def finalize_persisted_run_metadata_if_unfinished(
+    run_dir: str | Path,
+    *,
+    ended_at: Optional[datetime] = None,
+) -> bool:
+    """
+    Setzt ``ended_at`` in ``meta.json``, falls die Datei existiert und noch kein Ende vermerkt ist.
+
+    Idempotent: Bei bereits gesetztem ``ended_at`` wird nichts geändert.
+
+    Returns:
+        ``True`` wenn geschrieben, sonst ``False`` (keine Datei, Parse-Fehler, oder schon final).
+    """
+    run_path = Path(run_dir)
+    meta_path = run_path / "meta.json"
+    if not meta_path.is_file():
+        return False
+    try:
+        md = load_run_metadata(run_path)
+    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError):
+        return False
+    if md.ended_at is not None:
+        return False
+    md.ended_at = ended_at or datetime.now(timezone.utc)
+    try:
+        with open(meta_path, "w", encoding="utf-8") as f:
+            json.dump(md.to_dict(), f, indent=2, ensure_ascii=False)
+    except OSError:
+        return False
+    return True
+
+
 def load_run_events(run_dir: str | Path) -> pd.DataFrame:
     """
     Lädt Run-Events aus einem Run-Verzeichnis.
