@@ -84,7 +84,7 @@ The harness:
 
 ## 7. Expected artifacts
 
-Under `BASE="/tmp/peak_trade_bounded_scheduler_real_config_single_tick_execution_dry_run_<TS>/"` you should see:
+Under `BASE="&#47;tmp&#47;peak_trade_bounded_scheduler_real_config_single_tick_execution_dry_run_<TS>&#47;"` you should see:
 
 | File | Meaning |
 |------|---------|
