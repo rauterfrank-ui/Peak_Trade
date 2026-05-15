@@ -55,6 +55,7 @@ Runbooks for operating and troubleshooting documentation quality gates:
 
 - [TESTNET_CHECKER_PREREQUISITES_V0.md](TESTNET_CHECKER_PREREQUISITES_V0.md) — Read-only Testnet prerequisite keys (non-authorizing)
 - [ORPHAN_SCHEDULER_AFTER_RUN_WITH_TIMEOUT_V0.md](ORPHAN_SCHEDULER_AFTER_RUN_WITH_TIMEOUT_V0.md) — Orphan scheduler classification after bounded timeout (no auto-kill in doc)
+- [BOUNDED_SCHEDULER_SINGLE_TICK_OPS_RUNBOOK_V0.md](BOUNDED_SCHEDULER_SINGLE_TICK_OPS_RUNBOOK_V0.md) — Bounded real-config scheduler: one dry-run tick on a `/tmp` copy (`run_scheduler_tick_once`; NO-LIVE)
 - [DAEMON_PAPER_24H_PLUS_OBSERVATION_GATE_BEFORE_TESTNET_V0.md](DAEMON_PAPER_24H_PLUS_OBSERVATION_GATE_BEFORE_TESTNET_V0.md) — Gate runbook for planning a future 24h+ Daemon Paper-Observation before Testnet review (no start commands; prose only; not “demo”)
 - [DAEMON_PAPER_24H_PLUS_OPERATOR_SCOPE_PREFLIGHT_V0.md](DAEMON_PAPER_24H_PLUS_OPERATOR_SCOPE_PREFLIGHT_V0.md) — Operator scope / preflight worksheet for a future Daemon 24h+ Paper-Test (decisions and checklist only; no commands)
 
