@@ -31,9 +31,10 @@ import argparse
 import signal
 import sys
 import time
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional, Set
+from typing import Any, Callable, List, Optional, Set
 
 # Projekt-Root zum Python-Path hinzufügen
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -272,6 +273,109 @@ def log_job_to_registry(result: JobResult, job: JobDefinition) -> Optional[str]:
     except Exception as e:
         print(f"[WARNING] Registry-Logging fehlgeschlagen: {e}")
         return None
+
+
+@dataclass
+class SchedulerTickSummary:
+    """Zählerstands-Snapshot eines einzelnen Scheduler-Ticks."""
+
+    loaded: int = 0
+    eligible_after_tags: int = 0
+    skipped_not_due: int = 0
+    due: int = 0
+    dispatched: int = 0
+    succeeded: int = 0
+    failed: int = 0
+
+
+def run_scheduler_tick_once(
+    config_path: Path | str,
+    *,
+    now: Optional[datetime] = None,
+    dry_run: bool = False,
+    include_tags: Optional[Set[str]] = None,
+    exclude_tags: Optional[Set[str]] = None,
+    verbose: bool = False,
+    use_registry: bool = False,
+    notifier: Any | None = None,
+    subprocess_run: Optional[Any] = None,
+    utcnow: Optional[Callable[[], datetime]] = None,
+) -> SchedulerTickSummary:
+    """
+    Führt genau einen Scheduler-«Tick» aus: Jobs laden, fällige auswählen, ausführen, Schedule aktualisieren.
+
+    Kein ``while``-Loop, kein ``sleep``, kein Daemon. Spiegelt die Kernlogik eines
+    Loop-Durchlaufs von ``run_scheduler_loop`` (ohne Warten/Wiederholen).
+    """
+    path = Path(config_path)
+    summary = SchedulerTickSummary()
+
+    all_jobs = load_jobs_from_toml(path)
+    summary.loaded = len(all_jobs)
+
+    jobs = filter_jobs_by_tags(all_jobs, include_tags, exclude_tags)
+    summary.eligible_after_tags = len(jobs)
+
+    if not jobs:
+        summary.skipped_not_due = 0
+        return summary
+
+    for job in jobs:
+        warnings = validate_job_config(job)
+        for w in warnings:
+            if verbose:
+                print(f"[WARNING] {w}")
+
+    tick_now = now if now is not None else datetime.utcnow()
+
+    for job in jobs:
+        if job.schedule.next_run_at is None:
+            job.schedule.next_run_at = compute_next_run_at(job.schedule, now=tick_now)
+
+    if verbose:
+        print_job_summary(jobs, tick_now)
+
+    due_jobs = get_due_jobs(jobs, now=tick_now)
+    summary.due = len(due_jobs)
+    summary.skipped_not_due = summary.eligible_after_tags - summary.due
+
+    for job in due_jobs:
+        if verbose:
+            print(f"\n  -> Starte: {job.name}")
+
+        summary.dispatched += 1
+        result = run_job(
+            job,
+            dry_run=dry_run,
+            subprocess_run=subprocess_run,
+            utcnow=utcnow,
+        )
+
+        update_job_schedule_after_run(job, result)
+
+        if result.success:
+            summary.succeeded += 1
+            if verbose:
+                print(f"     ✅ Erfolgreich ({result.duration_seconds:.1f}s)")
+                if verbose and result.stdout:
+                    print(f"     stdout: {result.stdout[:200]}...")
+            send_job_alert(notifier, result, level="info")
+        else:
+            summary.failed += 1
+            if verbose:
+                print(f"     ❌ Fehlgeschlagen (return_code={result.return_code})")
+                if result.exception:
+                    print(f"     Exception: {result.exception}")
+                if result.stderr:
+                    print(f"     stderr: {result.stderr[:200]}...")
+            send_job_alert(notifier, result, level="critical")
+
+        if use_registry and not dry_run:
+            run_id = log_job_to_registry(result, job)
+            if run_id and verbose:
+                print(f"     Registry: {run_id[:8]}...")
+
+    return summary
 
 
 def run_scheduler_loop(
