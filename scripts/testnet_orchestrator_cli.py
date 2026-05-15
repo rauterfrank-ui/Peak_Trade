@@ -372,6 +372,7 @@ def cmd_status(args: argparse.Namespace, orchestrator: TestnetOrchestrator) -> i
                     print(f"Last Error: {status.last_error}")
                 if status.notes:
                     print(f"Notes: {status.notes}")
+                print(f"status_source: {status.status_source}")
 
         return 0
 

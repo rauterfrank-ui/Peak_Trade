@@ -21,7 +21,7 @@ from __future__ import annotations
 import logging
 import threading
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
@@ -73,6 +73,8 @@ class RunInfo:
     notes: str = ""
     session: Optional[Any] = None  # ShadowPaperSession oder Testnet-Session
     run_logger: Optional["LiveRunLogger"] = None
+    #: ``in_memory`` für den aktuellen Prozess; ``persisted`` aus ``meta.json`` / Run-Log
+    status_source: str = "in_memory"
 
     def to_dict(self) -> Dict[str, Any]:
         """Konvertiert zu Dictionary."""
@@ -88,6 +90,7 @@ class RunInfo:
             "last_event_time": self.last_event_time.isoformat() if self.last_event_time else None,
             "last_error": self.last_error,
             "notes": self.notes,
+            "status_source": self.status_source,
         }
 
 
@@ -158,6 +161,49 @@ class TestnetOrchestrator:
         self._lock = threading.RLock()
 
         logger.info("[ORCHESTRATOR] Initialisiert")
+
+    def _persisted_runs_base_dir(self) -> Path:
+        """Basisverzeichnis für Run-Logs (meta.json unter ``{base}/{run_id}/``)."""
+        from .run_logging import load_shadow_paper_logging_config
+
+        return Path(load_shadow_paper_logging_config(self._config).base_dir)
+
+    def _try_build_run_info_from_persisted_metadata(self, run_id: str) -> Optional[RunInfo]:
+        """
+        Rekonstruiert ``RunInfo`` aus persistiertem ``meta.json`` (ohne laufenden Prozess).
+
+        Nur Modi ``shadow`` / ``testnet`` (Orchestrierungs-Domäne).
+        """
+        from .run_logging import load_run_metadata
+
+        run_dir = self._persisted_runs_base_dir() / run_id
+        if not (run_dir / "meta.json").is_file():
+            return None
+        try:
+            md = load_run_metadata(run_dir)
+        except (FileNotFoundError, OSError, ValueError, KeyError, TypeError):
+            return None
+
+        if md.mode not in ("shadow", "testnet"):
+            return None
+
+        state = RunState.STOPPED if md.ended_at else RunState.RUNNING
+        started_at = md.started_at or datetime.now(timezone.utc)
+
+        return RunInfo(
+            run_id=md.run_id,
+            mode=md.mode,
+            strategy_name=md.strategy_name,
+            symbol=md.symbol,
+            timeframe=md.timeframe,
+            state=state,
+            started_at=started_at,
+            stopped_at=md.ended_at,
+            notes=md.notes,
+            session=None,
+            run_logger=None,
+            status_source="persisted",
+        )
 
     def _ensure_readiness(self, mode: str) -> None:
         """
@@ -343,6 +389,7 @@ class TestnetOrchestrator:
                     timeframe=timeframe,
                     run_id=run_id,
                 )
+                run_logger.initialize()
 
                 # Session bauen
                 session = self._build_shadow_session(
@@ -448,6 +495,7 @@ class TestnetOrchestrator:
                     timeframe=timeframe,
                     run_id=run_id,
                 )
+                run_logger.initialize()
 
                 # Für v1: Testnet-Runs nutzen ShadowPaperSession mit Testnet-Environment
                 # Später kann hier echte Testnet-Session erstellt werden
@@ -568,10 +616,14 @@ class TestnetOrchestrator:
             if run_id is None:
                 return list(self._runs.values())
 
-            if run_id not in self._runs:
-                raise RunNotFoundError(f"Run-ID nicht gefunden: {run_id}")
+            if run_id in self._runs:
+                return replace(self._runs[run_id], status_source="in_memory")
 
-            return self._runs[run_id]
+            persisted = self._try_build_run_info_from_persisted_metadata(run_id)
+            if persisted is not None:
+                return persisted
+
+            raise RunNotFoundError(f"Run-ID nicht gefunden: {run_id}")
 
     def tail_events(
         self,
