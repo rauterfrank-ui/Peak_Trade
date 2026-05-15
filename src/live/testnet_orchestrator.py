@@ -117,6 +117,23 @@ class RunNotFoundError(OrchestratorError):
     pass
 
 
+class PersistedRunStopNotApplicableError(OrchestratorError):
+    """
+    Stop angefordert, aber nur persistierte Metadaten vorhanden (kein In-Prozess-Run).
+
+    Tritt auf, wenn ``stop_run`` aus einem neuen Prozess aufgerufen wird, während der
+    Run nur als ``meta.json`` existiert — ein aktiver Worker kann nicht gestoppt werden.
+    """
+
+    def __init__(self, classification: str, run_id: str) -> None:
+        self.classification = classification
+        self.run_id = run_id
+        super().__init__(
+            f"stop_classification={classification}; persisted_only=True; "
+            f"process_stopped=False; run_id={run_id}"
+        )
+
+
 class InvalidModeError(OrchestratorError):
     """Ungültiger Mode (z.B. 'live' nicht erlaubt)."""
 
@@ -564,11 +581,23 @@ class TestnetOrchestrator:
             run_id: Run-ID
 
         Raises:
-            RunNotFoundError: Wenn Run-ID nicht gefunden
+            RunNotFoundError: Wenn Run-ID weder im Orchestrator noch auf der Platte (testnet/shadow-meta)
+            PersistedRunStopNotApplicableError: Wenn nur ``meta.json`` existiert, kein In-Prozess-Run
         """
         with self._lock:
             if run_id not in self._runs:
-                raise RunNotFoundError(f"Run-ID nicht gefunden: {run_id}")
+                persisted = self._try_build_run_info_from_persisted_metadata(run_id)
+                if persisted is None:
+                    raise RunNotFoundError(f"Run-ID nicht gefunden: {run_id}")
+                if persisted.state == RunState.RUNNING:
+                    raise PersistedRunStopNotApplicableError(
+                        "stale_persisted_running",
+                        run_id,
+                    )
+                raise PersistedRunStopNotApplicableError(
+                    "persisted_only_already_stopped",
+                    run_id,
+                )
 
             run_info = self._runs[run_id]
 
