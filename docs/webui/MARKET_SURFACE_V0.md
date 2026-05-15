@@ -60,6 +60,7 @@ Auf **`GET`** **`/market`** zeigt das Template einen **Futures-Ranking-Funnel** 
 - **Sichtbare Stufen-Bezeichner:** **Top Universe** → **Shortlist** → **Top Ranking / Selected Candidates** (sprachlicher Zielpfad auf **einer** Seite; **keine** separate Ranking-Route).
 - **Keine festen Endgrößen:** frühere illustrative Größen wie `Top 50&#47;20&#47;5` sind **kein** vertragliches Versprechen — **Umfang** jeder Stufe bleibt **producer-definiert** / datengetrieben.
 - **Stabile Marker:** `data-market-v0-ranking-funnel-empty-state-v0="true"`, `data-market-v0-ranking-funnel-dynamic-labels-v0="true"` (Tests/Strukturvertrag — **keine** operationalen Freigaben).
+- **Operator-Hinweis (Empty-State):** Fehlende Kandidatenzeilen bedeuten **nicht** Freigabe, Sperre, „Ready“, Handelserlaubnis oder Signal — nur, dass diese **read-only** Oberfläche (noch) **keine** Producer-/Ranking-Zeilen für die Stufen ausgibt.
 - **Kein** Ranking-Producer in diesem Markt-Slice dokumentiert oder impliziert; reale Listen/Scores folgen erst mit **explizitem** kanonischen Contract — bis dahin **keine** Umsetzungsannahme durch dieses Dokument.
 
 **Dashboard ≠ Freigabe:** der Funnel begründet **keine** Orders, **kein** Live/Testnet/Paper, **keine** Scope/Capital-, Risk-/KillSwitch- oder Strategieautorität.

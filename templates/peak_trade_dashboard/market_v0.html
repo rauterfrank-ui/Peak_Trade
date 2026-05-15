@@ -100,34 +100,36 @@
     <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
       <div class="min-w-0 space-y-1">
         <h2 id="market-v0-landmark-ranking-funnel-h2" class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">
-          Futures ranking funnel · contract-first (empty)
+          Futures-Ranking-Funnel · nur Darstellung (leer)
         </h2>
         <p class="text-[10px] text-slate-500 m-0 max-w-2xl leading-snug">
-          Zielpfad auf <strong class="text-slate-400 font-semibold">einer Seite</strong>, ohne separate Ranking-Route.
-          <strong class="text-amber-200/90 font-semibold">Noch keine Live-Ranking-Daten</strong>, keine Kandidatenlisten, keine erfundenen Scores oder Auswahlkriterien-Werte — reines SSR-Platzhalter-Panel bis ein kanonischer Producer angebunden ist.
+          Auf <strong class="text-slate-400 font-semibold">dieser read-only Oberfläche</strong> werden hier
+          <strong class="text-amber-200/90 font-semibold">keine Kandidatenzeilen</strong> aus einem Ranking-/Producer-Kontext angezeigt — bewusst, bis ein kanonischer Producer angebunden ist.
+          <strong class="text-slate-400">Das ist weder Empfehlung noch Signal, weder Freigabe noch Sperre noch „Ready“-Status</strong>; es fehlen schlicht Anzeigedaten für diese Stufen.
+          Zielpfad bleibt auf <strong class="text-slate-400 font-semibold">einer Seite</strong>, ohne separate Ranking-Route.
         </p>
       </div>
-      <span class="shrink-0 inline-flex items-center rounded-md border border-amber-800/55 bg-amber-950/45 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-amber-200/90">Not wired</span>
+      <span class="shrink-0 inline-flex items-center rounded-md border border-amber-800/55 bg-amber-950/45 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-amber-200/90">Leer · display-only</span>
     </div>
     <div
       class="grid grid-cols-1 sm:grid-cols-3 gap-2"
       data-market-v0-ranking-funnel-stages-v0="true"
-      aria-label="Target funnel stages: dynamic labels only, no fixed candidate counts"
+      aria-label="Funnel-Stufen: nur Beschriftung; leer — keine Kandidatenzeilen von dieser read-only Oberfläche"
     >
       <div class="rounded-lg border border-slate-700/75 bg-slate-950/65 px-2.5 py-2">
         <p class="text-[9px] font-bold uppercase tracking-[0.1em] text-violet-300/88 m-0">Stage 1</p>
         <p class="text-sm font-semibold text-slate-100 m-0 mt-1">Top Universe</p>
-        <p class="text-[9px] text-slate-500 m-0 mt-1 leading-snug">Breites Kandidatenfeld — Größe nur vom Producer, keine Symbole, keine Reihenfolge.</p>
+        <p class="text-[9px] text-slate-500 m-0 mt-1 leading-snug">Breites Feld — hier keine Zeilen; spätere Größe nur vom Producer, nicht von dieser Oberfläche festgelegt.</p>
       </div>
       <div class="rounded-lg border border-slate-700/75 bg-slate-950/65 px-2.5 py-2">
         <p class="text-[9px] font-bold uppercase tracking-[0.1em] text-violet-300/88 m-0">Stage 2</p>
         <p class="text-sm font-semibold text-slate-100 m-0 mt-1">Shortlist</p>
-        <p class="text-[9px] text-slate-500 m-0 mt-1 leading-snug">Vorgefilterte Menge — Umfang producer-definiert, keine Shortlist-Daten.</p>
+        <p class="text-[9px] text-slate-500 m-0 mt-1 leading-snug">Vorgefiltertes Feld — hier keine Shortlist-Zeilen; Umfang später producer-definiert.</p>
       </div>
       <div class="rounded-lg border border-slate-700/75 bg-slate-950/65 px-2.5 py-2">
         <p class="text-[9px] font-bold uppercase tracking-[0.1em] text-violet-300/88 m-0">Stage 3</p>
         <p class="text-sm font-semibold text-slate-100 m-0 mt-1">Top Ranking / Selected Candidates</p>
-        <p class="text-[9px] text-slate-500 m-0 mt-1 leading-snug">Auswahl ohne feste Stückzahl — Anzahl komplett vom Producer, keine Markierungen.</p>
+        <p class="text-[9px] text-slate-500 m-0 mt-1 leading-snug">Auswahl-Feld — hier keine Zeilen; spätere Anzahl nur vom Producer, keine Darstellung als Entscheidung.</p>
       </div>
     </div>
     <div class="mt-2.5 rounded-lg border border-slate-800/85 bg-slate-950/55 px-2.5 py-2">
