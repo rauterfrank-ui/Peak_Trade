@@ -6,7 +6,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass
-from typing import Any, Mapping, Optional, cast
+from typing import Any, Mapping, Optional, Sequence, cast
 
 from src.shadow_no_order_proof.bounded_adapter_v0 import (
     BoundedShadowAdapterPlan,
@@ -14,6 +14,7 @@ from src.shadow_no_order_proof.bounded_adapter_v0 import (
 )
 
 OBSERVATION_EVIDENCE_SCHEMA_V0 = "shadow_observation_evidence_record.v0"
+OBSERVATION_BATCH_SUMMARY_SCHEMA_V0 = "shadow_observation_batch_summary.v0"
 
 
 @dataclass(frozen=True)
@@ -56,6 +57,61 @@ class ShadowObservationEvidenceRecord:
     order_intent_created: bool
     runtime_started: bool
     scheduler_started: bool
+
+
+@dataclass(frozen=True)
+class ShadowObservationBatchSummary:
+    """Deterministic aggregate over ordered evidence records (metadata only)."""
+
+    batch_version: str
+    record_count: int
+    evidence_ids: tuple[str, ...]
+    batch_hash: str
+    all_no_order: bool
+    all_broker_touched_false: bool
+    all_exchange_touched_false: bool
+    all_credentials_touched_false: bool
+    all_order_intent_created_false: bool
+    all_runtime_started_false: bool
+    all_scheduler_started_false: bool
+    all_shadow_mode_allowed_false: bool
+    proven_shadow_no_order_entrypoint_found: bool
+    executable_command_created: bool
+
+
+def _record_satisfies_no_order_invariants(rec: ShadowObservationEvidenceRecord) -> bool:
+    if rec.allowed_actions:
+        return False
+    flags = (
+        rec.broker_touched,
+        rec.exchange_touched,
+        rec.credentials_touched,
+        rec.order_intent_created,
+        rec.order_submission_allowed,
+        rec.runtime_started,
+        rec.scheduler_started,
+        rec.shadow_mode_allowed,
+        rec.live_allowed,
+        rec.testnet_allowed,
+        rec.paper_allowed,
+        rec.broker_allowed,
+        rec.exchange_allowed,
+        rec.runtime_allowed,
+        rec.scheduler_allowed,
+        rec.proven_shadow_no_order_entrypoint_found,
+        rec.executable_command_created,
+    )
+    return not any(flags)
+
+
+def _batch_summary_fingerprint_bytes(*, evidence_ids: tuple[str, ...]) -> bytes:
+    body: dict[str, object] = {
+        "schema": OBSERVATION_BATCH_SUMMARY_SCHEMA_V0,
+        "evidence_ids": list(evidence_ids),
+    }
+    return json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode(
+        "utf-8"
+    )
 
 
 def _canonical_json_primitive(obj: object) -> object:
@@ -155,3 +211,55 @@ def run_shadow_observation_one_shot_v0(
 ) -> ShadowObservationEvidenceRecord:
     """One in-memory snapshot → one evidence record; bounded plan from `snapshot.source` only."""
     return build_shadow_observation_evidence_record_v0(snapshot=snapshot, plan=None)
+
+
+def run_shadow_observation_batch_v0(
+    snapshots: Sequence[ShadowObservationInputSnapshot],
+) -> tuple[ShadowObservationEvidenceRecord, ...]:
+    """Ordered snapshots → ordered evidence records; one one-shot evaluation per snapshot."""
+    return tuple(run_shadow_observation_one_shot_v0(s) for s in snapshots)
+
+
+def build_shadow_observation_batch_summary_v0(
+    records: Sequence[ShadowObservationEvidenceRecord],
+) -> ShadowObservationBatchSummary:
+    """Derive a deterministic batch summary and hash from an ordered evidence sequence."""
+    ordered = tuple(records)
+    evidence_ids = tuple(r.evidence_id for r in ordered)
+    raw = _batch_summary_fingerprint_bytes(evidence_ids=evidence_ids)
+    batch_hash = hashlib.sha256(raw).hexdigest()
+
+    if not ordered:
+        return ShadowObservationBatchSummary(
+            batch_version=OBSERVATION_BATCH_SUMMARY_SCHEMA_V0,
+            record_count=0,
+            evidence_ids=evidence_ids,
+            batch_hash=batch_hash,
+            all_no_order=True,
+            all_broker_touched_false=True,
+            all_exchange_touched_false=True,
+            all_credentials_touched_false=True,
+            all_order_intent_created_false=True,
+            all_runtime_started_false=True,
+            all_scheduler_started_false=True,
+            all_shadow_mode_allowed_false=True,
+            proven_shadow_no_order_entrypoint_found=False,
+            executable_command_created=False,
+        )
+
+    return ShadowObservationBatchSummary(
+        batch_version=OBSERVATION_BATCH_SUMMARY_SCHEMA_V0,
+        record_count=len(ordered),
+        evidence_ids=evidence_ids,
+        batch_hash=batch_hash,
+        all_no_order=all(_record_satisfies_no_order_invariants(r) for r in ordered),
+        all_broker_touched_false=all(not r.broker_touched for r in ordered),
+        all_exchange_touched_false=all(not r.exchange_touched for r in ordered),
+        all_credentials_touched_false=all(not r.credentials_touched for r in ordered),
+        all_order_intent_created_false=all(not r.order_intent_created for r in ordered),
+        all_runtime_started_false=all(not r.runtime_started for r in ordered),
+        all_scheduler_started_false=all(not r.scheduler_started for r in ordered),
+        all_shadow_mode_allowed_false=all(not r.shadow_mode_allowed for r in ordered),
+        proven_shadow_no_order_entrypoint_found=False,
+        executable_command_created=False,
+    )
