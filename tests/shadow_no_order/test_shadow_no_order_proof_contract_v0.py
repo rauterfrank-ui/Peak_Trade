@@ -602,6 +602,85 @@ def test_shadow_observation_harness_emits_no_order_like_allowed_actions() -> Non
         assert "order" not in low
 
 
+def test_run_shadow_observation_one_shot_v0_returns_same_as_default_plan_build() -> None:
+    """One-shot entry is sugar over evidence build with plan derived from snapshot.source."""
+    snapshot = observation_harness_v0.ShadowObservationInputSnapshot(
+        symbol="ONE",
+        observed_at_utc="2026-05-16T14:00:00Z",
+        source="one_shot_equiv",
+        payload={"x": 1},
+    )
+    via_one_shot = observation_harness_v0.run_shadow_observation_one_shot_v0(snapshot)
+    via_build = observation_harness_v0.build_shadow_observation_evidence_record_v0(
+        snapshot=snapshot, plan=None
+    )
+    assert via_one_shot == via_build
+    assert isinstance(via_one_shot, observation_harness_v0.ShadowObservationEvidenceRecord)
+
+
+def test_run_shadow_observation_one_shot_v0_is_deterministic() -> None:
+    snapshot = observation_harness_v0.ShadowObservationInputSnapshot(
+        symbol="TWO",
+        observed_at_utc="2026-05-16T14:01:00Z",
+        source="one_shot_det",
+        payload={"n": 2},
+    )
+    a = observation_harness_v0.run_shadow_observation_one_shot_v0(snapshot)
+    b = observation_harness_v0.run_shadow_observation_one_shot_v0(snapshot)
+    assert a.evidence_id == b.evidence_id
+
+
+def test_run_shadow_observation_one_shot_v0_hash_changes_when_snapshot_changes() -> None:
+    base = observation_harness_v0.ShadowObservationInputSnapshot(
+        symbol="THR",
+        observed_at_utc="2026-05-16T14:02:00Z",
+        source="one_shot_hash",
+        payload={"p": 0},
+    )
+    rid0 = observation_harness_v0.run_shadow_observation_one_shot_v0(base).evidence_id
+    rid1 = observation_harness_v0.run_shadow_observation_one_shot_v0(
+        observation_harness_v0.ShadowObservationInputSnapshot(
+            symbol="THR",
+            observed_at_utc="2026-05-16T14:02:00Z",
+            source="one_shot_hash",
+            payload={"p": 1},
+        )
+    ).evidence_id
+    assert rid0 != rid1
+
+
+def test_run_shadow_observation_one_shot_v0_preserves_no_order_safety_flags() -> None:
+    snapshot = observation_harness_v0.ShadowObservationInputSnapshot(
+        symbol="FOU",
+        observed_at_utc="2026-05-16T14:03:00Z",
+        source="one_shot_flags",
+        payload={},
+    )
+    rec = observation_harness_v0.run_shadow_observation_one_shot_v0(snapshot)
+    assert rec.allowed_actions == ()
+    assert rec.evidence_required is True
+    assert rec.proven_shadow_no_order_entrypoint_found is False
+    assert rec.executable_command_created is False
+    must_be_false = (
+        rec.broker_touched,
+        rec.exchange_touched,
+        rec.credentials_touched,
+        rec.order_intent_created,
+        rec.order_submission_allowed,
+        rec.runtime_started,
+        rec.scheduler_started,
+        rec.shadow_mode_allowed,
+        rec.live_allowed,
+        rec.testnet_allowed,
+        rec.paper_allowed,
+        rec.broker_allowed,
+        rec.exchange_allowed,
+        rec.runtime_allowed,
+        rec.scheduler_allowed,
+    )
+    assert not any(must_be_false), f"expected all operational flags false, got {must_be_false!r}"
+
+
 def test_observation_harness_module_isolates_from_mixed_risk_scripts_and_runtime_packages() -> None:
     path = Path(observation_harness_v0.__file__).resolve()
     text = path.read_text(encoding="utf-8")

@@ -148,3 +148,10 @@ def build_shadow_observation_evidence_record_v0(
         runtime_started=False,
         scheduler_started=False,
     )
+
+
+def run_shadow_observation_one_shot_v0(
+    snapshot: ShadowObservationInputSnapshot,
+) -> ShadowObservationEvidenceRecord:
+    """One in-memory snapshot → one evidence record; bounded plan from `snapshot.source` only."""
+    return build_shadow_observation_evidence_record_v0(snapshot=snapshot, plan=None)
