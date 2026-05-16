@@ -225,6 +225,8 @@ Bei Anomalien **sofort** stoppen und dokumentieren:
 
 ## 8. Verwandte Dokumente
 
+- [CANARY_LIVE_ENTRY_CRITERIA.md](CANARY_LIVE_ENTRY_CRITERIA.md) — kanonische Canary-Live-Entry-Kriterien; dieser Live-Entry-Runbook-Pointer ist rein navigierend und begründet keine Freigabe, keinen Live-Unlock, keine LB-APR-Abkürzung und keine Autorisierung von Runtime, Scheduler, Paper, Testnet, Live, Broker oder Exchange. **Docs ≠ Approval** · **Signal ≠ Trade** · NO-LIVE-Default unverändert.
+
 | Dokument | Rolle |
 |----------|--------|
 | `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` | Kanonischer Entry-Vertrag |
