@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-05-13
+last_updated: 2026-05-16
 ---
 
 # Current focus
@@ -30,6 +30,21 @@ Short operator snapshot after **#3470–#3478** (no new roadmap promises; **not*
 - **Chart.js:** CDN load-failure **attribution** is in place (#3476); **local** vendored fallback is **not** implemented and needs a **separate** charter if ever pursued.
 
 **Suggested default posture:** **STOP/IDLE** at the repo slice level unless the operator selects a **larger** charter (e.g. Testnet/Daemon planning, Chart.js local fallback **concept**, `/market/double-play` design depth, or another explicit non-micro topic).
+
+## Post–Canary docs navigation + Go-Live gap audit closeout (May 2026, docs-only)
+
+Kurzer Operator-Snapshot nach **PR #3494–#3496** sowie nach dem **read-only Go-Live Gap Audit Matrix v0** — **Navigation/Wissenslage nur**; **kein** Testnet-/Live-Readiness-Nachweis und **kein** Genehmigung-/LB-APR-Artefakt.
+
+- **PR #3494:** Canary-Kriterien ↔ kanonische Runbooks/Readiness-Pointer — [`CANARY_LIVE_ENTRY_CRITERIA.md`](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) (inkl. erforderlicher Truth-Map-Zeile im gleichen Slice).
+- **PR #3495:** Dry Validation ↔ Canary — [`RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md).
+- **PR #3496:** Bounded Pilot Live Entry ↔ Canary — [`RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md).
+
+GitHub (Links zur Nachverfolgung): https://github.com/rauterfrank-ui/Peak_Trade/pull/3494 · https://github.com/rauterfrank-ui/Peak_Trade/pull/3495 · https://github.com/rauterfrank-ui/Peak_Trade/pull/3496
+
+- **Read-only Go-Live Gap Audit Matrix v0:** breite bestehende Abdeckung für Live-default-off / Gates / CI-Doku-Verträge; **keine** sofortige Pflicht für einen zusätzlichen generischen tests-only Contract; empfohlene Haltung **`stop_idle_after_gap_audit`** bis zu einem neuen expliziten Charter. Lokales Audit-Artefakt (Maschinenreferenz): `/tmp/peak_trade_readonly_golive_gap_audit_v0_20260516T075330Z/READONLY_GOLIVE_GAP_AUDIT_V0_RESULT.md`
+- **Notion PR Slice Registry (nur dokumentarisch):** „Canary Docs Navigation Chain (#3494–#3496)“ — https://www.notion.so/3625d37faddf81baa19fdc239b3704e4 · „Go-Live Gap Audit Matrix v0“ — https://www.notion.so/3625d37faddf81549d04f1f17958f12b — **Notion ≠ Approval**, **Docs ≠ Approval**.
+
+**Suggested default posture:** **STOP_IDLE** für Runtime/Scheduler/Testnet/Live/Broker/Exchange bleibt; Cursor/Multi-Agent nur unter klarem **read-only / docs-tests-bounded** Charter. **NO-LIVE**-Default unverändert; **LB-APR** weiterhin erforderlich und durch diese Reihe **nicht** shortcut.
 
 ---
 
