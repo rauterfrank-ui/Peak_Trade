@@ -35,7 +35,7 @@ _DEFAULT_FORBIDDEN_ACTIONS: tuple[str, ...] = (
 )
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class BoundedShadowAdapterPlan:
     """Declarative adapter plan — metadata only, not an execution authority."""
 
