@@ -12,7 +12,7 @@ import hashlib
 import json
 import sys
 from pathlib import Path
-from typing import Any, Mapping, Optional
+from typing import Any, Mapping, Optional, Tuple
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
@@ -27,8 +27,38 @@ from src.shadow_no_order_proof.observation_harness_v0 import (  # noqa: E402
 
 CONFIRMATION_TOKEN = "NO_RUNTIME_NO_SCHEDULER_NO_BROKER_NO_ORDERS"
 CLOSEOUT_BASENAME = "SHADOW_OBSERVATION_FILE_SNAPSHOT_OPERATOR_ENTRYPOINT_V0_CLOSEOUT.md"
-INPUT_SCHEMA_V0 = "bounded_file_snapshot_observation_input_v0"
-INPUT_SOURCE_EXPECTED = "bounded_file_captured_static"
+BOUNDED_SCHEMA_V0 = "bounded_file_snapshot_observation_input_v0"
+BOUNDED_SOURCE_V0 = "bounded_file_captured_static"
+CAPTURED_SCHEMA_V0 = "captured_realistic_snapshot_observation_input_v0"
+
+CAPTURED_SOURCES_ALLOWED_V0 = frozenset(
+    {
+        "operator_supplied_static",
+        "redacted_public_snapshot_static",
+        "synthetic_realistic_static",
+        "prior_allowed_tmp_artifact_static",
+    }
+)
+
+_CAPTURED_PAYLOAD_REQUIRED_KEYS_V0 = frozenset({"bid", "ask", "last", "spread_bps", "sequence"})
+
+# Match whole payload key names via substring rejection (ASCII keys only expected).
+_PAYLOAD_KEY_REJECT_SUBSTRINGS_V0 = (
+    "api_key",
+    "secret",
+    "private_key",
+    "credential",
+    "account_id",
+    "wallet",
+    "order_id",
+    "fill_id",
+    "client_order_id",
+    "private_trade_id",
+    "balance",
+    "position_size",
+    "leverage",
+    "pnl",
+)
 
 
 def _die(msg: str, code: int = 2) -> None:
@@ -36,37 +66,122 @@ def _die(msg: str, code: int = 2) -> None:
     raise SystemExit(code)
 
 
-def _load_snapshots(payload: Mapping[str, Any]) -> tuple[ShadowObservationInputSnapshot, ...]:
-    schema = payload.get("schema")
-    if schema != INPUT_SCHEMA_V0:
-        _die(f"ERR: input schema must be {INPUT_SCHEMA_V0!r}, got {schema!r}")
+def _non_empty_trimmed_str(val: Any) -> bool:
+    return isinstance(val, str) and val.strip() != ""
+
+
+def _validate_captured_provenance(prov: Any) -> None:
+    if prov is None or not isinstance(prov, Mapping):
+        _die("ERR: captured-realistic input requires provenance object")
+    if prov.get("redacted") is not True:
+        _die("ERR: provenance.redacted must be true")
+    for key in (
+        "network_fetch_during_test",
+        "contains_credentials",
+        "contains_orders",
+        "contains_fills",
+    ):
+        if prov.get(key) is not False:
+            _die(f"ERR: provenance.{key} must be false")
+    if not _non_empty_trimmed_str(prov.get("captured_by")):
+        _die("ERR: provenance.captured_by must be a non-empty string")
+    if not _non_empty_trimmed_str(prov.get("captured_at_utc")):
+        _die("ERR: provenance.captured_at_utc must be a non-empty string")
+
+
+def _reject_forbidden_payload_keys(payload: Mapping[str, Any]) -> None:
+    for key in payload:
+        lk = key.lower()
+        for frag in _PAYLOAD_KEY_REJECT_SUBSTRINGS_V0:
+            if frag in lk:
+                _die(f"ERR: forbidden payload key pattern {frag!r} matched in field {key!r}")
+
+
+def _validate_bounded_snapshot_item(
+    item: Any, envelope_source: str
+) -> ShadowObservationInputSnapshot:
+    if not isinstance(item, Mapping):
+        _die("ERR: each snapshot must be an object")
+    try:
+        symbol = str(item["symbol"])
+        observed_at_utc = str(item["observed_at_utc"])
+        pl = item["payload"]
+    except (KeyError, TypeError) as e:
+        _die(f"ERR: snapshot missing required fields: {e}")
+    if not isinstance(pl, Mapping):
+        _die("ERR: payload must be an object")
+    if not symbol.strip():
+        _die("ERR: snapshot.symbol must be non-empty")
+    if not observed_at_utc.strip():
+        _die("ERR: snapshot.observed_at_utc must be non-empty")
+    return ShadowObservationInputSnapshot(
+        symbol=symbol,
+        observed_at_utc=observed_at_utc,
+        source=envelope_source,
+        payload=dict(pl),
+    )
+
+
+def _validate_captured_snapshot_item(
+    item: Any, envelope_source: str
+) -> ShadowObservationInputSnapshot:
+    snap = _validate_bounded_snapshot_item(item, envelope_source)
+    pl = snap.payload
+    missing = sorted(_CAPTURED_PAYLOAD_REQUIRED_KEYS_V0 - set(pl))
+    if missing:
+        _die(f"ERR: captured-realistic snapshot payload missing required keys {missing}")
+    _reject_forbidden_payload_keys(pl)
+    return snap
+
+
+def _load_bounded_snapshots(
+    payload: Mapping[str, Any],
+) -> Tuple[Tuple[ShadowObservationInputSnapshot, ...], str]:
     source = payload.get("source")
-    if source != INPUT_SOURCE_EXPECTED:
-        _die(f"ERR: input source must be {INPUT_SOURCE_EXPECTED!r}, got {source!r}")
+    if source != BOUNDED_SOURCE_V0:
+        _die(f"ERR: input source must be {BOUNDED_SOURCE_V0!r}, got {source!r}")
     raw = payload.get("snapshots")
     if not isinstance(raw, list) or not raw:
         _die("ERR: snapshots must be a non-empty list")
     out: list[ShadowObservationInputSnapshot] = []
     for item in raw:
-        if not isinstance(item, Mapping):
-            _die("ERR: each snapshot must be an object")
-        try:
-            symbol = str(item["symbol"])
-            observed_at_utc = str(item["observed_at_utc"])
-            pl = item["payload"]
-        except (KeyError, TypeError) as e:
-            _die(f"ERR: snapshot missing required fields: {e}")
-        if not isinstance(pl, Mapping):
-            _die("ERR: payload must be an object")
-        out.append(
-            ShadowObservationInputSnapshot(
-                symbol=symbol,
-                observed_at_utc=observed_at_utc,
-                source=str(source),
-                payload=dict(pl),
-            )
+        out.append(_validate_bounded_snapshot_item(item, BOUNDED_SOURCE_V0))
+    return tuple(out), BOUNDED_SOURCE_V0
+
+
+def _load_captured_snapshots(
+    payload: Mapping[str, Any],
+) -> Tuple[Tuple[ShadowObservationInputSnapshot, ...], str]:
+    source = payload.get("source")
+    if not isinstance(source, str) or source not in CAPTURED_SOURCES_ALLOWED_V0:
+        _die(
+            "ERR: captured-realistic source must be one of "
+            f"{sorted(CAPTURED_SOURCES_ALLOWED_V0)!r}, got {source!r}"
         )
-    return tuple(out)
+    _validate_captured_provenance(payload.get("provenance"))
+    raw = payload.get("snapshots")
+    if not isinstance(raw, list):
+        _die("ERR: snapshots must be a non-empty array for captured-realistic input")
+    n = len(raw)
+    if n < 3 or n > 20:
+        _die(f"ERR: captured-realistic requires between 3 and 20 snapshots, got {n}")
+    out: list[ShadowObservationInputSnapshot] = []
+    for item in raw:
+        out.append(_validate_captured_snapshot_item(item, source))
+    return tuple(out), source
+
+
+def load_snapshots_for_envelope(
+    payload: Mapping[str, Any],
+) -> Tuple[Tuple[ShadowObservationInputSnapshot, ...], str]:
+    schema = payload.get("schema")
+    if schema == BOUNDED_SCHEMA_V0:
+        return _load_bounded_snapshots(payload)
+    if schema == CAPTURED_SCHEMA_V0:
+        return _load_captured_snapshots(payload)
+    _die(
+        f"ERR: input schema must be {BOUNDED_SCHEMA_V0!r} or {CAPTURED_SCHEMA_V0!r}, got {schema!r}"
+    )
 
 
 def main(argv: Optional[list[str]] = None) -> int:
@@ -112,7 +227,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     if not isinstance(loaded, dict):
         _die("ERR: input JSON must be an object")
 
-    snapshots = _load_snapshots(loaded)
+    snapshots, harness_source = load_snapshots_for_envelope(loaded)
     ordered = tuple(sorted(snapshots, key=lambda s: s.observed_at_utc))
     started = ordered[0].observed_at_utc
     ended = ordered[-1].observed_at_utc
@@ -125,8 +240,8 @@ def main(argv: Optional[list[str]] = None) -> int:
             cadence_seconds=60,
             max_observations=len(ordered),
             run_id=args.run_id,
-            source=INPUT_SOURCE_EXPECTED,
-            cadence_source=INPUT_SOURCE_EXPECTED,
+            source=harness_source,
+            cadence_source=harness_source,
         )
         write_shadow_observation_local_evidence_v0(
             result,
