@@ -5,6 +5,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+import pytest
+
 from src.core.environment import EnvironmentConfig, TradingEnvironment
 from src.shadow_no_order_proof import markers_v0
 
@@ -82,6 +84,12 @@ _NO_ORDER_ENTRYPOINT_FORBIDDEN_APPROVAL: tuple[tuple[re.Pattern[str], str], ...]
         re.compile(r"EXECUTABLE_COMMAND_CREATED\s*=\s*(?i:True)"),
         "EXECUTABLE_COMMAND_CREATED true",
     ),
+)
+
+# Workflows must not treat declarative proof metadata as CI/release/execution authority.
+_WORKFLOW_FORBIDDEN_SHADOW_NO_ORDER_SUBSTR: tuple[str, ...] = (
+    "shadow_no_order_proof",
+    "src.shadow_no_order_proof",
 )
 
 _FORBIDDEN_SOURCE_MARKERS = (
@@ -225,6 +233,23 @@ def test_known_shadow_runtime_candidates_are_not_approved_no_order_entrypoints()
                 f"{label!r} must not appear in candidate {path} (matched {match.group(0)!r})"
             )
     assert checked > 0, "expected at least one known shadow/runtime candidate file to exist"
+
+
+def test_workflows_do_not_reference_shadow_no_order_proof_as_authority() -> None:
+    """GitHub Actions YAML must not reference declarative proof as CI/release/execution authority."""
+    wf_root = _REPO_ROOT / ".github" / "workflows"
+    if not wf_root.is_dir():
+        pytest.skip(".github/workflows not present")
+    paths = _workflow_files()
+    if not paths:
+        pytest.skip("no .yml/.yaml workflow files under .github/workflows")
+    for path in paths:
+        text = path.read_text(encoding="utf-8")
+        for needle in _WORKFLOW_FORBIDDEN_SHADOW_NO_ORDER_SUBSTR:
+            assert needle not in text, (
+                f"workflow {path} must not reference {needle!r} "
+                "(declarative shadow_no_order_proof is not CI/release authority)"
+            )
 
 
 def test_shadow_no_order_proof_package_is_non_execution_surface() -> None:
