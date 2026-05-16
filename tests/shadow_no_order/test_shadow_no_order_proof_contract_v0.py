@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 from dataclasses import fields
 from pathlib import Path
@@ -1129,6 +1131,172 @@ def test_shadow_observation_local_run_rejects_snapshot_count_over_max() -> None:
     }
     with pytest.raises(ValueError, match="snapshot count exceeds"):
         observation_harness_v0.run_shadow_observation_local_v0(snaps, **kw)
+
+
+def test_build_shadow_observation_local_evidence_bundle_v0_is_deterministic() -> None:
+    snaps = (_snap("E1", "evb", {"n": 1}),)
+    kw = _local_run_kw(run_id="evidence-run-1")
+    run = observation_harness_v0.run_shadow_observation_local_v0(snaps, **kw)
+    a = observation_harness_v0.build_shadow_observation_local_evidence_bundle_v0(run)
+    b = observation_harness_v0.build_shadow_observation_local_evidence_bundle_v0(run)
+    assert a == b
+    assert (
+        hashlib.sha256(a.local_run_result_json_bytes).hexdigest()
+        == hashlib.sha256(b.local_run_result_json_bytes).hexdigest()
+    )
+
+
+def test_evidence_bundle_manifest_reflects_payload_hash_and_schema() -> None:
+    snaps = (_snap("E2", "evm", {}),)
+    kw = _local_run_kw(run_id="manifest-run")
+    run = observation_harness_v0.run_shadow_observation_local_v0(snaps, **kw)
+    bundle = observation_harness_v0.build_shadow_observation_local_evidence_bundle_v0(run)
+    payload_hash = hashlib.sha256(bundle.local_run_result_json_bytes).hexdigest()
+    manifest = json.loads(bundle.manifest_json_bytes.decode("utf-8"))
+    assert manifest["schema"] == observation_harness_v0.LOCAL_OBSERVATION_EVIDENCE_OUTPUT_SCHEMA_V0
+    assert manifest["created_by"] == "shadow_observation_harness_v0"
+    assert manifest["run_id"] == run.run_id
+    assert manifest["run_hash"] == run.run_hash
+    assert manifest["files"] == [
+        {
+            "path": "local_run_result.json",
+            "sha256": payload_hash,
+            "bytes": len(bundle.local_run_result_json_bytes),
+        }
+    ]
+
+
+def test_evidence_bundle_bytes_change_when_local_run_payload_changes() -> None:
+    kw = _local_run_kw(run_id="delta-run")
+    r1 = observation_harness_v0.run_shadow_observation_local_v0(
+        (_snap("D", "evd", {"k": 1}),), **kw
+    )
+    r2 = observation_harness_v0.run_shadow_observation_local_v0(
+        (_snap("D", "evd", {"k": 2}),), **kw
+    )
+    b1 = observation_harness_v0.build_shadow_observation_local_evidence_bundle_v0(r1)
+    b2 = observation_harness_v0.build_shadow_observation_local_evidence_bundle_v0(r2)
+    assert b1.local_run_result_json_bytes != b2.local_run_result_json_bytes
+    assert b1.manifest_json_bytes != b2.manifest_json_bytes
+
+
+def test_write_shadow_observation_local_evidence_writes_three_files(tmp_path: Path) -> None:
+    snaps = (_snap("W1", "wrt", {}),)
+    kw = _local_run_kw(run_id="write-run-a")
+    run = observation_harness_v0.run_shadow_observation_local_v0(snaps, **kw)
+    receipt = observation_harness_v0.write_shadow_observation_local_evidence_v0(
+        run,
+        output_dir=tmp_path / "evidence_root",
+        overwrite=False,
+    )
+    root = Path(receipt.output_root)
+    names = {p.name for p in root.iterdir()}
+    assert names == {
+        "local_run_result.json",
+        "manifest.json",
+        "MANIFEST.sha256",
+    }
+    bundle = observation_harness_v0.build_shadow_observation_local_evidence_bundle_v0(run)
+    assert (root / "local_run_result.json").read_bytes() == bundle.local_run_result_json_bytes
+    assert (root / "manifest.json").read_bytes() == bundle.manifest_json_bytes
+    digest = (root / "MANIFEST.sha256").read_bytes().decode("utf-8")
+    assert digest == hashlib.sha256(bundle.manifest_json_bytes).hexdigest() + "\n"
+    assert (
+        receipt.local_run_result_sha256
+        == hashlib.sha256(bundle.local_run_result_json_bytes).hexdigest()
+    )
+    assert receipt.manifest_sha256 == hashlib.sha256(bundle.manifest_json_bytes).hexdigest()
+    assert (
+        receipt.manifest_body_sha256_hex == hashlib.sha256(bundle.manifest_json_bytes).hexdigest()
+    )
+
+
+def test_write_shadow_observation_local_evidence_refuses_overwrite(tmp_path: Path) -> None:
+    snaps = (_snap("W2", "novr", {}),)
+    kw = _local_run_kw(run_id="write-run-b")
+    run = observation_harness_v0.run_shadow_observation_local_v0(snaps, **kw)
+    out = tmp_path / "out_b"
+    observation_harness_v0.write_shadow_observation_local_evidence_v0(
+        run, output_dir=out, overwrite=False
+    )
+    with pytest.raises(FileExistsError):
+        observation_harness_v0.write_shadow_observation_local_evidence_v0(
+            run, output_dir=out, overwrite=False
+        )
+
+
+def test_write_shadow_observation_local_evidence_overwrite_true_replaces(tmp_path: Path) -> None:
+    snaps = (_snap("W3", "ovr", {}),)
+    kw = _local_run_kw(run_id="write-run-c")
+    run = observation_harness_v0.run_shadow_observation_local_v0(snaps, **kw)
+    out = tmp_path / "out_c"
+    observation_harness_v0.write_shadow_observation_local_evidence_v0(
+        run, output_dir=out, overwrite=False
+    )
+    first_payload = (Path(out) / run.run_id / "local_run_result.json").read_bytes()
+    observation_harness_v0.write_shadow_observation_local_evidence_v0(
+        run, output_dir=out, overwrite=True
+    )
+    second_payload = (Path(out) / run.run_id / "local_run_result.json").read_bytes()
+    assert first_payload == second_payload
+
+
+def test_write_shadow_observation_local_evidence_overwrite_preserves_extra_files(
+    tmp_path: Path,
+) -> None:
+    snaps = (_snap("W4", "xtra", {}),)
+    kw = _local_run_kw(run_id="write-run-d")
+    run = observation_harness_v0.run_shadow_observation_local_v0(snaps, **kw)
+    out = tmp_path / "out_d"
+    observation_harness_v0.write_shadow_observation_local_evidence_v0(
+        run, output_dir=out, overwrite=False
+    )
+    dest = Path(out) / run.run_id
+    (dest / "extra.txt").write_text("keep", encoding="utf-8")
+    observation_harness_v0.write_shadow_observation_local_evidence_v0(
+        run, output_dir=out, overwrite=True
+    )
+    assert (dest / "extra.txt").read_text(encoding="utf-8") == "keep"
+
+
+def test_evidence_output_receipt_authority_flags_remain_false(tmp_path: Path) -> None:
+    snaps = (_snap("W5", "rcp", {}), _snap("W6", "rcp", {"z": 9}))
+    kw = _local_run_kw(run_id="receipt-run")
+    run = observation_harness_v0.run_shadow_observation_local_v0(snaps, **kw)
+    receipt = observation_harness_v0.write_shadow_observation_local_evidence_v0(
+        run,
+        output_dir=tmp_path / "out_e",
+        overwrite=False,
+    )
+    assert receipt.local_observation_evidence_output_approved is False
+    assert receipt.local_observation_run_approved is False
+    assert receipt.proven_shadow_no_order_entrypoint_found is False
+    assert receipt.executable_command_created is False
+    assert receipt.shadow_mode_allowed is False
+    assert receipt.runtime_allowed is False
+    assert receipt.scheduler_allowed is False
+    assert receipt.order_submission_allowed is False
+
+
+def test_write_evidence_rejects_unsafe_run_id(tmp_path: Path) -> None:
+    snaps = (_snap("U", "unsafe", {}),)
+    meta = _timed_meta()
+    run = observation_harness_v0.run_shadow_observation_local_v0(
+        snaps,
+        started_at_utc=str(meta["started_at_utc"]),
+        ended_at_utc=str(meta["ended_at_utc"]),
+        cadence_seconds=int(meta["cadence_seconds"]),
+        max_observations=int(meta["max_observations"]),
+        run_id="trick/../../../escape",
+        source="caller_provided",
+        cadence_source="caller_provided",
+    )
+    with pytest.raises(ValueError, match="run_id"):
+        observation_harness_v0.write_shadow_observation_local_evidence_v0(
+            run,
+            output_dir=tmp_path / "bad",
+            overwrite=False,
+        )
 
 
 def test_observation_harness_has_no_sleep_or_datetime_now_tokens() -> None:

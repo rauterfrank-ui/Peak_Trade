@@ -1,12 +1,15 @@
 # Shadow Observation Harness v0 — declarative evidence only (no runtime entrypoint).
-# Pure: dataclasses + stdlib hashing/json. No I/O, no network, no time lookups.
+# Core helpers: dataclasses + stdlib hashing/json (no network, no wall-clock reads).
+# Bounded filesystem output exists only in write_shadow_observation_local_evidence_v0.
 
 from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass
-from typing import Any, Mapping, Optional, Sequence, cast
+import re
+from dataclasses import dataclass, fields, is_dataclass
+from pathlib import Path
+from typing import Any, Mapping, Optional, Sequence, Union, cast
 
 from src.shadow_no_order_proof.bounded_adapter_v0 import (
     BoundedShadowAdapterPlan,
@@ -17,6 +20,13 @@ OBSERVATION_EVIDENCE_SCHEMA_V0 = "shadow_observation_evidence_record.v0"
 OBSERVATION_BATCH_SUMMARY_SCHEMA_V0 = "shadow_observation_batch_summary.v0"
 TIMED_OBSERVATION_SUMMARY_SCHEMA_V0 = "shadow_observation_timed_summary.v0"
 LOCAL_OBSERVATION_RUN_RESULT_SCHEMA_V0 = "shadow_observation_local_run_result.v0"
+LOCAL_OBSERVATION_EVIDENCE_OUTPUT_SCHEMA_V0 = "shadow_observation_local_evidence_manifest.v0"
+
+_LOCAL_RUN_RESULT_BASENAME = "local_run_result.json"
+_MANIFEST_BASENAME = "manifest.json"
+_MANIFEST_SHA256_BASENAME = "MANIFEST.sha256"
+
+_SAFE_RUN_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,254}$")
 
 
 @dataclass(frozen=True)
@@ -146,6 +156,36 @@ class ShadowObservationLocalRunResult:
     order_submission_allowed: bool
 
 
+@dataclass(frozen=True)
+class ShadowObservationLocalEvidenceBundleV0:
+    """Deterministic JSON payloads for a local run evidence folder (no filesystem access)."""
+
+    local_run_result_json_bytes: bytes
+    manifest_json_bytes: bytes
+
+
+@dataclass(frozen=True)
+class ShadowObservationEvidenceOutputReceipt:
+    """Receipt for a bounded write under caller-provided output_dir/run_id (not an approval)."""
+
+    output_root: str
+    run_id: str
+    local_run_result_path: str
+    manifest_path: str
+    manifest_sha256_path: str
+    local_run_result_sha256: str
+    manifest_sha256: str
+    manifest_body_sha256_hex: str
+    local_observation_evidence_output_approved: bool
+    local_observation_run_approved: bool
+    proven_shadow_no_order_entrypoint_found: bool
+    executable_command_created: bool
+    shadow_mode_allowed: bool
+    runtime_allowed: bool
+    scheduler_allowed: bool
+    order_submission_allowed: bool
+
+
 def _record_satisfies_no_order_invariants(rec: ShadowObservationEvidenceRecord) -> bool:
     if rec.allowed_actions:
         return False
@@ -249,6 +289,132 @@ def _canonical_json_primitive(obj: object) -> object:
     if isinstance(obj, (list, tuple)):
         return [_canonical_json_primitive(x) for x in obj]
     raise TypeError(f"Unsupported payload type for canonical JSON: {type(obj)!r}")
+
+
+def _observation_value_to_json_obj(obj: object) -> object:
+    """Turn observation harness dataclasses/mappings into JSON-compatible trees."""
+    if is_dataclass(obj) and not isinstance(obj, type):
+        dc_any = cast(Any, obj)
+        return {
+            f.name: _observation_value_to_json_obj(getattr(dc_any, f.name)) for f in fields(dc_any)
+        }
+    if isinstance(obj, Mapping):
+        mapping = cast(Mapping[str, Any], obj)
+        return {k: _observation_value_to_json_obj(mapping[k]) for k in sorted(mapping)}
+    if isinstance(obj, (list, tuple)):
+        seq = cast(Sequence[object], obj)
+        return [_observation_value_to_json_obj(x) for x in seq]
+    if obj is None or isinstance(obj, (bool, int, float, str)):
+        return obj
+    raise TypeError(f"Unsupported observation export type: {type(obj)!r}")
+
+
+def _require_safe_run_id(run_id: str) -> None:
+    if run_id != run_id.strip() or not run_id:
+        raise ValueError("run_id must be a non-empty trimmed string")
+    if ".." in run_id:
+        raise ValueError("run_id must not contain '..'")
+    if _SAFE_RUN_ID_RE.match(run_id) is None:
+        raise ValueError("run_id has unsafe characters")
+
+
+def _dump_canonical_json_bytes(payload: Mapping[str, object]) -> bytes:
+    return json.dumps(
+        payload,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
+
+
+def build_shadow_observation_local_evidence_bundle_v0(
+    result: ShadowObservationLocalRunResult,
+) -> ShadowObservationLocalEvidenceBundleV0:
+    """Serialize a local run result + deterministic manifest bytes (pure; no filesystem)."""
+    body_obj = _observation_value_to_json_obj(result)
+    body = cast(Mapping[str, object], body_obj)
+    payload_bytes = _dump_canonical_json_bytes(body)
+    payload_sha256 = hashlib.sha256(payload_bytes).hexdigest()
+    manifest_body: dict[str, object] = {
+        "schema": LOCAL_OBSERVATION_EVIDENCE_OUTPUT_SCHEMA_V0,
+        "created_by": "shadow_observation_harness_v0",
+        "run_id": result.run_id,
+        "run_hash": result.run_hash,
+        "files": [
+            {
+                "path": _LOCAL_RUN_RESULT_BASENAME,
+                "sha256": payload_sha256,
+                "bytes": len(payload_bytes),
+            }
+        ],
+    }
+    manifest_bytes = _dump_canonical_json_bytes(manifest_body)
+    return ShadowObservationLocalEvidenceBundleV0(
+        local_run_result_json_bytes=payload_bytes,
+        manifest_json_bytes=manifest_bytes,
+    )
+
+
+def write_shadow_observation_local_evidence_v0(
+    result: ShadowObservationLocalRunResult,
+    *,
+    output_dir: Union[str, Path],
+    overwrite: bool = False,
+) -> ShadowObservationEvidenceOutputReceipt:
+    """Write bounded evidence files under output_dir/run_id (caller-owned paths only)."""
+    _require_safe_run_id(result.run_id)
+    base = Path(output_dir).expanduser().resolve()
+    base.mkdir(parents=True, exist_ok=True)
+    dest = (base / result.run_id).resolve()
+    if not dest.is_relative_to(base):
+        raise ValueError("run_id resolves outside output_dir")
+    dest.mkdir(parents=True, exist_ok=True)
+
+    bundle = build_shadow_observation_local_evidence_bundle_v0(result)
+    payload_bytes = bundle.local_run_result_json_bytes
+    manifest_bytes = bundle.manifest_json_bytes
+    manifest_body_hex = hashlib.sha256(manifest_bytes).hexdigest()
+    digest_bytes = f"{manifest_body_hex}\n".encode("utf-8")
+
+    p_payload = dest / _LOCAL_RUN_RESULT_BASENAME
+    p_manifest = dest / _MANIFEST_BASENAME
+    p_digest = dest / _MANIFEST_SHA256_BASENAME
+
+    targets = (p_payload, p_manifest, p_digest)
+    if not overwrite:
+        for p in targets:
+            if p.exists():
+                raise FileExistsError(str(p))
+    else:
+        for p in targets:
+            if p.exists():
+                p.unlink()
+
+    p_payload.write_bytes(payload_bytes)
+    p_manifest.write_bytes(manifest_bytes)
+    p_digest.write_bytes(digest_bytes)
+
+    payload_written_hash = hashlib.sha256(p_payload.read_bytes()).hexdigest()
+    manifest_written_hash = hashlib.sha256(p_manifest.read_bytes()).hexdigest()
+
+    return ShadowObservationEvidenceOutputReceipt(
+        output_root=str(dest),
+        run_id=result.run_id,
+        local_run_result_path=str(p_payload),
+        manifest_path=str(p_manifest),
+        manifest_sha256_path=str(p_digest),
+        local_run_result_sha256=payload_written_hash,
+        manifest_sha256=manifest_written_hash,
+        manifest_body_sha256_hex=manifest_body_hex,
+        local_observation_evidence_output_approved=False,
+        local_observation_run_approved=result.local_observation_run_approved,
+        proven_shadow_no_order_entrypoint_found=result.proven_shadow_no_order_entrypoint_found,
+        executable_command_created=result.executable_command_created,
+        shadow_mode_allowed=result.shadow_mode_allowed,
+        runtime_allowed=result.runtime_allowed,
+        scheduler_allowed=result.scheduler_allowed,
+        order_submission_allowed=result.order_submission_allowed,
+    )
 
 
 def _fingerprint_bytes(
