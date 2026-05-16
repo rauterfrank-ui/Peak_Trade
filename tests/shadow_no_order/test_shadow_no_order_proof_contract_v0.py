@@ -802,6 +802,196 @@ def test_shadow_observation_batch_summary_flags_safe_for_nonempty() -> None:
     assert summary.executable_command_created is False
 
 
+def _timed_meta() -> dict[str, object]:
+    return {
+        "started_at_utc": "2026-05-16T16:00:00Z",
+        "ended_at_utc": "2026-05-16T17:00:00Z",
+        "cadence_seconds": 60,
+        "max_observations": 10,
+    }
+
+
+def test_build_shadow_observation_timed_summary_v0_accepts_records_and_metadata() -> None:
+    snaps = (
+        _snap("T1", "timed", {"i": 0}),
+        _snap("T2", "timed", {"i": 1}),
+    )
+    recs = observation_harness_v0.run_shadow_observation_batch_v0(snaps)
+    meta = _timed_meta()
+    summary = observation_harness_v0.build_shadow_observation_timed_summary_v0(
+        recs,
+        started_at_utc=str(meta["started_at_utc"]),
+        ended_at_utc=str(meta["ended_at_utc"]),
+        cadence_seconds=int(meta["cadence_seconds"]),
+        max_observations=int(meta["max_observations"]),
+    )
+    assert summary.timed_version == observation_harness_v0.TIMED_OBSERVATION_SUMMARY_SCHEMA_V0
+    assert summary.record_count == 2
+    assert summary.observed_at_utc_values == tuple(r.observed_at_utc for r in recs)
+    assert len(summary.timed_hash) == 64
+    assert summary.cadence_source == "caller_provided"
+
+
+def test_shadow_observation_timed_summary_same_inputs_same_hash() -> None:
+    snaps = (_snap("S", "th", {"k": 1}),)
+    recs_a = observation_harness_v0.run_shadow_observation_batch_v0(snaps)
+    recs_b = observation_harness_v0.run_shadow_observation_batch_v0(snaps)
+    meta = _timed_meta()
+    kw = {
+        "started_at_utc": str(meta["started_at_utc"]),
+        "ended_at_utc": str(meta["ended_at_utc"]),
+        "cadence_seconds": int(meta["cadence_seconds"]),
+        "max_observations": int(meta["max_observations"]),
+    }
+    t_a = observation_harness_v0.build_shadow_observation_timed_summary_v0(recs_a, **kw)
+    t_b = observation_harness_v0.build_shadow_observation_timed_summary_v0(recs_b, **kw)
+    assert t_a.timed_hash == t_b.timed_hash
+    assert t_a.batch_hash == t_b.batch_hash
+
+
+def test_shadow_observation_timed_hash_changes_when_cadence_metadata_changes() -> None:
+    snaps = (_snap("C", "cad", {}),)
+    recs = observation_harness_v0.run_shadow_observation_batch_v0(snaps)
+    base = _timed_meta()
+    kw1 = {
+        "started_at_utc": str(base["started_at_utc"]),
+        "ended_at_utc": str(base["ended_at_utc"]),
+        "cadence_seconds": 60,
+        "max_observations": int(base["max_observations"]),
+    }
+    kw2 = {**kw1, "cadence_seconds": 120}
+    h1 = observation_harness_v0.build_shadow_observation_timed_summary_v0(recs, **kw1).timed_hash
+    h2 = observation_harness_v0.build_shadow_observation_timed_summary_v0(recs, **kw2).timed_hash
+    assert h1 != h2
+
+
+def test_shadow_observation_timed_hash_changes_when_cadence_source_changes() -> None:
+    snaps = (_snap("CS", "cads", {}),)
+    recs = observation_harness_v0.run_shadow_observation_batch_v0(snaps)
+    meta = _timed_meta()
+    kw = {
+        "started_at_utc": str(meta["started_at_utc"]),
+        "ended_at_utc": str(meta["ended_at_utc"]),
+        "cadence_seconds": int(meta["cadence_seconds"]),
+        "max_observations": int(meta["max_observations"]),
+    }
+    a = observation_harness_v0.build_shadow_observation_timed_summary_v0(
+        recs, cadence_source="caller_provided", **kw
+    )
+    b = observation_harness_v0.build_shadow_observation_timed_summary_v0(
+        recs, cadence_source="fixture", **kw
+    )
+    assert a.timed_hash != b.timed_hash
+
+
+def test_shadow_observation_timed_hash_changes_when_started_ended_change() -> None:
+    snaps = (_snap("E", "se", {}),)
+    recs = observation_harness_v0.run_shadow_observation_batch_v0(snaps)
+    h1 = observation_harness_v0.build_shadow_observation_timed_summary_v0(
+        recs,
+        started_at_utc="2026-05-16T12:00:00Z",
+        ended_at_utc="2026-05-16T13:00:00Z",
+        cadence_seconds=30,
+        max_observations=5,
+    ).timed_hash
+    h2 = observation_harness_v0.build_shadow_observation_timed_summary_v0(
+        recs,
+        started_at_utc="2026-05-16T12:00:01Z",
+        ended_at_utc="2026-05-16T13:00:00Z",
+        cadence_seconds=30,
+        max_observations=5,
+    ).timed_hash
+    assert h1 != h2
+
+
+def test_shadow_observation_timed_hash_order_sensitive() -> None:
+    s1 = _snap("O1", "ordt", {"n": 1})
+    s2 = _snap("O2", "ordt", {"n": 2})
+    meta = _timed_meta()
+    kw = {
+        "started_at_utc": str(meta["started_at_utc"]),
+        "ended_at_utc": str(meta["ended_at_utc"]),
+        "cadence_seconds": int(meta["cadence_seconds"]),
+        "max_observations": int(meta["max_observations"]),
+    }
+    fwd = observation_harness_v0.run_shadow_observation_batch_v0((s1, s2))
+    rev = observation_harness_v0.run_shadow_observation_batch_v0((s2, s1))
+    assert (
+        observation_harness_v0.build_shadow_observation_timed_summary_v0(fwd, **kw).timed_hash
+        != observation_harness_v0.build_shadow_observation_timed_summary_v0(rev, **kw).timed_hash
+    )
+
+
+def test_shadow_observation_timed_summary_empty_is_deterministic() -> None:
+    empty: tuple[observation_harness_v0.ShadowObservationEvidenceRecord, ...] = ()
+    meta = _timed_meta()
+    kw = {
+        "started_at_utc": str(meta["started_at_utc"]),
+        "ended_at_utc": str(meta["ended_at_utc"]),
+        "cadence_seconds": int(meta["cadence_seconds"]),
+        "max_observations": int(meta["max_observations"]),
+    }
+    a = observation_harness_v0.build_shadow_observation_timed_summary_v0(empty, **kw)
+    b = observation_harness_v0.build_shadow_observation_timed_summary_v0(empty, **kw)
+    assert a == b
+    assert a.record_count == 0
+    assert a.observed_at_utc_values == ()
+    assert len(a.timed_hash) == 64
+
+
+def test_shadow_observation_timed_summary_flags_safe_for_nonempty() -> None:
+    snaps = (_snap("F1", "tsafe", {}), _snap("F2", "tsafe", {"a": 1}))
+    recs = observation_harness_v0.run_shadow_observation_batch_v0(snaps)
+    meta = _timed_meta()
+    t = observation_harness_v0.build_shadow_observation_timed_summary_v0(
+        recs,
+        started_at_utc=str(meta["started_at_utc"]),
+        ended_at_utc=str(meta["ended_at_utc"]),
+        cadence_seconds=int(meta["cadence_seconds"]),
+        max_observations=int(meta["max_observations"]),
+    )
+    assert t.all_no_order is True
+    assert t.proven_shadow_no_order_entrypoint_found is False
+    assert t.executable_command_created is False
+    assert t.all_broker_touched_false is True
+    assert t.all_exchange_touched_false is True
+    assert t.all_credentials_touched_false is True
+    assert t.all_order_intent_created_false is True
+    assert t.all_runtime_started_false is True
+    assert t.all_scheduler_started_false is True
+    assert t.all_shadow_mode_allowed_false is True
+
+
+def test_shadow_observation_timed_summary_rejects_negative_cadence_or_max() -> None:
+    snaps = (_snap("V", "neg", {}),)
+    recs = observation_harness_v0.run_shadow_observation_batch_v0(snaps)
+    meta = _timed_meta()
+    base_kw = {
+        "started_at_utc": str(meta["started_at_utc"]),
+        "ended_at_utc": str(meta["ended_at_utc"]),
+        "max_observations": int(meta["max_observations"]),
+    }
+    with pytest.raises(ValueError, match="cadence_seconds"):
+        observation_harness_v0.build_shadow_observation_timed_summary_v0(
+            recs, cadence_seconds=-1, **base_kw
+        )
+    with pytest.raises(ValueError, match="max_observations"):
+        observation_harness_v0.build_shadow_observation_timed_summary_v0(
+            recs,
+            cadence_seconds=1,
+            max_observations=-3,
+            started_at_utc=str(meta["started_at_utc"]),
+            ended_at_utc=str(meta["ended_at_utc"]),
+        )
+
+
+def test_observation_harness_has_no_sleep_or_datetime_now_tokens() -> None:
+    path = Path(observation_harness_v0.__file__).resolve()
+    text = path.read_text(encoding="utf-8")
+    assert "time.sleep" not in text
+    assert "datetime.now" not in text
+
+
 def test_observation_harness_module_isolates_from_mixed_risk_scripts_and_runtime_packages() -> None:
     path = Path(observation_harness_v0.__file__).resolve()
     text = path.read_text(encoding="utf-8")

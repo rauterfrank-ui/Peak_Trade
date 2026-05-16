@@ -15,6 +15,7 @@ from src.shadow_no_order_proof.bounded_adapter_v0 import (
 
 OBSERVATION_EVIDENCE_SCHEMA_V0 = "shadow_observation_evidence_record.v0"
 OBSERVATION_BATCH_SUMMARY_SCHEMA_V0 = "shadow_observation_batch_summary.v0"
+TIMED_OBSERVATION_SUMMARY_SCHEMA_V0 = "shadow_observation_timed_summary.v0"
 
 
 @dataclass(frozen=True)
@@ -79,6 +80,34 @@ class ShadowObservationBatchSummary:
     executable_command_created: bool
 
 
+@dataclass(frozen=True)
+class ShadowObservationTimedSummary:
+    """Deterministic summary: batch evidence + caller-provided cadence metadata (no wall-clock)."""
+
+    timed_version: str
+    batch_version: str
+    record_count: int
+    evidence_ids: tuple[str, ...]
+    batch_hash: str
+    timed_hash: str
+    started_at_utc: str
+    ended_at_utc: str
+    cadence_seconds: int
+    max_observations: int
+    observed_at_utc_values: tuple[str, ...]
+    cadence_source: str
+    all_no_order: bool
+    all_broker_touched_false: bool
+    all_exchange_touched_false: bool
+    all_credentials_touched_false: bool
+    all_order_intent_created_false: bool
+    all_runtime_started_false: bool
+    all_scheduler_started_false: bool
+    all_shadow_mode_allowed_false: bool
+    proven_shadow_no_order_entrypoint_found: bool
+    executable_command_created: bool
+
+
 def _record_satisfies_no_order_invariants(rec: ShadowObservationEvidenceRecord) -> bool:
     if rec.allowed_actions:
         return False
@@ -108,6 +137,33 @@ def _batch_summary_fingerprint_bytes(*, evidence_ids: tuple[str, ...]) -> bytes:
     body: dict[str, object] = {
         "schema": OBSERVATION_BATCH_SUMMARY_SCHEMA_V0,
         "evidence_ids": list(evidence_ids),
+    }
+    return json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode(
+        "utf-8"
+    )
+
+
+def _timed_summary_fingerprint_bytes(
+    *,
+    batch_hash: str,
+    evidence_ids: tuple[str, ...],
+    started_at_utc: str,
+    ended_at_utc: str,
+    cadence_seconds: int,
+    max_observations: int,
+    cadence_source: str,
+    observed_at_utc_values: tuple[str, ...],
+) -> bytes:
+    body: dict[str, object] = {
+        "schema": TIMED_OBSERVATION_SUMMARY_SCHEMA_V0,
+        "batch_hash": batch_hash,
+        "evidence_ids": list(evidence_ids),
+        "cadence_seconds": cadence_seconds,
+        "cadence_source": cadence_source,
+        "ended_at_utc": ended_at_utc,
+        "max_observations": max_observations,
+        "observed_at_utc_values": list(observed_at_utc_values),
+        "started_at_utc": started_at_utc,
     }
     return json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode(
         "utf-8"
@@ -260,6 +316,60 @@ def build_shadow_observation_batch_summary_v0(
         all_runtime_started_false=all(not r.runtime_started for r in ordered),
         all_scheduler_started_false=all(not r.scheduler_started for r in ordered),
         all_shadow_mode_allowed_false=all(not r.shadow_mode_allowed for r in ordered),
+        proven_shadow_no_order_entrypoint_found=False,
+        executable_command_created=False,
+    )
+
+
+def build_shadow_observation_timed_summary_v0(
+    records: Sequence[ShadowObservationEvidenceRecord],
+    *,
+    started_at_utc: str,
+    ended_at_utc: str,
+    cadence_seconds: int,
+    max_observations: int,
+    cadence_source: str = "caller_provided",
+) -> ShadowObservationTimedSummary:
+    """Batch summary plus caller-supplied timing metadata → deterministic timed hash; no I/O or clocks."""
+    if cadence_seconds < 0:
+        raise ValueError("cadence_seconds must be >= 0")
+    if max_observations < 0:
+        raise ValueError("max_observations must be >= 0")
+    ordered = tuple(records)
+    batch = build_shadow_observation_batch_summary_v0(ordered)
+    observed_at_utc_values = tuple(rec.observed_at_utc for rec in ordered)
+    raw = _timed_summary_fingerprint_bytes(
+        batch_hash=batch.batch_hash,
+        evidence_ids=batch.evidence_ids,
+        started_at_utc=started_at_utc,
+        ended_at_utc=ended_at_utc,
+        cadence_seconds=cadence_seconds,
+        max_observations=max_observations,
+        cadence_source=cadence_source,
+        observed_at_utc_values=observed_at_utc_values,
+    )
+    timed_hash = hashlib.sha256(raw).hexdigest()
+    return ShadowObservationTimedSummary(
+        timed_version=TIMED_OBSERVATION_SUMMARY_SCHEMA_V0,
+        batch_version=batch.batch_version,
+        record_count=batch.record_count,
+        evidence_ids=batch.evidence_ids,
+        batch_hash=batch.batch_hash,
+        timed_hash=timed_hash,
+        started_at_utc=started_at_utc,
+        ended_at_utc=ended_at_utc,
+        cadence_seconds=cadence_seconds,
+        max_observations=max_observations,
+        observed_at_utc_values=observed_at_utc_values,
+        cadence_source=cadence_source,
+        all_no_order=batch.all_no_order,
+        all_broker_touched_false=batch.all_broker_touched_false,
+        all_exchange_touched_false=batch.all_exchange_touched_false,
+        all_credentials_touched_false=batch.all_credentials_touched_false,
+        all_order_intent_created_false=batch.all_order_intent_created_false,
+        all_runtime_started_false=batch.all_runtime_started_false,
+        all_scheduler_started_false=batch.all_scheduler_started_false,
+        all_shadow_mode_allowed_false=batch.all_shadow_mode_allowed_false,
         proven_shadow_no_order_entrypoint_found=False,
         executable_command_created=False,
     )
