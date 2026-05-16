@@ -103,6 +103,15 @@ _CONFIG_FORBIDDEN_SHADOW_NO_ORDER_SUBSTR: tuple[str, ...] = (
     "SHADOW_NO_ORDER_PROOF_V0",
 )
 
+# Workflows/configs must not wire bounded adapter plan symbols as CI/runtime/approval authority.
+_WORKFLOW_CONFIG_BOUNDED_ADAPTER_FORBIDDEN_SUBSTR: tuple[str, ...] = (
+    "bounded_adapter_v0",
+    "BoundedShadowAdapterPlan",
+    "build_bounded_shadow_adapter_plan_v0",
+    "BOUNDED_SHADOW_ADAPTER_PROOF_V0",
+    "declarative_no_order_shadow_adapter_proof",
+)
+
 _FORBIDDEN_SOURCE_MARKERS = (
     "requests",
     "httpx",
@@ -198,6 +207,19 @@ def _config_authority_surface_files() -> list[Path]:
     return sorted(set(paths))
 
 
+def _workflow_and_config_authority_surface_files() -> list[Path]:
+    """Union of workflow YAML and canonical config trees (deduped)."""
+    paths = _workflow_files() + _config_authority_surface_files()
+    seen: set[Path] = set()
+    out: list[Path] = []
+    for p in paths:
+        rp = p.resolve()
+        if rp not in seen:
+            seen.add(rp)
+            out.append(rp)
+    return out
+
+
 def _authority_surface_files_for_shadow_no_order_import_guard() -> list[Path]:
     paths: list[Path] = []
     for rel in _SRC_AUTHORITY_REL_DIRS:
@@ -288,6 +310,20 @@ def test_runtime_scheduler_configs_do_not_reference_shadow_no_order_proof_as_aut
             assert needle not in text, (
                 f"config {path} must not reference {needle!r} "
                 "(shadow_no_order_proof is not scheduler/runtime config authority)"
+            )
+
+
+def test_workflows_and_configs_do_not_reference_bounded_adapter_as_authority() -> None:
+    """Workflows and bounded config trees must not treat bounded adapter plans as wiring authority."""
+    paths = _workflow_and_config_authority_surface_files()
+    if not paths:
+        pytest.skip("no workflow or config authority surface files to scan")
+    for path in paths:
+        text = path.read_text(encoding="utf-8")
+        for needle in _WORKFLOW_CONFIG_BOUNDED_ADAPTER_FORBIDDEN_SUBSTR:
+            assert needle not in text, (
+                f"{path} must not reference {needle!r} "
+                "(bounded adapter plan is not workflow/config execution authority)"
             )
 
 
