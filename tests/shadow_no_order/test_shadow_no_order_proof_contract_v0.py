@@ -3,12 +3,18 @@
 from __future__ import annotations
 
 import re
+from dataclasses import fields
 from pathlib import Path
 
 import pytest
 
 from src.core.environment import EnvironmentConfig, TradingEnvironment
-from src.shadow_no_order_proof import adapter_contract_v0, bounded_adapter_v0, markers_v0
+from src.shadow_no_order_proof import (
+    adapter_contract_v0,
+    bounded_adapter_v0,
+    markers_v0,
+    observation_harness_v0,
+)
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -455,6 +461,165 @@ def test_bounded_adapter_module_isolates_from_mixed_risk_scripts_and_runtime_pac
 
 def test_bounded_adapter_module_source_has_no_execution_or_network_tokens() -> None:
     path = Path(bounded_adapter_v0.__file__).resolve()
+    text = path.read_text(encoding="utf-8")
+    low = text.lower()
+    for needle in _FORBIDDEN_SOURCE_MARKERS:
+        assert needle.lower() not in low, f"unexpected token {needle!r} in {path}"
+
+
+def test_shadow_observation_input_snapshot_has_only_safe_fields() -> None:
+    """Contract: snapshot carries symbol/time/source/payload only — no broker/exchange/client fields."""
+    expected = {"symbol", "observed_at_utc", "source", "payload"}
+    assert {
+        f.name for f in fields(observation_harness_v0.ShadowObservationInputSnapshot)
+    } == expected
+    forbidden_substrings = ("exchange", "broker", "client", "credential")
+    for f in fields(observation_harness_v0.ShadowObservationInputSnapshot):
+        lower = f.name.lower()
+        for sub in forbidden_substrings:
+            assert sub not in lower, f"field {f.name!r} must not contain {sub!r}"
+
+
+def test_shadow_observation_evidence_record_shapes_and_safety_flags() -> None:
+    """Contract: evidence record mirrors plan metadata; operational safety flags stay false."""
+    snapshot = observation_harness_v0.ShadowObservationInputSnapshot(
+        symbol="TEST",
+        observed_at_utc="2026-01-02T00:00:00Z",
+        source="contract_observation_v0",
+        payload={"mid": 1.0},
+    )
+    plan = bounded_adapter_v0.build_bounded_shadow_adapter_plan_v0(source=snapshot.source)
+    rec = observation_harness_v0.build_shadow_observation_evidence_record_v0(
+        snapshot=snapshot, plan=plan
+    )
+    assert rec.evidence_version == observation_harness_v0.OBSERVATION_EVIDENCE_SCHEMA_V0
+    assert rec.adapter_kind == plan.adapter_kind
+    assert rec.source == snapshot.source
+    assert rec.observed_at_utc == snapshot.observed_at_utc
+    assert rec.evidence_id == rec.evidence_hash
+    assert len(rec.evidence_id) == 64
+    assert rec.proof_version == plan.proof_version
+    assert rec.allowed_actions == ()
+    assert rec.evidence_required is True
+    assert rec.proven_shadow_no_order_entrypoint_found is False
+    assert rec.executable_command_created is False
+    must_be_false = (
+        rec.broker_touched,
+        rec.exchange_touched,
+        rec.credentials_touched,
+        rec.order_intent_created,
+        rec.order_submission_allowed,
+        rec.runtime_started,
+        rec.scheduler_started,
+        rec.shadow_mode_allowed,
+        rec.live_allowed,
+        rec.testnet_allowed,
+        rec.paper_allowed,
+        rec.broker_allowed,
+        rec.exchange_allowed,
+        rec.runtime_allowed,
+        rec.scheduler_allowed,
+    )
+    assert not any(must_be_false), f"expected all operational flags false, got {must_be_false!r}"
+
+
+def test_shadow_observation_evidence_is_deterministic_for_same_inputs() -> None:
+    snapshot = observation_harness_v0.ShadowObservationInputSnapshot(
+        symbol="AAA",
+        observed_at_utc="2026-05-16T12:00:00Z",
+        source="det_test",
+        payload={"a": 1, "nested": {"z": 3, "y": 2}},
+    )
+    plan = bounded_adapter_v0.build_bounded_shadow_adapter_plan_v0(source="det_test")
+    r1 = observation_harness_v0.build_shadow_observation_evidence_record_v0(
+        snapshot=snapshot, plan=plan
+    )
+    r2 = observation_harness_v0.build_shadow_observation_evidence_record_v0(
+        snapshot=snapshot, plan=plan
+    )
+    assert r1.evidence_id == r2.evidence_id
+
+
+def test_shadow_observation_evidence_id_changes_when_snapshot_or_plan_differs() -> None:
+    base_snap = observation_harness_v0.ShadowObservationInputSnapshot(
+        symbol="BBB",
+        observed_at_utc="2026-05-16T12:00:00Z",
+        source="id_change",
+        payload={"k": 1},
+    )
+    plan_a = bounded_adapter_v0.build_bounded_shadow_adapter_plan_v0(source="id_change")
+    plan_b = bounded_adapter_v0.build_bounded_shadow_adapter_plan_v0(source="other_source")
+    rid1 = observation_harness_v0.build_shadow_observation_evidence_record_v0(
+        snapshot=base_snap, plan=plan_a
+    ).evidence_id
+    rid2 = observation_harness_v0.build_shadow_observation_evidence_record_v0(
+        snapshot=observation_harness_v0.ShadowObservationInputSnapshot(
+            symbol="BBB",
+            observed_at_utc="2026-05-16T12:00:01Z",
+            source="id_change",
+            payload={"k": 1},
+        ),
+        plan=plan_a,
+    ).evidence_id
+    rid3 = observation_harness_v0.build_shadow_observation_evidence_record_v0(
+        snapshot=observation_harness_v0.ShadowObservationInputSnapshot(
+            symbol="BBB",
+            observed_at_utc="2026-05-16T12:00:00Z",
+            source="id_change",
+            payload={"k": 2},
+        ),
+        plan=plan_a,
+    ).evidence_id
+    rid4 = observation_harness_v0.build_shadow_observation_evidence_record_v0(
+        snapshot=observation_harness_v0.ShadowObservationInputSnapshot(
+            symbol="BBB",
+            observed_at_utc="2026-05-16T12:00:00Z",
+            source="other",
+            payload={"k": 1},
+        ),
+        plan=plan_a,
+    ).evidence_id
+    rid5 = observation_harness_v0.build_shadow_observation_evidence_record_v0(
+        snapshot=base_snap, plan=plan_b
+    ).evidence_id
+    assert len({rid1, rid2, rid3, rid4, rid5}) == 5
+
+
+def test_shadow_observation_harness_emits_no_order_like_allowed_actions() -> None:
+    snapshot = observation_harness_v0.ShadowObservationInputSnapshot(
+        symbol="CCC",
+        observed_at_utc="2026-05-16T12:00:00Z",
+        source="no_order_actions",
+        payload={},
+    )
+    plan = bounded_adapter_v0.build_bounded_shadow_adapter_plan_v0(source=snapshot.source)
+    rec = observation_harness_v0.build_shadow_observation_evidence_record_v0(
+        snapshot=snapshot, plan=plan
+    )
+    assert not rec.allowed_actions
+    for action in rec.allowed_actions:
+        low = action.lower()
+        assert "order" not in low
+
+
+def test_observation_harness_module_isolates_from_mixed_risk_scripts_and_runtime_packages() -> None:
+    path = Path(observation_harness_v0.__file__).resolve()
+    text = path.read_text(encoding="utf-8")
+    for needle in ("scripts/run_shadow_execution.py", "scripts/testnet_orchestrator_cli.py"):
+        assert needle not in text, f"{path} must not reference mixed-risk script path {needle!r}"
+    for pattern in (
+        re.compile(
+            r"(?m)^\s*from\s+src\.(execution|live|scheduler|strategies|ops|data|orders|backtest)\b"
+        ),
+        re.compile(
+            r"(?m)^\s*import\s+src\.(execution|live|scheduler|strategies|ops|data|orders|backtest)\b"
+        ),
+    ):
+        assert pattern.search(text) is None, f"{path} must not import runtime-like src packages"
+
+
+def test_observation_harness_module_source_has_no_execution_or_network_tokens() -> None:
+    path = Path(observation_harness_v0.__file__).resolve()
     text = path.read_text(encoding="utf-8")
     low = text.lower()
     for needle in _FORBIDDEN_SOURCE_MARKERS:
