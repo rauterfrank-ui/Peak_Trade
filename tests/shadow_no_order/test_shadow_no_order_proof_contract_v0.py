@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from src.core.environment import EnvironmentConfig, TradingEnvironment
-from src.shadow_no_order_proof import adapter_contract_v0, markers_v0
+from src.shadow_no_order_proof import adapter_contract_v0, bounded_adapter_v0, markers_v0
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -341,6 +341,84 @@ def test_markers_module_source_has_no_execution_or_network_tokens() -> None:
 
 def test_adapter_contract_module_source_has_no_execution_or_network_tokens() -> None:
     path = Path(adapter_contract_v0.__file__).resolve()
+    text = path.read_text(encoding="utf-8")
+    low = text.lower()
+    for needle in _FORBIDDEN_SOURCE_MARKERS:
+        assert needle.lower() not in low, f"unexpected token {needle!r} in {path}"
+
+
+def test_bounded_shadow_adapter_plan_is_declarative_non_executable_not_approved() -> None:
+    """Implementation slice: frozen plan only; no authority flags; no allowed actions."""
+    p1 = bounded_adapter_v0.build_bounded_shadow_adapter_plan_v0()
+    p2 = bounded_adapter_v0.build_bounded_shadow_adapter_plan_v0(source="bounded_adapter_build_v0")
+    assert p1 == p2
+    custom = bounded_adapter_v0.build_bounded_shadow_adapter_plan_v0(source="contract_test_source")
+    assert custom.source == "contract_test_source"
+    assert custom.adapter_kind == adapter_contract_v0.ADAPTER_KIND
+    assert custom.proof_version == f"{adapter_contract_v0.BOUNDED_SHADOW_ADAPTER_PROOF_V0}_impl_v0"
+    assert custom.allowed_actions == ()
+    assert custom.evidence_required is True
+    assert custom.proven_shadow_no_order_entrypoint_found is False
+    assert custom.executable_command_created is False
+    assert "not an executable command" in custom.not_executable_declaration.lower()
+    assert (
+        "not approved" in custom.not_approved_declaration.lower()
+        or "approved by this plan" in custom.not_approved_declaration.lower()
+    )
+    assert custom.shadow_mode_allowed is False
+    assert custom.order_submission_allowed is False
+    assert custom.broker_allowed is False
+    assert custom.exchange_allowed is False
+    assert custom.runtime_allowed is False
+    assert custom.scheduler_allowed is False
+    assert custom.live_allowed is False
+    assert custom.testnet_allowed is False
+    assert custom.paper_allowed is False
+    assert "intent_order_flow_submit" in custom.forbidden_actions
+    assert "intent_order_flow_place" in custom.forbidden_actions
+
+
+def test_bounded_adapter_plan_has_no_order_like_allowed_actions() -> None:
+    """No permitted action bucket may admit trading, runtime, or mixed-risk entry scripts."""
+    plan = bounded_adapter_v0.build_bounded_shadow_adapter_plan_v0()
+    assert not plan.allowed_actions
+    risky_tokens = (
+        "order",
+        "broker",
+        "exchange",
+        "runtime",
+        "scheduler",
+        "live",
+        "testnet",
+        "shadow_mode",
+        "credential",
+        "api_key",
+    )
+    for action in plan.allowed_actions:
+        low = action.lower()
+        assert not any(tok in low for tok in risky_tokens), (
+            f"unexpected risky allowed_action {action!r}"
+        )
+
+
+def test_bounded_adapter_module_isolates_from_mixed_risk_scripts_and_runtime_packages() -> None:
+    path = Path(bounded_adapter_v0.__file__).resolve()
+    text = path.read_text(encoding="utf-8")
+    for needle in ("scripts/run_shadow_execution.py", "scripts/testnet_orchestrator_cli.py"):
+        assert needle not in text, f"{path} must not reference mixed-risk script path {needle!r}"
+    for pattern in (
+        re.compile(
+            r"(?m)^\s*from\s+src\.(execution|live|scheduler|strategies|ops|data|orders|backtest)\b"
+        ),
+        re.compile(
+            r"(?m)^\s*import\s+src\.(execution|live|scheduler|strategies|ops|data|orders|backtest)\b"
+        ),
+    ):
+        assert pattern.search(text) is None, f"{path} must not import runtime-like src packages"
+
+
+def test_bounded_adapter_module_source_has_no_execution_or_network_tokens() -> None:
+    path = Path(bounded_adapter_v0.__file__).resolve()
     text = path.read_text(encoding="utf-8")
     low = text.lower()
     for needle in _FORBIDDEN_SOURCE_MARKERS:
