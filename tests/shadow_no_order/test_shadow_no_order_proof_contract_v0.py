@@ -8,6 +8,50 @@ from pathlib import Path
 from src.core.environment import EnvironmentConfig, TradingEnvironment
 from src.shadow_no_order_proof import markers_v0
 
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+
+# Bounded high-risk surfaces only (no whole-repo walk).
+_SRC_AUTHORITY_REL_DIRS = (
+    "src/execution",
+    "src/live",
+    "src/ops",
+    "src/risk",
+    "src/scheduler",
+    "src/strategies",
+)
+
+# Operational scripts: explicit list + everything under scripts/live/.
+_AUTHORITY_SCRIPT_RELPATHS: frozenset[str] = frozenset(
+    {
+        "scripts/aiops/run_shadow_session.py",
+        "scripts/check_live_readiness.py",
+        "scripts/ci/shadow_testnet_readiness_scorecard.py",
+        "scripts/live_alerts_cli.py",
+        "scripts/live_monitor_cli.py",
+        "scripts/live_operator_status.py",
+        "scripts/ops/p7_ctl.py",
+        "scripts/ops/report_paper_shadow_247_preflight_status.py",
+        "scripts/ops/review_scheduler_paper_runtime_evidence.py",
+        "scripts/ops/run_with_timeout.py",
+        "scripts/orchestrate_testnet_runs.py",
+        "scripts/orchestrator_dryrun.py",
+        "scripts/run_execution_session.py",
+        "scripts/run_live_beta_drill.py",
+        "scripts/run_scheduler.py",
+        "scripts/run_shadow_execution.py",
+        "scripts/run_shadow_paper_session.py",
+        "scripts/run_testnet_session.py",
+        "scripts/serve_live_dashboard.py",
+        "scripts/smoke_test_testnet_stack.py",
+        "scripts/testnet_orchestrator_cli.py",
+    }
+)
+
+_SHADOW_NO_ORDER_AUTHORITY_IMPORT: tuple[re.Pattern[str], ...] = (
+    re.compile(r"(?m)^\s*from\s+(?:src\.)?shadow_no_order_proof\b"),
+    re.compile(r"(?m)^\s*import\s+(?:src\.)?shadow_no_order_proof\b"),
+)
+
 _FORBIDDEN_SOURCE_MARKERS = (
     "requests",
     "httpx",
@@ -73,6 +117,46 @@ _NO_EXEC_SURFACE_PATTERNS: tuple[tuple[re.Pattern[str], str], ...] = (
 )
 
 
+def _py_files_under(root: Path) -> list[Path]:
+    return sorted(p for p in root.rglob("*.py") if p.is_file() and "__pycache__" not in p.parts)
+
+
+def _workflow_files() -> list[Path]:
+    d = _REPO_ROOT / ".github" / "workflows"
+    if not d.is_dir():
+        return []
+    return sorted(
+        p
+        for p in d.rglob("*")
+        if p.is_file() and p.suffix.lower() in {".yml", ".yaml"} and "__pycache__" not in p.parts
+    )
+
+
+def _authority_surface_files_for_shadow_no_order_import_guard() -> list[Path]:
+    paths: list[Path] = []
+    for rel in _SRC_AUTHORITY_REL_DIRS:
+        root = _REPO_ROOT / rel
+        if root.is_dir():
+            paths.extend(_py_files_under(root))
+    live_scripts = _REPO_ROOT / "scripts" / "live"
+    if live_scripts.is_dir():
+        paths.extend(_py_files_under(live_scripts))
+    for rel in sorted(_AUTHORITY_SCRIPT_RELPATHS):
+        p = _REPO_ROOT / rel
+        if p.is_file():
+            paths.append(p)
+    paths.extend(_workflow_files())
+    # De-dupe preserving order
+    seen: set[Path] = set()
+    out: list[Path] = []
+    for p in paths:
+        rp = p.resolve()
+        if rp not in seen:
+            seen.add(rp)
+            out.append(rp)
+    return out
+
+
 def _shadow_no_order_proof_py_files() -> list[Path]:
     assert _PACKAGE_ROOT.is_dir(), f"missing package: {_PACKAGE_ROOT}"
     paths = sorted(
@@ -80,6 +164,18 @@ def _shadow_no_order_proof_py_files() -> list[Path]:
     )
     assert paths, "expected at least one Python file under shadow_no_order_proof"
     return paths
+
+
+def test_runtime_authority_surfaces_do_not_import_shadow_no_order_proof() -> None:
+    """Static scan: bounded authority paths must not import declarative proof as runtime authority."""
+    for path in _authority_surface_files_for_shadow_no_order_import_guard():
+        text = path.read_text(encoding="utf-8")
+        for pattern in _SHADOW_NO_ORDER_AUTHORITY_IMPORT:
+            match = pattern.search(text)
+            assert match is None, (
+                f"authority surface {path} must not import shadow_no_order_proof "
+                f"(matched {match.group(0)!r})"
+            )
 
 
 def test_shadow_no_order_proof_package_is_non_execution_surface() -> None:
