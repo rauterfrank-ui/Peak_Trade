@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from src.core.environment import EnvironmentConfig, TradingEnvironment
-from src.shadow_no_order_proof import markers_v0
+from src.shadow_no_order_proof import adapter_contract_v0, markers_v0
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -314,8 +314,33 @@ def test_shadow_no_order_markers_are_all_false_and_tagged() -> None:
     assert markers_v0.RUNTIME_ALLOWED is False
 
 
+def test_bounded_shadow_adapter_proof_contract_is_declarative_and_all_flags_false() -> None:
+    """Bounded adapter proof slice: constants only, no authority to run or trade."""
+    assert adapter_contract_v0.BOUNDED_SHADOW_ADAPTER_PROOF_V0 == "bounded_shadow_adapter_proof_v0"
+    assert adapter_contract_v0.ADAPTER_KIND == "declarative_no_order_shadow_adapter_proof"
+    assert adapter_contract_v0.PROVEN_SHADOW_NO_ORDER_ENTRYPOINT_FOUND is False
+    assert adapter_contract_v0.EXECUTABLE_COMMAND_CREATED is False
+    assert adapter_contract_v0.SHADOW_MODE_ALLOWED is False
+    assert adapter_contract_v0.ORDER_SUBMISSION_ALLOWED is False
+    assert adapter_contract_v0.BROKER_ALLOWED is False
+    assert adapter_contract_v0.EXCHANGE_ALLOWED is False
+    assert adapter_contract_v0.RUNTIME_ALLOWED is False
+    assert adapter_contract_v0.SCHEDULER_ALLOWED is False
+    assert adapter_contract_v0.LIVE_ALLOWED is False
+    assert adapter_contract_v0.TESTNET_ALLOWED is False
+    assert adapter_contract_v0.PAPER_ALLOWED is False
+
+
 def test_markers_module_source_has_no_execution_or_network_tokens() -> None:
     path = Path(markers_v0.__file__).resolve()
+    text = path.read_text(encoding="utf-8")
+    low = text.lower()
+    for needle in _FORBIDDEN_SOURCE_MARKERS:
+        assert needle.lower() not in low, f"unexpected token {needle!r} in {path}"
+
+
+def test_adapter_contract_module_source_has_no_execution_or_network_tokens() -> None:
+    path = Path(adapter_contract_v0.__file__).resolve()
     text = path.read_text(encoding="utf-8")
     low = text.lower()
     for needle in _FORBIDDEN_SOURCE_MARKERS:
