@@ -681,6 +681,127 @@ def test_run_shadow_observation_one_shot_v0_preserves_no_order_safety_flags() ->
     assert not any(must_be_false), f"expected all operational flags false, got {must_be_false!r}"
 
 
+def _snap(
+    symbol: str, source: str, payload: dict[str, object]
+) -> observation_harness_v0.ShadowObservationInputSnapshot:
+    return observation_harness_v0.ShadowObservationInputSnapshot(
+        symbol=symbol,
+        observed_at_utc="2026-05-16T15:00:00Z",
+        source=source,
+        payload=payload,
+    )
+
+
+def test_run_shadow_observation_batch_v0_one_record_per_snapshot_ordered() -> None:
+    snaps = (
+        _snap("A", "batch_src", {"i": 0}),
+        _snap("B", "batch_src", {"i": 1}),
+    )
+    records = observation_harness_v0.run_shadow_observation_batch_v0(snaps)
+    assert len(records) == 2
+    assert records[0] == observation_harness_v0.run_shadow_observation_one_shot_v0(snaps[0])
+    assert records[1] == observation_harness_v0.run_shadow_observation_one_shot_v0(snaps[1])
+
+
+def test_run_shadow_observation_batch_v0_empty_is_deterministic() -> None:
+    r1 = observation_harness_v0.run_shadow_observation_batch_v0(())
+    r2 = observation_harness_v0.run_shadow_observation_batch_v0(())
+    assert r1 == () == r2
+    s1 = observation_harness_v0.build_shadow_observation_batch_summary_v0(r1)
+    s2 = observation_harness_v0.build_shadow_observation_batch_summary_v0(r2)
+    assert s1 == s2
+    assert s1.record_count == 0
+    assert s1.evidence_ids == ()
+    assert len(s1.batch_hash) == 64
+
+
+def test_shadow_observation_batch_summary_same_order_same_hash() -> None:
+    snaps = (
+        _snap("X", "batch_hash", {"k": 1}),
+        _snap("Y", "batch_hash", {"k": 2}),
+    )
+    recs_a = observation_harness_v0.run_shadow_observation_batch_v0(snaps)
+    recs_b = observation_harness_v0.run_shadow_observation_batch_v0(snaps)
+    su_a = observation_harness_v0.build_shadow_observation_batch_summary_v0(recs_a)
+    su_b = observation_harness_v0.build_shadow_observation_batch_summary_v0(recs_b)
+    assert su_a.batch_hash == su_b.batch_hash
+    assert su_a.evidence_ids == su_b.evidence_ids
+
+
+def test_shadow_observation_batch_hash_changes_when_snapshot_changes() -> None:
+    snaps1 = (
+        _snap("X", "bh", {"k": 1}),
+        _snap("Y", "bh", {"k": 2}),
+    )
+    snaps2 = (
+        _snap("X", "bh", {"k": 1}),
+        _snap("Y", "bh", {"k": 99}),
+    )
+    h1 = observation_harness_v0.build_shadow_observation_batch_summary_v0(
+        observation_harness_v0.run_shadow_observation_batch_v0(snaps1)
+    ).batch_hash
+    h2 = observation_harness_v0.build_shadow_observation_batch_summary_v0(
+        observation_harness_v0.run_shadow_observation_batch_v0(snaps2)
+    ).batch_hash
+    assert h1 != h2
+
+
+def test_shadow_observation_batch_hash_order_sensitive() -> None:
+    s1 = _snap("P", "ord", {"n": 1})
+    s2 = _snap("Q", "ord", {"n": 2})
+    h_forward = observation_harness_v0.build_shadow_observation_batch_summary_v0(
+        observation_harness_v0.run_shadow_observation_batch_v0((s1, s2))
+    ).batch_hash
+    h_reverse = observation_harness_v0.build_shadow_observation_batch_summary_v0(
+        observation_harness_v0.run_shadow_observation_batch_v0((s2, s1))
+    ).batch_hash
+    assert h_forward != h_reverse
+
+
+def test_shadow_observation_batch_records_remain_no_order() -> None:
+    snaps = (
+        _snap("N1", "no_order_batch", {}),
+        _snap("N2", "no_order_batch", {"z": 3}),
+    )
+    for rec in observation_harness_v0.run_shadow_observation_batch_v0(snaps):
+        assert rec.allowed_actions == ()
+        must_be_false = (
+            rec.broker_touched,
+            rec.exchange_touched,
+            rec.credentials_touched,
+            rec.order_intent_created,
+            rec.order_submission_allowed,
+            rec.runtime_started,
+            rec.scheduler_started,
+            rec.shadow_mode_allowed,
+            rec.live_allowed,
+            rec.testnet_allowed,
+            rec.paper_allowed,
+            rec.broker_allowed,
+            rec.exchange_allowed,
+            rec.runtime_allowed,
+            rec.scheduler_allowed,
+        )
+        assert not any(must_be_false)
+
+
+def test_shadow_observation_batch_summary_flags_safe_for_nonempty() -> None:
+    snaps = (_snap("S1", "sum_safe", {}), _snap("S2", "sum_safe", {"a": 1}))
+    summary = observation_harness_v0.build_shadow_observation_batch_summary_v0(
+        observation_harness_v0.run_shadow_observation_batch_v0(snaps)
+    )
+    assert summary.all_no_order is True
+    assert summary.all_broker_touched_false is True
+    assert summary.all_exchange_touched_false is True
+    assert summary.all_credentials_touched_false is True
+    assert summary.all_order_intent_created_false is True
+    assert summary.all_runtime_started_false is True
+    assert summary.all_scheduler_started_false is True
+    assert summary.all_shadow_mode_allowed_false is True
+    assert summary.proven_shadow_no_order_entrypoint_found is False
+    assert summary.executable_command_created is False
+
+
 def test_observation_harness_module_isolates_from_mixed_risk_scripts_and_runtime_packages() -> None:
     path = Path(observation_harness_v0.__file__).resolve()
     text = path.read_text(encoding="utf-8")
