@@ -16,6 +16,7 @@ from src.shadow_no_order_proof.bounded_adapter_v0 import (
 OBSERVATION_EVIDENCE_SCHEMA_V0 = "shadow_observation_evidence_record.v0"
 OBSERVATION_BATCH_SUMMARY_SCHEMA_V0 = "shadow_observation_batch_summary.v0"
 TIMED_OBSERVATION_SUMMARY_SCHEMA_V0 = "shadow_observation_timed_summary.v0"
+LOCAL_OBSERVATION_RUN_RESULT_SCHEMA_V0 = "shadow_observation_local_run_result.v0"
 
 
 @dataclass(frozen=True)
@@ -108,6 +109,43 @@ class ShadowObservationTimedSummary:
     executable_command_created: bool
 
 
+@dataclass(frozen=True)
+class ShadowObservationLocalRunResult:
+    """Pure composition of batch + timed summaries with an explicit run boundary hash (no runtime)."""
+
+    run_version: str
+    run_id: str
+    source: str
+    cadence_source: str
+    started_at_utc: str
+    ended_at_utc: str
+    cadence_seconds: int
+    max_observations: int
+    record_count: int
+    evidence_ids: tuple[str, ...]
+    batch_hash: str
+    timed_hash: str
+    run_hash: str
+    records: tuple[ShadowObservationEvidenceRecord, ...]
+    batch_summary: ShadowObservationBatchSummary
+    timed_summary: ShadowObservationTimedSummary
+    all_no_order: bool
+    all_broker_touched_false: bool
+    all_exchange_touched_false: bool
+    all_credentials_touched_false: bool
+    all_order_intent_created_false: bool
+    all_runtime_started_false: bool
+    all_scheduler_started_false: bool
+    all_shadow_mode_allowed_false: bool
+    proven_shadow_no_order_entrypoint_found: bool
+    executable_command_created: bool
+    local_observation_run_approved: bool
+    shadow_mode_allowed: bool
+    runtime_allowed: bool
+    scheduler_allowed: bool
+    order_submission_allowed: bool
+
+
 def _record_satisfies_no_order_invariants(rec: ShadowObservationEvidenceRecord) -> bool:
     if rec.allowed_actions:
         return False
@@ -164,6 +202,37 @@ def _timed_summary_fingerprint_bytes(
         "max_observations": max_observations,
         "observed_at_utc_values": list(observed_at_utc_values),
         "started_at_utc": started_at_utc,
+    }
+    return json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode(
+        "utf-8"
+    )
+
+
+def _local_run_fingerprint_bytes(
+    *,
+    timed_hash: str,
+    batch_hash: str,
+    evidence_ids: tuple[str, ...],
+    run_id: str,
+    source: str,
+    cadence_source: str,
+    started_at_utc: str,
+    ended_at_utc: str,
+    cadence_seconds: int,
+    max_observations: int,
+) -> bytes:
+    body: dict[str, object] = {
+        "schema": LOCAL_OBSERVATION_RUN_RESULT_SCHEMA_V0,
+        "batch_hash": batch_hash,
+        "cadence_seconds": cadence_seconds,
+        "cadence_source": cadence_source,
+        "ended_at_utc": ended_at_utc,
+        "evidence_ids": list(evidence_ids),
+        "max_observations": max_observations,
+        "run_id": run_id,
+        "source": source,
+        "started_at_utc": started_at_utc,
+        "timed_hash": timed_hash,
     }
     return json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode(
         "utf-8"
@@ -372,4 +441,77 @@ def build_shadow_observation_timed_summary_v0(
         all_shadow_mode_allowed_false=batch.all_shadow_mode_allowed_false,
         proven_shadow_no_order_entrypoint_found=False,
         executable_command_created=False,
+    )
+
+
+def run_shadow_observation_local_v0(
+    snapshots: Sequence[ShadowObservationInputSnapshot],
+    *,
+    started_at_utc: str,
+    ended_at_utc: str,
+    cadence_seconds: int,
+    max_observations: int,
+    run_id: str,
+    source: str = "caller_provided",
+    cadence_source: str = "caller_provided",
+) -> ShadowObservationLocalRunResult:
+    """Finite caller snapshots + metadata → records, batch summary, timed summary, deterministic run hash."""
+    ordered_snaps = tuple(snapshots)
+    if len(ordered_snaps) > max_observations:
+        raise ValueError("snapshot count exceeds max_observations")
+    records = run_shadow_observation_batch_v0(ordered_snaps)
+    batch_summary = build_shadow_observation_batch_summary_v0(records)
+    timed_summary = build_shadow_observation_timed_summary_v0(
+        records,
+        started_at_utc=started_at_utc,
+        ended_at_utc=ended_at_utc,
+        cadence_seconds=cadence_seconds,
+        max_observations=max_observations,
+        cadence_source=cadence_source,
+    )
+    raw = _local_run_fingerprint_bytes(
+        timed_hash=timed_summary.timed_hash,
+        batch_hash=batch_summary.batch_hash,
+        evidence_ids=batch_summary.evidence_ids,
+        run_id=run_id,
+        source=source,
+        cadence_source=cadence_source,
+        started_at_utc=started_at_utc,
+        ended_at_utc=ended_at_utc,
+        cadence_seconds=cadence_seconds,
+        max_observations=max_observations,
+    )
+    run_hash = hashlib.sha256(raw).hexdigest()
+    return ShadowObservationLocalRunResult(
+        run_version=LOCAL_OBSERVATION_RUN_RESULT_SCHEMA_V0,
+        run_id=run_id,
+        source=source,
+        cadence_source=cadence_source,
+        started_at_utc=started_at_utc,
+        ended_at_utc=ended_at_utc,
+        cadence_seconds=cadence_seconds,
+        max_observations=max_observations,
+        record_count=batch_summary.record_count,
+        evidence_ids=batch_summary.evidence_ids,
+        batch_hash=batch_summary.batch_hash,
+        timed_hash=timed_summary.timed_hash,
+        run_hash=run_hash,
+        records=records,
+        batch_summary=batch_summary,
+        timed_summary=timed_summary,
+        all_no_order=batch_summary.all_no_order,
+        all_broker_touched_false=batch_summary.all_broker_touched_false,
+        all_exchange_touched_false=batch_summary.all_exchange_touched_false,
+        all_credentials_touched_false=batch_summary.all_credentials_touched_false,
+        all_order_intent_created_false=batch_summary.all_order_intent_created_false,
+        all_runtime_started_false=batch_summary.all_runtime_started_false,
+        all_scheduler_started_false=batch_summary.all_scheduler_started_false,
+        all_shadow_mode_allowed_false=batch_summary.all_shadow_mode_allowed_false,
+        proven_shadow_no_order_entrypoint_found=False,
+        executable_command_created=False,
+        local_observation_run_approved=False,
+        shadow_mode_allowed=False,
+        runtime_allowed=False,
+        scheduler_allowed=False,
+        order_submission_allowed=False,
     )

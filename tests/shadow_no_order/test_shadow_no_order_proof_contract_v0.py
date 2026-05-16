@@ -985,6 +985,152 @@ def test_shadow_observation_timed_summary_rejects_negative_cadence_or_max() -> N
         )
 
 
+def _local_run_kw(
+    run_id: str = "run-1",
+    *,
+    source: str = "caller_provided",
+    cadence_source: str = "caller_provided",
+) -> dict[str, object]:
+    meta = _timed_meta()
+    return {
+        "started_at_utc": str(meta["started_at_utc"]),
+        "ended_at_utc": str(meta["ended_at_utc"]),
+        "cadence_seconds": int(meta["cadence_seconds"]),
+        "max_observations": int(meta["max_observations"]),
+        "run_id": run_id,
+        "source": source,
+        "cadence_source": cadence_source,
+    }
+
+
+def test_run_shadow_observation_local_v0_composes_records_batch_and_timed() -> None:
+    snaps = (
+        _snap("L1", "loc", {"i": 0}),
+        _snap("L2", "loc", {"i": 1}),
+    )
+    kw = _local_run_kw()
+    run = observation_harness_v0.run_shadow_observation_local_v0(snaps, **kw)
+    assert run.run_version == observation_harness_v0.LOCAL_OBSERVATION_RUN_RESULT_SCHEMA_V0
+    assert run.record_count == 2
+    assert run.records == observation_harness_v0.run_shadow_observation_batch_v0(snaps)
+    assert run.batch_summary == observation_harness_v0.build_shadow_observation_batch_summary_v0(
+        run.records
+    )
+    assert run.timed_summary == observation_harness_v0.build_shadow_observation_timed_summary_v0(
+        run.records,
+        started_at_utc=str(kw["started_at_utc"]),
+        ended_at_utc=str(kw["ended_at_utc"]),
+        cadence_seconds=int(kw["cadence_seconds"]),
+        max_observations=int(kw["max_observations"]),
+        cadence_source=str(kw["cadence_source"]),
+    )
+    assert len(run.run_hash) == 64
+
+
+def test_shadow_observation_local_run_same_inputs_same_run_hash() -> None:
+    snaps = (_snap("X", "lrh", {"k": 1}),)
+    kw = _local_run_kw()
+    a = observation_harness_v0.run_shadow_observation_local_v0(snaps, **kw)
+    b = observation_harness_v0.run_shadow_observation_local_v0(snaps, **kw)
+    assert a.run_hash == b.run_hash
+
+
+def test_shadow_observation_local_run_hash_changes_when_snapshot_payload_changes() -> None:
+    kw = _local_run_kw()
+    r1 = observation_harness_v0.run_shadow_observation_local_v0((_snap("P", "ch", {"k": 1}),), **kw)
+    r2 = observation_harness_v0.run_shadow_observation_local_v0((_snap("P", "ch", {"k": 2}),), **kw)
+    assert r1.run_hash != r2.run_hash
+
+
+def test_shadow_observation_local_run_hash_changes_when_run_id_or_sources_or_timing_change() -> (
+    None
+):
+    snaps = (_snap("Q", "meta", {}),)
+    base = _local_run_kw()
+    h0 = observation_harness_v0.run_shadow_observation_local_v0(snaps, **base).run_hash
+    assert (
+        observation_harness_v0.run_shadow_observation_local_v0(
+            snaps, **{**base, "run_id": "other-run"}
+        ).run_hash
+        != h0
+    )
+    assert (
+        observation_harness_v0.run_shadow_observation_local_v0(
+            snaps, **{**base, "source": "fixture_provenance"}
+        ).run_hash
+        != h0
+    )
+    assert (
+        observation_harness_v0.run_shadow_observation_local_v0(
+            snaps, **{**base, "cadence_source": "fixture"}
+        ).run_hash
+        != h0
+    )
+    assert (
+        observation_harness_v0.run_shadow_observation_local_v0(
+            snaps,
+            **{
+                **base,
+                "started_at_utc": "2026-05-16T10:00:00Z",
+            },
+        ).run_hash
+        != h0
+    )
+
+
+def test_shadow_observation_local_run_hash_order_sensitive() -> None:
+    s1 = _snap("A", "lord", {"n": 1})
+    s2 = _snap("B", "lord", {"n": 2})
+    kw = _local_run_kw()
+    h_fwd = observation_harness_v0.run_shadow_observation_local_v0((s1, s2), **kw).run_hash
+    h_rev = observation_harness_v0.run_shadow_observation_local_v0((s2, s1), **kw).run_hash
+    assert h_fwd != h_rev
+
+
+def test_shadow_observation_local_run_empty_is_deterministic() -> None:
+    snaps: tuple[observation_harness_v0.ShadowObservationInputSnapshot, ...] = ()
+    kw = _local_run_kw()
+    a = observation_harness_v0.run_shadow_observation_local_v0(snaps, **kw)
+    b = observation_harness_v0.run_shadow_observation_local_v0(snaps, **kw)
+    assert a == b
+    assert a.record_count == 0
+    assert len(a.run_hash) == 64
+
+
+def test_shadow_observation_local_run_flags_remain_not_approved() -> None:
+    snaps = (_snap("Z1", "nap", {}), _snap("Z2", "nap", {"x": 1}))
+    run = observation_harness_v0.run_shadow_observation_local_v0(snaps, **_local_run_kw())
+    assert run.local_observation_run_approved is False
+    assert run.proven_shadow_no_order_entrypoint_found is False
+    assert run.executable_command_created is False
+    assert run.shadow_mode_allowed is False
+    assert run.runtime_allowed is False
+    assert run.scheduler_allowed is False
+    assert run.order_submission_allowed is False
+    assert run.all_no_order is True
+    assert run.all_shadow_mode_allowed_false is True
+
+
+def test_shadow_observation_local_run_rejects_snapshot_count_over_max() -> None:
+    snaps = (
+        _snap("M0", "cap", {}),
+        _snap("M1", "cap", {}),
+        _snap("M2", "cap", {}),
+    )
+    meta = _timed_meta()
+    kw = {
+        "started_at_utc": str(meta["started_at_utc"]),
+        "ended_at_utc": str(meta["ended_at_utc"]),
+        "cadence_seconds": int(meta["cadence_seconds"]),
+        "max_observations": 2,
+        "run_id": "x",
+        "source": "caller_provided",
+        "cadence_source": "caller_provided",
+    }
+    with pytest.raises(ValueError, match="snapshot count exceeds"):
+        observation_harness_v0.run_shadow_observation_local_v0(snaps, **kw)
+
+
 def test_observation_harness_has_no_sleep_or_datetime_now_tokens() -> None:
     path = Path(observation_harness_v0.__file__).resolve()
     text = path.read_text(encoding="utf-8")
