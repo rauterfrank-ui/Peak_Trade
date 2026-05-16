@@ -452,10 +452,10 @@ def test_bounded_adapter_module_isolates_from_mixed_risk_scripts_and_runtime_pac
         assert needle not in text, f"{path} must not reference mixed-risk script path {needle!r}"
     for pattern in (
         re.compile(
-            r"(?m)^\s*from\s+src\.(execution|live|scheduler|strategies|ops|data|orders|backtest)\b"
+            r"(?m)^\s*from\s+src\.(strategies|execution|live|scheduler|ops|data|orders|backtest)\b"
         ),
         re.compile(
-            r"(?m)^\s*import\s+src\.(execution|live|scheduler|strategies|ops|data|orders|backtest)\b"
+            r"(?m)^\s*import\s+src\.(strategies|execution|live|scheduler|ops|data|orders|backtest)\b"
         ),
     ):
         assert pattern.search(text) is None, f"{path} must not import runtime-like src packages"
@@ -1299,6 +1299,109 @@ def test_write_evidence_rejects_unsafe_run_id(tmp_path: Path) -> None:
         )
 
 
+def _fixture_pkg_snaps() -> tuple[observation_harness_v0.ShadowObservationInputSnapshot, ...]:
+    """Synthetic in-test snapshots — no repo fixture files, no market data."""
+    return (
+        observation_harness_v0.ShadowObservationInputSnapshot(
+            symbol="FIXTURE-OBS",
+            observed_at_utc="2026-01-01T00:00:00Z",
+            source="fixture_static",
+            payload={"price": "100.00", "state": "synthetic", "idx": 0},
+        ),
+        observation_harness_v0.ShadowObservationInputSnapshot(
+            symbol="FIXTURE-OBS",
+            observed_at_utc="2026-01-01T00:01:00Z",
+            source="fixture_static",
+            payload={"price": "100.01", "state": "synthetic", "idx": 1},
+        ),
+    )
+
+
+def _fixture_pkg_local_run_kw() -> dict[str, object]:
+    return {
+        "started_at_utc": "2026-01-01T00:00:00Z",
+        "ended_at_utc": "2026-01-01T01:00:00Z",
+        "cadence_seconds": 60,
+        "max_observations": 10,
+        "run_id": "fixture-pkg-run-v0",
+        "source": "fixture_static",
+        "cadence_source": "fixture_static",
+    }
+
+
+def test_fixture_evidence_package_builds_local_run_from_fixture_snapshots() -> None:
+    kw = _fixture_pkg_local_run_kw()
+    run = observation_harness_v0.run_shadow_observation_local_v0(_fixture_pkg_snaps(), **kw)
+    assert run.run_version == observation_harness_v0.LOCAL_OBSERVATION_RUN_RESULT_SCHEMA_V0
+    assert run.run_id == "fixture-pkg-run-v0"
+    assert run.source == "fixture_static"
+    assert run.record_count == 2
+    assert run.local_observation_run_approved is False
+    assert run.all_no_order is True
+    assert run.proven_shadow_no_order_entrypoint_found is False
+
+
+def test_fixture_evidence_package_writes_bounded_output_under_tmp_path(tmp_path: Path) -> None:
+    kw = _fixture_pkg_local_run_kw()
+    run = observation_harness_v0.run_shadow_observation_local_v0(_fixture_pkg_snaps(), **kw)
+    receipt = observation_harness_v0.write_shadow_observation_local_evidence_v0(
+        run,
+        output_dir=tmp_path / "fixture_pkg_out",
+        overwrite=False,
+    )
+    root = Path(receipt.output_root)
+    assert {p.name for p in root.iterdir()} == {
+        "local_run_result.json",
+        "manifest.json",
+        "MANIFEST.sha256",
+    }
+    bundle = observation_harness_v0.build_shadow_observation_local_evidence_bundle_v0(run)
+    assert (root / "local_run_result.json").read_bytes() == bundle.local_run_result_json_bytes
+    assert (root / "manifest.json").read_bytes() == bundle.manifest_json_bytes
+    digest = (root / "MANIFEST.sha256").read_bytes().decode("utf-8")
+    assert digest == hashlib.sha256(bundle.manifest_json_bytes).hexdigest() + "\n"
+
+
+def test_fixture_evidence_package_generation_is_deterministic() -> None:
+    kw = _fixture_pkg_local_run_kw()
+    run_a = observation_harness_v0.run_shadow_observation_local_v0(_fixture_pkg_snaps(), **kw)
+    run_b = observation_harness_v0.run_shadow_observation_local_v0(_fixture_pkg_snaps(), **kw)
+    assert run_a == run_b
+    b_a = observation_harness_v0.build_shadow_observation_local_evidence_bundle_v0(run_a)
+    b_b = observation_harness_v0.build_shadow_observation_local_evidence_bundle_v0(run_b)
+    assert b_a == b_b
+
+
+def test_fixture_evidence_package_overwrite_behavior_explicit(tmp_path: Path) -> None:
+    kw = _fixture_pkg_local_run_kw()
+    run = observation_harness_v0.run_shadow_observation_local_v0(_fixture_pkg_snaps(), **kw)
+    out = tmp_path / "fpkg_ov"
+    observation_harness_v0.write_shadow_observation_local_evidence_v0(
+        run, output_dir=out, overwrite=False
+    )
+    with pytest.raises(FileExistsError):
+        observation_harness_v0.write_shadow_observation_local_evidence_v0(
+            run, output_dir=out, overwrite=False
+        )
+    observation_harness_v0.write_shadow_observation_local_evidence_v0(
+        run, output_dir=out, overwrite=True
+    )
+
+
+def test_fixture_evidence_package_safety_flags_false_and_no_run_approval(tmp_path: Path) -> None:
+    kw = _fixture_pkg_local_run_kw()
+    run = observation_harness_v0.run_shadow_observation_local_v0(_fixture_pkg_snaps(), **kw)
+    assert run.local_observation_run_approved is False
+    assert run.shadow_mode_allowed is False
+    receipt = observation_harness_v0.write_shadow_observation_local_evidence_v0(
+        run,
+        output_dir=tmp_path / "fpkg_flags",
+        overwrite=False,
+    )
+    assert receipt.local_observation_evidence_output_approved is False
+    assert receipt.local_observation_run_approved is False
+
+
 def test_observation_harness_has_no_sleep_or_datetime_now_tokens() -> None:
     path = Path(observation_harness_v0.__file__).resolve()
     text = path.read_text(encoding="utf-8")
@@ -1313,10 +1416,10 @@ def test_observation_harness_module_isolates_from_mixed_risk_scripts_and_runtime
         assert needle not in text, f"{path} must not reference mixed-risk script path {needle!r}"
     for pattern in (
         re.compile(
-            r"(?m)^\s*from\s+src\.(execution|live|scheduler|strategies|ops|data|orders|backtest)\b"
+            r"(?m)^\s*from\s+src\.(strategies|execution|live|scheduler|ops|data|orders|backtest)\b"
         ),
         re.compile(
-            r"(?m)^\s*import\s+src\.(execution|live|scheduler|strategies|ops|data|orders|backtest)\b"
+            r"(?m)^\s*import\s+src\.(strategies|execution|live|scheduler|ops|data|orders|backtest)\b"
         ),
     ):
         assert pattern.search(text) is None, f"{path} must not import runtime-like src packages"
