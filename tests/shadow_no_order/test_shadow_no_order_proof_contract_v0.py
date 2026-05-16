@@ -92,6 +92,17 @@ _WORKFLOW_FORBIDDEN_SHADOW_NO_ORDER_SUBSTR: tuple[str, ...] = (
     "src.shadow_no_order_proof",
 )
 
+# Canonical repo config trees — scheduler/runtime wiring must not reference declarative proof.
+_CONFIG_AUTHORITY_REL_ROOTS: tuple[str, ...] = ("config",)
+_CONFIG_AUTHORITY_FILE_SUFFIXES: frozenset[str] = frozenset(
+    {".toml", ".yaml", ".yml", ".json", ".ini", ".cfg"}
+)
+_CONFIG_FORBIDDEN_SHADOW_NO_ORDER_SUBSTR: tuple[str, ...] = (
+    "shadow_no_order_proof",
+    "src.shadow_no_order_proof",
+    "SHADOW_NO_ORDER_PROOF_V0",
+)
+
 _FORBIDDEN_SOURCE_MARKERS = (
     "requests",
     "httpx",
@@ -172,6 +183,21 @@ def _workflow_files() -> list[Path]:
     )
 
 
+def _config_authority_surface_files() -> list[Path]:
+    paths: list[Path] = []
+    for rel in _CONFIG_AUTHORITY_REL_ROOTS:
+        root = _REPO_ROOT / rel
+        if not root.is_dir():
+            continue
+        for p in root.rglob("*"):
+            if not p.is_file() or "__pycache__" in p.parts:
+                continue
+            suf = p.suffix.lower()
+            if suf in _CONFIG_AUTHORITY_FILE_SUFFIXES or p.name.lower().endswith(".env.example"):
+                paths.append(p.resolve())
+    return sorted(set(paths))
+
+
 def _authority_surface_files_for_shadow_no_order_import_guard() -> list[Path]:
     paths: list[Path] = []
     for rel in _SRC_AUTHORITY_REL_DIRS:
@@ -249,6 +275,19 @@ def test_workflows_do_not_reference_shadow_no_order_proof_as_authority() -> None
             assert needle not in text, (
                 f"workflow {path} must not reference {needle!r} "
                 "(declarative shadow_no_order_proof is not CI/release authority)"
+            )
+
+
+def test_runtime_scheduler_configs_do_not_reference_shadow_no_order_proof_as_authority() -> None:
+    """Bounded config trees must not wire declarative proof as scheduler/runtime authority."""
+    paths = _config_authority_surface_files()
+    assert paths, "expected at least one config-like file under canonical config roots"
+    for path in paths:
+        text = path.read_text(encoding="utf-8")
+        for needle in _CONFIG_FORBIDDEN_SHADOW_NO_ORDER_SUBSTR:
+            assert needle not in text, (
+                f"config {path} must not reference {needle!r} "
+                "(shadow_no_order_proof is not scheduler/runtime config authority)"
             )
 
 
