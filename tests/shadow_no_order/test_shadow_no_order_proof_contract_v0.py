@@ -52,6 +52,38 @@ _SHADOW_NO_ORDER_AUTHORITY_IMPORT: tuple[re.Pattern[str], ...] = (
     re.compile(r"(?m)^\s*import\s+(?:src\.)?shadow_no_order_proof\b"),
 )
 
+# Known mixed-risk Shadow / runtime candidates — may exist; must not claim no-order approval.
+_KNOWN_SHADOW_RUNTIME_CANDIDATE_RELPATHS: tuple[str, ...] = (
+    "scripts/aiops/run_shadow_session.py",
+    "scripts/live/verify_shadow_mode.py",
+    "scripts/run_shadow_execution.py",
+    "scripts/run_shadow_paper_session.py",
+    "scripts/testnet_orchestrator_cli.py",
+    "src/live/shadow_session.py",
+    "src/ops/p62/run_online_readiness_shadow_session_v1.py",
+    "src/ops/p67/shadow_session_scheduler_cli_v1.py",
+    "src/ops/p67/shadow_session_scheduler_v1.py",
+    "src/ops/p72/run_shadowloop_pack_v1.py",
+)
+
+_NO_ORDER_ENTRYPOINT_FORBIDDEN_APPROVAL: tuple[tuple[re.Pattern[str], str], ...] = (
+    (
+        re.compile(r"PROVEN_SHADOW_NO_ORDER_ENTRYPOINT_FOUND\s*=\s*(?i:True)"),
+        "PROVEN_SHADOW_NO_ORDER_ENTRYPOINT_FOUND true",
+    ),
+    (re.compile(r"SHADOW_MODE_ALLOWED\s*=\s*(?i:True)"), "SHADOW_MODE_ALLOWED true"),
+    (re.compile(r"ORDER_SUBMISSION_ALLOWED\s*=\s*(?i:True)"), "ORDER_SUBMISSION_ALLOWED true"),
+    (re.compile(r"BROKER_ALLOWED\s*=\s*(?i:True)"), "BROKER_ALLOWED true"),
+    (re.compile(r"EXCHANGE_ALLOWED\s*=\s*(?i:True)"), "EXCHANGE_ALLOWED true"),
+    (re.compile(r"LIVE_ALLOWED\s*=\s*(?i:True)"), "LIVE_ALLOWED true"),
+    (re.compile(r"TESTNET_ALLOWED\s*=\s*(?i:True)"), "TESTNET_ALLOWED true"),
+    (re.compile(r"APPROVAL_GRANTED\s*=\s*(?i:True)"), "APPROVAL_GRANTED true"),
+    (
+        re.compile(r"EXECUTABLE_COMMAND_CREATED\s*=\s*(?i:True)"),
+        "EXECUTABLE_COMMAND_CREATED true",
+    ),
+)
+
 _FORBIDDEN_SOURCE_MARKERS = (
     "requests",
     "httpx",
@@ -176,6 +208,23 @@ def test_runtime_authority_surfaces_do_not_import_shadow_no_order_proof() -> Non
                 f"authority surface {path} must not import shadow_no_order_proof "
                 f"(matched {match.group(0)!r})"
             )
+
+
+def test_known_shadow_runtime_candidates_are_not_approved_no_order_entrypoints() -> None:
+    """Explicit mixed-risk paths must not embed machine-style approval for no-order entry."""
+    checked = 0
+    for rel in _KNOWN_SHADOW_RUNTIME_CANDIDATE_RELPATHS:
+        path = _REPO_ROOT / rel
+        if not path.is_file():
+            continue
+        checked += 1
+        text = path.read_text(encoding="utf-8")
+        for pattern, label in _NO_ORDER_ENTRYPOINT_FORBIDDEN_APPROVAL:
+            match = pattern.search(text)
+            assert match is None, (
+                f"{label!r} must not appear in candidate {path} (matched {match.group(0)!r})"
+            )
+    assert checked > 0, "expected at least one known shadow/runtime candidate file to exist"
 
 
 def test_shadow_no_order_proof_package_is_non_execution_surface() -> None:
