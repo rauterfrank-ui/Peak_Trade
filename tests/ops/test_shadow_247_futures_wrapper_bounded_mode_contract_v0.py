@@ -1,9 +1,8 @@
 """Future Shadow 24/7 Futures wrapper bounded-mode contract — tests-only v0.
 
-Documents the intended ``--bounded-runtime-contract-check`` slice (not yet implemented
-in the wrapper). This module does **not** execute the wrapper, subprocess, network,
-broker, exchange, or order paths, and does **not** approve runtime, daemon, scheduler,
-paper, shadow, testnet, or live workloads.
+Documents the ``--bounded-runtime-contract-check`` slice implemented as a **non-executing**
+placeholder in the skeleton wrapper (local evidence only). This module does **not**
+approve runtime, daemon, scheduler, paper, shadow, testnet, or live workloads.
 
 Reads repository anchors as **text/TOML** only (offline).
 """
@@ -232,6 +231,10 @@ def test_ops_skeleton_matches_bounded_mode_btcusdt_futures_perp_posture_v0() -> 
     assert cfg["shadow_mode"] is True
 
 
-def test_future_bounded_mode_flag_not_present_until_implementation_v0() -> None:
-    """Guardrail: the future flag is contract-only until a later implementation PR."""
-    assert FUTURE_BOUNDED_MODE_CLI_FLAG not in _wrapper_source()
+def test_wrapper_source_declares_bounded_runtime_contract_check_cli_v0() -> None:
+    """Contract flag is present in wrapper source (placeholder implementation)."""
+    assert FUTURE_BOUNDED_MODE_CLI_FLAG in _wrapper_source()
+    assert FUTURE_BOUNDED_MODE_DURATION_MINUTES_FLAG in _wrapper_source()
+    assert "BOUNDED_RUNTIME_CONTRACT_DURATION_CAP_MINUTES" in _wrapper_source()
+    assert "bounded_runtime_contract_check" in _wrapper_source()
+    assert BOUNDED_RUNTIME_CONTRACT_VERSION in _wrapper_source()
