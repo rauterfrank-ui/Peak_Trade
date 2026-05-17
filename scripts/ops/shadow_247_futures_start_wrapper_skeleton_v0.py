@@ -14,7 +14,11 @@ import argparse
 import hashlib
 import json
 import sys
-import tomllib
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # pragma: no cover - exercised on Python < 3.11 in CI
+    import tomli as tomllib
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, MutableMapping, Sequence, TextIO, Tuple
