@@ -46,6 +46,8 @@ def test_shadow_247_futures_wrapper_skeleton_source_has_no_blocked_substrings(
         "BOUNDARY_NO_TESTNET_UNLESS_APPROVED",
         "BOUNDARY_NO_BROKER",
         "BOUNDARY_NO_PRIVATE_EXCHANGE",
+        "NO_EXCHANGE",
+        "EXIT_CODE_FAIL_CLOSED",
         "BOUNDARY_NO_ORDER_SUBMISSION",
         "BOUNDARY_NO_NETWORK",
         "BOUNDARY_FUTURES_PERP_SCOPE",
