@@ -55,6 +55,102 @@ Canonical Futures planning surfaces (read alongside this contract; **not** appro
 - [Futures Candidate Evidence Package Contract v0](../specs/FUTURES_CANDIDATE_EVIDENCE_PACKAGE_CONTRACT_V0.md)
 - [Master V2 Futures Class A Capability Contract v0](../specs/MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0.md)
 
+## 3b. Shadow 24/7 Futures executable command template boundary
+
+> **WARNUNG:** Dieser Abschnitt ist ein **Kommando-/Argumentvertrag zur späteren Überprüfung** („executable command template boundary“). Er ist **keine Ausführungsfreigabe**, kein Scheduling-/Daemon-Approval, keine Notion-/KG-Zustimmung und **keine** Aussage, dass Shadow-24/7-Futures jetzt bereit sei oder ohne weiteres Gate gestartet werden darf.
+
+> **Nicht kopieren und nicht ausführen**, bis eine **spätere, explizite Operator-Review** alle Platzhalter, Tag-Listen, Scheduler-Configs und Kill-/Abort-Kriterien **gegen das aktuelle Repository** nachgewiesen hat.
+
+### Aktueller Repo-Realismus (Pflicht beim Gate)
+
+Aus `config/scheduler/jobs.toml` sind heute **`paper_shadow_247`**-/Diagnostics- sowie **Paper-runtime**-Jobs sichtbar; ein **Governance-definierter Job-Satz für „Futures / perpetual Shadow 24/7 Daemon“** ist **nicht** als ausführbares Ziel dokumentiert.
+
+Vor einem realen Versuch sind mindestens verifiziert:
+
+- Hilfe-Ausgabe: `python scripts/run_scheduler.py --help`
+- Hilfe-Ausgabe: `python scripts/ops/run_with_timeout.py --help`
+- Relevante Repo-Pfade nur lesend (z.B. Abgleich `config/scheduler/jobs.toml`; optional Planungspfad für **temporäre** Scheduler-Configs: `scripts/ops/make_scheduler_temp_config.py` beschreibt keinen Aktivierungsauthority und **ändert keine** Canonical-`jobs.toml`).
+
+Siehe **„Futures / perpetual planning boundary“** weiter oben: **BTC-/USD-/Spot-/Proxy-/Public-REST-Evidenz allein sind keine Futures-/Perp-Shadow-Readiness.**
+
+### Constraints (bei jeder zukünftigen Ausarbeitung dieser Linie gelten weiter)
+
+Die folgenden Punkte sind **explizite Leitplanke** bis ein separates Governance-Gate andere Vorgaben beschließt:
+
+- **Kein Live**; **kein Testnet**, außer künftig **separat** und schriftlich freigegeben und erneut gegated.
+- **Kein Broker**, **keine private Exchange-/REST-/WebSocket-Endpunkte** für Konten-/Order-/Trading-Pfade.
+- **Keine Order-Submission**, **keine Credentials**, **keine** privaten Daten zu Orders/Fills/Kontoständen/Positionen.
+- **Keine Notion-/KG-Schreibfreigabe** aus diesem Dokument.
+- Evidence **immer** unter einem neuen **`/tmp/peak_trade_<…>`** Root; keine sensiblen Pfade unter dem Repo-Root ohne separates Risk-/Retention-Gate.
+
+### Bounded duration und Supervisor-Anforderung
+
+Jede künftige, explizit erlaubte Ausführung muss einen **hart begrenzten Wall-Clock**. Im Repo liegt dafür **nur** ein generischer Wrapper:
+
+- `scripts&#47;ops&#47;run_with_timeout.py --timeout-seconds <positive_float> -- <child argv…>`
+
+**Timeout-Verhalten:** Abbruch mit Exit-Code **124** bei Überschreitung (Konvention wie GNU `timeout`). Der Template-Wrapper unten soll **jeden** vorgeschlagenen Child-Prozess in diesen Supervisor einbetten — **Ausnahmen nur** nach dokumentiertem Operator-Governance.
+
+### Abort / STOP-Kriterien (nicht exhaustiv)
+
+Sofort **STOP ohne Fortführungsannahme**, wenn eines zutrifft:
+
+- Aktivierung eines Live-/Testnet-/Broker-/Exchange-Order-/private-Account-Pflugs ist erkennbar oder nicht zweifelsfrei ausgeschlossen.
+- Evidence-Root ist nicht frisch/neu angelegt oder liegt außerhalb `/tmp/peak_trade_*` ohne Governance.
+- Abweichungen von dokumentiertem Futures-/Perp-Instruments-/Venue-Vertrag, Kill-/Risk-State unklar, oder Proxy-/Spot-/BTCUSDT-Daten werden fälschlich als Futures-Readiness verkauft.
+- `run_scheduler`/Job-Menge weicht ohne Review von erwarteten Tag-Gates / Dry-Run-Proof ab oder umgeht dokumentierte Guards.
+
+Der folgende Block ist **`DO_NOT_RUN_YET`** markiert:
+
+```DO_NOT_RUN_YET
+#!/usr/bin/env bash
+#
+# PLANNING SURFACE ONLY — NOT EXECUTABLE AS-IS.
+#
+# Prerequisites before ANY future operator execution gate copies this skeleton:
+#
+# - Replace EVERY <PLACEHOLDER> after verifying against repo + governance.
+# - Prove a governed Futures/perpetual Shadow-247 job EXISTS in scheduler inventory
+#   matching this scope OR obtain a governance PR that introduces it BEFORE treating
+#   include/exclude tag lists as real.
+#
+# Repo-verified tooling shape (CLI surface may evolve — re-run --help each time):
+#   uv run python scripts/ops/run_with_timeout.py --timeout-seconds <N> -- \
+#       uv run python scripts/run_scheduler.py --config … --poll-interval … [tag filters …]
+#
+
+set -euo pipefail
+
+export PT_TRADING_SCOPE="${PT_TRADING_SCOPE:-<PLACEHOLDER_SHADOW_FUTURES_PERP_REVIEW_REQUIRED>}"
+export PT_MARKET_TYPE="${PT_MARKET_TYPE:-<PLACEHOLDER_MARKET_TYPE_FUTURES_PERP_REVIEW_REQUIRED>}"
+export PT_SYMBOL_NATIVE="${PT_SYMBOL_NATIVE:-<PLACEHOLDER_FOR_EXCHANGE_NATIVE_PERP_INSTRUMENT_STRING_REVIEW_REQUIRED>}"
+export PT_SYMBOL_CCXT_UNIFIED="${PT_SYMBOL_CCXT_UNIFIED:-<PLACEHOLDER/ccxt:LINEAR_PERP_PAIR_REVIEW_REQUIRED>}"
+export PT_VENUE_ADAPTER_REF="${PT_VENUE_ADAPTER_REF:-<PLACEHOLDER_READONLY_NO_ORDER_OBSERVATION_ADAPTER_REVIEW_REQUIRED>}"
+export PT_EVIDENCE_ROOT="${PT_EVIDENCE_ROOT:-/tmp/peak_trade_shadow_247_futures_<UTC_TIMESTAMP_REPLACE_ME>}"
+export PT_MAX_RUNTIME_SECONDS="${PT_MAX_RUNTIME_SECONDS:-7200}"
+export PT_SCHEDULER_CONFIG_PATH="${PT_SCHEDULER_CONFIG_PATH:-<ABSOLUTE_PATH_TO_OPERATOR_REVIEWED_SCHEDULER_CONFIG_TOML_REQUIRED_MAY_INCLUDE_TEMP_HELPER_OUTPUT>}"
+
+PT_LIVE_ENABLED="${PT_LIVE_ENABLED:-false}"
+PT_TESTNET_ENABLED="${PT_TESTNET_ENABLED:-false}"
+PT_BROKER_ENABLED="${PT_BROKER_ENABLED:-false}"
+PT_ORDER_SUBMISSION_ENABLED="${PT_ORDER_SUBMISSION_ENABLED:-false}"
+PT_PRIVATE_EXCHANGE_ENDPOINTS_ENABLED="${PT_PRIVATE_EXCHANGE_ENDPOINTS_ENABLED:-false}"
+PT_CREDENTIAL_REQUIRED="${PT_CREDENTIAL_REQUIRED:-false}"
+
+if [[ "${PT_LIVE_ENABLED}" != "false" ]]; then echo "STOP: PT_LIVE_ENABLED must remain false"; exit 64; fi
+if [[ "${PT_TESTNET_ENABLED}" != "false" ]]; then echo "STOP: PT_TESTNET_ENABLED must remain false unless separately approved gate"; exit 64; fi
+if [[ "${PT_BROKER_ENABLED}" != "false" ]]; then echo "STOP: broker paths blocked"; exit 64; fi
+if [[ "${PT_ORDER_SUBMISSION_ENABLED}" != "false" ]]; then echo "STOP: order submission blocked"; exit 64; fi
+if [[ "${PT_PRIVATE_EXCHANGE_ENDPOINTS_ENABLED}" != "false" ]]; then echo "STOP: private endpoints blocked"; exit 64; fi
+if [[ "${PT_CREDENTIAL_REQUIRED}" != "false" ]]; then echo "STOP: credentials required — blocked"; exit 64; fi
+
+mkdir -p "${PT_EVIDENCE_ROOT}"
+
+echo "$(date -uIs) DO_NOT_RUN_YET scaffold — execution intentionally blocked until governance resolves placeholders/governed scheduler jobs." \
+  > "${PT_EVIDENCE_ROOT}/DO_NOT_RUN_YET_PLACEHOLDER.log"
+
+exit 64
+```
 ## 4. Status model
 
 Conservative states (future materializations must use one of these):
