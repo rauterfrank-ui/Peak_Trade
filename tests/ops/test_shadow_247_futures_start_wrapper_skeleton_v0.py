@@ -221,6 +221,8 @@ def test_shadow_247_prestart_evidence_drycheck_writes_artifacts(
         combo = proc.stderr + proc.stdout
         for ln in _drycheck_machine_needles():
             assert ln in combo
+        assert "READONLY_OPS_OR_JOBS_CONFIG_VALIDATED=false" in combo
+        assert "READONLY_CONFIG_VALIDATION_OK=skipped" in combo
         assert _DRY_ART_MD in {p.name for p in root.iterdir()}
         manifest_path = root / _DRY_MANIFEST_JSON
         manifest_bytes = manifest_path.read_bytes()
@@ -230,10 +232,16 @@ def test_shadow_247_prestart_evidence_drycheck_writes_artifacts(
         md_txt = (root / _DRY_ART_MD).read_text(encoding="utf-8")
         for ln in _drycheck_machine_needles():
             assert ln in md_txt
+        assert "## Read-only config validation" in md_txt
+        assert "skipped" in md_txt.lower()
         doc = json.loads(manifest_bytes.decode("utf-8"))
         ms = doc["verbatim_machine_summary"]
         for ln in _drycheck_machine_needles():
             assert ln in ms
+        blk = doc["readonly_local_config_skeleton_validation"]
+        assert blk["ops_config_provided"] is False
+        assert blk["jobs_config_provided"] is False
+        assert blk["combined_validation_ok"] is True
     finally:
         shutil.rmtree(root_str, ignore_errors=True)
 
@@ -388,3 +396,281 @@ def test_shadow_247_prestart_evidence_drycheck_mutually_exclusive_with_inspect(
         assert "not allowed" in (proc.stderr + proc.stdout).lower()
     finally:
         shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_wrapper_config_validate_requires_prestart_drycheck(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--config",
+            "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=10,
+    )
+    assert proc.returncode == 64
+    assert "drycheck" in (proc.stderr + proc.stdout).lower()
+
+
+def test_shadow_247_wrapper_inspect_rejects_paired_config_args(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--inspect",
+            "--config",
+            "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=10,
+    )
+    assert proc.returncode == 64
+
+
+def test_shadow_247_prestart_drycheck_with_valid_ops_config_writes_success(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_ro_cfg_", dir="/tmp")
+    root = Path(root_str)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--prestart-evidence-drycheck",
+            "--evidence-root",
+            str(root),
+            "--config",
+            "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=10,
+    )
+    try:
+        assert proc.returncode == 0
+        combo = proc.stderr + proc.stdout
+        assert "READONLY_OPS_OR_JOBS_CONFIG_VALIDATED=true" in combo
+        assert "READONLY_CONFIG_VALIDATION_OK=true" in combo
+        md_txt = (root / _DRY_ART_MD).read_text(encoding="utf-8")
+        assert "**PASS**" in md_txt
+        doc = json.loads((root / _DRY_MANIFEST_JSON).read_text(encoding="utf-8"))
+        blk = doc["readonly_local_config_skeleton_validation"]
+        assert blk["ops_config_provided"] is True
+        assert blk["jobs_config_provided"] is False
+        assert blk["combined_validation_ok"] is True
+        assert not blk["ops_validation_errors"]
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_prestart_drycheck_with_ops_and_scheduler_jobs_config(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_ro_dual_", dir="/tmp")
+    root = Path(root_str)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--prestart-evidence-drycheck",
+            "--evidence-root",
+            str(root),
+            "--config",
+            "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+            "--jobs-config",
+            "config/scheduler/jobs.toml",
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=10,
+    )
+    try:
+        assert proc.returncode == 0
+        doc = json.loads((root / _DRY_MANIFEST_JSON).read_text(encoding="utf-8"))
+        blk = doc["readonly_local_config_skeleton_validation"]
+        assert blk["ops_config_provided"] is True
+        assert blk["jobs_config_provided"] is True
+        assert blk["combined_validation_ok"] is True
+        tail = Path(blk["jobs_config_absolute"]).as_posix()
+        assert tail.endswith("config/scheduler/jobs.toml")
+        assert not blk["ops_validation_errors"] and not blk["jobs_validation_errors"]
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def _mutate_ops_fixture(text: str, rel_name: str) -> Path:
+    mut_dir = REPO_ROOT / "_utest_shadow_247_ops_cfg_mut"
+    mut_dir.mkdir(exist_ok=True)
+    p = mut_dir / rel_name
+    p.write_text(text, encoding="utf-8")
+    return p.relative_to(REPO_ROOT)
+
+
+def test_shadow_247_prestart_drycheck_mutated_ops_config_fail_closed_no_artifacts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    good = (REPO_ROOT / "config/ops/shadow_247_futures_wrapper_skeleton.toml").read_text(
+        encoding="utf-8",
+    )
+    bad = good.replace("enabled = false", "enabled = true", 1)
+    rel = _mutate_ops_fixture(bad, "unsafe_enabled_true.toml")
+    mut_dir = REPO_ROOT / "_utest_shadow_247_ops_cfg_mut"
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_ro_bad_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--prestart-evidence-drycheck",
+                "--evidence-root",
+                str(root),
+                "--config",
+                str(rel),
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        combo = proc.stderr + proc.stdout
+        assert "validation failed" in combo.lower()
+        assert not (root / _DRY_ART_MD).exists()
+        assert "READY_TO_START_FUTURES_SHADOW_247_DAEMON=true" not in combo
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+        shutil.rmtree(mut_dir, ignore_errors=True)
+
+
+def test_shadow_247_prestart_drycheck_mutated_live_allowed_fail_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    good = (REPO_ROOT / "config/ops/shadow_247_futures_wrapper_skeleton.toml").read_text(
+        encoding="utf-8",
+    )
+    bad = good.replace("live_allowed = false", "live_allowed = true", 1)
+    rel = _mutate_ops_fixture(bad, "unsafe_live.toml")
+    mut_dir = REPO_ROOT / "_utest_shadow_247_ops_cfg_mut"
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_ro_bad2_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--prestart-evidence-drycheck",
+                "--evidence-root",
+                str(root),
+                "--config",
+                str(rel),
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert not (root / _DRY_ART_MD).exists()
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+        shutil.rmtree(mut_dir, ignore_errors=True)
+
+
+def test_shadow_247_prestart_drycheck_mutated_order_submission_fail_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    good = (REPO_ROOT / "config/ops/shadow_247_futures_wrapper_skeleton.toml").read_text(
+        encoding="utf-8",
+    )
+    bad = good.replace(
+        "order_submission_allowed = false",
+        "order_submission_allowed = true",
+        1,
+    )
+    rel = _mutate_ops_fixture(bad, "unsafe_orders.toml")
+    mut_dir = REPO_ROOT / "_utest_shadow_247_ops_cfg_mut"
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_ro_bad3_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--prestart-evidence-drycheck",
+                "--evidence-root",
+                str(root),
+                "--config",
+                str(rel),
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert not (root / _DRY_ART_MD).exists()
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+        shutil.rmtree(mut_dir, ignore_errors=True)
+
+
+def test_shadow_247_prestart_drycheck_mutated_instrument_fail_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    good = (REPO_ROOT / "config/ops/shadow_247_futures_wrapper_skeleton.toml").read_text(
+        encoding="utf-8",
+    )
+    bad = good.replace('instrument = "BTCUSDT"', 'instrument = "ETHUSDT"', 1)
+    rel = _mutate_ops_fixture(bad, "unsafe_instrument.toml")
+    mut_dir = REPO_ROOT / "_utest_shadow_247_ops_cfg_mut"
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_ro_bad4_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--prestart-evidence-drycheck",
+                "--evidence-root",
+                str(root),
+                "--config",
+                str(rel),
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert not (root / _DRY_ART_MD).exists()
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+        shutil.rmtree(mut_dir, ignore_errors=True)
