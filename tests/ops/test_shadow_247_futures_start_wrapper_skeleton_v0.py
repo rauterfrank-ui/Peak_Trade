@@ -65,9 +65,11 @@ def test_shadow_247_futures_wrapper_skeleton_source_has_no_blocked_substrings(
         "--bounded-runtime-contract-check",
         "--bounded-shadow-dry-run",
         "--max-steps",
+        "--step-interval-seconds",
         "--duration-minutes",
         "BOUNDED_RUNTIME_CONTRACT_DURATION_CAP_MINUTES",
         "BOUNDED_SHADOW_DURATION_CAP_MINUTES",
+        "BOUNDED_SHADOW_STEP_INTERVAL_MAX_SECONDS",
     ],
 )
 def test_shadow_247_futures_wrapper_skeleton_has_boundary_constants(marker: str) -> None:
@@ -1071,6 +1073,7 @@ def test_shadow_247_bounded_shadow_dry_run_writes_manifest_sha_md_and_steps(
         assert proc.returncode == 0
         combo = proc.stderr + proc.stdout
         assert "BOUNDED_SHADOW_DRY_RUN_WRITTEN=true" in combo
+        assert "STEP_INTERVAL_SECONDS=0.0" in combo
         names = {p.name for p in root.iterdir()}
         assert names == {
             _DRY_MANIFEST_JSON,
@@ -1101,6 +1104,7 @@ def test_shadow_247_bounded_shadow_dry_run_writes_manifest_sha_md_and_steps(
         assert doc.get("execution_approved") is False
         assert doc.get("dry_run") is True
         assert doc.get("shadow_mode") is True
+        assert doc.get("step_interval_seconds") == pytest.approx(0.0)
         ms = doc["verbatim_machine_summary"]
         assert "RUN_STARTED=true" in ms
         assert "TESTNET_STARTED=false" in ms
@@ -1153,3 +1157,193 @@ def test_shadow_247_bounded_shadow_dry_run_unsafe_ops_config_fail_closed(
     finally:
         shutil.rmtree(root_str, ignore_errors=True)
         shutil.rmtree(mut_dir, ignore_errors=True)
+
+
+def test_shadow_247_bounded_shadow_dry_run_rejects_step_interval_without_shadow_mode(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_pace_mx_", dir="/tmp")
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--prestart-evidence-drycheck",
+                "--evidence-root",
+                root_str,
+                "--step-interval-seconds",
+                "1",
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert "step-interval-seconds" in (proc.stderr + proc.stdout).lower()
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_bounded_shadow_dry_run_rejects_negative_step_interval(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_pace_neg_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-shadow-dry-run",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "1",
+                "--max-steps",
+                "2",
+                "--step-interval-seconds",
+                "-0.01",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert not any(root.iterdir())
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_bounded_shadow_dry_run_rejects_step_interval_above_cap(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_pace_61_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-shadow-dry-run",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "1",
+                "--max-steps",
+                "2",
+                "--step-interval-seconds",
+                "60.0001",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert not any(root.iterdir())
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_bounded_shadow_dry_run_accepts_60_second_step_interval(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_pace_60_", dir="/tmp")
+    root = Path(root_str)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--bounded-shadow-dry-run",
+            "--evidence-root",
+            str(root),
+            "--duration-minutes",
+            "10",
+            "--max-steps",
+            "1",
+            "--step-interval-seconds",
+            "60",
+            "--confirm-token",
+            _FUTURE_CONFIRM_TOKEN,
+            "--config",
+            "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+            "--jobs-config",
+            "config/scheduler/jobs.toml",
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=30,
+    )
+    try:
+        assert proc.returncode == 0
+        doc = json.loads((root / _DRY_MANIFEST_JSON).read_text(encoding="utf-8"))
+        assert doc["step_interval_seconds"] == pytest.approx(60.0)
+        assert "STEP_INTERVAL_SECONDS=60.0" in proc.stderr + proc.stdout
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_bounded_shadow_step_interval_paces_with_sleep(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import importlib.util
+
+    monkeypatch.chdir(REPO_ROOT)
+    spec = importlib.util.spec_from_file_location("_skel_pace_v0", SCRIPT)
+    assert spec and spec.loader
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)  # type: ignore[union-attr]
+    sleeps: list[float] = []
+    monkeypatch.setattr(mod.time, "sleep", lambda s: sleeps.append(float(s)))
+
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_pace_sleep_", dir="/tmp")
+    try:
+        rc = mod.main(
+            [
+                "--bounded-shadow-dry-run",
+                "--evidence-root",
+                root_str,
+                "--duration-minutes",
+                "10",
+                "--max-steps",
+                "3",
+                "--step-interval-seconds",
+                "0.25",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+            ],
+        )
+        assert rc == 0
+        assert sleeps == [0.25, 0.25]
+        manifest = json.loads((Path(root_str) / _DRY_MANIFEST_JSON).read_text(encoding="utf-8"))
+        assert manifest["step_interval_seconds"] == pytest.approx(0.25)
+        assert manifest["steps_emitted"] == 3
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
