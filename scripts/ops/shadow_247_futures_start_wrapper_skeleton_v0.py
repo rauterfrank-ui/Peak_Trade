@@ -14,6 +14,7 @@ import argparse
 import hashlib
 import json
 import sys
+import time
 
 try:
     import tomllib
@@ -52,6 +53,22 @@ PRESTART_MANIFEST_SHA256_V0 = "MANIFEST.sha256"
 # Bounded-runtime contract placeholder (non-executing; manifest/markdown annotations only).
 BOUNDED_RUNTIME_CONTRACT_VERSION_EMBEDDED = "shadow_247_futures_bounded_runtime_contract.v0"
 BOUNDED_RUNTIME_CONTRACT_DURATION_CAP_MINUTES = 30
+
+# Local bounded Shadow dry-run (simulated steps only; no broker/network/exchange/orders).
+BOUNDED_SHADOW_DRY_RUN_SCHEMA_V0 = "shadow_247_futures_bounded_shadow_dry_run.v0"
+BOUNDED_SHADOW_DRY_RUN_MARKDOWN_V0 = "SHADOW_247_FUTURES_BOUNDED_SHADOW_DRY_RUN.md"
+BOUNDED_SHADOW_STEPS_JSONL_V0 = "steps.jsonl"
+BOUNDED_SHADOW_DURATION_CAP_MINUTES = 10
+BOUNDED_SHADOW_MAX_STEPS_CAP = 600
+
+_BOUNDED_SHADOW_ALLOWED_ENTRIES = frozenset(
+    {
+        BOUNDED_SHADOW_DRY_RUN_MARKDOWN_V0,
+        BOUNDED_SHADOW_STEPS_JSONL_V0,
+        PRESTART_MANIFEST_JSON_V0,
+        PRESTART_MANIFEST_SHA256_V0,
+    },
+)
 
 _DRYCHECK_ALLOWED_ENTRIES = frozenset(
     {PRESTART_MARKDOWN_ARTIFACT_V0, PRESTART_MANIFEST_JSON_V0, PRESTART_MANIFEST_SHA256_V0},
@@ -95,6 +112,26 @@ EXCHANGE_USED=false
 ORDER_SUBMISSION_USED=false
 """
 
+# Local bounded Shadow dry-run only (verbatim machine block written into that mode's manifest/Markdown).
+_BOUNDED_SHADOW_MACHINE_LINES = """\
+RUN_STARTED=true
+SCHEDULER_STARTED=false
+RUNTIME_STARTED=false
+SHADOW_STARTED=true
+TESTNET_STARTED=false
+LIVE_STARTED=false
+NETWORK_USED=false
+BROKER_USED=false
+EXCHANGE_USED=false
+ORDER_SUBMISSION_USED=false
+CREDENTIALS_USED=false
+EXECUTION_APPROVED=false
+DRY_RUN=true
+SHADOW_MODE=true
+READY_TO_START_FUTURES_SHADOW_247_DAEMON=false
+SKELETON_ONLY=true
+"""
+
 
 def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -121,13 +158,32 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--bounded-shadow-dry-run",
+        action="store_true",
+        dest="bounded_shadow_dry_run",
+        help=(
+            "Local bounded Shadow dry-run simulation (no scheduler, broker, exchange, network, "
+            "orders, or credentials; requires confirm-token, dual config, evidence-root)."
+        ),
+    )
+    parser.add_argument(
         "--duration-minutes",
         type=int,
         default=None,
         help=(
-            "With `--bounded-runtime-contract-check` only: integer duration (1–"
-            f"{BOUNDED_RUNTIME_CONTRACT_DURATION_CAP_MINUTES} inclusive). "
-            "Does not start any workload."
+            "With `--bounded-runtime-contract-check`: duration (1–"
+            f"{BOUNDED_RUNTIME_CONTRACT_DURATION_CAP_MINUTES}). "
+            f"With `--bounded-shadow-dry-run`: duration (1–{BOUNDED_SHADOW_DURATION_CAP_MINUTES}). "
+            "Otherwise invalid."
+        ),
+    )
+    parser.add_argument(
+        "--max-steps",
+        type=int,
+        default=None,
+        help=(
+            f"With `--bounded-shadow-dry-run` only: step budget 1–{BOUNDED_SHADOW_MAX_STEPS_CAP} "
+            "(default ~12× duration minutes, capped)."
         ),
     )
     parser.add_argument(
@@ -136,8 +192,8 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         default="",
         help=(
             "Optional future governance token placeholder. Skeleton still exits "
-            f"{EXIT_FAIL_CLOSED_DEFAULT} unless prestart- or bounded-contract-check succeeds. "
-            "Bounded check requires an exact token match (still non-executing)."
+            f"{EXIT_FAIL_CLOSED_DEFAULT} unless a gated evidence / bounded-shadow mode succeeds. "
+            "Bounded modes require an exact token match."
         ),
     )
     parser.add_argument(
@@ -145,8 +201,9 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         metavar="PATH",
         default="",
         help=(
-            "Optional `/tmp/peak_trade_*`-style absolute path (convention-only), or required "
-            "with `--prestart-evidence-drycheck` / `--bounded-runtime-contract-check`."
+            "Optional `/tmp/peak_trade_*`-style absolute path, or required with evidence / "
+            "bounded modes (`--prestart-evidence-drycheck`, `--bounded-runtime-contract-check`, "
+            "`--bounded-shadow-dry-run`)."
         ),
     )
     parser.add_argument(
@@ -155,7 +212,8 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         default="",
         dest="ops_config_path",
         help=(
-            "**With `--prestart-evidence-drycheck` or `--bounded-runtime-contract-check`.** "
+            "**With `--prestart-evidence-drycheck`, `--bounded-runtime-contract-check`, or "
+            "`--bounded-shadow-dry-run`.** "
             "Read-only validate default-off Ops skeleton (`shadow_247_futures_wrapper_skeleton`) "
             "invariants via stdlib tomllib (path must lie under repo root)."
         ),
@@ -166,7 +224,8 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         default="",
         dest="jobs_config_path",
         help=(
-            "**With `--prestart-evidence-drycheck` or `--bounded-runtime-contract-check`.** "
+            "**With `--prestart-evidence-drycheck`, `--bounded-runtime-contract-check`, or "
+            "`--bounded-shadow-dry-run`.** "
             "Read-only validate the disabled scheduler placeholder row (stdlib tomllib)."
         ),
     )
@@ -524,6 +583,69 @@ def _validate_evidence_root_for_drycheck(
     return resolved, None
 
 
+def _validate_evidence_root_for_bounded_shadow(
+    path_str: str, repo_root: Path
+) -> Tuple[Path | None, str | None]:
+    """Same hygiene as `/tmp` drycheck, but allow bounded-shadow artefact filenames."""
+    trimmed = path_str.strip()
+    if not trimmed:
+        return None, "bounded-shadow-dry-run requires a non-empty --evidence-root"
+    probe = Path(trimmed).expanduser()
+    if not probe.is_absolute():
+        return None, "evidence-root must be an absolute path for bounded-shadow-dry-run"
+    try:
+        resolved = probe.resolve()
+    except (OSError, RuntimeError):
+        return None, "evidence-root cannot be resolved safely"
+
+    rr = repo_root.resolve()
+    try:
+        tmp_anchor = Path("/tmp").resolve()
+        rel_to_tmp = resolved.relative_to(tmp_anchor)
+    except (ValueError, OSError, RuntimeError):
+        return None, (
+            "evidence-root must resolve somewhere under filesystem `/tmp` after symlink normalization."
+        )
+    if not rel_to_tmp.parts:
+        return None, "evidence-root has empty relative path under `/tmp`."
+    top_seg = rel_to_tmp.parts[0].lower()
+    if not top_seg.startswith("peak_trade_"):
+        return (
+            None,
+            "evidence-root first directory segment under `/tmp` must start with "
+            "`peak_trade_` for bounded-shadow-dry-run.",
+        )
+    rstr = str(resolved)
+
+    if resolved == rr:
+        return None, "evidence-root must not equal the Peak_Trade repository root"
+    if resolved.is_relative_to(rr):
+        return None, "evidence-root must not reside inside the repository tree"
+
+    if ".git" in resolved.parts:
+        return None, "evidence-root must not traverse a `.git` path segment"
+
+    if _evidence_has_paper_or_test_hints(rstr):
+        return (
+            None,
+            "evidence-root path hints at paper/test fixtures — forbidden for bounded-shadow",
+        )
+
+    if resolved.is_file():
+        return None, "evidence-root must be a directory, not an existing file"
+
+    if resolved.exists():
+        entries = sorted(p.name for p in resolved.iterdir())
+        if entries and set(entries) != _BOUNDED_SHADOW_ALLOWED_ENTRIES:
+            bad = sorted(set(entries) - _BOUNDED_SHADOW_ALLOWED_ENTRIES)
+            return (
+                None,
+                f"evidence-root directory is non-empty with unexpected entries: {bad!r}",
+            )
+
+    return resolved, None
+
+
 def _canonical_json_bytes(payload: dict) -> bytes:
     return (json.dumps(payload, indent=2, sort_keys=True) + "\n").encode("utf-8")
 
@@ -670,6 +792,157 @@ def _execute_prestart_drycheck(
     return EXIT_DRYCHECK_SUCCESS
 
 
+def _bounded_shadow_markdown(
+    utc_now: datetime,
+    evidence_abs: Path,
+    repo_sha: str,
+    readonly_cfg_block: Mapping[str, Any],
+    run_meta: Mapping[str, Any],
+) -> str:
+    return "".join(
+        (
+            "# Shadow 24-7 Futures — Bounded Shadow Dry-Run (Local Simulation)\n\n",
+            f"UTC start: `{utc_now.strftime('%Y-%m-%dT%H:%M:%SZ')}`  \n",
+            f"Evidence root: `{evidence_abs}`  \n",
+            f"Repository git SHA prefix hint: `{repo_sha}` (best-effort, filesystem read).\n\n",
+            "## Statements (non-binding; local simulation only)\n\n",
+            "- No live, testnet, broker, exchange, private endpoints, credentials, or network I/O.\n",
+            "- No scheduler or daemon spawned; no execution session; no order submission.\n",
+            "- Simulated bounded step loop only — not an exchange/broker runtime.\n\n",
+            "## Operator machine summary (verbatim keys)\n\n",
+            "```text\n",
+            _BOUNDED_SHADOW_MACHINE_LINES,
+            "```\n\n",
+            "## Run parameters\n\n",
+            f"- Duration cap (minutes): `{run_meta['duration_minutes']}`\n",
+            f"- Step budget: `{run_meta['max_steps']}`\n",
+            f"- Steps emitted: `{run_meta['steps_emitted']}`\n",
+            f"- UTC end: `{run_meta['utc_end']}`\n\n",
+            *_readonly_validation_markdown_lines(readonly_cfg_block),
+            "## Appendix\n\n",
+            "Artefacts: `manifest.json`, `MANIFEST.sha256`, "
+            f"`{BOUNDED_SHADOW_DRY_RUN_MARKDOWN_V0}`, optional `{BOUNDED_SHADOW_STEPS_JSONL_V0}`. "
+            "`MANIFEST.sha256` covers canonical UTF-8 bytes of sorted-key pretty JSON manifest.\n",
+        ),
+    )
+
+
+def _bounded_shadow_manifest(
+    evidence_abs: Path,
+    repo_sha: str,
+    utc_started: datetime,
+    utc_ended: datetime,
+    readonly_cfg_block: Mapping[str, Any],
+    run_meta: Mapping[str, Any],
+) -> dict:
+    return {
+        "artifact": BOUNDED_SHADOW_DRY_RUN_SCHEMA_V0,
+        "bounded_local_shadow_dry_run": True,
+        "broker_used": False,
+        "credentials_used": False,
+        "daemon_run_approved": False,
+        "dry_run": True,
+        "duration_minutes_requested": int(run_meta["duration_minutes"]),
+        "duration_minutes_cap_enforced": int(BOUNDED_SHADOW_DURATION_CAP_MINUTES),
+        "evidence_root_absolute": str(evidence_abs),
+        "exchange_used": False,
+        "execution_approved": False,
+        "executor": "peak_trade/scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py",
+        "futures_perpetual_planning_scope_only": True,
+        "git_sha_prefix": repo_sha,
+        "live_started": False,
+        "markdown_artifact_filename": BOUNDED_SHADOW_DRY_RUN_MARKDOWN_V0,
+        "max_steps_budget": int(run_meta["max_steps"]),
+        "max_steps_cap_enforced": int(BOUNDED_SHADOW_MAX_STEPS_CAP),
+        "network_used": False,
+        "order_submission_used": False,
+        "prestart_claims_summary": (
+            "Local bounded Shadow **dry-run** simulation only — no scheduler, daemon, runtime "
+            "session, network, broker, exchange, orders, credentials, testnet, or live."
+        ),
+        "readonly_local_config_skeleton_validation": dict(readonly_cfg_block),
+        "ready_to_start_futures_shadow_247_daemon": False,
+        "run_started": True,
+        "runtime_started": False,
+        "scheduler_started": False,
+        "shadow_mode": True,
+        "shadow_started": True,
+        "steps_emitted": int(run_meta["steps_emitted"]),
+        "steps_jsonl_filename": BOUNDED_SHADOW_STEPS_JSONL_V0,
+        "testnet_started": False,
+        "utc_completed": utc_ended.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "utc_started": utc_started.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "verbatim_machine_summary": _BOUNDED_SHADOW_MACHINE_LINES.rstrip("\n"),
+        "wrapper_requires_future_gate_before_execution": True,
+    }
+
+
+def _execute_bounded_shadow_dry_run(
+    evidence_root_abs: Path,
+    repo_root: Path,
+    err: TextIO,
+    readonly_cfg_block: Mapping[str, Any],
+    duration_minutes: int,
+    max_steps: int,
+) -> int:
+    utc_started = datetime.now(timezone.utc)
+    deadline = time.monotonic() + float(duration_minutes) * 60.0
+    steps_emitted = 0
+    lines: list[str] = []
+
+    while steps_emitted < max_steps and time.monotonic() < deadline:
+        step_ts = datetime.now(timezone.utc)
+        payload = {
+            "step_index": steps_emitted + 1,
+            "utc": step_ts.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "kind": "bounded_shadow_dry_run_simulated_heartbeat",
+        }
+        lines.append(json.dumps(payload, sort_keys=True) + "\n")
+        steps_emitted += 1
+
+    utc_ended = datetime.now(timezone.utc)
+    run_meta: dict[str, Any] = {
+        "duration_minutes": duration_minutes,
+        "max_steps": max_steps,
+        "steps_emitted": steps_emitted,
+        "utc_end": utc_ended.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }
+    repo_sha = _read_git_sha_prefix(repo_root)
+    manifest = _bounded_shadow_manifest(
+        evidence_root_abs,
+        repo_sha,
+        utc_started,
+        utc_ended,
+        readonly_cfg_block,
+        run_meta,
+    )
+    manifest_bytes = _canonical_json_bytes(manifest)
+    digest_hex = hashlib.sha256(manifest_bytes).hexdigest()
+    md_text = _bounded_shadow_markdown(
+        utc_started,
+        evidence_root_abs,
+        repo_sha,
+        readonly_cfg_block,
+        run_meta,
+    )
+
+    evidence_root_abs.mkdir(parents=True, exist_ok=True)
+    (evidence_root_abs / BOUNDED_SHADOW_DRY_RUN_MARKDOWN_V0).write_text(md_text, encoding="utf-8")
+    (evidence_root_abs / PRESTART_MANIFEST_JSON_V0).write_bytes(manifest_bytes)
+    (evidence_root_abs / PRESTART_MANIFEST_SHA256_V0).write_text(
+        digest_hex + "\n", encoding="utf-8"
+    )
+    (evidence_root_abs / BOUNDED_SHADOW_STEPS_JSONL_V0).write_text("".join(lines), encoding="utf-8")
+
+    err.write(_BOUNDED_SHADOW_MACHINE_LINES)
+    err.write("READONLY_OPS_OR_JOBS_CONFIG_VALIDATED=true\n")
+    err.write("READONLY_CONFIG_VALIDATION_OK=true\n")
+    err.write(f"BOUNDED_SHADOW_DRY_RUN_STEPS_EMITTED={steps_emitted}\n")
+    err.write("BOUNDED_SHADOW_DRY_RUN_WRITTEN=true\n")
+    err.write(f"EXIT_CODE={EXIT_DRYCHECK_SUCCESS}\n")
+    return EXIT_DRYCHECK_SUCCESS
+
+
 def _emit_banner(out: TextIO) -> None:
     out.write(
         "peak_trade shadow_247_futures_start_wrapper_skeleton_v0: "
@@ -690,13 +963,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             args.inspect,
             args.prestart_evidence_drycheck,
             args.bounded_runtime_contract_check,
+            args.bounded_shadow_dry_run,
         )
         if flag
     )
     if mode_flags_active > 1:
         err.write(
-            "At most one of --inspect, --prestart-evidence-drycheck, and "
-            "--bounded-runtime-contract-check may be set.\n",
+            "At most one of --inspect, --prestart-evidence-drycheck, "
+            "--bounded-runtime-contract-check, and --bounded-shadow-dry-run may be set.\n",
         )
         _emit_banner(err)
         err.write(_MACHINE_LINES_ALWAYS)
@@ -713,11 +987,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         return EXIT_FAIL_CLOSED_DEFAULT
 
     if (args.ops_config_path.strip() or args.jobs_config_path.strip()) and (
-        not args.prestart_evidence_drycheck and not args.bounded_runtime_contract_check
+        not args.prestart_evidence_drycheck
+        and not args.bounded_runtime_contract_check
+        and not args.bounded_shadow_dry_run
     ):
         err.write(
-            "`--config` / `--jobs-config` are invalid without `--prestart-evidence-drycheck` "
-            "or `--bounded-runtime-contract-check` "
+            "`--config` / `--jobs-config` are invalid without `--prestart-evidence-drycheck`, "
+            "`--bounded-runtime-contract-check`, or `--bounded-shadow-dry-run` "
             "(read-only skeleton validation emits evidence only).\n",
         )
         _emit_banner(err)
@@ -727,12 +1003,26 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         return EXIT_FAIL_CLOSED_DEFAULT
 
-    if not args.bounded_runtime_contract_check and args.duration_minutes is not None:
-        err.write("`--duration-minutes` is only valid with `--bounded-runtime-contract-check`.\n")
+    if args.duration_minutes is not None and (
+        not args.bounded_runtime_contract_check and not args.bounded_shadow_dry_run
+    ):
+        err.write(
+            "`--duration-minutes` is only valid with `--bounded-runtime-contract-check` or "
+            "`--bounded-shadow-dry-run`.\n",
+        )
         _emit_banner(err)
         err.write(_MACHINE_LINES_ALWAYS)
         err.write(
-            f"EXIT_REASON=duration_requires_bounded_check\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+            f"EXIT_REASON=duration_requires_bounded_mode\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+        )
+        return EXIT_FAIL_CLOSED_DEFAULT
+
+    if args.max_steps is not None and not args.bounded_shadow_dry_run:
+        err.write("`--max-steps` is only valid with `--bounded-shadow-dry-run`.\n")
+        _emit_banner(err)
+        err.write(_MACHINE_LINES_ALWAYS)
+        err.write(
+            f"EXIT_REASON=max_steps_requires_bounded_shadow\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
         )
         return EXIT_FAIL_CLOSED_DEFAULT
 
@@ -829,6 +1119,103 @@ def main(argv: Sequence[str] | None = None) -> int:
             "contract_version": BOUNDED_RUNTIME_CONTRACT_VERSION_EMBEDDED,
         }
         return _drycheck_from_valid_evidence(validated, bounded_extra)
+
+    if args.bounded_shadow_dry_run:
+        token = args.confirm_token.strip()
+        if token != FUTURE_OPERATOR_CONFIRMATION_TOKEN_V0:
+            err.write(
+                "bounded-shadow-dry-run requires `--confirm-token` matching the future governance literal.\n",
+            )
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                f"EXIT_REASON=bounded_shadow_token_invalid\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+        if args.duration_minutes is None:
+            err.write("`--duration-minutes` is required with `--bounded-shadow-dry-run`.\n")
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                f"EXIT_REASON=bounded_shadow_duration_missing\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+        dm = args.duration_minutes
+        if dm < 1 or dm > BOUNDED_SHADOW_DURATION_CAP_MINUTES:
+            err.write(
+                "with `--bounded-shadow-dry-run`, `--duration-minutes` must be between 1 and "
+                f"{BOUNDED_SHADOW_DURATION_CAP_MINUTES} inclusive.\n",
+            )
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                f"EXIT_REASON=bounded_shadow_duration_out_of_range\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+        if args.max_steps is not None:
+            ms = args.max_steps
+            if ms < 1 or ms > BOUNDED_SHADOW_MAX_STEPS_CAP:
+                err.write(
+                    "`--max-steps` must be between 1 and "
+                    f"{BOUNDED_SHADOW_MAX_STEPS_CAP} inclusive.\n",
+                )
+                _emit_banner(err)
+                err.write(_MACHINE_LINES_ALWAYS)
+                err.write(
+                    f"EXIT_REASON=bounded_shadow_max_steps_out_of_range\n"
+                    f"EXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n"
+                )
+                return EXIT_FAIL_CLOSED_DEFAULT
+        else:
+            ms = min(12 * dm, BOUNDED_SHADOW_MAX_STEPS_CAP)
+
+        if not args.ops_config_path.strip() or not args.jobs_config_path.strip():
+            err.write(
+                "`--bounded-shadow-dry-run` requires both `--config` and `--jobs-config`.\n",
+            )
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                f"EXIT_REASON=bounded_shadow_requires_dual_config\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+
+        validated, ferr = _validate_evidence_root_for_bounded_shadow(args.evidence_root, repo_root)
+        if ferr or validated is None:
+            assert ferr is not None
+            err.write(ferr + "\n")
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                f"EXIT_REASON=invalid_evidence_root_bounded_shadow\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n"
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+
+        cfg_block, ferr_list = _build_readonly_validation_block(
+            repo_root,
+            args.ops_config_path,
+            args.jobs_config_path,
+        )
+        if not cfg_block["combined_validation_ok"]:
+            err.write(
+                "Read-only shadow futures ops/jobs TOML validation failed — bounded-shadow evidence "
+                "was not written.\n",
+            )
+            for msg in ferr_list:
+                err.write(f"- {msg}\n")
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                "READONLY_OPS_OR_JOBS_CONFIG_VALIDATED="
+                + str(cfg_block["ops_config_provided"] or cfg_block["jobs_config_provided"]).lower()
+                + "\n",
+            )
+            err.write(
+                f"EXIT_REASON=readonly_config_skeleton_validation_failed\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n"
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+
+        return _execute_bounded_shadow_dry_run(validated, repo_root, err, cfg_block, dm, int(ms))
 
     if args.prestart_evidence_drycheck:
         validated, ferr = _validate_evidence_root_for_drycheck(args.evidence_root, repo_root)
