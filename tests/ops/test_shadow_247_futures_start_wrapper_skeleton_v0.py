@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
+import json
+import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -53,6 +57,7 @@ def test_shadow_247_futures_wrapper_skeleton_source_has_no_blocked_substrings(
         "BOUNDARY_FUTURES_PERP_SCOPE",
         "/tmp/peak_trade",
         "NO_ORDER_SUBMISSION",
+        "PRESTART_SCHEMA_V0",
     ],
 )
 def test_shadow_247_futures_wrapper_skeleton_has_boundary_constants(marker: str) -> None:
@@ -170,3 +175,216 @@ def test_shadow_247_futures_wrapper_skeleton_machine_lines_include_flags() -> No
     assert "BOUNDARY_NO_LIVE" in combo
     assert "RUN_STARTED=false" in combo
     assert "SCHEDULER_STARTED=false" in combo
+
+
+_DRY_ART_MD = "SHADOW_247_FUTURES_PRESTART_EVIDENCE_DRYCHECK.md"
+_DRY_MANIFEST_JSON = "manifest.json"
+_DRY_SHA = "MANIFEST.sha256"
+
+
+def _drycheck_machine_needles() -> tuple[str, ...]:
+    return (
+        "RUN_STARTED=false",
+        "SCHEDULER_STARTED=false",
+        "RUNTIME_STARTED=false",
+        "NETWORK_USED=false",
+        "BROKER_USED=false",
+        "EXCHANGE_USED=false",
+        "ORDER_SUBMISSION_USED=false",
+        "READY_TO_START_FUTURES_SHADOW_247_DAEMON=false",
+    )
+
+
+def test_shadow_247_prestart_evidence_drycheck_writes_artifacts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_ev_", dir="/tmp")
+    root = Path(root_str)
+    assert str(root).startswith("/tmp/peak_trade_")
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--prestart-evidence-drycheck",
+            "--evidence-root",
+            str(root),
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=10,
+    )
+    try:
+        assert proc.returncode == 0
+        combo = proc.stderr + proc.stdout
+        for ln in _drycheck_machine_needles():
+            assert ln in combo
+        assert _DRY_ART_MD in {p.name for p in root.iterdir()}
+        manifest_path = root / _DRY_MANIFEST_JSON
+        manifest_bytes = manifest_path.read_bytes()
+        got_hex = hashlib.sha256(manifest_bytes).hexdigest()
+        sha_file = root / _DRY_SHA
+        assert sha_file.read_text(encoding="utf-8").strip() == got_hex
+        md_txt = (root / _DRY_ART_MD).read_text(encoding="utf-8")
+        for ln in _drycheck_machine_needles():
+            assert ln in md_txt
+        doc = json.loads(manifest_bytes.decode("utf-8"))
+        ms = doc["verbatim_machine_summary"]
+        for ln in _drycheck_machine_needles():
+            assert ln in ms
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_prestart_evidence_drycheck_repeat_overwrites(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_repeat_", dir="/tmp")
+    cli = [
+        sys.executable,
+        str(SCRIPT),
+        "--prestart-evidence-drycheck",
+        "--evidence-root",
+        root_str,
+    ]
+    try:
+        first = subprocess.run(
+            cli, cwd=REPO_ROOT, capture_output=True, text=True, check=False, timeout=10
+        )
+        second = subprocess.run(
+            cli, cwd=REPO_ROOT, capture_output=True, text=True, check=False, timeout=10
+        )
+        assert first.returncode == 0 and second.returncode == 0
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_prestart_evidence_drycheck_requires_strict_tmp_prefix(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--prestart-evidence-drycheck",
+            "--evidence-root",
+            "/tmp/does_not_start_with_peak_trade_convention_xx",
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=10,
+    )
+    assert proc.returncode == 64
+
+
+def test_shadow_247_prestart_evidence_drycheck_rejects_repo_internal_path(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    inner = REPO_ROOT / "_utest_inside_repo_peak_evidence_drychk"
+    inner.mkdir(parents=True, exist_ok=True)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--prestart-evidence-drycheck",
+                "--evidence-root",
+                str(inner.resolve()),
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+    finally:
+        shutil.rmtree(inner, ignore_errors=True)
+
+
+def test_shadow_247_prestart_evidence_drycheck_rejects_nonempty_dir(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_nonempty_", dir="/tmp")
+    root_path = Path(root_str)
+    (root_path / "unexpected.txt").write_text("junk", encoding="utf-8")
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--prestart-evidence-drycheck",
+                "--evidence-root",
+                root_str,
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_prestart_evidence_drycheck_rejects_paper_named_path(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    parent_str = tempfile.mkdtemp(prefix="peak_trade_utest_paren_", dir="/tmp")
+    paper_nested = Path(parent_str) / "paper_trade_only"
+    paper_nested.mkdir(parents=True)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--prestart-evidence-drycheck",
+                "--evidence-root",
+                str(paper_nested.resolve()),
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+    finally:
+        shutil.rmtree(parent_str, ignore_errors=True)
+
+
+def test_shadow_247_prestart_evidence_drycheck_mutually_exclusive_with_inspect(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_mutex_", dir="/tmp")
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--inspect",
+                "--prestart-evidence-drycheck",
+                "--evidence-root",
+                root_str,
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert "not allowed" in (proc.stderr + proc.stdout).lower()
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
