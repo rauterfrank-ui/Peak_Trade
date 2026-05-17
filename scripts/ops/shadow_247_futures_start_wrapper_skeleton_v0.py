@@ -49,6 +49,10 @@ PRESTART_MARKDOWN_ARTIFACT_V0 = "SHADOW_247_FUTURES_PRESTART_EVIDENCE_DRYCHECK.m
 PRESTART_MANIFEST_JSON_V0 = "manifest.json"
 PRESTART_MANIFEST_SHA256_V0 = "MANIFEST.sha256"
 
+# Bounded-runtime contract placeholder (non-executing; manifest/markdown annotations only).
+BOUNDED_RUNTIME_CONTRACT_VERSION_EMBEDDED = "shadow_247_futures_bounded_runtime_contract.v0"
+BOUNDED_RUNTIME_CONTRACT_DURATION_CAP_MINUTES = 30
+
 _DRYCHECK_ALLOWED_ENTRIES = frozenset(
     {PRESTART_MARKDOWN_ARTIFACT_V0, PRESTART_MANIFEST_JSON_V0, PRESTART_MANIFEST_SHA256_V0},
 )
@@ -108,12 +112,32 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         help=("Write local prestart evidence under --evidence-root only (still no daemon start)."),
     )
     parser.add_argument(
+        "--bounded-runtime-contract-check",
+        action="store_true",
+        dest="bounded_runtime_contract_check",
+        help=(
+            "Write the same local prestart evidence artefacts with bounded-runtime contract "
+            "metadata only (non-executing; requires --duration-minutes and confirm-token)."
+        ),
+    )
+    parser.add_argument(
+        "--duration-minutes",
+        type=int,
+        default=None,
+        help=(
+            "With `--bounded-runtime-contract-check` only: integer duration (1–"
+            f"{BOUNDED_RUNTIME_CONTRACT_DURATION_CAP_MINUTES} inclusive). "
+            "Does not start any workload."
+        ),
+    )
+    parser.add_argument(
         "--confirm-token",
         metavar="TOKEN",
         default="",
         help=(
             "Optional future governance token placeholder. Skeleton still exits "
-            f"{EXIT_FAIL_CLOSED_DEFAULT} unless prestart-evidence-drycheck succeeds."
+            f"{EXIT_FAIL_CLOSED_DEFAULT} unless prestart- or bounded-contract-check succeeds. "
+            "Bounded check requires an exact token match (still non-executing)."
         ),
     )
     parser.add_argument(
@@ -122,7 +146,7 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         default="",
         help=(
             "Optional `/tmp/peak_trade_*`-style absolute path (convention-only), or required "
-            "with `--prestart-evidence-drycheck`."
+            "with `--prestart-evidence-drycheck` / `--bounded-runtime-contract-check`."
         ),
     )
     parser.add_argument(
@@ -131,9 +155,9 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         default="",
         dest="ops_config_path",
         help=(
-            "**With `--prestart-evidence-drycheck` only.** Read-only validate default-off Ops "
-            "skeleton (`shadow_247_futures_wrapper_skeleton`) invariants via stdlib tomllib "
-            "(path must lie under repo root)."
+            "**With `--prestart-evidence-drycheck` or `--bounded-runtime-contract-check`.** "
+            "Read-only validate default-off Ops skeleton (`shadow_247_futures_wrapper_skeleton`) "
+            "invariants via stdlib tomllib (path must lie under repo root)."
         ),
     )
     parser.add_argument(
@@ -142,8 +166,8 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         default="",
         dest="jobs_config_path",
         help=(
-            "**With `--prestart-evidence-drycheck` only.** Read-only validate the disabled "
-            "scheduler placeholder row (stdlib tomllib)."
+            "**With `--prestart-evidence-drycheck` or `--bounded-runtime-contract-check`.** "
+            "Read-only validate the disabled scheduler placeholder row (stdlib tomllib)."
         ),
     )
     return parser.parse_args(list(argv) if argv is not None else None)
@@ -509,6 +533,7 @@ def _drycheck_manifest(
     repo_sha: str,
     utc_now: datetime,
     readonly_cfg_block: Mapping[str, Any],
+    bounded_extra: Mapping[str, Any] | None = None,
 ) -> dict:
     base_claim = (
         "No run, scheduler, daemon, network, broker, exchange, orders, shadow/paper/testnet/live "
@@ -545,6 +570,11 @@ def _drycheck_manifest(
         "verbatim_machine_summary": _MACHINE_LINES_ALWAYS.rstrip("\n"),
         "wrapper_requires_future_gate_before_execution": True,
     }
+    if bounded_extra is not None:
+        manifest["bounded_runtime_contract_check"] = True
+        manifest["duration_minutes_requested"] = int(bounded_extra["duration_minutes"])
+        manifest["duration_minutes_cap_enforced"] = int(bounded_extra["duration_cap"])
+        manifest["bounded_runtime_contract_version"] = str(bounded_extra["contract_version"])
     return manifest
 
 
@@ -553,28 +583,43 @@ def _drycheck_markdown(
     evidence_abs: Path,
     repo_sha: str,
     readonly_cfg_block: Mapping[str, Any],
+    bounded_extra: Mapping[str, Any] | None = None,
 ) -> str:
-    lines = (
-        "# Shadow 24-7 Futures — Prestart Evidence Drycheck (Local)\n\n",
-        f"UTC: `{utc_now.strftime('%Y-%m-%dT%H:%M:%SZ')}`  \n",
-        f"Evidence root: `{evidence_abs}`  \n",
-        f"Repository git SHA prefix hint: `{repo_sha}` (best-effort, filesystem read).\n\n",
-        "## Statements (non-binding; planning evidence only)\n\n",
-        "- No live, testnet, paper, shadow, or production runtime started.\n",
-        "- No scheduler or daemon spawned.\n",
-        "- No network, broker API, exchange private endpoint access, nor order submission.\n",
-        "- Futures/perpetual execution scope remains planning-only pending future gates.\n",
-        "- Wrapper is **not** `READY_TO_START` for Futures Shadow 24/7 daemon.\n\n",
-        "## Operator machine summary (verbatim keys)\n\n",
-        "```text\n",
-        _MACHINE_LINES_ALWAYS,
-        "```\n\n",
-        *_readonly_validation_markdown_lines(readonly_cfg_block),
-        "## Appendix\n\n",
-        "Drycheck artefacts: `manifest.json`, `MANIFEST.sha256`. "
-        "`MANIFEST.sha256` covers canonical UTF-8 bytes of sorted-key pretty JSON manifest.\n",
+    core = "".join(
+        (
+            "# Shadow 24-7 Futures — Prestart Evidence Drycheck (Local)\n\n",
+            f"UTC: `{utc_now.strftime('%Y-%m-%dT%H:%M:%SZ')}`  \n",
+            f"Evidence root: `{evidence_abs}`  \n",
+            f"Repository git SHA prefix hint: `{repo_sha}` (best-effort, filesystem read).\n\n",
+            "## Statements (non-binding; planning evidence only)\n\n",
+            "- No live, testnet, paper, shadow, or production runtime started.\n",
+            "- No scheduler or daemon spawned.\n",
+            "- No network, broker API, exchange private endpoint access, nor order submission.\n",
+            "- Futures/perpetual execution scope remains planning-only pending future gates.\n",
+            "- Wrapper is **not** `READY_TO_START` for Futures Shadow 24/7 daemon.\n\n",
+            "## Operator machine summary (verbatim keys)\n\n",
+            "```text\n",
+            _MACHINE_LINES_ALWAYS,
+            "```\n\n",
+            *_readonly_validation_markdown_lines(readonly_cfg_block),
+            "## Appendix\n\n",
+            "Drycheck artefacts: `manifest.json`, `MANIFEST.sha256`. "
+            "`MANIFEST.sha256` covers canonical UTF-8 bytes of sorted-key pretty JSON manifest.\n",
+        ),
     )
-    return "".join(lines)
+    if bounded_extra is None:
+        return core
+    insert = (
+        "## Bounded runtime contract check (placeholder; non-executing)\n\n"
+        f"- Duration requested: `{bounded_extra['duration_minutes']}` minute(s) "
+        f"(cap `{bounded_extra['duration_cap']}`).\n"
+        f"- Contract version: `{bounded_extra['contract_version']}`.\n"
+        "- No scheduler, daemon, runtime, shadow, testnet, or live workloads started.\n\n"
+    )
+    anchor = "## Operator machine summary (verbatim keys)\n\n"
+    if anchor not in core:
+        return core
+    return core.replace(anchor, insert + anchor, 1)
 
 
 def _execute_prestart_drycheck(
@@ -582,15 +627,20 @@ def _execute_prestart_drycheck(
     repo_root: Path,
     err: TextIO,
     readonly_cfg_block: Mapping[str, Any],
+    bounded_extra: Mapping[str, Any] | None = None,
 ) -> int:
     utc_now = datetime.now(timezone.utc)
     repo_sha = _read_git_sha_prefix(repo_root)
-    manifest = _drycheck_manifest(evidence_root_abs, repo_sha, utc_now, readonly_cfg_block)
+    manifest = _drycheck_manifest(
+        evidence_root_abs, repo_sha, utc_now, readonly_cfg_block, bounded_extra
+    )
 
     manifest_bytes = _canonical_json_bytes(manifest)
     digest_hex = hashlib.sha256(manifest_bytes).hexdigest()
 
-    md_text = _drycheck_markdown(utc_now, evidence_root_abs, repo_sha, readonly_cfg_block)
+    md_text = _drycheck_markdown(
+        utc_now, evidence_root_abs, repo_sha, readonly_cfg_block, bounded_extra
+    )
 
     evidence_root_abs.mkdir(parents=True, exist_ok=True)
     md_path = evidence_root_abs / PRESTART_MARKDOWN_ARTIFACT_V0
@@ -610,6 +660,9 @@ def _execute_prestart_drycheck(
     else:
         err.write("READONLY_OPS_OR_JOBS_CONFIG_VALIDATED=false\n")
         err.write("READONLY_CONFIG_VALIDATION_OK=skipped\n")
+
+    if bounded_extra is not None:
+        err.write("BOUNDED_RUNTIME_CONTRACT_CHECK_WRITTEN=true\n")
 
     err.write(
         "PRESTART_EVIDENCE_DRYCHECK_WRITTEN=true\nEXIT_CODE={}\n".format(EXIT_DRYCHECK_SUCCESS)
@@ -631,8 +684,20 @@ def main(argv: Sequence[str] | None = None) -> int:
     out = sys.stdout
     err = sys.stderr
 
-    if args.inspect and args.prestart_evidence_drycheck:
-        err.write("--inspect combined with --prestart-evidence-drycheck is not allowed.\n")
+    mode_flags_active = sum(
+        1
+        for flag in (
+            args.inspect,
+            args.prestart_evidence_drycheck,
+            args.bounded_runtime_contract_check,
+        )
+        if flag
+    )
+    if mode_flags_active > 1:
+        err.write(
+            "At most one of --inspect, --prestart-evidence-drycheck, and "
+            "--bounded-runtime-contract-check may be set.\n",
+        )
         _emit_banner(err)
         err.write(_MACHINE_LINES_ALWAYS)
         err.write(f"EXIT_REASON=mutually_exclusive_flags\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n")
@@ -648,35 +713,35 @@ def main(argv: Sequence[str] | None = None) -> int:
         return EXIT_FAIL_CLOSED_DEFAULT
 
     if (args.ops_config_path.strip() or args.jobs_config_path.strip()) and (
-        not args.prestart_evidence_drycheck
+        not args.prestart_evidence_drycheck and not args.bounded_runtime_contract_check
     ):
         err.write(
             "`--config` / `--jobs-config` are invalid without `--prestart-evidence-drycheck` "
+            "or `--bounded-runtime-contract-check` "
             "(read-only skeleton validation emits evidence only).\n",
         )
         _emit_banner(err)
         err.write(_MACHINE_LINES_ALWAYS)
         err.write(
-            f"EXIT_REASON=config_validate_requires_drycheck\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+            f"EXIT_REASON=config_validate_requires_evidence_mode\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+        )
+        return EXIT_FAIL_CLOSED_DEFAULT
+
+    if not args.bounded_runtime_contract_check and args.duration_minutes is not None:
+        err.write("`--duration-minutes` is only valid with `--bounded-runtime-contract-check`.\n")
+        _emit_banner(err)
+        err.write(_MACHINE_LINES_ALWAYS)
+        err.write(
+            f"EXIT_REASON=duration_requires_bounded_check\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
         )
         return EXIT_FAIL_CLOSED_DEFAULT
 
     repo_root = _REPO_ROOT_CALC.resolve()
 
-    if args.prestart_evidence_drycheck:
-        validated, ferr = _validate_evidence_root_for_drycheck(args.evidence_root, repo_root)
-        if ferr or validated is None:
-            assert ferr is not None
-            err.write(ferr + "\n")
-            _emit_banner(err)
-            err.write(_MACHINE_LINES_ALWAYS)
-            err.write(
-                f"EXIT_REASON=invalid_evidence_root_drycheck\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n"
-            )
-            return EXIT_FAIL_CLOSED_DEFAULT
-
-        path_v = validated
-
+    def _drycheck_from_valid_evidence(
+        path_v: Path,
+        bounded_extra: Mapping[str, Any] | None,
+    ) -> int:
         cfg_block, ferr_list = _build_readonly_validation_block(
             repo_root,
             args.ops_config_path,
@@ -701,7 +766,83 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             return EXIT_FAIL_CLOSED_DEFAULT
 
-        return _execute_prestart_drycheck(path_v, repo_root, err, cfg_block)
+        return _execute_prestart_drycheck(path_v, repo_root, err, cfg_block, bounded_extra)
+
+    if args.bounded_runtime_contract_check:
+        token = args.confirm_token.strip()
+        if token != FUTURE_OPERATOR_CONFIRMATION_TOKEN_V0:
+            err.write(
+                "bounded-runtime-contract-check requires `--confirm-token` matching the future "
+                "governance literal (still non-executing).\n",
+            )
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                f"EXIT_REASON=bounded_check_token_invalid\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+        if args.duration_minutes is None:
+            err.write("`--duration-minutes` is required with `--bounded-runtime-contract-check`.\n")
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                f"EXIT_REASON=bounded_check_duration_missing\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+        dm = args.duration_minutes
+        if dm < 1 or dm > BOUNDED_RUNTIME_CONTRACT_DURATION_CAP_MINUTES:
+            err.write(
+                "`--duration-minutes` must be between 1 and "
+                f"{BOUNDED_RUNTIME_CONTRACT_DURATION_CAP_MINUTES} inclusive.\n",
+            )
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                f"EXIT_REASON=bounded_check_duration_out_of_range\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+        if not args.ops_config_path.strip() or not args.jobs_config_path.strip():
+            err.write(
+                "`--bounded-runtime-contract-check` requires both `--config` and `--jobs-config`.\n",
+            )
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                f"EXIT_REASON=bounded_check_requires_dual_config\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+
+        validated, ferr = _validate_evidence_root_for_drycheck(args.evidence_root, repo_root)
+        if ferr or validated is None:
+            assert ferr is not None
+            err.write(ferr + "\n")
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                f"EXIT_REASON=invalid_evidence_root_drycheck\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n"
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+
+        bounded_extra: dict[str, Any] = {
+            "duration_minutes": dm,
+            "duration_cap": BOUNDED_RUNTIME_CONTRACT_DURATION_CAP_MINUTES,
+            "contract_version": BOUNDED_RUNTIME_CONTRACT_VERSION_EMBEDDED,
+        }
+        return _drycheck_from_valid_evidence(validated, bounded_extra)
+
+    if args.prestart_evidence_drycheck:
+        validated, ferr = _validate_evidence_root_for_drycheck(args.evidence_root, repo_root)
+        if ferr or validated is None:
+            assert ferr is not None
+            err.write(ferr + "\n")
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                f"EXIT_REASON=invalid_evidence_root_drycheck\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n"
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+
+        return _drycheck_from_valid_evidence(validated, None)
 
     ev_err = _validate_evidence_root(args.evidence_root)
     if ev_err:

@@ -17,6 +17,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "scripts" / "ops" / "shadow_247_futures_start_wrapper_skeleton_v0.py"
 SRC_TEXT = SCRIPT.read_text(encoding="utf-8")
 
+_FUTURE_CONFIRM_TOKEN = (
+    "I_EXPLICITLY_CONFIRM_SHADOW_247_FUTURES_START_WRAPPER_BEYOND_DEFAULT_OFF_SKELETON_V0"
+)
+
 
 def test_shadow_247_futures_wrapper_skeleton_script_exists() -> None:
     assert SCRIPT.is_file(), "expected skeleton under scripts/ops/"
@@ -58,6 +62,9 @@ def test_shadow_247_futures_wrapper_skeleton_source_has_no_blocked_substrings(
         "/tmp/peak_trade",
         "NO_ORDER_SUBMISSION",
         "PRESTART_SCHEMA_V0",
+        "--bounded-runtime-contract-check",
+        "--duration-minutes",
+        "BOUNDED_RUNTIME_CONTRACT_DURATION_CAP_MINUTES",
     ],
 )
 def test_shadow_247_futures_wrapper_skeleton_has_boundary_constants(marker: str) -> None:
@@ -393,7 +400,179 @@ def test_shadow_247_prestart_evidence_drycheck_mutually_exclusive_with_inspect(
             timeout=10,
         )
         assert proc.returncode == 64
-        assert "not allowed" in (proc.stderr + proc.stdout).lower()
+        combo = (proc.stderr + proc.stdout).lower()
+        assert "not allowed" in combo or "at most one of --inspect" in combo
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_bounded_runtime_contract_check_mutually_exclusive_with_inspect(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_bmutex_i_", dir="/tmp")
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--inspect",
+                "--bounded-runtime-contract-check",
+                "--evidence-root",
+                root_str,
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert "one of --inspect" in (proc.stderr + proc.stdout).lower()
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_bounded_runtime_contract_check_mutually_exclusive_with_prestart(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_bmutex_p_", dir="/tmp")
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--prestart-evidence-drycheck",
+                "--bounded-runtime-contract-check",
+                "--evidence-root",
+                root_str,
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert "one of --inspect" in (proc.stderr + proc.stdout).lower()
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_bounded_runtime_contract_check_writes_placeholder_evidence(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_bchk_", dir="/tmp")
+    root = Path(root_str)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--bounded-runtime-contract-check",
+            "--evidence-root",
+            str(root),
+            "--duration-minutes",
+            "10",
+            "--confirm-token",
+            _FUTURE_CONFIRM_TOKEN,
+            "--config",
+            "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+            "--jobs-config",
+            "config/scheduler/jobs.toml",
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=10,
+    )
+    try:
+        assert proc.returncode == 0
+        combo = proc.stderr + proc.stdout
+        assert "BOUNDED_RUNTIME_CONTRACT_CHECK_WRITTEN=true" in combo
+        assert "PRESTART_EVIDENCE_DRYCHECK_WRITTEN=true" in combo
+        doc = json.loads((root / _DRY_MANIFEST_JSON).read_text(encoding="utf-8"))
+        assert doc.get("bounded_runtime_contract_check") is True
+        assert doc.get("duration_minutes_requested") == 10
+        assert doc.get("duration_minutes_cap_enforced") == 30
+        assert (
+            doc.get("bounded_runtime_contract_version")
+            == "shadow_247_futures_bounded_runtime_contract.v0"
+        )
+        assert doc.get("run_started") is False
+        md_txt = (root / _DRY_ART_MD).read_text(encoding="utf-8")
+        assert "Bounded runtime contract check" in md_txt
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_bounded_runtime_contract_check_rejects_missing_jobs_config(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_bcfg_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-runtime-contract-check",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "10",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        combo = (proc.stderr + proc.stdout).lower()
+        assert "requires both" in combo or "jobs-config" in combo
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_bounded_runtime_contract_check_duration_out_of_range(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_bdur_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-runtime-contract-check",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "99",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert "duration-minutes" in (proc.stderr + proc.stdout).lower()
     finally:
         shutil.rmtree(root_str, ignore_errors=True)
 
