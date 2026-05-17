@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import sys
 import time
 
@@ -60,6 +61,7 @@ BOUNDED_SHADOW_DRY_RUN_MARKDOWN_V0 = "SHADOW_247_FUTURES_BOUNDED_SHADOW_DRY_RUN.
 BOUNDED_SHADOW_STEPS_JSONL_V0 = "steps.jsonl"
 BOUNDED_SHADOW_DURATION_CAP_MINUTES = 10
 BOUNDED_SHADOW_MAX_STEPS_CAP = 600
+BOUNDED_SHADOW_STEP_INTERVAL_MAX_SECONDS = 60.0
 
 _BOUNDED_SHADOW_ALLOWED_ENTRIES = frozenset(
     {
@@ -184,6 +186,17 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         help=(
             f"With `--bounded-shadow-dry-run` only: step budget 1–{BOUNDED_SHADOW_MAX_STEPS_CAP} "
             "(default ~12× duration minutes, capped)."
+        ),
+    )
+    parser.add_argument(
+        "--step-interval-seconds",
+        type=float,
+        default=None,
+        metavar="SECONDS",
+        dest="step_interval_seconds",
+        help=(
+            "`--bounded-shadow-dry-run` only: wall-clock seconds between simulated steps "
+            f"(0–{BOUNDED_SHADOW_STEP_INTERVAL_MAX_SECONDS:g}; default 0 for fast local tests)."
         ),
     )
     parser.add_argument(
@@ -816,6 +829,7 @@ def _bounded_shadow_markdown(
             "## Run parameters\n\n",
             f"- Duration cap (minutes): `{run_meta['duration_minutes']}`\n",
             f"- Step budget: `{run_meta['max_steps']}`\n",
+            f"- Step interval (seconds): `{run_meta['step_interval_seconds']}`\n",
             f"- Steps emitted: `{run_meta['steps_emitted']}`\n",
             f"- UTC end: `{run_meta['utc_end']}`\n\n",
             *_readonly_validation_markdown_lines(readonly_cfg_block),
@@ -867,6 +881,7 @@ def _bounded_shadow_manifest(
         "scheduler_started": False,
         "shadow_mode": True,
         "shadow_started": True,
+        "step_interval_seconds": float(run_meta["step_interval_seconds"]),
         "steps_emitted": int(run_meta["steps_emitted"]),
         "steps_jsonl_filename": BOUNDED_SHADOW_STEPS_JSONL_V0,
         "testnet_started": False,
@@ -884,6 +899,7 @@ def _execute_bounded_shadow_dry_run(
     readonly_cfg_block: Mapping[str, Any],
     duration_minutes: int,
     max_steps: int,
+    step_interval_seconds: float,
 ) -> int:
     utc_started = datetime.now(timezone.utc)
     deadline = time.monotonic() + float(duration_minutes) * 60.0
@@ -899,11 +915,18 @@ def _execute_bounded_shadow_dry_run(
         }
         lines.append(json.dumps(payload, sort_keys=True) + "\n")
         steps_emitted += 1
+        if steps_emitted >= max_steps or time.monotonic() >= deadline:
+            break
+        if step_interval_seconds > 0.0:
+            remaining_deadline = deadline - time.monotonic()
+            if remaining_deadline > 0.0:
+                time.sleep(min(step_interval_seconds, remaining_deadline))
 
     utc_ended = datetime.now(timezone.utc)
     run_meta: dict[str, Any] = {
         "duration_minutes": duration_minutes,
         "max_steps": max_steps,
+        "step_interval_seconds": step_interval_seconds,
         "steps_emitted": steps_emitted,
         "utc_end": utc_ended.strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
@@ -937,6 +960,7 @@ def _execute_bounded_shadow_dry_run(
     err.write(_BOUNDED_SHADOW_MACHINE_LINES)
     err.write("READONLY_OPS_OR_JOBS_CONFIG_VALIDATED=true\n")
     err.write("READONLY_CONFIG_VALIDATION_OK=true\n")
+    err.write(f"STEP_INTERVAL_SECONDS={step_interval_seconds}\n")
     err.write(f"BOUNDED_SHADOW_DRY_RUN_STEPS_EMITTED={steps_emitted}\n")
     err.write("BOUNDED_SHADOW_DRY_RUN_WRITTEN=true\n")
     err.write(f"EXIT_CODE={EXIT_DRYCHECK_SUCCESS}\n")
@@ -1023,6 +1047,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         err.write(_MACHINE_LINES_ALWAYS)
         err.write(
             f"EXIT_REASON=max_steps_requires_bounded_shadow\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+        )
+        return EXIT_FAIL_CLOSED_DEFAULT
+
+    if args.step_interval_seconds is not None and not args.bounded_shadow_dry_run:
+        err.write("`--step-interval-seconds` is only valid with `--bounded-shadow-dry-run`.\n")
+        _emit_banner(err)
+        err.write(_MACHINE_LINES_ALWAYS)
+        err.write(
+            f"EXIT_REASON=step_interval_requires_bounded_shadow\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
         )
         return EXIT_FAIL_CLOSED_DEFAULT
 
@@ -1215,7 +1248,37 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             return EXIT_FAIL_CLOSED_DEFAULT
 
-        return _execute_bounded_shadow_dry_run(validated, repo_root, err, cfg_block, dm, int(ms))
+        step_iv = 0.0 if args.step_interval_seconds is None else float(args.step_interval_seconds)
+        if not math.isfinite(step_iv):
+            err.write("`--step-interval-seconds` must be a finite number.\n")
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                f"EXIT_REASON=bounded_shadow_step_interval_non_finite\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+        if step_iv < 0.0 or step_iv > BOUNDED_SHADOW_STEP_INTERVAL_MAX_SECONDS:
+            err.write(
+                "`--step-interval-seconds` must be between 0 and "
+                f"{BOUNDED_SHADOW_STEP_INTERVAL_MAX_SECONDS:g} inclusive.\n",
+            )
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                f"EXIT_REASON=bounded_shadow_step_interval_out_of_range\n"
+                f"EXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+
+        return _execute_bounded_shadow_dry_run(
+            validated,
+            repo_root,
+            err,
+            cfg_block,
+            dm,
+            int(ms),
+            step_iv,
+        )
 
     if args.prestart_evidence_drycheck:
         validated, ferr = _validate_evidence_root_for_drycheck(args.evidence_root, repo_root)
