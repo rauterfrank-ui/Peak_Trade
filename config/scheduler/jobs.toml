@@ -264,3 +264,27 @@ script = "scripts/aiops/run_paper_trading_session.py"
 spec = "tests/fixtures/p7/paper_run_min_v0.json"
 outdir = "out/paper_shadow_247/runtime/min/__DRY_RUN_PLACEHOLDER__"
 
+# =============================================================================
+# Shadow 24/7 Futures wrapper — scheduler placeholder (disabled, non-authorizing)
+# =============================================================================
+# Invokes only the default-off wrapper entrypoint shape when enabled in a future gate.
+# Not Testnet/Live/Broker/Exchange/order authorization. Keep enabled=false until separately approved.
+[[job]]
+name = "shadow_247_futures_prestart_evidence_drycheck_placeholder_v0"
+enabled = false
+schedule_type = "once"
+command = "python"
+args = { script = "scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py" }
+description = "Placeholder: Futures wrapper fail-closed / prestart-drycheck command shape; disabled; non-authorizing."
+tags = ["shadow_247_futures", "futures_wrapper", "readonly", "disabled_by_default", "prestart_only"]
+timeout_seconds = 120
+paper_only = false
+paper_runtime_job = false
+dry_run_visible = true
+shadow_247_futures_placeholder = true
+testnet_authorized = false
+live_authorized = false
+broker_authorized = false
+exchange_authorized = false
+order_submission_authorized = false
+

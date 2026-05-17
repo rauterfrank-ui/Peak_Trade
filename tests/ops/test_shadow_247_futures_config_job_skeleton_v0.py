@@ -1,0 +1,104 @@
+"""Static contract tests for Shadow 24/7 Futures config/job skeleton (no runtime)."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+try:
+    import tomllib
+except ImportError:
+    import tomli as tomllib  # type: ignore[no-redef,import-not-found]
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+OPS_CONFIG = REPO_ROOT / "config" / "ops" / "shadow_247_futures_wrapper_skeleton.toml"
+JOBS_CONFIG = REPO_ROOT / "config" / "scheduler" / "jobs.toml"
+
+PLACEHOLDER_JOB_NAME = "shadow_247_futures_prestart_evidence_drycheck_placeholder_v0"
+
+
+def _load_ops_config() -> dict:
+    return tomllib.loads(OPS_CONFIG.read_text(encoding="utf-8"))
+
+
+def _jobs() -> list[dict]:
+    payload = tomllib.loads(JOBS_CONFIG.read_text(encoding="utf-8"))
+    return payload.get("job", [])
+
+
+def test_shadow_247_futures_ops_config_file_exists() -> None:
+    assert OPS_CONFIG.is_file()
+
+
+def test_shadow_247_futures_ops_config_schema_and_wrapper_path() -> None:
+    cfg = _load_ops_config()
+    assert cfg["schema_version"] == "shadow_247_futures_wrapper_skeleton.v0"
+    assert cfg["wrapper_script"] == "scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py"
+    assert "/tmp/peak_trade_" in cfg["evidence_root_convention"]
+
+
+def test_shadow_247_futures_ops_config_default_off_core() -> None:
+    cfg = _load_ops_config()
+    assert cfg["enabled"] is False
+    assert cfg["armed"] is False
+    assert cfg["dry_run"] is True
+    assert cfg["shadow_mode"] is True
+    assert cfg["immediate_execution_approved"] is False
+    assert cfg["wrapper_daemon_start_allowed"] is False
+
+
+def test_shadow_247_futures_ops_config_futures_scope_explicit() -> None:
+    cfg = _load_ops_config()
+    assert cfg["instrument"] == "BTCUSDT"
+    assert cfg["market_type"] == "futures"
+    assert cfg["perpetual_scope"] is True
+
+
+def test_shadow_247_futures_ops_config_all_runtime_flags_false() -> None:
+    cfg = _load_ops_config()
+    for key in (
+        "testnet_allowed",
+        "live_allowed",
+        "paper_allowed",
+        "network_allowed",
+        "broker_allowed",
+        "exchange_allowed",
+        "order_submission_allowed",
+        "private_exchange_endpoint_allowed",
+        "credentials_allowed",
+    ):
+        assert cfg[key] is False, key
+
+
+def test_shadow_247_futures_ops_config_future_gates_required_flags() -> None:
+    cfg = _load_ops_config()
+    assert cfg["supervisor_timeout_future_gate_required"] is True
+    assert cfg["abort_stop_criteria_future_gate_required"] is True
+    assert cfg["final_operator_confirmation_gate_required"] is True
+
+
+def test_shadow_247_futures_ops_config_wrapper_modes_include_prestart_only() -> None:
+    cfg = _load_ops_config()
+    modes = cfg["wrapper_modes_allowed"]
+    assert "prestart_evidence_drycheck" in modes
+    assert "inspect" in modes
+    assert "default_fail_closed" in modes
+
+
+def test_shadow_247_futures_scheduler_placeholder_is_disabled_and_safe() -> None:
+    job = next(j for j in _jobs() if j.get("name") == PLACEHOLDER_JOB_NAME)
+    assert job["enabled"] is False
+    assert job["args"]["script"] == "scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py"
+    assert job.get("paper_only") is False
+    assert job.get("paper_runtime_job") is False
+    for key in (
+        "testnet_authorized",
+        "live_authorized",
+        "broker_authorized",
+        "exchange_authorized",
+        "order_submission_authorized",
+    ):
+        assert job[key] is False
+    tags = job.get("tags", [])
+    assert "disabled_by_default" in tags
+    assert "shadow_247_futures" in tags
+    assert "prestart_only" in tags
