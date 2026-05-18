@@ -1,4 +1,8 @@
-"""Static contract tests for Shadow 24/7 Futures config/job skeleton (no runtime)."""
+"""Static contract tests for Shadow 24/7 Futures config/job skeleton (no runtime).
+
+Includes small drift hooks: scheduler placeholder relpath must match ops `wrapper_script`;
+preflight status job must stay on the read-only reporter (not the futures wrapper).
+"""
 
 from __future__ import annotations
 
@@ -14,6 +18,8 @@ OPS_CONFIG = REPO_ROOT / "config" / "ops" / "shadow_247_futures_wrapper_skeleton
 JOBS_CONFIG = REPO_ROOT / "config" / "scheduler" / "jobs.toml"
 
 PLACEHOLDER_JOB_NAME = "shadow_247_futures_prestart_evidence_drycheck_placeholder_v0"
+PREFLIGHT_STATUS_JOB_NAME = "paper_shadow_247_paper_only_preflight_status_v0"
+PREFLIGHT_REPORTER_SCRIPT = "scripts/ops/report_paper_shadow_247_preflight_status.py"
 
 
 def _load_ops_config() -> dict:
@@ -102,3 +108,28 @@ def test_shadow_247_futures_scheduler_placeholder_is_disabled_and_safe() -> None
     assert "disabled_by_default" in tags
     assert "shadow_247_futures" in tags
     assert "prestart_only" in tags
+
+
+def test_shadow_247_futures_placeholder_job_script_matches_ops_wrapper_path() -> None:
+    """Drift hook: scheduler placeholder and ops TOML must reference the same wrapper relpath."""
+    cfg = _load_ops_config()
+    job = next(j for j in _jobs() if j.get("name") == PLACEHOLDER_JOB_NAME)
+    assert job["args"]["script"] == cfg["wrapper_script"]
+
+
+def test_shadow_247_futures_ops_wrapper_script_file_exists() -> None:
+    cfg = _load_ops_config()
+    wrapper = REPO_ROOT / cfg["wrapper_script"]
+    assert wrapper.is_file()
+
+
+def test_paper_shadow_247_preflight_status_job_is_readonly_reporter_not_futures_wrapper() -> None:
+    """Preflight job may be scheduler-visible but must stay the read-only reporter, not the futures wrapper."""
+    job = next(j for j in _jobs() if j.get("name") == PREFLIGHT_STATUS_JOB_NAME)
+    assert job["args"]["script"] == PREFLIGHT_REPORTER_SCRIPT
+    assert job["args"]["script"] != "scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py"
+    tags = job.get("tags", [])
+    assert "readonly" in tags
+    assert "preflight" in tags
+    assert job.get("testnet_authorized") is False
+    assert job.get("live_authorized") is False
