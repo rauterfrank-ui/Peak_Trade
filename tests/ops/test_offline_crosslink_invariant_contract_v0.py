@@ -12,6 +12,9 @@ Ergänzt zudem einen statischen Scheduler-Anker für Paper/Shadow-247 Jobs und d
 (Pfade lösen unter ``REPO_ROOT``; keine Laufzeitfreigabe).
 
 Ergänzt stabile Offline-Anker für ``snapshot_operator_stop_signals`` (Contract-ID / PT_STOP_KEYS).
+
+Ergänzt Pfad-Anker für ``SHADOW_247_GOVERNANCE_CHARTER_V0.md`` und optionale Observation-Entrypoint-Skripte
+(nur ``Path.is_file``; keine Charter-Semantik — siehe ``test_shadow247_governance_charter_doc_contract_v0``).
 """
 
 from __future__ import annotations
@@ -45,9 +48,15 @@ _STATIC_PKG = REPO_ROOT / "scripts/ops/build_static_market_capture_package_v0.py
 _OFFLINE_GATE_CONFIRM_TOKEN = "NO_NETWORK_NO_BROKER_NO_EXCHANGE_NO_ORDERS"
 _WRAPPER_OWNER_TEST = REPO_ROOT / "tests/ops/test_shadow_247_futures_start_wrapper_skeleton_v0.py"
 _PREFLIGHT = REPO_ROOT / "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+_CHARTER = REPO_ROOT / "docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md"
+_OBS_FILE_SNAPSHOT_SCRIPT = REPO_ROOT / "scripts/ops/run_shadow_observation_file_snapshot_v0.py"
+_OBS_SUPERVISED_TIMED_SCRIPT = (
+    REPO_ROOT / "scripts/ops/run_shadow_observation_supervised_timed_v0.py"
+)
 _SUPERVISED_OBSERVER_TEST = (
     REPO_ROOT / "tests/ops/test_shadow_observation_supervised_timed_observer_v0.py"
 )
+_OFFLINE_CROSSLINK_SELF = Path(__file__).resolve()
 _JOBS_TOML = REPO_ROOT / "config" / "scheduler" / "jobs.toml"
 _SHADOW247_WRAPPER_OPS_TOML = (
     REPO_ROOT / "config" / "ops" / "shadow_247_futures_wrapper_skeleton.toml"
@@ -169,8 +178,22 @@ def test_preflight_contract_doc_states_blocked_non_authorizing() -> None:
 def test_supervised_observer_is_optional_test_surface_not_p67_gate() -> None:
     """Traceability crosslink reused gate artefacts; P67 Pfad referenziert kein supervised bundle."""
     assert _SUPERVISED_OBSERVER_TEST.is_file()
+    assert _OBS_SUPERVISED_TIMED_SCRIPT.is_file()
+    assert _OBS_FILE_SNAPSHOT_SCRIPT.is_file()
     p67_txt = _P67_SCHEDULER.read_text(encoding="utf-8").lower()
     assert "supervised" not in p67_txt
+
+
+def test_offline_crosslink_shadow247_governance_charter_path_anchor_v0() -> None:
+    """Path-only anchor; charter semantics are covered by test_shadow247_governance_charter_doc_contract_v0."""
+    assert _CHARTER.is_file()
+
+
+def test_offline_crosslink_charter_lists_this_contract_module_v0() -> None:
+    """Symmetric traceability: charter already references this offline crosslink test."""
+    body = _CHARTER.read_text(encoding="utf-8")
+    assert "test_offline_crosslink_invariant_contract_v0.py" in body
+    assert _OFFLINE_CROSSLINK_SELF.name in body
 
 
 def test_offline_jobs_shadow247_scripts_resolve_v0() -> None:
