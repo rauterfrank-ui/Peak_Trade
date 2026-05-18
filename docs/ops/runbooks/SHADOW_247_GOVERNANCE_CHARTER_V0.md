@@ -37,6 +37,7 @@ This charter **does not replace** the preflight contract, ops TOMLs, scheduler c
 - **Wrapper skeleton (fail-closed):** `scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py`
   - **Standard bounded Shadow dry-run cap (default):** 10 minutes / 600 simulated steps — unchanged.
   - **Extended tier (governed, default-off):** optional CLI path up to 60 minutes / 3600 steps only with `--extended-bounded-shadow-validation` plus a **distinct** extended confirm token (separate from the base wrapper token). Still local dry-run Shadow only; still **non-authorizing**; does **not** satisfy Stage 3 or any Live/Testnet/broker/exchange/order path.
+  - **24h candidate tier (governed, default-off):** optional CLI path up to 1440 minutes / 86400 steps only with `--candidate-24h-bounded-shadow-validation` plus a **distinct** `--candidate-24h-confirm-token` (separate from base and extended tokens; mutually exclusive with the extended flag). Preparation for bounded dry-run **candidate** validation only — **non-authorizing**, requires separate operator GO for any execution, does **not** imply 24/7 readiness or Stage 3+.
 - **Static drift tests (non-authorizing):** e.g. `tests/ops/test_shadow_247_futures_config_job_skeleton_v0.py`, `tests/ops/test_offline_crosslink_invariant_contract_v0.py`, `tests/ops/test_shadow_247_futures_start_wrapper_skeleton_v0.py`
 
 ---
