@@ -1018,7 +1018,8 @@
 
       <section
         id="market-v0-depth-ssr"
-        aria-label="Market depth read-model (SSR, offline or disabled)"
+        role="region"
+        aria-labelledby="market-v0-landmark-depth-ssr-h2"
         class="border-0 border-l-4 {% if market_depth.display_status == 'ok' %}border-l-emerald-500/55{% else %}border-l-amber-500/50{% endif %} bg-slate-900/70 px-3 py-3 text-[11px] text-slate-300"
         data-market-depth-panel="true"
         data-market-depth-status="{{ market_depth.display_status }}"
@@ -1026,6 +1027,7 @@
         data-market-depth-readmodel-id="{{ market_depth.readmodel_id }}"
         {% endif %}
       >
+        <h2 id="market-v0-landmark-depth-ssr-h2" class="sr-only" data-market-v0-depth-landmark-heading-v0="true">Market depth read-model (SSR, offline or disabled)</h2>
         <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
           <p class="font-semibold text-slate-100 tracking-wide uppercase text-[11px] m-0">
             Market Depth (read-only)
