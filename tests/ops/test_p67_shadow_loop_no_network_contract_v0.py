@@ -24,6 +24,7 @@ _P67_CHAIN_SOURCE_RELPATHS: tuple[str, ...] = (
     "scripts/ops/run_shadow_loop_v1.sh",
     "src/ops/p67/shadow_session_scheduler_cli_v1.py",
     "src/ops/p67/shadow_session_scheduler_v1.py",
+    "src/ops/p67/recorded_price_series_v0.py",
     "src/ops/p66/run_online_readiness_operator_entrypoint_v1.py",
     "src/ops/p65/run_online_readiness_loop_runner_v1.py",
     "src/ops/p64/run_online_readiness_runner_v1.py",

@@ -15,9 +15,16 @@ if [[ -z "$OUT_DIR" ]]; then
 fi
 
 cd "$(git rev-parse --show-toplevel)"
+
+REC_ARGS=()
+if [[ -n "${RECORDED_PRICE_SOURCE:-}" ]]; then
+  REC_ARGS=(--recorded-price-source "$RECORDED_PRICE_SOURCE")
+fi
+
 python3 -m src.ops.p67.shadow_session_scheduler_cli_v1 \
   --mode "$MODE" \
   --run-id "$RUN_ID" \
   --out-dir "$OUT_DIR" \
   --iterations "$ITERATIONS" \
-  --interval-seconds "$INTERVAL"
+  --interval-seconds "$INTERVAL" \
+  "${REC_ARGS[@]}"
