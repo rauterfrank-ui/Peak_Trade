@@ -12,6 +12,10 @@ from src.ops.p66.run_online_readiness_operator_entrypoint_v1 import (
     P66RunContextV1,
     run_online_readiness_operator_entrypoint_v1,
 )
+from .recorded_price_series_v0 import (
+    load_simple_returns_from_recorded_price_source,
+    validate_recorded_price_source_path,
+)
 
 ModeV1 = Literal["paper", "shadow"]
 
@@ -26,6 +30,7 @@ class P67RunContextV1:
     out_dir: Optional[Path] = None
     iterations: int = 1
     interval_seconds: float = 60.0
+    recorded_price_source: Optional[Path] = None
 
 
 def _utc_ts() -> str:
@@ -52,6 +57,21 @@ def run_shadow_session_scheduler_v1(ctx: P67RunContextV1) -> dict:
     if ctx.interval_seconds < 0:
         raise ValueError("ERR: interval_seconds must be >= 0")
 
+    recorded_price_source_used = False
+    recorded_price_source_path: Optional[str] = None
+    recorded_price_series_count: Optional[int] = None
+
+    if ctx.recorded_price_source is not None:
+        src_resolved, src_err = validate_recorded_price_source_path(str(ctx.recorded_price_source))
+        if src_err or src_resolved is None:
+            raise ValueError(src_err or "recorded price source validation failed")
+        price_series, _mid_count = load_simple_returns_from_recorded_price_source(src_resolved)
+        recorded_price_source_used = True
+        recorded_price_source_path = str(src_resolved)
+        recorded_price_series_count = len(price_series)
+    else:
+        price_series = list(_DEFAULT_PRICES)
+
     events: list[dict] = []
     base_out_dir = ctx.out_dir
     scheduler_meta = {
@@ -61,6 +81,9 @@ def run_shadow_session_scheduler_v1(ctx: P67RunContextV1) -> dict:
         "iterations": ctx.iterations,
         "interval_seconds": ctx.interval_seconds,
         "ts_utc_start": _utc_ts(),
+        "recorded_price_source_used": recorded_price_source_used,
+        "recorded_price_source_path": recorded_price_source_path,
+        "recorded_price_series_count": recorded_price_series_count,
     }
 
     for i in range(ctx.iterations):
@@ -78,7 +101,7 @@ def run_shadow_session_scheduler_v1(ctx: P67RunContextV1) -> dict:
             iterations=1,
             sleep_seconds=0.0,
         )
-        out = run_online_readiness_operator_entrypoint_v1(_DEFAULT_PRICES, p66_ctx)
+        out = run_online_readiness_operator_entrypoint_v1(price_series, p66_ctx)
         out_jsonable = to_jsonable_v1(out)
 
         event = {

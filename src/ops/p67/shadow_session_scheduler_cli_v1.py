@@ -17,16 +17,23 @@ def main() -> int:
     ap.add_argument("--out-dir", default="", help="If set, write evidence under this directory.")
     ap.add_argument("--iterations", type=int, default=1)
     ap.add_argument("--interval-seconds", type=float, default=60.0)
+    ap.add_argument(
+        "--recorded-price-source",
+        default="",
+        help="Absolute path to local directory with recorded public REST JSON snapshots.",
+    )
     ap.add_argument("--json", action="store_true", help="Print JSON result.")
     args = ap.parse_args()
 
     out_dir = Path(args.out_dir) if args.out_dir else None
+    rec = args.recorded_price_source.strip()
     ctx = P67RunContextV1(
         mode=args.mode,
         run_id=args.run_id,
         out_dir=out_dir,
         iterations=args.iterations,
         interval_seconds=args.interval_seconds,
+        recorded_price_source=Path(rec) if rec else None,
     )
     res = run_shadow_session_scheduler_v1(ctx)
     if args.json:
