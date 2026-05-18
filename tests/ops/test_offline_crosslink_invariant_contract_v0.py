@@ -3,15 +3,21 @@
 Verankert die im Traceability-Report beschriebene Semantik (Recorded public source → P67-Meta →
 bounded replay / lokale Inventur) an stabilen Repo-Ankern — ohne /tmp-Gate-Artefakte, ohne Subprozesse,
 ohne Netzwerk. Erzeugt keine Laufzeitfreigabe und keine parallele Evidenz-Oberfläche.
+
+Ergänzt die statische Offline-Grenze zwischen ``build_static_market_capture_package_v0`` und
+``build_public_rest_to_supervised_observer_bridge_v0`` (gemeinsames CONFIRM_TOKEN); schließt **kein**
+neues supervised-observation-Bundle ein.
 """
 
 from __future__ import annotations
 
 import importlib
+import importlib.util
 import json
 import socket
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -24,11 +30,22 @@ _RECORDED_ADAPTER = REPO_ROOT / "src/ops/p67/recorded_price_series_v0.py"
 _P67_SCHEDULER = REPO_ROOT / "src/ops/p67/shadow_session_scheduler_v1.py"
 _WRAPPER = REPO_ROOT / "scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py"
 _BRIDGE = REPO_ROOT / "scripts/ops/build_public_rest_to_supervised_observer_bridge_v0.py"
+_STATIC_PKG = REPO_ROOT / "scripts/ops/build_static_market_capture_package_v0.py"
+# Operator-supplied static package + public-rest→observer bridge share this offline gate (no new bundle).
+_OFFLINE_GATE_CONFIRM_TOKEN = "NO_NETWORK_NO_BROKER_NO_EXCHANGE_NO_ORDERS"
 _WRAPPER_OWNER_TEST = REPO_ROOT / "tests/ops/test_shadow_247_futures_start_wrapper_skeleton_v0.py"
 _PREFLIGHT = REPO_ROOT / "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 _SUPERVISED_OBSERVER_TEST = (
     REPO_ROOT / "tests/ops/test_shadow_observation_supervised_timed_observer_v0.py"
 )
+
+
+def _load_scripts_ops_module(fake_name: str, path: Path) -> Any:
+    spec = importlib.util.spec_from_file_location(fake_name, path)
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
 
 
 def test_public_capture_and_recorded_adapter_surfaces_exist() -> None:
@@ -73,6 +90,24 @@ def test_shadow_247_wrapper_owner_test_defines_matching_replay_constant() -> Non
 
 def test_optional_public_rest_to_supervised_observer_bridge_script_present() -> None:
     assert _BRIDGE.is_file()
+
+
+def test_static_market_capture_package_and_bridge_share_offline_confirm_token() -> None:
+    """Static gate package and bridge share one explicit offline confirm line — metadata crosslink only."""
+    assert _STATIC_PKG.is_file()
+    pkg_mod = _load_scripts_ops_module("_offline_crosslink_static_pkg_v0", _STATIC_PKG)
+    bridge_mod = _load_scripts_ops_module("_offline_crosslink_pub_rest_bridge_v0", _BRIDGE)
+    assert pkg_mod.CONFIRM_TOKEN == _OFFLINE_GATE_CONFIRM_TOKEN
+    assert bridge_mod.CONFIRM_TOKEN == _OFFLINE_GATE_CONFIRM_TOKEN
+    assert pkg_mod.CONFIRM_TOKEN == bridge_mod.CONFIRM_TOKEN
+
+
+def test_public_rest_capture_script_uses_distinct_confirm_token_from_static_offline_gate() -> None:
+    """One-shot public REST capture keeps its own token; do not conflate with offline package/bridge gate."""
+    cap = next(REPO_ROOT.glob("scripts/ops/capture_public_rest_binance*_v0.py"))
+    body = cap.read_text(encoding="utf-8")
+    assert 'CONFIRM_TOKEN = "ALLOW_PUBLIC_REST_MARKET_DATA_ONE_SHOT_NO_AUTH_NO_ORDERS"' in body
+    assert f'CONFIRM_TOKEN = "{_OFFLINE_GATE_CONFIRM_TOKEN}"' not in body
 
 
 def test_declarative_no_order_surfaces_reject_live_and_execution_authority() -> None:
