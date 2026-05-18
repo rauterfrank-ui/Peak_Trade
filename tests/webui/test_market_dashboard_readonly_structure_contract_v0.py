@@ -59,6 +59,27 @@ def test_market_dashboard_keeps_depth_ssr_without_client_depth_fetch(
     assert "XMLHttpRequest" not in html
 
 
+def test_market_dashboard_depth_ssr_region_role_contract_v0(client: TestClient) -> None:
+    """SSR depth strip section exposes role=region and aria-labelledby to landmark h2."""
+    html = _html(client, "/market")
+    assert re.search(
+        r'id="market-v0-depth-ssr"\s+role="region"\s+aria-labelledby="market-v0-landmark-depth-ssr-h2"',
+        html,
+    )
+    assert 'id="market-v0-landmark-depth-ssr-h2"' in html
+    assert 'data-market-v0-depth-landmark-heading-v0="true"' in html
+
+
+def test_double_play_market_dashboard_excludes_depth_ssr_region_role_contract_v0(
+    client: TestClient,
+) -> None:
+    html = _html(client, "/market/double-play")
+    assert not re.search(
+        r'id="market-v0-depth-ssr"\s+role="region"\s+aria-labelledby="market-v0-landmark-depth-ssr-h2"',
+        html,
+    )
+
+
 def test_double_play_market_dashboard_does_not_embed_market_depth_api_fetch(
     client: TestClient,
 ) -> None:
