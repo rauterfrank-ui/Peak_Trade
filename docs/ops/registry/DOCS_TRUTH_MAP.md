@@ -72,6 +72,7 @@ Kurzablauf, wenn **`src/orders/`** (Prefix-Regel) geändert wird:
 Wenn **`docs/ops/registry/TRUTH_BRANCH_PROTECTION.md`** geändert wird, muss im **selben Diff** **`docs/ops/registry/DOCS_TRUTH_MAP.md`** (diese Datei) einen kurzen Eintrag unter „Änderungsnachweis“ erhalten — damit bleibt die Registry-Landkarte mit der Branch-Protection-Referenz im Einklang (siehe Regel `truth-branch-protection-canonical` in `config/ops/docs_truth_map.yaml`).
 
 ## Änderungsnachweis (Slice A)
+- 2026-05-18 — `docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md` — Shadow-247 **Governance Charter v0** (activation ladder, operator/stop/evidence **planning**; **non-authorizing**; `not_ready` / STOP_IDLE); Querverweis aus `PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` + `RUNBOOK_INDEX.md`; **kein** Live-/Testnet-/Daemon-/Run-Unlock; **kein** Ersatz für Preflight-Contract oder TOMLs.
 - `docs/ops/runbooks/CANARY_LIVE_ENTRY_CRITERIA.md` → PR #3494 (Canary readiness crosslinks slice): pointer-only Verlinkung auf bestehende Readiness-/Bounded-Pilot-Runbooks; kein neuer Readiness-/Evidence-Surface, kein Live-Unlock, keine LB-APR-Abkürzung, NO-LIVE-Default unverändert.
 
 - 2026-05-02 — `docs&#47;ops&#47;specs&#47;MASTER_V2_GO_LIVE_ROADMAP_V0.md` — Informative **`### 3.1 Autonomy stage crosswalk (informative only)`** (planning vocabulary vs §4–§10; distributed recurring verification; **kein** neuer **`24&#47;7 Paper-Test-Daemon`**); **docs-only / non-authorizing**; **keine** Live-&#47;Testnet-&#47;Execution-Freigabe; Gates &#47; KillSwitch &#47; Risk dominieren weiterhin.

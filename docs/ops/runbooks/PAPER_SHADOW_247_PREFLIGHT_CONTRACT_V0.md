@@ -8,6 +8,10 @@ It does **not** authorize activation. It does **not** start a daemon. It does **
 
 Current status: **BLOCKED**.
 
+### Related: Shadow-247 governance charter (non-authorizing)
+
+For the **activation ladder**, operator-approval semantics, stop/evidence planning boundaries, and explicit **STOP_IDLE** posture, see **[SHADOW_247_GOVERNANCE_CHARTER_V0.md](SHADOW_247_GOVERNANCE_CHARTER_V0.md)**. That charter is governance-only and **does not** override this document’s **BLOCKED** status or constitute a runtime approval.
+
 ## 2. Canonical activation status
 
 There is no approved one-command Paper/Shadow 24/7 activation path in the repository.
