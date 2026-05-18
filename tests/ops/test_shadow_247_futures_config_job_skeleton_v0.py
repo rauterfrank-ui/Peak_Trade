@@ -23,6 +23,7 @@ JOBS_CONFIG = REPO_ROOT / "config" / "scheduler" / "jobs.toml"
 PLACEHOLDER_JOB_NAME = "shadow_247_futures_prestart_evidence_drycheck_placeholder_v0"
 PREFLIGHT_STATUS_JOB_NAME = "paper_shadow_247_paper_only_preflight_status_v0"
 PREFLIGHT_REPORTER_SCRIPT = "scripts/ops/report_paper_shadow_247_preflight_status.py"
+RUNTIME_HIGH_VOL_JOB_NAME = "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0"
 
 
 def _load_ops_config() -> dict:
@@ -142,6 +143,30 @@ def test_paper_shadow_247_preflight_status_job_is_readonly_reporter_not_futures_
     assert job.get("live_authorized") is False
 
 
+def test_paper_preflight_job_shape_vs_toml_crosslink_v0() -> None:
+    """Crosslink read-only preflight reporter job with paper_shadow_247_preflight.toml (no activation)."""
+    pf = _load_paper_shadow_preflight_toml()
+    job = next(j for j in _jobs() if j.get("name") == PREFLIGHT_STATUS_JOB_NAME)
+    assert PREFLIGHT_STATUS_JOB_NAME in pf.get("paper_jobs", [])
+    assert job["args"]["script"] == PREFLIGHT_REPORTER_SCRIPT
+    assert job["args"]["script"] != "scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py"
+    tags = set(job.get("tags", []))
+    assert tags >= {"paper_shadow_247", "preflight", "readonly"}
+    assert job.get("paper_only") is True
+    assert job.get("dry_run_visible") is True
+    for key in (
+        "testnet_authorized",
+        "live_authorized",
+        "broker_authorized",
+        "exchange_authorized",
+        "order_submission_authorized",
+    ):
+        assert job.get(key) is False, key
+    assert pf["scheduler_execution_authorized"] is False
+    assert pf["daemon_activation_authorized"] is False
+    assert pf["shadow_runtime_authorized"] is False
+
+
 def test_paper_shadow_247_preflight_toml_exists_parseable_and_default_off() -> None:
     """Read-only preflight metadata must stay default-off; does not authorize any activation path."""
     assert PAPER_SHADOW_PREFLIGHT_TOML.is_file()
@@ -182,3 +207,28 @@ def test_paper_shadow247_preflight_toml_and_futures_wrapper_toml_default_off_cro
         "order_submission_authorized",
     ):
         assert pf[key] is False and wrap[key.replace("_authorized", "_allowed")] is False, key
+
+
+def test_paper_shadow247_runtime_fixture_job_stays_quarantined_v0() -> None:
+    """Paper runtime fixture job stays disabled and off wrapper/reporter activation paths."""
+    job = next(j for j in _jobs() if j.get("name") == RUNTIME_HIGH_VOL_JOB_NAME)
+    assert job["enabled"] is False
+    assert job.get("paper_only") is True
+    assert job.get("paper_runtime_job") is True
+    assert job.get("dry_run_visible") is True
+    script = job["args"]["script"]
+    assert script == "scripts/aiops/run_paper_trading_session.py"
+    assert script != "scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py"
+    assert script != PREFLIGHT_REPORTER_SCRIPT
+    tags = set(job.get("tags", []))
+    assert "disabled_by_default" in tags
+    assert "paper_runtime" in tags
+    for key in (
+        "testnet_authorized",
+        "live_authorized",
+        "broker_authorized",
+        "exchange_authorized",
+        "order_submission_authorized",
+    ):
+        assert job.get(key) is False, key
+    assert job.get("shadow_247_futures_placeholder") is not True

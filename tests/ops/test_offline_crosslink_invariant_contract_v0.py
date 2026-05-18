@@ -7,6 +7,9 @@ ohne Netzwerk. Erzeugt keine Laufzeitfreigabe und keine parallele Evidenz-Oberfl
 Ergänzt die statische Offline-Grenze zwischen ``build_static_market_capture_package_v0`` und
 ``build_public_rest_to_supervised_observer_bridge_v0`` (gemeinsames CONFIRM_TOKEN); schließt **kein**
 neues supervised-observation-Bundle ein.
+
+Ergänzt zudem einen statischen Scheduler-Anker für Paper/Shadow-247 Jobs und das Futures-Wrapper-TOML
+(Pfade lösen unter ``REPO_ROOT``; keine Laufzeitfreigabe).
 """
 
 from __future__ import annotations
@@ -20,6 +23,11 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+
+try:
+    import tomllib
+except ImportError:
+    import tomli as tomllib  # type: ignore[no-redef,import-not-found]
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -37,6 +45,16 @@ _WRAPPER_OWNER_TEST = REPO_ROOT / "tests/ops/test_shadow_247_futures_start_wrapp
 _PREFLIGHT = REPO_ROOT / "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 _SUPERVISED_OBSERVER_TEST = (
     REPO_ROOT / "tests/ops/test_shadow_observation_supervised_timed_observer_v0.py"
+)
+_JOBS_TOML = REPO_ROOT / "config" / "scheduler" / "jobs.toml"
+_SHADOW247_WRAPPER_OPS_TOML = (
+    REPO_ROOT / "config" / "ops" / "shadow_247_futures_wrapper_skeleton.toml"
+)
+# Stable scheduler names; static path contract only (preflight reporter may stay enabled elsewhere).
+_OFFLINE_SHADOW247_SCHEDULER_JOB_NAMES = (
+    "paper_shadow_247_paper_only_preflight_status_v0",
+    "shadow_247_futures_prestart_evidence_drycheck_placeholder_v0",
+    "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0",
 )
 
 
@@ -150,6 +168,30 @@ def test_supervised_observer_is_optional_test_surface_not_p67_gate() -> None:
     assert _SUPERVISED_OBSERVER_TEST.is_file()
     p67_txt = _P67_SCHEDULER.read_text(encoding="utf-8").lower()
     assert "supervised" not in p67_txt
+
+
+def test_offline_jobs_shadow247_scripts_resolve_v0() -> None:
+    """Scheduler anchors for Paper/Shadow-247: on-disk scripts match wrapper TOML (static only)."""
+    ops = tomllib.loads(_SHADOW247_WRAPPER_OPS_TOML.read_text(encoding="utf-8"))
+    wrapper_script = ops["wrapper_script"]
+    jobs = tomllib.loads(_JOBS_TOML.read_text(encoding="utf-8")).get("job", [])
+    by_name = {j["name"]: j for j in jobs if isinstance(j, dict) and "name" in j}
+
+    for name in _OFFLINE_SHADOW247_SCHEDULER_JOB_NAMES:
+        assert name in by_name, f"missing scheduler job: {name!r}"
+
+    pre = by_name["paper_shadow_247_paper_only_preflight_status_v0"]
+    script_rel = pre["args"]["script"]
+    assert (REPO_ROOT / script_rel).is_file()
+
+    ph = by_name["shadow_247_futures_prestart_evidence_drycheck_placeholder_v0"]
+    assert ph["args"]["script"] == wrapper_script
+    assert (REPO_ROOT / ph["args"]["script"]).is_file()
+
+    rt = by_name["paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0"]
+    ra = rt["args"]
+    assert (REPO_ROOT / ra["script"]).is_file()
+    assert (REPO_ROOT / ra["spec"]).is_file()
 
 
 def test_p67_recorded_source_meta_matches_offline_crosslink_semantics(
