@@ -8,6 +8,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTRACT = REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+CHARTER = REPO_ROOT / "docs" / "ops" / "runbooks" / "SHADOW_247_GOVERNANCE_CHARTER_V0.md"
+CHARTER_NAME = "SHADOW_247_GOVERNANCE_CHARTER_V0.md"
 SCHEDULER_DAEMON = REPO_ROOT / "docs" / "SCHEDULER_DAEMON.md"
 JOBS_TOML = REPO_ROOT / "config" / "scheduler" / "jobs.toml"
 
@@ -20,6 +22,18 @@ def _extract_json_example(markdown: str) -> dict[str, object]:
     match = re.search(r"```json\n(.*?)\n```", markdown, re.DOTALL)
     assert match is not None
     return json.loads(match.group(1))
+
+
+def test_paper_shadow_247_contract_links_governance_charter_without_overriding_blocked_v0() -> None:
+    text = _read_contract()
+    assert CHARTER.is_file()
+    assert f"]({CHARTER_NAME})" in text
+    assert "Shadow-247 governance charter" in text
+    assert "**STOP_IDLE**" in text
+    assert "**does not** override this document" in text
+    assert "**BLOCKED** status" in text
+    assert "governance-only" in text
+    assert "runtime approval" in text
 
 
 def test_paper_shadow_247_contract_is_blocked_and_non_authorizing() -> None:
