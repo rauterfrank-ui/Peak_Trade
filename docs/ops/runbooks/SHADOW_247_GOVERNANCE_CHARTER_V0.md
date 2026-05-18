@@ -35,6 +35,8 @@ This charter **does not replace** the preflight contract, ops TOMLs, scheduler c
 - **Scheduler jobs:** `config/scheduler/jobs.toml` — preflight reporter vs placeholder vs quarantined paper-runtime jobs (see contract and tests).
 - **Stop snapshot (read-only):** `scripts/ops/snapshot_operator_stop_signals.py` — `CONTRACT_ID` / `PT_STOP_KEYS`; does not authorize trading.
 - **Wrapper skeleton (fail-closed):** `scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py`
+  - **Standard bounded Shadow dry-run cap (default):** 10 minutes / 600 simulated steps — unchanged.
+  - **Extended tier (governed, default-off):** optional CLI path up to 60 minutes / 3600 steps only with `--extended-bounded-shadow-validation` plus a **distinct** extended confirm token (separate from the base wrapper token). Still local dry-run Shadow only; still **non-authorizing**; does **not** satisfy Stage 3 or any Live/Testnet/broker/exchange/order path.
 - **Static drift tests (non-authorizing):** e.g. `tests/ops/test_shadow_247_futures_config_job_skeleton_v0.py`, `tests/ops/test_offline_crosslink_invariant_contract_v0.py`, `tests/ops/test_shadow_247_futures_start_wrapper_skeleton_v0.py`
 
 ---

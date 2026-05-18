@@ -28,6 +28,9 @@ SRC_TEXT = SCRIPT.read_text(encoding="utf-8")
 _FUTURE_CONFIRM_TOKEN = (
     "I_EXPLICITLY_CONFIRM_SHADOW_247_FUTURES_START_WRAPPER_BEYOND_DEFAULT_OFF_SKELETON_V0"
 )
+_EXTENDED_BOUNDED_CONFIRM_TOKEN = (
+    "I_EXPLICITLY_CONFIRM_SHADOW_247_EXTENDED_BOUNDED_SHADOW_60M_TIER_V0"
+)
 
 
 def test_shadow_247_futures_wrapper_skeleton_script_exists() -> None:
@@ -77,7 +80,12 @@ def test_shadow_247_futures_wrapper_skeleton_source_has_no_blocked_substrings(
         "--duration-minutes",
         "BOUNDED_RUNTIME_CONTRACT_DURATION_CAP_MINUTES",
         "BOUNDED_SHADOW_DURATION_CAP_MINUTES",
+        "BOUNDED_SHADOW_EXTENDED_DURATION_CAP_MINUTES",
+        "BOUNDED_SHADOW_EXTENDED_MAX_STEPS_CAP",
+        "EXTENDED_BOUNDED_SHADOW_CONFIRM_TOKEN_V0",
         "BOUNDED_SHADOW_STEP_INTERVAL_MAX_SECONDS",
+        "--extended-bounded-shadow-validation",
+        "--extended-confirm-token",
         "--recorded-public-rest-source",
         "bounded_shadow_dry_run_recorded_public_rest_replay_heartbeat",
     ],
@@ -955,6 +963,428 @@ def test_shadow_247_bounded_shadow_dry_run_rejects_duration_above_shadow_cap(
         shutil.rmtree(root_str, ignore_errors=True)
 
 
+def test_shadow_247_bounded_shadow_dry_run_rejects_max_steps_above_default_cap(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_ms601_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-shadow-dry-run",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "10",
+                "--max-steps",
+                "601",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert "max-steps" in (proc.stderr + proc.stdout).lower()
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_bounded_shadow_dry_run_rejects_duration_above_default_cap_even_if_steps_small(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_dm60_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-shadow-dry-run",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "60",
+                "--max-steps",
+                "2",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert "duration" in (proc.stderr + proc.stdout).lower()
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_extended_bounded_shadow_flag_requires_bounded_shadow_mode(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_extmx_", dir="/tmp")
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--extended-bounded-shadow-validation",
+                "--evidence-root",
+                root_str,
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert "extended-bounded-shadow-validation" in (proc.stderr + proc.stdout).lower()
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_extended_confirm_token_requires_bounded_shadow_mode(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_ecfm_", dir="/tmp")
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--extended-confirm-token",
+                _EXTENDED_BOUNDED_CONFIRM_TOKEN,
+                "--evidence-root",
+                root_str,
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        low = (proc.stderr + proc.stdout).lower()
+        assert "extended-confirm-token" in low or "bounded-shadow-dry-run" in low
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_extended_tier_accepts_duration_above_default_cap_when_gated(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_ext11_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-shadow-dry-run",
+                "--extended-bounded-shadow-validation",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "11",
+                "--max-steps",
+                "3",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--extended-confirm-token",
+                _EXTENDED_BOUNDED_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=15,
+        )
+        assert proc.returncode == 0, proc.stderr + proc.stdout
+        combo = proc.stderr + proc.stdout
+        assert "EXTENDED_BOUNDED_SHADOW_VALIDATION_TIER=true" in combo
+        doc = json.loads((root / _DRY_MANIFEST_JSON).read_text(encoding="utf-8"))
+        assert doc["duration_minutes_cap_enforced"] == 60
+        assert doc["max_steps_cap_enforced"] == 3600
+        assert doc["extended_bounded_shadow_validation"] is True
+        assert doc["dry_run"] is True
+        assert doc["live_started"] is False
+        assert doc["testnet_started"] is False
+        assert doc["broker_used"] is False
+        assert doc["exchange_used"] is False
+        assert doc["order_submission_used"] is False
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_extended_tier_rejects_without_extended_confirm_token(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_extnt_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-shadow-dry-run",
+                "--extended-bounded-shadow-validation",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "11",
+                "--max-steps",
+                "2",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert "extended-confirm-token" in (proc.stderr + proc.stdout).lower()
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_extended_tier_rejects_mismatched_extended_confirm_token(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_extbad_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-shadow-dry-run",
+                "--extended-bounded-shadow-validation",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "11",
+                "--max-steps",
+                "2",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--extended-confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert not any(root.iterdir())
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_extended_confirm_token_requires_extended_flag_when_bounded(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_ecfbf_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-shadow-dry-run",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "1",
+                "--max-steps",
+                "2",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--extended-confirm-token",
+                _EXTENDED_BOUNDED_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert "extended-bounded-shadow-validation" in (proc.stderr + proc.stdout).lower()
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_extended_tier_rejects_duration_above_extended_cap(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_ext61_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-shadow-dry-run",
+                "--extended-bounded-shadow-validation",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "61",
+                "--max-steps",
+                "2",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--extended-confirm-token",
+                _EXTENDED_BOUNDED_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert "duration" in (proc.stderr + proc.stdout).lower()
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_extended_tier_rejects_max_steps_above_extended_cap(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_ms3601_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-shadow-dry-run",
+                "--extended-bounded-shadow-validation",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "1",
+                "--max-steps",
+                "3601",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--extended-confirm-token",
+                _EXTENDED_BOUNDED_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert "max-steps" in (proc.stderr + proc.stdout).lower()
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_extended_tier_accepts_cli_ceiling_60_and_3600_without_long_run(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Caps allow duration=60 and max_steps=3600; finish early via small max_steps budget."""
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_ext60_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-shadow-dry-run",
+                "--extended-bounded-shadow-validation",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "60",
+                "--max-steps",
+                "2",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--extended-confirm-token",
+                _EXTENDED_BOUNDED_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=15,
+        )
+        assert proc.returncode == 0, proc.stderr + proc.stdout
+        doc = json.loads((root / _DRY_MANIFEST_JSON).read_text(encoding="utf-8"))
+        assert doc["duration_minutes_requested"] == 60
+        assert doc["max_steps_budget"] == 2
+        assert doc["duration_minutes_cap_enforced"] == 60
+        assert doc["max_steps_cap_enforced"] == 3600
+        assert doc["extended_bounded_shadow_validation"] is True
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
 def test_shadow_247_bounded_runtime_contract_check_allows_30_minutes(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -1370,6 +1800,9 @@ def test_shadow_247_bounded_shadow_dry_run_writes_manifest_sha_md_and_steps(
         )
         doc = json.loads(manifest_bytes.decode("utf-8"))
         assert doc.get("artifact") == "shadow_247_futures_bounded_shadow_dry_run.v0"
+        assert doc.get("duration_minutes_cap_enforced") == 10
+        assert doc.get("max_steps_cap_enforced") == 600
+        assert doc.get("extended_bounded_shadow_validation") is False
         assert doc.get("bounded_local_shadow_dry_run") is True
         assert doc.get("run_started") is True
         assert doc.get("shadow_started") is True

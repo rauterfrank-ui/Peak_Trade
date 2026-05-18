@@ -144,7 +144,9 @@ def test_wrapper_source_has_fail_closed_and_prestart_cli_markers_v0() -> None:
     src = _wrapper_source()
     assert "--prestart-evidence-drycheck" in src
     assert "--bounded-shadow-dry-run" in src
-    assert "--recorded-public-rest-source" in src
+    assert "--extended-bounded-shadow-validation" in src
+    assert "--extended-confirm-token" in src
+    assert "EXTENDED_BOUNDED_SHADOW_CONFIRM_TOKEN_V0" in src
     assert "--step-interval-seconds" in src
     assert "--evidence-root" in src
     assert "--config" in src
