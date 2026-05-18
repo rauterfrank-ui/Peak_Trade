@@ -70,6 +70,8 @@ def test_shadow_247_futures_wrapper_skeleton_source_has_no_blocked_substrings(
         "BOUNDED_RUNTIME_CONTRACT_DURATION_CAP_MINUTES",
         "BOUNDED_SHADOW_DURATION_CAP_MINUTES",
         "BOUNDED_SHADOW_STEP_INTERVAL_MAX_SECONDS",
+        "--recorded-public-rest-source",
+        "bounded_shadow_dry_run_recorded_public_rest_replay_heartbeat",
     ],
 )
 def test_shadow_247_futures_wrapper_skeleton_has_boundary_constants(marker: str) -> None:
@@ -1019,6 +1021,265 @@ def test_shadow_247_prestart_drycheck_rejects_duration_minutes_flag(
         )
         assert proc.returncode == 64
         assert "duration-minutes" in (proc.stderr + proc.stdout).lower()
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+_SHADOW_RECORDED_REPLAY_KIND = "bounded_shadow_dry_run_recorded_public_rest_replay_heartbeat"
+
+
+def test_shadow_247_recorded_public_rest_source_rejected_without_bounded_shadow(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--prestart-evidence-drycheck",
+            "--evidence-root",
+            tempfile.mkdtemp(prefix="peak_trade_utest_rec_pre_", dir="/tmp"),
+            "--recorded-public-rest-source",
+            "/tmp/peak_trade_utest_rec_dummy_gate",
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=10,
+    )
+    root = Path(proc.args[4])
+    try:
+        assert proc.returncode == 64
+        assert "recorded-public-rest-source" in (proc.stderr + proc.stdout).lower()
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_shadow_247_recorded_public_rest_source_rejects_missing_path(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_rec_", dir="/tmp")
+    missing = Path(root_str) / "nope_not_here"
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-shadow-dry-run",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "1",
+                "--max-steps",
+                "2",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+                "--recorded-public-rest-source",
+                str(missing),
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert "does not exist" in (proc.stderr + proc.stdout).lower()
+        assert not any(root.iterdir())
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_recorded_public_rest_source_rejects_disallowed_tmp_top_segment(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    bad_gate = tempfile.mkdtemp(prefix="forbidden_not_peak_trade_", dir="/tmp")
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_recbad_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-shadow-dry-run",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "1",
+                "--max-steps",
+                "1",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+                "--recorded-public-rest-source",
+                bad_gate,
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        combo = proc.stderr + proc.stdout
+        assert "recorded-public-rest-source" in combo.lower() or "peak_trade_" in combo
+        assert not any(root.iterdir())
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+        shutil.rmtree(bad_gate, ignore_errors=True)
+
+
+def test_shadow_247_recorded_public_rest_source_rejects_repo_path(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_rec_repo_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-shadow-dry-run",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "1",
+                "--max-steps",
+                "1",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+                "--recorded-public-rest-source",
+                str(REPO_ROOT),
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=10,
+        )
+        assert proc.returncode == 64
+        assert "repository" in (proc.stderr + proc.stdout).lower()
+        assert not any(root.iterdir())
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_bounded_shadow_dry_run_with_recorded_public_rest_source_writes_crosslink(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    gate_str = tempfile.mkdtemp(prefix="peak_trade_utest_pubrest_gate_", dir="/tmp")
+    gate = Path(gate_str)
+    sub = gate / "nested"
+    sub.mkdir(parents=True)
+    (sub / "manifest.json").write_text('{"probe": true}\n', encoding="utf-8")
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_rec_ok_", dir="/tmp")
+    root = Path(root_str)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--bounded-shadow-dry-run",
+            "--evidence-root",
+            str(root),
+            "--duration-minutes",
+            "1",
+            "--max-steps",
+            "3",
+            "--confirm-token",
+            _FUTURE_CONFIRM_TOKEN,
+            "--config",
+            "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+            "--jobs-config",
+            "config/scheduler/jobs.toml",
+            "--recorded-public-rest-source",
+            str(gate),
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=15,
+    )
+    try:
+        assert proc.returncode == 0
+        combo = proc.stderr + proc.stdout
+        assert "RECORDED_PUBLIC_REST_REPLAY_SOURCE_ATTACHED=true" in combo
+        doc = json.loads((root / _DRY_MANIFEST_JSON).read_text(encoding="utf-8"))
+        assert doc["recorded_public_rest_source_exists"] is True
+        assert doc["recorded_public_rest_source_path"] == str(gate.resolve())
+        assert doc["recorded_public_rest_source_manifest_count"] >= 1
+        assert doc["recorded_public_rest_source_json_count"] >= 1
+        assert "recorded_public_rest_source_files_digest_sha256" in doc
+        assert doc["network_used"] is False
+        md_txt = (root / _SHADOW_DRY_MD).read_text(encoding="utf-8")
+        assert "Recorded public REST replay source" in md_txt
+        assert str(gate.resolve()) in md_txt
+        lines = (root / _SHADOW_STEPS).read_text(encoding="utf-8").strip().splitlines()
+        assert len(lines) == 3
+        step0 = json.loads(lines[0])
+        step1 = json.loads(lines[1])
+        assert step0["kind"] == _SHADOW_RECORDED_REPLAY_KIND
+        assert step1["kind"] == "bounded_shadow_dry_run_simulated_heartbeat"
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+        shutil.rmtree(gate_str, ignore_errors=True)
+
+
+def test_shadow_247_bounded_shadow_dry_run_accepts_recorded_source_under_pytest_tmp(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    (tmp_path / "manifest.json").write_text("{}", encoding="utf-8")
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_evtmp_", dir="/tmp")
+    root = Path(root_str)
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--bounded-shadow-dry-run",
+                "--evidence-root",
+                str(root),
+                "--duration-minutes",
+                "1",
+                "--max-steps",
+                "1",
+                "--confirm-token",
+                _FUTURE_CONFIRM_TOKEN,
+                "--config",
+                "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+                "--jobs-config",
+                "config/scheduler/jobs.toml",
+                "--recorded-public-rest-source",
+                str(tmp_path),
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=15,
+        )
+        assert proc.returncode == 0, proc.stderr + proc.stdout
+        doc = json.loads((root / _DRY_MANIFEST_JSON).read_text(encoding="utf-8"))
+        assert doc["recorded_public_rest_source_manifest_count"] == 1
     finally:
         shutil.rmtree(root_str, ignore_errors=True)
 

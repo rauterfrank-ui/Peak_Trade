@@ -15,6 +15,7 @@ import hashlib
 import json
 import math
 import sys
+import tempfile
 import time
 
 try:
@@ -62,6 +63,11 @@ BOUNDED_SHADOW_STEPS_JSONL_V0 = "steps.jsonl"
 BOUNDED_SHADOW_DURATION_CAP_MINUTES = 10
 BOUNDED_SHADOW_MAX_STEPS_CAP = 600
 BOUNDED_SHADOW_STEP_INTERVAL_MAX_SECONDS = 60.0
+
+BOUNDED_SHADOW_RECORDED_PUBLIC_REST_REPLAY_HEARTBEAT_KIND = (
+    "bounded_shadow_dry_run_recorded_public_rest_replay_heartbeat"
+)
+_RECORDED_PUBLIC_REST_SOURCE_JSON_SCAN_CAP = 512
 
 _BOUNDED_SHADOW_ALLOWED_ENTRIES = frozenset(
     {
@@ -240,6 +246,17 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
             "**With `--prestart-evidence-drycheck`, `--bounded-runtime-contract-check`, or "
             "`--bounded-shadow-dry-run`.** "
             "Read-only validate the disabled scheduler placeholder row (stdlib tomllib)."
+        ),
+    )
+    parser.add_argument(
+        "--recorded-public-rest-source",
+        metavar="PATH",
+        default="",
+        dest="recorded_public_rest_source",
+        help=(
+            "`--bounded-shadow-dry-run` only: absolute path to an existing directory of local "
+            "public-REST gate artefacts (read-only inventory; no network, capture, bridge, "
+            "nor supervised observer)."
         ),
     )
     return parser.parse_args(list(argv) if argv is not None else None)
@@ -659,6 +676,96 @@ def _validate_evidence_root_for_bounded_shadow(
     return resolved, None
 
 
+def _is_allowed_recorded_public_rest_source_root(path: Path) -> bool:
+    """Allow `/tmp/peak_trade_*` and `/tmp/pytest-*`, else non-`/tmp` paths under `tempfile`."""
+    resolved = path.resolve()
+    tmp_root = Path("/tmp").resolve()
+    tempfile_root = Path(tempfile.gettempdir()).resolve()
+
+    try:
+        relative_to_tmp = resolved.relative_to(tmp_root)
+    except ValueError:
+        relative_to_tmp = None
+
+    if relative_to_tmp is not None:
+        if not relative_to_tmp.parts:
+            return False
+        top_segment = relative_to_tmp.parts[0].lower()
+        return top_segment.startswith("peak_trade_") or top_segment.startswith("pytest-")
+
+    if tempfile_root == tmp_root:
+        return False
+
+    try:
+        resolved.relative_to(tempfile_root)
+    except ValueError:
+        return False
+    return True
+
+
+def _validate_recorded_public_rest_source(
+    path_str: str, repo_root: Path
+) -> Tuple[Path | None, str | None]:
+    """Local directory only: under `/tmp` (`peak_trade_*` / `pytest-*`) or stdlib temp dir."""
+    trimmed = path_str.strip()
+    if not trimmed:
+        return None, "`--recorded-public-rest-source` must be non-empty when provided"
+    if ".." in Path(trimmed).parts:
+        return None, "recorded-public-rest-source must not contain path traversal segments"
+
+    probe = Path(trimmed).expanduser()
+    if not probe.is_absolute():
+        return None, "recorded-public-rest-source must be an absolute path"
+    try:
+        resolved = probe.resolve(strict=True)
+    except FileNotFoundError:
+        return None, "recorded-public-rest-source path does not exist"
+    except (OSError, RuntimeError):
+        return None, "recorded-public-rest-source cannot be resolved safely"
+
+    if not resolved.is_dir():
+        return None, "recorded-public-rest-source must be a directory"
+
+    rr = repo_root.resolve()
+    if resolved == rr or resolved.is_relative_to(rr):
+        return None, "recorded-public-rest-source must not reside inside the repository tree"
+
+    if ".git" in resolved.parts:
+        return None, "recorded-public-rest-source must not traverse a `.git` path segment"
+
+    if not _is_allowed_recorded_public_rest_source_root(resolved):
+        return (
+            None,
+            "recorded-public-rest-source must resolve under `/tmp` with a top-level segment "
+            "starting with `peak_trade_` or `pytest-`, or resolve under the process temporary "
+            "directory (stdlib `tempfile`) when it is not the filesystem `/tmp`.",
+        )
+
+    return resolved, None
+
+
+def _inventory_recorded_public_rest_source(source_dir: Path) -> dict[str, Any]:
+    manifest_paths = sorted({p for p in source_dir.rglob("manifest.json") if p.is_file()})
+    json_paths = sorted({p for p in source_dir.rglob("*.json") if p.is_file()})
+    truncated = len(json_paths) > _RECORDED_PUBLIC_REST_SOURCE_JSON_SCAN_CAP
+    subset = json_paths[:_RECORDED_PUBLIC_REST_SOURCE_JSON_SCAN_CAP]
+    rows: list[dict[str, str]] = []
+    for p in subset:
+        rel = p.relative_to(source_dir).as_posix()
+        digest = hashlib.sha256(p.read_bytes()).hexdigest()
+        rows.append({"relative_path": rel, "sha256": digest})
+    rows.sort(key=lambda r: r["relative_path"])
+    files_digest = hashlib.sha256(json.dumps(rows, sort_keys=True).encode("utf-8")).hexdigest()
+    return {
+        "recorded_public_rest_source_path": str(source_dir),
+        "recorded_public_rest_source_exists": True,
+        "recorded_public_rest_source_manifest_count": len(manifest_paths),
+        "recorded_public_rest_source_json_count": len(json_paths),
+        "recorded_public_rest_source_json_scan_truncated": truncated,
+        "recorded_public_rest_source_files_digest_sha256": files_digest,
+    }
+
+
 def _canonical_json_bytes(payload: dict) -> bytes:
     return (json.dumps(payload, indent=2, sort_keys=True) + "\n").encode("utf-8")
 
@@ -811,7 +918,20 @@ def _bounded_shadow_markdown(
     repo_sha: str,
     readonly_cfg_block: Mapping[str, Any],
     run_meta: Mapping[str, Any],
+    recorded_meta: Mapping[str, Any] | None = None,
 ) -> str:
+    recorded_block: tuple[str, ...] = ()
+    if recorded_meta is not None:
+        recorded_block = (
+            "## Recorded public REST replay source (local cross-link; read-only)\n\n",
+            f"- Source path: `{recorded_meta['recorded_public_rest_source_path']}`  \n",
+            f"- Exists: `{recorded_meta['recorded_public_rest_source_exists']}`\n",
+            f"- `manifest.json` files found: `{recorded_meta['recorded_public_rest_source_manifest_count']}`\n",
+            f"- JSON files found: `{recorded_meta['recorded_public_rest_source_json_count']}`\n",
+            f"- JSON inventory scan truncated: `{recorded_meta['recorded_public_rest_source_json_scan_truncated']}`\n",
+            f"- Per-file digest summary SHA-256: `{recorded_meta['recorded_public_rest_source_files_digest_sha256']}`\n",
+            "- No network, capture, bridge, nor supervised-observer scripts are invoked in this mode.\n\n",
+        )
     return "".join(
         (
             "# Shadow 24-7 Futures — Bounded Shadow Dry-Run (Local Simulation)\n\n",
@@ -832,6 +952,7 @@ def _bounded_shadow_markdown(
             f"- Step interval (seconds): `{run_meta['step_interval_seconds']}`\n",
             f"- Steps emitted: `{run_meta['steps_emitted']}`\n",
             f"- UTC end: `{run_meta['utc_end']}`\n\n",
+            *recorded_block,
             *_readonly_validation_markdown_lines(readonly_cfg_block),
             "## Appendix\n\n",
             "Artefacts: `manifest.json`, `MANIFEST.sha256`, "
@@ -848,8 +969,9 @@ def _bounded_shadow_manifest(
     utc_ended: datetime,
     readonly_cfg_block: Mapping[str, Any],
     run_meta: Mapping[str, Any],
+    recorded_meta: Mapping[str, Any] | None = None,
 ) -> dict:
-    return {
+    manifest: dict[str, Any] = {
         "artifact": BOUNDED_SHADOW_DRY_RUN_SCHEMA_V0,
         "bounded_local_shadow_dry_run": True,
         "broker_used": False,
@@ -890,6 +1012,9 @@ def _bounded_shadow_manifest(
         "verbatim_machine_summary": _BOUNDED_SHADOW_MACHINE_LINES.rstrip("\n"),
         "wrapper_requires_future_gate_before_execution": True,
     }
+    if recorded_meta is not None:
+        manifest.update(dict(recorded_meta))
+    return manifest
 
 
 def _execute_bounded_shadow_dry_run(
@@ -900,7 +1025,12 @@ def _execute_bounded_shadow_dry_run(
     duration_minutes: int,
     max_steps: int,
     step_interval_seconds: float,
+    recorded_public_rest_source: Path | None = None,
 ) -> int:
+    recorded_meta: dict[str, Any] | None = None
+    if recorded_public_rest_source is not None:
+        recorded_meta = _inventory_recorded_public_rest_source(recorded_public_rest_source)
+
     utc_started = datetime.now(timezone.utc)
     deadline = time.monotonic() + float(duration_minutes) * 60.0
     steps_emitted = 0
@@ -908,11 +1038,27 @@ def _execute_bounded_shadow_dry_run(
 
     while steps_emitted < max_steps and time.monotonic() < deadline:
         step_ts = datetime.now(timezone.utc)
-        payload = {
-            "step_index": steps_emitted + 1,
-            "utc": step_ts.strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "kind": "bounded_shadow_dry_run_simulated_heartbeat",
-        }
+        if steps_emitted == 0 and recorded_meta is not None:
+            payload = {
+                "kind": BOUNDED_SHADOW_RECORDED_PUBLIC_REST_REPLAY_HEARTBEAT_KIND,
+                "recorded_public_rest_source_files_digest_sha256": recorded_meta[
+                    "recorded_public_rest_source_files_digest_sha256"
+                ],
+                "recorded_public_rest_source_manifest_count": recorded_meta[
+                    "recorded_public_rest_source_manifest_count"
+                ],
+                "recorded_public_rest_source_path": recorded_meta[
+                    "recorded_public_rest_source_path"
+                ],
+                "step_index": steps_emitted + 1,
+                "utc": step_ts.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            }
+        else:
+            payload = {
+                "step_index": steps_emitted + 1,
+                "utc": step_ts.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "kind": "bounded_shadow_dry_run_simulated_heartbeat",
+            }
         lines.append(json.dumps(payload, sort_keys=True) + "\n")
         steps_emitted += 1
         if steps_emitted >= max_steps or time.monotonic() >= deadline:
@@ -938,6 +1084,7 @@ def _execute_bounded_shadow_dry_run(
         utc_ended,
         readonly_cfg_block,
         run_meta,
+        recorded_meta,
     )
     manifest_bytes = _canonical_json_bytes(manifest)
     digest_hex = hashlib.sha256(manifest_bytes).hexdigest()
@@ -947,6 +1094,7 @@ def _execute_bounded_shadow_dry_run(
         repo_sha,
         readonly_cfg_block,
         run_meta,
+        recorded_meta,
     )
 
     evidence_root_abs.mkdir(parents=True, exist_ok=True)
@@ -962,6 +1110,8 @@ def _execute_bounded_shadow_dry_run(
     err.write("READONLY_CONFIG_VALIDATION_OK=true\n")
     err.write(f"STEP_INTERVAL_SECONDS={step_interval_seconds}\n")
     err.write(f"BOUNDED_SHADOW_DRY_RUN_STEPS_EMITTED={steps_emitted}\n")
+    if recorded_meta is not None:
+        err.write("RECORDED_PUBLIC_REST_REPLAY_SOURCE_ATTACHED=true\n")
     err.write("BOUNDED_SHADOW_DRY_RUN_WRITTEN=true\n")
     err.write(f"EXIT_CODE={EXIT_DRYCHECK_SUCCESS}\n")
     return EXIT_DRYCHECK_SUCCESS
@@ -1056,6 +1206,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         err.write(_MACHINE_LINES_ALWAYS)
         err.write(
             f"EXIT_REASON=step_interval_requires_bounded_shadow\nEXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+        )
+        return EXIT_FAIL_CLOSED_DEFAULT
+
+    if args.recorded_public_rest_source.strip() and not args.bounded_shadow_dry_run:
+        err.write(
+            "`--recorded-public-rest-source` is only valid with `--bounded-shadow-dry-run`.\n",
+        )
+        _emit_banner(err)
+        err.write(_MACHINE_LINES_ALWAYS)
+        err.write(
+            f"EXIT_REASON=recorded_public_rest_source_requires_bounded_shadow\n"
+            f"EXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
         )
         return EXIT_FAIL_CLOSED_DEFAULT
 
@@ -1248,6 +1410,23 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             return EXIT_FAIL_CLOSED_DEFAULT
 
+        recorded_resolved: Path | None = None
+        if args.recorded_public_rest_source.strip():
+            rec_val, rec_err = _validate_recorded_public_rest_source(
+                args.recorded_public_rest_source, repo_root
+            )
+            if rec_err or rec_val is None:
+                assert rec_err is not None
+                err.write(rec_err + "\n")
+                _emit_banner(err)
+                err.write(_MACHINE_LINES_ALWAYS)
+                err.write(
+                    f"EXIT_REASON=invalid_recorded_public_rest_source\n"
+                    f"EXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+                )
+                return EXIT_FAIL_CLOSED_DEFAULT
+            recorded_resolved = rec_val
+
         step_iv = 0.0 if args.step_interval_seconds is None else float(args.step_interval_seconds)
         if not math.isfinite(step_iv):
             err.write("`--step-interval-seconds` must be a finite number.\n")
@@ -1278,6 +1457,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             dm,
             int(ms),
             step_iv,
+            recorded_resolved,
         )
 
     if args.prestart_evidence_drycheck:
