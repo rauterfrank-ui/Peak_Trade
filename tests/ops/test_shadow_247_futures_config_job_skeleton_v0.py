@@ -2,6 +2,8 @@
 
 Includes small drift hooks: scheduler placeholder relpath must match ops `wrapper_script`;
 preflight status job must stay on the read-only reporter (not the futures wrapper).
+Crosslinks `paper_shadow_247_preflight.toml` with `shadow_247_futures_wrapper_skeleton.toml`
+for shared default-off / non-authorizing posture (metadata only, not activation approval).
 """
 
 from __future__ import annotations
@@ -15,6 +17,7 @@ except ImportError:
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 OPS_CONFIG = REPO_ROOT / "config" / "ops" / "shadow_247_futures_wrapper_skeleton.toml"
+PAPER_SHADOW_PREFLIGHT_TOML = REPO_ROOT / "config" / "ops" / "paper_shadow_247_preflight.toml"
 JOBS_CONFIG = REPO_ROOT / "config" / "scheduler" / "jobs.toml"
 
 PLACEHOLDER_JOB_NAME = "shadow_247_futures_prestart_evidence_drycheck_placeholder_v0"
@@ -24,6 +27,10 @@ PREFLIGHT_REPORTER_SCRIPT = "scripts/ops/report_paper_shadow_247_preflight_statu
 
 def _load_ops_config() -> dict:
     return tomllib.loads(OPS_CONFIG.read_text(encoding="utf-8"))
+
+
+def _load_paper_shadow_preflight_toml() -> dict:
+    return tomllib.loads(PAPER_SHADOW_PREFLIGHT_TOML.read_text(encoding="utf-8"))
 
 
 def _jobs() -> list[dict]:
@@ -133,3 +140,45 @@ def test_paper_shadow_247_preflight_status_job_is_readonly_reporter_not_futures_
     assert "preflight" in tags
     assert job.get("testnet_authorized") is False
     assert job.get("live_authorized") is False
+
+
+def test_paper_shadow_247_preflight_toml_exists_parseable_and_default_off() -> None:
+    """Read-only preflight metadata must stay default-off; does not authorize any activation path."""
+    assert PAPER_SHADOW_PREFLIGHT_TOML.is_file()
+    pf = _load_paper_shadow_preflight_toml()
+    assert pf["schema_version"] == "paper_shadow_247_preflight.v0"
+    for key in (
+        "activation_authorized",
+        "daemon_activation_authorized",
+        "scheduler_execution_authorized",
+        "paper_runtime_authorized",
+        "shadow_runtime_authorized",
+        "testnet_authorized",
+        "live_authorized",
+        "broker_authorized",
+        "exchange_authorized",
+        "order_submission_authorized",
+    ):
+        assert pf[key] is False, key
+
+
+def test_paper_shadow247_preflight_toml_and_futures_wrapper_toml_default_off_crosslink() -> None:
+    """Both ops TOMLs must agree there is no default activation authority for Shadow-247 / wrapper daemon."""
+    pf = _load_paper_shadow_preflight_toml()
+    wrap = _load_ops_config()
+    assert pf["daemon_activation_authorized"] is False
+    assert pf["shadow_runtime_authorized"] is False
+    assert wrap["wrapper_daemon_start_allowed"] is False
+    assert wrap["immediate_execution_approved"] is False
+    assert wrap["enabled"] is False
+    assert wrap["armed"] is False
+    assert wrap["final_operator_confirmation_gate_required"] is True
+    assert wrap["supervisor_timeout_future_gate_required"] is True
+    for key in (
+        "testnet_authorized",
+        "live_authorized",
+        "broker_authorized",
+        "exchange_authorized",
+        "order_submission_authorized",
+    ):
+        assert pf[key] is False and wrap[key.replace("_authorized", "_allowed")] is False, key
