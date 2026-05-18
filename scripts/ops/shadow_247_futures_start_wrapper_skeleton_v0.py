@@ -71,6 +71,13 @@ EXTENDED_BOUNDED_SHADOW_CONFIRM_TOKEN_V0 = (
     "I_EXPLICITLY_CONFIRM_SHADOW_247_EXTENDED_BOUNDED_SHADOW_60M_TIER_V0"
 )
 
+# Governed 24h candidate tier: capped bounded dry-run only (explicit flag + distinct token; default-off).
+BOUNDED_SHADOW_24H_CANDIDATE_DURATION_CAP_MINUTES = 1440
+BOUNDED_SHADOW_24H_CANDIDATE_MAX_STEPS_CAP = 86400
+CANDIDATE_24H_BOUNDED_SHADOW_CONFIRM_TOKEN_V0 = (
+    "I_EXPLICITLY_CONFIRM_SHADOW_247_CANDIDATE_24H_BOUNDED_SHADOW_TIER_V0"
+)
+
 BOUNDED_SHADOW_RECORDED_PUBLIC_REST_REPLAY_HEARTBEAT_KIND = (
     "bounded_shadow_dry_run_recorded_public_rest_replay_heartbeat"
 )
@@ -192,6 +199,8 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
             f"{BOUNDED_SHADOW_DURATION_CAP_MINUTES}). "
             "With `--bounded-shadow-dry-run` plus `--extended-bounded-shadow-validation`: duration (1–"
             f"{BOUNDED_SHADOW_EXTENDED_DURATION_CAP_MINUTES}). "
+            "With `--bounded-shadow-dry-run` plus `--candidate-24h-bounded-shadow-validation`: duration (1–"
+            f"{BOUNDED_SHADOW_24H_CANDIDATE_DURATION_CAP_MINUTES}). "
             "Otherwise invalid."
         ),
     )
@@ -201,7 +210,8 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         default=None,
         help=(
             "With `--bounded-shadow-dry-run` only: step budget; default tier 1–"
-            f"{BOUNDED_SHADOW_MAX_STEPS_CAP}, extended tier 1–{BOUNDED_SHADOW_EXTENDED_MAX_STEPS_CAP} "
+            f"{BOUNDED_SHADOW_MAX_STEPS_CAP}, extended tier 1–{BOUNDED_SHADOW_EXTENDED_MAX_STEPS_CAP}, "
+            f"24h candidate tier 1–{BOUNDED_SHADOW_24H_CANDIDATE_MAX_STEPS_CAP} "
             "(default ~12× duration minutes, capped to active tier)."
         ),
     )
@@ -245,6 +255,27 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         help=(
             "With `--bounded-shadow-dry-run` + `--extended-bounded-shadow-validation` only. "
             "Must match the extended-tier governance literal (distinct from `--confirm-token`)."
+        ),
+    )
+    parser.add_argument(
+        "--candidate-24h-bounded-shadow-validation",
+        action="store_true",
+        dest="candidate_24h_bounded_shadow_validation",
+        help=(
+            "With `--bounded-shadow-dry-run` only: enable governed 24h **candidate** tier (dry-run only; "
+            f"duration ≤{BOUNDED_SHADOW_24H_CANDIDATE_DURATION_CAP_MINUTES}m; max-steps ≤"
+            f"{BOUNDED_SHADOW_24H_CANDIDATE_MAX_STEPS_CAP}). Mutually exclusive with "
+            "`--extended-bounded-shadow-validation`. Requires `--candidate-24h-confirm-token`."
+        ),
+    )
+    parser.add_argument(
+        "--candidate-24h-confirm-token",
+        metavar="TOKEN",
+        default="",
+        dest="candidate_24h_confirm_token",
+        help=(
+            "With `--bounded-shadow-dry-run` + `--candidate-24h-bounded-shadow-validation` only. "
+            "Must match the 24h-candidate-tier governance literal (distinct from other confirm tokens)."
         ),
     )
     parser.add_argument(
@@ -982,6 +1013,7 @@ def _bounded_shadow_markdown(
             f"- Duration requested (minutes): `{run_meta['duration_minutes']}`\n",
             f"- Duration cap enforced (minutes): `{run_meta['duration_minutes_cap_enforced']}`\n",
             f"- Extended bounded tier: `{run_meta.get('extended_bounded_shadow_validation', False)}`\n",
+            f"- Candidate 24h bounded tier: `{run_meta.get('candidate_24h_bounded_shadow_validation', False)}`\n",
             f"- Step budget: `{run_meta['max_steps']}`\n",
             f"- Step budget cap enforced: `{run_meta['max_steps_cap_enforced']}`\n",
             f"- Step interval (seconds): `{run_meta['step_interval_seconds']}`\n",
@@ -1017,6 +1049,9 @@ def _bounded_shadow_manifest(
         "duration_minutes_cap_enforced": int(run_meta["duration_minutes_cap_enforced"]),
         "extended_bounded_shadow_validation": bool(
             run_meta.get("extended_bounded_shadow_validation", False),
+        ),
+        "candidate_24h_bounded_shadow_validation": bool(
+            run_meta.get("candidate_24h_bounded_shadow_validation", False),
         ),
         "evidence_root_absolute": str(evidence_abs),
         "exchange_used": False,
@@ -1068,6 +1103,7 @@ def _execute_bounded_shadow_dry_run(
     duration_cap_minutes: int = BOUNDED_SHADOW_DURATION_CAP_MINUTES,
     max_steps_cap: int = BOUNDED_SHADOW_MAX_STEPS_CAP,
     extended_bounded_shadow_validation: bool = False,
+    candidate_24h_bounded_shadow_validation: bool = False,
 ) -> int:
     recorded_meta: dict[str, Any] | None = None
     if recorded_public_rest_source is not None:
@@ -1115,6 +1151,7 @@ def _execute_bounded_shadow_dry_run(
         "duration_minutes": duration_minutes,
         "duration_minutes_cap_enforced": int(duration_cap_minutes),
         "extended_bounded_shadow_validation": extended_bounded_shadow_validation,
+        "candidate_24h_bounded_shadow_validation": candidate_24h_bounded_shadow_validation,
         "max_steps": max_steps,
         "max_steps_cap_enforced": int(max_steps_cap),
         "step_interval_seconds": step_interval_seconds,
@@ -1157,7 +1194,9 @@ def _execute_bounded_shadow_dry_run(
     err.write(f"BOUNDED_SHADOW_DRY_RUN_STEPS_EMITTED={steps_emitted}\n")
     if recorded_meta is not None:
         err.write("RECORDED_PUBLIC_REST_REPLAY_SOURCE_ATTACHED=true\n")
-    if extended_bounded_shadow_validation:
+    if candidate_24h_bounded_shadow_validation:
+        err.write("CANDIDATE_24H_BOUNDED_SHADOW_VALIDATION_TIER=true\n")
+    elif extended_bounded_shadow_validation:
         err.write("EXTENDED_BOUNDED_SHADOW_VALIDATION_TIER=true\n")
     err.write("BOUNDED_SHADOW_DRY_RUN_WRITTEN=true\n")
     err.write(f"EXIT_CODE={EXIT_DRYCHECK_SUCCESS}\n")
@@ -1290,6 +1329,30 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         return EXIT_FAIL_CLOSED_DEFAULT
 
+    if args.candidate_24h_bounded_shadow_validation and not args.bounded_shadow_dry_run:
+        err.write(
+            "`--candidate-24h-bounded-shadow-validation` requires `--bounded-shadow-dry-run`.\n",
+        )
+        _emit_banner(err)
+        err.write(_MACHINE_LINES_ALWAYS)
+        err.write(
+            f"EXIT_REASON=candidate_24h_bounded_shadow_requires_bounded_shadow_mode\n"
+            f"EXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+        )
+        return EXIT_FAIL_CLOSED_DEFAULT
+
+    if args.candidate_24h_confirm_token.strip() and not args.bounded_shadow_dry_run:
+        err.write(
+            "`--candidate-24h-confirm-token` is only valid with `--bounded-shadow-dry-run`.\n"
+        )
+        _emit_banner(err)
+        err.write(_MACHINE_LINES_ALWAYS)
+        err.write(
+            f"EXIT_REASON=candidate_24h_confirm_requires_bounded_shadow_mode\n"
+            f"EXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+        )
+        return EXIT_FAIL_CLOSED_DEFAULT
+
     repo_root = _REPO_ROOT_CALC.resolve()
 
     def _drycheck_from_valid_evidence(
@@ -1397,7 +1460,48 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             return EXIT_FAIL_CLOSED_DEFAULT
 
+        cand_active = args.candidate_24h_bounded_shadow_validation
         ext_active = args.extended_bounded_shadow_validation
+
+        if cand_active and ext_active:
+            err.write(
+                "`--extended-bounded-shadow-validation` cannot be combined with "
+                "`--candidate-24h-bounded-shadow-validation`.\n",
+            )
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                f"EXIT_REASON=bounded_shadow_tier_mutex_violation\n"
+                f"EXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+
+        if cand_active:
+            c24_tok = args.candidate_24h_confirm_token.strip()
+            if c24_tok != CANDIDATE_24H_BOUNDED_SHADOW_CONFIRM_TOKEN_V0:
+                err.write(
+                    "24h candidate bounded-shadow tier requires `--candidate-24h-confirm-token` matching "
+                    "the 24h candidate governance literal.\n",
+                )
+                _emit_banner(err)
+                err.write(_MACHINE_LINES_ALWAYS)
+                err.write(
+                    f"EXIT_REASON=bounded_shadow_candidate_24h_token_invalid\n"
+                    f"EXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+                )
+                return EXIT_FAIL_CLOSED_DEFAULT
+        elif args.candidate_24h_confirm_token.strip():
+            err.write(
+                "`--candidate-24h-confirm-token` requires `--candidate-24h-bounded-shadow-validation`.\n",
+            )
+            _emit_banner(err)
+            err.write(_MACHINE_LINES_ALWAYS)
+            err.write(
+                f"EXIT_REASON=candidate_24h_confirm_requires_candidate_flag\n"
+                f"EXIT_CODE={EXIT_FAIL_CLOSED_DEFAULT}\n",
+            )
+            return EXIT_FAIL_CLOSED_DEFAULT
+
         if ext_active:
             ext_tok = args.extended_confirm_token.strip()
             if ext_tok != EXTENDED_BOUNDED_SHADOW_CONFIRM_TOKEN_V0:
@@ -1433,14 +1537,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             return EXIT_FAIL_CLOSED_DEFAULT
         dm = args.duration_minutes
-        duration_cap = (
-            BOUNDED_SHADOW_EXTENDED_DURATION_CAP_MINUTES
-            if ext_active
-            else BOUNDED_SHADOW_DURATION_CAP_MINUTES
-        )
-        max_steps_cap = (
-            BOUNDED_SHADOW_EXTENDED_MAX_STEPS_CAP if ext_active else BOUNDED_SHADOW_MAX_STEPS_CAP
-        )
+        if cand_active:
+            duration_cap = BOUNDED_SHADOW_24H_CANDIDATE_DURATION_CAP_MINUTES
+            max_steps_cap = BOUNDED_SHADOW_24H_CANDIDATE_MAX_STEPS_CAP
+        elif ext_active:
+            duration_cap = BOUNDED_SHADOW_EXTENDED_DURATION_CAP_MINUTES
+            max_steps_cap = BOUNDED_SHADOW_EXTENDED_MAX_STEPS_CAP
+        else:
+            duration_cap = BOUNDED_SHADOW_DURATION_CAP_MINUTES
+            max_steps_cap = BOUNDED_SHADOW_MAX_STEPS_CAP
         if dm < 1 or dm > duration_cap:
             err.write(
                 "with `--bounded-shadow-dry-run`, `--duration-minutes` must be between 1 and "
@@ -1565,6 +1670,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             duration_cap_minutes=duration_cap,
             max_steps_cap=max_steps_cap,
             extended_bounded_shadow_validation=ext_active,
+            candidate_24h_bounded_shadow_validation=cand_active,
         )
 
     if args.prestart_evidence_drycheck:
