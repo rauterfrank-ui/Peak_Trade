@@ -13,8 +13,16 @@ from pathlib import Path
 
 import pytest
 
+try:
+    import tomllib
+except ImportError:
+    import tomli as tomllib  # type: ignore[no-redef,import-not-found]
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "scripts" / "ops" / "shadow_247_futures_start_wrapper_skeleton_v0.py"
+_OPS_SHADOW247_WRAPPER_TOML = (
+    REPO_ROOT / "config" / "ops" / "shadow_247_futures_wrapper_skeleton.toml"
+)
 SRC_TEXT = SCRIPT.read_text(encoding="utf-8")
 
 _FUTURE_CONFIRM_TOKEN = (
@@ -76,6 +84,18 @@ def test_shadow_247_futures_wrapper_skeleton_source_has_no_blocked_substrings(
 )
 def test_shadow_247_futures_wrapper_skeleton_has_boundary_constants(marker: str) -> None:
     assert marker in SRC_TEXT
+
+
+def test_wrapper_operator_gate_fail_closed_crosslink_v0() -> None:
+    """Ops TOML operator/future gates align with fail-closed wrapper source markers (static)."""
+    cfg = tomllib.loads(_OPS_SHADOW247_WRAPPER_TOML.read_text(encoding="utf-8"))
+    assert cfg["final_operator_confirmation_gate_required"] is True
+    assert cfg["supervisor_timeout_future_gate_required"] is True
+    assert cfg["wrapper_daemon_start_allowed"] is False
+    assert cfg["enabled"] is False
+    assert cfg["armed"] is False
+    for token in ("EXIT_FAIL_CLOSED_DEFAULT", "EXIT_CODE_FAIL_CLOSED", "default_fail_closed"):
+        assert token in SRC_TEXT, token
 
 
 def test_shadow_247_futures_wrapper_skeleton_import_has_no_side_effects(

@@ -10,6 +10,8 @@ neues supervised-observation-Bundle ein.
 
 Ergänzt zudem einen statischen Scheduler-Anker für Paper/Shadow-247 Jobs und das Futures-Wrapper-TOML
 (Pfade lösen unter ``REPO_ROOT``; keine Laufzeitfreigabe).
+
+Ergänzt stabile Offline-Anker für ``snapshot_operator_stop_signals`` (Contract-ID / PT_STOP_KEYS).
 """
 
 from __future__ import annotations
@@ -56,6 +58,7 @@ _OFFLINE_SHADOW247_SCHEDULER_JOB_NAMES = (
     "shadow_247_futures_prestart_evidence_drycheck_placeholder_v0",
     "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0",
 )
+_SNAPSHOT_OPERATOR_STOP_SCRIPT = REPO_ROOT / "scripts" / "ops" / "snapshot_operator_stop_signals.py"
 
 
 def _load_scripts_ops_module(fake_name: str, path: Path) -> Any:
@@ -192,6 +195,15 @@ def test_offline_jobs_shadow247_scripts_resolve_v0() -> None:
     ra = rt["args"]
     assert (REPO_ROOT / ra["script"]).is_file()
     assert (REPO_ROOT / ra["spec"]).is_file()
+
+
+def test_offline_crosslink_stop_snapshot_contract_ids_v0() -> None:
+    """Stable read-only anchors for operator stop snapshot (no runtime, no authority grant)."""
+    body = _SNAPSHOT_OPERATOR_STOP_SCRIPT.read_text(encoding="utf-8")
+    assert 'CONTRACT_ID = "operator_stop_signal_snapshot_v1"' in body
+    assert "PT_STOP_KEYS" in body
+    low = body.lower()
+    assert "does not authorize live trading" in low
 
 
 def test_p67_recorded_source_meta_matches_offline_crosslink_semantics(
