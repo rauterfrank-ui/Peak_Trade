@@ -77,6 +77,8 @@ def test_double_play_dashboard_excludes_market_depth_ssr_markers_v0(
 
     assert "data-market-depth-panel" not in html
     assert "market-v0-depth-ssr" not in html
+    assert "market-v0-landmark-depth-ssr-h2" not in html
+    assert "data-market-v0-depth-landmark-heading-v0" not in html
 
 
 def test_market_and_double_play_chartjs_cdn_failure_attribution_v0(
@@ -223,6 +225,10 @@ def test_market_dashboard_landmarks_and_labelled_regions_v0(client: TestClient) 
     assert 'aria-labelledby="market-v0-landmark-query-context-h2"' in html
     assert 'id="market-v0-landmark-close-chart-h2"' in html
     assert 'aria-labelledby="market-v0-landmark-close-chart-h2"' in html
+    assert 'id="market-v0-landmark-depth-ssr-h2"' in html
+    assert 'data-market-v0-depth-landmark-heading-v0="true"' in html
+    assert 'aria-labelledby="market-v0-landmark-depth-ssr-h2"' in html
+    assert 'id="market-v0-depth-ssr"' in html
     assert 'data-market-readonly="true"' in html
     assert 'data-market-non-authorizing="true"' in html
     lowered = html.lower()
