@@ -4,6 +4,7 @@ Includes small drift hooks: scheduler placeholder relpath must match ops `wrappe
 preflight status job must stay on the read-only reporter (not the futures wrapper).
 Crosslinks `paper_shadow_247_preflight.toml` with `shadow_247_futures_wrapper_skeleton.toml`
 for shared default-off / non-authorizing posture (metadata only, not activation approval).
+Crosslinks preflight `stop_command` / `emergency_stop_command` to on-disk reporter/snapshot scripts.
 """
 
 from __future__ import annotations
@@ -37,6 +38,16 @@ def _load_paper_shadow_preflight_toml() -> dict:
 def _jobs() -> list[dict]:
     payload = tomllib.loads(JOBS_CONFIG.read_text(encoding="utf-8"))
     return payload.get("job", [])
+
+
+def _relative_repo_scripts_from_shell_command(cmd: str) -> list[str]:
+    """Extract repo-relative `scripts/...py` paths from a shell-ish TOML string (static parse only)."""
+    paths: list[str] = []
+    for raw in cmd.replace(";", " ").split():
+        tok = raw.strip().strip('"').strip("'")
+        if tok.startswith("scripts/") and tok.endswith(".py"):
+            paths.append(tok)
+    return paths
 
 
 def test_shadow_247_futures_ops_config_file_exists() -> None:
@@ -232,3 +243,18 @@ def test_paper_shadow247_runtime_fixture_job_stays_quarantined_v0() -> None:
     ):
         assert job.get(key) is False, key
     assert job.get("shadow_247_futures_placeholder") is not True
+
+
+def test_shadow247_preflight_stop_commands_resolve_v0() -> None:
+    """Preflight TOML stop/emergency commands reference existing scripts; stays non-authorizing."""
+    pf = _load_paper_shadow_preflight_toml()
+    stop_cmd = pf["stop_command"]
+    emerg_cmd = pf["emergency_stop_command"]
+    assert "report_paper_shadow_247_preflight_status.py" in stop_cmd
+    assert "snapshot_operator_stop_signals.py" in emerg_cmd
+    for cmd in (stop_cmd, emerg_cmd):
+        for rel in _relative_repo_scripts_from_shell_command(cmd):
+            assert (REPO_ROOT / rel).is_file(), rel
+    assert pf["activation_authorized"] is False
+    assert pf["daemon_activation_authorized"] is False
+    assert pf["scheduler_execution_authorized"] is False
