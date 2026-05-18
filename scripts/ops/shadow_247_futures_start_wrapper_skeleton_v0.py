@@ -676,6 +676,33 @@ def _validate_evidence_root_for_bounded_shadow(
     return resolved, None
 
 
+def _is_allowed_recorded_public_rest_source_root(path: Path) -> bool:
+    """Allow `/tmp/peak_trade_*` and `/tmp/pytest-*`, else non-`/tmp` paths under `tempfile`."""
+    resolved = path.resolve()
+    tmp_root = Path("/tmp").resolve()
+    tempfile_root = Path(tempfile.gettempdir()).resolve()
+
+    try:
+        relative_to_tmp = resolved.relative_to(tmp_root)
+    except ValueError:
+        relative_to_tmp = None
+
+    if relative_to_tmp is not None:
+        if not relative_to_tmp.parts:
+            return False
+        top_segment = relative_to_tmp.parts[0].lower()
+        return top_segment.startswith("peak_trade_") or top_segment.startswith("pytest-")
+
+    if tempfile_root == tmp_root:
+        return False
+
+    try:
+        resolved.relative_to(tempfile_root)
+    except ValueError:
+        return False
+    return True
+
+
 def _validate_recorded_public_rest_source(
     path_str: str, repo_root: Path
 ) -> Tuple[Path | None, str | None]:
@@ -706,31 +733,12 @@ def _validate_recorded_public_rest_source(
     if ".git" in resolved.parts:
         return None, "recorded-public-rest-source must not traverse a `.git` path segment"
 
-    tmp_anchor = Path("/tmp").resolve()
-    temp_anchor = Path(tempfile.gettempdir()).resolve()
-    allowed_under_tmp = False
-    allowed_under_tempfile = False
-    try:
-        rel_tmp = resolved.relative_to(tmp_anchor)
-        if rel_tmp.parts:
-            top = rel_tmp.parts[0].lower()
-            if top.startswith("peak_trade_") or top.startswith("pytest-"):
-                allowed_under_tmp = True
-    except ValueError:
-        pass
-    if not allowed_under_tmp:
-        try:
-            resolved.relative_to(temp_anchor)
-            allowed_under_tempfile = True
-        except ValueError:
-            pass
-
-    if not (allowed_under_tmp or allowed_under_tempfile):
+    if not _is_allowed_recorded_public_rest_source_root(resolved):
         return (
             None,
             "recorded-public-rest-source must resolve under `/tmp` with a top-level segment "
             "starting with `peak_trade_` or `pytest-`, or resolve under the process temporary "
-            "directory (stdlib `tempfile`).",
+            "directory (stdlib `tempfile`) when it is not the filesystem `/tmp`.",
         )
 
     return resolved, None
