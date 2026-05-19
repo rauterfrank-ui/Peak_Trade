@@ -11,6 +11,8 @@
 
 This charter **does not replace** the preflight contract, ops TOMLs, scheduler config, or tests. It **points to** them and records what **must still be decided** before any future stage can be considered.
 
+**24h bounded Shadow dry-run candidate — evidence semantics (non-authorizing):** A completed **governed** run using the wrapper’s **24h candidate tier** (duration-capped local simulation; dry-run only; no network, broker, or **order submission**; evidence under a fresh `/tmp/peak_trade_…` root such as emitted manifest/steps) produces **documentary machine-readable evidence** only. That evidence may be cited as **input material** for future readiness or gap reviews; it **does not** satisfy the blocked [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) (status remains **BLOCKED**), **does not** move Shadow-247 / Paper-Shadow-247 readiness away from **`not_ready`**, **does not** authorize Testnet, Live, broker or exchange paths, credentials, daemon operation, or scheduler execution, and is **not** a substitute for an external operator approval record. Canonical gate definitions remain in **this repository**; out-of-repo narrative alone does not clear gates.
+
 ---
 
 ## Boundary statements (non-negotiable semantics)
