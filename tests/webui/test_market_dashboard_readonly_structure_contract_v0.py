@@ -159,6 +159,24 @@ def test_market_dashboard_readonly_banner_markers(client: TestClient) -> None:
     assert 'data-market-non-authorizing="true"' in market_html
 
 
+def test_market_dashboard_readonly_banner_chip_rhythm_v0(client: TestClient) -> None:
+    """Top read-only banner uses grouped chip rows + rhythm marker; /market only."""
+    html = _html(client, "/market")
+    assert 'data-market-v0-readonly-banner-chip-rhythm-v0="true"' in html
+    assert 'data-market-v0-readonly-banner-chip-rows-v0="true"' in html
+    assert 'data-market-v0-readonly-banner-chip-divider-v0="true"' in html
+
+
+def test_double_play_market_dashboard_excludes_market_readonly_banner_chip_rhythm_v0(
+    client: TestClient,
+) -> None:
+    """Double-Play must not carry `/market` read-only banner rhythm contract markers."""
+    html = _html(client, "/market/double-play")
+    assert "data-market-v0-readonly-banner-chip-rhythm-v0" not in html
+    assert "data-market-v0-readonly-banner-chip-rows-v0" not in html
+    assert "data-market-v0-readonly-banner-chip-divider-v0" not in html
+
+
 def test_market_dashboard_ranking_funnel_empty_state_v0_marker(client: TestClient) -> None:
     """Contract-first funnel panel: stable marker only; no ranking data wired on /market."""
     market_html = _html(client, "/market")
