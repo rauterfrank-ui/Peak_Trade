@@ -1081,6 +1081,40 @@
         <p class="leading-relaxed text-slate-300/90 m-0" data-market-depth-summary="true">
           {{ market_depth.summary_line|e }}
         </p>
+        {% if market_depth.has_depth_bundle_provenance %}
+        <div
+          class="mt-2 rounded-md border border-slate-700/55 bg-slate-950/45 px-2 py-2 text-[10px] text-slate-400 leading-snug"
+          data-market-v0-depth-bundle-provenance-v0="true"
+          data-market-v0-depth-bundle-stale="{% if market_depth.depth_stale %}true{% else %}false{% endif %}"
+          role="note"
+        >
+          <p class="sr-only">
+            Read-only Datenherkunft des Markttiefen-Bündels beim Seitenaufruf — keine operative Freigabe, kein Proof für Live-/Exchange‑Freshness, kein Schluss auf Handlung.
+          </p>
+          <p class="m-0 font-semibold text-slate-300 text-[10px] uppercase tracking-wide">
+            Tiefen-Bundle-Provenienz (SSR)
+          </p>
+          <p class="m-0 mt-1 tabular-nums leading-snug">
+            <span class="text-slate-500">Bundle-Zeitstempel</span>
+            <span class="font-mono text-slate-200/95 break-all">{{ market_depth.depth_generated_at_iso|e }}</span>
+            <span class="text-slate-500"> — gehört zur read-only Tiefe;</span>
+            <strong class="text-slate-400 font-semibold">nicht</strong>
+            <span class="text-slate-500"> identisch mit dem eingebetteten OHLC-Snapshot („Snapshot bei Seitenladen“ weiter oben).</span>
+          </p>
+          <p class="m-0 mt-1 tabular-nums leading-snug text-slate-500">
+            {% if market_depth.depth_bundle_source %}
+            <span class="text-slate-500">Tiefe-<span class="font-mono text-slate-300/95">{{ market_depth.depth_bundle_source|e }}</span></span>
+            <span class="text-slate-600" aria-hidden="true">&nbsp;·&nbsp;</span>
+            {% endif %}
+            <span class="text-slate-500">Stale (Diagnose)</span>
+            <span class="font-mono text-slate-300/95">{% if market_depth.depth_stale %}yes{% else %}no{% endif %}</span>
+            {% if market_depth.depth_stale_reason %}
+            <span class="text-slate-600" aria-hidden="true">&nbsp;·&nbsp;</span>
+            <span class="font-mono text-slate-300/95 break-all">{{ market_depth.depth_stale_reason|e }}</span>
+            {% endif %}
+          </p>
+        </div>
+        {% endif %}
         {% if market_depth.display_status != 'ok' %}
         <p class="mt-1.5 text-[10px] text-slate-400 m-0 leading-snug" data-market-depth-operator-hint="true">
           {% if market_depth.display_status == 'disabled' %}
