@@ -328,20 +328,55 @@
         </div>
         {% endif %}
         {% if market_depth.has_depth_levels %}
-        <div class="flex-1 flex items-end gap-2 mt-1" aria-hidden="true">
-          <div class="flex-1 flex flex-col justify-end gap-0.5 h-14 rounded-md bg-slate-950/60 border border-slate-800/80 p-1">
-            <div class="h-2.5 rounded-sm bg-emerald-400/30 border border-emerald-500/25" style="width: 78%"></div>
-            <div class="h-2.5 rounded-sm bg-emerald-400/22 border border-emerald-500/18" style="width: 52%"></div>
+        {% set cockpit_bids = market_depth.top_bids[:3] %}
+        {% set cockpit_asks = market_depth.top_asks[:3] %}
+        <div
+          class="mt-1 rounded-md border border-slate-800/75 bg-slate-950/55 px-2 py-1.5 flex flex-col gap-1 min-h-[4.5rem]"
+          data-market-v0-depth-tile-topn-microtable-v0="true"
+          role="note"
+        >
+          <span class="sr-only">SSR Top‑N Bid und Ask aus dem bestehenden Depth-Kontext — rein darstellend, nicht handelbar, nicht kumulativ, keine Spread‑ oder Freshness‑Autorität.</span>
+          {% if cockpit_bids or cockpit_asks %}
+          <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[9px] leading-tight tabular-nums">
+            <div class="font-semibold uppercase tracking-wide text-emerald-400/85 border-b border-slate-800/70 pb-0.5">Bid</div>
+            <div class="font-semibold uppercase tracking-wide text-rose-400/85 border-b border-slate-800/70 pb-0.5">Ask</div>
+            {% set cockpit_rows = [cockpit_bids|length, cockpit_asks|length]|max %}
+            {% for i in range(cockpit_rows) %}
+            <div class="text-slate-300/95 font-mono">
+              {% if i < cockpit_bids|length %}
+              <span>{{ cockpit_bids[i].price|e }}</span><span class="text-slate-500">&nbsp;{{ cockpit_bids[i].size|e }}</span>
+              {% else %}
+              <span class="text-slate-600">—</span>
+              {% endif %}
+            </div>
+            <div class="text-slate-300/95 font-mono">
+              {% if i < cockpit_asks|length %}
+              <span>{{ cockpit_asks[i].price|e }}</span><span class="text-slate-500">&nbsp;{{ cockpit_asks[i].size|e }}</span>
+              {% else %}
+              <span class="text-slate-600">—</span>
+              {% endif %}
+            </div>
+            {% endfor %}
           </div>
-          <div class="flex-1 flex flex-col justify-end gap-0.5 h-14 rounded-md bg-slate-950/60 border border-slate-800/80 p-1">
-            <div class="h-2.5 rounded-sm bg-rose-400/28 border border-rose-500/22" style="width: 71%"></div>
-            <div class="h-2.5 rounded-sm bg-rose-400/20 border border-rose-500/15" style="width: 48%"></div>
-          </div>
+          {% else %}
+          <p class="text-[9px] text-slate-500 m-0 leading-snug">
+            Keine Bid/Ask-Zeilen in diesem Cockpit-Snapshot — nur Darstellung, keine Orderbuch‑Autorität.
+          </p>
+          {% endif %}
+          <p class="text-[9px] text-slate-600 m-0 leading-snug">
+            Top‑{{ market_depth.top_levels_limit }} Auszug · nicht kumulativ · keine Ausführungs‑ oder Bereitschaftsaussage.
+          </p>
         </div>
         <p class="text-[9px] text-slate-500 m-0">Top-N {{ market_depth.top_levels_limit }} · display-only · not cumulative</p>
         {% else %}
-        <div class="flex-1 flex items-center justify-center rounded-md border border-dashed border-slate-600/70 bg-slate-900/40 px-2 py-3">
+        <div
+          class="flex-1 flex flex-col justify-center rounded-md border border-dashed border-slate-600/70 bg-slate-900/40 px-2 py-3 gap-1"
+          data-market-v0-depth-tile-topn-microtable-v0="true"
+          role="note"
+        >
+          <span class="sr-only">Cockpit Top‑N Microtable ohne SSR‑Zeilen — depth ausgeschaltet oder nicht verfügbar.</span>
           <p class="text-[10px] text-slate-500 text-center m-0 leading-snug">No ladder rows in this snapshot — depth disabled, empty, or unavailable.</p>
+          <p class="text-[9px] text-slate-600 text-center m-0 leading-snug">Cockpit Top‑N: keine Datenzeilen geladen.</p>
         </div>
         {% endif %}
       </div>
