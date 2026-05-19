@@ -23,32 +23,52 @@
   <section
     role="region"
     aria-labelledby="market-v0-landmark-readonly-constraints-h2"
-    class="rounded-xl border border-slate-700/60 bg-slate-900/55 px-3 py-2.5 sm:px-4"
+    class="rounded-xl border border-slate-700/60 bg-slate-900/55 px-3 py-2.5 sm:px-4 sm:py-3"
     data-market-v1-readonly-banner="true"
+    data-market-v0-readonly-banner-chip-rhythm-v0="true"
   >
     <h2 id="market-v0-landmark-readonly-constraints-h2" class="sr-only">Read-only market constraints</h2>
-    <ul class="m-0 p-0 list-none flex flex-wrap gap-2">
-      <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
-        <span class="h-1.5 w-1.5 rounded-full bg-emerald-400/90 shrink-0" aria-hidden="true"></span>
-        Read-only market display
-      </li>
-      <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
-        <span class="h-1.5 w-1.5 rounded-full bg-slate-500 shrink-0" aria-hidden="true"></span>
-        No orders
-      </li>
-      <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
-        <span class="h-1.5 w-1.5 rounded-full bg-slate-500 shrink-0" aria-hidden="true"></span>
-        No strategy authority
-      </li>
-      <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
-        <span class="h-1.5 w-1.5 rounded-full bg-amber-400/85 shrink-0" aria-hidden="true"></span>
-        No Live/Testnet action
-      </li>
-      <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
-        <span class="h-1.5 w-1.5 rounded-full bg-rose-400/80 shrink-0" aria-hidden="true"></span>
-        No Risk/KillSwitch override
-      </li>
-    </ul>
+    <div
+      class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2.5"
+      data-market-v0-readonly-banner-chip-rows-v0="true"
+    >
+      <ul
+        class="m-0 p-0 list-none flex flex-wrap gap-2 sm:gap-2.5"
+        aria-label="Read-only posture"
+      >
+        <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-400/90 shrink-0" aria-hidden="true"></span>
+          Read-only market display
+        </li>
+        <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
+          <span class="h-1.5 w-1.5 rounded-full bg-slate-500 shrink-0" aria-hidden="true"></span>
+          No orders
+        </li>
+        <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
+          <span class="h-1.5 w-1.5 rounded-full bg-slate-500 shrink-0" aria-hidden="true"></span>
+          No strategy authority
+        </li>
+      </ul>
+      <div
+        role="presentation"
+        class="hidden sm:block sm:self-stretch w-px min-h-[1.75rem] bg-slate-600/35 shrink-0"
+        aria-hidden="true"
+        data-market-v0-readonly-banner-chip-divider-v0="true"
+      ></div>
+      <ul
+        class="m-0 p-0 list-none flex flex-wrap gap-2 sm:gap-2.5"
+        aria-label="Execution and risk boundaries"
+      >
+        <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
+          <span class="h-1.5 w-1.5 rounded-full bg-amber-400/85 shrink-0" aria-hidden="true"></span>
+          No Live/Testnet action
+        </li>
+        <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
+          <span class="h-1.5 w-1.5 rounded-full bg-rose-400/80 shrink-0" aria-hidden="true"></span>
+          No Risk/KillSwitch override
+        </li>
+      </ul>
+    </div>
   </section>
 
   <section
