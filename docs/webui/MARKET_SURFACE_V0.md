@@ -77,7 +77,7 @@ Current marker families are consolidated as:
 - **Read-only / non-authority shell**: markers that prove the Market Dashboard remains display-only and cannot approve, arm, or submit trades.
 - **SSR metric and candle/OHLC surface**: markers for server-rendered market context, candle stack continuity, and supplemental chart framing.
 - **Depth / orderbook readmodel display**: markers for read-only bid/ask/top-N/depth summaries; these do not create broker, exchange, or order authority.
-- **Visual Cockpit tiles**: markers for grouped Market Snapshot, Chart/OHLCV, Depth, and Safety Rail presentation. These are IA/test anchors, not a separate dashboard surface.
+- **Visual Cockpit tiles**: markers for grouped Market Snapshot, Chart/OHLCV, Depth, and Safety Rail presentation. These are IA/test anchors, not a separate dashboard surface. **Visual Cockpit · Depth‑Tile Readmodel-/Bundle‑Fingerprint (**`GET` `/market`):** wenn der SSR‑Depth‑Kontext **`readmodel_id`** oder Bundle‑**`source`** (Diagnostics/Fixture‑Label) enthält, kompakte monospace Zeilen (**Readmodel / Bundle**) unter **`data-market-v0-depth-tile-readmodel-identity-v0="true"`** — **non-authoritäre** Spiegelung bestehender **`market_depth`‑Felder**, **ohne** neuen Datenpfad oder Producer.
 - **Ranking funnel empty-state / dynamic labels**: markers for producer-defined stages such as `Top Universe`, `Shortlist`, `Top Ranking`, and `Selected Candidates`; the funnel is not fixed to `Top 50&#47;20&#47;5`.
 - **Diagnostic/helper markers**: compact template anchors may exist without individual doc bullets when they are subordinate to the families above.
 
