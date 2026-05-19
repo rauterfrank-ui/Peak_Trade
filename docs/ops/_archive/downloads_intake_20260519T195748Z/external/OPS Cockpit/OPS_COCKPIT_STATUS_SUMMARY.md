@@ -1,7 +1,7 @@
 # OPS Cockpit — Read-Only Status Summary
 
-**Erstellt:** Bestandsaufnahme auf Basis von Repo-Lesezugriff (keine Codeänderungen durch diese Datei).  
-**Repo-Pfad (Session):** `/Users/frnkhrz/Peak_Trade`  
+**Erstellt:** Bestandsaufnahme auf Basis von Repo-Lesezugriff (keine Codeänderungen durch diese Datei).
+**Repo-Pfad (Session):** `/Users/frnkhrz/Peak_Trade`
 **Branch (Ziel):** `main` (nach `git pull --ff-only` laut Session; lokale Änderungen an anderen Dateien können die Arbeitskopie verunreinigen — siehe unten).
 
 ---
@@ -51,18 +51,18 @@
 
 ### 4.1 Payload-/Themenbereiche (Auszug — Contract)
 
-`OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md` listet u. a.:  
+`OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md` listet u. a.:
 `truth_state`, `runtime_unknown_state`, `run_state`, `session_end_mismatch_state`, `transfer_ambiguity_state`, `stale_state`, `incident_state`, `dependencies_state`, `evidence_state`, `exposure_state`, `policy_state`, `guard_state`, `workflow_officer_state`, `update_officer_ui`, `phase83_eligibility_snapshot`, diverse `*_observation`-Keys, `safety_state`, `executive_summary`, `source_groups`, …
 
 ### 4.2 Stabile HTML-`id`s (gesichert via `rg 'id="' src/webui/ops_cockpit.py`)
 
-**Operator Summary (Auswahl):**  
+**Operator Summary (Auswahl):**
 `operator-summary-preamble`, `operator-summary-system-status`, `operator-summary-system-state-observation`, `operator-summary-phase83-eligibility`, `operator-summary-go-no-go-not-approval`, `operator-summary-policy-go-no-go-observation`, `operator-summary-operator-state`, `operator-summary-safety-posture-observation`, `operator-summary-safety-state-projection`, `operator-summary-governance-boundary-observation`, `operator-summary-workflow-officer`, `operator-summary-update-officer`, `operator-summary-phase57-snapshot-discoverability`, `operator-summary-run-session-observation`, `operator-summary-run-state`, `operator-summary-session-end-mismatch`, `operator-summary-transfer-ambiguity`, `operator-summary-stale-signals`, `operator-summary-health-drift-observation`, `operator-summary-dependencies-artifact-observations`, `operator-summary-exposure-risk-observation`, `operator-summary-exposure-state`, `operator-summary-balance-semantics`, `operator-summary-incident-safety-observation`, `operator-summary-incident-observation-read-only`, `operator-summary-evidence-audit-observation`, `operator-summary-evidence-freshness-observation-read-only`, `operator-summary-truth-state`, `operator-summary-truth-sources-runtime`, `operator-summary-status-at-a-glance`, `operator-summary-policy-governance-rv6`, …
 
-**Weitere Oberflächen:**  
+**Weitere Oberflächen:**
 `policy-governance-observation-surface`, `operator-workflow-observation-surface`, `operator-workflow-handoff-preview-observation`, `phase83-strategy-eligibility-card`, `phase57-live-snapshot-endpoints-card`, `incident-observed-rollup-observation-card`, `run-state-observation-card`, `update-officer-visibility-card`, …
 
-**Haupt-Grid (`render_ops_cockpit_html`, Auszug):**  
+**Haupt-Grid (`render_ops_cockpit_html`, Auszug):**
 `truth-state-observation-card`, `runtime-unknown-state-observation-card`, `exposure-state-observation-card`, `transfer-ambiguity-observation-surface`, `stale-state-observation-card`, `balance-semantics-observation-card`, `session-end-mismatch-observation-surface`, `evidence-state-card`, `dependencies-state-observation-card`, `incident-state-read-model-observation-card`.
 
 **Hinweis:** Es gibt weiterhin `<div class="card truth-card">` **ohne** äußeres `id` an mehreren Stellen (z. B. Policy-/Workflow-Innenlayouts, `_render_doc_card`, `_render_group_summary_block`) — **vollständige Liste der „fehlenden“ Anker** wäre eine eigene grep-Passage; hier nur qualitativ benannt.

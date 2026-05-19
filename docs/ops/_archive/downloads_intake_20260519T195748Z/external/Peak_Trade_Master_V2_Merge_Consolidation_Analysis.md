@@ -1,6 +1,6 @@
 # Master-V2: Konsolidierungs- und Integrationsanalyse (read-only)
 
-**Stand (lokal geprüft):** `main` = `a80748b5` — **enthält kein** `src/trading/master_v2/`.  
+**Stand (lokal geprüft):** `main` = `a80748b5` — **enthält kein** `src/trading/master_v2/`.
 **Befund:** Sämtliche genannten Feature-Branch-Tipps sind **jeweils genau 1 Commit** mit **direktem Eltern-Commit = `a80748b5` (main)**. Es gibt **keine** lineare Aneinanderkettung dieser Arbeit als Git-Historie: die Branches sind **Geschwister-Kommits**, kein `feat-A → feat-B → feat-C`‑Ketten-Graph.
 
 ---

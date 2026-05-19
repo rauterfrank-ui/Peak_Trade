@@ -1,7 +1,7 @@
 # Downloads intake archive — 2026-05-19T19:57:48Z
 
-**Status:** HISTORICAL / non-authorizing  
-**Source:** Operator `~/Downloads` (Cursor Multi-Agent Orchestrator intake)  
+**Status:** HISTORICAL / non-authorizing
+**Source:** Operator `~/Downloads` (Cursor Multi-Agent Orchestrator intake)
 **Rule:** Repo canonical docs supersede everything here. These files are **not** runtime authority and **do not** grant Live/Testnet/Paper/execution enablement.
 
 ## Archived in-repo (external/)

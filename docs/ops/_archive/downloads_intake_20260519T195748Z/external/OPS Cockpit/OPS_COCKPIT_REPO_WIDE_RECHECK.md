@@ -1,6 +1,6 @@
 # OPS Cockpit — Repo-weite Gegenprüfung (read-only)
 
-**Erstellt:** Audit auf Basis von `main` im Repo `/Users/frnkhrz/Peak_Trade` (Session).  
+**Erstellt:** Audit auf Basis von `main` im Repo `/Users/frnkhrz/Peak_Trade` (Session).
 **Modus:** rein informativ — keine Codeänderungen durch dieses Dokument.
 
 **Hinweis zur Ausgangslage:** Der Brief verweist auf `/mnt/data/OPS_COCKPIT_STATUS_SUMMARY.md` — **auf diesem System existiert dieser Pfad nicht** (`No such file or directory`). Eine frühere Summary liegt unter `/tmp/peak_trade_ops_cockpit_status_readonly/OPS_COCKPIT_STATUS_SUMMARY.md` (falls vorhanden). Diese Gegenprüfung ist **unabhängig** neu aus dem Repo abgeleitet.
