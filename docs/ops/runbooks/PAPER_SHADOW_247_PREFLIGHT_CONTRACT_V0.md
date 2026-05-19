@@ -12,6 +12,8 @@ Current status: **BLOCKED**.
 
 For the **activation ladder**, operator-approval semantics, stop/evidence planning boundaries, and explicit **STOP_IDLE** posture, see **[SHADOW_247_GOVERNANCE_CHARTER_V0.md](SHADOW_247_GOVERNANCE_CHARTER_V0.md)**. That charter is governance-only and **does not** override this document’s **BLOCKED** status or constitute a runtime approval.
 
+For **24h bounded Shadow dry-run candidate** documentary evidence semantics, see **Status and scope** in **[SHADOW_247_GOVERNANCE_CHARTER_V0.md](SHADOW_247_GOVERNANCE_CHARTER_V0.md)** (same charter file as the preceding governance link); that tier remains **documentary** and **non-authorizing**, **does not** change this contract’s **BLOCKED** status, and assists navigation only.
+
 ## 2. Canonical activation status
 
 There is no approved one-command Paper/Shadow 24/7 activation path in the repository.
