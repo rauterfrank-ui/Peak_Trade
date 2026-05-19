@@ -100,7 +100,7 @@ Doubleplay is **not** just:
 
 Likely roadmap evidence:
 - `docs&#47;roadmap&#47;PeakTrade_LevelUp_Roadmap_Evidence.md`
-- `docs&#47;roadmap&#47;PeakTrade_LevelUp_Roadmap_Evidence_20260211_doubleplay_leverage50.md`
+- `docs&#47;roadmap&#47;PeakTrade_LevelUp_Roadmap_Evidence_20260211_doubleplay_leverage50.md` <!-- pt:ref-target-ignore -->
 
 Cursor must preserve this interpretation unless later evidence clearly proves otherwise.
 

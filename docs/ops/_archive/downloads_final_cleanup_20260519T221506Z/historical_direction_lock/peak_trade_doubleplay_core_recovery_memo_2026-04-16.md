@@ -150,7 +150,7 @@ Diese Logik ist als **Sollbild** insbesondere in den LevelUp-Roadmaps sichtbar, 
 Wahrscheinlich wichtigste Soll-Dokumente:
 
 - `docs&#47;roadmap&#47;PeakTrade_LevelUp_Roadmap_Evidence.md`
-- `docs&#47;roadmap&#47;PeakTrade_LevelUp_Roadmap_Evidence_20260211_doubleplay_leverage50.md`
+- `docs&#47;roadmap&#47;PeakTrade_LevelUp_Roadmap_Evidence_20260211_doubleplay_leverage50.md` <!-- pt:ref-target-ignore -->
 
 ### Wichtige Negativabgrenzung
 Die heute sichtbare Regime-Schicht ist **nicht automatisch** die Doubleplay-Implementierung.
@@ -433,7 +433,7 @@ Das ist **das gewünschte Zielbild**, nicht die Behauptung, dass das Repo heute 
 
 ## 7.1 Für das Sollbild / die frühere Fachlogik
 - `docs&#47;roadmap&#47;PeakTrade_LevelUp_Roadmap_Evidence.md`
-- `docs&#47;roadmap&#47;PeakTrade_LevelUp_Roadmap_Evidence_20260211_doubleplay_leverage50.md`
+- `docs&#47;roadmap&#47;PeakTrade_LevelUp_Roadmap_Evidence_20260211_doubleplay_leverage50.md` <!-- pt:ref-target-ignore -->
 
 ## 7.2 Für Selection / Universe / Crawler-Nachfolger
 - `scripts&#47;scan_markets.py`

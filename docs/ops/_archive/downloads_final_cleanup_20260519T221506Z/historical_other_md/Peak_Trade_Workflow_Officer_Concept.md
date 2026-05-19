@@ -96,9 +96,9 @@ Aktuell sind diese Bausteine jedoch verteilt. Der Workflow Officer bündelt sie 
 - `src&#47;ops&#47;p39&#47;registry_cli_v1.py`
 
 ### 4.6 GitHub / TLS / Closeout
-- `scripts&#47;ops&#47;gh_tls_wrap.sh`
+- `scripts&#47;ops&#47;gh_tls_wrap.sh` <!-- pt:ref-target-ignore -->
 - `scripts&#47;ops&#47;gh_tls_diag_fix.sh`
-- `scripts&#47;ops&#47;tls_fix_gh_orchestrator.sh`
+- `scripts&#47;ops&#47;tls_fix_gh_orchestrator.sh` <!-- pt:ref-target-ignore -->
 - `scripts&#47;governance&#47;safe_delete_merged_branches.sh`
 - `scripts&#47;governance&#47;post_merge_closeout.sh`
 
@@ -341,8 +341,8 @@ out/ops/workflow_officer/<ts>/events.jsonl
       "status": "warn",
       "failure_class": "GH_TLS",
       "summary": "Use gh_tls_wrap.sh",
-      "recommended_action": "Run scripts/ops/gh_tls_wrap.sh",
-      "safe_fallback": "Avoid direct gh mutation; prepare local patch only"
+      "recommended_action": "Run scripts/ops/gh_tls_wrap.sh", <!-- pt:ref-target-ignore -->
+      "safe_fallback": "Avoid direct gh mutation; prepare local patch only" <!-- pt:ref-target-ignore -->
     }
   ]
 }
@@ -372,7 +372,7 @@ Wenn `docs_only_pr` aktiv ist:
 Der Officer soll keine „unscharfen“ Workarounds erfinden, sondern bekannte Fallbacks ausgeben.
 
 ### 13.1 Beispiele
-- `GH_TLS` → `scripts&#47;ops&#47;gh_tls_wrap.sh`
+- `GH_TLS` → `scripts&#47;ops&#47;gh_tls_wrap.sh` <!-- pt:ref-target-ignore -->
 - `NETWORK_UNAVAILABLE` → nur lokale Patch-/Diff-Vorbereitung
 - `HEADLESS_UI_LIMIT` → keine Browser-/open-Kommandos, stattdessen URL ausgeben
 - `SANDBOX_PERMISSION` → nur read-only Analyse, kein erzwungener Write

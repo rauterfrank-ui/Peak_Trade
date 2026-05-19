@@ -157,7 +157,7 @@ Doubleplay must be understood as:
 
 ### Likely roadmap evidence
 - `docs&#47;roadmap&#47;PeakTrade_LevelUp_Roadmap_Evidence.md`
-- `docs&#47;roadmap&#47;PeakTrade_LevelUp_Roadmap_Evidence_20260211_doubleplay_leverage50.md`
+- `docs&#47;roadmap&#47;PeakTrade_LevelUp_Roadmap_Evidence_20260211_doubleplay_leverage50.md` <!-- pt:ref-target-ignore -->
 
 ### Binding interpretation
 Doubleplay is not merely:
@@ -860,7 +860,7 @@ Read-only forensics currently suggest:
 
 ### 22.2 Doubleplay / roadmap family
 - `docs&#47;roadmap&#47;PeakTrade_LevelUp_Roadmap_Evidence.md`
-- `docs&#47;roadmap&#47;PeakTrade_LevelUp_Roadmap_Evidence_20260211_doubleplay_leverage50.md`
+- `docs&#47;roadmap&#47;PeakTrade_LevelUp_Roadmap_Evidence_20260211_doubleplay_leverage50.md` <!-- pt:ref-target-ignore -->
 
 ### 22.3 Regime / strategy switching family
 - `docs&#47;REGIME_DETECTION_AND_STRATEGY_SWITCHING_PHASE_28.md`
