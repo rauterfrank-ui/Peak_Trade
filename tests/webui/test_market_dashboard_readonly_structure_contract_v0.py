@@ -177,6 +177,24 @@ def test_double_play_market_dashboard_excludes_market_readonly_banner_chip_rhyth
     assert "data-market-v0-readonly-banner-chip-divider-v0" not in html
 
 
+def test_market_dashboard_embedded_snapshot_generated_at_visibility_v0(
+    client: TestClient,
+) -> None:
+    """Embedded OHLCV payload timestamp visible on `/market`; same field as SSR API surface."""
+    html = _html(client, "/market")
+    assert 'data-market-v0-embedded-snapshot-generated-at-v0="true"' in html
+    assert "Snapshot bei Seitenladen" in html
+    assert re.search(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}", html)
+
+
+def test_double_play_market_dashboard_excludes_market_embedded_snapshot_generated_at_marker_v0(
+    client: TestClient,
+) -> None:
+    """`/market`-specific embedded-snapshot marker must not leak onto Double-Play."""
+    html = _html(client, "/market/double-play")
+    assert "data-market-v0-embedded-snapshot-generated-at-v0" not in html
+
+
 def test_market_dashboard_ranking_funnel_empty_state_v0_marker(client: TestClient) -> None:
     """Contract-first funnel panel: stable marker only; no ranking data wired on /market."""
     market_html = _html(client, "/market")
