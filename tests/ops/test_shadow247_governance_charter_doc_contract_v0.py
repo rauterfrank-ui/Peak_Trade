@@ -29,7 +29,9 @@ _FORBIDDEN_PROMOTION_PHRASES_V0: tuple[str, ...] = (
 def _evidence_semantics_paragraph_v0() -> str:
     """Return the #3560 evidence-semantics paragraph in Status and scope (read-only)."""
     text = _read()
-    assert EVIDENCE_SEMANTICS_HEADING_V0 in text, "missing 24h evidence semantics heading (PR #3560 regression?)"
+    assert EVIDENCE_SEMANTICS_HEADING_V0 in text, (
+        "missing 24h evidence semantics heading (PR #3560 regression?)"
+    )
     start = text.index(EVIDENCE_SEMANTICS_HEADING_V0)
     end = text.find("\n\n---", start)
     assert end != -1, "expected evidence-semantics paragraph terminated by blank line + ---"
