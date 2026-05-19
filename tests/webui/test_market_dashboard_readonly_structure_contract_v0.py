@@ -293,6 +293,38 @@ def test_double_play_market_dashboard_excludes_depth_cockpit_readmodel_identity_
     assert "data-market-v0-depth-tile-readmodel-identity-v0" not in html
 
 
+def test_market_dashboard_depth_cockpit_tile_topn_microtable_marker_default_depth_disabled_v0(
+    client: TestClient,
+) -> None:
+    """Visual Cockpit Depth tile exposes SSR Top-N microtable anchor even when depth ladder empty."""
+    html = _html(client, "/market")
+    assert 'data-market-v0-depth-tile-topn-microtable-v0="true"' in html
+
+
+def test_market_dashboard_depth_cockpit_tile_topn_microtable_fixture_prices_v0(
+    client_depth_fixture_bundle_on: TestClient,
+) -> None:
+    """Fixture SSR renders bid/ask labels and deterministic fixture prices/sizes in cockpit tile."""
+    html = _html(client_depth_fixture_bundle_on, "/market")
+    assert 'data-market-v0-depth-tile-topn-microtable-v0="true"' in html
+    anchor = html.index("data-market-v0-depth-tile-topn-microtable-v0")
+    window = html[anchor : anchor + 4500]
+    assert "Bid" in window
+    assert "Ask" in window
+    assert "63000" in window
+    assert "0.5" in window
+    assert "63030" in window
+    assert "0.4" in window
+
+
+def test_double_play_market_dashboard_excludes_depth_cockpit_topn_microtable_marker_v0(
+    client: TestClient,
+) -> None:
+    """`/market`-only cockpit-depth Top-N microtable marker stays off Double-Play."""
+    html = _html(client, "/market/double-play")
+    assert "data-market-v0-depth-tile-topn-microtable-v0" not in html
+
+
 def test_market_dashboard_ranking_funnel_empty_state_v0_marker(client: TestClient) -> None:
     """Contract-first funnel panel: stable marker only; no ranking data wired on /market."""
     market_html = _html(client, "/market")
