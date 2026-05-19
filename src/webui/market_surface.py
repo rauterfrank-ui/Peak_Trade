@@ -165,6 +165,46 @@ def _top_depth_level_rows(
     return bids_out, asks_out
 
 
+def _sanitize_depth_bundle_provenance(display_envelope: Dict[str, Any]) -> Dict[str, Any]:
+    """Extract already-present Depth JSON envelope provenance fields for SSR templates only."""
+
+    ga = display_envelope.get("generated_at_iso")
+    depth_generated_at_iso = ""
+    if ga is not None:
+        depth_generated_at_iso = str(ga).strip()
+        if len(depth_generated_at_iso) > 200:
+            depth_generated_at_iso = f"{depth_generated_at_iso[:197]}..."
+
+    stale_raw = display_envelope.get("stale")
+    depth_stale = stale_raw is True
+
+    sr = display_envelope.get("stale_reason")
+    depth_stale_reason = ""
+    if sr is not None:
+        depth_stale_reason = str(sr).strip()
+        if len(depth_stale_reason) > 500:
+            depth_stale_reason = f"{depth_stale_reason[:497]}..."
+
+    bs = display_envelope.get("source")
+    depth_bundle_source = ""
+    if bs is not None:
+        depth_bundle_source = str(bs).strip()
+        if len(depth_bundle_source) > 80:
+            depth_bundle_source = f"{depth_bundle_source[:77]}..."
+
+    has_depth_bundle_provenance = bool(
+        depth_generated_at_iso or depth_bundle_source or depth_stale_reason or stale_raw is not None
+    )
+
+    return {
+        "depth_generated_at_iso": depth_generated_at_iso,
+        "depth_stale": depth_stale,
+        "depth_stale_reason": depth_stale_reason,
+        "depth_bundle_source": depth_bundle_source,
+        "has_depth_bundle_provenance": has_depth_bundle_provenance,
+    }
+
+
 def dataframe_to_bars(df: pd.DataFrame) -> List[Dict[str, Any]]:
     """Serialisiert DataFrame mit open/high/low/close/volume in JSON-Bar-Objekte."""
     bars: List[Dict[str, Any]] = []
@@ -190,6 +230,8 @@ def build_market_depth_display_context() -> Dict[str, Any]:
 
     depth_http_status, depth_payload = market_depth_json_payload_v0()
     readmodel_id = str(depth_payload.get("readmodel_id", ""))
+
+    provenance_ctx = _sanitize_depth_bundle_provenance(depth_payload)
 
     top_bids: List[Dict[str, str]] = []
     top_asks: List[Dict[str, str]] = []
@@ -228,6 +270,7 @@ def build_market_depth_display_context() -> Dict[str, Any]:
         "top_asks": top_asks,
         "top_levels_limit": top_limit,
         "has_depth_levels": has_depth_levels,
+        **provenance_ctx,
     }
 
 

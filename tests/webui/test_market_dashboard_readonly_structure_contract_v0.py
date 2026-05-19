@@ -212,6 +212,54 @@ def test_double_play_market_dashboard_excludes_market_payload_meta_note_marker_v
     assert "data-market-v0-payload-meta-note-v0" not in html
 
 
+@pytest.fixture()
+def client_depth_fixture_bundle_on(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Iterator[TestClient]:
+    """Offline depth SSR enabled pointing at repo fixture (deterministic timestamps via env)."""
+    monkeypatch.setenv("PEAK_TRADE_MARKET_DEPTH_ENABLED", "1")
+    bundle = (
+        project_root / "tests" / "fixtures" / "market_depth_readmodel_v0" / "complete_minimal"
+    ).resolve()
+    monkeypatch.setenv("PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT", str(bundle))
+    monkeypatch.setenv("PEAK_TRADE_FIXED_GENERATED_AT_UTC", "2030-01-15T12:34:56.000000+00:00")
+    with TestClient(create_app()) as test_client:
+        yield test_client
+
+
+def test_market_dashboard_depth_bundle_provenance_visibility_default_depth_disabled_v0(
+    client: TestClient,
+) -> None:
+    """`/market`: depth envelope provenance is visible and distinct from OHLC snapshot wording."""
+    html = _html(client, "/market?source=dummy")
+    assert 'data-market-v0-depth-bundle-provenance-v0="true"' in html
+    assert 'data-market-v0-depth-bundle-stale="true"' in html
+    assert "Tiefen-Bundle-Provenienz" in html
+    assert "Bundle-Zeitstempel" in html
+    assert "offline_bundle_scan" not in html
+    assert "source_disabled" in html
+    assert "Snapshot bei Seitenladen" in html
+
+
+def test_market_dashboard_depth_bundle_provenance_with_offline_fixture_stale_reason_v0(
+    client_depth_fixture_bundle_on: TestClient,
+) -> None:
+    """SSR depth bundle path surfaces fixture stale_reason and deterministic generated_at_iso."""
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy")
+    assert 'data-market-v0-depth-bundle-provenance-v0="true"' in html
+    assert 'data-market-v0-depth-bundle-stale="true"' in html
+    assert "2030-01-15T12:34:56.000000+00:00" in html
+    assert "offline_bundle_scan" in html
+
+
+def test_double_play_market_dashboard_excludes_market_depth_bundle_provenance_marker_v0(
+    client: TestClient,
+) -> None:
+    """`/market`-only depth-bundle provenance marker must not leak onto Double-Play."""
+    html = _html(client, "/market/double-play")
+    assert "data-market-v0-depth-bundle-provenance-v0" not in html
+
+
 def test_market_dashboard_ranking_funnel_empty_state_v0_marker(client: TestClient) -> None:
     """Contract-first funnel panel: stable marker only; no ranking data wired on /market."""
     market_html = _html(client, "/market")
