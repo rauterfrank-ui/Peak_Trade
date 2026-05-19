@@ -24,7 +24,7 @@ Peak_Trade hat eine **breite Master-V2-Spezifikationsfläche**, **implementierte
 |------|------|
 | Branch | `main` |
 | HEAD | `a81492155e28` (`docs(ops): link recent safe contract anchors v0 (#3239)`) |
-| Upstream | `main...origin/main` — zum Abfragezeitpunkt **up to date** |
+| Upstream | `main...origin&#47;main` — zum Abfragezeitpunkt **up to date** |
 | Working tree | **clean** |
 
 **Letzte relevante Commits (Auszug):**
@@ -40,53 +40,53 @@ Peak_Trade hat eine **breite Master-V2-Spezifikationsfläche**, **implementierte
 
 ### 3.1 Master V2 Specs
 
-- **Count:** **108** Dateien `docs/**/MASTER_V2*.md` (Glob gegen `/Users/frnkhrz/Peak_Trade/docs`).
-- **Steuerungs-Anker:** `docs/ops/specs/MASTER_V2_GO_LIVE_ROADMAP_V0.md`, `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`, `MASTER_V2_PROMOTION_STATE_MACHINE_V1.md`, `MASTER_V2_GATE_FILL_VOCABULARY_BOUNDARY_LOCK_V1.md`, Bounded-Pilot L1–L5 Pointer-/Runbook-Crosswalk.
+- **Count:** **108** Dateien `docs&#47;**&#47;MASTER_V2*.md` (Glob gegen `&#47;Users&#47;frnkhrz&#47;Peak_Trade&#47;docs`).
+- **Steuerungs-Anker:** `docs&#47;ops&#47;specs&#47;MASTER_V2_GO_LIVE_ROADMAP_V0.md`, `docs&#47;ops&#47;specs&#47;MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`, `MASTER_V2_PROMOTION_STATE_MACHINE_V1.md`, `MASTER_V2_GATE_FILL_VOCABULARY_BOUNDARY_LOCK_V1.md`, Bounded-Pilot L1–L5 Pointer-/Runbook-Crosswalk.
 - **Double Play:** `MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md`, Pure-Stack Readiness / Parking Maps, WebUI-Verträge (`MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md`, Display Map).
 - **Learning / AI / Autonomy (docs-only inventory):** `MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md`, `MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md`, `MASTER_V2_KB_REGISTRY_EVIDENCE_TAXONOMY_V0.md`.
 
-### 3.2 Implementierung (`src/trading/master_v2/`)
+### 3.2 Implementierung (`src&#47;trading&#47;master_v2&#47;`)
 
 - **22** Python-Module u. a. `double_play_state.py`, `double_play_composition.py` (explizit non-authorizing), `double_play_survival.py`, `double_play_suitability.py`, `double_play_capital_slot.py`, `double_play_futures_input*.py`, `double_play_dashboard_display.py`, Decision-Packet-/Replay-/Evaluator-Pfade.
 
-### 3.3 Tests (`tests/trading/master_v2/`)
+### 3.3 Tests (`tests&#47;trading&#47;master_v2&#47;`)
 
 - **16** Testdateien (Komposition, State, Survival, Suitability, Capital, Futures-Input/Producer, Dashboard Display, Pure-Stack-Contract, lokaler Evaluator/CLI).
 
 ### 3.4 Risk / KillSwitch / Gates
 
-- **KillSwitch / State:** `src/ops/gates/risk_gate.py`, `src/risk_layer/kill_switch/cli.py`, `src/execution/risk_hook_impl.py`.
-- **Live-/Pilot-Umfeld:** `src/core/environment.py` (`PT_LIVE_CONFIRM_TOKEN_ENV`), `scripts/ops/run_live_pilot_session.sh`, Tests `tests/ops/test_run_bounded_pilot_session.py`.
-- **Networked Entry Contract:** `src/execution/networked/entry_contract_v1.py` (`PT_CONFIRM`, `PT_CONFIRM_TOKEN`).
-- **Execution Governance:** `src/execution/__init__.py` (live gesperrt), `src/execution/pipeline.py`, `src/execution/orchestrator.py`.
+- **KillSwitch / State:** `src&#47;ops&#47;gates&#47;risk_gate.py`, `src&#47;risk_layer&#47;kill_switch&#47;cli.py`, `src&#47;execution&#47;risk_hook_impl.py`.
+- **Live-/Pilot-Umfeld:** `src&#47;core&#47;environment.py` (`PT_LIVE_CONFIRM_TOKEN_ENV`), `scripts&#47;ops&#47;run_live_pilot_session.sh`, Tests `tests&#47;ops&#47;test_run_bounded_pilot_session.py`.
+- **Networked Entry Contract:** `src&#47;execution&#47;networked&#47;entry_contract_v1.py` (`PT_CONFIRM`, `PT_CONFIRM_TOKEN`).
+- **Execution Governance:** `src&#47;execution&#47;__init__.py` (live gesperrt), `src&#47;execution&#47;pipeline.py`, `src&#47;execution&#47;orchestrator.py`.
 
 ### 3.5 PaperExecutionEngine / Paper / Shadow
 
-- **WP1B:** `src/execution/paper/engine.py`.
-- **Futures Accounting / Snapshot DTO v0:** `src/execution/paper/futures_accounting.py` — `FuturesPaperAccountingSnapshotV0`; Spec §7 `MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0.md`; Tests `tests/execution/paper/test_futures_accounting_snapshot_dto_v0.py`, `test_paper_engine_futures_seam_v0.py`.
+- **WP1B:** `src&#47;execution&#47;paper&#47;engine.py`.
+- **Futures Accounting / Snapshot DTO v0:** `src&#47;execution&#47;paper&#47;futures_accounting.py` — `FuturesPaperAccountingSnapshotV0`; Spec §7 `MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0.md`; Tests `tests&#47;execution&#47;paper&#47;test_futures_accounting_snapshot_dto_v0.py`, `test_paper_engine_futures_seam_v0.py`.
 
 ### 3.6 CI / Scheduled / Class-A / Offline
 
-- **Workflows:** **73** YAML-Dateien unter `.github/workflows/` — u. a. `offline_suites.yml`, `class-a-shadow-paper-scheduled-probe-v1.yml`, `ci-scheduled-paper-and-export-smoke.yml`, `prj-scheduled-shadow-paper-features-smoke.yml`, `paper_session_audit_evidence.yml`, `paper_tests_audit_evidence.yml`, `shadow_paper_smoke.yml`, `master_v2_dry_smoke.yml`, `prbe-shadow-testnet-scorecard.yml`, `prbj-testnet-exec-events.yml`, Scorecards/Pilot (`prbd-live-readiness-scorecard.yml`, `prbi-live-pilot-scorecard.yml`).
-- **Guardrails:** `scripts/ci/scheduled_guardrails.sh`.
-- **P77 (manual/script):** `docs/analysis/p77/README.md`, `scripts/ops/online_readiness_daemon_v1.sh` (kein GH-Workflow-Name „24/7 Paper-Test-Daemon“ laut Linkage Review).
+- **Workflows:** **73** YAML-Dateien unter `.github&#47;workflows&#47;` — u. a. `offline_suites.yml`, `class-a-shadow-paper-scheduled-probe-v1.yml`, `ci-scheduled-paper-and-export-smoke.yml`, `prj-scheduled-shadow-paper-features-smoke.yml`, `paper_session_audit_evidence.yml`, `paper_tests_audit_evidence.yml`, `shadow_paper_smoke.yml`, `master_v2_dry_smoke.yml`, `prbe-shadow-testnet-scorecard.yml`, `prbj-testnet-exec-events.yml`, Scorecards/Pilot (`prbd-live-readiness-scorecard.yml`, `prbi-live-pilot-scorecard.yml`).
+- **Guardrails:** `scripts&#47;ci&#47;scheduled_guardrails.sh`.
+- **P77 (manual/script):** `docs&#47;analysis&#47;p77&#47;README.md`, `scripts&#47;ops&#47;online_readiness_daemon_v1.sh` (kein GH-Workflow-Name „24/7 Paper-Test-Daemon“ laut Linkage Review).
 
 ### 3.7 WebUI / Readmodels / Dashboard
 
-- **App/Routes:** `src/webui/app.py` (Market/Double-Play SSR, Observability Hub, Paper-Shadow-Summary API).
-- **Double Play JSON:** `src/webui/double_play_dashboard_display_json_route_v0.py`.
-- **Readmodels:** `src/webui/market_depth_readmodel_v0/`, `src/webui/paper_shadow_summary_readmodel_v0/`.
-- **Templates:** `templates/peak_trade_dashboard/` u. a. Market/Observability.
+- **App/Routes:** `src&#47;webui&#47;app.py` (Market/Double-Play SSR, Observability Hub, Paper-Shadow-Summary API).
+- **Double Play JSON:** `src&#47;webui&#47;double_play_dashboard_display_json_route_v0.py`.
+- **Readmodels:** `src&#47;webui&#47;market_depth_readmodel_v0&#47;`, `src&#47;webui&#47;paper_shadow_summary_readmodel_v0&#47;`.
+- **Templates:** `templates&#47;peak_trade_dashboard&#47;` u. a. Market/Observability.
 
 ### 3.8 Evidence / Readiness / Registry
 
 - **Gate-/Readiness:** `MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md`, `MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`, Evidence-Packet-/Navigation-Maps, Session Review Pack Contracts.
-- **Registry:** `docs/ops/registry/INDEX.md`, `docs/ops/registry/DOCS_TRUTH_MAP.md`, `config/ops/docs_truth_map.yaml`.
+- **Registry:** `docs&#47;ops&#47;registry&#47;INDEX.md`, `docs&#47;ops&#47;registry&#47;DOCS_TRUTH_MAP.md`, `config&#47;ops&#47;docs_truth_map.yaml`.
 
 ### 3.9 Strategy / Backtest / Research
 
-- **Strategien:** `src/strategies/` (breites Portfolio + Research-Unterpakete).
-- **Backtest:** `src/backtest/engine.py`, typischer Bezug zu `ExecutionPipeline.for_paper` (Overview-Dokumentation).
+- **Strategien:** `src&#47;strategies&#47;` (breites Portfolio + Research-Unterpakete).
+- **Backtest:** `src&#47;backtest&#47;engine.py`, typischer Bezug zu `ExecutionPipeline.for_paper` (Overview-Dokumentation).
 
 ### 3.10 Env / Vars / Secrets (Repo-nachweisbar vs. nicht)
 
@@ -102,7 +102,7 @@ Jede Zeile: **Ziel** | **Reuse (Repo)** | **Lücken** | **Evidence** | **Tests**
 **Stage 0 — Research / Backtest only**
 
 - Ziel: Signale/Strategien offline validieren.
-- Repo: `src/backtest/`, `src/strategies/`, Robustness-/Stress-Doku in Specs wo vorhanden.
+- Repo: `src&#47;backtest&#47;`, `src&#47;strategies&#47;`, Robustness-/Stress-Doku in Specs wo vorhanden.
 - Lücken: keine Live/Testnet-Anbindung erforderlich.
 - Evidence: Backtest-Artefakte, keine Gate-Freigabe.
 - Tests: bestehende Unit/Integration je Suite.
@@ -219,7 +219,7 @@ Jede Zeile: **Ziel** | **Reuse (Repo)** | **Lücken** | **Evidence** | **Tests**
 2. **Strategy ≠ Authority:** Strategiewahl dokumentiert — Promotion über Governance nicht über Backtest allein (`MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md` als Orientierung).
 3. **AI ≠ Authority:** Learning Inventory & Governance (`AI_AUTONOMY_GO_NO_GO_OVERVIEW.md`, Bayesian Evidence Decision) — Advisory dominance.
 4. **Dashboard ≠ Freigabe:** WebUI Contracts explizit read-only / display (`MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md`, Overview §8).
-5. **Paper ≠ Live:** WP1B SPOT_SIM Semantik; `live_order_execution` gesperrt (`src/execution/__init__.py`).
+5. **Paper ≠ Live:** WP1B SPOT_SIM Semantik; `live_order_execution` gesperrt (`src&#47;execution&#47;__init__.py`).
 6. **Testnet ≠ Live:** Workflow-Namen warnen; Vars getrennt halten (`PEAK_TRADE_TESTNET_ONLY` in Workflow-Härtung erwähnt).
 7. **Kontrollkette:** Master V2 / Double Play Logik → Risk → KillSwitch → Execution Gates → Venue — Reihenfolge fail-closed zu halten ist Implementierungs-/Governance-Pflicht, hier **No-Touch** ohne Approval.
 8. **Learning Loop:** darf **Kandidaten** verbessern und Evidence erzeugen — **keine** Gate-Umgehung (`MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md` §5).
@@ -284,10 +284,10 @@ Jede Zeile: **Ziel** | **Reuse (Repo)** | **Lücken** | **Evidence** | **Tests**
 ### Move 1 — Read-only autonomy roadmap consolidation (**dieses Artefakt**)
 
 - **Nutzen:** gemeinsames Stage-Vokabular für Operator/Cursor Sessions.
-- **Risiko:** minimal wenn nur `/tmp` oder externes Wiki.
+- **Risiko:** minimal wenn nur `&#47;tmp` oder externes Wiki.
 - **Typ:** read-only.
 - **Dateien:** keine Repo — Basis `$BASE`; Referenzen auf Spec-Pfade oben.
-- **No-Touch:** gesamtes Runtime `src/execution`, Risk.
+- **No-Touch:** gesamtes Runtime `src&#47;execution`, Risk. <!-- pt:ref-target-ignore -->
 - **Reuse Owner:** Ops/Docs Governance.
 - **Jetzt:** sofort nutzbar; **Später:** einmal mit Repo-Doc Crosswalk mergen wenn STOP lifted.
 
@@ -296,7 +296,7 @@ Jede Zeile: **Ziel** | **Reuse (Repo)** | **Lücken** | **Evidence** | **Tests**
 - **Nutzen:** Ein Pfad Doc für Stage ↔ bestehende Roadmap-Stufen.
 - **Risiko:** Truth-Map Pflicht wenn substanzielle neue Claims zu Codepfaden — nur kurze Crosswalk-Tabelle minimieren.
 - **Typ:** docs-only (nach Operator-Freigabe).
-- **Dateien:** `docs/ops/specs/MASTER_V2_GO_LIVE_ROADMAP_V0.md`; optional `DOCS_TRUTH_MAP.md`.
+- **Dateien:** `docs&#47;ops&#47;specs&#47;MASTER_V2_GO_LIVE_ROADMAP_V0.md`; optional `DOCS_TRUTH_MAP.md`.
 - **No-Touch:** Code.
 - **Reuse Owner:** Peak_Trade Docs / Ops (bestehendes docs_token).
 - **Jetzt:** blockiert wenn STOP/HOLD strikt; **Später:** nach canonical surface Klärung.
@@ -304,9 +304,9 @@ Jede Zeile: **Ziel** | **Reuse (Repo)** | **Lücken** | **Evidence** | **Tests**
 ### Move 3 — Tests-only Paper/Shadow non-authority contract
 
 - **Nutzen:** Regression für Readmodels/Observability (#3238 Linie fortsetzen).
-- **Risiko:** Fixture/Drift wenn Paper-Artefakte berührt werden — nur `tests/fixtures/` reuse.
+- **Risiko:** Fixture/Drift wenn Paper-Artefakte berührt werden — nur `tests&#47;fixtures&#47;` reuse.
 - **Typ:** tests-only.
-- **Dateien:** `tests/webui/test_*`, Fixtures unter `tests/fixtures/`.
+- **Dateien:** `tests&#47;webui&#47;test_*`, Fixtures unter `tests&#47;fixtures&#47;`.
 - **No-Touch:** Production Paper Daten.
 - **Reuse Owner:** CI/WebUI Maintainer.
 - **Jetzt:** wenn konkrete Contract-Lücke identifiziert; **Später:** ohne Gap nicht erweitern.
@@ -326,7 +326,7 @@ Jede Zeile: **Ziel** | **Reuse (Repo)** | **Lücken** | **Evidence** | **Tests**
 - **Nutzen:** deterministische Hilfen für Offline Replay — bereits Code vorhanden.
 - **Risiko:** hoch wenn als Runtime Promotion missbraucht — nur nach §7 Approval.
 - **Typ:** Implementation — **nicht** ohne separates Approval Ticket.
-- **Dateien:** `src/execution/paper/futures_accounting.py`, Spec §7, Truth Map.
+- **Dateien:** `src&#47;execution&#47;paper&#47;futures_accounting.py`, Spec §7, Truth Map.
 - **No-Touch:** bis Approval — gesamtes Wiring Thema.
 - **Reuse Owner:** Execution Governance + Futures Contract Owner.
 - **Später:** nach Scope/Mark Price Klärung.
@@ -336,7 +336,7 @@ Jede Zeile: **Ziel** | **Reuse (Repo)** | **Lücken** | **Evidence** | **Tests**
 - **Nutzen:** schließt Lücken aus `MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md` ohne neue Surface — Mapping zu konkreten Tests.
 - **Risiko:** Zeit — rein lesend.
 - **Typ:** read-only follow-up memo.
-- **Dateien:** Inventory + `tests/` Crosswalk Matrix extern halten bis STOP lifted.
+- **Dateien:** Inventory + `tests&#47;` Crosswalk Matrix extern halten bis STOP lifted.
 - **No-Touch:** Runtime.
 - **Reuse Owner:** Governance AI autonomy docs owner.
 - **Jetzt:** parallel möglich.
@@ -346,7 +346,7 @@ Jede Zeile: **Ziel** | **Reuse (Repo)** | **Lücken** | **Evidence** | **Tests**
 - **Nutzen:** explizite Zuordnung scheduled workflow → Gate-artifact vs operational observability — bereits zu Teilen im Linkage Review — vertiefen für Stage 2 Klärung.
 - **Risiko:** Missinterpretation wenn ohne Operator Kontext publiziert.
 - **Typ:** read-only spreadsheet/Markdown extern.
-- **Dateien:** `.github/workflows/offline_suites.yml`, `ci-scheduled-paper-and-export-smoke.yml`, Guardrail scripts.
+- **Dateien:** `.github&#47;workflows&#47;offline_suites.yml`, `ci-scheduled-paper-and-export-smoke.yml`, Guardrail scripts.
 - **No-Touch:** Workflow YAML ohne Approval unnötig nicht ändern.
 - **Reuse Owner:** CI Ops.
 - **Jetzt:** unterstützt Move 4.
@@ -374,11 +374,11 @@ Jede Zeile: **Ziel** | **Reuse (Repo)** | **Lücken** | **Evidence** | **Tests**
 
 **Wenn Operator STOP für einen docs-only Slice hebt und Canonical Surface geklärt ist:**
 
-> „Arbeite auf `main`. Änderung nur an `docs/ops/specs/MASTER_V2_GO_LIVE_ROADMAP_V0.md`: füge einen kurzen nicht-autorisierenden Abschnitt **‚Autonomy stage crosswalk (informative only)‘** hinzu: Tabelle Stage 0–7 ↔ bestehende Abschnitte dieser Datei ↔ Zeiger auf `MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md` und `MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md`. Keine neuen Evidence-/Registry-Surfaces; `DOCS_TRUTH_MAP.yaml` nur ergänzen wenn Truth-Map Policy einen neuen Token fordert; sonst nur Markdown. Keine Code-/Workflow-/Secret-Änderungen.“
+> „Arbeite auf `main`. Änderung nur an `docs&#47;ops&#47;specs&#47;MASTER_V2_GO_LIVE_ROADMAP_V0.md`: füge einen kurzen nicht-autorisierenden Abschnitt **‚Autonomy stage crosswalk (informative only)‘** hinzu: Tabelle Stage 0–7 ↔ bestehende Abschnitte dieser Datei ↔ Zeiger auf `MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md` und `MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md`. Keine neuen Evidence-/Registry-Surfaces; `DOCS_TRUTH_MAP.yaml` nur ergänzen wenn Truth-Map Policy einen neuen Token fordert; sonst nur Markdown. Keine Code-/Workflow-/Secret-Änderungen.“
 
 **Wenn weiter STOP:**
 
-> „Erzeuge nur externes Markdown unter `/tmp/` mit CI/offline-suite Zuordnung zu Observation vs Promotion (Move 7), ohne Repo-Touch.“
+> „Erzeuge nur externes Markdown unter `&#47;tmp&#47;` mit CI/offline-suite Zuordnung zu Observation vs Promotion (Move 7), ohne Repo-Touch.“
 
 ---
 
