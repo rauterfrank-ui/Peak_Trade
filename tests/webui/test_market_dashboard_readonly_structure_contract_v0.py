@@ -260,6 +260,39 @@ def test_double_play_market_dashboard_excludes_market_depth_bundle_provenance_ma
     assert "data-market-v0-depth-bundle-provenance-v0" not in html
 
 
+def test_market_dashboard_depth_cockpit_tile_readmodel_identity_default_depth_disabled_v0(
+    client: TestClient,
+) -> None:
+    """Visual Cockpit Depth tile echoes readmodel + bundle diagnostics from SSR context."""
+    html = _html(client, "/market")
+    assert 'data-market-v0-depth-tile-readmodel-identity-v0="true"' in html
+    assert "market_depth_readmodel.v0" in html
+    assert "Readmodel" in html
+    assert "Bundle" in html
+    assert "unavailable" in html
+
+
+def test_market_dashboard_depth_cockpit_tile_readmodel_identity_fixture_bundle_v0(
+    client_depth_fixture_bundle_on: TestClient,
+) -> None:
+    """Fixture depth SSR exposes dummy bundle label in cockpit depth tile."""
+    html = _html(client_depth_fixture_bundle_on, "/market")
+    assert 'data-market-v0-depth-tile-readmodel-identity-v0="true"' in html
+    assert "market_depth_readmodel.v0" in html
+    anchor = html.index("data-market-v0-depth-tile-readmodel-identity-v0")
+    window = html[anchor : anchor + 900]
+    assert "Bundle" in window
+    assert "dummy" in window
+
+
+def test_double_play_market_dashboard_excludes_depth_cockpit_readmodel_identity_marker_v0(
+    client: TestClient,
+) -> None:
+    """`/market`-only cockpit-depth identity marker stays off Double-Play."""
+    html = _html(client, "/market/double-play")
+    assert "data-market-v0-depth-tile-readmodel-identity-v0" not in html
+
+
 def test_market_dashboard_ranking_funnel_empty_state_v0_marker(client: TestClient) -> None:
     """Contract-first funnel panel: stable marker only; no ranking data wired on /market."""
     market_html = _html(client, "/market")
