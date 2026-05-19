@@ -8,6 +8,34 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 CHARTER = REPO_ROOT / "docs" / "ops" / "runbooks" / "SHADOW_247_GOVERNANCE_CHARTER_V0.md"
 PREFLIGHT_NAME = "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 
+# PR #3560: Status-and-scope clarification block (documentary 24h bounded tier only).
+EVIDENCE_SEMANTICS_HEADING_V0 = (
+    "**24h bounded Shadow dry-run candidate — evidence semantics (non-authorizing):**"
+)
+
+_FORBIDDEN_PROMOTION_PHRASES_V0: tuple[str, ...] = (
+    "testnet approved",
+    "live ready",
+    "go-live approved",
+    "broker ready",
+    "order ready",
+    "production trading validated",
+    "execution authorized",
+    "charter ready",
+    "preflight unblocked",
+)
+
+
+def _evidence_semantics_paragraph_v0() -> str:
+    """Return the #3560 evidence-semantics paragraph in Status and scope (read-only)."""
+    text = _read()
+    assert EVIDENCE_SEMANTICS_HEADING_V0 in text, "missing 24h evidence semantics heading (PR #3560 regression?)"
+    start = text.index(EVIDENCE_SEMANTICS_HEADING_V0)
+    end = text.find("\n\n---", start)
+    assert end != -1, "expected evidence-semantics paragraph terminated by blank line + ---"
+    return text[start:end]
+
+
 EXPECTED_HEADINGS: tuple[str, ...] = (
     "## Status and scope",
     "## Boundary statements (non-negotiable semantics)",
@@ -97,3 +125,31 @@ def test_shadow247_governance_charter_doc_stage_zero_is_stop_idle_v0() -> None:
     text = _read()
     assert "### Stage 0 — STOP_IDLE / blocked (current)" in text
     assert "preflight **BLOCKED**" in text
+
+
+def test_shadow247_governance_charter_doc_24h_evidence_semantics_regression_v0() -> None:
+    """Regression anchor for PR #3560 — documentary bounded tier only; no gate lift."""
+    p = _evidence_semantics_paragraph_v0()
+    assert "**documentary machine-readable evidence** only" in p
+    assert "**24h candidate tier**" in p
+    assert "duration-capped local simulation" in p
+    assert "dry-run only" in p
+    assert PREFLIGHT_NAME in p
+    assert "it **does not** satisfy the blocked" in p
+    assert "status remains **BLOCKED**" in p
+    assert "away from **`not_ready`**" in p
+    for denial in (
+        "**does not** authorize Testnet",
+        "daemon operation",
+        "scheduler execution",
+    ):
+        assert denial in p, f"missing denial fragment {denial!r}"
+    assert "Canonical gate definitions remain in **this repository**" in p
+    assert "notion" not in p.lower()
+
+
+def test_shadow247_governance_charter_doc_forbidden_promotion_phrases_absent_v0() -> None:
+    """No accidental approval / readiness wording in the charter document."""
+    lowered = _read().lower()
+    for phrase in _FORBIDDEN_PROMOTION_PHRASES_V0:
+        assert phrase not in lowered, f"forbidden promotion phrase present: {phrase!r}"
