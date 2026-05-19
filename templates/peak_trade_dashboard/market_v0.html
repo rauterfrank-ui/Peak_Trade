@@ -197,6 +197,20 @@
           <span class="text-slate-500">Snapshot bei Seitenladen</span>
           <span class="font-mono text-slate-300 break-all">{{ payload.generated_at_utc }}</span>
         </div>
+        {% if payload.meta is mapping and payload.meta.get('note') %}
+        <div
+          class="rounded-md border border-slate-700/65 bg-slate-950/50 px-2.5 py-1.5 text-[10px] text-slate-400 max-w-full"
+          data-market-v0-payload-meta-note-v0="true"
+          role="note"
+        >
+          <p class="m-0 leading-snug">
+            <span class="font-semibold text-slate-500">Datenhinweis</span>
+            <span class="text-slate-600" aria-hidden="true">&nbsp;·&nbsp;</span>
+            <span class="sr-only">Eingebetteter Payload‑Hinweis, keine operative Freigabe.</span>
+            <span class="font-mono text-slate-300/95 break-words">{{ payload.meta.note|e }}</span>
+          </p>
+        </div>
+        {% endif %}
         <p class="text-[10px] text-slate-500 m-0 pt-0.5">Visual cockpit uses SSR tiles below — dann Kontext, dominant Chart und SSR-Leiter.</p>
       </div>
     </div>

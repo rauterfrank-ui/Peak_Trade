@@ -195,6 +195,23 @@ def test_double_play_market_dashboard_excludes_market_embedded_snapshot_generate
     assert "data-market-v0-embedded-snapshot-generated-at-v0" not in html
 
 
+def test_market_dashboard_payload_meta_note_visibility_dummy_v0(client: TestClient) -> None:
+    """Dummy OHLCV meta.note is surfaced on /market next to SSR snapshot cues (bounded)."""
+    html = _html(client, "/market?source=dummy&timeframe=5m")
+    assert 'data-market-v0-payload-meta-note-v0="true"' in html
+    assert "Datenhinweis" in html
+    assert "dummy: synthetische 1h-Bars" in html
+    assert "nur kraken-pfad nutzt timeframe" in html.lower()
+
+
+def test_double_play_market_dashboard_excludes_market_payload_meta_note_marker_v0(
+    client: TestClient,
+) -> None:
+    """`/market` payload-meta marker must not appear on Double-Play."""
+    html = _html(client, "/market/double-play")
+    assert "data-market-v0-payload-meta-note-v0" not in html
+
+
 def test_market_dashboard_ranking_funnel_empty_state_v0_marker(client: TestClient) -> None:
     """Contract-first funnel panel: stable marker only; no ranking data wired on /market."""
     market_html = _html(client, "/market")
