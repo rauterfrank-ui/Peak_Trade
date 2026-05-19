@@ -327,6 +327,42 @@
           {% endif %}
         </div>
         {% endif %}
+        <div
+          class="mt-0.5 rounded-md border border-slate-800/70 bg-slate-950/45 px-2 py-1.5 text-[9px] text-slate-400 leading-snug"
+          data-market-v0-depth-tile-freshness-mirror-v0="true"
+          data-market-v0-depth-tile-freshness-stale="{% if market_depth.depth_stale %}true{% else %}false{% endif %}"
+          role="note"
+        >
+          <span class="sr-only">
+            Read-only Tiefe-/Orderbuch-Bundle‑Freshness und Diagnose beim Seitenaufruf — keine operative Freigabe, kein Proof für Live‑Freshness, kein Schluss auf Orders oder Ausführung.
+          </span>
+          <p class="m-0 font-semibold uppercase tracking-wide text-slate-500 text-[8px]">
+            Depth bundle freshness (SSR)
+          </p>
+          {% if market_depth.has_depth_bundle_provenance %}
+          {% if market_depth.depth_generated_at_iso %}
+          <p class="m-0 mt-0.5 tabular-nums leading-snug">
+            <span class="text-slate-500">Bundle time</span>
+            <span class="font-mono text-slate-300/95 break-all">{{ market_depth.depth_generated_at_iso|e }}</span>
+          </p>
+          {% endif %}
+          <p class="m-0 mt-0.5 tabular-nums leading-snug">
+            <span class="text-slate-500">Stale (diag)</span>
+            <span class="font-mono text-slate-300/95">{% if market_depth.depth_stale %}yes{% else %}no{% endif %}</span>
+            {% if market_depth.depth_stale_reason %}
+            <span class="text-slate-600" aria-hidden="true">&nbsp;·&nbsp;</span>
+            <span class="font-mono text-slate-300/95 break-all">{{ market_depth.depth_stale_reason|e }}</span>
+            {% endif %}
+          </p>
+          <p class="m-0 mt-1 text-[8px] text-slate-600 leading-snug">
+            Not the embedded OHLC „Snapshot bei Seitenladen“ above · display-only · non-authority.
+          </p>
+          {% else %}
+          <p class="m-0 mt-0.5 text-slate-500 leading-snug">
+            Depth bundle freshness not available in this cockpit snapshot — display-only.
+          </p>
+          {% endif %}
+        </div>
         {% if market_depth.has_depth_levels %}
         {% set cockpit_bids = market_depth.top_bids[:3] %}
         {% set cockpit_asks = market_depth.top_asks[:3] %}

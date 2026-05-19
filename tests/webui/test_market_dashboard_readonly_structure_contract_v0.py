@@ -325,6 +325,42 @@ def test_double_play_market_dashboard_excludes_depth_cockpit_topn_microtable_mar
     assert "data-market-v0-depth-tile-topn-microtable-v0" not in html
 
 
+def test_market_dashboard_depth_cockpit_tile_freshness_mirror_default_depth_disabled_v0(
+    client: TestClient,
+) -> None:
+    """Cockpit Depth tile mirrors bundle freshness/stale cues without scanning lower SSR."""
+    html = _html(client, "/market?source=dummy")
+    assert 'data-market-v0-depth-tile-freshness-mirror-v0="true"' in html
+    assert 'data-market-v0-depth-tile-freshness-stale="true"' in html
+    anchor = html.index("data-market-v0-depth-tile-freshness-mirror-v0")
+    window = html[anchor : anchor + 2800]
+    assert "Depth bundle freshness (SSR)" in window
+    assert "Stale (diag)" in window
+    assert "source_disabled" in window
+    assert "Not the embedded OHLC" in window
+
+
+def test_market_dashboard_depth_cockpit_tile_freshness_mirror_fixture_bundle_v0(
+    client_depth_fixture_bundle_on: TestClient,
+) -> None:
+    """Fixture SSR exposes deterministic bundle time + stale_reason inside cockpit mirror."""
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy")
+    assert 'data-market-v0-depth-tile-freshness-mirror-v0="true"' in html
+    assert 'data-market-v0-depth-tile-freshness-stale="true"' in html
+    anchor = html.index("data-market-v0-depth-tile-freshness-mirror-v0")
+    window = html[anchor : anchor + 1200]
+    assert "2030-01-15T12:34:56.000000+00:00" in window
+    assert "offline_bundle_scan" in window
+
+
+def test_double_play_market_dashboard_excludes_depth_cockpit_freshness_mirror_marker_v0(
+    client: TestClient,
+) -> None:
+    """`/market`-only cockpit freshness mirror stays off Double-Play."""
+    html = _html(client, "/market/double-play")
+    assert "data-market-v0-depth-tile-freshness-mirror-v0" not in html
+
+
 def test_market_dashboard_ranking_funnel_empty_state_v0_marker(client: TestClient) -> None:
     """Contract-first funnel panel: stable marker only; no ranking data wired on /market."""
     market_html = _html(client, "/market")
