@@ -505,6 +505,35 @@ def test_review_fails_invalid_manifest_schema(tmp_path: Path) -> None:
     assert result["verdict"] == review.REVIEW_REQUIRED
 
 
+def test_review_fails_missing_manifest_schema(tmp_path: Path) -> None:
+    review = _load_review()
+    staging = tmp_path / "staging"
+    _write_wrapper_bundle(staging)
+    manifest_path = staging / "wrapper_evidence" / "manifest.json"
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    payload.pop("schema", None)
+    manifest_path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+    result = review.review_evidence(staging)
+    assert result["verdict"] == review.REVIEW_REQUIRED
+    assert any("schema must be" in issue for issue in result["issues"])
+
+
+def test_review_fails_missing_safety_boundary_strings(tmp_path: Path) -> None:
+    review = _load_review()
+    staging = tmp_path / "staging"
+    _write_wrapper_bundle(staging)
+    md_path = staging / "wrapper_evidence" / "SHADOW_247_FUTURES_BOUNDED_SHADOW_DRY_RUN.md"
+    md_path.write_text("# Bounded Shadow Dry Run\n", encoding="utf-8")
+    manifest_path = staging / "wrapper_evidence" / "manifest.json"
+    manifest_path.write_text(
+        json.dumps({"schema": "shadow_247_futures_bounded_shadow_dry_run.v0"}) + "\n",
+        encoding="utf-8",
+    )
+    result = review.review_evidence(staging)
+    assert result["verdict"] == review.REVIEW_REQUIRED
+    assert any("missing safety boundary strings" in issue for issue in result["issues"])
+
+
 def test_review_does_not_claim_gate_clearance(tmp_path: Path) -> None:
     review = _load_review()
     staging = tmp_path / "staging"

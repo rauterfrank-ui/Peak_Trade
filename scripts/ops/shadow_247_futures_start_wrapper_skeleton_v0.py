@@ -1005,6 +1005,10 @@ def _bounded_shadow_markdown(
             "- No live, testnet, broker, exchange, private endpoints, credentials, or network I/O.\n",
             "- No scheduler or daemon spawned; no execution session; no order submission.\n",
             "- Simulated bounded step loop only — not an exchange/broker runtime.\n\n",
+            "## Safety boundary markers (canonical)\n\n",
+            f"- {BOUNDARY_NO_BROKER}\n",
+            f"- {BOUNDARY_NO_NETWORK}\n",
+            f"- {BOUNDARY_NO_ORDER_SUBMISSION}\n\n",
             "## Operator machine summary (verbatim keys)\n\n",
             "```text\n",
             _BOUNDED_SHADOW_MACHINE_LINES,
@@ -1040,6 +1044,10 @@ def _bounded_shadow_manifest(
 ) -> dict:
     manifest: dict[str, Any] = {
         "artifact": BOUNDED_SHADOW_DRY_RUN_SCHEMA_V0,
+        "schema": BOUNDED_SHADOW_DRY_RUN_SCHEMA_V0,
+        BOUNDARY_NO_BROKER: True,
+        BOUNDARY_NO_NETWORK: True,
+        BOUNDARY_NO_ORDER_SUBMISSION: True,
         "bounded_local_shadow_dry_run": True,
         "broker_used": False,
         "credentials_used": False,

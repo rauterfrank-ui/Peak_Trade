@@ -2161,6 +2161,10 @@ def test_shadow_247_bounded_shadow_dry_run_writes_manifest_sha_md_and_steps(
         )
         doc = json.loads(manifest_bytes.decode("utf-8"))
         assert doc.get("artifact") == "shadow_247_futures_bounded_shadow_dry_run.v0"
+        assert doc.get("schema") == "shadow_247_futures_bounded_shadow_dry_run.v0"
+        assert doc.get("NO_BROKER") is True
+        assert doc.get("NO_NETWORK") is True
+        assert doc.get("NO_ORDER_SUBMISSION") is True
         assert doc.get("duration_minutes_cap_enforced") == 10
         assert doc.get("max_steps_cap_enforced") == 600
         assert doc.get("extended_bounded_shadow_validation") is False
@@ -2187,8 +2191,65 @@ def test_shadow_247_bounded_shadow_dry_run_writes_manifest_sha_md_and_steps(
         assert "LIVE_STARTED=false" in ms
         md_txt = (root / _SHADOW_DRY_MD).read_text(encoding="utf-8")
         assert "Bounded Shadow Dry-Run" in md_txt
+        assert "NO_BROKER" in md_txt
+        assert "NO_NETWORK" in md_txt
+        assert "NO_ORDER_SUBMISSION" in md_txt
         steps_txt = (root / _SHADOW_STEPS).read_text(encoding="utf-8").strip().splitlines()
         assert len(steps_txt) == 4
+    finally:
+        shutil.rmtree(root_str, ignore_errors=True)
+
+
+def test_shadow_247_bounded_shadow_dry_run_evidence_passes_review_script(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(REPO_ROOT)
+    review_spec = importlib.util.spec_from_file_location(
+        "review_shadow_bounded_observation_evidence_v0",
+        REPO_ROOT / "scripts" / "ops" / "review_shadow_bounded_observation_evidence_v0.py",
+    )
+    assert review_spec is not None and review_spec.loader is not None
+    review_mod = importlib.util.module_from_spec(review_spec)
+    review_spec.loader.exec_module(review_mod)
+
+    root_str = tempfile.mkdtemp(prefix="peak_trade_utest_shdw_review_", dir="/tmp")
+    root = Path(root_str)
+    staging = root / "staging"
+    evidence = staging / "wrapper_evidence"
+    evidence.mkdir(parents=True)
+    logs = staging / "logs"
+    logs.mkdir(parents=True)
+
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--bounded-shadow-dry-run",
+            "--evidence-root",
+            str(evidence),
+            "--duration-minutes",
+            "1",
+            "--max-steps",
+            "2",
+            "--confirm-token",
+            _FUTURE_CONFIRM_TOKEN,
+            "--config",
+            "config/ops/shadow_247_futures_wrapper_skeleton.toml",
+            "--jobs-config",
+            "config/scheduler/jobs.toml",
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=10,
+    )
+    try:
+        assert proc.returncode == 0, proc.stderr + proc.stdout
+        (logs / "wrapper_stdout.log").write_text(proc.stdout, encoding="utf-8")
+        (logs / "wrapper_stderr.log").write_text(proc.stderr, encoding="utf-8")
+        result = review_mod.review_evidence(staging)
+        assert result["verdict"] == review_mod.PASS, result["issues"]
     finally:
         shutil.rmtree(root_str, ignore_errors=True)
 
