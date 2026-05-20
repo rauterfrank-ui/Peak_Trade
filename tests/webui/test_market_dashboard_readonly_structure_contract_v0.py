@@ -361,6 +361,34 @@ def test_double_play_market_dashboard_excludes_depth_cockpit_freshness_mirror_ma
     assert "data-market-v0-depth-tile-freshness-mirror-v0" not in html
 
 
+def test_market_dashboard_depth_chart_placeholder_fixture_mini_bars_contract_v0(
+    client_depth_fixture_bundle_on: TestClient,
+) -> None:
+    """Fixture SSR locks depth-chart placeholder mini bid/ask bars from offline bundle."""
+    html = _html(client_depth_fixture_bundle_on, "/market")
+    assert 'data-market-v0-depth-chart-placeholder="true"' in html
+    placeholder_idx = html.index('data-market-v0-depth-chart-placeholder="true"')
+    window = html[placeholder_idx : placeholder_idx + 6000]
+    assert "Displayed top-level depth (static)" in window
+    assert "Not cumulative" in window
+    assert 'aria-label="Miniature SSR bid versus ask displayed sizes, top levels only"' in window
+    assert "Bids (display)" in window
+    assert "Asks (display)" in window
+    assert "63000" in window
+    assert "63030" in window
+    assert "data-market-v0-depth-chart-disabled-envelope" not in window
+    assert "fetch(" not in html
+    assert "/api/market/depth" not in html
+
+
+def test_double_play_market_dashboard_excludes_depth_chart_placeholder_marker_v0(
+    client: TestClient,
+) -> None:
+    """`/market`-only depth-chart placeholder marker stays off Double-Play."""
+    html = _html(client, "/market/double-play")
+    assert 'data-market-v0-depth-chart-placeholder="true"' not in html
+
+
 def test_market_dashboard_ranking_funnel_empty_state_v0_marker(client: TestClient) -> None:
     """Contract-first funnel panel: stable marker only; no ranking data wired on /market."""
     market_html = _html(client, "/market")
