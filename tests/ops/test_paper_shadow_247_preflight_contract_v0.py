@@ -36,6 +36,20 @@ def test_paper_shadow_247_contract_links_governance_charter_without_overriding_b
     assert "runtime approval" in text
 
 
+def test_paper_shadow_247_contract_links_charter_24h_evidence_semantics_without_changing_blocked_v0() -> None:
+    """Regression anchor for PR #3562 — preflight navigation to charter 24h tier only."""
+    text = _read_contract()
+    assert CHARTER.is_file()
+    assert "24h bounded Shadow dry-run candidate" in text
+    assert CHARTER_NAME in text
+    assert "Status and scope" in text
+    assert "**documentary**" in text
+    assert "**non-authorizing**" in text
+    assert "**does not** change this contract" in text
+    assert "**BLOCKED** status" in text
+    assert "assists navigation only" in text
+
+
 def test_paper_shadow_247_contract_is_blocked_and_non_authorizing() -> None:
     text = _read_contract()
 
