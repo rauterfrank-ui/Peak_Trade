@@ -1,0 +1,588 @@
+#!/usr/bin/env python3
+"""Paper-only bounded observation adapter v0 (plan-only default, Stage-3 gated execute).
+
+Non-authorizing ops tooling. Does not clear HOLD, preflight BLOCKED, or GLB blockers.
+Default mode emits a command plan only; no scheduler or paper runtime subprocess.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+import sys
+from dataclasses import asdict, dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Callable, Mapping, Sequence
+
+ADAPTER_VERSION = "cli_adapter_scheduler_composition_v0"
+ALLOWED_JOB = "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0"
+INCLUDE_TAGS = "paper_runtime"
+DEFAULT_DURATION_SECONDS = 7200
+DEFAULT_POLL_INTERVAL_SECONDS = 30
+
+FORBIDDEN_APPROVAL_TRUE = frozenset(
+    {
+        "START_SHADOW_NOW",
+        "START_TESTNET_NOW",
+        "START_SUPERVISOR_NOW",
+        "LIVE_ALLOWED",
+    }
+)
+FORBIDDEN_ENV_TRUTHY = frozenset(
+    {
+        "PT_LIVE_ENABLED",
+        "PT_TESTNET_ENABLED",
+        "PT_BROKER_ENABLED",
+        "PT_ORDER_SUBMISSION_ENABLED",
+        "LIVE_ALLOWED",
+        "START_TESTNET_NOW",
+        "START_SHADOW_NOW",
+        "START_SUPERVISOR_NOW",
+    }
+)
+FORBIDDEN_COMMAND_SUBSTRINGS = (
+    "shadow_247_futures",
+    "run_shadow_loop",
+    "online_readiness_supervisor",
+    "run_bounded_pilot_session",
+    "testnet",
+    "bounded_pilot",
+)
+
+REQUIRED_APPROVAL = {
+    "APPROVE_EXECUTE_PAPER_ONLY_120MIN_NOW": "true",
+    "START_PAPER_NOW": "true",
+}
+
+USAGE_EXIT = 2
+VALIDATION_EXIT = 1
+TIMEOUT_EXIT = 124
+
+
+@dataclass(frozen=True)
+class AdapterPlan:
+    adapter_version: str
+    mode: str
+    staging_root: str
+    archive_root: str
+    duration_seconds: int
+    poll_interval_seconds: int
+    job_name: str
+    include_tags: str
+    run_id: str
+    repo_root: str
+    source_jobs_toml: str
+    commands: dict[str, list[str]]
+    retention_steps: list[str]
+    expected_artifacts: list[str]
+    forbidden_paths_absent: bool = True
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
+class ExecuteContext:
+    args: argparse.Namespace
+    repo_root: Path
+    staging_root: Path
+    archive_root: Path
+    runtime_out: Path
+    logs_dir: Path
+    plan_dir: Path
+    review_dir: Path
+    temp_jobs: Path
+    run_id: str
+    approval_fields: Mapping[str, str] = field(default_factory=dict)
+
+
+SubprocessRunner = Callable[[Sequence[str], Path | None, Path | None, Path | None], int]
+RepoCleanChecker = Callable[[Path], tuple[bool, str]]
+
+
+def repo_root_from_script() -> Path:
+    return Path(__file__).resolve().parents[2]
+
+
+def parse_machine_lines(text: str) -> dict[str, str]:
+    fields: dict[str, str] = {}
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("```"):
+            continue
+        if "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        fields[key.strip()] = value.strip()
+    return fields
+
+
+def load_approval_record(path: Path) -> dict[str, str]:
+    if not path.is_file():
+        raise ValueError(f"approval record not found: {path}")
+    return parse_machine_lines(path.read_text(encoding="utf-8"))
+
+
+def validate_approval_record(fields: Mapping[str, str]) -> list[str]:
+    issues: list[str] = []
+    for key, expected in REQUIRED_APPROVAL.items():
+        if fields.get(key, "").lower() != expected:
+            issues.append(f"approval record missing or invalid: {key}={expected}")
+    for key in FORBIDDEN_APPROVAL_TRUE:
+        if fields.get(key, "false").lower() == "true":
+            issues.append(f"approval record forbids {key}=true")
+    return issues
+
+
+def validate_env_guardrails(environ: Mapping[str, str] | None = None) -> list[str]:
+    env = os.environ if environ is None else environ
+    issues: list[str] = []
+    for key in FORBIDDEN_ENV_TRUTHY:
+        if env.get(key, "").strip().lower() in {"1", "true", "yes", "on"}:
+            issues.append(f"environment forbids truthy {key}")
+    return issues
+
+
+def default_repo_clean_checker(repo_root: Path) -> tuple[bool, str]:
+    try:
+        proc = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=str(repo_root),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except OSError as exc:
+        return False, f"git status failed: {exc}"
+    if proc.returncode != 0:
+        return False, "git status returned nonzero"
+    output = proc.stdout.strip()
+    if output:
+        return False, "repository working tree is not clean"
+    return True, ""
+
+
+def _python_cmd(repo_root: Path, script_rel: str) -> list[str]:
+    script = (repo_root / script_rel).resolve()
+    return [sys.executable, str(script)]
+
+
+def _plan_paths(staging_root: Path, run_id: str) -> dict[str, Path]:
+    return {
+        "staging_root": staging_root,
+        "runtime_out": staging_root / "runtime_out",
+        "logs_dir": staging_root / "logs",
+        "plan_dir": staging_root / "plan",
+        "review_dir": staging_root / "review",
+        "temp_jobs": staging_root / "plan" / "temp_jobs.toml",
+        "run_id": Path(run_id),
+    }
+
+
+def build_plan(
+    *,
+    mode: str,
+    staging_root: Path,
+    archive_root: Path,
+    repo_root: Path,
+    source_jobs_toml: Path,
+    duration_seconds: int,
+    poll_interval_seconds: int,
+    run_id: str,
+) -> AdapterPlan:
+    paths = _plan_paths(staging_root, run_id)
+    runtime_out = paths["runtime_out"]
+    logs_dir = paths["logs_dir"]
+    temp_jobs = paths["temp_jobs"]
+
+    make_scheduler = _python_cmd(repo_root, "scripts/ops/make_scheduler_temp_config.py") + [
+        "--source",
+        str(source_jobs_toml.resolve()),
+        "--job",
+        ALLOWED_JOB,
+        "--outdir",
+        str(runtime_out.resolve()),
+        "--output",
+        str(temp_jobs.resolve()),
+        "--force",
+    ]
+    scheduler_inner = _python_cmd(repo_root, "scripts/run_scheduler.py") + [
+        "--config",
+        str(temp_jobs.resolve()),
+        "--poll-interval",
+        str(poll_interval_seconds),
+        "--include-tags",
+        INCLUDE_TAGS,
+        "--no-registry",
+        "--no-alerts",
+    ]
+    run_with_timeout = _python_cmd(repo_root, "scripts/ops/run_with_timeout.py") + [
+        "--timeout-seconds",
+        str(duration_seconds),
+        "--",
+        *scheduler_inner,
+    ]
+    review = _python_cmd(repo_root, "scripts/ops/review_scheduler_paper_runtime_evidence.py") + [
+        "--outroot",
+        str(runtime_out.resolve()),
+        "--logroot",
+        str(logs_dir.resolve()),
+        "--expected-timeout-seconds",
+        str(float(duration_seconds)),
+        "--json",
+    ]
+
+    archive_dest = archive_root / "runs" / "paper" / run_id
+    retention_steps = [
+        f"generate MANIFEST.sha256 under {staging_root}",
+        f"rsync staging bundle to {archive_dest}",
+        f"verify checksums on archive copy at {archive_dest}",
+        f"write ARCHIVE_POINTER.md under {staging_root}",
+    ]
+    expected_artifacts = [
+        "runtime_out/account.json",
+        "runtime_out/fills.json",
+        "runtime_out/evidence_manifest.json",
+        "logs/scheduler_stdout.log",
+        "logs/scheduler_stderr.log",
+        "review/REVIEW_RESULT.json",
+        "MANIFEST.sha256",
+        "CLOSEOUT.md",
+        "POSTRUN_ANALYSIS.md",
+    ]
+
+    commands = {
+        "temp_config": make_scheduler,
+        "scheduler_bounded": run_with_timeout,
+        "review": review,
+        "archive_copy": [
+            "rsync",
+            "-a",
+            "--checksum",
+            f"{staging_root}/",
+            str(archive_dest),
+        ],
+    }
+
+    forbidden_absent = all(
+        forbidden not in " ".join(argv).lower()
+        for forbidden in FORBIDDEN_COMMAND_SUBSTRINGS
+        for argv in commands.values()
+    )
+
+    return AdapterPlan(
+        adapter_version=ADAPTER_VERSION,
+        mode=mode,
+        staging_root=str(staging_root.resolve()),
+        archive_root=str(archive_root.resolve()),
+        duration_seconds=duration_seconds,
+        poll_interval_seconds=poll_interval_seconds,
+        job_name=ALLOWED_JOB,
+        include_tags=INCLUDE_TAGS,
+        run_id=run_id,
+        repo_root=str(repo_root.resolve()),
+        source_jobs_toml=str(source_jobs_toml.resolve()),
+        commands=commands,
+        retention_steps=retention_steps,
+        expected_artifacts=expected_artifacts,
+        forbidden_paths_absent=forbidden_absent,
+    )
+
+
+def render_plan(plan: AdapterPlan, as_json: bool) -> str:
+    if as_json:
+        return json.dumps(plan.to_dict(), indent=2, sort_keys=True)
+    lines = [
+        f"ADAPTER_VERSION={plan.adapter_version}",
+        f"MODE={plan.mode}",
+        f"JOB_NAME={plan.job_name}",
+        f"INCLUDE_TAGS={plan.include_tags}",
+        f"DURATION_SECONDS={plan.duration_seconds}",
+        f"POLL_INTERVAL_SECONDS={plan.poll_interval_seconds}",
+        f"STAGING_ROOT={plan.staging_root}",
+        f"ARCHIVE_ROOT={plan.archive_root}",
+        "COMMANDS:",
+    ]
+    for name, argv in plan.commands.items():
+        lines.append(f"  {name}: {' '.join(argv)}")
+    lines.append("RETENTION_STEPS:")
+    for step in plan.retention_steps:
+        lines.append(f"  - {step}")
+    return "\n".join(lines)
+
+
+def validate_execute_preconditions(
+    ctx: ExecuteContext,
+    *,
+    repo_clean_checker: RepoCleanChecker,
+    environ: Mapping[str, str] | None = None,
+) -> list[str]:
+    issues: list[str] = []
+    if ctx.args.approval_record is None:
+        issues.append("execute requires --approval-record")
+    else:
+        try:
+            fields = load_approval_record(ctx.args.approval_record)
+        except ValueError as exc:
+            issues.append(str(exc))
+        else:
+            ctx.approval_fields = fields
+            issues.extend(validate_approval_record(fields))
+    if not ctx.archive_root.is_dir():
+        issues.append(f"archive root must exist: {ctx.archive_root}")
+    elif not os.access(ctx.archive_root, os.W_OK):
+        issues.append(f"archive root is not writable: {ctx.archive_root}")
+    staging_str = str(ctx.staging_root)
+    if "/tmp/" not in staging_str and not staging_str.startswith("/tmp"):
+        issues.append("staging root must be under /tmp")
+    archive_resolved = str(ctx.archive_root.resolve())
+    if archive_resolved.startswith(("/tmp", "/private/tmp")):
+        issues.append("archive root must be outside /tmp")
+    issues.extend(validate_env_guardrails(environ))
+    if ctx.args.strict_repo_clean:
+        clean, reason = repo_clean_checker(ctx.repo_root)
+        if not clean:
+            issues.append(reason or "repository is not clean")
+    return issues
+
+
+def _default_subprocess_runner(
+    argv: Sequence[str],
+    cwd: Path | None,
+    stdout_path: Path | None,
+    stderr_path: Path | None,
+) -> int:
+    stdout = stderr = subprocess.DEVNULL
+    if stdout_path is not None:
+        stdout_path.parent.mkdir(parents=True, exist_ok=True)
+        stdout = stdout_path.open("w", encoding="utf-8")
+    if stderr_path is not None:
+        stderr_path.parent.mkdir(parents=True, exist_ok=True)
+        stderr = stderr_path.open("w", encoding="utf-8")
+    try:
+        proc = subprocess.run(
+            list(argv),
+            cwd=str(cwd) if cwd else None,
+            check=False,
+            stdout=stdout,
+            stderr=stderr,
+        )
+    finally:
+        if stdout not in (None, subprocess.DEVNULL):
+            stdout.close()
+        if stderr not in (None, subprocess.DEVNULL):
+            stderr.close()
+    return int(proc.returncode or 0)
+
+
+def _write_manifest_sha256(staging_root: Path) -> None:
+    lines: list[str] = []
+    for path in sorted(p for p in staging_root.rglob("*") if p.is_file()):
+        if path.name == "MANIFEST.sha256":
+            continue
+        rel = path.relative_to(staging_root).as_posix()
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        lines.append(f"{digest}  {rel}")
+    manifest = staging_root / "MANIFEST.sha256"
+    manifest.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
+
+
+def execute_plan(
+    ctx: ExecuteContext,
+    plan: AdapterPlan,
+    *,
+    subprocess_runner: SubprocessRunner,
+) -> int:
+    ctx.staging_root.mkdir(parents=True, exist_ok=True)
+    ctx.runtime_out.mkdir(parents=True, exist_ok=True)
+    ctx.logs_dir.mkdir(parents=True, exist_ok=True)
+    ctx.plan_dir.mkdir(parents=True, exist_ok=True)
+    ctx.review_dir.mkdir(parents=True, exist_ok=True)
+
+    rc = subprocess_runner(plan.commands["temp_config"], ctx.repo_root, None, None)
+    if rc != 0:
+        return rc
+
+    stdout_log = ctx.logs_dir / "scheduler_stdout.log"
+    stderr_log = ctx.logs_dir / "scheduler_stderr.log"
+    rc = subprocess_runner(
+        plan.commands["scheduler_bounded"],
+        ctx.repo_root,
+        stdout_log,
+        stderr_log,
+    )
+    if rc not in (0, TIMEOUT_EXIT):
+        return rc
+
+    review_out = ctx.review_dir / "REVIEW_RESULT.json"
+    review_rc = subprocess_runner(
+        plan.commands["review"],
+        ctx.repo_root,
+        review_out,
+        None,
+    )
+    if review_rc != 0:
+        return review_rc
+    try:
+        review_payload = json.loads(review_out.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return VALIDATION_EXIT
+    if review_payload.get("verdict") != "PASS":
+        return VALIDATION_EXIT
+
+    _write_manifest_sha256(ctx.staging_root)
+    archive_dest = ctx.archive_root / "runs" / "paper" / ctx.run_id
+    archive_dest.mkdir(parents=True, exist_ok=True)
+    for item in ctx.staging_root.iterdir():
+        dest = archive_dest / item.name
+        if item.is_dir():
+            if dest.exists():
+                shutil.rmtree(dest)
+            shutil.copytree(item, dest)
+        else:
+            shutil.copy2(item, dest)
+
+    pointer = ctx.staging_root / "ARCHIVE_POINTER.md"
+    pointer.write_text(
+        "\n".join(
+            [
+                f"STAGING_PATH={ctx.staging_root}",
+                f"ARCHIVE_PATH={archive_dest}",
+                f"COPY_UTC={datetime.now(timezone.utc).isoformat()}",
+                "ARCHIVE_COPY_COMPLETE=true",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    return 0
+
+
+def build_arg_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Paper-only bounded observation adapter v0. "
+            "Default plan-only mode emits commands without executing runtime."
+        )
+    )
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--plan-only",
+        action="store_true",
+        help="Emit plan only (default when --execute is omitted).",
+    )
+    mode.add_argument(
+        "--execute",
+        action="store_true",
+        help="Execute bounded observation (requires --approval-record).",
+    )
+    parser.add_argument("--staging-root", type=Path, required=True)
+    parser.add_argument("--archive-root", type=Path, required=True)
+    parser.add_argument(
+        "--duration-seconds",
+        type=int,
+        default=DEFAULT_DURATION_SECONDS,
+    )
+    parser.add_argument(
+        "--poll-interval",
+        type=int,
+        default=DEFAULT_POLL_INTERVAL_SECONDS,
+    )
+    parser.add_argument("--repo-root", type=Path, default=None)
+    parser.add_argument("--source-jobs-toml", type=Path, default=None)
+    parser.add_argument("--approval-record", type=Path, default=None)
+    parser.add_argument("--run-id", type=str, default="")
+    parser.add_argument(
+        "--strict-repo-clean",
+        action="store_true",
+        default=True,
+        help="Require clean git working tree before execute (default: true).",
+    )
+    parser.add_argument(
+        "--no-strict-repo-clean",
+        action="store_false",
+        dest="strict_repo_clean",
+        help="Do not require clean git working tree before execute.",
+    )
+    parser.add_argument("--json", action="store_true", help="Emit plan as JSON.")
+    return parser
+
+
+def main(
+    argv: list[str] | None = None,
+    *,
+    subprocess_runner: SubprocessRunner | None = None,
+    repo_clean_checker: RepoCleanChecker | None = None,
+    environ: Mapping[str, str] | None = None,
+) -> int:
+    parser = build_arg_parser()
+    try:
+        args = parser.parse_args(argv)
+    except SystemExit as exc:
+        if exc.code in (0, None):
+            raise
+        return USAGE_EXIT
+
+    if args.duration_seconds <= 0 or args.poll_interval <= 0:
+        print("duration and poll interval must be > 0", file=sys.stderr)
+        return USAGE_EXIT
+
+    repo_root = (args.repo_root or repo_root_from_script()).resolve()
+    source_jobs = (args.source_jobs_toml or (repo_root / "config/scheduler/jobs.toml")).resolve()
+    staging_root = args.staging_root.expanduser().resolve()
+    archive_root = args.archive_root.expanduser().resolve()
+    run_id = (
+        args.run_id.strip()
+        or f"paper_only_bounded_observation_120min_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
+    )
+
+    mode = "execute" if args.execute else "plan-only"
+    plan = build_plan(
+        mode=mode,
+        staging_root=staging_root,
+        archive_root=archive_root,
+        repo_root=repo_root,
+        source_jobs_toml=source_jobs,
+        duration_seconds=args.duration_seconds,
+        poll_interval_seconds=args.poll_interval,
+        run_id=run_id,
+    )
+
+    if args.execute:
+        ctx = ExecuteContext(
+            args=args,
+            repo_root=repo_root,
+            staging_root=staging_root,
+            archive_root=archive_root,
+            runtime_out=staging_root / "runtime_out",
+            logs_dir=staging_root / "logs",
+            plan_dir=staging_root / "plan",
+            review_dir=staging_root / "review",
+            temp_jobs=staging_root / "plan" / "temp_jobs.toml",
+            run_id=run_id,
+        )
+        issues = validate_execute_preconditions(
+            ctx,
+            repo_clean_checker=repo_clean_checker or default_repo_clean_checker,
+            environ=environ,
+        )
+        if issues:
+            for issue in issues:
+                print(issue, file=sys.stderr)
+            return VALIDATION_EXIT
+        runner = subprocess_runner or _default_subprocess_runner
+        return execute_plan(ctx, plan, subprocess_runner=runner)
+
+    print(render_plan(plan, args.json))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

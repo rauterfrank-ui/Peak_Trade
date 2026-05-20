@@ -1,0 +1,417 @@
+"""Tests for scripts/ops/run_paper_only_bounded_observation_adapter_v0.py."""
+
+from __future__ import annotations
+
+import importlib.util
+import json
+import subprocess
+import sys
+from pathlib import Path
+from typing import Sequence
+
+import pytest
+
+ROOT = Path(__file__).resolve().parent.parent.parent
+SCRIPT = ROOT / "scripts" / "ops" / "run_paper_only_bounded_observation_adapter_v0.py"
+APPROVAL_FIXTURE = (
+    ROOT / "tests" / "fixtures" / "ops" / "paper_only_adapter_stage3_approval_sample.md"
+)
+ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+
+
+def _load_mod():
+    name = "run_paper_only_bounded_observation_adapter_v0"
+    spec = importlib.util.spec_from_file_location(name, SCRIPT)
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _staging(tmp_path: Path) -> Path:
+    return Path("/tmp") / f"peak_trade_paper_only_bounded_observation_test_{tmp_path.name}"
+
+
+def _base_argv(staging: Path, archive: Path | None = None) -> list[str]:
+    return [
+        "--staging-root",
+        str(staging),
+        "--archive-root",
+        str(archive or ARCHIVE_ROOT),
+        "--repo-root",
+        str(ROOT),
+    ]
+
+
+def _durable_archive(tmp_path: Path) -> Path:
+    path = tmp_path / "durable_archive"
+    path.mkdir()
+    return path
+
+
+def _plan_dict(staging: Path, archive: Path | None = None) -> dict:
+    mod = _load_mod()
+    cap = subprocess.run(
+        [
+            "uv",
+            "run",
+            "python",
+            str(SCRIPT),
+            *_base_argv(staging, archive),
+            "--json",
+        ],
+        cwd=str(ROOT),
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert cap.returncode == 0, cap.stderr
+    return json.loads(cap.stdout)
+
+
+def test_script_exists() -> None:
+    assert SCRIPT.is_file()
+
+
+def test_help_works() -> None:
+    proc = subprocess.run(
+        ["uv", "run", "python", str(SCRIPT), "--help"],
+        cwd=str(ROOT),
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode == 0
+    assert "plan-only" in proc.stdout.lower() or "plan only" in proc.stdout.lower()
+
+
+def test_plan_only_default_does_not_call_subprocess(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    called = {"count": 0}
+
+    def _runner(*_args, **_kwargs) -> int:
+        called["count"] += 1
+        return 0
+
+    rc = mod.main(_base_argv(staging), subprocess_runner=_runner)
+    assert rc == 0
+    assert called["count"] == 0
+
+
+def test_plan_only_emits_paper_only_job_allowlist(tmp_path: Path) -> None:
+    plan = _plan_dict(_staging(tmp_path))
+    assert plan["job_name"] == "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0"
+
+
+def test_default_duration_is_7200(tmp_path: Path) -> None:
+    plan = _plan_dict(_staging(tmp_path))
+    assert plan["duration_seconds"] == 7200
+
+
+def test_default_tag_is_paper_runtime(tmp_path: Path) -> None:
+    plan = _plan_dict(_staging(tmp_path))
+    assert plan["include_tags"] == "paper_runtime"
+
+
+def test_default_poll_interval_is_30(tmp_path: Path) -> None:
+    plan = _plan_dict(_staging(tmp_path))
+    assert plan["poll_interval_seconds"] == 30
+
+
+def test_execute_without_approval_record_fails(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    rc = mod.main(
+        _base_argv(staging) + ["--execute", "--no-strict-repo-clean"],
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc != 0
+
+
+def test_execute_without_archive_root_fails(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    missing_archive = tmp_path / "missing_archive"
+    rc = mod.main(
+        [
+            "adapter.py",
+            "--staging-root",
+            str(staging),
+            "--archive-root",
+            str(missing_archive),
+            "--repo-root",
+            str(ROOT),
+            "--execute",
+            "--approval-record",
+            str(APPROVAL_FIXTURE),
+            "--no-strict-repo-clean",
+        ],
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc != 0
+
+
+def test_execute_with_missing_approval_fields_fails(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    bad = tmp_path / "bad_approval.md"
+    bad.write_text("APPROVE_EXECUTE_PAPER_ONLY_120MIN_NOW=false\n", encoding="utf-8")
+    rc = mod.main(
+        _base_argv(staging)
+        + [
+            "--execute",
+            "--approval-record",
+            str(bad),
+            "--no-strict-repo-clean",
+        ],
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc != 0
+
+
+def test_execute_rejects_start_shadow_now_true(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    bad = tmp_path / "shadow_approval.md"
+    bad.write_text(
+        "\n".join(
+            [
+                "APPROVE_EXECUTE_PAPER_ONLY_120MIN_NOW=true",
+                "START_PAPER_NOW=true",
+                "START_SHADOW_NOW=true",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    rc = mod.main(
+        _base_argv(staging)
+        + ["--execute", "--approval-record", str(bad), "--no-strict-repo-clean"],
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc != 0
+
+
+def test_execute_rejects_start_testnet_now_true(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    bad = tmp_path / "testnet_approval.md"
+    bad.write_text(
+        "\n".join(
+            [
+                "APPROVE_EXECUTE_PAPER_ONLY_120MIN_NOW=true",
+                "START_PAPER_NOW=true",
+                "START_TESTNET_NOW=true",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    rc = mod.main(
+        _base_argv(staging)
+        + ["--execute", "--approval-record", str(bad), "--no-strict-repo-clean"],
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc != 0
+
+
+def test_execute_rejects_live_allowed_true(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    bad = tmp_path / "live_approval.md"
+    bad.write_text(
+        "\n".join(
+            [
+                "APPROVE_EXECUTE_PAPER_ONLY_120MIN_NOW=true",
+                "START_PAPER_NOW=true",
+                "LIVE_ALLOWED=true",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    rc = mod.main(
+        _base_argv(staging)
+        + ["--execute", "--approval-record", str(bad), "--no-strict-repo-clean"],
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc != 0
+
+
+def test_execute_accepts_sample_approval_with_mocked_runner(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    calls: list[str] = []
+
+    def _runner(argv: Sequence[str], _cwd, _stdout, _stderr) -> int:
+        calls.append(" ".join(argv))
+        if "review_scheduler_paper_runtime_evidence.py" in " ".join(argv):
+            review_dir = staging / "review"
+            review_dir.mkdir(parents=True, exist_ok=True)
+            (review_dir / "REVIEW_RESULT.json").write_text(
+                json.dumps({"verdict": "PASS", "metrics": {}, "issues": []}),
+                encoding="utf-8",
+            )
+            return 0
+        if "run_with_timeout.py" in " ".join(argv):
+            return mod.TIMEOUT_EXIT
+        return 0
+
+    archive = _durable_archive(tmp_path)
+    rc = mod.main(
+        _base_argv(staging, archive)
+        + [
+            "--execute",
+            "--approval-record",
+            str(APPROVAL_FIXTURE),
+            "--no-strict-repo-clean",
+        ],
+        subprocess_runner=_runner,
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc == 0
+    assert calls
+
+
+def test_command_plan_includes_make_scheduler_temp_config(tmp_path: Path) -> None:
+    plan = _plan_dict(_staging(tmp_path))
+    joined = " ".join(plan["commands"]["temp_config"])
+    assert "make_scheduler_temp_config.py" in joined
+
+
+def test_command_plan_includes_run_with_timeout(tmp_path: Path) -> None:
+    plan = _plan_dict(_staging(tmp_path))
+    joined = " ".join(plan["commands"]["scheduler_bounded"])
+    assert "run_with_timeout.py" in joined
+
+
+def test_command_plan_includes_run_scheduler(tmp_path: Path) -> None:
+    plan = _plan_dict(_staging(tmp_path))
+    joined = " ".join(plan["commands"]["scheduler_bounded"])
+    assert "run_scheduler.py" in joined
+
+
+def test_command_plan_includes_review_helper(tmp_path: Path) -> None:
+    plan = _plan_dict(_staging(tmp_path))
+    joined = " ".join(plan["commands"]["review"])
+    assert "review_scheduler_paper_runtime_evidence.py" in joined
+
+
+def test_command_plan_uses_high_vol_job(tmp_path: Path) -> None:
+    plan = _plan_dict(_staging(tmp_path))
+    assert plan["job_name"] == "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0"
+    joined = " ".join(plan["commands"]["temp_config"])
+    assert "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0" in joined
+
+
+def test_command_plan_never_uses_shadow_testnet_live_jobs(tmp_path: Path) -> None:
+    plan = _plan_dict(_staging(tmp_path))
+    blob = json.dumps(plan["commands"]).lower()
+    assert "shadow_247_futures" not in blob
+    assert "testnet" not in blob
+    assert "bounded_pilot" not in blob
+
+
+def test_archive_retention_steps_include_checksum_manifest(tmp_path: Path) -> None:
+    plan = _plan_dict(_staging(tmp_path))
+    joined = " ".join(plan["retention_steps"]).lower()
+    assert "manifest.sha256" in joined
+
+
+def test_staging_root_is_under_tmp(tmp_path: Path) -> None:
+    staging = _staging(tmp_path)
+    plan = _plan_dict(staging)
+    assert "/tmp" in plan["staging_root"] or str(staging).startswith("/tmp")
+
+
+def test_durable_archive_root_outside_tmp_in_execute_mode(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    issues = mod.validate_execute_preconditions(
+        mod.ExecuteContext(
+            args=type(
+                "Args",
+                (),
+                {
+                    "approval_record": APPROVAL_FIXTURE,
+                    "strict_repo_clean": False,
+                },
+            )(),
+            repo_root=ROOT,
+            staging_root=staging,
+            archive_root=archive,
+            runtime_out=staging / "runtime_out",
+            logs_dir=staging / "logs",
+            plan_dir=staging / "plan",
+            review_dir=staging / "review",
+            temp_jobs=staging / "plan" / "temp_jobs.toml",
+            run_id="test_run",
+        ),
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert not issues
+
+
+def test_execute_rejects_tmp_archive_root(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    tmp_archive = Path("/tmp/peak_trade_adapter_reject_archive_test")
+    tmp_archive.mkdir(parents=True, exist_ok=True)
+    issues = mod.validate_execute_preconditions(
+        mod.ExecuteContext(
+            args=type(
+                "Args",
+                (),
+                {
+                    "approval_record": APPROVAL_FIXTURE,
+                    "strict_repo_clean": False,
+                },
+            )(),
+            repo_root=ROOT,
+            staging_root=staging,
+            archive_root=tmp_archive,
+            runtime_out=staging / "runtime_out",
+            logs_dir=staging / "logs",
+            plan_dir=staging / "plan",
+            review_dir=staging / "review",
+            temp_jobs=staging / "plan" / "temp_jobs.toml",
+            run_id="test_run",
+        ),
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert any("outside /tmp" in issue for issue in issues)
+
+
+def test_json_output_parseable(tmp_path: Path) -> None:
+    plan = _plan_dict(_staging(tmp_path))
+    assert isinstance(plan, dict)
+    assert "commands" in plan
+
+
+def test_fixed_job_constant_matches_allowlist() -> None:
+    mod = _load_mod()
+    assert mod.ALLOWED_JOB == "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0"
+
+
+def test_validate_env_guardrails_blocks_live() -> None:
+    mod = _load_mod()
+    issues = mod.validate_env_guardrails({"PT_LIVE_ENABLED": "true"})
+    assert issues
+
+
+def test_module_build_plan_forbidden_paths_absent(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    plan = mod.build_plan(
+        mode="plan-only",
+        staging_root=staging,
+        archive_root=ARCHIVE_ROOT,
+        repo_root=ROOT,
+        source_jobs_toml=ROOT / "config/scheduler/jobs.toml",
+        duration_seconds=7200,
+        poll_interval_seconds=30,
+        run_id="test_run",
+    )
+    assert plan.forbidden_paths_absent is True

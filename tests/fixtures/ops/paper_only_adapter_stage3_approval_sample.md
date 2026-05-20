@@ -1,0 +1,16 @@
+# Stage-3 Paper-only 120min Execution Approval (Sample Fixture)
+
+**Status:** TEST FIXTURE ONLY — not a live authorization
+
+```
+OPERATOR_NAME=Frank
+SELECTED_CANDIDATE_NAME=PAPER_ONLY_BOUNDED_OBSERVATION_120MIN_CANDIDATE_V0
+ADAPTER_DESIGN=cli_adapter_scheduler_composition_v0
+APPROVE_EXECUTE_PAPER_ONLY_120MIN_NOW=true
+START_PAPER_NOW=true
+START_SHADOW_NOW=false
+START_TESTNET_NOW=false
+START_SUPERVISOR_NOW=false
+LIVE_ALLOWED=false
+START_RUNTIME_NOW=false
+```
