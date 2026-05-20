@@ -58,6 +58,35 @@ Future run selectors and adapters must **reject or block** a run plan when prima
 
 Reference implementation: `scripts/ops/run_paper_only_bounded_observation_adapter_v0.py` (plan-only default; execute requires approval record; archive root outside `/tmp`).
 
+## 2b. Planning artifact durable retention v0
+
+`PLANNING_ARTIFACT_DURABLE_RETENTION_REQUIRED=true`
+
+`/tmp` may be used for scratch, staging, and short-lived working outputs. It is **not** durable storage for **material** planning, gate, closeout, or operator-decision artifacts that operators will rely on in later slices.
+
+When an artifact is **material** to future decisions (for example merge closeouts, scoped HOLD operator records, GLB authority packets, Testnet readiness selectors, durable-copy results), it must **not** remain `/tmp`-only. Operators must copy it to a durable archive **outside `/tmp`**, preferably:
+
+`/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_<id>/planning/<slice_or_context>/`
+
+Each durable copy should include at minimum:
+
+- the source report(s) or equivalent decision record
+- a context file (for example `DURABLE_COPY_README.md`) stating source, meaning, and non-authorizing scope
+- `MANIFEST.sha256` over the copied files (excluding the manifest line list itself)
+- checksum verification evidence (for example `shasum -a 256 -c MANIFEST.sha256` with **RC=0**)
+
+**Scope:** material decision artifacts only—not every scratch file, log fragment, or transient prompt under `/tmp`.
+
+**Not primary runtime evidence:** planning, gate, and closeout copies under `planning&#47;` assist review and traceability; they do **not** by themselves satisfy §2a primary runtime evidence for Paper, Shadow, Testnet, or Live runs.
+
+**Forbidden as durable artifact storage:**
+
+- Notion pointer-only rows (index/navigation; not the archive of record)
+- chat-summary-only evidence
+- transcript-only evidence without durable archive copy
+
+Repo docs state **policy**; durable artifact bytes remain in external archive paths. This section does **not** authorize scheduler execution, daemon activation, Paper runtime, Shadow runtime, Testnet, Live, broker, exchange, or order paths.
+
 ## 3. Non-authority
 
 The following are **not** trading authority, readiness approval, evidence approval, promotion, Master V2 / Double Play approval, or Live/Testnet approval:
