@@ -77,7 +77,7 @@ Each durable copy should include at minimum:
 
 **Scope:** material decision artifacts only—not every scratch file, log fragment, or transient prompt under `/tmp`.
 
-**Not primary runtime evidence:** planning, gate, and closeout copies under `planning/` assist review and traceability; they do **not** by themselves satisfy §2a primary runtime evidence for Paper, Shadow, Testnet, or Live runs.
+**Not primary runtime evidence:** planning, gate, and closeout copies under `planning&#47;` assist review and traceability; they do **not** by themselves satisfy §2a primary runtime evidence for Paper, Shadow, Testnet, or Live runs.
 
 **Forbidden as durable artifact storage:**
 
