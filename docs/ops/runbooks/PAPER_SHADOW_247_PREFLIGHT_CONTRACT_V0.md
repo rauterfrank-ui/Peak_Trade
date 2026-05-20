@@ -28,6 +28,36 @@ That command is for planning and diagnostics. It must not be interpreted as daem
 
 Operator decision until a future reviewed slice completes all mandatory contract items: **STOP — do not activate Paper/Shadow 24/7.**
 
+## 2a. Primary evidence retention invariant v0 (all run types)
+
+`PRIMARY_EVIDENCE_REQUIRED_FOR_EVERY_RUN=true`
+
+Every governed run—**Paper**, **Shadow**, **Testnet**, **Live/Canary**, **Scheduler**, **Supervisor**, **Daemon**, **Smoke**, **bounded trial**, and **runtime adapter** paths—must produce **durable primary evidence** before the run may be treated as complete.
+
+A run is **not complete** until **archive verification passes**, including at minimum:
+
+- durable archive outside `/tmp`
+- `MANIFEST.sha256` present and verifiable (`shasum -a 256 -c` RC=0)
+- required runtime artifacts present (for example account, fills, events, steps as applicable)
+- config snapshot with secrets redacted when applicable
+- stdout/stderr or scheduler logs present
+- closeout present
+- postrun/review present (for example `REVIEW_RESULT.json` with explicit verdict)
+- archive copy verified against staging
+- source path usable later for operator retrieval
+
+The following are **forbidden as primary evidence** (supporting or documentary only):
+
+- `/tmp`-only artifacts without durable archive
+- transcript-only evidence
+- Notion pointer-only evidence
+- chat-summary-only evidence
+- unverified archive copies
+
+Future run selectors and adapters must **reject or block** a run plan when primary evidence retention cannot be guaranteed. **No gate clearance** may be inferred from degraded or documentary evidence alone. Completing one bounded Paper observation run (for example Paper120) does **not** impose an automatic **24h** or **72h** rerun requirement.
+
+Reference implementation: `scripts/ops/run_paper_only_bounded_observation_adapter_v0.py` (plan-only default; execute requires approval record; archive root outside `/tmp`).
+
 ## 3. Non-authority
 
 The following are **not** trading authority, readiness approval, evidence approval, promotion, Master V2 / Double Play approval, or Live/Testnet approval:
