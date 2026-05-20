@@ -381,12 +381,53 @@ def test_market_dashboard_depth_chart_placeholder_fixture_mini_bars_contract_v0(
     assert "/api/market/depth" not in html
 
 
+def test_market_dashboard_orderbook_fixture_levels_contract_v0(
+    client_depth_fixture_bundle_on: TestClient,
+) -> None:
+    """Fixture SSR renders lower orderbook ladder with bid/ask rows from complete_minimal."""
+    html = _html(client_depth_fixture_bundle_on, "/market")
+    assert 'data-market-v0-orderbook-placeholder="true"' in html
+    assert 'data-market-v0-lower-depth-orderbook-visuals-v1="true"' in html
+    assert 'data-market-v0-orderbook-topn="true"' in html
+    assert 'data-market-v0-orderbook-has-levels="true"' in html
+    assert 'data-market-v0-orderbook-bids="true"' in html
+    assert 'data-market-v0-orderbook-asks="true"' in html
+    assert 'data-market-v0-orderbook-empty="true"' not in html
+
+    topn_idx = html.index('data-market-v0-orderbook-topn="true"')
+    window = html[topn_idx : topn_idx + 8000]
+    placeholder_idx = html.index('data-market-v0-orderbook-placeholder="true"')
+    header_window = html[placeholder_idx : topn_idx + 200]
+    assert "Read-only · offline depth bundle" in header_window
+    assert "63010" in window
+    assert "63020" in window
+    assert "63000" in window
+    assert "63030" in window
+    assert "Levels · bid-side (display only)" in window
+    assert "Levels · ask-side (display only)" in window
+    assert "Horizontal bars = displayed size" in window
+    assert "fetch(" not in html
+    assert "/api/market/depth" not in html
+    assert 'data-market-readonly="true"' in html
+    assert 'data-market-non-authorizing="true"' in html
+
+
 def test_double_play_market_dashboard_excludes_depth_chart_placeholder_marker_v0(
     client: TestClient,
 ) -> None:
     """`/market`-only depth-chart placeholder marker stays off Double-Play."""
     html = _html(client, "/market/double-play")
     assert 'data-market-v0-depth-chart-placeholder="true"' not in html
+
+
+def test_double_play_market_dashboard_excludes_orderbook_fixture_levels_markers_v0(
+    client: TestClient,
+) -> None:
+    """`/market`-only fixture orderbook level markers stay off Double-Play."""
+    html = _html(client, "/market/double-play")
+    assert 'data-market-v0-orderbook-has-levels="true"' not in html
+    assert 'data-market-v0-orderbook-bids="true"' not in html
+    assert 'data-market-v0-orderbook-asks="true"' not in html
 
 
 def test_market_dashboard_ranking_funnel_empty_state_v0_marker(client: TestClient) -> None:
