@@ -36,7 +36,9 @@ def test_paper_shadow_247_contract_links_governance_charter_without_overriding_b
     assert "runtime approval" in text
 
 
-def test_paper_shadow_247_contract_links_charter_24h_evidence_semantics_without_changing_blocked_v0() -> None:
+def test_paper_shadow_247_contract_links_charter_24h_evidence_semantics_without_changing_blocked_v0() -> (
+    None
+):
     """Regression anchor for PR #3562 — preflight navigation to charter 24h tier only."""
     text = _read_contract()
     assert CHARTER.is_file()
