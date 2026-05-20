@@ -78,6 +78,41 @@ def test_run_shadow_loop_invokes_p67_cli_module() -> None:
     assert "python3 -m src.ops.p67.shadow_session_scheduler_cli_v1" in text
 
 
+def test_run_shadow_loop_guards_rec_args_expansion_for_bash32_regression_v0() -> None:
+    """Regression anchor for #3563 — empty REC_ARGS must not expand on bash 3.2."""
+    text = _SHADOW_LOOP_SH.read_text(encoding="utf-8")
+
+    assert "REC_ARGS=()" in text
+    assert "PY_ARGS=(" in text
+    assert re.search(r"\[\[\s*\$\{#REC_ARGS\[@\]\}\s*-gt\s*0\s*\]\]", text)
+
+    guarded_match = re.search(
+        r"if\s+\[\[\s*\$\{#REC_ARGS\[@\]\}\s*-gt\s*0\s*\]\];\s*then\s*\n"
+        r"\s*python3 -m src\.ops\.p67\.shadow_session_scheduler_cli_v1 "
+        r'"\$\{PY_ARGS\[@\]\}"\s+"\$\{REC_ARGS\[@\]\}"',
+        text,
+    )
+    assert guarded_match is not None
+
+    fallback_match = re.search(
+        r"else\s*\n"
+        r"\s*python3 -m src\.ops\.p67\.shadow_session_scheduler_cli_v1 "
+        r'"\$\{PY_ARGS\[@\]\}"\s*$',
+        text,
+        re.MULTILINE,
+    )
+    assert fallback_match is not None
+
+    # Pre-#3563 anti-pattern: one python3 invocation unconditionally trailing REC_ARGS.
+    assert text.count("python3 -m src.ops.p67.shadow_session_scheduler_cli_v1") == 2
+
+    rec_expansion_lines = [
+        line for line in text.splitlines() if "${REC_ARGS[@]}" in line and "python3" in line
+    ]
+    assert len(rec_expansion_lines) == 1
+    assert guarded_match.group(0).splitlines()[-1].strip() == rec_expansion_lines[0].strip()
+
+
 def test_p67_scheduler_defines_synthetic_default_prices() -> None:
     body = (REPO_ROOT / "src/ops/p67/shadow_session_scheduler_v1.py").read_text(encoding="utf-8")
     assert "_DEFAULT_PRICES" in body
