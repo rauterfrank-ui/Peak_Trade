@@ -17,7 +17,7 @@ import sys
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Mapping, Sequence
+from typing import Any, Callable, Mapping, Optional, Sequence
 
 ADAPTER_VERSION = "cli_adapter_scheduler_composition_v0"
 ALLOWED_JOB = "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0"
@@ -101,7 +101,7 @@ class ExecuteContext:
     approval_fields: Mapping[str, str] = field(default_factory=dict)
 
 
-SubprocessRunner = Callable[[Sequence[str], Path | None, Path | None, Path | None], int]
+SubprocessRunner = Callable[[Sequence[str], Optional[Path], Optional[Path], Optional[Path]], int]
 RepoCleanChecker = Callable[[Path], tuple[bool, str]]
 
 

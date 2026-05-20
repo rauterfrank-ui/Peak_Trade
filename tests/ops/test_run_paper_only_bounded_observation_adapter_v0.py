@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import importlib.util
+import io
 import json
+import shutil
 import subprocess
 import sys
+from contextlib import redirect_stdout
 from pathlib import Path
 from typing import Sequence
 
@@ -45,29 +48,27 @@ def _base_argv(staging: Path, archive: Path | None = None) -> list[str]:
 
 
 def _durable_archive(tmp_path: Path) -> Path:
-    path = tmp_path / "durable_archive"
-    path.mkdir()
+    # pytest tmp_path on Linux CI lives under /tmp; adapter rejects archive roots there.
+    path = ROOT / "tests" / ".pytest_archive_roots" / tmp_path.name
+    path.mkdir(parents=True, exist_ok=True)
     return path
+
+
+@pytest.fixture(autouse=True)
+def _cleanup_durable_archive_dirs():
+    yield
+    archive_roots = ROOT / "tests" / ".pytest_archive_roots"
+    if archive_roots.is_dir():
+        shutil.rmtree(archive_roots, ignore_errors=True)
 
 
 def _plan_dict(staging: Path, archive: Path | None = None) -> dict:
     mod = _load_mod()
-    cap = subprocess.run(
-        [
-            "uv",
-            "run",
-            "python",
-            str(SCRIPT),
-            *_base_argv(staging, archive),
-            "--json",
-        ],
-        cwd=str(ROOT),
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    assert cap.returncode == 0, cap.stderr
-    return json.loads(cap.stdout)
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        rc = mod.main(_base_argv(staging, archive) + ["--json"])
+    assert rc == 0, buf.getvalue()
+    return json.loads(buf.getvalue())
 
 
 def test_script_exists() -> None:
@@ -76,7 +77,7 @@ def test_script_exists() -> None:
 
 def test_help_works() -> None:
     proc = subprocess.run(
-        ["uv", "run", "python", str(SCRIPT), "--help"],
+        [sys.executable, str(SCRIPT), "--help"],
         cwd=str(ROOT),
         check=False,
         capture_output=True,
