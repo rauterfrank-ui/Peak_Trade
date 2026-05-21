@@ -27,6 +27,10 @@ SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true
 SCHEDULER_COMPLETION_PRIMARY_EVIDENCE_CLOSEOUT_OPT_IN=true
 SUPERVISOR_EVIDENCE_PACK_CLOSEOUT_OPT_IN=true
 PRIMARY_EVIDENCE_SHARED_HELPER_REUSED=true
+P79_SUPERVISOR_ARCHIVE_ROOT_MODE_IMPLEMENTED=true
+P79_SUPERVISOR_PRIMARY_EVIDENCE_MANIFEST_VERIFY=true
+P79_SUPERVISOR_RUNTIME_TICK_MODE_PRESERVED=true
+P79_SUPERVISOR_GATE_NON_AUTHORIZING=true
 MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 ```
 
@@ -51,6 +55,7 @@ Non-goals:
 | Scheduler hard-block contract | [SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md) |
 | Scheduler completion closeout (opt-in) | [run_scheduler.py](../../../scripts/run_scheduler.py) + Preflight §2a |
 | Supervisor evidence pack closeout (opt-in, offline) | [pack_online_readiness_supervisor_evidence_v0.py](../../../scripts/ops/pack_online_readiness_supervisor_evidence_v0.py) + Preflight §2a |
+| P79 archive manifest gate (offline) | [p79_supervisor_health_gate_v1.sh](../../../scripts/ops/p79_supervisor_health_gate_v1.sh) `ARCHIVE_ROOT` + [p79_supervisor_evidence_manifest_verify_v0.py](../../../scripts/ops/p79_supervisor_evidence_manifest_verify_v0.py) |
 | Shared primary evidence finalize helper | [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) |
 | Generic Evidence Run Registry v1 | [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) |
 | Vocabulary forbidden equalities | [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md) |
@@ -221,7 +226,26 @@ Normative state (post supervisor evidence pack closeout #3590):
 - Live-pilot / production retention hooks remain out of scope for this taxonomy index.
 - Direct library calls to `run_shadow_session_scheduler_v1()` still bypass CLI scheduler guard (`SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true`).
 - Registry PASS, dashboard status, and readiness aggregate verdicts remain **non-authorizing**.
-- P79 offline archive mode (`ARCHIVE_ROOT` on `p79_supervisor_health_gate_v1.sh`) validates pack closeout + `MANIFEST.sha256`; runtime tick mode unchanged.
+
+## 7d. P79 supervisor archive manifest gate (offline)
+
+```
+P79_SUPERVISOR_ARCHIVE_ROOT_MODE_IMPLEMENTED=true
+P79_SUPERVISOR_PRIMARY_EVIDENCE_MANIFEST_VERIFY=true
+P79_SUPERVISOR_RUNTIME_TICK_MODE_PRESERVED=true
+P79_SUPERVISOR_GATE_NON_AUTHORIZING=true
+PRIMARY_EVIDENCE_SHARED_HELPER_REUSED=true
+```
+
+Normative state (post P79 archive manifest gate #3592):
+
+- `scripts/ops/p79_supervisor_health_gate_v1.sh` supports offline **ARCHIVE_ROOT** mode (mutually exclusive with runtime `OUT_DIR` tick mode).
+- `scripts/ops/p79_supervisor_evidence_manifest_verify_v0.py` validates `supervisor_session_closeout_v0.json` and verifies `MANIFEST.sha256` via shared `verify_manifest_sha256()`.
+- Consumes pack output from #3590; does **not** start/stop supervisor, online daemon, or invoke launchctl.
+- Runtime tick/pidfile/P76 mode (including tick `manifest.json` one-of check) remains unchanged when `ARCHIVE_ROOT` is unset.
+- P79 success is **non-authorizing**; does not clear HOLD, preflight BLOCKED, or Live/Testnet/broker/exchange gates.
+
+Detail owner: [online_readiness_supervisor_health_gate_runbook_v1.md](../ai/online_readiness_supervisor_health_gate_runbook_v1.md).
 
 ## 8. Canary and Live-Canary lanes
 
@@ -255,3 +279,4 @@ MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 - **v0** — Initial lane taxonomy, authority levels, forbidden promotions, scheduler gap acknowledgment, Master V2 protection, registry field schema (deferred).
 - **v0.1** — Truth-marker sync: registry v1 implemented; scheduler launcher + P67 CLI guarded; library bypass residual preserved.
 - **v0.2** — Primary evidence closeout marker sync: scheduler completion (#3589) and supervisor offline pack (#3590) indexed as opt-in at canonical owners; default off; residual online-daemon/live-pilot gaps preserved.
+- **v0.3** — P79 archive manifest gate marker sync (#3592): ARCHIVE_ROOT offline mode, shared manifest verify, runtime tick mode preserved, non-authorizing semantics indexed.
