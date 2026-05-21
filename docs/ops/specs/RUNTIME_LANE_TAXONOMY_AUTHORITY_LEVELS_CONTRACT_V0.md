@@ -413,6 +413,28 @@ Normative state (readiness aggregate cross-ref):
 
 `GENERIC_EVIDENCE_REGISTRY_V1_IMPLEMENTED=true` — Registry v1 is implemented offline via `build_generic_evidence_run_registry_v1.py`; it remains **non-authorizing** and does not clear HOLD, preflight BLOCKED, or Live/Testnet/broker gates. Gate Snapshot may optionally include registry section; inclusion does not elevate authority.
 
+### Bounded observation retention adapters (plan-only default, Stage-3 gated execute)
+
+```
+BOUNDED_OBSERVATION_ADAPTERS_TAXONOMY_INDEXED=true
+BOUNDED_OBSERVATION_ADAPTERS_REVIEW_INPUT_ONLY=true
+BOUNDED_OBSERVATION_ADAPTERS_STAGE3_EXECUTE_GATED=true
+BOUNDED_OBSERVATION_ADAPTERS_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true
+```
+
+| Tool | Taxonomy role | Canonical owner |
+|---|---|---|
+| Paper bounded observation adapter v0 | Triple-lane `paper` bounded evidence retention; **plan-only default**; Stage-3 gated execute; **review input only** | [run_paper_only_bounded_observation_adapter_v0.py](../../../scripts/ops/run_paper_only_bounded_observation_adapter_v0.py) |
+| Shadow bounded observation adapter v0 | Triple-lane `shadow` bounded evidence retention; **plan-only default**; Stage-3 gated execute; **review input only** | [run_shadow_bounded_observation_adapter_v0.py](../../../scripts/ops/run_shadow_bounded_observation_adapter_v0.py) |
+| Testnet bounded observation adapter v0 | Triple-lane `testnet` bounded evidence retention; **plan-only default**; Stage-3 gated execute; **review input only** | [run_testnet_bounded_observation_adapter_v0.py](../../../scripts/ops/run_testnet_bounded_observation_adapter_v0.py) |
+
+Normative state (bounded observation adapter cross-ref):
+
+- Bounded observation adapters produce **command plans and bounded evidence/review inputs only** by default; they do **not** grant approval, gate clearance, Live/broker/exchange permission, or trading authorization.
+- Default mode is **plan-only**; any `--execute` path requires explicit Stage-3 approval record and operator-explicit invocation — taxonomy indexing does **not** imply execute authority.
+- Adapter outputs **do not** override scheduler boundary guards ([SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md)), preflight retention owners ([PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a/§2b), operator-explicit approval records, or Master V2 / Double Play boundaries (`FORBIDDEN_PROMOTION_*` in §5 apply).
+- Adapter PASS or durable archive copy for one bounded lane **does not** authorize another lane or Live paths.
+
 ## 11. Revision
 
 - **v0** — Initial lane taxonomy, authority levels, forbidden promotions, scheduler gap acknowledgment, Master V2 protection, registry field schema (deferred).
@@ -425,3 +447,4 @@ Normative state (readiness aggregate cross-ref):
 - **v0.7** — P67/P72 library scheduler boundary opt-in: `scheduler_boundary_enforce` default off; shared guard at library entry; `SCHEDULER_LIBRARY_BYPASS_RESIDUAL` preserved.
 - **v0.8** — F5 read-only market dashboard taxonomy cross-ref: §7h markers; `dashboard` lane `review_input_only`; F5 contract owner indexed.
 - **v0.9** — Readiness aggregate cross-ref: §10 markers and script owners for ledger/mirror/gate snapshot; non-authorizing review-input-only semantics strengthened.
+- **v1.0** — Bounded observation adapter cross-ref: §10 subsection indexes paper/shadow/testnet retention adapters; plan-only default; Stage-3 gated execute; review-input-only semantics.
