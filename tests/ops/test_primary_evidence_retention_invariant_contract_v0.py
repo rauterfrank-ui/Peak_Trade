@@ -200,13 +200,11 @@ def test_p79_verifier_checks_closeout_and_manifest_non_authorizing() -> None:
     assert "BROKER_EXCHANGE_ALLOWED" not in text
 
 
-def test_p101_stop_playbook_post_stop_hint_references_pack_and_p79_archive() -> None:
+def test_p101_stop_playbook_post_stop_hint_references_wrapper_and_optional_p79() -> None:
     assert P101_SCRIPT.is_file()
-    assert PACK_SCRIPT.is_file()
     text = _p101_text()
-    assert "pack_online_readiness_supervisor_evidence_v0.py" in text
-    assert "p79_supervisor_health_gate_v1.sh" in text
-    assert "ARCHIVE_ROOT=" in text
+    assert "run_online_readiness_post_stop_pack_v0.sh" in text
+    assert "--p79-archive-verify" in text
     assert "P101_POST_STOP_PRIMARY_EVIDENCE_OPERATOR_HINTS.txt" in text
     assert "--primary-evidence-enforce" in text
 
@@ -215,6 +213,8 @@ def test_p101_stop_playbook_post_stop_hint_markers_non_authorizing() -> None:
     text = _p101_text()
     for marker in (
         "HINT_ONLY=true",
+        "WRAPPER_REFERENCED=true",
+        "WRAPPER_NOT_EXECUTED_BY_P101=true",
         "PACK_NOT_EXECUTED_BY_P101=true",
         "P79_ARCHIVE_VERIFY_NOT_EXECUTED_BY_P101=true",
         "OPERATOR_MUST_RUN_EXPLICITLY=true",
@@ -223,8 +223,16 @@ def test_p101_stop_playbook_post_stop_hint_markers_non_authorizing() -> None:
         assert marker in text
 
 
-def test_p101_stop_playbook_does_not_auto_execute_pack_or_p79_archive_verify() -> None:
+def test_p101_stop_playbook_does_not_auto_execute_wrapper_pack_or_p79_archive_verify() -> None:
     lines = _p101_text().splitlines()
+    wrapper_offenders = [
+        line
+        for line in lines
+        if "run_online_readiness_post_stop_pack_v0.sh" in line
+        and not line.strip().startswith("#")
+        and not line.strip().startswith("echo")
+    ]
+    assert wrapper_offenders == []
     pack_offenders = [
         line
         for line in lines

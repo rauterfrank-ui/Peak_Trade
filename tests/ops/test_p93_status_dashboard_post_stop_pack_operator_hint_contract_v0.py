@@ -5,12 +5,15 @@ from __future__ import annotations
 from pathlib import Path
 
 P93_SCRIPT = Path("scripts/ops/p93_online_readiness_status_dashboard_v1.sh")
+WRAPPER_SCRIPT = "run_online_readiness_post_stop_pack_v0.sh"
 PACK_SCRIPT = "pack_online_readiness_supervisor_evidence_v0.py"
 P79_SCRIPT = "p79_supervisor_health_gate_v1.sh"
 
 HINT_MARKERS = (
     "P93_POST_STOP_PRIMARY_EVIDENCE_OPERATOR_HINTS_v0",
     "HINT_ONLY=true",
+    "WRAPPER_REFERENCED=true",
+    "WRAPPER_NOT_EXECUTED_BY_P93=true",
     "PACK_NOT_EXECUTED_BY_P93=true",
     "P79_ARCHIVE_VERIFY_NOT_EXECUTED_BY_P93=true",
     "OPERATOR_MUST_RUN_EXPLICITLY=true",
@@ -29,14 +32,24 @@ def test_p93_hint_block_present_with_required_markers() -> None:
         assert marker in text
 
 
-def test_p93_hint_references_pack_script_and_p79_archive_root() -> None:
+def test_p93_hint_references_wrapper_and_optional_p79_verify() -> None:
     text = P93_SCRIPT.read_text(encoding="utf-8")
-    assert PACK_SCRIPT in text
-    assert P79_SCRIPT in text
-    assert "ARCHIVE_ROOT=" in text
+    assert WRAPPER_SCRIPT in text
+    assert "--p79-archive-verify" in text
     assert "--out-dir" in text
     assert "--archive-root" in text
     assert "--primary-evidence-enforce" in text
+
+
+def test_p93_does_not_execute_wrapper_automatically() -> None:
+    offenders = [
+        line
+        for line in _script_lines()
+        if WRAPPER_SCRIPT in line
+        and not line.strip().startswith("#")
+        and not line.strip().startswith("echo")
+    ]
+    assert offenders == []
 
 
 def test_p93_does_not_execute_pack_script_automatically() -> None:
