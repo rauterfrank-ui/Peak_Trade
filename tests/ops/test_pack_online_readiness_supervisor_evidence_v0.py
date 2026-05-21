@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import sys
 from pathlib import Path
 
@@ -20,6 +21,21 @@ from scripts.ops.pack_online_readiness_supervisor_evidence_v0 import (
     CLOSEOUT_FILENAME,
     pack_supervisor_evidence,
 )
+
+
+def _durable_archive(tmp_path: Path) -> Path:
+    # pytest tmp_path on Linux CI lives under /tmp; pack rejects archive roots there.
+    path = REPO_ROOT / "tests" / ".pytest_archive_roots" / tmp_path.name
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+@pytest.fixture(autouse=True)
+def _cleanup_durable_archive_dirs() -> None:
+    yield
+    archive_roots = REPO_ROOT / "tests" / ".pytest_archive_roots"
+    if archive_roots.is_dir():
+        shutil.rmtree(archive_roots, ignore_errors=True)
 
 
 def test_pack_script_exists_and_reuses_shared_helper() -> None:
@@ -95,7 +111,7 @@ def test_pack_enforce_writes_and_verifies_manifest(tmp_path: Path) -> None:
     out_dir.mkdir()
     (out_dir / "supervisor_meta.json").write_text("{}\n", encoding="utf-8")
 
-    archive = tmp_path / "archive"
+    archive = _durable_archive(tmp_path)
     result = pack_supervisor_evidence(
         out_dir=out_dir,
         archive_root=archive,
@@ -139,7 +155,7 @@ def test_pack_enforce_fails_closed_on_finalize_failure(
 
     result = pack_supervisor_evidence(
         out_dir=out_dir,
-        archive_root=tmp_path / "archive",
+        archive_root=_durable_archive(tmp_path),
         primary_evidence_enforce=True,
     )
     assert result.exit_code == 1
