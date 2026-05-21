@@ -97,6 +97,8 @@ The following are **not** trading authority, readiness approval, evidence approv
 - CI shadow/paper smoke artifacts;
 - any future read-only preflight JSON emitted from this contract.
 
+Normative **lane IDs** and **authority levels** for all runtime/evidence surfaces are indexed in **[Runtime Lane Taxonomy + Authority Levels Contract v0](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md)**. That spec is **non-authorizing**; this contract remains the owner of §2a/§2b retention and preflight **BLOCKED** status.
+
 ## 3a. Futures / perpetual planning boundary (BTC/USD proxy evidence)
 
 Symbols and surfaces such as **BTC/USD**, **BTC-USD**, **Bitcoin USD**, or **BTCUSDT** may appear in this repository as WebUI defaults, spot-style fixtures, Class-A smoke paths, or **public REST market-data captures**. Treat that evidence as **technical proxy / spot-smoke instrumentation only**.
@@ -284,6 +286,7 @@ Field names and enums may be refined in a later contract version; v0 only fixes 
 
 ## 7. Related documents
 
+- [Runtime Lane Taxonomy + Authority Levels Contract v0](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) — normative lane IDs, authority levels, forbidden cross-lane promotions (non-authorizing index; §2a/§2b retention remain here).
 - [SCHEDULER_DAEMON.md](../../SCHEDULER_DAEMON.md) — scheduler boundary and dry-run-only diagnostics.
 - Shadow session runbook: [runbook_shadow_session.md](../p6/runbook_shadow_session.md) (single-run, no daemon).
 - Paper trading runbook: [runbook_paper_trading.md](../p7/runbook_paper_trading.md).
