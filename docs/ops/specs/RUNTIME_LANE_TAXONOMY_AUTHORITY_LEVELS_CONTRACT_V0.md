@@ -31,6 +31,14 @@ P79_SUPERVISOR_ARCHIVE_ROOT_MODE_IMPLEMENTED=true
 P79_SUPERVISOR_PRIMARY_EVIDENCE_MANIFEST_VERIFY=true
 P79_SUPERVISOR_RUNTIME_TICK_MODE_PRESERVED=true
 P79_SUPERVISOR_GATE_NON_AUTHORIZING=true
+P101_POST_STOP_PRIMARY_EVIDENCE_HINTS_IMPLEMENTED=true
+P101_POST_STOP_PACK_HINT_REFERENCED=true
+P101_POST_STOP_P79_ARCHIVE_VERIFY_HINT_REFERENCED=true
+P101_POST_STOP_HINT_ONLY=true
+P101_POST_STOP_PACK_NOT_EXECUTED=true
+P101_POST_STOP_P79_VERIFY_NOT_EXECUTED=true
+P101_POST_STOP_OPERATOR_EXPLICIT_REQUIRED=true
+P101_POST_STOP_EVIDENCE_NON_AUTHORIZING=true
 MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 ```
 
@@ -56,6 +64,7 @@ Non-goals:
 | Scheduler completion closeout (opt-in) | [run_scheduler.py](../../../scripts/run_scheduler.py) + Preflight §2a |
 | Supervisor evidence pack closeout (opt-in, offline) | [pack_online_readiness_supervisor_evidence_v0.py](../../../scripts/ops/pack_online_readiness_supervisor_evidence_v0.py) + Preflight §2a |
 | P79 archive manifest gate (offline) | [p79_supervisor_health_gate_v1.sh](../../../scripts/ops/p79_supervisor_health_gate_v1.sh) `ARCHIVE_ROOT` + [p79_supervisor_evidence_manifest_verify_v0.py](../../../scripts/ops/p79_supervisor_evidence_manifest_verify_v0.py) |
+| P101 post-stop operator hints (non-executing) | [p101_stop_playbook_v1.sh](../../../scripts/ops/p101_stop_playbook_v1.sh) |
 | Shared primary evidence finalize helper | [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) |
 | Generic Evidence Run Registry v1 | [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) |
 | Vocabulary forbidden equalities | [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md) |
@@ -247,6 +256,29 @@ Normative state (post P79 archive manifest gate #3592):
 
 Detail owner: [online_readiness_supervisor_health_gate_runbook_v1.md](../ai/online_readiness_supervisor_health_gate_runbook_v1.md).
 
+## 7e. P101 post-stop primary evidence operator hints (non-executing)
+
+```
+P101_POST_STOP_PRIMARY_EVIDENCE_HINTS_IMPLEMENTED=true
+P101_POST_STOP_PACK_HINT_REFERENCED=true
+P101_POST_STOP_P79_ARCHIVE_VERIFY_HINT_REFERENCED=true
+P101_POST_STOP_HINT_ONLY=true
+P101_POST_STOP_PACK_NOT_EXECUTED=true
+P101_POST_STOP_P79_VERIFY_NOT_EXECUTED=true
+P101_POST_STOP_OPERATOR_EXPLICIT_REQUIRED=true
+P101_POST_STOP_EVIDENCE_NON_AUTHORIZING=true
+```
+
+Normative state (post P101 post-stop operator hints #3595):
+
+- `scripts/ops/p101_stop_playbook_v1.sh` emits a post-stop **hint block** to stdout and `P101_POST_STOP_PRIMARY_EVIDENCE_OPERATOR_HINTS.txt` after existing STOP semantics complete.
+- Hints carry copy-paste examples for `pack_online_readiness_supervisor_evidence_v0.py` (supervisor `OUT_DIR` → durable archive root) and P79 **ARCHIVE_ROOT** offline manifest verification against the packed archive.
+- P101 **does not** execute pack or P79 archive verification automatically; operator must run them explicitly after STOP.
+- Hint semantics remain **non-authorizing**; do not clear HOLD, preflight BLOCKED, or Live/Testnet/broker/exchange gates.
+- p93/p91 status playbooks may still default to runtime `OUT_DIR` P79; post-stop pack hints are not wired there in v0.
+
+Detail owner: [p101_stop_playbook_v1.sh](../../../scripts/ops/p101_stop_playbook_v1.sh).
+
 ## 8. Canary and Live-Canary lanes
 
 - `canary` and `live_canary` governance docs are **not** Live authority.
@@ -280,3 +312,4 @@ MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 - **v0.1** — Truth-marker sync: registry v1 implemented; scheduler launcher + P67 CLI guarded; library bypass residual preserved.
 - **v0.2** — Primary evidence closeout marker sync: scheduler completion (#3589) and supervisor offline pack (#3590) indexed as opt-in at canonical owners; default off; residual online-daemon/live-pilot gaps preserved.
 - **v0.3** — P79 archive manifest gate marker sync (#3592): ARCHIVE_ROOT offline mode, shared manifest verify, runtime tick mode preserved, non-authorizing semantics indexed.
+- **v0.4** — P101 post-stop operator hint marker sync (#3595/#3596): non-executing hint block for pack + P79 ARCHIVE_ROOT verify; operator-explicit; p93/p91 wiring gap preserved.
