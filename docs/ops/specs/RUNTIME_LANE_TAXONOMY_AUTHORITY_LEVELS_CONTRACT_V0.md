@@ -209,7 +209,7 @@ PRIMARY_EVIDENCE_SHARED_HELPER_REUSED=true
 Normative state (post supervisor evidence pack closeout #3590):
 
 - `scripts/ops/pack_online_readiness_supervisor_evidence_v0.py` is **operator-invoked after STOP** (offline; non-authorizing).
-- Copies existing supervisor `OUT_DIR` into `{archive_root}/supervisor_session/` and optional pid/log artifacts into `{archive_root}/supporting/`.
+- Copies existing supervisor `OUT_DIR` into `{archive_root}&#47;supervisor_session&#47;` and optional pid/log artifacts into `{archive_root}&#47;supporting&#47;`.
 - Writes `supervisor_session_closeout_v0.json`.
 - Opt-in `--primary-evidence-enforce` calls shared `finalize_primary_evidence_root()`; archive root must be outside `/tmp` when enforce is set.
 - Does **not** start/stop supervisor, online daemon, or invoke launchctl.
