@@ -248,7 +248,9 @@ def test_p67_cli_main_blocks_with_machine_tokens(monkeypatch, capsys) -> None:
 
     monkeypatch.setattr(sys, "argv", ["shadow_session_scheduler_cli_v1"])
     monkeypatch.setattr(p67, "_assert_scheduler_start_authorized", _guard)
-    monkeypatch.setattr(p67, "run_shadow_session_scheduler_v1", lambda ctx: {"meta": {}, "events": []})
+    monkeypatch.setattr(
+        p67, "run_shadow_session_scheduler_v1", lambda ctx: {"meta": {}, "events": []}
+    )
 
     with pytest.raises(SystemExit) as exc:
         p67.main()
