@@ -8,6 +8,11 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 CANONICAL_OWNER = (
     REPO_ROOT / "docs" / "ops" / "specs" / "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md"
 )
+GENERIC_EVIDENCE_REGISTRY_V1 = (
+    REPO_ROOT / "scripts" / "ops" / "build_generic_evidence_run_registry_v1.py"
+)
+SCHEDULER_BOUNDARY_GUARD = REPO_ROOT / "scripts" / "ops" / "scheduler_start_boundary_guard_v0.py"
+P67_SCHEDULER_CLI = REPO_ROOT / "src" / "ops" / "p67" / "shadow_session_scheduler_cli_v1.py"
 PREFLIGHT_OWNER = (
     REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 )
@@ -103,10 +108,13 @@ def test_required_machine_markers_present() -> None:
     text = _spec_text()
     for marker in (
         "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0=true",
-        "GENERIC_EVIDENCE_REGISTRY_V1_DEFERRED=true",
+        "GENERIC_EVIDENCE_REGISTRY_V1_IMPLEMENTED=true",
+        "GENERIC_EVIDENCE_REGISTRY_V1_DEFERRED=false",
         "EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true",
         "TESTNET_PASS_DOES_NOT_AUTHORIZE_LIVE=true",
-        "SCHEDULER_BOUNDARY_GAP_ACKNOWLEDGED=true",
+        "SCHEDULER_BOUNDARY_LAUNCHER_GUARDED=true",
+        "P67_CLI_SCHEDULER_BOUNDARY_GUARDED=true",
+        "SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true",
         "MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true",
     ):
         assert marker in text
@@ -137,17 +145,41 @@ def test_registry_field_names_present() -> None:
         assert f"`{field}`" in text or f"- `{field}`" in text or field in text
 
 
-def test_scheduler_gap_acknowledged() -> None:
+def test_generic_registry_v1_implemented_not_deferred() -> None:
+    assert GENERIC_EVIDENCE_REGISTRY_V1.is_file()
     text = _spec_text()
-    assert "SCHEDULER_BOUNDARY_VERIFIED=false" in text
-    assert "hard process-side block" in text.lower() or "process-side block" in text.lower()
+    assert "GENERIC_EVIDENCE_REGISTRY_V1_IMPLEMENTED=true" in text
+    assert "GENERIC_EVIDENCE_REGISTRY_V1_DEFERRED=false" in text
+    assert "build_generic_evidence_run_registry_v1.py" in text
+    assert "Registry v1" in text or "registry v1" in text
+
+
+def test_scheduler_boundary_markers_aligned_with_main() -> None:
+    assert SCHEDULER_BOUNDARY_GUARD.is_file()
+    assert P67_SCHEDULER_CLI.is_file()
+    text = _spec_text()
+    assert "SCHEDULER_BOUNDARY_LAUNCHER_GUARDED=true" in text
+    assert "P67_CLI_SCHEDULER_BOUNDARY_GUARDED=true" in text
+    assert "scheduler_start_boundary_guard_v0.py" in text
+    assert "run_scheduler.py" in text
+    assert "shadow_session_scheduler_cli_v1.py" in text
     assert "SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md" in text
 
 
-def test_generic_registry_v1_deferred() -> None:
+def test_scheduler_library_bypass_residual_preserved() -> None:
     text = _spec_text()
-    assert "GENERIC_EVIDENCE_REGISTRY_V1_DEFERRED=true" in text
-    assert "Registry v1" in text or "registry v1" in text
+    assert "SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true" in text
+    assert "run_shadow_session_scheduler_v1()" in text
+    assert "bypass" in text.lower()
+    assert "P72" in text
+
+
+def test_non_authorizing_language_preserved() -> None:
+    text = _spec_text()
+    assert "EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true" in text
+    assert "TESTNET_PASS_DOES_NOT_AUTHORIZE_LIVE=true" in text
+    assert "non-authorizing" in text.lower()
+    assert "does not grant gate clearance" in text.lower() or "does not clear" in text.lower()
 
 
 def test_paper_shadow_testnet_separation_stated() -> None:
