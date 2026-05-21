@@ -56,6 +56,10 @@ ONLINE_DAEMON_POST_STOP_WRAPPER_NON_AUTHORIZING=true
 MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
 MARKET_DASHBOARD_NO_APPROVAL_AUTHORITY=true
 MARKET_DASHBOARD_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true
+READINESS_LEDGER_REVIEW_INPUT_ONLY=true
+READINESS_MIRROR_NON_AUTHORIZING=true
+GATE_SNAPSHOT_NO_APPROVAL_AUTHORITY=true
+READINESS_AGGREGATE_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true
 MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 ```
 
@@ -89,6 +93,9 @@ Non-goals:
 | Vocabulary forbidden equalities | [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md) |
 | OPS Cockpit non-authority | [OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md](OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md) |
 | F5 read-only market dashboard (display) | [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) |
+| Readiness Evidence Ledger v0 | [build_readiness_evidence_ledger_v0.py](../../../scripts/ops/build_readiness_evidence_ledger_v0.py) |
+| Readiness Ledger Preflight Mirror v0 | [report_readiness_ledger_preflight_mirror_v0.py](../../../scripts/ops/report_readiness_ledger_preflight_mirror_v0.py) |
+| Readiness Gate Snapshot v0 | [report_readiness_gate_snapshot_v0.py](../../../scripts/ops/report_readiness_gate_snapshot_v0.py) |
 | Credential boundaries | [RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md](../runbooks/RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md) |
 
 **Rule:** This spec is the **lane ID index**. Retention rules remain in preflight §2a/§2b.
@@ -383,13 +390,28 @@ MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 
 ## 10. Relation to Readiness Ledger, Mirror, and Gate Snapshot v0
 
-| Tool | Taxonomy role |
-|---|---|
-| Readiness Evidence Ledger v0 | Triple-lane `paper` / `shadow` / `testnet` bounded evidence aggregate; `readiness_aggregate`; non-authorizing |
-| Readiness Ledger Preflight Mirror v0 | Consistency check between ledger and preflight; `review_input_only` |
-| Readiness Gate Snapshot v0 | Non-authorizing composite of ledger + preflight + mirror (+ optional registry section); `readiness_aggregate` |
+```
+READINESS_LEDGER_REVIEW_INPUT_ONLY=true
+READINESS_MIRROR_NON_AUTHORIZING=true
+GATE_SNAPSHOT_NO_APPROVAL_AUTHORITY=true
+READINESS_AGGREGATE_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true
+```
 
-`GENERIC_EVIDENCE_REGISTRY_V1_IMPLEMENTED=true` — Registry v1 is implemented offline via `build_generic_evidence_run_registry_v1.py`; it remains **non-authorizing** and does not clear HOLD, preflight BLOCKED, or Live/Testnet/broker gates.
+| Tool | Taxonomy role | Canonical owner |
+|---|---|---|
+| Readiness Evidence Ledger v0 | Triple-lane `paper` / `shadow` / `testnet` bounded evidence aggregate; `readiness_aggregate`; **review input only** | [build_readiness_evidence_ledger_v0.py](../../../scripts/ops/build_readiness_evidence_ledger_v0.py) |
+| Readiness Ledger Preflight Mirror v0 | Consistency check between ledger and preflight; `review_input_only` | [report_readiness_ledger_preflight_mirror_v0.py](../../../scripts/ops/report_readiness_ledger_preflight_mirror_v0.py) |
+| Readiness Gate Snapshot v0 | Non-authorizing composite of ledger + preflight + mirror (+ optional registry section); `readiness_aggregate` | [report_readiness_gate_snapshot_v0.py](../../../scripts/ops/report_readiness_gate_snapshot_v0.py) |
+
+Normative state (readiness aggregate cross-ref):
+
+- Readiness tooling produces **evidence/status/review inputs only**; it does **not** grant approval, gate clearance, Live/Testnet/broker/exchange permission, or trading authorization.
+- Verdicts such as `READINESS_EVIDENCE_LEDGER_PASS_BLOCKED_SAFE`, `READINESS_GATE_SNAPSHOT_PASS_BLOCKED_SAFE`, and `READINESS_GATE_SNAPSHOT_REVIEW_REQUIRED` remain **non-authorizing**; preflight **BLOCKED**, HOLD, and GLB blockers persist.
+- Readiness outputs **do not** override scheduler boundary guards ([SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md)), preflight retention owners ([PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a/§2b), or operator-explicit approval records.
+- Ledger PASS for one bounded lane **does not** authorize another lane or Live paths (`FORBIDDEN_PROMOTION_*` in §5 apply).
+- Preflight status remains canonical for scheduler start posture; mirror compares ledger vs preflight only — mirror PASS is not runtime authorization.
+
+`GENERIC_EVIDENCE_REGISTRY_V1_IMPLEMENTED=true` — Registry v1 is implemented offline via `build_generic_evidence_run_registry_v1.py`; it remains **non-authorizing** and does not clear HOLD, preflight BLOCKED, or Live/Testnet/broker gates. Gate Snapshot may optionally include registry section; inclusion does not elevate authority.
 
 ## 11. Revision
 
@@ -402,3 +424,4 @@ MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 - **v0.6** — P93 post-stop wrapper hint marker sync (#3599/#3601/#3603): dedicated §7g P93 hint markers; p91 wiring gap preserved.
 - **v0.7** — P67/P72 library scheduler boundary opt-in: `scheduler_boundary_enforce` default off; shared guard at library entry; `SCHEDULER_LIBRARY_BYPASS_RESIDUAL` preserved.
 - **v0.8** — F5 read-only market dashboard taxonomy cross-ref: §7h markers; `dashboard` lane `review_input_only`; F5 contract owner indexed.
+- **v0.9** — Readiness aggregate cross-ref: §10 markers and script owners for ledger/mirror/gate snapshot; non-authorizing review-input-only semantics strengthened.

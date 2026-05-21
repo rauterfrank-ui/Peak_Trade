@@ -26,6 +26,13 @@ WRAPPER_SCRIPT = REPO_ROOT / "scripts" / "ops" / "run_online_readiness_post_stop
 MARKET_DASHBOARD_SPEC = (
     REPO_ROOT / "docs" / "ops" / "specs" / "FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md"
 )
+READINESS_LEDGER_SCRIPT = REPO_ROOT / "scripts" / "ops" / "build_readiness_evidence_ledger_v0.py"
+READINESS_MIRROR_SCRIPT = (
+    REPO_ROOT / "scripts" / "ops" / "report_readiness_ledger_preflight_mirror_v0.py"
+)
+READINESS_GATE_SNAPSHOT_SCRIPT = (
+    REPO_ROOT / "scripts" / "ops" / "report_readiness_gate_snapshot_v0.py"
+)
 PREFLIGHT_OWNER = (
     REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 )
@@ -278,6 +285,35 @@ def test_readiness_tooling_referenced_non_authorizing() -> None:
     assert "Readiness Evidence Ledger v0" in text
     assert "Readiness Gate Snapshot v0" in text
     assert "non-authorizing" in text.lower()
+
+
+def test_readiness_tooling_taxonomy_cross_ref_aligned() -> None:
+    assert READINESS_LEDGER_SCRIPT.is_file()
+    assert READINESS_MIRROR_SCRIPT.is_file()
+    assert READINESS_GATE_SNAPSHOT_SCRIPT.is_file()
+    text = _spec_text()
+    for marker in (
+        "READINESS_LEDGER_REVIEW_INPUT_ONLY=true",
+        "READINESS_MIRROR_NON_AUTHORIZING=true",
+        "GATE_SNAPSHOT_NO_APPROVAL_AUTHORITY=true",
+        "READINESS_AGGREGATE_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true",
+    ):
+        assert marker in text
+    assert "build_readiness_evidence_ledger_v0.py" in text
+    assert "report_readiness_ledger_preflight_mirror_v0.py" in text
+    assert "report_readiness_gate_snapshot_v0.py" in text
+    assert "Readiness Ledger Preflight Mirror v0" in text
+    assert "review input only" in text.lower() or "review_input_only" in text
+    assert "READINESS_EVIDENCE_LEDGER_PASS_BLOCKED_SAFE" in text
+    assert "READINESS_GATE_SNAPSHOT_PASS_BLOCKED_SAFE" in text
+    assert "non-authorizing" in text.lower()
+    assert "does not" in text.lower() or "do not" in text.lower()
+    assert "Live" in text or "live" in text.lower()
+    assert "broker" in text.lower()
+    assert "SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md" in text
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in text
+    assert "operator" in text.lower()
+    assert "FORBIDDEN_PROMOTION" in text
 
 
 def test_scheduler_completion_closeout_marker_aligned() -> None:
