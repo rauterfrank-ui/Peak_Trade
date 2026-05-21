@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """Build an offline readiness/evidence ledger from a runtime evidence archive root.
 
-Non-authorizing: does not start runtime, read secrets, or grant Live/Testnet/Go.
+Taxonomy cross-reference (review-input-only): indexed in
+``docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md`` §10.
+
+Non-authorizing: review-input-only; does not start runtime, read secrets, or grant
+Live/Testnet/broker/exchange approval or trading authorization. Does not override
+scheduler boundary guards, preflight BLOCKED, or operator-explicit approval.
 """
 
 from __future__ import annotations

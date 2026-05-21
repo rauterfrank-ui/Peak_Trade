@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 """Compare Readiness Evidence Ledger v0 JSON with Preflight status JSON.
 
-Non-authorizing mirror check only. Does not start runtime or grant authority.
+Taxonomy cross-reference (review-input-only): indexed in
+``docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md`` §10.
+
+Non-authorizing mirror check only. Review-input-only; does not start runtime or grant
+approval, gate clearance, Live/Testnet/broker/exchange permission, or trading
+authorization. Does not override scheduler boundary guards, preflight BLOCKED, or
+operator-explicit approval.
 """
 
 from __future__ import annotations

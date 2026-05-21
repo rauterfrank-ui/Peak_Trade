@@ -317,6 +317,26 @@ def test_readiness_tooling_taxonomy_cross_ref_aligned() -> None:
     assert "FORBIDDEN_PROMOTION" in text
 
 
+def test_readiness_script_taxonomy_reciprocal_pointer_aligned() -> None:
+    taxonomy_ref = "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md"
+    for script in (
+        READINESS_LEDGER_SCRIPT,
+        READINESS_MIRROR_SCRIPT,
+        READINESS_GATE_SNAPSHOT_SCRIPT,
+    ):
+        assert script.is_file()
+        text = script.read_text(encoding="utf-8")
+        assert taxonomy_ref in text
+        assert "§10" in text or "section 10" in text.lower()
+        assert "review-input-only" in text.lower() or "review input only" in text.lower()
+        assert "non-authorizing" in text.lower()
+        assert "broker" in text.lower() or "exchange" in text.lower()
+        assert "live" in text.lower()
+        assert "preflight" in text.lower()
+        assert "scheduler" in text.lower() or "operator" in text.lower()
+        assert "does not override" in text.lower() or "do not override" in text.lower()
+
+
 def test_scheduler_completion_closeout_marker_aligned() -> None:
     assert SCHEDULER_LAUNCHER.is_file()
     text = _spec_text()
