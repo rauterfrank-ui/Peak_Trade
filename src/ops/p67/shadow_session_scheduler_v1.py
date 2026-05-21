@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys
 import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -31,6 +32,29 @@ class P67RunContextV1:
     iterations: int = 1
     interval_seconds: float = 60.0
     recorded_price_source: Optional[Path] = None
+    primary_evidence_enforce: bool = False
+
+
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[3]
+
+
+def _maybe_finalize_primary_evidence(ctx: P67RunContextV1) -> None:
+    if not ctx.primary_evidence_enforce:
+        return
+    if ctx.out_dir is None:
+        raise RuntimeError("ERR: primary_evidence_enforce requires out_dir (non-authorizing §2a)")
+    root = ctx.out_dir / f"p67_shadow_session_{ctx.run_id}"
+    if not root.is_dir():
+        raise RuntimeError(f"ERR: primary evidence root missing: {root}")
+    repo_root = _repo_root()
+    if str(repo_root) not in sys.path:
+        sys.path.insert(0, str(repo_root))
+    from scripts.ops.primary_evidence_retention_v0 import finalize_primary_evidence_root
+
+    ok, msg = finalize_primary_evidence_root(root)
+    if not ok:
+        raise RuntimeError(f"ERR: primary evidence finalize failed: {msg}")
 
 
 def _utc_ts() -> str:
@@ -131,5 +155,6 @@ def run_shadow_session_scheduler_v1(ctx: P67RunContextV1) -> dict:
             time.sleep(ctx.interval_seconds)
 
     scheduler_meta["ts_utc_end"] = _utc_ts()
+    _maybe_finalize_primary_evidence(ctx)
     res = {"meta": scheduler_meta, "events": events}
     return to_jsonable_v1(res)

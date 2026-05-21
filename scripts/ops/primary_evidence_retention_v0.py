@@ -42,3 +42,9 @@ def verify_manifest_sha256(root: Path) -> tuple[bool, str]:
         if actual != digest:
             return False, f"checksum mismatch: {rel}"
     return True, ""
+
+
+def finalize_primary_evidence_root(root: Path) -> tuple[bool, str]:
+    """Write MANIFEST.sha256 then verify. Fail closed on verify failure."""
+    write_manifest_sha256(root)
+    return verify_manifest_sha256(root)

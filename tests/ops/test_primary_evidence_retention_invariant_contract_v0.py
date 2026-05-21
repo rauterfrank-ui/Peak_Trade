@@ -125,6 +125,13 @@ def test_shared_helper_module_exists() -> None:
     text = SHARED_HELPER.read_text(encoding="utf-8")
     assert "def write_manifest_sha256" in text
     assert "def verify_manifest_sha256" in text
+    assert "def finalize_primary_evidence_root" in text
+
+
+def test_canonical_owner_references_p67_p72_opt_in_enforce() -> None:
+    text = _owner_text()
+    assert "primary_evidence_enforce=True" in text
+    assert "finalize_primary_evidence_root" in text
 
 
 def test_bounded_adapters_import_shared_helper_not_duplicate_verify() -> None:
