@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -20,6 +21,26 @@ class P72PackContextV1:
     allow_bear_strategies: Optional[list[str]] = None
     iterations: int = 1
     interval_seconds: float = 0.0
+    primary_evidence_enforce: bool = False
+
+
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[3]
+
+
+def _maybe_finalize_pack_primary_evidence(ctx: P72PackContextV1) -> None:
+    if not ctx.primary_evidence_enforce:
+        return
+    if not ctx.out_dir.is_dir():
+        raise RuntimeError(f"ERR: primary evidence pack root missing: {ctx.out_dir}")
+    repo_root = _repo_root()
+    if str(repo_root) not in sys.path:
+        sys.path.insert(0, str(repo_root))
+    from scripts.ops.primary_evidence_retention_v0 import finalize_primary_evidence_root
+
+    ok, msg = finalize_primary_evidence_root(ctx.out_dir)
+    if not ok:
+        raise RuntimeError(f"ERR: primary evidence pack finalize failed: {msg}")
 
 
 def run_shadowloop_pack_v1(ctx: P72PackContextV1) -> Dict[str, Any]:
@@ -52,12 +73,15 @@ def run_shadowloop_pack_v1(ctx: P72PackContextV1) -> Dict[str, Any]:
         out_dir=ctx.out_dir,
         iterations=ctx.iterations,
         interval_seconds=ctx.interval_seconds,
+        primary_evidence_enforce=ctx.primary_evidence_enforce,
     )
     loop_out = run_shadow_session_scheduler_v1(p67_ctx)
 
-    return {
+    result = {
         "p72_version": "v1",
         "gate_ok": True,
         "gate_report": gate_report,
         "loop_run": loop_out,
     }
+    _maybe_finalize_pack_primary_evidence(ctx)
+    return result
