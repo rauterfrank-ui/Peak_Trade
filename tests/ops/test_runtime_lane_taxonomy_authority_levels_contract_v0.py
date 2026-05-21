@@ -21,6 +21,7 @@ PRIMARY_EVIDENCE_HELPER = REPO_ROOT / "scripts" / "ops" / "primary_evidence_rete
 P79_SHELL = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_health_gate_v1.sh"
 P79_VERIFY = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_evidence_manifest_verify_v0.py"
 P101_SCRIPT = REPO_ROOT / "scripts" / "ops" / "p101_stop_playbook_v1.sh"
+P93_SCRIPT = REPO_ROOT / "scripts" / "ops" / "p93_online_readiness_status_dashboard_v1.sh"
 WRAPPER_SCRIPT = REPO_ROOT / "scripts" / "ops" / "run_online_readiness_post_stop_pack_v0.sh"
 PREFLIGHT_OWNER = (
     REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
@@ -361,7 +362,34 @@ def test_p101_post_stop_hint_marker_aligned() -> None:
     assert "does not** execute wrapper" in text or "does not execute wrapper" in text.lower()
     assert "operator must run" in text.lower() or "explicitly after STOP" in text
     assert "non-authorizing" in text.lower()
-    assert "p93/p91" in text or "p93" in text
+    assert "p91" in text
+    assert "SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true" in text
+
+
+def test_p93_post_stop_wrapper_hint_marker_aligned() -> None:
+    assert P93_SCRIPT.is_file()
+    text = _spec_text()
+    for marker in (
+        "P93_POST_STOP_WRAPPER_HINTS_IMPLEMENTED=true",
+        "P93_POST_STOP_WRAPPER_REFERENCED=true",
+        "P93_POST_STOP_P79_ARCHIVE_VERIFY_HINT_REFERENCED=true",
+        "P93_POST_STOP_HINT_ONLY=true",
+        "P93_POST_STOP_WRAPPER_NOT_EXECUTED=true",
+        "P93_POST_STOP_PACK_NOT_EXECUTED=true",
+        "P93_POST_STOP_P79_VERIFY_NOT_EXECUTED=true",
+        "P93_POST_STOP_OPERATOR_EXPLICIT_REQUIRED=true",
+        "P93_POST_STOP_EVIDENCE_NON_AUTHORIZING=true",
+    ):
+        assert marker in text
+    assert "p93_online_readiness_status_dashboard_v1.sh" in text
+    assert "P93_POST_STOP_PRIMARY_EVIDENCE_OPERATOR_HINTS.txt" in text
+    assert "run_online_readiness_post_stop_pack_v0.sh" in text
+    assert "--p79-archive-verify" in text
+    assert "does not** execute wrapper" in text or "does not execute wrapper" in text.lower()
+    assert "operator must run" in text.lower() or "explicitly after STOP" in text
+    assert "non-authorizing" in text.lower()
+    assert "In-process online daemon automatic session closeout pack is **not implemented**" in text
+    assert "p91" in text
     assert "SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true" in text
 
 
