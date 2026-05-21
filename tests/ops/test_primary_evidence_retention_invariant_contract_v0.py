@@ -169,12 +169,24 @@ def test_canonical_owner_references_p101_post_stop_operator_hints() -> None:
     text = _owner_text()
     assert "p101_stop_playbook_v1.sh" in text
     assert "P101_POST_STOP_PRIMARY_EVIDENCE_OPERATOR_HINTS" in text
-    assert "pack_online_readiness_supervisor_evidence_v0.py" in text
-    assert "ARCHIVE_ROOT" in text
-    assert "does not execute pack" in text.lower()
+    assert "run_online_readiness_post_stop_pack_v0.sh" in text
+    assert "--p79-archive-verify" in text
+    assert "does not execute wrapper" in text.lower() or "does not execute pack" in text.lower()
     assert "operator must" in text.lower()
     assert "non-authorizing" in text
-    assert "Online-daemon automatic pack remains unimplemented" in text
+    assert "In-process online-daemon automatic pack remains unimplemented" in text
+
+
+def test_canonical_owner_references_post_stop_pack_wrapper() -> None:
+    text = _owner_text()
+    assert "run_online_readiness_post_stop_pack_v0.sh" in text
+    assert "pack_online_readiness_supervisor_evidence_v0.py" in text
+    assert "operator-invoked" in text.lower()
+    assert "--p79-archive-verify" in text
+    assert "does not start/stop supervisor" in text
+    assert "launchctl" in text.lower()
+    assert "non-authorizing" in text
+    assert "In-process online-daemon automatic pack remains unimplemented" in text
 
 
 def test_p79_archive_root_mode_in_health_gate_shell() -> None:
