@@ -141,7 +141,7 @@ def test_scheduler_gap_acknowledged() -> None:
     text = _spec_text()
     assert "SCHEDULER_BOUNDARY_VERIFIED=false" in text
     assert "hard process-side block" in text.lower() or "process-side block" in text.lower()
-    assert "Scheduler guard implementation is out of scope" in text
+    assert "SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md" in text
 
 
 def test_generic_registry_v1_deferred() -> None:
