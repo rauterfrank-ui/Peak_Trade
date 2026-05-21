@@ -18,6 +18,8 @@ SUPERVISOR_PACK_SCRIPT = (
     REPO_ROOT / "scripts" / "ops" / "pack_online_readiness_supervisor_evidence_v0.py"
 )
 PRIMARY_EVIDENCE_HELPER = REPO_ROOT / "scripts" / "ops" / "primary_evidence_retention_v0.py"
+P79_SHELL = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_health_gate_v1.sh"
+P79_VERIFY = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_evidence_manifest_verify_v0.py"
 PREFLIGHT_OWNER = (
     REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 )
@@ -123,6 +125,10 @@ def test_required_machine_markers_present() -> None:
         "SCHEDULER_COMPLETION_PRIMARY_EVIDENCE_CLOSEOUT_OPT_IN=true",
         "SUPERVISOR_EVIDENCE_PACK_CLOSEOUT_OPT_IN=true",
         "PRIMARY_EVIDENCE_SHARED_HELPER_REUSED=true",
+        "P79_SUPERVISOR_ARCHIVE_ROOT_MODE_IMPLEMENTED=true",
+        "P79_SUPERVISOR_PRIMARY_EVIDENCE_MANIFEST_VERIFY=true",
+        "P79_SUPERVISOR_RUNTIME_TICK_MODE_PRESERVED=true",
+        "P79_SUPERVISOR_GATE_NON_AUTHORIZING=true",
         "MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true",
     ):
         assert marker in text
@@ -304,3 +310,21 @@ def test_primary_evidence_closeout_residual_risks_preserved() -> None:
     assert "Online daemon automatic session closeout pack is **not implemented**" in text
     assert "Live-pilot" in text or "live-pilot" in text
     assert "non-authorizing" in text.lower()
+
+
+def test_p79_archive_manifest_gate_marker_aligned() -> None:
+    assert P79_SHELL.is_file()
+    assert P79_VERIFY.is_file()
+    text = _spec_text()
+    assert "P79_SUPERVISOR_ARCHIVE_ROOT_MODE_IMPLEMENTED=true" in text
+    assert "P79_SUPERVISOR_PRIMARY_EVIDENCE_MANIFEST_VERIFY=true" in text
+    assert "P79_SUPERVISOR_RUNTIME_TICK_MODE_PRESERVED=true" in text
+    assert "P79_SUPERVISOR_GATE_NON_AUTHORIZING=true" in text
+    assert "ARCHIVE_ROOT" in text
+    assert "p79_supervisor_evidence_manifest_verify_v0.py" in text
+    assert "verify_manifest_sha256" in text
+    assert "supervisor_session_closeout_v0.json" in text
+    assert "MANIFEST.sha256" in text
+    assert "runtime tick" in text.lower() or "Runtime tick" in text
+    assert "launchctl" in text.lower()
+    assert "does not clear HOLD" in text or "non-authorizing" in text.lower()
