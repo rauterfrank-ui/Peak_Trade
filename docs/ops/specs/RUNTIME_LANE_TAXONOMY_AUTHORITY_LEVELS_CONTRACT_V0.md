@@ -39,6 +39,10 @@ P101_POST_STOP_PACK_NOT_EXECUTED=true
 P101_POST_STOP_P79_VERIFY_NOT_EXECUTED=true
 P101_POST_STOP_OPERATOR_EXPLICIT_REQUIRED=true
 P101_POST_STOP_EVIDENCE_NON_AUTHORIZING=true
+ONLINE_DAEMON_POST_STOP_PACK_WRAPPER_IMPLEMENTED=true
+ONLINE_DAEMON_POST_STOP_WRAPPER_OPERATOR_INVOKED=true
+ONLINE_DAEMON_POST_STOP_WRAPPER_NO_LAUNCHCTL=true
+ONLINE_DAEMON_POST_STOP_WRAPPER_NON_AUTHORIZING=true
 MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 ```
 
@@ -63,6 +67,7 @@ Non-goals:
 | Scheduler hard-block contract | [SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md) |
 | Scheduler completion closeout (opt-in) | [run_scheduler.py](../../../scripts/run_scheduler.py) + Preflight §2a |
 | Supervisor evidence pack closeout (opt-in, offline) | [pack_online_readiness_supervisor_evidence_v0.py](../../../scripts/ops/pack_online_readiness_supervisor_evidence_v0.py) + Preflight §2a |
+| Post-stop pack wrapper (operator-invoked, offline) | [run_online_readiness_post_stop_pack_v0.sh](../../../scripts/ops/run_online_readiness_post_stop_pack_v0.sh) + Preflight §2a |
 | P79 archive manifest gate (offline) | [p79_supervisor_health_gate_v1.sh](../../../scripts/ops/p79_supervisor_health_gate_v1.sh) `ARCHIVE_ROOT` + [p79_supervisor_evidence_manifest_verify_v0.py](../../../scripts/ops/p79_supervisor_evidence_manifest_verify_v0.py) |
 | P101 post-stop operator hints (non-executing) | [p101_stop_playbook_v1.sh](../../../scripts/ops/p101_stop_playbook_v1.sh) |
 | Shared primary evidence finalize helper | [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) |
@@ -231,7 +236,7 @@ Normative state (post supervisor evidence pack closeout #3590):
 
 ## 7c. Primary evidence closeout residual gaps
 
-- Online daemon automatic session closeout pack is **not implemented**; operator must invoke supervisor pack or equivalent manually.
+- In-process online daemon automatic session closeout pack is **not implemented**; operator must invoke post-stop wrapper (`run_online_readiness_post_stop_pack_v0.sh`) or pack script manually after STOP.
 - Live-pilot / production retention hooks remain out of scope for this taxonomy index.
 - Direct library calls to `run_shadow_session_scheduler_v1()` still bypass CLI scheduler guard (`SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true`).
 - Registry PASS, dashboard status, and readiness aggregate verdicts remain **non-authorizing**.
@@ -272,12 +277,33 @@ P101_POST_STOP_EVIDENCE_NON_AUTHORIZING=true
 Normative state (post P101 post-stop operator hints #3595):
 
 - `scripts/ops/p101_stop_playbook_v1.sh` emits a post-stop **hint block** to stdout and `P101_POST_STOP_PRIMARY_EVIDENCE_OPERATOR_HINTS.txt` after existing STOP semantics complete.
-- Hints carry copy-paste examples for `pack_online_readiness_supervisor_evidence_v0.py` (supervisor `OUT_DIR` → durable archive root) and P79 **ARCHIVE_ROOT** offline manifest verification against the packed archive.
-- P101 **does not** execute pack or P79 archive verification automatically; operator must run them explicitly after STOP.
+- Hints carry copy-paste examples for `run_online_readiness_post_stop_pack_v0.sh` (supervisor `OUT_DIR` → durable archive root; optional `--p79-archive-verify` for P79 **ARCHIVE_ROOT** offline manifest verification).
+- P101 **does not** execute wrapper, pack, or P79 archive verification automatically; operator must run them explicitly after STOP.
 - Hint semantics remain **non-authorizing**; do not clear HOLD, preflight BLOCKED, or Live/Testnet/broker/exchange gates.
 - p93/p91 status playbooks may still default to runtime `OUT_DIR` P79; post-stop pack hints are not wired there in v0.
 
 Detail owner: [p101_stop_playbook_v1.sh](../../../scripts/ops/p101_stop_playbook_v1.sh).
+
+## 7f. Online readiness post-stop pack wrapper (operator-invoked, offline)
+
+```
+ONLINE_DAEMON_POST_STOP_PACK_WRAPPER_IMPLEMENTED=true
+ONLINE_DAEMON_POST_STOP_WRAPPER_OPERATOR_INVOKED=true
+ONLINE_DAEMON_POST_STOP_WRAPPER_NO_LAUNCHCTL=true
+ONLINE_DAEMON_POST_STOP_WRAPPER_NON_AUTHORIZING=true
+PRIMARY_EVIDENCE_SHARED_HELPER_REUSED=true
+```
+
+Normative state (post post-stop pack wrapper #3600/#3601/#3602):
+
+- `scripts/ops/run_online_readiness_post_stop_pack_v0.sh` is the **canonical operator-invoked** post-stop path after daemon/supervisor STOP (offline; non-authorizing).
+- Delegates to `pack_online_readiness_supervisor_evidence_v0.py`; does **not** duplicate pack or manifest verification logic.
+- Optional `--p79-archive-verify` runs P79 **ARCHIVE_ROOT** gate only when explicitly set (off by default).
+- Does **not** start/stop supervisor, online daemon, or invoke launchctl.
+- P101/P93 emit non-executing post-stop hints referencing this wrapper; hints do not auto-execute wrapper, pack, or P79.
+- In-process online-daemon automatic pack remains **not implemented** (see §7c).
+
+Detail owner: [run_online_readiness_post_stop_pack_v0.sh](../../../scripts/ops/run_online_readiness_post_stop_pack_v0.sh).
 
 ## 8. Canary and Live-Canary lanes
 
@@ -313,3 +339,4 @@ MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 - **v0.2** — Primary evidence closeout marker sync: scheduler completion (#3589) and supervisor offline pack (#3590) indexed as opt-in at canonical owners; default off; residual online-daemon/live-pilot gaps preserved.
 - **v0.3** — P79 archive manifest gate marker sync (#3592): ARCHIVE_ROOT offline mode, shared manifest verify, runtime tick mode preserved, non-authorizing semantics indexed.
 - **v0.4** — P101 post-stop operator hint marker sync (#3595/#3596): non-executing hint block for pack + P79 ARCHIVE_ROOT verify; operator-explicit; p93/p91 wiring gap preserved.
+- **v0.5** — Post-stop pack wrapper cross-ref (#3600/#3601/#3602): operator-invoked wrapper indexed §7f; P101/P93 hints reference wrapper; in-process auto-pack deferred preserved.

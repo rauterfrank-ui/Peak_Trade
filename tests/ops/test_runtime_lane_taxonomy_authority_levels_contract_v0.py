@@ -21,6 +21,7 @@ PRIMARY_EVIDENCE_HELPER = REPO_ROOT / "scripts" / "ops" / "primary_evidence_rete
 P79_SHELL = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_health_gate_v1.sh"
 P79_VERIFY = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_evidence_manifest_verify_v0.py"
 P101_SCRIPT = REPO_ROOT / "scripts" / "ops" / "p101_stop_playbook_v1.sh"
+WRAPPER_SCRIPT = REPO_ROOT / "scripts" / "ops" / "run_online_readiness_post_stop_pack_v0.sh"
 PREFLIGHT_OWNER = (
     REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 )
@@ -316,7 +317,7 @@ def test_opt_in_default_off_preserved() -> None:
 def test_primary_evidence_closeout_residual_risks_preserved() -> None:
     text = _spec_text()
     assert "SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true" in text
-    assert "Online daemon automatic session closeout pack is **not implemented**" in text
+    assert "In-process online daemon automatic session closeout pack is **not implemented**" in text
     assert "Live-pilot" in text or "live-pilot" in text
     assert "non-authorizing" in text.lower()
 
@@ -355,11 +356,32 @@ def test_p101_post_stop_hint_marker_aligned() -> None:
         assert marker in text
     assert "p101_stop_playbook_v1.sh" in text
     assert "P101_POST_STOP_PRIMARY_EVIDENCE_OPERATOR_HINTS.txt" in text
-    assert "pack_online_readiness_supervisor_evidence_v0.py" in text
-    assert "ARCHIVE_ROOT" in text
-    assert "does not execute pack" in text.lower() or "does not** execute pack" in text
+    assert "run_online_readiness_post_stop_pack_v0.sh" in text
+    assert "--p79-archive-verify" in text
+    assert "does not** execute wrapper" in text or "does not execute wrapper" in text.lower()
     assert "operator must run" in text.lower() or "explicitly after STOP" in text
     assert "non-authorizing" in text.lower()
     assert "p93/p91" in text or "p93" in text
     assert "SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true" in text
-    assert "Online daemon automatic session closeout pack is **not implemented**" in text
+
+
+def test_post_stop_pack_wrapper_marker_aligned() -> None:
+    assert WRAPPER_SCRIPT.is_file()
+    text = _spec_text()
+    preflight = _preflight_text()
+    for marker in (
+        "ONLINE_DAEMON_POST_STOP_PACK_WRAPPER_IMPLEMENTED=true",
+        "ONLINE_DAEMON_POST_STOP_WRAPPER_OPERATOR_INVOKED=true",
+        "ONLINE_DAEMON_POST_STOP_WRAPPER_NO_LAUNCHCTL=true",
+        "ONLINE_DAEMON_POST_STOP_WRAPPER_NON_AUTHORIZING=true",
+    ):
+        assert marker in text
+    assert "run_online_readiness_post_stop_pack_v0.sh" in text
+    assert "pack_online_readiness_supervisor_evidence_v0.py" in text
+    assert "--p79-archive-verify" in text
+    assert "operator-invoked" in text.lower()
+    assert "launchctl" in text.lower()
+    assert "In-process online daemon automatic session closeout pack is **not implemented**" in text
+    assert "run_online_readiness_post_stop_pack_v0.sh" in preflight
+    assert "operator-invoked" in preflight.lower()
+    assert "non-authorizing" in preflight.lower()
