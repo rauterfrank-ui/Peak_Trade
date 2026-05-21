@@ -435,6 +435,26 @@ Normative state (bounded observation adapter cross-ref):
 - Adapter outputs **do not** override scheduler boundary guards ([SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md)), preflight retention owners ([PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a/§2b), operator-explicit approval records, or Master V2 / Double Play boundaries (`FORBIDDEN_PROMOTION_*` in §5 apply).
 - Adapter PASS or durable archive copy for one bounded lane **does not** authorize another lane or Live paths.
 
+#### Bounded observation evidence review scripts (offline, non-executing)
+
+```
+BOUNDED_OBSERVATION_REVIEW_SCRIPTS_TAXONOMY_INDEXED=true
+BOUNDED_OBSERVATION_REVIEW_SCRIPTS_REVIEW_INPUT_ONLY=true
+BOUNDED_OBSERVATION_REVIEW_SCRIPTS_NO_EXECUTE_AUTHORITY=true
+BOUNDED_OBSERVATION_REVIEW_SCRIPTS_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true
+```
+
+| Tool | Taxonomy role | Canonical owner |
+|---|---|---|
+| Shadow bounded observation evidence review v0 | Offline review of shadow bounded observation archive evidence; **review input only**; does not execute adapters | [review_shadow_bounded_observation_evidence_v0.py](../../../scripts/ops/review_shadow_bounded_observation_evidence_v0.py) |
+| Testnet bounded observation evidence review v0 | Offline review of testnet bounded observation archive evidence; **review input only**; does not execute adapters | [review_testnet_bounded_observation_evidence_v0.py](../../../scripts/ops/review_testnet_bounded_observation_evidence_v0.py) |
+
+Normative state (bounded observation review script cross-ref):
+
+- Review scripts inspect bounded observation evidence **after the fact**; they produce **review inputs only** and do **not** grant approval, gate clearance, Live/broker/exchange permission, adapter `--execute` authority, Stage-3 escalation, or runtime/scheduler start permission.
+- Review PASS **does not** authorize adapter execution, another bounded lane, or Live paths (`FORBIDDEN_PROMOTION_*` in §5 apply).
+- Review outputs **do not** override scheduler boundary guards, preflight retention owners, or operator-explicit approval records.
+
 ## 11. Revision
 
 - **v0** — Initial lane taxonomy, authority levels, forbidden promotions, scheduler gap acknowledgment, Master V2 protection, registry field schema (deferred).
@@ -448,3 +468,4 @@ Normative state (bounded observation adapter cross-ref):
 - **v0.8** — F5 read-only market dashboard taxonomy cross-ref: §7h markers; `dashboard` lane `review_input_only`; F5 contract owner indexed.
 - **v0.9** — Readiness aggregate cross-ref: §10 markers and script owners for ledger/mirror/gate snapshot; non-authorizing review-input-only semantics strengthened.
 - **v1.0** — Bounded observation adapter cross-ref: §10 subsection indexes paper/shadow/testnet retention adapters; plan-only default; Stage-3 gated execute; review-input-only semantics.
+- **v1.1** — Bounded observation review script cross-ref: §10 indexes shadow/testnet evidence review scripts; offline; non-executing; review-input-only semantics.

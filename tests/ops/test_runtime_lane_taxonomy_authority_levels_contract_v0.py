@@ -43,6 +43,12 @@ SHADOW_BOUNDED_ADAPTER_SCRIPT = (
 TESTNET_BOUNDED_ADAPTER_SCRIPT = (
     REPO_ROOT / "scripts" / "ops" / "run_testnet_bounded_observation_adapter_v0.py"
 )
+SHADOW_BOUNDED_REVIEW_SCRIPT = (
+    REPO_ROOT / "scripts" / "ops" / "review_shadow_bounded_observation_evidence_v0.py"
+)
+TESTNET_BOUNDED_REVIEW_SCRIPT = (
+    REPO_ROOT / "scripts" / "ops" / "review_testnet_bounded_observation_evidence_v0.py"
+)
 PREFLIGHT_OWNER = (
     REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 )
@@ -410,6 +416,47 @@ def test_bounded_observation_adapter_taxonomy_reciprocal_pointer_aligned() -> No
         assert "live" in text.lower()
         assert "preflight" in text.lower()
         assert "scheduler" in text.lower() or "operator" in text.lower()
+        assert "does not override" in text.lower() or "do not override" in text.lower()
+
+
+def test_bounded_observation_review_scripts_taxonomy_cross_ref_aligned() -> None:
+    text = _spec_text()
+    for marker in (
+        "BOUNDED_OBSERVATION_REVIEW_SCRIPTS_TAXONOMY_INDEXED=true",
+        "BOUNDED_OBSERVATION_REVIEW_SCRIPTS_REVIEW_INPUT_ONLY=true",
+        "BOUNDED_OBSERVATION_REVIEW_SCRIPTS_NO_EXECUTE_AUTHORITY=true",
+        "BOUNDED_OBSERVATION_REVIEW_SCRIPTS_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true",
+    ):
+        assert marker in text
+    assert "review_shadow_bounded_observation_evidence_v0.py" in text
+    assert "review_testnet_bounded_observation_evidence_v0.py" in text
+    assert "review input only" in text.lower() or "review_input_only" in text
+    assert "non-authorizing" in text.lower() or "non-executing" in text.lower()
+    assert "does not execute adapters" in text.lower() or "does not execute adapter" in text.lower()
+    assert "broker" in text.lower()
+    assert "Live" in text or "live" in text.lower()
+    assert "SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md" in text or "scheduler" in text.lower()
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in text or "preflight" in text.lower()
+    assert "operator" in text.lower()
+    assert "FORBIDDEN_PROMOTION" in text
+    assert "run_shadow_bounded_observation_adapter_v0.py" in text
+    assert "run_testnet_bounded_observation_adapter_v0.py" in text
+
+
+def test_bounded_observation_review_script_taxonomy_reciprocal_pointer_aligned() -> None:
+    taxonomy_ref = "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md"
+    for script in (SHADOW_BOUNDED_REVIEW_SCRIPT, TESTNET_BOUNDED_REVIEW_SCRIPT):
+        assert script.is_file()
+        text = script.read_text(encoding="utf-8")
+        assert taxonomy_ref in text
+        assert "§10" in text or "section 10" in text.lower()
+        assert "review-input-only" in text.lower() or "review input only" in text.lower()
+        assert "non-authorizing" in text.lower()
+        assert "broker" in text.lower() or "exchange" in text.lower()
+        assert "live" in text.lower()
+        assert "preflight" in text.lower()
+        assert "scheduler" in text.lower() or "operator" in text.lower()
+        assert "does not execute" in text.lower()
         assert "does not override" in text.lower() or "do not override" in text.lower()
 
 
