@@ -3,10 +3,28 @@
 
 from __future__ import annotations
 
+import json
+import os
 from pathlib import Path
 from typing import Any, Mapping
 
 SCHEDULER_START_BLOCKED_EXIT = 2
+TEST_PREFLIGHT_OVERRIDE_ENV = "PEAK_TRADE_SCHEDULER_BOUNDARY_TEST_PREFLIGHT_JSON"
+
+
+def _load_preflight_status(*, repo_root: Path | None) -> Mapping[str, Any]:
+    override = os.environ.get(TEST_PREFLIGHT_OVERRIDE_ENV)
+    if override:
+        payload = json.loads(override)
+        if isinstance(payload, dict):
+            return payload
+
+    from scripts.ops.report_paper_shadow_247_preflight_status import (
+        build_paper_shadow_247_preflight_status,
+    )
+
+    root = repo_root or Path(__file__).resolve().parents[2]
+    return build_paper_shadow_247_preflight_status(repo_root=root)
 
 
 def _emit_scheduler_start_block(
@@ -29,12 +47,7 @@ def assert_scheduler_start_authorized(
 ) -> None:
     """Fail closed before non-dry-run scheduler-like execution."""
     if preflight_status is None:
-        from scripts.ops.report_paper_shadow_247_preflight_status import (
-            build_paper_shadow_247_preflight_status,
-        )
-
-        root = repo_root or Path(__file__).resolve().parents[2]
-        preflight_status = build_paper_shadow_247_preflight_status(repo_root=root)
+        preflight_status = _load_preflight_status(repo_root=repo_root)
 
     hold = preflight_status.get("hold_context_v0")
     hold_state = hold.get("current_state") if isinstance(hold, dict) else None

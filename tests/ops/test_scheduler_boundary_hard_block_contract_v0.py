@@ -185,6 +185,22 @@ def test_allowed_fixture_keeps_live_flags_false() -> None:
     assert payload.get("broker_authorized") is False
 
 
+def test_guard_allows_test_preflight_override_env(monkeypatch) -> None:
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("scheduler_start_boundary_guard_v0", SHARED_GUARD)
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    monkeypatch.setenv(
+        mod.TEST_PREFLIGHT_OVERRIDE_ENV,
+        '{"status":"READY","scheduler_execution_authorized":true,'
+        '"hold_context_v0":{"current_state":"CLEAR"}}',
+    )
+    mod.assert_scheduler_start_authorized()
+
+
 def test_p67_cli_guarded_in_spec() -> None:
     text = SPEC.read_text(encoding="utf-8")
     assert "shadow_session_scheduler_cli_v1.py" in text
