@@ -2,6 +2,10 @@
 """Compose readiness ledger, preflight status, and mirror into one gate snapshot.
 
 Non-authorizing offline convenience CLI. Does not start runtime or grant authority.
+
+Optional ``--include-registry`` attaches a summary-only Generic Evidence Run Registry
+v1 subsection. That subsection is non-authorizing and must not be interpreted as gate
+clearance.
 """
 
 from __future__ import annotations
@@ -22,6 +26,10 @@ VERDICT_FAIL_CLOSED = "READINESS_GATE_SNAPSHOT_FAIL_CLOSED"
 
 LEDGER_PASS = "READINESS_EVIDENCE_LEDGER_PASS_BLOCKED_SAFE"
 MIRROR_PASS = "READINESS_LEDGER_PREFLIGHT_MIRROR_PASS_BLOCKED_SAFE"
+
+REGISTRY_PASS = "GENERIC_EVIDENCE_RUN_REGISTRY_PASS_BLOCKED_SAFE"
+REGISTRY_REVIEW = "GENERIC_EVIDENCE_RUN_REGISTRY_REVIEW_REQUIRED"
+REGISTRY_FAIL = "GENERIC_EVIDENCE_RUN_REGISTRY_FAIL_CLOSED"
 
 
 def _repo_root() -> Path:
@@ -192,11 +200,80 @@ def derive_gate_verdict(
     return VERDICT_REVIEW_REQUIRED
 
 
+def _summarize_registry(full: dict[str, Any]) -> dict[str, Any]:
+    summaries = full.get("summaries") if isinstance(full.get("summaries"), dict) else {}
+    blockers = full.get("blockers") if isinstance(full.get("blockers"), list) else []
+    return {
+        "included": True,
+        "non_authorizing": True,
+        "schema": full.get("schema"),
+        "verdict": full.get("verdict"),
+        "total_runs": summaries.get("total_runs"),
+        "verified_runs": summaries.get("verified_runs"),
+        "runs_by_lane": summaries.get("runs_by_lane"),
+        "scheduler_boundary_gap_acknowledged": summaries.get("scheduler_boundary_gap_acknowledged"),
+        "live_authority_present": summaries.get("live_authority_present"),
+        "broker_exchange_authority_present": summaries.get("broker_exchange_authority_present"),
+        "issues_count": len(full.get("issues") or []),
+        "blockers": blockers,
+    }
+
+
+def _registry_build_failed_section() -> dict[str, Any]:
+    return {
+        "included": False,
+        "non_authorizing": True,
+    }
+
+
+def _registry_unsafe_for_gate(full: dict[str, Any]) -> bool:
+    summaries = full.get("summaries") if isinstance(full.get("summaries"), dict) else {}
+    authority = full.get("authority") if isinstance(full.get("authority"), dict) else {}
+    if summaries.get("live_authority_present") is True:
+        return True
+    if summaries.get("broker_exchange_authority_present") is True:
+        return True
+    if authority.get("live_allowed") is True:
+        return True
+    if authority.get("broker_exchange_allowed") is True:
+        return True
+    if authority.get("secret_values_included") is True:
+        return True
+    return False
+
+
+def _apply_registry_verdict_escalation(
+    gate_verdict: str,
+    registry_full: dict[str, Any] | None,
+    *,
+    build_failed: bool,
+) -> str:
+    if build_failed:
+        if gate_verdict == VERDICT_FAIL_CLOSED:
+            return gate_verdict
+        return VERDICT_REVIEW_REQUIRED
+
+    if registry_full is None:
+        return gate_verdict
+
+    if _registry_unsafe_for_gate(registry_full):
+        return VERDICT_FAIL_CLOSED
+
+    reg_verdict = registry_full.get("verdict")
+    if reg_verdict == REGISTRY_FAIL:
+        return VERDICT_FAIL_CLOSED
+    if reg_verdict == REGISTRY_REVIEW and gate_verdict == VERDICT_PASS_BLOCKED_SAFE:
+        return VERDICT_REVIEW_REQUIRED
+
+    return gate_verdict
+
+
 def build_readiness_gate_snapshot(
     archive_root: Path,
     *,
     repo_root: Path | None = None,
     fixed_generated_at_utc: str | None = None,
+    include_registry: bool = False,
 ) -> dict[str, Any]:
     _ensure_repo_imports()
     from scripts.ops.build_readiness_evidence_ledger_v0 import (
@@ -235,11 +312,70 @@ def build_readiness_gate_snapshot(
     governance = _derive_governance(ledger_full, preflight_full)
     verdict = derive_gate_verdict(ledger_full, preflight_full, mirror_full, issues)
 
+    registry_section: dict[str, Any] | None = None
+    if include_registry:
+        try:
+            from scripts.ops.build_generic_evidence_run_registry_v1 import (
+                BuildContext as RegistryBuildContext,
+                build_registry,
+            )
+
+            registry_ctx = RegistryBuildContext(
+                archive_root=archive,
+                repo_root=root,
+                fixed_generated_at_utc=fixed_generated_at_utc,
+            )
+            registry_full = build_registry(registry_ctx)
+            registry_section = _summarize_registry(registry_full)
+            if _registry_unsafe_for_gate(registry_full):
+                issues.append(
+                    {
+                        "source": "registry",
+                        "code": "REGISTRY_SECTION_UNSAFE_AUTHORITY_SIGNAL",
+                        "message": "registry summary reported unsafe authority signal",
+                    }
+                )
+            elif registry_full.get("verdict") == REGISTRY_REVIEW:
+                issues.append(
+                    {
+                        "source": "registry",
+                        "code": "REGISTRY_SECTION_REVIEW_REQUIRED",
+                        "message": "registry verdict requires review",
+                    }
+                )
+            elif registry_full.get("verdict") == REGISTRY_FAIL:
+                issues.append(
+                    {
+                        "source": "registry",
+                        "code": "REGISTRY_SECTION_FAIL_CLOSED",
+                        "message": "registry verdict is fail closed",
+                    }
+                )
+            verdict = _apply_registry_verdict_escalation(
+                verdict,
+                registry_full,
+                build_failed=False,
+            )
+        except Exception as exc:
+            registry_section = _registry_build_failed_section()
+            issues.append(
+                {
+                    "source": "registry",
+                    "code": "REGISTRY_SECTION_BUILD_FAILED",
+                    "message": str(exc),
+                }
+            )
+            verdict = _apply_registry_verdict_escalation(
+                verdict,
+                None,
+                build_failed=True,
+            )
+
     generated_at = fixed_generated_at_utc or os.environ.get("PEAK_TRADE_FIXED_GENERATED_AT_UTC")
     if not generated_at:
         generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    return {
+    payload: dict[str, Any] = {
         "schema": SCHEMA,
         "generated_at_utc": generated_at,
         "archive_root": str(archive),
@@ -251,6 +387,9 @@ def build_readiness_gate_snapshot(
         "verdict": verdict,
         "issues": issues,
     }
+    if include_registry and registry_section is not None:
+        payload["registry"] = registry_section
+    return payload
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -258,6 +397,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--archive-root", type=Path, required=True)
     parser.add_argument("--repo-root", type=Path)
     parser.add_argument("--fixed-generated-at-utc")
+    parser.add_argument("--include-registry", action="store_true")
     parser.add_argument("--json", action="store_true")
     return parser.parse_args(argv)
 
@@ -268,6 +408,7 @@ def main(argv: list[str] | None = None) -> int:
         args.archive_root,
         repo_root=args.repo_root,
         fixed_generated_at_utc=args.fixed_generated_at_utc,
+        include_registry=args.include_registry,
     )
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=False))

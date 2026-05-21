@@ -26,6 +26,10 @@ LEDGER_REVIEW = "READINESS_EVIDENCE_LEDGER_REVIEW_REQUIRED"
 MIRROR_PASS = "READINESS_LEDGER_PREFLIGHT_MIRROR_PASS_BLOCKED_SAFE"
 MIRROR_FAIL = "READINESS_LEDGER_PREFLIGHT_MIRROR_FAIL_CLOSED"
 
+REGISTRY_PASS = "GENERIC_EVIDENCE_RUN_REGISTRY_PASS_BLOCKED_SAFE"
+REGISTRY_REVIEW = "GENERIC_EVIDENCE_RUN_REGISTRY_REVIEW_REQUIRED"
+REGISTRY_FAIL = "GENERIC_EVIDENCE_RUN_REGISTRY_FAIL_CLOSED"
+
 
 def _load_module():
     spec = importlib.util.spec_from_file_location("report_readiness_gate_snapshot_v0", SCRIPT)
@@ -95,6 +99,54 @@ def _safe_mirror(**overrides: object) -> dict:
     }
     base.update(overrides)
     return base
+
+
+def _safe_registry(**overrides: object) -> dict:
+    base = {
+        "schema": "peak_trade.generic_evidence_run_registry.v1",
+        "verdict": REGISTRY_PASS,
+        "summaries": {
+            "total_runs": 3,
+            "verified_runs": 3,
+            "runs_by_lane": {"paper": 1, "shadow": 1, "testnet": 1},
+            "scheduler_boundary_gap_acknowledged": True,
+            "live_authority_present": False,
+            "broker_exchange_authority_present": False,
+        },
+        "authority": {
+            "live_allowed": False,
+            "broker_exchange_allowed": False,
+            "secret_values_included": False,
+        },
+        "blockers": ["LIVE_NOT_AUTHORIZED"],
+        "issues": [],
+    }
+    if "summaries" in overrides and isinstance(overrides["summaries"], dict):
+        base["summaries"].update(overrides.pop("summaries"))  # type: ignore[arg-type]
+    if "authority" in overrides and isinstance(overrides["authority"], dict):
+        base["authority"].update(overrides.pop("authority"))  # type: ignore[arg-type]
+    base.update(overrides)
+    return base
+
+
+def _patch_safe_stack(monkeypatch, mod, *, registry: dict | None = None) -> None:
+    monkeypatch.setattr(
+        "scripts.ops.build_readiness_evidence_ledger_v0.build_ledger",
+        lambda ctx: _safe_ledger(),
+    )
+    monkeypatch.setattr(
+        "scripts.ops.report_paper_shadow_247_preflight_status.build_paper_shadow_247_preflight_status",
+        lambda **kwargs: _safe_preflight(),
+    )
+    monkeypatch.setattr(
+        "scripts.ops.report_readiness_ledger_preflight_mirror_v0.build_mirror_from_payloads",
+        lambda *a, **k: _safe_mirror(),
+    )
+    if registry is not None:
+        monkeypatch.setattr(
+            "scripts.ops.build_generic_evidence_run_registry_v1.build_registry",
+            lambda ctx: registry,
+        )
 
 
 @pytest.fixture
@@ -290,6 +342,157 @@ def test_schema_stable(mod, monkeypatch) -> None:
         "verdict",
         "issues",
     }
+    assert "registry" not in payload
+
+
+def test_default_output_has_no_registry_key(mod, monkeypatch) -> None:
+    _patch_safe_stack(monkeypatch, mod)
+    payload = mod.build_readiness_gate_snapshot(Path("/tmp/archive"))
+    assert "registry" not in payload
+
+
+def test_include_registry_adds_summary_section(mod, monkeypatch) -> None:
+    _patch_safe_stack(monkeypatch, mod, registry=_safe_registry())
+    payload = mod.build_readiness_gate_snapshot(
+        Path("/tmp/archive"),
+        include_registry=True,
+    )
+    reg = payload["registry"]
+    assert reg["included"] is True
+    assert reg["schema"] == "peak_trade.generic_evidence_run_registry.v1"
+    assert reg["total_runs"] == 3
+    assert reg["verified_runs"] == 3
+    assert reg["runs_by_lane"] == {"paper": 1, "shadow": 1, "testnet": 1}
+
+
+def test_registry_non_authorizing_flag(mod, monkeypatch) -> None:
+    _patch_safe_stack(monkeypatch, mod, registry=_safe_registry())
+    payload = mod.build_readiness_gate_snapshot(
+        Path("/tmp/archive"),
+        include_registry=True,
+    )
+    assert payload["registry"]["non_authorizing"] is True
+
+
+def test_registry_pass_does_not_change_gate_verdict(mod, monkeypatch) -> None:
+    _patch_safe_stack(monkeypatch, mod, registry=_safe_registry())
+    payload = mod.build_readiness_gate_snapshot(
+        Path("/tmp/archive"),
+        include_registry=True,
+    )
+    assert payload["verdict"] == GATE_PASS
+
+
+def test_registry_review_required_escalates_gate_from_pass(mod, monkeypatch) -> None:
+    _patch_safe_stack(monkeypatch, mod, registry=_safe_registry(verdict=REGISTRY_REVIEW))
+    payload = mod.build_readiness_gate_snapshot(
+        Path("/tmp/archive"),
+        include_registry=True,
+    )
+    assert payload["verdict"] == GATE_REVIEW
+
+
+def test_registry_fail_closed_escalates_gate(mod, monkeypatch) -> None:
+    _patch_safe_stack(monkeypatch, mod, registry=_safe_registry(verdict=REGISTRY_FAIL))
+    payload = mod.build_readiness_gate_snapshot(
+        Path("/tmp/archive"),
+        include_registry=True,
+    )
+    assert payload["verdict"] == GATE_FAIL
+
+
+def test_registry_live_authority_present_fail_closed(mod, monkeypatch) -> None:
+    _patch_safe_stack(
+        monkeypatch,
+        mod,
+        registry=_safe_registry(
+            summaries={"live_authority_present": True},
+        ),
+    )
+    payload = mod.build_readiness_gate_snapshot(
+        Path("/tmp/archive"),
+        include_registry=True,
+    )
+    assert payload["verdict"] == GATE_FAIL
+    assert any(
+        i.get("code") == "REGISTRY_SECTION_UNSAFE_AUTHORITY_SIGNAL" for i in payload["issues"]
+    )
+
+
+def test_registry_broker_exchange_authority_present_fail_closed(mod, monkeypatch) -> None:
+    _patch_safe_stack(
+        monkeypatch,
+        mod,
+        registry=_safe_registry(
+            summaries={"broker_exchange_authority_present": True},
+        ),
+    )
+    payload = mod.build_readiness_gate_snapshot(
+        Path("/tmp/archive"),
+        include_registry=True,
+    )
+    assert payload["verdict"] == GATE_FAIL
+
+
+def test_registry_build_failure_review_required(mod, monkeypatch) -> None:
+    _patch_safe_stack(monkeypatch, mod)
+
+    def _boom(ctx):
+        raise RuntimeError("registry build failed")
+
+    monkeypatch.setattr(
+        "scripts.ops.build_generic_evidence_run_registry_v1.build_registry",
+        _boom,
+    )
+    payload = mod.build_readiness_gate_snapshot(
+        Path("/tmp/archive"),
+        include_registry=True,
+    )
+    assert payload["verdict"] == GATE_REVIEW
+    assert payload["registry"]["included"] is False
+    assert any(i.get("code") == "REGISTRY_SECTION_BUILD_FAILED" for i in payload["issues"])
+
+
+def test_include_registry_schema_stable(mod, monkeypatch) -> None:
+    _patch_safe_stack(monkeypatch, mod, registry=_safe_registry())
+    payload = mod.build_readiness_gate_snapshot(
+        Path("/tmp/archive"),
+        include_registry=True,
+    )
+    assert set(payload) == {
+        "schema",
+        "generated_at_utc",
+        "archive_root",
+        "ledger",
+        "preflight",
+        "mirror",
+        "governance",
+        "blockers",
+        "verdict",
+        "issues",
+        "registry",
+    }
+
+
+def test_cli_include_registry_json_prints_json_only(tmp_path: Path) -> None:
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--archive-root",
+            str(tmp_path / "missing"),
+            "--fixed-generated-at-utc",
+            "2026-05-21T00:00:00Z",
+            "--include-registry",
+            "--json",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.stderr.strip() == ""
+    payload = json.loads(proc.stdout)
+    assert "registry" in payload
 
 
 def test_no_subprocess_or_network_in_module_source() -> None:
@@ -325,3 +528,32 @@ def test_real_smoke_pass_blocked_safe() -> None:
     assert payload["verdict"] == GATE_PASS
     assert payload["ledger"]["issues_count"] == 0
     assert payload["mirror"]["issues_count"] == 0
+    assert "registry" not in payload
+
+
+@pytest.mark.skipif(not ARCHIVE_ROOT.is_dir(), reason="operator archive not present")
+def test_real_smoke_include_registry_pass_blocked_safe() -> None:
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--archive-root",
+            str(ARCHIVE_ROOT),
+            "--fixed-generated-at-utc",
+            "2026-05-21T00:00:00Z",
+            "--include-registry",
+            "--json",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    payload = json.loads(proc.stdout)
+    assert payload["verdict"] == GATE_PASS
+    assert payload["registry"]["included"] is True
+    assert payload["registry"]["non_authorizing"] is True
+    assert payload["registry"]["verdict"] == REGISTRY_PASS
+    assert payload["governance"]["live_allowed"] is False
+    assert payload["governance"]["broker_exchange_allowed"] is False
+    assert payload["governance"]["secret_values_included"] is False
+    assert payload["registry"]["issues_count"] == 0
