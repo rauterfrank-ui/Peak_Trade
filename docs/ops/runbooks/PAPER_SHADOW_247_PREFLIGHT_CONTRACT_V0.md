@@ -62,6 +62,8 @@ P67/P72 library paths (`run_shadow_session_scheduler_v1`, `run_shadowloop_pack_v
 
 Scheduler launcher (`scripts/run_scheduler.py`) supports opt-in completion retention via `--evidence-dir` and `--primary-evidence-enforce`, writing `scheduler_completion_closeout_v0.json` and calling shared `finalize_primary_evidence_root()` when enforcement is enabled (default off; dry-run remains planning-only; start boundary guard unchanged).
 
+Offline supervisor/daemon evidence pack: `scripts/ops/pack_online_readiness_supervisor_evidence_v0.py` copies an existing supervisor `OUT_DIR` and optional pid/log artifacts into a durable archive root, writes `supervisor_session_closeout_v0.json`, and may call shared `finalize_primary_evidence_root()` when `--primary-evidence-enforce` is set (operator-invoked after STOP; does not start/stop supervisor, daemon, or launchctl; non-authorizing).
+
 ## 2b. Planning artifact durable retention v0
 
 `PLANNING_ARTIFACT_DURABLE_RETENTION_REQUIRED=true`
