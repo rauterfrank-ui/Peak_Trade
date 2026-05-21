@@ -32,12 +32,12 @@ Keine Kopplung an OPS Cockpit (`/ops`). Keine Trading-Aktionen.
 
 ### Lane taxonomy cross-reference (non-authorizing)
 
-This document is the **canonical Market Surface v0** owner for **`GET /market`**, **`GET /api/market/*`**, and related SSR read-only routes. Lane indexing and forbidden promotions are defined in [Runtime Lane Taxonomy + Authority Levels Contract v0](../ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) **§7h**:
+This document is the **canonical Market Surface v0** owner for **`GET &#47;market`**, **`GET &#47;api&#47;market&#47;*`**, and related SSR read-only routes. Lane indexing and forbidden promotions are defined in [Runtime Lane Taxonomy + Authority Levels Contract v0](../ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) **§7h**:
 
 - lane_id `dashboard` with authority level `review_input_only`
 - taxonomy §7h markers `MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true`, `MARKET_DASHBOARD_NO_APPROVAL_AUTHORITY=true`, `MARKET_DASHBOARD_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true`
-- **F5 Futures Read-only Market Dashboard** detail owner remains [Futures Read-only Market Dashboard Contract v0](../ops/specs/FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) — this broader `/market` surface does **not** replace F5 semantics
-- **`GET /market/double-play`** remains a separate Master V2 / Double Play read-only composition route; **no** live decision, selection, or execution authority
+- **F5 Futures Read-only Market Dashboard** detail owner remains [Futures Read-only Market Dashboard Contract v0](../ops/specs/FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) — this broader **`&#47;market`** surface does **not** replace F5 semantics
+- **`GET &#47;market&#47;double-play`** remains a separate Master V2 / Double Play read-only composition route; **no** live decision, selection, or execution authority
 - Display, SSR read models, and diagnostic output **do not** grant approval, gate clearance, Live/Testnet/broker/exchange permission, scheduler activation, or runtime start
 - `FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL` applies (taxonomy §5)
 
