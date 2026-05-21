@@ -135,6 +135,12 @@ def test_canonical_owner_references_scheduler_completion_opt_in() -> None:
     assert "scheduler_completion_closeout_v0" in text
 
 
+def test_canonical_owner_references_supervisor_pack_closeout() -> None:
+    text = _owner_text()
+    assert "pack_online_readiness_supervisor_evidence_v0.py" in text
+    assert "supervisor_session_closeout_v0" in text
+
+
 def test_canonical_owner_references_p67_p72_opt_in_enforce() -> None:
     text = _owner_text()
     assert "primary_evidence_enforce=True" in text
