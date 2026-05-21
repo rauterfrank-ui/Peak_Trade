@@ -64,6 +64,8 @@ Scheduler launcher (`scripts/run_scheduler.py`) supports opt-in completion reten
 
 Offline supervisor/daemon evidence pack: `scripts/ops/pack_online_readiness_supervisor_evidence_v0.py` copies an existing supervisor `OUT_DIR` and optional pid/log artifacts into a durable archive root, writes `supervisor_session_closeout_v0.json`, and may call shared `finalize_primary_evidence_root()` when `--primary-evidence-enforce` is set (operator-invoked after STOP; does not start/stop supervisor, daemon, or launchctl; non-authorizing).
 
+P79 offline archive manifest gate: `scripts/ops/p79_supervisor_health_gate_v1.sh` with `ARCHIVE_ROOT` (or `scripts/ops/p79_supervisor_evidence_manifest_verify_v0.py`) validates packed supervisor evidence (`supervisor_session_closeout_v0.json` + `MANIFEST.sha256` via shared `verify_manifest_sha256()`); mutually exclusive with runtime tick mode; non-authorizing; does not start/stop supervisor, daemon, or launchctl.
+
 ## 2b. Planning artifact durable retention v0
 
 `PLANNING_ARTIFACT_DURABLE_RETENTION_REQUIRED=true`

@@ -221,6 +221,7 @@ Normative state (post supervisor evidence pack closeout #3590):
 - Live-pilot / production retention hooks remain out of scope for this taxonomy index.
 - Direct library calls to `run_shadow_session_scheduler_v1()` still bypass CLI scheduler guard (`SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true`).
 - Registry PASS, dashboard status, and readiness aggregate verdicts remain **non-authorizing**.
+- P79 offline archive mode (`ARCHIVE_ROOT` on `p79_supervisor_health_gate_v1.sh`) validates pack closeout + `MANIFEST.sha256`; runtime tick mode unchanged.
 
 ## 8. Canary and Live-Canary lanes
 
