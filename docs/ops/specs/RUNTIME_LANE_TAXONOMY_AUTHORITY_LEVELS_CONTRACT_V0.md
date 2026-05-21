@@ -9,7 +9,7 @@ last_updated: 2026-05-21
 
 ## 1. Purpose and non-goals
 
-This contract is the **normative lane ID and authority-level index** for Peak_Trade runtime, evidence, planning, and display surfaces. It centralizes taxonomy and cross-links implemented ops tooling (Generic Evidence Run Registry v1, scheduler boundary guards) without substituting for those owners.
+This contract is the **normative lane ID and authority-level index** for Peak_Trade runtime, evidence, planning, and display surfaces. It centralizes taxonomy and cross-links implemented ops tooling (Generic Evidence Run Registry v1, scheduler boundary guards, opt-in primary evidence closeout hooks at canonical owners) without substituting for those owners.
 
 It does **not** authorize runtime, clear HOLD or GLB blockers, grant Live or Testnet permission, or substitute for subsystem owners (preflight retention, GLB register, Canary entry criteria, scheduler daemon policy).
 
@@ -24,12 +24,16 @@ TESTNET_PASS_DOES_NOT_AUTHORIZE_LIVE=true
 SCHEDULER_BOUNDARY_LAUNCHER_GUARDED=true
 P67_CLI_SCHEDULER_BOUNDARY_GUARDED=true
 SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true
+SCHEDULER_COMPLETION_PRIMARY_EVIDENCE_CLOSEOUT_OPT_IN=true
+SUPERVISOR_EVIDENCE_PACK_CLOSEOUT_OPT_IN=true
+PRIMARY_EVIDENCE_SHARED_HELPER_REUSED=true
 MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 ```
 
 Non-goals:
 
-- Additional scheduler completion or primary-evidence retention enforcement beyond canonical owners
+- Mandatory §2a primary-evidence enforcement beyond canonical owner opt-in closeouts (default off)
+- Online daemon automatic retention or live-pilot evidence closeout (not implemented in-repo)
 - Runtime, adapter, or wrapper execution
 - Master V2 / Double Play logic changes
 - Go/No-Go approval or gate clearance
@@ -45,6 +49,9 @@ Non-goals:
 | Canary Live entry | [CANARY_LIVE_ENTRY_CRITERIA.md](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) |
 | Scheduler HOLD boundary | [SCHEDULER_DAEMON.md](../../SCHEDULER_DAEMON.md) |
 | Scheduler hard-block contract | [SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md) |
+| Scheduler completion closeout (opt-in) | [run_scheduler.py](../../../scripts/run_scheduler.py) + Preflight §2a |
+| Supervisor evidence pack closeout (opt-in, offline) | [pack_online_readiness_supervisor_evidence_v0.py](../../../scripts/ops/pack_online_readiness_supervisor_evidence_v0.py) + Preflight §2a |
+| Shared primary evidence finalize helper | [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) |
 | Generic Evidence Run Registry v1 | [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) |
 | Vocabulary forbidden equalities | [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md) |
 | OPS Cockpit non-authority | [OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md](OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md) |
@@ -175,6 +182,46 @@ Normative rules:
 - Explicit gate and operator approval remain required before any runtime scheduler execution.
 - Hard-block semantics: [SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md).
 
+## 7a. Scheduler completion evidence (opt-in)
+
+```
+SCHEDULER_COMPLETION_PRIMARY_EVIDENCE_CLOSEOUT_OPT_IN=true
+PRIMARY_EVIDENCE_SHARED_HELPER_REUSED=true
+```
+
+Normative state (post scheduler completion closeout #3589):
+
+- `scripts/run_scheduler.py` supports opt-in completion retention via `--evidence-dir` and `--primary-evidence-enforce` (default off).
+- Writes `scheduler_completion_closeout_v0.json` when `--evidence-dir` is set.
+- Calls shared `finalize_primary_evidence_root()` from `scripts/ops/primary_evidence_retention_v0.py` when enforcement is enabled.
+- Does **not** alter scheduler start guard rules in §7; dry-run remains planning-only.
+- Completion evidence remains **non-authorizing**; does not clear HOLD, preflight BLOCKED, or Live/Testnet/broker gates.
+
+Detail owner: [SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md) §7a.
+
+## 7b. Online readiness supervisor evidence pack (opt-in, offline)
+
+```
+SUPERVISOR_EVIDENCE_PACK_CLOSEOUT_OPT_IN=true
+PRIMARY_EVIDENCE_SHARED_HELPER_REUSED=true
+```
+
+Normative state (post supervisor evidence pack closeout #3590):
+
+- `scripts/ops/pack_online_readiness_supervisor_evidence_v0.py` is **operator-invoked after STOP** (offline; non-authorizing).
+- Copies existing supervisor `OUT_DIR` into `{archive_root}&#47;supervisor_session&#47;` and optional pid/log artifacts into `{archive_root}&#47;supporting&#47;`.
+- Writes `supervisor_session_closeout_v0.json`.
+- Opt-in `--primary-evidence-enforce` calls shared `finalize_primary_evidence_root()`; archive root must be outside `/tmp` when enforce is set.
+- Does **not** start/stop supervisor, online daemon, or invoke launchctl.
+- Default supervisor/daemon driver pid/log paths may remain under `/tmp`; pack does not change driver defaults.
+
+## 7c. Primary evidence closeout residual gaps
+
+- Online daemon automatic session closeout pack is **not implemented**; operator must invoke supervisor pack or equivalent manually.
+- Live-pilot / production retention hooks remain out of scope for this taxonomy index.
+- Direct library calls to `run_shadow_session_scheduler_v1()` still bypass CLI scheduler guard (`SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true`).
+- Registry PASS, dashboard status, and readiness aggregate verdicts remain **non-authorizing**.
+
 ## 8. Canary and Live-Canary lanes
 
 - `canary` and `live_canary` governance docs are **not** Live authority.
@@ -206,3 +253,4 @@ MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 
 - **v0** — Initial lane taxonomy, authority levels, forbidden promotions, scheduler gap acknowledgment, Master V2 protection, registry field schema (deferred).
 - **v0.1** — Truth-marker sync: registry v1 implemented; scheduler launcher + P67 CLI guarded; library bypass residual preserved.
+- **v0.2** — Primary evidence closeout marker sync: scheduler completion (#3589) and supervisor offline pack (#3590) indexed as opt-in at canonical owners; default off; residual online-daemon/live-pilot gaps preserved.

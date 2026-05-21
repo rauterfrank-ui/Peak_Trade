@@ -13,6 +13,11 @@ GENERIC_EVIDENCE_REGISTRY_V1 = (
 )
 SCHEDULER_BOUNDARY_GUARD = REPO_ROOT / "scripts" / "ops" / "scheduler_start_boundary_guard_v0.py"
 P67_SCHEDULER_CLI = REPO_ROOT / "src" / "ops" / "p67" / "shadow_session_scheduler_cli_v1.py"
+SCHEDULER_LAUNCHER = REPO_ROOT / "scripts" / "run_scheduler.py"
+SUPERVISOR_PACK_SCRIPT = (
+    REPO_ROOT / "scripts" / "ops" / "pack_online_readiness_supervisor_evidence_v0.py"
+)
+PRIMARY_EVIDENCE_HELPER = REPO_ROOT / "scripts" / "ops" / "primary_evidence_retention_v0.py"
 PREFLIGHT_OWNER = (
     REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 )
@@ -115,6 +120,9 @@ def test_required_machine_markers_present() -> None:
         "SCHEDULER_BOUNDARY_LAUNCHER_GUARDED=true",
         "P67_CLI_SCHEDULER_BOUNDARY_GUARDED=true",
         "SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true",
+        "SCHEDULER_COMPLETION_PRIMARY_EVIDENCE_CLOSEOUT_OPT_IN=true",
+        "SUPERVISOR_EVIDENCE_PACK_CLOSEOUT_OPT_IN=true",
+        "PRIMARY_EVIDENCE_SHARED_HELPER_REUSED=true",
         "MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true",
     ):
         assert marker in text
@@ -247,4 +255,52 @@ def test_readiness_tooling_referenced_non_authorizing() -> None:
     text = _spec_text()
     assert "Readiness Evidence Ledger v0" in text
     assert "Readiness Gate Snapshot v0" in text
+    assert "non-authorizing" in text.lower()
+
+
+def test_scheduler_completion_closeout_marker_aligned() -> None:
+    assert SCHEDULER_LAUNCHER.is_file()
+    text = _spec_text()
+    assert "SCHEDULER_COMPLETION_PRIMARY_EVIDENCE_CLOSEOUT_OPT_IN=true" in text
+    assert "scheduler_completion_closeout_v0.json" in text
+    assert "--evidence-dir" in text or "evidence-dir" in text
+    assert "primary-evidence-enforce" in text or "primary_evidence_enforce" in text
+    assert "finalize_primary_evidence_root" in text
+    assert "default off" in text.lower()
+
+
+def test_supervisor_evidence_pack_closeout_marker_aligned() -> None:
+    assert SUPERVISOR_PACK_SCRIPT.is_file()
+    text = _spec_text()
+    assert "SUPERVISOR_EVIDENCE_PACK_CLOSEOUT_OPT_IN=true" in text
+    assert "pack_online_readiness_supervisor_evidence_v0.py" in text
+    assert "supervisor_session_closeout_v0.json" in text
+    assert "operator-invoked after STOP" in text.lower() or "after STOP" in text
+    assert "launchctl" in text.lower()
+    assert "start/stop supervisor" in text.lower()
+    assert "**not**" in text or "does not start" in text.lower()
+
+
+def test_primary_evidence_shared_helper_referenced() -> None:
+    assert PRIMARY_EVIDENCE_HELPER.is_file()
+    text = _spec_text()
+    assert "PRIMARY_EVIDENCE_SHARED_HELPER_REUSED=true" in text
+    assert "primary_evidence_retention_v0.py" in text
+    assert "finalize_primary_evidence_root" in text
+
+
+def test_opt_in_default_off_preserved() -> None:
+    text = _spec_text()
+    assert "default off" in text.lower()
+    assert "opt-in" in text.lower()
+    assert (
+        "Mandatory §2a primary-evidence enforcement beyond canonical owner opt-in closeouts" in text
+    )
+
+
+def test_primary_evidence_closeout_residual_risks_preserved() -> None:
+    text = _spec_text()
+    assert "SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true" in text
+    assert "Online daemon automatic session closeout pack is **not implemented**" in text
+    assert "Live-pilot" in text or "live-pilot" in text
     assert "non-authorizing" in text.lower()
