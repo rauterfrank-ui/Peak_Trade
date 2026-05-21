@@ -15,6 +15,7 @@ SHARED_HELPER = REPO_ROOT / "scripts" / "ops" / "primary_evidence_retention_v0.p
 P79_SHELL = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_health_gate_v1.sh"
 P79_VERIFY = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_evidence_manifest_verify_v0.py"
 P101_SCRIPT = REPO_ROOT / "scripts" / "ops" / "p101_stop_playbook_v1.sh"
+P93_SCRIPT = REPO_ROOT / "scripts" / "ops" / "p93_online_readiness_status_dashboard_v1.sh"
 PACK_SCRIPT = REPO_ROOT / "scripts" / "ops" / "pack_online_readiness_supervisor_evidence_v0.py"
 
 
@@ -28,6 +29,10 @@ def _adapter_text() -> str:
 
 def _p101_text() -> str:
     return P101_SCRIPT.read_text(encoding="utf-8")
+
+
+def _p93_text() -> str:
+    return P93_SCRIPT.read_text(encoding="utf-8")
 
 
 def test_canonical_owner_exists() -> None:
@@ -253,6 +258,65 @@ def test_p101_stop_playbook_does_not_auto_execute_wrapper_pack_or_p79_archive_ve
 
 def test_p101_stop_playbook_no_new_launchctl_or_supervisor_start() -> None:
     text = _p101_text()
+    assert "launchctl bootstrap" not in text
+    assert "launchctl kickstart" not in text
+    assert "online_readiness_supervisor_v1.sh start" not in text
+    assert "online_readiness_daemon_v1.sh" not in text
+
+
+def test_p93_status_dashboard_post_stop_hint_references_wrapper_and_optional_p79() -> None:
+    assert P93_SCRIPT.is_file()
+    text = _p93_text()
+    assert "run_online_readiness_post_stop_pack_v0.sh" in text
+    assert "--p79-archive-verify" in text
+    assert "P93_POST_STOP_PRIMARY_EVIDENCE_OPERATOR_HINTS.txt" in text
+    assert "--primary-evidence-enforce" in text
+
+
+def test_p93_status_dashboard_post_stop_hint_markers_non_authorizing() -> None:
+    text = _p93_text()
+    for marker in (
+        "HINT_ONLY=true",
+        "WRAPPER_REFERENCED=true",
+        "WRAPPER_NOT_EXECUTED_BY_P93=true",
+        "PACK_NOT_EXECUTED_BY_P93=true",
+        "P79_ARCHIVE_VERIFY_NOT_EXECUTED_BY_P93=true",
+        "OPERATOR_MUST_RUN_EXPLICITLY=true",
+        "EVIDENCE_NON_AUTHORIZING=true",
+    ):
+        assert marker in text
+
+
+def test_p93_status_dashboard_does_not_auto_execute_wrapper_pack_or_p79_archive_verify() -> None:
+    lines = _p93_text().splitlines()
+    wrapper_offenders = [
+        line
+        for line in lines
+        if "run_online_readiness_post_stop_pack_v0.sh" in line
+        and not line.strip().startswith("#")
+        and not line.strip().startswith("echo")
+    ]
+    assert wrapper_offenders == []
+    pack_offenders = [
+        line
+        for line in lines
+        if "pack_online_readiness_supervisor_evidence_v0.py" in line
+        and not line.strip().startswith("#")
+        and not line.strip().startswith("echo")
+    ]
+    assert pack_offenders == []
+    p79_offenders = [
+        line
+        for line in lines
+        if "p79_supervisor_health_gate_v1.sh" in line
+        and "ARCHIVE_ROOT" in line
+        and not line.strip().startswith("echo")
+    ]
+    assert p79_offenders == []
+
+
+def test_p93_status_dashboard_no_new_launchctl_or_supervisor_start() -> None:
+    text = _p93_text()
     assert "launchctl bootstrap" not in text
     assert "launchctl kickstart" not in text
     assert "online_readiness_supervisor_v1.sh start" not in text
