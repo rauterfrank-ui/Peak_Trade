@@ -23,6 +23,9 @@ P79_VERIFY = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_evidence_manifest_v
 P101_SCRIPT = REPO_ROOT / "scripts" / "ops" / "p101_stop_playbook_v1.sh"
 P93_SCRIPT = REPO_ROOT / "scripts" / "ops" / "p93_online_readiness_status_dashboard_v1.sh"
 WRAPPER_SCRIPT = REPO_ROOT / "scripts" / "ops" / "run_online_readiness_post_stop_pack_v0.sh"
+MARKET_DASHBOARD_SPEC = (
+    REPO_ROOT / "docs" / "ops" / "specs" / "FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md"
+)
 PREFLIGHT_OWNER = (
     REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 )
@@ -415,3 +418,29 @@ def test_post_stop_pack_wrapper_marker_aligned() -> None:
     assert "run_online_readiness_post_stop_pack_v0.sh" in preflight
     assert "operator-invoked" in preflight.lower()
     assert "non-authorizing" in preflight.lower()
+
+
+def test_market_dashboard_f5_non_authority_taxonomy_cross_ref_aligned() -> None:
+    assert MARKET_DASHBOARD_SPEC.is_file()
+    taxonomy = _spec_text()
+    market = MARKET_DASHBOARD_SPEC.read_text(encoding="utf-8")
+    for marker in (
+        "MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true",
+        "MARKET_DASHBOARD_NO_APPROVAL_AUTHORITY=true",
+        "MARKET_DASHBOARD_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true",
+    ):
+        assert marker in taxonomy
+    assert "FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md" in taxonomy
+    assert "`dashboard`" in taxonomy
+    assert "review_input_only" in taxonomy
+    assert "FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL" in taxonomy
+    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in market
+    assert "Lane taxonomy cross-reference" in market
+    assert "Dashboard ≠ Freigabe" in market or "dashboard" in market.lower()
+    assert "non-authorizing" in market.lower()
+    assert "does not grant" in market.lower() or "does not permit" in market.lower()
+    assert "Master V2" in market
+    assert "Double Play" in market
+    assert "Live" in market
+    assert "broker" in market.lower() or "exchange" in market.lower()
+    assert "scheduler" in market.lower() or "runtime" in market.lower()
