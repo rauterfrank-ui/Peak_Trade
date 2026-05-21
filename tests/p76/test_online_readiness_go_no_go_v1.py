@@ -7,6 +7,10 @@ import os
 import subprocess
 from pathlib import Path
 
+from tests.ops.scheduler_boundary_subprocess_test_env_v0 import (
+    scheduler_boundary_subprocess_test_env,
+)
+
 
 def _run(
     env: dict[str, str], cwd: Path, *, clear_p76_vars: bool = False
@@ -18,7 +22,7 @@ def _run(
     return subprocess.run(
         ["bash", "scripts/ops/online_readiness_go_no_go_v1.sh"],
         cwd=str(cwd),
-        env={**base, **env},
+        env={**base, **scheduler_boundary_subprocess_test_env(), **env},
         text=True,
         capture_output=True,
         check=False,

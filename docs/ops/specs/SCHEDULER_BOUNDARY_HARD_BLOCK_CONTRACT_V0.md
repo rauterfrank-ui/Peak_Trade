@@ -67,13 +67,16 @@ SCHEDULER_EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
 - Scheduler **cannot authorize** broker, exchange, or Live paths.
 - `SCHEDULER_CANNOT_AUTHORIZE_LIVE=true`
 
-## 6. Implementation anchor
+## 6. Implementation anchors
 
-`scripts/run_scheduler.py` exposes `assert_scheduler_start_authorized()`. Non-dry-run entry via `main()` calls this guard before `run_scheduler_loop`.
+Shared guard module: `scripts/ops/scheduler_start_boundary_guard_v0.py` exposes `assert_scheduler_start_authorized()`.
 
-## 7. Residual surface (out of scope v0)
+- `scripts/run_scheduler.py` — non-dry-run entry via `main()` calls this guard before `run_scheduler_loop`.
+- `src/ops/p67/shadow_session_scheduler_cli_v1.py` — `main()` calls the same shared guard before `run_shadow_session_scheduler_v1()`. P67 has no `--dry-run`; guard applies on every CLI start.
 
-`src/ops/p67/shadow_session_scheduler_cli_v1.py` is a separate scheduler-like CLI without this guard in v0. Operators must not treat P67 CLI as canonical scheduler activation. Future scope may add a separate guard.
+## 7. Residual surface (library bypass)
+
+Direct calls to `run_shadow_session_scheduler_v1()` (library API, unit tests, P72 pack) bypass the CLI guard. Operators must not treat library bypass as authorized scheduler activation under blocked preflight.
 
 ## 8. Master V2 / Double Play
 

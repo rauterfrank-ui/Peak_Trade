@@ -2,12 +2,26 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 from src.ops.p67.shadow_session_scheduler_v1 import (
     P67RunContextV1,
     run_shadow_session_scheduler_v1,
 )
+
+
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[3]
+
+
+def _assert_scheduler_start_authorized() -> None:
+    root = _repo_root()
+    if str(root) not in sys.path:
+        sys.path.insert(0, str(root))
+    from scripts.ops.scheduler_start_boundary_guard_v0 import assert_scheduler_start_authorized
+
+    assert_scheduler_start_authorized(repo_root=root)
 
 
 def main() -> int:
@@ -24,6 +38,8 @@ def main() -> int:
     )
     ap.add_argument("--json", action="store_true", help="Print JSON result.")
     args = ap.parse_args()
+
+    _assert_scheduler_start_authorized()
 
     out_dir = Path(args.out_dir) if args.out_dir else None
     rec = args.recorded_price_source.strip()
