@@ -128,6 +128,13 @@ def test_shared_helper_module_exists() -> None:
     assert "def finalize_primary_evidence_root" in text
 
 
+def test_canonical_owner_references_scheduler_completion_opt_in() -> None:
+    text = _owner_text()
+    assert "run_scheduler.py" in text
+    assert "primary-evidence-enforce" in text or "primary_evidence_enforce" in text
+    assert "scheduler_completion_closeout_v0" in text
+
+
 def test_canonical_owner_references_p67_p72_opt_in_enforce() -> None:
     text = _owner_text()
     assert "primary_evidence_enforce=True" in text

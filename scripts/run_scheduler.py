@@ -28,6 +28,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import json
 import signal
 import sys
 import time
@@ -71,6 +72,8 @@ from scripts.ops.scheduler_start_boundary_guard_v0 import (
     assert_scheduler_start_authorized,
 )
 
+SCHEDULER_COMPLETION_CLOSEOUT_FILENAME = "scheduler_completion_closeout_v0.json"
+
 # Globaler Flag für graceful shutdown
 _shutdown_requested = False
 
@@ -80,6 +83,106 @@ def signal_handler(signum, frame):
     global _shutdown_requested
     print("\n[SCHEDULER] Shutdown angefordert...")
     _shutdown_requested = True
+
+
+def _is_under_tmp(path: Path) -> bool:
+    try:
+        resolved = path.resolve()
+        tmp_root = Path("/tmp").resolve()
+        return resolved == tmp_root or tmp_root in resolved.parents
+    except OSError:
+        return str(path).startswith("/tmp")
+
+
+def validate_scheduler_evidence_cli(
+    *,
+    evidence_dir: Optional[Path],
+    primary_evidence_enforce: bool,
+    dry_run: bool,
+) -> Optional[int]:
+    """Return exit code when CLI evidence options are invalid; else None."""
+    if primary_evidence_enforce and evidence_dir is None:
+        print("ERR: --primary-evidence-enforce requires --evidence-dir")
+        return 1
+    if primary_evidence_enforce and dry_run:
+        print("ERR: --primary-evidence-enforce is incompatible with --dry-run")
+        return 1
+    if primary_evidence_enforce and evidence_dir is not None and _is_under_tmp(evidence_dir):
+        print("ERR: --evidence-dir must be outside /tmp when --primary-evidence-enforce is set")
+        return 1
+    return None
+
+
+def write_scheduler_completion_closeout(
+    evidence_dir: Path,
+    *,
+    dry_run: bool,
+    once: bool,
+    config_path: Path,
+    iterations: int,
+    jobs_dispatched: int,
+    exit_status: int,
+) -> None:
+    """Write non-authorizing scheduler completion closeout JSON."""
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "version": "scheduler_completion_closeout_v0",
+        "evidence_non_authorizing": True,
+        "dry_run": dry_run,
+        "once": once,
+        "config_path": str(config_path),
+        "iterations": iterations,
+        "jobs_dispatched": jobs_dispatched,
+        "exit_status": exit_status,
+        "ts_utc_end": datetime.utcnow().strftime("%Y%m%dT%H%M%SZ"),
+    }
+    closeout_path = evidence_dir / SCHEDULER_COMPLETION_CLOSEOUT_FILENAME
+    closeout_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def finalize_scheduler_completion_evidence(
+    evidence_dir: Optional[Path],
+    *,
+    primary_evidence_enforce: bool,
+    dry_run: bool,
+    once: bool,
+    config_path: Path,
+    iterations: int,
+    jobs_dispatched: int,
+    exit_status: int,
+) -> int:
+    """Write closeout when evidence dir is set; finalize MANIFEST when enforce is on."""
+    if evidence_dir is None and not primary_evidence_enforce:
+        return exit_status
+
+    if evidence_dir is None:
+        print("ERR: --primary-evidence-enforce requires --evidence-dir")
+        return 1
+
+    write_scheduler_completion_closeout(
+        evidence_dir,
+        dry_run=dry_run,
+        once=once,
+        config_path=config_path,
+        iterations=iterations,
+        jobs_dispatched=jobs_dispatched,
+        exit_status=exit_status,
+    )
+
+    if not primary_evidence_enforce:
+        return exit_status
+
+    if dry_run:
+        print("ERR: --primary-evidence-enforce is incompatible with --dry-run")
+        return 1
+
+    from scripts.ops.primary_evidence_retention_v0 import finalize_primary_evidence_root
+
+    ok, msg = finalize_primary_evidence_root(evidence_dir)
+    if not ok:
+        print(f"ERR: primary evidence finalize failed: {msg}")
+        return 1
+    return exit_status
 
 
 def parse_args(argv=None):
@@ -145,6 +248,19 @@ Examples:
 
     parser.add_argument(
         "--alert-log", type=str, default="logs/scheduler_alerts.log", help="Pfad zur Alert-Logdatei"
+    )
+
+    parser.add_argument(
+        "--evidence-dir",
+        type=str,
+        default=None,
+        help="Optional directory for scheduler completion closeout artifacts",
+    )
+
+    parser.add_argument(
+        "--primary-evidence-enforce",
+        action="store_true",
+        help="Require MANIFEST.sha256 finalize at completion (requires --evidence-dir; non-dry-run only)",
     )
 
     return parser.parse_args(argv)
@@ -393,9 +509,15 @@ def run_scheduler_loop(
     verbose: bool,
     use_registry: bool,
     notifier,
+    evidence_dir: Optional[Path] = None,
+    primary_evidence_enforce: bool = False,
 ) -> int:
     """Hauptschleife des Schedulers."""
     global _shutdown_requested
+
+    exit_code = 0
+    iteration = 0
+    total_jobs_run = 0
 
     print("\n" + "=" * 70)
     print("PEAK_TRADE SCHEDULER")
@@ -412,14 +534,33 @@ def run_scheduler_loop(
         all_jobs = load_jobs_from_toml(config_path)
     except FileNotFoundError as e:
         print(f"\nERROR: {e}")
-        return 1
+        exit_code = 1
+        return finalize_scheduler_completion_evidence(
+            evidence_dir,
+            primary_evidence_enforce=primary_evidence_enforce,
+            dry_run=dry_run,
+            once=once,
+            config_path=config_path,
+            iterations=iteration,
+            jobs_dispatched=total_jobs_run,
+            exit_status=exit_code,
+        )
 
     # Jobs filtern
     jobs = filter_jobs_by_tags(all_jobs, include_tags, exclude_tags)
 
     if not jobs:
         print("\nKeine passenden Jobs gefunden.")
-        return 0
+        return finalize_scheduler_completion_evidence(
+            evidence_dir,
+            primary_evidence_enforce=primary_evidence_enforce,
+            dry_run=dry_run,
+            once=once,
+            config_path=config_path,
+            iterations=iteration,
+            jobs_dispatched=total_jobs_run,
+            exit_status=exit_code,
+        )
 
     # Validierung
     for job in jobs:
@@ -437,9 +578,6 @@ def run_scheduler_loop(
     print_job_summary(jobs, now)
 
     # Schleife
-    iteration = 0
-    total_jobs_run = 0
-
     while not _shutdown_requested:
         iteration += 1
         now = datetime.utcnow()
@@ -506,12 +644,32 @@ def run_scheduler_loop(
     print(f"Jobs ausgeführt: {total_jobs_run}")
     print("=" * 70 + "\n")
 
-    return 0
+    return finalize_scheduler_completion_evidence(
+        evidence_dir,
+        primary_evidence_enforce=primary_evidence_enforce,
+        dry_run=dry_run,
+        once=once,
+        config_path=config_path,
+        iterations=iteration,
+        jobs_dispatched=total_jobs_run,
+        exit_status=exit_code,
+    )
 
 
 def main(argv=None) -> int:
     """Main entry point."""
     args = parse_args(argv)
+
+    evidence_dir = Path(args.evidence_dir) if args.evidence_dir else None
+    primary_evidence_enforce = bool(args.primary_evidence_enforce)
+
+    cli_rc = validate_scheduler_evidence_cli(
+        evidence_dir=evidence_dir,
+        primary_evidence_enforce=primary_evidence_enforce,
+        dry_run=args.dry_run,
+    )
+    if cli_rc is not None:
+        return cli_rc
 
     # Signal-Handler registrieren
     signal.signal(signal.SIGINT, signal_handler)
@@ -548,6 +706,8 @@ def main(argv=None) -> int:
         verbose=args.verbose,
         use_registry=use_registry,
         notifier=notifier,
+        evidence_dir=evidence_dir,
+        primary_evidence_enforce=primary_evidence_enforce,
     )
 
 
