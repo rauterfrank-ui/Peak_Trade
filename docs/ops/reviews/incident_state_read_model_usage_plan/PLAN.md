@@ -15,7 +15,7 @@ The contract defines the minimum incident-state fields. Consumer authority remai
 - **risk gate** — caller-provided `limits.kill_switch`
 - **risk hook** — kill-switch behavior remains future work
 
-Canonical implementation evidence: `tests/webui/test_ops_cockpit.py` (payload + HTML assertions). Wave closeout: `docs/ops/reviews/incident_state_read_model_ops_cockpit_closeout/CLOSEOUT.txt`.
+Canonical implementation evidence: `tests/webui/test_ops_cockpit.py` (payload + HTML assertions). Wave closeout: `docs/ops/reviews/incident_state_read_model_ops_cockpit_closeout&#47;CLOSEOUT.txt`.
 
 ## Primary Usage Questions
 1. Was incident-stop invoked?
@@ -88,7 +88,7 @@ Why later:
 Also present (rollup, not CONTRACT minimum): `status`, `blocked`, `degraded`, `requires_operator_attention`, `summary`.
 
 **Partial / optional follow-ons (not payload gaps):**
-- **4-section PLAN HTML IA** — fields render in HTML; explicit Section 1–4 layout per `incident_state_read_model_ops_cockpit_plan/PLAN.md` may still be refined (display-only).
+- **4-section PLAN HTML IA** — fields render in HTML; explicit Section 1–4 layout per `incident_state_read_model_ops_cockpit_plan&#47;PLAN.md` may still be refined (display-only).
 - **`safety_state` projection** — `src/ops/safety_state.py` exposes a **subset** of `incident_state` in `incident_signal_subset`; full contract field projection not required for observation.
 
 **Still out of scope / unchanged:**
@@ -108,6 +108,6 @@ Current authority:
 - none yet for kill switch; still future work
 
 ## Recommended Next Slice
-- Hold incident-state ops-cockpit payload stable unless a concrete follow-up need arises (see `incident_state_read_model_ops_cockpit_closeout/CLOSEOUT.txt`).
+- Hold incident-state ops-cockpit payload stable unless a concrete follow-up need arises (see `incident_state_read_model_ops_cockpit_closeout&#47;CLOSEOUT.txt`).
 - Optional docs-only: sync downstream review artifacts if drift reappears.
 - Optional bounded follow-ons (separate slices): 4-section HTML IA polish; `safety_state` full contract-field projection (read-only).
