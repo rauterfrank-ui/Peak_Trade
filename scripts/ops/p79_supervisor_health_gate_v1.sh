@@ -1,35 +1,50 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# P79 — Supervisor Health Gate v1 (paper/shadow only)
+# P79 — Supervisor Health Gate v1 (paper/shadow runtime OR offline archive evidence pack)
 #
 # Exit codes:
 #   0 = OK
 #   2 = usage / config error
-#   3 = gate failed
+#   3 = gate failed (runtime mode)
 #
-# Env:
+# Runtime mode env:
 #   MODE                (required) paper|shadow
 #   OUT_DIR             (required) supervisor output dir (contains tick_*/)
 #   PIDFILE             (optional) pidfile path to validate (must be live if present)
 #   MAX_AGE_SEC         (optional) max allowed age for newest tick dir (default 300)
 #   REQUIRE_P76_FILES   (optional) 1 to require P76 artifacts per tick (default 1)
 #
+# Offline archive mode env (mutually exclusive with OUT_DIR runtime mode):
+#   ARCHIVE_ROOT        packed supervisor evidence directory (closeout + MANIFEST.sha256)
+#
 # Evidence:
-#   Writes to OUT_DIR/p79_health_gate_v1.json (json) and prints P79_GATE_OK / P79_GATE_FAIL
+#   Runtime: OUT_DIR/p79_health_gate_v1.json
+#   Archive: ARCHIVE_ROOT/p79_health_gate_v1.json
 
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 die_usage() { echo "P79_USAGE: $*" >&2; exit 2; }
 fail_gate()  { echo "P79_GATE_FAIL: $*" >&2; exit 3; }
 
 MODE="${MODE:-}"
 OUT_DIR="${OUT_DIR:-}"
+ARCHIVE_ROOT="${ARCHIVE_ROOT:-}"
 PIDFILE="${PIDFILE:-}"
 MAX_AGE_SEC="${MAX_AGE_SEC:-300}"
 REQUIRE_P76_FILES="${REQUIRE_P76_FILES:-1}"
 
-[ -n "${MODE}" ] || die_usage "MODE required (paper|shadow)"
+if [ -n "${ARCHIVE_ROOT}" ]; then
+  [ -z "${OUT_DIR}" ] || die_usage "ARCHIVE_ROOT mode is mutually exclusive with OUT_DIR runtime mode"
+  [ -d "${ARCHIVE_ROOT}" ] || fail_gate "archive_root_missing: ${ARCHIVE_ROOT}"
+  rc=0
+  python3 "${ROOT}/scripts/ops/p79_supervisor_evidence_manifest_verify_v0.py" \
+    --archive-root "${ARCHIVE_ROOT}" || rc=$?
+  exit "${rc}"
+fi
+
+[ -n "${MODE}" ] || die_usage "MODE required (paper|shadow) unless ARCHIVE_ROOT is set"
 [ "${MODE}" = "paper" ] || [ "${MODE}" = "shadow" ] || fail_gate "mode_not_allowed: ${MODE} (paper|shadow only)"
-[ -n "${OUT_DIR}" ] || die_usage "OUT_DIR required"
+[ -n "${OUT_DIR}" ] || die_usage "OUT_DIR required unless ARCHIVE_ROOT is set"
 [ -d "${OUT_DIR}" ] || fail_gate "out_dir_missing: ${OUT_DIR}"
 
 # pidfile validation (if provided + exists)
@@ -107,6 +122,7 @@ import time
 path, mode, out_dir, pidfile, pid, max_age, age, newest, miss = sys.argv[1:10]
 doc = {
     "version": "p79_health_gate_v1",
+    "gate_mode": "runtime_ticks",
     "ts_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
     "mode": mode,
     "out_dir": out_dir,
@@ -116,6 +132,7 @@ doc = {
     "newest_tick": newest,
     "newest_tick_age_sec": int(age),
     "missing_tick_artifacts": int(miss),
+    "evidence_non_authorizing": True,
     "overall_ok": True,
 }
 parent = os.path.dirname(path)
