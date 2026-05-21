@@ -66,6 +66,8 @@ Offline supervisor/daemon evidence pack: `scripts/ops/pack_online_readiness_supe
 
 P79 offline archive manifest gate: `scripts/ops/p79_supervisor_health_gate_v1.sh` with `ARCHIVE_ROOT` (or `scripts/ops/p79_supervisor_evidence_manifest_verify_v0.py`) validates packed supervisor evidence (`supervisor_session_closeout_v0.json` + `MANIFEST.sha256` via shared `verify_manifest_sha256()`); mutually exclusive with runtime tick mode; non-authorizing; does not start/stop supervisor, daemon, or launchctl.
 
+P101 post-stop operator hints: `scripts/ops/p101_stop_playbook_v1.sh` emits a non-executing hint block (`P101_POST_STOP_PRIMARY_EVIDENCE_OPERATOR_HINTS.txt`) after existing STOP semantics with copy-paste examples for `pack_online_readiness_supervisor_evidence_v0.py` and P79 `ARCHIVE_ROOT` verification; P101 does not execute pack or P79 archive verify automatically—operator must invoke them explicitly after STOP (non-authorizing). Online-daemon automatic pack remains unimplemented; p93/p91 status playbooks may still default to runtime `OUT_DIR` P79; runtime P79 tick `manifest.json` is not equivalent to §2a `MANIFEST.sha256` verification.
+
 ## 2b. Planning artifact durable retention v0
 
 `PLANNING_ARTIFACT_DURABLE_RETENTION_REQUIRED=true`

@@ -160,6 +160,18 @@ def test_canonical_owner_references_p79_archive_manifest_gate() -> None:
     assert "does not start/stop supervisor" in text
 
 
+def test_canonical_owner_references_p101_post_stop_operator_hints() -> None:
+    text = _owner_text()
+    assert "p101_stop_playbook_v1.sh" in text
+    assert "P101_POST_STOP_PRIMARY_EVIDENCE_OPERATOR_HINTS" in text
+    assert "pack_online_readiness_supervisor_evidence_v0.py" in text
+    assert "ARCHIVE_ROOT" in text
+    assert "does not execute pack" in text.lower()
+    assert "operator must" in text.lower()
+    assert "non-authorizing" in text
+    assert "Online-daemon automatic pack remains unimplemented" in text
+
+
 def test_p79_archive_root_mode_in_health_gate_shell() -> None:
     assert P79_SHELL.is_file()
     text = P79_SHELL.read_text(encoding="utf-8")
