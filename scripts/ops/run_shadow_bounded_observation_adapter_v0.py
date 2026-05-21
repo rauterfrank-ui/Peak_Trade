@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """Shadow bounded observation retention adapter v0 (plan-only default, Stage-3 gated execute).
 
+Taxonomy cross-reference (review-input-only): indexed in
+``docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md`` §10.
+
 Non-authorizing ops tooling. Does not clear HOLD, preflight BLOCKED, or GLB blockers.
+Does not grant Live/broker/exchange approval. Does not override scheduler, preflight, or operator approval boundaries.
 Default mode emits a command plan only; no wrapper or Shadow runtime subprocess.
 """
 
