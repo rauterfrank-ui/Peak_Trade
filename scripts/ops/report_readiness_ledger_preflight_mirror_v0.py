@@ -327,15 +327,41 @@ def derive_blockers(ledger_summary: dict[str, Any], preflight_summary: dict[str,
 def build_mirror(ctx: MirrorContext) -> dict[str, Any]:
     ledger = _load_json(ctx.ledger_path, ctx, label="ledger")
     preflight = _load_json(ctx.preflight_path, ctx, label="preflight")
+    return build_mirror_from_payloads(
+        ledger,
+        preflight,
+        ctx=ctx,
+        fixed_generated_at_utc=ctx.fixed_generated_at_utc,
+    )
 
-    ledger_summary = _check_ledger(ledger, ctx)
-    preflight_summary = _check_preflight(preflight, ctx)
+
+def build_mirror_from_payloads(
+    ledger: dict[str, Any] | None,
+    preflight: dict[str, Any] | None,
+    *,
+    ctx: MirrorContext | None = None,
+    fixed_generated_at_utc: str | None = None,
+) -> dict[str, Any]:
+    mirror_ctx = ctx or MirrorContext(
+        ledger_path=None,
+        preflight_path=None,
+        fixed_generated_at_utc=fixed_generated_at_utc,
+    )
+    if ledger is None:
+        mirror_ctx.add_issue("MISSING_LEDGER_JSON", "ledger payload missing")
+    if preflight is None:
+        mirror_ctx.add_issue("MISSING_PREFLIGHT_JSON", "preflight payload missing")
+
+    ledger_summary = _check_ledger(ledger, mirror_ctx)
+    preflight_summary = _check_preflight(preflight, mirror_ctx)
     mirror = _build_mirror_checks(ledger_summary, preflight_summary)
 
-    verdict = derive_verdict(ctx)
+    verdict = derive_verdict(mirror_ctx)
     mirror["mirror_check_pass"] = verdict == VERDICT_PASS_BLOCKED_SAFE
 
-    generated_at = ctx.fixed_generated_at_utc or os.environ.get("PEAK_TRADE_FIXED_GENERATED_AT_UTC")
+    generated_at = mirror_ctx.fixed_generated_at_utc or os.environ.get(
+        "PEAK_TRADE_FIXED_GENERATED_AT_UTC"
+    )
     if not generated_at:
         generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -347,7 +373,7 @@ def build_mirror(ctx: MirrorContext) -> dict[str, Any]:
         "mirror": mirror,
         "blockers": derive_blockers(ledger_summary, preflight_summary),
         "verdict": verdict,
-        "issues": [issue.as_dict() for issue in ctx.issues],
+        "issues": [issue.as_dict() for issue in mirror_ctx.issues],
     }
 
 
