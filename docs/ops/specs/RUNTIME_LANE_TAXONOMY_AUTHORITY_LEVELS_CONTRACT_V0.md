@@ -39,6 +39,15 @@ P101_POST_STOP_PACK_NOT_EXECUTED=true
 P101_POST_STOP_P79_VERIFY_NOT_EXECUTED=true
 P101_POST_STOP_OPERATOR_EXPLICIT_REQUIRED=true
 P101_POST_STOP_EVIDENCE_NON_AUTHORIZING=true
+P93_POST_STOP_WRAPPER_HINTS_IMPLEMENTED=true
+P93_POST_STOP_WRAPPER_REFERENCED=true
+P93_POST_STOP_P79_ARCHIVE_VERIFY_HINT_REFERENCED=true
+P93_POST_STOP_HINT_ONLY=true
+P93_POST_STOP_WRAPPER_NOT_EXECUTED=true
+P93_POST_STOP_PACK_NOT_EXECUTED=true
+P93_POST_STOP_P79_VERIFY_NOT_EXECUTED=true
+P93_POST_STOP_OPERATOR_EXPLICIT_REQUIRED=true
+P93_POST_STOP_EVIDENCE_NON_AUTHORIZING=true
 ONLINE_DAEMON_POST_STOP_PACK_WRAPPER_IMPLEMENTED=true
 ONLINE_DAEMON_POST_STOP_WRAPPER_OPERATOR_INVOKED=true
 ONLINE_DAEMON_POST_STOP_WRAPPER_NO_LAUNCHCTL=true
@@ -70,6 +79,7 @@ Non-goals:
 | Post-stop pack wrapper (operator-invoked, offline) | [run_online_readiness_post_stop_pack_v0.sh](../../../scripts/ops/run_online_readiness_post_stop_pack_v0.sh) + Preflight §2a |
 | P79 archive manifest gate (offline) | [p79_supervisor_health_gate_v1.sh](../../../scripts/ops/p79_supervisor_health_gate_v1.sh) `ARCHIVE_ROOT` + [p79_supervisor_evidence_manifest_verify_v0.py](../../../scripts/ops/p79_supervisor_evidence_manifest_verify_v0.py) |
 | P101 post-stop operator hints (non-executing) | [p101_stop_playbook_v1.sh](../../../scripts/ops/p101_stop_playbook_v1.sh) |
+| P93 post-stop operator hints (non-executing) | [p93_online_readiness_status_dashboard_v1.sh](../../../scripts/ops/p93_online_readiness_status_dashboard_v1.sh) |
 | Shared primary evidence finalize helper | [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) |
 | Generic Evidence Run Registry v1 | [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) |
 | Vocabulary forbidden equalities | [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md) |
@@ -280,7 +290,7 @@ Normative state (post P101 post-stop operator hints #3595):
 - Hints carry copy-paste examples for `run_online_readiness_post_stop_pack_v0.sh` (supervisor `OUT_DIR` → durable archive root; optional `--p79-archive-verify` for P79 **ARCHIVE_ROOT** offline manifest verification).
 - P101 **does not** execute wrapper, pack, or P79 archive verification automatically; operator must run them explicitly after STOP.
 - Hint semantics remain **non-authorizing**; do not clear HOLD, preflight BLOCKED, or Live/Testnet/broker/exchange gates.
-- p93/p91 status playbooks may still default to runtime `OUT_DIR` P79; post-stop pack hints are not wired there in v0.
+- p91 status playbooks may still default to runtime `OUT_DIR` P79; post-stop wrapper hints are not wired there in v0.
 
 Detail owner: [p101_stop_playbook_v1.sh](../../../scripts/ops/p101_stop_playbook_v1.sh).
 
@@ -304,6 +314,31 @@ Normative state (post post-stop pack wrapper #3600/#3601/#3602):
 - In-process online-daemon automatic pack remains **not implemented** (see §7c).
 
 Detail owner: [run_online_readiness_post_stop_pack_v0.sh](../../../scripts/ops/run_online_readiness_post_stop_pack_v0.sh).
+
+## 7g. P93 post-stop primary evidence operator hints (non-executing)
+
+```
+P93_POST_STOP_WRAPPER_HINTS_IMPLEMENTED=true
+P93_POST_STOP_WRAPPER_REFERENCED=true
+P93_POST_STOP_P79_ARCHIVE_VERIFY_HINT_REFERENCED=true
+P93_POST_STOP_HINT_ONLY=true
+P93_POST_STOP_WRAPPER_NOT_EXECUTED=true
+P93_POST_STOP_PACK_NOT_EXECUTED=true
+P93_POST_STOP_P79_VERIFY_NOT_EXECUTED=true
+P93_POST_STOP_OPERATOR_EXPLICIT_REQUIRED=true
+P93_POST_STOP_EVIDENCE_NON_AUTHORIZING=true
+```
+
+Normative state (post P93 post-stop operator hints #3599/#3601):
+
+- `scripts/ops/p93_online_readiness_status_dashboard_v1.sh` emits a post-stop **hint block** to stdout and `P93_POST_STOP_PRIMARY_EVIDENCE_OPERATOR_HINTS.txt` after existing dashboard/status semantics complete.
+- Hints carry copy-paste examples for `run_online_readiness_post_stop_pack_v0.sh` (supervisor `OUT_DIR` → durable archive root; optional `--p79-archive-verify` for P79 **ARCHIVE_ROOT** offline manifest verification).
+- P93 **does not** execute wrapper, pack, or P79 archive verification automatically; operator must run them explicitly after STOP.
+- Hint semantics remain **non-authorizing**; do not clear HOLD, preflight BLOCKED, or Live/Testnet/broker/exchange gates.
+- p91 status playbooks may still default to runtime `OUT_DIR` P79; post-stop wrapper hints are not wired there in v0.
+- In-process online-daemon automatic pack remains **not implemented** (see §7c).
+
+Detail owner: [p93_online_readiness_status_dashboard_v1.sh](../../../scripts/ops/p93_online_readiness_status_dashboard_v1.sh).
 
 ## 8. Canary and Live-Canary lanes
 
@@ -340,3 +375,4 @@ MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 - **v0.3** — P79 archive manifest gate marker sync (#3592): ARCHIVE_ROOT offline mode, shared manifest verify, runtime tick mode preserved, non-authorizing semantics indexed.
 - **v0.4** — P101 post-stop operator hint marker sync (#3595/#3596): non-executing hint block for pack + P79 ARCHIVE_ROOT verify; operator-explicit; p93/p91 wiring gap preserved.
 - **v0.5** — Post-stop pack wrapper cross-ref (#3600/#3601/#3602): operator-invoked wrapper indexed §7f; P101/P93 hints reference wrapper; in-process auto-pack deferred preserved.
+- **v0.6** — P93 post-stop wrapper hint marker sync (#3599/#3601/#3603): dedicated §7g P93 hint markers; p91 wiring gap preserved.
