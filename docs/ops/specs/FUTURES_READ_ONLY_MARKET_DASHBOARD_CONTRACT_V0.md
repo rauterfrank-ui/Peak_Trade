@@ -295,6 +295,17 @@ The dashboard must fail closed in display semantics:
 
 Fail-closed display does not enforce trading. It prevents misleading UI claims.
 
+## Lane taxonomy cross-reference (non-authorizing)
+
+This contract is the **canonical F5 read-only market dashboard** display boundary. Lane indexing and forbidden promotions are defined in [Runtime Lane Taxonomy + Authority Levels Contract v0](RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md):
+
+- lane_id `dashboard` with authority level `review_input_only`
+- `MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true`
+- `FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL` — dashboard, read models, SSR fixtures, registry rows, and test PASS **do not** imply approval or gate clearance
+- `MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true` — no Master V2 or Double Play live authority from dashboard display
+
+Dashboard ≠ Freigabe. Read-only status, diagnostic output, and bounded WebUI contract tests **do not** authorize Live, Testnet, broker, exchange, scheduler, or runtime execution.
+
 ## Validation / future tests
 
 Future tests should prove:
@@ -312,6 +323,7 @@ Future tests should prove:
 
 ## References
 
+- [Runtime Lane Taxonomy + Authority Levels Contract v0](RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) — lane_id `dashboard`, non-authorizing display indexing (§7h)
 - [Futures Capability Spec v0](FUTURES_CAPABILITY_SPEC_V0.md)
 - [Futures Instrument Metadata Contract v0](FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md)
 - [Futures Market Data Provenance Contract v0](FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md)

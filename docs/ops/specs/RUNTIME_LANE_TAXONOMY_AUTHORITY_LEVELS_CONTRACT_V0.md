@@ -53,6 +53,9 @@ ONLINE_DAEMON_POST_STOP_PACK_WRAPPER_IMPLEMENTED=true
 ONLINE_DAEMON_POST_STOP_WRAPPER_OPERATOR_INVOKED=true
 ONLINE_DAEMON_POST_STOP_WRAPPER_NO_LAUNCHCTL=true
 ONLINE_DAEMON_POST_STOP_WRAPPER_NON_AUTHORIZING=true
+MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
+MARKET_DASHBOARD_NO_APPROVAL_AUTHORITY=true
+MARKET_DASHBOARD_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true
 MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 ```
 
@@ -85,6 +88,7 @@ Non-goals:
 | Generic Evidence Run Registry v1 | [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) |
 | Vocabulary forbidden equalities | [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md) |
 | OPS Cockpit non-authority | [OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md](OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md) |
+| F5 read-only market dashboard (display) | [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) |
 | Credential boundaries | [RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md](../runbooks/RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md) |
 
 **Rule:** This spec is the **lane ID index**. Retention rules remain in preflight §2a/§2b.
@@ -343,6 +347,23 @@ Normative state (post P93 post-stop operator hints #3599/#3601):
 
 Detail owner: [p93_online_readiness_status_dashboard_v1.sh](../../../scripts/ops/p93_online_readiness_status_dashboard_v1.sh).
 
+## 7h. F5 read-only market dashboard (display, non-authorizing)
+
+```
+MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
+MARKET_DASHBOARD_NO_APPROVAL_AUTHORITY=true
+MARKET_DASHBOARD_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true
+```
+
+Normative state (post Market Dashboard taxonomy cross-ref):
+
+- F5 read-only market dashboard surfaces map to lane_id `dashboard` with authority level `review_input_only` (see §3).
+- Detail owner: [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) — futures-aware read-only display boundary (F5 stage).
+- WebUI orientation surface [MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md) remains orthogonal Kraken/OHLCV/dummy lineage; it does **not** replace the F5 contract owner.
+- Dashboard display, SSR read models, registry rows, and test status **do not** grant approval, gate clearance, Live/Testnet/broker/exchange permission, scheduler activation, or runtime start.
+- `FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL` applies (see §5).
+- Master V2 / Double Play boundaries stay **protected**; dashboard must not reimplement selection or live decision authority (see §9).
+
 ## 8. Canary and Live-Canary lanes
 
 - `canary` and `live_canary` governance docs are **not** Live authority.
@@ -380,3 +401,4 @@ MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 - **v0.5** — Post-stop pack wrapper cross-ref (#3600/#3601/#3602): operator-invoked wrapper indexed §7f; P101/P93 hints reference wrapper; in-process auto-pack deferred preserved.
 - **v0.6** — P93 post-stop wrapper hint marker sync (#3599/#3601/#3603): dedicated §7g P93 hint markers; p91 wiring gap preserved.
 - **v0.7** — P67/P72 library scheduler boundary opt-in: `scheduler_boundary_enforce` default off; shared guard at library entry; `SCHEDULER_LIBRARY_BYPASS_RESIDUAL` preserved.
+- **v0.8** — F5 read-only market dashboard taxonomy cross-ref: §7h markers; `dashboard` lane `review_input_only`; F5 contract owner indexed.
