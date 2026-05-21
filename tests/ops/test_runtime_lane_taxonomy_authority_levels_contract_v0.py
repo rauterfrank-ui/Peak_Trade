@@ -194,6 +194,8 @@ def test_scheduler_boundary_markers_aligned_with_main() -> None:
 def test_scheduler_library_bypass_residual_preserved() -> None:
     text = _spec_text()
     assert "SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true" in text
+    assert "P67_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_IMPLEMENTED=true" in text
+    assert "scheduler_boundary_enforce" in text
     assert "run_shadow_session_scheduler_v1()" in text
     assert "bypass" in text.lower()
     assert "P72" in text

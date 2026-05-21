@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Literal, Optional
+from typing import Any, Literal, Mapping, Optional
 
 from src.ops.common import to_jsonable_v1
 from src.ops.p66.run_online_readiness_operator_entrypoint_v1 import (
@@ -33,10 +33,26 @@ class P67RunContextV1:
     interval_seconds: float = 60.0
     recorded_price_source: Optional[Path] = None
     primary_evidence_enforce: bool = False
+    scheduler_boundary_enforce: bool = False
+    scheduler_preflight_status: Optional[Mapping[str, Any]] = None
 
 
 def _repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
+
+
+def _maybe_assert_scheduler_boundary(ctx: P67RunContextV1) -> None:
+    if not ctx.scheduler_boundary_enforce:
+        return
+    repo_root = _repo_root()
+    if str(repo_root) not in sys.path:
+        sys.path.insert(0, str(repo_root))
+    from scripts.ops.scheduler_start_boundary_guard_v0 import assert_scheduler_start_authorized
+
+    assert_scheduler_start_authorized(
+        preflight_status=ctx.scheduler_preflight_status,
+        repo_root=repo_root if ctx.scheduler_preflight_status is None else None,
+    )
 
 
 def _maybe_finalize_primary_evidence(ctx: P67RunContextV1) -> None:
@@ -74,6 +90,7 @@ def run_shadow_session_scheduler_v1(ctx: P67RunContextV1) -> dict:
     - optional evidence write if ctx.out_dir set
     Returns dict-only boundary (jsonable).
     """
+    _maybe_assert_scheduler_boundary(ctx)
     if ctx.mode not in ("paper", "shadow"):
         raise PermissionError(f"ERR: P67 only supports paper/shadow, got mode={ctx.mode!r}")
     if ctx.iterations < 1:

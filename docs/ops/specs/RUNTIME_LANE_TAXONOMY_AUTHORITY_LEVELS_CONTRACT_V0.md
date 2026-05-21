@@ -23,6 +23,7 @@ EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
 TESTNET_PASS_DOES_NOT_AUTHORIZE_LIVE=true
 SCHEDULER_BOUNDARY_LAUNCHER_GUARDED=true
 P67_CLI_SCHEDULER_BOUNDARY_GUARDED=true
+P67_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_IMPLEMENTED=true
 SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true
 SCHEDULER_COMPLETION_PRIMARY_EVIDENCE_CLOSEOUT_OPT_IN=true
 SUPERVISOR_EVIDENCE_PACK_CLOSEOUT_OPT_IN=true
@@ -195,14 +196,16 @@ Illustrative defaults for `paper`, `shadow`, and `testnet` (all bounded lanes):
 ```
 SCHEDULER_BOUNDARY_LAUNCHER_GUARDED=true
 P67_CLI_SCHEDULER_BOUNDARY_GUARDED=true
+P67_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_IMPLEMENTED=true
 SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true
 ```
 
-Normative state (post scheduler boundary hard-block #3584/#3585):
+Normative state (post scheduler boundary hard-block #3584/#3585; library opt-in):
 
 - `scripts/run_scheduler.py` non-dry-run entry is **hard-blocked** via shared `scripts/ops/scheduler_start_boundary_guard_v0.py` (`assert_scheduler_start_authorized()`).
 - `src/ops/p67/shadow_session_scheduler_cli_v1.py` `main()` is **hard-blocked** by the same shared guard before `run_shadow_session_scheduler_v1()`.
-- Direct library calls to `run_shadow_session_scheduler_v1()` (unit tests, P72 pack) **bypass** the CLI guard — residual risk; see [SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md) §7.
+- Direct library calls to `run_shadow_session_scheduler_v1()` (unit tests, P72 pack) **bypass** the CLI guard by default — residual risk; see [SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md) §7–§7b.
+- Opt-in `scheduler_boundary_enforce=True` on `P67RunContextV1` / `P72PackContextV1` invokes the same shared guard at library entry; default off preserves unit tests and legacy library callers.
 
 Normative rules:
 
@@ -376,3 +379,4 @@ MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 - **v0.4** — P101 post-stop operator hint marker sync (#3595/#3596): non-executing hint block for pack + P79 ARCHIVE_ROOT verify; operator-explicit; p93/p91 wiring gap preserved.
 - **v0.5** — Post-stop pack wrapper cross-ref (#3600/#3601/#3602): operator-invoked wrapper indexed §7f; P101/P93 hints reference wrapper; in-process auto-pack deferred preserved.
 - **v0.6** — P93 post-stop wrapper hint marker sync (#3599/#3601/#3603): dedicated §7g P93 hint markers; p91 wiring gap preserved.
+- **v0.7** — P67/P72 library scheduler boundary opt-in: `scheduler_boundary_enforce` default off; shared guard at library entry; `SCHEDULER_LIBRARY_BYPASS_RESIDUAL` preserved.
