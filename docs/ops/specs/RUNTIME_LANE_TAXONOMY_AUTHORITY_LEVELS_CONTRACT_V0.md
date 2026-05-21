@@ -9,7 +9,7 @@ last_updated: 2026-05-21
 
 ## 1. Purpose and non-goals
 
-This contract is the **normative lane ID and authority-level index** for Peak_Trade runtime, evidence, planning, and display surfaces. It centralizes taxonomy before any Generic Evidence Run Registry v1 is planned or implemented.
+This contract is the **normative lane ID and authority-level index** for Peak_Trade runtime, evidence, planning, and display surfaces. It centralizes taxonomy and cross-links implemented ops tooling (Generic Evidence Run Registry v1, scheduler boundary guards) without substituting for those owners.
 
 It does **not** authorize runtime, clear HOLD or GLB blockers, grant Live or Testnet permission, or substitute for subsystem owners (preflight retention, GLB register, Canary entry criteria, scheduler daemon policy).
 
@@ -17,17 +17,19 @@ Machine markers (stable literals for contract tests):
 
 ```
 RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0=true
-GENERIC_EVIDENCE_REGISTRY_V1_DEFERRED=true
+GENERIC_EVIDENCE_REGISTRY_V1_IMPLEMENTED=true
+GENERIC_EVIDENCE_REGISTRY_V1_DEFERRED=false
 EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
 TESTNET_PASS_DOES_NOT_AUTHORIZE_LIVE=true
-SCHEDULER_BOUNDARY_GAP_ACKNOWLEDGED=true
+SCHEDULER_BOUNDARY_LAUNCHER_GUARDED=true
+P67_CLI_SCHEDULER_BOUNDARY_GUARDED=true
+SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true
 MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 ```
 
 Non-goals:
 
-- Generic Evidence Run Registry v1 implementation
-- Scheduler daemon process-side guards
+- Additional scheduler completion or primary-evidence retention enforcement beyond canonical owners
 - Runtime, adapter, or wrapper execution
 - Master V2 / Double Play logic changes
 - Go/No-Go approval or gate clearance
@@ -42,6 +44,8 @@ Non-goals:
 | GLB-014 / GLB-015 | [MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md](MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) |
 | Canary Live entry | [CANARY_LIVE_ENTRY_CRITERIA.md](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) |
 | Scheduler HOLD boundary | [SCHEDULER_DAEMON.md](../../SCHEDULER_DAEMON.md) |
+| Scheduler hard-block contract | [SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md) |
+| Generic Evidence Run Registry v1 | [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) |
 | Vocabulary forbidden equalities | [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md) |
 | OPS Cockpit non-authority | [OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md](OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md) |
 | Credential boundaries | [RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md](../runbooks/RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md) |
@@ -107,14 +111,17 @@ The following promotion literals are **always forbidden** unless an explicit ext
 
 Readiness aggregate verdicts such as `READINESS_EVIDENCE_LEDGER_PASS_BLOCKED_SAFE` and `READINESS_GATE_SNAPSHOT_PASS_BLOCKED_SAFE` remain **non-authorizing**; blockers persist.
 
-## 6. Future registry field schema (v1 input — deferred)
+## 6. Generic Evidence Run Registry v1 field schema (implemented baseline)
 
 ```
-GENERIC_EVIDENCE_REGISTRY_V1_DEFERRED=true
+GENERIC_EVIDENCE_REGISTRY_V1_IMPLEMENTED=true
+GENERIC_EVIDENCE_REGISTRY_V1_DEFERRED=false
 REGISTRY_V1_LANE_FIELD_SCHEMA_DEFINED=true
 ```
 
-Required field names for each lane row in a future Generic Evidence Run Registry v1:
+Implementation owner: `scripts/ops/build_generic_evidence_run_registry_v1.py` (non-authorizing index). Registry PASS does not grant gate clearance or Live/Testnet/broker authority.
+
+Required field names for each lane row in Generic Evidence Run Registry v1:
 
 - `lane_id`
 - `lane_kind`
@@ -147,20 +154,26 @@ Illustrative defaults for `paper`, `shadow`, and `testnet` (all bounded lanes):
 | can_touch_broker_exchange | false |
 | protected_master_v2_boundary | true |
 
-## 7. Scheduler lane — documented boundary gap
+## 7. Scheduler lane — launcher and CLI hard-block (partial verification)
 
 ```
-SCHEDULER_BOUNDARY_VERIFIED=false
+SCHEDULER_BOUNDARY_LAUNCHER_GUARDED=true
+P67_CLI_SCHEDULER_BOUNDARY_GUARDED=true
+SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true
 ```
 
-In the 2026-05-21 read-only runtime lane separation audit, the scheduler boundary was **documented** but **not verified as a hard process-side block**. Adapter-level composition gates exist for Paper-only paths; raw scheduler daemon start under `HOLD_NO_PAPER_RUN` relies on operator procedure and [SCHEDULER_DAEMON.md](../../SCHEDULER_DAEMON.md).
+Normative state (post scheduler boundary hard-block #3584/#3585):
+
+- `scripts/run_scheduler.py` non-dry-run entry is **hard-blocked** via shared `scripts/ops/scheduler_start_boundary_guard_v0.py` (`assert_scheduler_start_authorized()`).
+- `src/ops/p67/shadow_session_scheduler_cli_v1.py` `main()` is **hard-blocked** by the same shared guard before `run_shadow_session_scheduler_v1()`.
+- Direct library calls to `run_shadow_session_scheduler_v1()` (unit tests, P72 pack) **bypass** the CLI guard — residual risk; see [SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md) §7.
 
 Normative rules:
 
 - Scheduler diagnostics (`--dry-run --once`) are **planning_only**; they do not authorize daemon activation.
 - Scheduler lane evidence **cannot infer** Live, Testnet, broker, or exchange authority.
 - Explicit gate and operator approval remain required before any runtime scheduler execution.
-- Hard-block semantics: [SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md) (`scripts/run_scheduler.py` non-dry-run guard).
+- Hard-block semantics: [SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md).
 
 ## 8. Canary and Live-Canary lanes
 
@@ -185,10 +198,11 @@ MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
 |---|---|
 | Readiness Evidence Ledger v0 | Triple-lane `paper` / `shadow` / `testnet` bounded evidence aggregate; `readiness_aggregate`; non-authorizing |
 | Readiness Ledger Preflight Mirror v0 | Consistency check between ledger and preflight; `review_input_only` |
-| Readiness Gate Snapshot v0 | Non-authorizing composite of ledger + preflight + mirror; `readiness_aggregate` |
+| Readiness Gate Snapshot v0 | Non-authorizing composite of ledger + preflight + mirror (+ optional registry section); `readiness_aggregate` |
 
-`GENERIC_EVIDENCE_REGISTRY_V1_DEFERRED=true` — Registry v1 planning and implementation remain deferred until this contract is merged and operators re-evaluate registry safety preconditions.
+`GENERIC_EVIDENCE_REGISTRY_V1_IMPLEMENTED=true` — Registry v1 is implemented offline via `build_generic_evidence_run_registry_v1.py`; it remains **non-authorizing** and does not clear HOLD, preflight BLOCKED, or Live/Testnet/broker gates.
 
 ## 11. Revision
 
 - **v0** — Initial lane taxonomy, authority levels, forbidden promotions, scheduler gap acknowledgment, Master V2 protection, registry field schema (deferred).
+- **v0.1** — Truth-marker sync: registry v1 implemented; scheduler launcher + P67 CLI guarded; library bypass residual preserved.
