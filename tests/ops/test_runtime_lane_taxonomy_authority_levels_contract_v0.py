@@ -20,6 +20,7 @@ SUPERVISOR_PACK_SCRIPT = (
 PRIMARY_EVIDENCE_HELPER = REPO_ROOT / "scripts" / "ops" / "primary_evidence_retention_v0.py"
 P79_SHELL = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_health_gate_v1.sh"
 P79_VERIFY = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_evidence_manifest_verify_v0.py"
+P101_SCRIPT = REPO_ROOT / "scripts" / "ops" / "p101_stop_playbook_v1.sh"
 PREFLIGHT_OWNER = (
     REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 )
@@ -129,6 +130,14 @@ def test_required_machine_markers_present() -> None:
         "P79_SUPERVISOR_PRIMARY_EVIDENCE_MANIFEST_VERIFY=true",
         "P79_SUPERVISOR_RUNTIME_TICK_MODE_PRESERVED=true",
         "P79_SUPERVISOR_GATE_NON_AUTHORIZING=true",
+        "P101_POST_STOP_PRIMARY_EVIDENCE_HINTS_IMPLEMENTED=true",
+        "P101_POST_STOP_PACK_HINT_REFERENCED=true",
+        "P101_POST_STOP_P79_ARCHIVE_VERIFY_HINT_REFERENCED=true",
+        "P101_POST_STOP_HINT_ONLY=true",
+        "P101_POST_STOP_PACK_NOT_EXECUTED=true",
+        "P101_POST_STOP_P79_VERIFY_NOT_EXECUTED=true",
+        "P101_POST_STOP_OPERATOR_EXPLICIT_REQUIRED=true",
+        "P101_POST_STOP_EVIDENCE_NON_AUTHORIZING=true",
         "MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true",
     ):
         assert marker in text
@@ -328,3 +337,29 @@ def test_p79_archive_manifest_gate_marker_aligned() -> None:
     assert "runtime tick" in text.lower() or "Runtime tick" in text
     assert "launchctl" in text.lower()
     assert "does not clear HOLD" in text or "non-authorizing" in text.lower()
+
+
+def test_p101_post_stop_hint_marker_aligned() -> None:
+    assert P101_SCRIPT.is_file()
+    text = _spec_text()
+    for marker in (
+        "P101_POST_STOP_PRIMARY_EVIDENCE_HINTS_IMPLEMENTED=true",
+        "P101_POST_STOP_PACK_HINT_REFERENCED=true",
+        "P101_POST_STOP_P79_ARCHIVE_VERIFY_HINT_REFERENCED=true",
+        "P101_POST_STOP_HINT_ONLY=true",
+        "P101_POST_STOP_PACK_NOT_EXECUTED=true",
+        "P101_POST_STOP_P79_VERIFY_NOT_EXECUTED=true",
+        "P101_POST_STOP_OPERATOR_EXPLICIT_REQUIRED=true",
+        "P101_POST_STOP_EVIDENCE_NON_AUTHORIZING=true",
+    ):
+        assert marker in text
+    assert "p101_stop_playbook_v1.sh" in text
+    assert "P101_POST_STOP_PRIMARY_EVIDENCE_OPERATOR_HINTS.txt" in text
+    assert "pack_online_readiness_supervisor_evidence_v0.py" in text
+    assert "ARCHIVE_ROOT" in text
+    assert "does not execute pack" in text.lower() or "does not** execute pack" in text
+    assert "operator must run" in text.lower() or "explicitly after STOP" in text
+    assert "non-authorizing" in text.lower()
+    assert "p93/p91" in text or "p93" in text
+    assert "SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true" in text
+    assert "Online daemon automatic session closeout pack is **not implemented**" in text
