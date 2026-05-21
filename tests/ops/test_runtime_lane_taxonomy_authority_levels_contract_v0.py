@@ -346,6 +346,28 @@ def test_readiness_script_taxonomy_reciprocal_pointer_aligned() -> None:
         assert "does not override" in text.lower() or "do not override" in text.lower()
 
 
+def test_readiness_ledger_bounded_observation_adapter_cross_ref_aligned() -> None:
+    assert READINESS_LEDGER_SCRIPT.is_file()
+    text = READINESS_LEDGER_SCRIPT.read_text(encoding="utf-8")
+    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in text
+    assert "§10" in text or "section 10" in text.lower()
+    assert "bounded observation" in text.lower()
+    assert "run_paper_only_bounded_observation_adapter_v0.py" in text or (
+        "shadow_bounded_observation_" in text and "testnet_bounded_observation_" in text
+    )
+    assert "shadow_bounded_observation_" in text
+    assert "testnet_bounded_observation_" in text
+    assert "review-input-only" in text.lower() or "review input only" in text.lower()
+    assert "non-authorizing" in text.lower()
+    assert "broker" in text.lower() or "exchange" in text.lower()
+    assert "live" in text.lower()
+    assert "preflight" in text.lower()
+    assert "scheduler" in text.lower() or "operator" in text.lower()
+    assert "does not override" in text.lower() or "do not override" in text.lower()
+    assert "--execute" in text or "adapter" in text.lower()
+    assert "stage-3" in text.lower() or "stage 3" in text.lower()
+
+
 def test_bounded_observation_adapters_taxonomy_cross_ref_aligned() -> None:
     text = _spec_text()
     for marker in (
