@@ -12,6 +12,8 @@ PAPER_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_paper_only_bounded_observat
 SHADOW_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_shadow_bounded_observation_adapter_v0.py"
 TESTNET_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_testnet_bounded_observation_adapter_v0.py"
 SHARED_HELPER = REPO_ROOT / "scripts" / "ops" / "primary_evidence_retention_v0.py"
+P79_SHELL = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_health_gate_v1.sh"
+P79_VERIFY = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_evidence_manifest_verify_v0.py"
 
 
 def _owner_text() -> str:
@@ -139,6 +141,45 @@ def test_canonical_owner_references_supervisor_pack_closeout() -> None:
     text = _owner_text()
     assert "pack_online_readiness_supervisor_evidence_v0.py" in text
     assert "supervisor_session_closeout_v0" in text
+
+
+def test_canonical_owner_references_p79_archive_manifest_gate() -> None:
+    text = _owner_text()
+    assert "p79_supervisor_health_gate_v1.sh" in text
+    assert "ARCHIVE_ROOT" in text
+    assert "verify_manifest_sha256" in text
+    assert "supervisor_session_closeout_v0" in text
+    assert "MANIFEST.sha256" in text
+    assert "non-authorizing" in text
+    assert "does not start/stop supervisor" in text
+
+
+def test_p79_archive_root_mode_in_health_gate_shell() -> None:
+    assert P79_SHELL.is_file()
+    text = P79_SHELL.read_text(encoding="utf-8")
+    assert "ARCHIVE_ROOT" in text
+    assert "mutually exclusive" in text
+    assert "p79_supervisor_evidence_manifest_verify_v0.py" in text
+    assert "evidence_non_authorizing" in text
+
+
+def test_p79_verifier_reuses_shared_manifest_helper() -> None:
+    assert P79_VERIFY.is_file()
+    text = P79_VERIFY.read_text(encoding="utf-8")
+    assert "verify_manifest_sha256" in text
+    assert "primary_evidence_retention_v0" in text
+    assert "def verify_manifest_sha256" not in text
+    assert "subprocess" not in text
+    assert "launchctl " not in text
+
+
+def test_p79_verifier_checks_closeout_and_manifest_non_authorizing() -> None:
+    text = P79_VERIFY.read_text(encoding="utf-8")
+    assert "CLOSEOUT_FILENAME" in text or "supervisor_session_closeout_v0" in text
+    assert "MANIFEST_FILENAME" in text or "MANIFEST.sha256" in text
+    assert "evidence_non_authorizing" in text
+    assert "LIVE_ALLOWED" not in text
+    assert "BROKER_EXCHANGE_ALLOWED" not in text
 
 
 def test_canonical_owner_references_p67_p72_opt_in_enforce() -> None:
