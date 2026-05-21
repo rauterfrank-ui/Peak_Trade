@@ -76,11 +76,28 @@ Shared guard module: `scripts/ops/scheduler_start_boundary_guard_v0.py` exposes 
 
 ## 7. Residual surface (library bypass)
 
-Direct calls to `run_shadow_session_scheduler_v1()` (library API, unit tests, P72 pack) bypass the CLI guard. Operators must not treat library bypass as authorized scheduler activation under blocked preflight.
+Direct calls to `run_shadow_session_scheduler_v1()` (library API, unit tests, P72 pack) bypass the CLI guard by default. Operators must not treat library bypass as authorized scheduler activation under blocked preflight.
 
 ## 7a. Scheduler completion evidence (opt-in)
 
 Scheduler run-completion primary evidence (`MANIFEST.sha256` via shared `finalize_primary_evidence_root()`) is **opt-in** on `scripts/run_scheduler.py` via `--primary-evidence-enforce` and `--evidence-dir`. Default off. Does not alter start guard rules in §3–§4. Completion evidence remains **non-authorizing**.
+
+## 7b. P67/P72 library scheduler boundary (opt-in)
+
+```
+P67_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_IMPLEMENTED=true
+SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true
+```
+
+Normative state (post P67/P72 library scheduler boundary opt-in):
+
+- `P67RunContextV1` and `P72PackContextV1` expose `scheduler_boundary_enforce: bool = False` (default off).
+- Optional `scheduler_preflight_status` supports offline contract tests via dependency injection.
+- When `scheduler_boundary_enforce=True`, `run_shadow_session_scheduler_v1()` calls shared `assert_scheduler_start_authorized()` **before** iteration/workload work.
+- P72 pass-through forwards enforce + optional preflight status to P67 context.
+- P67 CLI and `scripts/run_scheduler.py` behavior **unchanged**; CLI guard remains before library call with enforce default off.
+- Default-off means direct library callers may still bypass unless they opt in — `SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true` preserved.
+- Opt-in guard remains **non-authorizing**; does not clear HOLD, preflight BLOCKED, or Live/Testnet/broker gates.
 
 ## 8. Master V2 / Double Play
 
@@ -94,3 +111,4 @@ This contract does not authorize Master V2 or Double Play selection or live exec
 
 - **v0** — Initial hard-block markers + launcher guard requirement.
 - **v0.1** — Document opt-in scheduler completion evidence closeout (§7a); start guard unchanged.
+- **v0.2** — P67/P72 library scheduler boundary opt-in (§7b); default off; shared guard reused; CLI/launcher unchanged.

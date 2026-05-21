@@ -5,7 +5,7 @@ from __future__ import annotations
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Mapping, Optional
 
 from src.ops.p67 import run_shadow_session_scheduler_v1
 from src.ops.p67.shadow_session_scheduler_v1 import P67RunContextV1
@@ -22,6 +22,8 @@ class P72PackContextV1:
     iterations: int = 1
     interval_seconds: float = 0.0
     primary_evidence_enforce: bool = False
+    scheduler_boundary_enforce: bool = False
+    scheduler_preflight_status: Optional[Mapping[str, Any]] = None
 
 
 def _repo_root() -> Path:
@@ -74,6 +76,8 @@ def run_shadowloop_pack_v1(ctx: P72PackContextV1) -> Dict[str, Any]:
         iterations=ctx.iterations,
         interval_seconds=ctx.interval_seconds,
         primary_evidence_enforce=ctx.primary_evidence_enforce,
+        scheduler_boundary_enforce=ctx.scheduler_boundary_enforce,
+        scheduler_preflight_status=ctx.scheduler_preflight_status,
     )
     loop_out = run_shadow_session_scheduler_v1(p67_ctx)
 
