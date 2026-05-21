@@ -160,7 +160,7 @@ Normative rules:
 - Scheduler diagnostics (`--dry-run --once`) are **planning_only**; they do not authorize daemon activation.
 - Scheduler lane evidence **cannot infer** Live, Testnet, broker, or exchange authority.
 - Explicit gate and operator approval remain required before any runtime scheduler execution.
-- **Scheduler guard implementation is out of scope** for this contract PR and remains a separate future scope if ever pursued.
+- Hard-block semantics: [SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md) (`scripts/run_scheduler.py` non-dry-run guard).
 
 ## 8. Canary and Live-Canary lanes
 
