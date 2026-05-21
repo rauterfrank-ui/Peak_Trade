@@ -56,7 +56,7 @@ The following are **forbidden as primary evidence** (supporting or documentary o
 
 Future run selectors and adapters must **reject or block** a run plan when primary evidence retention cannot be guaranteed. **No gate clearance** may be inferred from degraded or documentary evidence alone. Completing one bounded Paper observation run (for example Paper120) does **not** impose an automatic **24h** or **72h** rerun requirement.
 
-Reference implementation: `scripts/ops/run_paper_only_bounded_observation_adapter_v0.py` (plan-only default; execute requires approval record; archive root outside `/tmp`).
+Reference implementation: `scripts/ops/run_paper_only_bounded_observation_adapter_v0.py` and shared manifest helpers in `scripts/ops/primary_evidence_retention_v0.py` (plan-only default; execute requires approval record; archive root outside `/tmp`; `MANIFEST.sha256` verified after durable copy).
 
 ## 2b. Planning artifact durable retention v0
 

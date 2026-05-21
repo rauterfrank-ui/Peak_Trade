@@ -8,7 +8,6 @@ Default mode emits a command plan only; no Testnet runtime subprocess.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
 import shutil
@@ -18,6 +17,15 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping, Optional, Sequence
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from scripts.ops.primary_evidence_retention_v0 import (
+    verify_manifest_sha256,
+    write_manifest_sha256 as _write_manifest_sha256,
+)
 
 ADAPTER_VERSION = "cli_testnet_evidence_flow_composition_v0"
 STAGING_SCRIPT = "scripts/ops/run_testnet_bounded_evidence_staging_v0.sh"
@@ -400,40 +408,6 @@ def _default_subprocess_runner(
         if stderr not in (None, subprocess.DEVNULL):
             stderr.close()
     return int(proc.returncode or 0)
-
-
-def _write_manifest_sha256(staging_root: Path) -> None:
-    lines: list[str] = []
-    for path in sorted(p for p in staging_root.rglob("*") if p.is_file()):
-        if path.name == "MANIFEST.sha256":
-            continue
-        rel = path.relative_to(staging_root).as_posix()
-        digest = hashlib.sha256(path.read_bytes()).hexdigest()
-        lines.append(f"{digest}  {rel}")
-    (staging_root / "MANIFEST.sha256").write_text(
-        "\n".join(lines) + ("\n" if lines else ""),
-        encoding="utf-8",
-    )
-
-
-def verify_manifest_sha256(root: Path) -> tuple[bool, str]:
-    manifest = root / "MANIFEST.sha256"
-    if not manifest.is_file():
-        return False, "MANIFEST.sha256 missing"
-    for raw in manifest.read_text(encoding="utf-8").splitlines():
-        line = raw.strip()
-        if not line:
-            continue
-        parts = line.split(None, 1)
-        if len(parts) != 2:
-            return False, f"invalid manifest line: {line!r}"
-        digest, rel = parts
-        path = root / rel
-        if not path.is_file():
-            return False, f"missing manifest entry: {rel}"
-        if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
-            return False, f"checksum mismatch: {rel}"
-    return True, ""
 
 
 def _write_closeout_artifacts(
