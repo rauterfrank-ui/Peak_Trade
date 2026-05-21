@@ -2,7 +2,13 @@
 """Build an offline readiness/evidence ledger from a runtime evidence archive root.
 
 Taxonomy cross-reference (review-input-only): indexed in
-``docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md`` §10.
+``docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md`` §10
+(readiness aggregate and bounded observation retention adapters).
+
+Default shadow/testnet run IDs use the bounded observation evidence family
+(``shadow_bounded_observation_*``, ``testnet_bounded_observation_*``) as
+review-input-only archive inputs — ledger PASS does not authorize adapter
+``--execute``, Stage-3 escalation, or runtime start.
 
 Non-authorizing: review-input-only; does not start runtime, read secrets, or grant
 Live/Testnet/broker/exchange approval or trading authorization. Does not override
