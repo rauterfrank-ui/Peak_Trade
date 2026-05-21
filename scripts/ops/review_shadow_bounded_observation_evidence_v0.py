@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
-"""Review Shadow bounded dry-run observation evidence without running anything."""
+"""Review Shadow bounded dry-run observation evidence without running anything.
+
+Taxonomy cross-reference (review-input-only): indexed in
+``docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md`` §10
+(bounded observation evidence review scripts).
+
+Non-authorizing offline review only. Does not execute bounded observation adapters.
+Does not grant Live/broker/exchange approval. Does not override scheduler, preflight,
+or operator approval boundaries.
+"""
 
 from __future__ import annotations
 
