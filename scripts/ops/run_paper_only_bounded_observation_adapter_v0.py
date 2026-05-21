@@ -8,7 +8,6 @@ Default mode emits a command plan only; no scheduler or paper runtime subprocess
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
 import shutil
@@ -18,6 +17,15 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping, Optional, Sequence
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from scripts.ops.primary_evidence_retention_v0 import (
+    verify_manifest_sha256,
+    write_manifest_sha256 as _write_manifest_sha256,
+)
 
 ADAPTER_VERSION = "cli_adapter_scheduler_composition_v0"
 ALLOWED_JOB = "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0"
@@ -382,18 +390,6 @@ def _default_subprocess_runner(
     return int(proc.returncode or 0)
 
 
-def _write_manifest_sha256(staging_root: Path) -> None:
-    lines: list[str] = []
-    for path in sorted(p for p in staging_root.rglob("*") if p.is_file()):
-        if path.name == "MANIFEST.sha256":
-            continue
-        rel = path.relative_to(staging_root).as_posix()
-        digest = hashlib.sha256(path.read_bytes()).hexdigest()
-        lines.append(f"{digest}  {rel}")
-    manifest = staging_root / "MANIFEST.sha256"
-    manifest.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
-
-
 def execute_plan(
     ctx: ExecuteContext,
     plan: AdapterPlan,
@@ -449,6 +445,11 @@ def execute_plan(
         else:
             shutil.copy2(item, dest)
 
+    ok, reason = verify_manifest_sha256(archive_dest)
+    if not ok:
+        print(reason, file=sys.stderr)
+        return VALIDATION_EXIT
+
     pointer = ctx.staging_root / "ARCHIVE_POINTER.md"
     pointer.write_text(
         "\n".join(
@@ -457,6 +458,7 @@ def execute_plan(
                 f"ARCHIVE_PATH={archive_dest}",
                 f"COPY_UTC={datetime.now(timezone.utc).isoformat()}",
                 "ARCHIVE_COPY_COMPLETE=true",
+                "MANIFEST_VERIFY_RC=0",
             ]
         )
         + "\n",
