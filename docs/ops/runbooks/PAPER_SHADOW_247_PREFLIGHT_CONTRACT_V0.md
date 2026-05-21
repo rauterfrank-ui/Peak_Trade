@@ -60,6 +60,8 @@ Reference implementation: `scripts/ops/run_paper_only_bounded_observation_adapte
 
 P67/P72 library paths (`run_shadow_session_scheduler_v1`, `run_shadowloop_pack_v1`) write partial evidence by default; opt-in `primary_evidence_enforce=True` calls shared `finalize_primary_evidence_root()` at library completion (non-authorizing; does not clear HOLD or grant Live/Testnet/broker authority; P67 CLI scheduler guard unchanged).
 
+Scheduler launcher (`scripts/run_scheduler.py`) supports opt-in completion retention via `--evidence-dir` and `--primary-evidence-enforce`, writing `scheduler_completion_closeout_v0.json` and calling shared `finalize_primary_evidence_root()` when enforcement is enabled (default off; dry-run remains planning-only; start boundary guard unchanged).
+
 ## 2b. Planning artifact durable retention v0
 
 `PLANNING_ARTIFACT_DURABLE_RETENTION_REQUIRED=true`

@@ -78,6 +78,10 @@ Shared guard module: `scripts/ops/scheduler_start_boundary_guard_v0.py` exposes 
 
 Direct calls to `run_shadow_session_scheduler_v1()` (library API, unit tests, P72 pack) bypass the CLI guard. Operators must not treat library bypass as authorized scheduler activation under blocked preflight.
 
+## 7a. Scheduler completion evidence (opt-in)
+
+Scheduler run-completion primary evidence (`MANIFEST.sha256` via shared `finalize_primary_evidence_root()`) is **opt-in** on `scripts/run_scheduler.py` via `--primary-evidence-enforce` and `--evidence-dir`. Default off. Does not alter start guard rules in §3–§4. Completion evidence remains **non-authorizing**.
+
 ## 8. Master V2 / Double Play
 
 ```
@@ -89,3 +93,4 @@ This contract does not authorize Master V2 or Double Play selection or live exec
 ## 9. Revision
 
 - **v0** — Initial hard-block markers + launcher guard requirement.
+- **v0.1** — Document opt-in scheduler completion evidence closeout (§7a); start guard unchanged.
