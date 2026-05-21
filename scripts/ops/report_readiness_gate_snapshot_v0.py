@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 """Compose readiness ledger, preflight status, and mirror into one gate snapshot.
 
-Non-authorizing offline convenience CLI. Does not start runtime or grant authority.
+Taxonomy cross-reference (review-input-only): indexed in
+``docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md`` §10.
+
+Non-authorizing offline convenience CLI. Review-input-only; does not start runtime or
+grant approval, gate clearance, Live/Testnet/broker/exchange permission, or trading
+authorization. Does not override scheduler boundary guards, preflight BLOCKED, or
+operator-explicit approval.
 
 Optional ``--include-registry`` attaches a summary-only Generic Evidence Run Registry
 v1 subsection. That subsection is non-authorizing and must not be interpreted as gate
