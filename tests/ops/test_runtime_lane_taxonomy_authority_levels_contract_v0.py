@@ -153,9 +153,9 @@ def test_generic_registry_v1_deferred() -> None:
 def test_paper_shadow_testnet_separation_stated() -> None:
     text = _spec_text()
     assert "Paper / Shadow / Testnet hard separation" in text
-    assert "runs/paper" in text
-    assert "runs/shadow" in text
-    assert "runs/testnet" in text
+    assert "runs&#47;paper" in text
+    assert "runs&#47;shadow" in text
+    assert "runs&#47;testnet" in text
 
 
 def test_testnet_pass_does_not_authorize_live() -> None:

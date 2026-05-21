@@ -66,11 +66,11 @@ Each row uses the future registry field names defined in §6.
 | `notion` | index_pointer | navigation_only | planning_only |
 | `docs` | policy | repository_policy | planning_only |
 
-**Paper / Shadow / Testnet hard separation:** Each bounded lane has a distinct adapter, archive path (`runs/paper`, `runs/shadow`, `runs/testnet`), and forbidden cross-lane approval flags. Evidence in one lane does not authorize another.
+**Paper / Shadow / Testnet hard separation:** Each bounded lane has a distinct adapter, archive path (`runs&#47;paper`, `runs&#47;shadow`, `runs&#47;testnet`), and forbidden cross-lane approval flags. Evidence in one lane does not authorize another.
 
 Non-lane aggregate surfaces (cross-reference only):
 
-- **planning** — §2b durable planning artifacts under `{archive}/planning/`
+- **planning** — §2b durable planning artifacts under `{archive}&#47;planning&#47;`
 - **readiness_aggregate** — Readiness Evidence Ledger v0 + Preflight Mirror v0 + Gate Snapshot v0
 
 ## 4. Normative authority levels
@@ -166,7 +166,7 @@ Normative rules:
 
 - `canary` and `live_canary` governance docs are **not** Live authority.
 - `canary_live_gate_v1` denies outbound Live/Canary paths (fail-closed).
-- **Missing executable ops scripts** for Canary (`scripts/ops/*canary*`) does **not** imply permission; it means no authorized executable Canary ops path exists in-repo.
+- **Missing executable ops scripts** for Canary (`scripts&#47;ops&#47;*canary*`) does **not** imply permission; it means no authorized executable Canary ops path exists in-repo.
 - `live_canary` (Canary Live per [CANARY_LIVE_ENTRY_CRITERIA.md](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md)) remains **separate from Testnet PASS**; Testnet success is never sufficient for Canary Live.
 
 ## 9. Master V2 / Double Play protection
