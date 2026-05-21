@@ -4,9 +4,9 @@ Synthetic archive roots for offline registry builder tests.
 
 Layout per archive:
 
-- `runs/paper/{run_id}/` — manifest required; review optional
-- `runs/shadow/{run_id}/` — manifest + review PASS required
-- `runs/testnet/{run_id}/` — manifest + review PASS required
-- `planning/` — optional governance machine lines
+- `runs&#47;paper&#47;{run_id}&#47;` — manifest required; review optional
+- `runs&#47;shadow&#47;{run_id}&#47;` — manifest + review PASS required
+- `runs&#47;testnet&#47;{run_id}&#47;` — manifest + review PASS required
+- `planning&#47;` — optional governance machine lines
 
 Fixtures are created programmatically in tests; this directory documents conventions only.
