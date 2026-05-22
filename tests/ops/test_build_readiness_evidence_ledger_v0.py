@@ -145,7 +145,9 @@ def test_complete_fixture_returns_pass_blocked_safe(mod, complete_archive: Path)
     assert ledger["governance"]["live_allowed"] is False
 
 
-def test_pass_blocked_safe_triple_lane_does_not_clear_glb015_or_preflight(mod, complete_archive: Path) -> None:
+def test_pass_blocked_safe_triple_lane_does_not_clear_glb015_or_preflight(
+    mod, complete_archive: Path
+) -> None:
     """GLB-015 semantics: PASS_BLOCKED_SAFE + triple_lane is completeness only, not approval."""
     ctx = _build_ctx(mod, complete_archive)
     ledger = mod.build_ledger(ctx)
