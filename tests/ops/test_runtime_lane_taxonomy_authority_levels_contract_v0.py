@@ -139,9 +139,7 @@ AUTONOMY_CROSSWALK_MARKERS = (
     "OPERATOR_ONLY_PERMANENT_GATES_DEFINED=true",
 )
 
-MASTER_V2_ROADMAP = (
-    REPO_ROOT / "docs" / "ops" / "specs" / "MASTER_V2_GO_LIVE_ROADMAP_V0.md"
-)
+MASTER_V2_ROADMAP = REPO_ROOT / "docs" / "ops" / "specs" / "MASTER_V2_GO_LIVE_ROADMAP_V0.md"
 
 
 def _spec_text() -> str:
@@ -690,7 +688,9 @@ def test_autonomy_crosswalk_invariant_literals_present() -> None:
         assert marker in text
     assert "L6 EXEC" in text
     assert "go_decision_granted" in text
-    assert "Permanently operator-only" in text or "Permanently operator-only or external-gated" in text
+    assert (
+        "Permanently operator-only" in text or "Permanently operator-only or external-gated" in text
+    )
 
 
 def test_autonomy_crosswalk_forbidden_promotions_referenced() -> None:
