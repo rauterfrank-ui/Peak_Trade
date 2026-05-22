@@ -227,13 +227,17 @@ def test_require_durable_archive_root_fails_closed_on_tmp() -> None:
     assert "outside /tmp" in reason
 
 
-def test_require_durable_archive_root_accepts_durable_path(tmp_path: Path) -> None:
+def test_require_durable_archive_root_accepts_durable_path() -> None:
     import sys
 
     sys.path.insert(0, str(REPO_ROOT))
     from scripts.ops.primary_evidence_retention_v0 import require_durable_archive_root
 
-    durable = tmp_path / "archive"
-    durable.mkdir()
-    ok, reason = require_durable_archive_root(durable)
-    assert ok is True, reason
+    # Use repo-local path: pytest tmp_path resolves under /tmp on Linux CI.
+    durable = REPO_ROOT / "out" / "_pytest_primary_evidence_durable_root"
+    durable.mkdir(parents=True, exist_ok=True)
+    try:
+        ok, reason = require_durable_archive_root(durable)
+        assert ok is True, reason
+    finally:
+        durable.rmdir()
