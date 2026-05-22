@@ -97,6 +97,31 @@ Every future **Paper**, **Shadow**, **Testnet**, **Live/Canary**, **Scheduler**,
 
 **Readiness ledger and gate snapshot (review-input-only):** offline outputs from `build_readiness_evidence_ledger_v0.py` and `report_readiness_gate_snapshot_v0.py` may report `READINESS_EVIDENCE_LEDGER_PASS_BLOCKED_SAFE`, `READINESS_GATE_SNAPSHOT_PASS_BLOCKED_SAFE`, and `triple_lane_primary_evidence=true` when primary evidence manifests and reviews verify under durable archive roots. Those verdicts are **completeness and consistency signals only** — they **do not** authorize runtime, **do not** clear Preflight **BLOCKED**, **do not** lift **HOLD**, **do not** close GLB-014/GLB-015, and **do not** grant Paper/Shadow/Testnet/Live/broker/exchange activation. See GLB-015 clarification in [Master V2 Go-Live Blocker Register v0](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.
 
+**Scoped preflight exception (U3 pattern) v0:**
+
+```
+SCOPED_PREFLIGHT_EXCEPTION_U3_V0=true
+ADAPTER_EXECUTE_EVIDENCE_ONLY=true
+PREFLIGHT_MAY_REMAIN_BLOCKED_AFTER_RUN=true
+SCOPED_EXCEPTION_NON_GENERALIZABLE=true
+NO_AUTOMATIC_24H_72H_RERUN_REQUIRED=true
+```
+
+Under **BLOCKED** preflight and active global **HOLD**, a **bounded evidence-only adapter `--execute`** may be documented as a **scoped preflight exception (U3 pattern)** only when **all** of the following hold:
+
+1. **Explicit operator archive record** — a durable, non-`/tmp` operator record outside the repository (for example `U3_SCOPED_PREFLIGHT_EXCEPTION_RECORD.md` under a planning slice) scopes the attempt as evidence-only; archive paths are **historical examples**, not mandatory runtime inputs.
+2. **Stage-3 executing approval chain** — bounded adapters require `--approval-record` with executing approval fields; default plan-only mode remains unchanged.
+3. **§2a.1 hard gate satisfied** — durable `ARCHIVE_ROOT`, `MANIFEST.sha256` verified, closeout and review present.
+4. **Scope limits** — does **not** start scheduler, supervisor, daemon, launchctl, Paper, Testnet, Live, broker, exchange, P67/P72 workload, or WebUI server paths.
+
+**U3 non-authorizing semantics:**
+
+- Preflight **`status=BLOCKED`** and `activation_authorized=false` **may remain unchanged** after a successful scoped run.
+- U3 **does not** clear global **HOLD**, **does not** close GLB-014/GLB-015, **does not** grant Live/Testnet/broker authority, and **does not** generalize to unbounded or recurring runs.
+- One completed U3 exception **does not** authorize automatic **24h** or **72h** reruns or extensions.
+- Executing approval records are **scoped and non-generalizable** — each future bounded attempt requires its own explicit operator record and approval chain.
+- See GLB-015 §6.5 in [Master V2 Go-Live Blocker Register v0](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md): evidence and closeouts remain **review inputs only**.
+
 **Prior context (May 2026 testnet 240-min):** operator durable-copy check recorded `MISSING_SOURCE=true` for expired `/tmp` paths; reinforces that `/tmp`-only retention is insufficient for future governed runs.
 
 **Implementation anchors (reuse-before-new):** shared helper `scripts/ops/primary_evidence_retention_v0.py` (`is_under_tmp`, `require_durable_archive_root`, `finalize_primary_evidence_root`, `verify_manifest_sha256`); bounded adapters (`run_*_bounded_observation_adapter_v0.py`); scheduler `--primary-evidence-enforce`; P67/P72 `primary_evidence_enforce=True`; offline supervisor pack + P79 archive verify; P101/P93 post-stop hints (operator-explicit). Default-off opt-in closeouts remain unchanged; this section states the **future-run invariant** operators and implementers must satisfy when treating a run as complete.
