@@ -111,7 +111,7 @@ Addressed in §12 (docs index only):
 
 ## 9) Cross-References
 
-- [RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md](RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) — §12 autonomy crosswalk; stage 7 row cross-references **§10** (approval SM) and **§11** (learning-change evidence pointer index); §12.3 permanent operator-only gates
+- [RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md](RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) — Taxonomy **§12** autonomy crosswalk (this spec); stage 7 row cross-references Inventory **§10** (approval SM), **§11** (learning-change evidence pointer index), and **§12** (learning-trigger pointer index); §12.3 permanent operator-only gates
 - [MASTER_V2_GO_LIVE_ROADMAP_V0.md](MASTER_V2_GO_LIVE_ROADMAP_V0.md) — §3.1 stage vocabulary
 - [MASTER_V2_PROMOTION_STATE_MACHINE_V1.md](MASTER_V2_PROMOTION_STATE_MACHINE_V1.md) — environment promotion visibility (orthogonal to §10)
 - [MASTER_V2_DECISION_AUTHORITY_MAP_V1.md](MASTER_V2_DECISION_AUTHORITY_MAP_V1.md)
