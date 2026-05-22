@@ -88,6 +88,19 @@ def test_section_2a1_preserves_evidence_not_approval() -> None:
     assert "STOP_IDLE" in section
 
 
+def test_section_2a1_readiness_ledger_gate_snapshot_review_input_only() -> None:
+    section = _owner_text().split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
+    assert "Readiness ledger and gate snapshot (review-input-only)" in section
+    assert "READINESS_EVIDENCE_LEDGER_PASS_BLOCKED_SAFE" in section
+    assert "READINESS_GATE_SNAPSHOT_PASS_BLOCKED_SAFE" in section
+    assert "triple_lane_primary_evidence=true" in section
+    assert "authorize runtime" in section
+    assert "do not" in section
+    assert "do not clear Preflight BLOCKED" in section.replace("**", "")
+    assert "do not close GLB-014/GLB-015" in section.replace("**", "")
+    assert "GLB-015 clarification" in section
+
+
 def test_section_2a1_reuses_shared_helper_not_parallel_doc() -> None:
     section = _owner_text().split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
     assert "primary_evidence_retention_v0.py" in section

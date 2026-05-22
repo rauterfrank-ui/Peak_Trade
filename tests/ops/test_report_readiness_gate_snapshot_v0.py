@@ -185,6 +185,43 @@ def test_complete_safe_fixture_pass_blocked_safe(mod, monkeypatch) -> None:
     assert len(payload["issues"]) == 0
 
 
+def test_pass_blocked_safe_triple_lane_is_review_input_only_not_approval(mod, monkeypatch) -> None:
+    """GLB-015 / §2a.1: gate snapshot PASS_BLOCKED_SAFE does not clear preflight or grant authority."""
+    ledger = _safe_ledger(
+        evidence={"triple_lane_primary_evidence": True},
+        governance={
+            "governance_blocked": True,
+            "live_allowed": False,
+            "broker_exchange_allowed": False,
+            "preflight_ready": False,
+            "glb_015_cleared": False,
+            "go_decision_granted": False,
+            "hold_no_paper_run_cleared": False,
+        },
+    )
+    monkeypatch.setattr(
+        "scripts.ops.build_readiness_evidence_ledger_v0.build_ledger",
+        lambda ctx: ledger,
+    )
+    monkeypatch.setattr(
+        "scripts.ops.report_paper_shadow_247_preflight_status.build_paper_shadow_247_preflight_status",
+        lambda **kwargs: _safe_preflight(status="BLOCKED", activation_authorized=False),
+    )
+    monkeypatch.setattr(
+        "scripts.ops.report_readiness_ledger_preflight_mirror_v0.build_mirror_from_payloads",
+        lambda *a, **k: _safe_mirror(),
+    )
+
+    payload = mod.build_readiness_gate_snapshot(Path("/tmp/archive"))
+    assert payload["verdict"] == GATE_PASS
+    assert payload["ledger"]["triple_lane_primary_evidence"] is True
+    assert payload["preflight"]["status"] == "BLOCKED"
+    assert payload["preflight"]["activation_authorized"] is False
+    assert payload["governance"]["governance_blocked"] is True
+    assert payload["governance"]["preflight_ready"] is False
+    assert "PREFLIGHT_BLOCKED" in payload["blockers"]
+
+
 def test_ledger_fail_closed_propagates(mod, monkeypatch) -> None:
     monkeypatch.setattr(
         "scripts.ops.build_readiness_evidence_ledger_v0.build_ledger",

@@ -190,6 +190,20 @@ Until that confirmation exists, **BLOCKED** remains.
 - [Pilot Go/No-Go operational slice](./PILOT_GO_NO_GO_OPERATIONAL_SLICE.md)
 - [Bounded real-money pilot entry boundary note](./BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md)
 
+### 6.5 GLB-015 — Repo docs, evidence, ledger, and gate snapshots vs. approval (clarification)
+
+**GLB-015** (*Repo docs treated as approval*) remains **BLOCKED** until **operator / reviewer** explicitly confirms that in-repo documentation, archive closeouts, readiness evidence bundles, and offline review outputs are used as **review inputs and completeness signals only** — **not** as final Go-No-Go, Live, Testnet, broker/exchange, scheduler, daemon, or runtime authorization.
+
+The repository may contain **material planning, closeout, merge, and evidence-chain artifacts** (for example PR merge closeouts, scoped HOLD operator records, bounded adapter closeouts, post-run reviews, readiness ledger JSON, gate snapshot JSON). Offline tooling may report **`READINESS_EVIDENCE_LEDGER_PASS_BLOCKED_SAFE`**, **`READINESS_GATE_SNAPSHOT_PASS_BLOCKED_SAFE`**, and **`triple_lane_primary_evidence=true`**. That posture confirms **primary evidence completeness** and **governance-blocked safety** — it **does not** close **GLB-015** by itself, **does not** clear Preflight **BLOCKED**, **does not** lift **HOLD**, **does not** grant Live/Testnet/broker authority, and **does not** substitute for external or operator Go-No-Go.
+
+**Canonical read-order (existing surfaces; no new surface):**
+
+- [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — §2a.1 future-run primary evidence hard gate (`EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true`; evidence ≠ approval)
+- [Runtime Lane Taxonomy + Authority Levels Contract v0](./RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) — readiness ledger/gate snapshot markers §10 (review-input-only)
+- `scripts/ops/build_readiness_evidence_ledger_v0.py` and `scripts/ops/report_readiness_gate_snapshot_v0.py` — offline convenience CLIs; non-authorizing
+
+Until explicit operator/reviewer confirmation exists, **BLOCKED** remains.
+
 ## 7. No-Green Claim Rule
 
 This register may show that a blocker is OPEN, BLOCKED, DEFERRED, ACCEPTED_BY_AUTHORITY, or CLOSED.
