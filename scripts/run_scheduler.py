@@ -67,6 +67,7 @@ except ImportError:
     NOTIFICATIONS_AVAILABLE = False
 
 
+from scripts.ops.primary_evidence_retention_v0 import is_under_tmp
 from scripts.ops.scheduler_start_boundary_guard_v0 import (
     SCHEDULER_START_BLOCKED_EXIT,
     assert_scheduler_start_authorized,
@@ -85,15 +86,6 @@ def signal_handler(signum, frame):
     _shutdown_requested = True
 
 
-def _is_under_tmp(path: Path) -> bool:
-    try:
-        resolved = path.resolve()
-        tmp_root = Path("/tmp").resolve()
-        return resolved == tmp_root or tmp_root in resolved.parents
-    except OSError:
-        return str(path).startswith("/tmp")
-
-
 def validate_scheduler_evidence_cli(
     *,
     evidence_dir: Optional[Path],
@@ -107,7 +99,7 @@ def validate_scheduler_evidence_cli(
     if primary_evidence_enforce and dry_run:
         print("ERR: --primary-evidence-enforce is incompatible with --dry-run")
         return 1
-    if primary_evidence_enforce and evidence_dir is not None and _is_under_tmp(evidence_dir):
+    if primary_evidence_enforce and evidence_dir is not None and is_under_tmp(evidence_dir):
         print("ERR: --evidence-dir must be outside /tmp when --primary-evidence-enforce is set")
         return 1
     return None

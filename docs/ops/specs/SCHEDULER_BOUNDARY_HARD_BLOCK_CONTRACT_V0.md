@@ -99,6 +99,10 @@ Normative state (post P67/P72 library scheduler boundary opt-in):
 - Default-off means direct library callers may still bypass unless they opt in — `SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true` preserved.
 - Opt-in guard remains **non-authorizing**; does not clear HOLD, preflight BLOCKED, or Live/Testnet/broker gates.
 
+## 7c. Future-run primary evidence hard gate (cross-reference)
+
+Non-dry-run scheduler completion with `--primary-evidence-enforce` must satisfy [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) **§2a.1** (durable `ARCHIVE_ROOT` outside `/tmp`, `MANIFEST.sha256` verified, closeout present). Scheduler start hard-block (§3–§4) does **not** substitute for primary evidence closeout. `SCHEDULER_EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true` preserved.
+
 ## 8. Master V2 / Double Play
 
 ```
@@ -112,3 +116,4 @@ This contract does not authorize Master V2 or Double Play selection or live exec
 - **v0** — Initial hard-block markers + launcher guard requirement.
 - **v0.1** — Document opt-in scheduler completion evidence closeout (§7a); start guard unchanged.
 - **v0.2** — P67/P72 library scheduler boundary opt-in (§7b); default off; shared guard reused; CLI/launcher unchanged.
+- **v0.3** — Cross-reference Preflight §2a.1 future-run primary evidence hard gate (§7c); start guard unchanged.

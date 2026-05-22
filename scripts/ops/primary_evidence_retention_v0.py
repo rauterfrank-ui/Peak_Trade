@@ -1,5 +1,18 @@
 #!/usr/bin/env python3
-"""Shared primary evidence manifest helpers (Preflight §2a; non-authorizing)."""
+"""Shared primary evidence manifest helpers (Preflight §2a/§2a.1; non-authorizing).
+
+Machine markers (stable literals for contract tests):
+
+```
+PRIMARY_EVIDENCE_SHARED_HELPER_V0=true
+FUTURE_RUNS_REQUIRE_DURABLE_ARCHIVE_ROOT=true
+TMP_ONLY_EVIDENCE_INVALID=true
+MANIFEST_VERIFY_REQUIRED=true
+CLOSEOUT_REFERENCE_REQUIRED=true
+RUN_INCOMPLETE_WITHOUT_PRIMARY_EVIDENCE=true
+EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
+```
+"""
 
 from __future__ import annotations
 
@@ -7,6 +20,34 @@ import hashlib
 from pathlib import Path
 
 MANIFEST_FILENAME = "MANIFEST.sha256"
+
+# Closeout filenames referenced by §2a.1 hard gate (index only; owners remain canonical).
+KNOWN_CLOSEOUT_FILENAMES = (
+    "scheduler_completion_closeout_v0.json",
+    "supervisor_session_closeout_v0.json",
+)
+
+
+def is_under_tmp(path: Path) -> bool:
+    """Return True when path resolves under /tmp (including /private/tmp on macOS)."""
+    try:
+        resolved = path.resolve()
+        for tmp_root in (Path("/tmp").resolve(), Path("/private/tmp").resolve()):
+            if resolved == tmp_root or tmp_root in resolved.parents:
+                return True
+        return False
+    except OSError:
+        text = str(path)
+        return text.startswith("/tmp") or text.startswith("/private/tmp")
+
+
+def require_durable_archive_root(path: Path) -> tuple[bool, str]:
+    """Fail closed when primary evidence root is missing or under /tmp."""
+    if is_under_tmp(path):
+        return False, "archive root must be outside /tmp"
+    if not path.exists():
+        return False, f"archive root missing: {path}"
+    return True, ""
 
 
 def write_manifest_sha256(root: Path) -> None:
