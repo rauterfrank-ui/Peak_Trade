@@ -2,7 +2,7 @@
 docs_token: DOCS_TOKEN_RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0
 status: draft
 scope: docs-only, non-authorizing runtime lane taxonomy and authority levels
-last_updated: 2026-05-21
+last_updated: 2026-05-22
 ---
 
 # Runtime Lane Taxonomy + Authority Levels Contract v0
@@ -61,6 +61,16 @@ READINESS_MIRROR_NON_AUTHORIZING=true
 GATE_SNAPSHOT_NO_APPROVAL_AUTHORITY=true
 READINESS_AGGREGATE_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true
 MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true
+AUTONOMY_STAGE_AUTHORITY_CROSSWALK_V0=true
+AUTONOMY_STAGE_COUNT=8
+AI_L6_EXEC_FORBIDDEN=true
+SIGNAL_NOT_TRADE=true
+STRATEGY_NOT_AUTHORITY=true
+AI_NOT_AUTHORITY=true
+DASHBOARD_NOT_APPROVAL=true
+KILLSWITCH_SAFETY_VETO_DOMINATES=true
+GO_DECISION_REQUIRES_EXTERNAL_RECORD=true
+OPERATOR_ONLY_PERMANENT_GATES_DEFINED=true
 ```
 
 Non-goals:
@@ -97,8 +107,13 @@ Non-goals:
 | Readiness Ledger Preflight Mirror v0 | [report_readiness_ledger_preflight_mirror_v0.py](../../../scripts/ops/report_readiness_ledger_preflight_mirror_v0.py) |
 | Readiness Gate Snapshot v0 | [report_readiness_gate_snapshot_v0.py](../../../scripts/ops/report_readiness_gate_snapshot_v0.py) |
 | Credential boundaries | [RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md](../runbooks/RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md) |
+| Autonomy stages 0–7 vocabulary (informative) | [MASTER_V2_GO_LIVE_ROADMAP_V0.md](MASTER_V2_GO_LIVE_ROADMAP_V0.md) §3.1 |
+| Decision authority topology | [MASTER_V2_DECISION_AUTHORITY_MAP_V1.md](MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) |
+| Learning/AI/autonomy inventory | [MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md](MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md) |
+| AI autonomy layer matrix (L0–L6) | [AI_AUTONOMY_CONTROL_CENTER.md](../control_center/AI_AUTONOMY_CONTROL_CENTER.md) |
+| Promotion state machine | [MASTER_V2_PROMOTION_STATE_MACHINE_V1.md](MASTER_V2_PROMOTION_STATE_MACHINE_V1.md) |
 
-**Rule:** This spec is the **lane ID index**. Retention rules remain in preflight §2a/§2b.
+**Rule:** This spec is the **lane ID and authority-level index** (including §12 autonomy-stage crosswalk). Retention rules remain in preflight §2a/§2b. Stage vocabulary owner remains roadmap §3.1 — **do not renumber** stages here.
 
 ## 3. Normative lane IDs
 
@@ -455,6 +470,77 @@ Normative state (bounded observation review script cross-ref):
 - Review PASS **does not** authorize adapter execution, another bounded lane, or Live paths (`FORBIDDEN_PROMOTION_*` in §5 apply).
 - Review outputs **do not** override scheduler boundary guards, preflight retention owners, or operator-explicit approval records.
 
+## 12. Autonomy stage authority crosswalk (normative index)
+
+```
+AUTONOMY_STAGE_AUTHORITY_CROSSWALK_V0=true
+AUTONOMY_STAGE_COUNT=8
+```
+
+This section is the **normative crosswalk index** binding Master V2 **autonomy stages 0–7** (roadmap §3.1 vocabulary) to **max authority levels** (§4), **AI layer caps**, **evidence owners**, **required external/operator gates**, and **forbidden promotions** (§5). It does **not** authorize runtime, Live, Testnet execute, promotion, or model deployment.
+
+**Reuse-before-new:** Stage names and informative posture remain owned by [MASTER_V2_GO_LIVE_ROADMAP_V0.md](MASTER_V2_GO_LIVE_ROADMAP_V0.md) §3.1. This section adds the **authority crosswalk only** — no parallel autonomy spec.
+
+### 12.1 Authority inequality literals (always)
+
+```
+SIGNAL_NOT_TRADE=true
+STRATEGY_NOT_AUTHORITY=true
+AI_NOT_AUTHORITY=true
+DASHBOARD_NOT_APPROVAL=true
+EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
+TESTNET_PASS_DOES_NOT_AUTHORIZE_LIVE=true
+KILLSWITCH_SAFETY_VETO_DOMINATES=true
+AI_L6_EXEC_FORBIDDEN=true
+GO_DECISION_REQUIRES_EXTERNAL_RECORD=true
+```
+
+- **KillSwitch / safety veto** dominates strategic switch-gate and advisory AI outputs ([MASTER_V2_DECISION_AUTHORITY_MAP_V1.md](MASTER_V2_DECISION_AUTHORITY_MAP_V1.md)).
+- **AI layer L6 EXEC** is **forbidden** ([AI_AUTONOMY_CONTROL_CENTER.md](../control_center/AI_AUTONOMY_CONTROL_CENTER.md)).
+- **`go_decision_granted`** requires external human record (LB-APR-001 class per [CANARY_LIVE_ENTRY_CRITERIA.md](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md)); repo docs, evidence PASS, readiness aggregate, dashboard, Notion, and AI recommendations **cannot** substitute.
+
+### 12.2 Normative crosswalk table (stages 0–7)
+
+| stage | name (roadmap §3.1) | max authority level | AI layer cap | evidence owner (canonical) | required external/operator gate | forbidden promotion refs (§5) |
+|---|---|---|---|---|---|---|
+| `0` | Research / Backtest only | `planning_only` | L0–L2 (RO/REC) | offline research/backtest surfaces; `docs` lane | none for runtime | all Live/Testnet promotions |
+| `1` | Shadow advisory | `evidence_only` / `review_input_only` | L0–L2 (RO/REC) | `shadow` bounded adapter + review scripts (§10) | Stage-3 if `--execute` | `FORBIDDEN_PROMOTION_SHADOW_TO_TESTNET_LIVE` |
+| `2` | 24/7 Paper observation (distributed) | `evidence_only` | L0–L2 (RO/REC) | `paper` / `shadow` adapters; readiness aggregate (§10) | preflight **BLOCKED**; operator HOLD | `FORBIDDEN_PROMOTION_PAPER_TO_SHADOW_TESTNET_LIVE` |
+| `3` | Paper autonomous candidate loop | `bounded_runtime_candidate` | L0–L3 (max PROP; **no L6 EXEC**) | `paper` adapter; preflight §2a retention | explicit Stage-3 approval + operator execute | `FORBIDDEN_PROMOTION_*`; scheduler hard-block (§7) |
+| `4` | Testnet autonomous bounded loop | `scoped_runtime_exception` | L0–L3 (max PROP; **no L6 EXEC**) | `testnet` adapter + review scripts (§10) | Stage-3 approval; testnet-only charter | `FORBIDDEN_PROMOTION_TESTNET_PASS_TO_LIVE_BROKER_EXCHANGE` |
+| `5` | Gated Live pilot | `live_authority_requires_separate_record` | L0–L4 (no L6 EXEC) | readiness ladder/index; GLB register; Canary criteria | external LB-APR-001 class + Canary manifest | `FORBIDDEN_PROMOTION_CANARY_DOCS_TO_LIVE`; GLB-014/015 |
+| `6` | Bounded autonomous Live | `go_decision_granted` | L0–L4 (no L6 EXEC) | Canary manifest + session review surfaces | external Go within lease; KillSwitch path (GLB-008) | `FORBIDDEN_PROMOTION_GO_NO_GO_TEMPLATE_TO_GO_DECISION`; GLB-020 |
+| `7` | Self-improving monitored autonomy | `operator_decision_required` | L0–L5 (L6 EXEC **forbidden**) | [MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md](MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md); AI evidence packs | model/policy change approval; online learning → live **prohibited** | `FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL` |
+
+**Stage number ≠ authority level.** Higher automation surface does **not** imply higher repo authority without explicit external/operator gates.
+
+### 12.3 Permanently operator-only or external-gated (never fully automated)
+
+```
+OPERATOR_ONLY_PERMANENT_GATES_DEFINED=true
+```
+
+The following remain **operator-only** or **external-gated** regardless of stage:
+
+1. External Live/Canary **`go_decision_granted`** (LB-APR-001 class)
+2. Canary manifest scope changes (exchange, symbol, strategy version, order types)
+3. Capital ceiling / max-loss boundary increases (GLB-010/011)
+4. KillSwitch arming/disarming **policy** changes (organizational; GLB-008)
+5. GLB blocker acceptance/closure classification
+6. Binding **`session_id`** selection for workflows claiming explicit session tie-in (GLB-006)
+7. Promotion beyond bounded pilot (GLB-020)
+8. Model/policy deployment to live path (approval chain partial — remains governed)
+9. Scheduler **non-dry-run** authorization while hard-block active (§7)
+10. Credential validity interpretation ([RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md](../runbooks/RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md))
+11. Master V2 protected boundary changes (`MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true`)
+
+### 12.4 Non-goals (crosswalk)
+
+- No new readiness/evidence/map/index/handoff/package surface
+- No runtime, scheduler unlock, or Live/Testnet execute enablement
+- No online learning activation path
+- No duplicate autonomy taxonomy document
+
 ## 11. Revision
 
 - **v0** — Initial lane taxonomy, authority levels, forbidden promotions, scheduler gap acknowledgment, Master V2 protection, registry field schema (deferred).
@@ -469,3 +555,4 @@ Normative state (bounded observation review script cross-ref):
 - **v0.9** — Readiness aggregate cross-ref: §10 markers and script owners for ledger/mirror/gate snapshot; non-authorizing review-input-only semantics strengthened.
 - **v1.0** — Bounded observation adapter cross-ref: §10 subsection indexes paper/shadow/testnet retention adapters; plan-only default; Stage-3 gated execute; review-input-only semantics.
 - **v1.1** — Bounded observation review script cross-ref: §10 indexes shadow/testnet evidence review scripts; offline; non-executing; review-input-only semantics.
+- **v1.2** — Autonomy stage authority crosswalk §12: stages 0–7 → max authority, AI layer caps, evidence owners, external/operator gates, forbidden promotions; reuse roadmap §3.1 vocabulary; no parallel autonomy spec.
