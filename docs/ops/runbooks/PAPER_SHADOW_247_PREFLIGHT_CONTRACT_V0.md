@@ -70,6 +70,35 @@ P79 offline archive manifest gate: `scripts/ops/p79_supervisor_health_gate_v1.sh
 
 P101 post-stop operator hints: `scripts/ops/p101_stop_playbook_v1.sh` emits a non-executing hint block (`P101_POST_STOP_PRIMARY_EVIDENCE_OPERATOR_HINTS.txt`) after existing STOP semantics with copy-paste examples for `run_online_readiness_post_stop_pack_v0.sh` (optional `--p79-archive-verify`); P101 does not execute wrapper, pack, or P79 archive verify automatically—operator must invoke them explicitly after STOP (non-authorizing). P93 status dashboard emits analogous non-executing post-stop hints referencing the same wrapper. In-process online-daemon automatic pack remains unimplemented; p91 status playbooks may still default to runtime `OUT_DIR` P79; runtime P79 tick `manifest.json` is not equivalent to §2a `MANIFEST.sha256` verification.
 
+## 2a.1 Future-run primary evidence hard gate v0
+
+```
+RUN_PRIMARY_EVIDENCE_RETENTION_HARD_GATE_V0=true
+FUTURE_RUNS_REQUIRE_DURABLE_ARCHIVE_ROOT=true
+TMP_ONLY_EVIDENCE_INVALID=true
+MANIFEST_VERIFY_REQUIRED=true
+CLOSEOUT_REFERENCE_REQUIRED=true
+RUN_INCOMPLETE_WITHOUT_PRIMARY_EVIDENCE=true
+EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
+```
+
+Every future **Paper**, **Shadow**, **Testnet**, **Live/Canary**, **Scheduler**, **Supervisor**, **Daemon**, **Smoke**, **bounded trial**, and **runtime adapter** path is **incomplete and invalid** for gate, readiness, or promotion decisions unless **all** of the following hold at run closeout:
+
+1. **Durable archive root** — primary evidence bytes written under a path **outside `/tmp`** (operator `ARCHIVE_ROOT` or equivalent durable root; staging under `/tmp` alone does not qualify).
+2. **Checksum manifest** — `MANIFEST.sha256` written over archived files and verified (`verify_manifest_sha256()` RC=0 or equivalent `shasum -a 256 -c` RC=0).
+3. **Closeout reference** — a closeout artifact present and referencing the durable archive root (for example `scheduler_completion_closeout_v0.json`, `supervisor_session_closeout_v0.json`, or lane adapter closeout/review bundle per canonical owner).
+4. **Postrun/review when applicable** — bounded observation adapters include review output (for example `REVIEW_RESULT.json`) with explicit verdict.
+
+**Hard gate semantics (future runs):**
+
+- Future run selectors, adapters, and opt-in enforcement paths **must reject or fail closed** when durable primary evidence retention cannot be guaranteed before `--execute` or non-dry-run start.
+- A run that completes with `/tmp`-only artifacts is **`TMP_ONLY_EVIDENCE_INVALID`** — it must be treated as **not complete** regardless of exit code or operator narrative.
+- **Evidence ≠ approval** — satisfying this hard gate does not clear Preflight **BLOCKED**, Shadow **STOP_IDLE**, HOLD, or grant Live/Testnet/broker authority.
+
+**Prior context (May 2026 testnet 240-min):** operator durable-copy check recorded `MISSING_SOURCE=true` for expired `/tmp` paths; reinforces that `/tmp`-only retention is insufficient for future governed runs.
+
+**Implementation anchors (reuse-before-new):** shared helper `scripts/ops/primary_evidence_retention_v0.py` (`is_under_tmp`, `require_durable_archive_root`, `finalize_primary_evidence_root`, `verify_manifest_sha256`); bounded adapters (`run_*_bounded_observation_adapter_v0.py`); scheduler `--primary-evidence-enforce`; P67/P72 `primary_evidence_enforce=True`; offline supervisor pack + P79 archive verify; P101/P93 post-stop hints (operator-explicit). Default-off opt-in closeouts remain unchanged; this section states the **future-run invariant** operators and implementers must satisfy when treating a run as complete.
+
 ## 2b. Planning artifact durable retention v0
 
 `PLANNING_ARTIFACT_DURABLE_RETENTION_REQUIRED=true`

@@ -19,7 +19,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from scripts.ops.primary_evidence_retention_v0 import finalize_primary_evidence_root
+from scripts.ops.primary_evidence_retention_v0 import finalize_primary_evidence_root, is_under_tmp
 
 CLOSEOUT_FILENAME = "supervisor_session_closeout_v0.json"
 SUPERVISOR_SESSION_DIR = "supervisor_session"
@@ -49,15 +49,6 @@ class PackResult:
 
 def _utc_ts() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-
-def _is_under_tmp(path: Path) -> bool:
-    try:
-        resolved = path.resolve()
-        tmp_root = Path("/tmp").resolve()
-        return resolved == tmp_root or tmp_root in resolved.parents
-    except OSError:
-        return str(path).startswith("/tmp")
 
 
 def _copy_file_or_tree(source: Path, dest: Path) -> None:
@@ -110,7 +101,7 @@ def pack_supervisor_evidence(
         result.error = f"out_dir missing or not a directory: {out_dir}"
         return result
 
-    if primary_evidence_enforce and _is_under_tmp(archive_root):
+    if primary_evidence_enforce and is_under_tmp(archive_root):
         result.exit_code = 1
         result.error = "archive_root must be outside /tmp when --primary-evidence-enforce is set"
         return result
