@@ -121,7 +121,25 @@ FORBIDDEN_DUPLICATE_SPEC_PATHS = (
     "docs/ops/runbooks/RUNTIME_LANE_TAXONOMY",
     "docs/ops/specs/LANE_TAXONOMY_AUTHORITY",
     "docs/ops/registry/LANE_REGISTRY",
+    "AUTONOMY_STAGE_AUTHORITY_CROSSWALK",
 )
+
+REQUIRED_AUTONOMY_STAGES = tuple(str(i) for i in range(8))
+
+AUTONOMY_CROSSWALK_MARKERS = (
+    "AUTONOMY_STAGE_AUTHORITY_CROSSWALK_V0=true",
+    "AUTONOMY_STAGE_COUNT=8",
+    "AI_L6_EXEC_FORBIDDEN=true",
+    "SIGNAL_NOT_TRADE=true",
+    "STRATEGY_NOT_AUTHORITY=true",
+    "AI_NOT_AUTHORITY=true",
+    "DASHBOARD_NOT_APPROVAL=true",
+    "KILLSWITCH_SAFETY_VETO_DOMINATES=true",
+    "GO_DECISION_REQUIRES_EXTERNAL_RECORD=true",
+    "OPERATOR_ONLY_PERMANENT_GATES_DEFINED=true",
+)
+
+MASTER_V2_ROADMAP = REPO_ROOT / "docs" / "ops" / "specs" / "MASTER_V2_GO_LIVE_ROADMAP_V0.md"
 
 
 def _spec_text() -> str:
@@ -167,6 +185,7 @@ def test_required_machine_markers_present() -> None:
         "P101_POST_STOP_OPERATOR_EXPLICIT_REQUIRED=true",
         "P101_POST_STOP_EVIDENCE_NON_AUTHORIZING=true",
         "MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true",
+        *AUTONOMY_CROSSWALK_MARKERS,
     ):
         assert marker in text
 
@@ -648,3 +667,72 @@ def test_market_surface_v0_taxonomy_cross_ref_aligned() -> None:
     assert "does not" in surface.lower() or "do not" in surface.lower()
     assert "MARKET_SURFACE_V0.md" in taxonomy
     assert "does not replace the F5 contract owner" in taxonomy or "F5 contract owner" in taxonomy
+
+
+def test_autonomy_stage_authority_crosswalk_section_present() -> None:
+    text = _spec_text()
+    assert "## 12. Autonomy stage authority crosswalk" in text
+    assert "Reuse-before-new" in text
+    assert "§12" in text or "section 12" in text.lower()
+
+
+def test_all_autonomy_stages_0_through_7_present() -> None:
+    text = _spec_text()
+    for stage in REQUIRED_AUTONOMY_STAGES:
+        assert f"| `{stage}` |" in text, f"missing stage {stage!r} in crosswalk table"
+
+
+def test_autonomy_crosswalk_invariant_literals_present() -> None:
+    text = _spec_text()
+    for marker in AUTONOMY_CROSSWALK_MARKERS:
+        assert marker in text
+    assert "L6 EXEC" in text
+    assert "go_decision_granted" in text
+    assert (
+        "Permanently operator-only" in text or "Permanently operator-only or external-gated" in text
+    )
+
+
+def test_autonomy_crosswalk_forbidden_promotions_referenced() -> None:
+    text = _spec_text()
+    for literal in (
+        "FORBIDDEN_PROMOTION_SHADOW_TO_TESTNET_LIVE",
+        "FORBIDDEN_PROMOTION_PAPER_TO_SHADOW_TESTNET_LIVE",
+        "FORBIDDEN_PROMOTION_TESTNET_PASS_TO_LIVE_BROKER_EXCHANGE",
+        "FORBIDDEN_PROMOTION_CANARY_DOCS_TO_LIVE",
+        "FORBIDDEN_PROMOTION_GO_NO_GO_TEMPLATE_TO_GO_DECISION",
+        "FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL",
+    ):
+        assert literal in text
+
+
+def test_autonomy_crosswalk_canonical_owner_crosslinks() -> None:
+    text = _spec_text()
+    for owner in (
+        "MASTER_V2_GO_LIVE_ROADMAP_V0.md",
+        "MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+        "MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md",
+        "AI_AUTONOMY_CONTROL_CENTER.md",
+        "CANARY_LIVE_ENTRY_CRITERIA.md",
+    ):
+        assert owner in text
+
+
+def test_no_duplicate_autonomy_crosswalk_spec_introduced() -> None:
+    specs_dir = REPO_ROOT / "docs" / "ops" / "specs"
+    for fragment in FORBIDDEN_DUPLICATE_SPEC_PATHS:
+        if fragment.startswith("docs/"):
+            continue
+        matches = list(specs_dir.glob(f"*{fragment}*"))
+        assert matches == [], f"duplicate spec surface: {matches}"
+
+
+def test_roadmap_crosslinks_taxonomy_section_12() -> None:
+    assert MASTER_V2_ROADMAP.is_file()
+    roadmap = MASTER_V2_ROADMAP.read_text(encoding="utf-8")
+    taxonomy = _spec_text()
+    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in roadmap
+    assert "§12" in roadmap or "Autonomy Stage Authority Crosswalk" in roadmap
+    assert "MASTER_V2_GO_LIVE_ROADMAP_V0.md" in taxonomy
+    assert "§3.1" in taxonomy
+    assert "non-authorizing" in roadmap.lower() or "non-authorizing" in taxonomy.lower()
