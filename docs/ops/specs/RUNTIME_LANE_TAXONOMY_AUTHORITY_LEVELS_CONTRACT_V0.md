@@ -109,7 +109,7 @@ Non-goals:
 | Credential boundaries | [RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md](../runbooks/RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md) |
 | Autonomy stages 0–7 vocabulary (informative) | [MASTER_V2_GO_LIVE_ROADMAP_V0.md](MASTER_V2_GO_LIVE_ROADMAP_V0.md) §3.1 |
 | Decision authority topology | [MASTER_V2_DECISION_AUTHORITY_MAP_V1.md](MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) |
-| Learning/AI/autonomy inventory | [MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md](MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md) |
+| Learning/AI/autonomy inventory | [MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md](MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md) — **§10 Stage-7 model/policy approval state machine** |
 | AI autonomy layer matrix (L0–L6) | [AI_AUTONOMY_CONTROL_CENTER.md](../control_center/AI_AUTONOMY_CONTROL_CENTER.md) |
 | Promotion state machine | [MASTER_V2_PROMOTION_STATE_MACHINE_V1.md](MASTER_V2_PROMOTION_STATE_MACHINE_V1.md) |
 
@@ -510,7 +510,7 @@ GO_DECISION_REQUIRES_EXTERNAL_RECORD=true
 | `4` | Testnet autonomous bounded loop | `scoped_runtime_exception` | L0–L3 (max PROP; **no L6 EXEC**) | `testnet` adapter + review scripts (§10) | Stage-3 approval; testnet-only charter | `FORBIDDEN_PROMOTION_TESTNET_PASS_TO_LIVE_BROKER_EXCHANGE` |
 | `5` | Gated Live pilot | `live_authority_requires_separate_record` | L0–L4 (no L6 EXEC) | readiness ladder/index; GLB register; Canary criteria | external LB-APR-001 class + Canary manifest | `FORBIDDEN_PROMOTION_CANARY_DOCS_TO_LIVE`; GLB-014/015 |
 | `6` | Bounded autonomous Live | `go_decision_granted` | L0–L4 (no L6 EXEC) | Canary manifest + session review surfaces | external Go within lease; KillSwitch path (GLB-008) | `FORBIDDEN_PROMOTION_GO_NO_GO_TEMPLATE_TO_GO_DECISION`; GLB-020 |
-| `7` | Self-improving monitored autonomy | `operator_decision_required` | L0–L5 (L6 EXEC **forbidden**) | [MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md](MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md); AI evidence packs | model/policy change approval; online learning → live **prohibited** | `FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL` |
+| `7` | Self-improving monitored autonomy | `operator_decision_required` | L0–L5 (L6 EXEC **forbidden**) | [MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md](MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md) **§10**; AI evidence packs | model/policy change approval state machine §10; online learning → live **prohibited** | `FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL` |
 
 **Stage number ≠ authority level.** Higher automation surface does **not** imply higher repo authority without explicit external/operator gates.
 
