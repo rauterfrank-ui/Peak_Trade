@@ -13,6 +13,9 @@ TAXONOMY_SPEC = (
 )
 ROADMAP_SPEC = REPO_ROOT / "docs" / "ops" / "specs" / "MASTER_V2_GO_LIVE_ROADMAP_V0.md"
 PROMOTION_SM = REPO_ROOT / "docs" / "ops" / "specs" / "MASTER_V2_PROMOTION_STATE_MACHINE_V1.md"
+DECISION_AUTHORITY_MAP = (
+    REPO_ROOT / "docs" / "ops" / "specs" / "MASTER_V2_DECISION_AUTHORITY_MAP_V1.md"
+)
 
 FORBIDDEN_DUPLICATE_SPEC_PATHS = (
     "STAGE_7_MODEL_APPROVAL",
@@ -138,3 +141,18 @@ def test_promotion_sm_crosslinks_learning_inventory_section_10() -> None:
     promotion = PROMOTION_SM.read_text(encoding="utf-8")
     assert "MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md" in promotion
     assert "§10" in promotion
+
+
+def test_decision_authority_map_crosslinks_learning_inventory_section_10() -> None:
+    """DAM stage-10 row indexes Inventory §10; stale 'missing approval chain' wording removed."""
+    dam = DECISION_AUTHORITY_MAP.read_text(encoding="utf-8")
+    assert "MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md" in dam
+    assert "§10" in dam
+    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in dam
+    assert "§12" in dam
+    assert "S0" in dam or "Stage-7" in dam
+    assert "non-authorizing" in dam.lower()
+    assert "runtime enforcement" in dam.lower()
+    assert "consolidated authoritative approver map is not yet canonicalized" not in dam
+    assert "authoritative approval chain is not yet canonically unified" not in dam
+    assert "canonical authoritative approval chain is missing" not in dam

@@ -1,7 +1,7 @@
 # MASTER V2 — Decision Authority Map v1 (Canonical, Read-Only)
 
 status: ACTIVE
-last_updated: 2026-04-21
+last_updated: 2026-05-22
 owner: Peak_Trade
 purpose: Canonical docs-only, non-authorizing decision-authority mapping for Master V2 First Live Enablement
 docs_token: DOCS_TOKEN_MASTER_V2_DECISION_AUTHORITY_MAP_V1
@@ -56,7 +56,7 @@ The canonical stages for this map are:
 | downstream Risk and Exposure Cap enforcement | deployable scope proposal and position intents | risk metrics producers | hard-limit checks and cap enforcement transforms | partial: risk enforcement authority is evidenced as limit-enforcing, not final business decision authority | safety and governance can still veto execution path | risk-constrained execution eligibility | `src/live/risk_limits.py`; `src/live/safety.py`; `src/live/live_gates.py`; `docs/ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md` | partial | exact handoff from business decider to cap enforcer is only partially mapped |
 | Safety and Kill-Switch veto layer | execution-intent path and safety state | monitoring and safety signals | fail-closed safety gate evaluation | authoritative for veto intent (block capability), not business strategy authority | primary fail-closed veto | blocked or allowed continuation signal | `src/live/safety.py`; `src/live/live_gates.py`; `docs/risk/KILL_SWITCH_RUNBOOK.md`; `docs/ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md` | repo-evidenced | ordering between strategic switch and safety veto is frequently misread by reviewers |
 | staged Execution Enablement and promotion blocking | readiness evidence, gate states, governance constraints | operator and review artifacts | promotion-state interpretation and gating | partial: readiness interpretation is canonical, but live authorization remains separate and external | governance and safety veto precedence | promotion eligibility status, not live authorization | `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`; `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`; `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md` | partial | explicit authority actor for final live authorization remains outside this map |
-| learning, model, and policy change approval boundary | model and policy change proposals plus evidence packs | AI and model orchestration components | review and approval preparation | missing: consolidated authoritative approver map is not yet canonicalized in one artifact | governance and safety veto constraints still apply | approval-boundary posture and unresolved authority gaps | `docs/ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md`; `docs/governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md`; `docs/ops/specs/MASTER_V2_REUSE_REWIRE_INVENTORY_V1.md` | missing | authoritative approval chain is not yet canonically unified |
+| learning, model, and policy change approval boundary | model and policy change proposals plus evidence packs | AI and model orchestration components | review and approval preparation | partial: normative non-authorizing index in [Learning AI Autonomy Inventory §10](./MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md) (S0–S15); operator/external gates remain authoritative for live deploy | governance and safety veto constraints still apply | approval-boundary posture; docs index present; runtime enforcement out of scope | `docs/ops/specs/MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md` §10; `docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md` §12; `docs/ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md`; `docs/governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md` | partial | runtime enforcement of §10 transitions and single runtime approver remain open |
 
 ## 5) Advisory vs Authoritative vs Veto Rules
 
@@ -82,7 +82,7 @@ Boundary lock:
 - downstream Risk and Exposure Cap enforcement: enforcement role is strongly evidenced; not equivalent to business decision authority.
 - Safety and Kill-Switch veto layer: strongest veto evidence; fail-closed semantics are explicit.
 - staged Execution Enablement and promotion blocking: readiness visibility is mapped; final live authorization authority remains external.
-- learning, model, and policy change approval boundary: advisory/orchestration signals exist; canonical authoritative approval chain is missing.
+- learning, model, and policy change approval boundary: normative non-authorizing index in Learning AI Autonomy Inventory §10 (S0–S15); AI may recommend and governance may review; operator/external Go remains required for live deploy; runtime enforcement of §10 transitions remains out of scope.
 
 ## 7) Ambiguity / Confusion / Interpretation Risk Map
 
@@ -116,7 +116,7 @@ Confirmed by this spec:
 Still open:
 
 - canonical consolidation of authoritative decision ownership for several stages
-- canonical, single-surface authority chain for learning/model/policy change approval
+- runtime enforcement of Stage-7 model/policy approval transitions (docs normative index: Learning AI Autonomy Inventory §10)
 
 Next closure candidate (separate slice, not part of this document):
 
@@ -133,3 +133,5 @@ Next closure candidate (separate slice, not part of this document):
 - `docs/ops/specs/MASTER_V2_GATE_FILL_VOCABULARY_BOUNDARY_LOCK_V1.md`
 - `docs/ops/specs/CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md`
 - `docs/governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md`
+- `docs/ops/specs/MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md` §10 — Stage-7 model/policy approval state machine index (non-authorizing)
+- `docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md` §12 — autonomy stage authority crosswalk
