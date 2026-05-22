@@ -306,6 +306,8 @@ This contract is the **canonical F5 read-only market dashboard** display boundar
 
 Dashboard ≠ Freigabe. Read-only status, diagnostic output, and bounded WebUI contract tests **do not** authorize Live, Testnet, broker, exchange, scheduler, or runtime execution.
 
+The broader **`GET &#47;market`** WebUI owner [Market Surface v0](../../webui/MARKET_SURFACE_V0.md) (Kraken/OHLCV/dummy SSR lineage) is **orthogonal** to this F5 contract. Market Surface v0 **does not replace** F5 futures-aware display semantics; this contract remains the canonical F5 read-only dashboard boundary. Market-Airport and parallel dashboard surfaces remain out of scope.
+
 ## Validation / future tests
 
 Future tests should prove:
@@ -324,6 +326,7 @@ Future tests should prove:
 ## References
 
 - [Runtime Lane Taxonomy + Authority Levels Contract v0](RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) — lane_id `dashboard`, non-authorizing display indexing (§7h)
+- [Market Surface v0](../../webui/MARKET_SURFACE_V0.md) — orthogonal WebUI owner for `&#47;market` and related read-only routes; does not replace F5 semantics
 - [Futures Capability Spec v0](FUTURES_CAPABILITY_SPEC_V0.md)
 - [Futures Instrument Metadata Contract v0](FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md)
 - [Futures Market Data Provenance Contract v0](FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md)

@@ -697,6 +697,23 @@ def test_market_surface_v0_taxonomy_cross_ref_aligned() -> None:
     assert "does not replace the F5 contract owner" in taxonomy or "F5 contract owner" in taxonomy
 
 
+def test_f5_contract_market_surface_bidirectional_crossref_v0() -> None:
+    """F5 contract and Market Surface v0 cross-reference each other; separation preserved."""
+    assert MARKET_DASHBOARD_SPEC.is_file()
+    assert MARKET_SURFACE_V0.is_file()
+    f5 = MARKET_DASHBOARD_SPEC.read_text(encoding="utf-8")
+    surface = MARKET_SURFACE_V0.read_text(encoding="utf-8")
+    assert "MARKET_SURFACE_V0.md" in f5
+    assert "orthogonal" in f5.lower()
+    assert "does not replace" in f5.lower()
+    assert "Market-Airport" in f5 or "market-airport" in f5.lower()
+    assert "FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md" in surface
+    assert "replace f5" in surface.lower()
+    assert "Guardrails" in surface
+    assert "Freigabe" in surface
+    assert "AI" in surface and "Authority" in surface
+
+
 def test_autonomy_stage_authority_crosswalk_section_present() -> None:
     text = _spec_text()
     assert "## 12. Autonomy stage authority crosswalk" in text
