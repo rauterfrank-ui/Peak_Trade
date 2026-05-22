@@ -158,6 +158,8 @@ def test_pass_blocked_safe_triple_lane_does_not_clear_glb015_or_preflight(
     assert ledger["governance"]["glb_015_cleared"] is False
     assert ledger["governance"]["go_decision_granted"] is False
     assert mod.BLOCKER_PREFLIGHT in ledger["blockers"]
+    assert mod.BLOCKER_HOLD in ledger["blockers"]
+    assert ledger["governance"]["hold_no_paper_run_cleared"] is False
 
 
 def test_missing_paper_manifest_review_required(mod, complete_archive: Path) -> None:

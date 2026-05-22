@@ -198,6 +198,7 @@ def test_pass_blocked_safe_triple_lane_is_review_input_only_not_approval(mod, mo
             "go_decision_granted": False,
             "hold_no_paper_run_cleared": False,
         },
+        blockers=["PREFLIGHT_BLOCKED", "HOLD_NO_PAPER_RUN_NOT_CLEARED"],
     )
     monkeypatch.setattr(
         "scripts.ops.build_readiness_evidence_ledger_v0.build_ledger",
@@ -219,7 +220,9 @@ def test_pass_blocked_safe_triple_lane_is_review_input_only_not_approval(mod, mo
     assert payload["preflight"]["activation_authorized"] is False
     assert payload["governance"]["governance_blocked"] is True
     assert payload["governance"]["preflight_ready"] is False
+    assert payload["governance"]["hold_no_paper_run_cleared"] is False
     assert "PREFLIGHT_BLOCKED" in payload["blockers"]
+    assert "HOLD_NO_PAPER_RUN_NOT_CLEARED" in payload["blockers"]
 
 
 def test_ledger_fail_closed_propagates(mod, monkeypatch) -> None:
