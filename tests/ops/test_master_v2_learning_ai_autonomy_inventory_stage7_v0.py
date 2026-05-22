@@ -246,3 +246,75 @@ def test_learning_change_evidence_index_non_authorizing_v0() -> None:
     assert "evidence_complete ≠ approval_packet_complete" in text
     assert "consolidated learning-change evidence index" in text.lower()
     assert "Addressed in §11" in text
+
+
+LEARNING_TRIGGERS_COMPACT_INDEX_MARKERS = (
+    "LEARNING_TRIGGERS_COMPACT_INDEX_V0=true",
+    "LEARNING_TRIGGERS_POINTER_ONLY=true",
+    "LEARNING_TRIGGERS_NON_AUTHORIZING=true",
+    "EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true",
+    "TRIGGER_DOES_NOT_AUTHORIZE_RETRAIN=true",
+    "TRIGGER_DOES_NOT_AUTHORIZE_RUNTIME=true",
+    "FORBIDDEN_AUTO_RETRAINING_FROM_TRIGGER=true",
+    "MODEL_DEPLOY_NOT_AUTHORIZED=true",
+)
+
+LEARNING_TRIGGERS_SECTION10_STATE_IDS = (
+    "S1_MODEL_RECOMMENDATION",
+    "S2_POLICY_CANDIDATE_DRAFT",
+    "S3_OFFLINE_RETRAIN_COMPLETE",
+    "S4_SHADOW_EVIDENCE",
+    "S5_PAPER_EVIDENCE",
+    "S6_TESTNET_EVIDENCE",
+    "S7_APPROVAL_PACKET_ASSEMBLED",
+    "S8_GOVERNANCE_REVIEW",
+    "S9_OPERATOR_DECISION_PENDING",
+    "S14_ROLLBACK_OR_VETO",
+)
+
+
+def test_learning_triggers_compact_index_section_present_v0() -> None:
+    """Inventory §12 learning triggers compact pointer index exists."""
+    text = _spec_text()
+    assert "## 12) Learning triggers compact pointer index" in text
+    for marker in LEARNING_TRIGGERS_COMPACT_INDEX_MARKERS:
+        assert marker in text
+    assert "Reuse-before-new" in text
+    assert "No parallel Stage-7 approval" in text
+    assert "Addressed in §12" in text
+
+
+def test_learning_triggers_map_to_section10_and_section11_v0() -> None:
+    """§12 pointer table maps trigger events to §10 states and §11 evidence refs."""
+    text = _spec_text()
+    assert "### 12.1 Pointer index" in text
+    for state_id in LEARNING_TRIGGERS_SECTION10_STATE_IDS:
+        assert state_id in text
+    assert "§11 S1 row" in text
+    assert "§11 S14 row" in text
+    assert "MODEL_CHANGE_REQUIRES_REAPPROVAL=true" in text
+    assert "BAYESIAN re-entry rule" in text
+
+
+def test_learning_triggers_non_authorizing_v0() -> None:
+    """§12 is pointer-only; does not authorize runtime, retrain, or model deploy."""
+    text = _spec_text()
+    assert "pointer index" in text.lower()
+    assert "non-authorizing" in text.lower()
+    assert "TRIGGER_DOES_NOT_AUTHORIZE_RUNTIME=true" in text
+    assert "No approval grant" in text
+    assert "No runtime trigger dispatcher" in text
+    assert "trigger_event ≠ approval_packet_complete" in text
+    assert "consolidated learning triggers compact pointer index" in text.lower()
+
+
+def test_learning_triggers_excludes_trigger_training_module_v0() -> None:
+    """§12 excludes trigger_training drills and parallel Stage-7 specs."""
+    text = _spec_text()
+    assert "src/trigger_training/" in text
+    assert "trigger_training_sessions" in text
+    assert "offline trigger-training drill scripts" in text
+    specs_dir = REPO_ROOT / "docs" / "ops" / "specs"
+    for fragment in FORBIDDEN_DUPLICATE_SPEC_PATHS:
+        matches = list(specs_dir.glob(f"*{fragment}*"))
+        assert matches == [], f"duplicate spec surface: {matches}"

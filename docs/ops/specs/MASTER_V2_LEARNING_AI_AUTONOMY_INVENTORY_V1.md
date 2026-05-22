@@ -47,7 +47,7 @@ This inventory uses the following canonical categories:
 
 | category | canonical meaning | nearest repo evidence | what is confirmed | what remains unclear | authority visibility | confidence | ambiguity and gap |
 |---|---|---|---|---|---|---|---|
-| learning triggers | events that should start learning-related review or retraining flow | [AI_AUTONOMY_GO_NO_GO_OVERVIEW.md](../../governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md), [BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md](../decisions/BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md) | trigger-like governance conditions and re-entry guardrails are documented | one compact canonical trigger registry for Master V2 is not materialized | partial | partial | trigger semantics are distributed across governance and decision notes |
+| learning triggers | events that should start learning-related review or retraining flow | [AI_AUTONOMY_GO_NO_GO_OVERVIEW.md](../../governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md), [BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md](../decisions/BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md), **§12 learning triggers compact pointer index** | trigger-like governance conditions and re-entry guardrails are documented; **§12 materializes compact trigger→§10→§11 pointer index** | runtime trigger dispatch and auto-retrain enforcement remain out of scope | partial to strong | partial to high | **§12** consolidates review-entry triggers without new registry or runtime workflow |
 | training loops | closed-loop training process definitions and control boundaries | [BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md](../decisions/BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md), [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md) | closed self-learning loops are explicitly disallowed in current guardrails | one canonical training-loop contract for Master V2 is not materialized | unclear | partial | boundary is mostly defined by prohibitions, not by one positive loop contract |
 | offline learning and retraining | bounded offline model improvement outside live hot path | [BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md](../decisions/BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md), [AI_AUTONOMY_GO_NO_GO_OVERVIEW.md](../../governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md) | offline-only direction is explicit in multiple documents | canonical retraining lifecycle with approval checkpoints is not consolidated | partial | partial | retraining semantics exist, but lifecycle ownership remains distributed |
 | online learning and adaptation | live-time adaptation that affects behavior | [AI_AUTONOMY_GO_NO_GO_OVERVIEW.md](../../governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md), [BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md](../decisions/BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md) | online-learning influence on live behavior is explicitly blocked | approved exception path is intentionally absent | clear for prohibition | high | prohibition is strong, but no positive allowed path is specified |
@@ -73,6 +73,7 @@ This inventory uses the following canonical categories:
 - model orchestration versus strategy selection: model routing and strategy switching remain distinct and must not be collapsed.
 - offline retraining versus online adaptation: offline allowance exists, online adaptation in live influence remains prohibited.
 - evidence and registry artifacts versus actual learning authority: rich artifacts do not automatically prove consolidated authority ownership.
+- Master V2 learning triggers versus operator drill tooling: **§12** Stage-7 review-entry triggers must not be conflated with `src/trigger_training/`, InfoStream `trigger_training_sessions`, or offline drill scripts (orthogonal research/operator surfaces).
 
 ## 7) Non-Authorizing Constraint
 
@@ -103,6 +104,10 @@ Addressed in §10 (docs index only):
 Addressed in §11 (docs index only):
 
 - consolidated learning-change evidence index tied to explicit authority nodes and §10 states (pointer-only; no new approval spec)
+
+Addressed in §12 (docs index only):
+
+- consolidated learning triggers compact pointer index tied to §10 states and §11 evidence rows (pointer-only; no runtime trigger workflow)
 
 ## 9) Cross-References
 
@@ -281,3 +286,52 @@ Rows are **pointers** to canonical owners. This table does **not** implement sto
 - No runtime transition enforcement or model training workflow
 - No approval grant, live deploy path, scheduler unlock, or external gate bypass
 - No implication that indexed artifacts authorize model deploy, live capital, broker, or exchange activity
+
+## 12) Learning triggers compact pointer index (normative)
+
+```
+LEARNING_TRIGGERS_COMPACT_INDEX_V0=true
+LEARNING_TRIGGERS_POINTER_ONLY=true
+LEARNING_TRIGGERS_NON_AUTHORIZING=true
+EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
+TRIGGER_DOES_NOT_AUTHORIZE_RETRAIN=true
+TRIGGER_DOES_NOT_AUTHORIZE_RUNTIME=true
+ONLINE_LEARNING_TO_LIVE_FORBIDDEN=true
+FORBIDDEN_AUTO_RETRAINING_FROM_TRIGGER=true
+MODEL_DEPLOY_NOT_AUTHORIZED=true
+GLB015_EVIDENCE_NOT_APPROVAL=true
+```
+
+This section is the **compact pointer index** for Master V2 **learning-related review-entry events** mapped to **§10** states and **§11** evidence rows. It consolidates visibility only — **not** a trigger registry implementation, runtime dispatcher, auto-retraining workflow, or approval spec.
+
+**Reuse-before-new:** Trigger semantics remain in [AI_AUTONOMY_GO_NO_GO_OVERVIEW.md](../../governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md) (hard NO-GO conditions, TTL + Review Trigger on evidence packs) and [BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md](../decisions/BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md) (re-entry rule; **no** auto-retraining). State transitions remain indexed in **§10**; evidence artifacts remain indexed in **§11**. Stage-7 posture remains in [RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md](RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) §12.2 row `7`.
+
+**Critical inequality (unchanged):** `trigger_event ≠ approval_packet_complete ≠ operator_decision_granted ≠ go_decision_granted ≠ live_deploy_authorized`.
+
+**Orthogonal exclusion:** Master V2 learning triggers in this section are **not** `src/trigger_training/`, InfoStream `trigger_training_sessions`, offline trigger-training drill scripts, scheduler hooks, or model-deploy authorization paths.
+
+### 12.1 Pointer index (trigger event → §10 state → §11 evidence)
+
+| learning trigger event (review entry) | §10 state entry | §11 evidence ref | canonical source / owner | non-authority boundary |
+|---|---|---|---|---|
+| AI model recommendation captured | `S1_MODEL_RECOMMENDATION` | §11 S1 row | §10 `S0→S1`; AI evidence packs | Recommendation **≠** approval; **≠** live |
+| Operator promotes formal candidate | `S2_POLICY_CANDIDATE_DRAFT` | §11 S2 row | §10 `S1→S2` (**not automatic**) | Candidate **≠** approval |
+| Offline retrain run completed | `S3_OFFLINE_RETRAIN_COMPLETE` | §11 S3 row | [BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md](../decisions/BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md) | Offline **≠** live; drift hint **≠** auto-retrain |
+| Monitored autonomy model/policy change | `S2` (re-entry from `S13`) | §11 S2 row | `MODEL_CHANGE_REQUIRES_REAPPROVAL=true`; §10 `S13→S2` | Re-approval required; **≠** hot-swap |
+| Bounded lane evidence ready (shadow/paper/testnet) | `S4` / `S5` / `S6` | §11 lane rows | Taxonomy §10 adapters; review scripts | PASS **≠** gate clear (**GLB-015**) |
+| Approval packet assembled | `S7_APPROVAL_PACKET_ASSEMBLED` | §11 S7 row | [AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md](../../governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md) | Packet **≠** operator Go |
+| Governance review / TTL review due | `S8` / `S9` | §11 S8/S9 rows | Go/No-Go §10.2F TTL + Review Trigger | Review **≠** execution |
+| Drift/novelty/reliability hint (Bayesian parking) | review queue → `S1` or governance | pointer only | BAYESIAN re-entry rule | Observation-only; **no** auto-retrain trigger |
+| Online-learning live influence (NO-GO) | `S14_ROLLBACK_OR_VETO` | §11 S14 row | Go/No-Go §8 item 5 | Veto dominates |
+| KillSwitch / GLB / operator emergency veto | `S14_ROLLBACK_OR_VETO` | §11 S14 row | §10.5 vetoes; [MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md](MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) | **No** auto-resume |
+
+Rows are **pointers** to canonical owners. This table does **not** implement trigger dispatch, retrain execution, transition enforcement, or storage.
+
+### 12.2 Non-goals
+
+- No parallel Stage-7 approval, autonomy, or trigger spec
+- No `src/trigger_training/`, InfoStream `trigger_training_sessions`, or offline drill scripts as canonical Stage-7 trigger owners
+- No runtime trigger dispatcher, scheduler hook, or auto-retraining workflow
+- No new evidence registry, readiness hub, or archive surface
+- No approval grant, live deploy path, Preflight unblock, HOLD clear, or external gate bypass
+- No implication that indexed trigger events authorize model deploy, live capital, broker, exchange, or runtime activity
