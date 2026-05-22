@@ -22,6 +22,7 @@ P79_SHELL = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_health_gate_v1.sh"
 P79_VERIFY = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_evidence_manifest_verify_v0.py"
 P101_SCRIPT = REPO_ROOT / "scripts" / "ops" / "p101_stop_playbook_v1.sh"
 P93_SCRIPT = REPO_ROOT / "scripts" / "ops" / "p93_online_readiness_status_dashboard_v1.sh"
+P91_SCRIPT = REPO_ROOT / "scripts" / "ops" / "p91_audit_snapshot_runner_v1.sh"
 WRAPPER_SCRIPT = REPO_ROOT / "scripts" / "ops" / "run_online_readiness_post_stop_pack_v0.sh"
 MARKET_DASHBOARD_SPEC = (
     REPO_ROOT / "docs" / "ops" / "specs" / "FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md"
@@ -597,6 +598,32 @@ def test_p93_post_stop_wrapper_hint_marker_aligned() -> None:
     assert "SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true" in text
 
 
+def test_p91_post_stop_wrapper_hint_marker_aligned() -> None:
+    assert P91_SCRIPT.is_file()
+    text = _spec_text()
+    for marker in (
+        "P91_POST_STOP_WRAPPER_HINTS_IMPLEMENTED=true",
+        "P91_POST_STOP_WRAPPER_REFERENCED=true",
+        "P91_POST_STOP_P79_ARCHIVE_VERIFY_HINT_REFERENCED=true",
+        "P91_POST_STOP_HINT_ONLY=true",
+        "P91_POST_STOP_WRAPPER_NOT_EXECUTED=true",
+        "P91_POST_STOP_PACK_NOT_EXECUTED=true",
+        "P91_POST_STOP_P79_VERIFY_NOT_EXECUTED=true",
+        "P91_POST_STOP_OPERATOR_EXPLICIT_REQUIRED=true",
+        "P91_POST_STOP_EVIDENCE_NON_AUTHORIZING=true",
+    ):
+        assert marker in text
+    assert "p91_audit_snapshot_runner_v1.sh" in text
+    assert "P91_POST_STOP_PRIMARY_EVIDENCE_OPERATOR_HINTS.txt" in text
+    assert "run_online_readiness_post_stop_pack_v0.sh" in text
+    assert "--p79-archive-verify" in text
+    assert "does not** execute wrapper" in text or "does not execute wrapper" in text.lower()
+    assert "operator must run" in text.lower() or "explicitly when durable" in text
+    assert "non-authorizing" in text.lower()
+    assert "No** launchctl" in text or "no launchctl" in text.lower()
+    assert "audit/snapshot hygiene" in text.lower() or "audit snapshot" in text.lower()
+
+
 def test_post_stop_pack_wrapper_marker_aligned() -> None:
     assert WRAPPER_SCRIPT.is_file()
     text = _spec_text()
@@ -615,6 +642,7 @@ def test_post_stop_pack_wrapper_marker_aligned() -> None:
     assert "launchctl" in text.lower()
     assert "In-process online daemon automatic session closeout pack is **not implemented**" in text
     assert "run_online_readiness_post_stop_pack_v0.sh" in preflight
+    assert "p91_audit_snapshot_runner_v1.sh" in preflight
     assert "operator-invoked" in preflight.lower()
     assert "non-authorizing" in preflight.lower()
 
