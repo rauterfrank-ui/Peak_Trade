@@ -131,6 +131,23 @@ def test_taxonomy_crosslinks_learning_inventory_section_10() -> None:
     assert "§12" in inventory
 
 
+def test_taxonomy_crosslinks_learning_inventory_section_11_v0() -> None:
+    """Taxonomy §12 stage-7 indexes Inventory §11 evidence pointer; §10 approval owner preserved."""
+    taxonomy = TAXONOMY_SPEC.read_text(encoding="utf-8")
+    inventory = _spec_text()
+    assert "MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md" in taxonomy
+    assert "§10" in taxonomy
+    assert "§11" in taxonomy
+    assert "learning-change evidence pointer index" in taxonomy.lower()
+    assert "approval SM" in taxonomy or "approval state machine" in taxonomy.lower()
+    assert "non-authorizing" in taxonomy.lower()
+    assert "§11" in inventory
+    assert "§10" in inventory
+    assert "stage 7" in inventory.lower() or "§12" in inventory
+    assert "LEARNING_CHANGE_EVIDENCE_INDEX_POINTER_ONLY=true" in inventory
+    assert "## 10) Stage-7 model/policy approval state machine" in inventory
+
+
 def test_roadmap_crosslinks_learning_inventory_section_10() -> None:
     roadmap = ROADMAP_SPEC.read_text(encoding="utf-8")
     assert "MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md" in roadmap
