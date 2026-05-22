@@ -148,6 +148,28 @@ def test_taxonomy_crosslinks_learning_inventory_section_11_v0() -> None:
     assert "## 10) Stage-7 model/policy approval state machine" in inventory
 
 
+def test_taxonomy_crosslinks_learning_inventory_section_12_v0() -> None:
+    """Taxonomy §12 stage-7 indexes Inventory §12 trigger pointer; §10/§11 separation preserved."""
+    taxonomy = TAXONOMY_SPEC.read_text(encoding="utf-8")
+    inventory = _spec_text()
+    assert "MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md" in taxonomy
+    assert "§10" in taxonomy
+    assert "§11" in taxonomy
+    assert "learning-trigger pointer index" in taxonomy.lower()
+    assert (
+        "Inventory §12" in taxonomy or "distinct from this spec §12 autonomy crosswalk" in taxonomy
+    )
+    assert "learning-change evidence pointer index" in taxonomy.lower()
+    assert "approval SM" in taxonomy or "approval state machine" in taxonomy.lower()
+    assert "non-authorizing" in taxonomy.lower()
+    assert "LEARNING_TRIGGERS_COMPACT_INDEX_V0=true" in inventory
+    assert "LEARNING_TRIGGERS_POINTER_ONLY=true" in inventory
+    assert "## 12) Learning triggers compact pointer index" in inventory
+    assert "§11" in inventory
+    assert "§10" in inventory
+    assert "src/trigger_training/" in inventory
+
+
 def test_roadmap_crosslinks_learning_inventory_section_10() -> None:
     roadmap = ROADMAP_SPEC.read_text(encoding="utf-8")
     assert "MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md" in roadmap
