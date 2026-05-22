@@ -1,0 +1,140 @@
+"""Static contract tests for Stage-7 model/policy approval state machine (Learning Inventory §10)."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+CANONICAL_OWNER = (
+    REPO_ROOT / "docs" / "ops" / "specs" / "MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md"
+)
+TAXONOMY_SPEC = (
+    REPO_ROOT / "docs" / "ops" / "specs" / "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md"
+)
+ROADMAP_SPEC = REPO_ROOT / "docs" / "ops" / "specs" / "MASTER_V2_GO_LIVE_ROADMAP_V0.md"
+PROMOTION_SM = REPO_ROOT / "docs" / "ops" / "specs" / "MASTER_V2_PROMOTION_STATE_MACHINE_V1.md"
+
+FORBIDDEN_DUPLICATE_SPEC_PATHS = (
+    "STAGE_7_MODEL_APPROVAL",
+    "MODEL_APPROVAL_STATE_MACHINE",
+    "STAGE_7_MODEL_POLICY_APPROVAL",
+)
+
+REQUIRED_STATE_IDS = (
+    "S0_IDLE",
+    "S1_MODEL_RECOMMENDATION",
+    "S2_POLICY_CANDIDATE_DRAFT",
+    "S3_OFFLINE_RETRAIN_COMPLETE",
+    "S4_SHADOW_EVIDENCE",
+    "S5_PAPER_EVIDENCE",
+    "S6_TESTNET_EVIDENCE",
+    "S7_APPROVAL_PACKET_ASSEMBLED",
+    "S8_GOVERNANCE_REVIEW",
+    "S9_OPERATOR_DECISION_PENDING",
+    "S10_OPERATOR_ACCEPTED_BOUNDED",
+    "S11_CANARY_PILOT_ELIGIBLE",
+    "S12_LIVE_DEPLOY_PENDING_EXTERNAL",
+    "S13_MONITORED_AUTONOMY_LOCKED",
+    "S14_ROLLBACK_OR_VETO",
+    "S15_RETIRED",
+)
+
+STAGE_7_MACHINE_MARKERS = (
+    "STAGE_7_MODEL_APPROVAL_STATE_MACHINE_V0=true",
+    "STAGE_7_APPROVAL_STATE_COUNT=16",
+    "MODEL_RECOMMENDATION_NON_AUTHORIZING=true",
+    "POLICY_CANDIDATE_NON_EXECUTING=true",
+    "APPROVAL_PACKET_REVIEW_INPUT_ONLY=true",
+    "ONLINE_LEARNING_TO_LIVE_FORBIDDEN=true",
+    "MODEL_CHANGE_REQUIRES_REAPPROVAL=true",
+    "FORBIDDEN_AUTO_PROMOTION_RECOMMENDATION_TO_LIVE=true",
+    "FORBIDDEN_AUTO_PROMOTION_EVIDENCE_PASS_TO_LIVE=true",
+    "FORBIDDEN_AUTO_PROMOTION_PACKET_TO_GO_DECISION=true",
+    "EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true",
+    "TESTNET_PASS_DOES_NOT_AUTHORIZE_LIVE=true",
+    "GO_DECISION_REQUIRES_EXTERNAL_RECORD=true",
+    "AI_L6_EXEC_FORBIDDEN=true",
+    "KILLSWITCH_SAFETY_VETO_DOMINATES=true",
+)
+
+
+def _spec_text() -> str:
+    return CANONICAL_OWNER.read_text(encoding="utf-8")
+
+
+def test_canonical_owner_exists() -> None:
+    assert CANONICAL_OWNER.is_file()
+
+
+def test_stage_7_section_present() -> None:
+    text = _spec_text()
+    assert "## 10) Stage-7 model/policy approval state machine" in text
+    assert "Reuse-before-new" in text
+
+
+def test_all_stage_7_machine_markers_present() -> None:
+    text = _spec_text()
+    for marker in STAGE_7_MACHINE_MARKERS:
+        assert marker in text
+
+
+def test_all_s0_through_s15_state_ids_present() -> None:
+    text = _spec_text()
+    assert "STAGE_7_APPROVAL_STATE_COUNT=16" in text
+    for state_id in REQUIRED_STATE_IDS:
+        assert f"`{state_id}`" in text, f"missing state_id {state_id!r}"
+
+
+def test_forbidden_auto_promotion_literals_present() -> None:
+    text = _spec_text()
+    for literal in (
+        "FORBIDDEN_AUTO_PROMOTION_RECOMMENDATION_TO_LIVE",
+        "FORBIDDEN_AUTO_PROMOTION_EVIDENCE_PASS_TO_LIVE",
+        "FORBIDDEN_AUTO_PROMOTION_PACKET_TO_GO_DECISION",
+        "FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL",
+    ):
+        assert literal in text
+
+
+def test_semantic_distinctions_and_critical_inequality_present() -> None:
+    text = _spec_text()
+    assert "approval_packet_complete ≠ operator_decision_granted ≠ go_decision_granted" in text
+    assert "Model recommendation" in text
+    assert "Policy candidate" in text
+    assert "Monitored autonomy" in text or "Monitored autonomy (Stage 7)" in text
+
+
+def test_vetoes_and_non_goals_present() -> None:
+    text = _spec_text()
+    assert "S14_ROLLBACK_OR_VETO" in text
+    assert "KillSwitch" in text
+    assert "No parallel Stage-7 approval spec" in text
+    assert "non-authorizing" in text.lower()
+
+
+def test_no_duplicate_stage_7_approval_spec_introduced() -> None:
+    specs_dir = REPO_ROOT / "docs" / "ops" / "specs"
+    for fragment in FORBIDDEN_DUPLICATE_SPEC_PATHS:
+        matches = list(specs_dir.glob(f"*{fragment}*"))
+        assert matches == [], f"duplicate spec surface: {matches}"
+
+
+def test_taxonomy_crosslinks_learning_inventory_section_10() -> None:
+    taxonomy = TAXONOMY_SPEC.read_text(encoding="utf-8")
+    inventory = _spec_text()
+    assert "MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md" in taxonomy
+    assert "§10" in taxonomy
+    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in inventory
+    assert "§12" in inventory
+
+
+def test_roadmap_crosslinks_learning_inventory_section_10() -> None:
+    roadmap = ROADMAP_SPEC.read_text(encoding="utf-8")
+    assert "MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md" in roadmap
+    assert "§10" in roadmap or "Stage-7" in roadmap
+
+
+def test_promotion_sm_crosslinks_learning_inventory_section_10() -> None:
+    promotion = PROMOTION_SM.read_text(encoding="utf-8")
+    assert "MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md" in promotion
+    assert "§10" in promotion

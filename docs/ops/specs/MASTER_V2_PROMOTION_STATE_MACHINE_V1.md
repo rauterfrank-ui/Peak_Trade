@@ -65,6 +65,7 @@ State semantics are interpretation and governance visibility only. They are not 
 - [MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md](MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md): compact gate visibility and conservative status posture.
 - [MASTER_V2_DECISION_AUTHORITY_MAP_V1.md](MASTER_V2_DECISION_AUTHORITY_MAP_V1.md): authority topology and unresolved approval-chain nodes.
 - [MASTER_V2_SCOPE_CAPITAL_ENVELOPE_CLARIFICATION_V1.md](MASTER_V2_SCOPE_CAPITAL_ENVELOPE_CLARIFICATION_V1.md): upstream scope and capital semantics adjacent to promotion logic.
+- [MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md](MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md): Stage-7 model/policy approval state machine §10 (orthogonal to environment states in this spec).
 - [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md): non-equality and authority-boundary language lock.
 
 This specification only cross-links these artifacts and does not modify them.
