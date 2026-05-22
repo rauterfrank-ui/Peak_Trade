@@ -73,6 +73,14 @@ def test_glb015_repo_docs_not_final_approval_blocked_v0() -> None:
     assert "| BLOCKED |" in row
     assert "In-repo doc is used as final approval" in row
 
+    text = _plain(BLOCKER_REGISTER)
+    assert "6.5 GLB-015" in text or "GLB-015 — Repo docs, evidence, ledger" in text
+    assert "READINESS_EVIDENCE_LEDGER_PASS_BLOCKED_SAFE" in text
+    assert "READINESS_GATE_SNAPSHOT_PASS_BLOCKED_SAFE" in text
+    assert "triple_lane_primary_evidence=true" in text
+    assert "does not close GLB-015 by itself" in text
+    assert "does not clear Preflight BLOCKED" in text
+
 
 def test_no_green_claim_rule_v0() -> None:
     text = _plain(BLOCKER_REGISTER)

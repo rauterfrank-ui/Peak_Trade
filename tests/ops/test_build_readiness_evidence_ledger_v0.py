@@ -145,6 +145,21 @@ def test_complete_fixture_returns_pass_blocked_safe(mod, complete_archive: Path)
     assert ledger["governance"]["live_allowed"] is False
 
 
+def test_pass_blocked_safe_triple_lane_does_not_clear_glb015_or_preflight(
+    mod, complete_archive: Path
+) -> None:
+    """GLB-015 semantics: PASS_BLOCKED_SAFE + triple_lane is completeness only, not approval."""
+    ctx = _build_ctx(mod, complete_archive)
+    ledger = mod.build_ledger(ctx)
+    assert ledger["verdict"] == mod.VERDICT_PASS_BLOCKED_SAFE
+    assert ledger["evidence"]["triple_lane_primary_evidence"] is True
+    assert ledger["governance"]["governance_blocked"] is True
+    assert ledger["governance"]["preflight_ready"] is False
+    assert ledger["governance"]["glb_015_cleared"] is False
+    assert ledger["governance"]["go_decision_granted"] is False
+    assert mod.BLOCKER_PREFLIGHT in ledger["blockers"]
+
+
 def test_missing_paper_manifest_review_required(mod, complete_archive: Path) -> None:
     (complete_archive / "runs" / "paper" / "paper_run" / "MANIFEST.sha256").unlink()
     ctx = _build_ctx(mod, complete_archive)
