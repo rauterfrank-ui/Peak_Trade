@@ -153,6 +153,18 @@ def test_market_dashboard_has_no_trade_action_affordance(client: TestClient) -> 
         assert term not in combined_html
 
 
+def test_market_dashboard_guardrails_visibility_v0(client: TestClient) -> None:
+    """Both market routes render shared Guardrails non-authority copy (MARKET_SURFACE_V0)."""
+    guardrails_core = (
+        "Dashboard ≠ Freigabe · AI ≠ Authority · Signal ≠ Trade · Docs ≠ Approval"
+    )
+    for path in ("/market", "/market/double-play"):
+        html = _html(client, path)
+        assert "Guardrails:" in html
+        assert guardrails_core in html
+        assert "keine Broker-/Order-/Live-Autorität" in html
+
+
 def test_market_dashboard_readonly_banner_markers(client: TestClient) -> None:
     market_html = _html(client, "/market")
     assert 'data-market-readonly="true"' in market_html
