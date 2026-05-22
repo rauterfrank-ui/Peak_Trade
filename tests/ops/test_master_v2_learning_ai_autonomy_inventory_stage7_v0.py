@@ -156,3 +156,17 @@ def test_decision_authority_map_crosslinks_learning_inventory_section_10() -> No
     assert "consolidated authoritative approver map is not yet canonicalized" not in dam
     assert "authoritative approval chain is not yet canonically unified" not in dam
     assert "canonical authoritative approval chain is missing" not in dam
+
+
+def test_inventory_decision_authority_row_dam_bidirectional_crossref_v0() -> None:
+    """Inventory §4 row and §5 no longer mark DAM missing/partial after #3623 cross-ref sync."""
+    inventory = _spec_text()
+    dam = DECISION_AUTHORITY_MAP.read_text(encoding="utf-8")
+    assert "decision-authority map marks learning/model/policy chain as missing or partial" not in inventory
+    assert "one consolidated canonical chain remains incomplete" not in inventory
+    assert "**§10** is canonical Stage-7 approval index" in inventory
+    assert "Decision Authority Map stage-10 row cross-references **§10**" in inventory
+    assert "MASTER_V2_DECISION_AUTHORITY_MAP_V1.md" in inventory
+    assert "MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md" in dam
+    assert "§10" in dam
+    assert "runtime enforcement" in inventory.lower()
