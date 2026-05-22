@@ -173,3 +173,59 @@ def test_inventory_decision_authority_row_dam_bidirectional_crossref_v0() -> Non
     assert "MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md" in dam
     assert "§10" in dam
     assert "runtime enforcement" in inventory.lower()
+
+
+LEARNING_CHANGE_EVIDENCE_INDEX_MARKERS = (
+    "LEARNING_CHANGE_EVIDENCE_INDEX_V0=true",
+    "LEARNING_CHANGE_EVIDENCE_INDEX_POINTER_ONLY=true",
+    "LEARNING_CHANGE_EVIDENCE_INDEX_NON_AUTHORIZING=true",
+    "EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true",
+    "GLB015_EVIDENCE_NOT_APPROVAL=true",
+)
+
+LEARNING_CHANGE_EVIDENCE_INDEX_STATE_IDS = (
+    "S1_MODEL_RECOMMENDATION",
+    "S3_OFFLINE_RETRAIN_COMPLETE",
+    "S4_SHADOW_EVIDENCE",
+    "S5_PAPER_EVIDENCE",
+    "S6_TESTNET_EVIDENCE",
+    "S7_APPROVAL_PACKET_ASSEMBLED",
+    "S9_OPERATOR_DECISION_PENDING",
+    "S12_LIVE_DEPLOY_PENDING_EXTERNAL",
+    "S13_MONITORED_AUTONOMY_LOCKED",
+    "S14_ROLLBACK_OR_VETO",
+)
+
+
+def test_learning_change_evidence_index_section_present_v0() -> None:
+    """Inventory §11 learning-change evidence index exists (§8 follow-up slice)."""
+    text = _spec_text()
+    assert "## 11) Learning-change evidence index" in text
+    for marker in LEARNING_CHANGE_EVIDENCE_INDEX_MARKERS:
+        assert marker in text
+    assert "Reuse-before-new" in text
+    assert "No parallel Stage-7 approval" in text
+
+
+def test_learning_change_evidence_index_maps_to_section10_states_v0() -> None:
+    """§11 pointer table maps learning-change evidence types to §10 state ids."""
+    text = _spec_text()
+    assert "### 11.1 Pointer index" in text
+    for state_id in LEARNING_CHANGE_EVIDENCE_INDEX_STATE_IDS:
+        assert state_id in text
+    assert "build_generic_evidence_run_registry_v1.py" in text
+    assert "AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2" in text
+
+
+def test_learning_change_evidence_index_non_authorizing_v0() -> None:
+    """§11 is pointer-only; does not authorize runtime, live deploy, or model release."""
+    text = _spec_text()
+    assert "pointer index" in text.lower()
+    assert "non-authorizing" in text.lower()
+    assert "TESTNET_PASS_DOES_NOT_AUTHORIZE_LIVE=true" in text
+    assert "GO_DECISION_REQUIRES_EXTERNAL_RECORD=true" in text
+    assert "No approval grant" in text
+    assert "No runtime transition enforcement" in text
+    assert "evidence_complete ≠ approval_packet_complete" in text
+    assert "consolidated learning-change evidence index" in text.lower()
+    assert "Addressed in §11" in text

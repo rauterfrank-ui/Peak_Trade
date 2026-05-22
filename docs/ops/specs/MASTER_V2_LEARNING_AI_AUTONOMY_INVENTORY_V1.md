@@ -57,7 +57,7 @@ This inventory uses the following canonical categories:
 | approval logic for updated models | process and sign-off requirements before stronger autonomy states | [AI_AUTONOMY_GO_NO_GO_OVERVIEW.md](../../governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md), [AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md](../../governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md), **§10 Stage-7 approval state machine** | evidence pack and sign-off obligations are explicit; **§10 materializes model/policy approval state machine index** | runtime enforcement of transitions remains out of scope | partial | partial | approval chain indexed in §10; runtime router still outside inventory |
 | decision authority for model and policy changes | who can approve, veto, or stop changes | [MASTER_V2_DECISION_AUTHORITY_MAP_V1.md](MASTER_V2_DECISION_AUTHORITY_MAP_V1.md), [AI_AUTONOMY_GO_NO_GO_OVERVIEW.md](../../governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md), [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md), **§10** | **§10** is canonical Stage-7 approval index (S0–S15); Decision Authority Map stage-10 row cross-references **§10**; operator/external gates indexed | single runtime approver enforcement remains open | partial | partial | docs-index cross-link complete; runtime enforcement out of scope |
 | feedback loops from outcomes to learning | how outcomes inform future learning or policy updates | [BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md](../decisions/BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md), [AI_AUTONOMY_GO_NO_GO_OVERVIEW.md](../../governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md) | read-only and offline-first feedback intent is explicit | canonical bounded feedback protocol is not materialized | unclear | partial | distributed references, no single Master V2 feedback contract |
-| evidence, audit, and replay trail for learning and model changes | artifacts proving what changed, why, and under which authority | [AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md](../../governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md), [AI_AUTONOMY_GO_NO_GO_OVERVIEW.md](../../governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md), [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md) | evidence, replay, provenance, and sign-off fields are strongly documented | one compact Master V2 learning-change evidence index is not materialized | partial to strong | partial to high | evidence primitives are strong; consolidation as one index remains open |
+| evidence, audit, and replay trail for learning and model changes | artifacts proving what changed, why, and under which authority | [AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md](../../governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md), [AI_AUTONOMY_GO_NO_GO_OVERVIEW.md](../../governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md), [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md), **§11 learning-change evidence index** | evidence, replay, provenance, and sign-off fields are strongly documented; **§11 materializes compact pointer index to §10 states** | generic registry row indexing remains orthogonal (taxonomy §10) | partial to strong | partial to high | evidence primitives are strong; §11 consolidates pointer map without new registry impl |
 
 ## 5) Advisory, Authoritative, and Approval Boundary Notes
 
@@ -94,16 +94,15 @@ Confirmed by this specification:
 
 Still open:
 
-- one consolidated learning-change evidence index tied to explicit authority nodes
 - runtime enforcement of Stage-7 approval transitions (explicitly out of scope)
 
 Addressed in §10 (docs index only):
 
 - consolidated approval-chain map for model and policy updates at Stage 7
 
-Potential next follow-up slice (separate topic):
+Addressed in §11 (docs index only):
 
-- learning-change evidence index consolidation (no new approval spec)
+- consolidated learning-change evidence index tied to explicit authority nodes and §10 states (pointer-only; no new approval spec)
 
 ## 9) Cross-References
 
@@ -234,3 +233,51 @@ KillSwitch/safety (GLB-008 class), L5 Risk Gate, **L6 EXEC forbidden**, strategi
 - No new readiness/evidence registry
 - No runtime transition enforcement
 - No scheduler/live/testnet execute enablement
+
+## 11) Learning-change evidence index (normative pointer table)
+
+```
+LEARNING_CHANGE_EVIDENCE_INDEX_V0=true
+LEARNING_CHANGE_EVIDENCE_INDEX_POINTER_ONLY=true
+LEARNING_CHANGE_EVIDENCE_INDEX_NON_AUTHORIZING=true
+EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
+EVIDENCE_PASS_DOES_NOT_AUTHORIZE_LIVE=true
+GLB015_EVIDENCE_NOT_APPROVAL=true
+FORBIDDEN_AUTO_PROMOTION_EVIDENCE_PASS_TO_LIVE=true
+```
+
+This section is the **compact pointer index** for learning, model, and policy change evidence mapped to **§10** states (`S0`–`S15`). It consolidates visibility only — **not** a new approval spec, evidence registry implementation, or runtime workflow.
+
+**Reuse-before-new:** Evidence pack fields remain in [AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md](../../governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md). Bounded-lane adapters and generic run registry remain indexed in [RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md](RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) §10 and `build_generic_evidence_run_registry_v1.py` (non-authorizing). Environment promotion remains in [MASTER_V2_PROMOTION_STATE_MACHINE_V1.md](MASTER_V2_PROMOTION_STATE_MACHINE_V1.md). External Go and GLB posture remain in [MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md](MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) (**GLB-015**: evidence ≠ approval).
+
+**Critical inequality (unchanged):** `evidence_complete ≠ approval_packet_complete ≠ operator_decision_granted ≠ go_decision_granted ≠ live_deploy_authorized`.
+
+### 11.1 Pointer index (artifact → §10 state → authority)
+
+| evidence / artifact type | §10 state(s) | max authority / owner | required review / record | non-authority boundary |
+|---|---|---|---|---|
+| AI model recommendation capture | `S1_MODEL_RECOMMENDATION` | L0–L3 PROP advisory; AI evidence owner | Layer map + advisory record | **No** live deploy; **no** Go |
+| Policy / model candidate draft | `S2_POLICY_CANDIDATE_DRAFT` | L0–L3; operator promotes candidate | Version refs; artifact hashes | Candidate **≠** approval |
+| Offline retrain run logs | `S3_OFFLINE_RETRAIN_COMPLETE` | L0–L3; offline evidence owner | [BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md](../decisions/BAYESIAN_EVIDENCE_LAYER_V0_DECISION.md) | Offline **≠** live path; `ONLINE_LEARNING_TO_LIVE_FORBIDDEN=true` |
+| Shadow bounded observation bundle | `S4_SHADOW_EVIDENCE` | L0–L2; shadow adapter + review owner | Taxonomy §10 shadow lane; review script PASS | PASS **≠** runtime start; **≠** live |
+| Paper bounded observation bundle | `S5_PAPER_EVIDENCE` | L0–L3; paper adapter owner | Preflight §2a retention; adapter review | PASS **≠** gate clear; **≠** live |
+| Testnet bounded observation bundle | `S6_TESTNET_EVIDENCE` | L0–L3; testnet adapter owner | Taxonomy §10 testnet lane; review script | `TESTNET_PASS_DOES_NOT_AUTHORIZE_LIVE=true` |
+| Approval packet (EVP v2) | `S7_APPROVAL_PACKET_ASSEMBLED` | L4 review input only | [AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md](../../governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md); SoD PASS | Packet **≠** operator Go; **≠** live deploy |
+| Governance / L4 critic review | `S8_GOVERNANCE_REVIEW` | L4 RO/REC; governance owner | [AI_AUTONOMY_GO_NO_GO_OVERVIEW.md](../../governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md) | Review **≠** execution authority |
+| Operator decision record | `S9_OPERATOR_DECISION_PENDING`, `S10_OPERATOR_ACCEPTED_BOUNDED` | Operator; external gates for live | Explicit accept/reject record | Bounded accept **≠** live; live needs external Go |
+| Canary / pilot readiness artifacts | `S11_CANARY_PILOT_ELIGIBLE` | Readiness + GLB index | [CANARY_LIVE_ENTRY_CRITERIA.md](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) | Readiness **≠** repo auto-clear |
+| External Go / live deploy pending | `S12_LIVE_DEPLOY_PENDING_EXTERNAL` | External governance only | `GO_DECISION_REQUIRES_EXTERNAL_RECORD=true` | Repo evidence **≠** `go_decision_granted` |
+| Monitored autonomy session review | `S13_MONITORED_AUTONOMY_LOCKED` | L0–L5; L6 forbidden | Session review; locked model/policy version | Model change **re-enters** at `S2` |
+| Rollback / veto / incident evidence | `S14_ROLLBACK_OR_VETO` | L5 veto; KillSwitch / GLB | Stop playbooks; incident record | Veto dominates; **no** auto-resume |
+| Retired policy archive | `S15_RETIRED` | Archive owner | Supersession record | Archive **≠** re-approval |
+| Generic evidence run registry row | `S4`–`S6` (lane context) | Taxonomy §10 registry script owner | `build_generic_evidence_run_registry_v1.py` index row | Registry PASS **≠** gate clearance (**GLB-015**) |
+
+Rows are **pointers** to canonical owners. This table does **not** implement storage, replay enforcement, or transition logic.
+
+### 11.2 Non-goals
+
+- No parallel Stage-7 approval or autonomy spec
+- No new evidence registry, readiness hub, or archive surface
+- No runtime transition enforcement or model training workflow
+- No approval grant, live deploy path, scheduler unlock, or external gate bypass
+- No implication that indexed artifacts authorize model deploy, live capital, broker, or exchange activity
