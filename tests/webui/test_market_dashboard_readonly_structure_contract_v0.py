@@ -155,9 +155,7 @@ def test_market_dashboard_has_no_trade_action_affordance(client: TestClient) -> 
 
 def test_market_dashboard_guardrails_visibility_v0(client: TestClient) -> None:
     """Both market routes render shared Guardrails non-authority copy (MARKET_SURFACE_V0)."""
-    guardrails_core = (
-        "Dashboard ≠ Freigabe · AI ≠ Authority · Signal ≠ Trade · Docs ≠ Approval"
-    )
+    guardrails_core = "Dashboard ≠ Freigabe · AI ≠ Authority · Signal ≠ Trade · Docs ≠ Approval"
     for path in ("/market", "/market/double-play"):
         html = _html(client, path)
         assert "Guardrails:" in html
