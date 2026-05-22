@@ -380,9 +380,24 @@ The read-only preflight reporter includes a nested `hold_context_v0` object with
 
 This object is **non-authorizing**. It records the conservative operating posture when `OPERATOR_CLASSIFICATION=unknown`: `current_state=HOLD_NO_PAPER_RUN`, `go_live_next_step=blocked`, and all listed progression authorization flags remain `false`. Canonical references are documentation pointers only (`docs/ops/runbooks/incident_stop_freeze_rollback.md`, `docs/SCHEDULER_DAEMON.md`, and this contract). It does not clear incident stops, authorize daemon or scheduler execution, or activate Paper, Shadow, Testnet, Live, broker, exchange, or order paths.
 
+**Live projection (conservative by design):**
+
+```
+HOLD_CONTEXT_V0_CONSERVATIVE_PROJECTION=true
+ARCHIVE_OPERATOR_RECORD_TRACEABILITY_ONLY=true
+SCOPED_EXCEPTION_DOES_NOT_CLOSE_GLOBAL_HOLD=true
+PASS_BLOCKED_SAFE_DOES_NOT_CLEAR_HOLD=true
+```
+
+`hold_context_v0` is the **canonical live Preflight reporter projection**. Default reporter output **always** uses schema `unknown_hold_context.v0` with `operator_classification=unknown` and blocking progression flags — even when durable archive operator records exist (for example `OPERATOR_CLASSIFICATION=scoped_hold_with_exceptions`, completed U3 scoped preflight exceptions, or merge closeouts). Archive records **do not mutate, override, or clear** `hold_context_v0`. Global **HOLD** remains active unless a separate explicit gate-clearance slice authorizes otherwise.
+
+Offline readiness outputs (`READINESS_EVIDENCE_LEDGER_PASS_BLOCKED_SAFE`, `READINESS_GATE_SNAPSHOT_PASS_BLOCKED_SAFE`, `triple_lane_primary_evidence=true`) **do not** clear HOLD. See §2a.1 U3 scoped preflight exception and GLB-015 §6.5 in [Master V2 Go-Live Blocker Register v0](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md).
+
 ## Operator decision record context v0 (optional)
 
 The read-only preflight reporter (`scripts/ops/report_paper_shadow_247_preflight_status.py`) and stop-signal snapshot (`scripts/ops/snapshot_operator_stop_signals.py`) accept an optional `--operator-decision-record <path>` argument. When supplied, JSON includes `operator_decision_context_v0` (schema `operator_decision_context.v0`). This object is **non-authorizing**: it records parsed `OPERATOR_CLASSIFICATION`, `CURRENT_STATE`, and `GO_LIVE_NEXT_STEP` lines from the file for operator traceability only. It does not remove, move, overwrite, or reinterpret incident-stop artifacts; it does not change `hold_context_v0` (which remains the conservative unknown-HOLD projection); and it does not authorize scheduler, daemon, paper-validation, Testnet, Live, broker, exchange, or order paths.
+
+When `--operator-decision-record` points to a durable archive file (for example `OPERATOR_HOLD_CLASSIFICATION_RECORD.txt` with `OPERATOR_CLASSIFICATION=scoped_hold_with_exceptions`), parsed fields appear in `operator_decision_context_v0` for **traceability only** — they **do not** lift global HOLD, **do not** clear Preflight **BLOCKED**, and **do not** authorize Paper/Shadow/Testnet/Live/broker/exchange paths. A completed U3 scoped exception record is **not** global HOLD closure and **does not** generalize to unbounded runtime activation.
 
 ## 8. Revision
 
