@@ -162,7 +162,10 @@ def test_inventory_decision_authority_row_dam_bidirectional_crossref_v0() -> Non
     """Inventory §4 row and §5 no longer mark DAM missing/partial after #3623 cross-ref sync."""
     inventory = _spec_text()
     dam = DECISION_AUTHORITY_MAP.read_text(encoding="utf-8")
-    assert "decision-authority map marks learning/model/policy chain as missing or partial" not in inventory
+    assert (
+        "decision-authority map marks learning/model/policy chain as missing or partial"
+        not in inventory
+    )
     assert "one consolidated canonical chain remains incomplete" not in inventory
     assert "**§10** is canonical Stage-7 approval index" in inventory
     assert "Decision Authority Map stage-10 row cross-references **§10**" in inventory
