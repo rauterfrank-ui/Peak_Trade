@@ -11,15 +11,29 @@ MANIFEST_VERIFY_REQUIRED=true
 CLOSEOUT_REFERENCE_REQUIRED=true
 RUN_INCOMPLETE_WITHOUT_PRIMARY_EVIDENCE=true
 EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
+VALIDATE_DURABLE_PRIMARY_EVIDENCE_ROOT_V0=true
 ```
 """
 
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
+from typing import Any
 
 MANIFEST_FILENAME = "MANIFEST.sha256"
+
+# Bounded observation durable run roots (Shadow/Testnet adapter parity; Preflight §2a.1).
+BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS = (
+    "RUN_METADATA.json",
+    "review/REVIEW_RESULT.json",
+    "wrapper_evidence/steps.jsonl",
+    "wrapper_evidence/manifest.json",
+    "logs/wrapper_stdout.log",
+    "logs/wrapper_stderr.log",
+    MANIFEST_FILENAME,
+)
 
 # Closeout filenames referenced by §2a.1 hard gate (index only; owners remain canonical).
 KNOWN_CLOSEOUT_FILENAMES = (
@@ -89,3 +103,57 @@ def finalize_primary_evidence_root(root: Path) -> tuple[bool, str]:
     """Write MANIFEST.sha256 then verify. Fail closed on verify failure."""
     write_manifest_sha256(root)
     return verify_manifest_sha256(root)
+
+
+def validate_durable_primary_evidence_root(
+    root: Path,
+    *,
+    required_rel_paths: tuple[str, ...] = BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
+) -> tuple[bool, str, dict[str, Any]]:
+    """Validate durable bounded-observation primary evidence root (Preflight §2a.1).
+
+    Machine marker: ``VALIDATE_DURABLE_PRIMARY_EVIDENCE_ROOT_V0=true``
+    """
+    checks: dict[str, bool] = {}
+    issues: list[str] = []
+
+    ok, msg = require_durable_archive_root(root)
+    checks["durable_root_outside_tmp"] = ok
+    if not ok:
+        issues.append(msg)
+        return False, msg, {"checks": checks, "issues": issues}
+
+    for rel in required_rel_paths:
+        path = root / rel
+        present = path.is_file()
+        key = "required_" + rel.replace("/", "_").replace(".", "_")
+        checks[key] = present
+        if not present:
+            issues.append(f"missing durable required file: {rel}")
+
+    if issues:
+        return False, issues[0], {"checks": checks, "issues": issues}
+
+    ok, msg = verify_manifest_sha256(root)
+    checks["manifest_sha256_verify"] = ok
+    if not ok:
+        issues.append(msg)
+        return False, msg, {"checks": checks, "issues": issues}
+
+    review_path = root / "review" / "REVIEW_RESULT.json"
+    try:
+        review_payload = json.loads(review_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        msg = f"review/REVIEW_RESULT.json invalid: {exc}"
+        checks["durable_review_verdict_pass"] = False
+        issues.append(msg)
+        return False, msg, {"checks": checks, "issues": issues}
+
+    review_pass = review_payload.get("verdict") == "PASS"
+    checks["durable_review_verdict_pass"] = review_pass
+    if not review_pass:
+        msg = "review/REVIEW_RESULT.json verdict must be PASS"
+        issues.append(msg)
+        return False, msg, {"checks": checks, "issues": issues}
+
+    return True, "", {"checks": checks, "issues": []}

@@ -1,0 +1,232 @@
+"""Static and behavioral tests for bounded review durable-run-root hardening v0."""
+
+from __future__ import annotations
+
+import importlib.util
+import json
+import shutil
+import sys
+from pathlib import Path
+
+import pytest
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+PREFLIGHT = REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+SHARED_HELPER = REPO_ROOT / "scripts" / "ops" / "primary_evidence_retention_v0.py"
+SHADOW_REVIEW = REPO_ROOT / "scripts" / "ops" / "review_shadow_bounded_observation_evidence_v0.py"
+TESTNET_REVIEW = REPO_ROOT / "scripts" / "ops" / "review_testnet_bounded_observation_evidence_v0.py"
+
+
+def _load_module(script: Path, name: str):
+    spec = importlib.util.spec_from_file_location(name, script)
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _durable_root(tmp_path: Path) -> Path:
+    path = REPO_ROOT / "tests" / ".pytest_archive_roots" / tmp_path.name
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _write_shadow_staging_bundle(staging: Path) -> None:
+    evidence = staging / "wrapper_evidence"
+    evidence.mkdir(parents=True, exist_ok=True)
+    (evidence / "SHADOW_247_FUTURES_BOUNDED_SHADOW_DRY_RUN.md").write_text(
+        "NO_BROKER\nNO_NETWORK\nNO_ORDER_SUBMISSION\n",
+        encoding="utf-8",
+    )
+    (evidence / "steps.jsonl").write_text('{"step_index": 1}\n', encoding="utf-8")
+    (evidence / "manifest.json").write_text(
+        json.dumps(
+            {
+                "schema": "shadow_247_futures_bounded_shadow_dry_run.v0",
+                "NO_BROKER": True,
+                "NO_NETWORK": True,
+                "NO_ORDER_SUBMISSION": True,
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    logs = staging / "logs"
+    logs.mkdir(parents=True, exist_ok=True)
+    (logs / "wrapper_stdout.log").write_text("stdout\n", encoding="utf-8")
+    (logs / "wrapper_stderr.log").write_text("stderr\n", encoding="utf-8")
+
+
+def _write_testnet_staging_bundle(staging: Path) -> None:
+    evidence = staging / "wrapper_evidence"
+    evidence.mkdir(parents=True, exist_ok=True)
+    proof_doc = "docs/ops/specs/FUTURES_TESTNET_DRY_RUN_PROOF_CONTRACT_V0.md"
+    (evidence / "TESTNET_BOUNDED_OBSERVATION.md").write_text(
+        "\n".join(
+            [
+                "TESTNET_SANDBOX_ONLY",
+                "NO_PRODUCTION_FALLBACK",
+                "NO_LIVE_ORDER_SUBMISSION",
+                proof_doc,
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (evidence / "steps.jsonl").write_text('{"step_index": 1}\n', encoding="utf-8")
+    (evidence / "manifest.json").write_text(
+        json.dumps(
+            {
+                "schema": "testnet_bounded_dry_run.v0",
+                "TESTNET_SANDBOX_ONLY": True,
+                "NO_PRODUCTION_FALLBACK": True,
+                "NO_LIVE_ORDER_SUBMISSION": True,
+                "broker_connected": False,
+                "production_fallback": False,
+                "proof_contract_doc": proof_doc,
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    logs = staging / "logs"
+    logs.mkdir(parents=True, exist_ok=True)
+    (logs / "wrapper_stdout.log").write_text("stdout\n", encoding="utf-8")
+    (logs / "wrapper_stderr.log").write_text("stderr\n", encoding="utf-8")
+
+
+def _write_durable_bounded_bundle(durable: Path, *, lane: str) -> None:
+    if lane == "shadow":
+        _write_shadow_staging_bundle(durable)
+    else:
+        _write_testnet_staging_bundle(durable)
+    (durable / "RUN_METADATA.json").write_text('{"run_id": "test"}\n', encoding="utf-8")
+    review_dir = durable / "review"
+    review_dir.mkdir(parents=True, exist_ok=True)
+    (review_dir / "REVIEW_RESULT.json").write_text(
+        json.dumps({"verdict": "PASS"}) + "\n",
+        encoding="utf-8",
+    )
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
+
+    write_manifest_sha256(durable)
+
+
+@pytest.fixture(autouse=True)
+def _cleanup_durable_archive_dirs():
+    yield
+    archive_roots = REPO_ROOT / "tests" / ".pytest_archive_roots"
+    if archive_roots.is_dir():
+        shutil.rmtree(archive_roots, ignore_errors=True)
+
+
+def test_shadow_review_cli_accepts_optional_durable_run_root() -> None:
+    text = SHADOW_REVIEW.read_text(encoding="utf-8")
+    assert "--durable-run-root" in text
+    assert "validate_durable_primary_evidence_root" in text
+
+
+def test_testnet_review_cli_accepts_optional_durable_run_root() -> None:
+    text = TESTNET_REVIEW.read_text(encoding="utf-8")
+    assert "--durable-run-root" in text
+    assert "validate_durable_primary_evidence_root" in text
+
+
+def test_preflight_section_2a_references_review_durable_run_root_anchor() -> None:
+    section = PREFLIGHT.read_text(encoding="utf-8").split("## 2a.1", 1)[0]
+    assert "review_shadow_bounded_observation_evidence_v0.py" in section
+    assert "review_testnet_bounded_observation_evidence_v0.py" in section
+    assert "--durable-run-root" in section
+    assert "validate_durable_primary_evidence_root()" in section
+    assert "default off" in section.lower() or "Default off" in section
+
+
+def test_shared_helper_exposes_validate_durable_primary_evidence_root() -> None:
+    text = SHARED_HELPER.read_text(encoding="utf-8")
+    assert "def validate_durable_primary_evidence_root" in text
+    assert "VALIDATE_DURABLE_PRIMARY_EVIDENCE_ROOT_V0=true" in text
+
+
+def test_shadow_review_omitted_durable_flag_preserves_staging_only(tmp_path: Path) -> None:
+    review_mod = _load_module(
+        SHADOW_REVIEW, "review_shadow_bounded_observation_evidence_v0_staging_only"
+    )
+    staging = Path("/tmp") / f"peak_trade_shadow_review_staging_{tmp_path.name}"
+    staging.mkdir(parents=True, exist_ok=True)
+    _write_shadow_staging_bundle(staging)
+    result = review_mod.review_evidence(staging)
+    assert result["verdict"] == review_mod.PASS
+    assert "durable_run_root" not in result
+    assert "durable_checks" not in result
+
+
+def test_testnet_review_omitted_durable_flag_preserves_staging_only(tmp_path: Path) -> None:
+    review_mod = _load_module(
+        TESTNET_REVIEW, "review_testnet_bounded_observation_evidence_v0_staging_only"
+    )
+    staging = Path("/tmp") / f"peak_trade_testnet_review_staging_{tmp_path.name}"
+    staging.mkdir(parents=True, exist_ok=True)
+    _write_testnet_staging_bundle(staging)
+    result = review_mod.review_evidence(staging)
+    assert result["verdict"] == review_mod.PASS
+    assert "durable_run_root" not in result
+
+
+def test_shadow_review_durable_run_root_passes_with_valid_archive(tmp_path: Path) -> None:
+    review_mod = _load_module(
+        SHADOW_REVIEW, "review_shadow_bounded_observation_evidence_v0_durable_pass"
+    )
+    staging = Path("/tmp") / f"peak_trade_shadow_review_staging_pass_{tmp_path.name}"
+    staging.mkdir(parents=True, exist_ok=True)
+    durable = _durable_root(tmp_path)
+    _write_shadow_staging_bundle(staging)
+    _write_durable_bounded_bundle(durable, lane="shadow")
+    result = review_mod.review_evidence(staging, durable_run_root=durable)
+    assert result["verdict"] == review_mod.PASS
+    assert result["checks"]["durable_primary_evidence_valid"] is True
+    assert result["durable_checks"]["manifest_sha256_verify"] is True
+
+
+def test_testnet_review_durable_run_root_passes_with_valid_archive(tmp_path: Path) -> None:
+    review_mod = _load_module(
+        TESTNET_REVIEW, "review_testnet_bounded_observation_evidence_v0_durable_pass"
+    )
+    staging = Path("/tmp") / f"peak_trade_testnet_review_staging_pass_{tmp_path.name}"
+    staging.mkdir(parents=True, exist_ok=True)
+    durable = _durable_root(tmp_path)
+    _write_testnet_staging_bundle(staging)
+    _write_durable_bounded_bundle(durable, lane="testnet")
+    result = review_mod.review_evidence(staging, durable_run_root=durable)
+    assert result["verdict"] == review_mod.PASS
+    assert result["checks"]["durable_primary_evidence_valid"] is True
+
+
+def test_shadow_review_durable_run_root_fails_closed_under_tmp(tmp_path: Path) -> None:
+    review_mod = _load_module(
+        SHADOW_REVIEW, "review_shadow_bounded_observation_evidence_v0_durable_tmp"
+    )
+    staging = Path("/tmp") / f"peak_trade_shadow_review_staging_tmp_{tmp_path.name}"
+    staging.mkdir(parents=True, exist_ok=True)
+    durable = Path("/tmp") / f"peak_trade_shadow_review_durable_tmp_{tmp_path.name}"
+    durable.mkdir(parents=True, exist_ok=True)
+    _write_shadow_staging_bundle(staging)
+    _write_durable_bounded_bundle(durable, lane="shadow")
+    result = review_mod.review_evidence(staging, durable_run_root=durable)
+    assert result["verdict"] == review_mod.REVIEW_REQUIRED
+    assert result["checks"]["durable_primary_evidence_valid"] is False
+    assert any("outside /tmp" in issue for issue in result["issues"])
+
+
+def test_validate_durable_primary_evidence_root_fails_on_manifest_mismatch(tmp_path: Path) -> None:
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import validate_durable_primary_evidence_root
+
+    durable = _durable_root(tmp_path)
+    _write_durable_bounded_bundle(durable, lane="shadow")
+    tampered = durable / "RUN_METADATA.json"
+    tampered.write_text('{"run_id": "tampered"}\n', encoding="utf-8")
+    ok, reason, detail = validate_durable_primary_evidence_root(durable)
+    assert ok is False
+    assert "checksum mismatch" in reason or any("checksum mismatch" in i for i in detail["issues"])
