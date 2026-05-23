@@ -294,7 +294,9 @@ def test_pr3631_review_gate_preserved_without_adapter_execute_change() -> None:
 
 
 def test_mandatory_wiring_slice_reuses_canonical_preflight_owner_only() -> None:
-    canonical = REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+    canonical = (
+        REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+    )
     assert canonical == PREFLIGHT
     parallel_preflight = REPO_ROOT / "docs" / "ops" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
     assert not parallel_preflight.is_file()
