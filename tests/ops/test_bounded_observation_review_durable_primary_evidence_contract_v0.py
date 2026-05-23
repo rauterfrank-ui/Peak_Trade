@@ -150,7 +150,9 @@ def test_shared_helper_exposes_validate_durable_primary_evidence_root() -> None:
 
 
 def test_shadow_review_omitted_durable_flag_preserves_staging_only(tmp_path: Path) -> None:
-    review_mod = _load_module(SHADOW_REVIEW, "review_shadow_bounded_observation_evidence_v0_staging_only")
+    review_mod = _load_module(
+        SHADOW_REVIEW, "review_shadow_bounded_observation_evidence_v0_staging_only"
+    )
     staging = Path("/tmp") / f"peak_trade_shadow_review_staging_{tmp_path.name}"
     staging.mkdir(parents=True, exist_ok=True)
     _write_shadow_staging_bundle(staging)
@@ -161,7 +163,9 @@ def test_shadow_review_omitted_durable_flag_preserves_staging_only(tmp_path: Pat
 
 
 def test_testnet_review_omitted_durable_flag_preserves_staging_only(tmp_path: Path) -> None:
-    review_mod = _load_module(TESTNET_REVIEW, "review_testnet_bounded_observation_evidence_v0_staging_only")
+    review_mod = _load_module(
+        TESTNET_REVIEW, "review_testnet_bounded_observation_evidence_v0_staging_only"
+    )
     staging = Path("/tmp") / f"peak_trade_testnet_review_staging_{tmp_path.name}"
     staging.mkdir(parents=True, exist_ok=True)
     _write_testnet_staging_bundle(staging)
@@ -171,7 +175,9 @@ def test_testnet_review_omitted_durable_flag_preserves_staging_only(tmp_path: Pa
 
 
 def test_shadow_review_durable_run_root_passes_with_valid_archive(tmp_path: Path) -> None:
-    review_mod = _load_module(SHADOW_REVIEW, "review_shadow_bounded_observation_evidence_v0_durable_pass")
+    review_mod = _load_module(
+        SHADOW_REVIEW, "review_shadow_bounded_observation_evidence_v0_durable_pass"
+    )
     staging = Path("/tmp") / f"peak_trade_shadow_review_staging_pass_{tmp_path.name}"
     staging.mkdir(parents=True, exist_ok=True)
     durable = _durable_root(tmp_path)
@@ -184,7 +190,9 @@ def test_shadow_review_durable_run_root_passes_with_valid_archive(tmp_path: Path
 
 
 def test_testnet_review_durable_run_root_passes_with_valid_archive(tmp_path: Path) -> None:
-    review_mod = _load_module(TESTNET_REVIEW, "review_testnet_bounded_observation_evidence_v0_durable_pass")
+    review_mod = _load_module(
+        TESTNET_REVIEW, "review_testnet_bounded_observation_evidence_v0_durable_pass"
+    )
     staging = Path("/tmp") / f"peak_trade_testnet_review_staging_pass_{tmp_path.name}"
     staging.mkdir(parents=True, exist_ok=True)
     durable = _durable_root(tmp_path)
@@ -196,7 +204,9 @@ def test_testnet_review_durable_run_root_passes_with_valid_archive(tmp_path: Pat
 
 
 def test_shadow_review_durable_run_root_fails_closed_under_tmp(tmp_path: Path) -> None:
-    review_mod = _load_module(SHADOW_REVIEW, "review_shadow_bounded_observation_evidence_v0_durable_tmp")
+    review_mod = _load_module(
+        SHADOW_REVIEW, "review_shadow_bounded_observation_evidence_v0_durable_tmp"
+    )
     staging = Path("/tmp") / f"peak_trade_shadow_review_staging_tmp_{tmp_path.name}"
     staging.mkdir(parents=True, exist_ok=True)
     durable = Path("/tmp") / f"peak_trade_shadow_review_durable_tmp_{tmp_path.name}"
