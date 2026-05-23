@@ -18,10 +18,20 @@ P101_SCRIPT = REPO_ROOT / "scripts" / "ops" / "p101_stop_playbook_v1.sh"
 P93_SCRIPT = REPO_ROOT / "scripts" / "ops" / "p93_online_readiness_status_dashboard_v1.sh"
 P91_SCRIPT = REPO_ROOT / "scripts" / "ops" / "p91_audit_snapshot_runner_v1.sh"
 PACK_SCRIPT = REPO_ROOT / "scripts" / "ops" / "pack_online_readiness_supervisor_evidence_v0.py"
+SHADOW_REVIEW = REPO_ROOT / "scripts" / "ops" / "review_shadow_bounded_observation_evidence_v0.py"
+TESTNET_REVIEW = REPO_ROOT / "scripts" / "ops" / "review_testnet_bounded_observation_evidence_v0.py"
+HARD_GATE_CONTRACT_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_run_primary_evidence_retention_hard_gate_v0.py"
+)
+MANDATORY_CLOSEOUT_WIRING_TOKEN = "DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_WIRING_V0=true"
 
 
 def _owner_text() -> str:
     return CANONICAL_OWNER.read_text(encoding="utf-8")
+
+
+def _section_2a1() -> str:
+    return _owner_text().split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
 
 
 def _adapter_text() -> str:
@@ -423,6 +433,63 @@ def test_bounded_adapters_import_shared_helper_not_duplicate_verify() -> None:
         text = path.read_text(encoding="utf-8")
         assert "primary_evidence_retention_v0" in text
         assert "def verify_manifest_sha256" not in text
+
+
+def test_section_2a1_contains_mandatory_closeout_wiring_token() -> None:
+    text = _owner_text()
+    section = _section_2a1()
+    assert "## 2a. Primary evidence retention invariant v0" in text
+    assert "## 2a.1 Future-run primary evidence hard gate v0" in text
+    assert text.index("## 2a.") < text.index("## 2a.1") < text.index("## 2b.")
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in section
+
+
+def test_invariant_owner_crosslinks_mandatory_wiring_with_bounded_review_durable_run_root() -> None:
+    section = _section_2a1()
+    for review_path in (SHADOW_REVIEW, TESTNET_REVIEW):
+        text = review_path.read_text(encoding="utf-8")
+        assert review_path.name in section
+        assert "--durable-run-root" in text
+        assert "validate_durable_primary_evidence_root" in text
+        assert "default=None" in text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in section
+
+
+def test_invariant_owner_crosslinks_bounded_adapters_with_mandatory_wiring_review_owners() -> None:
+    section = _section_2a1()
+    for adapter_path, review_name in (
+        (SHADOW_ADAPTER, SHADOW_REVIEW.name),
+        (TESTNET_ADAPTER, TESTNET_REVIEW.name),
+    ):
+        adapter_text = adapter_path.read_text(encoding="utf-8")
+        assert review_name in adapter_text
+        assert review_name in section
+        assert "primary_evidence_retention_v0" in adapter_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in section
+
+
+def test_invariant_owner_preserves_durable_run_root_default_off_on_adapter_execute() -> None:
+    for adapter_path in (SHADOW_ADAPTER, TESTNET_ADAPTER):
+        text = adapter_path.read_text(encoding="utf-8")
+        assert "--durable-run-root" not in text
+        assert "durable_run_root" not in text
+        review_cmd_region = text.split("review_cmd =", 1)[1].split("]", 1)[0]
+        assert "--staging-root" in review_cmd_region
+        assert "--durable-run-root" not in review_cmd_region
+    section = _section_2a1()
+    collapsed = section.replace("**", "").lower()
+    assert "default off" in collapsed or "opt-in (default off)" in collapsed
+
+
+def test_invariant_owner_mandatory_wiring_chain_preserves_non_authorizing_boundary() -> None:
+    invariant_section = _owner_text().split("## 2a.1", 1)[0]
+    mandatory_section = _section_2a1()
+    for section in (invariant_section, mandatory_section):
+        collapsed = section.replace("**", "").lower()
+        assert "non-authorizing" in collapsed or "evidence ≠ approval" in section
+        assert "blocked" in collapsed
+    assert "EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true" in mandatory_section
+    assert HARD_GATE_CONTRACT_TESTS.name in Path(__file__).read_text(encoding="utf-8")
 
 
 def test_paper_adapter_verifies_manifest_after_archive_copy() -> None:
