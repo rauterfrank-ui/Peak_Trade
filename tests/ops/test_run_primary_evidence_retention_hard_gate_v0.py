@@ -29,6 +29,13 @@ P101 = REPO_ROOT / "scripts" / "ops" / "p101_stop_playbook_v1.sh"
 P93 = REPO_ROOT / "scripts" / "ops" / "p93_online_readiness_status_dashboard_v1.sh"
 POST_STOP = REPO_ROOT / "scripts" / "ops" / "run_online_readiness_post_stop_pack_v0.sh"
 DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+BOUNDED_REVIEW_CONTRACT_TESTS = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_observation_review_durable_primary_evidence_contract_v0.py"
+)
+MANDATORY_CLOSEOUT_WIRING_TOKEN = "DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_WIRING_V0=true"
 COPY_CHECK = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "retention/testnet_240min_existing_bundle_durable_copy_check_v0_20260522T081045Z/"
@@ -48,6 +55,10 @@ HARD_GATE_TOKENS = (
 
 def _owner_text() -> str:
     return CANONICAL_OWNER.read_text(encoding="utf-8")
+
+
+def _section_2a1() -> str:
+    return _owner_text().split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
 
 
 def test_canonical_owner_section_2a1_exists_with_hard_gate_tokens() -> None:
@@ -203,6 +214,54 @@ def test_docs_truth_map_records_hard_gate_slice() -> None:
     text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
     assert "§2a.1" in text or "2a.1" in text
     assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in text
+
+
+def test_section_2a1_contains_mandatory_closeout_wiring_token() -> None:
+    section = _section_2a1()
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in section
+    assert "Mandatory durable closeout wiring" in section
+
+
+def test_section_2a1_links_mandatory_wiring_to_bounded_shadow_testnet_closeouts() -> None:
+    section = _section_2a1()
+    collapsed = section.lower()
+    assert "review_shadow_bounded_observation_evidence_v0.py" in section
+    assert "review_testnet_bounded_observation_evidence_v0.py" in section
+    assert "--durable-run-root" in section
+    assert "shadow" in collapsed
+    assert "testnet" in collapsed
+    assert "closeout" in collapsed
+
+
+def test_docs_truth_map_records_mandatory_closeout_wiring_slice() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert "2026-05-23" in text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in text
+    assert "mandatory durable closeout wiring" in text.lower()
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in text
+    assert "--durable-run-root" in text
+
+
+def test_hard_gate_and_bounded_review_contract_modules_share_mandatory_wiring_anchor() -> None:
+    hard_gate_text = Path(__file__).read_text(encoding="utf-8")
+    bounded_text = BOUNDED_REVIEW_CONTRACT_TESTS.read_text(encoding="utf-8")
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in hard_gate_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in bounded_text
+    assert (
+        str(CANONICAL_OWNER) in bounded_text
+        or "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in bounded_text
+    )
+
+
+def test_section_2a1_mandatory_wiring_preserves_opt_in_and_non_authorizing() -> None:
+    section = _section_2a1()
+    collapsed = section.replace("**", "").lower()
+    assert "default off" in collapsed or "opt-in (default off)" in collapsed
+    assert "not default-on" in collapsed
+    assert "non-authorizing" in collapsed
+    assert "evidence ≠ approval" in section or "evidence = approval" not in collapsed
+    assert "does not authorize runtime" in collapsed
+    assert "does not clear preflight blocked" in collapsed
 
 
 @pytest.mark.skipif(not COPY_CHECK.is_file(), reason="operator archive copy-check not present")
