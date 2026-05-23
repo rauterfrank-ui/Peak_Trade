@@ -10,18 +10,17 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CHARTER = REPO_ROOT / "docs" / "ops" / "runbooks" / "SHADOW_247_GOVERNANCE_CHARTER_V0.md"
-REVIEW_SCRIPT = (
-    REPO_ROOT / "scripts" / "ops" / "review_shadow_bounded_observation_evidence_v0.py"
-)
-ADAPTER_SCRIPT = (
-    REPO_ROOT / "scripts" / "ops" / "run_shadow_bounded_observation_adapter_v0.py"
-)
+REVIEW_SCRIPT = REPO_ROOT / "scripts" / "ops" / "review_shadow_bounded_observation_evidence_v0.py"
+ADAPTER_SCRIPT = REPO_ROOT / "scripts" / "ops" / "run_shadow_bounded_observation_adapter_v0.py"
 
 STAGING_LOG_SECTION_HEADING = (
     "## Detached / manual bounded Shadow launch — staging log contract (v0)"
 )
-STAGING_STDOUT = "logs/wrapper_stdout.log"
-STAGING_STDERR = "logs/wrapper_stderr.log"
+# Docs token policy: illustrative paths in charter use &#47; encoding.
+STAGING_STDOUT_CHARTER = "logs&#47;wrapper_stdout.log"
+STAGING_STDERR_CHARTER = "logs&#47;wrapper_stderr.log"
+STAGING_STDOUT_LITERAL = "logs/wrapper_stdout.log"
+STAGING_STDERR_LITERAL = "logs/wrapper_stderr.log"
 CONTRACT_TOKEN = "SHADOW_BOUNDED_STAGING_LOG_CONTRACT_V0=true"
 
 
@@ -34,8 +33,11 @@ def _staging_log_section() -> str:
 
 def test_staging_log_contract_section_exists_in_governance_charter_v0() -> None:
     section = _staging_log_section()
-    assert STAGING_STDOUT in section
-    assert STAGING_STDERR in section
+    assert STAGING_STDOUT_CHARTER in section
+    assert STAGING_STDERR_CHARTER in section
+    assert "{staging_root}&#47;logs&#47;wrapper_stdout.log" in section
+    assert "detached&#47;" in section
+    assert "staging&#47;logs&#47;" in section
     assert "review_shadow_bounded_observation_evidence_v0.py" in section
     assert "run_shadow_bounded_observation_adapter_v0.py" in section
     assert CONTRACT_TOKEN in section
@@ -59,6 +61,6 @@ def test_review_enforcer_references_wrapper_staging_log_paths_v0() -> None:
 
 def test_adapter_expected_artifacts_include_staging_log_paths_v0() -> None:
     text = ADAPTER_SCRIPT.read_text(encoding="utf-8")
-    assert STAGING_STDOUT in text
-    assert STAGING_STDERR in text
+    assert STAGING_STDOUT_LITERAL in text
+    assert STAGING_STDERR_LITERAL in text
     assert "expected_artifacts" in text

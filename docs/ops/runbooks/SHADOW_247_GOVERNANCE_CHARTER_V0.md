@@ -41,8 +41,8 @@ This charter **does not replace** the preflight contract, ops TOMLs, scheduler c
   - **Extended tier (governed, default-off):** optional CLI path up to 60 minutes / 3600 steps only with `--extended-bounded-shadow-validation` plus a **distinct** extended confirm token (separate from the base wrapper token). Still local dry-run Shadow only; still **non-authorizing**; does **not** satisfy Stage 3 or any Live/Testnet/broker/exchange/order path.
   - **24h candidate tier (governed, default-off):** optional CLI path up to 1440 minutes / 86400 steps only with `--candidate-24h-bounded-shadow-validation` plus a **distinct** `--candidate-24h-confirm-token` (separate from base and extended tokens; mutually exclusive with the extended flag). Preparation for bounded dry-run **candidate** validation only — **non-authorizing**, requires separate operator GO for any execution, does **not** imply 24/7 readiness or Stage 3+.
 - **Static drift tests (non-authorizing):** e.g. `tests/ops/test_shadow_247_futures_config_job_skeleton_v0.py`, `tests/ops/test_offline_crosslink_invariant_contract_v0.py`, `tests/ops/test_shadow_247_futures_start_wrapper_skeleton_v0.py`, `tests/ops/test_shadow_bounded_observation_staging_log_contract_v0.py`
-- **Shadow bounded observation adapter (execute reference):** `scripts/ops/run_shadow_bounded_observation_adapter_v0.py` — writes wrapper stdout/stderr under `{staging_root}/logs/` before review.
-- **Shadow bounded observation review (enforcer):** `scripts/ops/review_shadow_bounded_observation_evidence_v0.py` — offline review only; requires `logs/wrapper_stdout.log` and `logs/wrapper_stderr.log`.
+- **Shadow bounded observation adapter (execute reference):** `scripts/ops/run_shadow_bounded_observation_adapter_v0.py` — writes wrapper stdout/stderr under `{staging_root}&#47;logs&#47;` before review.
+- **Shadow bounded observation review (enforcer):** `scripts/ops/review_shadow_bounded_observation_evidence_v0.py` — offline review only; requires `logs&#47;wrapper_stdout.log` and `logs&#47;wrapper_stderr.log`.
 
 ---
 
@@ -50,12 +50,12 @@ This charter **does not replace** the preflight contract, ops TOMLs, scheduler c
 
 Any **detached**, **manual**, or **archive-only** operator start path that later invokes `scripts/ops/review_shadow_bounded_observation_evidence_v0.py` **must** populate these canonical staging paths **before** post-run review:
 
-- `{staging_root}/logs/wrapper_stdout.log`
-- `{staging_root}/logs/wrapper_stderr.log`
+- `{staging_root}&#47;logs&#47;wrapper_stdout.log`
+- `{staging_root}&#47;logs&#47;wrapper_stderr.log`
 
 The wrapper skeleton emits evidence under `--evidence-root`; stdout/stderr capture is **caller-owned**. The canonical execute reference is `scripts/ops/run_shadow_bounded_observation_adapter_v0.py` (`expected_artifacts` includes both log files). The review script **hard-fails** when either path is missing — **do not** weaken review to accept detached-only alternate log locations.
 
-Detached `nohup` launches may mirror logs under a bundle `detached/` directory (symlink or copy) for operator monitoring, but **`staging/logs/`** paths are authoritative for review and durable archive closeout.
+Detached `nohup` launches may mirror logs under a bundle `detached&#47;` directory (symlink or copy) for operator monitoring, but **`staging&#47;logs&#47;`** paths are authoritative for review and durable archive closeout.
 
 ```text
 SHADOW_BOUNDED_STAGING_LOG_CONTRACT_V0=true
