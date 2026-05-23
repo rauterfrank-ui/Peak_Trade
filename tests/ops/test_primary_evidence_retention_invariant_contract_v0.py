@@ -29,6 +29,10 @@ BOUNDED_REVIEW_CONTRACT_TESTS = (
     / "ops"
     / "test_bounded_observation_review_durable_primary_evidence_contract_v0.py"
 )
+SCHEDULER_COMPLETION_CONTRACT_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_scheduler_completion_primary_evidence_closeout_v0.py"
+)
+RUN_SCHEDULER = REPO_ROOT / "scripts" / "run_scheduler.py"
 MANDATORY_CLOSEOUT_WIRING_TOKEN = "DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_WIRING_V0=true"
 
 
@@ -509,6 +513,72 @@ def test_invariant_owner_crosslinks_bounded_review_contract_module() -> None:
         assert review_path.name in bounded_text or review_path.name in invariant_text
         assert "--durable-run-root" in review_text
         assert "validate_durable_primary_evidence_root" in review_text
+
+
+def test_invariant_owner_crosslinks_scheduler_completion_contract_module() -> None:
+    invariant_text = Path(__file__).read_text(encoding="utf-8")
+    scheduler_text = SCHEDULER_COMPLETION_CONTRACT_TESTS.read_text(encoding="utf-8")
+    assert SCHEDULER_COMPLETION_CONTRACT_TESTS.name in invariant_text
+    assert Path(__file__).name in scheduler_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in invariant_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in scheduler_text
+    assert HARD_GATE_CONTRACT_TESTS.name in scheduler_text
+
+
+def test_invariant_scheduler_reciprocal_chain_shares_mandatory_wiring_with_preflight_2a1() -> None:
+    section = _section_2a1()
+    scheduler_text = SCHEDULER_COMPLETION_CONTRACT_TESTS.read_text(encoding="utf-8")
+    hard_gate_text = HARD_GATE_CONTRACT_TESTS.read_text(encoding="utf-8")
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in section
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in scheduler_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in hard_gate_text
+    assert HARD_GATE_CONTRACT_TESTS.name in Path(__file__).read_text(encoding="utf-8")
+    assert "§2a.1" in section or "2a.1" in section
+
+
+def test_invariant_scheduler_reciprocal_chain_preserves_non_authorizing_evidence_boundary() -> None:
+    scheduler_text = RUN_SCHEDULER.read_text(encoding="utf-8")
+    scheduler_owner_text = SCHEDULER_COMPLETION_CONTRACT_TESTS.read_text(encoding="utf-8")
+    section = _section_2a1().replace("**", "").lower()
+    assert "evidence_non_authorizing" in scheduler_text
+    assert "non-authorizing" in section or "does not authorize runtime" in section
+    assert (
+        "non-authorizing" in scheduler_owner_text.lower()
+        or "evidence_non_authorizing" in scheduler_owner_text
+    )
+    assert "finalize_primary_evidence_root" in SHARED_HELPER.read_text(encoding="utf-8")
+
+
+def test_invariant_scheduler_reciprocal_chain_confirms_no_scheduler_start_implied() -> None:
+    scheduler_script = RUN_SCHEDULER.read_text(encoding="utf-8")
+    scheduler_owner_text = SCHEDULER_COMPLETION_CONTRACT_TESTS.read_text(encoding="utf-8").lower()
+    preflight_text = _owner_text().lower()
+    assert "assert_scheduler_start_authorized" in scheduler_script
+    assert "SCHEDULER_START_BLOCKED_EXIT" in scheduler_script
+    assert "test_non_dry_run_blocked_under_hold_still_exits_2" in scheduler_owner_text
+    assert (
+        "start boundary guard unchanged" in preflight_text or "scheduler boundary" in preflight_text
+    )
+
+
+def test_invariant_scheduler_reciprocal_chain_preserves_durable_run_root_and_adapter_default_off() -> (
+    None
+):
+    scheduler_owner_text = SCHEDULER_COMPLETION_CONTRACT_TESTS.read_text(encoding="utf-8")
+    section = _section_2a1().replace("**", "").lower()
+    for adapter_path in (SHADOW_ADAPTER, TESTNET_ADAPTER):
+        text = adapter_path.read_text(encoding="utf-8")
+        assert "--durable-run-root" not in text
+        assert "durable_run_root" not in text
+    for review_path in (SHADOW_REVIEW, TESTNET_REVIEW):
+        text = review_path.read_text(encoding="utf-8")
+        assert "--durable-run-root" in text
+        assert "default=None" in text
+    assert "default off" in section or "opt-in" in section
+    assert (
+        "primary-evidence-enforce" in scheduler_owner_text
+        or "primary_evidence_enforce" in scheduler_owner_text
+    )
 
 
 def test_paper_adapter_verifies_manifest_after_archive_copy() -> None:
