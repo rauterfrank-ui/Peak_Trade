@@ -22,6 +22,8 @@ PACK_SCRIPT = REPO_ROOT / "scripts" / "ops" / "pack_online_readiness_supervisor_
 PAPER_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_paper_only_bounded_observation_adapter_v0.py"
 SHADOW_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_shadow_bounded_observation_adapter_v0.py"
 TESTNET_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_testnet_bounded_observation_adapter_v0.py"
+SHADOW_REVIEW = REPO_ROOT / "scripts" / "ops" / "review_shadow_bounded_observation_evidence_v0.py"
+TESTNET_REVIEW = REPO_ROOT / "scripts" / "ops" / "review_testnet_bounded_observation_evidence_v0.py"
 P67_LIB = REPO_ROOT / "src" / "ops" / "p67" / "shadow_session_scheduler_v1.py"
 P72_PACK = REPO_ROOT / "src" / "ops" / "p72" / "run_shadowloop_pack_v1.py"
 P79_VERIFY = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_evidence_manifest_verify_v0.py"
@@ -262,6 +264,72 @@ def test_section_2a1_mandatory_wiring_preserves_opt_in_and_non_authorizing() -> 
     assert "evidence ≠ approval" in section or "evidence = approval" not in collapsed
     assert "does not authorize runtime" in collapsed
     assert "does not clear preflight blocked" in collapsed
+
+
+def test_bounded_review_scripts_expose_durable_run_root_for_mandatory_closeout_wiring() -> None:
+    section = _section_2a1()
+    for review_path in (SHADOW_REVIEW, TESTNET_REVIEW):
+        text = review_path.read_text(encoding="utf-8")
+        assert review_path.name in section
+        assert "--durable-run-root" in text
+        assert "validate_durable_primary_evidence_root" in text
+        assert "default=None" in text
+        assert MANDATORY_CLOSEOUT_WIRING_TOKEN in section
+
+
+def test_bounded_adapters_reference_preflight_mandatory_wiring_review_owners() -> None:
+    section = _section_2a1()
+    adapter_review_pairs = (
+        (SHADOW_ADAPTER, SHADOW_REVIEW.name),
+        (TESTNET_ADAPTER, TESTNET_REVIEW.name),
+    )
+    for adapter_path, review_name in adapter_review_pairs:
+        adapter_text = adapter_path.read_text(encoding="utf-8")
+        assert review_name in adapter_text
+        assert review_name in section
+        assert MANDATORY_CLOSEOUT_WIRING_TOKEN in section
+
+
+def test_bounded_adapter_execute_surfaces_keep_durable_run_root_default_off() -> None:
+    for adapter_path in (SHADOW_ADAPTER, TESTNET_ADAPTER):
+        text = adapter_path.read_text(encoding="utf-8")
+        assert "--durable-run-root" not in text
+        assert "durable_run_root" not in text
+        review_cmd_region = text.split("review_cmd =", 1)[1].split("]", 1)[0]
+        assert "--staging-root" in review_cmd_region
+        assert "--durable-run-root" not in review_cmd_region
+
+
+def test_mandatory_wiring_adapter_review_chain_preserves_review_input_only_boundary() -> None:
+    section = _section_2a1()
+    for review_path in (SHADOW_REVIEW, TESTNET_REVIEW):
+        text = review_path.read_text(encoding="utf-8")
+        collapsed = text.lower()
+        assert "non-authorizing" in collapsed
+        assert "does not claim readiness" in collapsed or "does not authorize" in collapsed
+    for adapter_path in (SHADOW_ADAPTER, TESTNET_ADAPTER):
+        text = adapter_path.read_text(encoding="utf-8")
+        collapsed = text.lower()
+        assert (
+            "forbidden_command_substrings" in collapsed or "forbidden_env_substrings" in collapsed
+        )
+        assert "non-authorizing" in collapsed
+        assert "live_allowed=false" in collapsed
+    assert "EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true" in section
+    assert "does not clear preflight blocked" in section.replace("**", "").lower()
+
+
+def test_hard_gate_owner_covers_mandatory_wiring_adapter_review_chain() -> None:
+    owner_text = Path(__file__).read_text(encoding="utf-8")
+    for anchor in (
+        MANDATORY_CLOSEOUT_WIRING_TOKEN,
+        SHADOW_ADAPTER.name,
+        TESTNET_ADAPTER.name,
+        SHADOW_REVIEW.name,
+        TESTNET_REVIEW.name,
+        BOUNDED_REVIEW_CONTRACT_TESTS.name,
+    ):
+        assert anchor in owner_text
 
 
 @pytest.mark.skipif(not COPY_CHECK.is_file(), reason="operator archive copy-check not present")
