@@ -13,6 +13,23 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 RUN_SCHEDULER = REPO_ROOT / "scripts" / "run_scheduler.py"
 SHARED_HELPER = REPO_ROOT / "scripts" / "ops" / "primary_evidence_retention_v0.py"
 PREFLIGHT = REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+HARD_GATE_CONTRACT_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_run_primary_evidence_retention_hard_gate_v0.py"
+)
+INVARIANT_CONTRACT_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_primary_evidence_retention_invariant_contract_v0.py"
+)
+BOUNDED_REVIEW_CONTRACT_TESTS = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_observation_review_durable_primary_evidence_contract_v0.py"
+)
+MANDATORY_CLOSEOUT_WIRING_TOKEN = "DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_WIRING_V0=true"
+
+
+def _preflight_section_2a1() -> str:
+    return PREFLIGHT.read_text(encoding="utf-8").split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
 
 
 def _load_run_scheduler():
@@ -220,3 +237,59 @@ def test_preflight_documents_scheduler_completion_opt_in() -> None:
     text = PREFLIGHT.read_text(encoding="utf-8")
     assert "scheduler_completion_closeout_v0" in text or "run_scheduler.py" in text
     assert "primary-evidence-enforce" in text or "primary_evidence_enforce" in text
+
+
+def test_scheduler_completion_owner_locates_mandatory_closeout_wiring_token_in_preflight_2a1() -> (
+    None
+):
+    section = _preflight_section_2a1()
+    collapsed = section.replace("**", "").lower()
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in section
+    assert "run_scheduler.py" in section or "scheduler" in collapsed
+    assert "primary-evidence-enforce" in section or "primary_evidence_enforce" in section
+    assert "default off" in collapsed or "opt-in" in collapsed
+
+
+def test_scheduler_completion_owner_crosslinks_hard_gate_contract_module() -> None:
+    owner_text = Path(__file__).read_text(encoding="utf-8")
+    hard_gate_text = HARD_GATE_CONTRACT_TESTS.read_text(encoding="utf-8")
+    assert HARD_GATE_CONTRACT_TESTS.name in owner_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in hard_gate_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in _preflight_section_2a1()
+    assert "finalize_primary_evidence_root" in hard_gate_text
+
+
+def test_scheduler_completion_owner_crosslinks_invariant_and_bounded_review_contract_modules() -> (
+    None
+):
+    owner_text = Path(__file__).read_text(encoding="utf-8")
+    invariant_text = INVARIANT_CONTRACT_TESTS.read_text(encoding="utf-8")
+    bounded_text = BOUNDED_REVIEW_CONTRACT_TESTS.read_text(encoding="utf-8")
+    assert INVARIANT_CONTRACT_TESTS.name in owner_text
+    assert BOUNDED_REVIEW_CONTRACT_TESTS.name in owner_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in invariant_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in bounded_text
+    assert (
+        "scheduler_completion_closeout_v0" in invariant_text or "run_scheduler.py" in invariant_text
+    )
+
+
+def test_scheduler_completion_owner_preserves_non_authorizing_evidence_boundary() -> None:
+    scheduler_text = RUN_SCHEDULER.read_text(encoding="utf-8")
+    section = _preflight_section_2a1().replace("**", "").lower()
+    assert "evidence_non_authorizing" in scheduler_text
+    assert "non-authorizing" in section or "does not authorize runtime" in section
+    assert "does not clear preflight blocked" in section or "preflight blocked" in section
+    assert "finalize_primary_evidence_root" in SHARED_HELPER.read_text(encoding="utf-8")
+
+
+def test_scheduler_completion_owner_confirms_no_scheduler_start_from_closeout_contract() -> None:
+    scheduler_text = RUN_SCHEDULER.read_text(encoding="utf-8")
+    owner_text = Path(__file__).read_text(encoding="utf-8").lower()
+    preflight_text = PREFLIGHT.read_text(encoding="utf-8").lower()
+    assert "assert_scheduler_start_authorized" in scheduler_text
+    assert "SCHEDULER_START_BLOCKED_EXIT" in scheduler_text
+    assert "test_non_dry_run_blocked_under_hold_still_exits_2" in owner_text
+    assert (
+        "start boundary guard unchanged" in preflight_text or "scheduler boundary" in preflight_text
+    )
