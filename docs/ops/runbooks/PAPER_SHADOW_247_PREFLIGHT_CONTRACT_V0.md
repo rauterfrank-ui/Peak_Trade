@@ -97,6 +97,16 @@ Every future **Paper**, **Shadow**, **Testnet**, **Live/Canary**, **Scheduler**,
 - A run that completes with `/tmp`-only artifacts is **`TMP_ONLY_EVIDENCE_INVALID`** — it must be treated as **not complete** regardless of exit code or operator narrative.
 - **Evidence ≠ approval** — satisfying this hard gate does not clear Preflight **BLOCKED**, Shadow **STOP_IDLE**, HOLD, or grant Live/Testnet/broker authority.
 
+**Mandatory durable closeout wiring (bounded Shadow/Testnet, future paths) v0:**
+
+```
+DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_WIRING_V0=true
+```
+
+Future bounded **Shadow** and **Testnet** closeout paths that treat a run as **complete** for gate, readiness, or promotion **review input** must retain a **durable primary evidence wiring contract**: after durable archive copy and `MANIFEST.sha256` verification on that copy, operators and closeout plans must invoke `review_shadow_bounded_observation_evidence_v0.py` or `review_testnet_bounded_observation_evidence_v0.py` with **`--durable-run-root`** pointing at the verified durable archive root (shared `validate_durable_primary_evidence_root()`). Review **`--durable-run-root` remains opt-in (default off)** in repository runtime at this stage — this anchor documents **mandatory closeout wiring for future paths**, not default-on review behavior, and **does not** modify adapter execute paths in this slice.
+
+**Non-authorizing:** this wiring contract is **review/retention material only** — **Evidence ≠ approval**. It **does not** authorize runtime, scheduler, supervisor, daemon, Paper, Shadow, Testnet, Live, broker, exchange, or gate progression; **does not** clear Preflight **BLOCKED**, global **HOLD**, or GLB blockers.
+
 **Readiness ledger and gate snapshot (review-input-only):** offline outputs from `build_readiness_evidence_ledger_v0.py` and `report_readiness_gate_snapshot_v0.py` may report `READINESS_EVIDENCE_LEDGER_PASS_BLOCKED_SAFE`, `READINESS_GATE_SNAPSHOT_PASS_BLOCKED_SAFE`, and `triple_lane_primary_evidence=true` when primary evidence manifests and reviews verify under durable archive roots. Those verdicts are **completeness and consistency signals only** — they **do not** authorize runtime, **do not** clear Preflight **BLOCKED**, **do not** lift **HOLD**, **do not** close GLB-014/GLB-015, and **do not** grant Paper/Shadow/Testnet/Live/broker/exchange activation. See GLB-015 clarification in [Master V2 Go-Live Blocker Register v0](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.
 
 **Scoped preflight exception (U3 pattern) v0:**

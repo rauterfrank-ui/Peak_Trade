@@ -15,6 +15,13 @@ PREFLIGHT = REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGH
 SHARED_HELPER = REPO_ROOT / "scripts" / "ops" / "primary_evidence_retention_v0.py"
 SHADOW_REVIEW = REPO_ROOT / "scripts" / "ops" / "review_shadow_bounded_observation_evidence_v0.py"
 TESTNET_REVIEW = REPO_ROOT / "scripts" / "ops" / "review_testnet_bounded_observation_evidence_v0.py"
+SHADOW_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_shadow_bounded_observation_adapter_v0.py"
+TESTNET_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_testnet_bounded_observation_adapter_v0.py"
+MANDATORY_CLOSEOUT_WIRING_TOKEN = "DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_WIRING_V0=true"
+
+
+def _preflight_section_2a1() -> str:
+    return PREFLIGHT.read_text(encoding="utf-8").split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
 
 
 def _load_module(script: Path, name: str):
@@ -230,3 +237,65 @@ def test_validate_durable_primary_evidence_root_fails_on_manifest_mismatch(tmp_p
     ok, reason, detail = validate_durable_primary_evidence_root(durable)
     assert ok is False
     assert "checksum mismatch" in reason or any("checksum mismatch" in i for i in detail["issues"])
+
+
+def test_section_2a1_contains_mandatory_closeout_wiring_token() -> None:
+    section = _preflight_section_2a1()
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in section
+    assert "Mandatory durable closeout wiring" in section
+
+
+def test_section_2a1_anchors_bounded_shadow_testnet_mandatory_closeout_wiring() -> None:
+    section = _preflight_section_2a1()
+    assert "review_shadow_bounded_observation_evidence_v0.py" in section
+    assert "review_testnet_bounded_observation_evidence_v0.py" in section
+    assert "--durable-run-root" in section
+    assert "validate_durable_primary_evidence_root()" in section
+    assert "MANIFEST.sha256" in section
+    collapsed = section.lower()
+    assert "shadow" in collapsed
+    assert "testnet" in collapsed
+    assert "closeout" in collapsed
+
+
+def test_section_2a1_preserves_durable_run_root_opt_in_default_off() -> None:
+    section = _preflight_section_2a1()
+    collapsed = section.lower()
+    assert "default off" in collapsed or "opt-in (default off)" in collapsed
+    assert "not default-on review behavior" in collapsed
+    section_2a = PREFLIGHT.read_text(encoding="utf-8").split("## 2a.1", 1)[0]
+    assert "default off" in section_2a.lower() or "Default off" in section_2a
+
+
+def test_section_2a1_mandatory_wiring_does_not_authorize_runtime() -> None:
+    section = _preflight_section_2a1()
+    collapsed = section.replace("**", "").lower()
+    assert "evidence ≠ approval" in section or "evidence = approval" not in collapsed
+    assert "non-authorizing" in collapsed
+    assert "does not authorize runtime" in collapsed
+    assert "does not clear preflight blocked" in collapsed
+    for forbidden in ("live", "broker", "exchange", "scheduler"):
+        assert forbidden in collapsed
+
+
+def test_pr3631_review_gate_preserved_without_adapter_execute_change() -> None:
+    for review in (SHADOW_REVIEW, TESTNET_REVIEW):
+        text = review.read_text(encoding="utf-8")
+        assert "--durable-run-root" in text
+        assert "validate_durable_primary_evidence_root" in text
+        assert "default=True" not in text
+        assert 'default="on"' not in text.lower()
+    helper = SHARED_HELPER.read_text(encoding="utf-8")
+    assert "def validate_durable_primary_evidence_root" in helper
+    for adapter in (SHADOW_ADAPTER, TESTNET_ADAPTER):
+        text = adapter.read_text(encoding="utf-8")
+        assert "--durable-run-root" not in text
+        assert "verify_manifest_sha256" in text
+
+
+def test_mandatory_wiring_slice_reuses_canonical_preflight_owner_only() -> None:
+    canonical = REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+    assert canonical == PREFLIGHT
+    parallel_preflight = REPO_ROOT / "docs" / "ops" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+    assert not parallel_preflight.is_file()
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in _preflight_section_2a1()
