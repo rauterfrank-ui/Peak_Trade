@@ -133,3 +133,34 @@ IMPLEMENT_NOW=false
 NO_LOGIC_CHANGE=true
 NO_PERFORMANCE_REGRESSION=true
 ```
+
+## Cybersecurity Visibility Chain — canonical owner inventory v0
+
+**Anchor for this chain:** this file (`docs/ops/CI_AUDIT_KNOWN_ISSUES.md`). Registry pointers: [`docs/ops/registry/DOCS_TRUTH_MAP.md`](registry/DOCS_TRUTH_MAP.md) (Änderungsnachweis). **Non-authorizing:** static visibility contracts and this inventory do **not** authorize runtime, scheduler/daemon, paper/shadow/testnet/live, broker/exchange, or order-submission behavior.
+
+### Retained cybersecurity risks R-001 through R-007
+
+| ID | Repo-mapped static owner | Status |
+|----|--------------------------|--------|
+| R-001 | — | **Pending** — no repo test owner; requires lossless inventory recovery |
+| R-002 | — | **Pending** — no repo test owner; requires lossless inventory recovery |
+| R-003 | `tests/ops/test_run_sample_size_ramp_script_contract_v0.py` | mapped |
+| R-004 | `tests/ops/test_run_testnet_evidence_flow_v2_script_contract_v0.py` | mapped |
+| R-005 | `tests/ops/test_knowledge_prod_smoke_script.py` | mapped |
+| R-006 | `tests/ci/test_prcd_aws_export_write_smoke_workflow_contract_v0.py` | mapped |
+| R-007 | — | **Pending** — no repo test owner; requires lossless inventory recovery |
+
+> R-001/R-002/R-007 IDs here are the **post-HOLD lossless-inventory** set (see Source artifacts above), not `docs/ops/RISK_REGISTER.md` ops-register IDs.
+
+### Static visibility contract owners (reuse — do not duplicate)
+
+| Surface | Owner module |
+|---------|--------------|
+| Workflow secrets/vars/braced contexts (hub) | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
+| Workflow write permissions | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` |
+| Workflow network/gh markers | `tests/ci/test_workflow_network_gh_marker_visibility_contract_v0.py` |
+| Manual-dispatch sensitive surfaces | `tests/ci/test_workflow_manual_dispatch_sensitive_surface_contract_v0.py` |
+| Workflow artifact retention | `tests/ci/test_workflow_artifact_retention_visibility_contract_v0.py` |
+| Workflow permission boundary | `tests/ops/test_workflow_permission_boundary_visibility_v1.py` |
+| WebUI API security-header routes | `tests/webui/test_webui_api_security_headers_visibility_contract_v0.py` |
+| No `pull_request_target` + checkout v5 pin | `tests/ci/test_workflows_no_pull_request_target_contract_v0.py` |

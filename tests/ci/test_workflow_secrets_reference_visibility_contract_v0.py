@@ -32,6 +32,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 WORKFLOW_ROOT = REPO_ROOT / ".github" / "workflows"
+CI_AUDIT_KNOWN_ISSUES = REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
+DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
 
 SECRET_REF_RX = re.compile(r"\$\{\{\s*secrets\.([A-Za-z0-9_]+)\s*\}\}", re.I)
 LOOSE_SECRETS_RX = re.compile(r"secrets\.", re.I)
@@ -543,3 +545,48 @@ def test_github_actions_braced_needs_github_event_inputs_visibility_v1_prcd_gith
     row = inventory.get("prcd-aws-export-write-smoke.yml")
     assert row is not None
     assert "confirm_token" in row
+
+
+def test_cybersecurity_visibility_chain_owner_registry_crosslink_v0() -> None:
+    """CI audit anchor + DOCS_TRUTH_MAP registry pointers for Cybersecurity Visibility Chain."""
+    ci_audit_text = CI_AUDIT_KNOWN_ISSUES.read_text(encoding="utf-8")
+    ci_collapsed = ci_audit_text.lower()
+    truth_map_text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    truth_collapsed = truth_map_text.lower()
+
+    assert "Cybersecurity Visibility Chain" in ci_audit_text
+    assert "CI_AUDIT_KNOWN_ISSUES.md" in ci_audit_text
+    assert "non-authorizing" in ci_collapsed
+    assert "broker/exchange" in ci_collapsed or "broker" in ci_collapsed
+
+    for owner in (
+        "test_workflow_secrets_reference_visibility_contract_v0.py",
+        "test_workflow_write_permissions_visibility_contract_v0.py",
+        "test_workflow_network_gh_marker_visibility_contract_v0.py",
+        "test_workflow_manual_dispatch_sensitive_surface_contract_v0.py",
+        "test_workflow_artifact_retention_visibility_contract_v0.py",
+        "test_workflow_permission_boundary_visibility_v1.py",
+        "test_webui_api_security_headers_visibility_contract_v0.py",
+        "test_workflows_no_pull_request_target_contract_v0.py",
+    ):
+        assert owner in ci_audit_text
+
+    for risk_id, owner_module in (
+        ("R-003", "test_run_sample_size_ramp_script_contract_v0.py"),
+        ("R-004", "test_run_testnet_evidence_flow_v2_script_contract_v0.py"),
+        ("R-005", "test_knowledge_prod_smoke_script.py"),
+        ("R-006", "test_prcd_aws_export_write_smoke_workflow_contract_v0.py"),
+    ):
+        assert risk_id in ci_audit_text
+        assert owner_module in ci_audit_text
+
+    for pending_id in ("R-001", "R-002", "R-007"):
+        assert pending_id in ci_audit_text
+        assert "pending" in ci_collapsed or "lossless inventory" in ci_collapsed
+
+    assert "2026-05-23" in truth_map_text
+    assert "Cybersecurity Visibility Chain" in truth_map_text
+    assert "CI_AUDIT_KNOWN_ISSUES.md" in truth_map_text
+    assert Path(__file__).name in truth_map_text
+    assert "non-authorizing" in truth_collapsed
+    assert "r-003" in truth_collapsed or "R-003" in truth_map_text
