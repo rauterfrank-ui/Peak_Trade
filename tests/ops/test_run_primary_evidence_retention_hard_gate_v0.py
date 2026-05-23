@@ -283,6 +283,27 @@ def test_docs_truth_map_records_pr3633_3638_3639_contract_test_registry_visibili
     assert "non-authorizing" in collapsed
 
 
+def test_docs_truth_map_records_pr3641_3642_3643_contract_test_registry_visibility_slice() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = text.lower()
+    assert "2026-05-23" in text
+    assert "#3641" in text
+    assert "scheduler-completion" in collapsed or "scheduler completion" in collapsed
+    assert "test_scheduler_completion_primary_evidence_closeout_v0.py" in text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in text or "mandatory closeout wiring" in collapsed
+    assert "#3642" in text
+    assert "reciprocal crosslink" in collapsed
+    assert "test_primary_evidence_retention_invariant_contract_v0.py" in text
+    assert "#3643" in text
+    assert "u3" in collapsed
+    assert "bounded-review" in collapsed or "bounded review" in collapsed
+    assert "test_preflight_scoped_exception_contract_u3_v0.py" in text
+    assert "test_bounded_observation_review_durable_primary_evidence_contract_v0.py" in text
+    assert "§2a.1" in text or "2a.1" in text
+    assert "preflight **blocked**" in collapsed or "preflight blocked" in collapsed
+    assert "non-authorizing" in collapsed
+
+
 def test_hard_gate_and_bounded_review_contract_modules_share_mandatory_wiring_anchor() -> None:
     hard_gate_text = Path(__file__).read_text(encoding="utf-8")
     bounded_text = BOUNDED_REVIEW_CONTRACT_TESTS.read_text(encoding="utf-8")
