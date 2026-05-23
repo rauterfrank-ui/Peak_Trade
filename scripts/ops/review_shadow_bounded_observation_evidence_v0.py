@@ -18,6 +18,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from scripts.ops.primary_evidence_retention_v0 import validate_durable_primary_evidence_root
+
 PASS = "PASS"
 REVIEW_REQUIRED = "REVIEW_REQUIRED"
 REVIEW_REQUIRED_EXIT = 1
@@ -64,7 +70,11 @@ def _resolve_wrapper_evidence_root(staging_root: Path) -> Path:
     return staging_root
 
 
-def review_evidence(staging_root: Path) -> dict[str, Any]:
+def review_evidence(
+    staging_root: Path,
+    *,
+    durable_run_root: Path | None = None,
+) -> dict[str, Any]:
     issues: list[str] = []
     checks: dict[str, bool] = {}
 
@@ -134,7 +144,7 @@ def review_evidence(staging_root: Path) -> dict[str, Any]:
         issues.append("missing logs/wrapper_stderr.log")
 
     verdict = PASS if not issues else REVIEW_REQUIRED
-    return {
+    result: dict[str, Any] = {
         "verdict": verdict,
         "schema_version": SCHEMA_VERSION,
         "staging_root": str(staging_root.resolve()),
@@ -143,6 +153,23 @@ def review_evidence(staging_root: Path) -> dict[str, Any]:
         "issues": issues,
         "non_authorizing": True,
     }
+
+    if durable_run_root is not None:
+        durable_root = durable_run_root.resolve()
+        ok, msg, durable_detail = validate_durable_primary_evidence_root(durable_root)
+        result["durable_run_root"] = str(durable_root)
+        result["durable_checks"] = durable_detail.get("checks", {})
+        durable_issues = list(durable_detail.get("issues", []))
+        if not ok and msg and msg not in durable_issues:
+            durable_issues.insert(0, msg)
+        if durable_issues:
+            result["issues"] = list(result.get("issues", [])) + durable_issues
+            result["checks"]["durable_primary_evidence_valid"] = False
+            result["verdict"] = REVIEW_REQUIRED
+        else:
+            result["checks"]["durable_primary_evidence_valid"] = True
+
+    return result
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -153,6 +180,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
         )
     )
     parser.add_argument("--staging-root", type=Path, required=True)
+    parser.add_argument(
+        "--durable-run-root",
+        type=Path,
+        default=None,
+        help=(
+            "Optional durable primary evidence run root outside /tmp (Preflight §2a.1). "
+            "Default off; staging-only review when omitted."
+        ),
+    )
     parser.add_argument(
         "--out",
         type=Path,
@@ -177,7 +213,14 @@ def main(argv: list[str] | None = None) -> int:
         print(f"staging root must exist: {staging_root}", file=sys.stderr)
         return USAGE_EXIT
 
-    result = review_evidence(staging_root)
+    durable_run_root: Path | None = None
+    if args.durable_run_root is not None:
+        durable_run_root = args.durable_run_root.expanduser().resolve()
+        if not durable_run_root.is_dir():
+            print(f"durable run root must exist: {durable_run_root}", file=sys.stderr)
+            return USAGE_EXIT
+
+    result = review_evidence(staging_root, durable_run_root=durable_run_root)
     payload = json.dumps(result, indent=2, sort_keys=True)
     if args.out is not None:
         args.out.parent.mkdir(parents=True, exist_ok=True)
