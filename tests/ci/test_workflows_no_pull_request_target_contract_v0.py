@@ -13,6 +13,9 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 WORKFLOW_ROOT = REPO_ROOT / ".github" / "workflows"
+CHECKOUT_USES_PATTERN = re.compile(r"uses:\s*actions/checkout@v(\d+)\b")
+FORBIDDEN_CHECKOUT_VERSIONS = frozenset({"3", "4"})
+REQUIRED_CHECKOUT_VERSION = "5"
 
 
 def _workflow_files() -> list[Path]:
@@ -111,3 +114,34 @@ def test_workflows_no_pull_request_target_contract_covers_all_workflow_files() -
 
     assert len(workflows) >= 1
     assert any(name.endswith(".yml") or name.endswith(".yaml") for name in workflow_names)
+
+
+def _checkout_uses_by_workflow() -> dict[str, list[str]]:
+    by_workflow: dict[str, list[str]] = {}
+    for workflow in _workflow_files():
+        matches = CHECKOUT_USES_PATTERN.findall(_workflow_text(workflow))
+        if matches:
+            by_workflow[workflow.relative_to(REPO_ROOT).as_posix()] = matches
+    return by_workflow
+
+
+def test_workflows_checkout_pin_uniform_v5_contract_forbids_legacy_versions() -> None:
+    offenders: list[str] = []
+
+    for workflow_path, versions in _checkout_uses_by_workflow().items():
+        legacy = sorted({version for version in versions if version in FORBIDDEN_CHECKOUT_VERSIONS})
+        if legacy:
+            offenders.append(f"{workflow_path}: actions/checkout@v{', v'.join(legacy)}")
+
+    assert not offenders, f"legacy checkout pins are forbidden: {offenders}"
+
+
+def test_workflows_checkout_pin_uniform_v5_contract_requires_explicit_v5() -> None:
+    offenders: list[str] = []
+
+    for workflow_path, versions in _checkout_uses_by_workflow().items():
+        non_v5 = sorted({version for version in versions if version != REQUIRED_CHECKOUT_VERSION})
+        if non_v5:
+            offenders.append(f"{workflow_path}: actions/checkout@v{', v'.join(non_v5)}")
+
+    assert not offenders, f"checkout pins must use actions/checkout@v5: {offenders}"
