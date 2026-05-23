@@ -21,6 +21,9 @@ MANDATORY_CLOSEOUT_WIRING_TOKEN = "DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_W
 INVARIANT_CONTRACT_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_primary_evidence_retention_invariant_contract_v0.py"
 )
+U3_CONTRACT_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_preflight_scoped_exception_contract_u3_v0.py"
+)
 
 
 def _preflight_section_2a1() -> str:
@@ -354,3 +357,29 @@ def test_bounded_review_invariant_reciprocal_chain_preserves_non_authorizing_bou
         assert "non-authorizing" in collapsed or "does not claim readiness" in collapsed
     for adapter_path in (SHADOW_ADAPTER, TESTNET_ADAPTER):
         assert "live_allowed=false" in adapter_path.read_text(encoding="utf-8").lower()
+
+
+def test_bounded_review_owner_crosslinks_u3_contract_module() -> None:
+    owner_text = Path(__file__).read_text(encoding="utf-8")
+    u3_text = U3_CONTRACT_TESTS.read_text(encoding="utf-8")
+    assert U3_CONTRACT_TESTS.name in owner_text
+    assert Path(__file__).name in u3_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in u3_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in owner_text
+    assert "SCOPED_PREFLIGHT_EXCEPTION_U3_V0=true" in u3_text
+
+
+def test_bounded_review_u3_reciprocal_chain_preserves_durable_run_root_opt_in_default_off() -> None:
+    u3_text = U3_CONTRACT_TESTS.read_text(encoding="utf-8")
+    section = _preflight_section_2a1().replace("**", "").lower()
+    for review_path in (SHADOW_REVIEW, TESTNET_REVIEW):
+        text = review_path.read_text(encoding="utf-8")
+        assert "--durable-run-root" in text
+        assert "default=None" in text
+    for adapter_path in (SHADOW_ADAPTER, TESTNET_ADAPTER):
+        text = adapter_path.read_text(encoding="utf-8")
+        assert "--durable-run-root" not in text
+        assert "durable_run_root" not in text
+    assert "default off" in section or "opt-in (default off)" in section
+    assert SHADOW_ADAPTER.name in u3_text
+    assert "does not start scheduler" in section

@@ -18,6 +18,12 @@ HARD_GATE_CONTRACT_TESTS = (
 INVARIANT_CONTRACT_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_primary_evidence_retention_invariant_contract_v0.py"
 )
+BOUNDED_REVIEW_CONTRACT_TESTS = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_observation_review_durable_primary_evidence_contract_v0.py"
+)
 MANDATORY_CLOSEOUT_WIRING_TOKEN = "DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_WIRING_V0=true"
 
 U3_TOKENS = (
@@ -160,3 +166,41 @@ def test_u3_owner_confirms_scoped_exceptions_remain_non_authorizing() -> None:
     for adapter in (SHADOW_ADAPTER, TESTNET_ADAPTER):
         text = adapter.read_text(encoding="utf-8")
         assert "live_allowed=false" in text.lower()
+
+
+def test_u3_owner_crosslinks_bounded_review_contract_module() -> None:
+    u3_text = Path(__file__).read_text(encoding="utf-8")
+    bounded_text = BOUNDED_REVIEW_CONTRACT_TESTS.read_text(encoding="utf-8")
+    assert BOUNDED_REVIEW_CONTRACT_TESTS.name in u3_text
+    assert Path(__file__).name in bounded_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in bounded_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in _section_2a1()
+
+
+def test_u3_bounded_review_reciprocal_chain_shares_mandatory_wiring_with_preflight_2a1() -> None:
+    u3_text = Path(__file__).read_text(encoding="utf-8")
+    bounded_text = BOUNDED_REVIEW_CONTRACT_TESTS.read_text(encoding="utf-8")
+    hard_gate_text = HARD_GATE_CONTRACT_TESTS.read_text(encoding="utf-8")
+    invariant_text = INVARIANT_CONTRACT_TESTS.read_text(encoding="utf-8")
+    section = _section_2a1()
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in section
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in u3_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in bounded_text
+    assert HARD_GATE_CONTRACT_TESTS.name in u3_text
+    assert INVARIANT_CONTRACT_TESTS.name in u3_text
+    assert INVARIANT_CONTRACT_TESTS.name in bounded_text
+    assert "test_preflight_scoped_exception_contract_u3_v0.py" in hard_gate_text
+    assert "test_scheduler_completion_primary_evidence_closeout_v0.py" in invariant_text
+
+
+def test_u3_bounded_review_reciprocal_chain_preserves_u3_scoped_exception_boundary() -> None:
+    section = _section_2a1()
+    collapsed = section.replace("**", "").lower()
+    bounded_text = BOUNDED_REVIEW_CONTRACT_TESTS.read_text(encoding="utf-8").lower()
+    for token in U3_TOKENS:
+        assert token in section
+    assert "scoped preflight exception (u3 pattern) v0" in collapsed
+    assert "does not clear global hold" in collapsed
+    assert "does not start scheduler" in collapsed
+    assert "status=blocked" in section.lower()
+    assert "non-authorizing" in bounded_text or "does not authorize runtime" in bounded_text
