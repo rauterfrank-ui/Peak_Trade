@@ -10,7 +10,15 @@ CANONICAL_OWNER = (
 )
 GLB_REGISTER = REPO_ROOT / "docs" / "ops" / "specs" / "MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md"
 SHADOW_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_shadow_bounded_observation_adapter_v0.py"
+TESTNET_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_testnet_bounded_observation_adapter_v0.py"
 DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+HARD_GATE_CONTRACT_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_run_primary_evidence_retention_hard_gate_v0.py"
+)
+INVARIANT_CONTRACT_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_primary_evidence_retention_invariant_contract_v0.py"
+)
+MANDATORY_CLOSEOUT_WIRING_TOKEN = "DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_WIRING_V0=true"
 
 U3_TOKENS = (
     "SCOPED_PREFLIGHT_EXCEPTION_U3_V0=true",
@@ -100,3 +108,55 @@ def test_docs_truth_map_records_u3_slice() -> None:
     text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
     assert "U3 pattern" in text or "scoped preflight exception" in text
     assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in text
+
+
+def test_u3_section_2a1_locates_mandatory_closeout_wiring_token() -> None:
+    section = _section_2a1()
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in section
+    assert "§2a.1 hard gate satisfied" in section
+    assert "MANIFEST.sha256" in section
+    assert "Scoped preflight exception (U3 pattern) v0" in section
+
+
+def test_u3_owner_crosslinks_hard_gate_contract_module() -> None:
+    u3_text = Path(__file__).read_text(encoding="utf-8")
+    hard_gate_text = HARD_GATE_CONTRACT_TESTS.read_text(encoding="utf-8")
+    assert HARD_GATE_CONTRACT_TESTS.name in u3_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in hard_gate_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in _section_2a1()
+    assert (
+        "bounded adapter crosslink" in hard_gate_text.lower()
+        or SHADOW_ADAPTER.name in hard_gate_text
+    )
+
+
+def test_u3_owner_crosslinks_invariant_contract_module() -> None:
+    u3_text = Path(__file__).read_text(encoding="utf-8")
+    invariant_text = INVARIANT_CONTRACT_TESTS.read_text(encoding="utf-8")
+    assert INVARIANT_CONTRACT_TESTS.name in u3_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in invariant_text
+    assert HARD_GATE_CONTRACT_TESTS.name in invariant_text
+
+
+def test_u3_owner_preserves_bounded_adapter_durable_run_root_default_off() -> None:
+    section = _section_2a1()
+    collapsed = section.replace("**", "").lower()
+    assert "opt-in (default off)" in collapsed or "default off" in collapsed
+    for adapter in (SHADOW_ADAPTER, TESTNET_ADAPTER):
+        text = adapter.read_text(encoding="utf-8")
+        assert "--durable-run-root" not in text
+        assert "durable_run_root" not in text
+
+
+def test_u3_owner_confirms_scoped_exceptions_remain_non_authorizing() -> None:
+    section = _section_2a1()
+    collapsed = section.replace("**", "").lower()
+    for token in U3_TOKENS:
+        assert token in section
+    assert "does not clear global hold" in collapsed
+    assert "does not grant live/testnet/broker authority" in collapsed
+    assert "preflight_may_remain_blocked_after_run=true" in collapsed
+    assert "scoped_exception_non_generalizable=true" in collapsed
+    for adapter in (SHADOW_ADAPTER, TESTNET_ADAPTER):
+        text = adapter.read_text(encoding="utf-8")
+        assert "live_allowed=false" in text.lower()
