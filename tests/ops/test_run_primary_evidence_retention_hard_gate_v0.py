@@ -244,6 +244,25 @@ def test_docs_truth_map_records_mandatory_closeout_wiring_slice() -> None:
     assert "--durable-run-root" in text
 
 
+def test_docs_truth_map_records_pr3634_3635_3636_contract_test_registry_visibility_slice() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = text.lower()
+    assert "2026-05-23" in text
+    assert "#3634" in text
+    assert "checkout v5" in collapsed
+    assert "test_workflows_no_pull_request_target_contract_v0.py" in text
+    assert "#3635" in text
+    assert "bounded adapter crosslink" in collapsed
+    assert "test_run_primary_evidence_retention_hard_gate_v0.py" in text
+    assert "§2a.1" in text or "2a.1" in text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in text or "mandatory closeout wiring" in collapsed
+    assert "#3636" in text
+    assert "primary evidence invariant" in collapsed
+    assert "test_primary_evidence_retention_invariant_contract_v0.py" in text
+    assert "--durable-run-root" in text
+    assert "non-authorizing" in collapsed
+
+
 def test_hard_gate_and_bounded_review_contract_modules_share_mandatory_wiring_anchor() -> None:
     hard_gate_text = Path(__file__).read_text(encoding="utf-8")
     bounded_text = BOUNDED_REVIEW_CONTRACT_TESTS.read_text(encoding="utf-8")
