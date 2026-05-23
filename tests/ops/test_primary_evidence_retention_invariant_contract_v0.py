@@ -23,6 +23,12 @@ TESTNET_REVIEW = REPO_ROOT / "scripts" / "ops" / "review_testnet_bounded_observa
 HARD_GATE_CONTRACT_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_run_primary_evidence_retention_hard_gate_v0.py"
 )
+BOUNDED_REVIEW_CONTRACT_TESTS = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_observation_review_durable_primary_evidence_contract_v0.py"
+)
 MANDATORY_CLOSEOUT_WIRING_TOKEN = "DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_WIRING_V0=true"
 
 
@@ -490,6 +496,19 @@ def test_invariant_owner_mandatory_wiring_chain_preserves_non_authorizing_bounda
         assert "blocked" in collapsed
     assert "EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true" in mandatory_section
     assert HARD_GATE_CONTRACT_TESTS.name in Path(__file__).read_text(encoding="utf-8")
+
+
+def test_invariant_owner_crosslinks_bounded_review_contract_module() -> None:
+    invariant_text = Path(__file__).read_text(encoding="utf-8")
+    bounded_text = BOUNDED_REVIEW_CONTRACT_TESTS.read_text(encoding="utf-8")
+    assert BOUNDED_REVIEW_CONTRACT_TESTS.name in invariant_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in bounded_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in invariant_text
+    for review_path in (SHADOW_REVIEW, TESTNET_REVIEW):
+        review_text = review_path.read_text(encoding="utf-8")
+        assert review_path.name in bounded_text or review_path.name in invariant_text
+        assert "--durable-run-root" in review_text
+        assert "validate_durable_primary_evidence_root" in review_text
 
 
 def test_paper_adapter_verifies_manifest_after_archive_copy() -> None:

@@ -18,6 +18,9 @@ TESTNET_REVIEW = REPO_ROOT / "scripts" / "ops" / "review_testnet_bounded_observa
 SHADOW_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_shadow_bounded_observation_adapter_v0.py"
 TESTNET_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_testnet_bounded_observation_adapter_v0.py"
 MANDATORY_CLOSEOUT_WIRING_TOKEN = "DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_WIRING_V0=true"
+INVARIANT_CONTRACT_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_primary_evidence_retention_invariant_contract_v0.py"
+)
 
 
 def _preflight_section_2a1() -> str:
@@ -301,3 +304,53 @@ def test_mandatory_wiring_slice_reuses_canonical_preflight_owner_only() -> None:
     parallel_preflight = REPO_ROOT / "docs" / "ops" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
     assert not parallel_preflight.is_file()
     assert MANDATORY_CLOSEOUT_WIRING_TOKEN in _preflight_section_2a1()
+
+
+def test_bounded_review_owner_crosslinks_invariant_contract_module() -> None:
+    owner_text = Path(__file__).read_text(encoding="utf-8")
+    invariant_text = INVARIANT_CONTRACT_TESTS.read_text(encoding="utf-8")
+    assert INVARIANT_CONTRACT_TESTS.name in owner_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in owner_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in invariant_text
+    assert "test_run_primary_evidence_retention_hard_gate_v0.py" in invariant_text
+
+
+def test_bounded_review_invariant_owners_share_mandatory_closeout_wiring_anchor() -> None:
+    owner_text = Path(__file__).read_text(encoding="utf-8")
+    invariant_text = INVARIANT_CONTRACT_TESTS.read_text(encoding="utf-8")
+    section = _preflight_section_2a1()
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in section
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in owner_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in invariant_text
+    for review_path in (SHADOW_REVIEW, TESTNET_REVIEW):
+        assert review_path.name in section
+        assert "--durable-run-root" in review_path.read_text(encoding="utf-8")
+
+
+def test_bounded_review_invariant_reciprocal_chain_preserves_durable_run_root_opt_in_default_off() -> (
+    None
+):
+    for review_path in (SHADOW_REVIEW, TESTNET_REVIEW):
+        text = review_path.read_text(encoding="utf-8")
+        assert "--durable-run-root" in text
+        assert "default=None" in text
+    for adapter_path in (SHADOW_ADAPTER, TESTNET_ADAPTER):
+        text = adapter_path.read_text(encoding="utf-8")
+        assert "--durable-run-root" not in text
+        assert "durable_run_root" not in text
+    collapsed = _preflight_section_2a1().replace("**", "").lower()
+    assert "opt-in (default off)" in collapsed or "default off" in collapsed
+
+
+def test_bounded_review_invariant_reciprocal_chain_preserves_non_authorizing_boundary() -> None:
+    owner_text = Path(__file__).read_text(encoding="utf-8").lower()
+    invariant_text = INVARIANT_CONTRACT_TESTS.read_text(encoding="utf-8").lower()
+    section = _preflight_section_2a1().replace("**", "").lower()
+    assert "non-authorizing" in owner_text or "does not authorize runtime" in section
+    assert "non-authorizing" in invariant_text or "evidence" in invariant_text
+    assert "blocked" in section
+    for review_path in (SHADOW_REVIEW, TESTNET_REVIEW):
+        collapsed = review_path.read_text(encoding="utf-8").lower()
+        assert "non-authorizing" in collapsed or "does not claim readiness" in collapsed
+    for adapter_path in (SHADOW_ADAPTER, TESTNET_ADAPTER):
+        assert "live_allowed=false" in adapter_path.read_text(encoding="utf-8").lower()
