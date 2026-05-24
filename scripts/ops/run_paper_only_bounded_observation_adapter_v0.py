@@ -26,6 +26,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from scripts.ops import bounded_daemon_paper_shadow_24h_approval_v0 as contract_24h
 from scripts.ops.primary_evidence_retention_v0 import (
     verify_manifest_sha256,
     write_manifest_sha256 as _write_manifest_sha256,
@@ -92,6 +93,7 @@ class AdapterPlan:
     commands: dict[str, list[str]]
     retention_steps: list[str]
     expected_artifacts: list[str]
+    contract_profile: str = ""
     forbidden_paths_absent: bool = True
 
     def to_dict(self) -> dict[str, Any]:
@@ -142,8 +144,31 @@ def load_approval_record(path: Path) -> dict[str, str]:
     return parse_machine_lines(path.read_text(encoding="utf-8"))
 
 
-def validate_approval_record(fields: Mapping[str, str]) -> list[str]:
+def normalize_profile(profile: str | None) -> str:
+    return (profile or "").strip()
+
+
+def validate_profile_name(profile: str) -> list[str]:
+    if profile and profile != contract_24h.CONTRACT_PROFILE:
+        return [f"unknown profile: {profile!r}"]
+    return []
+
+
+def validate_approval_record(
+    fields: Mapping[str, str],
+    *,
+    profile: str = "",
+    approved_run_id: str = "",
+) -> list[str]:
     issues: list[str] = []
+    if profile == contract_24h.CONTRACT_PROFILE:
+        issues.extend(
+            contract_24h.validate_approval_record(fields, approved_run_id=approved_run_id)
+        )
+        for key in FORBIDDEN_APPROVAL_TRUE:
+            if fields.get(key, "false").lower() == "true":
+                issues.append(f"approval record forbids {key}=true")
+        return issues
     for key, expected in REQUIRED_APPROVAL.items():
         if fields.get(key, "").lower() != expected:
             issues.append(f"approval record missing or invalid: {key}={expected}")
@@ -208,6 +233,7 @@ def build_plan(
     duration_seconds: int,
     poll_interval_seconds: int,
     run_id: str,
+    contract_profile: str = "",
 ) -> AdapterPlan:
     paths = _plan_paths(staging_root, run_id)
     runtime_out = paths["runtime_out"]
@@ -304,6 +330,7 @@ def build_plan(
         commands=commands,
         retention_steps=retention_steps,
         expected_artifacts=expected_artifacts,
+        contract_profile=contract_profile,
         forbidden_paths_absent=forbidden_absent,
     )
 
@@ -320,8 +347,10 @@ def render_plan(plan: AdapterPlan, as_json: bool) -> str:
         f"POLL_INTERVAL_SECONDS={plan.poll_interval_seconds}",
         f"STAGING_ROOT={plan.staging_root}",
         f"ARCHIVE_ROOT={plan.archive_root}",
-        "COMMANDS:",
     ]
+    if plan.contract_profile:
+        lines.append(f"CONTRACT_PROFILE={plan.contract_profile}")
+    lines.append("COMMANDS:")
     for name, argv in plan.commands.items():
         lines.append(f"  {name}: {' '.join(argv)}")
     lines.append("RETENTION_STEPS:")
@@ -346,7 +375,14 @@ def validate_execute_preconditions(
             issues.append(str(exc))
         else:
             ctx.approval_fields = fields
-            issues.extend(validate_approval_record(fields))
+            profile = normalize_profile(getattr(ctx.args, "profile", ""))
+            issues.extend(
+                validate_approval_record(
+                    fields,
+                    profile=profile,
+                    approved_run_id=ctx.run_id,
+                )
+            )
     if not ctx.archive_root.is_dir():
         issues.append(f"archive root must exist: {ctx.archive_root}")
     elif not os.access(ctx.archive_root, os.W_OK):
@@ -494,7 +530,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--duration-seconds",
         type=int,
-        default=DEFAULT_DURATION_SECONDS,
+        default=None,
     )
     parser.add_argument(
         "--poll-interval",
@@ -505,6 +541,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--source-jobs-toml", type=Path, default=None)
     parser.add_argument("--approval-record", type=Path, default=None)
     parser.add_argument("--run-id", type=str, default="")
+    parser.add_argument(
+        "--profile",
+        type=str,
+        default="",
+        help=(
+            "Optional approval contract profile. "
+            f"Supported: {contract_24h.CONTRACT_PROFILE!r} (default: 120min paper-only)."
+        ),
+    )
     parser.add_argument(
         "--strict-repo-clean",
         action="store_true",
@@ -536,6 +581,27 @@ def main(
             raise
         return USAGE_EXIT
 
+    profile = normalize_profile(args.profile)
+    profile_issues = validate_profile_name(profile)
+    if profile_issues:
+        for issue in profile_issues:
+            print(issue, file=sys.stderr)
+        return USAGE_EXIT
+
+    if profile == contract_24h.CONTRACT_PROFILE:
+        if not args.run_id.strip():
+            print("--run-id is required for 24h profile", file=sys.stderr)
+            return USAGE_EXIT
+        if args.duration_seconds is None:
+            args.duration_seconds = contract_24h.DAEMON_PAPER_SHADOW_24H_DURATION_SECONDS
+        duration_issues = contract_24h.validate_paper_duration_seconds(args.duration_seconds)
+        if duration_issues:
+            for issue in duration_issues:
+                print(issue, file=sys.stderr)
+            return VALIDATION_EXIT
+    elif args.duration_seconds is None:
+        args.duration_seconds = DEFAULT_DURATION_SECONDS
+
     if args.duration_seconds <= 0 or args.poll_interval <= 0:
         print("duration and poll interval must be > 0", file=sys.stderr)
         return USAGE_EXIT
@@ -559,6 +625,7 @@ def main(
         duration_seconds=args.duration_seconds,
         poll_interval_seconds=args.poll_interval,
         run_id=run_id,
+        contract_profile=profile,
     )
 
     if args.execute:
