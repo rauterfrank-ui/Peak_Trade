@@ -196,11 +196,9 @@ def _assert_command_inventory_shape(payload: dict[str, object]) -> None:
         == "out/paper_shadow_247/runtime/high_vol_no_trade/__DRY_RUN_PLACEHOLDER__"
     )
 
-    assert any(str(c["name"]).startswith("paper_runner_") and c["found"] is False for c in commands)
-    for c in commands:
-        if str(c["name"]).startswith("paper_runner_") and c["found"] is False:
-            assert "safety_classification" not in c
-            break
+    assert not any(str(c["name"]).startswith("paper_runner_") for c in commands)
+    for name in paper:
+        assert by_name[name]["found"] is True, name
     shadow_entry = by_name["p7_shadow_high_vol_no_trade_runner_manual_v0"]
     assert shadow_entry["source"] == "shadow"
     assert shadow_entry["found"] is False
@@ -499,6 +497,24 @@ def test_preflight_cli_operator_decision_record_missing_file_exits_2(tmp_path: P
         "hold_testnet_authorized=false",
         "hold_live_authorized=false",
     ]
+
+
+def test_paper_shadow_247_preflight_paper_jobs_align_with_scheduler_inventory() -> None:
+    """P7 paper_runner_* contract fixtures must not be canonical scheduler job expectations."""
+
+    meta = tomllib.loads(PREFLIGHT_CONFIG.read_text(encoding="utf-8"))
+    paper_jobs = [str(x) for x in meta["paper_jobs"]]
+    assert paper_jobs == [
+        "paper_shadow_247_paper_only_runtime_min_v0",
+        "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0",
+        "paper_shadow_247_paper_only_preflight_status_v0",
+    ]
+    assert not any(name.startswith("paper_runner_") for name in paper_jobs)
+
+    payload = _run_json()
+    by_name = {str(c["name"]): c for c in payload["commands"]}
+    for name in paper_jobs:
+        assert by_name[name]["found"] is True, name
 
 
 def test_paper_shadow_247_preflight_metadata_config_is_materialized() -> None:
