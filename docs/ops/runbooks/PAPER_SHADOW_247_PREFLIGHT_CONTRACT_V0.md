@@ -443,6 +443,21 @@ ACTIVATION_AUTHORIZATION_DOES_NOT_CLEAR_HOLD=true
 DRY_ACTIVATION_READY_UNCHANGED_BY_ACTIVATION_AUTHORIZATION_BINDING=true
 ```
 
+## Execution prep readiness evidence v0 (optional)
+
+When paired `--durable-run-outroot` and `--expected-run-id` arguments are supplied and both `governance_outroot_clearance_v0.valid=true` and `activation_authorization_v0.valid=true`, JSON may also include `execution_prep_readiness_v0` (schema `execution_prep_readiness.v0`). This object is **non-authorizing**: it validates scoped durable OUTROOT execution-prep operator records for the requested `RUN_ID` only and sets `valid=true` only when fail-closed checks pass **and** governance clearance and activation authorization are valid. It **does not** change `status` (which remains **BLOCKED**), **does not** mutate or clear `hold_context_v0`, **does not** set top-level activation or scheduler authorization flags to `true`, **does not** set `dry_activation_readiness.ready=true`, and **does not** authorize scheduler, daemon, Paper, Shadow, Testnet, Live, broker, exchange, or order paths.
+
+If governance clearance, activation authorization, or execution-prep records are missing/mismatched, `execution_prep_readiness_v0.valid=false`.
+
+```
+EXECUTION_PREP_READINESS_TRACEABILITY_ONLY=true
+EXECUTION_PREP_READINESS_REQUIRES_GOVERNANCE_OUTROOT_CLEARANCE_VALID=true
+EXECUTION_PREP_READINESS_REQUIRES_ACTIVATION_AUTHORIZATION_VALID=true
+EXECUTION_PREP_READINESS_DOES_NOT_CHANGE_STATUS=true
+EXECUTION_PREP_READINESS_DOES_NOT_CLEAR_HOLD=true
+DRY_ACTIVATION_READY_UNCHANGED_BY_EXECUTION_PREP_READINESS_BINDING=true
+```
+
 ## 8. Revision
 
 - **v0** — Initial contract: BLOCKED default, status model, non-authority, informative JSON shape.

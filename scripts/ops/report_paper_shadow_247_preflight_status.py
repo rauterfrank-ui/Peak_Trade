@@ -400,6 +400,7 @@ def build_paper_shadow_247_preflight_status(
     if durable_run_outroot is not None:
         notes_list.append("governance_outroot_clearance_v0")
         notes_list.append("activation_authorization_v0")
+        notes_list.append("execution_prep_readiness_v0")
 
     # Authorization flags: never inferred from metadata alone (documentation-only TOML keys).
     payload: dict[str, Any] = {
@@ -483,6 +484,16 @@ def build_paper_shadow_247_preflight_status(
             durable_run_outroot,
             expected_run_id=expected_run_id,
             governance_outroot_clearance_v0=payload["governance_outroot_clearance_v0"],
+        )
+        from scripts.ops.paper_shadow_247_execution_prep_readiness_v0 import (
+            build_execution_prep_readiness_v0,
+        )
+
+        payload["execution_prep_readiness_v0"] = build_execution_prep_readiness_v0(
+            durable_run_outroot,
+            expected_run_id=expected_run_id,
+            governance_outroot_clearance_v0=payload["governance_outroot_clearance_v0"],
+            activation_authorization_v0=payload["activation_authorization_v0"],
         )
     return payload
 
