@@ -19,6 +19,11 @@ SCRIPT = ROOT / "scripts" / "ops" / "run_paper_only_bounded_observation_adapter_
 APPROVAL_FIXTURE = (
     ROOT / "tests" / "fixtures" / "ops" / "paper_only_adapter_stage3_approval_sample.md"
 )
+APPROVAL_FIXTURE_24H = (
+    ROOT / "tests" / "fixtures" / "ops" / "daemon_paper_shadow_24h_adapter_approval_sample.md"
+)
+RUN_ID_24H = "daemon_paper_24h_20260524T093549Z"
+PROFILE_24H = "daemon_paper_shadow_24h_v0"
 ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
 
 
@@ -44,6 +49,15 @@ def _base_argv(staging: Path, archive: Path | None = None) -> list[str]:
         str(archive or ARCHIVE_ROOT),
         "--repo-root",
         str(ROOT),
+    ]
+
+
+def _base_argv_24h(staging: Path, archive: Path | None = None) -> list[str]:
+    return _base_argv(staging, archive) + [
+        "--profile",
+        PROFILE_24H,
+        "--run-id",
+        RUN_ID_24H,
     ]
 
 
@@ -416,3 +430,179 @@ def test_module_build_plan_forbidden_paths_absent(tmp_path: Path) -> None:
         run_id="test_run",
     )
     assert plan.forbidden_paths_absent is True
+
+
+def test_default_profile_unchanged_still_7200(tmp_path: Path) -> None:
+    plan = _plan_dict(_staging(tmp_path))
+    assert plan["duration_seconds"] == 7200
+    assert plan.get("contract_profile", "") == ""
+
+
+def test_24h_profile_plan_only_default_duration_86400(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        rc = mod.main(_base_argv_24h(staging) + ["--json"])
+    assert rc == 0, buf.getvalue()
+    plan = json.loads(buf.getvalue())
+    assert plan["duration_seconds"] == 86400
+    assert plan["contract_profile"] == PROFILE_24H
+    assert plan["run_id"] == RUN_ID_24H
+
+
+def test_24h_profile_rejects_7200_duration(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    rc = mod.main(
+        _base_argv_24h(staging) + ["--duration-seconds", "7200"],
+    )
+    assert rc != 0
+
+
+def test_24h_profile_requires_run_id(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    rc = mod.main(
+        _base_argv(staging) + ["--profile", PROFILE_24H],
+    )
+    assert rc != 0
+
+
+def test_unknown_profile_rejected(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    rc = mod.main(
+        _base_argv(staging) + ["--profile", "unknown_profile_v0"],
+    )
+    assert rc != 0
+
+
+def test_24h_profile_execute_rejects_120min_approval_fixture(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    rc = mod.main(
+        _base_argv_24h(staging, archive)
+        + [
+            "--execute",
+            "--approval-record",
+            str(APPROVAL_FIXTURE),
+            "--no-strict-repo-clean",
+        ],
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc != 0
+
+
+def test_24h_profile_execute_rejects_run_id_mismatch(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    rc = mod.main(
+        _base_argv(staging, archive)
+        + [
+            "--profile",
+            PROFILE_24H,
+            "--run-id",
+            "other_run_id",
+            "--execute",
+            "--approval-record",
+            str(APPROVAL_FIXTURE_24H),
+            "--no-strict-repo-clean",
+        ],
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc != 0
+
+
+@pytest.mark.parametrize("key", ["PAPER_LANE_AUTHORIZED", "SHADOW_LANE_AUTHORIZED"])
+def test_24h_profile_execute_rejects_missing_lane_key(tmp_path: Path, key: str) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    text = APPROVAL_FIXTURE_24H.read_text(encoding="utf-8")
+    lines = [line for line in text.splitlines() if not line.strip().startswith(f"{key}=")]
+    bad = tmp_path / "bad_approval.md"
+    bad.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    rc = mod.main(
+        _base_argv_24h(staging, archive)
+        + [
+            "--execute",
+            "--approval-record",
+            str(bad),
+            "--no-strict-repo-clean",
+        ],
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc != 0
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("START_TESTNET_NOW", "true"),
+        ("START_LIVE_NOW", "true"),
+        ("LIVE_ALLOWED", "true"),
+        ("BROKER_EXCHANGE_ALLOWED", "true"),
+    ],
+)
+def test_24h_profile_execute_rejects_forbidden_flags(
+    tmp_path: Path, field: str, value: str
+) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    text = APPROVAL_FIXTURE_24H.read_text(encoding="utf-8").replace(
+        f"{field}=false", f"{field}={value}"
+    )
+    bad = tmp_path / f"bad_{field}.md"
+    bad.write_text(text, encoding="utf-8")
+    rc = mod.main(
+        _base_argv_24h(staging, archive)
+        + [
+            "--execute",
+            "--approval-record",
+            str(bad),
+            "--no-strict-repo-clean",
+        ],
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc != 0
+
+
+def test_24h_profile_execute_accepts_sample_fixture_mocked(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    calls: list[str] = []
+
+    def _runner(argv: Sequence[str], _cwd, _stdout, _stderr) -> int:
+        calls.append(" ".join(argv))
+        if "review_scheduler_paper_runtime_evidence.py" in " ".join(argv):
+            review_dir = staging / "review"
+            review_dir.mkdir(parents=True, exist_ok=True)
+            (review_dir / "REVIEW_RESULT.json").write_text(
+                json.dumps({"verdict": "PASS", "metrics": {}, "issues": []}),
+                encoding="utf-8",
+            )
+            return 0
+        if "run_with_timeout.py" in " ".join(argv):
+            return mod.TIMEOUT_EXIT
+        return 0
+
+    archive = _durable_archive(tmp_path)
+    rc = mod.main(
+        _base_argv_24h(staging, archive)
+        + [
+            "--execute",
+            "--approval-record",
+            str(APPROVAL_FIXTURE_24H),
+            "--no-strict-repo-clean",
+        ],
+        subprocess_runner=_runner,
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc == 0
+    assert calls
+    timeout_cmd = next(cmd for cmd in calls if "run_with_timeout.py" in cmd)
+    assert "--timeout-seconds 86400" in timeout_cmd
