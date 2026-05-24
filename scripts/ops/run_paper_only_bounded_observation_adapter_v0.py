@@ -20,7 +20,7 @@ import sys
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Mapping, Optional, Sequence
+from typing import Any, Callable, Mapping, Optional, Protocol, Sequence
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
@@ -115,7 +115,18 @@ class ExecuteContext:
     approval_fields: Mapping[str, str] = field(default_factory=dict)
 
 
-SubprocessRunner = Callable[[Sequence[str], Optional[Path], Optional[Path], Optional[Path]], int]
+class SubprocessRunner(Protocol):
+    def __call__(
+        self,
+        argv: Sequence[str],
+        cwd: Path | None,
+        stdout_path: Path | None,
+        stderr_path: Path | None,
+        *,
+        extra_env: Mapping[str, str] | None = None,
+    ) -> int: ...
+
+
 RepoCleanChecker = Callable[[Path], tuple[bool, str]]
 
 
@@ -406,6 +417,8 @@ def _default_subprocess_runner(
     cwd: Path | None,
     stdout_path: Path | None,
     stderr_path: Path | None,
+    *,
+    extra_env: Mapping[str, str] | None = None,
 ) -> int:
     stdout = stderr = subprocess.DEVNULL
     if stdout_path is not None:
@@ -414,6 +427,9 @@ def _default_subprocess_runner(
     if stderr_path is not None:
         stderr_path.parent.mkdir(parents=True, exist_ok=True)
         stderr = stderr_path.open("w", encoding="utf-8")
+    env = None
+    if extra_env:
+        env = {**os.environ, **dict(extra_env)}
     try:
         proc = subprocess.run(
             list(argv),
@@ -421,6 +437,7 @@ def _default_subprocess_runner(
             check=False,
             stdout=stdout,
             stderr=stderr,
+            env=env,
         )
     finally:
         if stdout not in (None, subprocess.DEVNULL):
@@ -448,11 +465,28 @@ def execute_plan(
 
     stdout_log = ctx.logs_dir / "scheduler_stdout.log"
     stderr_log = ctx.logs_dir / "scheduler_stderr.log"
+    scheduler_extra_env: dict[str, str] | None = None
+    if (
+        normalize_profile(ctx.args.profile) == contract_24h.CONTRACT_PROFILE
+        and ctx.args.approval_record is not None
+    ):
+        durable_outroot = ctx.args.approval_record.resolve().parent.parent
+        from scripts.ops.scheduler_start_boundary_guard_v0 import (
+            SCHEDULER_HOLD_RUNTIME_OUTROOT_ENV,
+            SCHEDULER_HOLD_RUNTIME_RUN_ID_ENV,
+        )
+
+        scheduler_extra_env = {
+            SCHEDULER_HOLD_RUNTIME_OUTROOT_ENV: str(durable_outroot),
+            SCHEDULER_HOLD_RUNTIME_RUN_ID_ENV: ctx.run_id,
+        }
+
     rc = subprocess_runner(
         plan.commands["scheduler_bounded"],
         ctx.repo_root,
         stdout_log,
         stderr_log,
+        extra_env=scheduler_extra_env,
     )
     if rc not in (0, TIMEOUT_EXIT):
         return rc
