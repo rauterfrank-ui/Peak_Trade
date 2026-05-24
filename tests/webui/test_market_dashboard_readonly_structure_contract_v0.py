@@ -80,6 +80,36 @@ def test_double_play_market_dashboard_excludes_depth_ssr_region_role_contract_v0
     )
 
 
+def test_market_dashboard_orderbook_topn_region_role_contract_v0(
+    client: TestClient,
+) -> None:
+    """Orderbook Top-N ladder section exposes role=region and aria-labelledby to landmark h2."""
+    html = _html(client, "/market")
+    assert re.search(
+        r'id="market-v0-orderbook-topn"\s+role="region"\s+aria-labelledby="market-v0-landmark-orderbook-topn-h2"',
+        html,
+    )
+    assert 'id="market-v0-landmark-orderbook-topn-h2"' in html
+    assert 'data-market-v0-orderbook-landmark-heading-v0="true"' in html
+    assert 'data-market-v0-orderbook-topn="true"' in html
+    assert 'data-market-v0-orderbook-placeholder="true"' in html
+
+
+def test_double_play_market_dashboard_excludes_orderbook_topn_landmark_region_v0(
+    client: TestClient,
+) -> None:
+    """Double-Play page must not carry `/market` Orderbook Top-N landmark region markup."""
+    html = _html(client, "/market/double-play")
+    assert not re.search(
+        r'id="market-v0-orderbook-topn"\s+role="region"\s+aria-labelledby="market-v0-landmark-orderbook-topn-h2"',
+        html,
+    )
+    assert "market-v0-landmark-orderbook-topn-h2" not in html
+    assert "data-market-v0-orderbook-landmark-heading-v0" not in html
+    assert "data-market-v0-orderbook-topn" not in html
+    assert "data-market-v0-orderbook-placeholder" not in html
+
+
 def test_double_play_market_dashboard_does_not_embed_market_depth_api_fetch(
     client: TestClient,
 ) -> None:
@@ -531,6 +561,10 @@ def test_market_dashboard_landmarks_and_labelled_regions_v0(client: TestClient) 
     assert 'data-market-v0-depth-landmark-heading-v0="true"' in html
     assert 'aria-labelledby="market-v0-landmark-depth-ssr-h2"' in html
     assert 'id="market-v0-depth-ssr"' in html
+    assert 'id="market-v0-landmark-orderbook-topn-h2"' in html
+    assert 'data-market-v0-orderbook-landmark-heading-v0="true"' in html
+    assert 'aria-labelledby="market-v0-landmark-orderbook-topn-h2"' in html
+    assert 'id="market-v0-orderbook-topn"' in html
     assert 'data-market-readonly="true"' in html
     assert 'data-market-non-authorizing="true"' in html
     lowered = html.lower()
