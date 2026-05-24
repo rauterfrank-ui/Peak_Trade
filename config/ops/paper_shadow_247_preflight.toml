@@ -6,17 +6,12 @@
 schema_version = "paper_shadow_247_preflight.v0"
 canonical_owner = "ops-paper-shadow-247-readiness"
 
+# Canonical scheduler-visible paper jobs only (see config/scheduler/jobs.toml).
+# P7 paper_runner_*_contract_v0 fixtures live under tests/aiops/p7/ — not scheduler jobs.
 paper_jobs = [
   "paper_shadow_247_paper_only_runtime_min_v0",
   "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0",
   "paper_shadow_247_paper_only_preflight_status_v0",
-  "paper_runner_no_order_no_fill_contract_v0",
-  "paper_runner_single_order_contract_v0",
-  "paper_runner_two_order_roundtrip_contract_v0",
-  "paper_runner_fail_closed_contract_v0",
-  "paper_runner_insufficient_cash_contract_v0",
-  "paper_runner_multisymbol_contract_v0",
-  "paper_runner_partial_sell_contract_v0",
 ]
 
 shadow_jobs = [
