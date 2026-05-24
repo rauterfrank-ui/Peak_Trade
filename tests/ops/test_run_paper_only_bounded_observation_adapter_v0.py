@@ -10,7 +10,7 @@ import subprocess
 import sys
 from contextlib import redirect_stdout
 from pathlib import Path
-from typing import Sequence
+from typing import Mapping, Sequence
 
 import pytest
 
@@ -258,9 +258,21 @@ def test_execute_accepts_sample_approval_with_mocked_runner(tmp_path: Path) -> N
     mod = _load_mod()
     staging = _staging(tmp_path)
     calls: list[str] = []
+    scheduler_extra_env: dict[str, str] | None = None
 
-    def _runner(argv: Sequence[str], _cwd, _stdout, _stderr) -> int:
+    def _runner(
+        argv: Sequence[str],
+        _cwd,
+        _stdout,
+        _stderr,
+        *,
+        extra_env: Mapping[str, str] | None = None,
+    ) -> int:
         calls.append(" ".join(argv))
+        if "run_with_timeout.py" in " ".join(argv):
+            nonlocal scheduler_extra_env
+            scheduler_extra_env = dict(extra_env) if extra_env else None
+            return mod.TIMEOUT_EXIT
         if "review_scheduler_paper_runtime_evidence.py" in " ".join(argv):
             review_dir = staging / "review"
             review_dir.mkdir(parents=True, exist_ok=True)
@@ -269,8 +281,6 @@ def test_execute_accepts_sample_approval_with_mocked_runner(tmp_path: Path) -> N
                 encoding="utf-8",
             )
             return 0
-        if "run_with_timeout.py" in " ".join(argv):
-            return mod.TIMEOUT_EXIT
         return 0
 
     archive = _durable_archive(tmp_path)
@@ -287,6 +297,7 @@ def test_execute_accepts_sample_approval_with_mocked_runner(tmp_path: Path) -> N
     )
     assert rc == 0
     assert calls
+    assert scheduler_extra_env is None
 
 
 def test_command_plan_includes_make_scheduler_temp_config(tmp_path: Path) -> None:
@@ -575,8 +586,16 @@ def test_24h_profile_execute_accepts_sample_fixture_mocked(tmp_path: Path) -> No
     mod = _load_mod()
     staging = _staging(tmp_path)
     calls: list[str] = []
+    scheduler_extra_env: dict[str, str] | None = None
 
-    def _runner(argv: Sequence[str], _cwd, _stdout, _stderr) -> int:
+    def _runner(
+        argv: Sequence[str],
+        _cwd,
+        _stdout,
+        _stderr,
+        *,
+        extra_env: Mapping[str, str] | None = None,
+    ) -> int:
         calls.append(" ".join(argv))
         if "review_scheduler_paper_runtime_evidence.py" in " ".join(argv):
             review_dir = staging / "review"
@@ -587,6 +606,8 @@ def test_24h_profile_execute_accepts_sample_fixture_mocked(tmp_path: Path) -> No
             )
             return 0
         if "run_with_timeout.py" in " ".join(argv):
+            nonlocal scheduler_extra_env
+            scheduler_extra_env = dict(extra_env) if extra_env else None
             return mod.TIMEOUT_EXIT
         return 0
 
@@ -606,3 +627,12 @@ def test_24h_profile_execute_accepts_sample_fixture_mocked(tmp_path: Path) -> No
     assert calls
     timeout_cmd = next(cmd for cmd in calls if "run_with_timeout.py" in cmd)
     assert "--timeout-seconds 86400" in timeout_cmd
+    from scripts.ops.scheduler_start_boundary_guard_v0 import (
+        SCHEDULER_HOLD_RUNTIME_OUTROOT_ENV,
+        SCHEDULER_HOLD_RUNTIME_RUN_ID_ENV,
+    )
+
+    expected_outroot = str(APPROVAL_FIXTURE_24H.resolve().parent.parent)
+    assert scheduler_extra_env is not None
+    assert scheduler_extra_env.get(SCHEDULER_HOLD_RUNTIME_OUTROOT_ENV) == expected_outroot
+    assert scheduler_extra_env.get(SCHEDULER_HOLD_RUNTIME_RUN_ID_ENV) == RUN_ID_24H

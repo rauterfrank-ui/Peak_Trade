@@ -20,7 +20,7 @@ import sys
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Mapping, Optional, Sequence
+from typing import Any, Callable, Mapping, Optional, Protocol, Sequence
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
@@ -115,7 +115,18 @@ class ExecuteContext:
     approval_fields: Mapping[str, str] = field(default_factory=dict)
 
 
-SubprocessRunner = Callable[[Sequence[str], Optional[Path], Optional[Path], Optional[Path]], int]
+class SubprocessRunner(Protocol):
+    def __call__(
+        self,
+        argv: Sequence[str],
+        cwd: Path | None,
+        stdout_path: Path | None,
+        stderr_path: Path | None,
+        *,
+        extra_env: Mapping[str, str] | None = None,
+    ) -> int: ...
+
+
 RepoCleanChecker = Callable[[Path], tuple[bool, str]]
 
 
@@ -470,27 +481,12 @@ def execute_plan(
             SCHEDULER_HOLD_RUNTIME_RUN_ID_ENV: ctx.run_id,
         }
 
-    def _scheduler_runner(
-        argv: Sequence[str],
-        cwd: Path | None,
-        stdout_path: Path | None,
-        stderr_path: Path | None,
-    ) -> int:
-        if scheduler_extra_env is not None:
-            return _default_subprocess_runner(
-                argv,
-                cwd,
-                stdout_path,
-                stderr_path,
-                extra_env=scheduler_extra_env,
-            )
-        return subprocess_runner(argv, cwd, stdout_path, stderr_path)
-
-    rc = _scheduler_runner(
+    rc = subprocess_runner(
         plan.commands["scheduler_bounded"],
         ctx.repo_root,
         stdout_log,
         stderr_log,
+        extra_env=scheduler_extra_env,
     )
     if rc not in (0, TIMEOUT_EXIT):
         return rc

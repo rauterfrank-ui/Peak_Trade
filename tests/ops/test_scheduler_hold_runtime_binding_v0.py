@@ -200,16 +200,31 @@ def test_paper_adapter_scheduler_bridge_sets_env_for_24h_profile(
     captured_env: dict[str, str | None] = {}
 
     def _runner(argv, cwd, stdout_path, stderr_path, *, extra_env=None):
-        captured_env["extra_env"] = dict(extra_env) if extra_env else None
+        if "run_with_timeout.py" in " ".join(argv):
+            captured_env["extra_env"] = dict(extra_env) if extra_env else None
         if stdout_path is not None:
             stdout_path.parent.mkdir(parents=True, exist_ok=True)
             stdout_path.write_text("", encoding="utf-8")
         return 0
 
-    monkeypatch.setattr(
-        "scripts.ops.run_paper_only_bounded_observation_adapter_v0._default_subprocess_runner",
-        _runner,
-    )
+    def _sequenced_runner(
+        argv,
+        cwd,
+        stdout_path,
+        stderr_path,
+        *,
+        extra_env=None,
+    ):
+        argv_joined = " ".join(argv)
+        if "run_with_timeout.py" in argv_joined:
+            return _runner(argv, cwd, stdout_path, stderr_path, extra_env=extra_env)
+        if "review_scheduler_paper_runtime_evidence.py" in argv_joined:
+            if stdout_path is not None:
+                stdout_path.parent.mkdir(parents=True, exist_ok=True)
+                stdout_path.write_text('{"verdict":"PASS"}', encoding="utf-8")
+            return 0
+        return 0
+
     monkeypatch.setattr(
         "scripts.ops.run_paper_only_bounded_observation_adapter_v0._write_manifest_sha256",
         lambda _root: None,
@@ -250,17 +265,6 @@ def test_paper_adapter_scheduler_bridge_sets_env_for_24h_profile(
         run_id=RUN_ID,
         contract_profile="daemon_paper_shadow_24h_v0",
     )
-
-    def _sequenced_runner(argv, cwd, stdout_path, stderr_path):
-        argv_joined = " ".join(argv)
-        if "run_with_timeout.py" in argv_joined:
-            return _runner(argv, cwd, stdout_path, stderr_path)
-        if "review_scheduler_paper_runtime_evidence.py" in argv_joined:
-            if stdout_path is not None:
-                stdout_path.parent.mkdir(parents=True, exist_ok=True)
-                stdout_path.write_text('{"verdict":"PASS"}', encoding="utf-8")
-            return 0
-        return 0
 
     rc = execute_plan(ctx, plan, subprocess_runner=_sequenced_runner)
     assert rc == 0
