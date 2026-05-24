@@ -1,0 +1,19 @@
+# Governance Hold Clearance Operator Record v0 (fixture)
+
+## Final machine lines
+
+```
+RUN_ID=__RUN_ID__
+OUTROOT=__OUTROOT__
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+PAPER_STARTED=false
+SHADOW_STARTED=false
+TESTNET_STARTED=false
+LIVE_STARTED=false
+STAGING_BRIDGE_MATERIALIZED=true
+GOVERNANCE_HOLD_CLEARANCE_OPERATOR_RECORD_CREATED=true
+HOLD_CLEARANCE_DONE=true_FOR_RUN_ID_ONLY
+HOLD_CLEARANCE_SCOPE=bounded_24h_daemon_paper_shadow_dry_run_only
+READY_TO_START_RUN_NOW=false
+```

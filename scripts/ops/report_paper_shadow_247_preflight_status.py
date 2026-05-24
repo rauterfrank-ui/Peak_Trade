@@ -330,6 +330,8 @@ def _build_operator_moment_snapshot_v0(
 def build_paper_shadow_247_preflight_status(
     repo_root: Path | None = None,
     operator_decision_record: Path | None = None,
+    durable_run_outroot: Path | None = None,
+    expected_run_id: str | None = None,
 ) -> dict[str, Any]:
     root = (repo_root or _repo_root()).resolve()
     op_rec: Path | None = None
@@ -395,6 +397,8 @@ def build_paper_shadow_247_preflight_status(
     ]
     if op_rec is not None:
         notes_list.append("operator_decision_context_v0")
+    if durable_run_outroot is not None:
+        notes_list.append("governance_outroot_clearance_v0")
 
     # Authorization flags: never inferred from metadata alone (documentation-only TOML keys).
     payload: dict[str, Any] = {
@@ -459,6 +463,17 @@ def build_paper_shadow_247_preflight_status(
     stop_snap = payload["operator_moment_snapshot_v0"].get("stop_signal_snapshot")
     if isinstance(stop_snap, dict) and "operator_decision_context_v0" in stop_snap:
         payload["operator_decision_context_v0"] = stop_snap["operator_decision_context_v0"]
+    if durable_run_outroot is not None:
+        if not expected_run_id:
+            raise ValueError("expected_run_id is required when durable_run_outroot is provided")
+        from scripts.ops.paper_shadow_247_governance_outroot_clearance_v0 import (
+            build_governance_outroot_clearance_v0,
+        )
+
+        payload["governance_outroot_clearance_v0"] = build_governance_outroot_clearance_v0(
+            durable_run_outroot,
+            expected_run_id=expected_run_id,
+        )
     return payload
 
 
@@ -479,13 +494,36 @@ def main(argv: list[str] | None = None) -> int:
             "(read-only, non-authorizing; does not change stop artifacts)."
         ),
     )
+    parser.add_argument(
+        "--durable-run-outroot",
+        type=Path,
+        default=None,
+        help=(
+            "Optional durable OUTROOT directory for scoped governance_outroot_clearance_v0 "
+            "evidence (read-only, non-authorizing; does not clear HOLD or change status)."
+        ),
+    )
+    parser.add_argument(
+        "--expected-run-id",
+        default=None,
+        help="Required when --durable-run-outroot is set; RUN_ID scope for governance validation.",
+    )
     args = parser.parse_args(argv)
+
+    if (args.durable_run_outroot is None) ^ (args.expected_run_id is None):
+        print(
+            "ERR: --durable-run-outroot and --expected-run-id must be supplied together",
+            file=sys.stderr,
+        )
+        return 2
 
     root = Path(args.repo_root).resolve() if args.repo_root else _repo_root().resolve()
     try:
         payload = build_paper_shadow_247_preflight_status(
             root,
             operator_decision_record=args.operator_decision_record,
+            durable_run_outroot=args.durable_run_outroot,
+            expected_run_id=args.expected_run_id,
         )
     except ValueError as e:
         print(f"ERR: {e}", file=sys.stderr)

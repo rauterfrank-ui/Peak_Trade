@@ -411,6 +411,24 @@ The read-only preflight reporter (`scripts/ops/report_paper_shadow_247_preflight
 
 When `--operator-decision-record` points to a durable archive file (for example `OPERATOR_HOLD_CLASSIFICATION_RECORD.txt` with `OPERATOR_CLASSIFICATION=scoped_hold_with_exceptions`), parsed fields appear in `operator_decision_context_v0` for **traceability only** — they **do not** lift global HOLD, **do not** clear Preflight **BLOCKED**, and **do not** authorize Paper/Shadow/Testnet/Live/broker/exchange paths. A completed U3 scoped exception record is **not** global HOLD closure and **does not** generalize to unbounded runtime activation.
 
+## Governance OUTROOT clearance evidence v0 (optional)
+
+The read-only preflight reporter accepts optional paired CLI arguments:
+
+- `--durable-run-outroot <path>`
+- `--expected-run-id <RUN_ID>`
+
+When both are supplied, JSON includes `governance_outroot_clearance_v0` (schema `governance_outroot_clearance.v0`). This object is **non-authorizing**: it validates scoped durable OUTROOT governance/staging/bridge allowlisted files for the requested `RUN_ID` only and sets `valid=true` only when fail-closed checks pass. It **does not** change `status` (which remains **BLOCKED**), **does not** mutate or clear `hold_context_v0`, **does not** set `dry_activation_readiness.ready=true`, and **does not** authorize scheduler, daemon, Paper, Shadow, Testnet, Live, broker, exchange, or order paths.
+
+When the paired arguments are omitted, reporter output is unchanged and `governance_outroot_clearance_v0` is absent.
+
+```
+GOVERNANCE_OUTROOT_CLEARANCE_TRACEABILITY_ONLY=true
+GOVERNANCE_OUTROOT_CLEARANCE_DOES_NOT_CLEAR_HOLD=true
+GOVERNANCE_OUTROOT_CLEARANCE_DOES_NOT_CHANGE_STATUS=true
+DRY_ACTIVATION_READY_UNCHANGED_BY_GOVERNANCE_OUTROOT_BINDING=true
+```
+
 ## 8. Revision
 
 - **v0** — Initial contract: BLOCKED default, status model, non-authority, informative JSON shape.
