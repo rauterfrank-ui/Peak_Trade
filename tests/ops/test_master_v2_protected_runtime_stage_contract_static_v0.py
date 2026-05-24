@@ -232,7 +232,9 @@ def test_ai_dashboard_evidence_non_authority_is_preserved_v0() -> None:
     assert "none" in lowered
 
 
-def test_universe_selector_strategy_suitability_market_airport_boundaries_are_preserved_v0() -> None:
+def test_universe_selector_strategy_suitability_market_airport_boundaries_are_preserved_v0() -> (
+    None
+):
     plain = _plain(PRT_CONTRACT)
     lowered = plain.lower()
     raw = _read(PRT_CONTRACT)
