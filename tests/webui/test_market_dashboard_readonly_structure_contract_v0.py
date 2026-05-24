@@ -534,6 +534,48 @@ def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> No
     assert "market-v0-order-form" not in lowered
 
 
+def test_market_dashboard_ranking_funnel_and_pro_shell_marker_families_v0(
+    client: TestClient,
+) -> None:
+    """Positive pairing: /market carries ranking funnel and pro-shell IA marker families."""
+    html = _html(client, "/market")
+    assert 'data-market-v0-ranking-funnel-empty-state-v0="true"' in html
+    assert 'data-market-v0-ranking-funnel-dynamic-labels-v0="true"' in html
+    assert 'data-market-v0-ranking-funnel-stages-v0="true"' in html
+    assert 'id="market-v0-landmark-ranking-funnel-h2"' in html
+    assert 'data-market-v0-pro-shell="true"' in html
+    assert 'data-market-v0-pro-grid="true"' in html
+    assert 'data-market-v0-pro-boundary="true"' in html
+    assert 'data-market-v0-visual-cockpit="true"' in html
+
+
+def test_double_play_market_dashboard_excludes_ranking_funnel_markers_v0(
+    client: TestClient,
+) -> None:
+    """Double-Play must not carry `/market`-only ranking funnel contract markers."""
+    html = _html(client, "/market/double-play")
+    assert "data-market-v0-ranking-funnel-empty-state-v0" not in html
+    assert "data-market-v0-ranking-funnel-dynamic-labels-v0" not in html
+    assert "data-market-v0-ranking-funnel-stages-v0" not in html
+    assert "market-v0-landmark-ranking-funnel-h2" not in html
+    assert "data-market-v0-" not in html
+    assert 'data-market-readonly="true"' in html
+
+
+def test_double_play_market_dashboard_excludes_pro_shell_markers_v0(
+    client: TestClient,
+) -> None:
+    """Double-Play must not carry `/market`-only pro-shell / visual-cockpit IA markers."""
+    html = _html(client, "/market/double-play")
+    assert "data-market-v0-pro-shell" not in html
+    assert "data-market-v0-pro-grid" not in html
+    assert "data-market-v0-pro-boundary" not in html
+    assert "data-market-v0-visual-cockpit" not in html
+    assert "market-v0-landmark-visual-cockpit-h2" not in html
+    assert "data-market-v0-" not in html
+    assert 'data-market-readonly="true"' in html
+
+
 def test_market_dashboard_landmarks_and_labelled_regions_v0(client: TestClient) -> None:
     """Stable region landmarks + aria-labelledby hooks; read-only markers unchanged."""
     html = _html(client, "/market")
