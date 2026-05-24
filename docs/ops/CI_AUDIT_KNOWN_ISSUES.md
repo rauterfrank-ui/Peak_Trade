@@ -46,6 +46,7 @@ This note records the post-HOLD owner-triage outcome for retained cybersecurity 
 - Owner-triage report: `/tmp/peak_trade_cybersecurity_post_hold_owner_triage_20260510T150908Z/CYBERSECURITY_POST_HOLD_OWNER_TRIAGE.md`
 - Full lossless retained candidate inventory: `/tmp/peak_trade_full_lossless_risk_inventory_readonly_20260508T163523Z/FULL_LOSSLESS_RISK_CANDIDATES.jsonl`
 - Top review queue: `/tmp/peak_trade_full_lossless_risk_clusters_readonly_20260508T163641Z/TOP_REVIEW_QUEUE.jsonl`
+- Repo-static successor inventory (durable archive; **not** lossless-equivalent; does **not** restore missing 20260508 JSONL; does **not** claim R-001/R-002/R-007 mapping): `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/inventory/repo_static_cybersecurity_risk_candidates/repo_static_cybersecurity_risk_candidates_jsonl_generation_v0_20260524T070050Z/REPO_STATIC_CYBERSECURITY_RISK_CANDIDATES.jsonl` — manifest verified (`MANIFEST_VERIFY_RC=0`); candidate rows: `162`; generation token: `repo_static_cybersecurity_risk_candidates_jsonl_generation_v0`
 
 ### Owner-triage outcome
 
