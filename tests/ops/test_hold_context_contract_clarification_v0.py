@@ -132,6 +132,15 @@ def test_governance_outroot_clearance_doc_subsection_exists() -> None:
     assert "GOVERNANCE_OUTROOT_CLEARANCE_DOES_NOT_CLEAR_HOLD=true" in text
 
 
+def test_activation_authorization_doc_subsection_exists() -> None:
+    text = (
+        REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+    ).read_text(encoding="utf-8")
+    assert "## Activation authorization evidence v0 (optional)" in text
+    assert "activation_authorization_v0" in text
+    assert "ACTIVATION_AUTHORIZATION_REQUIRES_GOVERNANCE_OUTROOT_CLEARANCE_VALID=true" in text
+
+
 def test_docs_truth_map_records_hold_context_clarification_slice() -> None:
     text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
     assert "hold_context_v0 conservative projection" in text
