@@ -26,6 +26,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from scripts.ops import bounded_daemon_paper_shadow_24h_approval_v0 as contract_24h
 from scripts.ops.primary_evidence_retention_v0 import (
     verify_manifest_sha256,
     write_manifest_sha256 as _write_manifest_sha256,
@@ -45,6 +46,10 @@ DEFAULT_MAX_STEPS = 120
 DEFAULT_STEP_INTERVAL_SECONDS = 0.0
 MAX_DURATION_MINUTES = 10
 MAX_STEPS_CAP = 600
+CANDIDATE_24H_MAX_STEPS_CAP = 86400
+CANDIDATE_24H_BOUNDED_SHADOW_CONFIRM_TOKEN_V0 = (
+    "I_EXPLICITLY_CONFIRM_SHADOW_247_CANDIDATE_24H_BOUNDED_SHADOW_TIER_V0"
+)
 
 FORBIDDEN_APPROVAL_TRUE = frozenset(
     {
@@ -106,6 +111,7 @@ class AdapterPlan:
     commands: dict[str, list[str]]
     retention_steps: list[str]
     expected_artifacts: list[str]
+    contract_profile: str = ""
     forbidden_paths_absent: bool = True
 
     def to_dict(self) -> dict[str, Any]:
@@ -155,8 +161,31 @@ def load_approval_record(path: Path) -> dict[str, str]:
     return parse_machine_lines(path.read_text(encoding="utf-8"))
 
 
-def validate_approval_record(fields: Mapping[str, str]) -> list[str]:
+def normalize_profile(profile: str | None) -> str:
+    return (profile or "").strip()
+
+
+def validate_profile_name(profile: str) -> list[str]:
+    if profile and profile != contract_24h.CONTRACT_PROFILE:
+        return [f"unknown profile: {profile!r}"]
+    return []
+
+
+def validate_approval_record(
+    fields: Mapping[str, str],
+    *,
+    profile: str = "",
+    approved_run_id: str = "",
+) -> list[str]:
     issues: list[str] = []
+    if profile == contract_24h.CONTRACT_PROFILE:
+        issues.extend(
+            contract_24h.validate_approval_record(fields, approved_run_id=approved_run_id)
+        )
+        for key in FORBIDDEN_APPROVAL_TRUE:
+            if fields.get(key, "false").lower() == "true":
+                issues.append(f"approval record forbids {key}=true")
+        return issues
     for key, expected in REQUIRED_APPROVAL.items():
         if fields.get(key, "").lower() != expected:
             issues.append(f"approval record missing or invalid: {key}={expected}")
@@ -217,6 +246,7 @@ def build_plan(
     max_steps: int,
     step_interval_seconds: float,
     run_id: str,
+    contract_profile: str = "",
 ) -> AdapterPlan:
     wrapper_evidence = staging_root / WRAPPER_EVIDENCE_DIR
     review_out = staging_root / "review" / "REVIEW_RESULT.json"
@@ -238,6 +268,14 @@ def build_plan(
         "--jobs-config",
         JOBS_CONFIG,
     ]
+    if contract_profile == contract_24h.CONTRACT_PROFILE:
+        wrapper_cmd.extend(
+            [
+                "--candidate-24h-bounded-shadow-validation",
+                "--candidate-24h-confirm-token",
+                CANDIDATE_24H_BOUNDED_SHADOW_CONFIRM_TOKEN_V0,
+            ]
+        )
     review_cmd = _python_cmd(repo_root, REVIEW_SCRIPT) + [
         "--staging-root",
         str(staging_root.resolve()),
@@ -299,6 +337,7 @@ def build_plan(
         commands=commands,
         retention_steps=retention_steps,
         expected_artifacts=expected_artifacts,
+        contract_profile=contract_profile,
         forbidden_paths_absent=forbidden_absent,
     )
 
@@ -317,8 +356,10 @@ def render_plan(plan: AdapterPlan, as_json: bool) -> str:
         f"STAGING_ROOT={plan.staging_root}",
         f"ARCHIVE_ROOT={plan.archive_root}",
         f"RUN_ID={plan.run_id}",
-        "COMMANDS:",
     ]
+    if plan.contract_profile:
+        lines.append(f"CONTRACT_PROFILE={plan.contract_profile}")
+    lines.append("COMMANDS:")
     for name, argv in plan.commands.items():
         lines.append(f"  {name}: {' '.join(argv)}")
     lines.append("RETENTION_STEPS:")
@@ -343,7 +384,14 @@ def validate_execute_preconditions(
             issues.append(str(exc))
         else:
             ctx.approval_fields = fields
-            issues.extend(validate_approval_record(fields))
+            profile = normalize_profile(getattr(ctx.args, "profile", ""))
+            issues.extend(
+                validate_approval_record(
+                    fields,
+                    profile=profile,
+                    approved_run_id=ctx.run_id,
+                )
+            )
     if not ctx.archive_root.is_dir():
         issues.append(f"archive root must exist: {ctx.archive_root}")
     elif not os.access(ctx.archive_root, os.W_OK):
@@ -541,7 +589,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--staging-root", type=Path, required=True)
     parser.add_argument("--archive-root", type=Path, required=True)
-    parser.add_argument("--duration-minutes", type=int, default=DEFAULT_DURATION_MINUTES)
+    parser.add_argument("--duration-minutes", type=int, default=None)
     parser.add_argument("--max-steps", type=int, default=None)
     parser.add_argument(
         "--step-interval-seconds",
@@ -551,6 +599,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--repo-root", type=Path, default=None)
     parser.add_argument("--approval-record", type=Path, default=None)
     parser.add_argument("--run-id", type=str, default="")
+    parser.add_argument(
+        "--profile",
+        type=str,
+        default="",
+        help=(
+            "Optional approval contract profile. "
+            f"Supported: {contract_24h.CONTRACT_PROFILE!r} (default: 10min bounded shadow)."
+        ),
+    )
     parser.add_argument(
         "--strict-repo-clean",
         action="store_true",
@@ -582,16 +639,45 @@ def main(
             raise
         return USAGE_EXIT
 
-    if args.duration_minutes <= 0 or args.duration_minutes > MAX_DURATION_MINUTES:
-        print(
-            f"duration-minutes must be between 1 and {MAX_DURATION_MINUTES} inclusive",
-            file=sys.stderr,
-        )
+    profile = normalize_profile(args.profile)
+    profile_issues = validate_profile_name(profile)
+    if profile_issues:
+        for issue in profile_issues:
+            print(issue, file=sys.stderr)
+        return USAGE_EXIT
+
+    if profile == contract_24h.CONTRACT_PROFILE:
+        if not args.run_id.strip():
+            print("--run-id is required for 24h profile", file=sys.stderr)
+            return USAGE_EXIT
+        if args.duration_minutes is None:
+            args.duration_minutes = contract_24h.DAEMON_PAPER_SHADOW_24H_DURATION_MINUTES
+        duration_issues = contract_24h.validate_shadow_duration_minutes(args.duration_minutes)
+        if duration_issues:
+            for issue in duration_issues:
+                print(issue, file=sys.stderr)
+            return VALIDATION_EXIT
+        max_steps_cap = CANDIDATE_24H_MAX_STEPS_CAP
+    else:
+        if args.duration_minutes is None:
+            args.duration_minutes = DEFAULT_DURATION_MINUTES
+        if args.duration_minutes <= 0 or args.duration_minutes > MAX_DURATION_MINUTES:
+            print(
+                f"duration-minutes must be between 1 and {MAX_DURATION_MINUTES} inclusive",
+                file=sys.stderr,
+            )
+            return USAGE_EXIT
+        max_steps_cap = MAX_STEPS_CAP
+
+    if args.duration_minutes <= 0:
+        print("duration-minutes must be > 0", file=sys.stderr)
         return USAGE_EXIT
 
     max_steps = _default_max_steps(args.duration_minutes, args.max_steps)
-    if max_steps <= 0 or max_steps > MAX_STEPS_CAP:
-        print(f"max-steps must be between 1 and {MAX_STEPS_CAP} inclusive", file=sys.stderr)
+    if profile == contract_24h.CONTRACT_PROFILE and args.max_steps is None:
+        max_steps = min(CANDIDATE_24H_MAX_STEPS_CAP, max(1, args.duration_minutes * 12))
+    if max_steps <= 0 or max_steps > max_steps_cap:
+        print(f"max-steps must be between 1 and {max_steps_cap} inclusive", file=sys.stderr)
         return USAGE_EXIT
 
     if args.step_interval_seconds < 0:
@@ -616,6 +702,7 @@ def main(
         max_steps=max_steps,
         step_interval_seconds=args.step_interval_seconds,
         run_id=run_id,
+        contract_profile=profile,
     )
 
     if args.execute:
