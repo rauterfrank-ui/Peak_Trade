@@ -429,6 +429,20 @@ GOVERNANCE_OUTROOT_CLEARANCE_DOES_NOT_CHANGE_STATUS=true
 DRY_ACTIVATION_READY_UNCHANGED_BY_GOVERNANCE_OUTROOT_BINDING=true
 ```
 
+## Activation authorization evidence v0 (optional)
+
+When paired `--durable-run-outroot` and `--expected-run-id` arguments are supplied and `governance_outroot_clearance_v0.valid=true`, JSON may also include `activation_authorization_v0` (schema `activation_authorization.v0`). This object is **non-authorizing**: it validates scoped durable OUTROOT activation authorization records for the requested `RUN_ID` only and sets `valid=true` only when fail-closed checks pass **and** governance clearance is valid. It **does not** change `status` (which remains **BLOCKED**), **does not** mutate or clear `hold_context_v0`, **does not** set top-level activation or scheduler authorization flags to `true`, **does not** set `dry_activation_readiness.ready=true`, and **does not** authorize scheduler, daemon, Paper, Shadow, Testnet, Live, broker, exchange, or order paths.
+
+If governance clearance is invalid or activation records are missing/mismatched, `activation_authorization_v0.valid=false`.
+
+```
+ACTIVATION_AUTHORIZATION_TRACEABILITY_ONLY=true
+ACTIVATION_AUTHORIZATION_REQUIRES_GOVERNANCE_OUTROOT_CLEARANCE_VALID=true
+ACTIVATION_AUTHORIZATION_DOES_NOT_CHANGE_STATUS=true
+ACTIVATION_AUTHORIZATION_DOES_NOT_CLEAR_HOLD=true
+DRY_ACTIVATION_READY_UNCHANGED_BY_ACTIVATION_AUTHORIZATION_BINDING=true
+```
+
 ## 8. Revision
 
 - **v0** — Initial contract: BLOCKED default, status model, non-authority, informative JSON shape.
