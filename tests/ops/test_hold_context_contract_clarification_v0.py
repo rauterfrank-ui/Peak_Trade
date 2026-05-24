@@ -123,6 +123,15 @@ def test_reporter_hold_context_unchanged_with_scoped_hold_operator_record(
     assert payload["activation_authorized"] is False
 
 
+def test_governance_outroot_clearance_doc_subsection_exists() -> None:
+    text = (
+        REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+    ).read_text(encoding="utf-8")
+    assert "## Governance OUTROOT clearance evidence v0 (optional)" in text
+    assert "governance_outroot_clearance_v0" in text
+    assert "GOVERNANCE_OUTROOT_CLEARANCE_DOES_NOT_CLEAR_HOLD=true" in text
+
+
 def test_docs_truth_map_records_hold_context_clarification_slice() -> None:
     text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
     assert "hold_context_v0 conservative projection" in text
