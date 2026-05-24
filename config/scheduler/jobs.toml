@@ -265,6 +265,31 @@ spec = "tests/fixtures/p7/paper_run_min_v0.json"
 outdir = "out/paper_shadow_247/runtime/min/__DRY_RUN_PLACEHOLDER__"
 
 # =============================================================================
+# Paper-Shadow 247 — shadow high-vol no-trade manual runner (disabled by default)
+# =============================================================================
+# Scheduler-visible Shadow command shape for a later explicit bounded run.
+# Not Testnet/Live/Broker/Exchange/order authorization.
+[[job]]
+name = "p7_shadow_high_vol_no_trade_runner_manual_v0"
+enabled = false
+schedule_type = "once"
+command = "python"
+args = { script = "scripts/aiops/run_shadow_session.py", spec = "tests/fixtures/p6/shadow_session_high_vol_no_trade_v0.json", run_id = "__DRY_RUN_PLACEHOLDER__", outdir = "out/paper_shadow_247/shadow/high_vol_no_trade/__DRY_RUN_PLACEHOLDER__", p7_enable = "1", p7_evidence = "0", dry_run = true }
+description = "Shadow high-vol no-trade manual runner; disabled until explicit bounded gate."
+tags = ["paper_shadow_247", "shadow_runtime", "readonly", "disabled_by_default"]
+timeout_seconds = 600
+paper_only = false
+paper_runtime_job = false
+dry_run_visible = true
+runtime_fixture = "tests/fixtures/p6/shadow_session_high_vol_no_trade_v0.json"
+runtime_outdir_template = "out/paper_shadow_247/shadow/high_vol_no_trade/{timestamp}"
+testnet_authorized = false
+live_authorized = false
+broker_authorized = false
+exchange_authorized = false
+order_submission_authorized = false
+
+# =============================================================================
 # Shadow 24/7 Futures wrapper — scheduler placeholder (disabled, non-authorizing)
 # =============================================================================
 # Invokes only the default-off wrapper entrypoint shape when enabled in a future gate.
