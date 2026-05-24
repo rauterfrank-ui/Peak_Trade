@@ -117,3 +117,45 @@ This contract does not authorize Master V2 or Double Play selection or live exec
 - **v0.1** — Document opt-in scheduler completion evidence closeout (§7a); start guard unchanged.
 - **v0.2** — P67/P72 library scheduler boundary opt-in (§7b); default off; shared guard reused; CLI/launcher unchanged.
 - **v0.3** — Cross-reference Preflight §2a.1 future-run primary evidence hard gate (§7c); start guard unchanged.
+- **v0.4** — RUN_ID-scoped scheduler HOLD runtime binding (§10): optional env bridge for bounded 24h Daemon Paper/Shadow dry-run only; default HOLD_NO_PAPER_RUN preserved.
+
+## 10. RUN_ID-scoped scheduler HOLD runtime binding (bounded 24h only)
+
+```
+SCHEDULER_HOLD_RUNTIME_BINDING_V0=true
+SCHEDULER_HOLD_RUNTIME_BINDING_DEFAULT_BLOCKED=true
+SCHEDULER_HOLD_RUNTIME_BINDING_DOES_NOT_CLEAR_GLOBAL_HOLD=true
+SCHEDULER_HOLD_RUNTIME_BINDING_DOES_NOT_CHANGE_REPORTER_DEFAULT=true
+```
+
+Non-dry-run scheduler start **remains blocked by default** via §3 (`HOLD_NO_PAPER_RUN`, `status=BLOCKED`, `scheduler_execution_authorized=false`).
+
+Optional **RUN_ID-scoped** clearance is available only when **both** environment variables are set at scheduler process start:
+
+- `PEAK_TRADE_SCHEDULER_HOLD_RUNTIME_OUTROOT` — durable OUTROOT path
+- `PEAK_TRADE_SCHEDULER_HOLD_RUNTIME_RUN_ID` — expected RUN_ID
+
+Guard module `scripts/ops/scheduler_start_boundary_guard_v0.py` validates `build_scheduler_hold_runtime_binding_v0()` from `scripts/ops/paper_shadow_247_scheduler_hold_runtime_binding_v0.py`. Clearance requires **all**:
+
+1. `governance_outroot_clearance_v0.valid=true`
+2. `activation_authorization_v0.valid=true`
+3. `execution_prep_readiness_v0.valid=true`
+4. bounded 24h adapter execute approval record valid for RUN_ID
+5. guarded `CANONICAL_COMBINED_PAPER_SHADOW_START_COMMAND_V0.sh` present (chmod 600, exit 76 guard)
+
+When valid, guard emits machine tokens including:
+
+```
+SCHEDULER_HOLD_RUNTIME_BINDING_CLEARANCE=true
+SCHEDULER_START_AUTHORIZED_FOR_RUN_ID_SCOPED_BOUNDED_24H=true
+```
+
+This clearance:
+
+- **Does not** change reporter default output without the env bridge
+- **Does not** set `dry_activation_readiness.ready=true`
+- **Does not** clear global HOLD for other invocations
+- **Does not** authorize Testnet/Live/broker/exchange
+- **Does not** authorize unscoped or automatic 24h/72h reruns
+
+Paper bounded 24h adapter `--execute` may set the env bridge for the scheduler subprocess only when profile `daemon_paper_shadow_24h_v0` and `--approval-record` are present.
