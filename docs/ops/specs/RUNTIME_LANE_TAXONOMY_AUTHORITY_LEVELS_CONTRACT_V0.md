@@ -363,14 +363,14 @@ REGISTRY_V1_COMPOSITION_RECORD_KIND=composition_index
 PER_LANE_MANIFEST_SHA256_REMAINS_CANONICAL=true
 ```
 
-**Purpose:** Represent combined daemon paper+shadow OUTROOTs as **composition/index metadata** in Generic Evidence Run Registry v1 without promoting `runs/daemon_paper_24h/` to a taxonomy lane or introducing `lane_id=daemon_paper_24h`.
+**Purpose:** Represent combined daemon paper+shadow OUTROOTs as **composition/index metadata** in Generic Evidence Run Registry v1 without promoting `runs&#47;daemon_paper_24h&#47;` to a taxonomy lane or introducing `lane_id=daemon_paper_24h`.
 
-**Normative rule:** `paper`, `shadow`, and `testnet` remain the only bounded primary-evidence **lanes** (§3). A combined OUTROOT under `runs/daemon_paper_24h/{run_id}/` is a **composition wrapper** that references child lane rows; it is **not** a runtime lane, approval lane, evidence standard, or closeout standard.
+**Normative rule:** `paper`, `shadow`, and `testnet` remain the only bounded primary-evidence **lanes** (§3). A combined OUTROOT under `runs&#47;daemon_paper_24h&#47;{run_id}&#47;` is a **composition wrapper** that references child lane rows; it is **not** a runtime lane, approval lane, evidence standard, or closeout standard.
 
 Implementation index:
 
 - Registry builder: [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) — `compositions[]` records with `record_kind=composition_index`; lane rows remain in `runs[]`.
-- Per-lane primary evidence owner unchanged: [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) — `MANIFEST.sha256` at `runs/{paper,shadow,testnet}/{run_id}/`.
+- Per-lane primary evidence owner unchanged: [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) — `MANIFEST.sha256` at `runs&#47;{paper,shadow,testnet}&#47;{run_id}&#47;`.
 - Preflight §2a anchor: [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — per-lane manifest verify remains canonical.
 
 #### composition_index vs lane_id
@@ -385,14 +385,14 @@ Implementation index:
 #### paper_then_shadow composition semantics
 
 - `runtime_mode=paper_then_shadow` on a composition record documents sequencing context only.
-- Composition record **`child_lane_refs`** point at canonical lane run roots: `runs/paper/{run_id}/`, `runs/shadow/{run_id}/`.
+- Composition record **`child_lane_refs`** point at canonical lane run roots: `runs&#47;paper&#47;{run_id}&#47;`, `runs&#47;shadow&#47;{run_id}&#47;`.
 - Child lane rows in `runs[]` remain authoritative for lane primary evidence, review verdicts, and closeout artifacts.
 - Composition record may carry governance/context pointers; it does **not** substitute for per-lane evidence or clear gates.
 
 #### Manifest resolution
 
-- **Per-lane primary:** `runs/{lane}/{run_id}/MANIFEST.sha256` — sole canonical primary evidence manifest for that lane (Preflight §2a; unchanged).
-- **Composition rollup (optional):** `runs/daemon_paper_24h/{run_id}/manifests/MANIFEST.sha256` — composition rollup only; paths relative to the composition root.
+- **Per-lane primary:** `runs&#47;{lane}&#47;{run_id}&#47;MANIFEST.sha256` — sole canonical primary evidence manifest for that lane (Preflight §2a; unchanged).
+- **Composition rollup (optional):** `runs&#47;daemon_paper_24h&#47;{run_id}&#47;manifests&#47;MANIFEST.sha256` — composition rollup only; paths relative to the composition root.
 - Composition rollup manifest **does not replace** per-lane `MANIFEST.sha256`.
 - Root-level `MANIFEST.sha256` on a composition OUTROOT is **not** primary evidence; registry emits `COMPOSITION_ROOT_MANIFEST_NOT_PRIMARY` when present.
 
@@ -407,8 +407,8 @@ Implementation index:
 #### Illustrative anchor (non-authorizing)
 
 - `RUN_ID=daemon_paper_24h_20260524T205447Z`
-- Combined OUTROOT: `runs/daemon_paper_24h/{run_id}/` with optional `manifests/MANIFEST.sha256`
-- Child lanes: `runs/paper/{run_id}/`, `runs/shadow/{run_id}/` — canonical per-lane evidence
+- Combined OUTROOT: `runs&#47;daemon_paper_24h&#47;{run_id}&#47;` with optional `manifests&#47;MANIFEST.sha256`
+- Child lanes: `runs&#47;paper&#47;{run_id}&#47;`, `runs&#47;shadow&#47;{run_id}&#47;` — canonical per-lane evidence
 
 ## 7. Scheduler lane — launcher and CLI hard-block (partial verification)
 

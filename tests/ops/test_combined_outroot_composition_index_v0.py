@@ -140,7 +140,7 @@ def test_taxonomy_section_6b_markers_present() -> None:
         assert marker in text
     assert "lane_id=daemon_paper_24h" in text
     assert "lane_id=remote_runtime" in text
-    assert "manifests/MANIFEST.sha256" in text
+    assert "manifests&#47;MANIFEST.sha256" in text
 
 
 def test_preflight_cross_references_composition_index() -> None:
