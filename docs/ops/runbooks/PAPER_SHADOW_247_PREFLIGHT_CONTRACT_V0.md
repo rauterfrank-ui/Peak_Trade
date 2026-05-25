@@ -58,6 +58,8 @@ Future run selectors and adapters must **reject or block** a run plan when prima
 
 Reference implementation: `scripts/ops/run_paper_only_bounded_observation_adapter_v0.py` and shared manifest helpers in `scripts/ops/primary_evidence_retention_v0.py` (plan-only default; execute requires approval record; archive root outside `/tmp`; `MANIFEST.sha256` verified after durable copy).
 
+Combined daemon paper+shadow OUTROOTs are **composition/index** wrappers indexed in Generic Evidence Run Registry v1 `compositions[]` (taxonomy §6b); per-lane `MANIFEST.sha256` at `runs&#47;{paper,shadow,testnet}&#47;{run_id}&#47;` remains canonical primary evidence.
+
 P67/P72 library paths (`run_shadow_session_scheduler_v1`, `run_shadowloop_pack_v1`) write partial evidence by default; opt-in `primary_evidence_enforce=True` calls shared `finalize_primary_evidence_root()` at library completion (non-authorizing; does not clear HOLD or grant Live/Testnet/broker authority; P67 CLI scheduler guard unchanged).
 
 Scheduler launcher (`scripts/run_scheduler.py`) supports opt-in completion retention via `--evidence-dir` and `--primary-evidence-enforce`, writing `scheduler_completion_closeout_v0.json` and calling shared `finalize_primary_evidence_root()` when enforcement is enabled (default off; dry-run remains planning-only; start boundary guard unchanged).
