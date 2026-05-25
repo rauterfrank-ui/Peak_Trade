@@ -177,15 +177,12 @@ def test_bounded_adapters_reject_tmp_archive_root_on_execute() -> None:
 
 
 def test_bounded_adapters_write_closeout_and_review_on_execute() -> None:
-    for path in (SHADOW_ADAPTER, TESTNET_ADAPTER):
+    for path in (PAPER_ADAPTER, SHADOW_ADAPTER, TESTNET_ADAPTER):
         text = path.read_text(encoding="utf-8")
         assert "_write_closeout_artifacts" in text
         assert "REVIEW_RESULT.json" in text
         assert "verify_manifest_sha256" in text
-    paper_text = PAPER_ADAPTER.read_text(encoding="utf-8")
-    assert "REVIEW_RESULT.json" in paper_text
-    assert "verify_manifest_sha256" in paper_text
-    assert "archive root must be outside /tmp" in paper_text
+        assert "archive root must be outside /tmp" in text
 
 
 def test_p67_p72_reference_finalize_primary_evidence_root() -> None:

@@ -35,6 +35,16 @@ BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS = (
     MANIFEST_FILENAME,
 )
 
+# Paper bounded observation durable run roots (scheduler composition; Preflight §2a.1).
+PAPER_BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS = (
+    "RUN_METADATA.json",
+    "review/REVIEW_RESULT.json",
+    "runtime_out/evidence_manifest.json",
+    "logs/scheduler_stdout.log",
+    "logs/scheduler_stderr.log",
+    MANIFEST_FILENAME,
+)
+
 # Closeout filenames referenced by §2a.1 hard gate (index only; owners remain canonical).
 KNOWN_CLOSEOUT_FILENAMES = (
     "scheduler_completion_closeout_v0.json",
