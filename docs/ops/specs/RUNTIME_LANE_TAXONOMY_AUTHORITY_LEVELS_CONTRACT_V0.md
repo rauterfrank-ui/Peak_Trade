@@ -292,7 +292,7 @@ MANIFEST_VERIFY_REQUIRED=true
 - `evidence_transport=s3_export_after_finalize` is permitted **only after** `finalize_primary_evidence_root()` / `verify_manifest_sha256()` returns success on the durable root (`MANIFEST.sha256` RC=0).
 - S3/Object Storage is **transport/archive**, not active staging sync, not a second evidence standard, and not closeout acceptance by itself.
 - Consumer-side download + manifest verify is required before treating remote copies as primary evidence ([PHASE_W_EXPORT_PACK_GH_CONSUMER.md](../runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md) patterns may be **extended** to `MANIFEST.sha256`; do not replace with a parallel manifest scheme).
-- [PHASE_T_DATA_NODE_EXPORT_CHANNEL.md](../runbooks/PHASE_T_DATA_NODE_EXPORT_CHANNEL.md) remains **planning-only / candidate-to-extend** for export prefixes; bounded run finalized evidence uses `run_id`-scoped keys under a `finalized_evidence/` prefix (proposal only in v0).
+- [PHASE_T_DATA_NODE_EXPORT_CHANNEL.md](../runbooks/PHASE_T_DATA_NODE_EXPORT_CHANNEL.md) remains **planning-only / candidate-to-extend** for export prefixes; bounded run finalized evidence uses `run_id`-scoped keys under a `finalized_evidence&#47;` prefix (proposal only in v0).
 
 ### Notion — projection/index only
 
@@ -314,7 +314,7 @@ MARKET_DASHBOARD_NO_APPROVAL_AUTHORITY=true
 ```
 
 - `market_dashboard_projection=read_only_run_status` or `read_only_evidence_status` may display registry/closeout-derived status on existing read-only surfaces ([MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md), [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md)) — **review input only**.
-- Dashboard projection must not touch Master V2 / Double Play routes (`GET /market/double-play`) or decision authority (§9).
+- Dashboard projection must not touch Master V2 / Double Play routes (`GET &#47;market&#47;double-play`) or decision authority (§9).
 - Default `disabled` in v0.
 
 ### v0 authority posture (hard false)

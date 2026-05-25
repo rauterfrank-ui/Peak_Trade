@@ -120,7 +120,7 @@ def test_s3_export_tied_to_finalized_manifest() -> None:
     assert "MANIFEST.sha256" in text
     assert "active staging sync" in text.lower() or "not active staging sync" in text.lower()
     helper = PRIMARY_EVIDENCE_HELPER.read_text(encoding="utf-8")
-    assert "MANIFEST_FILENAME = \"MANIFEST.sha256\"" in helper
+    assert 'MANIFEST_FILENAME = "MANIFEST.sha256"' in helper
 
 
 def test_notion_projection_non_authorizing() -> None:
