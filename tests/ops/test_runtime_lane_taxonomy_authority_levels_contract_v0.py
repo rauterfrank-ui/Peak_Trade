@@ -186,6 +186,8 @@ def test_required_machine_markers_present() -> None:
         "P101_POST_STOP_OPERATOR_EXPLICIT_REQUIRED=true",
         "P101_POST_STOP_EVIDENCE_NON_AUTHORIZING=true",
         "MASTER_V2_DOUBLE_PLAY_BOUNDARY_PRESERVED=true",
+        "REMOTE_RUNTIME_HOST_METADATA_CONTRACT_V0=true",
+        "REMOTE_RUNTIME_IS_BACKEND_NOT_LANE=true",
         *AUTONOMY_CROSSWALK_MARKERS,
     ):
         assert marker in text
