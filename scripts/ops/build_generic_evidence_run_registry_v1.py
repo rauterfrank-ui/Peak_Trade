@@ -23,8 +23,9 @@ from typing import Any
 
 SCHEMA = "peak_trade.generic_evidence_run_registry.v1"
 
-# Remote Runtime Host Metadata v0 (taxonomy §6a): optional run-row fields; non-authorizing.
-# Does not alter registry build output until a future slice opts in to populate these fields.
+# Remote Runtime Host Metadata v0 (taxonomy §6a): run-row metadata; non-authorizing defaults.
+# Machine marker: REGISTRY_V1_SECTION_6A_FIELDS_POPULATED=true
+REGISTRY_V1_SECTION_6A_FIELDS_POPULATED = True
 REMOTE_RUNTIME_HOST_METADATA_CONTRACT_V0 = True
 
 REMOTE_RUNTIME_HOST_METADATA_V0_FIELD_ALLOWED: dict[str, tuple[str, ...]] = {
@@ -52,6 +53,10 @@ REMOTE_RUNTIME_HOST_METADATA_V0_DEFAULTS: dict[str, str | bool] = {
     "live_authority": False,
     "testnet_authority": False,
 }
+
+SECTION_6A_METADATA_FIELD_NAMES: tuple[str, ...] = tuple(
+    REMOTE_RUNTIME_HOST_METADATA_V0_DEFAULTS.keys()
+)
 
 TAXONOMY_SPEC_REL = Path("docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md")
 
@@ -269,6 +274,29 @@ def _parse_machine_line(text: str, key: str) -> bool | None:
     if not values:
         return None
     return values[-1]
+
+
+def _section_6a_runtime_mode_for_lane(lane_id: str) -> str:
+    """Return safe §6a runtime_mode default for a lane row (non-authorizing)."""
+    if lane_id == "paper":
+        return "paper_only"
+    return str(REMOTE_RUNTIME_HOST_METADATA_V0_DEFAULTS["runtime_mode"])
+
+
+def _section_6a_metadata(*, runtime_mode: str | None = None) -> dict[str, str | bool]:
+    """Build taxonomy §6a metadata defaults without inferring remote/S3/Notion/Dashboard."""
+    out = dict(REMOTE_RUNTIME_HOST_METADATA_V0_DEFAULTS)
+    if runtime_mode is not None:
+        allowed = REMOTE_RUNTIME_HOST_METADATA_V0_FIELD_ALLOWED["runtime_mode"]
+        if runtime_mode not in allowed:
+            raise ValueError(f"runtime_mode {runtime_mode!r} not in allowed values {allowed!r}")
+        out["runtime_mode"] = runtime_mode
+    return out
+
+
+def _apply_section_6a_metadata(record: dict[str, Any], *, runtime_mode: str | None = None) -> None:
+    """Merge §6a fields into an existing runs[] or compositions[] record (additive only)."""
+    record.update(_section_6a_metadata(runtime_mode=runtime_mode))
 
 
 def scan_unsafe_text(text: str, ctx: BuildContext, path: Path) -> None:
@@ -503,7 +531,7 @@ def _build_composition_record(
 
     rel_archive = str(composition_root.relative_to(ctx.archive_root).as_posix())
 
-    return {
+    record: dict[str, Any] = {
         "record_kind": "composition_index",
         "composition_id": composition_id,
         "run_id": run_id,
@@ -531,6 +559,8 @@ def _build_composition_record(
         "evidence_status": composition_evidence_status,
         "issues": [],
     }
+    _apply_section_6a_metadata(record, runtime_mode=COMPOSITION_INDEX_DEFAULT_RUNTIME_MODE)
+    return record
 
 
 def _build_run_record(
@@ -625,7 +655,7 @@ def _build_run_record(
 
     rel_archive = str(run_dir.relative_to(ctx.archive_root).as_posix())
 
-    return {
+    record: dict[str, Any] = {
         "run_id": run_dir.name,
         "lane_id": lane_id,
         "lane_kind": defaults["lane_kind"],
@@ -650,6 +680,8 @@ def _build_run_record(
         "evidence_status": evidence_status,
         "issues": run_issues,
     }
+    _apply_section_6a_metadata(record, runtime_mode=_section_6a_runtime_mode_for_lane(lane_id))
+    return record
 
 
 def _lane_catalog_entry(lane_id: str, discovered: int) -> dict[str, Any]:

@@ -250,15 +250,16 @@ MARKET_DASHBOARD_PROJECTION_READONLY=true
 REMOTE_RUNTIME_V0_LIVE_AUTHORITY=false
 REMOTE_RUNTIME_V0_TESTNET_AUTHORITY=false
 REGISTRY_V1_REMOTE_RUNTIME_HOST_METADATA_FIELDS_DEFINED=true
+REGISTRY_V1_SECTION_6A_FIELDS_POPULATED=true
 ```
 
 **Purpose:** Describe where a bounded `paper` / `shadow` run executes (local laptop vs remote host) and how finalized evidence may be transported or projected — **without** creating a new lane, scheduler authority, evidence standard, or closeout standard.
 
 **Normative rule:** Remote Runtime is **backend metadata** for existing bounded lanes (`paper`, `shadow`, `testnet`). It is **not** a new `lane_id`. Remote hosts run the **same** canonical adapters, scheduler boundary guards, approval records, and `primary_evidence_retention_v0` manifest rules as local hosts.
 
-Implementation index (optional run-row metadata; default off until populated):
+Implementation index (Registry v1 emits §6a fields as non-authorizing metadata defaults):
 
-- Constants owner: [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) — `REMOTE_RUNTIME_HOST_METADATA_V0_DEFAULTS` (non-authorizing defaults; does not alter registry build output until a future slice opts in).
+- Constants owner: [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) — `REMOTE_RUNTIME_HOST_METADATA_V0_DEFAULTS` merged into every `runs[]` and `compositions[]` record (`REGISTRY_V1_SECTION_6A_FIELDS_POPULATED=true`). Defaults remain `runtime_host=local`, `runtime_backend=laptop`, `evidence_transport=local_only`, `notion_projection=disabled`, `market_dashboard_projection=disabled`, `live_authority=false`, `testnet_authority=false` unless explicit future operator metadata opts in. Archive presence alone does **not** infer remote runtime, S3 export, Notion sync, or dashboard projection.
 - Manifest owner unchanged: [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) — `MANIFEST.sha256` remains the sole primary evidence manifest format.
 - Preflight / bounded gate owner unchanged: [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a/§2a.1.
 
