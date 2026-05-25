@@ -83,7 +83,7 @@ RUN_PROJECTION_FIELDS = (
 def _section_6a1() -> str:
     text = TAXONOMY_SPEC.read_text(encoding="utf-8")
     return text.split("### 6a.1 Notion post-closeout sync projection contract v0", 1)[1].split(
-        "### Market Dashboard", 1
+        "### 6a.2 Market Dashboard read-only run projection contract v0", 1
     )[0]
 
 
