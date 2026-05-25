@@ -302,6 +302,7 @@ def build_plan(
         "logs/scheduler_stdout.log",
         "logs/scheduler_stderr.log",
         "review/REVIEW_RESULT.json",
+        "RUN_METADATA.json",
         "MANIFEST.sha256",
         "CLOSEOUT.md",
         "POSTRUN_ANALYSIS.md",
@@ -447,6 +448,67 @@ def _default_subprocess_runner(
     return int(proc.returncode or 0)
 
 
+def _write_closeout_artifacts(
+    ctx: ExecuteContext,
+    plan: AdapterPlan,
+    archive_dest: Path,
+    review_payload: Mapping[str, Any],
+) -> None:
+    now = datetime.now(timezone.utc).isoformat()
+    run_metadata = {
+        "run_id": ctx.run_id,
+        "adapter_version": plan.adapter_version,
+        "staging_root": str(ctx.staging_root),
+        "archive_path": str(archive_dest),
+        "duration_seconds": plan.duration_seconds,
+        "poll_interval_seconds": plan.poll_interval_seconds,
+        "review_verdict": review_payload.get("verdict"),
+        "live_authority": False,
+        "testnet_authority": False,
+        "broker_authority": False,
+        "utc": now,
+    }
+    (ctx.staging_root / "RUN_METADATA.json").write_text(
+        json.dumps(run_metadata, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    closeout_lines = [
+        "# Paper Bounded Observation Adapter Closeout",
+        "",
+        f"RUN_ID={ctx.run_id}",
+        f"STAGING_PATH={ctx.staging_root}",
+        f"ARCHIVE_PATH={archive_dest}",
+        f"REVIEW_VERDICT={review_payload.get('verdict')}",
+        "EXECUTION_PERFORMED=true",
+        "PAPER_RUNTIME_APPROVAL_GRANTED=false",
+        "SHADOW_STARTED=false",
+        "TESTNET_STARTED=false",
+        "LIVE_ALLOWED=false",
+        "live_authority=false",
+        "testnet_authority=false",
+        "broker_authority=false",
+        "PREFLIGHT_BLOCKED=true",
+        "NOTION_WRITES=false",
+        "PRIMARY_EVIDENCE_TIER=achieved",
+        "NO_AUTOMATIC_24H_72H_RERUN_REQUIRED=true",
+    ]
+    (ctx.staging_root / "CLOSEOUT.md").write_text(
+        "\n".join(closeout_lines) + "\n",
+        encoding="utf-8",
+    )
+    postrun_lines = [
+        "# Paper Bounded Observation Postrun Analysis",
+        "",
+        f"Generated UTC: {now}",
+        f"Review issues: {review_payload.get('issues', [])}",
+        "Non-authorizing adapter execute; no gate clearance claimed.",
+    ]
+    (ctx.staging_root / "POSTRUN_ANALYSIS.md").write_text(
+        "\n".join(postrun_lines) + "\n",
+        encoding="utf-8",
+    )
+
+
 def execute_plan(
     ctx: ExecuteContext,
     plan: AdapterPlan,
@@ -507,8 +569,9 @@ def execute_plan(
     if review_payload.get("verdict") != "PASS":
         return VALIDATION_EXIT
 
-    _write_manifest_sha256(ctx.staging_root)
     archive_dest = ctx.archive_root / "runs" / "paper" / ctx.run_id
+    _write_closeout_artifacts(ctx, plan, archive_dest, review_payload)
+    _write_manifest_sha256(ctx.staging_root)
     archive_dest.mkdir(parents=True, exist_ok=True)
     for item in ctx.staging_root.iterdir():
         dest = archive_dest / item.name
