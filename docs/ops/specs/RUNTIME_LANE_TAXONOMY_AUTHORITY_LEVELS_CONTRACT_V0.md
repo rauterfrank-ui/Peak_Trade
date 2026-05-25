@@ -82,6 +82,12 @@ REMOTE_RUNTIME_IS_BACKEND_NOT_LANE=true
 REMOTE_RUNTIME_HOST_METADATA_DOCS_TESTS_ONLY=true
 S3_FINALIZED_EVIDENCE_TRANSPORT_ONLY=true
 NOTION_PROJECTION_NON_AUTHORIZING=true
+NOTION_POST_CLOSEOUT_SYNC_PROJECTION_SPEC_V0=true
+NOTION_WRITE_DEFAULT=false
+NOTION_SYNC_REQUIRES_OPERATOR_TOKEN=true
+NOTION_AUTHORITY=false
+NOTION_DESTRUCTIVE_OPS=false
+REGISTRY_V1_IS_SOLE_NOTION_PROJECTION_FEED=true
 MARKET_DASHBOARD_PROJECTION_READONLY=true
 REMOTE_RUNTIME_V0_LIVE_AUTHORITY=false
 REMOTE_RUNTIME_V0_TESTNET_AUTHORITY=false
@@ -310,6 +316,79 @@ NOTION_PROJECTION_NON_AUTHORIZING=true
 - Taxonomy `lane_id=notion` remains `navigation_only` / `planning_only` (§3).
 - `FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL` applies (§5).
 - Notion writes require an explicit operator post-closeout token; default `disabled`.
+
+### 6a.1 Notion post-closeout sync projection contract v0
+
+```
+NOTION_POST_CLOSEOUT_SYNC_PROJECTION_SPEC_V0=true
+NOTION_PROJECTION_NON_AUTHORIZING=true
+NOTION_WRITE_DEFAULT=false
+NOTION_SYNC_REQUIRES_OPERATOR_TOKEN=true
+NOTION_AUTHORITY=false
+NOTION_DESTRUCTIVE_OPS=false
+RUNTIME_AUTHORITY=false
+SCHEDULER_CLEARANCE_AUTHORITY=false
+LIVE_AUTHORITY=false
+TESTNET_AUTHORITY=false
+BROKER_AUTHORITY=false
+DOUBLE_PLAY_AUTHORITY=false
+REGISTRY_V1_IS_SOLE_NOTION_PROJECTION_FEED=true
+NOTION_PROJECTION_DEFAULT=disabled
+```
+
+**Purpose:** Define how future Notion post-closeout sync may project **non-authorizing** evidence index rows from Generic Evidence Run Registry v1 — **without** creating a Notion truth layer, **without** Notion writes in this slice, and **without** parsing durable archives ad hoc.
+
+**Canonical feed (sole source):** [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) JSON output (`schema=peak_trade.generic_evidence_run_registry.v1`): `runs[]`, `compositions[]`, top-level `verdict`, `issues`, `blockers`, `archive_root`, and §6a metadata on each record. **Do not** walk `DURABLE_ARCHIVE_ROOT` directly for Notion projection.
+
+#### `notion_projection` states (Registry v1 §6a field)
+
+| State | Meaning (v0) |
+|---|---|
+| `disabled` | **Default.** No Notion sync; projection contract inactive. |
+| `post_closeout_sync` | Future operator-token-gated sync may copy pointer fields after closeout only. |
+| `verified_evidence_index` | Future operator-token-gated sync may index verified registry rows only (still non-authorizing). |
+
+Default: `notion_projection=disabled` on every `runs[]` and `compositions[]` record until explicit future operator metadata opts in.
+
+#### Future sync gate (default off)
+
+- Notion sync requires explicit operator token: `APPROVE_NOTION_POST_CLOSEOUT_SYNC_NOW=true` (future slice; **not implemented** in this contract).
+- Token may authorize **projection write only** — never runtime, testnet, live, scheduler, broker, exchange, strategy, or Double Play clearance.
+- Default is **no sync** (`NOTION_WRITE_DEFAULT=false`).
+
+#### Allowed projection fields (pointers only)
+
+From Registry v1 `runs[]` / `compositions[]` rows only:
+
+- `run_id`, `lane_id` or `composition_id`, `record_kind`
+- §6a: `runtime_host`, `runtime_backend`, `runtime_mode`, `evidence_root_type`, `evidence_transport`, `notion_projection`, `market_dashboard_projection`
+- `evidence_status`, `review_verdict`, `manifest_verified` (or `rollup_manifest_verified` on compositions)
+- `archive_path` pointer (relative under `archive_root`)
+- Top-level registry `verdict`, summarized `issues` / `blockers` (codes only; no secret values)
+- Closeout pointer **if already present in registry-derived summary** (future projection slice; not inferred by walking archive)
+- Authority markers as explicit **false** / non-authorizing literals
+
+Composition records: include `child_lane_refs` / `child_lane_status` pointers only; composition index does **not** substitute for per-lane primary evidence.
+
+#### Forbidden Notion behavior
+
+- No secrets, AWS credentials, exchange&#47;broker credentials
+- No destructive operations (delete, archive move) without separate explicit operator charter
+- No approval authority, runtime start&#47;stop, scheduler clearance, testnet&#47;live&#47;broker&#47;strategy&#47;Double Play authority
+- No parallel Notion truth layer; repo contracts, manifests, closeouts, and operator approvals remain canonical
+- No `lane_id=daemon_paper_24h`, no `lane_id=remote_runtime`, no Registry v2
+
+#### Status interpretation
+
+- Notion may display imported registry `verdict` values (`GENERIC_EVIDENCE_RUN_REGISTRY_PASS_BLOCKED_SAFE`, `GENERIC_EVIDENCE_RUN_REGISTRY_REVIEW_REQUIRED`, `GENERIC_EVIDENCE_RUN_REGISTRY_FAIL_CLOSED`) as **projection status only**.
+- Notion status does **not** clear blockers, override manifests&#47;closeouts, or grant gates.
+- `FAIL_CLOSED` remains fail-closed even if a Notion page exists.
+
+#### Canonical boundary copy (required on future Notion database)
+
+> This Notion database is a non-authorizing projection of Peak_Trade repo&#47;evidence state. Repo contracts, manifests, closeouts, and explicit operator approvals remain canonical. Notion entries do not authorize runtime, testnet, live trading, broker access, strategy execution, scheduler clearance, or Double Play decisions.
+
+Cross-reference: Remote Runtime Host Metadata §6a backend-not-lane semantics; composition-index §6b for `paper_then_shadow` pointer rows.
 
 ### Market Dashboard — read-only projection only
 
