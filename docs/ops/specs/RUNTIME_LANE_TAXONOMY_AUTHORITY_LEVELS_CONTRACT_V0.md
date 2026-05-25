@@ -77,6 +77,14 @@ DASHBOARD_NOT_APPROVAL=true
 KILLSWITCH_SAFETY_VETO_DOMINATES=true
 GO_DECISION_REQUIRES_EXTERNAL_RECORD=true
 OPERATOR_ONLY_PERMANENT_GATES_DEFINED=true
+REMOTE_RUNTIME_HOST_METADATA_CONTRACT_V0=true
+REMOTE_RUNTIME_IS_BACKEND_NOT_LANE=true
+REMOTE_RUNTIME_HOST_METADATA_DOCS_TESTS_ONLY=true
+S3_FINALIZED_EVIDENCE_TRANSPORT_ONLY=true
+NOTION_PROJECTION_NON_AUTHORIZING=true
+MARKET_DASHBOARD_PROJECTION_READONLY=true
+REMOTE_RUNTIME_V0_LIVE_AUTHORITY=false
+REMOTE_RUNTIME_V0_TESTNET_AUTHORITY=false
 ```
 
 Non-goals:
@@ -224,6 +232,113 @@ Illustrative defaults for `paper`, `shadow`, and `testnet` (all bounded lanes):
 | can_authorize_live | false |
 | can_touch_broker_exchange | false |
 | protected_master_v2_boundary | true |
+
+## 6a. Remote Runtime Host Metadata Contract v0 (backend metadata, non-authorizing)
+
+```
+REMOTE_RUNTIME_HOST_METADATA_CONTRACT_V0=true
+REMOTE_RUNTIME_IS_BACKEND_NOT_LANE=true
+REMOTE_RUNTIME_HOST_METADATA_DOCS_TESTS_ONLY=true
+S3_FINALIZED_EVIDENCE_TRANSPORT_ONLY=true
+NOTION_PROJECTION_NON_AUTHORIZING=true
+MARKET_DASHBOARD_PROJECTION_READONLY=true
+REMOTE_RUNTIME_V0_LIVE_AUTHORITY=false
+REMOTE_RUNTIME_V0_TESTNET_AUTHORITY=false
+REGISTRY_V1_REMOTE_RUNTIME_HOST_METADATA_FIELDS_DEFINED=true
+```
+
+**Purpose:** Describe where a bounded `paper` / `shadow` run executes (local laptop vs remote host) and how finalized evidence may be transported or projected — **without** creating a new lane, scheduler authority, evidence standard, or closeout standard.
+
+**Normative rule:** Remote Runtime is **backend metadata** for existing bounded lanes (`paper`, `shadow`, `testnet`). It is **not** a new `lane_id`. Remote hosts run the **same** canonical adapters, scheduler boundary guards, approval records, and `primary_evidence_retention_v0` manifest rules as local hosts.
+
+Implementation index (optional run-row metadata; default off until populated):
+
+- Constants owner: [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) — `REMOTE_RUNTIME_HOST_METADATA_V0_DEFAULTS` (non-authorizing defaults; does not alter registry build output until a future slice opts in).
+- Manifest owner unchanged: [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) — `MANIFEST.sha256` remains the sole primary evidence manifest format.
+- Preflight / bounded gate owner unchanged: [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a/§2a.1.
+
+### Optional Generic Evidence Run Registry v1 run-row fields (v0)
+
+These fields are **metadata only**. They do **not** authorize runtime, clear HOLD, or grant Live/Testnet/broker permission.
+
+| Field | Allowed values (v0) | Default (v0) |
+|---|---|---|
+| `runtime_host` | `local` \| `remote` | `local` |
+| `runtime_backend` | `laptop` \| `ec2` \| `vps` \| `data_node` \| `gha_runner` | `laptop` |
+| `runtime_mode` | `paper_only` \| `paper_then_shadow` | `paper_only` |
+| `evidence_root_type` | `local_durable` \| `remote_durable` | `local_durable` |
+| `evidence_transport` | `local_only` \| `s3_export_after_finalize` | `local_only` |
+| `notion_projection` | `disabled` \| `post_closeout_sync` \| `verified_evidence_index` | `disabled` |
+| `market_dashboard_projection` | `disabled` \| `read_only_run_status` \| `read_only_evidence_status` | `disabled` |
+| `live_authority` | `false` only in v0 | `false` |
+| `testnet_authority` | `false` only in v0 | `false` |
+
+**Forbidden:** introducing `lane_id=remote_runtime`, `remote_runtime`, or any parallel remote lane in taxonomy §3 or registry lane catalog.
+
+### Backend-not-lane semantics
+
+- `runtime_host=remote` changes **host placement only**; `lane_id` remains `paper`, `shadow`, or `testnet`.
+- Remote execution must reuse existing bounded adapters ([run_paper_only_bounded_observation_adapter_v0.py](../../../scripts/ops/run_paper_only_bounded_observation_adapter_v0.py), [run_shadow_bounded_observation_adapter_v0.py](../../../scripts/ops/run_shadow_bounded_observation_adapter_v0.py)) and scheduler hard-block contracts (§7).
+- [REAL_MARKET_247_RUNTIME_ARCHITECTURE_V1.md](REAL_MARKET_247_RUNTIME_ARCHITECTURE_V1.md) Class B (durable daemon) is **host/backend planning** atop the same gates — not a separate authority surface.
+
+### S3 / Object Storage — finalized evidence transport only
+
+```
+S3_FINALIZED_EVIDENCE_TRANSPORT_ONLY=true
+TMP_ONLY_EVIDENCE_INVALID=true
+MANIFEST_VERIFY_REQUIRED=true
+```
+
+- `evidence_transport=s3_export_after_finalize` is permitted **only after** `finalize_primary_evidence_root()` / `verify_manifest_sha256()` returns success on the durable root (`MANIFEST.sha256` RC=0).
+- S3/Object Storage is **transport/archive**, not active staging sync, not a second evidence standard, and not closeout acceptance by itself.
+- Consumer-side download + manifest verify is required before treating remote copies as primary evidence ([PHASE_W_EXPORT_PACK_GH_CONSUMER.md](../runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md) patterns may be **extended** to `MANIFEST.sha256`; do not replace with a parallel manifest scheme).
+- [PHASE_T_DATA_NODE_EXPORT_CHANNEL.md](../runbooks/PHASE_T_DATA_NODE_EXPORT_CHANNEL.md) remains **planning-only / candidate-to-extend** for export prefixes; bounded run finalized evidence uses `run_id`-scoped keys under a `finalized_evidence&#47;` prefix (proposal only in v0).
+
+### Notion — projection/index only
+
+```
+NOTION_PROJECTION_NON_AUTHORIZING=true
+```
+
+- `notion_projection=post_closeout_sync` or `verified_evidence_index` may copy **pointers** (run_id, durable archive path, manifest verify RC, review verdicts) after closeout — **never** gate clearance or approval.
+- Taxonomy `lane_id=notion` remains `navigation_only` / `planning_only` (§3).
+- `FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL` applies (§5).
+- Notion writes require an explicit operator post-closeout token; default `disabled`.
+
+### Market Dashboard — read-only projection only
+
+```
+MARKET_DASHBOARD_PROJECTION_READONLY=true
+MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
+MARKET_DASHBOARD_NO_APPROVAL_AUTHORITY=true
+```
+
+- `market_dashboard_projection=read_only_run_status` or `read_only_evidence_status` may display registry/closeout-derived status on existing read-only surfaces ([MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md), [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md)) — **review input only**.
+- Dashboard projection must not touch Master V2 / Double Play routes (`GET &#47;market&#47;double-play`) or decision authority (§9).
+- Default `disabled` in v0.
+
+### v0 authority posture (hard false)
+
+```
+REMOTE_RUNTIME_V0_LIVE_AUTHORITY=false
+REMOTE_RUNTIME_V0_TESTNET_AUTHORITY=false
+live_authority=false
+testnet_authority=false
+```
+
+Remote Runtime Host Metadata v0 does **not** authorize Live trading, Testnet execution, broker/exchange access, strategy execution, scheduler global clearance, or Double Play decisions.
+
+### Illustrative evidence anchor (non-authorizing example only)
+
+Completed bounded dry-run (example context for field semantics only):
+
+- `RUN_ID=daemon_paper_24h_20260524T205447Z`
+- Durable archive (operator path): external `Peak_Trade_runtime_evidence_archive_*` with `MANIFEST_VERIFY_RC=0`
+- Combined sequence: `paper_then_shadow` with reviews PASS — documents **field usage**, not gate clearance for future runs.
+
+### Reuse-before-new
+
+Do **not** add a parallel remote-runtime runbook, remote lane, remote evidence manifest, remote closeout standard, or remote scheduler authority. Extend this §6a, Generic Evidence Run Registry v1 optional fields, and existing Phase T/W export consumer planning only.
 
 ## 7. Scheduler lane — launcher and CLI hard-block (partial verification)
 

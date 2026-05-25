@@ -22,6 +22,36 @@ from typing import Any
 
 SCHEMA = "peak_trade.generic_evidence_run_registry.v1"
 
+# Remote Runtime Host Metadata v0 (taxonomy §6a): optional run-row fields; non-authorizing.
+# Does not alter registry build output until a future slice opts in to populate these fields.
+REMOTE_RUNTIME_HOST_METADATA_CONTRACT_V0 = True
+
+REMOTE_RUNTIME_HOST_METADATA_V0_FIELD_ALLOWED: dict[str, tuple[str, ...]] = {
+    "runtime_host": ("local", "remote"),
+    "runtime_backend": ("laptop", "ec2", "vps", "data_node", "gha_runner"),
+    "runtime_mode": ("paper_only", "paper_then_shadow"),
+    "evidence_root_type": ("local_durable", "remote_durable"),
+    "evidence_transport": ("local_only", "s3_export_after_finalize"),
+    "notion_projection": ("disabled", "post_closeout_sync", "verified_evidence_index"),
+    "market_dashboard_projection": (
+        "disabled",
+        "read_only_run_status",
+        "read_only_evidence_status",
+    ),
+}
+
+REMOTE_RUNTIME_HOST_METADATA_V0_DEFAULTS: dict[str, str | bool] = {
+    "runtime_host": "local",
+    "runtime_backend": "laptop",
+    "runtime_mode": "paper_only",
+    "evidence_root_type": "local_durable",
+    "evidence_transport": "local_only",
+    "notion_projection": "disabled",
+    "market_dashboard_projection": "disabled",
+    "live_authority": False,
+    "testnet_authority": False,
+}
+
 TAXONOMY_SPEC_REL = Path("docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md")
 
 VERDICT_PASS_BLOCKED_SAFE = "GENERIC_EVIDENCE_RUN_REGISTRY_PASS_BLOCKED_SAFE"
