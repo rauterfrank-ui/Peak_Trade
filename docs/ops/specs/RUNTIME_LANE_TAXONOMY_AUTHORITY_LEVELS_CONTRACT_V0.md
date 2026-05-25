@@ -89,6 +89,15 @@ NOTION_AUTHORITY=false
 NOTION_DESTRUCTIVE_OPS=false
 REGISTRY_V1_IS_SOLE_NOTION_PROJECTION_FEED=true
 MARKET_DASHBOARD_PROJECTION_READONLY=true
+MARKET_DASHBOARD_READONLY_RUN_PROJECTION_SPEC_V0=true
+MARKET_DASHBOARD_WRITE_DEFAULT=false
+MARKET_DASHBOARD_AUTHORITY=false
+MARKET_DASHBOARD_RUNTIME_ACTIONS=false
+MARKET_DASHBOARD_POLLING_ACTIVE_RUNTIME=false
+MARKET_DASHBOARD_START_STOP_BUTTONS=false
+MARKET_DASHBOARD_DOUBLE_PLAY_AUTHORITY=false
+MARKET_DASHBOARD_DOUBLE_PLAY_TOUCHED=false
+REGISTRY_V1_IS_SOLE_DASHBOARD_PROJECTION_FEED=true
 REMOTE_RUNTIME_V0_LIVE_AUTHORITY=false
 REMOTE_RUNTIME_V0_TESTNET_AUTHORITY=false
 COMBINED_OUTROOT_COMPOSITION_INDEX_V0=true
@@ -390,17 +399,99 @@ Composition records: include `child_lane_refs` / `child_lane_status` pointers on
 
 Cross-reference: Remote Runtime Host Metadata §6a backend-not-lane semantics; composition-index §6b for `paper_then_shadow` pointer rows.
 
-### Market Dashboard — read-only projection only
+### 6a.2 Market Dashboard read-only run projection contract v0
 
 ```
+MARKET_DASHBOARD_READONLY_RUN_PROJECTION_SPEC_V0=true
 MARKET_DASHBOARD_PROJECTION_READONLY=true
 MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
 MARKET_DASHBOARD_NO_APPROVAL_AUTHORITY=true
+MARKET_DASHBOARD_WRITE_DEFAULT=false
+MARKET_DASHBOARD_AUTHORITY=false
+MARKET_DASHBOARD_RUNTIME_ACTIONS=false
+MARKET_DASHBOARD_POLLING_ACTIVE_RUNTIME=false
+MARKET_DASHBOARD_START_STOP_BUTTONS=false
+MARKET_DASHBOARD_DOUBLE_PLAY_AUTHORITY=false
+MARKET_DASHBOARD_DOUBLE_PLAY_TOUCHED=false
+RUNTIME_AUTHORITY=false
+SCHEDULER_CLEARANCE_AUTHORITY=false
+LIVE_AUTHORITY=false
+TESTNET_AUTHORITY=false
+BROKER_AUTHORITY=false
+DOUBLE_PLAY_AUTHORITY=false
+REGISTRY_V1_IS_SOLE_DASHBOARD_PROJECTION_FEED=true
+MARKET_DASHBOARD_PROJECTION_DEFAULT=disabled
 ```
 
-- `market_dashboard_projection=read_only_run_status` or `read_only_evidence_status` may display registry/closeout-derived status on existing read-only surfaces ([MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md), [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md)) — **review input only**.
-- Dashboard projection must not touch Master V2 / Double Play routes (`GET &#47;market&#47;double-play`) or decision authority (§9).
-- Default `disabled` in v0.
+**Purpose:** Define how future Market Dashboard read-only surfaces may project **non-authorizing** run/evidence status from Generic Evidence Run Registry v1 — **without** creating a Dashboard truth layer, **without** UI/rendering in this slice, **without** polling active runtime, **without** runtime start&#47;stop controls, and **without** parsing durable archives ad hoc.
+
+**Canonical feed (sole source):** [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) JSON output (`schema=peak_trade.generic_evidence_run_registry.v1`): `runs[]`, `compositions[]`, top-level `verdict`, `issues`, `blockers`, `archive_root`, and §6a metadata on each record. **Do not** walk `DURABLE_ARCHIVE_ROOT` directly for Dashboard projection.
+
+#### `market_dashboard_projection` states (Registry v1 §6a field)
+
+| State | Meaning (v0) |
+|---|---|
+| `disabled` | **Default.** No registry-derived run/evidence projection on dashboard surfaces. |
+| `read_only_run_status` | Future read-only display may show run pointer + status labels from Registry v1 only. |
+| `read_only_evidence_status` | Future read-only display may show evidence/manifest/review status from Registry v1 only. |
+
+Default: `market_dashboard_projection=disabled` on every `runs[]` and `compositions[]` record until explicit future operator metadata opts in.
+
+#### Registry v1 sole feed (no ad hoc archive walks)
+
+Consumers may read Registry v1 JSON or registry-derived read-only artifacts only:
+
+- `runs[]`, `compositions[]`, §6a metadata fields
+- `evidence_status`, `review_verdict`, `manifest_verified` (or `rollup_manifest_verified` on compositions)
+- `archive_path` / top-level `archive_root` pointers
+- `child_lane_refs` / `child_lane_status` on composition records (pointers only)
+- Top-level `verdict`, summarized `issues` / `blockers` (codes only; no secret values)
+- Closeout pointer **if already present in registry-derived summary** (not inferred by walking archive)
+- Freshness/status labels **only** when derived from Registry v1 timestamps (e.g. `built_at`) — never from live runtime polling
+
+#### Allowed Dashboard projection fields (pointers/status only)
+
+From Registry v1 `runs[]` / `compositions[]` rows only:
+
+- `run_id`, `lane_id` or `composition_id`, `record_kind`
+- §6a: `runtime_host`, `runtime_backend`, `runtime_mode`, `evidence_root_type`, `evidence_transport`, `notion_projection`, `market_dashboard_projection`
+- `evidence_status`, `review_verdict`, `manifest_verified` (or `rollup_manifest_verified` on compositions)
+- `archive_path` pointer (relative under `archive_root`)
+- Top-level registry `verdict`, summarized `issues` / `blockers`
+- Closeout pointer if present in registry-derived summary
+- Authority markers as explicit **false** / non-authorizing literals
+
+Composition records: include `child_lane_refs` / `child_lane_status` pointers only; composition index does **not** substitute for per-lane primary evidence.
+
+#### Forbidden Dashboard behavior
+
+- No runtime starts, runtime stops, scheduler clearance, or strategy execution
+- No polling active runtime, no start&#47;stop buttons, no runtime actions from Dashboard
+- No AWS CLI, rclone, S3 uploads, or Notion writes from Dashboard projection paths
+- No broker&#47;exchange authority, testnet&#47;live authority, approval authority, or Double Play / Master V2 authority
+- No parallel Dashboard truth layer; repo contracts, manifests, closeouts, and operator approvals remain canonical
+- No changes to `GET &#47;market&#47;double-play` routes, handlers, templates, or decision authority (`MARKET_DASHBOARD_DOUBLE_PLAY_TOUCHED=false`)
+- No `lane_id=daemon_paper_24h`, no `lane_id=remote_runtime`, no Registry v2
+
+#### Status interpretation
+
+- Dashboard may display imported registry `verdict` values (`GENERIC_EVIDENCE_RUN_REGISTRY_PASS_BLOCKED_SAFE`, `GENERIC_EVIDENCE_RUN_REGISTRY_REVIEW_REQUIRED`, `GENERIC_EVIDENCE_RUN_REGISTRY_FAIL_CLOSED`) as **projection status only**.
+- Dashboard status does **not** clear blockers, override manifests&#47;closeouts, or grant gates.
+- `FAIL_CLOSED` remains fail-closed even if displayed on a read-only surface.
+
+#### Surface boundaries (orthogonal owners)
+
+- **`GET &#47;market` only** for future registry-derived run/evidence projection overlays: [MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md) remains the canonical Market Surface v0 owner (SSR OHLCV/dummy/kraken read-only lineage).
+- **F5 futures read-only display** remains orthogonal: [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) — instrument/provenance/risk display semantics; **does not** replace Registry v1 run/evidence projection fields.
+- **`GET &#47;market&#47;double-play` untouched:** Master V2 / Double Play read-only composition route, handlers, templates, and authority boundaries remain unchanged (§9). Registry projection must **not** embed Double Play decision or selection authority.
+
+Detail owner for existing F5 / §7h display markers: taxonomy §7h and [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md).
+
+#### Canonical boundary copy (required on future dashboard projection surfaces)
+
+> Read-only operational projection. This dashboard does not authorize runtime, scheduler clearance, testnet, live trading, broker access, strategy execution, S3 export, Notion sync, or Double Play decisions.
+
+Cross-reference: Notion projection §6a.1 (shared Registry v1 feed semantics); Remote Runtime Host Metadata §6a backend-not-lane semantics; composition-index §6b for `paper_then_shadow` pointer rows.
 
 ### v0 authority posture (hard false)
 
