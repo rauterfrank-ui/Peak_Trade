@@ -5,6 +5,7 @@ Non-authorizing: indexes run metadata only. Does not start runtime, read secrets
 grant Live/Testnet/Go, or imply scheduler/canary/live authority.
 
 Lane semantics: docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md
+(§6a remote runtime host metadata; §6b combined OUTROOT composition-index).
 """
 
 from __future__ import annotations
@@ -67,6 +68,14 @@ BLOCKER_BROKER = "BROKER_EXCHANGE_NOT_AUTHORIZED"
 
 PRIMARY_EVIDENCE_LANES = ("paper", "shadow", "testnet")
 NON_RUN_LANES = frozenset({"dashboard", "ai_orchestrator", "notion", "docs"})
+
+# Combined OUTROOT composition-index v0 (taxonomy §6b): directory names under runs/ that are
+# composition wrappers, not lane_id catalog entries. Does not introduce lane_id=daemon_paper_24h.
+COMBINED_OUTROOT_COMPOSITION_INDEX_V0 = True
+COMPOSITION_INDEX_DIRECTORIES = frozenset({"daemon_paper_24h"})
+COMPOSITION_INDEX_FORBIDDEN_LANE_IDS = frozenset({"daemon_paper_24h", "remote_runtime"})
+COMPOSITION_INDEX_DEFAULT_RUNTIME_MODE = "paper_then_shadow"
+COMPOSITION_ROLLUP_MANIFEST_REL = Path("manifests") / "MANIFEST.sha256"
 
 UNSAFE_TRUE_KEYS: frozenset[str] = frozenset(
     {
@@ -279,6 +288,34 @@ def scan_unsafe_text(text: str, ctx: BuildContext, path: Path) -> None:
 
 def verify_manifest_directory(root: Path, ctx: BuildContext, label: str) -> bool:
     manifest_path = root / "MANIFEST.sha256"
+    return _verify_manifest_at_path(root, manifest_path, ctx, label)
+
+
+def verify_composition_rollup_manifest(
+    composition_root: Path, ctx: BuildContext, label: str
+) -> bool:
+    """Verify manifests/MANIFEST.sha256 rollup on a combined OUTROOT (taxonomy §6b).
+
+    Rollup manifest paths are relative to the composition root. This does not replace
+    per-lane MANIFEST.sha256 at runs/{paper,shadow,testnet}/{run_id}/.
+    """
+    manifest_path = composition_root / COMPOSITION_ROLLUP_MANIFEST_REL
+    if not composition_root.is_dir():
+        ctx.add_issue("MISSING_RUN_DIR", f"{label} composition directory missing", composition_root)
+        return False
+    if not manifest_path.is_file():
+        ctx.add_issue(
+            "MISSING_COMPOSITION_ROLLUP_MANIFEST",
+            f"{label} composition rollup manifest missing at manifests/MANIFEST.sha256",
+            manifest_path,
+        )
+        return False
+    return _verify_manifest_at_path(composition_root, manifest_path, ctx, label)
+
+
+def _verify_manifest_at_path(
+    root: Path, manifest_path: Path, ctx: BuildContext, label: str
+) -> bool:
     if not root.is_dir():
         ctx.add_issue("MISSING_RUN_DIR", f"{label} run directory missing", root)
         return False
@@ -333,7 +370,7 @@ def _load_review_verdict(review_path: Path) -> tuple[str | None, str | None]:
     return verdict, None
 
 
-def _discover_all_runs(archive_root: Path) -> list[tuple[str, Path]]:
+def _discover_lane_runs(archive_root: Path) -> list[tuple[str, Path]]:
     runs_root = archive_root / "runs"
     if not runs_root.is_dir():
         return []
@@ -342,10 +379,158 @@ def _discover_all_runs(archive_root: Path) -> list[tuple[str, Path]]:
         if not lane_dir.is_dir():
             continue
         lane_id = lane_dir.name
+        if lane_id in COMPOSITION_INDEX_DIRECTORIES:
+            continue
         for run_dir in sorted(lane_dir.iterdir()):
             if run_dir.is_dir():
                 out.append((lane_id, run_dir))
     return out
+
+
+def _discover_composition_runs(archive_root: Path) -> list[tuple[str, Path]]:
+    runs_root = archive_root / "runs"
+    if not runs_root.is_dir():
+        return []
+    out: list[tuple[str, Path]] = []
+    for composition_id in sorted(COMPOSITION_INDEX_DIRECTORIES):
+        composition_lane = runs_root / composition_id
+        if not composition_lane.is_dir():
+            continue
+        for run_dir in sorted(composition_lane.iterdir()):
+            if run_dir.is_dir():
+                out.append((composition_id, run_dir))
+    return out
+
+
+def _discover_all_runs(archive_root: Path) -> list[tuple[str, Path]]:
+    """Backward-compatible alias: lane runs only (excludes composition-index directories)."""
+    return _discover_lane_runs(archive_root)
+
+
+def _infer_child_lane_refs(
+    archive_root: Path, run_id: str, *, expected_lanes: tuple[str, ...] = ("paper", "shadow")
+) -> list[dict[str, Any]]:
+    refs: list[dict[str, Any]] = []
+    for lane_id in expected_lanes:
+        child_dir = archive_root / "runs" / lane_id / run_id
+        present = child_dir.is_dir()
+        ref: dict[str, Any] = {
+            "lane_id": lane_id,
+            "present": present,
+        }
+        if present:
+            ref["archive_path"] = str(child_dir.relative_to(archive_root).as_posix())
+            ref["manifest_present"] = (child_dir / "MANIFEST.sha256").is_file()
+        else:
+            ref["archive_path"] = None
+            ref["manifest_present"] = False
+        refs.append(ref)
+    return refs
+
+
+def _build_composition_record(
+    composition_root: Path,
+    composition_id: str,
+    ctx: BuildContext,
+    lane_run_index: dict[tuple[str, str], dict[str, Any]],
+) -> dict[str, Any]:
+    run_id = composition_root.name
+    scan_unsafe_text(_scan_texts(composition_root), ctx, composition_root)
+
+    child_lane_refs = _infer_child_lane_refs(ctx.archive_root, run_id)
+    child_present_count = sum(1 for ref in child_lane_refs if ref["present"])
+    child_manifest_count = sum(1 for ref in child_lane_refs if ref.get("manifest_present"))
+
+    rollup_path = composition_root / COMPOSITION_ROLLUP_MANIFEST_REL
+    rollup_present = rollup_path.is_file()
+    if rollup_present:
+        rollup_verified = verify_composition_rollup_manifest(composition_root, ctx, composition_id)
+    else:
+        ctx.add_issue(
+            "MISSING_COMPOSITION_ROLLUP_MANIFEST",
+            (
+                f"composition {composition_id!r} rollup manifest missing at "
+                "manifests/MANIFEST.sha256"
+            ),
+            rollup_path,
+        )
+        rollup_verified = False
+
+    root_manifest_present = (composition_root / "MANIFEST.sha256").is_file()
+    if root_manifest_present:
+        ctx.add_issue(
+            "COMPOSITION_ROOT_MANIFEST_NOT_PRIMARY",
+            (
+                f"composition {composition_id!r} must not use root MANIFEST.sha256; "
+                "per-lane primary evidence remains at runs/{lane}/{run_id}/MANIFEST.sha256; "
+                "composition rollup belongs at manifests/MANIFEST.sha256 only"
+            ),
+            composition_root / "MANIFEST.sha256",
+        )
+
+    child_lane_status: list[dict[str, Any]] = []
+    for ref in child_lane_refs:
+        lane_id = ref["lane_id"]
+        lane_row = lane_run_index.get((lane_id, run_id))
+        status = {
+            "lane_id": lane_id,
+            "present": ref["present"],
+            "manifest_present": ref.get("manifest_present", False),
+        }
+        if lane_row is not None:
+            status["evidence_status"] = lane_row.get("evidence_status")
+            status["manifest_verified"] = lane_row.get("manifest_verified")
+        elif ref["present"]:
+            status["evidence_status"] = "unknown"
+            status["manifest_verified"] = ref.get("manifest_present", False)
+        else:
+            status["evidence_status"] = "missing"
+            status["manifest_verified"] = False
+        child_lane_status.append(status)
+
+    if not rollup_present:
+        composition_evidence_status = "incomplete"
+    elif not rollup_verified:
+        composition_evidence_status = "incomplete"
+    elif child_present_count < len(child_lane_refs):
+        composition_evidence_status = "partial"
+    else:
+        child_statuses = [s.get("evidence_status") for s in child_lane_status if s["present"]]
+        if any(s not in ("verified", None) for s in child_statuses):
+            composition_evidence_status = "partial"
+        else:
+            composition_evidence_status = "indexed"
+
+    rel_archive = str(composition_root.relative_to(ctx.archive_root).as_posix())
+
+    return {
+        "record_kind": "composition_index",
+        "composition_id": composition_id,
+        "run_id": run_id,
+        "runtime_mode": COMPOSITION_INDEX_DEFAULT_RUNTIME_MODE,
+        "archive_path": rel_archive,
+        "rollup_manifest_present": rollup_present,
+        "rollup_manifest_path": COMPOSITION_ROLLUP_MANIFEST_REL.as_posix(),
+        "rollup_manifest_verified": rollup_verified,
+        "root_manifest_present": root_manifest_present,
+        "child_lane_refs": child_lane_refs,
+        "child_lane_status": child_lane_status,
+        "child_lanes_present": child_present_count,
+        "child_lanes_with_manifest": child_manifest_count,
+        "composition_index_authority": False,
+        "live_authority": False,
+        "testnet_authority": False,
+        "s3_authority": False,
+        "notion_authority": False,
+        "market_dashboard_authority": False,
+        "can_clear_hold": False,
+        "can_clear_glb": False,
+        "can_authorize_live": False,
+        "can_touch_broker_exchange": False,
+        "protected_master_v2_boundary": True,
+        "evidence_status": composition_evidence_status,
+        "issues": [],
+    }
 
 
 def _build_run_record(
@@ -546,6 +731,8 @@ def derive_verdict(ctx: BuildContext) -> str:
         "MANIFEST_ENTRY_MISSING",
         "MISSING_REVIEW_JSON",
         "MISSING_EXTERNAL_LIVE_RECORD",
+        "MISSING_COMPOSITION_ROLLUP_MANIFEST",
+        "COMPOSITION_ROOT_MANIFEST_NOT_PRIMARY",
     }
     if codes & review_codes:
         return VERDICT_REVIEW_REQUIRED
@@ -565,11 +752,19 @@ def build_registry(ctx: BuildContext) -> dict[str, Any]:
     scan_unsafe_text(_scan_texts(planning_root), ctx, planning_root)
 
     runs: list[dict[str, Any]] = []
+    compositions: list[dict[str, Any]] = []
     runs_by_lane: dict[str, int] = {lid: 0 for lid in LANE_DEFAULTS}
 
-    for lane_id, run_dir in _discover_all_runs(archive_root):
+    for lane_id, run_dir in _discover_lane_runs(archive_root):
         runs_by_lane[lane_id] = runs_by_lane.get(lane_id, 0) + 1
         runs.append(_build_run_record(run_dir, lane_id, ctx))
+
+    lane_run_index = {(r["lane_id"], r["run_id"]): r for r in runs}
+
+    for composition_id, composition_root in _discover_composition_runs(archive_root):
+        compositions.append(
+            _build_composition_record(composition_root, composition_id, ctx, lane_run_index)
+        )
 
     # Testnet PASS must not imply live — check planning/run text for promotion markers
     blob = _scan_texts(archive_root)
@@ -625,6 +820,7 @@ def build_registry(ctx: BuildContext) -> dict[str, Any]:
 
     summaries = {
         "total_runs": len(runs),
+        "total_compositions": len(compositions),
         "runs_by_lane": {k: runs_by_lane.get(k, 0) for k in PRIMARY_EVIDENCE_LANES},
         "verified_runs": verified,
         "review_required_runs": review_required_runs,
@@ -649,6 +845,7 @@ def build_registry(ctx: BuildContext) -> dict[str, Any]:
         "archive_root": str(archive_root.resolve()),
         "lanes": lanes,
         "runs": runs,
+        "compositions": compositions,
         "summaries": summaries,
         "authority": authority,
         "blockers": blockers,

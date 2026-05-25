@@ -85,6 +85,11 @@ NOTION_PROJECTION_NON_AUTHORIZING=true
 MARKET_DASHBOARD_PROJECTION_READONLY=true
 REMOTE_RUNTIME_V0_LIVE_AUTHORITY=false
 REMOTE_RUNTIME_V0_TESTNET_AUTHORITY=false
+COMBINED_OUTROOT_COMPOSITION_INDEX_V0=true
+COMPOSITION_INDEX_IS_NOT_LANE=true
+LANE_ID_DAEMON_PAPER_24H_FORBIDDEN=true
+LANE_ID_REMOTE_RUNTIME_FORBIDDEN=true
+COMPOSITION_INDEX_AUTHORITY=false
 ```
 
 Non-goals:
@@ -339,6 +344,71 @@ Completed bounded dry-run (example context for field semantics only):
 ### Reuse-before-new
 
 Do **not** add a parallel remote-runtime runbook, remote lane, remote evidence manifest, remote closeout standard, or remote scheduler authority. Extend this §6a, Generic Evidence Run Registry v1 optional fields, and existing Phase T/W export consumer planning only.
+
+### 6b. Combined OUTROOT composition-index v0 (not a lane)
+
+```
+COMBINED_OUTROOT_COMPOSITION_INDEX_V0=true
+COMPOSITION_INDEX_IS_NOT_LANE=true
+LANE_ID_DAEMON_PAPER_24H_FORBIDDEN=true
+LANE_ID_REMOTE_RUNTIME_FORBIDDEN=true
+COMPOSITION_INDEX_AUTHORITY=false
+composition_index_authority=false
+live_authority=false
+testnet_authority=false
+s3_authority=false
+notion_authority=false
+market_dashboard_authority=false
+REGISTRY_V1_COMPOSITION_RECORD_KIND=composition_index
+PER_LANE_MANIFEST_SHA256_REMAINS_CANONICAL=true
+```
+
+**Purpose:** Represent combined daemon paper+shadow OUTROOTs as **composition/index metadata** in Generic Evidence Run Registry v1 without promoting `runs/daemon_paper_24h/` to a taxonomy lane or introducing `lane_id=daemon_paper_24h`.
+
+**Normative rule:** `paper`, `shadow`, and `testnet` remain the only bounded primary-evidence **lanes** (§3). A combined OUTROOT under `runs/daemon_paper_24h/{run_id}/` is a **composition wrapper** that references child lane rows; it is **not** a runtime lane, approval lane, evidence standard, or closeout standard.
+
+Implementation index:
+
+- Registry builder: [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) — `compositions[]` records with `record_kind=composition_index`; lane rows remain in `runs[]`.
+- Per-lane primary evidence owner unchanged: [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) — `MANIFEST.sha256` at `runs/{paper,shadow,testnet}/{run_id}/`.
+- Preflight §2a anchor: [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — per-lane manifest verify remains canonical.
+
+#### composition_index vs lane_id
+
+| Surface | Role | Authority |
+|---|---|---|
+| `lane_id` ∈ {`paper`, `shadow`, `testnet`} | Canonical bounded primary-evidence lane | `evidence_only` (§3) |
+| `composition_id=daemon_paper_24h` | Combined OUTROOT index wrapper | **none** (`composition_index_authority=false`) |
+| `lane_id=daemon_paper_24h` | **Forbidden** | must not appear in registry lane catalog |
+| `lane_id=remote_runtime` | **Forbidden** (§6a) | backend metadata only |
+
+#### paper_then_shadow composition semantics
+
+- `runtime_mode=paper_then_shadow` on a composition record documents sequencing context only.
+- Composition record **`child_lane_refs`** point at canonical lane run roots: `runs/paper/{run_id}/`, `runs/shadow/{run_id}/`.
+- Child lane rows in `runs[]` remain authoritative for lane primary evidence, review verdicts, and closeout artifacts.
+- Composition record may carry governance/context pointers; it does **not** substitute for per-lane evidence or clear gates.
+
+#### Manifest resolution
+
+- **Per-lane primary:** `runs/{lane}/{run_id}/MANIFEST.sha256` — sole canonical primary evidence manifest for that lane (Preflight §2a; unchanged).
+- **Composition rollup (optional):** `runs/daemon_paper_24h/{run_id}/manifests/MANIFEST.sha256` — composition rollup only; paths relative to the composition root.
+- Composition rollup manifest **does not replace** per-lane `MANIFEST.sha256`.
+- Root-level `MANIFEST.sha256` on a composition OUTROOT is **not** primary evidence; registry emits `COMPOSITION_ROOT_MANIFEST_NOT_PRIMARY` when present.
+
+#### Forbidden promotions
+
+- `lane_id=daemon_paper_24h` — forbidden
+- `lane_id=remote_runtime` — forbidden
+- `composition_index_authority=true` — forbidden
+- Treating composition rollup manifest as lane primary evidence — forbidden
+- Introducing `SHA256SUMS.stable.txt` as competing truth — forbidden (reuse `MANIFEST.sha256` only)
+
+#### Illustrative anchor (non-authorizing)
+
+- `RUN_ID=daemon_paper_24h_20260524T205447Z`
+- Combined OUTROOT: `runs/daemon_paper_24h/{run_id}/` with optional `manifests/MANIFEST.sha256`
+- Child lanes: `runs/paper/{run_id}/`, `runs/shadow/{run_id}/` — canonical per-lane evidence
 
 ## 7. Scheduler lane — launcher and CLI hard-block (partial verification)
 
