@@ -5,7 +5,7 @@ Non-authorizing: indexes run metadata only. Does not start runtime, read secrets
 grant Live/Testnet/Go, or imply scheduler/canary/live authority.
 
 Lane semantics: docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md
-(§6a remote runtime host metadata; §6b combined OUTROOT composition-index).
+(§6a remote runtime host metadata; §6a.1 Notion post-closeout sync projection; §6b combined OUTROOT composition-index).
 """
 
 from __future__ import annotations
@@ -20,6 +20,10 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+# Notion post-closeout sync projection v0 (taxonomy §6a.1): Registry v1 JSON is the sole Notion feed.
+NOTION_POST_CLOSEOUT_SYNC_PROJECTION_SPEC_V0 = True
+REGISTRY_V1_IS_SOLE_NOTION_PROJECTION_FEED = True
 
 SCHEMA = "peak_trade.generic_evidence_run_registry.v1"
 
