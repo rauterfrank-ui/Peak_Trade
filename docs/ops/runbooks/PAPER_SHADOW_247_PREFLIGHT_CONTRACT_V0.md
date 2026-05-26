@@ -169,6 +169,71 @@ Each durable copy should include at minimum:
 
 Repo docs state **policy**; durable artifact bytes remain in external archive paths. This section does **not** authorize scheduler execution, daemon activation, Paper runtime, Shadow runtime, Testnet, Live, broker, exchange, or order paths.
 
+## 2b.1 Mandatory Durable Closeout Contract v0
+
+```
+MANDATORY_DURABLE_CLOSEOUT_CONTRACT_V0=true
+MANDATORY_DURABLE_CLOSEOUT_DOCS_TESTS_ONLY=true
+TMP_ONLY_CLOSEOUT_INCOMPLETE=true
+MATERIAL_CLOSEOUT_REQUIRES_DURABLE_COPY=true
+DURABLE_COPY_README_REQUIRED=true
+MANIFEST_SHA256_REQUIRED=true
+MANIFEST_VERIFY_RC_ZERO_REQUIRED=true
+DURABLE_INDEX_OR_POINTER_REQUIRED=true
+MERGE_POST_PR_CLOSEOUTS_INCLUDED=true
+S3_NOT_CLOSEOUT_COMPLETION=true
+NOTION_NOT_AUTHORITY=true
+MARKET_DASHBOARD_NOT_AUTHORITY=true
+SOURCE_TMP_NOT_CANONICAL=true
+CLOSEOUT_DOES_NOT_AUTHORIZE_RUNTIME=true
+```
+
+**Purpose:** Define when a **material** closeout (planning, merge/post-PR, operator-decision, or evidence-chain record) is **complete** vs **incomplete** — **without** executing copy/verify in this contract slice and **without** duplicating §2a runtime primary evidence rules.
+
+**Normative rule:** A material closeout that exists **only** under `/tmp` is **`TMP_ONLY_CLOSEOUT_INCOMPLETE`** and must not be treated as the canonical audit record, gate input, or promotion evidence — regardless of narrative, chat summary, or CI pass status.
+
+### Incomplete vs complete (material closeouts)
+
+A **material** closeout is **incomplete** unless **all** of the following hold on a durable destination **outside `/tmp`**:
+
+1. Durable destination root exists (operator archive under `Peak_Trade_runtime_evidence_archive_<id>&#47;`, not `/tmp`).
+2. Durable closeout directory exists at that root (for example `{archive_root}&#47;closeout&#47;{context}/` or `{archive_root}&#47;planning&#47;{slice}/` per §2b).
+3. `DURABLE_COPY_README.md` exists in the durable closeout directory (`DURABLE_COPY_README_REQUIRED=true`).
+4. `MANIFEST.sha256` exists over the durable closeout files (`MANIFEST_SHA256_REQUIRED=true`).
+5. Manifest verify passes with **RC=0** (`MANIFEST_VERIFY_RC_ZERO_REQUIRED=true`; `shasum -a 256 -c MANIFEST.sha256` or shared `verify_manifest_sha256()` semantics).
+6. A durable **index or pointer** exists (for example batch backfill index markdown, `archive_closeout_index` entry, or cross-reference in durable archive context) (`DURABLE_INDEX_OR_POINTER_REQUIRED=true`).
+
+**Source `/tmp` may remain** as a non-deleted working copy, but **`SOURCE_TMP_NOT_CANONICAL=true`** — `/tmp` must not be the sole owner of a material closeout used for audit or downstream slices.
+
+### Merge / post-PR closeouts explicitly included
+
+`MERGE_POST_PR_CLOSEOUTS_INCLUDED=true`
+
+Post-merge and post-PR operator closeout reports (for example `AFTER_*_MERGE_CLOSEOUT.md`) are **material** when used as evidence of merged slice state, canonical chain continuity, or operator handoff. They are **incomplete** if `/tmp`-only.
+
+**Canonical durable merge-closeout owner pattern (observed, not exclusive timestamp):**
+
+- `{operator_home}&#47;Documents&#47;Peak_Trade_runtime_evidence_archive_<id>&#47;closeout&#47;`
+- Observed owner example: `Peak_Trade_runtime_evidence_archive_20260520T161443Z&#47;closeout&#47;`
+- Do **not** hardcode a single `<id>` as the only allowed archive; any durable `Peak_Trade_runtime_evidence_archive_*` root outside `/tmp` may qualify when index/pointer semantics are satisfied.
+
+Planning-only closeouts under `{archive}&#47;planning&#47;` remain valid per §2b when the same manifest/readme/verify requirements are met.
+
+### Relationship to §2a runtime primary evidence
+
+§2a governs **runtime primary evidence** for Paper, Shadow, Testnet, Live, scheduler, supervisor, and adapter paths. This §2b.1 governs **material planning/merge/operator closeout completeness** only. Satisfying §2b.1 does **not** satisfy §2a and vice versa.
+
+### Non-authorizing boundaries
+
+- `S3_NOT_CLOSEOUT_COMPLETION=true` — S3 upload, object prefix, or export success does **not** complete a material closeout unless a local durable copy + manifest verify RC=0 + index/pointer exist (align with taxonomy §6a.3 download+verify acceptance).
+- `NOTION_NOT_AUTHORITY=true` — Notion sync or projection rows do **not** complete or authorize closeouts.
+- `MARKET_DASHBOARD_NOT_AUTHORITY=true` — Dashboard projection/status does **not** complete or authorize closeouts.
+- `CLOSEOUT_DOES_NOT_AUTHORIZE_RUNTIME=true` — durable closeout completeness does **not** authorize runtime, scheduler clearance, testnet, live, broker, or Double Play decisions.
+
+**Implementation note:** This contract is **normative/static only** (`MANDATORY_DURABLE_CLOSEOUT_DOCS_TESTS_ONLY=true`). Future operator scripts may enforce copy+verify; this slice does **not** execute copy, verify, or archive mutation.
+
+Cross-reference: [Runtime Lane Taxonomy + Authority Levels Contract v0](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) §2 index; shared manifest helper [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) (reuse semantics only).
+
 ## 3. Non-authority
 
 The following are **not** trading authority, readiness approval, evidence approval, promotion, Master V2 / Double Play approval, or Live/Testnet approval:
@@ -179,7 +244,7 @@ The following are **not** trading authority, readiness approval, evidence approv
 - CI shadow/paper smoke artifacts;
 - any future read-only preflight JSON emitted from this contract.
 
-Normative **lane IDs** and **authority levels** for all runtime/evidence surfaces are indexed in **[Runtime Lane Taxonomy + Authority Levels Contract v0](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md)**. That spec is **non-authorizing**; this contract remains the owner of §2a/§2b retention and preflight **BLOCKED** status.
+Normative **lane IDs** and **authority levels** for all runtime/evidence surfaces are indexed in **[Runtime Lane Taxonomy + Authority Levels Contract v0](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md)**. That spec is **non-authorizing**; this contract remains the owner of §2a/§2b/§2b.1 retention and preflight **BLOCKED** status.
 
 ## 3a. Futures / perpetual planning boundary (BTC/USD proxy evidence)
 
