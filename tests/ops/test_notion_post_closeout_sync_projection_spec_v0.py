@@ -177,3 +177,23 @@ def test_docs_truth_map_references_notion_projection_spec() -> None:
     text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
     assert "NOTION_POST_CLOSEOUT_SYNC_PROJECTION_SPEC_V0" in text or "6a.1" in text
     assert TAXONOMY_SPEC.name in text
+
+
+def test_post_closeout_charter_binds_notion_default_off_and_no_authority() -> None:
+    section = pc.taxonomy_section_6a08()
+    for marker in pc.POST_CLOSEOUT_PROJECTION_AUTOMATION_CHARTER_MARKERS:
+        assert marker in section
+    assert "NOTION_POST_CLOSEOUT_SYNC_V0" in section
+    assert "§6a.1" in section
+    notion_section = _section_6a1()
+    assert "NOTION_WRITE_DEFAULT=false" in notion_section
+    assert "after closeout" in notion_section.lower() or "post_closeout_sync" in notion_section
+    assert "manifest" in section.lower()
+
+
+def test_notion_projection_after_closeout_and_manifest_verify_only() -> None:
+    section = pc.taxonomy_section_6a08()
+    assert "PROJECTION_AFTER_CLOSEOUT_ONLY=true" in section
+    assert "PROJECTION_AFTER_MANIFEST_VERIFY_ONLY=true" in section
+    assert "NOTION_POST_CLOSEOUT_SYNC_ENABLED=false" in section
+    assert "NOTION_IS_PROJECTION_ONLY=true" in section

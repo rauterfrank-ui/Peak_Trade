@@ -16,6 +16,7 @@ Layout per archive:
 
 Shared helpers and canonical field constants for Registry v1 projection consumers:
 
+- Post-Closeout Projection Automation Charter (taxonomy §6a.0.8)
 - Notion post-closeout sync projection (taxonomy §6a.1)
 - Market Dashboard read-only run projection (taxonomy §6a.2)
 - Future S3 finalized-evidence export gate contract tests (metadata only; no S3 implementation)

@@ -81,6 +81,23 @@ REMOTE_RUNTIME_HOST_METADATA_CONTRACT_V0=true
 REMOTE_RUNTIME_IS_BACKEND_NOT_LANE=true
 REMOTE_RUNTIME_HOST_METADATA_DOCS_TESTS_ONLY=true
 S3_FINALIZED_EVIDENCE_TRANSPORT_ONLY=true
+POST_CLOSEOUT_PROJECTION_AUTOMATION_V0=true
+NOTION_POST_CLOSEOUT_SYNC_V0=true
+MARKET_DASHBOARD_READONLY_RUN_PROJECTION_V0=true
+POST_CLOSEOUT_PROJECTION_AUTOMATION_ENABLED=false
+NOTION_POST_CLOSEOUT_SYNC_ENABLED=false
+MARKET_DASHBOARD_RUN_PROJECTION_ENABLED=false
+RUNTIME_CONTROL_FROM_PROJECTION=false
+DASHBOARD_RUNTIME_CONTROL=false
+BROKER_EXCHANGE_AUTHORITY=false
+PROJECTION_AFTER_CLOSEOUT_ONLY=true
+PROJECTION_AFTER_MANIFEST_VERIFY_ONLY=true
+REPO_AND_DURABLE_EVIDENCE_REMAIN_CANONICAL=true
+NOTION_IS_PROJECTION_ONLY=true
+MARKET_DASHBOARD_IS_PROJECTION_ONLY=true
+NO_PARALLEL_MARKET_SURFACE=true
+NO_PARALLEL_NOTION_DB=true
+NO_PARALLEL_READMODEL=true
 NOTION_PROJECTION_NON_AUTHORIZING=true
 NOTION_POST_CLOSEOUT_SYNC_PROJECTION_SPEC_V0=true
 NOTION_WRITE_DEFAULT=false
@@ -154,6 +171,7 @@ Non-goals:
 | §2b.1 mandatory durable closeout | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.1 |
 | §2b.2 closeout enforcement planning | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.2 |
 | §6a.0.7 remote paper dry command template planning | This spec §6a.0.7 (planning-only; non-executable) |
+| §6a.0.8 post-closeout projection automation charter | This spec §6a.0.8 (docs/tests-only; binds §6a.1 / §6a.2 / Registry v1) |
 | Preflight BLOCKED status | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) |
 | GLB-014 / GLB-015 | [MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md](MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) |
 | Canary Live entry | [CANARY_LIVE_ENTRY_CRITERIA.md](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) |
@@ -1153,6 +1171,56 @@ NOTION_PROJECTION_NON_AUTHORIZING=true
 - Taxonomy `lane_id=notion` remains `navigation_only` / `planning_only` (§3).
 - `FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL` applies (§5).
 - Notion writes require an explicit operator post-closeout token; default `disabled`.
+
+### 6a.0.8 Post-Closeout Projection Automation Charter v0 (docs/tests-only)
+
+```
+POST_CLOSEOUT_PROJECTION_AUTOMATION_V0=true
+NOTION_POST_CLOSEOUT_SYNC_V0=true
+MARKET_DASHBOARD_READONLY_RUN_PROJECTION_V0=true
+POST_CLOSEOUT_PROJECTION_AUTOMATION_ENABLED=false
+NOTION_POST_CLOSEOUT_SYNC_ENABLED=false
+MARKET_DASHBOARD_RUN_PROJECTION_ENABLED=false
+NOTION_AUTHORITY=false
+MARKET_DASHBOARD_AUTHORITY=false
+RUNTIME_CONTROL_FROM_PROJECTION=false
+DASHBOARD_RUNTIME_CONTROL=false
+LIVE_AUTHORITY=false
+TESTNET_AUTHORITY=false
+BROKER_EXCHANGE_AUTHORITY=false
+PROJECTION_AFTER_CLOSEOUT_ONLY=true
+PROJECTION_AFTER_MANIFEST_VERIFY_ONLY=true
+REPO_AND_DURABLE_EVIDENCE_REMAIN_CANONICAL=true
+NOTION_IS_PROJECTION_ONLY=true
+MARKET_DASHBOARD_IS_PROJECTION_ONLY=true
+NO_PARALLEL_MARKET_SURFACE=true
+NO_PARALLEL_NOTION_DB=true
+NO_PARALLEL_READMODEL=true
+POST_CLOSEOUT_PROJECTION_AUTOMATION_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Bind **Notion post-closeout sync** (§6a.1), **Market Dashboard read-only run projection** (§6a.2), and the **shared Registry v1 projection feed** into one operator-facing automation charter — **without** enabling sync, dashboard overlays, payload builders, hooks, or runtime actions in this slice.
+
+**Normative chain (future automation may follow; default off):**
+
+1. Material closeout complete on durable evidence **outside `/tmp`** per Preflight §2b.1 (`PROJECTION_AFTER_CLOSEOUT_ONLY=true`).
+2. `MANIFEST.sha256` verify **RC=0** on the durable root before any projection consumer treats evidence as displayable (`PROJECTION_AFTER_MANIFEST_VERIFY_ONLY=true`).
+3. Build [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) JSON only — **sole feed**; do not walk `DURABLE_ARCHIVE_ROOT` ad hoc.
+4. Optional future consumers (Notion §6a.1, Dashboard §6a.2) remain **projection-only**; repo contracts, manifests, closeouts, and explicit operator approvals stay canonical (`REPO_AND_DURABLE_EVIDENCE_REMAIN_CANONICAL=true`).
+
+**Sub-contract owners (reuse; do not duplicate):**
+
+| Charter alias | Owner |
+|---|---|
+| `NOTION_POST_CLOSEOUT_SYNC_V0` | §6a.1 — `notion_projection` states; default `disabled`; operator token future-only |
+| `MARKET_DASHBOARD_READONLY_RUN_PROJECTION_V0` | §6a.2 — `market_dashboard_projection` states; `GET &#47;market` only; Double Play untouched |
+| Shared pointer/status fields | [projection_consumer_v0.py](../../../tests/fixtures/ops/generic_evidence_run_registry_v1/projection_consumer_v0.py) test constants aligned with Registry v1 `runs[]` / `compositions[]` |
+
+**Forbidden in v0 charter slice:** Notion MCP/API writes; new Notion DB schema as productive SSOT; dashboard HTML/template panels or new routes; payload-builder scripts; CI hooks that start runtime; S3/AWS/rclone upload or download; scheduler/daemon/adapter execution; workflow dispatch; Live/Testnet/broker/exchange authority; Master V2 / Double Play route or authority changes; parallel Market Surface, Notion DB, or readmodel SSOT (`NO_PARALLEL_*=true`).
+
+**Implementation posture:** `POST_CLOSEOUT_PROJECTION_AUTOMATION_ENABLED=false`, `NOTION_POST_CLOSEOUT_SYNC_ENABLED=false`, `MARKET_DASHBOARD_RUN_PROJECTION_ENABLED=false` until explicit future operator-chartered slices opt in. This section is **contract/tests-only** (`POST_CLOSEOUT_PROJECTION_AUTOMATION_DOCS_TESTS_ONLY=true`).
+
+Cross-reference: [MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md) (future registry overlay on `GET &#47;market`); [DOCS_TRUTH_MAP.md](../registry/DOCS_TRUTH_MAP.md); Preflight §2b.1 mandatory durable closeout.
 
 ### 6a.1 Notion post-closeout sync projection contract v0
 

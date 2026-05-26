@@ -43,6 +43,17 @@ This document is the **canonical Market Surface v0** owner for **`GET &#47;marke
 
 Dashboard ≠ Freigabe. Market Surface v0 is **review input only** for operators; it must not be read as trading authorization.
 
+### Post-Closeout Registry run projection (future, contract-only)
+
+Future **registry-derived run/evidence status** on **`GET &#47;market`** only (not **`GET &#47;market&#47;double-play`**) is governed by [Runtime Lane Taxonomy + Authority Levels Contract v0](../ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) **§6a.0.8** (Post-Closeout Projection Automation Charter), **§6a.2** (Market Dashboard read-only run projection), and Generic Evidence Run Registry v1 — **not** by a parallel Market Surface or readmodel SSOT.
+
+- **Source:** finalized/verified durable evidence → Registry v1 JSON (`build_generic_evidence_run_registry_v1.py`) → read-only projection payload fields only; **no** ad-hoc archive walks; **no** `/tmp`-only closeouts as canonical input.
+- **Default:** `MARKET_DASHBOARD_RUN_PROJECTION_ENABLED=false` / `market_dashboard_projection=disabled` until an explicit future operator-chartered slice opts in.
+- **Boundaries:** read-only display (readmodel/projection semantics only); **no** runtime control from projection paths (`RUNTIME_CONTROL_FROM_PROJECTION=false`, `DASHBOARD_RUNTIME_CONTROL=false`); **no** start/stop buttons, polling of active runtime, or scheduler clearance; **no** Testnet/Live/broker/exchange authority; **no** Double Play / Master V2 authority or route changes (`MARKET_DASHBOARD_DOUBLE_PLAY_TOUCHED=false` in §6a.2).
+- **Orthogonal:** existing OHLCV/depth/ranking SSR on this page remains unchanged; F5 futures display owner stays [Futures Read-only Market Dashboard Contract v0](../ops/specs/FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md).
+
+`MARKET_DASHBOARD_IS_PROJECTION_ONLY=true` — this surface must not be promoted to approval, gate clearance, or execution authority.
+
 ## Safety banner and stable markers
 
 Das HTML-Template für **`GET &#47;market`** rendert oberhalb der Chart-Fläche ein **sichtbares** Safety-Banner (**read-only**, **non-authorizing**) mit Quellen-spezifischem Kurztext (`source=dummy` \| `source=kraken`).

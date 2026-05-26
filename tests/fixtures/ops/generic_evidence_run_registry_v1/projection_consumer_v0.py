@@ -16,7 +16,38 @@ from typing import Any
 REGISTRY_V1_PROJECTION_CONSUMER_SMOKE_FIXTURES_V0 = True
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
+TAXONOMY_SPEC = (
+    REPO_ROOT / "docs" / "ops" / "specs" / "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md"
+)
 REGISTRY_SCRIPT = REPO_ROOT / "scripts" / "ops" / "build_generic_evidence_run_registry_v1.py"
+
+POST_CLOSEOUT_PROJECTION_AUTOMATION_CHARTER_MARKERS: tuple[str, ...] = (
+    "POST_CLOSEOUT_PROJECTION_AUTOMATION_V0=true",
+    "NOTION_POST_CLOSEOUT_SYNC_V0=true",
+    "MARKET_DASHBOARD_READONLY_RUN_PROJECTION_V0=true",
+    "POST_CLOSEOUT_PROJECTION_AUTOMATION_ENABLED=false",
+    "NOTION_POST_CLOSEOUT_SYNC_ENABLED=false",
+    "MARKET_DASHBOARD_RUN_PROJECTION_ENABLED=false",
+    "RUNTIME_CONTROL_FROM_PROJECTION=false",
+    "DASHBOARD_RUNTIME_CONTROL=false",
+    "BROKER_EXCHANGE_AUTHORITY=false",
+    "PROJECTION_AFTER_CLOSEOUT_ONLY=true",
+    "PROJECTION_AFTER_MANIFEST_VERIFY_ONLY=true",
+    "REPO_AND_DURABLE_EVIDENCE_REMAIN_CANONICAL=true",
+    "NOTION_IS_PROJECTION_ONLY=true",
+    "MARKET_DASHBOARD_IS_PROJECTION_ONLY=true",
+    "NO_PARALLEL_MARKET_SURFACE=true",
+    "NO_PARALLEL_NOTION_DB=true",
+    "NO_PARALLEL_READMODEL=true",
+)
+
+
+def taxonomy_section_6a08() -> str:
+    text = TAXONOMY_SPEC.read_text(encoding="utf-8")
+    return text.split(
+        "### 6a.0.8 Post-Closeout Projection Automation Charter v0 (docs/tests-only)", 1
+    )[1].split("### 6a.1 Notion post-closeout sync projection contract v0", 1)[0]
+
 
 # Canonical pointer/status fields for Registry v1 projection consumers (§6a.1 + §6a.2 aligned).
 ALLOWED_PROJECTION_FIELDS: tuple[str, ...] = (
