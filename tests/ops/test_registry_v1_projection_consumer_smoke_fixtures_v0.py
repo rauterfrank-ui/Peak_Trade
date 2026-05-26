@@ -39,7 +39,8 @@ AUTHORITY_MARKERS = (
 def _section_6a1() -> str:
     text = TAXONOMY_SPEC.read_text(encoding="utf-8")
     return text.split("### 6a.1 Notion post-closeout sync projection contract v0", 1)[1].split(
-        "### 6a.2 Market Dashboard read-only run projection contract v0", 1
+        "### 6a.1.1 Notion post-closeout dry-run writer planning contract v0 (planning-only)",
+        1,
     )[0]
 
 
@@ -52,6 +53,19 @@ def _section_6a2() -> str:
 
 def test_shared_fixture_module_marker() -> None:
     assert pc.REGISTRY_V1_PROJECTION_CONSUMER_SMOKE_FIXTURES_V0 is True
+
+
+def test_notion_dry_run_writer_planning_contract_present() -> None:
+    text = TAXONOMY_SPEC.read_text(encoding="utf-8")
+    assert (
+        "### 6a.1.1 Notion post-closeout dry-run writer planning contract v0 (planning-only)"
+        in text
+    )
+    section = pc.taxonomy_section_6a11()
+    for marker in pc.POST_CLOSEOUT_NOTION_DRY_RUN_WRITER_PLANNING_MARKERS:
+        assert marker in section
+    for field in pc.PLANNED_NOTION_DRY_RUN_OUTPUT_FIELDS:
+        assert field in section
 
 
 def test_payload_builder_planning_contract_present() -> None:
