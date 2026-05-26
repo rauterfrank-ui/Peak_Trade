@@ -271,7 +271,7 @@ CLOSEOUT_ENFORCEMENT_DOES_NOT_AUTHORIZE_RUNTIME=true
 
 | Tool / surface | Role today | Closeout completion? |
 |---|---|---|
-| [post_merge_closeout.sh](../../../scripts/governance/post_merge_closeout.sh) | Git sync to `origin/main`, optional PR branch cleanup, `safe_delete_merged_branches` dry-run | **`CLOSEOUT_ENFORCEMENT_POST_MERGE_CLOSEOUT_SH_NOT_COMPLETION=true`** — **not** §2b.1 durable copy/verify/index |
+| [post_merge_closeout.sh](../../../scripts/governance/post_merge_closeout.sh) | Git sync to `origin&#47;main`, optional PR branch cleanup, `safe_delete_merged_branches` dry-run | **`CLOSEOUT_ENFORCEMENT_POST_MERGE_CLOSEOUT_SH_NOT_COMPLETION=true`** — **not** §2b.1 durable copy/verify/index |
 | [append_closeout_index.py](../../../scripts/ops/append_closeout_index.py) | Appends JSONL under repo-local `out/ops/index_post_merge_closeouts.jsonl` (or `PT_CLOSEOUT_INDEX` override) | **`CLOSEOUT_ENFORCEMENT_APPEND_CLOSEOUT_INDEX_NOT_CANONICAL_ARCHIVE_INDEX=true`** — navigation aid only; **not** canonical durable archive index |
 | `{operator_home}&#47;Documents&#47;Peak_Trade_runtime_evidence_archive_*&#47;closeout&#47;` | Observed canonical durable closeout owner pattern (example archive id `20260520T161443Z`) | **Target owner** for material closeout bytes + manifest + durable index/pointer when §2b.1 complete |
 
@@ -286,7 +286,7 @@ Future material closeout enforcement must treat closeout as **incomplete** unles
 3. **`CLOSEOUT_ENFORCEMENT_REQUIRES_DURABLE_COPY_README=true`** — `DURABLE_COPY_README.md` in durable closeout directory.
 4. **`CLOSEOUT_ENFORCEMENT_REQUIRES_MANIFEST_SHA256=true`** — `MANIFEST.sha256` over durable closeout files.
 5. **`CLOSEOUT_ENFORCEMENT_REQUIRES_MANIFEST_VERIFY_RC_ZERO=true`** — manifest verify **RC=0** on durable tree (reuse `verify_manifest_sha256()` / `shasum -a 256 -c` semantics).
-6. **`CLOSEOUT_ENFORCEMENT_REQUIRES_DURABLE_INDEX_OR_POINTER=true`** — durable index markdown or pointer under archive `closeout/` root (not repo-local JSONL alone).
+6. **`CLOSEOUT_ENFORCEMENT_REQUIRES_DURABLE_INDEX_OR_POINTER=true`** — durable index markdown or pointer under archive `closeout&#47;` root (not repo-local JSONL alone).
 7. **`CLOSEOUT_ENFORCEMENT_SOURCE_TMP_NOT_CANONICAL=true`** — `/tmp` source may remain until operator deletes; it is **not** canonical and must not be deleted before verify passes.
 
 **Non-completion substitutes (explicit):**
