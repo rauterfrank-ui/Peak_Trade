@@ -43,14 +43,16 @@ This document is the **canonical Market Surface v0** owner for **`GET &#47;marke
 
 Dashboard ≠ Freigabe. Market Surface v0 is **review input only** for operators; it must not be read as trading authorization.
 
-### Post-Closeout Registry run projection (future, contract-only)
+### Post-Closeout Registry run projection (env-gated SSR v0)
 
-Future **registry-derived run/evidence status** on **`GET &#47;market`** only (not **`GET &#47;market&#47;double-play`**) is governed by [Runtime Lane Taxonomy + Authority Levels Contract v0](../ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) **§6a.0.8** (Post-Closeout Projection Automation Charter), **§6a.2** (Market Dashboard read-only run projection), and Generic Evidence Run Registry v1 — **not** by a parallel Market Surface or readmodel SSOT.
+**`GET &#47;market`** only (not **`GET &#47;market&#47;double-play`**) may render an env-gated **read-only** registry/run projection panel from operator-supplied Post-Closeout Projection Payload JSON plus Registry v1 JSON (via payload `registry_pointer`). Governed by [Runtime Lane Taxonomy + Authority Levels Contract v0](../ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) **§6a.0.8**, **§6a.2**, and Generic Evidence Run Registry v1 — **not** a new route, **not** a new `readmodel_id`, **not** a parallel Market Surface SSOT.
 
-- **Source:** finalized/verified durable evidence → Registry v1 JSON (`build_generic_evidence_run_registry_v1.py`) → read-only projection payload fields only; **no** ad-hoc archive walks; **no** `/tmp`-only closeouts as canonical input.
-- **Default:** `MARKET_DASHBOARD_RUN_PROJECTION_ENABLED=false` / `market_dashboard_projection=disabled` until an explicit future operator-chartered slice opts in.
-- **Boundaries:** read-only display (readmodel/projection semantics only); **no** runtime control from projection paths (`RUNTIME_CONTROL_FROM_PROJECTION=false`, `DASHBOARD_RUNTIME_CONTROL=false`); **no** start/stop buttons, polling of active runtime, or scheduler clearance; **no** Testnet/Live/broker/exchange authority; **no** Double Play / Master V2 authority or route changes (`MARKET_DASHBOARD_DOUBLE_PLAY_TOUCHED=false` in §6a.2).
-- **Orthogonal:** existing OHLCV/depth/ranking SSR on this page remains unchanged; F5 futures display owner stays [Futures Read-only Market Dashboard Contract v0](../ops/specs/FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md).
+- **Gate (default off):** `PEAK_TRADE_MARKET_RUN_PROJECTION_ENABLED=1` and `PEAK_TRADE_MARKET_RUN_PROJECTION_PAYLOAD_JSON=<path>` — implemented in `src/webui/market_surface.py` (`build_market_run_projection_display_context()`).
+- **Payload schema:** `peak_trade.post_closeout_projection_payload.v0` (offline builder: `scripts/ops/build_post_closeout_projection_payload_v0.py` — **not** invoked by this SSR path).
+- **Registry load:** read-only JSON at `registry_pointer` when `projection_ready=true` and `consumers.market_dashboard_projection_allowed=true` (Registry v1 from `scripts/ops/build_generic_evidence_run_registry_v1.py`); **no** archive walks; UI shows basename labels only (no full durable paths).
+- **Markers:** `data-market-v0-run-projection="true"`, `data-market-v0-run-projection-readonly="true"`, `data-market-v0-run-projection-authority="false"`, `data-market-v0-run-projection-enabled`, `data-market-v0-run-projection-ready`.
+- **Boundaries:** read-only SSR; **no** runtime control (`RUNTIME_CONTROL_FROM_PROJECTION=false`, `DASHBOARD_RUNTIME_CONTROL=false`); **no** Testnet/Live/broker/exchange authority; **no** Double Play template/route changes (`MARKET_DASHBOARD_DOUBLE_PLAY_TOUCHED=false`).
+- **Orthogonal:** OHLCV/depth/ranking SSR unchanged; F5 owner remains [Futures Read-only Market Dashboard Contract v0](../ops/specs/FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md).
 
 `MARKET_DASHBOARD_IS_PROJECTION_ONLY=true` — this surface must not be promoted to approval, gate clearance, or execution authority.
 
@@ -64,6 +66,7 @@ Stabile `data-*`‑Marker (Anker für Anzeige und automatisierte Tests — **kei
 - `data-market-non-authorizing="true"`
 - `data-market-safety-banner="true"`
 - `data-market-surface-v0="true"`
+- **Registry run projection SSR v0 (**`GET`** **`&#47;market`**, env-gated):** `data-market-v0-run-projection="true"`, `data-market-v0-run-projection-readonly="true"`, `data-market-v0-run-projection-authority="false"`, `data-market-v0-run-projection-enabled`, `data-market-v0-run-projection-ready` — **absent** when gate disabled; **never** on **`GET &#47;market&#47;double-play`**.
 - **Market Depth SSR v0 (**`GET`** **`&#47;market`**):** `data-market-depth-panel="true"`, `data-market-depth-status="<status>"` — bei Hilfs‑**HTTP 200** zeigt das Template **`display_status` `ok`**; sonst **`runtime_source_status`** aus Diagnose‑JSON (z. B. **`disabled`**, **`unconfigured`**, **`builder_error`**); optional `data-market-depth-readmodel-id`, `data-market-depth-summary`; **Darstellung/Test‑Anker**, **keine** operationalen Freigaben.
 - **`GET`** **`/market` · SSR Tiefen-Bundle-Provenienz (gleiche Region):** wenn das eingebettete Depth-Hilfstupel bereits **`generated_at_iso`**, **`stale`** / **`stale_reason`** (Fixture-/Diagnose‑Semantik) und ggf. Bundle-**`source`** liefert, rendert `/market` darunter einen **getrennten** Kurzblock **„Tiefen-Bundle-Provenienz“** (**nicht** der OHLC-**„Snapshot bei Seitenladen“** / **`generated_at_utc`**); Marker **`data-market-v0-depth-bundle-provenance-v0="true"`** plus **`data-market-v0-depth-bundle-stale`** — **display-only**.
 - **Embedded OHLCV payload snapshot time (`GET` `/market`):** sichtbarer Hinweis **„Snapshot bei Seitenladen“** mit dem gleichen Feld **`generated_at_utc`** wie im eingebetteten Market-Payload (und wie der JSON-Vertrag **`GET`** **`&#47;api&#47;market&#47;ohlcv`**); Marker **`data-market-v0-embedded-snapshot-generated-at-v0="true"`** — bezeichnet **SSR‑Zeitpunkt beim Seitenauftrag**, keine Live‑ oder Exchange‑**Freshness**‑Autorität.

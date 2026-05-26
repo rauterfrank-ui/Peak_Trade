@@ -14,7 +14,9 @@ Keine Orders, kein OPS-Cockpit-Bezug. Dummy-Quelle für Offline/CI; Kraken über
 from __future__ import annotations
 
 import importlib.util
+import json
 import logging
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Literal
@@ -35,6 +37,26 @@ MARKET_DEPTH_SSR_TOP_LEVELS = 8
 DEFAULT_SYMBOL = "BTC/USD"
 DEFAULT_TIMEFRAME = "1h"
 DEFAULT_LIMIT = 120
+
+MARKET_RUN_PROJECTION_ENABLED_ENV = "PEAK_TRADE_MARKET_RUN_PROJECTION_ENABLED"
+MARKET_RUN_PROJECTION_PAYLOAD_JSON_ENV = "PEAK_TRADE_MARKET_RUN_PROJECTION_PAYLOAD_JSON"
+PROJECTION_PAYLOAD_SCHEMA_V0 = "peak_trade.post_closeout_projection_payload.v0"
+REGISTRY_V1_SCHEMA = "peak_trade.generic_evidence_run_registry.v1"
+
+RUN_PROJECTION_REGISTRY_FIELDS: tuple[str, ...] = (
+    "run_id",
+    "lane_id",
+    "runtime_host",
+    "runtime_backend",
+    "runtime_mode",
+    "evidence_root_type",
+    "evidence_transport",
+    "evidence_status",
+    "review_verdict",
+    "manifest_verified",
+    "archive_path",
+    "market_dashboard_projection",
+)
 
 _dummy_loader_mod: Any = None
 
@@ -223,6 +245,201 @@ def dataframe_to_bars(df: pd.DataFrame) -> List[Dict[str, Any]]:
     return bars
 
 
+def _market_run_projection_env_enabled() -> bool:
+    return (os.getenv(MARKET_RUN_PROJECTION_ENABLED_ENV) or "").strip() == "1"
+
+
+def _pointer_basename(value: object) -> str:
+    if value is None:
+        return ""
+    text = str(value).strip()
+    if not text:
+        return ""
+    try:
+        return Path(text).name
+    except (TypeError, ValueError):
+        return "configured"
+
+
+def _truncate_display(value: object, *, max_len: int = 120) -> str:
+    if value is None:
+        return ""
+    text = str(value).strip()
+    if len(text) > max_len:
+        return f"{text[: max_len - 3]}..."
+    return text
+
+
+def _load_projection_payload_json(path: Path) -> tuple[Dict[str, Any] | None, str | None]:
+    if not path.is_file():
+        return None, "payload_missing"
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None, "payload_malformed"
+    if not isinstance(payload, dict):
+        return None, "payload_invalid_shape"
+    return payload, None
+
+
+def _load_registry_v1_json(path: Path) -> tuple[Dict[str, Any] | None, str | None]:
+    if not path.is_file():
+        return None, "registry_missing"
+    try:
+        registry = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None, "registry_malformed"
+    if not isinstance(registry, dict):
+        return None, "registry_invalid_shape"
+    if registry.get("schema") != REGISTRY_V1_SCHEMA:
+        return None, "registry_schema_unsupported"
+    return registry, None
+
+
+def _select_registry_run(registry: Dict[str, Any], run_id: str | None) -> Dict[str, Any] | None:
+    runs = registry.get("runs")
+    if not isinstance(runs, list) or not runs:
+        return None
+    if run_id:
+        for row in runs:
+            if isinstance(row, dict) and row.get("run_id") == run_id:
+                return row
+        return None
+    first = runs[0]
+    return first if isinstance(first, dict) else None
+
+
+def _registry_run_projection_subset(run: Dict[str, Any]) -> Dict[str, Any]:
+    subset: Dict[str, Any] = {}
+    for key in RUN_PROJECTION_REGISTRY_FIELDS:
+        if key not in run:
+            continue
+        value = run.get(key)
+        if key == "archive_path" and value is not None:
+            subset[key] = _pointer_basename(value)
+        else:
+            subset[key] = value
+    return subset
+
+
+def build_market_run_projection_display_context() -> Dict[str, Any]:
+    """SSR-only post-closeout registry projection panel for GET /market (env-gated, read-only)."""
+
+    base: Dict[str, Any] = {
+        "section_visible": False,
+        "gate_enabled": False,
+        "projection_ready": False,
+        "projection_blocked_reason": "",
+        "manifest_verify_rc": "",
+        "closeout_accepted": False,
+        "primary_evidence_finalized": False,
+        "repo_commit": "",
+        "s3_export_status": "",
+        "download_verify_rc": "",
+        "run_id": "",
+        "payload_generated_at_utc": "",
+        "dashboard_projection_allowed": False,
+        "registry_configured_label": "",
+        "closeout_configured_label": "",
+        "registry_generated_at_utc": "",
+        "registry_verdict": "",
+        "registry_run_count": 0,
+        "registry_run": {},
+        "status": "disabled",
+    }
+
+    if not _market_run_projection_env_enabled():
+        return base
+
+    base["gate_enabled"] = True
+    payload_path_raw = (os.getenv(MARKET_RUN_PROJECTION_PAYLOAD_JSON_ENV) or "").strip()
+    if not payload_path_raw:
+        base["status"] = "unconfigured"
+        return base
+
+    payload_path = Path(payload_path_raw).expanduser()
+    payload, load_err = _load_projection_payload_json(payload_path)
+    if load_err or payload is None:
+        base["section_visible"] = True
+        base["status"] = load_err or "payload_malformed"
+        base["projection_blocked_reason"] = load_err or "payload_malformed"
+        return base
+
+    if payload.get("schema_version") != PROJECTION_PAYLOAD_SCHEMA_V0:
+        base["section_visible"] = True
+        base["status"] = "payload_schema_unsupported"
+        base["projection_blocked_reason"] = "payload_schema_unsupported"
+        return base
+
+    base["section_visible"] = True
+    base["status"] = "loaded"
+    base["run_id"] = _truncate_display(payload.get("run_id"))
+    base["payload_generated_at_utc"] = _truncate_display(payload.get("generated_at_utc"))
+    base["projection_ready"] = payload.get("projection_ready") is True
+    blocked = payload.get("projection_blocked_reason")
+    base["projection_blocked_reason"] = _truncate_display(blocked) if blocked else ""
+    manifest_rc = payload.get("manifest_verify_rc")
+    base["manifest_verify_rc"] = "" if manifest_rc is None else _truncate_display(manifest_rc)
+    base["closeout_accepted"] = payload.get("closeout_accepted") is True
+    base["primary_evidence_finalized"] = payload.get("primary_evidence_finalized") is True
+    base["repo_commit"] = _truncate_display(payload.get("repo_commit"), max_len=40)
+    base["s3_export_status"] = _truncate_display(payload.get("s3_export_status"), max_len=40)
+    download_rc = payload.get("download_verify_rc")
+    base["download_verify_rc"] = "" if download_rc is None else _truncate_display(download_rc)
+
+    base["registry_configured_label"] = _pointer_basename(payload.get("registry_pointer"))
+    base["closeout_configured_label"] = _pointer_basename(payload.get("closeout_pointer"))
+
+    consumers = payload.get("consumers")
+    if isinstance(consumers, dict):
+        base["dashboard_projection_allowed"] = (
+            consumers.get("market_dashboard_projection_allowed") is True
+        )
+
+    if not base["projection_ready"]:
+        base["status"] = "blocked"
+        return base
+
+    if not base["dashboard_projection_allowed"]:
+        base["projection_ready"] = False
+        base["status"] = "consumer_not_allowed"
+        base["projection_blocked_reason"] = base["projection_blocked_reason"] or (
+            "market_dashboard_projection_not_allowed"
+        )
+        return base
+
+    registry_pointer = payload.get("registry_pointer")
+    if not registry_pointer:
+        base["status"] = "registry_pointer_missing"
+        base["projection_blocked_reason"] = "registry_pointer_missing"
+        base["projection_ready"] = False
+        return base
+
+    registry_path = Path(str(registry_pointer)).expanduser()
+    registry, reg_err = _load_registry_v1_json(registry_path)
+    if reg_err or registry is None:
+        base["status"] = reg_err or "registry_unavailable"
+        base["projection_blocked_reason"] = reg_err or "registry_unavailable"
+        base["projection_ready"] = False
+        return base
+
+    base["registry_generated_at_utc"] = _truncate_display(registry.get("generated_at_utc"))
+    base["registry_verdict"] = _truncate_display(registry.get("verdict"), max_len=80)
+    runs = registry.get("runs")
+    base["registry_run_count"] = len(runs) if isinstance(runs, list) else 0
+
+    run = _select_registry_run(registry, payload.get("run_id"))
+    if run is None:
+        base["status"] = "registry_run_not_found"
+        base["projection_blocked_reason"] = "registry_run_not_found"
+        base["projection_ready"] = False
+        return base
+
+    base["registry_run"] = _registry_run_projection_subset(run)
+    base["status"] = "ready"
+    return base
+
+
 def build_market_depth_display_context() -> Dict[str, Any]:
     """SSR-only snapshot for templates: tuple from helper, unchanged semantics."""
 
@@ -344,6 +561,7 @@ def create_market_router(
         payload = build_market_payload(symbol=symbol, timeframe=timeframe, limit=limit, source=src)
         proj_status = get_project_status()
         market_depth = build_market_depth_display_context()
+        run_projection = build_market_run_projection_display_context()
         return templates.TemplateResponse(
             request,
             "market_v0.html",
@@ -351,6 +569,7 @@ def create_market_router(
                 "status": proj_status,
                 "payload": payload,
                 "market_depth": market_depth,
+                "run_projection": run_projection,
                 "query": {
                     "symbol": symbol,
                     "timeframe": timeframe,

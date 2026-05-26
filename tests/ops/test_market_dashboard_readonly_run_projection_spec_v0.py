@@ -230,7 +230,10 @@ def test_market_surface_documents_post_closeout_registry_projection_crosslink() 
     text = MARKET_SURFACE.read_text(encoding="utf-8")
     assert "Post-Closeout Registry run projection" in text
     assert "§6a.0.8" in text
-    assert "MARKET_DASHBOARD_RUN_PROJECTION_ENABLED=false" in text
+    assert "PEAK_TRADE_MARKET_RUN_PROJECTION_ENABLED" in text
+    assert "PEAK_TRADE_MARKET_RUN_PROJECTION_PAYLOAD_JSON" in text
+    assert "data-market-v0-run-projection" in text
+    assert "build_market_run_projection_display_context" in text
     assert "MARKET_DASHBOARD_IS_PROJECTION_ONLY=true" in text
     assert "RUNTIME_CONTROL_FROM_PROJECTION=false" in text
     assert "DASHBOARD_RUNTIME_CONTROL=false" in text
@@ -238,3 +241,4 @@ def test_market_surface_documents_post_closeout_registry_projection_crosslink() 
     assert "build_generic_evidence_run_registry_v1.py" in text
     assert "parallel Market Surface" in text
     assert "MARKET_DASHBOARD_DOUBLE_PLAY_TOUCHED=false" in text
+    assert "no new `readmodel_id`" in text or "not** a new `readmodel_id`" in text
