@@ -250,6 +250,8 @@ Future **remote Paper-only** command/metadata/gate shape (non-executing; no runt
 
 Future **remote Paper-only** non-executable approval/command packet (binds §6a.0.1 preflight JSON + guard/HOLD/approval/Registry/§2a/§2b.1 pointers; no runner/start unlock): taxonomy **§6a.0.2 Remote paper approval/command packet contract v0** — `REMOTE_PAPER_PACKET_READY_FOR_START=false`; extends bounded adapter approval chain only; **does not** authorize remote runner implementation or start.
 
+Future **remote host inventory** planning-only fields (non-provisioning; no connect/network/AWS/SSH/systemd/GHA; no runtime unlock): taxonomy **§6a.0.3 Remote host inventory planning contract v0** — `REMOTE_HOST_INVENTORY_PLANNING_ONLY=true`; `REMOTE_HOST_INVENTORY_READY_FOR_IMPLEMENTATION_CHARTER=false`; binds §6a.0–§6a.0.2 + Registry + §2a/§2b.1; **does not** provision, inspect, or authorize hosts.
+
 ## 3a. Futures / perpetual planning boundary (BTC/USD proxy evidence)
 
 Symbols and surfaces such as **BTC/USD**, **BTC-USD**, **Bitcoin USD**, or **BTCUSDT** may appear in this repository as WebUI defaults, spot-style fixtures, Class-A smoke paths, or **public REST market-data captures**. Treat that evidence as **technical proxy / spot-smoke instrumentation only**.
