@@ -65,7 +65,7 @@ def test_payload_builder_planning_contract_present() -> None:
     assert "projection_ready=false" in section.lower()
     assert "build_post_closeout_projection_payload_v0" in section
     builder_script = REPO_ROOT / "scripts" / "ops" / "build_post_closeout_projection_payload_v0.py"
-    assert not builder_script.is_file()
+    assert builder_script.is_file()
     assert pc.REGISTRY_V1_PROJECTION_CONSUMER_SMOKE_FIXTURES_V0 is True
 
 
