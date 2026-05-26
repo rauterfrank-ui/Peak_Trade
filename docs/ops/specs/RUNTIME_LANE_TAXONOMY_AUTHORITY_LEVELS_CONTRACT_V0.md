@@ -113,6 +113,8 @@ SHA256SUMS_STABLE_PARALLEL_TRUTH_FORBIDDEN=true
 EVIDENCE_TRANSPORT_DEFAULT=local_only
 REMOTE_RUNTIME_V0_LIVE_AUTHORITY=false
 REMOTE_RUNTIME_V0_TESTNET_AUTHORITY=false
+REMOTE_RUNTIME_COMMAND_CONTRACT_V0=true
+REMOTE_RUNTIME_COMMAND_CONTRACT_DOCS_TESTS_ONLY=true
 COMBINED_OUTROOT_COMPOSITION_INDEX_V0=true
 COMPOSITION_INDEX_IS_NOT_LANE=true
 LANE_ID_DAEMON_PAPER_24H_FORBIDDEN=true
@@ -316,6 +318,135 @@ These fields are **metadata only**. They do **not** authorize runtime, clear HOL
 - `runtime_host=remote` changes **host placement only**; `lane_id` remains `paper`, `shadow`, or `testnet`.
 - Remote execution must reuse existing bounded adapters ([run_paper_only_bounded_observation_adapter_v0.py](../../../scripts/ops/run_paper_only_bounded_observation_adapter_v0.py), [run_shadow_bounded_observation_adapter_v0.py](../../../scripts/ops/run_shadow_bounded_observation_adapter_v0.py)) and scheduler hard-block contracts (§7).
 - [REAL_MARKET_247_RUNTIME_ARCHITECTURE_V1.md](REAL_MARKET_247_RUNTIME_ARCHITECTURE_V1.md) Class B (durable daemon) is **host/backend planning** atop the same gates — not a separate authority surface.
+
+### 6a.0 Remote Runtime Command Contract v0 (paper-only command shape, non-executing)
+
+```
+REMOTE_RUNTIME_COMMAND_CONTRACT_V0=true
+REMOTE_RUNTIME_COMMAND_CONTRACT_DOCS_TESTS_ONLY=true
+REMOTE_RUNTIME_IS_BACKEND_NOT_LANE=true
+LANE_ID_REMOTE_RUNTIME_FORBIDDEN=true
+REMOTE_RUNTIME_V0_PAPER_ONLY=true
+REMOTE_RUNTIME_V0_TESTNET_AUTHORITY=false
+REMOTE_RUNTIME_V0_LIVE_AUTHORITY=false
+REMOTE_RUNTIME_V0_BROKER_CREDENTIALS_FORBIDDEN=true
+REMOTE_RUNTIME_V0_REQUIRES_MAX_RUNTIME_SECONDS=true
+REMOTE_RUNTIME_V0_REQUIRES_REMOTE_RUN_ID=true
+REMOTE_RUNTIME_V0_REQUIRES_REMOTE_DURABLE_EVIDENCE_ROOT=true
+REMOTE_RUNTIME_V0_REQUIRES_MANIFEST_SHA256=true
+REMOTE_RUNTIME_V0_REQUIRES_MANIFEST_VERIFY_RC_ZERO=true
+REMOTE_RUNTIME_V0_REQUIRES_MANDATORY_DURABLE_CLOSEOUT=true
+REMOTE_RUNTIME_V0_REUSES_SCHEDULER_BOUNDARY_GUARD=true
+REMOTE_RUNTIME_V0_REUSES_HOLD_BINDING=true
+REMOTE_RUNTIME_V0_REUSES_REGISTRY_V1=true
+REMOTE_RUNTIME_V0_S3_AFTER_FINALIZE_ONLY=true
+REMOTE_RUNTIME_V0_NOTION_PROJECTION_ONLY=true
+REMOTE_RUNTIME_V0_MARKET_DASHBOARD_PROJECTION_ONLY=true
+REMOTE_RUNTIME_V0_NO_REMOTE_RUNNER_IMPLEMENTATION=true
+REMOTE_RUNTIME_V0_NO_AWS_RCLONE_NETWORK_EXECUTION=true
+TMP_ONLY_EVIDENCE_INVALID=true
+EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
+```
+
+**Purpose:** Define the **normative command / metadata / gate shape** for future laptop-independent **remote Paper-only** execution — **without** implementing a remote runner, AWS host, systemd unit, GHA runner, SSH command, network action, or scheduler start in this slice.
+
+**Normative rule:** Remote Runtime remains **backend metadata** for existing bounded lanes (§6a above). This contract describes the **future command contract fields and gate chain** only; it **does not** execute, deploy, or authorize runtime.
+
+#### Allowed v0 lane and forbidden surfaces
+
+| Surface | v0 posture |
+|---|---|
+| `lane_id=paper` | **Only** allowed bounded lane for first remote runtime command contract |
+| `lane_id=shadow` | **Forbidden by default** in v0 remote command contract (defer to later stage) |
+| `lane_id=testnet` | **Forbidden** — `REMOTE_RUNTIME_V0_TESTNET_AUTHORITY=false` |
+| `lane_id=remote_runtime` | **Forbidden** — `LANE_ID_REMOTE_RUNTIME_FORBIDDEN=true` |
+| `lane_id=daemon_paper_24h` | **Forbidden as lane** — composition wrapper only (§6b); not a runtime lane |
+| Live / broker / exchange | **Forbidden** — `REMOTE_RUNTIME_V0_LIVE_AUTHORITY=false`; `REMOTE_RUNTIME_V0_BROKER_CREDENTIALS_FORBIDDEN=true` |
+| AWS / rclone / S3 upload / network | **Forbidden in command contract** — `REMOTE_RUNTIME_V0_NO_AWS_RCLONE_NETWORK_EXECUTION=true` |
+
+#### Required command / metadata fields (future remote paper-only)
+
+These fields document the **future non-executing command contract shape** for operator planning and Registry v1 row metadata. They **do not** authorize runtime when present alone.
+
+| Field | Required (v0) | Allowed values (v0) |
+|---|---|---|
+| `lane_id` | yes | `paper` only |
+| `runtime_host` | yes | `remote` |
+| `runtime_backend` | yes | `ec2` \| `vps` \| `gha_runner` \| `data_node` |
+| `runtime_mode` | yes | `paper_only` |
+| `remote_run_id` | yes | opaque run identifier (same semantics as bounded `run_id`) |
+| `max_runtime_seconds` | yes | positive bounded wall-clock cap |
+| `evidence_root_type` | yes | `remote_durable` |
+| `evidence_transport` | yes | `local_only` \| `s3_export_after_finalize` (planning metadata only until finalize) |
+| `live_authority` | yes | `false` only |
+| `testnet_authority` | yes | `false` only |
+
+When `evidence_transport=s3_export_after_finalize` appears in planning metadata, operators must use [preflight_s3_finalized_evidence_export_v0.py](../../../scripts/ops/preflight_s3_finalized_evidence_export_v0.py) with `--export-prefix-plan` **after** finalize — prefix-plan is **non-executing**; upload does **not** authorize runtime (§6a.3).
+
+#### Required gate chain (all must hold before any future remote paper execution)
+
+Future remote paper execution **must reuse** the same canonical gate chain as local bounded runs — **no bypass**, **no parallel scheduler authority**:
+
+1. [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — preflight posture (default **BLOCKED** unchanged by this contract).
+2. [SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md) + [scheduler_start_boundary_guard_v0.py](../../../scripts/ops/scheduler_start_boundary_guard_v0.py) — `REMOTE_RUNTIME_V0_REUSES_SCHEDULER_BOUNDARY_GUARD=true`.
+3. [paper_shadow_247_scheduler_hold_runtime_binding_v0.py](../../../scripts/ops/paper_shadow_247_scheduler_hold_runtime_binding_v0.py) — RUN_ID-scoped HOLD binding when scheduler subprocess is in scope — `REMOTE_RUNTIME_V0_REUSES_HOLD_BINDING=true`.
+4. Bounded adapter approval record — same Stage-3 executing approval chain as local paper bounded observation (reuse [run_paper_only_bounded_observation_adapter_v0.py](../../../scripts/ops/run_paper_only_bounded_observation_adapter_v0.py); no new approval surface).
+5. Preflight §2a / §2a.1 primary evidence — [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py); durable root outside `/tmp`; `MANIFEST.sha256` RC=0.
+6. Preflight §2b.1 mandatory durable closeout — material closeout complete on durable archive; `/tmp`-only remote evidence **`TMP_ONLY_EVIDENCE_INVALID`**.
+7. [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) — Registry v1 metadata row with §6a fields — `REMOTE_RUNTIME_V0_REUSES_REGISTRY_V1=true`.
+8. Local S3 preflight + prefix-plan — **only if** S3 transport is planned post-finalize (§6a.3 / §6a.3.1); dry-run only in v0.
+
+#### Required output / evidence semantics (remote durable root)
+
+All of the following are **required** before treating a remote paper run as complete:
+
+- Durable evidence root **outside `/tmp`** on the remote host (`REMOTE_RUNTIME_V0_REQUIRES_REMOTE_DURABLE_EVIDENCE_ROOT=true`).
+- `MANIFEST.sha256` present (`REMOTE_RUNTIME_V0_REQUIRES_MANIFEST_SHA256=true`).
+- Manifest verify **RC=0** (`REMOTE_RUNTIME_V0_REQUIRES_MANIFEST_VERIFY_RC_ZERO=true`).
+- Closeout marker present per §2a.1 (shared helper `KNOWN_CLOSEOUT_FILENAMES` / review closeout semantics).
+- Material closeout §2b.1 complete when used as merge/operator evidence (`REMOTE_RUNTIME_V0_REQUIRES_MANDATORY_DURABLE_CLOSEOUT=true`).
+- `/tmp`-only remote artifacts remain **invalid** regardless of exit code.
+
+Remote host placement **does not** relax manifest, closeout, or preflight rules.
+
+#### Forbidden parallel builds (normative)
+
+- Second scheduler authority — forbidden; reuse §7 shared guard only.
+- Second evidence root standard — forbidden; `MANIFEST.sha256` via `primary_evidence_retention_v0.py` only.
+- Second closeout index standard — forbidden; §2b.1 durable archive owner remains canonical.
+- S3 as runtime or approval — forbidden; `S3_AUTHORITY=false` (§6a.3).
+- Notion as source of truth — forbidden; Registry v1 sole feed (§6a.1); `REMOTE_RUNTIME_V0_NOTION_PROJECTION_ONLY=true`.
+- Dashboard as runtime / testnet / live authority — forbidden (§6a.2); `REMOTE_RUNTIME_V0_MARKET_DASHBOARD_PROJECTION_ONLY=true`.
+- Remote host with live/testnet credentials in v0 — forbidden.
+- Remote runner bypassing existing gates — forbidden.
+
+#### Notion and Market Dashboard (projection-only in this contract)
+
+- Notion: §6a.1 — post-closeout sync only; `NOTION_WRITE_DEFAULT=false`; no writes in this contract slice.
+- Market Dashboard: §6a.2 — read-only Registry v1 projection; no runtime actions; `GET /market/double-play` untouched.
+
+#### S3 (after-finalize-only)
+
+```
+REMOTE_RUNTIME_V0_S3_AFTER_FINALIZE_ONLY=true
+S3_UPLOAD_BEFORE_FINALIZE_FORBIDDEN=true
+DOWNLOAD_VERIFY_REQUIRED_BEFORE_CLOSEOUT_ACCEPTANCE=true
+```
+
+- Export prefix-plan from `preflight_s3_finalized_evidence_export_v0.py` is **planning-only** and **non-executing**.
+- Upload success does **not** authorize runtime or closeout acceptance.
+- Consumer download + `MANIFEST.sha256` verify RC=0 required before accepting remote object copies (§6a.3).
+
+#### Implementation posture (this slice)
+
+```
+REMOTE_RUNTIME_V0_NO_REMOTE_RUNNER_IMPLEMENTATION=true
+REMOTE_RUNTIME_V0_NO_AWS_RCLONE_NETWORK_EXECUTION=true
+```
+
+This contract is **static / normative only** (`REMOTE_RUNTIME_COMMAND_CONTRACT_DOCS_TESTS_ONLY=true`). It **does not** ship an execution script, remote command implementation, AWS/GHA/systemd/SSH wiring, or scheduler start path.
+
+Cross-reference: [REAL_MARKET_247_RUNTIME_ARCHITECTURE_V1.md](REAL_MARKET_247_RUNTIME_ARCHITECTURE_V1.md) Class A scheduled evidence before Class B daemon; composition-index §6b for deferred `paper_then_shadow`.
 
 ### S3 / Object Storage — finalized evidence transport only
 
