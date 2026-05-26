@@ -119,6 +119,8 @@ REMOTE_RUNTIME_RUNNER_PREFLIGHT_V0=true
 REMOTE_RUNTIME_RUNNER_PREFLIGHT_DOCS_TESTS_ONLY=true
 REMOTE_PAPER_APPROVAL_COMMAND_PACKET_CONTRACT_V0=true
 REMOTE_PAPER_APPROVAL_COMMAND_PACKET_DOCS_TESTS_ONLY=true
+REMOTE_HOST_INVENTORY_PLANNING_CONTRACT_V0=true
+REMOTE_HOST_INVENTORY_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true
 COMBINED_OUTROOT_COMPOSITION_INDEX_V0=true
 COMPOSITION_INDEX_IS_NOT_LANE=true
 LANE_ID_DAEMON_PAPER_24H_FORBIDDEN=true
@@ -589,6 +591,119 @@ Future operator tooling may emit a packet summary JSON or markdown footer with:
 This contract is **static / normative only** (`REMOTE_PAPER_APPROVAL_COMMAND_PACKET_DOCS_TESTS_ONLY=true`). It **does not** ship packet assembly CLI, runner implementation, dry command template, AWS/GHA/systemd/SSH wiring, or scheduler start path.
 
 Cross-reference: §6a.0 command shape; §6a.0.1 local preflight; §6a.3/§6a.3.1 S3 after-finalize; Preflight §2a/§2b.1; composition-index §6b (orthogonal; `daemon_paper_24h` is not a runtime lane).
+
+#### 6a.0.3 Remote host inventory planning contract v0 (planning-only)
+
+```
+REMOTE_HOST_INVENTORY_PLANNING_CONTRACT_V0=true
+REMOTE_HOST_INVENTORY_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true
+REMOTE_HOST_INVENTORY_PLANNING_ONLY=true
+REMOTE_HOST_INVENTORY_DO_NOT_PROVISION=true
+REMOTE_HOST_INVENTORY_DO_NOT_CONNECT=true
+REMOTE_HOST_INVENTORY_NO_AWS_CLI=true
+REMOTE_HOST_INVENTORY_NO_SSH=true
+REMOTE_HOST_INVENTORY_NO_SYSTEMD=true
+REMOTE_HOST_INVENTORY_NO_GHA_RUNNER=true
+REMOTE_HOST_INVENTORY_NO_NETWORK=true
+REMOTE_HOST_INVENTORY_NOT_APPROVAL=true
+REMOTE_HOST_INVENTORY_NOT_RUNTIME_START=true
+REMOTE_HOST_INVENTORY_NOT_CREDENTIAL_GRANT=true
+REMOTE_HOST_INVENTORY_NOT_TESTNET_OR_LIVE_GATE=true
+REMOTE_HOST_INVENTORY_REQUIRES_REMOTE_DURABLE_ROOT_CONVENTION=true
+REMOTE_HOST_INVENTORY_REQUIRES_COST_CEILING=true
+REMOTE_HOST_INVENTORY_REQUIRES_STOP_PROCEDURE=true
+REMOTE_HOST_INVENTORY_REQUIRES_ORPHAN_DETECTION=true
+REMOTE_HOST_INVENTORY_REQUIRES_TEARDOWN_OWNER=true
+REMOTE_HOST_INVENTORY_FORBIDS_REAL_IPS=true
+REMOTE_HOST_INVENTORY_FORBIDS_CREDENTIALS=true
+REMOTE_HOST_INVENTORY_FORBIDS_ACCOUNT_IDS=true
+REMOTE_HOST_INVENTORY_FORBIDS_PROVIDER_INSTANCE_IDS=true
+REMOTE_HOST_INVENTORY_FORBIDS_SSH_USERNAMES_KEYS=true
+REMOTE_HOST_INVENTORY_FORBIDS_REAL_BUCKET_NAMES=true
+REMOTE_HOST_INVENTORY_PAPER_ONLY=true
+REMOTE_HOST_INVENTORY_LIVE_AUTHORITY=false
+REMOTE_HOST_INVENTORY_TESTNET_AUTHORITY=false
+```
+
+**Purpose:** Define **non-authorizing** remote host inventory fields and ownership boundaries required **before** any future Remote Paper-only **implementation charter** can be considered — **without** provisioning, inspecting, connecting to, or managing any host, cloud account, network endpoint, or credential store.
+
+**Normative rule:** Inventory rows are **planning metadata only** (`REMOTE_HOST_INVENTORY_PLANNING_ONLY=true`). They **extend** §6a host metadata and bind to §6a.0 / §6a.0.1 / §6a.0.2 — they **do not** approve runtime, grant credentials, clear Preflight **BLOCKED**, or substitute for bounded adapter approval.
+
+**Fixture owner (non-authorizing):** [remote_host_inventory_planning_v0.json](../../../tests/fixtures/ops/remote_host_inventory_planning_v0.json) — fake planning-only example; **does not** describe a live resource.
+
+#### Required inventory fields (v0)
+
+| Field | Required value / rule |
+|---|---|
+| `remote_host_id` | Planning-only synthetic id (e.g. `planning_host_<slug>`); **not** a cloud provider instance id |
+| `runtime_backend` | `ec2` \| `vps` \| `gha_runner` \| `data_node` |
+| `host_owner` | Named operator/team responsible for host lifecycle planning |
+| `operator_owner` | Named operator responsible for run/evidence planning |
+| `environment_class` | **`planning_only`** only in v0 |
+| `remote_durable_root_convention` | Path convention outside `/tmp` on remote host (template, not live path) |
+| `log_root_convention` | Non-authorizing log path convention |
+| `closeout_root_convention` | Aligns with Preflight §2b.1 durable closeout owner pattern |
+| `registry_v1_pointer` | Pointer to Registry v1 row / builder contract |
+| `credential_boundary` | Pointer to [RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md](../runbooks/RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md) |
+| `secrets_present` | **`false`** in v0 planning rows |
+| `broker_credentials_present` | **`false`** |
+| `exchange_credentials_present` | **`false`** |
+| `live_authority` | **`false`** |
+| `testnet_authority` | **`false`** |
+| `paper_only` | **`true`** |
+| `max_instance_lifetime_required` | **`true`** — bounded lifetime must be declared before charter |
+| `max_runtime_seconds_required` | **`true`** — aligns with §6a.0 |
+| `cost_ceiling_required` | **`true`** — operator-declared planning ceiling (no billing API) |
+| `stop_procedure_required` | **`true`** — named stop owner + procedure reference |
+| `orphan_detection_required` | **`true`** — orphan resource detection owner required |
+| `teardown_owner_required` | **`true`** — named teardown owner before charter |
+
+#### Required contract bindings (reuse-only)
+
+Inventory rows **must** cross-reference (pointer-only):
+
+1. §6a.0 Remote Runtime Command Contract — backend-not-lane; `lane_id=paper` only.
+2. §6a.0.1 Local Remote Runner Preflight — dry CLI shape validation.
+3. §6a.0.2 Remote-Paper Approval/Command-Packet — non-executable packet pointers.
+4. Preflight §2a / §2a.1 — [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py).
+5. Preflight §2b.1 — mandatory durable closeout.
+6. Registry v1 — [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) §6a metadata defaults.
+7. S3 prefix-plan (optional) — [preflight_s3_finalized_evidence_export_v0.py](../../../scripts/ops/preflight_s3_finalized_evidence_export_v0.py) **only** as non-executing transport plan when `evidence_transport=s3_export_after_finalize_plan`; upload does **not** authorize runtime (§6a.3).
+
+#### Forbidden inventory content (fail-closed)
+
+| Forbidden in v0 planning rows | Marker |
+|---|---|
+| Cloud provider instance ids implying live discovery | `REMOTE_HOST_INVENTORY_FORBIDS_PROVIDER_INSTANCE_IDS=true` |
+| AWS/cloud account ids | `REMOTE_HOST_INVENTORY_FORBIDS_ACCOUNT_IDS=true` |
+| IP addresses / hostnames resolving to live endpoints | `REMOTE_HOST_INVENTORY_FORBIDS_REAL_IPS=true` |
+| SSH usernames, keys, fingerprints | `REMOTE_HOST_INVENTORY_FORBIDS_SSH_USERNAMES_KEYS=true` |
+| Credentials, API keys, tokens, secrets | `REMOTE_HOST_INVENTORY_FORBIDS_CREDENTIALS=true` |
+| Real S3 bucket names or transport endpoints | `REMOTE_HOST_INVENTORY_FORBIDS_REAL_BUCKET_NAMES=true` |
+| Regions requiring provider API interaction | forbidden in v0 fixture/docs examples |
+| Start/stop/provision/connect commands | `REMOTE_HOST_INVENTORY_DO_NOT_PROVISION=true`; `REMOTE_HOST_INVENTORY_DO_NOT_CONNECT=true` |
+
+#### Non-authorizing posture (required machine lines)
+
+Future operator tooling may emit inventory summary rows with:
+
+| Line | Allowed values (v0) |
+|---|---|
+| `REMOTE_HOST_INVENTORY_STATUS` | `planning_only` \| `blocked` \| `invalid` |
+| `REMOTE_HOST_INVENTORY_READY_FOR_IMPLEMENTATION_CHARTER` | `false` always in v0 |
+| `REMOTE_HOST_INVENTORY_PROVISIONED` | **`false`** |
+| `REMOTE_HOST_INVENTORY_CONNECTED` | **`false`** |
+| `REMOTE_HOST_INVENTORY_NETWORK_CALLED` | **`false`** |
+| `REMOTE_HOST_INVENTORY_AWS_CLI_CALLED` | **`false`** |
+| `REMOTE_HOST_INVENTORY_SSH_CALLED` | **`false`** |
+| `REMOTE_HOST_INVENTORY_SYSTEMD_CALLED` | **`false`** |
+| `REMOTE_HOST_INVENTORY_GHA_RUNNER_IMPLEMENTED` | **`false`** |
+
+#### Implementation posture (this slice)
+
+This contract is **static / normative only** (`REMOTE_HOST_INVENTORY_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true`). It **does not** ship inventory CLI, cloud discovery, provisioning scripts, SSH/systemd/GHA wiring, runner implementation, or dry command templates.
+
+Cross-reference: §6a Remote Runtime Host Metadata; §6a.0–§6a.0.2 remote paper chain; credential boundaries runbook; composition-index §6b orthogonal.
 
 ### S3 / Object Storage — finalized evidence transport only
 
