@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import subprocess
 import sys
 from pathlib import Path
 from unittest import mock
@@ -155,31 +154,24 @@ def test_active_staging_sync_marker_blocks(mod, durable_root: Path) -> None:
     assert "active_staging_sync_forbidden" in result["reasons"]
 
 
-def test_cli_main_eligible_exit_zero(durable_root: Path, tmp_path: Path) -> None:
-    import os
-
+def test_cli_main_eligible_exit_zero(mod, durable_root: Path, tmp_path: Path) -> None:
     out = tmp_path / "result.json"
-    env = {**os.environ, "PYTHONPATH": str(REPO_ROOT)}
-    proc = subprocess.run(
+    rc = mod.main(
         [
-            sys.executable,
-            str(SCRIPT),
             "--evidence-root",
             str(durable_root),
             "--dry-run",
             "--no-network",
             "--out",
             str(out),
-        ],
-        cwd=str(REPO_ROOT),
-        capture_output=True,
-        text=True,
-        check=False,
-        env=env,
+        ]
     )
-    assert proc.returncode == 0
+    assert rc == 0
+    assert out.is_file()
     payload = json.loads(out.read_text(encoding="utf-8"))
     assert payload["status"] == "eligible"
+    for field in BOUNDARY_BOOL_FIELDS:
+        assert field in payload
 
 
 def test_no_subprocess_network_aws_rclone_calls(mod, durable_root: Path) -> None:
