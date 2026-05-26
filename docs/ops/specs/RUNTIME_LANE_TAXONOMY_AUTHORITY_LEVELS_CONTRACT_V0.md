@@ -635,13 +635,15 @@ LOCAL_ONLY_DRY_ADAPTER_CONTRACT_DOCUMENTED=true
 - Projection consumer fixtures: [projection_consumer_v0.py](../../../tests/fixtures/ops/generic_evidence_run_registry_v1/projection_consumer_v0.py) — `S3_RELEVANT_PROJECTION_FIELDS`
 - Extend-only Phase surfaces: [PHASE_T_DATA_NODE_EXPORT_CHANNEL.md](../runbooks/PHASE_T_DATA_NODE_EXPORT_CHANNEL.md), [PHASE_W_EXPORT_PACK_GH_CONSUMER.md](../runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md)
 
-#### Future local-only dry adapter / command contract shape (not implemented in v0)
+#### Future local-only dry adapter / command contract shape
 
-A future governed slice may introduce a **local-only, non-network** preflight command (working name: `preflight_s3_finalized_evidence_export_v0`) with the following contract shape:
+Implementation owner: [preflight_s3_finalized_evidence_export_v0.py](../../../scripts/ops/preflight_s3_finalized_evidence_export_v0.py) — local-only dry preflight CLI (`--evidence-root`, `--dry-run`, `--no-network` required; JSON eligibility output; no upload/download/network).
+
+Contract shape (v0):
 
 | Input / flag | Required | Semantics (v0) |
 |---|---|---|
-| `--durable-evidence-root` | yes | Absolute path to finalized durable primary evidence root (**outside** `/tmp`) |
+| `--evidence-root` / `--durable-evidence-root` | yes | Absolute path to finalized durable primary evidence root (**outside** `/tmp`) |
 | `--registry-json` | yes | Path to Registry v1 JSON (`schema=peak_trade.generic_evidence_run_registry.v1`) |
 | `--run-id` | yes | Target run row in `runs[]` or composition row in `compositions[]` |
 | `--lane-id` or `--composition-id` | one required | Lane row vs composition-index row context |
