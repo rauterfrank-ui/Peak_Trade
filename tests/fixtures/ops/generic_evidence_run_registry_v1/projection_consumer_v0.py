@@ -48,6 +48,7 @@ def taxonomy_section_6a08() -> str:
         "### 6a.0.8 Post-Closeout Projection Automation Charter v0 (docs/tests-only)", 1
     )[1].split("### 6a.1 Notion post-closeout sync projection contract v0", 1)[0]
 
+
 # Canonical pointer/status fields for Registry v1 projection consumers (§6a.1 + §6a.2 aligned).
 ALLOWED_PROJECTION_FIELDS: tuple[str, ...] = (
     "run_id",
