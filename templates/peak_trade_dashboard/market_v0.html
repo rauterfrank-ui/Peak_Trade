@@ -110,6 +110,53 @@
     </p>
   </section>
 
+  {% if run_projection.section_visible %}
+  <section
+    role="region"
+    aria-labelledby="market-v0-landmark-run-projection-h2"
+    class="rounded-xl border border-sky-900/45 bg-gradient-to-br from-sky-950/35 via-slate-950/40 to-slate-950/20 px-3 py-2.5 sm:px-4 text-xs text-sky-100/95"
+    data-market-v0-run-projection="true"
+    data-market-v0-run-projection-readonly="true"
+    data-market-v0-run-projection-authority="false"
+    data-market-v0-run-projection-enabled="{{ 'true' if run_projection.gate_enabled else 'false' }}"
+    data-market-v0-run-projection-ready="{{ 'true' if run_projection.projection_ready else 'false' }}"
+  >
+    <h2 id="market-v0-landmark-run-projection-h2" class="font-semibold text-sky-200/95 tracking-wide uppercase text-[11px] m-0 mb-2">
+      Registry run projection (read-only)
+    </h2>
+    <p class="leading-snug text-sky-100/90 m-0 text-[11px] mb-2">
+      Read-only operational projection. This dashboard does not authorize runtime, testnet, live trading, broker access, exchange access, or strategy execution. Repo contracts and durable evidence remain canonical.
+    </p>
+    <dl class="m-0 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-[11px] tabular-nums">
+      <div><dt class="inline text-slate-400">run_id</dt> <dd class="inline text-slate-100">{{ run_projection.run_id or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">projection_ready</dt> <dd class="inline text-slate-100">{{ run_projection.projection_ready }}</dd></div>
+      <div><dt class="inline text-slate-400">blocked_reason</dt> <dd class="inline text-slate-100">{{ run_projection.projection_blocked_reason or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">manifest_verify_rc</dt> <dd class="inline text-slate-100">{{ run_projection.manifest_verify_rc or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">closeout_accepted</dt> <dd class="inline text-slate-100">{{ run_projection.closeout_accepted }}</dd></div>
+      <div><dt class="inline text-slate-400">primary_evidence_finalized</dt> <dd class="inline text-slate-100">{{ run_projection.primary_evidence_finalized }}</dd></div>
+      <div><dt class="inline text-slate-400">repo_commit</dt> <dd class="inline text-slate-100">{{ run_projection.repo_commit or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">s3_export_status</dt> <dd class="inline text-slate-100">{{ run_projection.s3_export_status or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">download_verify_rc</dt> <dd class="inline text-slate-100">{{ run_projection.download_verify_rc or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">dashboard_projection_allowed</dt> <dd class="inline text-slate-100">{{ run_projection.dashboard_projection_allowed }}</dd></div>
+      <div><dt class="inline text-slate-400">registry</dt> <dd class="inline text-slate-100">{{ run_projection.registry_configured_label or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">closeout</dt> <dd class="inline text-slate-100">{{ run_projection.closeout_configured_label or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">payload_built_at</dt> <dd class="inline text-slate-100">{{ run_projection.payload_generated_at_utc or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">status</dt> <dd class="inline text-slate-100">{{ run_projection.status }}</dd></div>
+    </dl>
+    {% if run_projection.registry_run %}
+    <div class="mt-2 pt-2 border-t border-sky-800/30">
+      <p class="m-0 mb-1 text-[10px] font-semibold uppercase tracking-wide text-sky-300/90">Registry v1 row (subset)</p>
+      <dl class="m-0 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-[11px] tabular-nums">
+        {% for key, value in run_projection.registry_run.items() %}
+        <div><dt class="inline text-slate-400">{{ key }}</dt> <dd class="inline text-slate-100">{{ value }}</dd></div>
+        {% endfor %}
+      </dl>
+      <p class="m-0 mt-1 text-[10px] text-slate-400">registry_verdict: {{ run_projection.registry_verdict or "—" }} · runs: {{ run_projection.registry_run_count }} · built_at: {{ run_projection.registry_generated_at_utc or "—" }}</p>
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
   <section
     role="region"
     aria-labelledby="market-v0-landmark-ranking-funnel-h2"
