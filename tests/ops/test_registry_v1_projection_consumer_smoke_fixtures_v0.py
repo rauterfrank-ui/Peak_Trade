@@ -54,6 +54,21 @@ def test_shared_fixture_module_marker() -> None:
     assert pc.REGISTRY_V1_PROJECTION_CONSUMER_SMOKE_FIXTURES_V0 is True
 
 
+def test_payload_builder_planning_contract_present() -> None:
+    text = TAXONOMY_SPEC.read_text(encoding="utf-8")
+    assert "### 6a.0.9 Shared Projection Payload Builder Planning Contract v0" in text
+    section = pc.taxonomy_section_6a09()
+    for marker in pc.POST_CLOSEOUT_PROJECTION_PAYLOAD_BUILDER_PLANNING_MARKERS:
+        assert marker in section
+    for field in pc.PLANNED_PROJECTION_PAYLOAD_OUTPUT_FIELDS:
+        assert field in section
+    assert "projection_ready=false" in section.lower()
+    assert "build_post_closeout_projection_payload_v0" in section
+    builder_script = REPO_ROOT / "scripts" / "ops" / "build_post_closeout_projection_payload_v0.py"
+    assert not builder_script.is_file()
+    assert pc.REGISTRY_V1_PROJECTION_CONSUMER_SMOKE_FIXTURES_V0 is True
+
+
 def test_post_closeout_projection_automation_charter_present() -> None:
     text = TAXONOMY_SPEC.read_text(encoding="utf-8")
     assert "### 6a.0.8 Post-Closeout Projection Automation Charter v0" in text
@@ -148,6 +163,14 @@ def test_docs_truth_map_references_post_closeout_projection_automation_charter()
     )
     assert "§6a.0.8" in text or "Post-Closeout Projection Automation Charter" in text
     assert TAXONOMY_SPEC.name in text
+
+
+def test_docs_truth_map_references_payload_builder_planning_contract() -> None:
+    text = (REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md").read_text(
+        encoding="utf-8"
+    )
+    assert "§6a.0.9" in text or "Projection Payload Builder Planning" in text
+    assert "build_post_closeout_projection_payload_v0" in text
 
 
 def test_section_6a_population_tests_use_shared_archive_helpers() -> None:

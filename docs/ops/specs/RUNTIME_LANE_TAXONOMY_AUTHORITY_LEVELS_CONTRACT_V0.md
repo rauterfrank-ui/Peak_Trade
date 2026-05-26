@@ -98,6 +98,19 @@ MARKET_DASHBOARD_IS_PROJECTION_ONLY=true
 NO_PARALLEL_MARKET_SURFACE=true
 NO_PARALLEL_NOTION_DB=true
 NO_PARALLEL_READMODEL=true
+POST_CLOSEOUT_PROJECTION_PAYLOAD_BUILDER_PLANNING_CONTRACT_V0=true
+BUILD_POST_CLOSEOUT_PROJECTION_PAYLOAD_V0=planning_target_only
+PAYLOAD_BUILDER_IMPLEMENTED=false
+PAYLOAD_BUILDER_SCRIPT_FORBIDDEN_IN_THIS_SLICE=true
+PROJECTION_PAYLOAD_AFTER_CLOSEOUT_ONLY=true
+PROJECTION_PAYLOAD_AFTER_MANIFEST_VERIFY_ONLY=true
+PROJECTION_PAYLOAD_READS_FINALIZED_EVIDENCE_ONLY=true
+PROJECTION_PAYLOAD_WRITES_LOCAL_JSON_ONLY=true
+PROJECTION_PAYLOAD_DOES_NOT_WRITE_NOTION=true
+PROJECTION_PAYLOAD_DOES_NOT_WRITE_DASHBOARD=true
+PROJECTION_PAYLOAD_DOES_NOT_CALL_S3_AWS_RCLONE=true
+PROJECTION_PAYLOAD_DOES_NOT_START_RUNTIME=true
+PROJECTION_PAYLOAD_AUTHORITY=false
 NOTION_PROJECTION_NON_AUTHORIZING=true
 NOTION_POST_CLOSEOUT_SYNC_PROJECTION_SPEC_V0=true
 NOTION_WRITE_DEFAULT=false
@@ -172,6 +185,7 @@ Non-goals:
 | §2b.2 closeout enforcement planning | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.2 |
 | §6a.0.7 remote paper dry command template planning | This spec §6a.0.7 (planning-only; non-executable) |
 | §6a.0.8 post-closeout projection automation charter | This spec §6a.0.8 (docs/tests-only; binds §6a.1 / §6a.2 / Registry v1) |
+| §6a.0.9 shared projection payload builder planning | This spec §6a.0.9 (planning-only; future `build_post_closeout_projection_payload_v0`; **no** script in this slice) |
 | Preflight BLOCKED status | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) |
 | GLB-014 / GLB-015 | [MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md](MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) |
 | Canary Live entry | [CANARY_LIVE_ENTRY_CRITERIA.md](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) |
@@ -1220,7 +1234,100 @@ POST_CLOSEOUT_PROJECTION_AUTOMATION_DOCS_TESTS_ONLY=true
 
 **Implementation posture:** `POST_CLOSEOUT_PROJECTION_AUTOMATION_ENABLED=false`, `NOTION_POST_CLOSEOUT_SYNC_ENABLED=false`, `MARKET_DASHBOARD_RUN_PROJECTION_ENABLED=false` until explicit future operator-chartered slices opt in. This section is **contract/tests-only** (`POST_CLOSEOUT_PROJECTION_AUTOMATION_DOCS_TESTS_ONLY=true`).
 
-Cross-reference: [MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md) (future registry overlay on `GET &#47;market`); [DOCS_TRUTH_MAP.md](../registry/DOCS_TRUTH_MAP.md); Preflight §2b.1 mandatory durable closeout.
+Cross-reference: [MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md) (future registry overlay on `GET &#47;market`); §6a.0.9 payload builder planning; [DOCS_TRUTH_MAP.md](../registry/DOCS_TRUTH_MAP.md); Preflight §2b.1 mandatory durable closeout.
+
+### 6a.0.9 Shared Projection Payload Builder Planning Contract v0 (planning-only)
+
+```
+POST_CLOSEOUT_PROJECTION_PAYLOAD_BUILDER_PLANNING_CONTRACT_V0=true
+BUILD_POST_CLOSEOUT_PROJECTION_PAYLOAD_V0=planning_target_only
+PAYLOAD_BUILDER_IMPLEMENTED=false
+PAYLOAD_BUILDER_SCRIPT_FORBIDDEN_IN_THIS_SLICE=true
+PROJECTION_PAYLOAD_AFTER_CLOSEOUT_ONLY=true
+PROJECTION_PAYLOAD_AFTER_MANIFEST_VERIFY_ONLY=true
+PROJECTION_PAYLOAD_READS_FINALIZED_EVIDENCE_ONLY=true
+PROJECTION_PAYLOAD_WRITES_LOCAL_JSON_ONLY=true
+PROJECTION_PAYLOAD_DOES_NOT_WRITE_NOTION=true
+PROJECTION_PAYLOAD_DOES_NOT_WRITE_DASHBOARD=true
+PROJECTION_PAYLOAD_DOES_NOT_CALL_S3_AWS_RCLONE=true
+PROJECTION_PAYLOAD_DOES_NOT_START_RUNTIME=true
+PROJECTION_PAYLOAD_AUTHORITY=false
+LIVE_AUTHORITY=false
+TESTNET_AUTHORITY=false
+BROKER_EXCHANGE_AUTHORITY=false
+NOTION_CONSUMER_WRITE_PERMITTED=false
+MARKET_DASHBOARD_CONSUMER_WRITE_PERMITTED=false
+POST_CLOSEOUT_PROJECTION_PAYLOAD_BUILDER_PLANNING_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Define the **planning-only** contract for a future offline helper **`build_post_closeout_projection_payload_v0`** (illustrative name; **not implemented** in this slice) that materializes a **local JSON projection payload** from finalized closeout/evidence/registry inputs for optional Notion (§6a.1) and Market Dashboard (§6a.2) consumers — **without** runtime authority, consumer writes, S3/AWS/rclone, hooks, or parallel schema/registry surfaces.
+
+**Relationship to §6a.0.8:** §6a.0.8 binds automation posture (default off). This §6a.0.9 specifies **future builder I/O and fail-closed block rules** only. `POST_CLOSEOUT_PROJECTION_AUTOMATION_ENABLED` remains `false` until separate operator-chartered implementation slices.
+
+#### Future builder target (not shipped)
+
+| Token | Meaning (v0 planning) |
+|---|---|
+| `BUILD_POST_CLOSEOUT_PROJECTION_PAYLOAD_V0` | Future offline CLI/module name (planning target only) |
+| `PAYLOAD_BUILDER_IMPLEMENTED` | `false` until an explicit implementation charter |
+| `PROJECTION_PAYLOAD_SCHEMA_OWNER` | Registry v1 + [projection_consumer_v0.py](../../../tests/fixtures/ops/generic_evidence_run_registry_v1/projection_consumer_v0.py) field compatibility — **no** parallel JSON schema file as SSOT in this slice |
+
+**Canonical inputs (future builder may read only):**
+
+1. **Durable closeout pointer** — material closeout complete outside `/tmp` per Preflight §2b.1 (`PROJECTION_PAYLOAD_AFTER_CLOSEOUT_ONLY=true`).
+2. **`MANIFEST.sha256` verify RC** — must be `0` on the durable primary evidence root (`PROJECTION_PAYLOAD_AFTER_MANIFEST_VERIFY_ONLY=true`).
+3. **Finalized primary evidence** — via shared [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) semantics; no ad-hoc archive walks (`PROJECTION_PAYLOAD_READS_FINALIZED_EVIDENCE_ONLY=true`).
+4. **Generic Evidence Run Registry v1 JSON** — sole structured feed from [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) (`schema=peak_trade.generic_evidence_run_registry.v1`).
+5. **Boundary / machine-line flags** — non-authorizing literals from closeout or registry summary (missing flags → block).
+6. **Repo commit pointer** — optional audit metadata (pointer only; not approval).
+7. **S3 export/download verify status** — optional **transport status** field only when already present in registry/closeout summary; **never** gate clearance or approval.
+
+**Forbidden inputs:** secrets/credentials; live/testnet/broker authority `true`; ad-hoc `DURABLE_ARCHIVE_ROOT` directory walks bypassing Registry v1.
+
+#### Future local JSON output (planning shape)
+
+Future builder writes **one local JSON document only** (`PROJECTION_PAYLOAD_WRITES_LOCAL_JSON_ONLY=true`). Illustrative top-level fields (planning vocabulary — **not** a parallel schema file in this slice):
+
+| Field | Role |
+|---|---|
+| `schema_version` | Payload contract version string (distinct from Registry v1 `schema` when needed) |
+| `run_id` | Run identifier from registry row |
+| `projection_ready` | `true` only when all gates pass; else `false` |
+| `projection_blocked_reason` | Machine-readable block code when `projection_ready=false` |
+| `manifest_verify_rc` | Echo of manifest verify result |
+| `closeout_accepted` | Closeout completeness pointer (non-authorizing) |
+| `primary_evidence_finalized` | Primary evidence finalization pointer |
+| `registry_pointer` | Path or URI pointer to Registry v1 JSON used |
+| `closeout_pointer` | Path pointer to durable closeout bundle |
+| `authority` | Object of explicit `*_authority=false` literals |
+| `notion_consumer` | Flags for §6a.1 consumer eligibility; `NOTION_CONSUMER_WRITE_PERMITTED=false` |
+| `market_dashboard_consumer` | Flags for §6a.2 consumer eligibility; `MARKET_DASHBOARD_CONSUMER_WRITE_PERMITTED=false` |
+
+Run-level pointer fields in the payload body must remain compatible with `ALLOWED_PROJECTION_FIELDS` / `RUN_PROJECTION_FIELDS` in [projection_consumer_v0.py](../../../tests/fixtures/ops/generic_evidence_run_registry_v1/projection_consumer_v0.py).
+
+**Forbidden outputs:** Notion API/MCP writes (`PROJECTION_PAYLOAD_DOES_NOT_WRITE_NOTION=true`); Dashboard HTML/template/route/readmodel mutations (`PROJECTION_PAYLOAD_DOES_NOT_WRITE_DASHBOARD=true`); S3/AWS/rclone upload/download (`PROJECTION_PAYLOAD_DOES_NOT_CALL_S3_AWS_RCLONE=true`); runtime/scheduler/daemon/adapter starts (`PROJECTION_PAYLOAD_DOES_NOT_START_RUNTIME=true`).
+
+#### Fail-closed block rules (future builder)
+
+Set `projection_ready=false` and populate `projection_blocked_reason` when **any** of:
+
+| Condition | Block posture |
+|---|---|
+| Missing or incomplete material closeout | `CLOSEOUT_INCOMPLETE` |
+| Missing primary evidence finalization | `PRIMARY_EVIDENCE_NOT_FINALIZED` |
+| `manifest_verify_rc != 0` | `MANIFEST_VERIFY_FAILED` |
+| Required boundary flags missing | `BOUNDARY_FLAGS_MISSING` |
+| `live_authority`, `testnet_authority`, or broker/exchange authority true on inputs | `UNSAFE_AUTHORITY_TRUE` |
+
+`PROJECTION_PAYLOAD_AUTHORITY=false` always — payload JSON does not clear Preflight **BLOCKED**, Shadow **STOP_IDLE**, HOLD, or grant Live/Testnet/broker access.
+
+#### Implementation posture (this slice)
+
+- **No** [build_post_closeout_projection_payload_v0.py](../../../scripts/ops/build_post_closeout_projection_payload_v0.py) in repository (`PAYLOAD_BUILDER_SCRIPT_FORBIDDEN_IN_THIS_SLICE=true`).
+- **No** post-closeout CI hook, consumer module, Dashboard panel, or Notion sync (`POST_CLOSEOUT_PROJECTION_PAYLOAD_BUILDER_PLANNING_DOCS_TESTS_ONLY=true`).
+- Reuse §6a.0.8 chain, Registry v1 builder, and `projection_consumer_v0` constants — **no** parallel registry, runbook, or readmodel SSOT (`NO_PARALLEL_REGISTRY=true` / `NO_PARALLEL_READMODEL=true` apply at charter level).
+
+Cross-reference: §6a.0.8 automation charter; §6a.1 Notion projection; §6a.2 Dashboard projection; Preflight §2b.1; [durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py) (local copy/verify helper only; builder must not invoke closeout helper implicitly without operator charter).
 
 ### 6a.1 Notion post-closeout sync projection contract v0
 
