@@ -38,10 +38,11 @@ CLI_CONTRACT_MARKERS = (
     "REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTATION_REQUIRES_OPERATOR_CHARTER=true",
 )
 
+IMPLEMENTED_CLI = REPO_ROOT / "scripts" / "ops" / "validate_remote_paper_packet_v0.py"
+
 FORBIDDEN_DUPLICATE_SPEC_FRAGMENTS = (
     "REMOTE_PAPER_VALIDATOR_CLI_PLANNING_CONTRACT_V0.md",
     "REMOTE_PAPER_VALIDATOR_CLI_V0.md",
-    "validate_remote_paper_packet",
 )
 
 FORBIDDEN_FIXTURE_PATTERNS = (
@@ -206,14 +207,16 @@ def test_taxonomy_links_cli_fixture() -> None:
     assert "remote_paper_validator_cli_planning_v0.json" in section
 
 
-def test_no_validator_cli_source_introduced() -> None:
+def test_validator_cli_implementation_singleton() -> None:
+    """OP-REMOTE-PAPER-VALIDATOR-CLI-IMPL-V0 allows exactly one offline CLI entrypoint."""
+    assert IMPLEMENTED_CLI.is_file()
     ops = REPO_ROOT / "scripts" / "ops"
-    for path in ops.glob("*.py"):
-        name = path.name.lower()
-        if "remote_paper" in name and "validator" in name and "planning" not in name:
-            raise AssertionError(f"unexpected validator CLI script: {path}")
-        if name.startswith("validate_remote_paper"):
-            raise AssertionError(f"unexpected validator CLI script: {path}")
+    matches = [
+        path
+        for path in ops.glob("*.py")
+        if path.name.startswith("validate_remote_paper") and path.resolve() != IMPLEMENTED_CLI.resolve()
+    ]
+    assert matches == [], f"duplicate validator CLI scripts: {matches}"
 
 
 def test_no_duplicate_cli_spec_introduced() -> None:
@@ -223,11 +226,8 @@ def test_no_duplicate_cli_spec_introduced() -> None:
         if fragment.endswith(".md"):
             assert list(specs_dir.glob(f"*{fragment}*")) == []
             assert list(runbooks_dir.glob(f"*{fragment}*")) == []
-    ops = REPO_ROOT / "scripts" / "ops"
     for fragment in FORBIDDEN_DUPLICATE_SPEC_FRAGMENTS:
-        if not fragment.endswith(".md"):
-            matches = [p for p in ops.glob(f"*{fragment}*") if p.is_file()]
-            assert matches == [], fragment
+        assert fragment.endswith(".md")
 
 
 def test_assembly_fixture_still_present() -> None:
