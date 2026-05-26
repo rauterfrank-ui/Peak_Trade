@@ -218,6 +218,14 @@ def test_post_closeout_charter_binds_dashboard_readonly_no_runtime_control() -> 
     assert "RUNTIME_CONTROL_FROM_PROJECTION=false" in section
 
 
+def test_payload_builder_planning_forbids_dashboard_write_and_runtime() -> None:
+    section = pc.taxonomy_section_6a09()
+    assert "PROJECTION_PAYLOAD_DOES_NOT_WRITE_DASHBOARD=true" in section
+    assert "PROJECTION_PAYLOAD_DOES_NOT_START_RUNTIME=true" in section
+    assert "MARKET_DASHBOARD_CONSUMER_WRITE_PERMITTED=false" in section
+    assert "PROJECTION_PAYLOAD_WRITES_LOCAL_JSON_ONLY=true" in section
+
+
 def test_market_surface_documents_post_closeout_registry_projection_crosslink() -> None:
     text = MARKET_SURFACE.read_text(encoding="utf-8")
     assert "Post-Closeout Registry run projection" in text

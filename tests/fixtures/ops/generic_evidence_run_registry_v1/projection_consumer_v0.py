@@ -1,6 +1,6 @@
 """Shared Registry v1 projection consumer smoke fixtures (test-only, non-authorizing).
 
-Consumers: Notion §6a.1, Market Dashboard §6a.2, future S3 finalized-evidence export gate tests.
+Consumers: Notion §6a.1, Market Dashboard §6a.2, future projection payload builder §6a.0.9, future S3 export gate tests.
 Does not define runtime authority, Registry v2, or new lanes.
 """
 
@@ -41,11 +41,54 @@ POST_CLOSEOUT_PROJECTION_AUTOMATION_CHARTER_MARKERS: tuple[str, ...] = (
     "NO_PARALLEL_READMODEL=true",
 )
 
+POST_CLOSEOUT_PROJECTION_PAYLOAD_BUILDER_PLANNING_MARKERS: tuple[str, ...] = (
+    "POST_CLOSEOUT_PROJECTION_PAYLOAD_BUILDER_PLANNING_CONTRACT_V0=true",
+    "BUILD_POST_CLOSEOUT_PROJECTION_PAYLOAD_V0=planning_target_only",
+    "PAYLOAD_BUILDER_IMPLEMENTED=false",
+    "PAYLOAD_BUILDER_SCRIPT_FORBIDDEN_IN_THIS_SLICE=true",
+    "PROJECTION_PAYLOAD_AFTER_CLOSEOUT_ONLY=true",
+    "PROJECTION_PAYLOAD_AFTER_MANIFEST_VERIFY_ONLY=true",
+    "PROJECTION_PAYLOAD_READS_FINALIZED_EVIDENCE_ONLY=true",
+    "PROJECTION_PAYLOAD_WRITES_LOCAL_JSON_ONLY=true",
+    "PROJECTION_PAYLOAD_DOES_NOT_WRITE_NOTION=true",
+    "PROJECTION_PAYLOAD_DOES_NOT_WRITE_DASHBOARD=true",
+    "PROJECTION_PAYLOAD_DOES_NOT_CALL_S3_AWS_RCLONE=true",
+    "PROJECTION_PAYLOAD_DOES_NOT_START_RUNTIME=true",
+    "PROJECTION_PAYLOAD_AUTHORITY=false",
+    "NOTION_CONSUMER_WRITE_PERMITTED=false",
+    "MARKET_DASHBOARD_CONSUMER_WRITE_PERMITTED=false",
+    "POST_CLOSEOUT_PROJECTION_PAYLOAD_BUILDER_PLANNING_DOCS_TESTS_ONLY=true",
+)
+
+PLANNED_PROJECTION_PAYLOAD_OUTPUT_FIELDS: tuple[str, ...] = (
+    "schema_version",
+    "run_id",
+    "projection_ready",
+    "projection_blocked_reason",
+    "manifest_verify_rc",
+    "closeout_accepted",
+    "primary_evidence_finalized",
+    "registry_pointer",
+    "closeout_pointer",
+    "authority",
+    "notion_consumer",
+    "market_dashboard_consumer",
+)
+
 
 def taxonomy_section_6a08() -> str:
     text = TAXONOMY_SPEC.read_text(encoding="utf-8")
     return text.split(
         "### 6a.0.8 Post-Closeout Projection Automation Charter v0 (docs/tests-only)", 1
+    )[1].split(
+        "### 6a.0.9 Shared Projection Payload Builder Planning Contract v0 (planning-only)", 1
+    )[0]
+
+
+def taxonomy_section_6a09() -> str:
+    text = TAXONOMY_SPEC.read_text(encoding="utf-8")
+    return text.split(
+        "### 6a.0.9 Shared Projection Payload Builder Planning Contract v0 (planning-only)", 1
     )[1].split("### 6a.1 Notion post-closeout sync projection contract v0", 1)[0]
 
 

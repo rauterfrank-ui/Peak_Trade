@@ -197,3 +197,10 @@ def test_notion_projection_after_closeout_and_manifest_verify_only() -> None:
     assert "PROJECTION_AFTER_MANIFEST_VERIFY_ONLY=true" in section
     assert "NOTION_POST_CLOSEOUT_SYNC_ENABLED=false" in section
     assert "NOTION_IS_PROJECTION_ONLY=true" in section
+
+
+def test_payload_builder_planning_forbids_notion_write() -> None:
+    section = pc.taxonomy_section_6a09()
+    assert "PROJECTION_PAYLOAD_DOES_NOT_WRITE_NOTION=true" in section
+    assert "NOTION_CONSUMER_WRITE_PERMITTED=false" in section
+    assert "PAYLOAD_BUILDER_IMPLEMENTED=false" in section
