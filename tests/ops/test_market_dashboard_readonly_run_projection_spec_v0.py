@@ -74,7 +74,7 @@ RUN_PROJECTION_FIELDS = pc.RUN_PROJECTION_FIELDS
 def _section_6a2() -> str:
     text = TAXONOMY_SPEC.read_text(encoding="utf-8")
     return text.split("### 6a.2 Market Dashboard read-only run projection contract v0", 1)[1].split(
-        "### v0 authority posture", 1
+        "### 6a.3 S3 finalized evidence export gate contract v0", 1
     )[0]
 
 
