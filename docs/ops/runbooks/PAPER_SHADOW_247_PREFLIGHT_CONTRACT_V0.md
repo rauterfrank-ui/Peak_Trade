@@ -246,6 +246,8 @@ The following are **not** trading authority, readiness approval, evidence approv
 
 Normative **lane IDs** and **authority levels** for all runtime/evidence surfaces are indexed in **[Runtime Lane Taxonomy + Authority Levels Contract v0](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md)**. That spec is **non-authorizing**; this contract remains the owner of §2a/§2b/§2b.1 retention and preflight **BLOCKED** status.
 
+Future **remote Paper-only** command/metadata/gate shape (non-executing; no runtime unlock): taxonomy **§6a.0 Remote Runtime Command Contract v0** in the same spec — backend-not-lane; reuses §2a/§2a.1/§2b.1, scheduler boundary guard, and HOLD binding; **does not** authorize remote execution in this repository slice.
+
 ## 3a. Futures / perpetual planning boundary (BTC/USD proxy evidence)
 
 Symbols and surfaces such as **BTC/USD**, **BTC-USD**, **Bitcoin USD**, or **BTCUSDT** may appear in this repository as WebUI defaults, spot-style fixtures, Class-A smoke paths, or **public REST market-data captures**. Treat that evidence as **technical proxy / spot-smoke instrumentation only**.
