@@ -203,3 +203,30 @@ def test_docs_truth_map_references_dashboard_projection_spec() -> None:
     text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
     assert "MARKET_DASHBOARD_READONLY_RUN_PROJECTION_SPEC_V0" in text or "6a.2" in text
     assert TAXONOMY_SPEC.name in text
+
+
+def test_post_closeout_charter_binds_dashboard_readonly_no_runtime_control() -> None:
+    section = pc.taxonomy_section_6a08()
+    for marker in pc.POST_CLOSEOUT_PROJECTION_AUTOMATION_CHARTER_MARKERS:
+        assert marker in section
+    assert "MARKET_DASHBOARD_READONLY_RUN_PROJECTION_V0" in section
+    assert "§6a.2" in section
+    dashboard_section = _section_6a2()
+    assert "MARKET_DASHBOARD_RUNTIME_ACTIONS=false" in dashboard_section
+    assert "MARKET_DASHBOARD_START_STOP_BUTTONS=false" in dashboard_section
+    assert "DASHBOARD_RUNTIME_CONTROL=false" in section
+    assert "RUNTIME_CONTROL_FROM_PROJECTION=false" in section
+
+
+def test_market_surface_documents_post_closeout_registry_projection_crosslink() -> None:
+    text = MARKET_SURFACE.read_text(encoding="utf-8")
+    assert "Post-Closeout Registry run projection" in text
+    assert "§6a.0.8" in text
+    assert "MARKET_DASHBOARD_RUN_PROJECTION_ENABLED=false" in text
+    assert "MARKET_DASHBOARD_IS_PROJECTION_ONLY=true" in text
+    assert "RUNTIME_CONTROL_FROM_PROJECTION=false" in text
+    assert "DASHBOARD_RUNTIME_CONTROL=false" in text
+    assert "double-play" in text.lower()
+    assert "build_generic_evidence_run_registry_v1.py" in text
+    assert "parallel Market Surface" in text
+    assert "MARKET_DASHBOARD_DOUBLE_PLAY_TOUCHED=false" in text

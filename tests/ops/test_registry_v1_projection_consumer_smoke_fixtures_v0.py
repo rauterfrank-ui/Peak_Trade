@@ -19,6 +19,8 @@ FIXTURES_README = (
     REPO_ROOT / "tests" / "fixtures" / "ops" / "generic_evidence_run_registry_v1" / "README.md"
 )
 
+POST_CLOSEOUT_PROJECTION_AUTOMATION_CHARTER_MARKERS = pc.POST_CLOSEOUT_PROJECTION_AUTOMATION_CHARTER_MARKERS
+
 AUTHORITY_MARKERS = (
     "NOTION_AUTHORITY=false",
     "MARKET_DASHBOARD_AUTHORITY=false",
@@ -48,6 +50,24 @@ def _section_6a2() -> str:
 
 def test_shared_fixture_module_marker() -> None:
     assert pc.REGISTRY_V1_PROJECTION_CONSUMER_SMOKE_FIXTURES_V0 is True
+
+
+def test_post_closeout_projection_automation_charter_present() -> None:
+    text = TAXONOMY_SPEC.read_text(encoding="utf-8")
+    assert "### 6a.0.8 Post-Closeout Projection Automation Charter v0" in text
+    section = pc.taxonomy_section_6a08()
+    for marker in POST_CLOSEOUT_PROJECTION_AUTOMATION_CHARTER_MARKERS:
+        assert marker in section
+    for marker in (
+        "NOTION_AUTHORITY=false",
+        "MARKET_DASHBOARD_AUTHORITY=false",
+        "LIVE_AUTHORITY=false",
+        "TESTNET_AUTHORITY=false",
+        "BROKER_EXCHANGE_AUTHORITY=false",
+    ):
+        assert marker in section
+    assert "projection_consumer_v0.py" in section
+    assert "build_generic_evidence_run_registry_v1.py" in section
 
 
 def test_notion_and_dashboard_tests_import_shared_field_constants() -> None:
@@ -118,6 +138,14 @@ def test_no_registry_v2_or_forbidden_lane_ids(tmp_path: Path) -> None:
     lane_ids = {r["lane_id"] for r in payload["runs"]}
     assert "daemon_paper_24h" not in lane_ids
     assert "remote_runtime" not in lane_ids
+
+
+def test_docs_truth_map_references_post_closeout_projection_automation_charter() -> None:
+    text = (REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md").read_text(
+        encoding="utf-8"
+    )
+    assert "§6a.0.8" in text or "Post-Closeout Projection Automation Charter" in text
+    assert TAXONOMY_SPEC.name in text
 
 
 def test_section_6a_population_tests_use_shared_archive_helpers() -> None:
