@@ -144,5 +144,8 @@ def test_adjacent_section_ordering() -> None:
         "## 2b.1 Mandatory Durable Closeout Contract v0"
     )
     assert text.index("## 2b.1 Mandatory Durable Closeout Contract v0") < text.index(
+        "## 2b.2 Closeout Enforcement Planning Contract v0"
+    )
+    assert text.index("## 2b.2 Closeout Enforcement Planning Contract v0") < text.index(
         "## 3. Non-authority"
     )

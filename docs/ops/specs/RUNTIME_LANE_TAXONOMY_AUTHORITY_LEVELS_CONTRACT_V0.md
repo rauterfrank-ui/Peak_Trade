@@ -148,6 +148,7 @@ Non-goals:
 | §2a.1 future-run primary evidence hard gate | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a.1 |
 | §2b planning artifact retention | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b |
 | §2b.1 mandatory durable closeout | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.1 |
+| §2b.2 closeout enforcement planning | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.2 |
 | Preflight BLOCKED status | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) |
 | GLB-014 / GLB-015 | [MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md](MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) |
 | Canary Live entry | [CANARY_LIVE_ENTRY_CRITERIA.md](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) |
@@ -925,7 +926,7 @@ All bound artifacts **must agree** on:
 Dry command templates remain **blocked** until:
 
 1. This validator planning contract exists (`REMOTE_PAPER_PACKET_VALIDATOR_DRY_TEMPLATE_BLOCKED_UNTIL_VALIDATOR_PLANNING=true`).
-2. Closeout enforcement planning has been reviewed (§2b.1 tooling gap acknowledged).
+2. Closeout enforcement planning contract reviewed (Preflight §2b.2; `CLOSEOUT_ENFORCEMENT_REVIEW_REQUIRED_BEFORE_DRY_COMMAND_TEMPLATE=true`).
 3. Operator explicitly charters a **separate non-executable** dry-command-template slice.
 
 #### Forbidden content
