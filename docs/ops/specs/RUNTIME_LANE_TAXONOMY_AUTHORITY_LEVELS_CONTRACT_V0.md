@@ -98,6 +98,15 @@ MARKET_DASHBOARD_START_STOP_BUTTONS=false
 MARKET_DASHBOARD_DOUBLE_PLAY_AUTHORITY=false
 MARKET_DASHBOARD_DOUBLE_PLAY_TOUCHED=false
 REGISTRY_V1_IS_SOLE_DASHBOARD_PROJECTION_FEED=true
+S3_FINALIZED_EVIDENCE_EXPORT_GATE_V0=true
+S3_EXPORT_GATE_DOCS_TESTS_ONLY=true
+S3_AUTHORITY=false
+S3_UPLOAD_BEFORE_FINALIZE_FORBIDDEN=true
+ACTIVE_STAGING_SYNC_FORBIDDEN=true
+DOWNLOAD_VERIFY_REQUIRED_BEFORE_CLOSEOUT_ACCEPTANCE=true
+MANIFEST_SHA256_REMAINS_CANONICAL=true
+SHA256SUMS_STABLE_PARALLEL_TRUTH_FORBIDDEN=true
+EVIDENCE_TRANSPORT_DEFAULT=local_only
 REMOTE_RUNTIME_V0_LIVE_AUTHORITY=false
 REMOTE_RUNTIME_V0_TESTNET_AUTHORITY=false
 COMBINED_OUTROOT_COMPOSITION_INDEX_V0=true
@@ -492,6 +501,95 @@ Detail owner for existing F5 / §7h display markers: taxonomy §7h and [FUTURES_
 > Read-only operational projection. This dashboard does not authorize runtime, scheduler clearance, testnet, live trading, broker access, strategy execution, S3 export, Notion sync, or Double Play decisions.
 
 Cross-reference: Notion projection §6a.1 (shared Registry v1 feed semantics); Remote Runtime Host Metadata §6a backend-not-lane semantics; composition-index §6b for `paper_then_shadow` pointer rows.
+
+### 6a.3 S3 finalized evidence export gate contract v0
+
+```
+S3_FINALIZED_EVIDENCE_EXPORT_GATE_V0=true
+S3_FINALIZED_EVIDENCE_TRANSPORT_ONLY=true
+S3_EXPORT_GATE_DOCS_TESTS_ONLY=true
+TMP_ONLY_EVIDENCE_INVALID=true
+MANIFEST_VERIFY_REQUIRED=true
+S3_AUTHORITY=false
+S3_UPLOAD_BEFORE_FINALIZE_FORBIDDEN=true
+ACTIVE_STAGING_SYNC_FORBIDDEN=true
+DOWNLOAD_VERIFY_REQUIRED_BEFORE_CLOSEOUT_ACCEPTANCE=true
+MANIFEST_SHA256_REMAINS_CANONICAL=true
+SHA256SUMS_STABLE_PARALLEL_TRUTH_FORBIDDEN=true
+RUNTIME_AUTHORITY=false
+SCHEDULER_CLEARANCE_AUTHORITY=false
+LIVE_AUTHORITY=false
+TESTNET_AUTHORITY=false
+BROKER_AUTHORITY=false
+NOTION_AUTHORITY=false
+MARKET_DASHBOARD_AUTHORITY=false
+DOUBLE_PLAY_AUTHORITY=false
+EVIDENCE_TRANSPORT_DEFAULT=local_only
+```
+
+**Purpose:** Define when Registry v1 may represent `evidence_transport=s3_export_after_finalize` and when a remote/object-storage copy may be **accepted** for closeout/review — **without** S3 upload/download implementation in this slice, **without** AWS/rclone calls, and **without** a parallel manifest truth layer.
+
+**Canonical owners (reuse):**
+
+- Finalize + manifest verify: [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) — `finalize_primary_evidence_root()`, `MANIFEST.sha256`
+- Registry v1 metadata: [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) — §6a `evidence_transport`, `manifest_verified`, `evidence_status`
+- Projection consumer fixtures: [projection_consumer_v0.py](../../../tests/fixtures/ops/generic_evidence_run_registry_v1/projection_consumer_v0.py) — `S3_RELEVANT_PROJECTION_FIELDS`
+- Extend-only planning surfaces: [PHASE_T_DATA_NODE_EXPORT_CHANNEL.md](../runbooks/PHASE_T_DATA_NODE_EXPORT_CHANNEL.md), [PHASE_W_EXPORT_PACK_GH_CONSUMER.md](../runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md) — may be extended; **do not** replace `MANIFEST.sha256` with `SHA256SUMS.stable.txt` as competing truth (§6b)
+
+#### `evidence_transport` states (Registry v1 §6a field)
+
+| State | Meaning (v0) |
+|---|---|
+| `local_only` | **Default.** Evidence remains local/durable; no finalized S3 export representation. |
+| `s3_export_after_finalize` | Future operator-gated export may occur **only after** finalize + `MANIFEST.sha256` verify RC=0 on durable primary evidence. |
+
+Default: `evidence_transport=local_only` on every `runs[]` and `compositions[]` record until explicit future operator metadata opts in **and** export eligibility preconditions are met.
+
+#### Export eligibility (all required)
+
+Before `evidence_transport=s3_export_after_finalize` may appear on a Registry v1 row or export planning surface:
+
+1. Durable primary evidence root exists **outside** `/tmp` (non-staging).
+2. `finalize_primary_evidence_root()` completed on that root.
+3. `MANIFEST.sha256` exists at the canonical per-lane or composition-rollup path (§6b manifest resolution).
+4. `MANIFEST.sha256` verify returns **RC=0** (`manifest_verified=true` on lane rows, or `rollup_manifest_verified=true` on composition records where applicable).
+5. Active staging sync is **forbidden** — no live `/tmp` → remote mirror during runtime.
+6. Runtime process has ended **or** the lane/composition evidence root is finalized for export (closeout boundary reached).
+
+Registry v1 JSON is the metadata index only; **do not** infer export eligibility by walking remote buckets ad hoc.
+
+#### Consumer acceptance (remote copy)
+
+- S3/Object Storage copy is **not** accepted as primary evidence until downloaded/re-materialized locally.
+- Local download + verify against **`MANIFEST.sha256`** must pass (RC=0).
+- Closeout acceptance of a remote copy requires **download+verify RC=0** — upload success alone is insufficient.
+- `SHA256SUMS.stable.txt` must **not** substitute for or compete with `MANIFEST.sha256` (§6b forbidden promotions).
+
+#### Allowed S3 projection / registry pointer fields
+
+From Registry v1 `runs[]` / `compositions[]` and top-level summary only (shared with Notion/Dashboard consumers):
+
+- `run_id`, `lane_id` or `composition_id`, `record_kind`
+- `evidence_transport`, `evidence_status`, `manifest_verified` (or `rollup_manifest_verified` on compositions)
+- `archive_path`, top-level `archive_root`
+- Top-level `verdict`, summarized `issues` / `blockers` (codes only)
+- §6a metadata pointers as non-authorizing literals
+
+#### Forbidden S3 behavior
+
+- No runtime, scheduler, approval, testnet, live, broker, exchange, or strategy execution authority
+- No Notion sync authority, Market Dashboard status authority, or Double Play / Master V2 authority
+- No upload before finalization; no active staging sync
+- No closeout acceptance without download+verify
+- No secrets or credentials in Registry / Notion / Dashboard projections
+- No `SHA256SUMS.stable.txt` as parallel truth or authority
+- No `lane_id=daemon_paper_24h`, no `lane_id=remote_runtime`, no Registry v2
+
+#### Canonical boundary copy (required on future S3/export surfaces)
+
+> S3/Object Storage is finalized evidence transport only. S3 objects, prefixes, upload success, or dashboard/notion links do not authorize runtime, scheduler clearance, testnet, live trading, broker access, strategy execution, Notion sync, Dashboard status, or Double Play decisions. MANIFEST.sha256 remains canonical for evidence verification.
+
+Cross-reference: Notion projection §6a.1; Market Dashboard projection §6a.2; composition-index §6b; Remote Runtime Host Metadata §6a backend-not-lane semantics.
 
 ### v0 authority posture (hard false)
 
