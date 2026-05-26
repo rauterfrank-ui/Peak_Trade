@@ -254,6 +254,8 @@ Future **remote host inventory** planning-only fields (non-provisioning; no conn
 
 Future **remote cost/kill/orphan safety** planning-only requirements (no kill/terminate/process-control/network/AWS/SSH/systemd/GHA; no runtime unlock): taxonomy **§6a.0.4 Remote cost/kill/orphan safety contract v0** — `REMOTE_COST_KILL_ORPHAN_PLANNING_ONLY=true`; `REMOTE_COST_KILL_ORPHAN_READY_FOR_IMPLEMENTATION_CHARTER=false`; binds §6a.0–§6a.0.3 + §2a/§2b.1; implementation charter blocked without declared safety fields; **does not** stop, kill, or terminate hosts.
 
+Future **remote paper packet assembly validator** planning-only cross-check contract (offline artifact consistency; no CLI/runner/dry-template unlock): taxonomy **§6a.0.5 Remote paper packet assembly validator planning contract v0** — `REMOTE_PAPER_PACKET_VALIDATOR_PLANNING_ONLY=true`; `REMOTE_PAPER_PACKET_VALIDATOR_READY_FOR_DRY_COMMAND_TEMPLATE=false`; binds §6a.0.1–§6a.0.4 fixtures + Registry v1; **does not** approve implementation or start.
+
 ## 3a. Futures / perpetual planning boundary (BTC/USD proxy evidence)
 
 Symbols and surfaces such as **BTC/USD**, **BTC-USD**, **Bitcoin USD**, or **BTCUSDT** may appear in this repository as WebUI defaults, spot-style fixtures, Class-A smoke paths, or **public REST market-data captures**. Treat that evidence as **technical proxy / spot-smoke instrumentation only**.

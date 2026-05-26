@@ -123,6 +123,8 @@ REMOTE_HOST_INVENTORY_PLANNING_CONTRACT_V0=true
 REMOTE_HOST_INVENTORY_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true
 REMOTE_COST_KILL_ORPHAN_SAFETY_CONTRACT_V0=true
 REMOTE_COST_KILL_ORPHAN_SAFETY_CONTRACT_DOCS_TESTS_ONLY=true
+REMOTE_PAPER_PACKET_ASSEMBLY_VALIDATOR_PLANNING_CONTRACT_V0=true
+REMOTE_PAPER_PACKET_ASSEMBLY_VALIDATOR_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true
 COMBINED_OUTROOT_COMPOSITION_INDEX_V0=true
 COMPOSITION_INDEX_IS_NOT_LANE=true
 LANE_ID_DAEMON_PAPER_24H_FORBIDDEN=true
@@ -829,6 +831,112 @@ Safety rows **must** cross-reference (pointer-only):
 This contract is **static / normative only** (`REMOTE_COST_KILL_ORPHAN_SAFETY_CONTRACT_DOCS_TESTS_ONLY=true`). It **does not** ship safety enforcement CLI, billing integration, process control, host termination scripts, SSH/systemd/GHA wiring, runner implementation, or dry command templates.
 
 Cross-reference: §6a.0–§6a.0.3 remote paper chain; KillSwitch / incident runbooks as **future pointer targets only** (no authority promotion); composition-index §6b orthogonal.
+
+#### 6a.0.5 Remote paper packet assembly validator planning contract v0 (planning-only)
+
+```
+REMOTE_PAPER_PACKET_ASSEMBLY_VALIDATOR_PLANNING_CONTRACT_V0=true
+REMOTE_PAPER_PACKET_ASSEMBLY_VALIDATOR_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true
+REMOTE_PAPER_PACKET_VALIDATOR_PLANNING_ONLY=true
+REMOTE_PAPER_PACKET_VALIDATOR_NO_CLI_IMPLEMENTATION=true
+REMOTE_PAPER_PACKET_VALIDATOR_DO_NOT_RUN=true
+REMOTE_PAPER_PACKET_VALIDATOR_NO_RUNNER_IMPLEMENTATION=true
+REMOTE_PAPER_PACKET_VALIDATOR_NO_DRY_COMMAND_TEMPLATE=true
+REMOTE_PAPER_PACKET_VALIDATOR_NO_AWS_CLI=true
+REMOTE_PAPER_PACKET_VALIDATOR_NO_SSH=true
+REMOTE_PAPER_PACKET_VALIDATOR_NO_SYSTEMD=true
+REMOTE_PAPER_PACKET_VALIDATOR_NO_GHA_RUNNER=true
+REMOTE_PAPER_PACKET_VALIDATOR_NO_NETWORK=true
+REMOTE_PAPER_PACKET_VALIDATOR_NO_PROCESS_CONTROL=true
+REMOTE_PAPER_PACKET_VALIDATOR_REQUIRES_PREFLIGHT_JSON=true
+REMOTE_PAPER_PACKET_VALIDATOR_REQUIRES_APPROVAL_PACKET=true
+REMOTE_PAPER_PACKET_VALIDATOR_REQUIRES_HOST_INVENTORY=true
+REMOTE_PAPER_PACKET_VALIDATOR_REQUIRES_COST_KILL_ORPHAN_SAFETY=true
+REMOTE_PAPER_PACKET_VALIDATOR_REQUIRES_REGISTRY_V1=true
+REMOTE_PAPER_PACKET_VALIDATOR_S3_PREFIX_PLAN_OPTIONAL_NON_EXECUTING=true
+REMOTE_PAPER_PACKET_VALIDATOR_READY_FOR_IMPLEMENTATION_CHARTER=false
+REMOTE_PAPER_PACKET_VALIDATOR_READY_FOR_START=false
+REMOTE_PAPER_PACKET_VALIDATOR_READY_FOR_DRY_COMMAND_TEMPLATE=false
+REMOTE_PAPER_PACKET_VALIDATOR_NOT_APPROVAL=true
+REMOTE_PAPER_PACKET_VALIDATOR_NOT_RUNTIME_START=true
+REMOTE_PAPER_PACKET_VALIDATOR_DRY_TEMPLATE_BLOCKED_UNTIL_VALIDATOR_PLANNING=true
+```
+
+**Purpose:** Define a **planning-only, offline** validator contract describing how existing remote-paper planning artifacts must be **cross-checked** before any dry command template or implementation charter can be considered — **without** implementing a validator CLI, assembling executable commands, starting runners, or inspecting real archives/cloud resources.
+
+**Normative rule:** This contract **does not** approve implementation, approve start, replace scheduler guard, HOLD binding, Preflight §2a/§2a.1, §2b.1 durable closeout, or Registry v1. S3/Notion/Dashboard remain non-authoritative.
+
+**Fixture owner (non-authorizing):** [remote_paper_packet_assembly_validator_planning_v0.json](../../../tests/fixtures/ops/remote_paper_packet_assembly_validator_planning_v0.json) — planning-only cross-artifact index; **does not** execute validation.
+
+#### Required bound artifacts (v0)
+
+| Artifact | Owner |
+|---|---|
+| Preflight JSON shape | §6a.0.1 [preflight_remote_runtime_runner_v0.py](../../../scripts/ops/preflight_remote_runtime_runner_v0.py) |
+| Approval/command packet | §6a.0.2 [remote_paper_approval_command_packet_v0.json](../../../tests/fixtures/ops/remote_paper_approval_command_packet_v0.json) |
+| Host inventory | §6a.0.3 [remote_host_inventory_planning_v0.json](../../../tests/fixtures/ops/remote_host_inventory_planning_v0.json) |
+| Cost/kill/orphan safety | §6a.0.4 [remote_cost_kill_orphan_safety_v0.json](../../../tests/fixtures/ops/remote_cost_kill_orphan_safety_v0.json) |
+| Registry v1 row/pointer | [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) |
+| S3 prefix-plan (optional) | [preflight_s3_finalized_evidence_export_v0.py](../../../scripts/ops/preflight_s3_finalized_evidence_export_v0.py) when `evidence_transport=s3_export_after_finalize_plan` |
+
+#### Required cross-artifact consistency fields
+
+All bound artifacts **must agree** on:
+
+| Field | Rule |
+|---|---|
+| `remote_run_id` | Same safe run id across packet, safety, and preflight planning rows |
+| `runtime_host` | `remote` |
+| `runtime_backend` | Same enum across artifacts |
+| `runtime_mode` | `paper_only` |
+| `lane_id` | `paper` |
+| `remote_host_id` | Same planning synthetic id across inventory and safety |
+| `max_runtime_seconds` | Consistent bounded cap |
+| `evidence_root_type` | `remote_durable` |
+| `evidence_transport` | Consistent; optional S3 prefix-plan only when planned |
+| `live_authority` | **`false`** |
+| `testnet_authority` | **`false`** |
+| `broker_credentials_present` | **`false`** |
+| `exchange_credentials_present` | **`false`** |
+
+#### Future validator output semantics (non-authorizing)
+
+| Line | Allowed values (v0) |
+|---|---|
+| `REMOTE_PAPER_PACKET_VALIDATOR_STATUS` | `planning_valid` \| `blocked` \| `invalid` |
+| `REMOTE_PAPER_PACKET_VALIDATOR_READY_FOR_IMPLEMENTATION_CHARTER` | **`false` always in v0** |
+| `REMOTE_PAPER_PACKET_VALIDATOR_READY_FOR_START` | **`false` always in v0** |
+| `REMOTE_PAPER_PACKET_VALIDATOR_READY_FOR_DRY_COMMAND_TEMPLATE` | **`false` always in v0** |
+| `REMOTE_PAPER_PACKET_VALIDATOR_RUNTIME_COMMANDS_CALLED` | **`false`** |
+| `REMOTE_PAPER_PACKET_VALIDATOR_AWS_CLI_CALLED` | **`false`** |
+| `REMOTE_PAPER_PACKET_VALIDATOR_NETWORK_CALLED` | **`false`** |
+| `REMOTE_PAPER_PACKET_VALIDATOR_SSH_CALLED` | **`false`** |
+| `REMOTE_PAPER_PACKET_VALIDATOR_SYSTEMD_CALLED` | **`false`** |
+| `REMOTE_PAPER_PACKET_VALIDATOR_GHA_RUNNER_IMPLEMENTED` | **`false`** |
+| `REMOTE_PAPER_PACKET_VALIDATOR_PROCESS_CONTROL_CALLED` | **`false`** |
+| `REMOTE_PAPER_PACKET_VALIDATOR_HOST_TERMINATION_CALLED` | **`false`** |
+| `REMOTE_PAPER_PACKET_VALIDATOR_S3_UPLOAD_CALLED` | **`false`** |
+| `REMOTE_PAPER_PACKET_VALIDATOR_S3_DOWNLOAD_CALLED` | **`false`** |
+
+`planning_valid` means cross-artifact planning fields align — it **still does not** authorize implementation, dry command templates, or runtime start.
+
+#### Dry command template gate (normative)
+
+Dry command templates remain **blocked** until:
+
+1. This validator planning contract exists (`REMOTE_PAPER_PACKET_VALIDATOR_DRY_TEMPLATE_BLOCKED_UNTIL_VALIDATOR_PLANNING=true`).
+2. Closeout enforcement planning has been reviewed (§2b.1 tooling gap acknowledged).
+3. Operator explicitly charters a **separate non-executable** dry-command-template slice.
+
+#### Forbidden content
+
+No real secrets, account IDs, IPs, provider instance IDs, bucket names, SSH usernames, or credentials in validator planning rows or fixture examples.
+
+#### Implementation posture (this slice)
+
+This contract is **static / normative only** (`REMOTE_PAPER_PACKET_ASSEMBLY_VALIDATOR_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true`). It **does not** ship validator CLI, archive walkers, cloud inspection, runner implementation, dry command templates, or process control.
+
+Cross-reference: §6a.0–§6a.0.4 remote paper chain; composition-index §6b orthogonal.
 
 ### S3 / Object Storage — finalized evidence transport only
 
