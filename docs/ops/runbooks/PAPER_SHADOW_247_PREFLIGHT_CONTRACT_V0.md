@@ -234,6 +234,94 @@ Planning-only closeouts under `{archive}&#47;planning&#47;` remain valid per §2
 
 Cross-reference: [Runtime Lane Taxonomy + Authority Levels Contract v0](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) §2 index; shared manifest helper [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) (reuse semantics only).
 
+## 2b.2 Closeout Enforcement Planning Contract v0
+
+```
+CLOSEOUT_ENFORCEMENT_PLANNING_CONTRACT_V0=true
+CLOSEOUT_ENFORCEMENT_PLANNING_ONLY=true
+CLOSEOUT_ENFORCEMENT_NO_COPY_VERIFY_IMPLEMENTATION=true
+CLOSEOUT_ENFORCEMENT_NO_ARCHIVE_MUTATION=true
+CLOSEOUT_ENFORCEMENT_NO_TMP_DELETE=true
+CLOSEOUT_ENFORCEMENT_TMP_ONLY_INCOMPLETE=true
+CLOSEOUT_ENFORCEMENT_REQUIRES_DURABLE_DESTINATION_OUTSIDE_TMP=true
+CLOSEOUT_ENFORCEMENT_REQUIRES_DURABLE_COPY_README=true
+CLOSEOUT_ENFORCEMENT_REQUIRES_MANIFEST_SHA256=true
+CLOSEOUT_ENFORCEMENT_REQUIRES_MANIFEST_VERIFY_RC_ZERO=true
+CLOSEOUT_ENFORCEMENT_REQUIRES_DURABLE_INDEX_OR_POINTER=true
+CLOSEOUT_ENFORCEMENT_SOURCE_TMP_NOT_CANONICAL=true
+CLOSEOUT_ENFORCEMENT_S3_NOT_COMPLETION=true
+CLOSEOUT_ENFORCEMENT_NOTION_NOT_COMPLETION=true
+CLOSEOUT_ENFORCEMENT_DASHBOARD_NOT_COMPLETION=true
+CLOSEOUT_ENFORCEMENT_POST_MERGE_CLOSEOUT_SH_NOT_COMPLETION=true
+CLOSEOUT_ENFORCEMENT_APPEND_CLOSEOUT_INDEX_NOT_CANONICAL_ARCHIVE_INDEX=true
+CLOSEOUT_ENFORCEMENT_REQUIRED_BEFORE_REMOTE_IMPLEMENTATION_CHARTER=true
+CLOSEOUT_ENFORCEMENT_REVIEW_REQUIRED_BEFORE_DRY_COMMAND_TEMPLATE=true
+CLOSEOUT_ENFORCEMENT_DOES_NOT_AUTHORIZE_RUNTIME=true
+```
+
+**Purpose:** Define the **enforcement plan** so material/post-merge closeouts cannot silently remain **`/tmp`-only** — **without** implementing copy/verify automation, **without** mutating operator archives, and **without** duplicating §2b.1 completeness rules (this section adds tooling classification + future helper expectations only).
+
+**Planning-only posture:** `CLOSEOUT_ENFORCEMENT_PLANNING_ONLY=true` — normative/static contract + static tests only. `CLOSEOUT_ENFORCEMENT_NO_COPY_VERIFY_IMPLEMENTATION=true` — this slice does **not** ship copy/verify CLI or scripts. `CLOSEOUT_ENFORCEMENT_NO_ARCHIVE_MUTATION=true` — no writes to `~/Documents/Peak_Trade_runtime_evidence_archive_*` or other durable archive roots from repo automation in this slice. `CLOSEOUT_ENFORCEMENT_NO_TMP_DELETE=true` — future enforcement must not delete `/tmp` sources before verify passes; source artifacts may remain non-canonical per §2b.1.
+
+### Relationship to §2b.1
+
+§2b.1 defines **when** a material closeout is complete vs incomplete. This §2b.2 defines **how tooling must eventually enforce** those rules and **classifies current helpers** that do **not** satisfy enforcement today. Satisfying §2b.2 planning review does **not** by itself complete any closeout and does **not** replace §2b.1 operator copy/verify discipline until a future enforcement helper is explicitly chartered and implemented in a separate slice.
+
+### Current tooling classification (observed; not completion)
+
+| Tool / surface | Role today | Closeout completion? |
+|---|---|---|
+| [post_merge_closeout.sh](../../../scripts/governance/post_merge_closeout.sh) | Git sync to `origin/main`, optional PR branch cleanup, `safe_delete_merged_branches` dry-run | **`CLOSEOUT_ENFORCEMENT_POST_MERGE_CLOSEOUT_SH_NOT_COMPLETION=true`** — **not** §2b.1 durable copy/verify/index |
+| [append_closeout_index.py](../../../scripts/ops/append_closeout_index.py) | Appends JSONL under repo-local `out/ops/index_post_merge_closeouts.jsonl` (or `PT_CLOSEOUT_INDEX` override) | **`CLOSEOUT_ENFORCEMENT_APPEND_CLOSEOUT_INDEX_NOT_CANONICAL_ARCHIVE_INDEX=true`** — navigation aid only; **not** canonical durable archive index |
+| `{operator_home}&#47;Documents&#47;Peak_Trade_runtime_evidence_archive_*&#47;closeout&#47;` | Observed canonical durable closeout owner pattern (example archive id `20260520T161443Z`) | **Target owner** for material closeout bytes + manifest + durable index/pointer when §2b.1 complete |
+
+**Gap (acknowledged):** Merge/post-PR slices through PR #3679–#3687 relied on **manual** operator durable copy/verify/index under the archive pattern above. Repo git-sync helpers alone did **not** prevent tmp-only recurrence.
+
+### Future enforcement requirements (normative; not implemented here)
+
+Future material closeout enforcement must treat closeout as **incomplete** unless **all** of the following hold (align with §2b.1; additive enforcement semantics only):
+
+1. **`CLOSEOUT_ENFORCEMENT_TMP_ONLY_INCOMPLETE=true`** — evidence existing **only** under `/tmp` is incomplete; must not be promoted to canonical audit input.
+2. **`CLOSEOUT_ENFORCEMENT_REQUIRES_DURABLE_DESTINATION_OUTSIDE_TMP=true`** — durable destination root outside `/tmp` (for example `Peak_Trade_runtime_evidence_archive_*`).
+3. **`CLOSEOUT_ENFORCEMENT_REQUIRES_DURABLE_COPY_README=true`** — `DURABLE_COPY_README.md` in durable closeout directory.
+4. **`CLOSEOUT_ENFORCEMENT_REQUIRES_MANIFEST_SHA256=true`** — `MANIFEST.sha256` over durable closeout files.
+5. **`CLOSEOUT_ENFORCEMENT_REQUIRES_MANIFEST_VERIFY_RC_ZERO=true`** — manifest verify **RC=0** on durable tree (reuse `verify_manifest_sha256()` / `shasum -a 256 -c` semantics).
+6. **`CLOSEOUT_ENFORCEMENT_REQUIRES_DURABLE_INDEX_OR_POINTER=true`** — durable index markdown or pointer under archive `closeout/` root (not repo-local JSONL alone).
+7. **`CLOSEOUT_ENFORCEMENT_SOURCE_TMP_NOT_CANONICAL=true`** — `/tmp` source may remain until operator deletes; it is **not** canonical and must not be deleted before verify passes.
+
+**Non-completion substitutes (explicit):**
+
+- `CLOSEOUT_ENFORCEMENT_S3_NOT_COMPLETION=true` — S3 export/upload/prefix success does **not** complete enforcement (align §6a.3 / §6a.3.1 download+verify acceptance).
+- `CLOSEOUT_ENFORCEMENT_NOTION_NOT_COMPLETION=true` — Notion projection/sync does **not** complete enforcement.
+- `CLOSEOUT_ENFORCEMENT_DASHBOARD_NOT_COMPLETION=true` — Market Dashboard projection does **not** complete enforcement.
+
+### Future helper expectations (planning only; do not implement in this slice)
+
+A future **durable closeout helper** (separate implementation charter) should:
+
+- Be **copy-only** into durable archive roots; preserve source `/tmp` artifacts until verify passes.
+- Generate or update `MANIFEST.sha256` over the durable closeout tree.
+- Verify manifests on **both** source (when present) and durable destination; **fail closed** on verify failure.
+- Write or update a **durable index/pointer** under `{archive_root}&#47;closeout&#47;` (not only repo `out/ops/` JSONL).
+- **Fail closed** on: missing source tree, missing manifest, verify RC≠0, destination under `/tmp`, ambiguous/unresolved archive root, or attempted archive mutation outside chartered copy scope.
+
+This slice **does not** modify [post_merge_closeout.sh](../../../scripts/governance/post_merge_closeout.sh) to copy files and **does not** modify [append_closeout_index.py](../../../scripts/ops/append_closeout_index.py) to mutate archive roots.
+
+### Bindings to existing contracts
+
+- **§2b.1 Mandatory Durable Closeout Contract v0** — completeness rules owner; §2b.2 enforcement plan subordinate.
+- **§2a Primary evidence retention invariant v0** — runtime primary evidence; orthogonal unless closeout references runtime runs.
+- **Remote planning §6a.0–§6a.0.5** — remote Paper planning chain; merge closeouts for those slices remain §2b.1 material closeouts; `CLOSEOUT_ENFORCEMENT_REQUIRED_BEFORE_REMOTE_IMPLEMENTATION_CHARTER=true`.
+- **S3 finalized evidence export §6a.3 / §6a.3.1** — transport planning only; S3 does not substitute for local durable closeout enforcement.
+
+### Gates and non-authority
+
+- `CLOSEOUT_ENFORCEMENT_REQUIRED_BEFORE_REMOTE_IMPLEMENTATION_CHARTER=true` — remote runner/host implementation charter must not proceed until closeout enforcement planning is reviewed **and** a future enforcement helper is separately chartered.
+- `CLOSEOUT_ENFORCEMENT_REVIEW_REQUIRED_BEFORE_DRY_COMMAND_TEMPLATE=true` — remote dry command template slices (taxonomy §6a.0.5 gate) remain blocked until this §2b.2 review is merged.
+- `CLOSEOUT_ENFORCEMENT_DOES_NOT_AUTHORIZE_RUNTIME=true` — enforcement planning does **not** authorize scheduler, daemon, Paper, Shadow, Testnet, Live, broker, exchange, remote runner start, or gate clearance.
+
+Cross-reference: [Runtime Lane Taxonomy + Authority Levels Contract v0](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) §2 index; §6a.0.5 dry-template gate; [test_closeout_enforcement_planning_contract_v0.py](../../../tests/ops/test_closeout_enforcement_planning_contract_v0.py).
+
 ## 3. Non-authority
 
 The following are **not** trading authority, readiness approval, evidence approval, promotion, Master V2 / Double Play approval, or Live/Testnet approval:
@@ -254,7 +342,9 @@ Future **remote host inventory** planning-only fields (non-provisioning; no conn
 
 Future **remote cost/kill/orphan safety** planning-only requirements (no kill/terminate/process-control/network/AWS/SSH/systemd/GHA; no runtime unlock): taxonomy **§6a.0.4 Remote cost/kill/orphan safety contract v0** — `REMOTE_COST_KILL_ORPHAN_PLANNING_ONLY=true`; `REMOTE_COST_KILL_ORPHAN_READY_FOR_IMPLEMENTATION_CHARTER=false`; binds §6a.0–§6a.0.3 + §2a/§2b.1; implementation charter blocked without declared safety fields; **does not** stop, kill, or terminate hosts.
 
-Future **remote paper packet assembly validator** planning-only cross-check contract (offline artifact consistency; no CLI/runner/dry-template unlock): taxonomy **§6a.0.5 Remote paper packet assembly validator planning contract v0** — `REMOTE_PAPER_PACKET_VALIDATOR_PLANNING_ONLY=true`; `REMOTE_PAPER_PACKET_VALIDATOR_READY_FOR_DRY_COMMAND_TEMPLATE=false`; binds §6a.0.1–§6a.0.4 fixtures + Registry v1; **does not** approve implementation or start.
+Future **remote paper packet assembly validator** planning-only cross-check contract (offline artifact consistency; no CLI/runner/dry-template unlock): taxonomy **§6a.0.5 Remote paper packet assembly validator planning contract v0** — `REMOTE_PAPER_PACKET_VALIDATOR_PLANNING_ONLY=true`; `REMOTE_PAPER_PACKET_VALIDATOR_READY_FOR_DRY_COMMAND_TEMPLATE=false`; binds §6a.0.1–§6a.0.4 fixtures + Registry v1; dry-template blocked until **§2b.2 Closeout Enforcement Planning Contract v0** review; **does not** approve implementation or start.
+
+Future **closeout enforcement planning** (tooling gap classification + future helper expectations; no copy/verify implementation): **§2b.2 Closeout Enforcement Planning Contract v0** — `CLOSEOUT_ENFORCEMENT_PLANNING_ONLY=true`; classifies `post_merge_closeout.sh` and `append_closeout_index.py` as non-completion helpers; binds §2b.1 + §2a + remote §6a.0–§6a.0.5 + S3 §6a.3; **does not** authorize runtime or archive mutation.
 
 ## 3a. Futures / perpetual planning boundary (BTC/USD proxy evidence)
 
