@@ -89,7 +89,8 @@ def test_planning_only_no_cli_or_runner() -> None:
     assert "REMOTE_PAPER_PACKET_VALIDATOR_PLANNING_ONLY=true" in section
     assert "REMOTE_PAPER_PACKET_VALIDATOR_NO_CLI_IMPLEMENTATION=true" in section
     assert "REMOTE_PAPER_PACKET_VALIDATOR_NO_RUNNER_IMPLEMENTATION=true" in section
-    assert "ship validator CLI" in section
+    assert "assembly-validator CLI" in section
+    assert "§6a.0.6 owns the separate offline packet validator CLI" in section
 
 
 def test_no_dry_command_template_and_blocked_gate() -> None:
