@@ -1,0 +1,67 @@
+{
+  "schema_version": "peak_trade.remote_paper_approval_command_packet.v0",
+  "packet_name": "remote_paper_approval_command_packet_v0",
+  "do_not_run": true,
+  "approve_remote_runner_start_now": false,
+  "runner_implemented": false,
+  "remote_run_id": "remote_paper_fixture_20260526T120000Z",
+  "runtime_host": "remote",
+  "runtime_backend": "ec2",
+  "runtime_mode": "paper_only",
+  "lane_id": "paper",
+  "max_runtime_seconds": 3600,
+  "evidence_root_type": "remote_durable",
+  "evidence_transport": "local_only",
+  "input_pointers": {
+    "preflight_remote_runtime_runner_v0_json": {
+      "path": "fixtures/example_preflight_remote_runtime_runner_v0.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "scheduler_guard_snapshot": {
+      "path": "fixtures/example_scheduler_guard.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "hold_binding": {
+      "path": "fixtures/example_hold_binding.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "bounded_adapter_approval_record": {
+      "path": "fixtures/ops/paper_only_adapter_stage3_approval_sample.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "registry_v1_row": {
+      "path": "fixtures/example_registry_v1_run_row.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "primary_evidence_retention_contract": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md#2a",
+    "mandatory_durable_closeout_contract": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md#2b1",
+    "s3_export_prefix_plan_json": null
+  },
+  "output_machine_lines": {
+    "REMOTE_PAPER_PACKET_STATUS": "prepared_not_executable",
+    "REMOTE_PAPER_PACKET_READY_FOR_IMPLEMENTATION_REVIEW": false,
+    "REMOTE_PAPER_PACKET_READY_FOR_START": false,
+    "REMOTE_PAPER_PACKET_OPERATOR_APPROVAL_REQUIRED": true,
+    "REMOTE_PAPER_PACKET_RUNTIME_COMMANDS_CALLED": false,
+    "REMOTE_PAPER_PACKET_AWS_CLI_CALLED": false,
+    "REMOTE_PAPER_PACKET_NETWORK_CALLED": false,
+    "REMOTE_PAPER_PACKET_SSH_CALLED": false,
+    "REMOTE_PAPER_PACKET_SYSTEMD_CALLED": false,
+    "REMOTE_PAPER_PACKET_S3_UPLOAD_CALLED": false,
+    "REMOTE_PAPER_PACKET_S3_DOWNLOAD_CALLED": false
+  },
+  "boundary_fields": {
+    "remote_runtime_backend_not_lane": true,
+    "lane_id_remote_runtime_forbidden": true,
+    "lane_id_daemon_paper_24h_not_lane": true,
+    "shadow_default_forbidden": true,
+    "testnet_forbidden": true,
+    "live_forbidden": true,
+    "broker_credentials_forbidden": true,
+    "aws_rclone_network_execution_forbidden": true,
+    "ssh_systemd_gha_runner_forbidden": true,
+    "notion_projection_only": true,
+    "market_dashboard_projection_only": true,
+    "not_new_approval_authority": true
+  }
+}

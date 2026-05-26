@@ -117,6 +117,8 @@ REMOTE_RUNTIME_COMMAND_CONTRACT_V0=true
 REMOTE_RUNTIME_COMMAND_CONTRACT_DOCS_TESTS_ONLY=true
 REMOTE_RUNTIME_RUNNER_PREFLIGHT_V0=true
 REMOTE_RUNTIME_RUNNER_PREFLIGHT_DOCS_TESTS_ONLY=true
+REMOTE_PAPER_APPROVAL_COMMAND_PACKET_CONTRACT_V0=true
+REMOTE_PAPER_APPROVAL_COMMAND_PACKET_DOCS_TESTS_ONLY=true
 COMBINED_OUTROOT_COMPOSITION_INDEX_V0=true
 COMPOSITION_INDEX_IS_NOT_LANE=true
 LANE_ID_DAEMON_PAPER_24H_FORBIDDEN=true
@@ -470,6 +472,123 @@ RUNNER_IMPLEMENTED=false
 **Fail-closed:** Missing `--dry-run` or `--no-network`; any forbidden lane (`remote_runtime`, `daemon_paper_24h`, `shadow`, `testnet`, `live`); non-`paper_only` mode; non-`remote` host; invalid backend; unsafe `max_runtime_seconds`; registry conflicts; non-executing S3 prefix-plan mismatches; forbidden approval/guard markers implying live/testnet/broker/network/AWS execution.
 
 **Output:** JSON with `status` ∈ {`eligible`, `blocked`, `invalid`} and non-authority boundary fields (`runner_implemented=false`, `network_called=false`, etc.). Preflight **does not** authorize runtime, clear HOLD, or grant gates.
+
+#### 6a.0.2 Remote paper approval/command packet contract v0 (non-executable)
+
+```
+REMOTE_PAPER_APPROVAL_COMMAND_PACKET_CONTRACT_V0=true
+REMOTE_PAPER_APPROVAL_COMMAND_PACKET_DOCS_TESTS_ONLY=true
+REMOTE_PAPER_PACKET_NON_EXECUTABLE=true
+REMOTE_PAPER_PACKET_DO_NOT_RUN=true
+REMOTE_PAPER_PACKET_RUNNER_IMPLEMENTED=false
+REMOTE_PAPER_PACKET_APPROVE_REMOTE_RUNNER_START_NOW=false
+REMOTE_PAPER_PACKET_LANE_ID_REQUIRED=paper
+REMOTE_PAPER_PACKET_REMOTE_RUNTIME_BACKEND_NOT_LANE=true
+REMOTE_PAPER_PACKET_LANE_ID_REMOTE_RUNTIME_FORBIDDEN=true
+REMOTE_PAPER_PACKET_LANE_ID_DAEMON_PAPER_24H_NOT_LANE=true
+REMOTE_PAPER_PACKET_SHADOW_DEFAULT_FORBIDDEN=true
+REMOTE_PAPER_PACKET_TESTNET_FORBIDDEN=true
+REMOTE_PAPER_PACKET_LIVE_FORBIDDEN=true
+REMOTE_PAPER_PACKET_BROKER_CREDENTIALS_FORBIDDEN=true
+REMOTE_PAPER_PACKET_AWS_RCLONE_NETWORK_EXECUTION_FORBIDDEN=true
+REMOTE_PAPER_PACKET_SSH_SYSTEMD_GHA_RUNNER_FORBIDDEN=true
+REMOTE_PAPER_PACKET_REQUIRES_PREFLIGHT_JSON=true
+REMOTE_PAPER_PACKET_REQUIRES_SCHEDULER_GUARD=true
+REMOTE_PAPER_PACKET_REQUIRES_HOLD_BINDING=true
+REMOTE_PAPER_PACKET_REQUIRES_BOUNDED_ADAPTER_APPROVAL=true
+REMOTE_PAPER_PACKET_REQUIRES_REGISTRY_V1=true
+REMOTE_PAPER_PACKET_REQUIRES_PRIMARY_EVIDENCE_RETENTION=true
+REMOTE_PAPER_PACKET_REQUIRES_MANDATORY_DURABLE_CLOSEOUT=true
+REMOTE_PAPER_PACKET_S3_PREFIX_PLAN_OPTIONAL_NON_EXECUTING=true
+REMOTE_PAPER_PACKET_NOTION_PROJECTION_ONLY=true
+REMOTE_PAPER_PACKET_MARKET_DASHBOARD_PROJECTION_ONLY=true
+REMOTE_PAPER_PACKET_READY_FOR_START=false
+REMOTE_PAPER_PACKET_OPERATOR_APPROVAL_REQUIRED=true
+REMOTE_PAPER_PACKET_NOT_NEW_APPROVAL_AUTHORITY=true
+```
+
+**Purpose:** Define a **non-executable** operator approval/command **packet** that binds together all §6a.0 gate inputs **before** any future Remote Paper-only runner **implementation review** or **start** can be considered — **without** shipping a runner, dry command template, AWS/EC2/GHA/systemd/SSH wiring, scheduler start, runtime start, broker/exchange access, S3 upload/download, or Notion/Dashboard writes.
+
+**Normative rule:** This packet **extends** the existing bounded adapter approval / operator decision chain (§6a.0 gate item 4). It is **not** a new approval authority and **does not** replace scheduler boundary guard, HOLD binding, Registry v1, Preflight §2a/§2a.1, or §2b.1 mandatory durable closeout.
+
+**Fixture owner (non-authorizing):** [remote_paper_approval_command_packet_v0.json](../../../tests/fixtures/ops/remote_paper_approval_command_packet_v0.json) — example packet shape only; `DO_NOT_RUN=true`; **does not** authorize execution.
+
+#### Required packet identity fields (v0)
+
+| Field | Required value / rule |
+|---|---|
+| `remote_run_id` | Non-empty; safe run id |
+| `runtime_host` | `remote` |
+| `runtime_backend` | `ec2` \| `vps` \| `gha_runner` \| `data_node` |
+| `runtime_mode` | `paper_only` |
+| `lane_id` | `paper` only (`REMOTE_PAPER_PACKET_LANE_ID_REQUIRED=paper`) |
+| `max_runtime_seconds` | Positive bounded cap |
+| `evidence_root_type` | `remote_durable` |
+| `evidence_transport` | `local_only` or `s3_export_after_finalize_plan` |
+
+#### Required packet input pointers (hashes or durable paths)
+
+All pointers are **non-authorizing references** to artifacts that must exist and verify before packet status may be `prepared_not_executable`:
+
+1. **Preflight JSON** — output from [preflight_remote_runtime_runner_v0.py](../../../scripts/ops/preflight_remote_runtime_runner_v0.py) with `status=eligible` (`REMOTE_PAPER_PACKET_REQUIRES_PREFLIGHT_JSON=true`).
+2. **Scheduler guard snapshot** — [scheduler_start_boundary_guard_v0.py](../../../scripts/ops/scheduler_start_boundary_guard_v0.py) JSON (`REMOTE_PAPER_PACKET_REQUIRES_SCHEDULER_GUARD=true`).
+3. **HOLD binding** — [paper_shadow_247_scheduler_hold_runtime_binding_v0.py](../../../scripts/ops/paper_shadow_247_scheduler_hold_runtime_binding_v0.py) RUN_ID-scoped binding when scheduler subprocess is in scope (`REMOTE_PAPER_PACKET_REQUIRES_HOLD_BINDING=true`).
+4. **Bounded adapter approval record** — reuse Stage-3 paper bounded observation approval chain ([run_paper_only_bounded_observation_adapter_v0.py](../../../scripts/ops/run_paper_only_bounded_observation_adapter_v0.py); no parallel approval surface) (`REMOTE_PAPER_PACKET_REQUIRES_BOUNDED_ADAPTER_APPROVAL=true`).
+5. **Registry v1 row** — [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) `runs[]` metadata with §6a fields (`REMOTE_PAPER_PACKET_REQUIRES_REGISTRY_V1=true`).
+6. **Primary evidence retention** — Preflight §2a / §2a.1 + [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) contract pointer (`REMOTE_PAPER_PACKET_REQUIRES_PRIMARY_EVIDENCE_RETENTION=true`).
+7. **Mandatory durable closeout** — Preflight §2b.1 contract pointer (`REMOTE_PAPER_PACKET_REQUIRES_MANDATORY_DURABLE_CLOSEOUT=true`).
+8. **S3 export prefix-plan (optional)** — [preflight_s3_finalized_evidence_export_v0.py](../../../scripts/ops/preflight_s3_finalized_evidence_export_v0.py) `--export-prefix-plan` JSON **only when** `evidence_transport=s3_export_after_finalize_plan`; non-executing; upload does **not** authorize runtime (`REMOTE_PAPER_PACKET_S3_PREFIX_PLAN_OPTIONAL_NON_EXECUTING=true`).
+
+#### Forbidden packet semantics (fail-closed)
+
+| Forbidden | Marker |
+|---|---|
+| `lane_id=remote_runtime` | `REMOTE_PAPER_PACKET_LANE_ID_REMOTE_RUNTIME_FORBIDDEN=true` |
+| `lane_id=daemon_paper_24h` as runtime lane | `REMOTE_PAPER_PACKET_LANE_ID_DAEMON_PAPER_24H_NOT_LANE=true` |
+| Shadow default / shadow lane authority | `REMOTE_PAPER_PACKET_SHADOW_DEFAULT_FORBIDDEN=true` |
+| Testnet | `REMOTE_PAPER_PACKET_TESTNET_FORBIDDEN=true` |
+| Live / broker / exchange | `REMOTE_PAPER_PACKET_LIVE_FORBIDDEN=true`; `REMOTE_PAPER_PACKET_BROKER_CREDENTIALS_FORBIDDEN=true` |
+| AWS / rclone / network execution | `REMOTE_PAPER_PACKET_AWS_RCLONE_NETWORK_EXECUTION_FORBIDDEN=true` |
+| SSH / systemd / GHA runner wiring | `REMOTE_PAPER_PACKET_SSH_SYSTEMD_GHA_RUNNER_FORBIDDEN=true` |
+| Executable command template in packet | forbidden — `REMOTE_PAPER_PACKET_NON_EXECUTABLE=true` |
+| Runner implementation implied | forbidden — `REMOTE_PAPER_PACKET_RUNNER_IMPLEMENTED=false` |
+
+#### Required packet output / final machine lines
+
+Future operator tooling may emit a packet summary JSON or markdown footer with:
+
+| Line | Allowed values |
+|---|---|
+| `REMOTE_PAPER_PACKET_STATUS` | `prepared_not_executable` \| `blocked` \| `invalid` |
+| `REMOTE_PAPER_PACKET_READY_FOR_IMPLEMENTATION_REVIEW` | `true` \| `false` (review-only; **not** start authority) |
+| `REMOTE_PAPER_PACKET_READY_FOR_START` | **`false` always in v0** |
+| `REMOTE_PAPER_PACKET_OPERATOR_APPROVAL_REQUIRED` | **`true` always in v0** |
+| `REMOTE_PAPER_PACKET_RUNTIME_COMMANDS_CALLED` | **`false`** |
+| `REMOTE_PAPER_PACKET_AWS_CLI_CALLED` | **`false`** |
+| `REMOTE_PAPER_PACKET_NETWORK_CALLED` | **`false`** |
+| `REMOTE_PAPER_PACKET_SSH_CALLED` | **`false`** |
+| `REMOTE_PAPER_PACKET_SYSTEMD_CALLED` | **`false`** |
+| `REMOTE_PAPER_PACKET_S3_UPLOAD_CALLED` | **`false`** |
+| `REMOTE_PAPER_PACKET_S3_DOWNLOAD_CALLED` | **`false`** |
+
+`prepared_not_executable` means all input pointers verify and §6a.0.1 preflight would be `eligible` — it **still does not** authorize runner implementation, scheduler start, or runtime start.
+
+#### Notion and Market Dashboard (projection-only)
+
+- `REMOTE_PAPER_PACKET_NOTION_PROJECTION_ONLY=true` — future Notion may display packet status from Registry/projection only; no approval/start authority (§6a.1).
+- `REMOTE_PAPER_PACKET_MARKET_DASHBOARD_PROJECTION_ONLY=true` — future Dashboard may display packet status read-only; no runtime actions (§6a.2).
+
+#### S3 (optional prefix-plan pointer only)
+
+- Prefix-plan pointer required only when S3 transport is planned post-finalize.
+- Upload does **not** authorize runtime or closeout acceptance (§6a.3).
+- Consumer download + `MANIFEST.sha256` verify RC=0 required before accepting remote object copies.
+
+#### Implementation posture (this slice)
+
+This contract is **static / normative only** (`REMOTE_PAPER_APPROVAL_COMMAND_PACKET_DOCS_TESTS_ONLY=true`). It **does not** ship packet assembly CLI, runner implementation, dry command template, AWS/GHA/systemd/SSH wiring, or scheduler start path.
+
+Cross-reference: §6a.0 command shape; §6a.0.1 local preflight; §6a.3/§6a.3.1 S3 after-finalize; Preflight §2a/§2b.1; composition-index §6b (orthogonal; `daemon_paper_24h` is not a runtime lane).
 
 ### S3 / Object Storage — finalized evidence transport only
 
