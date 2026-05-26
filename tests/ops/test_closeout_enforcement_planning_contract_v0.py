@@ -14,13 +14,17 @@ MANDATORY_CLOSEOUT_TESTS = (
 )
 POST_MERGE_CLOSEOUT = REPO_ROOT / "scripts" / "governance" / "post_merge_closeout.sh"
 APPEND_CLOSEOUT_INDEX = REPO_ROOT / "scripts" / "ops" / "append_closeout_index.py"
+DURABLE_CLOSEOUT_HELPER = REPO_ROOT / "scripts" / "ops" / "durable_closeout_copy_verify_v0.py"
 PRIMARY_EVIDENCE = REPO_ROOT / "scripts" / "ops" / "primary_evidence_retention_v0.py"
 DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
 
 ENFORCEMENT_MARKERS = (
     "CLOSEOUT_ENFORCEMENT_PLANNING_CONTRACT_V0=true",
     "CLOSEOUT_ENFORCEMENT_PLANNING_ONLY=true",
-    "CLOSEOUT_ENFORCEMENT_NO_COPY_VERIFY_IMPLEMENTATION=true",
+    "CLOSEOUT_ENFORCEMENT_HELPER_IMPLEMENTED=true",
+    "CLOSEOUT_ENFORCEMENT_HELPER_NON_AUTHORIZING=true",
+    "CLOSEOUT_ENFORCEMENT_HELPER_DOES_NOT_AUTHORIZE_RUNTIME=true",
+    "CLOSEOUT_ENFORCEMENT_HELPER_DOES_NOT_AUTHORIZE_REMOTE_RUNNER_START=true",
     "CLOSEOUT_ENFORCEMENT_NO_ARCHIVE_MUTATION=true",
     "CLOSEOUT_ENFORCEMENT_NO_TMP_DELETE=true",
     "CLOSEOUT_ENFORCEMENT_TMP_ONLY_INCOMPLETE=true",
@@ -38,6 +42,8 @@ ENFORCEMENT_MARKERS = (
     "CLOSEOUT_ENFORCEMENT_REQUIRED_BEFORE_REMOTE_IMPLEMENTATION_CHARTER=true",
     "CLOSEOUT_ENFORCEMENT_REVIEW_REQUIRED_BEFORE_DRY_COMMAND_TEMPLATE=true",
     "CLOSEOUT_ENFORCEMENT_DOES_NOT_AUTHORIZE_RUNTIME=true",
+    "PRE_FLIGHT_BLOCKED_LIFTED=false",
+    "READY_FOR_START=false",
 )
 
 
@@ -55,13 +61,21 @@ def test_section_2b2_present_with_markers() -> None:
         assert marker in text
 
 
-def test_planning_only_no_copy_verify_or_archive_mutation() -> None:
+def test_helper_implemented_non_authorizing_no_gate_lift() -> None:
     section = _section_2b2()
     assert "CLOSEOUT_ENFORCEMENT_PLANNING_ONLY=true" in section
-    assert "CLOSEOUT_ENFORCEMENT_NO_COPY_VERIFY_IMPLEMENTATION=true" in section
+    assert "CLOSEOUT_ENFORCEMENT_HELPER_IMPLEMENTED=true" in section
+    assert "CLOSEOUT_ENFORCEMENT_HELPER_NON_AUTHORIZING=true" in section
+    assert "CLOSEOUT_ENFORCEMENT_HELPER_DOES_NOT_AUTHORIZE_RUNTIME=true" in section
+    assert "CLOSEOUT_ENFORCEMENT_HELPER_DOES_NOT_AUTHORIZE_REMOTE_RUNNER_START=true" in section
+    assert "PRE_FLIGHT_BLOCKED_LIFTED=false" in section
+    assert "READY_FOR_START=false" in section
     assert "CLOSEOUT_ENFORCEMENT_NO_ARCHIVE_MUTATION=true" in section
     assert "CLOSEOUT_ENFORCEMENT_NO_TMP_DELETE=true" in section
-    assert "does **not** ship copy/verify" in section or "not** ship copy/verify" in section
+    assert "durable_closeout_copy_verify_v0.py" in section
+    assert DURABLE_CLOSEOUT_HELPER.is_file()
+    assert "OP-CLOSEOUT-HELPER-IMPL-V0" in section
+    assert "CLOSEOUT_ENFORCEMENT_NO_COPY_VERIFY_IMPLEMENTATION=true" not in section
 
 
 def test_tmp_only_incomplete_and_durable_destination_outside_tmp() -> None:
@@ -122,13 +136,14 @@ def test_canonical_archive_closeout_owner_pattern_documented() -> None:
     assert "Peak_Trade_runtime_evidence_archive" in section
 
 
-def test_future_helper_expectations_documented_not_implemented() -> None:
+def test_implemented_helper_documented_non_authorizing() -> None:
     section = _section_2b2()
-    assert "copy-only" in section.lower()
+    assert "copy-only" in section.lower() or "operator-invoked" in section.lower()
     assert "fail closed" in section.lower()
     assert "does **not** modify" in section or "not** modify" in section
     assert "post_merge_closeout.sh" in section
     assert "append_closeout_index.py" in section
+    assert "does **not** write or update" in section or "not** write or update" in section
 
 
 def test_binds_section_2b1_2a_remote_and_s3() -> None:
@@ -176,12 +191,14 @@ def test_preflight_crosslinks_section_2b2_under_non_authority() -> None:
     non_authority = text.split("## 3. Non-authority", 1)[1].split("## 3a.", 1)[0]
     assert "§2b.2 Closeout Enforcement Planning Contract v0" in non_authority
     assert "CLOSEOUT_ENFORCEMENT_PLANNING_ONLY=true" in non_authority
+    assert "CLOSEOUT_ENFORCEMENT_HELPER_IMPLEMENTED=true" in non_authority
 
 
 def test_docs_truth_map_lists_section_2b2() -> None:
     text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
     assert "§2b.2" in text
     assert "Closeout Enforcement Planning Contract v0" in text
+    assert "CLOSEOUT_ENFORCEMENT_HELPER_IMPLEMENTED=true" in text
 
 
 def test_mandatory_closeout_contract_tests_still_present() -> None:

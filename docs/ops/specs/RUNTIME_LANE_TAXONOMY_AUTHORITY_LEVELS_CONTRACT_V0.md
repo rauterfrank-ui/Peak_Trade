@@ -1088,12 +1088,12 @@ DRY_COMMAND_TEMPLATE_NO_DOCKER=true
 DRY_COMMAND_TEMPLATE_NO_PROCESS_CONTROL=true
 DRY_COMMAND_TEMPLATE_NO_REMOTE_RUNNER=true
 DRY_COMMAND_TEMPLATE_NO_VALIDATOR_CLI_IMPLEMENTATION=true
-DRY_COMMAND_TEMPLATE_NO_CLOSEOUT_HELPER_IMPLEMENTATION=true
+DRY_COMMAND_TEMPLATE_DOES_NOT_INVOKE_CLOSEOUT_HELPER=true
 DRY_COMMAND_TEMPLATE_NO_NOTION_WRITE=true
 DRY_COMMAND_TEMPLATE_NO_MARKET_DASHBOARD_CHANGE=true
 ```
 
-**Purpose:** Define a **planning-only, non-executable** dry command template **contract index** — structured operator-review steps and authority boundaries — **without** runnable shell one-liners, **without** shipping executable scripts, and **without** authorizing runtime, remote runner start, Validator CLI implementation, Closeout Helper implementation, AWS/EC2/GHA/systemd/SSH/rclone/S3 transport, Notion writes, Market Dashboard changes, Testnet, Live, or broker/exchange access.
+**Purpose:** Define a **planning-only, non-executable** dry command template **contract index** — structured operator-review steps and authority boundaries — **without** runnable shell one-liners, **without** shipping executable scripts, **without** invoking [durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py), and **without** authorizing runtime, remote runner start, Validator CLI execution, AWS/EC2/GHA/systemd/SSH/rclone/S3 transport, Notion writes, Market Dashboard changes, Testnet, Live, or broker/exchange access.
 
 **Normative rule:** `DRY_COMMAND_TEMPLATE_PLANNING_ONLY=true` — static contract + fixture + tests only. `DRY_COMMAND_TEMPLATE_NON_EXECUTABLE=true` — no shebang, no `chmod +x`, no copy-paste start commands. `DRY_COMMAND_TEMPLATE_DO_NOT_RUN=true` — operators must not treat this artifact as a command to execute.
 
@@ -1126,7 +1126,7 @@ No real secrets, hostnames, IPs, provider instance IDs, bucket ARNs, account IDs
 
 #### Implementation posture (this slice)
 
-This contract is **static / normative only** (`REMOTE_PAPER_DRY_COMMAND_TEMPLATE_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true`). It **does not** ship runnable templates, Validator CLI, Closeout Helper, remote runners, or process control.
+This contract is **static / normative only** (`REMOTE_PAPER_DRY_COMMAND_TEMPLATE_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true`). It **does not** ship runnable templates, execute Validator CLI, invoke Closeout Helper (`DRY_COMMAND_TEMPLATE_DOES_NOT_INVOKE_CLOSEOUT_HELPER=true`), implement remote runners, or perform process control.
 
 Cross-reference: §6a.0.6 validator CLI planning; composition-index §6b orthogonal.
 
