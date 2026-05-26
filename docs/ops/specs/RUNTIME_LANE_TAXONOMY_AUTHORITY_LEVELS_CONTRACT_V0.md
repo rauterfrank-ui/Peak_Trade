@@ -115,6 +115,8 @@ REMOTE_RUNTIME_V0_LIVE_AUTHORITY=false
 REMOTE_RUNTIME_V0_TESTNET_AUTHORITY=false
 REMOTE_RUNTIME_COMMAND_CONTRACT_V0=true
 REMOTE_RUNTIME_COMMAND_CONTRACT_DOCS_TESTS_ONLY=true
+REMOTE_RUNTIME_RUNNER_PREFLIGHT_V0=true
+REMOTE_RUNTIME_RUNNER_PREFLIGHT_DOCS_TESTS_ONLY=true
 COMBINED_OUTROOT_COMPOSITION_INDEX_V0=true
 COMPOSITION_INDEX_IS_NOT_LANE=true
 LANE_ID_DAEMON_PAPER_24H_FORBIDDEN=true
@@ -447,6 +449,27 @@ REMOTE_RUNTIME_V0_NO_AWS_RCLONE_NETWORK_EXECUTION=true
 This contract is **static / normative only** (`REMOTE_RUNTIME_COMMAND_CONTRACT_DOCS_TESTS_ONLY=true`). It **does not** ship an execution script, remote command implementation, AWS/GHA/systemd/SSH wiring, or scheduler start path.
 
 Cross-reference: [REAL_MARKET_247_RUNTIME_ARCHITECTURE_V1.md](REAL_MARKET_247_RUNTIME_ARCHITECTURE_V1.md) Class A scheduled evidence before Class B daemon; composition-index §6b for deferred `paper_then_shadow`.
+
+#### 6a.0.1 Local remote runner preflight v0 (non-executing CLI)
+
+```
+REMOTE_RUNTIME_RUNNER_PREFLIGHT_V0=true
+REMOTE_RUNTIME_RUNNER_PREFLIGHT_DOCS_TESTS_ONLY=true
+REMOTE_RUNTIME_RUNNER_PREFLIGHT_DRY_RUN_REQUIRED=true
+REMOTE_RUNTIME_RUNNER_PREFLIGHT_NO_NETWORK_REQUIRED=true
+REMOTE_RUNTIME_V0_NO_REMOTE_RUNNER_IMPLEMENTATION=true
+RUNNER_IMPLEMENTED=false
+```
+
+**Purpose:** Provide a **local-only, non-executing** preflight that validates whether a future remote **Paper-only** runner command shape would satisfy §6a.0 **before** any real remote runner, AWS host, GHA runner, SSH, systemd, or scheduler implementation exists.
+
+**Implementation owner:** [preflight_remote_runtime_runner_v0.py](../../../scripts/ops/preflight_remote_runtime_runner_v0.py) — dry-run CLI only; emits JSON eligibility checklist; **does not** start runners, schedulers, daemons, or network actions.
+
+**Required CLI flags (v0):** `--dry-run`, `--no-network`, `--runtime-host remote`, `--runtime-backend`, `--runtime-mode paper_only`, `--lane-id paper`, `--remote-run-id`, `--max-runtime-seconds`, `--evidence-root-type remote_durable`, `--evidence-transport` ∈ {`local_only`, `s3_export_after_finalize_plan`}, optional `--out`, `--registry-json`, `--s3-prefix-plan-json`, `--approval-record`, `--scheduler-guard-json`.
+
+**Fail-closed:** Missing `--dry-run` or `--no-network`; any forbidden lane (`remote_runtime`, `daemon_paper_24h`, `shadow`, `testnet`, `live`); non-`paper_only` mode; non-`remote` host; invalid backend; unsafe `max_runtime_seconds`; registry conflicts; non-executing S3 prefix-plan mismatches; forbidden approval/guard markers implying live/testnet/broker/network/AWS execution.
+
+**Output:** JSON with `status` ∈ {`eligible`, `blocked`, `invalid`} and non-authority boundary fields (`runner_implemented=false`, `network_called=false`, etc.). Preflight **does not** authorize runtime, clear HOLD, or grant gates.
 
 ### S3 / Object Storage — finalized evidence transport only
 
