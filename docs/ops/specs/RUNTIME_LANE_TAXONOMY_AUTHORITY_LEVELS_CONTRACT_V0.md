@@ -135,6 +135,7 @@ Non-goals:
 | §2a primary evidence retention | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a |
 | §2a.1 future-run primary evidence hard gate | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a.1 |
 | §2b planning artifact retention | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b |
+| §2b.1 mandatory durable closeout | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.1 |
 | Preflight BLOCKED status | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) |
 | GLB-014 / GLB-015 | [MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md](MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) |
 | Canary Live entry | [CANARY_LIVE_ENTRY_CRITERIA.md](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) |
@@ -162,7 +163,7 @@ Non-goals:
 | AI autonomy layer matrix (L0–L6) | [AI_AUTONOMY_CONTROL_CENTER.md](../control_center/AI_AUTONOMY_CONTROL_CENTER.md) |
 | Promotion state machine | [MASTER_V2_PROMOTION_STATE_MACHINE_V1.md](MASTER_V2_PROMOTION_STATE_MACHINE_V1.md) |
 
-**Rule:** This spec is the **lane ID and authority-level index** (including §12 autonomy-stage crosswalk). Retention rules remain in preflight §2a/§2b. Stage vocabulary owner remains roadmap §3.1 — **do not renumber** stages here.
+**Rule:** This spec is the **lane ID and authority-level index** (including §12 autonomy-stage crosswalk). Retention rules remain in preflight §2a/§2b/§2b.1. Stage vocabulary owner remains roadmap §3.1 — **do not renumber** stages here.
 
 ## 3. Normative lane IDs
 
@@ -187,6 +188,7 @@ Each row uses the future registry field names defined in §6.
 Non-lane aggregate surfaces (cross-reference only):
 
 - **planning** — §2b durable planning artifacts under `{archive}&#47;planning&#47;`
+- **merge_closeout** — §2b.1 mandatory durable merge/post-PR closeouts under `{archive}&#47;closeout&#47;` (or `planning&#47;` when §2b applies)
 - **readiness_aggregate** — Readiness Evidence Ledger v0 + Preflight Mirror v0 + Gate Snapshot v0
 
 ## 4. Normative authority levels

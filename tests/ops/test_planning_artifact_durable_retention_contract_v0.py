@@ -16,7 +16,7 @@ def _owner_text() -> str:
 
 def _section_2b(text: str) -> str:
     start = text.index("## 2b. Planning artifact durable retention v0")
-    end = text.index("## 3. Non-authority")
+    end = text.index("## 2b.1 Mandatory Durable Closeout Contract v0")
     return text[start:end]
 
 
@@ -32,7 +32,7 @@ def test_section_2b_exists_adjacent_to_primary_evidence_invariant() -> None:
     text = _owner_text()
     assert "## 2a. Primary evidence retention invariant v0" in text
     assert "## 2b. Planning artifact durable retention v0" in text
-    assert text.index("## 2a.") < text.index("## 2b.") < text.index("## 3.")
+    assert text.index("## 2a.") < text.index("## 2b.") < text.index("## 2b.1") < text.index("## 3.")
 
 
 def test_tmp_is_scratch_not_durable_for_material_artifacts() -> None:
