@@ -4,7 +4,7 @@
   "do_not_run": true,
   "approve_remote_runner_start_now": false,
   "runner_implemented": false,
-  "remote_run_id": "remote_paper_fixture_20260526T120000Z",
+  "remote_run_id": "remote_paper_planning_run_20260526T120000Z",
   "runtime_host": "remote",
   "runtime_backend": "ec2",
   "runtime_mode": "paper_only",
