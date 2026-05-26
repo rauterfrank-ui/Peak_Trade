@@ -214,7 +214,8 @@ def test_validator_cli_implementation_singleton() -> None:
     matches = [
         path
         for path in ops.glob("*.py")
-        if path.name.startswith("validate_remote_paper") and path.resolve() != IMPLEMENTED_CLI.resolve()
+        if path.name.startswith("validate_remote_paper")
+        and path.resolve() != IMPLEMENTED_CLI.resolve()
     ]
     assert matches == [], f"duplicate validator CLI scripts: {matches}"
 
