@@ -32,6 +32,25 @@ BOUNDARY_BOOL_FIELDS = (
     "testnet_authority",
 )
 
+EXPORT_PLAN_BOUNDARY_BOOL_FIELDS = (
+    "finalized_evidence_required",
+    "manifest_verify_required",
+    "download_verify_required",
+    "active_staging_sync_forbidden",
+    "upload_does_not_authorize_runtime",
+    "s3_authority",
+    "notion_authority",
+    "market_dashboard_authority",
+    "live_authority",
+    "testnet_authority",
+    "network_actions_called",
+    "aws_cli_called",
+    "rclone_called",
+    "upload_called",
+    "download_called",
+    "mutation_called",
+)
+
 
 def _import_module():
     import importlib.util
@@ -55,13 +74,7 @@ def _write_eligible_root(root: Path) -> None:
     write_manifest_sha256(root)
 
 
-@pytest.fixture
-def mod():
-    return _import_module()
-
-
-@pytest.fixture
-def durable_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+def _patch_not_tmp(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         "scripts.ops.primary_evidence_retention_v0.is_under_tmp",
         lambda _path: False,
@@ -69,6 +82,47 @@ def durable_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     import scripts.ops.preflight_s3_finalized_evidence_export_v0 as preflight_mod
 
     monkeypatch.setattr(preflight_mod, "is_under_tmp", lambda _path: False)
+
+
+def _write_registry(
+    path: Path,
+    *,
+    archive_root: Path,
+    run_id: str,
+    lane_id: str,
+    archive_path: str | None = None,
+    evidence_transport: str = "local_only",
+) -> None:
+    path.write_text(
+        json.dumps(
+            {
+                "schema": "peak_trade.generic_evidence_run_registry.v1",
+                "archive_root": str(archive_root.resolve()),
+                "runs": [
+                    {
+                        "run_id": run_id,
+                        "lane_id": lane_id,
+                        "archive_path": archive_path or f"runs/{lane_id}/{run_id}",
+                        "evidence_transport": evidence_transport,
+                        "manifest_verified": True,
+                    }
+                ],
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+@pytest.fixture
+def mod():
+    return _import_module()
+
+
+@pytest.fixture
+def durable_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    _patch_not_tmp(monkeypatch)
     root = tmp_path / "durable_evidence"
     _write_eligible_root(root)
     return root
@@ -184,3 +238,154 @@ def test_no_subprocess_network_aws_rclone_calls(mod, durable_root: Path) -> None
 def test_taxonomy_references_preflight_script() -> None:
     text = TAXONOMY.read_text(encoding="utf-8")
     assert "preflight_s3_finalized_evidence_export_v0" in text
+
+
+def test_export_prefix_plan_without_registry(
+    mod, durable_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_not_tmp(monkeypatch)
+    result = mod.run_preflight(
+        durable_root,
+        dry_run=True,
+        no_network=True,
+        run_id="paper_run_01",
+        lane_id="paper",
+        export_prefix_plan=True,
+    )
+    assert result["status"] == "eligible"
+    assert result["export_prefix_plan_enabled"] is True
+    plan = result["export_prefix_plan"]
+    assert plan["status"] == "proposed"
+    assert plan["run_id"] == "paper_run_01"
+    assert plan["lane_id"] == "paper"
+    assert plan["object_prefix_proposed"] == "s3-finalized-evidence/paper_run_01/paper/"
+
+
+def test_registry_json_selects_fixture_entry(
+    mod, durable_root: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_not_tmp(monkeypatch)
+    registry_path = tmp_path / "registry.json"
+    _write_registry(
+        registry_path,
+        archive_root=durable_root.parent,
+        run_id="paper_run_01",
+        lane_id="paper",
+        archive_path="durable_evidence",
+    )
+    result = mod.run_preflight(
+        durable_root,
+        dry_run=True,
+        no_network=True,
+        registry_json=registry_path,
+        run_id="paper_run_01",
+        lane_id="paper",
+        export_prefix_plan=True,
+    )
+    assert result["status"] == "eligible"
+    assert result["export_prefix_plan"]["object_prefix_proposed"] == (
+        "s3-finalized-evidence/paper_run_01/paper/"
+    )
+
+
+def test_registry_malformed_json_invalid(mod, durable_root: Path, tmp_path: Path) -> None:
+    bad = tmp_path / "bad.json"
+    bad.write_text("{not json", encoding="utf-8")
+    result = mod.run_preflight(
+        durable_root,
+        dry_run=True,
+        no_network=True,
+        registry_json=bad,
+        run_id="paper_run_01",
+        export_prefix_plan=True,
+    )
+    assert result["status"] == "invalid"
+    assert "registry_json_malformed" in result["reasons"]
+
+
+def test_registry_missing_run_id_blocked(
+    mod, durable_root: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_not_tmp(monkeypatch)
+    registry_path = tmp_path / "registry.json"
+    _write_registry(
+        registry_path,
+        archive_root=durable_root.parent,
+        run_id="paper_run_01",
+        lane_id="paper",
+        archive_path="durable_evidence",
+    )
+    result = mod.run_preflight(
+        durable_root,
+        dry_run=True,
+        no_network=True,
+        registry_json=registry_path,
+        run_id="missing_run",
+        lane_id="paper",
+        export_prefix_plan=True,
+    )
+    assert result["status"] == "blocked"
+    assert "registry_run_not_found" in result["reasons"]
+
+
+def test_unsafe_run_id_blocks_export_plan(mod, durable_root: Path) -> None:
+    result = mod.run_preflight(
+        durable_root,
+        dry_run=True,
+        no_network=True,
+        run_id="../evil",
+        lane_id="paper",
+        export_prefix_plan=True,
+    )
+    assert result["status"] == "blocked"
+    assert any("unsafe_path_segment" in r for r in result["reasons"])
+
+
+def test_registry_path_mismatch_blocks(
+    mod, durable_root: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_not_tmp(monkeypatch)
+    registry_path = tmp_path / "registry.json"
+    _write_registry(
+        registry_path,
+        archive_root=durable_root.parent,
+        run_id="paper_run_01",
+        lane_id="paper",
+        archive_path="other_evidence",
+    )
+    result = mod.run_preflight(
+        durable_root,
+        dry_run=True,
+        no_network=True,
+        registry_json=registry_path,
+        run_id="paper_run_01",
+        lane_id="paper",
+        export_prefix_plan=True,
+    )
+    assert result["status"] == "blocked"
+    assert "registry_evidence_root_mismatch" in result["reasons"]
+
+
+def test_export_prefix_plan_includes_boundary_fields(mod, durable_root: Path) -> None:
+    result = mod.run_preflight(
+        durable_root,
+        dry_run=True,
+        no_network=True,
+        run_id="paper_run_01",
+        lane_id="paper",
+        export_prefix_plan=True,
+    )
+    plan = result["export_prefix_plan"]
+    for field in EXPORT_PLAN_BOUNDARY_BOOL_FIELDS:
+        assert field in plan
+        if field.endswith("_authority") or field.endswith("_called"):
+            assert plan[field] is False
+        else:
+            assert plan[field] is True
+
+
+def test_root_only_preflight_unchanged_without_export_plan(mod, durable_root: Path) -> None:
+    result = mod.run_preflight(durable_root, dry_run=True, no_network=True)
+    assert result["status"] == "eligible"
+    assert result["export_prefix_plan_enabled"] is False
+    assert result["export_prefix_plan"] is None
