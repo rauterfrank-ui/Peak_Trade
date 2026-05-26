@@ -1,0 +1,105 @@
+{
+  "schema_version": "peak_trade.remote_paper_dry_command_template_planning.v0",
+  "planning_only": true,
+  "do_not_run": true,
+  "non_executable": true,
+  "execution_permitted": false,
+  "ready_for_start": false,
+  "command_template_absent_from_approval_packet": true,
+  "command_template_absent_from_validator_output": true,
+  "placeholder_only": true,
+  "no_secrets": true,
+  "no_real_hosts": true,
+  "no_cloud_identifiers": true,
+  "no_network_commands": true,
+  "boundaries": {
+    "runtime_start_permitted": false,
+    "remote_runner_implementation_permitted": false,
+    "remote_runner_start_permitted": false,
+    "validator_cli_implementation_permitted": false,
+    "closeout_helper_implementation_permitted": false,
+    "cloud_cli_permitted": false,
+    "secure_shell_permitted": false,
+    "init_system_service_cli_permitted": false,
+    "hosted_runner_wiring_permitted": false,
+    "object_store_transfer_permitted": false,
+    "container_runtime_permitted": false,
+    "process_control_permitted": false,
+    "notion_write_permitted": false,
+    "market_dashboard_change_permitted": false,
+    "preflight_blocked_lifted": false
+  },
+  "owner_references": [
+    {"section_id": "6a.0", "owner": "docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md"},
+    {"section_id": "6a.0.2", "owner": "tests/fixtures/ops/remote_paper_approval_command_packet_v0.json"},
+    {"section_id": "6a.0.5", "owner": "tests/fixtures/ops/remote_paper_packet_assembly_validator_planning_v0.json"},
+    {"section_id": "6a.0.6", "owner": "tests/fixtures/ops/remote_paper_validator_cli_planning_v0.json"},
+    {"section_id": "2b.1", "owner": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"},
+    {"section_id": "2b.2", "owner": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"}
+  ],
+  "illustrative_steps": [
+    {
+      "step_id": "review_remote_runtime_command_metadata",
+      "owner": "docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md",
+      "mode": "operator_manual_review_only",
+      "executable_command": null,
+      "command_line": null,
+      "starts_runtime": false,
+      "authority": false
+    },
+    {
+      "step_id": "review_approval_command_packet_fixture",
+      "owner": "tests/fixtures/ops/remote_paper_approval_command_packet_v0.json",
+      "mode": "operator_manual_review_only",
+      "executable_command": null,
+      "command_line": null,
+      "starts_runtime": false,
+      "authority": false
+    },
+    {
+      "step_id": "review_packet_assembly_validator_contract",
+      "owner": "tests/fixtures/ops/remote_paper_packet_assembly_validator_planning_v0.json",
+      "mode": "operator_manual_review_only",
+      "executable_command": null,
+      "command_line": null,
+      "starts_runtime": false,
+      "authority": false
+    },
+    {
+      "step_id": "review_validator_cli_planning_contract",
+      "owner": "tests/fixtures/ops/remote_paper_validator_cli_planning_v0.json",
+      "mode": "operator_manual_review_only",
+      "executable_command": null,
+      "command_line": null,
+      "starts_runtime": false,
+      "authority": false
+    },
+    {
+      "step_id": "review_mandatory_durable_closeout_contract",
+      "owner": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
+      "mode": "operator_manual_review_only",
+      "executable_command": null,
+      "command_line": null,
+      "starts_runtime": false,
+      "authority": false
+    },
+    {
+      "step_id": "review_closeout_enforcement_planning_contract",
+      "owner": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
+      "mode": "operator_manual_review_only",
+      "executable_command": null,
+      "command_line": null,
+      "starts_runtime": false,
+      "authority": false
+    }
+  ],
+  "output_machine_lines": {
+    "REMOTE_PAPER_DRY_COMMAND_TEMPLATE_PLANNING_CONTRACT_V0": true,
+    "DRY_COMMAND_TEMPLATE_PLANNING_ONLY": true,
+    "DRY_COMMAND_TEMPLATE_DO_NOT_RUN": true,
+    "DRY_COMMAND_TEMPLATE_NON_EXECUTABLE": true,
+    "DRY_COMMAND_TEMPLATE_EXECUTION_PERMITTED": false,
+    "DRY_COMMAND_TEMPLATE_READY_FOR_START": false,
+    "DRY_COMMAND_TEMPLATE_PLANNING_ARTIFACT_PRESENT": true
+  }
+}

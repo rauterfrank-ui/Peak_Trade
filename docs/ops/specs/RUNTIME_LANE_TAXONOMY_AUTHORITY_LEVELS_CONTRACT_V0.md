@@ -127,6 +127,8 @@ REMOTE_PAPER_PACKET_ASSEMBLY_VALIDATOR_PLANNING_CONTRACT_V0=true
 REMOTE_PAPER_PACKET_ASSEMBLY_VALIDATOR_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true
 REMOTE_PAPER_VALIDATOR_CLI_PLANNING_CONTRACT_V0=true
 REMOTE_PAPER_VALIDATOR_CLI_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true
+REMOTE_PAPER_DRY_COMMAND_TEMPLATE_PLANNING_CONTRACT_V0=true
+REMOTE_PAPER_DRY_COMMAND_TEMPLATE_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true
 COMBINED_OUTROOT_COMPOSITION_INDEX_V0=true
 COMPOSITION_INDEX_IS_NOT_LANE=true
 LANE_ID_DAEMON_PAPER_24H_FORBIDDEN=true
@@ -151,6 +153,7 @@ Non-goals:
 | §2b planning artifact retention | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b |
 | §2b.1 mandatory durable closeout | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.1 |
 | §2b.2 closeout enforcement planning | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.2 |
+| §6a.0.7 remote paper dry command template planning | This spec §6a.0.7 (planning-only; non-executable) |
 | Preflight BLOCKED status | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) |
 | GLB-014 / GLB-015 | [MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md](MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) |
 | Canary Live entry | [CANARY_LIVE_ENTRY_CRITERIA.md](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) |
@@ -1053,7 +1056,74 @@ When implemented under a **separate operator-approved charter**, the CLI **must*
 
 This contract is **static / normative only** (`REMOTE_PAPER_VALIDATOR_CLI_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true`). It **does not** ship validator CLI source, archive walkers, Docker integration, dry command templates, remote runners, or closeout copy/verify helpers.
 
-Cross-reference: §6a.0.5 assembly validator planning; composition-index §6b orthogonal.
+Cross-reference: §6a.0.5 assembly validator planning; §6a.0.7 dry command template planning; composition-index §6b orthogonal.
+
+#### 6a.0.7 Remote paper dry command template planning contract v0 (planning-only)
+
+```
+REMOTE_PAPER_DRY_COMMAND_TEMPLATE_PLANNING_CONTRACT_V0=true
+REMOTE_PAPER_DRY_COMMAND_TEMPLATE_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true
+DRY_COMMAND_TEMPLATE_PLANNING_ONLY=true
+DRY_COMMAND_TEMPLATE_DO_NOT_RUN=true
+DRY_COMMAND_TEMPLATE_NON_EXECUTABLE=true
+DRY_COMMAND_TEMPLATE_EXECUTION_PERMITTED=false
+DRY_COMMAND_TEMPLATE_READY_FOR_START=false
+DRY_COMMAND_TEMPLATE_PLANNING_ARTIFACT_PRESENT=true
+DRY_COMMAND_TEMPLATE_NOT_IN_APPROVAL_PACKET=true
+DRY_COMMAND_TEMPLATE_NOT_EMITTED_BY_VALIDATOR_CLI=true
+DRY_COMMAND_TEMPLATE_PREFLIGHT_BLOCKED_UNCHANGED=true
+DRY_COMMAND_TEMPLATE_NO_RUNTIME=true
+DRY_COMMAND_TEMPLATE_NO_NETWORK=true
+DRY_COMMAND_TEMPLATE_NO_AWS=true
+DRY_COMMAND_TEMPLATE_NO_SSH=true
+DRY_COMMAND_TEMPLATE_NO_SYSTEMD=true
+DRY_COMMAND_TEMPLATE_NO_GHA_RUNNER=true
+DRY_COMMAND_TEMPLATE_NO_RCLONE=true
+DRY_COMMAND_TEMPLATE_NO_DOCKER=true
+DRY_COMMAND_TEMPLATE_NO_PROCESS_CONTROL=true
+DRY_COMMAND_TEMPLATE_NO_REMOTE_RUNNER=true
+DRY_COMMAND_TEMPLATE_NO_VALIDATOR_CLI_IMPLEMENTATION=true
+DRY_COMMAND_TEMPLATE_NO_CLOSEOUT_HELPER_IMPLEMENTATION=true
+DRY_COMMAND_TEMPLATE_NO_NOTION_WRITE=true
+DRY_COMMAND_TEMPLATE_NO_MARKET_DASHBOARD_CHANGE=true
+```
+
+**Purpose:** Define a **planning-only, non-executable** dry command template **contract index** — structured operator-review steps and authority boundaries — **without** runnable shell one-liners, **without** shipping executable scripts, and **without** authorizing runtime, remote runner start, Validator CLI implementation, Closeout Helper implementation, AWS/EC2/GHA/systemd/SSH/rclone/S3 transport, Notion writes, Market Dashboard changes, Testnet, Live, or broker/exchange access.
+
+**Normative rule:** `DRY_COMMAND_TEMPLATE_PLANNING_ONLY=true` — static contract + fixture + tests only. `DRY_COMMAND_TEMPLATE_NON_EXECUTABLE=true` — no shebang, no `chmod +x`, no copy-paste start commands. `DRY_COMMAND_TEMPLATE_DO_NOT_RUN=true` — operators must not treat this artifact as a command to execute.
+
+**Relationship to §6a.0.5 / §6a.0.6:** §6a.0.5 defines assembly cross-check semantics; §6a.0.6 defines future Validator CLI I/O (**`REMOTE_PAPER_VALIDATOR_CLI_NO_DRY_COMMAND_TEMPLATE=true`** — CLI must **not** emit `command_template`). This §6a.0.7 is the **separate planning artifact** permitted after operator charter Gate 3; it **does not** satisfy execution gates and **`DRY_COMMAND_TEMPLATE_EXECUTION_PERMITTED=false`** always in v0.
+
+**Fixture owner (non-authorizing):** [remote_paper_dry_command_template_planning_v0.json](../../../tests/fixtures/ops/remote_paper_dry_command_template_planning_v0.json) — illustrative review steps only; **does not** execute.
+
+#### Subordination (must reuse; do not replace)
+
+- §6a.0 Remote Runtime Command Contract v0 — metadata/gate shape owner
+- §6a.0.2 Remote paper approval/command packet — **no** `command_template` field in packet
+- §6a.0.5 Packet assembly validator planning — cross-artifact semantics
+- §6a.0.6 Validator CLI planning — no template emission from CLI output
+- §2b.1 Mandatory Durable Closeout Contract v0 — completeness owner
+- §2b.2 Closeout Enforcement Planning Contract v0 — enforcement/helper classification
+
+#### Illustrative steps (fixture; operator manual review only)
+
+Each step in the fixture uses `mode=operator_manual_review_only`, `executable_command=null`, `command_line=null`, `starts_runtime=false`, `authority=false`. Steps name **contracts and fixtures** to read — not commands to run.
+
+#### Forbidden artifact content
+
+No real secrets, hostnames, IPs, provider instance IDs, bucket ARNs, account IDs, SSH users, credentials, runnable one-liners, or `command_template` fields inside the approval packet.
+
+#### Non-authority (explicit)
+
+- `DRY_COMMAND_TEMPLATE_PREFLIGHT_BLOCKED_UNCHANGED=true` — [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) remains **BLOCKED**; this artifact does not clear BLOCKED.
+- `DRY_COMMAND_TEMPLATE_READY_FOR_START=false` — does not set `REMOTE_PAPER_PACKET_READY_FOR_START` or any start authority.
+- Notion and Market Dashboard remain projection-only (§6a.1 / §6a.2).
+
+#### Implementation posture (this slice)
+
+This contract is **static / normative only** (`REMOTE_PAPER_DRY_COMMAND_TEMPLATE_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true`). It **does not** ship runnable templates, Validator CLI, Closeout Helper, remote runners, or process control.
+
+Cross-reference: §6a.0.6 validator CLI planning; composition-index §6b orthogonal.
 
 ### S3 / Object Storage — finalized evidence transport only
 

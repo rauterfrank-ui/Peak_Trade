@@ -346,6 +346,8 @@ Future **remote paper packet assembly validator** planning-only cross-check cont
 
 Future **remote paper validator CLI** planning-only contract (offline CLI input/output shape; no CLI implementation/runner/dry-template unlock): taxonomy **§6a.0.6 Remote paper validator CLI planning contract v0** — `REMOTE_PAPER_VALIDATOR_CLI_PLANNING_ONLY=true`; `REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED=false`; `REMOTE_PAPER_VALIDATOR_CLI_READY_FOR_IMPLEMENTATION=false`; local JSON inputs only; **does not** authorize runtime, remote runner, live, or testnet.
 
+Future **remote paper dry command template** planning-only contract (non-executable illustrative review steps; no runnable shell; not in approval packet; not emitted by Validator CLI): taxonomy **§6a.0.7 Remote paper dry command template planning contract v0** — `DRY_COMMAND_TEMPLATE_PLANNING_ONLY=true`; `DRY_COMMAND_TEMPLATE_EXECUTION_PERMITTED=false`; `DRY_COMMAND_TEMPLATE_READY_FOR_START=false`; Preflight **BLOCKED** unchanged; **does not** authorize runtime, remote runner, Validator CLI implementation, Closeout Helper implementation, live, or testnet.
+
 Future **closeout enforcement planning** (tooling gap classification + future helper expectations; no copy/verify implementation): **§2b.2 Closeout Enforcement Planning Contract v0** — `CLOSEOUT_ENFORCEMENT_PLANNING_ONLY=true`; classifies `post_merge_closeout.sh` and `append_closeout_index.py` as non-completion helpers; binds §2b.1 + §2a + remote §6a.0–§6a.0.5 + S3 §6a.3; **does not** authorize runtime or archive mutation.
 
 ## 3a. Futures / perpetual planning boundary (BTC/USD proxy evidence)
