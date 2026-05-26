@@ -17,9 +17,12 @@ ASSEMBLY_FIXTURE = (
 
 CLI_CONTRACT_MARKERS = (
     "REMOTE_PAPER_VALIDATOR_CLI_PLANNING_CONTRACT_V0=true",
-    "REMOTE_PAPER_VALIDATOR_CLI_PLANNING_ONLY=true",
-    "REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED=false",
-    "REMOTE_PAPER_VALIDATOR_CLI_DO_NOT_RUN=true",
+    "REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED=true",
+    "REMOTE_PAPER_VALIDATOR_CLI_OFFLINE_STATIC_ONLY=true",
+    "REMOTE_PAPER_VALIDATOR_CLI_READY_FOR_START=false",
+    "REMOTE_PAPER_VALIDATOR_CLI_PREFLIGHT_BLOCKED_LIFTED=false",
+    "REMOTE_RUNNER_START_PERMITTED=false",
+    "STAGE3_RUNNER_START_CHARTER_PERMITTED=false",
     "REMOTE_PAPER_VALIDATOR_CLI_NO_RUNTIME=true",
     "REMOTE_PAPER_VALIDATOR_CLI_NO_NETWORK=true",
     "REMOTE_PAPER_VALIDATOR_CLI_NO_AWS=true",
@@ -57,14 +60,14 @@ FORBIDDEN_FIXTURE_PATTERNS = (
 
 def _section_6a06() -> str:
     text = TAXONOMY_SPEC.read_text(encoding="utf-8")
-    return text.split("#### 6a.0.6 Remote paper validator CLI planning contract v0", 1)[1].split(
+    return text.split("#### 6a.0.6 Remote paper validator CLI contract v0", 1)[1].split(
         "### S3 / Object Storage", 1
     )[0]
 
 
 def test_section_6a06_present_with_markers() -> None:
     text = TAXONOMY_SPEC.read_text(encoding="utf-8")
-    assert "#### 6a.0.6 Remote paper validator CLI planning contract v0" in text
+    assert "#### 6a.0.6 Remote paper validator CLI contract v0" in text
     for marker in CLI_CONTRACT_MARKERS:
         assert marker in text
 
@@ -74,13 +77,18 @@ def test_top_level_taxonomy_markers_include_cli_planning_contract() -> None:
     assert "REMOTE_PAPER_VALIDATOR_CLI_PLANNING_CONTRACT_V0=true" in text.split("## 2.", 1)[0]
 
 
-def test_planning_only_not_implemented_do_not_run() -> None:
+def test_implemented_offline_non_authorizing() -> None:
     section = _section_6a06()
-    assert "REMOTE_PAPER_VALIDATOR_CLI_PLANNING_ONLY=true" in section
-    assert "REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED=false" in section
-    assert "REMOTE_PAPER_VALIDATOR_CLI_DO_NOT_RUN=true" in section
-    assert "ship validator CLI source" in section
-    assert "does **not**" in section or "not** ship" in section
+    assert "REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED=true" in section
+    assert "REMOTE_PAPER_VALIDATOR_CLI_OFFLINE_STATIC_ONLY=true" in section
+    assert "validate_remote_paper_packet_v0.py" in section
+    assert "REMOTE_PAPER_VALIDATOR_CLI_PASS_DOES_NOT_AUTHORIZE_RUNTIME=true" in section
+    assert "REMOTE_PAPER_VALIDATOR_CLI_READY_FOR_START=false" in section
+    assert "REMOTE_PAPER_VALIDATOR_CLI_PREFLIGHT_BLOCKED_LIFTED=false" in section
+    assert "REMOTE_RUNNER_START_PERMITTED=false" in section
+    assert "STAGE3_RUNNER_START_CHARTER_PERMITTED=false" in section
+    assert "lifting Preflight **BLOCKED**" in section
+    assert "does not clear Preflight BLOCKED" in section
 
 
 def test_no_runtime_network_aws_ssh_systemd_archive() -> None:
@@ -154,16 +162,17 @@ def test_section_ordering_6a06_after_6a05_before_s3() -> None:
     text = TAXONOMY_SPEC.read_text(encoding="utf-8")
     assert text.index(
         "#### 6a.0.5 Remote paper packet assembly validator planning contract v0"
-    ) < text.index("#### 6a.0.6 Remote paper validator CLI planning contract v0")
-    assert text.index("#### 6a.0.6 Remote paper validator CLI planning contract v0") < text.index(
+    ) < text.index("#### 6a.0.6 Remote paper validator CLI contract v0")
+    assert text.index("#### 6a.0.6 Remote paper validator CLI contract v0") < text.index(
         "### S3 / Object Storage"
     )
 
 
 def test_preflight_crosslinks_section_6a06() -> None:
     text = PREFLIGHT.read_text(encoding="utf-8")
-    assert "§6a.0.6 Remote paper validator CLI planning contract v0" in text
-    assert "REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED=false" in text
+    assert "§6a.0.6 Remote paper validator CLI contract v0" in text
+    assert "REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED=true" in text
+    assert "REMOTE_PAPER_VALIDATOR_CLI_READY_FOR_START=false" in text
 
 
 def test_docs_truth_map_lists_section_6a06() -> None:
@@ -176,7 +185,7 @@ def test_cli_fixture_exists_and_is_planning_only() -> None:
     assert FIXTURE.is_file()
     payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
     assert payload["planning_only"] is True
-    assert payload["implemented"] is False
+    assert payload["implemented"] is True
     assert payload["do_not_run"] is True
     assert payload["no_archive_walker"] is True
     assert payload["no_dry_command_template"] is True
@@ -205,6 +214,18 @@ def test_cli_fixture_has_no_obvious_secret_or_ip_fields() -> None:
 def test_taxonomy_links_cli_fixture() -> None:
     section = _section_6a06()
     assert "remote_paper_validator_cli_planning_v0.json" in section
+
+
+def test_implemented_true_with_non_authorizing_markers() -> None:
+    section = _section_6a06()
+    assert "REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED=true" in section
+    for marker in (
+        "REMOTE_PAPER_VALIDATOR_CLI_PASS_DOES_NOT_AUTHORIZE_RUNTIME=true",
+        "REMOTE_PAPER_VALIDATOR_CLI_PASS_DOES_NOT_AUTHORIZE_REMOTE_RUNNER=true",
+        "REMOTE_PAPER_VALIDATOR_CLI_NO_DRY_COMMAND_TEMPLATE=true",
+        "REMOTE_PAPER_VALIDATOR_CLI_READY_FOR_START=false",
+    ):
+        assert marker in section
 
 
 def test_validator_cli_implementation_singleton() -> None:
