@@ -61,8 +61,13 @@ RUN_PROJECTION_FIELDS = pc.RUN_PROJECTION_FIELDS
 def _section_6a1() -> str:
     text = TAXONOMY_SPEC.read_text(encoding="utf-8")
     return text.split("### 6a.1 Notion post-closeout sync projection contract v0", 1)[1].split(
-        "### 6a.2 Market Dashboard read-only run projection contract v0", 1
+        "### 6a.1.1 Notion post-closeout dry-run writer planning contract v0 (planning-only)",
+        1,
     )[0]
+
+
+def _section_6a11() -> str:
+    return pc.taxonomy_section_6a11()
 
 
 def _load_registry():
@@ -204,3 +209,71 @@ def test_payload_builder_planning_forbids_notion_write() -> None:
     assert "PROJECTION_PAYLOAD_DOES_NOT_WRITE_NOTION=true" in section
     assert "NOTION_CONSUMER_WRITE_PERMITTED=false" in section
     assert "PAYLOAD_BUILDER_IMPLEMENTED=false" in section
+
+
+def test_taxonomy_section_6a11_dry_run_writer_planning_present() -> None:
+    text = TAXONOMY_SPEC.read_text(encoding="utf-8")
+    assert (
+        "### 6a.1.1 Notion post-closeout dry-run writer planning contract v0 (planning-only)"
+        in text
+    )
+    section = _section_6a11()
+    for marker in pc.POST_CLOSEOUT_NOTION_DRY_RUN_WRITER_PLANNING_MARKERS:
+        assert marker in section
+
+
+def test_notion_dry_run_writer_default_dry_run_no_write_no_db_create() -> None:
+    section = _section_6a11()
+    assert "NOTION_DRY_RUN_WRITER_DEFAULT_DRY_RUN=true" in section
+    assert "NOTION_DRY_RUN_WRITER_WRITE_DEFAULT=false" in section
+    assert "NOTION_DRY_RUN_WRITER_CREATES_DB=false" in section
+    assert "NOTION_DRY_RUN_WRITER_DESTRUCTIVE_OPS=false" in section
+    assert "NOTION_DRY_RUN_WRITER_SCRIPT_FORBIDDEN_IN_THIS_SLICE=true" in section
+    assert "sync_post_closeout_projection_to_notion" not in section.lower()
+
+
+def test_notion_dry_run_writer_requires_confirm_token_and_boundary_target() -> None:
+    section = _section_6a11()
+    assert "NOTION_DRY_RUN_WRITER_REQUIRES_CONFIRM_TOKEN=true" in section
+    assert "NOTION_DRY_RUN_WRITER_CONFIRM_TOKEN=NOTION_POST_CLOSEOUT_SYNC_V0" in section
+    assert "NOTION_DRY_RUN_WRITER_REQUIRES_BOUNDARY_TEXT_VERIFIED=true" in section
+    assert "NOTION_DRY_RUN_WRITER_REQUIRES_EXISTING_TARGET_DB=true" in section
+    assert "Evidence & Closeouts" in section
+    assert "Peak_Trade Knowledge Graph (Current)" in section
+
+
+def test_notion_dry_run_writer_no_authority_and_mcp_write_not_ready() -> None:
+    section = _section_6a11()
+    assert "NOTION_AUTHORITY=false" in section
+    assert "LIVE_AUTHORITY=false" in section
+    assert "TESTNET_AUTHORITY=false" in section
+    assert "BROKER_EXCHANGE_AUTHORITY=false" in section
+    assert "NOTION_MCP_WRITE_READY=false" in section
+    assert "NOTION_DRY_RUN_WRITER_DOES_NOT_CALL_MCP_WRITE=true" in section
+
+
+def test_notion_dry_run_writer_planned_outputs_and_fail_closed_blocks() -> None:
+    section = _section_6a11()
+    for field in pc.PLANNED_NOTION_DRY_RUN_OUTPUT_FIELDS:
+        assert field in section
+    for block in (
+        "projection_ready=false",
+        "notion_projection_allowed=false",
+        "manifest_verify_rc",
+        "closeout_accepted=false",
+        "BOUNDARY_TEXT_NOT_VERIFIED",
+        "CONFIRM_TOKEN_MISSING",
+    ):
+        assert block.lower() in section.lower()
+
+
+def test_notion_dry_run_writer_forbidden_fields_documented() -> None:
+    section = _section_6a11()
+    assert "source_files" in section
+    assert "secrets" in section.lower() or "credentials" in section.lower()
+
+
+def test_docs_truth_map_references_notion_dry_run_writer_planning() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert "6a.1.1" in text
+    assert "NOTION_POST_CLOSEOUT_DRY_RUN_WRITER" in text or "dry-run writer" in text.lower()

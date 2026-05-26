@@ -1,6 +1,6 @@
 """Shared Registry v1 projection consumer smoke fixtures (test-only, non-authorizing).
 
-Consumers: Notion §6a.1, Market Dashboard §6a.2, future projection payload builder §6a.0.9, future S3 export gate tests.
+Consumers: Notion §6a.1, Notion dry-run writer §6a.1.1, Market Dashboard §6a.2, projection payload builder §6a.0.9, future S3 export gate tests.
 Does not define runtime authority, Registry v2, or new lanes.
 """
 
@@ -75,6 +75,38 @@ PLANNED_PROJECTION_PAYLOAD_OUTPUT_FIELDS: tuple[str, ...] = (
     "market_dashboard_consumer",
 )
 
+POST_CLOSEOUT_NOTION_DRY_RUN_WRITER_PLANNING_MARKERS: tuple[str, ...] = (
+    "NOTION_POST_CLOSEOUT_DRY_RUN_WRITER_PLANNING_CONTRACT_V0=true",
+    "NOTION_POST_CLOSEOUT_DRY_RUN_WRITER_V0=planning_target_only",
+    "NOTION_DRY_RUN_WRITER_IMPLEMENTED=false",
+    "NOTION_DRY_RUN_WRITER_SCRIPT_FORBIDDEN_IN_THIS_SLICE=true",
+    "NOTION_DRY_RUN_WRITER_DEFAULT_DRY_RUN=true",
+    "NOTION_DRY_RUN_WRITER_WRITE_DEFAULT=false",
+    "NOTION_DRY_RUN_WRITER_REQUIRES_CONFIRM_TOKEN=true",
+    "NOTION_DRY_RUN_WRITER_CONFIRM_TOKEN=NOTION_POST_CLOSEOUT_SYNC_V0",
+    "NOTION_DRY_RUN_WRITER_REQUIRES_BOUNDARY_TEXT_VERIFIED=true",
+    "NOTION_DRY_RUN_WRITER_REQUIRES_EXISTING_TARGET_DB=true",
+    "NOTION_DRY_RUN_WRITER_CREATES_DB=false",
+    "NOTION_DRY_RUN_WRITER_DESTRUCTIVE_OPS=false",
+    "NOTION_DRY_RUN_WRITER_AFTER_CLOSEOUT_ONLY=true",
+    "NOTION_DRY_RUN_WRITER_AFTER_MANIFEST_VERIFY_ONLY=true",
+    "NOTION_DRY_RUN_WRITER_DOES_NOT_CALL_MCP_WRITE=true",
+    "NOTION_MCP_WRITE_READY=false",
+    "NOTION_AUTHORITY=false",
+    "LIVE_AUTHORITY=false",
+    "TESTNET_AUTHORITY=false",
+    "BROKER_EXCHANGE_AUTHORITY=false",
+    "NO_PARALLEL_NOTION_DB=true",
+)
+
+PLANNED_NOTION_DRY_RUN_OUTPUT_FIELDS: tuple[str, ...] = (
+    "would_create_or_update",
+    "target_database_safe_name",
+    "field_mapping_preview",
+    "projection_blocked_reason",
+    "operator_review_required",
+)
+
 
 def taxonomy_section_6a08() -> str:
     text = TAXONOMY_SPEC.read_text(encoding="utf-8")
@@ -90,6 +122,14 @@ def taxonomy_section_6a09() -> str:
     return text.split(
         "### 6a.0.9 Shared Projection Payload Builder Planning Contract v0 (planning-only)", 1
     )[1].split("### 6a.1 Notion post-closeout sync projection contract v0", 1)[0]
+
+
+def taxonomy_section_6a11() -> str:
+    text = TAXONOMY_SPEC.read_text(encoding="utf-8")
+    return text.split(
+        "### 6a.1.1 Notion post-closeout dry-run writer planning contract v0 (planning-only)",
+        1,
+    )[1].split("### 6a.2 Market Dashboard read-only run projection contract v0", 1)[0]
 
 
 # Canonical pointer/status fields for Registry v1 projection consumers (§6a.1 + §6a.2 aligned).

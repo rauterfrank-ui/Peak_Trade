@@ -186,6 +186,7 @@ Non-goals:
 | §6a.0.7 remote paper dry command template planning | This spec §6a.0.7 (planning-only; non-executable) |
 | §6a.0.8 post-closeout projection automation charter | This spec §6a.0.8 (docs/tests-only; binds §6a.1 / §6a.2 / Registry v1) |
 | §6a.0.9 shared projection payload builder planning | This spec §6a.0.9 (planning-only; future `build_post_closeout_projection_payload_v0`; **no** script in this slice) |
+| §6a.1.1 notion dry-run writer planning | This spec §6a.1.1 (planning-only; future Notion dry-run writer; **no** script/MCP write in this slice) |
 | Preflight BLOCKED status | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) |
 | GLB-014 / GLB-015 | [MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md](MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) |
 | Canary Live entry | [CANARY_LIVE_ENTRY_CRITERIA.md](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) |
@@ -1401,6 +1402,134 @@ Composition records: include `child_lane_refs` / `child_lane_status` pointers on
 > This Notion database is a non-authorizing projection of Peak_Trade repo&#47;evidence state. Repo contracts, manifests, closeouts, and explicit operator approvals remain canonical. Notion entries do not authorize runtime, testnet, live trading, broker access, strategy execution, scheduler clearance, or Double Play decisions.
 
 Cross-reference: Remote Runtime Host Metadata §6a backend-not-lane semantics; composition-index §6b for `paper_then_shadow` pointer rows.
+
+### 6a.1.1 Notion post-closeout dry-run writer planning contract v0 (planning-only)
+
+```
+NOTION_POST_CLOSEOUT_DRY_RUN_WRITER_PLANNING_CONTRACT_V0=true
+NOTION_POST_CLOSEOUT_DRY_RUN_WRITER_V0=planning_target_only
+NOTION_DRY_RUN_WRITER_IMPLEMENTED=false
+NOTION_DRY_RUN_WRITER_SCRIPT_FORBIDDEN_IN_THIS_SLICE=true
+NOTION_DRY_RUN_WRITER_DEFAULT_DRY_RUN=true
+NOTION_DRY_RUN_WRITER_WRITE_DEFAULT=false
+NOTION_DRY_RUN_WRITER_REQUIRES_CONFIRM_TOKEN=true
+NOTION_DRY_RUN_WRITER_CONFIRM_TOKEN=NOTION_POST_CLOSEOUT_SYNC_V0
+NOTION_DRY_RUN_WRITER_REQUIRES_BOUNDARY_TEXT_VERIFIED=true
+NOTION_DRY_RUN_WRITER_REQUIRES_EXISTING_TARGET_DB=true
+NOTION_DRY_RUN_WRITER_CREATES_DB=false
+NOTION_DRY_RUN_WRITER_DESTRUCTIVE_OPS=false
+NOTION_DRY_RUN_WRITER_AFTER_CLOSEOUT_ONLY=true
+NOTION_DRY_RUN_WRITER_AFTER_MANIFEST_VERIFY_ONLY=true
+NOTION_DRY_RUN_WRITER_DOES_NOT_CALL_MCP_WRITE=true
+NOTION_MCP_WRITE_READY=false
+NOTION_AUTHORITY=false
+LIVE_AUTHORITY=false
+TESTNET_AUTHORITY=false
+BROKER_EXCHANGE_AUTHORITY=false
+NO_PARALLEL_NOTION_DB=true
+```
+
+**Purpose:** Define the **planning-only** contract for a future offline **`notion_post_closeout_sync_dry_run_v0`** helper (illustrative name; **not implemented** in this slice) that reads operator-supplied **`peak_trade.post_closeout_projection_payload.v0`** JSON and Registry v1 via `registry_pointer`, then emits a **local dry-run plan/report only** — **without** Notion MCP/API writes, **without** creating Notion databases or pages, and **without** elevating Notion to authority.
+
+**Relationship to §6a.1:** §6a.1 defines Notion projection semantics and forbidden behavior. This §6a.1.1 defines **future dry-run writer gates, inputs, outputs, field allowlists, and fail-closed block rules** only. `NOTION_POST_CLOSEOUT_SYNC_ENABLED` remains `false` until separate operator-chartered implementation slices.
+
+#### Canonical Notion target (operator-verified; no new DB)
+
+| Surface | Role (v0 planning) |
+|---|---|
+| **Peak_Trade Knowledge Graph (Current)** | Navigation / entry owner (external; not repo SSOT) |
+| **Evidence & Closeouts** | **Primary post-closeout run index target** — extend existing database schema/views only |
+| **Peak_Trade Approval Evidence — Current** | **Orthogonal** — approvals-only; not run projection SSOT |
+| **Operator Decisions** | Decisions-only — orthogonal |
+| **[HISTORICAL] Peak_Trade Ops** | **Not** a projection target |
+
+`NO_PARALLEL_NOTION_DB=true` — do **not** create a new “Peak_Trade Runs” or “Projection Payload” Notion database in v0.
+
+#### Future writer gates (default dry-run)
+
+| Marker | Rule |
+|---|---|
+| `NOTION_DRY_RUN_WRITER_DEFAULT_DRY_RUN=true` | Default mode emits local plan/report only |
+| `NOTION_DRY_RUN_WRITER_WRITE_DEFAULT=false` | Writes disabled unless explicit future slice + confirm token |
+| `NOTION_DRY_RUN_WRITER_REQUIRES_CONFIRM_TOKEN=true` | Any future write path requires confirm flag |
+| `NOTION_DRY_RUN_WRITER_CONFIRM_TOKEN=NOTION_POST_CLOSEOUT_SYNC_V0` | Confirm literal (aligns with §6a.1 operator-token posture; distinct from `APPROVE_NOTION_POST_CLOSEOUT_SYNC_NOW=true` future sync token name) |
+| `NOTION_DRY_RUN_WRITER_REQUIRES_BOUNDARY_TEXT_VERIFIED=true` | Target DB must carry §6a.1 canonical boundary copy before writes |
+| `NOTION_DRY_RUN_WRITER_REQUIRES_EXISTING_TARGET_DB=true` | Operator supplies existing Evidence & Closeouts identity |
+| `NOTION_DRY_RUN_WRITER_CREATES_DB=false` | No automated database creation |
+| `NOTION_DRY_RUN_WRITER_DESTRUCTIVE_OPS=false` | No delete/archive/move/update via automation |
+| `NOTION_MCP_WRITE_READY=false` | MCP may expose write tools; charter forbids use in planning/CI slices |
+
+#### Allowed later inputs (read-only)
+
+- `projection_payload_json` path (`schema_version=peak_trade.post_closeout_projection_payload.v0`)
+- Registry v1 JSON at `registry_pointer` from payload (read-only; no archive walks)
+- Closeout pointer from payload (metadata only; no walking closeout tree)
+- `repo_commit`, `manifest_verify_rc`, `closeout_accepted`, `primary_evidence_finalized`
+- Operator-provided Notion target id/name for **existing** Evidence & Closeouts (external reference only in planning)
+- `boundary_text_verified` operator attestation (future CLI flag)
+
+**Reuse:** [build_post_closeout_projection_payload_v0.py](../../../scripts/ops/build_post_closeout_projection_payload_v0.py) remains the sole offline payload materializer; the dry-run writer **must not** re-derive gates by walking durable archives.
+
+#### Later dry-run outputs (local only)
+
+Dry-run emits **local JSON or markdown** under an explicit operator `--output` path (not in repo), including at minimum:
+
+| Field | Meaning |
+|---|---|
+| `would_create_or_update` | `true` only when all gates pass; else `false` |
+| `target_database_safe_name` | Redacted/safe label (e.g. `Evidence & Closeouts`) |
+| `field_mapping_preview` | Payload/registry → Notion property mapping preview |
+| `projection_blocked_reason` | Echo or derive block code |
+| `operator_review_required` | `true` when plan is informational only |
+
+**Forbidden in dry-run:** any Notion MCP `create`/`update`/`delete`/`move` call; any write to Notion.
+
+#### Visible Notion fields (when gates pass)
+
+From payload + Registry v1 subset (pointers only):
+
+- `run_id`, `projection_ready`, `projection_blocked_reason`
+- `manifest_verify_rc`, `closeout_accepted`, `primary_evidence_finalized`
+- `repo_commit`, `s3_export_status`, `download_verify_rc`
+- `registry` / `closeout` — **basename or “configured” only** (no full absolute paths)
+- Registry row subset: `lane_id`, `evidence_status`, `review_verdict`, `manifest_verified`, `evidence_transport`, registry `verdict`
+- Authority mirrors — all **false** / non-authorizing literals
+- `operator_review_required` when derived
+
+#### Forbidden Notion fields
+
+- `source_files.*` from payload
+- Secrets, tokens, credentials, exchange/broker credentials
+- Full local absolute path leaks unless operator explicitly approves in a future slice
+- `live_authority` / `testnet_authority` / approval flags presented as authorization
+
+#### Fail-closed block rules (future writer)
+
+Set `would_create_or_update=false` and populate `projection_blocked_reason` when **any** of:
+
+| Condition | Block posture |
+|---|---|
+| Missing or unreadable payload | `PAYLOAD_MISSING` / `PAYLOAD_MALFORMED` |
+| Wrong `schema_version` | `PAYLOAD_SCHEMA_UNSUPPORTED` |
+| `projection_ready=false` | Echo payload reason |
+| `consumers.notion_projection_allowed=false` | `NOTION_PROJECTION_NOT_ALLOWED` |
+| `manifest_verify_rc != 0` | `MANIFEST_VERIFY_FAILED` |
+| `closeout_accepted=false` | `CLOSEOUT_NOT_ACCEPTED` |
+| `primary_evidence_finalized=false` | `PRIMARY_EVIDENCE_NOT_FINALIZED` |
+| Boundary text not verified on target DB | `BOUNDARY_TEXT_NOT_VERIFIED` |
+| Target DB not operator-approved / missing | `TARGET_DB_NOT_APPROVED` |
+| Any authority field true on payload/registry | `UNSAFE_AUTHORITY_TRUE` |
+| Write requested without confirm token | `CONFIRM_TOKEN_MISSING` |
+| Destructive operation requested | `DESTRUCTIVE_OP_FORBIDDEN` |
+
+#### Implementation posture (this slice)
+
+- **No** `notion_post_closeout_sync_dry_run_v0` script in repository (`NOTION_DRY_RUN_WRITER_SCRIPT_FORBIDDEN_IN_THIS_SLICE=true`).
+- **No** Notion MCP write/create/update/delete (`NOTION_DRY_RUN_WRITER_DOES_NOT_CALL_MCP_WRITE=true`).
+- **No** post-closeout CI hook or scheduler coupling.
+- Reuse §6a.0.8 / §6a.1 / §6a.0.9 / Registry v1 / payload builder — **no** parallel runbook SSOT (`NO_PARALLEL_DOCS=true` at charter level applies).
+
+Cross-reference: §6a.1 Notion projection; §6a.0.9 payload builder; [build_post_closeout_projection_payload_v0.py](../../../scripts/ops/build_post_closeout_projection_payload_v0.py); archived Notion knowledge-graph runbook under `docs/ops/_archive/` — **historical reference only**.
 
 ### 6a.2 Market Dashboard read-only run projection contract v0
 
