@@ -637,7 +637,7 @@ LOCAL_ONLY_DRY_ADAPTER_CONTRACT_DOCUMENTED=true
 
 #### Future local-only dry adapter / command contract shape
 
-Implementation owner: [preflight_s3_finalized_evidence_export_v0.py](../../../scripts/ops/preflight_s3_finalized_evidence_export_v0.py) — local-only dry preflight CLI (`--evidence-root`, `--dry-run`, `--no-network` required; JSON eligibility output; no upload/download/network).
+Implementation owner: [preflight_s3_finalized_evidence_export_v0.py](../../../scripts/ops/preflight_s3_finalized_evidence_export_v0.py) — local-only dry preflight CLI (`--evidence-root`, `--dry-run`, `--no-network` required; optional `--registry-json`, `--run-id`, `--lane-id`, `--export-prefix-plan` for non-executing export-prefix-plan JSON; no upload/download/network).
 
 Contract shape (v0):
 
