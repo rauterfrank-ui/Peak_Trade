@@ -184,6 +184,13 @@ def test_owner_crosslinks() -> None:
     assert "S3_FINALIZED_EVIDENCE_TRANSPORT_ONLY=true" in remote_text
 
 
+def test_section_6a3_references_implemented_preflight_cli() -> None:
+    section = _section_6a3()
+    assert "S3_EXPORT_PREFLIGHT_CLI_IMPLEMENTED=true" in section
+    assert "preflight_s3_finalized_evidence_export_v0.py" in section
+    assert "§6a.3.1" in section
+
+
 def test_docs_truth_map_references_s3_export_gate() -> None:
     text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
     assert "6a.3" in text or "S3 finalized evidence export gate" in text
