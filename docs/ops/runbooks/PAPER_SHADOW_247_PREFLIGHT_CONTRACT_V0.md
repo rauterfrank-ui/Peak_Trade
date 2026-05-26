@@ -358,6 +358,8 @@ Future **remote paper dry command template** planning-only contract (non-executa
 
 **Closeout enforcement planning** + implemented non-authorizing helper: **§2b.2 Closeout Enforcement Planning Contract v0** — `CLOSEOUT_ENFORCEMENT_PLANNING_ONLY=true`; `CLOSEOUT_ENFORCEMENT_HELPER_IMPLEMENTED=true`; [durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py) (`OP-CLOSEOUT-HELPER-IMPL-V0`); classifies `post_merge_closeout.sh` and `append_closeout_index.py` as non-completion; `CLOSEOUT_ENFORCEMENT_HELPER_NON_AUTHORIZING=true`; binds §2b.1 + §2a + remote §6a.0–§6a.0.5 + S3 §6a.3; `PRE_FLIGHT_BLOCKED_LIFTED=false`; `READY_FOR_START=false`; **does not** authorize runtime or remote runner start.
 
+**S3 finalized evidence export dry preflight CLI** (local-only transport planning; no upload/download/network): taxonomy **§6a.3 / §6a.3.1** — `S3_EXPORT_PREFLIGHT_CLI_IMPLEMENTED=true`; [preflight_s3_finalized_evidence_export_v0.py](../../../scripts/ops/preflight_s3_finalized_evidence_export_v0.py); `--dry-run` + `--no-network` required; non-executing `--export-prefix-plan`; `S3_EXPORT_PREFLIGHT_CLI_NON_AUTHORIZING=true`; `S3_UPLOAD_AUTHORITY=false`; `PRE_FLIGHT_BLOCKED_LIFTED=false`; `READY_FOR_START=false`; **does not** authorize runtime, remote runner start, or Stage-3 start charter.
+
 ## 3a. Futures / perpetual planning boundary (BTC/USD proxy evidence)
 
 Symbols and surfaces such as **BTC/USD**, **BTC-USD**, **Bitcoin USD**, or **BTCUSDT** may appear in this repository as WebUI defaults, spot-style fixtures, Class-A smoke paths, or **public REST market-data captures**. Treat that evidence as **technical proxy / spot-smoke instrumentation only**.

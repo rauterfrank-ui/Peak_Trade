@@ -30,6 +30,19 @@ PREFLIGHT_SPEC_MARKERS = (
     "S3_EXPORT_DRY_RUN_DEFAULT=true",
     "S3_EXPORT_NO_NETWORK_DEFAULT=true",
     "LOCAL_ONLY_DRY_ADAPTER_CONTRACT_DOCUMENTED=true",
+    "S3_EXPORT_PREFLIGHT_CLI_IMPLEMENTED=true",
+    "S3_EXPORT_PREFLIGHT_CLI_LOCAL_ONLY=true",
+    "S3_EXPORT_PREFLIGHT_CLI_NON_AUTHORIZING=true",
+    "S3_UPLOAD_AUTHORITY=false",
+    "S3_DOWNLOAD_AUTHORITY=false",
+    "AWS_CLI_AUTHORITY=false",
+    "RCLONE_AUTHORITY=false",
+    "NETWORK_AUTHORITY=false",
+    "RUNTIME_INTEGRATION_AUTHORITY=false",
+    "REMOTE_RUNNER_START_PERMITTED=false",
+    "PRE_FLIGHT_BLOCKED_LIFTED=false",
+    "READY_FOR_START=false",
+    "STAGE3_RUNNER_START_CHARTER_PERMITTED=false",
     "PHASE_T_W_EXTEND_ONLY=true",
     "PHASE_T_W_RECONCILED_TO_MANIFEST_SHA256=true",
     "MANIFEST_SHA256_REMAINS_CANONICAL=true",
@@ -74,16 +87,28 @@ def test_taxonomy_section_6a3_1_present() -> None:
         assert marker in text
 
 
-def test_local_only_dry_adapter_contract_documented() -> None:
+def test_s3_preflight_cli_implemented_local_only_non_authorizing() -> None:
     section = _section_6a3_1()
+    assert "S3_EXPORT_PREFLIGHT_CLI_IMPLEMENTED=true" in section
+    assert "S3_EXPORT_PREFLIGHT_CLI_LOCAL_ONLY=true" in section
+    assert "S3_EXPORT_PREFLIGHT_CLI_NON_AUTHORIZING=true" in section
     assert "LOCAL_ONLY_DRY_ADAPTER_CONTRACT_DOCUMENTED=true" in section
     assert "preflight_s3_finalized_evidence_export_v0" in section
+    assert "S3_UPLOAD_AUTHORITY=false" in section
+    assert "S3_DOWNLOAD_AUTHORITY=false" in section
+    assert "AWS_CLI_AUTHORITY=false" in section
+    assert "RCLONE_AUTHORITY=false" in section
+    assert "NETWORK_AUTHORITY=false" in section
+    assert "PRE_FLIGHT_BLOCKED_LIFTED=false" in section
+    assert "READY_FOR_START=false" in section
+    assert "STAGE3_RUNNER_START_CHARTER_PERMITTED=false" in section
     for flag in DRY_ADAPTER_INPUTS:
         assert flag in section
     assert "S3_EXPORT_DRY_RUN_DEFAULT=true" in section
     assert "S3_EXPORT_NO_NETWORK_DEFAULT=true" in section
     assert "non-executing" in section.lower() or "non executing" in section.lower()
     assert "no upload" in section.lower() or "does not** upload" in section.lower()
+    assert "future local-only" not in section.lower()
 
 
 def test_preflight_checklist_requires_finalize_and_manifest_verify() -> None:
@@ -211,4 +236,5 @@ def test_owner_crosslinks() -> None:
 def test_docs_truth_map_references_s3_export_implementation_preflight() -> None:
     text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
     assert "6a.3.1" in text or "S3 finalized evidence export implementation preflight" in text
+    assert "S3_EXPORT_PREFLIGHT_CLI_IMPLEMENTED=true" in text
     assert TAXONOMY_SPEC.name in text

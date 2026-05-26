@@ -1344,14 +1344,18 @@ NOTION_AUTHORITY=false
 MARKET_DASHBOARD_AUTHORITY=false
 DOUBLE_PLAY_AUTHORITY=false
 EVIDENCE_TRANSPORT_DEFAULT=local_only
+S3_EXPORT_PREFLIGHT_CLI_IMPLEMENTED=true
+S3_UPLOAD_AUTHORITY=false
+S3_DOWNLOAD_AUTHORITY=false
 ```
 
-**Purpose:** Define when Registry v1 may represent `evidence_transport=s3_export_after_finalize` and when a remote/object-storage copy may be **accepted** for closeout/review — **without** S3 upload/download implementation in this slice, **without** AWS/rclone calls, and **without** a parallel manifest truth layer.
+**Purpose:** Define when Registry v1 may represent `evidence_transport=s3_export_after_finalize` and when a remote/object-storage copy may be **accepted** for closeout/review — **without** S3 upload/download **implementation** in this gate slice, **without** AWS/rclone calls, and **without** a parallel manifest truth layer. S3 evidence transport **planning** exists here; the **implemented** local-only dry preflight CLI is documented in §6a.3.1 (`S3_EXPORT_PREFLIGHT_CLI_NON_AUTHORIZING=true`).
 
 **Canonical owners (reuse):**
 
 - Finalize + manifest verify: [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) — `finalize_primary_evidence_root()`, `MANIFEST.sha256`
 - Registry v1 metadata: [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) — §6a `evidence_transport`, `manifest_verified`, `evidence_status`
+- Local-only dry preflight CLI: §6a.3.1 — [preflight_s3_finalized_evidence_export_v0.py](../../../scripts/ops/preflight_s3_finalized_evidence_export_v0.py) (operator-invoked; no upload/download/network)
 - Projection consumer fixtures: [projection_consumer_v0.py](../../../tests/fixtures/ops/generic_evidence_run_registry_v1/projection_consumer_v0.py) — `S3_RELEVANT_PROJECTION_FIELDS`
 - Extend-only planning surfaces: [PHASE_T_DATA_NODE_EXPORT_CHANNEL.md](../runbooks/PHASE_T_DATA_NODE_EXPORT_CHANNEL.md), [PHASE_W_EXPORT_PACK_GH_CONSUMER.md](../runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md) — may be extended; **do not** replace `MANIFEST.sha256` with `SHA256SUMS.stable.txt` as competing truth (§6b)
 
@@ -1436,9 +1440,24 @@ MARKET_DASHBOARD_AUTHORITY=false
 DOUBLE_PLAY_AUTHORITY=false
 EVIDENCE_TRANSPORT_DEFAULT=local_only
 LOCAL_ONLY_DRY_ADAPTER_CONTRACT_DOCUMENTED=true
+S3_EXPORT_PREFLIGHT_CLI_IMPLEMENTED=true
+S3_EXPORT_PREFLIGHT_CLI_LOCAL_ONLY=true
+S3_EXPORT_PREFLIGHT_CLI_NON_AUTHORIZING=true
+S3_UPLOAD_AUTHORITY=false
+S3_DOWNLOAD_AUTHORITY=false
+AWS_CLI_AUTHORITY=false
+RCLONE_AUTHORITY=false
+NETWORK_AUTHORITY=false
+RUNTIME_INTEGRATION_AUTHORITY=false
+REMOTE_RUNNER_START_PERMITTED=false
+PRE_FLIGHT_BLOCKED_LIFTED=false
+READY_FOR_START=false
+STAGE3_RUNNER_START_CHARTER_PERMITTED=false
 ```
 
-**Purpose:** Define a **non-executing** implementation preflight for a future local-only S3 finalized-evidence export dry adapter or CLI command contract. This slice bridges §6a.3 gate rules to extend-only Phase T/W planning surfaces — **without** AWS/rclone calls, **without** upload/download, **without** a parallel manifest truth layer, and **without** mutating durable archives.
+**Purpose:** Define the **implemented** local-only S3 finalized-evidence export **dry preflight CLI** contract and checklist — bridging §6a.3 gate rules to extend-only Phase T/W planning surfaces — **without** AWS/rclone calls, **without** S3 upload/download/list, **without** network, **without** a parallel manifest truth layer, **without** mutating durable archives, and **without** lifting Preflight **BLOCKED**, `READY_FOR_START`, remote runner start, or Stage-3 start charter.
+
+**Normative rule:** `S3_EXPORT_PREFLIGHT_CLI_IMPLEMENTED=true` — [preflight_s3_finalized_evidence_export_v0.py](../../../scripts/ops/preflight_s3_finalized_evidence_export_v0.py) ships on `main`. `S3_EXPORT_PREFLIGHT_CLI_LOCAL_ONLY=true` — reads local evidence roots and Registry JSON only; `--dry-run` and `--no-network` required. `S3_EXPORT_PREFLIGHT_CLI_NON_AUTHORIZING=true` — preflight **PASS** does **not** authorize upload, download, runtime, scheduler clearance, or gate lift. `S3_UPLOAD_AUTHORITY=false`, `S3_DOWNLOAD_AUTHORITY=false`, `AWS_CLI_AUTHORITY=false`, `RCLONE_AUTHORITY=false`, `NETWORK_AUTHORITY=false` — no cloud transport in this slice.
 
 **Canonical owners (reuse):**
 
@@ -1448,9 +1467,9 @@ LOCAL_ONLY_DRY_ADAPTER_CONTRACT_DOCUMENTED=true
 - Projection consumer fixtures: [projection_consumer_v0.py](../../../tests/fixtures/ops/generic_evidence_run_registry_v1/projection_consumer_v0.py) — `S3_RELEVANT_PROJECTION_FIELDS`
 - Extend-only Phase surfaces: [PHASE_T_DATA_NODE_EXPORT_CHANNEL.md](../runbooks/PHASE_T_DATA_NODE_EXPORT_CHANNEL.md), [PHASE_W_EXPORT_PACK_GH_CONSUMER.md](../runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md)
 
-#### Future local-only dry adapter / command contract shape
+#### Implemented local-only dry preflight CLI (non-authorizing)
 
-Implementation owner: [preflight_s3_finalized_evidence_export_v0.py](../../../scripts/ops/preflight_s3_finalized_evidence_export_v0.py) — local-only dry preflight CLI (`--evidence-root`, `--dry-run`, `--no-network` required; optional `--registry-json`, `--run-id`, `--lane-id`, `--export-prefix-plan` for non-executing export-prefix-plan JSON; no upload/download/network).
+**Implementation owner:** [preflight_s3_finalized_evidence_export_v0.py](../../../scripts/ops/preflight_s3_finalized_evidence_export_v0.py) — local-only dry preflight CLI (`--evidence-root`, `--dry-run`, `--no-network` required; optional `--registry-json`, `--run-id`, `--lane-id`, `--export-prefix-plan` for non-executing export-prefix-plan JSON; **no** upload/download/network/AWS/rclone).
 
 Contract shape (v0):
 
@@ -1471,7 +1490,7 @@ Default posture: `S3_EXPORT_DRY_RUN_DEFAULT=true`, `S3_EXPORT_NO_NETWORK_DEFAULT
 
 #### Preflight checklist (all required for export-ready recommendation)
 
-Before a future dry adapter may recommend `evidence_transport=s3_export_after_finalize`:
+Before the dry preflight CLI may recommend `evidence_transport=s3_export_after_finalize`:
 
 1. `durable-evidence-root` is **outside** `/tmp` (non-staging).
 2. `finalize_primary_evidence_root()` completed on that root.
@@ -1515,7 +1534,7 @@ Do **not** modify Phase T/W to replace `MANIFEST.sha256`. Do **not** introduce `
 - Failed download verify is **fail-closed** — remote copy rejected for closeout acceptance.
 - Upload success alone is insufficient.
 
-#### Forbidden (implementation preflight + future adapter)
+#### Forbidden (implementation preflight CLI)
 
 - Upload before finalize; active staging sync; acceptance without download+verify
 - Secrets/credentials in Registry / Notion / Dashboard projections
@@ -1525,7 +1544,7 @@ Do **not** modify Phase T/W to replace `MANIFEST.sha256`. Do **not** introduce `
 - AWS CLI, rclone, S3 upload/download execution in this preflight slice
 - `SHA256SUMS.stable.txt` as parallel truth or authority
 
-#### Canonical boundary copy (required on future preflight/adapter surfaces)
+#### Canonical boundary copy (required on S3 preflight surfaces)
 
 > S3 export implementation preflight is non-executing. It authorizes no upload, download, runtime, scheduler clearance, testnet, live trading, broker access, strategy execution, Notion sync, Dashboard status, or Double Play decisions. MANIFEST.sha256 remains canonical.
 
