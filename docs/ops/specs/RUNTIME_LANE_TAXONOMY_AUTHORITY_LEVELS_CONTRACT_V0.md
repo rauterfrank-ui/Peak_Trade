@@ -423,7 +423,7 @@ Remote host placement **does not** relax manifest, closeout, or preflight rules.
 #### Notion and Market Dashboard (projection-only in this contract)
 
 - Notion: §6a.1 — post-closeout sync only; `NOTION_WRITE_DEFAULT=false`; no writes in this contract slice.
-- Market Dashboard: §6a.2 — read-only Registry v1 projection; no runtime actions; `GET /market/double-play` untouched.
+- Market Dashboard: §6a.2 — read-only Registry v1 projection; no runtime actions; `GET &#47;market&#47;double-play` untouched.
 
 #### S3 (after-finalize-only)
 

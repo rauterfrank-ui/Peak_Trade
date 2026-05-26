@@ -45,9 +45,9 @@ FORBIDDEN_DUPLICATE_SPEC_FRAGMENTS = (
 
 def _section_6a0() -> str:
     text = TAXONOMY_SPEC.read_text(encoding="utf-8")
-    return text.split(
-        "### 6a.0 Remote Runtime Command Contract v0", 1
-    )[1].split("### S3 / Object Storage", 1)[0]
+    return text.split("### 6a.0 Remote Runtime Command Contract v0", 1)[1].split(
+        "### S3 / Object Storage", 1
+    )[0]
 
 
 def test_section_6a0_present_with_markers() -> None:
@@ -122,7 +122,9 @@ def test_evidence_and_closeout_semantics() -> None:
 
 def test_forbidden_parallel_builds_documented() -> None:
     section = _section_6a0()
-    assert "Second scheduler authority" in section or "second scheduler authority" in section.lower()
+    assert (
+        "Second scheduler authority" in section or "second scheduler authority" in section.lower()
+    )
     assert "Notion as source of truth" in section or "notion as source of truth" in section.lower()
     assert "bypass" in section.lower()
 
@@ -132,7 +134,7 @@ def test_notion_and_dashboard_projection_only() -> None:
     assert "§6a.1" in section
     assert "§6a.2" in section
     assert "NOTION_WRITE_DEFAULT=false" in section
-    assert "GET /market/double-play" in section
+    assert "GET &#47;market&#47;double-play" in section
 
 
 def test_s3_after_finalize_only() -> None:
@@ -140,7 +142,10 @@ def test_s3_after_finalize_only() -> None:
     assert "S3_UPLOAD_BEFORE_FINALIZE_FORBIDDEN=true" in section
     assert "DOWNLOAD_VERIFY_REQUIRED_BEFORE_CLOSEOUT_ACCEPTANCE=true" in section
     assert "non-executing" in section.lower()
-    assert "upload does **not** authorize" in section or "does not authorize runtime" in section.lower()
+    assert (
+        "upload does **not** authorize" in section
+        or "does not authorize runtime" in section.lower()
+    )
 
 
 def test_no_runner_or_network_implementation() -> None:
