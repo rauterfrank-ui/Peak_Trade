@@ -121,6 +121,8 @@ REMOTE_PAPER_APPROVAL_COMMAND_PACKET_CONTRACT_V0=true
 REMOTE_PAPER_APPROVAL_COMMAND_PACKET_DOCS_TESTS_ONLY=true
 REMOTE_HOST_INVENTORY_PLANNING_CONTRACT_V0=true
 REMOTE_HOST_INVENTORY_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true
+REMOTE_COST_KILL_ORPHAN_SAFETY_CONTRACT_V0=true
+REMOTE_COST_KILL_ORPHAN_SAFETY_CONTRACT_DOCS_TESTS_ONLY=true
 COMBINED_OUTROOT_COMPOSITION_INDEX_V0=true
 COMPOSITION_INDEX_IS_NOT_LANE=true
 LANE_ID_DAEMON_PAPER_24H_FORBIDDEN=true
@@ -704,6 +706,129 @@ Future operator tooling may emit inventory summary rows with:
 This contract is **static / normative only** (`REMOTE_HOST_INVENTORY_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true`). It **does not** ship inventory CLI, cloud discovery, provisioning scripts, SSH/systemd/GHA wiring, runner implementation, or dry command templates.
 
 Cross-reference: §6a Remote Runtime Host Metadata; §6a.0–§6a.0.2 remote paper chain; credential boundaries runbook; composition-index §6b orthogonal.
+
+#### 6a.0.4 Remote cost/kill/orphan safety contract v0 (planning-only)
+
+```
+REMOTE_COST_KILL_ORPHAN_SAFETY_CONTRACT_V0=true
+REMOTE_COST_KILL_ORPHAN_SAFETY_CONTRACT_DOCS_TESTS_ONLY=true
+REMOTE_COST_KILL_ORPHAN_PLANNING_ONLY=true
+REMOTE_COST_KILL_ORPHAN_DO_NOT_PROVISION=true
+REMOTE_COST_KILL_ORPHAN_DO_NOT_CONNECT=true
+REMOTE_COST_KILL_ORPHAN_DO_NOT_KILL_PROCESS=true
+REMOTE_COST_KILL_ORPHAN_DO_NOT_TERMINATE_HOST=true
+REMOTE_COST_KILL_ORPHAN_NO_AWS_CLI=true
+REMOTE_COST_KILL_ORPHAN_NO_SSH=true
+REMOTE_COST_KILL_ORPHAN_NO_SYSTEMD=true
+REMOTE_COST_KILL_ORPHAN_NO_GHA_RUNNER=true
+REMOTE_COST_KILL_ORPHAN_NO_NETWORK=true
+REMOTE_COST_KILL_ORPHAN_NOT_APPROVAL=true
+REMOTE_COST_KILL_ORPHAN_NOT_RUNTIME_START=true
+REMOTE_COST_KILL_ORPHAN_NOT_HOST_TERMINATION=true
+REMOTE_COST_KILL_ORPHAN_NOT_CREDENTIAL_GRANT=true
+REMOTE_COST_KILL_ORPHAN_NOT_TESTNET_OR_LIVE_GATE=true
+REMOTE_COST_KILL_ORPHAN_REQUIRES_COST_CEILING=true
+REMOTE_COST_KILL_ORPHAN_REQUIRES_MAX_INSTANCE_LIFETIME=true
+REMOTE_COST_KILL_ORPHAN_REQUIRES_MAX_RUNTIME_SECONDS=true
+REMOTE_COST_KILL_ORPHAN_REQUIRES_STOP_PROCEDURE=true
+REMOTE_COST_KILL_ORPHAN_REQUIRES_KILL_PROCEDURE=true
+REMOTE_COST_KILL_ORPHAN_REQUIRES_ORPHAN_DETECTION=true
+REMOTE_COST_KILL_ORPHAN_REQUIRES_TEARDOWN_OWNER=true
+REMOTE_COST_KILL_ORPHAN_REQUIRES_DURABLE_CLOSEOUT=true
+REMOTE_COST_KILL_ORPHAN_REQUIRES_MANIFEST_VERIFY=true
+REMOTE_COST_KILL_ORPHAN_FORBIDS_REAL_IPS=true
+REMOTE_COST_KILL_ORPHAN_FORBIDS_CREDENTIALS=true
+REMOTE_COST_KILL_ORPHAN_FORBIDS_ACCOUNT_IDS=true
+REMOTE_COST_KILL_ORPHAN_FORBIDS_INSTANCE_IDS=true
+REMOTE_COST_KILL_ORPHAN_IMPLEMENTATION_CHARTER_BLOCKED_WITHOUT_SAFETY=true
+```
+
+**Purpose:** Define **non-authorizing** remote cost, kill, stop, teardown, and orphan-detection **planning requirements** that must be present and reviewed **before** any future Remote Paper-only **implementation charter** can be considered — **without** provisioning, connecting to, stopping, killing, terminating, or managing any real host or process.
+
+**Normative rule:** No Remote Paper implementation charter is acceptable in v0 unless cost/kill/orphan safety fields are declared, owned, and cross-linked to §6a.0.3 inventory rows (`REMOTE_COST_KILL_ORPHAN_IMPLEMENTATION_CHARTER_BLOCKED_WITHOUT_SAFETY=true`). This contract **does not** execute stop/kill/teardown and **does not** grant runtime or host termination authority.
+
+**Fixture owner (non-authorizing):** [remote_cost_kill_orphan_safety_v0.json](../../../tests/fixtures/ops/remote_cost_kill_orphan_safety_v0.json) — fake planning-only example; **does not** describe live resources or procedures that were executed.
+
+#### Required safety fields (v0)
+
+| Field | Required value / rule |
+|---|---|
+| `remote_host_id` | Planning-only synthetic id; aligns with §6a.0.3 inventory row |
+| `remote_run_id` | Safe run id; aligns with §6a.0 |
+| `runtime_backend` | `ec2` \| `vps` \| `gha_runner` \| `data_node` |
+| `expected_cost_ceiling` | Operator-declared planning ceiling (currency/unit documented; no billing API) |
+| `max_instance_lifetime_seconds` | Positive bounded cap |
+| `max_runtime_seconds` | Positive bounded cap; aligns with §6a.0 |
+| `stop_procedure_ref` | Pointer to documented stop procedure (planning doc/runbook ref; not executable command) |
+| `kill_procedure_ref` | Pointer to documented kill/emergency-stop procedure (planning only) |
+| `orphan_detection_ref` | Pointer to orphan detection checklist (planning only) |
+| `teardown_owner` | Named owner responsible for teardown planning |
+| `cost_owner` | Named owner responsible for cost ceiling oversight |
+| `incident_owner` | Named owner for incident/stop escalation |
+| `evidence_owner` | Named owner for §2a primary evidence |
+| `closeout_owner` | Named owner for §2b.1 durable closeout |
+| `orphan_check_required` | **`true`** |
+| `teardown_required` | **`true`** |
+| `stop_procedure_required` | **`true`** |
+| `cost_ceiling_required` | **`true`** |
+| `max_runtime_seconds_required` | **`true`** |
+| `max_instance_lifetime_required` | **`true`** |
+| `durable_closeout_required` | **`true`** |
+| `manifest_verify_required` | **`true`** — `MANIFEST.sha256` RC=0 per §2a |
+
+#### Required boundary fields (v0)
+
+| Field | Required value |
+|---|---|
+| `live_authority` | **`false`** |
+| `testnet_authority` | **`false`** |
+| `broker_credentials_present` | **`false`** |
+| `exchange_credentials_present` | **`false`** |
+| `network_called` | **`false`** |
+| `aws_cli_called` | **`false`** |
+| `ssh_called` | **`false`** |
+| `systemd_called` | **`false`** |
+| `gha_runner_implemented` | **`false`** |
+| `process_control_called` | **`false`** |
+| `host_termination_called` | **`false`** |
+
+#### Required contract bindings (reuse-only)
+
+Safety rows **must** cross-reference (pointer-only):
+
+1. §6a.0 Remote Runtime Command Contract — `max_runtime_seconds`, paper-only bounds.
+2. §6a.0.1 Local Remote Runner Preflight — dry shape validation.
+3. §6a.0.2 Remote-Paper Approval/Command-Packet — non-executable packet pointers.
+4. §6a.0.3 Remote Host Inventory Planning — host owner, teardown owner, cost ceiling requirements.
+5. Preflight §2a / §2a.1 — [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py).
+6. Preflight §2b.1 — mandatory durable closeout.
+7. Registry v1 — [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py).
+
+#### Forbidden content (fail-closed)
+
+| Forbidden in v0 planning rows | Marker |
+|---|---|
+| Real AWS/cloud account ids | `REMOTE_COST_KILL_ORPHAN_FORBIDS_ACCOUNT_IDS=true` |
+| Real EC2/provider instance ids | `REMOTE_COST_KILL_ORPHAN_FORBIDS_INSTANCE_IDS=true` |
+| IP addresses / live hostnames | `REMOTE_COST_KILL_ORPHAN_FORBIDS_REAL_IPS=true` |
+| SSH usernames, keys, credentials, secrets | `REMOTE_COST_KILL_ORPHAN_FORBIDS_CREDENTIALS=true` |
+| Real S3 bucket names | forbidden (align with §6a.0.3) |
+| Start/stop/kill/terminate/provision/connect commands | `DO_NOT_KILL_PROCESS`; `DO_NOT_TERMINATE_HOST`; inventory `DO_NOT_PROVISION`/`DO_NOT_CONNECT` |
+
+#### Non-authorizing posture (required machine lines)
+
+| Line | Allowed values (v0) |
+|---|---|
+| `REMOTE_COST_KILL_ORPHAN_STATUS` | `planning_only` \| `blocked` \| `invalid` |
+| `REMOTE_COST_KILL_ORPHAN_READY_FOR_IMPLEMENTATION_CHARTER` | **`false` always in v0** |
+| `REMOTE_COST_KILL_ORPHAN_PROCESS_KILLED` | **`false`** |
+| `REMOTE_COST_KILL_ORPHAN_HOST_TERMINATED` | **`false`** |
+
+#### Implementation posture (this slice)
+
+This contract is **static / normative only** (`REMOTE_COST_KILL_ORPHAN_SAFETY_CONTRACT_DOCS_TESTS_ONLY=true`). It **does not** ship safety enforcement CLI, billing integration, process control, host termination scripts, SSH/systemd/GHA wiring, runner implementation, or dry command templates.
+
+Cross-reference: §6a.0–§6a.0.3 remote paper chain; KillSwitch / incident runbooks as **future pointer targets only** (no authority promotion); composition-index §6b orthogonal.
 
 ### S3 / Object Storage — finalized evidence transport only
 
