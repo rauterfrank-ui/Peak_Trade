@@ -940,18 +940,17 @@ No real secrets, account IDs, IPs, provider instance IDs, bucket names, SSH user
 
 #### Implementation posture (this slice)
 
-This contract is **static / normative only** (`REMOTE_PAPER_PACKET_ASSEMBLY_VALIDATOR_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true`). It **does not** ship validator CLI, archive walkers, cloud inspection, runner implementation, dry command templates, or process control.
+This contract is **static / normative only** (`REMOTE_PAPER_PACKET_ASSEMBLY_VALIDATOR_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true`). It **does not** ship assembly-validator CLI, archive walkers, cloud inspection, runner implementation, dry command templates, or process control (§6a.0.6 owns the separate offline packet validator CLI).
 
 Cross-reference: §6a.0–§6a.0.4 remote paper chain; §6a.0.6 validator CLI planning; composition-index §6b orthogonal.
 
-#### 6a.0.6 Remote paper validator CLI planning contract v0 (planning-only)
+#### 6a.0.6 Remote paper validator CLI contract v0 (planning contract + implemented offline CLI)
 
 ```
 REMOTE_PAPER_VALIDATOR_CLI_PLANNING_CONTRACT_V0=true
 REMOTE_PAPER_VALIDATOR_CLI_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true
-REMOTE_PAPER_VALIDATOR_CLI_PLANNING_ONLY=true
-REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED=false
-REMOTE_PAPER_VALIDATOR_CLI_DO_NOT_RUN=true
+REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED=true
+REMOTE_PAPER_VALIDATOR_CLI_OFFLINE_STATIC_ONLY=true
 REMOTE_PAPER_VALIDATOR_CLI_NO_RUNTIME=true
 REMOTE_PAPER_VALIDATOR_CLI_NO_NETWORK=true
 REMOTE_PAPER_VALIDATOR_CLI_NO_AWS=true
@@ -962,6 +961,10 @@ REMOTE_PAPER_VALIDATOR_CLI_NO_ARCHIVE_MUTATION=true
 REMOTE_PAPER_VALIDATOR_CLI_NO_DRY_COMMAND_TEMPLATE=true
 REMOTE_PAPER_VALIDATOR_CLI_NO_REMOTE_RUNNER=true
 REMOTE_PAPER_VALIDATOR_CLI_READY_FOR_IMPLEMENTATION=false
+REMOTE_PAPER_VALIDATOR_CLI_READY_FOR_START=false
+REMOTE_PAPER_VALIDATOR_CLI_PREFLIGHT_BLOCKED_LIFTED=false
+REMOTE_RUNNER_START_PERMITTED=false
+STAGE3_RUNNER_START_CHARTER_PERMITTED=false
 REMOTE_PAPER_VALIDATOR_CLI_OUTPUT_STATUS_ENUM_PASS_BLOCKED_INVALID=true
 REMOTE_PAPER_VALIDATOR_CLI_PASS_DOES_NOT_AUTHORIZE_RUNTIME=true
 REMOTE_PAPER_VALIDATOR_CLI_PASS_DOES_NOT_AUTHORIZE_REMOTE_RUNNER=true
@@ -970,15 +973,17 @@ REMOTE_PAPER_VALIDATOR_CLI_PASS_DOES_NOT_AUTHORIZE_TESTNET=true
 REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTATION_REQUIRES_OPERATOR_CHARTER=true
 ```
 
-**Purpose:** Define the **future offline** Remote Paper packet validator **CLI shape**, input paths, validation rules, and JSON output contract — **without** implementing the CLI, emitting shell commands, walking operator archives, or granting runtime authority.
+**Purpose:** Define the Remote Paper packet validator **CLI contract** (input paths, validation rules, JSON output) and record the **implemented offline CLI** on `main` — **without** granting runtime authority, lifting Preflight **BLOCKED**, authorizing remote runner implementation/start, emitting `command_template`, or permitting Stage-3 runner start charter.
 
-**Normative rule:** `REMOTE_PAPER_VALIDATOR_CLI_PLANNING_ONLY=true` — static contract + fixture + tests only. `REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED=false` — no `scripts&#47;ops&#47;*validator*` executable ships in this slice. `REMOTE_PAPER_VALIDATOR_CLI_DO_NOT_RUN=true` — operators must not treat planning rows as runnable commands.
+**Implemented CLI (non-authorizing):** [validate_remote_paper_packet_v0.py](../../../scripts/ops/validate_remote_paper_packet_v0.py) (`OP-REMOTE-PAPER-VALIDATOR-CLI-IMPL-V0`) — offline/static local JSON validation only; explicit input paths; status enum `PASS` \| `BLOCKED` \| `INVALID`.
 
-**Relationship to §6a.0.5:** §6a.0.5 defines **assembly cross-check semantics** (`planning_valid` / `blocked` / `invalid`). This §6a.0.6 defines how a **future local CLI** would consume explicit JSON inputs and emit machine-readable results — still **non-authorizing**.
+**Normative rule:** `REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED=true` — the offline validator CLI ships on `main`. `REMOTE_PAPER_VALIDATOR_CLI_OFFLINE_STATIC_ONLY=true` — reads local JSON files only; no archive walker, network, AWS, SSH, systemd, Docker, or runtime inspection. `REMOTE_PAPER_VALIDATOR_CLI_PASS_DOES_NOT_AUTHORIZE_RUNTIME=true` — **`PASS` does not authorize runtime**. `REMOTE_PAPER_VALIDATOR_CLI_PASS_DOES_NOT_AUTHORIZE_REMOTE_RUNNER=true` — **`PASS` does not authorize remote runner implementation or start**. `REMOTE_PAPER_VALIDATOR_CLI_PREFLIGHT_BLOCKED_LIFTED=false` — **`PASS` does not clear Preflight BLOCKED**. `REMOTE_PAPER_VALIDATOR_CLI_READY_FOR_START=false` — **`PASS` does not set `READY_FOR_START=true`**. `REMOTE_RUNNER_START_PERMITTED=false` and `STAGE3_RUNNER_START_CHARTER_PERMITTED=false` — Stage-3 runner start charter remains forbidden. `authority.command_template` / CLI output **must not** emit executable `command_template` (`REMOTE_PAPER_VALIDATOR_CLI_NO_DRY_COMMAND_TEMPLATE=true`).
 
-**Fixture owner (non-authorizing):** [remote_paper_validator_cli_planning_v0.json](../../../tests/fixtures/ops/remote_paper_validator_cli_planning_v0.json) — planning-only CLI contract index; **does not** execute validation.
+**Relationship to §6a.0.5:** §6a.0.5 defines **assembly cross-check semantics** (`planning_valid` / `blocked` / `invalid`). This §6a.0.6 defines the **implemented local CLI** that consumes explicit JSON inputs and emits machine-readable results — still **non-authorizing**.
 
-#### Future CLI input shape (local JSON only)
+**Fixture owner (non-authorizing):** [remote_paper_validator_cli_planning_v0.json](../../../tests/fixtures/ops/remote_paper_validator_cli_planning_v0.json) — CLI contract index aligned with this section; the JSON fixture is **not** a runnable command.
+
+#### CLI input shape (local JSON only)
 
 | Input | Required | Rule |
 |---|---|---|
@@ -997,9 +1002,9 @@ REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTATION_REQUIRES_OPERATOR_CHARTER=true
 - `REMOTE_PAPER_VALIDATOR_CLI_NO_RUNTIME=true` — no live process, container, or Docker inspection.
 - No implicit glob over repo `out/` or operator home directories.
 
-#### Future CLI validations (offline rules)
+#### CLI validations (offline rules)
 
-When implemented under a **separate operator-approved charter**, the CLI **must** fail closed (`INVALID` or `BLOCKED`) when any of the following hold:
+The implemented CLI **must** fail closed (`INVALID` or `BLOCKED`) when any of the following hold:
 
 | Check | Rule |
 |---|---|
@@ -1015,7 +1020,7 @@ When implemented under a **separate operator-approved charter**, the CLI **must*
 | Closeout | §2b.1 and §2b.2 requirements **referenced** in optional metadata only — CLI does **not** execute copy/verify or mutate archives |
 | Authority substitutes | Notion, Market Dashboard, and S3 upload/export success **do not** substitute for packet/preflight authority |
 
-#### Future CLI output shape (JSON only)
+#### CLI output shape (JSON only)
 
 `REMOTE_PAPER_VALIDATOR_CLI_OUTPUT_STATUS_ENUM_PASS_BLOCKED_INVALID=true` — status enum: `PASS` \| `BLOCKED` \| `INVALID`.
 
@@ -1039,22 +1044,22 @@ When implemented under a **separate operator-approved charter**, the CLI **must*
 
 #### Implementation gates
 
-- `REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTATION_REQUIRES_OPERATOR_CHARTER=true` — future CLI code requires a **separate explicit operator-approved implementation charter**; initial implementation must remain **offline/static** (read JSON files, write JSON result).
-- `REMOTE_PAPER_VALIDATOR_CLI_READY_FOR_IMPLEMENTATION=false` — this planning slice does **not** authorize implementation.
-- `REMOTE_PAPER_VALIDATOR_CLI_NO_REMOTE_RUNNER=true` — CLI planning and future CLI **do not** implement or start remote runners.
-- **Dry command template** remains blocked until: §6a.0.5 assembly planning exists; §2b.2 closeout enforcement planning merged; **this §6a.0.6 CLI planning reviewed**; operator charters a **separate non-executable** dry-command-template slice.
+- `REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTATION_REQUIRES_OPERATOR_CHARTER=true` — initial CLI implementation shipped under **OP-REMOTE-PAPER-VALIDATOR-CLI-IMPL-V0**; must remain **offline/static** (read JSON files, write JSON result).
+- `REMOTE_PAPER_VALIDATOR_CLI_READY_FOR_IMPLEMENTATION=false` — this contract slice does **not** authorize further implementation beyond the chartered offline CLI.
+- `REMOTE_PAPER_VALIDATOR_CLI_NO_REMOTE_RUNNER=true` — the validator CLI **does not** implement or start remote runners.
+- **Dry command template** remains blocked until: §6a.0.5 assembly planning exists; §2b.2 closeout enforcement planning merged; **this §6a.0.6 implemented CLI reviewed**; operator charters a **separate non-executable** dry-command-template slice.
 
 #### Bindings
 
 - §2a primary evidence retention — Preflight owner; CLI does not satisfy §2a.
 - §2b.1 mandatory durable closeout — referenced via optional metadata only.
-- §2b.2 closeout enforcement planning — referenced; no helper implementation in this slice.
+- §2b.2 closeout enforcement planning — referenced; CLI does **not** execute closeout copy/verify by default ([durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py) is a separate non-authorizing helper).
 - §6a.0–§6a.0.5 remote paper planning chain — sole semantic inputs.
 - §6a.3 / §6a.3.1 S3 finalized evidence dry/prefix-plan — optional local prefix-plan input only.
 
 #### Implementation posture (this slice)
 
-This contract is **static / normative only** (`REMOTE_PAPER_VALIDATOR_CLI_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true`). It **does not** ship validator CLI source, archive walkers, Docker integration, dry command templates, remote runners, or closeout copy/verify helpers.
+This contract documents the **implemented offline validator CLI** and remains **non-authorizing** (`REMOTE_PAPER_VALIDATOR_CLI_PLANNING_CONTRACT_DOCS_TESTS_ONLY=true` for contract-doc/tests alignment only). It **does not** lift Preflight **BLOCKED**, authorize runner start, ship remote runners, emit dry command templates, or grant Stage-3 start charter authority.
 
 Cross-reference: §6a.0.5 assembly validator planning; §6a.0.7 dry command template planning; composition-index §6b orthogonal.
 
@@ -1092,7 +1097,7 @@ DRY_COMMAND_TEMPLATE_NO_MARKET_DASHBOARD_CHANGE=true
 
 **Normative rule:** `DRY_COMMAND_TEMPLATE_PLANNING_ONLY=true` — static contract + fixture + tests only. `DRY_COMMAND_TEMPLATE_NON_EXECUTABLE=true` — no shebang, no `chmod +x`, no copy-paste start commands. `DRY_COMMAND_TEMPLATE_DO_NOT_RUN=true` — operators must not treat this artifact as a command to execute.
 
-**Relationship to §6a.0.5 / §6a.0.6:** §6a.0.5 defines assembly cross-check semantics; §6a.0.6 defines future Validator CLI I/O (**`REMOTE_PAPER_VALIDATOR_CLI_NO_DRY_COMMAND_TEMPLATE=true`** — CLI must **not** emit `command_template`). This §6a.0.7 is the **separate planning artifact** permitted after operator charter Gate 3; it **does not** satisfy execution gates and **`DRY_COMMAND_TEMPLATE_EXECUTION_PERMITTED=false`** always in v0.
+**Relationship to §6a.0.5 / §6a.0.6:** §6a.0.5 defines assembly cross-check semantics; §6a.0.6 defines implemented Validator CLI I/O (**`REMOTE_PAPER_VALIDATOR_CLI_NO_DRY_COMMAND_TEMPLATE=true`** — CLI must **not** emit `command_template`). This §6a.0.7 is the **separate planning artifact** permitted after operator charter Gate 3; it **does not** satisfy execution gates and **`DRY_COMMAND_TEMPLATE_EXECUTION_PERMITTED=false`** always in v0.
 
 **Fixture owner (non-authorizing):** [remote_paper_dry_command_template_planning_v0.json](../../../tests/fixtures/ops/remote_paper_dry_command_template_planning_v0.json) — illustrative review steps only; **does not** execute.
 

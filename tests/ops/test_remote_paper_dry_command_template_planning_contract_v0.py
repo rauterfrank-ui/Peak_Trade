@@ -193,7 +193,7 @@ def test_no_dry_command_template_script_in_ops() -> None:
 
 def test_section_ordering_6a07_after_6a06_before_s3() -> None:
     text = TAXONOMY_SPEC.read_text(encoding="utf-8")
-    assert text.index("#### 6a.0.6 Remote paper validator CLI planning contract v0") < text.index(
+    assert text.index("#### 6a.0.6 Remote paper validator CLI contract v0") < text.index(
         "#### 6a.0.7 Remote paper dry command template planning contract v0"
     )
     assert text.index(

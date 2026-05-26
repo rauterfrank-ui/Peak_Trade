@@ -2,7 +2,7 @@
   "schema_version": "peak_trade.remote_paper_validator_cli_planning.v0",
   "validator_cli_name": "remote_paper_validator_cli_planning_v0",
   "planning_only": true,
-  "implemented": false,
+  "implemented": true,
   "do_not_run": true,
   "no_runtime": true,
   "no_network": true,
@@ -43,9 +43,12 @@
   "output_machine_lines": {
     "REMOTE_PAPER_VALIDATOR_CLI_PLANNING_CONTRACT_V0": true,
     "REMOTE_PAPER_VALIDATOR_CLI_PLANNING_ONLY": true,
-    "REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED": false,
+    "REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED": true,
     "REMOTE_PAPER_VALIDATOR_CLI_DO_NOT_RUN": true,
     "REMOTE_PAPER_VALIDATOR_CLI_READY_FOR_IMPLEMENTATION": false,
+    "REMOTE_PAPER_VALIDATOR_CLI_READY_FOR_START": false,
+    "REMOTE_PAPER_VALIDATOR_CLI_PREFLIGHT_BLOCKED_LIFTED": false,
+    "REMOTE_RUNNER_START_PERMITTED": false,
     "REMOTE_PAPER_VALIDATOR_CLI_PASS_DOES_NOT_AUTHORIZE_RUNTIME": true,
     "REMOTE_PAPER_VALIDATOR_CLI_PASS_DOES_NOT_AUTHORIZE_REMOTE_RUNNER": true
   }
