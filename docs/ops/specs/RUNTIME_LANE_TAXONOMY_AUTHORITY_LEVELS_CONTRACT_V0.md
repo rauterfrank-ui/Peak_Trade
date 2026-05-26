@@ -1323,7 +1323,7 @@ Set `projection_ready=false` and populate `projection_blocked_reason` when **any
 
 #### Implementation posture (this slice)
 
-- **No** [build_post_closeout_projection_payload_v0.py](../../../scripts/ops/build_post_closeout_projection_payload_v0.py) in repository (`PAYLOAD_BUILDER_SCRIPT_FORBIDDEN_IN_THIS_SLICE=true`).
+- **No** future `build_post_closeout_projection_payload_v0` offline helper script in repository (`PAYLOAD_BUILDER_SCRIPT_FORBIDDEN_IN_THIS_SLICE=true`).
 - **No** post-closeout CI hook, consumer module, Dashboard panel, or Notion sync (`POST_CLOSEOUT_PROJECTION_PAYLOAD_BUILDER_PLANNING_DOCS_TESTS_ONLY=true`).
 - Reuse §6a.0.8 chain, Registry v1 builder, and `projection_consumer_v0` constants — **no** parallel registry, runbook, or readmodel SSOT (`NO_PARALLEL_REGISTRY=true` / `NO_PARALLEL_READMODEL=true` apply at charter level).
 
