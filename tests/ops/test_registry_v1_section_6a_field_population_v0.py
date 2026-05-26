@@ -2,93 +2,28 @@
 
 from __future__ import annotations
 
-import importlib.util
 import json
-import sys
 from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).resolve().parents[2]
-REGISTRY_SCRIPT = ROOT / "scripts" / "ops" / "build_generic_evidence_run_registry_v1.py"
+from tests.fixtures.ops.generic_evidence_run_registry_v1 import projection_consumer_v0 as pc
+
+ROOT = pc.REPO_ROOT
+REGISTRY_SCRIPT = pc.REGISTRY_SCRIPT
 TAXONOMY_SPEC = (
     ROOT / "docs" / "ops" / "specs" / "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md"
 )
 
-SECTION_6A_FIELDS = (
-    "runtime_host",
-    "runtime_backend",
-    "runtime_mode",
-    "evidence_root_type",
-    "evidence_transport",
-    "notion_projection",
-    "market_dashboard_projection",
-    "live_authority",
-    "testnet_authority",
-)
+SECTION_6A_FIELDS = pc.SECTION_6A_METADATA_FIELDS
+RUN_ID = pc.DEFAULT_COMPOSITION_RUN_ID
 
-RUN_ID = "daemon_paper_24h_fixture_6a_v0"
+_write_lane = pc.write_lane
+_write_composition = pc.write_composition
 
 
 def _load_registry():
-    spec = importlib.util.spec_from_file_location(
-        "build_generic_evidence_run_registry_v1_section_6a",
-        REGISTRY_SCRIPT,
-    )
-    assert spec is not None and spec.loader is not None
-    mod = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = mod
-    spec.loader.exec_module(mod)
-    return mod
-
-
-def _sha256_file(path: Path) -> str:
-    import hashlib
-
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
-def _write_lane_manifest(run_dir: Path) -> None:
-    entries: list[str] = []
-    for path in sorted(run_dir.rglob("*")):
-        if not path.is_file() or path.name == "MANIFEST.sha256":
-            continue
-        rel = path.relative_to(run_dir).as_posix()
-        entries.append(f"{_sha256_file(path)}  {rel}")
-    (run_dir / "MANIFEST.sha256").write_text("\n".join(entries) + "\n", encoding="utf-8")
-
-
-def _write_lane(archive: Path, lane: str, run_id: str, *, review: str | None = None) -> Path:
-    run_dir = archive / "runs" / lane / run_id
-    run_dir.mkdir(parents=True, exist_ok=True)
-    (run_dir / "evidence.txt").write_text(f"{lane}:{run_id}\n", encoding="utf-8")
-    if review is not None:
-        review_dir = run_dir / "review"
-        review_dir.mkdir(parents=True, exist_ok=True)
-        (review_dir / "REVIEW_RESULT.json").write_text(
-            json.dumps({"verdict": review, "issues": []}) + "\n",
-            encoding="utf-8",
-        )
-    _write_lane_manifest(run_dir)
-    return run_dir
-
-
-def _write_composition(archive: Path, run_id: str) -> Path:
-    comp_dir = archive / "runs" / "daemon_paper_24h" / run_id
-    comp_dir.mkdir(parents=True, exist_ok=True)
-    (comp_dir / "COMPOSITION_INDEX.md").write_text(
-        "composition_index_authority=false\n", encoding="utf-8"
-    )
-    manifests = comp_dir / "manifests"
-    manifests.mkdir(parents=True, exist_ok=True)
-    rel = "COMPOSITION_INDEX.md"
-    digest = _sha256_file(comp_dir / rel)
-    (manifests / "MANIFEST.sha256").write_text(f"{digest}  {rel}\n", encoding="utf-8")
-    return comp_dir
+    return pc.load_registry_module(module_name="build_generic_evidence_run_registry_v1_section_6a")
 
 
 def _build(mod, archive: Path) -> dict:

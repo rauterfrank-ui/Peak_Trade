@@ -9,6 +9,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.fixtures.ops.generic_evidence_run_registry_v1 import projection_consumer_v0 as pc
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 TAXONOMY_SPEC = (
     REPO_ROOT / "docs" / "ops" / "specs" / "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md"
@@ -27,6 +29,9 @@ SECTION_6A_POPULATION_TESTS = (
 )
 NOTION_SPEC_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_notion_post_closeout_sync_projection_spec_v0.py"
+)
+PROJECTION_FIXTURE_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_registry_v1_projection_consumer_smoke_fixtures_v0.py"
 )
 MARKET_DASHBOARD_READONLY_TESTS = (
     REPO_ROOT / "tests" / "webui" / "test_market_dashboard_readonly_structure_contract_v0.py"
@@ -62,35 +67,8 @@ FORBIDDEN_TRUTH_LAYER_PHRASES = (
     "dashboard truth layer is canonical",
 )
 
-ALLOWED_PROJECTION_FIELDS = (
-    "run_id",
-    "lane_id",
-    "composition_id",
-    "record_kind",
-    "runtime_host",
-    "runtime_backend",
-    "runtime_mode",
-    "evidence_root_type",
-    "evidence_transport",
-    "evidence_status",
-    "review_verdict",
-    "manifest_verified",
-    "archive_path",
-)
-
-RUN_PROJECTION_FIELDS = (
-    "run_id",
-    "lane_id",
-    "runtime_host",
-    "runtime_backend",
-    "runtime_mode",
-    "evidence_root_type",
-    "evidence_transport",
-    "evidence_status",
-    "review_verdict",
-    "manifest_verified",
-    "archive_path",
-)
+ALLOWED_PROJECTION_FIELDS = pc.ALLOWED_PROJECTION_FIELDS
+RUN_PROJECTION_FIELDS = pc.RUN_PROJECTION_FIELDS
 
 
 def _section_6a2() -> str:
@@ -202,17 +180,10 @@ def test_surface_cross_references() -> None:
 
 def test_registry_fixture_supports_projection_field_extraction(mod, tmp_path: Path) -> None:
     archive = tmp_path / "archive"
-    run_dir = archive / "runs" / "paper" / "paper_run"
-    run_dir.mkdir(parents=True, exist_ok=True)
-    (run_dir / "evidence.txt").write_text("paper:paper_run\n", encoding="utf-8")
-    digest = __import__("hashlib").sha256(b"paper:paper_run\n").hexdigest()
-    (run_dir / "MANIFEST.sha256").write_text(f"{digest}  evidence.txt\n", encoding="utf-8")
+    pc.write_minimal_paper_run(archive)
     payload = mod.build_registry(mod.BuildContext(archive_root=archive, repo_root=REPO_ROOT))
     run = payload["runs"][0]
-    for field in RUN_PROJECTION_FIELDS:
-        assert field in run, f"missing projection field {field!r} on runs[] row"
-    assert run["market_dashboard_projection"] == "disabled"
-    assert run["live_authority"] is False
+    pc.assert_non_authorizing_run_projection_defaults(run)
     assert payload["schema"] == "peak_trade.generic_evidence_run_registry.v1"
     assert "generic_evidence_run_registry.v2" not in json.dumps(payload)
 
@@ -222,6 +193,7 @@ def test_owner_crosslinks() -> None:
     assert REMOTE_RUNTIME_TESTS.name in owner_text
     assert SECTION_6A_POPULATION_TESTS.name in owner_text
     assert NOTION_SPEC_TESTS.name in owner_text
+    assert PROJECTION_FIXTURE_TESTS.name in owner_text
     remote_text = REMOTE_RUNTIME_TESTS.read_text(encoding="utf-8")
     assert "MARKET_DASHBOARD_PROJECTION_READONLY=true" in remote_text
     assert MARKET_DASHBOARD_READONLY_TESTS.is_file()
