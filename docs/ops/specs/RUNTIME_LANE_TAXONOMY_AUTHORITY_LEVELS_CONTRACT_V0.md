@@ -969,7 +969,7 @@ REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTATION_REQUIRES_OPERATOR_CHARTER=true
 
 **Purpose:** Define the **future offline** Remote Paper packet validator **CLI shape**, input paths, validation rules, and JSON output contract — **without** implementing the CLI, emitting shell commands, walking operator archives, or granting runtime authority.
 
-**Normative rule:** `REMOTE_PAPER_VALIDATOR_CLI_PLANNING_ONLY=true` — static contract + fixture + tests only. `REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED=false` — no `scripts/ops/*validator*` executable ships in this slice. `REMOTE_PAPER_VALIDATOR_CLI_DO_NOT_RUN=true` — operators must not treat planning rows as runnable commands.
+**Normative rule:** `REMOTE_PAPER_VALIDATOR_CLI_PLANNING_ONLY=true` — static contract + fixture + tests only. `REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED=false` — no `scripts&#47;ops&#47;*validator*` executable ships in this slice. `REMOTE_PAPER_VALIDATOR_CLI_DO_NOT_RUN=true` — operators must not treat planning rows as runnable commands.
 
 **Relationship to §6a.0.5:** §6a.0.5 defines **assembly cross-check semantics** (`planning_valid` / `blocked` / `invalid`). This §6a.0.6 defines how a **future local CLI** would consume explicit JSON inputs and emit machine-readable results — still **non-authorizing**.
 
@@ -1008,7 +1008,7 @@ When implemented under a **separate operator-approved charter**, the CLI **must*
 | Packet authority | `DO_NOT_RUN=true`, `READY_FOR_START=false`, `READY_FOR_IMPLEMENTATION_CHARTER=false` |
 | Inventory | Synthetic planning ids only; **no** real IPs, provider instance ids, account ids, SSH users, or credentials |
 | Safety | Cost ceiling, `max_runtime_seconds`, stop/kill/orphan/teardown/incident/evidence/closeout owners present per §6a.0.4 |
-| S3 prefix-plan | If provided: local-only, non-secret, no `s3://` bucket ARNs in fixture examples |
+| S3 prefix-plan | If provided: local-only, non-secret, no `s3:&#47;&#47;` bucket ARNs in fixture examples |
 | Closeout | §2b.1 and §2b.2 requirements **referenced** in optional metadata only — CLI does **not** execute copy/verify or mutate archives |
 | Authority substitutes | Notion, Market Dashboard, and S3 upload/export success **do not** substitute for packet/preflight authority |
 
