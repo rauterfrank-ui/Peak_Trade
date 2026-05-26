@@ -63,7 +63,7 @@ S3_ALLOWED_PROJECTION_FIELDS = (
 def _section_6a3() -> str:
     text = TAXONOMY_SPEC.read_text(encoding="utf-8")
     return text.split("### 6a.3 S3 finalized evidence export gate contract v0", 1)[1].split(
-        "### v0 authority posture", 1
+        "### 6a.3.1 S3 finalized evidence export implementation preflight contract v0", 1
     )[0]
 
 

@@ -99,7 +99,11 @@ MARKET_DASHBOARD_DOUBLE_PLAY_AUTHORITY=false
 MARKET_DASHBOARD_DOUBLE_PLAY_TOUCHED=false
 REGISTRY_V1_IS_SOLE_DASHBOARD_PROJECTION_FEED=true
 S3_FINALIZED_EVIDENCE_EXPORT_GATE_V0=true
+S3_FINALIZED_EVIDENCE_EXPORT_IMPLEMENTATION_PREFLIGHT_V0=true
 S3_EXPORT_GATE_DOCS_TESTS_ONLY=true
+S3_EXPORT_PREFLIGHT_DOCS_TESTS_ONLY=true
+S3_EXPORT_DRY_RUN_DEFAULT=true
+S3_EXPORT_NO_NETWORK_DEFAULT=true
 S3_AUTHORITY=false
 S3_UPLOAD_BEFORE_FINALIZE_FORBIDDEN=true
 ACTIVE_STAGING_SYNC_FORBIDDEN=true
@@ -590,6 +594,125 @@ From Registry v1 `runs[]` / `compositions[]` and top-level summary only (shared 
 > S3/Object Storage is finalized evidence transport only. S3 objects, prefixes, upload success, or dashboard/notion links do not authorize runtime, scheduler clearance, testnet, live trading, broker access, strategy execution, Notion sync, Dashboard status, or Double Play decisions. MANIFEST.sha256 remains canonical for evidence verification.
 
 Cross-reference: Notion projection §6a.1; Market Dashboard projection §6a.2; composition-index §6b; Remote Runtime Host Metadata §6a backend-not-lane semantics.
+
+### 6a.3.1 S3 finalized evidence export implementation preflight contract v0
+
+```
+S3_FINALIZED_EVIDENCE_EXPORT_IMPLEMENTATION_PREFLIGHT_V0=true
+S3_EXPORT_PREFLIGHT_DOCS_TESTS_ONLY=true
+S3_EXPORT_DRY_RUN_DEFAULT=true
+S3_EXPORT_NO_NETWORK_DEFAULT=true
+S3_FINALIZED_EVIDENCE_TRANSPORT_ONLY=true
+MANIFEST_SHA256_REMAINS_CANONICAL=true
+SHA256SUMS_STABLE_PARALLEL_TRUTH_FORBIDDEN=true
+PHASE_T_W_EXTEND_ONLY=true
+PHASE_T_W_RECONCILED_TO_MANIFEST_SHA256=true
+S3_UPLOAD_BEFORE_FINALIZE_FORBIDDEN=true
+ACTIVE_STAGING_SYNC_FORBIDDEN=true
+DOWNLOAD_VERIFY_REQUIRED_BEFORE_CLOSEOUT_ACCEPTANCE=true
+S3_AUTHORITY=false
+RUNTIME_AUTHORITY=false
+SCHEDULER_CLEARANCE_AUTHORITY=false
+LIVE_AUTHORITY=false
+TESTNET_AUTHORITY=false
+BROKER_AUTHORITY=false
+NOTION_AUTHORITY=false
+MARKET_DASHBOARD_AUTHORITY=false
+DOUBLE_PLAY_AUTHORITY=false
+EVIDENCE_TRANSPORT_DEFAULT=local_only
+LOCAL_ONLY_DRY_ADAPTER_CONTRACT_DOCUMENTED=true
+```
+
+**Purpose:** Define a **non-executing** implementation preflight for a future local-only S3 finalized-evidence export dry adapter or CLI command contract. This slice bridges §6a.3 gate rules to extend-only Phase T/W planning surfaces — **without** AWS/rclone calls, **without** upload/download, **without** a parallel manifest truth layer, and **without** mutating durable archives.
+
+**Canonical owners (reuse):**
+
+- Gate contract: §6a.3 above (export eligibility + consumer acceptance)
+- Finalize + manifest verify: [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) — `finalize_primary_evidence_root()`, `verify_manifest_sha256()`, `MANIFEST.sha256`
+- Registry v1 metadata: [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) — §6a fields; constants `S3_FINALIZED_EVIDENCE_EXPORT_IMPLEMENTATION_PREFLIGHT_V0`
+- Projection consumer fixtures: [projection_consumer_v0.py](../../../tests/fixtures/ops/generic_evidence_run_registry_v1/projection_consumer_v0.py) — `S3_RELEVANT_PROJECTION_FIELDS`
+- Extend-only Phase surfaces: [PHASE_T_DATA_NODE_EXPORT_CHANNEL.md](../runbooks/PHASE_T_DATA_NODE_EXPORT_CHANNEL.md), [PHASE_W_EXPORT_PACK_GH_CONSUMER.md](../runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md)
+
+#### Future local-only dry adapter / command contract shape (not implemented in v0)
+
+A future governed slice may introduce a **local-only, non-network** preflight command (working name: `preflight_s3_finalized_evidence_export_v0`) with the following contract shape:
+
+| Input / flag | Required | Semantics (v0) |
+|---|---|---|
+| `--durable-evidence-root` | yes | Absolute path to finalized durable primary evidence root (**outside** `/tmp`) |
+| `--registry-json` | yes | Path to Registry v1 JSON (`schema=peak_trade.generic_evidence_run_registry.v1`) |
+| `--run-id` | yes | Target run row in `runs[]` or composition row in `compositions[]` |
+| `--lane-id` or `--composition-id` | one required | Lane row vs composition-index row context |
+| `--manifest-sha256` | default derived | Explicit path to canonical `MANIFEST.sha256` (per-lane or composition rollup per §6b) |
+| `--export-prefix-plan` | planning only | Non-executing S3 prefix proposal (e.g. `finalized_evidence&#47;{run_id}&#47;`); **does not** upload |
+| `--dry-run` | default `true` | Preflight emits checklist + exit code only; no side effects |
+| `--no-network` | default `true` | Hard forbid AWS/rclone/upload/download in preflight path |
+
+**Output (preflight-only):** structured pass/fail checklist, blocker codes, and optional Registry v1 metadata **recommendation** for `evidence_transport=s3_export_after_finalize` — never auto-applied without operator gate in a future slice.
+
+Default posture: `S3_EXPORT_DRY_RUN_DEFAULT=true`, `S3_EXPORT_NO_NETWORK_DEFAULT=true`. Preflight **never** executes upload, download, runtime, or scheduler actions.
+
+#### Preflight checklist (all required for export-ready recommendation)
+
+Before a future dry adapter may recommend `evidence_transport=s3_export_after_finalize`:
+
+1. `durable-evidence-root` is **outside** `/tmp` (non-staging).
+2. `finalize_primary_evidence_root()` completed on that root.
+3. `MANIFEST.sha256` exists at the resolved per-lane or composition-rollup path.
+4. `MANIFEST.sha256` verify returns **RC=0** (`manifest_verified=true` or `rollup_manifest_verified=true`).
+5. Registry row shows `evidence_transport=local_only` **before** export representation (transition gated).
+6. Active staging sync is **absent** — no live `/tmp` → remote mirror.
+7. Runtime process has ended **or** lane/composition evidence root is finalized for export.
+8. No secrets, AWS credentials, or broker/exchange credentials appear in Registry JSON or projection outputs.
+
+Fail-closed: any checklist failure → preflight RC≠0; do **not** recommend export or set `s3_export_after_finalize`.
+
+#### PHASE_T / PHASE_W reconciliation (extend-only)
+
+Phase T/W runbooks predate bounded primary-evidence `MANIFEST.sha256` closeout. Reconciliation rules for future implementation:
+
+| Legacy Phase surface | v0 reconciliation rule |
+|---|---|
+| [PHASE_T_DATA_NODE_EXPORT_CHANNEL.md](../runbooks/PHASE_T_DATA_NODE_EXPORT_CHANNEL.md) `manifest.json` + `SHA256SUMS.stable.txt` | **Extend-only.** Future Phase T export packs for bounded runs must treat `MANIFEST.sha256` from `primary_evidence_retention_v0` as **canonical**. Legacy filenames may appear only as **non-authoritative compatibility artifacts** that point back to `MANIFEST.sha256`. |
+| [PHASE_W_EXPORT_PACK_GH_CONSUMER.md](../runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md) `sha256sum -c SHA256SUMS.stable.txt` | **Extend-only.** Future Phase W consumers for bounded finalized evidence must verify against **`MANIFEST.sha256`** (RC=0). `SHA256SUMS.stable.txt` must **not** become competing truth or closeout authority. |
+
+```
+PHASE_T_W_EXTEND_ONLY=true
+PHASE_T_W_RECONCILED_TO_MANIFEST_SHA256=true
+MANIFEST_SHA256_REMAINS_CANONICAL=true
+SHA256SUMS_STABLE_PARALLEL_TRUTH_FORBIDDEN=true
+```
+
+Do **not** modify Phase T/W to replace `MANIFEST.sha256`. Do **not** introduce `SHA256SUMS.stable.txt` as parallel truth in new bounded-evidence paths.
+
+#### Export eligibility transition (`local_only` → `s3_export_after_finalize`)
+
+- `evidence_transport=s3_export_after_finalize` may be **represented** only after §6a.3 export eligibility **and** this preflight checklist pass.
+- Upload success, object prefix existence, or bucket listing **do not** imply closeout acceptance or approval authority.
+- Object prefix is a **transport plan pointer** only — not scheduler clearance, not testnet/live gate, not operator approval.
+
+#### Consumer acceptance (remote copy; unchanged from §6a.3)
+
+- Remote/object-storage copy must be downloaded or re-materialized locally before review.
+- Local download + verify against **`MANIFEST.sha256`** must return RC=0.
+- Failed download verify is **fail-closed** — remote copy rejected for closeout acceptance.
+- Upload success alone is insufficient.
+
+#### Forbidden (implementation preflight + future adapter)
+
+- Upload before finalize; active staging sync; acceptance without download+verify
+- Secrets/credentials in Registry / Notion / Dashboard projections
+- Runtime, scheduler clearance, live/testnet/broker/exchange/strategy authority
+- Notion sync authority; Market Dashboard status authority; Double Play / Master V2 authority
+- Registry v2; new lane; `lane_id=daemon_paper_24h`; `lane_id=remote_runtime`
+- AWS CLI, rclone, S3 upload/download execution in this preflight slice
+- `SHA256SUMS.stable.txt` as parallel truth or authority
+
+#### Canonical boundary copy (required on future preflight/adapter surfaces)
+
+> S3 export implementation preflight is non-executing. It authorizes no upload, download, runtime, scheduler clearance, testnet, live trading, broker access, strategy execution, Notion sync, Dashboard status, or Double Play decisions. MANIFEST.sha256 remains canonical.
+
+Cross-reference: §6a.3 gate contract; Notion projection §6a.1; Market Dashboard projection §6a.2; composition-index §6b; Remote Runtime Host Metadata §6a backend-not-lane semantics.
 
 ### v0 authority posture (hard false)
 
