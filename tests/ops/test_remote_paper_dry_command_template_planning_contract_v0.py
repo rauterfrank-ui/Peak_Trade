@@ -42,7 +42,7 @@ TEMPLATE_CONTRACT_MARKERS = (
     "DRY_COMMAND_TEMPLATE_NO_PROCESS_CONTROL=true",
     "DRY_COMMAND_TEMPLATE_NO_REMOTE_RUNNER=true",
     "DRY_COMMAND_TEMPLATE_NO_VALIDATOR_CLI_IMPLEMENTATION=true",
-    "DRY_COMMAND_TEMPLATE_NO_CLOSEOUT_HELPER_IMPLEMENTATION=true",
+    "DRY_COMMAND_TEMPLATE_DOES_NOT_INVOKE_CLOSEOUT_HELPER=true",
 )
 
 FORBIDDEN_DUPLICATE_SPEC_FRAGMENTS = (
@@ -106,7 +106,9 @@ def test_planning_only_non_executable_do_not_run() -> None:
     assert "DRY_COMMAND_TEMPLATE_PLANNING_ONLY=true" in section
     assert "DRY_COMMAND_TEMPLATE_NON_EXECUTABLE=true" in section
     assert "DRY_COMMAND_TEMPLATE_DO_NOT_RUN=true" in section
+    assert "DRY_COMMAND_TEMPLATE_DOES_NOT_INVOKE_CLOSEOUT_HELPER=true" in section
     assert "**does not** ship runnable templates" in section
+    assert "durable_closeout_copy_verify_v0.py" in section
 
 
 def test_execution_and_start_forbidden() -> None:
