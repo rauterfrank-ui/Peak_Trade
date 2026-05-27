@@ -18,8 +18,10 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import shutil
 import subprocess
 import sys
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 import pytest
@@ -50,6 +52,162 @@ REUSED_TEST_MODULES: tuple[str, ...] = (
     "tests/ops/test_durable_closeout_copy_verify_v0.py",
     "tests/ops/test_build_post_closeout_projection_payload_v0.py",
 )
+
+
+@dataclass(frozen=True)
+class PostCloseoutAutomationReadinessInputs:
+    """Synthetic post-closeout automation readiness audit (tests only; not production API)."""
+
+    closeout_root: Path | None = None
+    registry_json: Path | None = None
+    projection_dir: Path | None = None
+    projection_payload_path: Path | None = None
+    projection_payload: dict | None = None
+    notion_report_path: Path | None = None
+    notion_report: dict | None = None
+    market_hints_path: Path | None = None
+    duration_validation_path: Path | None = None
+    closeout_manifest_verify_ok: bool = False
+    projection_manifest_verify_ok: bool = False
+    machine_lines_keys_complete: bool | None = None
+    manual_recovery_required: bool = True
+    hook_automation_owner_status: str = "not_implemented"
+    claimed_full_post_closeout_automation_implemented: bool = False
+    notion_write_occurred: bool = False
+
+
+def _parse_machine_lines_file(path: Path) -> dict[str, str]:
+    parsed: dict[str, str] = {}
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        parsed[key.strip()] = value.strip()
+    return parsed
+
+
+def build_post_closeout_automation_readiness_summary(
+    inp: PostCloseoutAutomationReadinessInputs,
+) -> tuple[bool, list[str]]:
+    """Return (readiness_ok, blockers) for v0 synthetic post-closeout automation claims.
+
+    ``projection_ready`` alone does **not** imply full post-closeout automation readiness.
+    """
+    blockers: list[str] = []
+
+    if inp.notion_write_occurred:
+        blockers.append("notion_write_occurred_v0_forbidden")
+
+    if inp.manual_recovery_required:
+        blockers.append("manual_recovery_required")
+
+    if inp.claimed_full_post_closeout_automation_implemented:
+        if inp.hook_automation_owner_status != "identified":
+            blockers.append("full_automation_claim_requires_hook_owner_identified")
+
+    if inp.closeout_root is None or not inp.closeout_root.is_dir():
+        blockers.append("durable_closeout_missing")
+    else:
+        if not (inp.closeout_root / "DURABLE_COPY_README.md").is_file():
+            blockers.append("durable_closeout_readme_missing")
+        if not (inp.closeout_root / "MANIFEST.sha256").is_file():
+            blockers.append("closeout_manifest_missing")
+        if not (inp.closeout_root / "FINAL_MACHINE_LINES.txt").is_file():
+            blockers.append("final_machine_lines_missing")
+        else:
+            ml_path = inp.closeout_root / "FINAL_MACHINE_LINES.txt"
+            if inp.machine_lines_keys_complete is False:
+                blockers.append("final_machine_lines_incomplete")
+            elif inp.machine_lines_keys_complete is None:
+                fields = _parse_machine_lines_file(ml_path)
+                for key in payload_tests.REQUIRED_MACHINE_LINES:
+                    if key not in fields:
+                        blockers.append(f"missing_machine_line_key:{key}")
+                        break
+
+    if not inp.closeout_manifest_verify_ok:
+        blockers.append("closeout_manifest_verify_not_ok")
+
+    if inp.registry_json is None or not inp.registry_json.is_file():
+        blockers.append("registry_json_missing")
+
+    if inp.projection_payload_path is None or not inp.projection_payload_path.is_file():
+        blockers.append("projection_payload_missing")
+
+    payload = inp.projection_payload
+    if payload is None and inp.projection_payload_path and inp.projection_payload_path.is_file():
+        payload = json.loads(inp.projection_payload_path.read_text(encoding="utf-8"))
+
+    if not isinstance(payload, dict):
+        blockers.append("projection_payload_unreadable")
+    else:
+        if payload.get("projection_ready") is not True:
+            blockers.append("projection_ready_not_true")
+        blob = json.dumps(payload)
+        for token in (
+            "OBSERVED_DURATION_SECONDS",
+            "WALL_CLOCK_VALIDATION",
+            "step_interval_seconds",
+        ):
+            if token in blob:
+                blockers.append(f"projection_payload_must_not_embed_duration_token:{token}")
+
+    notion = inp.notion_report
+    if inp.notion_report_path and inp.notion_report_path.is_file() and notion is None:
+        notion = json.loads(inp.notion_report_path.read_text(encoding="utf-8"))
+    if notion is None:
+        blockers.append("notion_dry_run_report_missing")
+    else:
+        if notion.get("write_allowed") is not False:
+            blockers.append("notion_write_allowed_must_be_false_v0")
+        if notion.get("dry_run") is not True:
+            blockers.append("notion_dry_run_must_be_true_v0")
+
+    if inp.market_hints_path is None or not inp.market_hints_path.is_file():
+        blockers.append("market_handoff_hints_not_persisted")
+
+    if inp.duration_validation_path is None or not inp.duration_validation_path.is_file():
+        blockers.append("duration_validation_artifact_missing")
+
+    if inp.projection_dir is None or not inp.projection_dir.is_dir():
+        blockers.append("projection_dir_missing")
+    elif not (inp.projection_dir / "MANIFEST.sha256").is_file():
+        blockers.append("projection_manifest_missing")
+    elif not inp.projection_manifest_verify_ok:
+        blockers.append("projection_manifest_verify_not_ok")
+
+    if payload and isinstance(payload, dict):
+        auth = payload.get("authority") or {}
+        for key, expected in (
+            ("live_authority", False),
+            ("testnet_authority", False),
+            ("broker_exchange_authority", False),
+        ):
+            if auth.get(key) is not expected:
+                blockers.append(f"authority_boundary:{key}")
+
+    return (len(blockers) == 0, blockers)
+
+
+def _synthetic_chain_readiness_inputs(
+    paths: dict[str, Path],
+) -> PostCloseoutAutomationReadinessInputs:
+    """Map a successful ``_run_chain_phases_2_through_9`` result to readiness inputs."""
+    proj = paths["projection_dir"]
+    closeout = paths["closeout"]
+    return PostCloseoutAutomationReadinessInputs(
+        closeout_root=closeout,
+        registry_json=proj / "registry.json",
+        projection_dir=proj,
+        projection_payload_path=paths["payload_json"],
+        notion_report_path=paths["notion_report"],
+        market_hints_path=proj / "MARKET_OVERLAY_HINTS.txt",
+        duration_validation_path=proj / "DURATION_CONTRACT_VALIDATION.txt",
+        closeout_manifest_verify_ok=True,
+        projection_manifest_verify_ok=True,
+        manual_recovery_required=False,
+    )
 
 
 def _load_registry_module():
@@ -281,8 +439,15 @@ def _run_chain_phases_2_through_9(
 
         _projection_manifest_verify(projection_dir)
 
+        # ``closeout_dest`` lives under repo ``out/`` and is removed in ``finally``; keep a tmp_path
+        # snapshot so readiness checks can still inspect durable closeout layout after return.
+        closeout_snapshot = work / "closeout_readiness_snapshot"
+        if closeout_snapshot.exists():
+            shutil.rmtree(closeout_snapshot)
+        shutil.copytree(closeout_dest, closeout_snapshot)
+
         return {
-            "closeout": closeout_dest,
+            "closeout": closeout_snapshot,
             "projection_dir": projection_dir,
             "payload_json": payload_json,
             "notion_report": notion_report,
@@ -346,3 +511,146 @@ def test_strict_payload_builder_reports_missing_boundary_flags(
     captured = capsys.readouterr()
     assert rc == 1
     assert "projection_blocked_reason=missing_boundary_flags" in captured.err
+
+
+def test_post_closeout_automation_readiness_true_offline_synthetic_chain(tmp_path: Path):
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    ok, blockers = build_post_closeout_automation_readiness_summary(
+        _synthetic_chain_readiness_inputs(paths)
+    )
+    assert ok is True
+    assert blockers == []
+
+
+def test_readiness_false_when_manual_recovery_required_despite_artifacts(tmp_path: Path):
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    inp = replace(_synthetic_chain_readiness_inputs(paths), manual_recovery_required=True)
+    ok, blockers = build_post_closeout_automation_readiness_summary(inp)
+    assert ok is False
+    assert "manual_recovery_required" in blockers
+
+
+def test_readiness_false_when_market_hints_not_persisted(tmp_path: Path):
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    hints = paths["projection_dir"] / "MARKET_OVERLAY_HINTS.txt"
+    hints.unlink()
+    ok, blockers = build_post_closeout_automation_readiness_summary(
+        _synthetic_chain_readiness_inputs(paths)
+    )
+    assert ok is False
+    assert "market_handoff_hints_not_persisted" in blockers
+
+
+def test_readiness_false_when_duration_validation_artifact_missing(tmp_path: Path):
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    dur = paths["projection_dir"] / "DURATION_CONTRACT_VALIDATION.txt"
+    dur.unlink()
+    ok, blockers = build_post_closeout_automation_readiness_summary(
+        _synthetic_chain_readiness_inputs(paths)
+    )
+    assert ok is False
+    assert "duration_validation_artifact_missing" in blockers
+
+
+def test_readiness_false_when_notion_write_occurred_v0(tmp_path: Path):
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    inp = replace(_synthetic_chain_readiness_inputs(paths), notion_write_occurred=True)
+    ok, blockers = build_post_closeout_automation_readiness_summary(inp)
+    assert ok is False
+    assert "notion_write_occurred_v0_forbidden" in blockers
+
+
+def test_readiness_false_when_projection_manifest_verify_not_ok(tmp_path: Path):
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    payload = json.loads(paths["payload_json"].read_text(encoding="utf-8"))
+    assert payload.get("projection_ready") is True
+    inp = replace(_synthetic_chain_readiness_inputs(paths), projection_manifest_verify_ok=False)
+    ok, blockers = build_post_closeout_automation_readiness_summary(inp)
+    assert ok is False
+    assert "projection_manifest_verify_not_ok" in blockers
+
+
+def test_readiness_false_full_automation_claim_requires_hook_owner(tmp_path: Path):
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    inp = replace(
+        _synthetic_chain_readiness_inputs(paths),
+        claimed_full_post_closeout_automation_implemented=True,
+        hook_automation_owner_status="not_implemented",
+    )
+    ok, blockers = build_post_closeout_automation_readiness_summary(inp)
+    assert ok is False
+    assert "full_automation_claim_requires_hook_owner_identified" in blockers
+
+
+def test_readiness_true_when_hook_owner_identified_and_full_automation_claimed(tmp_path: Path):
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    inp = replace(
+        _synthetic_chain_readiness_inputs(paths),
+        claimed_full_post_closeout_automation_implemented=True,
+        hook_automation_owner_status="identified",
+    )
+    ok, blockers = build_post_closeout_automation_readiness_summary(inp)
+    assert ok is True
+    assert blockers == []
+
+
+def test_projection_ready_true_alone_insufficient_for_full_automation_readiness(tmp_path: Path):
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    payload = json.loads(paths["payload_json"].read_text(encoding="utf-8"))
+    assert payload.get("projection_ready") is True
+    inp = PostCloseoutAutomationReadinessInputs(
+        projection_payload=payload,
+        projection_payload_path=paths["payload_json"],
+        manual_recovery_required=False,
+        closeout_manifest_verify_ok=True,
+        projection_manifest_verify_ok=True,
+    )
+    ok, blockers = build_post_closeout_automation_readiness_summary(inp)
+    assert ok is False
+    assert "durable_closeout_missing" in blockers
+
+
+def test_readiness_false_when_projection_ready_not_true(tmp_path: Path):
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    bad = json.loads(paths["payload_json"].read_text(encoding="utf-8"))
+    bad["projection_ready"] = False
+    inp = replace(_synthetic_chain_readiness_inputs(paths), projection_payload=bad)
+    ok, blockers = build_post_closeout_automation_readiness_summary(inp)
+    assert ok is False
+    assert "projection_ready_not_true" in blockers
+
+
+def test_readiness_false_when_notion_report_write_allowed_not_false_v0(tmp_path: Path):
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    report_path = paths["notion_report"]
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    report["write_allowed"] = True
+    report_path.write_text(json.dumps(report) + "\n", encoding="utf-8")
+    ok, blockers = build_post_closeout_automation_readiness_summary(
+        _synthetic_chain_readiness_inputs(paths)
+    )
+    assert ok is False
+    assert "notion_write_allowed_must_be_false_v0" in blockers
+
+
+def test_readiness_false_when_notion_report_not_dry_run(tmp_path: Path):
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    report_path = paths["notion_report"]
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    report["dry_run"] = False
+    report_path.write_text(json.dumps(report) + "\n", encoding="utf-8")
+    ok, blockers = build_post_closeout_automation_readiness_summary(
+        _synthetic_chain_readiness_inputs(paths)
+    )
+    assert ok is False
+    assert "notion_dry_run_must_be_true_v0" in blockers
+
+
+def test_readiness_false_when_payload_authority_boundary_violation(tmp_path: Path):
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    bad = json.loads(paths["payload_json"].read_text(encoding="utf-8"))
+    bad.setdefault("authority", {})["live_authority"] = True
+    inp = replace(_synthetic_chain_readiness_inputs(paths), projection_payload=bad)
+    ok, blockers = build_post_closeout_automation_readiness_summary(inp)
+    assert ok is False
+    assert "authority_boundary:live_authority" in blockers
