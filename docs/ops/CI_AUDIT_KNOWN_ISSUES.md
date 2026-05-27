@@ -1,6 +1,7 @@
 # CI Audit — Known Issues
 
 ## Current status
+- **PR #3726 / CI classifier (2026-05):** Contract/docs-only PRs that touched `tests&#47;webui&#47;test_market_dashboard_readonly_structure_contract_v0.py` still ran the full Python matrix because `tests&#47;webui&#47;**` matched the `code` path filter (`tests&#47;!(ci|ops)&#47;**`). **Policy fix (PR1):** whitelist `tests&#47;webui&#47;test_*_structure_contract*.py` in the `static_contract` bucket, exclude it from `code`, and run those files in Fast-Lane static-contract pytest alongside `tests&#47;ci` and `tests&#47;ops`. Mixed PRs with `src&#47;**` or other non-whitelisted test paths still set `code_changed=true` (fail closed).
 - Historical context: GitHub [Issue #252](https://github.com/rauterfrank-ui/Peak_Trade/issues/252) tracked an older formatter drift described as a Black formatting/configuration issue.
 - Current CI policy is Ruff-oriented. `scripts/ops/run_audit.sh` runs `ruff check .` and `ruff format --check .`; `scripts/ops/check_no_black_enforcement.sh` guards against `black --check` enforcement in workflows/scripts.
 - `audit` findings are not all hard failures in every workflow path. In `.github/workflows/audit.yml`, `pip-audit` is blocking only for dependency-relevant changes and non-blocking for docs-only scope. The `run_audit.sh` step is currently wrapped so findings are surfaced but do not by themselves fail that workflow step.

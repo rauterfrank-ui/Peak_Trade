@@ -27,11 +27,39 @@ def test_code_filter_excludes_tests_ci_and_ops_buckets() -> None:
     assert "static_contract:" in text
     assert "'tests/ci/**'" in text
     assert "'tests/ops/**'" in text
-    assert "'tests/!(ci|ops)/**'" in text
+    assert "'tests/**'" in text
+    assert "'!tests/ci/**'" in text
+    assert "'!tests/ops/**'" in text
     code_block_start = text.index("            code:")
     code_block_end = text.index("            static_contract:")
     code_block = text[code_block_start:code_block_end]
-    assert "'tests/**'" not in code_block
+    assert "'tests/!(ci|ops)/**'" not in code_block
+
+
+def test_static_contract_includes_webui_structure_contract_whitelist() -> None:
+    text = _ci_text()
+    static_block_start = text.index("            static_contract:")
+    static_block_end = text.index("            docs:")
+    static_block = text[static_block_start:static_block_end]
+    assert "'tests/webui/test_*_structure_contract*.py'" in static_block
+
+
+def test_code_filter_excludes_webui_structure_contract_whitelist() -> None:
+    text = _ci_text()
+    code_block_start = text.index("            code:")
+    code_block_end = text.index("            static_contract:")
+    code_block = text[code_block_start:code_block_end]
+    assert "'!tests/webui/test_*_structure_contract*.py'" in code_block
+    assert "'src/**'" in code_block
+
+
+def test_code_filter_still_requires_full_matrix_for_src_and_templates() -> None:
+    text = _ci_text()
+    code_block_start = text.index("            code:")
+    code_block_end = text.index("            static_contract:")
+    code_block = text[code_block_start:code_block_end]
+    assert "'src/**'" in code_block
+    assert "'templates/**'" in code_block
 
 
 def test_matrix_jobs_keep_no_job_level_if_and_short_circuit_skip() -> None:
@@ -44,9 +72,11 @@ def test_matrix_jobs_keep_no_job_level_if_and_short_circuit_skip() -> None:
 
 def test_fast_lane_runs_static_contract_tests_when_applicable() -> None:
     text = _ci_text()
-    assert "Static contract tests (tests/ci, tests/ops)" in text
+    assert "Static contract tests (tests/ci, tests/ops, WebUI structure-contract)" in text
     assert "needs.changes.outputs.static_contract_changed == 'true'" in text
     assert "pytest tests/ci tests/ops" in text
+    assert "webui_structure_contract=(tests/webui/test_*structure_contract*.py)" in text
+    assert '"${webui_structure_contract[@]}"' in text
 
 
 def test_code_changed_output_uses_narrowed_code_bucket_not_raw_filter_alias() -> None:
