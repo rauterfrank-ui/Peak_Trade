@@ -252,6 +252,25 @@ OPERATOR_NAME=<name>
 
 **Relationship to repo-static charter v0:** Interim histogram and 162-row successor inventory remain **review-input only** per § Pending R-001/R-002/R-007 — repo-static successor inventory charter v0. Successor inventory **cannot** satisfy `INPUT_JSONL_REQUIRED` for definitive mapping.
 
+### Pending R-001/R-002/R-007 — mapping guard v0
+
+```
+CYBERSECURITY_VISIBILITY_R_PENDING_MAPPING_GUARD_V0=true
+LOSSLESS_JSONL_RECOVERY=false
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+INPUT_JSONL_REQUIRED=true
+INPUT_JSONL_PROVIDED=false
+NO_MAPPING_WITHOUT_INPUT_ARTIFACT=true
+FORBIDS_FLIPPING_INPUT_JSONL_PROVIDED_WITHOUT_AUTHORIZED_MAPPING_SLICE=true
+FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT=true
+FORBIDS_REPO_STATIC_SUCCESSOR_AS_DEFINITIVE_MAPPING_INPUT=true
+CYBERSECURITY_VISIBILITY_R_PENDING_MAPPING_GUARD_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Static guardrails so pending retained risks **R-001**, **R-002**, and **R-007** cannot be documented or tested as **recovered** or **definitively mapped** while `INPUT_JSONL_PROVIDED=false`. Repo edits that assign `candidate_id`, flip the retained-risk table to **mapped** with a repo test owner, or set `INPUT_JSONL_PROVIDED=true` without an operator-chartered mapping slice are **invalid** in this repository state.
+
+**Non-authorizing:** Same boundaries as § input artifact contract v0; no runtime, workflow dispatch, hooks, Notion, Market, broker/exchange, Testnet/Live, or Master V2 / Double Play authority changes.
+
 ### Static visibility contract owners (reuse — do not duplicate)
 
 | Surface | Owner module |
