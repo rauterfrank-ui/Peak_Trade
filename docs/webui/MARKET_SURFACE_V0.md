@@ -109,7 +109,7 @@ Canonical v0 boundary:
 - Display rows: `row_id`, `symbol`, `rank`, optional `display_score`, optional `notes`; no order, approval, readiness, live, or execution fields.
 - Metadata: `generated_at_iso`, `source`, `stale`, `stale_reason`, `non_authorizing=true`.
 - Marker transition: existing empty-state markers remain valid when no rows are present; implementation must add explicit row/has-row markers before replacing empty-state UI.
-- Test owner: `tests/webui/test_market_dashboard_readonly_structure_contract_v0.py` for funnel marker/IA invariants.
+- Test owner: `tests/ops/test_market_surface_ranking_funnel_producer_charter_v0.py` for this docs-charter contract and `tests/webui/test_market_dashboard_readonly_structure_contract_v0.py` for funnel marker/IA invariants.
 
 Forbidden promotions:
 
