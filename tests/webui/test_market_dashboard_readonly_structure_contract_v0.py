@@ -184,6 +184,8 @@ def test_double_play_market_dashboard_depth_ssr_post_merge_contract_v0(
     assert 'data-double-play-market-depth-readonly-copy-v0="true"' in html
     assert 'data-double-play-market-depth-landmark-heading-v0="true"' in html
     assert 'data-double-play-market-depth-readmodel-id="market_depth_readmodel.v0"' in html
+    assert 'id="double-play-market-v0-landmark-depth-ssr-h2"' in html
+    assert 'data-double-play-market-depth-operator-hint="true"' not in html
     assert "does not authorize trades" in html
 
     assert 'id="double-play-market-v0-shell"' in html
