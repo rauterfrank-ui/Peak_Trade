@@ -38,7 +38,7 @@ jobs:
   # - workflow_only: true when ONLY .github/workflows changed.
   # - static_contract_changed: tests/ci/** or tests/ops/** (CI/ops contract tests; not full-matrix code).
   # - docs_or_static_contract_only: no src/scripts/config/workflow code paths; docs and/or static-contract only.
-  # Code paths: src/**, tests/** (except tests/ci/**, tests/ops/**), scripts/**, config/**, schemas/levelup/**, deps, Makefile.
+  # Code paths: src/**, tests/!(ci|ops)/** (excludes tests/ci/**, tests/ops/**), scripts/**, config/**, schemas/levelup/**, deps, Makefile.
   # ============================================================================
   changes:
     runs-on: ubuntu-latest
@@ -62,9 +62,7 @@ jobs:
           filters: |
             code:
               - 'src/**'
-              - 'tests/**'
-              - '!tests/ci/**'
-              - '!tests/ops/**'
+              - 'tests/!(ci|ops)/**'
               - 'scripts/**'
               - 'config/**'
               - 'schemas/levelup/**'
