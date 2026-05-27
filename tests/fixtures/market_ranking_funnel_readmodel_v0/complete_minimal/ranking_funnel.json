@@ -1,0 +1,37 @@
+{
+  "readmodel_id": "market_ranking_funnel_readmodel.v0",
+  "generated_at_iso": "2026-05-27T00:00:00Z",
+  "source": "fixture:complete_minimal",
+  "stale": false,
+  "stale_reason": null,
+  "non_authorizing": true,
+  "stages": {
+    "universe": [
+      {
+        "row_id": "universe-1",
+        "symbol": "BTCUSDT",
+        "rank": 1,
+        "display_score": 0.91,
+        "notes": "fixture row"
+      }
+    ],
+    "shortlist": [
+      {
+        "row_id": "shortlist-1",
+        "symbol": "BTCUSDT",
+        "rank": 1,
+        "display_score": 0.88,
+        "notes": "fixture row"
+      }
+    ],
+    "selected": [
+      {
+        "row_id": "selected-1",
+        "symbol": "BTCUSDT",
+        "rank": 1,
+        "display_score": 0.84,
+        "notes": "fixture row"
+      }
+    ]
+  }
+}
