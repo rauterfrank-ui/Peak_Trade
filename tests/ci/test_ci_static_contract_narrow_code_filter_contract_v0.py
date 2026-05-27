@@ -1,17 +1,81 @@
 """Contract tests for CI static-contract narrow code path filter (ci.yml v0).
 
-Read-only YAML text assertions; no workflow dispatch, no GitHub API, no runtime.
+YAML structure assertions plus path semantics aligned with dorny/paths-filter
+(picomatch extglob). Semantics helper mirrors the three `tests/` code globs.
 """
 
 from __future__ import annotations
 
+import fnmatch
 from pathlib import Path
 
+import pytest
+
 CI_YML = Path(".github/workflows/ci.yml")
+
+CODE_TEST_GLOBS = (
+    "tests/!(ci|ops|webui)/**",
+    "tests/webui/!(test_*_structure_contract*)/**",
+    "tests/webui/!(test_*_structure_contract*).py",
+)
+STATIC_CONTRACT_WEBUI_GLOB = "tests/webui/test_*_structure_contract*.py"
 
 
 def _ci_text() -> str:
     return CI_YML.read_text(encoding="utf-8")
+
+
+def _code_block() -> str:
+    text = _ci_text()
+    start = text.index("            code:")
+    end = text.index("            static_contract:")
+    return text[start:end]
+
+
+def _static_block() -> str:
+    text = _ci_text()
+    start = text.index("            static_contract:")
+    end = text.index("            docs:")
+    return text[start:end]
+
+
+def _matches_picomatch_extglob(path: str, pattern: str) -> bool:
+    """Subset of picomatch extglob used by ci.yml `tests/` code bucket (PR #3728 fix)."""
+    if pattern == "tests/!(ci|ops|webui)/**":
+        if not path.startswith("tests/"):
+            return False
+        rest = path[len("tests/") :]
+        if not rest or rest.split("/")[0] in {"ci", "ops", "webui"}:
+            return False
+        return True
+    if pattern == "tests/webui/!(test_*_structure_contract*)/**":
+        if not path.startswith("tests/webui/"):
+            return False
+        rest = path[len("tests/webui/") :]
+        if not rest:
+            return False
+        first = rest.split("/")[0]
+        return not fnmatch.fnmatch(first, "test_*_structure_contract*")
+    if pattern == "tests/webui/!(test_*_structure_contract*).py":
+        if not path.startswith("tests/webui/") or "/" in path[len("tests/webui/") :]:
+            return False
+        name = path.rsplit("/", 1)[-1]
+        return not fnmatch.fnmatch(name, "test_*_structure_contract*.py")
+    raise AssertionError(f"unsupported pattern: {pattern!r}")
+
+
+def _matches_code_tests_bucket(path: str) -> bool:
+    return any(_matches_picomatch_extglob(path, g) for g in CODE_TEST_GLOBS)
+
+
+def _matches_static_contract_webui(path: str) -> bool:
+    return fnmatch.fnmatch(path, STATIC_CONTRACT_WEBUI_GLOB)
+
+
+def _matches_code_filter(path: str) -> bool:
+    if path.startswith("src/") or path.startswith("templates/"):
+        return True
+    return _matches_code_tests_bucket(path)
 
 
 def test_changes_job_exports_static_contract_outputs() -> None:
@@ -22,44 +86,55 @@ def test_changes_job_exports_static_contract_outputs() -> None:
     assert "docs_or_static_contract_only=true" in text
 
 
-def test_code_filter_excludes_tests_ci_and_ops_buckets() -> None:
-    text = _ci_text()
-    assert "static_contract:" in text
-    assert "'tests/ci/**'" in text
-    assert "'tests/ops/**'" in text
-    assert "'tests/**'" in text
-    assert "'!tests/ci/**'" in text
-    assert "'!tests/ops/**'" in text
-    code_block_start = text.index("            code:")
-    code_block_end = text.index("            static_contract:")
-    code_block = text[code_block_start:code_block_end]
-    assert "'tests/!(ci|ops)/**'" not in code_block
+def test_code_filter_uses_picomatch_extglob_for_tests_bucket() -> None:
+    code_block = _code_block()
+    for glob in CODE_TEST_GLOBS:
+        assert f"'{glob}'" in code_block
+    assert "'tests/**'" not in code_block
+    assert "'!tests/ci/**'" not in code_block
+    assert "'!tests/ops/**'" not in code_block
+    assert "'!tests/webui/test_*_structure_contract*.py'" not in code_block
 
 
 def test_static_contract_includes_webui_structure_contract_whitelist() -> None:
-    text = _ci_text()
-    static_block_start = text.index("            static_contract:")
-    static_block_end = text.index("            docs:")
-    static_block = text[static_block_start:static_block_end]
-    assert "'tests/webui/test_*_structure_contract*.py'" in static_block
-
-
-def test_code_filter_excludes_webui_structure_contract_whitelist() -> None:
-    text = _ci_text()
-    code_block_start = text.index("            code:")
-    code_block_end = text.index("            static_contract:")
-    code_block = text[code_block_start:code_block_end]
-    assert "'!tests/webui/test_*_structure_contract*.py'" in code_block
-    assert "'src/**'" in code_block
+    static_block = _static_block()
+    assert f"'{STATIC_CONTRACT_WEBUI_GLOB}'" in static_block
 
 
 def test_code_filter_still_requires_full_matrix_for_src_and_templates() -> None:
-    text = _ci_text()
-    code_block_start = text.index("            code:")
-    code_block_end = text.index("            static_contract:")
-    code_block = text[code_block_start:code_block_end]
+    code_block = _code_block()
     assert "'src/**'" in code_block
     assert "'templates/**'" in code_block
+
+
+@pytest.mark.parametrize(
+    ("path", "expect_code", "expect_static"),
+    [
+        (
+            "tests/webui/test_market_dashboard_readonly_structure_contract_v0.py",
+            False,
+            True,
+        ),
+        ("tests/webui/test_other_webui_behavior.py", True, False),
+        (
+            "tests/webui/subdir/test_market_dashboard_readonly_structure_contract_v0.py",
+            True,
+            False,
+        ),
+        ("tests/ci/foo.py", False, False),
+        ("tests/ops/foo.py", False, False),
+        ("tests/fixtures/foo.py", True, False),
+        ("src/webui/app.py", True, False),
+        ("templates/peak_trade_dashboard/market_v0.html", True, False),
+    ],
+)
+def test_code_and_static_contract_path_semantics_v0(
+    path: str,
+    expect_code: bool,
+    expect_static: bool,
+) -> None:
+    assert _matches_code_filter(path) is expect_code
+    assert _matches_static_contract_webui(path) is expect_static
 
 
 def test_matrix_jobs_keep_no_job_level_if_and_short_circuit_skip() -> None:
