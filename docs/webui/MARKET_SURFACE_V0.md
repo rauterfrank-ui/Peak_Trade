@@ -143,6 +143,30 @@ Boundary markers:
 - `SIGNAL_EQUALS_TRADE=false`
 - `DASHBOARD_EQUALS_APPROVAL=false`
 
+### Market Ranking Funnel SSR v0 landed
+
+The Ranking Funnel Producer v0 is now implemented as an env-gated, offline-bundle, SSR-only `/market` display path.
+
+Landed boundaries:
+
+- Readmodel: `market_ranking_funnel_readmodel.v0`.
+- Env gate: `PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1`.
+- Bundle root: `PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT`.
+- Runtime: `src/webui/market_ranking_funnel_runtime_v0.py`.
+- SSR context: existing `src/webui/market_surface.py`.
+- Template owner: existing `templates/peak_trade_dashboard/market_v0.html`.
+- Structure-contract owner: `tests/webui/test_market_dashboard_readonly_structure_contract_v0.py`.
+- Ops env/schema contract owner: `tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py`.
+
+The default disabled or empty state remains valid. When enabled with bundle rows, `/market` may render read-only ranking rows and explicit non-authority copy.
+
+Non-authority invariants remain unchanged:
+
+- `DASHBOARD_AUTHORITY_CHANGED=false`
+- `RANKING_PRODUCER_AUTHORIZES_TRADES=false`
+- `API_ENDPOINT_CREATED=false`
+- `DOUBLE_PLAY_ROUTE_CHANGED=false`
+
 ### Marker / IA crosswalk policy v0
 
 `market_v0.html` deliberately exposes many `data-market-v0-*` markers for SSR structure, visual grouping, and regression tests. `MARKET_SURFACE_V0.md` is the canonical product/contract surface, not a complete attribute registry: it should describe marker families and authority boundaries rather than duplicate every template attribute.
