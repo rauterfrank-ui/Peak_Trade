@@ -301,6 +301,8 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(payload, indent=2, sort_keys=True))
 
     if args.strict and not payload.get("projection_ready"):
+        blocked = payload.get("projection_blocked_reason") or "unknown"
+        print(f"projection_blocked_reason={blocked}", file=sys.stderr)
         return 1
     return 0
 
