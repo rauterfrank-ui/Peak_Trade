@@ -784,6 +784,8 @@ def test_market_dashboard_depth_and_ranking_funnel_coexistence_contract_v0(
         html,
     )
     assert 'data-market-depth-panel="true"' in html
+    assert 'data-market-depth-status="ok"' in html
+    assert 'data-market-depth-readmodel-id="market_depth_readmodel.v0"' in html
     assert 'id="market-v0-orderbook-topn"' in html
     assert 'data-market-v0-orderbook-topn="true"' in html
 
