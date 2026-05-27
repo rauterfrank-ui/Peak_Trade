@@ -23,6 +23,7 @@ from fastapi.testclient import TestClient
 pytestmark = pytest.mark.web
 
 from src.webui.app import create_app
+from tests.fixtures.ops import market_registry_projection_overlay_v0 as overlay_fixtures
 
 FORM_ACTION_RE = re.compile(
     r"<form\b[^>]*\baction\s*=\s*[\"']([^\"']*)[\"']",
@@ -695,3 +696,50 @@ def test_market_dashboard_forms_do_not_target_order_or_live_paths(
         lowered = action.lower()
         for fragment in forbidden_fragments:
             assert fragment not in lowered
+
+
+def test_market_dashboard_run_projection_landmark_region_when_enabled_v0(
+    tmp_path: Path,
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Run-projection SSR keeps IA/landmark parity when the env-gated overlay is enabled."""
+    payload_path, _ = overlay_fixtures.write_ready_bundle(tmp_path / "bundle")
+    monkeypatch.setenv("PEAK_TRADE_MARKET_RUN_PROJECTION_ENABLED", "1")
+    monkeypatch.setenv("PEAK_TRADE_MARKET_RUN_PROJECTION_PAYLOAD_JSON", str(payload_path))
+    html = _html(client, "/market")
+
+    assert re.search(
+        r'role="region"[^>]*aria-labelledby="market-v0-landmark-run-projection-h2"',
+        html,
+    )
+    assert 'id="market-v0-landmark-run-projection-h2"' in html
+    assert 'data-market-v0-run-projection="true"' in html
+    assert 'data-market-v0-run-projection-readonly="true"' in html
+    assert 'data-market-v0-run-projection-authority="false"' in html
+    assert "Registry run projection (read-only)" in html
+
+
+def test_market_dashboard_run_projection_landmark_absent_when_disabled_v0(
+    client: TestClient,
+) -> None:
+    """Run-projection landmark is absent when the env-gated overlay is disabled (default)."""
+    html = _html(client, "/market")
+
+    assert "market-v0-landmark-run-projection-h2" not in html
+    assert 'data-market-v0-run-projection="true"' not in html
+
+
+def test_double_play_market_dashboard_excludes_run_projection_landmark_v0(
+    tmp_path: Path,
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Double-Play market surface must not inherit /market run-projection SSR landmarks."""
+    payload_path, _ = overlay_fixtures.write_ready_bundle(tmp_path / "bundle")
+    monkeypatch.setenv("PEAK_TRADE_MARKET_RUN_PROJECTION_ENABLED", "1")
+    monkeypatch.setenv("PEAK_TRADE_MARKET_RUN_PROJECTION_PAYLOAD_JSON", str(payload_path))
+    html = _html(client, "/market/double-play")
+
+    assert "market-v0-landmark-run-projection-h2" not in html
+    assert 'data-market-v0-run-projection="true"' not in html
