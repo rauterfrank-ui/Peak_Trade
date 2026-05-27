@@ -119,11 +119,35 @@ def test_market_dashboard_depth_ssr_region_role_contract_v0(client: TestClient) 
 def test_double_play_market_dashboard_excludes_depth_ssr_region_role_contract_v0(
     client: TestClient,
 ) -> None:
+    """Double-Play uses dp-specific depth landmarks; must not carry `/market` depth region markup."""
     html = _html(client, "/market/double-play")
     assert not re.search(
         r'id="market-v0-depth-ssr"\s+role="region"\s+aria-labelledby="market-v0-landmark-depth-ssr-h2"',
         html,
     )
+    assert re.search(
+        r'id="double-play-market-v0-depth-ssr"\s+role="region"\s+aria-labelledby="double-play-market-v0-landmark-depth-ssr-h2"',
+        html,
+    )
+    assert 'data-double-play-market-depth-panel="true"' in html
+    assert 'data-double-play-market-depth-landmark-heading-v0="true"' in html
+    assert 'data-double-play-market-depth-non-authorizing="true"' in html
+    assert 'data-double-play-market-depth-readonly-copy-v0="true"' in html
+    assert "does not authorize trades" in html
+
+
+def test_double_play_market_dashboard_depth_ssr_with_fixture_bundle_v0(
+    client_depth_fixture_bundle_on: TestClient,
+) -> None:
+    """Enabled offline depth fixture surfaces on Double-Play via shared display context."""
+    html = _html(client_depth_fixture_bundle_on, "/market/double-play")
+    assert 'data-double-play-market-depth-panel="true"' in html
+    assert 'data-double-play-market-depth-status="ok"' in html
+    assert 'data-double-play-market-depth-summary="true"' in html
+    assert 'id="market-v0-depth-ssr"' not in html
+    assert "data-market-depth-panel" not in html
+    assert "/api/market/depth" not in html
+    assert "fetch(" not in html
 
 
 def test_market_dashboard_orderbook_topn_region_role_contract_v0(
@@ -201,9 +225,11 @@ def test_double_play_dashboard_excludes_market_depth_ssr_markers_v0(
     html = _html(client, "/market/double-play")
 
     assert "data-market-depth-panel" not in html
-    assert "market-v0-depth-ssr" not in html
-    assert "market-v0-landmark-depth-ssr-h2" not in html
+    assert 'id="market-v0-depth-ssr"' not in html
+    assert 'id="market-v0-landmark-depth-ssr-h2"' not in html
     assert "data-market-v0-depth-landmark-heading-v0" not in html
+    assert 'data-double-play-market-depth-panel="true"' in html
+    assert 'id="double-play-market-v0-depth-ssr"' in html
 
 
 def test_market_and_double_play_chartjs_cdn_failure_attribution_v0(
