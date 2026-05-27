@@ -27,8 +27,11 @@ def test_code_filter_excludes_tests_ci_and_ops_buckets() -> None:
     assert "static_contract:" in text
     assert "'tests/ci/**'" in text
     assert "'tests/ops/**'" in text
-    assert "'!tests/ci/**'" in text
-    assert "'!tests/ops/**'" in text
+    assert "'tests/!(ci|ops)/**'" in text
+    code_block_start = text.index("            code:")
+    code_block_end = text.index("            static_contract:")
+    code_block = text[code_block_start:code_block_end]
+    assert "'tests/**'" not in code_block
 
 
 def test_matrix_jobs_keep_no_job_level_if_and_short_circuit_skip() -> None:
