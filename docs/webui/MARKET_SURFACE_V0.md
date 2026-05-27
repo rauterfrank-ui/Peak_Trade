@@ -106,7 +106,7 @@ Canonical v0 boundary:
 - Gate: `PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1`.
 - Canonical offline bundle path: `PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT`.
 - v0 does not use an `&#47;api&#47;market&#47;ranking` endpoint; SSR reads the env-gated offline bundle/readmodel only.
-- Fixture target, when implementation starts: `tests/fixtures/market_ranking_funnel_readmodel_v0/`; do not create it in this charter-only slice.
+- Fixture target, when implementation starts: `tests&#47;fixtures&#47;market_ranking_funnel_readmodel_v0&#47;`; do not create it in this charter-only slice.
 - Minimal JSON envelope:
   - `readmodel_id="market_ranking_funnel_readmodel.v0"`
   - `generated_at_iso`
