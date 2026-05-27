@@ -91,9 +91,38 @@ Auf **`GET`** **`/market`** zeigt das Template einen **Futures-Ranking-Funnel** 
 - **Keine festen Endgrößen:** frühere illustrative Größen wie `Top 50&#47;20&#47;5` sind **kein** vertragliches Versprechen — **Umfang** jeder Stufe bleibt **producer-definiert** / datengetrieben.
 - **Stabile Marker:** `data-market-v0-ranking-funnel-empty-state-v0="true"`, `data-market-v0-ranking-funnel-dynamic-labels-v0="true"` (Tests/Strukturvertrag — **keine** operationalen Freigaben).
 - **Operator-Hinweis (Empty-State):** Fehlende Kandidatenzeilen bedeuten **nicht** Freigabe, Sperre, „Ready“, Handelserlaubnis oder Signal — nur, dass diese **read-only** Oberfläche (noch) **keine** Producer-/Ranking-Zeilen für die Stufen ausgibt.
-- **Kein** Ranking-Producer in diesem Markt-Slice dokumentiert oder impliziert; reale Listen/Scores folgen erst mit **explizitem** kanonischen Contract — bis dahin **keine** Umsetzungsannahme durch dieses Dokument.
+- **Implementierung** des Ranking Producers folgt dem Charter in § Market Ranking Funnel Producer v0 (read-only charter) unten; bis zur Implementierung **keine** Umsetzungsannahme durch dieses Dokument.
 
 **Dashboard ≠ Freigabe:** der Funnel begründet **keine** Orders, **kein** Live/Testnet/Paper, **keine** Scope/Capital-, Risk-/KillSwitch- oder Strategieautorität.
+
+### Market Ranking Funnel Producer v0 (read-only charter)
+
+The `/market` ranking funnel remains read-only and non-authorizing. A future Ranking Funnel Producer v0 may populate the existing funnel only through a deterministic, env-gated, offline/readmodel-style payload. It must not create trading authority, strategy activation, broker/exchange access, polling, scheduler/runtime coupling, or live/testnet/shadow/paper execution.
+
+Canonical v0 boundary:
+
+- Route scope: `GET &#47;market` only; `&#47;market&#47;double-play` remains excluded unless a separate Double-Play charter is approved.
+- Transport: SSR context first; no `&#47;api&#47;market&#47;ranking` endpoint in v0.
+- Gate proposal: `PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1` plus one canonical bundle/payload path, to be selected before implementation.
+- Readmodel id: `market_ranking_funnel_readmodel.v0`.
+- Stages: `universe`, `shortlist`, `selected`; producer-defined counts, not fixed 50/20/5 semantics.
+- Display rows: `row_id`, `symbol`, `rank`, optional `display_score`, optional `notes`; no order, approval, readiness, live, or execution fields.
+- Metadata: `generated_at_iso`, `source`, `stale`, `stale_reason`, `non_authorizing=true`.
+- Marker transition: existing empty-state markers remain valid when no rows are present; implementation must add explicit row/has-row markers before replacing empty-state UI.
+- Test owner: `tests/webui/test_market_dashboard_readonly_structure_contract_v0.py` for funnel marker/IA invariants.
+
+Forbidden promotions:
+
+- Dashboard ranking output must not be treated as trade signal, approval, readiness, live authorization, strategy activation, or Master V2 / Double Play trading input.
+- `FuturesRankingSnapshot` and Master V2 ranking structures must not be directly wired into the Market Dashboard producer without a separate explicit safety charter.
+- Missing ranking rows must not imply block/approval semantics; it is only a display empty state.
+
+Boundary markers:
+
+- `DASHBOARD_AUTHORITY_CHANGED=false`
+- `RANKING_PRODUCER_AUTHORIZES_TRADES=false`
+- `SIGNAL_EQUALS_TRADE=false`
+- `DASHBOARD_EQUALS_APPROVAL=false`
 
 ### Marker / IA crosswalk policy v0
 
