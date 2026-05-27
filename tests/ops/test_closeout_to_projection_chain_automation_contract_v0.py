@@ -26,7 +26,11 @@ from pathlib import Path
 
 import pytest
 
-from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256, write_manifest_sha256
+from scripts.ops.primary_evidence_retention_v0 import (
+    is_under_tmp,
+    verify_manifest_sha256,
+    write_manifest_sha256,
+)
 from tests.fixtures.ops.generic_evidence_run_registry_v1 import projection_consumer_v0 as pc
 from tests.ops import test_build_post_closeout_projection_payload_v0 as payload_tests
 from tests.ops import test_closeout_final_machine_lines_contract_v0 as ml_contract
@@ -74,6 +78,39 @@ class PostCloseoutAutomationReadinessInputs:
     hook_automation_owner_status: str = "not_implemented"
     claimed_full_post_closeout_automation_implemented: bool = False
     notion_write_occurred: bool = False
+
+
+@dataclass(frozen=True)
+class PostCloseoutHookContractInputs:
+    """Synthetic future post-closeout hook adapter contract (tests only; not production API)."""
+
+    readiness: PostCloseoutAutomationReadinessInputs
+    run_completed: bool = False
+    finalized_evidence_root: Path | None = None
+    hook_attaches_after_run_completion: bool = False
+    reuses_chain_owners: bool = False
+    bypasses_chain_owners: bool = False
+    attempts_notion_write: bool = False
+    attempts_notion_mcp: bool = False
+    attempts_notion_api: bool = False
+    attempts_market_global_enablement: bool = False
+    attempts_launchctl: bool = False
+    attempts_plist_install: bool = False
+    attempts_daemon_install: bool = False
+    attempts_testnet: bool = False
+    attempts_live: bool = False
+    attempts_broker_exchange: bool = False
+    attempts_s3_aws_rclone: bool = False
+    attempts_workflow_dispatch: bool = False
+    uses_dashboard_route_as_authority: bool = False
+
+
+CANONICAL_HOOK_CHAIN_OWNER_SCRIPTS: tuple[str, ...] = (
+    "durable_closeout_copy_verify_v0.py",
+    "build_generic_evidence_run_registry_v1.py",
+    "build_post_closeout_projection_payload_v0.py",
+    "notion_post_closeout_sync_dry_run_v0.py",
+)
 
 
 def _parse_machine_lines_file(path: Path) -> dict[str, str]:
@@ -188,6 +225,84 @@ def build_post_closeout_automation_readiness_summary(
                 blockers.append(f"authority_boundary:{key}")
 
     return (len(blockers) == 0, blockers)
+
+
+def build_post_closeout_hook_contract_summary(
+    inp: PostCloseoutHookContractInputs,
+) -> tuple[bool, list[str]]:
+    """Return (hook_contract_ok, blockers) for a future offline hook adapter plan (tests only)."""
+    blockers: list[str] = []
+
+    if not inp.run_completed:
+        blockers.append("hook_attach_before_run_completion")
+    if not inp.hook_attaches_after_run_completion:
+        blockers.append("hook_must_attach_after_run_completion")
+
+    if inp.finalized_evidence_root is None:
+        blockers.append("finalized_evidence_root_missing")
+    elif is_under_tmp(inp.finalized_evidence_root):
+        blockers.append("finalized_evidence_root_under_tmp")
+
+    if inp.bypasses_chain_owners:
+        blockers.append("hook_must_not_bypass_chain_owners")
+    if inp.run_completed and inp.hook_attaches_after_run_completion and not inp.reuses_chain_owners:
+        blockers.append("hook_must_reuse_chain_owners")
+
+    if inp.attempts_notion_write:
+        blockers.append("hook_notion_write_forbidden")
+    if inp.attempts_notion_mcp:
+        blockers.append("hook_notion_mcp_forbidden")
+    if inp.attempts_notion_api:
+        blockers.append("hook_notion_api_forbidden")
+    if inp.attempts_market_global_enablement:
+        blockers.append("hook_market_global_enablement_forbidden")
+    if inp.attempts_launchctl:
+        blockers.append("hook_launchctl_forbidden")
+    if inp.attempts_plist_install:
+        blockers.append("hook_plist_install_forbidden")
+    if inp.attempts_daemon_install:
+        blockers.append("hook_daemon_install_forbidden")
+    if inp.attempts_testnet:
+        blockers.append("hook_testnet_forbidden")
+    if inp.attempts_live:
+        blockers.append("hook_live_forbidden")
+    if inp.attempts_broker_exchange:
+        blockers.append("hook_broker_exchange_forbidden")
+    if inp.attempts_s3_aws_rclone:
+        blockers.append("hook_s3_aws_rclone_forbidden")
+    if inp.attempts_workflow_dispatch:
+        blockers.append("hook_workflow_dispatch_forbidden")
+    if inp.uses_dashboard_route_as_authority:
+        blockers.append("hook_dashboard_route_authority_forbidden")
+
+    readiness_ok, readiness_blockers = build_post_closeout_automation_readiness_summary(
+        inp.readiness
+    )
+    if not readiness_ok:
+        for item in readiness_blockers:
+            prefixed = f"readiness:{item}"
+            if prefixed not in blockers:
+                blockers.append(prefixed)
+
+    return (len(blockers) == 0, blockers)
+
+
+def _synthetic_future_hook_plan_inputs(
+    paths: dict[str, Path],
+) -> PostCloseoutHookContractInputs:
+    """Offline synthetic future-hook plan after finalized evidence + full chain (tests only)."""
+    closeout = paths["closeout"]
+    return PostCloseoutHookContractInputs(
+        readiness=replace(
+            _synthetic_chain_readiness_inputs(paths),
+            hook_automation_owner_status="identified",
+            claimed_full_post_closeout_automation_implemented=True,
+        ),
+        run_completed=True,
+        finalized_evidence_root=closeout,
+        hook_attaches_after_run_completion=True,
+        reuses_chain_owners=True,
+    )
 
 
 def _synthetic_chain_readiness_inputs(
@@ -654,3 +769,173 @@ def test_readiness_false_when_payload_authority_boundary_violation(tmp_path: Pat
     ok, blockers = build_post_closeout_automation_readiness_summary(inp)
     assert ok is False
     assert "authority_boundary:live_authority" in blockers
+
+
+def test_hook_contract_reuse_drift_guard_exports_and_no_hook_script() -> None:
+    text = Path(__file__).read_text(encoding="utf-8")
+    assert "PostCloseoutHookContractInputs" in text
+    assert "build_post_closeout_hook_contract_summary" in text
+    for script in CANONICAL_HOOK_CHAIN_OWNER_SCRIPTS:
+        assert (REPO_ROOT / "scripts" / "ops" / script).is_file(), script
+    assert not (REPO_ROOT / "scripts/ops/post_closeout_chain_execute_v0.py").exists()
+
+
+def test_hook_contract_false_before_finalized_evidence_root(tmp_path: Path) -> None:
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    inp = replace(_synthetic_future_hook_plan_inputs(paths), finalized_evidence_root=None)
+    ok, blockers = build_post_closeout_hook_contract_summary(inp)
+    assert ok is False
+    assert "finalized_evidence_root_missing" in blockers
+
+
+def test_hook_contract_false_before_closeout_manifest_verify(tmp_path: Path) -> None:
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    readiness = replace(
+        _synthetic_chain_readiness_inputs(paths),
+        closeout_manifest_verify_ok=False,
+        hook_automation_owner_status="identified",
+        claimed_full_post_closeout_automation_implemented=True,
+    )
+    inp = replace(
+        _synthetic_future_hook_plan_inputs(paths),
+        readiness=readiness,
+    )
+    ok, blockers = build_post_closeout_hook_contract_summary(inp)
+    assert ok is False
+    assert "readiness:closeout_manifest_verify_not_ok" in blockers
+
+
+def test_hook_contract_false_when_hook_owner_not_identified_while_claiming_full_automation(
+    tmp_path: Path,
+) -> None:
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    readiness = replace(
+        _synthetic_chain_readiness_inputs(paths),
+        hook_automation_owner_status="not_implemented",
+        claimed_full_post_closeout_automation_implemented=True,
+    )
+    inp = replace(
+        _synthetic_future_hook_plan_inputs(paths),
+        readiness=readiness,
+    )
+    ok, blockers = build_post_closeout_hook_contract_summary(inp)
+    assert ok is False
+    assert "readiness:full_automation_claim_requires_hook_owner_identified" in blockers
+
+
+def test_hook_contract_false_when_hook_attempts_notion_write(tmp_path: Path) -> None:
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    inp = replace(_synthetic_future_hook_plan_inputs(paths), attempts_notion_write=True)
+    ok, blockers = build_post_closeout_hook_contract_summary(inp)
+    assert ok is False
+    assert "hook_notion_write_forbidden" in blockers
+
+
+def test_hook_contract_false_when_hook_attempts_notion_mcp_or_api(tmp_path: Path) -> None:
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    for field, token in (
+        ("attempts_notion_mcp", "hook_notion_mcp_forbidden"),
+        ("attempts_notion_api", "hook_notion_api_forbidden"),
+    ):
+        inp = replace(_synthetic_future_hook_plan_inputs(paths), **{field: True})
+        ok, blockers = build_post_closeout_hook_contract_summary(inp)
+        assert ok is False
+        assert token in blockers
+
+
+def test_hook_contract_false_when_hook_attempts_market_global_enablement(tmp_path: Path) -> None:
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    inp = replace(_synthetic_future_hook_plan_inputs(paths), attempts_market_global_enablement=True)
+    ok, blockers = build_post_closeout_hook_contract_summary(inp)
+    assert ok is False
+    assert "hook_market_global_enablement_forbidden" in blockers
+
+
+def test_hook_contract_false_when_hook_attempts_launchctl_or_daemon_install(tmp_path: Path) -> None:
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    for field, token in (
+        ("attempts_launchctl", "hook_launchctl_forbidden"),
+        ("attempts_plist_install", "hook_plist_install_forbidden"),
+        ("attempts_daemon_install", "hook_daemon_install_forbidden"),
+    ):
+        inp = replace(_synthetic_future_hook_plan_inputs(paths), **{field: True})
+        ok, blockers = build_post_closeout_hook_contract_summary(inp)
+        assert ok is False
+        assert token in blockers
+
+
+def test_hook_contract_false_when_hook_attempts_runtime_promotion_paths(tmp_path: Path) -> None:
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    cases = (
+        ("attempts_testnet", "hook_testnet_forbidden"),
+        ("attempts_live", "hook_live_forbidden"),
+        ("attempts_broker_exchange", "hook_broker_exchange_forbidden"),
+        ("attempts_s3_aws_rclone", "hook_s3_aws_rclone_forbidden"),
+        ("attempts_workflow_dispatch", "hook_workflow_dispatch_forbidden"),
+    )
+    for field, token in cases:
+        inp = replace(_synthetic_future_hook_plan_inputs(paths), **{field: True})
+        ok, blockers = build_post_closeout_hook_contract_summary(inp)
+        assert ok is False
+        assert token in blockers
+
+
+def test_hook_contract_false_when_hook_bypasses_chain_owners(tmp_path: Path) -> None:
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    inp = replace(
+        _synthetic_future_hook_plan_inputs(paths),
+        reuses_chain_owners=False,
+        bypasses_chain_owners=True,
+    )
+    ok, blockers = build_post_closeout_hook_contract_summary(inp)
+    assert ok is False
+    assert "hook_must_not_bypass_chain_owners" in blockers
+    assert "hook_must_reuse_chain_owners" in blockers
+
+
+def test_hook_contract_false_when_hook_uses_dashboard_route_as_authority(tmp_path: Path) -> None:
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    inp = replace(
+        _synthetic_future_hook_plan_inputs(paths),
+        uses_dashboard_route_as_authority=True,
+    )
+    ok, blockers = build_post_closeout_hook_contract_summary(inp)
+    assert ok is False
+    assert "hook_dashboard_route_authority_forbidden" in blockers
+
+
+def test_hook_contract_false_when_manual_recovery_required(tmp_path: Path) -> None:
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    readiness = replace(
+        _synthetic_chain_readiness_inputs(paths),
+        manual_recovery_required=True,
+        hook_automation_owner_status="identified",
+        claimed_full_post_closeout_automation_implemented=True,
+    )
+    inp = replace(_synthetic_future_hook_plan_inputs(paths), readiness=readiness)
+    ok, blockers = build_post_closeout_hook_contract_summary(inp)
+    assert ok is False
+    assert "readiness:manual_recovery_required" in blockers
+
+
+def test_hook_contract_false_when_projection_manifest_verify_not_ok(tmp_path: Path) -> None:
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    readiness = replace(
+        _synthetic_chain_readiness_inputs(paths),
+        projection_manifest_verify_ok=False,
+        hook_automation_owner_status="identified",
+        claimed_full_post_closeout_automation_implemented=True,
+    )
+    inp = replace(_synthetic_future_hook_plan_inputs(paths), readiness=readiness)
+    ok, blockers = build_post_closeout_hook_contract_summary(inp)
+    assert ok is False
+    assert "readiness:projection_manifest_verify_not_ok" in blockers
+
+
+def test_hook_contract_true_offline_synthetic_future_hook_plan(tmp_path: Path) -> None:
+    paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
+    ok, blockers = build_post_closeout_hook_contract_summary(
+        _synthetic_future_hook_plan_inputs(paths)
+    )
+    assert ok is True
+    assert blockers == []
