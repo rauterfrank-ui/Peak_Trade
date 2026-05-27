@@ -27,10 +27,11 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from .market_depth_runtime_v0 import market_depth_json_payload_v0
+from .market_ranking_funnel_runtime_v0 import build_market_ranking_funnel_display_context
 
 logger = logging.getLogger(__name__)
 
-# Aligniert mit scripts/_shared_forward_args.OHLCV_TIMEFRAME_CHOICES / Kraken-ccxt-Übliches
+# Aligniert mit scripts/_shared_forward_args.OHLCV_TIMEFRAME_CHOICES (übliche Timeframes)
 MARKET_TIMEFRAMES: tuple[str, ...] = ("1m", "5m", "15m", "1h", "4h", "1d")
 MAX_OHLCV_LIMIT = 720
 MARKET_DEPTH_SSR_TOP_LEVELS = 8
@@ -562,6 +563,7 @@ def create_market_router(
         proj_status = get_project_status()
         market_depth = build_market_depth_display_context()
         run_projection = build_market_run_projection_display_context()
+        ranking_funnel = build_market_ranking_funnel_display_context()
         return templates.TemplateResponse(
             request,
             "market_v0.html",
@@ -570,6 +572,7 @@ def create_market_router(
                 "payload": payload,
                 "market_depth": market_depth,
                 "run_projection": run_projection,
+                "ranking_funnel": ranking_funnel,
                 "query": {
                     "symbol": symbol,
                     "timeframe": timeframe,

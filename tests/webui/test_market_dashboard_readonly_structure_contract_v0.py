@@ -34,6 +34,27 @@ FORM_ACTION_RE = re.compile(
 @pytest.fixture()
 def client(monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
     monkeypatch.setenv("PEAK_TRADE_MARKET_DEPTH_ENABLED", "0")
+    monkeypatch.delenv("PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED", raising=False)
+    monkeypatch.delenv("PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT", raising=False)
+    with TestClient(create_app()) as test_client:
+        yield test_client
+
+
+@pytest.fixture()
+def client_ranking_funnel_fixture_bundle_on(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Iterator[TestClient]:
+    """Offline ranking funnel SSR enabled with repo complete_minimal fixture."""
+    monkeypatch.setenv("PEAK_TRADE_MARKET_DEPTH_ENABLED", "0")
+    monkeypatch.setenv("PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED", "1")
+    bundle = (
+        project_root
+        / "tests"
+        / "fixtures"
+        / "market_ranking_funnel_readmodel_v0"
+        / "complete_minimal"
+    ).resolve()
+    monkeypatch.setenv("PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT", str(bundle))
     with TestClient(create_app()) as test_client:
         yield test_client
 
@@ -586,9 +607,53 @@ def test_double_play_market_dashboard_excludes_ranking_funnel_markers_v0(
     assert "data-market-v0-ranking-funnel-empty-state-v0" not in html
     assert "data-market-v0-ranking-funnel-dynamic-labels-v0" not in html
     assert "data-market-v0-ranking-funnel-stages-v0" not in html
+    assert "data-market-v0-ranking-funnel-has-rows-v0" not in html
+    assert "data-market-v0-ranking-funnel-enabled-v0" not in html
+    assert "data-market-v0-ranking-funnel-row-v0" not in html
+    assert "data-market-v0-ranking-funnel-stage-rows-v0" not in html
     assert "market-v0-landmark-ranking-funnel-h2" not in html
     assert "data-market-v0-" not in html
     assert 'data-market-readonly="true"' in html
+
+
+def test_market_dashboard_ranking_funnel_rows_when_bundle_enabled_v0(
+    client_ranking_funnel_fixture_bundle_on: TestClient,
+) -> None:
+    """Enabled ranking funnel with fixture bundle renders SSR rows on /market only."""
+    html = _html(client_ranking_funnel_fixture_bundle_on, "/market")
+    assert 'data-market-v0-ranking-funnel-enabled-v0="true"' in html
+    assert 'data-market-v0-ranking-funnel-has-rows-v0="true"' in html
+    assert 'data-market-v0-ranking-funnel-non-authorizing-v0="true"' in html
+    assert 'data-market-v0-ranking-funnel-row-v0="true"' in html
+    assert 'data-market-v0-ranking-funnel-stage-rows-v0="true"' in html
+    assert 'data-market-v0-ranking-funnel-stage-v0="universe"' in html
+    assert "BTCUSDT" in html
+    assert 'data-market-v0-ranking-funnel-empty-state-v0="true"' not in html
+
+
+def test_market_dashboard_ranking_funnel_non_authorizing_copy_when_rows_v0(
+    client_ranking_funnel_fixture_bundle_on: TestClient,
+) -> None:
+    """Row rendering includes explicit non-authority copy."""
+    html = _html(client_ranking_funnel_fixture_bundle_on, "/market")
+    assert 'data-market-v0-ranking-funnel-readonly-copy-v0="true"' in html
+    assert "does not authorize trades" in html
+
+
+def test_market_dashboard_ranking_funnel_fail_closed_missing_bundle_v0(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Enabled gate with missing bundle stays read-only empty display (no 500)."""
+    monkeypatch.setenv("PEAK_TRADE_MARKET_DEPTH_ENABLED", "0")
+    monkeypatch.setenv("PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED", "1")
+    monkeypatch.setenv(
+        "PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT", "/tmp/nonexistent-ranking-bundle"
+    )
+    with TestClient(create_app()) as test_client:
+        html = _html(test_client, "/market")
+    assert 'data-market-v0-ranking-funnel-enabled-v0="true"' in html
+    assert 'data-market-v0-ranking-funnel-has-rows-v0="true"' not in html
+    assert 'data-market-v0-ranking-funnel-empty-state-v0="true"' in html
 
 
 def test_double_play_market_dashboard_excludes_pro_shell_markers_v0(
