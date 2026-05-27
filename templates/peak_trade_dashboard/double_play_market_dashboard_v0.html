@@ -139,6 +139,49 @@
     </ul>
   </section>
 
+  <section
+    id="double-play-market-v0-depth-ssr"
+    role="region"
+    aria-labelledby="double-play-market-v0-landmark-depth-ssr-h2"
+    class="rounded-xl border border-slate-800/90 bg-slate-950/50 px-3 py-3 ring-1 ring-slate-800/70 text-[11px] text-slate-300"
+    data-double-play-market-depth-panel="true"
+    data-double-play-market-depth-status="{{ market_depth.display_status }}"
+    data-double-play-market-depth-non-authorizing="true"
+    {% if market_depth.readmodel_id %}
+    data-double-play-market-depth-readmodel-id="{{ market_depth.readmodel_id }}"
+    {% endif %}
+  >
+    <h2
+      id="double-play-market-v0-landmark-depth-ssr-h2"
+      data-double-play-market-depth-landmark-heading-v0="true"
+      class="text-[10px] font-semibold uppercase tracking-wide text-slate-400 m-0 mb-2"
+    >
+      Market depth (read-only SSR)
+    </h2>
+    <p class="m-0 mb-2 text-[10px] text-slate-500 leading-snug">
+      <strong class="text-slate-400 font-semibold">Display-only</strong> —
+      same offline depth readmodel context as <span class="font-mono text-sky-400/90">GET /market</span>;
+      <strong class="text-amber-200/90 font-semibold">not</strong> approval, signal, or trade authority.
+    </p>
+    <p class="leading-relaxed text-slate-300/90 m-0" data-double-play-market-depth-summary="true">
+      {{ market_depth.summary_line|e }}
+    </p>
+    <p class="mt-2 text-[9px] text-slate-500 m-0 leading-snug" data-double-play-market-depth-readonly-copy-v0="true">
+      Depth producer output is display-only. It does not authorize trades, signals, approvals, or live operation.
+    </p>
+    {% if market_depth.display_status != 'ok' %}
+    <p class="mt-1.5 text-[10px] text-slate-400 m-0 leading-snug" data-double-play-market-depth-operator-hint="true">
+      {% if market_depth.display_status == 'disabled' %}
+      Depth SSR is off for this process — enable the offline depth feature for fixture-backed display (see <span class="font-mono text-slate-300">GET /market</span> diagnostics).
+      {% elif market_depth.display_status == 'unconfigured' %}
+      Configure bundle root env for offline depth fixtures (see <span class="font-mono text-slate-300">GET /market</span> diagnostics).
+      {% else %}
+      Depth snapshot unavailable (status {{ market_depth.display_status|e }}) — display-only diagnostics.
+      {% endif %}
+    </p>
+    {% endif %}
+  </section>
+
   <div
     class="flex flex-col gap-6 xl:grid xl:grid-cols-[minmax(0,1fr)_min(21rem,100%)] xl:items-start xl:gap-6"
     data-double-play-market-cockpit-grid="true"

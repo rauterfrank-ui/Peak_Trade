@@ -194,6 +194,7 @@ from .market_depth_api_v0 import router as market_depth_api_v0_router
 from .market_surface import (
     MAX_OHLCV_LIMIT,
     MARKET_TIMEFRAMES,
+    build_market_depth_display_context,
     build_market_payload,
     create_market_router,
 )
@@ -617,6 +618,7 @@ def create_app() -> FastAPI:
         proj_status = get_project_status()
 
         dp_display = build_static_dashboard_display_dict()
+        market_depth = build_market_depth_display_context()
 
         return templates.TemplateResponse(
             request,
@@ -624,6 +626,7 @@ def create_app() -> FastAPI:
             {
                 "status": proj_status,
                 "payload": payload,
+                "market_depth": market_depth,
                 "query": {
                     "symbol": symbol,
                     "timeframe": timeframe,
