@@ -101,8 +101,8 @@ The `/market` ranking funnel remains read-only and non-authorizing. A future Ran
 
 Canonical v0 boundary:
 
-- Route scope: `GET /market` only; `/market/double-play` remains excluded unless a separate Double-Play charter is approved.
-- Transport: SSR context first; no `/api/market/ranking` endpoint in v0.
+- Route scope: `GET &#47;market` only; `&#47;market&#47;double-play` remains excluded unless a separate Double-Play charter is approved.
+- Transport: SSR context first; no `&#47;api&#47;market&#47;ranking` endpoint in v0.
 - Gate proposal: `PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1` plus one canonical bundle/payload path, to be selected before implementation.
 - Readmodel id: `market_ranking_funnel_readmodel.v0`.
 - Stages: `universe`, `shortlist`, `selected`; producer-defined counts, not fixed 50/20/5 semantics.
