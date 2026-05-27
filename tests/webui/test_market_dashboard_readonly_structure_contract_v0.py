@@ -749,6 +749,22 @@ def test_double_play_market_dashboard_excludes_ranking_funnel_markers_v0(
     assert 'data-market-readonly="true"' in html
 
 
+def test_double_play_excludes_ranking_funnel_when_depth_and_ranking_env_enabled_v0(
+    client_depth_and_ranking_funnel_fixtures_on: TestClient,
+) -> None:
+    """Depth+ranking fixtures enabled still render dp depth only on /market/double-play."""
+    html = _html(client_depth_and_ranking_funnel_fixtures_on, "/market/double-play")
+
+    assert re.search(
+        r'id="double-play-market-v0-depth-ssr"\s+role="region"\s+aria-labelledby="double-play-market-v0-landmark-depth-ssr-h2"',
+        html,
+    )
+    assert 'data-double-play-market-depth-panel="true"' in html
+    assert 'id="market-v0-depth-ssr"' not in html
+    assert "data-market-v0-ranking-funnel" not in html
+    assert 'id="market-v0-ranking-funnel-ssr"' not in html
+
+
 def test_market_dashboard_ranking_funnel_rows_when_bundle_enabled_v0(
     client_ranking_funnel_fixture_bundle_on: TestClient,
 ) -> None:
