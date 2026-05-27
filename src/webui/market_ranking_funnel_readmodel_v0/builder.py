@@ -98,9 +98,7 @@ def build_market_ranking_funnel_readmodel(bundle_root: str | Path) -> dict[str, 
     root = Path(bundle_root)
     payload_path = root / "ranking_funnel.json"
     if not payload_path.is_file():
-        raise MarketRankingFunnelReadmodelError(
-            f"missing ranking funnel payload: {payload_path}"
-        )
+        raise MarketRankingFunnelReadmodelError(f"missing ranking funnel payload: {payload_path}")
 
     try:
         payload = json.loads(payload_path.read_text(encoding="utf-8"))
@@ -110,9 +108,7 @@ def build_market_ranking_funnel_readmodel(bundle_root: str | Path) -> dict[str, 
     payload_map = _as_mapping(payload, field="payload")
     readmodel_id = _as_string(payload_map.get("readmodel_id"), field="readmodel_id")
     if readmodel_id != READMODEL_ID:
-        raise MarketRankingFunnelReadmodelError(
-            f"readmodel_id must be {READMODEL_ID!r}"
-        )
+        raise MarketRankingFunnelReadmodelError(f"readmodel_id must be {READMODEL_ID!r}")
 
     non_authorizing = _as_bool(
         payload_map.get("non_authorizing"),
@@ -123,8 +119,7 @@ def build_market_ranking_funnel_readmodel(bundle_root: str | Path) -> dict[str, 
 
     stages = _as_mapping(payload_map.get("stages"), field="stages")
     normalized_stages = {
-        stage: _normalize_stage_rows(stages.get(stage), stage=stage)
-        for stage in STAGES
+        stage: _normalize_stage_rows(stages.get(stage), stage=stage) for stage in STAGES
     }
 
     return {
@@ -141,8 +136,5 @@ def build_market_ranking_funnel_readmodel(bundle_root: str | Path) -> dict[str, 
         ),
         "non_authorizing": non_authorizing,
         "stages": normalized_stages,
-        "stage_counts": {
-            stage: len(rows)
-            for stage, rows in normalized_stages.items()
-        },
+        "stage_counts": {stage: len(rows) for stage, rows in normalized_stages.items()},
     }

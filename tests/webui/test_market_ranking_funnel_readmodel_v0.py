@@ -14,11 +14,7 @@ from src.webui.market_ranking_funnel_readmodel_v0 import (
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 FIXTURE_ROOT = (
-    PROJECT_ROOT
-    / "tests"
-    / "fixtures"
-    / "market_ranking_funnel_readmodel_v0"
-    / "complete_minimal"
+    PROJECT_ROOT / "tests" / "fixtures" / "market_ranking_funnel_readmodel_v0" / "complete_minimal"
 )
 
 
