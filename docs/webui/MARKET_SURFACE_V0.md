@@ -5,7 +5,7 @@
 | Methode | Pfad | Beschreibung |
 |---------|------|----------------|
 | GET | `/market` | HTML: **read-only** Market-Dashboard — **SSR-OHLC-/Kerzendisplay** (serverseitig aus eingebettetem Market-Payload); ergänzend **Chart.js**‑Close-Line/Diagnose gemäß **Chart-status**‑Semantik in diesem Dokument (**kein** clientseitiges Ranking-/Live-Nachladen). **Futures-Ranking-Funnel** als **contract-first Empty-State** mit **producer-definierten** Stufengrößen (**kein** festes `Top 50&#47;20&#47;5`); Details **[Ranking funnel empty state (dynamic labels)](#ranking-funnel-empty-state-dynamic-labels)**. **read-only Market Depth SSR-Anzeige v0** (**`data-market-depth-*`**; Zustand in-process über **`market_depth_json_payload_v0()`** — siehe **[Market Depth display on GET /market (SSR v0 implemented)](#market-depth-display-on-get-market-ssr-v0-implemented)**) |
-| GET | `/market/double-play` | HTML: SSR read-only Komposition (ein Server-Render) — **v1.2** dominanter Canvas-Candlestick + **v1.3** menschenlesbare Double‑Play‑Rail‑Feldzuordnung (weiterhin **gleiche** eingebettete Payload-/JSON‑Semantik), sekundärer Chart.js‑Close-Line (**gleicher JSON-Vertrag wie** **`GET`** **`/api/master-v2/double-play/dashboard-display.json`** in-process); **kein** client-fetch, **kein** automatisches Nachladen |
+| GET | `/market/double-play` | HTML: SSR read-only Komposition (ein Server-Render) — **v1.2** dominanter Canvas-Candlestick + **v1.3** menschenlesbare Double‑Play‑Rail‑Feldzuordnung (weiterhin **gleiche** eingebettete Payload-/JSON‑Semantik), sekundärer Chart.js‑Close-Line (**gleicher JSON-Vertrag wie** **`GET`** **`/api/master-v2/double-play/dashboard-display.json`** in-process); **narrow** read-only Market Depth SSR v0 (**`data-double-play-market-depth-*`**, **`#double-play-market-v0-depth-ssr`** — siehe **[Market Depth display on GET /market (SSR v0 implemented)](#market-depth-display-on-get-market-ssr-v0-implemented)**); **kein** **`/market`**‑only Top‑N ladder/ranking-funnel; **kein** client-fetch, **kein** automatisches Nachladen |
 | GET | `/api/market/ohlcv` | JSON: OHLCV-Bars (`open`/`high`/`low`/`close`/`volume`, Zeit `ts`) |
 | GET | `/api/market/depth` | JSON: Market Depth readmodel v0 — **read-only**, **env-gated** (**`PEAK_TRADE_MARKET_DEPTH_ENABLED`** muss **`1`** sein), Bundle nur über **`PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT`** (kein Query-/Pfad‑Override); bei Erfolg Builder‑Payload (**`200`**), sonst kurzes Diagnose‑JSON (**`503`**); **`HTTP 200`**/**`503`** gelten für **diese JSON‑Route**. **`GET`** **`/market`** nutzt denselben Hilfstupel **nur serverseitig**, **nicht** per Browser‑Request auf diese URL; **kein** Polling‑Vertrag hier |
 
@@ -155,7 +155,7 @@ Landed boundaries:
 - Runtime: `src/webui/market_ranking_funnel_runtime_v0.py`.
 - SSR context: existing `src/webui/market_surface.py`.
 - Template owner: existing `templates/peak_trade_dashboard/market_v0.html`.
-- Structure-contract owner: `tests/webui/test_market_dashboard_readonly_structure_contract_v0.py`.
+- Structure-contract owner: `tests/webui/test_market_dashboard_readonly_structure_contract_v0.py` (CI: whitelisted WebUI structure-contract fastpath — **#3727**/**#3729**/**#3730** runtime-confirmed; **docs-only** PRs use docs path, not this bucket).
 - Ops env/schema contract owner: `tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py`.
 
 The default disabled or empty state remains valid. When enabled with bundle rows, `/market` may render read-only ranking rows and explicit non-authority copy.
@@ -245,7 +245,7 @@ Stabile neue **Markup‑Marker** unter anderem **`data-double-play-market-cockpi
 
 Die **visual Double‑Play**‑Rail (**Chips**, **Tiles**, **Diagnostics**) ist **strikt display-only**. **`display_ready`** und sämtliche angezeigten Status-/Label‑Felder (**`trading_ready`**, **`testnet_ready`**, **`live_ready`**, Overlays wie **DISPLAY ONLY** / **Not trading ready**) sind **nicht** Handelsbereitschaft, **nicht** Freigabe/Autorisierung zu Live/Testnet, **keine** Scope/Capital‑Billigung und **kein** Risk-/KillSwitch‑Override.
 
-**Ein späteres Arbeitspaket** kann **z. B.** erweiterte Orderbuch-/Tiefen-Visualisierung **auf** **`GET`** **`&#47;market&#47;double-play`** oder CDN‑Ausfall‑Mitigation (**lokaler Chart.js‑Fallback**) **separat** planen — **v1.3** liefert **template‑gebundene** Rail‑Zuordnung (kein neues JSON‑Feld). (**Hinweis:** eine **kompakte** read‑only Tiefe‑Zeile existiert bereits auf **`GET`** **`&#47;market`** (**SSR v0**) — siehe [Market Depth display on GET /market (SSR v0 implemented)](#market-depth-display-on-get-market-ssr-v0-implemented).)
+**Ein späteres Arbeitspaket** kann **z. B.** erweiterte Orderbuch-/Tiefen-**Ladder**-/Cockpit‑Visualisierung **auf** **`GET`** **`&#47;market&#47;double-play`** (über die **kompakte** Depth‑SSR v0 hinaus) oder CDN‑Ausfall‑Mitigation (**lokaler Chart.js‑Fallback**) **separat** planen — **v1.3** liefert **template‑gebundene** Rail‑Zuordnung (kein neues JSON‑Feld). **Kompakte** read‑only Depth‑SSR v0 existiert auf **`GET`** **`&#47;market`** und **`GET`** **`&#47;market&#47;double-play`** (**#3725**, contract **#3726**/**#3730**) — siehe [Market Depth display on GET /market (SSR v0 implemented)](#market-depth-display-on-get-market-ssr-v0-implemented).
 
 ## Double-Play Market Dashboard v1.3 rail field mapping
 
@@ -324,7 +324,7 @@ Sorting expectations:
 - bids sorted descending by price
 - asks sorted ascending by price
 
-**`GET`** **`&#47;market`** (**`market_v0.html`**) enthält seit **SSR display v0** eine **read-only**, **SSR-only** Tiefe-/Diagnose-Zeile (**`data-market-depth-*`**) gebaut aus **`market_depth_json_payload_v0()`** (**ohne** Browser-Aufruf von **`GET`** **`&#47;api&#47;market&#47;depth`**); die **HTML‑Seite** bleibt **`HTTP 200`**, auch wenn der Hilfstupel JSON‑seitig **`503`‑Diagnose** wäre. **`GET`** **`&#47;market&#47;double-play`** **zeigt keine** analoge Markttiefen-Spalte (**unverändert**). Für eine **visual depth ladder**/größere Tabelle gilt weiterhin das **UI consumption boundary** unten (**keine** Order‑Handles).
+**`GET`** **`&#47;market`** (**`market_v0.html`**) und **`GET`** **`&#47;market&#47;double-play`** (**`double_play_market_dashboard_v0.html`**) rendern seit **SSR display v0** jeweils eine **read-only**, **SSR-only** kompakte Tiefe-/Diagnose-Zeile aus **`build_market_depth_display_context()`** / **`market_depth_json_payload_v0()`** (**ohne** Browser-Aufruf von **`GET`** **`&#47;api&#47;market&#47;depth`**): **`data-market-depth-*`** auf **`/market`**, **`data-double-play-market-depth-*`** auf **`/market/double-play`** (**keine** Marker-Vermischung). Die **HTML‑Seiten** bleiben **`HTTP 200`**, auch wenn der Hilfstupel JSON‑seitig **`503`‑Diagnose** wäre. **Nur** **`GET`** **`&#47;market`** hat Top‑N‑Ladder/Chart‑Placeholder‑Marker; **`GET`** **`&#47;market&#47;double-play`** hat **keine** **`/market`**‑only Ladder. Für erweiterte **visual depth ladder**/Cockpit‑Tiles gilt weiterhin das **UI consumption boundary** unten (**keine** Order‑Handles).
 
 ### Deferred derived fields
 
@@ -363,7 +363,7 @@ The dashboard must not infer orderbook/depth from OHLCV candles. OHLCV and depth
 
 ### UI consumption boundary
 
-The Double-Play Market Dashboard may later consume this readmodel only as display-only market context. It may not use orderbook/depth data to emit or imply:
+**`GET`** **`&#47;market&#47;double-play`** already consumes the same depth **display context** as **`GET`** **`&#47;market`** via **`build_market_depth_display_context()`** (**narrow** SSR v0 only — **no** **`dp_display`** enrichment). Extended Double-Play orderbook/cockpit depth tiles may be added later only as display-only market context. Neither route may use orderbook/depth data to emit or imply:
 
 - `recommended_side`
 - `active_side`
