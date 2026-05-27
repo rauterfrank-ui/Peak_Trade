@@ -291,7 +291,7 @@ def _synthetic_future_hook_plan_inputs(
     paths: dict[str, Path],
 ) -> PostCloseoutHookContractInputs:
     """Offline synthetic future-hook plan after finalized evidence + full chain (tests only)."""
-    closeout = paths["closeout"]
+    durable_root = paths["durable_closeout_root"]
     return PostCloseoutHookContractInputs(
         readiness=replace(
             _synthetic_chain_readiness_inputs(paths),
@@ -299,7 +299,7 @@ def _synthetic_future_hook_plan_inputs(
             claimed_full_post_closeout_automation_implemented=True,
         ),
         run_completed=True,
-        finalized_evidence_root=closeout,
+        finalized_evidence_root=durable_root,
         hook_attaches_after_run_completion=True,
         reuses_chain_owners=True,
     )
@@ -448,127 +448,118 @@ def _run_chain_phases_2_through_9(
     run_dir = _write_archive_shadow_run(archive, run_id)
 
     closeout_dest = closeout_tests._archive_like_dest(tmp_path, "closeout_dest")
-    try:
-        closeout_helper = closeout_tests._load_helper()
-        rc = closeout_helper.main(
+    closeout_tests._cleanup_archive_like_dest(closeout_dest)
+    closeout_helper = closeout_tests._load_helper()
+    rc = closeout_helper.main(
+        [
+            "--source-dir",
+            str(run_dir),
+            "--dest-dir",
+            str(closeout_dest),
+            *closeout_tests._tmp_source_args(),
+            "--force",
+        ]
+    )
+    assert rc == 0, "phase 2 durable closeout copy failed"
+    assert (closeout_dest / "DURABLE_COPY_README.md").is_file()
+    assert (closeout_dest / "MANIFEST.sha256").is_file()
+
+    _write_final_machine_lines(closeout_dest, complete=complete_machine_lines)
+    write_manifest_sha256(closeout_dest)
+    ok, msg = verify_manifest_sha256(closeout_dest)
+    assert ok, f"phase 3 manifest verify: {msg}"
+
+    projection_dir = work / "projection"
+    projection_dir.mkdir()
+    registry_json = projection_dir / "registry.json"
+    assert _run_registry_build(archive, registry_json) == 0
+
+    payload_json = projection_dir / "projection_payload.json"
+    builder = payload_tests._load_builder()
+    payload_rc, _, payload_err = _run_payload_strict(
+        builder, closeout_dest, registry_json, payload_json, run_id
+    )
+
+    notion_report = projection_dir / "notion_dry_run_report.json"
+    dry_run = chain_smoke._load_module(chain_smoke.DRY_RUN_SCRIPT, "notion_dry_run_chain_contract")
+
+    if not complete_machine_lines:
+        assert payload_rc == 1
+        assert "projection_blocked_reason=missing_boundary_flags" in payload_err
+        return {"closeout": closeout_dest, "projection_dir": projection_dir}
+
+    assert payload_rc == 0, payload_err
+    payload = json.loads(payload_json.read_text(encoding="utf-8"))
+    assert payload["projection_ready"] is True
+
+    notion_argv = [
+        "--projection-payload-json",
+        str(payload_json),
+        "--target-name",
+        "Evidence & Closeouts",
+        "--boundary-text-verified",
+        "--output-report-json",
+        str(notion_report),
+        "--strict",
+    ]
+    assert dry_run.main(notion_argv) == 0
+    report = json.loads(notion_report.read_text(encoding="utf-8"))
+    assert report["write_allowed"] is False
+    assert report["dry_run"] is True
+
+    hints = projection_dir / "MARKET_OVERLAY_HINTS.txt"
+    hints.write_text(
+        "\n".join(
             [
-                "--source-dir",
-                str(run_dir),
-                "--dest-dir",
-                str(closeout_dest),
-                *closeout_tests._tmp_source_args(),
-                "--force",
+                "MARKET_OVERLAY_GLOBAL_ENABLED=false",
+                f"PEAK_TRADE_MARKET_RUN_PROJECTION_PAYLOAD_JSON={payload_json}",
+                "HANDOFF_HINT_ONLY=true",
             ]
         )
-        assert rc == 0, "phase 2 durable closeout copy failed"
-        assert (closeout_dest / "DURABLE_COPY_README.md").is_file()
-        assert (closeout_dest / "MANIFEST.sha256").is_file()
+        + "\n",
+        encoding="utf-8",
+    )
+    assert "PEAK_TRADE_MARKET_RUN_PROJECTION_ENABLED" not in hints.read_text()
 
-        _write_final_machine_lines(closeout_dest, complete=complete_machine_lines)
-        write_manifest_sha256(closeout_dest)
-        ok, msg = verify_manifest_sha256(closeout_dest)
-        assert ok, f"phase 3 manifest verify: {msg}"
-
-        projection_dir = work / "projection"
-        projection_dir.mkdir()
-        registry_json = projection_dir / "registry.json"
-        assert _run_registry_build(archive, registry_json) == 0
-
-        payload_json = projection_dir / "projection_payload.json"
-        builder = payload_tests._load_builder()
-        payload_rc, _, payload_err = _run_payload_strict(
-            builder, closeout_dest, registry_json, payload_json, run_id
+    duration_path = projection_dir / "DURATION_CONTRACT_VALIDATION.txt"
+    manifest_path = closeout_dest / "wrapper_evidence" / "manifest.json"
+    meta = json.loads(manifest_path.read_text(encoding="utf-8"))
+    duration_path.write_text(
+        "\n".join(
+            [
+                "WALL_CLOCK_VALIDATION_REQUIRED=true",
+                "OBSERVED_DURATION_SECONDS=596",
+                "EXPECTED_DURATION_SECONDS=600",
+                f"steps_emitted={meta.get('steps_emitted', 0)}",
+                f"step_interval_seconds={meta.get('step_interval_seconds', 0)}",
+                "PAYLOAD_PROJECTION_READY_NOT_WALL_CLOCK_EVIDENCE=true",
+            ]
         )
+        + "\n",
+        encoding="utf-8",
+    )
+    duration_text = duration_path.read_text(encoding="utf-8")
+    assert "OBSERVED_DURATION_SECONDS=" in duration_text
+    assert "PAYLOAD_PROJECTION_READY_NOT_WALL_CLOCK_EVIDENCE=true" in duration_text
 
-        notion_report = projection_dir / "notion_dry_run_report.json"
-        dry_run = chain_smoke._load_module(
-            chain_smoke.DRY_RUN_SCRIPT, "notion_dry_run_chain_contract"
-        )
+    serialized_payload = json.dumps(payload)
+    for forbidden in (
+        "OBSERVED_DURATION_SECONDS",
+        "WALL_CLOCK_VALIDATION",
+        "step_interval_seconds",
+    ):
+        assert forbidden not in serialized_payload
 
-        if not complete_machine_lines:
-            assert payload_rc == 1
-            assert "projection_blocked_reason=missing_boundary_flags" in payload_err
-            return {"closeout": closeout_dest, "projection_dir": projection_dir}
+    _projection_manifest_verify(projection_dir)
 
-        assert payload_rc == 0, payload_err
-        payload = json.loads(payload_json.read_text(encoding="utf-8"))
-        assert payload["projection_ready"] is True
-
-        notion_argv = [
-            "--projection-payload-json",
-            str(payload_json),
-            "--target-name",
-            "Evidence & Closeouts",
-            "--boundary-text-verified",
-            "--output-report-json",
-            str(notion_report),
-            "--strict",
-        ]
-        assert dry_run.main(notion_argv) == 0
-        report = json.loads(notion_report.read_text(encoding="utf-8"))
-        assert report["write_allowed"] is False
-        assert report["dry_run"] is True
-
-        hints = projection_dir / "MARKET_OVERLAY_HINTS.txt"
-        hints.write_text(
-            "\n".join(
-                [
-                    "MARKET_OVERLAY_GLOBAL_ENABLED=false",
-                    f"PEAK_TRADE_MARKET_RUN_PROJECTION_PAYLOAD_JSON={payload_json}",
-                    "HANDOFF_HINT_ONLY=true",
-                ]
-            )
-            + "\n",
-            encoding="utf-8",
-        )
-        assert "PEAK_TRADE_MARKET_RUN_PROJECTION_ENABLED" not in hints.read_text()
-
-        duration_path = projection_dir / "DURATION_CONTRACT_VALIDATION.txt"
-        manifest_path = closeout_dest / "wrapper_evidence" / "manifest.json"
-        meta = json.loads(manifest_path.read_text(encoding="utf-8"))
-        duration_path.write_text(
-            "\n".join(
-                [
-                    "WALL_CLOCK_VALIDATION_REQUIRED=true",
-                    "OBSERVED_DURATION_SECONDS=596",
-                    "EXPECTED_DURATION_SECONDS=600",
-                    f"steps_emitted={meta.get('steps_emitted', 0)}",
-                    f"step_interval_seconds={meta.get('step_interval_seconds', 0)}",
-                    "PAYLOAD_PROJECTION_READY_NOT_WALL_CLOCK_EVIDENCE=true",
-                ]
-            )
-            + "\n",
-            encoding="utf-8",
-        )
-        duration_text = duration_path.read_text(encoding="utf-8")
-        assert "OBSERVED_DURATION_SECONDS=" in duration_text
-        assert "PAYLOAD_PROJECTION_READY_NOT_WALL_CLOCK_EVIDENCE=true" in duration_text
-
-        serialized_payload = json.dumps(payload)
-        for forbidden in (
-            "OBSERVED_DURATION_SECONDS",
-            "WALL_CLOCK_VALIDATION",
-            "step_interval_seconds",
-        ):
-            assert forbidden not in serialized_payload
-
-        _projection_manifest_verify(projection_dir)
-
-        # ``closeout_dest`` lives under repo ``out/`` and is removed in ``finally``; keep a tmp_path
-        # snapshot so readiness checks can still inspect durable closeout layout after return.
-        closeout_snapshot = work / "closeout_readiness_snapshot"
-        if closeout_snapshot.exists():
-            shutil.rmtree(closeout_snapshot)
-        shutil.copytree(closeout_dest, closeout_snapshot)
-
-        return {
-            "closeout": closeout_snapshot,
-            "projection_dir": projection_dir,
-            "payload_json": payload_json,
-            "notion_report": notion_report,
-        }
-    finally:
-        closeout_tests._cleanup_archive_like_dest(closeout_dest)
+    # ``closeout_dest`` lives under repo ``out/`` (outside ``/tmp``) for readiness/hook checks.
+    return {
+        "closeout": closeout_dest,
+        "durable_closeout_root": closeout_dest,
+        "projection_dir": projection_dir,
+        "payload_json": payload_json,
+        "notion_report": notion_report,
+    }
 
 
 @pytest.fixture(scope="module")
@@ -934,8 +925,12 @@ def test_hook_contract_false_when_projection_manifest_verify_not_ok(tmp_path: Pa
 
 def test_hook_contract_true_offline_synthetic_future_hook_plan(tmp_path: Path) -> None:
     paths = _run_chain_phases_2_through_9(tmp_path, complete_machine_lines=True)
-    ok, blockers = build_post_closeout_hook_contract_summary(
-        _synthetic_future_hook_plan_inputs(paths)
-    )
-    assert ok is True
-    assert blockers == []
+    try:
+        assert not is_under_tmp(paths["durable_closeout_root"])
+        ok, blockers = build_post_closeout_hook_contract_summary(
+            _synthetic_future_hook_plan_inputs(paths)
+        )
+        assert ok is True
+        assert blockers == []
+    finally:
+        closeout_tests._cleanup_archive_like_dest(paths["durable_closeout_root"])
