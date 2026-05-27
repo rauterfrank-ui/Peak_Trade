@@ -103,7 +103,26 @@ Canonical v0 boundary:
 
 - Route scope: `GET &#47;market` only; `&#47;market&#47;double-play` remains excluded unless a separate Double-Play charter is approved.
 - Transport: SSR context first; no `&#47;api&#47;market&#47;ranking` endpoint in v0.
-- Gate proposal: `PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1` plus one canonical bundle/payload path, to be selected before implementation.
+- Gate: `PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1`.
+- Canonical offline bundle path: `PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT`.
+- v0 does not use an `&#47;api&#47;market&#47;ranking` endpoint; SSR reads the env-gated offline bundle/readmodel only.
+- Fixture target, when implementation starts: `tests/fixtures/market_ranking_funnel_readmodel_v0/`; do not create it in this charter-only slice.
+- Minimal JSON envelope:
+  - `readmodel_id="market_ranking_funnel_readmodel.v0"`
+  - `generated_at_iso`
+  - `source`
+  - `stale`
+  - `stale_reason`
+  - `non_authorizing=true`
+  - `stages.universe[]`
+  - `stages.shortlist[]`
+  - `stages.selected[]`
+- Minimal display row fields:
+  - `row_id`
+  - `symbol`
+  - `rank`
+  - optional `display_score`
+  - optional `notes`
 - Readmodel id: `market_ranking_funnel_readmodel.v0`.
 - Stages: `universe`, `shortlist`, `selected`; producer-defined counts, not fixed 50/20/5 semantics.
 - Display rows: `row_id`, `symbol`, `rank`, optional `display_score`, optional `notes`; no order, approval, readiness, live, or execution fields.
