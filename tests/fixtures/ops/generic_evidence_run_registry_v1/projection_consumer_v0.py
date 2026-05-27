@@ -21,6 +21,25 @@ TAXONOMY_SPEC = (
 )
 REGISTRY_SCRIPT = REPO_ROOT / "scripts" / "ops" / "build_generic_evidence_run_registry_v1.py"
 
+POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_MARKERS: tuple[str, ...] = (
+    "POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_V0=true",
+    "HOOK_AUTOMATION_OWNER_STATUS=identified",
+    "POST_CLOSEOUT_AUTOMATION_HOOK_IMPLEMENTED=false",
+    "POST_CLOSEOUT_AUTOMATION_HOOK_AUTO_INSTALL=false",
+    "POST_CLOSEOUT_AUTOMATION_LAUNCHCTL_FORBIDDEN=true",
+    "POST_CLOSEOUT_CHAIN_EXECUTE_SCRIPT_FORBIDDEN=true",
+    "FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED=false",
+    "HOOK_ATTACH_AFTER_RUN_COMPLETION_ONLY=true",
+    "HOOK_ATTACH_AFTER_DURABLE_PRIMARY_EVIDENCE_ONLY=true",
+    "HOOK_ATTACH_AFTER_MANIFEST_VERIFY_RC_ZERO_ONLY=true",
+    "HOOK_MUST_REUSE_EXISTING_CHAIN_OWNERS=true",
+    "HOOK_MUST_FAIL_CLOSED=true",
+    "NO_SCHEDULER_BEHAVIOR_CHANGE_IN_PRECHECK=true",
+    "NO_NOTION_WRITE_IN_PRECHECK=true",
+    "NO_MARKET_GLOBAL_ENABLEMENT_IN_PRECHECK=true",
+    "POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_DOCS_TESTS_ONLY=true",
+)
+
 POST_CLOSEOUT_PROJECTION_AUTOMATION_CHARTER_MARKERS: tuple[str, ...] = (
     "POST_CLOSEOUT_PROJECTION_AUTOMATION_V0=true",
     "NOTION_POST_CLOSEOUT_SYNC_V0=true",
@@ -112,6 +131,15 @@ def taxonomy_section_6a08() -> str:
     text = TAXONOMY_SPEC.read_text(encoding="utf-8")
     return text.split(
         "### 6a.0.8 Post-Closeout Projection Automation Charter v0 (docs/tests-only)", 1
+    )[1].split(
+        "### 6a.0.9 Shared Projection Payload Builder Planning Contract v0 (planning-only)", 1
+    )[0]
+
+
+def taxonomy_section_6a08_1() -> str:
+    text = TAXONOMY_SPEC.read_text(encoding="utf-8")
+    return text.split(
+        "#### 6a.0.8.1 Post-Closeout Automation Hook Owner Precheck v0 (docs/tests-only)", 1
     )[1].split(
         "### 6a.0.9 Shared Projection Payload Builder Planning Contract v0 (planning-only)", 1
     )[0]

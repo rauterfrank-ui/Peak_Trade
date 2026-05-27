@@ -185,6 +185,7 @@ Non-goals:
 | §2b.2 closeout enforcement planning | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.2 |
 | §6a.0.7 remote paper dry command template planning | This spec §6a.0.7 (planning-only; non-executable) |
 | §6a.0.8 post-closeout projection automation charter | This spec §6a.0.8 (docs/tests-only; binds §6a.1 / §6a.2 / Registry v1) |
+| §6a.0.8.1 post-closeout automation hook owner precheck | This spec §6a.0.8.1 (docs/tests-only; attach-point plan only; **no** hook install) |
 | §6a.0.9 shared projection payload builder planning | This spec §6a.0.9 (planning-only; future `build_post_closeout_projection_payload_v0`; **no** script in this slice) |
 | §6a.1.1 notion dry-run writer planning | This spec §6a.1.1 (planning-only; future Notion dry-run writer; **no** script/MCP write in this slice) |
 | Preflight BLOCKED status | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) |
@@ -1234,6 +1235,61 @@ POST_CLOSEOUT_PROJECTION_AUTOMATION_DOCS_TESTS_ONLY=true
 **Forbidden in v0 charter slice:** Notion MCP/API writes; new Notion DB schema as productive SSOT; dashboard HTML/template panels or new routes; payload-builder scripts; CI hooks that start runtime; S3/AWS/rclone upload or download; scheduler/daemon/adapter execution; workflow dispatch; Live/Testnet/broker/exchange authority; Master V2 / Double Play route or authority changes; parallel Market Surface, Notion DB, or readmodel SSOT (`NO_PARALLEL_*=true`).
 
 **Implementation posture:** `POST_CLOSEOUT_PROJECTION_AUTOMATION_ENABLED=false`, `NOTION_POST_CLOSEOUT_SYNC_ENABLED=false`, `MARKET_DASHBOARD_RUN_PROJECTION_ENABLED=false` until explicit future operator-chartered slices opt in. This section is **contract/tests-only** (`POST_CLOSEOUT_PROJECTION_AUTOMATION_DOCS_TESTS_ONLY=true`).
+
+#### 6a.0.8.1 Post-Closeout Automation Hook Owner Precheck v0 (docs/tests-only)
+
+```
+POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_V0=true
+HOOK_AUTOMATION_OWNER_STATUS=identified
+POST_CLOSEOUT_AUTOMATION_HOOK_IMPLEMENTED=false
+POST_CLOSEOUT_AUTOMATION_HOOK_AUTO_INSTALL=false
+POST_CLOSEOUT_AUTOMATION_LAUNCHCTL_FORBIDDEN=true
+POST_CLOSEOUT_CHAIN_EXECUTE_SCRIPT_FORBIDDEN=true
+POST_CLOSEOUT_PROJECTION_AUTOMATION_ENABLED=false
+FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED=false
+HOOK_ATTACH_AFTER_RUN_COMPLETION_ONLY=true
+HOOK_ATTACH_AFTER_DURABLE_PRIMARY_EVIDENCE_ONLY=true
+HOOK_ATTACH_AFTER_MANIFEST_VERIFY_RC_ZERO_ONLY=true
+HOOK_MUST_REUSE_EXISTING_CHAIN_OWNERS=true
+HOOK_MUST_FAIL_CLOSED=true
+NO_SCHEDULER_BEHAVIOR_CHANGE_IN_PRECHECK=true
+NO_NOTION_WRITE_IN_PRECHECK=true
+NO_MARKET_GLOBAL_ENABLEMENT_IN_PRECHECK=true
+POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Normatively record **where** future post-closeout orchestration may attach after material run closeout — **without** implementing hooks, changing scheduler/daemon/adapter runtime behavior, or enabling Notion/Market consumers.
+
+**Hook owner status (Precheck only):** `hook_automation_owner_status=identified` means canonical attach surfaces are named below. It **does not** imply `FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED=true`, `POST_CLOSEOUT_AUTOMATION_HOOK_IMPLEMENTED=true`, or operator recovery elimination.
+
+**Allowed future attach points (planning; after prerequisites):**
+
+| Owner ID | Canonical script | Future attach **after** | Prerequisites (all required) |
+|---|---|---|---|
+| `scheduler_completion` | [run_scheduler.py](../../../scripts/run_scheduler.py) | `finalize_scheduler_completion_evidence()` return path — **after** scheduler loop exit, **not** before job dispatch | Run completion; durable evidence root when `--primary-evidence-enforce`; `finalize_primary_evidence_root()` success; `scheduler_completion_closeout_v0.json`; `MANIFEST.sha256` verify RC=0 |
+| `shadow_bounded_adapter` | [run_shadow_bounded_observation_adapter_v0.py](../../../scripts/ops/run_shadow_bounded_observation_adapter_v0.py) | Archive/closeout artifact finalization path (`_write_closeout_artifacts` / durable archive copy) — **after** review and durable retention | Adapter execute complete; durable archive outside `/tmp`; manifest verify RC=0; bounded review when applicable |
+| `supervisor_evidence_pack` | [pack_online_readiness_supervisor_evidence_v0.py](../../../scripts/ops/pack_online_readiness_supervisor_evidence_v0.py) | Pack finalization — **after** supervisor STOP and copy into durable archive root | Operator-invoked pack complete; `supervisor_session_closeout_v0.json`; optional `finalize_primary_evidence_root()` when `--primary-evidence-enforce`; manifest verify RC=0 |
+
+**Forbidden attach points (always):**
+
+- Before run completion (scheduler loop still running; adapter execute mid-flight; supervisor session not stopped).
+- Before durable primary evidence exists outside `/tmp` (`TMP_ONLY_EVIDENCE_INVALID`).
+- Before `MANIFEST.sha256` verify **RC=0** on the durable root.
+- `launchctl` / daemon startup / supervisor auto-start paths.
+- Dashboard route/view path (`GET &#47;market` SSR overlay — projection display only; not orchestration owner).
+- Notion writer / MCP / API path (§6a.1 / §6a.1.1 remain planning/dry-run until separate charter).
+- Market overlay global enablement path (`MARKET_DASHBOARD_RUN_PROJECTION_ENABLED` stays `false` by default).
+- Live / Testnet / broker / exchange execution paths.
+
+**Future hook boundary (separate implementation charter only):**
+
+- `POST_CLOSEOUT_AUTOMATION_HOOK_IMPLEMENTED=false` in this slice — **no** hook module, **no** auto-install, **no** `launchctl` plist change, **no** scheduler default behavior change.
+- A future hook adapter must **call/reuse** existing offline chain owners (phases 2–9) in order: [durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py) → [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) → [build_post_closeout_projection_payload_v0.py](../../../scripts/ops/build_post_closeout_projection_payload_v0.py) → [notion_post_closeout_sync_dry_run_v0.py](../../../scripts/ops/notion_post_closeout_sync_dry_run_v0.py) — and must **fail closed** on any phase block.
+- **Forbidden script names in repository:** `post_closeout_chain_execute_v0.py` (parallel execute surface); any `launchctl` coupling.
+
+**Readiness gate coupling:** [test_closeout_to_projection_chain_automation_contract_v0.py](../../../tests/ops/test_closeout_to_projection_chain_automation_contract_v0.py) treats `claimed_full_post_closeout_automation_implemented=true` as invalid unless `hook_automation_owner_status=identified` (synthetic tests only).
+
+Cross-reference: Preflight §2a.1 primary evidence hard gate; §2b.1 mandatory durable closeout; [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py); [test_post_closeout_automation_hook_owner_precheck_v0.py](../../../tests/ops/test_post_closeout_automation_hook_owner_precheck_v0.py).
 
 Cross-reference: [MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md) (future registry overlay on `GET &#47;market`); §6a.0.9 payload builder planning; [DOCS_TRUTH_MAP.md](../registry/DOCS_TRUTH_MAP.md); Preflight §2b.1 mandatory durable closeout.
 
