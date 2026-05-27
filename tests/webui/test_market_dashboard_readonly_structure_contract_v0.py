@@ -59,6 +59,30 @@ def client_ranking_funnel_fixture_bundle_on(
         yield test_client
 
 
+@pytest.fixture()
+def client_depth_and_ranking_funnel_fixtures_on(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Iterator[TestClient]:
+    """Depth and ranking funnel SSR enabled with repo offline fixtures."""
+    monkeypatch.setenv("PEAK_TRADE_MARKET_DEPTH_ENABLED", "1")
+    depth_bundle = (
+        project_root / "tests" / "fixtures" / "market_depth_readmodel_v0" / "complete_minimal"
+    ).resolve()
+    monkeypatch.setenv("PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT", str(depth_bundle))
+    monkeypatch.setenv("PEAK_TRADE_FIXED_GENERATED_AT_UTC", "2030-01-15T12:34:56.000000+00:00")
+    monkeypatch.setenv("PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED", "1")
+    ranking_bundle = (
+        project_root
+        / "tests"
+        / "fixtures"
+        / "market_ranking_funnel_readmodel_v0"
+        / "complete_minimal"
+    ).resolve()
+    monkeypatch.setenv("PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT", str(ranking_bundle))
+    with TestClient(create_app()) as test_client:
+        yield test_client
+
+
 def _html(client: TestClient, path: str) -> str:
     response = client.get(path)
     assert response.status_code == 200
@@ -520,6 +544,29 @@ def test_double_play_market_dashboard_excludes_orderbook_fixture_levels_markers_
     assert 'data-market-v0-orderbook-asks="true"' not in html
 
 
+def test_market_dashboard_ranking_funnel_region_role_contract_v0(client: TestClient) -> None:
+    """Ranking funnel section exposes role=region and aria-labelledby to landmark h2."""
+    html = _html(client, "/market")
+    assert re.search(
+        r'id="market-v0-ranking-funnel-ssr"\s+role="region"\s+aria-labelledby="market-v0-landmark-ranking-funnel-h2"',
+        html,
+    )
+    assert 'id="market-v0-landmark-ranking-funnel-h2"' in html
+    assert 'data-market-v0-ranking-funnel-landmark-heading-v0="true"' in html
+
+
+def test_double_play_market_dashboard_excludes_ranking_funnel_region_role_contract_v0(
+    client: TestClient,
+) -> None:
+    html = _html(client, "/market/double-play")
+    assert not re.search(
+        r'id="market-v0-ranking-funnel-ssr"\s+role="region"\s+aria-labelledby="market-v0-landmark-ranking-funnel-h2"',
+        html,
+    )
+    assert "market-v0-ranking-funnel-ssr" not in html
+    assert "data-market-v0-ranking-funnel-landmark-heading-v0" not in html
+
+
 def test_market_dashboard_ranking_funnel_empty_state_v0_marker(client: TestClient) -> None:
     """Contract-first funnel panel: stable marker only; no ranking data wired on /market."""
     market_html = _html(client, "/market")
@@ -612,6 +659,8 @@ def test_double_play_market_dashboard_excludes_ranking_funnel_markers_v0(
     assert "data-market-v0-ranking-funnel-row-v0" not in html
     assert "data-market-v0-ranking-funnel-stage-rows-v0" not in html
     assert "market-v0-landmark-ranking-funnel-h2" not in html
+    assert "market-v0-ranking-funnel-ssr" not in html
+    assert "data-market-v0-ranking-funnel-landmark-heading-v0" not in html
     assert "data-market-v0-" not in html
     assert 'data-market-readonly="true"' in html
 
@@ -638,6 +687,31 @@ def test_market_dashboard_ranking_funnel_non_authorizing_copy_when_rows_v0(
     html = _html(client_ranking_funnel_fixture_bundle_on, "/market")
     assert 'data-market-v0-ranking-funnel-readonly-copy-v0="true"' in html
     assert "does not authorize trades" in html
+
+
+def test_market_dashboard_depth_and_ranking_funnel_coexistence_contract_v0(
+    client_depth_and_ranking_funnel_fixtures_on: TestClient,
+) -> None:
+    """Depth/orderbook SSR and ranking funnel rows may coexist on /market without marker loss."""
+    html = _html(client_depth_and_ranking_funnel_fixtures_on, "/market")
+
+    assert re.search(
+        r'id="market-v0-depth-ssr"\s+role="region"\s+aria-labelledby="market-v0-landmark-depth-ssr-h2"',
+        html,
+    )
+    assert 'data-market-depth-panel="true"' in html
+    assert 'id="market-v0-orderbook-topn"' in html
+    assert 'data-market-v0-orderbook-topn="true"' in html
+
+    assert re.search(
+        r'id="market-v0-ranking-funnel-ssr"\s+role="region"\s+aria-labelledby="market-v0-landmark-ranking-funnel-h2"',
+        html,
+    )
+    assert 'data-market-v0-ranking-funnel-has-rows-v0="true"' in html
+    assert 'data-market-v0-ranking-funnel-row-v0="true"' in html
+    assert 'data-market-v0-ranking-funnel-stage-v0="universe"' in html
+    assert 'data-market-v0-ranking-funnel-readonly-copy-v0="true"' in html
+    assert 'data-market-v0-ranking-funnel-non-authorizing-v0="true"' in html
 
 
 def test_market_dashboard_ranking_funnel_fail_closed_missing_bundle_v0(
@@ -682,7 +756,9 @@ def test_market_dashboard_landmarks_and_labelled_regions_v0(client: TestClient) 
     assert 'id="market-v0-landmark-safety-banner-h2"' in html
     assert 'aria-labelledby="market-v0-landmark-safety-banner-h2"' in html
     assert 'id="market-v0-landmark-ranking-funnel-h2"' in html
+    assert 'data-market-v0-ranking-funnel-landmark-heading-v0="true"' in html
     assert 'aria-labelledby="market-v0-landmark-ranking-funnel-h2"' in html
+    assert 'id="market-v0-ranking-funnel-ssr"' in html
     assert 'id="market-v0-landmark-visual-cockpit-h2"' in html
     assert 'aria-labelledby="market-v0-landmark-visual-cockpit-h2"' in html
     assert 'id="market-v0-landmark-surface-links-h2"' in html
