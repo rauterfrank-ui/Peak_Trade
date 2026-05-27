@@ -63,10 +63,11 @@ jobs:
             code:
               - 'src/**'
               - 'templates/**'
-              - 'tests/**'
-              - '!tests/ci/**'
-              - '!tests/ops/**'
-              - '!tests/webui/test_*_structure_contract*.py'
+              # Picomatch extglob (dorny/paths-filter): separate `!` lines do not exclude
+              # matched files from `tests/**` (see PR #3728 validation). Split buckets:
+              - 'tests/!(ci|ops|webui)/**'
+              - 'tests/webui/!(test_*_structure_contract*)/**'
+              - 'tests/webui/!(test_*_structure_contract*).py'
               - 'scripts/**'
               - 'config/**'
               - 'schemas/levelup/**'
