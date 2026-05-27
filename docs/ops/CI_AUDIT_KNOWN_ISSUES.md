@@ -209,6 +209,49 @@ Operators may use this histogram for **CI/Ops visibility triage** until a lossle
 
 **Relationship to mapped risks R-003–R-006:** R-003 through R-006 retain their repo-mapped static test owners in the table above. This charter **does not** remap them.
 
+### Pending R-001/R-002/R-007 — input artifact contract v0
+
+```
+CYBERSECURITY_VISIBILITY_R_PENDING_INPUT_ARTIFACT_CONTRACT_V0=true
+LOSSLESS_JSONL_RECOVERY=false
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+INPUT_JSONL_REQUIRED=true
+ACCEPTED_INPUT_ARTIFACTS=FULL_LOSSLESS_RISK_CANDIDATES.jsonl,APPROVED_OPERATOR_TRIAGE_ARTIFACT
+NO_MAPPING_WITHOUT_INPUT_ARTIFACT=true
+INPUT_JSONL_PROVIDED=false
+R001_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false
+R002_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false
+R007_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false
+CYBERSECURITY_VISIBILITY_R_PENDING_INPUT_ARTIFACT_CONTRACT_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Normatively define which **operator-supplied durable artifacts** may authorize a **future separate** read-only mapping slice for definitive R-001/R-002/R-007 → repo test-owner assignment. This contract **does not** ingest files, **does not** assign `candidate_id` values, and **does not** set `LOSSLESS_JSONL_RECOVERY=true`.
+
+**Non-authorizing:** No workflow dispatch, runtime/scheduler/daemon/adapter execution, hooks, launchctl, Notion write/MCP/API, Market overlay enablement, S3/AWS/rclone, broker/exchange, Testnet/Live, or Master V2 / Double Play authority changes.
+
+**Accepted input artifacts (exactly one primary per mapping slice):**
+
+| Token | Artifact | Requirements |
+|-------|----------|--------------|
+| `FULL_LOSSLESS_RISK_CANDIDATES.jsonl` | Post-HOLD lossless retained-risk candidate inventory | Operator provides durable absolute path via `INPUT_JSONL=<path>`; file must parse as JSONL; must contain rows identifiable as R-001/R-002/R-007 (or equivalent retained-risk IDs documented in triage); `MANIFEST.sha256` verify **RC=0** when a manifest is bundled with the durable copy |
+| `APPROVED_OPERATOR_TRIAGE_ARTIFACT` | `CYBERSECURITY_POST_HOLD_OWNER_TRIAGE.md` or operator-chartered equivalent | Explicit operator approval record naming `APPROVED_SCOPE_NAME=cybersecurity_visibility_r001_r002_r007_inventory_recovery_read_only_v0` (or successor) and durable absolute path; must document R-001/R-002/R-007 boundaries; **not** repo-static successor JSONL alone |
+
+**Forbidden as mapping input:** repo-static successor `REPO_STATIC_CYBERSECURITY_RISK_CANDIDATES.jsonl` alone; speculative `CSC-STATIC-v0-*` `candidate_id` substitution; any path under `/tmp` without operator durable archive copy; repo edits that flip pending risks to **mapped** without `INPUT_JSONL_PROVIDED=true` in a future authorized slice.
+
+**Operator token (future mapping slice only):**
+
+```text
+INPUT_JSONL=<absolute path to FULL_LOSSLESS_RISK_CANDIDATES.jsonl>
+# or, for triage artifact:
+INPUT_TRIAGE_ARTIFACT=<absolute path to CYBERSECURITY_POST_HOLD_OWNER_TRIAGE.md>
+APPROVED_SCOPE_NAME=cybersecurity_visibility_r001_r002_r007_inventory_recovery_read_only_v0
+OPERATOR_NAME=<name>
+```
+
+**Gate for definitive mapping:** `NO_MAPPING_WITHOUT_INPUT_ARTIFACT=true` until a future slice records `INPUT_JSONL_PROVIDED=true` (or `INPUT_TRIAGE_ARTIFACT_PROVIDED=true`) with verified artifact checks. Until then, R-001/R-002/R-007 remain **Pending** in the table above with `DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true`.
+
+**Relationship to repo-static charter v0:** Interim histogram and 162-row successor inventory remain **review-input only** per § Pending R-001/R-002/R-007 — repo-static successor inventory charter v0. Successor inventory **cannot** satisfy `INPUT_JSONL_REQUIRED` for definitive mapping.
+
 ### Static visibility contract owners (reuse — do not duplicate)
 
 | Surface | Owner module |
