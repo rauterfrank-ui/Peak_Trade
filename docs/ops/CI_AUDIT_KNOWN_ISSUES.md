@@ -143,15 +143,71 @@ NO_PERFORMANCE_REGRESSION=true
 
 | ID | Repo-mapped static owner | Status |
 |----|--------------------------|--------|
-| R-001 | — | **Pending** — no repo test owner; requires lossless inventory recovery |
-| R-002 | — | **Pending** — no repo test owner; requires lossless inventory recovery |
+| R-001 | — | **Pending** — repo-static successor charter v0; no `candidate_id` assigned; definitive mapping requires lossless inventory row |
+| R-002 | — | **Pending** — repo-static successor charter v0; no `candidate_id` assigned; definitive mapping requires lossless inventory row |
 | R-003 | `tests/ops/test_run_sample_size_ramp_script_contract_v0.py` | mapped |
 | R-004 | `tests/ops/test_run_testnet_evidence_flow_v2_script_contract_v0.py` | mapped |
 | R-005 | `tests/ops/test_knowledge_prod_smoke_script.py` | mapped |
 | R-006 | `tests/ci/test_prcd_aws_export_write_smoke_workflow_contract_v0.py` | mapped |
-| R-007 | — | **Pending** — no repo test owner; requires lossless inventory recovery |
+| R-007 | — | **Pending** — repo-static successor charter v0; no `candidate_id` assigned; definitive mapping requires lossless inventory row |
 
 > R-001/R-002/R-007 IDs here are the **post-HOLD lossless-inventory** set (see Source artifacts above), not `docs/ops/RISK_REGISTER.md` ops-register IDs.
+
+### Pending R-001/R-002/R-007 — repo-static successor inventory charter v0
+
+```
+CYBERSECURITY_VISIBILITY_R_PENDING_REPO_STATIC_INVENTORY_CHARTER_V0=true
+LOSSLESS_JSONL_RECOVERY=false
+REPO_STATIC_SUCCESSOR_INVENTORY=true
+ORIGINAL_DURABLE_JSONL_REQUIRED_FOR_LOSSLESS_RECOVERY=true
+FULL_LOSSLESS_RISK_CANDIDATES_JSONL_NOT_FOUND=true
+REPO_STATIC_SUCCESSOR_DOES_NOT_CONTAIN_R001_R002_R007=true
+REPO_STATIC_SUCCESSOR_DOES_NOT_CLAIM_LOSSLESS_EQUIVALENCE=true
+R001_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false
+R002_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false
+R007_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false
+CYBERSECURITY_VISIBILITY_R_PENDING_INVENTORY_CHARTER_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Record interim visibility for retained risks **R-001**, **R-002**, and **R-007** while the missing 20260508 lossless inventory remains unavailable. This charter **does not** recover, regenerate, or claim equivalence to `FULL_LOSSLESS_RISK_CANDIDATES.jsonl` or `CYBERSECURITY_POST_HOLD_OWNER_TRIAGE.md`.
+
+**Non-authorizing:** This section does not authorize workflow dispatches, runtime/scheduler/daemon/adapter execution, hooks, launchctl, Notion write/MCP/API, Market overlay enablement, S3/AWS/rclone, broker/exchange, Testnet/Live, or Master V2 / Double Play authority changes.
+
+**Repo-static successor (interim review surface only):**
+
+| Field | Value |
+|-------|-------|
+| Durable JSONL | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/inventory/repo_static_cybersecurity_risk_candidates/repo_static_cybersecurity_risk_candidates_jsonl_generation_v0_20260524T070050Z/REPO_STATIC_CYBERSECURITY_RISK_CANDIDATES.jsonl` |
+| Generation token | `repo_static_cybersecurity_risk_candidates_jsonl_generation_v0` |
+| Candidate rows | `162` |
+| Manifest verify | `MANIFEST_VERIFY_RC=0` (per generation report in durable archive) |
+| `inventory_kind` | `repo_static_successor_v0` (every row `lossless_equivalent=false`) |
+| Retained-risk IDs in JSONL | **none** — successor extractor does **not** emit `R-001` / `R-002` / `R-007` |
+
+**Interim classification histogram (repo-static; not R-ID mapping):**
+
+| Classification | Row count | Notes |
+|----------------|-----------|-------|
+| `manual_dispatch_sensitive_surface` | 70 | Reuse `tests/ci/test_workflow_manual_dispatch_sensitive_surface_contract_v0.py` |
+| `workflow_secrets_visibility` | 44 | Reuse `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
+| `scheduler_or_runtime_boundary` | 24 | Reuse scheduler boundary visibility owners |
+| `branch_or_environment_authority` | 12 | Review-input only |
+| `artifact_retention_or_evidence_gap` | 6 | Reuse `tests/ci/test_workflow_artifact_retention_visibility_contract_v0.py` |
+| `paid_ai_eval_gate` | 4 | Review-input only |
+| `docs_drift_or_pointer_integrity` | 2 | Review-input only |
+
+Operators may use this histogram for **CI/Ops visibility triage** until a lossless row exists for each pending retained risk. **Do not** treat any `CSC-STATIC-v0-*` `candidate_id` as a substitute mapping for R-001/R-002/R-007 without restored lossless inventory or operator-approved triage.
+
+**Lossless recovery still required for definitive R-001/R-002/R-007 mapping:**
+
+| Artifact | Status |
+|----------|--------|
+| `/tmp/peak_trade_full_lossless_risk_inventory_readonly_20260508T163523Z/FULL_LOSSLESS_RISK_CANDIDATES.jsonl` | **Not found** at charter time |
+| `/tmp/peak_trade_cybersecurity_post_hold_owner_triage_20260510T150908Z/CYBERSECURITY_POST_HOLD_OWNER_TRIAGE.md` | **Not found** at charter time |
+
+**Approved recovery input (future slice only; not authorized here):** operator supplies durable `INPUT_JSONL=<absolute path>` to `FULL_LOSSLESS_RISK_CANDIDATES.jsonl` or equivalent approved triage artifact, then a separate read-only mapping slice may assign repo test owners — reusing this anchor and existing visibility contract modules only.
+
+**Relationship to mapped risks R-003–R-006:** R-003 through R-006 retain their repo-mapped static test owners in the table above. This charter **does not** remap them.
 
 ### Static visibility contract owners (reuse — do not duplicate)
 
