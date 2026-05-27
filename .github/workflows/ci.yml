@@ -36,9 +36,9 @@ jobs:
   # - run_fast: always true. run_fast_lane: alias.
   # - docs_only: true when ONLY docs/out/*.md changed (no code, workflow, or static-contract paths).
   # - workflow_only: true when ONLY .github/workflows changed.
-  # - static_contract_changed: tests/ci/** or tests/ops/** (CI/ops contract tests; not full-matrix code).
+  # - static_contract_changed: tests/ci/**, tests/ops/**, or tests/webui/test_*_structure_contract*.py (not full-matrix code).
   # - docs_or_static_contract_only: no src/scripts/config/workflow code paths; docs and/or static-contract only.
-  # Code paths: src/**, tests/!(ci|ops)/** (excludes tests/ci/**, tests/ops/**), scripts/**, config/**, schemas/levelup/**, deps, Makefile.
+  # Code paths: src/**, templates/**, tests/** minus tests/ci/**, tests/ops/**, and whitelisted tests/webui/test_*_structure_contract*.py; plus scripts/**, config/**, schemas/levelup/**, deps, Makefile.
   # ============================================================================
   changes:
     runs-on: ubuntu-latest
@@ -62,7 +62,11 @@ jobs:
           filters: |
             code:
               - 'src/**'
-              - 'tests/!(ci|ops)/**'
+              - 'templates/**'
+              - 'tests/**'
+              - '!tests/ci/**'
+              - '!tests/ops/**'
+              - '!tests/webui/test_*_structure_contract*.py'
               - 'scripts/**'
               - 'config/**'
               - 'schemas/levelup/**'
@@ -75,6 +79,7 @@ jobs:
             static_contract:
               - 'tests/ci/**'
               - 'tests/ops/**'
+              - 'tests/webui/test_*_structure_contract*.py'
             docs:
               - 'docs/**'
               - 'out/**'
@@ -209,10 +214,14 @@ jobs:
         run: |
           pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
 
-      - name: Static contract tests (tests/ci, tests/ops)
+      - name: Static contract tests (tests/ci, tests/ops, WebUI structure-contract)
         if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.code_changed != 'true' && needs.changes.outputs.workflow_only != 'true' }}
         run: |
-          pytest tests/ci tests/ops -q --tb=short -m "not network and not external_tools"
+          set -euo pipefail
+          shopt -s nullglob
+          webui_structure_contract=(tests/webui/test_*structure_contract*.py)
+          shopt -u nullglob
+          pytest tests/ci tests/ops "${webui_structure_contract[@]}" -q --tb=short -m "not network and not external_tools"
 
   # ============================================================================
   # Tests (all Python versions)
