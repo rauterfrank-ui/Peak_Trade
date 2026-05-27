@@ -29,23 +29,28 @@ jobs:
   # ============================================================================
   # Change Detection (pragmatic flow)
   # ============================================================================
-  # Outputs: code_changed (historical output name), run_matrix, run_fast_lane, docs_only, workflow_only.
+  # Outputs: code_changed (historical output name), run_matrix, run_fast_lane, docs_only, workflow_only,
+  # static_contract_changed, docs_or_static_contract_only.
   # - run_fast_lane: always true (Fast-Lane always runs).
   # - run_matrix: true when code paths changed (or workflow_dispatch force_matrix=true).
   # - run_fast: always true. run_fast_lane: alias.
-  # - docs_only: true when ONLY docs/out/*.md changed.
+  # - docs_only: true when ONLY docs/out/*.md changed (no code, workflow, or static-contract paths).
   # - workflow_only: true when ONLY .github/workflows changed.
-  # Code paths: src/**, tests/**, scripts/**, config/**, schemas/levelup/** (committed JSON Schema), pyproject.toml, uv.lock, requirements*.txt, pytest.ini, Makefile.
+  # - static_contract_changed: tests/ci/** or tests/ops/** (CI/ops contract tests; not full-matrix code).
+  # - docs_or_static_contract_only: no src/scripts/config/workflow code paths; docs and/or static-contract only.
+  # Code paths: src/**, tests/** (except tests/ci/**, tests/ops/**), scripts/**, config/**, schemas/levelup/**, deps, Makefile.
   # ============================================================================
   changes:
     runs-on: ubuntu-latest
     outputs:
-      code_changed: ${{ steps.filter.outputs.code }}
+      code_changed: ${{ steps.set_outputs.outputs.code_changed }}
       run_matrix: ${{ steps.set_outputs.outputs.run_matrix }}
       run_fast: ${{ steps.set_outputs.outputs.run_fast }}
       run_fast_lane: ${{ steps.set_outputs.outputs.run_fast }}
       docs_only: ${{ steps.set_outputs.outputs.docs_only }}
       workflow_only: ${{ steps.set_outputs.outputs.workflow_only }}
+      static_contract_changed: ${{ steps.set_outputs.outputs.static_contract_changed }}
+      docs_or_static_contract_only: ${{ steps.set_outputs.outputs.docs_or_static_contract_only }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -58,6 +63,8 @@ jobs:
             code:
               - 'src/**'
               - 'tests/**'
+              - '!tests/ci/**'
+              - '!tests/ops/**'
               - 'scripts/**'
               - 'config/**'
               - 'schemas/levelup/**'
@@ -67,6 +74,9 @@ jobs:
               - 'uv.lock'
               - 'pytest.ini'
               - 'Makefile'
+            static_contract:
+              - 'tests/ci/**'
+              - 'tests/ops/**'
             docs:
               - 'docs/**'
               - 'out/**'
@@ -78,24 +88,35 @@ jobs:
         id: set_outputs
         run: |
           FORCE_MATRIX="${{ github.event_name == 'workflow_dispatch' && github.event.inputs.force_matrix == 'true' }}"
+          CODE="${{ steps.filter.outputs.code }}"
+          STATIC="${{ steps.filter.outputs.static_contract }}"
+          DOCS="${{ steps.filter.outputs.docs }}"
+          WF="${{ steps.filter.outputs.workflow }}"
+
+          echo "code_changed=${CODE}" >> "$GITHUB_OUTPUT"
+          echo "static_contract_changed=${STATIC}" >> "$GITHUB_OUTPUT"
+
           if [ "$FORCE_MATRIX" = "true" ]; then
             echo "run_matrix=true" >> "$GITHUB_OUTPUT"
           else
-            echo "run_matrix=${{ steps.filter.outputs.code }}" >> "$GITHUB_OUTPUT"
+            echo "run_matrix=${CODE}" >> "$GITHUB_OUTPUT"
           fi
           echo "run_fast=true" >> "$GITHUB_OUTPUT"
-          CODE="${{ steps.filter.outputs.code }}"
-          DOCS="${{ steps.filter.outputs.docs }}"
-          WF="${{ steps.filter.outputs.workflow }}"
-          if [ "$DOCS" = "true" ] && [ "$CODE" != "true" ] && [ "$WF" != "true" ]; then
+
+          if [ "$DOCS" = "true" ] && [ "$CODE" != "true" ] && [ "$WF" != "true" ] && [ "$STATIC" != "true" ]; then
             echo "docs_only=true" >> "$GITHUB_OUTPUT"
           else
             echo "docs_only=false" >> "$GITHUB_OUTPUT"
           fi
-          if [ "$WF" = "true" ] && [ "$CODE" != "true" ] && [ "$DOCS" != "true" ]; then
+          if [ "$WF" = "true" ] && [ "$CODE" != "true" ] && [ "$DOCS" != "true" ] && [ "$STATIC" != "true" ]; then
             echo "workflow_only=true" >> "$GITHUB_OUTPUT"
           else
             echo "workflow_only=false" >> "$GITHUB_OUTPUT"
+          fi
+          if [ "$CODE" != "true" ] && [ "$WF" != "true" ] && { [ "$DOCS" = "true" ] || [ "$STATIC" = "true" ]; }; then
+            echo "docs_or_static_contract_only=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "docs_or_static_contract_only=false" >> "$GITHUB_OUTPUT"
           fi
 
   # ============================================================================
@@ -190,12 +211,17 @@ jobs:
         run: |
           pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
 
+      - name: Static contract tests (tests/ci, tests/ops)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.code_changed != 'true' && needs.changes.outputs.workflow_only != 'true' }}
+        run: |
+          pytest tests/ci tests/ops -q --tb=short -m "not network and not external_tools"
+
   # ============================================================================
   # Tests (all Python versions)
   # ============================================================================
   # Always creates test jobs for all required Python versions (3.9, 3.10, 3.11).
-  # On docs-only PRs, jobs skip gracefully (report SUCCESS/SKIPPED, not PENDING).
-  # On code changes, runs full test suite.
+  # On docs-only / static-contract-only PRs, jobs short-circuit SUCCESS (not missing/skipped).
+  # On code changes (or workflow-only), runs full test suite.
   # ============================================================================
   tests:
     name: tests (${{ matrix.python-version }})
@@ -212,9 +238,9 @@ jobs:
         python-version: ['3.9', '3.10', '3.11']
 
     steps:
-      - name: Docs-only PR — skip tests
+      - name: Docs/static-contract PR — skip full matrix tests
         if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.code_changed != 'true' && needs.changes.outputs.workflow_only != 'true' }}
-        run: echo "Docs-only PR detected - skipping tests for Python ${{ matrix.python-version }}"
+        run: echo "Docs/static-contract PR - skipping full matrix for Python ${{ matrix.python-version }} (contract tests run in Fast-Lane when applicable)"
 
       - name: Checkout
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
@@ -313,9 +339,9 @@ jobs:
     # to satisfy branch protection rules (e.g., "strategy-smoke" check)
 
     steps:
-      - name: Docs-only PR — skip strategy smoke tests
+      - name: Docs/static-contract PR — skip strategy smoke tests
         if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.code_changed != 'true' && needs.changes.outputs.workflow_only != 'true' }}
-        run: echo "Docs-only PR detected - skipping strategy smoke tests"
+        run: echo "Docs/static-contract PR - skipping strategy smoke tests"
 
       - name: Checkout
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
@@ -388,4 +414,4 @@ jobs:
           [[ "${{ needs.fast-lane.result }}" == "success" ]] || { echo "Fast-Lane failed"; exit 1; }
           [[ "${{ needs.tests.result }}" == "success" ]] || { echo "tests failed"; exit 1; }
           [[ "${{ needs.strategy-smoke.result }}" == "success" ]] || { echo "strategy-smoke failed"; exit 1; }
-          echo "PR Gate: all gates passed (run_matrix=${{ needs.changes.outputs.run_matrix }}, docs_only=${{ needs.changes.outputs.docs_only }}, workflow_only=${{ needs.changes.outputs.workflow_only }})"
+          echo "PR Gate: all gates passed (run_matrix=${{ needs.changes.outputs.run_matrix }}, docs_only=${{ needs.changes.outputs.docs_only }}, workflow_only=${{ needs.changes.outputs.workflow_only }}, static_contract_changed=${{ needs.changes.outputs.static_contract_changed }}, docs_or_static_contract_only=${{ needs.changes.outputs.docs_or_static_contract_only }})"
