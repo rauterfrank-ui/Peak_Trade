@@ -160,6 +160,8 @@ Landed boundaries:
 
 The default disabled or empty state remains valid. When enabled with bundle rows, `/market` may render read-only ranking rows and explicit non-authority copy.
 
+**Landmark / region (SSR v0):** section **`#market-v0-ranking-funnel-ssr`** has **`role="region"`**, **`aria-labelledby="market-v0-landmark-ranking-funnel-h2"`**, and **`data-market-v0-ranking-funnel-landmark-heading-v0="true"`** on the visible **`h2`** — same IA pattern family as depth/orderbook landmarks. Depth SSR and ranking funnel SSR may **coexist** on **`GET`** **`/market`** when both env gates and fixtures are enabled; markers must not replace each other. **`GET`** **`/market/double-play`** remains **without** ranking-funnel SSR landmarks.
+
 Non-authority invariants remain unchanged:
 
 - `DASHBOARD_AUTHORITY_CHANGED=false`
