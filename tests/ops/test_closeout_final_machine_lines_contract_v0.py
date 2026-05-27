@@ -113,9 +113,7 @@ def test_each_missing_required_key_triggers_missing_boundary_flags(
     assert payload["projection_blocked_reason"] == "missing_boundary_flags"
 
 
-def test_real10m_phase3_incomplete_machine_lines_must_not_claim_full_automation(
-    builder, tmp_path
-):
+def test_real10m_phase3_incomplete_machine_lines_must_not_claim_full_automation(builder, tmp_path):
     """Reproduce Real10m Phase-3 gap: partial lines block Phase-5 strict automation."""
     rc, payload = _build_payload(
         builder, tmp_path, REAL10M_PHASE3_INCOMPLETE_MACHINE_LINES, strict=True
