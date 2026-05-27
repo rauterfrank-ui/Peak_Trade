@@ -150,6 +150,60 @@ def test_double_play_market_dashboard_depth_ssr_with_fixture_bundle_v0(
     assert "fetch(" not in html
 
 
+def test_double_play_market_dashboard_depth_ssr_default_disabled_post_merge_v0(
+    client: TestClient,
+) -> None:
+    """Post-merge: Double-Play depth strip is always present; default env stays disabled."""
+    html = _html(client, "/market/double-play")
+    assert re.search(
+        r'id="double-play-market-v0-depth-ssr"\s+role="region"\s+aria-labelledby="double-play-market-v0-landmark-depth-ssr-h2"',
+        html,
+    )
+    assert 'data-double-play-market-depth-panel="true"' in html
+    assert 'data-double-play-market-depth-status="disabled"' in html
+    assert 'data-double-play-market-depth-non-authorizing="true"' in html
+    assert 'id="market-v0-depth-ssr"' not in html
+    assert "data-market-v0-ranking-funnel" not in html
+
+
+def test_double_play_market_dashboard_depth_ssr_post_merge_contract_v0(
+    client_depth_fixture_bundle_on: TestClient,
+) -> None:
+    """Post-merge #3725: fixture depth, dp markers, OHLC shell coexistence, /market exclusions, no fetch."""
+    html = _html(client_depth_fixture_bundle_on, "/market/double-play")
+
+    assert re.search(
+        r'id="double-play-market-v0-depth-ssr"\s+role="region"\s+aria-labelledby="double-play-market-v0-landmark-depth-ssr-h2"',
+        html,
+    )
+    assert 'data-double-play-market-depth-panel="true"' in html
+    assert 'data-double-play-market-depth-status="ok"' in html
+    assert 'data-double-play-market-depth-summary="true"' in html
+    assert 'data-double-play-market-depth-non-authorizing="true"' in html
+    assert 'data-double-play-market-depth-readonly-copy-v0="true"' in html
+    assert 'data-double-play-market-depth-landmark-heading-v0="true"' in html
+    assert "does not authorize trades" in html
+
+    assert 'id="double-play-market-v0-shell"' in html
+    assert 'data-double-play-market-ssr-only="true"' in html
+    assert 'data-double-play-market-no-fetch="true"' in html
+    assert 'data-double-play-market-embedded-chart="true"' in html
+    assert 'data-double-play-market-candlestick-v1-2="true"' in html
+    assert 'data-double-play-market-composition-ssr-v1="true"' in html
+
+    assert 'id="market-v0-depth-ssr"' not in html
+    assert "data-market-depth-panel" not in html
+    assert "data-market-v0-depth-" not in html
+    assert 'id="market-v0-landmark-depth-ssr-h2"' not in html
+    assert "data-market-v0-ranking-funnel" not in html
+    assert "market-v0-landmark-ranking-funnel-h2" not in html
+    assert 'id="market-v0-ranking-funnel-ssr"' not in html
+
+    assert "/api/market/depth" not in html
+    assert "fetch(" not in html
+    assert "XMLHttpRequest" not in html
+
+
 def test_market_dashboard_orderbook_topn_region_role_contract_v0(
     client: TestClient,
 ) -> None:
