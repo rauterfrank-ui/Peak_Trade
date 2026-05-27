@@ -1276,7 +1276,7 @@ POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_DOCS_TESTS_ONLY=true
 - Before durable primary evidence exists outside `/tmp` (`TMP_ONLY_EVIDENCE_INVALID`).
 - Before `MANIFEST.sha256` verify **RC=0** on the durable root.
 - `launchctl` / daemon startup / supervisor auto-start paths.
-- Dashboard route/view path (`GET /market` SSR overlay — projection display only; not orchestration owner).
+- Dashboard route/view path (`GET &#47;market` SSR overlay — projection display only; not orchestration owner).
 - Notion writer / MCP / API path (§6a.1 / §6a.1.1 remain planning/dry-run until separate charter).
 - Market overlay global enablement path (`MARKET_DASHBOARD_RUN_PROJECTION_ENABLED` stays `false` by default).
 - Live / Testnet / broker / exchange execution paths.

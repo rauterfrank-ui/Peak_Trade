@@ -31,7 +31,7 @@ CANONICAL_HOOK_ATTACH_OWNERS: dict[str, str] = {
 
 FORBIDDEN_ATTACH_SURFACES: tuple[str, ...] = (
     "launchctl",
-    "GET /market",
+    "GET &#47;market",
     "Notion writer",
     "Market overlay global enablement",
     "Live / Testnet / broker / exchange",
