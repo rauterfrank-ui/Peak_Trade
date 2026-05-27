@@ -7,10 +7,9 @@ from pathlib import Path
 from tests.fixtures.ops.generic_evidence_run_registry_v1 import projection_consumer_v0 as pc
 from tests.ops.test_closeout_to_projection_chain_automation_contract_v0 import (
     CANONICAL_OWNERS,
-    build_post_closeout_automation_readiness_summary,
-)
-from tests.ops.test_closeout_to_projection_chain_automation_contract_v0 import (
     PostCloseoutAutomationReadinessInputs,
+    build_post_closeout_automation_readiness_summary,
+    build_post_closeout_hook_contract_summary,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -130,3 +129,10 @@ def test_chain_contract_readiness_gate_hook_owner_semantics() -> None:
     )
     assert ok is False
     assert "durable_closeout_missing" in blockers
+
+
+def test_chain_contract_exports_hook_contract_summary() -> None:
+    text = CHAIN_CONTRACT_TESTS.read_text(encoding="utf-8")
+    assert "PostCloseoutHookContractInputs" in text
+    assert "build_post_closeout_hook_contract_summary" in text
+    assert callable(build_post_closeout_hook_contract_summary)
