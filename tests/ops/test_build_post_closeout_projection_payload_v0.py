@@ -116,6 +116,21 @@ def _run_cli(builder, closeout: Path, registry: Path, out: Path, **extra: str) -
     return builder.main(argv)
 
 
+def _run_hook_cli(builder, closeout: Path, registry: Path, out: Path, **extra: str) -> int:
+    argv = [
+        "--closeout-root",
+        str(closeout),
+        "--registry-json",
+        str(registry),
+        "--output-json",
+        str(out),
+        "--hook-readiness-validator-v0",
+    ]
+    for key, value in extra.items():
+        argv.extend([f"--{key.replace('_', '-')}", value])
+    return builder.main(argv)
+
+
 @pytest.fixture(scope="module")
 def builder():
     return _load_builder()
@@ -301,3 +316,83 @@ def test_cli_rejects_output_inside_repo(builder, tmp_path):
         assert rc == 2
     finally:
         out.unlink(missing_ok=True)
+
+
+def test_hook_readiness_happy_path_ready(builder, tmp_path):
+    closeout = tmp_path / "closeout"
+    registry_path = tmp_path / "registry.json"
+    out = tmp_path / "hook_readiness.json"
+    _write_closeout_bundle(closeout)
+    (closeout / "AFTER_PR3737_MERGE_CLOSEOUT.md").write_text("# closeout\n", encoding="utf-8")
+    _write_registry(registry_path, tmp_path)
+
+    rc = _run_hook_cli(builder, closeout, registry_path, out)
+    assert rc == 0
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    assert payload["schema_version"] == "peak_trade.post_closeout_hook_readiness_validator.v0"
+    assert payload["status"] == "READY"
+    assert payload["blocked_reasons"] == []
+    assert payload["checks"]["scheduler_heartbeat_informational_optional"] is True
+    assert payload["safety_flags"]["REMOTE_AWS_TOUCHED"] is False
+    assert payload["safety_flags"]["RUNTIME_STARTED"] is False
+    assert payload["non_authorizing"] is True
+
+
+def test_hook_readiness_blocks_missing_manifest(builder, tmp_path):
+    closeout = tmp_path / "closeout"
+    registry_path = tmp_path / "registry.json"
+    out = tmp_path / "hook_readiness.json"
+    _write_closeout_bundle(closeout, with_manifest=False)
+    (closeout / "AFTER_PR3737_MERGE_CLOSEOUT.md").write_text("# closeout\n", encoding="utf-8")
+    _write_registry(registry_path, tmp_path)
+
+    rc = _run_hook_cli(builder, closeout, registry_path, out)
+    assert rc == 0
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    assert payload["status"] == "BLOCKED"
+    assert "manifest_sha256_exists" in payload["blocked_reasons"]
+
+
+def test_hook_readiness_blocks_failing_manifest_verify_log(builder, tmp_path):
+    closeout = tmp_path / "closeout"
+    registry_path = tmp_path / "registry.json"
+    out = tmp_path / "hook_readiness.json"
+    _write_closeout_bundle(closeout)
+    (closeout / "AFTER_PR3737_MERGE_CLOSEOUT.md").write_text("# closeout\n", encoding="utf-8")
+    (closeout / "MANIFEST_VERIFY.log").write_text("evidence.txt: FAILED\n", encoding="utf-8")
+    _write_registry(registry_path, tmp_path)
+
+    rc = _run_hook_cli(builder, closeout, registry_path, out)
+    assert rc == 0
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    assert payload["status"] == "BLOCKED"
+    assert "manifest_verify_log_ok" in payload["blocked_reasons"]
+
+
+def test_hook_readiness_blocks_missing_closeout_report(builder, tmp_path):
+    closeout = tmp_path / "closeout"
+    registry_path = tmp_path / "registry.json"
+    out = tmp_path / "hook_readiness.json"
+    _write_closeout_bundle(closeout)
+    _write_registry(registry_path, tmp_path)
+
+    rc = _run_hook_cli(builder, closeout, registry_path, out)
+    assert rc == 0
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    assert payload["status"] == "BLOCKED"
+    assert "closeout_report_exists" in payload["blocked_reasons"]
+
+
+def test_hook_readiness_scheduler_heartbeat_optional(builder, tmp_path):
+    closeout = tmp_path / "closeout"
+    registry_path = tmp_path / "registry.json"
+    out = tmp_path / "hook_readiness.json"
+    _write_closeout_bundle(closeout)
+    (closeout / "AFTER_PR3737_MERGE_CLOSEOUT.md").write_text("# closeout\n", encoding="utf-8")
+    _write_registry(registry_path, tmp_path)
+
+    rc = _run_hook_cli(builder, closeout, registry_path, out)
+    assert rc == 0
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    assert payload["checks"]["scheduler_heartbeat_informational_optional"] is True
+    assert payload["heartbeat"]["present"] is False

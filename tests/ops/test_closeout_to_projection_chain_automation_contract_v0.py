@@ -769,6 +769,10 @@ def test_hook_contract_reuse_drift_guard_exports_and_no_hook_script() -> None:
     for script in CANONICAL_HOOK_CHAIN_OWNER_SCRIPTS:
         assert (REPO_ROOT / "scripts" / "ops" / script).is_file(), script
     assert not (REPO_ROOT / "scripts/ops/post_closeout_chain_execute_v0.py").exists()
+    builder_script = REPO_ROOT / "scripts/ops/build_post_closeout_projection_payload_v0.py"
+    text = builder_script.read_text(encoding="utf-8")
+    assert "build_hook_readiness_validator_v0" in text
+    assert "peak_trade.post_closeout_hook_readiness_validator.v0" in text
 
 
 def test_hook_contract_false_before_finalized_evidence_root(tmp_path: Path) -> None:
