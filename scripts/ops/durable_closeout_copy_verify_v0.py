@@ -27,6 +27,15 @@ from scripts.ops.primary_evidence_retention_v0 import (
 
 README_FILENAME = "DURABLE_COPY_README.md"
 CLOSEOUT_GLOB = "*CLOSEOUT*.md"
+MANIFEST_VERIFY_LOG_FILENAME = "MANIFEST_VERIFY.log"
+DEFAULT_POINTER_EVIDENCE_PATTERNS: tuple[str, ...] = (
+    "PR_URL.txt",
+    "PR_METADATA.json",
+    "ARCHIVE_POINTER.md",
+    "*.pointer",
+    "*INDEX*.md",
+    "*index*.md",
+)
 
 
 @dataclass
@@ -36,6 +45,9 @@ class CopyVerifyResult:
     source_dir: str
     dest_dir: str
     dest_manifest_verify_rc: str
+    manifest_verify_log_status: str
+    pointer_evidence_required: bool
+    pointer_evidence_found: bool
     source_tmp_not_canonical: bool
     force_overwrite: bool
     error: str = ""
@@ -100,6 +112,33 @@ def _copy_tree(source: Path, dest: Path) -> None:
         shutil.copy2(src_path, dst_path)
 
 
+def _verify_manifest_with_log(dest: Path) -> tuple[bool, str, str]:
+    """Verify MANIFEST and write MANIFEST_VERIFY.log with deterministic summary."""
+    ok, msg = verify_manifest_sha256(dest)
+    verify_log = _safe_dest_child(dest, Path(MANIFEST_VERIFY_LOG_FILENAME))
+    if ok:
+        verify_log.write_text("MANIFEST_VERIFY_RC=0\nSTATUS=OK\n", encoding="utf-8")
+        return True, "", "ok"
+    verify_log.write_text(f"MANIFEST_VERIFY_RC=1\nSTATUS=FAILED\nERROR={msg}\n", encoding="utf-8")
+    return False, msg, "failed"
+
+
+def _manifest_verify_log_is_success(dest: Path) -> bool:
+    path = _safe_dest_child(dest, Path(MANIFEST_VERIFY_LOG_FILENAME))
+    if not path.is_file():
+        return False
+    text = path.read_text(encoding="utf-8")
+    return "MANIFEST_VERIFY_RC=0" in text and "STATUS=OK" in text
+
+
+def _pointer_evidence_exists(dest: Path, patterns: tuple[str, ...]) -> bool:
+    for pattern in patterns:
+        for matched in dest.glob(pattern):
+            if matched.is_file():
+                return True
+    return False
+
+
 def _write_durable_readme(dest: Path, source: Path, *, pr_number: int | None) -> None:
     lines = [
         "# Durable Copy README",
@@ -124,6 +163,8 @@ def plan_and_execute(
     pr_number: int | None,
     pr_json: Path | None,
     require_closeout_report: bool,
+    require_durable_pointer_evidence: bool,
+    durable_pointer_patterns: tuple[str, ...],
     allow_tmp_source: bool,
     force: bool,
 ) -> CopyVerifyResult:
@@ -133,6 +174,9 @@ def plan_and_execute(
         source_dir=str(source_dir),
         dest_dir=str(dest_dir),
         dest_manifest_verify_rc="not_run",
+        manifest_verify_log_status="not_run",
+        pointer_evidence_required=require_durable_pointer_evidence,
+        pointer_evidence_found=False,
         source_tmp_not_canonical=is_under_tmp(source_dir),
         force_overwrite=force,
     )
@@ -165,6 +209,7 @@ def plan_and_execute(
     if dry_run:
         result.status = "pass"
         result.dest_manifest_verify_rc = "not_run"
+        result.manifest_verify_log_status = "not_run"
         return result
 
     if force and _dest_has_content(dest_dir):
@@ -174,10 +219,21 @@ def plan_and_execute(
         _copy_tree(source_dir, dest_dir)
         _write_durable_readme(dest_dir, source_dir, pr_number=pr_number)
         write_manifest_sha256(dest_dir)
-        ok_manifest, manifest_msg = verify_manifest_sha256(dest_dir)
+        ok_manifest, manifest_msg, log_status = _verify_manifest_with_log(dest_dir)
+        result.manifest_verify_log_status = log_status
         if not ok_manifest:
             result.dest_manifest_verify_rc = "nonzero"
             return _fail(result, f"manifest verify failed: {manifest_msg}")
+        if not _manifest_verify_log_is_success(dest_dir):
+            result.dest_manifest_verify_rc = "nonzero"
+            return _fail(result, "manifest verify log missing or failed")
+        result.pointer_evidence_found = _pointer_evidence_exists(dest_dir, durable_pointer_patterns)
+        if require_durable_pointer_evidence and not result.pointer_evidence_found:
+            result.dest_manifest_verify_rc = "nonzero"
+            return _fail(
+                result,
+                "durable pointer/index evidence missing while enforcement enabled",
+            )
         result.dest_manifest_verify_rc = "0"
         result.status = "pass"
         return result
@@ -193,6 +249,13 @@ def emit_machine_lines(result: CopyVerifyResult) -> None:
     print(f"DURABLE_CLOSEOUT_SOURCE_DIR={result.source_dir}")
     print(f"DURABLE_CLOSEOUT_DEST_DIR={result.dest_dir}")
     print(f"DURABLE_CLOSEOUT_DEST_MANIFEST_VERIFY_RC={result.dest_manifest_verify_rc}")
+    print(f"DURABLE_CLOSEOUT_MANIFEST_VERIFY_LOG_STATUS={result.manifest_verify_log_status}")
+    print(
+        f"DURABLE_CLOSEOUT_POINTER_EVIDENCE_REQUIRED={'true' if result.pointer_evidence_required else 'false'}"
+    )
+    print(
+        f"DURABLE_CLOSEOUT_POINTER_EVIDENCE_FOUND={'true' if result.pointer_evidence_found else 'false'}"
+    )
     print(f"SOURCE_TMP_NOT_CANONICAL={'true' if result.source_tmp_not_canonical else 'false'}")
     print("CLOSEOUT_DOES_NOT_AUTHORIZE_RUNTIME=true")
     print("RUNTIME_COMMANDS_CALLED=false")
@@ -232,6 +295,18 @@ def build_arg_parser() -> argparse.ArgumentParser:
         action=argparse.BooleanOptionalAction,
         default=True,
     )
+    parser.add_argument(
+        "--require-durable-pointer-evidence",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Fail closed when no pointer/index evidence file exists in durable destination.",
+    )
+    parser.add_argument(
+        "--durable-pointer-pattern",
+        action="append",
+        default=None,
+        help="Glob pattern for acceptable durable pointer/index evidence files (repeatable).",
+    )
     parser.add_argument("--allow-tmp-source", action="store_true")
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--json", action="store_true", dest="json_output")
@@ -240,6 +315,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_arg_parser().parse_args(argv)
+    pointer_patterns = tuple(
+        p for p in (args.durable_pointer_pattern or DEFAULT_POINTER_EVIDENCE_PATTERNS) if p
+    )
     result = plan_and_execute(
         source_dir=args.source_dir,
         dest_dir=args.dest_dir,
@@ -247,6 +325,8 @@ def main(argv: list[str] | None = None) -> int:
         pr_number=args.pr_number,
         pr_json=args.pr_json,
         require_closeout_report=args.require_closeout_report,
+        require_durable_pointer_evidence=args.require_durable_pointer_evidence,
+        durable_pointer_patterns=pointer_patterns,
         allow_tmp_source=args.allow_tmp_source,
         force=args.force,
     )
