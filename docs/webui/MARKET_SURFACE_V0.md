@@ -208,7 +208,39 @@ Dashboard markers remain non-authorizing: **Dashboard ≠ Freigabe**; no marker 
 - **Keine** Double‑Play‑Komposition oder Trading‑/Risk‑/Capital‑Interpretation durch diese Diagnosemarker.
 - **v0 CDN load attribution (template):** Die Chart.js‑Einbindung über **jsdelivr** setzt am `<script>`‑Tag ein **`onerror`**, markiert das Skript bei Ladefehler mit **`data-chartjs-cdn-load-error`** und spiegelt den Zustand auf den jeweiligen Dashboard‑Shell‑Container (**`data-chartjs-cdn-load-error`** auf **`#market-v0-shell`**, **`#double-play-market-v0-shell`**, bzw. **`#r-and-d-charts-shell`** wenn Diagramme geladen werden). Zusätzlich **`data-chartjs-cdn-monitored-v0="true"`** kennzeichnet Oberflächen mit dieser Überwachung. **Lokaler Vendor‑Chart.js‑Fallback** bleibt **separates** Arbeitspaket (siehe Hinweis zu **v1.2** unten); Oberflächen bleiben **read-only** und **non-authorizing**.
 
-**v1.2** kann einen **lokalen Chart.js‑Fallback** planen, falls CDN‑Blocking **evidenziert** ist.
+### Chart.js local fallback planning charter v0
+
+**Status:** **planning-only** — **keine** Implementierung in diesem Charter-Slice. **Kanonischer Owner** bleibt dieses Dokument (**`docs&#47;webui&#47;MARKET_SURFACE_V0.md`**); **kein** paralleles Spec-, Dashboard- oder Vendor-Artefakt.
+
+```
+CHARTJS_LOCAL_FALLBACK_PLANNING_CHARTER_V0=true
+CHARTJS_LOCAL_FALLBACK_IMPLEMENTATION_IN_THIS_SLICE=false
+CHARTJS_VENDOR_ADDED=false
+CHARTJS_VENDOR_ADDED_IN_THIS_SLICE=false
+TEMPLATES_CHANGED_IN_THIS_SLICE=false
+SRC_CHANGED_IN_THIS_SLICE=false
+STATIC_VENDOR_ASSET_ADDED_IN_THIS_SLICE=false
+DASHBOARD_AUTHORITY_CHANGED=false
+MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
+```
+
+**Scope dieses Charter-Slices (docs-only):** normative Planung für einen **zukünftigen**, **separaten** Implementierungs-PR — **nach** operatorisch **evidenziertem** CDN‑Blocking (bestehende **v0 CDN load attribution**, #3476). **Dieser Slice** ändert **weder** `templates&#47;**`, **noch** `src&#47;**`, **noch** statische Vendor-Pfade, **noch** `.github&#47;**` oder `config&#47;**`.
+
+**Nicht in diesem Slice:** Chart.js **nicht** ins Repo vendoren; **keine** `<script>`‑/Template‑Umstellung; **keine** neuen Dashboard-Routen; **keine** Runtime-, Scheduler-, Paper-, Shadow-, Testnet- oder Live-Starts; **keine** Order-Submission-, Handelsplatz- oder Ausführungs-Autorität; **kein** Polling; **keine** Master-V2-/Double-Play-Trading-Logik. Dashboard bleibt **read-only** und **non-authorizing** (**Dashboard ≠ Freigabe**).
+
+**Beibehalten (bestehend):** CDN‑Ladung über **jsdelivr** mit **`onerror`**, **`data-chartjs-cdn-load-error`**, **`data-chartjs-cdn-monitored-v0="true"`** auf den jeweiligen Shell-Containern (**`#market-v0-shell`**, **`#double-play-market-v0-shell`**, **`#r-and-d-charts-shell`**). SSR‑Empty-/Chart‑error‑Diagnosemarker aus **v1.1** bleiben unverändert.
+
+**Zukünftige Implementierungs-Voraussetzungen** (alle müssen in einem **eigenen**, operator-charterten PR erfüllt sein — **nicht** hier):
+
+| Voraussetzung | Anforderung |
+|---------------|-------------|
+| Kanonischer Asset-Owner | Ein **einziges** Repo-Ziel für vendorte Chart.js (Pfad + Review-Owner) **vor** Merge festlegen — **kein** paralleles Vendor-Verzeichnis |
+| Lizenz / Quelle / Integrität | Version, Download-Quelle, Lizenztext und Integritätsnachweis (z. B. Hash) **dokumentiert**; Attribution im UI/Docs **ohne** Autoritäts-Upgrade |
+| Offline-/No-Network-Test | Fallback-Ladepfad **ohne** CDN-Netzwerkabhängigkeit per Test nachweisbar (bestehende Structure-Contract-/WebUI-Testfamilie **erweitern**, nicht duplizieren) |
+| Dashboard-Autorität | **`MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true`**; **`DASHBOARD_AUTHORITY_CHANGED=false`**; keine Freigabe-, Gate-, Live-, Testnet- oder Handelsplatz-/Ausführungs-Semantik |
+| Runtime-Grenzen | **Kein** Polling; **keine** Scheduler-/Adapter-/Runtime-Kopplung; **keine** neuen `fetch()`-Verträge für Market/Double-Play |
+
+**v1.2 Implementierung (später):** Lokaler Chart.js‑Fallback **nur** nach obiger Checkliste und **separatem** Implementierungs-Charter — **nicht** als Micro-Contract ohne CDN‑Blocking‑Evidenz.
 
 ## Double-Play Market Dashboard v1 SSR
 
