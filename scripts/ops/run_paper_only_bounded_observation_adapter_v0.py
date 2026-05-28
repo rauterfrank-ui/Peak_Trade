@@ -76,6 +76,8 @@ USAGE_EXIT = 2
 VALIDATION_EXIT = 1
 TIMEOUT_EXIT = 124
 START_RETURN_CODE_ARTIFACT = "start_return_code.txt"
+FINAL_MACHINE_LINES_FILENAME = "FINAL_MACHINE_LINES.txt"
+BOUNDED_ADAPTER_LANE_PAPER = "paper_only_bounded_observation_v0"
 
 
 @dataclass(frozen=True)
@@ -309,6 +311,7 @@ def build_plan(
         "MANIFEST.sha256",
         "CLOSEOUT.md",
         "POSTRUN_ANALYSIS.md",
+        FINAL_MACHINE_LINES_FILENAME,
     ]
 
     commands = {
@@ -451,6 +454,72 @@ def _default_subprocess_runner(
     return int(proc.returncode or 0)
 
 
+def build_bounded_adapter_final_machine_lines_v0(
+    *,
+    run_id: str,
+    adapter_lane: str,
+    execution_performed: bool,
+    review_verdict: str | None = None,
+    closeout_succeeded: bool = True,
+) -> dict[str, str]:
+    """Deterministic non-authorizing FINAL_MACHINE_LINES payload for bounded adapters."""
+    from scripts.ops.build_post_closeout_projection_payload_v0 import (
+        REQUIRED_MACHINE_LINE_KEYS,
+    )
+
+    lines = {key: "false" for key in REQUIRED_MACHINE_LINE_KEYS}
+    if execution_performed:
+        lines["RUNTIME_COMMANDS_CALLED"] = "true"
+    lines.update(
+        {
+            "ADAPTER_EXECUTED": "true" if execution_performed else "false",
+            "ADAPTER_LANE": adapter_lane,
+            "RUN_ID": run_id,
+            "REMOTE_AWS_TOUCHED": "false",
+            "RUNTIME_STARTED": "false",
+            "SCHEDULER_STARTED": "false",
+            "PAPER_SHADOW_TESTNET_LIVE_STARTED": "false",
+            "LIVE_AUTHORITY_CHANGED": "false",
+            "PREFLIGHT_BLOCKED": "true",
+            "CLOSEOUT_ARTIFACT_EMIT_V0": "true",
+            "CLOSEOUT_SUCCEEDED": "true" if closeout_succeeded else "false",
+            "REVIEW_VERDICT": str(review_verdict or "UNKNOWN"),
+            "BOUNDED_OBSERVATION_ONLY": "true",
+            "NOTION_WRITE_CALLED": "false",
+            "S3_AWS_RCLONE_CALLED": "false",
+            "WORKFLOW_DISPATCH_CALLED": "false",
+            "BROKER_EXCHANGE_CALLED": "false",
+            "LIVE_AUTHORITY": "false",
+            "TESTNET_AUTHORITY": "false",
+        }
+    )
+    return lines
+
+
+def _write_final_machine_lines_artifact(
+    staging_root: Path,
+    *,
+    run_id: str,
+    adapter_lane: str,
+    execution_performed: bool,
+    review_verdict: str | None,
+    closeout_succeeded: bool = True,
+) -> None:
+    lines = build_bounded_adapter_final_machine_lines_v0(
+        run_id=run_id,
+        adapter_lane=adapter_lane,
+        execution_performed=execution_performed,
+        review_verdict=review_verdict,
+        closeout_succeeded=closeout_succeeded,
+    )
+    staging_root.mkdir(parents=True, exist_ok=True)
+    ordered = sorted(lines.items())
+    (staging_root / FINAL_MACHINE_LINES_FILENAME).write_text(
+        "\n".join(f"{key}={value}" for key, value in ordered) + "\n",
+        encoding="utf-8",
+    )
+
+
 def _write_closeout_artifacts(
     ctx: ExecuteContext,
     plan: AdapterPlan,
@@ -509,6 +578,14 @@ def _write_closeout_artifacts(
     (ctx.staging_root / "POSTRUN_ANALYSIS.md").write_text(
         "\n".join(postrun_lines) + "\n",
         encoding="utf-8",
+    )
+    _write_final_machine_lines_artifact(
+        ctx.staging_root,
+        run_id=ctx.run_id,
+        adapter_lane=BOUNDED_ADAPTER_LANE_PAPER,
+        execution_performed=True,
+        review_verdict=str(review_payload.get("verdict") or "UNKNOWN"),
+        closeout_succeeded=True,
     )
 
 
