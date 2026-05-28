@@ -32,8 +32,11 @@ from scripts.ops.primary_evidence_retention_v0 import (
     write_manifest_sha256 as _write_manifest_sha256,
 )
 from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import (
+    DurableCloseoutInvoker,
     FINAL_MACHINE_LINES_FILENAME,
     _write_final_machine_lines_artifact,
+    maybe_invoke_durable_closeout_after_archive,
+    validate_durable_closeout_invoke_cli_args,
 )
 
 BOUNDED_ADAPTER_LANE_SHADOW = "shadow_bounded_observation_v0"
@@ -416,6 +419,7 @@ def validate_execute_preconditions(
         clean, reason = repo_clean_checker(ctx.repo_root)
         if not clean:
             issues.append(reason or "repository is not clean")
+    issues.extend(validate_durable_closeout_invoke_cli_args(ctx.args))
     return issues
 
 
@@ -526,6 +530,7 @@ def execute_plan(
     plan: AdapterPlan,
     *,
     subprocess_runner: SubprocessRunner,
+    durable_closeout_invoker: DurableCloseoutInvoker | None = None,
 ) -> int:
     if ctx.staging_root.exists():
         shutil.rmtree(ctx.staging_root)
@@ -581,7 +586,11 @@ def execute_plan(
     if not ok:
         print(reason, file=sys.stderr)
         return VALIDATION_EXIT
-    return 0
+    return maybe_invoke_durable_closeout_after_archive(
+        ctx,
+        archive_dest,
+        durable_closeout_invoker=durable_closeout_invoker,
+    )
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -636,6 +645,20 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help="Do not require clean git working tree before execute.",
     )
     parser.add_argument("--json", action="store_true", help="Emit plan as JSON.")
+    parser.add_argument(
+        "--invoke-durable-closeout-v0",
+        action="store_true",
+        help=(
+            "After successful archive copy, invoke durable_closeout_copy_verify_v0.py "
+            "(requires --durable-closeout-dest-dir outside /tmp)."
+        ),
+    )
+    parser.add_argument(
+        "--durable-closeout-dest-dir",
+        type=Path,
+        default=None,
+        help="Durable material closeout destination (required with --invoke-durable-closeout-v0).",
+    )
     return parser
 
 
@@ -643,6 +666,7 @@ def main(
     argv: list[str] | None = None,
     *,
     subprocess_runner: SubprocessRunner | None = None,
+    durable_closeout_invoker: DurableCloseoutInvoker | None = None,
     repo_clean_checker: RepoCleanChecker | None = None,
     environ: Mapping[str, str] | None = None,
 ) -> int:
@@ -742,7 +766,12 @@ def main(
                 print(issue, file=sys.stderr)
             return VALIDATION_EXIT
         runner = subprocess_runner or _default_subprocess_runner
-        return execute_plan(ctx, plan, subprocess_runner=runner)
+        return execute_plan(
+            ctx,
+            plan,
+            subprocess_runner=runner,
+            durable_closeout_invoker=durable_closeout_invoker,
+        )
 
     print(render_plan(plan, args.json))
     return 0

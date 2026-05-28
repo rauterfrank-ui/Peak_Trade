@@ -28,6 +28,7 @@ if str(_REPO_ROOT) not in sys.path:
 
 from scripts.ops import bounded_daemon_paper_shadow_24h_approval_v0 as contract_24h
 from scripts.ops.primary_evidence_retention_v0 import (
+    is_under_tmp,
     verify_manifest_sha256,
     write_manifest_sha256 as _write_manifest_sha256,
 )
@@ -78,6 +79,9 @@ TIMEOUT_EXIT = 124
 START_RETURN_CODE_ARTIFACT = "start_return_code.txt"
 FINAL_MACHINE_LINES_FILENAME = "FINAL_MACHINE_LINES.txt"
 BOUNDED_ADAPTER_LANE_PAPER = "paper_only_bounded_observation_v0"
+DURABLE_CLOSEOUT_SCRIPT = _REPO_ROOT / "scripts" / "ops" / "durable_closeout_copy_verify_v0.py"
+
+DurableCloseoutInvoker = Callable[[Sequence[str]], int]
 
 
 @dataclass(frozen=True)
@@ -416,7 +420,117 @@ def validate_execute_preconditions(
         clean, reason = repo_clean_checker(ctx.repo_root)
         if not clean:
             issues.append(reason or "repository is not clean")
+    issues.extend(validate_durable_closeout_invoke_cli_args(ctx.args))
     return issues
+
+
+def validate_durable_closeout_invoke_cli_args(args: argparse.Namespace) -> list[str]:
+    """Validate durable closeout invocation flags (default-off; fail-closed when enabled)."""
+    if not getattr(args, "invoke_durable_closeout_v0", False):
+        return []
+    dest = getattr(args, "durable_closeout_dest_dir", None)
+    if dest is None:
+        return ["--durable-closeout-dest-dir is required with --invoke-durable-closeout-v0"]
+    dest_path = Path(dest).expanduser().resolve()
+    if is_under_tmp(dest_path):
+        return ["durable closeout destination must be outside /tmp"]
+    return []
+
+
+def _default_durable_closeout_invoker(argv: Sequence[str]) -> int:
+    proc = subprocess.run(
+        list(argv),
+        cwd=str(_REPO_ROOT),
+        capture_output=True,
+        text=True,
+    )
+    if proc.stderr:
+        print(proc.stderr, file=sys.stderr)
+    return int(proc.returncode)
+
+
+def build_durable_closeout_invoke_argv(
+    *,
+    source_dir: Path,
+    dest_dir: Path,
+) -> list[str]:
+    argv = [
+        sys.executable,
+        str(DURABLE_CLOSEOUT_SCRIPT),
+        "--source-dir",
+        str(source_dir.resolve()),
+        "--dest-dir",
+        str(dest_dir.resolve()),
+    ]
+    if is_under_tmp(source_dir):
+        argv.append("--allow-tmp-source")
+    return argv
+
+
+def invoke_durable_closeout_after_archive(
+    *,
+    source_dir: Path,
+    dest_dir: Path,
+    durable_closeout_invoker: DurableCloseoutInvoker | None = None,
+) -> int:
+    """Invoke canonical durable closeout helper after adapter archive success."""
+    invoker = durable_closeout_invoker or _default_durable_closeout_invoker
+    return invoker(build_durable_closeout_invoke_argv(source_dir=source_dir, dest_dir=dest_dir))
+
+
+def emit_bounded_adapter_durable_closeout_machine_lines(
+    *,
+    invoked: bool,
+    rc: int,
+    source_dir: Path,
+    dest_dir: Path | None,
+) -> None:
+    print(f"BOUNDED_ADAPTER_DURABLE_CLOSEOUT_INVOKED={'true' if invoked else 'false'}")
+    if not invoked:
+        return
+    status = "pass" if rc == 0 else "failed"
+    print(f"BOUNDED_ADAPTER_DURABLE_CLOSEOUT_STATUS={status}")
+    print(f"BOUNDED_ADAPTER_DURABLE_CLOSEOUT_SOURCE_DIR={source_dir.resolve()}")
+    if dest_dir is not None:
+        print(f"BOUNDED_ADAPTER_DURABLE_CLOSEOUT_DEST_DIR={dest_dir.resolve()}")
+    print(f"BOUNDED_ADAPTER_DURABLE_CLOSEOUT_HELPER_RC={rc}")
+    print("BOUNDED_ADAPTER_DURABLE_CLOSEOUT_NON_AUTHORIZING=true")
+    print("REMOTE_AWS_TOUCHED=false")
+    print("RUNTIME_STARTED=false")
+    print("SCHEDULER_STARTED=false")
+    print("PAPER_SHADOW_TESTNET_LIVE_STARTED=false")
+    print("LIVE_AUTHORITY_CHANGED=false")
+    print("DUPLICATE_SURFACE_CREATED=false")
+
+
+def maybe_invoke_durable_closeout_after_archive(
+    ctx: ExecuteContext,
+    archive_dest: Path,
+    *,
+    durable_closeout_invoker: DurableCloseoutInvoker | None = None,
+) -> int:
+    """Return adapter exit code after optional durable closeout invocation."""
+    if not getattr(ctx.args, "invoke_durable_closeout_v0", False):
+        emit_bounded_adapter_durable_closeout_machine_lines(
+            invoked=False,
+            rc=0,
+            source_dir=archive_dest,
+            dest_dir=None,
+        )
+        return 0
+    dest_dir = Path(ctx.args.durable_closeout_dest_dir).expanduser().resolve()
+    rc = invoke_durable_closeout_after_archive(
+        source_dir=archive_dest,
+        dest_dir=dest_dir,
+        durable_closeout_invoker=durable_closeout_invoker,
+    )
+    emit_bounded_adapter_durable_closeout_machine_lines(
+        invoked=True,
+        rc=rc,
+        source_dir=archive_dest,
+        dest_dir=dest_dir,
+    )
+    return 0 if rc == 0 else VALIDATION_EXIT
 
 
 def _default_subprocess_runner(
@@ -611,6 +725,7 @@ def execute_plan(
     plan: AdapterPlan,
     *,
     subprocess_runner: SubprocessRunner,
+    durable_closeout_invoker: DurableCloseoutInvoker | None = None,
 ) -> int:
     ctx.staging_root.mkdir(parents=True, exist_ok=True)
     ctx.runtime_out.mkdir(parents=True, exist_ok=True)
@@ -698,7 +813,11 @@ def execute_plan(
         + "\n",
         encoding="utf-8",
     )
-    return 0
+    return maybe_invoke_durable_closeout_after_archive(
+        ctx,
+        archive_dest,
+        durable_closeout_invoker=durable_closeout_invoker,
+    )
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -757,6 +876,20 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help="Do not require clean git working tree before execute.",
     )
     parser.add_argument("--json", action="store_true", help="Emit plan as JSON.")
+    parser.add_argument(
+        "--invoke-durable-closeout-v0",
+        action="store_true",
+        help=(
+            "After successful archive copy, invoke durable_closeout_copy_verify_v0.py "
+            "(requires --durable-closeout-dest-dir outside /tmp)."
+        ),
+    )
+    parser.add_argument(
+        "--durable-closeout-dest-dir",
+        type=Path,
+        default=None,
+        help="Durable material closeout destination (required with --invoke-durable-closeout-v0).",
+    )
     return parser
 
 
@@ -764,6 +897,7 @@ def main(
     argv: list[str] | None = None,
     *,
     subprocess_runner: SubprocessRunner | None = None,
+    durable_closeout_invoker: DurableCloseoutInvoker | None = None,
     repo_clean_checker: RepoCleanChecker | None = None,
     environ: Mapping[str, str] | None = None,
 ) -> int:
@@ -851,7 +985,12 @@ def main(
                 print(issue, file=sys.stderr)
             return VALIDATION_EXIT
         runner = subprocess_runner or _default_subprocess_runner
-        rc = execute_plan(ctx, plan, subprocess_runner=runner)
+        rc = execute_plan(
+            ctx,
+            plan,
+            subprocess_runner=runner,
+            durable_closeout_invoker=durable_closeout_invoker,
+        )
         _write_start_return_code_artifact(
             staging_root,
             rc,
