@@ -426,15 +426,49 @@ def validate_execute_preconditions(
 
 def validate_durable_closeout_invoke_cli_args(args: argparse.Namespace) -> list[str]:
     """Validate durable closeout invocation flags (default-off; fail-closed when enabled)."""
+    issues: list[str] = []
+    chain_requested = bool(getattr(args, "run_local_post_closeout_chain_v0", False))
+    if chain_requested and not getattr(args, "invoke_durable_closeout_v0", False):
+        issues.append("--run-local-post-closeout-chain-v0 requires --invoke-durable-closeout-v0")
+    if chain_requested:
+        chain_archive = getattr(args, "chain_archive_root", None)
+        if chain_archive is None:
+            issues.append(
+                "--chain-archive-root is required with --run-local-post-closeout-chain-v0"
+            )
+        else:
+            chain_archive_path = Path(chain_archive).expanduser().resolve()
+            if is_under_tmp(chain_archive_path):
+                issues.append(
+                    "chain archive root must be outside /tmp when "
+                    "--run-local-post-closeout-chain-v0 is set"
+                )
     if not getattr(args, "invoke_durable_closeout_v0", False):
-        return []
+        return issues
     dest = getattr(args, "durable_closeout_dest_dir", None)
     if dest is None:
-        return ["--durable-closeout-dest-dir is required with --invoke-durable-closeout-v0"]
-    dest_path = Path(dest).expanduser().resolve()
-    if is_under_tmp(dest_path):
-        return ["durable closeout destination must be outside /tmp"]
-    return []
+        issues.append("--durable-closeout-dest-dir is required with --invoke-durable-closeout-v0")
+    else:
+        dest_path = Path(dest).expanduser().resolve()
+        if is_under_tmp(dest_path):
+            issues.append("durable closeout destination must be outside /tmp")
+    return issues
+
+
+def resolve_bounded_adapter_chain_run_id(
+    args: argparse.Namespace,
+    *,
+    adapter_run_id: str,
+) -> str | None:
+    """Resolve chain run_id: explicit CLI wins; else adapter run_id when chain is requested."""
+    explicit = (getattr(args, "chain_run_id", None) or "").strip()
+    if explicit:
+        return explicit
+    if getattr(args, "run_local_post_closeout_chain_v0", False):
+        run_id = adapter_run_id.strip()
+        if run_id:
+            return run_id
+    return None
 
 
 def _default_durable_closeout_invoker(argv: Sequence[str]) -> int:
@@ -453,6 +487,9 @@ def build_durable_closeout_invoke_argv(
     *,
     source_dir: Path,
     dest_dir: Path,
+    run_local_post_closeout_chain_v0: bool = False,
+    chain_archive_root: Path | None = None,
+    chain_run_id: str | None = None,
 ) -> list[str]:
     argv = [
         sys.executable,
@@ -464,6 +501,13 @@ def build_durable_closeout_invoke_argv(
     ]
     if is_under_tmp(source_dir):
         argv.append("--allow-tmp-source")
+    if run_local_post_closeout_chain_v0:
+        if chain_archive_root is None:
+            raise ValueError("chain_archive_root is required when run_local_post_closeout_chain_v0")
+        argv.append("--run-local-post-closeout-chain-v0")
+        argv.extend(["--chain-archive-root", str(chain_archive_root.resolve())])
+        if chain_run_id:
+            argv.extend(["--chain-run-id", chain_run_id])
     return argv
 
 
@@ -471,11 +515,30 @@ def invoke_durable_closeout_after_archive(
     *,
     source_dir: Path,
     dest_dir: Path,
+    args: argparse.Namespace | None = None,
+    adapter_run_id: str = "",
     durable_closeout_invoker: DurableCloseoutInvoker | None = None,
 ) -> int:
     """Invoke canonical durable closeout helper after adapter archive success."""
+    chain_requested = bool(args and getattr(args, "run_local_post_closeout_chain_v0", False))
+    chain_archive_root: Path | None = None
+    if chain_requested and args is not None:
+        chain_archive_root = Path(args.chain_archive_root).expanduser().resolve()
+    chain_run_id = (
+        resolve_bounded_adapter_chain_run_id(args, adapter_run_id=adapter_run_id)
+        if args is not None
+        else None
+    )
     invoker = durable_closeout_invoker or _default_durable_closeout_invoker
-    return invoker(build_durable_closeout_invoke_argv(source_dir=source_dir, dest_dir=dest_dir))
+    return invoker(
+        build_durable_closeout_invoke_argv(
+            source_dir=source_dir,
+            dest_dir=dest_dir,
+            run_local_post_closeout_chain_v0=chain_requested,
+            chain_archive_root=chain_archive_root,
+            chain_run_id=chain_run_id,
+        )
+    )
 
 
 def emit_bounded_adapter_durable_closeout_machine_lines(
@@ -503,6 +566,28 @@ def emit_bounded_adapter_durable_closeout_machine_lines(
     print("DUPLICATE_SURFACE_CREATED=false")
 
 
+def emit_bounded_adapter_local_post_closeout_chain_machine_lines(
+    *,
+    requested: bool,
+    passthrough: bool,
+    chain_archive_root: Path | None = None,
+    chain_run_id: str | None = None,
+) -> None:
+    print(f"BOUNDED_ADAPTER_LOCAL_POST_CLOSEOUT_CHAIN_REQUESTED={'true' if requested else 'false'}")
+    print(
+        "BOUNDED_ADAPTER_LOCAL_POST_CLOSEOUT_CHAIN_PASSTHROUGH="
+        f"{'true' if passthrough else 'false'}"
+    )
+    if chain_archive_root is not None:
+        print(f"BOUNDED_ADAPTER_CHAIN_ARCHIVE_ROOT={chain_archive_root.resolve()}")
+    else:
+        print("BOUNDED_ADAPTER_CHAIN_ARCHIVE_ROOT=")
+    if chain_run_id:
+        print(f"BOUNDED_ADAPTER_CHAIN_RUN_ID={chain_run_id}")
+    else:
+        print("BOUNDED_ADAPTER_CHAIN_RUN_ID=")
+
+
 def maybe_invoke_durable_closeout_after_archive(
     ctx: ExecuteContext,
     archive_dest: Path,
@@ -510,18 +595,34 @@ def maybe_invoke_durable_closeout_after_archive(
     durable_closeout_invoker: DurableCloseoutInvoker | None = None,
 ) -> int:
     """Return adapter exit code after optional durable closeout invocation."""
-    if not getattr(ctx.args, "invoke_durable_closeout_v0", False):
+    chain_requested = bool(getattr(ctx.args, "run_local_post_closeout_chain_v0", False))
+    chain_archive_root: Path | None = None
+    if chain_requested:
+        chain_archive_root = Path(ctx.args.chain_archive_root).expanduser().resolve()
+    chain_run_id = resolve_bounded_adapter_chain_run_id(ctx.args, adapter_run_id=ctx.run_id)
+    invoke_requested = bool(getattr(ctx.args, "invoke_durable_closeout_v0", False))
+    chain_passthrough = chain_requested and invoke_requested
+
+    if not invoke_requested:
         emit_bounded_adapter_durable_closeout_machine_lines(
             invoked=False,
             rc=0,
             source_dir=archive_dest,
             dest_dir=None,
         )
+        emit_bounded_adapter_local_post_closeout_chain_machine_lines(
+            requested=chain_requested,
+            passthrough=False,
+            chain_archive_root=chain_archive_root,
+            chain_run_id=chain_run_id,
+        )
         return 0
     dest_dir = Path(ctx.args.durable_closeout_dest_dir).expanduser().resolve()
     rc = invoke_durable_closeout_after_archive(
         source_dir=archive_dest,
         dest_dir=dest_dir,
+        args=ctx.args,
+        adapter_run_id=ctx.run_id,
         durable_closeout_invoker=durable_closeout_invoker,
     )
     emit_bounded_adapter_durable_closeout_machine_lines(
@@ -529,6 +630,12 @@ def maybe_invoke_durable_closeout_after_archive(
         rc=rc,
         source_dir=archive_dest,
         dest_dir=dest_dir,
+    )
+    emit_bounded_adapter_local_post_closeout_chain_machine_lines(
+        requested=chain_requested,
+        passthrough=chain_passthrough,
+        chain_archive_root=chain_archive_root,
+        chain_run_id=chain_run_id,
     )
     return 0 if rc == 0 else VALIDATION_EXIT
 
@@ -876,6 +983,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help="Do not require clean git working tree before execute.",
     )
     parser.add_argument("--json", action="store_true", help="Emit plan as JSON.")
+    add_bounded_adapter_durable_closeout_cli_args(parser)
+    return parser
+
+
+def add_bounded_adapter_durable_closeout_cli_args(parser: argparse.ArgumentParser) -> None:
+    """Register default-off durable closeout + local post-closeout chain CLI flags."""
     parser.add_argument(
         "--invoke-durable-closeout-v0",
         action="store_true",
@@ -890,7 +1003,29 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default=None,
         help="Durable material closeout destination (required with --invoke-durable-closeout-v0).",
     )
-    return parser
+    parser.add_argument(
+        "--run-local-post-closeout-chain-v0",
+        action="store_true",
+        help=(
+            "Pass through to durable_closeout_copy_verify_v0.py local post-closeout chain "
+            "(requires --invoke-durable-closeout-v0 and --chain-archive-root outside /tmp)."
+        ),
+    )
+    parser.add_argument(
+        "--chain-archive-root",
+        type=Path,
+        default=None,
+        help="Evidence archive root for Registry v1 (required with --run-local-post-closeout-chain-v0).",
+    )
+    parser.add_argument(
+        "--chain-run-id",
+        type=str,
+        default="",
+        help=(
+            "Optional run_id for projection payload builder; defaults to adapter --run-id "
+            "when --run-local-post-closeout-chain-v0 is set."
+        ),
+    )
 
 
 def main(

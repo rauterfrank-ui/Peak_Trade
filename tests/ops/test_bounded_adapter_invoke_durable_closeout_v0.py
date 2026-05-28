@@ -42,6 +42,24 @@ def _durable_dest(tmp_path: Path, name: str = "dest") -> Path:
     return dest
 
 
+def _chain_archive_root(tmp_path: Path) -> Path:
+    root = PYTEST_DURABLE_DEST_ROOT / f"chain_archive_{tmp_path.name.replace('/', '_')}"
+    root.mkdir(parents=True, exist_ok=True)
+    return root
+
+
+def _durable_args(**overrides: object) -> argparse.Namespace:
+    base = {
+        "invoke_durable_closeout_v0": False,
+        "durable_closeout_dest_dir": None,
+        "run_local_post_closeout_chain_v0": False,
+        "chain_archive_root": None,
+        "chain_run_id": "",
+    }
+    base.update(overrides)
+    return argparse.Namespace(**base)
+
+
 @pytest.fixture(scope="module")
 def paper():
     return _load_paper()
@@ -53,23 +71,76 @@ def shadow():
 
 
 def test_default_off_validate_returns_no_issues(paper):
-    args = argparse.Namespace(invoke_durable_closeout_v0=False, durable_closeout_dest_dir=None)
-    assert paper.validate_durable_closeout_invoke_cli_args(args) == []
+    assert paper.validate_durable_closeout_invoke_cli_args(_durable_args()) == []
 
 
 def test_missing_dest_when_flag_enabled(paper):
-    args = argparse.Namespace(invoke_durable_closeout_v0=True, durable_closeout_dest_dir=None)
-    issues = paper.validate_durable_closeout_invoke_cli_args(args)
+    issues = paper.validate_durable_closeout_invoke_cli_args(
+        _durable_args(invoke_durable_closeout_v0=True)
+    )
     assert any("durable-closeout-dest-dir" in issue for issue in issues)
 
 
 def test_tmp_dest_blocked_when_flag_enabled(paper):
-    args = argparse.Namespace(
-        invoke_durable_closeout_v0=True,
-        durable_closeout_dest_dir=Path("/tmp/peak_trade_bounded_adapter_durable_dest_fixture"),
+    issues = paper.validate_durable_closeout_invoke_cli_args(
+        _durable_args(
+            invoke_durable_closeout_v0=True,
+            durable_closeout_dest_dir=Path("/tmp/peak_trade_bounded_adapter_durable_dest_fixture"),
+        )
     )
-    issues = paper.validate_durable_closeout_invoke_cli_args(args)
     assert any("outside /tmp" in issue for issue in issues)
+
+
+def test_chain_without_invoke_blocked(paper, tmp_path):
+    issues = paper.validate_durable_closeout_invoke_cli_args(
+        _durable_args(
+            run_local_post_closeout_chain_v0=True,
+            chain_archive_root=_chain_archive_root(tmp_path),
+        )
+    )
+    assert any("requires --invoke-durable-closeout-v0" in issue for issue in issues)
+
+
+def test_chain_without_archive_root_blocked(paper, tmp_path):
+    issues = paper.validate_durable_closeout_invoke_cli_args(
+        _durable_args(
+            invoke_durable_closeout_v0=True,
+            durable_closeout_dest_dir=_durable_dest(tmp_path, "dest"),
+            run_local_post_closeout_chain_v0=True,
+        )
+    )
+    assert any("chain-archive-root" in issue for issue in issues)
+
+
+def test_tmp_chain_archive_root_blocked(paper, tmp_path):
+    issues = paper.validate_durable_closeout_invoke_cli_args(
+        _durable_args(
+            invoke_durable_closeout_v0=True,
+            durable_closeout_dest_dir=_durable_dest(tmp_path, "dest"),
+            run_local_post_closeout_chain_v0=True,
+            chain_archive_root=Path("/tmp/peak_trade_chain_archive_fixture"),
+        )
+    )
+    assert any("chain archive root must be outside /tmp" in issue for issue in issues)
+
+
+def test_chain_run_id_defaults_to_adapter_run_id(paper):
+    run_id = paper.resolve_bounded_adapter_chain_run_id(
+        _durable_args(run_local_post_closeout_chain_v0=True),
+        adapter_run_id="paper_run_abc",
+    )
+    assert run_id == "paper_run_abc"
+
+
+def test_explicit_chain_run_id_forwarded(paper):
+    run_id = paper.resolve_bounded_adapter_chain_run_id(
+        _durable_args(
+            run_local_post_closeout_chain_v0=True,
+            chain_run_id="explicit_run",
+        ),
+        adapter_run_id="paper_run_abc",
+    )
+    assert run_id == "explicit_run"
 
 
 def test_build_argv_uses_archive_source_and_durable_helper_only(paper, tmp_path):
@@ -91,6 +162,30 @@ def test_build_argv_uses_archive_source_and_durable_helper_only(paper, tmp_path)
     assert "build_post_closeout_projection_payload_v0.py" not in joined
     assert "post_closeout_sync_dry_run_v0.py" not in joined
     assert "run-local-post-closeout-chain-v0" not in joined
+
+
+def test_build_argv_includes_chain_flags_when_requested(paper, tmp_path):
+    archive_source = tmp_path / "archive" / "runs" / "paper" / "run_id"
+    archive_source.mkdir(parents=True)
+    durable_dest = _durable_dest(tmp_path)
+    chain_archive = _chain_archive_root(tmp_path)
+
+    argv = paper.build_durable_closeout_invoke_argv(
+        source_dir=archive_source,
+        dest_dir=durable_dest,
+        run_local_post_closeout_chain_v0=True,
+        chain_archive_root=chain_archive,
+        chain_run_id="paper_run_chain",
+    )
+    joined = " ".join(argv)
+    assert "--run-local-post-closeout-chain-v0" in joined
+    assert "--chain-archive-root" in joined
+    assert str(chain_archive.resolve()) in joined
+    assert "--chain-run-id" in joined
+    assert "paper_run_chain" in joined
+    assert "build_generic_evidence_run_registry_v1.py" not in joined
+    assert "build_post_closeout_projection_payload_v0.py" not in joined
+    assert "post_closeout_sync_dry_run_v0.py" not in joined
 
 
 def test_invoke_fail_closed_on_nonzero_rc(paper, tmp_path):
@@ -140,10 +235,7 @@ def test_maybe_invoke_without_flag_does_not_call_helper(paper, tmp_path, capsys)
         calls.append(list(argv))
         return 0
 
-    args = argparse.Namespace(
-        invoke_durable_closeout_v0=False,
-        durable_closeout_dest_dir=None,
-    )
+    args = _durable_args()
     ctx = paper.ExecuteContext(
         args=args,
         repo_root=REPO_ROOT,
@@ -165,6 +257,8 @@ def test_maybe_invoke_without_flag_does_not_call_helper(paper, tmp_path, capsys)
     assert calls == []
     out = capsys.readouterr().out
     assert "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_INVOKED=false" in out
+    assert "BOUNDED_ADAPTER_LOCAL_POST_CLOSEOUT_CHAIN_REQUESTED=false" in out
+    assert "BOUNDED_ADAPTER_LOCAL_POST_CLOSEOUT_CHAIN_PASSTHROUGH=false" in out
 
 
 def test_maybe_invoke_with_flag_calls_helper(paper, tmp_path, capsys):
@@ -178,7 +272,7 @@ def test_maybe_invoke_with_flag_calls_helper(paper, tmp_path, capsys):
         calls.append(list(argv))
         return 0
 
-    args = argparse.Namespace(
+    args = _durable_args(
         invoke_durable_closeout_v0=True,
         durable_closeout_dest_dir=durable_dest,
     )
@@ -204,6 +298,57 @@ def test_maybe_invoke_with_flag_calls_helper(paper, tmp_path, capsys):
     out = capsys.readouterr().out
     assert "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_INVOKED=true" in out
     assert "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_STATUS=pass" in out
+    assert "BOUNDED_ADAPTER_LOCAL_POST_CLOSEOUT_CHAIN_PASSTHROUGH=false" in out
+
+
+def test_maybe_invoke_with_chain_passes_helper_flags(paper, tmp_path, capsys):
+    archive_source = tmp_path / "archive_run"
+    archive_source.mkdir()
+    (archive_source / "note.txt").write_text("x\n", encoding="utf-8")
+    durable_dest = _durable_dest(tmp_path, "chain_invoked")
+    chain_archive = _chain_archive_root(tmp_path)
+    calls: list[list[str]] = []
+
+    def _recording_invoker(argv: list[str]) -> int:
+        calls.append(list(argv))
+        return 0
+
+    args = _durable_args(
+        invoke_durable_closeout_v0=True,
+        durable_closeout_dest_dir=durable_dest,
+        run_local_post_closeout_chain_v0=True,
+        chain_archive_root=chain_archive,
+    )
+    ctx = paper.ExecuteContext(
+        args=args,
+        repo_root=REPO_ROOT,
+        staging_root=tmp_path / "staging",
+        archive_root=tmp_path / "archive",
+        runtime_out=tmp_path / "staging" / "runtime_out",
+        logs_dir=tmp_path / "staging" / "logs",
+        plan_dir=tmp_path / "staging" / "plan",
+        review_dir=tmp_path / "staging" / "review",
+        temp_jobs=tmp_path / "staging" / "plan" / "temp_jobs.toml",
+        run_id="paper_run_default_chain",
+    )
+    rc = paper.maybe_invoke_durable_closeout_after_archive(
+        ctx,
+        archive_source,
+        durable_closeout_invoker=_recording_invoker,
+    )
+    assert rc == 0
+    assert len(calls) == 1
+    joined = " ".join(calls[0])
+    assert calls[0][1].endswith("durable_closeout_copy_verify_v0.py")
+    assert "--run-local-post-closeout-chain-v0" in joined
+    assert str(chain_archive.resolve()) in joined
+    assert "--chain-run-id" in joined
+    assert "paper_run_default_chain" in joined
+    assert "build_generic_evidence_run_registry_v1.py" not in joined
+    out = capsys.readouterr().out
+    assert "BOUNDED_ADAPTER_LOCAL_POST_CLOSEOUT_CHAIN_REQUESTED=true" in out
+    assert "BOUNDED_ADAPTER_LOCAL_POST_CLOSEOUT_CHAIN_PASSTHROUGH=true" in out
+    assert "BOUNDED_ADAPTER_CHAIN_RUN_ID=paper_run_default_chain" in out
 
 
 def test_paper_and_shadow_expose_cli_flags(paper, shadow):
@@ -213,10 +358,12 @@ def test_paper_and_shadow_expose_cli_flags(paper, shadow):
     shadow_flags = {
         a.option_strings[0] for a in shadow.build_arg_parser()._actions if a.option_strings
     }
-    assert "--invoke-durable-closeout-v0" in paper_flags
-    assert "--durable-closeout-dest-dir" in paper_flags
-    assert "--invoke-durable-closeout-v0" in shadow_flags
-    assert "--durable-closeout-dest-dir" in shadow_flags
+    for flags in (paper_flags, shadow_flags):
+        assert "--invoke-durable-closeout-v0" in flags
+        assert "--durable-closeout-dest-dir" in flags
+        assert "--run-local-post-closeout-chain-v0" in flags
+        assert "--chain-archive-root" in flags
+        assert "--chain-run-id" in flags
 
 
 def test_forbidden_parallel_execute_script_absent():
@@ -225,6 +372,17 @@ def test_forbidden_parallel_execute_script_absent():
 
 
 def test_shadow_validate_delegates_same_rules(shadow):
-    args = argparse.Namespace(invoke_durable_closeout_v0=True, durable_closeout_dest_dir=None)
-    issues = shadow.validate_durable_closeout_invoke_cli_args(args)
+    issues = shadow.validate_durable_closeout_invoke_cli_args(
+        _durable_args(invoke_durable_closeout_v0=True)
+    )
     assert any("durable-closeout-dest-dir" in issue for issue in issues)
+
+
+def test_shadow_chain_validation_delegates_same_rules(shadow, tmp_path):
+    issues = shadow.validate_durable_closeout_invoke_cli_args(
+        _durable_args(
+            run_local_post_closeout_chain_v0=True,
+            chain_archive_root=_chain_archive_root(tmp_path),
+        )
+    )
+    assert any("requires --invoke-durable-closeout-v0" in issue for issue in issues)
