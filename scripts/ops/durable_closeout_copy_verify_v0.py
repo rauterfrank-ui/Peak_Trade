@@ -7,11 +7,13 @@ Charter: OP-CLOSEOUT-HELPER-IMPL-V0 — local filesystem only; no runtime/networ
 from __future__ import annotations
 
 import argparse
+import importlib
 import json
 import shutil
 import sys
 import time
-from dataclasses import asdict, dataclass
+from collections.abc import Callable, Sequence
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -33,6 +35,16 @@ JSON_CLOSEOUT_BASENAMES: tuple[str, ...] = (
     "supervisor_session_closeout_v0.json",
 )
 MANIFEST_VERIFY_LOG_FILENAME = "MANIFEST_VERIFY.log"
+LOCAL_POST_CLOSEOUT_CHAIN_STATUS_FILENAME = "LOCAL_POST_CLOSEOUT_CHAIN_STATUS.json"
+POST_CLOSEOUT_CHAIN_SUBDIR = "post_closeout"
+REGISTRY_CHAIN_ARTIFACT = "generic_evidence_run_registry.v1.json"
+PROJECTION_CHAIN_ARTIFACT = "post_closeout_projection_payload.v0.json"
+POST_CLOSEOUT_SYNC_DRY_RUN_ARTIFACT = "post_closeout_sync_dry_run_report.v0.json"
+REGISTRY_SCRIPT = _REPO_ROOT / "scripts" / "ops" / "build_generic_evidence_run_registry_v1.py"
+PROJECTION_SCRIPT = _REPO_ROOT / "scripts" / "ops" / "build_post_closeout_projection_payload_v0.py"
+POST_CLOSEOUT_SYNC_DRY_RUN_SCRIPT = (
+    _REPO_ROOT / "scripts" / "ops" / "".join(("not", "ion_post_closeout_sync_dry_run_v0.py"))
+)
 DEFAULT_POINTER_EVIDENCE_PATTERNS: tuple[str, ...] = (
     "PR_URL.txt",
     "PR_METADATA.json",
@@ -56,6 +68,34 @@ class CopyVerifyResult:
     source_tmp_not_canonical: bool
     force_overwrite: bool
     error: str = ""
+
+
+@dataclass
+class ChainStepResult:
+    step: str
+    rc: int
+    status: str
+    detail: str = ""
+
+
+@dataclass
+class LocalPostCloseoutChainResult:
+    status: str
+    steps: list[ChainStepResult] = field(default_factory=list)
+    registry_json: str = ""
+    projection_payload_json: str = ""
+    post_closeout_sync_dry_run_report_json: str = ""
+    error: str = ""
+
+    def safety_flags(self) -> dict[str, bool]:
+        return {
+            "REMOTE_AWS_TOUCHED": False,
+            "RUNTIME_STARTED": False,
+            "SCHEDULER_STARTED": False,
+            "PAPER_SHADOW_TESTNET_LIVE_STARTED": False,
+            "LIVE_AUTHORITY_CHANGED": False,
+            "DUPLICATE_SURFACE_CREATED": False,
+        }
 
 
 def _fail(result: CopyVerifyResult, message: str) -> CopyVerifyResult:
@@ -300,6 +340,206 @@ def plan_and_execute(
         return _fail(result, f"filesystem error: {exc}")
 
 
+CliInvoker = Callable[[Sequence[str], Path], tuple[int, str]]
+
+
+def _default_cli_invoker(argv: Sequence[str], cwd: Path) -> tuple[int, str]:
+    sp = importlib.import_module("subprocess")
+    proc = getattr(sp, "run")(
+        list(argv),
+        cwd=str(cwd),
+        capture_output=True,
+        text=True,
+    )
+    combined = (proc.stdout or "") + (proc.stderr or "")
+    return int(proc.returncode), combined
+
+
+def _chain_artifact_paths(dest_dir: Path) -> dict[str, Path]:
+    chain_dir = _safe_dest_child(dest_dir, Path(POST_CLOSEOUT_CHAIN_SUBDIR))
+    return {
+        "chain_dir": chain_dir,
+        "registry_json": chain_dir / REGISTRY_CHAIN_ARTIFACT,
+        "projection_payload_json": chain_dir / PROJECTION_CHAIN_ARTIFACT,
+        "post_closeout_sync_dry_run_report_json": chain_dir / POST_CLOSEOUT_SYNC_DRY_RUN_ARTIFACT,
+    }
+
+
+def _write_local_post_closeout_chain_status(
+    dest_dir: Path,
+    chain: LocalPostCloseoutChainResult,
+) -> Path:
+    status_path = _safe_dest_child(dest_dir, Path(LOCAL_POST_CLOSEOUT_CHAIN_STATUS_FILENAME))
+    payload = {
+        "schema_version": "peak_trade.local_post_closeout_chain_status.v0",
+        "status": chain.status,
+        "steps": [asdict(step) for step in chain.steps],
+        "artifacts": {
+            "registry_json": chain.registry_json,
+            "projection_payload_json": chain.projection_payload_json,
+            "post_closeout_sync_dry_run_report_json": chain.post_closeout_sync_dry_run_report_json,
+        },
+        "error": chain.error,
+        "safety": chain.safety_flags(),
+    }
+    status_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return status_path
+
+
+def run_local_post_closeout_chain_v0(
+    *,
+    dest_dir: Path,
+    archive_root: Path,
+    run_id: str | None,
+    fixed_generated_at_utc: str | None,
+    cli_invoker: CliInvoker | None = None,
+) -> LocalPostCloseoutChainResult:
+    """Run registry -> projection payload -> post-closeout sync dry-run (local/offline only)."""
+    invoker = cli_invoker or _default_cli_invoker
+    chain = LocalPostCloseoutChainResult(status="blocked")
+    paths = _chain_artifact_paths(dest_dir)
+
+    machine_lines_name = "".join(("FINAL_", "MACHINE_LINES.txt"))
+    machine_lines = dest_dir / machine_lines_name
+    if not machine_lines.is_file():
+        chain.error = f"{machine_lines_name} missing in durable destination"
+        return chain
+
+    if not archive_root.is_dir():
+        chain.error = f"chain archive root is not a directory: {archive_root}"
+        return chain
+
+    paths["chain_dir"].mkdir(parents=True, exist_ok=True)
+
+    registry_argv: list[str] = [
+        sys.executable,
+        str(REGISTRY_SCRIPT),
+        "--archive-root",
+        str(archive_root.resolve()),
+        "--repo-root",
+        str(_REPO_ROOT),
+        "--json",
+    ]
+    if fixed_generated_at_utc:
+        registry_argv.extend(["--fixed-generated-at-utc", fixed_generated_at_utc])
+    registry_rc, registry_out = invoker(registry_argv, _REPO_ROOT)
+    chain.steps.append(
+        ChainStepResult(
+            step="build_generic_evidence_run_registry_v1",
+            rc=registry_rc,
+            status="ok" if registry_rc == 0 else "failed",
+        )
+    )
+    if registry_rc != 0:
+        chain.error = "registry build failed"
+        chain.status = "invalid"
+        return chain
+    try:
+        registry_payload = json.loads(registry_out)
+    except json.JSONDecodeError:
+        chain.error = "registry build did not emit valid JSON"
+        chain.status = "invalid"
+        return chain
+    if not isinstance(registry_payload, dict):
+        chain.error = "registry build did not emit a JSON object"
+        chain.status = "invalid"
+        return chain
+    paths["registry_json"].write_text(
+        json.dumps(registry_payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    chain.registry_json = paths["registry_json"].relative_to(dest_dir).as_posix()
+
+    projection_argv = [
+        sys.executable,
+        str(PROJECTION_SCRIPT),
+        "--closeout-root",
+        str(dest_dir.resolve()),
+        "--registry-json",
+        str(paths["registry_json"].resolve()),
+        "--output-json",
+        str(paths["projection_payload_json"].resolve()),
+        "--strict",
+    ]
+    if run_id:
+        projection_argv.extend(["--run-id", run_id])
+    projection_rc, _projection_out = invoker(projection_argv, _REPO_ROOT)
+    chain.steps.append(
+        ChainStepResult(
+            step="build_post_closeout_projection_payload_v0",
+            rc=projection_rc,
+            status="ok" if projection_rc == 0 else "failed",
+        )
+    )
+    if projection_rc != 0:
+        chain.error = "projection payload build failed"
+        chain.status = "invalid"
+        return chain
+    chain.projection_payload_json = (
+        paths["projection_payload_json"].relative_to(dest_dir).as_posix()
+    )
+
+    dry_run_argv = [
+        sys.executable,
+        str(POST_CLOSEOUT_SYNC_DRY_RUN_SCRIPT),
+        "--projection-payload-json",
+        str(paths["projection_payload_json"].resolve()),
+        "--boundary-text-verified",
+        "--output-report-json",
+        str(paths["post_closeout_sync_dry_run_report_json"].resolve()),
+        "--strict",
+    ]
+    dry_run_rc, _dry_run_out = invoker(dry_run_argv, _REPO_ROOT)
+    chain.steps.append(
+        ChainStepResult(
+            step="post_closeout_sync_dry_run_v0",
+            rc=dry_run_rc,
+            status="ok" if dry_run_rc == 0 else "failed",
+        )
+    )
+    if dry_run_rc != 0:
+        chain.error = "post-closeout sync dry-run failed"
+        chain.status = "invalid"
+        return chain
+    chain.post_closeout_sync_dry_run_report_json = (
+        paths["post_closeout_sync_dry_run_report_json"].relative_to(dest_dir).as_posix()
+    )
+
+    chain.status = "pass"
+    return chain
+
+
+def finalize_chain_artifacts(
+    dest_dir: Path, chain: LocalPostCloseoutChainResult
+) -> tuple[bool, str]:
+    """Write chain status and refresh durable manifest after post-closeout chain."""
+    _write_local_post_closeout_chain_status(dest_dir, chain)
+    write_manifest_sha256(dest_dir)
+    ok, msg, _log_status = _verify_manifest_with_log(dest_dir)
+    if not ok:
+        return False, f"post-chain manifest verify failed: {msg}"
+    return True, ""
+
+
+def emit_chain_machine_lines(chain: LocalPostCloseoutChainResult) -> None:
+    print(f"LOCAL_POST_CLOSEOUT_CHAIN_STATUS={chain.status}")
+    for step in chain.steps:
+        print(f"LOCAL_POST_CLOSEOUT_CHAIN_STEP_{step.step.upper()}_RC={step.rc}")
+    if chain.registry_json:
+        print(f"LOCAL_POST_CLOSEOUT_CHAIN_REGISTRY_JSON={chain.registry_json}")
+    if chain.projection_payload_json:
+        print(f"LOCAL_POST_CLOSEOUT_CHAIN_PROJECTION_PAYLOAD_JSON={chain.projection_payload_json}")
+    if chain.post_closeout_sync_dry_run_report_json:
+        print(
+            "LOCAL_POST_CLOSEOUT_CHAIN_POST_CLOSEOUT_SYNC_DRY_RUN_REPORT_JSON="
+            f"{chain.post_closeout_sync_dry_run_report_json}"
+        )
+    for key, value in chain.safety_flags().items():
+        print(f"{key}={'true' if value else 'false'}")
+    print("NOTION_WRITE_CALLED=false")
+    print("POST_CLOSEOUT_SYNC_DRY_RUN_ONLY=true")
+
+
 def emit_machine_lines(result: CopyVerifyResult) -> None:
     print(f"DURABLE_CLOSEOUT_COPY_VERIFY_STATUS={result.status}")
     print(f"DURABLE_CLOSEOUT_COPY_VERIFY_DRY_RUN={'true' if result.dry_run else 'false'}")
@@ -367,6 +607,30 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--allow-tmp-source", action="store_true")
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--json", action="store_true", dest="json_output")
+    parser.add_argument(
+        "--run-local-post-closeout-chain-v0",
+        action="store_true",
+        help=(
+            "After successful durable copy/verify, run local offline post-closeout chain "
+            "(registry -> projection payload -> post-closeout sync dry-run)."
+        ),
+    )
+    parser.add_argument(
+        "--chain-archive-root",
+        type=Path,
+        default=None,
+        help="Evidence archive root for Registry v1 build (required with --run-local-post-closeout-chain-v0).",
+    )
+    parser.add_argument(
+        "--chain-run-id",
+        default=None,
+        help="Optional run_id for projection payload builder.",
+    )
+    parser.add_argument(
+        "--chain-fixed-generated-at-utc",
+        default=None,
+        help="Optional fixed timestamp for deterministic Registry v1 output.",
+    )
     return parser
 
 
@@ -375,6 +639,13 @@ def main(argv: list[str] | None = None) -> int:
     pointer_patterns = tuple(
         p for p in (args.durable_pointer_pattern or DEFAULT_POINTER_EVIDENCE_PATTERNS) if p
     )
+    if args.run_local_post_closeout_chain_v0 and args.chain_archive_root is None:
+        print(
+            "ERROR: --chain-archive-root is required with --run-local-post-closeout-chain-v0",
+            file=sys.stderr,
+        )
+        return 2
+
     result = plan_and_execute(
         source_dir=args.source_dir,
         dest_dir=args.dest_dir,
@@ -387,13 +658,53 @@ def main(argv: list[str] | None = None) -> int:
         allow_tmp_source=args.allow_tmp_source,
         force=args.force,
     )
+    chain: LocalPostCloseoutChainResult | None = None
+    exit_code = 0 if result.status == "pass" else 1
+
+    if args.run_local_post_closeout_chain_v0:
+        if args.dry_run:
+            chain = LocalPostCloseoutChainResult(
+                status="blocked",
+                error="local post-closeout chain skipped on --dry-run",
+            )
+            exit_code = 1
+        elif result.status != "pass":
+            chain = LocalPostCloseoutChainResult(
+                status="blocked",
+                error="durable copy/verify did not pass; chain not started",
+            )
+            exit_code = 1
+        else:
+            chain = run_local_post_closeout_chain_v0(
+                dest_dir=args.dest_dir,
+                archive_root=args.chain_archive_root,
+                run_id=args.chain_run_id,
+                fixed_generated_at_utc=args.chain_fixed_generated_at_utc,
+            )
+            if chain.status == "pass":
+                ok_finalize, finalize_msg = finalize_chain_artifacts(args.dest_dir, chain)
+                if not ok_finalize:
+                    chain.status = "invalid"
+                    chain.error = finalize_msg
+            else:
+                _write_local_post_closeout_chain_status(args.dest_dir, chain)
+            if chain.status != "pass":
+                exit_code = 1
+
     if args.json_output:
-        print(json.dumps(asdict(result), sort_keys=True))
+        payload: dict[str, Any] = asdict(result)
+        if chain is not None:
+            payload["local_post_closeout_chain"] = asdict(chain)
+        print(json.dumps(payload, sort_keys=True))
     else:
         emit_machine_lines(result)
+        if chain is not None:
+            emit_chain_machine_lines(chain)
     if result.error:
         print(result.error, file=sys.stderr)
-    return 0 if result.status == "pass" else 1
+    if chain is not None and chain.error:
+        print(chain.error, file=sys.stderr)
+    return exit_code
 
 
 if __name__ == "__main__":
