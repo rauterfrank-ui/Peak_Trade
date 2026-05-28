@@ -1241,12 +1241,17 @@ POST_CLOSEOUT_PROJECTION_AUTOMATION_DOCS_TESTS_ONLY=true
 ```
 POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_V0=true
 HOOK_AUTOMATION_OWNER_STATUS=identified
+DURABLE_CLOSEOUT_ATTACH_HOOK_V0_IMPLEMENTED=true
+DURABLE_CLOSEOUT_ATTACH_HOOK_V0_NON_AUTHORIZING=true
+DURABLE_CLOSEOUT_ATTACH_HOOK_V0_DEFAULT_OFF=true
 POST_CLOSEOUT_AUTOMATION_HOOK_IMPLEMENTED=false
 POST_CLOSEOUT_AUTOMATION_HOOK_AUTO_INSTALL=false
 POST_CLOSEOUT_AUTOMATION_LAUNCHCTL_FORBIDDEN=true
 POST_CLOSEOUT_CHAIN_EXECUTE_SCRIPT_FORBIDDEN=true
 POST_CLOSEOUT_PROJECTION_AUTOMATION_ENABLED=false
 FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED=false
+PREFLIGHT_BLOCKED_LIFTED=false
+READY_FOR_START_AFTER_SLICE=false
 HOOK_ATTACH_AFTER_RUN_COMPLETION_ONLY=true
 HOOK_ATTACH_AFTER_DURABLE_PRIMARY_EVIDENCE_ONLY=true
 HOOK_ATTACH_AFTER_MANIFEST_VERIFY_RC_ZERO_ONLY=true
@@ -1258,17 +1263,20 @@ NO_MARKET_GLOBAL_ENABLEMENT_IN_PRECHECK=true
 POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_DOCS_TESTS_ONLY=true
 ```
 
-**Purpose:** Normatively record **where** future post-closeout orchestration may attach after material run closeout — **without** implementing hooks, changing scheduler/daemon/adapter runtime behavior, or enabling Notion/Market consumers.
+**Purpose:** Normatively record **where** post-closeout work may attach after material run closeout, and distinguish **implemented narrow durable-closeout attach hooks** (default-off; invoke [durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py) only) from **not-yet-implemented full post-closeout automation** (phases 2–9 orchestration). This slice does **not** enable Notion/Market consumers, lift Preflight **BLOCKED**, or set `READY_FOR_START=true`.
 
-**Hook owner status (Precheck only):** `hook_automation_owner_status=identified` means canonical attach surfaces are named below. It **does not** imply `FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED=true`, `POST_CLOSEOUT_AUTOMATION_HOOK_IMPLEMENTED=true`, or operator recovery elimination.
+**Hook owner status (Precheck only):** `hook_automation_owner_status=identified` means canonical attach surfaces are named below. It **does not** imply `FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED=true`, `POST_CLOSEOUT_AUTOMATION_HOOK_IMPLEMENTED=true`, Preflight **BLOCKED** lift (`PREFLIGHT_BLOCKED_LIFTED=false`), or operator recovery elimination.
 
-**Allowed future attach points (planning; after prerequisites):**
+**Narrow durable-closeout attach hooks (implemented on `main`; default-off; non-authorizing):**
 
-| Owner ID | Canonical script | Future attach **after** | Prerequisites (all required) |
-|---|---|---|---|
-| `scheduler_completion` | [run_scheduler.py](../../../scripts/run_scheduler.py) | `finalize_scheduler_completion_evidence()` return path — **after** scheduler loop exit, **not** before job dispatch | Run completion; durable evidence root when `--primary-evidence-enforce`; `finalize_primary_evidence_root()` success; `scheduler_completion_closeout_v0.json`; `MANIFEST.sha256` verify RC=0 |
-| `shadow_bounded_adapter` | [run_shadow_bounded_observation_adapter_v0.py](../../../scripts/ops/run_shadow_bounded_observation_adapter_v0.py) | Archive/closeout artifact finalization path (`_write_closeout_artifacts` / durable archive copy) — **after** review and durable retention | Adapter execute complete; durable archive outside `/tmp`; manifest verify RC=0; bounded review when applicable |
-| `supervisor_evidence_pack` | [pack_online_readiness_supervisor_evidence_v0.py](../../../scripts/ops/pack_online_readiness_supervisor_evidence_v0.py) | Pack finalization — **after** supervisor STOP and copy into durable archive root | Operator-invoked pack complete; `supervisor_session_closeout_v0.json`; optional `finalize_primary_evidence_root()` when `--primary-evidence-enforce`; manifest verify RC=0 |
+| Owner ID | Canonical script | Opt-in CLI (default off) | Attach **after** | Prerequisites (all required) |
+|---|---|---|---|---|
+| `scheduler_completion` | [run_scheduler.py](../../../scripts/run_scheduler.py) | `--invoke-durable-closeout-after-completion-v0` (+ `--durable-closeout-dest-dir`, `--evidence-dir`) | `finalize_scheduler_completion_evidence()` return path — **after** scheduler loop exit, **not** before job dispatch | Run completion; durable evidence root when `--primary-evidence-enforce`; `finalize_primary_evidence_root()` success; `scheduler_completion_closeout_v0.json`; `MANIFEST.sha256` verify RC=0 |
+| `paper_bounded_adapter` | [run_paper_only_bounded_observation_adapter_v0.py](../../../scripts/ops/run_paper_only_bounded_observation_adapter_v0.py) | `--invoke-durable-closeout-v0` (+ `--durable-closeout-dest-dir`) | Archive/closeout artifact finalization — **after** review and durable retention | Adapter execute complete; durable archive outside `/tmp`; manifest verify RC=0; bounded review when applicable |
+| `shadow_bounded_adapter` | [run_shadow_bounded_observation_adapter_v0.py](../../../scripts/ops/run_shadow_bounded_observation_adapter_v0.py) | `--invoke-durable-closeout-v0` (shared bounded-adapter CLI wiring) | Archive/closeout artifact finalization — **after** review and durable retention | Adapter execute complete; durable archive outside `/tmp`; manifest verify RC=0; bounded review when applicable |
+| `supervisor_evidence_pack` | [pack_online_readiness_supervisor_evidence_v0.py](../../../scripts/ops/pack_online_readiness_supervisor_evidence_v0.py) | `--invoke-durable-closeout-after-pack-v0` (+ `--durable-closeout-dest-dir`) | Pack finalization — **after** supervisor STOP and copy into durable archive root | Operator-invoked pack complete; `supervisor_session_closeout_v0.json`; optional `finalize_primary_evidence_root()` when `--primary-evidence-enforce`; manifest verify RC=0 |
+
+`DURABLE_CLOSEOUT_ATTACH_HOOK_V0_IMPLEMENTED=true` — narrow attach hooks ship on `main` and call **only** [durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py). `DURABLE_CLOSEOUT_ATTACH_HOOK_V0_DEFAULT_OFF=true` — hooks require explicit operator flags. `DURABLE_CLOSEOUT_ATTACH_HOOK_V0_NON_AUTHORIZING=true` — hook invocation does **not** complete §2b.1 by itself, lift gates, or authorize runtime.
 
 **Forbidden attach points (always):**
 
@@ -1281,10 +1289,11 @@ POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_DOCS_TESTS_ONLY=true
 - Market overlay global enablement path (`MARKET_DASHBOARD_RUN_PROJECTION_ENABLED` stays `false` by default).
 - Live / Testnet / broker / exchange execution paths.
 
-**Future hook boundary (separate implementation charter only):**
+**Full post-closeout automation boundary (separate implementation charter only):**
 
-- `POST_CLOSEOUT_AUTOMATION_HOOK_IMPLEMENTED=false` in this slice — **no** hook module, **no** auto-install, **no** `launchctl` plist change, **no** scheduler default behavior change.
-- A future hook adapter must **call/reuse** existing offline chain owners (phases 2–9) in order: [durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py) → [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) → [build_post_closeout_projection_payload_v0.py](../../../scripts/ops/build_post_closeout_projection_payload_v0.py) → [notion_post_closeout_sync_dry_run_v0.py](../../../scripts/ops/notion_post_closeout_sync_dry_run_v0.py) — and must **fail closed** on any phase block.
+- `POST_CLOSEOUT_AUTOMATION_HOOK_IMPLEMENTED=false` — **no** full phases 2–9 orchestration hook module, **no** auto-install, **no** `launchctl` plist change, **no** scheduler default behavior change. Narrow durable-closeout attach hooks above are **not** this marker.
+- `FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED=false` — registry → payload → Notion dry-run chain automation remains future-only.
+- A future **full** hook adapter must **call/reuse** existing offline chain owners (phases 2–9) in order: [durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py) → [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) → [build_post_closeout_projection_payload_v0.py](../../../scripts/ops/build_post_closeout_projection_payload_v0.py) → [notion_post_closeout_sync_dry_run_v0.py](../../../scripts/ops/notion_post_closeout_sync_dry_run_v0.py) — and must **fail closed** on any phase block.
 - **Forbidden script names in repository:** `post_closeout_chain_execute_v0.py` (parallel execute surface); any `launchctl` coupling.
 
 **Readiness gate coupling:** [test_closeout_to_projection_chain_automation_contract_v0.py](../../../tests/ops/test_closeout_to_projection_chain_automation_contract_v0.py) treats `claimed_full_post_closeout_automation_implemented=true` as invalid unless `hook_automation_owner_status=identified` (synthetic tests only).
