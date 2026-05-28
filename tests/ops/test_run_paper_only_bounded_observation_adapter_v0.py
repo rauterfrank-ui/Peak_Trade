@@ -145,6 +145,11 @@ def test_execute_without_approval_record_fails(tmp_path: Path) -> None:
         repo_clean_checker=lambda _root: (True, ""),
     )
     assert rc != 0
+    start_rc = staging / mod.START_RETURN_CODE_ARTIFACT
+    assert start_rc.is_file()
+    content = start_rc.read_text(encoding="utf-8")
+    assert f"START_RC={mod.VALIDATION_EXIT}" in content
+    assert "execute requires --approval-record" in content
 
 
 def test_execute_without_archive_root_fails(tmp_path: Path) -> None:
@@ -298,6 +303,9 @@ def test_execute_accepts_sample_approval_with_mocked_runner(tmp_path: Path) -> N
     assert rc == 0
     assert calls
     assert scheduler_extra_env is None
+    start_rc = staging / mod.START_RETURN_CODE_ARTIFACT
+    assert start_rc.is_file()
+    assert f"START_RC=0" in start_rc.read_text(encoding="utf-8")
 
 
 def test_command_plan_includes_make_scheduler_temp_config(tmp_path: Path) -> None:
@@ -636,3 +644,6 @@ def test_24h_profile_execute_accepts_sample_fixture_mocked(tmp_path: Path) -> No
     assert scheduler_extra_env is not None
     assert scheduler_extra_env.get(SCHEDULER_HOLD_RUNTIME_OUTROOT_ENV) == expected_outroot
     assert scheduler_extra_env.get(SCHEDULER_HOLD_RUNTIME_RUN_ID_ENV) == RUN_ID_24H
+    start_rc = staging / mod.START_RETURN_CODE_ARTIFACT
+    assert start_rc.is_file()
+    assert "START_RC=0" in start_rc.read_text(encoding="utf-8")
