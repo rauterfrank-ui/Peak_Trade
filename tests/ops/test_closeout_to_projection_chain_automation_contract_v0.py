@@ -55,6 +55,7 @@ REUSED_TEST_MODULES: tuple[str, ...] = (
     "tests/ops/test_closeout_final_machine_lines_contract_v0.py",
     "tests/ops/test_durable_closeout_copy_verify_v0.py",
     "tests/ops/test_build_post_closeout_projection_payload_v0.py",
+    "tests/ops/test_bounded_adapter_durable_chain_synthetic_e2e_v0.py",
 )
 
 
