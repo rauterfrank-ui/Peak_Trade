@@ -362,6 +362,8 @@ def test_execute_accepts_sample_approval_with_mocked_runner(tmp_path: Path) -> N
     ok, reason = mod.verify_manifest_sha256(copied)
     assert ok, reason
     assert (copied / "review" / "REVIEW_RESULT.json").is_file()
+    assert (staging / mod.FINAL_MACHINE_LINES_FILENAME).is_file()
+    assert (copied / mod.FINAL_MACHINE_LINES_FILENAME).is_file()
 
 
 def test_command_plan_never_uses_scheduler_or_shadow_loop(tmp_path: Path) -> None:

@@ -306,6 +306,10 @@ def test_execute_accepts_sample_approval_with_mocked_runner(tmp_path: Path) -> N
     start_rc = staging / mod.START_RETURN_CODE_ARTIFACT
     assert start_rc.is_file()
     assert f"START_RC=0" in start_rc.read_text(encoding="utf-8")
+    assert (staging / mod.FINAL_MACHINE_LINES_FILENAME).is_file()
+    run_dirs = list((archive / "runs" / "paper").iterdir())
+    assert run_dirs
+    assert (run_dirs[0] / mod.FINAL_MACHINE_LINES_FILENAME).is_file()
 
 
 def test_command_plan_includes_make_scheduler_temp_config(tmp_path: Path) -> None:

@@ -158,14 +158,19 @@ def test_projection_ready_is_not_wall_clock_duration_evidence(builder, tmp_path)
 
 
 def test_no_repo_production_script_writes_final_machine_lines_file():
-    """Inventory: only tests + payload builder reference FINAL_MACHINE_LINES.txt in-repo."""
+    """Inventory: bounded adapters + payload builder may write FINAL_MACHINE_LINES.txt."""
     scripts_ops = REPO_ROOT / "scripts" / "ops"
+    allowed_writers = {
+        "scripts/ops/build_post_closeout_projection_payload_v0.py",
+        "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
+        "scripts/ops/run_shadow_bounded_observation_adapter_v0.py",
+    }
     writers: list[str] = []
     for path in scripts_ops.rglob("*.py"):
         text = path.read_text(encoding="utf-8")
         if 'FINAL_MACHINE_LINES.txt"' in text or "FINAL_MACHINE_LINES.txt'" in text:
             rel = path.relative_to(REPO_ROOT).as_posix()
-            if rel != "scripts/ops/build_post_closeout_projection_payload_v0.py":
+            if rel not in allowed_writers:
                 writers.append(rel)
     assert writers == [], (
         "unexpected production writers of FINAL_MACHINE_LINES.txt; "

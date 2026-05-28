@@ -31,6 +31,12 @@ from scripts.ops.primary_evidence_retention_v0 import (
     verify_manifest_sha256,
     write_manifest_sha256 as _write_manifest_sha256,
 )
+from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import (
+    FINAL_MACHINE_LINES_FILENAME,
+    _write_final_machine_lines_artifact,
+)
+
+BOUNDED_ADAPTER_LANE_SHADOW = "shadow_bounded_observation_v0"
 
 ADAPTER_VERSION = "cli_adapter_wrapper_composition_v0"
 WRAPPER_SCRIPT = "scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py"
@@ -304,6 +310,7 @@ def build_plan(
         "CLOSEOUT.md",
         "POSTRUN_ANALYSIS.md",
         "RUN_METADATA.json",
+        FINAL_MACHINE_LINES_FILENAME,
     ]
 
     commands = {
@@ -491,6 +498,14 @@ def _write_closeout_artifacts(
     (ctx.staging_root / "POSTRUN_ANALYSIS.md").write_text(
         "\n".join(postrun_lines) + "\n",
         encoding="utf-8",
+    )
+    _write_final_machine_lines_artifact(
+        ctx.staging_root,
+        run_id=ctx.run_id,
+        adapter_lane=BOUNDED_ADAPTER_LANE_SHADOW,
+        execution_performed=True,
+        review_verdict=str(review_payload.get("verdict") or "UNKNOWN"),
+        closeout_succeeded=True,
     )
 
 
