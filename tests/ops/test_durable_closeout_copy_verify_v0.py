@@ -70,7 +70,13 @@ def _cleanup_archive_like_dest(path: Path) -> None:
     shutil.rmtree(path.parents[2], ignore_errors=True)
 
 
-def _minimal_source(tmp_path: Path, *, with_closeout: bool = True, with_pr: bool = False) -> Path:
+def _minimal_source(
+    tmp_path: Path,
+    *,
+    with_closeout: bool = True,
+    with_pr: bool = False,
+    with_pointer: bool = False,
+) -> Path:
     src = tmp_path / "source"
     src.mkdir()
     (src / "note.txt").write_text("fixture\n", encoding="utf-8")
@@ -78,6 +84,8 @@ def _minimal_source(tmp_path: Path, *, with_closeout: bool = True, with_pr: bool
         (src / "AFTER_FIXTURE_CLOSEOUT.md").write_text("# closeout\n", encoding="utf-8")
     if with_pr:
         (src / "PR42.json").write_text('{"number": 42}\n', encoding="utf-8")
+    if with_pointer:
+        (src / "PR_URL.txt").write_text("https://example.invalid/pr/42\n", encoding="utf-8")
     return src
 
 
@@ -294,6 +302,7 @@ def test_non_dry_copy_creates_readme_and_manifest(helper, tmp_path):
         assert rc == 0
         assert (dest / "DURABLE_COPY_README.md").is_file()
         assert (dest / "MANIFEST.sha256").is_file()
+        assert (dest / "MANIFEST_VERIFY.log").is_file()
     finally:
         _cleanup_archive_like_dest(dest)
 
@@ -342,6 +351,82 @@ def test_duplicate_dest_with_force_succeeds(helper, tmp_path, capsys):
         rc = helper.main([*base_args, "--force"])
         assert rc == 0
         assert "FORCE_OVERWRITE=true" in capsys.readouterr().err
+    finally:
+        _cleanup_archive_like_dest(dest)
+
+
+def test_pointer_enforcement_enabled_blocks_without_pointer(helper, tmp_path):
+    src = _minimal_source(tmp_path, with_pointer=False)
+    dest = _archive_like_dest(tmp_path, "pointer_missing")
+    try:
+        rc = helper.main(
+            [
+                "--source-dir",
+                str(src),
+                "--dest-dir",
+                str(dest),
+                *_tmp_source_args(),
+                "--require-durable-pointer-evidence",
+            ]
+        )
+        assert rc == 1
+    finally:
+        _cleanup_archive_like_dest(dest)
+
+
+def test_pointer_enforcement_enabled_passes_with_pointer(helper, tmp_path):
+    src = _minimal_source(tmp_path, with_pointer=True)
+    dest = _archive_like_dest(tmp_path, "pointer_present")
+    try:
+        rc = helper.main(
+            [
+                "--source-dir",
+                str(src),
+                "--dest-dir",
+                str(dest),
+                *_tmp_source_args(),
+                "--require-durable-pointer-evidence",
+            ]
+        )
+        assert rc == 0
+    finally:
+        _cleanup_archive_like_dest(dest)
+
+
+def test_pointer_enforcement_disabled_is_backward_compatible(helper, tmp_path):
+    src = _minimal_source(tmp_path, with_pointer=False)
+    dest = _archive_like_dest(tmp_path, "pointer_optional")
+    try:
+        rc = helper.main(
+            [
+                "--source-dir",
+                str(src),
+                "--dest-dir",
+                str(dest),
+                *_tmp_source_args(),
+            ]
+        )
+        assert rc == 0
+    finally:
+        _cleanup_archive_like_dest(dest)
+
+
+def test_missing_manifest_verify_log_blocks(helper, tmp_path, monkeypatch):
+    src = _minimal_source(tmp_path, with_pointer=True)
+    dest = _archive_like_dest(tmp_path, "missing_manifest_log")
+    try:
+        monkeypatch.setattr(helper, "_manifest_verify_log_is_success", lambda _dest: False)
+        rc = helper.main(
+            [
+                "--source-dir",
+                str(src),
+                "--dest-dir",
+                str(dest),
+                *_tmp_source_args(),
+                "--require-durable-pointer-evidence",
+            ]
+        )
+        assert rc == 1
     finally:
         _cleanup_archive_like_dest(dest)
 
