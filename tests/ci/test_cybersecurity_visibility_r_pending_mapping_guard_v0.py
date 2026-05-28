@@ -20,12 +20,8 @@ RISK_TABLE_ROW_RX = re.compile(
     re.MULTILINE,
 )
 FENCED_BLOCK_RX = re.compile(r"```[^\n]*\n(.*?)```", re.DOTALL)
-REPO_TEST_OWNER_PATH_RX = re.compile(
-    r"`(tests/(?:ci|ops|webui)/[A-Za-z0-9_./-]+\.py)`"
-)
-HISTOGRAM_REUSE_PATH_RX = re.compile(
-    r"Reuse `(tests/(?:ci|ops|webui)/[A-Za-z0-9_./-]+\.py)`"
-)
+REPO_TEST_OWNER_PATH_RX = re.compile(r"`(tests/(?:ci|ops|webui)/[A-Za-z0-9_./-]+\.py)`")
+HISTOGRAM_REUSE_PATH_RX = re.compile(r"Reuse `(tests/(?:ci|ops|webui)/[A-Za-z0-9_./-]+\.py)`")
 
 CHARTER_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_R_PENDING_REPO_STATIC_INVENTORY_CHARTER_V0=true"
 INPUT_ARTIFACT_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_R_PENDING_INPUT_ARTIFACT_CONTRACT_V0=true"
@@ -78,14 +74,15 @@ def _machine_line_values(block: str) -> dict[str, str]:
     return values
 
 
-def _assert_block_keys(block: str, *, block_name: str, required_keys: frozenset[str]) -> dict[str, str]:
+def _assert_block_keys(
+    block: str, *, block_name: str, required_keys: frozenset[str]
+) -> dict[str, str]:
     values = _machine_line_values(block)
     missing = required_keys - values.keys()
     assert not missing, f"{block_name} missing keys: {sorted(missing)}"
     for key in required_keys:
         assert values[key] == GUARD_REGISTRY_EXPECTED[key], (
-            f"{block_name} {key}={values[key]!r} expected "
-            f"{GUARD_REGISTRY_EXPECTED[key]!r}"
+            f"{block_name} {key}={values[key]!r} expected {GUARD_REGISTRY_EXPECTED[key]!r}"
         )
     return values
 
