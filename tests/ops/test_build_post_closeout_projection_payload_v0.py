@@ -65,6 +65,7 @@ def _write_machine_lines(path: Path, overrides: dict[str, str] | None = None) ->
 def _write_closeout_bundle(
     closeout_root: Path,
     *,
+    closeout_artifact: str = "none",
     with_manifest: bool = True,
     manifest_valid: bool = True,
     with_verify_log: bool = True,
@@ -75,6 +76,18 @@ def _write_closeout_bundle(
     closeout_root.mkdir(parents=True, exist_ok=True)
     (closeout_root / "evidence.txt").write_text("fixture\n", encoding="utf-8")
     (closeout_root / "DURABLE_COPY_README.md").write_text("# durable copy\n", encoding="utf-8")
+    if closeout_artifact == "md":
+        (closeout_root / "AFTER_PR3737_MERGE_CLOSEOUT.md").write_text(
+            "# closeout\n", encoding="utf-8"
+        )
+    elif closeout_artifact == "scheduler_json":
+        (closeout_root / "scheduler_completion_closeout_v0.json").write_text(
+            '{"status":"ok"}\n', encoding="utf-8"
+        )
+    elif closeout_artifact == "supervisor_json":
+        (closeout_root / "supervisor_session_closeout_v0.json").write_text(
+            '{"status":"ok"}\n', encoding="utf-8"
+        )
     if with_machine_lines:
         _write_machine_lines(closeout_root / "FINAL_MACHINE_LINES.txt", machine_line_overrides)
     if with_manifest:
@@ -322,8 +335,7 @@ def test_hook_readiness_happy_path_ready(builder, tmp_path):
     closeout = tmp_path / "closeout"
     registry_path = tmp_path / "registry.json"
     out = tmp_path / "hook_readiness.json"
-    _write_closeout_bundle(closeout)
-    (closeout / "AFTER_PR3737_MERGE_CLOSEOUT.md").write_text("# closeout\n", encoding="utf-8")
+    _write_closeout_bundle(closeout, closeout_artifact="md")
     _write_registry(registry_path, tmp_path)
 
     rc = _run_hook_cli(builder, closeout, registry_path, out)
@@ -342,8 +354,7 @@ def test_hook_readiness_blocks_missing_manifest(builder, tmp_path):
     closeout = tmp_path / "closeout"
     registry_path = tmp_path / "registry.json"
     out = tmp_path / "hook_readiness.json"
-    _write_closeout_bundle(closeout, with_manifest=False)
-    (closeout / "AFTER_PR3737_MERGE_CLOSEOUT.md").write_text("# closeout\n", encoding="utf-8")
+    _write_closeout_bundle(closeout, closeout_artifact="md", with_manifest=False)
     _write_registry(registry_path, tmp_path)
 
     rc = _run_hook_cli(builder, closeout, registry_path, out)
@@ -357,8 +368,7 @@ def test_hook_readiness_blocks_failing_manifest_verify_log(builder, tmp_path):
     closeout = tmp_path / "closeout"
     registry_path = tmp_path / "registry.json"
     out = tmp_path / "hook_readiness.json"
-    _write_closeout_bundle(closeout)
-    (closeout / "AFTER_PR3737_MERGE_CLOSEOUT.md").write_text("# closeout\n", encoding="utf-8")
+    _write_closeout_bundle(closeout, closeout_artifact="md")
     (closeout / "MANIFEST_VERIFY.log").write_text("evidence.txt: FAILED\n", encoding="utf-8")
     _write_registry(registry_path, tmp_path)
 
@@ -387,8 +397,7 @@ def test_hook_readiness_scheduler_heartbeat_optional(builder, tmp_path):
     closeout = tmp_path / "closeout"
     registry_path = tmp_path / "registry.json"
     out = tmp_path / "hook_readiness.json"
-    _write_closeout_bundle(closeout)
-    (closeout / "AFTER_PR3737_MERGE_CLOSEOUT.md").write_text("# closeout\n", encoding="utf-8")
+    _write_closeout_bundle(closeout, closeout_artifact="md")
     _write_registry(registry_path, tmp_path)
 
     rc = _run_hook_cli(builder, closeout, registry_path, out)
@@ -396,3 +405,38 @@ def test_hook_readiness_scheduler_heartbeat_optional(builder, tmp_path):
     payload = json.loads(out.read_text(encoding="utf-8"))
     assert payload["checks"]["scheduler_heartbeat_informational_optional"] is True
     assert payload["heartbeat"]["present"] is False
+
+
+def test_hook_readiness_accepts_manifested_scheduler_json_closeout(builder, tmp_path):
+    closeout = tmp_path / "closeout"
+    registry_path = tmp_path / "registry.json"
+    out = tmp_path / "hook_readiness.json"
+    _write_closeout_bundle(closeout, closeout_artifact="scheduler_json")
+    _write_registry(registry_path, tmp_path)
+
+    rc = _run_hook_cli(builder, closeout, registry_path, out)
+    assert rc == 0
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    assert payload["status"] == "READY"
+    assert payload["checks"]["closeout_report_exists"] is True
+
+
+def test_hook_readiness_blocks_unmanifested_scheduler_json_closeout(builder, tmp_path):
+    closeout = tmp_path / "closeout"
+    registry_path = tmp_path / "registry.json"
+    out = tmp_path / "hook_readiness.json"
+    _write_closeout_bundle(closeout, closeout_artifact="scheduler_json")
+    manifest = closeout / "MANIFEST.sha256"
+    filtered = [
+        line
+        for line in manifest.read_text(encoding="utf-8").splitlines()
+        if "scheduler_completion_closeout_v0.json" not in line
+    ]
+    manifest.write_text("\n".join(filtered) + "\n", encoding="utf-8")
+    _write_registry(registry_path, tmp_path)
+
+    rc = _run_hook_cli(builder, closeout, registry_path, out)
+    assert rc == 0
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    assert payload["status"] == "BLOCKED"
+    assert "closeout_report_exists" in payload["blocked_reasons"]

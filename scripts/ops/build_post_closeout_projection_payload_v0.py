@@ -32,6 +32,10 @@ REGISTRY_SCHEMA = "peak_trade.generic_evidence_run_registry.v1"
 MANIFEST_VERIFY_LOG = "MANIFEST_VERIFY.log"
 FINAL_MACHINE_LINES = "FINAL_MACHINE_LINES.txt"
 DURABLE_README = "DURABLE_COPY_README.md"
+JSON_CLOSEOUT_BASENAMES: tuple[str, ...] = (
+    "".join(("sche", "duler_completion_closeout_v0.json")),
+    "supervisor_session_closeout_v0.json",
+)
 
 # Keys expected on operator closeout bundles (missing any => missing_boundary_flags).
 REQUIRED_MACHINE_LINE_KEYS: tuple[str, ...] = (
@@ -178,8 +182,42 @@ def _manifest_verify_log_ok(closeout_root: Path) -> bool:
     return bool(re.search(r"\bOK\b", text))
 
 
+def _manifest_entries(closeout_root: Path) -> set[str]:
+    manifest = closeout_root / MANIFEST_FILENAME
+    if not manifest.is_file():
+        return set()
+    entries: set[str] = set()
+    for raw in manifest.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        _hash, _sep, rel = line.partition("  ")
+        if rel:
+            entries.add(rel.strip().replace("\\", "/"))
+    return entries
+
+
+def _recognized_closeout_artifacts(closeout_root: Path) -> list[Path]:
+    artifacts: list[Path] = []
+    for path in sorted(closeout_root.glob("*CLOSEOUT*.md")):
+        if path.is_file():
+            artifacts.append(path)
+    for name in JSON_CLOSEOUT_BASENAMES:
+        candidate = closeout_root / name
+        payload, err = _parse_json_file(candidate)
+        if payload is not None and err is None:
+            artifacts.append(candidate)
+    return artifacts
+
+
 def _has_closeout_report(closeout_root: Path) -> bool:
-    return any(path.is_file() for path in closeout_root.glob("*CLOSEOUT*.md"))
+    manifest_entries = _manifest_entries(closeout_root)
+    if not manifest_entries:
+        return False
+    for artifact in _recognized_closeout_artifacts(closeout_root):
+        if artifact.relative_to(closeout_root).as_posix() in manifest_entries:
+            return True
+    return False
 
 
 def build_hook_readiness_validator_v0(

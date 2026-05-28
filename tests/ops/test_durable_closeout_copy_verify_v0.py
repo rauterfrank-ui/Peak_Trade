@@ -74,6 +74,8 @@ def _minimal_source(
     tmp_path: Path,
     *,
     with_closeout: bool = True,
+    closeout_json_name: str | None = None,
+    closeout_json_content: str = '{"status":"ok"}\n',
     with_pr: bool = False,
     with_pointer: bool = False,
 ) -> Path:
@@ -82,6 +84,8 @@ def _minimal_source(
     (src / "note.txt").write_text("fixture\n", encoding="utf-8")
     if with_closeout:
         (src / "AFTER_FIXTURE_CLOSEOUT.md").write_text("# closeout\n", encoding="utf-8")
+    if closeout_json_name:
+        (src / closeout_json_name).write_text(closeout_json_content, encoding="utf-8")
     if with_pr:
         (src / "PR42.json").write_text('{"number": 42}\n', encoding="utf-8")
     if with_pointer:
@@ -205,6 +209,51 @@ def test_dest_under_tmp_fails(helper, tmp_path):
 def test_missing_closeout_report_fails_by_default(helper, tmp_path):
     src = _minimal_source(tmp_path, with_closeout=False)
     dest = _archive_like_dest(tmp_path)
+    try:
+        rc = helper.main(
+            [
+                "--source-dir",
+                str(src),
+                "--dest-dir",
+                str(dest),
+                *_tmp_source_args(),
+            ]
+        )
+        assert rc == 1
+    finally:
+        _cleanup_archive_like_dest(dest)
+
+
+def test_valid_scheduler_json_closeout_is_accepted(helper, tmp_path):
+    src = _minimal_source(
+        tmp_path,
+        with_closeout=False,
+        closeout_json_name="scheduler_completion_closeout_v0.json",
+    )
+    dest = _archive_like_dest(tmp_path, "scheduler_json_closeout")
+    try:
+        rc = helper.main(
+            [
+                "--source-dir",
+                str(src),
+                "--dest-dir",
+                str(dest),
+                *_tmp_source_args(),
+            ]
+        )
+        assert rc == 0
+    finally:
+        _cleanup_archive_like_dest(dest)
+
+
+def test_malformed_scheduler_json_closeout_is_rejected(helper, tmp_path):
+    src = _minimal_source(
+        tmp_path,
+        with_closeout=False,
+        closeout_json_name="scheduler_completion_closeout_v0.json",
+        closeout_json_content="{not-json\n",
+    )
+    dest = _archive_like_dest(tmp_path, "scheduler_json_closeout_malformed")
     try:
         rc = helper.main(
             [
@@ -424,6 +473,41 @@ def test_missing_manifest_verify_log_blocks(helper, tmp_path, monkeypatch):
                 str(dest),
                 *_tmp_source_args(),
                 "--require-durable-pointer-evidence",
+            ]
+        )
+        assert rc == 1
+    finally:
+        _cleanup_archive_like_dest(dest)
+
+
+def test_manifest_must_cover_recognized_closeout_artifact(helper, tmp_path, monkeypatch):
+    src = _minimal_source(
+        tmp_path,
+        with_closeout=False,
+        closeout_json_name="scheduler_completion_closeout_v0.json",
+    )
+    dest = _archive_like_dest(tmp_path, "manifest_missing_closeout_artifact")
+    try:
+        original_write_manifest = helper.write_manifest_sha256
+
+        def _write_manifest_without_closeout(dest_dir: Path) -> None:
+            original_write_manifest(dest_dir)
+            manifest = dest_dir / "MANIFEST.sha256"
+            filtered = [
+                line
+                for line in manifest.read_text(encoding="utf-8").splitlines()
+                if "scheduler_completion_closeout_v0.json" not in line
+            ]
+            manifest.write_text("\n".join(filtered) + "\n", encoding="utf-8")
+
+        monkeypatch.setattr(helper, "write_manifest_sha256", _write_manifest_without_closeout)
+        rc = helper.main(
+            [
+                "--source-dir",
+                str(src),
+                "--dest-dir",
+                str(dest),
+                *_tmp_source_args(),
             ]
         )
         assert rc == 1

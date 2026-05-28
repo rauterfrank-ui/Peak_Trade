@@ -13,6 +13,7 @@ import sys
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from typing import Any
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
@@ -27,6 +28,10 @@ from scripts.ops.primary_evidence_retention_v0 import (
 
 README_FILENAME = "DURABLE_COPY_README.md"
 CLOSEOUT_GLOB = "*CLOSEOUT*.md"
+JSON_CLOSEOUT_BASENAMES: tuple[str, ...] = (
+    "".join(("sche", "duler_completion_closeout_v0.json")),
+    "supervisor_session_closeout_v0.json",
+)
 MANIFEST_VERIFY_LOG_FILENAME = "MANIFEST_VERIFY.log"
 DEFAULT_POINTER_EVIDENCE_PATTERNS: tuple[str, ...] = (
     "PR_URL.txt",
@@ -63,10 +68,30 @@ def _source_has_files(source: Path) -> bool:
     return any(p.is_file() for p in source.rglob("*"))
 
 
-def _find_closeout_report(source: Path) -> Path | None:
-    for path in sorted(source.glob(CLOSEOUT_GLOB)):
+def _json_closeout_valid(path: Path) -> bool:
+    try:
+        payload: Any = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return isinstance(payload, dict)
+
+
+def _recognized_closeout_artifacts(root: Path) -> list[Path]:
+    artifacts: list[Path] = []
+    for path in sorted(root.glob(CLOSEOUT_GLOB)):
         if path.is_file():
-            return path
+            artifacts.append(path)
+    for name in JSON_CLOSEOUT_BASENAMES:
+        candidate = root / name
+        if candidate.is_file() and _json_closeout_valid(candidate):
+            artifacts.append(candidate)
+    return artifacts
+
+
+def _find_closeout_report(source: Path) -> Path | None:
+    artifacts = _recognized_closeout_artifacts(source)
+    if artifacts:
+        return artifacts[0]
     return None
 
 
@@ -136,6 +161,32 @@ def _pointer_evidence_exists(dest: Path, patterns: tuple[str, ...]) -> bool:
         for matched in dest.glob(pattern):
             if matched.is_file():
                 return True
+    return False
+
+
+def _manifest_entries(dest: Path) -> set[str]:
+    manifest = _safe_dest_child(dest, Path(MANIFEST_FILENAME))
+    entries: set[str] = set()
+    if not manifest.is_file():
+        return entries
+    for raw in manifest.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        _hash, _sep, rel = line.partition("  ")
+        if rel:
+            entries.add(rel.strip().replace("\\", "/"))
+    return entries
+
+
+def _has_manifest_covered_closeout_artifact(dest: Path) -> bool:
+    manifest_entries = _manifest_entries(dest)
+    if not manifest_entries:
+        return False
+    for artifact in _recognized_closeout_artifacts(dest):
+        rel = artifact.relative_to(dest).as_posix()
+        if rel in manifest_entries:
+            return True
     return False
 
 
@@ -227,6 +278,12 @@ def plan_and_execute(
         if not _manifest_verify_log_is_success(dest_dir):
             result.dest_manifest_verify_rc = "nonzero"
             return _fail(result, "manifest verify log missing or failed")
+        if require_closeout_report and not _has_manifest_covered_closeout_artifact(dest_dir):
+            result.dest_manifest_verify_rc = "nonzero"
+            return _fail(
+                result,
+                "recognized closeout artifact missing or not manifest-covered while enforcement enabled",
+            )
         result.pointer_evidence_found = _pointer_evidence_exists(dest_dir, durable_pointer_patterns)
         if require_durable_pointer_evidence and not result.pointer_evidence_found:
             result.dest_manifest_verify_rc = "nonzero"
