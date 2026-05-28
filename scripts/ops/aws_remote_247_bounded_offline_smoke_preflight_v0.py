@@ -30,6 +30,7 @@ SCHEMA_VERSION = "peak_trade.aws_remote_247_bounded_offline_smoke_preflight.v0"
 PREFLIGHT_NAME = "aws_remote_247_bounded_offline_smoke_preflight_v0"
 REQUIRED_APPROVED_SCOPE = "aws_remote_247_bounded_offline_smoke_implementation_v0"
 MANIFEST_FILENAME = "MANIFEST.sha256"
+MACHINE_LINES_FILENAME = "BOUNDED_OFFLINE_SMOKE_MACHINE_LINES.txt"
 FORBIDDEN_SECRET_PATTERNS = (
     re.compile(r"AKIA[0-9A-Z]{16}"),
     re.compile(r"(?i)secret[_-]?key\s*[:=]"),
@@ -244,6 +245,7 @@ def _verify_gate_g4(
         evidence_root,
         dry_run=True,
         no_network=True,
+        registry_json=registry_path,
         run_id=run_id,
         lane_id=lane_id,
         export_prefix_plan=True,
@@ -405,7 +407,7 @@ def _write_durable_evidence(
         "\n".join(md_lines) + "\n",
         encoding="utf-8",
     )
-    _write_machine_lines(output_dir / "FINAL_MACHINE_LINES.txt", gates, report)
+    _write_machine_lines(output_dir / MACHINE_LINES_FILENAME, gates, report)
     write_manifest_sha256(output_dir)
     ok, msg = verify_manifest_sha256(output_dir)
     verify_log = output_dir / "MANIFEST_VERIFY.log"
@@ -456,9 +458,7 @@ def main(argv: list[str] | None = None) -> int:
         )
 
     for line in (
-        (args.durable_output_dir / "FINAL_MACHINE_LINES.txt")
-        .read_text(encoding="utf-8")
-        .splitlines()
+        (args.durable_output_dir / MACHINE_LINES_FILENAME).read_text(encoding="utf-8").splitlines()
     ):
         if line.strip():
             sys.stdout.write(line + "\n")

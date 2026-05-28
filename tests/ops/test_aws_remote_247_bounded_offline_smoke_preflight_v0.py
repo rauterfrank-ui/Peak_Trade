@@ -30,12 +30,36 @@ FORBIDDEN_IMPORTS = (
     "socket",
 )
 
+DURABLE_OUT_ROOT = (
+    REPO_ROOT / "tests" / ".pytest_archive_roots" / "aws_remote_247_smoke_preflight_runs"
+)
+
+
+def _require_durable_archive_root_test(path: Path) -> tuple[bool, str]:
+    if not path.exists():
+        return False, f"archive root missing: {path}"
+    return True, ""
+
 
 def _patch_not_tmp(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(smoke_mod, "is_under_tmp", lambda _path: False)
     import scripts.ops.preflight_s3_finalized_evidence_export_v0 as s3_mod
+    import scripts.ops.primary_evidence_retention_v0 as retention_mod
 
     monkeypatch.setattr(s3_mod, "is_under_tmp", lambda _path: False)
+    monkeypatch.setattr(retention_mod, "is_under_tmp", lambda _path: False)
+    monkeypatch.setattr(s3_mod, "require_durable_archive_root", _require_durable_archive_root_test)
+    monkeypatch.setattr(
+        retention_mod, "require_durable_archive_root", _require_durable_archive_root_test
+    )
+
+
+@pytest.fixture
+def durable_out_dir(tmp_path: Path) -> Path:
+    """Durable output outside /tmp for Linux CI (pytest tmp_path lives under /tmp)."""
+    out = DURABLE_OUT_ROOT / tmp_path.name
+    out.mkdir(parents=True, exist_ok=True)
+    return out
 
 
 def _parse_machine_lines(text: str) -> dict[str, str]:
@@ -64,10 +88,10 @@ def test_no_parallel_daemon_runner_or_runbook_surfaces() -> None:
 
 
 def test_happy_path_all_gates_true_and_safety_lines_false(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    durable_out_dir: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _patch_not_tmp(monkeypatch)
-    out = tmp_path / "durable_out"
+    out = durable_out_dir
     gates, report = smoke_mod.run_bounded_offline_smoke_preflight(
         fixture_path=FIXTURE,
         durable_output_dir=out,
@@ -79,7 +103,9 @@ def test_happy_path_all_gates_true_and_safety_lines_false(
     assert report["status"] == "pass"
     manifest_ok, _ = smoke_mod._write_durable_evidence(out, gates, report)
     assert manifest_ok
-    lines = _parse_machine_lines((out / "FINAL_MACHINE_LINES.txt").read_text(encoding="utf-8"))
+    lines = _parse_machine_lines(
+        (out / smoke_mod.MACHINE_LINES_FILENAME).read_text(encoding="utf-8")
+    )
     for gate in (
         "G1_OPERATOR_SCOPE_VERIFIED",
         "G2_OFFLINE_INVENTORY_VERIFIED",
@@ -155,9 +181,11 @@ def test_offline_and_no_network_flags_required(tmp_path: Path) -> None:
     assert "no_network_flag_required" in report2["reasons"]
 
 
-def test_cli_main_exit_zero_on_happy_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_cli_main_exit_zero_on_happy_path(
+    durable_out_dir: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     _patch_not_tmp(monkeypatch)
-    out = tmp_path / "cli_out"
+    out = durable_out_dir / "cli_out"
     rc = smoke_mod.main(
         [
             "--fixture",
