@@ -324,6 +324,8 @@ def test_command_plan_includes_run_scheduler(tmp_path: Path) -> None:
     plan = _plan_dict(_staging(tmp_path))
     joined = " ".join(plan["commands"]["scheduler_bounded"])
     assert "run_scheduler.py" in joined
+    assert "--heartbeat-file" in joined
+    assert "scheduler_heartbeat_freshness_v0.json" in joined
 
 
 def test_command_plan_includes_review_helper(tmp_path: Path) -> None:

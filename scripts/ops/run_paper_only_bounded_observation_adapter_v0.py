@@ -272,6 +272,8 @@ def build_plan(
         INCLUDE_TAGS,
         "--no-registry",
         "--no-alerts",
+        "--heartbeat-file",
+        str((runtime_out / "scheduler_heartbeat_freshness_v0.json").resolve()),
     ]
     run_with_timeout = _python_cmd(repo_root, "scripts/ops/run_with_timeout.py") + [
         "--timeout-seconds",

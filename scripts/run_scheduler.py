@@ -74,6 +74,7 @@ from scripts.ops.scheduler_start_boundary_guard_v0 import (
 )
 
 SCHEDULER_COMPLETION_CLOSEOUT_FILENAME = "scheduler_completion_closeout_v0.json"
+SCHEDULER_HEARTBEAT_FRESHNESS_FILENAME = "scheduler_heartbeat_freshness_v0.json"
 
 # Globaler Flag für graceful shutdown
 _shutdown_requested = False
@@ -130,6 +131,46 @@ def write_scheduler_completion_closeout(
     }
     closeout_path = evidence_dir / SCHEDULER_COMPLETION_CLOSEOUT_FILENAME
     closeout_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def write_scheduler_heartbeat_freshness(
+    heartbeat_file: Path,
+    *,
+    config_path: Path,
+    poll_interval: int,
+    include_tags: Optional[Set[str]],
+    exclude_tags: Optional[Set[str]],
+    dry_run: bool,
+    once: bool,
+    iteration: int,
+    due_jobs_count: int,
+    jobs_dispatched_total: int,
+    reason: str,
+) -> None:
+    """Write non-authorizing freshness marker for scheduler loop visibility."""
+    heartbeat_file.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "version": SCHEDULER_HEARTBEAT_FRESHNESS_FILENAME.replace(".json", ""),
+        "heartbeat_only": True,
+        "does_not_authorize_trading": True,
+        "live_authority_changed": False,
+        "testnet_started": False,
+        "real_orders_started": False,
+        "ts_utc": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "config_path": str(config_path),
+        "poll_interval_seconds": poll_interval,
+        "include_tags": sorted(include_tags) if include_tags else [],
+        "exclude_tags": sorted(exclude_tags) if exclude_tags else [],
+        "dry_run": dry_run,
+        "once": once,
+        "iteration": iteration,
+        "due_jobs_count": due_jobs_count,
+        "jobs_dispatched_total": jobs_dispatched_total,
+        "reason": reason,
+    }
+    heartbeat_file.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
 
 
 def finalize_scheduler_completion_evidence(
@@ -253,6 +294,12 @@ Examples:
         "--primary-evidence-enforce",
         action="store_true",
         help="Require MANIFEST.sha256 finalize at completion (requires --evidence-dir; non-dry-run only)",
+    )
+    parser.add_argument(
+        "--heartbeat-file",
+        type=str,
+        default=None,
+        help="Optional non-authorizing scheduler heartbeat/freshness file path",
     )
 
     return parser.parse_args(argv)
@@ -503,6 +550,7 @@ def run_scheduler_loop(
     notifier,
     evidence_dir: Optional[Path] = None,
     primary_evidence_enforce: bool = False,
+    heartbeat_file: Optional[Path] = None,
 ) -> int:
     """Hauptschleife des Schedulers."""
     global _shutdown_requested
@@ -579,6 +627,21 @@ def run_scheduler_loop(
 
         # Fällige Jobs finden
         due_jobs = get_due_jobs(jobs, now=now)
+
+        if heartbeat_file is not None:
+            write_scheduler_heartbeat_freshness(
+                heartbeat_file,
+                config_path=config_path,
+                poll_interval=poll_interval,
+                include_tags=include_tags,
+                exclude_tags=exclude_tags,
+                dry_run=dry_run,
+                once=once,
+                iteration=iteration,
+                due_jobs_count=len(due_jobs),
+                jobs_dispatched_total=total_jobs_run,
+                reason="jobs_due" if due_jobs else "idle_no_due_jobs",
+            )
 
         if due_jobs:
             print(f"\n[SCHEDULER] {len(due_jobs)} fällige Jobs:")
@@ -700,6 +763,9 @@ def main(argv=None) -> int:
         notifier=notifier,
         evidence_dir=evidence_dir,
         primary_evidence_enforce=primary_evidence_enforce,
+        heartbeat_file=Path(args.heartbeat_file).expanduser().resolve()
+        if args.heartbeat_file
+        else None,
     )
 
 
