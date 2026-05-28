@@ -106,6 +106,111 @@ def validate_scheduler_evidence_cli(
     return None
 
 
+def validate_scheduler_durable_closeout_hook_cli(
+    *,
+    invoke_durable_closeout_after_completion_v0: bool,
+    durable_closeout_dest_dir: Optional[Path],
+    evidence_dir: Optional[Path],
+) -> Optional[int]:
+    """Return exit code when durable closeout hook CLI options are invalid; else None."""
+    if not invoke_durable_closeout_after_completion_v0:
+        return None
+    if durable_closeout_dest_dir is None:
+        print(
+            "ERR: --durable-closeout-dest-dir is required with "
+            "--invoke-durable-closeout-after-completion-v0",
+            file=sys.stderr,
+        )
+        return 1
+    if is_under_tmp(durable_closeout_dest_dir):
+        print("ERR: --durable-closeout-dest-dir must be outside /tmp", file=sys.stderr)
+        return 1
+    if evidence_dir is None:
+        print(
+            "ERR: --invoke-durable-closeout-after-completion-v0 requires --evidence-dir",
+            file=sys.stderr,
+        )
+        return 1
+    return None
+
+
+def emit_scheduler_durable_closeout_machine_lines(
+    *,
+    requested: bool,
+    invoked: bool,
+    exit_code: int,
+    dest_dir: Optional[Path],
+) -> None:
+    print(f"SCHEDULER_DURABLE_CLOSEOUT_REQUESTED={'true' if requested else 'false'}")
+    print(f"SCHEDULER_DURABLE_CLOSEOUT_INVOKED={'true' if invoked else 'false'}")
+    print(f"SCHEDULER_DURABLE_CLOSEOUT_EXIT_CODE={exit_code}")
+    if dest_dir is not None:
+        print(f"SCHEDULER_DURABLE_CLOSEOUT_DEST_DIR={dest_dir.resolve()}")
+    else:
+        print("SCHEDULER_DURABLE_CLOSEOUT_DEST_DIR=")
+
+
+def invoke_scheduler_durable_closeout_after_completion(
+    *,
+    source_dir: Path,
+    dest_dir: Path,
+    durable_closeout_invoker: Optional[Callable[[list[str]], int]] = None,
+) -> int:
+    """Invoke canonical durable closeout helper after scheduler completion evidence."""
+    from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import (
+        _default_durable_closeout_invoker,
+        build_durable_closeout_invoke_argv,
+    )
+
+    invoker = durable_closeout_invoker or _default_durable_closeout_invoker
+    return invoker(build_durable_closeout_invoke_argv(source_dir=source_dir, dest_dir=dest_dir))
+
+
+def maybe_invoke_scheduler_durable_closeout_after_completion(
+    *,
+    evidence_dir: Path,
+    invoke_durable_closeout_after_completion_v0: bool,
+    durable_closeout_dest_dir: Optional[Path],
+    completion_evidence_finalized: bool,
+    durable_closeout_invoker: Optional[Callable[[list[str]], int]] = None,
+) -> int:
+    """Return exit code after optional durable closeout hook (default-off; fail-closed)."""
+    if not invoke_durable_closeout_after_completion_v0:
+        emit_scheduler_durable_closeout_machine_lines(
+            requested=False,
+            invoked=False,
+            exit_code=0,
+            dest_dir=None,
+        )
+        return 0
+    dest_dir = durable_closeout_dest_dir.resolve() if durable_closeout_dest_dir else None
+    if not completion_evidence_finalized:
+        emit_scheduler_durable_closeout_machine_lines(
+            requested=True,
+            invoked=False,
+            exit_code=1,
+            dest_dir=dest_dir,
+        )
+        print(
+            "ERR: durable closeout hook skipped; scheduler completion evidence not finalized",
+            file=sys.stderr,
+        )
+        return 1
+    assert dest_dir is not None
+    hook_rc = invoke_scheduler_durable_closeout_after_completion(
+        source_dir=evidence_dir,
+        dest_dir=dest_dir,
+        durable_closeout_invoker=durable_closeout_invoker,
+    )
+    emit_scheduler_durable_closeout_machine_lines(
+        requested=True,
+        invoked=True,
+        exit_code=hook_rc,
+        dest_dir=dest_dir,
+    )
+    return hook_rc
+
+
 def write_scheduler_completion_closeout(
     evidence_dir: Path,
     *,
@@ -183,6 +288,9 @@ def finalize_scheduler_completion_evidence(
     iterations: int,
     jobs_dispatched: int,
     exit_status: int,
+    invoke_durable_closeout_after_completion_v0: bool = False,
+    durable_closeout_dest_dir: Optional[Path] = None,
+    durable_closeout_invoker: Optional[Callable[[list[str]], int]] = None,
 ) -> int:
     """Write closeout when evidence dir is set; finalize MANIFEST when enforce is on."""
     if evidence_dir is None and not primary_evidence_enforce:
@@ -203,6 +311,15 @@ def finalize_scheduler_completion_evidence(
     )
 
     if not primary_evidence_enforce:
+        hook_rc = maybe_invoke_scheduler_durable_closeout_after_completion(
+            evidence_dir=evidence_dir,
+            invoke_durable_closeout_after_completion_v0=invoke_durable_closeout_after_completion_v0,
+            durable_closeout_dest_dir=durable_closeout_dest_dir,
+            completion_evidence_finalized=True,
+            durable_closeout_invoker=durable_closeout_invoker,
+        )
+        if hook_rc != 0:
+            return hook_rc
         return exit_status
 
     if dry_run:
@@ -215,6 +332,15 @@ def finalize_scheduler_completion_evidence(
     if not ok:
         print(f"ERR: primary evidence finalize failed: {msg}")
         return 1
+    hook_rc = maybe_invoke_scheduler_durable_closeout_after_completion(
+        evidence_dir=evidence_dir,
+        invoke_durable_closeout_after_completion_v0=invoke_durable_closeout_after_completion_v0,
+        durable_closeout_dest_dir=durable_closeout_dest_dir,
+        completion_evidence_finalized=True,
+        durable_closeout_invoker=durable_closeout_invoker,
+    )
+    if hook_rc != 0:
+        return hook_rc
     return exit_status
 
 
@@ -300,6 +426,24 @@ Examples:
         type=str,
         default=None,
         help="Optional non-authorizing scheduler heartbeat/freshness file path",
+    )
+    parser.add_argument(
+        "--invoke-durable-closeout-after-completion-v0",
+        action="store_true",
+        help=(
+            "After successful scheduler completion evidence finalization, invoke "
+            "durable_closeout_copy_verify_v0.py (requires --evidence-dir and "
+            "--durable-closeout-dest-dir outside /tmp)."
+        ),
+    )
+    parser.add_argument(
+        "--durable-closeout-dest-dir",
+        type=str,
+        default=None,
+        help=(
+            "Durable material closeout destination for post-completion hook "
+            "(required with --invoke-durable-closeout-after-completion-v0)."
+        ),
     )
 
     return parser.parse_args(argv)
@@ -551,6 +695,9 @@ def run_scheduler_loop(
     evidence_dir: Optional[Path] = None,
     primary_evidence_enforce: bool = False,
     heartbeat_file: Optional[Path] = None,
+    invoke_durable_closeout_after_completion_v0: bool = False,
+    durable_closeout_dest_dir: Optional[Path] = None,
+    durable_closeout_invoker: Optional[Callable[[list[str]], int]] = None,
 ) -> int:
     """Hauptschleife des Schedulers."""
     global _shutdown_requested
@@ -584,6 +731,9 @@ def run_scheduler_loop(
             iterations=iteration,
             jobs_dispatched=total_jobs_run,
             exit_status=exit_code,
+            invoke_durable_closeout_after_completion_v0=invoke_durable_closeout_after_completion_v0,
+            durable_closeout_dest_dir=durable_closeout_dest_dir,
+            durable_closeout_invoker=durable_closeout_invoker,
         )
 
     # Jobs filtern
@@ -600,6 +750,9 @@ def run_scheduler_loop(
             iterations=iteration,
             jobs_dispatched=total_jobs_run,
             exit_status=exit_code,
+            invoke_durable_closeout_after_completion_v0=invoke_durable_closeout_after_completion_v0,
+            durable_closeout_dest_dir=durable_closeout_dest_dir,
+            durable_closeout_invoker=durable_closeout_invoker,
         )
 
     # Validierung
@@ -708,6 +861,9 @@ def run_scheduler_loop(
         iterations=iteration,
         jobs_dispatched=total_jobs_run,
         exit_status=exit_code,
+        invoke_durable_closeout_after_completion_v0=invoke_durable_closeout_after_completion_v0,
+        durable_closeout_dest_dir=durable_closeout_dest_dir,
+        durable_closeout_invoker=durable_closeout_invoker,
     )
 
 
@@ -717,6 +873,14 @@ def main(argv=None) -> int:
 
     evidence_dir = Path(args.evidence_dir) if args.evidence_dir else None
     primary_evidence_enforce = bool(args.primary_evidence_enforce)
+    invoke_durable_closeout_after_completion_v0 = bool(
+        args.invoke_durable_closeout_after_completion_v0
+    )
+    durable_closeout_dest_dir = (
+        Path(args.durable_closeout_dest_dir).expanduser().resolve()
+        if args.durable_closeout_dest_dir
+        else None
+    )
 
     cli_rc = validate_scheduler_evidence_cli(
         evidence_dir=evidence_dir,
@@ -725,6 +889,14 @@ def main(argv=None) -> int:
     )
     if cli_rc is not None:
         return cli_rc
+
+    hook_cli_rc = validate_scheduler_durable_closeout_hook_cli(
+        invoke_durable_closeout_after_completion_v0=invoke_durable_closeout_after_completion_v0,
+        durable_closeout_dest_dir=durable_closeout_dest_dir,
+        evidence_dir=evidence_dir,
+    )
+    if hook_cli_rc is not None:
+        return hook_cli_rc
 
     # Signal-Handler registrieren
     signal.signal(signal.SIGINT, signal_handler)
@@ -766,6 +938,8 @@ def main(argv=None) -> int:
         heartbeat_file=Path(args.heartbeat_file).expanduser().resolve()
         if args.heartbeat_file
         else None,
+        invoke_durable_closeout_after_completion_v0=invoke_durable_closeout_after_completion_v0,
+        durable_closeout_dest_dir=durable_closeout_dest_dir,
     )
 
 
