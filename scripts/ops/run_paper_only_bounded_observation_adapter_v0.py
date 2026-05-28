@@ -75,6 +75,7 @@ REQUIRED_APPROVAL = {
 USAGE_EXIT = 2
 VALIDATION_EXIT = 1
 TIMEOUT_EXIT = 124
+START_RETURN_CODE_ARTIFACT = "start_return_code.txt"
 
 
 @dataclass(frozen=True)
@@ -509,6 +510,23 @@ def _write_closeout_artifacts(
     )
 
 
+def _write_start_return_code_artifact(
+    staging_root: Path,
+    rc: int,
+    *,
+    blocker_hint: str = "",
+) -> None:
+    """Persist execute return code for external orchestrators."""
+    staging_root.mkdir(parents=True, exist_ok=True)
+    lines = [f"START_RC={int(rc)}"]
+    if blocker_hint:
+        lines.append(f"BLOCKER_HINT={blocker_hint}")
+    (staging_root / START_RETURN_CODE_ARTIFACT).write_text(
+        "\n".join(lines) + "\n",
+        encoding="utf-8",
+    )
+
+
 def execute_plan(
     ctx: ExecuteContext,
     plan: AdapterPlan,
@@ -744,11 +762,23 @@ def main(
             environ=environ,
         )
         if issues:
+            blocker_hint = ";".join(issues)
+            _write_start_return_code_artifact(
+                staging_root,
+                VALIDATION_EXIT,
+                blocker_hint=blocker_hint,
+            )
             for issue in issues:
                 print(issue, file=sys.stderr)
             return VALIDATION_EXIT
         runner = subprocess_runner or _default_subprocess_runner
-        return execute_plan(ctx, plan, subprocess_runner=runner)
+        rc = execute_plan(ctx, plan, subprocess_runner=runner)
+        _write_start_return_code_artifact(
+            staging_root,
+            rc,
+            blocker_hint="" if rc == 0 else "execute_plan_nonzero",
+        )
+        return rc
 
     print(render_plan(plan, args.json))
     return 0
