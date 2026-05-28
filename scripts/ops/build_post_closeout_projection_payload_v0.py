@@ -26,6 +26,7 @@ from scripts.ops.primary_evidence_retention_v0 import (
 )
 
 SCHEMA_VERSION = "peak_trade.post_closeout_projection_payload.v0"
+HOOK_READINESS_SCHEMA_VERSION = "peak_trade.post_closeout_hook_readiness_validator.v0"
 REGISTRY_SCHEMA = "peak_trade.generic_evidence_run_registry.v1"
 
 MANIFEST_VERIFY_LOG = "MANIFEST_VERIFY.log"
@@ -66,6 +67,18 @@ def _parse_machine_lines(path: Path) -> dict[str, str]:
         key, _, value = line.partition("=")
         parsed[key.strip()] = value.strip()
     return parsed
+
+
+def _parse_json_file(path: Path) -> tuple[dict[str, Any] | None, str | None]:
+    if not path.is_file():
+        return None, "missing"
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return None, "malformed"
+    if not isinstance(payload, dict):
+        return None, "invalid_shape"
+    return payload, None
 
 
 def _is_truthy(value: str | None) -> bool:
@@ -153,6 +166,130 @@ def _manifest_verify_rc(closeout_root: Path) -> tuple[int | None, str | None]:
             return 0, None
         return 1, "manifest_verify_missing_or_failed"
     return 1, "manifest_verify_failed"
+
+
+def _manifest_verify_log_ok(closeout_root: Path) -> bool:
+    verify_log = closeout_root / MANIFEST_VERIFY_LOG
+    if not verify_log.is_file():
+        return False
+    text = verify_log.read_text(encoding="utf-8")
+    if "FAILED" in text:
+        return False
+    return bool(re.search(r"\bOK\b", text))
+
+
+def _has_closeout_report(closeout_root: Path) -> bool:
+    return any(path.is_file() for path in closeout_root.glob("*CLOSEOUT*.md"))
+
+
+def build_hook_readiness_validator_v0(
+    *,
+    closeout_root: Path,
+    registry_path: Path,
+    run_id: str | None = None,
+    repo_commit: str | None = None,
+) -> tuple[dict[str, Any], int]:
+    """Validate offline post-closeout hook readiness from local artifacts only."""
+    closeout_root = closeout_root.expanduser().resolve()
+    registry_path = registry_path.expanduser().resolve()
+
+    checks: dict[str, bool] = {
+        "durable_closeout_dir_exists": closeout_root.is_dir(),
+        "manifest_sha256_exists": (closeout_root / MANIFEST_FILENAME).is_file(),
+        "manifest_verify_log_ok": _manifest_verify_log_ok(closeout_root),
+        "closeout_report_exists": _has_closeout_report(closeout_root),
+        "registry_input_exists": registry_path.is_file(),
+    }
+
+    projection_payload, _ = build_projection_payload(
+        closeout_root=closeout_root,
+        registry_path=registry_path,
+        run_id=run_id,
+        repo_commit=repo_commit,
+    )
+    projection_ready = bool(projection_payload.get("projection_ready"))
+    projection_blocked_reason = projection_payload.get("projection_blocked_reason")
+
+    # Structurally buildable means we can parse the canonical payload and it carries
+    # expected schema/authority structure, even if it is fail-closed blocked.
+    projection_structurally_buildable = (
+        projection_payload.get("schema_version") == SCHEMA_VERSION
+        and isinstance(projection_payload.get("authority"), dict)
+        and isinstance(projection_payload.get("consumers"), dict)
+    )
+    checks["projection_payload_structurally_buildable"] = projection_structurally_buildable
+
+    consumers = projection_payload.get("consumers") if isinstance(projection_payload, dict) else {}
+    authority = projection_payload.get("authority") if isinstance(projection_payload, dict) else {}
+    notion_dry_run_non_authorizing = bool(
+        isinstance(consumers, dict)
+        and consumers.get("notion_write_allowed") is False
+        and isinstance(authority, dict)
+        and authority.get("notion_authority") is False
+    )
+    market_readonly_non_authorizing = bool(
+        isinstance(consumers, dict)
+        and consumers.get("dashboard_write_allowed") is False
+        and isinstance(authority, dict)
+        and authority.get("market_dashboard_authority") is False
+    )
+    checks["notion_dry_run_non_authorizing"] = notion_dry_run_non_authorizing
+    checks["market_projection_readonly_non_authorizing"] = market_readonly_non_authorizing
+
+    heartbeat_path = closeout_root / "runtime_out" / "scheduler_heartbeat_freshness_v0.json"
+    heartbeat_payload, heartbeat_err = _parse_json_file(heartbeat_path)
+    heartbeat_present = heartbeat_payload is not None
+    heartbeat_informational_only = True
+    if heartbeat_present:
+        heartbeat_informational_only = (
+            heartbeat_payload.get("heartbeat_only") is True
+            and heartbeat_payload.get("does_not_authorize_trading") is True
+        )
+    checks["scheduler_heartbeat_informational_optional"] = heartbeat_informational_only
+
+    required_checks = (
+        "durable_closeout_dir_exists",
+        "manifest_sha256_exists",
+        "manifest_verify_log_ok",
+        "closeout_report_exists",
+        "registry_input_exists",
+        "projection_payload_structurally_buildable",
+        "notion_dry_run_non_authorizing",
+        "market_projection_readonly_non_authorizing",
+        "scheduler_heartbeat_informational_optional",
+    )
+    blocked_reasons = [name for name in required_checks if not checks.get(name, False)]
+    status = "READY" if not blocked_reasons else "BLOCKED"
+
+    payload: dict[str, Any] = {
+        "schema_version": HOOK_READINESS_SCHEMA_VERSION,
+        "generated_at_utc": _utc_now_iso(),
+        "status": status,
+        "blocked_reasons": blocked_reasons,
+        "closeout_root": str(closeout_root),
+        "registry_pointer": str(registry_path),
+        "run_id": projection_payload.get("run_id", run_id),
+        "repo_commit": repo_commit,
+        "checks": checks,
+        "projection": {
+            "projection_ready": projection_ready,
+            "projection_blocked_reason": projection_blocked_reason,
+        },
+        "heartbeat": {
+            "path": str(heartbeat_path),
+            "present": heartbeat_present,
+            "parse_error": heartbeat_err,
+        },
+        "safety_flags": {
+            "REMOTE_AWS_TOUCHED": False,
+            "RUNTIME_STARTED": False,
+            "SCHEDULER_STARTED": False,
+            "PAPER_SHADOW_TESTNET_LIVE_STARTED": False,
+            "LIVE_AUTHORITY_CHANGED": False,
+        },
+        "non_authorizing": True,
+    }
+    return payload, 0
 
 
 def build_projection_payload(
@@ -260,6 +397,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--repo-commit", default=None)
     parser.add_argument(
+        "--hook-readiness-validator-v0",
+        action="store_true",
+        help=(
+            "Emit post-closeout hook readiness report instead of projection payload "
+            "(offline, read-only, fail-closed)."
+        ),
+    )
+    parser.add_argument(
         "--strict",
         action="store_true",
         help="Exit 1 when projection_ready=false (default: always exit 0 for blocked payloads).",
@@ -281,12 +426,20 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     try:
-        payload, _ = build_projection_payload(
-            closeout_root=args.closeout_root,
-            registry_path=args.registry_json,
-            run_id=args.run_id,
-            repo_commit=args.repo_commit,
-        )
+        if args.hook_readiness_validator_v0:
+            payload, _ = build_hook_readiness_validator_v0(
+                closeout_root=args.closeout_root,
+                registry_path=args.registry_json,
+                run_id=args.run_id,
+                repo_commit=args.repo_commit,
+            )
+        else:
+            payload, _ = build_projection_payload(
+                closeout_root=args.closeout_root,
+                registry_path=args.registry_json,
+                run_id=args.run_id,
+                repo_commit=args.repo_commit,
+            )
     except OSError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
@@ -300,10 +453,15 @@ def main(argv: list[str] | None = None) -> int:
     if args.stdout:
         print(json.dumps(payload, indent=2, sort_keys=True))
 
-    if args.strict and not payload.get("projection_ready"):
-        blocked = payload.get("projection_blocked_reason") or "unknown"
-        print(f"projection_blocked_reason={blocked}", file=sys.stderr)
-        return 1
+    if args.strict:
+        if args.hook_readiness_validator_v0 and payload.get("status") != "READY":
+            blocked = payload.get("blocked_reasons") or ["unknown"]
+            print(f"hook_readiness_blocked_reasons={','.join(blocked)}", file=sys.stderr)
+            return 1
+        if not args.hook_readiness_validator_v0 and not payload.get("projection_ready"):
+            blocked = payload.get("projection_blocked_reason") or "unknown"
+            print(f"projection_blocked_reason={blocked}", file=sys.stderr)
+            return 1
     return 0
 
 
