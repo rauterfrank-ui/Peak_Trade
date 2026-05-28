@@ -13,7 +13,7 @@ import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Sequence
+from typing import Callable, Optional, Sequence
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
@@ -51,6 +51,112 @@ def _utc_ts() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def validate_supervisor_pack_durable_closeout_hook_cli(
+    *,
+    invoke_durable_closeout_after_pack_v0: bool,
+    durable_closeout_dest_dir: Optional[Path],
+) -> Optional[int]:
+    """Return exit code when durable closeout hook CLI options are invalid; else None."""
+    if not invoke_durable_closeout_after_pack_v0:
+        return None
+    if durable_closeout_dest_dir is None:
+        print(
+            "ERR: --durable-closeout-dest-dir is required with "
+            "--invoke-durable-closeout-after-pack-v0",
+            file=sys.stderr,
+        )
+        return 1
+    if is_under_tmp(durable_closeout_dest_dir):
+        print("ERR: --durable-closeout-dest-dir must be outside /tmp", file=sys.stderr)
+        return 1
+    return None
+
+
+def emit_supervisor_pack_durable_closeout_machine_lines(
+    *,
+    requested: bool,
+    invoked: bool,
+    exit_code: int,
+    dest_dir: Optional[Path],
+) -> None:
+    print(f"SUPERVISOR_PACK_DURABLE_CLOSEOUT_REQUESTED={'true' if requested else 'false'}")
+    print(f"SUPERVISOR_PACK_DURABLE_CLOSEOUT_INVOKED={'true' if invoked else 'false'}")
+    print(f"SUPERVISOR_PACK_DURABLE_CLOSEOUT_EXIT_CODE={exit_code}")
+    if dest_dir is not None:
+        print(f"SUPERVISOR_PACK_DURABLE_CLOSEOUT_DEST_DIR={dest_dir.resolve()}")
+    else:
+        print("SUPERVISOR_PACK_DURABLE_CLOSEOUT_DEST_DIR=")
+
+
+def invoke_supervisor_pack_durable_closeout_after_pack(
+    *,
+    source_dir: Path,
+    dest_dir: Path,
+    durable_closeout_invoker: Optional[Callable[[list[str]], int]] = None,
+) -> int:
+    """Invoke canonical durable closeout helper after supervisor evidence pack."""
+    from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import (
+        _default_durable_closeout_invoker,
+        build_durable_closeout_invoke_argv,
+    )
+
+    invoker = durable_closeout_invoker or _default_durable_closeout_invoker
+    return invoker(build_durable_closeout_invoke_argv(source_dir=source_dir, dest_dir=dest_dir))
+
+
+def maybe_invoke_supervisor_pack_durable_closeout_after_pack(
+    *,
+    archive_root: Path,
+    invoke_durable_closeout_after_pack_v0: bool,
+    durable_closeout_dest_dir: Optional[Path],
+    pack_evidence_finalized: bool,
+    durable_closeout_invoker: Optional[Callable[[list[str]], int]] = None,
+) -> int:
+    """Return exit code after optional durable closeout hook (default-off; fail-closed)."""
+    if not invoke_durable_closeout_after_pack_v0:
+        emit_supervisor_pack_durable_closeout_machine_lines(
+            requested=False,
+            invoked=False,
+            exit_code=0,
+            dest_dir=None,
+        )
+        return 0
+    dest_dir = durable_closeout_dest_dir.resolve() if durable_closeout_dest_dir else None
+    if not pack_evidence_finalized:
+        emit_supervisor_pack_durable_closeout_machine_lines(
+            requested=True,
+            invoked=False,
+            exit_code=1,
+            dest_dir=dest_dir,
+        )
+        print(
+            "ERR: durable closeout hook skipped; supervisor pack evidence not finalized",
+            file=sys.stderr,
+        )
+        return 1
+    assert dest_dir is not None
+    hook_rc = invoke_supervisor_pack_durable_closeout_after_pack(
+        source_dir=archive_root,
+        dest_dir=dest_dir,
+        durable_closeout_invoker=durable_closeout_invoker,
+    )
+    emit_supervisor_pack_durable_closeout_machine_lines(
+        requested=True,
+        invoked=True,
+        exit_code=hook_rc,
+        dest_dir=dest_dir,
+    )
+    return hook_rc
+
+
+def _pack_evidence_finalized(result: PackResult) -> bool:
+    if result.exit_code != 0:
+        return False
+    if result.primary_evidence_enforce:
+        return result.manifest_verified
+    return True
+
+
 def _copy_file_or_tree(source: Path, dest: Path) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
     if source.is_dir():
@@ -86,6 +192,9 @@ def pack_supervisor_evidence(
     optional_artifacts: Sequence[Path] = (),
     primary_evidence_enforce: bool = False,
     require_optional_artifacts: bool = False,
+    invoke_durable_closeout_after_pack_v0: bool = False,
+    durable_closeout_dest_dir: Optional[Path] = None,
+    durable_closeout_invoker: Optional[Callable[[list[str]], int]] = None,
 ) -> PackResult:
     """Copy supervisor OUT_DIR and optional artifacts into archive_root; optional MANIFEST finalize."""
     result = PackResult(
@@ -133,6 +242,19 @@ def pack_supervisor_evidence(
             result.error = f"primary evidence finalize failed: {msg}"
             _write_closeout(archive_root, result)
             return result
+
+    if result.exit_code == 0:
+        hook_rc = maybe_invoke_supervisor_pack_durable_closeout_after_pack(
+            archive_root=archive_root,
+            invoke_durable_closeout_after_pack_v0=invoke_durable_closeout_after_pack_v0,
+            durable_closeout_dest_dir=durable_closeout_dest_dir,
+            pack_evidence_finalized=_pack_evidence_finalized(result),
+            durable_closeout_invoker=durable_closeout_invoker,
+        )
+        if hook_rc != 0:
+            result.exit_code = hook_rc
+            result.error = result.error or f"durable closeout hook failed: exit {hook_rc}"
+            _write_closeout(archive_root, result)
 
     return result
 
@@ -200,17 +322,41 @@ def build_arg_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Fail closed when any --optional-artifact path is missing",
     )
+    parser.add_argument(
+        "--invoke-durable-closeout-after-pack-v0",
+        action="store_true",
+        help=(
+            "After successful pack (and manifest verify when --primary-evidence-enforce), "
+            "invoke durable_closeout_copy_verify_v0 (default off)."
+        ),
+    )
+    parser.add_argument(
+        "--durable-closeout-dest-dir",
+        type=Path,
+        default=None,
+        help="Durable material closeout destination (required with --invoke-durable-closeout-after-pack-v0).",
+    )
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_arg_parser().parse_args(list(argv) if argv is not None else None)
+    invoke_durable_closeout_after_pack_v0 = bool(args.invoke_durable_closeout_after_pack_v0)
+    durable_closeout_dest_dir = args.durable_closeout_dest_dir
+    hook_cli_rc = validate_supervisor_pack_durable_closeout_hook_cli(
+        invoke_durable_closeout_after_pack_v0=invoke_durable_closeout_after_pack_v0,
+        durable_closeout_dest_dir=durable_closeout_dest_dir,
+    )
+    if hook_cli_rc is not None:
+        return hook_cli_rc
     result = pack_supervisor_evidence(
         out_dir=args.out_dir,
         archive_root=args.archive_root,
         optional_artifacts=tuple(args.optional_artifact or []),
         primary_evidence_enforce=bool(args.primary_evidence_enforce),
         require_optional_artifacts=bool(args.require_optional_artifacts),
+        invoke_durable_closeout_after_pack_v0=invoke_durable_closeout_after_pack_v0,
+        durable_closeout_dest_dir=durable_closeout_dest_dir,
     )
     if result.error:
         print(f"ERR: {result.error}", file=sys.stderr)
