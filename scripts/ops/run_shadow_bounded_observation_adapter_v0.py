@@ -35,6 +35,7 @@ from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import (
     DurableCloseoutInvoker,
     FINAL_MACHINE_LINES_FILENAME,
     _write_final_machine_lines_artifact,
+    add_bounded_adapter_durable_closeout_cli_args,
     maybe_invoke_durable_closeout_after_archive,
     validate_durable_closeout_invoke_cli_args,
 )
@@ -645,20 +646,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help="Do not require clean git working tree before execute.",
     )
     parser.add_argument("--json", action="store_true", help="Emit plan as JSON.")
-    parser.add_argument(
-        "--invoke-durable-closeout-v0",
-        action="store_true",
-        help=(
-            "After successful archive copy, invoke durable_closeout_copy_verify_v0.py "
-            "(requires --durable-closeout-dest-dir outside /tmp)."
-        ),
-    )
-    parser.add_argument(
-        "--durable-closeout-dest-dir",
-        type=Path,
-        default=None,
-        help="Durable material closeout destination (required with --invoke-durable-closeout-v0).",
-    )
+    add_bounded_adapter_durable_closeout_cli_args(parser)
     return parser
 
 
