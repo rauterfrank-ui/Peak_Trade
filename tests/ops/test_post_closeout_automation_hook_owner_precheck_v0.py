@@ -24,6 +24,7 @@ CHAIN_CONTRACT_TESTS = (
 
 CANONICAL_HOOK_ATTACH_OWNERS: dict[str, str] = {
     "scheduler_completion": "scripts/run_scheduler.py",
+    "paper_bounded_adapter": "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
     "shadow_bounded_adapter": "scripts/ops/run_shadow_bounded_observation_adapter_v0.py",
     "supervisor_evidence_pack": "scripts/ops/pack_online_readiness_supervisor_evidence_v0.py",
 }
@@ -103,8 +104,13 @@ def test_preflight_crosslinks_hook_owner_precheck() -> None:
     text = PREFLIGHT.read_text(encoding="utf-8")
     assert "§6a.0.8.1" in text or "6a.0.8.1" in text
     assert "hook_automation_owner_status=identified" in text
+    assert "DURABLE_CLOSEOUT_ATTACH_HOOK_V0_IMPLEMENTED=true" in text
     assert "POST_CLOSEOUT_AUTOMATION_HOOK_IMPLEMENTED=false" in text
+    assert "FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED=false" in text
+    assert "PRE_FLIGHT_BLOCKED_LIFTED=false" in text
+    assert "READY_FOR_START=false" in text
     assert "run_scheduler.py" in text
+    assert "run_paper_only_bounded_observation_adapter_v0.py" in text
     assert "pack_online_readiness_supervisor_evidence_v0.py" in text
 
 
