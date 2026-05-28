@@ -428,8 +428,15 @@ def validate_durable_closeout_invoke_cli_args(args: argparse.Namespace) -> list[
     """Validate durable closeout invocation flags (default-off; fail-closed when enabled)."""
     issues: list[str] = []
     chain_requested = bool(getattr(args, "run_local_post_closeout_chain_v0", False))
-    if chain_requested and not getattr(args, "invoke_durable_closeout_v0", False):
+    invoke_requested = bool(getattr(args, "invoke_durable_closeout_v0", False))
+    pointer_required = bool(getattr(args, "require_durable_pointer_evidence", False))
+    pointer_patterns = resolve_bounded_adapter_durable_pointer_patterns(args)
+    if chain_requested and not invoke_requested:
         issues.append("--run-local-post-closeout-chain-v0 requires --invoke-durable-closeout-v0")
+    if pointer_required and not invoke_requested:
+        issues.append("--require-durable-pointer-evidence requires --invoke-durable-closeout-v0")
+    if pointer_patterns and not invoke_requested:
+        issues.append("--durable-pointer-pattern requires --invoke-durable-closeout-v0")
     if chain_requested:
         chain_archive = getattr(args, "chain_archive_root", None)
         if chain_archive is None:
@@ -443,7 +450,7 @@ def validate_durable_closeout_invoke_cli_args(args: argparse.Namespace) -> list[
                     "chain archive root must be outside /tmp when "
                     "--run-local-post-closeout-chain-v0 is set"
                 )
-    if not getattr(args, "invoke_durable_closeout_v0", False):
+    if not invoke_requested:
         return issues
     dest = getattr(args, "durable_closeout_dest_dir", None)
     if dest is None:
@@ -453,6 +460,35 @@ def validate_durable_closeout_invoke_cli_args(args: argparse.Namespace) -> list[
         if is_under_tmp(dest_path):
             issues.append("durable closeout destination must be outside /tmp")
     return issues
+
+
+ARCHIVE_POINTER_FILENAME = "ARCHIVE_POINTER.md"
+
+
+def resolve_bounded_adapter_durable_pointer_patterns(
+    args: argparse.Namespace,
+) -> tuple[str, ...]:
+    raw = getattr(args, "durable_pointer_pattern", None)
+    if not raw:
+        return ()
+    if isinstance(raw, str):
+        return (raw,)
+    return tuple(pattern for pattern in raw if pattern)
+
+
+def ensure_archive_pointer_in_archive_dest(
+    staging_root: Path,
+    archive_dest: Path,
+) -> tuple[bool, str]:
+    """Copy existing ARCHIVE_POINTER.md into archive_dest when needed for durable helper source."""
+    archive_pointer = archive_dest / ARCHIVE_POINTER_FILENAME
+    if archive_pointer.is_file():
+        return True, ""
+    staging_pointer = staging_root / ARCHIVE_POINTER_FILENAME
+    if staging_pointer.is_file():
+        shutil.copy2(staging_pointer, archive_pointer)
+        return True, ""
+    return False, f"{ARCHIVE_POINTER_FILENAME} missing in staging and archive_dest"
 
 
 def resolve_bounded_adapter_chain_run_id(
@@ -490,6 +526,8 @@ def build_durable_closeout_invoke_argv(
     run_local_post_closeout_chain_v0: bool = False,
     chain_archive_root: Path | None = None,
     chain_run_id: str | None = None,
+    require_durable_pointer_evidence: bool = False,
+    durable_pointer_patterns: Sequence[str] = (),
 ) -> list[str]:
     argv = [
         sys.executable,
@@ -508,6 +546,10 @@ def build_durable_closeout_invoke_argv(
         argv.extend(["--chain-archive-root", str(chain_archive_root.resolve())])
         if chain_run_id:
             argv.extend(["--chain-run-id", chain_run_id])
+    if require_durable_pointer_evidence:
+        argv.append("--require-durable-pointer-evidence")
+    for pattern in durable_pointer_patterns:
+        argv.extend(["--durable-pointer-pattern", pattern])
     return argv
 
 
@@ -529,6 +571,10 @@ def invoke_durable_closeout_after_archive(
         if args is not None
         else None
     )
+    pointer_required = bool(args and getattr(args, "require_durable_pointer_evidence", False))
+    pointer_patterns = (
+        resolve_bounded_adapter_durable_pointer_patterns(args) if args is not None else ()
+    )
     invoker = durable_closeout_invoker or _default_durable_closeout_invoker
     return invoker(
         build_durable_closeout_invoke_argv(
@@ -537,6 +583,8 @@ def invoke_durable_closeout_after_archive(
             run_local_post_closeout_chain_v0=chain_requested,
             chain_archive_root=chain_archive_root,
             chain_run_id=chain_run_id,
+            require_durable_pointer_evidence=pointer_required,
+            durable_pointer_patterns=pointer_patterns,
         )
     )
 
@@ -588,6 +636,19 @@ def emit_bounded_adapter_local_post_closeout_chain_machine_lines(
         print("BOUNDED_ADAPTER_CHAIN_RUN_ID=")
 
 
+def emit_bounded_adapter_durable_pointer_machine_lines(
+    *,
+    required: bool,
+    pattern_count: int,
+    archive_pointer_handoff: bool,
+) -> None:
+    print(f"BOUNDED_ADAPTER_DURABLE_POINTER_EVIDENCE_REQUIRED={'true' if required else 'false'}")
+    print(f"BOUNDED_ADAPTER_DURABLE_POINTER_PATTERN_COUNT={pattern_count}")
+    print(
+        f"BOUNDED_ADAPTER_ARCHIVE_POINTER_HANDOFF={'true' if archive_pointer_handoff else 'false'}"
+    )
+
+
 def maybe_invoke_durable_closeout_after_archive(
     ctx: ExecuteContext,
     archive_dest: Path,
@@ -602,6 +663,9 @@ def maybe_invoke_durable_closeout_after_archive(
     chain_run_id = resolve_bounded_adapter_chain_run_id(ctx.args, adapter_run_id=ctx.run_id)
     invoke_requested = bool(getattr(ctx.args, "invoke_durable_closeout_v0", False))
     chain_passthrough = chain_requested and invoke_requested
+    pointer_required = bool(getattr(ctx.args, "require_durable_pointer_evidence", False))
+    pointer_patterns = resolve_bounded_adapter_durable_pointer_patterns(ctx.args)
+    pointer_pattern_count = len(pointer_patterns)
 
     if not invoke_requested:
         emit_bounded_adapter_durable_closeout_machine_lines(
@@ -616,7 +680,39 @@ def maybe_invoke_durable_closeout_after_archive(
             chain_archive_root=chain_archive_root,
             chain_run_id=chain_run_id,
         )
+        emit_bounded_adapter_durable_pointer_machine_lines(
+            required=pointer_required,
+            pattern_count=pointer_pattern_count,
+            archive_pointer_handoff=False,
+        )
         return 0
+    archive_pointer_handoff = False
+    if pointer_required:
+        handoff_ok, handoff_msg = ensure_archive_pointer_in_archive_dest(
+            ctx.staging_root,
+            archive_dest,
+        )
+        archive_pointer_handoff = handoff_ok
+        if not handoff_ok:
+            emit_bounded_adapter_durable_closeout_machine_lines(
+                invoked=False,
+                rc=0,
+                source_dir=archive_dest,
+                dest_dir=None,
+            )
+            emit_bounded_adapter_local_post_closeout_chain_machine_lines(
+                requested=chain_requested,
+                passthrough=False,
+                chain_archive_root=chain_archive_root,
+                chain_run_id=chain_run_id,
+            )
+            emit_bounded_adapter_durable_pointer_machine_lines(
+                required=True,
+                pattern_count=pointer_pattern_count,
+                archive_pointer_handoff=False,
+            )
+            print(handoff_msg, file=sys.stderr)
+            return VALIDATION_EXIT
     dest_dir = Path(ctx.args.durable_closeout_dest_dir).expanduser().resolve()
     rc = invoke_durable_closeout_after_archive(
         source_dir=archive_dest,
@@ -636,6 +732,11 @@ def maybe_invoke_durable_closeout_after_archive(
         passthrough=chain_passthrough,
         chain_archive_root=chain_archive_root,
         chain_run_id=chain_run_id,
+    )
+    emit_bounded_adapter_durable_pointer_machine_lines(
+        required=pointer_required,
+        pattern_count=pointer_pattern_count,
+        archive_pointer_handoff=archive_pointer_handoff,
     )
     return 0 if rc == 0 else VALIDATION_EXIT
 
@@ -1024,6 +1125,23 @@ def add_bounded_adapter_durable_closeout_cli_args(parser: argparse.ArgumentParse
         help=(
             "Optional run_id for projection payload builder; defaults to adapter --run-id "
             "when --run-local-post-closeout-chain-v0 is set."
+        ),
+    )
+    parser.add_argument(
+        "--require-durable-pointer-evidence",
+        action="store_true",
+        help=(
+            "Pass through to durable_closeout_copy_verify_v0.py pointer enforcement "
+            "(requires --invoke-durable-closeout-v0)."
+        ),
+    )
+    parser.add_argument(
+        "--durable-pointer-pattern",
+        action="append",
+        default=None,
+        help=(
+            "Repeatable durable pointer/index glob for durable helper "
+            "(requires --invoke-durable-closeout-v0)."
         ),
     )
 

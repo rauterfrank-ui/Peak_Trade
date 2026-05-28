@@ -55,6 +55,8 @@ def _durable_args(**overrides: object) -> argparse.Namespace:
         "run_local_post_closeout_chain_v0": False,
         "chain_archive_root": None,
         "chain_run_id": "",
+        "require_durable_pointer_evidence": False,
+        "durable_pointer_pattern": None,
     }
     base.update(overrides)
     return argparse.Namespace(**base)
@@ -89,6 +91,127 @@ def test_tmp_dest_blocked_when_flag_enabled(paper):
         )
     )
     assert any("outside /tmp" in issue for issue in issues)
+
+
+def test_pointer_without_invoke_blocked(paper):
+    issues = paper.validate_durable_closeout_invoke_cli_args(
+        _durable_args(require_durable_pointer_evidence=True)
+    )
+    assert any(
+        "require-durable-pointer-evidence requires --invoke-durable-closeout-v0" in i
+        for i in issues
+    )
+
+
+def test_pointer_pattern_without_invoke_blocked(paper):
+    issues = paper.validate_durable_closeout_invoke_cli_args(
+        _durable_args(durable_pointer_pattern=["ARCHIVE_POINTER.md"])
+    )
+    assert any("durable-pointer-pattern requires --invoke-durable-closeout-v0" in i for i in issues)
+
+
+def test_build_argv_includes_pointer_flags_when_requested(paper, tmp_path):
+    archive_source = tmp_path / "archive_run"
+    archive_source.mkdir()
+    durable_dest = _durable_dest(tmp_path, "pointer_argv")
+    argv = paper.build_durable_closeout_invoke_argv(
+        source_dir=archive_source,
+        dest_dir=durable_dest,
+        require_durable_pointer_evidence=True,
+        durable_pointer_patterns=("ARCHIVE_POINTER.md", "PR_URL.txt"),
+    )
+    joined = " ".join(argv)
+    assert argv[1].endswith("durable_closeout_copy_verify_v0.py")
+    assert "--require-durable-pointer-evidence" in joined
+    assert joined.count("--durable-pointer-pattern") == 2
+    assert "ARCHIVE_POINTER.md" in joined
+    assert "PR_URL.txt" in joined
+    assert "build_generic_evidence_run_registry_v1.py" not in joined
+
+
+def test_build_argv_includes_chain_and_pointer_together(paper, tmp_path):
+    archive_source = tmp_path / "archive_run"
+    archive_source.mkdir()
+    durable_dest = _durable_dest(tmp_path, "chain_pointer_argv")
+    chain_archive = _chain_archive_root(tmp_path)
+    argv = paper.build_durable_closeout_invoke_argv(
+        source_dir=archive_source,
+        dest_dir=durable_dest,
+        run_local_post_closeout_chain_v0=True,
+        chain_archive_root=chain_archive,
+        chain_run_id="run_chain_pointer",
+        require_durable_pointer_evidence=True,
+        durable_pointer_patterns=("ARCHIVE_POINTER.md",),
+    )
+    joined = " ".join(argv)
+    assert "--run-local-post-closeout-chain-v0" in joined
+    assert "--require-durable-pointer-evidence" in joined
+    assert "--durable-pointer-pattern" in joined
+
+
+def test_ensure_archive_pointer_handoff_from_staging(paper, tmp_path):
+    staging = tmp_path / "staging"
+    archive_dest = tmp_path / "archive_dest"
+    staging.mkdir()
+    archive_dest.mkdir()
+    (staging / paper.ARCHIVE_POINTER_FILENAME).write_text("ARCHIVE_PATH=/x\n", encoding="utf-8")
+    ok, msg = paper.ensure_archive_pointer_in_archive_dest(staging, archive_dest)
+    assert ok is True
+    assert msg == ""
+    assert (archive_dest / paper.ARCHIVE_POINTER_FILENAME).is_file()
+
+
+def test_ensure_archive_pointer_missing_fail_closed(paper, tmp_path):
+    staging = tmp_path / "staging"
+    archive_dest = tmp_path / "archive_dest"
+    staging.mkdir()
+    archive_dest.mkdir()
+    ok, msg = paper.ensure_archive_pointer_in_archive_dest(staging, archive_dest)
+    assert ok is False
+    assert "ARCHIVE_POINTER.md" in msg
+
+
+def test_maybe_invoke_pointer_handoff_before_helper(paper, tmp_path, capsys):
+    archive_dest = tmp_path / "archive_dest"
+    archive_dest.mkdir()
+    staging = tmp_path / "staging"
+    staging.mkdir()
+    (staging / paper.ARCHIVE_POINTER_FILENAME).write_text("pointer\n", encoding="utf-8")
+    durable_dest = _durable_dest(tmp_path, "pointer_handoff")
+    calls: list[list[str]] = []
+
+    def _recording_invoker(argv: list[str]) -> int:
+        calls.append(list(argv))
+        return 0
+
+    args = _durable_args(
+        invoke_durable_closeout_v0=True,
+        durable_closeout_dest_dir=durable_dest,
+        require_durable_pointer_evidence=True,
+    )
+    ctx = paper.ExecuteContext(
+        args=args,
+        repo_root=REPO_ROOT,
+        staging_root=staging,
+        archive_root=tmp_path / "archive",
+        runtime_out=staging / "runtime_out",
+        logs_dir=staging / "logs",
+        plan_dir=staging / "plan",
+        review_dir=staging / "review",
+        temp_jobs=staging / "plan" / "temp_jobs.toml",
+        run_id="paper_run",
+    )
+    rc = paper.maybe_invoke_durable_closeout_after_archive(
+        ctx,
+        archive_dest,
+        durable_closeout_invoker=_recording_invoker,
+    )
+    assert rc == 0
+    assert (archive_dest / paper.ARCHIVE_POINTER_FILENAME).is_file()
+    assert "--require-durable-pointer-evidence" in " ".join(calls[0])
+    out = capsys.readouterr().out
+    assert "BOUNDED_ADAPTER_ARCHIVE_POINTER_HANDOFF=true" in out
+    assert "BOUNDED_ADAPTER_DURABLE_POINTER_EVIDENCE_REQUIRED=true" in out
 
 
 def test_chain_without_invoke_blocked(paper, tmp_path):
@@ -364,6 +487,8 @@ def test_paper_and_shadow_expose_cli_flags(paper, shadow):
         assert "--run-local-post-closeout-chain-v0" in flags
         assert "--chain-archive-root" in flags
         assert "--chain-run-id" in flags
+        assert "--require-durable-pointer-evidence" in flags
+        assert "--durable-pointer-pattern" in flags
 
 
 def test_forbidden_parallel_execute_script_absent():

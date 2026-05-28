@@ -75,6 +75,28 @@ def test_forbidden_parallel_execute_script_absent():
     assert DURABLE_HELPER.is_file()
 
 
+def test_adapter_full_chain_and_pointer_argv_includes_required_flags(paper, tmp_path):
+    archive_source = tmp_path / "archive" / "runs" / "paper" / "run_id"
+    archive_source.mkdir(parents=True)
+    durable_dest = adapter_tests._durable_dest(tmp_path, "argv_chain_pointer")
+    chain_archive = adapter_tests._chain_archive_root(tmp_path)
+
+    argv = paper.build_durable_closeout_invoke_argv(
+        source_dir=archive_source,
+        dest_dir=durable_dest,
+        run_local_post_closeout_chain_v0=True,
+        chain_archive_root=chain_archive,
+        chain_run_id="paper_chain_e2e",
+        require_durable_pointer_evidence=True,
+        durable_pointer_patterns=("ARCHIVE_POINTER.md",),
+    )
+    joined = " ".join(argv)
+    _assert_argv_targets_helper_only(argv)
+    assert "--run-local-post-closeout-chain-v0" in joined
+    assert "--require-durable-pointer-evidence" in joined
+    assert "--durable-pointer-pattern" in joined
+
+
 def test_adapter_full_chain_argv_includes_required_flags(paper, tmp_path):
     archive_source = tmp_path / "archive" / "runs" / "paper" / "run_id"
     archive_source.mkdir(parents=True)
