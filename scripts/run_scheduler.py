@@ -168,7 +168,9 @@ def write_scheduler_heartbeat_freshness(
         "jobs_dispatched_total": jobs_dispatched_total,
         "reason": reason,
     }
-    heartbeat_file.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    heartbeat_file.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
 
 
 def finalize_scheduler_completion_evidence(
