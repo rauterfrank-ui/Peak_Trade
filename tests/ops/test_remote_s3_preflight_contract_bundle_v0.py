@@ -357,3 +357,95 @@ def test_cross_bundle_s3_transport_registry_remote_preflight_and_validator(
     from scripts.ops.primary_evidence_retention_v0 import is_under_tmp
 
     assert is_under_tmp(durable_root) is False
+
+
+# --- AWS Remote 24/7 daemon static contract crosslink v0 (offline; tests-only) ---
+
+AWS_REMOTE_247_DOC_OWNERS: dict[str, Path] = {
+    "paper_shadow_247_preflight": REPO_ROOT
+    / "docs"
+    / "ops"
+    / "runbooks"
+    / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
+    "shadow_247_governance_charter": REPO_ROOT
+    / "docs"
+    / "ops"
+    / "runbooks"
+    / "SHADOW_247_GOVERNANCE_CHARTER_V0.md",
+    "runtime_lane_taxonomy": REPO_ROOT
+    / "docs"
+    / "ops"
+    / "specs"
+    / "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md",
+}
+
+AWS_REMOTE_247_BUNDLE_SELF = Path(__file__).resolve()
+
+AWS_REMOTE_247_FORBIDDEN_SCRIPT_NAMES = "aws_remote_247_daemon*.py"
+AWS_REMOTE_247_FORBIDDEN_RUNBOOK_NAMES = "AWS_REMOTE_247_DAEMON*.md"
+
+
+def test_aws_remote_247_governance_and_retention_doc_owners_exist() -> None:
+    for label, path in AWS_REMOTE_247_DOC_OWNERS.items():
+        assert path.is_file(), f"missing aws_remote_247 doc owner {label}: {path}"
+    for label, path in CANONICAL_OWNERS.items():
+        assert path.is_file(), f"missing aws_remote_247 script owner {label}: {path}"
+    assert AWS_REMOTE_247_BUNDLE_SELF.is_file()
+    assert REMOTE_PREFLIGHT_SCRIPT.is_file()
+
+
+def test_aws_remote_247_remote_preflight_declares_runner_not_implemented() -> None:
+    source = REMOTE_PREFLIGHT_SCRIPT.read_text(encoding="utf-8")
+    assert '"runner_implemented": False' in source or "'runner_implemented': False" in source
+    assert "daemon_paper_24h" in source
+    assert '"remote_runtime"' in source or "'remote_runtime'" in source
+
+
+def test_aws_remote_247_governance_docs_preserve_blocked_stop_idle_posture() -> None:
+    preflight = AWS_REMOTE_247_DOC_OWNERS["paper_shadow_247_preflight"].read_text(encoding="utf-8")
+    charter = AWS_REMOTE_247_DOC_OWNERS["shadow_247_governance_charter"].read_text(encoding="utf-8")
+    taxonomy = AWS_REMOTE_247_DOC_OWNERS["runtime_lane_taxonomy"].read_text(encoding="utf-8")
+
+    assert "BLOCKED" in preflight
+    assert "ready_for_start=false" in preflight.lower()
+    assert "STOP_IDLE" in charter
+    assert "not_ready" in charter
+    assert "Evidence ≠ Approval" in charter or "Evidence" in charter and "Approval" in charter
+    assert "FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED=false" in taxonomy
+    assert "POST_CLOSEOUT_AUTOMATION_HOOK_IMPLEMENTED=false" in taxonomy
+    assert "REMOTE_RUNTIME_IS_BACKEND_NOT_LANE=true" in taxonomy
+    assert "runner_implemented=false" in taxonomy.lower()
+
+
+def test_aws_remote_247_docs_do_not_treat_docs_as_runtime_lane_authority() -> None:
+    preflight = AWS_REMOTE_247_DOC_OWNERS["paper_shadow_247_preflight"].read_text(encoding="utf-8")
+    taxonomy = AWS_REMOTE_247_DOC_OWNERS["runtime_lane_taxonomy"].read_text(encoding="utf-8")
+
+    assert "does not authorize" in preflight.lower()
+    assert "EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true" in taxonomy
+    assert (
+        "does not grant gate clearance" in taxonomy.lower() or "does not clear" in taxonomy.lower()
+    )
+
+
+def test_aws_remote_247_no_parallel_daemon_runner_or_runbook_surfaces() -> None:
+    assert not FORBIDDEN_PARALLEL_SCRIPT.exists()
+    ops_scripts = REPO_ROOT / "scripts" / "ops"
+    runbooks = REPO_ROOT / "docs" / "ops" / "runbooks"
+    assert list(ops_scripts.glob(AWS_REMOTE_247_FORBIDDEN_SCRIPT_NAMES)) == []
+    assert list(runbooks.glob(AWS_REMOTE_247_FORBIDDEN_RUNBOOK_NAMES)) == []
+
+
+def test_aws_remote_247_remote_preflight_forbids_daemon_paper_24h_as_lane(
+    remote_preflight_mod,
+) -> None:
+    forbidden = remote_preflight_mod.FORBIDDEN_LANE_IDS
+    assert "daemon_paper_24h" in forbidden
+    assert "remote_runtime" in forbidden
+    result = remote_preflight_mod.run_preflight(
+        **_remote_preflight_kwargs(lane_id="daemon_paper_24h")
+    )
+    assert result["status"] in {"blocked", "invalid"}
+    assert result["runner_implemented"] is False
+    assert result["network_called"] is False
+    assert result["aws_cli_called"] is False
