@@ -83,12 +83,14 @@ def test_main_hook_without_dest_fails_before_pack(pm, monkeypatch, tmp_path: Pat
     monkeypatch.setattr(
         pm,
         "pack_supervisor_evidence",
-        lambda **kwargs: pack_calls.append(kwargs)
-        or pm.PackResult(
-            out_dir="",
-            archive_root="",
-            closeout_path="",
-            supervisor_session_dest="",
+        lambda **kwargs: (
+            pack_calls.append(kwargs)
+            or pm.PackResult(
+                out_dir="",
+                archive_root="",
+                closeout_path="",
+                supervisor_session_dest="",
+            )
         ),
     )
     rc = pm.main(
