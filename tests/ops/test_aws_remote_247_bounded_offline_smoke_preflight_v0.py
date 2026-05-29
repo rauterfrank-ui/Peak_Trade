@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from scripts.ops import aws_remote_247_bounded_offline_smoke_preflight_v0 as smoke_mod
+from scripts.ops.aws_remote_247_bounded_offline_smoke_preflight_v0 import DirectPacketInput
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = (
@@ -215,3 +216,189 @@ def test_canonical_fixture_exists() -> None:
     assert FIXTURE.is_file()
     payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
     assert payload["approved_scope_name"] == REQUIRED_SCOPE
+
+
+DERIVED_ARCHIVE = Path(
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
+    "/closeout/aws_remote_daemon_247_offline_derived_packet_draft_v1_20260529T114049Z"
+)
+
+
+def _copy_derived_packet_triplet(target_dir: Path) -> DirectPacketInput:
+    names = {
+        "approval": "derived_remote_paper_approval_packet_v1_DO_NOT_RUN.json",
+        "inventory": "derived_remote_host_inventory_v1_DO_NOT_RUN.json",
+        "safety": "derived_remote_cost_kill_orphan_safety_v1_DO_NOT_RUN.json",
+        "preflight": "derived_preflight_remote_runtime_runner_v1_DO_NOT_RUN.json",
+        "registry": "derived_registry_v1_DO_NOT_RUN.json",
+    }
+    paths = {key: target_dir / filename for key, filename in names.items()}
+    for path in paths.values():
+        path.write_text((DERIVED_ARCHIVE / path.name).read_text(encoding="utf-8"), encoding="utf-8")
+    return DirectPacketInput(
+        approval_packet=paths["approval"],
+        host_inventory=paths["inventory"],
+        cost_kill_orphan_safety=paths["safety"],
+        remote_runtime_preflight=paths["preflight"],
+        registry=paths["registry"],
+    )
+
+
+def test_direct_derived_packet_triplet_passes_offline_non_authorizing(
+    durable_out_dir: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_not_tmp(monkeypatch)
+    packet_dir = tmp_path / "derived_packet"
+    packet_dir.mkdir()
+    direct = _copy_derived_packet_triplet(packet_dir)
+    out = durable_out_dir / "direct_out"
+    gates, report = smoke_mod.run_bounded_offline_smoke_preflight(
+        fixture_path=None,
+        durable_output_dir=out,
+        approved_scope_name=REQUIRED_SCOPE,
+        offline=True,
+        no_network=True,
+        direct_packet=direct,
+    )
+    assert gates.all_pass, report
+    assert report["input_mode"] == "direct_derived_packet"
+    manifest_ok, _ = smoke_mod._write_durable_evidence(out, gates, report)
+    assert manifest_ok
+    lines = _parse_machine_lines(
+        (out / smoke_mod.MACHINE_LINES_FILENAME).read_text(encoding="utf-8")
+    )
+    for key, value in smoke_mod.DIRECT_INPUT_MACHINE_LINES.items():
+        assert lines[key] == value
+
+
+@pytest.mark.parametrize(
+    "mutator,expected_reason",
+    [
+        (lambda d: d.approval_packet.unlink(), "approval_packet_missing"),
+        (lambda d: d.host_inventory.unlink(), "host_inventory_missing"),
+    ],
+)
+def test_direct_input_missing_required_file_fails_closed(
+    tmp_path: Path,
+    mutator,
+    expected_reason: str,
+) -> None:
+    packet_dir = tmp_path / "derived_packet"
+    packet_dir.mkdir()
+    direct = _copy_derived_packet_triplet(packet_dir)
+    mutator(direct)
+    gates, report = smoke_mod.run_bounded_offline_smoke_preflight(
+        fixture_path=None,
+        durable_output_dir=tmp_path / "out",
+        approved_scope_name=REQUIRED_SCOPE,
+        offline=True,
+        no_network=True,
+        direct_packet=direct,
+    )
+    assert not gates.all_pass
+    assert expected_reason in report["reasons"]
+
+
+def test_direct_input_do_not_run_false_fails_closed(tmp_path: Path) -> None:
+    packet_dir = tmp_path / "derived_packet"
+    packet_dir.mkdir()
+    direct = _copy_derived_packet_triplet(packet_dir)
+    approval = json.loads(direct.approval_packet.read_text(encoding="utf-8"))
+    approval["do_not_run"] = False
+    direct.approval_packet.write_text(json.dumps(approval, indent=2) + "\n", encoding="utf-8")
+    gates, report = smoke_mod.run_bounded_offline_smoke_preflight(
+        fixture_path=None,
+        durable_output_dir=tmp_path / "out",
+        approved_scope_name=REQUIRED_SCOPE,
+        offline=True,
+        no_network=True,
+        direct_packet=direct,
+    )
+    assert not gates.all_pass
+    assert any("do_not_run_required" in reason for reason in report["reasons"])
+
+
+def test_direct_input_hold_no_paper_run_false_fails_closed(tmp_path: Path) -> None:
+    packet_dir = tmp_path / "derived_packet"
+    packet_dir.mkdir()
+    direct = _copy_derived_packet_triplet(packet_dir)
+    approval = json.loads(direct.approval_packet.read_text(encoding="utf-8"))
+    approval["planning_gate"]["hold_no_paper_run"] = False
+    direct.approval_packet.write_text(json.dumps(approval, indent=2) + "\n", encoding="utf-8")
+    gates, report = smoke_mod.run_bounded_offline_smoke_preflight(
+        fixture_path=None,
+        durable_output_dir=tmp_path / "out",
+        approved_scope_name=REQUIRED_SCOPE,
+        offline=True,
+        no_network=True,
+        direct_packet=direct,
+    )
+    assert not gates.all_pass
+    assert "approval:hold_no_paper_run_required" in report["reasons"]
+
+
+@pytest.mark.parametrize(
+    "field,payload_key",
+    [
+        ("live_authority", "safety"),
+        ("testnet_authority", "safety"),
+        ("network_called", "safety"),
+        ("aws_cli_called", "safety"),
+    ],
+)
+def test_direct_input_forbidden_authority_true_fails_closed(
+    tmp_path: Path, field: str, payload_key: str
+) -> None:
+    packet_dir = tmp_path / "derived_packet"
+    packet_dir.mkdir()
+    direct = _copy_derived_packet_triplet(packet_dir)
+    path = direct.cost_kill_orphan_safety
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload[field] = True
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    gates, report = smoke_mod.run_bounded_offline_smoke_preflight(
+        fixture_path=None,
+        durable_output_dir=tmp_path / "out",
+        approved_scope_name=REQUIRED_SCOPE,
+        offline=True,
+        no_network=True,
+        direct_packet=direct,
+    )
+    assert not gates.all_pass
+    assert any(field in reason for reason in report["reasons"])
+
+
+def test_direct_input_cli_main_exit_zero(
+    durable_out_dir: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_not_tmp(monkeypatch)
+    packet_dir = tmp_path / "derived_packet"
+    packet_dir.mkdir()
+    direct = _copy_derived_packet_triplet(packet_dir)
+    out = durable_out_dir / "direct_cli_out"
+    rc = smoke_mod.main(
+        [
+            "--approval-packet",
+            str(direct.approval_packet),
+            "--host-inventory",
+            str(direct.host_inventory),
+            "--cost-kill-orphan-safety",
+            str(direct.cost_kill_orphan_safety),
+            "--remote-runtime-preflight",
+            str(direct.remote_runtime_preflight),
+            "--registry",
+            str(direct.registry),
+            "--durable-output-dir",
+            str(out),
+            "--approved-scope-name",
+            REQUIRED_SCOPE,
+            "--offline",
+            "--no-network",
+        ]
+    )
+    assert rc == 0
+    lines = _parse_machine_lines(
+        (out / smoke_mod.MACHINE_LINES_FILENAME).read_text(encoding="utf-8")
+    )
+    assert lines["DERIVED_PACKET_DIRECT_INPUT_USED"] == "true"
+    assert lines["EVIDENCE_ONLY_WRAPPER_REQUIRED"] == "false"
