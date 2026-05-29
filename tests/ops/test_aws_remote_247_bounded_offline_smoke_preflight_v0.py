@@ -218,23 +218,45 @@ def test_canonical_fixture_exists() -> None:
     assert payload["approved_scope_name"] == REQUIRED_SCOPE
 
 
-DERIVED_ARCHIVE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-    "/closeout/aws_remote_daemon_247_offline_derived_packet_draft_v1_20260529T114049Z"
-)
+FIXTURES_OPS = REPO_ROOT / "tests" / "fixtures" / "ops"
+
+# Repo-tracked canonical fixtures (CI-portable); derived-style filenames in tmp_path only.
+_DERIVED_PACKET_SOURCES: dict[str, tuple[Path, str]] = {
+    "approval": (
+        FIXTURES_OPS / "remote_paper_approval_command_packet_v0.json",
+        "derived_remote_paper_approval_packet_v1_DO_NOT_RUN.json",
+    ),
+    "inventory": (
+        FIXTURES_OPS / "remote_host_inventory_planning_v0.json",
+        "derived_remote_host_inventory_v1_DO_NOT_RUN.json",
+    ),
+    "safety": (
+        FIXTURES_OPS / "remote_cost_kill_orphan_safety_v0.json",
+        "derived_remote_cost_kill_orphan_safety_v1_DO_NOT_RUN.json",
+    ),
+    "preflight": (
+        FIXTURES_OPS / "preflight_remote_paper_planning_pass_v0.json",
+        "derived_preflight_remote_runtime_runner_v1_DO_NOT_RUN.json",
+    ),
+    "registry": (
+        FIXTURES_OPS / "registry_remote_paper_planning_row_v0.json",
+        "derived_registry_v1_DO_NOT_RUN.json",
+    ),
+}
 
 
 def _copy_derived_packet_triplet(target_dir: Path) -> DirectPacketInput:
-    names = {
-        "approval": "derived_remote_paper_approval_packet_v1_DO_NOT_RUN.json",
-        "inventory": "derived_remote_host_inventory_v1_DO_NOT_RUN.json",
-        "safety": "derived_remote_cost_kill_orphan_safety_v1_DO_NOT_RUN.json",
-        "preflight": "derived_preflight_remote_runtime_runner_v1_DO_NOT_RUN.json",
-        "registry": "derived_registry_v1_DO_NOT_RUN.json",
-    }
-    paths = {key: target_dir / filename for key, filename in names.items()}
-    for path in paths.values():
-        path.write_text((DERIVED_ARCHIVE / path.name).read_text(encoding="utf-8"), encoding="utf-8")
+    paths: dict[str, Path] = {}
+    for key, (source, dest_name) in _DERIVED_PACKET_SOURCES.items():
+        dest = target_dir / dest_name
+        payload = json.loads(source.read_text(encoding="utf-8"))
+        if key == "approval":
+            gate = payload.setdefault("planning_gate", {})
+            gate.setdefault("hold_no_paper_run", True)
+            gate.setdefault("run_start_allowed", False)
+            gate.setdefault("aws_remote_execution_allowed", False)
+        dest.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+        paths[key] = dest
     return DirectPacketInput(
         approval_packet=paths["approval"],
         host_inventory=paths["inventory"],
