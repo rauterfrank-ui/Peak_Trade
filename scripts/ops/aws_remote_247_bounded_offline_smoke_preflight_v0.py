@@ -632,9 +632,7 @@ def run_bounded_offline_smoke_preflight(
         )
         if r1:
             reasons.append(r1)
-        g2, r2 = _verify_gate_g2_direct(
-            approval=approval, inventory=inventory, safety=safety
-        )
+        g2, r2 = _verify_gate_g2_direct(approval=approval, inventory=inventory, safety=safety)
         if r2:
             reasons.append(r2)
         g3, r3 = _verify_gate_g3_direct(
@@ -645,13 +643,9 @@ def run_bounded_offline_smoke_preflight(
         )
         if r3:
             reasons.append(r3)
-        synthetic_fixture = _synthesize_fixture_from_direct(
-            approval=approval, inventory=inventory
-        )
+        synthetic_fixture = _synthesize_fixture_from_direct(approval=approval, inventory=inventory)
         fail_closed = bool(
-            synthetic_fixture.get("closeout_plan", {}).get(
-                "fail_closed_on_any_gate_false", True
-            )
+            synthetic_fixture.get("closeout_plan", {}).get("fail_closed_on_any_gate_false", True)
         )
     else:
         assert fixture_path is not None
@@ -667,7 +661,9 @@ def run_bounded_offline_smoke_preflight(
         g3, r3 = _verify_gate_g3(fixture_path, fixture)
         if r3:
             reasons.append(r3)
-        fail_closed = bool(fixture.get("closeout_plan", {}).get("fail_closed_on_any_gate_false", True))
+        fail_closed = bool(
+            fixture.get("closeout_plan", {}).get("fail_closed_on_any_gate_false", True)
+        )
 
     g4 = False
     if g1 and g2 and g3:
@@ -748,7 +744,9 @@ def _build_report(
                 else None
             ),
             "registry": (
-                str(direct_packet.registry.resolve()) if direct_packet.registry is not None else None
+                str(direct_packet.registry.resolve())
+                if direct_packet.registry is not None
+                else None
             ),
         }
     return report
