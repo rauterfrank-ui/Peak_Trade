@@ -79,6 +79,39 @@ This contract records the primary-evidence enforcement posture for future run-li
 
 This contract does not enable default enforcement, does not lift preflight, does not approve runtime, does not start Paper/Shadow/Testnet/Live, and does not mutate AWS/Notion/broker/exchange surfaces.
 
+## Gap 3 Execute Command Contract v0
+
+GAP3_EXECUTE_COMMAND_CONTRACT_V0=true
+GAP3_EXECUTE_COMMAND_VERIFIED=false
+GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP3_EXECUTE_COMMAND_DEFAULT_ON=false
+GAP3_EXECUTE_COMMAND_DRY_RUN_ONLY=true
+PATH_B_LIFT_DISCUSSION_READY=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+RUNTIME_APPROVED=false
+
+This is a docs/tests-only command contract. It records the canonical bounded dry-run execute-command posture for future planning. Current status remains contract-only, not verified, and not execution-authorized.
+
+### Canonical bounded dry-run command (text only; not executed in this PR)
+
+`uv run python scripts/run_scheduler.py --config config/scheduler/jobs.toml --dry-run --once --verbose`
+
+The canonical command is documentation/planning text only in this contract slice. This PR does not execute the scheduler, does not authorize scheduler execution, and does not enable `config/scheduler/jobs.toml`.
+
+### Reuse-first owner surfaces
+
+- `scripts/run_scheduler.py`
+- `config/scheduler/jobs.toml`
+- `scripts/ops/primary_evidence_retention_v0.py`
+- `scripts/ops/durable_closeout_copy_verify_v0.py`
+- existing scheduler CLI tests and ops runbooks
+- existing docs truth map / reference / token-policy checks
+
+### Non-authorization
+
+This PR does not authorize runtime, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
+
 ## Gap 4 Output/Evidence Paths Contract v0
 
 GAP4_OUTPUT_EVIDENCE_PATHS_CONTRACT_V0=true
@@ -141,3 +174,8 @@ GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false
 GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=false
 GAP4_OUTPUT_EVIDENCE_OPT_IN_ONLY=true
 GAP4_DURABLE_OUTPUT_REQUIRED_FOR_FUTURE_RUNS=true
+GAP3_EXECUTE_COMMAND_CONTRACT_V0=true
+GAP3_EXECUTE_COMMAND_VERIFIED=false
+GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP3_EXECUTE_COMMAND_DEFAULT_ON=false
+GAP3_EXECUTE_COMMAND_DRY_RUN_ONLY=true
