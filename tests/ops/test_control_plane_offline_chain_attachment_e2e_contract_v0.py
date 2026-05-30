@@ -119,6 +119,21 @@ def _assert_chain_non_authority_flags(chain: dict) -> None:
         assert chain[key] is False, f"expected chain {key}=false, got {chain[key]!r}"
 
 
+def _assert_chain_machine_lines_non_authority(outdir: Path) -> None:
+    machine_lines_path = outdir / chain_mod.CHAIN_MACHINE_LINES_FILENAME
+    text = machine_lines_path.read_text(encoding="utf-8")
+
+    assert "FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED=false" in text
+
+    machine_lines: dict[str, str] = {}
+    for raw in text.splitlines():
+        line = raw.strip()
+        if "=" in line:
+            key, _, value = line.partition("=")
+            machine_lines[key.strip()] = value.strip()
+    assert machine_lines["FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED"] == "false"
+
+
 def _assert_attachment_plan_non_authority(
     plan: ControlPlaneOfflineChainDurableAttachmentPlanV0,
 ) -> None:
@@ -161,6 +176,7 @@ def test_all_fixtures_chain_to_attachment_e2e_v0(tmp_path: Path, fixture_path: P
     chain = _load_chain(outdir)
     _assert_chain_status_mapping(chain, expected_forbidden=meta["expected_forbidden"])
     _assert_chain_non_authority_flags(chain)
+    _assert_chain_machine_lines_non_authority(outdir)
 
     status, plan = _evaluate_attachment_plan(
         source_chain_root=outdir,
