@@ -43,6 +43,42 @@ Any follow-up that edits docs must consider the existing docs truth map / drift 
 - Do not start Paper, Shadow, Testnet, Live, Scheduler, Supervisor, daemon, broker, exchange, AWS, or background processes.
 - Do not mutate AWS, Notion, broker, exchange, paper test data, dashboard authority, Master V2 / Double Play, Risk/KillSwitch, Scope/Capital, or Execution/Live Gates.
 
+
+
+## §2a.1 Primary Evidence Enforcement Contract v0
+
+GAP2A1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACT_V0=true
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+GAP2A1_ENFORCEMENT_DEFAULT_ON=false
+GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true
+PATH_B_LIFT_DISCUSSION_READY=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+RUNTIME_APPROVED=false
+
+This contract records the primary-evidence enforcement posture for future run-like actions. It is intentionally non-authorizing and opt-in only.
+
+### Reuse-first owner surfaces
+
+- `scripts/ops/primary_evidence_retention_v0.py`
+- `scripts/ops/durable_closeout_copy_verify_v0.py`
+- `scripts/run_scheduler.py`
+- `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py`
+- existing preflight contract §2a/§2a.1 surfaces
+- existing docs truth map / reference / token-policy checks
+
+### Enforcement tiers
+
+| Tier | Contract |
+|---|---|
+| Archive planning | durable manifest + verification already expected |
+| Bounded dry-run | manifest + closeout required; enforcement remains optional |
+| Non-dry-run execute | explicit operator GO + durable root + opt-in enforce flag required |
+
+### Non-authorization
+
+This contract does not enable default enforcement, does not lift preflight, does not approve runtime, does not start Paper/Shadow/Testnet/Live, and does not mutate AWS/Notion/broker/exchange surfaces.
+
 ## Final Machine Lines
 
 SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true
@@ -65,3 +101,7 @@ REUSE_BEFORE_NEW_CHECKED=true
 REUSE_DRIFT_GUARD_CHECKED=true
 PREFLIGHT_REMAINS_BLOCKED=true
 STOP_IDLE_PRESERVED=true
+GAP2A1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACT_V0=true
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+GAP2A1_ENFORCEMENT_DEFAULT_ON=false
+GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true
