@@ -210,11 +210,13 @@ CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_MANUAL_DISPATCH_SENSITIVE_SURFACE
 CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_MANUAL_DISPATCH_SENSITIVE_SURFACE_CROSSLINK_DOCS_TESTS_ONLY=true
 CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_WORKFLOW_SECRETS_VISIBILITY_CROSSLINK_V0=true
 CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_WORKFLOW_SECRETS_VISIBILITY_CROSSLINK_DOCS_TESTS_ONLY=true
+CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_ARTIFACT_RETENTION_OR_EVIDENCE_GAP_CROSSLINK_V0=true
+CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_ARTIFACT_RETENTION_OR_EVIDENCE_GAP_CROSSLINK_DOCS_TESTS_ONLY=true
 INPUT_JSONL_PROVIDED=false
 DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
 ```
 
-**Non-authorizing:** Explicit histogram reuse-owner crosslinks for `workflow_secrets_visibility`, `manual_dispatch_sensitive_surface`, `scheduler_or_runtime_boundary`, `branch_or_environment_authority`, and `paid_ai_eval_gate` are **visibility-only**; they do **not** authorize secrets availability or access, workflow manual-dispatch execution, scheduler/daemon/runtime start, workflow write-permission approval, paid Promptfoo/OpenAI eval execution, secret-injection approval, PR/push paid-eval paths, Testnet/Live, broker/exchange, or definitive R-001/R-002/R-007 mapping while `INPUT_JSONL_PROVIDED=false`.
+**Non-authorizing:** Explicit histogram reuse-owner crosslinks for `artifact_retention_or_evidence_gap`, `workflow_secrets_visibility`, `manual_dispatch_sensitive_surface`, `scheduler_or_runtime_boundary`, `branch_or_environment_authority`, and `paid_ai_eval_gate` are **visibility-only**; they do **not** authorize artifact retention remediation, retention-policy changes, evidence-gap remediation, secrets availability or access, workflow manual-dispatch execution, scheduler/daemon/runtime start, workflow write-permission approval, paid Promptfoo/OpenAI eval execution, secret-injection approval, PR/push paid-eval paths, Testnet/Live, broker/exchange, or definitive R-001/R-002/R-007 mapping while `INPUT_JSONL_PROVIDED=false`.
 
 Operators may use this histogram for **CI/Ops visibility triage** until a lossless row exists for each pending retained risk. **Do not** treat any `CSC-STATIC-v0-*` `candidate_id` as a substitute mapping for R-001/R-002/R-007 without restored lossless inventory or operator-approved triage.
 
