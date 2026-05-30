@@ -314,6 +314,67 @@ def test_market_and_double_play_chartjs_cdn_failure_attribution_v0(
         assert "XMLHttpRequest" not in html
 
 
+def test_market_dashboard_v11_chart_diagnostics_readonly_structure_contract_v0(
+    client: TestClient,
+) -> None:
+    """v1.1 chart diagnostics SSR markers on GET /market (structure-only, non-authorizing)."""
+    html = _html(client, "/market")
+    lowered = html.lower()
+
+    assert 'data-market-v11-chart-diagnostics="true"' in html
+    assert 'data-market-v11-diagnostics-inner="true"' in html
+    assert 'data-market-v11-render-fallback="true"' in html
+    assert "data-market-v11-fallback-mode=" in html
+    assert 'data-market-v11-chart-library-status="true"' in html
+    assert 'data-market-v11-payload-bars="true"' in html
+    assert 'data-market-v11-diagnostics-visual-rails="true"' in html
+    assert 'id="market-v11-render-fallback"' in html
+
+    assert "Chart diagnostics" in html
+    assert "No backend/API/provider change" in html
+    assert "Dominant panel · keine Order-UI" in html
+    assert "SSR only — verified in browser" in html
+
+    assert 'data-market-readonly="true"' in html
+    assert 'data-market-non-authorizing="true"' in html
+
+    assert "fetch(" not in html
+    assert "XMLHttpRequest" not in html
+    assert "<form" not in lowered
+    assert "place order" not in lowered
+    assert "ready for live" not in lowered
+    assert "testnet approved" not in lowered
+
+
+def test_double_play_market_dashboard_v11_chart_diagnostics_readonly_structure_contract_v0(
+    client: TestClient,
+) -> None:
+    """v1.1 chart diagnostics SSR markers on GET /market/double-play (dp-specific shell)."""
+    html = _html(client, "/market/double-play")
+    lowered = html.lower()
+
+    assert 'data-market-v11-chart-diagnostics="true"' in html
+    assert 'data-market-v11-diagnostics-inner="true"' in html
+    assert 'data-market-v11-render-fallback="true"' in html
+    assert "data-market-v11-fallback-mode=" in html
+    assert 'data-market-v11-chart-library-status="true"' in html
+    assert 'data-market-v11-payload-bars="true"' in html
+    assert 'data-double-play-market-cockpit-diagnostics-secondary="true"' in html
+    assert 'id="dp-market-v11-render-fallback"' in html
+
+    assert "Diagnostics" in html
+    assert "SSR only — verified in browser" in html
+
+    assert 'data-double-play-market-readonly="true"' in html
+    assert 'data-double-play-market-no-authority="true"' in html
+    assert 'data-double-play-market-no-orders="true"' in html
+
+    assert "fetch(" not in html
+    assert "XMLHttpRequest" not in html
+    assert "<form" not in lowered
+    assert "place order" not in lowered
+
+
 def test_market_dashboard_has_no_trade_action_affordance(client: TestClient) -> None:
     combined_html = "\n".join(
         [
