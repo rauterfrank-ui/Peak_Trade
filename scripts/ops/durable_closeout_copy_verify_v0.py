@@ -22,10 +22,18 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from scripts.ops.primary_evidence_retention_v0 import (
+    LIFECYCLE_CLOSEOUT_MARKER_SUFFIXES,
     MANIFEST_FILENAME,
     is_under_tmp,
+    validate_durable_lifecycle_closeout_root,
     verify_manifest_sha256,
     write_manifest_sha256,
+)
+
+# Chain hook markers: lifecycle/planning/remote/final-stop-idle slices only.
+# ``FINAL_MACHINE_LINES.txt`` alone does not activate the hook (paper bounded observation).
+_CHAIN_LIFECYCLE_HOOK_MARKER_SUFFIXES: tuple[str, ...] = tuple(
+    suffix for suffix in LIFECYCLE_CLOSEOUT_MARKER_SUFFIXES if suffix != "_MACHINE_LINES.txt"
 )
 
 README_FILENAME = "DURABLE_COPY_README.md"
@@ -355,6 +363,32 @@ def _default_cli_invoker(argv: Sequence[str], cwd: Path) -> tuple[int, str]:
     return int(proc.returncode), combined
 
 
+def _lifecycle_closeout_hook_applies(dest_dir: Path) -> bool:
+    """Return True when dest classifies as lifecycle/planning/remote/final-stop-idle closeout."""
+    for path in dest_dir.iterdir():
+        if not path.is_file():
+            continue
+        name = path.name
+        if any(name.endswith(suffix) for suffix in _CHAIN_LIFECYCLE_HOOK_MARKER_SUFFIXES):
+            return True
+        upper = name.upper()
+        if "STOP_IDLE" in upper and (name.endswith(".md") or name.endswith("_MACHINE_LINES.txt")):
+            return True
+    return False
+
+
+def _requires_final_stop_idle_lifecycle_gate(dest_dir: Path) -> bool:
+    for path in dest_dir.iterdir():
+        if not path.is_file():
+            continue
+        name = path.name
+        if "STOP_IDLE" not in name.upper():
+            continue
+        if name.endswith(".md") or name.endswith("_MACHINE_LINES.txt"):
+            return True
+    return False
+
+
 def _chain_artifact_paths(dest_dir: Path) -> dict[str, Path]:
     chain_dir = _safe_dest_child(dest_dir, Path(POST_CLOSEOUT_CHAIN_SUBDIR))
     return {
@@ -408,6 +442,25 @@ def run_local_post_closeout_chain_v0(
     if not archive_root.is_dir():
         chain.error = f"chain archive root is not a directory: {archive_root}"
         return chain
+
+    if _lifecycle_closeout_hook_applies(dest_dir):
+        require_final_stop_idle = _requires_final_stop_idle_lifecycle_gate(dest_dir)
+        ok_lifecycle, lifecycle_msg, lifecycle_detail = validate_durable_lifecycle_closeout_root(
+            dest_dir,
+            require_final_stop_idle_marker=require_final_stop_idle,
+        )
+        chain.steps.append(
+            ChainStepResult(
+                step="validate_durable_lifecycle_closeout_root_v0",
+                rc=0 if ok_lifecycle else 1,
+                status="ok" if ok_lifecycle else "failed",
+                detail=str(lifecycle_detail.get("classification", "")),
+            )
+        )
+        if not ok_lifecycle:
+            chain.error = f"lifecycle closeout validation failed: {lifecycle_msg}"
+            chain.status = "invalid"
+            return chain
 
     paths["chain_dir"].mkdir(parents=True, exist_ok=True)
 
