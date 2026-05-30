@@ -15,7 +15,9 @@ GAP3_PARALLEL_MARKERS = (
 
 
 def _gap3_section(text: str) -> str:
-    return text.split(GAP3_SECTION_HEADER, 1)[1].split("## Gap 4 Output/Evidence Paths Contract v0", 1)[0]
+    return text.split(GAP3_SECTION_HEADER, 1)[1].split(
+        "## Gap 4 Output/Evidence Paths Contract v0", 1
+    )[0]
 
 
 def test_gap3_execute_command_contract_is_present_and_non_authorizing():
