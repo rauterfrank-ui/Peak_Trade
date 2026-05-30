@@ -172,6 +172,49 @@ Future runs are not considered complete unless primary evidence artifacts are du
 
 This contract does not authorize runtime, scheduler, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
 
+## Gap 6 Dry-Run Proof Criteria Contract v0
+
+GAP6_DRY_RUN_PROOF_CRITERIA_CONTRACT_V0=true
+GAP6_CRITERIA_ONLY=true
+GAP6_DRY_RUN_PROOF_ACCEPTED=false
+GAP6_DRY_RUN_PROOF_VERIFIED=false
+GAP6_DRY_RUN_RC0_OBSERVED=false
+GAP6_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP6_DRY_RUN_PROOF_DEFAULT_ON=false
+PATH_B_LIFT_DISCUSSION_READY=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+RUNTIME_APPROVED=false
+
+This is a docs/tests-only criteria contract. It defines future dry-run proof acceptance criteria only. It does not claim that a dry-run proof exists, does not claim RC=0 was observed, and does not accept or verify any proof. Current status remains criteria-only, not proof-accepted, not verified, and not scheduler-authorized.
+
+Gap 1 remains the entrypoint boundary. Gap 3 remains the canonical command-text contract. Gap 4 remains the durable output/evidence path contract.
+
+### Reuse-first owner surfaces
+
+- `scripts/run_scheduler.py`
+- `config/scheduler/jobs.toml`
+- `scripts/ops/primary_evidence_retention_v0.py`
+- `scripts/ops/durable_closeout_copy_verify_v0.py`
+- `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py`
+- existing preflight contract §5.6 and `docs/SCHEDULER_DAEMON.md` dry-run discipline
+- existing docs truth map / reference / token-policy checks
+
+### Future dry-run proof criteria (planning only; not executed or accepted in this contract)
+
+Any future dry-run proof considered for preflight dimension 6 must satisfy all of the following criteria through existing reuse-first surfaces:
+
+1. **Entrypoint boundary** — bounded execute path named by Gap 1 (`scripts/run_scheduler.py` only; no parallel entrypoints).
+2. **Command contract** — canonical bounded dry-run command text from Gap 3 (`--dry-run --once`; no implicit long-running poll).
+3. **Durable evidence** — primary evidence durable, archived outside `/tmp`, checksummed, manifest-verified, and linked through Gap 4 and existing closeout surfaces (`primary_evidence_retention_v0.py`, `durable_closeout_copy_verify_v0.py`).
+4. **No unexpected job execution** — process gate and scheduler dry-run discipline documented; no claim that unexpected jobs ran.
+
+This contract records criteria only. It does not execute `scripts/run_scheduler.py`, does not observe or record RC=0, and does not treat any archive or prior bounded dry-run as proof accepted here.
+
+### Non-authorization
+
+This contract does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not enable or modify `config/scheduler/jobs.toml`, and does not authorize runtime, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
+
 ## Final Machine Lines
 
 SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true
@@ -214,3 +257,10 @@ GAP1_RUNTIME_APPROVED=false
 GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false
 GAP1_EXECUTE_ENTRYPOINT_DEFAULT_ON=false
 GAP1_ENTRYPOINT_DRY_RUN_ONLY=true
+GAP6_DRY_RUN_PROOF_CRITERIA_CONTRACT_V0=true
+GAP6_CRITERIA_ONLY=true
+GAP6_DRY_RUN_PROOF_ACCEPTED=false
+GAP6_DRY_RUN_PROOF_VERIFIED=false
+GAP6_DRY_RUN_RC0_OBSERVED=false
+GAP6_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP6_DRY_RUN_PROOF_DEFAULT_ON=false
