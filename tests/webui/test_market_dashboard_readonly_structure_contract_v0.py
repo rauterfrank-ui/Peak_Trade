@@ -721,7 +721,27 @@ def test_market_dashboard_ranking_funnel_empty_state_v0_marker(client: TestClien
 def test_market_dashboard_ranking_funnel_dynamic_labels_v0_marker(client: TestClient) -> None:
     """Funnel stages use dynamic labels (no fixed final-count wording in UI contract)."""
     market_html = _html(client, "/market")
+    assert 'data-market-v0-ranking-funnel-v0="true"' in market_html
     assert 'data-market-v0-ranking-funnel-dynamic-labels-v0="true"' in market_html
+    assert 'data-market-v0-ranking-funnel-display-only-v0="true"' in market_html
+    assert 'data-market-v0-ranking-funnel-label-text-v0="true"' in market_html
+    for stage_key in ("universe", "shortlist", "selected"):
+        assert f'data-market-v0-ranking-funnel-label-stage-v0="{stage_key}"' in market_html
+    assert "Top Universe" in market_html
+    assert "Shortlist" in market_html
+    assert "Top Ranking / Selected Candidates" in market_html
+    assert 'data-market-v0-ranking-funnel-non-authorizing-v0="true"' in market_html
+
+
+def test_market_dashboard_ranking_funnel_dynamic_labels_excluded_on_double_play_v0(
+    client: TestClient,
+) -> None:
+    """Double-Play must not carry /market-only ranking funnel dynamic-label SSR markers."""
+    html = _html(client, "/market/double-play")
+    assert 'data-market-v0-ranking-funnel-v0="true"' not in html
+    assert "data-market-v0-ranking-funnel-label-stage-v0" not in html
+    assert "data-market-v0-ranking-funnel-label-text-v0" not in html
+    assert 'data-market-v0-ranking-funnel-display-only-v0="true"' not in html
 
 
 def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> None:
@@ -782,7 +802,9 @@ def test_market_dashboard_ranking_funnel_and_pro_shell_marker_families_v0(
     """Positive pairing: /market carries ranking funnel and pro-shell IA marker families."""
     html = _html(client, "/market")
     assert 'data-market-v0-ranking-funnel-empty-state-v0="true"' in html
+    assert 'data-market-v0-ranking-funnel-v0="true"' in html
     assert 'data-market-v0-ranking-funnel-dynamic-labels-v0="true"' in html
+    assert 'data-market-v0-ranking-funnel-display-only-v0="true"' in html
     assert 'data-market-v0-ranking-funnel-stages-v0="true"' in html
     assert 'id="market-v0-landmark-ranking-funnel-h2"' in html
     assert 'data-market-v0-pro-shell="true"' in html
@@ -798,6 +820,9 @@ def test_double_play_market_dashboard_excludes_ranking_funnel_markers_v0(
     html = _html(client, "/market/double-play")
     assert "data-market-v0-ranking-funnel-empty-state-v0" not in html
     assert "data-market-v0-ranking-funnel-dynamic-labels-v0" not in html
+    assert "data-market-v0-ranking-funnel-label-stage-v0" not in html
+    assert "data-market-v0-ranking-funnel-label-text-v0" not in html
+    assert "data-market-v0-ranking-funnel-display-only-v0" not in html
     assert "data-market-v0-ranking-funnel-stages-v0" not in html
     assert "data-market-v0-ranking-funnel-has-rows-v0" not in html
     assert "data-market-v0-ranking-funnel-enabled-v0" not in html

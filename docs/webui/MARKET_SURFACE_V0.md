@@ -89,7 +89,9 @@ Auf **`GET`** **`/market`** zeigt das Template einen **Futures-Ranking-Funnel** 
 
 - **Sichtbare Stufen-Bezeichner:** **Top Universe** → **Shortlist** → **Top Ranking / Selected Candidates** (sprachlicher Zielpfad auf **einer** Seite; **keine** separate Ranking-Route).
 - **Keine festen Endgrößen:** frühere illustrative Größen wie `Top 50&#47;20&#47;5` sind **kein** vertragliches Versprechen — **Umfang** jeder Stufe bleibt **producer-definiert** / datengetrieben.
-- **Stabile Marker:** `data-market-v0-ranking-funnel-empty-state-v0="true"`, `data-market-v0-ranking-funnel-dynamic-labels-v0="true"` (Tests/Strukturvertrag — **keine** operationalen Freigaben).
+- **Stabile Marker:** `data-market-v0-ranking-funnel-v0="true"`, `data-market-v0-ranking-funnel-empty-state-v0="true"`, `data-market-v0-ranking-funnel-dynamic-labels-v0="true"`, `data-market-v0-ranking-funnel-display-only-v0="true"` (Tests/Strukturvertrag — **keine** operationalen Freigaben).
+- **Per-stage dynamic-label markers (`GET` `/market` only):** `data-market-v0-ranking-funnel-label-stage-v0` (stage key: `universe`, `shortlist`, `selected`), `data-market-v0-ranking-funnel-label-text-v0="true"` on the human-readable producer label (`Top Universe`, `Shortlist`, `Top Ranking &#47; Selected Candidates`). Labels are **display-only** — **no** execution authority, **no** live-entry approval, **no** broker/exchange action, **no** polling/runtime dependency.
+- **Route separation:** **`GET` `/market/double-play`** must **not** carry `/market`-only ranking-funnel dynamic-label SSR markers.
 - **Operator-Hinweis (Empty-State):** Fehlende Kandidatenzeilen bedeuten **nicht** Freigabe, Sperre, „Ready“, Handelserlaubnis oder Signal — nur, dass diese **read-only** Oberfläche (noch) **keine** Producer-/Ranking-Zeilen für die Stufen ausgibt.
 - **Implementierung** des Ranking Producers folgt dem Charter in § Market Ranking Funnel Producer v0 (read-only charter) unten; bis zur Implementierung **keine** Umsetzungsannahme durch dieses Dokument.
 

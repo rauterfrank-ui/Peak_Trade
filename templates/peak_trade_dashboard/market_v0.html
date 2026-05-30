@@ -162,8 +162,10 @@
     role="region"
     aria-labelledby="market-v0-landmark-ranking-funnel-h2"
     class="rounded-xl border border-violet-900/45 bg-gradient-to-br from-slate-950/92 via-violet-950/22 to-slate-950/85 px-3 py-3 sm:px-4 ring-1 ring-violet-900/25 shadow-md shadow-black/20"
+    data-market-v0-ranking-funnel-v0="true"
     data-market-v0-ranking-funnel-dynamic-labels-v0="true"
     data-market-v0-ranking-funnel-stages-v0="true"
+    data-market-v0-ranking-funnel-display-only-v0="true"
     {% if ranking_funnel.gate_enabled %}data-market-v0-ranking-funnel-enabled-v0="true"{% endif %}
     {% if ranking_funnel.has_rows %}data-market-v0-ranking-funnel-has-rows-v0="true"{% else %}data-market-v0-ranking-funnel-empty-state-v0="true"{% endif %}
     {% if ranking_funnel.non_authorizing %}data-market-v0-ranking-funnel-non-authorizing-v0="true"{% endif %}
@@ -204,9 +206,16 @@
       <div
         class="rounded-lg border border-slate-700/75 bg-slate-950/65 px-2.5 py-2"
         data-market-v0-ranking-funnel-stage-v0="{{ stage_key|e }}"
+        data-market-v0-ranking-funnel-label-stage-v0="{{ stage_key|e }}"
       >
-        <p class="text-[9px] font-bold uppercase tracking-[0.1em] text-violet-300/88 m-0">{{ stage_key|e }}</p>
-        <p class="text-sm font-semibold text-slate-100 m-0 mt-1">{{ stage_label|e }}</p>
+        <p
+          class="text-[9px] font-bold uppercase tracking-[0.1em] text-violet-300/88 m-0"
+          data-market-v0-ranking-funnel-label-stage-v0="{{ stage_key|e }}"
+        >{{ stage_key|e }}</p>
+        <p
+          class="text-sm font-semibold text-slate-100 m-0 mt-1"
+          data-market-v0-ranking-funnel-label-text-v0="true"
+        >{{ stage_label|e }}</p>
         <p class="text-[9px] text-slate-500 m-0 mt-1 leading-snug tabular-nums">
           {{ ranking_funnel.stage_counts[stage_key] }} row(s) · producer-defined count
         </p>
