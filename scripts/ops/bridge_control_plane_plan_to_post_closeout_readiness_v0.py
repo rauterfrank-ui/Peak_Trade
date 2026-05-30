@@ -60,7 +60,13 @@ READINESS_MACHINE_LINE_KEYS: tuple[str, ...] = (
 
 
 def _load_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"malformed JSON: {path}: {exc}") from exc
+    if not isinstance(payload, dict):
+        raise ValueError(f"JSON root must be object: {path}")
+    return payload
 
 
 def _validate_plan(plan: dict[str, Any], plan_path: Path) -> str:

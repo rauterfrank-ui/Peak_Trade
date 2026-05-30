@@ -19,6 +19,7 @@ from typing import Any
 
 from scripts.ops.plan_control_plane_offline_chain_durable_attachment_v0 import (
     DURABLE_ATTACHMENT_CONTRACT_MODE,
+    SCHEMA_VERSION as ATTACHMENT_PLAN_SCHEMA_VERSION,
     STATUS_READY_FOR_DURABLE_ATTACHMENT_PLANNING,
     missing_chain_rel_paths,
 )
@@ -59,6 +60,17 @@ FORBIDDEN_CLI_FLAGS: tuple[str, ...] = (
     "--s3",
     "--ssh",
     "--start",
+)
+
+REQUIRED_ATTACHMENT_PLAN_KEYS: frozenset[str] = frozenset(
+    {
+        "schema_version",
+        "status",
+        "pointer_only",
+        "target_archive_root",
+        "hook_implemented",
+        "full_post_closeout_automation_implemented",
+    }
 )
 
 SUMMARY_MACHINE_LINE_KEYS: tuple[str, ...] = (
@@ -246,6 +258,34 @@ def build_summary_machine_lines(status: str) -> dict[str, str]:
     }
 
 
+def _load_attachment_plan_json(path: Path) -> dict[str, Any]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"malformed JSON attachment plan: {path}: {exc}") from exc
+    if not isinstance(payload, dict):
+        raise ValueError(f"attachment plan JSON root must be object: {path}")
+    return payload
+
+
+def _validate_attachment_plan_json(plan: dict[str, Any], path: Path) -> None:
+    missing = REQUIRED_ATTACHMENT_PLAN_KEYS - plan.keys()
+    if missing:
+        raise ValueError(f"attachment plan missing keys {sorted(missing)}: {path}")
+    if plan["schema_version"] != ATTACHMENT_PLAN_SCHEMA_VERSION:
+        raise ValueError(
+            f"unsupported attachment plan schema {plan['schema_version']!r} "
+            f"(expected {ATTACHMENT_PLAN_SCHEMA_VERSION!r}): {path}"
+        )
+    if plan["hook_implemented"] is True:
+        raise ValueError(f"hostile attachment plan hook_implemented must remain false: {path}")
+    if plan["full_post_closeout_automation_implemented"] is True:
+        raise ValueError(
+            "hostile attachment plan full_post_closeout_automation_implemented "
+            f"must remain false: {path}"
+        )
+
+
 def evaluate_hook_dry_run_summary_v0(
     *,
     chain_root: Path,
@@ -253,7 +293,8 @@ def evaluate_hook_dry_run_summary_v0(
     attachment_e2e_complete: bool = True,
 ) -> dict[str, Any]:
     """Evaluate hook dry-run summary from chain root + attachment plan JSON path."""
-    plan = json.loads(attachment_plan_path.read_text(encoding="utf-8"))
+    plan = _load_attachment_plan_json(attachment_plan_path)
+    _validate_attachment_plan_json(plan, attachment_plan_path)
     chain_root_resolved = chain_root.resolve()
     attachment_plan_resolved = attachment_plan_path.resolve()
 
@@ -340,11 +381,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--outdir", type=Path, required=True)
     args = parser.parse_args(argv)
 
-    summary = run_hook_dry_run_summary(
-        chain_root=args.chain_root,
-        attachment_plan=args.attachment_plan,
-        outdir=args.outdir,
-    )
+    try:
+        summary = run_hook_dry_run_summary(
+            chain_root=args.chain_root,
+            attachment_plan=args.attachment_plan,
+            outdir=args.outdir,
+        )
+    except ValueError as exc:
+        sys.stderr.write(f"{exc}\n")
+        return 2
+
     for key in SUMMARY_MACHINE_LINE_KEYS:
         sys.stdout.write(f"{key}={summary['machine_lines'][key]}\n")
     return 0

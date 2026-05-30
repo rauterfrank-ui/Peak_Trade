@@ -279,3 +279,23 @@ def test_contract_module_imports_are_stdlib_scripts_ops_tests_ops_only_v0() -> N
             for alias in node.names:
                 root = alias.name.split(".")[0]
                 assert root in allowed_roots, f"unexpected import: {alias.name!r}"
+
+
+def test_planner_exits_2_on_malformed_chain_json_artifact(tmp_path: Path) -> None:
+    chain_dir = tmp_path / "chain"
+    plan_dir = tmp_path / "plan_malformed"
+    assert _run_offline_chain(LEGAL_FIXTURE, chain_dir) == 0
+    malformed_rel = "CONTROL_PLANE_OFFLINE_CHAIN_V0.json"
+    (chain_dir / malformed_rel).write_text("{not-json\n", encoding="utf-8")
+    rc = planner_mod.main(
+        [
+            "--chain-root",
+            str(chain_dir),
+            "--target-archive-root",
+            str(SYNTHETIC_DURABLE_ARCHIVE_ROOT),
+            "--outdir",
+            str(plan_dir),
+        ]
+    )
+    assert rc == 2
+    assert not (plan_dir / planner_mod.PLAN_JSON_FILENAME).exists()
