@@ -193,11 +193,20 @@ CYBERSECURITY_VISIBILITY_R_PENDING_INVENTORY_CHARTER_DOCS_TESTS_ONLY=true
 |----------------|-----------|-------|
 | `manual_dispatch_sensitive_surface` | 70 | Reuse `tests/ci/test_workflow_manual_dispatch_sensitive_surface_contract_v0.py` |
 | `workflow_secrets_visibility` | 44 | Reuse `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
-| `scheduler_or_runtime_boundary` | 24 | Reuse scheduler boundary visibility owners |
+| `scheduler_or_runtime_boundary` | 24 | Reuse `tests/ops/test_scheduler_boundary_hard_block_contract_v0.py`; Reuse `tests/ops/test_p67_library_scheduler_boundary_opt_in_v0.py` |
 | `branch_or_environment_authority` | 12 | Review-input only |
 | `artifact_retention_or_evidence_gap` | 6 | Reuse `tests/ci/test_workflow_artifact_retention_visibility_contract_v0.py` |
 | `paid_ai_eval_gate` | 4 | Review-input only |
 | `docs_drift_or_pointer_integrity` | 2 | Review-input only |
+
+```
+CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_SCHEDULER_BOUNDARY_CROSSLINK_V0=true
+CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_SCHEDULER_BOUNDARY_CROSSLINK_DOCS_TESTS_ONLY=true
+INPUT_JSONL_PROVIDED=false
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+```
+
+**Non-authorizing:** Explicit histogram reuse-owner crosslinks for `scheduler_or_runtime_boundary` are **visibility-only**; they do **not** authorize scheduler/daemon/runtime start, Testnet/Live, broker/exchange, or definitive R-001/R-002/R-007 mapping while `INPUT_JSONL_PROVIDED=false`.
 
 Operators may use this histogram for **CI/Ops visibility triage** until a lossless row exists for each pending retained risk. **Do not** treat any `CSC-STATIC-v0-*` `candidate_id` as a substitute mapping for R-001/R-002/R-007 without restored lossless inventory or operator-approved triage.
 
@@ -283,6 +292,8 @@ CYBERSECURITY_VISIBILITY_R_PENDING_MAPPING_GUARD_DOCS_TESTS_ONLY=true
 | Workflow network/gh markers | `tests/ci/test_workflow_network_gh_marker_visibility_contract_v0.py` |
 | Manual-dispatch sensitive surfaces | `tests/ci/test_workflow_manual_dispatch_sensitive_surface_contract_v0.py` |
 | Workflow artifact retention | `tests/ci/test_workflow_artifact_retention_visibility_contract_v0.py` |
+| Scheduler boundary hard-block (hub) | `tests/ops/test_scheduler_boundary_hard_block_contract_v0.py` |
+| P67/P72 library scheduler boundary opt-in | `tests/ops/test_p67_library_scheduler_boundary_opt_in_v0.py` |
 | Workflow permission boundary | `tests/ops/test_workflow_permission_boundary_visibility_v1.py` |
 | WebUI API security-header routes | `tests/webui/test_webui_api_security_headers_visibility_contract_v0.py` |
 | No `pull_request_target` + checkout v5 pin | `tests/ci/test_workflows_no_pull_request_target_contract_v0.py` |
