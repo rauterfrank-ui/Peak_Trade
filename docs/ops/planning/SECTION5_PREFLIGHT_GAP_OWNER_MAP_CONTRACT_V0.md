@@ -79,6 +79,35 @@ This contract records the primary-evidence enforcement posture for future run-li
 
 This contract does not enable default enforcement, does not lift preflight, does not approve runtime, does not start Paper/Shadow/Testnet/Live, and does not mutate AWS/Notion/broker/exchange surfaces.
 
+## Gap 1 Execute Entrypoint Contract v0
+
+GAP1_EXECUTE_ENTRYPOINT_CONTRACT_V0=true
+GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false
+GAP1_RUNTIME_APPROVED=false
+GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP1_EXECUTE_ENTRYPOINT_DEFAULT_ON=false
+GAP1_ENTRYPOINT_DRY_RUN_ONLY=true
+PATH_B_LIFT_DISCUSSION_READY=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+
+This is a docs/tests-only entrypoint contract. It identifies `scripts/run_scheduler.py` as the bounded scheduler entrypoint under contract. Current status remains contract-only, not verified, not runtime-approved, and not scheduler-authorized.
+
+Gap 3 remains the canonical command-text contract; Gap 1 only identifies the entrypoint boundary.
+
+### Reuse-first owner surfaces
+
+- `scripts/run_scheduler.py`
+- `config/scheduler/jobs.toml`
+- `scripts/ops/primary_evidence_retention_v0.py`
+- `scripts/ops/durable_closeout_copy_verify_v0.py`
+- existing scheduler CLI tests and ops runbooks
+- existing docs truth map / reference / token-policy checks
+
+### Non-authorization
+
+This contract does not execute `scripts/run_scheduler.py`, does not authorize runtime or scheduler execution, does not enable or modify `config/scheduler/jobs.toml`, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, and does not lift Path B.
+
 ## Gap 3 Execute Command Contract v0
 
 GAP3_EXECUTE_COMMAND_CONTRACT_V0=true
@@ -179,3 +208,9 @@ GAP3_EXECUTE_COMMAND_VERIFIED=false
 GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false
 GAP3_EXECUTE_COMMAND_DEFAULT_ON=false
 GAP3_EXECUTE_COMMAND_DRY_RUN_ONLY=true
+GAP1_EXECUTE_ENTRYPOINT_CONTRACT_V0=true
+GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false
+GAP1_RUNTIME_APPROVED=false
+GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP1_EXECUTE_ENTRYPOINT_DEFAULT_ON=false
+GAP1_ENTRYPOINT_DRY_RUN_ONLY=true
