@@ -52,6 +52,8 @@ STATUS_BLOCKED_INVOKE_OR_START_FLAG = "blocked_invoke_or_start_flag"
 
 RUNTIME_GENERIC_HOOK_ATTACH_OWNER_IDS_V0: tuple[str, ...] = tuple(CANONICAL_HOOK_ATTACH_OWNERS)
 
+DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+
 CP_HOOK_DRY_RUN_OWNER_REFERENCES_V0: tuple[str, ...] = (
     "scripts/ops/summarize_control_plane_automation_hook_dry_run_v0.py",
     "tests/ops/test_summarize_control_plane_automation_hook_dry_run_contract_v0.py",
@@ -282,6 +284,17 @@ def test_frozen_dry_run_machine_lines_v0() -> None:
 @pytest.mark.parametrize("owner_rel", CP_HOOK_DRY_RUN_OWNER_REFERENCES_V0)
 def test_cp_hook_dry_run_owner_references_exist_v0(owner_rel: str) -> None:
     assert (REPO_ROOT / owner_rel).is_file(), f"missing owner reference: {owner_rel!r}"
+
+
+def test_docs_truth_map_records_control_plane_hook_dry_run_crosslink_chronicle_v0() -> None:
+    docs_truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+
+    assert "test_control_plane_first_automation_hook_dry_run_contract_v0.py" in docs_truth_map
+    assert "#3802" in docs_truth_map
+    assert "Control-Plane Hook Dry-Run Reciprocal Owner Crosslink v0" in docs_truth_map
+    assert "FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED=false" in docs_truth_map
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in docs_truth_map
+    assert "STOP_IDLE_PRESERVED=true" in docs_truth_map
 
 
 def test_automation_readiness_still_blocks_full_automation_v0() -> None:
