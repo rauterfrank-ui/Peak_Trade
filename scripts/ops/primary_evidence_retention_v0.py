@@ -12,6 +12,8 @@ CLOSEOUT_REFERENCE_REQUIRED=true
 RUN_INCOMPLETE_WITHOUT_PRIMARY_EVIDENCE=true
 EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
 VALIDATE_DURABLE_PRIMARY_EVIDENCE_ROOT_V0=true
+PRIMARY_EVIDENCE_RETENTION_HARD_GATE_EXTENSION_V0=true
+VALIDATE_DURABLE_LIFECYCLE_CLOSEOUT_ROOT_V0=true
 ```
 """
 
@@ -50,6 +52,23 @@ KNOWN_CLOSEOUT_FILENAMES = (
     "scheduler_completion_closeout_v0.json",
     "supervisor_session_closeout_v0.json",
 )
+
+# Lifecycle / planning / remote closeout slices (Preflight §2a.1 extension v0).
+MANIFEST_VERIFY_LOG_FILENAMES: tuple[str, ...] = (
+    "MANIFEST_VERIFY.log",
+    "LOCAL_MANIFEST_VERIFY.log",
+)
+
+LIFECYCLE_CLOSEOUT_MARKER_SUFFIXES: tuple[str, ...] = (
+    "_REPORT.md",
+    "_READONLY.md",
+    "_RECORD.md",
+    "_MACHINE_LINES.txt",
+    "CLOSEOUT.md",
+)
+
+LIFECYCLE_CLOSEOUT_CLASSIFICATION = "lifecycle_closeout_slice_v0"
+FINAL_STOP_IDLE_CLOSEOUT_CLASSIFICATION = "final_stop_idle_lifecycle_closeout_v0"
 
 
 def is_under_tmp(path: Path) -> bool:
@@ -167,3 +186,125 @@ def validate_durable_primary_evidence_root(
         return False, msg, {"checks": checks, "issues": issues}
 
     return True, "", {"checks": checks, "issues": []}
+
+
+def parse_manifest_verify_log_rc(root: Path) -> tuple[int | None, str, str]:
+    """Parse MANIFEST_VERIFY_RC from standard or LOCAL manifest verify logs."""
+    for name in MANIFEST_VERIFY_LOG_FILENAMES:
+        log_path = root / name
+        if not log_path.is_file():
+            continue
+        text = log_path.read_text(encoding="utf-8")
+        for raw in text.splitlines():
+            line = raw.strip()
+            if not line.startswith("MANIFEST_VERIFY_RC="):
+                continue
+            value = line.split("=", 1)[1].strip()
+            try:
+                return int(value), "", name
+            except ValueError:
+                return None, f"invalid MANIFEST_VERIFY_RC in {name}", name
+        return None, f"MANIFEST_VERIFY_RC missing in {name}", name
+    return None, "manifest verify log missing", ""
+
+
+def _has_lifecycle_closeout_marker(root: Path) -> bool:
+    for path in root.iterdir():
+        if not path.is_file():
+            continue
+        if any(path.name.endswith(suffix) for suffix in LIFECYCLE_CLOSEOUT_MARKER_SUFFIXES):
+            return True
+    return False
+
+
+def _has_final_stop_idle_marker(root: Path) -> bool:
+    for path in root.iterdir():
+        if not path.is_file():
+            continue
+        name = path.name
+        upper = name.upper()
+        if "STOP_IDLE" not in upper:
+            continue
+        if name.endswith(".md") or name.endswith("_MACHINE_LINES.txt"):
+            return True
+    return False
+
+
+def validate_durable_lifecycle_closeout_root(
+    root: Path,
+    *,
+    require_closeout_marker: bool = True,
+    require_final_stop_idle_marker: bool = False,
+) -> tuple[bool, str, dict[str, Any]]:
+    """Validate durable lifecycle/planning/remote closeout slice root (§2a.1 extension v0).
+
+    Machine marker: ``VALIDATE_DURABLE_LIFECYCLE_CLOSEOUT_ROOT_V0=true``
+
+    Accepts ``MANIFEST_VERIFY.log`` or ``LOCAL_MANIFEST_VERIFY.log`` when RC=0.
+    Nested subdirectory manifests are orthogonal; parent ``MANIFEST.sha256`` is canonical.
+    """
+    checks: dict[str, bool] = {}
+    issues: list[str] = []
+    classification = (
+        FINAL_STOP_IDLE_CLOSEOUT_CLASSIFICATION
+        if require_final_stop_idle_marker
+        else LIFECYCLE_CLOSEOUT_CLASSIFICATION
+    )
+
+    ok, msg = require_durable_archive_root(root)
+    checks["durable_root_outside_tmp"] = ok
+    if not ok:
+        issues.append(msg)
+        return False, msg, {"checks": checks, "issues": issues, "classification": classification}
+
+    ok, msg = verify_manifest_sha256(root)
+    checks["manifest_sha256_verify"] = ok
+    if not ok:
+        issues.append(msg)
+        return False, msg, {"checks": checks, "issues": issues, "classification": classification}
+
+    rc, rc_msg, log_name = parse_manifest_verify_log_rc(root)
+    checks["manifest_verify_log_present"] = bool(log_name)
+    checks["manifest_verify_rc_zero"] = rc == 0
+    if rc is None:
+        issues.append(rc_msg)
+        return False, rc_msg, {"checks": checks, "issues": issues, "classification": classification}
+    if rc != 0:
+        msg = f"manifest verify RC must be 0 (got {rc} in {log_name})"
+        issues.append(msg)
+        return False, msg, {"checks": checks, "issues": issues, "classification": classification}
+
+    if require_closeout_marker:
+        has_marker = _has_lifecycle_closeout_marker(root)
+        checks["closeout_marker_present"] = has_marker
+        if not has_marker:
+            msg = "lifecycle closeout marker artifact missing"
+            issues.append(msg)
+            return (
+                False,
+                msg,
+                {"checks": checks, "issues": issues, "classification": classification},
+            )
+
+    if require_final_stop_idle_marker:
+        has_stop_idle = _has_final_stop_idle_marker(root)
+        checks["final_stop_idle_marker_present"] = has_stop_idle
+        if not has_stop_idle:
+            msg = "final stop-idle marker missing"
+            issues.append(msg)
+            return (
+                False,
+                msg,
+                {"checks": checks, "issues": issues, "classification": classification},
+            )
+
+    return (
+        True,
+        "",
+        {
+            "checks": checks,
+            "issues": [],
+            "classification": classification,
+            "manifest_verify_log": log_name,
+        },
+    )

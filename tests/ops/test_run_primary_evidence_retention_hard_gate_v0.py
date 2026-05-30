@@ -438,3 +438,180 @@ def test_require_durable_archive_root_accepts_durable_path() -> None:
         assert ok is True, reason
     finally:
         durable.rmdir()
+
+
+def _durable_closeout_root(tmp_path: Path) -> Path:
+    path = REPO_ROOT / "tests" / ".pytest_archive_roots" / f"lifecycle_{tmp_path.name}"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _write_lifecycle_closeout_bundle(
+    root: Path,
+    *,
+    verify_log_name: str = "MANIFEST_VERIFY.log",
+    verify_rc: int = 0,
+    marker_name: str = "HOST_TEARDOWN_EXECUTION_SLICE_V0_REPORT.md",
+    nested_mirror: bool = False,
+) -> None:
+    import sys
+
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
+
+    (root / marker_name).write_text("# lifecycle closeout\n", encoding="utf-8")
+    (root / verify_log_name).write_text(f"MANIFEST_VERIFY_RC={verify_rc}\n", encoding="utf-8")
+    if nested_mirror:
+        mirror = root / "remote_archive_mirror"
+        mirror.mkdir(parents=True, exist_ok=True)
+        (mirror / "evidence.txt").write_text("nested evidence\n", encoding="utf-8")
+        (mirror / "MANIFEST.sha256").write_text("# nested-local manifest\n", encoding="utf-8")
+    write_manifest_sha256(root)
+
+
+def test_shared_helper_exposes_lifecycle_closeout_hard_gate_extension() -> None:
+    text = SHARED_HELPER.read_text(encoding="utf-8")
+    assert "PRIMARY_EVIDENCE_RETENTION_HARD_GATE_EXTENSION_V0=true" in text
+    assert "VALIDATE_DURABLE_LIFECYCLE_CLOSEOUT_ROOT_V0=true" in text
+    assert "def parse_manifest_verify_log_rc" in text
+    assert "def validate_durable_lifecycle_closeout_root" in text
+    assert "LOCAL_MANIFEST_VERIFY.log" in text
+
+
+def test_validate_durable_lifecycle_closeout_root_accepts_local_manifest_verify_log(
+    tmp_path: Path,
+) -> None:
+    import sys
+
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import validate_durable_lifecycle_closeout_root
+
+    root = _durable_closeout_root(tmp_path)
+    _write_lifecycle_closeout_bundle(
+        root,
+        verify_log_name="LOCAL_MANIFEST_VERIFY.log",
+        marker_name="BOUNDED_RUNTIME_GRACEFUL_STOP_AND_DURABLE_CLOSEOUT_REPORT.md",
+    )
+    ok, reason, detail = validate_durable_lifecycle_closeout_root(root)
+    assert ok is True, reason
+    assert detail["manifest_verify_log"] == "LOCAL_MANIFEST_VERIFY.log"
+    assert detail["classification"] == "lifecycle_closeout_slice_v0"
+
+
+@pytest.mark.parametrize(
+    ("setup", "expected_substring"),
+    [
+        ("missing_root", "archive root missing"),
+        ("tmp_only", "outside /tmp"),
+        ("missing_manifest", "MANIFEST.sha256 missing"),
+        ("manifest_mismatch", "checksum mismatch"),
+        ("missing_verify_log", "manifest verify log missing"),
+        ("verify_rc_nonzero", "manifest verify RC must be 0"),
+        ("missing_marker", "lifecycle closeout marker artifact missing"),
+        ("missing_stop_idle", "final stop-idle marker missing"),
+    ],
+)
+def test_validate_durable_lifecycle_closeout_root_fail_closed_cases(
+    tmp_path: Path,
+    setup: str,
+    expected_substring: str,
+) -> None:
+    import sys
+
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import (
+        validate_durable_lifecycle_closeout_root,
+        write_manifest_sha256,
+    )
+
+    if setup == "missing_root":
+        root = REPO_ROOT / "tests" / ".pytest_archive_roots" / f"missing_{tmp_path.name}"
+        require_final = False
+    elif setup == "tmp_only":
+        root = Path("/tmp") / f"peak_trade_lifecycle_closeout_{tmp_path.name}"
+        root.mkdir(parents=True, exist_ok=True)
+        _write_lifecycle_closeout_bundle(root)
+        require_final = False
+    else:
+        root = _durable_closeout_root(tmp_path)
+        require_final = setup == "missing_stop_idle"
+        if setup == "missing_manifest":
+            (root / "HOST_TEARDOWN_EXECUTION_SLICE_V0_REPORT.md").write_text(
+                "# x\n", encoding="utf-8"
+            )
+            (root / "MANIFEST_VERIFY.log").write_text("MANIFEST_VERIFY_RC=0\n", encoding="utf-8")
+        elif setup == "manifest_mismatch":
+            _write_lifecycle_closeout_bundle(root)
+            (root / "HOST_TEARDOWN_EXECUTION_SLICE_V0_REPORT.md").write_text(
+                "# tampered\n", encoding="utf-8"
+            )
+        elif setup == "missing_verify_log":
+            (root / "HOST_TEARDOWN_EXECUTION_SLICE_V0_REPORT.md").write_text(
+                "# x\n", encoding="utf-8"
+            )
+            write_manifest_sha256(root)
+        elif setup == "verify_rc_nonzero":
+            _write_lifecycle_closeout_bundle(root, verify_rc=1)
+        elif setup == "missing_marker":
+            (root / "MANIFEST_VERIFY.log").write_text("MANIFEST_VERIFY_RC=0\n", encoding="utf-8")
+            write_manifest_sha256(root)
+        elif setup == "missing_stop_idle":
+            _write_lifecycle_closeout_bundle(
+                root,
+                marker_name="HOST_TEARDOWN_PLANNING_SLICE_V0_READONLY.md",
+            )
+        else:
+            _write_lifecycle_closeout_bundle(root)
+
+    ok, reason, _detail = validate_durable_lifecycle_closeout_root(
+        root,
+        require_final_stop_idle_marker=require_final,
+    )
+    assert ok is False
+    assert expected_substring in reason
+
+
+def test_validate_durable_lifecycle_closeout_root_passes_with_nested_mirror_parent_manifest(
+    tmp_path: Path,
+) -> None:
+    import sys
+
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import validate_durable_lifecycle_closeout_root
+
+    root = _durable_closeout_root(tmp_path)
+    _write_lifecycle_closeout_bundle(
+        root,
+        nested_mirror=True,
+        marker_name="SG_CLEANUP_EXECUTION_SLICE_V0_REPORT.md",
+    )
+    ok, reason, detail = validate_durable_lifecycle_closeout_root(root)
+    assert ok is True, reason
+    assert detail["checks"]["manifest_sha256_verify"] is True
+    assert (root / "remote_archive_mirror" / "MANIFEST.sha256").is_file()
+
+
+def test_validate_durable_lifecycle_closeout_root_final_stop_idle_record(tmp_path: Path) -> None:
+    import sys
+
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import validate_durable_lifecycle_closeout_root
+
+    root = _durable_closeout_root(tmp_path)
+    _write_lifecycle_closeout_bundle(
+        root,
+        marker_name="BOUNDED_REMOTE_LIFECYCLE_FINAL_STOP_IDLE_RECORD.md",
+    )
+    (root / "BOUNDED_REMOTE_LIFECYCLE_FINAL_STOP_IDLE_MACHINE_LINES.txt").write_text(
+        "NEXT_ACTION=STOP_IDLE_LIFECYCLE_COMPLETE_KEEP_IAM_FOR_REUSE\n",
+        encoding="utf-8",
+    )
+    from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
+
+    write_manifest_sha256(root)
+    ok, reason, detail = validate_durable_lifecycle_closeout_root(
+        root,
+        require_final_stop_idle_marker=True,
+    )
+    assert ok is True, reason
+    assert detail["classification"] == "final_stop_idle_lifecycle_closeout_v0"
