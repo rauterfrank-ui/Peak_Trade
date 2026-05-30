@@ -53,6 +53,9 @@ STATUS_BLOCKED_INVOKE_OR_START_FLAG = "blocked_invoke_or_start_flag"
 RUNTIME_GENERIC_HOOK_ATTACH_OWNER_IDS_V0: tuple[str, ...] = tuple(CANONICAL_HOOK_ATTACH_OWNERS)
 
 CP_HOOK_DRY_RUN_OWNER_REFERENCES_V0: tuple[str, ...] = (
+    "scripts/ops/summarize_control_plane_automation_hook_dry_run_v0.py",
+    "tests/ops/test_summarize_control_plane_automation_hook_dry_run_contract_v0.py",
+    "tests/ops/test_control_plane_planner_and_hook_summary_cli_e2e_contract_v0.py",
     "tests/ops/test_control_plane_offline_chain_attachment_e2e_contract_v0.py",
     "tests/ops/test_control_plane_offline_chain_durable_evidence_attachment_contracts_v0.py",
     "tests/ops/test_control_plane_post_closeout_automation_readiness_contracts_v0.py",
@@ -503,3 +506,13 @@ def test_module_has_no_runtime_or_invocation_patterns_v0() -> None:
             assert pattern not in line, (
                 f"forbidden pattern in cp hook dry-run contract source: {pattern!r} line={line!r}"
             )
+
+
+def test_hook_dry_run_summary_cli_e2e_reciprocal_owner_crosslink_v0() -> None:
+    """The downstream hook-summary E2E terminus must point back to this upstream hook owner."""
+
+    downstream_test = REPO_ROOT / "tests/ops/test_control_plane_planner_and_hook_summary_cli_e2e_contract_v0.py"
+    downstream_source = downstream_test.read_text(encoding="utf-8")
+
+    assert "E2E_OWNER_REFERENCES_V0" in downstream_source
+    assert "tests/ops/test_control_plane_first_automation_hook_dry_run_contract_v0.py" in downstream_source
