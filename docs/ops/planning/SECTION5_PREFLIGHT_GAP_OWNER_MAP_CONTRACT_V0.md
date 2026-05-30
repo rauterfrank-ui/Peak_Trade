@@ -307,6 +307,59 @@ This contract records criteria only. It does not execute `scripts/run_scheduler.
 
 This contract does not modify `config/scheduler/jobs.toml`, does not enable any scheduler job, does not verify or activate a canonical job set, does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not approve runtime execution, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
 
+## Gap 7 Risk Boundary Criteria Contract v0
+
+GAP7_RISK_BOUNDARY_CRITERIA_CONTRACT_V0=true
+GAP7_CRITERIA_ONLY=true
+GAP7_RISK_BOUNDARY_VERIFIED=false
+GAP7_RISK_KILLSWITCH_AUTHORITY_CHANGED=false
+GAP7_RISK_KILLSWITCH_RUNTIME_CHANGED=false
+GAP7_MASTER_V2_DOUBLE_PLAY_CHANGED=false
+GAP7_BULL_BEAR_SCOPE_CAPITAL_CHANGED=false
+GAP7_EXECUTION_LIVE_GATES_CHANGED=false
+GAP7_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP7_RUNTIME_APPROVED=false
+GAP7_RISK_BOUNDARY_DEFAULT_ON=false
+PATH_B_LIFT_DISCUSSION_READY=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+RUNTIME_APPROVED=false
+
+This is a docs/tests-only criteria contract. It prepares future Risk Boundary / Risk-KillSwitch criteria only. Existing Risk/KillSwitch surfaces are referenced as read-only boundary surfaces only. It does not verify or activate Risk Boundaries, does not change Risk/KillSwitch authority, does not change Risk/KillSwitch runtime behavior, does not change Master V2 / Double Play logic, does not change Bull/Bear side-switching or Scope/Capital behavior, and does not change execution/live gates. It does not modify `config/scheduler/jobs.toml`, does not enable any scheduler job, does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not approve runtime execution, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, and does not lift Path B. Current status remains criteria-only, not verified, no authority change, no runtime change, not scheduler-authorized, and not runtime-approved.
+
+Gap 1 remains the entrypoint boundary. Gap 2 remains the canonical job-set criteria contract. Gap 3 remains the canonical command-text contract. Gap 4 remains the durable output/evidence path contract. Gap 5 remains the stop criteria contract. Gap 6 remains the dry-run proof criteria contract.
+
+### Reuse-first owner surfaces
+
+- `docs/risk/KILL_SWITCH_RUNBOOK.md`
+- `docs/ops/specs/SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md`
+- `docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md`
+- `scripts/ops/snapshot_operator_stop_signals.py`
+- `tests/ops/test_scheduler_boundary_hard_block_contract_v0.py`
+- `scripts/run_scheduler.py`
+- `config/scheduler/jobs.toml`
+- `scripts/ops/primary_evidence_retention_v0.py`
+- `scripts/ops/durable_closeout_copy_verify_v0.py`
+- existing docs truth map / reference / token-policy checks
+
+### Future Risk Boundary criteria (planning only; not verified or authority-changed in this contract)
+
+Any future Risk Boundary / Risk-KillSwitch planning considered for preflight risk-boundary dimensions must satisfy criteria through existing reuse-first surfaces:
+
+1. **Boundary visibility (read-only)** — operator can identify canonical Risk/KillSwitch and execution/live gate surfaces via existing docs and read-only snapshot tools without claiming boundaries were verified or authority changed.
+2. **No authority change** — criteria do not modify Risk/KillSwitch authority, runtime wiring, or execution/live gate behavior.
+3. **Protected domains preserved** — Master V2 / Double Play, Bull/Bear side-switching, and Scope/Capital behavior remain untouched; criteria reference authority maps only.
+4. **Orthogonality to Gap 5** — stop/Type-2/rehearsal criteria remain Gap 5; this contract does not grant waivers or accept stop proof.
+5. **Orthogonality to Gap 6** — dry-run proof acceptance remains Gap 6 criteria-only.
+6. **Dependency chain** — Gap 1 entrypoint, Gap 2 job-set boundary, Gap 3 command text, Gap 4 durable evidence, Gap 5 stop criteria, and Gap 6 dry-run proof criteria remain authoritative for their domains.
+7. **Durable evidence** — any future Risk Boundary evidence must be durable, archived outside `/tmp`, checksummed, manifest-verified, and linked through existing reuse-first evidence/closeout surfaces (`primary_evidence_retention_v0.py`, `durable_closeout_copy_verify_v0.py`).
+
+This contract records criteria only. It does not execute `scripts/run_scheduler.py`, does not execute kill-switch tools, and does not treat any archive or prior risk review as Risk Boundary verified here.
+
+### Non-authorization
+
+This contract does not verify or activate Risk Boundaries, does not change Risk/KillSwitch authority, does not change Risk/KillSwitch runtime behavior, does not change Master V2 / Double Play logic, does not change Bull/Bear side-switching or Scope/Capital behavior, and does not change execution/live gates. It does not modify `config/scheduler/jobs.toml`, does not enable any scheduler job, does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not approve runtime execution, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
+
 ## Final Machine Lines
 
 SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true
@@ -372,3 +425,14 @@ GAP2_JOBS_TOML_CHANGED=false
 GAP2_SCHEDULER_EXECUTION_AUTHORIZED=false
 GAP2_RUNTIME_APPROVED=false
 GAP2_JOB_SET_DEFAULT_ON=false
+GAP7_RISK_BOUNDARY_CRITERIA_CONTRACT_V0=true
+GAP7_CRITERIA_ONLY=true
+GAP7_RISK_BOUNDARY_VERIFIED=false
+GAP7_RISK_KILLSWITCH_AUTHORITY_CHANGED=false
+GAP7_RISK_KILLSWITCH_RUNTIME_CHANGED=false
+GAP7_MASTER_V2_DOUBLE_PLAY_CHANGED=false
+GAP7_BULL_BEAR_SCOPE_CAPITAL_CHANGED=false
+GAP7_EXECUTION_LIVE_GATES_CHANGED=false
+GAP7_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP7_RUNTIME_APPROVED=false
+GAP7_RISK_BOUNDARY_DEFAULT_ON=false
