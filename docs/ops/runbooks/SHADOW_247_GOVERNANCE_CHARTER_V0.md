@@ -200,6 +200,37 @@ For any **future** authorized run stage, the org should specify how these are sa
 
 ---
 
+## Future-run operator decision worksheet v0
+
+**Purpose:** Compact **review-only** worksheet under **Stage 0 / STOP_IDLE**. It maps the seven mandatory preflight dimensions from [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §5 plus the §2a.1 primary-evidence hard-gate posture to **existing** canonical owners. It helps operators prepare **external** decisions and evidence review for a **future** governed Paper/Shadow path — **without** starting or authorizing any run.
+
+**Non-authorizing:** This worksheet does **not** authorize runtime, scheduler, daemon, Paper, Shadow, Testnet, Live, AWS/IAM/S3/EC2/SG/EIP mutation, broker/exchange/order paths, execution, or evidence-retention **mutation**. It does **not** create a new evidence/readiness/map/index/handoff/package/pointer surface. Preflight status remains **BLOCKED**; `READY_FOR_OPERATOR_ARMING` is **not** claimed here.
+
+**Companion normative owners:** [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §5 and §2a.1; [Runtime Lane Taxonomy + Authority Levels Contract v0](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) §2a.1 index; `scripts/ops/primary_evidence_retention_v0.py` (shared helper — **no** behavior change from this worksheet).
+
+| Dimension (Preflight §5 or cross-cutting) | Canonical pointer (reuse) | Required external operator decision / evidence | STOP if open |
+| --- | --- | --- | --- |
+| **1. Single owner entrypoint** | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §5.1; `config/ops/paper_shadow_247_preflight.toml` (`canonical_owner`); `scripts/ops/report_paper_shadow_247_preflight_status.py` | Written record naming the **one** ops-approved Paper/Shadow 24/7 entry path (not a script grab-bag); org sign-off **outside** the repo | **STOP** — no run planning until entrypoint is named and reviewed |
+| **2. Canonical job set** | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §5.2; `config/scheduler/jobs.toml` (inventory only until declared); [SCHEDULER_DAEMON.md](../../SCHEDULER_DAEMON.md) | Explicit declaration of Paper **and** Shadow 24/7 jobs (scheduler or runner IDs); decision that `jobs.toml` alone is **not** sufficient until declared canonical set exists | **STOP** — preflight remains **BLOCKED** while canonical 24/7 job set is undeclared |
+| **3. Commands** | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §5.3; declared job set (when present); `scripts/ops/scheduler_start_boundary_guard_v0.py` (boundary reference) | Resolved argv per job; no ambiguous “run everything” default; dry-run vs execute boundaries documented per job | **STOP** — ambiguous or missing resolved commands |
+| **4. Output paths** | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §5.4; `config/ops/paper_shadow_247_preflight.toml` output-path declarations; preflight reporter fields | Agreed directories, state files, logs, retention; **fresh/empty** roots where required; no accidental overwrite of existing paper/shadow runs | **STOP** — output paths undefined or collide with protected historical runs |
+| **5. Stop and emergency-stop** | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §5.5; `config/ops/paper_shadow_247_preflight.toml` (`stop_command`, `emergency_stop_command`); `scripts/ops/snapshot_operator_stop_signals.py` | Operator understands and can invoke stop/emergency-stop tools; procedures rehearsed **before** any future authorized attempt | **STOP** — stop or emergency-stop semantics undefined |
+| **6. Dry-run proof** | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §5.6; [SCHEDULER_DAEMON.md](../../SCHEDULER_DAEMON.md); scheduler `--dry-run` discipline in org process | Evidence that unexpected jobs do not run (documented scheduler dry-run behavior and process gate) | **STOP** — dry-run proof not documented or not accepted |
+| **7. Risk boundaries** | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §5.7; `config/ops/paper_shadow_247_preflight.toml` authorization flags (must remain **false** until separate governed update); preflight `risk_flags` | Documented no-Live, no-Testnet, no-broker, no-exchange, no-order guarantees for the proposed path; external approval **does not** override repo default-off flags by narrative alone | **STOP** — any Live/Testnet/broker/exchange/order path not explicitly bounded and default-denied |
+| **§2a.1 Primary-evidence hard gate (cross-cutting)** | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a.1; [RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) §2a.1; `scripts/ops/primary_evidence_retention_v0.py`; `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py` | Future-run closeout plan: durable `ARCHIVE_ROOT` (outside `/tmp`), `MANIFEST.sha256` verified, closeout reference, review when applicable; **Evidence ≠ approval** recorded in external decision record | **STOP** — `/tmp`-only evidence, missing manifest verify, or treating evidence as runtime approval |
+
+Until **all** §5 dimensions **and** §2a.1 posture are satisfied in **external** operator records **and** reflected in canonical repo owners (without lifting preflight status here), remain at **Stage 0 / STOP_IDLE** and preflight **BLOCKED**.
+
+```text
+PAPER_SHADOW_247_FUTURE_RUN_OPERATOR_DECISION_WORKSHEET_V0=true
+PREFLIGHT_STATUS_REMAINS_BLOCKED=true
+STOP_IDLE_PRESERVED=true
+WORKSHEET_AUTHORIZES_RUNTIME=false
+WORKSHEET_CREATES_EVIDENCE_SURFACE=false
+```
+
+---
+
 ## Document control
 
 - **Canonical owner:** ops governance / paper-shadow-247 readiness (align with `canonical_owner` in `paper_shadow_247_preflight.toml` for process ownership).

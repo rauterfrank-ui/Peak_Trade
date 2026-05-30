@@ -507,6 +507,8 @@ Before **READY_FOR_OPERATOR_ARMING** may be claimed, a future runbook or impleme
 
 Until each dimension is satisfied, status remains **BLOCKED**.
 
+**Future-run operator decision worksheet (review-only):** For a compact STOP_IDLE worksheet that maps these seven dimensions plus §2a.1 primary-evidence posture to existing canonical owners (no new evidence/readiness/map surface), see [SHADOW_247_GOVERNANCE_CHARTER_V0.md](SHADOW_247_GOVERNANCE_CHARTER_V0.md) — **Future-run operator decision worksheet v0**. That worksheet is **non-authorizing**; it does **not** change this contract’s **BLOCKED** status or grant `READY_FOR_OPERATOR_ARMING`.
+
 ## 6. Expected JSON shape (informative only)
 
 No emitter is required by this document. A future read-only tool **may** emit JSON shaped like:
