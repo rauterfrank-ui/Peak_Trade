@@ -16,6 +16,7 @@ import pytest
 from scripts.ops import plan_control_plane_offline_chain_durable_attachment_v0 as planner_mod
 from scripts.ops import run_autonomous_ops_control_plane_offline_chain_v0 as chain_mod
 from scripts.ops import summarize_control_plane_automation_hook_dry_run_v0 as summary_mod
+from scripts.ops import bridge_control_plane_plan_to_post_closeout_readiness_v0 as bridge_mod
 from tests.ops.test_control_plane_first_automation_hook_dry_run_contract_v0 import (
     build_control_plane_automation_hook_dry_run_summary as contract_build_summary,
 )
@@ -356,3 +357,47 @@ def test_module_has_no_runtime_invocation_or_cost_rearm_patterns_v0() -> None:
 
 def test_summary_cli_forbidden_flags_match_planner_posture_v0() -> None:
     assert summary_mod.FORBIDDEN_CLI_FLAGS == planner_mod.FORBIDDEN_CLI_FLAGS
+
+
+def test_bridge_exits_2_on_malformed_plan_json(tmp_path: Path) -> None:
+    plan_path = tmp_path / "malformed_plan.json"
+    plan_path.write_text("{not-json\n", encoding="utf-8")
+    readiness_dir = tmp_path / "readiness"
+    rc = bridge_mod.main(["--plan", str(plan_path), "--outdir", str(readiness_dir)])
+    assert rc == 2
+    assert not (readiness_dir / bridge_mod.READINESS_JSON_FILENAME).exists()
+
+
+def test_chain_orchestrator_exits_2_on_malformed_fixture_json(tmp_path: Path) -> None:
+    fixture_path = tmp_path / "malformed_fixture.json"
+    fixture_path.write_text("{not-json\n", encoding="utf-8")
+    chain_dir = tmp_path / "chain_malformed"
+    rc = chain_mod.main(["--fixture", str(fixture_path), "--outdir", str(chain_dir)])
+    assert rc == 2
+    assert not (chain_dir / chain_mod.CHAIN_JSON_FILENAME).exists()
+
+
+def test_e2e_summary_exits_2_on_tampered_attachment_plan_without_side_effects(
+    tmp_path: Path,
+) -> None:
+    chain_dir = tmp_path / "chain"
+    planner_dir = tmp_path / "planner"
+    summary_dir = tmp_path / "summary_tampered"
+    assert _run_offline_chain(LEGAL_FIXTURE, chain_dir) == 0
+    plan = _run_planner(chain_dir, SYNTHETIC_DURABLE_ARCHIVE_ROOT, planner_dir)
+    plan_path = planner_dir / planner_mod.PLAN_JSON_FILENAME
+    tampered = {**plan, "hook_implemented": True}
+    plan_path.write_text(json.dumps(tampered, indent=2) + "\n", encoding="utf-8")
+    rc = summary_mod.main(
+        [
+            "--chain-root",
+            str(chain_dir),
+            "--attachment-plan",
+            str(plan_path),
+            "--outdir",
+            str(summary_dir),
+        ]
+    )
+    assert rc == 2
+    assert not (summary_dir / summary_mod.SUMMARY_JSON_FILENAME).exists()
+    _assert_no_side_effect_artifacts(tmp_path)

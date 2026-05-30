@@ -313,3 +313,152 @@ def test_summary_machine_lines_include_required_keys_v0(tmp_path: Path) -> None:
 
 def test_summary_script_forbidden_flags_match_planner_posture_v0() -> None:
     assert summary_mod.FORBIDDEN_CLI_FLAGS == planner_mod.FORBIDDEN_CLI_FLAGS
+
+
+def _write_minimal_valid_attachment_plan(path: Path) -> None:
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": planner_mod.SCHEMA_VERSION,
+                "status": STATUS_READY_FOR_DURABLE_ATTACHMENT_PLANNING,
+                "pointer_only": True,
+                "target_archive_root": str(SYNTHETIC_DURABLE_ARCHIVE_ROOT),
+                "hook_implemented": False,
+                "full_post_closeout_automation_implemented": False,
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def test_summary_exits_2_on_malformed_attachment_plan_json(tmp_path: Path) -> None:
+    chain_dir = tmp_path / "chain"
+    summary_dir = tmp_path / "summary_malformed"
+    assert _run_offline_chain(LEGAL_FIXTURE, chain_dir) == 0
+    plan_path = tmp_path / "malformed_plan.json"
+    plan_path.write_text("{not-json\n", encoding="utf-8")
+    rc = summary_mod.main(
+        [
+            "--chain-root",
+            str(chain_dir),
+            "--attachment-plan",
+            str(plan_path),
+            "--outdir",
+            str(summary_dir),
+        ]
+    )
+    assert rc == 2
+    assert not (summary_dir / summary_mod.SUMMARY_JSON_FILENAME).exists()
+
+
+@pytest.mark.parametrize(
+    ("plan_body", "expected_substring"),
+    [
+        (
+            {
+                "status": STATUS_READY_FOR_DURABLE_ATTACHMENT_PLANNING,
+                "pointer_only": True,
+                "target_archive_root": str(SYNTHETIC_DURABLE_ARCHIVE_ROOT),
+                "hook_implemented": False,
+                "full_post_closeout_automation_implemented": False,
+            },
+            "missing keys",
+        ),
+        (
+            {
+                "schema_version": "wrong_schema_v0",
+                "status": STATUS_READY_FOR_DURABLE_ATTACHMENT_PLANNING,
+                "pointer_only": True,
+                "target_archive_root": str(SYNTHETIC_DURABLE_ARCHIVE_ROOT),
+                "hook_implemented": False,
+                "full_post_closeout_automation_implemented": False,
+            },
+            "unsupported attachment plan schema",
+        ),
+        (
+            {
+                "schema_version": planner_mod.SCHEMA_VERSION,
+                "status": STATUS_READY_FOR_DURABLE_ATTACHMENT_PLANNING,
+                "pointer_only": True,
+                "target_archive_root": str(SYNTHETIC_DURABLE_ARCHIVE_ROOT),
+                "hook_implemented": True,
+                "full_post_closeout_automation_implemented": False,
+            },
+            "hook_implemented must remain false",
+        ),
+        (
+            {
+                "schema_version": planner_mod.SCHEMA_VERSION,
+                "status": STATUS_READY_FOR_DURABLE_ATTACHMENT_PLANNING,
+                "pointer_only": True,
+                "target_archive_root": str(SYNTHETIC_DURABLE_ARCHIVE_ROOT),
+                "hook_implemented": False,
+                "full_post_closeout_automation_implemented": True,
+            },
+            "full_post_closeout_automation_implemented must remain false",
+        ),
+    ],
+)
+def test_summary_exits_2_on_hostile_attachment_plan(
+    tmp_path: Path,
+    plan_body: dict,
+    expected_substring: str,
+) -> None:
+    chain_dir = tmp_path / "chain"
+    summary_dir = tmp_path / "summary_hostile"
+    assert _run_offline_chain(LEGAL_FIXTURE, chain_dir) == 0
+    plan_path = tmp_path / "hostile_plan.json"
+    plan_path.write_text(json.dumps(plan_body, indent=2) + "\n", encoding="utf-8")
+    rc = summary_mod.main(
+        [
+            "--chain-root",
+            str(chain_dir),
+            "--attachment-plan",
+            str(plan_path),
+            "--outdir",
+            str(summary_dir),
+        ]
+    )
+    assert rc == 2
+    assert not (summary_dir / summary_mod.SUMMARY_JSON_FILENAME).exists()
+
+
+def test_summary_blocked_operational_path_still_exits_zero_and_non_authorizing(
+    tmp_path: Path,
+) -> None:
+    chain_dir = tmp_path / "chain_partial"
+    summary_dir = tmp_path / "summary_operational_blocked"
+    assert _run_offline_chain(LEGAL_FIXTURE, chain_dir) == 0
+    (chain_dir / REQUIRED_CHAIN_REL_PATHS_V0[0]).unlink()
+    plan_path = tmp_path / "valid_blocked_plan.json"
+    _write_minimal_valid_attachment_plan(plan_path)
+    plan_path.write_text(
+        json.dumps(
+            {
+                **json.loads(plan_path.read_text(encoding="utf-8")),
+                "status": STATUS_BLOCKED_MISSING_REQUIRED_CHAIN_ARTIFACT,
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    rc = summary_mod.main(
+        [
+            "--chain-root",
+            str(chain_dir),
+            "--attachment-plan",
+            str(plan_path),
+            "--outdir",
+            str(summary_dir),
+        ]
+    )
+    assert rc == 0
+    summary = json.loads(
+        (summary_dir / summary_mod.SUMMARY_JSON_FILENAME).read_text(encoding="utf-8"),
+    )
+    assert summary["status"] != STATUS_READY_FOR_CP_HOOK_DRY_RUN
+    assert summary["hook_implemented"] is False
+    assert summary["machine_lines"]["HOOK_IMPLEMENTED"] == "false"

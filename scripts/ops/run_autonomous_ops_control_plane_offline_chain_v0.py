@@ -206,7 +206,7 @@ def main(argv: list[str] | None = None) -> int:
             fixture_path=args.fixture.resolve(),
             outdir=args.outdir.resolve(),
         )
-    except ValueError as exc:
+    except (ValueError, json.JSONDecodeError) as exc:
         sys.stderr.write(f"{exc}\n")
         return 2
 

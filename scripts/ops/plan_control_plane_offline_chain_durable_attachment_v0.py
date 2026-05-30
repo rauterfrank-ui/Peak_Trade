@@ -102,6 +102,25 @@ def missing_chain_rel_paths(
     return missing
 
 
+def _validate_chain_json_artifacts(
+    chain_root: Path,
+    required_chain_rel_paths: tuple[str, ...] = REQUIRED_CHAIN_REL_PATHS_V0,
+) -> None:
+    """Fail closed when required chain JSON artifacts exist but are malformed."""
+    for rel in required_chain_rel_paths:
+        if not rel.endswith(".json"):
+            continue
+        path = chain_root / rel
+        if not path.is_file():
+            continue
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"malformed JSON in chain artifact {rel}: {exc}") from exc
+        if not isinstance(payload, dict):
+            raise ValueError(f"chain artifact JSON root must be object: {rel}")
+
+
 def evaluate_attachment_plan_v0(
     *,
     source_chain_root: Path,
@@ -116,6 +135,7 @@ def evaluate_attachment_plan_v0(
     elif is_under_tmp(target_archive_root):
         status = STATUS_BLOCKED_TARGET_ARCHIVE_ROOT_UNDER_TMP
     else:
+        _validate_chain_json_artifacts(source_chain_root, required_chain_rel_paths)
         status = STATUS_READY_FOR_DURABLE_ATTACHMENT_PLANNING
 
     machine_lines = {
@@ -238,11 +258,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--outdir", type=Path, required=True)
     args = parser.parse_args(argv)
 
-    plan = run_attachment_planner(
-        chain_root=args.chain_root,
-        target_archive_root=args.target_archive_root,
-        outdir=args.outdir,
-    )
+    try:
+        plan = run_attachment_planner(
+            chain_root=args.chain_root,
+            target_archive_root=args.target_archive_root,
+            outdir=args.outdir,
+        )
+    except ValueError as exc:
+        sys.stderr.write(f"{exc}\n")
+        return 2
+
     for key in PLAN_MACHINE_LINE_KEYS:
         sys.stdout.write(f"{key}={plan['machine_lines'][key]}\n")
     return 0
