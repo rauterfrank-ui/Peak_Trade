@@ -196,7 +196,7 @@ CYBERSECURITY_VISIBILITY_R_PENDING_INVENTORY_CHARTER_DOCS_TESTS_ONLY=true
 | `scheduler_or_runtime_boundary` | 24 | Reuse `tests/ops/test_scheduler_boundary_hard_block_contract_v0.py`; Reuse `tests/ops/test_p67_library_scheduler_boundary_opt_in_v0.py` |
 | `branch_or_environment_authority` | 12 | Reuse `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` |
 | `artifact_retention_or_evidence_gap` | 6 | Reuse `tests/ci/test_workflow_artifact_retention_visibility_contract_v0.py` |
-| `paid_ai_eval_gate` | 4 | Review-input only |
+| `paid_ai_eval_gate` | 4 | Reuse `tests/ci/test_aiops_promptfoo_cost_gate_workflow_contract_v0.py` |
 | `docs_drift_or_pointer_integrity` | 2 | Review-input only |
 
 ```
@@ -204,11 +204,13 @@ CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_SCHEDULER_BOUNDARY_CROSSLINK_V0=t
 CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_SCHEDULER_BOUNDARY_CROSSLINK_DOCS_TESTS_ONLY=true
 CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_BRANCH_ENVIRONMENT_AUTHORITY_CROSSLINK_V0=true
 CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_BRANCH_ENVIRONMENT_AUTHORITY_CROSSLINK_DOCS_TESTS_ONLY=true
+CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_PAID_AI_EVAL_GATE_CROSSLINK_V0=true
+CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_PAID_AI_EVAL_GATE_CROSSLINK_DOCS_TESTS_ONLY=true
 INPUT_JSONL_PROVIDED=false
 DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
 ```
 
-**Non-authorizing:** Explicit histogram reuse-owner crosslinks for `scheduler_or_runtime_boundary` and `branch_or_environment_authority` are **visibility-only**; they do **not** authorize scheduler/daemon/runtime start, workflow write-permission approval, Testnet/Live, broker/exchange, or definitive R-001/R-002/R-007 mapping while `INPUT_JSONL_PROVIDED=false`.
+**Non-authorizing:** Explicit histogram reuse-owner crosslinks for `scheduler_or_runtime_boundary`, `branch_or_environment_authority`, and `paid_ai_eval_gate` are **visibility-only**; they do **not** authorize scheduler/daemon/runtime start, workflow write-permission approval, paid Promptfoo/OpenAI eval execution, secret-injection approval, PR/push paid-eval paths, Testnet/Live, broker/exchange, or definitive R-001/R-002/R-007 mapping while `INPUT_JSONL_PROVIDED=false`.
 
 Operators may use this histogram for **CI/Ops visibility triage** until a lossless row exists for each pending retained risk. **Do not** treat any `CSC-STATIC-v0-*` `candidate_id` as a substitute mapping for R-001/R-002/R-007 without restored lossless inventory or operator-approved triage.
 
@@ -291,6 +293,7 @@ CYBERSECURITY_VISIBILITY_R_PENDING_MAPPING_GUARD_DOCS_TESTS_ONLY=true
 |---------|--------------|
 | Workflow secrets/vars/braced contexts (hub) | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
 | Workflow write permissions | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` |
+| AI-Ops Promptfoo paid eval cost gate | `tests/ci/test_aiops_promptfoo_cost_gate_workflow_contract_v0.py` |
 | Workflow network/gh markers | `tests/ci/test_workflow_network_gh_marker_visibility_contract_v0.py` |
 | Manual-dispatch sensitive surfaces | `tests/ci/test_workflow_manual_dispatch_sensitive_surface_contract_v0.py` |
 | Workflow artifact retention | `tests/ci/test_workflow_artifact_retention_visibility_contract_v0.py` |
