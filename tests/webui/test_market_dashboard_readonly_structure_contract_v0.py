@@ -862,6 +862,7 @@ def test_market_dashboard_landmarks_and_labelled_regions_v0(client: TestClient) 
     assert 'aria-labelledby="market-v0-landmark-ranking-funnel-h2"' in html
     assert 'id="market-v0-ranking-funnel-ssr"' in html
     assert 'id="market-v0-landmark-visual-cockpit-h2"' in html
+    assert 'data-market-v0-visual-cockpit-landmark-heading-v0="true"' in html
     assert 'aria-labelledby="market-v0-landmark-visual-cockpit-h2"' in html
     assert 'id="market-v0-landmark-surface-links-h2"' in html
     assert 'aria-labelledby="market-v0-landmark-surface-links-h2"' in html
@@ -888,6 +889,39 @@ def test_market_dashboard_landmarks_and_labelled_regions_v0(client: TestClient) 
     lowered = html.lower()
     assert "<form" not in lowered
     assert "<button" not in lowered
+
+
+def test_market_dashboard_visual_cockpit_tile_landmark_groups_v0(
+    client: TestClient,
+) -> None:
+    """Visual cockpit tiles use labelled role=group landmarks; safety tile is non-authorizing."""
+    html = _html(client, "/market")
+    assert 'data-market-v0-cockpit-tiles-grid-v0="true"' in html
+    assert 'data-market-v0-cockpit-tile-landmark-heading-v0="true"' in html
+    assert 'data-market-v0-cockpit-tile-readonly-v0="true"' in html
+    assert 'data-market-v0-cockpit-tile-non-authorizing-v0="true"' in html
+    for tile_id in (
+        "market-v0-landmark-cockpit-tile-snapshot-h3",
+        "market-v0-landmark-cockpit-tile-chart-h3",
+        "market-v0-landmark-cockpit-tile-depth-h3",
+        "market-v0-landmark-cockpit-tile-safety-h3",
+    ):
+        assert f'id="{tile_id}"' in html
+        assert f'aria-labelledby="{tile_id}"' in html
+    assert html.count('data-market-v0-cockpit-tile-landmark-heading-v0="true"') == 4
+    assert html.count('data-market-v0-cockpit-tile-readonly-v0="true"') == 4
+    assert html.count('role="group"') >= 4
+
+
+def test_double_play_excludes_visual_cockpit_tile_landmark_groups_v0(
+    client: TestClient,
+) -> None:
+    """Double-Play must not carry `/market`-only visual cockpit tile IA markers."""
+    html = _html(client, "/market/double-play")
+    assert "data-market-v0-cockpit-tiles-grid-v0" not in html
+    assert "data-market-v0-cockpit-tile-landmark-heading-v0" not in html
+    assert "market-v0-landmark-cockpit-tile-snapshot-h3" not in html
+    assert "data-market-v0-cockpit-tile-non-authorizing-v0" not in html
 
 
 def test_double_play_market_dashboard_landmarks_and_labelled_regions_v0(

@@ -312,7 +312,7 @@
   >
     <div class="flex flex-wrap items-end justify-between gap-2">
       <div>
-        <h2 id="market-v0-landmark-visual-cockpit-h2" class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">Visual cockpit</h2>
+        <h2 id="market-v0-landmark-visual-cockpit-h2" data-market-v0-visual-cockpit-landmark-heading-v0="true" class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">Visual cockpit</h2>
         <p class="text-[10px] text-slate-500 m-0 mt-0.5">SSR overview · read-only snapshot · not live</p>
       </div>
       <span class="text-[9px] font-semibold uppercase tracking-wide text-emerald-400/90">v1 tiles</span>
@@ -335,16 +335,20 @@
     <div
       class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 rounded-xl border border-slate-800/80 bg-slate-950/65 p-2.5 sm:p-3 ring-1 ring-slate-800/50"
       data-market-v0-ssr-metrics-strip="true"
+      data-market-v0-cockpit-tiles-grid-v0="true"
       aria-label="SSR metrics snapshot"
     >
       <div
+        role="group"
+        aria-labelledby="market-v0-landmark-cockpit-tile-snapshot-h3"
         class="relative overflow-hidden rounded-lg border border-sky-800/45 bg-gradient-to-br from-slate-900/90 to-slate-950/95 p-3 min-h-[7.5rem] flex flex-col gap-2 shadow-inner shadow-black/20"
         data-market-v0-cockpit-tile="snapshot"
+        data-market-v0-cockpit-tile-readonly-v0="true"
         data-market-v0-cockpit-source="{{ query.source }}"
       >
         <div class="flex items-start justify-between gap-2">
           <div>
-            <p class="text-[9px] font-bold uppercase tracking-[0.12em] text-sky-400/85 m-0">Market snapshot</p>
+            <h3 id="market-v0-landmark-cockpit-tile-snapshot-h3" data-market-v0-cockpit-tile-landmark-heading-v0="true" class="text-[9px] font-bold uppercase tracking-[0.12em] text-sky-400/85 m-0">Market snapshot</h3>
             <p class="text-lg sm:text-xl font-bold font-mono text-slate-50 tracking-tight m-0 mt-1 truncate" title="{{ query.symbol }}">{{ query.symbol }}</p>
           </div>
           <span class="shrink-0 inline-flex items-center rounded-md border border-slate-700/70 bg-slate-950/80 px-1.5 py-0.5 text-[9px] font-semibold text-slate-300 tabular-nums">{{ query.timeframe }}</span>
@@ -368,8 +372,11 @@
       </div>
 
       <div
+        role="group"
+        aria-labelledby="market-v0-landmark-cockpit-tile-chart-h3"
         class="relative overflow-hidden rounded-lg border {% if payload.bars_returned == 0 %}border-amber-800/50 bg-amber-950/20{% else %}border-emerald-900/40 bg-emerald-950/15{% endif %} p-3 min-h-[7.5rem] flex flex-row items-center gap-3 shadow-inner shadow-black/15"
         data-market-v0-cockpit-tile="chart"
+        data-market-v0-cockpit-tile-readonly-v0="true"
         data-market-v0-cockpit-chart-state="{% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}"
       >
         <div
@@ -378,7 +385,7 @@
           aria-hidden="true"
         ></div>
         <div class="min-w-0 flex-1 space-y-1">
-          <p class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 m-0">Chart / OHLCV</p>
+          <h3 id="market-v0-landmark-cockpit-tile-chart-h3" data-market-v0-cockpit-tile-landmark-heading-v0="true" class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 m-0">Chart / OHLCV</h3>
           <p class="text-sm font-semibold {% if payload.bars_returned == 0 %}text-amber-200/95{% else %}text-emerald-200/95{% endif %} m-0">
             {% if payload.bars_returned == 0 %}No embedded bars{% else %}Ready for close-line{% endif %}
           </p>
@@ -389,11 +396,14 @@
       </div>
 
       <div
+        role="group"
+        aria-labelledby="market-v0-landmark-cockpit-tile-depth-h3"
         class="rounded-lg border {% if market_depth.has_depth_levels %}border-amber-900/45 bg-gradient-to-br from-amber-950/25 to-slate-950/90{% else %}border-slate-700/70 bg-slate-950/75{% endif %} p-3 min-h-[7.5rem] flex flex-col gap-2 shadow-inner shadow-black/15"
         data-market-v0-cockpit-tile="depth"
+        data-market-v0-cockpit-tile-readonly-v0="true"
         data-market-v0-cockpit-depth-levels="{{ 'true' if market_depth.has_depth_levels else 'false' }}"
       >
-        <p class="text-[9px] font-bold uppercase tracking-[0.12em] text-amber-200/80 m-0">Depth (SSR)</p>
+        <h3 id="market-v0-landmark-cockpit-tile-depth-h3" data-market-v0-cockpit-tile-landmark-heading-v0="true" class="text-[9px] font-bold uppercase tracking-[0.12em] text-amber-200/80 m-0">Depth (SSR)</h3>
         <p class="text-[11px] font-mono text-amber-100/90 m-0 leading-snug">{{ market_depth.display_status }}</p>
         {% if market_depth.readmodel_id or market_depth.depth_bundle_source %}
         <div
@@ -505,10 +515,14 @@
       </div>
 
       <div
+        role="group"
+        aria-labelledby="market-v0-landmark-cockpit-tile-safety-h3"
         class="rounded-lg border border-slate-700/70 bg-slate-900/85 p-3 min-h-[7.5rem] flex flex-col gap-2 shadow-inner shadow-black/20"
         data-market-v0-cockpit-tile="safety"
+        data-market-v0-cockpit-tile-readonly-v0="true"
+        data-market-v0-cockpit-tile-non-authorizing-v0="true"
       >
-        <p class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 m-0">Safety rail</p>
+        <h3 id="market-v0-landmark-cockpit-tile-safety-h3" data-market-v0-cockpit-tile-landmark-heading-v0="true" class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 m-0">Safety rail</h3>
         <ul class="m-0 p-0 list-none grid grid-cols-2 gap-1.5 flex-1 content-center">
           <li class="flex items-center gap-1.5 rounded-md border border-emerald-900/40 bg-emerald-950/25 px-2 py-1.5 text-[9px] font-semibold text-emerald-200/95">
             <span class="h-2 w-2 rounded-full bg-emerald-400/90 shrink-0" aria-hidden="true"></span>
