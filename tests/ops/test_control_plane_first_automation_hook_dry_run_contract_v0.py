@@ -511,8 +511,13 @@ def test_module_has_no_runtime_or_invocation_patterns_v0() -> None:
 def test_hook_dry_run_summary_cli_e2e_reciprocal_owner_crosslink_v0() -> None:
     """The downstream hook-summary E2E terminus must point back to this upstream hook owner."""
 
-    downstream_test = REPO_ROOT / "tests/ops/test_control_plane_planner_and_hook_summary_cli_e2e_contract_v0.py"
+    downstream_test = (
+        REPO_ROOT / "tests/ops/test_control_plane_planner_and_hook_summary_cli_e2e_contract_v0.py"
+    )
     downstream_source = downstream_test.read_text(encoding="utf-8")
 
     assert "E2E_OWNER_REFERENCES_V0" in downstream_source
-    assert "tests/ops/test_control_plane_first_automation_hook_dry_run_contract_v0.py" in downstream_source
+    assert (
+        "tests/ops/test_control_plane_first_automation_hook_dry_run_contract_v0.py"
+        in downstream_source
+    )
