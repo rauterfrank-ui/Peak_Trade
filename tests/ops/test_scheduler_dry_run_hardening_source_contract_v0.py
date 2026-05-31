@@ -1,0 +1,145 @@
+"""Static source contract tests for scheduler dry-run hardening v0 (offline)."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+RUN_SCHEDULER = REPO_ROOT / "scripts" / "run_scheduler.py"
+SECTION5_DOC = (
+    REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
+)
+DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+GAP3_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap3_execute_command_contract_v0.py"
+GAP6_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap6_dry_run_proof_criteria_contract_v0.py"
+BOUNDARY_TESTS = REPO_ROOT / "tests" / "ops" / "test_scheduler_boundary_hard_block_contract_v0.py"
+REAL_CONFIG_TICK_TESTS = (
+    REPO_ROOT / "tests" / "test_scheduler_real_config_single_tick_dry_run_contract_v0.py"
+)
+
+PACKAGE_MARKER = "SCHEDULER_DRY_RUN_HARDENING_SOURCE_CONTRACT_V0=true"
+_MARKER_TRUE = "=true"
+
+OWNER_REFERENCES_V0 = (
+    "tests/ops/test_gap3_execute_command_contract_v0.py",
+    "tests/ops/test_gap6_dry_run_proof_criteria_contract_v0.py",
+    "tests/ops/test_scheduler_boundary_hard_block_contract_v0.py",
+    "tests/test_scheduler_real_config_single_tick_dry_run_contract_v0.py",
+    "scripts/run_scheduler.py",
+    "docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md",
+)
+
+
+def _run_scheduler_source() -> str:
+    return RUN_SCHEDULER.read_text(encoding="utf-8")
+
+
+def _this_module_source() -> str:
+    return Path(__file__).read_text(encoding="utf-8")
+
+
+def test_scheduler_dry_run_hardening_source_contract_marker_present_v0() -> None:
+    assert PACKAGE_MARKER in _this_module_source()
+
+
+def test_run_scheduler_argparse_dry_run_flag_anchored_v0() -> None:
+    source = _run_scheduler_source()
+    assert 'parser.add_argument("--dry-run"' in source
+    assert "dry_run=args.dry_run" in source
+
+
+def test_run_scheduler_argparse_once_flag_anchored_v0() -> None:
+    source = _run_scheduler_source()
+    assert '"--once", action="store_true"' in source
+    assert "once=args.once" in source
+
+
+def test_non_dry_run_path_remains_guarded_before_loop_v0() -> None:
+    source = _run_scheduler_source()
+    guard_block = source.split("if not args.dry_run:", 1)[1]
+    assert "assert_scheduler_start_authorized" in guard_block
+    guard_idx = source.index("if not args.dry_run:")
+    auth_idx = source.index("assert_scheduler_start_authorized", guard_idx)
+    loop_idx = source.index("return run_scheduler_loop", auth_idx)
+    assert auth_idx < loop_idx
+
+
+def test_dry_run_output_banner_contract_anchored_v0() -> None:
+    source = _run_scheduler_source()
+    assert "DRY-RUN: Keine echte Ausführung" in source
+    assert "Mode: {'ONCE' if once else 'CONTINUOUS'}" in source
+    assert "SCHEDULER BEENDET" in source
+    assert "Iterationen:" in source
+
+
+def test_primary_evidence_enforce_incompatible_with_dry_run_v0() -> None:
+    source = _run_scheduler_source()
+    assert "primary_evidence_enforce and dry_run" in source
+    assert "incompatible with --dry-run" in source
+    assert "validate_scheduler_evidence_cli" in source
+
+
+def test_tmp_evidence_boundary_uses_existing_is_under_tmp_helper_v0() -> None:
+    source = _run_scheduler_source()
+    assert "from scripts.ops.primary_evidence_retention_v0 import is_under_tmp" in source
+    assert "is_under_tmp(evidence_dir)" in source
+    assert "is_under_tmp(durable_closeout_dest_dir)" in source
+
+
+def test_hardening_module_does_not_claim_verified_or_scheduler_authorized_v0() -> None:
+    lines = {line.strip() for line in _this_module_source().splitlines()}
+    forbidden = (
+        "GAP3_EXECUTE_COMMAND_VERIFIED" + _MARKER_TRUE,
+        "GAP6_DRY_RUN_RC0_OBSERVED" + _MARKER_TRUE,
+        "GAP6_DRY_RUN_PROOF_VERIFIED" + _MARKER_TRUE,
+        "SCHEDULER_EXECUTION_AUTHORIZED" + _MARKER_TRUE,
+        "PREFLIGHT_LIFT_GRANTED" + _MARKER_TRUE,
+        "READY_FOR_OPERATOR_ARMING" + _MARKER_TRUE,
+    )
+    for marker in forbidden:
+        assert marker not in lines
+
+
+def test_section5_gap3_and_gap6_remain_unverified_and_non_authorizing_v0() -> None:
+    section5 = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in section5
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in section5
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in section5
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in section5
+
+
+def test_reciprocal_owner_references_exist_v0() -> None:
+    for owner_rel in OWNER_REFERENCES_V0:
+        assert (REPO_ROOT / owner_rel).is_file(), f"missing owner reference: {owner_rel!r}"
+
+
+def test_gap3_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
+    text = GAP3_TESTS.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
+    assert PACKAGE_MARKER in text
+
+
+def test_gap6_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
+    text = GAP6_TESTS.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
+    assert PACKAGE_MARKER in text
+
+
+def test_boundary_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
+    text = BOUNDARY_TESTS.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
+    assert PACKAGE_MARKER in text
+
+
+def test_real_config_tick_owner_crosslinked_from_hardening_module_v0() -> None:
+    assert "test_scheduler_real_config_single_tick_dry_run_contract_v0.py" in _this_module_source()
+    assert REAL_CONFIG_TICK_TESTS.is_file()
+
+
+def test_docs_truth_map_records_scheduler_dry_run_hardening_chronicle_v0() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert "Scheduler dry-run hardening source contract v0" in text
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
+    assert "test_gap3_execute_command_contract_v0.py" in text
+    assert "test_gap6_dry_run_proof_criteria_contract_v0.py" in text
+    assert "test_scheduler_boundary_hard_block_contract_v0.py" in text
