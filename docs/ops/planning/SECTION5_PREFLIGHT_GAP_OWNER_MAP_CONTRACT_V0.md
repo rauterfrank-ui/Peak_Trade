@@ -420,6 +420,37 @@ This governed repo-reflection block records scoped acceptance of external bounde
 
 Evidence acceptance is not runtime authorization. The Gap 6 Dry-Run Proof Criteria Contract v0 block above remains criteria-only and unchanged.
 
+## Gap 4 Governed Output Evidence Acceptance Reflection v0
+
+GAP4_OUTPUT_EVIDENCE_GOVERNED_REFLECTION_V0=true
+GAP4_OUTPUT_EVIDENCE_ACCEPTED=true
+ACCEPTED_MODE=SCOPED_TIER_A_B_DURABLE_OUTPUT_EVIDENCE
+CRITERION4_FULL_SCOPE_REMAINS_PARTIAL=true
+EXTERNAL_ACCEPTANCE_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/proof/gap4_output_evidence_accepted_external_v0_after_gap6_reflection_20260531T201007Z/
+GOVERNED_REPO_REFLECTION_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/external_gap4_output_evidence_governed_repo_reflection_charter_v0_20260531T201151Z/
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This governed repo-reflection block records scoped acceptance of external Tier-A Level-3 + Tier-B F6 durable output/evidence path evidence only. It does not adopt external-only acceptance tokens as repo SSOT. External acceptance records remain pointer-based and subordinate to repo governance.
+
+### Non-authority boundary (scoped reflection does not imply)
+
+- does not verify Gap-4 output evidence paths in criteria or Final Machine Lines
+- does not claim full-scope Gap-4 verification
+- does not resolve Criterion 4 full-scope partial status
+- does not verify Gap-7 risk boundaries
+- does not enforce Gap-2a.1 primary evidence
+- does not authorize scheduler execution
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+- does not modify existing Gap-4 criteria/final machine-line verification status
+- does not lift preflight
+
+Evidence acceptance is not runtime authorization. The Gap 4 Output/Evidence Paths Contract v0 block above remains contract-only and unchanged.
+
 ## Final Machine Lines
 
 SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true

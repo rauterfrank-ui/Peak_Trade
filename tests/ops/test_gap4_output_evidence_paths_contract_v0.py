@@ -4,6 +4,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 DOC = ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 GAP4_SECTION_HEADER = "## Gap 4 Output/Evidence Paths Contract v0"
+GAP4_GOVERNED_REFLECTION_HEADER = "## Gap 4 Governed Output Evidence Acceptance Reflection v0"
+FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP4_PARALLEL_MARKERS = (
     "GAP4_OUTPUT_EVIDENCE_PATHS_CONTRACT_V0=true",
     "Gap 4 Output/Evidence Paths Contract v0",
@@ -17,8 +19,22 @@ HARD_GATE_OWNER = ROOT / "tests" / "ops" / "test_run_primary_evidence_retention_
 _MARKER_TRUE = "=true"
 
 
+def _gap4_criteria_section(text: str) -> str:
+    return text.split(GAP4_SECTION_HEADER, 1)[1].split(
+        "## Gap 6 Dry-Run Proof Criteria Contract v0", 1
+    )[0]
+
+
+def _gap4_governed_reflection_section(text: str) -> str:
+    return text.split(GAP4_GOVERNED_REFLECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
+
+
+def _final_machine_lines(text: str) -> str:
+    return text.split(FINAL_MACHINE_LINES_HEADER, 1)[1]
+
+
 def _gap4_section(text: str) -> str:
-    return text.split(GAP4_SECTION_HEADER, 1)[1].split("## Final Machine Lines", 1)[0]
+    return _gap4_criteria_section(text)
 
 
 def test_gap4_output_evidence_paths_contract_is_present_and_non_authorizing():
@@ -104,3 +120,42 @@ def test_gap4_owner_crosslinks_output_evidence_paths_drift_guard_contract_v0():
     assert "test_gap4_output_evidence_paths_contract_v0.py" in text
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in text
     assert "DRIFT_GUARD_FORBIDDEN_GAP4_REPO_TOKENS" in text
+
+
+def test_gap4_output_evidence_paths_contract_governed_reflection_non_authorizing_v0():
+    text = DOC.read_text(encoding="utf-8")
+    reflection = _gap4_governed_reflection_section(text)
+    criteria = _gap4_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP4_OUTPUT_EVIDENCE_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP4_OUTPUT_EVIDENCE_ACCEPTED=true" in reflection
+    assert "ACCEPTED_MODE=SCOPED_TIER_A_B_DURABLE_OUTPUT_EVIDENCE" in reflection
+    assert "CRITERION4_FULL_SCOPE_REMAINS_PARTIAL=true" in reflection
+    assert "EXTERNAL_ACCEPTANCE_RECORD_POINTER=" in reflection
+    assert "Evidence acceptance is not runtime authorization" in reflection
+    assert (
+        "does not verify Gap-4 output evidence paths in criteria or Final Machine Lines"
+        in reflection
+    )
+    assert "does not claim full-scope Gap-4 verification" in reflection
+    assert "does not resolve Criterion 4 full-scope partial status" in reflection
+    assert "does not verify Gap-7 risk boundaries" in reflection
+    assert "does not enforce Gap-2a.1 primary evidence" in reflection
+    assert "does not enable operator arming" in reflection
+    assert "does not start or authorize Runtime, Paper, Shadow, Testnet, or Live" in reflection
+    assert (
+        "does not modify existing Gap-4 criteria/final machine-line verification status"
+        in reflection
+    )
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria
+    assert "contract-only, not verified" in criteria
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP4_OUTPUT_EVIDENCE_ACCEPTED_EXTERNAL=true" not in text
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in block_lines
+    reflection_lines = {line.strip() for line in reflection.splitlines()}
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    assert "GAP4_OUTPUT_EVIDENCE_ACCEPTED=true" in reflection_lines
+    assert "GAP4_OUTPUT_EVIDENCE_ACCEPTED=true" not in criteria_lines
+    assert "GAP4_OUTPUT_EVIDENCE_ACCEPTED=true" not in block_lines
