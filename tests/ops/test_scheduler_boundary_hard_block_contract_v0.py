@@ -12,9 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SPEC = REPO_ROOT / "docs/ops/specs/SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md"
 TAXONOMY = REPO_ROOT / "docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md"
 RUN_SCHEDULER = REPO_ROOT / "scripts/run_scheduler.py"
-HARDENING_TESTS = (
-    REPO_ROOT / "tests/ops/test_scheduler_dry_run_hardening_source_contract_v0.py"
-)
+HARDENING_TESTS = REPO_ROOT / "tests/ops/test_scheduler_dry_run_hardening_source_contract_v0.py"
 HARDENING_MARKER = "SCHEDULER_DRY_RUN_HARDENING_SOURCE_CONTRACT_V0=true"
 SHARED_GUARD = REPO_ROOT / "scripts/ops/scheduler_start_boundary_guard_v0.py"
 P67_CLI = REPO_ROOT / "src/ops/p67/shadow_session_scheduler_cli_v1.py"
