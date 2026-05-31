@@ -8,6 +8,10 @@ GAP7_PARALLEL_MARKERS = (
     "GAP7_RISK_BOUNDARY_CRITERIA_CONTRACT_V0=true",
     "Gap 7 Risk Boundary Criteria Contract v0",
 )
+HARDENING_OWNER = ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_source_contract_v0.py"
+HARDENING_MARKER = "SCHEDULER_DRY_RUN_HARDENING_SOURCE_CONTRACT_V0=true"
+BOUNDARY_OWNER = ROOT / "tests" / "ops" / "test_scheduler_boundary_hard_block_contract_v0.py"
+_MARKER_TRUE = "=true"
 
 
 def _gap7_section(text: str) -> str:
@@ -131,3 +135,23 @@ def test_gap7_risk_boundary_criteria_contract_has_no_parallel_doc_surface():
             parallel_docs.append(path.relative_to(ROOT))
 
     assert parallel_docs == []
+
+
+def test_gap7_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0():
+    assert HARDENING_OWNER.is_file()
+    text = HARDENING_OWNER.read_text(encoding="utf-8")
+    assert "assert_scheduler_start_authorized" in text
+    assert "test_gap7_risk_boundary_criteria_contract_v0.py" in text
+    assert HARDENING_MARKER in text
+    lines = {line.strip() for line in text.splitlines()}
+    assert ("GAP7_RISK_KILLSWITCH_AUTHORITY_CHANGED" + _MARKER_TRUE) not in lines
+    assert ("GAP7_MASTER_V2_DOUBLE_PLAY_CHANGED" + _MARKER_TRUE) not in lines
+    assert ("GAP7_RISK_BOUNDARY_VERIFIED" + _MARKER_TRUE) not in lines
+
+
+def test_gap7_owner_crosslinks_scheduler_boundary_hard_block_contract_v0():
+    section = _gap7_section(DOC.read_text(encoding="utf-8"))
+    assert BOUNDARY_OWNER.is_file()
+    assert "test_scheduler_boundary_hard_block_contract_v0.py" in section
+    hardening_text = HARDENING_OWNER.read_text(encoding="utf-8")
+    assert "test_scheduler_boundary_hard_block_contract_v0.py" in hardening_text

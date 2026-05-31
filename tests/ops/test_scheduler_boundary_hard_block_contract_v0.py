@@ -306,3 +306,19 @@ def test_p67_cli_main_reaches_scheduler_when_guard_passes(monkeypatch) -> None:
     rc = p67.main()
     assert rc == 0
     assert len(scheduler_calls) == 1
+
+
+def test_boundary_owner_crosslinks_gap7_and_scheduler_dry_run_hardening_v0() -> None:
+    gap7_owner = REPO_ROOT / "tests" / "ops" / "test_gap7_risk_boundary_criteria_contract_v0.py"
+
+    assert gap7_owner.is_file()
+    assert HARDENING_TESTS.is_file()
+
+    gap7_text = gap7_owner.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in gap7_text
+    assert HARDENING_MARKER in gap7_text
+    assert Path(__file__).name in gap7_text
+
+    hardening_text = HARDENING_TESTS.read_text(encoding="utf-8")
+    assert "test_gap7_risk_boundary_criteria_contract_v0.py" in hardening_text
+    assert Path(__file__).name in hardening_text
