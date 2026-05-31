@@ -55,6 +55,8 @@ HOOK_MACHINE_LINE_ASSERTIONS: tuple[str, ...] = (
     "AI_PAID_VARS_REARMED=false",
 )
 
+DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+
 CHARTER_NON_EXECUTING_EXTRA_FLAGS_V0: tuple[str, ...] = (
     "--run",
     "--live",
@@ -261,6 +263,19 @@ def test_summary_script_has_no_forbidden_cli_flags_v0() -> None:
         assert f"add_argument('{flag}'" not in source
 
     assert "workflow_dispatch" not in source
+
+
+def test_docs_truth_map_records_summary_forbidden_cli_flags_chronicle_v0() -> None:
+    docs_truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+
+    assert "test_summarize_control_plane_automation_hook_dry_run_contract_v0.py" in docs_truth_map
+    assert "#3808" in docs_truth_map
+    assert "Control-Plane summary forbidden CLI flags lock" in docs_truth_map
+    assert "--run" in docs_truth_map
+    assert "--live" in docs_truth_map
+    assert "--dispatch" in docs_truth_map
+    assert "workflow_dispatch" in docs_truth_map
+    assert "STOP_IDLE" in docs_truth_map
 
 
 def test_summary_script_has_no_runtime_or_invocation_patterns_v0() -> None:
