@@ -16,6 +16,7 @@ GAP1_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap1_execute_entrypoint_contrac
 GAP2_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap2_canonical_job_set_contract_v0.py"
 GAP4_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap4_output_evidence_paths_contract_v0.py"
 GAP5_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap5_stop_criteria_contract_v0.py"
+GAP7_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap7_risk_boundary_criteria_contract_v0.py"
 HARD_GATE_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_run_primary_evidence_retention_hard_gate_v0.py"
 )
@@ -37,6 +38,7 @@ OWNER_REFERENCES_V0 = (
     "tests/ops/test_gap3_execute_command_contract_v0.py",
     "tests/ops/test_gap4_output_evidence_paths_contract_v0.py",
     "tests/ops/test_gap5_stop_criteria_contract_v0.py",
+    "tests/ops/test_gap7_risk_boundary_criteria_contract_v0.py",
     "tests/ops/test_gap6_dry_run_proof_criteria_contract_v0.py",
     "tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py",
     "tests/ops/test_snapshot_operator_stop_signals.py",
@@ -118,6 +120,15 @@ def test_hardening_module_does_not_claim_verified_or_scheduler_authorized_v0() -
         "GAP5_RUNTIME_STOP_AUTHORITY_CHANGED" + _MARKER_TRUE,
         "GAP5_SCHEDULER_EXECUTION_AUTHORIZED" + _MARKER_TRUE,
         "GAP5_STOP_CRITERIA_DEFAULT_ON" + _MARKER_TRUE,
+        "GAP7_RISK_BOUNDARY_VERIFIED" + _MARKER_TRUE,
+        "GAP7_RISK_KILLSWITCH_AUTHORITY_CHANGED" + _MARKER_TRUE,
+        "GAP7_RISK_KILLSWITCH_RUNTIME_CHANGED" + _MARKER_TRUE,
+        "GAP7_MASTER_V2_DOUBLE_PLAY_CHANGED" + _MARKER_TRUE,
+        "GAP7_BULL_BEAR_SCOPE_CAPITAL_CHANGED" + _MARKER_TRUE,
+        "GAP7_EXECUTION_LIVE_GATES_CHANGED" + _MARKER_TRUE,
+        "GAP7_SCHEDULER_EXECUTION_AUTHORIZED" + _MARKER_TRUE,
+        "GAP7_RUNTIME_APPROVED" + _MARKER_TRUE,
+        "GAP7_RISK_BOUNDARY_DEFAULT_ON" + _MARKER_TRUE,
         "GAP6_DRY_RUN_RC0_OBSERVED" + _MARKER_TRUE,
         "GAP6_DRY_RUN_PROOF_VERIFIED" + _MARKER_TRUE,
         "SCHEDULER_EXECUTION_AUTHORIZED" + _MARKER_TRUE,
@@ -145,6 +156,15 @@ def test_section5_gap1_gap2_and_gap6_remain_unverified_and_non_authorizing_v0() 
     assert "GAP5_RUNTIME_STOP_AUTHORITY_CHANGED=false" in section5
     assert "GAP5_SCHEDULER_EXECUTION_AUTHORIZED=false" in section5
     assert "GAP5_STOP_CRITERIA_DEFAULT_ON=false" in section5
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in section5
+    assert "GAP7_RISK_KILLSWITCH_AUTHORITY_CHANGED=false" in section5
+    assert "GAP7_RISK_KILLSWITCH_RUNTIME_CHANGED=false" in section5
+    assert "GAP7_MASTER_V2_DOUBLE_PLAY_CHANGED=false" in section5
+    assert "GAP7_BULL_BEAR_SCOPE_CAPITAL_CHANGED=false" in section5
+    assert "GAP7_EXECUTION_LIVE_GATES_CHANGED=false" in section5
+    assert "GAP7_SCHEDULER_EXECUTION_AUTHORIZED=false" in section5
+    assert "GAP7_RUNTIME_APPROVED=false" in section5
+    assert "GAP7_RISK_BOUNDARY_DEFAULT_ON=false" in section5
     assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in section5
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in section5
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in section5
@@ -181,6 +201,12 @@ def test_gap4_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() 
 
 def test_gap5_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
     text = GAP5_TESTS.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
+    assert PACKAGE_MARKER in text
+
+
+def test_gap7_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
+    text = GAP7_TESTS.read_text(encoding="utf-8")
     assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
     assert PACKAGE_MARKER in text
 
