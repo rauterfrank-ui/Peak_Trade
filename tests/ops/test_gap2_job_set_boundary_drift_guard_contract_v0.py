@@ -223,3 +223,12 @@ def test_gap2_job_set_boundary_owner_crosslinks_hardening_source_contract_v0() -
     assert HARDENING_OWNER.is_file()
     text = HARDENING_OWNER.read_text(encoding="utf-8")
     assert "test_gap2_job_set_boundary_drift_guard_contract_v0.py" in text
+
+
+def test_gap2_job_set_boundary_owner_crosslinks_gap2_gap3_command_dependency_v0() -> None:
+    dependency_guard = ROOT / "tests" / "ops" / "test_gap2_gap3_command_dependency_contract_v0.py"
+    assert dependency_guard.is_file()
+    text = dependency_guard.read_text(encoding="utf-8")
+    assert BOUNDED_PATH_B_CANDIDATE_SCOPE in text
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in text
+    assert "test_gap2_job_set_boundary_drift_guard_contract_v0.py" in text
