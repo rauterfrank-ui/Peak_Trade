@@ -24,6 +24,9 @@ GAP2_GAP3_DEPENDENCY_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_gap2_gap3_command_dependency_contract_v0.py"
 )
 GAP4_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap4_output_evidence_paths_contract_v0.py"
+GAP4_DRIFT_GUARD_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_gap4_output_evidence_paths_drift_guard_contract_v0.py"
+)
 GAP5_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap5_stop_criteria_contract_v0.py"
 GAP5_DRIFT_GUARD_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_gap5_stop_criteria_drift_guard_contract_v0.py"
@@ -51,6 +54,7 @@ OWNER_REFERENCES_V0 = (
     "tests/ops/test_gap2_gap3_command_dependency_contract_v0.py",
     "tests/ops/test_gap3_execute_command_contract_v0.py",
     "tests/ops/test_gap4_output_evidence_paths_contract_v0.py",
+    "tests/ops/test_gap4_output_evidence_paths_drift_guard_contract_v0.py",
     "tests/ops/test_gap5_stop_criteria_contract_v0.py",
     "tests/ops/test_gap5_stop_criteria_drift_guard_contract_v0.py",
     "tests/ops/test_gap7_risk_boundary_criteria_contract_v0.py",
@@ -237,6 +241,13 @@ def test_gap4_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() 
     text = GAP4_TESTS.read_text(encoding="utf-8")
     assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
     assert PACKAGE_MARKER in text
+
+
+def test_gap4_drift_guard_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
+    text = GAP4_DRIFT_GUARD_TESTS.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
+    assert "test_gap4_output_evidence_paths_contract_v0.py" in text
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in text
 
 
 def test_gap5_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
