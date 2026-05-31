@@ -644,3 +644,23 @@ def test_hard_gate_owner_crosslinks_cybersecurity_artifact_retention_histogram_v
     for pending_id in ("R-001", "R-002", "R-007"):
         assert pending_id in ci_audit
         assert "pending" in ci_audit.lower()
+
+
+def test_hard_gate_owner_crosslinks_gap4_and_scheduler_dry_run_hardening_v0() -> None:
+    gap4_owner = REPO_ROOT / "tests" / "ops" / "test_gap4_output_evidence_paths_contract_v0.py"
+    hardening_owner = (
+        REPO_ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_source_contract_v0.py"
+    )
+    hardening_marker = "SCHEDULER_DRY_RUN_HARDENING_SOURCE_CONTRACT_V0=true"
+
+    assert gap4_owner.is_file()
+    assert hardening_owner.is_file()
+
+    gap4_text = gap4_owner.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in gap4_text
+    assert hardening_marker in gap4_text
+    assert Path(__file__).name in gap4_text
+
+    hardening_text = hardening_owner.read_text(encoding="utf-8")
+    assert "test_gap4_output_evidence_paths_contract_v0.py" in hardening_text
+    assert Path(__file__).name in hardening_text
