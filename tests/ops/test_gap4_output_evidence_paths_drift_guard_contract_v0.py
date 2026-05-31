@@ -25,6 +25,10 @@ INVARIANT_TESTS = (
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP4_SECTION_HEADER = "## Gap 4 Output/Evidence Paths Contract v0"
 GAP4_GOVERNED_REFLECTION_HEADER = "## Gap 4 Governed Output Evidence Acceptance Reflection v0"
+GAP4_REQ_A_CANDIDATE_REFLECTION_HEADER = (
+    "## Gap 4 REQ-A Candidate Paper Bounded Retry Acceptance Reflection v0"
+)
+GAP7_GOVERNED_REFLECTION_HEADER = "## Gap 7 Governed Risk Boundary Acceptance Reflection v0"
 GAP2A1_SECTION_HEADER = "## §2a.1 Primary Evidence Enforcement Contract v0"
 _MARKER_TRUE = "=true"
 
@@ -81,7 +85,15 @@ def _gap4_criteria_section(text: str) -> str:
 
 
 def _gap4_governed_reflection_section(text: str) -> str:
-    return text.split(GAP4_GOVERNED_REFLECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
+    return text.split(GAP4_GOVERNED_REFLECTION_HEADER, 1)[1].split(
+        GAP4_REQ_A_CANDIDATE_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap4_req_a_candidate_reflection_section(text: str) -> str:
+    return text.split(GAP4_REQ_A_CANDIDATE_REFLECTION_HEADER, 1)[1].split(
+        GAP7_GOVERNED_REFLECTION_HEADER, 1
+    )[0]
 
 
 def _gap4_section(text: str) -> str:
@@ -323,3 +335,53 @@ def test_gap4_output_evidence_paths_drift_guard_governed_reflection_scoped_accep
     assert "GAP4_OUTPUT_EVIDENCE_ACCEPTED=true" not in criteria_lines
     assert "GAP4_OUTPUT_EVIDENCE_ACCEPTED=true" not in block_lines
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" not in block_lines
+
+
+def test_gap4_req_a_candidate_acceptance_reflection_drift_guard_scoped_v0() -> None:
+    text = _section5_text()
+    candidate = _gap4_req_a_candidate_reflection_section(text)
+    criteria = _gap4_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP4_REQ_A_CANDIDATE_ACCEPTANCE_REFLECTION_V0=true" in candidate
+    assert "ACCEPTED_MODE=GAP4_REQ_A_CANDIDATE_PAPER_BOUNDED_300S_RETRY_EVIDENCE" in candidate
+    assert "EXTERNAL_RETRY_ROOT_POINTER=" in candidate
+    assert "gap4_req_a_paper_lane_retry_evidence_20260531T223848Z" in candidate
+    assert "EXTERNAL_REINVENTORY_POINTER=" in candidate
+    assert "gap4_req_a_post_retry_reinventory_v0_20260531T224542Z" in candidate
+    assert "REQ_A_CANDIDATE_CLOSURE_READY=true" in candidate
+    assert "REQ_A_CANDIDATE_REVIEW_ACCOUNT_FILLS_PRODUCED=true" in candidate
+    assert "REVIEW_PASS_FOUND=true" in candidate
+    assert "ACCOUNT_ARTIFACT_PRESENT=true" in candidate
+    assert "FILLS_ARTIFACT_PRESENT=true" in candidate
+    assert "FILLS_COUNT=0" in candidate
+    assert "TARGET_MANIFEST_VERIFY_RC=0" in candidate
+    assert "REQ_A_FULL_2A_ARTIFACT_SET_FOUND=false" in candidate
+    assert "REQ_B_TIER_D_POPULATED_PATHS_FOUND=false" in candidate
+    assert "REQ_C_CROSS_LANE_EVIDENCE_FOUND=false" in candidate
+    assert "GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=false" in candidate
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in candidate
+    assert "FULL_SCOPE_GAP4_VERIFIED=false" in candidate
+    assert "NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true" in candidate
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in candidate
+    assert "PATH_B_LIFT_DISCUSSION_READY=false" in candidate
+    assert "GLOBAL_PREFLIGHT_LIFTED=false" in candidate
+    assert "DOUBLE_PLAY_LOGIC_TOUCHED=false" in candidate
+    assert "TRADING_LOGIC_TOUCHED=false" in candidate
+    assert "not a PnL, fill-rate, or trading-performance claim" in candidate
+    assert "does not set `REQ_A_FULL_2A_ARTIFACT_SET_FOUND=true`" in candidate
+    assert "does not set `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true`" in candidate
+    assert "does not authorize scheduler execution or a further Paper-Lane retry" in candidate
+    assert "Evidence acceptance is not runtime authorization" in candidate
+
+    candidate_lines = {line.strip() for line in candidate.splitlines()}
+    assert "REQ_A_FULL_2A_ARTIFACT_SET_FOUND=true" not in candidate_lines
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" not in candidate_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in candidate_lines
+    assert "REQ_A_CANDIDATE_CLOSURE_READY=true" in candidate_lines
+    assert "REQ_A_CANDIDATE_CLOSURE_READY=true" not in {
+        line.strip() for line in criteria.splitlines()
+    }
+    assert "REQ_A_CANDIDATE_CLOSURE_READY=true" not in {line.strip() for line in block.splitlines()}
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block

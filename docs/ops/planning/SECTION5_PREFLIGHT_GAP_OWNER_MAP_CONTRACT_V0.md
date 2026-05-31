@@ -455,6 +455,52 @@ This governed repo-reflection block records scoped acceptance of external Tier-A
 
 Evidence acceptance is not runtime authorization. The Gap 4 Output/Evidence Paths Contract v0 block above remains contract-only and unchanged.
 
+## Gap 4 REQ-A Candidate Paper Bounded Retry Acceptance Reflection v0
+
+GAP4_REQ_A_CANDIDATE_ACCEPTANCE_REFLECTION_V0=true
+ACCEPTED_MODE=GAP4_REQ_A_CANDIDATE_PAPER_BOUNDED_300S_RETRY_EVIDENCE
+EXTERNAL_RETRY_ROOT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runs/gap4_req_a_paper_lane_retry_evidence_20260531T223848Z/
+EXTERNAL_REINVENTORY_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_req_a_post_retry_reinventory_v0_20260531T224542Z/
+GOVERNED_ACCEPTANCE_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_req_a_governed_acceptance_reflection_charter_v0_20260531T224834Z/
+REQ_A_CANDIDATE_CLOSURE_READY=true
+REQ_A_CANDIDATE_REVIEW_ACCOUNT_FILLS_PRODUCED=true
+REVIEW_PASS_FOUND=true
+ACCOUNT_ARTIFACT_PRESENT=true
+FILLS_ARTIFACT_PRESENT=true
+FILLS_COUNT=0
+TARGET_MANIFEST_VERIFY_RC=0
+REQ_A_FULL_2A_ARTIFACT_SET_FOUND=false
+REQ_B_TIER_D_POPULATED_PATHS_FOUND=false
+REQ_C_CROSS_LANE_EVIDENCE_FOUND=false
+GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=false
+GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false
+FULL_SCOPE_GAP4_VERIFIED=false
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+PATH_B_LIFT_DISCUSSION_READY=false
+GLOBAL_PREFLIGHT_LIFTED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+TRADING_LOGIC_TOUCHED=false
+
+This governed repo-reflection block records scoped acceptance of external Gap-4 REQ-A **candidate** Review/Account/Fills evidence from the bounded 300s Paper-Lane retry root after post-retry reinventory. It does not adopt external-only acceptance tokens as repo SSOT. External acceptance records remain pointer-based and subordinate to repo governance. `FILLS_COUNT=0` reflects a valid fills artifact and review PASS only; it is not a PnL, fill-rate, or trading-performance claim.
+
+### Non-authority boundary (REQ-A candidate reflection does not imply)
+
+- does not set `REQ_A_FULL_2A_ARTIFACT_SET_FOUND=true` (strict §2a unified layout remains incomplete: A01/A05 partial, A06 preflight unavailable)
+- does not satisfy REQ-B Tier-D or REQ-C cross-lane evidence
+- does not verify Gap-4 output evidence paths in criteria or Final Machine Lines
+- does not claim full-scope Gap-4 verification or set `FULL_SCOPE_GAP4_VERIFIED=true`
+- does not set `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true`
+- does not enforce Gap-2a.1 primary evidence
+- does not authorize scheduler execution or a further Paper-Lane retry
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+- does not lift global preflight
+- does not modify Double-Play, Master V2, trading logic, strategy modules, Bull/Bear, Scope/Capital, Risk/KillSwitch implementation, execution gates, live gates, dashboard authority, AI authority, or config default-on behavior
+
+Evidence acceptance is not runtime authorization. The Gap 4 Output/Evidence Paths Contract v0 block above remains contract-only and unchanged.
+
 ## Gap 7 Governed Risk Boundary Acceptance Reflection v0
 
 GAP7_RISK_BOUNDARY_GOVERNED_REFLECTION_V0=true
