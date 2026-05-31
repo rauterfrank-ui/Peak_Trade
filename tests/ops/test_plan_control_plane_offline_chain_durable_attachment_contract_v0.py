@@ -49,6 +49,8 @@ NON_AUTHORITY_JSON_KEYS: tuple[str, ...] = (
     "master_v2_double_play_touched",
 )
 
+DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+
 CHARTER_NON_EXECUTING_EXTRA_FLAGS_V0: tuple[str, ...] = (
     "--run",
     "--live",
@@ -250,6 +252,17 @@ def test_cli_parser_has_no_forbidden_flags_v0() -> None:
         assert f"add_argument('{flag}'" not in source
 
     assert "workflow_dispatch" not in source
+
+
+def test_docs_truth_map_records_pr3810_offline_stub_symmetry_chronicle_v0() -> None:
+    docs_truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+
+    assert "#3810" in docs_truth_map
+    assert "Control-Plane offline stub symmetry package" in docs_truth_map
+    assert (
+        "test_plan_control_plane_offline_chain_durable_attachment_contract_v0.py" in docs_truth_map
+    )
+    assert "test_summarize_control_plane_automation_hook_dry_run_contract_v0.py" in docs_truth_map
 
 
 def test_planner_script_has_no_runtime_or_invocation_patterns_v0() -> None:
