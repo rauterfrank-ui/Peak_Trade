@@ -109,6 +109,12 @@ def test_shadow_247_futures_ops_config_wrapper_modes_include_prestart_only() -> 
     assert "default_fail_closed" in modes
 
 
+def test_shadow_247_futures_placeholder_excluded_from_bounded_path_b_preflight_lists_v0() -> None:
+    pf = _load_paper_shadow_preflight_toml()
+    assert PLACEHOLDER_JOB_NAME not in pf.get("paper_jobs", [])
+    assert PLACEHOLDER_JOB_NAME not in pf.get("shadow_jobs", [])
+
+
 def test_shadow_247_futures_scheduler_placeholder_is_disabled_and_safe() -> None:
     job = next(j for j in _jobs() if j.get("name") == PLACEHOLDER_JOB_NAME)
     assert job["enabled"] is False
