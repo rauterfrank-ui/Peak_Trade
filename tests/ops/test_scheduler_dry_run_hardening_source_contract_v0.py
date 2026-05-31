@@ -53,6 +53,9 @@ GAP4_GAP2A1_DEPENDENCY_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py"
 )
 GAP7_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap7_risk_boundary_criteria_contract_v0.py"
+GAP7_DRIFT_GUARD_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_gap7_risk_boundary_drift_guard_contract_v0.py"
+)
 HARD_GATE_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_run_primary_evidence_retention_hard_gate_v0.py"
 )
@@ -85,6 +88,7 @@ OWNER_REFERENCES_V0 = (
     "tests/ops/test_gap2a1_primary_evidence_enforcement_drift_guard_contract_v0.py",
     "tests/ops/test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py",
     "tests/ops/test_gap7_risk_boundary_criteria_contract_v0.py",
+    "tests/ops/test_gap7_risk_boundary_drift_guard_contract_v0.py",
     "tests/ops/test_gap6_dry_run_proof_criteria_contract_v0.py",
     "tests/ops/test_gap6_external_repo_drift_guard_contract_v0.py",
     "tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py",
@@ -360,6 +364,19 @@ def test_gap7_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() 
     text = GAP7_TESTS.read_text(encoding="utf-8")
     assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
     assert PACKAGE_MARKER in text
+
+
+def test_gap7_drift_guard_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
+    text = GAP7_DRIFT_GUARD_TESTS.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
+    assert "test_gap7_risk_boundary_criteria_contract_v0.py" in text
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in text
+    hardening_text = _this_module_source()
+    assert "test_gap7_risk_boundary_drift_guard_contract_v0.py" in hardening_text
+    lines = {line.strip() for line in hardening_text.splitlines()}
+    assert ("GAP7_RISK_BOUNDARY_VERIFIED" + _MARKER_TRUE) not in lines
+    assert ("GAP7_RISK_KILLSWITCH_AUTHORITY_CHANGED" + _MARKER_TRUE) not in lines
+    assert ("GAP7_EXECUTION_LIVE_GATES_CHANGED" + _MARKER_TRUE) not in lines
 
 
 def test_gap6_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
