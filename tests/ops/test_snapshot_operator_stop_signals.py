@@ -254,10 +254,13 @@ def test_snapshot_owner_crosslinks_gap5_and_scheduler_dry_run_hardening_v0() -> 
     assert gap5_owner.is_file()
     assert hardening_owner.is_file()
 
+    gap5_drift_guard = ROOT / "tests" / "ops" / "test_gap5_stop_criteria_drift_guard_contract_v0.py"
     gap5_text = gap5_owner.read_text(encoding="utf-8")
     assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in gap5_text
     assert hardening_marker in gap5_text
     assert Path(__file__).name in gap5_text
+    assert gap5_drift_guard.is_file()
+    assert "snapshot_operator_stop_signals.py" in gap5_drift_guard.read_text(encoding="utf-8")
 
     hardening_text = hardening_owner.read_text(encoding="utf-8")
     assert "test_gap5_stop_criteria_contract_v0.py" in hardening_text
