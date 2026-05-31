@@ -9,6 +9,7 @@ GAP6_PARALLEL_MARKERS = (
     "Gap 6 Dry-Run Proof Criteria Contract v0",
 )
 HARDENING_OWNER = ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_source_contract_v0.py"
+DRIFT_GUARD_OWNER = ROOT / "tests" / "ops" / "test_gap6_external_repo_drift_guard_contract_v0.py"
 HARDENING_MARKER = "SCHEDULER_DRY_RUN_HARDENING_SOURCE_CONTRACT_V0=true"
 _MARKER_TRUE = "=true"
 
@@ -122,3 +123,11 @@ def test_gap6_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0():
     assert HARDENING_MARKER in text
     lines = {line.strip() for line in text.splitlines()}
     assert ("GAP6_DRY_RUN_RC0_OBSERVED" + _MARKER_TRUE) not in lines
+
+
+def test_gap6_owner_crosslinks_external_repo_drift_guard_contract_v0():
+    assert DRIFT_GUARD_OWNER.is_file()
+    text = DRIFT_GUARD_OWNER.read_text(encoding="utf-8")
+    assert "test_gap6_dry_run_proof_criteria_contract_v0.py" in text
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in text
+    assert "DRIFT_GUARD_FORBIDDEN_REPO_TOKENS" in text

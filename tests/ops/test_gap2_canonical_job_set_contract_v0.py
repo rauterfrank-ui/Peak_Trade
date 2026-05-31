@@ -165,3 +165,11 @@ def test_gap2_owner_crosslinks_paper_shadow_runtime_scheduler_job_config_v0():
     assert "test_paper_shadow_247_runtime_scheduler_job_config_v0.py" in section
     hardening_text = HARDENING_OWNER.read_text(encoding="utf-8")
     assert "test_paper_shadow_247_runtime_scheduler_job_config_v0.py" in hardening_text
+
+
+def test_gap2_owner_crosslinks_gap6_external_repo_drift_guard_contract_v0():
+    drift_guard = ROOT / "tests" / "ops" / "test_gap6_external_repo_drift_guard_contract_v0.py"
+    assert drift_guard.is_file()
+    text = drift_guard.read_text(encoding="utf-8")
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in text
+    assert "GAP2_JOB_SET_ENABLED=false" in text
