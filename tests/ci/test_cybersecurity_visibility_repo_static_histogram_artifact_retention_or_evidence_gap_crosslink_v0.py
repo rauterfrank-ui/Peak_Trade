@@ -13,6 +13,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CI_AUDIT_KNOWN_ISSUES = REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
+DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+THIS_MODULE = Path(__file__).name
 
 HISTOGRAM_CLASSIFICATION = "artifact_retention_or_evidence_gap"
 HISTOGRAM_ROW_RX = re.compile(
@@ -32,6 +34,11 @@ STATIC_OWNERS_SECTION_RX = re.compile(
 REQUIRED_ARTIFACT_RETENTION_REUSE_OWNER = (
     "tests/ci/test_workflow_artifact_retention_visibility_contract_v0.py"
 )
+REQUIRED_DURABLE_PRIMARY_EVIDENCE_REUSE_OWNERS: tuple[str, ...] = (
+    "tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py",
+    "tests/ops/test_primary_evidence_retention_invariant_contract_v0.py",
+)
+RECIPROCAL_CROSSLINK_MARKER = "CYBERSECURITY_VISIBILITY_ARTIFACT_RETENTION_DURABLE_PRIMARY_EVIDENCE_RECIPROCAL_CROSSLINK_V0=true"
 
 ARTIFACT_RETENTION_PARALLEL_MARKERS = (
     "CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_ARTIFACT_RETENTION_OR_EVIDENCE_GAP_CROSSLINK_V0=true",
@@ -93,6 +100,11 @@ def test_cybersecurity_visibility_repo_static_histogram_artifact_retention_cross
         "CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_ARTIFACT_RETENTION_OR_EVIDENCE_GAP_CROSSLINK_DOCS_TESTS_ONLY=true"
         in text
     )
+    assert RECIPROCAL_CROSSLINK_MARKER in text
+    assert (
+        "CYBERSECURITY_VISIBILITY_ARTIFACT_RETENTION_DURABLE_PRIMARY_EVIDENCE_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY=true"
+        in text
+    )
     assert "INPUT_JSONL_PROVIDED=false" in text
     assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in text
     assert "non-authorizing" in collapsed
@@ -103,18 +115,26 @@ def test_cybersecurity_visibility_repo_static_histogram_artifact_retention_cross
     assert match.group(1) == "6"
     notes_cell = match.group(2)
     assert f"Reuse `{REQUIRED_ARTIFACT_RETENTION_REUSE_OWNER}`" in notes_cell
-    assert (REPO_ROOT / REQUIRED_ARTIFACT_RETENTION_REUSE_OWNER).is_file(), (
-        f"missing reuse owner module: {REQUIRED_ARTIFACT_RETENTION_REUSE_OWNER}"
-    )
+    for durable_owner in REQUIRED_DURABLE_PRIMARY_EVIDENCE_REUSE_OWNERS:
+        assert f"Reuse `{durable_owner}`" in notes_cell
+        assert (REPO_ROOT / durable_owner).is_file(), (
+            f"missing reuse owner module: {durable_owner!r}"
+        )
 
     reuse_paths = HISTOGRAM_REUSE_PATH_RX.findall(histogram)
     assert REQUIRED_ARTIFACT_RETENTION_REUSE_OWNER in reuse_paths
+    for durable_owner in REQUIRED_DURABLE_PRIMARY_EVIDENCE_REUSE_OWNERS:
+        assert durable_owner in reuse_paths
 
     owners_match = STATIC_OWNERS_SECTION_RX.search(text)
     assert owners_match is not None, "static visibility contract owners section missing"
     owners_section = owners_match.group(1)
     assert "Workflow artifact retention" in owners_section
     assert REQUIRED_ARTIFACT_RETENTION_REUSE_OWNER in owners_section
+    assert "Durable primary evidence hard gate" in owners_section
+    assert "Primary evidence retention invariant" in owners_section
+    for durable_owner in REQUIRED_DURABLE_PRIMARY_EVIDENCE_REUSE_OWNERS:
+        assert durable_owner in owners_section
 
     rows = _risk_table_rows(text)
     for pending_id in ("R-001", "R-002", "R-007"):
@@ -154,3 +174,45 @@ def test_cybersecurity_visibility_artifact_retention_crosslink_has_no_parallel_d
             parallel_docs.append(path.relative_to(REPO_ROOT))
 
     assert parallel_docs == []
+
+
+def test_cybersecurity_visibility_artifact_retention_durable_primary_evidence_reciprocal_crosslink_v0() -> (
+    None
+):
+    text = _ci_audit_text()
+    hard_gate = REQUIRED_DURABLE_PRIMARY_EVIDENCE_REUSE_OWNERS[0]
+    invariant = REQUIRED_DURABLE_PRIMARY_EVIDENCE_REUSE_OWNERS[1]
+
+    assert hard_gate in text
+    assert invariant in text
+    assert (
+        "primary_evidence_retention_v0.py"
+        not in text.split("Static visibility contract owners", 1)[0]
+    )
+
+    hard_gate_text = (REPO_ROOT / hard_gate).read_text(encoding="utf-8")
+    invariant_text = (REPO_ROOT / invariant).read_text(encoding="utf-8")
+    assert THIS_MODULE in hard_gate_text
+    assert THIS_MODULE in invariant_text
+    assert RECIPROCAL_CROSSLINK_MARKER in hard_gate_text
+    assert RECIPROCAL_CROSSLINK_MARKER in invariant_text
+
+
+def test_cybersecurity_visibility_artifact_retention_truth_map_crosslink_v0() -> None:
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = truth_map.lower()
+
+    assert (
+        "Cybersecurity artifact-retention durable primary evidence reciprocal crosslink v0"
+        in truth_map
+    )
+    assert "CI_AUDIT_KNOWN_ISSUES.md" in truth_map
+    assert THIS_MODULE in truth_map
+    assert "test_run_primary_evidence_retention_hard_gate_v0.py" in truth_map
+    assert "test_primary_evidence_retention_invariant_contract_v0.py" in truth_map
+    assert (
+        RECIPROCAL_CROSSLINK_MARKER in truth_map
+        or "artifact-retention durable primary evidence reciprocal crosslink" in collapsed
+    )
+    assert "non-authorizing" in collapsed
+    assert "input_jsonl_provided=false" in collapsed or "INPUT_JSONL_PROVIDED=false" in truth_map
