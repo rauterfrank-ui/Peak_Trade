@@ -254,3 +254,15 @@ def test_gap5_gap4_durable_evidence_dependency_owner_crosslinks_hardening_source
     lines = {line.strip() for line in text.splitlines()}
     assert ("GAP5_STOP_PROOF_ACCEPTED" + _MARKER_TRUE) not in lines
     assert ("GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED" + _MARKER_TRUE) not in lines
+
+
+def test_gap5_gap4_durable_evidence_dependency_owner_crosslinks_rehearsal_classification_v0() -> (
+    None
+):
+    classification = (
+        ROOT / "tests" / "ops" / "test_gap5_stop_rehearsal_evidence_classification_contract_v0.py"
+    )
+    assert classification.is_file()
+    text = classification.read_text(encoding="utf-8")
+    assert "test_gap5_gap4_durable_evidence_dependency_contract_v0.py" in text
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" in text

@@ -34,6 +34,9 @@ GAP5_DRIFT_GUARD_TESTS = (
 GAP5_GAP4_DEPENDENCY_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_gap5_gap4_durable_evidence_dependency_contract_v0.py"
 )
+GAP5_REHEARSAL_CLASSIFICATION_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_gap5_stop_rehearsal_evidence_classification_contract_v0.py"
+)
 GAP7_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap7_risk_boundary_criteria_contract_v0.py"
 HARD_GATE_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_run_primary_evidence_retention_hard_gate_v0.py"
@@ -61,6 +64,7 @@ OWNER_REFERENCES_V0 = (
     "tests/ops/test_gap5_stop_criteria_contract_v0.py",
     "tests/ops/test_gap5_stop_criteria_drift_guard_contract_v0.py",
     "tests/ops/test_gap5_gap4_durable_evidence_dependency_contract_v0.py",
+    "tests/ops/test_gap5_stop_rehearsal_evidence_classification_contract_v0.py",
     "tests/ops/test_gap7_risk_boundary_criteria_contract_v0.py",
     "tests/ops/test_gap6_dry_run_proof_criteria_contract_v0.py",
     "tests/ops/test_gap6_external_repo_drift_guard_contract_v0.py",
@@ -275,6 +279,20 @@ def test_gap5_gap4_dependency_owner_crosslinks_scheduler_dry_run_hardening_sourc
     assert "test_gap4_output_evidence_paths_drift_guard_contract_v0.py" in text
     assert "test_gap5_stop_criteria_drift_guard_contract_v0.py" in text
     assert "GAP5_STOP_PROOF_ACCEPTED=false" in text
+
+
+def test_gap5_rehearsal_classification_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> (
+    None
+):
+    text = GAP5_REHEARSAL_CLASSIFICATION_TESTS.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in text
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" in text
+    hardening_text = _this_module_source()
+    assert "test_gap5_stop_rehearsal_evidence_classification_contract_v0.py" in hardening_text
+    lines = {line.strip() for line in hardening_text.splitlines()}
+    assert ("GAP5_STOP_REHEARSAL_EXECUTED" + _MARKER_TRUE) not in lines
+    assert ("GAP5_STOP_PROOF_ACCEPTED" + _MARKER_TRUE) not in lines
 
 
 def test_gap7_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
