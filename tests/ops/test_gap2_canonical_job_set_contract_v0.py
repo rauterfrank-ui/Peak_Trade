@@ -186,3 +186,12 @@ def test_gap2_owner_crosslinks_job_set_boundary_drift_guard_contract_v0():
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in text
     assert "GAP2_JOB_SET_ENABLED=false" in text
     assert "test_gap2_canonical_job_set_contract_v0.py" in text
+
+
+def test_gap2_owner_crosslinks_gap2_gap3_command_dependency_contract_v0():
+    dependency_guard = ROOT / "tests" / "ops" / "test_gap2_gap3_command_dependency_contract_v0.py"
+    assert dependency_guard.is_file()
+    text = dependency_guard.read_text(encoding="utf-8")
+    assert "CANONICAL_BOUNDED_DRY_RUN_COMMAND" in text
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in text
+    assert "test_gap2_canonical_job_set_contract_v0.py" in text

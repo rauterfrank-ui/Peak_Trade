@@ -97,3 +97,13 @@ def test_gap3_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0():
     assert HARDENING_MARKER in text
     lines = {line.strip() for line in text.splitlines()}
     assert ("GAP3_EXECUTE_COMMAND_VERIFIED" + _MARKER_TRUE) not in lines
+
+
+def test_gap3_owner_crosslinks_gap2_gap3_command_dependency_contract_v0():
+    dependency_guard = ROOT / "tests" / "ops" / "test_gap2_gap3_command_dependency_contract_v0.py"
+    assert dependency_guard.is_file()
+    text = dependency_guard.read_text(encoding="utf-8")
+    assert "CANONICAL_BOUNDED_DRY_RUN_COMMAND" in text
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in text
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in text
+    assert "test_gap3_execute_command_contract_v0.py" in text
