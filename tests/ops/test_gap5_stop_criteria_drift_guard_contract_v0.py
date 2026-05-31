@@ -215,3 +215,13 @@ def test_gap5_stop_criteria_drift_guard_owner_crosslinks_hardening_source_contra
     lines = {line.strip() for line in text.splitlines()}
     assert ("GAP5_STOP_REHEARSAL_EXECUTED" + _MARKER_TRUE) not in lines
     assert ("GAP5_STOP_PROOF_ACCEPTED" + _MARKER_TRUE) not in lines
+
+
+def test_gap5_stop_criteria_drift_guard_owner_crosslinks_gap5_gap4_dependency_v0() -> None:
+    dependency = (
+        ROOT / "tests" / "ops" / "test_gap5_gap4_durable_evidence_dependency_contract_v0.py"
+    )
+    assert dependency.is_file()
+    text = dependency.read_text(encoding="utf-8")
+    assert "test_gap5_stop_criteria_drift_guard_contract_v0.py" in text
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" in text
