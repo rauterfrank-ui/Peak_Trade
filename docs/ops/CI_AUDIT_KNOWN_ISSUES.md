@@ -195,7 +195,7 @@ CYBERSECURITY_VISIBILITY_R_PENDING_INVENTORY_CHARTER_DOCS_TESTS_ONLY=true
 | `workflow_secrets_visibility` | 44 | Reuse `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
 | `scheduler_or_runtime_boundary` | 24 | Reuse `tests/ops/test_scheduler_boundary_hard_block_contract_v0.py`; Reuse `tests/ops/test_p67_library_scheduler_boundary_opt_in_v0.py` |
 | `branch_or_environment_authority` | 12 | Reuse `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` |
-| `artifact_retention_or_evidence_gap` | 6 | Reuse `tests/ci/test_workflow_artifact_retention_visibility_contract_v0.py` |
+| `artifact_retention_or_evidence_gap` | 6 | Reuse `tests/ci/test_workflow_artifact_retention_visibility_contract_v0.py`; Reuse `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py`; Reuse `tests/ops/test_primary_evidence_retention_invariant_contract_v0.py` |
 | `paid_ai_eval_gate` | 4 | Reuse `tests/ci/test_aiops_promptfoo_cost_gate_workflow_contract_v0.py` |
 | `docs_drift_or_pointer_integrity` | 2 | Review-input only |
 
@@ -212,6 +212,8 @@ CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_WORKFLOW_SECRETS_VISIBILITY_CROSS
 CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_WORKFLOW_SECRETS_VISIBILITY_CROSSLINK_DOCS_TESTS_ONLY=true
 CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_ARTIFACT_RETENTION_OR_EVIDENCE_GAP_CROSSLINK_V0=true
 CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_ARTIFACT_RETENTION_OR_EVIDENCE_GAP_CROSSLINK_DOCS_TESTS_ONLY=true
+CYBERSECURITY_VISIBILITY_ARTIFACT_RETENTION_DURABLE_PRIMARY_EVIDENCE_RECIPROCAL_CROSSLINK_V0=true
+CYBERSECURITY_VISIBILITY_ARTIFACT_RETENTION_DURABLE_PRIMARY_EVIDENCE_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY=true
 INPUT_JSONL_PROVIDED=false
 DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
 ```
@@ -303,6 +305,8 @@ CYBERSECURITY_VISIBILITY_R_PENDING_MAPPING_GUARD_DOCS_TESTS_ONLY=true
 | Workflow network/gh markers | `tests/ci/test_workflow_network_gh_marker_visibility_contract_v0.py` |
 | Manual-dispatch sensitive surfaces | `tests/ci/test_workflow_manual_dispatch_sensitive_surface_contract_v0.py` |
 | Workflow artifact retention | `tests/ci/test_workflow_artifact_retention_visibility_contract_v0.py` |
+| Durable primary evidence hard gate | `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py` |
+| Primary evidence retention invariant | `tests/ops/test_primary_evidence_retention_invariant_contract_v0.py` |
 | Scheduler boundary hard-block (hub) | `tests/ops/test_scheduler_boundary_hard_block_contract_v0.py` |
 | P67/P72 library scheduler boundary opt-in | `tests/ops/test_p67_library_scheduler_boundary_opt_in_v0.py` |
 | Workflow permission boundary | `tests/ops/test_workflow_permission_boundary_visibility_v1.py` |

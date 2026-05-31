@@ -34,6 +34,16 @@ SCHEDULER_COMPLETION_CONTRACT_TESTS = (
 )
 RUN_SCHEDULER = REPO_ROOT / "scripts" / "run_scheduler.py"
 MANDATORY_CLOSEOUT_WIRING_TOKEN = "DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_WIRING_V0=true"
+ARTIFACT_RETENTION_CROSSLINK_TESTS = (
+    REPO_ROOT
+    / "tests"
+    / "ci"
+    / "test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py"
+)
+RECIPROCAL_CROSSLINK_MARKER = (
+    "CYBERSECURITY_VISIBILITY_ARTIFACT_RETENTION_DURABLE_PRIMARY_EVIDENCE_RECIPROCAL_CROSSLINK_V0=true"
+)
+_MARKER_TRUE = "=true"
 
 
 def _owner_text() -> str:
@@ -633,3 +643,23 @@ def test_write_and_verify_manifest_roundtrip(tmp_path) -> None:
     write_manifest_sha256(tmp_path)
     ok, reason = verify_manifest_sha256(tmp_path)
     assert ok is True, reason
+
+
+def test_invariant_owner_crosslinks_cybersecurity_artifact_retention_histogram_v0() -> None:
+    ci_audit = (REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(
+        encoding="utf-8"
+    )
+    assert RECIPROCAL_CROSSLINK_MARKER in ci_audit
+    assert "artifact_retention_or_evidence_gap" in ci_audit
+    assert Path(__file__).name in ci_audit
+    assert ARTIFACT_RETENTION_CROSSLINK_TESTS.is_file()
+
+    crosslink_text = ARTIFACT_RETENTION_CROSSLINK_TESTS.read_text(encoding="utf-8")
+    assert Path(__file__).name in crosslink_text
+    assert RECIPROCAL_CROSSLINK_MARKER in crosslink_text
+    assert HARD_GATE_CONTRACT_TESTS.is_file()
+    assert Path(__file__).name in HARD_GATE_CONTRACT_TESTS.read_text(encoding="utf-8")
+
+    ci_lines = {line.strip() for line in ci_audit.splitlines()}
+    assert ("INPUT_JSONL_PROVIDED" + _MARKER_TRUE) not in ci_lines
+    assert ("R001_R002_R007_MAPPING_COMPLETED" + _MARKER_TRUE) not in ci_lines

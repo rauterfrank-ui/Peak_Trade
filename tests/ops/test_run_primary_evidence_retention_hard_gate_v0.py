@@ -31,6 +31,16 @@ P101 = REPO_ROOT / "scripts" / "ops" / "p101_stop_playbook_v1.sh"
 P93 = REPO_ROOT / "scripts" / "ops" / "p93_online_readiness_status_dashboard_v1.sh"
 POST_STOP = REPO_ROOT / "scripts" / "ops" / "run_online_readiness_post_stop_pack_v0.sh"
 DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+ARTIFACT_RETENTION_CROSSLINK_TESTS = (
+    REPO_ROOT
+    / "tests"
+    / "ci"
+    / "test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py"
+)
+RECIPROCAL_CROSSLINK_MARKER = (
+    "CYBERSECURITY_VISIBILITY_ARTIFACT_RETENTION_DURABLE_PRIMARY_EVIDENCE_RECIPROCAL_CROSSLINK_V0=true"
+)
+_MARKER_TRUE = "=true"
 BOUNDED_REVIEW_CONTRACT_TESTS = (
     REPO_ROOT
     / "tests"
@@ -615,3 +625,26 @@ def test_validate_durable_lifecycle_closeout_root_final_stop_idle_record(tmp_pat
     )
     assert ok is True, reason
     assert detail["classification"] == "final_stop_idle_lifecycle_closeout_v0"
+
+
+def test_hard_gate_owner_crosslinks_cybersecurity_artifact_retention_histogram_v0() -> None:
+    ci_audit = (REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(
+        encoding="utf-8"
+    )
+    assert RECIPROCAL_CROSSLINK_MARKER in ci_audit
+    assert "artifact_retention_or_evidence_gap" in ci_audit
+    assert Path(__file__).name in ci_audit
+    assert ARTIFACT_RETENTION_CROSSLINK_TESTS.is_file()
+
+    crosslink_text = ARTIFACT_RETENTION_CROSSLINK_TESTS.read_text(encoding="utf-8")
+    assert Path(__file__).name in crosslink_text
+    assert RECIPROCAL_CROSSLINK_MARKER in crosslink_text
+    assert "INPUT_JSONL_PROVIDED=false" in ci_audit
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in ci_audit
+
+    ci_lines = {line.strip() for line in ci_audit.splitlines()}
+    assert ("INPUT_JSONL_PROVIDED" + _MARKER_TRUE) not in ci_lines
+
+    for pending_id in ("R-001", "R-002", "R-007"):
+        assert pending_id in ci_audit
+        assert "pending" in ci_audit.lower()
