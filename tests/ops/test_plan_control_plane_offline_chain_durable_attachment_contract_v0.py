@@ -49,6 +49,12 @@ NON_AUTHORITY_JSON_KEYS: tuple[str, ...] = (
     "master_v2_double_play_touched",
 )
 
+CHARTER_NON_EXECUTING_EXTRA_FLAGS_V0: tuple[str, ...] = (
+    "--run",
+    "--live",
+    "--dispatch",
+)
+
 _FORBIDDEN_SOURCE_PATTERNS: tuple[str, ...] = (
     "import subprocess",
     "from subprocess",
@@ -238,6 +244,12 @@ def test_cli_parser_has_no_forbidden_flags_v0() -> None:
     for flag in planner_mod.FORBIDDEN_CLI_FLAGS:
         assert f'add_argument("{flag}"' not in source
         assert f"add_argument('{flag}'" not in source
+
+    for flag in CHARTER_NON_EXECUTING_EXTRA_FLAGS_V0:
+        assert f'add_argument("{flag}"' not in source
+        assert f"add_argument('{flag}'" not in source
+
+    assert "workflow_dispatch" not in source
 
 
 def test_planner_script_has_no_runtime_or_invocation_patterns_v0() -> None:
