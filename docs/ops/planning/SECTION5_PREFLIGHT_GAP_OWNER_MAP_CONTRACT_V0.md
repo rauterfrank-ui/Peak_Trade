@@ -501,6 +501,58 @@ This governed repo-reflection block records scoped acceptance of external Gap-4 
 
 Evidence acceptance is not runtime authorization. The Gap 4 Output/Evidence Paths Contract v0 block above remains contract-only and unchanged.
 
+## Gap 4 REQ-A Strict §2a Full Artifact Set Acceptance Reflection v0
+
+GAP4_REQ_A_STRICT_2A_ACCEPTANCE_REFLECTION_V0=true
+ACCEPTED_MODE=GAP4_REQ_A_DERIVED_STRICT_2A_FULL_2A_ARTIFACT_SET
+EXTERNAL_DERIVED_STRICT_2A_ROOT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runs/gap4_req_a_paper_lane_retry_evidence_20260531T223848Z_derived_strict_2a_layout_20260531T225744Z/
+EXTERNAL_SOURCE_RETRY_ROOT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runs/gap4_req_a_paper_lane_retry_evidence_20260531T223848Z/
+EXTERNAL_REINVENTORY_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_req_a_post_derived_strict_2a_reinventory_v0_20260531T225914Z/
+GOVERNED_ACCEPTANCE_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_req_a_strict_2a_acceptance_reflection_charter_v0_20260531T230038Z/
+REQ_A_FULL_2A_ARTIFACT_SET_FOUND=true
+REQ_A_FULL_2A_SCOPE=derived_strict_2a_root_only
+REQ_A_CANDIDATE_CLOSURE_READY=true
+REQ_A_CANDIDATE_REVIEW_ACCOUNT_FILLS_PRODUCED=true
+REVIEW_PASS_FOUND=true
+ACCOUNT_ARTIFACT_PRESENT=true
+FILLS_ARTIFACT_PRESENT=true
+FILLS_COUNT=0
+A01_ARCHIVE_ROOT_STATUS=PRESENT_VALID
+A05_CONFIG_STATUS=PRESENT_VALID
+A06_PREFLIGHT_STATUS=PRESENT_NOT_AVAILABLE_WITH_EXPLANATION
+TARGET_DERIVED_MANIFEST_VERIFY_RC=0
+REQ_B_TIER_D_POPULATED_PATHS_FOUND=false
+REQ_C_CROSS_LANE_EVIDENCE_FOUND=false
+GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=false
+GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false
+FULL_SCOPE_GAP4_VERIFIED=false
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+PATH_B_LIFT_DISCUSSION_READY=false
+GLOBAL_PREFLIGHT_LIFTED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+TRADING_LOGIC_TOUCHED=false
+
+This governed repo-reflection block records scoped acceptance of external Gap-4 REQ-A **strict §2a full artifact set** evidence at the **derived strict §2a root only** (`REQ_A_FULL_2A_SCOPE=derived_strict_2a_root_only`). It preserves candidate Review/Account/Fills context and does not adopt external-only acceptance tokens as repo SSOT. External acceptance records remain pointer-based and subordinate to repo governance. `A06_PREFLIGHT_STATUS=PRESENT_NOT_AVAILABLE_WITH_EXPLANATION` documents explained preflight unavailability at the derived root; it is **not** a global or scoped preflight lift. `FILLS_COUNT=0` reflects a valid fills artifact and review PASS only; it is not a PnL, fill-rate, or trading-performance claim.
+
+### Non-authority boundary (REQ-A strict §2a reflection does not imply)
+
+- does not apply `REQ_A_FULL_2A_ARTIFACT_SET_FOUND=true` to the immutable source retry root (derived root scope only)
+- does not treat `A06_PREFLIGHT_STATUS=PRESENT_NOT_AVAILABLE_WITH_EXPLANATION` as preflight lift or set `GLOBAL_PREFLIGHT_LIFTED=true`
+- does not satisfy REQ-B Tier-D or REQ-C cross-lane evidence
+- does not verify Gap-4 output evidence paths in criteria or Final Machine Lines
+- does not claim full-scope Gap-4 verification or set `FULL_SCOPE_GAP4_VERIFIED=true`
+- does not set `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true` or `GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=true`
+- does not enforce Gap-2a.1 primary evidence
+- does not authorize scheduler execution, Paper-Lane retry, or further runtime
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+- does not lift global preflight
+- does not modify Double-Play, Master V2, trading logic, strategy modules, Bull/Bear, Scope/Capital, Risk/KillSwitch implementation, execution gates, live gates, dashboard authority, AI authority, or config default-on behavior
+
+Evidence acceptance is not runtime authorization. The Gap 4 Output/Evidence Paths Contract v0 block above remains contract-only and unchanged.
+
 ## Gap 7 Governed Risk Boundary Acceptance Reflection v0
 
 GAP7_RISK_BOUNDARY_GOVERNED_REFLECTION_V0=true

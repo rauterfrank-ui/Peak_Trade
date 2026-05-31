@@ -28,6 +28,9 @@ GAP4_GOVERNED_REFLECTION_HEADER = "## Gap 4 Governed Output Evidence Acceptance 
 GAP4_REQ_A_CANDIDATE_REFLECTION_HEADER = (
     "## Gap 4 REQ-A Candidate Paper Bounded Retry Acceptance Reflection v0"
 )
+GAP4_REQ_A_STRICT_2A_REFLECTION_HEADER = (
+    "## Gap 4 REQ-A Strict §2a Full Artifact Set Acceptance Reflection v0"
+)
 GAP7_GOVERNED_REFLECTION_HEADER = "## Gap 7 Governed Risk Boundary Acceptance Reflection v0"
 GAP2A1_SECTION_HEADER = "## §2a.1 Primary Evidence Enforcement Contract v0"
 _MARKER_TRUE = "=true"
@@ -92,6 +95,12 @@ def _gap4_governed_reflection_section(text: str) -> str:
 
 def _gap4_req_a_candidate_reflection_section(text: str) -> str:
     return text.split(GAP4_REQ_A_CANDIDATE_REFLECTION_HEADER, 1)[1].split(
+        GAP4_REQ_A_STRICT_2A_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap4_req_a_strict_2a_reflection_section(text: str) -> str:
+    return text.split(GAP4_REQ_A_STRICT_2A_REFLECTION_HEADER, 1)[1].split(
         GAP7_GOVERNED_REFLECTION_HEADER, 1
     )[0]
 
@@ -383,5 +392,73 @@ def test_gap4_req_a_candidate_acceptance_reflection_drift_guard_scoped_v0() -> N
         line.strip() for line in criteria.splitlines()
     }
     assert "REQ_A_CANDIDATE_CLOSURE_READY=true" not in {line.strip() for line in block.splitlines()}
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
+
+
+def test_gap4_req_a_strict_2a_acceptance_reflection_drift_guard_scoped_v0() -> None:
+    text = _section5_text()
+    strict_2a = _gap4_req_a_strict_2a_reflection_section(text)
+    candidate = _gap4_req_a_candidate_reflection_section(text)
+    criteria = _gap4_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP4_REQ_A_STRICT_2A_ACCEPTANCE_REFLECTION_V0=true" in strict_2a
+    assert "ACCEPTED_MODE=GAP4_REQ_A_DERIVED_STRICT_2A_FULL_2A_ARTIFACT_SET" in strict_2a
+    assert "EXTERNAL_DERIVED_STRICT_2A_ROOT_POINTER=" in strict_2a
+    assert (
+        "gap4_req_a_paper_lane_retry_evidence_20260531T223848Z_derived_strict_2a_layout_20260531T225744Z"
+        in strict_2a
+    )
+    assert "EXTERNAL_SOURCE_RETRY_ROOT_POINTER=" in strict_2a
+    assert "gap4_req_a_paper_lane_retry_evidence_20260531T223848Z" in strict_2a
+    assert "EXTERNAL_REINVENTORY_POINTER=" in strict_2a
+    assert "gap4_req_a_post_derived_strict_2a_reinventory_v0_20260531T225914Z" in strict_2a
+    assert "GOVERNED_ACCEPTANCE_CHARTER_POINTER=" in strict_2a
+    assert "gap4_req_a_strict_2a_acceptance_reflection_charter_v0_20260531T230038Z" in strict_2a
+    assert "REQ_A_FULL_2A_ARTIFACT_SET_FOUND=true" in strict_2a
+    assert "REQ_A_FULL_2A_SCOPE=derived_strict_2a_root_only" in strict_2a
+    assert "REQ_A_CANDIDATE_CLOSURE_READY=true" in strict_2a
+    assert "REQ_A_CANDIDATE_REVIEW_ACCOUNT_FILLS_PRODUCED=true" in strict_2a
+    assert "REVIEW_PASS_FOUND=true" in strict_2a
+    assert "ACCOUNT_ARTIFACT_PRESENT=true" in strict_2a
+    assert "FILLS_ARTIFACT_PRESENT=true" in strict_2a
+    assert "FILLS_COUNT=0" in strict_2a
+    assert "A01_ARCHIVE_ROOT_STATUS=PRESENT_VALID" in strict_2a
+    assert "A05_CONFIG_STATUS=PRESENT_VALID" in strict_2a
+    assert "A06_PREFLIGHT_STATUS=PRESENT_NOT_AVAILABLE_WITH_EXPLANATION" in strict_2a
+    assert "TARGET_DERIVED_MANIFEST_VERIFY_RC=0" in strict_2a
+    assert "REQ_B_TIER_D_POPULATED_PATHS_FOUND=false" in strict_2a
+    assert "REQ_C_CROSS_LANE_EVIDENCE_FOUND=false" in strict_2a
+    assert "GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=false" in strict_2a
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in strict_2a
+    assert "FULL_SCOPE_GAP4_VERIFIED=false" in strict_2a
+    assert "NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true" in strict_2a
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in strict_2a
+    assert "PATH_B_LIFT_DISCUSSION_READY=false" in strict_2a
+    assert "GLOBAL_PREFLIGHT_LIFTED=false" in strict_2a
+    assert "DOUBLE_PLAY_LOGIC_TOUCHED=false" in strict_2a
+    assert "TRADING_LOGIC_TOUCHED=false" in strict_2a
+    assert "not a PnL, fill-rate, or trading-performance claim" in strict_2a
+    assert "not** a global or scoped preflight lift" in strict_2a
+    assert "derived strict §2a root only" in strict_2a
+    assert "does not set `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true`" in strict_2a
+    assert "does not authorize scheduler execution" in strict_2a
+    assert "Evidence acceptance is not runtime authorization" in strict_2a
+
+    strict_2a_lines = {line.strip() for line in strict_2a.splitlines()}
+    candidate_lines = {line.strip() for line in candidate.splitlines()}
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+
+    assert "REQ_A_FULL_2A_ARTIFACT_SET_FOUND=true" in strict_2a_lines
+    assert "REQ_A_FULL_2A_ARTIFACT_SET_FOUND=false" in candidate_lines
+    assert "REQ_A_FULL_2A_ARTIFACT_SET_FOUND=true" not in candidate_lines
+    assert "REQ_A_FULL_2A_ARTIFACT_SET_FOUND=true" not in criteria_lines
+    assert "REQ_A_FULL_2A_ARTIFACT_SET_FOUND=true" not in block_lines
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" not in strict_2a_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in strict_2a_lines
+    assert "GLOBAL_PREFLIGHT_LIFTED=true" not in strict_2a_lines
+    assert "PATH_B_LIFT_DISCUSSION_READY=true" not in strict_2a_lines
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
