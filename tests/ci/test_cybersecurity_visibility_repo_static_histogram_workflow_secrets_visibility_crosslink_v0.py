@@ -1,8 +1,9 @@
 """Static contract for Cybersecurity Visibility workflow-secrets histogram crosslink v0.
 
-Reads docs/ops/CI_AUDIT_KNOWN_ISSUES.md only. Never dispatches workflows, never
-accesses secrets, never touches runtime, scheduler, daemon, adapter, hooks,
-launchctl, Notion, Market, broker/exchange, or order paths.
+Reads docs/ops/CI_AUDIT_KNOWN_ISSUES.md only. Never reads credential payloads,
+never calls GitHub APIs, never dispatches workflows, never touches runtime,
+scheduler, daemon, adapter, hooks, launchctl, Notion, Market, broker/exchange,
+or order paths.
 """
 
 from __future__ import annotations
@@ -12,6 +13,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CI_AUDIT_KNOWN_ISSUES = REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
+DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+THIS_MODULE = Path(__file__).name
 
 HISTOGRAM_CLASSIFICATION = "workflow_secrets_visibility"
 HISTOGRAM_ROW_RX = re.compile(
@@ -32,15 +35,10 @@ REQUIRED_WORKFLOW_SECRETS_REUSE_OWNER = (
     "tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py"
 )
 
-WORKFLOW_SECRETS_PARALLEL_MARKERS = (
-    "CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_WORKFLOW_SECRETS_VISIBILITY_CROSSLINK_V0=true",
-    "Cybersecurity Visibility repo-static histogram workflow secrets visibility",
-)
-
 FORBIDDEN_AUTHORIZATION_PHRASES: tuple[str, ...] = (
-    "secrets available",
-    "secrets accessed",
     "secret access approved",
+    "secrets available",
+    "workflow secrets approved",
     "runtime start authorized",
     "testnet approved",
     "live approved",
@@ -139,15 +137,34 @@ def test_cybersecurity_visibility_repo_static_histogram_workflow_secrets_crossli
     assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
 
 
-def test_cybersecurity_visibility_workflow_secrets_crosslink_has_no_parallel_doc_surface() -> None:
-    canonical = CI_AUDIT_KNOWN_ISSUES.resolve()
-    parallel_docs: list[Path] = []
+def test_cybersecurity_visibility_workflow_secrets_hub_reciprocal_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    hub_text = (REPO_ROOT / REQUIRED_WORKFLOW_SECRETS_REUSE_OWNER).read_text(encoding="utf-8")
 
-    for path in (REPO_ROOT / "docs").rglob("*.md"):
-        if path.resolve() == canonical:
-            continue
-        body = path.read_text(encoding="utf-8")
-        if any(marker in body for marker in WORKFLOW_SECRETS_PARALLEL_MARKERS):
-            parallel_docs.append(path.relative_to(REPO_ROOT))
+    assert REQUIRED_WORKFLOW_SECRETS_REUSE_OWNER in text
+    assert THIS_MODULE in hub_text
+    assert (
+        "CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_WORKFLOW_SECRETS_VISIBILITY_CROSSLINK_V0=true"
+        in hub_text
+    )
+    assert "workflow_secrets_visibility" in hub_text
 
-    assert parallel_docs == []
+
+def test_cybersecurity_visibility_workflow_secrets_truth_map_crosslink_v0() -> None:
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = truth_map.lower()
+
+    assert (
+        "Cybersecurity Visibility repo-static histogram workflow secrets visibility owner crosslink v0"
+        in truth_map
+    )
+    assert "CI_AUDIT_KNOWN_ISSUES.md" in truth_map
+    assert THIS_MODULE in truth_map
+    assert REQUIRED_WORKFLOW_SECRETS_REUSE_OWNER in truth_map
+    assert (
+        "CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_WORKFLOW_SECRETS_VISIBILITY_CROSSLINK_V0=true"
+        in truth_map
+        or "workflow secrets visibility owner crosslink" in collapsed
+    )
+    assert "non-authorizing" in collapsed
+    assert "input_jsonl_provided=false" in collapsed or "INPUT_JSONL_PROVIDED=false" in truth_map

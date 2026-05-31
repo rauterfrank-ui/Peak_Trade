@@ -590,3 +590,33 @@ def test_cybersecurity_visibility_chain_owner_registry_crosslink_v0() -> None:
     assert Path(__file__).name in truth_map_text
     assert "non-authorizing" in truth_collapsed
     assert "r-003" in truth_collapsed or "R-003" in truth_map_text
+
+
+WORKFLOW_SECRETS_HISTOGRAM_CROSSLINK_TESTS = (
+    REPO_ROOT
+    / "tests/ci/test_cybersecurity_visibility_repo_static_histogram_workflow_secrets_visibility_crosslink_v0.py"
+)
+WORKFLOW_SECRETS_HISTOGRAM_CROSSLINK_MARKER = (
+    "CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_WORKFLOW_SECRETS_VISIBILITY_CROSSLINK_V0=true"
+)
+
+
+def test_workflow_secrets_owner_crosslinks_cybersecurity_histogram_v0() -> None:
+    """Reciprocal static crosslink to workflow_secrets_visibility histogram owner."""
+    ci_audit_text = CI_AUDIT_KNOWN_ISSUES.read_text(encoding="utf-8")
+    ci_collapsed = ci_audit_text.lower()
+
+    assert WORKFLOW_SECRETS_HISTOGRAM_CROSSLINK_MARKER in ci_audit_text
+    assert "workflow_secrets_visibility" in ci_audit_text
+    assert "INPUT_JSONL_PROVIDED=false" in ci_audit_text
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in ci_audit_text
+    assert WORKFLOW_SECRETS_HISTOGRAM_CROSSLINK_TESTS.is_file()
+
+    crosslink_text = WORKFLOW_SECRETS_HISTOGRAM_CROSSLINK_TESTS.read_text(encoding="utf-8")
+    assert Path(__file__).name in crosslink_text
+    assert WORKFLOW_SECRETS_HISTOGRAM_CROSSLINK_MARKER in crosslink_text
+    assert "tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py" in crosslink_text
+
+    assert "secret access approved" not in ci_collapsed
+    assert "workflow_dispatch executed" not in ci_collapsed
+    assert "mapping completed" not in ci_collapsed
