@@ -243,3 +243,15 @@ def test_gap4_output_evidence_paths_drift_guard_owner_crosslinks_gap2a1_drift_gu
     text = drift_guard.read_text(encoding="utf-8")
     assert "test_gap4_output_evidence_paths_drift_guard_contract_v0.py" in text
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in text
+
+
+def test_gap4_output_evidence_paths_drift_guard_owner_crosslinks_gap4_gap2a1_dependency_v0() -> (
+    None
+):
+    dependency = (
+        ROOT / "tests" / "ops" / "test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py"
+    )
+    assert dependency.is_file()
+    text = dependency.read_text(encoding="utf-8")
+    assert "test_gap4_output_evidence_paths_drift_guard_contract_v0.py" in text
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in text
