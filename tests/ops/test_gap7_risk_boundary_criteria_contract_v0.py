@@ -4,6 +4,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 DOC = ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 GAP7_SECTION_HEADER = "## Gap 7 Risk Boundary Criteria Contract v0"
+GAP7_GOVERNED_REFLECTION_HEADER = "## Gap 7 Governed Risk Boundary Acceptance Reflection v0"
+GAP5_GOVERNED_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
+FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP7_PARALLEL_MARKERS = (
     "GAP7_RISK_BOUNDARY_CRITERIA_CONTRACT_V0=true",
     "Gap 7 Risk Boundary Criteria Contract v0",
@@ -15,8 +18,16 @@ DRIFT_GUARD_OWNER = ROOT / "tests" / "ops" / "test_gap7_risk_boundary_drift_guar
 _MARKER_TRUE = "=true"
 
 
+def _gap7_criteria_section(text: str) -> str:
+    return text.split(GAP7_SECTION_HEADER, 1)[1].split(GAP5_GOVERNED_REFLECTION_HEADER, 1)[0]
+
+
+def _gap7_governed_reflection_section(text: str) -> str:
+    return text.split(GAP7_GOVERNED_REFLECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
+
+
 def _gap7_section(text: str) -> str:
-    return text.split(GAP7_SECTION_HEADER, 1)[1].split("## Final Machine Lines", 1)[0]
+    return _gap7_criteria_section(text)
 
 
 def test_gap7_risk_boundary_criteria_contract_is_present_and_non_authorizing():
@@ -165,3 +176,39 @@ def test_gap7_owner_crosslinks_risk_boundary_drift_guard_contract_v0():
     assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in text
     assert "GAP7_RISK_KILLSWITCH_AUTHORITY_CHANGED=false" in text
     assert "DRIFT_GUARD_FORBIDDEN_GAP7_REPO_TOKENS" in text
+
+
+def test_gap7_risk_boundary_criteria_contract_governed_reflection_non_authorizing_v0():
+    text = DOC.read_text(encoding="utf-8")
+    reflection = _gap7_governed_reflection_section(text)
+    criteria = _gap7_criteria_section(text)
+    block = text.split(FINAL_MACHINE_LINES_HEADER, 1)[1]
+
+    assert "GAP7_RISK_BOUNDARY_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP7_RISK_BOUNDARY_ACCEPTED=true" in reflection
+    assert (
+        "ACCEPTED_MODE=GAP7_RISK_BOUNDARY_SCOPED_EXTERNAL_CHECKLIST_WALKTHROUGH_ACCEPTANCE"
+        in reflection
+    )
+    assert "EXTERNAL_ACCEPTANCE_RECORD_POINTER=" in reflection
+    assert "Evidence acceptance is not runtime authorization" in reflection
+    assert "does not verify Gap-7 risk boundaries in criteria or Final Machine Lines" in reflection
+    assert "does not change Risk/KillSwitch authority or runtime behavior" in reflection
+    assert "does not authorize scheduler execution" in reflection
+    assert "does not enable operator arming" in reflection
+    assert "does not start or authorize Runtime, Paper, Shadow, Testnet, or Live" in reflection
+    assert (
+        "does not modify existing Gap-7 criteria/final machine-line verification status"
+        in reflection
+    )
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in criteria
+    assert "criteria-only" in criteria
+    assert "not verified" in criteria
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in block
+    assert "GAP7_RISK_BOUNDARY_ACCEPTED_EXTERNAL=true" not in text
+    reflection_lines = {line.strip() for line in reflection.splitlines()}
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP7_RISK_BOUNDARY_ACCEPTED=true" in reflection_lines
+    assert "GAP7_RISK_BOUNDARY_ACCEPTED=true" not in criteria_lines
+    assert "GAP7_RISK_BOUNDARY_ACCEPTED=true" not in block_lines

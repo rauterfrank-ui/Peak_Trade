@@ -23,6 +23,8 @@ HARDENING_OWNER = ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_sou
 BOUNDARY_OWNER = ROOT / "tests" / "ops" / "test_scheduler_boundary_hard_block_contract_v0.py"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP7_SECTION_HEADER = "## Gap 7 Risk Boundary Criteria Contract v0"
+GAP7_GOVERNED_REFLECTION_HEADER = "## Gap 7 Governed Risk Boundary Acceptance Reflection v0"
+GAP5_GOVERNED_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
 _MARKER_TRUE = "=true"
 
 GAP7_RISK_BOUNDARY_PLANNED = True
@@ -118,8 +120,16 @@ def _final_machine_lines(text: str) -> str:
     return text.split(FINAL_MACHINE_LINES_HEADER, 1)[1]
 
 
+def _gap7_criteria_section(text: str) -> str:
+    return text.split(GAP7_SECTION_HEADER, 1)[1].split(GAP5_GOVERNED_REFLECTION_HEADER, 1)[0]
+
+
+def _gap7_governed_reflection_section(text: str) -> str:
+    return text.split(GAP7_GOVERNED_REFLECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
+
+
 def _gap7_section(text: str) -> str:
-    return text.split(GAP7_SECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
+    return _gap7_criteria_section(text)
 
 
 def _section5_text() -> str:
@@ -296,3 +306,55 @@ def test_gap7_drift_guard_owner_crosslinks_boundary_contract_v0() -> None:
     assert BOUNDARY_OWNER.is_file()
     section = _gap7_section(_section5_text())
     assert "test_scheduler_boundary_hard_block_contract_v0.py" in section
+
+
+def test_gap7_drift_guard_repo_ssot_forbids_external_gap7_acceptance_token_v0() -> None:
+    text = _section5_text()
+    assert "GAP7_RISK_BOUNDARY_ACCEPTED_EXTERNAL=true" not in text
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in text
+
+
+def test_gap7_drift_guard_governed_reflection_scoped_acceptance_v0() -> None:
+    text = _section5_text()
+    reflection = _gap7_governed_reflection_section(text)
+    criteria = _gap7_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP7_RISK_BOUNDARY_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP7_RISK_BOUNDARY_ACCEPTED=true" in reflection
+    assert (
+        "ACCEPTED_MODE=GAP7_RISK_BOUNDARY_SCOPED_EXTERNAL_CHECKLIST_WALKTHROUGH_ACCEPTANCE"
+        in reflection
+    )
+    assert "NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true" in reflection
+    assert "EXTERNAL_ACCEPTANCE_RECORD_POINTER=" in reflection
+    assert "GOVERNED_REPO_REFLECTION_CHARTER_POINTER=" in reflection
+    assert "GAP7_RISK_BOUNDARY_ACCEPTED_EXTERNAL=true" not in text
+    assert "does not verify Gap-7 risk boundaries in criteria or Final Machine Lines" in reflection
+    assert "does not change Risk/KillSwitch authority or runtime behavior" in reflection
+    assert "does not change execution/live gates" in reflection
+    assert "does not authorize scheduler execution" in reflection
+    assert "does not enable operator arming" in reflection
+    assert "does not open Path-B lift discussion" in reflection
+    assert "does not start or authorize Runtime, Paper, Shadow, Testnet, or Live" in reflection
+    assert (
+        "does not modify existing Gap-7 criteria/final machine-line verification status"
+        in reflection
+    )
+    assert "Evidence acceptance is not runtime authorization" in reflection
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in criteria
+    assert "criteria-only" in criteria
+    assert "not verified" in criteria
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in block
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "PATH_B_LIFT_DISCUSSION_READY=false" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    reflection_lines = {line.strip() for line in reflection.splitlines()}
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP7_RISK_BOUNDARY_ACCEPTED=true" in reflection_lines
+    assert "GAP7_RISK_BOUNDARY_ACCEPTED=true" not in criteria_lines
+    assert "GAP7_RISK_BOUNDARY_ACCEPTED=true" not in block_lines
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" not in block_lines

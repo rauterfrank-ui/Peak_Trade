@@ -451,6 +451,36 @@ This governed repo-reflection block records scoped acceptance of external Tier-A
 
 Evidence acceptance is not runtime authorization. The Gap 4 Output/Evidence Paths Contract v0 block above remains contract-only and unchanged.
 
+## Gap 7 Governed Risk Boundary Acceptance Reflection v0
+
+GAP7_RISK_BOUNDARY_GOVERNED_REFLECTION_V0=true
+GAP7_RISK_BOUNDARY_ACCEPTED=true
+ACCEPTED_MODE=GAP7_RISK_BOUNDARY_SCOPED_EXTERNAL_CHECKLIST_WALKTHROUGH_ACCEPTANCE
+EXTERNAL_ACCEPTANCE_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap7_risk_boundary_operator_walkthrough_external_acceptance_record_v0_20260531T202750Z/
+GOVERNED_REPO_REFLECTION_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap7_risk_boundary_governed_repo_reflection_charter_v0_after_external_acceptance_20260531T202930Z/
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This governed repo-reflection block records scoped acceptance of external Gap-7 risk-boundary checklist walkthrough evidence only. It does not adopt external-only acceptance tokens as repo SSOT. External acceptance records remain pointer-based and subordinate to repo governance.
+
+### Non-authority boundary (scoped reflection does not imply)
+
+- does not verify Gap-7 risk boundaries in criteria or Final Machine Lines
+- does not change Risk/KillSwitch authority or runtime behavior
+- does not change execution/live gates
+- does not verify Gap-4 output evidence paths in criteria or Final Machine Lines
+- does not enforce Gap-2a.1 primary evidence
+- does not authorize scheduler execution
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+- does not modify existing Gap-7 criteria/final machine-line verification status
+- does not lift preflight
+
+Evidence acceptance is not runtime authorization. The Gap 7 Risk Boundary Criteria Contract v0 block above remains criteria-only and unchanged.
+
 ## Final Machine Lines
 
 SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true
