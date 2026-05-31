@@ -598,7 +598,7 @@ This governed repo-reflection block records scoped REQ-B Tier-D boundary state a
 
 `REQ_B_TIER_D_SHADOW_PATH_FOUND=true` means only:
 
-- Tier-D shadow path exists under `future_runs/paper_shadow_247/<RUN_ID>/shadow/`
+- Tier-D shadow path exists under `future_runs&#47;paper_shadow_247&#47;<RUN_ID>&#47;shadow&#47;`
 - per-lane manifest verify RC=0
 - review PASS on bounded shadow dry-run evidence
 - 120 Fast-Sim steps emitted with `step_interval_seconds=0`
