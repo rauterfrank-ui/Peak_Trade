@@ -225,3 +225,13 @@ def test_gap5_stop_criteria_drift_guard_owner_crosslinks_gap5_gap4_dependency_v0
     text = dependency.read_text(encoding="utf-8")
     assert "test_gap5_stop_criteria_drift_guard_contract_v0.py" in text
     assert "GAP5_STOP_PROOF_ACCEPTED=false" in text
+
+
+def test_gap5_stop_criteria_drift_guard_owner_crosslinks_rehearsal_classification_v0() -> None:
+    classification = (
+        ROOT / "tests" / "ops" / "test_gap5_stop_rehearsal_evidence_classification_contract_v0.py"
+    )
+    assert classification.is_file()
+    text = classification.read_text(encoding="utf-8")
+    assert "test_gap5_stop_criteria_drift_guard_contract_v0.py" in text
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in text
