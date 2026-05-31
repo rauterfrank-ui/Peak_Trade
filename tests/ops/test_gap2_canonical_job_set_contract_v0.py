@@ -173,3 +173,16 @@ def test_gap2_owner_crosslinks_gap6_external_repo_drift_guard_contract_v0():
     text = drift_guard.read_text(encoding="utf-8")
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in text
     assert "GAP2_JOB_SET_ENABLED=false" in text
+
+
+def test_gap2_owner_crosslinks_job_set_boundary_drift_guard_contract_v0():
+    boundary_guard = (
+        ROOT / "tests" / "ops" / "test_gap2_job_set_boundary_drift_guard_contract_v0.py"
+    )
+    assert boundary_guard.is_file()
+    text = boundary_guard.read_text(encoding="utf-8")
+    assert "BOUNDED_PATH_B_CANDIDATE_SCOPE" in text
+    assert "PAPER_PLUS_BOUNDED_SHADOW_NON_24_7" in text
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in text
+    assert "GAP2_JOB_SET_ENABLED=false" in text
+    assert "test_gap2_canonical_job_set_contract_v0.py" in text

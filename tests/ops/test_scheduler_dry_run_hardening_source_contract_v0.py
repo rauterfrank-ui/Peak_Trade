@@ -17,6 +17,9 @@ GAP6_DRIFT_GUARD_TESTS = (
 )
 GAP1_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap1_execute_entrypoint_contract_v0.py"
 GAP2_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap2_canonical_job_set_contract_v0.py"
+GAP2_BOUNDARY_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_gap2_job_set_boundary_drift_guard_contract_v0.py"
+)
 GAP4_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap4_output_evidence_paths_contract_v0.py"
 GAP5_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap5_stop_criteria_contract_v0.py"
 GAP7_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap7_risk_boundary_criteria_contract_v0.py"
@@ -38,6 +41,7 @@ _MARKER_TRUE = "=true"
 OWNER_REFERENCES_V0 = (
     "tests/ops/test_gap1_execute_entrypoint_contract_v0.py",
     "tests/ops/test_gap2_canonical_job_set_contract_v0.py",
+    "tests/ops/test_gap2_job_set_boundary_drift_guard_contract_v0.py",
     "tests/ops/test_gap3_execute_command_contract_v0.py",
     "tests/ops/test_gap4_output_evidence_paths_contract_v0.py",
     "tests/ops/test_gap5_stop_criteria_contract_v0.py",
@@ -189,6 +193,17 @@ def test_gap2_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() 
     text = GAP2_TESTS.read_text(encoding="utf-8")
     assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
     assert PACKAGE_MARKER in text
+
+
+def test_gap2_boundary_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
+    text = GAP2_BOUNDARY_TESTS.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in text
+    assert "GAP2_JOB_SET_ENABLED=false" in text
+    hardening_text = _this_module_source()
+    assert "test_gap2_job_set_boundary_drift_guard_contract_v0.py" in hardening_text
+    lines = {line.strip() for line in hardening_text.splitlines()}
+    assert ("GAP2_CANONICAL_JOB_SET_VERIFIED" + _MARKER_TRUE) not in lines
 
 
 def test_gap3_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
