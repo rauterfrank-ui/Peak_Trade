@@ -360,6 +360,36 @@ This contract records criteria only. It does not execute `scripts/run_scheduler.
 
 This contract does not verify or activate Risk Boundaries, does not change Risk/KillSwitch authority, does not change Risk/KillSwitch runtime behavior, does not change Master V2 / Double Play logic, does not change Bull/Bear side-switching or Scope/Capital behavior, and does not change execution/live gates. It does not modify `config/scheduler/jobs.toml`, does not enable any scheduler job, does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not approve runtime execution, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
 
+## Gap 5 Governed Stop Proof Acceptance Reflection v0
+
+GAP5_STOP_PROOF_GOVERNED_REFLECTION_V0=true
+GAP5_STOP_PROOF_ACCEPTED=true
+GAP5_STOP_REHEARSAL_EXECUTED=false
+ACCEPTED_MODE=READ_ONLY_SNAPSHOT
+EXTERNAL_ACCEPTANCE_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/proof/gap5_stop_rehearsal_read_only_snapshot_proof_accepted_external_v0_20260531T194049Z/
+GOVERNED_REPO_REFLECTION_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/external_gap5_stop_proof_governed_repo_reflection_charter_v0_20260531T194205Z/
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This governed repo-reflection block records scoped acceptance of external READ_ONLY_SNAPSHOT stop proof evidence only. It does not adopt external-only acceptance tokens as repo SSOT. External acceptance records remain pointer-based and subordinate to repo governance.
+
+### Non-authority boundary (scoped reflection does not imply)
+
+- does not verify Gap-4 output evidence paths
+- does not accept Gap-6 dry-run proof in repo SSOT
+- does not verify Gap-7 risk boundaries
+- does not enforce Gap-2a.1 primary evidence
+- does not authorize scheduler execution
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+- does not change Risk/KillSwitch authority or execution/live gates
+- does not lift preflight
+
+Evidence acceptance is not runtime authorization. The Gap 5 Stop Criteria Contract v0 block above remains criteria-only and unchanged.
+
 ## Final Machine Lines
 
 SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true

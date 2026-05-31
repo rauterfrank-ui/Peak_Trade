@@ -26,6 +26,7 @@ GAP5_TESTS = ROOT / "tests" / "ops" / "test_gap5_stop_criteria_contract_v0.py"
 HARDENING_OWNER = ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_source_contract_v0.py"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP5_SECTION_HEADER = "## Gap 5 Stop Criteria Contract v0"
+GAP5_GOVERNED_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
 _MARKER_TRUE = "=true"
 
 # External planning posture only — must not appear as verified/rehearsed/proof in repo SSOT.
@@ -85,7 +86,13 @@ def _final_machine_lines(text: str) -> str:
 
 
 def _gap5_section(text: str) -> str:
-    return text.split(GAP5_SECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
+    return text.split(GAP5_SECTION_HEADER, 1)[1].split("## Gap 2 Canonical Job Set Contract v0", 1)[
+        0
+    ]
+
+
+def _gap5_governed_reflection_section(text: str) -> str:
+    return text.split(GAP5_GOVERNED_REFLECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
 
 
 def _section5_text() -> str:
@@ -235,3 +242,23 @@ def test_gap5_stop_criteria_drift_guard_owner_crosslinks_rehearsal_classificatio
     text = classification.read_text(encoding="utf-8")
     assert "test_gap5_stop_criteria_drift_guard_contract_v0.py" in text
     assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in text
+
+
+def test_gap5_stop_criteria_drift_guard_governed_reflection_scoped_acceptance_v0() -> None:
+    text = _section5_text()
+    reflection = _gap5_governed_reflection_section(text)
+    block = _final_machine_lines(text)
+    criteria = _gap5_section(text)
+
+    assert "GAP5_STOP_PROOF_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in reflection
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in reflection
+    assert "ACCEPTED_MODE=READ_ONLY_SNAPSHOT" in reflection
+    assert "NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true" in reflection
+    assert "GAP5_STOP_PROOF_ACCEPTED_EXTERNAL=true" not in text
+    assert "does not verify Gap-4 output evidence paths" in reflection
+    assert "does not enable operator arming" in reflection
+    assert "does not start or authorize Runtime, Paper, Shadow, Testnet, or Live" in reflection
+    assert "Evidence acceptance is not runtime authorization" in reflection
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" in criteria
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" in block
