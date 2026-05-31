@@ -27,6 +27,7 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from scripts.ops import bounded_daemon_paper_shadow_24h_approval_v0 as contract_24h
+from scripts.ops import gap4_req_a_paper_hold_binding_approval_v0 as contract_gap4
 from scripts.ops.primary_evidence_retention_v0 import (
     is_under_tmp,
     verify_manifest_sha256,
@@ -167,9 +168,39 @@ def normalize_profile(profile: str | None) -> str:
 
 
 def validate_profile_name(profile: str) -> list[str]:
-    if profile and profile != contract_24h.CONTRACT_PROFILE:
+    known = {contract_24h.CONTRACT_PROFILE, contract_gap4.CONTRACT_PROFILE}
+    if profile and profile not in known:
         return [f"unknown profile: {profile!r}"]
     return []
+
+
+def _profiles_with_hold_runtime_env_bridge() -> frozenset[str]:
+    return frozenset({contract_24h.CONTRACT_PROFILE, contract_gap4.CONTRACT_PROFILE})
+
+
+def resolve_scheduler_hold_runtime_binding_target(
+    *,
+    profile: str,
+    approval_record: Path,
+    approval_fields: Mapping[str, str],
+    run_id: str,
+) -> tuple[Path | None, str, list[str]]:
+    """Resolve OUTROOT + RUN_ID for scheduler HOLD env bridge (non-authorizing)."""
+    if profile == contract_24h.CONTRACT_PROFILE:
+        return approval_record.resolve().parent.parent, run_id, []
+    if profile == contract_gap4.CONTRACT_PROFILE:
+        outroot, issues = contract_gap4.resolve_hold_binding_outroot(approval_fields)
+        expected = approval_fields.get("APPROVED_RUN_ID", "").strip() or run_id
+        if outroot is None:
+            return None, expected, issues
+        if expected != run_id:
+            return (
+                None,
+                expected,
+                [f"APPROVED_RUN_ID mismatch: expected {run_id!r}, got {expected!r}"],
+            )
+        return outroot, expected, []
+    return None, run_id, []
 
 
 def validate_approval_record(
@@ -186,6 +217,11 @@ def validate_approval_record(
         for key in FORBIDDEN_APPROVAL_TRUE:
             if fields.get(key, "false").lower() == "true":
                 issues.append(f"approval record forbids {key}=true")
+        return issues
+    if profile == contract_gap4.CONTRACT_PROFILE:
+        issues.extend(
+            contract_gap4.validate_approval_record(fields, approved_run_id=approved_run_id)
+        )
         return issues
     for key, expected in REQUIRED_APPROVAL.items():
         if fields.get(key, "").lower() != expected:
@@ -405,6 +441,23 @@ def validate_execute_preconditions(
                     approved_run_id=ctx.run_id,
                 )
             )
+            if profile == contract_gap4.CONTRACT_PROFILE:
+                outroot, expected_run_id, resolve_issues = (
+                    resolve_scheduler_hold_runtime_binding_target(
+                        profile=profile,
+                        approval_record=ctx.args.approval_record,
+                        approval_fields=fields,
+                        run_id=ctx.run_id,
+                    )
+                )
+                issues.extend(resolve_issues)
+                if outroot is not None:
+                    issues.extend(
+                        contract_gap4.validate_scheduler_hold_runtime_binding_outroot(
+                            outroot,
+                            expected_run_id=expected_run_id,
+                        )
+                    )
     if not ctx.archive_root.is_dir():
         issues.append(f"archive root must exist: {ctx.archive_root}")
     elif not os.access(ctx.archive_root, os.W_OK):
@@ -948,20 +1001,26 @@ def execute_plan(
     stdout_log = ctx.logs_dir / "scheduler_stdout.log"
     stderr_log = ctx.logs_dir / "scheduler_stderr.log"
     scheduler_extra_env: dict[str, str] | None = None
-    if (
-        normalize_profile(ctx.args.profile) == contract_24h.CONTRACT_PROFILE
-        and ctx.args.approval_record is not None
-    ):
-        durable_outroot = ctx.args.approval_record.resolve().parent.parent
-        from scripts.ops.scheduler_start_boundary_guard_v0 import (
-            SCHEDULER_HOLD_RUNTIME_OUTROOT_ENV,
-            SCHEDULER_HOLD_RUNTIME_RUN_ID_ENV,
+    profile = normalize_profile(ctx.args.profile)
+    if profile in _profiles_with_hold_runtime_env_bridge() and ctx.args.approval_record is not None:
+        outroot, binding_run_id, bridge_issues = resolve_scheduler_hold_runtime_binding_target(
+            profile=profile,
+            approval_record=ctx.args.approval_record,
+            approval_fields=ctx.approval_fields,
+            run_id=ctx.run_id,
         )
+        if bridge_issues:
+            return VALIDATION_EXIT
+        if outroot is not None:
+            from scripts.ops.scheduler_start_boundary_guard_v0 import (
+                SCHEDULER_HOLD_RUNTIME_OUTROOT_ENV,
+                SCHEDULER_HOLD_RUNTIME_RUN_ID_ENV,
+            )
 
-        scheduler_extra_env = {
-            SCHEDULER_HOLD_RUNTIME_OUTROOT_ENV: str(durable_outroot),
-            SCHEDULER_HOLD_RUNTIME_RUN_ID_ENV: ctx.run_id,
-        }
+            scheduler_extra_env = {
+                SCHEDULER_HOLD_RUNTIME_OUTROOT_ENV: str(outroot),
+                SCHEDULER_HOLD_RUNTIME_RUN_ID_ENV: binding_run_id,
+            }
 
     rc = subprocess_runner(
         plan.commands["scheduler_bounded"],
@@ -1176,6 +1235,20 @@ def main(
         if args.duration_seconds is None:
             args.duration_seconds = contract_24h.DAEMON_PAPER_SHADOW_24H_DURATION_SECONDS
         duration_issues = contract_24h.validate_paper_duration_seconds(args.duration_seconds)
+        if duration_issues:
+            for issue in duration_issues:
+                print(issue, file=sys.stderr)
+            return VALIDATION_EXIT
+    elif profile == contract_gap4.CONTRACT_PROFILE:
+        if not args.run_id.strip():
+            print(
+                f"--run-id is required for {contract_gap4.CONTRACT_PROFILE} profile",
+                file=sys.stderr,
+            )
+            return USAGE_EXIT
+        if args.duration_seconds is None:
+            args.duration_seconds = contract_gap4.GAP4_DEFAULT_DURATION_SECONDS
+        duration_issues = contract_gap4.validate_paper_duration_seconds(args.duration_seconds)
         if duration_issues:
             for issue in duration_issues:
                 print(issue, file=sys.stderr)
