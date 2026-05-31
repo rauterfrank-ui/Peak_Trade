@@ -38,9 +38,7 @@ REQUIRED_DURABLE_PRIMARY_EVIDENCE_REUSE_OWNERS: tuple[str, ...] = (
     "tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py",
     "tests/ops/test_primary_evidence_retention_invariant_contract_v0.py",
 )
-RECIPROCAL_CROSSLINK_MARKER = (
-    "CYBERSECURITY_VISIBILITY_ARTIFACT_RETENTION_DURABLE_PRIMARY_EVIDENCE_RECIPROCAL_CROSSLINK_V0=true"
-)
+RECIPROCAL_CROSSLINK_MARKER = "CYBERSECURITY_VISIBILITY_ARTIFACT_RETENTION_DURABLE_PRIMARY_EVIDENCE_RECIPROCAL_CROSSLINK_V0=true"
 
 ARTIFACT_RETENTION_PARALLEL_MARKERS = (
     "CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_ARTIFACT_RETENTION_OR_EVIDENCE_GAP_CROSSLINK_V0=true",
@@ -119,7 +117,9 @@ def test_cybersecurity_visibility_repo_static_histogram_artifact_retention_cross
     assert f"Reuse `{REQUIRED_ARTIFACT_RETENTION_REUSE_OWNER}`" in notes_cell
     for durable_owner in REQUIRED_DURABLE_PRIMARY_EVIDENCE_REUSE_OWNERS:
         assert f"Reuse `{durable_owner}`" in notes_cell
-        assert (REPO_ROOT / durable_owner).is_file(), f"missing reuse owner module: {durable_owner!r}"
+        assert (REPO_ROOT / durable_owner).is_file(), (
+            f"missing reuse owner module: {durable_owner!r}"
+        )
 
     reuse_paths = HISTOGRAM_REUSE_PATH_RX.findall(histogram)
     assert REQUIRED_ARTIFACT_RETENTION_REUSE_OWNER in reuse_paths
@@ -185,7 +185,10 @@ def test_cybersecurity_visibility_artifact_retention_durable_primary_evidence_re
 
     assert hard_gate in text
     assert invariant in text
-    assert "primary_evidence_retention_v0.py" not in text.split("Static visibility contract owners", 1)[0]
+    assert (
+        "primary_evidence_retention_v0.py"
+        not in text.split("Static visibility contract owners", 1)[0]
+    )
 
     hard_gate_text = (REPO_ROOT / hard_gate).read_text(encoding="utf-8")
     invariant_text = (REPO_ROOT / invariant).read_text(encoding="utf-8")

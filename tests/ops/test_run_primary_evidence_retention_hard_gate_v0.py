@@ -37,9 +37,7 @@ ARTIFACT_RETENTION_CROSSLINK_TESTS = (
     / "ci"
     / "test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py"
 )
-RECIPROCAL_CROSSLINK_MARKER = (
-    "CYBERSECURITY_VISIBILITY_ARTIFACT_RETENTION_DURABLE_PRIMARY_EVIDENCE_RECIPROCAL_CROSSLINK_V0=true"
-)
+RECIPROCAL_CROSSLINK_MARKER = "CYBERSECURITY_VISIBILITY_ARTIFACT_RETENTION_DURABLE_PRIMARY_EVIDENCE_RECIPROCAL_CROSSLINK_V0=true"
 _MARKER_TRUE = "=true"
 BOUNDED_REVIEW_CONTRACT_TESTS = (
     REPO_ROOT
@@ -628,9 +626,7 @@ def test_validate_durable_lifecycle_closeout_root_final_stop_idle_record(tmp_pat
 
 
 def test_hard_gate_owner_crosslinks_cybersecurity_artifact_retention_histogram_v0() -> None:
-    ci_audit = (REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(
-        encoding="utf-8"
-    )
+    ci_audit = (REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(encoding="utf-8")
     assert RECIPROCAL_CROSSLINK_MARKER in ci_audit
     assert "artifact_retention_or_evidence_gap" in ci_audit
     assert Path(__file__).name in ci_audit
