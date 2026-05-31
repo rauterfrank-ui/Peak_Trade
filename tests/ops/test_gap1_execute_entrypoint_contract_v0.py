@@ -94,3 +94,11 @@ def test_gap1_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0():
     assert HARDENING_MARKER in text
     lines = {line.strip() for line in text.splitlines()}
     assert ("GAP1_EXECUTE_ENTRYPOINT_VERIFIED" + _MARKER_TRUE) not in lines
+
+
+def test_gap1_execute_entrypoint_contract_owner_crosslinks_drift_guard_v0() -> None:
+    drift_guard = ROOT / "tests" / "ops" / "test_gap1_execute_entrypoint_drift_guard_contract_v0.py"
+    assert drift_guard.is_file()
+    text = drift_guard.read_text(encoding="utf-8")
+    assert "test_gap1_execute_entrypoint_contract_v0.py" in text
+    assert "GAP1_RUNTIME_APPROVED=false" in text

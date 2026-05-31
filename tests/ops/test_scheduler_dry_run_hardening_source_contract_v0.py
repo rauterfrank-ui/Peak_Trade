@@ -16,6 +16,9 @@ GAP6_DRIFT_GUARD_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_gap6_external_repo_drift_guard_contract_v0.py"
 )
 GAP1_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap1_execute_entrypoint_contract_v0.py"
+GAP1_DRIFT_GUARD_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_gap1_execute_entrypoint_drift_guard_contract_v0.py"
+)
 GAP2_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap2_canonical_job_set_contract_v0.py"
 GAP2_BOUNDARY_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_gap2_job_set_boundary_drift_guard_contract_v0.py"
@@ -67,6 +70,7 @@ _MARKER_TRUE = "=true"
 
 OWNER_REFERENCES_V0 = (
     "tests/ops/test_gap1_execute_entrypoint_contract_v0.py",
+    "tests/ops/test_gap1_execute_entrypoint_drift_guard_contract_v0.py",
     "tests/ops/test_gap2_canonical_job_set_contract_v0.py",
     "tests/ops/test_gap2_job_set_boundary_drift_guard_contract_v0.py",
     "tests/ops/test_gap2_gap3_command_dependency_contract_v0.py",
@@ -222,6 +226,20 @@ def test_gap1_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() 
     text = GAP1_TESTS.read_text(encoding="utf-8")
     assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
     assert PACKAGE_MARKER in text
+
+
+def test_gap1_drift_guard_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
+    text = GAP1_DRIFT_GUARD_TESTS.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
+    assert "GAP1_RUNTIME_APPROVED=false" in text
+    assert "GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false" in text
+    assert "GAP1_ENTRYPOINT_DRY_RUN_ONLY=true" in text
+    hardening_text = _this_module_source()
+    assert "test_gap1_execute_entrypoint_drift_guard_contract_v0.py" in hardening_text
+    lines = {line.strip() for line in hardening_text.splitlines()}
+    assert ("GAP1_EXECUTE_ENTRYPOINT_VERIFIED" + _MARKER_TRUE) not in lines
+    assert ("GAP1_RUNTIME_APPROVED" + _MARKER_TRUE) not in lines
+    assert ("GAP1_SCHEDULER_EXECUTION_AUTHORIZED" + _MARKER_TRUE) not in lines
 
 
 def test_gap2_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
