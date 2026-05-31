@@ -12,6 +12,7 @@ SECTION5_DOC = (
 DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
 GAP3_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap3_execute_command_contract_v0.py"
 GAP6_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap6_dry_run_proof_criteria_contract_v0.py"
+GAP1_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap1_execute_entrypoint_contract_v0.py"
 GAP2_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap2_canonical_job_set_contract_v0.py"
 BOUNDARY_TESTS = REPO_ROOT / "tests" / "ops" / "test_scheduler_boundary_hard_block_contract_v0.py"
 REAL_CONFIG_TICK_TESTS = (
@@ -25,6 +26,7 @@ PACKAGE_MARKER = "SCHEDULER_DRY_RUN_HARDENING_SOURCE_CONTRACT_V0=true"
 _MARKER_TRUE = "=true"
 
 OWNER_REFERENCES_V0 = (
+    "tests/ops/test_gap1_execute_entrypoint_contract_v0.py",
     "tests/ops/test_gap2_canonical_job_set_contract_v0.py",
     "tests/ops/test_gap3_execute_command_contract_v0.py",
     "tests/ops/test_gap6_dry_run_proof_criteria_contract_v0.py",
@@ -95,6 +97,7 @@ def test_tmp_evidence_boundary_uses_existing_is_under_tmp_helper_v0() -> None:
 def test_hardening_module_does_not_claim_verified_or_scheduler_authorized_v0() -> None:
     lines = {line.strip() for line in _this_module_source().splitlines()}
     forbidden = (
+        "GAP1_EXECUTE_ENTRYPOINT_VERIFIED" + _MARKER_TRUE,
         "GAP2_CANONICAL_JOB_SET_VERIFIED" + _MARKER_TRUE,
         "GAP3_EXECUTE_COMMAND_VERIFIED" + _MARKER_TRUE,
         "GAP6_DRY_RUN_RC0_OBSERVED" + _MARKER_TRUE,
@@ -107,8 +110,11 @@ def test_hardening_module_does_not_claim_verified_or_scheduler_authorized_v0() -
         assert marker not in lines
 
 
-def test_section5_gap3_and_gap6_remain_unverified_and_non_authorizing_v0() -> None:
+def test_section5_gap1_gap2_and_gap6_remain_unverified_and_non_authorizing_v0() -> None:
     section5 = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in section5
+    assert "GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false" in section5
+    assert "GAP1_RUNTIME_APPROVED=false" in section5
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in section5
     assert "GAP2_JOB_SET_ENABLED=false" in section5
     assert "GAP2_JOBS_TOML_CHANGED=false" in section5
@@ -121,6 +127,12 @@ def test_section5_gap3_and_gap6_remain_unverified_and_non_authorizing_v0() -> No
 def test_reciprocal_owner_references_exist_v0() -> None:
     for owner_rel in OWNER_REFERENCES_V0:
         assert (REPO_ROOT / owner_rel).is_file(), f"missing owner reference: {owner_rel!r}"
+
+
+def test_gap1_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
+    text = GAP1_TESTS.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
+    assert PACKAGE_MARKER in text
 
 
 def test_gap2_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
