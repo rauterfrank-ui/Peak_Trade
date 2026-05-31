@@ -159,3 +159,19 @@ This clearance:
 - **Does not** authorize unscoped or automatic 24h/72h reruns
 
 Paper bounded 24h adapter `--execute` may set the env bridge for the scheduler subprocess only when profile `daemon_paper_shadow_24h_v0` and `--approval-record` are present.
+
+## 10a. Gap-4 REQ-A bounded paper profile (`gap4_req_a_paper_bounded_v0`)
+
+```
+GAP4_REQ_A_PAPER_HOLD_BINDING_PROFILE_V0=true
+GAP4_REQ_A_HOLD_BINDING_PROFILE_DOES_NOT_CLEAR_GLOBAL_HOLD=true
+GAP4_REQ_A_HOLD_BINDING_PROFILE_NON_AUTHORIZING=true
+```
+
+Profile `gap4_req_a_paper_bounded_v0` on [run_paper_only_bounded_observation_adapter_v0.py](../../../scripts/ops/run_paper_only_bounded_observation_adapter_v0.py) (contract: [gap4_req_a_paper_hold_binding_approval_v0.py](../../../scripts/ops/gap4_req_a_paper_hold_binding_approval_v0.py)):
+
+- Duration **300–900** seconds (recommended **300**); fail-closed outside range.
+- On `--execute`, sets the same §10 env bridge (`PEAK_TRADE_SCHEDULER_HOLD_RUNTIME_OUTROOT`, `PEAK_TRADE_SCHEDULER_HOLD_RUNTIME_RUN_ID`) using approval field `HOLD_BINDING_OUTROOT` + `APPROVED_RUN_ID`.
+- Validates `build_scheduler_hold_runtime_binding_v0()` at adapter preflight (fail-closed when invalid).
+- **Does not** change global preflight reporter defaults; **does not** clear `HOLD_NO_PAPER_RUN` for unscoped invocations.
+- **Does not** authorize Testnet/Live/Shadow/broker; **does not** lift `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED` or full-scope tokens.
