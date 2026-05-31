@@ -289,6 +289,14 @@ def test_docs_truth_map_records_pr3810_offline_stub_symmetry_chronicle_v0() -> N
     )
 
 
+def test_docs_truth_map_records_pr3812_summary_docs_pointer_lock_chronicle_v0() -> None:
+    docs_truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+
+    assert "#3812" in docs_truth_map
+    assert "Summary DOCS #3810 pointer lock" in docs_truth_map
+    assert "test_summarize_control_plane_automation_hook_dry_run_contract_v0.py" in docs_truth_map
+
+
 def test_summary_script_has_no_runtime_or_invocation_patterns_v0() -> None:
     for pattern in _FORBIDDEN_SOURCE_PATTERNS:
         assert pattern not in _summary_script_source(), (
