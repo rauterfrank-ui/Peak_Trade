@@ -4,6 +4,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 DOC = ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 GAP5_SECTION_HEADER = "## Gap 5 Stop Criteria Contract v0"
+GAP5_GOVERNED_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
+FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP5_PARALLEL_MARKERS = (
     "GAP5_STOP_CRITERIA_CONTRACT_V0=true",
     "Gap 5 Stop Criteria Contract v0",
@@ -19,8 +21,18 @@ def _gap5_section(text: str) -> str:
     return text.split(GAP5_SECTION_HEADER, 1)[1].split("## Final Machine Lines", 1)[0]
 
 
+def _gap5_criteria_section(text: str) -> str:
+    return text.split(GAP5_SECTION_HEADER, 1)[1].split("## Gap 2 Canonical Job Set Contract v0", 1)[
+        0
+    ]
+
+
+def _gap5_governed_reflection_section(text: str) -> str:
+    return text.split(GAP5_GOVERNED_REFLECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
+
+
 def test_gap5_stop_criteria_contract_is_present_and_non_authorizing():
-    section = _gap5_section(DOC.read_text(encoding="utf-8"))
+    section = _gap5_criteria_section(DOC.read_text(encoding="utf-8"))
 
     required = [
         "GAP5_STOP_CRITERIA_CONTRACT_V0=true",
@@ -40,7 +52,7 @@ def test_gap5_stop_criteria_contract_is_present_and_non_authorizing():
 
 
 def test_gap5_stop_criteria_contract_is_criteria_only_not_waiver_or_proof_claimed():
-    section = _gap5_section(DOC.read_text(encoding="utf-8"))
+    section = _gap5_criteria_section(DOC.read_text(encoding="utf-8"))
 
     required_language = [
         "docs/tests-only criteria contract",
@@ -61,7 +73,7 @@ def test_gap5_stop_criteria_contract_is_criteria_only_not_waiver_or_proof_claime
 
 
 def test_gap5_stop_criteria_contract_reuses_existing_surfaces():
-    section = _gap5_section(DOC.read_text(encoding="utf-8"))
+    section = _gap5_criteria_section(DOC.read_text(encoding="utf-8"))
 
     required_surfaces = [
         "scripts/ops/snapshot_operator_stop_signals.py",
@@ -76,7 +88,7 @@ def test_gap5_stop_criteria_contract_reuses_existing_surfaces():
 
 
 def test_gap5_stop_criteria_contract_references_dependency_chain():
-    section = _gap5_section(DOC.read_text(encoding="utf-8"))
+    section = _gap5_criteria_section(DOC.read_text(encoding="utf-8"))
 
     required_chain = [
         "Gap 1 remains the entrypoint boundary",
@@ -90,7 +102,7 @@ def test_gap5_stop_criteria_contract_references_dependency_chain():
 
 
 def test_gap5_stop_criteria_contract_is_not_waiver_or_lifted():
-    section = _gap5_section(DOC.read_text(encoding="utf-8"))
+    section = _gap5_criteria_section(DOC.read_text(encoding="utf-8"))
     lines = {line.strip() for line in section.splitlines()}
 
     forbidden = [
@@ -135,7 +147,7 @@ def test_gap5_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0():
 
 
 def test_gap5_owner_crosslinks_snapshot_operator_stop_signals_v0():
-    section = _gap5_section(DOC.read_text(encoding="utf-8"))
+    section = _gap5_criteria_section(DOC.read_text(encoding="utf-8"))
     assert SNAPSHOT_OWNER.is_file()
     assert "snapshot_operator_stop_signals.py" in section
     hardening_text = HARDENING_OWNER.read_text(encoding="utf-8")
@@ -148,3 +160,21 @@ def test_gap5_owner_crosslinks_stop_criteria_drift_guard_contract_v0():
     assert "test_gap5_stop_criteria_contract_v0.py" in text
     assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in text
     assert "DRIFT_GUARD_FORBIDDEN_GAP5_REPO_TOKENS" in text
+
+
+def test_gap5_stop_criteria_contract_governed_reflection_non_authorizing_v0():
+    text = DOC.read_text(encoding="utf-8")
+    reflection = _gap5_governed_reflection_section(text)
+    criteria = _gap5_criteria_section(text)
+
+    assert "GAP5_STOP_PROOF_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in reflection
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in reflection
+    assert "EXTERNAL_ACCEPTANCE_RECORD_POINTER=" in reflection
+    assert "Evidence acceptance is not runtime authorization" in reflection
+    assert "does not verify Gap-4 output evidence paths" in reflection
+    assert "does not enable operator arming" in reflection
+    assert "does not start or authorize Runtime, Paper, Shadow, Testnet, or Live" in reflection
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" in criteria
+    assert "does not accept or verify stop proof" in criteria
+    assert "GAP5_STOP_PROOF_ACCEPTED_EXTERNAL=true" not in text

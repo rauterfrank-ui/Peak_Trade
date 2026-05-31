@@ -23,6 +23,7 @@ GAP5_GAP4_DEPENDENCY = (
 HARDENING_OWNER = ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_source_contract_v0.py"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP5_SECTION_HEADER = "## Gap 5 Stop Criteria Contract v0"
+GAP5_GOVERNED_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
 _MARKER_TRUE = "=true"
 
 EXTERNAL_REHEARSAL_RECORD_NOT_REPO_SSOT = True
@@ -74,6 +75,10 @@ def _gap5_section(text: str) -> str:
     return text.split(GAP5_SECTION_HEADER, 1)[1].split("## Gap 2 Canonical Job Set Contract v0", 1)[
         0
     ]
+
+
+def _gap5_governed_reflection_section(text: str) -> str:
+    return text.split(GAP5_GOVERNED_REFLECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
 
 
 def _section5_text() -> str:
@@ -205,3 +210,18 @@ def test_gap5_rehearsal_classification_owner_crosslinks_hardening_source_contrac
     lines = {line.strip() for line in text.splitlines()}
     assert ("GAP5_STOP_REHEARSAL_EXECUTED" + _MARKER_TRUE) not in lines
     assert ("GAP5_STOP_PROOF_ACCEPTED" + _MARKER_TRUE) not in lines
+
+
+def test_gap5_rehearsal_classification_governed_reflection_allows_scoped_repo_token_v0() -> None:
+    text = _section5_text()
+    reflection = _gap5_governed_reflection_section(text)
+    criteria = _gap5_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in reflection
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" in criteria
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" in block
+    assert "GAP5_STOP_PROOF_ACCEPTED_EXTERNAL=true" not in text
+    assert "does not adopt external-only acceptance tokens as repo SSOT" in reflection
+    assert FUTURE_REHEARSAL_ACCEPTANCE_REQUIRES_GOVERNED_REPO_PROCESS is True
+    assert STOP_PROOF_OBSERVED_EXTERNAL_NOT_GAP5_STOP_PROOF_ACCEPTED is True
