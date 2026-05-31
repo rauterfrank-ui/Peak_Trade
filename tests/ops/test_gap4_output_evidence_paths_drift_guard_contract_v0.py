@@ -31,6 +31,7 @@ GAP4_REQ_A_CANDIDATE_REFLECTION_HEADER = (
 GAP4_REQ_A_STRICT_2A_REFLECTION_HEADER = (
     "## Gap 4 REQ-A Strict §2a Full Artifact Set Acceptance Reflection v0"
 )
+GAP4_REQ_B_TIER_D_BOUNDARY_REFLECTION_HEADER = "## Gap 4 REQ-B Tier-D Boundary Reflection v0"
 GAP7_GOVERNED_REFLECTION_HEADER = "## Gap 7 Governed Risk Boundary Acceptance Reflection v0"
 GAP2A1_SECTION_HEADER = "## §2a.1 Primary Evidence Enforcement Contract v0"
 _MARKER_TRUE = "=true"
@@ -101,6 +102,12 @@ def _gap4_req_a_candidate_reflection_section(text: str) -> str:
 
 def _gap4_req_a_strict_2a_reflection_section(text: str) -> str:
     return text.split(GAP4_REQ_A_STRICT_2A_REFLECTION_HEADER, 1)[1].split(
+        GAP4_REQ_B_TIER_D_BOUNDARY_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap4_req_b_tier_d_boundary_reflection_section(text: str) -> str:
+    return text.split(GAP4_REQ_B_TIER_D_BOUNDARY_REFLECTION_HEADER, 1)[1].split(
         GAP7_GOVERNED_REFLECTION_HEADER, 1
     )[0]
 
@@ -460,5 +467,69 @@ def test_gap4_req_a_strict_2a_acceptance_reflection_drift_guard_scoped_v0() -> N
     assert "FULL_SCOPE_GAP4_VERIFIED=true" not in strict_2a_lines
     assert "GLOBAL_PREFLIGHT_LIFTED=true" not in strict_2a_lines
     assert "PATH_B_LIFT_DISCUSSION_READY=true" not in strict_2a_lines
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
+
+
+def test_gap4_req_b_tier_d_boundary_reflection_drift_guard_scoped_v0() -> None:
+    text = _section5_text()
+    req_b = _gap4_req_b_tier_d_boundary_reflection_section(text)
+    strict_2a = _gap4_req_a_strict_2a_reflection_section(text)
+    criteria = _gap4_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP4_REQ_B_TIER_D_BOUNDARY_REFLECTION_V0=true" in req_b
+    assert "ACCEPTED_MODE=GAP4_REQ_B_TIER_D_FAST_SIM_SHADOW_BOUNDARY_REFLECTION" in req_b
+    assert "TIER_D_RUN_ID=gap4_req_b_tier_d_paper_candidate_20260531T230911Z" in req_b
+    assert "EXTERNAL_FAST_SIM_BOUNDARY_CHARTER_POINTER=" in req_b
+    assert "gap4_req_b_shadow_fast_sim_boundary_charter_v0_20260531T233134Z" in req_b
+    assert "EXTERNAL_POST_TIER_D_REINVENTORY_POINTER=" in req_b
+    assert "gap4_req_b_post_tier_d_populated_paths_reinventory_v0_20260531T232726Z" in req_b
+    assert "REQ_A_FULL_2A_ARTIFACT_SET_FOUND=true" in req_b
+    assert "REQ_B_TIER_D_PAPER_PATH_CANDIDATE_READY=true" in req_b
+    assert "REQ_B_TIER_D_SHADOW_PATH_FOUND=true" in req_b
+    assert "REQ_B_TIER_D_POPULATED_PATHS_FOUND=false" in req_b
+    assert "SHADOW_FAST_SIM_ONLY=true" in req_b
+    assert "SHADOW_REAL_10MIN_OBSERVATION=false" in req_b
+    assert "SHADOW_EVIDENCE_TIMING_VERDICT=VALID_FAST_SIM_DRY_RUN" in req_b
+    assert "PLANNED_PROFILE_LABEL_10_MIN=true" in req_b
+    assert "PLANNED_STEPS=120" in req_b
+    assert "PLANNED_INTERVAL_SECONDS=0" in req_b
+    assert "ACTUAL_WALL_CLOCK_SECONDS=0" in req_b
+    assert "REVIEW_VALIDATES_WALL_CLOCK_DURATION=false" in req_b
+    assert "SHADOW_B07_B08_MISSING=true" in req_b
+    assert "SHADOW_B09_B16_PARTIAL=true" in req_b
+    assert "TIER_D_SHADOW_PATH_MANIFEST_VERIFY_RC=0" in req_b
+    assert "SHADOW_REVIEW_PASS=true" in req_b
+    assert "REQ_C_CROSS_LANE_EVIDENCE_FOUND=false" in req_b
+    assert "GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=false" in req_b
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in req_b
+    assert "FULL_SCOPE_GAP4_VERIFIED=false" in req_b
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in req_b
+    assert "PATH_B_LIFT_DISCUSSION_READY=false" in req_b
+    assert "GLOBAL_PREFLIGHT_LIFTED=false" in req_b
+    assert "DOUBLE_PLAY_LOGIC_TOUCHED=false" in req_b
+    assert "TRADING_LOGIC_TOUCHED=false" in req_b
+    assert "profile/deadline cap labels" in req_b
+    assert "fast local simulation" in req_b
+    assert "does not claim `SHADOW_REAL_10MIN_OBSERVATION=true`" in req_b
+    assert "does not set `REQ_B_TIER_D_POPULATED_PATHS_FOUND=true`" in req_b
+    assert "120 Fast-Sim steps emitted" in req_b
+    assert "Evidence acceptance is not runtime authorization" in req_b
+
+    req_b_lines = {line.strip() for line in req_b.splitlines()}
+    strict_2a_lines = {line.strip() for line in strict_2a.splitlines()}
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+
+    assert "REQ_B_TIER_D_SHADOW_PATH_FOUND=true" in req_b_lines
+    assert "REQ_B_TIER_D_POPULATED_PATHS_FOUND=false" in req_b_lines
+    assert "SHADOW_REAL_10MIN_OBSERVATION=true" not in req_b_lines
+    assert "REQ_B_TIER_D_POPULATED_PATHS_FOUND=true" not in req_b_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in req_b_lines
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" not in req_b_lines
+    assert "REQ_B_TIER_D_SHADOW_PATH_FOUND=true" not in strict_2a_lines
+    assert "REQ_B_TIER_D_SHADOW_PATH_FOUND=true" not in criteria_lines
+    assert "REQ_B_TIER_D_SHADOW_PATH_FOUND=true" not in block_lines
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block

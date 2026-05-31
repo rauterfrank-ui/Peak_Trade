@@ -553,6 +553,93 @@ This governed repo-reflection block records scoped acceptance of external Gap-4 
 
 Evidence acceptance is not runtime authorization. The Gap 4 Output/Evidence Paths Contract v0 block above remains contract-only and unchanged.
 
+## Gap 4 REQ-B Tier-D Boundary Reflection v0
+
+GAP4_REQ_B_TIER_D_BOUNDARY_REFLECTION_V0=true
+ACCEPTED_MODE=GAP4_REQ_B_TIER_D_FAST_SIM_SHADOW_BOUNDARY_REFLECTION
+TIER_D_RUN_ID=gap4_req_b_tier_d_paper_candidate_20260531T230911Z
+EXTERNAL_FAST_SIM_BOUNDARY_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_req_b_shadow_fast_sim_boundary_charter_v0_20260531T233134Z/
+EXTERNAL_REMAINING_GAPS_CLOSURE_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_req_b_shadow_remaining_gaps_closure_charter_v0_20260531T233252Z/
+EXTERNAL_POST_TIER_D_REINVENTORY_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_req_b_post_tier_d_populated_paths_reinventory_v0_20260531T232726Z/
+EXTERNAL_DURATION_ANOMALY_AUDIT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_req_b_shadow_runtime_duration_anomaly_audit_v0_20260531T232537Z/
+EXTERNAL_SHADOW_EXECUTE_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_req_b_bounded_shadow_lane_evidence_run_v0_20260531T232321Z/
+REQ_A_FULL_2A_ARTIFACT_SET_FOUND=true
+REQ_B_TIER_D_PAPER_PATH_CANDIDATE_READY=true
+REQ_B_TIER_D_SHADOW_PATH_FOUND=true
+REQ_B_TIER_D_POPULATED_PATHS_FOUND=false
+SHADOW_FAST_SIM_ONLY=true
+SHADOW_REAL_10MIN_OBSERVATION=false
+SHADOW_EVIDENCE_TIMING_VERDICT=VALID_FAST_SIM_DRY_RUN
+PLANNED_PROFILE_LABEL_10_MIN=true
+PLANNED_STEPS=120
+PLANNED_INTERVAL_SECONDS=0
+ACTUAL_WALL_CLOCK_SECONDS=0
+STEP_TIMESTAMP_SPAN_SECONDS=0.0
+REVIEW_VALIDATES_WALL_CLOCK_DURATION=false
+SHADOW_B07_B08_MISSING=true
+SHADOW_B09_B16_PARTIAL=true
+TIER_D_PAPER_PATH_MANIFEST_VERIFY_RC=0
+TIER_D_SHADOW_PATH_MANIFEST_VERIFY_RC=0
+SHADOW_REVIEW_PASS=true
+REQ_C_CROSS_LANE_EVIDENCE_FOUND=false
+GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=false
+GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false
+FULL_SCOPE_GAP4_VERIFIED=false
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+PATH_B_LIFT_DISCUSSION_READY=false
+GLOBAL_PREFLIGHT_LIFTED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+TRADING_LOGIC_TOUCHED=false
+
+This governed repo-reflection block records scoped REQ-B Tier-D boundary state after external post-Tier-D reinventory and Fast-Sim boundary charter. It does not adopt external-only acceptance tokens as repo SSOT. External records remain pointer-based and subordinate to repo governance.
+
+### REQ-B Tier-D shadow path found (allowed scope only)
+
+`REQ_B_TIER_D_SHADOW_PATH_FOUND=true` means only:
+
+- Tier-D shadow path exists under `future_runs/paper_shadow_247/<RUN_ID>/shadow/`
+- per-lane manifest verify RC=0
+- review PASS on bounded shadow dry-run evidence
+- 120 Fast-Sim steps emitted with `step_interval_seconds=0`
+- duration caveat accepted: `SHADOW_EVIDENCE_TIMING_VERDICT=VALID_FAST_SIM_DRY_RUN`
+
+It does **not** mean real 10-minute wall-clock observation, full REQ-B populate, or REQ-C cross-lane evidence.
+
+### REQ-B Tier-D populated paths remain false
+
+`REQ_B_TIER_D_POPULATED_PATHS_FOUND=false` because:
+
+- Shadow B07 command transcript and B08 process inventory are missing
+- Shadow B09 config/preflight snapshot and B16 archive root marker are partial only
+- strict B05–B16 across **both** paper and shadow lanes is not satisfied
+- Fast-Sim shadow evidence is not a 600s elapsed observation
+
+### Timing boundary (Fast-Sim vs real observation)
+
+- `duration_minutes=10` and `PLANNED_PROFILE_LABEL_10_MIN=true` are **profile/deadline cap labels**, not elapsed minimum wall-clock duration
+- `PLANNED_INTERVAL_SECONDS=0` means fast local simulation (120 steps may complete in subsecond wall-clock)
+- `ACTUAL_WALL_CLOCK_SECONDS=0` at manifest 1s precision reflects observed Fast-Sim timing
+- review PASS validates artifact shape, safety strings, and non-empty steps — **not** wall-clock duration
+- manifest RC=0 validates integrity — **not** 600s observation
+
+### Non-authority boundary (REQ-B Tier-D reflection does not imply)
+
+- does not claim `SHADOW_REAL_10MIN_OBSERVATION=true` or real elapsed 10-minute Shadow observation
+- does not set `REQ_B_TIER_D_POPULATED_PATHS_FOUND=true`
+- does not satisfy REQ-C cross-lane evidence
+- does not verify Gap-4 output evidence paths in criteria or Final Machine Lines
+- does not claim full-scope Gap-4 verification or set `FULL_SCOPE_GAP4_VERIFIED=true`
+- does not set `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true` or `GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=true`
+- does not enforce Gap-2a.1 primary evidence
+- does not authorize scheduler execution or further Shadow/Paper/Testnet/Live runtime
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not lift global preflight
+- does not modify Double-Play, Master V2, trading logic, strategy modules, Bull/Bear, Scope/Capital, Risk/KillSwitch implementation, execution gates, live gates, dashboard authority, AI authority, or config default-on behavior
+
+Evidence acceptance is not runtime authorization. The Gap 4 Output/Evidence Paths Contract v0 block above remains contract-only and unchanged.
+
 ## Gap 7 Governed Risk Boundary Acceptance Reflection v0
 
 GAP7_RISK_BOUNDARY_GOVERNED_REFLECTION_V0=true
