@@ -9,6 +9,12 @@ GAP2_PARALLEL_MARKERS = (
     "GAP2_CANONICAL_JOB_SET_CONTRACT_V0=true",
     "Gap 2 Canonical Job Set Contract v0",
 )
+HARDENING_OWNER = ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_source_contract_v0.py"
+HARDENING_MARKER = "SCHEDULER_DRY_RUN_HARDENING_SOURCE_CONTRACT_V0=true"
+JOB_CONFIG_OWNER = (
+    ROOT / "tests" / "ops" / "test_paper_shadow_247_runtime_scheduler_job_config_v0.py"
+)
+_MARKER_TRUE = "=true"
 
 
 def _gap2_section(text: str) -> str:
@@ -141,3 +147,21 @@ def test_gap2a1_markers_remain_in_section2a1_not_gap2_canonical_job_set():
     for marker in gap2a1_markers:
         assert marker in gap2a1_section
         assert marker not in gap2_section
+
+
+def test_gap2_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0():
+    assert HARDENING_OWNER.is_file()
+    text = HARDENING_OWNER.read_text(encoding="utf-8")
+    assert "scripts/run_scheduler.py" in text
+    assert "test_gap2_canonical_job_set_contract_v0.py" in text
+    assert HARDENING_MARKER in text
+    lines = {line.strip() for line in text.splitlines()}
+    assert ("GAP2_CANONICAL_JOB_SET_VERIFIED" + _MARKER_TRUE) not in lines
+
+
+def test_gap2_owner_crosslinks_paper_shadow_runtime_scheduler_job_config_v0():
+    section = _gap2_section(DOC.read_text(encoding="utf-8"))
+    assert JOB_CONFIG_OWNER.is_file()
+    assert "test_paper_shadow_247_runtime_scheduler_job_config_v0.py" in section
+    hardening_text = HARDENING_OWNER.read_text(encoding="utf-8")
+    assert "test_paper_shadow_247_runtime_scheduler_job_config_v0.py" in hardening_text
