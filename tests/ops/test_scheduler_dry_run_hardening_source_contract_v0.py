@@ -15,6 +15,7 @@ GAP6_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap6_dry_run_proof_criteria_con
 GAP1_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap1_execute_entrypoint_contract_v0.py"
 GAP2_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap2_canonical_job_set_contract_v0.py"
 GAP4_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap4_output_evidence_paths_contract_v0.py"
+GAP5_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap5_stop_criteria_contract_v0.py"
 HARD_GATE_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_run_primary_evidence_retention_hard_gate_v0.py"
 )
@@ -25,6 +26,7 @@ REAL_CONFIG_TICK_TESTS = (
 JOB_CONFIG_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_paper_shadow_247_runtime_scheduler_job_config_v0.py"
 )
+SNAPSHOT_TESTS = REPO_ROOT / "tests" / "ops" / "test_snapshot_operator_stop_signals.py"
 
 PACKAGE_MARKER = "SCHEDULER_DRY_RUN_HARDENING_SOURCE_CONTRACT_V0=true"
 _MARKER_TRUE = "=true"
@@ -34,8 +36,10 @@ OWNER_REFERENCES_V0 = (
     "tests/ops/test_gap2_canonical_job_set_contract_v0.py",
     "tests/ops/test_gap3_execute_command_contract_v0.py",
     "tests/ops/test_gap4_output_evidence_paths_contract_v0.py",
+    "tests/ops/test_gap5_stop_criteria_contract_v0.py",
     "tests/ops/test_gap6_dry_run_proof_criteria_contract_v0.py",
     "tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py",
+    "tests/ops/test_snapshot_operator_stop_signals.py",
     "tests/ops/test_scheduler_boundary_hard_block_contract_v0.py",
     "tests/test_scheduler_real_config_single_tick_dry_run_contract_v0.py",
     "tests/ops/test_paper_shadow_247_runtime_scheduler_job_config_v0.py",
@@ -108,6 +112,12 @@ def test_hardening_module_does_not_claim_verified_or_scheduler_authorized_v0() -
         "GAP3_EXECUTE_COMMAND_VERIFIED" + _MARKER_TRUE,
         "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED" + _MARKER_TRUE,
         "GAP4_OUTPUT_EVIDENCE_DEFAULT_ON" + _MARKER_TRUE,
+        "GAP5_TYPE2_WAIVER_GRANTED" + _MARKER_TRUE,
+        "GAP5_STOP_REHEARSAL_EXECUTED" + _MARKER_TRUE,
+        "GAP5_STOP_PROOF_ACCEPTED" + _MARKER_TRUE,
+        "GAP5_RUNTIME_STOP_AUTHORITY_CHANGED" + _MARKER_TRUE,
+        "GAP5_SCHEDULER_EXECUTION_AUTHORIZED" + _MARKER_TRUE,
+        "GAP5_STOP_CRITERIA_DEFAULT_ON" + _MARKER_TRUE,
         "GAP6_DRY_RUN_RC0_OBSERVED" + _MARKER_TRUE,
         "GAP6_DRY_RUN_PROOF_VERIFIED" + _MARKER_TRUE,
         "SCHEDULER_EXECUTION_AUTHORIZED" + _MARKER_TRUE,
@@ -129,6 +139,12 @@ def test_section5_gap1_gap2_and_gap6_remain_unverified_and_non_authorizing_v0() 
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in section5
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in section5
     assert "GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=false" in section5
+    assert "GAP5_TYPE2_WAIVER_GRANTED=false" in section5
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in section5
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" in section5
+    assert "GAP5_RUNTIME_STOP_AUTHORITY_CHANGED=false" in section5
+    assert "GAP5_SCHEDULER_EXECUTION_AUTHORIZED=false" in section5
+    assert "GAP5_STOP_CRITERIA_DEFAULT_ON=false" in section5
     assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in section5
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in section5
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in section5
@@ -163,6 +179,12 @@ def test_gap4_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() 
     assert PACKAGE_MARKER in text
 
 
+def test_gap5_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
+    text = GAP5_TESTS.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
+    assert PACKAGE_MARKER in text
+
+
 def test_gap6_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
     text = GAP6_TESTS.read_text(encoding="utf-8")
     assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
@@ -188,6 +210,11 @@ def test_job_config_owner_crosslinked_from_hardening_module_v0() -> None:
 def test_hard_gate_owner_crosslinked_from_hardening_module_v0() -> None:
     assert "test_run_primary_evidence_retention_hard_gate_v0.py" in _this_module_source()
     assert HARD_GATE_TESTS.is_file()
+
+
+def test_snapshot_owner_crosslinked_from_hardening_module_v0() -> None:
+    assert "test_snapshot_operator_stop_signals.py" in _this_module_source()
+    assert SNAPSHOT_TESTS.is_file()
 
 
 def test_docs_truth_map_records_scheduler_dry_run_hardening_chronicle_v0() -> None:

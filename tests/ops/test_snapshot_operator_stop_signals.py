@@ -242,3 +242,23 @@ def test_main_operator_decision_record_missing_file_exits_2(
         ["x", "--json", "--repo-root", str(tmp_path), "--operator-decision-record", str(missing)],
     )
     assert mod.main() == 2
+
+
+def test_snapshot_owner_crosslinks_gap5_and_scheduler_dry_run_hardening_v0() -> None:
+    gap5_owner = ROOT / "tests" / "ops" / "test_gap5_stop_criteria_contract_v0.py"
+    hardening_owner = (
+        ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_source_contract_v0.py"
+    )
+    hardening_marker = "SCHEDULER_DRY_RUN_HARDENING_SOURCE_CONTRACT_V0=true"
+
+    assert gap5_owner.is_file()
+    assert hardening_owner.is_file()
+
+    gap5_text = gap5_owner.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in gap5_text
+    assert hardening_marker in gap5_text
+    assert Path(__file__).name in gap5_text
+
+    hardening_text = hardening_owner.read_text(encoding="utf-8")
+    assert "test_gap5_stop_criteria_contract_v0.py" in hardening_text
+    assert Path(__file__).name in hardening_text
