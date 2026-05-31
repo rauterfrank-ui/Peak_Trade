@@ -98,7 +98,10 @@ def _materialize_gap4_hold_binding_outroot(tmp_path: Path) -> Path:
         _materialize_valid_binding_outroot,
     )
 
-    return _materialize_valid_binding_outroot(tmp_path)
+    # Gap-4 approval rejects HOLD_BINDING_OUTROOT under /tmp; CI pytest tmp_path is /tmp.
+    parent = ROOT / "tests" / ".pytest_archive_roots" / f"gap4_hold_binding_{tmp_path.name}"
+    parent.mkdir(parents=True, exist_ok=True)
+    return _materialize_valid_binding_outroot(parent)
 
 
 def _durable_archive(tmp_path: Path) -> Path:
