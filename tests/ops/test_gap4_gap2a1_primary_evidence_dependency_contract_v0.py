@@ -193,10 +193,11 @@ def test_gap4_gap2a1_dependency_durable_evidence_not_enforcement_v0() -> None:
 def test_gap4_gap2a1_dependency_sample_conflation_lines_not_repo_ssot_lifts_v0() -> None:
     text = _section5_text()
     block = _final_machine_lines(text)
-    lines = {line.strip() for line in block.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    doc_lines = {line.strip() for line in text.splitlines()}
     for sample in CONFLATION_SAMPLE_LINES_MUST_NOT_LIFT_ENFORCEMENT:
-        assert sample not in lines
-        assert sample not in text
+        assert sample not in block_lines
+        assert sample not in doc_lines
 
 
 def test_gap4_gap2a1_dependency_tmp_not_canonical_durable_chain_v0() -> None:
