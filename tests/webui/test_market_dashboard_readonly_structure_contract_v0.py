@@ -1108,6 +1108,75 @@ def test_double_play_market_dashboard_excludes_run_projection_landmark_v0(
     assert 'data-market-v0-run-projection="true"' not in html
 
 
+MARKET_SURFACE_DOC = project_root / "docs" / "webui" / "MARKET_SURFACE_V0.md"
+STRUCTURE_CONTRACT_OWNER = "tests/webui/test_market_dashboard_readonly_structure_contract_v0.py"
+MARKET_DASHBOARD_MARKER_IA_CROSSWALK_DRIFT_LOCK_V0 = (
+    "MARKET_DASHBOARD_MARKER_IA_CROSSWALK_DOCS_TEST_DRIFT_LOCK_V0=true"
+)
+
+
+def _market_surface_doc_text() -> str:
+    assert MARKET_SURFACE_DOC.is_file()
+    return MARKET_SURFACE_DOC.read_text(encoding="utf-8")
+
+
+def _marker_ia_crosswalk_policy_section(surface: str) -> str:
+    start = surface.index("### Marker / IA crosswalk policy v0")
+    end = surface.index("## Market Surface v1 visual framing", start)
+    return surface[start:end]
+
+
+def test_market_surface_marker_ia_crosswalk_policy_docs_test_drift_lock_v0() -> None:
+    """MARKET_SURFACE_V0 Marker/IA crosswalk policy stays locked to structure-contract owner."""
+    surface = _market_surface_doc_text()
+    crosswalk = _marker_ia_crosswalk_policy_section(surface)
+
+    assert MARKET_DASHBOARD_MARKER_IA_CROSSWALK_DRIFT_LOCK_V0.endswith("=true")
+
+    required_crosswalk_tokens = [
+        "### Marker / IA crosswalk policy v0",
+        "MARKET_SURFACE_V0.md` is the canonical product/contract surface",
+        "not a complete attribute registry",
+        "Current marker families are consolidated as:",
+        "**Read-only / non-authority shell**",
+        "**Depth / orderbook readmodel display**",
+        "**Visual Cockpit tiles**",
+        "not a separate dashboard surface",
+        "**Ranking funnel empty-state / dynamic labels**",
+        "**Registry run projection (env-gated SSR, `GET` `/market` only):**",
+        "**never** on `GET` `/market/double-play`",
+        "The canonical test owner for structural marker invariants is",
+        STRUCTURE_CONTRACT_OWNER,
+        "Avoid creating parallel marker registries",
+        "duplicate docs",
+        "separate evidence/readiness/map/handoff/package/pointer surfaces",
+        "**Dashboard ≠ Freigabe**",
+        "no marker may imply order UI",
+        "Master V2 / Double Play authority",
+    ]
+
+    for token in required_crosswalk_tokens:
+        assert token in crosswalk, f"missing crosswalk token: {token!r}"
+
+    required_surface_tokens = [
+        "**Route separation:**",
+        "`GET` `/market/double-play`",
+        "must **not** carry `/market`-only ranking-funnel dynamic-label SSR markers",
+        "**Dashboard ≠ Freigabe** · **AI ≠ Authority** · **Signal ≠ Trade** · **Docs ≠ Approval**",
+        "`GET &#47;market&#47;double-play`",
+        "remains a separate Master V2 / Double Play read-only composition route",
+        "**`data-market-depth-*`** auf **`/market`**, **`data-double-play-market-depth-*`** auf **`/market/double-play`**",
+        "**keine** Marker-Vermischung",
+        "review input only",
+    ]
+
+    for token in required_surface_tokens:
+        assert token in surface, f"missing surface token: {token!r}"
+
+    assert "market-airport" not in crosswalk.lower()
+    assert "market airport" not in crosswalk.lower()
+
+
 def test_market_surface_ranking_funnel_producer_charter_v0() -> None:
     """Market Ranking Funnel Producer v0 charter stays read-only and non-authorizing."""
     market_surface_doc = "docs/webui/MARKET_SURFACE_V0.md"
