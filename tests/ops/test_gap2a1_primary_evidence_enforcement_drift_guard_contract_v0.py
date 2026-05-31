@@ -240,3 +240,13 @@ def test_gap2a1_drift_guard_owner_crosslinks_hardening_source_contract_v0() -> N
     lines = {line.strip() for line in text.splitlines()}
     assert ("GAP2A1_PRIMARY_EVIDENCE_ENFORCED" + _MARKER_TRUE) not in lines
     assert ("GAP2A1_ENFORCEMENT_DEFAULT_ON" + _MARKER_TRUE) not in lines
+
+
+def test_gap2a1_drift_guard_owner_crosslinks_gap4_gap2a1_dependency_v0() -> None:
+    dependency = (
+        ROOT / "tests" / "ops" / "test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py"
+    )
+    assert dependency.is_file()
+    text = dependency.read_text(encoding="utf-8")
+    assert "test_gap2a1_primary_evidence_enforcement_drift_guard_contract_v0.py" in text
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in text
