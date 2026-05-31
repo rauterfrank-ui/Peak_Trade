@@ -8,6 +8,9 @@ GAP6_PARALLEL_MARKERS = (
     "GAP6_DRY_RUN_PROOF_CRITERIA_CONTRACT_V0=true",
     "Gap 6 Dry-Run Proof Criteria Contract v0",
 )
+HARDENING_OWNER = ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_source_contract_v0.py"
+HARDENING_MARKER = "SCHEDULER_DRY_RUN_HARDENING_SOURCE_CONTRACT_V0=true"
+_MARKER_TRUE = "=true"
 
 
 def _gap6_section(text: str) -> str:
@@ -88,7 +91,7 @@ def test_gap6_dry_run_proof_criteria_contract_is_not_proof_accepted_or_lifted():
         "PATH_B_LIFT_DISCUSSION_READY=true",
         "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
         "GAP6_DRY_RUN_PROOF_VERIFIED=true",
-        "GAP6_DRY_RUN_RC0_OBSERVED=true",
+        "GAP6_DRY_RUN_RC0_OBSERVED" + _MARKER_TRUE,
         "GAP6_SCHEDULER_EXECUTION_AUTHORIZED=true",
         "GAP6_DRY_RUN_PROOF_DEFAULT_ON=true",
     ]
@@ -109,3 +112,13 @@ def test_gap6_dry_run_proof_criteria_contract_has_no_parallel_doc_surface():
             parallel_docs.append(path.relative_to(ROOT))
 
     assert parallel_docs == []
+
+
+def test_gap6_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0():
+    assert HARDENING_OWNER.is_file()
+    text = HARDENING_OWNER.read_text(encoding="utf-8")
+    assert "scripts/run_scheduler.py" in text
+    assert "test_gap6_dry_run_proof_criteria_contract_v0.py" in text
+    assert HARDENING_MARKER in text
+    lines = {line.strip() for line in text.splitlines()}
+    assert ("GAP6_DRY_RUN_RC0_OBSERVED" + _MARKER_TRUE) not in lines
