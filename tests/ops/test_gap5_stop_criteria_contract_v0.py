@@ -9,6 +9,7 @@ GAP5_PARALLEL_MARKERS = (
     "Gap 5 Stop Criteria Contract v0",
 )
 HARDENING_OWNER = ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_source_contract_v0.py"
+DRIFT_GUARD_OWNER = ROOT / "tests" / "ops" / "test_gap5_stop_criteria_drift_guard_contract_v0.py"
 HARDENING_MARKER = "SCHEDULER_DRY_RUN_HARDENING_SOURCE_CONTRACT_V0=true"
 SNAPSHOT_OWNER = ROOT / "tests" / "ops" / "test_snapshot_operator_stop_signals.py"
 _MARKER_TRUE = "=true"
@@ -139,3 +140,11 @@ def test_gap5_owner_crosslinks_snapshot_operator_stop_signals_v0():
     assert "snapshot_operator_stop_signals.py" in section
     hardening_text = HARDENING_OWNER.read_text(encoding="utf-8")
     assert "test_snapshot_operator_stop_signals.py" in hardening_text
+
+
+def test_gap5_owner_crosslinks_stop_criteria_drift_guard_contract_v0():
+    assert DRIFT_GUARD_OWNER.is_file()
+    text = DRIFT_GUARD_OWNER.read_text(encoding="utf-8")
+    assert "test_gap5_stop_criteria_contract_v0.py" in text
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in text
+    assert "DRIFT_GUARD_FORBIDDEN_GAP5_REPO_TOKENS" in text
