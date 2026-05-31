@@ -37,6 +37,15 @@ GAP5_GAP4_DEPENDENCY_TESTS = (
 GAP5_REHEARSAL_CLASSIFICATION_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_gap5_stop_rehearsal_evidence_classification_contract_v0.py"
 )
+GAP2A1_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_gap2a1_primary_evidence_enforcement_contract_v0.py"
+)
+GAP2A1_DRIFT_GUARD_TESTS = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_gap2a1_primary_evidence_enforcement_drift_guard_contract_v0.py"
+)
 GAP7_TESTS = REPO_ROOT / "tests" / "ops" / "test_gap7_risk_boundary_criteria_contract_v0.py"
 HARD_GATE_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_run_primary_evidence_retention_hard_gate_v0.py"
@@ -65,6 +74,8 @@ OWNER_REFERENCES_V0 = (
     "tests/ops/test_gap5_stop_criteria_drift_guard_contract_v0.py",
     "tests/ops/test_gap5_gap4_durable_evidence_dependency_contract_v0.py",
     "tests/ops/test_gap5_stop_rehearsal_evidence_classification_contract_v0.py",
+    "tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py",
+    "tests/ops/test_gap2a1_primary_evidence_enforcement_drift_guard_contract_v0.py",
     "tests/ops/test_gap7_risk_boundary_criteria_contract_v0.py",
     "tests/ops/test_gap6_dry_run_proof_criteria_contract_v0.py",
     "tests/ops/test_gap6_external_repo_drift_guard_contract_v0.py",
@@ -293,6 +304,20 @@ def test_gap5_rehearsal_classification_owner_crosslinks_scheduler_dry_run_harden
     lines = {line.strip() for line in hardening_text.splitlines()}
     assert ("GAP5_STOP_REHEARSAL_EXECUTED" + _MARKER_TRUE) not in lines
     assert ("GAP5_STOP_PROOF_ACCEPTED" + _MARKER_TRUE) not in lines
+
+
+def test_gap2a1_drift_guard_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> (
+    None
+):
+    text = GAP2A1_DRIFT_GUARD_TESTS.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in text
+    assert "GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true" in text
+    hardening_text = _this_module_source()
+    assert "test_gap2a1_primary_evidence_enforcement_drift_guard_contract_v0.py" in hardening_text
+    lines = {line.strip() for line in hardening_text.splitlines()}
+    assert ("GAP2A1_PRIMARY_EVIDENCE_ENFORCED" + _MARKER_TRUE) not in lines
+    assert ("GAP2A1_ENFORCEMENT_DEFAULT_ON" + _MARKER_TRUE) not in lines
 
 
 def test_gap7_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:

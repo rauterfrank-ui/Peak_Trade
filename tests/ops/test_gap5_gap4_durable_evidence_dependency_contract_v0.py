@@ -266,3 +266,16 @@ def test_gap5_gap4_durable_evidence_dependency_owner_crosslinks_rehearsal_classi
     text = classification.read_text(encoding="utf-8")
     assert "test_gap5_gap4_durable_evidence_dependency_contract_v0.py" in text
     assert "GAP5_STOP_PROOF_ACCEPTED=false" in text
+
+
+def test_gap5_gap4_durable_evidence_dependency_owner_crosslinks_gap2a1_drift_guard_v0() -> None:
+    drift_guard = (
+        ROOT
+        / "tests"
+        / "ops"
+        / "test_gap2a1_primary_evidence_enforcement_drift_guard_contract_v0.py"
+    )
+    assert drift_guard.is_file()
+    text = drift_guard.read_text(encoding="utf-8")
+    assert "test_gap5_gap4_durable_evidence_dependency_contract_v0.py" in text
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in text
