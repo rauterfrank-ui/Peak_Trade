@@ -11,6 +11,7 @@ GAP7_PARALLEL_MARKERS = (
 HARDENING_OWNER = ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_source_contract_v0.py"
 HARDENING_MARKER = "SCHEDULER_DRY_RUN_HARDENING_SOURCE_CONTRACT_V0=true"
 BOUNDARY_OWNER = ROOT / "tests" / "ops" / "test_scheduler_boundary_hard_block_contract_v0.py"
+DRIFT_GUARD_OWNER = ROOT / "tests" / "ops" / "test_gap7_risk_boundary_drift_guard_contract_v0.py"
 _MARKER_TRUE = "=true"
 
 
@@ -155,3 +156,12 @@ def test_gap7_owner_crosslinks_scheduler_boundary_hard_block_contract_v0():
     assert "test_scheduler_boundary_hard_block_contract_v0.py" in section
     hardening_text = HARDENING_OWNER.read_text(encoding="utf-8")
     assert "test_scheduler_boundary_hard_block_contract_v0.py" in hardening_text
+
+
+def test_gap7_owner_crosslinks_risk_boundary_drift_guard_contract_v0():
+    assert DRIFT_GUARD_OWNER.is_file()
+    text = DRIFT_GUARD_OWNER.read_text(encoding="utf-8")
+    assert "test_gap7_risk_boundary_criteria_contract_v0.py" in text
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in text
+    assert "GAP7_RISK_KILLSWITCH_AUTHORITY_CHANGED=false" in text
+    assert "DRIFT_GUARD_FORBIDDEN_GAP7_REPO_TOKENS" in text
