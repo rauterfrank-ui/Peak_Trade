@@ -19,6 +19,8 @@ PREFLIGHT_CONTRACT = (
 GAP6_TESTS = ROOT / "tests" / "ops" / "test_gap6_dry_run_proof_criteria_contract_v0.py"
 HARDENING_OWNER = ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_source_contract_v0.py"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
+GAP6_SECTION_HEADER = "## Gap 6 Dry-Run Proof Criteria Contract v0"
+GAP6_GOVERNED_REFLECTION_HEADER = "## Gap 6 Governed Dry-Run Proof Acceptance Reflection v0"
 _MARKER_TRUE = "=true"
 
 DRIFT_GUARD_REQUIRED_FINAL_LINES = (
@@ -54,6 +56,14 @@ def _final_machine_lines(text: str) -> str:
     return text.split(FINAL_MACHINE_LINES_HEADER, 1)[1]
 
 
+def _gap6_criteria_section(text: str) -> str:
+    return text.split(GAP6_SECTION_HEADER, 1)[1].split("## Gap 5 Stop Criteria Contract v0", 1)[0]
+
+
+def _gap6_governed_reflection_section(text: str) -> str:
+    return text.split(GAP6_GOVERNED_REFLECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
+
+
 def _section5_text() -> str:
     return SECTION5_DOC.read_text(encoding="utf-8")
 
@@ -67,6 +77,7 @@ def test_gap6_external_repo_drift_guard_final_machine_lines_remain_blocked_v0() 
 def test_gap6_external_repo_drift_guard_repo_ssot_forbids_external_gap6_observed_token_v0() -> None:
     text = _section5_text()
     assert "GAP6_DRY_RUN_RC0_OBSERVED_EXTERNAL=true" not in text
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED_EXTERNAL=true" not in text
     assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in text
 
 
@@ -94,14 +105,12 @@ def test_gap6_external_repo_drift_guard_preflight_contract_remains_blocked_v0() 
 
 
 def test_gap6_external_repo_drift_guard_gap6_section_preserves_evidence_not_approval_v0() -> None:
-    gap6_section = (
-        _section5_text()
-        .split("## Gap 6 Dry-Run Proof Criteria Contract v0", 1)[1]
-        .split("## Gap 5 Stop Criteria Contract v0", 1)[0]
-    )
+    gap6_section = _gap6_criteria_section(_section5_text())
     assert "does not claim RC=0 was observed" in gap6_section
     assert "does not accept or verify any proof" in gap6_section
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in gap6_section
+    lines = {line.strip() for line in gap6_section.splitlines()}
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" not in lines
 
 
 def test_gap6_external_repo_drift_guard_shadow_24_7_not_authorized_in_repo_ssot_v0() -> None:
@@ -123,3 +132,39 @@ def test_gap6_external_repo_drift_guard_owner_crosslinks_hardening_source_contra
     assert "test_gap6_external_repo_drift_guard_contract_v0.py" in text
     lines = {line.strip() for line in text.splitlines()}
     assert ("GAP6_DRY_RUN_RC0_OBSERVED" + _MARKER_TRUE) not in lines
+
+
+def test_gap6_external_repo_drift_guard_governed_reflection_scoped_acceptance_v0() -> None:
+    text = _section5_text()
+    reflection = _gap6_governed_reflection_section(text)
+    criteria = _gap6_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP6_DRY_RUN_PROOF_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in reflection
+    assert "ACCEPTED_MODE=BOUNDED_DRY_RUN_PROOF" in reflection
+    assert "NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true" in reflection
+    assert "EXTERNAL_ACCEPTANCE_RECORD_POINTER=" in reflection
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED_EXTERNAL=true" not in text
+    assert "GAP6_DRY_RUN_RC0_OBSERVED_EXTERNAL=true" not in text
+    assert "does not verify Gap-4 output evidence paths" in reflection
+    assert "does not verify Gap-7 risk boundaries" in reflection
+    assert "does not enforce Gap-2a.1 primary evidence" in reflection
+    assert "does not authorize scheduler execution" in reflection
+    assert "does not enable operator arming" in reflection
+    assert "does not open Path-B lift discussion" in reflection
+    assert "does not start or authorize Runtime, Paper, Shadow, Testnet, or Live" in reflection
+    assert "does not modify the existing Gap-6 criteria block" in reflection
+    assert "does not modify Final Machine Lines" in reflection
+    assert "Evidence acceptance is not runtime authorization" in reflection
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in criteria
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
+    assert "GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false" in block
+    assert "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "PATH_B_LIFT_DISCUSSION_READY=false" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
