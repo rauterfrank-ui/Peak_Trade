@@ -180,6 +180,7 @@ def test_owner_crosslinks() -> None:
     owner_text = Path(__file__).read_text(encoding="utf-8")
     assert REMOTE_RUNTIME_TESTS.name in owner_text
     assert PROJECTION_FIXTURE_TESTS.name in owner_text
+    assert "test_remote_runtime_contract_docs_guard_v0.py" in owner_text
     remote_text = REMOTE_RUNTIME_TESTS.read_text(encoding="utf-8")
     assert "S3_FINALIZED_EVIDENCE_TRANSPORT_ONLY=true" in remote_text
 

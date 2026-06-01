@@ -174,6 +174,7 @@ def test_owner_crosslinks_remote_runtime_and_section_6a_population_tests() -> No
     assert REMOTE_RUNTIME_TESTS.name in owner_text
     assert SECTION_6A_POPULATION_TESTS.name in owner_text
     assert PROJECTION_FIXTURE_TESTS.name in owner_text
+    assert "test_remote_runtime_contract_docs_guard_v0.py" in owner_text
     remote_text = REMOTE_RUNTIME_TESTS.read_text(encoding="utf-8")
     assert "NOTION_PROJECTION_NON_AUTHORIZING=true" in remote_text
 

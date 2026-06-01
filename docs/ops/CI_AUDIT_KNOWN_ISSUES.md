@@ -353,3 +353,67 @@ CYBERSECURITY_VISIBILITY_R_PENDING_EXTERNAL_INPUT_JSONL_MAPPING_GUARD_DOCS_TESTS
 | Workflow permission boundary | `tests/ops/test_workflow_permission_boundary_visibility_v1.py` |
 | WebUI API security-header routes | `tests/webui/test_webui_api_security_headers_visibility_contract_v0.py` |
 | No `pull_request_target` + checkout v5 pin | `tests/ci/test_workflows_no_pull_request_target_contract_v0.py` |
+
+## Remote Runtime Contract — external charter reflection v0
+
+### Remote Runtime external charter docs guard v0
+
+```
+REMOTE_RUNTIME_EXTERNAL_CHARTER_CONTRACT_DOCS_GUARD_V0=true
+REMOTE_RUNTIME_IS_BACKEND=true
+LOCAL_REPO_GATES_REMAIN_AUTHORITATIVE=true
+REMOTE_HOST_HAS_NO_INDEPENDENT_AUTHORITY=true
+S3_AS_FINALIZED_EVIDENCE_TRANSPORT_ONLY=true
+NOTION_AS_PROJECTION_ONLY=true
+MARKET_DASHBOARD_AS_READONLY_PROJECTION_ONLY=true
+MAX_RUNTIME_SECONDS_REQUIRED=true
+FINALIZED_EVIDENCE_REQUIRED=true
+DURABLE_COPY_REQUIRED=true
+MANIFEST_VERIFY_REQUIRED=true
+CYBER_INPUT_JSONL_BLOCKED=true
+PREFLIGHT_REMAINS_BLOCKED=true
+PATH_B_LIFT_DISCUSSION_READY=false
+GLOBAL_PREFLIGHT_LIFTED=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+PAPER_STARTED=false
+SHADOW_STARTED=false
+TESTNET_STARTED=false
+LIVE_STARTED=false
+AWS_TOUCHED=false
+NETWORK_TOUCHED=false
+NOTION_TOUCHED=false
+MARKET_DASHBOARD_TOUCHED=false
+PRODUCTION_CODE_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+TRADING_LOGIC_TOUCHED=false
+PARALLEL_DOCS_CREATED=false
+PARALLEL_BUILDS_CREATED=false
+REMOTE_RUNTIME_EXTERNAL_CHARTER_CONTRACT_DOCS_GUARD_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Reflect the **external** Remote Runtime Charter v0 in this CI audit anchor for governed docs/tests-only guard work. Remote Runtime is **backend metadata** for existing bounded lanes (`paper`, `shadow`, `testnet`) — not a new authority, lane, scheduler, evidence standard, or closeout standard.
+
+**External durable artifacts (archive only — not repo-ingested):**
+
+| Token | Durable path |
+|-------|--------------|
+| Consolidation bundle | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/remote_runtime_consolidation_after_cyber_input_blocked_v0_20260601T110000Z` |
+| Remote Runtime Charter v0 | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/remote_runtime_charter_v0_20260601T120000Z` |
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Lane taxonomy + §6a remote backend metadata | `docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md` |
+| §2a primary evidence + §2b.1 closeout | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
+| Scheduler hard-block boundary | `docs/ops/specs/SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md` |
+| Primary evidence helper | `scripts/ops/primary_evidence_retention_v0.py` |
+| Closeout helper | `scripts/ops/durable_closeout_copy_verify_v0.py` |
+| S3 finalized export dry preflight | `scripts/ops/preflight_s3_finalized_evidence_export_v0.py` |
+
+**Guard module (reuse — no parallel remote-runtime anchor):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` with reciprocal static crosslinks to `test_remote_runtime_host_metadata_contract_v0.py`, `test_s3_finalized_evidence_export_gate_v0.py`, `test_scheduler_boundary_hard_block_contract_v0.py`, `test_notion_post_closeout_sync_projection_spec_v0.py`, and `test_market_dashboard_readonly_run_projection_spec_v0.py`.
+
+**Non-authorizing:** No runtime/scheduler/daemon/adapter execution, hooks, launchctl, Notion write/MCP/API, Market Dashboard rendering changes, S3/AWS/rclone upload or network, broker/exchange, Testnet/Live, Preflight lift, Path-B lift, operator GO, Cyber definitive mapping, or Master V2 / Double Play authority changes. `/tmp`-only evidence remains invalid for future runs.
+
+**Relationship to Cyber INPUT_JSONL block:** `CYBER_INPUT_JSONL_BLOCKED=true` and `INPUT_JSONL_PROVIDED=false` unchanged. Remote Runtime charter reflection does **not** bypass Cyber recovery or authorize R-001/R-002/R-007 mapping.
