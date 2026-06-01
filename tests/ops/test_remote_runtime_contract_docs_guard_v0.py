@@ -25,8 +25,13 @@ CONSOLIDATION_PATH = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/remote_runtime_consolidation_after_cyber_input_blocked_v0_20260601T110000Z"
 )
+LOCAL_DRY_HOST_PREFLIGHT_CHARTER_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/local_dry_host_no_run_preflight_charter_v0_20260601T024302Z"
+)
 
 GUARD_BLOCK_ANCHOR = "REMOTE_RUNTIME_EXTERNAL_CHARTER_CONTRACT_DOCS_GUARD_V0=true"
+LOCAL_DRY_HOST_GUARD_BLOCK_ANCHOR = "LOCAL_DRY_HOST_NO_RUN_PREFLIGHT_CHARTER_REFLECTION_V0=true"
 
 GUARD_EXPECTED: dict[str, str] = {
     "REMOTE_RUNTIME_IS_BACKEND": "true",
@@ -59,6 +64,43 @@ GUARD_EXPECTED: dict[str, str] = {
     "PARALLEL_DOCS_CREATED": "false",
     "PARALLEL_BUILDS_CREATED": "false",
     "REMOTE_RUNTIME_EXTERNAL_CHARTER_CONTRACT_DOCS_GUARD_DOCS_TESTS_ONLY": "true",
+}
+LOCAL_DRY_HOST_GUARD_EXPECTED: dict[str, str] = {
+    "LOCAL_DRY_HOST_NO_RUN_PREFLIGHT_CHARTER_REFLECTION_V0": "true",
+    "LOCAL_DRY_HOST_SCOPE_READY": "true",
+    "BACKEND_TARGET": "local-only-dry-host",
+    "COST_CEILING": "0_EUR_CLOUD_SPEND",
+    "REMOTE_RUNTIME_GO": "false",
+    "NO_RUN_CHARTER": "true",
+    "FUTURE_OPERATOR_GO_REQUIRED": "true",
+    "MAX_RUNTIME_SECONDS_REQUIRED": "true",
+    "NO_ACTIVE_RUN_CHECK_REQUIRED": "true",
+    "ORPHAN_PROCESS_CHECK_REQUIRED": "true",
+    "PRIMARY_EVIDENCE_REQUIRED": "true",
+    "DURABLE_COPY_REQUIRED": "true",
+    "MANIFEST_VERIFY_REQUIRED": "true",
+    "CLOSEOUT_REQUIRED": "true",
+    "TMP_ONLY_EVIDENCE_ACCEPTED": "false",
+    "SECRETS_INCLUDED": "false",
+    "AWS_TOUCHED": "false",
+    "NETWORK_TOUCHED": "false",
+    "NOTION_TOUCHED": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "RUNTIME_STARTED": "false",
+    "SCHEDULER_STARTED": "false",
+    "PAPER_STARTED": "false",
+    "SHADOW_STARTED": "false",
+    "TESTNET_STARTED": "false",
+    "LIVE_STARTED": "false",
+    "PRODUCTION_CODE_TOUCHED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "PATH_B_LIFT_DISCUSSION_READY": "false",
+    "GLOBAL_PREFLIGHT_LIFTED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "PARALLEL_DOCS_CREATED": "false",
+    "PARALLEL_BUILDS_CREATED": "false",
+    "LOCAL_DRY_HOST_NO_RUN_PREFLIGHT_DOCS_TESTS_ONLY": "true",
 }
 
 RECIPROCAL_OWNER_TESTS = (
@@ -124,6 +166,23 @@ def test_ci_audit_guard_machine_lines() -> None:
         assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
 
 
+def test_ci_audit_local_dry_host_no_run_section_present() -> None:
+    text = _ci_audit_text()
+    assert "## Local Dry Host No-Run Preflight Charter — external reflection v0" in text
+    assert "### Local dry host no-run preflight docs guard v0" in text
+    assert LOCAL_DRY_HOST_PREFLIGHT_CHARTER_PATH in text
+    assert "no parallel local-dry-host runtime anchor" in text.lower()
+
+
+def test_ci_audit_local_dry_host_guard_machine_lines() -> None:
+    block = _block_containing(_ci_audit_text(), LOCAL_DRY_HOST_GUARD_BLOCK_ANCHOR)
+    values = _machine_line_values(block)
+    missing = set(LOCAL_DRY_HOST_GUARD_EXPECTED) - values.keys()
+    assert not missing, f"missing local dry host guard keys: {sorted(missing)}"
+    for key, expected in LOCAL_DRY_HOST_GUARD_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
 def test_ci_audit_reuses_canonical_owners_not_parallel_surfaces() -> None:
     text = _ci_audit_text()
     section_start = text.index("## Remote Runtime Contract — external charter reflection v0")
@@ -141,9 +200,12 @@ def test_docs_truth_map_chronicle_references_guard_and_charter() -> None:
     text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
     assert THIS_MODULE in text
     assert "Remote Runtime external charter reflection docs guard v0" in text
+    assert "Local Dry Host no-run preflight charter reflection docs guard v0" in text
     assert "REMOTE_RUNTIME_IS_BACKEND=true" in text
+    assert "LOCAL_DRY_HOST_SCOPE_READY=true" in text
     assert "FORBIDDEN_NEW_SURFACES=0" in text
     assert CHARTER_PATH.split("/")[-1] in text or "120000Z" in text
+    assert LOCAL_DRY_HOST_PREFLIGHT_CHARTER_PATH.split("/")[-1] in text or "024302Z" in text
 
 
 def test_taxonomy_section_6a_backend_tokens_preserved() -> None:

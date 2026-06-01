@@ -417,3 +417,67 @@ REMOTE_RUNTIME_EXTERNAL_CHARTER_CONTRACT_DOCS_GUARD_DOCS_TESTS_ONLY=true
 **Non-authorizing:** No runtime/scheduler/daemon/adapter execution, hooks, launchctl, Notion write/MCP/API, Market Dashboard rendering changes, S3/AWS/rclone upload or network, broker/exchange, Testnet/Live, Preflight lift, Path-B lift, operator GO, Cyber definitive mapping, or Master V2 / Double Play authority changes. `/tmp`-only evidence remains invalid for future runs.
 
 **Relationship to Cyber INPUT_JSONL block:** `CYBER_INPUT_JSONL_BLOCKED=true` and `INPUT_JSONL_PROVIDED=false` unchanged. Remote Runtime charter reflection does **not** bypass Cyber recovery or authorize R-001/R-002/R-007 mapping.
+
+## Local Dry Host No-Run Preflight Charter — external reflection v0
+
+### Local dry host no-run preflight docs guard v0
+
+```text
+LOCAL_DRY_HOST_NO_RUN_PREFLIGHT_CHARTER_REFLECTION_V0=true
+LOCAL_DRY_HOST_SCOPE_READY=true
+BACKEND_TARGET=local-only-dry-host
+COST_CEILING=0_EUR_CLOUD_SPEND
+REMOTE_RUNTIME_GO=false
+NO_RUN_CHARTER=true
+FUTURE_OPERATOR_GO_REQUIRED=true
+MAX_RUNTIME_SECONDS_REQUIRED=true
+NO_ACTIVE_RUN_CHECK_REQUIRED=true
+ORPHAN_PROCESS_CHECK_REQUIRED=true
+PRIMARY_EVIDENCE_REQUIRED=true
+DURABLE_COPY_REQUIRED=true
+MANIFEST_VERIFY_REQUIRED=true
+CLOSEOUT_REQUIRED=true
+TMP_ONLY_EVIDENCE_ACCEPTED=false
+SECRETS_INCLUDED=false
+AWS_TOUCHED=false
+NETWORK_TOUCHED=false
+NOTION_TOUCHED=false
+MARKET_DASHBOARD_TOUCHED=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+PAPER_STARTED=false
+SHADOW_STARTED=false
+TESTNET_STARTED=false
+LIVE_STARTED=false
+PRODUCTION_CODE_TOUCHED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+PATH_B_LIFT_DISCUSSION_READY=false
+GLOBAL_PREFLIGHT_LIFTED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+TRADING_LOGIC_TOUCHED=false
+PARALLEL_DOCS_CREATED=false
+PARALLEL_BUILDS_CREATED=false
+LOCAL_DRY_HOST_NO_RUN_PREFLIGHT_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Reflect the external local dry host no-run preflight charter as planning-only guard posture in existing canonical surfaces. This is a scope selection (`local-only-dry-host`) and does **not** authorize any run.
+
+**External durable artifact (archive only — not repo-ingested):**
+
+| Token | Durable path |
+|-------|--------------|
+| Local Dry Host No-Run Preflight Charter v0 | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/local_dry_host_no_run_preflight_charter_v0_20260601T024302Z` |
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Lane taxonomy + §6a remote backend metadata | `docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md` |
+| §2a primary evidence + §2b.1 closeout | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
+| Scheduler hard-block boundary | `docs/ops/specs/SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md` |
+| Primary evidence helper | `scripts/ops/primary_evidence_retention_v0.py` |
+| Closeout helper | `scripts/ops/durable_closeout_copy_verify_v0.py` |
+
+**Guard module (reuse — no parallel local-dry-host runtime anchor):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** No runtime/scheduler/daemon execution, no paper/shadow/testnet/live, no AWS/network/rclone/S3 upload, no Notion write, no Market Dashboard authority, no Preflight lift, no Path-B lift, and no Global-Preflight lift. `/tmp`-only evidence remains invalid.
