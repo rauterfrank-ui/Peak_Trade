@@ -744,6 +744,55 @@ This governed repo-reflection block records external Gap-4 full-scope evidence c
 
 Evidence acceptance is not runtime authorization. The Gap 4 Output/Evidence Paths Contract v0 criteria block and Final Machine Lines above remain unchanged in verification posture.
 
+## Gap 4 Full-Scope Gap4 Verified Reflection v0
+
+GAP4_FULL_SCOPE_GAP4_VERIFIED_REFLECTION_V0=true
+ACCEPTED_MODE=GAP4_FULL_SCOPE_GAP4_VERIFIED_EXTERNAL_READ_ONLY_REFLECTION
+EXTERNAL_VERIFIED_READ_ONLY_VERIFICATION_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/full_scope_gap4_verified_read_only_verification_v0_20260601T011200Z/
+EXTERNAL_VERIFIED_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/full_scope_gap4_verified_charter_v0_20260601T011000Z/
+EXTERNAL_PR3845_MERGE_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_pr3845_gap4_full_scope_evidence_complete_reflection_merge_closeout_v0_20260601T010700Z/
+EXTERNAL_COMPLETENESS_VERIFICATION_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_full_scope_evidence_completeness_verification_v0_20260601T010600Z/
+CHARTER_VERIFIED=true
+PR3845_CLOSEOUT_VERIFIED=true
+GAP4_COMPLETENESS_BUNDLE_VERIFIED=true
+REPO_CANONICAL_OWNER_REUSE_VERIFIED=true
+REUSE_DRIFT_GUARD_VERIFIED=true
+VERIFICATION_MANIFEST_VERIFY_RC=0
+GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=true
+GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true
+FULL_SCOPE_GAP4_VERIFIED=true
+SHADOW_REAL_10MIN_OBSERVATION=false
+TEN_MINUTE_RUN_STARTED=false
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+PATH_B_LIFT_DISCUSSION_READY=false
+GLOBAL_PREFLIGHT_LIFTED=false
+READY_FOR_OPERATOR_ARMING=false
+RUNTIME_APPROVED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+TRADING_LOGIC_TOUCHED=false
+
+This governed repo-reflection block records external read-only verification PASS for `FULL_SCOPE_GAP4_VERIFIED` after completeness verification (PR #3845) and verified charter criteria. External verification records remain pointer-based and subordinate to repo governance. Reflection records verified criteria status only — **not** operational authorization.
+
+### Full-scope verified scope (allowed only)
+
+- external read-only verification bundle manifest RC=0
+- charter, PR #3845 closeout, and completeness verification chain intact
+- `FULL_SCOPE_GAP4_VERIFIED=true` in **this reflection block only**
+
+### Non-authority boundary (full-scope verified reflection does not imply)
+
+- does not lift global preflight or set `GLOBAL_PREFLIGHT_LIFTED=true`
+- does not open Path-B lift discussion or set `PATH_B_LIFT_DISCUSSION_READY=true`
+- does not enable operator arming or set `READY_FOR_OPERATOR_ARMING=true`
+- does not authorize scheduler execution or Paper/Shadow/Testnet/Live runtime
+- does not claim `SHADOW_REAL_10MIN_OBSERVATION=true` or real elapsed 10-minute observation
+- does not modify Gap-4 Output/Evidence Paths Contract v0 criteria block or Final Machine Lines verification posture for unrelated tokens
+- does not enforce Gap-2a.1 primary evidence
+- does not modify Double-Play, Master V2, trading logic, strategy modules, Bull/Bear, Scope/Capital, Risk/KillSwitch implementation, execution gates, live gates, dashboard authority, AI authority, or config default-on behavior
+
+Evidence acceptance is not runtime authorization. The Gap 4 Full-Scope Evidence Completeness Reflection v0 block above remains unchanged in completeness token posture.
+
 ## Gap 7 Governed Risk Boundary Acceptance Reflection v0
 
 GAP7_RISK_BOUNDARY_GOVERNED_REFLECTION_V0=true
