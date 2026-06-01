@@ -336,10 +336,70 @@ CYBERSECURITY_VISIBILITY_R_PENDING_EXTERNAL_INPUT_JSONL_MAPPING_GUARD_DOCS_TESTS
 
 **Relationship to pending risks R-001/R-002/R-007:** Retained risks remain **Pending** in the table above while `INPUT_JSONL_PROVIDED=false`. External validation confirms intake **contract readiness** only — not lossless recovery or definitive mapping.
 
+### Static inventory schema validation guard v0
+
+```
+CYBERSECURITY_STATIC_INVENTORY_SCHEMA_VALIDATION_GUARD_V0=true
+STATIC_INVENTORY_RESTART_SOURCE=true
+STATIC_INVENTORY_SCHEMA_VALIDATION_PASSED=true
+STATIC_INVENTORY_JSONL_VALID=true
+STATIC_INVENTORY_RECORD_COUNT=162
+ACCEPT_AS_LOSSLESS_INPUT=false
+PARTIAL_RECOVERY_INPUT=true
+RESTART_SOURCE_CANDIDATE=true
+DEFINITIVE_MAPPING_ALLOWED=false
+CONTAINS_R001=false
+CONTAINS_R002=false
+CONTAINS_R007=false
+HAS_SEVERITY=false
+HAS_CATEGORY=true
+HAS_SOURCE_PATH=true
+HAS_CONTEXT_OR_EVIDENCE_PAYLOAD=true
+HAS_PROVENANCE=false
+HAS_CHECKSUM=false
+FAKE_RECONSTRUCTION_ALLOWED=false
+SECURITY_SCAN_STARTED=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+PAPER_STARTED=false
+SHADOW_STARTED=false
+TESTNET_STARTED=false
+LIVE_STARTED=false
+AWS_TOUCHED=false
+NETWORK_TOUCHED=false
+SECRETS_INCLUDED=false
+NOTION_TOUCHED=false
+MARKET_DASHBOARD_TOUCHED=false
+PRODUCTION_CODE_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+TRADING_LOGIC_TOUCHED=false
+PARALLEL_DOCS_CREATED=false
+PARALLEL_BUILDS_CREATED=false
+CYBERSECURITY_STATIC_INVENTORY_SCHEMA_VALIDATION_GUARD_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Reflect external read-only schema validation of the durable repo-static successor JSONL as **`STATIC_INVENTORY_RESTART_SOURCE`** only. This guard **does not** treat the 162-row inventory as lossless input, **does not** authorize definitive R-001/R-002/R-007 mapping, and **does not** permit severity/provenance/checksum claims absent from the source rows.
+
+**Static inventory source (durable archive — not repo-ingested):**
+
+| Field | Value |
+|-------|-------|
+| JSONL | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/inventory/repo_static_cybersecurity_risk_candidates/repo_static_cybersecurity_risk_candidates_jsonl_generation_v0_20260524T070050Z/REPO_STATIC_CYBERSECURITY_RISK_CANDIDATES.jsonl` |
+| External validation bundle | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/static_inventory_schema_validation_v0_20260601T040842Z` |
+| `inventory_kind` | `repo_static_successor_v0` (every row `lossless_equivalent=false`) |
+| Definitive R-001/R-002/R-007 mapping | **blocked** while `INPUT_JSONL_PROVIDED=false` |
+
+**Guard module (reuse — no parallel cyber anchor):** `tests/ci/test_static_inventory_schema_guard_contract_v0.py` with reciprocal static crosslinks to `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py` and `tests/ci/test_cybersecurity_visibility_r_pending_inventory_charter_v0.py`.
+
+**Non-authorizing:** No workflow dispatch, runtime/scheduler/daemon/adapter execution, hooks, launchctl, Notion write/MCP/API, Market overlay enablement, S3/AWS/rclone, broker/exchange, Testnet/Live, security scans, network, secrets access, fake reconstruction, or Master V2 / Double Play authority changes.
+
+**Relationship to repo-static successor charter v0:** Interim 162-row histogram remains **review-input only**. This guard records external validation PASS only — not lossless recovery or definitive mapping.
+
 ### Static visibility contract owners (reuse — do not duplicate)
 
 | Surface | Owner module |
 |---------|--------------|
+| Static inventory schema validation guard | `tests/ci/test_static_inventory_schema_guard_contract_v0.py` |
 | Workflow secrets/vars/braced contexts (hub) | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
 | Workflow write permissions | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` |
 | AI-Ops Promptfoo paid eval cost gate | `tests/ci/test_aiops_promptfoo_cost_gate_workflow_contract_v0.py` |
