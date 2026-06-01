@@ -35,6 +35,7 @@ ACCEPTED_SUBGROUP_002_INFRA = "CSC-RCHAIN-v1-002-infra"
 ACCEPTED_SUBGROUP_002_INTEGRATION = "CSC-RCHAIN-v1-002-integration"
 ACCEPTED_SUBGROUP_002_P101 = "CSC-RCHAIN-v1-002-p101"
 ACCEPTED_SUBGROUP_002_P117 = "CSC-RCHAIN-v1-002-p117"
+ACCEPTED_SUBGROUP_002_P50 = "CSC-RCHAIN-v1-002-p50"
 
 FORBIDDEN_AUTHORIZATION_PHRASES: tuple[str, ...] = (
     "scheduler start authorized",
@@ -123,9 +124,10 @@ def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_cross
     assert ACCEPTED_SUBGROUP_002_INTEGRATION in guard_block
     assert ACCEPTED_SUBGROUP_002_P101 in guard_block
     assert ACCEPTED_SUBGROUP_002_P117 in guard_block
+    assert ACCEPTED_SUBGROUP_002_P50 in guard_block
     assert GROUPING_REFLECTION_GUARD_MODULE in guard_block
-    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=9" in guard_block
-    assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=128" in guard_block
+    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=10" in guard_block
+    assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=129" in guard_block
     assert "CSC-RCHAIN-v1-002-infra" in guard_block
     assert "parent **002** remains PARK" in guard_block
     assert "network escalation is authorized" not in collapsed
@@ -136,6 +138,9 @@ def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_cross
     assert "exec-evidence collection enablement" in text
     assert "launchctl execution enablement" in text
     assert "p117 ops-loop semantics changes" in text
+    assert "AI model enablement authorization" in text
+    assert "AI model policy semantics changes" in text
+    assert "PEAKTRADE_STAGE=testnet` enablement" in text
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_truth_map_crosslink_v0() -> (
