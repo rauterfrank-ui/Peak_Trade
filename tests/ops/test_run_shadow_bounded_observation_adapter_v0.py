@@ -364,6 +364,24 @@ def test_execute_accepts_sample_approval_with_mocked_runner(tmp_path: Path) -> N
     assert (copied / "review" / "REVIEW_RESULT.json").is_file()
     assert (staging / mod.FINAL_MACHINE_LINES_FILENAME).is_file()
     assert (copied / mod.FINAL_MACHINE_LINES_FILENAME).is_file()
+    assert (staging / mod.COMMAND_TRANSCRIPT_FILENAME).is_file()
+    assert (staging / mod.PROCESS_INVENTORY_BEFORE_FILENAME).is_file()
+    assert (staging / mod.PROCESS_INVENTORY_AFTER_FILENAME).is_file()
+    transcript = (staging / mod.COMMAND_TRANSCRIPT_FILENAME).read_text(encoding="utf-8")
+    assert "RUN_ID=" in transcript
+    assert "bounded-shadow-dry-run" in transcript.lower()
+    manifest = (staging / "MANIFEST.sha256").read_text(encoding="utf-8")
+    assert mod.COMMAND_TRANSCRIPT_FILENAME in manifest
+    assert mod.PROCESS_INVENTORY_BEFORE_FILENAME in manifest
+    assert mod.PROCESS_INVENTORY_AFTER_FILENAME in manifest
+
+
+def test_plan_lists_b07_b08_expected_artifacts(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    plan = _plan_dict(_staging(tmp_path))
+    assert mod.COMMAND_TRANSCRIPT_FILENAME in plan["expected_artifacts"]
+    assert mod.PROCESS_INVENTORY_BEFORE_FILENAME in plan["expected_artifacts"]
+    assert mod.PROCESS_INVENTORY_AFTER_FILENAME in plan["expected_artifacts"]
 
 
 def test_command_plan_never_uses_scheduler_or_shadow_loop(tmp_path: Path) -> None:
