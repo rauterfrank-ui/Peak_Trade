@@ -69,8 +69,9 @@ EXTERNAL_BATCH_REVIEW = (
 )
 REFRESHED_AUTHORITY_BUNDLE = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/csc_rchain_v1_post_ops_evidence_closeout_build_batch_authority_refresh_and_next_batch_ranking_readonly_v0_20260601T132245Z"
+    "planning/csc_rchain_v1_post_ops_closeout_contracts_batch_authority_refresh_and_next_batch_ranking_readonly_v0_20260601T133828Z"
 )
+GROUP_PARK_REAFFIRMED_GROUPS: tuple[str, ...] = ()
 OPERATOR_BATCH_ACCEPT_TIER_A_003 = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/csc_rchain_v1_tier_a_003_002_observability_batch_operator_accept_and_governed_reflection_v0_20260601T113119Z"
@@ -209,6 +210,11 @@ EXPECTED_MACHINE_LINES: dict[str, str] = {
     "CSC_RCHAIN_V1_NO_ENABLEMENT_CLAIMS": "true",
     "CSC_RCHAIN_V1_MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_NO_TOUCH": "true",
     "CSC_RCHAIN_V1_NO_PARALLEL_DOCS_BUILDS_SURFACES": "true",
+    "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMATION_MODEL_ACTIVE": "true",
+    "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_GROUPS": "",
+    "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_GROUP_COUNT": "0",
+    "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_CANDIDATE_COUNT": "0",
+    "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_SUBSET_OF_PARK": "true",
 }
 
 
@@ -290,6 +296,48 @@ def test_csc_rchain_v1_grouping_reflection_contract_v0() -> None:
     assert "does **not** ingest `FULL_AUTHORITY_BUNDLE_DRAFT.csv`" in block
     assert "CSC_RCHAIN_V1_002_P63_ACCEPTED=false" in block
 
+    assert "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMATION_MODEL_ACTIVE=true" in block
+    reaffirmed_line = next(
+        line
+        for line in block.splitlines()
+        if line.startswith("CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_GROUPS=")
+    )
+    assert reaffirmed_line == "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_GROUPS="
+    for gid in GROUP_PARK_REAFFIRMED_GROUPS:
+        assert gid in reaffirmed_line
+    park_count = int(
+        next(
+            line.split("=", 1)[1]
+            for line in block.splitlines()
+            if line.startswith("CSC_RCHAIN_V1_PARK_COUNT=")
+        )
+    )
+    reaffirmed_candidate_count = int(
+        next(
+            line.split("=", 1)[1]
+            for line in block.splitlines()
+            if line.startswith("CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_CANDIDATE_COUNT=")
+        )
+    )
+    accept_count = int(
+        next(
+            line.split("=", 1)[1]
+            for line in block.splitlines()
+            if line.startswith("CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=")
+        )
+    )
+    reviewed_count = int(
+        next(
+            line.split("=", 1)[1]
+            for line in block.splitlines()
+            if line.startswith("CSC_RCHAIN_V1_REVIEWED_PREPARED_ONLY_COUNT=")
+        )
+    )
+    assert accept_count + reviewed_count + park_count == 672
+    assert reaffirmed_candidate_count <= park_count
+    assert "group park reaffirmation" in collapsed
+    assert "Does **not** treat reaffirmed groups as accepted" in block
+
     assert "Does **not** treat PARK groups as accepted" in block
     assert "does **not** authorize definitive R-001/R-002/R-007 mapping" in block
     assert "does **not** claim old R-ID equivalence" in block
@@ -330,6 +378,9 @@ def test_csc_rchain_v1_grouping_reflection_truth_map_crosslink_v0() -> None:
     assert EXTERNAL_AUTHORITY_BUNDLE in truth_map
     assert "124" in truth_map and "historical" in collapsed
     assert "002-p63" in truth_map
+    assert "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMATION_MODEL_ACTIVE=true" in truth_map
+    assert "group park reaffirmation model" in collapsed
+    assert "133828Z" in truth_map
     assert "non-authorizing" in collapsed
 
 
