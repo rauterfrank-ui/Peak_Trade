@@ -26,6 +26,8 @@ GAP2A1_DRIFT_GUARD = (
 HARDENING_OWNER = ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_source_contract_v0.py"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP4_SECTION_HEADER = "## Gap 4 Output/Evidence Paths Contract v0"
+GAP4_COMPLETENESS_REFLECTION_HEADER = "## Gap 4 Full-Scope Evidence Completeness Reflection v0"
+GAP4_VERIFIED_REFLECTION_HEADER = "## Gap 4 Full-Scope Gap4 Verified Reflection v0"
 GAP2A1_SECTION_HEADER = "## §2a.1 Primary Evidence Enforcement Contract v0"
 _MARKER_TRUE = "=true"
 
@@ -96,6 +98,10 @@ CONFLATION_SAMPLE_LINES_MUST_NOT_LIFT_ENFORCEMENT = (
     "EXTERNAL_TIER_PLAN_TIER_5_SATISFIED=true",
 )
 
+CONFLATION_SAMPLE_ALLOWED_IN_COMPLETENESS_REFLECTION_ONLY = (
+    "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
+)
+
 
 def _final_machine_lines(text: str) -> str:
     return text.split(FINAL_MACHINE_LINES_HEADER, 1)[1]
@@ -110,6 +116,18 @@ def _gap4_section(text: str) -> str:
 def _gap2a1_section(text: str) -> str:
     return text.split(GAP2A1_SECTION_HEADER, 1)[1].split(
         "## Gap 1 Execute Entrypoint Contract v0", 1
+    )[0]
+
+
+def _gap4_completeness_reflection_section(text: str) -> str:
+    return text.split(GAP4_COMPLETENESS_REFLECTION_HEADER, 1)[1].split(
+        GAP4_VERIFIED_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap4_verified_reflection_section(text: str) -> str:
+    return text.split(GAP4_VERIFIED_REFLECTION_HEADER, 1)[1].split(
+        "## Gap 7 Governed Risk Boundary Acceptance Reflection v0", 1
     )[0]
 
 
@@ -192,12 +210,21 @@ def test_gap4_gap2a1_dependency_durable_evidence_not_enforcement_v0() -> None:
 
 def test_gap4_gap2a1_dependency_sample_conflation_lines_not_repo_ssot_lifts_v0() -> None:
     text = _section5_text()
-    block = _final_machine_lines(text)
-    block_lines = {line.strip() for line in block.splitlines()}
-    doc_lines = {line.strip() for line in text.splitlines()}
+    block_lines = {line.strip() for line in _final_machine_lines(text).splitlines()}
+    criteria_lines = {line.strip() for line in _gap4_section(text).splitlines()}
+    gap2a1_lines = {line.strip() for line in _gap2a1_section(text).splitlines()}
+    completeness_lines = {
+        line.strip() for line in _gap4_completeness_reflection_section(text).splitlines()
+    }
+    verified_lines = {line.strip() for line in _gap4_verified_reflection_section(text).splitlines()}
+    repo_ssot_lines = block_lines | criteria_lines | gap2a1_lines
     for sample in CONFLATION_SAMPLE_LINES_MUST_NOT_LIFT_ENFORCEMENT:
         assert sample not in block_lines
-        assert sample not in doc_lines
+        if sample in CONFLATION_SAMPLE_ALLOWED_IN_COMPLETENESS_REFLECTION_ONLY:
+            assert sample in completeness_lines or sample in verified_lines
+            assert sample not in repo_ssot_lines
+            continue
+        assert sample not in repo_ssot_lines
 
 
 def test_gap4_gap2a1_dependency_tmp_not_canonical_durable_chain_v0() -> None:

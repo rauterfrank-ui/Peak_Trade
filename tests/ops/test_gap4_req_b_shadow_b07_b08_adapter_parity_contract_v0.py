@@ -16,6 +16,19 @@ REVIEW_SCRIPT = ROOT / "scripts" / "ops" / "review_shadow_bounded_observation_ev
 SECTION5_DOC = (
     ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 )
+FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
+GAP4_CRITERIA_HEADER = "## Gap 4 Output/Evidence Paths Contract v0"
+GAP4_ADAPTER_PARITY_HEADER = "## Gap 4 REQ-B Shadow B07/B08 Adapter Parity v0"
+GAP4_COMPLETENESS_REFLECTION_HEADER = "## Gap 4 Full-Scope Evidence Completeness Reflection v0"
+GAP4_VERIFIED_REFLECTION_HEADER = "## Gap 4 Full-Scope Gap4 Verified Reflection v0"
+
+ADAPTER_PARITY_FORBIDDEN_TRUE_OUTSIDE_SCOPED_REFLECTION = (
+    "REQ_B_TIER_D_POPULATED_PATHS_FOUND=true",
+    "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
+    "FULL_SCOPE_GAP4_VERIFIED=true",
+    "GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=true",
+)
+
 APPROVAL_FIXTURE = ROOT / "tests" / "fixtures" / "ops" / "shadow_adapter_stage3_approval_sample.md"
 ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
 
@@ -46,6 +59,38 @@ def _load_review():
 
 def _staging(tmp_path: Path) -> Path:
     return Path("/tmp") / f"peak_trade_shadow_parity_test_{tmp_path.name}"
+
+
+def _section5_text() -> str:
+    return SECTION5_DOC.read_text(encoding="utf-8")
+
+
+def _final_machine_lines(text: str) -> str:
+    return text.split(FINAL_MACHINE_LINES_HEADER, 1)[1]
+
+
+def _gap4_criteria_section(text: str) -> str:
+    return text.split(GAP4_CRITERIA_HEADER, 1)[1].split(
+        "## Gap 6 Dry-Run Proof Criteria Contract v0", 1
+    )[0]
+
+
+def _gap4_adapter_parity_section(text: str) -> str:
+    return text.split(GAP4_ADAPTER_PARITY_HEADER, 1)[1].split(
+        GAP4_COMPLETENESS_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap4_completeness_reflection_section(text: str) -> str:
+    return text.split(GAP4_COMPLETENESS_REFLECTION_HEADER, 1)[1].split(
+        GAP4_VERIFIED_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap4_verified_reflection_section(text: str) -> str:
+    return text.split(GAP4_VERIFIED_REFLECTION_HEADER, 1)[1].split(
+        "## Gap 7 Governed Risk Boundary Acceptance Reflection v0", 1
+    )[0]
 
 
 def _base_argv(staging: Path, archive: Path) -> list[str]:
@@ -290,15 +335,31 @@ def test_plan_only_does_not_execute_runtime_v0(tmp_path: Path) -> None:
 
 
 def test_adapter_parity_does_not_flip_section5_evidence_tokens_v0() -> None:
-    text = SECTION5_DOC.read_text(encoding="utf-8")
-    lines = {line.strip() for line in text.splitlines()}
-    assert "SHADOW_B07_B08_MISSING=true" in lines
-    assert "REQ_B_TIER_D_POPULATED_PATHS_FOUND=false" in lines
-    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in lines
-    assert "FULL_SCOPE_GAP4_VERIFIED=false" in lines
-    assert "PREFLIGHT_REMAINS_BLOCKED=true" in lines
-    assert "SHADOW_B07_B08_MISSING=false" not in lines
-    assert "REQ_B_TIER_D_POPULATED_PATHS_FOUND=true" not in lines
+    text = _section5_text()
+    parity = _gap4_adapter_parity_section(text)
+    parity_lines = {line.strip() for line in parity.splitlines()}
+    criteria_lines = {line.strip() for line in _gap4_criteria_section(text).splitlines()}
+    block_lines = {line.strip() for line in _final_machine_lines(text).splitlines()}
+    completeness_lines = {
+        line.strip() for line in _gap4_completeness_reflection_section(text).splitlines()
+    }
+    verified_lines = {line.strip() for line in _gap4_verified_reflection_section(text).splitlines()}
+    repo_ssot_lines = criteria_lines | block_lines | parity_lines
+
+    assert "SHADOW_B07_B08_MISSING=true" in parity_lines
+    assert "REQ_B_TIER_D_POPULATED_PATHS_FOUND=false" in parity_lines
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in parity_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=false" in parity_lines
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in parity_lines
+    assert "SHADOW_B07_B08_MISSING=false" not in parity_lines
+
+    for token in ADAPTER_PARITY_FORBIDDEN_TRUE_OUTSIDE_SCOPED_REFLECTION:
+        assert token not in repo_ssot_lines
+
+    assert "REQ_B_TIER_D_POPULATED_PATHS_FOUND=true" in completeness_lines
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in completeness_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" in verified_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in completeness_lines
 
 
 def test_pr_scope_excludes_trading_and_double_play_paths() -> None:
