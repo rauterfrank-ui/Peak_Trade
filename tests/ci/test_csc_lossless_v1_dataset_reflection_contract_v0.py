@@ -15,6 +15,7 @@ DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
 THIS_MODULE = Path(__file__).name
 STATIC_INVENTORY_GUARD_MODULE = "test_static_inventory_schema_guard_contract_v0.py"
 MAPPING_GUARD_MODULE = "test_cybersecurity_visibility_r_pending_mapping_guard_v0.py"
+RCHAIN_GUARD_MODULE = "test_csc_rchain_v1_grouping_reflection_contract_v0.py"
 
 NORMALIZED_JSONL = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
@@ -64,7 +65,7 @@ def _ci_audit_text() -> str:
 
 def _guard_block(text: str) -> str:
     start = text.index("### CSC-LOSSLESS-v1 dataset reflection guard v0")
-    end = text.index("### Static visibility contract owners", start)
+    end = text.index("### CSC-RCHAIN-v1 accepted groups reflection guard v0", start)
     return text[start:end]
 
 
@@ -80,6 +81,8 @@ def test_csc_lossless_v1_dataset_reflection_contract_v0() -> None:
     assert THIS_MODULE in block
     assert STATIC_INVENTORY_GUARD_MODULE in block
     assert MAPPING_GUARD_MODULE in block
+    assert "CSC-RCHAIN-v1 accepted groups reflection guard v0" in text
+    assert RCHAIN_GUARD_MODULE in text
 
     for key, value in EXPECTED_MACHINE_LINES.items():
         assert f"{key}={value}" in block, f"missing or wrong {key}={value}"

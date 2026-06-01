@@ -353,5 +353,7 @@ def test_cybersecurity_visibility_pending_guard_negative_drift_forbidden_v0() ->
     assert "test_static_inventory_schema_guard_contract_v0.py" in text
     assert "CSC-LOSSLESS-v1 dataset reflection guard v0" in text
     assert "test_csc_lossless_v1_dataset_reflection_contract_v0.py" in text
+    assert "CSC-RCHAIN-v1 accepted groups reflection guard v0" in text
+    assert "test_csc_rchain_v1_grouping_reflection_contract_v0.py" in text
     static_section = _static_visibility_owner_section(text)
     assert "do not duplicate" in static_section.lower()

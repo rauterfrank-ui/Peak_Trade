@@ -457,11 +457,80 @@ CYBERSECURITY_CSC_LOSSLESS_V1_DATASET_REFLECTION_GUARD_DOCS_TESTS_ONLY=true
 
 **Relationship to static inventory guard v0:** `STATIC_INVENTORY_RESTART_SOURCE` (162 rows) remains a **separate** interim restart source — not superseded by v1 and not lossless-equivalent.
 
+### CSC-RCHAIN-v1 accepted groups reflection guard v0
+
+```
+CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUARD_V0=true
+CSC_RCHAIN_V1_OPERATOR_DECISION_RECORDED=true
+CSC_RCHAIN_V1_ACCEPTED_GROUPS=CSC-RCHAIN-v1-006,CSC-RCHAIN-v1-007,CSC-RCHAIN-v1-008
+CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=3
+CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=114
+CSC_RCHAIN_V1_PARKED_GROUPS=CSC-RCHAIN-v1-001,CSC-RCHAIN-v1-002,CSC-RCHAIN-v1-003,CSC-RCHAIN-v1-004,CSC-RCHAIN-v1-005,CSC-RCHAIN-v1-009
+CSC_RCHAIN_V1_PARKED_GROUP_COUNT=6
+CSC_RCHAIN_V1_REJECTED_GROUPS=
+CSC_RCHAIN_V1_NEED_MORE_REVIEW_GROUPS=
+SOURCE_DATASET_ID_FAMILY=CSC-LOSSLESS-v1
+SOURCE_DATASET_RECORD_COUNT=672
+NEW_RCHAIN_FAMILY=CSC-RCHAIN-v1
+TRACEABILITY_TO_CSC_LOSSLESS_PASSED=true
+OLD_R_ID_MAPPING_ALLOWED=false
+OLD_R_ID_EQUIVALENCE_CLAIM_ALLOWED=false
+OLD_R_ID_EQUIVALENCE_CLAIM_COUNT=0
+OLD_RCHAIN_RESTORED=false
+LEGACY_R_ID_REFERENCE_ALLOWED=false
+FAKE_RECONSTRUCTION_ALLOWED=false
+STATIC_INVENTORY_IS_SEPARATE_SOURCE=true
+STATIC_INVENTORY_RECORD_COUNT=162
+PARK_GROUPS_NOT_AUTHORIZED_FOR_REFLECTION=true
+SCHEDULER_PARK_GROUPS_SPLIT_RECOMMENDED=true
+GROUP_009_SPLIT_RECOMMENDED=true
+SECURITY_SCAN_STARTED=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+AWS_TOUCHED=false
+NETWORK_TOUCHED=false
+SECRETS_INCLUDED=false
+NOTION_TOUCHED=false
+MARKET_DASHBOARD_TOUCHED=false
+PRODUCTION_CODE_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+TRADING_LOGIC_TOUCHED=false
+PARALLEL_DOCS_CREATED=false
+PARALLEL_BUILDS_CREATED=false
+CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUARD_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Reflect operator **ACCEPT** of three **new** `CSC-RCHAIN-v1` triage groups derived from `CSC-LOSSLESS-v1` — **not** restoration of the legacy post-HOLD R-001/R-002/R-007 chain and **not** acceptance of PARK scheduler/mixed groups.
+
+| Accepted `rchain_id` | Category theme | `candidate_count` | Visibility owner (reuse) |
+|--------------------|----------------|------------------:|------------------------|
+| CSC-RCHAIN-v1-006 | manual_dispatch_sensitive_surface | 59 | `tests/ci/test_workflow_manual_dispatch_sensitive_surface_contract_v0.py` |
+| CSC-RCHAIN-v1-007 | branch_or_environment_authority | 39 | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` |
+| CSC-RCHAIN-v1-008 | workflow_secrets_visibility | 16 | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
+
+**PARK (not repo-reflected as accepted):** CSC-RCHAIN-v1-001 through CSC-RCHAIN-v1-005 (scheduler/runtime boundary buckets; split recommended) and CSC-RCHAIN-v1-009 (mixed artifact_retention + paid_ai_eval; split recommended).
+
+**External decision artifacts (archive — not repo-ingested):**
+
+| Field | Value |
+|-------|-------|
+| Operator decision filed | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/csc_rchain_v1_operator_decision_filed_v0_20260601T045040Z` |
+| Decision refinement review | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/csc_rchain_v1_decision_refinement_review_v0_20260601T044924Z` |
+| Candidate grouping review | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/csc_lossless_v1_r_chain_candidate_grouping_review_v0_20260601T044523Z` |
+| Proposed groups JSON | `…&#47;PROPOSED_CSC_RCHAIN_V1_GROUPS.json` (external) |
+
+**Guard module (reuse — no parallel cyber anchor):** `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py` with reciprocal crosslinks to `tests/ci/test_csc_lossless_v1_dataset_reflection_contract_v0.py`, `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py`, and `tests/ci/test_static_inventory_schema_guard_contract_v0.py`.
+
+**Non-authorizing:** Does **not** treat PARK groups as accepted; does **not** authorize definitive R-001/R-002/R-007 mapping; does **not** claim old R-ID equivalence; does **not** authorize runtime/scheduler/daemon execution, security scans, network, secrets access, fake reconstruction, Notion write/MCP/API, Market overlay changes, S3/AWS/rclone, broker/exchange, Testnet/Live, or Master V2 / Double Play authority changes.
+
+**Relationship to CSC-LOSSLESS-v1 guard v0:** Source dataset remains 672-row `CSC-LOSSLESS-v1`; accepted R-chain groups cover **114** candidates only. **Relationship to pending R-001/R-002/R-007:** Retained risks remain **Pending** while `INPUT_JSONL_PROVIDED=false`.
+
 ### Static visibility contract owners (reuse — do not duplicate)
 
 | Surface | Owner module |
 |---------|--------------|
 | CSC-LOSSLESS-v1 dataset reflection guard | `tests/ci/test_csc_lossless_v1_dataset_reflection_contract_v0.py` |
+| CSC-RCHAIN-v1 accepted groups reflection guard | `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py` |
 | Static inventory schema validation guard | `tests/ci/test_static_inventory_schema_guard_contract_v0.py` |
 | Workflow secrets/vars/braced contexts (hub) | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
 | Workflow write permissions | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` |
