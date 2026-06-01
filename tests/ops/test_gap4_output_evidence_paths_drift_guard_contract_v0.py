@@ -594,9 +594,7 @@ def test_gap4_full_scope_evidence_completeness_reflection_drift_guard_scoped_v0(
     block = _final_machine_lines(text)
 
     assert "GAP4_FULL_SCOPE_EVIDENCE_COMPLETENESS_REFLECTION_V0=true" in full_scope
-    assert (
-        "ACCEPTED_MODE=GAP4_FULL_SCOPE_EVIDENCE_EXTERNAL_COMPLETENESS_REFLECTION" in full_scope
-    )
+    assert "ACCEPTED_MODE=GAP4_FULL_SCOPE_EVIDENCE_EXTERNAL_COMPLETENESS_REFLECTION" in full_scope
     assert "EXTERNAL_COMPLETENESS_VERIFICATION_POINTER=" in full_scope
     assert "gap4_full_scope_evidence_completeness_verification_v0_20260601T010600Z" in full_scope
     assert "EXTERNAL_OUTPUT_EVIDENCE_PATHS_VERIFICATION_POINTER=" in full_scope
