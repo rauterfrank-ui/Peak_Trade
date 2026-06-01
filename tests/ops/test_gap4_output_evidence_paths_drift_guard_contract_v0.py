@@ -36,6 +36,7 @@ GAP4_REQ_B_SHADOW_B07_B08_ADAPTER_PARITY_HEADER = "## Gap 4 REQ-B Shadow B07/B08
 GAP4_FULL_SCOPE_EVIDENCE_COMPLETENESS_REFLECTION_HEADER = (
     "## Gap 4 Full-Scope Evidence Completeness Reflection v0"
 )
+GAP4_FULL_SCOPE_GAP4_VERIFIED_REFLECTION_HEADER = "## Gap 4 Full-Scope Gap4 Verified Reflection v0"
 GAP7_GOVERNED_REFLECTION_HEADER = "## Gap 7 Governed Risk Boundary Acceptance Reflection v0"
 GAP2A1_SECTION_HEADER = "## §2a.1 Primary Evidence Enforcement Contract v0"
 _MARKER_TRUE = "=true"
@@ -124,6 +125,12 @@ def _gap4_req_b_shadow_b07_b08_adapter_parity_section(text: str) -> str:
 
 def _gap4_full_scope_evidence_completeness_reflection_section(text: str) -> str:
     return text.split(GAP4_FULL_SCOPE_EVIDENCE_COMPLETENESS_REFLECTION_HEADER, 1)[1].split(
+        GAP4_FULL_SCOPE_GAP4_VERIFIED_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap4_full_scope_gap4_verified_reflection_section(text: str) -> str:
+    return text.split(GAP4_FULL_SCOPE_GAP4_VERIFIED_REFLECTION_HEADER, 1)[1].split(
         GAP7_GOVERNED_REFLECTION_HEADER, 1
     )[0]
 
@@ -637,5 +644,54 @@ def test_gap4_full_scope_evidence_completeness_reflection_drift_guard_scoped_v0(
     assert "GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=true" not in block_lines
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" not in criteria_lines
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" not in block_lines
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
+
+
+def test_gap4_full_scope_gap4_verified_reflection_drift_guard_scoped_v0() -> None:
+    text = _section5_text()
+    verified = _gap4_full_scope_gap4_verified_reflection_section(text)
+    completeness = _gap4_full_scope_evidence_completeness_reflection_section(text)
+    criteria = _gap4_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP4_FULL_SCOPE_GAP4_VERIFIED_REFLECTION_V0=true" in verified
+    assert "ACCEPTED_MODE=GAP4_FULL_SCOPE_GAP4_VERIFIED_EXTERNAL_READ_ONLY_REFLECTION" in verified
+    assert "EXTERNAL_VERIFIED_READ_ONLY_VERIFICATION_POINTER=" in verified
+    assert "full_scope_gap4_verified_read_only_verification_v0_20260601T011200Z" in verified
+    assert "EXTERNAL_VERIFIED_CHARTER_POINTER=" in verified
+    assert "full_scope_gap4_verified_charter_v0_20260601T011000Z" in verified
+    assert "CHARTER_VERIFIED=true" in verified
+    assert "PR3845_CLOSEOUT_VERIFIED=true" in verified
+    assert "GAP4_COMPLETENESS_BUNDLE_VERIFIED=true" in verified
+    assert "REPO_CANONICAL_OWNER_REUSE_VERIFIED=true" in verified
+    assert "REUSE_DRIFT_GUARD_VERIFIED=true" in verified
+    assert "VERIFICATION_MANIFEST_VERIFY_RC=0" in verified
+    assert "GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=true" in verified
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" in verified
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in verified
+    assert "PATH_B_LIFT_DISCUSSION_READY=false" in verified
+    assert "GLOBAL_PREFLIGHT_LIFTED=false" in verified
+    assert "READY_FOR_OPERATOR_ARMING=false" in verified
+    assert "RUNTIME_APPROVED=false" in verified
+    assert "does not lift global preflight" in verified
+    assert "does not enable operator arming" in verified
+    assert "Evidence acceptance is not runtime authorization" in verified
+
+    verified_lines = {line.strip() for line in verified.splitlines()}
+    completeness_lines = {line.strip() for line in completeness.splitlines()}
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" in verified_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in completeness_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in criteria_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in block_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=false" in completeness_lines
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in verified_lines
+    assert "GLOBAL_PREFLIGHT_LIFTED=true" not in verified_lines
+    assert "PATH_B_LIFT_DISCUSSION_READY=true" not in verified_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in verified_lines
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
