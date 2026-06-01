@@ -395,10 +395,73 @@ CYBERSECURITY_STATIC_INVENTORY_SCHEMA_VALIDATION_GUARD_DOCS_TESTS_ONLY=true
 
 **Relationship to repo-static successor charter v0:** Interim 162-row histogram remains **review-input only**. This guard records external validation PASS only — not lossless recovery or definitive mapping.
 
+### CSC-LOSSLESS-v1 dataset reflection guard v0
+
+```
+CYBERSECURITY_CSC_LOSSLESS_V1_DATASET_REFLECTION_GUARD_V0=true
+NEW_LOSSLESS_DATASET_CREATED=true
+ID_FAMILY=CSC-LOSSLESS-v1
+PIPELINE_RUN_ID=cybersecurity_lossless_pipeline_dry_run_v0_20260601T042949Z
+NORMALIZED_RECORD_COUNT=672
+RAW_RECORD_COUNT=672
+JSONL_VALID=true
+REQUIRED_FIELDS_PRESENT=true
+CANDIDATE_IDS_UNIQUE=true
+SOURCE_FILE_CHECKSUM_COVERAGE=true
+RECORD_CHECKSUM_COVERAGE=true
+SOURCE_PATH_EXISTENCE_CHECK_PASSED=true
+MAPPING_STATUS_UNMAPPED_COUNT=672
+OLD_R_ID_EQUIVALENCE_CLAIM_COUNT=0
+TRUE_OLD_LOSSLESS_INPUT_FOUND=false
+ACCEPT_AS_OLD_LOSSLESS_INPUT=false
+OLD_R_ID_MAPPING_ALLOWED=false
+FAKE_RECONSTRUCTION_ALLOWED=false
+STATIC_INVENTORY_IS_SEPARATE_SOURCE=true
+STATIC_INVENTORY_RECORD_COUNT=162
+STATIC_ID_OVERLAP_COUNT=0
+SECURITY_SCAN_STARTED=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+PAPER_STARTED=false
+SHADOW_STARTED=false
+TESTNET_STARTED=false
+LIVE_STARTED=false
+AWS_TOUCHED=false
+NETWORK_TOUCHED=false
+SECRETS_INCLUDED=false
+NOTION_TOUCHED=false
+MARKET_DASHBOARD_TOUCHED=false
+PRODUCTION_CODE_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+TRADING_LOGIC_TOUCHED=false
+PARALLEL_DOCS_CREATED=false
+PARALLEL_BUILDS_CREATED=false
+CYBERSECURITY_CSC_LOSSLESS_V1_DATASET_REFLECTION_GUARD_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Reflect the external **new** `CSC-LOSSLESS-v1` dataset (672 normalized rows) as a **separate evidence/ID family** from the 162-row `CSC-STATIC-v0` restart source and from any **old** `FULL_LOSSLESS_RISK_CANDIDATES.jsonl`. This guard **does not** treat v1 as recovered old lossless input, **does not** authorize definitive R-001/R-002/R-007 mapping, and **does not** merge v1 with static inventory IDs.
+
+**CSC-LOSSLESS-v1 durable paths (archive — not repo-ingested):**
+
+| Field | Value |
+|-------|-------|
+| Normalized JSONL | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/cybersecurity_lossless_pipeline/cybersecurity_lossless_pipeline_dry_run_v0_20260601T042949Z/NORMALIZED_JSONL/CSC_LOSSLESS_V1_CANDIDATES.jsonl` |
+| Raw JSONL | `…/RAW_OUTPUT/RAW_CANDIDATES.jsonl` |
+| Post-extract review | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_new_lossless_pipeline_post_extract_review_v0_20260601T043237Z` |
+| `mapping_status` | **unmapped** (672/672 at extract) |
+| Definitive R-001/R-002/R-007 mapping | **blocked** while `INPUT_JSONL_PROVIDED=false` |
+
+**Guard module (reuse — no parallel cyber anchor):** `tests/ci/test_csc_lossless_v1_dataset_reflection_contract_v0.py` with reciprocal crosslinks to `tests/ci/test_static_inventory_schema_guard_contract_v0.py` and `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py`.
+
+**Non-authorizing:** No pipeline re-run, workflow dispatch, runtime/scheduler/daemon/adapter execution, hooks, launchctl, Notion write/MCP/API, Market overlay enablement, S3/AWS/rclone, broker/exchange, Testnet/Live, security scans, network, secrets access, fake reconstruction, or Master V2 / Double Play authority changes.
+
+**Relationship to static inventory guard v0:** `STATIC_INVENTORY_RESTART_SOURCE` (162 rows) remains a **separate** interim restart source — not superseded by v1 and not lossless-equivalent.
+
 ### Static visibility contract owners (reuse — do not duplicate)
 
 | Surface | Owner module |
 |---------|--------------|
+| CSC-LOSSLESS-v1 dataset reflection guard | `tests/ci/test_csc_lossless_v1_dataset_reflection_contract_v0.py` |
 | Static inventory schema validation guard | `tests/ci/test_static_inventory_schema_guard_contract_v0.py` |
 | Workflow secrets/vars/braced contexts (hub) | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
 | Workflow write permissions | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` |

@@ -15,6 +15,7 @@ DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
 THIS_MODULE = Path(__file__).name
 MAPPING_GUARD_MODULE = "test_cybersecurity_visibility_r_pending_mapping_guard_v0.py"
 INVENTORY_CHARTER_MODULE = "test_cybersecurity_visibility_r_pending_inventory_charter_v0.py"
+CSC_LOSSLESS_V1_GUARD_MODULE = "test_csc_lossless_v1_dataset_reflection_contract_v0.py"
 
 STATIC_INVENTORY_JSONL = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
@@ -79,6 +80,7 @@ def test_static_inventory_schema_guard_contract_v0() -> None:
     assert THIS_MODULE in block
     assert MAPPING_GUARD_MODULE in block
     assert INVENTORY_CHARTER_MODULE in block
+    assert CSC_LOSSLESS_V1_GUARD_MODULE in block
 
     for key, value in EXPECTED_MACHINE_LINES.items():
         assert f"{key}={value}" in block, f"missing or wrong {key}={value}"
