@@ -30,6 +30,8 @@ REQUIRED_SCHEDULER_REUSE_OWNERS: tuple[str, ...] = (
     "tests/ops/test_scheduler_boundary_hard_block_contract_v0.py",
     "tests/ops/test_p67_library_scheduler_boundary_opt_in_v0.py",
 )
+GROUPING_REFLECTION_GUARD_MODULE = "tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py"
+ACCEPTED_SUBGROUP_002_INFRA = "CSC-RCHAIN-v1-002-infra"
 
 FORBIDDEN_AUTHORIZATION_PHRASES: tuple[str, ...] = (
     "scheduler start authorized",
@@ -60,6 +62,12 @@ def _risk_table_rows(text: str) -> dict[str, tuple[str, str]]:
     for risk_id, owner_cell, status_cell in RISK_TABLE_ROW_RX.findall(text):
         rows[risk_id] = (owner_cell.strip(), status_cell.strip())
     return rows
+
+
+def _csc_rchain_accepted_groups_guard_block(text: str) -> str:
+    start = text.index("### CSC-RCHAIN-v1 accepted groups reflection guard v0")
+    end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0() -> None:
@@ -106,6 +114,16 @@ def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_cross
         assert phrase not in collapsed
 
     assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
+
+    guard_block = _csc_rchain_accepted_groups_guard_block(text)
+    assert ACCEPTED_SUBGROUP_002_INFRA in guard_block
+    assert GROUPING_REFLECTION_GUARD_MODULE in guard_block
+    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=6" in guard_block
+    assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=125" in guard_block
+    assert "CSC-RCHAIN-v1-002-infra" in guard_block
+    assert "parent **002** remains PARK" in guard_block
+    assert "network escalation is authorized" not in collapsed
+    assert "network enablement" not in collapsed
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_truth_map_crosslink_v0() -> (
