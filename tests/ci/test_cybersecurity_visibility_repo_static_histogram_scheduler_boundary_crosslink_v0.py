@@ -10,6 +10,10 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from tests.ci.cybersecurity_visibility_retained_risk_row_assertions_v0 import (
+    assert_retained_r001_r002_r007_pending_or_derived_evidence,
+)
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CI_AUDIT_KNOWN_ISSUES = REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
 DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
@@ -103,13 +107,7 @@ def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_cross
     for owner_path in REQUIRED_SCHEDULER_REUSE_OWNERS:
         assert owner_path in reuse_paths
 
-    rows = _risk_table_rows(text)
-    for pending_id in ("R-001", "R-002", "R-007"):
-        assert pending_id in rows
-        owner_cell, status_cell = rows[pending_id]
-        assert owner_cell == "—"
-        assert "pending" in status_cell.lower()
-        assert "mapped" not in status_cell.lower()
+    assert_retained_r001_r002_r007_pending_or_derived_evidence(_risk_table_rows(text))
 
     for owner_path in REQUIRED_SCHEDULER_REUSE_OWNERS:
         assert owner_path in text
