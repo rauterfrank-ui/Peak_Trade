@@ -33,9 +33,7 @@ STATIC_OWNERS_SECTION_RX = re.compile(
 REQUIRED_PAID_AI_EVAL_REUSE_OWNER = (
     "tests/ci/test_aiops_promptfoo_cost_gate_workflow_contract_v0.py"
 )
-GROUPING_REFLECTION_GUARD_MODULE = (
-    "tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py"
-)
+GROUPING_REFLECTION_GUARD_MODULE = "tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py"
 ACCEPTED_SUBGROUP_009B = "CSC-RCHAIN-v1-009b"
 
 FORBIDDEN_AUTHORIZATION_PHRASES: tuple[str, ...] = (
