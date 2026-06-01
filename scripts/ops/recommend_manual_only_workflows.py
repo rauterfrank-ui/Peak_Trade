@@ -373,7 +373,9 @@ def format_text(payload: dict[str, Any]) -> str:
         if rec.get("variable_gates"):
             lines.append(f"   variable gates: {rec['variable_gates']}")
         if rec.get("ai_or_paid"):
-            lines.append(f"   AI/paid: yes — {rec.get('ai_note') or 'confirm cost before dispatch'}")
+            lines.append(
+                f"   AI/paid: yes — {rec.get('ai_note') or 'confirm cost before dispatch'}"
+            )
         if rec.get("warning"):
             lines.append(f"   WARNING: {rec['warning']}")
         lines.append("   operator-GO: required before running any gh command")
