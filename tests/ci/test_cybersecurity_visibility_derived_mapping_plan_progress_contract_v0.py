@@ -174,10 +174,7 @@ def test_cybersecurity_visibility_derived_only_mapping_contract_extension_v0() -
     extension_block = _block_containing(text, CONTRACT_EXTENSION_BLOCK_ANCHOR)
     extension_values = _machine_line_values(extension_block)
 
-    assert (
-        "Pending R-001/R-002/R-007 — derived-only mapping contract extension v0"
-        in text
-    )
+    assert "Pending R-001/R-002/R-007 — derived-only mapping contract extension v0" in text
     assert CHARTER_BUNDLE_PATH in text
     assert PRECHECK_BUNDLE_PATH in text
     assert PLAN_PROGRESS_CLOSEOUT_PATH in text
@@ -191,8 +188,7 @@ def test_cybersecurity_visibility_derived_only_mapping_contract_extension_v0() -
 
     for key, expected in CONTRACT_EXTENSION_EXPECTED.items():
         assert extension_values.get(key) == expected, (
-            f"contract extension {key}={extension_values.get(key)!r} "
-            f"expected {expected!r}"
+            f"contract extension {key}={extension_values.get(key)!r} expected {expected!r}"
         )
 
     assert "non-authorizing" in collapsed
