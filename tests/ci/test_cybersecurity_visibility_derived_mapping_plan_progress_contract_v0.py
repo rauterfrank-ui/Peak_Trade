@@ -18,6 +18,21 @@ MAPPING_GUARD_TEST = "test_cybersecurity_visibility_r_pending_mapping_guard_v0.p
 THIS_MODULE = Path(__file__).name
 
 PLAN_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_DERIVED_MAPPING_PLAN_PROGRESS_V0=true"
+CONTRACT_EXTENSION_BLOCK_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_CONTRACT_EXTENSION_V0=true"
+)
+CHARTER_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_only_mapping_contract_extension_charter_readonly_v0_20260601T171650Z"
+)
+PRECHECK_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_definitive_mapping_readiness_precheck_readonly_v0_20260601T171452Z"
+)
+PLAN_PROGRESS_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_small_cyber_mapping_plan_progress_pr_merge_closeout_readonly_v0_20260601T171301Z"
+)
 PLANNING_BUNDLE_PATH = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/cybersecurity_mapping_after_derived_reflection_next_progress_readonly_v0_20260601T170753Z"
@@ -54,6 +69,19 @@ PLAN_DERIVED_IDS = (
     "DERIVED-CYBER-R-002-001",
     "DERIVED-CYBER-R-007-001",
 )
+
+CONTRACT_EXTENSION_EXPECTED: dict[str, str] = {
+    "DERIVED_ONLY_MAPPING_CONTRACT_PROPOSED": "true",
+    "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO": "true",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT": "true",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED": "false",
+    "OLD_R_ID_RECONSTRUCTION_ALLOWED": "false",
+    "DERIVED_CANDIDATE_ID_FAMILY_ONLY": "true",
+}
 
 
 def _ci_audit_text() -> str:
@@ -133,6 +161,48 @@ def test_cybersecurity_visibility_derived_mapping_plan_progress_truth_map_crossl
 
     assert "derived mapping plan progress" in truth_map
     assert "DERIVED_MAPPING_PLAN_PROGRESS_ONLY=true" in truth_map
+    assert "INPUT_JSONL_PROVIDED=false" in truth_map
+    assert THIS_MODULE in truth_map
+    assert DERIVED_REFLECTION_TEST in truth_map
+    assert MAPPING_GUARD_TEST in truth_map
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_contract_extension_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    extension_block = _block_containing(text, CONTRACT_EXTENSION_BLOCK_ANCHOR)
+    extension_values = _machine_line_values(extension_block)
+
+    assert "Pending R-001/R-002/R-007 — derived-only mapping contract extension v0" in text
+    assert CHARTER_BUNDLE_PATH in text
+    assert PRECHECK_BUNDLE_PATH in text
+    assert PLAN_PROGRESS_CLOSEOUT_PATH in text
+    assert THIS_MODULE in text
+    assert "OPERATOR_GO_DERIVED_ONLY_MAPPING_EXECUTION" in text
+    assert "does not** execute mapping" in text
+    assert "does not** set `INPUT_JSONL_PROVIDED=true`" in text
+    assert "does not** flip the pending risk table to **mapped**" in text
+    assert "does not** claim derived JSONL is the original" in text
+    assert "does not** authorize Old-R-ID reconstruction" in text
+
+    for key, expected in CONTRACT_EXTENSION_EXPECTED.items():
+        assert extension_values.get(key) == expected, (
+            f"contract extension {key}={extension_values.get(key)!r} expected {expected!r}"
+        )
+
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_contract_extension_truth_map_crosslink_v0() -> (
+    None
+):
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = truth_map.lower()
+
+    assert "derived-only mapping contract extension" in truth_map
+    assert "DERIVED_ONLY_MAPPING_CONTRACT_PROPOSED=true" in truth_map
+    assert "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true" in truth_map
     assert "INPUT_JSONL_PROVIDED=false" in truth_map
     assert THIS_MODULE in truth_map
     assert DERIVED_REFLECTION_TEST in truth_map
