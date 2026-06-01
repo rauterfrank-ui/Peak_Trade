@@ -2,14 +2,7 @@ name: Class A Shadow Paper Scheduled Probe v1
 
 on:
   workflow_dispatch:
-  schedule:
-    # ~4 runs/day, minute 17 avoids top-of-hour congestion.
-    # Inactive for scheduled runs until repo variable is set (see job `if:`):
-    # Settings → Secrets and variables → Actions → Variables:
-    #   CLASS_A_SHADOW_PAPER_SCHEDULE_ENABLED = true
-    # Manual workflow_dispatch always runs; schedule events still appear in the
-    # Actions UI but skip the job when the variable is absent or not 'true'.
-    - cron: "17 */6 * * *"
+  # Scheduled cron removed (cost minimization); manual dispatch only.
 
 permissions:
   contents: read
