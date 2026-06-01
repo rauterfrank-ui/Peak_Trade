@@ -37,6 +37,9 @@ WAVE1_CHARTER_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_WAVE
 WAVE1_EXECUTION_GUARD_PREP_BLOCK_ANCHOR = (
     "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_WAVE1_EXECUTION_GUARD_PREP_V0=true"
 )
+WAVE1_BATCH_CLOSURE_BLOCK_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0=true"
+)
 CHARTER_BUNDLE_PATH = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/cybersecurity_derived_only_mapping_contract_extension_charter_readonly_v0_20260601T171650Z"
@@ -113,6 +116,16 @@ PR3893_CLOSEOUT_PATH = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "closeout/after_small_derived_only_mapping_wave1_charter_pr_merge_closeout_readonly_v0_20260601T181212Z"
 )
+WAVE1_BATCH_CLOSURE_PLAN_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_only_mapping_wave1_batch_closure_plan_readonly_v0_20260601T182957Z"
+)
+PR3894_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_small_derived_only_mapping_wave1_execution_guard_prep_pr_merge_closeout_readonly_v0_20260601T182216Z"
+)
+WRITE_PERMISSIONS_OWNER_TEST = "test_workflow_write_permissions_visibility_contract_v0.py"
+SECRETS_REFERENCE_OWNER_TEST = "test_workflow_secrets_reference_visibility_contract_v0.py"
 
 FENCED_BLOCK_RX = re.compile(r"```[^\n]*\n(.*?)```", re.DOTALL)
 RISK_TABLE_ROW_RX = re.compile(
@@ -236,6 +249,58 @@ WAVE1_EXECUTION_GUARD_PREP_EXPECTED: dict[str, str] = {
     "DIRECT_MAPPING_WAVE_BLOCKED": "true",
 }
 
+WAVE1_BATCH_CLOSURE_EXPECTED: dict[str, str] = {
+    "DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0": "true",
+    "MAPPED_BY_DERIVED_EVIDENCE_ONLY": "true",
+    "DERIVED_EVIDENCE_MAPPED_STATUS_ALLOWED": "true",
+    "FORBIDS_DEFINITIVE_MAPPED_WITHOUT_INPUT": "true",
+    "FORBIDS_PENDING_RISK_TABLE_DEFINITIVE_MAPPED_WITHOUT_INPUT": "true",
+    "DERIVED_ONLY_MAPPING_WAVE1_EXECUTION_GUARD_PREP_PROPOSED": "true",
+    "DERIVED_ONLY_MAPPING_WAVE1_CHARTER_PROPOSED": "true",
+    "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO": "true",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT": "true",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED": "false",
+    "OLD_R_ID_RECONSTRUCTION_ALLOWED": "false",
+    "DERIVED_CANDIDATE_ID_FAMILY_ONLY": "true",
+    "DIRECT_MAPPING_WAVE_BLOCKED": "false",
+}
+
+DERIVED_EVIDENCE_MAPPED_RISKS: dict[str, tuple[str, str]] = {
+    "R-001": (
+        "tests/ci/test_workflow_write_permissions_visibility_contract_v0.py",
+        "DERIVED-CYBER-R-001-001",
+    ),
+    "R-002": (
+        "tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py",
+        "DERIVED-CYBER-R-002-001",
+    ),
+    "R-007": (
+        "tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py",
+        "DERIVED-CYBER-R-007-001",
+    ),
+}
+
+
+def _assert_derived_evidence_mapped(status_cell: str) -> None:
+    assert "mapped-by-derived-evidence" in status_cell.lower()
+    assert status_cell.strip().lower() != "mapped"
+
+
+def _assert_derived_evidence_mapped_row(
+    owner_cell: str,
+    status_cell: str,
+    *,
+    expected_owner: str,
+    derived_id: str,
+) -> None:
+    assert expected_owner in owner_cell
+    _assert_derived_evidence_mapped(status_cell)
+    assert derived_id in status_cell
+
 
 def _ci_audit_text() -> str:
     return CI_AUDIT_KNOWN_ISSUES.read_text(encoding="utf-8")
@@ -299,13 +364,16 @@ def test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0() ->
     assert "non-authorizing" in collapsed
 
 
-def test_cybersecurity_visibility_derived_mapping_plan_pending_table_unchanged_v0() -> None:
+def test_cybersecurity_visibility_derived_mapping_plan_wave1_derived_evidence_table_v0() -> None:
     rows = _risk_table_rows(_ci_audit_text())
-    for pending_id in ("R-001", "R-002", "R-007"):
-        owner_cell, status_cell = rows[pending_id]
-        assert owner_cell == "—"
-        assert "pending" in status_cell.lower()
-        assert "mapped" not in status_cell.lower()
+    for risk_id, (expected_owner, derived_id) in DERIVED_EVIDENCE_MAPPED_RISKS.items():
+        owner_cell, status_cell = rows[risk_id]
+        _assert_derived_evidence_mapped_row(
+            owner_cell,
+            status_cell,
+            expected_owner=expected_owner,
+            derived_id=derived_id,
+        )
 
 
 def test_cybersecurity_visibility_derived_mapping_plan_progress_truth_map_crosslink_v0() -> None:
@@ -628,4 +696,70 @@ def test_cybersecurity_visibility_derived_only_mapping_wave1_execution_guard_pre
     assert THIS_MODULE in truth_map
     assert DERIVED_REFLECTION_TEST in truth_map
     assert MAPPING_GUARD_TEST in truth_map
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_wave1_batch_closure_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    batch_block = _block_containing(text, WAVE1_BATCH_CLOSURE_BLOCK_ANCHOR)
+    batch_values = _machine_line_values(batch_block)
+
+    assert "Pending R-001/R-002/R-007 — derived-only mapping wave-1 batch closure v0" in text
+    assert WAVE1_BATCH_CLOSURE_PLAN_PATH in text
+    assert PR3894_CLOSEOUT_PATH in text
+    assert WAVE1_EXECUTION_READINESS_PRECHECK_PATH in text
+    assert DERIVED_JSONL_BUILD_VALIDATE_PATH in text
+    assert THIS_MODULE in text
+    assert MAPPING_GUARD_TEST in text
+    assert DERIVED_REFLECTION_TEST in text
+    assert WRITE_PERMISSIONS_OWNER_TEST in text
+    assert SECRETS_REFERENCE_OWNER_TEST in text
+    assert "OPERATOR_GO_WAVE1_BATCH_CLOSURE_PR=true" in text
+    assert "does not** set `INPUT_JSONL_PROVIDED=true`" in text
+    assert "does not** claim derived JSONL is the original" in text
+    assert "does not** authorize Old-R-ID reconstruction" in text
+    assert "does not** assign definitive **`mapped`** status" in text
+    assert "is distinct from definitive mapped" in text
+
+    for derived_id in PLAN_DERIVED_IDS:
+        assert derived_id in text
+
+    for key, expected in WAVE1_BATCH_CLOSURE_EXPECTED.items():
+        assert batch_values.get(key) == expected, (
+            f"wave-1 batch closure {key}={batch_values.get(key)!r} expected {expected!r}"
+        )
+
+    rows = _risk_table_rows(text)
+    for risk_id, (expected_owner, derived_id) in DERIVED_EVIDENCE_MAPPED_RISKS.items():
+        owner_cell, status_cell = rows[risk_id]
+        _assert_derived_evidence_mapped_row(
+            owner_cell,
+            status_cell,
+            expected_owner=expected_owner,
+            derived_id=derived_id,
+        )
+
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_wave1_batch_closure_truth_map_crosslink_v0() -> (
+    None
+):
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = truth_map.lower()
+
+    assert "derived-only mapping wave-1 batch closure" in truth_map
+    assert "DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0=true" in truth_map
+    assert "MAPPED_BY_DERIVED_EVIDENCE_ONLY=true" in truth_map
+    assert "DERIVED_EVIDENCE_MAPPED_STATUS_ALLOWED=true" in truth_map
+    assert "FORBIDS_DEFINITIVE_MAPPED_WITHOUT_INPUT=true" in truth_map
+    assert "INPUT_JSONL_PROVIDED=false" in truth_map
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in truth_map
+    assert THIS_MODULE in truth_map
+    assert DERIVED_REFLECTION_TEST in truth_map
+    assert MAPPING_GUARD_TEST in truth_map
+    assert WRITE_PERMISSIONS_OWNER_TEST in truth_map
+    assert SECRETS_REFERENCE_OWNER_TEST in truth_map
+    assert "mapped-by-derived-evidence" in collapsed
     assert "non-authorizing" in collapsed

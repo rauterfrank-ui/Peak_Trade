@@ -146,13 +146,13 @@ NO_PERFORMANCE_REGRESSION=true
 
 | ID | Repo-mapped static owner | Status |
 |----|--------------------------|--------|
-| R-001 | — | **Pending** — repo-static successor charter v0; no `candidate_id` assigned; definitive mapping requires lossless inventory row |
-| R-002 | — | **Pending** — repo-static successor charter v0; no `candidate_id` assigned; definitive mapping requires lossless inventory row |
+| R-001 | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` | **mapped-by-derived-evidence** (`DERIVED-CYBER-R-001-001`) |
+| R-002 | `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py` | **mapped-by-derived-evidence** (`DERIVED-CYBER-R-002-001`) |
 | R-003 | `tests/ops/test_run_sample_size_ramp_script_contract_v0.py` | mapped |
 | R-004 | `tests/ops/test_run_testnet_evidence_flow_v2_script_contract_v0.py` | mapped |
 | R-005 | `tests/ops/test_knowledge_prod_smoke_script.py` | mapped |
 | R-006 | `tests/ci/test_prcd_aws_export_write_smoke_workflow_contract_v0.py` | mapped |
-| R-007 | — | **Pending** — repo-static successor charter v0; no `candidate_id` assigned; definitive mapping requires lossless inventory row |
+| R-007 | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` | **mapped-by-derived-evidence** (`DERIVED-CYBER-R-007-001`) |
 
 > R-001/R-002/R-007 IDs here are the **post-HOLD lossless-inventory** set (see Source artifacts above), not `docs/ops/RISK_REGISTER.md` ops-register IDs.
 
@@ -714,6 +714,59 @@ CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_WAVE1_EXECUTION_GUARD_PREP_DOCS_TE
 **Relationship to § input artifact contract v0:** `INPUT_JSONL_PROVIDED` remains **false**. `DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL=true` does **not** satisfy definitive mapping input.
 
 **Relationship to pending risks R-001/R-002/R-007:** Retained risks remain **Pending** in the table above. Mapping **execution** requires merged execution guard prep plus `OPERATOR_GO_DERIVED_ONLY_MAPPING_EXECUTION` and a separate multi-wave execution slice; not implied here.
+
+### Pending R-001/R-002/R-007 — derived-only mapping wave-1 batch closure v0
+
+```
+CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0=true
+DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0=true
+MAPPED_BY_DERIVED_EVIDENCE_ONLY=true
+DERIVED_EVIDENCE_MAPPED_STATUS_ALLOWED=true
+FORBIDS_DEFINITIVE_MAPPED_WITHOUT_INPUT=true
+FORBIDS_PENDING_RISK_TABLE_DEFINITIVE_MAPPED_WITHOUT_INPUT=true
+DERIVED_ONLY_MAPPING_WAVE1_EXECUTION_GUARD_PREP_PROPOSED=true
+DERIVED_ONLY_MAPPING_WAVE1_CHARTER_PROPOSED=true
+DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true
+INPUT_JSONL_PROVIDED=false
+DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL=true
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT=true
+LOSSLESS_JSONL_RECOVERY=false
+ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED=false
+OLD_R_ID_RECONSTRUCTION_ALLOWED=false
+DERIVED_CANDIDATE_ID_FAMILY_ONLY=true
+DIRECT_MAPPING_WAVE_BLOCKED=false
+CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Record operator wave-1 batch closure (Frank Rauter; `OPERATOR_GO_WAVE1_BATCH_CLOSURE_PR=true`) promoting R-001/R-002/R-007 to **`mapped-by-derived-evidence`** with reciprocal repo test owners after merged execution guard prep (PR #3894) and batch-closure plan **PASS**. This section **does not** set `INPUT_JSONL_PROVIDED=true`, **does not** claim derived JSONL is the original `FULL_LOSSLESS_RISK_CANDIDATES.jsonl`, **does not** authorize Old-R-ID reconstruction or equivalence, and **does not** assign definitive **`mapped`** status (lossless-input mapped). Status **`mapped-by-derived-evidence`** is distinct from definitive mapped and remains valid while `INPUT_JSONL_PROVIDED=false`.
+
+**Non-authorizing:** No workflow dispatch, runtime/scheduler/daemon execution, hooks, Notion write/MCP/API, Market overlay enablement, S3/AWS/rclone, broker/exchange, Testnet/Live, or Master V2 / Double Play authority changes. No CSC-RCHAIN count changes (**258** / **1** / **413** / **672** unchanged).
+
+**Wave-1 batch closure scope (derived-only — not definitive mapped):**
+
+| Risk | `derived_candidate_id` | Repo-mapped static owner | Status |
+|------|------------------------|--------------------------|--------|
+| R-001 | `DERIVED-CYBER-R-001-001` | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` | **mapped-by-derived-evidence** |
+| R-002 | `DERIVED-CYBER-R-002-001` | `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py` | **mapped-by-derived-evidence** |
+| R-007 | `DERIVED-CYBER-R-007-001` | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` | **mapped-by-derived-evidence** |
+
+**External planning artifacts (archive only):**
+
+| Token | Durable path |
+|-------|--------------|
+| Wave-1 batch closure plan | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_wave1_batch_closure_plan_readonly_v0_20260601T182957Z` |
+| PR3894 guard-prep closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_small_derived_only_mapping_wave1_execution_guard_prep_pr_merge_closeout_readonly_v0_20260601T182216Z` |
+| Execution-readiness precheck | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_wave1_execution_readiness_precheck_readonly_v0_20260601T182100Z` |
+| Derived JSONL build/validate | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_jsonl_build_validate_v0_20260601T165743Z` |
+
+**Guard modules (reuse — no parallel cyber anchor):** `tests/ci/test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py`, `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py`, `tests/ci/test_cybersecurity_visibility_derived_input_jsonl_reflection_contract_v0.py`, `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py`, `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py`
+
+**Relationship to § derived-only mapping wave-1 execution guard prep v0:** Supersedes retained-table **Pending** status for R-001/R-002/R-007 only; historical guard-prep § prose unchanged. `FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT=true` in historical §§ remains true for **definitive** mapped; batch closure qualifies via `FORBIDS_DEFINITIVE_MAPPED_WITHOUT_INPUT=true` and `DERIVED_EVIDENCE_MAPPED_STATUS_ALLOWED=true`.
+
+**Relationship to § input artifact contract v0:** `INPUT_JSONL_PROVIDED` remains **false**. `DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL=true` does **not** satisfy definitive mapping input.
+
+**Relationship to pending risks R-001/R-002/R-007:** Retained table above records **mapped-by-derived-evidence** — not definitive mapped. Definitive mapping with `INPUT_JSONL_PROVIDED=true` remains blocked.
 
 ### Static inventory schema validation guard v0
 

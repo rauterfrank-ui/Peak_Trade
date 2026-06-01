@@ -29,6 +29,54 @@ MAPPING_GUARD_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_R_PENDING_MAPPING_GUARD_V
 EXTERNAL_INPUT_JSONL_MAPPING_GUARD_BLOCK_ANCHOR = (
     "CYBERSECURITY_VISIBILITY_R_PENDING_EXTERNAL_INPUT_JSONL_MAPPING_GUARD_V0=true"
 )
+WAVE1_BATCH_CLOSURE_BLOCK_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0=true"
+)
+
+DERIVED_EVIDENCE_MAPPED_RISKS: dict[str, tuple[str, str]] = {
+    "R-001": (
+        "tests/ci/test_workflow_write_permissions_visibility_contract_v0.py",
+        "DERIVED-CYBER-R-001-001",
+    ),
+    "R-002": (
+        "tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py",
+        "DERIVED-CYBER-R-002-001",
+    ),
+    "R-007": (
+        "tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py",
+        "DERIVED-CYBER-R-007-001",
+    ),
+}
+
+WAVE1_BATCH_CLOSURE_PLAN_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_only_mapping_wave1_batch_closure_plan_readonly_v0_20260601T182957Z"
+)
+PR3894_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_small_derived_only_mapping_wave1_execution_guard_prep_pr_merge_closeout_readonly_v0_20260601T182216Z"
+)
+DERIVED_JSONL_BUILD_VALIDATE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_jsonl_build_validate_v0_20260601T165743Z"
+)
+WAVE1_EXECUTION_READINESS_PRECHECK_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_only_mapping_wave1_execution_readiness_precheck_readonly_v0_20260601T182100Z"
+)
+
+WAVE1_BATCH_CLOSURE_EXPECTED: dict[str, str] = {
+    "DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0": "true",
+    "MAPPED_BY_DERIVED_EVIDENCE_ONLY": "true",
+    "DERIVED_EVIDENCE_MAPPED_STATUS_ALLOWED": "true",
+    "FORBIDS_DEFINITIVE_MAPPED_WITHOUT_INPUT": "true",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED": "false",
+    "OLD_R_ID_RECONSTRUCTION_ALLOWED": "false",
+}
 
 INTAKE_PACKET_PATH = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
@@ -130,6 +178,23 @@ def _risk_table_rows(text: str) -> dict[str, tuple[str, str]]:
     return rows
 
 
+def _assert_derived_evidence_mapped(status_cell: str) -> None:
+    assert "mapped-by-derived-evidence" in status_cell.lower()
+    assert status_cell.strip().lower() != "mapped"
+
+
+def _assert_derived_evidence_mapped_row(
+    owner_cell: str,
+    status_cell: str,
+    *,
+    expected_owner: str,
+    derived_id: str,
+) -> None:
+    assert expected_owner in owner_cell
+    _assert_derived_evidence_mapped(status_cell)
+    assert derived_id in status_cell
+
+
 def test_cybersecurity_visibility_r_pending_mapping_guard_v0() -> None:
     text = CI_AUDIT_KNOWN_ISSUES.read_text(encoding="utf-8")
     collapsed = text.lower()
@@ -152,12 +217,15 @@ def test_cybersecurity_visibility_r_pending_mapping_guard_v0() -> None:
     assert "repo-static successor `REPO_STATIC_CYBERSECURITY_RISK_CANDIDATES.jsonl` alone" in text
 
     rows = _risk_table_rows(text)
-    for pending_id in ("R-001", "R-002", "R-007"):
-        assert pending_id in rows
-        owner_cell, status_cell = rows[pending_id]
-        assert owner_cell == "—"
-        assert "pending" in status_cell.lower()
-        assert "mapped" not in status_cell.lower()
+    for risk_id, (expected_owner, derived_id) in DERIVED_EVIDENCE_MAPPED_RISKS.items():
+        assert risk_id in rows
+        owner_cell, status_cell = rows[risk_id]
+        _assert_derived_evidence_mapped_row(
+            owner_cell,
+            status_cell,
+            expected_owner=expected_owner,
+            derived_id=derived_id,
+        )
 
     for mapped_id, expected_owner in (
         ("R-003", "tests/ops/test_run_sample_size_ramp_script_contract_v0.py"),
@@ -227,12 +295,15 @@ def test_cybersecurity_visibility_pending_guard_risk_table_registry_v0() -> None
     text = _ci_audit_text()
     rows = _risk_table_rows(text)
 
-    for pending_id in ("R-001", "R-002", "R-007"):
-        assert pending_id in rows
-        owner_cell, status_cell = rows[pending_id]
-        assert owner_cell == "—"
-        assert "pending" in status_cell.lower()
-        assert "mapped" not in status_cell.lower()
+    for risk_id, (expected_owner, derived_id) in DERIVED_EVIDENCE_MAPPED_RISKS.items():
+        assert risk_id in rows
+        owner_cell, status_cell = rows[risk_id]
+        _assert_derived_evidence_mapped_row(
+            owner_cell,
+            status_cell,
+            expected_owner=expected_owner,
+            derived_id=derived_id,
+        )
         assert "recovered" not in status_cell.lower()
 
     for mapped_id, expected_owner in (
@@ -327,9 +398,9 @@ def test_cybersecurity_visibility_pending_guard_negative_drift_forbidden_v0() ->
     assert not drift_lines, f"forbidden guard-registry assignments: {drift_lines}"
 
     rows = _risk_table_rows(text)
-    for pending_id in ("R-001", "R-002", "R-007"):
-        _, status_cell = rows[pending_id]
-        assert status_cell.lower() != "mapped"
+    for risk_id in DERIVED_EVIDENCE_MAPPED_RISKS:
+        _, status_cell = rows[risk_id]
+        assert status_cell.strip().lower() != "mapped"
         assert "recovered" not in status_cell.lower()
 
     for line in text.splitlines():
@@ -357,3 +428,39 @@ def test_cybersecurity_visibility_pending_guard_negative_drift_forbidden_v0() ->
     assert "test_csc_rchain_v1_grouping_reflection_contract_v0.py" in text
     static_section = _static_visibility_owner_section(text)
     assert "do not duplicate" in static_section.lower()
+
+
+def test_cybersecurity_visibility_wave1_batch_closure_mapping_guard_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    batch_block = _block_containing(text, WAVE1_BATCH_CLOSURE_BLOCK_ANCHOR)
+    batch_values = _machine_line_values(batch_block)
+
+    assert "Pending R-001/R-002/R-007 — derived-only mapping wave-1 batch closure v0" in text
+    assert WAVE1_BATCH_CLOSURE_PLAN_PATH in text
+    assert PR3894_CLOSEOUT_PATH in text
+    assert WAVE1_EXECUTION_READINESS_PRECHECK_PATH in text
+    assert DERIVED_JSONL_BUILD_VALIDATE_PATH in text
+    assert THIS_MODULE in text
+    assert "OPERATOR_GO_WAVE1_BATCH_CLOSURE_PR=true" in text
+    assert "does not** set `INPUT_JSONL_PROVIDED=true`" in text
+    assert "does not** claim derived JSONL is the original" in text
+    assert "does not** authorize Old-R-ID reconstruction" in text
+    assert "does not** assign definitive **`mapped`** status" in text
+
+    for key, expected in WAVE1_BATCH_CLOSURE_EXPECTED.items():
+        assert batch_values.get(key) == expected, (
+            f"wave-1 batch closure {key}={batch_values.get(key)!r} expected {expected!r}"
+        )
+
+    rows = _risk_table_rows(text)
+    for risk_id, (expected_owner, derived_id) in DERIVED_EVIDENCE_MAPPED_RISKS.items():
+        owner_cell, status_cell = rows[risk_id]
+        _assert_derived_evidence_mapped_row(
+            owner_cell,
+            status_cell,
+            expected_owner=expected_owner,
+            derived_id=derived_id,
+        )
+
+    assert "non-authorizing" in collapsed
