@@ -290,9 +290,7 @@ def test_cybersecurity_visibility_r_pending_external_input_jsonl_mapping_guard_v
     external_block = _block_containing(text, EXTERNAL_INPUT_JSONL_MAPPING_GUARD_BLOCK_ANCHOR)
     external_values = _machine_line_values(external_block)
 
-    assert (
-        "Pending R-001/R-002/R-007 — external INPUT_JSONL intake mapping guard v0" in text
-    )
+    assert "Pending R-001/R-002/R-007 — external INPUT_JSONL intake mapping guard v0" in text
     assert INTAKE_PACKET_PATH in text
     assert VALIDATION_BUNDLE_PATH in text
     assert THIS_MODULE in text
