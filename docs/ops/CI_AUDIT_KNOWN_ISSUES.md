@@ -295,6 +295,47 @@ CYBERSECURITY_VISIBILITY_R_PENDING_MAPPING_GUARD_DOCS_TESTS_ONLY=true
 
 **Non-authorizing:** Same boundaries as § input artifact contract v0; no runtime, workflow dispatch, hooks, Notion, Market, broker/exchange, Testnet/Live, or Master V2 / Double Play authority changes.
 
+### Pending R-001/R-002/R-007 — external INPUT_JSONL intake mapping guard v0
+
+```
+CYBERSECURITY_VISIBILITY_R_PENDING_EXTERNAL_INPUT_JSONL_MAPPING_GUARD_V0=true
+EXTERNAL_INPUT_JSONL_INTAKE_PACKET_CREATED=true
+EXTERNAL_INPUT_JSONL_VALIDATION_PASSED=true
+INPUT_JSONL_PROVIDED=false
+LOSSLESS_JSONL_RECOVERY=false
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+NO_MAPPING_WITHOUT_INPUT_ARTIFACT=true
+INPUT_PACKET_VERIFIED=true
+JSONL_PARSE_PASSED=true
+SCHEMA_ALLOWLIST_PASSED=true
+FORBIDDEN_FIELDS_SECRET_SCAN_PASSED=true
+REDACTION_RULES_PASSED=true
+OWNER_REUSE_VERIFIED=true
+SECRETS_INCLUDED=false
+MANIFEST_VERIFY_RC=0
+PREFLIGHT_REMAINS_BLOCKED=true
+PATH_B_LIFT_DISCUSSION_READY=false
+GLOBAL_PREFLIGHT_LIFTED=false
+RUNTIME_STARTED=false
+FORBIDS_FLIPPING_INPUT_JSONL_PROVIDED_WITHOUT_AUTHORIZED_MAPPING_SLICE=true
+CYBERSECURITY_VISIBILITY_R_PENDING_EXTERNAL_INPUT_JSONL_MAPPING_GUARD_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Record that the **external** Cybersecurity INPUT_JSONL intake contract and validation bundle passed (shape, allowlist, forbidden-field scan, redaction rules, owner reuse) and are reflected in this anchor for governed docs/tests-only guard work. This section **does not** ingest operator JSONL into the repo, **does not** commit lossless inventory rows, and **does not** set `INPUT_JSONL_PROVIDED=true` or authorize definitive R-001/R-002/R-007 → repo test-owner mapping until an operator supplies `FULL_LOSSLESS_RISK_CANDIDATES.jsonl` or `APPROVED_OPERATOR_TRIAGE_ARTIFACT` per § input artifact contract v0.
+
+**External durable artifacts (archive only — not repo-ingested):**
+
+| Token | Durable path |
+|-------|--------------|
+| Intake packet | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_input_jsonl_intake_packet_v0_20260601T020000Z` |
+| Validation bundle | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_input_jsonl_validation_v0_20260601T030000Z` |
+
+**Guard module (reuse — no parallel cyber anchor):** `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py`
+
+**Non-authorizing:** No workflow dispatch, runtime/scheduler/daemon/adapter execution, hooks, launchctl, Notion write/MCP/API, Market overlay enablement, S3/AWS/rclone, broker/exchange, Testnet/Live, Preflight lift, Path-B lift, operator GO, or Master V2 / Double Play authority changes. Synthetic/redacted JSONL examples remain **external** only unless explicitly marked synthetic in a future fixture.
+
+**Relationship to pending risks R-001/R-002/R-007:** Retained risks remain **Pending** in the table above while `INPUT_JSONL_PROVIDED=false`. External validation confirms intake **contract readiness** only — not lossless recovery or definitive mapping.
+
 ### Static visibility contract owners (reuse — do not duplicate)
 
 | Surface | Owner module |

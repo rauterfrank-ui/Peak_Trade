@@ -26,6 +26,35 @@ HISTOGRAM_REUSE_PATH_RX = re.compile(r"Reuse `(tests/(?:ci|ops|webui)/[A-Za-z0-9
 CHARTER_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_R_PENDING_REPO_STATIC_INVENTORY_CHARTER_V0=true"
 INPUT_ARTIFACT_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_R_PENDING_INPUT_ARTIFACT_CONTRACT_V0=true"
 MAPPING_GUARD_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_R_PENDING_MAPPING_GUARD_V0=true"
+EXTERNAL_INPUT_JSONL_MAPPING_GUARD_BLOCK_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_R_PENDING_EXTERNAL_INPUT_JSONL_MAPPING_GUARD_V0=true"
+)
+
+INTAKE_PACKET_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_input_jsonl_intake_packet_v0_20260601T020000Z"
+)
+VALIDATION_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_input_jsonl_validation_v0_20260601T030000Z"
+)
+
+EXTERNAL_VALIDATION_EXPECTED: dict[str, str] = {
+    "EXTERNAL_INPUT_JSONL_INTAKE_PACKET_CREATED": "true",
+    "EXTERNAL_INPUT_JSONL_VALIDATION_PASSED": "true",
+    "INPUT_PACKET_VERIFIED": "true",
+    "JSONL_PARSE_PASSED": "true",
+    "SCHEMA_ALLOWLIST_PASSED": "true",
+    "FORBIDDEN_FIELDS_SECRET_SCAN_PASSED": "true",
+    "REDACTION_RULES_PASSED": "true",
+    "OWNER_REUSE_VERIFIED": "true",
+    "SECRETS_INCLUDED": "false",
+    "MANIFEST_VERIFY_RC": "0",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "PATH_B_LIFT_DISCUSSION_READY": "false",
+    "GLOBAL_PREFLIGHT_LIFTED": "false",
+    "RUNTIME_STARTED": "false",
+}
 
 GUARD_REGISTRY_EXPECTED: dict[str, str] = {
     "INPUT_JSONL_PROVIDED": "false",
@@ -162,10 +191,16 @@ def test_cybersecurity_visibility_r_pending_mapping_guard_truth_map_crosslink_v0
     collapsed = truth_map.lower()
 
     assert "Cybersecurity Visibility R pending mapping guard v0" in truth_map
+    assert (
+        "Cybersecurity Visibility R pending external INPUT_JSONL intake mapping guard v0"
+        in truth_map
+    )
     assert THIS_MODULE in truth_map
     assert INPUT_ARTIFACT_TEST in truth_map
     assert "non-authorizing" in collapsed
     assert "fastpath" in collapsed or "fast-path" in collapsed or "tests/ci" in truth_map
+    assert "INPUT_PACKET_VERIFIED=true" in truth_map
+    assert "SECRETS_INCLUDED=false" in truth_map
 
 
 def test_cybersecurity_visibility_pending_guard_machine_line_consistency_v0() -> None:
@@ -247,6 +282,43 @@ def _forbidden_guard_registry_assignments(text: str) -> list[str]:
         elif key in GUARD_REGISTRY_EXPECTED and value != GUARD_REGISTRY_EXPECTED[key]:
             drift.append(stripped)
     return drift
+
+
+def test_cybersecurity_visibility_r_pending_external_input_jsonl_mapping_guard_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    external_block = _block_containing(text, EXTERNAL_INPUT_JSONL_MAPPING_GUARD_BLOCK_ANCHOR)
+    external_values = _machine_line_values(external_block)
+
+    assert (
+        "Pending R-001/R-002/R-007 — external INPUT_JSONL intake mapping guard v0" in text
+    )
+    assert INTAKE_PACKET_PATH in text
+    assert VALIDATION_BUNDLE_PATH in text
+    assert THIS_MODULE in text
+    assert "does not** ingest operator JSONL into the repo" in text
+    assert "does not** set `INPUT_JSONL_PROVIDED=true`" in text
+
+    for key, expected in EXTERNAL_VALIDATION_EXPECTED.items():
+        assert external_values.get(key) == expected, (
+            f"external mapping guard {key}={external_values.get(key)!r} expected {expected!r}"
+        )
+
+    _assert_block_keys(
+        external_block,
+        block_name="external_input_jsonl_mapping_guard",
+        required_keys=frozenset(
+            {
+                "INPUT_JSONL_PROVIDED",
+                "LOSSLESS_JSONL_RECOVERY",
+                "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED",
+                "NO_MAPPING_WITHOUT_INPUT_ARTIFACT",
+            }
+        ),
+    )
+
+    assert "non-authorizing" in collapsed
+    assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
 
 
 def test_cybersecurity_visibility_pending_guard_negative_drift_forbidden_v0() -> None:
