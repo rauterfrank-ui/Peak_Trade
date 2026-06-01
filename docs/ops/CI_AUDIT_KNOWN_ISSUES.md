@@ -614,6 +614,55 @@ CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_GUARD_EXTENSION_DOCS_TESTS_ONLY=tr
 
 **Relationship to pending risks R-001/R-002/R-007:** Retained risks remain **Pending** in the table above. Mapping **execution** requires merged guard-extension plus `OPERATOR_GO_DERIVED_ONLY_MAPPING_EXECUTION`; not implied here.
 
+### Pending R-001/R-002/R-007 — derived-only mapping wave-1 charter v0
+
+```
+CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_WAVE1_CHARTER_V0=true
+DERIVED_ONLY_MAPPING_WAVE1_CHARTER_PROPOSED=true
+DERIVED_ONLY_MAPPING_GUARD_EXTENSION_PROPOSED=true
+DERIVED_ONLY_MAPPING_EXECUTION_GO_RECORDED=true
+DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true
+INPUT_JSONL_PROVIDED=false
+DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL=true
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT=true
+LOSSLESS_JSONL_RECOVERY=false
+ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED=false
+OLD_R_ID_RECONSTRUCTION_ALLOWED=false
+DERIVED_CANDIDATE_ID_FAMILY_ONLY=true
+CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_WAVE1_CHARTER_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Record operator wave-1 charter (Frank Rauter; `OPERATOR_GO_SMALL_DERIVED_ONLY_MAPPING_WAVE1_R001_R002_R007_CHARTER_PR=true`) that documents the **governance scope** for a future multi-wave derived-only mapping path for R-001/R-002/R-007 after PR #3892 guard-extension merge and wave-scope precheck **PASS**. This section **does not** execute mapping, **does not** set `INPUT_JSONL_PROVIDED=true`, **does not** claim derived JSONL is the original `FULL_LOSSLESS_RISK_CANDIDATES.jsonl`, **does not** authorize Old-R-ID reconstruction or equivalence, **does not** edit owner test modules, and **does not** flip the pending risk table to **mapped**. Direct mapping execution remains **blocked** (`DIRECT_MAPPING_WAVE_BLOCKED=true` — minimum **6** repo files for full owner promotion; exceeds ≤3 allowlist).
+
+**Non-authorizing:** No workflow dispatch, runtime/scheduler/daemon execution, hooks, Notion write/MCP/API, Market overlay enablement, S3/AWS/rclone, broker/exchange, Testnet/Live, or Master V2 / Double Play authority changes. No CSC-RCHAIN count changes (**258** / **1** / **413** / **672** unchanged).
+
+**Wave-1 scope (governance crosslink only — not execution):**
+
+| Risk | `derived_candidate_id` | Future owner module (not edited in wave-1 charter) | Status |
+|------|------------------------|-----------------------------------------------------|--------|
+| R-001 | `DERIVED-CYBER-R-001-001` | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` | **Pending** |
+| R-002 | `DERIVED-CYBER-R-002-001` | `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py` | **Pending** |
+| R-007 | `DERIVED-CYBER-R-007-001` | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` | **Pending** |
+
+**External planning artifacts (archive only):**
+
+| Token | Durable path |
+|-------|--------------|
+| Wave-scope precheck | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_wave_scope_precheck_readonly_v0_20260601T180641Z` |
+| Post PR #3892 guard-extension merge closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_small_derived_only_mapping_guard_extension_pr_merge_closeout_readonly_v0_20260601T180415Z` |
+| Derived JSONL build/validate | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_jsonl_build_validate_v0_20260601T165743Z` |
+
+**Future slice token (requires separate Operator GO):** `OPERATOR_GO_DERIVED_ONLY_MAPPING_EXECUTION` — not authorized by this wave-1 charter section.
+
+**Guard module (reuse — no parallel cyber anchor):** `tests/ci/test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py`
+
+**Relationship to § derived-only mapping guard extension v0:** Builds on `DERIVED_ONLY_MAPPING_GUARD_EXTENSION_PROPOSED=true`; records wave-1 charter governance only; `DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true` unchanged.
+
+**Relationship to § input artifact contract v0:** `INPUT_JSONL_PROVIDED` remains **false**. `DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL=true` does **not** satisfy definitive mapping input.
+
+**Relationship to pending risks R-001/R-002/R-007:** Retained risks remain **Pending** in the table above. Mapping **execution** requires merged wave-1 charter plus `OPERATOR_GO_DERIVED_ONLY_MAPPING_EXECUTION` and a separate multi-wave execution slice; not implied here.
+
 ### Static inventory schema validation guard v0
 
 ```
