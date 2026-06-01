@@ -144,7 +144,7 @@ def test_cybersecurity_visibility_repo_static_histogram_paid_ai_eval_gate_crossl
     )
     assert "CSC_RCHAIN_V1_OLD_124_COUNT_BUNDLES_HISTORICAL_ONLY=true" in guard_block
     assert "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMATION_MODEL_ACTIVE=true" in guard_block
-    assert "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_CANDIDATE_COUNT=205" in guard_block
+    assert "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_CANDIDATE_COUNT=211" in guard_block
     assert "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_SUBSET_OF_PARK=true" in guard_block
     assert (
         "csc_rchain_v1_post_ops_closeout_contracts_batch_authority_refresh_and_next_batch_ranking_readonly_v0_20260601T133828Z"
