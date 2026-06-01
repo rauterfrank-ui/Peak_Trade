@@ -33,6 +33,9 @@ GAP4_REQ_A_STRICT_2A_REFLECTION_HEADER = (
 )
 GAP4_REQ_B_TIER_D_BOUNDARY_REFLECTION_HEADER = "## Gap 4 REQ-B Tier-D Boundary Reflection v0"
 GAP4_REQ_B_SHADOW_B07_B08_ADAPTER_PARITY_HEADER = "## Gap 4 REQ-B Shadow B07/B08 Adapter Parity v0"
+GAP4_FULL_SCOPE_EVIDENCE_COMPLETENESS_REFLECTION_HEADER = (
+    "## Gap 4 Full-Scope Evidence Completeness Reflection v0"
+)
 GAP7_GOVERNED_REFLECTION_HEADER = "## Gap 7 Governed Risk Boundary Acceptance Reflection v0"
 GAP2A1_SECTION_HEADER = "## §2a.1 Primary Evidence Enforcement Contract v0"
 _MARKER_TRUE = "=true"
@@ -115,6 +118,12 @@ def _gap4_req_b_tier_d_boundary_reflection_section(text: str) -> str:
 
 def _gap4_req_b_shadow_b07_b08_adapter_parity_section(text: str) -> str:
     return text.split(GAP4_REQ_B_SHADOW_B07_B08_ADAPTER_PARITY_HEADER, 1)[1].split(
+        GAP4_FULL_SCOPE_EVIDENCE_COMPLETENESS_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap4_full_scope_evidence_completeness_reflection_section(text: str) -> str:
+    return text.split(GAP4_FULL_SCOPE_EVIDENCE_COMPLETENESS_REFLECTION_HEADER, 1)[1].split(
         GAP7_GOVERNED_REFLECTION_HEADER, 1
     )[0]
 
@@ -573,5 +582,62 @@ def test_gap4_req_b_tier_d_boundary_reflection_drift_guard_scoped_v0() -> None:
     assert "REQ_B_TIER_D_SHADOW_PATH_FOUND=true" not in strict_2a_lines
     assert "REQ_B_TIER_D_SHADOW_PATH_FOUND=true" not in criteria_lines
     assert "REQ_B_TIER_D_SHADOW_PATH_FOUND=true" not in block_lines
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
+
+
+def test_gap4_full_scope_evidence_completeness_reflection_drift_guard_scoped_v0() -> None:
+    text = _section5_text()
+    full_scope = _gap4_full_scope_evidence_completeness_reflection_section(text)
+    parity = _gap4_req_b_shadow_b07_b08_adapter_parity_section(text)
+    criteria = _gap4_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP4_FULL_SCOPE_EVIDENCE_COMPLETENESS_REFLECTION_V0=true" in full_scope
+    assert (
+        "ACCEPTED_MODE=GAP4_FULL_SCOPE_EVIDENCE_EXTERNAL_COMPLETENESS_REFLECTION" in full_scope
+    )
+    assert "EXTERNAL_COMPLETENESS_VERIFICATION_POINTER=" in full_scope
+    assert "gap4_full_scope_evidence_completeness_verification_v0_20260601T010600Z" in full_scope
+    assert "EXTERNAL_OUTPUT_EVIDENCE_PATHS_VERIFICATION_POINTER=" in full_scope
+    assert "gap4_output_evidence_paths_verification_v0_20260601T010200Z" in full_scope
+    assert "REQ_A_FULL_2A_ARTIFACT_SET_FOUND=true" in full_scope
+    assert "REQ_A_TO_DERIVED_PAPER_LINKAGE_CONFIRMED=true" in full_scope
+    assert "REQ_B_TIER_D_POPULATED_PATHS_FOUND=true" in full_scope
+    assert "REQ_C_CROSS_LANE_EVIDENCE_FOUND=true" in full_scope
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in full_scope
+    assert "GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=true" in full_scope
+    assert "SHADOW_REAL_10MIN_OBSERVATION=false" in full_scope
+    assert "TEN_MINUTE_RUN_STARTED=false" in full_scope
+    assert "FULL_SCOPE_GAP4_VERIFIED=false" in full_scope
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in full_scope
+    assert "PATH_B_LIFT_DISCUSSION_READY=false" in full_scope
+    assert "GLOBAL_PREFLIGHT_LIFTED=false" in full_scope
+    assert "DOUBLE_PLAY_LOGIC_TOUCHED=false" in full_scope
+    assert "TRADING_LOGIC_TOUCHED=false" in full_scope
+    assert "does not set `FULL_SCOPE_GAP4_VERIFIED=true`" in full_scope
+    assert "does not verify Gap-4 output evidence paths in criteria or Final Machine Lines" in (
+        full_scope
+    )
+    assert "Evidence acceptance is not runtime authorization" in full_scope
+
+    full_scope_lines = {line.strip() for line in full_scope.splitlines()}
+    parity_lines = {line.strip() for line in parity.splitlines()}
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+
+    assert "GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=true" in full_scope_lines
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in full_scope_lines
+    assert "REQ_B_TIER_D_POPULATED_PATHS_FOUND=true" in full_scope_lines
+    assert "REQ_C_CROSS_LANE_EVIDENCE_FOUND=true" in full_scope_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in full_scope_lines
+    assert "GLOBAL_PREFLIGHT_LIFTED=true" not in full_scope_lines
+    assert "PATH_B_LIFT_DISCUSSION_READY=true" not in full_scope_lines
+    assert "SHADOW_REAL_10MIN_OBSERVATION=true" not in full_scope_lines
+    assert "GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=true" not in parity_lines
+    assert "GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=true" not in criteria_lines
+    assert "GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=true" not in block_lines
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" not in criteria_lines
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" not in block_lines
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
