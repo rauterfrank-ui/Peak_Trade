@@ -322,3 +322,11 @@ def test_boundary_owner_crosslinks_gap7_and_scheduler_dry_run_hardening_v0() -> 
     hardening_text = HARDENING_TESTS.read_text(encoding="utf-8")
     assert "test_gap7_risk_boundary_criteria_contract_v0.py" in hardening_text
     assert Path(__file__).name in hardening_text
+
+
+def test_reciprocal_crosslink_to_remote_runtime_charter_docs_guard_v0() -> None:
+    guard_test = REPO_ROOT / "tests" / "ops" / "test_remote_runtime_contract_docs_guard_v0.py"
+    assert guard_test.is_file()
+    guard_text = guard_test.read_text(encoding="utf-8")
+    assert Path(__file__).name in guard_text
+    assert SPEC.name in guard_text

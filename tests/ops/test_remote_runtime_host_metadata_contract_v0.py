@@ -191,3 +191,11 @@ def test_closeout_anchor_referenced_as_example_only() -> None:
     text = _taxonomy_text()
     assert "daemon_paper_24h_20260524T205447Z" in text
     assert "non-authorizing example" in text.lower() or "example context" in text.lower()
+
+
+def test_reciprocal_crosslink_to_external_charter_docs_guard() -> None:
+    guard_test = REPO_ROOT / "tests" / "ops" / "test_remote_runtime_contract_docs_guard_v0.py"
+    assert guard_test.is_file()
+    guard_text = guard_test.read_text(encoding="utf-8")
+    assert Path(__file__).name in guard_text
+    assert "REMOTE_RUNTIME_IS_BACKEND_NOT_LANE=true" in _taxonomy_text()
