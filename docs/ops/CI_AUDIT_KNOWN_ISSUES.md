@@ -462,9 +462,9 @@ CYBERSECURITY_CSC_LOSSLESS_V1_DATASET_REFLECTION_GUARD_DOCS_TESTS_ONLY=true
 ```
 CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUARD_V0=true
 CSC_RCHAIN_V1_OPERATOR_DECISION_RECORDED=true
-CSC_RCHAIN_V1_ACCEPTED_GROUPS=CSC-RCHAIN-v1-006,CSC-RCHAIN-v1-007,CSC-RCHAIN-v1-008,CSC-RCHAIN-v1-009b
-CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=4
-CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=118
+CSC_RCHAIN_V1_ACCEPTED_GROUPS=CSC-RCHAIN-v1-006,CSC-RCHAIN-v1-007,CSC-RCHAIN-v1-008,CSC-RCHAIN-v1-009a,CSC-RCHAIN-v1-009b
+CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=5
+CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=124
 CSC_RCHAIN_V1_PARKED_GROUPS=CSC-RCHAIN-v1-001,CSC-RCHAIN-v1-002,CSC-RCHAIN-v1-003,CSC-RCHAIN-v1-004,CSC-RCHAIN-v1-005,CSC-RCHAIN-v1-009
 CSC_RCHAIN_V1_PARKED_GROUP_COUNT=6
 CSC_RCHAIN_V1_REJECTED_GROUPS=
@@ -500,16 +500,17 @@ PARALLEL_BUILDS_CREATED=false
 CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUARD_DOCS_TESTS_ONLY=true
 ```
 
-**Purpose:** Reflect operator **ACCEPT** of four **new** `CSC-RCHAIN-v1` triage groups derived from `CSC-LOSSLESS-v1` (006/007/008 plus leaf subgroup **009b**) — **not** restoration of the legacy post-HOLD R-001/R-002/R-007 chain and **not** acceptance of PARK scheduler/mixed parent groups.
+**Purpose:** Reflect operator **ACCEPT** of five **new** `CSC-RCHAIN-v1` triage groups derived from `CSC-LOSSLESS-v1` (006/007/008 plus leaf subgroups **009a** and **009b**) — **not** restoration of the legacy post-HOLD R-001/R-002/R-007 chain and **not** acceptance of PARK scheduler/mixed parent groups.
 
 | Accepted `rchain_id` | Category theme | `candidate_count` | Visibility owner (reuse) |
 |--------------------|----------------|------------------:|------------------------|
 | CSC-RCHAIN-v1-006 | manual_dispatch_sensitive_surface | 59 | `tests/ci/test_workflow_manual_dispatch_sensitive_surface_contract_v0.py` |
 | CSC-RCHAIN-v1-007 | branch_or_environment_authority | 39 | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` |
 | CSC-RCHAIN-v1-008 | workflow_secrets_visibility | 16 | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
+| CSC-RCHAIN-v1-009a | artifact_retention_or_evidence_gap | 6 | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py` |
 | CSC-RCHAIN-v1-009b | paid_ai_eval_gate | 4 | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_paid_ai_eval_gate_crosslink_v0.py` |
 
-**PARK (not repo-reflected as accepted):** CSC-RCHAIN-v1-001 through CSC-RCHAIN-v1-005 (scheduler/runtime boundary buckets; split recommended) and parent **CSC-RCHAIN-v1-009** (mixed artifact_retention + paid_ai_eval; split into 009a/009b — only **009b** accepted here; **009a** remains PARK).
+**PARK (not repo-reflected as accepted):** CSC-RCHAIN-v1-001 through CSC-RCHAIN-v1-005 (scheduler/runtime boundary buckets; split recommended) and parent **CSC-RCHAIN-v1-009** (mixed artifact_retention + paid_ai_eval; split into 009a/009b — leaf subgroups **009a** and **009b** accepted here; parent **009** remains PARK).
 
 **External decision artifacts (archive — not repo-ingested):**
 
@@ -521,12 +522,13 @@ CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUARD_DOCS_TESTS_ONLY=tru
 | Proposed groups JSON | `…&#47;PROPOSED_CSC_RCHAIN_V1_GROUPS.json` (external) |
 | Operator ACCEPT CSC-RCHAIN-v1-009b | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/csc_rchain_v1_group_009b_review_v0_20260601T052317Z` |
 | Governed reflection PR plan 009b | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/csc_rchain_v1_009b_governed_reflection_pr_plan_v0_20260601T060823Z` |
+| Operator ACCEPT CSC-RCHAIN-v1-009a | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/csc_rchain_009a_operator_accept_and_governed_reflection_v0_20260601T090317Z` |
 
 **Guard module (reuse — no parallel cyber anchor):** `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py` with reciprocal crosslinks to `tests/ci/test_csc_lossless_v1_dataset_reflection_contract_v0.py`, `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py`, and `tests/ci/test_static_inventory_schema_guard_contract_v0.py`.
 
 **Non-authorizing:** Does **not** treat PARK groups as accepted; does **not** authorize definitive R-001/R-002/R-007 mapping; does **not** claim old R-ID equivalence; does **not** authorize runtime/scheduler/daemon execution, security scans, network, secrets access, fake reconstruction, Notion write/MCP/API, Market overlay changes, S3/AWS/rclone, broker/exchange, Testnet/Live, or Master V2 / Double Play authority changes.
 
-**Relationship to CSC-LOSSLESS-v1 guard v0:** Source dataset remains 672-row `CSC-LOSSLESS-v1`; accepted R-chain groups cover **118** candidates (114 from 006/007/008 plus 4 from **009b**). Histogram row `paid_ai_eval_gate | 4` remains unchanged — visibility-only crosslink to `tests/ci/test_aiops_promptfoo_cost_gate_workflow_contract_v0.py`. **Relationship to pending R-001/R-002/R-007:** Retained risks remain **Pending** while `INPUT_JSONL_PROVIDED=false`.
+**Relationship to CSC-LOSSLESS-v1 guard v0:** Source dataset remains 672-row `CSC-LOSSLESS-v1`; accepted R-chain groups cover **124** candidates (114 from 006/007/008 plus 6 from **009a** plus 4 from **009b**). Histogram row `artifact_retention_or_evidence_gap | 6` and `paid_ai_eval_gate | 4` remain unchanged — visibility-only crosslinks to existing workflow/histogram guard owners. **Relationship to pending R-001/R-002/R-007:** Retained risks remain **Pending** while `INPUT_JSONL_PROVIDED=false`.
 
 ### Static visibility contract owners (reuse — do not duplicate)
 
