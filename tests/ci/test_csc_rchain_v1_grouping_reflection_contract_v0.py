@@ -31,6 +31,7 @@ ACCEPT_GROUPS = (
     "CSC-RCHAIN-v1-002-ci-workflow-visibility",
     "CSC-RCHAIN-v1-002-observability",
     "CSC-RCHAIN-v1-001-ops-autonomous-control-plane",
+    "CSC-RCHAIN-v1-001-ops-control-plane-offline",
 )
 PARK_GROUPS = (
     "CSC-RCHAIN-v1-001",
@@ -63,7 +64,7 @@ EXTERNAL_BATCH_REVIEW = (
 )
 REFRESHED_AUTHORITY_BUNDLE = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/csc_rchain_v1_post_observability_batch_authority_refresh_and_next_batch_ranking_readonly_v0_20260601T114022Z"
+    "planning/csc_rchain_v1_post_ops_control_plane_batch_authority_refresh_and_next_batch_ranking_readonly_v0_20260601T115749Z"
 )
 OPERATOR_BATCH_ACCEPT_TIER_A_003 = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
@@ -81,6 +82,14 @@ EXTERNAL_BATCH_REVIEW_TIER_A_004 = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/csc_rchain_v1_tier_a_004_001_ops_autonomous_control_plane_batch_external_review_readonly_v0_20260601T114411Z"
 )
+OPERATOR_BATCH_ACCEPT_TIER_A_005 = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/csc_rchain_v1_tier_a_005_001_ops_control_plane_offline_batch_operator_accept_and_governed_reflection_v0_20260601T120540Z"
+)
+EXTERNAL_BATCH_REVIEW_TIER_A_005 = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/csc_rchain_v1_tier_a_005_001_ops_control_plane_offline_batch_external_review_readonly_v0_20260601T120135Z"
+)
 
 GUARD_BLOCK_ANCHOR = "CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUARD_V0=true"
 
@@ -93,10 +102,11 @@ EXPECTED_MACHINE_LINES: dict[str, str] = {
         "CSC-RCHAIN-v1-002-p117,CSC-RCHAIN-v1-002-p50,"
         "CSC-RCHAIN-v1-002-ci-workflow-visibility,"
         "CSC-RCHAIN-v1-002-observability,"
-        "CSC-RCHAIN-v1-001-ops-autonomous-control-plane"
+        "CSC-RCHAIN-v1-001-ops-autonomous-control-plane,"
+        "CSC-RCHAIN-v1-001-ops-control-plane-offline"
     ),
-    "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT": "13",
-    "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT": "144",
+    "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT": "14",
+    "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT": "152",
     "CSC_RCHAIN_V1_PARKED_GROUP_COUNT": "6",
     "CSC_RCHAIN_V1_REJECTED_GROUPS": "",
     "CSC_RCHAIN_V1_NEED_MORE_REVIEW_GROUPS": "",
@@ -127,9 +137,9 @@ EXPECTED_MACHINE_LINES: dict[str, str] = {
     "CSC_RCHAIN_V1_EXTERNAL_AUTHORITY_CSV": "FULL_AUTHORITY_BUNDLE_DRAFT.csv",
     "CSC_RCHAIN_V1_EXTERNAL_AUTHORITY_JSON": "FULL_AUTHORITY_BUNDLE_DRAFT.json",
     "CSC_RCHAIN_V1_AUTHORITY_DRAFT_ROWS": "672",
-    "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT": "144",
+    "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT": "152",
     "CSC_RCHAIN_V1_REVIEWED_PREPARED_ONLY_COUNT": "1",
-    "CSC_RCHAIN_V1_PARK_COUNT": "527",
+    "CSC_RCHAIN_V1_PARK_COUNT": "519",
     "CSC_RCHAIN_V1_BASE_AUTHORITY_BUNDLE_SNAPSHOT_ACCEPT_COUNT": "129",
     "CSC_RCHAIN_V1_BASE_AUTHORITY_BUNDLE_SNAPSHOT_PARK_COUNT": "542",
     "CSC_RCHAIN_V1_COUNTS_CONSISTENT": "true",
@@ -205,7 +215,10 @@ def test_csc_rchain_v1_grouping_reflection_contract_v0() -> None:
     assert EXTERNAL_BATCH_REVIEW_TIER_A_003 in block
     assert OPERATOR_BATCH_ACCEPT_TIER_A_004 in block
     assert EXTERNAL_BATCH_REVIEW_TIER_A_004 in block
+    assert OPERATOR_BATCH_ACCEPT_TIER_A_005 in block
+    assert EXTERNAL_BATCH_REVIEW_TIER_A_005 in block
     assert "TIER-A-004-001-ops-autonomous-control-plane-v0" in block
+    assert "TIER-A-005-001-ops-control-plane-offline-v0" in block
     assert "reviewed-prepared-only" in collapsed
     assert "historical/stale" in collapsed
     assert "does **not** ingest `FULL_AUTHORITY_BUNDLE_DRAFT.csv`" in block
@@ -227,10 +240,12 @@ def test_csc_rchain_v1_grouping_reflection_truth_map_crosslink_v0() -> None:
 
     assert "CSC-RCHAIN-v1 accepted groups reflection guard v0" in truth_map
     assert THIS_MODULE in truth_map
-    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=13" in truth_map
+    assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=152" in truth_map
     assert "CSC-RCHAIN-v1-002-ci-workflow-visibility" in truth_map
     assert "CSC-RCHAIN-v1-002-observability" in truth_map
     assert "CSC-RCHAIN-v1-001-ops-autonomous-control-plane" in truth_map
+    assert "CSC-RCHAIN-v1-001-ops-control-plane-offline" in truth_map
+    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=14" in truth_map
     assert "CSC-RCHAIN-v1-009a" in truth_map
     assert "CSC-RCHAIN-v1-009b" in truth_map
     assert "CSC-RCHAIN-v1-002-infra" in truth_map
