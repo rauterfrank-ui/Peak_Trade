@@ -28,6 +28,7 @@ ACCEPT_GROUPS = (
     "CSC-RCHAIN-v1-002-p101",
     "CSC-RCHAIN-v1-002-p117",
     "CSC-RCHAIN-v1-002-p50",
+    "CSC-RCHAIN-v1-002-ci-workflow-visibility",
 )
 PARK_GROUPS = (
     "CSC-RCHAIN-v1-001",
@@ -50,6 +51,14 @@ EXTERNAL_AUTHORITY_BUNDLE = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/csc_rchain_v1_external_full_authority_bundle_draft_and_wiring_check_readonly_v0_20260601T104257Z"
 )
+OPERATOR_BATCH_ACCEPT = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/csc_rchain_v1_tier_a_002_ci_workflow_visibility_batch_operator_accept_and_governed_reflection_v0_20260601T111100Z"
+)
+EXTERNAL_BATCH_REVIEW = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/csc_rchain_v1_tier_a_002_ci_workflow_visibility_batch_external_review_readonly_v0_20260601T110733Z"
+)
 
 GUARD_BLOCK_ANCHOR = "CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUARD_V0=true"
 
@@ -59,10 +68,11 @@ EXPECTED_MACHINE_LINES: dict[str, str] = {
         "CSC-RCHAIN-v1-006,CSC-RCHAIN-v1-007,CSC-RCHAIN-v1-008,"
         "CSC-RCHAIN-v1-009a,CSC-RCHAIN-v1-009b,CSC-RCHAIN-v1-002-infra,"
         "CSC-RCHAIN-v1-002-integration,CSC-RCHAIN-v1-002-p101,"
-        "CSC-RCHAIN-v1-002-p117,CSC-RCHAIN-v1-002-p50"
+        "CSC-RCHAIN-v1-002-p117,CSC-RCHAIN-v1-002-p50,"
+        "CSC-RCHAIN-v1-002-ci-workflow-visibility"
     ),
-    "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT": "10",
-    "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT": "129",
+    "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT": "11",
+    "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT": "137",
     "CSC_RCHAIN_V1_PARKED_GROUP_COUNT": "6",
     "CSC_RCHAIN_V1_REJECTED_GROUPS": "",
     "CSC_RCHAIN_V1_NEED_MORE_REVIEW_GROUPS": "",
@@ -92,9 +102,11 @@ EXPECTED_MACHINE_LINES: dict[str, str] = {
     "CSC_RCHAIN_V1_EXTERNAL_AUTHORITY_CSV": "FULL_AUTHORITY_BUNDLE_DRAFT.csv",
     "CSC_RCHAIN_V1_EXTERNAL_AUTHORITY_JSON": "FULL_AUTHORITY_BUNDLE_DRAFT.json",
     "CSC_RCHAIN_V1_AUTHORITY_DRAFT_ROWS": "672",
-    "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT": "129",
+    "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT": "137",
     "CSC_RCHAIN_V1_REVIEWED_PREPARED_ONLY_COUNT": "1",
-    "CSC_RCHAIN_V1_PARK_COUNT": "542",
+    "CSC_RCHAIN_V1_PARK_COUNT": "534",
+    "CSC_RCHAIN_V1_BASE_AUTHORITY_BUNDLE_SNAPSHOT_ACCEPT_COUNT": "129",
+    "CSC_RCHAIN_V1_BASE_AUTHORITY_BUNDLE_SNAPSHOT_PARK_COUNT": "542",
     "CSC_RCHAIN_V1_COUNTS_CONSISTENT": "true",
     "CSC_RCHAIN_V1_REVIEWED_PREPARED_ONLY_UNIT": "CSC-RCHAIN-v1-002-p63",
     "CSC_RCHAIN_V1_REVIEWED_PREPARED_ONLY_CANDIDATE": "CSC-LOSSLESS-v1-000603",
@@ -161,6 +173,8 @@ def test_csc_rchain_v1_grouping_reflection_contract_v0() -> None:
     assert "CSC-RCHAIN-v1-002-p63" not in accepted_line
 
     assert EXTERNAL_AUTHORITY_BUNDLE in block
+    assert OPERATOR_BATCH_ACCEPT in block
+    assert EXTERNAL_BATCH_REVIEW in block
     assert "reviewed-prepared-only" in collapsed
     assert "historical/stale" in collapsed
     assert "does **not** ingest `FULL_AUTHORITY_BUNDLE_DRAFT.csv`" in block
@@ -182,7 +196,8 @@ def test_csc_rchain_v1_grouping_reflection_truth_map_crosslink_v0() -> None:
 
     assert "CSC-RCHAIN-v1 accepted groups reflection guard v0" in truth_map
     assert THIS_MODULE in truth_map
-    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=10" in truth_map
+    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=11" in truth_map
+    assert "CSC-RCHAIN-v1-002-ci-workflow-visibility" in truth_map
     assert "CSC-RCHAIN-v1-009a" in truth_map
     assert "CSC-RCHAIN-v1-009b" in truth_map
     assert "CSC-RCHAIN-v1-002-infra" in truth_map
