@@ -126,8 +126,8 @@ def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_cross
     assert ACCEPTED_SUBGROUP_002_P117 in guard_block
     assert ACCEPTED_SUBGROUP_002_P50 in guard_block
     assert GROUPING_REFLECTION_GUARD_MODULE in guard_block
-    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=11" in guard_block
-    assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=137" in guard_block
+    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=12" in guard_block
+    assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=140" in guard_block
     assert "CSC_RCHAIN_V1_HYBRID_AUTHORITY_POINTER_ACTIVE=true" in guard_block
     assert (
         "csc_rchain_v1_external_full_authority_bundle_draft_and_wiring_check_readonly_v0_20260601T104257Z"
@@ -135,7 +135,10 @@ def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_cross
     )
     assert "CSC_RCHAIN_V1_002_P63_ACCEPTED=false" in guard_block
     assert "reviewed-prepared-only" in guard_block.lower()
-    assert "does **not** authorize shadow/online-readiness/runtime/scheduler" in guard_block
+    assert (
+        "does **not** authorize observability/logging/decision-context/execution/runtime/scheduler/shadow/online-readiness"
+        in guard_block
+    )
     assert "CSC-RCHAIN-v1-002-infra" in guard_block
     assert "parent **002** remains PARK" in guard_block
     assert "network escalation is authorized" not in collapsed
