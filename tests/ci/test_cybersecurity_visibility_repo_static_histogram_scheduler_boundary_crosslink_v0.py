@@ -135,7 +135,7 @@ def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_cross
     )
     assert "CSC_RCHAIN_V1_002_P63_ACCEPTED=false" in guard_block
     assert "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMATION_MODEL_ACTIVE=true" in guard_block
-    assert "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_CANDIDATE_COUNT=43" in guard_block
+    assert "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_CANDIDATE_COUNT=114" in guard_block
     assert "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_SUBSET_OF_PARK=true" in guard_block
     assert (
         "csc_rchain_v1_post_ops_closeout_contracts_batch_authority_refresh_and_next_batch_ranking_readonly_v0_20260601T133828Z"
