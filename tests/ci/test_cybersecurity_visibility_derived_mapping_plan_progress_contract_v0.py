@@ -27,6 +27,9 @@ DECISION_RECORD_BLOCK_ANCHOR = (
 EXECUTION_CHARTER_BLOCK_ANCHOR = (
     "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_EXECUTION_CHARTER_V0=true"
 )
+EXECUTION_GO_RECORD_BLOCK_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_EXECUTION_GO_RECORD_V0=true"
+)
 CHARTER_BUNDLE_PATH = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/cybersecurity_derived_only_mapping_contract_extension_charter_readonly_v0_20260601T171650Z"
@@ -66,6 +69,14 @@ EXECUTION_CHARTER_PRECHECK_PATH = (
 PR3889_CLOSEOUT_PATH = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "closeout/after_small_derived_only_mapping_decision_record_pr_merge_closeout_readonly_v0_20260601T173555Z"
+)
+EXECUTION_GO_READINESS_PRECHECK_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_only_mapping_execution_go_readiness_precheck_readonly_v0_20260601T174752Z"
+)
+PR3890_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_small_derived_only_mapping_execution_charter_pr_merge_closeout_readonly_v0_20260601T174422Z"
 )
 
 FENCED_BLOCK_RX = re.compile(r"```[^\n]*\n(.*?)```", re.DOTALL)
@@ -120,6 +131,19 @@ DECISION_RECORD_EXPECTED: dict[str, str] = {
 
 EXECUTION_CHARTER_EXPECTED: dict[str, str] = {
     "DERIVED_ONLY_MAPPING_EXECUTION_CHARTER_PROPOSED": "true",
+    "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO": "true",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT": "true",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED": "false",
+    "OLD_R_ID_RECONSTRUCTION_ALLOWED": "false",
+    "DERIVED_CANDIDATE_ID_FAMILY_ONLY": "true",
+}
+
+EXECUTION_GO_RECORD_EXPECTED: dict[str, str] = {
+    "DERIVED_ONLY_MAPPING_EXECUTION_GO_RECORDED": "true",
     "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO": "true",
     "INPUT_JSONL_PROVIDED": "false",
     "DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL": "true",
@@ -334,6 +358,47 @@ def test_cybersecurity_visibility_derived_only_mapping_execution_charter_truth_m
 
     assert "derived-only mapping execution charter" in truth_map
     assert "DERIVED_ONLY_MAPPING_EXECUTION_CHARTER_PROPOSED=true" in truth_map
+    assert "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true" in truth_map
+    assert "INPUT_JSONL_PROVIDED=false" in truth_map
+    assert THIS_MODULE in truth_map
+    assert DERIVED_REFLECTION_TEST in truth_map
+    assert MAPPING_GUARD_TEST in truth_map
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_execution_go_record_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    go_record_block = _block_containing(text, EXECUTION_GO_RECORD_BLOCK_ANCHOR)
+    go_record_values = _machine_line_values(go_record_block)
+
+    assert "Pending R-001/R-002/R-007 — derived-only mapping execution GO record v0" in text
+    assert EXECUTION_GO_READINESS_PRECHECK_PATH in text
+    assert PR3890_CLOSEOUT_PATH in text
+    assert EXECUTION_CHARTER_PRECHECK_PATH in text
+    assert THIS_MODULE in text
+    assert "does not** execute mapping" in text
+    assert "does not** set `INPUT_JSONL_PROVIDED=true`" in text
+    assert "does not** flip the pending risk table to **mapped**" in text
+    assert "does not** claim derived JSONL is the original" in text
+    assert "does not** authorize Old-R-ID reconstruction" in text
+
+    for key, expected in EXECUTION_GO_RECORD_EXPECTED.items():
+        assert go_record_values.get(key) == expected, (
+            f"execution GO record {key}={go_record_values.get(key)!r} expected {expected!r}"
+        )
+
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_execution_go_record_truth_map_crosslink_v0() -> (
+    None
+):
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = truth_map.lower()
+
+    assert "derived-only mapping execution GO record" in truth_map
+    assert "DERIVED_ONLY_MAPPING_EXECUTION_GO_RECORDED=true" in truth_map
     assert "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true" in truth_map
     assert "INPUT_JSONL_PROVIDED=false" in truth_map
     assert THIS_MODULE in truth_map

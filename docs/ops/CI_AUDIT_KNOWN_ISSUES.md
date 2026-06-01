@@ -535,6 +535,45 @@ CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_EXECUTION_CHARTER_DOCS_TESTS_ONLY=
 
 **Relationship to pending risks R-001/R-002/R-007:** Retained risks remain **Pending** in the table above. Mapping **execution** requires merged execution charter plus `OPERATOR_GO_DERIVED_ONLY_MAPPING_EXECUTION`; not implied here.
 
+### Pending R-001/R-002/R-007 — derived-only mapping execution GO record v0
+
+```
+CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_EXECUTION_GO_RECORD_V0=true
+DERIVED_ONLY_MAPPING_EXECUTION_GO_RECORDED=true
+DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true
+INPUT_JSONL_PROVIDED=false
+DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL=true
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT=true
+LOSSLESS_JSONL_RECOVERY=false
+ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED=false
+OLD_R_ID_RECONSTRUCTION_ALLOWED=false
+DERIVED_CANDIDATE_ID_FAMILY_ONLY=true
+CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_EXECUTION_GO_RECORD_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Record operator governance record (Frank Rauter; `OPERATOR_GO_SMALL_DERIVED_ONLY_MAPPING_EXECUTION_GO_RECORD_PR=true`) that documents the **execution GO boundary** in the derived-only mapping chain after PR #3890 execution-charter merge and execution-GO readiness precheck **PASS**. This section **does not** execute mapping, **does not** set `INPUT_JSONL_PROVIDED=true`, **does not** claim derived JSONL is the original `FULL_LOSSLESS_RISK_CANDIDATES.jsonl`, **does not** authorize Old-R-ID reconstruction or equivalence, and **does not** flip the pending risk table to **mapped**.
+
+**Non-authorizing:** No workflow dispatch, runtime/scheduler/daemon execution, hooks, Notion write/MCP/API, Market overlay enablement, S3/AWS/rclone, broker/exchange, Testnet/Live, or Master V2 / Double Play authority changes. No CSC-RCHAIN count changes (**258** / **1** / **413** / **672** unchanged).
+
+**External planning artifacts (archive only):**
+
+| Token | Durable path |
+|-------|--------------|
+| Execution-GO readiness precheck | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_execution_go_readiness_precheck_readonly_v0_20260601T174752Z` |
+| Post PR #3890 execution-charter merge closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_small_derived_only_mapping_execution_charter_pr_merge_closeout_readonly_v0_20260601T174422Z` |
+| Execution charter precheck | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_execution_charter_precheck_readonly_v0_20260601T173815Z` |
+
+**Future slice token (requires separate Operator GO):** guard-extension or mapping-execution wave — not authorized by this execution-GO-record section.
+
+**Guard module (reuse — no parallel cyber anchor):** `tests/ci/test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py`
+
+**Relationship to § derived-only mapping execution charter v0:** Builds on `DERIVED_ONLY_MAPPING_EXECUTION_CHARTER_PROPOSED=true`; records execution-GO governance stage only; `DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true` unchanged.
+
+**Relationship to § input artifact contract v0:** `INPUT_JSONL_PROVIDED` remains **false**. `DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL=true` does **not** satisfy definitive mapping input.
+
+**Relationship to pending risks R-001/R-002/R-007:** Retained risks remain **Pending** in the table above. Mapping **execution** requires guard-extension coherence and a future multi-wave slice; not implied here.
+
 ### Static inventory schema validation guard v0
 
 ```
