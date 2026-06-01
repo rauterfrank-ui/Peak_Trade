@@ -83,6 +83,7 @@ GROUP_PARK_REAFFIRMED_GROUPS: tuple[str, ...] = (
     "CSC-RCHAIN-v1-002-tests-ci-retained-park",
     "CSC-RCHAIN-v1-002-tests-webui-retained-park",
     "CSC-RCHAIN-v1-002-tests-governance-retained-park",
+    "CSC-RCHAIN-v1-002-tests-execution-retained-park",
 )
 OPERATOR_BATCH_ACCEPT_TIER_A_003 = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
@@ -236,6 +237,14 @@ EXTERNAL_BATCH_REVIEW_PR12 = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/csc_rchain_v1_post_pr11_authority_refresh_and_pr12_group_park_reaffirmation_scope_ranking_readonly_v0_20260601T155403Z"
 )
+OPERATOR_BATCH_GROUP_PARK_REAFFIRM_002_005 = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/csc_rchain_v1_pr13_group_park_reaffirm_002_005_tests_execution_retained_park_implementation_v0_20260601T160431Z"
+)
+EXTERNAL_BATCH_REVIEW_PR13 = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/csc_rchain_v1_post_pr12_authority_refresh_and_pr13_group_park_reaffirmation_scope_ranking_readonly_v0_20260601T160218Z"
+)
 
 GUARD_BLOCK_ANCHOR = "CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUARD_V0=true"
 
@@ -320,10 +329,11 @@ EXPECTED_MACHINE_LINES: dict[str, str] = {
         "CSC-RCHAIN-v1-001-tests-ops-retained-park,CSC-RCHAIN-v1-005-tests-fixtures-retained-park,"
         "CSC-RCHAIN-v1-002-tests-ci-retained-park,"
         "CSC-RCHAIN-v1-002-tests-webui-retained-park,"
-        "CSC-RCHAIN-v1-002-tests-governance-retained-park"
+        "CSC-RCHAIN-v1-002-tests-governance-retained-park,"
+        "CSC-RCHAIN-v1-002-tests-execution-retained-park"
     ),
-    "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_GROUP_COUNT": "7",
-    "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_CANDIDATE_COUNT": "226",
+    "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_GROUP_COUNT": "8",
+    "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_CANDIDATE_COUNT": "232",
     "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_SUBSET_OF_PARK": "true",
 }
 
@@ -415,6 +425,8 @@ def test_csc_rchain_v1_grouping_reflection_contract_v0() -> None:
     assert EXTERNAL_BATCH_REVIEW_PR11 in block
     assert OPERATOR_BATCH_GROUP_PARK_REAFFIRM_002_004 in block
     assert EXTERNAL_BATCH_REVIEW_PR12 in block
+    assert OPERATOR_BATCH_GROUP_PARK_REAFFIRM_002_005 in block
+    assert EXTERNAL_BATCH_REVIEW_PR13 in block
     assert "TIER-A-004-001-ops-autonomous-control-plane-v0" in block
     assert "TIER-A-005-001-ops-control-plane-offline-v0" in block
     assert "TIER-A-006-001-ops-gap-contracts-v0" in block
@@ -441,6 +453,7 @@ def test_csc_rchain_v1_grouping_reflection_contract_v0() -> None:
     assert "GROUP-PARK-REAFFIRM-002-002-tests-ci-retained-park-v0" in block
     assert "GROUP-PARK-REAFFIRM-002-003-tests-webui-retained-park-v0" in block
     assert "GROUP-PARK-REAFFIRM-002-004-tests-governance-retained-park-v0" in block
+    assert "GROUP-PARK-REAFFIRM-002-005-tests-execution-retained-park-v0" in block
     assert "CSC-RCHAIN-v1-002-tests-retained-park" in block
     assert "CSC-RCHAIN-v1-004-scripts-ops-retained-park" in block
     assert "CSC-RCHAIN-v1-001-tests-ops-retained-park" in block
@@ -448,6 +461,7 @@ def test_csc_rchain_v1_grouping_reflection_contract_v0() -> None:
     assert "CSC-RCHAIN-v1-002-tests-ci-retained-park" in block
     assert "CSC-RCHAIN-v1-002-tests-webui-retained-park" in block
     assert "CSC-RCHAIN-v1-002-tests-governance-retained-park" in block
+    assert "CSC-RCHAIN-v1-002-tests-execution-retained-park" in block
     assert "002-tests-retained-park" in collapsed
     assert "004-scripts-ops-retained-park" in collapsed
     assert "001-tests-ops-retained-park" in collapsed
@@ -455,6 +469,13 @@ def test_csc_rchain_v1_grouping_reflection_contract_v0() -> None:
     assert "002-tests-ci-retained-park" in collapsed
     assert "002-tests-webui-retained-park" in collapsed
     assert "002-tests-governance-retained-park" in collapsed
+    assert "002-tests-execution-retained-park" in collapsed
+    assert "test_decision_context_v0" in collapsed
+    assert "test_decision_context_v1" in collapsed
+    assert "test_paper_session_cli_contract" in collapsed
+    assert "test_policy_enforcement_contract" in collapsed
+    assert "test_testnet_exec_events_safe" in collapsed
+    assert "venue_adapters/test_registry" in collapsed
     assert "test_live_mode_gate" in collapsed
     assert "test_wp0c_enforce_gate" in collapsed
     assert "policy_critic" in collapsed
@@ -489,6 +510,7 @@ def test_csc_rchain_v1_grouping_reflection_contract_v0() -> None:
     assert "CSC-RCHAIN-v1-002-tests-ci-retained-park" not in accepted_line
     assert "CSC-RCHAIN-v1-002-tests-webui-retained-park" not in accepted_line
     assert "CSC-RCHAIN-v1-002-tests-governance-retained-park" not in accepted_line
+    assert "CSC-RCHAIN-v1-002-tests-execution-retained-park" not in accepted_line
     park_count = int(
         next(
             line.split("=", 1)[1]
@@ -521,7 +543,7 @@ def test_csc_rchain_v1_grouping_reflection_contract_v0() -> None:
     assert accept_count == 258
     assert reviewed_count == 1
     assert park_count == 413
-    assert reaffirmed_candidate_count == 226
+    assert reaffirmed_candidate_count == 232
     assert reaffirmed_candidate_count <= park_count
     assert "group park reaffirmation" in collapsed
     assert "Does **not** treat reaffirmed groups as accepted" in block
@@ -574,6 +596,8 @@ def test_csc_rchain_v1_grouping_reflection_truth_map_crosslink_v0() -> None:
     assert "154526Z" in truth_map
     assert "155403Z" in truth_map
     assert "155649Z" in truth_map
+    assert "160218Z" in truth_map
+    assert "160431Z" in truth_map
     assert "GROUP-PARK-REAFFIRM-002-001-tests-retained-park-v0" in truth_map
     assert "GROUP-PARK-REAFFIRM-004-001-scripts-ops-retained-park-v0" in truth_map
     assert "GROUP-PARK-REAFFIRM-001-001-tests-ops-retained-park-v0" in truth_map
@@ -581,6 +605,7 @@ def test_csc_rchain_v1_grouping_reflection_truth_map_crosslink_v0() -> None:
     assert "GROUP-PARK-REAFFIRM-002-002-tests-ci-retained-park-v0" in truth_map
     assert "GROUP-PARK-REAFFIRM-002-003-tests-webui-retained-park-v0" in truth_map
     assert "GROUP-PARK-REAFFIRM-002-004-tests-governance-retained-park-v0" in truth_map
+    assert "GROUP-PARK-REAFFIRM-002-005-tests-execution-retained-park-v0" in truth_map
     assert "CSC-RCHAIN-v1-002-tests-retained-park" in truth_map
     assert "CSC-RCHAIN-v1-004-scripts-ops-retained-park" in truth_map
     assert "CSC-RCHAIN-v1-001-tests-ops-retained-park" in truth_map
@@ -588,8 +613,9 @@ def test_csc_rchain_v1_grouping_reflection_truth_map_crosslink_v0() -> None:
     assert "CSC-RCHAIN-v1-002-tests-ci-retained-park" in truth_map
     assert "CSC-RCHAIN-v1-002-tests-webui-retained-park" in truth_map
     assert "CSC-RCHAIN-v1-002-tests-governance-retained-park" in truth_map
-    assert "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_CANDIDATE_COUNT=226" in truth_map
-    assert "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_GROUP_COUNT=7" in truth_map
+    assert "CSC-RCHAIN-v1-002-tests-execution-retained-park" in truth_map
+    assert "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_CANDIDATE_COUNT=232" in truth_map
+    assert "CSC_RCHAIN_V1_GROUP_PARK_REAFFIRMED_GROUP_COUNT=8" in truth_map
     assert "CSC-RCHAIN-v1-001-ops-remote-planning-contracts" in truth_map
     assert "CSC-RCHAIN-v1-002-tests-misc-contracts" in truth_map
     assert "TIER-A-009-003-ops-remote-planning-contracts-v0" in truth_map
