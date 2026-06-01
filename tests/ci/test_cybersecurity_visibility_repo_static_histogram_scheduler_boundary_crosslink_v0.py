@@ -33,6 +33,7 @@ REQUIRED_SCHEDULER_REUSE_OWNERS: tuple[str, ...] = (
 GROUPING_REFLECTION_GUARD_MODULE = "tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py"
 ACCEPTED_SUBGROUP_002_INFRA = "CSC-RCHAIN-v1-002-infra"
 ACCEPTED_SUBGROUP_002_INTEGRATION = "CSC-RCHAIN-v1-002-integration"
+ACCEPTED_SUBGROUP_002_P101 = "CSC-RCHAIN-v1-002-p101"
 
 FORBIDDEN_AUTHORIZATION_PHRASES: tuple[str, ...] = (
     "scheduler start authorized",
@@ -119,14 +120,17 @@ def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_cross
     guard_block = _csc_rchain_accepted_groups_guard_block(text)
     assert ACCEPTED_SUBGROUP_002_INFRA in guard_block
     assert ACCEPTED_SUBGROUP_002_INTEGRATION in guard_block
+    assert ACCEPTED_SUBGROUP_002_P101 in guard_block
     assert GROUPING_REFLECTION_GUARD_MODULE in guard_block
-    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=7" in guard_block
-    assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=126" in guard_block
+    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=8" in guard_block
+    assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=127" in guard_block
     assert "CSC-RCHAIN-v1-002-infra" in guard_block
     assert "parent **002** remains PARK" in guard_block
     assert "network escalation is authorized" not in collapsed
     assert "network enablement" not in collapsed
-    assert "kill-switch bypass, or safety-guard semantics changes" in text
+    assert "live enablement (`LIVE=1` appears only as refusal-test context)" in text
+    assert "kill-switch bypass" in text
+    assert "p101 stop-playbook semantics changes" in text
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_truth_map_crosslink_v0() -> (
