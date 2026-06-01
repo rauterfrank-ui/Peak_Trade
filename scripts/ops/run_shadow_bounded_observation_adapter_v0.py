@@ -51,6 +51,9 @@ WRAPPER_CONFIRM_TOKEN = (
     "I_EXPLICITLY_CONFIRM_SHADOW_247_FUTURES_START_WRAPPER_BEYOND_DEFAULT_OFF_SKELETON_V0"
 )
 WRAPPER_EVIDENCE_DIR = "wrapper_evidence"
+COMMAND_TRANSCRIPT_FILENAME = "COMMAND_TRANSCRIPT.log"
+PROCESS_INVENTORY_BEFORE_FILENAME = "PROCESS_INVENTORY_BEFORE.txt"
+PROCESS_INVENTORY_AFTER_FILENAME = "PROCESS_INVENTORY_AFTER.txt"
 DEFAULT_DURATION_MINUTES = 10
 DEFAULT_MAX_STEPS = 120
 DEFAULT_STEP_INTERVAL_SECONDS = 0.0
@@ -298,6 +301,8 @@ def build_plan(
     retention_steps = [
         f"run wrapper bounded dry-run under {wrapper_evidence}",
         f"review PASS required at {review_out.parent}",
+        f"write {COMMAND_TRANSCRIPT_FILENAME} under {staging_root}",
+        f"write {PROCESS_INVENTORY_BEFORE_FILENAME} and {PROCESS_INVENTORY_AFTER_FILENAME} under {staging_root}",
         f"generate MANIFEST.sha256 under {staging_root}",
         f"copy staging bundle to {archive_dest}",
         f"verify checksums on archive copy at {archive_dest}",
@@ -310,6 +315,9 @@ def build_plan(
         "logs/wrapper_stdout.log",
         "logs/wrapper_stderr.log",
         "review/REVIEW_RESULT.json",
+        COMMAND_TRANSCRIPT_FILENAME,
+        PROCESS_INVENTORY_BEFORE_FILENAME,
+        PROCESS_INVENTORY_AFTER_FILENAME,
         "MANIFEST.sha256",
         "CLOSEOUT.md",
         "POSTRUN_ANALYSIS.md",
@@ -453,6 +461,92 @@ def _default_subprocess_runner(
     return int(proc.returncode or 0)
 
 
+def _sanitize_command_for_transcript(argv: Sequence[str]) -> str:
+    joined = " ".join(argv)
+    lowered = joined.lower()
+    for forbidden in ("api_key", "apikey", "secret", "password", "bearer ", "token="):
+        if forbidden in lowered:
+            return "[REDACTED_BOUNDED_SHADOW_COMMAND]"
+    return joined
+
+
+def _write_process_inventory_snapshot(
+    staging_root: Path,
+    *,
+    phase: str,
+    run_id: str,
+) -> None:
+    filename = (
+        PROCESS_INVENTORY_BEFORE_FILENAME if phase == "before" else PROCESS_INVENTORY_AFTER_FILENAME
+    )
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    header_lines = [
+        f"CAPTURE_UTC={now}",
+        f"CAPTURE_PHASE={phase}",
+        f"RUN_ID={run_id}",
+        f"STAGING_ROOT={staging_root.resolve()}",
+        "BOUNDED_SHADOW_ADAPTER_EXECUTE=true",
+        "",
+    ]
+    try:
+        proc = subprocess.run(
+            ["ps", "aux"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        body = proc.stdout or proc.stderr or ""
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        body = f"PROCESS_INVENTORY_CAPTURE_ERROR={exc}\n"
+    (staging_root / filename).write_text("".join(header_lines) + body, encoding="utf-8")
+
+
+def _write_command_transcript(
+    staging_root: Path,
+    *,
+    plan: AdapterPlan,
+    run_id: str,
+    archive_root: Path,
+    wrapper_rc: int,
+    review_rc: int | None,
+    review_verdict: str | None,
+    started_utc: str,
+    ended_utc: str,
+) -> None:
+    lines = [
+        f"=== SHADOW BOUNDED DRY-RUN START UTC={started_utc} ===",
+        f"RUN_ID={run_id}",
+        f"STAGING_ROOT={staging_root.resolve()}",
+        f"ARCHIVE_ROOT={archive_root.resolve()}",
+        f"ADAPTER_VERSION={plan.adapter_version}",
+        "WRAPPER_MODE=bounded-shadow-dry-run",
+        f"DURATION_MINUTES={plan.duration_minutes}",
+        f"MAX_STEPS={plan.max_steps}",
+        f"STEP_INTERVAL_SECONDS={plan.step_interval_seconds}",
+        f"WRAPPER_COMMAND={_sanitize_command_for_transcript(plan.commands['wrapper_bounded_dry_run'])}",
+        f"REVIEW_COMMAND={_sanitize_command_for_transcript(plan.commands['review'])}",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "SHADOW_RUNTIME_APPROVAL_GRANTED=false",
+        "TESTNET_STARTED=false",
+        "LIVE_ALLOWED=false",
+        "",
+        f"=== WRAPPER_RC={wrapper_rc} ===",
+    ]
+    if review_rc is not None:
+        lines.append(f"=== REVIEW_RC={review_rc} REVIEW_VERDICT={review_verdict or 'UNKNOWN'} ===")
+    lines.extend(
+        [
+            "",
+            f"=== SHADOW BOUNDED DRY-RUN END UTC={ended_utc} ===",
+        ]
+    )
+    (staging_root / COMMAND_TRANSCRIPT_FILENAME).write_text(
+        "\n".join(lines) + "\n",
+        encoding="utf-8",
+    )
+
+
 def _write_closeout_artifacts(
     ctx: ExecuteContext,
     plan: AdapterPlan,
@@ -541,6 +635,9 @@ def execute_plan(
     ctx.plan_dir.mkdir(parents=True, exist_ok=True)
     ctx.review_dir.mkdir(parents=True, exist_ok=True)
 
+    started_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    _write_process_inventory_snapshot(ctx.staging_root, phase="before", run_id=ctx.run_id)
+
     stdout_log = ctx.logs_dir / "wrapper_stdout.log"
     stderr_log = ctx.logs_dir / "wrapper_stderr.log"
     rc = subprocess_runner(
@@ -550,21 +647,48 @@ def execute_plan(
         stderr_log,
     )
     if rc != 0:
+        ended_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        _write_command_transcript(
+            ctx.staging_root,
+            plan=plan,
+            run_id=ctx.run_id,
+            archive_root=ctx.archive_root,
+            wrapper_rc=rc,
+            review_rc=None,
+            review_verdict=None,
+            started_utc=started_utc,
+            ended_utc=ended_utc,
+        )
         return rc
 
     review_out = ctx.review_dir / "REVIEW_RESULT.json"
     review_rc = subprocess_runner(plan.commands["review"], ctx.repo_root, review_out, None)
+    review_payload: dict[str, Any] = {}
+    if review_rc == 0:
+        try:
+            review_payload = json.loads(review_out.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            review_payload = {}
+    ended_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    _write_command_transcript(
+        ctx.staging_root,
+        plan=plan,
+        run_id=ctx.run_id,
+        archive_root=ctx.archive_root,
+        wrapper_rc=rc,
+        review_rc=review_rc,
+        review_verdict=str(review_payload.get("verdict") or "UNKNOWN"),
+        started_utc=started_utc,
+        ended_utc=ended_utc,
+    )
     if review_rc != 0:
         return review_rc
-    try:
-        review_payload = json.loads(review_out.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return VALIDATION_EXIT
     if review_payload.get("verdict") != "PASS":
         return VALIDATION_EXIT
 
     archive_dest = ctx.archive_root / "runs" / "shadow" / ctx.run_id
     _write_closeout_artifacts(ctx, plan, archive_dest, review_payload)
+    _write_process_inventory_snapshot(ctx.staging_root, phase="after", run_id=ctx.run_id)
 
     pointer_text = (
         "\n".join(

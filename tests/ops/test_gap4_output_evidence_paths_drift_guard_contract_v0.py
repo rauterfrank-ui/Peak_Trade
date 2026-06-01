@@ -32,6 +32,7 @@ GAP4_REQ_A_STRICT_2A_REFLECTION_HEADER = (
     "## Gap 4 REQ-A Strict §2a Full Artifact Set Acceptance Reflection v0"
 )
 GAP4_REQ_B_TIER_D_BOUNDARY_REFLECTION_HEADER = "## Gap 4 REQ-B Tier-D Boundary Reflection v0"
+GAP4_REQ_B_SHADOW_B07_B08_ADAPTER_PARITY_HEADER = "## Gap 4 REQ-B Shadow B07/B08 Adapter Parity v0"
 GAP7_GOVERNED_REFLECTION_HEADER = "## Gap 7 Governed Risk Boundary Acceptance Reflection v0"
 GAP2A1_SECTION_HEADER = "## §2a.1 Primary Evidence Enforcement Contract v0"
 _MARKER_TRUE = "=true"
@@ -108,6 +109,12 @@ def _gap4_req_a_strict_2a_reflection_section(text: str) -> str:
 
 def _gap4_req_b_tier_d_boundary_reflection_section(text: str) -> str:
     return text.split(GAP4_REQ_B_TIER_D_BOUNDARY_REFLECTION_HEADER, 1)[1].split(
+        GAP4_REQ_B_SHADOW_B07_B08_ADAPTER_PARITY_HEADER, 1
+    )[0]
+
+
+def _gap4_req_b_shadow_b07_b08_adapter_parity_section(text: str) -> str:
+    return text.split(GAP4_REQ_B_SHADOW_B07_B08_ADAPTER_PARITY_HEADER, 1)[1].split(
         GAP7_GOVERNED_REFLECTION_HEADER, 1
     )[0]
 
@@ -469,6 +476,41 @@ def test_gap4_req_a_strict_2a_acceptance_reflection_drift_guard_scoped_v0() -> N
     assert "PATH_B_LIFT_DISCUSSION_READY=true" not in strict_2a_lines
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
+
+
+def test_gap4_req_b_shadow_b07_b08_adapter_parity_drift_guard_scoped_v0() -> None:
+    text = _section5_text()
+    parity = _gap4_req_b_shadow_b07_b08_adapter_parity_section(text)
+    req_b = _gap4_req_b_tier_d_boundary_reflection_section(text)
+    adapter_text = (
+        ROOT / "scripts" / "ops" / "run_shadow_bounded_observation_adapter_v0.py"
+    ).read_text(encoding="utf-8")
+
+    assert "GAP4_REQ_B_SHADOW_B07_B08_ADAPTER_PARITY_V0=true" in parity
+    assert "B07_B08_ADAPTER_PARITY_IMPLEMENTED=true" in parity
+    assert "COMMAND_TRANSCRIPT.log" in parity
+    assert "PROCESS_INVENTORY_BEFORE.txt" in parity
+    assert "PROCESS_INVENTORY_AFTER.txt" in parity
+    assert "SHADOW_B07_B08_MISSING=true" in parity
+    assert "SHADOW_B09_B16_ARCHIVE_METADATA_CLOSED=true" in parity
+    assert "REQ_B_TIER_D_POPULATED_PATHS_FOUND=false" in parity
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in parity
+    assert "PATH_B_LIFT_DISCUSSION_READY=false" in parity
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in parity
+    assert "FULL_SCOPE_GAP4_VERIFIED=false" in parity
+    assert "does not set `SHADOW_B07_B08_MISSING=false`" in parity
+    assert "does not set `REQ_B_TIER_D_POPULATED_PATHS_FOUND=true`" in parity
+    assert "Evidence acceptance is not runtime authorization" in parity
+
+    parity_lines = {line.strip() for line in parity.splitlines()}
+    assert "SHADOW_B07_B08_MISSING=true" in parity_lines
+    assert "SHADOW_B07_B08_MISSING=false" not in parity_lines
+    assert "REQ_B_TIER_D_POPULATED_PATHS_FOUND=true" not in parity_lines
+    assert "SHADOW_B07_B08_MISSING=true" in req_b
+
+    assert "COMMAND_TRANSCRIPT_FILENAME" in adapter_text
+    assert "_write_command_transcript" in adapter_text
+    assert "_write_process_inventory_snapshot" in adapter_text
 
 
 def test_gap4_req_b_tier_d_boundary_reflection_drift_guard_scoped_v0() -> None:

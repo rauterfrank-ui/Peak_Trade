@@ -640,6 +640,52 @@ It does **not** mean real 10-minute wall-clock observation, full REQ-B populate,
 
 Evidence acceptance is not runtime authorization. The Gap 4 Output/Evidence Paths Contract v0 block above remains contract-only and unchanged.
 
+## Gap 4 REQ-B Shadow B07/B08 Adapter Parity v0
+
+GAP4_REQ_B_SHADOW_B07_B08_ADAPTER_PARITY_V0=true
+ACCEPTED_MODE=GAP4_REQ_B_SHADOW_B07_B08_ADAPTER_PARITY_REPO_IMPLEMENTATION
+EXTERNAL_ADAPTER_PARITY_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_req_b_shadow_b07_b08_adapter_parity_pr_charter_v0_20260531T235845Z/
+EXTERNAL_POST_B09_B16_REINVENTORY_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_req_b_post_b09_b16_derived_bundle_reinventory_v0_20260531T235649Z/
+B07_B08_ADAPTER_PARITY_IMPLEMENTED=true
+COMMAND_TRANSCRIPT_FILENAME=COMMAND_TRANSCRIPT.log
+PROCESS_INVENTORY_BEFORE_FILENAME=PROCESS_INVENTORY_BEFORE.txt
+PROCESS_INVENTORY_AFTER_FILENAME=PROCESS_INVENTORY_AFTER.txt
+SHADOW_FAST_SIM_ONLY=true
+SHADOW_REAL_10MIN_OBSERVATION=false
+SHADOW_B07_B08_MISSING=true
+SHADOW_B09_B16_ARCHIVE_METADATA_CLOSED=true
+REQ_B_TIER_D_POPULATED_PATHS_FOUND=false
+REQ_C_CROSS_LANE_EVIDENCE_FOUND=false
+GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=false
+GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false
+FULL_SCOPE_GAP4_VERIFIED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+PATH_B_LIFT_DISCUSSION_READY=false
+GLOBAL_PREFLIGHT_LIFTED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+TRADING_LOGIC_TOUCHED=false
+
+This governed repo-reflection block records Shadow bounded-observation adapter parity for future B07 command transcript and B08 process inventory emission. It does **not** claim existing Tier-D shadow paths already contain B07/B08 bytes. Token flip for `SHADOW_B07_B08_MISSING` requires a separate post-merge bounded Shadow evidence run and reinventory.
+
+### Adapter parity scope (allowed only)
+
+- `run_shadow_bounded_observation_adapter_v0.py` execute path writes `COMMAND_TRANSCRIPT.log`, `PROCESS_INVENTORY_BEFORE.txt`, and `PROCESS_INVENTORY_AFTER.txt` under staging root
+- plan-only `expected_artifacts` and retention steps include B07/B08 filenames
+- transcript and inventory content are sanitized (no secrets, no env dumps)
+- default fast-sim semantics and plan-only default unchanged
+
+### Non-authority boundary (adapter parity does not imply)
+
+- does not set `SHADOW_B07_B08_MISSING=false` until post-merge evidence run + reinventory
+- does not set `REQ_B_TIER_D_POPULATED_PATHS_FOUND=true`
+- does not verify Gap-4 output evidence paths in criteria or Final Machine Lines
+- does not claim full-scope Gap-4 verification or set `FULL_SCOPE_GAP4_VERIFIED=true`
+- does not lift global preflight or open Path-B lift discussion
+- does not authorize scheduler execution or further Shadow/Paper/Testnet/Live runtime
+- does not modify Double-Play, Master V2, trading logic, strategy modules, Bull/Bear, Scope/Capital, Risk/KillSwitch implementation, execution gates, live gates, dashboard authority, AI authority, or config default-on behavior
+
+Evidence acceptance is not runtime authorization. The Gap 4 REQ-B Tier-D Boundary Reflection v0 block above remains unchanged in token posture for populated-path claims.
+
 ## Gap 7 Governed Risk Boundary Acceptance Reflection v0
 
 GAP7_RISK_BOUNDARY_GOVERNED_REFLECTION_V0=true
