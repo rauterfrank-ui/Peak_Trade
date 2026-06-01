@@ -4,8 +4,7 @@ name: Knowledge Extras (ChromaDB Tests)
 # Not required for merge - provides additional signal
 
 on:
-  schedule:
-    - cron: '30 6 * * 1' # Every Monday at 06:30 UTC
+  # Scheduled cron removed (cost minimization); manual dispatch only.
   workflow_dispatch: # Manual trigger
     inputs:
       reason:

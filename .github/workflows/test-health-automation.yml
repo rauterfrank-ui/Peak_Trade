@@ -51,12 +51,7 @@ on:
         default: false
         type: boolean
 
-  # ===========================================================================
-  # Nightly Run (alle stabilen Profile)
-  # ===========================================================================
-  schedule:
-    # Nachtlauf um 03:00 UTC (04:00 CET)
-    - cron: '0 3 * * *'
+  # Scheduled cron removed (cost minimization); manual dispatch only.
 
 # ============================================================================
 # Environment: Offline/Test-Modus sicherstellen

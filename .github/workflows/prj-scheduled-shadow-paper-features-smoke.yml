@@ -1,8 +1,7 @@
 name: PR-J / Scheduled Shadow+Paper Features Smoke
 
 on:
-  schedule:
-    - cron: "23 * * * *"
+  # Scheduled cron removed (cost minimization); manual dispatch only.
   workflow_dispatch:
     inputs:
       enabled:

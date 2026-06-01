@@ -1,11 +1,7 @@
 name: Full Security & Quality Audit (Weekly)
 
 on:
-  # Wöchentlich Montags um 06:00 UTC (07:00 CET)
-  schedule:
-    - cron: '0 6 * * 1'
-
-  # Manueller Trigger
+  # Scheduled cron removed (cost minimization); manual dispatch only.
   workflow_dispatch:
 
 jobs:
