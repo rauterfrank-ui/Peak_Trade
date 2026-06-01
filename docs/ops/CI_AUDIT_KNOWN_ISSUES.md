@@ -418,6 +418,45 @@ CYBERSECURITY_VISIBILITY_DERIVED_MAPPING_PLAN_PROGRESS_DOCS_TESTS_ONLY=true
 
 **Relationship to pending risks R-001/R-002/R-007:** Retained risks remain **Pending** in the table above. Plan rows are **not** definitive mapped assignments.
 
+### Pending R-001/R-002/R-007 — derived-only mapping contract extension v0
+
+```
+CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_CONTRACT_EXTENSION_V0=true
+DERIVED_ONLY_MAPPING_CONTRACT_PROPOSED=true
+DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true
+INPUT_JSONL_PROVIDED=false
+DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL=true
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT=true
+LOSSLESS_JSONL_RECOVERY=false
+ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED=false
+OLD_R_ID_RECONSTRUCTION_ALLOWED=false
+DERIVED_CANDIDATE_ID_FAMILY_ONLY=true
+CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_CONTRACT_EXTENSION_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Record a **governance-only** derived-only mapping contract path that coexists with existing guards after PR #3887 plan progress and definitive-mapping readiness precheck **BLOCKED**. This section **does not** execute mapping, **does not** set `INPUT_JSONL_PROVIDED=true`, **does not** claim derived JSONL is the original `FULL_LOSSLESS_RISK_CANDIDATES.jsonl`, **does not** authorize Old-R-ID reconstruction or equivalence, and **does not** flip the pending risk table to **mapped**.
+
+**Non-authorizing:** No workflow dispatch, runtime/scheduler/daemon execution, hooks, Notion write/MCP/API, Market overlay enablement, S3/AWS/rclone, broker/exchange, Testnet/Live, or Master V2 / Double Play authority changes. No CSC-RCHAIN count changes (**258** / **1** / **413** / **672** unchanged).
+
+**External planning artifacts (archive only):**
+
+| Token | Durable path |
+|-------|--------------|
+| Derived-only contract extension charter | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_contract_extension_charter_readonly_v0_20260601T171650Z` |
+| Definitive mapping readiness precheck | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_definitive_mapping_readiness_precheck_readonly_v0_20260601T171452Z` |
+| Post plan-progress merge closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_small_cyber_mapping_plan_progress_pr_merge_closeout_readonly_v0_20260601T171301Z` |
+
+**Future slice token (requires separate Operator GO):** `OPERATOR_GO_DERIVED_ONLY_MAPPING_EXECUTION` — not authorized by this contract-extension section.
+
+**Guard module (reuse — no parallel cyber anchor):** `tests/ci/test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py`
+
+**Relationship to § derived mapping plan progress v0:** Builds on `DERIVED_MAPPING_PLAN_PROGRESS_ONLY=true`; adds explicit `DERIVED_ONLY_MAPPING_CONTRACT_PROPOSED=true` and `DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true` without changing definitive-mapping gates.
+
+**Relationship to § input artifact contract v0:** `INPUT_JSONL_PROVIDED` remains **false**. `DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL=true` does **not** satisfy definitive mapping input. `NO_MAPPING_WITHOUT_INPUT_ARTIFACT` for **definitive** mapping with `INPUT_JSONL_PROVIDED=true` remains in force.
+
+**Relationship to pending risks R-001/R-002/R-007:** Retained risks remain **Pending** in the table above. Derived-only mapping **execution** requires a future operator-chartered slice; not implied here.
+
 ### Static inventory schema validation guard v0
 
 ```
