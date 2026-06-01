@@ -40,6 +40,7 @@ ACCEPT_GROUPS = (
     "CSC-RCHAIN-v1-001-ops-bounded-durable-evidence-contracts",
     "CSC-RCHAIN-v1-001-ops-post-closeout-contracts",
     "CSC-RCHAIN-v1-001-ops-remote-planning-contracts",
+    "CSC-RCHAIN-v1-002-tests-misc-contracts",
 )
 PARK_GROUPS = (
     "CSC-RCHAIN-v1-001",
@@ -163,6 +164,14 @@ EXTERNAL_BATCH_REVIEW_TIER_A_009_003 = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/csc_rchain_v1_post_pr03_authority_refresh_and_pr04_scope_ranking_readonly_v0_20260601T142048Z"
 )
+OPERATOR_BATCH_ACCEPT_TIER_A_002_004 = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/csc_rchain_v1_pr05_tier_a_002_004_tests_misc_contracts_accept_wave_implementation_v0_20260601T144600Z"
+)
+EXTERNAL_BATCH_REVIEW_TIER_A_002_004 = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/csc_rchain_v1_post_pr04_authority_refresh_and_pr05_scope_ranking_readonly_v0_20260601T143905Z"
+)
 
 GUARD_BLOCK_ANCHOR = "CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUARD_V0=true"
 
@@ -184,10 +193,11 @@ EXPECTED_MACHINE_LINES: dict[str, str] = {
         "CSC-RCHAIN-v1-001-ops-closeout-contracts,"
         "CSC-RCHAIN-v1-001-ops-bounded-durable-evidence-contracts,"
         "CSC-RCHAIN-v1-001-ops-post-closeout-contracts,"
-        "CSC-RCHAIN-v1-001-ops-remote-planning-contracts"
+        "CSC-RCHAIN-v1-001-ops-remote-planning-contracts,"
+        "CSC-RCHAIN-v1-002-tests-misc-contracts"
     ),
-    "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT": "22",
-    "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT": "249",
+    "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT": "23",
+    "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT": "258",
     "CSC_RCHAIN_V1_PARKED_GROUP_COUNT": "6",
     "CSC_RCHAIN_V1_REJECTED_GROUPS": "",
     "CSC_RCHAIN_V1_NEED_MORE_REVIEW_GROUPS": "",
@@ -218,9 +228,9 @@ EXPECTED_MACHINE_LINES: dict[str, str] = {
     "CSC_RCHAIN_V1_EXTERNAL_AUTHORITY_CSV": "FULL_AUTHORITY_BUNDLE_DRAFT.csv",
     "CSC_RCHAIN_V1_EXTERNAL_AUTHORITY_JSON": "FULL_AUTHORITY_BUNDLE_DRAFT.json",
     "CSC_RCHAIN_V1_AUTHORITY_DRAFT_ROWS": "672",
-    "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT": "249",
+    "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT": "258",
     "CSC_RCHAIN_V1_REVIEWED_PREPARED_ONLY_COUNT": "1",
-    "CSC_RCHAIN_V1_PARK_COUNT": "422",
+    "CSC_RCHAIN_V1_PARK_COUNT": "413",
     "CSC_RCHAIN_V1_BASE_AUTHORITY_BUNDLE_SNAPSHOT_ACCEPT_COUNT": "129",
     "CSC_RCHAIN_V1_BASE_AUTHORITY_BUNDLE_SNAPSHOT_PARK_COUNT": "542",
     "CSC_RCHAIN_V1_COUNTS_CONSISTENT": "true",
@@ -319,6 +329,8 @@ def test_csc_rchain_v1_grouping_reflection_contract_v0() -> None:
     assert EXTERNAL_BATCH_REVIEW_TIER_A_009_002 in block
     assert OPERATOR_BATCH_ACCEPT_TIER_A_009_003 in block
     assert EXTERNAL_BATCH_REVIEW_TIER_A_009_003 in block
+    assert OPERATOR_BATCH_ACCEPT_TIER_A_002_004 in block
+    assert EXTERNAL_BATCH_REVIEW_TIER_A_002_004 in block
     assert "TIER-A-004-001-ops-autonomous-control-plane-v0" in block
     assert "TIER-A-005-001-ops-control-plane-offline-v0" in block
     assert "TIER-A-006-001-ops-gap-contracts-v0" in block
@@ -336,7 +348,12 @@ def test_csc_rchain_v1_grouping_reflection_contract_v0() -> None:
     assert "remote_s3_preflight_contract_bundle" in collapsed
     assert "offline preflight/planning contract verification only" in collapsed
     assert "notion_post_closeout_sync_dry_run" in collapsed
-    assert "reserved for pr04 wave a3" in collapsed
+    assert "TIER-A-002-004-tests-misc-contracts-v0" in block
+    assert "CSC-RCHAIN-v1-002-tests-misc-contracts" in block
+    assert "test_promptfoo_model_config" in collapsed
+    assert "test_prcd_aws_export_write_smoke_workflow_contract" in collapsed
+    assert "contract/smoke tests" in collapsed
+    assert "wave **a4**" in collapsed
     assert "preflight_s3_finalized_evidence_export" in collapsed
     assert "offline/preflight contract verification only" in collapsed
     assert "reviewed-prepared-only" in collapsed
@@ -402,12 +419,12 @@ def test_csc_rchain_v1_grouping_reflection_truth_map_crosslink_v0() -> None:
 
     assert "CSC-RCHAIN-v1 accepted groups reflection guard v0" in truth_map
     assert THIS_MODULE in truth_map
-    assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=249" in truth_map
+    assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=258" in truth_map
     assert "CSC-RCHAIN-v1-002-ci-workflow-visibility" in truth_map
     assert "CSC-RCHAIN-v1-002-observability" in truth_map
     assert "CSC-RCHAIN-v1-001-ops-autonomous-control-plane" in truth_map
     assert "CSC-RCHAIN-v1-001-ops-control-plane-offline" in truth_map
-    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=22" in truth_map
+    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=23" in truth_map
     assert "CSC-RCHAIN-v1-001-ops-gap-contracts" in truth_map
     assert "CSC-RCHAIN-v1-001-ops-gap-contracts-gap4-gap5" in truth_map
     assert "CSC-RCHAIN-v1-001-ops-gap-contracts-gap6-gap7" in truth_map
@@ -420,8 +437,11 @@ def test_csc_rchain_v1_grouping_reflection_truth_map_crosslink_v0() -> None:
     assert "140212Z" in truth_map
     assert "141144Z" in truth_map
     assert "142048Z" in truth_map
+    assert "143905Z" in truth_map
     assert "CSC-RCHAIN-v1-001-ops-remote-planning-contracts" in truth_map
+    assert "CSC-RCHAIN-v1-002-tests-misc-contracts" in truth_map
     assert "TIER-A-009-003-ops-remote-planning-contracts-v0" in truth_map
+    assert "TIER-A-002-004-tests-misc-contracts-v0" in truth_map
     assert "CSC-RCHAIN-v1-009a" in truth_map
     assert "CSC-RCHAIN-v1-009b" in truth_map
     assert "CSC-RCHAIN-v1-002-infra" in truth_map
