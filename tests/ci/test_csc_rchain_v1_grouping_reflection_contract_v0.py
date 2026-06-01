@@ -21,6 +21,7 @@ ACCEPT_GROUPS = (
     "CSC-RCHAIN-v1-006",
     "CSC-RCHAIN-v1-007",
     "CSC-RCHAIN-v1-008",
+    "CSC-RCHAIN-v1-009b",
 )
 PARK_GROUPS = (
     "CSC-RCHAIN-v1-001",
@@ -44,9 +45,11 @@ GUARD_BLOCK_ANCHOR = "CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUA
 
 EXPECTED_MACHINE_LINES: dict[str, str] = {
     "CSC_RCHAIN_V1_OPERATOR_DECISION_RECORDED": "true",
-    "CSC_RCHAIN_V1_ACCEPTED_GROUPS": "CSC-RCHAIN-v1-006,CSC-RCHAIN-v1-007,CSC-RCHAIN-v1-008",
-    "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT": "3",
-    "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT": "114",
+    "CSC_RCHAIN_V1_ACCEPTED_GROUPS": (
+        "CSC-RCHAIN-v1-006,CSC-RCHAIN-v1-007,CSC-RCHAIN-v1-008,CSC-RCHAIN-v1-009b"
+    ),
+    "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT": "4",
+    "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT": "118",
     "CSC_RCHAIN_V1_PARKED_GROUP_COUNT": "6",
     "CSC_RCHAIN_V1_REJECTED_GROUPS": "",
     "CSC_RCHAIN_V1_NEED_MORE_REVIEW_GROUPS": "",
@@ -134,7 +137,8 @@ def test_csc_rchain_v1_grouping_reflection_truth_map_crosslink_v0() -> None:
 
     assert "CSC-RCHAIN-v1 accepted groups reflection guard v0" in truth_map
     assert THIS_MODULE in truth_map
-    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=3" in truth_map
+    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=4" in truth_map
+    assert "CSC-RCHAIN-v1-009b" in truth_map
     assert "PARK_GROUPS_NOT_AUTHORIZED_FOR_REFLECTION=true" in truth_map
     assert "OLD_RCHAIN_RESTORED=false" in truth_map
     assert "non-authorizing" in collapsed

@@ -33,6 +33,8 @@ STATIC_OWNERS_SECTION_RX = re.compile(
 REQUIRED_PAID_AI_EVAL_REUSE_OWNER = (
     "tests/ci/test_aiops_promptfoo_cost_gate_workflow_contract_v0.py"
 )
+GROUPING_REFLECTION_GUARD_MODULE = "tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py"
+ACCEPTED_SUBGROUP_009B = "CSC-RCHAIN-v1-009b"
 
 FORBIDDEN_AUTHORIZATION_PHRASES: tuple[str, ...] = (
     "paid evals enabled by default",
@@ -62,6 +64,12 @@ def _histogram_section(text: str) -> str:
     assert start != -1, "histogram section missing"
     end = text.find("**Lossless recovery still required")
     assert end != -1, "histogram section end missing"
+    return text[start:end]
+
+
+def _csc_rchain_accepted_groups_guard_block(text: str) -> str:
+    start = text.index("### CSC-RCHAIN-v1 accepted groups reflection guard v0")
+    end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
 
@@ -120,6 +128,14 @@ def test_cybersecurity_visibility_repo_static_histogram_paid_ai_eval_gate_crossl
         assert phrase not in collapsed
 
     assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
+
+    guard_block = _csc_rchain_accepted_groups_guard_block(text)
+    assert ACCEPTED_SUBGROUP_009B in guard_block
+    assert GROUPING_REFLECTION_GUARD_MODULE in guard_block
+    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=4" in guard_block
+    assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=118" in guard_block
+    assert "CSC-RCHAIN-v1-009" in guard_block
+    assert "CSC-RCHAIN-v1-009b" in guard_block
 
 
 def test_cybersecurity_visibility_repo_static_histogram_paid_ai_eval_gate_truth_map_crosslink_v0() -> (
