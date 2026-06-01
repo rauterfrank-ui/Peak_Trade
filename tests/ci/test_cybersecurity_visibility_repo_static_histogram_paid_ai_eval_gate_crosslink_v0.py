@@ -134,8 +134,8 @@ def test_cybersecurity_visibility_repo_static_histogram_paid_ai_eval_gate_crossl
     assert ACCEPTED_SUBGROUP_009A in guard_block
     assert ACCEPTED_SUBGROUP_009B in guard_block
     assert GROUPING_REFLECTION_GUARD_MODULE in guard_block
-    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=6" in guard_block
-    assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=125" in guard_block
+    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=7" in guard_block
+    assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=126" in guard_block
     assert "CSC-RCHAIN-v1-009" in guard_block
     assert "parent **CSC-RCHAIN-v1-009**" in guard_block
 
