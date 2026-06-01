@@ -46,6 +46,10 @@ GROUPING_REVIEW = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/csc_lossless_v1_r_chain_candidate_grouping_review_v0_20260601T044523Z"
 )
+EXTERNAL_AUTHORITY_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/csc_rchain_v1_external_full_authority_bundle_draft_and_wiring_check_readonly_v0_20260601T104257Z"
+)
 
 GUARD_BLOCK_ANCHOR = "CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUARD_V0=true"
 
@@ -83,6 +87,31 @@ EXPECTED_MACHINE_LINES: dict[str, str] = {
     "AWS_TOUCHED": "false",
     "NETWORK_TOUCHED": "false",
     "SECRETS_INCLUDED": "false",
+    "CSC_RCHAIN_V1_HYBRID_AUTHORITY_POINTER_ACTIVE": "true",
+    "CSC_RCHAIN_V1_EXTERNAL_AUTHORITY_BUNDLE": EXTERNAL_AUTHORITY_BUNDLE,
+    "CSC_RCHAIN_V1_EXTERNAL_AUTHORITY_CSV": "FULL_AUTHORITY_BUNDLE_DRAFT.csv",
+    "CSC_RCHAIN_V1_EXTERNAL_AUTHORITY_JSON": "FULL_AUTHORITY_BUNDLE_DRAFT.json",
+    "CSC_RCHAIN_V1_AUTHORITY_DRAFT_ROWS": "672",
+    "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT": "129",
+    "CSC_RCHAIN_V1_REVIEWED_PREPARED_ONLY_COUNT": "1",
+    "CSC_RCHAIN_V1_PARK_COUNT": "542",
+    "CSC_RCHAIN_V1_COUNTS_CONSISTENT": "true",
+    "CSC_RCHAIN_V1_REVIEWED_PREPARED_ONLY_UNIT": "CSC-RCHAIN-v1-002-p63",
+    "CSC_RCHAIN_V1_REVIEWED_PREPARED_ONLY_CANDIDATE": "CSC-LOSSLESS-v1-000603",
+    "CSC_RCHAIN_V1_REVIEWED_PREPARED_ONLY_TARGET": (
+        "tests/p63/test_online_readiness_shadow_runner_v1.py"
+    ),
+    "CSC_RCHAIN_V1_002_P63_ACCEPTED": "false",
+    "CSC_RCHAIN_V1_PARENT_002_REMAINS_PARKED": "true",
+    "CSC_RCHAIN_V1_PARENT_009_REMAINS_PARKED": "true",
+    "CSC_RCHAIN_V1_GROUPS_001_003_004_005_REMAIN_PARKED": "true",
+    "CSC_RCHAIN_V1_OLD_124_COUNT_BUNDLES_HISTORICAL_ONLY": "true",
+    "CSC_RCHAIN_V1_NO_OLD_R_ID_EQUIVALENCE_CLAIMS": "true",
+    "CSC_RCHAIN_V1_NO_FAKE_RECONSTRUCTION": "true",
+    "CSC_RCHAIN_V1_OLD_RCHAIN_RESTORED": "false",
+    "CSC_RCHAIN_V1_NO_ENABLEMENT_CLAIMS": "true",
+    "CSC_RCHAIN_V1_MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_NO_TOUCH": "true",
+    "CSC_RCHAIN_V1_NO_PARALLEL_DOCS_BUILDS_SURFACES": "true",
 }
 
 
@@ -129,6 +158,13 @@ def test_csc_rchain_v1_grouping_reflection_contract_v0() -> None:
     )
     for gid in ACCEPT_GROUPS:
         assert gid in accepted_line
+    assert "CSC-RCHAIN-v1-002-p63" not in accepted_line
+
+    assert EXTERNAL_AUTHORITY_BUNDLE in block
+    assert "reviewed-prepared-only" in collapsed
+    assert "historical/stale" in collapsed
+    assert "does **not** ingest `FULL_AUTHORITY_BUNDLE_DRAFT.csv`" in block
+    assert "CSC_RCHAIN_V1_002_P63_ACCEPTED=false" in block
 
     assert "Does **not** treat PARK groups as accepted" in block
     assert "does **not** authorize definitive R-001/R-002/R-007 mapping" in block
@@ -156,6 +192,10 @@ def test_csc_rchain_v1_grouping_reflection_truth_map_crosslink_v0() -> None:
     assert "CSC-RCHAIN-v1-002-p50" in truth_map
     assert "PARK_GROUPS_NOT_AUTHORIZED_FOR_REFLECTION=true" in truth_map
     assert "OLD_RCHAIN_RESTORED=false" in truth_map
+    assert "external hybrid authority minimal repo pointer contract v0" in collapsed
+    assert EXTERNAL_AUTHORITY_BUNDLE in truth_map
+    assert "124" in truth_map and "historical" in collapsed
+    assert "002-p63" in truth_map
     assert "non-authorizing" in collapsed
 
 

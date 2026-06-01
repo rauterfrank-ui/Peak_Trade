@@ -128,6 +128,14 @@ def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_cross
     assert GROUPING_REFLECTION_GUARD_MODULE in guard_block
     assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=10" in guard_block
     assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=129" in guard_block
+    assert "CSC_RCHAIN_V1_HYBRID_AUTHORITY_POINTER_ACTIVE=true" in guard_block
+    assert (
+        "csc_rchain_v1_external_full_authority_bundle_draft_and_wiring_check_readonly_v0_20260601T104257Z"
+        in guard_block
+    )
+    assert "CSC_RCHAIN_V1_002_P63_ACCEPTED=false" in guard_block
+    assert "reviewed-prepared-only" in guard_block.lower()
+    assert "does **not** authorize shadow/online-readiness/runtime/scheduler" in guard_block
     assert "CSC-RCHAIN-v1-002-infra" in guard_block
     assert "parent **002** remains PARK" in guard_block
     assert "network escalation is authorized" not in collapsed

@@ -136,6 +136,13 @@ def test_cybersecurity_visibility_repo_static_histogram_paid_ai_eval_gate_crossl
     assert GROUPING_REFLECTION_GUARD_MODULE in guard_block
     assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=10" in guard_block
     assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=129" in guard_block
+    assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=129" in guard_block
+    assert "CSC_RCHAIN_V1_HYBRID_AUTHORITY_POINTER_ACTIVE=true" in guard_block
+    assert (
+        "csc_rchain_v1_external_full_authority_bundle_draft_and_wiring_check_readonly_v0_20260601T104257Z"
+        in guard_block
+    )
+    assert "CSC_RCHAIN_V1_OLD_124_COUNT_BUNDLES_HISTORICAL_ONLY=true" in guard_block
     assert "CSC-RCHAIN-v1-009" in guard_block
     assert "parent **CSC-RCHAIN-v1-009**" in guard_block
 
