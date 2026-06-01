@@ -446,7 +446,7 @@ CYBERSECURITY_CSC_LOSSLESS_V1_DATASET_REFLECTION_GUARD_DOCS_TESTS_ONLY=true
 | Field | Value |
 |-------|-------|
 | Normalized JSONL | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/cybersecurity_lossless_pipeline/cybersecurity_lossless_pipeline_dry_run_v0_20260601T042949Z/NORMALIZED_JSONL/CSC_LOSSLESS_V1_CANDIDATES.jsonl` |
-| Raw JSONL | `…/RAW_OUTPUT/RAW_CANDIDATES.jsonl` |
+| Raw JSONL | `…&#47;RAW_OUTPUT&#47;RAW_CANDIDATES.jsonl` |
 | Post-extract review | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_new_lossless_pipeline_post_extract_review_v0_20260601T043237Z` |
 | `mapping_status` | **unmapped** (672/672 at extract) |
 | Definitive R-001/R-002/R-007 mapping | **blocked** while `INPUT_JSONL_PROVIDED=false` |
