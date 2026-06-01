@@ -190,9 +190,9 @@ def test_cybersecurity_visibility_r001_derived_evidence_owner_crosslink_v0() -> 
         encoding="utf-8"
     )
     ci_collapsed = ci_audit_text.lower()
-    truth_map_text = (
-        REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
-    ).read_text(encoding="utf-8")
+    truth_map_text = (REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md").read_text(
+        encoding="utf-8"
+    )
     truth_collapsed = truth_map_text.lower()
     module_name = Path(__file__).name
 
