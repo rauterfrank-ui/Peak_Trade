@@ -374,6 +374,50 @@ CYBERSECURITY_VISIBILITY_DERIVED_INPUT_JSONL_REFLECTION_DOCS_TESTS_ONLY=true
 
 **Relationship to pending risks R-001/R-002/R-007:** Derived rows use `cyber_mapping_relevance` anchors only; proposed repo test owners were prechecked read-only — **not** promoted to definitive mapped status.
 
+### Pending R-001/R-002/R-007 — derived mapping plan progress v0
+
+```
+CYBERSECURITY_VISIBILITY_DERIVED_MAPPING_PLAN_PROGRESS_V0=true
+DERIVED_MAPPING_PLAN_PROGRESS_ONLY=true
+INPUT_JSONL_PROVIDED=false
+DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL=true
+LOSSLESS_JSONL_RECOVERY=false
+ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED=false
+OLD_R_ID_RECONSTRUCTION_ALLOWED=false
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT=true
+DERIVED_CANDIDATE_ID_FAMILY_ONLY=true
+CYBERSECURITY_VISIBILITY_DERIVED_MAPPING_PLAN_PROGRESS_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Record **plan-only** progress toward a future definitive R-001/R-002/R-007 mapping slice after PR #3886 derived-input reflection. This section **does not** execute mapping, **does not** set `INPUT_JSONL_PROVIDED=true`, **does not** claim derived JSONL is the original `FULL_LOSSLESS_RISK_CANDIDATES.jsonl`, and **does not** flip the pending risk table to **mapped**.
+
+**Non-authorizing:** No workflow dispatch, runtime/scheduler/daemon execution, hooks, Notion write/MCP/API, Market overlay enablement, S3/AWS/rclone, broker/exchange, Testnet/Live, or Master V2 / Double Play authority changes. No CSC-RCHAIN count changes (**258** / **1** / **413** / **672** unchanged).
+
+**Derived mapping plan table (visibility only — pending table unchanged):**
+
+| Retained risk | `derived_candidate_id` (plan) | Proposed repo test owner (precheck) | Repo pending status |
+|---------------|------------------------------|-------------------------------------|---------------------|
+| R-001 | `DERIVED-CYBER-R-001-001` | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` | **Pending** |
+| R-002 | `DERIVED-CYBER-R-002-001` | `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py` | **Pending** |
+| R-007 | `DERIVED-CYBER-R-007-001` | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` | **Pending** |
+
+**External planning artifacts (archive only):**
+
+| Token | Durable path |
+|-------|--------------|
+| Next progress planning | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_mapping_after_derived_reflection_next_progress_readonly_v0_20260601T170753Z` |
+| Post-merge closeout (PR #3886) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_derived_input_artifact_repo_reflection_pr_merge_closeout_readonly_v0_20260601T170502Z` |
+| Mapping precheck | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_jsonl_mapping_precheck_readonly_v0_20260601T165920Z` |
+
+**Future slice token (requires separate Operator GO):** `DEFINITIVE_R001_R002_R007_MAPPING_PR` — not authorized by this plan-progress section.
+
+**Guard module (reuse — no parallel cyber anchor):** `tests/ci/test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py`
+
+**Relationship to § derived CSC-RCHAIN evidence input reflection v0:** Builds on `DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL=true`; still **no** definitive mapping authorization.
+
+**Relationship to pending risks R-001/R-002/R-007:** Retained risks remain **Pending** in the table above. Plan rows are **not** definitive mapped assignments.
+
 ### Static inventory schema validation guard v0
 
 ```
