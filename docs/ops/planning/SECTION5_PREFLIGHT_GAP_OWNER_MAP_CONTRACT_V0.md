@@ -686,6 +686,64 @@ This governed repo-reflection block records Shadow bounded-observation adapter p
 
 Evidence acceptance is not runtime authorization. The Gap 4 REQ-B Tier-D Boundary Reflection v0 block above remains unchanged in token posture for populated-path claims.
 
+## Gap 4 Full-Scope Evidence Completeness Reflection v0
+
+GAP4_FULL_SCOPE_EVIDENCE_COMPLETENESS_REFLECTION_V0=true
+ACCEPTED_MODE=GAP4_FULL_SCOPE_EVIDENCE_EXTERNAL_COMPLETENESS_REFLECTION
+EXTERNAL_COMPLETENESS_VERIFICATION_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_full_scope_evidence_completeness_verification_v0_20260601T010600Z/
+EXTERNAL_COMPLETENESS_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_full_scope_evidence_completeness_charter_v0_20260601T010400Z/
+EXTERNAL_OUTPUT_EVIDENCE_PATHS_VERIFICATION_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_output_evidence_paths_verification_v0_20260601T010200Z/
+EXTERNAL_REQ_C_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_req_c_derived_cross_lane_evidence_bundle_creation_v0_20260601T005354Z/
+EXTERNAL_REQ_B_FINAL_REINVENTORY_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_req_b_tier_d_populated_paths_final_reinventory_v0_20260601T005232Z/
+EXTERNAL_DERIVED_PAPER_PATH_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/future_runs/paper_shadow_247/gap4_req_b_derived_paper_lane_normalized_20260601T004928Z/paper/
+EXTERNAL_COMPOSED_SHADOW_PATH_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/future_runs/paper_shadow_247/gap4_req_b_composed_shadow_evidence_20260601T004515Z/shadow/
+EXTERNAL_REQ_C_CROSS_LANE_PATH_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/future_runs/paper_shadow_247/gap4_req_c_derived_cross_lane_evidence_20260601T005354Z/
+REQ_A_FULL_2A_ARTIFACT_SET_FOUND=true
+REQ_A_TO_DERIVED_PAPER_LINKAGE_CONFIRMED=true
+REQ_B_TIER_D_POPULATED_PATHS_FOUND=true
+REQ_C_CROSS_LANE_EVIDENCE_FOUND=true
+GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true
+GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=true
+SHADOW_FAST_SIM_ONLY=true
+SHADOW_REAL_10MIN_OBSERVATION=false
+TEN_MINUTE_RUN_STARTED=false
+PAPER_OUTPUT_MANIFEST_VERIFY_RC=0
+SHADOW_OUTPUT_MANIFEST_VERIFY_RC=0
+REQ_C_OUTPUT_MANIFEST_VERIFY_RC=0
+PROVENANCE_POINTER_CHAIN_COMPLETE=true
+REVIEW_AND_B01_B16_LINKAGE_COMPLETE=true
+SOURCE_MUTATED=false
+FULL_SCOPE_GAP4_VERIFIED=false
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+PATH_B_LIFT_DISCUSSION_READY=false
+GLOBAL_PREFLIGHT_LIFTED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+TRADING_LOGIC_TOUCHED=false
+
+This governed repo-reflection block records external Gap-4 full-scope evidence completeness verification after REQ-A strict §2a, REQ-B Tier-D populated paths, REQ-C cross-lane evidence, and output evidence path verification PASS. It does not adopt external-only acceptance tokens as repo SSOT beyond this scoped reflection block. External records remain pointer-based and subordinate to repo governance. Composed-reference split RUN_ID and Fast-Sim timing boundaries are accepted and documented in external bundles — **not** real 10-minute wall-clock observation.
+
+### Full-scope completeness scope (allowed only)
+
+- external verification bundle manifest RC=0 with complete REQ-A → derived Paper lineage
+- canonical Paper, Shadow, and REQ-C cross-lane paths manifest RC=0
+- provenance pointer chain, review PASS, and B01–B16 linkage complete
+- `GAP4_FULL_SCOPE_EVIDENCE_COMPLETE=true` and `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true` in **this reflection block only**
+
+### Non-authority boundary (full-scope completeness reflection does not imply)
+
+- does not set `FULL_SCOPE_GAP4_VERIFIED=true` or repo criteria/full-scope verified lift
+- does not lift global preflight or set `GLOBAL_PREFLIGHT_LIFTED=true`
+- does not open Path-B lift discussion or set `PATH_B_LIFT_DISCUSSION_READY=true`
+- does not claim `SHADOW_REAL_10MIN_OBSERVATION=true` or real elapsed 10-minute observation
+- does not verify Gap-4 output evidence paths in criteria or Final Machine Lines (criteria block unchanged)
+- does not enforce Gap-2a.1 primary evidence
+- does not authorize scheduler execution or further Paper/Shadow/Testnet/Live runtime
+- does not enable operator arming
+- does not modify Double-Play, Master V2, trading logic, strategy modules, Bull/Bear, Scope/Capital, Risk/KillSwitch implementation, execution gates, live gates, dashboard authority, AI authority, or config default-on behavior
+
+Evidence acceptance is not runtime authorization. The Gap 4 Output/Evidence Paths Contract v0 criteria block and Final Machine Lines above remain unchanged in verification posture.
+
 ## Gap 7 Governed Risk Boundary Acceptance Reflection v0
 
 GAP7_RISK_BOUNDARY_GOVERNED_REFLECTION_V0=true
