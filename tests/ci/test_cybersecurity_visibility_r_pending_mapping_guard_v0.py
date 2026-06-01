@@ -349,5 +349,7 @@ def test_cybersecurity_visibility_pending_guard_negative_drift_forbidden_v0() ->
     assert "Pending R-001/R-002/R-007 — repo-static successor inventory charter v0" in text
     assert "Pending R-001/R-002/R-007 — input artifact contract v0" in text
     assert "Pending R-001/R-002/R-007 — mapping guard v0" in text
+    assert "Static inventory schema validation guard v0" in text
+    assert "test_static_inventory_schema_guard_contract_v0.py" in text
     static_section = _static_visibility_owner_section(text)
     assert "do not duplicate" in static_section.lower()
