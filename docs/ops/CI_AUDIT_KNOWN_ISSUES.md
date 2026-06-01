@@ -497,6 +497,29 @@ DOUBLE_PLAY_LOGIC_TOUCHED=false
 TRADING_LOGIC_TOUCHED=false
 PARALLEL_DOCS_CREATED=false
 PARALLEL_BUILDS_CREATED=false
+CSC_RCHAIN_V1_HYBRID_AUTHORITY_POINTER_ACTIVE=true
+CSC_RCHAIN_V1_EXTERNAL_AUTHORITY_BUNDLE=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/csc_rchain_v1_external_full_authority_bundle_draft_and_wiring_check_readonly_v0_20260601T104257Z
+CSC_RCHAIN_V1_EXTERNAL_AUTHORITY_CSV=FULL_AUTHORITY_BUNDLE_DRAFT.csv
+CSC_RCHAIN_V1_EXTERNAL_AUTHORITY_JSON=FULL_AUTHORITY_BUNDLE_DRAFT.json
+CSC_RCHAIN_V1_AUTHORITY_DRAFT_ROWS=672
+CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=129
+CSC_RCHAIN_V1_REVIEWED_PREPARED_ONLY_COUNT=1
+CSC_RCHAIN_V1_PARK_COUNT=542
+CSC_RCHAIN_V1_COUNTS_CONSISTENT=true
+CSC_RCHAIN_V1_REVIEWED_PREPARED_ONLY_UNIT=CSC-RCHAIN-v1-002-p63
+CSC_RCHAIN_V1_REVIEWED_PREPARED_ONLY_CANDIDATE=CSC-LOSSLESS-v1-000603
+CSC_RCHAIN_V1_REVIEWED_PREPARED_ONLY_TARGET=tests/p63/test_online_readiness_shadow_runner_v1.py
+CSC_RCHAIN_V1_002_P63_ACCEPTED=false
+CSC_RCHAIN_V1_PARENT_002_REMAINS_PARKED=true
+CSC_RCHAIN_V1_PARENT_009_REMAINS_PARKED=true
+CSC_RCHAIN_V1_GROUPS_001_003_004_005_REMAIN_PARKED=true
+CSC_RCHAIN_V1_OLD_124_COUNT_BUNDLES_HISTORICAL_ONLY=true
+CSC_RCHAIN_V1_NO_OLD_R_ID_EQUIVALENCE_CLAIMS=true
+CSC_RCHAIN_V1_NO_FAKE_RECONSTRUCTION=true
+CSC_RCHAIN_V1_OLD_RCHAIN_RESTORED=false
+CSC_RCHAIN_V1_NO_ENABLEMENT_CLAIMS=true
+CSC_RCHAIN_V1_MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_NO_TOUCH=true
+CSC_RCHAIN_V1_NO_PARALLEL_DOCS_BUILDS_SURFACES=true
 CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUARD_DOCS_TESTS_ONLY=true
 ```
 
@@ -533,6 +556,9 @@ CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUARD_DOCS_TESTS_ONLY=tru
 | Operator ACCEPT CSC-RCHAIN-v1-002-p101 | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/csc_rchain_v1_002_p101_operator_accept_and_governed_reflection_v0_20260601T095530Z` |
 | Operator ACCEPT CSC-RCHAIN-v1-002-p117 | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/csc_rchain_v1_002_p117_operator_accept_and_governed_reflection_v0_20260601T100534Z` |
 | Operator ACCEPT CSC-RCHAIN-v1-002-p50 | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/csc_rchain_v1_002_p50_operator_accept_and_governed_reflection_v0_20260601T101646Z` |
+| External hybrid authority bundle (current per-candidate detail; not repo-ingested) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/csc_rchain_v1_external_full_authority_bundle_draft_and_wiring_check_readonly_v0_20260601T104257Z` (`FULL_AUTHORITY_BUNDLE_DRAFT.csv` / `.json`; `MANIFEST_VERIFY_REQUIRED=true`) |
+
+**External hybrid authority pointer (detail authority external only):** The archive bundle above is the **canonical per-candidate status** source (`672` rows: `129` repo-reflected ACCEPT, `1` reviewed-prepared-only, `542` PARK). The repo stores **pointer and aggregate counts only** — it does **not** ingest `FULL_AUTHORITY_BUNDLE_DRAFT.csv` or `.json`. **`CSC-RCHAIN-v1-002-p63`** (`CSC-LOSSLESS-v1-000603`, `tests/p63/test_online_readiness_shadow_runner_v1.py`) is **reviewed-prepared-only** (`CSC_RCHAIN_V1_002_P63_ACCEPTED=false`) — **not** repo-accepted until a separate operator ACCEPT. Archive planning bundles citing **124** accepted candidates are **historical/stale**; current repo-reflected count is **129**. This pointer does **not** authorize shadow/online-readiness/runtime/scheduler/Testnet/Live/network/AI-model enablement; does **not** claim old R-ID equivalence, fake reconstruction, or restored old RCHAIN; does **not** accept parent **002**, parent **009**, or groups **001–005**; does **not** change Master V2 / Double Play / trading logic.
 
 **Guard module (reuse — no parallel cyber anchor):** `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py` with reciprocal crosslinks to `tests/ci/test_csc_lossless_v1_dataset_reflection_contract_v0.py`, `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py`, and `tests/ci/test_static_inventory_schema_guard_contract_v0.py`.
 
