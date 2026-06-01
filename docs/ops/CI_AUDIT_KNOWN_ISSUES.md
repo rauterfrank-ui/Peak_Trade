@@ -336,6 +336,44 @@ CYBERSECURITY_VISIBILITY_R_PENDING_EXTERNAL_INPUT_JSONL_MAPPING_GUARD_DOCS_TESTS
 
 **Relationship to pending risks R-001/R-002/R-007:** Retained risks remain **Pending** in the table above while `INPUT_JSONL_PROVIDED=false`. External validation confirms intake **contract readiness** only — not lossless recovery or definitive mapping.
 
+### Pending R-001/R-002/R-007 — derived CSC-RCHAIN evidence input reflection v0
+
+```
+CYBERSECURITY_VISIBILITY_DERIVED_INPUT_JSONL_REFLECTION_V0=true
+DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL=true
+INPUT_JSONL_PROVIDED=false
+LOSSLESS_JSONL_RECOVERY=false
+ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED=false
+OLD_R_ID_RECONSTRUCTION_ALLOWED=false
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+NO_MAPPING_WITHOUT_INPUT_ARTIFACT=true
+FORBIDS_FLIPPING_INPUT_JSONL_PROVIDED_WITHOUT_AUTHORIZED_MAPPING_SLICE=true
+FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT=true
+DERIVED_LOSSLESS_ARTIFACT_FILENAME=DERIVED_LOSSLESS_RISK_CANDIDATES_FROM_CSC_RCHAIN_EVIDENCE.jsonl
+DERIVED_INPUT_JSONL_LINE_COUNT=39
+DERIVED_CANDIDATE_ID_FAMILY_ONLY=true
+CYBERSECURITY_VISIBILITY_DERIVED_INPUT_JSONL_REFLECTION_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Record operator-chartered **external** derived JSONL (`DERIVED_LOSSLESS_RISK_CANDIDATES_FROM_CSC_RCHAIN_EVIDENCE.jsonl`) built from manifest-verified CSC-RCHAIN-v1 evidence after the original `FULL_LOSSLESS_RISK_CANDIDATES.jsonl` was lost. This reflection **does not** claim the derived file is the original lossless inventory, **does not** set `INPUT_JSONL_PROVIDED=true`, **does not** authorize definitive R-001/R-002/R-007 mapping, and **does not** flip the pending risk table to **mapped**.
+
+**Non-authorizing:** No workflow dispatch, runtime/scheduler/daemon execution, hooks, Notion write/MCP/API, Market overlay enablement, S3/AWS/rclone, broker/exchange, Testnet/Live, Preflight lift, Path-B lift, or Master V2 / Double Play authority changes. No CSC-RCHAIN count changes (**258** / **1** / **413** / **672** unchanged).
+
+**External derived artifact (archive only — not repo-ingested):**
+
+| Token | Durable path | Notes |
+|-------|--------------|-------|
+| `DERIVED_LOSSLESS_RISK_CANDIDATES_FROM_CSC_RCHAIN_EVIDENCE.jsonl` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_input_jsonl_operator_intake_readonly_v0_20260601T164324Z/operator_artifacts_pending/DERIVED_LOSSLESS_RISK_CANDIDATES_FROM_CSC_RCHAIN_EVIDENCE.jsonl` | `derived_candidate_id` family; `r_id_claim_status=NEW_DERIVED_ID_ONLY`; `old_r_id_equivalence=false`; `original_full_lossless_file_available=false`; manifest-verified pending copy |
+| Mapping precheck bundle | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_jsonl_mapping_precheck_readonly_v0_20260601T165920Z` | `OPERATOR_GO_MAPPING_PRECHECK=true`; owner file existence verified; **no** mapping PR |
+| Build/validate bundle | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_jsonl_build_validate_v0_20260601T165743Z` | `INPUT_JSONL_VALID=true`; `INPUT_JSONL_PROVIDED_EXTERNAL=true` (external only) |
+| Replacement charter | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_lossless_jsonl_replacement_charter_readonly_v0_20260601T165515Z` | `DERIVED_REPLACEMENT_MAY_CLAIM_ORIGINAL_EQUIVALENCE=false` |
+
+**Guard module (reuse — no parallel cyber anchor):** `tests/ci/test_cybersecurity_visibility_derived_input_jsonl_reflection_contract_v0.py`
+
+**Relationship to § input artifact contract v0:** `INPUT_JSONL_PROVIDED` remains **false**. `DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL=true` is an **external visibility/registry** token only and does **not** satisfy the `INPUT_JSONL_PROVIDED=true` gate for definitive mapping. Retained risks **R-001**, **R-002**, and **R-007** remain **Pending** in the table above.
+
+**Relationship to pending risks R-001/R-002/R-007:** Derived rows use `cyber_mapping_relevance` anchors only; proposed repo test owners were prechecked read-only — **not** promoted to definitive mapped status.
+
 ### Static inventory schema validation guard v0
 
 ```
