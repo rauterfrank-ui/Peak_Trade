@@ -36,6 +36,7 @@ ACCEPT_GROUPS = (
     "CSC-RCHAIN-v1-001-ops-gap-contracts-gap4-gap5",
     "CSC-RCHAIN-v1-001-ops-gap-contracts-gap6-gap7",
     "CSC-RCHAIN-v1-001-ops-evidence-closeout-build-contracts",
+    "CSC-RCHAIN-v1-001-ops-closeout-contracts",
 )
 PARK_GROUPS = (
     "CSC-RCHAIN-v1-001",
@@ -68,7 +69,7 @@ EXTERNAL_BATCH_REVIEW = (
 )
 REFRESHED_AUTHORITY_BUNDLE = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/csc_rchain_v1_post_ops_gap6_gap7_batch_authority_refresh_and_next_batch_ranking_readonly_v0_20260601T130806Z"
+    "planning/csc_rchain_v1_post_ops_evidence_closeout_build_batch_authority_refresh_and_next_batch_ranking_readonly_v0_20260601T132245Z"
 )
 OPERATOR_BATCH_ACCEPT_TIER_A_003 = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
@@ -126,6 +127,14 @@ EXTERNAL_BATCH_REVIEW_TIER_A_007_003 = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/csc_rchain_v1_tier_a_007_003_ops_evidence_closeout_build_contracts_batch_external_review_readonly_v0_20260601T131231Z"
 )
+OPERATOR_BATCH_ACCEPT_TIER_A_008_001 = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/csc_rchain_v1_tier_a_008_001_ops_closeout_contracts_batch_operator_accept_and_governed_reflection_v0_20260601T134600Z"
+)
+EXTERNAL_BATCH_REVIEW_TIER_A_008_001 = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/csc_rchain_v1_tier_a_008_001_ops_closeout_contracts_batch_external_review_readonly_v0_20260601T133200Z"
+)
 
 GUARD_BLOCK_ANCHOR = "CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUARD_V0=true"
 
@@ -143,10 +152,11 @@ EXPECTED_MACHINE_LINES: dict[str, str] = {
         "CSC-RCHAIN-v1-001-ops-gap-contracts,"
         "CSC-RCHAIN-v1-001-ops-gap-contracts-gap4-gap5,"
         "CSC-RCHAIN-v1-001-ops-gap-contracts-gap6-gap7,"
-        "CSC-RCHAIN-v1-001-ops-evidence-closeout-build-contracts"
+        "CSC-RCHAIN-v1-001-ops-evidence-closeout-build-contracts,"
+        "CSC-RCHAIN-v1-001-ops-closeout-contracts"
     ),
-    "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT": "18",
-    "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT": "176",
+    "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT": "19",
+    "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT": "180",
     "CSC_RCHAIN_V1_PARKED_GROUP_COUNT": "6",
     "CSC_RCHAIN_V1_REJECTED_GROUPS": "",
     "CSC_RCHAIN_V1_NEED_MORE_REVIEW_GROUPS": "",
@@ -177,9 +187,9 @@ EXPECTED_MACHINE_LINES: dict[str, str] = {
     "CSC_RCHAIN_V1_EXTERNAL_AUTHORITY_CSV": "FULL_AUTHORITY_BUNDLE_DRAFT.csv",
     "CSC_RCHAIN_V1_EXTERNAL_AUTHORITY_JSON": "FULL_AUTHORITY_BUNDLE_DRAFT.json",
     "CSC_RCHAIN_V1_AUTHORITY_DRAFT_ROWS": "672",
-    "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT": "176",
+    "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT": "180",
     "CSC_RCHAIN_V1_REVIEWED_PREPARED_ONLY_COUNT": "1",
-    "CSC_RCHAIN_V1_PARK_COUNT": "495",
+    "CSC_RCHAIN_V1_PARK_COUNT": "491",
     "CSC_RCHAIN_V1_BASE_AUTHORITY_BUNDLE_SNAPSHOT_ACCEPT_COUNT": "129",
     "CSC_RCHAIN_V1_BASE_AUTHORITY_BUNDLE_SNAPSHOT_PARK_COUNT": "542",
     "CSC_RCHAIN_V1_COUNTS_CONSISTENT": "true",
@@ -265,12 +275,16 @@ def test_csc_rchain_v1_grouping_reflection_contract_v0() -> None:
     assert EXTERNAL_BATCH_REVIEW_TIER_A_007_002 in block
     assert OPERATOR_BATCH_ACCEPT_TIER_A_007_003 in block
     assert EXTERNAL_BATCH_REVIEW_TIER_A_007_003 in block
+    assert OPERATOR_BATCH_ACCEPT_TIER_A_008_001 in block
+    assert EXTERNAL_BATCH_REVIEW_TIER_A_008_001 in block
     assert "TIER-A-004-001-ops-autonomous-control-plane-v0" in block
     assert "TIER-A-005-001-ops-control-plane-offline-v0" in block
     assert "TIER-A-006-001-ops-gap-contracts-v0" in block
     assert "TIER-A-007-001-ops-gap-contracts-gap4-gap5-v0" in block
     assert "TIER-A-007-002-ops-gap-contracts-gap6-gap7-v0" in block
     assert "TIER-A-007-003-ops-evidence-closeout-build-contracts-v0" in block
+    assert "TIER-A-008-001-ops-closeout-contracts-v0" in block
+    assert "CSC-RCHAIN-v1-001-ops-closeout-contracts" in block
     assert "reviewed-prepared-only" in collapsed
     assert "historical/stale" in collapsed
     assert "does **not** ingest `FULL_AUTHORITY_BUNDLE_DRAFT.csv`" in block
@@ -292,16 +306,17 @@ def test_csc_rchain_v1_grouping_reflection_truth_map_crosslink_v0() -> None:
 
     assert "CSC-RCHAIN-v1 accepted groups reflection guard v0" in truth_map
     assert THIS_MODULE in truth_map
-    assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=176" in truth_map
+    assert "CSC_RCHAIN_V1_ACCEPTED_CANDIDATE_COUNT=180" in truth_map
     assert "CSC-RCHAIN-v1-002-ci-workflow-visibility" in truth_map
     assert "CSC-RCHAIN-v1-002-observability" in truth_map
     assert "CSC-RCHAIN-v1-001-ops-autonomous-control-plane" in truth_map
     assert "CSC-RCHAIN-v1-001-ops-control-plane-offline" in truth_map
-    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=18" in truth_map
+    assert "CSC_RCHAIN_V1_ACCEPTED_GROUP_COUNT=19" in truth_map
     assert "CSC-RCHAIN-v1-001-ops-gap-contracts" in truth_map
     assert "CSC-RCHAIN-v1-001-ops-gap-contracts-gap4-gap5" in truth_map
     assert "CSC-RCHAIN-v1-001-ops-gap-contracts-gap6-gap7" in truth_map
     assert "CSC-RCHAIN-v1-001-ops-evidence-closeout-build-contracts" in truth_map
+    assert "CSC-RCHAIN-v1-001-ops-closeout-contracts" in truth_map
     assert "CSC-RCHAIN-v1-009a" in truth_map
     assert "CSC-RCHAIN-v1-009b" in truth_map
     assert "CSC-RCHAIN-v1-002-infra" in truth_map
