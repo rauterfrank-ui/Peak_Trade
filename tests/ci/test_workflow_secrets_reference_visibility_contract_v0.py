@@ -580,9 +580,17 @@ def test_cybersecurity_visibility_chain_owner_registry_crosslink_v0() -> None:
         assert risk_id in ci_audit_text
         assert owner_module in ci_audit_text
 
-    for pending_id in ("R-001", "R-002", "R-007"):
-        assert pending_id in ci_audit_text
-        assert "pending" in ci_collapsed or "lossless inventory" in ci_collapsed
+    for derived_id, owner_module in (
+        ("R-001", "test_workflow_write_permissions_visibility_contract_v0.py"),
+        ("R-002", "test_cybersecurity_visibility_r_pending_mapping_guard_v0.py"),
+        ("R-007", Path(__file__).name),
+    ):
+        assert derived_id in ci_audit_text
+        assert owner_module in ci_audit_text
+        assert "mapped-by-derived-evidence" in ci_collapsed
+        assert "DERIVED-CYBER-" in ci_audit_text
+
+    assert "INPUT_JSONL_PROVIDED=false" in ci_audit_text
 
     assert "2026-05-23" in truth_map_text
     assert "Cybersecurity Visibility Chain" in truth_map_text

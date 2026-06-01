@@ -54,6 +54,26 @@ DERIVED_REFLECTION_EXPECTED: dict[str, str] = {
     "DERIVED_CANDIDATE_ID_FAMILY_ONLY": "true",
 }
 
+DERIVED_EVIDENCE_MAPPED_RISKS: dict[str, tuple[str, str]] = {
+    "R-001": (
+        "tests/ci/test_workflow_write_permissions_visibility_contract_v0.py",
+        "DERIVED-CYBER-R-001-001",
+    ),
+    "R-002": (
+        "tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py",
+        "DERIVED-CYBER-R-002-001",
+    ),
+    "R-007": (
+        "tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py",
+        "DERIVED-CYBER-R-007-001",
+    ),
+}
+
+
+def _assert_derived_evidence_mapped(status_cell: str) -> None:
+    assert "mapped-by-derived-evidence" in status_cell.lower()
+    assert status_cell.strip().lower() != "mapped"
+
 
 def _ci_audit_text() -> str:
     return CI_AUDIT_KNOWN_ISSUES.read_text(encoding="utf-8")
@@ -114,13 +134,13 @@ def test_cybersecurity_visibility_derived_input_jsonl_reflection_contract_v0() -
     assert "non-authorizing" in collapsed
 
 
-def test_cybersecurity_visibility_derived_input_pending_table_unchanged_v0() -> None:
+def test_cybersecurity_visibility_derived_input_wave1_derived_evidence_table_v0() -> None:
     rows = _risk_table_rows(_ci_audit_text())
-    for pending_id in ("R-001", "R-002", "R-007"):
-        owner_cell, status_cell = rows[pending_id]
-        assert owner_cell == "—"
-        assert "pending" in status_cell.lower()
-        assert "mapped" not in status_cell.lower()
+    for risk_id, (expected_owner, derived_id) in DERIVED_EVIDENCE_MAPPED_RISKS.items():
+        owner_cell, status_cell = rows[risk_id]
+        assert expected_owner in owner_cell
+        _assert_derived_evidence_mapped(status_cell)
+        assert derived_id in status_cell
 
 
 def test_cybersecurity_visibility_derived_input_jsonl_reflection_truth_map_crosslink_v0() -> None:

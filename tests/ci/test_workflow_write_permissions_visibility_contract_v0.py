@@ -182,3 +182,29 @@ def test_workflow_write_permissions_visibility_contract_retains_static_local_sco
 
     found = [fragment for fragment in forbidden_fragments if fragment in test_text]
     assert not found, f"contract must remain static/local-only: {found}"
+
+
+def test_cybersecurity_visibility_r001_derived_evidence_owner_crosslink_v0() -> None:
+    """R-001 mapped-by-derived-evidence owner crosslink for Cybersecurity Visibility Chain."""
+    ci_audit_text = (REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(
+        encoding="utf-8"
+    )
+    ci_collapsed = ci_audit_text.lower()
+    truth_map_text = (
+        REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+    ).read_text(encoding="utf-8")
+    truth_collapsed = truth_map_text.lower()
+    module_name = Path(__file__).name
+
+    assert "R-001" in ci_audit_text
+    assert module_name in ci_audit_text
+    assert "DERIVED-CYBER-R-001-001" in ci_audit_text
+    assert "mapped-by-derived-evidence" in ci_collapsed
+    assert "INPUT_JSONL_PROVIDED=false" in ci_audit_text
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in ci_audit_text
+    assert "non-authorizing" in ci_collapsed
+
+    assert module_name in truth_map_text
+    assert "mapped-by-derived-evidence" in truth_collapsed
+    assert "DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0=true" in truth_map_text
+    assert "non-authorizing" in truth_collapsed
