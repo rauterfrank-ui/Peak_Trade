@@ -109,6 +109,33 @@ gh run list --workflow="ci-export-pack-download-verify.yml" --limit 5
 
 ---
 
+## Manual-only workflow recommender after PR #3896
+
+Fourteen ops/schedule workflows remain **active** on GitHub with **`workflow_dispatch` retained**; their **`schedule` / cron triggers were removed** in PR #3896 to reduce recurring Actions cost. Cron is not restored by merging or running this recommender.
+
+**Read-only CLI:** `scripts/ops/recommend_manual_only_workflows.py`
+
+| Behavior | Detail |
+|----------|--------|
+| Purpose | Map an operator **intent** (e.g. paper/shadow evidence, health suite) to relevant manual-only workflows |
+| Output | Workflow file, display name, rationale, cost/risk notes, optional `gh workflow run "…"` **text only** |
+| Does **not** | Run `gh`, mutate repo files, re-enable `schedule`, or change GitHub settings |
+| Operator-GO | Every manual run needs an explicit operator decision; runs can incur runner and provider (e.g. AI) costs |
+
+**Re-enabling cron** requires a **separate PR** that restores `schedule:` in workflow YAML plus explicit **operator-GO** — not this recommender.
+
+**Examples:**
+
+```bash
+python scripts/ops/recommend_manual_only_workflows.py --list-intents
+python scripts/ops/recommend_manual_only_workflows.py --intent paper_shadow_evidence --include-commands
+python scripts/ops/recommend_manual_only_workflows.py --intent market_info_daily --include-commands --json
+```
+
+AI-adjacent workflows (`infostream-automation`, `market_outlook_automation`) may incur model/API cost; prefer safe dispatch inputs (e.g. `skip_ai=true`) unless cost is explicitly approved.
+
+---
+
 ## Cross-References
 
 - [CI.md](CI.md) — CI pipeline overview
