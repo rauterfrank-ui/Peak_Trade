@@ -4,7 +4,7 @@
 
 {% block content %}
 <div
-  class="space-y-5 max-w-7xl mx-auto px-2 sm:px-0 pb-1"
+  class="space-y-6 max-w-7xl mx-auto px-2 sm:px-1 pb-2"
   id="market-v0-shell"
   role="region"
   aria-labelledby="market-v0-landmark-page-title"
@@ -23,7 +23,7 @@
   <section
     role="region"
     aria-labelledby="market-v0-landmark-readonly-constraints-h2"
-    class="rounded-xl border border-slate-700/60 bg-slate-900/55 px-3 py-2.5 sm:px-4 sm:py-3"
+    class="rounded-xl border border-slate-600/55 bg-slate-900/60 px-3 py-3 sm:px-4 sm:py-3.5 shadow-sm shadow-black/25 ring-1 ring-slate-800/45"
     data-market-v1-readonly-banner="true"
     data-market-v0-readonly-banner-chip-rhythm-v0="true"
   >
@@ -36,15 +36,15 @@
         class="m-0 p-0 list-none flex flex-wrap gap-2 sm:gap-2.5"
         aria-label="Read-only posture"
       >
-        <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
+        <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/65 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums ring-1 ring-inset ring-slate-700/35">
           <span class="h-1.5 w-1.5 rounded-full bg-emerald-400/90 shrink-0" aria-hidden="true"></span>
           Read-only market display
         </li>
-        <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
+        <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/65 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums ring-1 ring-inset ring-slate-700/35">
           <span class="h-1.5 w-1.5 rounded-full bg-slate-500 shrink-0" aria-hidden="true"></span>
           No orders
         </li>
-        <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
+        <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/65 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums ring-1 ring-inset ring-slate-700/35">
           <span class="h-1.5 w-1.5 rounded-full bg-slate-500 shrink-0" aria-hidden="true"></span>
           No strategy authority
         </li>
@@ -59,11 +59,11 @@
         class="m-0 p-0 list-none flex flex-wrap gap-2 sm:gap-2.5"
         aria-label="Execution and risk boundaries"
       >
-        <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
+        <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/65 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums ring-1 ring-inset ring-slate-700/35">
           <span class="h-1.5 w-1.5 rounded-full bg-amber-400/85 shrink-0" aria-hidden="true"></span>
           No Live/Testnet action
         </li>
-        <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums">
+        <li class="inline-flex items-center gap-1.5 rounded-full border border-slate-600/70 bg-slate-950/65 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95 tabular-nums ring-1 ring-inset ring-slate-700/35">
           <span class="h-1.5 w-1.5 rounded-full bg-rose-400/80 shrink-0" aria-hidden="true"></span>
           No Risk/KillSwitch override
         </li>
@@ -74,7 +74,7 @@
   <section
     role="region"
     aria-labelledby="market-v0-landmark-safety-banner-h2"
-    class="rounded-xl border border-amber-900/45 bg-gradient-to-br from-amber-950/35 via-slate-950/35 to-slate-950/20 px-3 py-2.5 sm:px-4 text-xs text-amber-100/95"
+    class="rounded-xl border border-amber-900/45 bg-gradient-to-br from-amber-950/40 via-slate-950/40 to-slate-950/25 px-3 py-3 sm:px-4 sm:py-3.5 text-xs text-amber-100/95 shadow-md shadow-black/20 ring-1 ring-amber-950/30"
     data-market-safety-banner="true"
     {% if query.source == 'dummy' %}
     data-market-source-kind="dummy-offline-synthetic"
@@ -104,7 +104,7 @@
       Keine Orders, kein Testnet, kein Live.
     </p>
     {% endif %}
-    <p class="mt-2 border-t border-amber-800/30 pt-2 leading-snug text-amber-100/85 m-0 text-[11px]">
+    <p class="mt-2.5 rounded-lg border border-amber-800/35 bg-amber-950/25 px-2.5 py-2 leading-snug text-amber-100/90 m-0 text-[11px]">
       <strong class="text-amber-200/95">Guardrails:</strong>
       Dashboard ≠ Freigabe · AI ≠ Authority · Signal ≠ Trade · Docs ≠ Approval — reine Anzeige, keine Broker-/Order-/Live-Autorität.
     </p>
@@ -199,12 +199,12 @@
       {% endif %}
     </div>
     <div
-      class="grid grid-cols-1 sm:grid-cols-3 gap-2"
+      class="grid grid-cols-1 sm:grid-cols-3 gap-2.5"
       aria-label="Funnel-Stufen: read-only ranking producer display"
     >
       {% for stage_key, stage_label in ranking_funnel.stage_labels.items() %}
       <div
-        class="rounded-lg border border-slate-700/75 bg-slate-950/65 px-2.5 py-2"
+        class="rounded-lg border border-slate-700/70 bg-slate-950/70 px-2.5 py-2.5 ring-1 ring-violet-900/20 shadow-sm shadow-black/15"
         data-market-v0-ranking-funnel-stage-v0="{{ stage_key|e }}"
         data-market-v0-ranking-funnel-label-stage-v0="{{ stage_key|e }}"
       >
@@ -264,7 +264,7 @@
 
   <!-- Pro cockpit grid: chart/main column + read-only side panels (IA inspiration only; no order UI) -->
   <div
-    class="grid grid-cols-1 xl:grid-cols-12 gap-3 lg:gap-5 xl:gap-6 items-start"
+    class="grid grid-cols-1 xl:grid-cols-12 gap-4 lg:gap-5 xl:gap-6 items-start"
     data-market-v0-pro-grid="true"
   >
     <div class="xl:col-span-8 space-y-6 min-w-0" data-market-v0-chart-panel="true">
@@ -315,16 +315,16 @@
   <section
     role="region"
     aria-labelledby="market-v0-landmark-visual-cockpit-h2"
-    class="rounded-xl border border-slate-600/50 bg-gradient-to-b from-slate-950/90 via-slate-900/80 to-slate-950/70 p-3 sm:p-4 ring-1 ring-sky-900/25 shadow-lg shadow-black/25 space-y-3"
+    class="rounded-xl border border-slate-600/50 bg-gradient-to-b from-slate-950/92 via-slate-900/82 to-slate-950/72 p-3 sm:p-4 ring-1 ring-sky-900/30 shadow-lg shadow-black/30 space-y-3.5"
     data-market-v0-visual-cockpit="true"
     data-market-v0-visual-cockpit-v1="true"
   >
-    <div class="flex flex-wrap items-end justify-between gap-2">
+    <div class="flex flex-wrap items-end justify-between gap-2 border-b border-slate-800/70 pb-2.5">
       <div>
-        <h2 id="market-v0-landmark-visual-cockpit-h2" data-market-v0-visual-cockpit-landmark-heading-v0="true" class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">Visual cockpit</h2>
-        <p class="text-[10px] text-slate-500 m-0 mt-0.5">SSR overview · read-only snapshot · not live</p>
+        <h2 id="market-v0-landmark-visual-cockpit-h2" data-market-v0-visual-cockpit-landmark-heading-v0="true" class="text-xs sm:text-sm font-semibold text-slate-50 tracking-tight m-0">Visual cockpit</h2>
+        <p class="text-[10px] text-slate-500 m-0 mt-1 leading-snug">SSR overview · read-only snapshot · not live</p>
       </div>
-      <span class="text-[9px] font-semibold uppercase tracking-wide text-emerald-400/90">v1 tiles</span>
+      <span class="inline-flex items-center rounded-md border border-emerald-900/45 bg-emerald-950/35 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-emerald-300/95">v1 tiles · display-only</span>
     </div>
 
     {% set lim = query.limit|int %}
@@ -342,7 +342,7 @@
     {% endif %}
 
     <div
-      class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 rounded-xl border border-slate-800/80 bg-slate-950/65 p-2.5 sm:p-3 ring-1 ring-slate-800/50"
+      class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2.5 sm:gap-3 rounded-xl border border-slate-800/75 bg-slate-950/70 p-2.5 sm:p-3 ring-1 ring-slate-800/55"
       data-market-v0-ssr-metrics-strip="true"
       data-market-v0-cockpit-tiles-grid-v0="true"
       aria-label="SSR metrics snapshot"
@@ -589,14 +589,14 @@
   <section
     role="region"
     aria-labelledby="market-v0-landmark-data-rails-h2"
-    class="rounded-xl border border-slate-700/70 bg-slate-950/55 p-3 sm:p-4 ring-1 ring-sky-900/15 space-y-3"
+    class="rounded-xl border border-slate-700/65 bg-slate-950/60 p-3 sm:p-4 ring-1 ring-sky-900/20 space-y-3 shadow-md shadow-black/15"
     data-market-v0-data-surfaces="true"
   >
-    <div class="flex flex-wrap items-center justify-between gap-2">
-      <h2 id="market-v0-landmark-data-rails-h2" class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">Data rails · OHLCV · Depth</h2>
+    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/65 pb-2">
+      <h2 id="market-v0-landmark-data-rails-h2" class="text-xs sm:text-sm font-semibold text-slate-50 tracking-tight m-0">Data rails · OHLCV · Depth</h2>
       <div class="flex flex-wrap gap-1.5">
-        <span class="rounded border border-slate-700/80 bg-slate-900/70 px-1.5 py-0.5 text-[9px] font-semibold text-slate-400 tabular-nums">No Live authorization</span>
-        <span class="rounded border border-slate-700/80 bg-slate-900/70 px-1.5 py-0.5 text-[9px] font-semibold text-slate-400 tabular-nums">SSR snapshot</span>
+        <span class="inline-flex items-center rounded-md border border-slate-700/75 bg-slate-900/75 px-1.5 py-0.5 text-[9px] font-semibold text-slate-400 tabular-nums">No Live authorization</span>
+        <span class="inline-flex items-center rounded-md border border-sky-900/40 bg-sky-950/30 px-1.5 py-0.5 text-[9px] font-semibold text-sky-300/85 tabular-nums">SSR snapshot</span>
       </div>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-2.5">
@@ -663,51 +663,51 @@
   <section
     role="region"
     aria-labelledby="market-v0-landmark-query-context-h2"
-    class="bg-slate-900/80 rounded-xl border border-slate-800/90 p-3 sm:p-4 ring-1 ring-slate-800/60"
+    class="bg-slate-900/85 rounded-xl border border-slate-800/85 p-3 sm:p-4 ring-1 ring-slate-800/55 shadow-md shadow-black/20"
     data-market-v1-context="true"
   >
-    <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2.5">
-      <h2 id="market-v0-landmark-query-context-h2" class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">PeakTrade Market Dashboard · context</h2>
-      <span class="text-[10px] font-medium uppercase tracking-wide text-slate-500">Snapshot · keine Live-Autorisierung</span>
+    <div class="flex flex-wrap items-baseline justify-between gap-2 mb-3 border-b border-slate-800/70 pb-2">
+      <h2 id="market-v0-landmark-query-context-h2" class="text-xs sm:text-sm font-semibold text-slate-50 tracking-tight m-0">PeakTrade Market Dashboard · context</h2>
+      <span class="inline-flex items-center rounded-md border border-slate-700/75 bg-slate-950/65 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Snapshot · keine Live-Autorisierung</span>
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-2.5 text-[11px]">
       <div
-        class="rounded-lg border border-slate-800/90 bg-slate-950/60 px-2.5 py-2 shadow-sm shadow-black/15"
+        class="rounded-lg border border-slate-800/85 bg-slate-950/65 px-2.5 py-2 shadow-sm shadow-black/20 ring-1 ring-slate-800/40"
         data-market-v1-stat-card="true"
       >
         <span class="text-slate-500 block mb-1">Source</span>
         <span class="font-mono text-sky-300/95">{{ query.source }}</span>
       </div>
       <div
-        class="rounded-lg border border-slate-800/90 bg-slate-950/60 px-2.5 py-2 shadow-sm shadow-black/15"
+        class="rounded-lg border border-slate-800/85 bg-slate-950/65 px-2.5 py-2 shadow-sm shadow-black/20 ring-1 ring-slate-800/40"
         data-market-v1-stat-card="true"
       >
         <span class="text-slate-500 block mb-1">Symbol</span>
         <span class="font-mono text-slate-200">{{ query.symbol }}</span>
       </div>
       <div
-        class="rounded-lg border border-slate-800/90 bg-slate-950/60 px-2.5 py-2 shadow-sm shadow-black/15"
+        class="rounded-lg border border-slate-800/85 bg-slate-950/65 px-2.5 py-2 shadow-sm shadow-black/20 ring-1 ring-slate-800/40"
         data-market-v1-stat-card="true"
       >
         <span class="text-slate-500 block mb-1">Timeframe</span>
         <span class="font-mono text-slate-200">{{ query.timeframe }}</span>
       </div>
       <div
-        class="rounded-lg border border-slate-800/90 bg-slate-950/60 px-2.5 py-2 shadow-sm shadow-black/15"
+        class="rounded-lg border border-slate-800/85 bg-slate-950/65 px-2.5 py-2 shadow-sm shadow-black/20 ring-1 ring-slate-800/40"
         data-market-v1-stat-card="true"
       >
         <span class="text-slate-500 block mb-1">Limit</span>
         <span class="font-mono text-slate-200">{{ query.limit }}</span>
       </div>
       <div
-        class="rounded-lg border border-slate-800/90 bg-slate-950/60 px-2.5 py-2 shadow-sm shadow-black/15"
+        class="rounded-lg border border-slate-800/85 bg-slate-950/65 px-2.5 py-2 shadow-sm shadow-black/20 ring-1 ring-slate-800/40"
         data-market-v1-stat-card="true"
       >
         <span class="text-slate-500 block mb-1">Bars returned</span>
         <span class="font-mono text-slate-200">{{ payload.bars_returned }}</span>
       </div>
       <div
-        class="rounded-lg border border-slate-800/90 bg-slate-950/60 px-2.5 py-2 shadow-sm shadow-black/15"
+        class="rounded-lg border border-slate-800/85 bg-slate-950/65 px-2.5 py-2 shadow-sm shadow-black/20 ring-1 ring-slate-800/40"
         data-market-v1-stat-card="true"
       >
         <span class="text-slate-500 block mb-1">Chart hint (SSR)</span>
@@ -809,7 +809,7 @@
     <div
       id="market-v0-chart-status"
       role="status"
-      class="text-xs text-slate-300 mb-0 min-h-[1.5rem] font-medium border-b border-slate-800/80 px-3 py-2.5 bg-slate-950/50"
+      class="text-xs text-slate-200 mb-0 min-h-[1.5rem] font-medium border-b border-slate-800/80 border-l-4 border-l-sky-500/55 px-3 py-2.5 bg-slate-950/55"
       data-market-chart-status="{% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}"
       {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
     >
@@ -943,7 +943,7 @@
       aria-label="Read-only market side panels (no order controls)"
     >
       <section
-        class="rounded-lg border border-slate-600/50 bg-gradient-to-r from-slate-900/80 to-slate-950/70 px-2.5 py-2 text-[10px] text-slate-300 leading-tight"
+        class="rounded-lg border border-slate-600/50 bg-gradient-to-r from-slate-900/85 to-slate-950/75 px-3 py-2.5 text-[10px] text-slate-300 leading-tight shadow-sm shadow-black/20"
         data-market-v0-pro-boundary="true"
         aria-label="Read-only boundaries"
       >
