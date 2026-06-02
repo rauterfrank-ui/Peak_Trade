@@ -216,6 +216,34 @@ FORBIDDEN_AUTHORIZATION_PHRASES_003F_B: tuple[str, ...] = (
     "provider activated",
     "real order placed",
 )
+GOVERNED_REFLECTION_SUBGROUP_003D = "CSC-RCHAIN-v1-003d"
+OPERATOR_ACCEPT_003D_SLICE_1 = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/operator_accept_artifact_csc_rchain_003d_slice_1_v0_20260602T214239Z"
+)
+NARROWING_BASENAMES_003D: tuple[str, ...] = (
+    "base.py",
+    "exchange.py",
+    "paper.py",
+    "shadow.py",
+    "testnet_executor.py",
+)
+CANDIDATE_IDS_003D: tuple[str, ...] = (
+    "CSC-LOSSLESS-v1-000317",
+    "CSC-LOSSLESS-v1-000318",
+    "CSC-LOSSLESS-v1-000319",
+    "CSC-LOSSLESS-v1-000320",
+    "CSC-LOSSLESS-v1-000321",
+    "CSC-LOSSLESS-v1-000322",
+)
+FORBIDDEN_AUTHORIZATION_PHRASES_003D: tuple[str, ...] = (
+    "order placement authorized",
+    "routing enabled",
+    "session armed",
+    "paper order sent",
+    "shadow order sent",
+    "testnet order enabled",
+)
 
 FORBIDDEN_AUTHORIZATION_PHRASES: tuple[str, ...] = (
     "scheduler start authorized",
@@ -310,6 +338,16 @@ def _csc_rchain_003b_guard_block(text: str) -> str:
 
 def _csc_rchain_003f_b_guard_block(text: str) -> str:
     start = text.index("### CSC-RCHAIN-v1-003f-B governed reflection guard v0")
+    end_marker = "### CSC-RCHAIN-v1-003d governed reflection guard v0"
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+def _csc_rchain_003d_guard_block(text: str) -> str:
+    start = text.index("### CSC-RCHAIN-v1-003d governed reflection guard v0")
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
@@ -686,6 +724,62 @@ def test_csc_rchain_v1_003f_b_governed_reflection_scheduler_boundary_crosslink_v
     assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
     assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
     assert "CSC_RCHAIN_V1_003B_GOVERNED_REFLECTION_SLICE1_V0=true" in text
+
+
+def test_csc_rchain_v1_003d_governed_reflection_scheduler_boundary_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    block = _csc_rchain_003d_guard_block(text)
+
+    assert "CSC_RCHAIN_V1_003D_GOVERNED_REFLECTION_SLICE1_V0=true" in block
+    assert "CSC_RCHAIN_V1_003D_REFLECTION_DOCS_TESTS_ONLY=true" in block
+    assert "CSC_RCHAIN_V1_003D_CANDIDATE_COUNT=6" in block
+    assert "CSC_RCHAIN_V1_003D_EXTERNAL_ACCEPT_READY_COUNT=0" in block
+    assert "CSC_RCHAIN_V1_003D_NARROWING_REQUIRED_COUNT=5" in block
+    assert "CSC_RCHAIN_V1_003D_PARK_RETAINED=true" in block
+    assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT_UNCHANGED=true" in block
+    assert "CSC_RCHAIN_V1_PARK_COUNT_UNCHANGED=true" in block
+    assert "REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-003D-SLICE-1" in block
+    assert "NO_ORDER_PLACEMENT_AUTHORITY=true" in block
+    assert "NO_ROUTING_AUTHORITY=true" in block
+    assert "NO_SESSION_AUTHORITY=true" in block
+    assert "NO_PAPER_ORDER_AUTHORITY=true" in block
+    assert "NO_SHADOW_ORDER_SEND=true" in block
+    assert "NO_TESTNET_ORDER_ENABLEMENT=true" in block
+    assert "ORDERS_VISIBILITY_ONLY=true" in block
+    assert "ROUTING_NO_AUTHORITY_VISIBILITY_ONLY=true" in block
+    assert "SESSION_NO_AUTHORITY_VISIBILITY_ONLY=true" in block
+    assert "ORDERS_BEHAVIOR_CHANGED=false" in block
+    assert "ROUTING_BEHAVIOR_CHANGED=false" in block
+    assert "CSC_RCHAIN_V1_003F_A_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_003F_C_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_003F_D_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_003C_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_003B_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_003F_B_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_003A_LIVE_EXCLUDED=true" in block
+    assert "CSC_RCHAIN_V1_003E_MASTER_V2_EXCLUDED=true" in block
+    assert OPERATOR_ACCEPT_003D_SLICE_1 in block
+    assert GOVERNED_REFLECTION_SUBGROUP_003D in block
+    assert THIS_MODULE in block
+    assert GROUPING_REFLECTION_GUARD_MODULE in block
+    assert "orders" in block.lower()
+    assert "routing-no-authority" in block.lower() or "routing" in block.lower()
+
+    for basename in NARROWING_BASENAMES_003D:
+        assert basename in block
+    assert len(CANDIDATE_IDS_003D) == 6
+    assert "CSC-LOSSLESS-v1-000317" in block
+    assert "000318`–`000322" in block
+
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES:
+        assert phrase not in collapsed
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES_003D:
+        assert phrase not in collapsed
+
+    assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
+    assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
+    assert "CSC_RCHAIN_V1_003F_B_GOVERNED_REFLECTION_SLICE1_V0=true" in text
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_truth_map_crosslink_v0() -> (
