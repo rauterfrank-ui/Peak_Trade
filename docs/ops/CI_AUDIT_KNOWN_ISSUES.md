@@ -1428,7 +1428,7 @@ PARALLEL_CYBER_INDEX_CREATED=false
 | Order | Slice ID | Scope |
 |-------|----------|-------|
 | 1 | **SLICE-OC-1** | Docs-only: this meta-index + Ops Cockpit summary reflection (**this PR**) |
-| 2 | **SLICE-OC-2** | Tests-ops: static guard for meta-index tokens in existing `tests/ops/test_ops_cockpit_*` or docs-guard modules only |
+| 2 | **SLICE-OC-2** | Tests-ops: static guard for meta-index tokens in existing `tests&#47;ops&#47;test_ops_cockpit_*` or docs-guard modules only |
 | 3 | **SLICE-OC-3** (optional) | Docs-only: one-line trilogy pointer in `docs/webui/MARKET_SURFACE_V0.md` |
 
 **Operational rules:**
