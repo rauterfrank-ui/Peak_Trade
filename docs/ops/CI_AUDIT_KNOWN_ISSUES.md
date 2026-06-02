@@ -1463,3 +1463,67 @@ MASTER_V2_LOGIC_CHANGED=false
 DOUBLE_PLAY_LOGIC_CHANGED=false
 PARALLEL_OPERATOR_STATUS_INDEX_CREATED=false
 ```
+
+## GH Schedule Governance Minimal RC v0 — index v0
+
+**Release:** `GH_SCHEDULE_GOVERNANCE_MINIMAL_RC_V0` · **Slice:** `SLICE-GH-0` (docs-only start) · **UTC:** 2026-06-02 · **Recommended next larger release candidate** after `OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0` (CORE COMPLETE on `main` @ `6fac49be717b58eb85c5ddef4dbf653400425125`). **Canonical repo owners (reuse — no parallel index):**
+
+| Concern | Owner |
+|---------|-------|
+| GH schedule governance meta-index (this section) | `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` (this document) |
+| Scheduled workflow variable gates + residual schedule boundaries | `docs/ops/CI_SCHEDULED_WORKFLOW_VARIABLE_GATES.md` — **§ GH Schedule Governance Minimal RC v0** |
+| Read-only manual-only / residual schedule recommender | `scripts/ops/recommend_manual_only_workflows.py` (reference only; **no** script change in SLICE-GH-0) |
+| Manual-only recommender tests | `tests/ops/test_recommend_manual_only_workflows.py` (reference only; optional guard in SLICE-GH-2 after GH-001) |
+| Ops Cockpit / OE / CV / ER / OC prior releases | this document — § Operator Experience …, § Cybersecurity Visibility …, § Ops Cockpit …; ER SSOT in `PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
+
+**Release scope (planned):** **2–3 PRs** maximum — minimal explicit sub-go-gated workflow governance without batch YAML, without new status hubs, and without lifting STOP_IDLE / preflight / retention enforcement.
+
+**Slice separation (mandatory):**
+
+| Slice | Scope | YAML | Sub-GO |
+|-------|-------|------|--------|
+| **SLICE-GH-0** | Docs-only governance start (**this PR**) | **none** | Operator GO for docs only |
+| **SLICE-GH-001** | Possible later change to `.github&#47;workflows&#47;pro-prk-nightly-selfcheck.yml` only (remove `schedule:`; retain `workflow_dispatch`) | **one file** | **Separate explicit Sub-GO** — **not** authorized from SLICE-GH-0 |
+| **SLICE-GH-2** (optional) | Static test guard after GH-001 if needed | none | after GH-001 merge |
+
+**Residual schedules (13 — unchanged in SLICE-GH-0):** `audit.yml`, `ci.yml`, `prbc-stability-gate.yml`, `prbd-live-readiness-scorecard.yml`, `prbe-shadow-testnet-scorecard.yml`, `prbg-execution-evidence.yml`, `prbi-live-pilot-scorecard.yml`, `prbj-testnet-exec-events.yml`, `prcc-aws-export-smoke.yml`, `prk-prj-status-report.yml`, **`pro-prk-nightly-selfcheck.yml`** (sole SLICE-GH-001 candidate), `pru-required-checks-drift-detector.yml`, `real-market-forward-evidence-smoke.yml`. **No batch YAML wave.** **No schedule reactivation** for PR #3896 manual-only set.
+
+**Durable operator pointers (archive only — not repo-ingested):**
+
+| Token | Durable path |
+|-------|--------------|
+| Next larger theme ranking (post-OC) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_larger_theme_ranking_after_ops_cockpit_status_index_rc_v0_20260602T201200Z/` |
+| GH residual schedule cost review | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gh_residual_schedule_cost_review_readonly_v0_20260602T171045Z/` |
+| SLICE-GH-0 docs-only start (this slice) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gh_schedule_governance_minimal_rc_v0_slice_gh0_docs_only_20260602T201500Z/` |
+
+**Operational rules:**
+
+- **SLICE-GH-0 is docs-only** — **no** `.github&#47;workflows&#47;**` edits, **no** `workflow_dispatch` execution from agent/CI automation, **no** batch cron removal on the 12 other residual workflows.
+- **SLICE-GH-001** requires **separate explicit Sub-GO** before any YAML merge; manual-only recommender output is **read-only** and **not** equivalent to schedule deactivation.
+- **STOP_IDLE preserved** — `PREFLIGHT_REMAINS_BLOCKED=true`; no paper/shadow/testnet/live, no scheduler/daemon execution, no runtime.
+- **Notion** remains mirror/status only — **no** Notion writes.
+- **No trading / execution / risk / governance / live-gate authority** — no Master V2 / Double Play logic changes.
+- **Reuse-before-new** — extend this CI audit anchor and `CI_SCHEDULED_WORKFLOW_VARIABLE_GATES.md` only; **no** parallel schedule-governance hub, evidence index, readiness map, or handoff surface.
+
+```text
+GH_SCHEDULE_GOVERNANCE_MINIMAL_RC_V0=true
+SLICE_GH0_DOCS_ONLY=true
+SLICE_GH_001_SEPARATE_SUB_GO=true
+SLICE_GH_001_NOT_AUTHORIZED_FROM_GH0=true
+GH_YAML_CHANGED=false
+BATCH_SCHEDULE_CHANGES=false
+SCHEDULE_REACTIVATION=false
+RESIDUAL_SCHEDULE_COUNT=13
+GH001_CANDIDATE_WORKFLOW=pro-prk-nightly-selfcheck.yml
+WORKFLOW_DISPATCH_EXECUTED=false
+RECOMMENDER_READ_ONLY=true
+PREFLIGHT_REMAINS_BLOCKED=true
+STOP_IDLE_PRESERVED=true
+RETENTION_ENFORCEMENT_ACTIVATED=false
+NOTION_WRITES=false
+NO_RUNTIME=true
+NO_TRADING_AUTHORITY_CHANGE=true
+MASTER_V2_LOGIC_CHANGED=false
+DOUBLE_PLAY_LOGIC_CHANGED=false
+PARALLEL_SCHEDULE_GOVERNANCE_INDEX_CREATED=false
+```
