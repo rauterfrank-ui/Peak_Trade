@@ -598,6 +598,45 @@ FORBIDDEN_AUTHORIZATION_PHRASES_005C_SLICE6_AIOPS_SHADOW: tuple[str, ...] = (
 
 def _csc_rchain_005c_slice6_aiops_shadow_guard_block(text: str) -> str:
     start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-6 AIOps-Shadow)")
+    end_marker = "### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-7 Execution-Workflow)"
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+OPERATOR_ACCEPT_005C_SLICE_7_EXECUTION_WORKFLOW = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/create_operator_accept_artifact_bundle_005c_slice7_execution_workflow_v0_20260602T231105Z"
+)
+NARROWING_BASENAMES_005C_SLICE7_EXECUTION_WORKFLOW: tuple[str, ...] = (
+    "run_execution_session.py",
+    "run_autonomous_workflow.py",
+)
+CANDIDATE_IDS_005C_SLICE7_EXECUTION_WORKFLOW: tuple[str, ...] = (
+    "CSC-LOSSLESS-v1-000244",
+    "CSC-LOSSLESS-v1-000241",
+)
+FORBIDDEN_AUTHORIZATION_PHRASES_005C_SLICE7_EXECUTION_WORKFLOW: tuple[str, ...] = (
+    "script execution authorized",
+    "scheduler start authorized",
+    "execution session authorized",
+    "execution session start authorized",
+    "execution started",
+    "workflow dispatch approved",
+    "workflow dispatch authorized",
+    "autonomous workflow enabled",
+    "autonomous authority granted",
+    "execution authorized",
+    "cli invocation approved",
+)
+
+
+def _csc_rchain_005c_slice7_execution_workflow_guard_block(text: str) -> str:
+    start = text.index(
+        "### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-7 Execution-Workflow)"
+    )
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
@@ -1297,6 +1336,58 @@ def test_csc_rchain_v1_005c_governed_reflection_slice6_aiops_shadow_scheduler_bo
     assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
     assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
     assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE5_LIVE_NAMED_B_V0=true" in text
+
+
+def test_csc_rchain_v1_005c_governed_reflection_slice7_execution_workflow_scheduler_boundary_crosslink_v0() -> (
+    None
+):
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    block = _csc_rchain_005c_slice7_execution_workflow_guard_block(text)
+
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE7_EXECUTION_WORKFLOW_V0=true" in block
+    assert "CSC_RCHAIN_V1_005C_REFLECTION_DOCS_TESTS_ONLY=true" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE7_CANDIDATE_COUNT=2" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE7_EXTERNAL_ACCEPT_READY_COUNT=0" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE7_NARROWING_REQUIRED_COUNT=2" in block
+    assert "CSC_RCHAIN_V1_005C_FINAL_SCRIPT_SLICE=true" in block
+    assert "CSC_RCHAIN_V1_005C_PARK_RETAINED=true" in block
+    assert "REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-005C-SLICE-7-EXECUTION-WORKFLOW" in block
+    assert "EXECUTION_WORKFLOW_CLI_VISIBILITY_ONLY=true" in block
+    assert "NO_EXECUTION_SESSION_START_AUTHORITY=true" in block
+    assert "NO_WORKFLOW_DISPATCH_AUTHORITY=true" in block
+    assert "NO_AUTONOMOUS_AUTHORITY=true" in block
+    assert "NO_EXECUTION_AUTHORITY=true" in block
+    assert "NO_WORKFLOW_AUTHORITY=true" in block
+    assert "RUN_SCHEDULER_000253_BLOCKED=true" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE1_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE2_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE3_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE4_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE5_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE6_REOPENED=false" in block
+    assert OPERATOR_ACCEPT_005C_SLICE_7_EXECUTION_WORKFLOW in block
+    assert GOVERNED_REFLECTION_SUBGROUP_005C in block
+    assert THIS_MODULE in block
+    assert GROUPING_REFLECTION_GUARD_MODULE in block
+    assert "execution" in block.lower()
+    assert "workflow" in block.lower()
+
+    for basename in NARROWING_BASENAMES_005C_SLICE7_EXECUTION_WORKFLOW:
+        assert basename in block
+    assert len(CANDIDATE_IDS_005C_SLICE7_EXECUTION_WORKFLOW) == 2
+    assert "CSC-LOSSLESS-v1-000244" in block
+    assert "000241" in block
+    assert "36/37" in block
+
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES:
+        assert phrase not in collapsed
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES_005C_SLICE7_EXECUTION_WORKFLOW:
+        assert phrase not in collapsed
+
+    assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
+    assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE6_AIOPS_SHADOW_V0=true" in text
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_truth_map_crosslink_v0() -> (
