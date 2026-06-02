@@ -1541,14 +1541,15 @@ PARALLEL_SCHEDULE_GOVERNANCE_INDEX_CREATED=false
 
 **Generator-use precondition (external — confirmed):**
 
-- **Use #1:** `planning/notion_sync_package_generator_v0_20260602T165958Z/` (`MODE_A_COMPLETE=true`, draft-only).
-- **Use #2:** `planning/notion_external_generator_use_2_dry_run_rc_v0_20260602T192244Z/` (GH closeout input).
-- **2B attestation:** `planning/notion_external_generator_use_2b_review_and_repo_helper_decision_20260602T192421Z/` — `GENERATOR_USE_COUNT_CONFIRMED=2`, `NOTION_REPO_HELPER_MIN_2_USES_MET=true`.
+- **Use #1:** external archive bundle `notion_sync_package_generator_v0_20260602T165958Z` (`MODE_A_COMPLETE=true`, draft-only) — full path in table below.
+- **Use #2:** external archive bundle `notion_external_generator_use_2_dry_run_rc_v0_20260602T192244Z` (GH closeout input) — full path in table below.
+- **2B attestation:** external archive bundle `notion_external_generator_use_2b_review_and_repo_helper_decision_20260602T192421Z` — `GENERATOR_USE_COUNT_CONFIRMED=2`, `NOTION_REPO_HELPER_MIN_2_USES_MET=true`.
 
 **Durable operator pointers (archive only — not repo-ingested):**
 
 | Token | Durable path |
 |-------|--------------|
+| Generator use #1 (sync package generator v0) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/notion_sync_package_generator_v0_20260602T165958Z/` |
 | Notion Repo Helper Charter (readonly RC v0) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/notion_repo_helper_charter_readonly_rc_v0_20260602T192538Z/` |
 | Generator use #2 dry-run | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/notion_external_generator_use_2_dry_run_rc_v0_20260602T192244Z/` |
 | 2B review / repo-helper decision | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/notion_external_generator_use_2b_review_and_repo_helper_decision_20260602T192421Z/` |
@@ -1561,7 +1562,7 @@ PARALLEL_SCHEDULE_GOVERNANCE_INDEX_CREATED=false
 |-------|----------|-------|
 | 1 | **SLICE-NRH-1** | Docs-only: this reflection (**this PR**) |
 | 2 | **SLICE-NRH-2** | Tests-ops: no-write/no-network/no-PII static guards for future helper allowlist |
-| 3 | **SLICE-NRH-3** | Implementation: `scripts/ops/generate_notion_sync_package_v0.py` + tests — **separate explicit GO** |
+| 3 | **SLICE-NRH-3** | Implementation: allowlisted repo helper CLI + tests per external charter — **separate explicit GO**; helper script **not on main** |
 
 **Operational rules:**
 
