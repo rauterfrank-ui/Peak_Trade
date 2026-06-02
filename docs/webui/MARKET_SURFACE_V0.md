@@ -531,6 +531,33 @@ RUNTIME_AUTHORITY_CHANGED=false
 MARKET_AIRPORT_TOUCHED=false
 ```
 
+## Operator Experience Release RC v0 — SLICE-OE-1 Status-Reflexion (docs-only)
+
+**Release:** `OPERATOR_EXPERIENCE_RELEASE_RC_V0` · **Slice:** `SLICE-OE-1` · **UTC:** 2026-06-02 · **Repo-SSOT:** dieses Dokument — **kein** paralleler Market-/Dashboard-Index.
+
+**Visual Polish abgeschlossen (templates-only, merged):**
+
+| Route | PR | Scope |
+|-------|-----|--------|
+| **`GET`** **`/market`** | **#3900** | Visual polish — `templates/peak_trade_dashboard/market_v0.html` only |
+| **`GET`** **`/market/double-play`** | **#3901** | Visual polish — `templates/peak_trade_dashboard/double_play_market_dashboard_v0.html` only |
+
+- **Charakter:** rein **Template-/Darstellungs**-Polish auf bestehenden SSR-/Payload-/JSON-Pfaden — **keine** `src/`-, API-, Route-, Provider-, Runtime-, Scheduler-, Paper-/Testnet-/Live-, Trading-, Execution-, Risk-, Governance-, Scope/Capital-, KillSwitch- oder Master-V2-/Double-Play-**Entscheidlogik**-Änderung.
+- **Dashboard zeigt/reflektiert nur:** alle Status-, „ready“-, Label- und Rail-Felder bleiben **display-only** / **non-authorizing** (siehe Safety banner, Double-Play v1.2/v1.3, Lane taxonomy §7h).
+- **Ops-/Status-Pointer:** kompakter Operator-Experience-Index in [CI Audit — Known Issues](../ops/CI_AUDIT_KNOWN_ISSUES.md) (**§ Operator Experience Release RC v0 — index v0**).
+
+```text
+OPERATOR_EXPERIENCE_RELEASE_RC_V0=true
+SLICE_OE1_DOCS_ONLY_REFLECTION=true
+MARKET_VISUAL_POLISH_PR3900_COMPLETE=true
+DOUBLE_PLAY_VISUAL_POLISH_PR3901_COMPLETE=true
+TEMPLATES_ONLY_POLISH=true
+DASHBOARD_AUTHORITY_CHANGED=false
+RUNTIME_AUTHORITY_CHANGED=false
+TRADING_AUTHORITY_CHANGED=false
+MARKET_SURFACE_AUTHORITY_SOURCE=false
+```
+
 ## Operator‑Downloads — Ingest‑Ledger (nicht kanonisch, v0)
 
 **Authority / Lesereihenfolge:** Markdown- oder PDF‑Exporte, die außerhalb des Repos unter einem **„Downloads“‑Ordner** des Operators liegen, sind **Hilfs-/Entwurfsspuren**. Sie ersetzen **keine** `docs/ops/specs/`‑Verträge, **keine** Runbooks und **keinen** dieser Market‑Surface‑Abschnitte. **`GET`** **`&#47;market&#47;double-play`** und **`GET`** **`&#47;api&#47;master‑v2&#47;double‑play&#47;dashboard-display.json`** bleiben an die **bereits eingecheckten** Read‑only‑Kontrakte gekoppelt ([**MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0**](../ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md); reine Dokumentation, **ohne** Steuerbefugnis).
