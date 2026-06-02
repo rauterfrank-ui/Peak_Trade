@@ -1638,7 +1638,7 @@ PARALLEL_NOTION_REPO_HELPER_INDEX_CREATED=false
 |-------|----------|-------|
 | 0 | **SLICE-PE-0** | External charter (**complete** — see archive bundle above) |
 | 1 | **SLICE-PE-1** | Docs-only: this reflection (**this PR**) |
-| 2 | **SLICE-PE-2** (optional) | Tests-ops: extend existing `tests/ops/test_gap2a1_*` and/or `test_primary_evidence_retention_invariant_contract_v0.py` only |
+| 2 | **SLICE-PE-2** (optional) | Tests-ops: extend existing `tests&#47;ops&#47;test_gap2a1_*` and/or `test_primary_evidence_retention_invariant_contract_v0.py` only |
 | — | **RUNTIME_ENFORCEMENT_IMPLEMENTATION** | Production enforcement / default-on flags — **BLOCKED** without separate Runtime-GO + tier GO |
 
 **Runtime-GO preconditions (discussion-only — non-authorizing):**
