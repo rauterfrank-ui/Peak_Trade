@@ -391,6 +391,47 @@ FORBIDDEN_AUTHORIZATION_PHRASES_005C: tuple[str, ...] = (
 
 def _csc_rchain_005c_guard_block(text: str) -> str:
     start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0")
+    end_marker = "### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-2)"
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+OPERATOR_ACCEPT_005C_SLICE_2 = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/create_operator_accept_artifact_bundle_005c_slice2_v0_20260602T221918Z"
+)
+NARROWING_BASENAMES_005C_SLICE2: tuple[str, ...] = (
+    "health_dashboard.py",
+    "run_full_portfolio.py",
+    "run_offline_realtime_ma_crossover.py",
+    "run_strategy_from_config.py",
+    "run_sweep_strategy.py",
+)
+CANDIDATE_IDS_005C_SLICE2: tuple[str, ...] = (
+    "CSC-LOSSLESS-v1-000250",
+    "CSC-LOSSLESS-v1-000251",
+    "CSC-LOSSLESS-v1-000159",
+    "CSC-LOSSLESS-v1-000245",
+    "CSC-LOSSLESS-v1-000249",
+    "CSC-LOSSLESS-v1-000255",
+    "CSC-LOSSLESS-v1-000256",
+)
+FORBIDDEN_AUTHORIZATION_PHRASES_005C_SLICE2: tuple[str, ...] = (
+    "script execution authorized",
+    "scheduler start authorized",
+    "live trading enabled",
+    "testnet session authorized",
+    "shadow execution authorized",
+    "dashboard server start authorized",
+    "cli invocation approved",
+)
+
+
+def _csc_rchain_005c_slice2_guard_block(text: str) -> str:
+    start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-2)")
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
@@ -871,6 +912,43 @@ def test_csc_rchain_v1_005c_governed_reflection_scheduler_boundary_crosslink_v0(
     assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
     assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
     assert "CSC_RCHAIN_V1_003D_GOVERNED_REFLECTION_SLICE1_V0=true" in text
+
+
+def test_csc_rchain_v1_005c_governed_reflection_slice2_scheduler_boundary_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    block = _csc_rchain_005c_slice2_guard_block(text)
+
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE2_V0=true" in block
+    assert "CSC_RCHAIN_V1_005C_REFLECTION_DOCS_TESTS_ONLY=true" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE2_CANDIDATE_COUNT=7" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE2_EXTERNAL_ACCEPT_READY_COUNT=2" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE2_NARROWING_REQUIRED_COUNT=5" in block
+    assert "CSC_RCHAIN_V1_005C_PARK_RETAINED=true" in block
+    assert "REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-005C-SLICE-2" in block
+    assert "OFFLINE_REMAINDER_CLI_VISIBILITY_ONLY=true" in block
+    assert "RUN_SCHEDULER_000253_BLOCKED=true" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE1_REOPENED=false" in block
+    assert OPERATOR_ACCEPT_005C_SLICE_2 in block
+    assert GOVERNED_REFLECTION_SUBGROUP_005C in block
+    assert THIS_MODULE in block
+    assert GROUPING_REFLECTION_GUARD_MODULE in block
+    assert "offline remainder" in block.lower()
+
+    for basename in NARROWING_BASENAMES_005C_SLICE2:
+        assert basename in block
+    assert len(CANDIDATE_IDS_005C_SLICE2) == 7
+    assert "CSC-LOSSLESS-v1-000250" in block
+    assert "000250`–`000251" in block
+
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES:
+        assert phrase not in collapsed
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES_005C_SLICE2:
+        assert phrase not in collapsed
+
+    assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
+    assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE1_V0=true" in text
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_truth_map_crosslink_v0() -> (
