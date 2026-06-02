@@ -147,7 +147,7 @@ AI-adjacent workflows (`infostream-automation`, `market_outlook_automation`) may
 | **SLICE-GH-0** | Docs-only governance start | This section documents boundaries only — **no** YAML change |
 | **SLICE-GH-001** | Possible later single-workflow manual-only | **Not** authorized from SLICE-GH-0; requires **separate explicit Sub-GO** |
 
-**SLICE-GH-001 candidate (only):** `.github/workflows/pro-prk-nightly-selfcheck.yml` — currently retains active `schedule:` (daily cron) among **13 residual scheduled workflows** documented in `scripts/ops/recommend_manual_only_workflows.py` (`RESIDUAL_SCHEDULE_WORKFLOW_FILES`). **All other 12 residuals remain unchanged** in this release line; **no batch YAML wave.**
+**SLICE-GH-001 candidate (only):** `.github&#47;workflows&#47;pro-prk-nightly-selfcheck.yml` — currently retains active `schedule:` (daily cron) among **13 residual scheduled workflows** documented in `scripts&#47;ops&#47;recommend_manual_only_workflows.py` (`RESIDUAL_SCHEDULE_WORKFLOW_FILES`). **All other 12 residuals remain unchanged** in this release line; **no batch YAML wave.**
 
 **Governance boundaries:**
 

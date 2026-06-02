@@ -1483,7 +1483,7 @@ PARALLEL_OPERATOR_STATUS_INDEX_CREATED=false
 | Slice | Scope | YAML | Sub-GO |
 |-------|-------|------|--------|
 | **SLICE-GH-0** | Docs-only governance start (**this PR**) | **none** | Operator GO for docs only |
-| **SLICE-GH-001** | Possible later change to `.github/workflows/pro-prk-nightly-selfcheck.yml` only (remove `schedule:`; retain `workflow_dispatch`) | **one file** | **Separate explicit Sub-GO** — **not** authorized from SLICE-GH-0 |
+| **SLICE-GH-001** | Possible later change to `.github&#47;workflows&#47;pro-prk-nightly-selfcheck.yml` only (remove `schedule:`; retain `workflow_dispatch`) | **one file** | **Separate explicit Sub-GO** — **not** authorized from SLICE-GH-0 |
 | **SLICE-GH-2** (optional) | Static test guard after GH-001 if needed | none | after GH-001 merge |
 
 **Residual schedules (13 — unchanged in SLICE-GH-0):** `audit.yml`, `ci.yml`, `prbc-stability-gate.yml`, `prbd-live-readiness-scorecard.yml`, `prbe-shadow-testnet-scorecard.yml`, `prbg-execution-evidence.yml`, `prbi-live-pilot-scorecard.yml`, `prbj-testnet-exec-events.yml`, `prcc-aws-export-smoke.yml`, `prk-prj-status-report.yml`, **`pro-prk-nightly-selfcheck.yml`** (sole SLICE-GH-001 candidate), `pru-required-checks-drift-detector.yml`, `real-market-forward-evidence-smoke.yml`. **No batch YAML wave.** **No schedule reactivation** for PR #3896 manual-only set.
@@ -1498,7 +1498,7 @@ PARALLEL_OPERATOR_STATUS_INDEX_CREATED=false
 
 **Operational rules:**
 
-- **SLICE-GH-0 is docs-only** — **no** `.github/workflows/**` edits, **no** `workflow_dispatch` execution from agent/CI automation, **no** batch cron removal on the 12 other residual workflows.
+- **SLICE-GH-0 is docs-only** — **no** `.github&#47;workflows&#47;**` edits, **no** `workflow_dispatch` execution from agent/CI automation, **no** batch cron removal on the 12 other residual workflows.
 - **SLICE-GH-001** requires **separate explicit Sub-GO** before any YAML merge; manual-only recommender output is **read-only** and **not** equivalent to schedule deactivation.
 - **STOP_IDLE preserved** — `PREFLIGHT_REMAINS_BLOCKED=true`; no paper/shadow/testnet/live, no scheduler/daemon execution, no runtime.
 - **Notion** remains mirror/status only — **no** Notion writes.
