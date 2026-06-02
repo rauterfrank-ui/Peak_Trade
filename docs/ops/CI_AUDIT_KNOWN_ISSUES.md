@@ -1595,3 +1595,92 @@ DOUBLE_PLAY_LOGIC_CHANGED=false
 CYBER_REAL_DATA_PII_BLOCKED=true
 PARALLEL_NOTION_REPO_HELPER_INDEX_CREATED=false
 ```
+
+## Primary Evidence Enforcement Runtime-GO Charter RC v0 — docs reflection v0
+
+**Release:** `PRIMARY_EVIDENCE_ENFORCEMENT_RUNTIME_GO_CHARTER_RC_V0` · **Slice:** `SLICE-PE-1` (`PRIMARY_EVIDENCE_ENFORCEMENT_RUNTIME_GO_DOCS_REFLECTION_SLICE_V0`) · **UTC:** 2026-06-02 · **Docs-only reflection** of the external Primary Evidence Enforcement Runtime-GO Charter (charter body remains in the durable archive — **not** repo-ingested). **Canonical repo owners (reuse — no parallel index):**
+
+| Concern | Owner |
+|---------|-------|
+| Primary evidence / closeout / enforcement posture (**SSOT — pointer only**) | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` — **§2a**, **§2a.1**, **§2b**, **§2b.2** (CI audit does **not** duplicate Preflight body) |
+| Gap-2a.1 contract tokens | `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` — **§2a.1 Primary Evidence Enforcement Contract v0** |
+| PE RC meta-index (this section) | `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` (this document) |
+| Shared retention helper (reference only — **no** change in SLICE-PE-1) | `scripts/ops/primary_evidence_retention_v0.py` |
+| Durable closeout helper (reference only) | `scripts/ops/durable_closeout_copy_verify_v0.py` |
+| Scheduler opt-in enforce (default off; reference only) | `scripts/run_scheduler.py` (`--evidence-dir`, `--primary-evidence-enforce`) |
+| Remote / local-dry charter reflection | this document — **§ Remote Runtime Charter …**, **§ Local Dry Host No-Run Preflight Charter …** |
+| ER RC status (**ER SSOT in Preflight only**) | `PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` — **§ Evidence Durable Closeout Retention RC v0 — index v0** |
+
+**Subordinate external inputs (archive only — confirmed):**
+
+| Input | Role |
+|-------|------|
+| SLICE-PE-0 charter bundle | Runtime-GO preconditions; tier 0 effective; release train |
+| Next larger theme ranking (post-Notion) | Recommended PE RC; slice decomposition |
+| Gap-2a.1 external tier plan | Tiers 0–5 (not active) |
+| Gap-2a.1 implementation planning charter | Post–Gap-4/5/6/7 boundaries |
+| Evidence Retention RC final closeout | ER core complete; enforcement off |
+
+**Durable operator pointers (archive only — not repo-ingested):**
+
+| Token | Durable path |
+|-------|--------------|
+| SLICE-PE-0 charter bundle | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/primary_evidence_enforcement_runtime_go_charter_rc_v0_slice_pe0_20260602T194200Z/` |
+| Next larger theme ranking (post-Notion) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_larger_theme_ranking_after_notion_repo_helper_charter_rc_v0_20260602T200000Z/` |
+| Gap-2a.1 external tier plan | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/external_gap2a1_primary_evidence_enforcement_tier_plan_v0_20260531T183954Z/` |
+| Gap-2a.1 implementation planning charter | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap2a1_primary_evidence_enforcement_implementation_planning_charter_v0_after_gap4567_reflection_20260531T203700Z/` |
+| Evidence Retention RC final closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/evidence_durable_closeout_retention_rc_v0_final_closeout_handoff_20260602T182534Z/` |
+| SLICE-PE-1 docs reflection (this slice) | repo: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — this section only |
+
+**Planned follow-on slices (reference — not authorized until explicit GO):**
+
+| Order | Slice ID | Scope |
+|-------|----------|-------|
+| 0 | **SLICE-PE-0** | External charter (**complete** — see archive bundle above) |
+| 1 | **SLICE-PE-1** | Docs-only: this reflection (**this PR**) |
+| 2 | **SLICE-PE-2** (optional) | Tests-ops: extend existing `tests&#47;ops&#47;test_gap2a1_*` and/or `test_primary_evidence_retention_invariant_contract_v0.py` only |
+| — | **RUNTIME_ENFORCEMENT_IMPLEMENTATION** | Production enforcement / default-on flags — **BLOCKED** without separate Runtime-GO + tier GO |
+
+**Runtime-GO preconditions (discussion-only — non-authorizing):**
+
+Durable primary evidence path outside `/tmp`; `MANIFEST.sha256` verify RC=0; closeout copy/verify when applicable; fail-closed when evidence unavailable; no `/tmp`-only completion; S3/rclone not completion unless separate GO; staged operator confirm for any runtime-affecting change. Satisfying preconditions **does not** grant Runtime-GO, lift Preflight **BLOCKED**, or set `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true`.
+
+**Operational rules:**
+
+- **Charter is planning-only** — **no** runtime, scheduler, daemon, Paper, Shadow, Testnet, or Live start from this slice.
+- **No enforcement activation** — `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`; `RETENTION_ENFORCEMENT_ACTIVATED=false`; `CLOSEOUT_ENFORCEMENT_ACTIVATED=false`; `RUNTIME_ENFORCEMENT_ALLOWED_NOW=false`; tier **0** effective (`GAP2A1_ENFORCEMENT_TIER_EFFECTIVE=0`).
+- **Evidence ≠ approval** — readiness ledger / gate snapshot pass-blocked-safe and helper PASS **do not** authorize runtime or lift STOP_IDLE.
+- **No** archive/evidence mutation, AWS/S3/rclone, Notion API/MCP/writes, or `workflow_dispatch` from agent/CI automation.
+- **No** trading/execution/risk/governance/live-gate authority; **no** Master V2 / Double Play logic changes.
+- **Reuse-before-new** — extend this CI audit anchor and existing Preflight/SECTION5/gap2a1 test surfaces; **no** parallel evidence index, readiness map, registry handoff, or pointer hub in repo.
+
+```text
+PRIMARY_EVIDENCE_ENFORCEMENT_RUNTIME_GO_CHARTER_RC_V0=true
+SLICE_PE1_DOCS_REFLECTION_ONLY=true
+SLICE_PE0_CHARTER_DONE=true
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true
+GAP2A1_ENFORCEMENT_DEFAULT_ON=false
+GAP2A1_ENFORCEMENT_TIER_EFFECTIVE=0
+RUNTIME_ENFORCEMENT_ALLOWED_NOW=false
+RETENTION_ENFORCEMENT_ACTIVATED=false
+CLOSEOUT_ENFORCEMENT_ACTIVATED=false
+EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
+TMP_ONLY_EVIDENCE_INVALID=true
+PE_SSOT_PREFLIGHT_POINTER_ONLY=true
+WORKFLOW_DISPATCH_EXECUTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+STOP_IDLE_PRESERVED=true
+READY_FOR_START=false
+PRE_FLIGHT_BLOCKED_LIFTED=false
+NO_RUNTIME=true
+NO_PAPER_SHADOW_TESTNET_LIVE=true
+NO_AWS_S3_RCLONE=true
+NOTION_WRITES=false
+NOTION_API_ALLOWED_NOW=false
+NO_TRADING_AUTHORITY_CHANGE=true
+MASTER_V2_LOGIC_CHANGED=false
+DOUBLE_PLAY_LOGIC_CHANGED=false
+CYBER_REAL_DATA_PII_BLOCKED=true
+PARALLEL_PRIMARY_EVIDENCE_ENFORCEMENT_INDEX_CREATED=false
+```
