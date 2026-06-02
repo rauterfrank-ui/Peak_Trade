@@ -1342,6 +1342,69 @@ CSC_RCHAIN_V1_003F_B_EXCLUDED=true
 
 **Non-authorizing:** No `src/` edits; no runtime/scheduler/daemon execution; no workflow dispatch; no GH YAML; no Notion/AWS/S3; no Testnet/Live/trading/Master V2/Double Play authority changes; no parent 003/003f wholesale ACCEPT; **no** `CSC-RCHAIN-v1-003a` (live), `CSC-RCHAIN-v1-003e` (master_v2), `CSC-RCHAIN-v1-003b`, or `CSC-RCHAIN-v1-003f-B` touch.
 
+### CSC-RCHAIN-v1-003b governed reflection guard v0 (Slice-1)
+
+**Release:** `REPO_GO-CSC-RCHAIN-003B-SLICE-1` · **Token scope:** docs/tests-only governed reflection · **UTC:** 2026-06-02 · **Operator ACCEPT:** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/operator_accept_artifact_csc_rchain_003b_slice_1_v0_20260602T212003Z/`
+
+```text
+CSC_RCHAIN_V1_003B_GOVERNED_REFLECTION_SLICE1_V0=true
+CSC_RCHAIN_V1_003B_REFLECTION_DOCS_TESTS_ONLY=true
+CSC_RCHAIN_V1_003B_CANDIDATE_COUNT=9
+CSC_RCHAIN_V1_003B_EXTERNAL_ACCEPT_READY_COUNT=1
+CSC_RCHAIN_V1_003B_NARROWING_REQUIRED_COUNT=5
+CSC_RCHAIN_V1_003B_PARK_RETAINED=true
+CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT_UNCHANGED=true
+CSC_RCHAIN_V1_PARK_COUNT_UNCHANGED=true
+REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-003B-SLICE-1
+PREFLIGHT_REMAINS_BLOCKED=true
+STOP_IDLE_PRESERVED=true
+NO_LIVE_SESSION_AUTHORITY=true
+NO_ORCHESTRATOR_ENABLEMENT=true
+NO_PIPELINE_ENABLEMENT=true
+NO_VENUE_ADAPTER_AUTHORITY=true
+NO_EXECUTION_ENABLEMENT=true
+NO_LIVE_RUNS=true
+NO_TESTNET_ENABLEMENT=true
+EXECUTION_VISIBILITY_ONLY=true
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+WORKFLOW_DISPATCH_EXECUTED=false
+MASTER_V2_LOGIC_CHANGED=false
+DOUBLE_PLAY_LOGIC_CHANGED=false
+TRADING_AUTHORITY_CHANGED=false
+EXECUTION_AUTHORITY_CHANGED=false
+LIVE_TESTNET_SESSION_AUTHORITY_CHANGED=false
+EXCHANGE_AUTHORITY_CHANGED=false
+SHADOW_AUTHORITY_CHANGED=false
+GOVERNANCE_BEHAVIOR_CHANGED=false
+AI_AUTHORITY_CHANGED=false
+PRODUCTION_CODE_TOUCHED=false
+CSC_RCHAIN_V1_003F_A_REOPENED=false
+CSC_RCHAIN_V1_003F_C_REOPENED=false
+CSC_RCHAIN_V1_003F_D_REOPENED=false
+CSC_RCHAIN_V1_003C_REOPENED=false
+CSC_RCHAIN_V1_003A_LIVE_EXCLUDED=true
+CSC_RCHAIN_V1_003E_MASTER_V2_EXCLUDED=true
+CSC_RCHAIN_V1_003F_B_EXCLUDED=true
+CSC_RCHAIN_V1_003D_ORDERS_EXCLUDED=true
+```
+
+**Purpose:** Governed **visibility/crosslink/guard** reflection for cluster **003b** (9 `PARK` candidates: **execution** modules — orchestrator, pipeline, live_session, venue adapters). **Does not** add `CSC-RCHAIN-v1-003b` to `CSC_RCHAIN_V1_ACCEPTED_GROUPS`; **does not** change `CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT` (**258**) or `CSC_RCHAIN_V1_PARK_COUNT` (**413**). **Does not** reopen **003f-A** (PR #3915), **003f-C** (PR #3916), **003f-D** (PR #3917), or **003c** (PR #3918). Distinct from **003a** live BLOCKED cluster and **003f-B** exchange/shadow scope. Parent **003** and **003f** remain PARK at parent level.
+
+| Field | Value |
+|-------|-------|
+| `rchain_id` | `CSC-RCHAIN-v1-003b` |
+| Category | `scheduler_or_runtime_boundary` |
+| `candidate_count` | 9 |
+| Visibility owner (reuse) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
+| Grouping reciprocal | `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py` |
+
+**Narrowing paths (5 — basename reference only in docs/tests):** `live_session.py`, `orchestrator.py`, `pipeline.py`, `__init__.py` (execution package), `registry.py` — visibility/crosslink/guard only; **no** execution enablement, orchestration authority, pipeline runs, venue activation, or live/testnet/session authority.
+
+**003b candidate IDs (reference):** `CSC-LOSSLESS-v1-000276` (execution README), `000277`–`000284` (execution Python modules incl. live_session and venue_adapters).
+
+**Non-authorizing:** No `src/` edits; no runtime/scheduler/daemon execution; no workflow dispatch; no GH YAML; no Notion/AWS/S3; no Testnet/Live/trading/Master V2/Double Play authority changes; no parent 003/003f wholesale ACCEPT; **no** `CSC-RCHAIN-v1-003a` (live), `CSC-RCHAIN-v1-003e` (master_v2), `CSC-RCHAIN-v1-003f-B` (exchange/shadow), or `CSC-RCHAIN-v1-003d` (orders) touch.
+
 ### Static visibility contract owners (reuse — do not duplicate)
 
 | Surface | Owner module |
@@ -1352,6 +1415,7 @@ CSC_RCHAIN_V1_003F_B_EXCLUDED=true
 | CSC-RCHAIN-v1-003f-C governed reflection guard (Slice-1) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
 | CSC-RCHAIN-v1-003f-D governed reflection guard (Slice-1) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
 | CSC-RCHAIN-v1-003c governed reflection guard (Slice-1) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
+| CSC-RCHAIN-v1-003b governed reflection guard (Slice-1) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
 | Static inventory schema validation guard | `tests/ci/test_static_inventory_schema_guard_contract_v0.py` |
 | Workflow secrets/vars/braced contexts (hub) | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
 | Workflow write permissions | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` |
