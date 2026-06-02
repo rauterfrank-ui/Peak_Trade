@@ -464,6 +464,16 @@ def _guard_block_005c_slice3_testnet(text: str) -> str:
 
 def _guard_block_005c_slice4_live_named_a(text: str) -> str:
     start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-4 Live-Named A)")
+    end_marker = "### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-5 Live-Named B)"
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+def _guard_block_005c_slice5_live_named_b(text: str) -> str:
+    start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-5 Live-Named B)")
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
@@ -519,6 +529,10 @@ OPERATOR_ACCEPT_005C_SLICE_4_LIVE_NAMED_A = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/create_operator_accept_artifact_bundle_005c_slice4_live_named_a_v0_20260602T224627Z"
 )
+OPERATOR_ACCEPT_005C_SLICE_5_LIVE_NAMED_B = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/create_operator_accept_artifact_bundle_005c_slice5_live_named_b_v0_20260602T225455Z"
+)
 GOVERNED_REFLECTION_SUBGROUP_005C = "CSC-RCHAIN-v1-005c"
 NARROWING_BASENAMES_005C_SLICE2: tuple[str, ...] = (
     "health_dashboard.py",
@@ -540,6 +554,13 @@ NARROWING_BASENAMES_005C_SLICE4_LIVE_NAMED_A: tuple[str, ...] = (
     "live_pilot_scorecard.py",
     "live_alerts_cli.py",
     "live_monitor_cli.py",
+)
+NARROWING_BASENAMES_005C_SLICE5_LIVE_NAMED_B: tuple[str, ...] = (
+    "live_operator_status.py",
+    "live_ops.py",
+    "live_web_server.py",
+    "report_live_sessions.py",
+    "run_live_beta_drill.py",
 )
 SCHEDULER_BOUNDARY_CROSSLINK_MODULE = "tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py"
 
@@ -1214,3 +1235,45 @@ def test_csc_rchain_v1_005c_governed_reflection_slice4_live_named_a_contract_v0(
     assert "live execution authorized" not in collapsed
     assert "live readiness clearance" not in collapsed
     assert "live arming authorized" not in collapsed
+
+
+def test_csc_rchain_v1_005c_governed_reflection_slice5_live_named_b_contract_v0() -> None:
+    text = _ci_audit_text()
+    block = _guard_block_005c_slice5_live_named_b(text)
+    collapsed = block.lower()
+
+    assert OPERATOR_ACCEPT_005C_SLICE_5_LIVE_NAMED_B in block
+    assert GOVERNED_REFLECTION_SUBGROUP_005C in block
+    assert SCHEDULER_BOUNDARY_CROSSLINK_MODULE in block
+    assert THIS_MODULE in block
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE5_LIVE_NAMED_B_V0=true" in block
+    assert "CSC_RCHAIN_V1_005C_PARK_RETAINED=true" in block
+    assert "REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-005C-SLICE-5-LIVE-NAMED-B" in block
+    assert "RUN_SCHEDULER_000253_BLOCKED=true" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE1_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE2_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE3_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE4_REOPENED=false" in block
+    assert "NO_LIVE_EXECUTION_AUTHORITY=true" in block
+    assert "NO_LIVE_OPS_AUTHORITY=true" in block
+    assert "NO_LIVE_WEB_SERVE_AUTHORITY=true" in block
+    assert "NO_LIVE_DRILL_EXECUTION_AUTHORITY=true" in block
+    assert "LIVE_NAMED_B_CLI_VISIBILITY_ONLY=true" in block
+    for basename in NARROWING_BASENAMES_005C_SLICE5_LIVE_NAMED_B:
+        assert basename in block
+    assert "000162" in block
+    assert "000163" in block
+    assert "000164" in block
+    assert "000237" in block
+    assert "000246" in block
+    assert "live-named b" in collapsed or "live-named" in collapsed
+    assert "ops/web/drill" in collapsed or "ops" in collapsed
+    assert "CSC_PARENT005A_EXCLUDED=true" in block
+    assert "**Does not** add" in block
+    assert "258" in block
+    assert "413" in block
+    assert "script execution authorized" not in collapsed
+    assert "scheduler start authorized" not in collapsed
+    assert "live ops approved" not in collapsed
+    assert "web server start authorized" not in collapsed
+    assert "drill execution authorized" not in collapsed
