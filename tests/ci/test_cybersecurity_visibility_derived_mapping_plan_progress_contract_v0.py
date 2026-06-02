@@ -763,3 +763,80 @@ def test_cybersecurity_visibility_derived_only_mapping_wave1_batch_closure_truth
     assert SECRETS_REFERENCE_OWNER_TEST in truth_map
     assert "mapped-by-derived-evidence" in collapsed
     assert "non-authorizing" in collapsed
+
+
+RELEASE_RC_INDEX_HEADING = "## Cybersecurity Visibility Release RC v0 — index v0"
+RELEASE_RC_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0=true"
+CV1_PLANNING_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_visibility_release_rc_v0_slice_cv1_docs_only_20260602T175506Z/"
+)
+POST_OE_RANKING_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/next_larger_theme_ranking_after_operator_experience_release_rc_v0_20260602T175228Z/"
+)
+
+RELEASE_RC_EXPECTED: dict[str, str] = {
+    "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0": "true",
+    "SLICE_CV1_DOCS_ONLY": "true",
+    "WAVE1_DERIVED_MAPPING_BATCH_CLOSURE_COMPLETE": "true",
+    "MAPPED_BY_DERIVED_EVIDENCE_ONLY": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "INPUT_JSONL_PROVIDED": "false",
+    "CYBER_REAL_DATA_PII_BLOCKED": "true",
+    "CYBER_REAL_DATA_REQUIRES_LEGAL_PRIVACY_GO": "true",
+    "NO_EXTERNAL_CYBER_DATA_INTAKE": "true",
+    "NO_RUNTIME": "true",
+    "NO_TRADING_AUTHORITY_CHANGE": "true",
+    "MASTER_V2_LOGIC_CHANGED": "false",
+    "DOUBLE_PLAY_LOGIC_CHANGED": "false",
+    "NOTION_WRITES": "false",
+    "WORKFLOW_DISPATCH_EXECUTED": "false",
+    "PARALLEL_DOCS_CREATED": "false",
+    "PARALLEL_CYBER_INDEX_CREATED": "false",
+}
+
+
+def _release_rc_index_section(text: str) -> str:
+    start = text.find(RELEASE_RC_INDEX_HEADING)
+    assert start != -1, "missing Cybersecurity Visibility Release RC v0 index section"
+    return text[start:]
+
+
+def test_cybersecurity_visibility_release_rc_v0_slice_cv1_index_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    section = _release_rc_index_section(text)
+    release_block = _block_containing(text, RELEASE_RC_BLOCK_ANCHOR)
+    release_values = _machine_line_values(release_block)
+
+    assert "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0" in section
+    assert "SLICE-CV-1" in section
+    assert "SLICE-CV-2" in section
+    assert "docs/tests-only" in section
+    assert "docs/ops/CI_AUDIT_KNOWN_ISSUES.md" in section
+    assert THIS_MODULE in section
+    assert MAPPING_GUARD_TEST in section
+    assert CV1_PLANNING_BUNDLE_PATH in section
+    assert POST_OE_RANKING_BUNDLE_PATH in section
+    assert "DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0=true" in section
+    assert "mapped-by-derived-evidence" in section
+    assert "Legal/Privacy-GO" in section
+    assert "no parallel" in section.lower()
+    assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
+
+    for key, expected in RELEASE_RC_EXPECTED.items():
+        assert release_values.get(key) == expected, (
+            f"release RC index {key}={release_values.get(key)!r} expected {expected!r}"
+        )
+
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_release_rc_v0_slice_cv2_guard_owner_crosslink_v0() -> None:
+    text = _release_rc_index_section(_ci_audit_text())
+
+    assert "SLICE-CV-2" in text
+    assert "test_cybersecurity_visibility_" in text
+    assert THIS_MODULE in text
+    assert "extend existing" in text.lower()

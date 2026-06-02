@@ -14,6 +14,10 @@ CI_AUDIT_KNOWN_ISSUES = REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
 DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
 INPUT_ARTIFACT_TEST = "test_cybersecurity_visibility_r_pending_input_artifact_contract_v0.py"
 THIS_MODULE = Path(__file__).name
+DERIVED_MAPPING_PLAN_PROGRESS_TEST = (
+    "test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py"
+)
+RELEASE_RC_INDEX_HEADING = "## Cybersecurity Visibility Release RC v0 — index v0"
 
 RISK_TABLE_ROW_RX = re.compile(
     r"^\| (R-\d{3}) \| ([^|]*) \| ([^|]*) \|$",
@@ -464,3 +468,19 @@ def test_cybersecurity_visibility_wave1_batch_closure_mapping_guard_v0() -> None
         )
 
     assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_release_rc_v0_slice_cv1_mapping_guard_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    start = text.find(RELEASE_RC_INDEX_HEADING)
+    assert start != -1, "missing Cybersecurity Visibility Release RC v0 index section"
+    section = text[start : start + 8000]
+
+    assert "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0" in section
+    assert THIS_MODULE in section
+    assert DERIVED_MAPPING_PLAN_PROGRESS_TEST in section
+    assert "docs/tests-only" in section
+    assert "no parallel" in section.lower()
+    assert "CYBER_REAL_DATA_PII_BLOCKED=true" in text
+    assert "NO_RUNTIME=true" in text
+    assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
