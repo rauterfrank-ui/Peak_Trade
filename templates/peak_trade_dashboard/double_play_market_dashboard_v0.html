@@ -3,7 +3,7 @@
 
 {% block content %}
 <div
-  class="space-y-5 max-w-7xl mx-auto px-4 py-6 pb-12"
+  class="space-y-6 max-w-7xl mx-auto px-4 py-6 pb-12"
   id="double-play-market-v0-shell"
   role="region"
   aria-labelledby="double-play-market-v0-landmark-page-title"
@@ -23,7 +23,7 @@
   data-double-play-market-symbol="{{ query.symbol }}"
 >
   <header
-    class="rounded-2xl border border-slate-800/95 bg-gradient-to-br from-slate-950 via-slate-900/95 to-slate-950 px-5 py-4 shadow-xl shadow-black/30 ring-1 ring-slate-800/90"
+    class="rounded-2xl border border-slate-800/90 bg-gradient-to-br from-slate-950 via-slate-900/95 to-slate-950 px-5 py-4 shadow-xl shadow-black/35 ring-1 ring-slate-700/40"
     data-double-play-market-cockpit-header="true"
     {% if query.source == 'dummy' %}
     data-market-source-kind="dummy-offline-synthetic"
@@ -43,10 +43,10 @@
       </div>
       <div class="flex flex-wrap items-center gap-2">
         <span
-          class="inline-flex items-center gap-1.5 rounded-lg border border-amber-800/60 bg-amber-950/40 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-amber-200/95"
+          class="inline-flex items-center gap-1.5 rounded-full border border-amber-800/55 bg-amber-950/45 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-amber-200/95 ring-1 ring-inset ring-amber-900/35"
           title="Keine Ausführung, kein Live/Testnet aus dieser Oberfläche"
         >
-          <span aria-hidden="true">🔒</span> Read-only
+          <span class="h-1.5 w-1.5 rounded-full bg-amber-400/90 shrink-0" aria-hidden="true"></span> Read-only
         </span>
         <div class="flex flex-wrap gap-1.5 text-[11px]">
           <a href="/" class="rounded-md border border-slate-700/80 bg-slate-900/80 px-2 py-1 text-slate-300 hover:bg-slate-800">Dashboard</a>
@@ -55,25 +55,32 @@
         </div>
       </div>
     </div>
-    <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2 border-t border-slate-800/80 pt-3 text-xs">
-      <div class="font-mono text-slate-100">
-        <span class="text-slate-500 font-sans text-[10px] uppercase tracking-wide mr-1">Instrument</span>{{ query.symbol }}
-      </div>
-      <div class="font-mono text-sky-300/90">
-        <span class="text-slate-500 font-sans text-[10px] uppercase tracking-wide mr-1">Source</span>{{ query.source }}
-      </div>
-      <div class="font-mono text-slate-200">
-        <span class="text-slate-500 font-sans text-[10px] uppercase tracking-wide mr-1">TF</span>{{ query.timeframe }}
-      </div>
-      <div class="font-mono text-slate-200">
-        <span class="text-slate-500 font-sans text-[10px] uppercase tracking-wide mr-1">Limit</span>{{ query.limit }}
-      </div>
-      <div class="font-mono text-slate-200">
-        <span class="text-slate-500 font-sans text-[10px] uppercase tracking-wide mr-1">Bars</span>{{ payload.bars_returned }}
-      </div>
-      <div class="text-[11px] text-slate-400 min-w-0">
-        <span class="text-slate-500">Snapshot bei Seitenladen</span>
-        <span class="font-mono text-slate-300 ml-1">{{ payload.generated_at_utc }}</span>
+    <div class="mt-4 border-t border-slate-800/75 pt-3">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-[11px]">
+        <div class="rounded-lg border border-slate-800/85 bg-slate-950/65 px-2.5 py-2 shadow-sm shadow-black/20 ring-1 ring-slate-800/40">
+          <span class="text-slate-500 block mb-0.5 text-[10px] uppercase tracking-wide">Instrument</span>
+          <span class="font-mono text-slate-100">{{ query.symbol }}</span>
+        </div>
+        <div class="rounded-lg border border-slate-800/85 bg-slate-950/65 px-2.5 py-2 shadow-sm shadow-black/20 ring-1 ring-slate-800/40">
+          <span class="text-slate-500 block mb-0.5 text-[10px] uppercase tracking-wide">Source</span>
+          <span class="font-mono text-sky-300/90">{{ query.source }}</span>
+        </div>
+        <div class="rounded-lg border border-slate-800/85 bg-slate-950/65 px-2.5 py-2 shadow-sm shadow-black/20 ring-1 ring-slate-800/40">
+          <span class="text-slate-500 block mb-0.5 text-[10px] uppercase tracking-wide">TF</span>
+          <span class="font-mono text-slate-200">{{ query.timeframe }}</span>
+        </div>
+        <div class="rounded-lg border border-slate-800/85 bg-slate-950/65 px-2.5 py-2 shadow-sm shadow-black/20 ring-1 ring-slate-800/40">
+          <span class="text-slate-500 block mb-0.5 text-[10px] uppercase tracking-wide">Limit</span>
+          <span class="font-mono text-slate-200">{{ query.limit }}</span>
+        </div>
+        <div class="rounded-lg border border-slate-800/85 bg-slate-950/65 px-2.5 py-2 shadow-sm shadow-black/20 ring-1 ring-slate-800/40">
+          <span class="text-slate-500 block mb-0.5 text-[10px] uppercase tracking-wide">Bars</span>
+          <span class="font-mono text-slate-200">{{ payload.bars_returned }}</span>
+        </div>
+        <div class="rounded-lg border border-slate-800/85 bg-slate-950/65 px-2.5 py-2 shadow-sm shadow-black/20 ring-1 ring-slate-800/40 min-w-0 col-span-2 sm:col-span-1 lg:col-span-1">
+          <span class="text-slate-500 block mb-0.5 text-[10px] uppercase tracking-wide">Snapshot bei Seitenladen</span>
+          <span class="font-mono text-slate-300 text-[10px] break-all">{{ payload.generated_at_utc }}</span>
+        </div>
       </div>
     </div>
   </header>
@@ -81,22 +88,22 @@
   <section
     role="region"
     aria-labelledby="double-play-market-v0-landmark-safety-h2"
-    class="rounded-xl border border-amber-900/45 bg-amber-950/15 px-3 py-2.5"
+    class="rounded-xl border border-amber-900/45 bg-gradient-to-br from-amber-950/40 via-slate-950/40 to-slate-950/25 px-3 py-3 sm:px-4 sm:py-3.5 shadow-md shadow-black/20 ring-1 ring-amber-950/30"
     data-double-play-market-safety="true"
     data-double-play-market-cockpit-safety-chips="true"
   >
     <h2 id="double-play-market-v0-landmark-safety-h2" class="sr-only">Safety boundaries</h2>
-    <p class="text-[11px] text-amber-100/85 m-0 mb-2 leading-snug">
+    <p class="text-[11px] text-amber-100/90 m-0 mb-2.5 leading-snug rounded-lg border border-amber-800/35 bg-amber-950/25 px-2.5 py-2">
       <strong class="text-amber-200/95">Guardrails:</strong>
       Dashboard ≠ Freigabe · AI ≠ Authority · Signal ≠ Trade · Docs ≠ Approval — reine Anzeige, keine Broker-/Order-/Live-Autorität.
     </p>
     <div class="flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-wide text-amber-100/95">
-      <span class="rounded-md border border-amber-800/55 bg-amber-950/50 px-2 py-0.5">No orders</span>
-      <span class="rounded-md border border-amber-800/55 bg-amber-950/50 px-2 py-0.5">No live</span>
-      <span class="rounded-md border border-amber-800/55 bg-amber-950/50 px-2 py-0.5">No strategy authority</span>
-      <span class="rounded-md border border-amber-800/55 bg-amber-950/50 px-2 py-0.5">No side-switch authority</span>
-      <span class="rounded-md border border-amber-800/55 bg-amber-950/50 px-2 py-0.5">No Scope/Capital approval</span>
-      <span class="rounded-md border border-amber-800/55 bg-amber-950/50 px-2 py-0.5">No Risk/KillSwitch override</span>
+      <span class="inline-flex items-center gap-1 rounded-full border border-amber-800/55 bg-amber-950/50 px-2 py-0.5 ring-1 ring-inset ring-amber-900/30"><span class="h-1 w-1 rounded-full bg-slate-500 shrink-0" aria-hidden="true"></span>No orders</span>
+      <span class="inline-flex items-center gap-1 rounded-full border border-amber-800/55 bg-amber-950/50 px-2 py-0.5 ring-1 ring-inset ring-amber-900/30"><span class="h-1 w-1 rounded-full bg-amber-400/85 shrink-0" aria-hidden="true"></span>No live</span>
+      <span class="inline-flex items-center gap-1 rounded-full border border-amber-800/55 bg-amber-950/50 px-2 py-0.5 ring-1 ring-inset ring-amber-900/30"><span class="h-1 w-1 rounded-full bg-slate-500 shrink-0" aria-hidden="true"></span>No strategy authority</span>
+      <span class="inline-flex items-center gap-1 rounded-full border border-amber-800/55 bg-amber-950/50 px-2 py-0.5 ring-1 ring-inset ring-amber-900/30"><span class="h-1 w-1 rounded-full bg-slate-500 shrink-0" aria-hidden="true"></span>No side-switch authority</span>
+      <span class="inline-flex items-center gap-1 rounded-full border border-amber-800/55 bg-amber-950/50 px-2 py-0.5 ring-1 ring-inset ring-amber-900/30"><span class="h-1 w-1 rounded-full bg-slate-500 shrink-0" aria-hidden="true"></span>No Scope/Capital approval</span>
+      <span class="inline-flex items-center gap-1 rounded-full border border-amber-800/55 bg-amber-950/50 px-2 py-0.5 ring-1 ring-inset ring-amber-900/30"><span class="h-1 w-1 rounded-full bg-rose-400/80 shrink-0" aria-hidden="true"></span>No Risk/KillSwitch override</span>
     </div>
     <details class="mt-2 text-xs text-amber-100/85">
       <summary class="cursor-pointer text-amber-200/95 font-medium outline-none hover:text-amber-100">Weitere Hinweise zur Read-only‑Oberfläche</summary>
@@ -111,10 +118,10 @@
   <section
     role="region"
     aria-labelledby="double-play-market-v0-landmark-reading-guide-h2"
-    class="rounded-xl border border-slate-800/90 bg-slate-950/40 px-3 py-2.5 ring-1 ring-slate-800/60"
+    class="rounded-xl border border-slate-800/85 bg-slate-950/55 px-3 py-3 sm:px-4 ring-1 ring-slate-800/55 shadow-sm shadow-black/15"
     data-double-play-market-operator-reading-guide-v0="true"
   >
-    <h2 id="double-play-market-v0-landmark-reading-guide-h2" class="text-[10px] font-semibold uppercase tracking-wide text-slate-500 m-0 mb-1.5">
+    <h2 id="double-play-market-v0-landmark-reading-guide-h2" class="text-[10px] font-semibold uppercase tracking-wide text-slate-400 m-0 mb-2 pb-1.5 border-b border-slate-800/70">
       So lesen Sie diese Ansicht
     </h2>
     <ul class="m-0 pl-4 list-disc text-[11px] text-slate-300/95 space-y-1 leading-snug marker:text-slate-600">
@@ -143,7 +150,7 @@
     id="double-play-market-v0-depth-ssr"
     role="region"
     aria-labelledby="double-play-market-v0-landmark-depth-ssr-h2"
-    class="rounded-xl border border-slate-800/90 bg-slate-950/50 px-3 py-3 ring-1 ring-slate-800/70 text-[11px] text-slate-300"
+    class="rounded-xl border border-slate-800/85 bg-slate-950/60 px-3 py-3 sm:px-4 ring-1 ring-slate-800/55 shadow-md shadow-black/15 text-[11px] text-slate-300"
     data-double-play-market-depth-panel="true"
     data-double-play-market-depth-status="{{ market_depth.display_status }}"
     data-double-play-market-depth-non-authorizing="true"
@@ -187,14 +194,14 @@
     data-double-play-market-cockpit-grid="true"
   >
     <div
-      class="min-w-0 flex flex-col gap-4"
+      class="min-w-0 flex flex-col gap-5"
       data-double-play-market-cockpit-chart-column="true"
       data-section="double-play-market-embedded-market"
       data-market-surface-v0="true"
       data-market-readonly="true"
       data-market-non-authorizing="true"
     >
-      <div class="rounded-lg border border-slate-800/80 bg-slate-950/50 px-3 py-2 text-[11px] text-slate-400">
+      <div class="rounded-lg border border-slate-700/65 bg-gradient-to-r from-slate-900/85 to-slate-950/75 px-3 py-2.5 text-[11px] text-slate-400 shadow-sm shadow-black/20 ring-1 ring-slate-800/40">
         {% if query.source == 'dummy' %}
         <span class="text-sky-300/90 font-medium">Dummy / offline</span> — synthetische OHLCV, keine Netzwerk‑Orders.
         {% elif query.source == 'kraken' %}
@@ -206,12 +213,12 @@
       <section
         role="region"
         aria-labelledby="double-play-market-v0-landmark-candlestick-h2"
-        class="rounded-xl border border-slate-800 bg-slate-950/60 ring-1 ring-cyan-900/30 shadow-xl shadow-black/30 overflow-hidden"
+        class="rounded-xl border border-slate-800/85 bg-slate-950/65 ring-1 ring-cyan-900/35 shadow-xl shadow-black/35 overflow-hidden"
         data-double-play-market-candlestick-v1-2="true"
         data-double-play-market-candlestick-no-plugin="true"
         data-double-play-market-ohlc-source="embedded-ssr-bars"
       >
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/95 px-4 py-3 bg-gradient-to-r from-slate-950 via-slate-900/95 to-slate-950">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/85 px-4 py-3 bg-gradient-to-r from-slate-950 via-slate-900/95 to-slate-950">
           <div>
             <h2 id="double-play-market-v0-landmark-candlestick-h2" class="text-sm font-semibold text-slate-50 m-0 tracking-tight">Candlestick view</h2>
             <p class="text-[10px] text-slate-400 m-0 mt-1 leading-relaxed">
@@ -220,14 +227,14 @@
               · Read-only OHLCV visualization
             </p>
           </div>
-          <span class="font-mono text-[10px] text-slate-500">{{ query.symbol }}</span>
+          <span class="inline-flex items-center rounded-md border border-slate-700/75 bg-slate-950/65 px-2 py-0.5 font-mono text-[10px] text-slate-400 tabular-nums">{{ query.symbol }}</span>
         </div>
 
         <div class="relative min-h-[22rem] sm:min-h-[26rem] p-3 md:p-4">
           <div
             id="dp-market-candlestick-status"
             role="status"
-            class="text-[11px] text-slate-400 mb-2 min-h-[1.25rem] font-medium px-1"
+            class="text-[11px] text-slate-300 mb-2 min-h-[1.25rem] font-medium px-1 border-l-4 border-l-sky-500/55 pl-2"
             data-double-play-market-candlestick-status="true"
             data-market-chart-status="{% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}"
             {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
@@ -251,8 +258,8 @@
       </section>
 
       {# --- Close-line secondary (existing Chart.js) --- #}
-      <details class="rounded-xl border border-slate-800/90 bg-slate-950/40 group">
-        <summary class="cursor-pointer list-none px-4 py-2.5 text-xs font-medium text-slate-300 hover:text-slate-100 border-b border-slate-800/80">
+      <details class="rounded-xl border border-slate-800/85 bg-slate-950/55 group ring-1 ring-slate-800/50 shadow-sm shadow-black/15">
+        <summary class="cursor-pointer list-none px-4 py-2.5 text-xs font-medium text-slate-300 hover:text-slate-100 border-b border-slate-800/75 bg-slate-950/40">
           <span class="text-sky-400/90">Secondary:</span> Close-line (Chart.js, close only)
         </summary>
         <div class="p-4 space-y-2">
@@ -264,21 +271,21 @@
       </details>
 
       <div
-        class="rounded-xl border border-slate-800/90 bg-slate-950/60 px-4 py-3 space-y-2"
+        class="rounded-xl border border-slate-800/85 bg-slate-950/65 px-4 py-3 space-y-2.5 ring-1 ring-slate-800/50 shadow-md shadow-black/15"
         data-double-play-market-cockpit-diagnostics-secondary="true"
         data-market-v11-chart-diagnostics="true"
       >
-        <p class="text-[10px] font-semibold uppercase tracking-wide text-slate-500 m-0">Diagnostics</p>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px] font-mono text-slate-300" data-market-v11-diagnostics-inner="true">
-          <div data-market-v11-chart-library-status="true">
+        <p class="text-[10px] font-semibold uppercase tracking-wide text-slate-400 m-0 pb-1 border-b border-slate-800/70">Diagnostics</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px] font-mono text-slate-300" data-market-v11-diagnostics-inner="true">
+          <div class="rounded-md border border-slate-800/75 bg-slate-950/55 px-2 py-1.5" data-market-v11-chart-library-status="true">
             <span class="text-slate-500 block text-[9px] uppercase tracking-wide mb-0.5">Chart.js</span>
             <span id="dp-market-v11-chartjs-state" class="text-sky-400/95">SSR only — verified in browser</span>
           </div>
-          <div data-market-v11-payload-bars="true">
+          <div class="rounded-md border border-slate-800/75 bg-slate-950/55 px-2 py-1.5" data-market-v11-payload-bars="true">
             <span class="text-slate-500 block text-[9px] uppercase tracking-wide mb-0.5">Bars</span>
             <span id="dp-market-v11-embedded-bar-count">{{ payload.bars_returned }}</span>
           </div>
-          <div>
+          <div class="rounded-md border border-slate-800/75 bg-slate-950/55 px-2 py-1.5">
             <span class="text-slate-500 block text-[9px] uppercase tracking-wide mb-0.5">Line render</span>
             <span id="dp-market-v11-client-render-flag">SSR: {% if payload.bars_returned == 0 %}empty{% else %}pending{% endif %}</span>
           </div>
@@ -714,7 +721,7 @@
     </div>
 
     <aside
-      class="rounded-xl border border-slate-900/95 bg-gradient-to-b from-black/85 via-slate-950 to-slate-950 p-4 shadow-2xl shadow-black/45 ring-1 ring-cyan-950/45 xl:sticky xl:top-4"
+      class="rounded-xl border border-slate-800/90 bg-gradient-to-b from-black/88 via-slate-950 to-slate-950 p-4 shadow-2xl shadow-black/50 ring-1 ring-cyan-950/50 xl:sticky xl:top-4"
       aria-labelledby="double-play-market-v0-landmark-rail-h2"
       data-double-play-market-cockpit-rail="true"
       data-double-play-display-ssr-v1="true"
@@ -738,29 +745,29 @@
         'capital_slot_release': {'title': 'Capital Slot Release', 'subtitle': 'Release context display; no capital action'},
         'composition': {'title': 'Composition Summary', 'subtitle': 'Display-only composition of panel diagnostics'},
       } %}
-      <div class="rounded-lg border border-slate-800/95 bg-slate-950/60 px-3 py-2.5 mb-3 space-y-1.5 text-[11px] text-slate-300 leading-snug" data-double-play-market-diagnostic-only-label="true">
-        <p class="font-semibold text-slate-200 m-0">Diagnostic only</p>
-        <p class="m-0">Keine Trading-Freigabe</p>
-        <p class="m-0">Panel titles are display labels</p>
-        <p class="m-0">Status labels describe the display snapshot, not trading permission</p>
+      <div class="rounded-lg border border-slate-800/85 bg-slate-950/70 px-3 py-2.5 mb-3 space-y-1 text-[11px] text-slate-300 leading-snug ring-1 ring-slate-800/45 shadow-sm shadow-black/15" data-double-play-market-diagnostic-only-label="true">
+        <p class="font-semibold text-slate-100 m-0 text-xs tracking-tight">Diagnostic only</p>
+        <p class="m-0 text-slate-400">Keine Trading-Freigabe</p>
+        <p class="m-0 text-slate-500 text-[10px]">Panel titles are display labels</p>
+        <p class="m-0 text-slate-500 text-[10px]">Status labels describe the display snapshot, not trading permission</p>
       </div>
-      <div class="flex flex-wrap gap-1.5 mb-3" data-double-play-market-status-chip="true">
-        <span class="rounded-full border border-cyan-900/55 bg-cyan-950/40 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-cyan-200">DISPLAY ONLY</span>
-        <span class="rounded-full border border-slate-700/80 bg-slate-900/90 px-2 py-0.5 text-[9px] font-semibold uppercase text-slate-300">SSR snapshot</span>
-        <span class="rounded-full border border-amber-900/55 bg-amber-950/30 px-2 py-0.5 text-[9px] font-semibold uppercase text-amber-200/95">Not trading ready</span>
-        <span class="rounded-full border border-slate-700 px-2 py-0.5 text-[9px] font-semibold uppercase text-slate-400">No authority</span>
-        <span class="rounded-full border border-slate-700 px-2 py-0.5 text-[9px] font-semibold text-slate-500">Diagnostics (not approval)</span>
-        <span class="rounded-full border border-dashed border-slate-700 px-2 py-0.5 text-[9px] text-slate-500">Model label only</span>
+      <div class="flex flex-wrap gap-1.5 mb-3 pb-2.5 border-b border-slate-800/75" data-double-play-market-status-chip="true">
+        <span class="inline-flex items-center gap-1 rounded-full border border-cyan-900/55 bg-cyan-950/45 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-cyan-200 ring-1 ring-inset ring-cyan-900/30"><span class="h-1 w-1 rounded-full bg-cyan-400/90 shrink-0" aria-hidden="true"></span>DISPLAY ONLY</span>
+        <span class="inline-flex items-center rounded-full border border-slate-700/80 bg-slate-900/90 px-2 py-0.5 text-[9px] font-semibold uppercase text-slate-300">SSR snapshot</span>
+        <span class="inline-flex items-center rounded-full border border-amber-900/55 bg-amber-950/35 px-2 py-0.5 text-[9px] font-semibold uppercase text-amber-200/95">Not trading ready</span>
+        <span class="inline-flex items-center rounded-full border border-slate-700 px-2 py-0.5 text-[9px] font-semibold uppercase text-slate-400">No authority</span>
+        <span class="inline-flex items-center rounded-full border border-slate-700/80 bg-slate-950/60 px-2 py-0.5 text-[9px] font-semibold text-slate-500">Diagnostics (not approval)</span>
+        <span class="inline-flex items-center rounded-full border border-dashed border-slate-700 px-2 py-0.5 text-[9px] text-slate-500">Model label only</span>
       </div>
 
-      <h2 id="double-play-market-v0-landmark-rail-h2" class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-2 m-0">Double-Play · Rail</h2>
-      <p class="text-[11px] text-slate-400 mb-3 m-0 leading-snug border-b border-slate-800 pb-3">
+      <h2 id="double-play-market-v0-landmark-rail-h2" class="text-xs font-semibold uppercase tracking-wide text-slate-300 mb-2 m-0 pb-1.5 border-b border-slate-800/70">Double-Play · Rail</h2>
+      <p class="text-[11px] text-slate-400 mb-3 m-0 leading-snug">
         Display-only Snapshot — keine Operational-Freigabe.
-        <a href="{{ double_play_json_url }}" class="text-sky-400 underline underline-offset-2 font-mono break-all block mt-2" data-double-play-market-display-json-link="true">{{ double_play_json_url }}</a>
+        <a href="{{ double_play_json_url }}" class="text-sky-400 underline underline-offset-2 font-mono break-all block mt-2 rounded-md border border-slate-800/75 bg-slate-950/55 px-2 py-1.5 text-[10px] hover:bg-slate-900/70" data-double-play-market-display-json-link="true">{{ double_play_json_url }}</a>
       </p>
 
       <div
-        class="rounded-lg border border-slate-800/90 bg-slate-950/70 px-3 py-2.5 mb-3 space-y-1 font-mono text-[10px] text-slate-300"
+        class="rounded-lg border border-slate-800/85 bg-slate-950/75 px-3 py-2.5 mb-3 space-y-1 font-mono text-[10px] text-slate-300 ring-1 ring-slate-800/45 shadow-sm shadow-black/15"
         data-double-play-market-display-snapshot-meta="true"
       >
         <p class="text-[9px] uppercase tracking-wide text-slate-500 m-0 font-sans font-semibold">
@@ -778,13 +785,13 @@
         </p>
       </div>
 
-      <div class="grid gap-2 mb-3">
-        <div class="rounded-lg border border-emerald-900/35 bg-emerald-950/15 px-3 py-2.5" data-double-play-overall-snapshot-pack="true" data-double-play-overall-display-status="{{ dp_display.overall_status }}">
+      <div class="grid gap-2.5 mb-3">
+        <div class="rounded-lg border border-emerald-900/40 bg-emerald-950/20 px-3 py-2.5 ring-1 ring-emerald-900/25 shadow-sm shadow-black/15" data-double-play-overall-snapshot-pack="true" data-double-play-overall-display-status="{{ dp_display.overall_status }}">
           <p class="text-[9px] uppercase tracking-wider text-emerald-500/95 m-0 mb-1">Overall · Display snapshot</p>
           <p class="text-lg font-semibold text-emerald-200/95 m-0 leading-none" data-double-play-market-display-status-label="true">{{ _dp_snap_status[dp_display.overall_status]['lab'] if dp_display.overall_status in _dp_snap_status else 'Anzeige: unbekannt' }}</p>
-          <p class="text-[10px] text-emerald-200/75 m-0 mt-1 leading-snug">{{ _dp_snap_status[dp_display.overall_status]['hint'] if dp_display.overall_status in _dp_snap_status else 'Unbekannter Display-Status' }}</p>
+          <p class="text-[10px] text-emerald-200/75 m-0 mt-1.5 leading-snug">{{ _dp_snap_status[dp_display.overall_status]['hint'] if dp_display.overall_status in _dp_snap_status else 'Unbekannter Display-Status' }}</p>
         </div>
-        <div class="flex items-center justify-between gap-2 rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2">
+        <div class="flex items-center justify-between gap-2 rounded-lg border border-slate-800/85 bg-slate-900/65 px-3 py-2 ring-1 ring-slate-800/40">
           <span class="text-[10px] uppercase text-slate-500 tracking-wide font-medium">display_only</span>
           <span class="font-mono text-sm font-semibold text-slate-100">{{ dp_display.display_only }}</span>
         </div>
@@ -799,28 +806,28 @@
       </div>
 
       <div
-        class="rounded-xl border border-slate-800/90 bg-black/55 p-3 mb-3"
+        class="rounded-xl border border-slate-800/85 bg-black/60 p-3 mb-3 ring-1 ring-slate-800/45 shadow-sm shadow-black/15"
         data-double-play-market-diagnostics-chip="true"
       >
-        <p class="text-[10px] text-slate-500 mb-2 uppercase tracking-wide font-semibold">Diagnostics · read-only Flags</p>
-        <dl class="grid gap-2 text-[11px] text-slate-300 font-mono">
-          <div class="flex justify-between gap-2 rounded-md bg-slate-950/50 px-2 py-1">
+        <p class="text-[10px] text-slate-400 mb-2 uppercase tracking-wide font-semibold pb-1 border-b border-slate-800/70">Diagnostics · read-only Flags</p>
+        <dl class="grid gap-1.5 text-[11px] text-slate-300 font-mono">
+          <div class="flex justify-between gap-2 rounded-md border border-slate-800/60 bg-slate-950/55 px-2 py-1.5">
             <dt class="text-slate-500 font-sans text-[10px] normal-case">No-live banner visible</dt>
             <dd class="m-0">{{ dp_display.no_live_banner_visible }}</dd>
           </div>
-          <div class="flex justify-between gap-2 rounded-md bg-slate-950/50 px-2 py-1">
+          <div class="flex justify-between gap-2 rounded-md border border-slate-800/60 bg-slate-950/55 px-2 py-1.5">
             <dt class="text-slate-500 font-sans text-[10px] normal-case">trading_ready</dt>
             <dd class="m-0">{{ dp_display.trading_ready }}</dd>
           </div>
-          <div class="flex justify-between gap-2 rounded-md bg-slate-950/50 px-2 py-1">
+          <div class="flex justify-between gap-2 rounded-md border border-slate-800/60 bg-slate-950/55 px-2 py-1.5">
             <dt class="text-slate-500 font-sans text-[10px] normal-case">testnet_ready</dt>
             <dd class="m-0">{{ dp_display.testnet_ready }}</dd>
           </div>
-          <div class="flex justify-between gap-2 rounded-md bg-slate-950/50 px-2 py-1">
+          <div class="flex justify-between gap-2 rounded-md border border-slate-800/60 bg-slate-950/55 px-2 py-1.5">
             <dt class="text-slate-500 font-sans text-[10px] normal-case">live_ready</dt>
             <dd class="m-0">{{ dp_display.live_ready }}</dd>
           </div>
-          <div class="flex justify-between gap-2 rounded-md bg-slate-950/50 px-2 py-1">
+          <div class="flex justify-between gap-2 rounded-md border border-slate-800/60 bg-slate-950/55 px-2 py-1.5">
             <dt class="text-slate-500 font-sans text-[10px] normal-case">Live-Freigabe-Feld</dt>
             <dd class="m-0">{{ dp_display.live_authorization }}</dd>
           </div>
@@ -834,7 +841,7 @@
         {% set _nb = panel.blockers | length %}
         {% set _nm = panel.missing_inputs | length %}
         <article
-          class="relative overflow-hidden rounded-xl border border-slate-700/85 bg-gradient-to-br from-slate-950 via-slate-900/96 to-black p-3 text-[11px] shadow-inner shadow-black/40 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-cyan-800/55 before:to-slate-800/20"
+          class="relative overflow-hidden rounded-xl border border-slate-700/80 bg-gradient-to-br from-slate-950 via-slate-900/96 to-black p-3 text-[11px] shadow-md shadow-black/35 ring-1 ring-slate-800/45 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-cyan-800/60 before:to-slate-800/25"
           data-double-play-market-panel-tile="true"
           data-double-play-panel="{{ panel.name }}"
           data-double-play-display-status="{{ panel.status }}"
@@ -846,15 +853,15 @@
           </div>
           <div class="mt-1 flex flex-wrap gap-1.5 text-[10px] text-slate-400">
             <span
-              class="rounded border border-slate-800/90 bg-black/45 px-1.5 py-0.5 font-mono text-slate-300"
+              class="inline-flex items-center rounded-md border border-slate-800/90 bg-black/50 px-1.5 py-0.5 font-mono text-slate-300 ring-1 ring-slate-800/40"
               data-double-play-market-panel-ordinal="true"
             >Ordinal: {{ panel.ordinal }}</span>
             <span
-              class="rounded border border-slate-800/90 bg-black/45 px-1.5 py-0.5 font-mono text-slate-300"
+              class="inline-flex items-center rounded-md border border-slate-800/90 bg-black/50 px-1.5 py-0.5 font-mono text-slate-300 ring-1 ring-slate-800/40"
               data-double-play-market-panel-group="true"
             >Group: {{ panel.panel_group }}</span>
             <span
-              class="rounded border border-slate-800/90 bg-black/45 px-1.5 py-0.5 font-mono text-slate-300"
+              class="inline-flex items-center rounded-md border border-slate-800/90 bg-black/50 px-1.5 py-0.5 font-mono text-slate-300 ring-1 ring-slate-800/40"
               data-double-play-market-severity-rank="true"
             >Severity rank: {{ panel.severity_rank }}</span>
           </div>
@@ -866,9 +873,9 @@
             Panel group is a display category
           </p>
           {% endif %}
-          <div class="flex items-start justify-between gap-2 mb-2 flex-wrap">
-            <span class="rounded-md border border-slate-700/85 bg-black/65 px-2 py-1 text-[11px] font-semibold text-sky-100/95" data-double-play-market-display-status-label="true">{{ _sl.lab }}</span>
-            <span class="rounded-md border border-slate-800/85 bg-black/45 px-2 py-1 text-[9px] text-slate-500 font-mono shrink-0">{{ _sl.hint }}</span>
+          <div class="flex items-start justify-between gap-2 mb-2 flex-wrap mt-2 pt-2 border-t border-slate-800/75">
+            <span class="inline-flex items-center rounded-md border border-sky-900/45 bg-sky-950/35 px-2 py-1 text-[11px] font-semibold text-sky-100/95 ring-1 ring-sky-900/25" data-double-play-market-display-status-label="true">{{ _sl.lab }}</span>
+            <span class="inline-flex items-center rounded-md border border-slate-800/85 bg-black/50 px-2 py-1 text-[9px] text-slate-500 font-mono shrink-0">{{ _sl.hint }}</span>
           </div>
           {% if panel.summary %}
           <p class="text-slate-400 leading-snug m-0 text-[11px] line-clamp-4 border-t border-slate-800/80 pt-2 mt-1">{{ panel.summary }}</p>
