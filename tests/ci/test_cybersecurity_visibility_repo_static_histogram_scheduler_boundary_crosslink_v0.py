@@ -992,7 +992,9 @@ def test_csc_rchain_v1_005c_governed_reflection_slice2_scheduler_boundary_crossl
     assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE1_V0=true" in text
 
 
-def test_csc_rchain_v1_005c_governed_reflection_slice3_testnet_scheduler_boundary_crosslink_v0() -> None:
+def test_csc_rchain_v1_005c_governed_reflection_slice3_testnet_scheduler_boundary_crosslink_v0() -> (
+    None
+):
     text = _ci_audit_text()
     collapsed = text.lower()
     block = _csc_rchain_005c_slice3_testnet_guard_block(text)
