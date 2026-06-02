@@ -1684,3 +1684,104 @@ DOUBLE_PLAY_LOGIC_CHANGED=false
 CYBER_REAL_DATA_PII_BLOCKED=true
 PARALLEL_PRIMARY_EVIDENCE_ENFORCEMENT_INDEX_CREATED=false
 ```
+
+## Master V2 / Double Play Read-only Alignment Inventory RC v0 — docs reflection v0
+
+**Release:** `MASTER_V2_DOUBLE_PLAY_READONLY_ALIGNMENT_INVENTORY_RC_V0` · **Slice:** `SLICE-MV2-1` (`MASTER_V2_DOUBLE_PLAY_READONLY_ALIGNMENT_DOCS_REFLECTION_SLICE_V0`) · **UTC:** 2026-06-02 · **Docs-only reflection** of the external Master V2 / Double Play read-only alignment inventory (inventory body remains in the durable archive — **not** repo-ingested). **Canonical repo owners (reuse — no parallel index):**
+
+| Concern | Owner |
+|---------|-------|
+| Master V2 reuse / rewire inventory (**SSOT — pointer only**) | `docs/ops/specs/MASTER_V2_REUSE_REWIRE_INVENTORY_V1.md` (CI audit does **not** duplicate inventory body) |
+| Double Play pure display baseline closeout index | `docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_DISPLAY_BASELINE_CLOSEOUT_INDEX_V0.md` |
+| Runtime producer dashboard prerequisites (**PARKED**) | `docs/ops/specs/MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md` |
+| Master V2 decision authority | `docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md` |
+| Ops Cockpit ↔ Master V2 non-authority boundary | `docs/ops/specs/OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md` |
+| Bounded acceptance vs Master V2 priority | `docs/ops/BOUNDED_ACCEPTANCE_AUTHORITY_FRONTDOOR_INDEX_V0.md` |
+| MV2 alignment RC meta-index (this section) | `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` (this document) |
+| Post-trilogy operator status reflection | `docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md` |
+| Market / Double Play read-only display | `docs/webui/MARKET_SURFACE_V0.md` |
+| Preflight / ER / primary evidence posture (**SSOT — pointer only**) | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
+
+**Subordinate external inputs (archive only — confirmed):**
+
+| Input | Role |
+|-------|------|
+| SLICE-MV2-0 alignment inventory | Seven-arc Master-V2 compatibility verdict; owner map; safety boundaries |
+| Next larger theme ranking (post-PE) | Recommended MV2 RC; slice decomposition |
+| Primary Evidence charter final closeout | PE core complete; enforcement off |
+| Prior release closeouts (OE/CV/ER/OC/GH/NRH) | Reflection/guard-only arcs |
+
+**Durable operator pointers (archive only — not repo-ingested):**
+
+| Token | Durable path |
+|-------|--------------|
+| SLICE-MV2-0 alignment inventory | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/master_v2_double_play_readonly_alignment_inventory_rc_v0_slice_mv2_0_20260602T195509Z/` |
+| Next larger theme ranking (post-PE) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_larger_theme_ranking_after_primary_evidence_charter_rc_v0_20260602T195223Z/` |
+| Primary Evidence charter final closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/primary_evidence_enforcement_runtime_go_charter_rc_v0_final_closeout_handoff_20260602T195046Z/` |
+| SLICE-MV2-1 docs reflection (this slice) | repo: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — this section only |
+
+**Completed arcs — Master-V2 compatibility (inventory verdict — all expected false / reflection true):**
+
+| Completed arc | Trading logic | Runtime authority | Master-V2 logic | Dashboard/Notion/Ops authority | Reflection/guard only |
+|---------------|---------------|-------------------|-----------------|------------------------------|------------------------|
+| `OPERATOR_EXPERIENCE_RELEASE_RC_V0` | false | false | false | false | true |
+| `CYBERSECURITY_VISIBILITY_RELEASE_RC_V0` | false | false | false | false | true |
+| `EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0` | false | false | false | false | true |
+| `OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0` | false | false | false | false | true |
+| `GH_SCHEDULE_GOVERNANCE_MINIMAL_RC_V0` | false | false | false | false | true |
+| `NOTION_REPO_HELPER_CHARTER_READONLY_RC_V0` | false | false | false | false | true |
+| `PRIMARY_EVIDENCE_ENFORCEMENT_RUNTIME_GO_CHARTER_RC_V0` | false | false | false | false | true |
+
+**Canonical priority (unchanged):** Master V2 / Double Play authoritative specs win over bounded/acceptance/dashboard/Notion mirror language. Completed arcs add **operator visibility** only — **not** trading, live, gate, or execution authority.
+
+**Planned follow-on slices (reference — not authorized until explicit GO):**
+
+| Order | Slice ID | Scope |
+|-------|----------|-------|
+| 0 | **SLICE-MV2-0** | External read-only alignment inventory (**complete** — see archive bundle above) |
+| 1 | **SLICE-MV2-1** | Docs-only: this reflection (**this PR**) |
+| 2 | **SLICE-OC-2** | Tests-ops: ops cockpit post-trilogy reflection static guard — **separate GO** |
+| 3 | **SLICE-MV2-2** (optional) | Tests-ops: extend existing `tests&#47;ops&#47;test_master_v2_*` crosslink guards only |
+| — | **MASTER_V2_LOGIC_IMPLEMENTATION** | Trading-logic / runtime-producer lift / authority change — **BLOCKED** without separate explicit Operator-GO |
+
+**Operational rules:**
+
+- **Inventory is planning-only** — **no** runtime, scheduler, daemon, Paper, Shadow, Testnet, or Live start from this slice.
+- **No enforcement activation** — `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`; `RETENTION_ENFORCEMENT_ACTIVATED=false`; `RUNTIME_ENFORCEMENT_ALLOWED_NOW=false` (unchanged).
+- **Runtime producer remains PARKED** — `RUNTIME_PRODUCER_PARKING_LIFTED=false`; reopen only per parking-map triggers + separate GO.
+- **Master V2 / Double Play priority preserved** — bull/bear/scope/capital/kill-switch/state-switch/trailing-scope/capital-slot-ratchet semantics **unchanged**; **no** strategy/trading/execution/risk/governance/live-gate authority from this slice.
+- **Dashboard / Notion / Ops status ≠ approval** — `DASHBOARD_AUTHORITY_CHANGED=false`; `NOTION_AUTHORITY_CHANGED=false`; `OPS_STATUS_AUTHORITY_CHANGED=false`; Notion **mirror only**.
+- **No** archive/evidence mutation, AWS/S3/rclone, Notion API/MCP/writes, `workflow_dispatch` from agent/CI automation, Market-Airport, or cyber real-data/PII.
+- **Reuse-before-new** — extend this CI audit anchor and existing Master V2 / Double Play spec owners; **no** parallel alignment index, evidence hub, readiness map, registry handoff, or pointer hub in repo.
+
+```text
+MASTER_V2_DOUBLE_PLAY_READONLY_ALIGNMENT_INVENTORY_RC_V0=true
+SLICE_MV2_0_EXTERNAL_INVENTORY_COMPLETE=true
+SLICE_MV2_1_DOCS_REFLECTION_ONLY=true
+COMPLETED_ARCS_MASTER_V2_COMPATIBLE=true
+MASTER_V2_PRIORITY_PRESERVED=true
+RUNTIME_PRODUCER_PARKING_LIFTED=false
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+RUNTIME_ENFORCEMENT_ALLOWED_NOW=false
+RETENTION_ENFORCEMENT_ACTIVATED=false
+WORKFLOW_DISPATCH_EXECUTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+STOP_IDLE_PRESERVED=true
+NO_RUNTIME=true
+NO_PAPER_SHADOW_TESTNET_LIVE=true
+NO_AWS_S3_RCLONE=true
+NOTION_WRITES=false
+NOTION_API_ALLOWED_NOW=false
+NO_TRADING_AUTHORITY_CHANGE=true
+TRADING_AUTHORITY_CHANGED=false
+RUNTIME_AUTHORITY_CHANGED=false
+DASHBOARD_AUTHORITY_CHANGED=false
+NOTION_AUTHORITY_CHANGED=false
+OPS_STATUS_AUTHORITY_CHANGED=false
+MASTER_V2_LOGIC_CHANGED=false
+DOUBLE_PLAY_LOGIC_CHANGED=false
+CYBER_REAL_DATA_PII_BLOCKED=true
+PARALLEL_MASTER_V2_ALIGNMENT_INDEX_CREATED=false
+FOLLOWUP_DOCS_SLICE_NEEDED=false
+FOLLOWUP_TEST_GUARD_NEEDED=true
+```
