@@ -1267,7 +1267,7 @@ CSC_RCHAIN_V1_003A_LIVE_EXCLUDED=true
 CSC_RCHAIN_V1_003E_MASTER_V2_EXCLUDED=true
 ```
 
-**Purpose:** Governed **visibility/crosslink/guard** reflection for cluster **003f-D** (9 `PARK` candidates: `src&#47;docs`, `src&#47;peak_trade.egg-info`, `src&#47;webui`). **Does not** add `CSC-RCHAIN-v1-003f-D` to `CSC_RCHAIN_V1_ACCEPTED_GROUPS`; **does not** change `CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT` (**258**) or `CSC_RCHAIN_V1_PARK_COUNT` (**413**). **Does not** reopen **003f-A** (PR #3915) or **003f-C** (PR #3916). Distinct from **tests&#47;webui** retained-park reaffirm (not `src&#47;webui` production modules). Parent **003** and **003f** remain PARK at parent level.
+**Purpose:** Governed **visibility/crosslink/guard** reflection for cluster **003f-D** (9 `PARK` candidates: project **docs**, **peak_trade.egg-info** packaging metadata, **webui** modules under src tree). **Does not** add `CSC-RCHAIN-v1-003f-D` to `CSC_RCHAIN_V1_ACCEPTED_GROUPS`; **does not** change `CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT` (**258**) or `CSC_RCHAIN_V1_PARK_COUNT` (**413**). **Does not** reopen **003f-A** (PR #3915) or **003f-C** (PR #3916). Distinct from tests&#47;webui retained-park reaffirm (tests tree only, not production webui modules). Parent **003** and **003f** remain PARK at parent level.
 
 | Field | Value |
 |-------|-------|
@@ -1277,7 +1277,7 @@ CSC_RCHAIN_V1_003E_MASTER_V2_EXCLUDED=true
 | Visibility owner (reuse) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
 | Grouping reciprocal | `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py` |
 
-**Narrowing paths (5 — basename reference only in docs/tests):** `PEAK_TRADE_PROJECT_SUMMARY.md`, `Peak_Trade_setup_notes.md`, `architecture.md` (illustrative `src&#47;docs&#47;*` encoding required in token-policy prose), `live_track.py`, `ops_cockpit.py` — visibility/crosslink/guard only; **no** docs owner change, live-track authority, webui runtime enablement, or ops-cockpit/Market-Airport enablement.
+**Narrowing paths (5 — basename reference only in docs/tests):** `PEAK_TRADE_PROJECT_SUMMARY.md`, `Peak_Trade_setup_notes.md`, `architecture.md` (illustrative src&#47;docs&#47; slash encoding required in token-policy prose per `DOCS_PATH_ENCODING_REQUIRED`), `live_track.py`, `ops_cockpit.py` — visibility/crosslink/guard only; **no** docs owner change, live-track authority, webui runtime enablement, or ops-cockpit/Market-Airport enablement.
 
 **003f-D candidate IDs (reference):** `CSC-LOSSLESS-v1-000269`–`000271` (docs), `000323`–`000325` (egg-info), `000345`–`000347` (webui).
 
