@@ -508,7 +508,9 @@ def _guard_block_005a_bundle_a_prb_scorecard(text: str) -> str:
     start = text.index(
         "### CSC-RCHAIN-v1-005a governed reflection guard v0 (Bundle-A PRB Scorecard)"
     )
-    end_marker = "### CSC-RCHAIN-v1-005a governed reflection guard v0 (Bundle-B Active Non-PRB Remainder)"
+    end_marker = (
+        "### CSC-RCHAIN-v1-005a governed reflection guard v0 (Bundle-B Active Non-PRB Remainder)"
+    )
     if end_marker in text[start:]:
         end = text.index(end_marker, start)
     else:
@@ -1563,8 +1565,7 @@ def test_csc_rchain_v1_005a_governed_reflection_bundle_b_active_non_prb_contract
     assert SCHEDULER_BOUNDARY_CROSSLINK_MODULE in block
     assert THIS_MODULE in block
     assert (
-        "CSC_RCHAIN_V1_005A_GOVERNED_REFLECTION_BUNDLE_B_ACTIVE_NON_PRB_REMAINDER_V0=true"
-        in block
+        "CSC_RCHAIN_V1_005A_GOVERNED_REFLECTION_BUNDLE_B_ACTIVE_NON_PRB_REMAINDER_V0=true" in block
     )
     assert "CSC_RCHAIN_V1_005A_PARK_RETAINED=true" in block
     assert (
