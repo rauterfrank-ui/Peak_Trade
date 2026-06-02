@@ -1223,7 +1223,7 @@ CSC_RCHAIN_V1_003E_MASTER_V2_EXCLUDED=true
 | Visibility owner (reuse) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
 | Grouping reciprocal | `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py` |
 
-**Narrowing paths (4 — basename reference only in docs/tests):** `live_session_registry.py`, `armstrong_cycle_strategy.py`, `el_karoui_vol_model_strategy.py`, `sweeps/engine.py` — visibility/crosslink/guard only; **no** live-session authority, strategy execution, or sweep-job execution.
+**Narrowing paths (4 — basename reference only in docs/tests):** `live_session_registry.py`, `armstrong_cycle_strategy.py`, `el_karoui_vol_model_strategy.py`, `sweeps&#47;engine.py` — visibility/crosslink/guard only; **no** live-session authority, strategy execution, or sweep-job execution.
 
 **003f-C candidate IDs (reference):** `CSC-LOSSLESS-v1-000262`–`000263` (backtest), `000285` (experiments init), `000286` (experiments live_session_registry), `000334`–`000335` (strategies named), `000336` (strategies registry), `000337`–`000338` (sweeps).
 
