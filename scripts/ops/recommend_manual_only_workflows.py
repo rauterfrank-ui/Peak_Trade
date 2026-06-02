@@ -438,10 +438,14 @@ def _files_for_intent(intent: str) -> list[str]:
 
 
 def _all_intent_ids() -> list[str]:
-    return sorted(INTENT_TO_FILES.keys()) + sorted(RESIDUAL_INTENT_TO_FILES.keys()) + [
-        "all",
-        "residual_all",
-    ]
+    return (
+        sorted(INTENT_TO_FILES.keys())
+        + sorted(RESIDUAL_INTENT_TO_FILES.keys())
+        + [
+            "all",
+            "residual_all",
+        ]
+    )
 
 
 def _build_gh_command(rec: WorkflowRecord, ref: str = "main") -> str:

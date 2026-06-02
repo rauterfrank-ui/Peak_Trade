@@ -48,9 +48,7 @@ RESIDUAL_SCHEDULE_FILES = frozenset(
     }
 )
 
-RESIDUAL_CI_OPS_FILES = frozenset(
-    {"ci.yml", "audit.yml", "pru-required-checks-drift-detector.yml"}
-)
+RESIDUAL_CI_OPS_FILES = frozenset({"ci.yml", "audit.yml", "pru-required-checks-drift-detector.yml"})
 
 PAPER_SHADOW_FILES = frozenset(
     {
@@ -157,7 +155,11 @@ def test_residual_ci_ops_intent_count() -> None:
 def test_residual_scorecard_chain_includes_prbc_and_prk() -> None:
     proc = _run_cli("--intent", "residual_scorecard_chain", "--include-commands")
     assert proc.returncode == 0, proc.stderr
-    for name in ("prbc-stability-gate.yml", "prk-prj-status-report.yml", "prbj-testnet-exec-events.yml"):
+    for name in (
+        "prbc-stability-gate.yml",
+        "prk-prj-status-report.yml",
+        "prbj-testnet-exec-events.yml",
+    ):
         assert name in proc.stdout
 
 
@@ -176,6 +178,11 @@ def test_residual_intents_listed_with_manual_only_intents() -> None:
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     intent_ids = {row["id"] for row in payload["intents"]}
-    for intent in ("residual_all", "residual_ci_ops", "residual_scorecard_chain", "residual_data_smoke"):
+    for intent in (
+        "residual_all",
+        "residual_ci_ops",
+        "residual_scorecard_chain",
+        "residual_data_smoke",
+    ):
         assert intent in intent_ids
     assert payload["residual_schedule_count"] == 13
