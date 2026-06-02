@@ -109,7 +109,40 @@ RECIPROCAL_OWNER_TESTS = (
     "test_scheduler_boundary_hard_block_contract_v0.py",
     "test_notion_post_closeout_sync_projection_spec_v0.py",
     "test_market_dashboard_readonly_run_projection_spec_v0.py",
+    "test_ops_cockpit_payload_top_level_contract.py",
 )
+
+OPS_COCKPIT_OPERATOR_SUMMARY_SPEC = (
+    REPO_ROOT / "docs" / "ops" / "specs" / "OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md"
+)
+OC1_PLANNING_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/ops_cockpit_operator_status_index_rc_v0_slice_oc1_docs_only_20260602T182955Z/"
+)
+OC_RELEASE_RC_INDEX_HEADING = "## Ops Cockpit / Operator Status Index RC v0 — meta-index v0"
+OC_RELEASE_RC_BLOCK_ANCHOR = "OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0=true"
+OC_RELEASE_RC_EXPECTED: dict[str, str] = {
+    "OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0": "true",
+    "SLICE_OC1_DOCS_ONLY": "true",
+    "OPERATOR_EXPERIENCE_RELEASE_RC_V0_CORE_DONE": "true",
+    "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_CORE_DONE": "true",
+    "EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0_CORE_DONE": "true",
+    "ER_SSOT_PREFLIGHT_POINTER_ONLY": "true",
+    "ER3_REPO_FOLLOWUP_DEFERRED": "true",
+    "OPS_COCKPIT_REFLECTION_ONLY": "true",
+    "OPS_COCKPIT_AUTHORITY_CHANGED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "STOP_IDLE_PRESERVED": "true",
+    "RETENTION_ENFORCEMENT_ACTIVATED": "false",
+    "NOTION_AS_MIRROR_ONLY": "true",
+    "NOTION_WRITES": "false",
+    "WORKFLOW_DISPATCH_EXECUTED": "false",
+    "NO_RUNTIME": "true",
+    "NO_TRADING_AUTHORITY_CHANGE": "true",
+    "MASTER_V2_LOGIC_CHANGED": "false",
+    "DOUBLE_PLAY_LOGIC_CHANGED": "false",
+    "PARALLEL_OPERATOR_STATUS_INDEX_CREATED": "false",
+}
 
 FORBIDDEN_PARALLEL_DOC_FRAGMENTS = (
     "REMOTE_RUNTIME_HOST_CONTRACT_V0.md",
@@ -236,3 +269,51 @@ def test_guard_module_declares_non_authorization() -> None:
     text = Path(__file__).read_text(encoding="utf-8")
     assert "Never starts runtime" in text or "Never starts" in text
     assert "grants GO" in text or "grants go" in text.lower()
+
+
+def _oc_release_rc_index_section(text: str) -> str:
+    start = text.find(OC_RELEASE_RC_INDEX_HEADING)
+    assert start != -1, "missing Ops Cockpit / Operator Status Index RC v0 meta-index section"
+    return text[start:]
+
+
+def test_ci_audit_ops_cockpit_operator_status_index_rc_v0_section_present() -> None:
+    text = _ci_audit_text()
+    section = _oc_release_rc_index_section(text)
+    assert "SLICE-OC-1" in section
+    assert "SLICE-OC-2" in section
+    assert "docs/tests-only" in section
+    assert "OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md" in section
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
+    assert "does **not** duplicate ER body" in section or "does not duplicate ER body" in section
+    assert OPS_COCKPIT_OPERATOR_SUMMARY_SPEC.name in section
+    assert OC1_PLANNING_BUNDLE_PATH in section
+    assert "parallel operator-status hub" in section.lower()
+    assert THIS_MODULE not in section
+
+
+def test_ci_audit_ops_cockpit_operator_status_index_machine_lines() -> None:
+    text = _ci_audit_text()
+    block = _block_containing(text, OC_RELEASE_RC_BLOCK_ANCHOR)
+    values = _machine_line_values(block)
+    missing = set(OC_RELEASE_RC_EXPECTED) - values.keys()
+    assert not missing, f"missing OC release RC keys: {sorted(missing)}"
+    for key, expected in OC_RELEASE_RC_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_ci_audit_ops_cockpit_operator_status_index_er_preflight_pointer_only() -> None:
+    section = _oc_release_rc_index_section(_ci_audit_text())
+    assert "ER SSOT — pointer only" in section or "ER SSOT" in section
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
+    assert "Operator Experience Release RC v0" in section
+    assert "Cybersecurity Visibility Release RC v0" in section
+    assert "Evidence Durable Closeout Retention RC v0" in section
+
+
+def test_ci_audit_ops_cockpit_operator_status_index_slice_oc2_guard_owner_v0() -> None:
+    section = _oc_release_rc_index_section(_ci_audit_text())
+    assert "SLICE-OC-2" in section
+    assert "test_ops_cockpit_" in section
+    assert "test_ops_cockpit_" in section
+    assert "extend existing" in section.lower() or "Tests-ops" in section
