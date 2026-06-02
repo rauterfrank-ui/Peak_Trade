@@ -1389,3 +1389,77 @@ WORKFLOW_DISPATCH_EXECUTED=false
 PARALLEL_DOCS_CREATED=false
 PARALLEL_CYBER_INDEX_CREATED=false
 ```
+
+## Ops Cockpit / Operator Status Index RC v0 — meta-index v0
+
+**Release:** `OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0` · **Slice:** `SLICE-OC-1` (docs-only start) · **UTC:** 2026-06-02 · **Recommended next larger release candidate** after the OE/CV/ER trilogy (all **CORE COMPLETE** on `main` @ `232a27e5a0ed6d098951d12c0e148f7d6a7159b0`). **Canonical repo owners (reuse — no parallel index):**
+
+| Concern | Owner |
+|---------|-------|
+| Post-trilogy operator posture meta-index (this section) | `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` (this document) |
+| Operator Experience RC status | this document — **§ Operator Experience Release RC v0 — index v0** |
+| Cybersecurity Visibility RC status | this document — **§ Cybersecurity Visibility Release RC v0 — index v0** |
+| Evidence Durable Closeout Retention RC status (**ER SSOT — pointer only**) | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` — **§ Evidence Durable Closeout Retention RC v0 — index v0** (CI audit does **not** duplicate ER body; ER-3 deferred by design) |
+| Ops Cockpit operator summary reflection | `docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md` — **§ Ops Cockpit — post-trilogy operator status reflection v0** |
+| Read-only GH manual-only recommender | `scripts/ops/recommend_manual_only_workflows.py` (reference only; no script change in SLICE-OC-1) |
+
+**Release scope (planned):** **2–3 PRs**, **docs/tests-only** — consolidate post-OE/CV/ER operator-visible status in existing owners without new status hubs, without ER SSOT duplication in CI audit, and without Ops Cockpit authority.
+
+**Prior releases complete (reference):**
+
+| Release | Status | Repo index owner |
+|---------|--------|------------------|
+| `OPERATOR_EXPERIENCE_RELEASE_RC_V0` | **CORE COMPLETE** (OE-1 + OE-2) | this document — § Operator Experience … |
+| `CYBERSECURITY_VISIBILITY_RELEASE_RC_V0` | **CORE COMPLETE** (CV-1 + CV-2) | this document — § Cybersecurity Visibility … |
+| `EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0` | **CORE COMPLETE** (ER-1 + ER-2; ER-3 optional deferred) | `PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` — § Evidence Durable … |
+
+**Durable operator pointers (archive only — not repo-ingested):**
+
+| Token | Durable path |
+|-------|--------------|
+| Next larger theme ranking (post-ER) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_larger_theme_ranking_after_evidence_retention_rc_v0_20260602T182803Z/` |
+| SLICE-OC-1 docs-only start (this slice) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/ops_cockpit_operator_status_index_rc_v0_slice_oc1_docs_only_20260602T182955Z/` |
+| OE final closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/operator_experience_release_rc_v0_final_release_closeout_handoff_20260602T174916Z/` |
+| CV final closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/cybersecurity_visibility_release_rc_v0_final_closeout_handoff_20260602T180735Z/` |
+| ER final closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/evidence_durable_closeout_retention_rc_v0_final_closeout_handoff_20260602T182534Z/` |
+
+**Planned slice decomposition (reference — not authorized until merged):**
+
+| Order | Slice ID | Scope |
+|-------|----------|-------|
+| 1 | **SLICE-OC-1** | Docs-only: this meta-index + Ops Cockpit summary reflection (**this PR**) |
+| 2 | **SLICE-OC-2** | Tests-ops: static guard for meta-index tokens in existing `tests/ops/test_ops_cockpit_*` or docs-guard modules only |
+| 3 | **SLICE-OC-3** (optional) | Docs-only: one-line trilogy pointer in `docs/webui/MARKET_SURFACE_V0.md` |
+
+**Operational rules:**
+
+- **STOP_IDLE preserved** — `PREFLIGHT_REMAINS_BLOCKED=true`; no paper/shadow/testnet/live, no scheduler/daemon execution.
+- **Ops Cockpit reflects only** — observation/display; **no** runtime, trading, execution, risk, governance, or live-gate authority from this release line.
+- **ER SSOT** remains Preflight — CI audit carries pointers only; **no** full ER index duplication; **do not** start SLICE-ER-3 without proven Preflight↔CI drift.
+- **Notion** remains mirror/status only — **no** Notion writes; **no** auto-sync without operator GO.
+- **No `workflow_dispatch`** from agent/CI automation; **SLICE-GH-001** remains separate Sub-GO.
+- **No Master V2 / Double Play** decision-logic changes.
+- **Reuse-before-new** — extend this CI audit anchor and Ops Cockpit spec; **no** parallel operator-status hub, evidence index, readiness map, or handoff surface.
+
+```text
+OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0=true
+SLICE_OC1_DOCS_ONLY=true
+OPERATOR_EXPERIENCE_RELEASE_RC_V0_CORE_DONE=true
+CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_CORE_DONE=true
+EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0_CORE_DONE=true
+ER_SSOT_PREFLIGHT_POINTER_ONLY=true
+ER3_REPO_FOLLOWUP_DEFERRED=true
+OPS_COCKPIT_REFLECTION_ONLY=true
+OPS_COCKPIT_AUTHORITY_CHANGED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+STOP_IDLE_PRESERVED=true
+RETENTION_ENFORCEMENT_ACTIVATED=false
+NOTION_AS_MIRROR_ONLY=true
+NOTION_WRITES=false
+WORKFLOW_DISPATCH_EXECUTED=false
+NO_RUNTIME=true
+NO_TRADING_AUTHORITY_CHANGE=true
+MASTER_V2_LOGIC_CHANGED=false
+DOUBLE_PLAY_LOGIC_CHANGED=false
+PARALLEL_OPERATOR_STATUS_INDEX_CREATED=false
+```
