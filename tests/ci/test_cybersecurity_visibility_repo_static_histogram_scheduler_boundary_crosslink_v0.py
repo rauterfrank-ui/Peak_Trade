@@ -40,6 +40,38 @@ ACCEPTED_SUBGROUP_002_INTEGRATION = "CSC-RCHAIN-v1-002-integration"
 ACCEPTED_SUBGROUP_002_P101 = "CSC-RCHAIN-v1-002-p101"
 ACCEPTED_SUBGROUP_002_P117 = "CSC-RCHAIN-v1-002-p117"
 ACCEPTED_SUBGROUP_002_P50 = "CSC-RCHAIN-v1-002-p50"
+GOVERNED_REFLECTION_SUBGROUP_003F_A = "CSC-RCHAIN-v1-003f-A"
+OPERATOR_ACCEPT_003F_A_SLICE_1 = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/operator_accept_artifact_csc_rchain_003f_a_slice_1_v0_20260602T202456Z"
+)
+NARROWING_BASENAMES_003F_A: tuple[str, ...] = (
+    "network_gate.py",
+    "shadow_session_scheduler_v1.py",
+    "run_shadowloop_pack_v1.py",
+)
+CANDIDATE_IDS_003F_A: tuple[str, ...] = (
+    "CSC-LOSSLESS-v1-000264",
+    "CSC-LOSSLESS-v1-000265",
+    "CSC-LOSSLESS-v1-000266",
+    "CSC-LOSSLESS-v1-000267",
+    "CSC-LOSSLESS-v1-000268",
+    "CSC-LOSSLESS-v1-000293",
+    "CSC-LOSSLESS-v1-000294",
+    "CSC-LOSSLESS-v1-000308",
+    "CSC-LOSSLESS-v1-000309",
+    "CSC-LOSSLESS-v1-000310",
+    "CSC-LOSSLESS-v1-000311",
+    "CSC-LOSSLESS-v1-000312",
+    "CSC-LOSSLESS-v1-000313",
+    "CSC-LOSSLESS-v1-000314",
+    "CSC-LOSSLESS-v1-000315",
+    "CSC-LOSSLESS-v1-000316",
+    "CSC-LOSSLESS-v1-000326",
+    "CSC-LOSSLESS-v1-000327",
+    "CSC-LOSSLESS-v1-000328",
+    "CSC-LOSSLESS-v1-000329",
+)
 
 FORBIDDEN_AUTHORIZATION_PHRASES: tuple[str, ...] = (
     "scheduler start authorized",
@@ -74,6 +106,16 @@ def _risk_table_rows(text: str) -> dict[str, tuple[str, str]]:
 
 def _csc_rchain_accepted_groups_guard_block(text: str) -> str:
     start = text.index("### CSC-RCHAIN-v1 accepted groups reflection guard v0")
+    end_marker = "### CSC-RCHAIN-v1-003f-A governed reflection guard v0"
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+def _csc_rchain_003f_a_guard_block(text: str) -> str:
+    start = text.index("### CSC-RCHAIN-v1-003f-A governed reflection guard v0")
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
@@ -157,6 +199,51 @@ def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_cross
     assert "AI model enablement authorization" in text
     assert "AI model policy semantics changes" in text
     assert "PEAKTRADE_STAGE=testnet` enablement" in text
+
+    accepted_line = next(
+        line for line in guard_block.splitlines() if line.startswith("CSC_RCHAIN_V1_ACCEPTED_GROUPS=")
+    )
+    assert GOVERNED_REFLECTION_SUBGROUP_003F_A not in accepted_line
+
+
+def test_csc_rchain_v1_003f_a_governed_reflection_scheduler_boundary_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    block = _csc_rchain_003f_a_guard_block(text)
+
+    assert "CSC_RCHAIN_V1_003F_A_GOVERNED_REFLECTION_SLICE1_V0=true" in block
+    assert "CSC_RCHAIN_V1_003F_A_REFLECTION_DOCS_TESTS_ONLY=true" in block
+    assert "CSC_RCHAIN_V1_003F_A_CANDIDATE_COUNT=20" in block
+    assert "CSC_RCHAIN_V1_003F_A_EXTERNAL_ACCEPT_READY_COUNT=17" in block
+    assert "CSC_RCHAIN_V1_003F_A_NARROWING_REQUIRED_COUNT=3" in block
+    assert "CSC_RCHAIN_V1_003F_A_PARK_RETAINED=true" in block
+    assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT_UNCHANGED=true" in block
+    assert "CSC_RCHAIN_V1_PARK_COUNT_UNCHANGED=true" in block
+    assert "REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-003F-A-SLICE-1" in block
+    assert "NO_AWS_NO_NETWORK_OPS=true" in block
+    assert "NO_SHADOW_SCHEDULER_EXECUTION=true" in block
+    assert "NO_SHADOWLOOP_START=true" in block
+    assert "NETWORK_GATE_VISIBILITY_ONLY=true" in block
+    assert OPERATOR_ACCEPT_003F_A_SLICE_1 in block
+    assert GOVERNED_REFLECTION_SUBGROUP_003F_A in block
+    assert THIS_MODULE in block
+    assert GROUPING_REFLECTION_GUARD_MODULE in block
+
+    for basename in NARROWING_BASENAMES_003F_A:
+        assert basename in block
+    assert "CSC-LOSSLESS-v1-000264" in block
+    assert "000293`–`000294" in block
+    assert "000312`–`000316" in block
+    assert "000326`–`000329" in block
+    assert len(CANDIDATE_IDS_003F_A) == 20
+
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES:
+        assert phrase not in collapsed
+
+    assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
+    assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
+    assert "scheduler start authorized" not in collapsed
+    assert "shadowloop start authorized" not in collapsed
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_truth_map_crosslink_v0() -> (

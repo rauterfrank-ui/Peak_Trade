@@ -1130,12 +1130,60 @@ CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUARD_DOCS_TESTS_ONLY=tru
 
 **Relationship to CSC-LOSSLESS-v1 guard v0:** Source dataset remains 672-row `CSC-LOSSLESS-v1`; accepted R-chain groups cover **258** repo-reflected candidates (114 from 006/007/008 plus 6 from **009a** plus 4 from **009b** plus 1 from **002-infra** plus 1 from **002-integration** plus 1 from **002-p101** plus 1 from **002-p117** plus 1 from **002-p50** plus **8** from **002-ci-workflow-visibility** plus **3** from **002-observability** plus **9** from **002-tests-misc-contracts** plus **4** from **001-ops-autonomous-control-plane** plus **8** from **001-ops-control-plane-offline** plus **8** from **001-ops-gap-contracts** plus **8** from **001-ops-gap-contracts-gap4-gap5** plus **4** from **001-ops-gap-contracts-gap6-gap7** plus **4** from **001-ops-evidence-closeout-build-contracts** plus **4** from **001-ops-closeout-contracts** plus **23** from **001-ops-bounded-durable-evidence-contracts** plus **23** from **001-ops-post-closeout-contracts** plus **23** from **001-ops-remote-planning-contracts**). Histogram rows `artifact_retention_or_evidence_gap | 6`, `paid_ai_eval_gate | 4`, and `scheduler_or_runtime_boundary | 24` remain unchanged — visibility-only crosslinks to existing guard owners. Candidate paths `tests/infra/test_network_escalation_gate.py`, `tests/integration/test_kill_switch_e2_safety_guard.py`, `tests/p101/test_p101_stop_playbook_exists.py`, `tests/p117/test_p117_ops_loop_includes_exec_evidence_step.py`, and `tests/p50/test_ai_model_enablement_policy_v1.py` are named for traceability only; this guard does **not** modify those files and does **not** authorize network escalation, Testnet/Live trading, live enablement (`LIVE=1` appears only as refusal-test context), kill-switch bypass, safety-guard semantics changes, p101 stop-playbook semantics changes, scheduler start/enablement, exec-evidence collection enablement, launchctl execution enablement (`launchctl` appears only as readiness-probe context in inventory metadata), p117 ops-loop semantics changes, AI model enablement authorization, AI model policy semantics changes, workflow dispatch enablement, or `PEAKTRADE_STAGE=testnet` enablement (`PEAKTRADE_STAGE=testnet` appears only as isolated policy-test fixture context in inventory metadata). **Relationship to pending R-001/R-002/R-007:** Retained risks remain **Pending** while `INPUT_JSONL_PROVIDED=false`.
 
+### CSC-RCHAIN-v1-003f-A governed reflection guard v0 (Slice-1)
+
+**Release:** `REPO_GO-CSC-RCHAIN-003F-A-SLICE-1` · **Token scope:** docs/tests-only governed reflection · **UTC:** 2026-06-02 · **Operator ACCEPT:** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/operator_accept_artifact_csc_rchain_003f_a_slice_1_v0_20260602T202456Z/`
+
+```text
+CSC_RCHAIN_V1_003F_A_GOVERNED_REFLECTION_SLICE1_V0=true
+CSC_RCHAIN_V1_003F_A_REFLECTION_DOCS_TESTS_ONLY=true
+CSC_RCHAIN_V1_003F_A_CANDIDATE_COUNT=20
+CSC_RCHAIN_V1_003F_A_EXTERNAL_ACCEPT_READY_COUNT=17
+CSC_RCHAIN_V1_003F_A_NARROWING_REQUIRED_COUNT=3
+CSC_RCHAIN_V1_003F_A_PARK_RETAINED=true
+CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT_UNCHANGED=true
+CSC_RCHAIN_V1_PARK_COUNT_UNCHANGED=true
+REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-003F-A-SLICE-1
+PREFLIGHT_REMAINS_BLOCKED=true
+STOP_IDLE_PRESERVED=true
+NO_AWS_NO_NETWORK_OPS=true
+NO_SHADOW_SCHEDULER_EXECUTION=true
+NO_SHADOWLOOP_START=true
+NETWORK_GATE_VISIBILITY_ONLY=true
+SHADOW_SCHEDULER_MARKER_ONLY=true
+SHADOWLOOP_PACK_MARKER_ONLY=true
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+WORKFLOW_DISPATCH_EXECUTED=false
+MASTER_V2_LOGIC_CHANGED=false
+DOUBLE_PLAY_LOGIC_CHANGED=false
+TRADING_AUTHORITY_CHANGED=false
+PRODUCTION_CODE_TOUCHED=false
+```
+
+**Purpose:** Governed **visibility/crosslink/guard** reflection for cluster **003f-A** (20 `PARK` candidates under parent **003** split). **Does not** add `CSC-RCHAIN-v1-003f-A` to `CSC_RCHAIN_V1_ACCEPTED_GROUPS`; **does not** change `CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT` (**258**) or `CSC_RCHAIN_V1_PARK_COUNT` (**413**). Parent **003** and **003f** remain PARK at parent level.
+
+| Field | Value |
+|-------|-------|
+| `rchain_id` | `CSC-RCHAIN-v1-003f-A` |
+| Category | `scheduler_or_runtime_boundary` |
+| `candidate_count` | 20 |
+| Visibility owner (reuse) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
+| Grouping reciprocal | `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py` |
+
+**Narrowing paths (3 — basename reference only in docs/tests):** `network_gate.py`, `shadow_session_scheduler_v1.py`, `run_shadowloop_pack_v1.py` — visibility/crosslink/guard only; **no** network operations, scheduler execution, or shadowloop start.
+
+**003f-A candidate IDs (reference):** `CSC-LOSSLESS-v1-000264`–`000268` (core), `000293`–`000294` (infra), `000308`–`000311` (observability), `000312`–`000316` (ops), `000326`–`000329` (scheduler).
+
+**Non-authorizing:** No `src/` edits; no runtime/scheduler/daemon execution; no workflow dispatch; no GH YAML; no Notion/AWS/S3; no Testnet/Live/trading/Master V2/Double Play authority changes; no parent 003/003f wholesale ACCEPT.
+
 ### Static visibility contract owners (reuse — do not duplicate)
 
 | Surface | Owner module |
 |---------|--------------|
 | CSC-LOSSLESS-v1 dataset reflection guard | `tests/ci/test_csc_lossless_v1_dataset_reflection_contract_v0.py` |
 | CSC-RCHAIN-v1 accepted groups reflection guard | `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py` |
+| CSC-RCHAIN-v1-003f-A governed reflection guard (Slice-1) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
 | Static inventory schema validation guard | `tests/ci/test_static_inventory_schema_guard_contract_v0.py` |
 | Workflow secrets/vars/braced contexts (hub) | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
 | Workflow write permissions | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` |
