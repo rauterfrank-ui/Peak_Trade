@@ -149,7 +149,10 @@ def test_ops_cockpit_operator_summary_surface_oc1_reflection_tokens_v0() -> None
 
     assert "read-only" in section.lower()
     assert "reflection" in section.lower()
-    assert "ops_cockpit_display_reflection_only" in section.lower() or "display or reflect" in section.lower()
+    assert (
+        "ops_cockpit_display_reflection_only" in section.lower()
+        or "display or reflect" in section.lower()
+    )
     assert "durable Evidence Archive" in section or "durable evidence archive" in section.lower()
     assert "mirror/status" in section.lower() or "mirror" in section.lower()
     assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
