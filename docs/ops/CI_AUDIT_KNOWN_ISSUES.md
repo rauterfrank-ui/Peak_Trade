@@ -1527,3 +1527,70 @@ MASTER_V2_LOGIC_CHANGED=false
 DOUBLE_PLAY_LOGIC_CHANGED=false
 PARALLEL_SCHEDULE_GOVERNANCE_INDEX_CREATED=false
 ```
+
+## Notion Repo Helper Charter — docs reflection v0
+
+**Release:** `NOTION_REPO_HELPER_CHARTER_READONLY_RC_V0` · **Slice:** `SLICE-NRH-1` (`NOTION_REPO_HELPER_DOCS_REFLECTION_SLICE_V0`) · **UTC:** 2026-06-02 · **Docs-only reflection** of the external Notion Repo Helper Charter (charter body remains in the durable archive — **not** repo-ingested). **Canonical repo owner (reuse — no parallel index):**
+
+| Concern | Owner |
+|---------|-------|
+| Notion / generator / repo-helper planning pointers (this section) | `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` (this document) |
+| Operator Experience Notion mirror rules | this document — **§ Operator Experience Release RC v0 — index v0** |
+| Ops Cockpit operator summary (non-authority) | `docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md` |
+| Post-closeout Notion **projection** dry-run (distinct tool — do not merge with sync-package helper) | `scripts/ops/notion_post_closeout_sync_dry_run_v0.py` |
+
+**Generator-use precondition (external — confirmed):**
+
+- **Use #1:** `planning/notion_sync_package_generator_v0_20260602T165958Z/` (`MODE_A_COMPLETE=true`, draft-only).
+- **Use #2:** `planning/notion_external_generator_use_2_dry_run_rc_v0_20260602T192244Z/` (GH closeout input).
+- **2B attestation:** `planning/notion_external_generator_use_2b_review_and_repo_helper_decision_20260602T192421Z/` — `GENERATOR_USE_COUNT_CONFIRMED=2`, `NOTION_REPO_HELPER_MIN_2_USES_MET=true`.
+
+**Durable operator pointers (archive only — not repo-ingested):**
+
+| Token | Durable path |
+|-------|--------------|
+| Notion Repo Helper Charter (readonly RC v0) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/notion_repo_helper_charter_readonly_rc_v0_20260602T192538Z/` |
+| Generator use #2 dry-run | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/notion_external_generator_use_2_dry_run_rc_v0_20260602T192244Z/` |
+| 2B review / repo-helper decision | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/notion_external_generator_use_2b_review_and_repo_helper_decision_20260602T192421Z/` |
+| Next larger theme ranking (post-GH) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_larger_theme_ranking_after_gh_schedule_governance_rc_v0_20260602T192033Z/` |
+| SLICE-NRH-1 docs reflection (this slice) | repo: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — this section only |
+
+**Planned follow-on slices (reference — not authorized until explicit GO):**
+
+| Order | Slice ID | Scope |
+|-------|----------|-------|
+| 1 | **SLICE-NRH-1** | Docs-only: this reflection (**this PR**) |
+| 2 | **SLICE-NRH-2** | Tests-ops: no-write/no-network/no-PII static guards for future helper allowlist |
+| 3 | **SLICE-NRH-3** | Implementation: `scripts/ops/generate_notion_sync_package_v0.py` + tests — **separate explicit GO** |
+
+**Operational rules:**
+
+- **Charter is planning-only** — **no** repo helper implementation, **no** Notion API/MCP, **no** Notion writes from this slice.
+- **Helper output (future)** may emit **draft-only** sync packages; **no** auto-write; **no** runtime/paper/shadow/testnet/live coupling.
+- **Notion** remains **mirror/status surface only** — canonical truth remains **repo + durable Evidence Archive**; **not** an authority source.
+- **No PII / raw logs / secrets** in helper or generator pipelines; **no** external cyber real-data intake.
+- **No** `workflow_dispatch` from agent/CI automation; **no** AWS/S3/rclone; **no** trading/execution/risk/governance/live-gate authority; **no** Master V2 / Double Play logic changes.
+- **Reuse-before-new** — extend this CI audit anchor and existing external generator bundles; **no** parallel Notion SSOT spec, evidence index, readiness map, or handoff surface in repo.
+- **`REPO_HELPER_IMPLEMENTATION_ALLOWED_NOW=false`** until `GO SLICE-NRH-3` (or successor token) with named allowlist files.
+
+```text
+NOTION_REPO_HELPER_CHARTER_READONLY_RC_V0=true
+SLICE_NRH1_DOCS_REFLECTION_ONLY=true
+GENERATOR_USE_COUNT_CONFIRMED=2
+NOTION_REPO_HELPER_MIN_2_USES_MET=true
+REPO_HELPER_IMPLEMENTATION_ALLOWED_NOW=false
+NOTION_API_ALLOWED_NOW=false
+NOTION_WRITES_ALLOWED_NOW=false
+NOTION_AS_MIRROR_ONLY=true
+NOTION_AUTO_WRITE_FORBIDDEN=true
+WORKFLOW_DISPATCH_EXECUTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+STOP_IDLE_PRESERVED=true
+RETENTION_ENFORCEMENT_ACTIVATED=false
+NO_RUNTIME=true
+NO_TRADING_AUTHORITY_CHANGE=true
+MASTER_V2_LOGIC_CHANGED=false
+DOUBLE_PLAY_LOGIC_CHANGED=false
+CYBER_REAL_DATA_PII_BLOCKED=true
+PARALLEL_NOTION_REPO_HELPER_INDEX_CREATED=false
+```
