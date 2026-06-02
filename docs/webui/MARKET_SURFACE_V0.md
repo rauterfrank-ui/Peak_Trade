@@ -514,7 +514,7 @@ Das HTML für **`GET &#47;market`** enthält beim Chart‑Bereich ein Status‑E
 
 **Status:** planning input reflected (docs-only slice) · **UTC:** 2026-06-02 · **Repo-SSOT bleibt dieses Dokument** — kein paralleles Dashboard-Spec.
 
-**Durable planning bundle (extern, nicht repo-kanonisch):** `…/planning/market_dashboard_ui_charter_external_planning_v0_20260602T152012Z/` unter dem Operator-Archiv `Peak_Trade_runtime_evidence_archive_20260520T161443Z`.
+**Durable planning bundle (extern, nicht repo-kanonisch):** `…&#47;planning&#47;market_dashboard_ui_charter_external_planning_v0_20260602T152012Z&#47;` unter dem Operator-Archiv `Peak_Trade_runtime_evidence_archive_20260520T161443Z`.
 
 - **Read-only Operator Surface:** Market Dashboard bleibt **rein darstellend** — schnelle Lageübersicht, **keine** Handelsausführung, **keine** Runtime-Kontrolle, **keine** Trading-/Execution-/Risk-/Governance-/Live-Autorität.
 - **Verboten ohne separates GO:** Provider-Polling, Data-Ingestion, Scheduler-/Paper-/Testnet-/Live-Starts, neue APIs/Routen, Template-/Visual-Implementierung in Charter-Nachfolgeslices.
