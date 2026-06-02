@@ -474,6 +474,16 @@ def _guard_block_005c_slice4_live_named_a(text: str) -> str:
 
 def _guard_block_005c_slice5_live_named_b(text: str) -> str:
     start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-5 Live-Named B)")
+    end_marker = "### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-6 AIOps-Shadow)"
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+def _guard_block_005c_slice6_aiops_shadow(text: str) -> str:
+    start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-6 AIOps-Shadow)")
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
@@ -533,6 +543,10 @@ OPERATOR_ACCEPT_005C_SLICE_5_LIVE_NAMED_B = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/create_operator_accept_artifact_bundle_005c_slice5_live_named_b_v0_20260602T225455Z"
 )
+OPERATOR_ACCEPT_005C_SLICE_6_AIOPS_SHADOW = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/create_operator_accept_artifact_bundle_005c_slice6_aiops_shadow_v0_20260602T230331Z"
+)
 GOVERNED_REFLECTION_SUBGROUP_005C = "CSC-RCHAIN-v1-005c"
 NARROWING_BASENAMES_005C_SLICE2: tuple[str, ...] = (
     "health_dashboard.py",
@@ -561,6 +575,16 @@ NARROWING_BASENAMES_005C_SLICE5_LIVE_NAMED_B: tuple[str, ...] = (
     "live_web_server.py",
     "report_live_sessions.py",
     "run_live_beta_drill.py",
+)
+NARROWING_BASENAMES_005C_SLICE6_AIOPS_SHADOW: tuple[str, ...] = (
+    "run_paper_trading_session.py",
+    "run_prj_features_smoke.py",
+    "run_shadow_session.py",
+    "run_shadow_execution.py",
+)
+DUAL_MARKER_BASENAMES_005C_SLICE6_AIOPS_SHADOW: tuple[str, ...] = (
+    "run_shadow_session.py",
+    "run_shadow_execution.py",
 )
 SCHEDULER_BOUNDARY_CROSSLINK_MODULE = "tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py"
 
@@ -1277,3 +1301,50 @@ def test_csc_rchain_v1_005c_governed_reflection_slice5_live_named_b_contract_v0(
     assert "live ops approved" not in collapsed
     assert "web server start authorized" not in collapsed
     assert "drill execution authorized" not in collapsed
+
+
+def test_csc_rchain_v1_005c_governed_reflection_slice6_aiops_shadow_contract_v0() -> None:
+    text = _ci_audit_text()
+    block = _guard_block_005c_slice6_aiops_shadow(text)
+    collapsed = block.lower()
+
+    assert OPERATOR_ACCEPT_005C_SLICE_6_AIOPS_SHADOW in block
+    assert GOVERNED_REFLECTION_SUBGROUP_005C in block
+    assert SCHEDULER_BOUNDARY_CROSSLINK_MODULE in block
+    assert THIS_MODULE in block
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE6_AIOPS_SHADOW_V0=true" in block
+    assert "CSC_RCHAIN_V1_005C_PARK_RETAINED=true" in block
+    assert "REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-005C-SLICE-6-AIOPS-SHADOW" in block
+    assert "RUN_SCHEDULER_000253_BLOCKED=true" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE1_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE2_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE3_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE4_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE5_REOPENED=false" in block
+    assert "NO_SHADOW_EXECUTION_AUTHORITY=true" in block
+    assert "NO_SHADOW_RUNTIME_START_AUTHORITY=true" in block
+    assert "NO_AIOPS_AUTHORITY=true" in block
+    assert "NO_AUTONOMY_AUTHORITY=true" in block
+    assert "AIOPS_SHADOW_CLI_VISIBILITY_ONLY=true" in block
+    assert "CSC_RCHAIN_V1_005C_DUAL_MARKER_CANDIDATE_COUNT=2" in block
+    for basename in NARROWING_BASENAMES_005C_SLICE6_AIOPS_SHADOW:
+        assert basename in block
+    for basename in DUAL_MARKER_BASENAMES_005C_SLICE6_AIOPS_SHADOW:
+        assert basename in block
+    assert "000152" in block
+    assert "000153" in block
+    assert "000154" in block
+    assert "000254" in block
+    assert "dual" in collapsed
+    assert "aiops" in collapsed
+    assert "shadow" in collapsed
+    assert "CSC_PARENT005A_EXCLUDED=true" in block
+    assert "**Does not** add" in block
+    assert "258" in block
+    assert "413" in block
+    assert "script execution authorized" not in collapsed
+    assert "scheduler start authorized" not in collapsed
+    assert "shadow runtime authorized" not in collapsed
+    assert "aiops approved" not in collapsed
+    assert "autonomy enabled" not in collapsed
+    assert "execution authorized" not in collapsed
