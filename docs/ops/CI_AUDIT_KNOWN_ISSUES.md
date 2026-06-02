@@ -1278,3 +1278,46 @@ LOCAL_DRY_HOST_NO_RUN_PREFLIGHT_DOCS_TESTS_ONLY=true
 **Guard module (reuse — no parallel local-dry-host runtime anchor):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
 
 **Non-authorizing:** No runtime/scheduler/daemon execution, no paper/shadow/testnet/live, no AWS/network/rclone/S3 upload, no Notion write, no Market Dashboard authority, no Preflight lift, no Path-B lift, and no Global-Preflight lift. `/tmp`-only evidence remains invalid.
+
+## Operator Experience Release RC v0 — index v0
+
+**Release:** `OPERATOR_EXPERIENCE_RELEASE_RC_V0` · **Slice:** `SLICE-OE-1` (docs-only start) · **UTC:** 2026-06-02 · **Canonical repo owners (reuse — no parallel index):**
+
+| Concern | Owner |
+|---------|-------|
+| Market Surface routes, visual polish status, non-authority boundaries | `docs/webui/MARKET_SURFACE_V0.md` (**§ Operator Experience Release RC v0 — SLICE-OE-1 Status-Reflexion**) |
+| CI audit posture, ops pointers, schedule/Notion handoff | `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` (this section) |
+
+**Durable operator pointers (archive only — not repo-ingested):**
+
+| Token | Durable path |
+|-------|--------------|
+| Final consolidated handoff after PR3901 | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/final_consolidated_handoff_after_pr3901_notion_and_generator_stop_idle_v0_20260602T170236Z/` |
+| Notion update after PR3901 | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/notion_update_after_pr3901_operator_go_v0_20260602T165522Z/` |
+| Notion Auto-Sync Charter | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/notion_auto_sync_charter_and_design_readonly_v0_20260602T165746Z/` |
+| Notion Sync Package Generator v0 | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/notion_sync_package_generator_v0_20260602T165958Z/` |
+| GH residual schedule cost review | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gh_residual_schedule_cost_review_readonly_v0_20260602T171045Z/` |
+| Larger release candidate planning | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/larger_release_candidate_planning_after_pr3901_v0_20260602T170937Z/` |
+| SLICE-OE-1 docs-only start (this slice) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/operator_experience_release_rc_v0_slice_oe1_docs_only_start_20260602T171519Z/` |
+
+**Operational rules:**
+
+- **Notion** remains a **mirror/status surface only** — **not** an authority source for runtime, trading, gates, or approvals.
+- **Notion Auto-Sync** is **operator_gated** or **draft-only**; **no** auto-write for Runtime/Live, PII, raw logs, or secrets.
+- **`workflow_dispatch` must not be executed** from agent/CI automation in this release line; optional **SLICE-GH-001** remains a **separate sub-GO** (GH schedule residual cost review pointer above).
+
+```text
+OPERATOR_EXPERIENCE_RELEASE_RC_V0=true
+SLICE_OE1_DOCS_ONLY=true
+NOTION_AS_MIRROR_ONLY=true
+NOTION_AUTO_SYNC_OPERATOR_GATED=true
+NOTION_AUTO_WRITE_FORBIDDEN=true
+WORKFLOW_DISPATCH_EXECUTED=false
+GH_SCHEDULE_REVIEW_POINTER_ONLY=true
+SLICE_GH_001_SEPARATE_SUB_GO=true
+DASHBOARD_AUTHORITY_CHANGED=false
+RUNTIME_TOUCHED=false
+TRADING_AUTHORITY_CHANGED=false
+NOTION_WRITES=false
+PARALLEL_DOCS_CREATED=false
+```
