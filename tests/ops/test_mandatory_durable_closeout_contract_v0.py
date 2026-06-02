@@ -13,7 +13,12 @@ PRIMARY_EVIDENCE = REPO_ROOT / "scripts" / "ops" / "primary_evidence_retention_v
 PLANNING_RETENTION_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_planning_artifact_durable_retention_contract_v0.py"
 )
+PRIMARY_EVIDENCE_INVARIANT_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_primary_evidence_retention_invariant_contract_v0.py"
+)
 DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+ER_RELEASE_RC_INDEX_HEADING = "### Evidence Durable Closeout Retention RC v0 — index v0"
+THIS_MODULE = Path(__file__).name
 
 MANDATORY_MARKERS = (
     "MANDATORY_DURABLE_CLOSEOUT_CONTRACT_V0=true",
@@ -149,3 +154,23 @@ def test_adjacent_section_ordering() -> None:
     assert text.index("## 2b.2 Closeout Enforcement Planning Contract v0") < text.index(
         "## 3. Non-authority"
     )
+
+
+def test_evidence_durable_closeout_retention_rc_v0_slice_er1_closeout_guard_crosslink_v0() -> None:
+    text = PREFLIGHT.read_text(encoding="utf-8")
+    start = text.find(ER_RELEASE_RC_INDEX_HEADING)
+    assert start != -1, "missing Evidence Durable Closeout Retention RC v0 index section"
+    section = text[start : start + 8000]
+    collapsed = text.lower()
+
+    assert "EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0" in section
+    assert "SLICE-ER-1" in section
+    assert "SLICE-ER-2" in section
+    assert THIS_MODULE in section
+    assert PRIMARY_EVIDENCE_INVARIANT_TESTS.name in section
+    assert "docs/tests/tooling-only" in section
+    assert "RETENTION_ENFORCEMENT_ACTIVATED=false" in text
+    assert "PRE_FLIGHT_BLOCKED_LIFTED=false" in text
+    assert "no parallel" in collapsed
+    assert "NO_RUNTIME=true" in text
+    assert "WORKFLOW_DISPATCH_EXECUTED=false" in text

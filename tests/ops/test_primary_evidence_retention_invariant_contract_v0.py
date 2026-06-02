@@ -42,6 +42,37 @@ ARTIFACT_RETENTION_CROSSLINK_TESTS = (
 )
 RECIPROCAL_CROSSLINK_MARKER = "CYBERSECURITY_VISIBILITY_ARTIFACT_RETENTION_DURABLE_PRIMARY_EVIDENCE_RECIPROCAL_CROSSLINK_V0=true"
 _MARKER_TRUE = "=true"
+ER_RELEASE_RC_INDEX_HEADING = "### Evidence Durable Closeout Retention RC v0 — index v0"
+ER_RELEASE_RC_BLOCK_ANCHOR = "EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0=true"
+ER_PLANNING_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/evidence_durable_closeout_retention_rc_v0_planning_20260602T180921Z/"
+)
+MANDATORY_CLOSEOUT_CONTRACT_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_mandatory_durable_closeout_contract_v0.py"
+)
+DURABLE_CLOSEOUT_VERIFY_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_durable_closeout_copy_verify_v0.py"
+)
+THIS_MODULE = Path(__file__).name
+
+ER_RELEASE_RC_EXPECTED: dict[str, str] = {
+    "EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0": "true",
+    "SLICE_ER1_DOCS_ONLY": "true",
+    "RETENTION_ENFORCEMENT_ACTIVATED": "false",
+    "CLOSEOUT_ENFORCEMENT_ACTIVATED": "false",
+    "PRE_FLIGHT_BLOCKED_LIFTED": "false",
+    "READY_FOR_START": "false",
+    "NO_RUNTIME": "true",
+    "NO_PAPER_SHADOW_TESTNET_LIVE": "true",
+    "NO_AWS_S3_RCLONE": "true",
+    "NOTION_WRITES": "false",
+    "WORKFLOW_DISPATCH_EXECUTED": "false",
+    "NO_TRADING_AUTHORITY_CHANGE": "true",
+    "MASTER_V2_LOGIC_CHANGED": "false",
+    "PARALLEL_EVIDENCE_INDEX_CREATED": "false",
+    "REUSE_BEFORE_NEW_PASS": "true",
+}
 
 
 def _owner_text() -> str:
@@ -50,6 +81,32 @@ def _owner_text() -> str:
 
 def _section_2a1() -> str:
     return _owner_text().split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
+
+
+def _er_release_rc_index_section(text: str) -> str:
+    start = text.find(ER_RELEASE_RC_INDEX_HEADING)
+    assert start != -1, "missing Evidence Durable Closeout Retention RC v0 index section"
+    end = text.find("## 2b.2 Closeout Enforcement Planning Contract v0", start)
+    assert end != -1
+    return text[start:end]
+
+
+def _machine_line_values_from_anchor(text: str, anchor: str) -> dict[str, str]:
+    idx = text.find(anchor)
+    assert idx != -1, f"missing anchor {anchor}"
+    fence_start = text.rfind("```", 0, idx)
+    fence_end = text.find("```", idx)
+    assert fence_start != -1 and fence_end != -1
+    inner = text[fence_start + 3 : fence_end]
+    if inner.startswith("text\n"):
+        inner = inner[5:]
+    values: dict[str, str] = {}
+    for line in inner.splitlines():
+        stripped = line.strip()
+        if "=" in stripped:
+            key, value = stripped.split("=", 1)
+            values[key.strip()] = value.strip()
+    return values
 
 
 def _adapter_text() -> str:
@@ -659,3 +716,55 @@ def test_invariant_owner_crosslinks_cybersecurity_artifact_retention_histogram_v
     ci_lines = {line.strip() for line in ci_audit.splitlines()}
     assert ("INPUT_JSONL_PROVIDED" + _MARKER_TRUE) not in ci_lines
     assert ("R001_R002_R007_MAPPING_COMPLETED" + _MARKER_TRUE) not in ci_lines
+
+
+def test_evidence_durable_closeout_retention_rc_v0_slice_er1_release_index_v0() -> None:
+    text = _owner_text()
+    collapsed = text.lower()
+    section = _er_release_rc_index_section(text)
+    release_values = _machine_line_values_from_anchor(text, ER_RELEASE_RC_BLOCK_ANCHOR)
+
+    assert "EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0" in section
+    assert "SLICE-ER-1" in section
+    assert "SLICE-ER-2" in section
+    assert "SLICE-ER-3" in section
+    assert "docs/tests/tooling-only" in section
+    assert (
+        "this document (§2a / §2a.1)" in section
+        or "§2a primary evidence retention invariant" in section
+    )
+    assert THIS_MODULE in section
+    assert MANDATORY_CLOSEOUT_CONTRACT_TESTS.name in section
+    assert DURABLE_CLOSEOUT_VERIFY_TESTS.name in section
+    assert ER_PLANNING_BUNDLE_PATH in section
+    assert "no parallel" in collapsed
+    assert (
+        "does **not** authorize future runs" in section
+        or "does not authorize future runs" in collapsed
+    )
+    assert "does **not** claim retention is fully enforced" in section or (
+        "does not claim retention is fully enforced" in collapsed
+    )
+    assert "Canonical remains repo + durable Evidence Archive" in section
+
+    for key, expected in ER_RELEASE_RC_EXPECTED.items():
+        assert release_values.get(key) == expected, (
+            f"release RC index {key}={release_values.get(key)!r} expected {expected!r}"
+        )
+
+    assert "non-authorizing" in collapsed or "BLOCKED" in section
+
+
+def test_evidence_durable_closeout_retention_rc_v0_slice_er2_guard_owner_crosslink_v0() -> None:
+    section = _er_release_rc_index_section(_owner_text())
+
+    assert "SLICE-ER-2" in section
+    assert (
+        "test_*retention*" in section
+        or "test_primary_evidence_retention_invariant_contract_v0.py" in section
+    )
+    assert (
+        "test_*closeout*" in section or "test_mandatory_durable_closeout_contract_v0.py" in section
+    )
+    assert THIS_MODULE in section
+    assert MANDATORY_CLOSEOUT_CONTRACT_TESTS.is_file()
