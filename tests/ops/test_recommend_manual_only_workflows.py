@@ -23,8 +23,32 @@ EXPECTED_INTENTS = frozenset(
         "docs_hygiene",
         "paper_test_evidence",
         "all",
+        "residual_ci_ops",
+        "residual_scorecard_chain",
+        "residual_data_smoke",
+        "residual_all",
     }
 )
+
+RESIDUAL_SCHEDULE_FILES = frozenset(
+    {
+        "audit.yml",
+        "ci.yml",
+        "prbc-stability-gate.yml",
+        "prbd-live-readiness-scorecard.yml",
+        "prbe-shadow-testnet-scorecard.yml",
+        "prbg-execution-evidence.yml",
+        "prbi-live-pilot-scorecard.yml",
+        "prbj-testnet-exec-events.yml",
+        "prcc-aws-export-smoke.yml",
+        "prk-prj-status-report.yml",
+        "pro-prk-nightly-selfcheck.yml",
+        "pru-required-checks-drift-detector.yml",
+        "real-market-forward-evidence-smoke.yml",
+    }
+)
+
+RESIDUAL_CI_OPS_FILES = frozenset({"ci.yml", "audit.yml", "pru-required-checks-drift-detector.yml"})
 
 PAPER_SHADOW_FILES = frozenset(
     {
@@ -102,3 +126,63 @@ def test_recommender_does_not_invoke_gh(intent: str) -> None:
     proc = _run_cli("--intent", intent, "--include-commands")
     assert proc.returncode == 0
     assert "gh workflow run" in proc.stdout
+
+
+def test_residual_all_json_covers_thirteen_without_duplicates() -> None:
+    proc = _run_cli("--intent", "residual_all", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    files = [r["workflow_file"].split("/")[-1] for r in payload["recommendations"]]
+    assert len(files) == len(RESIDUAL_SCHEDULE_FILES)
+    assert frozenset(files) == RESIDUAL_SCHEDULE_FILES
+    assert payload["schedule_reactivation"] is False
+    assert payload["executes_workflows"] is False
+    assert payload["workflow_dispatch_executed"] is False
+    for rec in payload["recommendations"]:
+        assert rec["has_active_schedule"] is True
+        assert rec["residual_scheduled_workflow"] is True
+        assert "warning" in rec
+
+
+def test_residual_ci_ops_intent_count() -> None:
+    proc = _run_cli("--intent", "residual_ci_ops", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    files = {r["workflow_file"].split("/")[-1] for r in payload["recommendations"]}
+    assert files == RESIDUAL_CI_OPS_FILES
+
+
+def test_residual_scorecard_chain_includes_prbc_and_prk() -> None:
+    proc = _run_cli("--intent", "residual_scorecard_chain", "--include-commands")
+    assert proc.returncode == 0, proc.stderr
+    for name in (
+        "prbc-stability-gate.yml",
+        "prk-prj-status-report.yml",
+        "prbj-testnet-exec-events.yml",
+    ):
+        assert name in proc.stdout
+
+
+def test_residual_data_smoke_single_workflow() -> None:
+    proc = _run_cli("--intent", "residual_data_smoke", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert len(payload["recommendations"]) == 1
+    assert payload["recommendations"][0]["workflow_file"].endswith(
+        "real-market-forward-evidence-smoke.yml"
+    )
+
+
+def test_residual_intents_listed_with_manual_only_intents() -> None:
+    proc = _run_cli("--list-intents", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    intent_ids = {row["id"] for row in payload["intents"]}
+    for intent in (
+        "residual_all",
+        "residual_ci_ops",
+        "residual_scorecard_chain",
+        "residual_data_smoke",
+    ):
+        assert intent in intent_ids
+    assert payload["residual_schedule_count"] == 13

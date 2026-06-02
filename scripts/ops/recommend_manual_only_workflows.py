@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """
-Read-only recommender for manual-only GitHub Actions workflows (post PR #3896).
+Read-only recommender for GitHub Actions workflows (post PR #3896 + SLICE-OE-2).
+
+Covers (1) manual-only workflows that lost cron in PR #3896 and (2) residual workflows
+that still have active `schedule:` triggers (GH residual schedule cost review v0).
 
 Lists workflows that match an operator intent and prints suggested `gh workflow run`
 commands as text only. Does not invoke gh, mutate files, or re-enable cron schedules.
@@ -52,6 +55,52 @@ MANUAL_ONLY_WORKFLOW_FILES: frozenset[str] = frozenset(
 # Related downstream workflow (dispatch-only; schedule commented in YAML).
 PAPER_TEST_EVIDENCE_FILE = "paper_tests_audit_evidence.yml"
 
+# Workflows that retain active schedule: post #3896 residuals (GH review v0, 13 files).
+RESIDUAL_SCHEDULE_WORKFLOW_FILES: frozenset[str] = frozenset(
+    {
+        "audit.yml",
+        "ci.yml",
+        "prbc-stability-gate.yml",
+        "prbd-live-readiness-scorecard.yml",
+        "prbe-shadow-testnet-scorecard.yml",
+        "prbg-execution-evidence.yml",
+        "prbi-live-pilot-scorecard.yml",
+        "prbj-testnet-exec-events.yml",
+        "prcc-aws-export-smoke.yml",
+        "prk-prj-status-report.yml",
+        "pro-prk-nightly-selfcheck.yml",
+        "pru-required-checks-drift-detector.yml",
+        "real-market-forward-evidence-smoke.yml",
+    }
+)
+
+RESIDUAL_INTENT_LABELS: dict[str, str] = {
+    "residual_ci_ops": "Residual scheduled CI core / audit / PR-U drift (do not batch-remove)",
+    "residual_scorecard_chain": "Residual PR-B / PR-K nightly scorecard and evidence chain",
+    "residual_data_smoke": "Residual high-frequency market forward evidence smoke",
+    "residual_all": "All 13 workflows with active schedule (read-only inventory)",
+}
+
+RESIDUAL_INTENT_TO_FILES: dict[str, tuple[str, ...]] = {
+    "residual_ci_ops": (
+        "ci.yml",
+        "audit.yml",
+        "pru-required-checks-drift-detector.yml",
+    ),
+    "residual_scorecard_chain": (
+        "pro-prk-nightly-selfcheck.yml",
+        "prk-prj-status-report.yml",
+        "prbc-stability-gate.yml",
+        "prbj-testnet-exec-events.yml",
+        "prbg-execution-evidence.yml",
+        "prbe-shadow-testnet-scorecard.yml",
+        "prbi-live-pilot-scorecard.yml",
+        "prbd-live-readiness-scorecard.yml",
+        "prcc-aws-export-smoke.yml",
+    ),
+    "residual_data_smoke": ("real-market-forward-evidence-smoke.yml",),
+}
+
 INTENT_LABELS: dict[str, str] = {
     "paper_shadow_evidence": "Paper / shadow / scheduled-smoke orchestration",
     "paper_test_evidence": "Direct paper-tests-audit-evidence run",
@@ -61,6 +110,7 @@ INTENT_LABELS: dict[str, str] = {
     "docs_hygiene": "Docs reference full scan",
     "security_audit": "Weekly security and quality audit",
     "all": "All manual-only workflows in the PR #3896 set",
+    **RESIDUAL_INTENT_LABELS,
 }
 
 INTENT_TO_FILES: dict[str, tuple[str, ...]] = {
@@ -204,6 +254,104 @@ STATIC_META: dict[str, dict[str, Any]] = {
     },
 }
 
+RESIDUAL_STATIC_META: dict[str, dict[str, Any]] = {
+    "ci.yml": {
+        "why": "Weekly full Python matrix (supplements PR/push/merge_group).",
+        "risk": "HIGH — redundant weekly full matrix; required-gate hybrid — do not remove schedule without explicit GO.",
+        "variable_gates": "",
+        "ai": False,
+        "residual_schedule": True,
+    },
+    "audit.yml": {
+        "why": "Weekly pip-audit + PR report validation (supplements PR runs).",
+        "risk": "MEDIUM — CI_CORE hybrid; do not batch-remove.",
+        "variable_gates": "",
+        "ai": False,
+        "residual_schedule": True,
+    },
+    "pru-required-checks-drift-detector.yml": {
+        "why": "Weekly branch-protection vs required_status_checks reconciliation.",
+        "risk": "ELEVATED — CI_OPS authority surface.",
+        "variable_gates": "",
+        "ai": False,
+        "residual_schedule": True,
+    },
+    "pro-prk-nightly-selfcheck.yml": {
+        "why": "Daily PR-K nightly self-check (mock JSON; safest future manual-only YAML candidate).",
+        "risk": "LOW — mock-only; no secrets.",
+        "variable_gates": "",
+        "ai": False,
+        "residual_schedule": True,
+    },
+    "prk-prj-status-report.yml": {
+        "why": "Daily PR-J status report; feeds scorecard chain.",
+        "risk": "MEDIUM — GitHub API read.",
+        "variable_gates": "",
+        "ai": False,
+        "residual_schedule": True,
+    },
+    "prbc-stability-gate.yml": {
+        "why": "Daily stability gate; upstream artifact for PR-B scorecards.",
+        "risk": "ELEVATED — scorecard chain dependency.",
+        "variable_gates": "",
+        "ai": False,
+        "residual_schedule": True,
+    },
+    "prbj-testnet-exec-events.yml": {
+        "why": "Daily testnet exec events producer (orchestrator).",
+        "risk": "BLOCKED when KRAKEN_TESTNET_CRON_ENABLED — testnet/runtime boundary.",
+        "variable_gates": "vars.KRAKEN_TESTNET_CRON_ENABLED",
+        "ai": False,
+        "residual_schedule": True,
+    },
+    "prbg-execution-evidence.yml": {
+        "why": "Daily execution evidence bundle (testnet-adjacent).",
+        "risk": "BLOCKED — scorecard chain; testnet evidence surface.",
+        "variable_gates": "",
+        "ai": False,
+        "residual_schedule": True,
+    },
+    "prbe-shadow-testnet-scorecard.yml": {
+        "why": "Daily shadow/testnet readiness scorecard.",
+        "risk": "BLOCKED — LIVE_SCORECARD semantics; not trading approval.",
+        "variable_gates": "",
+        "ai": False,
+        "residual_schedule": True,
+    },
+    "prbi-live-pilot-scorecard.yml": {
+        "why": "Daily live pilot scorecard (display/evidence only).",
+        "risk": "BLOCKED — live-path naming; operator GO required.",
+        "variable_gates": "",
+        "ai": False,
+        "residual_schedule": True,
+    },
+    "prbd-live-readiness-scorecard.yml": {
+        "why": "Daily live readiness scorecard; downloads upstream artifacts.",
+        "risk": "BLOCKED — chain dependency with prbc/prk/prbe.",
+        "variable_gates": "",
+        "ai": False,
+        "residual_schedule": True,
+    },
+    "prcc-aws-export-smoke.yml": {
+        "why": "Daily AWS export smoke (rclone/S3 read).",
+        "risk": "BLOCKED — AWS_READ secrets surface.",
+        "variable_gates": "PT_* export secrets",
+        "ai": False,
+        "residual_schedule": True,
+    },
+    "real-market-forward-evidence-smoke.yml": {
+        "why": "Kraken OHLCV forward evidence (4×/day schedule).",
+        "risk": "HIGH — DATA_INGEST frequency; dry_run_execution in checks only.",
+        "variable_gates": "",
+        "ai": False,
+        "residual_schedule": True,
+    },
+}
+
+
+def _meta_for_file(filename: str) -> dict[str, Any]:
+    return RESIDUAL_STATIC_META.get(filename) or STATIC_META.get(filename, {})
+
 
 @dataclass
 class WorkflowRecord:
@@ -254,7 +402,7 @@ def _parse_workflow_file(filename: str) -> WorkflowRecord:
                 if isinstance(spec, dict) and "default" in spec:
                     input_defaults[str(key)] = str(spec["default"])
 
-    meta = STATIC_META.get(filename, {})
+    meta = _meta_for_file(filename)
     for key, val in (meta.get("default_flags") or {}).items():
         input_defaults[str(key)] = str(val)
 
@@ -282,7 +430,22 @@ def _files_for_intent(intent: str) -> list[str]:
         if (WORKFLOWS_DIR / PAPER_TEST_EVIDENCE_FILE).exists():
             files.append(PAPER_TEST_EVIDENCE_FILE)
         return files
+    if intent == "residual_all":
+        return sorted(RESIDUAL_SCHEDULE_WORKFLOW_FILES)
+    if intent in RESIDUAL_INTENT_TO_FILES:
+        return list(RESIDUAL_INTENT_TO_FILES[intent])
     return list(INTENT_TO_FILES[intent])
+
+
+def _all_intent_ids() -> list[str]:
+    return (
+        sorted(INTENT_TO_FILES.keys())
+        + sorted(RESIDUAL_INTENT_TO_FILES.keys())
+        + [
+            "all",
+            "residual_all",
+        ]
+    )
 
 
 def _build_gh_command(rec: WorkflowRecord, ref: str = "main") -> str:
@@ -294,7 +457,7 @@ def _build_gh_command(rec: WorkflowRecord, ref: str = "main") -> str:
 
 
 def _recommendation_dict(rec: WorkflowRecord, include_commands: bool, ref: str) -> dict[str, Any]:
-    meta = STATIC_META.get(rec.file, {})
+    meta = _meta_for_file(rec.file)
     item: dict[str, Any] = {
         "workflow_file": f".github/workflows/{rec.file}",
         "workflow_name": rec.name,
@@ -304,12 +467,16 @@ def _recommendation_dict(rec: WorkflowRecord, include_commands: bool, ref: str) 
         "ai_or_paid": bool(meta.get("ai")),
         "ai_note": meta.get("ai_note"),
         "has_active_schedule": rec.has_active_schedule,
+        "residual_scheduled_workflow": rec.file in RESIDUAL_SCHEDULE_WORKFLOW_FILES,
         "operator_go_required": True,
     }
     if include_commands:
         item["suggested_command"] = _build_gh_command(rec, ref=ref)
     if rec.has_active_schedule:
-        item["warning"] = "YAML still contains schedule: — review before dispatch."
+        item["warning"] = (
+            "Active cron schedule still enabled in YAML — recommender does not disable "
+            "schedules; review cost/risk before any manual dispatch."
+        )
     return item
 
 
@@ -342,6 +509,7 @@ def recommend(
         "guard": GUARD_BANNER,
         "schedule_reactivation": False,
         "executes_workflows": False,
+        "workflow_dispatch_executed": False,
         "recommendations": recommendations,
         "errors": errors,
     }
@@ -392,7 +560,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--intent",
-        choices=sorted(INTENT_TO_FILES.keys()) + ["all"],
+        choices=_all_intent_ids(),
         help="Operator planning intent",
     )
     parser.add_argument(
@@ -415,21 +583,34 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.list_intents:
         if args.json:
+            intent_rows = [
+                {"id": k, "label": INTENT_LABELS[k], "files": list(v)}
+                for k, v in INTENT_TO_FILES.items()
+            ]
+            intent_rows.extend(
+                {"id": k, "label": INTENT_LABELS[k], "files": list(v)}
+                for k, v in RESIDUAL_INTENT_TO_FILES.items()
+            )
+            intent_rows.append(
+                {
+                    "id": "all",
+                    "label": INTENT_LABELS["all"],
+                    "files": _files_for_intent("all"),
+                }
+            )
+            intent_rows.append(
+                {
+                    "id": "residual_all",
+                    "label": INTENT_LABELS["residual_all"],
+                    "files": _files_for_intent("residual_all"),
+                }
+            )
             print(
                 json.dumps(
                     {
-                        "intents": [
-                            {"id": k, "label": INTENT_LABELS[k], "files": list(v)}
-                            for k, v in INTENT_TO_FILES.items()
-                        ]
-                        + [
-                            {
-                                "id": "all",
-                                "label": INTENT_LABELS["all"],
-                                "files": _files_for_intent("all"),
-                            }
-                        ],
+                        "intents": intent_rows,
                         "guard": GUARD_BANNER,
+                        "residual_schedule_count": len(RESIDUAL_SCHEDULE_WORKFLOW_FILES),
                     },
                     indent=2,
                 )
@@ -440,7 +621,10 @@ def main(argv: list[str] | None = None) -> int:
             print("Supported intents:")
             for intent_id in sorted(INTENT_TO_FILES.keys()):
                 print(f"  - {intent_id}: {INTENT_LABELS[intent_id]}")
+            for intent_id in sorted(RESIDUAL_INTENT_TO_FILES.keys()):
+                print(f"  - {intent_id}: {INTENT_LABELS[intent_id]}")
             print(f"  - all: {INTENT_LABELS['all']}")
+            print(f"  - residual_all: {INTENT_LABELS['residual_all']}")
         return 0
 
     if not args.intent:
