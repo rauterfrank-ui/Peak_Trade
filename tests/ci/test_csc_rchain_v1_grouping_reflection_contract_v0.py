@@ -424,6 +424,16 @@ def _guard_block_003f_b(text: str) -> str:
 
 def _guard_block_003d(text: str) -> str:
     start = text.index("### CSC-RCHAIN-v1-003d governed reflection guard v0")
+    end_marker = "### CSC-RCHAIN-v1-005c governed reflection guard v0"
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+def _guard_block_005c(text: str) -> str:
+    start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0")
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
@@ -463,6 +473,11 @@ OPERATOR_ACCEPT_003D_SLICE_1 = (
     "planning/operator_accept_artifact_csc_rchain_003d_slice_1_v0_20260602T214239Z"
 )
 GOVERNED_REFLECTION_SUBGROUP_003D = "CSC-RCHAIN-v1-003d"
+OPERATOR_ACCEPT_005C_SLICE_1 = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/create_operator_accept_artifact_bundle_005c_slice1_v0_20260602T220533Z"
+)
+GOVERNED_REFLECTION_SUBGROUP_005C = "CSC-RCHAIN-v1-005c"
 SCHEDULER_BOUNDARY_CROSSLINK_MODULE = "tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py"
 
 
@@ -507,6 +522,7 @@ def test_csc_rchain_v1_grouping_reflection_contract_v0() -> None:
     assert GOVERNED_REFLECTION_SUBGROUP_003B not in accepted_line
     assert GOVERNED_REFLECTION_SUBGROUP_003F_B not in accepted_line
     assert GOVERNED_REFLECTION_SUBGROUP_003D not in accepted_line
+    assert GOVERNED_REFLECTION_SUBGROUP_005C not in accepted_line
 
     assert EXTERNAL_AUTHORITY_BUNDLE in block
     assert OPERATOR_BATCH_ACCEPT in block
@@ -796,6 +812,7 @@ def test_csc_rchain_v1_grouping_reflection_reciprocal_owner_modules_exist_v0() -
     assert GOVERNED_REFLECTION_SUBGROUP_003B in static_section
     assert GOVERNED_REFLECTION_SUBGROUP_003F_B in static_section
     assert GOVERNED_REFLECTION_SUBGROUP_003D in static_section
+    assert GOVERNED_REFLECTION_SUBGROUP_005C in static_section
     assert SCHEDULER_BOUNDARY_CROSSLINK_MODULE in static_section
 
 
@@ -1002,3 +1019,29 @@ def test_csc_rchain_v1_003d_governed_reflection_slice1_contract_v0() -> None:
     assert "testnet order enabled" not in collapsed
     assert "kraken live authorized" not in collapsed
     assert "execution enabled" not in collapsed
+
+
+def test_csc_rchain_v1_005c_governed_reflection_slice1_contract_v0() -> None:
+    text = _ci_audit_text()
+    block = _guard_block_005c(text)
+    collapsed = block.lower()
+
+    assert OPERATOR_ACCEPT_005C_SLICE_1 in block
+    assert GOVERNED_REFLECTION_SUBGROUP_005C in block
+    assert SCHEDULER_BOUNDARY_CROSSLINK_MODULE in block
+    assert THIS_MODULE in block
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE1_V0=true" in block
+    assert "CSC_RCHAIN_V1_005C_PARK_RETAINED=true" in block
+    assert "REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-005C-SLICE-1" in block
+    assert "run_backtest.py" in block
+    assert "run_donchian_realistic.py" in block
+    assert "run_ma_realistic.py" in block
+    assert "research" in block.lower()
+    assert "CSC_RCHAIN_V1_003D_REOPENED=false" in block
+    assert "CSC_PARENT005A_EXCLUDED=true" in block
+    assert "**Does not** add" in block
+    assert "258" in block
+    assert "413" in block
+    assert "script execution authorized" not in collapsed
+    assert "scheduler start authorized" not in collapsed
+    assert "live trading enabled" not in collapsed
