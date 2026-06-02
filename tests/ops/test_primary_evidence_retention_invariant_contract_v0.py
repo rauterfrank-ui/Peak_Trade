@@ -729,13 +729,19 @@ def test_evidence_durable_closeout_retention_rc_v0_slice_er1_release_index_v0() 
     assert "SLICE-ER-2" in section
     assert "SLICE-ER-3" in section
     assert "docs/tests/tooling-only" in section
-    assert "this document (§2a / §2a.1)" in section or "§2a primary evidence retention invariant" in section
+    assert (
+        "this document (§2a / §2a.1)" in section
+        or "§2a primary evidence retention invariant" in section
+    )
     assert THIS_MODULE in section
     assert MANDATORY_CLOSEOUT_CONTRACT_TESTS.name in section
     assert DURABLE_CLOSEOUT_VERIFY_TESTS.name in section
     assert ER_PLANNING_BUNDLE_PATH in section
     assert "no parallel" in collapsed
-    assert "does **not** authorize future runs" in section or "does not authorize future runs" in collapsed
+    assert (
+        "does **not** authorize future runs" in section
+        or "does not authorize future runs" in collapsed
+    )
     assert "does **not** claim retention is fully enforced" in section or (
         "does not claim retention is fully enforced" in collapsed
     )
@@ -753,7 +759,12 @@ def test_evidence_durable_closeout_retention_rc_v0_slice_er2_guard_owner_crossli
     section = _er_release_rc_index_section(_owner_text())
 
     assert "SLICE-ER-2" in section
-    assert "test_*retention*" in section or "test_primary_evidence_retention_invariant_contract_v0.py" in section
-    assert "test_*closeout*" in section or "test_mandatory_durable_closeout_contract_v0.py" in section
+    assert (
+        "test_*retention*" in section
+        or "test_primary_evidence_retention_invariant_contract_v0.py" in section
+    )
+    assert (
+        "test_*closeout*" in section or "test_mandatory_durable_closeout_contract_v0.py" in section
+    )
     assert THIS_MODULE in section
     assert MANDATORY_CLOSEOUT_CONTRACT_TESTS.is_file()
