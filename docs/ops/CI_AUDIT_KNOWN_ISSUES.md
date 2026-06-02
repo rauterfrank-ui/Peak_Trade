@@ -1321,3 +1321,71 @@ TRADING_AUTHORITY_CHANGED=false
 NOTION_WRITES=false
 PARALLEL_DOCS_CREATED=false
 ```
+
+## Cybersecurity Visibility Release RC v0 — index v0
+
+**Release:** `CYBERSECURITY_VISIBILITY_RELEASE_RC_V0` · **Slice:** `SLICE-CV-1` (docs-only start) · **UTC:** 2026-06-02 · **Recommended next larger release candidate** after `OPERATOR_EXPERIENCE_RELEASE_RC_V0` (CORE COMPLETE on `main` @ `ca9cffa8e41305bd1047dbb815369bbfeb65b0f5`). **Canonical repo owners (reuse — no parallel index):**
+
+| Concern | Owner |
+|---------|-------|
+| Retained risks R-001–R-007, derived mapping chain, CSC-RCHAIN reflection, histogram crosslinks | `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` (this document — § Cybersecurity owner-triage notes … wave-1 batch closure) |
+| Derived mapping plan progress guard | `tests/ci/test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py` |
+| Pending mapping guard | `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py` |
+| CSC-LOSSLESS-v1 / CSC-RCHAIN-v1 reflection guards | `tests/ci/test_csc_lossless_v1_dataset_reflection_contract_v0.py`, `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py` |
+| Static inventory schema guard | `tests/ci/test_static_inventory_schema_guard_contract_v0.py` |
+| Repo-static histogram crosslinks (6 buckets) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_*_crosslink_v0.py` |
+
+**Release scope (planned):** **2–3 PRs**, **docs/tests-only** — consolidate post-wave-1 cybersecurity visibility governance without new parallel surfaces.
+
+**Wave-1 derived mapping status (closed):**
+
+- `DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0=true` (merged PR #3895).
+- R-001/R-002/R-007 promoted to **`mapped-by-derived-evidence`** with reciprocal repo test owners (see § derived-only mapping wave-1 batch closure v0).
+- Definitive **`mapped`** status remains **blocked** while `INPUT_JSONL_PROVIDED=false` (`DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true`).
+- CSC-RCHAIN-v1 repo-reflected aggregates unchanged: **258** ACCEPT / **1** reviewed-prepared-only / **413** PARK (`672` total); GROUP_PARK_REAFFIRMED **238**.
+
+**Durable operator pointers (archive only — not repo-ingested):**
+
+| Token | Durable path |
+|-------|--------------|
+| Next larger theme ranking (post-OE) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_larger_theme_ranking_after_operator_experience_release_rc_v0_20260602T175228Z/` |
+| SLICE-CV-1 docs-only start (this slice) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_visibility_release_rc_v0_slice_cv1_docs_only_20260602T175506Z/` |
+| Wave-1 batch closure plan | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_wave1_batch_closure_plan_readonly_v0_20260601T182957Z` |
+| OE final release closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/operator_experience_release_rc_v0_final_release_closeout_handoff_20260602T174916Z/` |
+
+**Planned slice decomposition (reference — not authorized until merged):**
+
+| Order | Slice ID | Scope |
+|-------|----------|-------|
+| 1 | **SLICE-CV-1** | Docs-only: this release index + post-wave-1 status reflection (**this PR**) |
+| 2 | **SLICE-CV-2** | Tests-ci: static guard coherence — extend existing `tests/ci/test_cybersecurity_visibility_*` modules only |
+| 3 | **SLICE-CV-3** (optional) | Docs/tests: CSC-RCHAIN PR15 finalization reflection OR remaining histogram bucket closure |
+
+**Operational rules:**
+
+- **No real-data/PII** — no lossless JSONL ingest, no external cyber datasets, no raw logs, no personenbezogene Daten; cyber real-data/PII remains **BLOCKED** until explicit Legal/Privacy-GO.
+- **No runtime** — no paper/shadow/testnet/live, no scheduler/daemon, no workflow dispatch from automation.
+- **No external cyber data intake** — derived/repo-static visibility only; `INPUT_JSONL_PROVIDED=false` unchanged by this release line.
+- **No trading authority** — no Master V2 / Double Play / execution / risk / governance / live gate changes.
+- **Reuse-before-new** — extend this CI audit anchor and existing guard modules; **no** parallel cybersecurity index, evidence hub, readiness map, or handoff surface.
+- **Follow slices** may extend existing `tests/ci/test_cybersecurity_visibility_*` guards only — not new parallel SSOT files.
+
+```text
+CYBERSECURITY_VISIBILITY_RELEASE_RC_V0=true
+SLICE_CV1_DOCS_ONLY=true
+WAVE1_DERIVED_MAPPING_BATCH_CLOSURE_COMPLETE=true
+MAPPED_BY_DERIVED_EVIDENCE_ONLY=true
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+INPUT_JSONL_PROVIDED=false
+CYBER_REAL_DATA_PII_BLOCKED=true
+CYBER_REAL_DATA_REQUIRES_LEGAL_PRIVACY_GO=true
+NO_EXTERNAL_CYBER_DATA_INTAKE=true
+NO_RUNTIME=true
+NO_TRADING_AUTHORITY_CHANGE=true
+MASTER_V2_LOGIC_CHANGED=false
+DOUBLE_PLAY_LOGIC_CHANGED=false
+NOTION_WRITES=false
+WORKFLOW_DISPATCH_EXECUTED=false
+PARALLEL_DOCS_CREATED=false
+PARALLEL_CYBER_INDEX_CREATED=false
+```
