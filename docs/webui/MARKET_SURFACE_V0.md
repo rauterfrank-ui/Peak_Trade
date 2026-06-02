@@ -510,6 +510,27 @@ Das HTML für **`GET &#47;market`** enthält beim Chart‑Bereich ein Status‑E
 - **Struktur‑/SSR‑Contract (read-only, nicht autorisierend):** Regressions‑Anker für die Market‑Dashboard‑HTML‑**Struktur** (u. a. SSR‑Markttiefe‑Marker auf **`GET`** **`&#47;market`**, **kein** Browser‑Bezug zur JSON‑Route **`GET`** **`&#47;api&#47;market&#47;depth`**, Read‑only‑Banner‑Marker, einfache „kein Trade‑Affordance“‑Heuristik) in **`tests&#47;webui&#47;test_market_dashboard_readonly_structure_contract_v0.py`** — **keine** Live‑/Order‑/Execution‑Freigabe; nur Beobachtungs‑/Template‑Struktur (kontextuell PR **#3434**).
 - **SSR Top‑N Ladder (`main`):** Dokumentierte Marker/Display‑Keys und **deferred** Depth‑Chart siehe **[Market Depth display on GET /market (SSR v0 implemented)](#market-depth-display-on-get-market-ssr-v0-implemented)**; kontextuell Merge **PR #3439** nach der Depth‑SSR‑Basis — **read‑only**, **non‑authorizing**, **kein** Polling/Runtime‑Prozess.
 
+## Externe Market Dashboard UI Charter v0 (Reflection)
+
+**Status:** planning input reflected (docs-only slice) · **UTC:** 2026-06-02 · **Repo-SSOT bleibt dieses Dokument** — kein paralleles Dashboard-Spec.
+
+**Durable planning bundle (extern, nicht repo-kanonisch):** `…&#47;planning&#47;market_dashboard_ui_charter_external_planning_v0_20260602T152012Z&#47;` unter dem Operator-Archiv `Peak_Trade_runtime_evidence_archive_20260520T161443Z`.
+
+- **Read-only Operator Surface:** Market Dashboard bleibt **rein darstellend** — schnelle Lageübersicht, **keine** Handelsausführung, **keine** Runtime-Kontrolle, **keine** Trading-/Execution-/Risk-/Governance-/Live-Autorität.
+- **Verboten ohne separates GO:** Provider-Polling, Data-Ingestion, Scheduler-/Paper-/Testnet-/Live-Starts, neue APIs/Routen, Template-/Visual-Implementierung in Charter-Nachfolgeslices.
+- **Master V2 / Double Play:** UI-Darstellung passt sich **main** und bestehenden Master-V2-/Double-Play-**Display**-Kontrakten an — **nicht umgekehrt**; keine Entscheidlogik-, Gate- oder Signalautoritäts-Änderung durch Dashboard-Arbeit.
+- **Market-Airport:** **excluded** — nicht Teil dieses Charters oder künftiger UI-Slices ohne separate Operator-Entscheidung.
+- **Future UI slices:** Jeder Repo-Slice (Tests, Template-Polish, Data/API) benötigt **explizites Operator-GO** und muss innerhalb der Owner in diesem Dokument bleiben — **reuse-before-new**; **keine** parallelen Dashboard-/Evidence-/Readiness-Hubs.
+- **Duplicate-surface-risk:** **medium** — nur bestehende Oberflächen (`GET` `/market`, `GET` `/market/double-play`, env-gated SSR/API) erweitern; keine Alias-Routen, keine zweite Marker-Registry, kein F5-in-`/market`-Merge ohne F5-GO.
+
+```text
+MARKET_DASHBOARD_UI_CHARTER_REFLECTED=true
+CHARTER_REFLECTION_SLICE=DOCS_CHARTER_REFLECTION_V0
+DASHBOARD_AUTHORITY_CHANGED=false
+RUNTIME_AUTHORITY_CHANGED=false
+MARKET_AIRPORT_TOUCHED=false
+```
+
 ## Operator‑Downloads — Ingest‑Ledger (nicht kanonisch, v0)
 
 **Authority / Lesereihenfolge:** Markdown- oder PDF‑Exporte, die außerhalb des Repos unter einem **„Downloads“‑Ordner** des Operators liegen, sind **Hilfs-/Entwurfsspuren**. Sie ersetzen **keine** `docs/ops/specs/`‑Verträge, **keine** Runbooks und **keinen** dieser Market‑Surface‑Abschnitte. **`GET`** **`&#47;market&#47;double-play`** und **`GET`** **`&#47;api&#47;master‑v2&#47;double‑play&#47;dashboard-display.json`** bleiben an die **bereits eingecheckten** Read‑only‑Kontrakte gekoppelt ([**MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0**](../ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md); reine Dokumentation, **ohne** Steuerbefugnis).
