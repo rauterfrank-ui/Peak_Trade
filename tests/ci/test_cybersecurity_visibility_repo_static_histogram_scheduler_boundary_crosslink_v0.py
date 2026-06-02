@@ -649,6 +649,10 @@ OPERATOR_ACCEPT_005A_BUNDLE_A_WF_PRB_SCORECARD = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/create_operator_accept_artifact_bundle_005a_bundle_a_wf_prb_scorecard_family_v0_20260602T232911Z"
 )
+OPERATOR_ACCEPT_005A_BUNDLE_B_ACTIVE_NON_PRB = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/create_operator_accept_artifact_bundle_005a_bundle_b_active_non_prb_remainder_v0_20260602T234201Z"
+)
 GOVERNED_REFLECTION_SUBGROUP_005A = "CSC-RCHAIN-v1-005a"
 NARROWING_BASENAMES_005A_BUNDLE_A_WF_PRB_SCORECARD: tuple[str, ...] = (
     "prbc-stability-gate.yml",
@@ -679,11 +683,56 @@ FORBIDDEN_AUTHORIZATION_PHRASES_005A_BUNDLE_A_WF_PRB_SCORECARD: tuple[str, ...] 
     "testnet scorecard run authorized",
     "execution scorecard run authorized",
 )
+NARROWING_BASENAMES_005A_BUNDLE_B_ACTIVE_NON_PRB: tuple[str, ...] = (
+    "audit.yml",
+    "ci.yml",
+    "pru-required-checks-drift-detector.yml",
+    "prk-prj-status-report.yml",
+    "prcc-aws-export-smoke.yml",
+    "real-market-forward-evidence-smoke.yml",
+)
+CANDIDATE_IDS_005A_BUNDLE_B_ACTIVE_NON_PRB: tuple[str, ...] = (
+    "CSC-LOSSLESS-v1-000011",
+    "CSC-LOSSLESS-v1-000025",
+    "CSC-LOSSLESS-v1-000132",
+    "CSC-LOSSLESS-v1-000126",
+    "CSC-LOSSLESS-v1-000116",
+    "CSC-LOSSLESS-v1-000136",
+)
+FORBIDDEN_AUTHORIZATION_PHRASES_005A_BUNDLE_B_ACTIVE_NON_PRB: tuple[str, ...] = (
+    "workflow run authorized",
+    "workflow execution authorized",
+    "schedule reactivation authorized",
+    "schedule enablement authorized",
+    "aws export execution authorized",
+    "aws export authorized",
+    "real-market execution authorized",
+    "market execution authorized",
+    "workflow dispatch approved",
+    "workflow dispatch authorized",
+    "gh yaml change authorized",
+    "ci run authorized",
+    "drift detector run authorized",
+)
 
 
 def _csc_rchain_005a_bundle_a_wf_prb_scorecard_guard_block(text: str) -> str:
     start = text.index(
         "### CSC-RCHAIN-v1-005a governed reflection guard v0 (Bundle-A PRB Scorecard)"
+    )
+    end_marker = (
+        "### CSC-RCHAIN-v1-005a governed reflection guard v0 (Bundle-B Active Non-PRB Remainder)"
+    )
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+def _csc_rchain_005a_bundle_b_active_non_prb_guard_block(text: str) -> str:
+    start = text.index(
+        "### CSC-RCHAIN-v1-005a governed reflection guard v0 (Bundle-B Active Non-PRB Remainder)"
     )
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
@@ -1487,6 +1536,62 @@ def test_csc_rchain_v1_005a_governed_reflection_bundle_a_wf_prb_scorecard_schedu
     assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
     assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
     assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE7_EXECUTION_WORKFLOW_V0=true" in text
+
+
+def test_csc_rchain_v1_005a_governed_reflection_bundle_b_active_non_prb_scheduler_boundary_crosslink_v0() -> (
+    None
+):
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    block = _csc_rchain_005a_bundle_b_active_non_prb_guard_block(text)
+
+    assert (
+        "CSC_RCHAIN_V1_005A_GOVERNED_REFLECTION_BUNDLE_B_ACTIVE_NON_PRB_REMAINDER_V0=true" in block
+    )
+    assert "CSC_RCHAIN_V1_005A_REFLECTION_DOCS_TESTS_ONLY=true" in block
+    assert "CSC_RCHAIN_V1_005A_BUNDLE_B_CANDIDATE_COUNT=6" in block
+    assert "CSC_RCHAIN_V1_005A_BUNDLE_B_EXTERNAL_ACCEPT_READY_COUNT=0" in block
+    assert "CSC_RCHAIN_V1_005A_BUNDLE_B_NARROWING_REQUIRED_COUNT=6" in block
+    assert "CSC_RCHAIN_V1_005A_BUNDLE_B_ACTIVE_SCHEDULE_COUNT=6" in block
+    assert "CSC_RCHAIN_V1_005A_SECOND_GOVERNED_SLICE=true" in block
+    assert "CSC_RCHAIN_V1_005A_PARK_RETAINED=true" in block
+    assert (
+        "REPO_GO_TOKEN=REPO_GO_CSC_RCHAIN_005A_BUNDLE_B_ACTIVE_NON_PRB_REMAINDER_GOVERNED_REFLECTION_V0"
+        in block
+    )
+    assert "ACTIVE_NON_PRB_WORKFLOW_VISIBILITY_ONLY=true" in block
+    assert "NO_AWS_EXPORT_RUN_AUTHORITY=true" in block
+    assert "NO_REAL_MARKET_SMOKE_RUN_AUTHORITY=true" in block
+    assert "NO_WORKFLOW_EXECUTION_AUTHORITY=true" in block
+    assert "NO_WORKFLOW_DISPATCH_AUTHORITY=true" in block
+    assert "NO_SCHEDULE_REACTIVATION_AUTHORITY=true" in block
+    assert "NO_GH_YAML_TOUCH=true" in block
+    assert "RUN_SCHEDULER_000253_BLOCKED=true" in block
+    assert "005C_SLICE1_THROUGH_SLICE7_NOT_REOPENED=true" in block
+    assert "005A_BUNDLE_A_SLICE_NOT_REOPENED=true" in block
+    assert "BUNDLE_A_NOT_REOPENED=true" in block
+    assert "BUNDLE_C_EXCLUDED=true" in block
+    assert OPERATOR_ACCEPT_005A_BUNDLE_B_ACTIVE_NON_PRB in block
+    assert GOVERNED_REFLECTION_SUBGROUP_005A in block
+    assert THIS_MODULE in block
+    assert GROUPING_REFLECTION_GUARD_MODULE in block
+    assert "active non-prb" in block.lower()
+
+    for basename in NARROWING_BASENAMES_005A_BUNDLE_B_ACTIVE_NON_PRB:
+        assert basename in block
+    assert len(CANDIDATE_IDS_005A_BUNDLE_B_ACTIVE_NON_PRB) == 6
+    assert "CSC-LOSSLESS-v1-000011" in block
+    assert "000136" in block
+    assert "12/27" in block
+
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES:
+        assert phrase not in collapsed
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES_005A_BUNDLE_B_ACTIVE_NON_PRB:
+        assert phrase not in collapsed
+
+    assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
+    assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
+    assert "CSC_RCHAIN_V1_005A_GOVERNED_REFLECTION_BUNDLE_A_WF_PRB_SCORECARD_V0=true" in text
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_truth_map_crosslink_v0() -> (
