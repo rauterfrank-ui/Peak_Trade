@@ -434,6 +434,16 @@ def _guard_block_003d(text: str) -> str:
 
 def _guard_block_005c(text: str) -> str:
     start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0")
+    end_marker = "### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-2)"
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+def _guard_block_005c_slice2(text: str) -> str:
+    start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-2)")
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
@@ -477,7 +487,18 @@ OPERATOR_ACCEPT_005C_SLICE_1 = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/create_operator_accept_artifact_bundle_005c_slice1_v0_20260602T220533Z"
 )
+OPERATOR_ACCEPT_005C_SLICE_2 = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/create_operator_accept_artifact_bundle_005c_slice2_v0_20260602T221918Z"
+)
 GOVERNED_REFLECTION_SUBGROUP_005C = "CSC-RCHAIN-v1-005c"
+NARROWING_BASENAMES_005C_SLICE2: tuple[str, ...] = (
+    "health_dashboard.py",
+    "run_full_portfolio.py",
+    "run_offline_realtime_ma_crossover.py",
+    "run_strategy_from_config.py",
+    "run_sweep_strategy.py",
+)
 SCHEDULER_BOUNDARY_CROSSLINK_MODULE = "tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py"
 
 
@@ -1045,3 +1066,32 @@ def test_csc_rchain_v1_005c_governed_reflection_slice1_contract_v0() -> None:
     assert "script execution authorized" not in collapsed
     assert "scheduler start authorized" not in collapsed
     assert "live trading enabled" not in collapsed
+
+
+def test_csc_rchain_v1_005c_governed_reflection_slice2_contract_v0() -> None:
+    text = _ci_audit_text()
+    block = _guard_block_005c_slice2(text)
+    collapsed = block.lower()
+
+    assert OPERATOR_ACCEPT_005C_SLICE_2 in block
+    assert GOVERNED_REFLECTION_SUBGROUP_005C in block
+    assert SCHEDULER_BOUNDARY_CROSSLINK_MODULE in block
+    assert THIS_MODULE in block
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE2_V0=true" in block
+    assert "CSC_RCHAIN_V1_005C_PARK_RETAINED=true" in block
+    assert "REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-005C-SLICE-2" in block
+    assert "RUN_SCHEDULER_000253_BLOCKED=true" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE1_REOPENED=false" in block
+    for basename in NARROWING_BASENAMES_005C_SLICE2:
+        assert basename in block
+    assert "000250" in block
+    assert "000251" in block
+    assert "offline remainder" in collapsed
+    assert "CSC_PARENT005A_EXCLUDED=true" in block
+    assert "**Does not** add" in block
+    assert "258" in block
+    assert "413" in block
+    assert "script execution authorized" not in collapsed
+    assert "scheduler start authorized" not in collapsed
+    assert "live trading enabled" not in collapsed
+    assert "dashboard server start authorized" not in collapsed
