@@ -522,6 +522,20 @@ def _guard_block_005a_bundle_b_active_non_prb(text: str) -> str:
     start = text.index(
         "### CSC-RCHAIN-v1-005a governed reflection guard v0 (Bundle-B Active Non-PRB Remainder)"
     )
+    end_marker = (
+        "### CSC-RCHAIN-v1-005a governed reflection guard v0 (Bundle-C Inactive PARK-Marker Remainder)"
+    )
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+def _guard_block_005a_bundle_c_inactive_park_marker(text: str) -> str:
+    start = text.index(
+        "### CSC-RCHAIN-v1-005a governed reflection guard v0 (Bundle-C Inactive PARK-Marker Remainder)"
+    )
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
@@ -596,6 +610,10 @@ OPERATOR_ACCEPT_005A_BUNDLE_A_WF_PRB_SCORECARD = (
 OPERATOR_ACCEPT_005A_BUNDLE_B_ACTIVE_NON_PRB = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/create_operator_accept_artifact_bundle_005a_bundle_b_active_non_prb_remainder_v0_20260602T234201Z"
+)
+OPERATOR_ACCEPT_005A_BUNDLE_C_INACTIVE_PARK_MARKER = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/create_operator_accept_artifact_bundle_005a_bundle_c_inactive_park_marker_v0_20260602T235307Z"
 )
 GOVERNED_REFLECTION_SUBGROUP_005C = "CSC-RCHAIN-v1-005c"
 GOVERNED_REFLECTION_SUBGROUP_005A = "CSC-RCHAIN-v1-005a"
@@ -700,6 +718,56 @@ FORBIDDEN_AUTHORIZATION_PHRASES_005A_BUNDLE_B_ACTIVE_NON_PRB: tuple[str, ...] = 
     "gh yaml change authorized",
     "ci run authorized",
     "drift detector run authorized",
+)
+NARROWING_BASENAMES_005A_BUNDLE_C_INACTIVE_PARK_MARKER: tuple[str, ...] = (
+    "ci-scheduled-paper-and-export-smoke.yml",
+    "class-a-shadow-paper-scheduled-probe-v1.yml",
+    "prj-scheduled-shadow-paper-features-smoke.yml",
+    "ops_doctor_dashboard.yml",
+    "ops_doctor_pages.yml",
+    "docs_reference_targets_fullscan_schedule.yml",
+    "full_audit_weekly.yml",
+    "weekly_core_audit.yml",
+    "pro-prk-nightly-selfcheck.yml",
+    "test-health-automation.yml",
+    "test_health.yml",
+    "infostream-automation.yml",
+    "knowledge_extras_chromadb.yml",
+    "market_outlook_automation.yml",
+    "offline_suites.yml",
+)
+CANDIDATE_IDS_005A_BUNDLE_C_INACTIVE_PARK_MARKER: tuple[str, ...] = (
+    "CSC-LOSSLESS-v1-000021",
+    "CSC-LOSSLESS-v1-000030",
+    "CSC-LOSSLESS-v1-000123",
+    "CSC-LOSSLESS-v1-000072",
+    "CSC-LOSSLESS-v1-000075",
+    "CSC-LOSSLESS-v1-000043",
+    "CSC-LOSSLESS-v1-000047",
+    "CSC-LOSSLESS-v1-000151",
+    "CSC-LOSSLESS-v1-000129",
+    "CSC-LOSSLESS-v1-000142",
+    "CSC-LOSSLESS-v1-000144",
+    "CSC-LOSSLESS-v1-000051",
+    "CSC-LOSSLESS-v1-000054",
+    "CSC-LOSSLESS-v1-000062",
+    "CSC-LOSSLESS-v1-000069",
+)
+FORBIDDEN_AUTHORIZATION_PHRASES_005A_BUNDLE_C_INACTIVE_PARK_MARKER: tuple[str, ...] = (
+    "workflow run authorized",
+    "workflow execution authorized",
+    "schedule reactivation authorized",
+    "schedule enablement authorized",
+    "paper run authorized",
+    "shadow run authorized",
+    "testnet run authorized",
+    "live run authorized",
+    "ops doctor run authorized",
+    "prk nightly run authorized",
+    "market outlook run authorized",
+    "workflow dispatch approved",
+    "workflow dispatch authorized",
+    "gh yaml change authorized",
 )
 EXECUTION_MARKER_BASENAMES_005C_SLICE7: tuple[str, ...] = ("run_execution_session.py",)
 WORKFLOW_MARKER_BASENAMES_005C_SLICE7: tuple[str, ...] = ("run_autonomous_workflow.py",)
@@ -1597,4 +1665,67 @@ def test_csc_rchain_v1_005a_governed_reflection_bundle_b_active_non_prb_contract
     assert "413" in block
     assert "12/27" in block
     for phrase in FORBIDDEN_AUTHORIZATION_PHRASES_005A_BUNDLE_B_ACTIVE_NON_PRB:
+        assert phrase not in collapsed
+
+
+def test_csc_rchain_v1_005a_governed_reflection_bundle_c_inactive_park_marker_contract_v0() -> None:
+    text = _ci_audit_text()
+    block = _guard_block_005a_bundle_c_inactive_park_marker(text)
+    collapsed = block.lower()
+
+    assert OPERATOR_ACCEPT_005A_BUNDLE_C_INACTIVE_PARK_MARKER in block
+    assert GOVERNED_REFLECTION_SUBGROUP_005A in block
+    assert SCHEDULER_BOUNDARY_CROSSLINK_MODULE in block
+    assert THIS_MODULE in block
+    assert "CSC_RCHAIN_V1_005A_GOVERNED_REFLECTION_BUNDLE_C_INACTIVE_PARK_MARKER_V0=true" in block
+    assert "CSC_RCHAIN_V1_005A_PARK_RETAINED=true" in block
+    assert (
+        "REPO_GO_TOKEN=REPO_GO_CSC_RCHAIN_005A_BUNDLE_C_INACTIVE_PARK_MARKER_GOVERNED_REFLECTION_V0"
+        in block
+    )
+    assert "RUN_SCHEDULER_000253_BLOCKED=true" in block
+    assert "NO_WORKFLOW_EXECUTION_AUTHORITY=true" in block
+    assert "NO_WORKFLOW_DISPATCH_AUTHORITY=true" in block
+    assert "NO_SCHEDULE_REACTIVATION_AUTHORITY=true" in block
+    assert "NO_GH_YAML_TOUCH=true" in block
+    assert "INACTIVE_PARK_MARKER_WORKFLOW_VISIBILITY_ONLY=true" in block
+    assert "NO_PAPER_SHADOW_TESTNET_LIVE_RUN_AUTHORITY=true" in block
+    assert "NO_OPS_DOCTOR_RUN_AUTHORITY=true" in block
+    assert "NO_PRK_NIGHTLY_RUN_AUTHORITY=true" in block
+    assert "NO_MARKET_OUTLOOK_RUN_AUTHORITY=true" in block
+    assert "CSC_RCHAIN_V1_005A_BUNDLE_C_ACTIVE_SCHEDULE_COUNT=0" in block
+    assert "CSC_RCHAIN_V1_005A_BUNDLE_C_INACTIVE_PARK_MARKER_COUNT=15" in block
+    assert "CSC_RCHAIN_V1_005A_FINAL_WORKFLOW_SLICE=true" in block
+    assert "005C_SLICE1_THROUGH_SLICE7_NOT_REOPENED=true" in block
+    assert "005A_BUNDLE_A_SLICE_NOT_REOPENED=true" in block
+    assert "005A_BUNDLE_B_SLICE_NOT_REOPENED=true" in block
+    assert "BUNDLE_A_NOT_REOPENED=true" in block
+    assert "BUNDLE_B_NOT_REOPENED=true" in block
+    for basename in NARROWING_BASENAMES_005A_BUNDLE_C_INACTIVE_PARK_MARKER:
+        assert basename in block
+    assert "CSC-LOSSLESS-v1-000021" in block
+    for short_id in (
+        "000030",
+        "000123",
+        "000072",
+        "000075",
+        "000043",
+        "000047",
+        "000151",
+        "000129",
+        "000142",
+        "000144",
+        "000051",
+        "000054",
+        "000062",
+        "000069",
+    ):
+        assert short_id in block
+    assert "inactive park-marker" in collapsed
+    assert "CSC_PARENT005C_EXCLUDED=true" in block
+    assert "**Does not** add" in block
+    assert "258" in block
+    assert "413" in block
+    assert "27/27" in block
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES_005A_BUNDLE_C_INACTIVE_PARK_MARKER:
         assert phrase not in collapsed
