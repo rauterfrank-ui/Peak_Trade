@@ -557,6 +557,47 @@ FORBIDDEN_AUTHORIZATION_PHRASES_005C_SLICE5_LIVE_NAMED_B: tuple[str, ...] = (
 
 def _csc_rchain_005c_slice5_live_named_b_guard_block(text: str) -> str:
     start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-5 Live-Named B)")
+    end_marker = "### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-6 AIOps-Shadow)"
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+OPERATOR_ACCEPT_005C_SLICE_6_AIOPS_SHADOW = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/create_operator_accept_artifact_bundle_005c_slice6_aiops_shadow_v0_20260602T230331Z"
+)
+NARROWING_BASENAMES_005C_SLICE6_AIOPS_SHADOW: tuple[str, ...] = (
+    "run_paper_trading_session.py",
+    "run_prj_features_smoke.py",
+    "run_shadow_session.py",
+    "run_shadow_execution.py",
+)
+CANDIDATE_IDS_005C_SLICE6_AIOPS_SHADOW: tuple[str, ...] = (
+    "CSC-LOSSLESS-v1-000152",
+    "CSC-LOSSLESS-v1-000153",
+    "CSC-LOSSLESS-v1-000154",
+    "CSC-LOSSLESS-v1-000254",
+)
+FORBIDDEN_AUTHORIZATION_PHRASES_005C_SLICE6_AIOPS_SHADOW: tuple[str, ...] = (
+    "script execution authorized",
+    "scheduler start authorized",
+    "shadow execution authorized",
+    "shadow runtime authorized",
+    "shadow runtime start authorized",
+    "aiops approved",
+    "autonomy enabled",
+    "decision authority granted",
+    "paper trading session cleared",
+    "execution authorized",
+    "cli invocation approved",
+)
+
+
+def _csc_rchain_005c_slice6_aiops_shadow_guard_block(text: str) -> str:
+    start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-6 AIOps-Shadow)")
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
@@ -1206,6 +1247,56 @@ def test_csc_rchain_v1_005c_governed_reflection_slice5_live_named_b_scheduler_bo
     assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
     assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
     assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE4_LIVE_NAMED_A_V0=true" in text
+
+
+def test_csc_rchain_v1_005c_governed_reflection_slice6_aiops_shadow_scheduler_boundary_crosslink_v0() -> (
+    None
+):
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    block = _csc_rchain_005c_slice6_aiops_shadow_guard_block(text)
+
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE6_AIOPS_SHADOW_V0=true" in block
+    assert "CSC_RCHAIN_V1_005C_REFLECTION_DOCS_TESTS_ONLY=true" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE6_CANDIDATE_COUNT=4" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE6_EXTERNAL_ACCEPT_READY_COUNT=0" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE6_NARROWING_REQUIRED_COUNT=4" in block
+    assert "CSC_RCHAIN_V1_005C_DUAL_MARKER_CANDIDATE_COUNT=2" in block
+    assert "CSC_RCHAIN_V1_005C_PARK_RETAINED=true" in block
+    assert "REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-005C-SLICE-6-AIOPS-SHADOW" in block
+    assert "AIOPS_SHADOW_CLI_VISIBILITY_ONLY=true" in block
+    assert "NO_SHADOW_EXECUTION_AUTHORITY=true" in block
+    assert "NO_SHADOW_RUNTIME_START_AUTHORITY=true" in block
+    assert "NO_AIOPS_AUTHORITY=true" in block
+    assert "NO_AUTONOMY_AUTHORITY=true" in block
+    assert "RUN_SCHEDULER_000253_BLOCKED=true" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE1_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE2_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE3_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE4_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE5_REOPENED=false" in block
+    assert OPERATOR_ACCEPT_005C_SLICE_6_AIOPS_SHADOW in block
+    assert GOVERNED_REFLECTION_SUBGROUP_005C in block
+    assert THIS_MODULE in block
+    assert GROUPING_REFLECTION_GUARD_MODULE in block
+    assert "aiops" in block.lower()
+    assert "shadow" in block.lower()
+    assert "dual" in block.lower()
+
+    for basename in NARROWING_BASENAMES_005C_SLICE6_AIOPS_SHADOW:
+        assert basename in block
+    assert len(CANDIDATE_IDS_005C_SLICE6_AIOPS_SHADOW) == 4
+    assert "CSC-LOSSLESS-v1-000152" in block
+    assert "000254" in block
+
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES:
+        assert phrase not in collapsed
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES_005C_SLICE6_AIOPS_SHADOW:
+        assert phrase not in collapsed
+
+    assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
+    assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE5_LIVE_NAMED_B_V0=true" in text
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_truth_map_crosslink_v0() -> (
