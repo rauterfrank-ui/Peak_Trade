@@ -522,9 +522,7 @@ def _guard_block_005a_bundle_b_active_non_prb(text: str) -> str:
     start = text.index(
         "### CSC-RCHAIN-v1-005a governed reflection guard v0 (Bundle-B Active Non-PRB Remainder)"
     )
-    end_marker = (
-        "### CSC-RCHAIN-v1-005a governed reflection guard v0 (Bundle-C Inactive PARK-Marker Remainder)"
-    )
+    end_marker = "### CSC-RCHAIN-v1-005a governed reflection guard v0 (Bundle-C Inactive PARK-Marker Remainder)"
     if end_marker in text[start:]:
         end = text.index(end_marker, start)
     else:
