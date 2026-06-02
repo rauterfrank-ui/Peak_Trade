@@ -444,6 +444,16 @@ def _guard_block_005c(text: str) -> str:
 
 def _guard_block_005c_slice2(text: str) -> str:
     start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-2)")
+    end_marker = "### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-3 Testnet)"
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+def _guard_block_005c_slice3_testnet(text: str) -> str:
+    start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-3 Testnet)")
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
@@ -491,6 +501,10 @@ OPERATOR_ACCEPT_005C_SLICE_2 = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/create_operator_accept_artifact_bundle_005c_slice2_v0_20260602T221918Z"
 )
+OPERATOR_ACCEPT_005C_SLICE_3_TESTNET = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/create_operator_accept_artifact_bundle_005c_slice3_testnet_v0_20260602T223444Z"
+)
 GOVERNED_REFLECTION_SUBGROUP_005C = "CSC-RCHAIN-v1-005c"
 NARROWING_BASENAMES_005C_SLICE2: tuple[str, ...] = (
     "health_dashboard.py",
@@ -498,6 +512,13 @@ NARROWING_BASENAMES_005C_SLICE2: tuple[str, ...] = (
     "run_offline_realtime_ma_crossover.py",
     "run_strategy_from_config.py",
     "run_sweep_strategy.py",
+)
+NARROWING_BASENAMES_005C_SLICE3_TESTNET: tuple[str, ...] = (
+    "shadow_testnet_readiness_scorecard.py",
+    "orchestrate_testnet_runs.py",
+    "run_testnet_session.py",
+    "smoke_test_testnet_stack.py",
+    "testnet_orchestrator_cli.py",
 )
 SCHEDULER_BOUNDARY_CROSSLINK_MODULE = "tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py"
 
@@ -1095,3 +1116,40 @@ def test_csc_rchain_v1_005c_governed_reflection_slice2_contract_v0() -> None:
     assert "scheduler start authorized" not in collapsed
     assert "live trading enabled" not in collapsed
     assert "dashboard server start authorized" not in collapsed
+
+
+def test_csc_rchain_v1_005c_governed_reflection_slice3_testnet_contract_v0() -> None:
+    text = _ci_audit_text()
+    block = _guard_block_005c_slice3_testnet(text)
+    collapsed = block.lower()
+
+    assert OPERATOR_ACCEPT_005C_SLICE_3_TESTNET in block
+    assert GOVERNED_REFLECTION_SUBGROUP_005C in block
+    assert SCHEDULER_BOUNDARY_CROSSLINK_MODULE in block
+    assert THIS_MODULE in block
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE3_TESTNET_V0=true" in block
+    assert "CSC_RCHAIN_V1_005C_PARK_RETAINED=true" in block
+    assert "REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-005C-SLICE-3-TESTNET" in block
+    assert "RUN_SCHEDULER_000253_BLOCKED=true" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE1_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE2_REOPENED=false" in block
+    assert "NO_TESTNET_EXECUTION_AUTHORITY=true" in block
+    assert "TESTNET_NAMED_CLI_VISIBILITY_ONLY=true" in block
+    for basename in NARROWING_BASENAMES_005C_SLICE3_TESTNET:
+        assert basename in block
+    assert "000158" in block
+    assert "000236" in block
+    assert "000257" in block
+    assert "000258" in block
+    assert "000259" in block
+    assert "dual testnet+shadow" in collapsed or "dual testnet" in collapsed
+    assert "testnet-named" in collapsed
+    assert "CSC_PARENT005A_EXCLUDED=true" in block
+    assert "**Does not** add" in block
+    assert "258" in block
+    assert "413" in block
+    assert "script execution authorized" not in collapsed
+    assert "scheduler start authorized" not in collapsed
+    assert "testnet execution authorized" not in collapsed
+    assert "testnet session authorized" not in collapsed
+    assert "orchestrator dispatch authorized" not in collapsed

@@ -1671,6 +1671,73 @@ CSC_RCHAIN_V1_003E_MASTER_V2_EXCLUDED=true
 
 **Non-authorizing:** No `src/` edits; no `scripts&#47;**` target file edits; no runtime/scheduler/daemon execution; no workflow dispatch; no GH YAML; no Notion/AWS/S3; no Testnet/Live/trading/Master V2/Double Play authority changes; no parent **005** wholesale ACCEPT; **no** `scripts&#47;ops&#47;` (004), **005a** workflows, **005b** fixtures, **003a**/**003e**, live/testnet/shadow/aiops/workflow paths, or `scripts&#47;run_scheduler.py` (000253) in this slice.
 
+### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-3 Testnet)
+
+**Release:** `REPO_GO-CSC-RCHAIN-005C-SLICE-3-TESTNET` · **Token scope:** docs/tests-only governed reflection · **UTC:** 2026-06-02 · **Operator ACCEPT:** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/create_operator_accept_artifact_bundle_005c_slice3_testnet_v0_20260602T223444Z/`
+
+```text
+CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE3_TESTNET_V0=true
+CSC_RCHAIN_V1_005C_REFLECTION_DOCS_TESTS_ONLY=true
+CSC_RCHAIN_V1_005C_SLICE3_CANDIDATE_COUNT=5
+CSC_RCHAIN_V1_005C_SLICE3_EXTERNAL_ACCEPT_READY_COUNT=0
+CSC_RCHAIN_V1_005C_SLICE3_NARROWING_REQUIRED_COUNT=5
+CSC_RCHAIN_V1_005C_SLICE3_DUAL_TESTNET_SHADOW_MARKER_COUNT=1
+CSC_RCHAIN_V1_005C_PARK_RETAINED=true
+CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT_UNCHANGED=true
+CSC_RCHAIN_V1_PARK_COUNT_UNCHANGED=true
+REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-005C-SLICE-3-TESTNET
+SLICE1_SLICE2_ON_MAIN=true
+PREFLIGHT_REMAINS_BLOCKED=true
+STOP_IDLE_PRESERVED=true
+NO_SCRIPT_EXECUTION_AUTHORITY=true
+NO_SCHEDULER_EXECUTION_AUTHORITY=true
+NO_TESTNET_EXECUTION_AUTHORITY=true
+NO_LIVE_TESTNET_SHADOW_RUNTIME_AUTHORITY=true
+TESTNET_NAMED_CLI_VISIBILITY_ONLY=true
+SCRIPT_BEHAVIOR_CHANGED=false
+SCHEDULER_BEHAVIOR_CHANGED=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+TESTNET_EXECUTED=false
+TESTNET_AUTHORITY_CHANGED=false
+WORKFLOW_DISPATCH_EXECUTED=false
+MASTER_V2_LOGIC_CHANGED=false
+DOUBLE_PLAY_LOGIC_CHANGED=false
+TRADING_AUTHORITY_CHANGED=false
+PRODUCTION_CODE_TOUCHED=false
+CSC_PARENT005A_EXCLUDED=true
+CSC_PARENT005B_EXCLUDED=true
+CSC_PARENT005C_WHOLESALE_ACCEPT=false
+RUN_SCHEDULER_000253_BLOCKED=true
+CSC_RCHAIN_V1_005C_SLICE1_REOPENED=false
+CSC_RCHAIN_V1_005C_SLICE2_REOPENED=false
+CSC_RCHAIN_V1_003F_A_REOPENED=false
+CSC_RCHAIN_V1_003F_C_REOPENED=false
+CSC_RCHAIN_V1_003F_D_REOPENED=false
+CSC_RCHAIN_V1_003C_REOPENED=false
+CSC_RCHAIN_V1_003B_REOPENED=false
+CSC_RCHAIN_V1_003F_B_REOPENED=false
+CSC_RCHAIN_V1_003D_REOPENED=false
+CSC_RCHAIN_V1_003A_LIVE_EXCLUDED=true
+CSC_RCHAIN_V1_003E_MASTER_V2_EXCLUDED=true
+```
+
+**Purpose:** Governed **visibility/crosslink/guard** reflection for cluster **005c** Slice-3 (**5** deferred `PARK` candidates: **testnet-named CLI** markers — shadow/testnet readiness scorecard, testnet orchestration, testnet session, testnet stack smoke-test, testnet orchestrator CLI). **Testnet-named CLI marker-only** visibility; **no** testnet execution, orchestrator dispatch, session start, stack deployment, readiness clearance, scheduler enablement, or live/paper/shadow runtime authority. Dual-marker **000158** (testnet + shadow) explicit — **no** shadow runtime clearance. **Does not** add `CSC-RCHAIN-v1-005c` to `CSC_RCHAIN_V1_ACCEPTED_GROUPS`; **does not** change `CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT` (**258**) or `CSC_RCHAIN_V1_PARK_COUNT` (**413**). **Does not** reopen Slice-1 (#3922), Slice-2 (#3923), or Parent-003 slices (#3915–#3921). **17** hot-marker remainder candidates and **000253** scheduler remain PARK/BLOCKED for Slice 4+.
+
+| Field | Value |
+|-------|-------|
+| `rchain_id` | `CSC-RCHAIN-v1-005c` |
+| Category | `scheduler_or_runtime_boundary` |
+| `candidate_count` | 5 |
+| Visibility owner (reuse) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
+| Grouping reciprocal | `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py` |
+
+**Narrowing paths (5 — basename reference only in docs/tests):** `shadow_testnet_readiness_scorecard.py` (dual testnet+shadow marker), `orchestrate_testnet_runs.py`, `run_testnet_session.py`, `smoke_test_testnet_stack.py`, `testnet_orchestrator_cli.py` — testnet-named CLI **marker-only**; **no** testnet execute, orchestrator dispatch, session start, smoke test execution, readiness clearance, scheduler start, or live/paper/shadow session claims.
+
+**005c Slice-3 candidate IDs (reference):** `CSC-LOSSLESS-v1-000158` (dual testnet+shadow narrowing), `000236`, `000257`, `000258`, `000259` (testnet-named narrowing set).
+
+**Non-authorizing:** No `src/` edits; no `scripts&#47;**` target file edits; no runtime/scheduler/daemon execution; no workflow dispatch; no GH YAML; no Notion/AWS/S3; no Testnet/Live/trading/Master V2/Double Play authority changes; no parent **005** wholesale ACCEPT; **no** `scripts&#47;ops&#47;` (004), **005a** workflows, **005b** fixtures, **003a**/**003e**, live/aiops/shadow/execution/workflow paths, or `scripts&#47;run_scheduler.py` (000253) in this slice.
+
 ### Static visibility contract owners (reuse — do not duplicate)
 
 | Surface | Owner module |
@@ -1686,6 +1753,7 @@ CSC_RCHAIN_V1_003E_MASTER_V2_EXCLUDED=true
 | CSC-RCHAIN-v1-003d governed reflection guard (Slice-1) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
 | CSC-RCHAIN-v1-005c governed reflection guard (Slice-1) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
 | CSC-RCHAIN-v1-005c governed reflection guard (Slice-2) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
+| CSC-RCHAIN-v1-005c governed reflection guard (Slice-3 Testnet) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
 | Static inventory schema validation guard | `tests/ci/test_static_inventory_schema_guard_contract_v0.py` |
 | Workflow secrets/vars/braced contexts (hub) | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
 | Workflow write permissions | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` |

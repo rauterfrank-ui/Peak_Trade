@@ -432,6 +432,47 @@ FORBIDDEN_AUTHORIZATION_PHRASES_005C_SLICE2: tuple[str, ...] = (
 
 def _csc_rchain_005c_slice2_guard_block(text: str) -> str:
     start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-2)")
+    end_marker = "### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-3 Testnet)"
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+OPERATOR_ACCEPT_005C_SLICE_3_TESTNET = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/create_operator_accept_artifact_bundle_005c_slice3_testnet_v0_20260602T223444Z"
+)
+NARROWING_BASENAMES_005C_SLICE3_TESTNET: tuple[str, ...] = (
+    "shadow_testnet_readiness_scorecard.py",
+    "orchestrate_testnet_runs.py",
+    "run_testnet_session.py",
+    "smoke_test_testnet_stack.py",
+    "testnet_orchestrator_cli.py",
+)
+CANDIDATE_IDS_005C_SLICE3_TESTNET: tuple[str, ...] = (
+    "CSC-LOSSLESS-v1-000158",
+    "CSC-LOSSLESS-v1-000236",
+    "CSC-LOSSLESS-v1-000257",
+    "CSC-LOSSLESS-v1-000258",
+    "CSC-LOSSLESS-v1-000259",
+)
+FORBIDDEN_AUTHORIZATION_PHRASES_005C_SLICE3_TESTNET: tuple[str, ...] = (
+    "script execution authorized",
+    "scheduler start authorized",
+    "testnet execution authorized",
+    "testnet session authorized",
+    "orchestrator dispatch authorized",
+    "smoke test execution authorized",
+    "readiness clearance granted",
+    "shadow runtime authorized",
+    "cli invocation approved",
+)
+
+
+def _csc_rchain_005c_slice3_testnet_guard_block(text: str) -> str:
+    start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-3 Testnet)")
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
@@ -949,6 +990,46 @@ def test_csc_rchain_v1_005c_governed_reflection_slice2_scheduler_boundary_crossl
     assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
     assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
     assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE1_V0=true" in text
+
+
+def test_csc_rchain_v1_005c_governed_reflection_slice3_testnet_scheduler_boundary_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    block = _csc_rchain_005c_slice3_testnet_guard_block(text)
+
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE3_TESTNET_V0=true" in block
+    assert "CSC_RCHAIN_V1_005C_REFLECTION_DOCS_TESTS_ONLY=true" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE3_CANDIDATE_COUNT=5" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE3_EXTERNAL_ACCEPT_READY_COUNT=0" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE3_NARROWING_REQUIRED_COUNT=5" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE3_DUAL_TESTNET_SHADOW_MARKER_COUNT=1" in block
+    assert "CSC_RCHAIN_V1_005C_PARK_RETAINED=true" in block
+    assert "REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-005C-SLICE-3-TESTNET" in block
+    assert "TESTNET_NAMED_CLI_VISIBILITY_ONLY=true" in block
+    assert "NO_TESTNET_EXECUTION_AUTHORITY=true" in block
+    assert "RUN_SCHEDULER_000253_BLOCKED=true" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE1_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE2_REOPENED=false" in block
+    assert OPERATOR_ACCEPT_005C_SLICE_3_TESTNET in block
+    assert GOVERNED_REFLECTION_SUBGROUP_005C in block
+    assert THIS_MODULE in block
+    assert GROUPING_REFLECTION_GUARD_MODULE in block
+    assert "testnet-named" in block.lower()
+
+    for basename in NARROWING_BASENAMES_005C_SLICE3_TESTNET:
+        assert basename in block
+    assert len(CANDIDATE_IDS_005C_SLICE3_TESTNET) == 5
+    assert "CSC-LOSSLESS-v1-000158" in block
+    assert "000236" in block
+
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES:
+        assert phrase not in collapsed
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES_005C_SLICE3_TESTNET:
+        assert phrase not in collapsed
+
+    assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
+    assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE2_V0=true" in text
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_truth_map_crosslink_v0() -> (
