@@ -473,6 +473,47 @@ FORBIDDEN_AUTHORIZATION_PHRASES_005C_SLICE3_TESTNET: tuple[str, ...] = (
 
 def _csc_rchain_005c_slice3_testnet_guard_block(text: str) -> str:
     start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-3 Testnet)")
+    end_marker = "### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-4 Live-Named A)"
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+OPERATOR_ACCEPT_005C_SLICE_4_LIVE_NAMED_A = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/create_operator_accept_artifact_bundle_005c_slice4_live_named_a_v0_20260602T224627Z"
+)
+NARROWING_BASENAMES_005C_SLICE4_LIVE_NAMED_A: tuple[str, ...] = (
+    "check_live_readiness.py",
+    "check_docs_no_live_enable_patterns.sh",
+    "live_pilot_scorecard.py",
+    "live_alerts_cli.py",
+    "live_monitor_cli.py",
+)
+CANDIDATE_IDS_005C_SLICE4_LIVE_NAMED_A: tuple[str, ...] = (
+    "CSC-LOSSLESS-v1-000155",
+    "CSC-LOSSLESS-v1-000156",
+    "CSC-LOSSLESS-v1-000157",
+    "CSC-LOSSLESS-v1-000160",
+    "CSC-LOSSLESS-v1-000161",
+)
+FORBIDDEN_AUTHORIZATION_PHRASES_005C_SLICE4_LIVE_NAMED_A: tuple[str, ...] = (
+    "script execution authorized",
+    "scheduler start authorized",
+    "live execution authorized",
+    "live readiness clearance",
+    "live arming authorized",
+    "pilot clearance granted",
+    "alert dispatch authorized",
+    "monitor serve authorized",
+    "cli invocation approved",
+)
+
+
+def _csc_rchain_005c_slice4_live_named_a_guard_block(text: str) -> str:
+    start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-4 Live-Named A)")
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
@@ -1032,6 +1073,50 @@ def test_csc_rchain_v1_005c_governed_reflection_slice3_testnet_scheduler_boundar
     assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
     assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
     assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE2_V0=true" in text
+
+
+def test_csc_rchain_v1_005c_governed_reflection_slice4_live_named_a_scheduler_boundary_crosslink_v0() -> (
+    None
+):
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    block = _csc_rchain_005c_slice4_live_named_a_guard_block(text)
+
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE4_LIVE_NAMED_A_V0=true" in block
+    assert "CSC_RCHAIN_V1_005C_REFLECTION_DOCS_TESTS_ONLY=true" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE4_CANDIDATE_COUNT=5" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE4_EXTERNAL_ACCEPT_READY_COUNT=0" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE4_NARROWING_REQUIRED_COUNT=5" in block
+    assert "CSC_RCHAIN_V1_005C_PARK_RETAINED=true" in block
+    assert "REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-005C-SLICE-4-LIVE-NAMED-A" in block
+    assert "LIVE_NAMED_CLI_VISIBILITY_ONLY=true" in block
+    assert "NO_LIVE_EXECUTION_AUTHORITY=true" in block
+    assert "NO_LIVE_READINESS_CLEARANCE_AUTHORITY=true" in block
+    assert "NO_LIVE_ARMING_AUTHORITY=true" in block
+    assert "RUN_SCHEDULER_000253_BLOCKED=true" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE1_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE2_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE3_REOPENED=false" in block
+    assert OPERATOR_ACCEPT_005C_SLICE_4_LIVE_NAMED_A in block
+    assert GOVERNED_REFLECTION_SUBGROUP_005C in block
+    assert THIS_MODULE in block
+    assert GROUPING_REFLECTION_GUARD_MODULE in block
+    assert "live-named" in block.lower()
+
+    for basename in NARROWING_BASENAMES_005C_SLICE4_LIVE_NAMED_A:
+        assert basename in block
+    assert len(CANDIDATE_IDS_005C_SLICE4_LIVE_NAMED_A) == 5
+    assert "CSC-LOSSLESS-v1-000155" in block
+    assert "000160" in block
+
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES:
+        assert phrase not in collapsed
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES_005C_SLICE4_LIVE_NAMED_A:
+        assert phrase not in collapsed
+
+    assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
+    assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE3_TESTNET_V0=true" in text
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_truth_map_crosslink_v0() -> (

@@ -454,6 +454,16 @@ def _guard_block_005c_slice2(text: str) -> str:
 
 def _guard_block_005c_slice3_testnet(text: str) -> str:
     start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-3 Testnet)")
+    end_marker = "### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-4 Live-Named A)"
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+def _guard_block_005c_slice4_live_named_a(text: str) -> str:
+    start = text.index("### CSC-RCHAIN-v1-005c governed reflection guard v0 (Slice-4 Live-Named A)")
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
@@ -505,6 +515,10 @@ OPERATOR_ACCEPT_005C_SLICE_3_TESTNET = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/create_operator_accept_artifact_bundle_005c_slice3_testnet_v0_20260602T223444Z"
 )
+OPERATOR_ACCEPT_005C_SLICE_4_LIVE_NAMED_A = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/create_operator_accept_artifact_bundle_005c_slice4_live_named_a_v0_20260602T224627Z"
+)
 GOVERNED_REFLECTION_SUBGROUP_005C = "CSC-RCHAIN-v1-005c"
 NARROWING_BASENAMES_005C_SLICE2: tuple[str, ...] = (
     "health_dashboard.py",
@@ -519,6 +533,13 @@ NARROWING_BASENAMES_005C_SLICE3_TESTNET: tuple[str, ...] = (
     "run_testnet_session.py",
     "smoke_test_testnet_stack.py",
     "testnet_orchestrator_cli.py",
+)
+NARROWING_BASENAMES_005C_SLICE4_LIVE_NAMED_A: tuple[str, ...] = (
+    "check_live_readiness.py",
+    "check_docs_no_live_enable_patterns.sh",
+    "live_pilot_scorecard.py",
+    "live_alerts_cli.py",
+    "live_monitor_cli.py",
 )
 SCHEDULER_BOUNDARY_CROSSLINK_MODULE = "tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py"
 
@@ -1153,3 +1174,43 @@ def test_csc_rchain_v1_005c_governed_reflection_slice3_testnet_contract_v0() -> 
     assert "testnet execution authorized" not in collapsed
     assert "testnet session authorized" not in collapsed
     assert "orchestrator dispatch authorized" not in collapsed
+
+
+def test_csc_rchain_v1_005c_governed_reflection_slice4_live_named_a_contract_v0() -> None:
+    text = _ci_audit_text()
+    block = _guard_block_005c_slice4_live_named_a(text)
+    collapsed = block.lower()
+
+    assert OPERATOR_ACCEPT_005C_SLICE_4_LIVE_NAMED_A in block
+    assert GOVERNED_REFLECTION_SUBGROUP_005C in block
+    assert SCHEDULER_BOUNDARY_CROSSLINK_MODULE in block
+    assert THIS_MODULE in block
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SLICE4_LIVE_NAMED_A_V0=true" in block
+    assert "CSC_RCHAIN_V1_005C_PARK_RETAINED=true" in block
+    assert "REPO_GO_TOKEN=REPO_GO-CSC-RCHAIN-005C-SLICE-4-LIVE-NAMED-A" in block
+    assert "RUN_SCHEDULER_000253_BLOCKED=true" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE1_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE2_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE3_REOPENED=false" in block
+    assert "NO_LIVE_EXECUTION_AUTHORITY=true" in block
+    assert "NO_LIVE_READINESS_CLEARANCE_AUTHORITY=true" in block
+    assert "NO_LIVE_ARMING_AUTHORITY=true" in block
+    assert "LIVE_NAMED_CLI_VISIBILITY_ONLY=true" in block
+    for basename in NARROWING_BASENAMES_005C_SLICE4_LIVE_NAMED_A:
+        assert basename in block
+    assert "000155" in block
+    assert "000156" in block
+    assert "000157" in block
+    assert "000160" in block
+    assert "000161" in block
+    assert "live-named" in collapsed
+    assert "guard/check-tier" in collapsed or "guard" in collapsed
+    assert "CSC_PARENT005A_EXCLUDED=true" in block
+    assert "**Does not** add" in block
+    assert "258" in block
+    assert "413" in block
+    assert "script execution authorized" not in collapsed
+    assert "scheduler start authorized" not in collapsed
+    assert "live execution authorized" not in collapsed
+    assert "live readiness clearance" not in collapsed
+    assert "live arming authorized" not in collapsed
