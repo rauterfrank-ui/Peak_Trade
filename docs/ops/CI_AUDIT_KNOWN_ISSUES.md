@@ -1607,7 +1607,7 @@ CSC_RCHAIN_V1_003E_MASTER_V2_EXCLUDED=true
 
 **005c Slice-1 candidate IDs (reference):** `CSC-LOSSLESS-v1-000238`–`000240` (research CLI trio), `000242`–`000243`, `000247`–`000248`, `000252` (bounded `run_*` CLI narrowing set).
 
-**Non-authorizing:** No `src/` edits; no `scripts/**` target file edits; no runtime/scheduler/daemon execution; no workflow dispatch; no GH YAML; no Notion/AWS/S3; no Testnet/Live/trading/Master V2/Double Play authority changes; no parent **005** wholesale ACCEPT; **no** `scripts/ops/` (004), **005a** workflows, **005b** fixtures, **003a**/**003e**, or `scripts/run_scheduler.py` (000253) in this slice.
+**Non-authorizing:** No `src/` edits; no `scripts&#47;**` target file edits; no runtime/scheduler/daemon execution; no workflow dispatch; no GH YAML; no Notion/AWS/S3; no Testnet/Live/trading/Master V2/Double Play authority changes; no parent **005** wholesale ACCEPT; **no** `scripts&#47;ops&#47;` (004), **005a** workflows, **005b** fixtures, **003a**/**003e**, or `scripts&#47;run_scheduler.py` (000253) in this slice.
 
 ### Static visibility contract owners (reuse — do not duplicate)
 
