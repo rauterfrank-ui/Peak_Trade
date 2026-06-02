@@ -373,9 +373,7 @@ OPERATOR_ACCEPT_003F_A_SLICE_1 = (
     "planning/operator_accept_artifact_csc_rchain_003f_a_slice_1_v0_20260602T202456Z"
 )
 GOVERNED_REFLECTION_SUBGROUP_003F_A = "CSC-RCHAIN-v1-003f-A"
-SCHEDULER_BOUNDARY_CROSSLINK_MODULE = (
-    "tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py"
-)
+SCHEDULER_BOUNDARY_CROSSLINK_MODULE = "tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py"
 
 
 def test_csc_rchain_v1_grouping_reflection_contract_v0() -> None:

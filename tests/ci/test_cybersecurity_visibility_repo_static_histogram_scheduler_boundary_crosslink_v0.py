@@ -201,7 +201,9 @@ def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_cross
     assert "PEAKTRADE_STAGE=testnet` enablement" in text
 
     accepted_line = next(
-        line for line in guard_block.splitlines() if line.startswith("CSC_RCHAIN_V1_ACCEPTED_GROUPS=")
+        line
+        for line in guard_block.splitlines()
+        if line.startswith("CSC_RCHAIN_V1_ACCEPTED_GROUPS=")
     )
     assert GOVERNED_REFLECTION_SUBGROUP_003F_A not in accepted_line
 
