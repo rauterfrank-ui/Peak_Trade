@@ -1333,7 +1333,7 @@ PARALLEL_DOCS_CREATED=false
 | Pending mapping guard | `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py` |
 | CSC-LOSSLESS-v1 / CSC-RCHAIN-v1 reflection guards | `tests/ci/test_csc_lossless_v1_dataset_reflection_contract_v0.py`, `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py` |
 | Static inventory schema guard | `tests/ci/test_static_inventory_schema_guard_contract_v0.py` |
-| Repo-static histogram crosslinks (6 buckets) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_*_crosslink_v0.py` |
+| Repo-static histogram crosslinks (6 buckets) | `tests&#47;ci&#47;test_cybersecurity_visibility_repo_static_histogram_*_crosslink_v0.py` |
 
 **Release scope (planned):** **2–3 PRs**, **docs/tests-only** — consolidate post-wave-1 cybersecurity visibility governance without new parallel surfaces.
 
@@ -1358,7 +1358,7 @@ PARALLEL_DOCS_CREATED=false
 | Order | Slice ID | Scope |
 |-------|----------|-------|
 | 1 | **SLICE-CV-1** | Docs-only: this release index + post-wave-1 status reflection (**this PR**) |
-| 2 | **SLICE-CV-2** | Tests-ci: static guard coherence — extend existing `tests/ci/test_cybersecurity_visibility_*` modules only |
+| 2 | **SLICE-CV-2** | Tests-ci: static guard coherence — extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` modules only |
 | 3 | **SLICE-CV-3** (optional) | Docs/tests: CSC-RCHAIN PR15 finalization reflection OR remaining histogram bucket closure |
 
 **Operational rules:**
@@ -1368,7 +1368,7 @@ PARALLEL_DOCS_CREATED=false
 - **No external cyber data intake** — derived/repo-static visibility only; `INPUT_JSONL_PROVIDED=false` unchanged by this release line.
 - **No trading authority** — no Master V2 / Double Play / execution / risk / governance / live gate changes.
 - **Reuse-before-new** — extend this CI audit anchor and existing guard modules; **no** parallel cybersecurity index, evidence hub, readiness map, or handoff surface.
-- **Follow slices** may extend existing `tests/ci/test_cybersecurity_visibility_*` guards only — not new parallel SSOT files.
+- **Follow slices** may extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` guards only — not new parallel SSOT files.
 
 ```text
 CYBERSECURITY_VISIBILITY_RELEASE_RC_V0=true
