@@ -1,7 +1,5 @@
 name: PR-O / PR-K Nightly Self-Check
 on:
-  schedule:
-    - cron: "37 1 * * *"
   workflow_dispatch: {}
 permissions:
   actions: read
