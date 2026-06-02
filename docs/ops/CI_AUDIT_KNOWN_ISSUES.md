@@ -2033,6 +2033,80 @@ CSC_RCHAIN_V1_003E_MASTER_V2_EXCLUDED=true
 
 **Non-authorizing:** No `src/` edits; no `scripts&#47;**` target file edits; no runtime/scheduler/daemon execution; no workflow dispatch; no GH YAML; no Notion/AWS/S3; no execution/workflow/trading/Master V2/Double Play authority changes; no parent **005** wholesale ACCEPT; **no** `scripts&#47;ops&#47;` (004), **005a** workflows, **005b** fixtures, **003a**/**003e**, or `scripts&#47;run_scheduler.py` (000253) in this slice.
 
+### CSC-RCHAIN-v1-005a governed reflection guard v0 (Bundle-A PRB Scorecard)
+
+**Release:** `REPO_GO_CSC_RCHAIN_005A_BUNDLE_A_WF_PRB_SCORECARD_GOVERNED_REFLECTION_V0` · **Token scope:** docs/tests-only governed reflection · **UTC:** 2026-06-02 · **Operator ACCEPT:** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/create_operator_accept_artifact_bundle_005a_bundle_a_wf_prb_scorecard_family_v0_20260602T232911Z/`
+
+```text
+CSC_RCHAIN_V1_005A_GOVERNED_REFLECTION_BUNDLE_A_WF_PRB_SCORECARD_V0=true
+CSC_RCHAIN_V1_005A_REFLECTION_DOCS_TESTS_ONLY=true
+CSC_RCHAIN_V1_005A_BUNDLE_A_CANDIDATE_COUNT=6
+CSC_RCHAIN_V1_005A_BUNDLE_A_EXTERNAL_ACCEPT_READY_COUNT=0
+CSC_RCHAIN_V1_005A_BUNDLE_A_NARROWING_REQUIRED_COUNT=6
+CSC_RCHAIN_V1_005A_BUNDLE_A_ACTIVE_SCHEDULE_COUNT=6
+CSC_RCHAIN_V1_005A_FIRST_GOVERNED_SLICE=true
+CSC_RCHAIN_V1_005A_PARK_RETAINED=true
+CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT_UNCHANGED=true
+CSC_RCHAIN_V1_PARK_COUNT_UNCHANGED=true
+REPO_GO_TOKEN=REPO_GO_CSC_RCHAIN_005A_BUNDLE_A_WF_PRB_SCORECARD_GOVERNED_REFLECTION_V0
+005C_SCRIPT_SLICES_COMPLETE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+STOP_IDLE_PRESERVED=true
+NO_WORKFLOW_EXECUTION_AUTHORITY=true
+NO_WORKFLOW_DISPATCH_AUTHORITY=true
+NO_SCHEDULE_REACTIVATION_AUTHORITY=true
+NO_GH_YAML_TOUCH=true
+PRB_SCORECARD_WORKFLOW_VISIBILITY_ONLY=true
+WORKFLOW_YAML_BEHAVIOR_CHANGED=false
+SCHEDULER_BEHAVIOR_CHANGED=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+WORKFLOW_DISPATCH_EXECUTED=false
+WORKFLOW_AUTHORITY_CHANGED=false
+LIVE_AUTHORITY_CHANGED=false
+TESTNET_AUTHORITY_CHANGED=false
+EXECUTION_AUTHORITY_CHANGED=false
+MASTER_V2_LOGIC_CHANGED=false
+DOUBLE_PLAY_LOGIC_CHANGED=false
+TRADING_AUTHORITY_CHANGED=false
+PRODUCTION_CODE_TOUCHED=false
+CSC_PARENT005B_EXCLUDED=true
+CSC_PARENT005C_EXCLUDED=true
+CSC_PARENT005A_WHOLESALE_ACCEPT=false
+CSC_PARENT005_WHOLESALE_ACCEPT=false
+BUNDLE_B_EXCLUDED=true
+BUNDLE_C_EXCLUDED=true
+RUN_SCHEDULER_000253_BLOCKED=true
+005C_SLICE1_THROUGH_SLICE7_NOT_REOPENED=true
+CSC_RCHAIN_V1_003F_A_REOPENED=false
+CSC_RCHAIN_V1_003F_C_REOPENED=false
+CSC_RCHAIN_V1_003F_D_REOPENED=false
+CSC_RCHAIN_V1_003C_REOPENED=false
+CSC_RCHAIN_V1_003B_REOPENED=false
+CSC_RCHAIN_V1_003F_B_REOPENED=false
+CSC_RCHAIN_V1_003D_REOPENED=false
+CSC_RCHAIN_V1_003A_LIVE_EXCLUDED=true
+CSC_RCHAIN_V1_003E_MASTER_V2_EXCLUDED=true
+CSC_PARENT006_EXCLUDED=true
+```
+
+**Purpose:** Governed **visibility/crosslink/guard** reflection for cluster **005a** Bundle A (**6** deferred `PARK` workflow candidates: **PRB scorecard-family** scheduled-workflow markers). **PRB scorecard workflow scheduler-trigger marker-only** visibility; **no** workflow execution, schedule reactivation, `workflow_dispatch`, runtime, scheduler, live/paper/shadow/testnet scorecard run authority, or trading/execution authority. **6/6 active schedule** on HEAD documented as **visibility-only risk** — **no** cron enablement or workflow authority change. **First 005a governed slice** on main; **Does not** add `CSC-RCHAIN-v1-005a` to `CSC_RCHAIN_V1_ACCEPTED_GROUPS`; **does not** change `CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT` (**258**) or `CSC_RCHAIN_V1_PARK_COUNT` (**413**). **Does not** reopen 005c Slices 1–7 (#3922–#3928) or Parent-003 slices (#3915–#3921). After merge: **6/27** of Parent-005a workflow PARK set reflected in docs/tests guards; **21** remain PARK (Bundle B **6** + Bundle C **15**); **000253** scheduler script remains **BLOCKED**.
+
+| Field | Value |
+|-------|-------|
+| `rchain_id` | `CSC-RCHAIN-v1-005a` |
+| Category | `scheduler_or_runtime_boundary` |
+| `candidate_count` | 6 |
+| Severity | `elevated` (6/6) |
+| Visibility owner (reuse) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
+| Grouping reciprocal | `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py` |
+
+**Narrowing paths (6 — workflow basename reference only in docs/tests):** `prbc-stability-gate.yml` (stability gate scorecard **marker-only**; **no** workflow run or schedule change), `prbd-live-readiness-scorecard.yml` (live readiness scorecard **marker-only**; **no** live readiness clearance), `prbe-shadow-testnet-scorecard.yml` (shadow/testnet scorecard **marker-only**; **no** shadow/testnet runtime), `prbg-execution-evidence.yml` (execution evidence scorecard **marker-only**; **no** execution authority), `prbi-live-pilot-scorecard.yml` (live pilot scorecard **marker-only**; **no** live pilot run authority), `prbj-testnet-exec-events.yml` (testnet exec events scorecard **marker-only**; **no** testnet execution authority) — **no** scheduler start, workflow dispatch, GH YAML touch, or trading claims.
+
+**005a Bundle A candidate IDs (reference):** `CSC-LOSSLESS-v1-000097`, `000100`, `000103`, `000106`, `000109`, `000112`.
+
+**Non-authorizing:** No `src/` edits; no `.github&#47;workflows&#47;**` target file edits; no runtime/scheduler/daemon execution; no workflow dispatch; no GH YAML; no schedule reactivation; no Notion/AWS/S3; no live/testnet/execution/scorecard run/trading/Master V2/Double Play authority changes; no parent **005** wholesale ACCEPT; **no** `scripts&#47;**` (005c), **005b** fixtures, **003a**/**003e**, Bundle B/C, or `scripts&#47;run_scheduler.py` (000253) in this slice.
+
 ### Static visibility contract owners (reuse — do not duplicate)
 
 | Surface | Owner module |
@@ -2053,6 +2127,7 @@ CSC_RCHAIN_V1_003E_MASTER_V2_EXCLUDED=true
 | CSC-RCHAIN-v1-005c governed reflection guard (Slice-5 Live-Named B) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
 | CSC-RCHAIN-v1-005c governed reflection guard (Slice-6 AIOps-Shadow) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
 | CSC-RCHAIN-v1-005c governed reflection guard (Slice-7 Execution-Workflow) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
+| CSC-RCHAIN-v1-005a governed reflection guard (Bundle-A PRB Scorecard) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
 | Static inventory schema validation guard | `tests/ci/test_static_inventory_schema_guard_contract_v0.py` |
 | Workflow secrets/vars/braced contexts (hub) | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
 | Workflow write permissions | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` |
