@@ -48,6 +48,12 @@ RESIDUAL_SCHEDULE_FILES = frozenset(
     }
 )
 
+# SLICE-GH-001: schedule removed; workflow_dispatch retained (recommender inventory unchanged).
+GH001_MANUAL_ONLY_FORMER_RESIDUAL = frozenset({"pro-prk-nightly-selfcheck.yml"})
+PRO_PRK_NIGHTLY_SELFCHECK_WORKFLOW = (
+    REPO_ROOT / ".github" / "workflows" / "pro-prk-nightly-selfcheck.yml"
+)
+
 RESIDUAL_CI_OPS_FILES = frozenset({"ci.yml", "audit.yml", "pru-required-checks-drift-detector.yml"})
 
 PAPER_SHADOW_FILES = frozenset(
@@ -139,9 +145,20 @@ def test_residual_all_json_covers_thirteen_without_duplicates() -> None:
     assert payload["executes_workflows"] is False
     assert payload["workflow_dispatch_executed"] is False
     for rec in payload["recommendations"]:
-        assert rec["has_active_schedule"] is True
+        fname = rec["workflow_file"].split("/")[-1]
         assert rec["residual_scheduled_workflow"] is True
-        assert "warning" in rec
+        if fname in GH001_MANUAL_ONLY_FORMER_RESIDUAL:
+            assert rec["has_active_schedule"] is False
+        else:
+            assert rec["has_active_schedule"] is True
+            assert "warning" in rec
+
+
+def test_pro_prk_nightly_selfcheck_manual_only_yaml_shape() -> None:
+    """GH-001: cron removed; dispatch retained."""
+    text = PRO_PRK_NIGHTLY_SELFCHECK_WORKFLOW.read_text(encoding="utf-8")
+    assert "workflow_dispatch" in text
+    assert "schedule:" not in text
 
 
 def test_residual_ci_ops_intent_count() -> None:
