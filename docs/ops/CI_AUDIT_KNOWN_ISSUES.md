@@ -2582,10 +2582,15 @@ LOCAL_DRY_HOST_NO_RUN_PREFLIGHT_DOCS_TESTS_ONLY=true
 
 **Durable operator pointers (archive only — not repo-ingested):**
 
+**Operational lifecycle start (post #3935–#3939 train + #3940):** use **Final lifecycle handoff after PR3935–#3939** below; **PR #3940** closeout is the latest GH residual label-sync addendum. **Do not** use the PR3901 consolidated handoff as the current operational starting point (pre–Post-RC-train; historical reference only).
+
 | Token | Durable path |
 |-------|--------------|
-| Final consolidated handoff after PR3901 | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/final_consolidated_handoff_after_pr3901_notion_and_generator_stop_idle_v0_20260602T170236Z/` |
-| Notion update after PR3901 | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/notion_update_after_pr3901_operator_go_v0_20260602T165522Z/` |
+| **Final lifecycle handoff after PR3935–#3939 (operational start)** | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/handoff/final_lifecycle_handoff_after_pr3935_3939_train_v0_20260603T014600Z/` |
+| **PR #3940 closeout — GH residual_all intent label sync** | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_pr3940_gh_residual_all_intent_label_sync_merge_closeout_v0_20260603T021734Z/` |
+| Post-#3940 next-workstream planning (read-only) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/read_only_next_workstream_after_pr3940_v0_20260603T040000Z/` |
+| Final consolidated handoff after PR3901 (**historical — superseded operational start**) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/final_consolidated_handoff_after_pr3901_notion_and_generator_stop_idle_v0_20260602T170236Z/` |
+| Notion update after PR3901 (**historical**) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/notion_update_after_pr3901_operator_go_v0_20260602T165522Z/` |
 | Notion Auto-Sync Charter | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/notion_auto_sync_charter_and_design_readonly_v0_20260602T165746Z/` |
 | Notion Sync Package Generator v0 | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/notion_sync_package_generator_v0_20260602T165958Z/` |
 | GH residual schedule cost review | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gh_residual_schedule_cost_review_readonly_v0_20260602T171045Z/` |
@@ -2612,6 +2617,16 @@ RUNTIME_TOUCHED=false
 TRADING_AUTHORITY_CHANGED=false
 NOTION_WRITES=false
 PARALLEL_DOCS_CREATED=false
+POST_RC_TRAIN_PR3935_3939_COMPLETE=true
+PR3940_GH_RESIDUAL_ALL_INTENT_LABEL_SYNC_COMPLETE=true
+PR3901_HANDOFF_SUPERSEDED_AS_OPERATIONAL_START=true
+PR3901_HANDOFF_HISTORICAL_REFERENCE_ONLY=true
+STOP_IDLE_VALID=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+LIVE_TOUCHED=false
 ```
 
 ## Cybersecurity Visibility Release RC v0 — index v0
