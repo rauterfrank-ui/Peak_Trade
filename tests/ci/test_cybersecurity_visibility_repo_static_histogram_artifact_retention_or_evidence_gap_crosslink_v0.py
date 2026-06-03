@@ -44,6 +44,22 @@ REQUIRED_DURABLE_PRIMARY_EVIDENCE_REUSE_OWNERS: tuple[str, ...] = (
 )
 RECIPROCAL_CROSSLINK_MARKER = "CYBERSECURITY_VISIBILITY_ARTIFACT_RETENTION_DURABLE_PRIMARY_EVIDENCE_RECIPROCAL_CROSSLINK_V0=true"
 
+PE6_CYBER_ER_CROSSLINK_MARKERS: tuple[str, ...] = (
+    "PE6_CYBER_ER_ARTIFACT_RETENTION_CROSSLINK_V0=true",
+    "CYBER_VISIBILITY_ARTIFACTS_RETENTION_LINKED_TO_PRIMARY_EVIDENCE_V0=true",
+    "ER_ARTIFACT_RETENTION_LINKED_TO_CYBER_VISIBILITY_V0=true",
+    "CYBER_VISIBILITY_ARTIFACTS_DEFENSIVE_DERIVED_STATIC_ONLY=true",
+    "SLICE_PE6_TESTS_ONLY=true",
+)
+
+PE6_PRIMARY_EVIDENCE_RETENTION_SEMANTICS: tuple[str, ...] = (
+    "durable primary evidence",
+    "/tmp`-only",
+    "manifest",
+    "checksum",
+    "does not activate enforcement",
+)
+
 ARTIFACT_RETENTION_PARALLEL_MARKERS = (
     "CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_ARTIFACT_RETENTION_OR_EVIDENCE_GAP_CROSSLINK_V0=true",
     "Cybersecurity Visibility repo-static histogram artifact retention or evidence gap",
@@ -214,3 +230,56 @@ def test_cybersecurity_visibility_artifact_retention_truth_map_crosslink_v0() ->
     )
     assert "non-authorizing" in collapsed
     assert "input_jsonl_provided=false" in collapsed or "INPUT_JSONL_PROVIDED=false" in truth_map
+
+
+def test_pe6_ci_audit_documents_cyber_er_bidirectional_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    for token in PE6_CYBER_ER_CROSSLINK_MARKERS:
+        assert token in text
+    assert RECIPROCAL_CROSSLINK_MARKER in text
+    assert "Cyber ↔ ER artifact-retention crosslink" in text
+    assert "defensive/derived/static" in collapsed
+    assert "INPUT_JSONL_PROVIDED=false" in text
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in text
+    assert "does not activate enforcement" in collapsed
+
+
+def test_pe6_reciprocal_owners_reference_primary_evidence_retention_chain_v0() -> None:
+    text = _ci_audit_text()
+    hard_gate_text = (REPO_ROOT / REQUIRED_DURABLE_PRIMARY_EVIDENCE_REUSE_OWNERS[0]).read_text(
+        encoding="utf-8"
+    )
+    invariant_text = (REPO_ROOT / REQUIRED_DURABLE_PRIMARY_EVIDENCE_REUSE_OWNERS[1]).read_text(
+        encoding="utf-8"
+    )
+    for owner_path in REQUIRED_DURABLE_PRIMARY_EVIDENCE_REUSE_OWNERS:
+        owner_text = (REPO_ROOT / owner_path).read_text(encoding="utf-8")
+        assert THIS_MODULE in owner_text
+        assert RECIPROCAL_CROSSLINK_MARKER in owner_text
+    assert "PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true" in hard_gate_text
+    assert "PE2_RUN_TYPE_GUARD_MATRIX" in hard_gate_text
+    assert "artifact_retention_or_evidence_gap" in invariant_text
+    for marker in PE6_CYBER_ER_CROSSLINK_MARKERS:
+        assert marker in text
+    histogram = _histogram_section(text)
+    assert REQUIRED_ARTIFACT_RETENTION_REUSE_OWNER in histogram
+
+
+def test_pe6_cyber_visibility_retention_linked_to_durable_primary_evidence_semantics_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    for phrase in PE6_PRIMARY_EVIDENCE_RETENTION_SEMANTICS:
+        assert phrase.lower() in collapsed or phrase in text
+
+
+def test_pe6_cyber_er_crosslink_module_is_static_no_subprocess_v0() -> None:
+    import ast
+
+    tree = ast.parse(Path(__file__).read_text(encoding="utf-8"))
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                assert alias.name != "subprocess"
+        elif isinstance(node, ast.ImportFrom):
+            assert node.module != "subprocess"

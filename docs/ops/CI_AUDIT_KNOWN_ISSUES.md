@@ -214,9 +214,17 @@ CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_ARTIFACT_RETENTION_OR_EVIDENCE_GA
 CYBERSECURITY_VISIBILITY_REPO_STATIC_HISTOGRAM_ARTIFACT_RETENTION_OR_EVIDENCE_GAP_CROSSLINK_DOCS_TESTS_ONLY=true
 CYBERSECURITY_VISIBILITY_ARTIFACT_RETENTION_DURABLE_PRIMARY_EVIDENCE_RECIPROCAL_CROSSLINK_V0=true
 CYBERSECURITY_VISIBILITY_ARTIFACT_RETENTION_DURABLE_PRIMARY_EVIDENCE_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY=true
+PE6_CYBER_ER_ARTIFACT_RETENTION_CROSSLINK_V0=true
+CYBER_VISIBILITY_ARTIFACTS_RETENTION_LINKED_TO_PRIMARY_EVIDENCE_V0=true
+ER_ARTIFACT_RETENTION_LINKED_TO_CYBER_VISIBILITY_V0=true
+CYBER_VISIBILITY_ARTIFACTS_DEFENSIVE_DERIVED_STATIC_ONLY=true
+SLICE_PE5_COMPLETE=true
+SLICE_PE6_TESTS_ONLY=true
 INPUT_JSONL_PROVIDED=false
 DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
 ```
+
+**Cyber ↔ ER artifact-retention crosslink (PE-6 guard) v0:** `artifact_retention_or_evidence_gap` histogram visibility **must not** be treated independently of §2a/§2a.1 primary-evidence and `EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0` durable-retention posture. Cybersecurity visibility artifacts are **defensive/derived/static** review inputs only — not runtime authorization, not retention-policy enforcement, not definitive R-001/R-002/R-007 mapping while `INPUT_JSONL_PROVIDED=false`. Durable primary evidence outside `/tmp`, `MANIFEST.sha256` verification, and checksum manifest requirements apply to ER/closeout completion semantics; `/tmp`-only is insufficient. Static guards: `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`, `tests/ops/test_primary_evidence_retention_invariant_contract_v0.py`, `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py`. Tests-only; does not activate enforcement or arming.
 
 **Non-authorizing:** Explicit histogram reuse-owner crosslinks for `artifact_retention_or_evidence_gap`, `workflow_secrets_visibility`, `manual_dispatch_sensitive_surface`, `scheduler_or_runtime_boundary`, `branch_or_environment_authority`, and `paid_ai_eval_gate` are **visibility-only**; they do **not** authorize artifact retention remediation, retention-policy changes, evidence-gap remediation, secrets availability or access, workflow manual-dispatch execution, scheduler/daemon/runtime start, workflow write-permission approval, paid Promptfoo/OpenAI eval execution, secret-injection approval, PR/push paid-eval paths, Testnet/Live, broker/exchange, or definitive R-001/R-002/R-007 mapping while `INPUT_JSONL_PROVIDED=false`.
 

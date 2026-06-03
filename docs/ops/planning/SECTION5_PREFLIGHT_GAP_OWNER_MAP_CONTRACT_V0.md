@@ -66,6 +66,9 @@ SLICE_PE4_TESTS_ONLY=true
 MANDATORY_DURABLE_CLOSEOUT_REQUIRED=true
 PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true
 GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0=true
+PE6_CYBER_ER_ARTIFACT_RETENTION_CROSSLINK_V0=true
+CYBER_VISIBILITY_ARTIFACTS_RETENTION_LINKED_TO_PRIMARY_EVIDENCE_V0=true
+ER_ARTIFACT_RETENTION_LINKED_TO_CYBER_VISIBILITY_V0=true
 
 This contract records the primary-evidence enforcement posture for future run-like actions. It is intentionally non-authorizing and opt-in only.
 
@@ -76,6 +79,8 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 **Bounded observation mandatory closeout wiring (PE-4 guard) v0:** Shadow/Testnet bounded observation review (`review_*_bounded_observation_evidence_v0.py`, `--durable-run-root`, `validate_durable_primary_evidence_root()`), Paper bounded adapter (`run_paper_only_bounded_observation_adapter_v0.py`), and Scheduler completion closeout reference (`scheduler_completion_closeout_v0.json`) must satisfy §2a.1 durable primary evidence + manifest/checksum verify; `/tmp`-only insufficient; material closeout may reference `durable_closeout_copy_verify_v0.py`. Static guard: `tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py` (`PE4_BOUNDED_CLOSEOUT_LANE_MATRIX`). **Tests-only**; **does not** activate enforcement.
 
 **Gap4 ↔ Gap2a.1 dependency (PE-5 guard) v0:** Gap 4 output-evidence completion is invalid without §2a.1 durable primary evidence and manifest/checksum verification (`GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0`). See Gap 4 output/evidence paths criteria below. Static guard: `tests/ops/test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py`. **Tests-only**; **does not** activate enforcement.
+
+**Cyber ↔ ER artifact-retention crosslink (PE-6 guard) v0:** Cybersecurity visibility `artifact_retention_or_evidence_gap` histogram posture is linked to §2a.1 durable primary evidence / ER retention (`CYBER_VISIBILITY_ARTIFACTS_RETENTION_LINKED_TO_PRIMARY_EVIDENCE_V0`, `ER_ARTIFACT_RETENTION_LINKED_TO_CYBER_VISIBILITY_V0`). Defensive/derived/static only; no definitive cyber mapping without authoritative INPUT_JSONL. Crosslink: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` reciprocal histogram block. Static guard: `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`. **Tests-only**; **does not** activate enforcement.
 
 ### Reuse-first owner surfaces
 
@@ -89,6 +94,7 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 - `tests/ops/test_mandatory_durable_closeout_contract_v0.py`
 - `tests/ops/test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py`
 - `tests/ops/test_gap4_output_evidence_paths_contract_v0.py`
+- `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`
 - existing preflight contract §2a/§2a.1 surfaces
 - existing docs truth map / reference / token-policy checks
 
