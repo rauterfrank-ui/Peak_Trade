@@ -484,3 +484,44 @@ def test_cybersecurity_visibility_release_rc_v0_slice_cv1_mapping_guard_crosslin
     assert "CYBER_REAL_DATA_PII_BLOCKED=true" in text
     assert "NO_RUNTIME=true" in text
     assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
+
+
+CV3B_READOUT_HEADING = "### Defensive visibility readout / owner-triage guard v0 (SLICE-CV-3b)"
+CV3B_BLOCK_ANCHOR = "CV3B_DEFENSIVE_VISIBILITY_READOUT_OWNER_TRIAGE_GUARD_V0=true"
+DERIVED_MAPPING_PLAN_PROGRESS_MODULE = (
+    "tests/ci/test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py"
+)
+INVENTORY_CHARTER_MODULE = (
+    "tests/ci/test_cybersecurity_visibility_r_pending_inventory_charter_v0.py"
+)
+
+
+def _cv3b_readout_block(text: str) -> str:
+    start = text.index(CV3B_READOUT_HEADING)
+    end = text.index("Operators may use this histogram", start)
+    return text[start:end]
+
+
+def test_cybersecurity_visibility_cv3b_mapping_guard_readout_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    block = _cv3b_readout_block(text)
+    collapsed = block.lower()
+
+    assert CV3B_BLOCK_ANCHOR in block
+    assert THIS_MODULE in block
+    assert DERIVED_MAPPING_PLAN_PROGRESS_MODULE in block
+    assert INVENTORY_CHARTER_MODULE in block
+    assert "Retained risk table" in block
+    assert "mapped-by-derived-evidence" in collapsed
+    assert "definitive" in collapsed
+    assert "INPUT_JSONL_PROVIDED=false" in block
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in block
+    assert "non-authorizing" in collapsed
+
+    rows = _risk_table_rows(text)
+    for risk_id in ("R-001", "R-002", "R-007"):
+        _, status_cell = rows[risk_id]
+        assert "mapped-by-derived-evidence" in status_cell
+        assert status_cell.strip() != "mapped"
+
+    assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text

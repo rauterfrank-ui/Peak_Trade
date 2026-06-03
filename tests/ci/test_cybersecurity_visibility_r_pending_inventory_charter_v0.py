@@ -69,3 +69,35 @@ def test_cybersecurity_visibility_r_pending_charter_truth_map_crosslink_v0() -> 
     )
     assert "non-authorizing" in collapsed
     assert "r-001" in collapsed or "R-001" in truth_map
+
+
+CV3B_READOUT_HEADING = "### Defensive visibility readout / owner-triage guard v0 (SLICE-CV-3b)"
+CV3B_BLOCK_ANCHOR = "CV3B_DEFENSIVE_VISIBILITY_READOUT_OWNER_TRIAGE_GUARD_V0=true"
+MAPPING_GUARD_MODULE = "tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py"
+DERIVED_MAPPING_PLAN_MODULE = (
+    "tests/ci/test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py"
+)
+
+
+def _cv3b_readout_block(text: str) -> str:
+    start = text.index(CV3B_READOUT_HEADING)
+    end = text.index("Operators may use this histogram", start)
+    return text[start:end]
+
+
+def test_cybersecurity_visibility_cv3b_inventory_charter_readout_guard_v0() -> None:
+    text = CI_AUDIT_KNOWN_ISSUES.read_text(encoding="utf-8")
+    block = _cv3b_readout_block(text)
+    collapsed = block.lower()
+
+    assert CV3B_BLOCK_ANCHOR in block
+    assert THIS_MODULE in block
+    assert MAPPING_GUARD_MODULE in block
+    assert DERIVED_MAPPING_PLAN_MODULE in block
+    assert "Repo-static successor inventory charter" in block
+    assert "review-input only" in collapsed
+    assert "no r-001/r-002/r-007 rows" in collapsed
+    assert "REPO_STATIC_SUCCESSOR_DOES_NOT_CONTAIN_R001_R002_R007=true" in text
+    assert "INPUT_JSONL_PROVIDED=false" in block
+    assert "non-authorizing" in collapsed
+    assert "input_jsonl fabrication" in collapsed

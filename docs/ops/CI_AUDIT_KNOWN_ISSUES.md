@@ -284,6 +284,58 @@ SLICE_CV3A_DOCS_TESTS_ONLY=true
 
 Static guards: `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py`, `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`.
 
+### Defensive visibility readout / owner-triage guard v0 (SLICE-CV-3b)
+
+**Operator-GO:** `GO_SLICE_CV3B_DEFENSIVE_VISIBILITY_READOUT_OWNER_TRIAGE_GUARD_V0` · **Workstream:** `CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cv3b_defensive_visibility_readout_after_cv3a_v0_20260603T031905Z/` · **CV3A closeout (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_cv3a_csc_rchain_histogram_defensive_closure_merge_closeout_v0_20260603T031905Z/`
+
+**Purpose:** Statically guard **defensive visibility readouts** and **owner-triage** surfaces so operators cannot confuse review-input readouts with definitive mapping, offensive security automation, INPUT_JSONL fabrication, or runtime/scheduler/live authority. Builds on CV3A histogram closure routing; **no** new parallel surfaces.
+
+**Readout routing (static/derived only — not authorization):**
+
+| Readout surface | Posture | Static guard owner |
+|-----------------|---------|-------------------|
+| Retained risk table (R-001–R-007) | `mapped` (R-003–R-006) vs **`mapped-by-derived-evidence`** (R-001/R-002/R-007) vs definitive **`mapped`** **blocked** without authoritative INPUT_JSONL | `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py` |
+| Repo-static successor inventory charter | **review-input only**; no R-001/R-002/R-007 rows; no lossless equivalence | `tests/ci/test_cybersecurity_visibility_r_pending_inventory_charter_v0.py` |
+| Derived mapping plan progress / wave-1 closure | **plan progress only**; does **not** lift definitive mapping | `tests/ci/test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py` |
+| CV3A histogram closure routing | **complete** vs **deferred** preserved | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py` |
+| CSC-RCHAIN owner aggregates (258/413) | visibility readout only; **003a**/**003e** **BLOCKED** | `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py` |
+
+**Non-authorizing:** Tests-only; defensive/derived/static readouts only; does **not** authorize runtime/scheduler/daemon execution, workflow dispatch, Testnet/Live, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, enforcement activation, exploit/offensive automation, secret scanning against real secrets, INPUT_JSONL fabrication, definitive R-001/R-002/R-007 mapping, or CSC **003a**/**003e** touch.
+
+```text
+CV3B_DEFENSIVE_VISIBILITY_READOUT_OWNER_TRIAGE_GUARD_V0=true
+CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STARTED=true
+CV3A_COMPLETE=true
+CV3B_DEFENSIVE_VISIBILITY_READOUT_OWNER_TRIAGE_GUARD_COMPLETE=true
+DEFENSIVE_CYBER_ONLY=true
+DEFENSIVE_VISIBILITY_READOUT_STATIC_DERIVED_ONLY=true
+OWNER_TRIAGE_READOUT_NON_AUTHORIZING=true
+DEFINITIVE_CYBER_MAPPING_PERFORMED=false
+INPUT_JSONL_REQUIRED=false
+INPUT_JSONL_FABRICATED=false
+INPUT_JSONL_PROVIDED=false
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+MAPPED_BY_DERIVED_EVIDENCE_ONLY=true
+CSC_RCHAIN_V1_003A_BLOCKED=true
+CSC_RCHAIN_V1_003E_BLOCKED=true
+RUNTIME_AUTHORITY_ADDED=false
+SECRET_SCANNING_REAL_SECRETS=false
+REUSE_DRIFT_GUARD=REUSE_OK
+NO_PARALLEL_DOCS=true
+NO_PARALLEL_BUILDS=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+LIVE_TOUCHED=false
+ENFORCEMENT_ACTIVATED=false
+EXPLOIT_CODE_ADDED=false
+OFFENSIVE_AUTOMATION_ADDED=false
+SLICE_CV3B_TESTS_ONLY=true
+```
+
+Static guards: `tests/ci/test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py`, `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py`, `tests/ci/test_cybersecurity_visibility_r_pending_inventory_charter_v0.py`, `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`.
+
 Operators may use this histogram for **CI/Ops visibility triage** until a lossless row exists for each pending retained risk. **Do not** treat any `CSC-STATIC-v0-*` `candidate_id` as a substitute mapping for R-001/R-002/R-007 without restored lossless inventory or operator-approved triage.
 
 **Lossless recovery still required for definitive R-001/R-002/R-007 mapping:**
@@ -2737,7 +2789,8 @@ LIVE_TOUCHED=false
 | 1 | **SLICE-CV-1** | Docs-only: this release index + post-wave-1 status reflection (**this PR**) |
 | 2 | **SLICE-CV-2** | Tests-ci: static guard coherence — extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` modules only |
 | 3 | **SLICE-CV-3a** | Docs/tests: CSC-RCHAIN histogram defensive closure — extend existing `tests&#47;ci&#47;test_csc_rchain_*` and `tests&#47;ci&#47;test_cybersecurity_visibility_repo_static_histogram_*` only (**this PR**) |
-| 4 | **SLICE-CV-3** (optional follow-up) | Docs/tests: CSC-RCHAIN PR15 finalization reflection OR `docs_drift_or_pointer_integrity` bucket |
+| 4 | **SLICE-CV-3b** | Tests-ci: defensive visibility readout / owner-triage guard coverage — extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` only (**next PR**) |
+| 5 | **SLICE-CV-3** (optional follow-up) | Docs/tests: CSC-RCHAIN PR15 finalization reflection OR `docs_drift_or_pointer_integrity` bucket |
 
 **Operational rules:**
 
