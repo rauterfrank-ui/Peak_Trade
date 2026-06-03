@@ -2684,7 +2684,7 @@ PARALLEL_CYBER_INDEX_CREATED=false
 
 ## Ops Cockpit / Operator Status Index RC v0 — meta-index v0
 
-**Release:** `OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0` · **Status:** **CORE COMPLETE** (SLICE-OC-1 + SLICE-OC-2; OC-3 optional deferred) · **UTC:** 2026-06-02 · **Canonical repo owners (reuse — no parallel index):**
+**Release:** `OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0` · **Status:** **CORE COMPLETE** (SLICE-OC-1 + SLICE-OC-2 + SLICE-OC-3 pointer-only) · **UTC:** 2026-06-02 · **Canonical repo owners (reuse — no parallel index):**
 
 | Concern | Owner |
 |---------|-------|
@@ -2722,7 +2722,7 @@ PARALLEL_CYBER_INDEX_CREATED=false
 |-------|----------|-------|--------|
 | 1 | **SLICE-OC-1** | Docs-only: this meta-index + Ops Cockpit summary reflection | **complete** (#3908) |
 | 2 | **SLICE-OC-2** | Tests-ops: static guard for meta-index tokens in `tests&#47;ops&#47;test_ops_cockpit_payload_top_level_contract.py` and reciprocal docs-guard modules | **complete** (#3909) |
-| 3 | **SLICE-OC-3** (optional) | Docs-only: one-line trilogy pointer in `docs/webui/MARKET_SURFACE_V0.md` | **deferred** |
+| 3 | **SLICE-OC-3** | Docs-only: one-line trilogy pointer in `docs/webui/MARKET_SURFACE_V0.md` | **complete** (pointer-only closeout) |
 
 **Operational rules:**
 
