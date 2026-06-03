@@ -1891,3 +1891,130 @@ def test_csc_rchain_v1_005b_governed_reflection_fixtures_slice1_contract_v0() ->
     assert "36/36" in block
     for phrase in FORBIDDEN_AUTHORIZATION_PHRASES_005B_FIXTURES_SLICE1:
         assert phrase not in collapsed
+
+
+HISTOGRAM_DEFENSIVE_CLOSURE_HEADING = "### CSC-RCHAIN histogram defensive closure v0 (SLICE-CV-3a)"
+CV3A_PLANNING_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/next_larger_release_candidate_after_pe_rc_core_complete_v0_20260603T031800Z/"
+)
+ARTIFACT_RETENTION_HISTOGRAM_MODULE = (
+    "tests/ci/test_cybersecurity_visibility_repo_static_histogram_"
+    "artifact_retention_or_evidence_gap_crosslink_v0.py"
+)
+HISTOGRAM_CROSSLINK_OWNERS: tuple[str, ...] = (
+    "tests/ci/test_cybersecurity_visibility_repo_static_histogram_manual_dispatch_sensitive_surface_crosslink_v0.py",
+    "tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py",
+    "tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py",
+    "tests/ci/test_cybersecurity_visibility_repo_static_histogram_branch_environment_authority_crosslink_v0.py",
+    ARTIFACT_RETENTION_HISTOGRAM_MODULE,
+    "tests/ci/test_cybersecurity_visibility_repo_static_histogram_paid_ai_eval_gate_crosslink_v0.py",
+)
+CV3A_EXPECTED_MACHINE_LINES: dict[str, str] = {
+    "CSC_RCHAIN_HISTOGRAM_DEFENSIVE_CLOSURE_V0": "true",
+    "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STARTED": "true",
+    "CSC_RCHAIN_HISTOGRAM_DEFENSIVE_CLOSURE_COMPLETE": "true",
+    "DEFENSIVE_CYBER_ONLY": "true",
+    "DEFINITIVE_CYBER_MAPPING_PERFORMED": "false",
+    "INPUT_JSONL_REQUIRED": "false",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "CSC_RCHAIN_V1_003A_BLOCKED": "true",
+    "CSC_RCHAIN_V1_003E_BLOCKED": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+    "HISTOGRAM_BUCKET_CROSSLINKS_COMPLETE": "true",
+    "REUSE_DRIFT_GUARD": "REUSE_OK",
+    "NO_PARALLEL_DOCS": "true",
+    "NO_PARALLEL_BUILDS": "true",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "RUNTIME_STARTED": "false",
+    "SCHEDULER_STARTED": "false",
+    "LIVE_TOUCHED": "false",
+    "ENFORCEMENT_ACTIVATED": "false",
+    "EXPLOIT_CODE_ADDED": "false",
+    "OFFENSIVE_AUTOMATION_ADDED": "false",
+    "SLICE_CV3A_DOCS_TESTS_ONLY": "true",
+}
+CV3A_FORBIDDEN_PHRASES: tuple[str, ...] = (
+    "exploit payload added",
+    "offensive_automation_enabled=true",
+    "r-001 mapped",
+    "r-002 mapped",
+    "r-007 mapped",
+    "definitive mapping completed",
+)
+CV3A_FORBIDDEN_MACHINE_TRUE_LINES: tuple[str, ...] = (
+    "INPUT_JSONL_PROVIDED=true",
+    "READY_FOR_OPERATOR_ARMING=true",
+    "ENFORCEMENT_ACTIVATED=true",
+    "EXPLOIT_CODE_ADDED=true",
+    "OFFENSIVE_AUTOMATION_ADDED=true",
+    "PREFLIGHT_REMAINS_BLOCKED=false",
+)
+
+
+def _histogram_defensive_closure_block(text: str) -> str:
+    start = text.index(HISTOGRAM_DEFENSIVE_CLOSURE_HEADING)
+    end = text.index("**Lossless recovery still required", start)
+    return text[start:end]
+
+
+def _machine_line_values(block: str) -> dict[str, str]:
+    values: dict[str, str] = {}
+    for line in block.splitlines():
+        stripped = line.strip()
+        if "=" not in stripped or stripped.startswith("```"):
+            continue
+        key, _, value = stripped.partition("=")
+        values[key] = value
+    return values
+
+
+def test_csc_rchain_histogram_defensive_closure_v0() -> None:
+    text = _ci_audit_text()
+    block = _histogram_defensive_closure_block(text)
+    collapsed = block.lower()
+    machine_values = _machine_line_values(block)
+
+    assert "GO_SLICE_CV3A_CSC_RCHAIN_HISTOGRAM_DEFENSIVE_CLOSURE_V0" in block
+    assert "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0" in block
+    assert CV3A_PLANNING_BUNDLE in block
+    assert THIS_MODULE in block
+    assert ARTIFACT_RETENTION_HISTOGRAM_MODULE in block
+    assert "complete vs blocked/deferred" in collapsed
+    assert "defensive/derived/static" in collapsed or "defensive" in collapsed
+    assert "CSC-RCHAIN-v1-003a" in block
+    assert "CSC-RCHAIN-v1-003e" in block
+    assert "docs_drift_or_pointer_integrity" in block
+    assert "deferred" in collapsed
+    assert "258" in block
+    assert "413" in block
+    assert "non-authorizing" in collapsed
+
+    for owner in HISTOGRAM_CROSSLINK_OWNERS:
+        assert owner in block
+        assert (REPO_ROOT / owner).is_file(), f"missing histogram crosslink owner: {owner!r}"
+
+    for key, expected in CV3A_EXPECTED_MACHINE_LINES.items():
+        assert machine_values.get(key) == expected, (
+            f"CV3A closure {key}={machine_values.get(key)!r} expected {expected!r}"
+        )
+
+    accepted_line = next(
+        line for line in text.splitlines() if line.startswith("CSC_RCHAIN_V1_ACCEPTED_GROUPS=")
+    )
+    assert "CSC-RCHAIN-v1-003a" not in accepted_line
+    assert "CSC-RCHAIN-v1-003e" not in accepted_line
+
+    for phrase in CV3A_FORBIDDEN_PHRASES:
+        assert phrase not in collapsed
+
+    closure_lines = {line.strip() for line in block.splitlines()}
+    for marker in CV3A_FORBIDDEN_MACHINE_TRUE_LINES:
+        assert marker not in closure_lines
+
+    assert "exploit/offensive automation" in collapsed
+    assert "ready_for_operator_arming=true" in collapsed
+
+    assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
