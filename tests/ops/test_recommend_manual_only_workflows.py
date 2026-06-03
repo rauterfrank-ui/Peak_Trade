@@ -54,6 +54,11 @@ PRO_PRK_NIGHTLY_SELFCHECK_WORKFLOW = (
     REPO_ROOT / ".github" / "workflows" / "pro-prk-nightly-selfcheck.yml"
 )
 
+RESIDUAL_INVENTORY_COUNT = 13
+RESIDUAL_ACTIVE_SCHEDULE_COUNT = 12
+RESIDUAL_MANUAL_ONLY_COUNT = 1
+RESIDUAL_ALL_INTENT_MISLEADING_PHRASE = "13 workflows with active schedule"
+
 RESIDUAL_CI_OPS_FILES = frozenset({"ci.yml", "audit.yml", "pru-required-checks-drift-detector.yml"})
 
 PAPER_SHADOW_FILES = frozenset(
@@ -134,6 +139,27 @@ def test_recommender_does_not_invoke_gh(intent: str) -> None:
     assert "gh workflow run" in proc.stdout
 
 
+def test_residual_all_intent_label_inventory_split_v0() -> None:
+    proc = _run_cli("--list-intents")
+    assert proc.returncode == 0, proc.stderr
+    lowered = proc.stdout.lower()
+    assert RESIDUAL_ALL_INTENT_MISLEADING_PHRASE not in lowered
+    assert "13 inventory" in lowered
+    assert "12 active schedule" in lowered
+    assert "manual-only" in lowered
+
+    proc_json = _run_cli("--list-intents", "--json")
+    assert proc_json.returncode == 0, proc_json.stderr
+    payload = json.loads(proc_json.stdout)
+    row = next(r for r in payload["intents"] if r["id"] == "residual_all")
+    label = row["label"].lower()
+    assert RESIDUAL_ALL_INTENT_MISLEADING_PHRASE not in label
+    assert "13 inventory" in label
+    assert "12 active schedule" in label
+    assert "manual-only" in label
+    assert payload["residual_schedule_count"] == RESIDUAL_INVENTORY_COUNT
+
+
 def test_residual_all_json_covers_thirteen_without_duplicates() -> None:
     proc = _run_cli("--intent", "residual_all", "--json")
     assert proc.returncode == 0, proc.stderr
@@ -144,14 +170,21 @@ def test_residual_all_json_covers_thirteen_without_duplicates() -> None:
     assert payload["schedule_reactivation"] is False
     assert payload["executes_workflows"] is False
     assert payload["workflow_dispatch_executed"] is False
+    active_count = 0
+    manual_only_count = 0
     for rec in payload["recommendations"]:
         fname = rec["workflow_file"].split("/")[-1]
         assert rec["residual_scheduled_workflow"] is True
         if fname in GH001_MANUAL_ONLY_FORMER_RESIDUAL:
             assert rec["has_active_schedule"] is False
+            manual_only_count += 1
         else:
             assert rec["has_active_schedule"] is True
             assert "warning" in rec
+            active_count += 1
+    assert len(files) == RESIDUAL_INVENTORY_COUNT
+    assert active_count == RESIDUAL_ACTIVE_SCHEDULE_COUNT
+    assert manual_only_count == RESIDUAL_MANUAL_ONLY_COUNT
 
 
 def test_pro_prk_nightly_selfcheck_manual_only_yaml_shape() -> None:

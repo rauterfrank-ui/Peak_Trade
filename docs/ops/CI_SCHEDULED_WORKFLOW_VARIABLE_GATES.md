@@ -124,6 +124,8 @@ Fourteen ops/schedule workflows remain **active** on GitHub with **`workflow_dis
 
 **Re-enabling cron** requires a **separate PR** that restores `schedule:` in workflow YAML plus explicit **operator-GO** — not this recommender.
 
+**`residual_all` intent:** lists all **13** entries in `RESIDUAL_SCHEDULE_WORKFLOW_FILES` — **12** with active `schedule:` plus **1** manual-only (`pro-prk-nightly-selfcheck.yml`, GH-001); not “13 active schedules”.
+
 **Examples:**
 
 ```bash
