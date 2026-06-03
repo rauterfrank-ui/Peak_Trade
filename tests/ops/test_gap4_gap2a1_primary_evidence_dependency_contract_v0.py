@@ -24,6 +24,13 @@ GAP2A1_DRIFT_GUARD = (
     ROOT / "tests" / "ops" / "test_gap2a1_primary_evidence_enforcement_drift_guard_contract_v0.py"
 )
 HARDENING_OWNER = ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_source_contract_v0.py"
+HARD_GATE_TESTS = ROOT / "tests" / "ops" / "test_run_primary_evidence_retention_hard_gate_v0.py"
+BOUNDED_REVIEW_TESTS = (
+    ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_observation_review_durable_primary_evidence_contract_v0.py"
+)
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP4_SECTION_HEADER = "## Gap 4 Output/Evidence Paths Contract v0"
 GAP4_COMPLETENESS_REFLECTION_HEADER = "## Gap 4 Full-Scope Evidence Completeness Reflection v0"
@@ -100,6 +107,35 @@ CONFLATION_SAMPLE_LINES_MUST_NOT_LIFT_ENFORCEMENT = (
 
 CONFLATION_SAMPLE_ALLOWED_IN_COMPLETENESS_REFLECTION_ONLY = (
     "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
+)
+
+PE5_GAP4_GAP2A1_DEPENDENCY_MARKERS = (
+    "PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true",
+    "GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0=true",
+    "GAP4_COMPLETION_INVALID_WITHOUT_DURABLE_PRIMARY_EVIDENCE=true",
+    "GAP4_COMPLETION_INVALID_WITHOUT_MANIFEST_VERIFY=true",
+    "SLICE_PE4_COMPLETE=true",
+    "SLICE_PE5_TESTS_ONLY=true",
+)
+
+PE5_GAP2A1_RECIPROCAL_MARKERS = (
+    "PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true",
+    "GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0=true",
+)
+
+PE5_PREFLIGHT_SECTION_2A1_MARKERS = (
+    "PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true",
+    "GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0=true",
+    "TMP_ONLY_EVIDENCE_INVALID=true",
+    "MANIFEST_VERIFY_REQUIRED=true",
+    "CHECKSUM_VERIFY_REQUIRED=true",
+    "MANDATORY_DURABLE_CLOSEOUT_REQUIRED=true",
+)
+
+PE5_PE_CHAIN_MARKERS = (
+    "PE2_RUN_TYPE_GUARD_MATRIX",
+    "PE3_RUN_TYPE_APPLICABILITY_CONTRACT_V0=true",
+    "PE4_BOUNDED_OBSERVATION_MANDATORY_CLOSEOUT_WIRING_GUARD_V0=true",
 )
 
 
@@ -309,3 +345,71 @@ def test_gap4_gap2a1_dependency_owner_crosslinks_hardening_source_contract_v0() 
     lines = {line.strip() for line in text.splitlines()}
     assert ("GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED" + _MARKER_TRUE) not in lines
     assert ("GAP2A1_PRIMARY_EVIDENCE_ENFORCED" + _MARKER_TRUE) not in lines
+
+
+def test_pe5_gap4_section_documents_dependency_on_gap2a1_primary_evidence_v0() -> None:
+    gap4 = _gap4_section(_section5_text())
+    gap2a1 = _gap2a1_section(_section5_text())
+    for token in PE5_GAP4_GAP2A1_DEPENDENCY_MARKERS:
+        assert token in gap4
+    for token in PE5_GAP2A1_RECIPROCAL_MARKERS:
+        assert token in gap2a1
+    assert "Gap4 ↔ Gap2a.1 dependency" in gap4
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACT_V0" in gap4
+    assert "TMP_ONLY_EVIDENCE_INVALID" in gap4
+    assert "MANIFEST_VERIFY_REQUIRED" in gap4
+    assert "test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py" in gap4
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in gap4
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in gap4
+    gap4_lines = {line.strip() for line in gap4.splitlines()}
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" not in gap4_lines
+
+
+def test_pe5_preflight_section_2a1_gap4_output_evidence_dependency_guard_v0() -> None:
+    preflight = PREFLIGHT_CONTRACT.read_text(encoding="utf-8")
+    section = preflight.split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
+    for token in PE5_PREFLIGHT_SECTION_2A1_MARKERS:
+        assert token in section
+    assert "Gap4 output evidence ↔ Gap2a.1 dependency" in section
+    assert "GAP4_COMPLETION_INVALID_WITHOUT_DURABLE_PRIMARY_EVIDENCE" in section
+    assert "GAP4_COMPLETION_INVALID_WITHOUT_MANIFEST_VERIFY" in section
+    assert "test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py" in section
+    collapsed = section.replace("**", "")
+    assert "does not activate enforcement" in collapsed.lower()
+
+
+def test_pe5_gap4_completion_invalid_without_durable_primary_and_manifest_v0() -> None:
+    gap4 = _gap4_section(_section5_text())
+    preflight = PREFLIGHT_CONTRACT.read_text(encoding="utf-8")
+    assert "GAP4_COMPLETION_INVALID_WITHOUT_DURABLE_PRIMARY_EVIDENCE=true" in gap4
+    assert "GAP4_COMPLETION_INVALID_WITHOUT_MANIFEST_VERIFY=true" in gap4
+    assert "archived outside `/tmp`" in gap4
+    assert "checksum" in gap4.lower() or "checksummed" in gap4.lower()
+    assert "TMP_ONLY_EVIDENCE_INVALID" in preflight
+    assert TMP_CANNOT_SATISFY_DURABLE_EVIDENCE_CHAIN is True
+    assert MANIFEST_VERIFY_NOT_ENFORCEMENT is True
+
+
+def test_pe5_pe_chain_pe2_pe3_pe4_present_before_gap4_dependency_v0() -> None:
+    gap4 = _gap4_section(_section5_text())
+    gap2a1 = _gap2a1_section(_section5_text())
+    preflight = PREFLIGHT_CONTRACT.read_text(encoding="utf-8")
+    for marker in PE5_PE_CHAIN_MARKERS:
+        assert marker in gap2a1
+        assert marker in preflight
+    assert "SLICE_PE2_COMPLETE=true" in gap2a1
+    assert "SLICE_PE3_DOCS_TESTS_ONLY=true" in gap2a1
+    assert "SLICE_PE4_TESTS_ONLY=true" in gap2a1
+    assert "SLICE_PE5_TESTS_ONLY=true" in gap4
+
+
+def test_pe5_gap4_depends_on_gap2a1_owner_crosslinks_hard_gate_and_pe4_v0() -> None:
+    assert HARD_GATE_TESTS.is_file()
+    assert BOUNDED_REVIEW_TESTS.is_file()
+    hard_gate = HARD_GATE_TESTS.read_text(encoding="utf-8")
+    bounded = BOUNDED_REVIEW_TESTS.read_text(encoding="utf-8")
+    assert "PE2_RUN_TYPE_GUARD_MATRIX" in hard_gate
+    assert "PE4_BOUNDED_CLOSEOUT_LANE_MATRIX" in bounded
+    gap4 = _gap4_section(_section5_text())
+    assert HARD_GATE_TESTS.name in gap4
+    assert BOUNDED_REVIEW_TESTS.name in _gap2a1_section(_section5_text())

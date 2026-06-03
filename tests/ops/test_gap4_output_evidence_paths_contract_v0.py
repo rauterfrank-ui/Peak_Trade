@@ -16,6 +16,9 @@ DRIFT_GUARD_OWNER = (
 )
 HARDENING_MARKER = "SCHEDULER_DRY_RUN_HARDENING_SOURCE_CONTRACT_V0=true"
 HARD_GATE_OWNER = ROOT / "tests" / "ops" / "test_run_primary_evidence_retention_hard_gate_v0.py"
+GAP4_GAP2A1_DEPENDENCY_OWNER = (
+    ROOT / "tests" / "ops" / "test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py"
+)
 _MARKER_TRUE = "=true"
 
 
@@ -159,3 +162,19 @@ def test_gap4_output_evidence_paths_contract_governed_reflection_non_authorizing
     assert "GAP4_OUTPUT_EVIDENCE_ACCEPTED=true" in reflection_lines
     assert "GAP4_OUTPUT_EVIDENCE_ACCEPTED=true" not in criteria_lines
     assert "GAP4_OUTPUT_EVIDENCE_ACCEPTED=true" not in block_lines
+
+
+def test_gap4_pe5_output_evidence_depends_on_gap2a1_primary_evidence_v0() -> None:
+    section = _gap4_section(DOC.read_text(encoding="utf-8"))
+    for token in (
+        "PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true",
+        "GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0=true",
+        "GAP4_COMPLETION_INVALID_WITHOUT_DURABLE_PRIMARY_EVIDENCE=true",
+        "GAP4_COMPLETION_INVALID_WITHOUT_MANIFEST_VERIFY=true",
+        "SLICE_PE5_TESTS_ONLY=true",
+    ):
+        assert token in section
+    assert "Gap4 ↔ Gap2a.1 dependency" in section
+    assert GAP4_GAP2A1_DEPENDENCY_OWNER.name in section
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in section
+    assert GAP4_GAP2A1_DEPENDENCY_OWNER.is_file()

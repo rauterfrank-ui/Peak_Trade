@@ -86,6 +86,27 @@ def test_gap2a1_pe4_bounded_observation_mandatory_closeout_wiring_crosslink_v0()
     assert BOUNDED_REVIEW_TESTS.name in gap2a1
 
 
+def test_gap2a1_pe5_gap4_output_evidence_dependency_crosslink_v0() -> None:
+    section5 = DOC.read_text(encoding="utf-8")
+    preflight = PREFLIGHT.read_text(encoding="utf-8")
+    gap2a1 = section5.split("## §2a.1 Primary Evidence Enforcement Contract v0", 1)[1].split(
+        "## Gap 1 Execute Entrypoint Contract v0", 1
+    )[0]
+    gap4 = section5.split("## Gap 4 Output/Evidence Paths Contract v0", 1)[1].split(
+        "## Gap 6 Dry-Run Proof Criteria Contract v0", 1
+    )[0]
+    section_2a1 = preflight.split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
+    for token in (
+        "PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true",
+        "GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0=true",
+    ):
+        assert token in gap2a1
+        assert token in gap4
+        assert token in section_2a1
+    assert "test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py" in gap2a1
+    assert "Gap4 ↔ Gap2a.1 dependency" in gap2a1
+
+
 def test_gap2a1_primary_evidence_enforcement_contract_is_not_default_on():
     text = DOC.read_text(encoding="utf-8")
     section = text.split("## §2a.1 Primary Evidence Enforcement Contract v0", 1)[1].split(
