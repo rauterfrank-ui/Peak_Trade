@@ -3306,7 +3306,7 @@ When defensive/docs release trains (for example PE run-completion, CV3+, EER, OE
 - **Decision contract only** — **no** runtime, scheduler, daemon, Paper, Shadow, Testnet, or Live start from this slice.
 - **No enforcement activation** — `ENFORCEMENT_ACTIVATED=false`; `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`; `RETENTION_ENFORCEMENT_ACTIVATED=false`.
 - **No Preflight lift** — `PREFLIGHT_REMAINS_BLOCKED=true`; `READY_FOR_OPERATOR_ARMING=false`.
-- **Protected areas remain no-touch** — no `src/**`, `scripts/**` semantics change, `.github/workflows/**` batch edits, `config/**`, `templates/**`, Master V2 / Double Play logic, or Paper/Test data without separate explicit GO.
+- **Protected areas remain no-touch** — no `src&#47;**`, `scripts&#47;**` semantics change, `.github&#47;workflows&#47;**` batch edits, `config&#47;**`, `templates&#47;**`, Master V2 / Double Play logic, or Paper/Test data without separate explicit GO.
 - **Reuse-before-new** — extend this CI audit anchor and existing test surfaces; **no** parallel decision index, handoff hub, or readiness map.
 
 **Hard stop after PR1 (OPDS-2 gate):**
