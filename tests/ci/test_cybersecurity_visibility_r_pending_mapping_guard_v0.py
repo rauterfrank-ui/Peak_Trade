@@ -27,6 +27,15 @@ FENCED_BLOCK_RX = re.compile(r"```[^\n]*\n(.*?)```", re.DOTALL)
 REPO_TEST_OWNER_PATH_RX = re.compile(r"`(tests/(?:ci|ops|webui)/[A-Za-z0-9_./-]+\.py)`")
 HISTOGRAM_REUSE_PATH_RX = re.compile(r"Reuse `(tests/(?:ci|ops|webui)/[A-Za-z0-9_./-]+\.py)`")
 
+ADOPTION_BLOCK_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_OPERATOR_ACCEPTED_ARCHIVE_FULL_LOSSLESS_ADOPTION_V0=true"
+)
+ADOPTION_HEADING = (
+    "Pending R-001/R-002/R-007 — operator-accepted archive FULL_LOSSLESS governance adoption v0"
+)
+ARCHIVE_FULL_LOSSLESS_SHA256 = (
+    "eff5698370a8cd38cacf02325d81223ca667d4995bda8cfcb6435b5de5327f26"
+)
 CHARTER_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_R_PENDING_REPO_STATIC_INVENTORY_CHARTER_V0=true"
 INPUT_ARTIFACT_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_R_PENDING_INPUT_ARTIFACT_CONTRACT_V0=true"
 MAPPING_GUARD_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_R_PENDING_MAPPING_GUARD_V0=true"
@@ -559,3 +568,35 @@ def test_cybersecurity_visibility_cv3c_mapping_guard_report_crosslink_v0() -> No
     artifact_text = (REPO_ROOT / INPUT_ARTIFACT_MODULE).read_text(encoding="utf-8")
     assert CV3C_BLOCK_ANCHOR in artifact_text or CV3C_REPORT_HEADING in artifact_text
     assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
+
+
+def test_cybersecurity_visibility_archive_adoption_mapping_guard_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    adoption_block = _block_containing(text, ADOPTION_BLOCK_ANCHOR)
+    adoption_values = _machine_line_values(adoption_block)
+
+    assert ADOPTION_HEADING in text
+    assert ARCHIVE_FULL_LOSSLESS_SHA256 in text
+    assert adoption_values["NOT_ORIGINAL_TMP_FULL_LOSSLESS"] == "true"
+    assert adoption_values["DERIVED_ONLY_USED_AS_AUTHORITY"] == "false"
+    assert adoption_values["INPUT_JSONL_PROVIDED"] == "false"
+    assert adoption_values["LOSSLESS_JSONL_RECOVERY"] == "false"
+    assert adoption_values["DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED"] == "true"
+    assert adoption_values["FORBIDS_ORIGINAL_TMP_RECOVERY_CLAIM"] == "true"
+
+    assert "Pending R-001/R-002/R-007 — mapping guard v0" in text
+    assert "cannot be documented or tested as **recovered**" in text
+
+    rows = _risk_table_rows(text)
+    for risk_id, (expected_owner, derived_id) in DERIVED_EVIDENCE_MAPPED_RISKS.items():
+        owner_cell, status_cell = rows[risk_id]
+        _assert_derived_evidence_mapped_row(
+            owner_cell,
+            status_cell,
+            expected_owner=expected_owner,
+            derived_id=derived_id,
+        )
+
+    assert "original recovered" not in collapsed.replace("not be claimed recovered", "")
+    assert "does not** use `DERIVED_LOSSLESS_RISK_CANDIDATES_FROM_CSC_RCHAIN_EVIDENCE.jsonl` as authority" in text
