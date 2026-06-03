@@ -975,4 +975,7 @@ def test_cybersecurity_visibility_cv3b_readout_slice_guard_owner_crosslink_v0() 
     assert CV3B_BLOCK_ANCHOR in text
     assert THIS_MODULE in text
     assert MAPPING_GUARD_MODULE in text
-    assert "extend existing" in release_section.lower() or "test_cybersecurity_visibility_" in release_section
+    assert (
+        "extend existing" in release_section.lower()
+        or "test_cybersecurity_visibility_" in release_section
+    )
