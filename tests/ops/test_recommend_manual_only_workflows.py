@@ -56,7 +56,7 @@ RESIDUAL_SCHEDULE_FILES = frozenset(
     }
 )
 
-# SLICE-GH-001..004 + GH-CI + PRCC + PRK/PRBD Option2: schedule removed; other triggers retained.
+# SLICE-GH-001..004 + GH-CI + PRCC + PRK/PRBD Option2 + PRBJ Option B: schedule removed; other triggers retained.
 GH001_MANUAL_ONLY_FORMER_RESIDUAL = frozenset(
     {
         "ci.yml",
@@ -66,6 +66,7 @@ GH001_MANUAL_ONLY_FORMER_RESIDUAL = frozenset(
         "pru-required-checks-drift-detector.yml",
         "prcc-aws-export-smoke.yml",
         "prk-prj-status-report.yml",
+        "prbj-testnet-exec-events.yml",
     }
 )
 CI_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "ci.yml"
@@ -81,8 +82,8 @@ PRU_REQUIRED_CHECKS_DRIFT_DETECTOR_WORKFLOW = (
 )
 
 RESIDUAL_INVENTORY_COUNT = 13
-RESIDUAL_ACTIVE_SCHEDULE_COUNT = 6
-RESIDUAL_MANUAL_ONLY_COUNT = 7
+RESIDUAL_ACTIVE_SCHEDULE_COUNT = 5
+RESIDUAL_MANUAL_ONLY_COUNT = 8
 RESIDUAL_ALL_INTENT_MISLEADING_PHRASE = "13 workflows with active schedule"
 
 RESIDUAL_CI_OPS_FILES = frozenset({"ci.yml", "audit.yml", "pru-required-checks-drift-detector.yml"})
@@ -182,7 +183,7 @@ def test_residual_all_intent_label_inventory_split_v0() -> None:
     lowered = proc.stdout.lower()
     assert RESIDUAL_ALL_INTENT_MISLEADING_PHRASE not in lowered
     assert "13 inventory" in lowered
-    assert "6 active schedule" in lowered
+    assert "5 active schedule" in lowered
     assert "manual-only" in lowered
 
     proc_json = _run_cli("--list-intents", "--json")
@@ -192,7 +193,7 @@ def test_residual_all_intent_label_inventory_split_v0() -> None:
     label = row["label"].lower()
     assert RESIDUAL_ALL_INTENT_MISLEADING_PHRASE not in label
     assert "13 inventory" in label
-    assert "6 active schedule" in label
+    assert "5 active schedule" in label
     assert "manual-only" in label
     assert payload["residual_schedule_count"] == RESIDUAL_INVENTORY_COUNT
 
@@ -279,6 +280,16 @@ def test_prcc_aws_export_smoke_manual_only_yaml_shape() -> None:
 
 
 PRK_PRJ_STATUS_REPORT_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "prk-prj-status-report.yml"
+PRBJ_TESTNET_EXEC_EVENTS_WORKFLOW = (
+    REPO_ROOT / ".github" / "workflows" / "prbj-testnet-exec-events.yml"
+)
+
+
+def test_prbj_testnet_exec_events_manual_only_yaml_shape() -> None:
+    """PRBJ Option B: cron removed; dispatch retained (signed testnet policy)."""
+    text = PRBJ_TESTNET_EXEC_EVENTS_WORKFLOW.read_text(encoding="utf-8")
+    assert "workflow_dispatch" in text
+    assert "schedule:" not in text
 
 
 def test_prk_prj_status_report_manual_only_yaml_shape() -> None:

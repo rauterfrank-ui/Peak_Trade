@@ -124,7 +124,7 @@ Fourteen ops/schedule workflows remain **active** on GitHub with **`workflow_dis
 
 **Re-enabling cron** requires a **separate PR** that restores `schedule:` in workflow YAML plus explicit **operator-GO** — not this recommender.
 
-**`residual_all` intent:** lists all **13** entries in `RESIDUAL_SCHEDULE_WORKFLOW_FILES` — **8** with active `schedule:` plus **5** manual-only (GH-001..004 + GH-CI); not “13 active schedules”.
+**`residual_all` intent:** lists all **13** entries in `RESIDUAL_SCHEDULE_WORKFLOW_FILES` — **5** with active `schedule:` plus **8** manual-only (GH-001..004 + GH-CI + PRCC + PRK + PRBJ); not “13 active schedules”.
 
 **Examples:**
 
@@ -150,7 +150,7 @@ AI-adjacent workflows (`infostream-automation`, `market_outlook_automation`) may
 | **SLICE-GH-001** | Single-workflow manual-only: `.github&#47;workflows&#47;pro-prk-nightly-selfcheck.yml` | **complete** (#3911) |
 | **SLICE-GH-CI** | Single-workflow manual-only: `.github&#47;workflows&#47;ci.yml` | **pending PR** (GH-CI slice) |
 
-**Post GH-001..004 + GH-CI schedule posture:** **5** residual inventory workflows are manual-only (`ci.yml`, `pro-prk-nightly-selfcheck.yml`, `real-market-forward-evidence-smoke.yml`, `audit.yml`, `pru-required-checks-drift-detector.yml`); **`workflow_dispatch`** and other non-schedule triggers retained per workflow. Among `RESIDUAL_SCHEDULE_WORKFLOW_FILES`, **8** retain active `schedule:`. **No batch YAML wave.**
+**Post GH-001..004 + GH-CI + PRCC + PRK/PRBD + PRBJ Option B schedule posture:** **8** residual inventory workflows are manual-only (`ci.yml`, `pro-prk-nightly-selfcheck.yml`, `real-market-forward-evidence-smoke.yml`, `audit.yml`, `pru-required-checks-drift-detector.yml`, `prcc-aws-export-smoke.yml`, `prk-prj-status-report.yml`, `prbj-testnet-exec-events.yml`); **`workflow_dispatch`** and other non-schedule triggers retained per workflow. Among `RESIDUAL_SCHEDULE_WORKFLOW_FILES`, **5** retain active `schedule:`. **No batch YAML wave.**
 
 **Governance boundaries:**
 
