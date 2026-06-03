@@ -75,6 +75,11 @@ from src.live.run_logging import (
     generate_run_id,
 )
 from src.orders.base import OrderRequest, OrderExecutionResult
+from src.ops.wallclock_session_evidence_v0 import (
+    WALLCLOCK_EVIDENCE_FILENAME,
+    WallClockSessionTracker,
+    write_wallclock_evidence,
+)
 from src.orders.testnet_executor import (
     TestnetExchangeOrderExecutor,
     EnvironmentNotTestnetError,
@@ -336,6 +341,8 @@ class TestnetSession:
         self._shutdown_requested = False
         self._last_signal: int = 0
         self._price_buffer: List[Dict[str, Any]] = []
+        self._wallclock_tracker: Optional[WallClockSessionTracker] = None
+        self._wallclock_evidence: Optional[Dict[str, Any]] = None
 
         # Signal Handler
         self._original_sigint_handler = None
@@ -631,6 +638,7 @@ class TestnetSession:
         """
         end_time = time.time() + (minutes * 60)
         all_results: List[OrderExecutionResult] = []
+        self._wallclock_tracker = WallClockSessionTracker.begin(minutes * 60)
 
         _emit_exec_event_safe(
             event_type="session_start",
@@ -670,6 +678,7 @@ class TestnetSession:
             level="info",
             msg=f"testnet session end symbol={self._session_config.symbol}",
         )
+        self._emit_wallclock_evidence()
         self._log_session_summary()
 
         if self._run_logger:
@@ -700,9 +709,25 @@ class TestnetSession:
             f"  Executor Mode: {executor_summary['mode']}"
         )
 
+    def _emit_wallclock_evidence(self) -> None:
+        if self._wallclock_tracker is None:
+            return
+        early_exit = self._shutdown_requested
+        early_reason = "shutdown_requested" if early_exit else ""
+        self._wallclock_evidence = self._wallclock_tracker.finalize(
+            early_exit_detected=early_exit,
+            early_exit_reason=early_reason,
+        )
+        self._wallclock_tracker = None
+        if self._run_logger is not None:
+            write_wallclock_evidence(
+                self._run_logger.run_dir / WALLCLOCK_EVIDENCE_FILENAME,
+                self._wallclock_evidence,
+            )
+
     def get_execution_summary(self) -> Dict[str, Any]:
         """Gibt eine Zusammenfassung der Session zurueck."""
-        return {
+        summary: Dict[str, Any] = {
             "session_metrics": self._metrics.to_dict(),
             "executor_summary": self._executor.get_execution_summary(),
             "config": {
@@ -711,6 +736,9 @@ class TestnetSession:
                 "poll_interval": self._session_config.poll_interval_seconds,
             },
         }
+        if self._wallclock_evidence is not None:
+            summary["wallclock_evidence"] = self._wallclock_evidence
+        return summary
 
 
 # =============================================================================
