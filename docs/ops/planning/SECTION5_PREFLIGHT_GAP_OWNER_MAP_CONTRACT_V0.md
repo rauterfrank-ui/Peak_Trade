@@ -82,6 +82,8 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 
 **Cyber ↔ ER artifact-retention crosslink (PE-6 guard) v0:** Cybersecurity visibility `artifact_retention_or_evidence_gap` histogram posture is linked to §2a.1 durable primary evidence / ER retention (`CYBER_VISIBILITY_ARTIFACTS_RETENTION_LINKED_TO_PRIMARY_EVIDENCE_V0`, `ER_ARTIFACT_RETENTION_LINKED_TO_CYBER_VISIBILITY_V0`). Defensive/derived/static only; no definitive cyber mapping without authoritative INPUT_JSONL. Crosslink: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` reciprocal histogram block. Static guard: `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`. **Tests-only**; **does not** activate enforcement.
 
+**Repo-native bounded Testnet order-cap contract (PE-7 guard) v0:** Closes the documented `repo_native_bounded_order_cap_contract_residual` gap at contract/evaluator layer only. Canonical offline evaluator: `src/ops/bounded_testnet_order_cap_contract_v0.py` (`BOUNDED_TESTNET_ORDER_CAP_CONTRACT_V0=true`). Static guard: `tests/ops/test_repo_native_bounded_order_cap_contract_v0.py`. `scripts/run_testnet_session.py` retains `REPO_NATIVE_BOUNDED_ORDER_CAP_CLI_WIRING_PENDING=true`; entrypoint CLI cap flags remain deferred. **Tests-only + contract module**; **does not** authorize Testnet execute, **does not** wire exchange calls, **does not** lift preflight.
+
 ### Reuse-first owner surfaces
 
 - `scripts/ops/primary_evidence_retention_v0.py`
@@ -95,6 +97,8 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 - `tests/ops/test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py`
 - `tests/ops/test_gap4_output_evidence_paths_contract_v0.py`
 - `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`
+- `src/ops/bounded_testnet_order_cap_contract_v0.py`
+- `tests/ops/test_repo_native_bounded_order_cap_contract_v0.py`
 - existing preflight contract §2a/§2a.1 surfaces
 - existing docs truth map / reference / token-policy checks
 
