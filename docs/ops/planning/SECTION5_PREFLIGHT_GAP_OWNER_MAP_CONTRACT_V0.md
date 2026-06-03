@@ -352,52 +352,6 @@ This contract records criteria only. It does not execute `scripts/run_scheduler.
 
 This contract does not grant a Type-2 waiver, does not execute or claim a stop-tool rehearsal, does not accept or verify stop proof, and does not change Risk/KillSwitch or runtime stop authority. It does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not enable or modify `config/scheduler/jobs.toml`, and does not authorize runtime, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
 
-## Gap 2 Canonical Job Set Contract v0
-
-GAP2_CANONICAL_JOB_SET_CONTRACT_V0=true
-GAP2_CRITERIA_ONLY=true
-GAP2_CANONICAL_JOB_SET_VERIFIED=false
-GAP2_JOB_SET_ENABLED=false
-GAP2_JOBS_TOML_CHANGED=false
-GAP2_SCHEDULER_EXECUTION_AUTHORIZED=false
-GAP2_RUNTIME_APPROVED=false
-GAP2_JOB_SET_DEFAULT_ON=false
-PATH_B_LIFT_DISCUSSION_READY=false
-PREFLIGHT_REMAINS_BLOCKED=true
-READY_FOR_OPERATOR_ARMING=false
-RUNTIME_APPROVED=false
-
-This is a docs/tests-only criteria contract. It prepares future canonical job-set boundary criteria only. `config/scheduler/jobs.toml` is referenced as a boundary surface only. It does not modify `config/scheduler/jobs.toml`, does not enable any scheduler job, does not verify or activate a canonical job set, does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not approve runtime execution, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, and does not lift Path B. Current status remains criteria-only, not verified, not job-enabled, not scheduler-authorized, and not runtime-approved.
-
-Gap 1 remains the entrypoint boundary. Gap 3 remains the canonical command-text contract. Gap 4 remains the durable output/evidence path contract. Gap 5 remains the stop criteria-only contract. Gap 6 remains the dry-run proof criteria-only contract.
-
-### Reuse-first owner surfaces
-
-- `scripts/run_scheduler.py`
-- `config/scheduler/jobs.toml`
-- `scripts/ops/primary_evidence_retention_v0.py`
-- `scripts/ops/durable_closeout_copy_verify_v0.py`
-- `tests/ops/test_paper_shadow_247_runtime_scheduler_job_config_v0.py`
-- `tests/ops/test_paper_shadow_247_preflight_contract_v0.py`
-- `tests/ops/test_scheduler_boundary_hard_block_contract_v0.py`
-- existing docs truth map / reference / token-policy checks
-
-### Future canonical job-set boundary criteria (planning only; not verified or enabled in this contract)
-
-Any future canonical job-set boundary considered for preflight job-set dimensions must satisfy criteria through existing reuse-first surfaces:
-
-1. **Job-definition boundary (read-only)** — `config/scheduler/jobs.toml` is the canonical job-definition surface; criteria name job classes/tags in-scope for bounded dry-run planning vs explicitly out-of-scope without enabling jobs or mutating `enabled` fields.
-2. **No enablement** — criteria do not authorize changing `enabled` fields, starting scheduler loops, or claiming the job set is active.
-3. **Orthogonality to Gap 6** — dry-run proof acceptance remains Gap 6 criteria-only; this contract does not accept dry-run proof or RC=0 for job-set paths.
-4. **Dependency chain** — Gap 1 entrypoint, Gap 3 command text, Gap 4 durable evidence, Gap 5 stop criteria, and Gap 6 dry-run proof criteria remain authoritative for their domains.
-5. **Durable evidence** — any future job-set evidence must be durable, archived outside `/tmp`, checksummed, manifest-verified, and linked through existing reuse-first evidence/closeout surfaces (`primary_evidence_retention_v0.py`, `durable_closeout_copy_verify_v0.py`).
-
-This contract records criteria only. It does not execute `scripts/run_scheduler.py` and does not treat any archive or prior job inventory as canonical job set verified here.
-
-### Non-authorization
-
-This contract does not modify `config/scheduler/jobs.toml`, does not enable any scheduler job, does not verify or activate a canonical job set, does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not approve runtime execution, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
-
 ## Gap 7 Risk Boundary Criteria Contract v0
 
 GAP7_RISK_BOUNDARY_CRITERIA_CONTRACT_V0=true
@@ -1370,6 +1324,52 @@ Static guard: `tests/ops/test_tier_c_shadow_durable_evidence_crosslink_contract_
 - does not set `PREFLIGHT_REMAINS_BLOCKED=false` or lift Shadow-HOLD
 - does not recommend or start Testnet, Paper 24/7, Shadow 24/7, scheduler loops, or Live
 - does not touch paper test data, `src/`, `jobs.toml`, workflows, or risk configs
+
+## Gap 2 Canonical Job Set Contract v0
+
+GAP2_CANONICAL_JOB_SET_CONTRACT_V0=true
+GAP2_CRITERIA_ONLY=true
+GAP2_CANONICAL_JOB_SET_VERIFIED=false
+GAP2_JOB_SET_ENABLED=false
+GAP2_JOBS_TOML_CHANGED=false
+GAP2_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP2_RUNTIME_APPROVED=false
+GAP2_JOB_SET_DEFAULT_ON=false
+PATH_B_LIFT_DISCUSSION_READY=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+RUNTIME_APPROVED=false
+
+This is a docs/tests-only criteria contract. It prepares future canonical job-set boundary criteria only. `config/scheduler/jobs.toml` is referenced as a boundary surface only. It does not modify `config/scheduler/jobs.toml`, does not enable any scheduler job, does not verify or activate a canonical job set, does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not approve runtime execution, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, and does not lift Path B. Current status remains criteria-only, not verified, not job-enabled, not scheduler-authorized, and not runtime-approved.
+
+Gap 1 remains the entrypoint boundary. Gap 3 remains the canonical command-text contract. Gap 4 remains the durable output/evidence path contract. Gap 5 remains the stop criteria-only contract. Gap 6 remains the dry-run proof criteria-only contract.
+
+### Reuse-first owner surfaces
+
+- `scripts/run_scheduler.py`
+- `config/scheduler/jobs.toml`
+- `scripts/ops/primary_evidence_retention_v0.py`
+- `scripts/ops/durable_closeout_copy_verify_v0.py`
+- `tests/ops/test_paper_shadow_247_runtime_scheduler_job_config_v0.py`
+- `tests/ops/test_paper_shadow_247_preflight_contract_v0.py`
+- `tests/ops/test_scheduler_boundary_hard_block_contract_v0.py`
+- existing docs truth map / reference / token-policy checks
+
+### Future canonical job-set boundary criteria (planning only; not verified or enabled in this contract)
+
+Any future canonical job-set boundary considered for preflight job-set dimensions must satisfy criteria through existing reuse-first surfaces:
+
+1. **Job-definition boundary (read-only)** — `config/scheduler/jobs.toml` is the canonical job-definition surface; criteria name job classes/tags in-scope for bounded dry-run planning vs explicitly out-of-scope without enabling jobs or mutating `enabled` fields.
+2. **No enablement** — criteria do not authorize changing `enabled` fields, starting scheduler loops, or claiming the job set is active.
+3. **Orthogonality to Gap 6** — dry-run proof acceptance remains Gap 6 criteria-only; this contract does not accept dry-run proof or RC=0 for job-set paths.
+4. **Dependency chain** — Gap 1 entrypoint, Gap 3 command text, Gap 4 durable evidence, Gap 5 stop criteria, and Gap 6 dry-run proof criteria remain authoritative for their domains.
+5. **Durable evidence** — any future job-set evidence must be durable, archived outside `/tmp`, checksummed, manifest-verified, and linked through existing reuse-first evidence/closeout surfaces (`primary_evidence_retention_v0.py`, `durable_closeout_copy_verify_v0.py`).
+
+This contract records criteria only. It does not execute `scripts/run_scheduler.py` and does not treat any archive or prior job inventory as canonical job set verified here.
+
+### Non-authorization
+
+This contract does not modify `config/scheduler/jobs.toml`, does not enable any scheduler job, does not verify or activate a canonical job set, does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not approve runtime execution, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
 
 ## Final Machine Lines
 
