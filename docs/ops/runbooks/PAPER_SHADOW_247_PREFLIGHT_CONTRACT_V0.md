@@ -88,7 +88,18 @@ MANIFEST_VERIFY_REQUIRED=true
 CLOSEOUT_REFERENCE_REQUIRED=true
 RUN_INCOMPLETE_WITHOUT_PRIMARY_EVIDENCE=true
 EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
+PE3_RUN_TYPE_APPLICABILITY_CONTRACT_V0=true
+PE3_RUN_TYPE_MATRIX_DOCS_ANCHOR_V0=true
+SLICE_PE2_COMPLETE=true
+SLICE_PE3_DOCS_TESTS_ONLY=true
+PRIMARY_EVIDENCE_REQUIRED_FOR_RUN_COMPLETION=true
+RUN_COMPLETION_INVALID_WITHOUT_DURABLE_PRIMARY_EVIDENCE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
 ```
+
+**Run-type applicability (run completion contract) v0:** The following lanes require durable primary evidence for **run completion** to be valid (docs/tests contract only; enforcement remains opt-in): **Paper**, **Shadow**, **Testnet**, **Live/Canary**, **bounded trial** (bounded observation/pilot adapters), **Scheduler** completion closeout, **Supervisor** evidence-pack closeout. Each lane: durable archive **outside `/tmp`**, `MANIFEST.sha256` verified (checksum manifest), closeout reference when applicable; **`/tmp`-only is insufficient**; **run completion is invalid** without durable primary evidence. Static guard matrix: `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py` (`PE2_RUN_TYPE_GUARD_MATRIX`). Crosslink: `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` §2a.1. **Does not** activate enforcement, **does not** lift Preflight **BLOCKED**, **does not** set `READY_FOR_OPERATOR_ARMING=true`.
 
 Every future **Paper**, **Shadow**, **Testnet**, **Live/Canary**, **Scheduler**, **Supervisor**, **Daemon**, **Smoke**, **bounded trial**, and **runtime adapter** path is **incomplete and invalid** for gate, readiness, or promotion decisions unless **all** of the following hold at run closeout:
 

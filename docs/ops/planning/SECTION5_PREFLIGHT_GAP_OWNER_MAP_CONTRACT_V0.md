@@ -55,8 +55,18 @@ PATH_B_LIFT_DISCUSSION_READY=false
 PREFLIGHT_REMAINS_BLOCKED=true
 READY_FOR_OPERATOR_ARMING=false
 RUNTIME_APPROVED=false
+PE3_RUN_TYPE_APPLICABILITY_CONTRACT_V0=true
+PE3_RUN_TYPE_MATRIX_DOCS_ANCHOR_V0=true
+SLICE_PE2_COMPLETE=true
+SLICE_PE3_DOCS_TESTS_ONLY=true
+PRIMARY_EVIDENCE_REQUIRED_FOR_RUN_COMPLETION=true
+RUN_COMPLETION_INVALID_WITHOUT_DURABLE_PRIMARY_EVIDENCE=true
 
 This contract records the primary-evidence enforcement posture for future run-like actions. It is intentionally non-authorizing and opt-in only.
+
+### Run-type applicability (Preflight §2a.1 crosslink) v0
+
+Preflight §2a.1 documents run-type applicability for **run completion**: Paper, Shadow, Testnet, Live/Canary, bounded trial (bounded observation/pilot), Scheduler completion closeout, Supervisor evidence-pack closeout. Requirements: durable primary evidence outside `/tmp`, `MANIFEST.sha256` verified, closeout reference when applicable; `/tmp`-only insufficient; run completion invalid without durable primary evidence. Contract-backed static guard: `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py` (`PE2_RUN_TYPE_GUARD_MATRIX`). Canonical prose: `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` §2a.1. **Does not** enable default enforcement, **does not** lift preflight, **does not** approve runtime or arming.
 
 ### Reuse-first owner surfaces
 
@@ -64,6 +74,8 @@ This contract records the primary-evidence enforcement posture for future run-li
 - `scripts/ops/durable_closeout_copy_verify_v0.py`
 - `scripts/run_scheduler.py`
 - `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py`
+- `tests/ops/test_paper_shadow_247_preflight_contract_v0.py`
+- `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py`
 - existing preflight contract §2a/§2a.1 surfaces
 - existing docs truth map / reference / token-policy checks
 

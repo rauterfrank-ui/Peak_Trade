@@ -125,3 +125,51 @@ def test_scheduler_config_exposes_read_only_paper_shadow_247_preflight_job_only(
 
     lowered = jobs_text.lower()
     assert "run_shadow_paper_session" not in lowered
+
+
+def _section_2a1(text: str) -> str:
+    return text.split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
+
+
+def test_preflight_section_2a1_pe3_run_type_applicability_contract_v0() -> None:
+    text = _read_contract()
+    section = _section_2a1(text)
+    for token in (
+        "PE3_RUN_TYPE_APPLICABILITY_CONTRACT_V0=true",
+        "PE3_RUN_TYPE_MATRIX_DOCS_ANCHOR_V0=true",
+        "SLICE_PE2_COMPLETE=true",
+        "SLICE_PE3_DOCS_TESTS_ONLY=true",
+        "PRIMARY_EVIDENCE_REQUIRED_FOR_RUN_COMPLETION=true",
+        "RUN_COMPLETION_INVALID_WITHOUT_DURABLE_PRIMARY_EVIDENCE=true",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "READY_FOR_OPERATOR_ARMING=false",
+        "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
+    ):
+        assert token in section
+    for run_type in (
+        "Paper",
+        "Shadow",
+        "Testnet",
+        "Live/Canary",
+        "bounded trial",
+        "Scheduler",
+        "Supervisor",
+    ):
+        assert run_type in section
+    assert "PE2_RUN_TYPE_GUARD_MATRIX" in section
+    assert "/tmp`-only is insufficient" in section or "`/tmp`-only is insufficient" in section
+    assert "MANIFEST.sha256" in section
+    collapsed = section.replace("**", "")
+    assert "Does not activate enforcement" in collapsed
+    assert "READY_FOR_OPERATOR_ARMING=false" in section
+    assert "set `READY_FOR_OPERATOR_ARMING=true`." in section
+    assert "does not** set `READY_FOR_OPERATOR_ARMING=true`" in section
+
+
+def test_preflight_section_2a1_run_completion_requires_durable_primary_evidence_v0() -> None:
+    section = _section_2a1(_read_contract())
+    assert "RUN_INCOMPLETE_WITHOUT_PRIMARY_EVIDENCE=true" in section
+    assert "TMP_ONLY_EVIDENCE_INVALID=true" in section
+    assert "MANIFEST_VERIFY_REQUIRED=true" in section
+    assert "FUTURE_RUNS_REQUIRE_DURABLE_ARCHIVE_ROOT=true" in section
+    assert "incomplete and invalid" in section
