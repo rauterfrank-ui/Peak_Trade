@@ -35,6 +35,7 @@ WICHTIG:
     - Default: validate_only=true (Orders werden validiert, nicht ausgefuehrt)
     - Keine echten Live-Trades in Phase 35!
     - RUN_TESTNET_SESSION_ALLOWED_NOW=false (defense-in-depth; kein normaler Testnet-Run)
+    - REPO_NATIVE_BOUNDED_ORDER_CAP_CLI_WIRING_PENDING=true (bounded order-cap CLI deferred)
     - Session-Execute erfordert --duration oder explizites --allow-unbounded-session
 
 Zum Beenden: Ctrl+C (SIGINT) oder SIGTERM
