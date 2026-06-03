@@ -143,14 +143,13 @@ def evaluate_bounded_order_cap_evidence(
     result["order_attempt_cap_pass"] = (
         order_attempts is not None and order_attempts <= spec.max_order_attempts
     )
-    result["real_order_cap_pass"] = (
-        real_orders is not None and real_orders <= spec.max_real_orders
-    )
+    result["real_order_cap_pass"] = real_orders is not None and real_orders <= spec.max_real_orders
     result["cancel_close_cap_pass"] = (
         cancel_attempts is not None and cancel_attempts <= spec.max_cancel_attempts
     )
     result["notional_cap_pass"] = (
-        notional is not None and notional <= spec.max_notional_eur
+        notional is not None
+        and notional <= spec.max_notional_eur
         and evidence.get("order_notional_within_cap") is True
     )
     result["position_flatten_pass"] = evidence.get("position_flattened_by_end") is True
