@@ -56,15 +56,17 @@ RESIDUAL_SCHEDULE_FILES = frozenset(
     }
 )
 
-# SLICE-GH-001..004: schedule removed; other triggers retained (inventory unchanged).
+# SLICE-GH-001..004 + GH-CI: schedule removed; other triggers retained (inventory unchanged).
 GH001_MANUAL_ONLY_FORMER_RESIDUAL = frozenset(
     {
+        "ci.yml",
         "pro-prk-nightly-selfcheck.yml",
         "real-market-forward-evidence-smoke.yml",
         "audit.yml",
         "pru-required-checks-drift-detector.yml",
     }
 )
+CI_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "ci.yml"
 PRO_PRK_NIGHTLY_SELFCHECK_WORKFLOW = (
     REPO_ROOT / ".github" / "workflows" / "pro-prk-nightly-selfcheck.yml"
 )
@@ -77,8 +79,8 @@ PRU_REQUIRED_CHECKS_DRIFT_DETECTOR_WORKFLOW = (
 )
 
 RESIDUAL_INVENTORY_COUNT = 13
-RESIDUAL_ACTIVE_SCHEDULE_COUNT = 9
-RESIDUAL_MANUAL_ONLY_COUNT = 4
+RESIDUAL_ACTIVE_SCHEDULE_COUNT = 8
+RESIDUAL_MANUAL_ONLY_COUNT = 5
 RESIDUAL_ALL_INTENT_MISLEADING_PHRASE = "13 workflows with active schedule"
 
 RESIDUAL_CI_OPS_FILES = frozenset({"ci.yml", "audit.yml", "pru-required-checks-drift-detector.yml"})
@@ -178,7 +180,7 @@ def test_residual_all_intent_label_inventory_split_v0() -> None:
     lowered = proc.stdout.lower()
     assert RESIDUAL_ALL_INTENT_MISLEADING_PHRASE not in lowered
     assert "13 inventory" in lowered
-    assert "9 active schedule" in lowered
+    assert "8 active schedule" in lowered
     assert "manual-only" in lowered
 
     proc_json = _run_cli("--list-intents", "--json")
@@ -188,7 +190,7 @@ def test_residual_all_intent_label_inventory_split_v0() -> None:
     label = row["label"].lower()
     assert RESIDUAL_ALL_INTENT_MISLEADING_PHRASE not in label
     assert "13 inventory" in label
-    assert "9 active schedule" in label
+    assert "8 active schedule" in label
     assert "manual-only" in label
     assert payload["residual_schedule_count"] == RESIDUAL_INVENTORY_COUNT
 
@@ -218,6 +220,16 @@ def test_residual_all_json_covers_thirteen_without_duplicates() -> None:
     assert len(files) == RESIDUAL_INVENTORY_COUNT
     assert active_count == RESIDUAL_ACTIVE_SCHEDULE_COUNT
     assert manual_only_count == RESIDUAL_MANUAL_ONLY_COUNT
+
+
+def test_ci_manual_only_yaml_shape() -> None:
+    """GH-CI: cron removed; dispatch and PR/push/merge_group retained."""
+    text = CI_WORKFLOW.read_text(encoding="utf-8")
+    assert "workflow_dispatch" in text
+    assert "schedule:" not in text
+    assert "pull_request:" in text
+    assert "push:" in text
+    assert "merge_group:" in text
 
 
 def test_pro_prk_nightly_selfcheck_manual_only_yaml_shape() -> None:

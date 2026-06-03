@@ -55,7 +55,7 @@ MANUAL_ONLY_WORKFLOW_FILES: frozenset[str] = frozenset(
 # Related downstream workflow (dispatch-only; schedule commented in YAML).
 PAPER_TEST_EVIDENCE_FILE = "paper_tests_audit_evidence.yml"
 
-# Residual schedule inventory (13 files): 9 active schedule + 4 manual-only (GH-001..004).
+# Residual schedule inventory (13 files): 8 active schedule + 5 manual-only (GH-001..004 + GH-CI).
 RESIDUAL_SCHEDULE_WORKFLOW_FILES: frozenset[str] = frozenset(
     {
         "audit.yml",
@@ -78,7 +78,7 @@ RESIDUAL_INTENT_LABELS: dict[str, str] = {
     "residual_ci_ops": "Residual scheduled CI core / audit / PR-U drift (do not batch-remove)",
     "residual_scorecard_chain": "Residual PR-B / PR-K nightly scorecard and evidence chain",
     "residual_data_smoke": "Residual high-frequency market forward evidence smoke",
-    "residual_all": "13 inventory workflows (9 active schedule + 4 manual-only; read-only)",
+    "residual_all": "13 inventory workflows (8 active schedule + 5 manual-only; read-only)",
 }
 
 RESIDUAL_INTENT_TO_FILES: dict[str, tuple[str, ...]] = {
@@ -256,11 +256,11 @@ STATIC_META: dict[str, dict[str, Any]] = {
 
 RESIDUAL_STATIC_META: dict[str, dict[str, Any]] = {
     "ci.yml": {
-        "why": "Weekly full Python matrix (supplements PR/push/merge_group).",
-        "risk": "HIGH — redundant weekly full matrix; required-gate hybrid — do not remove schedule without explicit GO.",
+        "why": "Full Python matrix on PR/push/merge_group/workflow_dispatch (schedule removed GH-CI).",
+        "risk": "HIGH — required-gate hybrid; schedule manual-only; dispatch/PR paths unchanged.",
         "variable_gates": "",
         "ai": False,
-        "residual_schedule": True,
+        "residual_schedule": False,
     },
     "audit.yml": {
         "why": "Weekly pip-audit + PR report validation (supplements PR runs).",
