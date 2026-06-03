@@ -41,6 +41,11 @@ ARTIFACT_RETENTION_CROSSLINK_TESTS = (
     / "test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py"
 )
 RECIPROCAL_CROSSLINK_MARKER = "CYBERSECURITY_VISIBILITY_ARTIFACT_RETENTION_DURABLE_PRIMARY_EVIDENCE_RECIPROCAL_CROSSLINK_V0=true"
+PE6_CYBER_ER_CROSSLINK_MARKERS: tuple[str, ...] = (
+    "PE6_CYBER_ER_ARTIFACT_RETENTION_CROSSLINK_V0=true",
+    "CYBER_VISIBILITY_ARTIFACTS_RETENTION_LINKED_TO_PRIMARY_EVIDENCE_V0=true",
+    "ER_ARTIFACT_RETENTION_LINKED_TO_CYBER_VISIBILITY_V0=true",
+)
 _MARKER_TRUE = "=true"
 ER_RELEASE_RC_INDEX_HEADING = "### Evidence Durable Closeout Retention RC v0 — index v0"
 ER_RELEASE_RC_BLOCK_ANCHOR = "EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0=true"
@@ -719,6 +724,42 @@ def test_invariant_owner_crosslinks_cybersecurity_artifact_retention_histogram_v
     assert RECIPROCAL_CROSSLINK_MARKER in crosslink_text
     assert HARD_GATE_CONTRACT_TESTS.is_file()
     assert Path(__file__).name in HARD_GATE_CONTRACT_TESTS.read_text(encoding="utf-8")
+
+    ci_lines = {line.strip() for line in ci_audit.splitlines()}
+    assert ("INPUT_JSONL_PROVIDED" + _MARKER_TRUE) not in ci_lines
+    assert ("R001_R002_R007_MAPPING_COMPLETED" + _MARKER_TRUE) not in ci_lines
+
+
+def test_pe6_invariant_owner_cyber_er_defensive_reciprocal_retention_guard_v0() -> None:
+    ci_audit = (REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(encoding="utf-8")
+    section5 = (
+        REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
+    ).read_text(encoding="utf-8")
+    gap2a1 = section5.split("## §2a.1 Primary Evidence Enforcement Contract v0", 1)[1].split(
+        "## Gap 1 Execute Entrypoint Contract v0", 1
+    )[0]
+    preflight_er = (
+        _owner_text()
+        .split("### Evidence Durable Closeout Retention RC v0", 1)[1]
+        .split("## 2b.", 1)[0]
+    )
+
+    for token in PE6_CYBER_ER_CROSSLINK_MARKERS:
+        assert token in ci_audit
+        assert token in gap2a1
+        assert token in preflight_er
+
+    crosslink_text = ARTIFACT_RETENTION_CROSSLINK_TESTS.read_text(encoding="utf-8")
+    assert "PE6_CYBER_ER_ARTIFACT_RETENTION_CROSSLINK_V0=true" in crosslink_text
+    assert "defensive/derived/static" in ci_audit.lower()
+    assert "CYBER_VISIBILITY_ARTIFACTS_DEFENSIVE_DERIVED_STATIC_ONLY=true" in ci_audit
+    assert "artifact_retention_or_evidence_gap" in ci_audit
+    assert HARD_GATE_CONTRACT_TESTS.is_file()
+    assert THIS_MODULE in HARD_GATE_CONTRACT_TESTS.read_text(encoding="utf-8")
+    assert "TMP_ONLY_EVIDENCE_INVALID" in _owner_text()
+    assert "MANIFEST_VERIFY_REQUIRED" in _owner_text()
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in preflight_er
+    assert "READY_FOR_OPERATOR_ARMING=false" in preflight_er
 
     ci_lines = {line.strip() for line in ci_audit.splitlines()}
     assert ("INPUT_JSONL_PROVIDED" + _MARKER_TRUE) not in ci_lines

@@ -107,6 +107,39 @@ def test_gap2a1_pe5_gap4_output_evidence_dependency_crosslink_v0() -> None:
     assert "Gap4 ↔ Gap2a.1 dependency" in gap2a1
 
 
+def test_gap2a1_pe6_cyber_er_artifact_retention_crosslink_v0() -> None:
+    section5 = DOC.read_text(encoding="utf-8")
+    preflight = PREFLIGHT.read_text(encoding="utf-8")
+    ci_audit = (ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(encoding="utf-8")
+    gap2a1 = section5.split("## §2a.1 Primary Evidence Enforcement Contract v0", 1)[1].split(
+        "## Gap 1 Execute Entrypoint Contract v0", 1
+    )[0]
+    er_index = preflight.split("### Evidence Durable Closeout Retention RC v0", 1)[1].split(
+        "## 2b.", 1
+    )[0]
+    cyber_crosslink = (
+        ROOT
+        / "tests"
+        / "ci"
+        / "test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py"
+    )
+    for token in (
+        "PE6_CYBER_ER_ARTIFACT_RETENTION_CROSSLINK_V0=true",
+        "CYBER_VISIBILITY_ARTIFACTS_RETENTION_LINKED_TO_PRIMARY_EVIDENCE_V0=true",
+        "ER_ARTIFACT_RETENTION_LINKED_TO_CYBER_VISIBILITY_V0=true",
+    ):
+        assert token in gap2a1
+        assert token in ci_audit
+        assert token in er_index
+    assert "Cyber ↔ ER artifact-retention crosslink" in gap2a1
+    assert cyber_crosslink.name in gap2a1
+    assert cyber_crosslink.is_file()
+    assert "INPUT_JSONL_PROVIDED=false" in ci_audit
+    assert "defensive/derived/static" in ci_audit.lower()
+    collapsed = gap2a1.replace("**", "")
+    assert "does not activate enforcement" in collapsed.lower()
+
+
 def test_gap2a1_primary_evidence_enforcement_contract_is_not_default_on():
     text = DOC.read_text(encoding="utf-8")
     section = text.split("## §2a.1 Primary Evidence Enforcement Contract v0", 1)[1].split(

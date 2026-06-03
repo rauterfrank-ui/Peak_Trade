@@ -557,6 +557,36 @@ def test_pe5_hard_gate_crosslinks_gap4_gap2a1_dependency_owner_v0() -> None:
     assert gap4_gap2a1.name in section or "gap4_gap2a1" in section.lower()
 
 
+def test_pe6_hard_gate_cyber_er_artifact_retention_crosslink_v0() -> None:
+    ci_audit = (REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(encoding="utf-8")
+    preflight = _owner_text()
+    er_index = preflight.split("### Evidence Durable Closeout Retention RC v0", 1)[1].split(
+        "## 2b.", 1
+    )[0]
+    section_2a1 = _section_2a1()
+    owner_text = Path(__file__).read_text(encoding="utf-8")
+    crosslink_text = ARTIFACT_RETENTION_CROSSLINK_TESTS.read_text(encoding="utf-8")
+
+    for token in (
+        "PE6_CYBER_ER_ARTIFACT_RETENTION_CROSSLINK_V0=true",
+        "CYBER_VISIBILITY_ARTIFACTS_RETENTION_LINKED_TO_PRIMARY_EVIDENCE_V0=true",
+        "ER_ARTIFACT_RETENTION_LINKED_TO_CYBER_VISIBILITY_V0=true",
+    ):
+        assert token in ci_audit
+        assert token in er_index
+    assert "TMP_ONLY_EVIDENCE_INVALID=true" in section_2a1
+    assert "MANIFEST_VERIFY_REQUIRED=true" in section_2a1
+    assert RECIPROCAL_CROSSLINK_MARKER in ci_audit
+    assert ARTIFACT_RETENTION_CROSSLINK_TESTS.name in owner_text
+    assert Path(__file__).name in crosslink_text
+    assert "PE2_RUN_TYPE_GUARD_MATRIX" in owner_text
+    assert "PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true" in owner_text
+    assert "INPUT_JSONL_PROVIDED=false" in ci_audit
+    assert "CYBER_VISIBILITY_ARTIFACTS_DEFENSIVE_DERIVED_STATIC_ONLY=true" in ci_audit
+    ci_lines = {line.strip() for line in ci_audit.splitlines()}
+    assert ("INPUT_JSONL_PROVIDED" + _MARKER_TRUE) not in ci_lines
+
+
 @pytest.mark.skipif(not COPY_CHECK.is_file(), reason="operator archive copy-check not present")
 def test_operator_copy_check_confirms_missing_source_when_present() -> None:
     text = COPY_CHECK.read_text(encoding="utf-8")

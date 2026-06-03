@@ -274,7 +274,7 @@ Cross-reference: [Runtime Lane Taxonomy + Authority Levels Contract v0](../specs
 | Primary evidence hard gate guard | `tests&#47;ops&#47;test_run_primary_evidence_retention_hard_gate_v0.py` |
 | Durable closeout copy/verify guard | `tests&#47;ops&#47;test_durable_closeout_copy_verify_v0.py` |
 | Mandatory durable closeout contract guard | `tests&#47;ops&#47;test_mandatory_durable_closeout_contract_v0.py` |
-| CI audit reciprocal retention crosslink (read-only pointer) | `docs&#47;ops&#47;CI_AUDIT_KNOWN_ISSUES.md` — artifact_retention_or_evidence_gap histogram (**pointer only — no ER SSOT duplication**) |
+| CI audit reciprocal retention crosslink (PE-6 guard; read-only) | `docs&#47;ops&#47;CI_AUDIT_KNOWN_ISSUES.md` — `artifact_retention_or_evidence_gap` histogram linked to §2a.1 durable primary evidence / ER retention (`PE6_CYBER_ER_ARTIFACT_RETENTION_CROSSLINK_V0`); defensive/derived/static only; **no ER SSOT duplication**; static guard: `tests&#47;ci&#47;test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py` |
 
 **Release scope (complete):** **2 PRs** merged (**docs/tests/tooling-only**) — primary evidence retention (§2a/§2a.1), mandatory durable closeout (§2b.1), and existing helper/guard ownership consolidated without runtime, S3/rclone, or new parallel evidence surfaces.
 
@@ -310,10 +310,15 @@ Cross-reference: [Runtime Lane Taxonomy + Authority Levels Contract v0](../specs
 - **Preflight remains BLOCKED** — `PRE_FLIGHT_BLOCKED_LIFTED=false`; `PREFLIGHT_REMAINS_BLOCKED=true`; this release index does **not** authorize future runs, does **not** set `READY_FOR_OPERATOR_ARMING`, and does **not** clear **STOP_IDLE**.
 - **Reuse-before-new** — extend this Preflight owner and existing helper/guard modules; **no** parallel evidence index, readiness map, or handoff surface.
 - **Canonical remains repo + durable Evidence Archive** — external archive paths are operator pointers only.
-- **Do not start SLICE-ER-3** without proven Preflight↔CI histogram drift; CI audit carries pointer-only crosslinks by design.
+- **Do not start SLICE-ER-3** without proven Preflight↔CI histogram drift; CI audit carries reciprocal crosslinks by design (PE-6 strengthens Cyber↔ER artifact-retention guard; still non-authorizing).
+
+**Cyber ↔ ER artifact-retention crosslink (PE-6 guard) v0:** CI audit `artifact_retention_or_evidence_gap` visibility is linked to §2a.1 durable primary evidence and ER closeout retention posture — defensive/derived/static only; `/tmp`-only insufficient; manifest/checksum verify required for valid completion semantics; no definitive R-001/R-002/R-007 mapping without authoritative INPUT_JSONL. Static guard: `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`. **Does not** activate enforcement or arming.
 
 ```text
 EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0=true
+PE6_CYBER_ER_ARTIFACT_RETENTION_CROSSLINK_V0=true
+CYBER_VISIBILITY_ARTIFACTS_RETENTION_LINKED_TO_PRIMARY_EVIDENCE_V0=true
+ER_ARTIFACT_RETENTION_LINKED_TO_CYBER_VISIBILITY_V0=true
 SLICE_ER1_COMPLETE=true
 SLICE_ER2_COMPLETE=true
 SLICE_ER3_DEFERRED=true
