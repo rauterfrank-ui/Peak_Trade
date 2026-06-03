@@ -1169,6 +1169,55 @@ This governed repo-reflection block records operator-authorized Gap-7 risk-bound
 
 Evidence verification is not runtime authorization. The Gap 7 Governed Risk Boundary Acceptance Reflection v0 block above remains scoped acceptance only and unchanged.
 
+## Gap 4 Governed Output Evidence Paths Verified Final-Line Reflection v0
+
+GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true
+GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=false
+GAP4_OUTPUT_EVIDENCE_OPT_IN_ONLY=true
+ACCEPTED_MODE=GAP4_OUTPUT_EVIDENCE_PATHS_SCOPED_EXTERNAL_VERIFICATION_FINAL_LINE_VERIFIED
+GOVERNED_ACCEPTANCE_BASIS=GAP4_OUTPUT_EVIDENCE_ACCEPTED=true
+EXTERNAL_OUTPUT_EVIDENCE_PATHS_VERIFICATION_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_output_evidence_paths_verification_v0_20260601T010200Z/
+EXTERNAL_COMPLETENESS_VERIFICATION_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_full_scope_evidence_completeness_verification_v0_20260601T010600Z/
+GOVERNED_REPO_REFLECTION_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/external_gap4_output_evidence_governed_repo_reflection_charter_v0_20260531T201151Z/
+INPUT_STRATEGY_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/section5_remaining_gaps_closure_strategy_no_lift_v0_20260603T160500Z/
+INPUT_GAP7_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr3966_gap7_risk_boundary_final_line_reflection_post_merge_closeout_v0_20260603T161613Z/
+INPUT_GAP5_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr3967_gap5_stop_proof_final_line_reflection_post_merge_closeout_v0_20260603T162700Z/
+OPERATOR_GO=GO_GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED_FINAL_LINE_REPO_REFLECTION_DOCS_TESTS_V0
+NO_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+FULL_SCOPE_GAP4_VERIFIED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This governed repo-reflection block records operator-authorized Gap-4 output-evidence-paths **final-line verification** only. It propagates `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true` to Final Machine Lines based on existing scoped external output evidence path verification and full-scope completeness acceptance. External acceptance records remain pointer-based and subordinate to repo governance.
+
+### Verified final-line scope (allowed only)
+
+- external output evidence paths verification bundle MANIFEST_VERIFY_RC=0 per acceptance record
+- full-scope completeness verification confirms REQ-A/B/C lineage and populated paths
+- `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true` in **Final Machine Lines only**
+- Gap 4 Output/Evidence Paths Contract v0 block remains criteria-only with `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false`
+
+### Non-authority boundary (verified final-line reflection does not imply)
+
+- does not modify Gap-4 criteria block verification posture (`GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false` in criteria unchanged)
+- does not set `FULL_SCOPE_GAP4_VERIFIED=true` in criteria or Final Machine Lines
+- does not set `GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=true`
+- does not enforce Gap-2a.1 primary evidence
+- does not verify Gap-5 stop proof beyond existing final-line acceptance (remains `GAP5_STOP_PROOF_ACCEPTED=true` from PR #3967)
+- does not verify Gap-7 risk boundaries beyond existing final-line verification (remains `GAP7_RISK_BOUNDARY_VERIFIED=true` from PR #3966)
+- does not authorize scheduler execution
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not set `ALL_GAPS_CLOSED=true`
+- does not lift preflight
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+
+Evidence verification is not runtime authorization. The Gap 4 Full-Scope Evidence Completeness Reflection v0 and Gap 4 Governed Output Evidence Acceptance Reflection v0 blocks above remain scoped acceptance only and unchanged.
+
 ## Final Machine Lines
 
 SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true
@@ -1196,7 +1245,7 @@ GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
 GAP2A1_ENFORCEMENT_DEFAULT_ON=false
 GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true
 GAP4_OUTPUT_EVIDENCE_PATHS_CONTRACT_V0=true
-GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false
+GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true
 GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=false
 GAP4_OUTPUT_EVIDENCE_OPT_IN_ONLY=true
 GAP4_DURABLE_OUTPUT_REQUIRED_FOR_FUTURE_RUNS=true

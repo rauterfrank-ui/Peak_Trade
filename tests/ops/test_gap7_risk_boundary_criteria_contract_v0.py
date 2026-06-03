@@ -8,6 +8,9 @@ GAP7_GOVERNED_REFLECTION_HEADER = "## Gap 7 Governed Risk Boundary Acceptance Re
 GAP7_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
     "## Gap 7 Governed Risk Boundary Verified Final-Line Reflection v0"
 )
+GAP4_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 4 Governed Output Evidence Paths Verified Final-Line Reflection v0"
+)
 GAP5_GOVERNED_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP7_PARALLEL_MARKERS = (
@@ -33,7 +36,7 @@ def _gap7_governed_reflection_section(text: str) -> str:
 
 def _gap7_verified_final_line_reflection_section(text: str) -> str:
     return text.split(GAP7_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
-        FINAL_MACHINE_LINES_HEADER, 1
+        GAP4_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1
     )[0]
 
 

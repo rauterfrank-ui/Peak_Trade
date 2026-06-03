@@ -48,7 +48,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "GAP5_STOP_REHEARSAL_EXECUTED=false",
     "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP5_TYPE2_WAIVER_GRANTED=false",
-    "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false",
+    "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
 )
 
@@ -65,7 +65,6 @@ DRIFT_GUARD_FORBIDDEN_GAP5_REPO_TOKENS = (
     "ALL_GAPS_CLOSED=true",
     "READY_FOR_OPERATOR_ARMING=true",
     "PREFLIGHT_REMAINS_BLOCKED=false",
-    "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
 )
 
@@ -238,7 +237,7 @@ def test_gap5_stop_criteria_drift_guard_preflight_toml_stop_commands_inventory_o
 
 def test_gap5_stop_criteria_drift_guard_gap4_gap6_tokens_untouched_v0() -> None:
     block = _final_machine_lines(_section5_text())
-    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
