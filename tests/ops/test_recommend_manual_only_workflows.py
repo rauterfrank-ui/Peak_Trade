@@ -56,12 +56,13 @@ RESIDUAL_SCHEDULE_FILES = frozenset(
     }
 )
 
-# SLICE-GH-001/002/003: schedule removed; other triggers retained (inventory unchanged).
+# SLICE-GH-001..004: schedule removed; other triggers retained (inventory unchanged).
 GH001_MANUAL_ONLY_FORMER_RESIDUAL = frozenset(
     {
         "pro-prk-nightly-selfcheck.yml",
         "real-market-forward-evidence-smoke.yml",
         "audit.yml",
+        "pru-required-checks-drift-detector.yml",
     }
 )
 PRO_PRK_NIGHTLY_SELFCHECK_WORKFLOW = (
@@ -71,10 +72,13 @@ REAL_MARKET_FORWARD_EVIDENCE_SMOKE_WORKFLOW = (
     REPO_ROOT / ".github" / "workflows" / "real-market-forward-evidence-smoke.yml"
 )
 AUDIT_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "audit.yml"
+PRU_REQUIRED_CHECKS_DRIFT_DETECTOR_WORKFLOW = (
+    REPO_ROOT / ".github" / "workflows" / "pru-required-checks-drift-detector.yml"
+)
 
 RESIDUAL_INVENTORY_COUNT = 13
-RESIDUAL_ACTIVE_SCHEDULE_COUNT = 10
-RESIDUAL_MANUAL_ONLY_COUNT = 3
+RESIDUAL_ACTIVE_SCHEDULE_COUNT = 9
+RESIDUAL_MANUAL_ONLY_COUNT = 4
 RESIDUAL_ALL_INTENT_MISLEADING_PHRASE = "13 workflows with active schedule"
 
 RESIDUAL_CI_OPS_FILES = frozenset({"ci.yml", "audit.yml", "pru-required-checks-drift-detector.yml"})
@@ -174,7 +178,7 @@ def test_residual_all_intent_label_inventory_split_v0() -> None:
     lowered = proc.stdout.lower()
     assert RESIDUAL_ALL_INTENT_MISLEADING_PHRASE not in lowered
     assert "13 inventory" in lowered
-    assert "10 active schedule" in lowered
+    assert "9 active schedule" in lowered
     assert "manual-only" in lowered
 
     proc_json = _run_cli("--list-intents", "--json")
@@ -184,7 +188,7 @@ def test_residual_all_intent_label_inventory_split_v0() -> None:
     label = row["label"].lower()
     assert RESIDUAL_ALL_INTENT_MISLEADING_PHRASE not in label
     assert "13 inventory" in label
-    assert "10 active schedule" in label
+    assert "9 active schedule" in label
     assert "manual-only" in label
     assert payload["residual_schedule_count"] == RESIDUAL_INVENTORY_COUNT
 
@@ -238,6 +242,16 @@ def test_audit_manual_only_yaml_shape() -> None:
     assert "pull_request:" in text
     assert "push:" in text
     assert "merge_group:" in text
+
+
+def test_pru_required_checks_drift_detector_manual_only_yaml_shape() -> None:
+    """GH-004: cron removed; dispatch and path-filtered pull_request retained."""
+    text = PRU_REQUIRED_CHECKS_DRIFT_DETECTOR_WORKFLOW.read_text(encoding="utf-8")
+    assert "workflow_dispatch" in text
+    assert "schedule:" not in text
+    assert "pull_request:" in text
+    assert "config/ci/required_status_checks.json" in text
+    assert ".github/workflows/**" in text
 
 
 def test_residual_ci_ops_intent_count() -> None:
@@ -353,7 +367,7 @@ def test_github_workflows_active_schedule_allowlist_drift_guard_v0() -> None:
 
 
 def test_residual_active_schedule_allowlist_each_has_schedule_v0() -> None:
-    """Each of the 10 residual cron workflows must still expose schedule in on block."""
+    """Each of the 9 residual cron workflows must still expose schedule in on block."""
     pytest.importorskip("yaml")
     for fname in sorted(RESIDUAL_ACTIVE_SCHEDULE_ALLOWLIST):
         rec = _parse_workflow_file(fname)
