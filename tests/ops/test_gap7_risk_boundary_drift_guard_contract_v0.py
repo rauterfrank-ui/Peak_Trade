@@ -27,6 +27,9 @@ GAP7_GOVERNED_REFLECTION_HEADER = "## Gap 7 Governed Risk Boundary Acceptance Re
 GAP7_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
     "## Gap 7 Governed Risk Boundary Verified Final-Line Reflection v0"
 )
+GAP4_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 4 Governed Output Evidence Paths Verified Final-Line Reflection v0"
+)
 GAP5_GOVERNED_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
 _MARKER_TRUE = "=true"
 
@@ -65,7 +68,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
-    "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false",
+    "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
 )
 
 DRIFT_GUARD_FORBIDDEN_GAP7_REPO_TOKENS = (
@@ -132,7 +135,7 @@ def _gap7_governed_reflection_section(text: str) -> str:
 
 def _gap7_verified_final_line_reflection_section(text: str) -> str:
     return text.split(GAP7_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
-        FINAL_MACHINE_LINES_HEADER, 1
+        GAP4_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1
     )[0]
 
 
@@ -355,7 +358,7 @@ def test_gap7_drift_guard_governed_reflection_scoped_acceptance_v0() -> None:
     assert "criteria-only" in criteria
     assert "not verified" in criteria
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
-    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
     assert "PATH_B_LIFT_DISCUSSION_READY=false" in block
