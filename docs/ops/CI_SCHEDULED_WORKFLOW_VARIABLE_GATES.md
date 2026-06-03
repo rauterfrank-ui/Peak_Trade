@@ -124,7 +124,7 @@ Fourteen ops/schedule workflows remain **active** on GitHub with **`workflow_dis
 
 **Re-enabling cron** requires a **separate PR** that restores `schedule:` in workflow YAML plus explicit **operator-GO** — not this recommender.
 
-**`residual_all` intent:** lists all **13** entries in `RESIDUAL_SCHEDULE_WORKFLOW_FILES` — **12** with active `schedule:` plus **1** manual-only (`pro-prk-nightly-selfcheck.yml`, GH-001); not “13 active schedules”.
+**`residual_all` intent:** lists all **13** entries in `RESIDUAL_SCHEDULE_WORKFLOW_FILES` — **8** with active `schedule:` plus **5** manual-only (GH-001..004 + GH-CI); not “13 active schedules”.
 
 **Examples:**
 
@@ -148,8 +148,9 @@ AI-adjacent workflows (`infostream-automation`, `market_outlook_automation`) may
 |-------|-------|--------|
 | **SLICE-GH-0** | Docs-only governance start | **complete** (#3910) |
 | **SLICE-GH-001** | Single-workflow manual-only: `.github&#47;workflows&#47;pro-prk-nightly-selfcheck.yml` | **complete** (#3911) |
+| **SLICE-GH-CI** | Single-workflow manual-only: `.github&#47;workflows&#47;ci.yml` | **pending PR** (GH-CI slice) |
 
-**Post #3911 schedule posture:** `.github&#47;workflows&#47;pro-prk-nightly-selfcheck.yml` has **no** active `schedule:`; **`workflow_dispatch`** retained. Among workflows listed in `scripts&#47;ops&#47;recommend_manual_only_workflows.py` (`RESIDUAL_SCHEDULE_WORKFLOW_FILES`), **12** retain active `schedule:` and **1** (`pro-prk-nightly-selfcheck.yml`) is manual-only. **All other 11 active residuals remain unchanged** beyond GH-001; **no batch YAML wave.**
+**Post GH-001..004 + GH-CI schedule posture:** **5** residual inventory workflows are manual-only (`ci.yml`, `pro-prk-nightly-selfcheck.yml`, `real-market-forward-evidence-smoke.yml`, `audit.yml`, `pru-required-checks-drift-detector.yml`); **`workflow_dispatch`** and other non-schedule triggers retained per workflow. Among `RESIDUAL_SCHEDULE_WORKFLOW_FILES`, **8** retain active `schedule:`. **No batch YAML wave.**
 
 **Governance boundaries:**
 
@@ -174,7 +175,8 @@ GH_SCHEDULE_GOVERNANCE_MINIMAL_RC_V0_CORE_DONE=true
 SLICE_GH0_DOCS_ONLY=true
 SLICE_GH001_COMPLETE=true
 GH001_MANUAL_ONLY=true
-RESIDUAL_ACTIVE_SCHEDULE_COUNT=12
+RESIDUAL_ACTIVE_SCHEDULE_COUNT=8
+RESIDUAL_MANUAL_ONLY_RESIDUAL_COUNT=5
 RESIDUAL_SCHEDULE_INVENTORY_COUNT=13
 GH001_CANDIDATE_WORKFLOW=pro-prk-nightly-selfcheck.yml
 WORKFLOW_DISPATCH_EXECUTED=false
