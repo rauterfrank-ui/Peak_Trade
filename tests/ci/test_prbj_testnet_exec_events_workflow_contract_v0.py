@@ -1,4 +1,4 @@
-"""Static contract for PR-BJ Kraken testnet exec-events workflow cron gate.
+"""Static contract for PR-BJ Kraken testnet exec-events workflow (manual-only dispatch).
 
 Parses workflow YAML as UTF-8 text only. Never dispatches workflows, never
 reads secret values, and never touches runtime/testnet execution paths.
@@ -43,15 +43,13 @@ def _run_testnet_job() -> dict[str, Any]:
     return job
 
 
-def test_workflow_has_schedule_and_workflow_dispatch_triggers() -> None:
+def test_workflow_has_workflow_dispatch_only_no_schedule() -> None:
+    """PRBJ Option B: schedule removed; workflow_dispatch retained."""
     triggers = _trigger_section(_workflow())
 
     assert "workflow_dispatch" in triggers
-
-    schedule = triggers.get("schedule")
-    assert isinstance(schedule, list)
-    assert len(schedule) >= 1
-    assert any(isinstance(entry, dict) and "cron" in entry for entry in schedule)
+    assert "schedule" not in triggers
+    assert "schedule:" not in _workflow_text()
 
 
 def test_workflow_schedule_requires_kraken_testnet_cron_enabled_var() -> None:

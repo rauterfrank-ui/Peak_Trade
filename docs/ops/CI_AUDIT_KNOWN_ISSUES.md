@@ -2976,7 +2976,7 @@ PARALLEL_OPERATOR_STATUS_INDEX_CREATED=false
 | **SLICE-GH-2** (optional) | Static test guard after GH-001 if needed | none | **deferred** (GH-001 yaml-shape guard merged #3911) |
 | **SLICE-GH-CI** | Single-workflow manual-only: `.github&#47;workflows&#47;ci.yml` (`schedule:` removed; `workflow_dispatch`, `pull_request`, `push`, `merge_group` retained) | **one file** | **pending PR** (GH-CI slice) |
 
-**Residual schedules on `main` (post GH-001..004 + GH-CI + PRCC + PRK/PRBD Option2):** **6** workflows retain active `schedule:` — `prbc-stability-gate.yml`, `prbd-live-readiness-scorecard.yml`, `prbe-shadow-testnet-scorecard.yml`, `prbg-execution-evidence.yml`, `prbi-live-pilot-scorecard.yml`, `prbj-testnet-exec-events.yml`. **7** are **manual-only** (no active `schedule:`; other triggers retained): `ci.yml`, `pro-prk-nightly-selfcheck.yml`, `real-market-forward-evidence-smoke.yml`, `audit.yml`, `pru-required-checks-drift-detector.yml`, `prcc-aws-export-smoke.yml`, `prk-prj-status-report.yml`. Recommender inventory set remains **13** files (`RESIDUAL_SCHEDULE_WORKFLOW_FILES`); **6** have active schedules. **No batch YAML wave.** **No schedule reactivation** for PR #3896 manual-only set.
+**Residual schedules on `main` (post GH-001..004 + GH-CI + PRCC + PRK/PRBD Option2 + PRBJ Option B):** **5** workflows retain active `schedule:` — `prbc-stability-gate.yml`, `prbd-live-readiness-scorecard.yml`, `prbe-shadow-testnet-scorecard.yml`, `prbg-execution-evidence.yml`, `prbi-live-pilot-scorecard.yml`. **8** are **manual-only** (no active `schedule:`; other triggers retained): `ci.yml`, `pro-prk-nightly-selfcheck.yml`, `real-market-forward-evidence-smoke.yml`, `audit.yml`, `pru-required-checks-drift-detector.yml`, `prcc-aws-export-smoke.yml`, `prk-prj-status-report.yml`, `prbj-testnet-exec-events.yml`. Recommender inventory set remains **13** files (`RESIDUAL_SCHEDULE_WORKFLOW_FILES`); **5** have active schedules. **No batch YAML wave.** **No schedule reactivation** for PR #3896 manual-only set.
 
 **Durable operator pointers (archive only — not repo-ingested):**
 
@@ -2989,9 +2989,9 @@ PARALLEL_OPERATOR_STATUS_INDEX_CREATED=false
 
 **Operational rules:**
 
-- **SLICE-GH-0 / SLICE-GH-001 complete** — **no** further YAML in this release line without **per-workflow Sub-GO**; **no** `workflow_dispatch` execution from agent/CI automation; **no** batch cron removal on residual active schedules (**6** after GH-CI + PRCC + PRK/PRBD Option2).
+- **SLICE-GH-0 / SLICE-GH-001 complete** — **no** further YAML in this release line without **per-workflow Sub-GO**; **no** `workflow_dispatch` execution from agent/CI automation; **no** batch cron removal on residual active schedules (**5** after GH-CI + PRCC + PRK/PRBD Option2 + PRBJ Option B).
 - **Manual-only recommender output** is **read-only** and **not** equivalent to schedule deactivation.
-- **`residual_all` intent** — **13** inventory entries (`RESIDUAL_SCHEDULE_WORKFLOW_FILES`); **6** active `schedule:` + **7** manual-only; CLI label must not imply “13 active schedules”.
+- **`residual_all` intent** — **13** inventory entries (`RESIDUAL_SCHEDULE_WORKFLOW_FILES`); **5** active `schedule:` + **8** manual-only; CLI label must not imply “13 active schedules”.
 - **STOP_IDLE preserved** — `PREFLIGHT_REMAINS_BLOCKED=true`; no paper/shadow/testnet/live, no scheduler/daemon execution, no runtime.
 - **Notion** remains mirror/status only — **no** Notion writes.
 - **No trading / execution / risk / governance / live-gate authority** — no Master V2 / Double Play logic changes.

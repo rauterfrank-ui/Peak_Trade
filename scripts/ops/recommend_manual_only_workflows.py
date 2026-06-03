@@ -55,7 +55,7 @@ MANUAL_ONLY_WORKFLOW_FILES: frozenset[str] = frozenset(
 # Related downstream workflow (dispatch-only; schedule commented in YAML).
 PAPER_TEST_EVIDENCE_FILE = "paper_tests_audit_evidence.yml"
 
-# Residual schedule inventory (13 files): 6 active schedule + 7 manual-only (GH-001..004 + GH-CI + PRCC + PRK).
+# Residual schedule inventory (13 files): 5 active schedule + 8 manual-only (GH-001..004 + GH-CI + PRCC + PRK + PRBJ).
 RESIDUAL_SCHEDULE_WORKFLOW_FILES: frozenset[str] = frozenset(
     {
         "audit.yml",
@@ -78,7 +78,7 @@ RESIDUAL_INTENT_LABELS: dict[str, str] = {
     "residual_ci_ops": "Residual scheduled CI core / audit / PR-U drift (do not batch-remove)",
     "residual_scorecard_chain": "Residual PR-B / PR-K nightly scorecard and evidence chain",
     "residual_data_smoke": "Residual high-frequency market forward evidence smoke",
-    "residual_all": "13 inventory workflows (6 active schedule + 7 manual-only; read-only)",
+    "residual_all": "13 inventory workflows (5 active schedule + 8 manual-only; read-only)",
 }
 
 RESIDUAL_INTENT_TO_FILES: dict[str, tuple[str, ...]] = {
@@ -298,11 +298,11 @@ RESIDUAL_STATIC_META: dict[str, dict[str, Any]] = {
         "residual_schedule": True,
     },
     "prbj-testnet-exec-events.yml": {
-        "why": "Daily testnet exec events producer (orchestrator).",
-        "risk": "BLOCKED when KRAKEN_TESTNET_CRON_ENABLED — testnet/runtime boundary.",
-        "variable_gates": "vars.KRAKEN_TESTNET_CRON_ENABLED",
+        "why": "Testnet exec events producer (dispatch-only; schedule removed per signed PRBJ Option B).",
+        "risk": "BLOCKED — testnet/runtime boundary; workflow_dispatch requires named Operator-GO.",
+        "variable_gates": "vars.KRAKEN_TESTNET_CRON_ENABLED (job if: legacy schedule branch)",
         "ai": False,
-        "residual_schedule": True,
+        "residual_schedule": False,
     },
     "prbg-execution-evidence.yml": {
         "why": "Daily execution evidence bundle (testnet-adjacent).",

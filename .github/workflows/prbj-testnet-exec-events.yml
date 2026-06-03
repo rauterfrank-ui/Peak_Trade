@@ -1,8 +1,6 @@
 name: PR-BJ / Testnet Exec Events Artifact
 
 on:
-  schedule:
-    - cron: "9 2 * * *"
   workflow_dispatch:
     inputs:
       profile:
