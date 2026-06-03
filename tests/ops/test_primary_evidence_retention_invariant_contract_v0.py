@@ -58,11 +58,17 @@ THIS_MODULE = Path(__file__).name
 
 ER_RELEASE_RC_EXPECTED: dict[str, str] = {
     "EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0": "true",
-    "SLICE_ER1_DOCS_ONLY": "true",
+    "SLICE_ER1_COMPLETE": "true",
+    "SLICE_ER2_COMPLETE": "true",
+    "SLICE_ER3_DEFERRED": "true",
     "RETENTION_ENFORCEMENT_ACTIVATED": "false",
     "CLOSEOUT_ENFORCEMENT_ACTIVATED": "false",
     "PRE_FLIGHT_BLOCKED_LIFTED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
     "READY_FOR_START": "false",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_ENFORCEMENT_ACTIVATION": "true",
     "NO_RUNTIME": "true",
     "NO_PAPER_SHADOW_TESTNET_LIVE": "true",
     "NO_AWS_S3_RCLONE": "true",
@@ -72,6 +78,7 @@ ER_RELEASE_RC_EXPECTED: dict[str, str] = {
     "MASTER_V2_LOGIC_CHANGED": "false",
     "PARALLEL_EVIDENCE_INDEX_CREATED": "false",
     "REUSE_BEFORE_NEW_PASS": "true",
+    "STOP_IDLE_VALID": "true",
 }
 
 
@@ -725,9 +732,15 @@ def test_evidence_durable_closeout_retention_rc_v0_slice_er1_release_index_v0() 
     release_values = _machine_line_values_from_anchor(text, ER_RELEASE_RC_BLOCK_ANCHOR)
 
     assert "EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0" in section
+    assert "**CORE COMPLETE**" in section
     assert "SLICE-ER-1" in section
     assert "SLICE-ER-2" in section
     assert "SLICE-ER-3" in section
+    assert "complete" in section and "#3906" in section
+    assert "complete" in section and "#3907" in section
+    assert "**deferred**" in section
+    assert "not authorized until merged" not in collapsed
+    assert "Release scope (complete)" in section
     assert "docs/tests/tooling-only" in section
     assert (
         "this document (§2a / §2a.1)" in section
@@ -746,6 +759,8 @@ def test_evidence_durable_closeout_retention_rc_v0_slice_er1_release_index_v0() 
         "does not claim retention is fully enforced" in collapsed
     )
     assert "Canonical remains repo + durable Evidence Archive" in section
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in section
+    assert "READY_FOR_OPERATOR_ARMING=false" in section
 
     for key, expected in ER_RELEASE_RC_EXPECTED.items():
         assert release_values.get(key) == expected, (
