@@ -2582,13 +2582,16 @@ LOCAL_DRY_HOST_NO_RUN_PREFLIGHT_DOCS_TESTS_ONLY=true
 
 **Durable operator pointers (archive only — not repo-ingested):**
 
-**Operational lifecycle start (post #3935–#3939 train + #3940):** use **Final lifecycle handoff after PR3935–#3939** below; **PR #3940** closeout is the latest GH residual label-sync addendum. **Do not** use the PR3901 consolidated handoff as the current operational starting point (pre–Post-RC-train; historical reference only).
+**Operational lifecycle start (post #3935–#3941 train):** use **Final lifecycle handoff after PR3941 pointer sync** below; **PR #3941** closeout documents the in-repo CI-Audit lifecycle pointer sync; **PR #3940** closeout is the GH residual label-sync addendum. **Do not** use the PR3901 consolidated handoff or the superseded PR3935–#3939 handoff as the current operational starting point (historical reference only).
 
 | Token | Durable path |
 |-------|--------------|
-| **Final lifecycle handoff after PR3935–#3939 (operational start)** | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/handoff/final_lifecycle_handoff_after_pr3935_3939_train_v0_20260603T014600Z/` |
+| **Final lifecycle handoff after PR3941 pointer sync (operational start)** | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/handoff/final_lifecycle_handoff_after_pr3941_pointer_sync_v0_20260603T060000Z/` |
+| **PR #3941 closeout — CI-Audit lifecycle handoff pointer sync** | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_post_pr3940_ci_audit_lifecycle_pointer_sync_merge_closeout_v0_20260603T022400Z/` |
 | **PR #3940 closeout — GH residual_all intent label sync** | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_pr3940_gh_residual_all_intent_label_sync_merge_closeout_v0_20260603T021734Z/` |
+| Post-#3941 next-workstream planning (read-only) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/read_only_next_workstream_after_final_handoff_pr3941_v0_20260603T070000Z/` |
 | Post-#3940 next-workstream planning (read-only) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/read_only_next_workstream_after_pr3940_v0_20260603T040000Z/` |
+| Final lifecycle handoff after PR3935–#3939 (**superseded operational start**) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/handoff/final_lifecycle_handoff_after_pr3935_3939_train_v0_20260603T014600Z/` |
 | Final consolidated handoff after PR3901 (**historical — superseded operational start**) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/final_consolidated_handoff_after_pr3901_notion_and_generator_stop_idle_v0_20260602T170236Z/` |
 | Notion update after PR3901 (**historical**) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/notion_update_after_pr3901_operator_go_v0_20260602T165522Z/` |
 | Notion Auto-Sync Charter | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/notion_auto_sync_charter_and_design_readonly_v0_20260602T165746Z/` |
@@ -2617,8 +2620,10 @@ RUNTIME_TOUCHED=false
 TRADING_AUTHORITY_CHANGED=false
 NOTION_WRITES=false
 PARALLEL_DOCS_CREATED=false
-POST_RC_TRAIN_PR3935_3939_COMPLETE=true
+POST_RC_TRAIN_PR3935_3941_COMPLETE=true
 PR3940_GH_RESIDUAL_ALL_INTENT_LABEL_SYNC_COMPLETE=true
+PR3941_CI_AUDIT_LIFECYCLE_POINTER_SYNC_COMPLETE=true
+PREVIOUS_3935_3939_HANDOFF_SUPERSEDED=true
 PR3901_HANDOFF_SUPERSEDED_AS_OPERATIONAL_START=true
 PR3901_HANDOFF_HISTORICAL_REFERENCE_ONLY=true
 STOP_IDLE_VALID=true
