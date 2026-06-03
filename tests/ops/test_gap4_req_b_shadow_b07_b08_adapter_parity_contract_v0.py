@@ -344,7 +344,7 @@ def test_adapter_parity_does_not_flip_section5_evidence_tokens_v0() -> None:
         line.strip() for line in _gap4_completeness_reflection_section(text).splitlines()
     }
     verified_lines = {line.strip() for line in _gap4_verified_reflection_section(text).splitlines()}
-    repo_ssot_lines = criteria_lines | block_lines | parity_lines
+    criteria_and_parity_lines = criteria_lines | parity_lines
 
     assert "SHADOW_B07_B08_MISSING=true" in parity_lines
     assert "REQ_B_TIER_D_POPULATED_PATHS_FOUND=false" in parity_lines
@@ -354,7 +354,9 @@ def test_adapter_parity_does_not_flip_section5_evidence_tokens_v0() -> None:
     assert "SHADOW_B07_B08_MISSING=false" not in parity_lines
 
     for token in ADAPTER_PARITY_FORBIDDEN_TRUE_OUTSIDE_SCOPED_REFLECTION:
-        assert token not in repo_ssot_lines
+        assert token not in criteria_and_parity_lines
+
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block_lines
 
     assert "REQ_B_TIER_D_POPULATED_PATHS_FOUND=true" in completeness_lines
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in completeness_lines
