@@ -19,6 +19,7 @@ from tests.ops.test_testnet_wallclock_duration_evidence_contract_v0 import (
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RUN_TESTNET_SESSION = REPO_ROOT / "scripts" / "run_testnet_session.py"
+WALLCLOCK_SESSION_EVIDENCE = REPO_ROOT / "src" / "ops" / "wallclock_session_evidence_v0.py"
 ENTRYPOINT_FAIL_CLOSED_TEST = (
     REPO_ROOT / "tests/ops" / "test_run_testnet_session_entrypoint_fail_closed_contract_v0.py"
 )
@@ -185,15 +186,17 @@ def test_guard_crosslinks_present() -> None:
     )
 
 
-def test_run_testnet_session_lacks_runtime_wallclock_emitter() -> None:
-    """Gap guard: production emitter PR required before repo-native session evidence is complete."""
+def test_run_testnet_session_integrates_runtime_wallclock_emitter() -> None:
+    """Production emitter hook present on bounded session path."""
     source = RUN_TESTNET_SESSION.read_text(encoding="utf-8")
-    assert EMITTER_ARTIFACT_FILENAME not in source
-    for field in REQUIRED_WALLCLOCK_FIELD_NAMES:
-        assert f"{field}=" not in source
-        assert f'"{field}"' not in source
-    assert "def get_execution_summary" in source
-    assert "duration_proven" not in source
+    assert "wallclock_session_evidence_v0" in source
+    assert "WallClockSessionTracker" in source
+    assert "_emit_wallclock_evidence" in source
+    assert "wallclock_evidence" in source
+    assert WALLCLOCK_SESSION_EVIDENCE.is_file()
+    assert "RUNTIME_WALLCLOCK_SESSION_EVIDENCE_V0=true" in (
+        WALLCLOCK_SESSION_EVIDENCE.read_text(encoding="utf-8")
+    )
 
 
 def test_production_emitter_pr_required_before_repo_native_session_evidence() -> None:
@@ -276,3 +279,43 @@ def test_future_repo_native_closeout_must_include_planned_vs_elapsed_fields() ->
     serialized = json.dumps(sample)
     for key in required:
         assert key in serialized
+
+
+def test_wallclock_session_tracker_emits_required_fields() -> None:
+    from src.ops.wallclock_session_evidence_v0 import (
+        INVALID_IF_ELAPSED_BELOW_MIN,
+        WallClockSessionTracker,
+    )
+
+    tracker = WallClockSessionTracker.begin(
+        300,
+        start_wall_clock_iso="2026-06-03T20:00:00Z",
+        start_monotonic_seconds=1000.0,
+    )
+    evidence = tracker.finalize(
+        end_wall_clock_iso="2026-06-03T20:05:01Z",
+        end_monotonic_seconds=1301.2,
+    )
+    for field in REQUIRED_WALLCLOCK_FIELD_NAMES:
+        assert field in evidence
+    assert evidence["invalid_if_elapsed_below_min"] is INVALID_IF_ELAPSED_BELOW_MIN
+    assert evidence["evidence_source"] == "repo_native_session"
+    assert evidence["duration_evidence_valid"] is True
+    assert evidence["duration_proven"] is True
+
+
+def test_wallclock_session_tracker_invalid_if_elapsed_below_min() -> None:
+    from src.ops.wallclock_session_evidence_v0 import WallClockSessionTracker
+
+    tracker = WallClockSessionTracker.begin(
+        300,
+        start_wall_clock_iso="2026-06-03T20:00:00Z",
+        start_monotonic_seconds=1000.0,
+    )
+    evidence = tracker.finalize(
+        end_wall_clock_iso="2026-06-03T20:00:30Z",
+        end_monotonic_seconds=1030.0,
+    )
+    assert evidence["invalid_if_elapsed_below_min"] is True
+    assert evidence["duration_evidence_valid"] is False
+    assert evidence["duration_proven"] is False

@@ -214,25 +214,19 @@ def test_section5_preflight_wall_clock_review_still_blocked() -> None:
     assert "ACTUAL_WALL_CLOCK_SECONDS=0" in gap_map
 
 
-def test_run_testnet_session_does_not_yet_export_duration_evidence_fields() -> None:
-    """Gap guard: runtime must add fields in a separate GO; this contract defines the target."""
+def test_run_testnet_session_integrates_wallclock_session_evidence_module() -> None:
+    """Bounded session delegates wall-clock emission to repo-native helper module."""
     source = RUN_TESTNET_SESSION.read_text(encoding="utf-8")
-    for field in (
-        "duration_proven",
-        "duration_evidence_valid",
-        "elapsed_wall_clock_seconds",
-        "planned_duration_seconds",
-        "min_required_wall_clock_seconds",
-    ):
-        assert f"{field}=" not in source
-        assert f'"{field}"' not in source
+    assert "wallclock_session_evidence_v0" in source
+    assert "WallClockSessionTracker" in source
+    assert "write_wallclock_evidence" in source
 
 
-def test_run_testnet_session_uses_wall_clock_loop_but_no_evidence_export() -> None:
+def test_run_testnet_session_uses_wall_clock_loop_with_emitter_hook() -> None:
     source = RUN_TESTNET_SESSION.read_text(encoding="utf-8")
     assert "def run_for_duration" in source
     assert "time.time()" in source
-    assert "duration_proven" not in source
+    assert "_emit_wallclock_evidence" in source
 
 
 def test_valid_thirty_min_evidence_passes_evaluator() -> None:

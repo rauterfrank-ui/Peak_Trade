@@ -8,6 +8,7 @@ GAP6_GOVERNED_REFLECTION_HEADER = "## Gap 6 Governed Dry-Run Proof Acceptance Re
 GAP6_RC0_OBSERVED_REFLECTION_HEADER = (
     "## Gap 6 Governed Bounded Dry-Run RC0 Observed Evidence Reflection v0"
 )
+GAP5_GOVERNED_STOP_PROOF_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP6_PARALLEL_MARKERS = (
     "GAP6_DRY_RUN_PROOF_CRITERIA_CONTRACT_V0=true",
@@ -20,7 +21,9 @@ _MARKER_TRUE = "=true"
 
 
 def _gap6_criteria_section(text: str) -> str:
-    return text.split(GAP6_SECTION_HEADER, 1)[1].split("## Gap 5 Stop Criteria Contract v0", 1)[0]
+    return text.split(GAP6_SECTION_HEADER, 1)[1].split(
+        GAP5_GOVERNED_STOP_PROOF_REFLECTION_HEADER, 1
+    )[0]
 
 
 def _gap6_governed_reflection_section(text: str) -> str:
