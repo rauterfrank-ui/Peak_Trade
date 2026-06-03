@@ -1800,9 +1800,7 @@ def test_csc_rchain_v1_005c_governed_reflection_scheduler_000253_sc_g_scheduler_
 
     assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
     assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
-    assert (
-        "CSC_RCHAIN_V1_005A_GOVERNED_REFLECTION_BUNDLE_C_INACTIVE_PARK_MARKER_V0=true" in text
-    )
+    assert "CSC_RCHAIN_V1_005A_GOVERNED_REFLECTION_BUNDLE_C_INACTIVE_PARK_MARKER_V0=true" in text
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_truth_map_crosslink_v0() -> (
