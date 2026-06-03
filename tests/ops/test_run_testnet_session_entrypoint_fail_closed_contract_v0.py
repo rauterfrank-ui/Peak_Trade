@@ -15,7 +15,21 @@ BOUNDED_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_testnet_bounded_observati
 LEGACY_SMOKE_TESTS = REPO_ROOT / "tests" / "test_run_testnet_session.py"
 
 PACKAGE_MARKER = "RUN_TESTNET_SESSION_ENTRYPOINT_FAIL_CLOSED_CONTRACT_V0=true"
+_CLASS4_SCOPED_EXCEPTION_MARKER = (
+    "TESTNET_ENTRYPOINT_FAIL_CLOSED_GUARD_CLASS4_SCOPED_EXCEPTION_V0=true"
+)
 _EXIT_FAIL_CLOSED = 2
+SECTION5_GAP_OWNER_MAP = (
+    REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
+)
+
+# External governance tokens (archive) map to repo-native, statically verifiable markers.
+CONTRACT_GOVERNANCE_TOKEN_MAP = {
+    "TESTNET_NOW_EXECUTE_ALLOWED": "RUN_TESTNET_SESSION_ALLOWED_NOW=false",
+    "TESTNET_NOW_RECOMMENDED": "Does not authorize NORMAL_TESTNET_RUN",
+    "RUN_TESTNET_SESSION_ALLOWED": "RUN_TESTNET_SESSION_ALLOWED_NOW=false",
+    "NORMAL_TESTNET_RUN_ALLOWED_NOW": "Does not authorize NORMAL_TESTNET_RUN",
+}
 
 
 @pytest.fixture
@@ -78,6 +92,27 @@ def _source() -> str:
 def test_package_marker_present() -> None:
     text = Path(__file__).read_text(encoding="utf-8")
     assert PACKAGE_MARKER in text
+    assert _CLASS4_SCOPED_EXCEPTION_MARKER in text
+
+
+def test_contract_governance_tokens_map_to_repo_native_markers() -> None:
+    source = _source()
+    for external_token, repo_marker in CONTRACT_GOVERNANCE_TOKEN_MAP.items():
+        assert repo_marker in source, f"{external_token} -> missing {repo_marker!r}"
+
+
+def test_enforce_fail_closed_helper_is_non_authorizing() -> None:
+    text = _source()
+    helper = text.split("def _enforce_fail_closed_entrypoint", 1)[1].split("\ndef ", 1)[0]
+    assert "Does not authorize NORMAL_TESTNET_RUN" in helper
+    assert "operator arming" in helper
+
+
+def test_section5_preflight_remains_blocked_while_entrypoint_guarded() -> None:
+    gap_map = SECTION5_GAP_OWNER_MAP.read_text(encoding="utf-8")
+    final_lines = gap_map.split("## Final Machine Lines", 1)[-1]
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in final_lines
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in final_lines
 
 
 def test_source_declares_not_authorized_normal_testnet_run() -> None:
@@ -123,11 +158,13 @@ def test_pe2_hard_gate_uses_line_based_gap2a1_forbidden_tokens_v0() -> None:
     assert '"READY_FOR_OPERATOR_ARMING=true" not in gap2a1_lines' in hard_gate
 
 
+@patch("scripts.run_testnet_session.build_testnet_session")
 @patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
 @patch("scripts.run_testnet_session.load_config")
 def test_main_execute_rejects_missing_duration_and_credentials(
     mock_load_config: MagicMock,
     mock_create_client: MagicMock,
+    mock_build_session: MagicMock,
     testnet_config_dict: Dict[str, Any],
 ) -> None:
     from src.core.peak_config import PeakConfig
@@ -143,6 +180,7 @@ def test_main_execute_rejects_missing_duration_and_credentials(
                 rc = main()
 
     assert rc == _EXIT_FAIL_CLOSED
+    mock_build_session.assert_not_called()
 
 
 @patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
@@ -170,18 +208,22 @@ def test_main_execute_rejects_missing_credentials_with_duration(
     assert rc == _EXIT_FAIL_CLOSED
 
 
+@patch("scripts.run_testnet_session.build_testnet_session")
 @patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
 @patch("scripts.run_testnet_session.load_config")
 def test_main_dry_run_skips_duration_and_credentials(
     mock_load_config: MagicMock,
     mock_create_client: MagicMock,
+    mock_build_session: MagicMock,
     testnet_config_dict: Dict[str, Any],
 ) -> None:
     from src.core.peak_config import PeakConfig
     from scripts.run_testnet_session import main
 
+    session_mock = MagicMock()
     mock_load_config.return_value = PeakConfig(raw=testnet_config_dict)
     mock_create_client.return_value = MagicMock(has_credentials=False)
+    mock_build_session.return_value = session_mock
 
     env = {k: v for k, v in os.environ.items() if not k.startswith("KRAKEN_TESTNET_API")}
     with patch.dict(os.environ, env, clear=True):
@@ -190,6 +232,9 @@ def test_main_dry_run_skips_duration_and_credentials(
                 rc = main()
 
     assert rc == 0
+    session_mock.warmup.assert_not_called()
+    session_mock.run_for_duration.assert_not_called()
+    session_mock.run_forever.assert_not_called()
 
 
 @patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
