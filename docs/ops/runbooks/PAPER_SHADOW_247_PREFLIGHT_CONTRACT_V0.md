@@ -97,6 +97,10 @@ RUN_COMPLETION_INVALID_WITHOUT_DURABLE_PRIMARY_EVIDENCE=true
 PREFLIGHT_REMAINS_BLOCKED=true
 READY_FOR_OPERATOR_ARMING=false
 GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+PE4_BOUNDED_OBSERVATION_MANDATORY_CLOSEOUT_WIRING_GUARD_V0=true
+SLICE_PE4_TESTS_ONLY=true
+MANDATORY_DURABLE_CLOSEOUT_REQUIRED=true
+CHECKSUM_VERIFY_REQUIRED=true
 ```
 
 **Run-type applicability (run completion contract) v0:** The following lanes require durable primary evidence for **run completion** to be valid (docs/tests contract only; enforcement remains opt-in): **Paper**, **Shadow**, **Testnet**, **Live/Canary**, **bounded trial** (bounded observation/pilot adapters), **Scheduler** completion closeout, **Supervisor** evidence-pack closeout. Each lane: durable archive **outside `/tmp`**, `MANIFEST.sha256` verified (checksum manifest), closeout reference when applicable; **`/tmp`-only is insufficient**; **run completion is invalid** without durable primary evidence. Static guard matrix: `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py` (`PE2_RUN_TYPE_GUARD_MATRIX`). Crosslink: `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` §2a.1. **Does not** activate enforcement, **does not** lift Preflight **BLOCKED**, **does not** set `READY_FOR_OPERATOR_ARMING=true`.
@@ -118,7 +122,10 @@ Every future **Paper**, **Shadow**, **Testnet**, **Live/Canary**, **Scheduler**,
 
 ```
 DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_WIRING_V0=true
+PE4_BOUNDED_OBSERVATION_MANDATORY_CLOSEOUT_WIRING_GUARD_V0=true
 ```
+
+Future bounded **Shadow** and **Testnet** closeout paths that treat a run as **complete** for gate, readiness, or promotion **review input** must not claim completion when mandatory durable closeout wiring is unsatisfied: durable archive outside `/tmp`, `MANIFEST.sha256` verified (checksum), primary evidence present, and (when applicable) `durable_closeout_copy_verify_v0.py` invoked for material closeout copy — **contract/guard only**; enforcement remains opt-in. **Paper** bounded observation (`run_paper_only_bounded_observation_adapter_v0.py`) and **Scheduler** completion closeout (`scheduler_completion_closeout_v0.json`) follow the same §2a.1 hard-gate posture for run completion validity; `/tmp`-only remains insufficient.
 
 Future bounded **Shadow** and **Testnet** closeout paths that treat a run as **complete** for gate, readiness, or promotion **review input** must retain a **durable primary evidence wiring contract**: after durable archive copy and `MANIFEST.sha256` verification on that copy, operators and closeout plans must invoke `review_shadow_bounded_observation_evidence_v0.py` or `review_testnet_bounded_observation_evidence_v0.py` with **`--durable-run-root`** pointing at the verified durable archive root (shared `validate_durable_primary_evidence_root()`). Review **`--durable-run-root` remains opt-in (default off)** in repository runtime at this stage — this anchor documents **mandatory closeout wiring for future paths**, not default-on review behavior, and **does not** modify adapter execute paths in this slice.
 
