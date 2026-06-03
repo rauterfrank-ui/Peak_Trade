@@ -360,3 +360,44 @@ def test_cybersecurity_visibility_histogram_defensive_closure_crosslink_v0() -> 
         assert marker not in {line.strip() for line in text.splitlines()}
 
     assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
+
+
+CV3B_READOUT_HEADING = "### Defensive visibility readout / owner-triage guard v0 (SLICE-CV-3b)"
+CV3B_BLOCK_ANCHOR = "CV3B_DEFENSIVE_VISIBILITY_READOUT_OWNER_TRIAGE_GUARD_V0=true"
+DERIVED_MAPPING_PLAN_MODULE = (
+    "tests/ci/test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py"
+)
+MAPPING_GUARD_MODULE = "tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py"
+INVENTORY_CHARTER_MODULE = (
+    "tests/ci/test_cybersecurity_visibility_r_pending_inventory_charter_v0.py"
+)
+
+
+def _cv3b_readout_block(text: str) -> str:
+    start = text.index(CV3B_READOUT_HEADING)
+    end = text.index("Operators may use this histogram", start)
+    return text[start:end]
+
+
+def test_cybersecurity_visibility_cv3b_histogram_readout_reciprocal_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    block = _cv3b_readout_block(text)
+    collapsed = block.lower()
+
+    assert CV3B_BLOCK_ANCHOR in block
+    assert THIS_MODULE in block
+    assert DERIVED_MAPPING_PLAN_MODULE in block
+    assert MAPPING_GUARD_MODULE in block
+    assert INVENTORY_CHARTER_MODULE in block
+    assert "CV3A histogram closure routing" in block
+    assert "complete" in collapsed
+    assert "deferred" in collapsed
+    assert "CSC_RCHAIN_HISTOGRAM_DEFENSIVE_CLOSURE_COMPLETE=true" in text
+    assert "INPUT_JSONL_FABRICATED=false" in block
+    assert "RUNTIME_AUTHORITY_ADDED=false" in block
+    assert "non-authorizing" in collapsed
+
+    derived_text = (REPO_ROOT / DERIVED_MAPPING_PLAN_MODULE).read_text(encoding="utf-8")
+    mapping_text = (REPO_ROOT / MAPPING_GUARD_MODULE).read_text(encoding="utf-8")
+    assert CV3B_BLOCK_ANCHOR in derived_text or CV3B_READOUT_HEADING in derived_text
+    assert CV3B_BLOCK_ANCHOR in mapping_text or CV3B_READOUT_HEADING in mapping_text

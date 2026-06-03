@@ -840,3 +840,139 @@ def test_cybersecurity_visibility_release_rc_v0_slice_cv2_guard_owner_crosslink_
     assert "test_cybersecurity_visibility_" in text
     assert THIS_MODULE in text
     assert "extend existing" in text.lower()
+
+
+CV3B_READOUT_HEADING = "### Defensive visibility readout / owner-triage guard v0 (SLICE-CV-3b)"
+CV3B_BLOCK_ANCHOR = "CV3B_DEFENSIVE_VISIBILITY_READOUT_OWNER_TRIAGE_GUARD_V0=true"
+CV3B_PLANNING_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cv3b_defensive_visibility_readout_after_cv3a_v0_20260603T031905Z/"
+)
+CV3A_CLOSEOUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_cv3a_csc_rchain_histogram_defensive_closure_merge_closeout_v0_20260603T031905Z/"
+)
+MAPPING_GUARD_MODULE = "tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py"
+INVENTORY_CHARTER_MODULE = (
+    "tests/ci/test_cybersecurity_visibility_r_pending_inventory_charter_v0.py"
+)
+ARTIFACT_RETENTION_MODULE = (
+    "tests/ci/test_cybersecurity_visibility_repo_static_histogram_"
+    "artifact_retention_or_evidence_gap_crosslink_v0.py"
+)
+CSC_RCHAIN_GROUPING_MODULE = "tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py"
+
+CV3B_EXPECTED_MACHINE_LINES: dict[str, str] = {
+    "CV3B_DEFENSIVE_VISIBILITY_READOUT_OWNER_TRIAGE_GUARD_V0": "true",
+    "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STARTED": "true",
+    "CV3A_COMPLETE": "true",
+    "CV3B_DEFENSIVE_VISIBILITY_READOUT_OWNER_TRIAGE_GUARD_COMPLETE": "true",
+    "DEFENSIVE_CYBER_ONLY": "true",
+    "DEFENSIVE_VISIBILITY_READOUT_STATIC_DERIVED_ONLY": "true",
+    "OWNER_TRIAGE_READOUT_NON_AUTHORIZING": "true",
+    "DEFINITIVE_CYBER_MAPPING_PERFORMED": "false",
+    "INPUT_JSONL_REQUIRED": "false",
+    "INPUT_JSONL_FABRICATED": "false",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "MAPPED_BY_DERIVED_EVIDENCE_ONLY": "true",
+    "CSC_RCHAIN_V1_003A_BLOCKED": "true",
+    "CSC_RCHAIN_V1_003E_BLOCKED": "true",
+    "RUNTIME_AUTHORITY_ADDED": "false",
+    "SECRET_SCANNING_REAL_SECRETS": "false",
+    "REUSE_DRIFT_GUARD": "REUSE_OK",
+    "NO_PARALLEL_DOCS": "true",
+    "NO_PARALLEL_BUILDS": "true",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "RUNTIME_STARTED": "false",
+    "SCHEDULER_STARTED": "false",
+    "LIVE_TOUCHED": "false",
+    "ENFORCEMENT_ACTIVATED": "false",
+    "EXPLOIT_CODE_ADDED": "false",
+    "OFFENSIVE_AUTOMATION_ADDED": "false",
+    "SLICE_CV3B_TESTS_ONLY": "true",
+}
+CV3B_FORBIDDEN_AUTHORIZATION_PHRASES: tuple[str, ...] = (
+    "definitive mapping completed",
+    "input_jsonl fabricated",
+    "offensive_automation_enabled=true",
+    "runtime authority granted",
+    "secret scanning authorized",
+)
+CV3B_FORBIDDEN_MACHINE_TRUE_LINES: tuple[str, ...] = (
+    "INPUT_JSONL_PROVIDED=true",
+    "INPUT_JSONL_FABRICATED=true",
+    "READY_FOR_OPERATOR_ARMING=true",
+    "RUNTIME_AUTHORITY_ADDED=true",
+    "ENFORCEMENT_ACTIVATED=true",
+    "EXPLOIT_CODE_ADDED=true",
+    "OFFENSIVE_AUTOMATION_ADDED=true",
+)
+
+
+def _cv3b_readout_block(text: str) -> str:
+    start = text.index(CV3B_READOUT_HEADING)
+    end = text.index("Operators may use this histogram", start)
+    return text[start:end]
+
+
+def test_cybersecurity_visibility_cv3b_defensive_readout_owner_triage_guard_v0() -> None:
+    text = _ci_audit_text()
+    block = _cv3b_readout_block(text)
+    collapsed = block.lower()
+    machine_values = _machine_line_values(block)
+
+    assert "GO_SLICE_CV3B_DEFENSIVE_VISIBILITY_READOUT_OWNER_TRIAGE_GUARD_V0" in block
+    assert CV3B_PLANNING_BUNDLE in block
+    assert CV3A_CLOSEOUT_BUNDLE in block
+    assert THIS_MODULE in block
+    assert MAPPING_GUARD_MODULE in block
+    assert INVENTORY_CHARTER_MODULE in block
+    assert ARTIFACT_RETENTION_MODULE in block
+    assert CSC_RCHAIN_GROUPING_MODULE in block
+    assert "static/derived only" in collapsed
+    assert "owner-triage" in collapsed or "owner triage" in collapsed
+    assert "mapped-by-derived-evidence" in collapsed
+    assert "review-input only" in collapsed
+    assert "plan progress only" in collapsed
+    assert "CSC_RCHAIN_V1_003A_BLOCKED=true" in block
+    assert "CSC_RCHAIN_V1_003E_BLOCKED=true" in block
+    assert "**003a**" in block or "003a" in collapsed
+    assert "non-authorizing" in collapsed
+
+    for owner in (
+        MAPPING_GUARD_MODULE,
+        INVENTORY_CHARTER_MODULE,
+        f"tests/ci/{THIS_MODULE}",
+        ARTIFACT_RETENTION_MODULE,
+        CSC_RCHAIN_GROUPING_MODULE,
+    ):
+        assert (REPO_ROOT / owner).is_file(), f"missing CV3B guard owner: {owner!r}"
+
+    for key, expected in CV3B_EXPECTED_MACHINE_LINES.items():
+        assert machine_values.get(key) == expected, (
+            f"CV3B readout {key}={machine_values.get(key)!r} expected {expected!r}"
+        )
+
+    readout_lines = {line.strip() for line in block.splitlines()}
+    for marker in CV3B_FORBIDDEN_MACHINE_TRUE_LINES:
+        assert marker not in readout_lines
+
+    for phrase in CV3B_FORBIDDEN_AUTHORIZATION_PHRASES:
+        assert phrase not in collapsed
+
+    assert "exploit/offensive automation" in collapsed
+    assert "secret scanning against real secrets" in collapsed
+    assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
+
+
+def test_cybersecurity_visibility_cv3b_readout_slice_guard_owner_crosslink_v0() -> None:
+    text = _cv3b_readout_block(_ci_audit_text())
+    release_section = _release_rc_index_section(_ci_audit_text())
+
+    assert "SLICE-CV-3b" in release_section
+    assert CV3B_BLOCK_ANCHOR in text
+    assert THIS_MODULE in text
+    assert MAPPING_GUARD_MODULE in text
+    assert "extend existing" in release_section.lower() or "test_cybersecurity_visibility_" in release_section
