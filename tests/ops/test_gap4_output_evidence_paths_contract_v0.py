@@ -181,7 +181,9 @@ def test_gap4_output_evidence_paths_verified_final_line_reflection_non_authorizi
     criteria = _gap4_criteria_section(text)
     block = _final_machine_lines(text)
 
-    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in reflection
+    assert (
+        "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in reflection
+    )
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in reflection
     assert "NO_RUNTIME_AUTHORITY=true" in reflection
     assert "FULL_SCOPE_GAP4_VERIFIED=false" in reflection

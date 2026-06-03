@@ -719,69 +719,9 @@ def test_gap4_verified_final_line_governed_reflection_scoped_verification_v0() -
     criteria = _gap4_criteria_section(text)
     block = _final_machine_lines(text)
 
-    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in reflection
-    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in reflection
     assert (
-        "ACCEPTED_MODE=GAP4_OUTPUT_EVIDENCE_PATHS_SCOPED_EXTERNAL_VERIFICATION_FINAL_LINE_VERIFIED"
-        in reflection
+        "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in reflection
     )
-    assert "GOVERNED_ACCEPTANCE_BASIS=GAP4_OUTPUT_EVIDENCE_ACCEPTED=true" in reflection
-    assert "EXTERNAL_OUTPUT_EVIDENCE_PATHS_VERIFICATION_POINTER=" in reflection
-    assert "gap4_output_evidence_paths_verification_v0_20260601T010200Z" in reflection
-    assert "EXTERNAL_COMPLETENESS_VERIFICATION_POINTER=" in reflection
-    assert "gap4_full_scope_evidence_completeness_verification_v0_20260601T010600Z" in reflection
-    assert "INPUT_STRATEGY_POINTER=" in reflection
-    assert "section5_remaining_gaps_closure_strategy_no_lift_v0_20260603T160500Z" in reflection
-    assert "INPUT_GAP7_CLOSEOUT_POINTER=" in reflection
-    assert (
-        "pr3966_gap7_risk_boundary_final_line_reflection_post_merge_closeout_v0_20260603T161613Z"
-        in reflection
-    )
-    assert "INPUT_GAP5_CLOSEOUT_POINTER=" in reflection
-    assert (
-        "pr3967_gap5_stop_proof_final_line_reflection_post_merge_closeout_v0_20260603T162700Z"
-        in reflection
-    )
-    assert (
-        "OPERATOR_GO=GO_GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED_FINAL_LINE_REPO_REFLECTION_DOCS_TESTS_V0"
-        in reflection
-    )
-    assert "NO_RUNTIME_AUTHORITY=true" in reflection
-    assert "FULL_SCOPE_GAP4_VERIFIED=false" in reflection
-    assert "does not modify Gap-4 criteria block verification posture" in reflection
-    assert "does not set `FULL_SCOPE_GAP4_VERIFIED=true`" in reflection
-    assert "does not enable operator arming" in reflection
-    assert "does not set `ALL_GAPS_CLOSED=true`" in reflection
-    assert "does not lift preflight" in reflection
-    assert "Evidence verification is not runtime authorization" in reflection
-    assert "GAP4_OUTPUT_EVIDENCE_ACCEPTED=true" in acceptance
-    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in completeness
-    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria
-    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
-    assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
-    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
-    assert "ALL_GAPS_CLOSED=false" in block
-    assert "READY_FOR_OPERATOR_ARMING=false" in block
-    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
-    reflection_lines = {line.strip() for line in reflection.splitlines()}
-    criteria_lines = {line.strip() for line in criteria.splitlines()}
-    block_lines = {line.strip() for line in block.splitlines()}
-    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in reflection_lines
-    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block_lines
-    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" not in criteria_lines
-    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" not in block_lines
-    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in block_lines
-
-
-def test_gap4_verified_final_line_governed_reflection_scoped_verification_v0() -> None:
-    text = _section5_text()
-    reflection = _gap4_verified_final_line_reflection_section(text)
-    acceptance = _gap4_governed_reflection_section(text)
-    completeness = _gap4_full_scope_evidence_completeness_reflection_section(text)
-    criteria = _gap4_criteria_section(text)
-    block = _final_machine_lines(text)
-
-    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in reflection
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in reflection
     assert (
         "ACCEPTED_MODE=GAP4_OUTPUT_EVIDENCE_PATHS_SCOPED_EXTERNAL_VERIFICATION_FINAL_LINE_VERIFIED"
